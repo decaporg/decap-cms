@@ -1,0 +1,26 @@
+  <div class="body narrow">
+
+  <div class="section courses">
+    <div class="pull-left meta rtl">
+      <h2>CMS</h2>
+    </div>
+    <div class="content">
+
+      <h1>
+        <a class="cms-action" {{action "login"}}>Login to your CMS</a>
+      </h1>
+
+      {{#if error}}
+      <p class="cms-error">{{error}}</p>
+      {{else}}
+      <p>
+        Once you&#39;re logged in you can add new content or edit your site.
+      </p>
+      {{/if}}
+
+      <div class="meta">
+        <p><a class="cms-action" {{action "login"}}>Login</a></p>
+      </div>
+    </div>
+  </div>
+</div>

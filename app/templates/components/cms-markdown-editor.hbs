@@ -1,0 +1,18 @@
+<div class="markdown-editor">
+  <div class="markdown-label">
+    <label>{{label}}</label>
+  </div>
+  <div class="markdown-menu">
+    <a class="markdown-menu-icon markdown-icon-bold" {{action 'bold'}}>Bold</a>
+    <a class="markdown-menu-icon markdown-icon-italic" {{action 'italic'}}>Italic</a>
+    <a class="markdown-menu-icon markdown-icon-link" {{action 'link'}}>Link</a>
+  </div>
+  {{#if showLinkbox}}
+  <div class="markdown-link-box clearfix">
+    {{input type="text" class="markdown-link-url" placeholder="https://www.netlify.com" value=linkUrl focus-out="insertLink" enter="insertLink"}}      
+  </div>
+  {{/if}}
+  <div class="markdown-body">
+    {{cms-expanding-textarea value=value}}
+  </div>
+</div>

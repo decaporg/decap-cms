@@ -1,0 +1,10 @@
+<label>{{field.label}}</label>
+{{#cms-list field=field as |item|}}
+  {{#each field in item.fields}}
+  <div class="widget">
+    <div class="form-control">
+      {{cms-widget-control field=field}}
+    </div>
+  </div>
+  {{/each}}
+{{/cms-list}}

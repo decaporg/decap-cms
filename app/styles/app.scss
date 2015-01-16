@@ -1,0 +1,186 @@
+@font-face {
+  font-family: Icomoon;
+  src: url(data:application/font-woff;base64,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);
+}
+
+body.dragging, body.dragging * {
+  cursor: move !important;
+}
+
+form {
+  label {
+    display: block;
+  }
+  input, textarea {
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    border: 1px solid #333;
+    &.ng-touched.ng-invalid {
+      box-shadow: 0 0 5px #ED2121;
+    }
+  }
+}
+
+.cms-action {
+  cursor: pointer;
+}
+
+.cms-form {
+  display: table;
+  width: 100%;
+}
+.widget {
+  display: table-row;
+}
+.form-control, .preview {
+  box-sizing: border-box;
+  display: table-cell;
+  padding-bottom: 20px;
+  vertical-align: top;
+  width: 50%;
+}
+.form-control {
+  padding-right: 20px;
+  margin-bottom: 20px;
+}
+.markdown-label, .markdown-menu {
+  float: left;
+  width: 50%;
+}
+.markdown-menu {
+  text-align: right;
+}
+.markdown-body {
+  clear: both;
+}
+.preview {
+  padding-left: 20px;
+  border-left: 1px solid;
+  img {
+    max-width: 100%;
+  }
+}
+
+.markdown-menu-icon {
+  display: inline-block;
+  width: 14px;
+  line-height: 14px;
+  text-align: center;
+  padding: 3px;
+  margin: 0 0 0 5px;
+  text-indent: -9999px;
+  overflow: hidden;
+  border: 1px solid;
+  font-size: 12px;
+  position: relative;
+  color: inherit;
+}
+.markdown-menu-icon:after {
+  position: absolute;
+  display: block;
+  top: 0;
+  left: 0;
+  width: 14px;
+  font-family: Icomoon;
+  padding: 3px;
+  text-indent: 0;
+  background: #333;
+  color: #fff;
+}
+.markdown-menu-icon.markdown-icon-bold:after {
+  content: "\ea62";
+}
+.markdown-menu-icon.markdown-icon-italic:after {
+  content: "\ea64";
+}
+.markdown-menu-icon.markdown-icon-link:after {
+  content: "\e9cb";
+}
+
+.media-image-upload-box {
+  position: relative;
+  border: 1px solid;
+  padding: 5px;
+  overflow: hidden;
+  .button {
+    margin-right: 10px;
+  }
+}
+.media-image-uploader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 10em;
+  opacity: 0;
+}
+
+
+.cms-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.cms-list-item {
+  position: relative;
+  padding: 20px 20px 20px 60px;
+}
+
+.cms-list-ordering {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  margin-top: -39px;
+}
+.cms-list-icon {
+  display: block;
+  font-family: Icomoon;
+  color: #bbb;
+  &:hover {
+    color: #aaa;
+  }
+  &.up:after {
+    content: "\ea32";
+  }
+  &.drag {
+    cursor: move;
+  }
+  &.drag:after {
+    content: "\ea54";
+  }
+  &.down:after {
+    content: "\ea36";
+  }
+  &.remove:after {
+    content: "\ea0f";
+  }
+}
+.cms-list-actions {
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  margin-top: -13px;
+}
+
+.dragged {
+  position: absolute;
+  opacity: 0.5;
+  z-index: 2000;
+}
+
+.cms-list-placeholder {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.cms-list-placeholder:before {
+  content: "";
+  display: block;
+  height: 100%;
+  margin: 0 20px 0 60px;
+  background: #efefef;
+}
+

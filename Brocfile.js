@@ -16,5 +16,11 @@ var app = new EmberApp();
 // modules that you would like to import into your application
 // please specify an object with the list of modules as keys
 // along with the exports of each module as its value.
+app.import("vendor/authentication.js");
+
+app.import('bower_components/js-yaml/dist/js-yaml.js');
+app.import('bower_components/marked/lib/marked.js');
+app.import('bower_components/js-base64/base64.js');
+app.import('bower_components/jquery-sortable/source/js/jquery-sortable.js');
 
 module.exports = app.toTree();

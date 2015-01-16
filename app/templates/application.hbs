@@ -1,3 +1,35 @@
-<h2 id="title">Welcome to Ember.js</h2>
+<div class="header">
+  <div class="top-bar">
+    <div class="container">
+      
+      <div class="masthead">
+        <h6>
+          <a href="/about" target="_self">Erik Christensen <span>Musicologist, Educator &amp; Researcher</span></a>
+        </h6>
+      </div>
+      
+      <div class="breadcrumb">
+        <a href="/" target="_self">Timespace</a>
+        {{#link-to 'home'}}/ Admin{{/link-to}}
+        <span> / {{ currentAction }} </span>
+      </div>
+
+      <div class="nav">
+        <a id="nav-button" class="icon-link no-underline" href="#navigation">
+          <svg class="icon-nav">
+            <use xlink:href="#icon-nav"></use>
+            <foreignObject>
+              <span class="svg-fallback icon-nav">Menu</span>
+            </foreignObject>
+          </svg>
+        </a>
+        <ul id="navigation">
+          <li>{{#link-to 'logout'}}Logout{{/link-to}}</li>
+        </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
 
 {{outlet}}

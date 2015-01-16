@@ -1,0 +1,20 @@
+<div class="body narrow">
+  <div class="section courses">
+    <div class="pull-left meta rtl">
+      <h2>Add new content</h2>
+    </div>
+    <ul class="no-bullets">
+      {{#each collection in collections}}
+        {{#if collection.create }}
+          <li>
+            <h3>
+            {{#link-to "create" collection class="card new"}}
+              New {{collection.label}} <small>Add a new {{collection.label}} to your website</small>
+            {{/link-to}}
+            </h3>
+          </li>
+        {{/if}}
+      {{/each}}
+    </ul>
+  </div>
+</div>
