@@ -5,16 +5,7 @@
       <div class="preview"><h2>Preview {{collection.label}}</h2></div>
     </div>
 
-    {{#each field in collection.fields}}
-      <div class="widget">
-        <div class="form-control">
-          {{cms-widget-control field=field}}
-        </div>
-        <div class="preview">
-          {{cms-widget-preview field=field}}
-        </div>
-      </div>
-    {{/each}}
+    {{#each field in collection.fields}}{{cms-widget field=field entry=model}}{{/each}}
 
     <div class="controls">
       <button class="button">Save {{collection.label}}</button>

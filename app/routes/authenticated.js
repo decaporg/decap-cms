@@ -1,6 +1,6 @@
-import Ember from 'ember';
+import Route from './cms';
 
-export default Ember.Route.extend({
+export default Route.extend({
   authenticated: Ember.computed.alias("authentication.authenticated"),
   beforeModel: function() {
     if (!this.get("authenticated")) {

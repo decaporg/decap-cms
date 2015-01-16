@@ -1,14 +1,13 @@
-import Ember from 'ember';
+import Route from './cms';
  /* global netlify */
 
 
-export default Ember.Route.extend({
+export default Route.extend({
   actions: {
     login: function() {
       netlify.configure({site_id: 'timespace.netlify.com'});
       netlify.authenticate({provider: "github", scope: "repo"}, function(err, data) {
         if (err) {
-          //this.controller.set("error", err);
           console.log(this);
         } else {
           localStorage.setItem("cms.token", data.token);
