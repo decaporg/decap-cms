@@ -2,7 +2,7 @@
 
 {{#cms-list widget=widget as |item|}}
   {{#each widget in item.widgets}}
-  <div class="widget">
+  <div {{bind-attr class=":widget widget.dirtyAndInvalid:cms-invalid"}}>
     <div class="form-control">
       {{cms-widget-control widget=widget}}
     </div>

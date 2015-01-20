@@ -13,6 +13,11 @@ var Validators = {
       if (this.options === false) { return true; }
       return !!this.get("value");
     }
+  }),
+  date: Validator.extend({
+    validate: function() {
+      return !isNaN(this.get("value"));
+    }
   })
 };
 
@@ -73,3 +78,5 @@ window.CMSWidget.reopenClass({
 });
 
 export default window.CMSWidget;
+
+export {Validators};
