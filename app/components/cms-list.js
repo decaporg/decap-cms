@@ -1,54 +1,43 @@
 import Ember from 'ember';
-import Field from '../models/field';
+import Widget from '../models/widgets/base';
+
+var Item = Ember.Object.extend({
+  id: null,
+  widgets: null
+});
 
 export default Ember.Component.extend({
   tagName: "ul",
   classNames: ["cms-list"],
   _itemId: 0,
   _newItem: function(value) {
-    var item = {id: ++this._itemId, fields: []},
-        field = null,
-        fields = this.field.get("fields");
+    var widget;
+    var fields = this.get("widget.field.fields");
+    var widgets = [];
+    var item = Item.create({id: ++this._itemId, value: $.extend({}, value)});
 
     for (var i=0; i<fields.length; i++) {
-      field  = Ember.$.extend(true, {}, fields[i]);
-      field.value = value && value[fields[i].name];
-      item.fields.push(Field.create(field));
+      widget = Widget.widgetFor(this.container, fields[i], item.value, value && value[fields[i].name]);
+      widgets.push(widget);
     }
+
+    item.set("widgets", widgets);
+
     return item;
   },
-  
+
   init: function() {
     this._super.apply(this, arguments);
-    var field = this.get("field");
-    var items = this.get("field.value");
-    var newItems = Ember.A();
-    if (items && items.length) {
-      for (var i=0; i<items.length; i++) {
-        newItems.pushObject(this._newItem(items[i]));
+    var items = Ember.A();
+    var values = this.get("widget.value");
+    if (values && values.length) {
+      for (var i=0; i<values.length; i++) {
+        items.pushObject(this._newItem(values[i]));
       }
-      this.set("field.value", newItems);
     } else {
-      newItems.pushObject(this._newItem());
-      this.set("field.value", newItems);
+      items.pushObject(this._newItem());
     }
-    field.getValue = function() {
-      var obj, fields;
-      var items = [];
-      var value = this.get("value") || [];
-      var emptyObj = function(obj) { return Object.keys(obj).every(function(key) { return obj[key] == null; }); };
-      for (var i=0, len=value.length; i<len; i++) {
-        obj = {};
-        fields = value[i].fields;
-        for (var j=0; j<fields.length; j++) {
-          obj[fields[j].name] = fields[j].getValue();
-        }
-        if (!emptyObj(obj)) {
-          items.push(obj);
-        }
-      }
-      return items;
-    };
+    this.set("widget.items", items);
   },
 
   didInsertElement: function() {
@@ -57,7 +46,7 @@ export default Ember.Component.extend({
       itemSelector: ".cms-list-item",
       onDrop: function($item, container, _super) {
         _super($item, container);
-        var items = this.get("field.value");
+        var items = this.get("widget.items");
         var newItems = Ember.A();
         var itemLookup = {};
         for (var i=0, len=items.length; i<len; i++) {
@@ -66,7 +55,7 @@ export default Ember.Component.extend({
         this.$().children(".cms-list-item").each(function() {
           newItems.push(itemLookup[Ember.$(this).data("item")]);
         });
-        this.set("field.value", newItems);
+        this.set("widget.items", newItems);
       }.bind(this),
       afterMove: function($placeholder, container, $closestItemOrContainer) {
         var css = {
@@ -80,7 +69,7 @@ export default Ember.Component.extend({
 
   _moveItem: function(item, direction) {
     var swapWith, index;
-    var items = this.get("field.value");
+    var items = this.get("widget.items");
     for (var i=0; i<items.length; i++) {
       if (items[i].id === item.id) {
         swapWith = items[i+direction];
@@ -99,13 +88,16 @@ export default Ember.Component.extend({
   },
   actions: {
     addItem: function() {
-      this.get("field.value").pushObject(this._newItem());
+      this.get("widget.items").pushObject(this._newItem());
     },
     removeItem: function(item) {
-      this.set("field.value", this.get("field.value").reject(function(i) { return i.id === item.id; }));
+      this.set("widget.items", this.get("widget.items").reject(function(i) { 
+        return i.id === item.id;
+      }));
     },
     moveUp: function(item) {
       this._moveItem(item, -1);
+      console.log(this.get("widget.items"));
     },
     moveDown: function(item) {
       this._moveItem(item, 1);

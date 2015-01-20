@@ -20,21 +20,29 @@ export default AuthenticatedRoute.extend({
   model: function(params) {
     var collection = this.get("config").findCollection(params.collection_id);
     var path = this._pathFor(collection, params.slug);
+    this.entryPath = path;
+    this.collection = collection;
     return this.get("repository").readFile(path).then(function(content) {
-      var entry = Entry.create(Ember.$.extend(this._parseContent(content), {_collection: collection, _path: path}));
-      collection.setEntry(entry);
-      return entry;
+      return Entry.create(Ember.$.extend(this._parseContent(content), {_collection: collection}));
     }.bind(this));
   },
 
+  controllerName: "entry",
+  setupController: function(controller, model, transition) {
+    this._super();
+    controller.set("entry", model);
+    controller.set("collection", this.collection);
+    controller.set("entryPath", this.entryPath);
+  },
+
+  cmsTemplateName: "entry",
+
   actions: {
     save: function() {
-      var entry = this.currentModel;
-      console.log("Hmm, entry? %o", entry);
-      var content = entry._generateContent();
+      console.log(this.get("controller").toFileContent());
       this.get("repository").updateFiles({
-        files: [{path: entry._path, content: content}],
-        message: "Updated " + entry._collection.label + " " + entry.title
+        files: [{path: this.entryPath, content: this.get("controller").toFileContent()}],
+        message: "Updated " + this.get("controller.collection.label") + " " + this.get("controller.entry.title")
       }).then(function() {
         console.log("Done!");
       });

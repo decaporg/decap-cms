@@ -1,8 +1,8 @@
 <ul class="cms-list-preview">
-{{#each item in field.value}}
+{{#each item in widget.items}}
   <li class="cms-list-item-preview widget">
-  {{#each field in item.fields}}
-    {{cms-widget-preview field=field}}
+  {{#each widget in item.widgets}}
+    {{cms-widget-preview widget=widget}}
   {{/each}}
   </li>
 {{/each}}

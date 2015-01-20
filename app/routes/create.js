@@ -11,28 +11,33 @@ export default AuthenticatedRoute.extend({
       .replace(/-+$/, '');            // Trim - from end of text
   },
   _generateSlug: function() {
-    var date = new Date;
+    var date = new Date();
     return "" + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + "-" + this._slugify(this.currentModel.entry.title);
   },
-  afterModel: function(model) {
-    model.setEntry(Entry.create({_collection: model}));
-  },
+  
   model: function(params) {
-    return this.get("config").findCollection(params.collection_id);
+    var collection = this.get("config").findCollection(params.collection_id);
+    return collection;
   },
+  controllerName: "entry",
+  setupController: function(controller, model) {
+    this._super();
+    controller.set("entry", Entry.create({}));
+    console.log("Setting collection to %o", model);
+    controller.set("collection", model);
+  },
+
+  templateName: "entry",
 
   actions: {
     save: function() {
-      var collection = this.currentModel;
-      var content = collection.entry._generateContent();
       var slug = this._generateSlug();
-      
       this.get("repository").updateFiles({
-        files: [{path: collection.folder + "/" + slug + ".md", content: content}],
-        message: "Created " + collection.label + " " + collection.entry.title
+        files: [{path: collection.folder + "/" + slug + ".md", content: this.get("controller").toFileContent()}],
+        message: "Updated " + this.get("controller.collection.label") + " " + this.get("controller.entry.title")
       }).then(function() {
         console.log("Done!");
-      }.bind(this));
+      });
     }
   }
 });

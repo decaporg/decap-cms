@@ -1,8 +1,9 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
-  init: function() {
-    this._super.apply(this, arguments);
-    this.set("templateName", "widgets/" + this.field.get("widget"));
-  }
+  tagName: "",
+  layoutName: function() {
+    var type = this.get("widget.type");
+    return this.container && this.container.lookup("template:cms/widgets" + type) ? "cms/widgets/" + type : "widgets/" + type;
+  }.property("widget.type")
 });

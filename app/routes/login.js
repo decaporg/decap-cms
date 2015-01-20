@@ -8,7 +8,7 @@ export default Route.extend({
       netlify.configure({site_id: 'timespace.netlify.com'});
       netlify.authenticate({provider: "github", scope: "repo"}, function(err, data) {
         if (err) {
-          console.log(this);
+          console.log("Error during signup: %o", err);
         } else {
           localStorage.setItem("cms.token", data.token);
           this.get("authentication").authenticate(this.get("repository"), data.token);

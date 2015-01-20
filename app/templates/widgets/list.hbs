@@ -1,9 +1,10 @@
-<label>{{field.label}}</label>
-{{#cms-list field=field as |item|}}
-  {{#each field in item.fields}}
+<label>{{widget.label}}</label>
+
+{{#cms-list widget=widget as |item|}}
+  {{#each widget in item.widgets}}
   <div class="widget">
     <div class="form-control">
-      {{cms-widget-control field=field}}
+      {{cms-widget-control widget=widget}}
     </div>
   </div>
   {{/each}}

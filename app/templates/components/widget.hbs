@@ -1,8 +1,8 @@
-<div class="widget">
+<div {{bind-attr class=":widget widget.dirtyAndInvalid:cms-invalid"}}>
   <div class="form-control">
-    {{cms-widget-control field=field}}
+    {{cms-widget-control widget=widget}}
   </div>
   <div class="preview">
-    {{cms-widget-preview field=field}}
+    {{cms-widget-preview widget=widget}}
   </div>
 </div>

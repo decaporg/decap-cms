@@ -1,0 +1,15 @@
+<div class="container no-max-width">
+  <form name="contentForm" class="cms-form" {{action "save" on="submit"}}>
+    <div class="widget meta">
+      <div class="form-control"><h2>{{currentAction}} {{collection.label}}</h2></div>
+      <div class="preview"><h2>Preview {{collection.label}}</h2></div>
+    </div>
+
+    {{#each widget in widgets}}{{cms-widget widget=widget}}{{/each}}
+
+    <div class="controls">
+      <button class="button" >{{currentAction}} {{collection.label}}</button>
+      {{#unless isValid}}<small class="invalid">Please fill out all required fields</small>{{/unless}}
+    </div>
+  </form>
+</div>

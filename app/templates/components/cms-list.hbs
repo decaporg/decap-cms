@@ -1,4 +1,4 @@
-{{#each item in field.value}}
+{{#each item in widget.items}}
   <li class="cms-list-item" {{bind-attr data-item="item.id"}}>
   <div class="cms-list-ordering">
     <a class="cms-list-icon up cms-action" title="Move up" {{action "moveUp" item}}></a>
