@@ -11,8 +11,14 @@ export default Widget.extend({
   getValue: function() {
     var value = [];
     this.get("items").forEach(function(item) {
+      if (item.isEmpty()) { return; }
       value.push(item.get("value"));
     });
     return value;
-  }
+  },
+  isValid: function() {
+    return this.get("items").every(function(item) {
+      return item.isEmpty() || item.get("isValid");
+    });
+  }.property("items.@each.isValid"),
 });

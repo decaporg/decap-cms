@@ -1,3 +1,4 @@
+import Ember from 'ember';
 import Route from './cms';
 
 export default Route.extend({

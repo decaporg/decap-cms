@@ -10,6 +10,7 @@ export function initialize(container, application) {
     application.inject('route', 'config', 'cms:config');
     application.inject('service', 'config', 'cms:config');
     application.inject('model', 'config', 'cms:config');
+    application.inject('component', 'config', 'cms:config');
     application.advanceReadiness();
   });
 }

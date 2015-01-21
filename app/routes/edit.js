@@ -28,7 +28,7 @@ export default AuthenticatedRoute.extend({
   },
 
   controllerName: "entry",
-  setupController: function(controller, model, transition) {
+  setupController: function(controller, model) {
     this._super();
     controller.set("entry", model);
     controller.set("collection", this.collection);

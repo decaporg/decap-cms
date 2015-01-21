@@ -3,7 +3,13 @@ import Widget from '../models/widgets/base';
 
 var Item = Ember.Object.extend({
   id: null,
-  widgets: null
+  widgets: null,
+  isValid: function() {
+    return this.get("widgets").every(function(widget) { return widget.get("isValid"); });
+  }.property("widgets.@each.isValid"),
+  isEmpty: function() {
+    return this.get("widgets").every(function(widget) { return !widget.get("value"); });
+  }
 });
 
 export default Ember.Component.extend({
@@ -14,7 +20,7 @@ export default Ember.Component.extend({
     var widget;
     var fields = this.get("widget.field.fields");
     var widgets = [];
-    var item = Item.create({id: ++this._itemId, value: $.extend({}, value)});
+    var item = Item.create({id: ++this._itemId, value: Ember.$.extend({}, value)});
 
     for (var i=0; i<fields.length; i++) {
       widget = Widget.widgetFor(this.container, fields[i], item.value, value && value[fields[i].name]);

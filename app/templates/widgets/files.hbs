@@ -1,0 +1,9 @@
+<label>{{widget.label}}</label>
+{{#if widget.value.length}}
+<ul class="cms-files">
+  {{#each file in widget.value}}
+    <li class="cms-file">{{file.label}} ({{file.path}})</li>
+  {{/each}}
+</ul>
+{{/if}}
+{{cms-file-upload widget=widget multiple=true}}

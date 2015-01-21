@@ -184,3 +184,20 @@ form {
   background: #efefef;
 }
 
+.cms-upload-dropzone {
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  margin: 20px 0;
+  padding: 20px;
+  border: 2px dashed #aaa;
+  .cms-file-field {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 1000px;
+    opacity: 0;
+  }
+}

@@ -16,7 +16,7 @@ export default Ember.Controller.extend({
   },
   generateSlug: function() {
     var date = new Date();
-    var titleWidget = this.get("widgets").filter(function(widget) { return widget.get("name") == "title"})[0];
+    var titleWidget = this.get("widgets").filter(function(widget) { return widget.get("name") === "title"; })[0];
 
     return "" + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + "-" + this.slugify(titleWidget.getValue());
   },
@@ -57,6 +57,8 @@ export default Ember.Controller.extend({
   },
   actions: {
     save: function() {
+      console.log("Widgets: ", this.get("widgets").map(function(w) { return [w.get("name"), w.get("isValid")].join(": "); }));
+      if (this.get("isInvalid")) { return; }
       var path = this.get("entryPath") || this.get("collection.folder") + "/" + this.generateSlug() + ".md";
       this.get("repository").updateFiles({
         files: [{path: path, content: this.toFileContent()}],

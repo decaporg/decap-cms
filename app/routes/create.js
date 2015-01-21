@@ -27,17 +27,5 @@ export default AuthenticatedRoute.extend({
     controller.set("collection", model);
   },
 
-  templateName: "entry",
-
-  actions: {
-    save: function() {
-      var slug = this._generateSlug();
-      this.get("repository").updateFiles({
-        files: [{path: collection.folder + "/" + slug + ".md", content: this.get("controller").toFileContent()}],
-        message: "Updated " + this.get("controller.collection.label") + " " + this.get("controller.entry.title")
-      }).then(function() {
-        console.log("Done!");
-      });
-    }
-  }
+  templateName: "entry"
 });

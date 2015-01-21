@@ -31,14 +31,6 @@ function uploadBlob(file) {
   });
 }
 
-function outputTree(tree) {
-  var r = [tree.sha, "truncated: "+tree.truncated];
-  for (var i=0;  i<tree.tree.length; i++) {
-    r.push("  " + tree.tree[i].path + " " + tree.tree[i].sha);
-  }
-  return r.join("\n");
-}
-
 function updateTree(sha, path, fileTree) {
   return getTree(sha)
     .then(function(tree) {
@@ -93,8 +85,11 @@ export default Ember.Object.extend({
     var file, filename, part, parts, subtree;
     var fileTree = {};
     var files = [];
-    for (var i=0, len=options.files.length; i<len; i++) {
-      file = options.files[i];
+    var uploads = (options.files || []).concat(this.get("media.uploads"));
+    console.log("uploads: %o", uploads);
+    return;
+    for (var i=0, len=uploads.length; i<len; i++) {
+      file = uploads[i];
       files.push(file.upload ? file : uploadBlob(file));
       parts = file.path.split("/").filter(function(part) { return part; });
       filename = parts.pop();
