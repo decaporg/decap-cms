@@ -6,10 +6,17 @@ var Item = Ember.Object.extend({
   widgets: null,
   isValid: function() {
     return this.get("widgets").every(function(widget) { return widget.get("isValid"); });
-  }.property("widgets.@each.isValid"),
+  },
   isEmpty: function() {
     return this.get("widgets").every(function(widget) { return !widget.get("value"); });
-  }
+  },
+  valueDidChange: function() {
+    var value = {};
+    this.get("widgets").forEach(function(widget) {
+      value[widget.get("name")] = widget.getValue();
+    });
+    this.set("value", value);
+  }.observes("widgets.@each.value")
 });
 
 export default Ember.Component.extend({
@@ -23,7 +30,7 @@ export default Ember.Component.extend({
     var item = Item.create({id: ++this._itemId, value: Ember.$.extend({}, value)});
 
     for (var i=0; i<fields.length; i++) {
-      widget = Widget.widgetFor(this.container, fields[i], item.value, value && value[fields[i].name]);
+      widget = Widget.widgetFor(this.container, fields[i], null, value && value[fields[i].name]);
       widgets.push(widget);
     }
 
@@ -43,8 +50,24 @@ export default Ember.Component.extend({
     } else {
       items.pushObject(this._newItem());
     }
+    this.set("widget.value", []);
     this.set("widget.items", items);
+    this.widget.registerValidator(function(value) {
+      return this.get("widget.items").every(function(item) {
+        console.log("Validating");
+        return item.isEmpty() || item.isValid();
+      });
+    }.bind(this));
   },
+
+  didUpdateItem: function() {
+    var value = [];
+    this.get("widget.items").forEach(function(item) {
+      if (item.isEmpty()) { return; }
+      value.push(item.get("value"));
+    });
+    this.set("widget.value", value);
+  }.observes("widget.items.@each.value"),
 
   didInsertElement: function() {
     this.$().sortable({

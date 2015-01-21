@@ -3,20 +3,20 @@ import Ember from 'ember';
 var Validator = Ember.Object.extend({
   value: Ember.computed.alias("model.value"),
   isValid: function() {
-    return this.validate();
+    return this.validate(this.get("value"), this.options);
   }.property("model.value")
 });
 
 var Validators = {
   presence: Validator.extend({
-    validate: function() {
-      if (this.options === false) { return true; }
-      return !!this.get("value");
+    validate: function(value, options) {
+      if (options === false) { return true; }
+      return !!value;
     }
   }),
   date: Validator.extend({
-    validate: function() {
-      return !isNaN(this.get("value"));
+    validate: function(value) {
+      return !isNaN(value);
     }
   })
 };
@@ -32,6 +32,10 @@ window.CMSWidget = Ember.Object.extend({
     }
 
     this.validators = validators;
+  },
+
+  registerValidator: function(validFn) {
+    this.validators.pushObject(Validator.create({model: this, validate: validFn}));
   },
 
   isValid: function() {
@@ -58,7 +62,7 @@ window.CMSWidget = Ember.Object.extend({
 
   onValuechange: function() {
     this.set("dirty", true);
-    this.get("entry")[this.get("name")] = this.getValue();
+    this.entry && this.entry.set(this.get("name"), this.getValue());
   }.observes("value"),
 
   clear: function() {
@@ -72,7 +76,7 @@ window.CMSWidget.reopenClass({
     return model.create({
       field: field,
       entry: entry,
-      value: value || entry[field.name] || null
+      value: value || (entry && entry[field.name]) || null
     });
   }
 });
