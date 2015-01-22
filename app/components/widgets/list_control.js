@@ -21,8 +21,6 @@ var Item = Ember.Object.extend({
 });
 
 export default Ember.Component.extend({
-  tagName: "ul",
-  classNames: ["cms-list"],
   _itemId: 0,
   _newItem: function(value) {
     var fields = this.get("widget.field.fields");
@@ -72,67 +70,13 @@ export default Ember.Component.extend({
     this.set("widget.value", value);
   }.observes("widget.items.@each.value"),
 
-  didInsertElement: function() {
-    this.$().sortable({
-      placeholder: "<li class='cms-list-placeholder'/>",
-      itemSelector: ".cms-list-item",
-      onDrop: function($item, container, _super) {
-        _super($item, container);
-        var items = this.get("widget.items");
-        var newItems = Ember.A();
-        var itemLookup = {};
-        for (var i=0, len=items.length; i<len; i++) {
-          itemLookup[items[i].id] = items[i];
-        }
-        this.$().children(".cms-list-item").each(function() {
-          newItems.push(itemLookup[Ember.$(this).data("item")]);
-        });
-        this.set("widget.items", newItems);
-      }.bind(this),
-      afterMove: function($placeholder, container, $closestItemOrContainer) {
-        var css = {
-          height: $closestItemOrContainer.height(),
-          width: $closestItemOrContainer.width(),
-        };
-        $placeholder.css(css);
-      }
-    });
-  },
-
-  _moveItem: function(item, direction) {
-    var swapWith, index;
-    var items = this.get("widget.items");
-    for (var i=0; i<items.length; i++) {
-      if (items[i].id === item.id) {
-        swapWith = items[i+direction];
-        index  = i;
-        break;
-      }
-    }
-    if (swapWith) {
-      if (direction < 0 ) {
-        items.replace(index-1, 2, [item, swapWith]);
-      } else {
-        items.replace(index, 2, [swapWith, item]);
-      }
-      
-    }
-  },
+  
   actions: {
     addItem: function() {
       this.get("widget.items").pushObject(this._newItem());
     },
-    removeItem: function(item) {
-      this.set("widget.items", this.get("widget.items").reject(function(i) { 
-        return i.id === item.id;
-      }));
-    },
-    moveUp: function(item) {
-      this._moveItem(item, -1);
-      console.log(this.get("widget.items"));
-    },
-    moveDown: function(item) {
-      this._moveItem(item, 1);
+    reorder: function(items) {
+      this.set("widget.items", items);
     }
   }
 });

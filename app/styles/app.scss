@@ -29,6 +29,7 @@ form {
 .cms-form {
   display: table;
   width: 100%;
+  table-layout: fixed;
 }
 .widget {
   display: table-row;
@@ -200,4 +201,8 @@ form {
     height: 1000px;
     opacity: 0;
   }
+}
+
+.cms-file {
+  width: 83%;
 }
