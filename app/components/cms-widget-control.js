@@ -1,9 +1,13 @@
-import Ember from 'ember';
+import Resolver from './cms-widget-resolver';
 
-export default Ember.Component.extend({
-  tagName: "",
-  layoutName: function() {
-    var type = this.get("widget.type");
-    return this.container && this.container.lookup("template:cms/widgets" + type) ? "cms/widgets/" + type : "widgets/" + type;
-  }.property("widget.type")
+export default Resolver.extend({
+  customName: function() {
+    return "cms/widgets/" + this.widget.get("type") + "-control";
+  },
+  defaultName: function() {
+    return "widgets/" + this.widget.get("type") + "-control";
+  },
+  noName: function() {
+    return "widgets/not-found-control";
+  }
 });

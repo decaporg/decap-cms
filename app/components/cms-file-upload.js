@@ -2,7 +2,7 @@ import Ember from 'ember';
 
 export default Ember.Component.extend({
   init: function() {
-    this._super()
+    this._super();
     this.set("uploads", Ember.A());
     this.widget.set("value", Ember.A());
     this.widget.set("files", Ember.A());
@@ -20,4 +20,4 @@ export default Ember.Component.extend({
       }
     }
   }
-})
+});

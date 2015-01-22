@@ -6,11 +6,10 @@ export default Ember.Component.extend({
     this._super();
   },
   render: function() {
-    var type = this.widget.get("type");
     var componentLookup = this.container.lookup("component-lookup:main");
-    var customName = "cms-widget-" + type + "-control";
-    var defaultName = "cms-widget-control";
-    var component = componentLookup.lookupFactory(customName, this.container) || componentLookup.lookupFactory(defaultName, this.container);
+    var component = componentLookup.lookupFactory(this.customName(), this.container) ||
+                    componentLookup.lookupFactory(this.defaultName(), this.container) ||
+                    componentLookup.lookupFactory(this.noName(), this.container);
     this.appendChild(component.create({widget: this.widget}));
   }
 });

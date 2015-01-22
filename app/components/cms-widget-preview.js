@@ -1,14 +1,18 @@
-import Ember from 'ember';
+import Resolver from './cms-widget-resolver';
 
-export default Ember.Component.extend({
-  tagName: "",
+export default Resolver.extend({
   init: function() {
     this._super();
     this.set("tagName", this.get("widget.field.tagname") || "div");
     this.set("classNames", (this.get("widget.field.class") || "").split(" "));
   },
-  layoutName: function() {
-    var type = this.get("widget.field.preview") || (this.get("widget.type") + "_preview");
-    return this.container && this.container.lookup("template:cms/widgets" + type) ? "cms/widgets/" + type : "widgets/" + type;
-  }.property("widget.type")
+  customName: function() {
+    return "cms/widgets/" + (this.widget.get("field.preview") || this.widget.get("type") + "-preview");
+  },
+  defaultName: function() {
+    return "widgets/" + (this.widget.get("field.preview") || this.widget.get("type") + "-preview");
+  },
+  noName: function() {
+    return "widgets/string-preview";
+  }
 });

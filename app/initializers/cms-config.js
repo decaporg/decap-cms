@@ -13,7 +13,7 @@ export function initialize(container, application) {
     application.inject('component', 'config', 'cms:config');
     application.advanceReadiness();
   });
-};
+}
 
 export default {
   name: 'config-service',

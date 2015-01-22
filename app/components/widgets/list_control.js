@@ -1,5 +1,6 @@
 import Ember from 'ember';
-import Widget from '../models/widgets/base';
+
+import Widget from '../../models/widget';
 
 var Item = Ember.Object.extend({
   id: null,
@@ -24,14 +25,17 @@ export default Ember.Component.extend({
   classNames: ["cms-list"],
   _itemId: 0,
   _newItem: function(value) {
-    var widget;
     var fields = this.get("widget.field.fields");
     var widgets = [];
     var item = Item.create({id: ++this._itemId, value: Ember.$.extend({}, value)});
 
     for (var i=0; i<fields.length; i++) {
-      widget = Widget.widgetFor(this.container, fields[i], null, value && value[fields[i].name]);
-      widgets.push(widget);
+
+      widgets.push(Widget.create({
+        field: fields[i],
+        value: value && value[fields[i].name],
+        entry: null
+      }));
     }
 
     item.set("widgets", widgets);
@@ -52,9 +56,8 @@ export default Ember.Component.extend({
     }
     this.set("widget.value", []);
     this.set("widget.items", items);
-    this.widget.registerValidator(function(value) {
+    this.widget.registerValidator(function() {
       return this.get("widget.items").every(function(item) {
-        console.log("Validating");
         return item.isEmpty() || item.isValid();
       });
     }.bind(this));

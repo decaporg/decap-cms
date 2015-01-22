@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import Widget from '../models/widgets/base';
+import Widget from '../models/widget';
  /* global jsyaml */
 
 export default Ember.Controller.extend({
@@ -28,7 +28,7 @@ export default Ember.Controller.extend({
     var fields = this.get("collection.fields");
     var widgets = Ember.A();
     for (var i=0, len=fields.length; i<len; i++) {
-      widgets.push(Widget.widgetFor(this.container, fields[i], this.get("entry")));
+      widgets.push(Widget.create({field: fields[i], entry: this.get("entry"), value: this.get("entry." +fields[i].name)}));
     }
     return widgets;
   }.property("entry.fields.@each.widget"),

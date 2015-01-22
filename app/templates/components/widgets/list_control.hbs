@@ -1,0 +1,24 @@
+<label>{{widget.label}}</label>
+
+{{#each item in widget.items}}
+  <li class="cms-list-item" {{bind-attr data-item="item.id"}}>
+  <div class="cms-list-ordering">
+    <a class="cms-list-icon up cms-action" title="Move up" {{action "moveUp" item}}></a>
+    <a class="cms-list-icon drag" title="Grab to drag"></a>
+    <a class="cms-list-icon down cms-action" title="Move down" {{action "moveDown" item}}></a>
+  </div>
+  <div class="cms-list-actions">
+    <a class="cms-list-icon remove cms-action" {{action "removeItem" item}}></a>
+  </div>
+  {{#each widget in item.widgets}}
+    <div {{bind-attr class=":widget widget.dirtyAndInvalid:cms-invalid"}}>
+      <div class="form-control">
+        {{cms-widget-control widget=widget}}
+      </div>
+    </div>
+  {{/each}}
+  </li>
+{{/each}}
+<li class="cms-list-controls">
+  <a class="cms-action" {{action 'addItem'}}>Add new</a>
+</li>

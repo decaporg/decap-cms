@@ -28,11 +28,14 @@ export default Ember.Object.extend({
         this.uploads.pushObject(mediaFile);
         resolve(mediaFile);
       }.bind(this);
+      reader.onerror = function() {
+        reject("Unable to read file");
+      };
       console.log("Reading: %o", file);
       reader.readAsDataURL(file);
     }.bind(this));
   },
   remove: function(path) {
-    this.set("uploads", this.get("uploads").reject(function(mediaFile) { return path === mediaFile.path }));
+    this.set("uploads", this.get("uploads").reject(function(mediaFile) { return path === mediaFile.path; }));
   }
 });
