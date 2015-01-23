@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import AuthenticatedRoute from './authenticated';
 import Entry from '../models/entry';
- /* global jsyaml */
+
 
 
 export default AuthenticatedRoute.extend({
@@ -9,39 +9,34 @@ export default AuthenticatedRoute.extend({
     return collection.folder + "/" + slug + ".md";
   },
 
-  _parseContent: function(content) {
-    var regexp = /^---\n([^]*?)\n---\n([^]*)$/;
-    var match = content.match(regexp);
-    var item = jsyaml.safeLoad(match[1]);
-    item.body = (match[2] || "").replace(/^\n+/, '');
-    return item;
+  serialize: function(model) {
+    return {
+      collection_id: model.get("_collection.id"),
+      slug: (model.get("_path") || "").split("/").pop().replace(/\.[^.]+$/, '')
+    };
   },
 
   model: function(params) {
+    console.log("Finding model: %o", params);
     var collection = this.get("config").findCollection(params.collection_id);
     var path = this._pathFor(collection, params.slug);
-    this.entryPath = path;
-    this.collection = collection;
     return this.get("repository").readFile(path).then(function(content) {
-      return Entry.create(Ember.$.extend(this._parseContent(content), {_collection: collection}));
+      return Entry.fromContent(collection, content, path);
     }.bind(this));
   },
 
   controllerName: "entry",
   setupController: function(controller, model) {
     this._super();
-    controller.set("entry", model);
-    controller.set("collection", this.collection);
-    controller.set("entryPath", this.entryPath);
+    this.collection = model._collection;
+    controller.prepare(this.collection, model);
   },
-
-  cmsTemplateName: "entry",
 
   actions: {
     save: function() {
       console.log(this.get("controller").toFileContent());
       this.get("repository").updateFiles({
-        files: [{path: this.entryPath, content: this.get("controller").toFileContent()}],
+        files: [{path: this.model._path, content: this.get("controller").toFileContent()}],
         message: "Updated " + this.get("controller.collection.label") + " " + this.get("controller.entry.title")
       }).then(function() {
         console.log("Done!");

@@ -8,12 +8,29 @@
         {{#if collection.create }}
           <li>
             <h3>
-            {{#link-to "create" collection class="card new"}}
+            {{#link-to "create" collection}}
               New {{collection.label}} <small>Add a new {{collection.label}} to your website</small>
             {{/link-to}}
             </h3>
           </li>
         {{/if}}
+      {{/each}}
+    </ul>
+  </div>
+
+  <div class="section courses">
+    <div class="pull-left meta rtl">
+      <h2>Edit existing content</h2>
+    </div>
+    <ul class="no-bullets">
+      {{#each collection in collections}}        
+        <li>
+          <h3>
+          {{#link-to "list" collection}}
+            Edit {{collection.label}} <small>Edit an existing {{collection.label}} from your website</small>
+          {{/link-to}}
+          </h3>
+        </li>
       {{/each}}
     </ul>
   </div>

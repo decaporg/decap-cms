@@ -1,0 +1,20 @@
+<div class="body narrow">
+  <div class="section courses">
+    <div class="pull-left meta rtl">
+      <h2>Edit existing {{collection.label}}</h2>
+      <p>{{#link-to "home"}}Back to index{{/link-to}}</p>
+    </div>
+    {{#if loading_entries}}<div class="cms-loading">Loading entries</div>{{/if}}
+    <ul class="no-bullets">
+      {{#each entry in entries}}
+        <li>
+          <h3>
+          {{#link-to "edit" entry}}
+            {{entry.title}} <small>{{entry.cmsExcerpt}}</small>
+          {{/link-to}}
+          </h3>
+        </li>
+      {{/each}}
+    </ul>
+  </div>
+</div>

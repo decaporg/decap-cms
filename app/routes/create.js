@@ -16,16 +16,13 @@ export default AuthenticatedRoute.extend({
   },
   
   model: function(params) {
-    var collection = this.get("config").findCollection(params.collection_id);
-    return collection;
-  },
-  controllerName: "entry",
-  setupController: function(controller, model) {
-    this._super();
-    controller.set("entry", Entry.create({}));
-    console.log("Setting collection to %o", model);
-    controller.set("collection", model);
+    return this.get("config").findCollection(params.collection_id);
   },
 
-  templateName: "entry"
+  controllerName: "entry",
+  
+  setupController: function(controller, model) {
+    this._super();
+    controller.prepare(model, Entry.create({}));
+  }
 });

@@ -1,5 +1,7 @@
 import Ember from 'ember';
 
+//var MAX_SIZE = 1048576; // 10 MB
+
 export default Ember.Component.extend({
   init: function() {
     this._super();
@@ -19,7 +21,6 @@ export default Ember.Component.extend({
       }
     },
     reorder: function(files) {
-      console.log("Upating value: %o", files);
       this.set("widget.value", files);
     }
   }

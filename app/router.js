@@ -10,7 +10,8 @@ Router.map(function() {
   this.route("logout");
   this.route("home", {path: "/"});
   this.route("create", {path: "/collections/:collection_id"});
-  this.route("edit", {path: "/collections/:collection_id/:slug"});
+  this.route("edit", {path: "/collections/:collection_id/entries/:slug"});
+  this.route("list", {path: "/collections/:collection_id/entries/"});
 });
 
 export default Router;

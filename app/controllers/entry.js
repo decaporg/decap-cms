@@ -3,9 +3,13 @@ import Widget from '../models/widget';
  /* global jsyaml */
 
 export default Ember.Controller.extend({
-  entry: null,
-  entryPath: null,
-  collection: null,
+  needs: ['application'],
+  entryPath: Ember.computed.alias("entry._path"),
+  prepare: function(collection, entry) {
+    this.set("collection", collection);
+    this.set("entry", entry);
+    this.set('controllers.application.currentAction', this.get("currentAction") + " " + this.get("collection.label"));
+  },
   slugify: function(text) {
     return text.toString().toLowerCase()
       .replace(/\s+/g, '-')           // Replace spaces with -
@@ -20,10 +24,10 @@ export default Ember.Controller.extend({
 
     return "" + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + "-" + this.slugify(titleWidget.getValue());
   },
-
   currentAction: function() {
     return this.get("entryPath") ? "Edit" : "Create";
   }.property("entryPath"),
+
   widgets: function() {
     var fields = this.get("collection.fields");
     var widgets = Ember.A();
@@ -57,7 +61,6 @@ export default Ember.Controller.extend({
   },
   actions: {
     save: function() {
-      console.log("Widgets: ", this.get("widgets").map(function(w) { return [w.get("name"), w.get("isValid")].join(": "); }));
       if (this.get("isInvalid")) { return; }
       var path = this.get("entryPath") || this.get("collection.folder") + "/" + this.generateSlug() + ".md";
       this.get("repository").updateFiles({
