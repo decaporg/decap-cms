@@ -26,18 +26,5 @@ export default AuthenticatedRoute.extend({
     this._super();
     this.collection = model._collection;
     controller.prepare(this.collection, model);
-  },
-
-  actions: {
-    save: function() {
-      this.set("saving", true);
-      this.get("repository").updateFiles({
-        files: [{path: this.model._path, content: this.get("controller").toFileContent()}],
-        message: "Updated " + this.get("controller.collection.label") + " " + this.get("controller.entry.title")
-      }).then(function() {
-        console.log("Done!");
-        this.set("saving", false);
-      });
-    }
   }
 });

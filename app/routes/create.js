@@ -23,6 +23,6 @@ export default AuthenticatedRoute.extend({
   
   setupController: function(controller, model) {
     this._super();
-    controller.prepare(model, Entry.create({}));
+    controller.prepare(model, Entry.create({_collection: model}));
   }
 });
