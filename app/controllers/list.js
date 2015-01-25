@@ -14,7 +14,7 @@ export default Ember.Controller.extend({
     this.set("loading_entries", true);
     this.set("entries", []);
     repository.readFiles(collection.folder).then(function(files) {
-      var files = files.filter(function(file) { return file.name.split(".").pop() === "md"}).map(function(file) {
+      files = files.filter(function(file) { return file.name.split(".").pop() === "md"; }).map(function(file) {
         return repository.readFile(file.path, file.sha).then(function(content) { 
           file.content = content;
           return file;

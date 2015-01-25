@@ -1,9 +1,8 @@
-import Ember from 'ember';
 import AuthenticatedRoute from './authenticated';
 
 export default AuthenticatedRoute.extend({
   model: function(params) {
-    return this.get("config").findCollection(params.collection_id);;
+    return this.get("config").findCollection(params.collection_id);
   },
 
   controllerName: "list",

@@ -1,8 +1,5 @@
-import Ember from 'ember';
 import AuthenticatedRoute from './authenticated';
 import Entry from '../models/entry';
-
-
 
 export default AuthenticatedRoute.extend({
   _pathFor: function(collection, slug) {

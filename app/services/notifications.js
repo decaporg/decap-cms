@@ -5,11 +5,11 @@ export default Ember.Object.extend({
 
   withPermission: function() {
     return new Ember.RSVP.Promise(function(resolve, reject) {
-      if (!"Notification" in window) { return reject("Browser doesn't support notifications"); }
+      if (!window.Notification) { return reject("Browser doesn't support notifications"); }
       if (window.Notification.permission === "granted") { return resolve(true); }
       if (window.Notification.permission === "denied") { return reject("Permission to send notifications denied"); }
       window.Notification.requestPermission(function(permission) {
-        permission ? resolve(true) : reject("Permission to send notifications denied");
+        return permission ? resolve(true) : reject("Permission to send notifications denied");
       });
     });
   },
