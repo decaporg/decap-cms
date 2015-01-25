@@ -67,9 +67,11 @@ export default Ember.Controller.extend({
     if (this.deployChecker) { return; }
     Ember.$.get("/").then(function(_,__,response) {
       var current = response.getResponseHeader("ETag") || response.getResponseHeader("Last-Modified");
+      console.log("Current: '%o'", current);
       this.deployChecker = function() {
         Ember.$.get("/").then(function(_,__,response) {
           var state = response.getResponseHeader("ETag") || response.getResponseHeader("Last-Modified");
+          console.log("Got state - '%o' (current: '%o')", state, current);
           if (state !== current) {
             this.get("notifications").notify("Changes are live", "Your site has been built and deployed.");
           } else{

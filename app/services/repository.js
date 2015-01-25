@@ -218,7 +218,7 @@ export default Ember.Object.extend({
       file.file = true;
     }
     return Promise.all(files)
-      .then(this.get("media.reset"))
+      .then(function() { return this.get("media").reset(); })
       .then(getBranch)
       .then(function(branchData) {
         return updateTree(branchData.commit.sha, "/", fileTree);
