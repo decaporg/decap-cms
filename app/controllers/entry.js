@@ -65,12 +65,11 @@ export default Ember.Controller.extend({
   },
   notifyOnDeploy: function() {
     if (this.deployChecker) { return; }
-    Ember.$.get("/").then(function(_,__,response) {
-      var current = response.getResponseHeader("ETag") || response.getResponseHeader("Last-Modified");
-      console.log("Current: '%o'", current);
+    Ember.$.getJSON("ts.json").then(function(data) {
+      var current = new Date(data.ts).getTime();
       this.deployChecker = function() {
-        Ember.$.get("/").then(function(_,__,response) {
-          var state = response.getResponseHeader("ETag") || response.getResponseHeader("Last-Modified");
+        Ember.$.getJSON("ts.json").then(function(data) {
+          var state = new Date(data.ts).getTime();
           console.log("Got state - '%o' (current: '%o')", state, current);
           if (state !== current) {
             this.get("notifications").notify("Changes are live", "Your site has been built and deployed.");
@@ -94,7 +93,7 @@ export default Ember.Controller.extend({
       }).then(function() {
         console.log("Done!");
         this.set("saving", false);
-      }, function(err) {
+      }.bind(this), function(err) {
         console.log("Error saving: %o", err);
         this.set("error", err);
       }.bind(this));
