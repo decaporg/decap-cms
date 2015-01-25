@@ -8,7 +8,10 @@
     {{#each widget in widgets}}{{cms-widget widget=widget}}{{/each}}
 
     <div class="controls">
-      <button class="button" {{bind-attr disabled=isNotValid}}>{{currentAction}} {{collection.label}}</button>
+      <button class="button" {{bind-attr disabled=disableButton}}>
+        {{#if saving}}Saving{{else}}{{currentAction}}{{/if}}
+        {{collection.label}}{{#if saving}}...{{/if}}
+      </button>
       {{#unless isValid}}<small class="invalid">Please fill out all required fields</small>{{/unless}}
     </div>
   </form>

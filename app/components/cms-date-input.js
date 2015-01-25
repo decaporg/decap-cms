@@ -5,7 +5,6 @@ import Ember from 'ember';
 export default Ember.TextField.extend({
   init: function() {
     this._super();
-    console.log("Init - value: %o", this.get("value"));
     var value = this.get("value");
     if (value) {
       this.set("value", moment(value).utc().format(this.get("dateFormat")));

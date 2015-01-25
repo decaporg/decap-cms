@@ -1,10 +1,5 @@
 {{#each item in sortableItems}}
   <li class="cms-list-item" {{bind-attr data-item="item.id"}}>
-    <div class="cms-list-ordering">
-      <a class="cms-list-icon up cms-action" title="Move up" {{action "moveUp" item}}></a>
-      <a class="cms-list-icon drag" title="Grab to drag"></a>
-      <a class="cms-list-icon down cms-action" title="Move down" {{action "moveDown" item}}></a>
-    </div>
     <div class="cms-list-actions">
       <a class="cms-list-icon remove cms-action" {{action "removeItem" item}}></a>
     </div>

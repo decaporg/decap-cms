@@ -9,6 +9,7 @@ export default Ember.Controller.extend({
     this.set("collection", collection);
     this.set("entry", entry);
     this.set('controllers.application.currentAction', this.get("currentAction") + " " + this.get("collection.label"));
+    this.initWidgets();
   },
   slugify: function(text) {
     return text.toString().toLowerCase()
@@ -28,18 +29,21 @@ export default Ember.Controller.extend({
     return this.get("entryPath") ? "Edit" : "Create";
   }.property("entryPath"),
 
-  widgets: function() {
+  initWidgets: function() {
     var fields = this.get("collection.fields");
     var widgets = Ember.A();
     for (var i=0, len=fields.length; i<len; i++) {
       widgets.push(Widget.create({field: fields[i], entry: this.get("entry"), value: this.get("entry." +fields[i].name)}));
     }
-    return widgets;
-  }.property("entry.fields.@each.widget"),
+    this.set("widgets", widgets);
+  },
   isValid: function() {
     return this.get("widgets").every(function(widget) { return widget.get("isValid"); });
   }.property("widgets.@each.isValid"),
   isInvalid: Ember.computed.not("isValid"),
+  disableButton: function() {
+    return this.get("isInvalid") || this.get("saving");
+  }.property("isInvalid", "saving"),
   toFileContent: function() {
     var widget;
     var meta = {};
@@ -59,15 +63,35 @@ export default Ember.Controller.extend({
     content += body;
     return content;
   },
+  notifyOnDeploy: function() {
+    if (this.deployChecker) { return; }
+    Ember.$.get("/").then(function(_,__,response) {
+      var current = response.getResponseHeader("ETag") || response.getResponseHeader("Last-Modified");
+      this.deployChecker = function() {
+        Ember.$.get("/").then(function(_,__,response) {
+          var state = response.getResponseHeader("ETag") || response.getResponseHeader("Last-Modified");
+          if (state !== current) {
+            this.get("notifications").notify("Changes are live", "Your site has been built and deployed.");
+          } else{
+            setTimeout(this.deployChecker, 1000);
+          }
+        }.bind(this));
+      }.bind(this);
+      this.deployChecker();
+    }.bind(this));
+  },
   actions: {
     save: function() {
       if (this.get("isInvalid")) { return; }
       var path = this.get("entryPath") || this.get("collection.folder") + "/" + this.generateSlug() + ".md";
+      this.set("saving", true);
+      this.notifyOnDeploy();
       this.get("repository").updateFiles({
         files: [{path: path, content: this.toFileContent()}],
         message: "Updated " + this.get("collection.label") + " " + this.get("entry.title")
       }).then(function() {
         console.log("Done!");
+        this.set("saving", false);
       });
     }
   }

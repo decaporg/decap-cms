@@ -5,7 +5,6 @@ export default Ember.Component.extend({
   classNames: ['cms-list'],
   sortableItems: function() {
     var id = this.get("id") || "id";
-    console.log("updating items %o %s", this.get("items"), id);
     return this.get("items").map(function(item) {
       return {id: item[id], item: item};
     });

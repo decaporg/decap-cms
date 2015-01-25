@@ -3,7 +3,6 @@ import AuthenticatedRoute from './authenticated';
 
 export default AuthenticatedRoute.extend({
   model: function(params) {
-    console.log("Getting model");
     return this.get("config").findCollection(params.collection_id);;
   },
 

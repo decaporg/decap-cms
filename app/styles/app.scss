@@ -58,6 +58,9 @@ form {
 .preview {
   padding-left: 20px;
   border-left: 1px solid;
+  h1 {
+    margin: 0;
+  }
   img {
     max-width: 100%;
   }
@@ -124,19 +127,30 @@ form {
   padding: 0;
 }
 .cms-list-item {
+  cursor: move;
   position: relative;
-  padding: 20px 20px 20px 60px;
+  padding: 20px 20px 20px 20px;
+  border: 1px solid;
+  .widget {
+    display: block;
+  }
+  .form-control {
+    display: block;
+    margin: 0;
+    width: 100%;
+  }
 }
 
 .cms-list-ordering {
   position: absolute;
-  left: 20px;
+  right: 10px;
   top: 50%;
-  margin-top: -39px;
+  margin-top: -24px;
 }
 .cms-list-icon {
   display: block;
   font-family: Icomoon;
+  font-size: 14px;
   color: #bbb;
   &:hover {
     color: #aaa;
@@ -159,9 +173,8 @@ form {
 }
 .cms-list-actions {
   position: absolute;
-  top: 50%;
-  right: 20px;
-  margin-top: -13px;
+  top: 10px;
+  right: 10px;
 }
 
 .dragged {
@@ -181,7 +194,7 @@ form {
   content: "";
   display: block;
   height: 100%;
-  margin: 0 20px 0 60px;
+  margin: 20px 20px 20px 20px;
   background: #efefef;
 }
 
@@ -191,7 +204,7 @@ form {
   text-align: center;
   margin: 20px 0;
   padding: 20px;
-  border: 2px dashed #aaa;
+  border: 1px dashed;
   .cms-file-field {
     position: absolute;
     cursor: pointer;

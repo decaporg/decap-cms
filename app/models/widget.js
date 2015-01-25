@@ -3,7 +3,6 @@ import Ember from 'ember';
 var Validator = Ember.Object.extend({
   value: Ember.computed.alias("model.value"),
   isValid: function() {
-    console.log("isValid");
     return this.validate(this.get("value"), this.options);
   }.property("model.value")
 });

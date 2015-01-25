@@ -6,7 +6,9 @@ export default Ember.Component.extend({
   init: function() {
     this._super();
     this.set("uploads", Ember.A());
-    this.widget.set("value", Ember.A());
+    if (!this.get("widget.value")) {
+      this.widget.set("value", Ember.A());
+    }
   },
   actions: {
     fileUpload: function(files) {

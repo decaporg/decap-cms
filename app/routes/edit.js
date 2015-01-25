@@ -17,7 +17,6 @@ export default AuthenticatedRoute.extend({
   },
 
   model: function(params) {
-    console.log("Finding model: %o", params);
     var collection = this.get("config").findCollection(params.collection_id);
     var path = this._pathFor(collection, params.slug);
     return this.get("repository").readFile(path).then(function(content) {
@@ -34,12 +33,13 @@ export default AuthenticatedRoute.extend({
 
   actions: {
     save: function() {
-      console.log(this.get("controller").toFileContent());
+      this.set("saving", true);
       this.get("repository").updateFiles({
         files: [{path: this.model._path, content: this.get("controller").toFileContent()}],
         message: "Updated " + this.get("controller.collection.label") + " " + this.get("controller.entry.title")
       }).then(function() {
         console.log("Done!");
+        this.set("saving", false);
       });
     }
   }

@@ -193,7 +193,8 @@ export default Ember.Object.extend({
     } else {
       return request(base + "/contents/" + path, {
         headers: {Accept: "application/vnd.github.VERSION.raw"},
-        data: {ref: branch}
+        data: {ref: branch},
+        cache: false
       });
     }
   },
@@ -217,15 +218,16 @@ export default Ember.Object.extend({
       file.file = true;
     }
     return Promise.all(files)
+      .then(this.get("media.reset"))
       .then(getBranch)
       .then(function(branchData) {
         return updateTree(branchData.commit.sha, "/", fileTree);
       })
-      .then(function(changeTree) {
+      .then(function(changeTree) {        
         return request(base + "/git/commits", {
           type: "POST",
           data: JSON.stringify({message: options.message, tree: changeTree.sha, parents: [changeTree.parentSha]})
-        });
+        });  
       }).then(function(response) {
         return request(base + "/git/refs/heads/" + branch, {
           type: "PATCH",
