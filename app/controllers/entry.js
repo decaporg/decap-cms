@@ -94,7 +94,10 @@ export default Ember.Controller.extend({
       }).then(function() {
         console.log("Done!");
         this.set("saving", false);
-      });
+      }, function(err) {
+        console.log("Error saving: %o", err);
+        this.set("error", err);
+      }.bind(this));
     }
   }
 });

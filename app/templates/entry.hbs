@@ -13,6 +13,7 @@
         {{collection.label}}{{#if saving}}...{{/if}}
       </button>
       {{#unless isValid}}<small class="invalid">Please fill out all required fields</small>{{/unless}}
+      {{#if error}}<small class="error">Error saving {{collection.label}}: {{error}}</small>{{/if}}
     </div>
   </form>
 </div>

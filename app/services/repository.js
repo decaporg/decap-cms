@@ -202,7 +202,8 @@ export default Ember.Object.extend({
     var file, filename, part, parts, subtree;
     var fileTree = {};
     var files = [];
-    var uploads = (options.files || []).concat(this.get("media.uploads"));
+    var media = this.get("media");
+    var uploads = (options.files || []).concat(media.get("uploads"));
     
     for (var i=0, len=uploads.length; i<len; i++) {
       file = uploads[i];
@@ -218,7 +219,7 @@ export default Ember.Object.extend({
       file.file = true;
     }
     return Promise.all(files)
-      .then(function() { return this.get("media").reset(); })
+      .then(function() { return media.reset(); })
       .then(getBranch)
       .then(function(branchData) {
         return updateTree(branchData.commit.sha, "/", fileTree);
