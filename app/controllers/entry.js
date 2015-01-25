@@ -67,10 +67,10 @@ export default Ember.Controller.extend({
     if (this.deployChecker) { return; }
     var base = Ember.$("base").attr("href") || "/";
     Ember.$.getJSON(base + "ts.json").then(function(data) {
-      var current = new Date(data.ts).getTime();
+      var current = data.ts;
       this.deployChecker = function() {
         Ember.$.getJSON(base + "ts.json").then(function(data) {
-          var state = new Date(data.ts).getTime();
+          var state = data.ts;
           console.log("Got state - '%o' (current: '%o')", state, current);
           if (state !== current) {
             this.get("notifications").notify("Changes are live", "Your site has been built and deployed.");
