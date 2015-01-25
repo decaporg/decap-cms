@@ -18,6 +18,7 @@ var app = new EmberApp();
 // along with the exports of each module as its value.
 app.import("vendor/authentication.js");
 
+app.import('bower_components/ember/ember-template-compiler.js');
 app.import('bower_components/js-yaml/dist/js-yaml.js');
 app.import('bower_components/marked/lib/marked.js');
 app.import('bower_components/moment/moment.js');
