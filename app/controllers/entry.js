@@ -94,6 +94,10 @@ export default Ember.Controller.extend({
       }).then(function() {
         console.log("Done!");
         this.set("saving", false);
+        if (!this.get("entryPath")) {
+          this.set("entry._path", path);
+          this.transitionToRoute("edit", this.get("entry"));
+        }
       }.bind(this), function(err) {
         console.log("Error saving: %o", err);
         this.set("error", err);
