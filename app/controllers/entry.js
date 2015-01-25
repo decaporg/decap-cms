@@ -33,7 +33,11 @@ export default Ember.Controller.extend({
     var fields = this.get("collection.fields");
     var widgets = Ember.A();
     for (var i=0, len=fields.length; i<len; i++) {
-      widgets.push(Widget.create({field: fields[i], entry: this.get("entry"), value: this.get("entry." +fields[i].name)}));
+      widgets.push(Widget.create({
+        field: fields[i],
+        entry: this.get("entry"),
+        value: this.get("entry." +fields[i].name) || fields[i]['default'] || null
+      }));
     }
     this.set("widgets", widgets);
   },
