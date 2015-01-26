@@ -1,8 +1,4 @@
 /* global require, module */
-var mergeTrees = require('broccoli-merge-trees');
-var fs = require("fs");
-var Promise = require("rsvp").Promise;
-
 var EmberApp = require('ember-cli/lib/broccoli/ember-app');
 
 var app = new EmberApp();
