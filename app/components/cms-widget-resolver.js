@@ -10,6 +10,6 @@ export default Ember.Component.extend({
     var component = componentLookup.lookupFactory(this.customName(), this.container) ||
                     componentLookup.lookupFactory(this.defaultName(), this.container) ||
                     componentLookup.lookupFactory(this.noName(), this.container);
-    this.appendChild(component.create({widget: this.widget}));
+    this.appendChild(component.create({widget: this.widget, tagName: ""}));
   }
 });
