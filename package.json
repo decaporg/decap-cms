@@ -33,8 +33,5 @@
     "ember-validations": "2.0.0-alpha.1",
     "express": "^4.8.5",
     "glob": "^4.0.5"
-  },
-  "dependencies": {
-    "ember-cli-htmlbars": "^0.6.0"
   }
 }

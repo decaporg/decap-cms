@@ -1,4 +1,7 @@
 /* global require, module */
+var mergeTrees = require('broccoli-merge-trees');
+var fs = require("fs");
+var Promise = require("rsvp").Promise;
 
 var EmberApp = require('ember-cli/lib/broccoli/ember-app');
 
@@ -17,7 +20,7 @@ var app = new EmberApp();
 // please specify an object with the list of modules as keys
 // along with the exports of each module as its value.
 app.import("vendor/authentication.js");
-
+app.import("vendor/meta_hack.js");
 app.import('bower_components/ember/ember-template-compiler.js');
 app.import('bower_components/js-yaml/dist/js-yaml.js');
 app.import('bower_components/marked/lib/marked.js');
