@@ -22,11 +22,17 @@ window.CMSWidget = Ember.Object.extend({
   init: function() {
     this._super();
     var validators = Ember.A();
-    if (this.field.optional !== true) {
+    console.log("Widget field :%o", this.field);
+    if (this.isRequired()) {
       validators.pushObject(Validators.presence.create({model: this, options: true}));
     }
 
     this.validators = validators;
+  },
+
+  isRequired: function() {
+    if (this.field.widget === 'checkbox' && this.field.optional !== false) { return false; }
+    return this.field.options !== true;
   },
 
   registerValidator: function(validFn) {

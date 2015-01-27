@@ -20,6 +20,11 @@ form {
       box-shadow: 0 0 5px #ED2121;
     }
   }
+  input[type='checkbox'] {
+    display: inline-block;
+    width: auto;
+    margin-right: 5px;
+  }
 }
 [class^='cms-'] {
   box-sizing: border-box;

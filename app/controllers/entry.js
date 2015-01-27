@@ -33,10 +33,14 @@ export default Ember.Controller.extend({
     var fields = this.get("collection.fields");
     var widgets = Ember.A();
     for (var i=0, len=fields.length; i<len; i++) {
+      var value = this.get("entry." + fields[i].name);
+      if (typeof value === "undefined") {
+        value = fields[i]['default'] || null;
+      }
       widgets.push(Widget.create({
         field: fields[i],
         entry: this.get("entry"),
-        value: this.get("entry." +fields[i].name) || fields[i]['default'] || null
+        value: value
       }));
     }
     this.set("widgets", widgets);
