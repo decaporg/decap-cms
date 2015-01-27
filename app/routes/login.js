@@ -5,7 +5,9 @@ import Route from './cms';
 export default Route.extend({
   actions: {
     login: function() {
-      netlify.configure({site_id: 'timespace.netlify.com'});
+      if (document.location.host === "localhost") {
+        netlify.configure({site_id: 'timespace.netlify.com'});
+      }
       netlify.authenticate({provider: "github", scope: "repo"}, function(err, data) {
         if (err) {
           console.log("Error during signup: %o", err);

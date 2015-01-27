@@ -22,11 +22,9 @@ window.CMSWidget = Ember.Object.extend({
   init: function() {
     this._super();
     var validators = Ember.A();
-    console.log("Widget field :%o", this.field);
     if (this.isRequired()) {
       validators.pushObject(Validators.presence.create({model: this, options: true}));
     }
-
     this.validators = validators;
   },
 
