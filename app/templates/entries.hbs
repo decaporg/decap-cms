@@ -1,16 +1,16 @@
-<div class="body narrow">
-  <div class="section courses">
-    <div class="pull-left meta">
-      <h2>Edit existing {{collection.label}}</h2>
+<div class="cms-main-panel">
+  <div class="cms-panel-section">
+    <div class="cms-pull-left">
+      <h2 class="cms-section-title">Edit existing {{collection.label}}</h2>
       <p>{{#link-to "home"}}&#8592; Back to index{{/link-to}}</p>
     </div>
     {{#if loading_entries}}<div class="cms-loading">Loading entries</div>{{/if}}
-    <ul class="no-bullets">
+    <ul class="cms-plain-list">
       {{#each entry in entries}}
-        <li>
-          <h3>
+        <li class="cms-entry">
+          <h3 class="cms-entry-title">
           {{#link-to "edit" entry}}
-            {{entry.title}} <small>{{entry.cmsExcerpt}}</small>
+            {{entry.title}} <small class="cms-subtitle">{{entry.cmsExcerpt}}</small>
           {{/link-to}}
           </h3>
         </li>

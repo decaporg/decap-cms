@@ -1,8 +1,8 @@
 <div class="container no-max-width">
   <form name="contentForm" class="cms-form" {{action "save" on="submit"}}>
-    <div class="widget meta">
-      <div class="form-control"><h2>{{currentAction}} {{collection.label}}</h2></div>
-      <div class="preview"><h2>Preview {{collection.label}}</h2></div>
+    <div class="cms-form-header">
+      <div class="cms-control-header"><h2 class="cms-form-title">{{currentAction}} {{collection.label}}</h2></div>
+      <div class="cms-preview-header"><h2 class="cms-form-title">Preview {{collection.label}}</h2></div>
     </div>
 
     {{#each widget in widgets}}{{cms-widget widget=widget}}{{/each}}

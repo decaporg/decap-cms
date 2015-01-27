@@ -21,9 +21,60 @@ form {
     }
   }
 }
+[class^='cms-'] {
+  box-sizing: border-box;
+}
 
+.cms-clearfix:after {
+  content: "";
+  display: table;
+  clear: both;
+}
 .cms-action {
   cursor: pointer;
+}
+
+.cms-main-panel {
+  display: block;
+  margin: 72px 60px 60px 440px;
+  border-left: 1px solid;
+  padding-left: 32px;
+}
+
+.cms-panel-section {
+  margin: 53px 0;
+}
+
+.cms-section-title {
+  font-size: 18px;
+  line-height:1.48;
+  margin-top: 0;
+  margin-bottom: 27px;
+  margin-right: -11px;
+}
+
+.cms-collection-title, .cms-entry-title, .cms-action-title {
+  font-size: 23px;
+}
+.cms-subtitle {
+  display: block;
+  font-size: 80%;
+  line-height: 1.57;
+}
+
+.cms-pull-left {
+  position: relative;
+  float: left;
+  width: 240px;
+  margin-left: -240px;
+  left: -64.72px;
+  text-align: right;
+}
+
+.cms-plain-list {
+  list-style: none;
+  margin-left: 0;
+  padding-left: 0;
 }
 
 .cms-form {
@@ -31,31 +82,21 @@ form {
   width: 100%;
   table-layout: fixed;
 }
-.widget {
+.cms-widget, .cms-form-header {
   display: table-row;
 }
-.form-control, .preview {
+.cms-control, .cms-preview, .cms-control-header, .cms-preview-header {
   box-sizing: border-box;
   display: table-cell;
   padding-bottom: 20px;
   vertical-align: top;
   width: 50%;
 }
-.form-control {
+.cms-control, .cms-control-header {
   padding-right: 20px;
   margin-bottom: 20px;
 }
-.markdown-label, .markdown-menu {
-  float: left;
-  width: 50%;
-}
-.markdown-menu {
-  text-align: right;
-}
-.markdown-body {
-  clear: both;
-}
-.preview {
+.cms-preview, .cms-preview-header {
   padding-left: 20px;
   border-left: 1px solid;
   h1 {
@@ -66,9 +107,19 @@ form {
   }
 }
 
-.markdown-menu-icon {
+.cms-markdown-label, .cms-markdown-menu {
+  float: left;
+  width: 50%;
+}
+.cms-markdown-menu {
+  text-align: right;
+}
+.cms-markdown-body {
+  clear: both;
+}
+.cms-markdown-menu-icon {
   display: inline-block;
-  width: 14px;
+  width: 22px;
   line-height: 14px;
   text-align: center;
   padding: 3px;
@@ -79,47 +130,30 @@ form {
   font-size: 12px;
   position: relative;
   color: inherit;
+  box-sizing: border-box;
 }
-.markdown-menu-icon:after {
+.cms-markdown-menu-icon:after {
   position: absolute;
   display: block;
   top: 0;
   left: 0;
-  width: 14px;
+  width: 22px;
   font-family: Icomoon;
   padding: 3px;
   text-indent: 0;
   background: #333;
   color: #fff;
+  box-sizing: border-box;
 }
-.markdown-menu-icon.markdown-icon-bold:after {
+.cms-markdown-icon-bold:after {
   content: "\ea62";
 }
-.markdown-menu-icon.markdown-icon-italic:after {
+.cms-markdown-icon-italic:after {
   content: "\ea64";
 }
-.markdown-menu-icon.markdown-icon-link:after {
+.cms-markdown-icon-link:after {
   content: "\e9cb";
 }
-
-.media-image-upload-box {
-  position: relative;
-  border: 1px solid;
-  padding: 5px;
-  overflow: hidden;
-  .button {
-    margin-right: 10px;
-  }
-}
-.media-image-uploader {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 10em;
-  opacity: 0;
-}
-
 
 .cms-list {
   list-style: none;
@@ -154,18 +188,6 @@ form {
   color: #bbb;
   &:hover {
     color: #aaa;
-  }
-  &.up:after {
-    content: "\ea32";
-  }
-  &.drag {
-    cursor: move;
-  }
-  &.drag:after {
-    content: "\ea54";
-  }
-  &.down:after {
-    content: "\ea36";
   }
   &.remove:after {
     content: "\ea0f";

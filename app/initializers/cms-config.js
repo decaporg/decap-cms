@@ -2,6 +2,12 @@ import Ember from "ember";
 import Config from "../models/config";
  /* global jsyaml */
 
+window.CMSComponent = function(name, component) {
+  define("cms/components/" + name, ['exports'], function(exports) {
+    exports['default'] = Ember.Component.extend(component);
+  });
+};
+
 export function initialize(container, application) {
   application.deferReadiness();
   Ember.$.get("config.yml").then(function(data) {

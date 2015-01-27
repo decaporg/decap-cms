@@ -12,13 +12,14 @@ export default Ember.Component.extend({
     return "http://" + url;
   },
   _getSelection: function() {
-    var textarea = this.element.getElementsByTagName("textarea")[0],
+    console.log("Gmm: %o", this);
+    var textarea = this.$("textarea")[0],
         start = textarea.selectionStart,
         end   = textarea.selectionEnd;
     return {start: start, end: end, selected: (this.get("value") || "").substr(start, end-start)};
   },
   _setSelection: function(selection) {
-    var textarea = this.element.getElementsByTagName("textarea")[0];
+    var textarea = this.$("textarea")[0];
     textarea.focus();
     textarea.selectionStart = selection.start;
     textarea.selectionEnd = selection.end;
@@ -55,8 +56,8 @@ export default Ember.Component.extend({
     link: function() {
       this._currentSelection = this._getSelection();
       this.set("showLinkbox", true);
-      var el = this.element;
-      setTimeout(function() { el.querySelector(".markdown-link-url").focus(); }, 0);
+      var $ = this.$;
+      setTimeout(function() { $(".cms-markdown-link-url")[0].focus(); }, 0);
     },
     insertLink: function() {
       if (this._currentSelection == null || this.get("showLinkbox") === false) { return; }

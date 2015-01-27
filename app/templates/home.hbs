@@ -1,15 +1,15 @@
-<div class="body narrow">
-  <div class="section courses">
-    <div class="pull-left meta rtl">
-      <h2>Add new content</h2>
+<div class="cms-main-panel">
+  <div class="cms-panel-section">
+    <div class="cms-pull-left">
+      <h2 class="cms-section-title">Add new content</h2>
     </div>
-    <ul class="no-bullets">
+    <ul class="cms-plain-list">
       {{#each collection in collections}}
         {{#if collection.create }}
           <li>
-            <h3>
+            <h3 class="cms-action-title">
             {{#link-to "create" collection}}
-              New {{collection.label}} <small>Add a new {{collection.label}} to your website</small>
+              New {{collection.label}} <small class="cms-subtitle">Add a new {{collection.label}} to your website</small>
             {{/link-to}}
             </h3>
           </li>
@@ -18,16 +18,16 @@
     </ul>
   </div>
 
-  <div class="section courses">
-    <div class="pull-left meta rtl">
-      <h2>Edit existing content</h2>
+  <div class="cms-panel-section">
+    <div class="cms-pull-left">
+      <h2 class="cms-section-title">Edit existing content</h2>
     </div>
-    <ul class="no-bullets">
+    <ul class="cms-plain-list">
       {{#each collection in collections}}        
-        <li>
-          <h3>
+        <li class="cms-collection">
+          <h3 class="cms-collection-title">
           {{#link-to "list" collection}}
-            Edit {{collection.label}} <small>Edit an existing {{collection.label}} from your website</small>
+            Edit {{collection.label}} <small class="cms-subtitle">Edit an existing {{collection.label}} from your website</small>
           {{/link-to}}
           </h3>
         </li>
