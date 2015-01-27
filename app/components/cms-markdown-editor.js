@@ -1,7 +1,7 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
-  tagName: "",
+  tagName: "div",
   showLinkbox: false,
   linkUrl: null,
   _getAbsoluteLinkUrl: function() {

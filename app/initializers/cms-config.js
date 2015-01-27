@@ -1,6 +1,7 @@
 import Ember from "ember";
 import Config from "../models/config";
  /* global jsyaml */
+ /* global define */
 
 window.CMSComponent = function(name, component) {
   define("cms/components/" + name, ['exports'], function(exports) {
