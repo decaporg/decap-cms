@@ -7,7 +7,7 @@ export default Resolver.extend({
     this.set("classNames", (this.get("widget.field.class") || "").split(" "));
   },
   customName: function() {
-    return "cms/widgets/" + (this.widget.get("field.preview") || this.widget.get("type") + "-preview");
+    return this.widget.get("field.preview") || this.widget.get("type") + "-preview";
   },
   defaultName: function() {
     return "widgets/" + (this.widget.get("field.preview") || this.widget.get("type") + "-preview");

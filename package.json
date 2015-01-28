@@ -20,6 +20,7 @@
   "license": "MIT",
   "devDependencies": {
     "broccoli-asset-rev": "^2.0.0",
+    "ember-browserify": "^0.6.0",
     "ember-cli": "0.1.7",
     "ember-cli-6to5": "0.2.1",
     "ember-cli-content-security-policy": "0.3.0",
@@ -32,6 +33,8 @@
     "ember-export-application-global": "^1.0.0",
     "ember-validations": "2.0.0-alpha.1",
     "express": "^4.8.5",
-    "glob": "^4.0.5"
+    "glob": "^4.0.5",
+    "html-to-vdom": "^0.5.0",
+    "virtual-dom": "^1.3.0"
   }
 }

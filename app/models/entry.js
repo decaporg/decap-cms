@@ -30,7 +30,15 @@ var Entry = Ember.Object.extend({
       }
       return line;
     }
-  }.property("body")
+  }.property("body"),
+  dateFromUrl: function() {
+    // TODO: check collection.entry_path to figure out if we have date parts in the url
+    var name = this._path.split("/").pop();
+    var match = name.match(/^(\d\d\d\d-\d\d-\d\d)-/);
+    if (match) {
+      return new Date(match[1]);
+    }
+  }.property("_path")
 });
 
 Entry.reopenClass({

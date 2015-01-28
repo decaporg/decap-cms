@@ -2,7 +2,7 @@ import Resolver from './cms-widget-resolver';
 
 export default Resolver.extend({
   customName: function() {
-    return "cms/widgets/" + this.widget.get("type") + "-control";
+    return this.widget.get("type") + "-control";
   },
   defaultName: function() {
     return "widgets/" + this.widget.get("type") + "-control";

@@ -33,6 +33,9 @@ export default Ember.Object.extend({
       reader.readAsDataURL(file);
     }.bind(this));
   },
+  find: function(path) {
+    return this.get("uploads").find(function(mediaFile) { return mediaFile.path === path; });
+  },
   remove: function(path) {
     this.set("uploads", this.get("uploads").reject(function(mediaFile) { return path === mediaFile.path; }));
   },

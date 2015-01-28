@@ -12,7 +12,6 @@ export default Ember.Component.extend({
     return "http://" + url;
   },
   _getSelection: function() {
-    console.log("Gmm: %o", this);
     var textarea = this.$("textarea")[0],
         start = textarea.selectionStart,
         end   = textarea.selectionEnd;
@@ -47,34 +46,34 @@ export default Ember.Component.extend({
     this._setSelection(selection);
   },
   didInsertElement: function() {
-    console.log("Binding events listeners on %o",this.$("textarea"));
-    this.$("textarea").on("dragenter", function(e) {
-      e.preventDefault();
-    });
-    this.$("textarea").on("dragover", function(e) {
-      e.preventDefault();
-    });
-    this.$("textarea").on("drop", function(e) {
-      e.preventDefault();
-      console.log("Got event: %e");
-      var data, textarea = this.$("textarea")[0];
+    // console.log("Binding events listeners on %o",this.$("textarea"));
+    // this.$("textarea").on("dragenter", function(e) {
+    //   e.preventDefault();
+    // });
+    // this.$("textarea").on("dragover", function(e) {
+    //   e.preventDefault();
+    // });
+    // this.$("textarea").on("drop", function(e) {
+    //   e.preventDefault();
+    //   console.log("Got event: %e");
+    //   var data, textarea = this.$("textarea")[0];
 
 
-      if (e.originalEvent.dataTransfer.files) {
-        console.log("Got files");
+    //   if (e.originalEvent.dataTransfer.files) {
+    //     console.log("Got files");
 
-      } else {
-        console.log("Got text");
-        data = Ember.RSVP.Promise.resolve(e.originalEvent.dataTransfer.getData("text/plain"));
-      }
-      data.then(function(text) {
-        var selection = this._getSelection();
-        var value = this.get("value");
+    //   } else {
+    //     console.log("Got text");
+    //     data = Ember.RSVP.Promise.resolve(e.originalEvent.dataTransfer.getData("text/plain"));
+    //   }
+    //   data.then(function(text) {
+    //     var selection = this._getSelection();
+    //     var value = this.get("value");
 
-        this.set("value", value.substr(0,selection.start) + text + value.substr(selection.end));
-      }.bind(this));
-      console.log(e);
-    }.bind(this));
+    //     this.set("value", value.substr(0,selection.start) + text + value.substr(selection.end));
+    //   }.bind(this));
+    //   console.log(e);
+    // }.bind(this));
   },
   actions: {
     bold: function() {
