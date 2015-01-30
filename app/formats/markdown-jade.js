@@ -1,7 +1,7 @@
-import Frontmatter from './frontmatter';
+import Ember from 'ember';
 /* global jsyaml */
 
-export default Frontmatter.extend({
+export default Ember.Object.extend({
   extension: "jade",
   indent: function(content, indentation) {
     var indentedContent = [];
@@ -15,10 +15,9 @@ export default Frontmatter.extend({
     var line, lines, match;
     var markdown = null;
     var indentation = null;
-    var obj = this._super(content);
-    obj.jade_body = obj.body;
+    var obj = {};
 
-    lines = (obj.jade_body || "").split("\n");
+    lines = (content || "").split("\n");
     for (var i=0, len=lines.length; i<len; i++) {
       line = lines[i];
       if (markdown === null) {
@@ -39,10 +38,7 @@ export default Frontmatter.extend({
       }
     }
 
-    if (obj.hasOwnProperty("title") === false) {
-      obj.title = (markdown[0] || "").replace(/^#+\s*/, '');
-    }
-
+    obj.title = (markdown[0] || "").replace(/^#+\s*/, '');
     obj.body = markdown ? markdown.join("\n") : null;
 
     return obj;
@@ -54,19 +50,8 @@ export default Frontmatter.extend({
     var indentation = null;
     var body = [];
     var meta = {};
-    var content = "";
     var originalContent = entry._file_content || ";"
     var bodyTpl = originalContent.replace(/^---\n([^]*?)\n---\n/, '') || ":markdown\n  ";
-
-    for (var key in obj) {
-      if (key !== "body") {
-        meta[key] = obj[key];
-      }
-    }
-
-    content += "---\n";
-    content += jsyaml.safeDump(meta);
-    content += "---\n\n";
 
     lines = bodyTpl.split("\n");
     for (var i=0, len=lines.length; i<len; i++) {
@@ -95,6 +80,6 @@ export default Frontmatter.extend({
       body.push(this.indent(obj.body || "", indentation || "  "));
     }
 
-    return content + body.join("\n");
+    return body.join("\n");
   }
 });
