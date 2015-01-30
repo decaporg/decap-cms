@@ -53,23 +53,17 @@ export default Ember.Controller.extend({
     return this.get("isInvalid") || this.get("saving");
   }.property("isInvalid", "saving"),
   toFileContent: function() {
-    var widget;
-    var meta = {};
-    var content ="---\n";
-    var body = "";
+    var widget, content;
+    var obj = {};
+    var formatter = this.get("collection.formatter");
     var widgets = this.get("widgets");
+    
     for (var i=0,len=widgets.length; i<len; i++) {
       widget = widgets[i];
-      if (widget.get("name") === "body") {
-        body = widget.getValue();
-      } else {
-        meta[widget.get("name")] = widget.getValue();  
-      }
+      obj[widget.get("name")] = widget.getValue();
     }
-    content += jsyaml.safeDump(meta);
-    content += "---\n\n";
-    content += body;
-    return content;
+
+    return formatter.toFile(obj, this.get("entry"));
   },
   notifyOnDeploy: function() {
     if (this.deployChecker) { return; }
@@ -79,7 +73,6 @@ export default Ember.Controller.extend({
       this.deployChecker = function() {
         Ember.$.getJSON(base + "ts.json").then(function(data) {
           var state = data.ts;
-          console.log("Got state - '%o' (current: '%o')", state, current);
           if (state !== current) {
             this.get("notifications").notify("Changes are live", "Your site has been built and deployed.");
           } else{

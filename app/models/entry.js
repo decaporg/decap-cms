@@ -1,14 +1,5 @@
 import Ember from 'ember';
- /* global jsyaml */
-
-function parseContent(content) {
-  var regexp = /^---\n([^]*?)\n---\n([^]*)$/;
-  var match = content.match(regexp);
-  var item = jsyaml.safeLoad(match[1]);
-  item.body = (match[2] || "").replace(/^\n+/, '');
-  return item;
-}
-
+ 
 var Entry = Ember.Object.extend({
   cmsExcerpt: function() {
     var line, lines;
@@ -43,7 +34,7 @@ var Entry = Ember.Object.extend({
 
 Entry.reopenClass({
   fromContent: function(collection, content, path) {
-    return Entry.create(Ember.$.extend(parseContent(content), {_collection: collection, _path: path}));
+    return Entry.create(Ember.$.extend(collection.formatter.fromFile(content), {_collection: collection, _path: path, _file_content: content}));
   }
 });
 

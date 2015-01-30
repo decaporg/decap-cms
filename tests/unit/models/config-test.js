@@ -3,7 +3,7 @@ import {
   test
 } from 'ember-qunit';
 
-moduleForModel('config', 'Config', {
+moduleFor('model:config', 'Config', {
   // Specify the other units that are required for this test.
   needs: []
 });

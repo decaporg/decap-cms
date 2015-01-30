@@ -3,16 +3,11 @@ import Config from "../models/config";
  /* global jsyaml */
  /* global define */
 
-window.CMSComponent = function(name, component) {
-  define("cms/components/" + name, ['exports'], function(exports) {
-    exports['default'] = Ember.Component.extend(component);
-  });
-};
-
 export function initialize(container, application) {
   application.deferReadiness();
   Ember.$.get("config.yml").then(function(data) {
-    var config = Config.create(jsyaml.safeLoad(data));
+    var config = Config.create(Ember.$.extend(jsyaml.safeLoad(data), {container: container}));
+    config.set("container", container);
     application.register('cms:config', config, { instantiate: false });
     application.inject('route', 'config', 'cms:config');
     application.inject('service', 'config', 'cms:config');
