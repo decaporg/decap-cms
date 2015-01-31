@@ -1,6 +1,5 @@
 import Ember from 'ember';
 import Widget from '../models/widget';
- /* global jsyaml */
 
 export default Ember.Controller.extend({
   needs: ['application'],
@@ -23,7 +22,21 @@ export default Ember.Controller.extend({
     var date = new Date();
     var titleWidget = this.get("widgets").filter(function(widget) { return widget.get("name") === "title"; })[0];
 
-    return "" + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + "-" + this.slugify(titleWidget.getValue());
+    return titleWidget ? "" + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + "-" + this.slugify(titleWidget.getValue()) : null;
+  },
+  getFilePath: function() {
+    var path = this.get("entryPath");
+    var collection = this.get("collection");
+    if (path) {
+      return Ember.RSVP.Promise.resolve(path);
+    }
+    return new Ember.RSVP.Promise(function(resolve) {
+      var slug = this.generateSlug();
+      if (!slug) {
+        slug = this.slugify(prompt("Slug: "));
+      }
+      resolve(collection.get("folder") + "/" + slug + "." + collection.getExtension());
+    }.bind(this));
   },
   currentAction: function() {
     return this.get("entryPath") ? "Edit" : "Create";
@@ -53,7 +66,7 @@ export default Ember.Controller.extend({
     return this.get("isInvalid") || this.get("saving");
   }.property("isInvalid", "saving"),
   toFileContent: function() {
-    var widget, content;
+    var widget;
     var obj = {};
     var formatter = this.get("collection.formatter");
     var widgets = this.get("widgets");
@@ -86,23 +99,24 @@ export default Ember.Controller.extend({
   actions: {
     save: function() {
       if (this.get("isInvalid")) { return; }
-      var path = this.get("entryPath") || this.get("collection.folder") + "/" + this.generateSlug() + ".md";
-      this.set("saving", true);
-      this.notifyOnDeploy();
-      this.get("repository").updateFiles({
-        files: [{path: path, content: this.toFileContent()}],
-        message: "Updated " + this.get("collection.label") + " " + this.get("entry.title")
-      }).then(function() {
-        console.log("Done!");
-        this.set("saving", false);
-        if (!this.get("entryPath")) {
-          this.set("entry._path", path);
-          this.transitionToRoute("edit", this.get("entry"));
-        }
-      }.bind(this), function(err) {
-        console.log("Error saving: %o", err);
-        this.set("error", err);
-      }.bind(this));
+      this.getFilePath().then(function(path) {
+        this.set("saving", true);
+        this.notifyOnDeploy();
+        this.get("repository").updateFiles({
+          files: [{path: path, content: this.toFileContent()}],
+          message: "Updated " + this.get("collection.label") + " " + this.get("entry.title")
+        }).then(function() {
+          console.log("Done!");
+          this.set("saving", false);
+          if (!this.get("entryPath")) {
+            this.set("entry._path", path);
+            this.transitionToRoute("edit", this.get("entry"));
+          }
+        }.bind(this), function(err) {
+          console.log("Error saving: %o", err);
+          this.set("error", err);
+        }.bind(this));
+      });
     }
   }
 });

@@ -1,5 +1,4 @@
 import Ember from 'ember';
-/* global jsyaml */
 
 export default Ember.Object.extend({
   extension: "jade",
@@ -49,8 +48,7 @@ export default Ember.Object.extend({
     var done = null;
     var indentation = null;
     var body = [];
-    var meta = {};
-    var originalContent = entry._file_content || ";"
+    var originalContent = entry._file_content || "";
     var bodyTpl = originalContent.replace(/^---\n([^]*?)\n---\n/, '') || ":markdown\n  ";
 
     lines = bodyTpl.split("\n");

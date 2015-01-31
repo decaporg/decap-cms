@@ -55,7 +55,7 @@ export default Frontmatter.extend({
     var body = [];
     var meta = {};
     var content = "";
-    var originalContent = entry._file_content || ";"
+    var originalContent = entry._file_content || "";
     var bodyTpl = originalContent.replace(/^---\n([^]*?)\n---\n/, '') || ":markdown\n  ";
 
     for (var key in obj) {

@@ -7,7 +7,7 @@ export default Ember.Object.extend({
     var collection;
     var collections = [];
     for (var i=0, len=this.collections.length; i<len; i++) {
-      var collection = Collection.create(this.collections[i]);
+      collection = Collection.create(this.collections[i]);
       collection.set("formatter", this.container.lookup("format:" + collection.get("format")));
       collections.push(collection);
     }

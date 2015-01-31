@@ -1,7 +1,6 @@
 import Ember from "ember";
 import Config from "../models/config";
  /* global jsyaml */
- /* global define */
 
 export function initialize(container, application) {
   application.deferReadiness();
