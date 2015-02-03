@@ -14,6 +14,7 @@ var MediaFile = Ember.Object.extend({
 
 export default Ember.Object.extend({
   uploads: Ember.A(),
+  base: "uploads",
   add: function(path, file) {
     return new Promise(function(resolve,reject) {
       var reader = new FileReader();

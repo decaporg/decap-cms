@@ -45,35 +45,57 @@ export default Ember.Component.extend({
 
     this._setSelection(selection);
   },
+
+  linkToFiles: function(files) {
+    var media = this.get("media");
+    var mediaFiles = [];
+    for (var i=0, len=files.length; i<len; i++) {
+      mediaFiles.push(media.add(`${this.media.get("base")}/${files[i].name}` , files[i]));
+    }
+    return new Ember.RSVP.Promise(function(resolve) {
+      var file, image;
+      var links = [];
+      Ember.RSVP.Promise.all(mediaFiles).then(function(mediaFiles) {
+        for (var i=0, len=mediaFiles.length; i < len; i++) {
+          file = mediaFiles[i];
+          image = file.name.match(/\.(gif|jpg|jpeg|png|svg)$/);          
+          links.push(`${image ? '!' : ''}[${file.name}](${file.path})`)
+        }
+        console.log("Links: %o", links);
+        resolve(links.join("\n"));
+      });
+    });
+  },
+
   didInsertElement: function() {
-    // console.log("Binding events listeners on %o",this.$("textarea"));
-    // this.$("textarea").on("dragenter", function(e) {
-    //   e.preventDefault();
-    // });
-    // this.$("textarea").on("dragover", function(e) {
-    //   e.preventDefault();
-    // });
-    // this.$("textarea").on("drop", function(e) {
-    //   e.preventDefault();
-    //   console.log("Got event: %e");
-    //   var data, textarea = this.$("textarea")[0];
+    console.log("Binding events listeners on %o",this.$("textarea"));
+    this.$("textarea").on("dragenter", function(e) {
+      e.preventDefault();
+    });
+    this.$("textarea").on("dragover", function(e) {
+      e.preventDefault();
+    });
+    this.$("textarea").on("drop", function(e) {
+      e.preventDefault();
+      console.log("Got event: %o", e);
+      var data, textarea = this.$("textarea")[0];
 
 
-    //   if (e.originalEvent.dataTransfer.files) {
-    //     console.log("Got files");
+      if (e.originalEvent.dataTransfer.files) {
+        console.log("Got files");
+        data = this.linkToFiles(e.originalEvent.dataTransfer.files)
+      } else {
+        console.log("Got text");
+        data = Ember.RSVP.Promise.resolve(e.originalEvent.dataTransfer.getData("text/plain"));
+      }
+      data.then(function(text) {
+        var selection = this._getSelection();
+        var value = this.get("value") || "";
 
-    //   } else {
-    //     console.log("Got text");
-    //     data = Ember.RSVP.Promise.resolve(e.originalEvent.dataTransfer.getData("text/plain"));
-    //   }
-    //   data.then(function(text) {
-    //     var selection = this._getSelection();
-    //     var value = this.get("value");
-
-    //     this.set("value", value.substr(0,selection.start) + text + value.substr(selection.end));
-    //   }.bind(this));
-    //   console.log(e);
-    // }.bind(this));
+        this.set("value", value.substr(0,selection.start) + text + value.substr(selection.end));
+      }.bind(this));
+      console.log(e);
+    }.bind(this));
   },
   actions: {
     bold: function() {
