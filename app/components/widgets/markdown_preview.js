@@ -8,8 +8,6 @@ import commonmark from 'npm:commonmark';
 /* global HTMLParser */
 
 var markdownParser = new commonmark.Parser();
-window.markdown = commonmark;
-window.VNode = VNode;
 
 var getAttrs = {};
 [
@@ -41,35 +39,45 @@ class HTMLHandler {
     this.current = this.stack[0];
   }
   start(tagName, attrs, unary) {
-    this.stack.push({tagName: tagName, properties: this.propertiesFor(attrs), children: []});
+    this.stack.push({tagName: tagName, properties: this.propertiesFor(tagName, attrs), children: []});
     this.current = this.stack[this.stack.length - 1];
     if (unary) {
       this.end(tagName);
     }
   }
-  end() {
+  end(tagName) {
     var newNode = new VNode(this.current.tagName, this.current.properties, this.current.children);
     this.stack.pop();
     this.current = this.stack[this.stack.length - 1];
+    if (tagName === "script") {
+      return;
+    }
     this.current.children.push(newNode);
   }
   chars(text) {
     this.current.children.push(new VText(text));
   }
-  propertiesFor(attrs) {
+  propertiesFor(tagName, attrs) {
     var mediaFile;
     var properties = {};
+    var value;
     attrs.forEach((attr) => {
+      value = (attr.value || "").indexOf("javascript:") === 0 ? "" : attr.value;
       if (getAttrs[attr.name]) {
         properties.attributes = properties.attributes || {};
-        properties.attributes[attr.name] = attr.value;
+        properties.attributes[attr.name] = value;
+      } else if (attr.name.indexOf("on") === 0) {
+        // Skip
       } else if (attr.name === "src") {
-        mediaFile = this.media.find(attr.value);
-        properties.src = mediaFile ? mediaFile.src : attr.value;
+        mediaFile = this.media.find(value);
+        properties.src = mediaFile ? mediaFile.src : value;
       } else {
-        properties[attr.name] = attr.value;  
+        properties[attr.name] = value;  
       }
     });
+    if (tagName === "a") {
+      properties.target = "_blank";
+    }
     return properties;
   }
   getNodes() {
@@ -139,7 +147,6 @@ export default Ember.Component.extend({
         }
         break;
       default:
-        console.log("Properties for %o",node);
         break;
     }
     return properties;
@@ -155,7 +162,6 @@ export default Ember.Component.extend({
     while (event = walker.next()) {
       entering = event.entering;
       node = event.node;
-      console.log("Node: %o", node);
       switch(node.type) {
         case 'Text':
           current.children.push(new VText(node.literal));
@@ -188,6 +194,25 @@ export default Ember.Component.extend({
             stack.push({tagName: this.tagNameFor(node), properties: this.propertiesFor(node), children: []});
             current = stack[stack.length - 1];
           } else {
+            if (current.html) {
+              var newChildren = [];
+              var html = "";
+              current.children.forEach(child => {
+                if (child.type === "VirtualText") {
+                  html += child.text;
+                } else {
+                  this.htmlToVNodes(html).forEach(node => {
+                    newChildren.push(node);
+                  });
+                  html = "";
+                  newChildren.push(child);
+                }
+              });
+              this.htmlToVNodes(html).forEach(node => {
+                newChildren.push(node);
+              });
+              current.children = newChildren;
+            }
             newNode = new VNode(current.tagName, current.properties, current.children);
             stack.pop();
             current = stack[stack.length - 1];
@@ -220,16 +245,15 @@ export default Ember.Component.extend({
           ]));
           break;
         case 'Html':
+          current.html = true;
           current.children.push(new VText(node.literal));
           break;
         case 'HtmlBlock':
-          console.log("html: %o", node);
-          this.htmlToVNodes(node.literal).forEach((node) => {
+          this.htmlToVNodes(node.literal).forEach(node => {
             current.children.push(node);
           });
           break;
         default:
-
           // Do nothing
       }
     }

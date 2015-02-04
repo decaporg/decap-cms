@@ -59,7 +59,7 @@ export default Ember.Component.extend({
         for (var i=0, len=mediaFiles.length; i < len; i++) {
           file = mediaFiles[i];
           image = file.name.match(/\.(gif|jpg|jpeg|png|svg)$/);          
-          links.push(`${image ? '!' : ''}[${file.name}](${file.path})`)
+          links.push(`${image ? '!' : ''}[${file.name}](${file.path})`);
         }
         console.log("Links: %o", links);
         resolve(links.join("\n"));
@@ -68,7 +68,6 @@ export default Ember.Component.extend({
   },
 
   didInsertElement: function() {
-    console.log("Binding events listeners on %o",this.$("textarea"));
     this.$("textarea").on("dragenter", function(e) {
       e.preventDefault();
     });
@@ -77,13 +76,11 @@ export default Ember.Component.extend({
     });
     this.$("textarea").on("drop", function(e) {
       e.preventDefault();
-      console.log("Got event: %o", e);
-      var data, textarea = this.$("textarea")[0];
+      var data;
 
-
-      if (e.originalEvent.dataTransfer.files) {
+      if (e.originalEvent.dataTransfer.files && e.originalEvent.dataTransfer.files.length) {
         console.log("Got files");
-        data = this.linkToFiles(e.originalEvent.dataTransfer.files)
+        data = this.linkToFiles(e.originalEvent.dataTransfer.files);
       } else {
         console.log("Got text");
         data = Ember.RSVP.Promise.resolve(e.originalEvent.dataTransfer.getData("text/plain"));
