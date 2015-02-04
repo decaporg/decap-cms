@@ -16,10 +16,10 @@ var app = new EmberApp();
 // please specify an object with the list of modules as keys
 // along with the exports of each module as its value.
 app.import("vendor/authentication.js");
+app.import("vendor/html-parser.js");
 app.import("vendor/meta_hack.js");
 app.import('bower_components/ember/ember-template-compiler.js');
 app.import('bower_components/js-yaml/dist/js-yaml.js');
-app.import('bower_components/marked/lib/marked.js');
 app.import('bower_components/moment/moment.js');
 app.import('bower_components/js-base64/base64.js');
 app.import('bower_components/jquery-sortable/source/js/jquery-sortable.js');

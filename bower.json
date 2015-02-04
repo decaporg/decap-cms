@@ -12,7 +12,6 @@
     "ember-qunit-notifications": "0.0.4",
     "qunit": "~1.15.0",
     "js-yaml": "~3.2.5",
-    "marked": "~0.3.2",
     "jquery-sortable": "~0.9.12",
     "js-base64": "~2.1.7",
     "moment": "~2.9.0"

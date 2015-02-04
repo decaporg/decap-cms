@@ -4,9 +4,14 @@ import VNode from 'npm:virtual-dom/vnode/vnode';
 import VText from 'npm:virtual-dom/vnode/vtext';
 import diff from 'npm:virtual-dom/diff';
 import patch from 'npm:virtual-dom/patch';
-/* global marked */
+import commonmark from 'npm:commonmark';
+/* global HTMLParser */
 
-var attrs ={};
+var markdownParser = new commonmark.Parser();
+window.markdown = commonmark;
+window.VNode = VNode;
+
+var getAttrs = {};
 [
   "class", "style",
   "allowfullscreen", "allowtransparency", "charset", "cols", "contextmenu", "datetime", "disabled", "form", "frameborder",
@@ -15,71 +20,76 @@ var attrs ={};
   "spreadMethod", "stopColor", "stopOpacity", "stroke", "strokeLinecap", "strokeWidth", "textAnchor", "transform", "version",
   "viewBox", "x1", "x2", "x", "y1", "y2", "y"
 ].forEach(function(attr) {
-  attrs[attr] = true;
+  getAttrs[attr] = true;
 });
 
+var nodeTypes = {
+  Paragraph: "p",
+  Item: "li",
+  BlockQuote: "blockquote",
+  Link: "a",
+  Emph: "em",
+  Strong: "strong",
+  Hardbreak: "br",
+  HorizontalRule: "hr"
+};
+
+class HTMLHandler {
+  constructor(media) {
+    this.media = media;
+    this.stack = [{tagName: "none", children: []}];
+    this.current = this.stack[0];
+  }
+  start(tagName, attrs, unary) {
+    this.stack.push({tagName: tagName, properties: this.propertiesFor(attrs), children: []});
+    this.current = this.stack[this.stack.length - 1];
+    if (unary) {
+      this.end(tagName);
+    }
+  }
+  end() {
+    var newNode = new VNode(this.current.tagName, this.current.properties, this.current.children);
+    this.stack.pop();
+    this.current = this.stack[this.stack.length - 1];
+    this.current.children.push(newNode);
+  }
+  chars(text) {
+    this.current.children.push(new VText(text));
+  }
+  propertiesFor(attrs) {
+    var mediaFile;
+    var properties = {};
+    attrs.forEach((attr) => {
+      if (getAttrs[attr.name]) {
+        properties.attributes = properties.attributes || {};
+        properties.attributes[attr.name] = attr.value;
+      } else if (attr.name === "src") {
+        mediaFile = this.media.find(attr.value);
+        properties.src = mediaFile ? mediaFile.src : attr.value;
+      } else {
+        properties[attr.name] = attr.value;  
+      }
+    });
+    return properties;
+  }
+  getNodes() {
+    return this.current.children;
+  }
+}
 
 export default Ember.Component.extend({
+  htmlToVNodes: function(html) {
+    var handler = new HTMLHandler(this.get("media"));
+
+    try {
+      new HTMLParser(html, handler);
+    } catch (_) {
+      return [new VText(html)];
+    }
+
+    return handler.getNodes();
+  },
   tagName: "div",
-
-  createVNode: function(domNode, key) {
-    key = key || null; // XXX: Leave out `key` for now... merely used for (re-)ordering
-
-    if(domNode.nodeType === 1) {
-      return this.createFromElement(domNode, key);
-    }
-    if(domNode.nodeType === 3) {
-      return this.createFromTextNode(domNode, key);
-    }
-    return;
-  },
-
-  vdomFromHtml: function(html, key) {
-    var domNode = document.createElement('div'); // create container
-    domNode.innerHTML = html; // browser parses HTML into DOM tree
-    domNode = domNode.children[0] || domNode; // select first node in tree
-    return this.createVNode(domNode, key);
-  },
-
-  createFromTextNode: function(tNode) {
-    return new VText(tNode.nodeValue);
-  },
-
-  createFromElement: function(el) {
-    var tagName = el.tagName;
-    var namespace = el.namespaceURI === 'http://www.w3.org/1999/xhtml'? null : el.namespaceURI;
-    var properties = this.getElementProperties(el);
-    var children = [];
-    var node = null;
-
-    for (var i = 0; i < el.childNodes.length; i++) {
-      node = this.createVNode(el.childNodes[i]/*, i*/);
-      if (node) {
-          children.push(node);
-      }
-    }
-
-    return new VNode(tagName, properties, children, null, namespace);
-  },
-
-  getElementProperties: function(el) {
-    var name,value,mediaFile;
-    var obj = {};
-    for (var i=0, len=el.attributes.length; i<len; i++) {
-      name = el.attributes[i].name;
-      value = el.attributes[i].value;
-      if (attrs[name]) {
-        obj.attributes = obj.attributes || {};
-        obj.attributes[name] = value;
-      } else if (name === "src") {
-        mediaFile = this.get("media").find(value);
-        obj.src = mediaFile ? mediaFile.src : value;
-      } else {
-        obj[el.attributes[i].name] = el.attributes[i].value;  
-      }
-    }
-    return obj;
-  },
   didInsertElement: function() {
     var vdom = this.createVdom();
     var rootNode = createElement(vdom);
@@ -96,7 +106,134 @@ export default Ember.Component.extend({
     this.set("vdom", newTree);
   }.observes("widget.value"),
 
+  tagNameFor: function(node) {
+    switch(node.type) {
+      case "Header":
+        return `h${node.level}`;
+      case "List":
+        return node.listType === "Bullet" ? "ul" : "ol";
+      default:
+        return nodeTypes[node.type];
+    }
+  },
+
+  propertiesFor: function(node) {
+    var mediaFile, infoWords;
+    var properties = {};
+    switch(node.type) {
+      case 'Link':
+        properties.href = node.destination;
+        properties.target = "_blank";
+        if (node.title) {
+          properties.title = node.title;
+        }
+        break;
+      case 'Image':
+        mediaFile = this.get("media").find(node.destination);
+        properties.src = mediaFile ? mediaFile.src : node.destination;
+        break;
+      case 'CodeBlock':
+        infoWords = node.info ? node.info.split(/ +/) : [];
+        if (infoWords.length > 0 && infoWords[0].length > 0) {
+          properties.attributes = {"class": "language-" + infoWords[0]};
+        }
+        break;
+      default:
+        console.log("Properties for %o",node);
+        break;
+    }
+    return properties;
+  },
+
   createVdom: function() {
-    return this.vdomFromHtml("<div>" + marked(this.get("widget.value") || "") + "</div>"); 
+    var event, entering, node, newNode, html, grandparent;
+    var ast = markdownParser.parse(this.get("widget.value") || "");
+    var walker = ast.walker();
+    var stack = [{tagName: "div", properties: {}, children: []}];
+    var current = stack[0];
+
+    while (event = walker.next()) {
+      entering = event.entering;
+      node = event.node;
+      console.log("Node: %o", node);
+      switch(node.type) {
+        case 'Text':
+          current.children.push(new VText(node.literal));
+          break;
+        case 'Softbreak':
+          current.children.push(new VText("\n"));
+          break;
+        case 'Hardbreak':
+        case 'HorizontalRule':
+          current.children.push(new VNode(this.tagNameFor(node), {}, []));
+          break;
+        case 'Emph':
+        case 'Strong':
+        case 'BlockQuote':
+        case 'Item':
+        case 'List':
+        case 'Link':
+        case 'Header':
+        case 'Paragraph':
+          if (node.type === "Paragraph") {
+            grandparent = node.parent.parent;
+            if (grandparent !== null &&
+                grandparent.type === 'List') {
+                if (grandparent.listTight) {
+                    break;
+                }
+            }
+          }
+          if (entering) {
+            stack.push({tagName: this.tagNameFor(node), properties: this.propertiesFor(node), children: []});
+            current = stack[stack.length - 1];
+          } else {
+            newNode = new VNode(current.tagName, current.properties, current.children);
+            stack.pop();
+            current = stack[stack.length - 1];
+            current.children.push(newNode);
+          }
+          break;
+        case 'Image':
+          if (entering) {
+            stack.push({tagName: "img", properties: this.propertiesFor(node), children: []});
+            current = stack[stack.length - 1];
+          } else {
+            if (current.children.length) {
+              current.properties.alt = "";
+              current.children.forEach((child) => {
+                current.properties.alt += child.text || "";
+              });
+            }
+            newNode = new VNode(current.tagName, current.properties, []);
+            stack.pop();
+            current = stack[stack.length - 1];
+            current.children.push(newNode);
+          }
+          break;
+        case 'Code':
+          current.children.push(new VNode("code", {}, [new VText(node.literal)]));
+          break;
+        case 'CodeBlock':
+          current.children.push(new VNode("pre", {}, [
+            new VNode("code", this.propertiesFor(node), [new VText(node.literal)])
+          ]));
+          break;
+        case 'Html':
+          current.children.push(new VText(node.literal));
+          break;
+        case 'HtmlBlock':
+          console.log("html: %o", node);
+          this.htmlToVNodes(node.literal).forEach((node) => {
+            current.children.push(node);
+          });
+          break;
+        default:
+
+          // Do nothing
+      }
+    }
+
+    return new VNode(current.tagName, current.properties, current.children);
   }
 });
