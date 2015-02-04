@@ -138,9 +138,9 @@ export default Ember.Component.extend({
   _setSelection: function(selection) {
     setTimeout(() => {
       var textarea = this.$("textarea")[0];
-      textarea.focus();
       textarea.selectionStart = selection.start;
       textarea.selectionEnd = selection.end;
+      textarea.focus();
     }, 0);
   },
   _surroundSelection: function(chars) {
@@ -225,7 +225,7 @@ export default Ember.Component.extend({
       } else {
         var div = document.createElement("div");
         div.contentEditable = true;
-        div.setAttribute("style", "opacity: 0; overflow: hidden; width: 1px; height: 1px; position: absolute; top: 0; left: 0;");
+        div.setAttribute("style", "opacity: 0; overflow: hidden; width: 1px; height: 1px; position: fixed; top: 50%; left: 0;");
         document.body.appendChild(div);
         div.focus();
         setTimeout(() => {
