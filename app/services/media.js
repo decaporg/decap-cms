@@ -3,6 +3,7 @@ import Ember from 'ember';
 var Promise = Ember.RSVP.Promise;
 
 var MediaFile = Ember.Object.extend({
+  uploaded: false,
   name: null,
   size: 0,
   path: null,
@@ -14,8 +15,11 @@ var MediaFile = Ember.Object.extend({
 
 export default Ember.Object.extend({
   uploads: Ember.A(),
-  base: "uploads",
+  base: function() {
+    return "/"+ (this.get("config.media_folder") || "uploads");
+  }.property("config.media_folder"),
   add: function(path, file) {
+    this.remove(path);
     return new Promise(function(resolve,reject) {
       var reader = new FileReader();
       reader.onload = function() {

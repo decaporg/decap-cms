@@ -124,6 +124,7 @@ function uploadBlob(file) {
     })
   }).then(function(response) {
     file.sha = response.sha;
+    file.uploaded = true;
     return file;
   });
 }
@@ -207,6 +208,7 @@ export default Ember.Object.extend({
     
     for (var i=0, len=uploads.length; i<len; i++) {
       file = uploads[i];
+      if (file.uploaded) { continue; }
       files.push(file.upload ? file : uploadBlob(file));
       parts = file.path.split("/").filter(function(part) { return part; });
       filename = parts.pop();
@@ -219,7 +221,6 @@ export default Ember.Object.extend({
       file.file = true;
     }
     return Promise.all(files)
-      .then(function() { return media.reset(); })
       .then(getBranch)
       .then(function(branchData) {
         return updateTree(branchData.commit.sha, "/", fileTree);

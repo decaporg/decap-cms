@@ -1,6 +1,7 @@
 import Ember from 'ember';
 /* global HTMLParser */
 
+/* Helpers for transforming messy pasted in HTML to clean Markup */
 var selfClosing = {
   img: true,
   hr: true,
@@ -106,6 +107,8 @@ class HTMLHandler {
   }
 }
 
+
+/* Actual component */
 export default Ember.Component.extend({
   cleanupPaste: function(html) {
     var handler = new HTMLHandler();
