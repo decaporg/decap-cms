@@ -6,6 +6,7 @@ import diff from 'npm:virtual-dom/diff';
 import patch from 'npm:virtual-dom/patch';
 import commonmark from 'npm:commonmark';
 /* global HTMLParser */
+/*jshint scripturl:true*/
 
 var markdownParser = new commonmark.Parser();
 
@@ -62,7 +63,7 @@ class HTMLHandler {
     var properties = {};
     var value;
     attrs.forEach((attr) => {
-      value = (attr.value || "").indexOf("javascript:") === 0 ? "" : attr.value;
+      value = (attr.value || "").indexOf('javascript:') === 0 ? "" : attr.value;
       if (getAttrs[attr.name]) {
         properties.attributes = properties.attributes || {};
         properties.attributes[attr.name] = value;
@@ -196,7 +197,7 @@ export default Ember.Component.extend({
           } else {
             if (current.html) {
               var newChildren = [];
-              var html = "";
+              html = "";
               current.children.forEach(child => {
                 if (child.type === "VirtualText") {
                   html += child.text;

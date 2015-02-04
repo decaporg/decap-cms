@@ -209,42 +209,37 @@ export default Ember.Component.extend({
         this.set("value", value.substr(0,selection.start) + text + value.substr(selection.end));
       }.bind(this));
     }.bind(this));
-    this.$("textarea").on("keydown", function(e) {
+    this.$("textarea").on("paste", (e) => {
       var selection = this._getSelection();
-      if((e.ctrlKey || e.metaKey) && e.keyCode === 0x56) {
-        
-        this.$("textarea").on("paste", (e) => {
-          var transfer = e.originalEvent.clipboardData;
-          // Make sure we don't handle plain text pasting as HTML
-          if (transfer.types.length === 1) {
-            e.preventDefault();
-            var value = this.get("value") || "";
-            var before = value.substr(0, selection.start);
-            var middle = transfer.getData(transfer.types[0]);
-            var after = value.substr(selection.end);
-            this.set("value", before + middle + after);
-            selection.start = selection.end = before.length + middle.length;
-            this._setSelection(selection);
-          } else {
-            var div = document.createElement("div");
-            div.contentEditable = true;
-            div.setAttribute("style", "opacity: 0; overflow: hidden; width: 1px; height: 1px; position: absolute; top: 0; left: 0;");
-            document.body.appendChild(div);
-            div.focus();
-            setTimeout(() => {
-              var value = this.get("value") || "";
-              var before = value.substr(0, selection.start);
-              var middle = this.cleanupPaste(div.innerHTML);
-              var after = value.substr(selection.end);
-              this.set("value", before + middle + after);
-              document.body.removeChild(div);
-              selection.start = selection.end = before.length + middle.length;
-              this._setSelection(selection);
-            }, 50);
-          }
-        });
+      var transfer = e.originalEvent.clipboardData;
+      // Make sure we don't handle plain text pasting as HTML
+      if (transfer.types.length === 1) {
+        e.preventDefault();
+        var value = this.get("value") || "";
+        var before = value.substr(0, selection.start);
+        var middle = transfer.getData(transfer.types[0]);
+        var after = value.substr(selection.end);
+        this.set("value", before + middle + after);
+        selection.start = selection.end = before.length + middle.length;
+        this._setSelection(selection);
+      } else {
+        var div = document.createElement("div");
+        div.contentEditable = true;
+        div.setAttribute("style", "opacity: 0; overflow: hidden; width: 1px; height: 1px; position: absolute; top: 0; left: 0;");
+        document.body.appendChild(div);
+        div.focus();
+        setTimeout(() => {
+          var value = this.get("value") || "";
+          var before = value.substr(0, selection.start);
+          var middle = this.cleanupPaste(div.innerHTML);
+          var after = value.substr(selection.end);
+          this.set("value", before + middle + after);
+          document.body.removeChild(div);
+          selection.start = selection.end = before.length + middle.length;
+          this._setSelection(selection);
+        }, 50);
       }
-    }.bind(this));
+    });
   },
   actions: {
     bold: function() {
