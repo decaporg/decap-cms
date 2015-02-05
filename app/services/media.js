@@ -18,6 +18,9 @@ export default Ember.Object.extend({
   base: function() {
     return "/"+ (this.get("config.media_folder") || "uploads");
   }.property("config.media_folder"),
+  previewBase: function() {
+    return this.get("config.media_preview_folder") || "";
+  }.property("config.media_preview_folder"),
   add: function(path, file) {
     this.remove(path);
     return new Promise(function(resolve,reject) {
@@ -47,5 +50,9 @@ export default Ember.Object.extend({
   reset: function() {
     this.set("uploads", Ember.A());
     return true;
+  },
+  srcFor: function(path) {
+    var mediaFile = this.find(path);
+    return mediaFile ? mediaFile.src : this.get("previewBase") + path;
   }
 });

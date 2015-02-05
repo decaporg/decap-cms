@@ -70,8 +70,7 @@ class HTMLHandler {
       } else if (attr.name.indexOf("on") === 0) {
         // Skip
       } else if (attr.name === "src") {
-        mediaFile = this.media.find(value);
-        properties.src = mediaFile ? mediaFile.src : value;
+        properties.src = this.media.srcFor(value);
       } else {
         properties[attr.name] = value;  
       }
@@ -138,8 +137,7 @@ export default Ember.Component.extend({
         }
         break;
       case 'Image':
-        mediaFile = this.get("media").find(node.destination);
-        properties.src = mediaFile ? mediaFile.src : node.destination;
+        properties.src = this.get("media").srcFor(node.destination);
         break;
       case 'CodeBlock':
         infoWords = node.info ? node.info.split(/ +/) : [];
