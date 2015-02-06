@@ -108,7 +108,7 @@ function request(url, settings) {
 }
 
 function getBranch() {
-  return request(base+ "/branches/" + branch);
+  return request(base+ "/branches/" + branch, {cache: false});
 }
 
 function getTree(sha) {
