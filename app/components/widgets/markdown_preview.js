@@ -59,7 +59,6 @@ class HTMLHandler {
     this.current.children.push(new VText(text));
   }
   propertiesFor(tagName, attrs) {
-    var mediaFile;
     var properties = {};
     var value;
     attrs.forEach((attr) => {

@@ -8,12 +8,15 @@ var selfClosing = {
   br: true
 };
 
+var whitespace = /^\s*$/;
+
 class Node {
   constructor(node) {
     this.node = node;
   }
   render() {
-    return (this.node.text || "").replace(/\n/g, '').replace(/(&nbsp;)+/g, ' ');
+    var text = (this.node.text || "").replace(/\n/g, '').replace(/(&nbsp;)+/g, ' ');
+    return whitespace.test(text) ? "" : text.replace(/\s+/g, ' ');
   }
 }
 
@@ -30,18 +33,18 @@ class Root extends Node {
 class Tag extends Root {
   render() {
     var innerHTML = super();
-    if (!selfClosing[this.node.tagName] && innerHTML.trim() === "") {
+    if (!selfClosing[this.node.tagName] && whitespace.test(innerHTML)) {
       return "";
     }
     switch(this.node.tagName) {
       case "strong":
       case "b":
-        return `**${innerHTML}**`;
+        return `**${innerHTML.trim()}**`;
       case "em":
       case "i":
-        return `_${innerHTML}_`;
+        return `_${innerHTML.trim()}_`;
       case "a":
-        return `[${innerHTML}](${this.node.attrs.href})`;
+        return `[${innerHTML.trim().replace(/\s+/, ' ')}](${this.node.attrs.href})`;
       case "img":
         return `![${this.node.attrs.alt || ''}](${this.node.attrs.src})`;
       case "hr":
@@ -52,7 +55,7 @@ class Tag extends Root {
       case "h4":
       case "h5":
       case "h6":
-        return `${this.headerPrefix(this.node.tagName)} ${innerHTML}\n\n`;
+        return `${this.headerPrefix(this.node.tagName)} ${innerHTML.replace(/\s+/, ' ').trim()}\n\n`;
       case "div":
         return `${innerHTML}\n\n`;
       case "p":
@@ -62,7 +65,7 @@ class Tag extends Root {
       case "br":
         return `  \n`;
     }
-    return super();
+    return innerHTML;
   }
   headerPrefix(tagName) {
     var count = parseInt(tagName.substr(1), 10);
@@ -189,6 +192,42 @@ export default Ember.Component.extend({
     });
   },
 
+  getCleanPaste: function(event) {
+    var transfer = event.originalEvent.clipboardData;
+    return new Ember.RSVP.Promise((resolve) => {
+      var data, isHTML;
+      for (var i=0; i<transfer.types.length; i++) {
+        if (transfer.types[i] === "text/html") {
+          isHTML = true;
+          break;
+        }
+      }
+
+      if (isHTML) {
+        data = transfer.getData("text/html");
+        // Avoid trying to clean up full HTML documents with head/body/etc
+        if (!data.match(/^\s*<!doctype/i)) {
+          event.preventDefault();
+          return resolve(this.cleanupPaste(data));
+        } else {
+          // Handle complex pastes by stealing focus with a contenteditable div
+          var div = document.createElement("div");
+          div.contentEditable = true;
+          div.setAttribute("style", "opacity: 0; overflow: hidden; width: 1px; height: 1px; position: fixed; top: 50%; left: 0;");
+          document.body.appendChild(div);
+          div.focus();
+          setTimeout(() => {
+            resolve(this.cleanupPaste(div.innerHTML));
+            document.body.removeChild(div);
+          }, 50);
+        }
+      } else {
+        event.preventDefault();
+        resolve(transfer.getData(transfer.types[0]));  
+      }
+    });
+  },
+
   didInsertElement: function() {
     this.$("textarea").on("dragenter", function(e) {
       e.preventDefault();
@@ -214,34 +253,15 @@ export default Ember.Component.extend({
     }.bind(this));
     this.$("textarea").on("paste", (e) => {
       var selection = this._getSelection();
-      var transfer = e.originalEvent.clipboardData;
-      // Make sure we don't handle plain text pasting as HTML
-      if (transfer.types.length === 1) {
-        e.preventDefault();
-        var value = this.get("value") || "";
-        var before = value.substr(0, selection.start);
-        var middle = transfer.getData(transfer.types[0]);
-        var after = value.substr(selection.end);
-        this.set("value", before + middle + after);
-        selection.start = selection.end = before.length + middle.length;
+      var value = this.get("value") || "";
+      var before = value.substr(0, selection.start);
+      var after = value.substr(selection.end);
+
+      this.getCleanPaste(e).then((paste) => {
+        this.set("value", before + paste + after);
+        selection.start = selection.end = before.length + paste.length;
         this._setSelection(selection);
-      } else {
-        var div = document.createElement("div");
-        div.contentEditable = true;
-        div.setAttribute("style", "opacity: 0; overflow: hidden; width: 1px; height: 1px; position: fixed; top: 50%; left: 0;");
-        document.body.appendChild(div);
-        div.focus();
-        setTimeout(() => {
-          var value = this.get("value") || "";
-          var before = value.substr(0, selection.start);
-          var middle = this.cleanupPaste(div.innerHTML);
-          var after = value.substr(selection.end);
-          this.set("value", before + middle + after);
-          document.body.removeChild(div);
-          selection.start = selection.end = before.length + middle.length;
-          this._setSelection(selection);
-        }, 50);
-      }
+      });
     });
   },
   actions: {
