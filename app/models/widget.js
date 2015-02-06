@@ -29,7 +29,7 @@ window.CMSWidget = Ember.Object.extend({
   },
 
   isRequired: function() {
-    if (this.field.widget === 'checkbox' && this.field.optional !== false) { return false; }
+    if (this.field.widget === 'checkbox' || this.field.optional) { return false; }
     return this.field.options !== true;
   },
 
