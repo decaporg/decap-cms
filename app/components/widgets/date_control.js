@@ -6,7 +6,7 @@ export default Ember.Component.extend({
     this.widget.registerValidator(function(value) {
       return !isNaN(value);
     }.bind(this));
-    
+
     this.set("value", (this.get("widget.value") && this.get("widget.value").toString()));
   },
 

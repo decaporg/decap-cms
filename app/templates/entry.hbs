@@ -9,7 +9,7 @@
 
     <div class="controls">
       <button class="button" {{bind-attr disabled=disableButton}}>
-        {{#if saving}}Saving{{else}}{{currentAction}}{{/if}}
+        {{#if saving}}Saving{{else}}Save{{/if}}
         {{collection.label}}{{#if saving}}...{{/if}}
       </button>
       {{#unless isValid}}<small class="invalid">Please fill out all required fields</small>{{/unless}}

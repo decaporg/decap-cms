@@ -16,7 +16,7 @@ class Node {
   }
   render() {
     var text = (this.node.text || "").replace(/\n/g, '').replace(/(&nbsp;)+/g, ' ');
-    return whitespace.test(text) ? "" : text.replace(/\s+/g, ' ');
+    return text.replace(/\s+/g, ' ');
   }
 }
 
@@ -32,9 +32,9 @@ class Root extends Node {
 
 class Tag extends Root {
   render() {
-    var innerHTML = super();
+    var innerHTML = super.render();
     if (!selfClosing[this.node.tagName] && whitespace.test(innerHTML)) {
-      return "";
+      return innerHTML.replace(/\s+/, ' ');
     }
     switch(this.node.tagName) {
       case "strong":
@@ -48,7 +48,7 @@ class Tag extends Root {
       case "img":
         return `![${this.node.attrs.alt || ''}](${this.node.attrs.src})`;
       case "hr":
-        return `--------`;
+        return `\n\n--------\n\n`;
       case "h1":
       case "h2":
       case "h3":
@@ -96,6 +96,7 @@ class HTMLHandler {
     this.current.children.push(newNode);
   }
   chars(text) {
+
     this.current.children.push(new Node({text: text}));
   }
   attrsFor(attrs) {
@@ -130,8 +131,8 @@ export default Ember.Component.extend({
   _getAbsoluteLinkUrl: function() {
     var url = this.get("linkUrl");
     if (url.indexOf("/") === 0) { return url; }
-    if (url.match(/^https?:\/\//)) { return url; }
-    if (url.match(/^mailto:/)) { return url; }
+    if (url.match(/^https?\:\/\//)) { return url; }
+    if (url.match(/^mailto\:/)) { return url; }
     if (url.match(/@/)) { return `mailto:${url}`; }
     return `http://${url}`;
   },
@@ -163,7 +164,7 @@ export default Ember.Component.extend({
       selection.end = selection.end+chars.length;
       changed = selection.selected;
     }
-    
+
     var before = value.substr(0,selection.start),
         after  = value.substr(selection.end);
 
@@ -184,7 +185,7 @@ export default Ember.Component.extend({
       Ember.RSVP.Promise.all(mediaFiles).then(function(mediaFiles) {
         for (var i=0, len=mediaFiles.length; i < len; i++) {
           file = mediaFiles[i];
-          image = file.name.match(/\.(gif|jpg|jpeg|png|svg)$/);          
+          image = file.name.match(/\.(gif|jpg|jpeg|png|svg)$/);
           links.push(`${image ? '!' : ''}[${file.name}](${file.path})`);
         }
         resolve(links.join("\n"));
@@ -223,7 +224,7 @@ export default Ember.Component.extend({
         }
       } else {
         event.preventDefault();
-        resolve(transfer.getData(transfer.types[0]));  
+        resolve(transfer.getData(transfer.types[0]));
       }
     });
   },
