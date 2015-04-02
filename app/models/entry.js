@@ -1,5 +1,5 @@
 import Ember from 'ember';
- 
+
 var Entry = Ember.Object.extend({
   cmsExcerpt: function() {
     var line, lines;
@@ -17,7 +17,7 @@ var Entry = Ember.Object.extend({
           lines.shift();
           continue;
         }
-        excerpt = line;
+        excerpt = line.trim();
       }
       return line;
     }
