@@ -1,7 +1,9 @@
 /* global require, module */
 var EmberApp = require('ember-cli/lib/broccoli/ember-app');
+var concatenate = require('broccoli-concat');
+var merge       = require('broccoli-merge-trees');
 
-var app = new EmberApp();
+var app = new EmberApp({fingerprint: {enabled: false}});
 
 // Use `app.import` to add additional libraries to the generated
 // output files.
@@ -24,4 +26,12 @@ app.import('bower_components/moment/moment.js');
 app.import('bower_components/js-base64/base64.js');
 app.import('bower_components/jquery-sortable/source/js/jquery-sortable.js');
 
-module.exports = app.toTree();
+var appTree = app.toTree();
+
+var release = concatenate(appTree, {
+    inputFiles : ['assets/vendor.js','assets/cms.js'],
+    outputFile : '/cms.js',
+    header     : '/** Copyright MakerLoop Inc. 2015 **/'
+});
+
+module.exports = merge([appTree, release]);

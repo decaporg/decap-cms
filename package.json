@@ -20,6 +20,8 @@
   "license": "MIT",
   "devDependencies": {
     "broccoli-asset-rev": "^2.0.0",
+    "broccoli-concat": "0.0.13",
+    "broccoli-merge-trees": "^0.2.1",
     "commonmark": "^0.17.1",
     "ember-browserify": "^0.6.0",
     "ember-cli": "0.2.2",
