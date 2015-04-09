@@ -31,14 +31,14 @@ export default Ember.Controller.extend({
     this.set("entries.model", []);
     repository.readFiles(collection.folder).then(function(files) {
       files = files.filter(function(file) { return file.name.split(".").pop() === collection.getExtension(); }).map(function(file) {
-        return repository.readFile(file.path, file.sha).then(function(content) { 
+        return repository.readFile(file.path, file.sha).then(function(content) {
           file.content = content;
           return file;
         });
       });
       Ember.RSVP.Promise.all(files).then(function(files) {
         this.set("entries.collection", collection);
-        this.set("entries.model", files.map(function(file) { 
+        this.set("entries.model", files.map(function(file) {
           return Entry.fromContent(collection, file.content, file.path);
         }));
         this.set("loading_entries", false);

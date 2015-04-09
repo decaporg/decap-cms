@@ -70,7 +70,7 @@ export default Ember.Controller.extend({
     var obj = {};
     var formatter = this.get("collection.formatter");
     var widgets = this.get("widgets");
-    
+
     for (var i=0,len=widgets.length; i<len; i++) {
       widget = widgets[i];
       obj[widget.get("name")] = widget.getValue();
