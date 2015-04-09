@@ -5,7 +5,7 @@ module.exports = function(environment) {
     modulePrefix: 'cms',
     environment: environment,
     baseURL: '/',
-    locationType: 'history',
+    locationType: 'hash',
     EmberENV: {
       FEATURES: {
         'ember-htmlbars': true
