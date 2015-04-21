@@ -1,5 +1,18 @@
 import Ember from 'ember';
 
+/**
+@module app
+@submodule widgets
+*/
+
+/**
+  The UI for a widget.
+
+  
+
+  @class CmsWidget
+  @extends Ember.Component
+*/
 export default Ember.Component.extend({
   tagName: "",
   layoutName: function() {

@@ -1,0 +1,14 @@
+{
+  "name": "netlify-cms",
+  "description": "Netlify CMS is a CMS for static site generators.",
+  "version": "0.0.0",
+  "options": {
+    "paths": [
+      "app"
+    ],
+    "exclude": "vendor",
+    "outdir": "docs",
+    "themedir": "node_modules/yuidoc-lucid-theme",
+    "helpers" : ["node_modules/yuidoc-lucid-theme/helpers/helpers.js"]
+  }
+}

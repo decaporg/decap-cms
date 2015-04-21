@@ -1,107 +1,11 @@
 import Ember from 'ember';
+import Cache from './object_cache/cache';
 /* global Base64 */
 
 var Promise = Ember.RSVP.Promise;
 var base, branch;
 var ENDPOINT = "https://api.github.com/";
 var token = null;
-
-var ObjectCache = Ember.Object.extend({
-  cache: {},
-  get: function(key) {
-    var value = this.cache[key];
-    return value ? Promise.resolve(value) : Promise.reject();
-  },
-  set: function(key, value) {
-    this.cache[key] = value;
-    return Promise.resolve(value);
-  }
-});
-
-var LocalStorageCache = Ember.Object.extend({
-  prefix: "cms.cache",
-  get: function(key) {
-    var value = window.localStorage.getItem(this.prefix + "." + key);
-    return value ? Promise.resolve(value) : Promise.reject();
-  },
-  set: function(key, value) {
-    window.localStorage.setItem(this.prefix + "." + key, value);
-    return Promise.resolve(value);
-  }
-});
-
-var IndexedDBCache = Ember.Object.extend({
-  db: "cms.cache",
-  objectStore: "cms.cache",
-  withDB: function() {
-    return new Promise(function(resolve,reject) {
-      var request = window.indexedDB.open(this.db,1);
-      request.onerror = reject;
-      request.onsuccess = function() {
-        resolve(request.result);
-      };
-      request.onupgradeneeded = function(event) {
-        var db = event.target.result;
-        try {
-          db.createObjectStore(this.objectStore, {keyPath: "key"});
-        } catch(e) {
-          console.log("Object store creation failed: %o", e);
-        }
-      }.bind(this);
-    }.bind(this));  
-  },
-  withObjectStore: function(write) {
-    return new Promise(function(resolve, reject) {
-      this.withDB().then(function(db) {
-        var transaction = db.transaction([this.objectStore], write ? 'readwrite' : 'readonly');
-        var objectStore = transaction.objectStore(this.objectStore);
-        resolve(objectStore);
-      }.bind(this), reject);
-    }.bind(this));
-  },
-  get: function(key) {
-    return new Promise(function(resolve, reject) {
-      this.withObjectStore().then(function(objectStore) {
-        var request = objectStore.get(key);
-        request.onerror = reject;
-        request.onsuccess = function() {
-          if (request.result) {
-            resolve(request.result.value);
-          } else {
-            reject();
-          }
-        };
-      }, reject);
-    }.bind(this));
-  },
-  set: function(key, value) {
-    return new Promise(function(resolve, reject) {
-      this.withObjectStore(true).then(function(objectStore) {
-        var request = objectStore.add({key: key, value: value});
-        request.onerror = reject;
-        request.onsuccess = function() {
-          resolve(value);
-        };
-      });
-    }.bind(this));
-  }
-});
-
-
-var Cache = Ember.Object.extend({
-  init: function() {
-    this._super();
-    if (window.indexedDB) {
-      this.cache = IndexedDBCache.create({});
-    } else if (window.localStorage) {
-      this.cache = LocalStorageCache.create({});
-    } else {
-      this.cache = ObjectCache.create({});  
-    }
-  },
-  get: function(key) { return this.cache.get(key); },
-  set: function(key, value) { return this.cache.set(key, value); }
-});
 
 function request(url, settings) {
   return Ember.$.ajax(url, Ember.$.extend(true, {headers: {Authorization: "Bearer " + token}, contentType: "application/json"}, settings || {}));
@@ -171,7 +75,7 @@ export default Ember.Object.extend({
   init: function() {
     this.fileCache = Cache.create({});
   },
-  configure: function(config, newToken) { 
+  configure: function(config, newToken) {
     base = ENDPOINT + "repos/" + config.repo;
     branch = config.branch;
     token = newToken;
@@ -205,7 +109,7 @@ export default Ember.Object.extend({
     var files = [];
     var media = this.get("media");
     var uploads = (options.files || []).concat(media.get("uploads"));
-    
+
     for (var i=0, len=uploads.length; i<len; i++) {
       file = uploads[i];
       if (file.uploaded) { continue; }
@@ -225,11 +129,11 @@ export default Ember.Object.extend({
       .then(function(branchData) {
         return updateTree(branchData.commit.sha, "/", fileTree);
       })
-      .then(function(changeTree) {        
+      .then(function(changeTree) {
         return request(base + "/git/commits", {
           type: "POST",
           data: JSON.stringify({message: options.message, tree: changeTree.sha, parents: [changeTree.parentSha]})
-        });  
+        });
       }).then(function(response) {
         return request(base + "/git/refs/heads/" + branch, {
           type: "PATCH",

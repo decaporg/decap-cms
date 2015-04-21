@@ -1,5 +1,26 @@
 import Ember from 'ember';
 
+/**
+@module app
+@submodule components
+*/
+
+/**
+  A list of items that can be reaaranged via drag'n drop
+
+  ## Usage:
+
+  ```htmlbars
+  {{#cms-sortable-list items=items action="reorder" as |item| }}
+    <h2>{{item.title}}</h2>
+    <p>{{item.body}}</p>
+  {{/cms-sortable-list}}  ```
+
+  The `action` will get triggered everytime the user reorders the listed items.
+
+  @class CmsSortableList
+  @extends Ember.Component
+*/
 export default Ember.Component.extend({
   tagName: 'ul',
   classNames: ['cms-list'],
