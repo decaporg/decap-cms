@@ -17,11 +17,33 @@ export default Ember.Component.extend({
   init: function() {
     this._super();
   },
+  lookupFactory: function(fullName, container) {
+    container = container || this.container;
+
+    var componentFullName = `component:${fullName.replace(/^components\//, '')}`
+    var templateFullName = `template:${fullName}`;
+    var templateRegistered = container && container._registry.has(templateFullName);
+
+    if (templateRegistered) {
+      container._registry.injection(componentFullName, 'layout', templateFullName);
+    }
+
+    var Component = container.lookupFactory(componentFullName);
+
+    // Only treat as a component if either the component
+    // or a template has been registered.
+    if (templateRegistered || Component) {
+      if (!Component) {
+        container._registry.register(componentFullName, Ember.Component);
+        Component = container.lookupFactory(componentFullName);
+      }
+      return Component;
+    }
+  },
   render: function() {
-    var componentLookup = this.container.lookup("component-lookup:main");
-    var component = componentLookup.lookupFactory(this.customName(), this.container) ||
-                    componentLookup.lookupFactory(this.defaultName(), this.container) ||
-                    componentLookup.lookupFactory(this.noName(), this.container);
+    var component = this.lookupFactory(`cms/widgets/${this.name()}`) ||
+                    this.lookupFactory(`components/widgets/${this.name()}`) ||
+                    this.lookupFactory(`components/widgets/${this.noName()}`);
 
     var instance = component.create({widget: this.widget});
     if (instance.tagName === null) {

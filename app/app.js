@@ -15,11 +15,18 @@ var App = Ember.Application.extend({
 loadInitializers(App, config.modulePrefix);
 
 // Expose Global API for extending the CMS
-window.CMSComponent = function(name, component) {
-  define("cms/components/" + name, ['exports'], function(exports) {
-    exports['default'] = Ember.Component.extend(component);
+window.CMSWidgetControl = function(name, widget) {
+  define(`cms/components/cms/widgets/${name}-control`, ['exports'], function(exports) {
+    exports['default'] = Ember.Component.extend(widget);
   });
 };
+
+window.CMSWidgetPreview = function(name, widget) {
+  define(`cms/components/cms/widgets/${name}-preview`, ['exports'], function(exports) {
+    exports['default'] = Ember.Component.extend(widget);
+  });
+};
+
 
 window.CMSFormat = function(name, format) {
   define("cms/formats/" + name, ['exports'], function(exports) {

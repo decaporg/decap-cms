@@ -20,13 +20,10 @@ import Resolver from './cms-widget-resolver';
   @extends Resolver
 */
 export default Resolver.extend({
-  customName: function() {
+  name: function() {
     return this.widget.get("type") + "-control";
   },
-  defaultName: function() {
-    return "widgets/" + this.widget.get("type") + "-control";
-  },
   noName: function() {
-    return "widgets/not-found-control";
+    return "not-found-control";
   }
 });

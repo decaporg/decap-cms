@@ -27,13 +27,10 @@ export default Resolver.extend({
     this.set("tagName", this.get("widget.field.tagname") || "div");
     this.set("classNames", (this.get("widget.field.class") || "").split(" "));
   },
-  customName: function() {
+  name: function() {
     return this.widget.get("field.preview") || this.widget.get("type") + "-preview";
   },
-  defaultName: function() {
-    return "widgets/" + (this.widget.get("field.preview") || this.widget.get("type") + "-preview");
-  },
   noName: function() {
-    return "widgets/string-preview";
+    return "string-preview";
   }
 });
