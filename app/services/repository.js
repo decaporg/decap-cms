@@ -75,16 +75,60 @@ export default Ember.Object.extend({
   init: function() {
     this.fileCache = Cache.create({});
   },
-  configure: function(config, newToken) {
+  /**
+    Configure the repository.
+
+    Gets the global CMS config and the credentials from the authenticator.
+
+    TODO: Handle bad credentials (users github account doesn't have access to the
+    repo specified in the config).
+
+    @method configure
+    @param {Config} config
+    @param {Object} credentials
+  */
+  configure: function(config, credentials) {
     base = ENDPOINT + "repos/" + config.repo;
     branch = config.branch;
-    token = newToken;
+    token = credentials.token;
   },
+
+  /**
+    Used when logging out. Makes sure the repository settings is reset and that
+    the current in memory repo can longer be used to make calls to the repo API.
+
+    @method reset
+  */
+  reset: function() {
+    base = null;
+    branch = null;
+    token = null;
+  },
+
+  /**
+    Read the files from a specific path of the repository
+
+    @method readFiles
+    @param {String} path
+    @return {Promise} files
+  */
   readFiles: function(path) {
     return request(base + "/contents/" + path, {
       data: {ref: branch}
     });
   },
+
+  /**
+    Read the content of a file.
+
+    If an optional sha is specified, the content will be read from the local cache
+    if present.
+
+    @method readFile
+    @param {String} path
+    @param {String} sha
+    @return {Promise} content
+  */
   readFile: function(path, sha) {
     if (sha) {
       return this.fileCache.get(sha).then(function(content) {
@@ -103,12 +147,26 @@ export default Ember.Object.extend({
       });
     }
   },
-  updateFiles: function(options) {
+
+  /**
+    Takes a list of files that should be updated in the repository. Will also fetch
+    any uploads in the media store and add them to the commit.
+
+    Each file must be a {path, content} object.
+
+    Only option at this point is a `message` that will be used as the commit message.
+
+    @method updateFiles
+    @param {Array} files
+    @param {Object} options
+    @return {Promise} response
+  */
+  updateFiles: function(files, options) {
     var file, filename, part, parts, subtree;
     var fileTree = {};
     var files = [];
     var media = this.get("media");
-    var uploads = (options.files || []).concat(media.get("uploads"));
+    var uploads = (files || []).concat(media.get("uploads"));
 
     for (var i=0, len=uploads.length; i<len; i++) {
       file = uploads[i];

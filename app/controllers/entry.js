@@ -242,16 +242,18 @@ export default Ember.Controller.extend({
       if (this.get("isInvalid")) { return; }
 
       this.getFilePath().then((path) => {
+        var files = [{path: path, content: this.toFileContent()}];
+        var commitMessage = "Updated " + this.get("collection.label") + " " +
+                                         this.get("entry.title");
+
         this.set("saving", true);
 
         // Start watching for a deploy
         this.notifyOnDeploy();
 
-        this.get("repository").updateFiles({
-          files: [{path: path, content: this.toFileContent()}],
-          message: "Updated " + this.get("collection.label") + " " + this.get("entry.title")
-        }).then(() => {
+        this.get("repository").updateFiles(files, {message: commitMessage}).then(() => {
           this.set("saving", false);
+
           // If the entry was a new record, we'll transition the route to the
           // edit screen for that entry
           if (!this.get("entryPath")) {
