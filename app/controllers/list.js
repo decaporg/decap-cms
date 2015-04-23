@@ -18,6 +18,13 @@ export default Ember.Controller.extend({
     this._super.apply(this, arguments);
     this.set("entries", EntriesController.create({}));
   },
+  breadcrumbs: function() {
+    return [{
+      label: `${this.get("collection.label")} List`,
+      path: "list",
+      model: this.get("collection")
+    }];
+  }.property("collection"),
   needs: ['application'],
   prepare: function(collection) {
     this.set("collection", collection);

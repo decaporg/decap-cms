@@ -1,5 +1,18 @@
 import Ember from 'ember';
 
+/**
+@module app
+@submodule widgets
+*/
+
+/**
+ Date input. Relies on the standard date input in browsers that supports it.
+
+ Will make sure the entered value is a date.
+
+ @class DateControl
+ @extends Ember.Component
+ */
 export default Ember.Component.extend({
   init: function() {
     this._super();

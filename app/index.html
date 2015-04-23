@@ -17,12 +17,20 @@
   <body>
     <script type="text/x-handlebars" data-template-name='cms/widgets/foo-control'>
       <h2>This is a foo control for {{widget.label}}</h2>
-      {{input value=widget.value}}
+      <button class="button" {{action 'toggle'}}>Toogle Foo</button>
     </script>
 
     <script type="text/x-handlebars" data-template-name='cms/widgets/foo-preview'>
-      <h2>This is a foo preview for {{widget.label}}</h2>
-      <div>{{widget.value}}</div>
+      {{#if widget.value }}
+      <h2>Foo is on :)</h2>
+      {{else}}
+      <h2>Foo is off :(</h2>
+      {{/if}}
+    </script>
+
+
+    <script type="text/x-handlebars" data-template-name='cms/widgets/string-preview'>
+      <h2>Reversed: {{reversed}}</h2>
     </script>
 
 
@@ -32,12 +40,23 @@
     <script src="assets/cms.js"></script>
 
     <script>
-      CMSWidgetControl("foo", {
-        init: function() {
-          this._super();
-          console.log("Setting widget value");
-          this.set("widget.value", "Helloooo");
+      CMS.WidgetControl("foo", {
+        testing: function() {
+          console.log("Recalculating");
+          return "Hello: " + this.get("widget.value");
+        }.property("widget.value"),
+        actions: {
+          toggle: function() {
+            this.set("widget.value", this.get("widget.value") ? false : true);
+          }
         }
+      });
+
+      CMS.WidgetPreview("string", {
+        reversed: function() {
+          var value = this.get("widget.value") || "";
+          return value.split("").reverse().join("");
+        }.property("widget.value")
       });
     </script>
 

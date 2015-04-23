@@ -1,8 +1,22 @@
 import Ember from 'ember';
 import Collection from './collection';
 
+/**
+@module app
+@submodule models
+*/
+
+/**
+ The CMS configuration
+
+ @class Config
+ @extends Ember.Object
+ */
 
 export default Ember.Object.extend({
+  /*
+    Instantiate all the collections
+  */
   init: function() {
     var collection;
     var collections = [];
@@ -13,6 +27,14 @@ export default Ember.Object.extend({
     }
     this.collections = collections;
   },
+
+  /**
+    Find the collection matching the `id`
+
+    @method findCollection
+    @param {String} id
+    @return {Collection} collection
+  */
   findCollection: function(id) {
     return this.collections.filter(function(c) { return c.id === id; })[0];
   }

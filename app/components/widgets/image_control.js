@@ -1,5 +1,17 @@
 import Ember from 'ember';
+/**
+@module app
+@submodule widgets
+*/
 
+/**
+ A single image. This widget gives the user a dropzone for an image.
+
+ The value of the field will be set to the path of the image.
+
+ @class ImageControl
+ @extends Ember.Component
+ */
 export default Ember.Component.extend({
   init: function() {
     this._super();

@@ -1,7 +1,18 @@
 import Ember from 'ember';
 
-//var MAX_SIZE = 1048576; // 10 MB
+/**
+@module app
+@submodule widgets
+*/
 
+/**
+ Files input. Gives the user a dropzone for multiple files.
+
+ The value of the field will be set to an array of {label, path} objects
+
+ @class FilesControl
+ @extends Ember.Component
+ */
 export default Ember.Component.extend({
   init: function() {
     this._super();
@@ -17,9 +28,9 @@ export default Ember.Component.extend({
       var field = this.get("widget.field");
       for (var i=0,len=files.length; i<len; i ++) {
         file = files[i];
-        media.add("/" + (field.folder || "uploads") + "/" + file.name, file).then(function(mediaFile) {
+        media.add("/" + (field.folder || "uploads") + "/" + file.name, file).then((mediaFile) => {
           this.widget.get("value").pushObject({label: mediaFile.name, path: mediaFile.path});
-        }.bind(this));
+        });
       }
     },
     reorder: function(files) {

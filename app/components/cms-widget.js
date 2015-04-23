@@ -6,9 +6,12 @@ import Ember from 'ember';
 */
 
 /**
-  The UI for a widget.
+  The base widget UI cmponent
 
-  
+  The default temlate sets up a widget control and a widget preview for each widget.
+
+  The template can be overwritten by any "cms/widget" template defined when integrating
+  the CMS.
 
   @class CmsWidget
   @extends Ember.Component
@@ -16,6 +19,6 @@ import Ember from 'ember';
 export default Ember.Component.extend({
   tagName: "",
   layoutName: function() {
-    return this.container && this.container.lookup("template:cms/components/widget") ? "cms/components/widget" : "components/widget";
+    return this.container && this.container.lookup("template:cms/widget") ? "cms/widget" : "components/widget";
   }.property("widget")
 });
