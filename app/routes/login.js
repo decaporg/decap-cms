@@ -5,17 +5,21 @@ import Route from './cms';
 export default Route.extend({
   actions: {
     login: function() {
-      if (document.location.host.split(":")[0] === "localhost") {
-        netlify.configure({site_id: 'timespace.netlify.com'});
-      }
-      netlify.authenticate({provider: "github", scope: "repo"}, function(err, data) {
-        if (err) {
-          console.log("Error during signup: %o", err);
-        } else {
-          this.get("authentication").authenticate(this.get("repository"), data.token);
-          this.transitionTo("home");
+      var config = this.get("config");
+      this.get("authenticator").authenticate(this.get("config")).then(
+        (data) => {
+          this.get("repository").authorize(data).then(
+            () => {
+              this.get("authstore").store(data);
+              this.transitionTo("index");
+            },
+            (err) => { this.set("error", err); }
+          );
+        },
+        (err) => {
+          this.set("error", err);
         }
-      }.bind(this));
+      );
     }
   }
 });

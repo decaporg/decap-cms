@@ -50,7 +50,6 @@ export default Ember.Component.extend({
                     this.componentLookupFactory(`components/widgets/${this.name()}`) ||
                     this.componentLookupFactory(`components/widgets/${this.noName()}`);
 
-    console.log("Instantiating component %o - %o", component, this.widget);
     var instance = component.create({widget: this.widget});
 
     if (instance.tagName === null) {

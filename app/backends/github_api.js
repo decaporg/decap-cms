@@ -21,19 +21,34 @@ class GithubAPI {
   /**
     Sets up a new Github API backend
 
-    Must be instantiated with a github_access_token in the credentials.
-
     The config requires a `repo` and a `branch`.
 
     @method constructor
     @param {Config} config
-    @param {Object} credentials
     @return {GithubAPI} github_backend
   */
-  constructor(config, credentials) {
+  constructor(config) {
     this.base = ENDPOINT + "repos/" + config.repo;
     this.branch = config.branch;
+  }
+
+  /**
+    Authorize a user via a github_access_token.
+
+    @method authorize
+    @param {Object} credentials
+    @return {Promise} result
+  */
+  authorize(credentials) {
     this.token = credentials.github_access_token;
+    return this.request(this.base).then((repo) =>{
+      if (repo.permissions.push && repo.permissions.pull) {
+        return true;
+      }
+      throw(`This user doesn't have write access to the repo '${config.repo}'`);
+    }, (err) => {
+      throw(`This user couldn't access the repo '${config.repo}'`);
+    });
   }
 
   /**

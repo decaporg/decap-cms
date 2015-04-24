@@ -5,15 +5,19 @@ export default Route.extend({
   authenticated: Ember.computed.alias("authentication.authenticated"),
   actions: {
     logout: function() {
-      this.get("authentication").logout(this.get("repository"));
+      this.get("authstore").clear();
+      this.get("repository").reset();
       this.transitionTo("login");
     }
   },
   beforeModel: function() {
     if (!this.get("authenticated")) {
-      var token = localStorage.getItem("cms.token");
-      if (token) {
-        this.get("authentication").authenticate(this.get("repository"), token);
+      var credentials = this.get("authstore").stored();
+      if (credentials) {
+        this.get("repository").authorize(credentials).then(() => {}, (err) => {
+          this.get("authstore").clear();
+          this.transitionTo("login");
+        });
       } else {
         this.transitionTo("login");
       }

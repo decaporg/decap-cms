@@ -7,7 +7,7 @@ var Router = Ember.Router.extend({
 
 Router.map(function() {
   this.route("login");
-  this.route("home", {path: "/"});
+  this.route("index", {path: "/"});
   this.route("create", {path: "/collections/:collection_id"});
   this.route("edit", {path: "/collections/:collection_id/entries/:slug"});
   this.route("list", {path: "/collections/:collection_id/entries/"});

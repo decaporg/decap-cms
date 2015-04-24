@@ -5,22 +5,18 @@ import GithubAPI from '../backends/github_api';
 export default Ember.Object.extend({
   init: function() {
     this.fileCache = Cache.create({});
+    this.backend = new GithubAPI(this.get("config"));
   },
 
   /**
-    Configure the repository.
-
-    Gets the global CMS config and the credentials from the authenticator.
-
-    TODO: Handle bad credentials (users github account doesn't have access to the
-    repo specified in the config).
+    Authorize with the backend and instantiate the backend.
 
     @method configure
-    @param {Config} config
     @param {Object} credentials
+    @return {Promise} result
   */
-  configure: function(config, credentials) {
-    this.backend = new GithubAPI(config, credentials);
+  authorize: function(credentials) {
+    return this.backend.authorize(credentials);
   },
 
   /**
