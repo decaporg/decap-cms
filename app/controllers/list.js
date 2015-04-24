@@ -36,7 +36,7 @@ export default Ember.Controller.extend({
     var repository = this.get("repository");
     this.set("loading_entries", true);
     this.set("entries.model", []);
-    repository.readFiles(collection.folder).then(function(files) {
+    repository.listFiles(collection.folder).then(function(files) {
       files = files.filter(function(file) { return file.name.split(".").pop() === collection.getExtension(); }).map(function(file) {
         return repository.readFile(file.path, file.sha).then(function(content) {
           file.content = content;
