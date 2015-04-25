@@ -263,6 +263,7 @@ export default Ember.Controller.extend({
         }, (err) => {
           // Definitively needs better error reporting here...
           console.log("Error saving: %o", err);
+          console.trace();
           this.set("error", err);
         });
       });
