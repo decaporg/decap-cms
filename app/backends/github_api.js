@@ -112,15 +112,17 @@ class GithubAPI {
       file.file = true;
     });
     return Promise.all(files)
-      .then(this.getBranch)
-      .then((branchData) => this.updateTree(branchData.commit.sha, "/", fileTree))
+      .then(() => this.getBranch())
+      .then((branchData) => {
+        return this.updateTree(branchData.commit.sha, "/", fileTree)
+      })
       .then((changeTree) => {
-        return this.request(base + "/git/commits", {
+        return this.request(this.base + "/git/commits", {
           type: "POST",
           data: JSON.stringify({message: options.message, tree: changeTree.sha, parents: [changeTree.parentSha]})
         });
       }).then((response) => {
-        return this.request(base + "/git/refs/heads/" + branch, {
+        return this.request(this.base + "/git/refs/heads/" + this.branch, {
           type: "PATCH",
           data: JSON.stringify({sha: response.sha})
         });

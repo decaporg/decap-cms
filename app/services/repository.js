@@ -83,6 +83,6 @@ export default Ember.Object.extend({
     var media = this.get("media");
     var uploads = (files || []).concat(media.get("uploads"));
 
-    return this.backend.updateFiles(uploads);
+    return this.backend.updateFiles(uploads, options);
   }
 });
