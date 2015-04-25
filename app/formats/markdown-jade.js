@@ -1,6 +1,7 @@
 import Ember from 'ember';
+import MarkdownFormatter from "./markdown";
 
-export default Ember.Object.extend({
+export default MarkdownFormatter.extend({
   extension: "jade",
   indent: function(content, indentation) {
     var indentedContent = [];

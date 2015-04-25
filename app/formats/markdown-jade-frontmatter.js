@@ -1,7 +1,8 @@
 import Frontmatter from './frontmatter';
+import MarkdownFrontmatterFormatter from "./markdown-frontmatter";
 /* global jsyaml */
 
-export default Frontmatter.extend({
+export default MarkdownFrontmatterFormatter.extend({
   extension: "jade",
   indent: function(content, indentation) {
     var indentedContent = [];

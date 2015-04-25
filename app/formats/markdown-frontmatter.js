@@ -1,8 +1,8 @@
 import Ember from 'ember';
+import MarkdownFormatter from "./markdown";
 /* global jsyaml */
 
-export default Ember.Object.extend({
-  extension: "md",
+export default MarkdownFormatter.extend({
   fromFile: function(content) {
     var regexp = /^---\n([^]*?)\n---\n([^]*)$/;
     var match = content.match(regexp);

@@ -15,34 +15,12 @@ var Entry = Ember.Object.extend({
   /**
     Excerpt of the entry for lists/etc.
 
-    Right now it's hardcoded here with logic to get a reasonable excerpts from a
-    Markdown body, but this should be the responsibility of the `format` of the
-    file.
-
     @property cmsExcerpt
   */
   cmsExcerpt: function() {
-    var line, lines;
-    var excerpt = this.excerpt || this.description;
-    if (excerpt) {
-      return excerpt;
-    }
+    var excerpt = this.get("excerpt") || this.get("description");
 
-    lines = (this.body || "").split("\n");
-    while (!excerpt && lines.length) {
-      line = lines.shift();
-      // Skip Markdown headers (this should be specific to the format)
-      if (line.indexOf("#") === 0 || line.indexOf(">") === 0) {
-        continue;
-      }
-      // Skip markdown headers or hrs (this should be specific to the format)
-      if (lines[0] && lines[0].match(/^(-+|=+)$/)) {
-        lines.shift();
-        continue;
-      }
-      excerpt = line.trim();
-    }
-    return line;
+    return excerpt || this._collection.formatter.excerpt(this.get("body"));
   }.property("body"),
 
   /**

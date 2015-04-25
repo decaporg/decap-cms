@@ -7,8 +7,8 @@
 
     {{#each widget in widgets}}{{cms-widget widget=widget}}{{/each}}
 
-    <div class="controls">
-      <button class="button" {{bind-attr disabled=disableButton}}>
+    <div class="cms-controls">
+      <button class="cms-button" {{bind-attr disabled=disableButton}}>
         {{#if saving}}Saving{{else}}Save{{/if}}
         {{collection.label}}{{#if saving}}...{{/if}}
       </button>

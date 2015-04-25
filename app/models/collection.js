@@ -13,10 +13,10 @@ import Ember from 'ember';
  */
 
 var Collection = Ember.Object.extend({
-  /* Set the id and format */
+  /* Set the id and format. Default format is markdown with frontmatter */
   init: function() {
     this.id = this.slug;
-    this.format = this.format || "frontmatter";
+    this.format = this.format || "markdown-frontmatter";
   },
   /**
     The extension for documents in this collection

@@ -14,6 +14,9 @@ import Ember from 'ember';
   @extends Ember.Component
 */
 export default Ember.Component.extend({
+  tagName: "",
+
+  
   /**
    An injected reference to the Ember router.
 
