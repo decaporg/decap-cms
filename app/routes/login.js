@@ -13,11 +13,11 @@ export default Route.extend({
               this.get("authstore").store(data);
               this.transitionTo("index");
             },
-            (err) => { this.set("error", err); }
+            (err) => { this.set("controller.error", err); }
           );
         },
         (err) => {
-          this.set("error", err);
+          this.set("controller.error", err);
         }
       );
     }

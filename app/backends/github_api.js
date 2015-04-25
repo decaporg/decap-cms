@@ -30,6 +30,7 @@ class GithubAPI {
   constructor(config) {
     this.base = ENDPOINT + "repos/" + config.repo;
     this.branch = config.branch;
+    this.config = config;
   }
 
   /**
@@ -41,13 +42,16 @@ class GithubAPI {
   */
   authorize(credentials) {
     this.token = credentials.github_access_token;
-    return this.request(this.base).then((repo) =>{
-      if (repo.permissions.push && repo.permissions.pull) {
-        return true;
-      }
-      throw(`This user doesn't have write access to the repo '${config.repo}'`);
-    }, (err) => {
-      throw(`This user couldn't access the repo '${config.repo}'`);
+    return new Promise((resolve,reject) => {
+      this.request(this.base).then((repo) =>{
+        if (repo.permissions.push && repo.permissions.pull) {
+          resolve();
+        } else {
+          reject(`This user doesn't have write access to the repo '${this.config.repo}'`);
+        }
+      }, (err) => {
+        reject(`This user couldn't access the repo '${this.config.repo}'`);
+      });
     });
   }
 
@@ -85,18 +89,17 @@ class GithubAPI {
     A commit message can be specified in `options` as `message`.
 
     @method updateFiles
-    @param {Array} files
+    @param {Array} uploads
     @param {Object} options
     @return {Promise} result
   */
-  updateFiles(files, options) {
+  updateFiles(uploads, options) {
     var file, filename, part, parts, subtree;
     var fileTree = {};
     var files = [];
 
-    for (var i=0, len=uploads.length; i<len; i++) {
-      file = uploads[i];
-      if (file.uploaded) { continue; }
+    uploads.forEach((file) => {
+      if (file.uploaded) { return; }
       files.push(file.upload ? file : this.uploadBlob(file));
       parts = file.path.split("/").filter((part) => part);
       filename = parts.pop();
@@ -107,7 +110,7 @@ class GithubAPI {
       }
       subtree[filename] = file;
       file.file = true;
-    }
+    });
     return Promise.all(files)
       .then(this.getBranch)
       .then((branchData) => this.updateTree(branchData.commit.sha, "/", fileTree))
