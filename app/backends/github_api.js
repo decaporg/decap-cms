@@ -184,12 +184,12 @@ class GithubAPI {
           );
         }
         return Promise.all(updates)
-          .then(function(updates) {
+          .then((updates) => {
             return this.request(this.base + "/git/trees", {
               type: "POST",
               data: JSON.stringify({base_tree: sha, tree: updates})
             });
-          }).then(function(response) {
+          }).then((response) => {
             return {path: path, mode: "040000", type: "tree", sha: response.sha, parentSha: sha};
           });
         });
