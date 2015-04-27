@@ -87,11 +87,11 @@ function parse(component, key, action) {
 export default Ember.Mixin.create({
   init: function() {
     this._super.apply(this, arguments);
-    console.log("Shortcuts: %o", this.shortcuts);
     this._registered_shortcuts = [];
     this._reset();
     this._registerShortcut();
   },
+
   _registerShortcut: function() {
     if (!this.shortcuts) {
       return;
@@ -109,14 +109,12 @@ export default Ember.Mixin.create({
 
     if (isMod(kc)) {
       this._pressed_mods[kc] = true;
-      console.log("This isa mod");
       return;
     }
 
     this._updatePressedMods(event, kc);
 
     if (!(kc in this._registered_shortcuts)) {
-      console.log("No kc");
       return;
     }
 

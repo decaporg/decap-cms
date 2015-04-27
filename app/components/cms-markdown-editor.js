@@ -62,6 +62,7 @@ export default Ember.Component.extend(Shortcuts, {
 
   _surroundSelection: function(chars) {
     var selection = this._getSelection(),
+        newSelection = $.extend({}, selection),
         value = this.get("value") || "",
         changed = chars + selection.selected + chars,
         escapedChars = chars.replace(/\*/g, '\\*'),
@@ -69,10 +70,13 @@ export default Ember.Component.extend(Shortcuts, {
 
     if (regexp.test(selection.selected)) {
       changed = selection.selected.substr(chars.length,selection.selected.length - (chars.length * 2));
+      newSelection.end = selection.end - (chars.length * 2) ;
     } else if (value.substr(selection.start-chars.length,chars.length) === chars && value.substr(selection.end, chars.length) === chars) {
-      selection.start = selection.start - chars.length;
-      selection.end = selection.end+chars.length;
+      newSelection.start = selection.start - chars.length;
+      newSelection.end = selection.end+chars.length;
       changed = selection.selected;
+    } else {
+      newSelection.end = selection.end + (chars.length * 2);
     }
 
     var before = value.substr(0,selection.start),
@@ -80,7 +84,7 @@ export default Ember.Component.extend(Shortcuts, {
 
     this.set("value", before + changed + after);
 
-    this._setSelection(selection);
+    this._setSelection(newSelection);
   },
 
   linkToFiles: function(files) {
