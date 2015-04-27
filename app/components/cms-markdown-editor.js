@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import Sanitizer from '../utils/sanitizer';
-
+import Shortcuts from '../mixins/keyboard_shortcuts';
 
 /**
 @module app
@@ -25,13 +25,18 @@ import Sanitizer from '../utils/sanitizer';
   @class CmsMarkdownEditor
   @extends Ember.Component
 */
-export default Ember.Component.extend({
+export default Ember.Component.extend(Shortcuts, {
   cleanupPaste: function(html) {
     return new Sanitizer().sanitize(html);
   },
   tagName: "div",
   showLinkbox: false,
   linkUrl: null,
+  shortcuts: {
+    '⌘+b': 'bold',
+    '⌘+i': 'italic',
+    '⌘+l': 'link'
+  },
   _getAbsoluteLinkUrl: function() {
     var url = this.get("linkUrl");
     if (url.indexOf("/") === 0) { return url; }
@@ -54,6 +59,7 @@ export default Ember.Component.extend({
       textarea.focus();
     }, 0);
   },
+
   _surroundSelection: function(chars) {
     var selection = this._getSelection(),
         value = this.get("value") || "",
