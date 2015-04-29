@@ -120,6 +120,7 @@ export default Ember.Mixin.create({
 
     var def = this._registered_shortcuts[kc];
     if (this._modsMatch(def)) {
+      event.preventDefault();
       this.send(def.action);
     }
   },
