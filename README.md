@@ -73,6 +73,20 @@ edited). In the future it'll also support single documents.
 Each collection have a list of fields, where each field has a `label`, a `name`
 and a `widget`.
 
+## Authentication
+
+Right now Netlify CMS only have one `authenticator` and one `repository backend`.
+
+The authenticator integrates with Netlify's [Authentication Provider feature](https://www.netlify.com/docs/authentication-providers) and the repository
+backend integrates directly with Github's API.
+
+To get everything hooked up, setup continuous deployment from Github to Netlify
+and then follow [the documentation](https://www.netlify.com/docs/authentication-providers)
+to setup Github as an authentication provider.
+
+That's it, now you should be able to go to the `/admin` section of your site and
+log in.
+
 ## Widgets
 
 Actual content editing happens with a side by side view where each `widget` has
@@ -95,3 +109,66 @@ Currently these widgets are built-in:
 
 It's easy to add a custom template for either the preview or the control part of
 a widget by adding handlebars templates in your `/admin/index.html`.
+
+Each widget consists of two Ember components, a **widget control** and a **widget preview**.
+
+You can overwrite the template for any widget control or preview like this:
+
+```html
+<script type="text/x-handlebars" data-template-name='cms/widgets/string-control'>
+  <div class="form-group">
+    <label>{{widget.label}}</label>
+    {{input value=raw_value class="form-control"}}
+  </div>
+</script>
+```
+
+A typical handlebar template. Within the template you can access the actual
+`widget` object that exposes the `label` and the `value` of the field.
+
+You can also access the `field` property on the widget to access the raw field
+object from the `config.yml`.
+
+It also exposes an `entry` object that represents the full document that's being edited.
+This can be useful if you need to combine various values in a preview template.
+
+Here's a more advanced example of creating a new widget called `author` just by adding
+custom templates:
+
+```html
+<script type="text/x-handlebars" data-template-name='cms/widgets/author-control'>
+  <div class="form-group">
+    <label>{{widget.label}}</label>
+    {{view "select" content=widget.field.authors value=widget.value}}
+  </div>
+</script>
+
+<script type="text/x-handlebars" data-template-name='cms/widgets/author-preview'>
+  Written by
+  <span class="author">{{widget.value}}</span>
+  on
+  <span class="date">{{time-format widget.entry.cmsDate 'LL'}}</span>
+</script>
+```
+
+It can now be used in the `config.yml` like this:
+
+```yaml
+collections: # A list of collections the CMS should be able to edit
+  - slug: "post" # Used in routes, ie.: /admin/collections/:slug/edit
+    label: "Post" # Used in the UI, ie.: "New Post"
+    folder: "_posts" # The path to the folder where the documents are stored
+    create: true # Allow users to create new documents in this collection
+    fields: # The fields each document in this collection have
+      - {label: "Title", name: "title", widget: "string", tagname: "h1"}
+      - {label: "Body", name: "body", widget: "markdown"}
+      - {label: "Author", name: "author", widget: "author", authors: ["Matt", "Chris"]}
+```
+
+Here we use Ember's [Select View](http://emberjs.com/api/classes/Ember.Select.html)
+to let the user pick one of two authors and we use a custom preview to show the
+output like: `Written by Matt on April 29, 2015`.
+
+Netlify CMS includes [a date helper plugin](https://github.com/johnotander/ember-cli-dates)
+so you can easily format dates with the `{{time-format}}` helper via [moment.js's](http://momentjs.com/)
+formatting shortcuts.
