@@ -1,4 +1,3 @@
-import Frontmatter from './frontmatter';
 import MarkdownFrontmatterFormatter from "./markdown-frontmatter";
 /* global jsyaml */
 
@@ -56,7 +55,7 @@ export default MarkdownFrontmatterFormatter.extend({
     var body = [];
     var meta = {};
     var content = "";
-    var originalContent = entry._file_content || "";
+    var originalContent = entry.get("cmsFileContent") || "";
     var bodyTpl = originalContent.replace(/^---\n([^]*?)\n---\n/, '') || ":markdown\n  ";
 
     for (var key in obj) {

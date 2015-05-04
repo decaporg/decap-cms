@@ -34,6 +34,13 @@ var Entry = Ember.Object.extend({
   }.property("date", "created_at", "dateFromUrl"),
 
   /**
+    The orignal file content of the entry.
+
+    @property cmsFileContent
+  */
+  cmsFileContent: Ember.computed.alias("_file_content"),
+
+  /**
     The date of the entry inferred from the current URL of the entry.
 
     Right now this is a really naive method, always assuming that entries are stored via:

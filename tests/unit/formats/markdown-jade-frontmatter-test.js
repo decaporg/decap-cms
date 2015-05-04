@@ -31,7 +31,7 @@ test('it should convert an object to jade with frontmatter and a markdown block'
     title: 'Hello World!',
     body: "This is my **first blog post** yaaaa!"
   };
-  var fileContent = format.toFile(obj);
+  var fileContent = format.toFile(obj, {get: () => ""});
 
   ok(fileContent);
   equal(fileContent, "---\ntitle: \"Hello World!\"\n---\n\n:markdown\n  This is my **first blog post** yaaaa!");

@@ -3,7 +3,7 @@ import {
   test
 } from 'ember-qunit';
 
-moduleFor('format:frontmatter', 'FrontmatterFormat', {});
+moduleFor('format:markdown-frontmatter', 'FrontmatterFormat', {});
 
 test('it should convert a simple file with frontmatter and text', function() {
   var format = this.subject();
@@ -24,7 +24,7 @@ test('it should convert a simple obejct to frontmatter and a body', function() {
     number: 10,
     body: "## Hello\n\nWorld"
   };
-  var fileContent = format.toFile(obj);
+  var fileContent = format.toFile(obj, {get: () => ""});
 
   ok(fileContent);
   equal(fileContent, "---\ntitle: A test object\ndescription: This is another field\nnumber: 10\n---\n\n## Hello\n\nWorld");

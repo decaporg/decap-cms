@@ -49,7 +49,7 @@ export default MarkdownFormatter.extend({
     var done = null;
     var indentation = null;
     var body = [];
-    var originalContent = entry._file_content || "";
+    var originalContent = entry.get("cmsFileContent") || "";
     var bodyTpl = originalContent.replace(/^---\n([^]*?)\n---\n/, '') || ":markdown\n  ";
 
     lines = bodyTpl.split("\n");

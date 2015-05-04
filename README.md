@@ -172,3 +172,10 @@ output like: `Written by Matt on April 29, 2015`.
 Netlify CMS includes [a date helper plugin](https://github.com/johnotander/ember-cli-dates)
 so you can easily format dates with the `{{time-format}}` helper via [moment.js's](http://momentjs.com/)
 formatting shortcuts.
+
+### Coming Soon:
+
+Docs on creating custom widget components, file formats, etc...
+
+This is obviously still early days for Netlify CMS, there's a long list of features
+and improvements on the roadmap.

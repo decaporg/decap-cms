@@ -28,8 +28,8 @@ class GithubAPI {
     @return {GithubAPI} github_backend
   */
   constructor(config) {
-    this.base = ENDPOINT + "repos/" + config.repo;
-    this.branch = config.branch;
+    this.base = ENDPOINT + "repos/" + (config && config.repo);
+    this.branch = config && config.branch;
     this.config = config;
   }
 
