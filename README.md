@@ -29,7 +29,7 @@ your source directory and use this `index.html` as a template:
 
   <title>Content Manager</title>
   <!-- Include the stylesheets from your site here -->
-  <link rel="stylesheet" href="//ember-cms.netlify.com/assets/cms.css" />
+  <link rel="stylesheet" href="//cms.netlify.com/assets/cms.css" />
   <!-- Include a CMS specific stylesheet here -->
 
   <base href="/admin/">
@@ -44,8 +44,8 @@ your source directory and use this `index.html` as a template:
     <section>{{outlet}}</section>
   </script>
 
-  <script src="//ember-cms.netlify.com/assets/vendor.js"></script>
-  <script src="//ember-cms.netlify.com/assets/cms.js"></script>
+  <script src="//cms.netlify.com/assets/vendor.js"></script>
+  <script src="//cms.netlify.com/assets/cms.js"></script>
 </body>
 </html>
 ```
