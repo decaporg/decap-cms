@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import Sanitizer from '../utils/sanitizer';
 import Shortcuts from '../mixins/keyboard_shortcuts';
+import DMP from 'npm:diff_match_patch/lib/diff_match_patch';
 
 /**
 @module app
@@ -26,6 +27,14 @@ import Shortcuts from '../mixins/keyboard_shortcuts';
   @extends Ember.Component
 */
 export default Ember.Component.extend(Shortcuts, {
+  init: function() {
+    this._super.apply(this, arguments);
+    this._undoStack = [];
+    this._redoStack = [];
+    this._undoing = false;
+    this._checkPoint = this.get("value");
+    this._dmp = new DMP.diff_match_patch();
+  },
   cleanupPaste: function(html) {
     return new Sanitizer().sanitize(html);
   },
@@ -35,7 +44,9 @@ export default Ember.Component.extend(Shortcuts, {
   shortcuts: {
     '⌘+b': 'bold',
     '⌘+i': 'italic',
-    '⌘+l': 'link'
+    '⌘+l': 'link',
+    '⇧+⌘+z': 'redo',
+    '⌘+z': 'undo'
   },
   _getAbsoluteLinkUrl: function() {
     var url = this.get("linkUrl");
@@ -166,19 +177,34 @@ export default Ember.Component.extend(Shortcuts, {
         this.set("value", value.substr(0,selection.start) + text + value.substr(selection.end));
       }.bind(this));
     }.bind(this));
-    this.$("textarea").on("paste", (e) => {
-      var selection = this._getSelection();
-      var value = this.get("value") || "";
-      var before = value.substr(0, selection.start);
-      var after = value.substr(selection.end);
 
-      this.getCleanPaste(e).then((paste) => {
-        this.set("value", before + paste + after);
-        selection.start = selection.end = before.length + paste.length;
-        this._setSelection(selection);
-      });
-    });
+    this.$("textarea").on("paste",
+      (e) => {
+        var selection = this._getSelection();
+        var value = this.get("value") || "";
+        var before = value.substr(0, selection.start);
+        var after = value.substr(selection.end);
+
+        this.getCleanPaste(e).then((paste) => {
+          this.set("value", before + paste + after);
+          selection.start = selection.end = before.length + paste.length;
+          this._setSelection(selection);
+        });
+      }
+    );
   },
+
+  appendToHistory: function() {
+    if (this._undoing) {
+      this._undoing = false;
+    } else {
+      var value = this.get("value");
+      this._undoStack.push(this._dmp.diff_main(this._checkPoint, value));
+      this._checkPoint = value;
+      this._redoStack = [];
+    }
+  }.observes("value"),
+
   actions: {
     bold: function() {
       this._surroundSelection("**");
@@ -208,6 +234,33 @@ export default Ember.Component.extend(Shortcuts, {
       this.set("linkUrl", null);
       this._setSelection(selection);
       this._currentSelection = null;
+    },
+    undo: function() {
+      var action = this._undoStack.pop();
+      if (action) {
+        this._redoStack.push(action);
+        var diffs = action.map((diff) => {
+          return [-1 * diff[0], diff[1]];
+        });
+        var result = this._dmp.patch_apply(this._dmp.patch_make(diffs), this.get("value"));
+
+        this._undoing = true;
+        this.set("value", result[0]);
+      }
+    },
+    redo: function() {
+      console.log("redo...");
+      var action = this._redoStack.pop();
+      if (action) {
+        this._undoStack.push(action);
+        var diffs = action.map((diff) => {
+          return diff;
+        });
+        var result = this._dmp.patch_apply(this._dmp.patch_make(diffs), this.get("value"));
+
+        this._undoing = true;
+        this.set("value", result[0]);
+      }
     }
   }
 });
