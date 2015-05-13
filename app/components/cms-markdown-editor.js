@@ -1,7 +1,6 @@
 import Ember from 'ember';
 import Sanitizer from '../utils/sanitizer';
 import Shortcuts from '../mixins/keyboard_shortcuts';
-import DMP from 'npm:diff_match_patch/lib/diff_match_patch';
 
 /**
 @module app
@@ -32,8 +31,8 @@ export default Ember.Component.extend(Shortcuts, {
     this._undoStack = [];
     this._redoStack = [];
     this._undoing = false;
-    this._checkPoint = this.get("value");
-    this._dmp = new DMP.diff_match_patch();
+    this._selection = null;
+    this._checkpoint = this.get("value");
   },
   cleanupPaste: function(html) {
     return new Sanitizer().sanitize(html);
@@ -60,7 +59,7 @@ export default Ember.Component.extend(Shortcuts, {
     var textarea = this.$("textarea")[0],
         start = textarea.selectionStart,
         end   = textarea.selectionEnd;
-    return {start: start, end: end, selected: (this.get("value") || "").substr(start, end-start)};
+    return this._selection = {start: start, end: end, selected: (this.get("value") || "").substr(start, end-start)};
   },
   _setSelection: function(selection) {
     setTimeout(() => {
@@ -116,6 +115,11 @@ export default Ember.Component.extend(Shortcuts, {
         resolve(links.join("\n"));
       });
     });
+  },
+
+  keyDown: function() {
+    this._super.apply(this, arguments);
+    this._getSelection();
   },
 
   getCleanPaste: function(event) {
@@ -194,13 +198,27 @@ export default Ember.Component.extend(Shortcuts, {
     );
   },
 
+  bookmark: function(before) {
+    var value;
+    if (before) {
+      value = this._checkpoint;
+      this._checkpoint = this.get("value");
+    } else {
+      value = this._checkpoint = this.get("value");
+    }
+
+    return {
+      before: this._selection,
+      after: this._getSelection(),
+      value: value
+    }
+  },
+
   appendToHistory: function() {
     if (this._undoing) {
       this._undoing = false;
     } else {
-      var value = this.get("value");
-      this._undoStack.push(this._dmp.diff_main(this._checkPoint, value));
-      this._checkPoint = value;
+      this._undoStack.push(this.bookmark(true));
       this._redoStack = [];
     }
   }.observes("value"),
@@ -236,30 +254,25 @@ export default Ember.Component.extend(Shortcuts, {
       this._currentSelection = null;
     },
     undo: function() {
-      var action = this._undoStack.pop();
-      if (action) {
-        this._redoStack.push(action);
-        var diffs = action.map((diff) => {
-          return [-1 * diff[0], diff[1]];
-        });
-        var result = this._dmp.patch_apply(this._dmp.patch_make(diffs), this.get("value"));
-
+      var bookmark = this._undoStack.pop();
+      if (bookmark) {
+        console.log("Pusing current bookmark to redo stack %o", this.get("value"))
+        this._redoStack.push(this.bookmark(false));
         this._undoing = true;
-        this.set("value", result[0]);
+        console.log("Setting value to %o", bookmark.value);
+        this.set("value", bookmark.value);
+        this._setSelection(bookmark.before);
       }
     },
     redo: function() {
-      console.log("redo...");
-      var action = this._redoStack.pop();
-      if (action) {
-        this._undoStack.push(action);
-        var diffs = action.map((diff) => {
-          return diff;
-        });
-        var result = this._dmp.patch_apply(this._dmp.patch_make(diffs), this.get("value"));
-
+      console.log("In redo stack: %o", this._redoStack.map((e) => e.value))
+      var bookmark = this._redoStack.pop();
+      console.log("Latest bookmark in redo stack %o", bookmark)
+      if (bookmark) {
+        this._undoStack.push(this.bookmark(false));
         this._undoing = true;
-        this.set("value", result[0]);
+        this.set("value", bookmark.value);
+        this._setSelection(bookmark.after);
       }
     }
   }
