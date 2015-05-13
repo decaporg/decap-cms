@@ -2,6 +2,20 @@ import Ember from 'ember';
 import Cache from './object_cache/cache';
 import GithubAPI from '../backends/github_api';
 
+/**
+@module app
+@submodule services
+*/
+
+/**
+  Repository. Represents the remote git repository the CMS is working on.
+
+  All methods will delegate to a backend and add browser caching to any file
+  reads.
+
+  @class Repository
+  @extends Ember.Object
+*/
 export default Ember.Object.extend({
   init: function() {
     this.fileCache = Cache.create({});
