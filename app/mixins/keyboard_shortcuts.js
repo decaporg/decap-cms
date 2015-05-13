@@ -98,7 +98,8 @@ export default Ember.Mixin.create({
     }
     for (var key in this.shortcuts) {
       var def = parse(this, key, this.shortcuts[key]);
-      this._registered_shortcuts[def.kc] = def;
+      this._registered_shortcuts[def.kc] = this._registered_shortcuts[def.kc] || [];
+      this._registered_shortcuts[def.kc].push(def);
     }
   },
 
@@ -118,11 +119,14 @@ export default Ember.Mixin.create({
       return;
     }
 
-    var def = this._registered_shortcuts[kc];
-    if (this._modsMatch(def)) {
-      event.preventDefault();
-      this.send(def.action);
-    }
+    (this._registered_shortcuts[kc] || []).forEach((def) => {
+      console.log("Checking against def %o", def);
+      if (this._modsMatch(def)) {
+        console.log("Dispatching action %o", def.action);
+        event.preventDefault();
+        this.send(def.action);
+      }
+    });
   },
 
   _updatePressedMods: function(event, kc) {

@@ -26,6 +26,14 @@ import Shortcuts from '../mixins/keyboard_shortcuts';
   @extends Ember.Component
 */
 export default Ember.Component.extend(Shortcuts, {
+  init: function() {
+    this._super.apply(this, arguments);
+    this._undoStack = [];
+    this._redoStack = [];
+    this._undoing = false;
+    this._selection = null;
+    this._checkpoint = this.get("value");
+  },
   cleanupPaste: function(html) {
     return new Sanitizer().sanitize(html);
   },
@@ -35,7 +43,9 @@ export default Ember.Component.extend(Shortcuts, {
   shortcuts: {
     '⌘+b': 'bold',
     '⌘+i': 'italic',
-    '⌘+l': 'link'
+    '⌘+l': 'link',
+    '⇧+⌘+z': 'redo',
+    '⌘+z': 'undo'
   },
   _getAbsoluteLinkUrl: function() {
     var url = this.get("linkUrl");
@@ -49,7 +59,7 @@ export default Ember.Component.extend(Shortcuts, {
     var textarea = this.$("textarea")[0],
         start = textarea.selectionStart,
         end   = textarea.selectionEnd;
-    return {start: start, end: end, selected: (this.get("value") || "").substr(start, end-start)};
+    return this._selection = {start: start, end: end, selected: (this.get("value") || "").substr(start, end-start)};
   },
   _setSelection: function(selection) {
     setTimeout(() => {
@@ -105,6 +115,11 @@ export default Ember.Component.extend(Shortcuts, {
         resolve(links.join("\n"));
       });
     });
+  },
+
+  keyDown: function() {
+    this._super.apply(this, arguments);
+    this._getSelection();
   },
 
   getCleanPaste: function(event) {
@@ -166,19 +181,48 @@ export default Ember.Component.extend(Shortcuts, {
         this.set("value", value.substr(0,selection.start) + text + value.substr(selection.end));
       }.bind(this));
     }.bind(this));
-    this.$("textarea").on("paste", (e) => {
-      var selection = this._getSelection();
-      var value = this.get("value") || "";
-      var before = value.substr(0, selection.start);
-      var after = value.substr(selection.end);
 
-      this.getCleanPaste(e).then((paste) => {
-        this.set("value", before + paste + after);
-        selection.start = selection.end = before.length + paste.length;
-        this._setSelection(selection);
-      });
-    });
+    this.$("textarea").on("paste",
+      (e) => {
+        var selection = this._getSelection();
+        var value = this.get("value") || "";
+        var before = value.substr(0, selection.start);
+        var after = value.substr(selection.end);
+
+        this.getCleanPaste(e).then((paste) => {
+          this.set("value", before + paste + after);
+          selection.start = selection.end = before.length + paste.length;
+          this._setSelection(selection);
+        });
+      }
+    );
   },
+
+  bookmark: function(before) {
+    var value;
+    if (before) {
+      value = this._checkpoint;
+      this._checkpoint = this.get("value");
+    } else {
+      value = this._checkpoint = this.get("value");
+    }
+
+    return {
+      before: this._selection,
+      after: this._getSelection(),
+      value: value
+    }
+  },
+
+  appendToHistory: function() {
+    if (this._undoing) {
+      this._undoing = false;
+    } else {
+      this._undoStack.push(this.bookmark(true));
+      this._redoStack = [];
+    }
+  }.observes("value"),
+
   actions: {
     bold: function() {
       this._surroundSelection("**");
@@ -208,6 +252,28 @@ export default Ember.Component.extend(Shortcuts, {
       this.set("linkUrl", null);
       this._setSelection(selection);
       this._currentSelection = null;
+    },
+    undo: function() {
+      var bookmark = this._undoStack.pop();
+      if (bookmark) {
+        console.log("Pusing current bookmark to redo stack %o", this.get("value"))
+        this._redoStack.push(this.bookmark(false));
+        this._undoing = true;
+        console.log("Setting value to %o", bookmark.value);
+        this.set("value", bookmark.value);
+        this._setSelection(bookmark.before);
+      }
+    },
+    redo: function() {
+      console.log("In redo stack: %o", this._redoStack.map((e) => e.value))
+      var bookmark = this._redoStack.pop();
+      console.log("Latest bookmark in redo stack %o", bookmark)
+      if (bookmark) {
+        this._undoStack.push(this.bookmark(false));
+        this._undoing = true;
+        this.set("value", bookmark.value);
+        this._setSelection(bookmark.after);
+      }
     }
   }
 });
