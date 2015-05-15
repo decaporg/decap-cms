@@ -14,7 +14,6 @@ test('undo/redo functionality', function() {
   equal(component._state, 'preRender');
 
   // Renders the component to the page
-  console.log(this)
   this.append();
   equal(component._state, 'inDOM');
 
@@ -42,7 +41,6 @@ test('undo/redo functionality', function() {
   equal(component._undoStack.length, 1);
   equal(component._redoStack.length, 2);
   equal(component._redoStack[1].value, "hello w", "should have 'hello w' in redo stack");
-  console.log("Redostack: ", component._redoStack)
 
   Ember.run(() => {
     component.send("redo")
@@ -57,7 +55,4 @@ test('undo/redo functionality', function() {
   equal(component.get("value"), "hello ", "should have undone the last redo");
   equal(component._undoStack.length, 1);
   equal(component._redoStack.length, 2);
-
-
-  console.log("Component is: %o", component);
 });

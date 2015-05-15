@@ -18,7 +18,7 @@ export default Ember.Component.extend({
     this._super();
     this.set("uploads", Ember.A());
     if (!this.get("widget.value")) {
-      this.widget.set("value", Ember.A());
+      this.set("widget.value", Ember.A());
     }
   },
   actions: {
@@ -29,7 +29,7 @@ export default Ember.Component.extend({
       for (var i=0,len=files.length; i<len; i ++) {
         file = files[i];
         media.add("/" + (field.folder || "uploads") + "/" + file.name, file).then((mediaFile) => {
-          this.widget.get("value").pushObject({label: mediaFile.name, path: mediaFile.path});
+          this.get("widget.value").pushObject({label: mediaFile.name, path: mediaFile.path});
         });
       }
     },
