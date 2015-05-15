@@ -14,6 +14,7 @@ var EntriesController = Ember.ArrayController.extend({
 });
 
 export default Ember.Controller.extend({
+  templateName: "entries",
   init: function() {
     this._super.apply(this, arguments);
     this.set("entries", EntriesController.create({}));
@@ -27,6 +28,7 @@ export default Ember.Controller.extend({
   }.property("collection"),
   needs: ['application'],
   prepare: function(collection) {
+    console.log("Preparing collection: %o", collection);
     this.set("collection", collection);
     this.set('controllers.application.currentAction', "Edit existing" + " " + this.get("collection.label"));
   },
@@ -36,16 +38,23 @@ export default Ember.Controller.extend({
     var repository = this.get("repository");
     this.set("loading_entries", true);
     this.set("entries.model", []);
+    console.log("Now loading entries from %o", collection.folder);
     repository.listFiles(collection.folder).then(function(files) {
+      console.log("Got files %o", files);
       files = files.filter(function(file) { return file.name.split(".").pop() === collection.getExtension(); }).map(function(file) {
+        console.log("Reading file");
         return repository.readFile(file.path, file.sha).then(function(content) {
+          console.log("Got file content %o", content)
           file.content = content;
           return file;
+        }, function(err) {
+          console.log("Error reading file :( %o", err);
         });
       });
       Ember.RSVP.Promise.all(files).then(function(files) {
         this.set("entries.collection", collection);
         this.set("entries.model", files.map(function(file) {
+          console.log("Loading entry from content");
           return Entry.fromContent(collection, file.content, file.path);
         }));
         this.set("loading_entries", false);

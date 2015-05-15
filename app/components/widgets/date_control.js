@@ -16,7 +16,7 @@ import Ember from 'ember';
 export default Ember.Component.extend({
   init: function() {
     this._super();
-    this.widget.registerValidator(function(value) {
+    this.get("widget").registerValidator(function(value) {
       return !isNaN(value);
     }.bind(this));
 

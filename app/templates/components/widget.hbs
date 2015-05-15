@@ -1,8 +1,5 @@
-<div {{bind-attr class=":cms-widget widget.dirtyAndInvalid:cms-invalid"}}>
-  <div class="cms-control">
-    {{cms-widget-control widget=widget}}
-  </div>
-  <div class="cms-preview">
-    {{cms-widget-preview widget=widget}}
-  </div>
-</div>
+{{#if isControl}}
+  {{component controlComponent widget=widget tagName=""}}
+{{else}}
+  {{component previewComponent widget=widget tagName=previewTagName classNames=previewClassNames}}
+{{/if}}

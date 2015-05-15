@@ -21,7 +21,7 @@ import Resolver from './cms-widget-resolver';
 */
 export default Resolver.extend({
   name: function() {
-    return this.widget.get("type") + "-control";
+    return this.get("widget.type") + "-control";
   },
   noName: function() {
     return "not-found-control";

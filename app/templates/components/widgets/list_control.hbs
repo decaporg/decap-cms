@@ -3,7 +3,7 @@
   {{#each widget in item.widgets}}
     <div {{bind-attr class=":widget widget.dirtyAndInvalid:cms-invalid"}}>
       <div class="form-control">
-        {{cms-widget-control widget=widget}}
+        {{cms-widget widget=widget type="control"}}
       </div>
     </div>
   {{/each}}

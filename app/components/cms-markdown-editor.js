@@ -56,6 +56,10 @@ export default Ember.Component.extend(Shortcuts, {
     return `http://${url}`;
   },
   _getSelection: function() {
+    if (!this.$("textarea")) {
+      console.log("Hmm, no textarea?")
+      return null
+    }
     var textarea = this.$("textarea")[0],
         start = textarea.selectionStart,
         end   = textarea.selectionEnd;

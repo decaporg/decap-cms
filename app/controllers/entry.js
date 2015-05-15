@@ -13,6 +13,8 @@ import Widget from '../models/widget';
  @extends Ember.Controller
  */
 export default Ember.Controller.extend({
+  templateName: "entry",
+
   needs: ['application'],
 
   /**

@@ -80,7 +80,7 @@ export default Ember.Component.extend({
     this.set("widget.items", items);
     this.set("widget.addLabel", "Add " + (this.get("widget.item_label") || "one"))
     this.didUpdateItem();
-    this.widget.registerValidator(function() {
+    this.get("widget").registerValidator(function() {
       var items = this.get("widget.items");
       return items && items.every(function(item) {
         return item.isEmpty() || item.isValid();

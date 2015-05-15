@@ -5,7 +5,16 @@
       <div class="cms-preview-header"><h2 class="cms-form-title">Preview {{collection.label}}</h2></div>
     </div>
 
-    {{#each widget in widgets}}{{cms-widget widget=widget}}{{/each}}
+    {{#each widget in widgets}}
+      <div class="cms-widget">
+        <div class="cms-control">
+          {{cms-widget widget=widget type="control"}}
+        </div>
+        <div class="cms-preview">
+          {{cms-widget widget=widget type="preview"}}
+        </div>
+      </div>
+    {{/each}}
 
     <div class="cms-controls">
       <button class="cms-button" {{bind-attr disabled=disableButton}}>

@@ -45,17 +45,21 @@ export default Ember.Component.extend({
       return Component;
     }
   },
+  //componentName: function() {
   render: function() {
     var component = this.componentLookupFactory(`cms/widgets/${this.name()}`) ||
                     this.componentLookupFactory(`components/widgets/${this.name()}`) ||
                     this.componentLookupFactory(`components/widgets/${this.noName()}`);
 
-    var instance = component.create({widget: this.widget});
-
-    if (instance.tagName === null) {
-      instance.set("tagName", "");
-    }
-
-    this.appendChild(instance);
+    console.log(component.toString().split(":")[1]);
+    return component.toString().split(":")[1];
+    // var instance = this.createChildView(component, {widget: this.get("widget")});
+    //
+    // //component.create({widget: this.get("widget")});
+    //
+    // if (instance.tagName === null) {
+    //   instance.set("tagName", "");
+    // }
+    // this.appendChild(instance);
   }
 });

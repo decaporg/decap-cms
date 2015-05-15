@@ -20,7 +20,7 @@ var Entry = Ember.Object.extend({
   cmsExcerpt: function() {
     var excerpt = this.get("excerpt") || this.get("description");
 
-    return excerpt || this._collection.formatter.excerpt(this.get("body"));
+    return excerpt || this.get("_collection.formatter").excerpt(this.get("body"));
   }.property("body"),
 
   /**
@@ -73,7 +73,7 @@ Entry.reopenClass({
     @return {Entry} entry
   */
   fromContent: function(collection, content, path) {
-    return Entry.create(Ember.$.extend(collection.formatter.fromFile(content), {_collection: collection, _path: path, _file_content: content}));
+    return Entry.create(Ember.$.extend(collection.get("formatter").fromFile(content), {_collection: collection, _path: path, _file_content: content}));
   }
 });
 

@@ -28,7 +28,7 @@ export default Resolver.extend({
     this.set("classNames", (this.get("widget.field.class") || "").split(" "));
   },
   name: function() {
-    return `${this.widget.get("field.preview") || this.widget.get("type")}-preview`;
+    return `${this.get("widget.field.preview") || this.get("widget.type")}-preview`;
   },
   noName: function() {
     return "string-preview";

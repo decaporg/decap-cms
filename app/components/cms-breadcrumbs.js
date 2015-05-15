@@ -16,7 +16,7 @@ import Ember from 'ember';
 export default Ember.Component.extend({
   tagName: "",
 
-  
+
   /**
    An injected reference to the Ember router.
 
@@ -37,10 +37,11 @@ export default Ember.Component.extend({
     @property layoutName
   */
   layoutName: function() {
+    console.log("Container is: %o", this.container);
     return this.container && this.container.lookup("template:cms/breadcrumbs") ?
            "cms/breadcrumbs" :
            "components/cms-breadcrumbs";
-  }.property("widget"),
+  }.property("controllers"),
 
   /* handlers for the current app.
      See https://github.com/chrisfarber/ember-breadcrumbs/blob/master/addon/components/bread-crumbs.js#L11

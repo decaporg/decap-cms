@@ -1,4 +1,8 @@
 import Ember from 'ember';
+/**
+@module app
+@submodule services
+*/
 
 var Promise = Ember.RSVP.Promise;
 
@@ -12,6 +16,16 @@ var MediaFile = Ember.Object.extend({
     return this.src && this.src.split(",").pop();
   }
 });
+
+/**
+  Media service is a global media handler.
+
+  This service is used to upload new files to the CMS. When a commit is made,
+  these files will be included and added to the repository.
+
+  @class Media
+  @extends Ember.Object
+*/
 
 export default Ember.Object.extend({
   uploads: Ember.A(),

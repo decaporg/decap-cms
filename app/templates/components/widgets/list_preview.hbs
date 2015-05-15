@@ -2,7 +2,7 @@
 {{#each item in widget.items}}
   <li class="cms-list-item-preview widget">
   {{#each widget in item.widgets}}
-    {{cms-widget-preview widget=widget}}
+    {{cms-widget widget=widget type="preview"}}
   {{/each}}
   </li>
 {{/each}}

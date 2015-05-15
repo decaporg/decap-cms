@@ -22,11 +22,15 @@ export default Ember.Object.extend({
     var collections = [];
     for (var i=0, len=this.collections.length; i<len; i++) {
       collection = Collection.create(this.collections[i]);
-      collection.set("formatter", this.container.lookup("format:" + collection.get("format")));
+      collection.set("config", this);
       collections.push(collection);
     }
     this.collections = collections;
   },
+
+  ready: false,
+
+  container: null,
 
   /**
     Find the collection matching the `id`
