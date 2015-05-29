@@ -13,5 +13,18 @@ export default AuthenticatedRoute.extend({
     controller.prepare(model, Entry.create({_collection: model}));
   },
 
-  templateName: "entry"
+  templateName: "entry",
+
+  actions: {
+    willTransition: function(transition) {
+      console.log("Values: ", this.get("controller.widgets").map((w) => [w.get("value"), w.get("dirty")] ));
+      if (this.get("controller.widgets").filter((w) => w.get("value") && w.get("dirty")).length === 0) {
+        return;
+      }
+      if (!confirm("Discard changes?")) {
+        transition.abort();
+      }
+    }
+  }
+
 });

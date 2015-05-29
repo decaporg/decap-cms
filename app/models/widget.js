@@ -161,9 +161,11 @@ var Widget = Ember.Object.extend({
     Update the corresponding value on the enrty whenever the value changes.
   */
   onValuechange: function() {
+    var name  = this.get("name"),
+        value = this.get("value");
     this.set("dirty", true);
     if (this.entry) {
-      this.entry.set(this.get("name"), this.getValue());
+      this.entry.set(name, value);
     }
   }.observes("value")
 });

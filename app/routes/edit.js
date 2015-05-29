@@ -31,5 +31,17 @@ export default AuthenticatedRoute.extend({
   renderTemplate: function() {
     this.render("entry");
     this.render("entry-sidebar", {outlet: "sidebar"});
+  },
+
+  actions: {
+    willTransition: function(transition) {
+      if (this.controller.get("widgets").filter((w) => w.get("dirty")).length === 0) {
+        return;
+      }
+      if (!confirm("Discard changes?")) {
+        transition.abort();
+      }
+    }
   }
+
 });

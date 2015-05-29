@@ -47,19 +47,11 @@ var Entry = Ember.Object.extend({
   }),
 
   cmsSlug: function() {
-    var formatter = this.get("_collection.slugFormatter");
-    console.log("Formatter: %o", formatter);
     return this.get("_collection.slugFormatter")(this);
   }.property("cmsUserSlug", "cmsDate", "title"),
 
   cmsPath: function() {
-    console.log("Path os: %o", this.get("_path"));
-    console.log("folder: ", this.get("_collection.folder"));
-    console.log("cmsSlug: ", this.get("cmsSlug"));
-    console.log("extension: ", this.get("_collection").getExtension());
-    var path = this.get("_path") || (this.get("_collection.folder") + "/" + this.get("cmsSlug") + "." + this.get("_collection").getExtension());
-    console.log("Computed path: %o", path);
-    return path;
+    return this.get("_path") || (this.get("_collection.folder") + "/" + this.get("cmsSlug") + "." + this.get("_collection").getExtension());
   }.property("cmsSlug"),
 
   /**
