@@ -1,4 +1,6 @@
 import Ember from 'ember';
+import {urlify} from '../utils/slugify';
+
 /**
 @module app
 @submodule services
@@ -17,6 +19,10 @@ var MediaFile = Ember.Object.extend({
   }
 });
 
+function normalize(path) {
+  return (path || "").split("/").map(function(el) { return urlify(el)}).join("/");
+}
+
 /**
   Media service is a global media handler.
 
@@ -30,18 +36,22 @@ var MediaFile = Ember.Object.extend({
 export default Ember.Object.extend({
   uploads: Ember.A(),
   base: function() {
-    return "/"+ (this.get("config.media_folder") || "uploads");
+    return "/"+ (
+      this.get("config.media_folder") || "uploads");
   }.property("config.media_folder"),
   previewBase: function() {
     return this.get("config.media_preview_folder") || "";
   }.property("config.media_preview_folder"),
   add: function(path, file) {
+    path = normalize(path);
+    var name = path.split("/").pop();
+
     this.remove(path);
     return new Promise(function(resolve,reject) {
       var reader = new FileReader();
       reader.onload = function() {
         var mediaFile = MediaFile.create({
-          name: file.name,
+          name: name,
           size: file.size,
           path: path,
           src: reader.result
