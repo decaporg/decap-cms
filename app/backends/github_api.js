@@ -17,7 +17,7 @@ var ENDPOINT = "https://api.github.com/";
 
  @class GithubAPI
  */
-class GithubAPI {
+export default Ember.Object.extend({
   /**
     Sets up a new Github API backend
 
@@ -27,11 +27,11 @@ class GithubAPI {
     @param {Config} config
     @return {GithubAPI} github_backend
   */
-  constructor(config) {
-    this.base = ENDPOINT + "repos/" + (config && config.repo);
-    this.branch = config && config.branch;
+  init: function(config) {
+    this.base = ENDPOINT + "repos/" + (config && config.backend.repo);
+    this.branch = config && config.backend.branch;
     this.config = config;
-  }
+  },
 
   /**
     Authorize a user via a github_access_token.
@@ -40,7 +40,7 @@ class GithubAPI {
     @param {Object} credentials
     @return {Promise} result
   */
-  authorize(credentials) {
+  authorize: function(credentials) {
     this.token = credentials.github_access_token;
     return new Promise((resolve,reject) => {
       this.request(this.base).then((repo) =>{
@@ -53,7 +53,7 @@ class GithubAPI {
         reject(`This user couldn't access the repo '${this.config.repo}'`);
       });
     });
-  }
+  },
 
   /**
     Read the content of a file in the repository
@@ -62,13 +62,13 @@ class GithubAPI {
     @param {String} path
     @return {String} content
   */
-  readFile(path) {
+  readFile: function(path) {
     return this.request(this.base + "/contents/" + path, {
       headers: {Accept: "application/vnd.github.VERSION.raw"},
       data: {ref: this.branch},
       cache: false
     });
-  }
+  },
 
   /**
     Get a list of files in the repository
@@ -77,11 +77,11 @@ class GithubAPI {
     @param {String} path
     @return {Array} files
   */
-  listFiles(path) {
+  listFiles: function(path) {
     return this.request(this.base + "/contents/" + path, {
       data: {ref: this.branch}
     });
-  }
+  },
 
   /**
     Update files in the repo with a commit.
@@ -93,7 +93,7 @@ class GithubAPI {
     @param {Object} options
     @return {Promise} result
   */
-  updateFiles(uploads, options) {
+  updateFiles: function(uploads, options) {
     var file, filename, part, parts, subtree;
     var fileTree = {};
     var files = [];
@@ -111,6 +111,7 @@ class GithubAPI {
       subtree[filename] = file;
       file.file = true;
     });
+
     return Promise.all(files)
       .then(() => this.getBranch())
       .then((branchData) => {
@@ -127,24 +128,24 @@ class GithubAPI {
           data: JSON.stringify({sha: response.sha})
         });
       });
-  }
+  },
 
-  request(url, settings) {
+  request: function(url, settings) {
     return Ember.$.ajax(url, Ember.$.extend(true, {
       headers: {Authorization: "Bearer " + this.token},
       contentType: "application/json"
     }, settings || {}));
-  }
+  },
 
-  getBranch() {
+  getBranch: function() {
     return this.request(this.base + "/branches/" + this.branch, {cache: false});
-  }
+  },
 
-  getTree(sha) {
+  getTree: function(sha) {
     return sha ? this.request(this.base + "/git/trees/" + sha) : Promise.resolve({tree: []});
-  }
+  },
 
-  uploadBlob(file) {
+  uploadBlob: function(file) {
     return this.request(this.base + "/git/blobs", {
       type: "POST",
       data: JSON.stringify({
@@ -156,9 +157,9 @@ class GithubAPI {
       file.uploaded = true;
       return file;
     });
-  }
+  },
 
-  updateTree(sha, path, fileTree) {
+  updateTree: function(sha, path, fileTree) {
     return this.getTree(sha)
       .then((tree) => {
         var obj, filename, fileOrDir;
@@ -196,6 +197,4 @@ class GithubAPI {
           });
         });
   }
-}
-
-export default GithubAPI;
+});

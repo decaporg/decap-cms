@@ -1,6 +1,6 @@
-<div class="cms-breadcrumbs">
+<div class="cms cms-breadcrumbs">
   {{#each crumb in breadcrumbs}}
-    <a href="#" {{action "gotoCrumb" crumb}} class="cms-breadcrumb {{crumb.class}}">{{crumb.label}}</a>
-    {{#unless crumb.last}}<span class="cms-breadcrumb-separator"> &gt; </span>{{/unless}}
+    <a href="#" {{action "gotoCrumb" crumb}} class="cms cms-breadcrumb {{crumb.class}}">{{crumb.label}}</a>
+    {{#unless crumb.last}}<span class="cms cms-breadcrumb-separator"> &gt; </span>{{/unless}}
   {{/each}}
 </div>

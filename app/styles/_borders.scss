@@ -1,0 +1,14 @@
+body.ember-application {
+  .cms-navbar-top {
+    border-bottom: 1px solid $color_muted;
+  }
+  .cms-navbar-bottom {
+    border-top: 1px solid $color_muted;
+  }
+  .cms-widget {
+    border-bottom: 1px solid $color_light;
+  }
+  .cms-widget:last-child {
+    border-bottom: none;
+  }
+}

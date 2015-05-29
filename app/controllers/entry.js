@@ -36,6 +36,7 @@ export default Ember.Controller.extend({
     this.set("entry", entry);
     this.set('controllers.application.currentAction', this.get("currentAction") + " " + this.get("collection.label"));
     this.initWidgets();
+    this.initMeta();
   },
 
   /**
@@ -55,25 +56,6 @@ export default Ember.Controller.extend({
   },
 
   /**
-   Generates a slug for a new entry.
-
-   If the collection has a widget with the name title, the value of this will be
-   used  to generate a slug consisting of date + slugified title.
-
-   TODO: logic for different kind of slug generation (based on date, based on category,
-   pure title, etc).
-
-   @method generateSlug
-   @return {String} slug
-  */
-  generateSlug: function() {
-    var date = new Date();
-    var titleWidget = this.get("widgets").filter(function(widget) { return widget.get("name") === "title"; })[0];
-
-    return titleWidget ? "" + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + "-" + this.slugify(titleWidget.getValue()) : null;
-  },
-
-  /**
    Resolve the repository path for the current entry.
 
    If the entry is a new entry it creates a new path for the entry.
@@ -88,18 +70,7 @@ export default Ember.Controller.extend({
    @return {Ember.RSVP.Promise} filepath
   */
   getFilePath: function() {
-    var path = this.get("entryPath");
-    var collection = this.get("collection");
-    if (path) {
-      return Ember.RSVP.Promise.resolve(path);
-    }
-    return new Ember.RSVP.Promise((resolve) => {
-      var slug = this.generateSlug();
-      if (!slug) {
-        slug = this.slugify(prompt("Slug: "));
-      }
-      resolve(collection.get("folder") + "/" + slug + "." + collection.getExtension());
-    });
+    return Ember.RSVP.Promise.resolve(this.get("entry.cmsPath"));
   },
 
   /**
@@ -121,7 +92,7 @@ export default Ember.Controller.extend({
       return [
         {
           label: `${this.get("collection.label")} List`,
-          path: "list",
+          path: "index.list",
           model: this.get("collection"),
         },
         {
@@ -159,7 +130,27 @@ export default Ember.Controller.extend({
         value: value
       }));
     });
+    
     this.set("widgets", widgets);
+  },
+
+  initMeta: function() {
+    var meta = Ember.A();
+    [
+      {label: "Slug", name: "cmsUserSlug", widget: "slug"}
+    ].concat(this.get("collection.meta") || []).forEach((field) => {
+      var value = this.get(`entry.${field.name}`);
+      if (typeof value === "undefined") {
+        value = field['default'] || null;
+      }
+      meta.push(Widget.create({
+        field: field,
+        entry: this.get("entry"),
+        value: value
+      }));
+    })
+
+    this.set("meta", meta);
   },
 
   /**
@@ -241,9 +232,11 @@ export default Ember.Controller.extend({
       @method save
     */
     save: function() {
+      console.log("Saving - invalid? %o", this.get("isInvalid"));
       if (this.get("isInvalid")) { return; }
 
       this.getFilePath().then((path) => {
+        console.log("Got filepath: %o", path);
         var files = [{path: path, content: this.toFileContent()}];
         var commitMessage = "Updated " + this.get("collection.label") + " " +
                                          this.get("entry.title");

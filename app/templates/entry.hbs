@@ -1,28 +1,23 @@
-<div class="container no-max-width">
-  <form name="contentForm" class="cms-form" {{action "save" on="submit"}}>
-    <div class="cms-form-header">
-      <div class="cms-control-header"><h2 class="cms-form-title">{{currentAction}} {{collection.label}}</h2></div>
-      <div class="cms-preview-header"><h2 class="cms-form-title">Preview {{collection.label}}</h2></div>
-    </div>
-
+<div class="cms cms-content">
+  {{#cms-entry-form action="save"}}
     {{#each widget in widgets}}
-      <div class="cms-widget">
-        <div class="cms-control">
+      <div class="cms cms-widget">
+        <div class="cms cms-control">
+          <label class="cms cms-label">{{widget.label}}</label>
           {{cms-widget widget=widget type="control"}}
         </div>
-        <div class="cms-preview">
+        <div class="cms cms-preview">
           {{cms-widget widget=widget type="preview"}}
         </div>
       </div>
     {{/each}}
-
-    <div class="cms-controls">
-      <button class="cms-button" {{bind-attr disabled=disableButton}}>
-        {{#if saving}}Saving{{else}}Save{{/if}}
-        {{collection.label}}{{#if saving}}...{{/if}}
-      </button>
-      {{#unless isValid}}<small class="invalid">Please fill out all required fields</small>{{/unless}}
-      {{#if error}}<small class="error">Error saving {{collection.label}}: {{error}}</small>{{/if}}
-    </div>
-  </form>
+  {{/cms-entry-form}}
+</div>
+<div class="cms cms-navbar-bottom">
+  <div class="cms cms-right-menu">
+    <ul class="cms cms-inline-list">
+      <li class="cms cms-li"><a href="#" {{action "save"}}>Save</a></li>
+      <li class="cms cms-li"><a href="#" {{action "toggleSidebar"}}>More</a></li>
+    </ul>
+  </div>
 </div>

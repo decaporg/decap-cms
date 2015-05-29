@@ -13,52 +13,23 @@
     <link rel="stylesheet" href="assets/cms.css">
 
     {{content-for 'head-footer'}}
+
+    <script>
+      window.repoFiles = {
+        _posts: {
+          "2015-02-14-this-is-a-post.md": {
+            content: "---\ntitle: This is a post\n---\n\n# This is a post\n\nHello, world\n"
+          }
+        },
+        _faqs: {}
+      }
+    </script>
   </head>
   <body>
-    <script type="text/x-handlebars" data-template-name='cms/widgets/foo-control'>
-      <h2>This is a foo control for {{widget.label}}</h2>
-      <button class="button" {{action 'toggle'}}>Toogle Foo</button>
-    </script>
-
-    <script type="text/x-handlebars" data-template-name='cms/widgets/foo-preview'>
-      {{#if widget.value }}
-      <h2>Foo is on :)</h2>
-      {{else}}
-      <h2>Foo is off :(</h2>
-      {{/if}}
-    </script>
-
-
-    <script type="text/x-handlebars" data-template-name='cms/widgets/string-preview'>
-      <h2>Reversed: {{reversed}}</h2>
-    </script>
-
-
     {{content-for 'body'}}
 
     <script src="assets/vendor.js"></script>
     <script src="assets/cms.js"></script>
-
-    <script>
-      CMS.WidgetControl("foo", {
-        testing: function() {
-          console.log("Recalculating");
-          return "Hello: " + this.get("widget.value");
-        }.property("widget.value"),
-        actions: {
-          toggle: function() {
-            this.set("widget.value", this.get("widget.value") ? false : true);
-          }
-        }
-      });
-
-      CMS.WidgetPreview("string", {
-        reversed: function() {
-          var value = this.get("widget.value") || "";
-          return value.split("").reverse().join("");
-        }.property("widget.value")
-      });
-    </script>
 
     {{content-for 'body-footer'}}
   </body>

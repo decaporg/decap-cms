@@ -19,7 +19,6 @@ import GithubAPI from '../backends/github_api';
 export default Ember.Object.extend({
   init: function() {
     this.fileCache = Cache.create({});
-    this.reset();
   },
 
   /**
@@ -40,7 +39,7 @@ export default Ember.Object.extend({
     @method reset
   */
   reset: function() {
-    this.backend = new GithubAPI(this.get("config"));
+    this.backend = this.backendFactory.create(this.get("config"));
   },
 
   /**

@@ -1,5 +1,14 @@
 import Ember from 'ember';
 
+function slugify(text) {
+  return text.toString().toLowerCase()
+    .replace(/\s+/g, '-')           // Replace spaces with -
+    .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+    .replace(/\-\-+/g, '-')         // Replace multiple - with single -
+    .replace(/^-+/, '')             // Trim - from start of text
+    .replace(/-+$/, '');            // Trim - from end of text
+}
+
 /**
 @module app
 @submodule models
@@ -32,6 +41,34 @@ var Entry = Ember.Object.extend({
   cmsDate: function() {
     return this.get("date") || this.get("created_at") || this.get("dateFromUrl") || new Date();
   }.property("date", "created_at", "dateFromUrl"),
+
+
+  cmsUserSlug: Ember.computed("title", {
+    get: function() {
+      return slugify(this.get("_cmsUserSlug") || this.get("title") || "");
+    },
+    set: function(key, value) {
+      value = slugify(value);
+      this.set("_cmsUserSlug", value);
+      return value;
+    }
+  }),
+
+  cmsSlug: function() {
+    var formatter = this.get("_collection.slugFormatter");
+    console.log("Formatter: %o", formatter);
+    return this.get("_collection.slugFormatter")(this);
+  }.property("cmsUserSlug", "cmsDate", "title"),
+
+  cmsPath: function() {
+    console.log("Path os: %o", this.get("_path"));
+    console.log("folder: ", this.get("_collection.folder"));
+    console.log("cmsSlug: ", this.get("cmsSlug"));
+    console.log("extension: ", this.get("_collection").getExtension());
+    var path = this.get("_path") || (this.get("_collection.folder") + "/" + this.get("cmsSlug") + "." + this.get("_collection").getExtension());
+    console.log("Computed path: %o", path);
+    return path;
+  }.property("cmsSlug"),
 
   /**
     The orignal file content of the entry.

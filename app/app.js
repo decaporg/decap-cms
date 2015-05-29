@@ -143,4 +143,11 @@ CMS.Format = function(name, format) {
   });
 };
 
+
+CMS.Backend = function(name, backend) {
+  define("cms/backends" + name, ['exports'], function(exports) {
+    exports['default'] = Ember.Object.extend(backend);
+  });
+}
+
 export default App;

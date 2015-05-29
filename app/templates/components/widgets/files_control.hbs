@@ -1,13 +1,12 @@
-<label>{{widget.label}}</label>
 {{#if widget.value.length}}
 {{#cms-sortable-list items=widget.value action="reorder" id="path" as |file|}}
-  <div class="cms-file">
+  <div class="cms cms-file">
     <label>{{file.path}}</label>
     {{input value=file.label}}
   </div>
 {{/cms-sortable-list}}
 {{/if}}
-<div class="cms-upload-dropzone">
+<div class="cms cms-upload-dropzone">
   <strong>Drop files</strong> to upload<br>
   (or click)
   {{cms-file-field value=uploads multiple=true accept=accept action="fileUpload"}}

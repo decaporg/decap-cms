@@ -1,37 +1,19 @@
-<div class="cms-main-panel">
-  <div class="cms-panel-section">
-    <div class="cms-pull-left">
-      <h2 class="cms-section-title">Add new content</h2>
-    </div>
-    <ul class="cms-plain-list">
-      {{#each collection in collections}}
-        {{#if collection.create }}
-          <li>
-            <h3 class="cms-action-title">
-            {{#link-to "create" collection}}
-              New {{collection.label}} <small class="cms-subtitle">Add a new {{collection.label}} to your website</small>
+<div class="cms cms-content">
+  <div class="cms cms-container">
+    <div class="cms cms-aside">
+      <ul class="cms nav-menu">
+        {{#each collection in collections}}
+          <li class="cms-collection">
+            {{#link-to "index.list" collection}}
+              {{collection.label}}
             {{/link-to}}
-            </h3>
+            {{#if collection.create}}
+              {{#link-to "create" collection}}Add{{/link-to}}
+            {{/if}}
           </li>
-        {{/if}}
-      {{/each}}
-    </ul>
-  </div>
-
-  <div class="cms-panel-section">
-    <div class="cms-pull-left">
-      <h2 class="cms-section-title">Edit existing content</h2>
+        {{/each}}
+      </ul>
     </div>
-    <ul class="cms-plain-list">
-      {{#each collection in collections}}        
-        <li class="cms-collection">
-          <h3 class="cms-collection-title">
-          {{#link-to "list" collection}}
-            Edit {{collection.label}} <small class="cms-subtitle">Edit an existing {{collection.label}} from your website</small>
-          {{/link-to}}
-          </h3>
-        </li>
-      {{/each}}
-    </ul>
+    {{outlet}}
   </div>
 </div>

@@ -1,0 +1,16 @@
+<div class="cms cms-sidebar-top">
+  <h3 class="cms cms-sidebar-title">{{collection.label}} Settings</h3>
+</div>
+<div class="cms cms-sidebar-content">
+  {{#each widget in meta}}
+  <div class="cms cms-meta">
+    <div class="cms cms-meta-control">
+      <label class="cms cms-label">{{widget.label}}</label>
+      {{cms-widget widget=widget type="control"}}
+    </div>
+  </div>
+  {{/each}}
+</div>
+<div class="cms cms-sidebar-bottom">
+  <a href="#" action="delete">Delete {{collection.label}}</a>
+</div>

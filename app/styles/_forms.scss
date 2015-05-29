@@ -1,0 +1,22 @@
+body.ember-application {
+  .cms-label {
+    display: block;
+    font-size: $font_size * 0.66667;
+    margin-bottom: $font-size;
+  }
+  .cms-control {
+    input:not([type="checkbox"]), textarea {
+      display: block;
+      width: 100%;
+      padding: 0;
+      margin: 0;
+      border: none;
+      outline: none;
+      box-shadow: none;
+      background: transparent;
+    }
+    textarea {
+      resize: none;
+    }
+  }
+}

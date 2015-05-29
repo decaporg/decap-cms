@@ -15,10 +15,6 @@ var EntriesController = Ember.ArrayController.extend({
 
 export default Ember.Controller.extend({
   templateName: "entries",
-  init: function() {
-    this._super.apply(this, arguments);
-    this.set("entries", EntriesController.create({}));
-  },
   breadcrumbs: function() {
     return [{
       label: `${this.get("collection.label")} List`,
@@ -31,9 +27,11 @@ export default Ember.Controller.extend({
     console.log("Preparing collection: %o", collection);
     this.set("collection", collection);
     this.set('controllers.application.currentAction', "Edit existing" + " " + this.get("collection.label"));
+    this.set("entries", EntriesController.create({}));
   },
 
   onFiles: function() {
+    console.log("reloading entries");
     var collection = this.get("collection");
     var repository = this.get("repository");
     this.set("loading_entries", true);
@@ -60,5 +58,5 @@ export default Ember.Controller.extend({
         this.set("loading_entries", false);
       }.bind(this));
     }.bind(this));
-  }.observes("collection")
+  }.observes("entries")
 });

@@ -1,0 +1,19 @@
+body.ember-application {
+  .cms-upload-dropzone {
+    position: relative;
+    overflow: hidden;
+    border: 1px dashed $color_muted;
+    padding: $container_padding * 2;
+    color: $color_light;
+    text-align: center;
+    input[type="file"] {
+      opacity: 0;
+      position: absolute;
+      width: 100%;
+      height: 200px;
+      top: 0;
+      left: 0;
+      cursor: pointer;
+    }
+  }
+}

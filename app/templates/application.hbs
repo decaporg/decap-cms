@@ -1,3 +1,20 @@
-{{cms-breadcrumbs}}
+<div class="cms cms-wrapper {{if showSidebar 'cms-show-sidebar' 'cms-hide-sidebar'}}">
+  <div class="cms cms-main">
+      <div class="cms cms-navbar-top">
+        <div class="cms cms-left-menu">
+          <div class="cms cms-breadcrumb">{{cms-breadcrumbs}}</div>
+        </div>
+        <div class="cms cms-right-menu">
+          <ul class="cms cms-inline-list">
+            <li class="cms cms-li"><a href="#">Add Content</a></li>
+            <li class="cms cms-li"><a href="#">User</a></li>
+          </ul>
+        </div>
+      </div>
 
-{{outlet}}
+      {{outlet}}
+  </div>
+  <div class="cms cms-sidebar">
+    {{outlet "sidebar"}}
+  </div>
+</div>

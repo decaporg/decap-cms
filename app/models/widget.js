@@ -112,7 +112,7 @@ var Widget = Ember.Object.extend({
   },
 
   /**
-    Whether the value of this widget is required oroptional.
+    Whether the value of this widget is required optional.
 
     @property isRequired
     @type Boolean
@@ -165,7 +165,7 @@ var Widget = Ember.Object.extend({
     if (this.entry) {
       this.entry.set(this.get("name"), this.getValue());
     }
-  }.observes("value"),
+  }.observes("value")
 });
 
 export default Widget;

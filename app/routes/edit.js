@@ -26,5 +26,10 @@ export default AuthenticatedRoute.extend({
     this._super();
     this.collection = model._collection;
     controller.prepare(this.collection, model);
+  },
+
+  renderTemplate: function() {
+    this.render("entry");
+    this.render("entry-sidebar", {outlet: "sidebar"});
   }
 });

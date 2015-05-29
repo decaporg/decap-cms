@@ -14,15 +14,17 @@ export default AuthenticatedRoute.extend({
     var date = new Date();
     return "" + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + "-" + this._slugify(this.currentModel.entry.title);
   },
-  
+
   model: function(params) {
     return this.get("config").findCollection(params.collection_id);
   },
 
   controllerName: "entry",
-  
+
   setupController: function(controller, model) {
     this._super();
     controller.prepare(model, Entry.create({_collection: model}));
-  }
+  },
+
+  templateName: "entry"
 });

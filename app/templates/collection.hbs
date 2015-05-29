@@ -1,0 +1,12 @@
+<ul class="cms cms-list">
+  {{#each entry in entries}}
+    <li class="cms cms-entry">
+      {{#link-to "edit" entry}}
+      <h3 class="cms cms-entry-title">{{entry.title}}</h3>
+        <div class="cms cms-entry-excerpt">
+          {{entry.cmsExcerpt}}
+        </div>
+      {{/link-to}}
+    </li>
+  {{/each}}
+</ul>
