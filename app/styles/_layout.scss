@@ -34,8 +34,9 @@ body.ember-application {
   .cms-content, .cms-sidebar-content {
     flex-grow: 1;
     overflow: auto;
+    height: 100%;
   }
-  .cms-navbar-bottom, .cms-sidebar-bottom {
+  .cms-navbar-bottom, .cms-sidebar-bottom, .cms-actionbar {
     height: $navbar_bottom_height;
     flex-shrink: 0;
     padding: $container_padding 2*$container_padding;
@@ -44,14 +45,32 @@ body.ember-application {
     width: $sidebar_width;
     padding: $container_padding 2*$container_padding;
   }
+
+  .cms-actionbar {
+    margin-bottom: -$navbar_bottom_height;
+    transition: margin 0.1s ease-in-out;
+  }
+  .cms-actionbar.cms-open {
+    margin-bottom: 0;
+  }
   .cms-sidebar-title {
     margin: 0;
   }
+  .cms-logo {
+    width: 20px;
+    height: 20px;
+    float: left;
+    margin-right: 2*$container_padding;
+  }
   .cms-left-menu {
     float: left;
+    width: 50%;
+    min-height: 1px;
   }
   .cms-right-menu {
-    float: right;
+    float: left;
+    width: 50%;
+    text-align: right;
   }
   .cms-inline-list {
     list-style: none;
@@ -64,18 +83,77 @@ body.ember-application {
 
   .cms-container {
     display: flex;
+    height: 100%;
   }
   .cms-aside {
     width: $aside_width;
     flex-shrink: 0;
     padding: $container_padding 2*$container_padding;
   }
+  .cms-nav-menu {
+    list-style: none;
+    padding: 0;
+    margin: $container_padding 0;
+  }
+  .cms-list-header {
+    max-width: 800px;
+    margin: 0 auto;
+
+  }
   .cms-list {
+    max-width: 800px;
+    margin: 0 auto;
     padding: $container_padding 2*$container_padding $container_padding 0;
+    flex-grow: 1;
+    list-style: none;
   }
 
+  .cms-list-entry {
+    padding: 0;
+    margin-bottom: $container_padding*2;
+    overflow: hidden;
+  }
+
+  .cms-list-entry-link {
+    display: block;
+    padding: $container_padding 2*$container_padding;
+    > *:first-child {
+      margin-top: 0;
+    }
+  }
+
+  .cms-list-entry-actions, .cms-list-entry-footer {
+    padding: $container_padding 2*$container_padding;
+    height: 62px;
+  }
+  .cms-list-entry-footer {
+    background: #fff;
+  }
+  .cms-list-entry-actions {
+    background: $color-bg-highlight;
+    margin-bottom: -62px;
+    transition: margin 0.1s ease-in-out;
+  }
+  .cms-list-entry-actions.cms-open {
+    margin-bottom: 0;
+  }
+
+
+  .cms-form {
+    height: 100%;
+    position: relative;
+    &:before {
+      content: " ";
+      display: block;
+      position: absolute;
+      width: 50%;
+      height: 100%;
+      background: $color-bg-light;
+    }
+  }
   .cms-widget {
     display: flex;
+    position: relative;
   }
   .cms-widget:last-child {
     border-bottom: none;

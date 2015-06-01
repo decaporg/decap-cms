@@ -1,16 +1,15 @@
 body.ember-application {
-  .cms {
+  .cms-text {
     font-size: $font-size;
     font-family: $font-family;
-    font-weight: normal;
+    font-weight: 200;
     text-decoration: none;
     font-style: normal;
   }
   .cms-control {
     input:not([type="checkbox"]), textarea {
-      font-family: $font_family_forms;
       font-size: $font_size;
+      color: $color-text-normal;
     }
   }
-
 }

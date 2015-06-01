@@ -3,9 +3,11 @@ body.ember-application {
     position: relative;
     overflow: hidden;
     border: 1px dashed $color_muted;
-    padding: $container_padding * 2;
+    background: #fff;
+    padding: $container_padding * 5;
     color: $color_light;
     text-align: center;
+    text-transform: uppercase;
     input[type="file"] {
       opacity: 0;
       position: absolute;

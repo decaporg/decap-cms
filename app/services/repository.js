@@ -38,8 +38,8 @@ export default Ember.Object.extend({
 
     @method reset
   */
-  reset: function() {
-    this.backend = this.backendFactory.create(this.get("config"));
+  reset: function(config) {
+    this.backend = this.backendFactory.create({config: config});
   },
 
   /**

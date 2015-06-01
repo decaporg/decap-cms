@@ -1,6 +1,6 @@
 body.ember-application {
   .cms-navbar-top {
-    border-bottom: 1px solid $color_muted;
+    border-bottom: 2px solid $color-highlight;
   }
   .cms-navbar-bottom {
     border-top: 1px solid $color_muted;
@@ -10,5 +10,8 @@ body.ember-application {
   }
   .cms-widget:last-child {
     border-bottom: none;
+  }
+  .cms-control, .cms-aside {
+    border-right: 1px solid $color_muted;
   }
 }

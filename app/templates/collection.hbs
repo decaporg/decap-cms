@@ -1,12 +1,8 @@
-<ul class="cms cms-list">
-  {{#each entry in entries}}
-    <li class="cms cms-entry">
-      {{#link-to "edit" entry}}
-      <h3 class="cms cms-entry-title">{{entry.title}}</h3>
-        <div class="cms cms-entry-excerpt">
-          {{entry.cmsExcerpt}}
-        </div>
-      {{/link-to}}
-    </li>
-  {{/each}}
-</ul>
+<div class="cms cms-content cms-list-content">
+  <h2 class="cms-list-header cms-text">All {{collection.label}} entries</h2>
+  <ul class="cms cms-list">
+    {{#each entry in entries}}
+      {{cms-list-entry entry=entry}}
+    {{/each}}
+  </ul>
+</div>

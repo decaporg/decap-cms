@@ -6,7 +6,7 @@ export default Route.extend({
   actions: {
     logout: function() {
       this.get("authstore").clear();
-      this.get("repository").reset();
+      this.get("repository").reset(this.get("config"));
       this.transitionTo("login");
     }
   },

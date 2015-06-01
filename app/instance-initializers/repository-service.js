@@ -9,6 +9,7 @@ export default {
     var config = instance.container.lookup("cms:config");
 
     repo.backendFactory = instance.container.lookupFactory("backend:" + config.backend.name);
-    repo.reset();
+    console.log("reset from: %o", config);
+    repo.reset(config);
   }
 }

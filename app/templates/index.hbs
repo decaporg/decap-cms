@@ -1,14 +1,14 @@
 <div class="cms cms-content">
   <div class="cms cms-container">
-    <div class="cms cms-aside">
-      <ul class="cms nav-menu">
+    <div class="cms cms-aside cms-text">
+      <ul class="cms cms-nav-menu">
         {{#each collection in collections}}
           <li class="cms-collection">
-            {{#link-to "index.list" collection}}
+            {{#link-to "index.list" collection class="cms-aside-link"}}
               {{collection.label}}
             {{/link-to}}
             {{#if collection.create}}
-              {{#link-to "create" collection}}Add{{/link-to}}
+              {{#link-to "create" collection class="cms-aside-new-link"}}Create New{{/link-to}}
             {{/if}}
           </li>
         {{/each}}

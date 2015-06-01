@@ -1,0 +1,98 @@
+body.ember-application {
+  .cms-control, .cms-list-content, .cms-aside {
+    background: $color-bg-light;
+    color: $color-text-normal;
+  }
+
+  .cms-navbar-top {
+    background: $color-dark;
+    color: $color-lightest;
+    text-transform: uppercase;
+    font-size: 14px;
+  }
+  .cms-nav-link {
+    text-decoration: none;
+    color: $color-lightest;
+    padding: $container-padding $container-padding*2;
+    border-right: 1px solid #000;
+    display: inline-block;
+    margin: -$container-padding 0
+  }
+  .cms-li:last-child .cms-nav-link {
+    border-right: none;
+  }
+  .cms-breadcrumb {
+    color: $color-lightest;
+    text-decoration: none;
+  }
+  .cms-breadcrumb-separator {
+    color: $color-highlight;
+  }
+  .cms-collection {
+    margin-bottom: $container-padding;
+  }
+  .cms-aside-link {
+    color: $color-text-normal;
+    text-decoration: none;
+    &.active {
+      color: $color-highlight;
+    }
+  }
+  .cms-aside-new-link {
+    float: right;
+    text-decoration: none;
+    color: $color-text-dark;
+    text-transform: uppercase;
+    font-size: 12px;
+    vertical-align: bottom;
+    line-height: 30px;
+  }
+  .cms-list-entry {
+    border: 1px solid $color_muted;
+  }
+  .cms-list-header {
+    color: $color-highlight;
+    border-bottom: 1px solid $color-highlight;
+    margin: 30px auto 25px;
+    padding-bottom: 15px;
+    font-size: 25px;
+  }
+  .cms-list {
+    padding: 0;
+  }
+  .cms-list-entry-link {
+    text-decoration: none;
+    color: $color-text-dark;
+  }
+  .cms-entry-title {
+
+  }
+  .cms-actionbar {
+    background: $color-bg-highlight;
+  }
+  .cms-link, .cms-action {
+    text-transform: uppercase;
+    text-decoration: none;
+    color: $color-text-normal;
+    font-size: 14px;
+    margin-right: $container-padding;
+    &:hover {
+      color: $color-highlight;
+    }
+  }
+  .cms-action {
+    font-size: 12px;
+    &:before {
+      content: "";
+      display: inline-block;
+      border: 1px solid $color-text-normal;
+      border-radius: 100%;
+      width: 0.5em;
+      height: 0.5em;
+      margin-right: 5px;
+    }
+    &:hover:before {
+      border-color: $color-highlight;
+    }
+  }
+}

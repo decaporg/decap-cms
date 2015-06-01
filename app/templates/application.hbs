@@ -1,20 +1,24 @@
-<div class="cms cms-wrapper {{if showSidebar 'cms-show-sidebar' 'cms-hide-sidebar'}}">
+<div class="cms cms-base cms-wrapper {{if showSidebar 'cms-show-sidebar' 'cms-hide-sidebar'}}">
   <div class="cms cms-main">
-      <div class="cms cms-navbar-top">
+      <div class="cms cms-navbar-top cms-text">
         <div class="cms cms-left-menu">
+          <div class="cms-logo">
+            <svg viewBox="0 0 200 200" style="transform: rotate(45deg)" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g class="nf-logo-bg" stroke="none" stroke-width="1" fill="#3FB5A0"><path d="M0,0 L200,0 L200,200 L0,200 L0,0 Z"></path></g><g id="nf-logo-lines" stroke="rgb(39,46,48)" stroke-width="8" fill="none"><path d="M205,66 L-4,205 Z"></path><path d="M205,2 L-4,89 Z"></path><path d="M205,176 L-4,141 Z"></path><path d="M84,205 L39,-4 Z"></path><path d="M205,168 L85,-4 Z"></path><path d="M133,-4 L53,205 Z"></path></g><g id="nf-logo-circles" stroke="none" stroke-width="1" fill="rgb(39,46,48)"><circle cx="53" cy="67" r="14"></circle><circle cx="116" cy="41" r="12"></circle><circle cx="155" cy="99" r="12"></circle><circle cx="74" cy="154" r="16"></circle></g></svg>
+          </div>
+
           <div class="cms cms-breadcrumb">{{cms-breadcrumbs}}</div>
         </div>
         <div class="cms cms-right-menu">
           <ul class="cms cms-inline-list">
-            <li class="cms cms-li"><a href="#">Add Content</a></li>
-            <li class="cms cms-li"><a href="#">User</a></li>
+            <li class="cms cms-li"><a class="cms cms-nav-link" href="#">New</a></li>
+            <li class="cms cms-li"><a class="cms cms-nav-link" href="#">Profile</a></li>
           </ul>
         </div>
       </div>
 
       {{outlet}}
   </div>
-  <div class="cms cms-sidebar">
+  <div class="cms cms-sidebar cms-text">
     {{outlet "sidebar"}}
   </div>
 </div>

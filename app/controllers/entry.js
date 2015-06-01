@@ -130,7 +130,7 @@ export default Ember.Controller.extend({
         value: value
       }));
     });
-    
+
     this.set("widgets", widgets);
   },
 
@@ -223,6 +223,10 @@ export default Ember.Controller.extend({
   },
 
   actions: {
+    toggleActions: function() {
+      this.set("actionsOpen", !this.get("actionsOpen"));
+    },
+
     /**
       Saves the current entry if valid.
 

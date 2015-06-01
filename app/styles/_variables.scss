@@ -1,6 +1,6 @@
 // Typography
 $font_size: 18px;
-$font_family: "Helvetica Neue",HelveticaNeue,Helvetica,Arial,sans-serif;
+$font_family: Roboto, "Helvetica Neue",HelveticaNeue,Helvetica,Arial,sans-serif;
 $font_family_forms: monospace;
 
 // width and spacing
@@ -11,5 +11,12 @@ $aside_width: 300px;
 $container_padding: 20px;
 
 // Colors
-$color_muted: #666;
+$color_muted: rgb(232,234,232);
+$color_bg_light: rgb(242,245,244);
+$color_bg_highlight: rgb(196, 217, 214);
+$color_text_normal: rgb(124,131,130);
+$color_text_dark: rgb(57,57,57);
 $color_light: #ddd;
+$color_lightest: rgb(224,230,231);
+$color_dark: rgb(39,46,48);
+$color_highlight: rgb(58,183,165);

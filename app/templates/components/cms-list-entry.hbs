@@ -1,0 +1,16 @@
+<li class="cms cms-list-entry">
+  {{#link-to "edit" entry class="cms cms-list-entry-link"}}
+    <h3 class="cms cms-entry-title">{{entry.title}}</h3>
+    <div class="cms cms-entry-excerpt">
+      {{entry.cmsExcerpt}}
+    </div>
+  {{/link-to}}
+  <div class="cms cms-list-entry-footer cms-text">
+    <a href="#" class="cms cms-link" {{action "toggleActions"}}>Action</a>
+  </div>
+  <div class="cms cms-list-entry-actions cms-text {{if actionsOpen 'cms-open' 'cms-closed'}}">
+    <a href="#" class="cms cms-action">Publish</a>
+    <a href="#" class="cms cms-action">Duplicate</a>
+    <a href="#" class="cms cms-action">Delete</a>
+  </div>
+</li>

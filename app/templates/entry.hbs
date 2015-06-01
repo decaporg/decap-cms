@@ -3,7 +3,7 @@
     {{#each widget in widgets}}
       <div class="cms cms-widget">
         <div class="cms cms-control">
-          <label class="cms cms-label">{{widget.label}}</label>
+          <label class="cms cms-label cms-text">{{widget.label}}</label>
           {{cms-widget widget=widget type="control"}}
         </div>
         <div class="cms cms-preview">
@@ -13,11 +13,25 @@
     {{/each}}
   {{/cms-entry-form}}
 </div>
-<div class="cms cms-navbar-bottom">
+<div class="cms cms-navbar-bottom cms-text">
+  <div class="cms cms-left-menu">
+
+  </div>
   <div class="cms cms-right-menu">
     <ul class="cms cms-inline-list">
-      <li class="cms cms-li"><a href="#" {{action "save"}}>Save</a></li>
-      <li class="cms cms-li"><a href="#" {{action "toggleSidebar"}}>More</a></li>
+      <li class="cms cms-li"><a class="cms-link" href="#" {{action "toggleActions"}}>Action</a></li>
+      <li class="cms cms-li"><a class="cms-link" href="#" {{action "toggleSidebar"}}>Settings</a></li>
+    </ul>
+  </div>
+</div>
+<div class="cms cms-actionbar cms-text {{if actionsOpen 'cms-open' 'cms-closed'}}">
+  <div class="cms cms-left-menu">
+
+  </div>
+  <div class="cms cms-right-menu">
+    <ul class="cms cms-inline-list">
+      <li class="cms cms-li"><a class="cms-action" href="#" {{action "save"}}>Publish</a></li>
+      <li class="cms cms-li"><a class="cms-action" href="#" {{action "Delete"}}>Delete</a></li>
     </ul>
   </div>
 </div>
