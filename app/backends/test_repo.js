@@ -40,7 +40,8 @@ var ENDPOINT = "https://api.github.com/";
  @class TestRepo
  */
 export default Ember.Object.extend({
-  init: function(config) {
+  init: function() {
+    this.delay = this.config.backend.delay || 0;
   },
 
   authorize: function(credentials) {
@@ -57,7 +58,7 @@ export default Ember.Object.extend({
         return Promise.reject("No such file: " + path);
       }
     }
-    return Promise.resolve(file.content);
+    return this.withDelay(file.content, 0.5);
   },
 
   listFiles: function(path) {
@@ -82,7 +83,7 @@ export default Ember.Object.extend({
       });
     }
 
-    return Promise.resolve(files);
+    return this.withDelay(files, 0.5);
   },
 
   updateFiles: function(files, options) {
@@ -100,6 +101,12 @@ export default Ember.Object.extend({
       }
     });
 
-    return Promise.resolve(true);
+    console.log("Delaying: %s", this.delay * 1000);
+    return this.withDelay(true)
+  },
+
+  withDelay: function(fn, modifier) {
+    modifier = modifier || 1;
+    return new Promise((resolve) => { setTimeout(() => { resolve(fn.call ? fn() : fn)}, this.delay * 1000 * modifier)});
   }
 });
