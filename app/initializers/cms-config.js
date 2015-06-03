@@ -8,9 +8,11 @@ export function initialize(container, application) {
     var config = Config.create(jsyaml.safeLoad(data));
     application.register('cms:config', config, { instantiate: false });
     application.inject('route', 'config', 'cms:config');
+    application.inject('controller', 'config', 'cms:config');
     application.inject('service', 'config', 'cms:config');
     application.inject('model', 'config', 'cms:config');
     application.inject('component', 'config', 'cms:config');
+
     application.inject('route', 'authenticator', 'authenticator:netlify_github');
     application.advanceReadiness();
   });

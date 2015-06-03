@@ -1,5 +1,5 @@
 body.ember-application {
-  .cms-control, .cms-list-content, .cms-aside {
+  .cms-control, .cms-aside {
     background: $color-bg-light;
     color: $color-text-normal;
   }
@@ -9,6 +9,24 @@ body.ember-application {
     color: $color-lightest;
     text-transform: uppercase;
     font-size: 14px;
+    .cms-dropdown {
+      background: $color-dark;
+      &:after {
+        content: "";
+        position: absolute;
+        top: -2px;
+        left: 50%;
+        width: 0;
+      	height: 0;
+      	border-left: 8px solid transparent;
+      	border-right: 8px solid transparent;
+      	border-top: 8px solid $color-highlight;
+        margin-left: -8px;
+      }
+    }
+    .cms-dropdown-link {
+      color: #fff;
+    }
   }
   .cms-nav-link {
     text-decoration: none;
@@ -50,12 +68,24 @@ body.ember-application {
   .cms-list-entry {
     border: 1px solid $color_muted;
   }
-  .cms-list-header {
+  .cms-list-header, .cms-message-title {
     color: $color-highlight;
     border-bottom: 1px solid $color-highlight;
     margin: 30px auto 25px;
     padding-bottom: 15px;
     font-size: 25px;
+  }
+  .cms-message-title {
+    margin-top: 0;
+  }
+  .cms-login-button {
+    display: block;
+    margin-top: 2*$container-padding;
+    background: $color-bg-highlight;
+    padding: $container-padding;
+    color: #fff;
+    text-transform: uppercase;
+    text-align: center;
   }
   .cms-list {
     padding: 0;
@@ -64,11 +94,22 @@ body.ember-application {
     text-decoration: none;
     color: $color-text-dark;
   }
+  .cms-list-entry-footer {
+    background: $color-bg-light;
+  }
+  .cms-list-entry-actions {
+    background: $color-bg-highlight;
+  }
+
   .cms-entry-title {
 
   }
   .cms-actionbar {
     background: $color-bg-highlight;
+    .cms-message {
+      font-size: 14px;
+      color: $color-text-normal;
+    }
   }
   .cms-link, .cms-action {
     text-transform: uppercase;
@@ -93,6 +134,27 @@ body.ember-application {
     }
     &:hover:before {
       border-color: $color-highlight;
+    }
+  }
+
+  .cms-sidebar-title {
+    color: $color-text-normal;
+  }
+  .cms-meta {
+    .cms-label {
+      font-weight: normal;
+      color: $color-text-normal;
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+
+    input:not([type='checkbox']), textarea {
+      box-sizing: border-box;
+      width: 85%;
+      padding: 7px;
+      border: 1px solid #ddd;
+      box-shadow: none;
+      color: $color-text-normal;
     }
   }
 }

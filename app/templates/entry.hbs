@@ -26,7 +26,12 @@
 </div>
 <div class="cms cms-actionbar cms-text {{if actionsOpen 'cms-open' 'cms-closed'}}">
   <div class="cms cms-left-menu">
-
+    {{#if saving}}
+      <span class="cms-message">Saving {{collection.label}}...</span>
+    {{/if}}
+    {{#if isInvalid}}
+      <span class="cms-message">Can't save until all fields have been filled out correctly.</span>
+    {{/if}}
   </div>
   <div class="cms cms-right-menu">
     <ul class="cms cms-inline-list">

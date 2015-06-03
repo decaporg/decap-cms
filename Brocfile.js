@@ -28,10 +28,16 @@ app.import('bower_components/jquery-sortable/source/js/jquery-sortable.js');
 
 var appTree = app.toTree();
 
-var release = concatenate(appTree, {
+var jsRelease = concatenate(appTree, {
     inputFiles : ['assets/vendor.js','assets/cms.js'],
     outputFile : '/cms.js',
     header     : '/** Copyright MakerLoop Inc. 2015 **/'
 });
 
-module.exports = merge([appTree, release]);
+var cssRelease = concatenate(appTree, {
+    inputFiles : ['assets/vendor.css','assets/cms.css'],
+    outputFile : '/cms.css',
+    header     : '/** Copyright MakerLoop Inc. 2015 **/'
+});
+
+module.exports = merge([appTree, jsRelease, cssRelease]);

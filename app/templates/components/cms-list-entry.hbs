@@ -9,8 +9,7 @@
     <a href="#" class="cms cms-link" {{action "toggleActions"}}>Action</a>
   </div>
   <div class="cms cms-list-entry-actions cms-text {{if actionsOpen 'cms-open' 'cms-closed'}}">
-    <a href="#" class="cms cms-action">Publish</a>
-    <a href="#" class="cms cms-action">Duplicate</a>
-    <a href="#" class="cms cms-action">Delete</a>
+    <a href="#" class="cms cms-action" {{action "duplicate"}}>Duplicate</a>
+    <a href="#" class="cms cms-action" {{action "delete"}}>Delete</a>
   </div>
 </li>

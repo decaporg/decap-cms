@@ -6,12 +6,34 @@ body.ember-application {
     border-top: 1px solid $color_muted;
   }
   .cms-widget {
-    border-bottom: 1px solid $color_light;
+    border-bottom: 1px solid $color-muted;
   }
   .cms-widget:last-child {
     border-bottom: none;
   }
   .cms-control, .cms-aside {
     border-right: 1px solid $color_muted;
+  }
+  .cms-message-box {
+    border: 1px solid $color_muted;
+  }
+  .cms-control:after {
+    content: '';
+    position: absolute;
+    left: 42px;
+    bottom: -7px;
+    width: 12px;
+    height: 12px;
+    background-color: $color-bg-light;
+    transform: rotate(45deg);
+    z-index: 1;
+    border-right: 1px solid $color-muted;
+    border-bottom: 1px solid $color-muted;
+  }
+  .cms-widget:last-child .cms-control:after {
+    display: none;
+  }
+  .cms-sidebar {
+    border-left: 1px solid $color_muted;
   }
 }

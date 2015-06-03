@@ -1,5 +1,11 @@
 body.ember-application {
+  .cms-sidebar-top, .cms-sidebar-content {
+    background: #fff;
+  }
+  .cms-navbar-bottom {
+    background: #fff;
+  }
   .cms-control label {
-    color: $color_light;
+    color: $color-text-light;
   }
 }

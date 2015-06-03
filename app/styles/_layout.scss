@@ -11,14 +11,13 @@ body.ember-application {
     height: 100%;
     display: flex;
     flex-direction: column;
-    transition: transform 0.1s ease-in-out;
+    transition: transform 0.03s ease-in-out;
   }
   .cms-sidebar {
     display: flex;
     flex-direction: column;
     width: $sidebar_width;
-    border-left: 1px solid #444;
-    transition: transform 0.1s ease-in-out;
+    transition: transform 0.03s ease-in-out;
   }
   .cms-show-sidebar {
     .cms-main, .cms-sidebar {
@@ -30,6 +29,17 @@ body.ember-application {
     height: $navbar_top_height;
     flex-shrink: 0;
     padding: $container_padding 2*$container_padding;
+  }
+  .cms-navbar-top {
+    height: 60px;
+    .cms-nav-link {
+      height: 58px;
+    }
+    &.cms-login {
+      .cms-breadcrumb, .cms-right-menu {
+        display: none;
+      }
+    }
   }
   .cms-content, .cms-sidebar-content {
     flex-grow: 1;
@@ -48,7 +58,7 @@ body.ember-application {
 
   .cms-actionbar {
     margin-bottom: -$navbar_bottom_height;
-    transition: margin 0.1s ease-in-out;
+    transition: margin 0.03s ease-in-out;
   }
   .cms-actionbar.cms-open {
     margin-bottom: 0;
@@ -80,10 +90,49 @@ body.ember-application {
       display: inline-block;
     }
   }
+  .cms-has-dropdown {
+    position: relative;
+  }
+  .cms-dropdown {
+    position: absolute;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    right: 0;
+    top: 40px;
+    z-index: 2;
+    transition: transform 0.03s ease-in-out;
+    //transform: scaleY(0) translateY(-50%);
+    transform: translateY(-50%) scaleY(0);
+  }
+  .cms-dropdown.cms-open {
+    //transform: scaleY(1) translateY(0%);
+    transform: translateY(0%) scaleY(1);
+  }
+  .cms-dropdown-li {
+    margin: 0;
+    padding: 0;
+    display: block;
+  }
+  .cms-dropdown-link {
+    display: block;
+    padding: 20px 40px 0;
+    margin: 0;
+    text-decoration: none;
+    text-align: left;
+    white-space: nowrap;
+  }
+  .cms-dropdown-li:last-child .cms-dropdown-link {
+    padding-bottom: 20px;
+  }
 
   .cms-container {
     display: flex;
     height: 100%;
+  }
+  .cms-container.cms-center {
+    align-items: center;
+    justify-content: center;
   }
   .cms-aside {
     width: $aside_width;
@@ -126,11 +175,8 @@ body.ember-application {
     padding: $container_padding 2*$container_padding;
     height: 62px;
   }
-  .cms-list-entry-footer {
-    background: #fff;
-  }
+
   .cms-list-entry-actions {
-    background: $color-bg-highlight;
     margin-bottom: -62px;
     transition: margin 0.1s ease-in-out;
   }
@@ -170,5 +216,15 @@ body.ember-application {
     img {
       max-width: 100%;
     }
+    *:first-child {
+      margin-top: 0;
+    }
+    *:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .cms-message-box {
+    padding: 2*$container_padding;
   }
 }

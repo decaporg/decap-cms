@@ -1,7 +1,6 @@
 import Route from './cms';
  /* global netlify */
 
-
 export default Route.extend({
   actions: {
     login: function() {

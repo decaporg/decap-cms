@@ -10,8 +10,26 @@
         </div>
         <div class="cms cms-right-menu">
           <ul class="cms cms-inline-list">
-            <li class="cms cms-li"><a class="cms cms-nav-link" href="#">New</a></li>
-            <li class="cms cms-li"><a class="cms cms-nav-link" href="#">Profile</a></li>
+            <li class="cms cms-li cms-has-dropdown">
+              <a class="cms cms-nav-link" href="#" {{action "toggleCollections"}}>New</a>
+              <ul class="cms-dropdown {{if showCollections 'cms-open' 'cms-closed'}}">
+                {{#each collection in collections}}
+                  {{#if collection.create}}
+                    <li class="cms-dropdown-li">
+                      <a href="#" class="cms-dropdown-link" {{action "newEntry" collection}}>{{collection.label}}</a>
+                    </li>
+                  {{/if}}
+                {{/each}}
+              </ul>
+            </li>
+            <li class="cms cms-li cms-has-dropdown">
+              <a class="cms cms-nav-link" href="#" {{action "toggleProfile"}}>Profile</a>
+              <ul class="cms-dropdown {{if showProfile 'cms-open' 'cms-closed'}}">
+                <li class="cms-dropdown-li">
+                  <a href="#" class="cms-dropdown-link" {{action "logout"}}>Log out</a>
+                </li>
+              </ul>
+            </li>
           </ul>
         </div>
       </div>

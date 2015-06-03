@@ -135,10 +135,18 @@ export default Ember.Controller.extend({
   },
 
   initMeta: function() {
-    var meta = Ember.A();
-    [
+    var meta = Ember.A()
+
+    var defaultFields = [
       {label: "Slug", name: "cmsUserSlug", widget: "slug"}
-    ].concat(this.get("collection.meta") || []).forEach((field) => {
+    ];
+    var existingDateField = (this.get("collection.fields") || []).filter((f) => f.name === 'date')[0];
+    var existingDateMeta  = (this.get("collection.meta") || []).filter((f) => f.name === 'date')[0];
+    if (!(existingDateField || existingDateMeta)) {
+      defaultFields.push({label: "Publish Date", name: "date", widget: "date", default: "now"})
+    }
+
+    defaultFields.concat(this.get("collection.meta") || []).forEach((field) => {
       var value = this.get(`entry.${field.name}`);
       if (typeof value === "undefined") {
         value = field['default'] || null;
@@ -148,7 +156,7 @@ export default Ember.Controller.extend({
         entry: this.get("entry"),
         value: value
       }));
-    })
+    });
 
     this.set("meta", meta);
   },
@@ -252,6 +260,8 @@ export default Ember.Controller.extend({
 
         this.get("repository").updateFiles(files, {message: commitMessage}).then(() => {
           this.set("saving", false);
+          this.set("actionsOpen", false);
+          this.get("widgets").forEach((w) => { w.set("dirty", false); })
 
           // If the entry was a new record, we'll transition the route to the
           // edit screen for that entry
