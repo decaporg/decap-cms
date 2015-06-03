@@ -55,15 +55,56 @@ body.ember-application {
     &.active {
       color: $color-highlight;
     }
+    &:before {
+      content: "⬅";
+      display: inline-block;
+      color: $color-bg-light;
+      background: $color-highlight;
+      border-radius: 100%;
+      font-size: 8px;
+      line-height: 12px;
+      height: 14px;
+      width: 14px;
+      margin-right: 10px;
+      text-align: center;
+      box-sizing: border-box;
+      transform: rotate(180deg);
+      position: relative;
+      top: -3px;
+      padding: 2px;
+      visibility: hidden;
+    }
+    &.active:before {
+      visibility: visible;
+    }
   }
   .cms-aside-new-link {
     float: right;
     text-decoration: none;
-    color: $color-text-dark;
+    color: darken($color-text-normal, 5%);
     text-transform: uppercase;
-    font-size: 12px;
+    font-size: 10px;
+    font-weight: bold;
     vertical-align: bottom;
-    line-height: 30px;
+    line-height: 28px;
+    &:hover {
+      color: $color-highlight;
+    }
+  }
+  .cms-aside-new-link:before {
+    content: "+";
+    display: inline-block;
+    border: 1px solid;
+    border-radius: 100%;
+    position: relative;
+    top: 1px;
+    height: 16px;
+    width: 16px;
+    padding: 0px 3px 0 3px;
+    line-height: 1em;
+    box-sizing: border-box;
+    font-size: 15px;
+    margin-right: 8px;
   }
   .cms-list-entry {
     border: 1px solid $color_muted;
@@ -151,11 +192,24 @@ body.ember-application {
 
     input:not([type='checkbox']), textarea {
       box-sizing: border-box;
-      width: 85%;
+      width: 220px;
       padding: 7px;
       border: 1px solid #ddd;
       box-shadow: none;
       color: $color-text-normal;
+    }
+
+    .cms-datetime {
+      overflow: hidden;
+      input.cms-datetime-date {
+        float: left;
+        width: 110px;
+        margin-right: 10px;
+      }
+      input.cms-datetime-time {
+        float: left;
+        width: 100px;
+      }
     }
   }
 }

@@ -13,7 +13,10 @@ export default AuthenticatedRoute.extend({
     controller.prepare(model, Entry.create({_collection: model}));
   },
 
-  templateName: "entry",
+  renderTemplate: function() {
+    this.render("entry");
+    this.render("entry-sidebar", {outlet: "sidebar"});
+  },
 
   actions: {
     willTransition: function(transition) {
