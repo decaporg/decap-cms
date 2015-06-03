@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import Pikaday from 'npm:pikaday';
  /* global moment */
 
 /**
@@ -7,7 +8,7 @@ import Ember from 'ember';
 */
 
 /**
-  An input field for dates. Will make sure the dat format gets stores as YYYY-MM-DD
+  An input field for dates.
 
   ## Usage:
 
@@ -19,16 +20,17 @@ import Ember from 'ember';
   @extends Ember.TextField
 */
 export default Ember.TextField.extend({
-  init: function() {
-    this._super();
-    var value = this.get("value");
-    if (value) {
-      this.set("value", moment(value).utc().format(this.get("dateFormat")));
-    }
+  didInsertElement: function() {
+    var picker = new Pikaday({ field: this.$()[0] });
+    picker.setMoment(moment(this.get("value")));
+    this.set("_picker", picker);
   },
-  type: 'date',
-  placeholderBinding: 'dateFormat',
-  dateFormat: function() {
-    return "YYYY-MM-DD";
-  }.property()
+
+  willDestroyElement: function() {
+    var picker = this.get("_picker");
+    if (picker) {
+      picker.destroy();
+    }
+    this.set("_picker", null);
+  }
 });

@@ -192,13 +192,20 @@ export default Ember.Controller.extend({
   */
   toFileContent: function() {
     var widget;
+    var meta;
     var obj = {};
     var formatter = this.get("collection.formatter");
     var widgets = this.get("widgets");
+    var metas   = this.get("meta");
 
     for (var i=0,len=widgets.length; i<len; i++) {
       widget = widgets[i];
       obj[widget.get("name")] = widget.getValue();
+    }
+
+    for (var i=0,len=metas.length; i<len; i++) {
+      meta = metas[i];
+      obj[meta.get("name")] = meta.getValue();
     }
 
     return formatter.toFile(obj, this.get("entry"));
@@ -274,6 +281,8 @@ export default Ember.Controller.extend({
           console.log("Error saving: %o", err);
           this.set("error", err);
         });
+      }).catch((err) => {
+          console.log("Error :%o", err);
       });
     }
   }

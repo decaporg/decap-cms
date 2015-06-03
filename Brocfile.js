@@ -25,6 +25,7 @@ app.import('bower_components/js-yaml/dist/js-yaml.js');
 app.import('bower_components/moment/moment.js');
 app.import('bower_components/js-base64/base64.js');
 app.import('bower_components/jquery-sortable/source/js/jquery-sortable.js');
+app.import('bower_components/timepicker/jquery.timepicker.js');
 
 var appTree = app.toTree();
 

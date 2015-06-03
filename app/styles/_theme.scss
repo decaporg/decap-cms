@@ -141,6 +141,7 @@ body.ember-application {
     color: $color-text-normal;
   }
   .cms-meta {
+    margin-bottom: $container-padding;
     .cms-label {
       font-weight: normal;
       color: $color-text-normal;
