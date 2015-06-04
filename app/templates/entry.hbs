@@ -15,17 +15,6 @@
 </div>
 <div class="cms cms-navbar-bottom cms-text">
   <div class="cms cms-left-menu">
-
-  </div>
-  <div class="cms cms-right-menu">
-    <ul class="cms cms-inline-list">
-      <li class="cms cms-li"><a class="cms-link" href="#" {{action "toggleActions"}}>Action</a></li>
-      <li class="cms cms-li"><a class="cms-link" href="#" {{action "toggleSidebar"}}>Settings</a></li>
-    </ul>
-  </div>
-</div>
-<div class="cms cms-actionbar cms-text {{if actionsOpen 'cms-open' 'cms-closed'}}">
-  <div class="cms cms-left-menu">
     {{#if saving}}
       <span class="cms-message">Saving {{collection.label}}...</span>
     {{/if}}
@@ -35,8 +24,12 @@
   </div>
   <div class="cms cms-right-menu">
     <ul class="cms cms-inline-list">
-      <li class="cms cms-li"><a class="cms-action" href="#" {{action "save"}}>Publish</a></li>
-      <li class="cms cms-li"><a class="cms-action" href="#" {{action "Delete"}}>Delete</a></li>
+      <li class="cms cms-li">
+        <a class="cms-link cms-save-btn" href="#" {{action "save"}}>
+        {{if saving 'Saving...' 'Save'}}
+        </a>
+      </li>
+      <li class="cms cms-li"><a class="cms-link cms-settings-btn" href="#" {{action "toggleSidebar"}}>Settings</a></li>
     </ul>
   </div>
 </div>

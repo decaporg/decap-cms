@@ -37,7 +37,6 @@ export default Ember.Component.extend({
     @property layoutName
   */
   layoutName: function() {
-    console.log("Container is: %o", this.container);
     return this.container && this.container.lookup("template:cms/breadcrumbs") ?
            "cms/breadcrumbs" :
            "components/cms-breadcrumbs";

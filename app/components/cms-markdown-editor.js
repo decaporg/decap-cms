@@ -57,7 +57,6 @@ export default Ember.Component.extend(Shortcuts, {
   },
   _getSelection: function() {
     if (!this.$("textarea")) {
-      console.log("Hmm, no textarea?")
       return null
     }
     var textarea = this.$("textarea")[0],
@@ -260,18 +259,14 @@ export default Ember.Component.extend(Shortcuts, {
     undo: function() {
       var bookmark = this._undoStack.pop();
       if (bookmark) {
-        console.log("Pusing current bookmark to redo stack %o", this.get("value"))
         this._redoStack.push(this.bookmark(false));
         this._undoing = true;
-        console.log("Setting value to %o", bookmark.value);
         this.set("value", bookmark.value);
         this._setSelection(bookmark.before);
       }
     },
     redo: function() {
-      console.log("In redo stack: %o", this._redoStack.map((e) => e.value))
       var bookmark = this._redoStack.pop();
-      console.log("Latest bookmark in redo stack %o", bookmark)
       if (bookmark) {
         this._undoStack.push(this.bookmark(false));
         this._undoing = true;

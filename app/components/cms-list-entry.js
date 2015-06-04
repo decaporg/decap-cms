@@ -5,7 +5,6 @@ export default Ember.Component.extend({
   tagName: "",
   actions: {
     toggleActions: function() {
-      console.log("Toggling actions")
       this.set("actionsOpen", !this.get("actionsOpen"));
     },
     publish: function() {

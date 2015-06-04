@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import {slugify} from '../utils/slugify';
+/* global moment */
 
 /**
 @module app
@@ -31,7 +32,7 @@ var Entry = Ember.Object.extend({
     @property cmsDate
   */
   cmsDate: function() {
-    return this.get("date") || this.get("created_at") || this.get("dateFromUrl") || new Date();
+    return this.get("date") || this.get("created_at") || this.get("dateFromUrl") || moment();
   }.property("date", "created_at", "dateFromUrl"),
 
 

@@ -5,7 +5,6 @@ export default AuthenticatedRoute.extend({
     return this.get("config").collections[0];
   },
   afterModel: function(model, transition) {
-    console.log("Hello %o", model);
     this.transitionTo("index.list", model);
   }
 });

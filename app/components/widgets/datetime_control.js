@@ -23,10 +23,12 @@ export default Ember.Component.extend({
     }.bind(this));
 
     var value = this.get("widget.value");
-    if (value && value instanceof Date) {
-      date = moment(value).format(this.get("dateFormat"));
+    if (value) {
+      date = moment(value, this.get("format")).format(this.get("dateFormat"));
+      time = moment(value, this.get("format")).format(this.get("timeFormat"));
     }
 
+    this.set("time", time);
     this.set("date", date);
   },
 
@@ -43,9 +45,8 @@ export default Ember.Component.extend({
   }.observes("time"),
 
   format: function() {
-    var format = this.get("widget.field.format");
-    return format ? format : "YYYY-MM-DD HH:MM";
-  },
+    return this.get("dateFormat") + " " + this.get("timeFormat");
+  }.property("dateFormat", "timeFormat"),
 
   datestring: function() {
     var date = this.get("date"),

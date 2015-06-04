@@ -251,11 +251,9 @@ export default Ember.Controller.extend({
       @method save
     */
     save: function() {
-      console.log("Saving - invalid? %o", this.get("isInvalid"));
       if (this.get("isInvalid")) { return; }
 
       this.getFilePath().then((path) => {
-        console.log("Got filepath: %o", path);
         var files = [{path: path, content: this.toFileContent()}];
         var commitMessage = "Updated " + this.get("collection.label") + " " +
                                          this.get("entry.title");

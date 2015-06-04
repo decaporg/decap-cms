@@ -101,7 +101,6 @@ export default Ember.Object.extend({
       }
     });
 
-    console.log("Delaying: %s", this.delay * 1000);
     return this.withDelay(true)
   },
 

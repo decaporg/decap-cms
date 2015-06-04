@@ -120,9 +120,7 @@ export default Ember.Mixin.create({
     }
 
     (this._registered_shortcuts[kc] || []).forEach((def) => {
-      console.log("Checking against def %o", def);
       if (this._modsMatch(def)) {
-        console.log("Dispatching action %o", def.action);
         event.preventDefault();
         this.send(def.action);
       }

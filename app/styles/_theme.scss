@@ -145,14 +145,44 @@ body.ember-application {
   .cms-entry-title {
 
   }
-  .cms-actionbar {
-    background: $color-bg-highlight;
-    .cms-message {
-      font-size: 14px;
-      color: $color-text-normal;
+
+  .cms-message {
+    font-size: 14px;
+    color: $color-text-normal;
+  }
+  
+  .cms-link.cms-save-btn, .cms-link.cms-settings-btn {
+    &:before {
+      display: inline-block;
+      height: 20px;
+      width: 20px;
+      box-sizing: border-box;
+      padding: 3px;
+      border: 1px solid;
+      border-radius: 100%;
+      margin-right: 4px;
+      line-height: 15px;
+      text-align: center;
+    }
+  }
+  .cms-link.cms-save-btn {
+    &:before {
+      content: "⬆";
+      font-size: 12px;
+      position: relative;
+      top: -1px;
+    }
+  }
+  .cms-link.cms-settings-btn {
+    &:before {
+      content: "⚙";
+      font-size: 18px;
+      margin-right: 8px;
+      line-height: 12px;
     }
   }
   .cms-link, .cms-action {
+    display: inline-block;
     text-transform: uppercase;
     text-decoration: none;
     color: $color-text-normal;

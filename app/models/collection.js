@@ -7,11 +7,11 @@ function slugFormatterFn(template) {
     return template.replace(/\{\{([^\}]+)\}\}/g, function(_, name) {
       switch(name) {
         case "year":
-          return entry.get("cmsDate").getFullYear();
+          return entry.get("cmsDate").year();
         case "month":
-          return entry.get("cmsDate").getMonth() + 1;
+          return entry.get("cmsDate").month() + 1;
         case "day":
-          return entry.get("cmsDate").getDate();
+          return entry.get("cmsDate").date();
         case "slug":
           return entry.get("cmsUserSlug");
         default:
@@ -52,7 +52,6 @@ var Collection = Ember.Object.extend({
   },
 
   formatter: function() {
-    console.log("Looking up format %o", this.get("config"));
     return this.get("config.container").lookup("format:" + this.get("format"));
   }.property("config.ready")
 });
