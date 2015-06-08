@@ -1,4 +1,4 @@
-<div class="cms cms-content">
+<div class="cms cms-content cms-entry-editor">
   {{#cms-entry-form action="save"}}
     {{#each widget in widgets}}
       <div class="cms cms-widget">
@@ -6,12 +6,10 @@
           <label class="cms cms-label cms-text">{{widget.label}}</label>
           {{cms-widget widget=widget type="control"}}
         </div>
-        <div class="cms cms-preview">
-          {{cms-widget widget=widget type="preview"}}
-        </div>
       </div>
     {{/each}}
   {{/cms-entry-form}}
+  {{cms-preview-pane widgets=widgets}}
 </div>
 <div class="cms cms-navbar-bottom cms-text">
   <div class="cms cms-left-menu">

@@ -5,6 +5,9 @@ body.ember-application {
   .cms-navbar-bottom {
     background: #fff;
   }
+  .cms-control-pane {
+    background: $color-bg-light;
+  }
   .cms-control label {
     color: $color-text-light;
   }

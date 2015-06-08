@@ -83,6 +83,8 @@ var Widget = Ember.Object.extend({
   */
   type: Ember.computed.alias("field.widget"),
 
+  collections: Ember.computed.alias("entry._collection"),
+
 
   /* Set up the validators forthis widget */
   init: function() {

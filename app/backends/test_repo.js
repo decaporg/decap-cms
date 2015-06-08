@@ -58,7 +58,7 @@ export default Ember.Object.extend({
         return Promise.reject("No such file: " + path);
       }
     }
-    return this.withDelay(file.content, 0.5);
+    return this.withDelay(file.content);
   },
 
   listFiles: function(path) {
@@ -83,25 +83,27 @@ export default Ember.Object.extend({
       });
     }
 
-    return this.withDelay(files, 0.5);
+    return this.withDelay(files);
   },
 
   updateFiles: function(files, options) {
     var parts, part;
-    var dir = window.repoFiles;
+    var dir = window.repoFiles, subdir;
     files.forEach((file) => {
+      subdir = dir;
       parts = file.path.split("/");
       name  = parts.pop();
       while (part = parts.shift()) {
-        dir = dir[part];
+        subdir[part] = subdir[part] || {};
+        subdir = subdir[part];
       }
-      dir[name] = {
+      subdir[name] = {
         content: file.base64 ? Base64.decode(file.base64()) : file.content,
         sha: new Date().getTime()
       }
     });
 
-    return this.withDelay(true)
+    return this.withDelay(true, files.length * 10)
   },
 
   withDelay: function(fn, modifier) {

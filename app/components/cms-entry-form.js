@@ -16,7 +16,7 @@ import Ember from 'ember';
 */
 export default Ember.Component.extend({
   tagName: "form",
-  classNames: ["cms-form"],
+  classNames: ["cms-form", "cms-control-pane"],
   didInsertElement: function() {
     this.$("input,textarea,select").first().focus();
   },

@@ -184,44 +184,22 @@ body.ember-application {
     margin-bottom: 0;
   }
 
-
-  .cms-form {
-    height: 100%;
-    position: relative;
-    &:before {
-      content: " ";
-      display: block;
-      position: absolute;
-      width: 50%;
-      height: 100%;
-      background: $color-bg-light;
-    }
-  }
-  .cms-widget {
+  .cms-entry-editor {
     display: flex;
-    position: relative;
   }
-  .cms-widget:last-child {
-    border-bottom: none;
-  }
-  .cms-control, .cms-preview {
+  .cms-control-pane, .cms-preview-pane {
     width: 50%;
-    padding: $container_padding;
+    overflow-y: auto;
   }
-  .cms-control {
-    padding-left: 2*$container_padding;
-  }
-  .cms-preview {
-    padding-right: 2*$container_padding;
+  .cms-preview-pane {
+    padding: 0 $container_padding*2 0 $container_padding;
     img {
       max-width: 100%;
     }
-    *:first-child {
-      margin-top: 0;
-    }
-    *:last-child {
-      margin-bottom: 0;
-    }
+  }
+
+  .cms-control {
+    padding: $container_padding $container_padding $container_padding 2*$container_padding;
   }
 
   .cms-message-box {
