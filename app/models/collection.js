@@ -53,7 +53,11 @@ var Collection = Ember.Object.extend({
 
   formatter: function() {
     return this.get("config.container").lookup("format:" + this.get("format"));
-  }.property("config.ready")
+  }.property("config.ready"),
+
+  mediaFolder: function() {
+    return this.get("media_folder") || this.get("config.media_folder") || "uploads";
+  }.property("media_folder", "config.media_folder")
 });
 
 export default Collection;

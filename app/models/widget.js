@@ -83,8 +83,12 @@ var Widget = Ember.Object.extend({
   */
   type: Ember.computed.alias("field.widget"),
 
-  collections: Ember.computed.alias("entry._collection"),
+  collection: Ember.computed.alias("entry._collection"),
 
+  mediaFolder: function() {
+    console.log("Getting widget media folder");
+    return this.get("field.media_folder") || this.get("collection.mediaFolder");
+  }.property("collection", "field.media_folder"),
 
   /* Set up the validators forthis widget */
   init: function() {

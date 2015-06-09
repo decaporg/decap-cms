@@ -104,7 +104,7 @@ export default Ember.Component.extend(Shortcuts, {
     var media = this.get("media");
     var mediaFiles = [];
     for (var i=0, len=files.length; i<len; i++) {
-      mediaFiles.push(media.add(`${this.media.get("base")}/${files[i].name}` , files[i]));
+      mediaFiles.push(media.add(`${this.get("mediaFolder")}/${files[i].name}` , files[i]));
     }
     return new Ember.RSVP.Promise(function(resolve) {
       var file, image;
@@ -113,7 +113,7 @@ export default Ember.Component.extend(Shortcuts, {
         for (var i=0, len=mediaFiles.length; i < len; i++) {
           file = mediaFiles[i];
           image = file.name.match(/\.(gif|jpg|jpeg|png|svg)$/);
-          links.push(`${image ? '!' : ''}[${file.name}](${file.path})`);
+          links.push(`${image ? '!' : ''}[${file.name}](${file.publicPath})`);
         }
         resolve(links.join("\n"));
       });

@@ -21,12 +21,11 @@ export default Ember.Component.extend({
     fileUpload: function(files) {
       var file = files[0];
       var media = this.get("media");
-      var folder = this.get("widget.field.folder") || this.get("widget.collection.media_folder") ||
-                   this.get("config.media_folder");
+      var folder = this.get("widget.mediaFolder");
 
       console.log("folder: %s", folder);
       media.add(folder+ "/" + file.name, file).then(function(mediaFile) {
-        this.set("widget.value", mediaFile.path);
+        this.set("widget.value", mediaFile.publicPath);
         this.set("widget.src", mediaFile.src);
       }.bind(this));
     }

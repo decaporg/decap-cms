@@ -13,6 +13,7 @@ var MediaFile = Ember.Object.extend({
   name: null,
   size: 0,
   path: null,
+  publicPath: null,
   src: null,
   base64: function() {
     return this.src && this.src.split(",").pop();
@@ -35,48 +36,47 @@ function normalize(path) {
 
 export default Ember.Object.extend({
   uploads: Ember.A(),
-  base: function() {
-    return "/"+ (
-      this.get("config.media_folder") || "uploads");
-  }.property("config.media_folder"),
-  previewBase: function() {
-    return this.get("config.media_preview_folder") || "";
-  }.property("config.media_preview_folder"),
   add: function(path, file) {
     path = normalize(path);
     var name = path.split("/").pop();
 
     this.remove(path);
-    return new Promise(function(resolve,reject) {
+    return new Promise((resolve,reject) => {
       var reader = new FileReader();
-      reader.onload = function() {
+      reader.onload = () => {
         var mediaFile = MediaFile.create({
           name: name,
           size: file.size,
           path: path,
+          publicPath: this.publicPathFor(path),
           src: reader.result
         });
         this.uploads.pushObject(mediaFile);
         resolve(mediaFile);
-      }.bind(this);
+      };
       reader.onerror = function() {
         reject("Unable to read file");
       };
       reader.readAsDataURL(file);
-    }.bind(this));
+    });
   },
   find: function(path) {
-    return this.get("uploads").find(function(mediaFile) { return mediaFile.path === path; });
+    return this.get("uploads").find((mediaFile) => mediaFile.path === path.replace(/^\//, ''));
   },
   remove: function(path) {
-    this.set("uploads", this.get("uploads").reject(function(mediaFile) { return path === mediaFile.path; }));
+    this.set("uploads", this.get("uploads").reject((mediaFile) => path === mediaFile.path ));
   },
   reset: function() {
     this.set("uploads", Ember.A());
     return true;
   },
   srcFor: function(path) {
-    var mediaFile = this.find(path);
-    return mediaFile ? mediaFile.src : this.get("previewBase") + path;
+    var base = this.get("config.public_folder");
+    var mediaFile = this.find(base ? base + path : path);
+    return mediaFile ? mediaFile.src : path;
+  },
+  publicPathFor: function(path) {
+    var base = this.get("config.public_folder");
+    return base ? path.replace(new RegExp("^/?" + base + "/"), '/') : "/" + path;
   }
 });

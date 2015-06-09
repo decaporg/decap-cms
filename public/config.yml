@@ -2,7 +2,7 @@ backend:
   name: test_repo
   delay: 0.1
 
-media_folder: "public/assets/uploads"
+media_folder: "assets/uploads"
 
 collections: # A list of collections the CMS should be able to edit
   - name: "post" # Used in routes, ie.: /admin/collections/:slug/edit
