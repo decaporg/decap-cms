@@ -52,30 +52,15 @@ body.ember-application {
   .cms-aside-link {
     color: $color-text-normal;
     text-decoration: none;
+    .cms-icon {
+      visibility: hidden;
+      margin-right: $container-padding/2;
+    }
     &.active {
       color: $color-highlight;
-    }
-    &:before {
-      content: "⬅";
-      display: inline-block;
-      color: $color-bg-light;
-      background: $color-highlight;
-      border-radius: 100%;
-      font-size: 8px;
-      line-height: 12px;
-      height: 14px;
-      width: 14px;
-      margin-right: 10px;
-      text-align: center;
-      box-sizing: border-box;
-      transform: rotate(180deg);
-      position: relative;
-      top: -3px;
-      padding: 2px;
-      visibility: hidden;
-    }
-    &.active:before {
-      visibility: visible;
+      .cms-icon {
+        visibility: visible;
+      }
     }
   }
   .cms-aside-new-link {
@@ -84,27 +69,17 @@ body.ember-application {
     color: darken($color-text-normal, 5%);
     text-transform: uppercase;
     font-size: 10px;
-    font-weight: bold;
     vertical-align: bottom;
-    line-height: 28px;
+    line-height: 15px;
     &:hover {
       color: $color-highlight;
     }
   }
-  .cms-aside-new-link:before {
-    content: "+";
-    display: inline-block;
-    border: 1px solid;
-    border-radius: 100%;
-    position: relative;
-    top: 1px;
-    height: 16px;
-    width: 16px;
-    padding: 0px 3px 0 3px;
-    line-height: 1em;
-    box-sizing: border-box;
+  .cms-aside-new-link .cms-icon-create {
     font-size: 15px;
-    margin-right: 8px;
+    margin-right: 4px;
+    position: relative;
+    top: 2px;
   }
   .cms-list-entry {
     border: 1px solid $color_muted;
@@ -150,37 +125,22 @@ body.ember-application {
     font-size: 14px;
     color: $color-text-normal;
   }
-  
+
   .cms-link.cms-save-btn, .cms-link.cms-settings-btn {
-    &:before {
-      display: inline-block;
-      height: 20px;
-      width: 20px;
-      box-sizing: border-box;
-      padding: 3px;
-      border: 1px solid;
-      border-radius: 100%;
-      margin-right: 4px;
-      line-height: 15px;
-      text-align: center;
-    }
-  }
-  .cms-link.cms-save-btn {
-    &:before {
-      content: "⬆";
-      font-size: 12px;
+    margin-top: -$container-padding/2;
+    border: 1px solid $color-highlight;
+    padding: 3px $container-padding;
+    font-size: 12px;
+    line-height: 18px;
+    .cms-icon {
+      font-size: 16px;
+      color: $color-highlight;
       position: relative;
-      top: -1px;
+      top: 2px;
+      margin: 0 $container-padding/2 0 (-$container-padding/2);
     }
   }
-  .cms-link.cms-settings-btn {
-    &:before {
-      content: "⚙";
-      font-size: 18px;
-      margin-right: 8px;
-      line-height: 12px;
-    }
-  }
+
   .cms-link, .cms-action {
     display: inline-block;
     text-transform: uppercase;
@@ -205,6 +165,31 @@ body.ember-application {
     }
     &:hover:before {
       border-color: $color-highlight;
+    }
+  }
+  .cms-navbar-bottom {
+    position: relative;
+    .cms-loading-indicator, .cms-loading-indicator-inner {
+      border: 1px solid $color-highlight;
+    }
+    .cms-loading-indicator {
+      width: $container-padding;
+      height: $container-padding;
+      position: absolute;
+      top: $container-padding;
+      left: 50%;
+      margin-left: -($container-padding/2);
+      &.cms-loading {
+        animation: spin 2s cubic-bezier(0.785, 0.135, 0.150, 0.860) 0s infinite;
+        .cms-loading-indicator-inner {
+          animation: spin 2s cubic-bezier(0.455, 0.030, 0.515, 0.955)  0s infinite;
+        }
+      }
+    }
+    .cms-loading-indicator-inner {
+      width: $container-padding - 6;
+      height: $container-padding - 6;
+      margin: 2px;
     }
   }
 

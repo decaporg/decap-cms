@@ -31,9 +31,16 @@ body.ember-application {
     padding: $container_padding 2*$container_padding;
   }
   .cms-navbar-top {
-    height: 60px;
+    height: $navbar_top_height;
+    line-height: $navbar_top_height - 2*$container_padding;
     .cms-nav-link {
-      height: 58px;
+      height: $navbar_top_height - 2;
+    }
+    .cms-icon {
+      font-size: 20px;
+      position: relative;
+      top: 3px;
+      margin-right: $container_padding;
     }
     &.cms-login {
       .cms-breadcrumb, .cms-right-menu {
@@ -67,8 +74,8 @@ body.ember-application {
     margin: 0;
   }
   .cms-logo {
-    width: 20px;
-    height: 20px;
+    width: 30px;
+    height: 30px;
     float: left;
     margin-right: 2*$container_padding;
   }

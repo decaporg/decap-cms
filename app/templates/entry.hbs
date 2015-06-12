@@ -12,6 +12,9 @@
   {{cms-preview-pane widgets=widgets}}
 </div>
 <div class="cms cms-navbar-bottom cms-text">
+  <div class="cms cms-loading-indicator {{if saving 'cms-loading'}}">
+    <div class="cms cms-loading-indicator-inner"></div>
+  </div>
   <div class="cms cms-left-menu">
     {{#if error}}
       <span class="cms-message">{{error}}</span>
@@ -25,10 +28,16 @@
     <ul class="cms cms-inline-list">
       <li class="cms cms-li">
         <a class="cms-link cms-save-btn" href="#" {{action "save"}}>
-        {{if saving 'Saving...' 'Save'}}
+          <i class="cms cms-icon cms-icon-update"></i>
+          {{if saving 'Saving...' 'Save'}}
         </a>
       </li>
-      <li class="cms cms-li"><a class="cms-link cms-settings-btn" href="#" {{action "toggleSidebar"}}>Settings</a></li>
+      <li class="cms cms-li">
+        <a class="cms-link cms-settings-btn" href="#" {{action "toggleSidebar"}}>
+          <i class="cms cms-icon cms-icon-gear"></i>
+          Settings
+        </a>
+      </li>
     </ul>
   </div>
 </div>

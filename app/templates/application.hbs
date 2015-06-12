@@ -3,7 +3,9 @@
       <div class="cms cms-navbar-top cms-text">
         <div class="cms cms-left-menu">
           <div class="cms-logo">
-            <svg viewBox="0 0 200 200" style="-webkit-transform: rotate(45deg); -ms-transform(45deg); transform: rotate(45deg)" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g class="nf-logo-bg" stroke="none" stroke-width="1" fill="#3FB5A0"><path d="M0,0 L200,0 L200,200 L0,200 L0,0 Z"></path></g><g id="nf-logo-lines" stroke="rgb(39,46,48)" stroke-width="8" fill="none"><path d="M205,66 L-4,205 Z"></path><path d="M205,2 L-4,89 Z"></path><path d="M205,176 L-4,141 Z"></path><path d="M84,205 L39,-4 Z"></path><path d="M205,168 L85,-4 Z"></path><path d="M133,-4 L53,205 Z"></path></g><g id="nf-logo-circles" stroke="none" stroke-width="1" fill="rgb(39,46,48)"><circle cx="53" cy="67" r="14"></circle><circle cx="116" cy="41" r="12"></circle><circle cx="155" cy="99" r="12"></circle><circle cx="74" cy="154" r="16"></circle></g></svg>
+            {{#link-to 'index'}}
+              <svg viewBox="0 0 200 200" style="-webkit-transform: rotate(45deg); -ms-transform(45deg); transform: rotate(45deg)" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g class="nf-logo-bg" stroke="none" stroke-width="1" fill="#3FB5A0"><path d="M0,0 L200,0 L200,200 L0,200 L0,0 Z"></path></g><g id="nf-logo-lines" stroke="rgb(39,46,48)" stroke-width="8" fill="none"><path d="M205,66 L-4,205 Z"></path><path d="M205,2 L-4,89 Z"></path><path d="M205,176 L-4,141 Z"></path><path d="M84,205 L39,-4 Z"></path><path d="M205,168 L85,-4 Z"></path><path d="M133,-4 L53,205 Z"></path></g><g id="nf-logo-circles" stroke="none" stroke-width="1" fill="rgb(39,46,48)"><circle cx="53" cy="67" r="14"></circle><circle cx="116" cy="41" r="12"></circle><circle cx="155" cy="99" r="12"></circle><circle cx="74" cy="154" r="16"></circle></g></svg>
+            {{/link-to}}
           </div>
 
           <div class="cms cms-breadcrumb">{{cms-breadcrumbs}}</div>
@@ -11,7 +13,10 @@
         <div class="cms cms-right-menu">
           <ul class="cms cms-inline-list">
             <li class="cms cms-li cms-has-dropdown">
-              <a class="cms cms-nav-link" href="#" {{action "toggleCollections"}}>New</a>
+              <a class="cms cms-nav-link" href="#" {{action "toggleCollections"}}>
+                <i class="cms cms-icon cms-icon-new"></i>
+                New
+              </a>
               <ul class="cms-dropdown {{if showCollections 'cms-open' 'cms-closed'}}">
                 {{#each collection in collections}}
                   {{#if collection.create}}
@@ -23,7 +28,10 @@
               </ul>
             </li>
             <li class="cms cms-li cms-has-dropdown">
-              <a class="cms cms-nav-link" href="#" {{action "toggleProfile"}}>Profile</a>
+              <a class="cms cms-nav-link" href="#" {{action "toggleProfile"}}>
+                <i class="cms cms-icon cms-icon-profile"></i>
+                Profile
+              </a>
               <ul class="cms-dropdown {{if showProfile 'cms-open' 'cms-closed'}}">
                 <li class="cms-dropdown-li">
                   <a href="#" class="cms-dropdown-link" {{action "logout"}}>Log out</a>

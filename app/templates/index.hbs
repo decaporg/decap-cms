@@ -5,10 +5,13 @@
         {{#each collection in collections}}
           <li class="cms-collection">
             {{#link-to "index.list" collection class="cms-aside-link"}}
+              <i class="cms cms-icon cms-icon-selector"></i>
               {{collection.label}}
             {{/link-to}}
             {{#if collection.create}}
-              {{#link-to "create" collection class="cms-aside-new-link"}}New{{/link-to}}
+              {{#link-to "create" collection class="cms-aside-new-link"}}
+                <i class="cms cms-icon-create"></i> New
+              {{/link-to}}
             {{/if}}
           </li>
         {{/each}}
