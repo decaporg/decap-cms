@@ -106,4 +106,38 @@ body.ember-application {
   .ui-timepicker-list li.ui-timepicker-selected.ui-timepicker-disabled {
   	background: #f2f2f2;
   }
+
+  .cms-markdown-toolbar {
+    position: absolute;
+    transform: scale(0);
+    transition: transform 0.1s ease-in-out;
+    border-radius: 5px;
+    background: $color-dark;
+    color: #fff;
+    padding: 0 7px;
+    display: flex;
+    margin-top: -30px;
+    margin-left: -50px;
+    &:after {
+      content: " ";
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      margin-left: -6px;
+      display: block;
+      width: 0;
+    	height: 0;
+    	border-left: 6px solid transparent;
+    	border-right: 6px solid transparent;
+    	border-top: 6px solid $color-dark;
+    }
+  }
+  .cms-toolbar-button {
+    text-decoration: none;
+    padding: 5px;
+    font-size: 12px;
+  }
+  .cms-markdown-toolbar.cms-open {
+    transform: scale(1);
+  }
 }

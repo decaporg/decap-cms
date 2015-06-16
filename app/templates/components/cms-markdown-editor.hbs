@@ -1,3 +1,23 @@
 <div class="cms cms-markdown-editor">
   {{cms-expanding-textarea value=value}}
+
+  {{#ember-wormhole to="cms-global-components"}}
+    <div class="cms cms-markdown-toolbar {{if toolbarOpen 'cms-open'}}" style="top: {{toolbarY}}px; left: {{toolbarX}}px">
+      <a class="cms cms-toolbar-button" {{action 'h1'}}>
+        <div class="cms cms-icon cms-icon-h1"></div>
+      </a>
+      <a class="cms cms-toolbar-button" {{action 'h2'}}>
+        <div class="cms cms-icon cms-icon-h2"></div>
+      </a>
+      <a class="cms cms-toolbar-button" {{action 'h3'}}>
+        <div class="cms cms-icon cms-icon-h3"></div>
+      </a>
+      <a class="cms cms-toolbar-button" {{action 'bold'}}>
+        <div class="cms cms-icon cms-icon-bold"></div>
+      </a>
+      <a class="cms cms-toolbar-button" {{action 'italic'}}>
+        <div class="cms cms-icon cms-icon-italic"></div>
+      </a>
+    </div>
+  {{/ember-wormhole}}
 </div>

@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import Sanitizer from '../utils/sanitizer';
 import Shortcuts from '../mixins/keyboard_shortcuts';
+import CaretPosition from 'npm:textarea-caret-position';
 
 /**
 @module app
@@ -40,6 +41,9 @@ export default Ember.Component.extend(Shortcuts, {
   tagName: "div",
   showLinkbox: false,
   linkUrl: null,
+  toolbarX: 0,
+  toolbarY: 0,
+  toolbarOpen: false,
   shortcuts: {
     '⌘+b': 'bold',
     '⌘+i': 'italic',
@@ -98,6 +102,39 @@ export default Ember.Component.extend(Shortcuts, {
     this.set("value", before + changed + after);
 
     this._setSelection(newSelection);
+  },
+
+  _toggleHeadline: function(header) {
+    var value = this.get("value");
+    var selection = this._getSelection();
+    var i = selection.start;
+    var m, before, after;
+    while (i>=0) {
+      if (value.substr(i,1) == "\n") {
+        break;
+      } else {
+        i--;
+      }
+    }
+    i += 1;
+    before = value.substr(0,i);
+    after = value.substr(i);
+    if (m = after.match(/^(#+)\s/)) {
+      if (m[1] == header) {
+        after = after.replace(/^#+\s/, '');
+        selection.end = selection.end - (m[1].length + 1);
+      } else {
+        after = after.replace(/^#+/, header);
+        selection.end = selection.end - (m[1].length - header.length);
+      }
+      selection.start = i;
+    } else {
+      after = header + " " + after
+      selection.start = i;
+      selection.end = selection.end + header.length + 1;
+    }
+    this.set("value", before + after);
+    this._setSelection(selection);
   },
 
   linkToFiles: function(files) {
@@ -199,6 +236,27 @@ export default Ember.Component.extend(Shortcuts, {
         });
       }
     );
+
+    this.$("textarea").on("blur focus keydown keyup mousedown mouseup",
+      (e) => {
+        setTimeout(() => {
+          var el = e.originalEvent.target;
+          this.set("toolbarOpen", el.selectionStart !== el.selectionEnd);
+        }, 0);
+      }
+    );
+
+    var TextAreaCaretPositoon = new CaretPosition(this.$("textarea")[0]);
+    this.$("textarea").on("select",
+      (e) => {
+        var el = e.originalEvent.target;
+        var position = TextAreaCaretPositoon.get(el.selectionStart, el.selectionEnd);
+        var offset = $(el).offset();
+        this.set("toolbarX", Math.max(60, offset.left + position.left));
+        this.set("toolbarY", offset.top + position.top);
+        this.set("toolbarOpen", true);
+      }
+    );
   },
 
   bookmark: function(before) {
@@ -227,6 +285,15 @@ export default Ember.Component.extend(Shortcuts, {
   }.observes("value"),
 
   actions: {
+    h1: function() {
+      this._toggleHeadline("#");
+    },
+    h2: function() {
+      this._toggleHeadline("##");
+    },
+    h3: function() {
+      this._toggleHeadline("###");
+    },
     bold: function() {
       this._surroundSelection("**");
     },
