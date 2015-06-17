@@ -13,6 +13,13 @@ var ENDPOINT = "https://api.github.com/";
 /**
  Github API repository backend.
 
+ ```yaml
+ backend:
+   name: github_api
+   repo: netlify/netlify-home
+   branch: master
+ ```
+
  This backend uses the Git Data API to create commits when updateFiles is called.
 
  @class GithubAPI

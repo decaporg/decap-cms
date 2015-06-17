@@ -18,7 +18,6 @@ export default Ember.Component.extend({
 
     var value = this.get("widget.value");
     var upload  = value && this.get("media").find(value);
-    console.log("Got value %o and upload: %o", value, upload);
     this.set("widget.src", upload ? upload.src : value);
   },
   actions: {
@@ -27,7 +26,6 @@ export default Ember.Component.extend({
       var media = this.get("media");
       var folder = this.get("widget.mediaFolder");
 
-      console.log("folder: %s", folder);
       media.add(folder+ "/" + file.name, file).then(function(mediaFile) {
         this.set("widget.value", mediaFile.publicPath);
         this.set("widget.src", mediaFile.src);

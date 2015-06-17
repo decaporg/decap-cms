@@ -15,7 +15,7 @@ var ENDPOINT = "https://api.github.com/";
 
  ```yaml
  backend:
-   type: test
+   name: test_repo
  ```
 
  It depends on a global variable on the window object called `repoFiles`:

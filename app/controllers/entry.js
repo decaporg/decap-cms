@@ -261,7 +261,7 @@ export default Ember.Controller.extend({
         this.set("saving", true);
 
         // Start watching for a deploy
-        this.notifyOnDeploy();
+        //this.notifyOnDeploy();
 
         this.get("repository").updateFiles(files, {message: commitMessage}).then(() => {
           this.set("saving", false);

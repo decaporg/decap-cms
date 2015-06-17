@@ -206,6 +206,7 @@ body.ember-application {
   }
 
   .cms-control {
+    position: relative;
     padding: $container_padding $container_padding $container_padding 2*$container_padding;
   }
 
