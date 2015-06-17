@@ -36,6 +36,7 @@ function normalize(path) {
 
 export default Ember.Object.extend({
   uploads: Ember.A(),
+  uploaded: Ember.A(),
   add: function(path, file) {
     path = normalize(path);
     var name = path.split("/").pop();
@@ -61,12 +62,14 @@ export default Ember.Object.extend({
     });
   },
   find: function(path) {
-    return this.get("uploads").find((mediaFile) => mediaFile.path === path.replace(/^\//, ''));
+    var upload = this.get("uploads").find((mediaFile) => mediaFile.path === path.replace(/^\//, ''));
+    return upload || this.get("uploaded").find((mediaFile) => mediaFile.path === path.replace(/^\//, ''));
   },
   remove: function(path) {
     this.set("uploads", this.get("uploads").reject((mediaFile) => path === mediaFile.path ));
   },
   reset: function() {
+    this.set("uploaded", this.get("uploaded").concat(this.get("uploads")));
     this.set("uploads", Ember.A());
     return true;
   },

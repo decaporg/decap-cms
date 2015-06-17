@@ -15,7 +15,11 @@ import Ember from 'ember';
 export default Ember.Component.extend({
   init: function() {
     this._super();
-    this.set("widget.src", this.get("widget.value"));
+
+    var value = this.get("widget.value");
+    var upload  = value && this.get("media").find(value);
+    console.log("Got value %o and upload: %o", value, upload);
+    this.set("widget.src", upload ? upload.src : value);
   },
   actions: {
     fileUpload: function(files) {
