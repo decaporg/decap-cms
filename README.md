@@ -35,15 +35,6 @@ your source directory and use this `index.html` as a template:
   <base href="/admin/">
 </head>
 <body>
-
-  <script type="text/x-handlebars" data-template-name='cms/application'>
-    <header>
-      {{cms-breadcrumbs}}
-      <a href="#" class="logout-button" {{action 'logout'}}>Log out</a>
-    </header>
-    <section>{{outlet}}</section>
-  </script>
-
   <script src="//cms.netlify.com/assets/vendor.js"></script>
   <script src="//cms.netlify.com/assets/cms.js"></script>
 </body>
@@ -53,11 +44,15 @@ your source directory and use this `index.html` as a template:
 Add a `config.yml` file to the `/admin` folder and configure your content model:
 
 ```yaml
-repo: owner/repo # Path to your Github repository
-branch: master # Branch to update (master by default)
+backend:
+  name: github_api
+  repo: owner/repo # Path to your Github repository
+  branch: master # Branch to update (master by default)
+
 media_folder: "img/uploads" # Folder where user uploaded files should go
+
 collections: # A list of collections the CMS should be able to edit
-  - slug: "post" # Used in routes, ie.: /admin/collections/:slug/edit
+  - name: "post" # Used in routes, ie.: /admin/collections/:slug/edit
     label: "Post" # Used in the UI, ie.: "New Post"
     folder: "_posts" # The path to the folder where the documents are stored
     create: true # Allow users to create new documents in this collection
@@ -102,7 +97,6 @@ Currently these widgets are built-in:
 * **number** A number
 * **hidden** Useful for setting a default value with a hidden field
 * **image** An uploaded image
-* **files** A multi file uploader
 * **list** A list of objects, takes it's own array of fields describing the individual objects
 
 ## Extending and overriding
@@ -155,7 +149,7 @@ It can now be used in the `config.yml` like this:
 
 ```yaml
 collections: # A list of collections the CMS should be able to edit
-  - slug: "post" # Used in routes, ie.: /admin/collections/:slug/edit
+  - name: "post" # Used in routes, ie.: /admin/collections/:slug/edit
     label: "Post" # Used in the UI, ie.: "New Post"
     folder: "_posts" # The path to the folder where the documents are stored
     create: true # Allow users to create new documents in this collection

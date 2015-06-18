@@ -32,7 +32,7 @@ export default Ember.Component.extend({
   }.property("items.@each"),
 
   extraxtOriginalItems: function(items) {
-    return items.map(function(item) { return item.item; });
+    return items.map((item) => item.item);
   },
 
   didInsertElement: function() {

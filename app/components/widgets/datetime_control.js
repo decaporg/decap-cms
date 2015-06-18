@@ -16,24 +16,26 @@ import Ember from 'ember';
  */
 export default Ember.Component.extend({
   init: function() {
-    var date, time;
+    var datetime, date, time;
     this._super();
-    this.get("widget").registerValidator(function(value) {
-      return !isNaN(value);
-    }.bind(this));
 
     var value = this.get("widget.value");
     if (value) {
-      date = moment(value, this.get("format")).format(this.get("dateFormat"));
-      time = moment(value, this.get("format")).format(this.get("timeFormat"));
+      console.log("Casting value %s - %s", value, this.get("format"));
+      datetime = moment(value, this.get("format"));
+      this.set("widget.value", datetime);
+      date = datetime.format(this.get("dateFormat"));
+      time = datetime.format(this.get("timeFormat"));
     }
 
+    console.log("Set time: %v", time);
+    console.log("Set date: %v", date)
     this.set("time", time);
     this.set("date", date);
   },
 
   onDateStringChange: function() {
-    var datetime = moment(this.get("datestring"), "YYYY-MM-DD hh:mma");
+    var datetime = moment(this.get("datestring"), this.get("format"));
     if (this.get("time") == null) {
       this.set("time", datetime.format(this.get("timeFormat")));
     }
@@ -41,7 +43,7 @@ export default Ember.Component.extend({
   }.observes("date"),
 
   onTimeStringChange: function() {
-    this.set("widget.value",  moment(this.get("datestring"), "YYYY-MM-DD hh:mma"));
+    this.set("widget.value",  moment(this.get("datestring"), this.get("format")));
   }.observes("time"),
 
   format: function() {
@@ -59,12 +61,12 @@ export default Ember.Component.extend({
   }.property("date", "time"),
 
   dateFormat: function() {
-    var format = this.get("widget.field.date_format");
+    var format = this.get("widget.field.dateFormat");
     return format ? format : "YYYY-MM-DD";
   }.property("widget.date_format"),
 
   timeFormat: function() {
-    var format = this.get("widget.field.time_format");
+    var format = this.get("widget.field.timeFormat");
     return format ? format : "hh:mma";
-  }.property("widget.time_format")
+  }.property("widget.timeFormat")
 });

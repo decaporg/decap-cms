@@ -1,8 +1,8 @@
 {{#each item in sortableItems}}
-  <li class="cms cms-list-item" data-item="item.id">
-    <div class="cms cms-list-actions">
-      <a class="cms cms-list-icon remove cms-action" {{action "removeItem" item}}></a>
-    </div>
+  <li class="cms cms-list-item" data-item="{{item.id}}">
     {{yield item.item}}
+    <div class="cms cms-list-actions">
+      <a class="cms cms-list-icon cms-icon-remove" {{action "removeItem" item}}></a>
+    </div>
   </li>
 {{/each}}

@@ -1,12 +1,15 @@
 {{#cms-sortable-list items=widget.items action="reorder" as |item| }}
   {{#each widget in item.widgets}}
-    <div class=":widget widget.dirtyAndInvalid:cms-invalid">
-      <div class="cms form-control">
+    <div class="cms cms-widget">
+      <div class="cms cms-control">
+        <label class="cms cms-label cms-text">{{widget.label}}</label>
         {{cms-widget widget=widget type="control"}}
       </div>
     </div>
   {{/each}}
 {{/cms-sortable-list}}
-<div class="cms cms-list-controls">
-  <a class="cms cms-action" {{action 'addItem'}}>{{widget.addLabel}}</a>
+<div class="cms cms-list-controls cms-text">
+  <a class="cms cms-new-link" {{action 'addItem'}}>
+    <i class="cms cms-icon-create"></i> New
+  </a>
 </div>

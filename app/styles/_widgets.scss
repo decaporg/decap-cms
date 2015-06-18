@@ -33,6 +33,22 @@ body.ember-application {
     }
   }
 
+  .cms-list-item {
+    position: relative;
+    border: 1px solid $color_muted;
+    margin-bottom: $container_padding;
+
+    .cms-list-actions {
+      position: absolute;
+      top: $container_padding/2;
+      right: $container_padding;
+    }
+
+    .cms-list-icon {
+      font-size: 12px;
+      color: $color-bg-highlight;
+    }
+  }
 
   .ui-timepicker-wrapper {
   	overflow-y: auto;

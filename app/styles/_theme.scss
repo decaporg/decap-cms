@@ -65,6 +65,8 @@ body.ember-application {
   }
   .cms-aside-new-link {
     float: right;
+  }
+  .cms-aside-new-link, .cms-new-link {
     text-decoration: none;
     color: darken($color-text-normal, 5%);
     text-transform: uppercase;
@@ -74,12 +76,13 @@ body.ember-application {
     &:hover {
       color: $color-highlight;
     }
-  }
-  .cms-aside-new-link .cms-icon-create {
-    font-size: 15px;
-    margin-right: 4px;
-    position: relative;
-    top: 2px;
+
+    .cms-icon-create {
+      font-size: 15px;
+      margin-right: 4px;
+      position: relative;
+      top: 2px;
+    }
   }
   .cms-list-entry {
     border: 1px solid $color_muted;
