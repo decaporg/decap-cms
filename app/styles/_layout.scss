@@ -197,6 +197,8 @@ body.ember-application {
   .cms-control-pane, .cms-preview-pane {
     width: 50%;
     overflow-y: auto;
+    margin: 0;
+    padding: 0;
   }
   .cms-preview-pane {
     padding: 0 $container_padding*2 0 $container_padding;
