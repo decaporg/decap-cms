@@ -2,6 +2,8 @@
   "name": "cms",
   "dependencies": {
     "ember": "canary",
+    "ember-resolver": "~0.1.15",
+    "loader.js": "ember-cli/loader.js#3.2.0",
     "ember-cli-shims": "ember-cli/ember-cli-shims#0.0.3",
     "ember-cli-test-loader": "rwjblue/ember-cli-test-loader#0.1.2",
     "ember-load-initializers": "ember-cli/ember-load-initializers#0.1.4",
@@ -11,6 +13,7 @@
     "jt.timepicker": "~1.7.0",
     "moment": "~2.9.0",
     "ember-cli-moment-shim": "~0.0.3",
+    "qunit": "~1.17.1",
     "ember-qunit": "^0.3.3"
   },
   "resolutions": {
