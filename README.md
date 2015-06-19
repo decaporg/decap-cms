@@ -60,6 +60,8 @@ collections: # A list of collections the CMS should be able to edit
       - {label: "Title", name: "title", widget: "string", tagname: "h1"}
       - {label: "Body", name: "body", widget: "markdown"}
       - {label: "Foo", name: "foo", widget: "foo"}
+    meta: # Meta data fields. Just like fields, but without any preview element
+      - {label: "Publish Date", name: "date", widget: "datetime"}
 ```
 
 Right now Netlify CMS only supports collections (a folder with files that can be
@@ -94,6 +96,7 @@ Currently these widgets are built-in:
 * **markdown** A markdown editor
 * **checkbox** A simple checkbox
 * **date** A date input
+* **datetime** A date and time input
 * **number** A number
 * **hidden** Useful for setting a default value with a hidden field
 * **image** An uploaded image
@@ -166,6 +169,7 @@ output like: `Written by Matt on April 29, 2015`.
 Netlify CMS includes [a date helper plugin](https://github.com/johnotander/ember-cli-dates)
 so you can easily format dates with the `{{time-format}}` helper via [moment.js's](http://momentjs.com/)
 formatting shortcuts.
+
 
 ### Coming Soon:
 

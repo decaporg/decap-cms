@@ -15,7 +15,7 @@ collections: # A list of collections the CMS should be able to edit
       - {label: "Cover Image", name: "image", widget: "image", optional: true}
       - {label: "Body", name: "body", widget: "markdown"}
     meta:
-      - {label: "Publish Date", name: "date", widget: "datetime"}
+      - {label: "Publish Date", name: "date", widget: "datetime", format: "YYYY-MM-DD hh:mma"}
   - name: "faq" # Used in routes, ie.: /admin/collections/:slug/edit
     label: "FAQ" # Used in the UI, ie.: "New Post"
     folder: "_faqs"

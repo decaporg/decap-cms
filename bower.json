@@ -14,6 +14,7 @@
     "js-yaml": "~3.2.5",
     "jquery-sortable": "~0.9.12",
     "js-base64": "~2.1.7",
+    "jt.timepicker": "~1.7.0",
     "moment": "~2.9.0",
     "ember-cli-moment-shim": "~0.0.3"
   },

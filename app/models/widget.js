@@ -83,6 +83,16 @@ var Widget = Ember.Object.extend({
   */
   type: Ember.computed.alias("field.widget"),
 
+  /**
+    True if the widget is hidden and should not show up in the ui.
+
+    @property hidden
+    @type Boolean
+  */
+  hidden: function() {
+    return this.get("field.widget") == "hidden";
+  }.property("field.widget"),
+
   collection: Ember.computed.alias("entry._collection"),
 
   mediaFolder: function() {
