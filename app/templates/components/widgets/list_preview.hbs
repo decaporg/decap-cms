@@ -1,7 +1,7 @@
 <ul class="cms-list-preview">
-{{#each item in widget.items}}
+{{#each widget.items as |item|}}
   <li class="cms-list-item-preview widget">
-  {{#each widget in item.widgets}}
+  {{#each item.widgets as |widget|}}
     {{cms-widget widget=widget type="preview"}}
   {{/each}}
   </li>

@@ -2,7 +2,7 @@
   <div class="cms cms-container">
     <div class="cms cms-aside cms-text">
       <ul class="cms cms-nav-menu">
-        {{#each collection in collections}}
+        {{#each collections as |collection|}}
           <li class="cms-collection">
             {{#link-to "index.list" collection class="cms-aside-link"}}
               <i class="cms cms-icon cms-icon-selector"></i>

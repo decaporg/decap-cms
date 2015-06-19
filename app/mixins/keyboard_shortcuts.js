@@ -55,7 +55,7 @@ function parse(component, key, action) {
   var kc = code(parts.pop());
   var m, mods = {};
 
-  Ember.EnumerableUtils.forEach(parts, function(part) {
+  parts.forEach((part) => {
     if ((m = MODIFIERS[part])) mods[m] = true;
   });
 

@@ -1,4 +1,4 @@
-{{#each item in sortableItems}}
+{{#each sortableItems as |item|}}
   <li class="cms cms-list-item" data-item="{{item.id}}">
     {{yield item.item}}
     <div class="cms cms-list-actions">

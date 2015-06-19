@@ -18,7 +18,7 @@
                 New
               </a>
               <ul class="cms-dropdown {{if showCollections 'cms-open' 'cms-closed'}}">
-                {{#each collection in collections}}
+                {{#each collections as |collection|}}
                   {{#if collection.create}}
                     <li class="cms-dropdown-li">
                       <a href="#" class="cms-dropdown-link" {{action "newEntry" collection}}>{{collection.label}}</a>

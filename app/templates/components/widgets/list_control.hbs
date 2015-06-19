@@ -1,5 +1,5 @@
 {{#cms-sortable-list items=widget.items action="reorder" as |item| }}
-  {{#each widget in item.widgets}}
+  {{#each item.widgets as |widget|}}
     <div class="cms cms-widget">
       <div class="cms cms-control">
         <label class="cms cms-label cms-text">{{widget.label}}</label>

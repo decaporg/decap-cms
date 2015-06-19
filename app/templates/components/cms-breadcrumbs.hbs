@@ -1,5 +1,5 @@
 <div class="cms cms-breadcrumbs">
-  {{#each crumb in breadcrumbs}}
+  {{#each breadcrumbs as |crumb|}}
     <a href="#" {{action "gotoCrumb" crumb}} class="cms cms-breadcrumb {{crumb.class}}">{{crumb.label}}</a>
     {{#unless crumb.last}}<span class="cms cms-breadcrumb-separator"> / </span>{{/unless}}
   {{/each}}

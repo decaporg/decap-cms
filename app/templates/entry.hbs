@@ -1,6 +1,6 @@
 <div class="cms cms-content cms-entry-editor">
   {{#cms-entry-form action="save"}}
-    {{#each widget in widgets}}
+    {{#each widgets as |widget|}}
       {{#unless widget.hidden}}
         <div class="cms cms-widget">
           <div class="cms cms-control">
