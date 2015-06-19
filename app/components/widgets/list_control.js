@@ -118,6 +118,7 @@ export default Ember.Component.extend({
       @method reorder
     */
     reorder: function(items) {
+      console.log("New items: ", items.map((i) => i.id));
       this.set("widget.items", items);
     }
   }

@@ -25,6 +25,7 @@ export default Ember.Component.extend({
   tagName: 'ul',
   classNames: ['cms-list'],
   sortableItems: function() {
+    console.log("Sortable updated");
     var id = this.get("id") || "id";
     return this.get("items").map(function(item) {
       return {id: item[id], item: item};
@@ -39,7 +40,7 @@ export default Ember.Component.extend({
     this.$().sortable({
       placeholder: "<li class='cms-list-placeholder'/>",
       itemSelector: ".cms-list-item",
-      onDrop: function($item, container, _super) {
+      onDrop: ($item, container, _super) => {
         _super($item, container);
         var items = this.get("sortableItems");
         var newItems = Ember.A();
@@ -51,8 +52,8 @@ export default Ember.Component.extend({
           newItems.push(itemLookup[Ember.$(this).data("item")]);
         });
         this.sendAction("action", this.extraxtOriginalItems(newItems));
-      }.bind(this),
-      afterMove: function($placeholder, container, $closestItemOrContainer) {
+      },
+      afterMove: ($placeholder, container, $closestItemOrContainer) => {
         var css = {
           height: $closestItemOrContainer.height(),
           width: $closestItemOrContainer.width(),
