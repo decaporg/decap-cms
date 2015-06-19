@@ -90,7 +90,7 @@ var Widget = Ember.Object.extend({
     @type Boolean
   */
   hidden: function() {
-    return this.get("field.widget") == "hidden";
+    return this.get("field.widget") === "hidden";
   }.property("field.widget"),
 
   collection: Ember.computed.alias("entry._collection"),

@@ -1,4 +1,3 @@
-import Ember from 'ember';
 import Route from './cms';
 
 export default Route.extend({
@@ -13,6 +12,7 @@ export default Route.extend({
     var credentials = this.get("authstore").stored();
     if (credentials) {
       this.get("repository").authorize(credentials).then(() => {}, (err) => {
+        console.log("Authentication error: %o", err);
         this.get("authstore").clear();
         this.transitionTo("login");
       });

@@ -78,7 +78,7 @@ export default Ember.Component.extend({
       items.pushObject(this._newItem());
     }
     this.set("widget.items", items);
-    this.set("widget.addLabel", "Add " + (this.get("widget.item_label") || "one"))
+    this.set("widget.addLabel", "Add " + (this.get("widget.item_label") || "one"));
     this.didUpdateItem();
     this.get("widget").registerValidator(function() {
       var items = this.get("widget.items");

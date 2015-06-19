@@ -1,6 +1,5 @@
 import Ember from 'ember';
 import Cache from './object_cache/cache';
-import GithubAPI from '../backends/github_api';
 
 /**
 @module app
@@ -77,6 +76,10 @@ export default Ember.Object.extend({
     } else {
       return this.backend.readFile(path);
     }
+  },
+
+  deleteFile: function(path) {
+    return this.backend.deleteFile(path);
   },
 
   /**

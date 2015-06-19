@@ -32,7 +32,9 @@ var DEFINITIONS = {
   ';': 186, '\'': 222,
   '[': 219, ']': 221, '\\': 220
 };
-for (var n = 1; n < 20; n++) DEFINITIONS['f'+n] = 111 + n;
+for (var n = 1; n < 20; n++) {
+  DEFINITIONS['f'+n] = 111 + n;
+}
 
 /* Helper function to get a charcode from a shortcut definition. */
 function code(c) {
@@ -56,7 +58,9 @@ function parse(component, key, action) {
   var m, mods = {};
 
   parts.forEach((part) => {
-    if ((m = MODIFIERS[part])) mods[m] = true;
+    if ((m = MODIFIERS[part])) {
+      mods[m] = true;
+    }
   });
 
   return { mods: mods, kc: kc, raw: key, action: action };
@@ -127,11 +131,11 @@ export default Ember.Mixin.create({
     });
   },
 
-  _updatePressedMods: function(event, kc) {
-    if (event.shiftKey) this._pressed_mods[16] = true;
-    if (event.ctrlKey)  this._pressed_mods[17] = true;
-    if (event.altKey)   this._pressed_mods[18] = true;
-    if (event.metaKey)  this._pressed_mods[91] = true;
+  _updatePressedMods: function(event) {
+    if (event.shiftKey) { this._pressed_mods[16] = true; }
+    if (event.ctrlKey)  { this._pressed_mods[17] = true; }
+    if (event.altKey)   { this._pressed_mods[18] = true; }
+    if (event.metaKey)  { this._pressed_mods[91] = true; }
   },
 
   _modsMatch: function(def) {
@@ -157,7 +161,7 @@ export default Ember.Mixin.create({
 
   keyDown: function(e) {
     this._super.apply(this, arguments);
-    this._dispatchShortcut(e)
+    this._dispatchShortcut(e);
   },
   keyUp: function(e) {
     this._super.apply(this, arguments);

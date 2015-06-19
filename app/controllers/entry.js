@@ -135,7 +135,7 @@ export default Ember.Controller.extend({
   },
 
   initMeta: function() {
-    var meta = Ember.A()
+    var meta = Ember.A();
 
     var defaultFields = [
       {label: "Slug", name: "cmsUserSlug", widget: "slug"}
@@ -143,7 +143,7 @@ export default Ember.Controller.extend({
     var existingDateField = (this.get("collection.fields") || []).filter((f) => f.name === 'date')[0];
     var existingDateMeta  = (this.get("collection.meta") || []).filter((f) => f.name === 'date')[0];
     if (!(existingDateField || existingDateMeta)) {
-      defaultFields.push({label: "Publish Date", name: "date", widget: "date", default: "now"})
+      defaultFields.push({label: "Publish Date", name: "date", widget: "date", default: "now"});
     }
 
     defaultFields.concat(this.get("collection.meta") || []).forEach((field) => {
@@ -193,17 +193,19 @@ export default Ember.Controller.extend({
   toFileContent: function() {
     var widget;
     var meta;
+    var i;
+    var len;
     var obj = {};
     var formatter = this.get("collection.formatter");
     var widgets = this.get("widgets");
     var metas   = this.get("meta");
 
-    for (var i=0,len=widgets.length; i<len; i++) {
+    for (i=0,len=widgets.length; i<len; i++) {
       widget = widgets[i];
       obj[widget.get("name")] = widget.getValue();
     }
 
-    for (var i=0,len=metas.length; i<len; i++) {
+    for (i=0,len=metas.length; i<len; i++) {
       meta = metas[i];
       obj[meta.get("name")] = meta.getValue();
     }
@@ -266,7 +268,7 @@ export default Ember.Controller.extend({
         this.get("repository").updateFiles(files, {message: commitMessage}).then(() => {
           this.set("saving", false);
           this.set("actionsOpen", false);
-          this.get("widgets").forEach((w) => { w.set("dirty", false); })
+          this.get("widgets").forEach((w) => { w.set("dirty", false); });
 
           // If the entry was a new record, we'll transition the route to the
           // edit screen for that entry

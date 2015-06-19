@@ -102,7 +102,7 @@ class HTMLHandler {
     }
     return properties;
   }
-  
+
   getNodes() {
     return this.current.children;
   }
@@ -238,7 +238,7 @@ class MarkdownProcessor {
   }
 
   propertiesFor(node) {
-    var mediaFile, infoWords;
+    var infoWords;
     var properties = {};
     switch(node.type) {
       case 'Link':

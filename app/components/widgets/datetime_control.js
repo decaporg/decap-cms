@@ -24,7 +24,7 @@ export default Ember.Component.extend({
 
     var value = this.get("widget.value");
     if (value) {
-      if (typeof value == 'object') {
+      if (typeof value === 'object') {
         datetime = moment(value);
         datetime._f = this.get("format");
       } else {

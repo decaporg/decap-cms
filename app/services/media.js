@@ -21,7 +21,7 @@ var MediaFile = Ember.Object.extend({
 });
 
 function normalize(path) {
-  return (path || "").split("/").map(function(el) { return urlify(el)}).join("/");
+  return (path || "").split("/").map(function(el) { return urlify(el); }).join("/");
 }
 
 /**

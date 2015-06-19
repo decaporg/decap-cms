@@ -1,22 +1,26 @@
+import Ember from 'ember';
+
 import {
   moduleFor,
   test
 } from 'ember-qunit';
 
-moduleFor('format:markdown-frontmatter', 'FrontmatterFormat', {});
+moduleFor('format:markdown-frontmatter', 'FrontmatterFormat', {
+  needs: ['components:link-to']
+});
 
-test('it should convert a simple file with frontmatter and text', function() {
+test('it should convert a simple file with frontmatter and text', function(assert) {
   var format = this.subject();
   var fileContent = "---\ntitle: test\ndescription: a test\n---\n\n## This is Markdown\n\nStill in the body";
 
   var obj = format.fromFile(fileContent);
-  ok(obj);
-  equal(obj.title, "test");
-  equal(obj.description, "a test");
-  equal(obj.body, "## This is Markdown\n\nStill in the body");
+  assert.ok(obj);
+  assert.equal(obj.title, "test");
+  assert.equal(obj.description, "a test");
+  assert.equal(obj.body, "## This is Markdown\n\nStill in the body");
 });
 
-test('it should convert a simple obejct to frontmatter and a body', function() {
+test('it should convert a simple obejct to frontmatter and a body', function(assert) {
   var format = this.subject();
   var obj = {
     title: "A test object",
@@ -26,15 +30,15 @@ test('it should convert a simple obejct to frontmatter and a body', function() {
   };
   var fileContent = format.toFile(obj, {get: () => ""});
 
-  ok(fileContent);
-  equal(fileContent, "---\ntitle: A test object\ndescription: This is another field\nnumber: 10\n---\n\n## Hello\n\nWorld");
+  assert.ok(fileContent);
+  assert.equal(fileContent, "---\ntitle: A test object\ndescription: This is another field\nnumber: 10\n---\n\n## Hello\n\nWorld");
 });
 
-test('it should handle a file with just a body', function() {
+test('it should handle a file with just a body', function(assert) {
   var format = this.subject();
   var fileContent = "## This is just a plain markdown file";
 
   var obj = format.fromFile(fileContent);
-  ok(obj);
-  equal(obj.body, "## This is just a plain markdown file");
+  assert.ok(obj);
+  assert.equal(obj.body, "## This is just a plain markdown file");
 });

@@ -37,4 +37,4 @@ export default Ember.Component.extend({
       this.observer = null;
     }
   }
-})
+});

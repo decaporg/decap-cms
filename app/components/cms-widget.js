@@ -20,7 +20,7 @@ export default Ember.Component.extend({
   componentLookupFactory: function(fullName, container) {
     container = container || this.container;
 
-    var componentFullName = `component:${fullName.replace(/^components\//, '')}`
+    var componentFullName = `component:${fullName.replace(/^components\//, '')}`;
     var templateFullName = `template:${fullName}`;
     var templateRegistered = container && container._registry.has(templateFullName);
 
@@ -44,7 +44,7 @@ export default Ember.Component.extend({
   tagName: "",
   type: "control",
   isControl: function() {
-    return this.get("type") == "control";
+    return this.get("type") === "control";
   }.property("type"),
   previewTagName: function() {
     return this.get("widget.field.tagname") || "div";

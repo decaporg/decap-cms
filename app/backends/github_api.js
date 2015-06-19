@@ -58,6 +58,7 @@ export default Ember.Object.extend({
           reject(`This user doesn't have write access to the repo '${this.config.repo}'`);
         }
       }, (err) => {
+        console.log("Auth error: %o", err);
         reject(`This user couldn't access the repo '${this.config.repo}'`);
       });
     });
@@ -102,7 +103,7 @@ export default Ember.Object.extend({
     @return {Promise} result
   */
   updateFiles: function(uploads, options) {
-    var file, filename, part, parts, subtree;
+    var filename, part, parts, subtree;
     var fileTree = {};
     var files = [];
 
@@ -123,7 +124,7 @@ export default Ember.Object.extend({
     return Promise.all(files)
       .then(() => this.getBranch())
       .then((branchData) => {
-        return this.updateTree(branchData.commit.sha, "/", fileTree)
+        return this.updateTree(branchData.commit.sha, "/", fileTree);
       })
       .then((changeTree) => {
         return this.request(this.base + "/git/commits", {

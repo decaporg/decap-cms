@@ -4,4 +4,4 @@ export default {
     config.set("container", instance.container);
     config.set("ready", true);
   }
-}
+};

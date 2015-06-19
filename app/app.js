@@ -62,7 +62,7 @@ window.CMS = {};
   @param {String} name
   @param {Object} widget
 */
-CMS.WidgetControl = function(name, widget) {
+window.CMS.WidgetControl = function(name, widget) {
   define(`cms/components/cms/widgets/${name}-control`, ['exports'], function(exports) {
     exports['default'] = Ember.Component.extend(widget);
   });
@@ -104,7 +104,7 @@ CMS.WidgetControl = function(name, widget) {
   @param {String} name
   @param {Object} widget
 */
-CMS.WidgetPreview = function(name, widget) {
+window.CMS.WidgetPreview = function(name, widget) {
   define(`cms/components/cms/widgets/${name}-preview`, ['exports'], function(exports) {
     exports['default'] = Ember.Component.extend(widget);
   });
@@ -137,17 +137,17 @@ CMS.WidgetPreview = function(name, widget) {
   @param {String} name
   @param {Object} format
 */
-CMS.Format = function(name, format) {
+window.CMS.Format = function(name, format) {
   define("cms/formats/" + name, ['exports'], function(exports) {
     exports['default'] = Ember.Object.extend(format);
   });
 };
 
 
-CMS.Backend = function(name, backend) {
+window.CMS.Backend = function(name, backend) {
   define("cms/backends" + name, ['exports'], function(exports) {
     exports['default'] = Ember.Object.extend(backend);
   });
-}
+};
 
 export default App;

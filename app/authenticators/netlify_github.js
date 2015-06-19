@@ -4,7 +4,7 @@ import Ember from 'ember';
 var Promise = Ember.RSVP.Promise;
 
 export default Ember.Object.extend({
-  authenticate: function(config) {
+  authenticate: function() {
     return new Promise((resolve, reject) => {
       if (document.location.host.split(":")[0] === "localhost") {
         netlify.configure({site_id: 'timespace.netlify.com'});

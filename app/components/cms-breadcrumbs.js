@@ -69,7 +69,7 @@ export default Ember.Component.extend({
     var crumbs = [], last;
     this.get("controllers").forEach((controller) => {
       (controller.get("breadcrumbs") || []).forEach((crumb) => {
-        crumbs.push($.extend({class: "cms-breadcrumb-inactive"},crumb));
+        crumbs.push(Ember.$.extend({class: "cms-breadcrumb-inactive"},crumb));
       });
     });
 
@@ -101,7 +101,7 @@ export default Ember.Component.extend({
       if (crumb.model) {
         args.push(crumb.model);
       }
-      appController.transitionToRoute.apply(appController, args)
+      appController.transitionToRoute.apply(appController, args);
     }
   }
 });

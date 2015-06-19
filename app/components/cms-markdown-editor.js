@@ -61,7 +61,7 @@ export default Ember.Component.extend(Shortcuts, {
   },
   _getSelection: function() {
     if (!this.$("textarea")) {
-      return null
+      return null;
     }
     var textarea = this.$("textarea")[0],
         start = textarea.selectionStart,
@@ -79,7 +79,7 @@ export default Ember.Component.extend(Shortcuts, {
 
   _surroundSelection: function(chars) {
     var selection = this._getSelection(),
-        newSelection = $.extend({}, selection),
+        newSelection = Ember.$.extend({}, selection),
         value = this.get("value") || "",
         changed = chars + selection.selected + chars,
         escapedChars = chars.replace(/\*/g, '\\*'),
@@ -110,7 +110,7 @@ export default Ember.Component.extend(Shortcuts, {
     var i = selection.start;
     var m, before, after;
     while (i>=0) {
-      if (value.substr(i,1) == "\n") {
+      if (value.substr(i,1) === "\n") {
         break;
       } else {
         i--;
@@ -120,7 +120,7 @@ export default Ember.Component.extend(Shortcuts, {
     before = value.substr(0,i);
     after = value.substr(i);
     if (m = after.match(/^(#+)\s/)) {
-      if (m[1] == header) {
+      if (m[1] === header) {
         after = after.replace(/^#+\s/, '');
         selection.end = selection.end - (m[1].length + 1);
       } else {
@@ -129,7 +129,7 @@ export default Ember.Component.extend(Shortcuts, {
       }
       selection.start = i;
     } else {
-      after = header + " " + after
+      after = header + " " + after;
       selection.start = i;
       selection.end = selection.end + header.length + 1;
     }
@@ -251,7 +251,7 @@ export default Ember.Component.extend(Shortcuts, {
       (e) => {
         var el = e.originalEvent.target;
         var position = TextAreaCaretPositoon.get(el.selectionStart, el.selectionEnd);
-        var offset = $(el).offset();
+        var offset = Ember.$(el).offset();
         this.set("toolbarX", Math.max(60, offset.left + position.left));
         this.set("toolbarY", offset.top + position.top);
         this.set("toolbarOpen", true);
@@ -272,7 +272,7 @@ export default Ember.Component.extend(Shortcuts, {
       before: this._selection,
       after: this._getSelection(),
       value: value
-    }
+    };
   },
 
   appendToHistory: function() {

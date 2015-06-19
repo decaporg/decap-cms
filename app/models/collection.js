@@ -1,7 +1,7 @@
 import Ember from 'ember';
 
 function slugFormatterFn(template) {
-  if (!template) { return function(entry) { return entry.get("cmsUserSlug"); }}
+  if (!template) { return function(entry) { return entry.get("cmsUserSlug"); }; }
 
   return function(entry) {
     return template.replace(/\{\{([^\}]+)\}\}/g, function(_, name) {
@@ -18,7 +18,7 @@ function slugFormatterFn(template) {
           return entry.get(name);
       }
     });
-  }
+  };
 }
 
 /**

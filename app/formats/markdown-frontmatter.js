@@ -1,4 +1,3 @@
-import Ember from 'ember';
 import MarkdownFormatter from "./markdown";
 /* global jsyaml */
 /* global moment */
