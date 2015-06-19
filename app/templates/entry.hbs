@@ -1,12 +1,14 @@
 <div class="cms cms-content cms-entry-editor">
   {{#cms-entry-form action="save"}}
     {{#each widget in widgets}}
-      <div class="cms cms-widget">
-        <div class="cms cms-control">
-          <label class="cms cms-label cms-text">{{widget.label}}</label>
-          {{cms-widget widget=widget type="control"}}
+      {{#unless widget.hidden}}
+        <div class="cms cms-widget">
+          <div class="cms cms-control">
+            <label class="cms cms-label cms-text">{{widget.label}}</label>
+            {{cms-widget widget=widget type="control"}}
+          </div>
         </div>
-      </div>
+      {{/unless}}
     {{/each}}
   {{/cms-entry-form}}
   {{cms-preview-pane widgets=widgets}}
