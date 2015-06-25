@@ -3,6 +3,8 @@
 A CMS for static site generators. Give non-technical users a simple way to edit
 and add content to any site built with a static site generator.
 
+Try the UI demo here: [cms.netlify.com](https://cms.netlify.com).
+
 ## How it works
 
 Netlify CMS is a single page app that you pull into the `/admin` part of your site.
