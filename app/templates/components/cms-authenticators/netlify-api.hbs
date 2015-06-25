@@ -1,0 +1,23 @@
+<div class="cms cms-container cms-center">
+  <div class="cms cms-text cms-message-box cms-login">
+    <h2 class="cms cms-message-title">CMS Login</h2>
+    {{#if error}}
+    <div class="cms cms-login-error">{{error}}</div>
+    {{/if}}
+
+    <div class="cms">
+      <div class="cms cms-login-control">
+        <label class="cms cms-label">Email</label>
+        {{input type="email" class="cms cms-input" value=email placeholder="Your Email"}}
+      </div>
+      <div class="cms cms-login-control">
+        <label class="cms cms-label">Password</label>
+        {{input type="password" class="cms cms-input" value=password placeholder="Your Password"}}
+      </div>
+    </div>
+
+    <a href="#" class="cms cms-login-button" {{action "authenticate"}}>
+      Login Now
+    </a>
+  </div>
+</div>

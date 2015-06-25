@@ -199,7 +199,7 @@ body.ember-application {
   .cms-sidebar-title {
     color: $color-text-normal;
   }
-  .cms-meta {
+  .cms-meta, .cms-login {
     margin-bottom: $container-padding;
     .cms-label {
       font-weight: normal;
@@ -229,5 +229,18 @@ body.ember-application {
         width: 100px;
       }
     }
+  }
+  .cms-login .cms-label {
+    display: none;
+  }
+  .cms-login .cms-login-control {
+    margin-bottom: $container-padding;
+  }
+  .cms-login input.cms-input {
+    width: 20em;
+  }
+  .cms-login .cms-login-error {
+    width: 20em;
+    margin-bottom: $container-padding;
   }
 }

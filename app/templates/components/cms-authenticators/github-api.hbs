@@ -1,0 +1,16 @@
+<div class="cms cms-container cms-center">
+  <div class="cms cms-text cms-message-box">
+    <h2 class="cms cms-message-title">CMS Login</h2>
+    {{#if error}}
+    <div class="cms cms-login-error">{{error}}</div>
+    {{else}}
+    <div class="cms cms-login-message">
+      Login to your CMS to add or edit content.
+    </div>
+    {{/if}}
+
+    <a href="#" class="cms cms-login-button" {{action "authenticate"}}>
+      Login Now
+    </a>
+  </div>
+</div>

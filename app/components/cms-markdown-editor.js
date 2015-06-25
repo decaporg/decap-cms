@@ -241,10 +241,11 @@ export default Ember.Component.extend(Shortcuts, {
       (e) => {
         setTimeout(() => {
           var el = e.originalEvent.target;
-          this.set("toolbarOpen", el.selectionStart !== el.selectionEnd);
+          this.set("toolbarOpen", window.document.activeElement == el && el.selectionStart !== el.selectionEnd);
         }, 0);
       }
     );
+
 
     var TextAreaCaretPositoon = new CaretPosition(this.$("textarea")[0]);
     this.$("textarea").on("select",
