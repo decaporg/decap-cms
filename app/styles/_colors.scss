@@ -11,4 +11,10 @@ body.ember-application {
   .cms-control label {
     color: $color-text-light;
   }
+  .cms-login-modal {
+    background: rgba(0,0,0,0.9);
+    .cms-message-box {
+      background: $color-bg-light;
+    }
+  }
 }

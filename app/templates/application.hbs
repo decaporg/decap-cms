@@ -50,3 +50,6 @@
 </div>
 
 <div id="cms-global-components"></div>
+<div class="cms cms-login-modal {{if showLoginModal 'cms-open'}}">
+  {{component authenticator authorizationError=authorizationError action="login"}}
+</div>

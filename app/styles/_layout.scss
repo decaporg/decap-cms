@@ -215,4 +215,16 @@ body.ember-application {
   .cms-message-box {
     padding: 2*$container_padding;
   }
+
+  .cms-login-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+  }
+  .cms-login-modal.cms-open {
+    display: block;
+  }
 }
