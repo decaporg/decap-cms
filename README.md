@@ -74,9 +74,7 @@ and a `widget`.
 
 ## Authentication
 
-Right now Netlify CMS only have one `authenticator` and one `repository backend`.
-
-The authenticator integrates with Netlify's [Authentication Provider feature](https://www.netlify.com/docs/authentication-providers) and the repository
+The defauly Github based authenticator integrates with Netlify's [Authentication Provider feature](https://www.netlify.com/docs/authentication-providers) and the repository
 backend integrates directly with Github's API.
 
 To get everything hooked up, setup continuous deployment from Github to Netlify
@@ -85,6 +83,29 @@ to setup Github as an authentication provider.
 
 That's it, now you should be able to go to the `/admin` section of your site and
 log in.
+
+## Running with a local backend
+
+If you don't have a Github repo or just wan't to work locally, netlify CMS also
+has a local version of the Github api that you can run from any repo on your machine.
+
+Grab it from [https://github.com/netlify/netlify-git-api/releases](the netlify-git-api repo),
+follow the installation instructions, then CD into the repo with your site and run:
+
+```bash
+netlify users add
+netlify-git-api serve
+```
+
+This will add a new user and start serving an API for your repo.
+
+Configure the backend like this in your `config.yml`:
+
+```yaml
+backend:
+  name: netlify-api
+  url: localhost:8080
+```
 
 ## Widgets
 
