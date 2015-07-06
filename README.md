@@ -47,7 +47,7 @@ Add a `config.yml` file to the `/admin` folder and configure your content model:
 
 ```yaml
 backend:
-  name: github_api
+  name: github-api
   repo: owner/repo # Path to your Github repository
   branch: master # Branch to update (master by default)
 
@@ -72,7 +72,7 @@ edited). In the future it'll also support single documents.
 Each collection have a list of fields, where each field has a `label`, a `name`
 and a `widget`.
 
-## Authentication
+## GitHub as a Backend
 
 The defauly Github based authenticator integrates with Netlify's [Authentication Provider feature](https://www.netlify.com/docs/authentication-providers) and the repository
 backend integrates directly with Github's API.
@@ -84,7 +84,7 @@ to setup Github as an authentication provider.
 That's it, now you should be able to go to the `/admin` section of your site and
 log in.
 
-## Running with a local backend
+## Local git backend
 
 If you don't have a Github repo or just wan't to work locally, netlify CMS also
 has a local version of the Github api that you can run from any repo on your machine.
