@@ -14,7 +14,8 @@
     "moment": "~2.9.0",
     "ember-cli-moment-shim": "~0.0.3",
     "qunit": "~1.17.1",
-    "ember-qunit": "^0.3.3"
+    "ember-qunit": "^0.3.3",
+    "jquery.scrollTo": "~2.1.1"
   },
   "resolutions": {
     "ember": "canary",
@@ -23,6 +24,5 @@
     "jquery": "^1.11.1",
     "loader.js": "ember-cli/loader.js#3.2.0",
     "qunit": "~1.17.1"
-
   }
 }
