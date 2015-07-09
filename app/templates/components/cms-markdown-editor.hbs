@@ -3,19 +3,19 @@
 
   {{#ember-wormhole to="cms-global-components"}}
     <div class="cms cms-markdown-toolbar {{if toolbarOpen 'cms-open'}}" style="top: {{toolbarY}}px; left: {{toolbarX}}px">
-      <a class="cms cms-toolbar-button" {{action 'h1'}}>
+      <a class="cms cms-toolbar-button" {{action 'h1' on='mouseDown'}}>
         <div class="cms cms-icon cms-icon-h1"></div>
       </a>
-      <a class="cms cms-toolbar-button" {{action 'h2'}}>
+      <a class="cms cms-toolbar-button" {{action 'h2' on='mouseDown'}}>
         <div class="cms cms-icon cms-icon-h2"></div>
       </a>
-      <a class="cms cms-toolbar-button" {{action 'h3'}}>
+      <a class="cms cms-toolbar-button" {{action 'h3' on='mouseDown'}}>
         <div class="cms cms-icon cms-icon-h3"></div>
       </a>
-      <a class="cms cms-toolbar-button" {{action 'bold'}}>
+      <a class="cms cms-toolbar-button" {{action 'bold' on='mouseDown'}}>
         <div class="cms cms-icon cms-icon-bold"></div>
       </a>
-      <a class="cms cms-toolbar-button" {{action 'italic'}}>
+      <a class="cms cms-toolbar-button" {{action 'italic' on='mouseDown'}}>
         <div class="cms cms-icon cms-icon-italic"></div>
       </a>
     </div>
