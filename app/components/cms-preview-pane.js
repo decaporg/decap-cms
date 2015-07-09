@@ -5,6 +5,13 @@ export default Ember.Component.extend({
   classNames: ['cms', 'cms-preview-pane'],
   lastMutationEl: null,
 
+  templateName: function() {
+    var customName = `cms/preview/${this.get("collection.name")}`;
+    var name = Ember.TEMPLATES[customName] ? customName : 'components/cms-preview-pane';
+    console.log("Name is: %o (custom %o)", name, customName);
+    return name;
+  }.property("collection.name"),
+
   scrollTo: function(mutation) {
     var target;
     switch(mutation.type) {

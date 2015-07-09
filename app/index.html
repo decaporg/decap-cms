@@ -26,13 +26,39 @@
         _faqs: {}
       }
     </script>
+    <style>
+      .post-header {
+        position: relative;
+      }
+      .post-header.image-bg {
+        overflow: hidden;
+        padding: 50px;
+        margin-top: 20px;
+        text-align: center;
+      }
+      .cover-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+      .post-header h1 {
+        position: relative;
+        text-shadow: 0 0 5px rgba(255,255,255,0.9);
+      }
+    </style>
   </head>
   <body>
-    {{content-for 'body'}}
+    <script type="text/x-handlebars" data-template-name='cms/preview/posts'>
+      <div class="post-header {{if entry.image 'image-bg'}}">
+        <div class="cover-image">{{cms-preview field='image'}}</div>
+        {{cms-preview field='title'}}
+      </div>
+      <div class="post-text">
+        {{cms-preview field='body'}}
+      </div>
+    </script>
 
     <script src="assets/vendor.js"></script>
     <script src="assets/cms.js"></script>
-
-    {{content-for 'body-footer'}}
   </body>
 </html>

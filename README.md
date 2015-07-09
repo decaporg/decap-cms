@@ -125,6 +125,25 @@ Currently these widgets are built-in:
 * **image** An uploaded image
 * **list** A list of objects, takes it's own array of fields describing the individual objects
 
+## Customizing the preview
+
+You can customize how entries in a collection are previewed easily by adding a handlebars template in your `/admin/index.html`:
+
+```html
+<script type="text/x-handlebars" data-template-name='cms/preview/my-collection'>
+  <h1>{{cms-preview field='title'}}</h1>
+  <div class="photo">{{cms-preview field='image'}}</div>
+  <div class="body">{{cms-preview field='body'}}</div>
+</script>
+```
+
+The name of the template should be prefixed 'cms/preview/' and have the same name
+as the collection you want to preview.
+
+User the `{{cms-preview field='fieldname'}}` to insert the preview widget for a field.
+
+You can use `{{entry.fieldname}}` to access the actual value of a field in the template.
+
 ## Extending and overriding
 
 It's easy to add a custom template for either the preview or the control part of

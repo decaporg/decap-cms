@@ -47,7 +47,8 @@ export default Ember.Component.extend({
     return this.get("type") === "control";
   }.property("type"),
   previewTagName: function() {
-    return this.get("widget.field.tagname") || "div";
+    var field = this.get("widget.field");
+    return field.hasOwnProperty("tagname") ? field.tagname : "div";
   }.property("widget"),
   previewClassNames: function() {
     return (this.get("widget.field.class") || "").split(" ");
