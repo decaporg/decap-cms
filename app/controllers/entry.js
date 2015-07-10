@@ -35,8 +35,6 @@ export default Ember.Controller.extend({
     this.set("collection", collection);
     this.set("entry", entry);
     this.set('controllers.application.currentAction', this.get("currentAction") + " " + this.get("collection.label"));
-    this.initWidgets();
-    this.initMeta();
   },
 
   /**
@@ -111,13 +109,13 @@ export default Ember.Controller.extend({
   }.property("currentAction"),
 
   /**
-   Initialized the widgets for this entry.
+   The widgets for this entry.
 
    One widget is instantiated for each of the fields in the collection.
 
-   @method initWidgets
+   @property widgets
   */
-  initWidgets: function() {
+  widgets: function() {
     var widgets = Ember.A();
     this.get("collection.fields").forEach((field) => {
       var value = this.get(`entry.${field.name}`);
@@ -131,10 +129,10 @@ export default Ember.Controller.extend({
       }));
     });
 
-    this.set("widgets", widgets);
-  },
+    return widgets;
+  }.property("entry"),
 
-  initMeta: function() {
+  meta: function() {
     var meta = Ember.A();
 
     var defaultFields = [
@@ -158,8 +156,8 @@ export default Ember.Controller.extend({
       }));
     });
 
-    this.set("meta", meta);
-  },
+    return meta;
+  }.property("entry"),
 
   /**
     The `valid` state of the current entry.

@@ -5,16 +5,16 @@ export default Ember.Component.extend({
   classNames: ['cms', 'cms-preview-pane'],
   hasScrolled: false,
 
-  templateName: function() {
+  previewTemplate: function() {
     var customName = `cms/preview/${this.get("collection.name")}`;
-    var name = Ember.TEMPLATES[customName] ? customName : 'components/cms-preview-pane';
+    var name = Ember.TEMPLATES[customName] ? customName : 'preview/default';
     return name;
-  }.property("collection.name"),
+  }.property("entry"),
 
   scrollTo: function() {
     if (!this.get("hasScrolled")) {
       this.set("hasScrolled", true);
-      return
+      return;
     }
     var mutations = this.get("_mutations");
     var mutation = mutations[0];
