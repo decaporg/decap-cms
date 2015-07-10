@@ -21,6 +21,6 @@ export default Base.extend({
         console.log("Got data: %o", data);
         resolve({access_token: data.access_token});
       }, (err) => { reject(err); });
-    })
+    });
   }
 });

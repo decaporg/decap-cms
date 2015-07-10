@@ -7,7 +7,6 @@ import Ember from 'ember';
 */
 
 var Promise = Ember.RSVP.Promise;
-var $ = Ember.$;
 
 /**
  NetlifyAPI repository backend.
