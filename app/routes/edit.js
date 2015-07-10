@@ -16,12 +16,13 @@ export default AuthenticatedRoute.extend({
   model: function(params) {
     var collection = this.get("config").findCollection(params.collection_id);
     var path = this._pathFor(collection, params.slug);
-    return this.get("repository").readFile(path).then(function(content) {
+    return this.get("repository").readFile(path).then((content) => {
       return Entry.fromContent(collection, content, path);
-    }.bind(this));
+    });
   },
 
   controllerName: "entry",
+
   setupController: function(controller, model) {
     this._super();
     this.collection = model._collection;

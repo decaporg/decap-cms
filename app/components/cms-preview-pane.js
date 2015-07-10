@@ -8,7 +8,6 @@ export default Ember.Component.extend({
   templateName: function() {
     var customName = `cms/preview/${this.get("collection.name")}`;
     var name = Ember.TEMPLATES[customName] ? customName : 'components/cms-preview-pane';
-    console.log("Name is: %o (custom %o)", name, customName);
     return name;
   }.property("collection.name"),
 
@@ -32,12 +31,10 @@ export default Ember.Component.extend({
         target = mutation.target;
         break;
     }
-    console.log("Target is: %o", target);
     while ((target && target.parentNode) && !('offsetTop' in target)) {
       target = target.parentNode;
     }
-    if (target) {
-      console.log("Scrolling to: %o", target, target.offsetTop);
+    if (target && ('offsetTop' in target)) {
       this.$().scrollTo(target, 200);
     }
   },
