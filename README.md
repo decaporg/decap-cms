@@ -89,7 +89,7 @@ log in.
 If you don't have a Github repo or just wan't to work locally, netlify CMS also
 has a local version of the Github api that you can run from any repo on your machine.
 
-Grab it from [https://github.com/netlify/netlify-git-api/releases](the netlify-git-api repo),
+Grab it from [the netlify-git-api repo](https://github.com/netlify/netlify-git-api/releases),
 follow the installation instructions, then CD into the repo with your site and run:
 
 ```bash
