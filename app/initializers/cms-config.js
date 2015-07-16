@@ -3,7 +3,7 @@ import Config from "../models/config";
  /* global jsyaml */
 
 function loadYamlConfig() {
-  if (Ember.$("#cms-yaml-config")) {
+  if (Ember.$("#cms-yaml-config").length) {
     return Ember.RSVP.Promise.resolve(Ember.$("#cms-yaml-config").html());
   } else {
     return Ember.$.get("config.yml");
