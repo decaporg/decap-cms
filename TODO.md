@@ -50,6 +50,14 @@ Jekyll has the strangest draft behavior currently. Only works for the \_posts co
 
 Better UI for reordering, work on stability, make items collapsible? Current list field works, but it's simple and the reordering doesn't feel super robust. Would be good to give it an overhaul.
 
+## Help texts
+
+It should be possible to add help texts to fields with a bit of extra information. Some of these might be small inline help texts defined directly in the config.yml, while others might be templates with more information.
+
+Here's an example of what the end result should be like:
+
+![Help Text](/todo/help-text.png)
+
 ## Formats
 
 Make fromFile and toFile return a promise, so formats can do async operations.

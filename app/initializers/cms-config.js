@@ -2,9 +2,17 @@ import Ember from "ember";
 import Config from "../models/config";
  /* global jsyaml */
 
+function loadYamlConfig() {
+  if (Ember.$("#cms-yaml-config")) {
+    return Ember.RSVP.Promise.resolve(Ember.$("#cms-yaml-config").html());
+  } else {
+    return Ember.$.get("config.yml");
+  }
+}
+
 export function initialize(container, application) {
   application.deferReadiness();
-  Ember.$.get("config.yml").then(function(data) {
+  loadYamlConfig().then(function(data) {
     var config = Config.create(jsyaml.safeLoad(data));
     application.register('cms:config', config, { instantiate: false });
     application.inject('route', 'config', 'cms:config');

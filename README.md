@@ -57,6 +57,7 @@ collections: # A list of collections the CMS should be able to edit
   - name: "post" # Used in routes, ie.: /admin/collections/:slug/edit
     label: "Post" # Used in the UI, ie.: "New Post"
     folder: "_posts" # The path to the folder where the documents are stored
+    sort: "date:desc" # Default is title:asc
     create: true # Allow users to create new documents in this collection
     fields: # The fields each document in this collection have
       - {label: "Title", name: "title", widget: "string", tagname: "h1"}
@@ -71,6 +72,16 @@ edited). In the future it'll also support single documents.
 
 Each collection have a list of fields, where each field has a `label`, a `name`
 and a `widget`.
+
+Some Static Site Generators (looking at you Hexo) won't copy a config.yml from
+the admin folder into the build when generating a site. As an alternative you can
+embed the config.yml directly in the `admin/index.html` file like this:
+
+```html
+<script type="application/x-yaml" id="cms-yaml-config">
+# Config YAML goes here...
+</script>
+```
 
 ## GitHub as a Backend
 
@@ -104,7 +115,22 @@ Configure the backend like this in your `config.yml`:
 ```yaml
 backend:
   name: netlify-api
-  url: localhost:8080
+  url: http://localhost:8080
+```
+
+## Media folder and Public folder
+
+Most static file generators, except from Jekyll, don't keep the files that'll be
+copied into the build folder when generating in their root folder.
+
+This can create a problem for image and file paths when uploaded through the CMS.
+
+Use the `public_folder` setting in `config.yml` to tell the CMS where the public
+folder is located in the sources. A typical Middleman setup would look like this:
+
+```yml
+media_folder: "source/uploads" # Media files will be stored in the repo under source/uploads
+public_folder: "source" # CMS now knows 'source' is the public folder and will strip this from the path
 ```
 
 ## Widgets
@@ -125,6 +151,7 @@ Currently these widgets are built-in:
 * **image** An uploaded image
 * **list** A list of objects, takes it's own array of fields describing the individual objects
 
+
 ## Customizing the preview
 
 You can customize how entries in a collection are previewed easily by adding a handlebars template in your `/admin/index.html`:
@@ -143,6 +170,9 @@ as the collection you want to preview.
 User the `{{cms-preview field='fieldname'}}` to insert the preview widget for a field.
 
 You can use `{{entry.fieldname}}` to access the actual value of a field in the template.
+
+For widgets like markdown fields or images, you'll typically always want to use the {{cms-preview field='body'}} format, since otherwise you'll get the raw value of the field, rather than the
+HTML value.
 
 ## Extending and overriding
 
