@@ -19,7 +19,7 @@ she'll be able to create new content or edit existing content.
 
 ## Installing
 
-Netlify CMS is an Ember app. To install it in your site, add an /admin folder in
+Netlify CMS is an Ember app. To install it in your site, add an `/admin` folder in
 your source directory and use this `index.html` as a template:
 
 ```html
@@ -173,6 +173,20 @@ You can use `{{entry.fieldname}}` to access the actual value of a field in the t
 
 For widgets like markdown fields or images, you'll typically always want to use the {{cms-preview field='body'}} format, since otherwise you'll get the raw value of the field, rather than the
 HTML value.
+
+## Escaping handlebars tags in Jekyll/Hexo
+
+Some static site generators, like Jekyll or Hexo, will try to parse the handlebar tags in your templates. Both of these use the following syntax to use raw HTML:
+
+```html
+{% raw %}
+<script type="text/x-handlebars" data-template-name='cms/preview/my-collection'>
+  <h1>{{cms-preview field='title'}}</h1>
+  <div class="photo">{{cms-preview field='image'}}</div>
+  <div class="body">{{cms-preview field='body'}}</div>
+</script>
+{% endraw %}
+```
 
 ## Extending and overriding
 
