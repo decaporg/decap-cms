@@ -37,7 +37,7 @@ export default Ember.Object.extend({
   init: function() {
     var config = this.get("config");
     this.base = ENDPOINT + "repos/" + (config && config.backend.repo);
-    this.branch = config && config.backend.branch;
+    this.branch = config && config.backend.branch || "master";
     this.config = config;
   },
 
