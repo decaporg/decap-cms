@@ -25,6 +25,15 @@ export default Ember.Controller.extend({
   entryPath: Ember.computed.alias("entry._path"),
 
   /**
+    Whether this is a new record or an already persisted record
+
+    @property newRecord
+  */
+  newRecord: function() {
+    return !this.get("entryPath");
+  }.property("entryPath"),
+
+  /**
     Prepare the controller. The router calls this when setting up the controller.
 
     @method prepare
@@ -77,8 +86,8 @@ export default Ember.Controller.extend({
    @property currentAction
   */
   currentAction: function() {
-    return this.get("entryPath") ? "Edit" : "Create";
-  }.property("entryPath"),
+    return this.get("newRecord") ? "Create" : "Edit";
+  }.property("newRecord"),
 
   /**
    Breadcrumbs for this controller.
@@ -255,8 +264,9 @@ export default Ember.Controller.extend({
 
       this.getFilePath().then((path) => {
         var files = [{path: path, content: this.toFileContent()}];
-        var commitMessage = "Updated " + this.get("collection.label") + " " +
-                                         this.get("entry.title");
+        var commitMessage = (this.get("newRecord") ? "Created " : "Updated ") +
+              this.get("collection.label") + " " +
+              this.get("entry.title");
 
         this.set("saving", true);
 
@@ -282,6 +292,28 @@ export default Ember.Controller.extend({
       }).catch((err) => {
           console.log("Error :%o", err);
       });
+    },
+
+    delete: function() {
+      if (this.get("newRecord")) {
+        // Can't delete if not persisted...
+        return;
+      }
+
+      if (confirm("Are you sure you want to delete this entry?")) {
+        var file = {path: this.get("entryPath"), content: this.toFileContent()};
+        var commitMessage = "Deleted " + this.get("collection.label") + " " +
+                                         this.get("entry.title");
+
+        this.set("saving", true);
+
+        this.get("repository").deleteFile(file, {message: commitMessage}).then(() => {
+          this.set("saving", false);
+          this.set("actionsOpen", false);
+          this.send("hideSidebar");
+          this.transitionToRoute("index.list", this.get("collection"));
+        });
+      }
     }
   }
 });

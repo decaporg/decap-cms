@@ -78,8 +78,8 @@ export default Ember.Object.extend({
     }
   },
 
-  deleteFile: function(path) {
-    return this.backend.deleteFile(path);
+  deleteFile: function(path, options) {
+    return this.backend.deleteFile(path, options);
   },
 
   /**

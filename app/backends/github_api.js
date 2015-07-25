@@ -139,6 +139,40 @@ export default Ember.Object.extend({
       });
   },
 
+  /**
+    Delete a file in the repo with a commit.
+
+    A commit message can be specified in `options` as `message`.
+
+    @method DeleteFiles
+    @param {Object} file
+    @param {Object} options
+    @return {Promise} result
+  */
+  deleteFile: function(file, options) {
+    var match = (file && file.path || "").match(/^(.*)\/([^\/]+)$/);
+    var dir = match && match[1];
+    var name = match && match[2];
+    if (!name) {
+      return Ember.RSVP.Promise.reject("Bad file path");
+    }
+    return this.listFiles(dir).then((files) => {
+      for (var i=0; i<files.length; i++) {
+        var meta = files[i];
+        if (meta.name === name) {
+          return this.request(this.base + "/contents/" + meta.path, {
+            type: "DELETE",
+            data: JSON.stringify({
+              message: options.message || `Deleting ${file.path}`,
+              sha: meta.sha,
+              branch: this.branch
+            })
+          });
+        }
+      }
+    });
+  },
+
   request: function(url, settings) {
     return Ember.$.ajax(url, Ember.$.extend(true, {
       headers: {Authorization: "Bearer " + this.token},

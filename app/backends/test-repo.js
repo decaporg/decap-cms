@@ -104,6 +104,21 @@ export default Ember.Object.extend({
     return this.withDelay(true, files.length * 10);
   },
 
+  deleteFile: function(file) {
+    var name, parts, part;
+    var dir = window.repoFiles, subdir;
+    subdir = dir;
+    parts = file.path.split("/");
+    name  = parts.pop();
+    while (part = parts.shift()) {
+      subdir[part] = subdir[part] || {};
+      subdir = subdir[part];
+    }
+    delete subdir[name];
+
+    return this.withDelay(true, 10);
+  },
+
   withDelay: function(fn, modifier) {
     modifier = modifier || 1;
     return new Promise((resolve) => {
