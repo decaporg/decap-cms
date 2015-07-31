@@ -19,4 +19,7 @@ body.ember-application {
       resize: none;
     }
   }
+  .cms-markdown-editor textarea {
+    font-family: monospace;
+  }
 }
