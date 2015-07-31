@@ -104,7 +104,7 @@ Grab it from [the netlify-git-api repo](https://github.com/netlify/netlify-git-a
 follow the installation instructions, then CD into the repo with your site and run:
 
 ```bash
-netlify users add
+netlify-git-api users add
 netlify-git-api serve
 ```
 
