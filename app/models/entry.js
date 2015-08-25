@@ -167,7 +167,6 @@ var Entry = Ember.Object.extend({
     @return {Promise} entry
   */
   cmsSave: function(widgets, metaFields) {
-    var repository = this.get("collection.repository");
     var path = this.get("cmsPath");
     var files = [{path: path, content: this.toFileContent(widgets, metaFields)}];
     var commitMessage = (this.get("cmsNewRecord") ? "Created " : "Updated ") +

@@ -182,7 +182,7 @@ var Collection = Ember.Object.extend({
       var path = this.get("folder") + "/" + slug + "." + (this.getExtension() || "md");
       return Entry.fromFile(this, {path: path});
     } else if (this.get("files")) {
-      var doc = this.get("files").find((doc) => doc.name == slug);
+      var doc = this.get("files").find((doc) => doc.name === slug);
       return doc ? Entry.fromFile(this, {path: doc.file}, {_doc: doc}) : Ember.RSVP.Promise.reject("File not found");
     } else if (this.get("file")) {
       // TODO: Load multiple entries from a single document

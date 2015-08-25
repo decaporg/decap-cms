@@ -1,5 +1,4 @@
 import AuthenticatedRoute from './authenticated';
-import Entry from '../models/entry';
 
 export default AuthenticatedRoute.extend({
   serialize: function(model) {

@@ -3,7 +3,7 @@ import Ember from 'ember';
 export default Ember.Controller.extend({
   init: function() {
     this._super.apply(this, arguments);
-    Ember.$(document).ajaxError((event, jqXHR, ajaxSettings, thrownError) => {
+    Ember.$(document).ajaxError((event, jqXHR /*, ajaxSettings, thrownError*/) => {
       // You should include additional conditions to the if statement so that this
       // only triggers when you're absolutely certain it should
       if (jqXHR.status === 401) {
