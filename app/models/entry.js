@@ -107,7 +107,7 @@ var Entry = Ember.Object.extend({
     @property cmsFields
   */
   cmsFields: function() {
-    return (this.get("_collection.fields") || []).concat(this.get("_doc.fields"));
+    return (this.get("_collection.fields") || []).concat(this.get("_doc.fields") || []);
   }.property("_doc"),
 
   /**
@@ -158,23 +158,6 @@ var Entry = Ember.Object.extend({
     return !this.get("_path");
   }.property("_path"),
 
-  /**
-    Save the entry (must pass in the widgets and metaFields from the controller)
-
-    @method toFileContent
-    @param {Array} widgets
-    @param {Array} metaFields
-    @return {Promise} entry
-  */
-  cmsSave: function(widgets, metaFields) {
-    var path = this.get("cmsPath");
-    var files = [{path: path, content: this.toFileContent(widgets, metaFields)}];
-    var commitMessage = (this.get("cmsNewRecord") ? "Created " : "Updated ") +
-          this.get("_collection.label") + " " +
-          this.get("title");
-
-    return this.get("_collection.repository").updateFiles(files, {message: commitMessage}).then(() => this);
-  },
 
   /**
     The orignal file content of the entry.
@@ -201,7 +184,42 @@ var Entry = Ember.Object.extend({
     if (match) {
       return new Date(match[1]);
     }
-  }.property("_path")
+  }.property("_path"),
+
+  /**
+    Save the entry (must pass in the widgets and metaFields from the controller)
+
+    @method toFileContent
+    @param {Array} widgets
+    @param {Array} metaFields
+    @return {Promise} entry
+  */
+  cmsSave: function(widgets, metaFields) {
+    var path = this.get("cmsPath");
+    var files = [{path: path, content: this.toFileContent(widgets, metaFields)}];
+    var commitMessage = (this.get("cmsNewRecord") ? "Created " : "Updated ") +
+          this.get("_collection.label") + " " +
+          this.get("cmsTitle");
+
+    return this.get("_collection.repository").updateFiles(files, {message: commitMessage}).then(() => this);
+  },
+
+  /**
+    Delete the entry
+
+    @method cmsDelete
+    @return {Promise} deleted
+  */
+  cmsDelete: function() {
+    if (!this.get("_collection.create")) {
+      throw("Can't delete entries in collections with creation disabled");
+    }
+    var file = {path: this.get("cmsPath")};
+    var commitMessage = "Deleted " + this.get("_collection.label") + " " +
+                                     this.get("cmsTitle");
+
+    return this.get("_collection.repository").deleteFile(file, {message: commitMessage})
+  }
 });
 
 Entry.reopenClass({

@@ -15,11 +15,11 @@
 </div>
 <div class="cms cms-sidebar-bottom">
   <div class="cms cms-sidebar-actions">
-    {{#unless newRecord}}
+    {{#if canDelete}}
     <a {{action 'delete'}} class="cms cms-action cms-btn-delete">
       <i class="cms cms-icon cms-icon-remove"></i>
       Delete
     </a>
-    {{/unless}}
+    {{/if}}
   </div>
 </div>

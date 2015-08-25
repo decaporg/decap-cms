@@ -30,12 +30,16 @@ export default Ember.Controller.extend({
     @property newRecord
   */
   newRecord: function() {
-    return !this.get("entryPath");
-  }.property("entryPath"),
+    return this.get("entry.cmsNewRecord");
+  }.property("entry.cmsNewRecord"),
 
   canCreate: function() {
     return !!this.get("collection.create");
   }.property("collection.create"),
+
+  canDelete: function() {
+    return !this.get("entry.cmsNewRecord") && this.get("collection.create");
+  }.property("collection.create", "entry.cmsNewRecord"),
 
   /**
     Prepare the controller. The router calls this when setting up the controller.
@@ -135,7 +139,7 @@ export default Ember.Controller.extend({
   */
   widgets: function() {
     var widgets = Ember.A();
-    
+
     (this.get("entry.cmsFields") || []).forEach((field) => {
       var value = this.get(`entry.${field.name}`);
       if (typeof value === "undefined") {
@@ -259,23 +263,23 @@ export default Ember.Controller.extend({
     },
 
     delete: function() {
+      console.log("Deleted");
       if (this.get("newRecord")) {
         // Can't delete if not persisted...
         return;
       }
 
       if (confirm("Are you sure you want to delete this entry?")) {
-        var file = {path: this.get("entryPath"), content: this.toFileContent()};
-        var commitMessage = "Deleted " + this.get("collection.label") + " " +
-                                         this.get("entry.title");
-
         this.set("saving", true);
-
-        this.get("repository").deleteFile(file, {message: commitMessage}).then(() => {
+        this.get("entry").cmsDelete().then(() => {
           this.set("saving", false);
           this.set("actionsOpen", false);
           this.send("hideSidebar");
           this.transitionToRoute("index.list", this.get("collection"));
+        }).catch((err) => {
+          // Definitively needs better error reporting here...
+          console.log("Error saving: %o", err);
+          this.set("error", err);
         });
       }
     }
