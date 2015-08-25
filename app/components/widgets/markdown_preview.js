@@ -17,7 +17,6 @@ import MarkdownVDOM from '../../utils/markdown_vdom';
 */
 export default Ember.Component.extend({
   init: function() {
-    console.log("Init markdown preview");
     this._super.apply(this, arguments);
   },
   /*
@@ -30,7 +29,6 @@ export default Ember.Component.extend({
     component element is inserted into the DOM.
   */
   didInsertElement: function() {
-    console.log("Inserted markdown preview");
     this.md = new MarkdownVDOM(this.get("media"));
     var vdom = this.md.markdownToVDOM(this.get("widget.value"));
     var rootNode = createElement(vdom);

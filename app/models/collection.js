@@ -60,12 +60,10 @@ var Collection = Ember.Object.extend({
   }.property("config.ready"),
 
   repository: function() {
-    console.log("Get repository from %o", this.get("config.container"));
     return this.get("config.container").lookup("service:repository");
   }.property("config.container"),
 
   getFormatter: function(path) {
-    console.log("Getting formatter for %s", path);
     if (this.get("format")) {
       return this.get("formatter");
     }
@@ -87,11 +85,9 @@ var Collection = Ember.Object.extend({
   }.property("media_folder", "config.media_folder"),
 
   loadEntriesFromFolder: function() {
-    console.log("Getting repository");
     var repository = this.get("repository");
     var extension = this.getExtension();
 
-    console.log("Repsitory is: %o", repository);
     return repository && repository.listFiles(this.get("folder")).then((files) => {
       files = files.filter((file) => extension == null || this.gfile.name.split(".").pop() === extension).map((file) => {
         return Entry.fromFile(this, file);
@@ -132,10 +128,9 @@ var Collection = Ember.Object.extend({
   findEntry: function(slug) {
     if (this.get("folder")) {
       var path = this.get("folder") + "/" + slug + "." + (this.getExtension() || "md");
-      console.log("Finding file - repository: %o", this.get("repository"));
       return Entry.fromFile(this, {path: path});
     } else if (this.get("files")) {
-      var doc = this.get("files").find((doc) => {console.log("Comparing %o with %s", doc, slug); return doc.name == slug});
+      var doc = this.get("files").find((doc) => doc.name == slug);
       return doc ? Entry.fromFile(this, {path: doc.file}, {_doc: doc}) : Ember.RSVP.Promise.reject("File not found");
     } else if (this.get("file")) {
       //

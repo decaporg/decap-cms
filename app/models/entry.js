@@ -21,8 +21,6 @@ var Entry = Ember.Object.extend({
   */
   cmsExcerpt: function() {
     var excerpt = this.get("excerpt") || this.get("description");
-
-    console.log("Getting excerprt via: %o", this.get("_formatter"));
     return excerpt || this.get("_formatter").excerpt(this.get("body"));
   }.property("body"),
 
@@ -76,7 +74,6 @@ var Entry = Ember.Object.extend({
   }.property("_doc"),
 
   cmsIsDocument: function() {
-    console.log("Is doc? %o", this.get("_doc"));
     return this.get("_doc") ? true : false;
   }.property("_doc"),
 
