@@ -7,5 +7,6 @@ export default Ember.Controller.extend({
     this.set("config", config);
     this.set("controllers.application.currentAction", "Index");
   },
-  collections: Ember.computed.alias("config.collections")
+  collections: Ember.computed.alias("config.collections"),
+  documents: Ember.computed.alias("config.documents")
 });

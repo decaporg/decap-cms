@@ -15,7 +15,7 @@ import Cache from './object_cache/cache';
   @class Repository
   @extends Ember.Object
 */
-export default Ember.Object.extend({
+export default Ember.Service.extend({
   init: function() {
     this.fileCache = Cache.create({});
   },

@@ -22,7 +22,8 @@ var Entry = Ember.Object.extend({
   cmsExcerpt: function() {
     var excerpt = this.get("excerpt") || this.get("description");
 
-    return excerpt || this.get("_collection.formatter").excerpt(this.get("body"));
+    console.log("Getting excerprt via: %o", this.get("_formatter"));
+    return excerpt || this.get("_formatter").excerpt(this.get("body"));
   }.property("body"),
 
   /**
@@ -47,13 +48,81 @@ var Entry = Ember.Object.extend({
     }
   }),
 
+  cmsTitle: function() {
+    var doc = this.get("_doc");
+    return this.get("title") || doc.title || this.get("cmsSlug");
+  }.property("title", "_doc"),
+
   cmsSlug: function() {
-    return this.get("_collection.slugFormatter")(this);
-  }.property("cmsUserSlug", "cmsDate", "title"),
+    if (this.get("cmsIsDocument")) {
+      return this.get("_doc.name");
+    } else if (this.get("_path")) {
+      return this.get("_path").split("/").pop().split(".").slice(0,-1).join(".");
+    } else {
+      return this.get("_collection.slugFormatter")(this);
+    }
+  }.property("cmsUserSlug", "cmsDate", "title", "_doc"),
 
   cmsPath: function() {
-    return this.get("_path") || (this.get("_collection.folder") + "/" + this.get("cmsSlug") + "." + this.get("_collection").getExtension());
+    if (this.get("cmsIsDocument")) {
+      return this.get("_doc.file");
+    }
+    return this.get("_path") || (this.get("_collection.folder") + "/" + this.get("cmsSlug") + "." + (this.get("_collection").getExtension() || "md"));
   }.property("cmsSlug"),
+
+  cmsFields: function() {
+    var doc = this.get("_doc");
+    return doc && doc.fields;
+  }.property("_doc"),
+
+  cmsIsDocument: function() {
+    console.log("Is doc? %o", this.get("_doc"));
+    return this.get("_doc") ? true : false;
+  }.property("_doc"),
+
+  /**
+    Convert the entry to file content via the `format` of the collection.
+
+    @method toFileContent
+    @param {Array} widgets
+    @param {Array} metaFields
+    @return {String} fileContent
+  */
+  toFileContent: function(widgets, metaFields) {
+    var widget;
+    var meta;
+    var i;
+    var len;
+    var obj = {};
+    var formatter = this.get("_collection").getFormatter(this.get("cmsPath"));
+
+    for (i=0,len=widgets.length; i<len; i++) {
+      widget = widgets[i];
+      obj[widget.get("name")] = widget.getValue();
+    }
+
+    for (i=0,len=metaFields.length; i<len; i++) {
+      meta = metaFields[i];
+      obj[meta.get("name")] = meta.getValue();
+    }
+
+    return formatter.toFile(obj, this);
+  },
+
+  cmsNewRecord: function() {
+    return !this.get("_path");
+  }.property("_path"),
+
+  cmsSave: function(widgets, metas) {
+    var repository = this.get("collection.repository");
+    var path = this.get("cmsPath");
+    var files = [{path: path, content: this.toFileContent(widgets, metas)}];
+    var commitMessage = (this.get("cmsNewRecord") ? "Created " : "Updated ") +
+          this.get("_collection.label") + " " +
+          this.get("title");
+
+    return this.get("_collection.repository").updateFiles(files, {message: commitMessage}).then(() => this);
+  },
 
   /**
     The orignal file content of the entry.
@@ -94,8 +163,20 @@ Entry.reopenClass({
     @static
     @return {Entry} entry
   */
-  fromContent: function(collection, content, path) {
-    return Entry.create(Ember.$.extend(collection.get("formatter").fromFile(content), {_collection: collection, _path: path, _file_content: content}));
+  fromContent: function(collection, content, path, metadata) {
+    var formatter = collection.getFormatter(path);
+    return Entry.create(
+      Ember.$.extend(
+        formatter.fromFile(content),
+        {_collection: collection, _path: path, _file_content: content, _formatter: formatter},
+        metadata
+      ));
+  },
+
+  fromFile: function(collection, file, metadata) {
+    return collection.get("repository").readFile(file.path, file.sha).then((content) => {
+      return Entry.fromContent(collection, content, file.path, metadata);
+    });
   }
 });
 

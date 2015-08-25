@@ -33,6 +33,10 @@ export default Ember.Controller.extend({
     return !this.get("entryPath");
   }.property("entryPath"),
 
+  canCreate: function() {
+    return !!this.get("collection.create");
+  }.property("collection.create"),
+
   /**
     Prepare the controller. The router calls this when setting up the controller.
 
@@ -109,7 +113,12 @@ export default Ember.Controller.extend({
         }
       ];
     } else {
-      return [{
+      return [
+      {
+        label: `${this.get("collection.label")} List`,
+        path: "index.list",
+        model: this.get("collection"),
+      },{
         label: `New ${this.get("collection.label")}`,
         path: "create",
         model: this.get("collection")
@@ -126,7 +135,19 @@ export default Ember.Controller.extend({
   */
   widgets: function() {
     var widgets = Ember.A();
-    this.get("collection.fields").forEach((field) => {
+    (this.get("collection.fields") || []).forEach((field) => {
+      var value = this.get(`entry.${field.name}`);
+      if (typeof value === "undefined") {
+        value = field['default'] || null;
+      }
+      widgets.push(Widget.create({
+        field: field,
+        entry: this.get("entry"),
+        value: value
+      }));
+    });
+
+    (this.get("entry.cmsFields") || []).forEach((field) => {
       var value = this.get(`entry.${field.name}`);
       if (typeof value === "undefined") {
         value = field['default'] || null;
@@ -144,9 +165,10 @@ export default Ember.Controller.extend({
   meta: function() {
     var meta = Ember.A();
 
-    var defaultFields = [
-      {label: "Slug", name: "cmsUserSlug", widget: "slug"}
-    ];
+    var defaultFields = [];
+    if (!this.get("entry.cmsIsDocument")) {
+      defaultFields.push({label: "Slug", name: "cmsUserSlug", widget: "slug"});
+    }
     var existingDateField = (this.get("collection.fields") || []).filter((f) => f.name === 'date')[0];
     var existingDateMeta  = (this.get("collection.meta") || []).filter((f) => f.name === 'date')[0];
     if (!(existingDateField || existingDateMeta)) {
@@ -192,35 +214,6 @@ export default Ember.Controller.extend({
   }.property("isInvalid", "saving"),
 
   /**
-    Convert the current entry to file content via the `format` of the collection.
-
-    @method toFileContent
-    @return {String} fileContent
-  */
-  toFileContent: function() {
-    var widget;
-    var meta;
-    var i;
-    var len;
-    var obj = {};
-    var formatter = this.get("collection.formatter");
-    var widgets = this.get("widgets");
-    var metas   = this.get("meta");
-
-    for (i=0,len=widgets.length; i<len; i++) {
-      widget = widgets[i];
-      obj[widget.get("name")] = widget.getValue();
-    }
-
-    for (i=0,len=metas.length; i<len; i++) {
-      meta = metas[i];
-      obj[meta.get("name")] = meta.getValue();
-    }
-
-    return formatter.toFile(obj, this.get("entry"));
-  },
-
-  /**
     Check for a ts.json with a deploy timestamp and poll it if it exists.
 
     Send a desktop notification once it changes.
@@ -262,35 +255,17 @@ export default Ember.Controller.extend({
     save: function() {
       if (this.get("isInvalid")) { return; }
 
-      this.getFilePath().then((path) => {
-        var files = [{path: path, content: this.toFileContent()}];
-        var commitMessage = (this.get("newRecord") ? "Created " : "Updated ") +
-              this.get("collection.label") + " " +
-              this.get("entry.title");
+      this.set("saving", true);
+      this.get("entry").cmsSave(this.get("widgets"), this.get("meta")).then((entry) => {
+        this.set("saving", false);
+        this.set("actionsOpen", false);
+        this.get("widgets").forEach((w) => { w.set("dirty", false); });
 
-        this.set("saving", true);
-
-        // Start watching for a deploy
-        //this.notifyOnDeploy();
-
-        this.get("repository").updateFiles(files, {message: commitMessage}).then(() => {
-          this.set("saving", false);
-          this.set("actionsOpen", false);
-          this.get("widgets").forEach((w) => { w.set("dirty", false); });
-
-          // If the entry was a new record, we'll transition the route to the
-          // edit screen for that entry
-          if (!this.get("entryPath")) {
-            this.set("entry._path", path);
-            this.transitionToRoute("edit", this.get("entry"));
-          }
-        }, (err) => {
-          // Definitively needs better error reporting here...
-          console.log("Error saving: %o", err);
-          this.set("error", err);
-        });
+        this.transitionToRoute("edit", entry);
       }).catch((err) => {
-          console.log("Error :%o", err);
+        // Definitively needs better error reporting here...
+        console.log("Error saving: %o", err);
+        this.set("error", err);
       });
     },
 

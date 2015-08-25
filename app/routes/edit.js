@@ -2,23 +2,16 @@ import AuthenticatedRoute from './authenticated';
 import Entry from '../models/entry';
 
 export default AuthenticatedRoute.extend({
-  _pathFor: function(collection, slug) {
-    return collection.folder + "/" + slug + ".md";
-  },
-
   serialize: function(model) {
     return {
       collection_id: model.get("_collection.id"),
-      slug: (model.get("_path") || "").split("/").pop().replace(/\.[^.]+$/, '')
+      slug: model.get("cmsSlug")
     };
   },
 
   model: function(params) {
     var collection = this.get("config").findCollection(params.collection_id);
-    var path = this._pathFor(collection, params.slug);
-    return this.get("repository").readFile(path).then((content) => {
-      return Entry.fromContent(collection, content, path);
-    });
+    return collection.findEntry(params.slug);
   },
 
   controllerName: "entry",
@@ -44,5 +37,4 @@ export default AuthenticatedRoute.extend({
       }
     }
   }
-
 });

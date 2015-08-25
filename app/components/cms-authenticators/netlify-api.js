@@ -18,7 +18,6 @@ export default Base.extend({
           "Authorization": "Basic " + btoa(this.get("email") + ":" + this.get("password"))
         }
       }).then((data) => {
-        console.log("Got data: %o", data);
         resolve({access_token: data.access_token});
       }, (err) => { reject(err); });
     });

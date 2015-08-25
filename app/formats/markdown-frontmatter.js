@@ -20,6 +20,7 @@ var OutputSchema = new jsyaml.Schema({
 });
 
 export default MarkdownFormatter.extend({
+  extension: "md",
   fromFile: function(content) {
     var regexp = /^---\n([^]*?)\n---\n([^]*)$/;
     var match = content.match(regexp);

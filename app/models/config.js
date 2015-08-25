@@ -20,7 +20,7 @@ export default Ember.Object.extend({
   init: function() {
     var collection;
     var collections = [];
-    for (var i=0, len=this.collections.length; i<len; i++) {
+    for (var i=0, len = this.collections && this.collections.length; i<len; i++) {
       collection = Collection.create(this.collections[i]);
       collection.set("config", this);
       collections.push(collection);

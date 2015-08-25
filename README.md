@@ -256,6 +256,24 @@ Netlify CMS includes [a date helper plugin](https://github.com/johnotander/ember
 so you can easily format dates with the `{{time-format}}` helper via [moment.js's](http://momentjs.com/)
 formatting shortcuts.
 
+### Template Helpers
+
+When writing preview templates or widget templates, you can use any component or helper normally available in Ember apps, but apart from that netlify CMS adds a few extra helpers:
+
+#### Time format
+
+Netlify CMS has a built-in time-format helper for formatting date and time with the formatting syntax from [moment.js](http://momentjs.com/).
+
+```html
+<h2>Date: {{ time-format entry.date "dddd, MMMM Do YYYY, h:mm:ss a"}}</h2>
+```
+
+This would output something like:
+
+```html
+<h2> Date: Friday, August 14th 2015, 2:12:34 pm</h2>
+```
+
 
 ### Coming Soon:
 

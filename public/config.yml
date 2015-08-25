@@ -16,6 +16,7 @@ collections: # A list of collections the CMS should be able to edit
       - {label: "Body", name: "body", widget: "markdown"}
     meta:
       - {label: "Publish Date", name: "date", widget: "datetime", format: "YYYY-MM-DD hh:mma"}
+
   - name: "faq" # Used in routes, ie.: /admin/collections/:slug/edit
     label: "FAQ" # Used in the UI, ie.: "New Post"
     folder: "_faqs"
@@ -23,3 +24,13 @@ collections: # A list of collections the CMS should be able to edit
     fields: # The fields each document in this collection have
       - {label: "Question", name: "title", widget: "string", tagname: "h1"}
       - {label: "Answer", name: "body", widget: "markdown"}
+
+  - name: "settings"
+    label: "Settings"
+    files:
+      - name: "general"
+        label: "General Settings"
+        file: "_data/settings.json"
+        fields:
+          - {label: "Global title", name: site_title, widget: "string"}
+          - {label: "Number of posts on frontpage", name: frontpage_post_count, widget: "number"}

@@ -34,12 +34,14 @@
           {{if saving 'Saving...' 'Save'}}
         </a>
       </li>
+      {{#if canCreate }}
       <li class="cms cms-li">
         <a class="cms-link cms-settings-btn" href="#" {{action "toggleSidebar"}}>
           <i class="cms cms-icon cms-icon-gear"></i>
           Settings
         </a>
       </li>
+      {{/if}}
     </ul>
   </div>
 </div>

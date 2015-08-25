@@ -1,6 +1,8 @@
 import Ember from 'ember';
 
 export default Ember.Object.extend({
+  isServiceFactory: true,
+
   defaultIcon: "/favicon.ico",
 
   withPermission: function() {

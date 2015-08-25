@@ -1,6 +1,7 @@
 import Ember from 'ember';
 
 export default Ember.Object.extend({
+  isServiceFactory: true,
   store: function(data) {
     if (window.localStorage) {
       window.localStorage.setItem('cms.credentials', JSON.stringify(data));

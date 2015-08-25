@@ -36,4 +36,8 @@ body.ember-application {
   .cms-sidebar {
     border-left: 1px solid $color_muted;
   }
+  .cms-nav-menu + .cms-nav-menu {
+    border-top: 1px solid $color_muted;
+    padding-top: $container_padding;
+  }
 }

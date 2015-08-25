@@ -31,7 +31,6 @@ export default Ember.Object.extend({
   },
 
   authorize: function(credentials) {
-    console.log("Setting token from credentials: %v", credentials);
     this.set("token", credentials.access_token);
     return Promise.resolve(true);
   },
@@ -98,7 +97,6 @@ export default Ember.Object.extend({
             data: JSON.stringify({message: options.message, tree: changeTree.sha, parents: [ref.object.sha]})
           });
         }).then((response) => {
-          console.log("Done - got ref: %o", response);
           return this.request(this.base + "/refs/heads/" + this.branch, {
             type: "PATCH",
             data: JSON.stringify({sha: response.sha})
