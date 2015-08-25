@@ -135,18 +135,7 @@ export default Ember.Controller.extend({
   */
   widgets: function() {
     var widgets = Ember.A();
-    (this.get("collection.fields") || []).forEach((field) => {
-      var value = this.get(`entry.${field.name}`);
-      if (typeof value === "undefined") {
-        value = field['default'] || null;
-      }
-      widgets.push(Widget.create({
-        field: field,
-        entry: this.get("entry"),
-        value: value
-      }));
-    });
-
+    
     (this.get("entry.cmsFields") || []).forEach((field) => {
       var value = this.get(`entry.${field.name}`);
       if (typeof value === "undefined") {

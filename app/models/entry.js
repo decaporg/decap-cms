@@ -10,16 +10,23 @@ import {slugify} from '../utils/slugify';
 /**
  Represents an entry in a collection or a single document
 
+ Note, since the properties on this object represents the keys/values in a CMS
+ document, all properties that are not part of the CMS document, are camelcase
+ and prefixed with cdm (ie. cmsExcerpt, cmsSlug, etc...).
+
  @class Entry
  @extends Ember.Object
  */
 var Entry = Ember.Object.extend({
   /**
-    Excerpt of the entry for lists/etc.
+    Excerpt of the entry for the entry listing
 
     @property cmsExcerpt
   */
   cmsExcerpt: function() {
+    if (this.get("_doc.description")) {
+      return this.get("_doc.description");
+    }
     var excerpt = this.get("excerpt") || this.get("description");
     return excerpt || this.get("_formatter").excerpt(this.get("body"));
   }.property("body"),
@@ -35,6 +42,15 @@ var Entry = Ember.Object.extend({
   }.property("date", "created_at", "dateFromUrl"),
 
 
+  /**
+    The slug we'll show to the user in the meta input for slug.
+
+    This is often different from the filename of the document. Ie, when using a
+    permalink structure like "{year}-{month}-{day}-{slug}", the user slug will
+    only be the final slug part.
+
+    @property cmsUserSlug
+  */
   cmsUserSlug: Ember.computed("title", {
     get: function() {
       return slugify(this.get("_cmsUserSlug") || this.get("title") || "");
@@ -46,11 +62,23 @@ var Entry = Ember.Object.extend({
     }
   }),
 
+  /**
+    The title of an entry showed in lists, relations, etc...
+
+    @property cmsTitle
+  */
   cmsTitle: function() {
-    var doc = this.get("_doc");
-    return this.get("title") || doc.title || this.get("cmsSlug");
+    if (this.get("_doc.label")) {
+      return this.get("_doc.label");
+    }
+    return this.get("title") || this.get("cmsSlug");
   }.property("title", "_doc"),
 
+  /**
+    The slug of an entry
+
+    @property cmsSlug
+  */
   cmsSlug: function() {
     if (this.get("cmsIsDocument")) {
       return this.get("_doc.name");
@@ -61,6 +89,11 @@ var Entry = Ember.Object.extend({
     }
   }.property("cmsUserSlug", "cmsDate", "title", "_doc"),
 
+  /**
+    File path of an entry within the repository
+
+    @property cmsPath
+  */
   cmsPath: function() {
     if (this.get("cmsIsDocument")) {
       return this.get("_doc.file");
@@ -68,11 +101,21 @@ var Entry = Ember.Object.extend({
     return this.get("_path") || (this.get("_collection.folder") + "/" + this.get("cmsSlug") + "." + (this.get("_collection").getExtension() || "md"));
   }.property("cmsSlug"),
 
+  /**
+    All the fields this entry has
+
+    @property cmsFields
+  */
   cmsFields: function() {
-    var doc = this.get("_doc");
-    return doc && doc.fields;
+    return (this.get("_collection.fields") || []).concat(this.get("_doc.fields"));
   }.property("_doc"),
 
+  /**
+    Whether this entry is a document (in a collection of individual document files)
+    or an entry (a collection with similar entry types)
+
+    @property cmsIsDocument
+  */
   cmsIsDocument: function() {
     return this.get("_doc") ? true : false;
   }.property("_doc"),
@@ -106,14 +149,27 @@ var Entry = Ember.Object.extend({
     return formatter.toFile(obj, this);
   },
 
+  /**
+    Whether this entry is a new record or an existing file
+
+    @property cmsNewRecord
+  */
   cmsNewRecord: function() {
     return !this.get("_path");
   }.property("_path"),
 
-  cmsSave: function(widgets, metas) {
+  /**
+    Save the entry (must pass in the widgets and metaFields from the controller)
+
+    @method toFileContent
+    @param {Array} widgets
+    @param {Array} metaFields
+    @return {Promise} entry
+  */
+  cmsSave: function(widgets, metaFields) {
     var repository = this.get("collection.repository");
     var path = this.get("cmsPath");
-    var files = [{path: path, content: this.toFileContent(widgets, metas)}];
+    var files = [{path: path, content: this.toFileContent(widgets, metaFields)}];
     var commitMessage = (this.get("cmsNewRecord") ? "Created " : "Updated ") +
           this.get("_collection.label") + " " +
           this.get("title");
@@ -157,6 +213,7 @@ Entry.reopenClass({
     @param {Collection} collection
     @param {String} content
     @param {String} path
+    @param {Object} metadata
     @static
     @return {Entry} entry
   */
@@ -170,6 +227,16 @@ Entry.reopenClass({
       ));
   },
 
+  /**
+    Instantiates a new entry model from a file object
+
+    @method fromFile
+    @param {Collection} collection
+    @param {File} file
+    @param {Object} metadata
+    @static
+    @return {Entry} entry
+  */
   fromFile: function(collection, file, metadata) {
     return collection.get("repository").readFile(file.path, file.sha).then((content) => {
       return Entry.fromContent(collection, content, file.path, metadata);

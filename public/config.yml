@@ -29,8 +29,9 @@ collections: # A list of collections the CMS should be able to edit
     label: "Settings"
     files:
       - name: "general"
-        label: "General Settings"
+        label: "Site Settings"
         file: "_data/settings.json"
+        description: "General Site Settings"
         fields:
           - {label: "Global title", name: site_title, widget: "string"}
           - {label: "Number of posts on frontpage", name: frontpage_post_count, widget: "number"}

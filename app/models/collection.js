@@ -55,14 +55,36 @@ var Collection = Ember.Object.extend({
     return this.get("extension") || this.get("formatter.extension");
   },
 
+  /**
+    The formatter for this collection
+    Note: a collection of individual file documents, might have a different formatter
+    for each document and in that case this will return null
+
+    @property formatter
+  */
   formatter: function() {
     return this.get("config.container").lookup("format:" + this.get("format"));
   }.property("config.ready"),
 
+  /**
+    The Git repository we're working on
+
+    @property repository
+  */
   repository: function() {
     return this.get("config.container").lookup("service:repository");
   }.property("config.container"),
 
+  /**
+    Get the formatter for a path
+
+    If the collection has an explicit formatter set, that will be returned. Otherwise
+    the formatter will be determined based on the file extension.
+
+    @method getFormatter
+    @param {String} path
+    @return {Format} formatter
+  */
   getFormatter: function(path) {
     if (this.get("format")) {
       return this.get("formatter");
@@ -77,25 +99,42 @@ var Collection = Ember.Object.extend({
       case "md":
         return this.get("config.container").lookup("format:markdown_frontmatter");
     }
-
   },
 
+  /**
+    The folder where media should be stored for this collection.
+
+    @property mediaFolder
+  */
   mediaFolder: function() {
     return this.get("media_folder") || this.get("config.media_folder") || "uploads";
   }.property("media_folder", "config.media_folder"),
 
+  /**
+    Loads all entries from a folder. If an extension is specified for the collection,
+    only files with that extension will be processed.
+
+    @method loadEntriesFromFolder
+    @return {Promise} entries
+  */
   loadEntriesFromFolder: function() {
     var repository = this.get("repository");
     var extension = this.getExtension();
 
     return repository && repository.listFiles(this.get("folder")).then((files) => {
-      files = files.filter((file) => extension == null || this.gfile.name.split(".").pop() === extension).map((file) => {
+      files = files.filter((file) => extension == null || file.name.split(".").pop() === extension).map((file) => {
         return Entry.fromFile(this, file);
       });
       return Ember.RSVP.Promise.all(files);
     });
   },
 
+  /**
+    Loads entries from individual files specified directly in the collection configuration.
+
+    @method loadEntriesFromFiles
+    @return {Promise} entries
+  */
   loadEntriesFromFiles: function() {
     var repository = this.get("repository");
 
@@ -113,6 +152,12 @@ var Collection = Ember.Object.extend({
     });
   },
 
+  /**
+    Loads the entries in this collection
+
+    @method loadEntries
+    @return {Promise} entries
+  */
   loadEntries: function() {
     if (this.get("folder")) {
       return this.loadEntriesFromFolder();
@@ -125,6 +170,13 @@ var Collection = Ember.Object.extend({
     }
   },
 
+  /**
+    Find an entry by slug.
+
+    @method findEntry
+    @param {String} slug
+    @return {Promise} entry
+  */
   findEntry: function(slug) {
     if (this.get("folder")) {
       var path = this.get("folder") + "/" + slug + "." + (this.getExtension() || "md");
@@ -133,7 +185,7 @@ var Collection = Ember.Object.extend({
       var doc = this.get("files").find((doc) => doc.name == slug);
       return doc ? Entry.fromFile(this, {path: doc.file}, {_doc: doc}) : Ember.RSVP.Promise.reject("File not found");
     } else if (this.get("file")) {
-      //
+      // TODO: Load multiple entries from a single document
     } else {
       alert("This collection doesn't have any entries configured. Set either 'folder', 'file' or 'files' in your config.yml");
     }
