@@ -18,6 +18,9 @@ export default Ember.Controller.extend({
     this.get("collection").loadEntries().then((entries) => {
       this.set("entries", entries);
       this.set("loading_entries", false);
-    });
+    }).catch((err) => {
+      alert("Error loading documents from " + this.get("collection.label"));
+      console.log(err);
+    })
   }.observes("collection")
 });

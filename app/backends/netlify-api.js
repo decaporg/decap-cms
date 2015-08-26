@@ -140,10 +140,10 @@ export default Ember.Object.extend({
   },
 
   request: function(url, settings) {
-    return Ember.$.ajax(url, Ember.$.extend(true, {
+    return Ember.RSVP.Promise.cast(Ember.$.ajax(url, Ember.$.extend(true, {
       contentType: "application/json",
       headers: {Authorization: "Bearer " + this.token}
-    }, settings || {}));
+    }, settings || {})));
   },
 
   getRef: function() {

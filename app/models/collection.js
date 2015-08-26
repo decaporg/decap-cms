@@ -119,13 +119,17 @@ var Collection = Ember.Object.extend({
   */
   loadEntriesFromFolder: function() {
     var repository = this.get("repository");
-    var extension = this.getExtension();
+    var extension = this.getExtension() || "md";
+
+    if (!repository) {
+      return Ember.RSVP.Promise.resolve([]);
+    }
 
     return repository && repository.listFiles(this.get("folder")).then((files) => {
       files = files.filter((file) => extension == null || file.name.split(".").pop() === extension).map((file) => {
         return Entry.fromFile(this, file);
       });
-      return Ember.RSVP.Promise.all(files);
+      return Ember.RSVP.Promise.all(files).then((entries) => { console.log("got entries now: %o", entries); return entries});
     });
   },
 

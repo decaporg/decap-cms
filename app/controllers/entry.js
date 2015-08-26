@@ -163,7 +163,7 @@ export default Ember.Controller.extend({
     }
     var existingDateField = (this.get("collection.fields") || []).filter((f) => f.name === 'date')[0];
     var existingDateMeta  = (this.get("collection.meta") || []).filter((f) => f.name === 'date')[0];
-    if (!(existingDateField || existingDateMeta)) {
+    if (!(existingDateField || existingDateMeta || this.get("entry.cmsIsDocument"))) {
       defaultFields.push({label: "Publish Date", name: "date", widget: "date", default: "now"});
     }
 
@@ -191,7 +191,7 @@ export default Ember.Controller.extend({
   */
   isValid: function() {
     return this.get("widgets").every(function(widget) { return widget.get("isValid"); });
-  }.property("widgets.@each.isValid"),
+  }.property("widgets.[].isValid"),
 
   /**
     Opposite of `isValid`.

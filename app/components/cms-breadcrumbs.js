@@ -78,7 +78,7 @@ export default Ember.Component.extend({
     last.class = "cms-breadcrumb-active";
 
     return crumbs;
-  }.property("controllers", "controllers.@each.breadcrumbs"),
+  }.property("controllers", "controllers.[].breadcrumbs"),
 
   actions: {
     /**

@@ -174,10 +174,10 @@ export default Ember.Object.extend({
   },
 
   request: function(url, settings) {
-    return Ember.$.ajax(url, Ember.$.extend(true, {
+    return Ember.RSVP.Promise.cast(Ember.$.ajax(url, Ember.$.extend(true, {
       headers: {Authorization: "Bearer " + this.token},
       contentType: "application/json"
-    }, settings || {}));
+    }, settings || {})));
   },
 
   getBranch: function() {

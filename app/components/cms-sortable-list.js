@@ -29,7 +29,7 @@ export default Ember.Component.extend({
     return this.get("items").map(function(item) {
       return {id: item[id], item: item};
     });
-  }.property("items.@each"),
+  }.property("items.[]"),
 
   extraxtOriginalItems: function(items) {
     return items.map((item) => item.item);
