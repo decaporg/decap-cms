@@ -6,9 +6,11 @@ export default AuthenticatedRoute.extend({
   },
 
   controllerName: "list",
+
   setupController: function(controller, model) {
     this._super();
     controller.prepare(model);
   },
+
   templateName: "collection"
 });

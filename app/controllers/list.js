@@ -12,6 +12,7 @@ export default Ember.Controller.extend({
   needs: ['application'],
   prepare: function(collection) {
     this.set("collection", collection);
+    this.loadEntries();
   },
   loadEntries: function() {
     this.set("loading_entries", true);
@@ -22,5 +23,5 @@ export default Ember.Controller.extend({
       alert("Error loading documents from " + this.get("collection.label"));
       console.log(err);
     })
-  }.observes("collection")
+  }
 });
