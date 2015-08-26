@@ -65,13 +65,61 @@ collections: # A list of collections the CMS should be able to edit
       - {label: "Foo", name: "foo", widget: "foo"}
     meta: # Meta data fields. Just like fields, but without any preview element
       - {label: "Publish Date", name: "date", widget: "datetime"}
+  - name: "settings"
+    label: "Settings"
+    files:
+      - name: "general"
+        label: "General settings"
+        file: "_settings/general.json"
+        fields:
+          - {label: "Main site title", name: "site_title", widget: "string"}
+          - {label: "Number of fronpage posts", name: "post_count", widget: "number"}
+          - {label: "Site cover image", name: "cover", widget: "image"}
 ```
 
-Right now Netlify CMS only supports collections (a folder with files that can be
-edited). In the future it'll also support single documents.
+Netlify CMS works with the concept of collections of documents that a user can edit.
 
-Each collection have a list of fields, where each field has a `label`, a `name`
+Collections basically comes in three forms:
+
+1. A `folder`. Set the `folder` attribute on the collection. Each document will be a
+   file in this folder. Each document will have the same format, fields and meta fields.
+2. A list of `files`. Set the `files` attribute on the collection. You can set fields that
+   all files in the folder shares directly on the collection, and set specific fields for
+   each file. This is great when you have files with a different structure.
+3. A `file`. **Warning, not implemented yet**. This is a collection stored in a single file.
+   Typically a YAML file or a CSV with an array of items.
+
+Each collection have a list of fields (or files with their indidual fields). Each field has a `label`, a `name`
 and a `widget`.
+
+Setting up the right collections is the main part of integrating netlify CMS with your site. It's
+where you decide exactly what content editors can work with, and what widgets should be used to
+edit each field of your various files or content types.
+
+## Environments
+
+Often it's useful to have a few different environments defined in your config. By default the config
+will be loaded as is, but if you set a global CMS_ENV variable in a script tag in your admin/index.html,
+any attributes in that environment will take precedence over the default attributes.
+
+Example:
+
+```yaml
+backend:
+  name: netlify-git-api
+  url: localhost:8080
+
+production:
+  backend: github-api
+  repo: netlify/netlify-home
+  branch: master
+
+# rest of the config here...
+```
+
+Now when working locally, the CMS will use a local instance of the [netlify git API](https://github.com/netlify/netlify-git-api), but if you make sure to set `window.CMS_ENV="production"` in your production builds, then the CMS will work on Github's API in production.
+
+## Defining the config directly in your admin/index.html
 
 Some Static Site Generators (looking at you Hexo) won't copy a config.yml from
 the admin folder into the build when generating a site. As an alternative you can
@@ -252,9 +300,11 @@ Here we use Ember's [Select View](http://emberjs.com/api/classes/Ember.Select.ht
 to let the user pick one of two authors and we use a custom preview to show the
 output like: `Written by Matt on April 29, 2015`.
 
-Netlify CMS includes [a date helper plugin](https://github.com/johnotander/ember-cli-dates)
-so you can easily format dates with the `{{time-format}}` helper via [moment.js's](http://momentjs.com/)
-formatting shortcuts.
+Netlify CMS includes a time format helper so you can easily format dates with the `{{time-format}}` helper via [moment.js's](http://momentjs.com/) formatting shortcuts.
+
+```html
+{{time-format entry.date ""}}
+```
 
 ### Template Helpers
 
