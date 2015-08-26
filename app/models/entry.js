@@ -218,7 +218,7 @@ var Entry = Ember.Object.extend({
     var commitMessage = "Deleted " + this.get("_collection.label") + " " +
                                      this.get("cmsTitle");
 
-    return this.get("_collection.repository").deleteFile(file, {message: commitMessage})
+    return this.get("_collection.repository").deleteFile(file, {message: commitMessage});
   }
 });
 

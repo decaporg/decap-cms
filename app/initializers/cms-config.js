@@ -1,5 +1,5 @@
 import Ember from "ember";
-import Config from "../models/config";
+import Config from "../services/config";
  /* global jsyaml */
  /* global CMS_ENV */
 

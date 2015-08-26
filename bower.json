@@ -1,12 +1,12 @@
 {
   "name": "cms",
   "dependencies": {
-    "ember": "canary",
+    "ember": "2.0.1",
     "ember-resolver": "~0.1.15",
     "loader.js": "ember-cli/loader.js#3.2.0",
     "ember-cli-shims": "ember-cli/ember-cli-shims#0.0.3",
-    "ember-cli-test-loader": "rwjblue/ember-cli-test-loader#0.1.2",
-    "ember-load-initializers": "ember-cli/ember-load-initializers#0.1.4",
+    "ember-cli-test-loader": "rwjblue/ember-cli-test-loader#0.1.3",
+    "ember-load-initializers": "ember-cli/ember-load-initializers#0.1.6",
     "js-yaml": "~3.2.5",
     "jquery-sortable": "~0.9.12",
     "js-base64": "~2.1.7",
@@ -14,11 +14,10 @@
     "moment": "~2.9.0",
     "ember-cli-moment-shim": "~0.0.3",
     "qunit": "~1.17.1",
-    "ember-qunit": "^0.3.3",
+    "ember-qunit": "^0.4.10",
     "jquery.scrollTo": "~2.1.1"
   },
   "resolutions": {
-    "ember": "canary",
     "ember-qunit-notifications": "0.0.7",
     "ember-resolver": "~0.1.15",
     "jquery": "^1.11.1",

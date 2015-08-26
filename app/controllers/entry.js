@@ -51,7 +51,6 @@ export default Ember.Controller.extend({
   prepare: function(collection, entry) {
     this.set("collection", collection);
     this.set("entry", entry);
-    this.set('controllers.application.currentAction', this.get("currentAction") + " " + this.get("collection.label"));
   },
 
   /**

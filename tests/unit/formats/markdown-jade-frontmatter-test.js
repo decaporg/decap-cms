@@ -3,9 +3,7 @@ import {
   test
 } from 'ember-qunit';
 
-moduleFor('format:markdown-jade-frontmatter', 'MarkdownJadeFrontmatterFormat', {
-  needs: ['components:link-to']
-});
+moduleFor('format:markdown-jade-frontmatter', 'MarkdownJadeFrontmatterFormat', {});
 
 test('it should convert a file with frontmatter and jade with a markdown block', function(assert) {
   var format = this.subject();

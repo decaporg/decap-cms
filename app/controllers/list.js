@@ -12,7 +12,6 @@ export default Ember.Controller.extend({
   needs: ['application'],
   prepare: function(collection) {
     this.set("collection", collection);
-    this.set('controllers.application.currentAction', "Edit existing" + " " + this.get("collection.label"));
   },
   loadEntries: function() {
     this.set("loading_entries", true);

@@ -34,7 +34,7 @@ function normalize(path) {
   @extends Ember.Object
 */
 
-export default Ember.Object.extend({
+export default Ember.Service.extend({
   isServiceFactory: true,
   uploads: Ember.A(),
   uploaded: Ember.A(),

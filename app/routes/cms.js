@@ -1,5 +1,3 @@
 import Ember from 'ember';
 
-export default Ember.Route.extend({
-  viewName: "Cms"
-});
+export default Ember.Route.extend({});

@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import Collection from './collection';
+import Collection from '../models/collection';
 
 /**
 @module app
@@ -13,7 +13,8 @@ import Collection from './collection';
  @extends Ember.Object
  */
 
-export default Ember.Object.extend({
+export default Ember.Service.extend({
+  isServiceFactory: true,
   /*
     Instantiate all the collections
   */

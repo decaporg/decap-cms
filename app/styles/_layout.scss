@@ -1,4 +1,8 @@
 body.ember-application {
+  .ember-view {
+    height: 100%;
+  }
+
   .cms-wrapper {
     display: flex;
     height: 100%;

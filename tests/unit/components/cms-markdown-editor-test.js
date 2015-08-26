@@ -7,7 +7,7 @@ import {
 
 moduleForComponent('cms-markdown-editor', 'CmsMarkdownEditor', {
   // Specify the other units that are required for this test
-  needs: ['component:cms-expanding-textarea', 'component:link-to']
+  needs: ['component:cms-expanding-textarea', 'component:ember-wormhole']
 });
 
 test('undo/redo functionality', function(assert) {
