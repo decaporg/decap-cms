@@ -18,10 +18,6 @@
     "jquery.scrollTo": "~2.1.1"
   },
   "resolutions": {
-    "ember-qunit-notifications": "0.0.7",
-    "ember-resolver": "~0.1.15",
-    "jquery": "^1.11.1",
-    "loader.js": "ember-cli/loader.js#3.2.0",
-    "qunit": "~1.17.1"
+    "ember": "2.0.1"
   }
 }
