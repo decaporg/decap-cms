@@ -107,7 +107,7 @@ Example:
 ```yaml
 backend:
   name: netlify-api
-  url: localhost:8080
+  url: http://localhost:8080
 
 production:
   backend: github-api
