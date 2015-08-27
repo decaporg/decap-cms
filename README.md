@@ -17,6 +17,13 @@ tweak the main layout of the CMS a bit to fit your own site.
 When a user navigates to `/admin` she'll be prompted to login, and once authenticated
 she'll be able to create new content or edit existing content.
 
+## Quick Start
+
+The easiest way to get started playing around with netlify CMS, is to clone on of
+our starter templates and start hacking:
+
+* [Jekyll + netlify CMS](https://github.com/netlify-templates/jekyll-netlify-cms)
+
 ## Installing
 
 Netlify CMS is an Ember app. To install it in your site, add an `/admin` folder in
