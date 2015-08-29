@@ -23,7 +23,7 @@ var Item = Ember.Object.extend({
       value[widget.get("name")] = widget.getValue();
     });
     this.set("value", value);
-  }.observes("widgets.[].value")
+  }.observes("widgets.@each.value")
 });
 
 /**
@@ -99,7 +99,7 @@ export default Ember.Component.extend({
       value.push(item.get("value"));
     });
     this.set("widget.value", value);
-  }.observes("widget.items.[].value"),
+  }.observes("widget.items.@each.value"),
 
 
   actions: {

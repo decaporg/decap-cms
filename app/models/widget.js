@@ -145,7 +145,7 @@ var Widget = Ember.Object.extend({
   */
   isValid: function() {
     return this.get("validators").every(function(validator) { return validator.get("isValid"); });
-  }.property("validators.[].isValid"),
+  }.property("validators.@each.isValid"),
 
   /**
     false if the value of the widget is valid

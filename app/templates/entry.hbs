@@ -22,7 +22,13 @@
       <span class="cms-message">{{error}}</span>
     {{else}}
       {{#if isInvalid}}
-        <span class="cms-message">Can't save until all fields have been filled out correctly.</span>
+        <span class="cms-message">
+          {{# if errorMessage }}
+            {{errorMessage}}
+          {{else}}
+            Can't save until all fields have been filled out correctly.
+          {{/if}}
+        </span>
       {{/if}}
     {{/if}}
   </div>

@@ -191,7 +191,7 @@ export default Ember.Controller.extend({
   */
   isValid: function() {
     return this.get("widgets").every(function(widget) { return widget.get("isValid"); });
-  }.property("widgets.[].isValid"),
+  }.property("widgets.@each.isValid"),
 
   /**
     Opposite of `isValid`.
@@ -245,7 +245,11 @@ export default Ember.Controller.extend({
       @method save
     */
     save: function() {
-      if (this.get("isInvalid")) { return; }
+      this.set("errorMessage", null);
+      if (this.get("isInvalid")) {
+        this.set("errorMessage",this.get("widgets").find((w) => !w.get("isValid")).get("label") + " has not been filled out correctly");
+        return
+      }
 
       this.set("saving", true);
       this.get("entry").cmsSave(this.get("widgets"), this.get("meta")).then((entry) => {
