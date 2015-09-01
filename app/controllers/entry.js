@@ -127,7 +127,7 @@ export default Ember.Controller.extend({
         model: this.get("collection")
       }];
     }
-  }.property("currentAction"),
+  }.property("currentAction", "collection.label", "entry"),
 
   /**
    The widgets for this entry.
