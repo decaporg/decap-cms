@@ -35,3 +35,15 @@ collections: # A list of collections the CMS should be able to edit
         fields:
           - {label: "Global title", name: site_title, widget: "string"}
           - {label: "Number of posts on frontpage", name: frontpage_post_count, widget: "number"}
+
+      - name: "authors"
+        label: "Authors"
+        file: "_data/authors.yml"
+        description: "Author descriptions"
+        fields:
+          - name: authors
+            label: Authors
+            widget: list
+            fields:
+              - {label: "Name", name: "name", widget: "string"}
+              - {label: "Description", name: "description", widget: "markdown"}

@@ -95,7 +95,7 @@ var Collection = Ember.Object.extend({
       case "json":
         return this.get("config.container").lookup("format:json");
       case "yml":
-        return this.get("config.container").lookup("format:yml");
+        return this.get("config.container").lookup("format:yaml");
       case "md":
         return this.get("config.container").lookup("format:markdown_frontmatter");
     }
