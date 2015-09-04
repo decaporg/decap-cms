@@ -1,8 +1,9 @@
 {{#each sortableItems as |item|}}
   <li class="cms cms-list-item" data-item="{{item.id}}">
+    {{#if draggable }}<div class="cms cms-icon-drag"></div>{{/if}}
     {{yield item.item}}
     <div class="cms cms-list-actions">
-      <a class="cms cms-list-icon cms-icon-remove" {{action "removeItem" item}}></a>
+      <a href="#" class="cms cms-list-icon cms-icon-remove" {{action "removeItem" item}}></a>
     </div>
   </li>
 {{/each}}

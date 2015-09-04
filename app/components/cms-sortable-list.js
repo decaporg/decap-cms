@@ -31,6 +31,10 @@ export default Ember.Component.extend({
     });
   }.property("items.[]"),
 
+  draggable: function() {
+    return this.get("items").length > 1;
+  }.property("items.[]"),
+
   extraxtOriginalItems: function(items) {
     return items.map((item) => item.item);
   },

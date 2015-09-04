@@ -37,6 +37,7 @@ body.ember-application {
     position: relative;
     border: 1px solid $color_muted;
     margin-bottom: $container_padding;
+    cursor: move;
 
     .cms-list-actions {
       position: absolute;
@@ -48,6 +49,25 @@ body.ember-application {
       font-size: 12px;
       color: $color-bg-highlight;
     }
+
+    .cms-icon-drag {
+      opacity: 0.3;
+      left: 17px;
+      position: absolute;
+      top: 18px;
+      z-index: 1;
+    }
+    &:hover .cms-icon-drag {
+      opacity: 0.6;
+    }
+  }
+  .cms-list-placeholder {
+    border: 1px dashed $color_muted;
+  }
+  .cms-list-item.dragged {
+    position: absolute;
+    opacity: 0.5;
+    z-index: 2000;
   }
 
   .ui-timepicker-wrapper {
