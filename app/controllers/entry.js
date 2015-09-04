@@ -248,7 +248,7 @@ export default Ember.Controller.extend({
       this.set("errorMessage", null);
       if (this.get("isInvalid")) {
         this.set("errorMessage",this.get("widgets").find((w) => !w.get("isValid")).get("label") + " has not been filled out correctly");
-        return
+        return;
       }
 
       this.set("saving", true);

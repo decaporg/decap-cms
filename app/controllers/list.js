@@ -22,6 +22,6 @@ export default Ember.Controller.extend({
     }).catch((err) => {
       alert("Error loading documents from " + this.get("collection.label"));
       console.log(err);
-    })
+    });
   }
 });
