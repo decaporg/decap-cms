@@ -2,7 +2,7 @@
   {{#each item.widgets as |widget|}}
     <div class="cms cms-widget">
       <div class="cms cms-control">
-        <label class="cms cms-label cms-text">{{widget.label}}</label>
+        <label class="cms cms-label cms-text">{{if item.cmsCollapsed item.cmsFirstField widget.label}}</label>
         {{cms-widget widget=widget type="control"}}
       </div>
     </div>

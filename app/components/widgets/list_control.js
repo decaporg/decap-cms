@@ -24,7 +24,13 @@ var Item = Ember.Object.extend({
       this.set(widget.get("name"), widget.getValue());
     });
     this.set("value", value);
-  }.observes("widgets.@each.value")
+  }.observes("widgets.@each.value"),
+
+  cmsFirstField: function() {
+    var widget = this.get("widgets")[0];
+    var v = widget && widget.getValue();
+    return ("" + v).substr(0,50);
+  }.property("widgets.@each.value")
 });
 
 /**

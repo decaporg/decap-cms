@@ -41,7 +41,7 @@ body.ember-application {
 
     .cms-list-actions {
       position: absolute;
-      top: $container_padding/2;
+      top: 18px;
       right: $container_padding;
     }
 
@@ -54,11 +54,34 @@ body.ember-application {
       opacity: 0.3;
       left: 17px;
       position: absolute;
-      top: 18px;
+      top: 19px;
       z-index: 1;
+    }
+    .cms-collapse-control {
+      position: absolute;
+      z-index: 1;
+      top: 14px;
+      font-size: 22px;
+      color: $color-dark;
+      left: -26px;
+      opacity: 0.2;
+      transform: rotate(90deg);
+      transition: all 0.1s ease-in-out;
+      &:hover {
+        opacity: 0.4;
+      }
     }
     &:hover .cms-icon-drag {
       opacity: 0.6;
+    }
+    &.cms-collapsed {
+      .cms-item-container {
+        overflow: hidden;
+        height: 54px;
+      }
+      .cms-collapse-control {
+        transform: rotate(0);
+      }
     }
   }
   .cms-list-placeholder {

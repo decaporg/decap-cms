@@ -97,5 +97,9 @@ export default Ember.Component.extend({
     moveDown: function(item) {
       this._moveItem(item, 1);
     },
+    toggleCollapse: function(item) {
+      console.log("Item: %o", item);
+      item.item.set("cmsCollapsed", !item.item.get("cmsCollapsed"));
+    }
   }
 });
