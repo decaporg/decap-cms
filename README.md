@@ -140,7 +140,7 @@ embed the config.yml directly in the `admin/index.html` file like this:
 
 ## GitHub as a Backend
 
-The defauly Github based authenticator integrates with Netlify's [Authentication Provider feature](https://www.netlify.com/docs/authentication-providers) and the repository
+The default Github based authenticator integrates with Netlify's [Authentication Provider feature](https://www.netlify.com/docs/authentication-providers) and the repository
 backend integrates directly with Github's API.
 
 To get everything hooked up, setup continuous deployment from Github to Netlify
