@@ -1,1 +1,5 @@
+{{#if hasBlock}}
+{{#each widget.items as |item|}}{{yield item}}{{/each}}
+{{else}}
 {{cms-widget widget=widget type="preview"}}
+{{/if}}

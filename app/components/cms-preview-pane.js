@@ -6,6 +6,12 @@ export default Ember.Component.extend({
   hasScrolled: false,
 
   previewTemplate: function() {
+    if (this.get("entry.cmsIsDocument")) {
+      var customName = `cms/preview/${this.get("entry._doc.name")}`;
+      if (Ember.TEMPLATES[customName]) {
+        return customName;
+      }
+    }
     var customName = `cms/preview/${this.get("collection.name")}`;
     var name = Ember.TEMPLATES[customName] ? customName : 'preview/default';
     return name;

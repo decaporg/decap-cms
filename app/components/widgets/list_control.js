@@ -19,8 +19,9 @@ var Item = Ember.Object.extend({
   },
   valueDidChange: function() {
     var value = {};
-    this.get("widgets").forEach(function(widget) {
+    this.get("widgets").forEach((widget) => {
       value[widget.get("name")] = widget.getValue();
+      this.set(widget.get("name"), widget.getValue());
     });
     this.set("value", value);
   }.observes("widgets.@each.value")

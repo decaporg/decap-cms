@@ -66,6 +66,15 @@
       </div>
     </script>
 
+    <script type="text/x-handlebars" data-template-name='cms/preview/authors'>
+      {{#cms-preview field="authors" as |author|}}
+        <div class="author">
+          <h2>{{author.name}}</h2>
+          <div class="description">{{cms-preview field="description" from=author}}</div>
+        </div>
+      {{/cms-preview}}
+    </script>
+
     <script src="assets/vendor.js"></script>
     <script src="assets/cms.js"></script>
   </body>

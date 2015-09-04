@@ -206,7 +206,6 @@ Currently these widgets are built-in:
 * **image** An uploaded image
 * **list** A list of objects, takes it's own array of fields describing the individual objects
 
-
 ## Customizing the preview
 
 You can customize how entries in a collection are previewed easily by adding a handlebars template in your `/admin/index.html`:
@@ -228,6 +227,49 @@ You can use `{{entry.fieldname}}` to access the actual value of a field in the t
 
 For widgets like markdown fields or images, you'll typically always want to use the {{cms-preview field='body'}} format, since otherwise you'll get the raw value of the field, rather than the
 HTML value.
+
+## List Widget and Custom Previews
+
+The list widget is very powerful and allow you to have a list of structured object within an entry, that can be reordered via drag and drop.
+
+Here's a basic example of an entry in a file based collection that lets the user edit a list of authors.
+
+**config.yml**
+```yaml
+collections:
+  - name: "settings"
+    label: "Settings"
+      - name: "authors"
+        label: "Authors"
+        file: "_data/authors.yml"
+        description: "Author descriptions"
+        fields:
+          - name: authors
+            label: Authors
+            widget: list
+            fields:
+              - {label: "Name", name: "name", widget: "string"}
+              - {label: "Description", name: "description", widget: "markdown"}
+```
+
+This will let the user edit a list of authors that each have a Name and a Description.
+
+When configuring a custom preview for this entry, it's important to treat the list field a bit different than normal values on the entry, to make sure you can get the right output from `{{cms-preview}}` within the list:
+
+```html
+<script type="text/x-handlebars" data-template-name='cms/preview/authors'>
+  {{#cms-preview field="authors" as |author|}}
+    <div class="author">
+      <h2>{{author.name}}</h2>
+      <div class="description">{{cms-preview field="description" from=author}}</div>
+    </div>
+  {{/cms-preview}}
+</script>
+```
+
+Note that for the list widget, we're using the `cms-preview` tag in a new way, to iterate over
+each item in the list, and when using `cms-preview` for a specific item, we're setting a `from` attribute to make sure we're showing the preview of the `description` for that specific author, and not a global `description` field from the entry itself.
+
 
 ## Escaping handlebars tags in Jekyll/Hexo
 
