@@ -53,14 +53,18 @@ export default Ember.Component.extend({
   _newItem: function(value) {
     var fields = this.get("widget.field.fields");
     var widgets = [];
-    var item = Item.create({id: ++this._itemId, value: Ember.$.extend({}, value)});
+    var item = Item.create({
+      id: ++this._itemId,
+      _collection: this.get("widget.collection"),
+      value: Ember.$.extend({}, value)
+    });
 
     for (var i=0; i<fields.length; i++) {
 
       widgets.push(Widget.create({
         field: fields[i],
         value: value && value[fields[i].name],
-        entry: null
+        entry: item
       }));
     }
 
