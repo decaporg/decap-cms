@@ -1,4 +1,10 @@
 <div class="cms cms-upload-dropzone">
-  <strong class="cms cms-strong cms-text">Insert {{widget.label}}</strong>
+  <strong class="cms cms-text">Add {{widget.label}} <span class="cms-icon cms-icon-edit"></span></strong>
   {{cms-file-field value=uploads multiple=false accept="image/jpeg,image/gif,image/png,image/svg+xml"  action="fileUpload"}}
 </div>
+{{#if widget.value}}
+<div class="cms cms-upload-value">
+  <span class="cms cms-text">{{widget.value}}</span>
+  <a class="cms-icon cms-icon-remove" href="#" {{action "clear"}}></a>
+</div>
+{{/if}}

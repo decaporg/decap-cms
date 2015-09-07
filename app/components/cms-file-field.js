@@ -35,6 +35,7 @@ export default Ember.TextField.extend({
   attributeBindings: ['multiple'],
   change: function() {
     this.sendAction('action', this.validFiles());
+    this.element.value = null;
   },
   validFiles: function() {
     return Array.prototype.filter.call(this.element.files, function(file) {

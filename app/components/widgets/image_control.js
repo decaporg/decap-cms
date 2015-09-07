@@ -25,11 +25,14 @@ export default Ember.Component.extend({
       var file = files[0];
       var media = this.get("media");
       var folder = this.get("widget.mediaFolder");
-
-      media.add(folder+ "/" + file.name, file).then(function(mediaFile) {
+      media.add(folder+ "/" + file.name, file).then((mediaFile) => {
         this.set("widget.value", mediaFile.publicPath);
         this.set("widget.src", mediaFile.src);
-      }.bind(this));
+      });
+    },
+    clear: function() {
+      this.set("widget.value", null);
+      this.set("widget.src", null);
     }
   }
 });
