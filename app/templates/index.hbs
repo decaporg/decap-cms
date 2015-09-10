@@ -4,13 +4,13 @@
       {{#if collections }}
         <ul class="cms cms-nav-menu">
           {{#each collections as |collection|}}
-            <li class="cms-collection">
-              {{#link-to "index.list" collection class="cms-aside-link"}}
+            <li class="cms cms-collection">
+              {{#link-to "index.list" collection class="cms cms-aside-link"}}
                 <i class="cms cms-icon cms-icon-selector"></i>
                 {{collection.label}}
               {{/link-to}}
               {{#if collection.create}}
-                {{#link-to "create" collection class="cms-aside-new-link"}}
+                {{#link-to "create" collection class="cms cms-aside-new-link"}}
                   <i class="cms cms-icon-create"></i> New
                 {{/link-to}}
               {{/if}}

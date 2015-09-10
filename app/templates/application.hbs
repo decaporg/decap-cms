@@ -17,11 +17,11 @@
                 <i class="cms cms-icon cms-icon-new"></i>
                 New
               </a>
-              <ul class="cms-dropdown {{if showCollections 'cms-open' 'cms-closed'}}">
+              <ul class="cms cms-dropdown {{if showCollections 'cms-open' 'cms-closed'}}">
                 {{#each collections as |collection|}}
                   {{#if collection.create}}
                     <li class="cms-dropdown-li">
-                      <a href="#" class="cms-dropdown-link" {{action "newEntry" collection}}>{{collection.label}}</a>
+                      <a href="#" class="cms cms-dropdown-link" {{action "newEntry" collection}}>{{collection.label}}</a>
                     </li>
                   {{/if}}
                 {{/each}}
@@ -32,9 +32,9 @@
                 <i class="cms cms-icon cms-icon-profile"></i>
                 Profile
               </a>
-              <ul class="cms-dropdown {{if showProfile 'cms-open' 'cms-closed'}}">
-                <li class="cms-dropdown-li">
-                  <a href="#" class="cms-dropdown-link" {{action "logout"}}>Log out</a>
+              <ul class="cms cms-dropdown {{if showProfile 'cms-open' 'cms-closed'}}">
+                <li class="cms cms-dropdown-li">
+                  <a href="#" class="cms cms-dropdown-link" {{action "logout"}}>Log out</a>
                 </li>
               </ul>
             </li>
