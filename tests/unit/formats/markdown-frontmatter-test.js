@@ -29,7 +29,7 @@ test('it should convert a simple obejct to frontmatter and a body', function(ass
   var fileContent = format.toFile(obj, {get: () => ""});
 
   assert.ok(fileContent);
-  assert.equal(fileContent, "---\n\"title\": \"A test object\"\n\"description\": \"This is another field\"\n\"number\": 10\n---\n\n## Hello\n\nWorld");
+  assert.equal(fileContent, "---\ntitle: A test object\ndescription: This is another field\nnumber: 10\n---\n\n## Hello\n\nWorld");
 });
 
 test('it should handle a file with just a body', function(assert) {

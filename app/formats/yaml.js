@@ -9,6 +9,9 @@ var MomentType = new jsyaml.Type('date', {
   },
   represent: function(value) {
     return value.format(value._f);
+  },
+  resolve: function(value) {
+    return moment.isMoment(value) && value._f;
   }
 });
 
