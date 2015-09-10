@@ -86,8 +86,18 @@ var Collection = Ember.Object.extend({
     @return {Format} formatter
   */
   getFormatter: function(path) {
+    if (path && this.get("files")) {
+      var doc = this.get("files").find((doc) => doc.file === path);
+      if (doc && doc.format) {
+        return this.get("config.container").lookup("format:" + doc.format);
+      }
+    }
+
     if (this.get("format")) {
       return this.get("formatter");
+    }
+    if (this.get("config.format")) {
+      return this.get("config.formatter");
     }
     // TODO: Make this work with custom formatters
     var extension = (path || "").split(".").pop();
@@ -97,7 +107,7 @@ var Collection = Ember.Object.extend({
       case "yml":
         return this.get("config.container").lookup("format:yaml");
       case "md":
-        return this.get("config.container").lookup("format:markdown_frontmatter");
+        return this.get("config.container").lookup("format:markdown-frontmatter");
     }
   },
 

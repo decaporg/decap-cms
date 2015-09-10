@@ -34,6 +34,15 @@ export default Ember.Service.extend({
   container: null,
 
   /**
+    The default formatter
+
+    @property formatter
+  */
+  formatter: function() {
+    return this.get("container").lookup("format:" + this.get("format"));
+  }.property("config.format"),
+
+  /**
     Find the collection matching the `id`
 
     @method findCollection
