@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import Widget from '../../models/widget';
+import Item from '../../models/item';
 
 /**
 @module app
@@ -7,31 +7,6 @@ import Widget from '../../models/widget';
 */
 
 
-/* A single item in the list */
-var Item = Ember.Object.extend({
-  id: null,
-  widgets: null,
-  isValid: function() {
-    return this.get("widgets").every(function(widget) { return widget.get("isValid"); });
-  },
-  isEmpty: function() {
-    return this.get("widgets").every(function(widget) { return !widget.get("value"); });
-  },
-  valueDidChange: function() {
-    var value = {};
-    this.get("widgets").forEach((widget) => {
-      value[widget.get("name")] = widget.getValue();
-      this.set(widget.get("name"), widget.getValue());
-    });
-    this.set("value", value);
-  }.observes("widgets.@each.value"),
-
-  cmsFirstField: function() {
-    var widget = this.get("widgets")[0];
-    var v = widget && widget.getValue();
-    return ("" + v).substr(0,50);
-  }.property("widgets.@each.value")
-});
 
 /**
  A list of objects. Gives the user a sortable list where each item has its own
@@ -51,24 +26,11 @@ export default Ember.Component.extend({
     Instantiate a new item and add it to the list.
   */
   _newItem: function(value) {
-    var fields = this.get("widget.field.fields");
-    var widgets = [];
     var item = Item.create({
       id: ++this._itemId,
-      _collection: this.get("widget.collection"),
+      widget: this.get("widget"),
       value: Ember.$.extend({}, value)
     });
-
-    for (var i=0; i<fields.length; i++) {
-
-      widgets.push(Widget.create({
-        field: fields[i],
-        value: value && value[fields[i].name],
-        entry: item
-      }));
-    }
-
-    item.set("widgets", widgets);
 
     return item;
   },

@@ -1,5 +1,13 @@
 {{#if hasBlock}}
-{{#each widget.items as |item|}}{{yield item}}{{/each}}
+  {{#if widget.items}}
+    {{#each widget.items as |item|}}{{yield item}}{{/each}}
+  {{else}}
+    {{#if widget.item}}
+      {{yield widget.item}}
+    {{else}}
+      {{yield entry}}
+    {{/if}}
+  {{/if}}
 {{else}}
 {{cms-widget widget=widget type="preview"}}
 {{/if}}

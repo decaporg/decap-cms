@@ -1,0 +1,13 @@
+<div class="cms cms-list-item {{if collapsed 'cms-collapsed'}}" data-item="{{item.id}}">
+  <a class="cms cms-collapse-control cms-icon-marker" href="#" {{action "toggleCollapse" item}}></a>
+  <div class="cms cms-item-container">
+    {{#each item.widgets as |widget|}}
+      <div class="cms cms-widget">
+        <div class="cms cms-control">
+          <label class="cms cms-label cms-text">{{if collapsed item.cmsFirstField widget.label}}</label>
+          {{cms-widget widget=widget type="control"}}
+        </div>
+      </div>
+    {{/each}}
+  </div>
+</div>

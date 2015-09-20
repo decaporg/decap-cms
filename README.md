@@ -204,6 +204,7 @@ Currently these widgets are built-in:
 * **number** A number
 * **hidden** Useful for setting a default value with a hidden field
 * **image** An uploaded image
+* **object** An object with it's own set of fields
 * **list** A list of objects, takes it's own array of fields describing the individual objects
 
 ## Customizing the preview
@@ -228,7 +229,7 @@ You can use `{{entry.fieldname}}` to access the actual value of a field in the t
 For widgets like markdown fields or images, you'll typically always want to use the {{cms-preview field='body'}} format, since otherwise you'll get the raw value of the field, rather than the
 HTML value.
 
-## List Widget and Custom Previews
+## List or Object Widgets and Custom Previews
 
 The list widget is very powerful and allow you to have a list of structured object within an entry, that can be reordered via drag and drop.
 
@@ -270,6 +271,35 @@ When configuring a custom preview for this entry, it's important to treat the li
 Note that for the list widget, we're using the `cms-preview` tag in a new way, to iterate over
 each item in the list, and when using `cms-preview` for a specific item, we're setting a `from` attribute to make sure we're showing the preview of the `description` for that specific author, and not a global `description` field from the entry itself.
 
+The same rule applies when using a single object widget to group various fields together. You'll need this when editing data with nested keys like this:
+
+```json
+{"posts": {"frontpage_limit": 5, "author": "Jon Doe"}}
+```
+
+As a field in a configuration file, this would look like:
+
+```yml
+- label: "Post settings"
+  name: posts
+  widget: object
+  fields:
+    - {label: "Number of posts on front page", name: "frontpage_limit", widget: "number"}
+    - {label: "Default Author", name: "author", widget: "string"}
+```
+
+And to setup a custom preview template for this, you would again use the "cms-preview" component:
+
+```html
+{{#cms-preview field="posts" as |posts|}}
+<p>Number on frontpage: {{posts.frontpage_limit}}</p>
+<p>Default Author: {{posts.author}}</p>
+{{/cms-preview}}
+```
+
+Again we're using the cms-preview to get us access to the inner object. You could use `{{entry.posts.frontpage_limit}}` as well in simple cases, but once you have nested values that needs
+more complex preview rendering (such as image or markdown widgets), you'll want to use this technique
+to make sure you get the right kind of object in scope.
 
 ## Escaping handlebars tags in Jekyll/Hexo
 

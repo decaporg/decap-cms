@@ -26,7 +26,7 @@
         _faqs: {},
         _data: {
           "settings.json": {
-            content: '{"site_title": "CMS Demo", "frontpage_post_count": 5}'
+            content: '{"site_title": "CMS Demo", "posts": {"front_limit": 5, "author": "Matt Biilmann"}}'
           },
           "authors.yml": {
             content: 'authors:\n  - name: Mathias\n    description: Co-founder @ Netlify\n'
@@ -53,6 +53,10 @@
         position: relative;
         text-shadow: 0 0 5px rgba(255,255,255,0.9);
       }
+      .thumb {
+        width: 100px;
+        margin-top: 20px;
+      }
     </style>
   </head>
   <body>
@@ -64,6 +68,29 @@
       <div class="post-text">
         {{cms-preview field='body'}}
       </div>
+    </script>
+
+    <script type="text/x-handlebars" data-template-name='cms/preview/settings'>
+      <h1>{{entry.site_title}}</h1>
+      {{#cms-preview field="posts" as |posts|}}
+        <p>
+          <strong>{{posts.front_limit}}</strong> posts will be shown in the list on the front-page.
+        </p>
+        <p>
+          Default byline:
+        </p>
+        <p>
+          <small>Written by <strong>{{posts.author}}</strong></small>
+        </p>
+        <p>
+          Default thumbnail:
+          {{#if posts.thumb}}
+          {{cms-preview field="thumb" from=posts}}
+          {{else}}
+          <strong>disabled</strong>
+          {{/if}}
+        </p>
+      {{/cms-preview}}
     </script>
 
     <script type="text/x-handlebars" data-template-name='cms/preview/authors'>
