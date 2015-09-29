@@ -4,16 +4,15 @@ This is a fairly rambling TODO list listing features that we should have and som
 
 Based on this we can start working on a more detailed roadmap and turn some larger features into RFCs for discussions.
 
-## Image widget:
+## Rich Text editor
 
-The image widget has a few things missing. Mainly being able to see the image file name and
-removing the image.
+It would be good to have a rich text widget. Ideally one that can edit markdown as rich text.
 
-Here's a UI mockup:
+The best candidate for rich text editing right now is the newly released [ProseMirror](http://prosemirror.net/). It's still a very young project, but it's the only rich text editor that doesn't depend on editing HTML directly through contentEditable, but works with structured content through a completely custom built editing UI.
 
-![Image widget](/todo/image-field.png)
+## Error Messages / Validation
 
-At some point in the future more advanced options like a media browser + image editing tools like crops and resizing would be great to have as well. Short term, just being able to remove an image from a post is the most important.
+The current validation system is not very user friendly. We should make sure widgets can show a clear validation message when loosing focus if they're in an invalid state. Since we also have hidden meta data in the sidebar that can be invalid and block a save, something like what Ghost does with a infobox explaining the error, would probably work for us as well.
 
 ## File widget
 
@@ -30,14 +29,6 @@ be great to have a robust ui for it.
 
 Make the media file store upload async in the background when a file is added. Right now all media files that haven't been uploaded yet gets passed to the repository when the entry is saved. Would be much better to just have them upload in the background as soon as they're added. They would simply be prepared as "blobs" in the backend, and then included in the commit tree.
 
-## Delete Entries
-
-We currently don't have any way to remove entries, only adding them.
-
-Something like this (see draft functionality as well) would be good:
-
-![Delete and draft functionality](/todo/delete-and-draft.png)
-
 ## Draft functionality
 
 Support saving drafts. Might be simply based on a boolean property in documents. Not all collections/static gens will support this, so needs to be configurable.
@@ -45,10 +36,6 @@ Support saving drafts. Might be simply based on a boolean property in documents.
 Some support a 'draft' flag that'll hide a post in the production environmnet, middleman has a 'published' flag that works the other way around (and that's true by default). We'll need to support both, without making configuration clunky...
 
 Jekyll has the strangest draft behavior currently. Only works for the \_posts collection and is based on keeping drafts in a separate folder called \_drafts. That makes listing posts, etc, tricky, since it requrires looking in two different folders... Lets not try to support this from the get-go...
-
-## List field:
-
-Better UI for reordering, work on stability, make items collapsible? Current list field works, but it's simple and the reordering doesn't feel super robust. Would be good to give it an overhaul.
 
 ## Help texts
 
@@ -87,26 +74,11 @@ The scroll behavior in the preview pane can sometimes be finicky - would be grea
 and get it rock solid.
 
 
-## Single Documents
-
-Right now netlify CMS only works on collections of documents. We should have the options to work on single documents as well, like Jekyll data files, Roots records, etc, etc...
-
-We'll need a configuration format for this, and figure out format support....
-
 ## Relations
 
 We need widgets for relations. At first just a simple one-to-one widget between collections would do wonders. It can always be combined with a list widget to create one-to-many relations.
 
 Requires UI, and also requires moving the current logic for listing all entries in a collection out of the list controller and into the collection model.
-
-## Navigations
-
-Not sure if we need any distinction or if the combination of single documents + relations is enough. Ideally
-it is. But a common need for a single document is arranging entries for a menu.
-
-See:
-
-https://github.com/jekyll/jekyll/blob/master/site/_data/docs.yml
 
 ## Authors & Profiles
 
@@ -121,38 +93,6 @@ authors:
     - {label: "Biography", name: "bio", widget: "markdown"}
 
 And then add a link in the profile dropdown that would let authors edit their own bio (as identified by a username the backend would need to supply...)
-
-## Environments
-
-Often you'll want to use the netlify-git-api backend when working locally, and switch to the github-api backend for production builds.
-
-One way is to generate the config.yml from the static site generator, but that seems a bit clumsy.
-
-Would be better to be able to do something like this:
-
-```yml
-backend:
-  name: netlify-api
-  url: localhost:8080
-
-production:
-  backend:
-    name: github-api
-    repo: owner/repo
-
-collections:
-  ...
-```
-
-Then setting a global `CMS_ENV` variable would make the config loader do something like:
-
-```js
-if (CMS_ENV) {
-  $.extend(config, config[CMS_ENV], true)
-}
-```
-
-To make sure the specific environment takes precedence over the default settings.
 
 ## Starter Sites
 

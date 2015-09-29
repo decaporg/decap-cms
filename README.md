@@ -23,6 +23,7 @@ The easiest way to get started playing around with netlify CMS, is to clone on o
 our starter templates and start hacking:
 
 * [Jekyll + netlify CMS](https://github.com/netlify-templates/jekyll-netlify-cms)
+* [Pelican + netlify CMS](https://github.com/netlify-templates/pelican-netlify-cms)
 
 ## Installing
 
@@ -96,8 +97,7 @@ Collections basically comes in three forms:
 3. A `file`. **Warning, not implemented yet**. This is a collection stored in a single file.
    Typically a YAML file or a CSV with an array of items.
 
-Each collection have a list of fields (or files with their indidual fields). Each field has a `label`, a `name`
-and a `widget`.
+Each collection have a list of fields (or files with their individual fields). Each field has a `label`, a `name` and a `widget`.
 
 Setting up the right collections is the main part of integrating netlify CMS with your site. It's
 where you decide exactly what content editors can work with, and what widgets should be used to
@@ -126,6 +126,7 @@ production:
 
 Now when working locally, the CMS will use a local instance of the [netlify git API](https://github.com/netlify/netlify-git-api), but if you make sure to set `window.CMS_ENV="production"` in your production builds, then the CMS will work on Github's API in production.
 
+
 ## Defining the config directly in your admin/index.html
 
 Some Static Site Generators (looking at you Hexo) won't copy a config.yml from
@@ -138,6 +139,7 @@ embed the config.yml directly in the `admin/index.html` file like this:
 </script>
 ```
 
+
 ## GitHub as a Backend
 
 The default Github based authenticator integrates with Netlify's [Authentication Provider feature](https://www.netlify.com/docs/authentication-providers) and the repository
@@ -149,6 +151,7 @@ to setup Github as an authentication provider.
 
 That's it, now you should be able to go to the `/admin` section of your site and
 log in.
+
 
 ## Local git backend
 
@@ -173,6 +176,7 @@ backend:
   url: http://localhost:8080
 ```
 
+
 ## Media folder and Public folder
 
 Most static file generators, except from Jekyll, don't keep the files that'll be
@@ -187,6 +191,7 @@ folder is located in the sources. A typical Middleman setup would look like this
 media_folder: "source/uploads" # Media files will be stored in the repo under source/uploads
 public_folder: "source" # CMS now knows 'source' is the public folder and will strip this from the path
 ```
+
 
 ## Widgets
 
@@ -206,6 +211,7 @@ Currently these widgets are built-in:
 * **image** An uploaded image
 * **object** An object with it's own set of fields
 * **list** A list of objects, takes it's own array of fields describing the individual objects
+
 
 ## Customizing the preview
 
@@ -228,6 +234,7 @@ You can use `{{entry.fieldname}}` to access the actual value of a field in the t
 
 For widgets like markdown fields or images, you'll typically always want to use the {{cms-preview field='body'}} format, since otherwise you'll get the raw value of the field, rather than the
 HTML value.
+
 
 ## List or Object Widgets and Custom Previews
 
@@ -409,4 +416,4 @@ This would output something like:
 Docs on creating custom widget components, file formats, etc...
 
 This is obviously still early days for Netlify CMS, there's a long list of features
-and improvements on the roadmap.
+and improvements on the roadmap. 
