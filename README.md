@@ -19,7 +19,7 @@ she'll be able to create new content or edit existing content.
 
 ## Quick Start
 
-The easiest way to get started playing around with netlify CMS, is to clone on of
+The easiest way to get started playing around with netlify CMS, is to clone one of
 our starter templates and start hacking:
 
 * [Jekyll + netlify CMS](https://github.com/netlify-templates/jekyll-netlify-cms)
