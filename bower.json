@@ -1,7 +1,7 @@
 {
   "name": "cms",
   "dependencies": {
-    "ember": "2.0.1",
+    "ember": "2.1.0",
     "ember-resolver": "~0.1.15",
     "loader.js": "ember-cli/loader.js#3.2.0",
     "ember-cli-shims": "ember-cli/ember-cli-shims#0.0.3",

@@ -1,8 +1,16 @@
 <li class="cms cms-list-entry">
-  {{#link-to "edit" entry class="cms cms-list-entry-link"}}
-    <h3 class="cms cms-entry-title">{{entry.cmsTitle}}</h3>
-    <div class="cms cms-entry-excerpt">
-      {{entry.cmsExcerpt}}
+  {{#if entry.cmsLoading}}
+  <div class="cms cms-loading-indicator-box">
+    <div class="cms cms-loading-indicator cms-loading">
+      <div class="cms cms-loading-indicator-inner"></div>
     </div>
-  {{/link-to}}
+  </div>
+  {{else}}
+    {{#link-to "edit" entry class="cms cms-list-entry-link"}}
+      <h3 class="cms cms-entry-title">{{entry.cmsTitle}}</h3>
+      <div class="cms cms-entry-excerpt">
+        {{entry.cmsExcerpt}}
+      </div>
+    {{/link-to}}
+  {{/if}}
 </li>

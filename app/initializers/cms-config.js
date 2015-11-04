@@ -11,7 +11,7 @@ function loadYamlConfig() {
   }
 }
 
-export function initialize(container, application) {
+export function initialize(application) {
   application.deferReadiness();
   loadYamlConfig().then(function(yaml) {
     var data = jsyaml.safeLoad(yaml);

@@ -22,10 +22,10 @@ export default Ember.Component.extend({
 
     var componentFullName = `component:${fullName.replace(/^components\//, '')}`;
     var templateFullName = `template:${fullName}`;
-    var templateRegistered = container && container._registry.has(templateFullName);
+    var templateRegistered = container && container.registry.has(templateFullName);
 
     if (templateRegistered) {
-      container._registry.injection(componentFullName, 'layout', templateFullName);
+      container.registry.injection(componentFullName, 'layout', templateFullName);
     }
 
     var Component = container.lookupFactory(componentFullName);
@@ -34,7 +34,7 @@ export default Ember.Component.extend({
     // or a template has been registered.
     if (templateRegistered || Component) {
       if (!Component) {
-        container._registry.register(componentFullName, Ember.Component);
+        container.registry.register(componentFullName, Ember.Component);
         Component = container.lookupFactory(componentFullName);
       }
       return Component;

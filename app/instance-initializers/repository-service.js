@@ -3,7 +3,10 @@ export default {
     var repo = instance.container.lookup("service:repository");
     var config = instance.container.lookup("cms:config");
 
-    repo.backendFactory = instance.container.lookupFactory("backend:" + config.backend.name);
+    console.log(instance);
+    console.log(instance.container);
+
+    repo.backendFactory = instance.__container__.lookupFactory("backend:" + config.backend.name);
     repo.reset(config);
   }
 };

@@ -129,6 +129,35 @@ body.ember-application {
     color: $color-text-normal;
   }
 
+  .cms-loading-indicator {
+    width: $container-padding;
+    height: $container-padding;
+    position: absolute;
+    top: $container-padding;
+    left: 50%;
+    margin-left: -($container-padding/2);
+    &.cms-loading {
+      animation: spin 2s cubic-bezier(0.785, 0.135, 0.150, 0.860) 0s infinite;
+      .cms-loading-indicator-inner {
+        animation: spin 2s cubic-bezier(0.455, 0.030, 0.515, 0.955)  0s infinite;
+      }
+    }
+  }
+  .cms-loading-indicator-inner {
+    width: $container-padding - 6;
+    height: $container-padding - 6;
+    margin: 2px;
+  }
+
+  .cms-loading-indicator, .cms-loading-indicator-inner {
+    border: 1px solid $color-highlight;
+  }
+
+  .cms-loading-indicator-box {
+    height: $container-padding * 3;
+    position: relative;
+  }
+
   .cms-link.cms-save-btn, .cms-link.cms-settings-btn, .cms-action.cms-btn-delete {
     margin-top: -$container-padding/2;
     border: 1px solid $color-highlight;
@@ -165,28 +194,6 @@ body.ember-application {
   }
   .cms-navbar-bottom {
     position: relative;
-    .cms-loading-indicator, .cms-loading-indicator-inner {
-      border: 1px solid $color-highlight;
-    }
-    .cms-loading-indicator {
-      width: $container-padding;
-      height: $container-padding;
-      position: absolute;
-      top: $container-padding;
-      left: 50%;
-      margin-left: -($container-padding/2);
-      &.cms-loading {
-        animation: spin 2s cubic-bezier(0.785, 0.135, 0.150, 0.860) 0s infinite;
-        .cms-loading-indicator-inner {
-          animation: spin 2s cubic-bezier(0.455, 0.030, 0.515, 0.955)  0s infinite;
-        }
-      }
-    }
-    .cms-loading-indicator-inner {
-      width: $container-padding - 6;
-      height: $container-padding - 6;
-      margin: 2px;
-    }
   }
 
   .cms-sidebar-title {

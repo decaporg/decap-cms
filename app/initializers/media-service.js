@@ -1,4 +1,4 @@
-export function initialize(container, application) {
+export function initialize(application) {
   application.inject('component', 'media', 'service:media');
   application.inject('service:repository', 'media', 'service:media');
 }

@@ -18,6 +18,8 @@ import {slugify} from '../utils/slugify';
  @extends Ember.Object
  */
 var Entry = Ember.Object.extend({
+  cmsLoading: false,
+
   /**
     Excerpt of the entry for the entry listing
 

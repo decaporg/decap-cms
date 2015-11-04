@@ -121,6 +121,42 @@ var Collection = Ember.Object.extend({
   }.property("media_folder", "config.media_folder"),
 
   /**
+    Compare two files for sorting based on current collection settings
+
+    @method compareFiles
+    @param {Object} fileOne
+    @param {Object} fileTwo
+
+  */
+  compareFiles: function(fileOne, fileTwo, order) {
+    var first, second, comp;
+    if (order > 0) {
+      first = fileOne;
+      second = fileTwo;
+    } else {
+      first = fileTwo;
+      second = fileOne;
+    }
+
+    return first.name.localeCompare(second.name);
+  },
+
+  loadFromQueue: function(queue) {
+    if (queue.length) {
+      var obj = queue.shift();
+      var formatter = this.getFormatter(obj.file.path);
+      this.get("repository").readFile(obj.file.path, obj.file.sha).then((content) => {
+        obj.entry.setProperties(Ember.$.extend(
+          formatter.fromFile(content),
+          {_file_content: content, _formatter: formatter, cmsLoading: false},
+          {_doc: obj.file.doc}
+        ));
+        this.loadFromQueue(queue);
+      });
+    }
+  },
+
+  /**
     Loads all entries from a folder. If an extension is specified for the collection,
     only files with that extension will be processed.
 
@@ -136,10 +172,22 @@ var Collection = Ember.Object.extend({
     }
 
     return repository && repository.listFiles(this.get("folder")).then((files) => {
-      files = files.filter((file) => extension == null || file.name.split(".").pop() === extension).map((file) => {
-        return Entry.fromFile(this, file);
-      });
-      return Ember.RSVP.Promise.all(files);
+      var loadQueue = [];
+
+      var order = (this.slug || "").match(/^(\{\{year\}\}|\{\{month\}\})/) ? -1 : 1;
+      console.log("Slug: %s order: %o", this.slug, order);
+
+      var entries = files
+        .filter((file) => extension == null || file.name.split(".").pop() === extension)
+        .sort((a,b) => this.compareFiles(a,b,order))
+        .map((file) => {
+          var entry = Entry.create({_collection: this, _path: file.path, cmsLoading: true});
+          loadQueue.push({entry: entry, file: file});
+          return entry;
+        });
+      this.loadFromQueue(loadQueue);
+      console.log(entries);
+      return entries;
     });
   },
 
