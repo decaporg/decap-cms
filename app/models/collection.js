@@ -129,7 +129,7 @@ var Collection = Ember.Object.extend({
 
   */
   compareFiles: function(fileOne, fileTwo, order) {
-    var first, second, comp;
+    var first, second;
     if (order > 0) {
       first = fileOne;
       second = fileTwo;
