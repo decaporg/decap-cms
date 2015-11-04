@@ -65,7 +65,6 @@ collections: # A list of collections the CMS should be able to edit
   - name: "post" # Used in routes, ie.: /admin/collections/:slug/edit
     label: "Post" # Used in the UI, ie.: "New Post"
     folder: "_posts" # The path to the folder where the documents are stored
-    sort: "date:desc" # Default is title:asc
     create: true # Allow users to create new documents in this collection
     fields: # The fields each document in this collection have
       - {label: "Title", name: "title", widget: "string", tagname: "h1"}
@@ -416,4 +415,4 @@ This would output something like:
 Docs on creating custom widget components, file formats, etc...
 
 This is obviously still early days for Netlify CMS, there's a long list of features
-and improvements on the roadmap. 
+and improvements on the roadmap.

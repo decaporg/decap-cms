@@ -18,6 +18,6 @@
     "jquery.scrollTo": "~2.1.1"
   },
   "resolutions": {
-    "ember": "2.0.1"
+    "ember": "2.1.0"
   }
 }
