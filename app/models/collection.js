@@ -10,9 +10,9 @@ function slugFormatterFn(template) {
         case "year":
           return entry.get("cmsDate").year();
         case "month":
-          return entry.get("cmsDate").month() + 1;
+          return ('0' + (entry.get("cmsDate").month() + 1)).slice(-2);
         case "day":
-          return entry.get("cmsDate").date();
+          return ('0' + entry.get("cmsDate").date()).slice(-2);
         case "slug":
           return entry.get("cmsUserSlug");
         default:
@@ -120,39 +120,64 @@ var Collection = Ember.Object.extend({
     return this.get("media_folder") || this.get("config.media_folder") || "uploads";
   }.property("media_folder", "config.media_folder"),
 
-  /**
-    Compare two files for sorting based on current collection settings
+  fileSorter: function(files) {
+    var type = this.get("sort") || "slug";
 
-    @method compareFiles
-    @param {Object} fileOne
-    @param {Object} fileTwo
+    if (type === "slug") {
+      if ((this.slug || "").match(/^\{\{year\}\}-\{\{month\}\}-\{\{day\}\}/)) {
+        return {
+          async: false,
+          fn: (a, b) => {
+            var dateA = new Date(a.name.split("-").slice(0, 3).join("-"));
+            var dateB = new Date(b.name.split("-").slice(0, 3).join("-"))
 
-  */
-  compareFiles: function(fileOne, fileTwo, order) {
-    var first, second;
-    if (order > 0) {
-      first = fileOne;
-      second = fileTwo;
-    } else {
-      first = fileTwo;
-      second = fileOne;
+            return dateA > dateB ? -1 : ( dateA == dateB ? 0 : 1);
+          }
+        };
+      } else {
+        return {
+          async: false,
+          fn: (a, b) => {
+            return a.name.localeCompare(b.name);
+          }
+        };
+      }
     }
 
-    return first.name.localeCompare(second.name);
+    var m = type.match("^([^:]+)(?::(asc|desc))?");
+    var field = m[1] || 'title';
+    var order = m[2] || 'asc';
+    return {
+      async: true,
+      fn: (a, b) => {
+        var first, second;
+        if (order === "asc") {
+          first = a.get(field);
+          second = b.get(field);
+        } else {
+          first = b.get(field);
+          second = a.get(field);
+        }
+
+        return first > second ? 1 : (first < second ? -1 : 0);
+      }
+    }
   },
 
   loadFromQueue: function(queue) {
     if (queue.length) {
       var obj = queue.shift();
       var formatter = this.getFormatter(obj.file.path);
-      this.get("repository").readFile(obj.file.path, obj.file.sha).then((content) => {
+      return this.get("repository").readFile(obj.file.path, obj.file.sha).then((content) => {
         obj.entry.setProperties(Ember.$.extend(
           formatter.fromFile(content),
           {_file_content: content, _formatter: formatter, cmsLoading: false},
           {_doc: obj.file.doc}
         ));
-        this.loadFromQueue(queue);
+        return this.loadFromQueue(queue);
       });
+    } else {
+      return Ember.RSVP.Promise.resolve(true);
     }
   },
 
@@ -174,19 +199,24 @@ var Collection = Ember.Object.extend({
     return repository && repository.listFiles(this.get("folder")).then((files) => {
       var loadQueue = [];
 
-      var order = (this.slug || "").match(/^(\{\{year\}\}|\{\{month\}\})/) ? -1 : 1;
-      console.log("Slug: %s order: %o", this.slug, order);
+      var files = files.filter((file) => extension == null || file.name.split(".").pop() === extension);
+      var fileSorter = this.fileSorter(files);
+      if (fileSorter.async === false) {
+        files = files.sort(fileSorter.fn);
+      }
 
-      var entries = files
-        .filter((file) => extension == null || file.name.split(".").pop() === extension)
-        .sort((a,b) => this.compareFiles(a,b,order))
-        .map((file) => {
+      var entries = files.map((file) => {
           var entry = Entry.create({_collection: this, _path: file.path, cmsLoading: true});
           loadQueue.push({entry: entry, file: file});
           return entry;
         });
-      this.loadFromQueue(loadQueue);
-      console.log(entries);
+
+      var lazyLoader = this.loadFromQueue(loadQueue);
+
+      if (fileSorter.async) {
+        return lazyLoader.then(() => entries.sort(fileSorter.fn));
+      }
+
       return entries;
     });
   },
