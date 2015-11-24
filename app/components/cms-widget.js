@@ -53,6 +53,13 @@ export default Ember.Component.extend({
   previewClassNames: function() {
     return (this.get("widget.field.class") || "").split(" ");
   }.property("widget"),
+  controlTagName: function() {
+    var component = this.get("controlComponent");
+    return component && component.get("tagName") ? component.get("tagName") : "";
+  }.property("widget"),
+  controlClassNames: function() {
+    return (this.get("widget.field.class") || "").split(" ");
+  }.property("widget"),
   layoutName: function() {
     return this.container && this.container.lookup("template:cms/widget") ? "cms/widget" : "components/widget";
   }.property("widget"),

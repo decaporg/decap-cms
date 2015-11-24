@@ -409,10 +409,147 @@ This would output something like:
 <h2> Date: Friday, August 14th 2015, 2:12:34 pm</h2>
 ```
 
+### Custom Widgets
+
+Netlify CMS can easily be extended with custom widgets.
+
+Each widget consists of two Ember Components.
+
+1. Widget Control Component
+   Used on the left site of the CMS as the input for the field value.
+2. Widget Preview Component
+   Not always necesarry (will always fall back to a simple string preview), but for advanced widgets like the markdown editor, etc, a preview widget is needed to format the output of the field right.
+
+#### Creating your own widget
+
+As a small example, we'll look at how creating a "color" widget that'll let us define a field like this:
+
+```yml
+{"label": "color", "name": "color", "widget": "color"}
+```
+
+And then get a nice color picker.
+
+The bare minimum for creating your own widget, is to create a widget template. Lets add this to our `admin/index.html`:
+
+```html
+<script type="text/x-handlebars" data-template-name='components/widgets/color-control'>
+  {{input value=widget.value type="color"}}
+</script>
+```
+
+That's actually all it take for a really simple widget. Now any browser that implements `<input type="color">` will show a color picker and update the preview in realtime with the value as we make changes.
+
+Widget components have access to a `widget` object. For all the details on this object, [read the source code documentation](/app/models/widget.js).
+
+Most of the time, you'll need to also add some custom behavior to your component that can't be handle by a handlebars template alone.
+
+Lets try to write a color picker widget based on the [jQuery spectrum color-picker](https://bgrins.github.io/spectrum/) instead of the browser's native color field.
+
+First we make sure to include the assets needed for spectrum.
+
+```
+<script src="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.7.1/spectrum.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.7.1/spectrum.min.css"></link>
+```
+
+Now that we have spectrum loaded, we need to make sure we initialize the plugin when our component is added to the DOM and cleanup when it's removed.
+
+We'll start by changing our component template a bit:
+
+```html
+<script type="text/x-handlebars" data-template-name='components/widgets/color-control'>
+  <input type='text' class="cms-color-control"/>
+</script>
+```
+
+Instead of the built-in Ember input component, we'll just output a normal input tag that we can use as the element we attach spectrum to.
+
+To add the logic for our control component, we call `CMS.WidgetControl(componentName, implementation)`. For those familiar with Ember, this is the same as creating a new Ember component via `Ember.Component.extend(implementation)`.
+
+Here's the full Spectrum color picker control component (make sure to add this after the script tag that includes the CMS JavaScript):
+
+```html
+// Create the Control component fro the "color" widget
+CMS.WidgetControl("color", {
+  // We want this component to wrap it's template in a "div" so we can use
+  // this.$(...) to access the template DOM
+  tagName: "div",
+
+  // willInsertElement is a standard Ember callback that gets invoked when
+  // our component is inserted into the DOM
+  willInsertElement: function() {
+    var widget = this.get("widget");
+    // Setup spectrum with an initial value from the widget, and make sure
+    // we update the value when the user picks a color
+    this.$("input").spectrum({
+      color: this.get("widget.value"),
+      change: function(color) {
+        widget.set("value", color.toHexString());
+      }
+    });
+  },
+
+  // willDestroyElement is a standard Ember callback that gets invoked when
+  // our component is about to be removed from the DOM
+  willDestroyElement: function() {
+    this.$("input").spectrum("destroy");
+  }
+});
+```
+
+That's it - now we'll get a nice spectrum color picker.
+
+By default the default preview for this widget will simply output a string with the color value.
+
+The simplest way to customize the preview, is to just create a preview template:
+
+```html
+<script type="text/x-handlebars" data-template-name='components/widgets/color-preview'>
+  <div class="cms-color-preview" style="background: {{widget.value}};">{{widget.value}}</div>
+</script>
+```
+
+Just like with the control part of our widget, we can also add some logic to our preview component.
+
+In some cases it might be impossible to actually read the widget.value if the color of the text and the background gets too close. Lets add a bit of logic to always use the inverted color of the current value to show the color string.
+
+First we update our template a bit:
+
+```html
+<script type="text/x-handlebars" data-template-name='components/widgets/color-preview'>
+  <div class="cms-color-preview" style="background: {{widget.value}};">
+    <p style="color: {{invertedColor}}">{{widget.value}}</p>
+  </div>
+</script>
+```
+
+Now we create a preview component for our color widget:
+
+```html
+<script>
+CMS.WidgetPreview("color", {
+  invertedColor: function() {
+    var color = this.get("widget.value") || "#fff";
+    color = color.substring(1);           // remove #
+    color = parseInt(color, 16);          // convert to integer
+    color = 0xFFFFFF ^ color;             // invert three bytes
+    color = color.toString(16);           // convert to hex
+    color = ("000000" + color).slice(-6); // pad with leading zeros
+    color = "#" + color;                  // prepend #
+    return color;
+  }.property("widget.value")
+});
+</script>
+```
+
+Just as with CMS.WidgetControl, this is the same as defining a new Ember Component via `Ember.Component.extend(implementation)`. An important part of Ember is computed properties. In this case we define a function `invertedColor` and use `.property("widget.value")` to make this a computed property that depends on `widget.value`. This way it'll get recomputed every time `widget.value` changes, and we can use `invertedColor` in our handlebars template.
+
+
 
 ### Coming Soon:
 
-Docs on creating custom widget components, file formats, etc...
+Docs on file formats, internal APIs etc...
 
 This is obviously still early days for Netlify CMS, there's a long list of features
 and improvements on the roadmap.

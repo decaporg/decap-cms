@@ -52,7 +52,7 @@ window.CMS = {};
   To pair the widget control with a template, create a template in "cms/widgets/":
 
   ```html
-  <script type="text/x-handlebars" data-template-name="cms/widgets/foo-control">
+  <script type="text/x-handlebars" data-template-name="components/widgets/foo-control">
     <h2>{{widget.label}}</h2>
     <button class="button" {{action 'toggle'}}>Toogle Foo</button>
   </script>
@@ -63,7 +63,7 @@ window.CMS = {};
   @param {Object} widget
 */
 window.CMS.WidgetControl = function(name, widget) {
-  define(`cms/components/cms/widgets/${name}-control`, ['exports'], function(exports) {
+  define(`cms/components/widgets/${name}-control`, ['exports'], function(exports) {
     exports['default'] = Ember.Component.extend(widget);
   });
 };
@@ -95,7 +95,7 @@ window.CMS.WidgetControl = function(name, widget) {
   To pair the widget preview with a template, create a template in "cms/widgets/":
 
   ```html
-  <script type="text/x-handlebars" data-template-name="cms/widgets/foo-preview">
+  <script type="text/x-handlebars" data-template-name="components/widgets/foo-preview">
     <h2>{{widget.reversed}}</h2>
   </script>
   ```
@@ -105,7 +105,7 @@ window.CMS.WidgetControl = function(name, widget) {
   @param {Object} widget
 */
 window.CMS.WidgetPreview = function(name, widget) {
-  define(`cms/components/cms/widgets/${name}-preview`, ['exports'], function(exports) {
+  define(`cms/components/widgets/${name}-preview`, ['exports'], function(exports) {
     exports['default'] = Ember.Component.extend(widget);
   });
 };
