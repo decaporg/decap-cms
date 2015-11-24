@@ -448,7 +448,7 @@ Lets try to write a color picker widget based on the [jQuery spectrum color-pick
 
 First we make sure to include the assets needed for spectrum.
 
-```
+```html
 <script src="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.7.1/spectrum.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.7.1/spectrum.min.css"></link>
 ```
@@ -470,6 +470,7 @@ To add the logic for our control component, we call `CMS.WidgetControl(component
 Here's the full Spectrum color picker control component (make sure to add this after the script tag that includes the CMS JavaScript):
 
 ```html
+<script>
 // Create the Control component fro the "color" widget
 CMS.WidgetControl("color", {
   // We want this component to wrap it's template in a "div" so we can use
@@ -496,6 +497,7 @@ CMS.WidgetControl("color", {
     this.$("input").spectrum("destroy");
   }
 });
+</script>
 ```
 
 That's it - now we'll get a nice spectrum color picker.
