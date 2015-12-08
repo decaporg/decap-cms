@@ -23,8 +23,8 @@ The easiest way to get started playing around with netlify CMS, is to clone one 
 our starter templates and start hacking:
 
 * [Jekyll + netlify CMS](https://github.com/netlify-templates/jekyll-netlify-cms)
-* [Roots + netlify CMS](https://github.com/netlify-templates/roots-netlify-cms)
-* [Hexo + netlify CMS](https://github.com/netlify-templates/hexo-netlify-cms)
+* [Roots + netlify CMS](https://github.com/netlify-templates/roots-cms-example)
+* [Hexo + netlify CMS](https://github.com/netlify-templates/hexo-cms-example)
 * [Pelican + netlify CMS](https://github.com/netlify-templates/pelican-netlify-cms)
 
 ## Installing
