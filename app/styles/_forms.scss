@@ -18,6 +18,10 @@ body.ember-application {
     textarea {
       resize: none;
     }
+    textarea,
+    input[type="text"] {
+      border: 1px solid $color_muted;
+    }
   }
   .cms-markdown-editor textarea {
     font-family: monospace;
