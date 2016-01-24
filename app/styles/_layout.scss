@@ -1,5 +1,5 @@
 body.ember-application {
-  .ember-view {
+  > .ember-view {
     height: 100%;
   }
 
