@@ -7,7 +7,7 @@ Try the UI demo here: [cms.netlify.com](https://cms.netlify.com).
 
 ## How it works
 
-Netlify CMS is a single page app that you pull into the `/admin` part of your site.
+Netlify CMS is a single-page app that you pull into the `/admin` part of your site.
 
 It presents a clean UI for editing content stored in a Git repository.
 
@@ -98,7 +98,7 @@ Collections basically comes in three forms:
 3. A `file`. **Warning, not implemented yet**. This is a collection stored in a single file.
    Typically a YAML file or a CSV with an array of items.
 
-Each collection have a list of fields (or files with their individual fields). Each field has a `label`, a `name` and a `widget`.
+Each collection has a list of fields (or files with their individual fields). Each field has a `label`, a `name` and a `widget`.
 
 Setting up the right collections is the main part of integrating netlify CMS with your site. It's
 where you decide exactly what content editors can work with, and what widgets should be used to
@@ -143,7 +143,7 @@ embed the config.yml directly in the `admin/index.html` file like this:
 
 ## GitHub as a Backend
 
-The default Github based authenticator integrates with Netlify's [Authentication Provider feature](https://www.netlify.com/docs/authentication-providers) and the repository
+The default Github-based authenticator integrates with Netlify's [Authentication Provider feature](https://www.netlify.com/docs/authentication-providers) and the repository
 backend integrates directly with Github's API.
 
 To get everything hooked up, setup continuous deployment from Github to Netlify
