@@ -129,9 +129,9 @@ var Collection = Ember.Object.extend({
           async: false,
           fn: (a, b) => {
             var dateA = new Date(a.name.split("-").slice(0, 3).join("-"));
-            var dateB = new Date(b.name.split("-").slice(0, 3).join("-"))
+            var dateB = new Date(b.name.split("-").slice(0, 3).join("-"));
 
-            return dateA > dateB ? -1 : ( dateA == dateB ? 0 : 1);
+            return dateA > dateB ? -1 : ( dateA === dateB ? 0 : 1);
           }
         };
       } else {
@@ -161,7 +161,7 @@ var Collection = Ember.Object.extend({
 
         return first > second ? 1 : (first < second ? -1 : 0);
       }
-    }
+    };
   },
 
   loadFromQueue: function(queue) {
@@ -199,7 +199,7 @@ var Collection = Ember.Object.extend({
     return repository && repository.listFiles(this.get("folder")).then((files) => {
       var loadQueue = [];
 
-      var files = files.filter((file) => extension == null || file.name.split(".").pop() === extension);
+      files = files.filter((file) => extension == null || file.name.split(".").pop() === extension);
       var fileSorter = this.fileSorter(files);
       if (fileSorter.async === false) {
         files = files.sort(fileSorter.fn);
