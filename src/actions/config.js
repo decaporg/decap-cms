@@ -1,27 +1,25 @@
 import yaml from 'js-yaml';
 
-export const CONFIG = {
-  REQUEST: 'REQUEST',
-  SUCCESS: 'SUCCESS',
-  FAILURE: 'FAILURE'
-};
+export const CONFIG_REQUEST = 'CONFIG_REQUEST';
+export const CONFIG_SUCCESS = 'CONFIG_SUCCESS';
+export const CONFIG_FAILURE = 'CONFIG_FAILURE';
 
 export function configLoaded(config) {
   return {
-    type: CONFIG.SUCCESS,
+    type: CONFIG_SUCCESS,
     payload: config
   };
 }
 
 export function configLoading() {
   return {
-    type: CONFIG.REQUEST
+    type: CONFIG_REQUEST
   };
 }
 
 export function configFailed(err) {
   return {
-    type: CONFIG.FAILURE,
+    type: CONFIG_FAILURE,
     error: 'Error loading config',
     payload: err
   };

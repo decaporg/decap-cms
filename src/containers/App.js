@@ -1,6 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { loadConfig } from '../actions/config';
+import { loginUser } from '../actions/auth';
+import { currentBackend } from '../backends/backend';
 
 class App extends React.Component {
   constructor(props) {
@@ -9,6 +11,10 @@ class App extends React.Component {
 
   componentDidMount() {
     this.props.dispatch(loadConfig());
+  }
+
+  componentWillReceiveProps(nextProps) {
+    //this.props.dispatch(loadBackend());
   }
 
   configError(config) {
@@ -28,8 +34,29 @@ class App extends React.Component {
     </div>;
   }
 
+  handleLogin(credentials) {
+    this.props.dispatch(loginUser(credentials));
+  }
+
+  authenticating() {
+    const { auth } = this.props;
+    const backend = currentBackend(this.props.config);
+
+    if (backend == null) {
+      return <div><h1>Waiting for backend...</h1></div>;
+    }
+
+    return <div>
+      {React.createElement(backend.authComponent(), {
+        onLogin: this.handleLogin.bind(this),
+        error: auth && auth.get('error'),
+        isFetching: auth && auth.get('isFetching')
+      })}
+    </div>;
+  }
+
   render() {
-    const { config, children } = this.props;
+    const { user, config, children } = this.props;
 
     if (config === null) {
       return null;
@@ -43,6 +70,10 @@ class App extends React.Component {
       return this.configLoading();
     }
 
+    if (user == null) {
+      return this.authenticating();
+    }
+
     return (
       <div>{children}</div>
     );
@@ -50,7 +81,11 @@ class App extends React.Component {
 }
 
 function mapStateToProps(state) {
+  const { auth } = state;
+
   return {
+    auth: auth,
+    user: auth && auth.get('user'),
     config: state.config
   };
 }
