@@ -2,9 +2,44 @@
 <html>
 <head>
   <title>This is an example</title>
+  <script>
+  window.repoFiles = {
+    _posts: {
+      "2015-02-14-this-is-a-post.md": {
+        content: "---\ntitle: This is a post\ndate: 2015-02-14T00:00:00.000Z\n---\n\n# I Am a Title in Markdown\n\nHello, world\n"
+      }
+    },
+    _faqs: {
+      "what-is-netlify-cms.md": {
+        content: "---\ntitle: What is netlify CMS?\ndate: 2015-11-02T00:00.000Z\n---\n\n# Netlify CMS is Content Manager for Static Site Generators\n\nStatic sites are many times faster, cheaper and safer and traditional dynamic websites.\n\nModern static site generators like Jekyll, Middleman, Roots or Hugo are powerful publishing and development systems, but when we build sites for non-technical users, we need a layer on top of them.\n\nNetlify CMS is there to let your marketing team push new content to your public site, or to let technical writers work on your documentation.\n\nNetlify CMS integrates with Git and turns normal content editors into git comitters.\n\n"
+      }
+    },
+    _data: {
+      "settings.json": {
+        content: '{"site_title": "CMS Demo", "posts": {"front_limit": 5, "author": "Matt Biilmann"}}'
+      },
+      "authors.yml": {
+        content: 'authors:\n  - name: Mathias\n    description: Co-founder @ Netlify\n'
+      }
+    }
+  }
+
+  var ONE_DAY = 60 * 60 * 24 * 1000;
+
+  for (var i= 0; i<10; i++) {
+    var date = new Date();
+
+    date.setTime(date.getTime() + ONE_DAY);
+    var dateString = '' + date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+    var slug = dateString + "-post-number-" + i + ".md";
+
+    window.repoFiles._posts[slug] = {
+      content: "---\ntitle: \"This is post # " + (10-i) + "\"\ndate: " + dateString + "T00:99:99.999Z\n---\n\n# The post is number " + i + "\n\nAnd this is yet another identical post body"
+    }
+  }
+  </script>
 </head>
 <body>
-
   <script src='/cms.js'></script>
 </body>
 </html>

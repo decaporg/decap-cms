@@ -1,4 +1,5 @@
 import TestRepoBackend from './test-repo/Implementation';
+import { resolveFormat } from '../formats/formats';
 
 export function resolveBackend(config) {
   const name = config.getIn(['backend', 'name']);
@@ -32,8 +33,24 @@ class Backend {
     return this.implementation.authComponent();
   }
 
-  authenticate(state) {
-    return this.implementation.authenticate(state);
+  authenticate(credentials) {
+    return this.implementation.authenticate(credentials);
+  }
+
+  entries(collection) {
+    return this.implementation.entries(collection).then((entries) => (
+      (entries || []).map((entry) => {
+        const format = resolveFormat(collection, entry);
+        if (entry && entry.raw) {
+          entry.data = format && format.fromFile(entry.raw);
+        }
+        return entry;
+      })
+    ));
+  }
+
+  entry(collection, slug) {
+    return this.implementation.entry(collection, slug);
   }
 }
 

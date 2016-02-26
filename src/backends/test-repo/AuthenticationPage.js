@@ -12,7 +12,8 @@ export default class AuthenticationPage extends React.Component {
     this.handleEmailChange = this.handleEmailChange.bind(this);
   }
 
-  handleLogin() {
+  handleLogin(e) {
+    e.preventDefault();
     this.props.onLogin(this.state);
   }
 
@@ -21,13 +22,13 @@ export default class AuthenticationPage extends React.Component {
   }
 
   render() {
-    return <div>
+    return <form onSubmit={this.handleLogin}>
       <p>
         <label>Your name or email: <input type='text' onChange={this.handleEmailChange}/></label>
       </p>
       <p>
-        <button onClick={this.handleLogin}>Login</button>
+        <button type='submit'>Login</button>
       </p>
-    </div>;
+    </form>;
   }
 }

@@ -32,7 +32,7 @@ export function loadConfig(config) {
   return (dispatch, getState) => {
     dispatch(configLoading());
 
-    fetch('config.yml').then((response) => {
+    fetch('/config.yml').then((response) => {
       if (response.status !== 200) {
         throw `Failed to load config.yml (${response.status})`;
       }
