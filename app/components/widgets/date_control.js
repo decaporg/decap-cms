@@ -24,13 +24,15 @@ export default Ember.Component.extend({
     var value = this.get("widget.value");
     if (value && value instanceof Date) {
       value = moment(value).format(this.get("dateFormat"));
+    } else if (value === 'now') {
+      value = moment().format(this.get("dateFormat"));
     }
 
     this.set("value", value);
   },
 
   onDateStringChange: function() {
-    
+
     this.set("widget.value", moment(this.get("value")));
   }.observes("value"),
 
