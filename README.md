@@ -333,7 +333,7 @@ Each widget consists of two Ember components, a **widget control** and a **widge
 You can overwrite the template for any widget control or preview like this:
 
 ```html
-<script type="text/x-handlebars" data-template-name='cms/widgets/string-control'>
+<script type="text/x-handlebars" data-template-name='components/widgets/string-control'>
   <div class="form-group">
     <label>{{widget.label}}</label>
     {{input value=raw_value class="form-control"}}
@@ -354,14 +354,14 @@ Here's a more advanced example of creating a new widget called `author` just by 
 custom templates:
 
 ```html
-<script type="text/x-handlebars" data-template-name='cms/widgets/author-control'>
+<script type="text/x-handlebars" data-template-name='components/widgets/author-control'>
   <div class="form-group">
     <label>{{widget.label}}</label>
     {{view "select" content=widget.field.authors value=widget.value}}
   </div>
 </script>
 
-<script type="text/x-handlebars" data-template-name='cms/widgets/author-preview'>
+<script type="text/x-handlebars" data-template-name='components/widgets/author-preview'>
   Written by
   <span class="author">{{widget.value}}</span>
   on
