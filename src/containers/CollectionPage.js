@@ -39,9 +39,7 @@ class DashboardPage extends React.Component {
         )).toArray()}
       </div>
       <div>
-        {slug ? children :
-          entries ? <EntryListing collection={collection} entries={entries}/> : 'No entries...'
-        }
+        {entries ? <EntryListing collection={collection} entries={entries}/> : 'No entries...'}
       </div>
     </div>;
   }

@@ -1,7 +1,7 @@
 import AuthenticationPage from './AuthenticationPage';
 
 function getSlug(path) {
-  const m = path.match(/([^\/]+)(\.[^\/\.]+)?$/);
+  const m = path.match(/([^\/]+?)(\.[^\/\.]+)?$/);
   return m && m[1];
 }
 
@@ -38,6 +38,8 @@ export default class TestRepo {
   }
 
   entry(collection, slug) {
-    return Promise.resolve({slug: slug, title: 'hello'});
+    return this.entries(collection).then((entries) => (
+      entries.filter((entry) => entry.slug === slug)[0]
+    ));
   }
 }

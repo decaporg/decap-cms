@@ -1,4 +1,6 @@
 import yaml from 'js-yaml';
+import { currentBackend } from '../backends/backend';
+import { authenticate } from '../actions/auth';
 
 export const CONFIG_REQUEST = 'CONFIG_REQUEST';
 export const CONFIG_SUCCESS = 'CONFIG_SUCCESS';
@@ -37,7 +39,12 @@ export function loadConfig(config) {
         throw `Failed to load config.yml (${response.status})`;
       }
 
-      response.text().then(parseConfig).then((config) => dispatch(configLoaded(config)));
+      response.text().then(parseConfig).then((config) => {
+        dispatch(configLoaded(config));
+        const backend = currentBackend(config);
+        const user = backend && backend.currentUser();
+        user && dispatch(authenticate(user));
+      });
     }).catch((err) => {
       dispatch(configFailed(err));
     });

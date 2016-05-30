@@ -1,8 +1,7 @@
 import React from 'react';
-import { Link } from 'react-router';
 import { connect } from 'react-redux';
-import { loadEntries } from '../actions/entries';
-import EntryListing from '../components/EntryListing';
+import { Map } from 'immutable';
+import EntryEditor from '../components/EntryEditor';
 
 class DashboardPage extends React.Component {
   componentDidMount() {
@@ -14,18 +13,17 @@ class DashboardPage extends React.Component {
   render() {
     const { collection, entry } = this.props;
 
-    return <div>
-      <h1>Entry in {collection.get('label')}</h1>
-      <h2>{entry && entry.get('title')}</h2>
-    </div>;
+    return <EntryEditor entry={entry || new Map()} collection={collection}/>;
   }
 }
 
 function mapStateToProps(state, ownProps) {
   const { collections } = state;
+  const collection = collections.get(ownProps.params.name);
+  // const entryName = `${collection.get('name')}/${ownProps.params.slug}`;
 
   return {
-    collection: collections.get(ownProps.params.name),
+    collection: collection,
     collections: collections
   };
 }

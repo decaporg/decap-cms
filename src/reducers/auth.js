@@ -8,6 +8,7 @@ export function auth(state = null, action) {
     case AUTH_SUCCESS:
       return Immutable.fromJS({user: action.payload});
     case AUTH_FAILURE:
+      console.error(action.payload);
       return Immutable.Map({error: action.payload.toString()});
     default:
       return state;

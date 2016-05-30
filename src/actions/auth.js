@@ -33,6 +33,6 @@ export function loginUser(credentials) {
     dispatch(authenticating());
     backend.authenticate(credentials)
       .then((user) => dispatch(authenticate(user)))
-      .catch((err) => dispatch(authError(err)));
+      //.catch((err) => dispatch(authError(err)));
   };
 }

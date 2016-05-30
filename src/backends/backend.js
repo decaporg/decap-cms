@@ -1,17 +1,16 @@
 import TestRepoBackend from './test-repo/Implementation';
 import { resolveFormat } from '../formats/formats';
 
-export function resolveBackend(config) {
-  const name = config.getIn(['backend', 'name']);
-  if (name == null) {
-    throw 'No backend defined in configuration';
+class LocalStorageAuthStore {
+  storageKey = 'nf-cms-user';
+
+  retrieve() {
+    const data = window.localStorage.getItem(this.storageKey);
+    return data && JSON.parse(data);
   }
 
-  switch (name) {
-    case 'test-repo':
-      return new Backend(new TestRepoBackend(config));
-    default:
-      throw `Backend not found: ${name}`;
+  store(userData) {
+    window.localStorage.setItem(this.storageKey, JSON.stringify(userData));
   }
 }
 
@@ -34,12 +33,15 @@ class Backend {
   }
 
   authenticate(credentials) {
-    return this.implementation.authenticate(credentials);
+    return this.implementation.authenticate(credentials).then((user) => {
+      if (this.authStore) { this.authStore.store(user); }
+      return user;
+    });
   }
 
   entries(collection) {
-    return this.implementation.entries(collection).then((entries) => (
-      (entries || []).map((entry) => {
+    return this.implementation.entries(collection).then((entries = []) => (
+      entries.map((entry) => {
         const format = resolveFormat(collection, entry);
         if (entry && entry.raw) {
           entry.data = format && format.fromFile(entry.raw);
@@ -51,6 +53,22 @@ class Backend {
 
   entry(collection, slug) {
     return this.implementation.entry(collection, slug);
+  }
+}
+
+export function resolveBackend(config) {
+  const name = config.getIn(['backend', 'name']);
+  if (name == null) {
+    throw 'No backend defined in configuration';
+  }
+
+  const authStore = new LocalStorageAuthStore();
+
+  switch (name) {
+    case 'test-repo':
+      return new Backend(new TestRepoBackend(config), authStore);
+    default:
+      throw `Backend not found: ${name}`;
   }
 }
 
