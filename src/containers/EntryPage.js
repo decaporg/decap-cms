@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Map } from 'immutable';
 import EntryEditor from '../components/EntryEditor';
 
-class DashboardPage extends React.Component {
+class EntryPage extends React.Component {
   componentDidMount() {
   }
 
@@ -20,7 +20,6 @@ class DashboardPage extends React.Component {
 function mapStateToProps(state, ownProps) {
   const { collections } = state;
   const collection = collections.get(ownProps.params.name);
-  // const entryName = `${collection.get('name')}/${ownProps.params.slug}`;
 
   return {
     collection: collection,
@@ -28,4 +27,4 @@ function mapStateToProps(state, ownProps) {
   };
 }
 
-export default connect(mapStateToProps)(DashboardPage);
+export default connect(mapStateToProps)(EntryPage);

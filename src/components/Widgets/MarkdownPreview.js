@@ -1,6 +1,6 @@
 import React from 'react';
 import CommonMark from 'commonmark';
-import ReactRenderer from'commonmark-react-renderer';
+import ReactRenderer from 'commonmark-react-renderer';
 
 const parser = new CommonMark.Parser();
 const renderer = new ReactRenderer();
@@ -8,7 +8,6 @@ const renderer = new ReactRenderer();
 export default class MarkdownPreview extends React.Component {
   render() {
     const { value } = this.props;
-    console.log(value);
     if (value == null) { return null; }
 
     const ast = parser.parse(value);
