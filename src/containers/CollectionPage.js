@@ -21,7 +21,7 @@ class DashboardPage extends React.Component {
   }
 
   render() {
-    const { collections, collection, slug, children } = this.props;
+    const { collections, collection } = this.props;
 
     if (collections == null) {
       return <h1>No collections defined in your config.yml</h1>;
@@ -48,12 +48,9 @@ class DashboardPage extends React.Component {
 function mapStateToProps(state, ownProps) {
   const { collections } = state;
   const { name, slug } = ownProps.params;
+  const collection = name ? collections.get(name) : collections.first();
 
-  return {
-    slug: slug,
-    collection: name ? collections.get(name) : collections.first(),
-    collections: collections
-  };
+  return {slug, collection, collections};
 }
 
 export default connect(mapStateToProps)(DashboardPage);

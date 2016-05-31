@@ -5,16 +5,8 @@ import { loginUser } from '../actions/auth';
 import { currentBackend } from '../backends/backend';
 
 class App extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   componentDidMount() {
     this.props.dispatch(loadConfig());
-  }
-
-  componentWillReceiveProps(nextProps) {
-    //this.props.dispatch(loadBackend());
   }
 
   configError(config) {
@@ -81,13 +73,10 @@ class App extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { auth } = state;
+  const { auth, config } = state;
+  const user = auth && auth.get('user');
 
-  return {
-    auth: auth,
-    user: auth && auth.get('user'),
-    config: state.config
-  };
+  return {auth, config, user};
 }
 
 export default connect(mapStateToProps)(App);

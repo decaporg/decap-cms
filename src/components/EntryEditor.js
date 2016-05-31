@@ -10,7 +10,6 @@ export default class EntryEditor extends React.Component {
   }
 
   handleChange(entry) {
-    console.log('Got new entry: %o', entry.toObject());
     this.setState({entry: entry});
   }
 
@@ -28,6 +27,6 @@ export default class EntryEditor extends React.Component {
           <PreviewPane collection={collection} entry={this.state.entry}/>
         </div>
       </div>
-    </div>
+    </div>;
   }
 }

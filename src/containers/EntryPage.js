@@ -4,12 +4,6 @@ import { Map } from 'immutable';
 import EntryEditor from '../components/EntryEditor';
 
 class EntryPage extends React.Component {
-  componentDidMount() {
-  }
-
-  componentWillReceiveProps(nextProps) {
-  }
-
   render() {
     const { collection, entry } = this.props;
 
@@ -18,13 +12,10 @@ class EntryPage extends React.Component {
 }
 
 function mapStateToProps(state, ownProps) {
-  const { collections } = state;
+  const { collections, media } = state;
   const collection = collections.get(ownProps.params.name);
 
-  return {
-    collection: collection,
-    collections: collections
-  };
+  return {media, collection, collections};
 }
 
 export default connect(mapStateToProps)(EntryPage);

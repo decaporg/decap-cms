@@ -31,8 +31,7 @@ export function loginUser(credentials) {
     const backend = currentBackend(state.config);
 
     dispatch(authenticating());
-    backend.authenticate(credentials)
-      .then((user) => dispatch(authenticate(user)))
-      //.catch((err) => dispatch(authError(err)));
+    return backend.authenticate(credentials)
+      .then((user) => dispatch(authenticate(user)));
   };
 }
