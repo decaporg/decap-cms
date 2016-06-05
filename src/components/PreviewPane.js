@@ -8,7 +8,7 @@ export default class PreviewPane extends React.Component {
     return React.createElement(widget.Preview, {
       key: field.get('name'),
       field: field,
-      value: entry.get(field.get('name'))
+      value: entry.getIn(['data', field.get('name')])
     });
   }
 

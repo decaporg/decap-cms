@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import { loadEntries } from '../actions/entries';
+import { selectEntries } from '../reducers/entries';
 import EntryListing from '../components/EntryListing';
 
 class DashboardPage extends React.Component {
@@ -21,13 +22,11 @@ class DashboardPage extends React.Component {
   }
 
   render() {
-    const { collections, collection } = this.props;
+    const { collections, collection, entries } = this.props;
 
     if (collections == null) {
       return <h1>No collections defined in your config.yml</h1>;
     }
-
-    const entries = collection.get('entries');
 
     return <div>
       <h1>Dashboard</h1>
@@ -39,7 +38,7 @@ class DashboardPage extends React.Component {
         )).toArray()}
       </div>
       <div>
-        {entries ? <EntryListing collection={collection} entries={entries}/> : 'No entries...'}
+        {entries ? <EntryListing collection={collection} entries={entries}/> : 'Loading entries...'}
       </div>
     </div>;
   }
@@ -49,8 +48,9 @@ function mapStateToProps(state, ownProps) {
   const { collections } = state;
   const { name, slug } = ownProps.params;
   const collection = name ? collections.get(name) : collections.first();
+  const entries = selectEntries(state, collection.get('name'));
 
-  return {slug, collection, collections};
+  return {slug, collection, collections, entries};
 }
 
 export default connect(mapStateToProps)(DashboardPage);

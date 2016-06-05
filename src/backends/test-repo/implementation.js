@@ -13,6 +13,8 @@ export default class TestRepo {
     }
   }
 
+  setUser() {}
+
   authComponent() {
     return AuthenticationPage;
   }
@@ -34,12 +36,15 @@ export default class TestRepo {
       }
     }
 
-    return Promise.resolve(entries);
+    return Promise.resolve({
+      pagination: {},
+      entries
+    });
   }
 
   entry(collection, slug) {
-    return this.entries(collection).then((entries) => (
-      entries.filter((entry) => entry.slug === slug)[0]
+    return this.entries(collection).then((response) => (
+      response.entries.filter((entry) => entry.slug === slug)[0]
     ));
   }
 }

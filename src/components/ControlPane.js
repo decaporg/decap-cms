@@ -8,8 +8,8 @@ export default class ControlPane extends React.Component {
     return React.createElement(widget.Control, {
       key: field.get('name'),
       field: field,
-      value: entry.get(field.get('name')),
-      onChange: (value) => this.props.onChange(entry.set(field.get('name'), value))
+      value: entry.getIn(['data', field.get('name')]),
+      onChange: (value) => this.props.onChange(entry.setIn(['data', field.get('name')], value))
     });
   }
 
@@ -18,7 +18,7 @@ export default class ControlPane extends React.Component {
     if (!collection) { return null; }
 
     return <div>
-      {collection.get('fields').map((field) => <div>{this.controlFor(field)}</div>)}
+      {collection.get('fields').map((field) => <div key={field.get('names ')}>{this.controlFor(field)}</div>)}
     </div>;
   }
 }

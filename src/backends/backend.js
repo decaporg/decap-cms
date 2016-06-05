@@ -1,4 +1,5 @@
 import TestRepoBackend from './test-repo/Implementation';
+import GitHubBackend from './github/Implementation';
 import { resolveFormat } from '../formats/formats';
 
 class LocalStorageAuthStore {
@@ -25,7 +26,11 @@ class Backend {
 
   currentUser() {
     if (this.user) { return this.user; }
-    return this.authStore && this.authStore.retrieve();
+    const stored = this.authStore && this.authStore.retrieve();
+    if (stored) {
+      this.implementation.setUser(stored);
+      return stored;
+    }
   }
 
   authComponent() {
@@ -39,20 +44,27 @@ class Backend {
     });
   }
 
-  entries(collection) {
-    return this.implementation.entries(collection).then((entries = []) => (
-      entries.map((entry) => {
-        const format = resolveFormat(collection, entry);
-        if (entry && entry.raw) {
-          entry.data = format && format.fromFile(entry.raw);
-        }
-        return entry;
-      })
-    ));
+  entries(collection, page, perPage) {
+    return this.implementation.entries(collection, page, perPage).then((response) => {
+      return {
+        pagination: response.pagination,
+        entries: response.entries.map(this.entryWithFormat(collection))
+      };
+    });
   }
 
   entry(collection, slug) {
-    return this.implementation.entry(collection, slug);
+    return this.implementation.entry(collection, slug).then(this.entryWithFormat(collection));
+  }
+
+  entryWithFormat(collection) {
+    return (entry) => {
+      const format = resolveFormat(collection, entry);
+      if (entry && entry.raw) {
+        entry.data = format && format.fromFile(entry.raw);
+      }
+      return entry;
+    };
   }
 }
 
@@ -67,6 +79,8 @@ export function resolveBackend(config) {
   switch (name) {
     case 'test-repo':
       return new Backend(new TestRepoBackend(config), authStore);
+    case 'github':
+      return new Backend(new GitHubBackend(config), authStore);
     default:
       throw `Backend not found: ${name}`;
   }
