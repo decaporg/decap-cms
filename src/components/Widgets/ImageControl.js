@@ -77,7 +77,8 @@ export default class ImageControl extends React.Component {
     if (this.state.currentImage instanceof File) {
       return this.state.currentImage.name;
     } else if (typeof this.state.currentImage === 'string') {
-      return this.state.currentImage;
+      const fileName = this.state.currentImage;
+      return fileName.substring(fileName.lastIndexOf('/') + 1);
     }
 
     return null;
