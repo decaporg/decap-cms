@@ -35,7 +35,7 @@ export default class ImageControl extends React.Component {
     const files = [...fileList];
     const imageType = /^image\//;
 
-    // Iterate to list of files and return the first image on the list
+    // Iterate through the list of files and return the first image on the list
     const file = files.find((currentFile) => {
       if (imageType.test(currentFile.type)) {
         return currentFile;
