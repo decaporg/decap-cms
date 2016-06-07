@@ -9,7 +9,8 @@ export default class ControlPane extends React.Component {
       key: field.get('name'),
       field: field,
       value: entry.getIn(['data', field.get('name')]),
-      onChange: (value) => this.props.onChange(entry.setIn(['data', field.get('name')], value))
+      onChange: (value) => this.props.onChange(entry.setIn(['data', field.get('name')], value)),
+      onAddMedia: (mediaFile) => this.props.onAddMedia(mediaFile)
     });
   }
 

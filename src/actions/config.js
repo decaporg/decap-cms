@@ -1,6 +1,7 @@
 import yaml from 'js-yaml';
 import { currentBackend } from '../backends/backend';
 import { authenticate } from '../actions/auth';
+import * as ImageProxy from '../valueObjects/ImageProxy';
 
 export const CONFIG_REQUEST = 'CONFIG_REQUEST';
 export const CONFIG_SUCCESS = 'CONFIG_SUCCESS';
@@ -27,9 +28,17 @@ export function configFailed(err) {
   };
 }
 
+export function configDidLoad(config) {
+  return (dispatch) => {
+    ImageProxy.setConfig(config);
+    dispatch(configLoaded(config));
+  };
+}
+
+
 export function loadConfig(config) {
   if (window.CMS_CONFIG) {
-    return configLoaded(window.CMS_CONFIG);
+    return configDidLoad(window.CMS_CONFIG);
   }
   return (dispatch, getState) => {
     dispatch(configLoading());
@@ -40,7 +49,7 @@ export function loadConfig(config) {
       }
 
       response.text().then(parseConfig).then((config) => {
-        dispatch(configLoaded(config));
+        dispatch(configDidLoad(config));
         const backend = currentBackend(config);
         const user = backend && backend.currentUser();
         user && dispatch(authenticate(user));

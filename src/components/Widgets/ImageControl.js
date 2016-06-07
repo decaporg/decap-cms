@@ -1,14 +1,18 @@
 import React from 'react';
+import ImageProxy from '../../valueObjects/ImageProxy';
 
 export default class ImageControl extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      currentImage: props.value
+      currentImage: {
+        file: null,
+        imageProxy: new ImageProxy(props.value, null, null, true)
+      }
     };
 
-    this.revokeCurrentImage = this.revokeCurrentImage.bind(this);
+    this.revokeCurrentObjectURL = this.revokeCurrentObjectURL.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleFileInputRef = this.handleFileInputRef.bind(this);
     this.handleClick = this.handleClick.bind(this);
@@ -18,12 +22,12 @@ export default class ImageControl extends React.Component {
   }
 
   componentWillUnmount() {
-    this.revokeCurrentImage();
+    this.revokeCurrentObjectURL();
   }
 
-  revokeCurrentImage() {
-    if (this.state.currentImage instanceof File) {
-      window.URL.revokeObjectURL(this.state.currentImage);
+  revokeCurrentObjectURL() {
+    if (this.state.currentImage.file) {
+      window.URL.revokeObjectURL(this.state.currentImage.file);
     }
   }
 
@@ -48,7 +52,8 @@ export default class ImageControl extends React.Component {
   handleChange(e) {
     e.stopPropagation();
     e.preventDefault();
-    this.revokeCurrentImage();
+    this.revokeCurrentObjectURL();
+    let imageRef = null;
     const fileList = e.dataTransfer ? e.dataTransfer.files : e.target.files;
     const files = [...fileList];
     const imageType = /^image\//;
@@ -61,27 +66,17 @@ export default class ImageControl extends React.Component {
     });
 
     if (file) {
-      // Custom toString function on file, so it can be used on regular image fields
-      file.toString = function() {
-        return window.URL.createObjectURL(file);
-      };
+      this.props.onAddMedia(file);
+      imageRef = new ImageProxy(file.name, file.size, window.URL.createObjectURL(file));
     }
 
-    this.props.onChange(file);
-    this.setState({currentImage: file});
+    this.props.onChange(imageRef);
+    this.setState({currentImage: {file:file, imageProxy: imageRef}});
   }
 
   renderImageName() {
-    if (!this.state.currentImage) return null;
-
-    if (this.state.currentImage instanceof File) {
-      return this.state.currentImage.name;
-    } else if (typeof this.state.currentImage === 'string') {
-      const fileName = this.state.currentImage;
-      return fileName.substring(fileName.lastIndexOf('/') + 1);
-    }
-
-    return null;
+    if (!this.state.currentImage.imageProxy) return null;
+    return this.state.currentImage.imageProxy.uri;
   }
 
   render() {

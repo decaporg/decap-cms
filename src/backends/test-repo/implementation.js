@@ -47,4 +47,9 @@ export default class TestRepo {
       response.entries.filter((entry) => entry.slug === slug)[0]
     ));
   }
+
+  persist(collection, entry, mediaFiles) {
+    alert('This will be the persisted data:\n' + entry.raw);
+    return Promise.resolve({collection, entry});
+  }
 }
