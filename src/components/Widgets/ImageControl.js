@@ -12,7 +12,7 @@ export default class ImageControl extends React.Component {
       }
     };
 
-    this.revokeCurrentObjectURL = this.revokeCurrentObjectURL.bind(this);
+    this.revokeCurrentImage = this.revokeCurrentImage.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleFileInputRef = this.handleFileInputRef.bind(this);
     this.handleClick = this.handleClick.bind(this);
@@ -22,11 +22,12 @@ export default class ImageControl extends React.Component {
   }
 
   componentWillUnmount() {
-    this.revokeCurrentObjectURL();
+    this.revokeCurrentImage();
   }
 
-  revokeCurrentObjectURL() {
+  revokeCurrentImage() {
     if (this.state.currentImage.file) {
+      this.props.onRemoveMedia(this.state.currentImage.file);
       window.URL.revokeObjectURL(this.state.currentImage.file);
     }
   }
@@ -52,7 +53,7 @@ export default class ImageControl extends React.Component {
   handleChange(e) {
     e.stopPropagation();
     e.preventDefault();
-    this.revokeCurrentObjectURL();
+    this.revokeCurrentImage();
     let imageRef = null;
     const fileList = e.dataTransfer ? e.dataTransfer.files : e.target.files;
     const files = [...fileList];

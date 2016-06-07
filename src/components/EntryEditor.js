@@ -12,6 +12,7 @@ export default class EntryEditor extends React.Component {
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleAddMedia = this.handleAddMedia.bind(this);
+    this.handleRemoveMedia = this.handleRemoveMedia.bind(this);
     this.handleSave = this.handleSave.bind(this);
   }
 
@@ -21,6 +22,14 @@ export default class EntryEditor extends React.Component {
 
   handleAddMedia(mediaFile) {
     this.setState({mediaFiles: this.state.mediaFiles.push(mediaFile)});
+  }
+
+  handleRemoveMedia(mediaFile) {
+    const newState = this.state.mediaFiles.filterNot((item) => item === mediaFile);
+    this.state = {
+      entry: this.props.entry,
+      mediaFiles: Immutable.List(newState)
+    };
   }
 
   handleSave() {
@@ -40,6 +49,7 @@ export default class EntryEditor extends React.Component {
               entry={this.state.entry}
               onChange={this.handleChange}
               onAddMedia={this.handleAddMedia}
+              onRemoveMedia={this.handleRemoveMedia}
           />
         </div>
         <div className="cms-preview-pane" style={styles.pane}>

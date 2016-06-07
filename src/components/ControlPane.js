@@ -10,7 +10,8 @@ export default class ControlPane extends React.Component {
       field: field,
       value: entry.getIn(['data', field.get('name')]),
       onChange: (value) => this.props.onChange(entry.setIn(['data', field.get('name')], value)),
-      onAddMedia: (mediaFile) => this.props.onAddMedia(mediaFile)
+      onAddMedia: (mediaFile) => this.props.onAddMedia(mediaFile),
+      onRemoveMedia: (mediaFile) => this.props.onRemoveMedia(mediaFile)
     });
   }
 
