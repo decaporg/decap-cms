@@ -1,15 +1,14 @@
 import React from 'react';
 import ImageProxy from '../../valueObjects/ImageProxy';
 
+const MAX_DISPLAY_LENGTH = 50;
+
 export default class ImageControl extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      currentImage: {
-        file: null,
-        imageProxy: new ImageProxy(props.value, null, null, true)
-      }
+      currentImage: new ImageProxy(props.value, null, true)
     };
 
     this.revokeCurrentImage = this.revokeCurrentImage.bind(this);
@@ -21,14 +20,9 @@ export default class ImageControl extends React.Component {
     this.renderImageName = this.renderImageName.bind(this);
   }
 
-  componentWillUnmount() {
-    this.revokeCurrentImage();
-  }
-
   revokeCurrentImage() {
-    if (this.state.currentImage.file) {
-      this.props.onRemoveMedia(this.state.currentImage.file);
-      window.URL.revokeObjectURL(this.state.currentImage.file);
+    if (this.state.currentImage && !this.state.currentImage.uploaded) {
+      this.props.onRemoveMedia(this.state.currentImage);
     }
   }
 
@@ -67,17 +61,21 @@ export default class ImageControl extends React.Component {
     });
 
     if (file) {
-      this.props.onAddMedia(file);
-      imageRef = new ImageProxy(file.name, file.size, window.URL.createObjectURL(file));
+      imageRef = new ImageProxy(file.name, file);
+      this.props.onAddMedia(imageRef);
     }
 
     this.props.onChange(imageRef);
-    this.setState({currentImage: {file:file, imageProxy: imageRef}});
+    this.setState({currentImage: imageRef});
   }
 
   renderImageName() {
-    if (!this.state.currentImage.imageProxy) return null;
-    return this.state.currentImage.imageProxy.uri;
+    if (!this.state.currentImage) return null;
+    if (this.state.currentImage.uri.length < MAX_DISPLAY_LENGTH) {
+      return this.state.currentImage.uri;
+    }
+
+    return this.state.currentImage.uri.substring(0, MAX_DISPLAY_LENGTH) + '\u2026';
   }
 
   render() {
