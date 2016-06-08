@@ -5,6 +5,7 @@ import { syncHistory, routeReducer } from 'react-router-redux';
 import { auth } from '../reducers/auth';
 import { config } from '../reducers/config';
 import { entries } from '../reducers/entries';
+import { entryDraft } from '../reducers/entryDraft';
 import { collections } from '../reducers/collections';
 
 const reducer = combineReducers({
@@ -12,6 +13,7 @@ const reducer = combineReducers({
   config,
   collections,
   entries,
+  entryDraft,
   router: routeReducer
 });
 

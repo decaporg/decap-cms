@@ -62,8 +62,8 @@ export default class ImageControl extends React.Component {
     });
 
     if (file) {
-      imageRef = new ImageProxy(file.name, file);
-      this.props.onAddMedia(imageRef);
+      imageRef = new ImageProxy(file.name, window.URL.createObjectURL(file, {oneTimeOnly: true}));
+      this.props.onAddMedia(file);
     }
 
     this.props.onChange(imageRef);

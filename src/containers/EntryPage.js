@@ -1,32 +1,56 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Map } from 'immutable';
-import { loadEntry, persist } from '../actions/entries';
+import {
+  loadEntry,
+  createDraft,
+  discardDraft,
+  changeDraft,
+  addMediaToDraft,
+  removeMediaFromDraft,
+  persist
+} from '../actions/entries';
 import { selectEntry } from '../reducers/entries';
 import EntryEditor from '../components/EntryEditor';
 
 class EntryPage extends React.Component {
   constructor(props) {
     super(props);
-    this.props.dispatch(loadEntry(props.collection, props.slug));
-
+    this.props.loadEntry(props.collection, props.slug);
     this.handlePersist = this.handlePersist.bind(this);
   }
 
-  handlePersist(entry, mediaFiles) {
-    this.props.dispatch(persist(this.props.collection, entry, mediaFiles));
+  componentDidMount() {
+    if (this.props.entry) {
+      this.props.createDraft(this.props.entry);
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.entry !== nextProps.entry && !nextProps.entry.get('isFetching')) {
+      this.props.createDraft(nextProps.entry);
+    }
+  }
+
+  componentWillUnmount() {
+    this.props.discardDraft();
+  }
+
+  handlePersist() {
+    this.props.persist(this.props.collection, this.props.entryDraft);
   }
 
   render() {
-    const { entry, collection } = this.props;
-    if (entry == null || entry.get('isFetching')) {
+    const { entry, entryDraft, collection, handleDraftChange, handleDraftAddMedia, handleDraftRemoveMedia } = this.props;
+    if (entry == null || entryDraft.get('entry') == undefined || entry.get('isFetching')) {
       return <div>Loading...</div>;
     }
-
     return (
       <EntryEditor
-          entry={entry || new Map()}
+          entry={entryDraft.get('entry')}
           collection={collection}
+          onChange={handleDraftChange}
+          onAddMedia={handleDraftAddMedia}
+          onRemoveMedia={handleDraftRemoveMedia}
           onPersist={this.handlePersist}
       />
     );
@@ -34,12 +58,22 @@ class EntryPage extends React.Component {
 }
 
 function mapStateToProps(state, ownProps) {
-  const { collections } = state;
+  const { collections, entryDraft } = state;
   const collection = collections.get(ownProps.params.name);
   const slug = ownProps.params.slug;
   const entry = selectEntry(state, collection.get('name'), slug);
-
-  return {collection, collections, slug, entry};
+  return {collection, collections, entryDraft, slug, entry};
 }
 
-export default connect(mapStateToProps)(EntryPage);
+export default connect(
+  mapStateToProps,
+  {
+    handleDraftChange: changeDraft,
+    handleDraftAddMedia: addMediaToDraft,
+    handleDraftRemoveMedia: removeMediaFromDraft,
+    loadEntry,
+    createDraft,
+    discardDraft,
+    persist
+  }
+)(EntryPage);

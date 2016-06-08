@@ -67,15 +67,16 @@ class Backend {
     };
   }
 
-  persist(collection, entry, mediaFiles) {
-    const entryData = entry.get('data').toJS();
+  persist(collection, entryDraft) {
+
+    const entryData = entryDraft.getIn(['entry', 'data']).toJS();
     const entryObj = {
-      path: entry.get('path'),
-      slug: entry.get('slug'),
+      path: entryDraft.getIn(['entry', 'path']),
+      slug: entryDraft.getIn(['entry', 'slug']),
       raw: this.entryToRaw(collection, entryData)
     };
 
-    return this.implementation.persist(collection, entryObj, mediaFiles.toJS());
+    return this.implementation.persist(collection, entryObj, entryDraft.get('mediaFiles').toJS());
   }
 
   entryToRaw(collection, entry) {

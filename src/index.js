@@ -7,6 +7,8 @@ import 'file?name=index.html!../example/index.html';
 
 const store = configureStore();
 
+window.store = store;
+
 const el = document.createElement('div');
 document.body.appendChild(el);
 
