@@ -72,11 +72,7 @@ export default class ImageControl extends React.Component {
 
   renderImageName() {
     if (!this.state.currentImage) return null;
-    const { uri } = this.state.currentImage;
-    if (uri.length <= MAX_DISPLAY_LENGTH) {
-      return uri;
-    }
-    return truncateMiddle(uri, MAX_DISPLAY_LENGTH);
+    return truncateMiddle(this.state.currentImage.uri, MAX_DISPLAY_LENGTH);
   }
 
   render() {
