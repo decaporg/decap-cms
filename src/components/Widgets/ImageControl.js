@@ -8,7 +8,7 @@ export default class ImageControl extends React.Component {
     super(props);
 
     this.state = {
-      currentImage: new ImageProxy(props.value, null, true)
+      currentImage: props.value ? new ImageProxy(props.value, null, true) : null
     };
 
     this.revokeCurrentImage = this.revokeCurrentImage.bind(this);
