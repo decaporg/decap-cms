@@ -1,4 +1,5 @@
 import React from 'react';
+import { truncateMiddle } from '../../lib/textHelper';
 import ImageProxy from '../../valueObjects/ImageProxy';
 
 const MAX_DISPLAY_LENGTH = 50;
@@ -71,11 +72,11 @@ export default class ImageControl extends React.Component {
 
   renderImageName() {
     if (!this.state.currentImage) return null;
-    if (this.state.currentImage.uri.length < MAX_DISPLAY_LENGTH) {
-      return this.state.currentImage.uri;
+    const { uri } = this.state.currentImage;
+    if (uri.length <= MAX_DISPLAY_LENGTH) {
+      return uri;
     }
-
-    return this.state.currentImage.uri.substring(0, MAX_DISPLAY_LENGTH) + '\u2026';
+    return truncateMiddle(uri, MAX_DISPLAY_LENGTH);
   }
 
   render() {
