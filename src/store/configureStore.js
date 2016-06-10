@@ -2,18 +2,10 @@ import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 import { browserHistory } from 'react-router';
 import { syncHistory, routeReducer } from 'react-router-redux';
-import { auth } from '../reducers/auth';
-import { config } from '../reducers/config';
-import { entries } from '../reducers/entries';
-import { entryDraft } from '../reducers/entryDraft';
-import { collections } from '../reducers/collections';
+import reducers from '../reducers';
 
 const reducer = combineReducers({
-  auth,
-  config,
-  collections,
-  entries,
-  entryDraft,
+  ...reducers,
   router: routeReducer
 });
 

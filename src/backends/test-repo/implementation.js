@@ -5,31 +5,6 @@ function getSlug(path) {
   return m && m[1];
 }
 
-function getFileData(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      resolve(reader.result);
-    };
-    reader.onerror = function() {
-      reject('Unable to read file');
-    };
-    reader.readAsDataURL(file);
-  });
-}
-
-// Only necessary in test-repo, where images won't actually be persisted on server
-function changeFilePathstoBase64(mediaFolder, content, mediaFiles, base64Files) {
-  let _content = content;
-
-  mediaFiles.forEach((media, index) => {
-    const reg = new RegExp('\\b' + mediaFolder + '/' + media.name + '\\b', 'g');
-    _content = _content.replace(reg, base64Files[index]);
-  });
-
-  return _content;
-}
-
 export default class TestRepo {
   constructor(config) {
     this.config = config;
@@ -74,17 +49,9 @@ export default class TestRepo {
   }
 
   persist(collection, entry, mediaFiles = []) {
-    return new Promise((resolve, reject) => {
-      Promise.all(mediaFiles.map((file) => getFileData(file))).then(
-        (base64Files) => {
-          const content = changeFilePathstoBase64(this.config.get('media_folder'), entry.raw, mediaFiles, base64Files);
-          const folder = collection.get('folder');
-          const fileName = entry.path.substring(entry.path.lastIndexOf('/') + 1);
-          window.repoFiles[folder][fileName]['content'] = content;
-          resolve({collection, entry});
-        },
-        (error) => reject({collection, entry, error})
-      );
-    });
+    const folder = collection.get('folder');
+    const fileName = entry.path.substring(entry.path.lastIndexOf('/') + 1);
+    window.repoFiles[folder][fileName]['content'] = entry.raw;
+    return Promise.resolve({collection, entry});
   }
 }

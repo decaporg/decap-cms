@@ -1,7 +1,7 @@
 import Immutable from 'immutable';
 import { AUTH_REQUEST, AUTH_SUCCESS, AUTH_FAILURE } from '../actions/auth';
 
-export function auth(state = null, action) {
+const auth = (state = null, action) => {
   switch (action.type) {
     case AUTH_REQUEST:
       return Immutable.Map({isFetching: true});
@@ -13,4 +13,6 @@ export function auth(state = null, action) {
     default:
       return state;
   }
-}
+};
+
+export default auth;

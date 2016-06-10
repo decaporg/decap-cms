@@ -1,7 +1,7 @@
 import yaml from 'js-yaml';
 import { currentBackend } from '../backends/backend';
 import { authenticate } from '../actions/auth';
-import * as ImageProxy from '../valueObjects/ImageProxy';
+import * as MediaProxy from '../valueObjects/MediaProxy';
 
 export const CONFIG_REQUEST = 'CONFIG_REQUEST';
 export const CONFIG_SUCCESS = 'CONFIG_SUCCESS';
@@ -30,7 +30,7 @@ export function configFailed(err) {
 
 export function configDidLoad(config) {
   return (dispatch) => {
-    ImageProxy.setConfig(config);
+    MediaProxy.setConfig(config);
     dispatch(configLoaded(config));
   };
 }

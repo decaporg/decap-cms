@@ -3,12 +3,13 @@ import Widgets from './Widgets';
 
 export default class PreviewPane extends React.Component {
   previewFor(field) {
-    const { entry } = this.props;
+    const { entry, getMedia } = this.props;
     const widget = Widgets[field.get('widget')] || Widgets._unknown;
     return React.createElement(widget.Preview, {
       key: field.get('name'),
       field: field,
-      value: entry.getIn(['data', field.get('name')])
+      value: entry.getIn(['data', field.get('name')]),
+      getMedia: getMedia,
     });
   }
 

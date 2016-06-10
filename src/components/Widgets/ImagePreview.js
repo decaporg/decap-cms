@@ -6,7 +6,7 @@ export default class ImagePreview extends React.Component {
   }
 
   render() {
-    const { value } = this.props;
-    return value ? <img src={value}/> : null;
+    const { value, getMedia } = this.props;
+    return value ? <img src={getMedia(value)}/> : null;
   }
 }

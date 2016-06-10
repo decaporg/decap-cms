@@ -14,8 +14,7 @@ export const ENTRIES_FAILURE = 'ENTRIES_FAILURE';
 export const DRAFT_CREATE = 'DRAFT_CREATE';
 export const DRAFT_DISCARD = 'DRAFT_DISCARD';
 export const DRAFT_CHANGE = 'DRAFT_CHANGE';
-export const DRAFT_ADD_MEDIA = 'DRAFT_ADD_MEDIA';
-export const DRAFT_REMOVE_MEDIA = 'DRAFT_REMOVE_MEDIA';
+
 
 export const ENTRY_PERSIST_REQUEST = 'ENTRY_PERSIST_REQUEST';
 export const ENTRY_PERSIST_SUCCESS = 'ENTRY_PERSIST_SUCCESS';
@@ -122,20 +121,6 @@ export function changeDraft(entry) {
   return {
     type: DRAFT_CHANGE,
     payload: entry
-  };
-}
-
-export function addMediaToDraft(mediaFile) {
-  return {
-    type: DRAFT_ADD_MEDIA,
-    payload: mediaFile
-  };
-}
-
-export function removeMediaFromDraft(mediaFile) {
-  return {
-    type: DRAFT_REMOVE_MEDIA,
-    payload: mediaFile
   };
 }
 

@@ -3,7 +3,7 @@ import {
   ENTRY_REQUEST, ENTRY_SUCCESS, ENTRIES_REQUEST, ENTRIES_SUCCESS
 } from '../actions/entries';
 
-export function entries(state = Map({entities: Map(), pages: Map()}), action) {
+const entries = (state = Map({entities: Map(), pages: Map()}), action) => {
   switch (action.type) {
     case ENTRY_REQUEST:
       return state.setIn(['entities', `${action.payload.collection}.${action.payload.slug}`, 'isFetching'], true);
@@ -28,13 +28,15 @@ export function entries(state = Map({entities: Map(), pages: Map()}), action) {
     default:
       return state;
   }
-}
+};
 
-export function selectEntry(state, collection, slug) {
-  return state.entries.getIn(['entities', `${collection}.${slug}`]);
-}
+export const selectEntry = (state, collection, slug) => (
+  state.getIn(['entities', `${collection}.${slug}`])
+);
 
-export function selectEntries(state, collection) {
-  const slugs = state.entries.getIn(['pages', collection, 'ids']);
+export const selectEntries = (state, collection) => {
+  const slugs = state.getIn(['pages', collection, 'ids']);
   return slugs && slugs.map((slug) => selectEntry(state, collection, slug));
-}
+};
+
+export default entries;

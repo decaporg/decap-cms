@@ -1,6 +1,5 @@
 import React from 'react';
 import { truncateMiddle } from '../../lib/textHelper';
-import ImageProxy from '../../valueObjects/ImageProxy';
 
 const MAX_DISPLAY_LENGTH = 50;
 
@@ -9,7 +8,7 @@ export default class ImageControl extends React.Component {
     super(props);
 
     this.state = {
-      currentImage: props.value ? new ImageProxy(props.value, null, true) : null
+      currentImage: props.value
     };
 
     this.revokeCurrentImage = this.revokeCurrentImage.bind(this);
@@ -22,8 +21,8 @@ export default class ImageControl extends React.Component {
   }
 
   revokeCurrentImage() {
-    if (this.state.currentImage && !this.state.currentImage.uploaded) {
-      this.props.onRemoveMedia(this.state.currentImage);
+    if (this.state.currentImage) {
+      //this.props.onRemoveMedia(this.state.currentImage);
     }
   }
 
@@ -49,7 +48,6 @@ export default class ImageControl extends React.Component {
     e.stopPropagation();
     e.preventDefault();
     this.revokeCurrentImage();
-    let imageRef = null;
     const fileList = e.dataTransfer ? e.dataTransfer.files : e.target.files;
     const files = [...fileList];
     const imageType = /^image\//;
@@ -62,17 +60,20 @@ export default class ImageControl extends React.Component {
     });
 
     if (file) {
-      imageRef = new ImageProxy(file.name, window.URL.createObjectURL(file, {oneTimeOnly: true}));
       this.props.onAddMedia(file);
+      this.props.onChange(file.name);
+      this.setState({currentImage: file.name});
+    } else {
+      this.props.onChange(null);
+      this.setState({currentImage: null});
     }
 
-    this.props.onChange(imageRef);
-    this.setState({currentImage: imageRef});
   }
 
   renderImageName() {
+
     if (!this.state.currentImage) return null;
-    return truncateMiddle(this.state.currentImage.uri, MAX_DISPLAY_LENGTH);
+    return truncateMiddle(this.props.getMedia(this.state.currentImage).uri, MAX_DISPLAY_LENGTH);
   }
 
   render() {

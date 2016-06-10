@@ -1,6 +1,6 @@
 import yaml from 'js-yaml';
 import moment from 'moment';
-import ImageProxy from '../valueObjects/ImageProxy';
+import MediaProxy from '../valueObjects/MediaProxy';
 
 const MomentType = new yaml.Type('date', {
   kind: 'scalar',
@@ -17,13 +17,13 @@ const MomentType = new yaml.Type('date', {
 
 const ImageType = new yaml.Type('image', {
   kind: 'scalar',
-  instanceOf: ImageProxy,
+  instanceOf: MediaProxy,
   represent: function(value) {
     return `${value.uri}`;
   },
   resolve: function(value) {
     if (value === null) return false;
-    if (value instanceof ImageProxy) return true;
+    if (value instanceof MediaProxy) return true;
     return false;
   }
 });
