@@ -9,6 +9,6 @@ export default function MediaProxy(value, file, uploaded = false) {
   this.uploaded = uploaded;
   this.uri = config.media_folder && !uploaded ? config.media_folder + '/' + value : value;
   this.toString = function() {
-    return uploaded ? this.uri : window.URL.createObjectURL(this.file, {oneTimeOnly: true});
+    return this.uploaded ? this.uri : window.URL.createObjectURL(this.file, {oneTimeOnly: true});
   };
 }

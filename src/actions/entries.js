@@ -83,12 +83,12 @@ function entryPersisting(collection, entry) {
   };
 }
 
-function entryPersisted(collection, entry) {
+function entryPersisted(persistedEntry, persistedMediaFiles) {
   return {
     type: ENTRY_PERSIST_SUCCESS,
     payload: {
-      collection: collection,
-      entry: entry
+      persistedEntry: persistedEntry,
+      persistedMediaFiles: persistedMediaFiles
     }
   };
 }
@@ -158,7 +158,9 @@ export function persist(collection, entry, mediaFiles) {
     const backend = currentBackend(state.config);
     dispatch(entryPersisting(collection, entry));
     backend.persist(collection, entry, mediaFiles).then(
-      (entry) => dispatch(entryPersisted(collection, entry)),
+      ({persistedEntry, persistedMediaFiles}) => {
+        dispatch(entryPersisted(persistedEntry, persistedMediaFiles));
+      },
       (error) => dispatch(entryPersistFail(collection, entry, error))
     );
   };

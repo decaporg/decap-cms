@@ -52,6 +52,6 @@ export default class TestRepo {
     const folder = collection.get('folder');
     const fileName = entry.path.substring(entry.path.lastIndexOf('/') + 1);
     window.repoFiles[folder][fileName]['content'] = entry.raw;
-    return Promise.resolve({collection, entry});
+    return Promise.resolve({persistedEntry:entry, persistedMediaFiles:[]});
   }
 }
