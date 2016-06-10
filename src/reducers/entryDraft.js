@@ -1,6 +1,6 @@
 import { Map, List } from 'immutable';
 import { DRAFT_CREATE, DRAFT_DISCARD, DRAFT_CHANGE } from '../actions/entries';
-import { ADD_MEDIA } from '../actions/media';
+import { ADD_MEDIA, REMOVE_MEDIA } from '../actions/media';
 
 const initialState = Map({entry: Map(), mediaFiles: List()});
 
@@ -22,7 +22,9 @@ const entryDraft = (state = Map(), action) => {
       return state.set('entry', action.payload);
 
     case ADD_MEDIA:
-      return state.update('mediaFiles', (list) => list.push(action.payload.name));
+      return state.update('mediaFiles', (list) => list.push(action.payload.uri));
+    case REMOVE_MEDIA:
+      return state.update('mediaFiles', (list) => list.filterNot((uri) => uri === action.payload));
 
     default:
       return state;

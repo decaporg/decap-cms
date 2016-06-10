@@ -7,7 +7,7 @@ import {
   changeDraft,
   persist
 } from '../actions/entries';
-import { addMedia } from '../actions/media';
+import { addMedia, removeMedia } from '../actions/media';
 import { selectEntry, getMedia } from '../reducers';
 import EntryEditor from '../components/EntryEditor';
 
@@ -40,7 +40,7 @@ class EntryPage extends React.Component {
 
   render() {
     const {
-      entry, entryDraft, boundGetMedia, collection, handleDraftChange, handleAddMedia, handleDraftRemoveMedia
+      entry, entryDraft, boundGetMedia, collection, changeDraft, addMedia, removeMedia
     } = this.props;
 
     if (entry == null || entryDraft.get('entry') == undefined || entry.get('isFetching')) {
@@ -51,8 +51,9 @@ class EntryPage extends React.Component {
           entry={entryDraft.get('entry')}
           getMedia={boundGetMedia}
           collection={collection}
-          onChange={handleDraftChange}
-          onAddMedia={handleAddMedia}
+          onChange={changeDraft}
+          onAddMedia={addMedia}
+          onRemoveMedia={removeMedia}
           onPersist={this.handlePersist}
       />
     );
@@ -71,8 +72,9 @@ function mapStateToProps(state, ownProps) {
 export default connect(
   mapStateToProps,
   {
-    handleDraftChange: changeDraft,
-    handleAddMedia: addMedia,
+    changeDraft,
+    addMedia,
+    removeMedia,
     loadEntry,
     createDraft,
     discardDraft,

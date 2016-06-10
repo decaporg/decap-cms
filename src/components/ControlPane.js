@@ -3,7 +3,7 @@ import Widgets from './Widgets';
 
 export default class ControlPane extends React.Component {
   controlFor(field) {
-    const { entry, getMedia, onChange, onAddMedia } = this.props;
+    const { entry, getMedia, onChange, onAddMedia, onRemoveMedia } = this.props;
     const widget = Widgets[field.get('widget')] || Widgets._unknown;
     return React.createElement(widget.Control, {
       key: field.get('name'),
@@ -11,6 +11,7 @@ export default class ControlPane extends React.Component {
       value: entry.getIn(['data', field.get('name')]),
       onChange: (value) => onChange(entry.setIn(['data', field.get('name')], value)),
       onAddMedia: onAddMedia,
+      onRemoveMedia: onRemoveMedia,
       getMedia: getMedia
     });
   }
