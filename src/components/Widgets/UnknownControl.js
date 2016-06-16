@@ -1,9 +1,10 @@
 import React from 'react';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 
-export default class UnknownControl extends React.Component {
-  render() {
-    const { field } = this.props;
-
-    return <div>No control for widget '{field.get('widget')}'.</div>;
-  }
+export default function UnknownControl({ field }) {
+  return <div>No control for widget '{field.get('widget')}'.</div>;
 }
+
+UnknownControl.propTypes = {
+  field: ImmutablePropTypes.map,
+};

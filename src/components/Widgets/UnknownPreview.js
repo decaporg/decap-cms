@@ -1,9 +1,10 @@
 import React from 'react';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 
-export default class UnknownPreview extends React.Component {
-  render() {
-    const { field } = this.props;
-
-    return <div>No preview for widget '{field.widget}'.</div>;
-  }
+export default function UnknownPreview({ field }) {
+  return <div>No preview for widget '{field.get('widget')}'.</div>;
 }
+
+UnknownPreview.propTypes = {
+  field: ImmutablePropTypes.map,
+};

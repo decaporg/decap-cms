@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 
 export default class StringControl extends React.Component {
   constructor(props) {
@@ -14,3 +14,8 @@ export default class StringControl extends React.Component {
     return <input value={this.props.value} onChange={this.handleChange}/>;
   }
 }
+
+StringControl.propTypes = {
+  onChange: PropTypes.func.isRequired,
+  value: PropTypes.node,
+};

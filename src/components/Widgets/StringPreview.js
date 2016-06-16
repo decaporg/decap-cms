@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 
-export default class StringPreview extends React.Component {
-  render() {
-    const { value } = this.props;
-
-    return <span>{value}</span>;
-  }
+export default function StringPreview({ value }) {
+  return <span>{value}</span>;
 }
+
+StringPreview.propTypes = {
+  value: PropTypes.node,
+};
