@@ -29,7 +29,7 @@
     "babel-runtime": "^6.5.0",
     "eslint": "^1.10.3",
     "eslint-loader": "^1.2.1",
-    "eslint-plugin-react": "^3.16.1",
+    "eslint-plugin-react": "^5.1.1",
     "exports-loader": "^0.6.3",
     "express": "^4.13.4",
     "file-loader": "^0.8.5",
