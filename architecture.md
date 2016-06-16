@@ -41,7 +41,7 @@ For either updating an existing entry or creating a new one, the `EntryEditor` i
 - The `EntryPage` will also render widgets for each field type in the given entry.
 - Widgets are used for editing entry fields. There are different widgets for different field types, and they are always defined in a pair containing a `control` and a `preview` components. The control component is responsible for presenting the user with the appropriate interface for manipulating the current field value, while the preview component is responsible for displaying value with the appropriate styling.
 
-### Widget components implementation:
+#### Widget components implementation:
 The control component receives 3 callbacks as props: onChange, onAddMedia & onRemoveMedia.
   - onChange (Required): Should be called when the users changes the current value. It will ultimately end up updating the EntryDraft object in the Redux Store, thus updating the preview component.
   - onAddMedia & onRemoveMedia (optionals): If the field accepts file uploads for media (images, for example), these callbacks should be invoked with a `MediaProxy` value object. `onAddMedia` will get the current media stored in the Redux state tree while `onRemoveMedia` will remove it. MediaProxy objects are stored in the `Medias` object and referenced in the `EntryDraft` object on the state tree.
