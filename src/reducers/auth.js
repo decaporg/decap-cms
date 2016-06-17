@@ -4,12 +4,12 @@ import { AUTH_REQUEST, AUTH_SUCCESS, AUTH_FAILURE } from '../actions/auth';
 const auth = (state = null, action) => {
   switch (action.type) {
     case AUTH_REQUEST:
-      return Immutable.Map({isFetching: true});
+      return Immutable.Map({ isFetching: true });
     case AUTH_SUCCESS:
-      return Immutable.fromJS({user: action.payload});
+      return Immutable.fromJS({ user: action.payload });
     case AUTH_FAILURE:
       console.error(action.payload);
-      return Immutable.Map({error: action.payload.toString()});
+      return Immutable.Map({ error: action.payload.toString() });
     default:
       return state;
   }

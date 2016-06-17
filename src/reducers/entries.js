@@ -3,7 +3,7 @@ import {
   ENTRY_REQUEST, ENTRY_SUCCESS, ENTRIES_REQUEST, ENTRIES_SUCCESS
 } from '../actions/entries';
 
-const entries = (state = Map({entities: Map(), pages: Map()}), action) => {
+const entries = (state = Map({ entities: Map(), pages: Map() }), action) => {
   switch (action.type) {
     case ENTRY_REQUEST:
       return state.setIn(['entities', `${action.payload.collection}.${action.payload.slug}`, 'isFetching'], true);
