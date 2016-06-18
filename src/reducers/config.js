@@ -1,7 +1,7 @@
 import Immutable from 'immutable';
 import { CONFIG_REQUEST, CONFIG_SUCCESS, CONFIG_FAILURE } from '../actions/config';
 
-export function config(state = null, action) {
+const config = (state = null, action) => {
   switch (action.type) {
     case CONFIG_REQUEST:
       return Immutable.Map({isFetching: true});
@@ -12,4 +12,6 @@ export function config(state = null, action) {
     default:
       return state;
   }
-}
+};
+
+export default config;

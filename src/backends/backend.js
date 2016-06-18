@@ -66,6 +66,26 @@ class Backend {
       return entry;
     };
   }
+
+  persist(collection, entryDraft) {
+    const entryData = entryDraft.getIn(['entry', 'data']).toObject();
+    const entryObj = {
+      path: entryDraft.getIn(['entry', 'path']),
+      slug: entryDraft.getIn(['entry', 'slug']),
+      raw: this.entryToRaw(collection, entryData)
+    };
+    return this.implementation.persist(collection, entryObj, entryDraft.get('mediaFiles').toJS()).then(
+      (response) => ({
+        persistedEntry: this.entryWithFormat(collection)(response.persistedEntry),
+        persistedMediaFiles:response.persistedMediaFiles
+      })
+    );
+  }
+
+  entryToRaw(collection, entry) {
+    const format = resolveFormat(collection, entry);
+    return format && format.toFile(entry);
+  }
 }
 
 export function resolveBackend(config) {

@@ -1,7 +1,7 @@
 import { OrderedMap, fromJS } from 'immutable';
 import { CONFIG_SUCCESS } from '../actions/config';
 
-export function collections(state = null, action) {
+const collections = (state = null, action) => {
   switch (action.type) {
     case CONFIG_SUCCESS:
       const collections = action.payload && action.payload.collections;
@@ -14,3 +14,5 @@ export function collections(state = null, action) {
       return state;
   }
 }
+
+export default collections;
