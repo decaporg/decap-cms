@@ -6,7 +6,8 @@
   "scripts": {
     "start": "webpack-dev-server -d --inline --config webpack.config.js",
     "test": "NODE_ENV=test mocha --recursive --compilers js:babel-register --require ./test/setup.js",
-    "test:watch": "npm test -- --watch"
+    "test:watch": "npm test -- --watch",
+    "build": "webpack --config webpack.config.js"
   },
   "keywords": [
     "netlify",
