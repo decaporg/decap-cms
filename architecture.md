@@ -2,6 +2,16 @@
 
 Netlify CMS is a React Application, using Redux for state management with immutable data structures (immutable.js).
 
+The core abstractions for content editing are `collections`, `entries` and `widgets`.
+
+Each `collection` represents a collection of entries. This can either be a collection of similar entries with the same structure, or a set of entries that each of their own structure.
+
+The structure of an entry is defined as a series of fields, each with a `name`, a `label` and a `widget` .
+
+The `widget` determines the UI widget that the content editor will use when editing this field of an entry, as well as how the content of the field is presented in the editing preview.
+
+Entries are loaded and persisted through a `backend` that will typically represent a `git` repository. 
+
 ## State shape / reducers
 **Auth:** Keeps track of the logged state and the current user.
 
