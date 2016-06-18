@@ -13,6 +13,6 @@ const collections = (state = null, action) => {
     default:
       return state;
   }
-}
+};
 
 export default collections;
