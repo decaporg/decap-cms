@@ -1,5 +1,5 @@
-import TestRepoBackend from './test-repo/Implementation';
-import GitHubBackend from './github/Implementation';
+import TestRepoBackend from './test-repo/implementation';
+import GitHubBackend from './github/implementation';
 import { resolveFormat } from '../formats/formats';
 
 class LocalStorageAuthStore {
