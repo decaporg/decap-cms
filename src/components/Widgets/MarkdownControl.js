@@ -1,7 +1,7 @@
-import React from 'react';
-import {Editor, EditorState, RichUtils} from 'draft-js';
-import {stateToMarkdown} from 'draft-js-export-markdown';
-import {stateFromMarkdown} from 'draft-js-import-markdown';
+import React, { PropTypes } from 'react';
+import { Editor, EditorState, RichUtils } from 'draft-js';
+import { stateToMarkdown } from 'draft-js-export-markdown';
+import { stateFromMarkdown } from 'draft-js-import-markdown';
 
 export default class MarkdownControl extends React.Component {
   constructor(props) {
@@ -15,7 +15,7 @@ export default class MarkdownControl extends React.Component {
 
   handleChange(editorState) {
     const content = editorState.getCurrentContent();
-    this.setState({editorState});
+    this.setState({ editorState });
     this.props.onChange(stateToMarkdown(content));
   }
 
@@ -29,7 +29,7 @@ export default class MarkdownControl extends React.Component {
   }
 
   render() {
-    const {editorState} = this.state;
+    const { editorState } = this.state;
     return (
       <Editor
           editorState={editorState}
@@ -38,3 +38,8 @@ export default class MarkdownControl extends React.Component {
       />);
   }
 }
+
+MarkdownControl.propTypes = {
+  onChange: PropTypes.func.isRequired,
+  value: PropTypes.node,
+};

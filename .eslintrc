@@ -57,6 +57,7 @@ rules:
   no-mixed-spaces-and-tabs: 2
   no-multiple-empty-lines: [2, {max: 2}]
   no-trailing-spaces: 2
+  object-curly-spacing: [1, "always"]
   quotes: [2, "single", "avoid-escape"]
   semi: 2
   space-after-keywords: 2
@@ -84,6 +85,7 @@ rules:
   no-unused-vars: [2, {"args": "none"}]
 
 
+  react/prop-types: 1
   react/forbid-prop-types: 1
   react/jsx-boolean-value: 1
   react/jsx-closing-bracket-location: 1
@@ -109,6 +111,7 @@ rules:
   react/no-string-refs: 1
   react/no-unknown-property: 1
   react/prefer-es6-class: 1
+  react/prefer-stateless-function: 1
   react/react-in-jsx-scope: 1
   react/require-extension: 1
   react/self-closing-comp: 1

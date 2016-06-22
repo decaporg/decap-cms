@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 import {
   loadEntry,
@@ -39,6 +40,7 @@ class EntryPage extends React.Component {
   }
 
   render() {
+
     const {
       entry, entryDraft, boundGetMedia, collection, changeDraft, addMedia, removeMedia
     } = this.props;
@@ -60,13 +62,28 @@ class EntryPage extends React.Component {
   }
 }
 
+EntryPage.propTypes = {
+  addMedia: PropTypes.func.isRequired,
+  boundGetMedia: PropTypes.func.isRequired,
+  changeDraft: PropTypes.func.isRequired,
+  collection: ImmutablePropTypes.map.isRequired,
+  createDraft: PropTypes.func.isRequired,
+  discardDraft: PropTypes.func.isRequired,
+  entry: ImmutablePropTypes.map.isRequired,
+  entryDraft: ImmutablePropTypes.map.isRequired,
+  loadEntry: PropTypes.func.isRequired,
+  persist: PropTypes.func.isRequired,
+  removeMedia: PropTypes.func.isRequired,
+  slug: PropTypes.string.isRequired,
+};
+
 function mapStateToProps(state, ownProps) {
   const { collections, entryDraft } = state;
   const collection = collections.get(ownProps.params.name);
   const slug = ownProps.params.slug;
   const entry = selectEntry(state, collection.get('name'), slug);
   const boundGetMedia = getMedia.bind(null, state);
-  return {collection, collections, entryDraft, boundGetMedia, slug, entry};
+  return { collection, collections, entryDraft, boundGetMedia, slug, entry };
 }
 
 export default connect(

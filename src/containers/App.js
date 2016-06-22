@@ -76,7 +76,7 @@ function mapStateToProps(state) {
   const { auth, config } = state;
   const user = auth && auth.get('user');
 
-  return {auth, config, user};
+  return { auth, config, user };
 }
 
 export default connect(mapStateToProps)(App);

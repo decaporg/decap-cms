@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { truncateMiddle } from '../../lib/textHelper';
 import MediaProxy from '../../valueObjects/MediaProxy';
 
@@ -97,4 +97,11 @@ const styles = {
   input: {
     display: 'none'
   }
+};
+
+ImageControl.propTypes = {
+  onAddMedia: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
+  onRemoveMedia: PropTypes.func.isRequired,
+  value: PropTypes.node,
 };
