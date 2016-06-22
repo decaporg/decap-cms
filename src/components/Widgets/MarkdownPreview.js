@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import CommonMark from 'commonmark';
 import ReactRenderer from 'commonmark-react-renderer';
 
@@ -14,3 +14,7 @@ export default class MarkdownPreview extends React.Component {
     return React.createElement.apply(React, ['div', {}].concat(renderer.render(ast)));
   }
 }
+
+MarkdownPreview.propTypes = {
+  value: PropTypes.node,
+};

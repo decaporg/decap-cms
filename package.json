@@ -29,7 +29,7 @@
     "babel-runtime": "^6.5.0",
     "eslint": "^1.10.3",
     "eslint-loader": "^1.2.1",
-    "eslint-plugin-react": "^3.16.1",
+    "eslint-plugin-react": "^5.1.1",
     "exports-loader": "^0.6.3",
     "express": "^4.13.4",
     "file-loader": "^0.8.5",
@@ -39,8 +39,8 @@
     "mocha": "^2.4.5",
     "moment": "^2.11.2",
     "normalizr": "^2.0.0",
-    "react": "^0.14.7",
-    "react-dom": "^0.14.7",
+    "react": "^15.1.0",
+    "react-dom": "^15.1.0",
     "react-immutable-proptypes": "^1.6.0",
     "react-lazy-load": "^3.0.3",
     "react-pure-render": "^1.0.2",
@@ -54,7 +54,7 @@
     "webpack": "^1.12.13",
     "webpack-dev-server": "^1.14.1",
     "webpack-postcss-tools": "^1.1.1",
-    "whatwg-fetch": "^0.11.0"
+    "whatwg-fetch": "^1.0.0"
   },
   "dependencies": {
     "commonmark": "^0.24.0",

@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 
-export default class ImagePreview extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    const { value, getMedia } = this.props;
-    return value ? <img src={getMedia(value)}/> : null;
-  }
+export default function ImagePreview({ value, getMedia }) {
+  return <span>
+    {value ? <img src={getMedia(value)}/> : null}
+  </span>;
 }
+
+ImagePreview.propTypes = {
+  getMedia: PropTypes.func.isRequired,
+  value: PropTypes.node,
+};
