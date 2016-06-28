@@ -11,6 +11,10 @@ module.exports = {
       },
       { test: /\.json$/, loader: 'json-loader' },
       {
+        test: /\.css$/,
+        loader: 'style!css?modules!postcss'
+      },
+      {
         loader: 'babel',
         test: /\.js?$/,
         exclude: /(node_modules|bower_components)/,
@@ -22,6 +26,10 @@ module.exports = {
       }
     ]
   },
+
+  postcss: [
+    require('postcss-cssnext')
+  ],
 
   plugins: [
     new webpack.ProvidePlugin({
