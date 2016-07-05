@@ -1,9 +1,11 @@
 import React, { PropTypes } from 'react';
 import fuzzy from 'fuzzy';
+import _ from 'lodash';
 import { connect } from 'react-redux';
 
 class FindBar extends React.Component {
-  constructor() {
+  constructor(props) {
+    super(props);
     this.compiledCommands = {};
     this.state = {
       prompt: '',
@@ -13,7 +15,7 @@ class FindBar extends React.Component {
 
     this.compileCommand = this.compileCommand.bind(this);
     this.matchCommand = this.matchCommand.bind(this);
-    this.getSuggestions = this.getSuggestions.bind(this);
+    this.getSuggestions = _.throttle(this.getSuggestions.bind(this), 200);
     this.handleInputChange = this.handleInputChange.bind(this);
   }
 
@@ -67,12 +69,14 @@ class FindBar extends React.Component {
   }
 
   getSuggestions(value) {
+    console.log(value);
     const options = {
       //pre: '<strong>',
       //post: '</strong>',
       extract: el => el. token
     };
     const results = fuzzy.filter(value, this.compiledCommands, options);
+
     return results;
   }
 

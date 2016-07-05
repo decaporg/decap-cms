@@ -21,7 +21,7 @@ module.exports = {
         query: {
           cacheDirectory: true,
           presets: ['react', 'es2015'],
-          plugins: ['transform-class-properties', 'transform-object-assign', 'transform-object-rest-spread']
+          plugins: ['transform-class-properties', 'transform-object-assign', 'transform-object-rest-spread', 'lodash']
         }
       }
     ]
