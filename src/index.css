@@ -2,8 +2,13 @@ html {
   box-sizing: border-box;
 }
 
-html, body, #appRoot, #appRoot > * {
+body {
+  font-family: sans-serif;
   margin: 0;
+  height: 100%;
+}
+
+:global #root, :global #root > * {
   height: 100%;
 }
 
