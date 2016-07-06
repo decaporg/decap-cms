@@ -8,7 +8,8 @@
     "test": "NODE_ENV=test mocha --recursive --compilers js:babel-register --require ./test/setup.js",
     "test:watch": "npm test -- --watch",
     "build": "webpack --config webpack.config.js",
-    "storybook": "start-storybook -p 9001"
+    "storybook": "start-storybook -p 9001",
+    "storybook-build": "build-storybook -o dist"
   },
   "keywords": [
     "netlify",
