@@ -1,7 +1,7 @@
 import React from 'react';
 import { storiesOf, action } from '@kadira/storybook';
 
-import FindBar from '../FindBar';
+import { FindBar } from '../FindBar';
 
 const commands = [
   { pattern: 'Create new Collection(:collectionName)' },
