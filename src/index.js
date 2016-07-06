@@ -11,7 +11,7 @@ const store = configureStore();
 window.store = store;
 
 const el = document.createElement('div');
-el.id = 'appRoot';
+el.id = 'root';
 document.body.appendChild(el);
 
 render((

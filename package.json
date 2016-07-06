@@ -7,7 +7,8 @@
     "start": "webpack-dev-server -d --inline --config webpack.config.js",
     "test": "NODE_ENV=test mocha --recursive --compilers js:babel-register --require ./test/setup.js",
     "test:watch": "npm test -- --watch",
-    "build": "webpack --config webpack.config.js"
+    "build": "webpack --config webpack.config.js",
+    "storybook": "start-storybook -p 9001"
   },
   "keywords": [
     "netlify",
@@ -16,6 +17,7 @@
   "author": "Netlify",
   "license": "MIT",
   "devDependencies": {
+    "@kadira/storybook": "^1.36.0",
     "autoprefixer": "^6.3.3",
     "babel-core": "^6.5.1",
     "babel-eslint": "^4.1.8",
@@ -42,6 +44,7 @@
     "moment": "^2.11.2",
     "normalizr": "^2.0.0",
     "postcss-cssnext": "^2.7.0",
+    "postcss-import": "^8.1.2",
     "postcss-loader": "^0.9.1",
     "react": "^15.1.0",
     "react-dom": "^15.1.0",

@@ -7,12 +7,12 @@ module.exports = {
     loaders: [
       {
         test: /\.((png)|(eot)|(woff)|(woff2)|(ttf)|(svg)|(gif))(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'file?name=/[hash].[ext]'
+        loader: 'url-loader?limit=100000'
       },
       { test: /\.json$/, loader: 'json-loader' },
       {
         test: /\.css$/,
-        loader: 'style!css?modules!postcss'
+        loader: 'style!css?modules&importLoaders=1!postcss'
       },
       {
         loader: 'babel',
@@ -28,6 +28,7 @@ module.exports = {
   },
 
   postcss: [
+    require('postcss-import')({ addDependencyTo: webpack }),
     require('postcss-cssnext')
   ],
 
