@@ -1,5 +1,5 @@
 import React from 'react';
-import { storiesOf } from '@kadira/storybook';
+import { storiesOf, action } from '@kadira/storybook';
 
 import FindBar from '../FindBar';
 
@@ -57,13 +57,13 @@ const commands = [
   { pattern: 'Visit West Virginia at(:date)' },
   { pattern: 'Visit Wisconsin at(:date)' },
   { pattern: 'Visit Wyoming at(:date)' },
-  { pattern: '(:searchTerm as Find...)' }
+  { pattern: '(:searchTerm as Find...)', token:'Search' }
 ];
-
 
 storiesOf('FindBar', module)
   .add('Default View', () => (
     <FindBar
         commands={commands}
+        dispatch={action('DISPATCH')}
     />
   ));

@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import fuzzy from 'fuzzy';
 import _ from 'lodash';
+import { runCommand } from '../actions/findbar';
 import { connect } from 'react-redux';
 import styles from './FindBar.css';
 
@@ -55,7 +56,7 @@ class FindBar extends Component {
 
     const matcher = /\(:([a-zA-Z_$][a-zA-Z0-9_$]*)(?:(?: as )(.*))?\)/g;
     const match = matcher.exec(command.pattern);
-    const token = command.pattern.slice(0, match.index);
+    const token = command.pattern.slice(0, match.index) || command.token;
     regexp += this._escapeRegExp(command.pattern.slice(0, match.index));
 
     if (match[1]) {
@@ -88,15 +89,9 @@ class FindBar extends Component {
         activeScope: command.token,
         placeholder: command.param.display
       });
+    } else {
+      this.props.dispatch(runCommand(command.token, command.param.name, param));
     }
-    console.log({
-      command,
-      param
-    })
-    return {
-      command,
-      param
-    };
   }
 
   handleChange(event) {
@@ -271,7 +266,8 @@ class FindBar extends Component {
   }
 }
 FindBar.propTypes = {
-  commands: PropTypes.array.isRequired
+  commands: PropTypes.array.isRequired,
+  dispatch: PropTypes.func.isRequired,
 };
 
 
