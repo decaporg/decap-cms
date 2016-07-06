@@ -1,6 +1,6 @@
 /* global module, __dirname, require */
-var webpack = require('webpack');
-var path = require('path');
+var webpack = require("webpack");
+const path = require("path");
 
 module.exports = {
   module: {
@@ -28,28 +28,7 @@ module.exports = {
   },
 
   postcss: [
-    require('postcss-import')({ addDependencyTo: webpack }),
-    require('postcss-cssnext')
+    require("postcss-import")({addDependencyTo: webpack}),
+    require("postcss-cssnext")()
   ],
-
-  plugins: [
-    new webpack.ProvidePlugin({
-      'fetch': 'imports?this=>global!exports?global.fetch!whatwg-fetch'
-    })
-  ],
-
-  context: path.join(__dirname, 'src'),
-  entry: {
-    cms: './index',
-  },
-  output: {
-    path: path.join(__dirname, 'dist'),
-    filename: '[name].js'
-  },
-  externals:  [/^vendor\/.+\.js$/],
-  devServer: {
-    contentBase: 'example/',
-    historyApiFallback: true,
-    devTool: 'source-map'
-  },
 };
