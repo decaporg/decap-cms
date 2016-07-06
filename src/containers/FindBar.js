@@ -270,5 +270,5 @@ FindBar.propTypes = {
   dispatch: PropTypes.func.isRequired,
 };
 
-export { FindBar }
+export { FindBar };
 export default connect()(FindBar);
