@@ -158,9 +158,6 @@ class FindBar extends Component {
   handleKeyDown(event) {
     let highlightedIndex, index;
     switch (event.key) {
-      case 'Backspace':
-        this.maybeRemoveActiveScope();
-        break;
       case 'ArrowDown':
         event.preventDefault();
         highlightedIndex = this.state.highlightedIndex;
@@ -208,6 +205,12 @@ class FindBar extends Component {
         this.setState({
           highlightedIndex: 0,
           isOpen: false
+        }, this.maybeRemoveActiveScope);
+        break;
+      case 'Backspace':
+        this.setState({
+          highlightedIndex: 0,
+          isOpen: true
         }, this.maybeRemoveActiveScope);
         break;
       default:
