@@ -3,12 +3,16 @@ import fuzzy from 'fuzzy';
 import _ from 'lodash';
 import { runCommand } from '../actions/findbar';
 import { connect } from 'react-redux';
+import { Icon } from '../components/UI';
 import styles from './FindBar.css';
+
+const SEARCH = 'SEARCH';
 
 class FindBar extends Component {
   constructor(props) {
     super(props);
-    this._compiledCommands = {};
+    this._compiledCommands = [];
+    this._searchCommand = { search: true, regexp:`(?:${SEARCH})?(.*)`, param:{ name:'searchTerm', display:'' } };
     this.state = {
       value: '',
       placeholder: '',
@@ -66,12 +70,6 @@ class FindBar extends Component {
       param = { name:match[1], display:match[2] || this._camelCaseToSpace(match[1]) };
     }
 
-    console.log(Object.assign({}, command, {
-      regexp,
-      token,
-      param
-    }));
-
     return Object.assign({}, command, {
       regexp,
       token,
@@ -84,17 +82,25 @@ class FindBar extends Component {
   matchCommand() {
     const string = this.state.activeScope ? this.state.activeScope + this.state.value : this.state.value;
     let match;
-    const command = this._compiledCommands.find(command => {
+    let command = this._compiledCommands.find(command => {
       match = string.match(RegExp(`^${command.regexp}`, 'i'));
       return match;
     });
 
-    const paramName = command.param ? command.param.name : null;
-    const enteredParamValue = command.param && match[1] ? match[1].trim() : null;
-
+    // If no command was found, trigger a search command
     if (!command) {
-      // No matched command
-      return null;
+      command = this._searchCommand;
+      match = string.match(RegExp(`^${this._searchCommand.regexp}`, 'i'));
+    }
+
+    const paramName = command && command.param ? command.param.name : null;
+    const enteredParamValue = command && command.param && match[1] ? match[1].trim() : null;
+
+    if (command.search) {
+      this.setState({
+        activeScope: SEARCH
+      });
+      this.props.dispatch(runCommand('search', { searchTerm: enteredParamValue }));
     } else if (command.param && !enteredParamValue) {
       // Partial Match
       // Command was partially matched: It requires a param, but param wasn't entered
@@ -128,12 +134,23 @@ class FindBar extends Component {
   // Memoized version
   _getSuggestions(value, scope, commands) {
     if (scope) return []; // No autocomplete for scoped input
+
     const results = fuzzy.filter(value, commands, {
-      //pre: '<strong>',
-      //post: '</strong>',
+      pre: '<strong>',
+      post: '</strong>',
       extract: el => el.token
     });
-    return results.slice(0, 5).map(result => result.original);
+
+    let returnResults;
+    if (value.length > 0) {
+      returnResults = results.slice(0, 4).map(result => Object.assign({}, result.original, { string:result.string }));
+      returnResults.push(this._searchCommand);
+    }
+    else {
+      returnResults = results.slice(0, 5).map(result => Object.assign({}, result.original, { string:result.string }));
+    }
+
+    return returnResults;
   }
 
   handleKeyDown(event) {
@@ -172,7 +189,7 @@ class FindBar extends Component {
             isOpen: false,
             highlightedIndex: 0
           };
-          if (command) {
+          if (command && !command.search) {
             newState.value = command.token;
           }
           this.setState(newState, () => {
@@ -228,11 +245,14 @@ class FindBar extends Component {
   }
 
   selectCommandFromMouse(command) {
-    this.setState({
-      value: command.token,
+    const newState = {
       isOpen: false,
       highlightedIndex: 0
-    }, () => {
+    };
+    if (command && !command.search) {
+      newState.value = command.token;
+    }
+    this.setState(newState, () => {
       this.matchCommand();
       this._input.focus();
       this.setIgnoreBlur(false);
@@ -245,23 +265,43 @@ class FindBar extends Component {
 
   renderMenu() {
     const commands = this.getSuggestions().map((command, index) => {
-      return (
-        <div
-            className={this.state.highlightedIndex === index ? styles.highlightedCommand : styles.command}
-            key={command.token.trim().replace(/[^a-z0-9]+/gi, '-')}
-            onMouseDown={() => this.setIgnoreBlur(true)}
-            onMouseEnter={() => this.highlightCommandFromMouse(index)}
-            onClick={() => this.selectCommandFromMouse(command)}
-            ref={`command-${index}`}
-        >{command.token}</div>
-      );
+      if (!command.search) {
+        return (
+          <div
+              className={this.state.highlightedIndex === index ? styles.highlightedCommand : styles.command}
+              key={command.token.trim().replace(/[^a-z0-9]+/gi, '-')}
+              onMouseDown={() => this.setIgnoreBlur(true)}
+              onMouseEnter={() => this.highlightCommandFromMouse(index)}
+              onClick={() => this.selectCommandFromMouse(command)}
+          >
+            <Icon type="right-open-mini"/>
+            <span dangerouslySetInnerHTML={{__html: command.string}} />
+          </div>
+        );
+      } else {
+        return (
+          <div
+              className={this.state.highlightedIndex === index ? styles.highlightedCommand : styles.command}
+              key='builtin-search'
+              onMouseDown={() => this.setIgnoreBlur(true)}
+              onMouseEnter={() => this.highlightCommandFromMouse(index)}
+              onClick={() => this.selectCommandFromMouse(command)}
+          >
+            <span className={styles.faded}><Icon type="search"/> Search for: </span>{this.state.value}
+          </div>
+        );
+      }
     });
 
     return commands.length > 0 ? <div className={styles.menu} children={commands} /> : null;
   }
 
   renderActiveScope() {
-    return <div className={styles.inputScope}>{this.state.activeScope}</div>;
+    if (this.state.activeScope === SEARCH) {
+      return <div className={styles.inputScope}><Icon type="search"/> </div>;
+    } else {
+      return <div className={styles.inputScope}>{this.state.activeScope}</div>;
+    }
   }
 
   render() {

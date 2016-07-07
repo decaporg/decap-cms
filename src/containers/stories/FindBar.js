@@ -10,10 +10,7 @@ const commands = [
   { pattern: 'Create new FAQ item(:faqName as FAQ item name)' },
   { pattern: 'Add news item(:headline)' },
   { pattern: 'Add new User(:userName as User name)' },
-  { pattern: 'Search(:searchTerm as what?)' },
   { pattern: 'Go to Settings' },
-  { pattern: 'Find(:seachTerm as what?)' },
-  { pattern: '(:searchTerm as Find...)', token:'Find' }
 ];
 
 storiesOf('FindBar', module)
