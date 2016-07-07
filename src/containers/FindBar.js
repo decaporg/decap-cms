@@ -7,6 +7,7 @@ import { Icon } from '../components/UI';
 import styles from './FindBar.css';
 
 const SEARCH = 'SEARCH';
+const PLACEHOLDER = 'Type to search or execute commands';
 
 class FindBar extends Component {
   constructor(props) {
@@ -15,7 +16,7 @@ class FindBar extends Component {
     this._searchCommand = { search: true, regexp:`(?:${SEARCH})?(.*)`, param:{ name:'searchTerm', display:'' } };
     this.state = {
       value: '',
-      placeholder: '',
+      placeholder: PLACEHOLDER,
       activeScope: null,
       isOpen: false,
       highlightedIndex: 0,
@@ -98,7 +99,8 @@ class FindBar extends Component {
 
     if (command.search) {
       this.setState({
-        activeScope: SEARCH
+        activeScope: SEARCH,
+        placeholder: ''
       });
       this.props.dispatch(runCommand('search', { searchTerm: enteredParamValue }));
     } else if (command.param && !enteredParamValue) {
@@ -123,7 +125,7 @@ class FindBar extends Component {
     if (this.state.value.length === 0 && this.state.activeScope) {
       this.setState({
         activeScope: null,
-        placeholder: ''
+        placeholder: PLACEHOLDER
       });
     }
   }
