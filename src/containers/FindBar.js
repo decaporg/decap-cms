@@ -18,9 +18,9 @@ class FindBar extends Component {
     };
 
     this._getSuggestions = _.memoize(this._getSuggestions, (value, activeScope) => value + activeScope);
-
     this.compileCommand = this.compileCommand.bind(this);
     this.matchCommand = this.matchCommand.bind(this);
+    this.maybeRemoveActiveScope = this.maybeRemoveActiveScope.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleInputBlur = this.handleInputBlur.bind(this);
@@ -30,7 +30,6 @@ class FindBar extends Component {
     this.highlightCommandFromMouse = this.highlightCommandFromMouse.bind(this);
     this.selectCommandFromMouse = this.selectCommandFromMouse.bind(this);
     this.setIgnoreBlur = this.setIgnoreBlur.bind(this);
-    this.renderMenu = this.renderMenu.bind(this);
   }
 
   componentWillMount() {
@@ -94,6 +93,15 @@ class FindBar extends Component {
     }
   }
 
+  maybeRemoveActiveScope() {
+    if (this.state.value.length === 0 && this.state.activeScope) {
+      this.setState({
+        activeScope: null,
+        placeholder: ''
+      });
+    }
+  }
+
   handleChange(event) {
     this.setState({
       value: event.target.value,
@@ -104,12 +112,7 @@ class FindBar extends Component {
     let highlightedIndex, index;
     switch (event.key) {
       case 'Backspace':
-        if (this.state.value.length === 0 && this.state.activeScope) {
-          this.setState({
-            activeScope: null,
-            placeholder: ''
-          });
-        }
+        this.maybeRemoveActiveScope();
         break;
       case 'ArrowDown':
         event.preventDefault();
@@ -158,7 +161,7 @@ class FindBar extends Component {
         this.setState({
           highlightedIndex: 0,
           isOpen: false
-        });
+        }, this.maybeRemoveActiveScope);
         break;
       default:
         this.setState({
@@ -253,8 +256,8 @@ class FindBar extends Component {
               ref={(c) => this._input = c}
               onFocus={this.handleInputFocus}
               onBlur={this.handleInputBlur}
-              onChange={(event) => this.handleChange(event)}
-              onKeyDown={(event) => this.handleKeyDown(event)}
+              onChange={this.handleChange}
+              onKeyDown={this.handleKeyDown}
               onClick={this.handleInputClick}
               placeholder={this.state.placeholder}
               value={this.state.value}
