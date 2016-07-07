@@ -53,6 +53,7 @@
 .hitory {
   display: table-cell;
   width: 50%;
+  padding-left: 10px;
 }
 
 .command {
