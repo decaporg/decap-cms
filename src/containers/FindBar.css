@@ -1,31 +1,33 @@
-.root {
-  width: 350px;
+:root {
+  --foregroundColor: #222;
+  --backgroundColor: #eaeaea;
+  --highlightFGColor: #000;
+  --highlightBGColor: #d2dee4;
 }
 
 .inputArea {
   display: table;
   width: 100%;
-  border: 1px solid #ddd;
-  border-radius: 3px;
-  box-shadow: inset 0 1px 2px rgba(0,0,0,0.075);
+  color: var(--foregroundColor);
+  border: 1px solid var(--backgroundColor);
 }
 
 .inputScope {
   display: table-cell;
   width: 1%;
-  padding-right: 6px;
-  padding-left: 8px;
+  padding: 6px 6px 6px 8px;
   color: #767676;
+  font-size: 16px;
   white-space: nowrap;
   vertical-align: middle;
-  border-right: 1px solid #eee;
-  border-top-left-radius: 2px;
-  border-bottom-left-radius: 2px;
+  border-right: 1px solid var(--backgroundColor);
 }
 
 .inputField {
   display: table-cell;
   width: 99%;
+  padding: 6px;
+  font-size: 16px;
   background: none transparent;
   border: 0 none;
   box-shadow: none;
@@ -34,34 +36,43 @@
 }
 
 .menu {
-  border-radius: 3px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-  background: rgba(255, 255, 255, 0.9);
-  padding: 2px 0;
-  width: 350px;
+  display: table;
+  width: 100%;
+  background: var(--backgroundColor);
+  font-size: 13px;
+  padding: 10px;
   height: 100%;
 }
 
+.suggestions {
+  display: table-cell;
+  width: 50%;
+  padding-right: 10px;
+}
+
+.hitory {
+  display: table-cell;
+  width: 50%;
+}
+
 .command {
-  padding: 2px 6px;
+  padding: 6px;
   cursor: default;
 }
 
 .command .faded {
-  font-style: italic;
   font-weight: lighter;
   color: #555;
 }
 
 .highlightedCommand {
-  color: white;
-  background: hsl(200, 50%, 50%);
-  padding: 2px 6px;
+  color: var(--highlightFGColor);
+  background: var(--highlightBGColor);
+  padding: 6px;
   cursor: default;
 }
 
 .highlightedCommand .faded {
-  font-style: italic;
   font-weight: lighter;
-  color: #ddd;
+  color: #282c34;
 }

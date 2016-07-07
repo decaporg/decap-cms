@@ -13,10 +13,17 @@ const commands = [
   { pattern: 'Go to Settings' },
 ];
 
+const style = {
+  width: 800,
+  margin: 20
+};
+
 storiesOf('FindBar', module)
   .add('Default View', () => (
-    <FindBar
-        commands={commands}
-        dispatch={action('DISPATCH')}
-    />
+    <div style={style}>
+      <FindBar
+          commands={commands}
+          dispatch={action('DISPATCH')}
+      />
+    </div>
   ));

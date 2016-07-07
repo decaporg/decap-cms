@@ -13,7 +13,7 @@ class FindBar extends Component {
   constructor(props) {
     super(props);
     this._compiledCommands = [];
-    this._searchCommand = { search: true, regexp:`(?:${SEARCH})?(.*)`, param:{ name:'searchTerm', display:'' } };
+    this._searchCommand = { search: true, regexp:`(?:${SEARCH})?(.*)`, param:{ name:'searchTerm', display:'' }, token: SEARCH };
     this.state = {
       value: '',
       placeholder: PLACEHOLDER,
@@ -102,7 +102,8 @@ class FindBar extends Component {
         activeScope: SEARCH,
         placeholder: ''
       });
-      this.props.dispatch(runCommand('search', { searchTerm: enteredParamValue }));
+
+      enteredParamValue && this.props.dispatch(runCommand('search', { searchTerm: enteredParamValue }));
     } else if (command.param && !enteredParamValue) {
       // Partial Match
       // Command was partially matched: It requires a param, but param wasn't entered
@@ -143,14 +144,10 @@ class FindBar extends Component {
       extract: el => el.token
     });
 
-    let returnResults;
-    if (value.length > 0) {
-      returnResults = results.slice(0, 4).map(result => Object.assign({}, result.original, { string:result.string }));
-      returnResults.push(this._searchCommand);
-    }
-    else {
-      returnResults = results.slice(0, 5).map(result => Object.assign({}, result.original, { string:result.string }));
-    }
+    const returnResults = results.slice(0, 4).map(result => (
+      Object.assign({}, result.original, { string:result.string }
+    )));
+    returnResults.push(this._searchCommand);
 
     return returnResults;
   }
@@ -270,35 +267,43 @@ class FindBar extends Component {
 
   renderMenu() {
     const commands = this.getSuggestions().map((command, index) => {
+      let children;
       if (!command.search) {
-        return (
-          <div
-              className={this.state.highlightedIndex === index ? styles.highlightedCommand : styles.command}
-              key={command.token.trim().replace(/[^a-z0-9]+/gi, '-')}
-              onMouseDown={() => this.setIgnoreBlur(true)}
-              onMouseEnter={() => this.highlightCommandFromMouse(index)}
-              onClick={() => this.selectCommandFromMouse(command)}
-          >
-            <Icon type="right-open-mini"/>
-            <span dangerouslySetInnerHTML={{__html: command.string}} />
-          </div>
+        children = (
+          <span><Icon type="right-open-mini"/><span dangerouslySetInnerHTML={{__html: command.string}} /></span>
         );
       } else {
-        return (
-          <div
-              className={this.state.highlightedIndex === index ? styles.highlightedCommand : styles.command}
-              key='builtin-search'
-              onMouseDown={() => this.setIgnoreBlur(true)}
-              onMouseEnter={() => this.highlightCommandFromMouse(index)}
-              onClick={() => this.selectCommandFromMouse(command)}
-          >
-            <span className={styles.faded}><Icon type="search"/> Search for: </span>{this.state.value}
-          </div>
+        children = (
+          <span>
+          {this.state.value.length === 0 ?
+            <span><Icon type="search"/>Search... </span> :
+            <span className={styles.faded}><Icon type="search"/>Search for: </span>
+          }
+          {this.state.value}</span>
         );
       }
+      return (
+        <div
+            className={this.state.highlightedIndex === index ? styles.highlightedCommand : styles.command}
+            key={command.token.trim().replace(/[^a-z0-9]+/gi, '-')}
+            onMouseDown={() => this.setIgnoreBlur(true)}
+            onMouseEnter={() => this.highlightCommandFromMouse(index)}
+            onClick={() => this.selectCommandFromMouse(command)}
+        >
+          {children}
+        </div>
+      );
     });
-
-    return commands.length > 0 ? <div className={styles.menu} children={commands} /> : null;
+    return commands.length === 0 ? null : (
+      <div className={styles.menu}>
+        <div className={styles.suggestions}>
+          { commands }
+        </div>
+        <div className={styles.history}>
+          Your past searches and commands
+        </div>
+      </div>
+    );
   }
 
   renderActiveScope() {
@@ -313,7 +318,7 @@ class FindBar extends Component {
     const menu = this.state.isOpen && this.renderMenu();
     const scope = this.state.activeScope && this.renderActiveScope();
     return (
-      <div className={styles.root}>
+      <div>
         <label className={styles.inputArea}>
           {scope}
           <input
