@@ -7,7 +7,7 @@ import { Icon } from '../components/UI';
 import styles from './FindBar.css';
 
 export const SEARCH = 'SEARCH';
-const PLACEHOLDER = 'Type to search or execute commands';
+const PLACEHOLDER = 'Search or enter a command';
 
 class FindBar extends Component {
   constructor(props) {
@@ -287,7 +287,7 @@ class FindBar extends Component {
       let children;
       if (!command.search) {
         children = (
-          <span><Icon type="right-open-mini"/><span dangerouslySetInnerHTML={{__html: command.string}} /></span>
+          <span><span dangerouslySetInnerHTML={{__html: command.string}} /></span>
         );
       } else {
         children = (
