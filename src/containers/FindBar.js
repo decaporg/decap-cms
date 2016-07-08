@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { Icon } from '../components/UI';
 import styles from './FindBar.css';
 
-const SEARCH = 'SEARCH';
+export const SEARCH = 'SEARCH';
 const PLACEHOLDER = 'Type to search or execute commands';
 
 class FindBar extends Component {
@@ -103,7 +103,7 @@ class FindBar extends Component {
         placeholder: ''
       });
 
-      enteredParamValue && this.props.dispatch(runCommand('search', { searchTerm: enteredParamValue }));
+      enteredParamValue && this.props.dispatch(runCommand(SEARCH, { searchTerm: enteredParamValue }));
     } else if (command.param && !enteredParamValue) {
       // Partial Match
       // Command was partially matched: It requires a param, but param wasn't entered
@@ -117,8 +117,13 @@ class FindBar extends Component {
       // Match
       // Command was matched and either it doesn't require a param or it's required param was entered
       // Dispatch action
+      this.setState({
+        value: '',
+        placeholder: PLACEHOLDER,
+        activeScope: null
+      });
       const payload = paramName ? { [paramName]: enteredParamValue } : null;
-      this.props.dispatch(runCommand(command.token, payload));
+      this.props.dispatch(runCommand(command.id, payload));
     }
   }
 
@@ -339,7 +344,10 @@ class FindBar extends Component {
   }
 }
 FindBar.propTypes = {
-  commands: PropTypes.array.isRequired,
+  commands: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    pattern: PropTypes.string.isRequired
+  })).isRequired,
   dispatch: PropTypes.func.isRequired,
 };
 
