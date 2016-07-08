@@ -18,12 +18,14 @@ const style = {
   margin: 20
 };
 
+const dispatch = action('DISPATCH');
+
 storiesOf('FindBar', module)
   .add('Default View', () => (
     <div style={style}>
       <FindBar
           commands={commands}
-          dispatch={action('DISPATCH')}
+          dispatch={f => f(dispatch)}
       />
     </div>
   ));
