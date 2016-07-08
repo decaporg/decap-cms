@@ -121,6 +121,8 @@ class FindBar extends Component {
         value: '',
         placeholder: PLACEHOLDER,
         activeScope: null
+      }, () => {
+        this._input.blur();
       });
       const payload = paramName ? { [paramName]: enteredParamValue } : null;
       this.props.dispatch(runCommand(command.id, payload));
@@ -137,11 +139,18 @@ class FindBar extends Component {
   }
 
   getSuggestions() {
-    return this._getSuggestions(this.state.value, this.state.activeScope, this._compiledCommands);
+    return this._getSuggestions(this.state.value, this.state.activeScope, this._compiledCommands, this.props.defaultCommands);
   }
   // Memoized version
-  _getSuggestions(value, scope, commands) {
+  _getSuggestions(value, scope, commands, defaultCommands) {
     if (scope) return []; // No autocomplete for scoped input
+    if (value.length === 0 && defaultCommands) {
+      return commands
+        .filter(command => defaultCommands.indexOf(command.id) !== -1)
+        .map(result => (
+          Object.assign({}, result, { string: result.token }
+        )));
+    }
 
     const results = fuzzy.filter(value, commands, {
       pre: '<strong>',
@@ -205,9 +214,12 @@ class FindBar extends Component {
         break;
       case 'Escape':
         this.setState({
+          value: '',
           highlightedIndex: 0,
-          isOpen: false
-        }, this.maybeRemoveActiveScope);
+          isOpen: false,
+          activeScope: null,
+          placeholder: PLACEHOLDER
+        });
         break;
       case 'Backspace':
         this.setState({
@@ -348,6 +360,7 @@ FindBar.propTypes = {
     id: PropTypes.string.isRequired,
     pattern: PropTypes.string.isRequired
   })).isRequired,
+  defaultCommands: PropTypes.arrayOf(PropTypes.string),
   dispatch: PropTypes.func.isRequired,
 };
 

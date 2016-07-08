@@ -6,7 +6,6 @@ export const LIST_POSTS = 'LIST_POSTS';
 export const LIST_FAQ = 'LIST_FAQ';
 export const HELP = 'HELP';
 
-
 export function run(commandName, payload) {
   return { type: RUN_COMMAND, command: commandName, payload };
 }
