@@ -318,7 +318,7 @@ class FindBar extends Component {
     const menu = this.state.isOpen && this.renderMenu();
     const scope = this.state.activeScope && this.renderActiveScope();
     return (
-      <div>
+      <div className={styles.root}>
         <label className={styles.inputArea}>
           {scope}
           <input
