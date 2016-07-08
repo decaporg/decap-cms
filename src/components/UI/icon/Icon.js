@@ -191,8 +191,8 @@ const iconPropType = (props, propName) => {
   }
 };
 
-export default function Icon({ style, type }) {
-  return <span className={`${styles.root} ${styles[type]}`} style={style}/>;
+export default function Icon({ style, className = '', type }) {
+  return <span className={`${styles.root} ${styles[type]} ${className}`} style={style}/>;
 }
 
 Icon.propTypes = {
