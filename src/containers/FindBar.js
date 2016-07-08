@@ -296,7 +296,7 @@ class FindBar extends Component {
             <span><Icon type="search"/>Search... </span> :
             <span className={styles.faded}><Icon type="search"/>Search for: </span>
           }
-          {this.state.value}</span>
+          <strong>{this.state.value}</strong></span>
         );
       }
       return (

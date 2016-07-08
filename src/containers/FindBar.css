@@ -1,8 +1,8 @@
 :root {
-  --foregroundColor: #222;
+  --foregroundColor: #555;
   --backgroundColor: rgba(245, 245, 245, 0.98);
   --textFieldBorderColor: #e7e7e7;
-  --highlightFGColor: #000;
+  --highlightFGColor: #444;
   --highlightBGColor: #d2dee4;
 }
 
@@ -73,11 +73,16 @@
 .command {
   padding: 6px;
   cursor: default;
+  color: var(--foregroundColor);
+}
+
+.command strong, .highlightedCommand strong {
+  color: #000;
 }
 
 .command .faded {
   font-weight: 300;
-  color: #555;
+  color: #888;
 }
 
 .highlightedCommand {
