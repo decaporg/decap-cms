@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import { loadEntries } from '../actions/entries';
 import { selectEntries } from '../reducers';
 import EntryListing from '../components/EntryListing';
-import FindBar from './FindBar';
 
 class DashboardPage extends React.Component {
   componentDidMount() {
@@ -29,16 +28,8 @@ class DashboardPage extends React.Component {
       return <h1>No collections defined in your config.yml</h1>;
     }
 
-    const commands = [
-      { pattern: 'Create Collections(:collectionName)' },
-      { pattern: 'Create Posts(:postName)' },
-      { pattern: 'Find(:seachTerm as what?)' },
-      { pattern: '(:searchTerm as Find...)' }
-    ];
-
     return <div>
       <h1>Dashboard</h1>
-      <FindBar commands={commands} />
       <div>
         {collections.map((collection) => (
           <div key={collection.get('name')}>
