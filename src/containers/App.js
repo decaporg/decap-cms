@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { loadConfig } from '../actions/config';
 import { loginUser } from '../actions/auth';
 import { currentBackend } from '../backends/backend';
+import { LIST_POSTS, LIST_FAQ, HELP } from '../actions/findbar';
 import FindBar from './FindBar';
 
 class App extends React.Component {
@@ -51,14 +52,6 @@ class App extends React.Component {
   render() {
     const { user, config, children } = this.props;
 
-    const commands = [
-      { pattern: 'Create new Post(:postName)' },
-      { pattern: 'Create new FAQ item(:faqName as FAQ item name)' },
-      { pattern: 'Add new User(:userName as User name)' },
-      { pattern: 'Go to Settings' },
-    ];
-
-
     if (config === null) {
       return null;
     }
@@ -77,7 +70,11 @@ class App extends React.Component {
 
     return (
       <div>
-        <FindBar commands={commands} />
+        <FindBar commands={[
+          { id: LIST_POSTS, pattern: 'List Posts' },
+          { id: LIST_FAQ, pattern: 'List FAQs' },
+          { id: HELP, pattern: 'Help' },
+        ]} />
         {children}
       </div>
     );
