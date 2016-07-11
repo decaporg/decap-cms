@@ -4,6 +4,7 @@
   composes: rounded from "../theme.css";
   composes: depth from "../theme.css";
   overflow: hidden;
+  width: 240px;
 }
 
 .card > *:not(iframe, video, img, header, footer) {

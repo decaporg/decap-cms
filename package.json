@@ -65,6 +65,7 @@
     "whatwg-fetch": "^1.0.0"
   },
   "dependencies": {
+    "bricks.js": "^1.7.0",
     "commonmark": "^0.24.0",
     "commonmark-react-renderer": "^4.1.2",
     "draft-js": "^0.7.0",
