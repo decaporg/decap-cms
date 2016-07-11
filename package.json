@@ -8,7 +8,8 @@
     "test": "NODE_ENV=test mocha --recursive --compilers js:babel-register --require ./test/setup.js",
     "test:watch": "npm test -- --watch",
     "build": "webpack --config webpack.config.js",
-    "storybook": "start-storybook -p 9001"
+    "storybook": "start-storybook -p 9001",
+    "storybook-build": "build-storybook -o dist"
   },
   "keywords": [
     "netlify",
@@ -22,6 +23,7 @@
     "babel-core": "^6.5.1",
     "babel-eslint": "^4.1.8",
     "babel-loader": "^6.2.2",
+    "babel-plugin-lodash": "^3.2.0",
     "babel-plugin-transform-class-properties": "^6.5.2",
     "babel-plugin-transform-object-assign": "^6.5.0",
     "babel-plugin-transform-object-rest-spread": "^6.5.0",
@@ -68,7 +70,9 @@
     "draft-js": "^0.7.0",
     "draft-js-export-markdown": "^0.2.0",
     "draft-js-import-markdown": "^0.1.6",
+    "fuzzy": "^0.1.1",
     "json-loader": "^0.5.4",
-    "localforage": "^1.4.2"
+    "localforage": "^1.4.2",
+    "lodash": "^4.13.1"
   }
 }

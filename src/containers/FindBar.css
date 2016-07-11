@@ -1,0 +1,98 @@
+:root {
+  --foregroundColor: #555;
+  --backgroundColor: rgba(245, 245, 245, 0.98);
+  --textFieldBorderColor: #e7e7e7;
+  --highlightFGColor: #444;
+  --highlightBGColor: #d2dee4;
+}
+
+.root {
+  position: relative;
+  background-color: var(--backgroundColor);
+  padding: 1px 0;
+}
+
+.inputArea {
+  display: table;
+  width: calc(100% - 10px);
+  margin: 5px;
+  color: var(--foregroundColor);
+  background-color: #fff;
+  border: 1px solid var(--textFieldBorderColor);
+}
+
+.inputScope {
+  display: table-cell;
+  width: 1%;
+  padding: 0 6px 0 8px;
+  color: #767676;
+  font-size: 16px;
+  white-space: nowrap;
+  vertical-align: middle;
+  border-right: 1px solid var(--textFieldBorderColor);
+}
+
+.inputField {
+  display: table-cell;
+  width: 99%;
+  padding: 6px;
+  font-size: 16px;
+  background: none transparent;
+  border: 0 none;
+  box-shadow: none;
+  outline: none;
+  font-size: inherit;
+}
+
+.menu {
+  position: absolute;
+  top: 44px;
+  left: 0;
+  z-index: 9999;
+  display: table;
+  width: 100%;
+  background: var(--backgroundColor);
+  font-size: 13px;
+  font-weight: 400;
+  padding: 5px;
+  height: 100%;
+}
+
+.suggestions {
+  display: table-cell;
+  width: 50%;
+  padding-right: 10px;
+}
+
+.history {
+  display: table-cell;
+  width: 50%;
+  padding-left: 10px;
+}
+
+.command {
+  padding: 6px;
+  cursor: default;
+  color: var(--foregroundColor);
+}
+
+.command strong, .highlightedCommand strong {
+  color: #000;
+}
+
+.command .faded {
+  font-weight: 300;
+  color: #888;
+}
+
+.highlightedCommand {
+  color: var(--highlightFGColor);
+  background: var(--highlightBGColor);
+  padding: 6px;
+  cursor: default;
+}
+
+.highlightedCommand .faded {
+  font-weight: 300;
+  color: #282c34;
+}

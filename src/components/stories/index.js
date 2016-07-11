@@ -1,2 +1,2 @@
-import '../../index.css';
 import './Card';
+import './Icon';
