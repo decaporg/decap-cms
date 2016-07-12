@@ -12,7 +12,6 @@
 }
 
 .container {
-  margin: 10px;
   color: var(--defaultColor);
   background-color: var(--backgroundColor);
 }

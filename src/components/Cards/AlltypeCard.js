@@ -9,7 +9,7 @@ export default class AlltypeCard extends React.Component {
   // http://erikloyer.com/index.php/blog/the_slabtype_algorithm_part_1_background/
   renderInscription(inscription) {
 
-    var idealCharPerLine = 20;
+    var idealCharPerLine = 22;
 
     // segment the text into lines
     var words = inscription.split(' ');

@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import styles from './ScaledLine.css';
 
 export default class ScaledLine extends React.Component {
   constructor(props) {
@@ -25,14 +26,12 @@ export default class ScaledLine extends React.Component {
 
     var baseFontSize = 15;
 
-    var styles = {
-      whiteSpace: 'nowrap',
-      textAlign: 'center'
+    var inlineStyles = {
     };
-    styles.fontSize = Math.round((baseFontSize * ratio)*1000)/1000
+    inlineStyles.fontSize = Math.round((baseFontSize * ratio)*1000)/1000
 
     return (
-      <div ref={(c) => this._content = c} style={styles}>
+      <div ref={(c) => this._content = c} style={inlineStyles} className={styles.root}>
         <span>{children}</span>
       </div>
     )
