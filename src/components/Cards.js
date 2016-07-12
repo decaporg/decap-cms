@@ -1,10 +1,10 @@
 import UnknownCard from './Cards/UnknownCard';
-import MediaCard from './Cards/MediaCard';
+import ImageCard from './Cards/ImageCard';
 import AlltypeCard from './Cards/AlltypeCard';
 
 const Cards = {
   _unknown: UnknownCard,
-  media: MediaCard,
+  image: ImageCard,
   alltype: AlltypeCard
 };
 

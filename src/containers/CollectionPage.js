@@ -31,13 +31,6 @@ class DashboardPage extends React.Component {
     return <div>
       <h1>Dashboard</h1>
       <div>
-        {collections.map((collection) => (
-          <div key={collection.get('name')}>
-            <Link to={`/collections/${collection.get('name')}`}>{collection.get('name')}</Link>
-          </div>
-        )).toArray()}
-      </div>
-      <div>
         {entries ? <EntryListing collection={collection} entries={entries}/> : 'Loading entries...'}
       </div>
     </div>;

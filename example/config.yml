@@ -17,7 +17,7 @@ collections: # A list of collections the CMS should be able to edit
     meta:
       - {label: "Publish Date", name: "date", widget: "datetime", format: "YYYY-MM-DD hh:mma"}
       - {label: "SEO Description", name: "description", widget: "text"}
-    card: {type: "media", media: "image", text: "title"}
+    card: {type: "image", image: "image", text: "title"}
 
   - name: "faq" # Used in routes, ie.: /admin/collections/:slug/edit
     label: "FAQ" # Used in the UI, ie.: "New Post"

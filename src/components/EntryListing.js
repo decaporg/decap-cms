@@ -58,7 +58,7 @@ export default class EntryListing extends React.Component {
       collection: collection,
       onClick: browserHistory.push.bind(this, link),
       text: entry.getIn(['data', collection.getIn(['card', 'text'])]),
-      media: entry.getIn(['data', collection.getIn(['card', 'media'])]),
+      image: entry.getIn(['data', collection.getIn(['card', 'image'])]),
     });
   }
 
@@ -67,7 +67,7 @@ export default class EntryListing extends React.Component {
     const name = collection.get('name');
 
     return <div>
-      <h2>Listing entries!</h2>
+      <h2>Listing {name}</h2>
       <div ref={(c) => this._entries = c}>
         {entries.map((entry) => {
           const path = `/collections/${name}/entries/${entry.get('slug')}`;
