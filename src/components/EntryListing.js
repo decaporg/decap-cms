@@ -57,6 +57,7 @@ export default class EntryListing extends React.Component {
       key: entry.get('slug'),
       collection: collection,
       onClick: browserHistory.push.bind(this, link),
+      onImageLoaded: () => this.bricksInstance.pack(),
       text: entry.getIn(['data', collection.getIn(['card', 'text'])]),
       image: entry.getIn(['data', collection.getIn(['card', 'image'])]),
     });
