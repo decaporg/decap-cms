@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Card } from '../UI';
 import ScaledLine from './ScaledLine';
-
+import styles from './AlltypeCard.css';
 
 export default class AlltypeCard extends React.Component {
 
@@ -9,14 +9,14 @@ export default class AlltypeCard extends React.Component {
   // http://erikloyer.com/index.php/blog/the_slabtype_algorithm_part_1_background/
   renderInscription(inscription) {
 
-    var idealCharPerLine = 22;
+    const idealCharPerLine = 22;
 
     // segment the text into lines
-    var words = inscription.split(' ');
-    var preText, postText, finalText;
-    var preDiff, postDiff;
-    var wordIndex = 0;
-    var lineText = [];
+    const words = inscription.split(' ');
+    let preText, postText, finalText;
+    let preDiff, postDiff;
+    let wordIndex = 0;
+    const lineText = [];
 
     // while we still have words left, build the next line
     while (wordIndex < words.length) {
@@ -65,12 +65,11 @@ export default class AlltypeCard extends React.Component {
     const { onClick, text } = this.props;
     return (
       <Card onClick={onClick}>
-        <div>{this.renderInscription(text)}</div>
+        <div className={styles.cardContent}>{this.renderInscription(text)}</div>
       </Card>
     );
   }
 }
-
 
 AlltypeCard.propTypes = {
   onClick: PropTypes.func,
