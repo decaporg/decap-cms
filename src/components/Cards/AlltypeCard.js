@@ -55,7 +55,7 @@ export default class AlltypeCard extends React.Component {
       lineText.push(finalText.substr(0, finalText.length - 1));
     }
     return lineText.map(text => (
-      <ScaledLine toWidth={216}>
+      <ScaledLine key={text.trim().replace(/[^a-z0-9]+/gi, '-')} toWidth={216}>
         {text}
       </ScaledLine>
     ));
