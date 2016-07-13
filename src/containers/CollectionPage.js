@@ -29,10 +29,7 @@ class DashboardPage extends React.Component {
     }
 
     return <div>
-      <h1>Dashboard</h1>
-      <div>
-        {entries ? <EntryListing collection={collection} entries={entries}/> : 'Loading entries...'}
-      </div>
+      {entries ? <EntryListing collection={collection} entries={entries}/> : 'Loading entries...'}
     </div>;
   }
 }

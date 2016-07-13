@@ -68,7 +68,7 @@ export default class EntryListing extends React.Component {
     const name = collection.get('name');
 
     return <div>
-      <h2>Listing {name}</h2>
+      <h1>Listing {name}</h1>
       <div ref={(c) => this._entries = c}>
         {entries.map((entry) => {
           const path = `/collections/${name}/entries/${entry.get('slug')}`;

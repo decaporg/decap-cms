@@ -10,6 +10,7 @@
   position: relative;
   background-color: var(--backgroundColor);
   padding: 1px 0;
+  margin-bottom: 50px;
 }
 
 .inputArea {
