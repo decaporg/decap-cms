@@ -1,7 +1,7 @@
 :root {
   --defaultColor: #333;
   --backgroundColor: #fff;
-  --shadowColor: rgba(0, 0, 0, 0.25);
+  --shadowColor: rgba(0, 0, 0, 0.117647);
   --successColor: #1c7;
   --warningColor: #fa0;
   --errorColor: #f52;
@@ -17,9 +17,9 @@
 }
 
 .rounded {
-  border-radius: 6px;
+  border-radius: 2px;
 }
 
 .depth {
-  box-shadow: 0px 1px 2px 0px var(--shadowColor);
+  box-shadow: var(--shadowColor) 0px 1px 6px, var(--shadowColor) 0px 1px 4px;
 }

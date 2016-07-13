@@ -36,7 +36,7 @@ export default class ImageCard extends React.Component {
     return (
       <Card onClick={onClick}>
         <img src={image} />
-        <h1>{text}</h1>
+        <h4>{text}</h4>
       </Card>
     );
   }
