@@ -1,11 +1,11 @@
-import UnknownControl from './widgets/UnknownControl';
-import UnknownPreview from './widgets/UnknownPreview';
-import StringControl from './widgets/StringControl';
-import StringPreview from './widgets/StringPreview';
-import MarkdownControl from './widgets/MarkdownControl';
-import MarkdownPreview from './widgets/MarkdownPreview';
-import ImageControl from './widgets/ImageControl';
-import ImagePreview from './widgets/ImagePreview';
+import UnknownControl from './Widgets/UnknownControl';
+import UnknownPreview from './Widgets/UnknownPreview';
+import StringControl from './Widgets/StringControl';
+import StringPreview from './Widgets/StringPreview';
+import MarkdownControl from './Widgets/MarkdownControl';
+import MarkdownPreview from './Widgets/MarkdownPreview';
+import ImageControl from './Widgets/ImageControl';
+import ImagePreview from './Widgets/ImagePreview';
 
 
 const Widgets = {
