@@ -2,6 +2,7 @@ html {
   box-sizing: border-box;
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
+  margin: 0;
 }
 *, *:before, *:after {
   box-sizing: inherit;
@@ -10,8 +11,23 @@ html {
 body {
   font-family: 'Roboto', sans-serif;
   height: 100%;
+  background-color: #fafafa;
+  margin: 0;
+}
+
+header {
+  background-color: #fff;
+  box-shadow: 0 1px 2px 0 rgba(0,0,0,0.22);
+  height: 54px;
+  position: fixed;
+  width: 100%;
+  z-index: 999;
 }
 
 :global #root, :global #root > * {
   height: 100%;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
 }

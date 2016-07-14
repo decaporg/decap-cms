@@ -12,12 +12,13 @@ export default class EntryListing extends React.Component {
     this.bricksConfig = {
       packed: 'data-packed',
       sizes: [
-        { columns: 2, gutter: 15 },
-        { mq: '780px', columns: 3, gutter: 15 },
-        { mq: '1035px', columns: 4, gutter: 15 },
-        { mq: '1290px', columns: 5, gutter: 15 },
-        { mq: '1545px', columns: 6, gutter: 15 },
-        { mq: '1800px', columns: 7, gutter: 15 },
+        { columns: 1, gutter: 15 },
+        { mq: '495px', columns: 2, gutter: 15 },
+        { mq: '750px', columns: 3, gutter: 15 },
+        { mq: '1005px', columns: 4, gutter: 15 },
+        { mq: '1260px', columns: 5, gutter: 15 },
+        { mq: '1515px', columns: 6, gutter: 15 },
+        { mq: '1770px', columns: 7, gutter: 15 },
       ]
     };
   }

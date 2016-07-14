@@ -5,6 +5,7 @@ import { loginUser } from '../actions/auth';
 import { currentBackend } from '../backends/backend';
 import { LIST_POSTS, LIST_FAQ, HELP, MORE_COMMANDS } from '../actions/findbar';
 import FindBar from './FindBar';
+import styles from './App.css';
 
 class App extends React.Component {
   componentDidMount() {
@@ -70,12 +71,18 @@ class App extends React.Component {
 
     return (
       <div>
-        <FindBar commands={[
-          { id: LIST_POSTS, pattern: 'List Posts' },
-          { id: LIST_FAQ, pattern: 'List FAQs' },
-          { id: HELP, pattern: 'Help' },
-        ]} />
-        {children}
+        <header>
+          <div className={styles.alignable}>
+            <FindBar commands={[
+              { id: LIST_POSTS, pattern: 'List Posts' },
+              { id: LIST_FAQ, pattern: 'List FAQs' },
+              { id: HELP, pattern: 'Help' },
+            ]} />
+          </div>
+        </header>
+        <div className={`${styles.alignable} ${styles.main}`}>
+          {children}
+        </div>
       </div>
     );
   }
