@@ -1,10 +1,10 @@
 import { createHistory } from 'history';
 import { useRouterHistory } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
+import basePath from './basePath';
 
-const base = document.querySelector('base');
 let history = useRouterHistory(createHistory)({
-  basename: base && base.href || ''
+  basename: basePath
 });
 
 const syncHistory = (store) => {

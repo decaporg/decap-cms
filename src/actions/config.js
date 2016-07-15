@@ -2,6 +2,7 @@ import yaml from 'js-yaml';
 import { currentBackend } from '../backends/backend';
 import { authenticate } from '../actions/auth';
 import * as MediaProxy from '../valueObjects/MediaProxy';
+import basePath from '../routing/basePath';
 
 export const CONFIG_REQUEST = 'CONFIG_REQUEST';
 export const CONFIG_SUCCESS = 'CONFIG_SUCCESS';
@@ -43,7 +44,7 @@ export function loadConfig(config) {
   return (dispatch, getState) => {
     dispatch(configLoading());
 
-    fetch('/config.yml').then((response) => {
+    fetch(`${basePath}/config.yml`).then((response) => {
       if (response.status !== 200) {
         throw `Failed to load config.yml (${response.status})`;
       }
