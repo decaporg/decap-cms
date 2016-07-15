@@ -1,4 +1,4 @@
-import { browserHistory } from 'react-router';
+import history from '../routing/history';
 import { SEARCH } from '../containers/FindBar';
 
 export const RUN_COMMAND = 'RUN_COMMAND';
@@ -10,21 +10,20 @@ export function run(commandName, payload) {
   return { type: RUN_COMMAND, command: commandName, payload };
 }
 
-
 export function runCommand(commandName, payload) {
   return (dispatch, getState) => {
     switch (commandName) {
       case LIST_POSTS:
-        browserHistory.push('/collections/posts');
+        history.push('/collections/posts');
         break;
       case LIST_FAQ:
-        browserHistory.push('/collections/faq');
+        history.push('/collections/faq');
         break;
       case HELP:
         window.alert('Find Bar Help (PLACEHOLDER)\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit.');
         break;
       case SEARCH:
-        browserHistory.push('/search');
+        history.push('/search');
         break;
     }
     dispatch(run(commandName, payload));

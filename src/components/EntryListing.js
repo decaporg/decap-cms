@@ -1,7 +1,7 @@
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import Bricks from 'bricks.js'
-import { browserHistory } from 'react-router';
+import Bricks from 'bricks.js';
+import history from '../routing/history';
 import Cards from './Cards';
 
 export default class EntryListing extends React.Component {
@@ -57,7 +57,7 @@ export default class EntryListing extends React.Component {
     return React.createElement(card, {
       key: entry.get('slug'),
       collection: collection,
-      onClick: browserHistory.push.bind(this, link),
+      onClick: history.push.bind(this, link),
       onImageLoaded: () => this.bricksInstance.pack(),
       text: entry.getIn(['data', collection.getIn(['card', 'text'])]),
       image: entry.getIn(['data', collection.getIn(['card', 'image'])]),
