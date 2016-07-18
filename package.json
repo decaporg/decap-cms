@@ -36,6 +36,7 @@
     "eslint-loader": "^1.2.1",
     "eslint-plugin-react": "^5.1.1",
     "exports-loader": "^0.6.3",
+    "extract-text-webpack-plugin": "^1.0.1",
     "express": "^4.13.4",
     "file-loader": "^0.8.5",
     "immutable": "^3.7.6",
