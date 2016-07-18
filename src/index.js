@@ -10,12 +10,12 @@ import './index.css';
 
 const store = configureStore();
 
+// Create an enhanced history that syncs navigation events with the store
+syncHistory(store);
+
 const el = document.createElement('div');
 el.id = 'root';
 document.body.appendChild(el);
-
-// Create an enhanced history that syncs navigation events with the store
-syncHistory(store);
 
 render((
   <Provider store={store}>
