@@ -8,7 +8,7 @@ class API {
     this.token = token;
     this.repo = repo;
     this.branch = branch;
-    this.baseURL = API_ROOT + `/repos/${this.repo}`;
+    this.repoURL = `/repos/${this.repo}`;
   }
 
   user() {
@@ -20,9 +20,9 @@ class API {
     return cache.then((cached) => {
       if (cached) { return cached; }
 
-      return this.request(`/contents/${path}`, {
-        headers: {Accept: 'application/vnd.github.VERSION.raw'},
-        data: {ref: this.branch},
+      return this.request(`${this.repoURL}/contents/${path}`, {
+        headers: { Accept: 'application/vnd.github.VERSION.raw' },
+        data: { ref: this.branch },
         cache: false
       }).then((result) => {
         if (sha) {
@@ -35,8 +35,8 @@ class API {
   }
 
   listFiles(path) {
-    return this.request(`/contents/${path}`, {
-      data: {ref: this.branch}
+    return this.request(`${this.repoURL}/contents/${path}`, {
+      data: { ref: this.branch }
     });
   }
 
@@ -60,7 +60,7 @@ class API {
 
   request(path, options = {}) {
     const headers = this.requestHeaders(options.headers || {});
-    return fetch(this.baseURL + path, {...options, headers: headers}).then((response) => {
+    return fetch(API_ROOT + path, { ...options, headers: headers }).then((response) => {
       if (response.headers.get('Content-Type').match(/json/)) {
         return this.parseJsonResponse(response);
       }
