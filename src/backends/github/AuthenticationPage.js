@@ -16,7 +16,7 @@ export default class AuthenticationPage extends React.Component {
     e.preventDefault();
 
     const auth = new Authenticator({site_id: 'cms.netlify.com'});
-    auth.authenticate({provider: 'github', scope: 'user'}, (err, data) => {
+    auth.authenticate({provider: 'github', scope: 'repo'}, (err, data) => {
       if (err) {
         this.setState({loginError: err.toString()});
         return;
