@@ -5,6 +5,6 @@ export function addMedia(mediaProxy) {
   return { type: ADD_MEDIA, payload: mediaProxy };
 }
 
-export function removeMedia(uri) {
-  return { type: REMOVE_MEDIA, payload: uri };
+export function removeMedia(path) {
+  return { type: REMOVE_MEDIA, payload: path };
 }

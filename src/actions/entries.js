@@ -11,7 +11,7 @@ export const ENTRIES_REQUEST = 'ENTRIES_REQUEST';
 export const ENTRIES_SUCCESS = 'ENTRIES_SUCCESS';
 export const ENTRIES_FAILURE = 'ENTRIES_FAILURE';
 
-export const DRAFT_CREATE = 'DRAFT_CREATE';
+export const DRAFT_CREATE_FROM_ENTRY = 'DRAFT_CREATE_FROM_ENTRY';
 export const DRAFT_DISCARD = 'DRAFT_DISCARD';
 export const DRAFT_CHANGE = 'DRAFT_CHANGE';
 
@@ -104,9 +104,9 @@ function entryPersistFail(collection, entry, error) {
 /*
  * Exported simple Action Creators
  */
-export function createDraft(entry) {
+export function createDraftFromEntry(entry) {
   return {
-    type: DRAFT_CREATE,
+    type: DRAFT_CREATE_FROM_ENTRY,
     payload: entry
   };
 }
@@ -152,12 +152,12 @@ export function loadEntries(collection) {
   };
 }
 
-export function persist(collection, entry, mediaFiles) {
+export function persistEntry(collection, entry, mediaFiles) {
   return (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
     dispatch(entryPersisting(collection, entry));
-    backend.persist(collection, entry, mediaFiles).then(
+    backend.persistEntry(collection, entry, mediaFiles).then(
       ({persistedEntry, persistedMediaFiles}) => {
         dispatch(entryPersisted(persistedEntry, persistedMediaFiles));
       },

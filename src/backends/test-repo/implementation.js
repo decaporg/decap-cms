@@ -48,10 +48,10 @@ export default class TestRepo {
     ));
   }
 
-  persist(collection, entry, mediaFiles = []) {
-    const folder = collection.get('folder');
+  persistEntry(collection, entry, mediaFiles = []) {
+    const folder = entry.path.substring(0, entry.path.lastIndexOf('/'));
     const fileName = entry.path.substring(entry.path.lastIndexOf('/') + 1);
     window.repoFiles[folder][fileName]['content'] = entry.raw;
-    return Promise.resolve({persistedEntry:entry, persistedMediaFiles:[]});
+    return Promise.resolve({ persistedEntry:entry, persistedMediaFiles:[] });
   }
 }

@@ -19,7 +19,7 @@ const ImageType = new yaml.Type('image', {
   kind: 'scalar',
   instanceOf: MediaProxy,
   represent: function(value) {
-    return `${value.uri}`;
+    return `${value.path}`;
   },
   resolve: function(value) {
     if (value === null) return false;

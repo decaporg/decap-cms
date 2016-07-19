@@ -67,14 +67,21 @@ class Backend {
     };
   }
 
-  persist(collection, entryDraft) {
+  persistEntry(collection, entryDraft) {
     const entryData = entryDraft.getIn(['entry', 'data']).toObject();
     const entryObj = {
       path: entryDraft.getIn(['entry', 'path']),
       slug: entryDraft.getIn(['entry', 'slug']),
       raw: this.entryToRaw(collection, entryData)
     };
-    return this.implementation.persist(collection, entryObj, entryDraft.get('mediaFiles').toJS()).then(
+
+    const commitMessage = (entryDraft.getIn(['entry', 'newRecord']) ? 'Created ' : 'Updated ') +
+          collection.get('label') + ' “' +
+          entryDraft.getIn(['entry', 'data', 'title']) + '”';
+
+
+    return this.implementation.persistEntry(collection, entryObj, entryDraft.get('mediaFiles').toJS(), { commitMessage })
+    .then(
       (response) => ({
         persistedEntry: this.entryWithFormat(collection)(response.persistedEntry),
         persistedMediaFiles:response.persistedMediaFiles
