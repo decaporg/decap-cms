@@ -67,7 +67,7 @@ class Backend {
     };
   }
 
-  persistEntry(collection, entryDraft) {
+  persistEntry(collection, entryDraft, MediaFiles) {
     const entryData = entryDraft.getIn(['entry', 'data']).toObject();
     const entryObj = {
       path: entryDraft.getIn(['entry', 'path']),
@@ -79,8 +79,7 @@ class Backend {
           collection.get('label') + ' “' +
           entryDraft.getIn(['entry', 'data', 'title']) + '”';
 
-
-    return this.implementation.persistEntry(collection, entryObj, entryDraft.get('mediaFiles').toJS(), { commitMessage })
+    return this.implementation.persistEntry(collection, entryObj, MediaFiles, { commitMessage })
     .then(
       (response) => ({
         persistedEntry: this.entryWithFormat(collection)(response.persistedEntry),

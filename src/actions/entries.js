@@ -1,4 +1,5 @@
 import { currentBackend } from '../backends/backend';
+import { getMedia } from '../reducers';
 
 /*
  * Contant Declarations
@@ -152,13 +153,15 @@ export function loadEntries(collection) {
   };
 }
 
-export function persistEntry(collection, entry, mediaFiles) {
+export function persistEntry(collection, entry) {
   return (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
+    const MediaProxies = entry.get('mediaFiles').map(path => getMedia(state, path));
+
     dispatch(entryPersisting(collection, entry));
-    backend.persistEntry(collection, entry, mediaFiles).then(
-      ({persistedEntry, persistedMediaFiles}) => {
+    backend.persistEntry(collection, entry, MediaProxies.toJS()).then(
+      ({ persistedEntry, persistedMediaFiles }) => {
         dispatch(entryPersisted(persistedEntry, persistedMediaFiles));
       },
       (error) => dispatch(entryPersistFail(collection, entry, error))

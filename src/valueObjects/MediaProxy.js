@@ -20,7 +20,8 @@ MediaProxy.prototype.toBase64 = function() {
     const fr = new FileReader();
     fr.onload = (readerEvt) => {
       const binaryString = readerEvt.target.result;
-      resolve(btoa(binaryString));
+
+      resolve(binaryString.split('base64,')[1]);
     };
     fr.readAsDataURL(this.file);
   });
