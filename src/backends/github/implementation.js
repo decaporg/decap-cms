@@ -24,7 +24,7 @@ class API {
 
       return this.request(`${this.repoURL}/contents/${path}`, {
         headers: { Accept: 'application/vnd.github.VERSION.raw' },
-        data: { ref: this.branch },
+        body: { ref: this.branch },
         cache: false
       }).then((result) => {
         if (sha) {
@@ -38,7 +38,7 @@ class API {
 
   listFiles(path) {
     return this.request(`${this.repoURL}/contents/${path}`, {
-      data: { ref: this.branch }
+      body: { ref: this.branch }
     });
   }
 
@@ -68,13 +68,13 @@ class API {
       })
       .then((changeTree) => {
         return this.request(`${this.repoURL}/git/commits`, {
-          type: 'POST',
-          data: JSON.stringify({ message: options.message, tree: changeTree.sha, parents: [changeTree.parentSha] })
+          method: 'POST',
+          body: JSON.stringify({ message: options.commitMessage, tree: changeTree.sha, parents: [changeTree.parentSha] })
         });
       }).then((response) => {
         return this.request(`${this.repoURL}/git/refs/heads/${this.branch}`, {
-          type: 'PATCH',
-          data: JSON.stringify({ sha: response.sha })
+          method: 'PATCH',
+          body: JSON.stringify({ sha: response.sha })
         });
       });
   }
@@ -170,8 +170,8 @@ class API {
         return Promise.all(updates)
           .then((updates) => {
             return this.request(`${this.repoURL}/git/trees`, {
-              type: 'POST',
-              data: JSON.stringify({ base_tree: sha, tree: updates })
+              method: 'POST',
+              body: JSON.stringify({ base_tree: sha, tree: updates })
             });
           }).then((response) => {
             return { path: path, mode: '040000', type: 'tree', sha: response.sha, parentSha: sha };
@@ -227,7 +227,7 @@ export default class GitHub {
     ));
   }
 
-  persistEntry(collection, entry, mediaFiles = []) {
-    return this.api.persistFiles(collection, entry, mediaFiles);
+  persistEntry(collection, entry, mediaFiles = [], options = {}) {
+    return this.api.persistFiles(collection, entry, mediaFiles, options);
   }
 }
