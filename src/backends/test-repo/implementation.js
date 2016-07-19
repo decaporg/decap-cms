@@ -20,7 +20,7 @@ export default class TestRepo {
   }
 
   authenticate(state) {
-    return Promise.resolve({email: state.email});
+    return Promise.resolve({ email: state.email });
   }
 
   entries(collection) {
@@ -52,6 +52,7 @@ export default class TestRepo {
     const folder = entry.path.substring(0, entry.path.lastIndexOf('/'));
     const fileName = entry.path.substring(entry.path.lastIndexOf('/') + 1);
     window.repoFiles[folder][fileName]['content'] = entry.raw;
-    return Promise.resolve({ persistedEntry:entry, persistedMediaFiles:[] });
+    mediaFiles.forEach(media => media.uploaded = true);
+    return Promise.resolve();
   }
 }

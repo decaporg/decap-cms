@@ -79,13 +79,7 @@ class Backend {
           collection.get('label') + ' “' +
           entryDraft.getIn(['entry', 'data', 'title']) + '”';
 
-    return this.implementation.persistEntry(collection, entryObj, MediaFiles, { commitMessage })
-    .then(
-      (response) => ({
-        persistedEntry: this.entryWithFormat(collection)(response.persistedEntry),
-        persistedMediaFiles:response.persistedMediaFiles
-      })
-    );
+    return this.implementation.persistEntry(collection, entryObj, MediaFiles, { commitMessage });
   }
 
   entryToRaw(collection, entry) {

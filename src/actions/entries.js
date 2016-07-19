@@ -70,7 +70,7 @@ function entriesFailed(collection, error) {
     type: ENTRIES_FAILURE,
     error: 'Failed to load entries',
     payload: error.toString(),
-    meta: {collection: collection.get('name')}
+    meta: { collection: collection.get('name') }
   };
 }
 
@@ -84,12 +84,12 @@ function entryPersisting(collection, entry) {
   };
 }
 
-function entryPersisted(persistedEntry, persistedMediaFiles) {
+function entryPersisted(collection, entry) {
   return {
     type: ENTRY_PERSIST_SUCCESS,
     payload: {
-      persistedEntry: persistedEntry,
-      persistedMediaFiles: persistedMediaFiles
+      collection: collection,
+      entry: entry
     }
   };
 }
@@ -161,8 +161,8 @@ export function persistEntry(collection, entry) {
 
     dispatch(entryPersisting(collection, entry));
     backend.persistEntry(collection, entry, MediaProxies.toJS()).then(
-      ({ persistedEntry, persistedMediaFiles }) => {
-        dispatch(entryPersisted(persistedEntry, persistedMediaFiles));
+      () => {
+        dispatch(entryPersisted(collection, entry));
       },
       (error) => dispatch(entryPersistFail(collection, entry, error))
     );
