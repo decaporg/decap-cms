@@ -124,8 +124,11 @@ class FindBar extends Component {
       }, () => {
         this._input.blur();
       });
-      const payload = paramName ? { [paramName]: enteredParamValue } : null;
-      this.props.dispatch(runCommand(command.id, payload));
+      const payload = command.payload || {};
+      if (paramName) {
+        payload[paramName] = enteredParamValue;
+      }
+      this.props.dispatch(runCommand(command.type, payload));
     }
   }
 
@@ -358,6 +361,7 @@ class FindBar extends Component {
 FindBar.propTypes = {
   commands: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
     pattern: PropTypes.string.isRequired
   })).isRequired,
   defaultCommands: PropTypes.arrayOf(PropTypes.string),
