@@ -1,10 +1,9 @@
-import { createHistory } from 'history';
+import { createHashHistory } from 'history';
 import { useRouterHistory } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
-import basePath from './basePath';
 
-let history = useRouterHistory(createHistory)({
-  basename: basePath
+let history = useRouterHistory(createHashHistory)({
+  queryKey: false
 });
 
 const syncHistory = (store) => {
