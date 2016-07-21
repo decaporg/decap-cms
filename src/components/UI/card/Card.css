@@ -8,7 +8,8 @@
 }
 
 .card > *:not(iframe, video, img, header, footer) {
-  margin: 0 10px;
+  margin-left: 10px;
+  margin-right: 10px;
 }
 
 .card > *:not(iframe, video, img, header, footer):first-child {

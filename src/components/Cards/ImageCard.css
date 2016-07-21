@@ -3,11 +3,16 @@
 }
 
 .root h1 {
-  font-weight: 500;
-  font-size: 18px;
+  font-size: 17px;
 }
 
 .root h2 {
   font-weight: 400;
-  font-size: 16px;
+  font-size: 15px;
+}
+
+.root p {
+  color: #555;
+  font-size: 14px;
+  margin-top: 5px;
 }
