@@ -1,8 +1,10 @@
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import Bricks from 'bricks.js'
-import { browserHistory } from 'react-router';
+import Bricks from 'bricks.js';
+import history from '../routing/history';
 import Cards from './Cards';
+import _ from 'lodash';
+import styles from './EntryListing.css'
 
 export default class EntryListing extends React.Component {
   constructor(props) {
@@ -21,6 +23,8 @@ export default class EntryListing extends React.Component {
         { mq: '1770px', columns: 7, gutter: 15 },
       ]
     };
+
+    this.updateBricks = _.throttle(this.updateBricks.bind(this), 30);
   }
 
   componentDidMount() {
@@ -51,15 +55,20 @@ export default class EntryListing extends React.Component {
     this.bricksInstance.resize(false);
   }
 
+  updateBricks() {
+    this.bricksInstance.pack();
+  }
+
   cardFor(collection, entry, link) {
     //const { entry, getMedia, onChange, onAddMedia, onRemoveMedia } = this.props;
     const card = Cards[collection.getIn(['card', 'type'])] || Cards._unknown;
     return React.createElement(card, {
       key: entry.get('slug'),
       collection: collection,
-      onClick: browserHistory.push.bind(this, link),
-      onImageLoaded: () => this.bricksInstance.pack(),
+      onClick: history.push.bind(this, link),
+      onImageLoaded: this.updateBricks,
       text: entry.getIn(['data', collection.getIn(['card', 'text'])]),
+      description: entry.getIn(['data', collection.getIn(['card', 'description'])]),
       image: entry.getIn(['data', collection.getIn(['card', 'image'])]),
     });
   }
@@ -68,7 +77,7 @@ export default class EntryListing extends React.Component {
     const { collection, entries } = this.props;
     const name = collection.get('name');
 
-    return <div>
+    return <div className={styles.root}>
       <h1>Listing {name}</h1>
       <div ref={(c) => this._entries = c}>
         {entries.map((entry) => {

@@ -3,9 +3,10 @@ import { connect } from 'react-redux';
 import { loadConfig } from '../actions/config';
 import { loginUser } from '../actions/auth';
 import { currentBackend } from '../backends/backend';
-import { LIST_POSTS, LIST_FAQ, HELP, MORE_COMMANDS } from '../actions/findbar';
+import { SHOW_COLLECTION, CREATE_COLLECTION, HELP } from '../actions/findbar';
 import FindBar from './FindBar';
 import styles from './App.css';
+import pluralize from 'pluralize';
 
 class App extends React.Component {
   componentDidMount() {
@@ -50,6 +51,37 @@ class App extends React.Component {
     </div>;
   }
 
+  generateFindBarCommands() {
+    // Generate command list
+    const commands = [];
+    const defaultCommands = [];
+
+    this.props.collections.forEach(collection => {
+      commands.push({
+        id: `show_${collection.get('name')}`,
+        pattern: `Show ${pluralize(collection.get('label'))}`,
+        type: SHOW_COLLECTION,
+        payload: { collectionName:collection.get('name') }
+      });
+
+      if (defaultCommands.length < 5) defaultCommands.push(`show_${collection.get('name')}`);
+
+      if (collection.get('create') === true) {
+        commands.push({
+          id: `create_${collection.get('name')}`,
+          pattern: `Create new ${pluralize(collection.get('label'), 1)}(:itemName as ${pluralize(collection.get('label'), 1)} Name)`,
+          type: CREATE_COLLECTION,
+          payload: { collectionName:collection.get('name') }
+        });
+      }
+    });
+
+    commands.push({ id: HELP, type: HELP, pattern: 'Help' });
+    defaultCommands.push(HELP);
+
+    return { commands, defaultCommands };
+  }
+
   render() {
     const { user, config, children } = this.props;
 
@@ -69,15 +101,16 @@ class App extends React.Component {
       return this.authenticating();
     }
 
+    const { commands, defaultCommands } = this.generateFindBarCommands();
+
     return (
       <div>
         <header>
           <div className={styles.alignable}>
-            <FindBar commands={[
-              { id: LIST_POSTS, pattern: 'List Posts' },
-              { id: LIST_FAQ, pattern: 'List FAQs' },
-              { id: HELP, pattern: 'Help' },
-            ]} />
+            <FindBar
+                commands={commands}
+                defaultCommands={defaultCommands}
+            />
           </div>
         </header>
         <div className={`${styles.alignable} ${styles.main}`}>
@@ -89,10 +122,10 @@ class App extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { auth, config } = state;
+  const { auth, config, collections } = state;
   const user = auth && auth.get('user');
 
-  return { auth, config, user };
+  return { auth, config, collections, user };
 }
 
 export default connect(mapStateToProps)(App);

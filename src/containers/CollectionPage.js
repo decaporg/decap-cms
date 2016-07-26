@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import { loadEntries } from '../actions/entries';
 import { selectEntries } from '../reducers';

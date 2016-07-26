@@ -1,4 +1,5 @@
 import { currentBackend } from '../backends/backend';
+import { getMedia } from '../reducers';
 
 /*
  * Contant Declarations
@@ -11,7 +12,7 @@ export const ENTRIES_REQUEST = 'ENTRIES_REQUEST';
 export const ENTRIES_SUCCESS = 'ENTRIES_SUCCESS';
 export const ENTRIES_FAILURE = 'ENTRIES_FAILURE';
 
-export const DRAFT_CREATE = 'DRAFT_CREATE';
+export const DRAFT_CREATE_FROM_ENTRY = 'DRAFT_CREATE_FROM_ENTRY';
 export const DRAFT_DISCARD = 'DRAFT_DISCARD';
 export const DRAFT_CHANGE = 'DRAFT_CHANGE';
 
@@ -69,7 +70,7 @@ function entriesFailed(collection, error) {
     type: ENTRIES_FAILURE,
     error: 'Failed to load entries',
     payload: error.toString(),
-    meta: {collection: collection.get('name')}
+    meta: { collection: collection.get('name') }
   };
 }
 
@@ -83,12 +84,12 @@ function entryPersisting(collection, entry) {
   };
 }
 
-function entryPersisted(persistedEntry, persistedMediaFiles) {
+function entryPersisted(collection, entry) {
   return {
     type: ENTRY_PERSIST_SUCCESS,
     payload: {
-      persistedEntry: persistedEntry,
-      persistedMediaFiles: persistedMediaFiles
+      collection: collection,
+      entry: entry
     }
   };
 }
@@ -104,9 +105,9 @@ function entryPersistFail(collection, entry, error) {
 /*
  * Exported simple Action Creators
  */
-export function createDraft(entry) {
+export function createDraftFromEntry(entry) {
   return {
-    type: DRAFT_CREATE,
+    type: DRAFT_CREATE_FROM_ENTRY,
     payload: entry
   };
 }
@@ -152,14 +153,16 @@ export function loadEntries(collection) {
   };
 }
 
-export function persist(collection, entry, mediaFiles) {
+export function persistEntry(collection, entry) {
   return (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
+    const MediaProxies = entry.get('mediaFiles').map(path => getMedia(state, path));
+
     dispatch(entryPersisting(collection, entry));
-    backend.persist(collection, entry, mediaFiles).then(
-      ({persistedEntry, persistedMediaFiles}) => {
-        dispatch(entryPersisted(persistedEntry, persistedMediaFiles));
+    backend.persistEntry(collection, entry, MediaProxies.toJS()).then(
+      () => {
+        dispatch(entryPersisted(collection, entry));
       },
       (error) => dispatch(entryPersistFail(collection, entry, error))
     );
