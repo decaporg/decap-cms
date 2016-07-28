@@ -79,7 +79,7 @@ export default class ImageControl extends React.Component {
           onDrop={this.handleChange}
       >
         <span onClick={this.handleClick}>
-          {imageName ? imageName : 'Click or drop imag here.'}
+          {imageName ? imageName : 'Click or drop image here.'}
         </span>
         <input
             type="file"
