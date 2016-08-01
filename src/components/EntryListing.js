@@ -4,7 +4,6 @@ import Bricks from 'bricks.js';
 import history from '../routing/history';
 import Cards from './Cards';
 import _ from 'lodash';
-import styles from './EntryListing.css'
 
 export default class EntryListing extends React.Component {
   constructor(props) {
@@ -77,7 +76,7 @@ export default class EntryListing extends React.Component {
     const { collection, entries } = this.props;
     const name = collection.get('name');
 
-    return <div className={styles.root}>
+    return <div>
       <h1>Listing {name}</h1>
       <div ref={(c) => this._entries = c}>
         {entries.map((entry) => {

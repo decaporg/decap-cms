@@ -6,7 +6,6 @@ export default class ImageCard extends React.Component {
 
   render() {
     const { onClick, onImageLoaded, image, text, description } = this.props;
-    console.log(this.props)
     return (
       <Card onClick={onClick} className={styles.root}>
         <img src={image} onLoad={onImageLoaded} />
