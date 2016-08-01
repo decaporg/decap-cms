@@ -36,6 +36,7 @@
     "eslint-loader": "^1.2.1",
     "eslint-plugin-react": "^5.1.1",
     "exports-loader": "^0.6.3",
+    "extract-text-webpack-plugin": "^1.0.1",
     "express": "^4.13.4",
     "file-loader": "^0.8.5",
     "immutable": "^3.7.6",
@@ -53,8 +54,8 @@
     "react-lazy-load": "^3.0.3",
     "react-pure-render": "^1.0.2",
     "react-redux": "^4.4.0",
-    "react-router": "^2.0.0",
-    "react-router-redux": "^3.0.0",
+    "react-router": "^2.5.1",
+    "react-router-redux": "^4.0.5",
     "redux": "^3.3.1",
     "redux-thunk": "^1.0.3",
     "style-loader": "^0.13.0",
@@ -65,14 +66,17 @@
     "whatwg-fetch": "^1.0.0"
   },
   "dependencies": {
+    "bricks.js": "^1.7.0",
     "commonmark": "^0.24.0",
     "commonmark-react-renderer": "^4.1.2",
     "draft-js": "^0.7.0",
     "draft-js-export-markdown": "^0.2.0",
     "draft-js-import-markdown": "^0.1.6",
     "fuzzy": "^0.1.1",
+    "js-base64": "^2.1.9",
     "json-loader": "^0.5.4",
     "localforage": "^1.4.2",
-    "lodash": "^4.13.1"
+    "lodash": "^4.13.1",
+    "pluralize": "^3.0.0"
   }
 }

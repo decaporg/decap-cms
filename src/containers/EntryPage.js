@@ -3,10 +3,10 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 import {
   loadEntry,
-  createDraft,
+  createDraftFromEntry,
   discardDraft,
   changeDraft,
-  persist
+  persistEntry
 } from '../actions/entries';
 import { addMedia, removeMedia } from '../actions/media';
 import { selectEntry, getMedia } from '../reducers';
@@ -16,18 +16,18 @@ class EntryPage extends React.Component {
   constructor(props) {
     super(props);
     this.props.loadEntry(props.collection, props.slug);
-    this.handlePersist = this.handlePersist.bind(this);
+    this.handlePersistEntry = this.handlePersistEntry.bind(this);
   }
 
   componentDidMount() {
     if (this.props.entry) {
-      this.props.createDraft(this.props.entry);
+      this.props.createDraftFromEntry(this.props.entry);
     }
   }
 
   componentWillReceiveProps(nextProps) {
     if (this.props.entry !== nextProps.entry && !nextProps.entry.get('isFetching')) {
-      this.props.createDraft(nextProps.entry);
+      this.props.createDraftFromEntry(nextProps.entry);
     }
   }
 
@@ -35,8 +35,8 @@ class EntryPage extends React.Component {
     this.props.discardDraft();
   }
 
-  handlePersist() {
-    this.props.persist(this.props.collection, this.props.entryDraft);
+  handlePersistEntry() {
+    this.props.persistEntry(this.props.collection, this.props.entryDraft);
   }
 
   render() {
@@ -56,7 +56,7 @@ class EntryPage extends React.Component {
           onChange={changeDraft}
           onAddMedia={addMedia}
           onRemoveMedia={removeMedia}
-          onPersist={this.handlePersist}
+          onPersist={this.handlePersistEntry}
       />
     );
   }
@@ -67,12 +67,12 @@ EntryPage.propTypes = {
   boundGetMedia: PropTypes.func.isRequired,
   changeDraft: PropTypes.func.isRequired,
   collection: ImmutablePropTypes.map.isRequired,
-  createDraft: PropTypes.func.isRequired,
+  createDraftFromEntry: PropTypes.func.isRequired,
   discardDraft: PropTypes.func.isRequired,
   entry: ImmutablePropTypes.map.isRequired,
   entryDraft: ImmutablePropTypes.map.isRequired,
   loadEntry: PropTypes.func.isRequired,
-  persist: PropTypes.func.isRequired,
+  persistEntry: PropTypes.func.isRequired,
   removeMedia: PropTypes.func.isRequired,
   slug: PropTypes.string.isRequired,
 };
@@ -93,8 +93,8 @@ export default connect(
     addMedia,
     removeMedia,
     loadEntry,
-    createDraft,
+    createDraftFromEntry,
     discardDraft,
-    persist
+    persistEntry
   }
 )(EntryPage);

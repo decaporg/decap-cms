@@ -29,8 +29,8 @@ const PROVIDERS = {
 };
 
 class Authenticator {
-  constructor(config) {
-    this.site_id = config.site_id;
+  constructor(config = {}) {
+    this.site_id = config.site_id || null;
     this.base_url = config.base_url || NETLIFY_API;
   }
 

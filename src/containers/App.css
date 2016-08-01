@@ -1,0 +1,43 @@
+.alignable {
+  margin: 0px auto;
+}
+
+@media (max-width: 749px) and (min-width: 495px) {
+  .alignable {
+    width: 495px;
+  }
+}
+
+@media (max-width: 1004px) and (min-width: 750px) {
+  .alignable {
+    width: 750px;
+  }
+}
+
+@media (max-width: 1259px) and (min-width: 1005px) {
+  .alignable {
+    width: 1005px;
+  }
+}
+
+@media (max-width: 1514px) and (min-width: 1260px) {
+  .alignable {
+    width: 1260px;
+  }
+}
+
+@media (max-width: 1769px) and (min-width: 1515px) {
+  .alignable {
+    width: 1515px;
+  }
+}
+
+@media (min-width: 1770px) {
+  .alignable {
+    width: 1770px;
+  }
+}
+
+.main {
+  padding-top: 60px;
+}

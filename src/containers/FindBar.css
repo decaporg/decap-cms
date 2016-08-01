@@ -10,8 +10,8 @@
   position: relative;
   background-color: var(--backgroundColor);
   padding: 1px 0;
+  margin: 4px auto;
 }
-
 .inputArea {
   display: table;
   width: calc(100% - 10px);

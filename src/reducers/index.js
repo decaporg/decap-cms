@@ -23,5 +23,5 @@ export const selectEntry = (state, collection, slug) =>
 export const selectEntries = (state, collection) =>
   fromEntries.selectEntries(state.entries, collection);
 
-export const getMedia = (state, uri) =>
-  fromMedias.getMedia(state.medias, uri);
+export const getMedia = (state, path) =>
+  fromMedias.getMedia(state.medias, path);

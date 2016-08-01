@@ -53,7 +53,7 @@ export default class ImageControl extends React.Component {
     if (file) {
       const mediaProxy = new MediaProxy(file.name, file);
       this.props.onAddMedia(mediaProxy);
-      this.props.onChange(mediaProxy.uri);
+      this.props.onChange(mediaProxy.path);
     } else {
       this.props.onChange(null);
     }
@@ -63,7 +63,7 @@ export default class ImageControl extends React.Component {
   renderImageName() {
     if (!this.props.value) return null;
     if (this.value instanceof MediaProxy) {
-      return truncateMiddle(this.props.value.uri, MAX_DISPLAY_LENGTH);
+      return truncateMiddle(this.props.value.path, MAX_DISPLAY_LENGTH);
     } else {
       return truncateMiddle(this.props.value, MAX_DISPLAY_LENGTH);
     }
