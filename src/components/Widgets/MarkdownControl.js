@@ -1,9 +1,10 @@
 import React, { PropTypes } from 'react';
-import { Editor } from 'slate';
+import { Editor, Plain } from 'slate';
 import Markdown from 'slate-markdown-serializer';
+import Block from './MarkdownControlElements/Block';
+import { Icon } from '../UI';
+
 const markdown = new Markdown();
-
-
 /*
  * Slate Render Configuration
  */
@@ -13,16 +14,20 @@ const DEFAULT_NODE = 'paragraph';
 
 // Local node renderers.
 const NODES = {
-  'block-quote': (props) => <blockquote {...props.attributes}>{props.children}</blockquote>,
-  'bulleted-list': props => <ul {...props.attributes}>{props.children}</ul>,
-  'heading1': props => <h1 {...props.attributes}>{props.children}</h1>,
-  'heading2': props => <h2 {...props.attributes}>{props.children}</h2>,
+  'block-quote': (props) => <Block type='blockquote' {...props.attributes}>{props.children}</Block>,
+  'bulleted-list': props => <Block type='Unordered List'><ul {...props.attributes}>{props.children}</ul></Block>,
+  'heading1': props => <Block type='Heading1' {...props.attributes}>{props.children}</Block>,
+  'heading2': props => <Block type='Heading2' {...props.attributes}>{props.children}</Block>,
+  'heading3': props => <Block type='Heading2' {...props.attributes}>{props.children}</Block>,
+  'heading4': props => <Block type='Heading2' {...props.attributes}>{props.children}</Block>,
+  'heading5': props => <Block type='Heading2' {...props.attributes}>{props.children}</Block>,
+  'heading6': props => <Block type='Heading2' {...props.attributes}>{props.children}</Block>,
   'list-item': props => <li {...props.attributes}>{props.children}</li>,
-  'paragraph': props => <p {...props.attributes}>{props.children}</p>,
+  'paragraph': props => <Block type='Paragraph' {...props.attributes}>{props.children}</Block>,
   'link': (props) => {
     const { data } = props.node;
     const href = data.get('href');
-    return <a {...props.attributes} href={href}>{props.children}</a>;
+    return <span><a {...props.attributes} href={href}>{props.children}</a><Icon type="link"/></span>;
   },
   'image': (props) => {
     const { node, state } = props;
@@ -52,8 +57,9 @@ const MARKS = {
 class MarkdownControl extends React.Component {
   constructor(props) {
     super(props);
+    this.blockEdit = false;
     this.state = {
-      state: markdown.deserialize(props.value || '')
+      state: props.value ? markdown.deserialize(props.value) : Plain.deserialize('')
     };
 
     this.hasMark = this.hasMark.bind(this);
@@ -62,6 +68,7 @@ class MarkdownControl extends React.Component {
     this.handleDocumentChange = this.handleDocumentChange.bind(this);
     this.onClickMark = this.onClickMark.bind(this);
     this.onClickBlock = this.onClickBlock.bind(this);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
     this.renderToolbar = this.renderToolbar.bind(this);
     this.renderMarkButton = this.renderMarkButton.bind(this);
     this.renderBlockButton = this.renderBlockButton.bind(this);
@@ -88,7 +95,11 @@ class MarkdownControl extends React.Component {
    * content changes
    */
   handleChange(state) {
-    this.setState({ state });
+    if (this.blockEdit) {
+      this.blockEdit = false;
+    } else {
+      this.setState({ state });
+    }
   }
 
   handleDocumentChange(document, state) {
@@ -100,7 +111,6 @@ class MarkdownControl extends React.Component {
    * Toggle marks / blocks when button is clicked
    */
   onClickMark(e, type) {
-    e.preventDefault();
     let { state } = this.state;
 
     state = state
@@ -109,6 +119,19 @@ class MarkdownControl extends React.Component {
       .apply();
 
     this.setState({ state });
+  }
+
+  handleKeyDown(evt) {
+    if (evt.shiftKey && evt.key === 'Enter') {
+      this.blockEdit = true;
+      let { state } = this.state;
+      state = state
+      .transform()
+      .insertText('  \n')
+      .apply();
+
+      this.setState({ state });
+    }
   }
 
   onClickBlock(e, type) {
@@ -167,6 +190,7 @@ class MarkdownControl extends React.Component {
         {this.renderMarkButton('bold', 'b')}
         {this.renderMarkButton('italic', 'i')}
         {this.renderMarkButton('code', 'code')}
+        {this.renderMarkButton('linebreak', 'break')}
         {this.renderBlockButton('heading1', 'h1')}
         {this.renderBlockButton('heading2', 'h2')}
         {this.renderBlockButton('block-quote', 'blockquote')}
@@ -219,6 +243,7 @@ class MarkdownControl extends React.Component {
               renderNode={this.renderNode}
               renderMark={this.renderMark}
               onChange={this.handleChange}
+              onKeyDown={this.handleKeyDown}
               onDocumentChange={this.handleDocumentChange}
           />
         </div>
