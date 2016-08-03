@@ -1,62 +1,16 @@
 import React, { PropTypes } from 'react';
 import { Editor, Plain } from 'slate';
-import Markdown from 'slate-markdown-serializer';
-import Block from './MarkdownControlElements/Block';
 import Portal from 'react-portal';
 import position from 'selection-position';
-import { Icon } from '../UI';
+import Markdown from 'slate-markdown-serializer';
+import { DEFAULT_NODE, NODES, MARKS } from './MarkdownControlElements/localRenderers';
 import styles from './MarkdownControl.css';
 
 const markdown = new Markdown();
-/*
+
+/**
  * Slate Render Configuration
  */
-
-// Define the default node type.
-const DEFAULT_NODE = 'paragraph';
-
-// Local node renderers.
-const NODES = {
-  'block-quote': (props) => <Block type='blockquote' {...props.attributes}>{props.children}</Block>,
-  'bulleted-list': props => <Block type='Unordered List'><ul {...props.attributes}>{props.children}</ul></Block>,
-  'heading1': props => <Block type='Heading1' {...props.attributes}>{props.children}</Block>,
-  'heading2': props => <Block type='Heading2' {...props.attributes}>{props.children}</Block>,
-  'heading3': props => <Block type='Heading2' {...props.attributes}>{props.children}</Block>,
-  'heading4': props => <Block type='Heading2' {...props.attributes}>{props.children}</Block>,
-  'heading5': props => <Block type='Heading2' {...props.attributes}>{props.children}</Block>,
-  'heading6': props => <Block type='Heading2' {...props.attributes}>{props.children}</Block>,
-  'list-item': props => <li {...props.attributes}>{props.children}</li>,
-  'paragraph': props => <Block type='Paragraph' {...props.attributes}>{props.children}</Block>,
-  'link': (props) => {
-    const { data } = props.node;
-    const href = data.get('href');
-    return <span><a {...props.attributes} href={href}>{props.children}</a><Icon type="link"/></span>;
-  },
-  'image': (props) => {
-    const { node, state } = props;
-    const src = node.data.get('src');
-    return (
-      <img {...props.attributes} src={src} />
-    );
-  }
-};
-
-// Local mark renderers.
-const MARKS = {
-  bold: {
-    fontWeight: 'bold'
-  },
-  italic: {
-    fontStyle: 'italic'
-  },
-  code: {
-    fontFamily: 'monospace',
-    backgroundColor: '#eee',
-    padding: '3px',
-    borderRadius: '4px'
-  }
-};
-
 class MarkdownControl extends React.Component {
   constructor(props) {
     super(props);
@@ -77,22 +31,22 @@ class MarkdownControl extends React.Component {
     this.renderBlockButton = this.renderBlockButton.bind(this);
     this.renderNode = this.renderNode.bind(this);
     this.renderMark = this.renderMark.bind(this);
-    this.onOpen = this.onOpen.bind(this);
+    this.handleOpen = this.handleOpen.bind(this);
     this.updateMenu = this.updateMenu.bind(this);
   }
 
-  /*
+  /**
    * On update, update the menu.
    */
   componentDidMount() {
     this.updateMenu();
   }
+
   componentDidUpdate() {
     this.updateMenu();
   }
 
-
-  /*
+  /**
    * Used to set toolbar buttons to active state
    */
   hasMark(type) {
@@ -104,7 +58,7 @@ class MarkdownControl extends React.Component {
     return state.blocks.some(node => node.type == type);
   }
 
-  /*
+  /**
    * Slate keeps track of selections, scroll position etc.
    * So, onChange gets dispatched on every interaction (click, arrows, everything...)
    * It also have an onDocumentChange, that get's dispached only when the actual
@@ -122,8 +76,7 @@ class MarkdownControl extends React.Component {
     this.props.onChange(markdown.serialize(state));
   }
 
-
-  /*
+  /**
    * Toggle marks / blocks when button is clicked
    */
   onClickMark(e, type) {
@@ -200,22 +153,21 @@ class MarkdownControl extends React.Component {
     this.setState({ state });
   }
 
-  /*
+  /**
    * When the portal opens, cache the menu element.
    */
-  onOpen(portal) {
+  handleOpen(portal) {
     this.setState({ menu: portal.firstChild });
   }
 
   renderMenu() {
-    const { state } = this.state
-    const isOpen = state.isExpanded && state.isFocused
+    const { state } = this.state;
+    const isOpen = state.isExpanded && state.isFocused;
     return (
-      <Portal isOpened onOpen={this.onOpen}>
+      <Portal isOpened={isOpen} onOpen={this.handleOpen}>
         <div className={`${styles.menu} ${styles.hoverMenu}`}>
           {this.renderMarkButton('bold', 'b')}
           {this.renderMarkButton('italic', 'i')}
-          {this.renderMarkButton('underlined', 'u')}
           {this.renderMarkButton('code', 'code')}
           {this.renderBlockButton('heading1', 'h1')}
           {this.renderBlockButton('heading2', 'h2')}
@@ -223,7 +175,7 @@ class MarkdownControl extends React.Component {
           {this.renderBlockButton('bulleted-list', 'ul')}
         </div>
       </Portal>
-    )
+    );
   }
 
   renderMarkButton(type, icon) {
@@ -248,7 +200,7 @@ class MarkdownControl extends React.Component {
     );
   }
 
-  /*
+  /**
    * Return renderers for Slate
    */
   renderNode(node) {
@@ -258,10 +210,9 @@ class MarkdownControl extends React.Component {
     return MARKS[mark.type];
   }
 
-  /*
+  /**
    * Update the menu's absolute position.
    */
-
   updateMenu() {
     const { menu, state } = this.state;
     if (!menu) return;
@@ -276,7 +227,6 @@ class MarkdownControl extends React.Component {
     menu.style.top = `${rect.top + window.scrollY - menu.offsetHeight}px`;
     menu.style.left = `${rect.left + window.scrollX - menu.offsetWidth / 2 + rect.width / 2}px`;
   }
-
 
   render() {
     return (
