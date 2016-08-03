@@ -75,6 +75,8 @@
     "localforage": "^1.4.2",
     "lodash": "^4.13.1",
     "pluralize": "^3.0.0",
+    "react-portal": "^2.2.1",
+    "selection-position": "^1.0.0",
     "slate": "^0.10.1",
     "slate-markdown-serializer": "^0.1.2"
   }

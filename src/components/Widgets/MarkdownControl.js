@@ -2,7 +2,10 @@ import React, { PropTypes } from 'react';
 import { Editor, Plain } from 'slate';
 import Markdown from 'slate-markdown-serializer';
 import Block from './MarkdownControlElements/Block';
+import Portal from 'react-portal';
+import position from 'selection-position';
 import { Icon } from '../UI';
+import styles from './MarkdownControl.css';
 
 const markdown = new Markdown();
 /*
@@ -69,12 +72,25 @@ class MarkdownControl extends React.Component {
     this.onClickMark = this.onClickMark.bind(this);
     this.onClickBlock = this.onClickBlock.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
-    this.renderToolbar = this.renderToolbar.bind(this);
+    this.renderMenu = this.renderMenu.bind(this);
     this.renderMarkButton = this.renderMarkButton.bind(this);
     this.renderBlockButton = this.renderBlockButton.bind(this);
     this.renderNode = this.renderNode.bind(this);
     this.renderMark = this.renderMark.bind(this);
+    this.onOpen = this.onOpen.bind(this);
+    this.updateMenu = this.updateMenu.bind(this);
   }
+
+  /*
+   * On update, update the menu.
+   */
+  componentDidMount() {
+    this.updateMenu();
+  }
+  componentDidUpdate() {
+    this.updateMenu();
+  }
+
 
   /*
    * Used to set toolbar buttons to active state
@@ -184,20 +200,30 @@ class MarkdownControl extends React.Component {
     this.setState({ state });
   }
 
-  renderToolbar() {
-    return (
-      <div className="menu toolbar-menu">
-        {this.renderMarkButton('bold', 'b')}
-        {this.renderMarkButton('italic', 'i')}
-        {this.renderMarkButton('code', 'code')}
-        {this.renderMarkButton('linebreak', 'break')}
-        {this.renderBlockButton('heading1', 'h1')}
-        {this.renderBlockButton('heading2', 'h2')}
-        {this.renderBlockButton('block-quote', 'blockquote')}
-        {this.renderBlockButton('bulleted-list', 'ul')}
+  /*
+   * When the portal opens, cache the menu element.
+   */
+  onOpen(portal) {
+    this.setState({ menu: portal.firstChild });
+  }
 
-      </div>
-    );
+  renderMenu() {
+    const { state } = this.state
+    const isOpen = state.isExpanded && state.isFocused
+    return (
+      <Portal isOpened onOpen={this.onOpen}>
+        <div className={`${styles.menu} ${styles.hoverMenu}`}>
+          {this.renderMarkButton('bold', 'b')}
+          {this.renderMarkButton('italic', 'i')}
+          {this.renderMarkButton('underlined', 'u')}
+          {this.renderMarkButton('code', 'code')}
+          {this.renderBlockButton('heading1', 'h1')}
+          {this.renderBlockButton('heading2', 'h2')}
+          {this.renderBlockButton('block-quote', 'blockquote')}
+          {this.renderBlockButton('bulleted-list', 'ul')}
+        </div>
+      </Portal>
+    )
   }
 
   renderMarkButton(type, icon) {
@@ -205,9 +231,9 @@ class MarkdownControl extends React.Component {
     const onMouseDown = e => this.onClickMark(e, type);
 
     return (
-      <button onMouseDown={onMouseDown} data-active={isActive}>
+      <span className={styles.button} onMouseDown={onMouseDown} data-active={isActive}>
         {icon}
-      </button>
+      </span>
     );
   }
 
@@ -216,9 +242,9 @@ class MarkdownControl extends React.Component {
     const onMouseDown = e => this.onClickBlock(e, type);
 
     return (
-      <button onMouseDown={onMouseDown} data-active={isActive}>
-        {icon}
-      </button>
+      <span className={styles.button} onMouseDown={onMouseDown} data-active={isActive}>
+        <span>{icon}</span>
+      </span>
     );
   }
 
@@ -232,21 +258,39 @@ class MarkdownControl extends React.Component {
     return MARKS[mark.type];
   }
 
+  /*
+   * Update the menu's absolute position.
+   */
+
+  updateMenu() {
+    const { menu, state } = this.state;
+    if (!menu) return;
+
+    if (state.isBlurred || state.isCollapsed) {
+      menu.removeAttribute('style');
+      return;
+    }
+
+    const rect = position();
+    menu.style.opacity = 1;
+    menu.style.top = `${rect.top + window.scrollY - menu.offsetHeight}px`;
+    menu.style.left = `${rect.left + window.scrollX - menu.offsetWidth / 2 + rect.width / 2}px`;
+  }
+
+
   render() {
     return (
       <div>
-        {this.renderToolbar()}
-        <div className="editor">
-          <Editor
-              placeholder={'Enter some rich text...'}
-              state={this.state.state}
-              renderNode={this.renderNode}
-              renderMark={this.renderMark}
-              onChange={this.handleChange}
-              onKeyDown={this.handleKeyDown}
-              onDocumentChange={this.handleDocumentChange}
-          />
-        </div>
+        {this.renderMenu()}
+        <Editor
+            placeholder={'Enter some rich text...'}
+            state={this.state.state}
+            renderNode={this.renderNode}
+            renderMark={this.renderMark}
+            onChange={this.handleChange}
+            onKeyDown={this.handleKeyDown}
+            onDocumentChange={this.handleDocumentChange}
+        />
       </div>
     );
   }
