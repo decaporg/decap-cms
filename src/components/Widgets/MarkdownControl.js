@@ -4,6 +4,7 @@ import Portal from 'react-portal';
 import position from 'selection-position';
 import Markdown from 'slate-markdown-serializer';
 import { DEFAULT_NODE, NODES, MARKS } from './MarkdownControlElements/localRenderers';
+import { Icon } from '../UI';
 import styles from './MarkdownControl.css';
 
 const markdown = new Markdown();
@@ -166,13 +167,13 @@ class MarkdownControl extends React.Component {
     return (
       <Portal isOpened={isOpen} onOpen={this.handleOpen}>
         <div className={`${styles.menu} ${styles.hoverMenu}`}>
-          {this.renderMarkButton('bold', 'b')}
-          {this.renderMarkButton('italic', 'i')}
+          {this.renderMarkButton('bold', 'bold')}
+          {this.renderMarkButton('italic', 'italic')}
           {this.renderMarkButton('code', 'code')}
           {this.renderBlockButton('heading1', 'h1')}
           {this.renderBlockButton('heading2', 'h2')}
-          {this.renderBlockButton('block-quote', 'blockquote')}
-          {this.renderBlockButton('bulleted-list', 'ul')}
+          {this.renderBlockButton('block-quote', 'quote-left')}
+          {this.renderBlockButton('bulleted-list', 'list-bullet')}
         </div>
       </Portal>
     );
@@ -184,7 +185,7 @@ class MarkdownControl extends React.Component {
 
     return (
       <span className={styles.button} onMouseDown={onMouseDown} data-active={isActive}>
-        {icon}
+        <Icon type={icon}/>
       </span>
     );
   }
@@ -195,7 +196,7 @@ class MarkdownControl extends React.Component {
 
     return (
       <span className={styles.button} onMouseDown={onMouseDown} data-active={isActive}>
-        <span>{icon}</span>
+        <Icon type={icon}/>
       </span>
     );
   }
