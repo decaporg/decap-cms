@@ -2,6 +2,11 @@ import React from 'react';
 import styles from './Icon.css';
 
 const availableIcons = [
+  // Font Awesome Editor Icons
+  'bold', 'italic', 'list', 'font', 'text-height', 'text-width', 'align-left', 'align-center', 'align-right',
+  'align-justify', 'indent-left', 'indent-right', 'list-bullet', 'list-numbered', 'strike', 'underline', 'table',
+  'superscript', 'subscript', 'header', 'h1', 'h2', 'paragraph', 'link', 'unlink', 'quote-left', 'quote-right', 'code',
+  // Entypo
   'note', 'note-beamed',
   'music',
   'search',
@@ -23,7 +28,7 @@ const availableIcons = [
   'info', 'info-circled',
   'back',
   'home',
-  'link',
+  'link-alt',
   'attach',
   'lock', 'lock-open',
   'eye',
@@ -33,7 +38,7 @@ const availableIcons = [
   'thumbs-up', 'thumbs-down',
   'download', 'upload', 'upload-cloud',
   'reply', 'reply-all', 'forward', 'quote',
-  'code',
+  'code-alt',
   'export',
   'pencil',
   'feather',
