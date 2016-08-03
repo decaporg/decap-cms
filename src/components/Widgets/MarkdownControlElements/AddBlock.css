@@ -1,0 +1,10 @@
+.root {
+  position: absolute;
+  color: #ddd;
+  transition: color 0.5s ease;
+  cursor: pointer;
+}
+
+.root:hover {
+  color: #aaa;
+}

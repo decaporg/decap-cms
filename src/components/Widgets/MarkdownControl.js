@@ -4,6 +4,7 @@ import Portal from 'react-portal';
 import position from 'selection-position';
 import Markdown from 'slate-markdown-serializer';
 import { DEFAULT_NODE, NODES, MARKS } from './MarkdownControlElements/localRenderers';
+import AddBlock from './MarkdownControlElements/AddBlock';
 import { Icon } from '../UI';
 import styles from './MarkdownControl.css';
 
@@ -17,17 +18,22 @@ class MarkdownControl extends React.Component {
     super(props);
     this.blockEdit = false;
     this.state = {
-      state: props.value ? markdown.deserialize(props.value) : Plain.deserialize('')
+      state: props.value ? markdown.deserialize(props.value) : Plain.deserialize(''),
+      addBlockButton:{
+        show: false
+      }
     };
 
     this.hasMark = this.hasMark.bind(this);
     this.hasBlock = this.hasBlock.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleDocumentChange = this.handleDocumentChange.bind(this);
+    this.maybeShowBlockAddButton = this.maybeShowBlockAddButton.bind(this);
     this.onClickMark = this.onClickMark.bind(this);
     this.onClickBlock = this.onClickBlock.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.renderMenu = this.renderMenu.bind(this);
+    this.renderAddBlock = this.renderAddBlock.bind(this);
     this.renderMarkButton = this.renderMarkButton.bind(this);
     this.renderBlockButton = this.renderBlockButton.bind(this);
     this.renderNode = this.renderNode.bind(this);
@@ -69,12 +75,29 @@ class MarkdownControl extends React.Component {
     if (this.blockEdit) {
       this.blockEdit = false;
     } else {
-      this.setState({ state });
+
+      this.setState({ state }, this.maybeShowBlockAddButton);
     }
   }
 
   handleDocumentChange(document, state) {
     this.props.onChange(markdown.serialize(state));
+  }
+
+  maybeShowBlockAddButton() {
+    if (this.state.state.blocks.get(0).isEmpty) {
+      const rect = document.querySelectorAll(`[data-key='${this.state.state.selection.focusKey}']`)[0].getBoundingClientRect();
+      this.setState({ addBlockButton: {
+        show: true,
+        top: rect.top + window.scrollY + 2,
+        left: rect.left + window.scrollX - 28
+      } });
+
+    } else {
+      this.setState({ addBlockButton: {
+        show: false
+      } });
+    }
   }
 
   /**
@@ -179,6 +202,12 @@ class MarkdownControl extends React.Component {
     );
   }
 
+  renderAddBlock() {
+    return (
+      this.state.addBlockButton.show ? <AddBlock top={this.state.addBlockButton.top} left={this.state.addBlockButton.left} /> : null
+    );
+  }
+
   renderMarkButton(type, icon) {
     const isActive = this.hasMark(type);
     const onMouseDown = e => this.onClickMark(e, type);
@@ -233,6 +262,7 @@ class MarkdownControl extends React.Component {
     return (
       <div>
         {this.renderMenu()}
+        {this.renderAddBlock()}
         <Editor
             placeholder={'Enter some rich text...'}
             state={this.state.state}
