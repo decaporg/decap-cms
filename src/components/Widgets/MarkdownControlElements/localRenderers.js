@@ -10,7 +10,7 @@ export const DEFAULT_NODE = 'paragraph';
 // Local node renderers.
 export const NODES = {
   'block-quote': (props) => <Block type='blockquote' {...props.attributes}>{props.children}</Block>,
-  'bulleted-list': props => <Block type='Unordered List'><ul {...props.attributes}>{props.children}</ul></Block>,
+  'bulleted-list': props => <Block type='List'><ul {...props.attributes}>{props.children}</ul></Block>,
   'heading1': props => <Block type='Heading1' {...props.attributes}>{props.children}</Block>,
   'heading2': props => <Block type='Heading2' {...props.attributes}>{props.children}</Block>,
   'heading3': props => <Block type='Heading2' {...props.attributes}>{props.children}</Block>,

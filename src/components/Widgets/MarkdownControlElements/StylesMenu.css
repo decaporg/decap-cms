@@ -1,0 +1,39 @@
+
+.button {
+  color: #ccc;
+  cursor: pointer;
+}
+
+.button[data-active="true"] {
+  color: black;
+}
+
+
+.menu > * {
+  display: inline-block;
+}
+
+.menu > * + * {
+  margin-left: 10px;
+}
+
+.hoverMenu {
+  padding: 8px 7px 6px;
+  position: absolute;
+  z-index: 1;
+  top: -10000px;
+  left: -10000px;
+  margin-top: -6px;
+  opacity: 0;
+  background-color: #222;
+  border-radius: 4px;
+  transition: opacity .75s;
+}
+
+.hoverMenu .button {
+  color: #aaa;
+}
+
+.hoverMenu .button[data-active="true"] {
+  color: #fff;
+}

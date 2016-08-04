@@ -9,7 +9,7 @@ const AVAILABLE_TYPES = [
   'Heading4',
   'Heading5',
   'Heading6',
-  'ul',
+  'List',
   'blockquote'
 ];
 
