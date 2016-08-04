@@ -51,7 +51,6 @@ export default class StylesMenu extends Component {
     return marks.some(mark => mark.type == type);
   }
   hasBlock(type) {
-    console.log(type);
     const { blocks } = this.props;
     return blocks.some(node => node.type == type);
   }
@@ -78,8 +77,10 @@ export default class StylesMenu extends Component {
     this.props.onClickBlock(type, isActive, isList);
   }
 
-  renderBlockButton(type, icon) {
-    const isActive = this.hasBlock(type);
+  renderBlockButton(type, icon, checkType) {
+    checkType = checkType || type;
+    console.log(checkType)
+    const isActive = this.hasBlock(checkType);
     const onMouseDown = e => this.handleBlockClick(e, type);
     return (
       <span className={styles.button} onMouseDown={onMouseDown} data-active={isActive}>
@@ -106,7 +107,7 @@ export default class StylesMenu extends Component {
           {this.renderBlockButton('heading1', 'h1')}
           {this.renderBlockButton('heading2', 'h2')}
           {this.renderBlockButton('block-quote', 'quote-left')}
-          {this.renderBlockButton('bulleted-list', 'list-bullet')}
+          {this.renderBlockButton('bulleted-list', 'list-bullet', 'list-item')}
         </div>
       </Portal>
     );
