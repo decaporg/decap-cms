@@ -1,0 +1,14 @@
+.divider {
+
+}
+
+.divider:before {
+    font-family: Georgia,Cambria,"Times New Roman",Times,serif;
+    font-size: 28px;
+    letter-spacing: .6em;
+    content: '...';
+    color: rgba(0,0,0,.6);
+    position: relative;
+    top: -12px;
+    margin-left: calc(50% - 60px);
+}

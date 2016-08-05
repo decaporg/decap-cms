@@ -39,6 +39,8 @@ storiesOf('Icon', module)
       <Icon type="quote-left"/>
       <Icon type="quote-right"/>
       <Icon type="code"/>
+      <Icon type="picture"/>
+      <Icon type="video"/>
       <Icon type="note"/>
       <Icon type="note-beamed"/>
       <Icon type="music"/>

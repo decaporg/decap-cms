@@ -79,7 +79,6 @@ export default class StylesMenu extends Component {
 
   renderBlockButton(type, icon, checkType) {
     checkType = checkType || type;
-    console.log(checkType)
     const isActive = this.hasBlock(checkType);
     const onMouseDown = e => this.handleBlockClick(e, type);
     return (

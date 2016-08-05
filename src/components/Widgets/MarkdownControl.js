@@ -4,7 +4,7 @@ import position from 'selection-position';
 import Markdown from 'slate-markdown-serializer';
 import { DEFAULT_NODE, NODES, MARKS } from './MarkdownControlElements/localRenderers';
 import StylesMenu from './MarkdownControlElements/StylesMenu';
-import AddBlock from './MarkdownControlElements/AddBlock';
+import BlockTypesMenu from './MarkdownControlElements/BlockTypesMenu';
 
 const markdown = new Markdown();
 
@@ -15,27 +15,33 @@ class MarkdownControl extends React.Component {
   constructor(props) {
     super(props);
     this.blockEdit = false;
-    this.stylesMenuPosition = {
-      top: 0,
-      left: 0,
-      width: 0,
-      height: 0
+    this.menuPositions = {
+      stylesMenu: {
+        top: 0,
+        left: 0,
+        width: 0,
+        height: 0
+      },
+      blockTypesMenu: {
+        top: 0,
+        left: 0,
+        width: 0,
+        height: 0
+      }
     };
 
     this.state = {
-      state: props.value ? markdown.deserialize(props.value) : Plain.deserialize(''),
-      addBlockButton:{
-        show: false
-      }
+      state: props.value ? markdown.deserialize(props.value) : Plain.deserialize('')
     };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleDocumentChange = this.handleDocumentChange.bind(this);
-    this.maybeShowBlockAddButton = this.maybeShowBlockAddButton.bind(this);
     this.handleMarkStyleClick = this.handleMarkStyleClick.bind(this);
     this.handleBlockStyleClick = this.handleBlockStyleClick.bind(this);
+    this.handleBlockTypeClick = this.handleBlockTypeClick.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
-    this.renderAddBlock = this.renderAddBlock.bind(this);
+    this.calculateMenuPositions = this.calculateMenuPositions.bind(this);
+    this.renderBlockTypesMenu = this.renderBlockTypesMenu.bind(this);
     this.renderNode = this.renderNode.bind(this);
     this.renderMark = this.renderMark.bind(this);
   }
@@ -52,7 +58,7 @@ class MarkdownControl extends React.Component {
       this.blockEdit = false;
     } else {
 
-      this.setState({ state }, this.maybeShowBlockAddButton);
+      this.setState({ state }, this.calculateMenuPositions);
     }
   }
 
@@ -60,19 +66,27 @@ class MarkdownControl extends React.Component {
     this.props.onChange(markdown.serialize(state));
   }
 
-  maybeShowBlockAddButton() {
-    if (this.state.state.blocks.get(0).isEmpty) {
-      const rect = document.querySelectorAll(`[data-key='${this.state.state.selection.focusKey}']`)[0].getBoundingClientRect();
-      this.setState({ addBlockButton: {
-        show: true,
-        top: rect.top + window.scrollY + 2,
-        left: rect.left + window.scrollX - 28
-      } });
+  /**
+   * All menu positions are calculated accessing dom elements
+   * That's why calculateMenuPositions is called on handleChange's setState callback
+   */
+  calculateMenuPositions() {
+    const rect1 = position();
+    this.menuPositions.stylesMenu = {
+      top: rect1.top + window.scrollY,
+      left: rect1.left + window.scrollX,
+      width: rect1.width,
+      height: rect1.height
+    };
 
-    } else {
-      this.setState({ addBlockButton: {
-        show: false
-      } });
+    const blockElement = document.querySelectorAll(`[data-key='${this.state.state.selection.focusKey}']`);
+    if (blockElement.length > 0) {
+      const rect2 = blockElement[0].getBoundingClientRect();
+      this.menuPositions.blockTypesMenu = {
+        top: rect2.top + window.scrollY,
+        left: rect2.left + window.scrollX
+      };
+      this.forceUpdate();
     }
   }
 
@@ -136,6 +150,18 @@ class MarkdownControl extends React.Component {
     this.setState({ state });
   }
 
+  handleBlockTypeClick(type) {
+    let { state } = this.state;
+
+    state = state
+      .transform()
+      .setBlock(type)
+      .splitBlock()
+      .setBlock(DEFAULT_NODE)
+      .apply();
+    this.setState({ state }, this.calculateMenuPositions);
+  }
+
   handleKeyDown(evt) {
     if (evt.shiftKey && evt.key === 'Enter') {
       this.blockEdit = true;
@@ -149,12 +175,6 @@ class MarkdownControl extends React.Component {
     }
   }
 
-  renderAddBlock() {
-    return (
-      this.state.addBlockButton.show ? <AddBlock top={this.state.addBlockButton.top} left={this.state.addBlockButton.left} /> : null
-    );
-  }
-
   /**
    * Return renderers for Slate
    */
@@ -165,28 +185,27 @@ class MarkdownControl extends React.Component {
     return MARKS[mark.type];
   }
 
-  /**
-   * Update the menu's absolute position.
-   */
+  renderBlockTypesMenu() {
+    const currentBlock = this.state.state.blocks.get(0);
+    const isOpen = (currentBlock.isEmpty && currentBlock.type !== 'list-item' && currentBlock.type !== 'horizontal-rule');
+
+    return (
+      <BlockTypesMenu
+          isOpen={isOpen}
+          position={this.menuPositions.blockTypesMenu}
+          onClickBlock={this.handleBlockTypeClick}
+      />
+    );
+  }
+
   renderStylesMenu() {
     const { state } = this.state;
-    const rect = position();
-
     const isOpen = !(state.isBlurred || state.isCollapsed);
-
-    if (isOpen) {
-      this.stylesMenuPosition = {
-        top: rect.top + window.scrollY,
-        left: rect.left + window.scrollX,
-        width: rect.width,
-        height: rect.height
-      };
-    }
 
     return (
       <StylesMenu
           isOpen={isOpen}
-          position={this.stylesMenuPosition}
+          position={this.menuPositions.stylesMenu}
           marks={this.state.state.marks}
           blocks={this.state.state.blocks}
           onClickMark={this.handleMarkStyleClick}
@@ -199,7 +218,7 @@ class MarkdownControl extends React.Component {
     return (
       <div>
         {this.renderStylesMenu()}
-        {this.renderAddBlock()}
+        {this.renderBlockTypesMenu()}
         <Editor
             placeholder={'Enter some rich text...'}
             state={this.state.state}
