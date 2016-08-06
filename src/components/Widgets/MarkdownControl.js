@@ -38,6 +38,7 @@ class MarkdownControl extends React.Component {
     this.handleDocumentChange = this.handleDocumentChange.bind(this);
     this.handleMarkStyleClick = this.handleMarkStyleClick.bind(this);
     this.handleBlockStyleClick = this.handleBlockStyleClick.bind(this);
+    this.handleInlineClick = this.handleInlineClick.bind(this);
     this.handleBlockTypeClick = this.handleBlockTypeClick.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.calculateMenuPositions = this.calculateMenuPositions.bind(this);
@@ -150,6 +151,42 @@ class MarkdownControl extends React.Component {
     this.setState({ state });
   }
 
+  /**
+ * When clicking a link, if the selection has a link in it, remove the link.
+ * Otherwise, add a new link with an href and text.
+ *
+ * @param {Event} e
+ */
+
+  handleInlineClick(type, isActive) {
+    let { state } = this.state;
+
+    if (type === 'link') {
+      if (!state.isExpanded) return;
+
+      if (isActive) {
+        state = state
+          .transform()
+          .unwrapInline('link')
+          .apply();
+      }
+
+      else {
+        const href = window.prompt('Enter the URL of the link:', 'http://www.');
+        state = state
+          .transform()
+          .wrapInline({
+            type: 'link',
+            data: { href }
+          })
+          .collapseToEnd()
+          .apply();
+      }
+    }
+    this.setState({ state });
+  }
+
+
   handleBlockTypeClick(type) {
     let { state } = this.state;
 
@@ -208,7 +245,9 @@ class MarkdownControl extends React.Component {
           position={this.menuPositions.stylesMenu}
           marks={this.state.state.marks}
           blocks={this.state.state.blocks}
+          inlines={this.state.state.inlines}
           onClickMark={this.handleMarkStyleClick}
+          onClickInline={this.handleInlineClick}
           onClickBlock={this.handleBlockStyleClick}
       />
     );

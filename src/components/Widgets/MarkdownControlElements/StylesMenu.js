@@ -16,8 +16,10 @@ export default class StylesMenu extends Component {
     this.hasBlock = this.hasBlock.bind(this);
     this.renderMarkButton = this.renderMarkButton.bind(this);
     this.renderBlockButton = this.renderBlockButton.bind(this);
+    this.renderLinkButton = this.renderLinkButton.bind(this);
     this.updateMenuPosition = this.updateMenuPosition.bind(this);
     this.handleMarkClick = this.handleMarkClick.bind(this);
+    this.handleInlineClick = this.handleInlineClick.bind(this);
     this.handleBlockClick = this.handleBlockClick.bind(this);
     this.handleOpen = this.handleOpen.bind(this);
   }
@@ -54,6 +56,10 @@ export default class StylesMenu extends Component {
     const { blocks } = this.props;
     return blocks.some(node => node.type == type);
   }
+  hasLinks(type) {
+    const { inlines } = this.props;
+    return inlines.some(inline => inline.type == 'link');
+  }
 
   handleMarkClick(e, type) {
     e.preventDefault();
@@ -66,6 +72,21 @@ export default class StylesMenu extends Component {
     return (
       <span className={styles.button} onMouseDown={onMouseDown} data-active={isActive}>
         <Icon type={icon}/>
+      </span>
+    );
+  }
+
+  handleInlineClick(e, type, isActive) {
+    e.preventDefault();
+    this.props.onClickInline(type, isActive);
+  }
+
+  renderLinkButton() {
+    const isActive = this.hasLinks();
+    const onMouseDown = e => this.handleInlineClick(e, 'link', isActive);
+    return (
+      <span className={styles.button} onMouseDown={onMouseDown} data-active={isActive}>
+        <Icon type="link"/>
       </span>
     );
   }
@@ -103,6 +124,7 @@ export default class StylesMenu extends Component {
           {this.renderMarkButton('bold', 'bold')}
           {this.renderMarkButton('italic', 'italic')}
           {this.renderMarkButton('code', 'code')}
+          {this.renderLinkButton()}
           {this.renderBlockButton('heading1', 'h1')}
           {this.renderBlockButton('heading2', 'h2')}
           {this.renderBlockButton('block-quote', 'quote-left')}
@@ -122,6 +144,8 @@ StylesMenu.propTypes = {
   }),
   marks: PropTypes.object.isRequired,
   blocks: PropTypes.object.isRequired,
+  inlines: PropTypes.object.isRequired,
   onClickBlock: PropTypes.func.isRequired,
-  onClickMark: PropTypes.func.isRequired
+  onClickMark: PropTypes.func.isRequired,
+  onClickInline: PropTypes.func.isRequired
 };

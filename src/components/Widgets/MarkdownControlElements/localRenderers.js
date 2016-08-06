@@ -1,7 +1,6 @@
 import React from 'react';
 import Block from './Block';
 import BlockStatic from './BlockStatic';
-import { Icon } from '../../UI';
 
 /* eslint react/prop-types: 0, react/no-multi-comp: 0 */
 
@@ -24,7 +23,7 @@ export const NODES = {
   'link': (props) => {
     const { data } = props.node;
     const href = data.get('href');
-    return <span><a {...props.attributes} href={href}>{props.children}</a><Icon type="link"/></span>;
+    return <a {...props.attributes} href={href}>{props.children}</a>;
   },
   'image': (props) => {
     const { node } = props;
