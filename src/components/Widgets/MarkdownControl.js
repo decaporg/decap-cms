@@ -47,7 +47,6 @@ class MarkdownControl extends React.Component {
     this.renderMark = this.renderMark.bind(this);
   }
 
-
   /**
    * Slate keeps track of selections, scroll position etc.
    * So, onChange gets dispatched on every interaction (click, arrows, everything...)
@@ -58,7 +57,6 @@ class MarkdownControl extends React.Component {
     if (this.blockEdit) {
       this.blockEdit = false;
     } else {
-
       this.setState({ state }, this.calculateMenuPositions);
     }
   }
@@ -89,6 +87,7 @@ class MarkdownControl extends React.Component {
       };
       this.forceUpdate();
     }
+
   }
 
   /**
@@ -191,12 +190,24 @@ class MarkdownControl extends React.Component {
     let { state } = this.state;
 
     state = state
-      .transform()
-      .setBlock(type)
-      .splitBlock()
-      .setBlock(DEFAULT_NODE)
-      .apply();
-    this.setState({ state }, this.calculateMenuPositions);
+    .transform()
+    .insertBlock(type)
+    .apply();
+
+    this.setState({ state }, () => {
+      const blocks = this.state.state.document.getBlocks();
+      const last = blocks.last();
+      const normalized = state
+        .transform()
+        .focus()
+        .collapseToEndOf(last)
+        .splitBlock()
+        .setBlock(DEFAULT_NODE)
+        .apply({
+          snapshot: false
+        });
+      this.setState({ state:normalized });
+    });
   }
 
   handleKeyDown(evt) {
