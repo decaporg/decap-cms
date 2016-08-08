@@ -1,6 +1,6 @@
 import React from 'react';
 import Block from './Block';
-import styles from './localRenderers.css'
+import styles from '../MarkdownControl.css';
 
 /* eslint react/prop-types: 0, react/no-multi-comp: 0 */
 

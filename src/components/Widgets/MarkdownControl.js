@@ -6,8 +6,7 @@ import Markdown from 'slate-markdown-serializer';
 import { DEFAULT_NODE, NODES, MARKS } from './MarkdownControlElements/localRenderers';
 import StylesMenu from './MarkdownControlElements/StylesMenu';
 import BlockTypesMenu from './MarkdownControlElements/BlockTypesMenu';
-
-const markdown = new Markdown();
+import styles from './MarkdownControl.css';
 
 /**
  * Slate Render Configuration
@@ -15,6 +14,13 @@ const markdown = new Markdown();
 class MarkdownControl extends React.Component {
   constructor(props) {
     super(props);
+
+    this.customMarkdownSerialize = this.customMarkdownSerialize.bind(this);
+    this.markdown = new Markdown({ rules: [{ serialize: this.customMarkdownSerialize }] });
+
+    this.customImageNodeRenderer = this.customImageNodeRenderer.bind(this);
+    NODES['image'] = this.customImageNodeRenderer;
+
     this.blockEdit = false;
     this.menuPositions = {
       stylesMenu: {
@@ -32,7 +38,7 @@ class MarkdownControl extends React.Component {
     };
 
     this.state = {
-      state: props.value ? markdown.deserialize(props.value) : Plain.deserialize('')
+      state: props.value ? this.markdown.deserialize(props.value) : Plain.deserialize('')
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -41,12 +47,36 @@ class MarkdownControl extends React.Component {
     this.handleBlockStyleClick = this.handleBlockStyleClick.bind(this);
     this.handleInlineClick = this.handleInlineClick.bind(this);
     this.handleBlockTypeClick = this.handleBlockTypeClick.bind(this);
+    this.handleImageClick = this.handleImageClick.bind(this);
+    this.focusAndAddParagraph = this.focusAndAddParagraph.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.calculateHoverMenuPosition = _.throttle(this.calculateHoverMenuPosition.bind(this), 100);
     this.calculateBlockMenuPosition = _.throttle(this.calculateBlockMenuPosition.bind(this), 100);
     this.renderBlockTypesMenu = this.renderBlockTypesMenu.bind(this);
     this.renderNode = this.renderNode.bind(this);
     this.renderMark = this.renderMark.bind(this);
+  }
+
+
+  /**
+   * The two custom methods customMarkdownSerialize and customImageNodeRenderer make sure that
+   * both Markdown serializer and Node renderers have access to getMedia with the latest state.
+   */
+  customMarkdownSerialize(obj, children) {
+    if (obj.kind === 'block' && obj.type === 'image') {
+      const src = this.props.getMedia(obj.getIn(['data', 'src']));
+      const alt = obj.getIn(['data', 'alt']) || '';
+      return `![${alt}](${src})`;
+    }
+  }
+  customImageNodeRenderer(editorProps) {
+    const { node, state } = editorProps;
+    const isFocused = state.selection.hasEdgeIn(node);
+    const className = isFocused ? styles.active : null;
+    const src = node.data.get('src');
+    return (
+      <img {...editorProps.attributes} src={this.props.getMedia(src)} className={className} />
+    );
   }
 
   /**
@@ -65,7 +95,7 @@ class MarkdownControl extends React.Component {
   }
 
   handleDocumentChange(document, state) {
-    this.props.onChange(markdown.serialize(state));
+    this.props.onChange(this.markdown.serialize(state));
   }
 
   calculateHoverMenuPosition() {
@@ -201,21 +231,40 @@ class MarkdownControl extends React.Component {
     })
     .apply();
 
-    this.setState({ state }, () => {
-      const blocks = this.state.state.document.getBlocks();
-      const last = blocks.last();
-      const normalized = state
-        .transform()
-        .focus()
-        .collapseToEndOf(last)
-        .splitBlock()
-        .setBlock(DEFAULT_NODE)
-        .apply({
-          snapshot: false
-        });
-      this.setState({ state:normalized });
-    });
+    this.setState({ state }, this.focusAndAddParagraph);
   }
+
+  handleImageClick(mediaProxy) {
+    let { state } = this.state;
+    this.props.onAddMedia(mediaProxy);
+    state = state
+    .transform()
+    .insertBlock({
+      type: 'image',
+      isVoid: true,
+      data: { src: mediaProxy.path }
+    })
+    .apply();
+
+    this.setState({ state }, this.focusAndAddParagraph);
+  }
+
+  focusAndAddParagraph() {
+    const { state } = this.state;
+    const blocks = state.document.getBlocks();
+    const last = blocks.last();
+    const normalized = state
+      .transform()
+      .focus()
+      .collapseToEndOf(last)
+      .splitBlock()
+      .setBlock(DEFAULT_NODE)
+      .apply({
+        snapshot: false
+      });
+    this.setState({ state:normalized });
+  }
+
 
   handleKeyDown(evt) {
     if (evt.shiftKey && evt.key === 'Enter') {
@@ -249,6 +298,7 @@ class MarkdownControl extends React.Component {
           isOpen={isOpen}
           position={this.menuPositions.blockTypesMenu}
           onClickBlock={this.handleBlockTypeClick}
+          onClickImage={this.handleImageClick}
       />
     );
   }
@@ -294,5 +344,7 @@ export default MarkdownControl;
 
 MarkdownControl.propTypes = {
   onChange: PropTypes.func.isRequired,
+  onAddMedia: PropTypes.func.isRequired,
+  getMedia: PropTypes.func.isRequired,
   value: PropTypes.node,
 };

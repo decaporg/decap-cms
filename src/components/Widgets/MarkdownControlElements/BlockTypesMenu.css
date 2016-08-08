@@ -26,3 +26,7 @@
   cursor: pointer;
   color: #555;
 }
+
+.input {
+  display: none;
+}

@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import Portal from 'react-portal';
 import { Icon } from '../../UI';
+import MediaProxy from '../../../valueObjects/MediaProxy';
 import styles from './BlockTypesMenu.css';
 
 export default class BlockTypesMenu extends Component {
@@ -16,6 +17,8 @@ export default class BlockTypesMenu extends Component {
     this.toggleMenu = this.toggleMenu.bind(this);
     this.handleOpen = this.handleOpen.bind(this);
     this.handleBlockTypeClick = this.handleBlockTypeClick.bind(this);
+    this.handleFileUploadClick = this.handleFileUploadClick.bind(this);
+    this.handleFileUploadChange = this.handleFileUploadChange.bind(this);
     this.renderBlockTypeButton = this.renderBlockTypeButton.bind(this);
   }
 
@@ -52,8 +55,35 @@ export default class BlockTypesMenu extends Component {
   }
 
   handleBlockTypeClick(e, type) {
-    this.props.onClickBlock(type, false, false);
+    this.props.onClickBlock(type);
   }
+
+  handleFileUploadClick() {
+    this._fileInput.click();
+  }
+
+  handleFileUploadChange(e) {
+    e.stopPropagation();
+    e.preventDefault();
+
+    const fileList = e.dataTransfer ? e.dataTransfer.files : e.target.files;
+    const files = [...fileList];
+    const imageType = /^image\//;
+
+    // Iterate through the list of files and return the first image on the list
+    const file = files.find((currentFile) => {
+      if (imageType.test(currentFile.type)) {
+        return currentFile;
+      }
+    });
+
+    if (file) {
+      const mediaProxy = new MediaProxy(file.name, file);
+      this.props.onClickImage(mediaProxy);
+    }
+
+  }
+
 
   renderBlockTypeButton(type, icon) {
     const onClick = e => this.handleBlockTypeClick(e, type);
@@ -67,6 +97,14 @@ export default class BlockTypesMenu extends Component {
       return (
         <div className={styles.menu}>
           {this.renderBlockTypeButton('horizontal-rule', 'dot-3')}
+          <Icon type="picture" onClick={this.handleFileUploadClick} className={styles.icon} />
+          <input
+              type="file"
+              accept="image/*"
+              onChange={this.handleFileUploadChange}
+              className={styles.input}
+              ref={(el) => this._fileInput = el}
+          />
         </div>
       );
     } else {
@@ -100,5 +138,6 @@ BlockTypesMenu.propTypes = {
     top: PropTypes.number.isRequired,
     left: PropTypes.number.isRequired
   }),
-  onClickBlock: PropTypes.func.isRequired
+  onClickBlock: PropTypes.func.isRequired,
+  onClickImage: PropTypes.func.isRequired
 };
