@@ -1,6 +1,6 @@
 import React from 'react';
 import Block from './Block';
-import BlockStatic from './BlockStatic';
+import styles from './localRenderers.css'
 
 /* eslint react/prop-types: 0, react/no-multi-comp: 0 */
 
@@ -19,7 +19,14 @@ export const NODES = {
   'heading6': props => <Block type='Heading2' {...props.attributes}>{props.children}</Block>,
   'list-item': props => <li {...props.attributes}>{props.children}</li>,
   'paragraph': props => <Block type='Paragraph' {...props.attributes}>{props.children}</Block>,
-  'horizontal-rule': props => <BlockStatic type='divider' {...props.attributes}>{props.children}</BlockStatic>,
+  'horizontal-rule': props => {
+    const { node, state } = props;
+    const isFocused = state.selection.hasEdgeIn(node);
+    const className = isFocused ? styles.active : null;
+    return (
+      <hr className={className} {...props.attributes} />
+    );
+  },
   'link': (props) => {
     const { data } = props.node;
     const href = data.get('href');

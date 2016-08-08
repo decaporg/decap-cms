@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import _ from 'lodash';
 import { Editor, Plain } from 'slate';
 import position from 'selection-position';
 import Markdown from 'slate-markdown-serializer';
@@ -41,7 +42,8 @@ class MarkdownControl extends React.Component {
     this.handleInlineClick = this.handleInlineClick.bind(this);
     this.handleBlockTypeClick = this.handleBlockTypeClick.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
-    this.calculateMenuPositions = this.calculateMenuPositions.bind(this);
+    this.calculateHoverMenuPosition = _.throttle(this.calculateHoverMenuPosition.bind(this), 100);
+    this.calculateBlockMenuPosition = _.throttle(this.calculateBlockMenuPosition.bind(this), 100);
     this.renderBlockTypesMenu = this.renderBlockTypesMenu.bind(this);
     this.renderNode = this.renderNode.bind(this);
     this.renderMark = this.renderMark.bind(this);
@@ -57,7 +59,8 @@ class MarkdownControl extends React.Component {
     if (this.blockEdit) {
       this.blockEdit = false;
     } else {
-      this.setState({ state }, this.calculateMenuPositions);
+      this.calculateHoverMenuPosition();
+      this.setState({ state }, this.calculateBlockMenuPosition);
     }
   }
 
@@ -65,29 +68,30 @@ class MarkdownControl extends React.Component {
     this.props.onChange(markdown.serialize(state));
   }
 
-  /**
-   * All menu positions are calculated accessing dom elements
-   * That's why calculateMenuPositions is called on handleChange's setState callback
-   */
-  calculateMenuPositions() {
-    const rect1 = position();
+  calculateHoverMenuPosition() {
+    const rect = position();
     this.menuPositions.stylesMenu = {
-      top: rect1.top + window.scrollY,
-      left: rect1.left + window.scrollX,
-      width: rect1.width,
-      height: rect1.height
+      top: rect.top + window.scrollY,
+      left: rect.left + window.scrollX,
+      width: rect.width,
+      height: rect.height
     };
+  }
 
-    const blockElement = document.querySelectorAll(`[data-key='${this.state.state.selection.focusKey}']`);
-    if (blockElement.length > 0) {
-      const rect2 = blockElement[0].getBoundingClientRect();
-      this.menuPositions.blockTypesMenu = {
-        top: rect2.top + window.scrollY,
-        left: rect2.left + window.scrollX
-      };
-      this.forceUpdate();
+  calculateBlockMenuPosition() {
+    // Don't bother calculating position if block is not empty
+    if (this.state.state.blocks.get(0).isEmpty) {
+      const blockElement = document.querySelectorAll(`[data-key='${this.state.state.selection.focusKey}']`);
+      if (blockElement.length > 0) {
+        const rect = blockElement[0].getBoundingClientRect();
+        this.menuPositions.blockTypesMenu = {
+          top: rect.top + window.scrollY,
+          left: rect.left + window.scrollX
+        };
+        // Force re-render so the menu is positioned on these new coordinates
+        this.forceUpdate();
+      }
     }
-
   }
 
   /**
@@ -191,7 +195,10 @@ class MarkdownControl extends React.Component {
 
     state = state
     .transform()
-    .insertBlock(type)
+    .insertBlock({
+      type: type,
+      isVoid: true
+    })
     .apply();
 
     this.setState({ state }, () => {
@@ -235,7 +242,7 @@ class MarkdownControl extends React.Component {
 
   renderBlockTypesMenu() {
     const currentBlock = this.state.state.blocks.get(0);
-    const isOpen = (currentBlock.isEmpty && currentBlock.type !== 'list-item' && currentBlock.type !== 'horizontal-rule');
+    const isOpen = (currentBlock.isEmpty && currentBlock.type !== 'horizontal-rule');
 
     return (
       <BlockTypesMenu
