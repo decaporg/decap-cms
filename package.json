@@ -74,10 +74,10 @@
     "json-loader": "^0.5.4",
     "localforage": "^1.4.2",
     "lodash": "^4.13.1",
+    "markup-it": "git+https://github.com/cassiozen/markup-it.git",
     "pluralize": "^3.0.0",
     "react-portal": "^2.2.1",
     "selection-position": "^1.0.0",
-    "slate": "^0.11.2",
-    "slate-markdown-serializer": "^0.1.5"
+    "slate": "^0.12.2"
   }
 }

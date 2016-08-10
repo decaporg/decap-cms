@@ -1,8 +1,9 @@
 import React, { PropTypes } from 'react';
 import _ from 'lodash';
-import { Editor, Plain } from 'slate';
+import { Editor, Raw } from 'slate';
 import position from 'selection-position';
-import Markdown from 'slate-markdown-serializer';
+import MarkupIt, { SlateUtils } from 'markup-it';
+import getSyntax from './MarkdownControlElements/syntax';
 import { DEFAULT_NODE, NODES, MARKS } from './MarkdownControlElements/localRenderers';
 import StylesMenu from './MarkdownControlElements/StylesMenu';
 import BlockTypesMenu from './MarkdownControlElements/BlockTypesMenu';
@@ -15,11 +16,12 @@ class MarkdownControl extends React.Component {
   constructor(props) {
     super(props);
 
-    this.customMarkdownSerialize = this.customMarkdownSerialize.bind(this);
-    this.markdown = new Markdown({ rules: [{ serialize: this.customMarkdownSerialize }] });
+    this.getMedia = this.getMedia.bind(this);
+    const MarkdownSyntax = getSyntax(this.getMedia);
+    this.markdown = new MarkupIt(MarkdownSyntax);
 
     this.customImageNodeRenderer = this.customImageNodeRenderer.bind(this);
-    NODES['image'] = this.customImageNodeRenderer;
+    NODES['mediaproxy'] = this.customImageNodeRenderer;
 
     this.blockEdit = false;
     this.menuPositions = {
@@ -37,8 +39,29 @@ class MarkdownControl extends React.Component {
       }
     };
 
+    let rawJson;
+    if (props.value !== undefined) {
+      // Parse the markdown
+      const content = this.markdown.toContent(props.value);
+      // Convert the content to JSON
+      rawJson = SlateUtils.encode(content);
+    } else {
+      rawJson = {
+        nodes: [
+          { kind: 'block',
+            type: 'paragraph',
+            nodes: [{
+              kind: 'text',
+              ranges: [{
+                text: ''
+              }]
+            }]
+          }
+        ]
+      };
+    }
     this.state = {
-      state: props.value ? this.markdown.deserialize(props.value) : Plain.deserialize('')
+      state: Raw.deserialize(rawJson, { terse: true })
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -57,18 +80,13 @@ class MarkdownControl extends React.Component {
     this.renderMark = this.renderMark.bind(this);
   }
 
+  getMedia(src) {
+    return this.props.getMedia(src);
+  }
 
   /**
-   * The two custom methods customMarkdownSerialize and customImageNodeRenderer make sure that
-   * both Markdown serializer and Node renderers have access to getMedia with the latest state.
+   * Custom local renderer for image proxy.
    */
-  customMarkdownSerialize(obj, children) {
-    if (obj.kind === 'block' && obj.type === 'image') {
-      const src = this.props.getMedia(obj.getIn(['data', 'src']));
-      const alt = obj.getIn(['data', 'alt']) || '';
-      return `![${alt}](${src})`;
-    }
-  }
   customImageNodeRenderer(editorProps) {
     const { node, state } = editorProps;
     const isFocused = state.selection.hasEdgeIn(node);
@@ -95,7 +113,9 @@ class MarkdownControl extends React.Component {
   }
 
   handleDocumentChange(document, state) {
-    this.props.onChange(this.markdown.serialize(state));
+    const rawJson = Raw.serialize(state, { terse: true });
+    const content = SlateUtils.decode(rawJson);
+    this.props.onChange(this.markdown.toText(content));
   }
 
   calculateHoverMenuPosition() {
@@ -144,13 +164,13 @@ class MarkdownControl extends React.Component {
     const { document } = state;
 
     // Handle everything but list buttons.
-    if (type != 'bulleted-list' && type != 'numbered-list') {
+    if (type != 'unordered_list' && type != 'ordered_list') {
 
       if (isList) {
         transform = transform
           .setBlock(isActive ? DEFAULT_NODE : type)
-          .unwrapBlock('bulleted-list')
-          .unwrapBlock('numbered-list');
+          .unwrapBlock('unordered_list')
+          .unwrapBlock('ordered_list');
       }
 
       else {
@@ -168,14 +188,14 @@ class MarkdownControl extends React.Component {
       if (isList && isType) {
         transform = transform
           .setBlock(DEFAULT_NODE)
-          .unwrapBlock('bulleted-list');
+          .unwrapBlock('unordered_list');
       } else if (isList) {
         transform = transform
-          .unwrapBlock(type == 'bulleted-list')
+          .unwrapBlock(type == 'unordered_list')
           .wrapBlock(type);
       } else {
         transform = transform
-          .setBlock('list-item')
+          .setBlock('list_item')
           .wrapBlock(type);
       }
     }
@@ -237,16 +257,20 @@ class MarkdownControl extends React.Component {
   handleImageClick(mediaProxy) {
     let { state } = this.state;
     this.props.onAddMedia(mediaProxy);
-    state = state
-    .transform()
-    .insertBlock({
-      type: 'image',
-      isVoid: true,
-      data: { src: mediaProxy.path }
-    })
-    .apply();
 
-    this.setState({ state }, this.focusAndAddParagraph);
+    state = state
+      .transform()
+      .insertInline({
+        type: 'mediaproxy',
+        isVoid: true,
+        data: { src: mediaProxy.path }
+      })
+      .collapseToEnd()
+      .insertBlock(DEFAULT_NODE)
+      .focus()
+      .apply();
+
+    this.setState({ state });
   }
 
   focusAndAddParagraph() {

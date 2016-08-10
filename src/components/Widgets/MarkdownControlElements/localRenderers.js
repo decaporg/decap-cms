@@ -9,17 +9,17 @@ export const DEFAULT_NODE = 'paragraph';
 
 // Local node renderers.
 export const NODES = {
-  'block-quote': (props) => <Block type='blockquote' {...props.attributes}>{props.children}</Block>,
-  'bulleted-list': props => <Block type='List'><ul {...props.attributes}>{props.children}</ul></Block>,
-  'heading1': props => <Block type='Heading1' {...props.attributes}>{props.children}</Block>,
-  'heading2': props => <Block type='Heading2' {...props.attributes}>{props.children}</Block>,
-  'heading3': props => <Block type='Heading2' {...props.attributes}>{props.children}</Block>,
-  'heading4': props => <Block type='Heading2' {...props.attributes}>{props.children}</Block>,
-  'heading5': props => <Block type='Heading2' {...props.attributes}>{props.children}</Block>,
-  'heading6': props => <Block type='Heading2' {...props.attributes}>{props.children}</Block>,
-  'list-item': props => <li {...props.attributes}>{props.children}</li>,
+  'blockquote': (props) => <Block type='blockquote' {...props.attributes}>{props.children}</Block>,
+  'unordered_list': props => <Block type='List'><ul {...props.attributes}>{props.children}</ul></Block>,
+  'header_one': props => <Block type='Heading1' {...props.attributes}>{props.children}</Block>,
+  'header_two': props => <Block type='Heading2' {...props.attributes}>{props.children}</Block>,
+  'header_three': props => <Block type='Heading2' {...props.attributes}>{props.children}</Block>,
+  'header_four': props => <Block type='Heading2' {...props.attributes}>{props.children}</Block>,
+  'header_five': props => <Block type='Heading2' {...props.attributes}>{props.children}</Block>,
+  'header_six': props => <Block type='Heading2' {...props.attributes}>{props.children}</Block>,
+  'list_item': props => <li {...props.attributes}>{props.children}</li>,
   'paragraph': props => <Block type='Paragraph' {...props.attributes}>{props.children}</Block>,
-  'horizontal-rule': props => {
+  'hr': props => {
     const { node, state } = props;
     const isFocused = state.selection.hasEdgeIn(node);
     const className = isFocused ? styles.active : null;
@@ -43,13 +43,13 @@ export const NODES = {
 
 // Local mark renderers.
 export const MARKS = {
-  bold: {
+  BOLD: {
     fontWeight: 'bold'
   },
-  italic: {
+  ITALIC: {
     fontStyle: 'italic'
   },
-  code: {
+  CODE: {
     fontFamily: 'monospace',
     backgroundColor: '#eee',
     padding: '3px',

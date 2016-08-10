@@ -121,14 +121,14 @@ export default class StylesMenu extends Component {
     return (
       <Portal isOpened={isOpen} onOpen={this.handleOpen}>
         <div className={`${styles.menu} ${styles.hoverMenu}`}>
-          {this.renderMarkButton('bold', 'bold')}
-          {this.renderMarkButton('italic', 'italic')}
-          {this.renderMarkButton('code', 'code')}
+          {this.renderMarkButton('BOLD', 'bold')}
+          {this.renderMarkButton('ITALIC', 'italic')}
+          {this.renderMarkButton('CODE', 'code')}
           {this.renderLinkButton()}
-          {this.renderBlockButton('heading1', 'h1')}
-          {this.renderBlockButton('heading2', 'h2')}
-          {this.renderBlockButton('block-quote', 'quote-left')}
-          {this.renderBlockButton('bulleted-list', 'list-bullet', 'list-item')}
+          {this.renderBlockButton('header_one', 'h1')}
+          {this.renderBlockButton('header_two', 'h2')}
+          {this.renderBlockButton('blockquote', 'quote-left')}
+          {this.renderBlockButton('unordered_list', 'list-bullet', 'list_item')}
         </div>
       </Portal>
     );

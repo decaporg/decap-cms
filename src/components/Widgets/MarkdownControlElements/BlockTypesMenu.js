@@ -96,7 +96,7 @@ export default class BlockTypesMenu extends Component {
     if (this.state.expanded) {
       return (
         <div className={styles.menu}>
-          {this.renderBlockTypeButton('horizontal-rule', 'dot-3')}
+          {this.renderBlockTypeButton('hr', 'dot-3')}
           <Icon type="picture" onClick={this.handleFileUploadClick} className={styles.icon} />
           <input
               type="file"
