@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import Portal from 'react-portal';
-import { Icon } from '../../UI';
+import { Icon } from '../../../UI';
 import styles from './StylesMenu.css';
 
 export default class StylesMenu extends Component {

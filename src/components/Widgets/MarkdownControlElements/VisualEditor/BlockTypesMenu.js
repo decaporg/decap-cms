@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import Portal from 'react-portal';
-import { Icon } from '../../UI';
-import MediaProxy from '../../../valueObjects/MediaProxy';
+import { Icon } from '../../../UI';
+import MediaProxy from '../../../../valueObjects/MediaProxy';
 import styles from './BlockTypesMenu.css';
 
 export default class BlockTypesMenu extends Component {
