@@ -33,10 +33,12 @@ export const NODES = {
     return <a {...props.attributes} href={href}>{props.children}</a>;
   },
   'image': (props) => {
-    const { node } = props;
+    const { node, state } = props;
+    const isFocused = state.selection.hasEdgeIn(node);
+    const className = isFocused ? styles.active : null;
     const src = node.data.get('src');
     return (
-      <img {...props.attributes} src={src} />
+      <img {...props.attributes} src={src} className={className} />
     );
   }
 };
