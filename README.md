@@ -1,5 +1,7 @@
 # Netlify CMS
 
+**Current work on Netlify CMS is taking place in the [React branch](https://github.com/netlify/netlify-cms/tree/react). The current Ember prototype is still more functional, but we expect the React version to overtake it soon.**
+
 A CMS for static site generators. Give non-technical users a simple way to edit
 and add content to any site built with a static site generator.
 
