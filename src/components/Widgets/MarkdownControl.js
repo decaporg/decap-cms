@@ -5,17 +5,17 @@ import { connect } from 'react-redux';
 import { switchVisualMode } from '../../actions/editor';
 
 class MarkdownControl extends React.Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.useVisualEditor = this.useVisualEditor.bind(this);
     this.useRawEditor = this.useRawEditor.bind(this);
   }
 
-  useVisualEditor(){
+  useVisualEditor() {
     this.props.switchVisualMode(true);
   }
 
-  useRawEditor(){
+  useRawEditor() {
     this.props.switchVisualMode(false);
   }
 
@@ -29,6 +29,7 @@ class MarkdownControl extends React.Component {
               onChange={onChange}
               onAddMedia={onAddMedia}
               getMedia={getMedia}
+              registeredComponents={editor.get('registeredComponents')}
               value={value}
           />
         </div>

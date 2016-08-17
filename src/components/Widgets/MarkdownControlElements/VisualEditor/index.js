@@ -5,7 +5,7 @@ import position from 'selection-position';
 import MarkupIt, { SlateUtils } from 'markup-it';
 import getSyntax from '../syntax';
 import { emptyParagraphBlock } from '../constants';
-import { DEFAULT_NODE, NODES, MARKS } from './localRenderers';
+import { DEFAULT_NODE, SCHEMA } from './schema';
 import StylesMenu from './StylesMenu';
 import BlockTypesMenu from './BlockTypesMenu';
 import styles from './index.css';
@@ -22,7 +22,7 @@ class VisualEditor extends React.Component {
     this.markdown = new MarkupIt(MarkdownSyntax);
 
     this.customImageNodeRenderer = this.customImageNodeRenderer.bind(this);
-    NODES['mediaproxy'] = this.customImageNodeRenderer;
+    SCHEMA.nodes['mediaproxy'] = this.customImageNodeRenderer;
 
     this.blockEdit = false;
     this.menuPositions = {
@@ -63,8 +63,6 @@ class VisualEditor extends React.Component {
     this.calculateHoverMenuPosition = _.throttle(this.calculateHoverMenuPosition.bind(this), 30);
     this.calculateBlockMenuPosition = _.throttle(this.calculateBlockMenuPosition.bind(this), 100);
     this.renderBlockTypesMenu = this.renderBlockTypesMenu.bind(this);
-    this.renderNode = this.renderNode.bind(this);
-    this.renderMark = this.renderMark.bind(this);
   }
 
   getMedia(src) {
@@ -290,16 +288,6 @@ class VisualEditor extends React.Component {
     }
   }
 
-  /**
-   * Return renderers for Slate
-   */
-  renderNode(node) {
-    return NODES[node.type];
-  }
-  renderMark(mark) {
-    return MARKS[mark.type];
-  }
-
   renderBlockTypesMenu() {
     const currentBlock = this.state.state.blocks.get(0);
     const isOpen = (this.props.value !== undefined && currentBlock.isEmpty && currentBlock.type !== 'horizontal-rule');
@@ -340,8 +328,7 @@ class VisualEditor extends React.Component {
         <Editor
             placeholder={'Enter some rich text...'}
             state={this.state.state}
-            renderNode={this.renderNode}
-            renderMark={this.renderMark}
+            schema={SCHEMA}
             onChange={this.handleChange}
             onKeyDown={this.handleKeyDown}
             onDocumentChange={this.handleDocumentChange}
