@@ -17,9 +17,11 @@ export default class BlockTypesMenu extends Component {
     this.toggleMenu = this.toggleMenu.bind(this);
     this.handleOpen = this.handleOpen.bind(this);
     this.handleBlockTypeClick = this.handleBlockTypeClick.bind(this);
+    this.handlePluginClick = this.handlePluginClick.bind(this);
     this.handleFileUploadClick = this.handleFileUploadClick.bind(this);
     this.handleFileUploadChange = this.handleFileUploadChange.bind(this);
     this.renderBlockTypeButton = this.renderBlockTypeButton.bind(this);
+    this.renderPluginButton = this.renderPluginButton.bind(this);
   }
 
   /**
@@ -58,6 +60,14 @@ export default class BlockTypesMenu extends Component {
     this.props.onClickBlock(type);
   }
 
+  handlePluginClick(e, plugin) {
+    const data = {};
+    plugin.fields.forEach(field => {
+      data[field] = window.prompt(field);
+    });
+    this.props.onClickPlugin(plugin.id, data);
+  }
+
   handleFileUploadClick() {
     this._fileInput.click();
   }
@@ -84,11 +94,17 @@ export default class BlockTypesMenu extends Component {
 
   }
 
-
   renderBlockTypeButton(type, icon) {
     const onClick = e => this.handleBlockTypeClick(e, type);
     return (
       <Icon key={type} type={icon} onClick={onClick} className={styles.icon} />
+    );
+  }
+
+  renderPluginButton(plugin) {
+    const onClick = e => this.handlePluginClick(e, plugin);
+    return (
+      <Icon key={plugin.id} type={plugin.icon} onClick={onClick} className={styles.icon} />
     );
   }
 
@@ -98,7 +114,7 @@ export default class BlockTypesMenu extends Component {
       return (
         <div className={styles.menu}>
           {this.renderBlockTypeButton('hr', 'dot-3')}
-          {plugins.map(plugin => this.renderBlockTypeButton(plugin.id, plugin.icon))}
+          {plugins.map(plugin => this.renderPluginButton(plugin))}
           <Icon type="picture" onClick={this.handleFileUploadClick} className={styles.icon} />
           <input
               type="file"
@@ -142,5 +158,6 @@ BlockTypesMenu.propTypes = {
     left: PropTypes.number.isRequired
   }),
   onClickBlock: PropTypes.func.isRequired,
+  onClickPlugin: PropTypes.func.isRequired,
   onClickImage: PropTypes.func.isRequired
 };

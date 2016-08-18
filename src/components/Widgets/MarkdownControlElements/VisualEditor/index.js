@@ -17,8 +17,11 @@ class VisualEditor extends React.Component {
   constructor(props) {
     super(props);
 
+    this.getMedia = this.getMedia.bind(this);
+    const MarkdownSyntax = getSyntaxes(this.getMedia).markdown;
+    this.markdown = new MarkupIt(MarkdownSyntax);
+
     SCHEMA.nodes = _.merge(SCHEMA.nodes, getNodes());
-    this.markdown = new MarkupIt(getSyntaxes().markdown);
 
     this.blockEdit = false;
     this.menuPositions = {
@@ -39,7 +42,7 @@ class VisualEditor extends React.Component {
     let rawJson;
     if (props.value !== undefined) {
       const content = this.markdown.toContent(props.value);
-      rawJson = SlateUtils.encode(content);
+      rawJson = SlateUtils.encode(content, null, getPlugins().map(plugin => plugin.id));
     } else {
       rawJson = emptyParagraphBlock;
     }
@@ -53,6 +56,7 @@ class VisualEditor extends React.Component {
     this.handleBlockStyleClick = this.handleBlockStyleClick.bind(this);
     this.handleInlineClick = this.handleInlineClick.bind(this);
     this.handleBlockTypeClick = this.handleBlockTypeClick.bind(this);
+    this.handlePluginClick = this.handlePluginClick.bind(this);
     this.handleImageClick = this.handleImageClick.bind(this);
     this.focusAndAddParagraph = this.focusAndAddParagraph.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
@@ -63,19 +67,6 @@ class VisualEditor extends React.Component {
 
   getMedia(src) {
     return this.props.getMedia(src);
-  }
-
-  /**
-   * Custom local renderer for image proxy.
-   */
-  customImageNodeRenderer(editorProps) {
-    const { node, state } = editorProps;
-    const isFocused = state.selection.hasEdgeIn(node);
-    const className = isFocused ? styles.active : null;
-    const src = node.data.get('src');
-    return (
-      <img {...editorProps.attributes} src={this.props.getMedia(src)} className={className} />
-    );
   }
 
   /**
@@ -235,6 +226,24 @@ class VisualEditor extends React.Component {
     this.setState({ state }, this.focusAndAddParagraph);
   }
 
+  handlePluginClick(type, data) {
+    let { state } = this.state;
+
+    state = state
+      .transform()
+      .insertInline({
+        type: type,
+        data: data,
+        isVoid: true
+      })
+      .collapseToEnd()
+      .insertBlock(DEFAULT_NODE)
+      .focus()
+      .apply();
+
+    this.setState({ state });
+  }
+
   handleImageClick(mediaProxy) {
     let { state } = this.state;
     this.props.onAddMedia(mediaProxy);
@@ -294,6 +303,7 @@ class VisualEditor extends React.Component {
           plugins={getPlugins()}
           position={this.menuPositions.blockTypesMenu}
           onClickBlock={this.handleBlockTypeClick}
+          onClickPlugin={this.handlePluginClick}
           onClickImage={this.handleImageClick}
       />
     );
