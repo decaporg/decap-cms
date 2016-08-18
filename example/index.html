@@ -73,15 +73,15 @@
       id: "youtube",
       label: "Youtube",
       icon: 'video',
-      fields: ['video-id'],
+      fields: [{name: 'id', label: 'Youtube Video ID'}],
       pattern: /^{{<\s?youtube (\S+)\s?>}}/,
       fromBlock: function(match) {
         return {
-          "video-id": match[1]
+          id: match[1]
         };
       },
       toBlock: function(obj) {
-        return '{{< youtube ' + obj['video-id'] + ' >}}';
+        return '{{< youtube ' + obj.id + ' >}}';
       }
     })
   </script>

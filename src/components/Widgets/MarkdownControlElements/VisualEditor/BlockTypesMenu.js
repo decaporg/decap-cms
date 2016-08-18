@@ -63,7 +63,7 @@ export default class BlockTypesMenu extends Component {
   handlePluginClick(e, plugin) {
     const data = {};
     plugin.fields.forEach(field => {
-      data[field] = window.prompt(field);
+      data[field.name] = window.prompt(field.label);
     });
     this.props.onClickPlugin(plugin.id, data);
   }

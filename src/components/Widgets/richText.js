@@ -44,7 +44,7 @@ function processEditorPlugins(plugins) {
         <div {...props.attributes} className={className}>
           <div className="plugin_icon" contentEditable={false}><Icon type={plugin.icon}/></div>
           <div className="plugin_fields" contentEditable={false}>
-            { plugin.fields.map(field => `${field}: “${node.data.get(field)}”`) }
+            { plugin.fields.map(field => `${field.label}: “${node.data.get(field.name)}”`) }
           </div>
 
 
