@@ -88,15 +88,17 @@ export default class BlockTypesMenu extends Component {
   renderBlockTypeButton(type, icon) {
     const onClick = e => this.handleBlockTypeClick(e, type);
     return (
-      <Icon type={icon} onClick={onClick} className={styles.icon} />
+      <Icon key={type} type={icon} onClick={onClick} className={styles.icon} />
     );
   }
 
   renderMenu() {
+    const { plugins } = this.props;
     if (this.state.expanded) {
       return (
         <div className={styles.menu}>
           {this.renderBlockTypeButton('hr', 'dot-3')}
+          {plugins.map(plugin => this.renderBlockTypeButton(plugin.id, plugin.icon))}
           <Icon type="picture" onClick={this.handleFileUploadClick} className={styles.icon} />
           <input
               type="file"
@@ -134,6 +136,7 @@ export default class BlockTypesMenu extends Component {
 
 BlockTypesMenu.propTypes = {
   isOpen: PropTypes.bool.isRequired,
+  plugins: PropTypes.array.isRequired,
   position: PropTypes.shape({
     top: PropTypes.number.isRequired,
     left: PropTypes.number.isRequired

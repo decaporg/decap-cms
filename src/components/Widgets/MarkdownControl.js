@@ -1,14 +1,19 @@
 import React, { PropTypes } from 'react';
 import RawEditor from './MarkdownControlElements/RawEditor';
 import VisualEditor from './MarkdownControlElements/VisualEditor';
+import { processEditorPlugins } from './richText';
 import { connect } from 'react-redux';
 import { switchVisualMode } from '../../actions/editor';
 
 class MarkdownControl extends React.Component {
-  constructor(props) {
-    super(props);
+  constructor(props, context) {
+    super(props, context);
     this.useVisualEditor = this.useVisualEditor.bind(this);
     this.useRawEditor = this.useRawEditor.bind(this);
+  }
+
+  componentWillMount() {
+    processEditorPlugins(this.context.plugins.editor);
   }
 
   useVisualEditor() {
@@ -68,6 +73,10 @@ MarkdownControl.propTypes = {
   getMedia: PropTypes.func.isRequired,
   switchVisualMode: PropTypes.func.isRequired,
   value: PropTypes.node,
+};
+
+MarkdownControl.contextTypes = {
+  plugins: PropTypes.object,
 };
 
 export default connect(

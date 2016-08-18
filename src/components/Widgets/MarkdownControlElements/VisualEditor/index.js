@@ -3,9 +3,9 @@ import _ from 'lodash';
 import { Editor, Raw } from 'slate';
 import position from 'selection-position';
 import MarkupIt, { SlateUtils } from 'markup-it';
-import getSyntax from '../syntax';
 import { emptyParagraphBlock } from '../constants';
 import { DEFAULT_NODE, SCHEMA } from './schema';
+import { getNodes, getSyntaxes, getPlugins } from '../../richText';
 import StylesMenu from './StylesMenu';
 import BlockTypesMenu from './BlockTypesMenu';
 import styles from './index.css';
@@ -17,12 +17,8 @@ class VisualEditor extends React.Component {
   constructor(props) {
     super(props);
 
-    this.getMedia = this.getMedia.bind(this);
-    const MarkdownSyntax = getSyntax(this.getMedia);
-    this.markdown = new MarkupIt(MarkdownSyntax);
-
-    this.customImageNodeRenderer = this.customImageNodeRenderer.bind(this);
-    SCHEMA.nodes['mediaproxy'] = this.customImageNodeRenderer;
+    SCHEMA.nodes = _.merge(SCHEMA.nodes, getNodes());
+    this.markdown = new MarkupIt(getSyntaxes().markdown);
 
     this.blockEdit = false;
     this.menuPositions = {
@@ -295,6 +291,7 @@ class VisualEditor extends React.Component {
     return (
       <BlockTypesMenu
           isOpen={isOpen}
+          plugins={getPlugins()}
           position={this.menuPositions.blockTypesMenu}
           onClickBlock={this.handleBlockTypeClick}
           onClickImage={this.handleImageClick}
