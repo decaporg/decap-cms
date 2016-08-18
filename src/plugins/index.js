@@ -1,40 +1,58 @@
-import { registerComponent } from '../actions/editor';
+import { Component, PropTypes, Children } from 'react';
+import { List, Record } from 'immutable';
+import _ from 'lodash';
 
-let storeRef;
-const requiredEditorComponentProperties = ['label', 'fields', 'detect', 'fromBlock', 'toBlock'];
+const plugins = { editor: List() };
 
-const checkConfigKeys = (config, requiredProps) => {
-  for (var i = requiredProps.length; i--;) {
-    if (!config.hasOwnProperty(requiredProps[i])) return false;
-  }
-  return true;
-};
-
-const wrap = (func) => function() {
-  func.apply(null, arguments);
-};
+const catchesNothing = /.^/;
+const EditorComponent = Record({
+  id: null,
+  label: 'unnamed component',
+  icon: 'exclamation-triangle',
+  fields: [],
+  pattern: catchesNothing,
+  fromBlock: function(match) { return {}; },
+  toBlock: function(attributes) { return 'Plugin'; },
+  toPreview: function(attributes) { return 'Plugin'; }
+});
 
 function CMS() {
   this.registerEditorComponent = (config) => {
-    if (checkConfigKeys(config, requiredEditorComponentProperties)) {
-      const configObj = {
-        label: config.label || 'unnamed',
-        icon: config.icon || 'exclamation-triangle',
-        fields: config.fields,
-        detect: wrap(config.detect),
-        fromBlock: wrap(config.fromBlock),
-        toBlock: wrap(config.toBlock),
-        toPreview: config.toPreview ? wrap(config.toPreview) : wrap(config.toBlock)
-      };
-      storeRef.dispatch(registerComponent(configObj));
-    } else {
-      const label = config.label || 'unnamed';
-      window.console && console.error(`The provided component configuration for ${label} is incorrect.`);
-    }
+    const configObj = new EditorComponent({
+      id: config.id || config.label.replace(/[^A-Z0-9]+/ig, '_'),
+      label: config.label,
+      icon: config.icon,
+      fields: config.fields,
+      pattern: config.pattern,
+      fromBlock: _.isFunction(config.fromBlock) ? config.fromBlock.bind(null) : null,
+      toBlock: _.isFunction(config.toBlock) ? config.toBlock.bind(null) : null,
+      toPreview: _.isFunction(config.toPreview) ? config.toPreview.bind(null) : config.toBlock.bind(null)
+    });
+
+    plugins.editor = plugins.editor.push(configObj);
   };
 }
 
-export const initPluginAPI = (store) => {
-  storeRef = store;
+
+class Plugin extends Component {
+  getChildContext() {
+    return { plugins: plugins };
+  }
+
+  render() {
+    return Children.only(this.props.children);
+  }
+}
+
+Plugin.propTypes = {
+  children: PropTypes.element.isRequired
+};
+Plugin.childContextTypes = {
+  plugins: PropTypes.object
+};
+
+
+export const initPluginAPI = () => {
   window.CMS = new CMS();
+  return Plugin;
 };

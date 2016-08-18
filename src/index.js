@@ -14,7 +14,7 @@ const store = configureStore();
 // Create an enhanced history that syncs navigation events with the store
 syncHistory(store);
 
-initPluginAPI(store);
+const Plugin = initPluginAPI();
 
 const el = document.createElement('div');
 el.id = 'root';
@@ -22,8 +22,10 @@ document.body.appendChild(el);
 
 render((
   <Provider store={store}>
-    <Router history={history}>
-      {routes}
-    </Router>
+    <Plugin>
+      <Router history={history}>
+        {routes}
+      </Router>
+    </Plugin>
   </Provider>
 ), el);
