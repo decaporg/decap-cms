@@ -67,8 +67,6 @@
   },
   "dependencies": {
     "bricks.js": "^1.7.0",
-    "commonmark": "^0.24.0",
-    "commonmark-react-renderer": "^4.1.2",
     "fuzzy": "^0.1.1",
     "js-base64": "^2.1.9",
     "json-loader": "^0.5.4",

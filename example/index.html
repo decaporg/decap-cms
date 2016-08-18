@@ -82,6 +82,11 @@
       },
       toBlock: function(obj) {
         return '{{< youtube ' + obj.id + ' >}}';
+      },
+      toPreview: function(obj) {
+        return (
+          '<img src="http://img.youtube.com/vi/' + obj.id + '/maxresdefault.jpg" alt="Youtube Video"/>'
+        );
       }
     })
   </script>

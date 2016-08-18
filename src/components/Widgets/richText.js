@@ -26,15 +26,17 @@ function processEditorPlugins(plugins) {
   if (plugins === processedPlugins) return;
 
   plugins.forEach(plugin => {
-    const markdownRule = MarkupIt.Rule(plugin.id)
-      .regExp(plugin.pattern, function(state, match) {
-        return { data: plugin.fromBlock(match) };
-      })
-      .toText(function(state, token) { return plugin.toBlock(token.getData().toObject()) + '\n\n'; });
+    const basicRule = MarkupIt.Rule(plugin.id).regExp(plugin.pattern, (state, match) => (
+      { data: plugin.fromBlock(match) }
+    ));
 
-    const htmlRule = MarkupIt.Rule(plugin.id)
-      .regExp(plugin.pattern, function(state, match) { return plugin.fromBlock(match); })
-      .toText(function(state, token) { return plugin.toPreview(token.getData()); });
+    const markdownRule = basicRule.toText((state, token) => (
+      plugin.toBlock(token.getData().toObject()) + '\n\n'
+    ));
+
+    const htmlRule = basicRule.toText((state, token) => (
+      plugin.toPreview(token.getData().toObject())
+    ));
 
     const nodeRenderer = (props) => {
       const { node, state } = props;
@@ -61,35 +63,40 @@ function processEditorPlugins(plugins) {
 }
 
 function processMediaProxyPlugins(getMedia) {
-  const customImageRule = MarkupIt.Rule('mediaproxy')
-    .regExp(reInline.link, function(state, match) {
-      if (match[0].charAt(0) !== '!') {
-        // Return if this is not an image
-        return;
-      }
+  const mediaProxyRule = MarkupIt.Rule('mediaproxy').regExp(reInline.link, (state, match) => {
+    if (match[0].charAt(0) !== '!') {
+      // Return if this is not an image
+      return;
+    }
 
-      var imgData = Map({
-        alt:   match[1],
-        src:   getMedia(match[2]),
-        title: match[3]
-      }).filter(Boolean);
+    var imgData = Map({
+      alt:   match[1],
+      src:   match[2],
+      title: match[3]
+    }).filter(Boolean);
 
-      return {
-        data: imgData
-      };
-    })
-    .toText(function(state, token) {
-      var data  = token.getData();
-      var alt   = data.get('alt', '');
-      var src   = getMedia(data.get('src', ''));
-      var title = data.get('title', '');
+    return {
+      data: imgData
+    };
+  });
+  const mediaProxyMarkdownRule = mediaProxyRule.toText((state, token) => {
+    var data  = token.getData();
+    var alt   = data.get('alt', '');
+    var src   = getMedia(data.get('src', ''));
+    var title = data.get('title', '');
 
-      if (title) {
-        return '![' + alt + '](' + src + ' "' + title + '")';
-      } else {
-        return '![' + alt + '](' + src + ')';
-      }
-    });
+    if (title) {
+      return '![' + alt + '](' + src + ' "' + title + '")';
+    } else {
+      return '![' + alt + '](' + src + ')';
+    }
+  });
+  const mediaProxyHTMLRule = mediaProxyRule.toText((state, token) => {
+    var data  = token.getData();
+    var alt   = data.get('alt', '');
+    var src   = data.get('src', '');
+    return `<img src=${src} alt=${alt} />`;
+  });
 
   nodes['mediaproxy'] = (props) => {
     /* eslint react/prop-types: 0 */
@@ -101,7 +108,8 @@ function processMediaProxyPlugins(getMedia) {
       <img {...props.attributes} src={getMedia(src)} className={className} />
     );
   };
-  augmentedMarkdownSyntax = augmentedMarkdownSyntax.addInlineRules(customImageRule);
+  augmentedMarkdownSyntax = augmentedMarkdownSyntax.addInlineRules(mediaProxyMarkdownRule);
+  augmentedHTMLSyntax = augmentedHTMLSyntax.addInlineRules(mediaProxyHTMLRule);
 }
 
 function getPlugins() {
@@ -115,7 +123,9 @@ function getNodes() {
 }
 
 function getSyntaxes(getMedia) {
-  processMediaProxyPlugins(getMedia);
+  if (getMedia) {
+    processMediaProxyPlugins(getMedia);
+  }
   return { markdown: augmentedMarkdownSyntax, html:augmentedHTMLSyntax };
 }
 
