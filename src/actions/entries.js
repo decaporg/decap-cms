@@ -13,6 +13,7 @@ export const ENTRIES_SUCCESS = 'ENTRIES_SUCCESS';
 export const ENTRIES_FAILURE = 'ENTRIES_FAILURE';
 
 export const DRAFT_CREATE_FROM_ENTRY = 'DRAFT_CREATE_FROM_ENTRY';
+export const DRAFT_CREATE_EMPTY = 'DRAFT_CREATE_EMPTY';
 export const DRAFT_DISCARD = 'DRAFT_DISCARD';
 export const DRAFT_CHANGE = 'DRAFT_CHANGE';
 
@@ -102,6 +103,13 @@ function entryPersistFail(collection, entry, error) {
   };
 }
 
+function emmptyDraftCreated(entry) {
+  return {
+    type: DRAFT_CREATE_EMPTY,
+    payload: entry
+  };
+}
+
 /*
  * Exported simple Action Creators
  */
@@ -150,6 +158,15 @@ export function loadEntries(collection) {
       (response) => dispatch(entriesLoaded(collection, response.entries, response.pagination)),
       (error) => dispatch(entriesFailed(collection, error))
     );
+  };
+}
+
+export function createEmptyDraft(collection) {
+  return (dispatch, getState) => {
+    const state = getState();
+    const backend = currentBackend(state.config);
+    const newEntry = backend.newEntry(collection);
+    dispatch(emmptyDraftCreated(newEntry));
   };
 }
 

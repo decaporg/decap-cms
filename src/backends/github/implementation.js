@@ -1,5 +1,6 @@
 import LocalForage from 'localforage';
 import MediaProxy from '../../valueObjects/MediaProxy';
+import { createEntry } from '../../valueObjects/Entry';
 import AuthenticationPage from './AuthenticationPage';
 import { Base64 } from 'js-base64';
 
@@ -210,9 +211,7 @@ export default class GitHub {
     return this.api.listFiles(collection.get('folder')).then((files) => (
       Promise.all(files.map((file) => (
         this.api.readFile(file.path, file.sha).then((data) => {
-          file.slug = file.path.split('/').pop().replace(/\.[^\.]+$/, '');
-          file.raw = data;
-          return file;
+          return createEntry(file.path, file.path.split('/').pop().replace(/\.[^\.]+$/, ''), data);
         })
       )))
     )).then((entries) => ({

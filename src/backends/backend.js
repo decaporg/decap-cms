@@ -1,6 +1,7 @@
 import TestRepoBackend from './test-repo/implementation';
 import GitHubBackend from './github/implementation';
 import { resolveFormat } from '../formats/formats';
+import { createEntry } from '../valueObjects/Entry';
 
 class LocalStorageAuthStore {
   storageKey = 'nf-cms-user';
@@ -55,6 +56,11 @@ class Backend {
 
   entry(collection, slug) {
     return this.implementation.entry(collection, slug).then(this.entryWithFormat(collection));
+  }
+
+  newEntry(collection) {
+    const newEntry = createEntry();
+    return this.entryWithFormat(collection)(newEntry);
   }
 
   entryWithFormat(collection) {

@@ -11,7 +11,7 @@ export default class StringControl extends React.Component {
   }
 
   render() {
-    return <input value={this.props.value} onChange={this.handleChange}/>;
+    return <input type="text" value={this.props.value || ''} onChange={this.handleChange}/>;
   }
 }
 

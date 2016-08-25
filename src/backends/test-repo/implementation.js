@@ -1,4 +1,5 @@
 import AuthenticationPage from './AuthenticationPage';
+import { createEntry } from '../../valueObjects/Entry';
 
 function getSlug(path) {
   const m = path.match(/([^\/]+?)(\.[^\/\.]+)?$/);
@@ -28,11 +29,7 @@ export default class TestRepo {
     const folder = collection.get('folder');
     if (folder) {
       for (var path in window.repoFiles[folder]) {
-        entries.push({
-          path: folder + '/' + path,
-          slug: getSlug(path),
-          raw: window.repoFiles[folder][path].content
-        });
+        entries.push(createEntry(folder + '/' + path, getSlug(path), window.repoFiles[folder][path].content));
       }
     }
 
