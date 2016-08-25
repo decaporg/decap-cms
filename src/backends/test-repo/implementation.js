@@ -45,10 +45,14 @@ export default class TestRepo {
     ));
   }
 
-  persistEntry(collection, entry, mediaFiles = []) {
+  persistEntry(collection, entry, mediaFiles = [], newEntry = false) {
     const folder = entry.path.substring(0, entry.path.lastIndexOf('/'));
     const fileName = entry.path.substring(entry.path.lastIndexOf('/') + 1);
-    window.repoFiles[folder][fileName]['content'] = entry.raw;
+    if (newEntry) {
+      window.repoFiles[folder][fileName] = { content: entry.raw };
+    } else {
+      window.repoFiles[folder][fileName]['content'] = entry.raw;
+    }
     mediaFiles.forEach(media => media.uploaded = true);
     return Promise.resolve();
   }

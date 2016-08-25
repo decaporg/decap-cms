@@ -73,19 +73,49 @@ class Backend {
     };
   }
 
-  persistEntry(collection, entryDraft, MediaFiles) {
-    const entryData = entryDraft.getIn(['entry', 'data']).toObject();
-    const entryObj = {
-      path: entryDraft.getIn(['entry', 'path']),
-      slug: entryDraft.getIn(['entry', 'slug']),
-      raw: this.entryToRaw(collection, entryData)
-    };
+  slugFormatter(template, entry) {
+    var date = new Date();
+    return template.replace(/\{\{([^\}]+)\}\}/g, function(_, name) {
+      switch (name) {
+        case 'year':
+          return date.getFullYear();
+        case 'month':
+          return ('0' + (date.getMonth() + 1)).slice(-2);
+        case 'day':
+          return ('0' + date.getDate()).slice(-2);
+        case 'slug':
+          return entry.getIn(['data', 'title']).trim().toLowerCase().replace(/[^a-z0-9\.\-\_]+/gi, '-');
+        default:
+          return entry.getIn(['data', name]);
+      }
+    });
+  }
 
-    const commitMessage = (entryDraft.getIn(['entry', 'newRecord']) ? 'Created ' : 'Updated ') +
+  persistEntry(collection, entryDraft, MediaFiles) {
+    const newEntry = entryDraft.getIn(['entry', 'newRecord']) || false;
+    const entryData = entryDraft.getIn(['entry', 'data']).toObject();
+    let entryObj;
+
+    if (newEntry) {
+      const slug = this.slugFormatter(collection.get('slug'), entryDraft.get('entry'));
+      entryObj = {
+        path: `${collection.get('folder')}/${slug}.md`,
+        slug: slug,
+        raw: this.entryToRaw(collection, entryData)
+      };
+    } else {
+      entryObj = {
+        path: entryDraft.getIn(['entry', 'path']),
+        slug: entryDraft.getIn(['entry', 'slug']),
+        raw: this.entryToRaw(collection, entryData)
+      };
+    }
+
+    const commitMessage = (newEntry ? 'Created ' : 'Updated ') +
           collection.get('label') + ' “' +
           entryDraft.getIn(['entry', 'data', 'title']) + '”';
 
-    return this.implementation.persistEntry(collection, entryObj, MediaFiles, { commitMessage });
+    return this.implementation.persistEntry(collection, entryObj, MediaFiles, { commitMessage }, newEntry);
   }
 
   entryToRaw(collection, entry) {

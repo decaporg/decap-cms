@@ -10,12 +10,14 @@ const entryDraft = (state = Map(), action) => {
       // Existing Entry
       return state.withMutations((state) => {
         state.set('entry', action.payload);
+        state.setIn(['entry', 'newRecord'], false);
         state.set('mediaFiles', List());
       });
     case DRAFT_CREATE_EMPTY:
       // New Entry
       return state.withMutations((state) => {
         state.set('entry', fromJS(action.payload));
+        state.setIn(['entry', 'newRecord'], true);
         state.set('mediaFiles', List());
       });
     case DRAFT_DISCARD:
