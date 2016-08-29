@@ -3,7 +3,6 @@ backend:
   delay: 0.1
 
 media_folder: "assets/uploads"
-publish_mode: branch
 
 collections: # A list of collections the CMS should be able to edit
   - name: "posts" # Used in routes, ie.: /admin/collections/:slug/edit

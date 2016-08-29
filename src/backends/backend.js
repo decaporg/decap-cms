@@ -1,8 +1,8 @@
 import TestRepoBackend from './test-repo/implementation';
 import GitHubBackend from './github/implementation';
 import { resolveFormat } from '../formats/formats';
-import { randomStr } from '../lib/randomGenerator';
 import { createEntry } from '../valueObjects/Entry';
+import { SIMPLE, BRANCH } from './constants';
 
 class LocalStorageAuthStore {
   storageKey = 'nf-cms-user';
@@ -93,12 +93,12 @@ class Backend {
   }
 
   getPublishMode(config) {
-    const publish_modes = ['simple', 'branch'];
-    const mode = config.get('publish_mode');
+    const publish_modes = [SIMPLE, BRANCH];
+    const mode = config.getIn(['backend', 'publish_mode']);
     if (publish_modes.indexOf(mode) !== -1) {
       return mode;
     } else {
-      return 'simple';
+      return SIMPLE;
     }
   }
 
