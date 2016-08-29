@@ -175,9 +175,8 @@ export function persistEntry(collection, entry) {
     const state = getState();
     const backend = currentBackend(state.config);
     const MediaProxies = entry.get('mediaFiles').map(path => getMedia(state, path));
-
     dispatch(entryPersisting(collection, entry));
-    backend.persistEntry(collection, entry, MediaProxies.toJS()).then(
+    backend.persistEntry(state.config, collection, entry, MediaProxies.toJS()).then(
       () => {
         dispatch(entryPersisted(collection, entry));
       },

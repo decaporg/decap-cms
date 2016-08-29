@@ -43,11 +43,10 @@ class API {
     });
   }
 
-  persistFiles(collection, entry, mediaFiles, options) {
+  persistFiles(entry, mediaFiles, options) {
     let filename, part, parts, subtree;
     const fileTree = {};
     const files = [];
-
     mediaFiles.concat(entry).forEach((file) => {
       if (file.uploaded) { return; }
       files.push(this.uploadBlob(file));
@@ -226,7 +225,7 @@ export default class GitHub {
     ));
   }
 
-  persistEntry(collection, entry, mediaFiles = [], options = {}) {
-    return this.api.persistFiles(collection, entry, mediaFiles, options);
+  persistEntry(entry, mediaFiles = [], options = {}) {
+    return this.api.persistFiles(entry, mediaFiles, options);
   }
 }

@@ -26,7 +26,7 @@ const entryDraft = (state = Map(), action) => {
       return state.set('entry', action.payload);
 
     case ADD_MEDIA:
-      return state.update('mediaFiles', (list) => list.push(action.payload.path));
+      return state.update('mediaFiles', (list) => list.push(action.payload.public_path));
     case REMOVE_MEDIA:
       return state.update('mediaFiles', (list) => list.filterNot((path) => path === action.payload));
 

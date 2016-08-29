@@ -253,7 +253,7 @@ class VisualEditor extends React.Component {
       .insertInline({
         type: 'mediaproxy',
         isVoid: true,
-        data: { src: mediaProxy.path }
+        data: { src: mediaProxy.public_path }
       })
       .collapseToEnd()
       .insertBlock(DEFAULT_NODE)

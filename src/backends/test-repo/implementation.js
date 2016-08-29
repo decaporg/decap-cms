@@ -45,7 +45,8 @@ export default class TestRepo {
     ));
   }
 
-  persistEntry(collection, entry, mediaFiles = [], newEntry = false) {
+  persistEntry(entry, mediaFiles = [], options) {
+    const newEntry = options.newEntry || false;
     const folder = entry.path.substring(0, entry.path.lastIndexOf('/'));
     const fileName = entry.path.substring(entry.path.lastIndexOf('/') + 1);
     if (newEntry) {

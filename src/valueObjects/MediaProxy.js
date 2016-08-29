@@ -8,11 +8,12 @@ export default function MediaProxy(value, file, uploaded = false) {
   this.file = file;
   this.uploaded = uploaded;
   this.sha = null;
-  this.path = config.media_folder && !uploaded ? config.media_folder + '/' + value : value;
+  this.path = config.media_folder && !uploaded ? config.media_folder.path + '/' + value : value;
+  this.public_path = config.media_folder && !uploaded ? config.media_folder.public_path + '/' + value : value;
 }
 
 MediaProxy.prototype.toString = function() {
-  return this.uploaded ? this.path : window.URL.createObjectURL(this.file, { oneTimeOnly: true });
+  return this.uploaded ? this.public_path : window.URL.createObjectURL(this.file, { oneTimeOnly: true });
 };
 
 MediaProxy.prototype.toBase64 = function() {

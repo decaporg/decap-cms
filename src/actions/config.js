@@ -62,7 +62,6 @@ export function loadConfig(config) {
 
 function parseConfig(data) {
   const config = yaml.safeLoad(data);
-
   if (typeof CMS_ENV === 'string' && config[CMS_ENV]) {
     for (var key in config[CMS_ENV]) {
       if (config[CMS_ENV].hasOwnProperty(key)) {
@@ -70,5 +69,14 @@ function parseConfig(data) {
       }
     }
   }
+
+  if ('media_folder' in config && typeof config.media_folder === 'string') {
+    // Parse source & public paths for media folder.
+    config.media_folder = {
+      path: config.media_folder,
+      public_path: config.media_folder
+    };
+  }
+
   return config;
 }

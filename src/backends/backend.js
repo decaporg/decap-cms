@@ -1,6 +1,7 @@
 import TestRepoBackend from './test-repo/implementation';
 import GitHubBackend from './github/implementation';
 import { resolveFormat } from '../formats/formats';
+import { randomStr } from '../lib/randomGenerator';
 import { createEntry } from '../valueObjects/Entry';
 
 class LocalStorageAuthStore {
@@ -91,11 +92,21 @@ class Backend {
     });
   }
 
-  persistEntry(collection, entryDraft, MediaFiles) {
-    const newEntry = entryDraft.getIn(['entry', 'newRecord']) || false;
-    const entryData = entryDraft.getIn(['entry', 'data']).toObject();
-    let entryObj;
+  getPublishMode(config) {
+    const publish_modes = ['simple', 'branch'];
+    const mode = config.get('publish_mode');
+    if (publish_modes.indexOf(mode) !== -1) {
+      return mode;
+    } else {
+      return 'simple';
+    }
+  }
 
+  persistEntry(config, collection, entryDraft, MediaFiles) {
+    const mode = this.getPublishMode(config);
+    const newEntry = entryDraft.getIn(['entry', 'newRecord']) || false;
+    const entryData = entryDraft.getIn(['entry', 'data']).toJS();
+    let entryObj;
     if (newEntry) {
       const slug = this.slugFormatter(collection.get('slug'), entryDraft.get('entry'));
       entryObj = {
@@ -115,7 +126,7 @@ class Backend {
           collection.get('label') + ' “' +
           entryDraft.getIn(['entry', 'data', 'title']) + '”';
 
-    return this.implementation.persistEntry(collection, entryObj, MediaFiles, { commitMessage }, newEntry);
+    return this.implementation.persistEntry(entryObj, MediaFiles, { newEntry, commitMessage, mode });
   }
 
   entryToRaw(collection, entry) {
