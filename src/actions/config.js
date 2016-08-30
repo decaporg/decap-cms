@@ -70,12 +70,13 @@ function parseConfig(data) {
     }
   }
 
-  if ('media_folder' in config && typeof config.media_folder === 'string') {
-    // Parse source & public paths for media folder.
-    config.media_folder = {
-      path: config.media_folder,
-      public_path: config.media_folder
-    };
+  if (!('public_folder' in config)) {
+    // Make sure there is a public folder
+    config.public_folder = config.media_folder;
+  }
+
+  if (config.public_folder.charAt(0) !== '/') {
+    config.public_folder = '/' + config.public_folder;
   }
 
   return config;

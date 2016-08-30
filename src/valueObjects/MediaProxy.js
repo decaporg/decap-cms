@@ -8,8 +8,8 @@ export default function MediaProxy(value, file, uploaded = false) {
   this.file = file;
   this.uploaded = uploaded;
   this.sha = null;
-  this.path = config.media_folder && !uploaded ? config.media_folder.path + '/' + value : value;
-  this.public_path = config.media_folder && !uploaded ? config.media_folder.public_path + '/' + value : value;
+  this.path = config.media_folder && !uploaded ? config.media_folder + '/' + value : value;
+  this.public_path = config.public_folder && !uploaded ? config.public_folder + '/' + value : value;
 }
 
 MediaProxy.prototype.toString = function() {
