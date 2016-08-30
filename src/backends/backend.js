@@ -103,7 +103,7 @@ class Backend {
   }
 
   persistEntry(config, collection, entryDraft, MediaFiles) {
-    const mode = this.getPublishMode(config);
+
     const newEntry = entryDraft.getIn(['entry', 'newRecord']) || false;
     const entryData = entryDraft.getIn(['entry', 'data']).toJS();
     let entryObj;
@@ -126,7 +126,11 @@ class Backend {
           collection.get('label') + ' “' +
           entryDraft.getIn(['entry', 'data', 'title']) + '”';
 
-    return this.implementation.persistEntry(entryObj, MediaFiles, { newEntry, commitMessage, mode });
+    const mode = this.getPublishMode(config);
+
+    const collectionName = collection.get('name');
+
+    return this.implementation.persistEntry(entryObj, MediaFiles, { newEntry, commitMessage, collectionName, mode });
   }
 
   entryToRaw(collection, entry) {
