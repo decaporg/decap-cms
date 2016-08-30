@@ -3,7 +3,6 @@ import MediaProxy from '../../valueObjects/MediaProxy';
 import { createEntry } from '../../valueObjects/Entry';
 import AuthenticationPage from './AuthenticationPage';
 import { Base64 } from 'js-base64';
-import { randomStr } from '../../lib/randomGenerator';
 import { BRANCH } from '../constants';
 
 const API_ROOT = 'https://api.github.com';
@@ -49,7 +48,6 @@ class API {
     let filename, part, parts, subtree;
     const fileTree = {};
     const files = [];
-    const branchName = ( options.mode === BRANCH ) ? 'cms-' + randomStr() : this.branch;
     mediaFiles.concat(entry).forEach((file) => {
       if (file.uploaded) { return; }
       files.push(this.uploadBlob(file));
@@ -65,15 +63,9 @@ class API {
     });
 
     return Promise.all(files)
-      .then(() => {
-        if (options.mode === BRANCH) {
-          return this.createBranch(branchName);
-        } else {
-          return this.getBranch();
-        }
-      })
-      .then((BranchCommit) => {
-        return this.updateTree(BranchCommit.sha, '/', fileTree);
+      .then(() => this.getBranch())
+      .then((branchData) => {
+        return this.updateTree(branchData.commit.sha, '/', fileTree);
       })
       .then((changeTree) => {
         return this.request(`${this.repoURL}/git/commits`, {
@@ -81,10 +73,11 @@ class API {
           body: JSON.stringify({ message: options.commitMessage, tree: changeTree.sha, parents: [changeTree.parentSha] })
         });
       }).then((response) => {
-        return this.request(`${this.repoURL}/git/refs/heads/${branchName}`, {
-          method: 'PATCH',
-          body: JSON.stringify({ sha: response.sha })
-        });
+        if (options.mode === BRANCH) {
+          return this.createBranch(`cms/${entry.slug}`, response.sha);
+        } else {
+          return this.patchBranch(this.branch, response.sha);
+        }
       });
   }
 
@@ -117,24 +110,22 @@ class API {
     });
   }
 
-  createBranch(branchName) {
-    return this.getBranch()
-    .then(branchCommit => {
-      const branchData = {
-        ref: 'refs/heads/' + branchName,
-        sha: branchCommit.sha
-      };
-      return this.request(`${this.repoURL}/git/refs`, {
-        method: 'POST',
-        body: JSON.stringify(branchData),
-      });
-    })
-    .then(branchData => branchData.object);
+  getBranch() {
+    return this.request(`${this.repoURL}/branches/${this.branch}`);
   }
 
-  getBranch() {
-    return this.request(`${this.repoURL}/branches/${this.branch}`)
-    .then(branchData => branchData.commit);
+  createBranch(branchName, sha) {
+    return this.request(`${this.repoURL}/git/refs`, {
+      method: 'POST',
+      body: JSON.stringify({ ref: `refs/heads/${branchName}`, sha }),
+    });
+  }
+
+  patchBranch(branchName, sha) {
+    return this.request(`${this.repoURL}/git/refs/heads/${branchName}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ sha })
+    });
   }
 
   getTree(sha) {
