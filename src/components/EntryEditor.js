@@ -8,7 +8,7 @@ export default function EntryEditor({ collection, entry, getMedia, onChange, onA
     <h1>Entry in {collection.get('label')}</h1>
     <h2>{entry && entry.get('title')}</h2>
     <div className="cms-container" style={styles.container}>
-      <div className="cms-control-pane" style={styles.pane}>
+      <div className="cms-control-pane" style={styles.controlPane}>
         <ControlPane
             collection={collection}
             entry={entry}
@@ -29,6 +29,11 @@ export default function EntryEditor({ collection, entry, getMedia, onChange, onA
 const styles = {
   container: {
     display: 'flex'
+  },
+  controlPane: {
+    width: '50%',
+    paddingLeft: '10px',
+    paddingRight: '10px'
   },
   pane: {
     width: '50%'
