@@ -98,14 +98,15 @@ const styles = {
     display: 'none'
   },
   imageUpload: {
-    backgroundColor: '#3ab7a5',
+    backgroundColor: '#fff',
     textAlign: 'center',
-    color: '#fff',
-    padding: '10px',
+    color: '#888',
+    padding: '20px',
     display: 'block',
     margin: '10px',
-    boxShadow: '0px 9px 8px -5px rgba(0,0,0,0.75)',
-    cursor: 'pointer'
+    border: '1px dashed #eee',
+    cursor: 'pointer',
+    fontSize: '12px'
   }
 };
 
