@@ -9,7 +9,7 @@ export default class ImageCard extends React.Component {
     return (
       <Card onClick={onClick} className={styles.root}>
         <img src={image} onLoad={onImageLoaded} />
-        <h1>{text}</h1>
+        <h2>{text}</h2>
 
         {description ? <p>{description}</p> : null}
       </Card>
