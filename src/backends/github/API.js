@@ -68,21 +68,40 @@ export default class API {
     });
   }
 
-  storeMetadata(name, data) {
+  storeMetadata(key, data) {
     this.checkMetadataBranch()
     .then((branchData) => {
       const fileTree = {
-        [`${name}.json`]: {
-          path: `${name}.json`,
+        [`${key}.json`]: {
+          path: `${key}.json`,
           raw: JSON.stringify(data),
           file: true
         }
       };
 
-      return this.uploadBlob(fileTree[`${name}.json`])
+      return this.uploadBlob(fileTree[`${key}.json`])
       .then(item => this.updateTree(branchData.sha, '/', fileTree))
-      .then(changeTree => this.commit(`Updating “${name}” metadata`, changeTree))
+      .then(changeTree => this.commit(`Updating “${key}” metadata`, changeTree))
       .then(response => this.patchBranch('_netlify_cms', response.sha));
+    });
+  }
+
+  retrieveMetadata(key, data) {
+    const cache = LocalForage.getItem(`gh.meta.${key}`);
+    return cache.then((cached) => {
+      if (cached && cached.expires > Date.now()) { return cached.data; }
+
+      return this.request(`${this.repoURL}/contents/${key}.json?ref=_netlify_cms`, {
+        headers: { Accept: 'application/vnd.github.VERSION.raw' },
+        cache: 'no-store',
+      }).then((result) => {
+        console.log(result);
+        LocalForage.setItem(`gh.meta.${key}`, {
+          expires: Date.now() + 300000, // In 5 minutes
+          data: result,
+        });
+        return result;
+      });
     });
   }
 
