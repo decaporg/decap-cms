@@ -34,3 +34,11 @@ header {
 h1, h2, h3, h4, h5, h6, p {
   margin: 0;
 }
+
+h1{
+    color: #3ab7a5;
+    border-bottom: 1px solid #3ab7a5;
+    margin: 30px auto 25px;
+    padding-bottom: 15px;
+    font-size: 25px;
+}
