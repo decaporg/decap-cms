@@ -1,9 +1,9 @@
 :root {
-  --foregroundColor: #555;
-  --backgroundColor: rgba(245, 245, 245, 0.98);
+  --foregroundColor: #fff;
+  --backgroundColor: #596362;
   --textFieldBorderColor: #e7e7e7;
-  --highlightFGColor: #444;
-  --highlightBGColor: #d2dee4;
+  --highlightFGColor: #fff;
+  --highlightBGColor: #3ab7a5;
 }
 
 .root {
