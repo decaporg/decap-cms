@@ -67,16 +67,16 @@
   },
   "dependencies": {
     "bricks.js": "^1.7.0",
-    "commonmark": "^0.24.0",
-    "commonmark-react-renderer": "^4.1.2",
-    "draft-js": "^0.7.0",
-    "draft-js-export-markdown": "^0.2.0",
-    "draft-js-import-markdown": "^0.1.6",
     "fuzzy": "^0.1.1",
     "js-base64": "^2.1.9",
     "json-loader": "^0.5.4",
     "localforage": "^1.4.2",
     "lodash": "^4.13.1",
-    "pluralize": "^3.0.0"
+    "markup-it": "git+https://github.com/cassiozen/markup-it.git",
+    "pluralize": "^3.0.0",
+    "prismjs": "^1.5.1",
+    "react-portal": "^2.2.1",
+    "selection-position": "^1.0.0",
+    "slate": "^0.13.6"
   }
 }

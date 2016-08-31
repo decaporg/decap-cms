@@ -1,5 +1,6 @@
 import auth from './auth';
 import config from './config';
+import editor from './editor';
 import entries, * as fromEntries  from './entries';
 import entryDraft from './entryDraft';
 import collections from './collections';
@@ -9,6 +10,7 @@ const reducers = {
   auth,
   config,
   collections,
+  editor,
   entries,
   entryDraft,
   medias

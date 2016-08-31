@@ -1,0 +1,26 @@
+.active {
+  box-shadow: 0 0 0 2px blue;
+}
+
+:global .plugin {
+  background-color: #ddd;
+  color: #555;
+  text-align: center;
+  width: 200px;
+  padding: 8px;
+  border-radius: 2px;
+}
+
+:global .plugin_icon {
+  font-size: 50px;
+  margin: 12px 0;
+}
+
+:global .plugin_fields {
+  font-size: 11px;
+  outline:none;
+}
+
+:global .active {
+  box-shadow: 0 0 0 2px blue;
+}

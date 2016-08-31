@@ -1,0 +1,32 @@
+.root {
+  position: absolute;
+}
+
+.button {
+  margin-top: 2px;
+  color: #ddd;
+  transition: color 0.5s ease;
+  cursor: pointer;
+}
+.button:hover {
+  color: #aaa;
+}
+
+.menu {
+  position: absolute;
+  top: -5px;
+  left: 20px;
+  height: 32px;
+  white-space: nowrap;
+  background-color: rgba(126, 126, 126, 0.1);
+}
+
+.icon {
+  margin: 8px;
+  cursor: pointer;
+  color: #555;
+}
+
+.input {
+  display: none;
+}

@@ -2,6 +2,12 @@ import React from 'react';
 import styles from './Icon.css';
 
 const availableIcons = [
+  // Font Awesome Editor Icons
+  'bold', 'italic', 'list', 'font', 'text-height', 'text-width', 'align-left', 'align-center', 'align-right',
+  'align-justify', 'indent-left', 'indent-right', 'list-bullet', 'list-numbered', 'strike', 'underline', 'table',
+  'superscript', 'subscript', 'header', 'h1', 'h2', 'paragraph', 'link', 'unlink', 'quote-left', 'quote-right', 'code',
+  'picture','video',
+  // Entypo
   'note', 'note-beamed',
   'music',
   'search',
@@ -10,8 +16,8 @@ const availableIcons = [
   'heart', 'heart-empty',
   'star', 'star-empty',
   'user', 'users', 'user-add',
-  'video',
-  'picture',
+  'video-alt',
+  'picture-alt',
   'camera',
   'layout',
   'menu',
@@ -23,7 +29,7 @@ const availableIcons = [
   'info', 'info-circled',
   'back',
   'home',
-  'link',
+  'link-alt',
   'attach',
   'lock', 'lock-open',
   'eye',
@@ -33,7 +39,7 @@ const availableIcons = [
   'thumbs-up', 'thumbs-down',
   'download', 'upload', 'upload-cloud',
   'reply', 'reply-all', 'forward', 'quote',
-  'code',
+  'code-alt',
   'export',
   'pencil',
   'feather',
@@ -191,8 +197,10 @@ const iconPropType = (props, propName) => {
   }
 };
 
-export default function Icon({ style, className = '', type }) {
-  return <span className={`${styles.root} ${styles[type]} ${className}`} style={style}/>;
+const noop = function() {};
+
+export default function Icon({ style, className = '', type, onClick = noop}) {
+  return <span className={`${styles.root} ${styles[type]} ${className}`} style={style} onClick={onClick} />;
 }
 
 Icon.propTypes = {
