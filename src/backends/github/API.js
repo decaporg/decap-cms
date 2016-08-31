@@ -46,15 +46,15 @@ export default class API {
     });
   }
 
-  checkMetadataBranch() {
-    return this.request(`${this.repoURL}/branches/_netlify_cms?${Date.now()}`, {
+  checkMetadataRef() {
+    return this.request(`${this.repoURL}/git/refs/meta/_netlify_cms?${Date.now()}`, {
       cache: 'no-store',
     })
-    .then(response => response.commit)
+    .then(response => response.object)
     .catch(error => {
-      //Branch doesn't exist
+      // Meta ref doesn't exist
       const readme = {
-        raw: '# Netlify CMS\n\nThis branch is used by the Netlify CMS to store metadata information for specific files and branches.'
+        raw: '# Netlify CMS\n\nThis tree is used by the Netlify CMS to store metadata information for specific files and branches.'
       };
 
       return this.uploadBlob(readme)
@@ -63,13 +63,13 @@ export default class API {
         body: JSON.stringify({ tree: [{ path: 'README.md', mode: '100644', type: 'blob', sha: item.sha }] })
       }))
       .then(tree => this.commit('First Commit', tree))
-      .then(response => this.createBranch('_netlify_cms', response.sha))
+      .then(response => this.createRef('meta', '_netlify_cms', response.sha))
       .then(response => response.object);
     });
   }
 
   storeMetadata(key, data) {
-    this.checkMetadataBranch()
+    this.checkMetadataRef()
     .then((branchData) => {
       const fileTree = {
         [`${key}.json`]: {
@@ -82,7 +82,7 @@ export default class API {
       return this.uploadBlob(fileTree[`${key}.json`])
       .then(item => this.updateTree(branchData.sha, '/', fileTree))
       .then(changeTree => this.commit(`Updating “${key}” metadata`, changeTree))
-      .then(response => this.patchBranch('_netlify_cms', response.sha));
+      .then(response => this.patchRef('meta', '_netlify_cms', response.sha));
     });
   }
 
@@ -91,7 +91,7 @@ export default class API {
     return cache.then((cached) => {
       if (cached && cached.expires > Date.now()) { return cached.data; }
 
-      return this.request(`${this.repoURL}/contents/${key}.json?ref=_netlify_cms`, {
+      return this.request(`${this.repoURL}/contents/${key}.json?ref=refs/meta/_netlify_cms`, {
         headers: { Accept: 'application/vnd.github.VERSION.raw' },
         cache: 'no-store',
       }).then((result) => {
@@ -153,30 +153,39 @@ export default class API {
       .then(changeTree => this.commit(options.commitMessage, changeTree))
       .then((response) => {
         if (options.mode && options.mode === BRANCH) {
-          const newBranch = options.collectionName ? `cms/${options.collectionName}-${entry.slug}` : `cms/${entry.slug}`;
-          return this.createBranch(newBranch, response.sha);
+          const branchKey = options.collectionName ? `${options.collectionName}-${entry.slug}` : entry.slug;
+          return this.createBranch(`cms/${branchKey}`, response.sha)
+          .then(this.storeMetadata(branchKey, { status: 'draft' }));
         } else {
           return this.patchBranch(this.branch, response.sha);
         }
       });
   }
 
-  getBranch() {
-    return this.request(`${this.repoURL}/branches/${this.branch}`);
+  createRef(type, name, sha) {
+    return this.request(`${this.repoURL}/git/refs`, {
+      method: 'POST',
+      body: JSON.stringify({ ref: `refs/${type}/${name}`, sha }),
+    });
   }
 
   createBranch(branchName, sha) {
-    return this.request(`${this.repoURL}/git/refs`, {
-      method: 'POST',
-      body: JSON.stringify({ ref: `refs/heads/${branchName}`, sha }),
+    return this.createRef('heads', branchName, sha);
+  }
+
+  patchRef(type, name, sha) {
+    return this.request(`${this.repoURL}/git/refs/${type}/${name}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ sha })
     });
   }
 
   patchBranch(branchName, sha) {
-    return this.request(`${this.repoURL}/git/refs/heads/${branchName}`, {
-      method: 'PATCH',
-      body: JSON.stringify({ sha })
-    });
+    return this.patchRef('heads', branchName, sha);
+  }
+
+  getBranch() {
+    return this.request(`${this.repoURL}/branches/${this.branch}`);
   }
 
   getTree(sha) {
