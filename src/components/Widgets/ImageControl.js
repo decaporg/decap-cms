@@ -78,8 +78,8 @@ export default class ImageControl extends React.Component {
           onDragOver={this.handleDragOver}
           onDrop={this.handleChange}
       >
-        <span onClick={this.handleClick}>
-          {imageName ? imageName : 'Click or drop image here.'}
+        <span style={styles.imageUpload} onClick={this.handleClick}>
+          {imageName ? imageName : 'Click here to upload from your file browser, or drag an image directly into this box from your desktop'}
         </span>
         <input
             type="file"
@@ -96,6 +96,16 @@ export default class ImageControl extends React.Component {
 const styles = {
   input: {
     display: 'none'
+  },
+  imageUpload: {
+    backgroundColor: '#3ab7a5',
+    textAlign: 'center',
+    color: '#fff',
+    padding: '10px',
+    display: 'block',
+    margin: '10px',
+    boxShadow: '0px 9px 8px -5px rgba(0,0,0,0.75)',
+    cursor: 'pointer'
   }
 };
 
