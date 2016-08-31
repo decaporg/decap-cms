@@ -42,9 +42,15 @@ h1{
     padding-bottom: 15px;
     font-size: 25px;
 }
+
 input{
   width:100%;
   padding:3px;
+  font-size:14px;
+  margin-bottom:10px;
+}
+header input{
+  margin-bottom:0;
 }
 button{
   border: 1px solid #3ab7a5;

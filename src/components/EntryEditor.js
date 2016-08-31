@@ -31,7 +31,9 @@ const styles = {
     display: 'flex'
   },
   controlPane: {
-    width: '50%'
+    width: '50%',
+    paddingLeft: '10px',
+    paddingRight: '10px'
   },
   pane: {
     width: '50%'

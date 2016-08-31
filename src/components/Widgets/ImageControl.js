@@ -103,7 +103,6 @@ const styles = {
     color: '#999',
     padding: '20px',
     display: 'block',
-    margin: '10px',
     border: '1px dashed #eee',
     cursor: 'pointer',
     fontSize: '12px'

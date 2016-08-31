@@ -30,6 +30,7 @@
   white-space: nowrap;
   vertical-align: middle;
   border-right: 1px solid var(--textFieldBorderColor);
+  margin:0;
 }
 
 .inputField {
