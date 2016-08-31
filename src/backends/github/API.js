@@ -11,7 +11,6 @@ export default class API {
     this.repo = repo;
     this.branch = branch;
     this.repoURL = `/repos/${this.repo}`;
-    this.checkMetadataBranch();
   }
 
   user() {
@@ -48,33 +47,43 @@ export default class API {
   }
 
   checkMetadataBranch() {
-    this.request(`${this.repoURL}/contents?ref=_netlify_cms`, {
-      cache: false
+    return this.request(`${this.repoURL}/branches/_netlify_cms?${Date.now()}`, {
+      cache: 'no-store',
     })
-    .then(result => console.log(result))
+    .then(response => response.commit)
     .catch(error => {
       //Branch doesn't exist
       const readme = {
         raw: '# Netlify CMS\n\nThis branch is used by the Netlify CMS to store metadata information for specific files and branches.'
       };
 
-      this.uploadBlob(readme)
+      return this.uploadBlob(readme)
       .then(item => this.request(`${this.repoURL}/git/trees`, {
         method: 'POST',
         body: JSON.stringify({ tree: [{ path: 'README.md', mode: '100644', type: 'blob', sha: item.sha }] })
       }))
-      .then(tree => this.request(`${this.repoURL}/git/commits`, {
-        method: 'POST',
-        body: JSON.stringify({ message: 'First Commit', tree: tree.sha, parents: [] })
-      }))
-      .then(response => this.createBranch('_netlify_cms', response.sha));
+      .then(tree => this.commit('First Commit', tree))
+      .then(response => this.createBranch('_netlify_cms', response.sha))
+      .then(response => response.object);
     });
+  }
 
-    // List all branches inside /cms
-    // this.request(`${this.repoURL}/git/refs/heads/cms/`).then((result) => {
-    //   console.log(result);
-    // });
+  storeMetadata(name, data) {
+    this.checkMetadataBranch()
+    .then((branchData) => {
+      const fileTree = {
+        [`${name}.json`]: {
+          path: `${name}.json`,
+          raw: JSON.stringify(data),
+          file: true
+        }
+      };
 
+      return this.uploadBlob(fileTree[`${name}.json`])
+      .then(item => this.updateTree(branchData.sha, '/', fileTree))
+      .then(changeTree => this.commit(`Updating “${name}” metadata`, changeTree))
+      .then(response => this.patchBranch('_netlify_cms', response.sha));
+    });
   }
 
   readFile(path, sha) {
@@ -119,18 +128,11 @@ export default class API {
       subtree[filename] = file;
       file.file = true;
     });
-
     return Promise.all(files)
       .then(() => this.getBranch())
-      .then((branchData) => {
-        return this.updateTree(branchData.commit.sha, '/', fileTree);
-      })
-      .then((changeTree) => {
-        return this.request(`${this.repoURL}/git/commits`, {
-          method: 'POST',
-          body: JSON.stringify({ message: options.commitMessage, tree: changeTree.sha, parents: [changeTree.parentSha] })
-        });
-      }).then((response) => {
+      .then(branchData => this.updateTree(branchData.commit.sha, '/', fileTree))
+      .then(changeTree => this.commit(options.commitMessage, changeTree))
+      .then((response) => {
         if (options.mode && options.mode === BRANCH) {
           const newBranch = options.collectionName ? `cms/${options.collectionName}-${entry.slug}` : `cms/${entry.slug}`;
           return this.createBranch(newBranch, response.sha);
@@ -223,6 +225,15 @@ export default class API {
             return { path: path, mode: '040000', type: 'tree', sha: response.sha, parentSha: sha };
           });
       });
+  }
+
+  commit(message, changeTree) {
+    const tree = changeTree.sha;
+    const parents = changeTree.parentSha ? [changeTree.parentSha] : [];
+    return this.request(`${this.repoURL}/git/commits`, {
+      method: 'POST',
+      body: JSON.stringify({ message, tree, parents })
+    });
   }
 
 }
