@@ -1,5 +1,6 @@
 import TestRepoBackend from './test-repo/implementation';
 import GitHubBackend from './github/implementation';
+import NetlifyGitBackend from './netlify-git/implementation';
 import { resolveFormat } from '../formats/formats';
 import { createEntry } from '../valueObjects/Entry';
 import { SIMPLE, BRANCH } from './constants';
@@ -152,6 +153,8 @@ export function resolveBackend(config) {
       return new Backend(new TestRepoBackend(config), authStore);
     case 'github':
       return new Backend(new GitHubBackend(config), authStore);
+    case 'netlify-git':
+      return new Backend(new NetlifyGitBackend(config), authStore);
     default:
       throw `Backend not found: ${name}`;
   }
