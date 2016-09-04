@@ -49,6 +49,7 @@ class Backend {
 
   entries(collection, page, perPage) {
     return this.implementation.entries(collection, page, perPage).then((response) => {
+      console.log("Got %s entries", response.entries.length);
       return {
         pagination: response.pagination,
         entries: response.entries.map(this.entryWithFormat(collection))

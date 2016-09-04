@@ -36,12 +36,15 @@ export default class GitHub {
       const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
       const promises = [];
       files.map((file) => {
-        sem.take(() => {
-          promises.push(this.api.readFile(file.path, file.sha).then((data) => {
+        promises.push(new Promise((resolve, reject) => {
+          return sem.take(() => this.api.readFile(file.path, file.sha).then((data) => {
+            resolve(createEntry(file.path, file.path.split('/').pop().replace(/\.[^\.]+$/, ''), data));
             sem.leave();
-            return createEntry(file.path, file.path.split('/').pop().replace(/\.[^\.]+$/, ''), data);
+          }).catch((err) => {
+            sem.leave();
+            reject(err);
           }));
-        });
+        }));
       });
       return Promise.all(promises);
     }).then((entries) => ({
