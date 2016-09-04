@@ -1,4 +1,4 @@
-import { createEntry } from '../../valueObjects/Entry';
+import {createEntry} from '../../valueObjects/Entry';
 import AuthenticationPage from './AuthenticationPage';
 import API from './API';
 
@@ -9,6 +9,7 @@ export default class GitHub {
       throw 'The GitHub backend needs a "repo" in the backend configuration.';
     }
     this.repo = config.getIn(['backend', 'repo']);
+    this.branch = config.getIn(['backend', 'branch']) || 'master';
   }
 
   authComponent() {

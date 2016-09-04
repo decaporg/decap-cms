@@ -35,9 +35,23 @@ export default class API {
     });
   }
 
+  urlFor(path, options) {
+    const params = [];
+    if (options.params) {
+      for (const key in options.params) {
+        params.push(`${key}=${encodeURIComponent(options.params[key])}`);
+      }
+    }
+    if (params.length) {
+      path += `?${params.join('&')}`;
+    }
+    return API_ROOT + path;
+  }
+
   request(path, options = {}) {
     const headers = this.requestHeaders(options.headers || {});
-    return fetch(API_ROOT + path, { ...options, headers: headers }).then((response) => {
+    const url = this.urlFor(path, options);
+    return fetch(url, { ...options, headers: headers }).then((response) => {
       if (response.headers.get('Content-Type').match(/json/)) {
         return this.parseJsonResponse(response);
       }
@@ -111,7 +125,7 @@ export default class API {
 
       return this.request(`${this.repoURL}/contents/${path}`, {
         headers: { Accept: 'application/vnd.github.VERSION.raw' },
-        body: { ref: this.branch },
+        params: { ref: this.branch },
         cache: false
       }).then((result) => {
         if (sha) {
@@ -125,7 +139,7 @@ export default class API {
 
   listFiles(path) {
     return this.request(`${this.repoURL}/contents/${path}`, {
-      body: { ref: this.branch }
+      params: { ref: this.branch }
     });
   }
 
