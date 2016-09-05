@@ -101,7 +101,7 @@ export default class API {
         });
         return result;
       });
-    });
+    }).catch(error => null);
   }
 
   readFile(path, sha) {
@@ -132,10 +132,13 @@ export default class API {
   persistFiles(entry, mediaFiles, options) {
     let filename, part, parts, subtree;
     const fileTree = {};
-    const files = [];
-    mediaFiles.concat(entry).forEach((file) => {
+    const uploadPromises = [];
+
+    const files = mediaFiles.concat(entry);
+
+    files.forEach((file) => {
       if (file.uploaded) { return; }
-      files.push(this.uploadBlob(file));
+      uploadPromises.push(this.uploadBlob(file));
       parts = file.path.split('/').filter((part) => part);
       filename = parts.pop();
       subtree = fileTree;
@@ -146,15 +149,23 @@ export default class API {
       subtree[filename] = file;
       file.file = true;
     });
-    return Promise.all(files)
+    return Promise.all(uploadPromises)
       .then(() => this.getBranch())
       .then(branchData => this.updateTree(branchData.commit.sha, '/', fileTree))
       .then(changeTree => this.commit(options.commitMessage, changeTree))
       .then((response) => {
         if (options.mode && options.mode === BRANCH) {
           const contentKey = options.collectionName ? `${options.collectionName}-${entry.slug}` : entry.slug;
-          return this.createBranch(`cms/${contentKey}`, response.sha)
-          .then(this.storeMetadata(contentKey, { status: 'draft' }))
+          const branchName = `cms/${contentKey}`;
+          return this.createBranch(branchName, response.sha)
+          .then(this.storeMetadata(contentKey, {
+            type: 'PR',
+            status: 'draft',
+            branch: branchName,
+            title: options.parsedData.title,
+            description: options.parsedData.description,
+            objects: files.map(file => file.path)
+          }))
           .then(this.createPR(options.commitMessage, `cms/${contentKey}`));
         } else {
           return this.patchBranch(this.branch, response.sha);

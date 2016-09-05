@@ -21,7 +21,7 @@ class Backend {
   constructor(implementation, authStore = null) {
     this.implementation = implementation;
     this.authStore = authStore;
-    if (this.implementation == null) {
+    if (this.implementation === null) {
       throw 'Cannot instantiate a Backend with no implementation';
     }
   }
@@ -103,8 +103,13 @@ class Backend {
   }
 
   persistEntry(config, collection, entryDraft, MediaFiles) {
-
     const newEntry = entryDraft.getIn(['entry', 'newRecord']) || false;
+
+    const parsedData = {
+      title: entryDraft.getIn(['entry', 'data', 'title'], 'No Title'),
+      description: entryDraft.getIn(['entry', 'data', 'description'], 'No Description'),
+    };
+
     const entryData = entryDraft.getIn(['entry', 'data']).toJS();
     let entryObj;
     if (newEntry) {
@@ -130,7 +135,9 @@ class Backend {
 
     const collectionName = collection.get('name');
 
-    return this.implementation.persistEntry(entryObj, MediaFiles, { newEntry, commitMessage, collectionName, mode });
+    return this.implementation.persistEntry(entryObj, MediaFiles, {
+      newEntry, parsedData, commitMessage, collectionName, mode
+    });
   }
 
   entryToRaw(collection, entry) {

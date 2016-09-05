@@ -70,6 +70,11 @@ function parseConfig(data) {
     }
   }
 
+  if (!('publish_mode' in config.backend)) {
+    // Make sure there is a publish mode
+    config.backend['publish_mode'] = 'simple';
+  }
+
   if (!('public_folder' in config)) {
     // Make sure there is a public folder
     config.public_folder = config.media_folder;
