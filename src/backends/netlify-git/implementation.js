@@ -5,14 +5,15 @@ import API from './API';
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
 
-export default class GitHub {
+export default class NetlifyGit {
   constructor(config) {
     this.config = config;
-    if (config.getIn(['backend', 'repo']) == null) {
-      throw 'The GitHub backend needs a "repo" in the backend configuration.';
+    if (config.getIn(['backend', 'url']) == null) {
+      throw 'The netlify-git backend needs a "url" in the backend configuration.';
     }
-    this.repo = config.getIn(['backend', 'repo']);
+    this.url = config.getIn(['backend', 'url']);
     this.branch = config.getIn(['backend', 'branch']) || 'master';
+    AuthenticationPage.url = this.url;
   }
 
   authComponent() {
@@ -20,15 +21,11 @@ export default class GitHub {
   }
 
   setUser(user) {
-    this.api = new API(user.token, this.repo, this.branch || 'master');
+    this.api = new API(user.access_token, this.url, this.branch || 'master');
   }
 
   authenticate(state) {
-    this.api = new API(state.token, this.repo, this.branch || 'master');
-    return this.api.user().then((user) => {
-      user.token = state.token;
-      return user;
-    });
+    return Promise.resolve(state);
   }
 
   entries(collection) {

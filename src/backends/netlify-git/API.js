@@ -3,23 +3,17 @@ import MediaProxy from '../../valueObjects/MediaProxy';
 import { Base64 } from 'js-base64';
 import { BRANCH } from '../constants';
 
-const API_ROOT = 'https://api.github.com';
-
 export default class API {
-  constructor(token, repo, branch) {
+  constructor(token, url, branch) {
     this.token = token;
-    this.repo = repo;
+    this.url = url;
     this.branch = branch;
-    this.repoURL = `/repos/${this.repo}`;
-  }
-
-  user() {
-    return this.request('/user');
+    this.repoURL = '';
   }
 
   requestHeaders(headers = {}) {
     return {
-      Authorization: `token ${this.token}`,
+      Authorization: `Bearer ${this.token}`,
       'Content-Type': 'application/json',
       ...headers
     };
@@ -45,14 +39,14 @@ export default class API {
     if (params.length) {
       path += `?${params.join('&')}`;
     }
-    return API_ROOT + path;
+    return this.url + path;
   }
 
   request(path, options = {}) {
     const headers = this.requestHeaders(options.headers || {});
     const url = this.urlFor(path, options);
     return fetch(url, { ...options, headers: headers }).then((response) => {
-      if (response.headers.get('Content-Type').match(/json/)) {
+      if (response.headers.get('Content-Type').match(/json/) && !options.raw) {
         return this.parseJsonResponse(response);
       }
 
@@ -105,7 +99,7 @@ export default class API {
     return cache.then((cached) => {
       if (cached && cached.expires > Date.now()) { return cached.data; }
 
-      return this.request(`${this.repoURL}/contents/${key}.json?ref=refs/meta/_netlify_cms`, {
+      return this.request(`${this.repoURL}/files/${key}.json?ref=refs/meta/_netlify_cms`, {
         headers: { Accept: 'application/vnd.github.VERSION.raw' },
         cache: 'no-store',
       }).then((result) => {
@@ -123,10 +117,11 @@ export default class API {
     return cache.then((cached) => {
       if (cached) { return cached; }
 
-      return this.request(`${this.repoURL}/contents/${path}`, {
+      return this.request(`${this.repoURL}/files/${path}`, {
         headers: { Accept: 'application/vnd.github.VERSION.raw' },
         params: { ref: this.branch },
-        cache: false
+        cache: false,
+        raw: true
       }).then((result) => {
         if (sha) {
           LocalForage.setItem(`gh.${sha}`, result);
@@ -138,7 +133,7 @@ export default class API {
   }
 
   listFiles(path) {
-    return this.request(`${this.repoURL}/contents/${path}`, {
+    return this.request(`${this.repoURL}/files/${path}`, {
       params: { ref: this.branch }
     });
   }
