@@ -1,3 +1,3 @@
-// Create/edit modes
+// Create/edit workflows
 export const SIMPLE = 'simple';
-export const BRANCH = 'branch';
+export const EDITORIAL = 'editorial';

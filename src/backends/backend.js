@@ -3,7 +3,7 @@ import GitHubBackend from './github/implementation';
 import NetlifyGitBackend from './netlify-git/implementation';
 import { resolveFormat } from '../formats/formats';
 import { createEntry } from '../valueObjects/Entry';
-import { SIMPLE, BRANCH } from './constants';
+import { SIMPLE, EDITORIAL } from './constants';
 
 class LocalStorageAuthStore {
   storageKey = 'nf-cms-user';
@@ -94,9 +94,9 @@ class Backend {
   }
 
   getPublishMode(config) {
-    const publish_modes = [SIMPLE, BRANCH];
-    const mode = config.getIn(['backend', 'publish_mode']);
-    if (publish_modes.indexOf(mode) !== -1) {
+    const publish_workflows = [SIMPLE, EDITORIAL];
+    const mode = config.get('publish_workflow');
+    if (publish_workflows.indexOf(mode) !== -1) {
       return mode;
     } else {
       return SIMPLE;

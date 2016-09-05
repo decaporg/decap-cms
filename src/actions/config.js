@@ -70,9 +70,9 @@ function parseConfig(data) {
     }
   }
 
-  if (!('publish_mode' in config.backend)) {
-    // Make sure there is a publish mode
-    config.backend['publish_mode'] = 'simple';
+  if (!('publish_workflow' in config)) {
+    // Make sure there is a publish workflow mode set
+    config['publish_workflow'] = 'simple';
   }
 
   if (!('public_folder' in config)) {
