@@ -99,7 +99,8 @@ export default class API {
     return cache.then((cached) => {
       if (cached && cached.expires > Date.now()) { return cached.data; }
 
-      return this.request(`${this.repoURL}/files/${key}.json?ref=refs/meta/_netlify_cms`, {
+      return this.request(`${this.repoURL}/files/${key}.json`, {
+        params: { ref: 'refs/meta/_netlify_cms' },
         headers: { Accept: 'application/vnd.github.VERSION.raw' },
         cache: 'no-store',
       }).then((result) => {
