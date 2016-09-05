@@ -1,5 +1,5 @@
 import semaphore from 'semaphore';
-import {createEntry} from '../../valueObjects/Entry';
+import { createEntry } from '../../valueObjects/Entry';
 import AuthenticationPage from './AuthenticationPage';
 import API from './API';
 
