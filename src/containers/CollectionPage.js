@@ -3,6 +3,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 import { loadEntries } from '../actions/entries';
 import { selectEntries } from '../reducers';
+import { Loader } from '../components/UI';
 import EntryListing from '../components/EntryListing';
 
 class DashboardPage extends React.Component {
@@ -28,7 +29,11 @@ class DashboardPage extends React.Component {
     }
 
     return <div>
-      {entries ? <EntryListing collection={collection} entries={entries}/> : 'Loading entries...'}
+      {entries ?
+        <EntryListing collection={collection} entries={entries}/>
+        :
+        <Loader active>{['Loading Entries', 'Caching Entries', 'This might take several minutes']}</Loader>
+      }
     </div>;
   }
 }
