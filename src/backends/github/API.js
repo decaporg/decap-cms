@@ -1,7 +1,7 @@
 import LocalForage from 'localforage';
 import MediaProxy from '../../valueObjects/MediaProxy';
 import { Base64 } from 'js-base64';
-import { EDITORIAL } from '../constants';
+import { EDITORIAL_WORKFLOW } from '../../constants/publishModes';
 
 const API_ROOT = 'https://api.github.com';
 
@@ -169,7 +169,7 @@ export default class API {
       .then(branchData => this.updateTree(branchData.commit.sha, '/', fileTree))
       .then(changeTree => this.commit(options.commitMessage, changeTree))
       .then((response) => {
-        if (options.mode && options.mode === EDITORIAL) {
+        if (options.mode && options.mode === EDITORIAL_WORKFLOW) {
           const contentKey = options.collectionName ? `${options.collectionName}-${entry.slug}` : entry.slug;
           const branchName = `cms/${contentKey}`;
           return this.createBranch(branchName, response.sha)
@@ -177,6 +177,7 @@ export default class API {
             type: 'PR',
             status: 'draft',
             branch: branchName,
+            collection: options.collectionName,
             title: options.parsedData.title,
             description: options.parsedData.description,
             objects: files.map(file => file.path)

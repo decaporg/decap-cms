@@ -1,7 +1,7 @@
 import LocalForage from 'localforage';
 import MediaProxy from '../../valueObjects/MediaProxy';
 import { Base64 } from 'js-base64';
-import { EDITORIAL } from '../constants';
+import { EDITORIAL_WORKFLOW } from '../../constants/publishModes';
 
 export default class API {
   constructor(token, url, branch) {
@@ -161,7 +161,7 @@ export default class API {
       .then(branchData => this.updateTree(branchData.commit.sha, '/', fileTree))
       .then(changeTree => this.commit(options.commitMessage, changeTree))
       .then((response) => {
-        if (options.mode && options.mode === EDITORIAL) {
+        if (options.mode && options.mode === EDITORIAL_WORKFLOW) {
           const contentKey = options.collectionName ? `${options.collectionName}-${entry.slug}` : entry.slug;
           return this.createBranch(`cms/${contentKey}`, response.sha)
           .then(this.storeMetadata(contentKey, { status: 'draft' }))

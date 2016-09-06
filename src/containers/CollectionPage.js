@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 import { loadEntries } from '../actions/entries';
+import { loadUnpublishedEntries } from '../actions/editorialWorkflow';
 import { selectEntries } from '../reducers';
 import { Loader } from '../components/UI';
 import EntryListing from '../components/EntryListing';
@@ -9,7 +10,7 @@ import EntryListing from '../components/EntryListing';
 class DashboardPage extends React.Component {
   componentDidMount() {
     const { collection, dispatch } = this.props;
-
+    dispatch(loadUnpublishedEntries);
     if (collection) {
       dispatch(loadEntries(collection));
     }

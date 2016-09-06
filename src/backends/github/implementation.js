@@ -1,5 +1,5 @@
 import semaphore from 'semaphore';
-import {createEntry} from '../../valueObjects/Entry';
+import { createEntry } from '../../valueObjects/Entry';
 import AuthenticationPage from './AuthenticationPage';
 import API from './API';
 
@@ -61,5 +61,12 @@ export default class GitHub {
 
   persistEntry(entry, mediaFiles = [], options = {}) {
     return this.api.persistFiles(entry, mediaFiles, options);
+  }
+
+  unpublishedEntries() {
+    return Promise.resolve({
+      pagination: {},
+      entries: []
+    });
   }
 }

@@ -3,7 +3,6 @@ import GitHubBackend from './github/implementation';
 import NetlifyGitBackend from './netlify-git/implementation';
 import { resolveFormat } from '../formats/formats';
 import { createEntry } from '../valueObjects/Entry';
-import { SIMPLE, EDITORIAL } from './constants';
 
 class LocalStorageAuthStore {
   storageKey = 'nf-cms-user';
@@ -65,14 +64,23 @@ class Backend {
     return this.entryWithFormat(collection)(newEntry);
   }
 
-  entryWithFormat(collection) {
+  entryWithFormat(collectionOrEntity) {
     return (entry) => {
-      const format = resolveFormat(collection, entry);
+      const format = resolveFormat(collectionOrEntity, entry);
       if (entry && entry.raw) {
         entry.data = format && format.fromFile(entry.raw);
       }
       return entry;
     };
+  }
+
+  unpublishedEntries(page, perPage) {
+    return this.implementation.unpublishedEntries(page, perPage).then((response) => {
+      return {
+        pagination: response.pagination,
+        entries: response.entries.map(this.entryWithFormat('editorialWorkflow'))
+      };
+    });
   }
 
   slugFormatter(template, entry) {
@@ -91,16 +99,6 @@ class Backend {
           return entry.getIn(['data', name]);
       }
     });
-  }
-
-  getPublishMode(config) {
-    const publish_workflows = [SIMPLE, EDITORIAL];
-    const mode = config.get('publish_workflow');
-    if (publish_workflows.indexOf(mode) !== -1) {
-      return mode;
-    } else {
-      return SIMPLE;
-    }
   }
 
   persistEntry(config, collection, entryDraft, MediaFiles) {
@@ -132,7 +130,7 @@ class Backend {
           collection.get('label') + ' “' +
           entryDraft.getIn(['entry', 'data', 'title']) + '”';
 
-    const mode = this.getPublishMode(config);
+    const mode = config.get('publish_mode');
 
     const collectionName = collection.get('name');
 
