@@ -12,7 +12,7 @@ const unpublishedEntries = (state = Map({ entities: Map(), pages: Map() }), acti
       const { entries, pages } = action.payload;
       return state.withMutations((map) => {
         entries.forEach((entry) => (
-          map.setIn(['entities', `${entry.metadata.status}.${entry.slug}`], fromJS(entry).set('isFetching', false))
+          map.setIn(['entities', `${entry.metaData.status}.${entry.slug}`], fromJS(entry).set('isFetching', false))
         ));
         map.set('pages', Map({
           ...pages,

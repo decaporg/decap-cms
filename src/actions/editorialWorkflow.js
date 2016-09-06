@@ -41,8 +41,7 @@ function unpublishedEntriesFailed(error) {
 export function loadUnpublishedEntries() {
   return (dispatch, getState) => {
     const state = getState();
-    if (state.publish_mode !== EDITORIAL_WORKFLOW) return;
-
+    if (state.config.get('publish_mode') !== EDITORIAL_WORKFLOW) return;
     const backend = currentBackend(state.config);
     dispatch(unpublishedEntriesLoading());
     backend.unpublishedEntries().then(

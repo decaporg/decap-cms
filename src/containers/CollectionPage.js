@@ -10,7 +10,7 @@ import EntryListing from '../components/EntryListing';
 class DashboardPage extends React.Component {
   componentDidMount() {
     const { collection, dispatch } = this.props;
-    dispatch(loadUnpublishedEntries);
+    dispatch(loadUnpublishedEntries());
     if (collection) {
       dispatch(loadEntries(collection));
     }

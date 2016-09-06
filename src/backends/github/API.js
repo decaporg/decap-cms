@@ -100,7 +100,7 @@ export default class API {
     });
   }
 
-  retrieveMetadata(key, data) {
+  retrieveMetadata(key) {
     const cache = LocalForage.getItem(`gh.meta.${key}`);
     return cache.then((cached) => {
       if (cached && cached.expires > Date.now()) { return cached.data; }
@@ -109,7 +109,9 @@ export default class API {
         params: { ref: 'refs/meta/_netlify_cms' },
         headers: { Accept: 'application/vnd.github.VERSION.raw' },
         cache: 'no-store',
-      }).then((result) => {
+      })
+      .then(response => JSON.parse(response))
+      .then((result) => {
         LocalForage.setItem(`gh.meta.${key}`, {
           expires: Date.now() + 300000, // In 5 minutes
           data: result,
@@ -119,20 +121,19 @@ export default class API {
     }).catch(error => null);
   }
 
-  readFile(path, sha) {
+  readFile(path, sha, branch = this.branch) {
     const cache = sha ? LocalForage.getItem(`gh.${sha}`) : Promise.resolve(null);
     return cache.then((cached) => {
       if (cached) { return cached; }
 
       return this.request(`${this.repoURL}/contents/${path}`, {
         headers: { Accept: 'application/vnd.github.VERSION.raw' },
-        params: { ref: this.branch },
+        params: { ref: branch },
         cache: false
       }).then((result) => {
         if (sha) {
           LocalForage.setItem(`gh.${sha}`, result);
         }
-
         return result;
       });
     });
@@ -142,6 +143,22 @@ export default class API {
     return this.request(`${this.repoURL}/contents/${path}`, {
       params: { ref: this.branch }
     });
+  }
+
+  readUnpublishedBranchFile(contentKey) {
+    let metaData;
+    return this.retrieveMetadata(contentKey)
+    .then(data => {
+      metaData = data;
+      return this.readFile(data.objects.entry, null, data.branch);
+    })
+    .then(file => {
+      return { metaData, file };
+    });
+  }
+
+  listUnpublishedBranches() {
+    return this.request(`${this.repoURL}/git/refs/heads/cms`);
   }
 
   persistFiles(entry, mediaFiles, options) {
@@ -180,7 +197,10 @@ export default class API {
             collection: options.collectionName,
             title: options.parsedData.title,
             description: options.parsedData.description,
-            objects: files.map(file => file.path)
+            objects: {
+              entry: entry.path,
+              files: mediaFiles.map(file => file.path)
+            }
           }))
           .then(this.createPR(options.commitMessage, `cms/${contentKey}`));
         } else {
