@@ -12,7 +12,7 @@ export default class Loader extends React.Component {
     this.renderChild = this.renderChild.bind(this);
   }
 
-  componengWillUnmount() {
+  componentWillUnmount() {
     if (this.interval) {
       clearInterval(this.interval);
     }
