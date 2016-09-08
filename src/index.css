@@ -3,6 +3,7 @@ html {
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
   margin: 0;
+  font-family: Roboto,"Helvetica Neue",HelveticaNeue,Helvetica,Arial,sans-serif;
 }
 *, *:before, *:after {
   box-sizing: inherit;
@@ -11,14 +12,16 @@ html {
 body {
   font-family: 'Roboto', sans-serif;
   height: 100%;
-  background-color: #fafafa;
+  background-color: #f2f5f4;
+  color:#7c8382;
   margin: 0;
 }
 
 header {
-  background-color: #fff;
+  background-color: #272e30;
   box-shadow: 0 1px 2px 0 rgba(0,0,0,0.22);
   height: 54px;
+  border-bottom:2px solid #3ab7a5;
   position: fixed;
   width: 100%;
   z-index: 999;
@@ -30,4 +33,30 @@ header {
 
 h1, h2, h3, h4, h5, h6, p {
   margin: 0;
+}
+
+h1{
+    color: #3ab7a5;
+    border-bottom: 1px solid #3ab7a5;
+    margin: 30px auto 25px;
+    padding-bottom: 15px;
+    font-size: 25px;
+}
+
+input{
+  width:100%;
+  padding:3px;
+  font-size:14px;
+  margin-bottom:10px;
+}
+header input{
+  margin-bottom:0;
+}
+button{
+  border: 1px solid #3ab7a5;
+  padding: 3px 20px;
+  font-size: 12px;
+  line-height: 18px;
+  background-color:#fff;
+  cursor: pointer;
 }
