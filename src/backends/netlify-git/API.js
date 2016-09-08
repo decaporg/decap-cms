@@ -100,7 +100,7 @@ export default class API {
       if (cached && cached.expires > Date.now()) { return cached.data; }
 
       return this.request(`${this.repoURL}/files/${key}.json?ref=refs/meta/_netlify_cms`, {
-        headers: { Accept: 'application/vnd.github.VERSION.raw' },
+        headers: { 'Content-Type': 'application/vnd.netlify.raw' },
         cache: 'no-store',
       }).then((result) => {
         LocalForage.setItem(`gh.meta.${key}`, {
@@ -118,7 +118,7 @@ export default class API {
       if (cached) { return cached; }
 
       return this.request(`${this.repoURL}/files/${path}`, {
-        headers: { Accept: 'application/vnd.github.VERSION.raw' },
+        headers: { 'Content-Type': 'application/vnd.netlify.raw' },
         params: { ref: this.branch },
         cache: false,
         raw: true
