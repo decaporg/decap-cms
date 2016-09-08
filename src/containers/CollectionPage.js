@@ -2,15 +2,14 @@ import React, { PropTypes } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 import { loadEntries } from '../actions/entries';
-import { loadUnpublishedEntries } from '../actions/editorialWorkflow';
 import { selectEntries } from '../reducers';
 import { Loader } from '../components/UI';
 import EntryListing from '../components/EntryListing';
+import EditorialWorkflow from './EditorialWorkflowHoC';
 
 class DashboardPage extends React.Component {
   componentDidMount() {
     const { collection, dispatch } = this.props;
-    dispatch(loadUnpublishedEntries());
     if (collection) {
       dispatch(loadEntries(collection));
     }
@@ -38,13 +37,19 @@ class DashboardPage extends React.Component {
     </div>;
   }
 }
-
 DashboardPage.propTypes = {
   collection: ImmutablePropTypes.map.isRequired,
   collections: ImmutablePropTypes.orderedMap.isRequired,
   dispatch: PropTypes.func.isRequired,
   entries: ImmutablePropTypes.list,
 };
+
+/*
+ * Instead of checking the publish mode everywhere to dispatch & render the additional editorial workflow stuff,
+ * We delegate it to a Higher Order Component
+ */
+DashboardPage = EditorialWorkflow(DashboardPage);
+
 
 function mapStateToProps(state, ownProps) {
   const { collections } = state;

@@ -3,6 +3,7 @@ import { EDITORIAL_WORKFLOW } from '../constants/publishModes';
 /*
  * Contant Declarations
  */
+export const INIT = 'init';
 export const UNPUBLISHED_ENTRIES_REQUEST = 'UNPUBLISHED_ENTRIES_REQUEST';
 export const UNPUBLISHED_ENTRIES_SUCCESS = 'UNPUBLISHED_ENTRIES_SUCCESS';
 export const UNPUBLISHED_ENTRIES_FAILURE = 'UNPUBLISHED_ENTRIES_FAILURE';
@@ -34,6 +35,16 @@ function unpublishedEntriesFailed(error) {
     payload: error.toString(),
   };
 }
+
+/*
+ * Exported simple Action Creators
+ */
+export function init() {
+  return {
+    type: INIT
+  };
+}
+
 
 /*
  * Exported Thunk Action Creators

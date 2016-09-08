@@ -1,11 +1,13 @@
 import LocalForage from 'localforage';
 import MediaProxy from '../../valueObjects/MediaProxy';
 import { Base64 } from 'js-base64';
-import { EDITORIAL_WORKFLOW } from '../../constants/publishModes';
+import { EDITORIAL_WORKFLOW, status } from '../../constants/publishModes';
 
 const API_ROOT = 'https://api.github.com';
 
 export default class API {
+
+
   constructor(token, repo, branch) {
     this.token = token;
     this.repo = repo;
@@ -192,7 +194,7 @@ export default class API {
           return this.createBranch(branchName, response.sha)
           .then(this.storeMetadata(contentKey, {
             type: 'PR',
-            status: 'draft',
+            status: status.DRAFT,
             branch: branchName,
             collection: options.collectionName,
             title: options.parsedData.title,
