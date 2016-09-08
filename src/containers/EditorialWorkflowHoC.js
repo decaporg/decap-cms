@@ -1,9 +1,12 @@
 import React, { PropTypes } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import { Map } from 'immutable';
 import { init, loadUnpublishedEntries } from '../actions/editorialWorkflow';
 import { selectUnpublishedEntries } from '../reducers';
-import { EDITORIAL_WORKFLOW } from '../constants/publishModes';
+import { EDITORIAL_WORKFLOW, status } from '../constants/publishModes';
+import UnpublishedListing from '../components/UnpublishedListing';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 
 export default function EditorialWorkflow(WrappedComponent) {
   class EditorialWorkflow extends WrappedComponent {
@@ -18,12 +21,12 @@ export default function EditorialWorkflow(WrappedComponent) {
     }
 
     render() {
-      const { isEditorialWorkflow } = this.props;
+      const { isEditorialWorkflow, unpublishedEntries } = this.props;
       if (!isEditorialWorkflow) return super.render();
 
       return (
         <div>
-          <h2>HOC</h2>
+          <UnpublishedListing entries={unpublishedEntries}/>
           {super.render()}
         </div>
       );
@@ -33,7 +36,7 @@ export default function EditorialWorkflow(WrappedComponent) {
   EditorialWorkflow.propTypes = {
     dispatch: PropTypes.func.isRequired,
     isEditorialWorkflow: PropTypes.bool.isRequired,
-    unpublishedEntries: ImmutablePropTypes.list,
+    unpublishedEntries: ImmutablePropTypes.map,
   };
 
   function mapStateToProps(state) {
@@ -42,7 +45,9 @@ export default function EditorialWorkflow(WrappedComponent) {
     const returnObj = { isEditorialWorkflow };
 
     if (isEditorialWorkflow) {
-      returnObj.unpublishedEntries = selectUnpublishedEntries(state, 'draft');
+      returnObj.unpublishedEntries = _.reduce(status, (acc, currStatus) => {
+        return acc.set(currStatus, selectUnpublishedEntries(state, currStatus));
+      }, Map());
     }
 
     return returnObj;

@@ -28,13 +28,22 @@ const unpublishedEntries = (state = null, action) => {
 };
 
 export const selectUnpublishedEntry = (state, status, slug) => (
-  state.getIn(['entities', `${status}.${slug}`], null)
+  state.getIn(['entities', `${status}.${slug}`])
 );
 
 export const selectUnpublishedEntries = (state, status) => {
   if (!state) return;
   const slugs = state.getIn(['pages', 'ids']);
-  return slugs && slugs.map((slug) => selectUnpublishedEntry(state, status, slug));
+
+  return slugs && slugs.reduce((acc, slug) => {
+    const entry = selectUnpublishedEntry(state, status, slug);
+    if (entry) {
+      return acc.push(entry);
+    } else {
+      return acc;
+    }
+  }, List());
 };
+
 
 export default unpublishedEntries;
