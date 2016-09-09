@@ -64,8 +64,6 @@ class MarkdownControl extends React.Component {
   }
 }
 
-export default MarkdownControl;
-
 MarkdownControl.propTypes = {
   editor: PropTypes.object.isRequired,
   onChange: PropTypes.func.isRequired,
