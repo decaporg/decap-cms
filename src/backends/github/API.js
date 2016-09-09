@@ -103,24 +103,12 @@ export default class API {
   }
 
   retrieveMetadata(key) {
-    const cache = LocalForage.getItem(`gh.meta.${key}`);
-    return cache.then((cached) => {
-      if (cached && cached.expires > Date.now()) { return cached.data; }
-
-      return this.request(`${this.repoURL}/contents/${key}.json`, {
-        params: { ref: 'refs/meta/_netlify_cms' },
-        headers: { Accept: 'application/vnd.github.VERSION.raw' },
-        cache: 'no-store',
-      })
-      .then(response => JSON.parse(response))
-      .then((result) => {
-        LocalForage.setItem(`gh.meta.${key}`, {
-          expires: Date.now() + 300000, // In 5 minutes
-          data: result,
-        });
-        return result;
-      });
-    }).catch(error => null);
+    return this.request(`${this.repoURL}/contents/${key}.json`, {
+      params: { ref: 'refs/meta/_netlify_cms' },
+      headers: { Accept: 'application/vnd.github.VERSION.raw' },
+      cache: 'no-store',
+    })
+    .then(response => JSON.parse(response));
   }
 
   readFile(path, sha, branch = this.branch) {
@@ -148,14 +136,26 @@ export default class API {
   }
 
   readUnpublishedBranchFile(contentKey) {
-    let metaData;
-    return this.retrieveMetadata(contentKey)
-    .then(data => {
-      metaData = data;
-      return this.readFile(data.objects.entry, null, data.branch);
-    })
-    .then(file => {
-      return { metaData, file };
+    const cache = LocalForage.getItem(`gh.unpublished.${contentKey}`);
+    return cache.then((cached) => {
+      if (cached && cached.expires > Date.now()) { return cached.data; }
+
+      let metaData;
+      return this.retrieveMetadata(contentKey)
+      .then(data => {
+        metaData = data;
+        return this.readFile(data.objects.entry, null, data.branch);
+      })
+      .then(file => {
+        return { metaData, file };
+      })
+      .then((result) => {
+        LocalForage.setItem(`gh.unpublished.${contentKey}`, {
+          expires: Date.now() + 300000, // In 5 minutes
+          data: result,
+        });
+        return result;
+      });
     });
   }
 
@@ -191,19 +191,24 @@ export default class API {
         if (options.mode && options.mode === EDITORIAL_WORKFLOW) {
           const contentKey = options.collectionName ? `${options.collectionName}-${entry.slug}` : entry.slug;
           const branchName = `cms/${contentKey}`;
-          return this.createBranch(branchName, response.sha)
-          .then(this.storeMetadata(contentKey, {
+          return this.user().then(user => {
+            return user.name ? user.name : user.login;
+          })
+          .then(username => this.storeMetadata(contentKey, {
             type: 'PR',
-            status: status.DRAFT,
+            user: username,
+            status: status.first(),
             branch: branchName,
             collection: options.collectionName,
-            title: options.parsedData.title,
-            description: options.parsedData.description,
+            title: options.parsedData && options.parsedData.title,
+            description: options.parsedData && options.parsedData.description,
             objects: {
               entry: entry.path,
               files: mediaFiles.map(file => file.path)
-            }
+            },
+            timeStamp: new Date().toISOString()
           }))
+          .then(this.createBranch(branchName, response.sha))
           .then(this.createPR(options.commitMessage, `cms/${contentKey}`));
         } else {
           return this.patchBranch(this.branch, response.sha);

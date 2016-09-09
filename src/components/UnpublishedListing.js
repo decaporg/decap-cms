@@ -1,29 +1,41 @@
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import dateFormat from 'dateFormat';
 import { Card } from './UI';
 import { statusDescriptions } from '../constants/publishModes';
+import styles from './UnpublishedListing.css';
 
 export default class UnpublishedListing extends React.Component {
-  renderColumn(entries) {
+  renderColumns(entries, column) {
     if (!entries) return;
-    return (
-      <div>
+
+    if (!column) {
+      return entries.entrySeq().map(([currColumn, currEntries]) => (
+        <div key={currColumn} className={styles.column}>
+          <h3>{statusDescriptions.get(currColumn)}</h3>
+          {this.renderColumns(currEntries, currColumn)}
+        </div>
+      ));
+    } else {
+      return <div>
         {entries.map(entry => {
-          return <Card key={entry.get('slug')}><h4>{entry.getIn(['data', 'title'])}</h4></Card>;
+          // Look for an "author" field. Fallback to username on backend implementation;
+          const author = entry.getIn(['data', 'author'], entry.getIn(['metaData', 'user']));
+          const timeStamp = dateFormat(Date.parse(entry.getIn(['metaData', 'timeStamp'])), 'longDate');
+          return (
+            <Card key={entry.get('slug')} className={styles.card}>
+              <h1>{entry.getIn(['data', 'title'])} <small>by {author}</small></h1>
+              <p>Last updated: {timeStamp} by {entry.getIn(['metaData', 'user'])}</p>
+            </Card>
+          );
         }
         )}
-      </div>
-    );
+      </div>;
+    }
   }
 
   render() {
-    const { entries } = this.props;
-    const columns = entries.entrySeq().map(([key, currEntries]) => (
-      <div key={key}>
-        <h3>{statusDescriptions.get(key)}</h3>
-        {this.renderColumn(currEntries)}
-      </div>
-    ));
+    const columns = this.renderColumns(this.props.entries);
 
     return (
       <div>
@@ -34,12 +46,5 @@ export default class UnpublishedListing extends React.Component {
 }
 
 UnpublishedListing.propTypes = {
-  entries: ImmutablePropTypes.map,
+  entries: ImmutablePropTypes.orderedMap,
 };
-
-
-
-<div>
-  <h3>Drafts</h3>
-  <card>Cool Recipe</card>
-</div>
