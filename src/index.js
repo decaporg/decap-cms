@@ -2,6 +2,7 @@ import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router';
+import { registerPreviewStyle,registerPreviewTemplate } from './lib/registry';
 import configureStore from './store/configureStore';
 import routes from './routing/routes';
 import history, { syncHistory } from './routing/history';
@@ -29,3 +30,8 @@ render((
     </Plugin>
   </Provider>
 ), el);
+
+window.CMS = {
+  registerPreviewStyle: registerPreviewStyle,
+  registerPreviewTemplate: registerPreviewTemplate
+};

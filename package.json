@@ -68,6 +68,7 @@
   "dependencies": {
     "bricks.js": "^1.7.0",
     "fuzzy": "^0.1.1",
+    "html-to-react": "^1.0.0",
     "js-base64": "^2.1.9",
     "json-loader": "^0.5.4",
     "localforage": "^1.4.2",

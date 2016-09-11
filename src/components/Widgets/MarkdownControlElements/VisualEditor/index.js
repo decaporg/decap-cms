@@ -42,6 +42,7 @@ class VisualEditor extends React.Component {
     let rawJson;
     if (props.value !== undefined) {
       const content = this.markdown.toContent(props.value);
+      console.log('md: %o', content);
       rawJson = SlateUtils.encode(content, null, ['mediaproxy'].concat(getPlugins().map(plugin => plugin.id)));
     } else {
       rawJson = emptyParagraphBlock;
