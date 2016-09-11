@@ -1,14 +1,14 @@
 import React, { PropTypes } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import Widgets from './Widgets';
+import {resolveWidget} from './Widgets';
 
 export default class ControlPane extends React.Component {
   controlFor(field) {
     const { entry, getMedia, onChange, onAddMedia, onRemoveMedia } = this.props;
-    const widget = Widgets[field.get('widget')] || Widgets._unknown;
+    const widget = resolveWidget(field.get('widget'));
     return <div className="cms-control">
       <label>{ field.get('label') }</label>
-      {React.createElement(widget.Control, {
+      {React.createElement(widget.control, {
         field: field,
         value: entry.getIn(['data', field.get('name')]),
         onChange: (value) => onChange(entry.setIn(['data', field.get('name')], value)),

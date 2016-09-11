@@ -1,0 +1,10 @@
+.container {
+  display: flex
+}
+.controlPane {
+  width: 50%;
+  padding: 0 10px;
+}
+.previewPane {
+  width: 50%;
+}

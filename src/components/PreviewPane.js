@@ -1,15 +1,15 @@
 import React, { PropTypes } from 'react';
 import { render } from 'react-dom';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { getPreviewTemplate, getPreviewStyles } from '../lib/registry';
-import Widgets from './Widgets';
+import registry from '../lib/registry';
+import { resolveWidget } from './Widgets';
 import styles from './PreviewPane.css';
 
 class Preview extends React.Component {
   previewFor(field) {
     const { entry, getMedia } = this.props;
-    const widget = Widgets[field.get('widget')] || Widgets._unknown;
-    return React.createElement(widget.Preview, {
+    const widget = resolveWidget(field.get('widget'));
+    return React.createElement(widget.preview, {
       field: field,
       value: entry.getIn(['data', field.get('name')]),
       getMedia: getMedia,
@@ -46,8 +46,8 @@ export default class PreviewPane extends React.Component {
   widgetFor(name) {
     const { collection, entry, getMedia } = this.props;
     const field  = collection.get('fields').find((field) => field.get('name') === name);
-    const widget = Widgets[field.get('widget')] || Widgets._unknown;
-    return React.createElement(widget.Preview, {
+    const widget = resolveWidget(field.get('widget'));
+    return React.createElement(widget.preview, {
       field: field,
       value: entry.getIn(['data', field.get('name')]),
       getMedia: getMedia,
@@ -56,14 +56,14 @@ export default class PreviewPane extends React.Component {
 
   renderPreview() {
     const props = Object.assign({}, this.props, {widgetFor: this.widgetFor});
-    const component = getPreviewTemplate(props.collection.get('name')) || Preview;
+    const component = registry.getPreviewTemplate(props.collection.get('name')) || Preview;
 
     render(React.createElement(component, props), this.previewEl);
   }
 
   handleIframeRef(ref) {
     if (ref) {
-      getPreviewStyles().forEach((style) => {
+      registry.getPreviewStyles().forEach((style) => {
         const linkEl = document.createElement('link');
         linkEl.setAttribute('rel', 'stylesheet');
         linkEl.setAttribute('href', style);
@@ -79,7 +79,7 @@ export default class PreviewPane extends React.Component {
     const { collection } = this.props;
     if (!collection) { return null; }
 
-    return <iframe className={styles.frame} ref={this.handleIframeRef}></iframe>
+    return <iframe className={styles.frame} ref={this.handleIframeRef}></iframe>;
   }
 }
 
