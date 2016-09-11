@@ -76,6 +76,7 @@
     "markup-it": "git+https://github.com/cassiozen/markup-it.git",
     "pluralize": "^3.0.0",
     "prismjs": "^1.5.1",
+    "react-datetime": "^2.6.0",
     "react-portal": "^2.2.1",
     "selection-position": "^1.0.0",
     "semaphore": "^1.0.5",
