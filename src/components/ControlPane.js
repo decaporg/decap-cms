@@ -23,7 +23,7 @@ export default class ControlPane extends React.Component {
     const { collection } = this.props;
     if (!collection) { return null; }
     return <div>
-      {collection.get('fields').map((field) => <div key={field.get('name')}>{this.controlFor(field)}</div>)}
+      {collection.get('fields').map((field) => <div key={field.get('name')} className="cms-widget">{this.controlFor(field)}</div>)}
     </div>;
   }
 }

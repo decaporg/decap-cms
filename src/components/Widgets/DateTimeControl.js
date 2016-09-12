@@ -18,5 +18,5 @@ export default class DateTimeControl extends React.Component {
 
 DateTimeControl.propTypes = {
   onChange: PropTypes.func.isRequired,
-  value: PropTypes.node,
+  value: PropTypes.object,
 };

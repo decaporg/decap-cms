@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import registry from '../../lib/registry';
 import RawEditor from './MarkdownControlElements/RawEditor';
 import VisualEditor from './MarkdownControlElements/VisualEditor';
 import { processEditorPlugins } from './richText';
@@ -13,7 +14,8 @@ class MarkdownControl extends React.Component {
   }
 
   componentWillMount() {
-    processEditorPlugins(this.context.plugins.editor);
+    this.useRawEditor();
+    processEditorPlugins(registry.getEditorComponents());
   }
 
   useVisualEditor() {
@@ -28,8 +30,8 @@ class MarkdownControl extends React.Component {
     const { editor, onChange, onAddMedia, getMedia, value } = this.props;
     if (editor.get('useVisualMode')) {
       return (
-        <div>
-          <button onClick={this.useRawEditor}>Switch to Raw Editor</button>
+        <div className='cms-editor-visual'>
+          {null && <button onClick={this.useRawEditor}>Switch to Raw Editor</button>}
           <VisualEditor
               onChange={onChange}
               onAddMedia={onAddMedia}
@@ -41,8 +43,8 @@ class MarkdownControl extends React.Component {
       );
     } else {
       return (
-        <div>
-          <button onClick={this.useVisualEditor}>Switch to Visual Editor</button>
+        <div className='cms-editor-raw'>
+          {null && <button onClick={this.useVisualEditor}>Switch to Visual Editor</button>}
           <RawEditor
               onChange={onChange}
               onAddMedia={onAddMedia}

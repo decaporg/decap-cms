@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { loadEntries } from '../actions/entries';
 import { selectEntries } from '../reducers';
 import EntryListing from '../components/EntryListing';
+import styles from './CollectionPage.css';
 
 class DashboardPage extends React.Component {
   componentDidMount() {
@@ -27,7 +28,7 @@ class DashboardPage extends React.Component {
       return <h1>No collections defined in your config.yml</h1>;
     }
 
-    return <div>
+    return <div className={styles.alignable}>
       {entries ? <EntryListing collection={collection} entries={entries}/> : 'Loading entries...'}
     </div>;
   }
