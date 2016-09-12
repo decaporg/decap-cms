@@ -1,5 +1,5 @@
 import semaphore from 'semaphore';
-import {createEntry} from '../../valueObjects/Entry';
+import { createEntry } from '../../valueObjects/Entry';
 import AuthenticationPage from './AuthenticationPage';
 import API from './API';
 
@@ -61,5 +61,33 @@ export default class GitHub {
 
   persistEntry(entry, mediaFiles = [], options = {}) {
     return this.api.persistFiles(entry, mediaFiles, options);
+  }
+
+  unpublishedEntries() {
+    return this.api.listUnpublishedBranches().then((branches) => {
+      const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
+      const promises = [];
+      branches.map((branch) => {
+        promises.push(new Promise((resolve, reject) => {
+          const contentKey = branch.ref.split('refs/heads/cms/').pop();
+          return sem.take(() => this.api.readUnpublishedBranchFile(contentKey).then((data) => {
+            const entryPath = data.metaData.objects.entry;
+            const entry = createEntry(entryPath, entryPath.split('/').pop().replace(/\.[^\.]+$/, ''), data.file);
+            entry.metaData = data.metaData;
+            resolve(entry);
+            sem.leave();
+          }).catch((err) => {
+            sem.leave();
+            reject(err);
+          }));
+        }));
+      });
+      return Promise.all(promises);
+    }).then((entries) => {
+      return {
+        pagination: {},
+        entries
+      };
+    });
   }
 }

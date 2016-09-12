@@ -1,7 +1,7 @@
 import LocalForage from 'localforage';
 import MediaProxy from '../../valueObjects/MediaProxy';
 import { Base64 } from 'js-base64';
-import { BRANCH } from '../constants';
+import { EDITORIAL_WORKFLOW } from '../../constants/publishModes';
 
 export default class API {
   constructor(token, url, branch) {
@@ -100,6 +100,7 @@ export default class API {
       if (cached && cached.expires > Date.now()) { return cached.data; }
 
       return this.request(`${this.repoURL}/files/${key}.json?ref=refs/meta/_netlify_cms`, {
+        params: { ref: 'refs/meta/_netlify_cms' },
         headers: { 'Content-Type': 'application/vnd.netlify.raw' },
         cache: 'no-store',
       }).then((result) => {
@@ -160,7 +161,7 @@ export default class API {
       .then(branchData => this.updateTree(branchData.commit.sha, '/', fileTree))
       .then(changeTree => this.commit(options.commitMessage, changeTree))
       .then((response) => {
-        if (options.mode && options.mode === BRANCH) {
+        if (options.mode && options.mode === EDITORIAL_WORKFLOW) {
           const contentKey = options.collectionName ? `${options.collectionName}-${entry.slug}` : entry.slug;
           return this.createBranch(`cms/${contentKey}`, response.sha)
           .then(this.storeMetadata(contentKey, { status: 'draft' }))

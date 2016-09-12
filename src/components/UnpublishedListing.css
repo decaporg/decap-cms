@@ -1,0 +1,29 @@
+.column {
+  position: relative;
+  display: inline-block;
+  vertical-align: top;
+  text-align: center;
+  width: 28%;
+}
+
+.column:not(:last-child) {
+  margin-right: 8%;
+}
+
+.card {
+  width: 100% !important;
+  margin: 7px 0;
+
+  & h1 {
+    font-size: 17px;
+    & small {
+      font-weight: normal;
+    }
+  }
+
+  & p {
+    color: #555;
+    font-size: 12px;
+    margin-top: 5px;
+  }
+}

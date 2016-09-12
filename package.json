@@ -67,6 +67,7 @@
   },
   "dependencies": {
     "bricks.js": "^1.7.0",
+    "dateformat": "^1.0.12",
     "fuzzy": "^0.1.1",
     "js-base64": "^2.1.9",
     "json-loader": "^0.5.4",
@@ -76,6 +77,7 @@
     "pluralize": "^3.0.0",
     "prismjs": "^1.5.1",
     "react-datetime": "^2.6.0",
+    "react-addons-css-transition-group": "^15.3.1",
     "react-portal": "^2.2.1",
     "selection-position": "^1.0.0",
     "semaphore": "^1.0.5",

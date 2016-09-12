@@ -4,5 +4,6 @@ export function createEntry(path = '', slug = '', raw = '') {
   returnObj.slug = slug;
   returnObj.raw = raw;
   returnObj.data = {};
+  returnObj.metaData = {};
   return returnObj;
 }

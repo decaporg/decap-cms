@@ -3,7 +3,6 @@ import GitHubBackend from './github/implementation';
 import NetlifyGitBackend from './netlify-git/implementation';
 import { resolveFormat } from '../formats/formats';
 import { createEntry } from '../valueObjects/Entry';
-import { SIMPLE, BRANCH } from './constants';
 
 class LocalStorageAuthStore {
   storageKey = 'nf-cms-user';
@@ -22,7 +21,7 @@ class Backend {
   constructor(implementation, authStore = null) {
     this.implementation = implementation;
     this.authStore = authStore;
-    if (this.implementation == null) {
+    if (this.implementation === null) {
       throw 'Cannot instantiate a Backend with no implementation';
     }
   }
@@ -49,7 +48,6 @@ class Backend {
 
   entries(collection, page, perPage) {
     return this.implementation.entries(collection, page, perPage).then((response) => {
-      console.log("Got %s entries", response.entries.length);
       return {
         pagination: response.pagination,
         entries: response.entries.map(this.entryWithFormat(collection))
@@ -66,14 +64,23 @@ class Backend {
     return this.entryWithFormat(collection)(newEntry);
   }
 
-  entryWithFormat(collection) {
+  entryWithFormat(collectionOrEntity) {
     return (entry) => {
-      const format = resolveFormat(collection, entry);
+      const format = resolveFormat(collectionOrEntity, entry);
       if (entry && entry.raw) {
         entry.data = format && format.fromFile(entry.raw);
       }
       return entry;
     };
+  }
+
+  unpublishedEntries(page, perPage) {
+    return this.implementation.unpublishedEntries(page, perPage).then((response) => {
+      return {
+        pagination: response.pagination,
+        entries: response.entries.map(this.entryWithFormat('editorialWorkflow'))
+      };
+    });
   }
 
   slugFormatter(template, entry) {
@@ -94,19 +101,14 @@ class Backend {
     });
   }
 
-  getPublishMode(config) {
-    const publish_modes = [SIMPLE, BRANCH];
-    const mode = config.getIn(['backend', 'publish_mode']);
-    if (publish_modes.indexOf(mode) !== -1) {
-      return mode;
-    } else {
-      return SIMPLE;
-    }
-  }
-
   persistEntry(config, collection, entryDraft, MediaFiles) {
-
     const newEntry = entryDraft.getIn(['entry', 'newRecord']) || false;
+
+    const parsedData = {
+      title: entryDraft.getIn(['entry', 'data', 'title'], 'No Title'),
+      description: entryDraft.getIn(['entry', 'data', 'description'], 'No Description'),
+    };
+
     const entryData = entryDraft.getIn(['entry', 'data']).toJS();
     let entryObj;
     if (newEntry) {
@@ -128,11 +130,13 @@ class Backend {
           collection.get('label') + ' “' +
           entryDraft.getIn(['entry', 'data', 'title']) + '”';
 
-    const mode = this.getPublishMode(config);
+    const mode = config.get('publish_mode');
 
     const collectionName = collection.get('name');
 
-    return this.implementation.persistEntry(entryObj, MediaFiles, { newEntry, commitMessage, collectionName, mode });
+    return this.implementation.persistEntry(entryObj, MediaFiles, {
+      newEntry, parsedData, commitMessage, collectionName, mode
+    });
   }
 
   entryToRaw(collection, entry) {

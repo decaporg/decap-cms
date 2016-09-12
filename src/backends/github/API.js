@@ -1,11 +1,13 @@
 import LocalForage from 'localforage';
 import MediaProxy from '../../valueObjects/MediaProxy';
 import { Base64 } from 'js-base64';
-import { BRANCH } from '../constants';
+import { EDITORIAL_WORKFLOW, status } from '../../constants/publishModes';
 
 const API_ROOT = 'https://api.github.com';
 
 export default class API {
+
+
   constructor(token, repo, branch) {
     this.token = token;
     this.repo = repo;
@@ -100,38 +102,28 @@ export default class API {
     });
   }
 
-  retrieveMetadata(key, data) {
-    const cache = LocalForage.getItem(`gh.meta.${key}`);
-    return cache.then((cached) => {
-      if (cached && cached.expires > Date.now()) { return cached.data; }
-
-      return this.request(`${this.repoURL}/contents/${key}.json?ref=refs/meta/_netlify_cms`, {
-        headers: { Accept: 'application/vnd.github.VERSION.raw' },
-        cache: 'no-store',
-      }).then((result) => {
-        LocalForage.setItem(`gh.meta.${key}`, {
-          expires: Date.now() + 300000, // In 5 minutes
-          data: result,
-        });
-        return result;
-      });
-    });
+  retrieveMetadata(key) {
+    return this.request(`${this.repoURL}/contents/${key}.json`, {
+      params: { ref: 'refs/meta/_netlify_cms' },
+      headers: { Accept: 'application/vnd.github.VERSION.raw' },
+      cache: 'no-store',
+    })
+    .then(response => JSON.parse(response));
   }
 
-  readFile(path, sha) {
+  readFile(path, sha, branch = this.branch) {
     const cache = sha ? LocalForage.getItem(`gh.${sha}`) : Promise.resolve(null);
     return cache.then((cached) => {
       if (cached) { return cached; }
 
       return this.request(`${this.repoURL}/contents/${path}`, {
         headers: { Accept: 'application/vnd.github.VERSION.raw' },
-        params: { ref: this.branch },
+        params: { ref: branch },
         cache: false
       }).then((result) => {
         if (sha) {
           LocalForage.setItem(`gh.${sha}`, result);
         }
-
         return result;
       });
     });
@@ -143,13 +135,44 @@ export default class API {
     });
   }
 
+  readUnpublishedBranchFile(contentKey) {
+    const cache = LocalForage.getItem(`gh.unpublished.${contentKey}`);
+    return cache.then((cached) => {
+      if (cached && cached.expires > Date.now()) { return cached.data; }
+
+      let metaData;
+      return this.retrieveMetadata(contentKey)
+      .then(data => {
+        metaData = data;
+        return this.readFile(data.objects.entry, null, data.branch);
+      })
+      .then(file => {
+        return { metaData, file };
+      })
+      .then((result) => {
+        LocalForage.setItem(`gh.unpublished.${contentKey}`, {
+          expires: Date.now() + 300000, // In 5 minutes
+          data: result,
+        });
+        return result;
+      });
+    });
+  }
+
+  listUnpublishedBranches() {
+    return this.request(`${this.repoURL}/git/refs/heads/cms`);
+  }
+
   persistFiles(entry, mediaFiles, options) {
     let filename, part, parts, subtree;
     const fileTree = {};
-    const files = [];
-    mediaFiles.concat(entry).forEach((file) => {
+    const uploadPromises = [];
+
+    const files = mediaFiles.concat(entry);
+
+    files.forEach((file) => {
       if (file.uploaded) { return; }
-      files.push(this.uploadBlob(file));
+      uploadPromises.push(this.uploadBlob(file));
       parts = file.path.split('/').filter((part) => part);
       filename = parts.pop();
       subtree = fileTree;
@@ -160,15 +183,32 @@ export default class API {
       subtree[filename] = file;
       file.file = true;
     });
-    return Promise.all(files)
+    return Promise.all(uploadPromises)
       .then(() => this.getBranch())
       .then(branchData => this.updateTree(branchData.commit.sha, '/', fileTree))
       .then(changeTree => this.commit(options.commitMessage, changeTree))
       .then((response) => {
-        if (options.mode && options.mode === BRANCH) {
+        if (options.mode && options.mode === EDITORIAL_WORKFLOW) {
           const contentKey = options.collectionName ? `${options.collectionName}-${entry.slug}` : entry.slug;
-          return this.createBranch(`cms/${contentKey}`, response.sha)
-          .then(this.storeMetadata(contentKey, { status: 'draft' }))
+          const branchName = `cms/${contentKey}`;
+          return this.user().then(user => {
+            return user.name ? user.name : user.login;
+          })
+          .then(username => this.storeMetadata(contentKey, {
+            type: 'PR',
+            user: username,
+            status: status.first(),
+            branch: branchName,
+            collection: options.collectionName,
+            title: options.parsedData && options.parsedData.title,
+            description: options.parsedData && options.parsedData.description,
+            objects: {
+              entry: entry.path,
+              files: mediaFiles.map(file => file.path)
+            },
+            timeStamp: new Date().toISOString()
+          }))
+          .then(this.createBranch(branchName, response.sha))
           .then(this.createPR(options.commitMessage, `cms/${contentKey}`));
         } else {
           return this.patchBranch(this.branch, response.sha);
