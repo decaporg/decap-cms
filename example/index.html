@@ -69,6 +69,26 @@
 
   <script src='/cms.js'></script>
   <script>
+    var PostPreview = createClass({
+      render: function() {
+        var entry = this.props.entry;
+        var image = entry.getIn(['data', 'image']);
+        var bg = image && this.props.getMedia(image);
+        return h('div', {},
+          h('div', {className: "cover"},
+            h('h1', {}, entry.getIn(['data', 'title'])),
+            bg ? h('img', {src: bg.toString()}) : null
+          ),
+          h('p', {},
+            h('small', {}, "Written " + entry.getIn(['data', 'date']))
+          ),
+          h('div', {"className": "text"}, this.props.widgetFor('body'))
+        );
+      }
+    });
+
+    CMS.registerPreviewTemplate("posts", PostPreview);
+    CMS.registerPreviewStyle("/example.css");
     CMS.registerEditorComponent({
       id: "youtube",
       label: "Youtube",
@@ -88,7 +108,7 @@
           '<img src="http://img.youtube.com/vi/' + obj.id + '/maxresdefault.jpg" alt="Youtube Video"/>'
         );
       }
-    })
+    });
   </script>
 </body>
 </html>

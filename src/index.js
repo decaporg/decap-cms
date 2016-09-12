@@ -31,3 +31,5 @@ console.log('reg: ', registry);
 for (const method in registry) {
   window.CMS[method] = registry[method];
 }
+window.createClass = React.createClass;
+window.h = React.createElement;
