@@ -14,8 +14,8 @@ export default class AuthenticationPage extends React.Component {
 
   handleLogin(e) {
     e.preventDefault();
-    const {email, password} = this.state;
-    this.setState({authenticating: true});
+    const { email, password } = this.state;
+    this.setState({ authenticating: true });
     fetch(`${AuthenticationPage.url}/token`, {
       method: 'POST',
       body: 'grant_type=client_credentials',
@@ -27,18 +27,18 @@ export default class AuthenticationPage extends React.Component {
       console.log(response);
       if (response.ok) {
         return response.json().then((data) => {
-          this.props.onLogin(Object.assign({email}, data));
+          this.props.onLogin(Object.assign({ email }, data));
         });
       }
       response.json().then((data) => {
-        this.setState({loginError: data.msg});
-      })
-    })
+        this.setState({ loginError: data.msg });
+      });
+    });
   }
 
   handleChange(key) {
     return (e) => {
-      this.setState({[key]: e.target.value});
+      this.setState({ [key]: e.target.value });
     };
   }
 

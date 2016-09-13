@@ -14,9 +14,9 @@ describe('config', () => {
 
   it('should handle an update', () => {
     expect(
-      config(Immutable.Map({'a': 'b', 'c': 'd'}), configLoaded({'a': 'changed', 'e': 'new'}))
+      config(Immutable.Map({ 'a': 'b', 'c': 'd' }), configLoaded({ 'a': 'changed', 'e': 'new' }))
     ).toEqual(
-      Immutable.Map({'a': 'changed', 'e': 'new'})
+      Immutable.Map({ 'a': 'changed', 'e': 'new' })
     );
   });
 
@@ -24,15 +24,15 @@ describe('config', () => {
     expect(
       config(undefined, configLoading())
     ).toEqual(
-      Immutable.Map({isFetching: true})
+      Immutable.Map({ isFetching: true })
     );
   });
 
   it('should handle an error', () => {
     expect(
-      config(Immutable.Map({isFetching: true}), configFailed(new Error('Config could not be loaded')))
+      config(Immutable.Map({ isFetching: true }), configFailed(new Error('Config could not be loaded')))
     ).toEqual(
-      Immutable.Map({error: 'Error: Config could not be loaded'})
+      Immutable.Map({ error: 'Error: Config could not be loaded' })
     );
   });
 });

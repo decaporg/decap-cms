@@ -2,7 +2,7 @@ import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import moment from 'moment';
 import { Card } from './UI';
-import { Link } from 'react-router'
+import { Link } from 'react-router';
 import { statusDescriptions } from '../constants/publishModes';
 import styles from './UnpublishedListing.css';
 

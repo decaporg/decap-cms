@@ -62,4 +62,4 @@ export const SCHEMA = {
       borderRadius: '4px'
     }
   }
-}
+};

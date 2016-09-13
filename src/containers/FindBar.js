@@ -290,7 +290,7 @@ class FindBar extends Component {
       let children;
       if (!command.search) {
         children = (
-          <span><span dangerouslySetInnerHTML={{__html: command.string}} /></span>
+          <span><span dangerouslySetInnerHTML={{ __html: command.string }} /></span>
         );
       } else {
         children = (
@@ -317,7 +317,7 @@ class FindBar extends Component {
     return commands.length === 0 ? null : (
       <div className={styles.menu}>
         <div className={styles.suggestions}>
-          { commands }
+          {commands}
         </div>
         <div className={styles.history}>
           Your past searches and commands
