@@ -11,8 +11,16 @@
     "storybook": "start-storybook -p 9001",
     "storybook-build": "build-storybook -o dist",
     "lint": "eslint .",
-    "lint:fix": "npm run lint -- --fix"
+    "lint:fix": "npm run lint -- --fix",
+    "lint:staged": "lint-staged"
   },
+  "lint-staged": {
+    "*.@(js|jsx)": [
+      "eslint --fix",
+      "git add"
+    ]
+  },
+  "pre-commit": "lint:staged",
   "keywords": [
     "netlify",
     "cms"
@@ -43,12 +51,14 @@
     "immutable": "^3.7.6",
     "imports-loader": "^0.6.5",
     "js-yaml": "^3.5.3",
+    "lint-staged": "^3.0.2",
     "mocha": "^2.4.5",
     "moment": "^2.11.2",
     "normalizr": "^2.0.0",
     "postcss-cssnext": "^2.7.0",
     "postcss-import": "^8.1.2",
     "postcss-loader": "^0.9.1",
+    "pre-commit": "^1.1.3",
     "react": "^15.1.0",
     "react-dom": "^15.1.0",
     "react-immutable-proptypes": "^1.6.0",
