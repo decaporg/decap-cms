@@ -1,19 +1,18 @@
 import React, { PropTypes } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { OrderedMap } from 'immutable';
-import { init, loadUnpublishedEntries } from '../actions/editorialWorkflow';
-import { selectUnpublishedEntries } from '../reducers';
-import { EDITORIAL_WORKFLOW, status } from '../constants/publishModes';
-import UnpublishedListing from '../components/UnpublishedListing';
+import { loadUnpublishedEntries } from '../../actions/editorialWorkflow';
+import { selectUnpublishedEntries } from '../../reducers';
+import { EDITORIAL_WORKFLOW, status } from '../../constants/publishModes';
+import UnpublishedListing from '../../components/UnpublishedListing';
 import { connect } from 'react-redux';
 
-export default function EditorialWorkflow(WrappedComponent) {
-  class EditorialWorkflow extends WrappedComponent {
+export default function CollectionPageHOC(CollectionPage) {
+  class CollectionPageHOC extends CollectionPage {
 
     componentDidMount() {
       const { dispatch, isEditorialWorkflow } = this.props;
       if (isEditorialWorkflow) {
-        dispatch(init());
         dispatch(loadUnpublishedEntries());
       }
       super.componentDidMount();
@@ -32,7 +31,7 @@ export default function EditorialWorkflow(WrappedComponent) {
     }
   }
 
-  EditorialWorkflow.propTypes = {
+  CollectionPageHOC.propTypes = {
     dispatch: PropTypes.func.isRequired,
     isEditorialWorkflow: PropTypes.bool.isRequired,
     unpublishedEntries: ImmutablePropTypes.map,
@@ -56,5 +55,5 @@ export default function EditorialWorkflow(WrappedComponent) {
     return returnObj;
   }
 
-  return connect(mapStateToProps)(EditorialWorkflow);
+  return connect(mapStateToProps)(CollectionPageHOC);
 }

@@ -6,7 +6,7 @@ import { selectEntries } from '../reducers';
 import { Loader } from '../components/UI';
 import EntryListing from '../components/EntryListing';
 import styles from './CollectionPage.css';
-import EditorialWorkflow from './EditorialWorkflowHoC';
+import CollectionPageHOC from './editorialWorkflow/CollectionPageHOC';
 
 class DashboardPage extends React.Component {
   componentDidMount() {
@@ -50,7 +50,7 @@ DashboardPage.propTypes = {
  * Instead of checking the publish mode everywhere to dispatch & render the additional editorial workflow stuff,
  * We delegate it to a Higher Order Component
  */
-DashboardPage = EditorialWorkflow(DashboardPage);
+DashboardPage = CollectionPageHOC(DashboardPage);
 
 
 function mapStateToProps(state, ownProps) {

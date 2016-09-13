@@ -1,13 +1,30 @@
 import { Map, List, fromJS } from 'immutable';
+import { EDITORIAL_WORKFLOW } from '../constants/publishModes';
 import {
-  INIT, UNPUBLISHED_ENTRIES_REQUEST, UNPUBLISHED_ENTRIES_SUCCESS
+  UNPUBLISHED_ENTRY_REQUEST, UNPUBLISHED_ENTRY_SUCCESS, UNPUBLISHED_ENTRIES_REQUEST, UNPUBLISHED_ENTRIES_SUCCESS
 } from '../actions/editorialWorkflow';
+import { CONFIG_SUCCESS } from '../actions/config';
 
 const unpublishedEntries = (state = null, action) => {
   switch (action.type) {
-    case INIT:
-      //  Editorial workflow must be explicitly initiated.
-      return Map({ entities: Map(), pages: Map() });
+    case CONFIG_SUCCESS:
+      const publish_mode = action.payload && action.payload.publish_mode;
+      if (publish_mode === EDITORIAL_WORKFLOW) {
+        //  Editorial workflow state is explicetelly initiated after the config.
+        return Map({ entities: Map(), pages: Map() });
+      } else {
+        return state;
+      }
+    case UNPUBLISHED_ENTRY_REQUEST:
+      return state.setIn(['entities', `${action.payload.status}.${action.payload.slug}`, 'isFetching'], true);
+
+    case UNPUBLISHED_ENTRY_SUCCESS:
+      return state.setIn(
+        ['entities', `${action.payload.status}.${action.payload.entry.slug}`],
+        fromJS(action.payload.entry)
+      );
+
+
     case UNPUBLISHED_ENTRIES_REQUEST:
       return state.setIn(['pages', 'isFetching'], true);
 
@@ -27,9 +44,9 @@ const unpublishedEntries = (state = null, action) => {
   }
 };
 
-export const selectUnpublishedEntry = (state, status, slug) => (
-  state.getIn(['entities', `${status}.${slug}`])
-);
+export const selectUnpublishedEntry = (state, status, slug) => {
+  return state && state.getIn(['entities', `${status}.${slug}`]);
+};
 
 export const selectUnpublishedEntries = (state, status) => {
   if (!state) return;

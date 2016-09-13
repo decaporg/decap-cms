@@ -3,7 +3,9 @@ import { EDITORIAL_WORKFLOW } from '../constants/publishModes';
 /*
  * Contant Declarations
  */
-export const INIT = 'init';
+export const UNPUBLISHED_ENTRY_REQUEST = 'UNPUBLISHED_ENTRY_REQUEST';
+export const UNPUBLISHED_ENTRY_SUCCESS = 'UNPUBLISHED_ENTRY_SUCCESS';
+
 export const UNPUBLISHED_ENTRIES_REQUEST = 'UNPUBLISHED_ENTRIES_REQUEST';
 export const UNPUBLISHED_ENTRIES_SUCCESS = 'UNPUBLISHED_ENTRIES_SUCCESS';
 export const UNPUBLISHED_ENTRIES_FAILURE = 'UNPUBLISHED_ENTRIES_FAILURE';
@@ -12,6 +14,21 @@ export const UNPUBLISHED_ENTRIES_FAILURE = 'UNPUBLISHED_ENTRIES_FAILURE';
 /*
  * Simple Action Creators (Internal)
  */
+
+function unpublishedEntryLoading(status, slug) {
+  return {
+    type: UNPUBLISHED_ENTRY_REQUEST,
+    payload: { status,  slug }
+  };
+}
+
+function unpublishedEntryLoaded(status, entry) {
+  return {
+    type: UNPUBLISHED_ENTRY_SUCCESS,
+    payload: { status, entry }
+  };
+}
+
 function unpublishedEntriesLoading() {
   return {
     type: UNPUBLISHED_ENTRIES_REQUEST
@@ -37,18 +54,19 @@ function unpublishedEntriesFailed(error) {
 }
 
 /*
- * Exported simple Action Creators
+ * Exported Thunk Action Creators
  */
-export function init() {
-  return {
-    type: INIT
+
+export function loadUnpublishedEntry(collection, status, slug) {
+  return (dispatch, getState) => {
+    const state = getState();
+    const backend = currentBackend(state.config);
+    dispatch(unpublishedEntryLoading(status, slug));
+    backend.unpublishedEntry(collection, slug)
+      .then((entry) => dispatch(unpublishedEntryLoaded(status, entry)));
   };
 }
 
-
-/*
- * Exported Thunk Action Creators
- */
 export function loadUnpublishedEntries() {
   return (dispatch, getState) => {
     const state = getState();

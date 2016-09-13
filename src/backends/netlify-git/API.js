@@ -55,7 +55,7 @@ export default class API {
   }
 
   checkMetadataRef() {
-    return this.request(`${this.repoURL}/git/refs/meta/_netlify_cms?${Date.now()}`, {
+    return this.request(`${this.repoURL}/refs/meta/_netlify_cms?${Date.now()}`, {
       cache: 'no-store',
     })
     .then(response => response.object)
@@ -66,7 +66,7 @@ export default class API {
       };
 
       return this.uploadBlob(readme)
-      .then(item => this.request(`${this.repoURL}/git/trees`, {
+      .then(item => this.request(`${this.repoURL}/trees`, {
         method: 'POST',
         body: JSON.stringify({ tree: [{ path: 'README.md', mode: '100644', type: 'blob', sha: item.sha }] })
       }))
@@ -173,7 +173,7 @@ export default class API {
   }
 
   createRef(type, name, sha) {
-    return this.request(`${this.repoURL}/git/refs`, {
+    return this.request(`${this.repoURL}/refs`, {
       method: 'POST',
       body: JSON.stringify({ ref: `refs/${type}/${name}`, sha }),
     });
@@ -184,7 +184,7 @@ export default class API {
   }
 
   patchRef(type, name, sha) {
-    return this.request(`${this.repoURL}/git/refs/${type}/${name}`, {
+    return this.request(`${this.repoURL}/refs/${type}/${name}`, {
       method: 'PATCH',
       body: JSON.stringify({ sha })
     });
@@ -195,7 +195,7 @@ export default class API {
   }
 
   getBranch() {
-    return this.request(`${this.repoURL}/branches/${this.branch}`);
+    return this.request(`${this.repoURL}/refs/heads/${this.branch}`);
   }
 
   createPR(title, head, base = 'master') {
@@ -207,7 +207,7 @@ export default class API {
   }
 
   getTree(sha) {
-    return sha ? this.request(`${this.repoURL}/git/trees/${sha}`) : Promise.resolve({ tree: [] });
+    return sha ? this.request(`${this.repoURL}/trees/${sha}`) : Promise.resolve({ tree: [] });
   }
 
   toBase64(str) {
@@ -220,7 +220,7 @@ export default class API {
     const content = item instanceof MediaProxy ? item.toBase64() : this.toBase64(item.raw);
 
     return content.then((contentBase64) => {
-      return this.request(`${this.repoURL}/git/blobs`, {
+      return this.request(`${this.repoURL}/blobs`, {
         method: 'POST',
         body: JSON.stringify({
           content: contentBase64,
@@ -263,7 +263,7 @@ export default class API {
         }
         return Promise.all(updates)
           .then((updates) => {
-            return this.request(`${this.repoURL}/git/trees`, {
+            return this.request(`${this.repoURL}/trees`, {
               method: 'POST',
               body: JSON.stringify({ base_tree: sha, tree: updates })
             });
@@ -276,7 +276,7 @@ export default class API {
   commit(message, changeTree) {
     const tree = changeTree.sha;
     const parents = changeTree.parentSha ? [changeTree.parentSha] : [];
-    return this.request(`${this.repoURL}/git/commits`, {
+    return this.request(`${this.repoURL}/commits`, {
       method: 'POST',
       body: JSON.stringify({ message, tree, parents })
     });

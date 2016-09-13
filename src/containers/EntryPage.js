@@ -12,6 +12,7 @@ import {
 import { addMedia, removeMedia } from '../actions/media';
 import { selectEntry, getMedia } from '../reducers';
 import EntryEditor from '../components/EntryEditor';
+import EntryPageHOC from './editorialWorkflow/EntryPageHOC';
 
 class EntryPage extends React.Component {
   constructor(props) {
@@ -56,6 +57,7 @@ class EntryPage extends React.Component {
     const {
       entry, entryDraft, boundGetMedia, collection, changeDraft, addMedia, removeMedia
     } = this.props;
+    
     if (entryDraft == null || entryDraft.get('entry') == undefined || entry && entry.get('isFetching')) {
       return <div>Loading...</div>;
     }
@@ -99,6 +101,12 @@ function mapStateToProps(state, ownProps) {
   const boundGetMedia = getMedia.bind(null, state);
   return { collection, collections, newEntry, entryDraft, boundGetMedia, slug, entry };
 }
+
+/*
+ * Instead of checking the publish mode everywhere to dispatch & render the additional editorial workflow stuff,
+ * We delegate it to a Higher Order Component
+ */
+EntryPage = EntryPageHOC(EntryPage);
 
 export default connect(
   mapStateToProps,

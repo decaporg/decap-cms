@@ -83,6 +83,10 @@ class Backend {
     });
   }
 
+  unpublishedEntry(collection, slug) {
+    return this.implementation.unpublishedEntry(collection, slug).then(this.entryWithFormat(collection));
+  }
+
   slugFormatter(template, entry) {
     var date = new Date();
     return template.replace(/\{\{([^\}]+)\}\}/g, function(_, name) {
