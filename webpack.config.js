@@ -13,7 +13,7 @@ module.exports = {
       { test: /\.json$/, loader: 'json-loader' },
       {
         test: /\.css$/,
-        loader: ExtractTextPlugin.extract("style", "css?modules&importLoaders=1!postcss"),
+        loader: ExtractTextPlugin.extract("style", "css?modules&importLoaders=1&&localIdentName=cms__[name]__[local]!postcss"),
       },
       {
         loader: 'babel',

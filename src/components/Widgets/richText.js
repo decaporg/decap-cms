@@ -48,8 +48,6 @@ function processEditorPlugins(plugins) {
           <div className="plugin_fields" contentEditable={false}>
             { plugin.fields.map(field => `${field.label}: “${node.data.get(field.name)}”`) }
           </div>
-
-
         </div>
       );
     };

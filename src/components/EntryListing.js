@@ -60,7 +60,8 @@ export default class EntryListing extends React.Component {
 
   cardFor(collection, entry, link) {
     //const { entry, getMedia, onChange, onAddMedia, onRemoveMedia } = this.props;
-    const card = Cards[collection.getIn(['card', 'type'])] || Cards._unknown;
+    const cartType = collection.getIn(['card', 'type']) || 'alltype';
+    const card = Cards[cartType] || Cards._unknown;
     return React.createElement(card, {
       key: entry.get('slug'),
       collection: collection,

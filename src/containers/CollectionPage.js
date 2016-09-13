@@ -5,6 +5,7 @@ import { loadEntries } from '../actions/entries';
 import { selectEntries } from '../reducers';
 import { Loader } from '../components/UI';
 import EntryListing from '../components/EntryListing';
+import styles from './CollectionPage.css';
 import CollectionPageHOC from './editorialWorkflow/CollectionPageHOC';
 
 class DashboardPage extends React.Component {
@@ -28,7 +29,8 @@ class DashboardPage extends React.Component {
       return <h1>No collections defined in your config.yml</h1>;
     }
 
-    return <div>
+
+    return <div className={styles.alignable}>
       {entries ?
         <EntryListing collection={collection} entries={entries}/>
         :
