@@ -20,7 +20,6 @@ render((
 if (module.hot) {
   module.hot.accept('./root', () => {
     const NextRoot = require('./root').default;
-    console.log(NextRoot);
     render((
       <AppContainer>
         <NextRoot />
