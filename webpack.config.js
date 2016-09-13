@@ -1,6 +1,5 @@
 /* global module, __dirname, require */
 var webpack = require('webpack');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var path = require('path');
 
 const HOST = 'localhost';
@@ -16,7 +15,7 @@ module.exports = {
       { test: /\.json$/, loader: 'json-loader' },
       {
         test: /\.css$/,
-        loader: ExtractTextPlugin.extract("style", "css?modules&importLoaders=1&&localIdentName=cms__[name]__[local]!postcss"),
+        loader: 'style!css?modules&importLoaders=1&&localIdentName=cms__[name]__[local]!postcss',
       },
       {
         loader: 'babel',
@@ -46,7 +45,6 @@ module.exports = {
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin(),
-    new ExtractTextPlugin('cms.css', { allChunks: true }),
     new webpack.ProvidePlugin({
       'fetch': 'imports?this=>global!exports?global.fetch!whatwg-fetch'
     })
