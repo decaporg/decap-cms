@@ -13,7 +13,7 @@ export default class UnpublishedListing extends React.Component {
     if (!column) {
       return entries.entrySeq().map(([currColumn, currEntries]) => (
         <div key={currColumn} className={styles.column}>
-          <h3>{statusDescriptions.get(currColumn)}</h3>
+          <h2>{statusDescriptions.get(currColumn)}</h2>
           {this.renderColumns(currEntries, currColumn)}
         </div>
       ));
@@ -22,7 +22,7 @@ export default class UnpublishedListing extends React.Component {
         {entries.map(entry => {
           // Look for an "author" field. Fallback to username on backend implementation;
           const author = entry.getIn(['data', 'author'], entry.getIn(['metaData', 'user']));
-          const timeStamp = moment(entry.getIn(['metaData', 'timeStamp'])).formate('llll');
+          const timeStamp = moment(entry.getIn(['metaData', 'timeStamp'])).format('llll');
           const link = `/editorialworkflow/${entry.getIn(['metaData', 'collection'])}/${entry.getIn(['metaData', 'status'])}/${entry.get('slug')}`;
           return (
             <Card key={entry.get('slug')} className={styles.card}>
@@ -41,6 +41,7 @@ export default class UnpublishedListing extends React.Component {
 
     return (
       <div>
+        <h1>Editorial Workflow</h1>
         {columns}
       </div>
     );

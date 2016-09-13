@@ -6,6 +6,7 @@ import { selectUnpublishedEntries } from '../../reducers';
 import { EDITORIAL_WORKFLOW, status } from '../../constants/publishModes';
 import UnpublishedListing from '../../components/UnpublishedListing';
 import { connect } from 'react-redux';
+import styles from '../CollectionPage.css';
 
 export default function CollectionPageHOC(CollectionPage) {
   class CollectionPageHOC extends CollectionPage {
@@ -23,7 +24,7 @@ export default function CollectionPageHOC(CollectionPage) {
       if (!isEditorialWorkflow) return super.render();
 
       return (
-        <div>
+        <div className={styles.alignable}>
           <UnpublishedListing entries={unpublishedEntries}/>
           {super.render()}
         </div>

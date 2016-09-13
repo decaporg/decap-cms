@@ -4,6 +4,9 @@
   vertical-align: top;
   text-align: center;
   width: 28%;
+  & h2 {
+    font-size: 16px;
+  }
 }
 
 .column:not(:last-child) {
