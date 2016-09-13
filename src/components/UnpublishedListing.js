@@ -2,6 +2,7 @@ import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import dateFormat from 'dateFormat';
 import { Card } from './UI';
+import { Link } from 'react-router'
 import { statusDescriptions } from '../constants/publishModes';
 import styles from './UnpublishedListing.css';
 
@@ -22,9 +23,10 @@ export default class UnpublishedListing extends React.Component {
           // Look for an "author" field. Fallback to username on backend implementation;
           const author = entry.getIn(['data', 'author'], entry.getIn(['metaData', 'user']));
           const timeStamp = dateFormat(Date.parse(entry.getIn(['metaData', 'timeStamp'])), 'longDate');
+          const link = `/editorialworkflow/${entry.getIn(['metaData', 'collection'])}/${entry.getIn(['metaData', 'status'])}/${entry.get('slug')}`;
           return (
             <Card key={entry.get('slug')} className={styles.card}>
-              <h1>{entry.getIn(['data', 'title'])} <small>by {author}</small></h1>
+              <h1><Link to={link}>{entry.getIn(['data', 'title'])}</Link> <small>by {author}</small></h1>
               <p>Last updated: {timeStamp} by {entry.getIn(['metaData', 'user'])}</p>
             </Card>
           );

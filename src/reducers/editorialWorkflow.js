@@ -27,9 +27,9 @@ const unpublishedEntries = (state = null, action) => {
   }
 };
 
-export const selectUnpublishedEntry = (state, status, slug) => (
-  state.getIn(['entities', `${status}.${slug}`])
-);
+export const selectUnpublishedEntry = (state, status, slug) => {
+  return state && state.getIn(['entities', `${status}.${slug}`]);
+};
 
 export const selectUnpublishedEntries = (state, status) => {
   if (!state) return;
