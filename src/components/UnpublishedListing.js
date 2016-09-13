@@ -13,7 +13,7 @@ export default class UnpublishedListing extends React.Component {
     if (!column) {
       return entries.entrySeq().map(([currColumn, currEntries]) => (
         <div key={currColumn} className={styles.column}>
-          <h3>{statusDescriptions.get(currColumn)}</h3>
+          <h2>{statusDescriptions.get(currColumn)}</h2>
           {this.renderColumns(currEntries, currColumn)}
         </div>
       ));
@@ -41,6 +41,7 @@ export default class UnpublishedListing extends React.Component {
 
     return (
       <div>
+        <h1>Editorial Workflow</h1>
         {columns}
       </div>
     );
