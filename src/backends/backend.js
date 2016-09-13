@@ -105,7 +105,7 @@ class Backend {
     });
   }
 
-  persistEntry(config, collection, entryDraft, MediaFiles) {
+  persistEntry(config, collection, entryDraft, MediaFiles, options) {
     const newEntry = entryDraft.getIn(['entry', 'newRecord']) || false;
 
     const parsedData = {
@@ -139,9 +139,14 @@ class Backend {
     const collectionName = collection.get('name');
 
     return this.implementation.persistEntry(entryObj, MediaFiles, {
-      newEntry, parsedData, commitMessage, collectionName, mode
+      newEntry, parsedData, commitMessage, collectionName, mode, ...options
     });
   }
+
+  persistUnpublishedEntry(config, collection, status, entryDraft, MediaFiles) {
+    return this.persistEntry(config, collection, entryDraft, MediaFiles, { unpublished: true, status });
+  }
+
 
   entryToRaw(collection, entry) {
     const format = resolveFormat(collection, entry);

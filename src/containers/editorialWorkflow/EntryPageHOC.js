@@ -1,7 +1,7 @@
 import React from 'react';
 import { EDITORIAL_WORKFLOW } from '../../constants/publishModes';
 import { selectUnpublishedEntry } from '../../reducers';
-import { loadUnpublishedEntry } from '../../actions/editorialWorkflow';
+import { loadUnpublishedEntry, persistUnpublishedEntry } from '../../actions/editorialWorkflow';
 import { connect } from 'react-redux';
 
 export default function EntryPageHOC(EntryPage) {
@@ -22,10 +22,6 @@ export default function EntryPageHOC(EntryPage) {
       const slug = ownProps.params.slug;
       const entry =  selectUnpublishedEntry(state, status, slug);
       returnObj.entry = entry;
-
-      returnObj.persistEntry = () => {
-        // TODO - for now, simply ignore
-      };
     }
     return returnObj;
   }
@@ -38,6 +34,10 @@ export default function EntryPageHOC(EntryPage) {
       const status = ownProps.params.status;
       returnObj.loadEntry = (collection, slug) => {
         dispatch(loadUnpublishedEntry(collection, status, slug));
+      };
+
+      returnObj.persistEntry = (collection, entryDraft) => {
+        dispatch(persistUnpublishedEntry(collection, status, entryDraft));
       };
     }
     return returnObj;

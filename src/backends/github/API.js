@@ -1,7 +1,8 @@
 import LocalForage from 'localforage';
 import MediaProxy from '../../valueObjects/MediaProxy';
 import { Base64 } from 'js-base64';
-import { EDITORIAL_WORKFLOW, status } from '../../constants/publishModes';
+import _ from 'lodash';
+import { SIMPLE, EDITORIAL_WORKFLOW, status } from '../../constants/publishModes';
 
 const API_ROOT = 'https://api.github.com';
 
@@ -183,37 +184,84 @@ export default class API {
       subtree[filename] = file;
       file.file = true;
     });
-    return Promise.all(uploadPromises)
-      .then(() => this.getBranch())
+    return Promise.all(uploadPromises).then(() => {
+      if (!options.mode || (options.mode && options.mode === SIMPLE)) {
+        return this.getBranch()
+        .then(branchData => this.updateTree(branchData.commit.sha, '/', fileTree))
+        .then(changeTree => this.commit(options.commitMessage, changeTree))
+        .then(response => this.patchBranch(this.branch, response.sha));
+      } else if (options.mode && options.mode === EDITORIAL_WORKFLOW) {
+        const mediaFilesList = mediaFiles.map(file => file.path);
+        return this.editorialWorkflowGit(fileTree, entry, mediaFilesList, options);
+      }
+    });
+  }
+
+  editorialWorkflowGit(fileTree, entry, filesList, options) {
+    const contentKey = options.collectionName ? `${options.collectionName}-${entry.slug}` : entry.slug;
+    const branchName = `cms/${contentKey}`;
+    const unpublished = options.unpublished || false;
+
+    if (!unpublished) {
+      // Open new editorial review workflow for this entry - Create new metadata and commit to new branch
+      return this.getBranch()
       .then(branchData => this.updateTree(branchData.commit.sha, '/', fileTree))
       .then(changeTree => this.commit(options.commitMessage, changeTree))
       .then((response) => {
-        if (options.mode && options.mode === EDITORIAL_WORKFLOW) {
-          const contentKey = options.collectionName ? `${options.collectionName}-${entry.slug}` : entry.slug;
-          const branchName = `cms/${contentKey}`;
-          return this.user().then(user => {
-            return user.name ? user.name : user.login;
-          })
-          .then(username => this.storeMetadata(contentKey, {
-            type: 'PR',
-            user: username,
-            status: status.first(),
-            branch: branchName,
-            collection: options.collectionName,
+        const contentKey = options.collectionName ? `${options.collectionName}-${entry.slug}` : entry.slug;
+        const branchName = `cms/${contentKey}`;
+        return this.user().then(user => {
+          return user.name ? user.name : user.login;
+        })
+        .then(username => this.storeMetadata(contentKey, {
+          type: 'PR',
+          user: username,
+          status: status.first(),
+          branch: branchName,
+          collection: options.collectionName,
+          title: options.parsedData && options.parsedData.title,
+          description: options.parsedData && options.parsedData.description,
+          objects: {
+            entry: entry.path,
+            files: filesList
+          },
+          timeStamp: new Date().toISOString()
+        }))
+        .then(this.createBranch(branchName, response.sha))
+        .then(this.createPR(options.commitMessage, `cms/${contentKey}`));
+      });
+    } else {
+      // Entry is already on editorial review workflow - just update metadata and commit to existing branch
+      return this.getBranch(branchName)
+      .then(branchData => this.updateTree(branchData.commit.sha, '/', fileTree))
+      .then(changeTree => this.commit(options.commitMessage, changeTree))
+      .then((response) => {
+        const contentKey = options.collectionName ? `${options.collectionName}-${entry.slug}` : entry.slug;
+        const branchName = `cms/${contentKey}`;
+        return this.user().then(user => {
+          return user.name ? user.name : user.login;
+        })
+        .then(username => this.retrieveMetadata(contentKey))
+        .then(metadata => {
+          let files = metadata.objects && metadata.objects.files || [];
+          files = files.concat(filesList);
+
+          return {
+            ...metadata,
+            status: options.status,
             title: options.parsedData && options.parsedData.title,
             description: options.parsedData && options.parsedData.description,
             objects: {
               entry: entry.path,
-              files: mediaFiles.map(file => file.path)
+              files: _.uniq(files)
             },
             timeStamp: new Date().toISOString()
-          }))
-          .then(this.createBranch(branchName, response.sha))
-          .then(this.createPR(options.commitMessage, `cms/${contentKey}`));
-        } else {
-          return this.patchBranch(this.branch, response.sha);
-        }
+          };
+        })
+        .then(updatedMetadata => this.storeMetadata(contentKey, updatedMetadata))
+        .then(this.patchBranch(branchName, response.sha));
       });
+    }
   }
 
   createRef(type, name, sha) {
@@ -238,8 +286,8 @@ export default class API {
     return this.patchRef('heads', branchName, sha);
   }
 
-  getBranch() {
-    return this.request(`${this.repoURL}/branches/${this.branch}`);
+  getBranch(branch = this.branch) {
+    return this.request(`${this.repoURL}/branches/${branch}`);
   }
 
   createPR(title, head, base = 'master') {

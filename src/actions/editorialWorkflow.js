@@ -1,4 +1,5 @@
 import { currentBackend } from '../backends/backend';
+import { getMedia } from '../reducers';
 import { EDITORIAL_WORKFLOW } from '../constants/publishModes';
 /*
  * Contant Declarations
@@ -10,6 +11,8 @@ export const UNPUBLISHED_ENTRIES_REQUEST = 'UNPUBLISHED_ENTRIES_REQUEST';
 export const UNPUBLISHED_ENTRIES_SUCCESS = 'UNPUBLISHED_ENTRIES_SUCCESS';
 export const UNPUBLISHED_ENTRIES_FAILURE = 'UNPUBLISHED_ENTRIES_FAILURE';
 
+export const UNPUBLISHED_ENTRY_PERSIST_REQUEST = 'UNPUBLISHED_ENTRY_PERSIST_REQUEST';
+export const UNPUBLISHED_ENTRY_PERSIST_SUCCESS = 'UNPUBLISHED_ENTRY_PERSIST_SUCCESS';
 
 /*
  * Simple Action Creators (Internal)
@@ -53,6 +56,28 @@ function unpublishedEntriesFailed(error) {
   };
 }
 
+
+function unpublishedEntryPersisting(status, entry) {
+  return {
+    type: UNPUBLISHED_ENTRY_PERSIST_REQUEST,
+    payload: { status, entry }
+  };
+}
+
+function unpublishedEntryPersisted(status, entry) {
+  return {
+    type: UNPUBLISHED_ENTRY_PERSIST_SUCCESS,
+    payload: { status, entry }
+  };
+}
+
+function unpublishedEntryPersistedFail(status, entry) {
+  return {
+    type: UNPUBLISHED_ENTRY_PERSIST_SUCCESS,
+    payload: { status, entry }
+  };
+}
+
 /*
  * Exported Thunk Action Creators
  */
@@ -76,6 +101,21 @@ export function loadUnpublishedEntries() {
     backend.unpublishedEntries().then(
       (response) => dispatch(unpublishedEntriesLoaded(response.entries, response.pagination)),
       (error) => dispatch(unpublishedEntriesFailed(error))
+    );
+  };
+}
+
+export function persistUnpublishedEntry(collection, status, entry) {
+  return (dispatch, getState) => {
+    const state = getState();
+    const backend = currentBackend(state.config);
+    const MediaProxies = entry && entry.get('mediaFiles').map(path => getMedia(state, path));
+    dispatch(unpublishedEntryPersisting(status, entry));
+    backend.persistUnpublishedEntry(state.config, collection, status, entry, MediaProxies.toJS()).then(
+      () => {
+        dispatch(unpublishedEntryPersisted(status, entry));
+      },
+      (error) => dispatch(unpublishedEntryPersistedFail(error))
     );
   };
 }
