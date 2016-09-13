@@ -16,6 +16,6 @@ const Root = () => (
       {routes}
     </Router>
   </Provider>
-)
+);
 
-export default Root
+export default Root;
