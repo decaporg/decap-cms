@@ -55,7 +55,7 @@ export default class PreviewPane extends React.Component {
   }
 
   renderPreview() {
-    const props = Object.assign({}, this.props, {widgetFor: this.widgetFor});
+    const props = Object.assign({}, this.props, { widgetFor: this.widgetFor });
     const component = registry.getPreviewTemplate(props.collection.get('name')) || Preview;
 
     render(React.createElement(component, props), this.previewEl);

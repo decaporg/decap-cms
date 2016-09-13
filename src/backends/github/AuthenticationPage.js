@@ -21,9 +21,9 @@ export default class AuthenticationPage extends React.Component {
       auth = new Authenticator();
     }
 
-    auth.authenticate({provider: 'github', scope: 'repo'}, (err, data) => {
+    auth.authenticate({ provider: 'github', scope: 'repo' }, (err, data) => {
       if (err) {
-        this.setState({loginError: err.toString()});
+        this.setState({ loginError: err.toString() });
         return;
       }
       this.props.onLogin(data);

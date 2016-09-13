@@ -13,7 +13,12 @@ class FindBar extends Component {
   constructor(props) {
     super(props);
     this._compiledCommands = [];
-    this._searchCommand = { search: true, regexp:`(?:${SEARCH})?(.*)`, param:{ name:'searchTerm', display:'' }, token: SEARCH };
+    this._searchCommand = {
+      search: true,
+      regexp: `(?:${SEARCH})?(.*)`,
+      param: { name: 'searchTerm', display: '' },
+      token: SEARCH
+    };
     this.state = {
       value: '',
       placeholder: PLACEHOLDER,
@@ -68,7 +73,7 @@ class FindBar extends Component {
 
     if (match && match[1]) {
       regexp += '(.*)';
-      param = { name:match[1], display:match[2] || this._camelCaseToSpace(match[1]) };
+      param = { name: match[1], display: match[2] || this._camelCaseToSpace(match[1]) };
     }
 
     return Object.assign({}, command, {
@@ -144,6 +149,7 @@ class FindBar extends Component {
   getSuggestions() {
     return this._getSuggestions(this.state.value, this.state.activeScope, this._compiledCommands, this.props.defaultCommands);
   }
+
   // Memoized version
   _getSuggestions(value, scope, commands, defaultCommands) {
     if (scope) return []; // No autocomplete for scoped input
@@ -152,7 +158,7 @@ class FindBar extends Component {
         .filter(command => defaultCommands.indexOf(command.id) !== -1)
         .map(result => (
           Object.assign({}, result, { string: result.token }
-        )));
+          )));
     }
 
     const results = fuzzy.filter(value, commands, {
@@ -162,8 +168,8 @@ class FindBar extends Component {
     });
 
     const returnResults = results.slice(0, 4).map(result => (
-      Object.assign({}, result.original, { string:result.string }
-    )));
+      Object.assign({}, result.original, { string: result.string }
+      )));
     returnResults.push(this._searchCommand);
 
     return returnResults;
@@ -178,7 +184,7 @@ class FindBar extends Component {
         index = (
           highlightedIndex === this.getSuggestions().length - 1 ||
           this.state.isOpen === false
-        ) ?  0 : highlightedIndex + 1;
+        ) ? 0 : highlightedIndex + 1;
         this.setState({
           highlightedIndex: index,
           isOpen: true,
@@ -290,7 +296,7 @@ class FindBar extends Component {
       let children;
       if (!command.search) {
         children = (
-          <span><span dangerouslySetInnerHTML={{__html: command.string}} /></span>
+          <span><span dangerouslySetInnerHTML={{ __html: command.string }}/></span>
         );
       } else {
         children = (
@@ -299,7 +305,8 @@ class FindBar extends Component {
             <span><Icon type="search"/>Search... </span> :
             <span className={styles.faded}><Icon type="search"/>Search for: </span>
           }
-          <strong>{this.state.value}</strong></span>
+            <strong>{this.state.value}</strong>
+          </span>
         );
       }
       return (
@@ -317,7 +324,7 @@ class FindBar extends Component {
     return commands.length === 0 ? null : (
       <div className={styles.menu}>
         <div className={styles.suggestions}>
-          { commands }
+          {commands}
         </div>
         <div className={styles.history}>
           Your past searches and commands
@@ -328,7 +335,7 @@ class FindBar extends Component {
 
   renderActiveScope() {
     if (this.state.activeScope === SEARCH) {
-      return <div className={styles.inputScope}><Icon type="search"/> </div>;
+      return <div className={styles.inputScope}><Icon type="search"/></div>;
     } else {
       return <div className={styles.inputScope}>{this.state.activeScope}</div>;
     }
@@ -358,6 +365,7 @@ class FindBar extends Component {
     );
   }
 }
+
 FindBar.propTypes = {
   commands: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.string.isRequired,

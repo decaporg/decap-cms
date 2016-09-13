@@ -6,7 +6,7 @@ const availableIcons = [
   'bold', 'italic', 'list', 'font', 'text-height', 'text-width', 'align-left', 'align-center', 'align-right',
   'align-justify', 'indent-left', 'indent-right', 'list-bullet', 'list-numbered', 'strike', 'underline', 'table',
   'superscript', 'subscript', 'header', 'h1', 'h2', 'paragraph', 'link', 'unlink', 'quote-left', 'quote-right', 'code',
-  'picture','video',
+  'picture', 'video',
   // Entypo
   'note', 'note-beamed',
   'music',
@@ -199,7 +199,7 @@ const iconPropType = (props, propName) => {
 
 const noop = function() {};
 
-export default function Icon({ style, className = '', type, onClick = noop}) {
+export default function Icon({ style, className = '', type, onClick = noop }) {
   return <span className={`${styles.root} ${styles[type]} ${className}`} style={style} onClick={onClick} />;
 }
 

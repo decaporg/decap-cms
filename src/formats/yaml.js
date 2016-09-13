@@ -41,6 +41,6 @@ export default class YAML {
   }
 
   toFile(data) {
-    return yaml.safeDump(data, {schema: OutputSchema});
+    return yaml.safeDump(data, { schema: OutputSchema });
   }
 }

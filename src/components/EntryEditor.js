@@ -27,14 +27,14 @@ export default class EntryEditor extends React.Component {
   calculateHeight() {
     const height = window.innerHeight - 54;
     console.log('setting height to %s', height);
-    this.setState({height});
+    this.setState({ height });
   }
 
   render() {
     const { collection, entry, getMedia, onChange, onAddMedia, onRemoveMedia, onPersist } = this.props;
-    const {height} = this.state;
+    const { height } = this.state;
 
-    return <div className={styles.entryEditor} style={{height}}>
+    return <div className={styles.entryEditor} style={{ height }}>
       <div className={styles.container}>
         <div className={styles.controlPane}>
           <ControlPane
