@@ -1,5 +1,4 @@
 import React from 'react';
-import Authenticator from '../../lib/netlify-auth';
 
 export default class AuthenticationPage extends React.Component {
   static propTypes = {
