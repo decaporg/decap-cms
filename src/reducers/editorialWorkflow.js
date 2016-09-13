@@ -1,6 +1,6 @@
 import { Map, List, fromJS } from 'immutable';
 import {
-  INIT, UNPUBLISHED_ENTRIES_REQUEST, UNPUBLISHED_ENTRIES_SUCCESS
+  INIT, UNPUBLISHED_ENTRY_REQUEST, UNPUBLISHED_ENTRY_SUCCESS, UNPUBLISHED_ENTRIES_REQUEST, UNPUBLISHED_ENTRIES_SUCCESS
 } from '../actions/editorialWorkflow';
 
 const unpublishedEntries = (state = null, action) => {
@@ -8,6 +8,17 @@ const unpublishedEntries = (state = null, action) => {
     case INIT:
       //  Editorial workflow must be explicitly initiated.
       return Map({ entities: Map(), pages: Map() });
+
+    case UNPUBLISHED_ENTRY_REQUEST:
+      return state.setIn(['entities', `${action.payload.status}.${action.payload.slug}`, 'isFetching'], true);
+
+    case UNPUBLISHED_ENTRY_SUCCESS:
+      return state.setIn(
+        ['entities', `${action.payload.status}.${action.payload.entry.slug}`],
+        fromJS(action.payload.entry)
+      );
+
+
     case UNPUBLISHED_ENTRIES_REQUEST:
       return state.setIn(['pages', 'isFetching'], true);
 

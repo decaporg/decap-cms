@@ -17,17 +17,17 @@ export const UNPUBLISHED_ENTRIES_FAILURE = 'UNPUBLISHED_ENTRIES_FAILURE';
  * Simple Action Creators (Internal)
  */
 
-function unpublishedEntryLoading(collection, slug) {
+function unpublishedEntryLoading(status, slug) {
   return {
     type: UNPUBLISHED_ENTRY_REQUEST,
-    payload: { collection, slug }
+    payload: { status,  slug }
   };
 }
 
-function unpublishedEntryLoaded(entry) {
+function unpublishedEntryLoaded(status, entry) {
   return {
     type: UNPUBLISHED_ENTRY_SUCCESS,
-    payload: { entry }
+    payload: { status, entry }
   };
 }
 
@@ -69,13 +69,13 @@ export function init() {
  * Exported Thunk Action Creators
  */
 
-export function loadUnpublishedEntry(collection, slug) {
+export function loadUnpublishedEntry(collection, status, slug) {
   return (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
-    dispatch(unpublishedEntryLoading(collection, slug));
+    dispatch(unpublishedEntryLoading(status, slug));
     backend.unpublishedEntry(collection, slug)
-      .then((entry) => dispatch(unpublishedEntryLoaded(entry)));
+      .then((entry) => dispatch(unpublishedEntryLoaded(status, entry)));
   };
 }
 

@@ -35,8 +35,9 @@ export default function EntryPageHOC(EntryPage) {
     const returnObj = {};
     if (unpublishedEntry) {
       // Overwrite loadEntry to loadUnpublishedEntry
+      const status = ownProps.params.status;
       returnObj.loadEntry = (collection, slug) => {
-        dispatch(loadUnpublishedEntry(collection, slug));
+        dispatch(loadUnpublishedEntry(collection, status, slug));
       };
     }
     return returnObj;
