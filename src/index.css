@@ -17,16 +17,6 @@ body {
   margin: 0;
 }
 
-header {
-  background-color: #272e30;
-  box-shadow: 0 1px 2px 0 rgba(0,0,0,0.22);
-  height: 54px;
-  border-bottom:2px solid #3ab7a5;
-  position: fixed;
-  width: 100%;
-  z-index: 999;
-}
-
 :global #root, :global #root > * {
   height: 100%;
 }

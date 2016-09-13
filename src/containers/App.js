@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { IndexLink } from 'react-router';
 import { loadConfig } from '../actions/config';
 import { loginUser } from '../actions/auth';
 import { currentBackend } from '../backends/backend';
@@ -105,15 +106,18 @@ class App extends React.Component {
 
     return (
       <div>
-        <header>
-          <div className={styles.alignable}>
+        <header className={styles.header}>
+          <IndexLink to="/" className={styles.homeLink}>
+            Dashboard
+          </IndexLink>
+          <div className={styles.findBar}>
             <FindBar
                 commands={commands}
                 defaultCommands={defaultCommands}
             />
           </div>
         </header>
-        <div className={`${styles.alignable} ${styles.main}`}>
+        <div className={styles.main}>
           {children}
         </div>
       </div>
