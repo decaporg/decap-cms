@@ -7,8 +7,6 @@ import { SIMPLE, EDITORIAL_WORKFLOW, status } from '../../constants/publishModes
 const API_ROOT = 'https://api.github.com';
 
 export default class API {
-
-
   constructor(token, repo, branch) {
     this.token = token;
     this.repo = repo;
@@ -99,17 +97,28 @@ export default class API {
       return this.uploadBlob(fileTree[`${key}.json`])
       .then(item => this.updateTree(branchData.sha, '/', fileTree))
       .then(changeTree => this.commit(`Updating “${key}” metadata`, changeTree))
-      .then(response => this.patchRef('meta', '_netlify_cms', response.sha));
+      .then(response => this.patchRef('meta', '_netlify_cms', response.sha))
+      .then(() => {
+        LocalForage.setItem(`gh.meta.${key}`, {
+          expires: Date.now() + 300000, // In 5 minutes
+          data
+        });
+      });
     });
   }
 
   retrieveMetadata(key) {
-    return this.request(`${this.repoURL}/contents/${key}.json`, {
-      params: { ref: 'refs/meta/_netlify_cms' },
-      headers: { Accept: 'application/vnd.github.VERSION.raw' },
-      cache: 'no-store',
-    })
-    .then(response => JSON.parse(response));
+    const cache = LocalForage.getItem(`gh.meta.${key}`);
+    return cache.then((cached) => {
+      if (cached && cached.expires > Date.now()) { return cached.data; }
+
+      return this.request(`${this.repoURL}/contents/${key}.json`, {
+        params: { ref: 'refs/meta/_netlify_cms' },
+        headers: { Accept: 'application/vnd.github.VERSION.raw' },
+        cache: 'no-store',
+      })
+      .then(response => JSON.parse(response));
+    });
   }
 
   readFile(path, sha, branch = this.branch) {
@@ -137,26 +146,14 @@ export default class API {
   }
 
   readUnpublishedBranchFile(contentKey) {
-    const cache = LocalForage.getItem(`gh.unpublished.${contentKey}`);
-    return cache.then((cached) => {
-      if (cached && cached.expires > Date.now()) { return cached.data; }
-
-      let metaData;
-      return this.retrieveMetadata(contentKey)
-      .then(data => {
-        metaData = data;
-        return this.readFile(data.objects.entry, null, data.branch);
-      })
-      .then(file => {
-        return { metaData, file };
-      })
-      .then((result) => {
-        LocalForage.setItem(`gh.unpublished.${contentKey}`, {
-          expires: Date.now() + 300000, // In 5 minutes
-          data: result,
-        });
-        return result;
-      });
+    let metaData;
+    return this.retrieveMetadata(contentKey)
+    .then(data => {
+      metaData = data;
+      return this.readFile(data.objects.entry, null, data.branch);
+    })
+    .then(file => {
+      return { metaData, file };
     });
   }
 
@@ -248,7 +245,6 @@ export default class API {
 
           return {
             ...metadata,
-            status: options.status,
             title: options.parsedData && options.parsedData.title,
             description: options.parsedData && options.parsedData.description,
             objects: {
@@ -262,6 +258,18 @@ export default class API {
         .then(this.patchBranch(branchName, response.sha));
       });
     }
+  }
+
+  updateUnpublishedEntryStatus(collection, slug, status) {
+    const contentKey = collection ? `${collection}-${slug}` : slug;
+    return this.retrieveMetadata(contentKey)
+    .then(metadata => {
+      return {
+        ...metadata,
+        status
+      };
+    })
+    .then(updatedMetadata => this.storeMetadata(contentKey, updatedMetadata));
   }
 
   createRef(type, name, sha) {

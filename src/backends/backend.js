@@ -143,8 +143,12 @@ class Backend {
     });
   }
 
-  persistUnpublishedEntry(config, collection, status, entryDraft, MediaFiles) {
-    return this.persistEntry(config, collection, entryDraft, MediaFiles, { unpublished: true, status });
+  persistUnpublishedEntry(config, collection, entryDraft, MediaFiles) {
+    return this.persistEntry(config, collection, entryDraft, MediaFiles, { unpublished: true });
+  }
+
+  updateUnpublishedEntryStatus(collection, slug, newStatus) {
+    return this.implementation.updateUnpublishedEntryStatus(collection, slug, newStatus);
   }
 
 

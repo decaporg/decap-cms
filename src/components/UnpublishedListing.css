@@ -1,16 +1,25 @@
+.container {
+  display: table;
+  width: 100%;
+}
+
 .column {
-  position: relative;
-  display: inline-block;
-  vertical-align: top;
+  display: table-cell;
   text-align: center;
-  width: 28%;
+  width: 33%;
+  height: 100%;
+  transition: background-color .5s ease;
   & h2 {
     font-size: 16px;
   }
 }
 
+.highlighted {
+  background-color: #e1eeea;
+}
+
 .column:not(:last-child) {
-  margin-right: 8%;
+  padding-right: 20px;
 }
 
 .card {
@@ -29,4 +38,11 @@
     font-size: 12px;
     margin-top: 5px;
   }
+}
+
+
+.clear::after {
+    content:"";
+    display:block;
+    clear:both;
 }

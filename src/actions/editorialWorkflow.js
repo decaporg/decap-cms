@@ -14,6 +14,9 @@ export const UNPUBLISHED_ENTRIES_FAILURE = 'UNPUBLISHED_ENTRIES_FAILURE';
 export const UNPUBLISHED_ENTRY_PERSIST_REQUEST = 'UNPUBLISHED_ENTRY_PERSIST_REQUEST';
 export const UNPUBLISHED_ENTRY_PERSIST_SUCCESS = 'UNPUBLISHED_ENTRY_PERSIST_SUCCESS';
 
+export const UNPUBLISHED_ENTRY_STATUS_CHANGE_REQUEST = 'UNPUBLISHED_ENTRY_STATUS_CHANGE_REQUEST';
+export const UNPUBLISHED_ENTRY_STATUS_CHANGE_SUCCESS = 'UNPUBLISHED_ENTRY_STATUS_CHANGE_SUCCESS';
+
 /*
  * Simple Action Creators (Internal)
  */
@@ -57,24 +60,39 @@ function unpublishedEntriesFailed(error) {
 }
 
 
-function unpublishedEntryPersisting(status, entry) {
+function unpublishedEntryPersisting(entry) {
   return {
     type: UNPUBLISHED_ENTRY_PERSIST_REQUEST,
-    payload: { status, entry }
+    payload: { entry }
   };
 }
 
-function unpublishedEntryPersisted(status, entry) {
+function unpublishedEntryPersisted(entry) {
   return {
     type: UNPUBLISHED_ENTRY_PERSIST_SUCCESS,
-    payload: { status, entry }
+    payload: { entry }
   };
 }
 
-function unpublishedEntryPersistedFail(status, entry) {
+function unpublishedEntryPersistedFail(error) {
   return {
     type: UNPUBLISHED_ENTRY_PERSIST_SUCCESS,
-    payload: { status, entry }
+    payload: { error }
+  };
+}
+
+
+function unpublishedEntryStatusChangeRequest(collection, slug, oldStatus, newStatus) {
+  return {
+    type: UNPUBLISHED_ENTRY_STATUS_CHANGE_REQUEST,
+    payload: { collection, slug, oldStatus, newStatus }
+  };
+}
+
+function unpublishedEntryStatusChangePersisted(collection, slug, oldStatus, newStatus) {
+  return {
+    type: UNPUBLISHED_ENTRY_STATUS_CHANGE_SUCCESS,
+    payload: { collection, slug, oldStatus, newStatus }
   };
 }
 
@@ -105,17 +123,29 @@ export function loadUnpublishedEntries() {
   };
 }
 
-export function persistUnpublishedEntry(collection, status, entry) {
+export function persistUnpublishedEntry(collection, entry) {
   return (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
     const MediaProxies = entry && entry.get('mediaFiles').map(path => getMedia(state, path));
-    dispatch(unpublishedEntryPersisting(status, entry));
-    backend.persistUnpublishedEntry(state.config, collection, status, entry, MediaProxies.toJS()).then(
+    dispatch(unpublishedEntryPersisting(entry));
+    backend.persistUnpublishedEntry(state.config, collection, entry, MediaProxies.toJS()).then(
       () => {
-        dispatch(unpublishedEntryPersisted(status, entry));
+        dispatch(unpublishedEntryPersisted(entry));
       },
       (error) => dispatch(unpublishedEntryPersistedFail(error))
     );
+  };
+}
+
+export function updateUnpublishedEntryStatus(collection, slug, oldStatus, newStatus) {
+  return (dispatch, getState) => {
+    const state = getState();
+    const backend = currentBackend(state.config);
+    dispatch(unpublishedEntryStatusChangeRequest(collection, slug, oldStatus, newStatus));
+    backend.updateUnpublishedEntryStatus(collection, slug, newStatus)
+    .then(() => {
+      dispatch(unpublishedEntryStatusChangePersisted(collection, slug, oldStatus, newStatus));
+    });
   };
 }

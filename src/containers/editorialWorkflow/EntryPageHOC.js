@@ -37,7 +37,7 @@ export default function EntryPageHOC(EntryPage) {
       };
 
       returnObj.persistEntry = (collection, entryDraft) => {
-        dispatch(persistUnpublishedEntry(collection, status, entryDraft));
+        dispatch(persistUnpublishedEntry(collection, entryDraft));
       };
     }
     return returnObj;

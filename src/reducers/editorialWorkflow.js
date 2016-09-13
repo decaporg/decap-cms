@@ -1,7 +1,11 @@
 import { Map, List, fromJS } from 'immutable';
 import { EDITORIAL_WORKFLOW } from '../constants/publishModes';
 import {
-  UNPUBLISHED_ENTRY_REQUEST, UNPUBLISHED_ENTRY_SUCCESS, UNPUBLISHED_ENTRIES_REQUEST, UNPUBLISHED_ENTRIES_SUCCESS
+  UNPUBLISHED_ENTRY_REQUEST,
+  UNPUBLISHED_ENTRY_SUCCESS,
+  UNPUBLISHED_ENTRIES_REQUEST,
+  UNPUBLISHED_ENTRIES_SUCCESS,
+  UNPUBLISHED_ENTRY_STATUS_CHANGE_SUCCESS
 } from '../actions/editorialWorkflow';
 import { CONFIG_SUCCESS } from '../actions/config';
 
@@ -39,6 +43,21 @@ const unpublishedEntries = (state = null, action) => {
           ids: List(entries.map((entry) => entry.slug))
         }));
       });
+
+    case UNPUBLISHED_ENTRY_STATUS_CHANGE_SUCCESS:
+      const { slug, oldStatus, newStatus } = action.payload;
+      return state.withMutations((map) => {
+        const entry = map.getIn(['entities', `${oldStatus}.${slug}`]);
+
+        let entities = map.get('entities').filter((val, key) => (
+          key !== `${oldStatus}.${slug}`
+        ));
+
+        entities = entities.set(`${newStatus}.${slug}`, entry);
+
+        map.set('entities', entities);
+      });
+
     default:
       return state;
   }
