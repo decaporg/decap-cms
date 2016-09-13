@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { OrderedMap } from 'immutable';
-import { init, loadUnpublishedEntries } from '../../actions/editorialWorkflow';
+import { loadUnpublishedEntries } from '../../actions/editorialWorkflow';
 import { selectUnpublishedEntries } from '../../reducers';
 import { EDITORIAL_WORKFLOW, status } from '../../constants/publishModes';
 import UnpublishedListing from '../../components/UnpublishedListing';
@@ -13,7 +13,6 @@ export default function CollectionPageHOC(CollectionPage) {
     componentDidMount() {
       const { dispatch, isEditorialWorkflow } = this.props;
       if (isEditorialWorkflow) {
-        dispatch(init());
         dispatch(loadUnpublishedEntries());
       }
       super.componentDidMount();
