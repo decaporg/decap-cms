@@ -2,7 +2,7 @@ import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import moment from 'moment';
 import { Card } from './UI';
-import { Link } from 'react-router'
+import { Link } from 'react-router';
 import { statusDescriptions } from '../constants/publishModes';
 import styles from './UnpublishedListing.css';
 
@@ -22,7 +22,7 @@ export default class UnpublishedListing extends React.Component {
         {entries.map(entry => {
           // Look for an "author" field. Fallback to username on backend implementation;
           const author = entry.getIn(['data', 'author'], entry.getIn(['metaData', 'user']));
-          const timeStamp = moment(entry.getIn(['metaData', 'timeStamp'])).formate('llll');
+          const timeStamp = moment(entry.getIn(['metaData', 'timeStamp'])).format('llll');
           const link = `/editorialworkflow/${entry.getIn(['metaData', 'collection'])}/${entry.getIn(['metaData', 'status'])}/${entry.get('slug')}`;
           return (
             <Card key={entry.get('slug')} className={styles.card}>
