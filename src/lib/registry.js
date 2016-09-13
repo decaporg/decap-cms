@@ -1,5 +1,5 @@
-import {List} from 'immutable';
-import {newEditorPlugin} from '../components/Widgets/MarkdownControlElements/plugins';
+import { List } from 'immutable';
+import { newEditorPlugin } from '../components/Widgets/MarkdownControlElements/plugins';
 
 const _registry = {
   templates: {},

@@ -39,4 +39,4 @@ storiesOf('Card', module)
       <p>header and footer elements are also not subject to margin</p>
       <footer style={styles.footer}>&copy; Thousand Cats Corp</footer>
     </Card>
-  ))
+  ));

@@ -57,7 +57,7 @@ class EntryPage extends React.Component {
     const {
       entry, entryDraft, boundGetMedia, collection, changeDraft, addMedia, removeMedia
     } = this.props;
-    
+
     if (entryDraft == null || entryDraft.get('entry') == undefined || entry && entry.get('isFetching')) {
       return <div>Loading...</div>;
     }

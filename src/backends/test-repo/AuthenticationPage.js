@@ -7,7 +7,7 @@ export default class AuthenticationPage extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {email: ''};
+    this.state = { email: '' };
     this.handleLogin = this.handleLogin.bind(this);
     this.handleEmailChange = this.handleEmailChange.bind(this);
   }
@@ -18,7 +18,7 @@ export default class AuthenticationPage extends React.Component {
   }
 
   handleEmailChange(e) {
-    this.setState({email: e.target.value});
+    this.setState({ email: e.target.value });
   }
 
   render() {
