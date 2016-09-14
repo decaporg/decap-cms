@@ -17,6 +17,9 @@ export const UNPUBLISHED_ENTRY_PERSIST_SUCCESS = 'UNPUBLISHED_ENTRY_PERSIST_SUCC
 export const UNPUBLISHED_ENTRY_STATUS_CHANGE_REQUEST = 'UNPUBLISHED_ENTRY_STATUS_CHANGE_REQUEST';
 export const UNPUBLISHED_ENTRY_STATUS_CHANGE_SUCCESS = 'UNPUBLISHED_ENTRY_STATUS_CHANGE_SUCCESS';
 
+export const UNPUBLISHED_ENTRY_PUBLISH_REQUEST = 'UNPUBLISHED_ENTRY_PUBLISH_REQUEST';
+export const UNPUBLISHED_ENTRY_PUBLISH_SUCCESS = 'UNPUBLISHED_ENTRY_PUBLISH_SUCCESS';
+
 /*
  * Simple Action Creators (Internal)
  */
@@ -81,7 +84,6 @@ function unpublishedEntryPersistedFail(error) {
   };
 }
 
-
 function unpublishedEntryStatusChangeRequest(collection, slug, oldStatus, newStatus) {
   return {
     type: UNPUBLISHED_ENTRY_STATUS_CHANGE_REQUEST,
@@ -93,6 +95,20 @@ function unpublishedEntryStatusChangePersisted(collection, slug, oldStatus, newS
   return {
     type: UNPUBLISHED_ENTRY_STATUS_CHANGE_SUCCESS,
     payload: { collection, slug, oldStatus, newStatus }
+  };
+}
+
+function unpublishedEntryPublishRequest(collection, slug, status) {
+  return {
+    type: UNPUBLISHED_ENTRY_PUBLISH_REQUEST,
+    payload: { collection, slug, status }
+  };
+}
+
+function unpublishedEntryPublished(collection, slug, status) {
+  return {
+    type: UNPUBLISHED_ENTRY_PUBLISH_SUCCESS,
+    payload: { collection, slug, status }
   };
 }
 
@@ -146,6 +162,18 @@ export function updateUnpublishedEntryStatus(collection, slug, oldStatus, newSta
     backend.updateUnpublishedEntryStatus(collection, slug, newStatus)
     .then(() => {
       dispatch(unpublishedEntryStatusChangePersisted(collection, slug, oldStatus, newStatus));
+    });
+  };
+}
+
+export function publishUnpublishedEntry(collection, slug, status) {
+  return (dispatch, getState) => {
+    const state = getState();
+    const backend = currentBackend(state.config);
+    dispatch(unpublishedEntryPublishRequest(collection, slug, status));
+    backend.publishUnpublishedEntry(collection, slug, status)
+    .then(() => {
+      dispatch(unpublishedEntryPublished(collection, slug, status));
     });
   };
 }

@@ -201,17 +201,24 @@ export default class API {
 
     if (!unpublished) {
       // Open new editorial review workflow for this entry - Create new metadata and commit to new branch
+      const contentKey = options.collectionName ? `${options.collectionName}-${entry.slug}` : entry.slug;
+      const branchName = `cms/${contentKey}`;
+
       return this.getBranch()
       .then(branchData => this.updateTree(branchData.commit.sha, '/', fileTree))
       .then(changeTree => this.commit(options.commitMessage, changeTree))
-      .then((response) => {
-        const contentKey = options.collectionName ? `${options.collectionName}-${entry.slug}` : entry.slug;
-        const branchName = `cms/${contentKey}`;
+      .then(commitResponse => this.createBranch(branchName, commitResponse.sha))
+      .then(branchResponse => this.createPR(options.commitMessage, branchName))
+      .then((prResponse) => {
         return this.user().then(user => {
           return user.name ? user.name : user.login;
         })
         .then(username => this.storeMetadata(contentKey, {
           type: 'PR',
+          pr: {
+            number: prResponse.number,
+            head: prResponse.head && prResponse.head.sha
+          },
           user: username,
           status: status.first(),
           branch: branchName,
@@ -223,9 +230,7 @@ export default class API {
             files: filesList
           },
           timeStamp: new Date().toISOString()
-        }))
-        .then(this.createBranch(branchName, response.sha))
-        .then(this.createPR(options.commitMessage, `cms/${contentKey}`));
+        }));
       });
     } else {
       // Entry is already on editorial review workflow - just update metadata and commit to existing branch
@@ -272,6 +277,16 @@ export default class API {
     .then(updatedMetadata => this.storeMetadata(contentKey, updatedMetadata));
   }
 
+  publishUnpublishedEntry(collection, slug, status) {
+    const contentKey = collection ? `${collection}-${slug}` : slug;
+    return this.retrieveMetadata(contentKey)
+    .then(metadata => {
+      const headSha = metadata.pr && metadata.pr.head;
+      const number = metadata.pr && metadata.pr.number;
+      return this.mergePR(headSha, number);
+    });
+  }
+
   createRef(type, name, sha) {
     return this.request(`${this.repoURL}/git/refs`, {
       method: 'POST',
@@ -303,6 +318,16 @@ export default class API {
     return this.request(`${this.repoURL}/pulls`, {
       method: 'POST',
       body: JSON.stringify({ title, body, head, base }),
+    });
+  }
+
+  mergePR(headSha, number) {
+    return this.request(`${this.repoURL}/pulls/${number}/merge`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        commit_message: 'Automatically generated. Merged on Netlify CMS.',
+        sha: headSha
+      }),
     });
   }
 

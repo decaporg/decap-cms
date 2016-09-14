@@ -26,7 +26,7 @@
   width: 100% !important;
   margin: 7px 0;
 
-  & h1 {
+  & h2 {
     font-size: 17px;
     & small {
       font-weight: normal;
@@ -37,6 +37,11 @@
     color: #555;
     font-size: 12px;
     margin-top: 5px;
+  }
+
+  & button {
+    margin: 10px 10px 0 0;
+    float: right;
   }
 }
 

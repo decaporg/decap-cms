@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { OrderedMap } from 'immutable';
-import { loadUnpublishedEntries, updateUnpublishedEntryStatus } from '../../actions/editorialWorkflow';
+import { loadUnpublishedEntries, updateUnpublishedEntryStatus, publishUnpublishedEntry } from '../../actions/editorialWorkflow';
 import { selectUnpublishedEntries } from '../../reducers';
 import { EDITORIAL_WORKFLOW, status } from '../../constants/publishModes';
 import UnpublishedListing from '../../components/UnpublishedListing';
@@ -19,17 +19,17 @@ export default function CollectionPageHOC(CollectionPage) {
       super.componentDidMount();
     }
 
-    handleChangeStatus(collection, slug, oldStatus, newStatus) {
-      this.props.updateUnpublishedEntryStatus(collection, slug, oldStatus, newStatus);
-    }
-
     render() {
-      const { isEditorialWorkflow, unpublishedEntries } = this.props;
+      const { isEditorialWorkflow, unpublishedEntries, updateUnpublishedEntryStatus, publishUnpublishedEntry } = this.props;
       if (!isEditorialWorkflow) return super.render();
 
       return (
         <div className={styles.alignable}>
-          <UnpublishedListing entries={unpublishedEntries} handleChangeStatus={this.handleChangeStatus.bind(this)} />
+          <UnpublishedListing
+              entries={unpublishedEntries}
+              handleChangeStatus={updateUnpublishedEntryStatus}
+              handlePublish={publishUnpublishedEntry}
+          />
           {super.render()}
         </div>
       );
@@ -60,5 +60,8 @@ export default function CollectionPageHOC(CollectionPage) {
     return returnObj;
   }
 
-  return connect(mapStateToProps, { updateUnpublishedEntryStatus })(CollectionPageHOC);
+  return connect(mapStateToProps, {
+    updateUnpublishedEntryStatus,
+    publishUnpublishedEntry
+  })(CollectionPageHOC);
 }

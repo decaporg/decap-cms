@@ -151,6 +151,10 @@ class Backend {
     return this.implementation.updateUnpublishedEntryStatus(collection, slug, newStatus);
   }
 
+  publishUnpublishedEntry(collection, slug, status) {
+    return this.implementation.publishUnpublishedEntry(collection, slug, status);
+  }
+
 
   entryToRaw(collection, entry) {
     const format = resolveFormat(collection, entry);

@@ -5,7 +5,8 @@ import {
   UNPUBLISHED_ENTRY_SUCCESS,
   UNPUBLISHED_ENTRIES_REQUEST,
   UNPUBLISHED_ENTRIES_SUCCESS,
-  UNPUBLISHED_ENTRY_STATUS_CHANGE_SUCCESS
+  UNPUBLISHED_ENTRY_STATUS_CHANGE_SUCCESS,
+  UNPUBLISHED_ENTRY_PUBLISH_SUCCESS
 } from '../actions/editorialWorkflow';
 import { CONFIG_SUCCESS } from '../actions/config';
 
@@ -45,18 +46,20 @@ const unpublishedEntries = (state = null, action) => {
       });
 
     case UNPUBLISHED_ENTRY_STATUS_CHANGE_SUCCESS:
-      const { slug, oldStatus, newStatus } = action.payload;
       return state.withMutations((map) => {
-        const entry = map.getIn(['entities', `${oldStatus}.${slug}`]);
+        let entry = map.getIn(['entities', `${action.payload.oldStatus}.${action.payload.slug}`]);
+        entry = entry.setIn(['metaData', 'status'], action.payload.newStatus);
 
         let entities = map.get('entities').filter((val, key) => (
-          key !== `${oldStatus}.${slug}`
+          key !== `${action.payload.oldStatus}.${action.payload.slug}`
         ));
-
-        entities = entities.set(`${newStatus}.${slug}`, entry);
+        entities = entities.set(`${action.payload.newStatus}.${action.payload.slug}`, entry);
 
         map.set('entities', entities);
       });
+
+    case UNPUBLISHED_ENTRY_PUBLISH_SUCCESS:
+      return state.deleteIn(['entities', `${action.payload.status}.${action.payload.slug}`]);
 
     default:
       return state;
