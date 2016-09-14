@@ -53,7 +53,8 @@ export default class API {
     const headers = this.requestHeaders(options.headers || {});
     const url = this.urlFor(path, options);
     return fetch(url, { ...options, headers: headers }).then((response) => {
-      if (response.headers.get('Content-Type').match(/json/)) {
+      const contentType = response.headers.get('Content-Type');
+      if (contentType && contentType.match(/json/)) {
         return this.parseJsonResponse(response);
       }
 
@@ -284,7 +285,8 @@ export default class API {
       const headSha = metadata.pr && metadata.pr.head;
       const number = metadata.pr && metadata.pr.number;
       return this.mergePR(headSha, number);
-    });
+    })
+    .then(() => this.deleteBranch(`cms/${contentKey}`));
   }
 
   createRef(type, name, sha) {
@@ -294,10 +296,6 @@ export default class API {
     });
   }
 
-  createBranch(branchName, sha) {
-    return this.createRef('heads', branchName, sha);
-  }
-
   patchRef(type, name, sha) {
     return this.request(`${this.repoURL}/git/refs/${type}/${name}`, {
       method: 'PATCH',
@@ -305,12 +303,26 @@ export default class API {
     });
   }
 
-  patchBranch(branchName, sha) {
-    return this.patchRef('heads', branchName, sha);
+  deleteRef(type, name, sha) {
+    return this.request(`${this.repoURL}/git/refs/${type}/${name}`, {
+      method: 'DELETE',
+    });
   }
 
   getBranch(branch = this.branch) {
     return this.request(`${this.repoURL}/branches/${branch}`);
+  }
+
+  createBranch(branchName, sha) {
+    return this.createRef('heads', branchName, sha);
+  }
+
+  patchBranch(branchName, sha) {
+    return this.patchRef('heads', branchName, sha);
+  }
+
+  deleteBranch(branchName) {
+    return this.deleteRef('heads', branchName);
   }
 
   createPR(title, head, base = 'master') {
