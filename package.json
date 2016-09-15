@@ -4,7 +4,7 @@
   "description": "Netlify CMS lets content editors work on structured content stored in git",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --config webpack.config.js",
+    "start": "webpack-dev-server --config webpack.dev.js",
     "test": "NODE_ENV=test mocha --recursive --compilers js:babel-register --require ./test/setup.js",
     "test:watch": "npm test -- --watch",
     "build": "webpack --config webpack.config.js",
@@ -75,6 +75,7 @@
     "url-loader": "^0.5.7",
     "webpack": "^1.13.2",
     "webpack-dev-server": "^1.15.1",
+    "webpack-merge": "^0.14.1",
     "webpack-postcss-tools": "^1.1.1",
     "whatwg-fetch": "^1.0.0"
   },

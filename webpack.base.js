@@ -1,9 +1,4 @@
-/* global module, __dirname, require */
-var webpack = require('webpack');
-var path = require('path');
-
-const HOST = 'localhost';
-const PORT = '8080';
+const webpack = require('webpack');
 
 module.exports = {
   module: {
@@ -47,35 +42,4 @@ module.exports = {
     require('postcss-import')({ addDependencyTo: webpack }),
     require('postcss-cssnext')
   ],
-
-  plugins: [
-    new webpack.optimize.OccurenceOrderPlugin(),
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoErrorsPlugin(),
-    new webpack.ProvidePlugin({
-      'fetch': 'imports?this=>global!exports?global.fetch!whatwg-fetch'
-    })
-  ],
-
-  context: path.join(__dirname, 'src'),
-  entry: {
-    cms: [
-      'webpack/hot/dev-server',
-      `webpack-dev-server/client?http://${HOST}:${PORT}/`,
-      'react-hot-loader/patch',
-      './index'
-    ],
-  },
-  output: {
-    path: path.join(__dirname, 'dist'),
-    filename: '[name].js',
-    publicPath: `http://${HOST}:${PORT}/`,
-  },
-  externals: [/^vendor\/.+\.js$/],
-  devServer: {
-    hot: true,
-    contentBase: 'example/',
-    historyApiFallback: true,
-    devTool: 'cheap-module-source-map'
-  },
 };
