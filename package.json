@@ -88,9 +88,8 @@
     "prismjs": "^1.5.1",
     "react-addons-css-transition-group": "^15.3.1",
     "react-datetime": "^2.6.0",
-    "react-dnd": "^2.1.4",
-    "react-dnd-html5-backend": "^2.1.2",
     "react-portal": "^2.2.1",
+    "react-simple-dnd": "^0.1.2",
     "selection-position": "^1.0.0",
     "semaphore": "^1.0.5",
     "slate": "^0.13.6"
