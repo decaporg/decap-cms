@@ -36,19 +36,6 @@ h1 {
   font-size: 25px;
 }
 
-header input {
-  margin-bottom: 0;
-}
-
-button {
-  border: 1px solid #3ab7a5;
-  padding: 3px 20px;
-  font-size: 12px;
-  line-height: 18px;
-  background-color: #fff;
-  cursor: pointer;
-}
-
 :global {
   & .cms-widget {
     border-bottom: 1px solid #e8eae8;
