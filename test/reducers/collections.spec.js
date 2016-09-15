@@ -15,39 +15,39 @@ describe('collections', () => {
 
   it('should load the collections from the config', () => {
     expect(
-      collections(undefined, configLoaded({collections: [
-        {name: 'posts', folder: '_posts', fields: [{name: 'title', widget: 'string'}]}
-      ]}))
+      collections(undefined, configLoaded({ collections: [
+        { name: 'posts', folder: '_posts', fields: [{ name: 'title', widget: 'string' }] }
+      ] }))
     ).toEqual(
       OrderedMap({
-        posts: fromJS({name: 'posts', folder: '_posts', fields: [{name: 'title', widget: 'string'}]})
+        posts: fromJS({ name: 'posts', folder: '_posts', fields: [{ name: 'title', widget: 'string' }] })
       })
     );
   });
 
   it('should mark entries as loading', () => {
     const state = OrderedMap({
-      'posts': Map({name: 'posts'})
+      'posts': Map({ name: 'posts' })
     });
     expect(
-      collections(state, entriesLoading(Map({name: 'posts'})))
+      collections(state, entriesLoading(Map({ name: 'posts' })))
     ).toEqual(
       OrderedMap({
-        'posts': Map({name: 'posts', isFetching: true})
+        'posts': Map({ name: 'posts', isFetching: true })
       })
     );
   });
 
   it('should handle loaded entries', () => {
     const state = OrderedMap({
-      'posts': Map({name: 'posts'})
+      'posts': Map({ name: 'posts' })
     });
-    const entries = [{slug: 'a', path: ''}, {slug: 'b', title: 'B'}];
+    const entries = [{ slug: 'a', path: '' }, { slug: 'b', title: 'B' }];
     expect(
-      collections(state, entriesLoaded(Map({name: 'posts'}), entries))
+      collections(state, entriesLoaded(Map({ name: 'posts' }), entries))
     ).toEqual(
       OrderedMap({
-        'posts': fromJS({name: 'posts', entries: entries})
+        'posts': fromJS({ name: 'posts', entries: entries })
       })
     );
   });

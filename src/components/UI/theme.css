@@ -1,5 +1,6 @@
 :root {
   --defaultColor: #333;
+  --defaultColorLight: #eee;
   --backgroundColor: #fff;
   --shadowColor: rgba(0, 0, 0, 0.117647);
   --successColor: #1c7;

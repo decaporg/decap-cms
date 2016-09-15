@@ -60,7 +60,7 @@ class MarkdownControl extends React.Component {
     return (
       <div>
 
-        { this.renderEditor() }
+        {this.renderEditor()}
       </div>
     );
   }

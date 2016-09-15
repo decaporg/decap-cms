@@ -1,13 +1,12 @@
 import LocalForage from 'localforage';
 import MediaProxy from '../../valueObjects/MediaProxy';
 import { Base64 } from 'js-base64';
-import { EDITORIAL_WORKFLOW, status } from '../../constants/publishModes';
+import _ from 'lodash';
+import { SIMPLE, EDITORIAL_WORKFLOW, status } from '../../constants/publishModes';
 
 const API_ROOT = 'https://api.github.com';
 
 export default class API {
-
-
   constructor(token, repo, branch) {
     this.token = token;
     this.repo = repo;
@@ -54,7 +53,8 @@ export default class API {
     const headers = this.requestHeaders(options.headers || {});
     const url = this.urlFor(path, options);
     return fetch(url, { ...options, headers: headers }).then((response) => {
-      if (response.headers.get('Content-Type').match(/json/)) {
+      const contentType = response.headers.get('Content-Type');
+      if (contentType && contentType.match(/json/)) {
         return this.parseJsonResponse(response);
       }
 
@@ -98,17 +98,28 @@ export default class API {
       return this.uploadBlob(fileTree[`${key}.json`])
       .then(item => this.updateTree(branchData.sha, '/', fileTree))
       .then(changeTree => this.commit(`Updating “${key}” metadata`, changeTree))
-      .then(response => this.patchRef('meta', '_netlify_cms', response.sha));
+      .then(response => this.patchRef('meta', '_netlify_cms', response.sha))
+      .then(() => {
+        LocalForage.setItem(`gh.meta.${key}`, {
+          expires: Date.now() + 300000, // In 5 minutes
+          data
+        });
+      });
     });
   }
 
   retrieveMetadata(key) {
-    return this.request(`${this.repoURL}/contents/${key}.json`, {
-      params: { ref: 'refs/meta/_netlify_cms' },
-      headers: { Accept: 'application/vnd.github.VERSION.raw' },
-      cache: 'no-store',
-    })
-    .then(response => JSON.parse(response));
+    const cache = LocalForage.getItem(`gh.meta.${key}`);
+    return cache.then((cached) => {
+      if (cached && cached.expires > Date.now()) { return cached.data; }
+
+      return this.request(`${this.repoURL}/contents/${key}.json`, {
+        params: { ref: 'refs/meta/_netlify_cms' },
+        headers: { Accept: 'application/vnd.github.VERSION.raw' },
+        cache: 'no-store',
+      })
+      .then(response => JSON.parse(response));
+    });
   }
 
   readFile(path, sha, branch = this.branch) {
@@ -136,26 +147,14 @@ export default class API {
   }
 
   readUnpublishedBranchFile(contentKey) {
-    const cache = LocalForage.getItem(`gh.unpublished.${contentKey}`);
-    return cache.then((cached) => {
-      if (cached && cached.expires > Date.now()) { return cached.data; }
-
-      let metaData;
-      return this.retrieveMetadata(contentKey)
-      .then(data => {
-        metaData = data;
-        return this.readFile(data.objects.entry, null, data.branch);
-      })
-      .then(file => {
-        return { metaData, file };
-      })
-      .then((result) => {
-        LocalForage.setItem(`gh.unpublished.${contentKey}`, {
-          expires: Date.now() + 300000, // In 5 minutes
-          data: result,
-        });
-        return result;
-      });
+    let metaData;
+    return this.retrieveMetadata(contentKey)
+    .then(data => {
+      metaData = data;
+      return this.readFile(data.objects.entry, null, data.branch);
+    })
+    .then(file => {
+      return { metaData, file };
     });
   }
 
@@ -183,37 +182,111 @@ export default class API {
       subtree[filename] = file;
       file.file = true;
     });
-    return Promise.all(uploadPromises)
-      .then(() => this.getBranch())
+    return Promise.all(uploadPromises).then(() => {
+      if (!options.mode || (options.mode && options.mode === SIMPLE)) {
+        return this.getBranch()
+        .then(branchData => this.updateTree(branchData.commit.sha, '/', fileTree))
+        .then(changeTree => this.commit(options.commitMessage, changeTree))
+        .then(response => this.patchBranch(this.branch, response.sha));
+      } else if (options.mode && options.mode === EDITORIAL_WORKFLOW) {
+        const mediaFilesList = mediaFiles.map(file => file.path);
+        return this.editorialWorkflowGit(fileTree, entry, mediaFilesList, options);
+      }
+    });
+  }
+
+  editorialWorkflowGit(fileTree, entry, filesList, options) {
+    const contentKey = options.collectionName ? `${options.collectionName}-${entry.slug}` : entry.slug;
+    const branchName = `cms/${contentKey}`;
+    const unpublished = options.unpublished || false;
+
+    if (!unpublished) {
+      // Open new editorial review workflow for this entry - Create new metadata and commit to new branch
+      const contentKey = options.collectionName ? `${options.collectionName}-${entry.slug}` : entry.slug;
+      const branchName = `cms/${contentKey}`;
+
+      return this.getBranch()
+      .then(branchData => this.updateTree(branchData.commit.sha, '/', fileTree))
+      .then(changeTree => this.commit(options.commitMessage, changeTree))
+      .then(commitResponse => this.createBranch(branchName, commitResponse.sha))
+      .then(branchResponse => this.createPR(options.commitMessage, branchName))
+      .then((prResponse) => {
+        return this.user().then(user => {
+          return user.name ? user.name : user.login;
+        })
+        .then(username => this.storeMetadata(contentKey, {
+          type: 'PR',
+          pr: {
+            number: prResponse.number,
+            head: prResponse.head && prResponse.head.sha
+          },
+          user: username,
+          status: status.first(),
+          branch: branchName,
+          collection: options.collectionName,
+          title: options.parsedData && options.parsedData.title,
+          description: options.parsedData && options.parsedData.description,
+          objects: {
+            entry: entry.path,
+            files: filesList
+          },
+          timeStamp: new Date().toISOString()
+        }));
+      });
+    } else {
+      // Entry is already on editorial review workflow - just update metadata and commit to existing branch
+      return this.getBranch(branchName)
       .then(branchData => this.updateTree(branchData.commit.sha, '/', fileTree))
       .then(changeTree => this.commit(options.commitMessage, changeTree))
       .then((response) => {
-        if (options.mode && options.mode === EDITORIAL_WORKFLOW) {
-          const contentKey = options.collectionName ? `${options.collectionName}-${entry.slug}` : entry.slug;
-          const branchName = `cms/${contentKey}`;
-          return this.user().then(user => {
-            return user.name ? user.name : user.login;
-          })
-          .then(username => this.storeMetadata(contentKey, {
-            type: 'PR',
-            user: username,
-            status: status.first(),
-            branch: branchName,
-            collection: options.collectionName,
+        const contentKey = options.collectionName ? `${options.collectionName}-${entry.slug}` : entry.slug;
+        const branchName = `cms/${contentKey}`;
+        return this.user().then(user => {
+          return user.name ? user.name : user.login;
+        })
+        .then(username => this.retrieveMetadata(contentKey))
+        .then(metadata => {
+          let files = metadata.objects && metadata.objects.files || [];
+          files = files.concat(filesList);
+
+          return {
+            ...metadata,
             title: options.parsedData && options.parsedData.title,
             description: options.parsedData && options.parsedData.description,
             objects: {
               entry: entry.path,
-              files: mediaFiles.map(file => file.path)
+              files: _.uniq(files)
             },
             timeStamp: new Date().toISOString()
-          }))
-          .then(this.createBranch(branchName, response.sha))
-          .then(this.createPR(options.commitMessage, `cms/${contentKey}`));
-        } else {
-          return this.patchBranch(this.branch, response.sha);
-        }
+          };
+        })
+        .then(updatedMetadata => this.storeMetadata(contentKey, updatedMetadata))
+        .then(this.patchBranch(branchName, response.sha));
       });
+    }
+  }
+
+  updateUnpublishedEntryStatus(collection, slug, status) {
+    const contentKey = collection ? `${collection}-${slug}` : slug;
+    return this.retrieveMetadata(contentKey)
+    .then(metadata => {
+      return {
+        ...metadata,
+        status
+      };
+    })
+    .then(updatedMetadata => this.storeMetadata(contentKey, updatedMetadata));
+  }
+
+  publishUnpublishedEntry(collection, slug, status) {
+    const contentKey = collection ? `${collection}-${slug}` : slug;
+    return this.retrieveMetadata(contentKey)
+    .then(metadata => {
+      const headSha = metadata.pr && metadata.pr.head;
+      const number = metadata.pr && metadata.pr.number;
+      return this.mergePR(headSha, number);
+    })
+    .then(() => this.deleteBranch(`cms/${contentKey}`));
   }
 
   createRef(type, name, sha) {
@@ -223,10 +296,6 @@ export default class API {
     });
   }
 
-  createBranch(branchName, sha) {
-    return this.createRef('heads', branchName, sha);
-  }
-
   patchRef(type, name, sha) {
     return this.request(`${this.repoURL}/git/refs/${type}/${name}`, {
       method: 'PATCH',
@@ -234,12 +303,26 @@ export default class API {
     });
   }
 
+  deleteRef(type, name, sha) {
+    return this.request(`${this.repoURL}/git/refs/${type}/${name}`, {
+      method: 'DELETE',
+    });
+  }
+
+  getBranch(branch = this.branch) {
+    return this.request(`${this.repoURL}/branches/${branch}`);
+  }
+
+  createBranch(branchName, sha) {
+    return this.createRef('heads', branchName, sha);
+  }
+
   patchBranch(branchName, sha) {
     return this.patchRef('heads', branchName, sha);
   }
 
-  getBranch() {
-    return this.request(`${this.repoURL}/branches/${this.branch}`);
+  deleteBranch(branchName) {
+    return this.deleteRef('heads', branchName);
   }
 
   createPR(title, head, base = 'master') {
@@ -247,6 +330,16 @@ export default class API {
     return this.request(`${this.repoURL}/pulls`, {
       method: 'POST',
       body: JSON.stringify({ title, body, head, base }),
+    });
+  }
+
+  mergePR(headSha, number) {
+    return this.request(`${this.repoURL}/pulls/${number}/merge`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        commit_message: 'Automatically generated. Merged on Netlify CMS.',
+        sha: headSha
+      }),
     });
   }
 

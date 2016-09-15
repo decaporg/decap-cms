@@ -98,4 +98,12 @@ export default class GitHub {
       ))[0]
     ));
   }
+
+  updateUnpublishedEntryStatus(collection, slug, newStatus) {
+    return this.api.updateUnpublishedEntryStatus(collection, slug, newStatus);
+  }
+
+  publishUnpublishedEntry(collection, slug, status) {
+    return this.api.publishUnpublishedEntry(collection, slug, status);
+  }
 }

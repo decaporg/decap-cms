@@ -4,6 +4,7 @@ import { IndexLink } from 'react-router';
 import { loadConfig } from '../actions/config';
 import { loginUser } from '../actions/auth';
 import { currentBackend } from '../backends/backend';
+import { Loader } from '../components/UI';
 import { SHOW_COLLECTION, CREATE_COLLECTION, HELP } from '../actions/findbar';
 import FindBar from './FindBar';
 import styles from './App.css';
@@ -27,7 +28,7 @@ class App extends React.Component {
 
   configLoading() {
     return <div>
-      <h1>Loading configuration...</h1>
+      <Loader active>Loading configuration...</Loader>
     </div>;
   }
 

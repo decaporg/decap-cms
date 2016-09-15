@@ -12,6 +12,7 @@
   height: 45px;
   border-top: 1px solid #e8eae8;
   padding: 10px 20px;
+  z-index: 10;
 }
 .controlPane {
   width: 50%;
