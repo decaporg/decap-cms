@@ -1,21 +1,21 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { IndexLink } from 'react-router';
 import pluralize from 'pluralize';
+import { connect } from 'react-redux';
+import { Layout, Panel } from 'react-toolbox';
 import { loadConfig } from '../actions/config';
 import { loginUser } from '../actions/auth';
 import { currentBackend } from '../backends/backend';
-import { Loader } from '../components/UI';
 import {
   SHOW_COLLECTION,
   CREATE_COLLECTION,
   HELP,
   createNewEntryInCollection
 } from '../actions/findbar';
-import FindBar from './FindBar';
+import { AppHeader, Loader } from '../components/UI';
 import styles from './App.css';
 
 class App extends React.Component {
+
   componentDidMount() {
     this.props.dispatch(loadConfig());
   }
@@ -68,7 +68,7 @@ class App extends React.Component {
         id: `show_${collection.get('name')}`,
         pattern: `Show ${pluralize(collection.get('label'))}`,
         type: SHOW_COLLECTION,
-        payload: { collectionName:collection.get('name') }
+        payload: { collectionName: collection.get('name') }
       });
 
       if (defaultCommands.length < 5) defaultCommands.push(`show_${collection.get('name')}`);
@@ -78,7 +78,7 @@ class App extends React.Component {
           id: `create_${collection.get('name')}`,
           pattern: `Create new ${pluralize(collection.get('label'), 1)}(:itemName as ${pluralize(collection.get('label'), 1)} Name)`,
           type: CREATE_COLLECTION,
-          payload: { collectionName:collection.get('name') }
+          payload: { collectionName: collection.get('name') }
         });
       }
     });
@@ -89,7 +89,7 @@ class App extends React.Component {
     return { commands, defaultCommands };
   }
 
-  handleCreatePostClick = collectionName => {
+  onCreateEntryClick = collectionName => {
     this.props.dispatch(
       createNewEntryInCollection(collectionName)
     );
@@ -117,32 +117,19 @@ class App extends React.Component {
     const { commands, defaultCommands } = this.generateFindBarCommands();
 
     return (
-      <div>
-        <header className={styles.header}>
-          <IndexLink to="/" className={styles.homeLink}>
-            Dashboard
-          </IndexLink>
-          <div className={styles.findBar}>
-            <FindBar
-                commands={commands}
-                defaultCommands={defaultCommands}
-            />
+      <Layout>
+        <Panel scrollY>
+          <AppHeader
+              collections={collections}
+              commands={commands}
+              defaultCommands={defaultCommands}
+              onCreateEntryClick={this.onCreateEntryClick}
+          />
+          <div className={`${styles.alignable} ${styles.main}`}>
+            {children}
           </div>
-          <div className={styles.actions}>
-            {
-              collections.map(collection =>
-                <button
-                    onClick={this.handleCreatePostClick.bind(this, collection.get('name'))}
-                >
-                  + {pluralize(collection.get('label'), 1)}
-                </button>)
-            }
-          </div>
-        </header>
-        <div className={styles.main}>
-          {children}
-        </div>
-      </div>
+        </Panel>
+      </Layout>
     );
   }
 }
