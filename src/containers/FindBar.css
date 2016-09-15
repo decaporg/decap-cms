@@ -7,15 +7,14 @@
 }
 
 .root {
+  flex: 1;
   position: relative;
   background-color: var(--backgroundColor);
-  padding: 1px 0;
-  margin: 4px auto;
+  padding: 5px;
 }
 .inputArea {
   display: table;
-  width: calc(100% - 10px);
-  margin: 5px;
+  width: 100%;
   color: var(--foregroundColor);
   background-color: #fff;
   border: 1px solid var(--textFieldBorderColor);
