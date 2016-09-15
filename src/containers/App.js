@@ -1,14 +1,19 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { IndexLink } from 'react-router';
+import pluralize from 'pluralize';
 import { loadConfig } from '../actions/config';
 import { loginUser } from '../actions/auth';
 import { currentBackend } from '../backends/backend';
 import { Loader } from '../components/UI';
-import { SHOW_COLLECTION, CREATE_COLLECTION, HELP } from '../actions/findbar';
+import {
+  SHOW_COLLECTION,
+  CREATE_COLLECTION,
+  HELP,
+  createNewEntryInCollection
+} from '../actions/findbar';
 import FindBar from './FindBar';
 import styles from './App.css';
-import pluralize from 'pluralize';
 
 class App extends React.Component {
   componentDidMount() {
@@ -84,8 +89,14 @@ class App extends React.Component {
     return { commands, defaultCommands };
   }
 
+  handleCreatePostClick = collectionName => {
+    this.props.dispatch(
+      createNewEntryInCollection(collectionName)
+    );
+  }
+
   render() {
-    const { user, config, children } = this.props;
+    const { user, config, children, collections } = this.props;
 
     if (config === null) {
       return null;
@@ -116,6 +127,16 @@ class App extends React.Component {
                 commands={commands}
                 defaultCommands={defaultCommands}
             />
+          </div>
+          <div className={styles.actions}>
+            {
+              collections.map(collection =>
+                <button
+                    onClick={this.handleCreatePostClick.bind(this, collection.get('name'))}
+                >
+                  + {pluralize(collection.get('label'), 1)}
+                </button>)
+            }
           </div>
         </header>
         <div className={styles.main}>
