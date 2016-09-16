@@ -1,18 +1,12 @@
 import React from 'react';
 import pluralize from 'pluralize';
 import { IndexLink } from 'react-router';
-import { Menu, MenuItem, Button } from 'react-toolbox';
+import { Menu, MenuItem, Button, IconButton } from 'react-toolbox';
 import AppBar from 'react-toolbox/lib/app_bar';
 import FindBar from '../FindBar/FindBar';
 import styles from './AppHeader.css';
 
 export default class AppHeader extends React.Component {
-
-  // props: {
-  //   // collections: React.,
-  //   // commands,
-  //   // defaultCommands
-  // }
 
   state = {
     createMenuActive: false
@@ -25,20 +19,26 @@ export default class AppHeader extends React.Component {
     }
   }
 
-  onCreateButtonClick = () => {
+  handleCreateButtonClick = () => {
     this.setState({
       createMenuActive: true
     });
   }
 
-  onCreateMenuHide = () => {
+  handleCreateMenuHide = () => {
     this.setState({
       createMenuActive: false
     });
   }
 
   render() {
-    const { collections, commands, defaultCommands, runCommand } = this.props;
+    const {
+      collections,
+      commands,
+      defaultCommands,
+      runCommand,
+      toggleNavDrawer
+    } = this.props;
     const { createMenuActive } = this.state;
 
     return (
@@ -46,6 +46,11 @@ export default class AppHeader extends React.Component {
           fixed
           theme={styles}
       >
+        <IconButton
+            icon="menu"
+            inverse
+            onClick={toggleNavDrawer}
+        />
         <IndexLink to="/">
           Dashboard
         </IndexLink>
@@ -59,12 +64,12 @@ export default class AppHeader extends React.Component {
             icon='add'
             floating
             accent
-            onClick={this.onCreateButtonClick}
+            onClick={this.handleCreateButtonClick}
         >
           <Menu
               active={createMenuActive}
               position="topRight"
-              onHide={this.onCreateMenuHide}
+              onHide={this.handleCreateMenuHide}
           >
             {
               collections.valueSeq().map(collection =>
@@ -78,6 +83,7 @@ export default class AppHeader extends React.Component {
             }
           </Menu>
         </Button>
+
       </AppBar>
     );
   }
