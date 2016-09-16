@@ -1,27 +1,10 @@
-.header {
-  display: flex;
-  align-items: center;
-  background-color: #272e30;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
-  height: 54px;
-  border-bottom: 2px solid #3ab7a5;
-  position: fixed;
-  width: 100%;
-  z-index: 999;
+.layout .navDrawer .drawerContent {
+  padding-top: 54px;
 }
-
-.homeLink {
-  display: inline-block;
-  padding: .5em;
-  color: #fff;
+.nav {
+  display: block;
+  padding: 1rem;
 }
-
-.actions {}
-
-.findBar {
-  flex: 1;
-}
-
 .main {
   padding-top: 54px;
 }
