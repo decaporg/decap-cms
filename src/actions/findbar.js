@@ -10,6 +10,10 @@ export function run(commandName, payload) {
   return { type: RUN_COMMAND, command: commandName, payload };
 }
 
+export function navigateToCollection(collectionName) {
+  return runCommand(SHOW_COLLECTION, { collectionName });
+}
+
 export function createNewEntryInCollection(collectionName) {
   return runCommand(CREATE_COLLECTION, { collectionName });
 }
