@@ -3,7 +3,7 @@ import pluralize from 'pluralize';
 import { IndexLink } from 'react-router';
 import { Menu, MenuItem, Button } from 'react-toolbox';
 import AppBar from 'react-toolbox/lib/app_bar';
-import FindBar from '../../../containers/FindBar';
+import FindBar from '../FindBar/FindBar';
 import styles from './AppHeader.css';
 
 export default class AppHeader extends React.Component {
@@ -38,7 +38,7 @@ export default class AppHeader extends React.Component {
   }
 
   render() {
-    const { collections, commands, defaultCommands } = this.props;
+    const { collections, commands, defaultCommands, runCommand } = this.props;
     const { createMenuActive } = this.state;
 
     return (
@@ -52,6 +52,7 @@ export default class AppHeader extends React.Component {
         <FindBar
             commands={commands}
             defaultCommands={defaultCommands}
+            runCommand={runCommand}
         />
         <Button
             className={styles.createBtn}

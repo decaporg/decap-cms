@@ -9,9 +9,10 @@ import {
   SHOW_COLLECTION,
   CREATE_COLLECTION,
   HELP,
+  runCommand,
   createNewEntryInCollection
 } from '../actions/findbar';
-import { AppHeader, Loader } from '../components/UI';
+import { AppHeader, Loader } from '../components/UI/index';
 import styles from './App.css';
 
 class App extends React.Component {
@@ -89,12 +90,6 @@ class App extends React.Component {
     return { commands, defaultCommands };
   }
 
-  onCreateEntryClick = collectionName => {
-    this.props.dispatch(
-      createNewEntryInCollection(collectionName)
-    );
-  }
-
   render() {
     const { user, config, children, collections } = this.props;
 
@@ -123,7 +118,8 @@ class App extends React.Component {
               collections={collections}
               commands={commands}
               defaultCommands={defaultCommands}
-              onCreateEntryClick={this.onCreateEntryClick}
+              runCommand={this.props.runCommand}
+              onCreateEntryClick={this.props.createNewEntryInCollection}
           />
           <div className={`${styles.alignable} ${styles.main}`}>
             {children}
@@ -141,4 +137,16 @@ function mapStateToProps(state) {
   return { auth, config, collections, user };
 }
 
-export default connect(mapStateToProps)(App);
+function mapDispatchToProps(dispatch) {
+  return {
+    dispatch,
+    runCommand: (type, payload) => {
+      dispatch(runCommand(type, payload));
+    },
+    createNewEntryInCollection: (collectionName) => {
+      dispatch(createNewEntryInCollection(collectionName));
+    }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

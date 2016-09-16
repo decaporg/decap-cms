@@ -1,9 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import fuzzy from 'fuzzy';
 import _ from 'lodash';
-import { runCommand } from '../actions/findbar';
-import { connect } from 'react-redux';
-import { Icon } from '../components/UI';
+import { Icon } from '../index';
 import styles from './FindBar.css';
 
 export const SEARCH = 'SEARCH';
@@ -102,13 +100,15 @@ class FindBar extends Component {
     const paramName = command && command.param ? command.param.name : null;
     const enteredParamValue = command && command.param && match[1] ? match[1].trim() : null;
 
+    console.log(this.props.runCommand);
+
     if (command.search) {
       this.setState({
         activeScope: SEARCH,
         placeholder: ''
       });
 
-      enteredParamValue && this.props.dispatch(runCommand(SEARCH, { searchTerm: enteredParamValue }));
+      enteredParamValue && this.props.runCommand(SEARCH, { searchTerm: enteredParamValue });
     } else if (command.param && !enteredParamValue) {
       // Partial Match
       // Command was partially matched: It requires a param, but param wasn't entered
@@ -133,7 +133,7 @@ class FindBar extends Component {
       if (paramName) {
         payload[paramName] = enteredParamValue;
       }
-      this.props.dispatch(runCommand(command.type, payload));
+      this.props.runCommand(command.type, payload);
     }
   }
 
@@ -373,8 +373,7 @@ FindBar.propTypes = {
     pattern: PropTypes.string.isRequired
   })).isRequired,
   defaultCommands: PropTypes.arrayOf(PropTypes.string),
-  dispatch: PropTypes.func.isRequired,
+  runCommand: PropTypes.func.isRequired,
 };
 
-export { FindBar };
-export default connect()(FindBar);
+export default FindBar;
