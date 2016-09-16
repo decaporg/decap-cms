@@ -67,7 +67,7 @@ export default class AppHeader extends React.Component {
               onHide={this.onCreateMenuHide}
           >
             {
-              collections.map(collection =>
+              collections.valueSeq().map(collection =>
                 <MenuItem
                     key={collection.get('name')}
                     value={collection.get('name')}
