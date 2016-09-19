@@ -1,3 +1,10 @@
+.layout .navDrawer .drawerContent {
+  padding-top: 54px;
+}
+.nav {
+  display: block;
+  padding: 1rem;
+}
 .main {
   padding-top: 54px;
 }
