@@ -1,15 +1,27 @@
 import React from 'react';
+import pluralize from 'pluralize';
 import { connect } from 'react-redux';
+import { Layout, Panel, NavDrawer, Navigation, Link } from 'react-toolbox';
 import { loadConfig } from '../actions/config';
 import { loginUser } from '../actions/auth';
 import { currentBackend } from '../backends/backend';
-import { Loader } from '../components/UI';
-import { SHOW_COLLECTION, CREATE_COLLECTION, HELP } from '../actions/findbar';
-import FindBar from './FindBar';
+import {
+  SHOW_COLLECTION,
+  CREATE_COLLECTION,
+  HELP,
+  runCommand,
+  navigateToCollection,
+  createNewEntryInCollection
+} from '../actions/findbar';
+import { AppHeader, Loader } from '../components/UI/index';
 import styles from './App.css';
-import pluralize from 'pluralize';
 
 class App extends React.Component {
+
+  state = {
+    navDrawerIsVisible: false
+  }
+
   componentDidMount() {
     this.props.dispatch(loadConfig());
   }
@@ -62,7 +74,7 @@ class App extends React.Component {
         id: `show_${collection.get('name')}`,
         pattern: `Show ${pluralize(collection.get('label'))}`,
         type: SHOW_COLLECTION,
-        payload: { collectionName:collection.get('name') }
+        payload: { collectionName: collection.get('name') }
       });
 
       if (defaultCommands.length < 5) defaultCommands.push(`show_${collection.get('name')}`);
@@ -72,7 +84,7 @@ class App extends React.Component {
           id: `create_${collection.get('name')}`,
           pattern: `Create new ${pluralize(collection.get('label'), 1)}(:itemName as ${pluralize(collection.get('label'), 1)} Name)`,
           type: CREATE_COLLECTION,
-          payload: { collectionName:collection.get('name') }
+          payload: { collectionName: collection.get('name') }
         });
       }
     });
@@ -83,8 +95,23 @@ class App extends React.Component {
     return { commands, defaultCommands };
   }
 
+  toggleNavDrawer = () => {
+    this.setState({
+      navDrawerIsVisible: !this.state.navDrawerIsVisible
+    });
+  }
+
   render() {
-    const { user, config, children } = this.props;
+    const { navDrawerIsVisible } = this.state;
+    const {
+      user,
+      config,
+      children,
+      collections,
+      runCommand,
+      navigateToCollection,
+      createNewEntryInCollection
+    } = this.props;
 
     if (config === null) {
       return null;
@@ -105,19 +132,42 @@ class App extends React.Component {
     const { commands, defaultCommands } = this.generateFindBarCommands();
 
     return (
-      <div>
-        <header>
-          <div className={styles.alignable}>
-            <FindBar
-                commands={commands}
-                defaultCommands={defaultCommands}
-            />
+      <Layout theme={styles}>
+        <NavDrawer
+            active={navDrawerIsVisible}
+            scrollY
+            permanentAt="md"
+        >
+          <nav className={styles.nav}>
+            <h1>Collections</h1>
+            <Navigation type='vertical'>
+              {
+                collections.valueSeq().map(collection =>
+                  <Link
+                      key={collection.get('name')}
+                      onClick={navigateToCollection.bind(this, collection.get('name'))}
+                  >
+                    {collection.get('label')}
+                  </Link>
+                )
+              }
+            </Navigation>
+          </nav>
+        </NavDrawer>
+        <Panel scrollY>
+          <AppHeader
+              collections={collections}
+              commands={commands}
+              defaultCommands={defaultCommands}
+              runCommand={runCommand}
+              onCreateEntryClick={createNewEntryInCollection}
+              toggleNavDrawer={this.toggleNavDrawer}
+          />
+          <div className={`${styles.alignable} ${styles.main}`}>
+            {children}
           </div>
-        </header>
-        <div className={`${styles.alignable} ${styles.main}`}>
-          {children}
-        </div>
-      </div>
+        </Panel>
+      </Layout>
     );
   }
 }
@@ -129,4 +179,19 @@ function mapStateToProps(state) {
   return { auth, config, collections, user };
 }
 
-export default connect(mapStateToProps)(App);
+function mapDispatchToProps(dispatch) {
+  return {
+    dispatch,
+    runCommand: (type, payload) => {
+      dispatch(runCommand(type, payload));
+    },
+    navigateToCollection: (collection) => {
+      dispatch(navigateToCollection(collection));
+    },
+    createNewEntryInCollection: (collectionName) => {
+      dispatch(createNewEntryInCollection(collectionName));
+    }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

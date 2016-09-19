@@ -1,0 +1,17 @@
+:root {
+  --foregroundColor: #fff;
+  --backgroundColor: #272e30;
+  --textFieldBorderColor: #e7e7e7;
+  --highlightFGColor: #fff;
+  --highlightBGColor: #3ab7a5;
+}
+
+.appBar {
+  background-color: var(--backgroundColor);
+}
+
+.createBtn {
+  position: fixed;
+  right: 2rem;
+  top: 3.5rem;
+}
