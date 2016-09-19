@@ -16,23 +16,6 @@ const EditorComponent = Record({
   toPreview: function(attributes) { return 'Plugin'; }
 });
 
-function CMS() {
-  this.registerEditorComponent = (config) => {
-    const configObj = new EditorComponent({
-      id: config.id || config.label.replace(/[^A-Z0-9]+/ig, '_'),
-      label: config.label,
-      icon: config.icon,
-      fields: config.fields,
-      pattern: config.pattern,
-      fromBlock: _.isFunction(config.fromBlock) ? config.fromBlock.bind(null) : null,
-      toBlock: _.isFunction(config.toBlock) ? config.toBlock.bind(null) : null,
-      toPreview: _.isFunction(config.toPreview) ? config.toPreview.bind(null) : config.toBlock.bind(null)
-    });
-
-    plugins.editor = plugins.editor.push(configObj);
-  };
-}
-
 
 class Plugin extends Component {
   getChildContext() {
@@ -51,8 +34,18 @@ Plugin.childContextTypes = {
   plugins: PropTypes.object
 };
 
+export function newEditorPlugin(config) {
+  const configObj = new EditorComponent({
+    id: config.id || config.label.replace(/[^A-Z0-9]+/ig, '_'),
+    label: config.label,
+    icon: config.icon,
+    fields: config.fields,
+    pattern: config.pattern,
+    fromBlock: _.isFunction(config.fromBlock) ? config.fromBlock.bind(null) : null,
+    toBlock: _.isFunction(config.toBlock) ? config.toBlock.bind(null) : null,
+    toPreview: _.isFunction(config.toPreview) ? config.toPreview.bind(null) : config.toBlock.bind(null)
+  });
 
-export const initPluginAPI = () => {
-  window.CMS = new CMS();
-  return Plugin;
-};
+
+  return configObj;
+}

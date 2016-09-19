@@ -46,10 +46,8 @@ function processEditorPlugins(plugins) {
         <div {...props.attributes} className={className}>
           <div className="plugin_icon" contentEditable={false}><Icon type={plugin.icon}/></div>
           <div className="plugin_fields" contentEditable={false}>
-            { plugin.fields.map(field => `${field.label}: “${node.data.get(field.name)}”`) }
+            {plugin.fields.map(field => `${field.label}: “${node.data.get(field.name)}”`)}
           </div>
-
-
         </div>
       );
     };
@@ -82,7 +80,7 @@ function processMediaProxyPlugins(getMedia) {
   const mediaProxyMarkdownRule = mediaProxyRule.toText((state, token) => {
     var data  = token.getData();
     var alt   = data.get('alt', '');
-    var src   = getMedia(data.get('src', ''));
+    var src   = data.get('src', '');
     var title = data.get('title', '');
 
     if (title) {
@@ -95,7 +93,7 @@ function processMediaProxyPlugins(getMedia) {
     var data  = token.getData();
     var alt   = data.get('alt', '');
     var src   = data.get('src', '');
-    return `<img src=${src} alt=${alt} />`;
+    return `<img src=${getMedia(src)} alt=${alt} />`;
   });
 
   nodes['mediaproxy'] = (props) => {

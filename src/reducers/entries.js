@@ -7,13 +7,16 @@ const entries = (state = Map({ entities: Map(), pages: Map() }), action) => {
   switch (action.type) {
     case ENTRY_REQUEST:
       return state.setIn(['entities', `${action.payload.collection}.${action.payload.slug}`, 'isFetching'], true);
+
     case ENTRY_SUCCESS:
       return state.setIn(
         ['entities', `${action.payload.collection}.${action.payload.entry.slug}`],
         fromJS(action.payload.entry)
       );
+
     case ENTRIES_REQUEST:
       return state.setIn(['pages', action.payload.collection, 'isFetching'], true);
+
     case ENTRIES_SUCCESS:
       const { collection, entries, pages } = action.payload;
       return state.withMutations((map) => {
@@ -25,6 +28,7 @@ const entries = (state = Map({ entities: Map(), pages: Map() }), action) => {
           ids: List(entries.map((entry) => entry.slug))
         }));
       });
+
     default:
       return state;
   }

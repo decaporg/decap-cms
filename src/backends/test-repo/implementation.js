@@ -1,4 +1,5 @@
 import AuthenticationPage from './AuthenticationPage';
+import { createEntry } from '../../valueObjects/Entry';
 
 function getSlug(path) {
   const m = path.match(/([^\/]+?)(\.[^\/\.]+)?$/);
@@ -28,11 +29,7 @@ export default class TestRepo {
     const folder = collection.get('folder');
     if (folder) {
       for (var path in window.repoFiles[folder]) {
-        entries.push({
-          path: folder + '/' + path,
-          slug: getSlug(path),
-          raw: window.repoFiles[folder][path].content
-        });
+        entries.push(createEntry(folder + '/' + path, getSlug(path), window.repoFiles[folder][path].content));
       }
     }
 
@@ -48,11 +45,17 @@ export default class TestRepo {
     ));
   }
 
-  persistEntry(collection, entry, mediaFiles = []) {
+  persistEntry(entry, mediaFiles = [], options) {
+    const newEntry = options.newEntry || false;
     const folder = entry.path.substring(0, entry.path.lastIndexOf('/'));
     const fileName = entry.path.substring(entry.path.lastIndexOf('/') + 1);
-    window.repoFiles[folder][fileName]['content'] = entry.raw;
+    if (newEntry) {
+      window.repoFiles[folder][fileName] = { content: entry.raw };
+    } else {
+      window.repoFiles[folder][fileName]['content'] = entry.raw;
+    }
     mediaFiles.forEach(media => media.uploaded = true);
     return Promise.resolve();
   }
+
 }

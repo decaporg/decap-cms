@@ -5,7 +5,7 @@ import MediaProxy from '../valueObjects/MediaProxy';
 const medias = (state = Map(), action) => {
   switch (action.type) {
     case ADD_MEDIA:
-      return state.set(action.payload.path, action.payload);
+      return state.set(action.payload.public_path, action.payload);
     case REMOVE_MEDIA:
       return state.delete(action.payload);
 

@@ -16,15 +16,15 @@ describe('auth', () => {
     expect(
       auth(undefined, authenticating())
     ).toEqual(
-      Immutable.Map({isFetching: true})
+      Immutable.Map({ isFetching: true })
     );
   });
 
   it('should handle authentication', () => {
     expect(
-      auth(undefined, authenticate({email: 'joe@example.com'}))
+      auth(undefined, authenticate({ email: 'joe@example.com' }))
     ).toEqual(
-      Immutable.fromJS({user: {email: 'joe@example.com'}})
+      Immutable.fromJS({ user: { email: 'joe@example.com' } })
     );
   });
 

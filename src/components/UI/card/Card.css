@@ -1,8 +1,7 @@
+@import "../theme.css";
+
 .card {
-  composes: base from "../theme.css";
-  composes: container from "../theme.css";
-  composes: rounded from "../theme.css";
-  composes: depth from "../theme.css";
+  composes: base container rounded depth;
   overflow: hidden;
   width: 240px;
 }

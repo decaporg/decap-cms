@@ -1,0 +1,37 @@
+import React, { PropTypes } from 'react';
+
+export default class StringControl extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleRef = this.handleRef.bind(this);
+  }
+
+  componentDidMount() {
+    this.updateHeight();
+  }
+
+  handleChange(e) {
+    this.props.onChange(e.target.value);
+    this.updateHeight();
+  }
+
+  updateHeight() {
+    if (this.element.scrollHeight > this.element.clientHeight) {
+      this.element.style.height = this.element.scrollHeight + 'px';
+    }
+  }
+
+  handleRef(ref) {
+    this.element = ref;
+  }
+
+  render() {
+    return <textarea ref={this.handleRef} value={this.props.value || ''} onChange={this.handleChange}/>;
+  }
+}
+
+StringControl.propTypes = {
+  onChange: PropTypes.func.isRequired,
+  value: PropTypes.node,
+};

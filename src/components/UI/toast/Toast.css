@@ -1,0 +1,40 @@
+@import "../theme.css";
+
+.toast {
+  composes: base container rounded depth;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 100;
+  width: 350px;
+  padding: 20px 10px;
+  font-size: 0.9rem;
+  text-align: center;
+  color: var(--defaultColorLight);
+  overflow: hidden;
+  opacity: 1;
+  transition: opacity .3s ease-in;
+}
+
+.hidden {
+  opacity: 0;
+}
+
+.icon {
+  position: absolute;
+  top: calc(50% - 15px);
+  left: 15px;
+  font-size: 30px;
+}
+
+.success {
+  background-color: var(--successColor);
+}
+
+.warning {
+  background-color: var(--warningColor);
+}
+
+.error {
+  background-color: var(--errorColor);
+}

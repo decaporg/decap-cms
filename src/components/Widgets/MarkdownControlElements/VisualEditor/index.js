@@ -42,7 +42,8 @@ class VisualEditor extends React.Component {
     let rawJson;
     if (props.value !== undefined) {
       const content = this.markdown.toContent(props.value);
-      rawJson = SlateUtils.encode(content, null, getPlugins().map(plugin => plugin.id));
+      console.log('md: %o', content);
+      rawJson = SlateUtils.encode(content, null, ['mediaproxy'].concat(getPlugins().map(plugin => plugin.id)));
     } else {
       rawJson = emptyParagraphBlock;
     }
@@ -253,7 +254,7 @@ class VisualEditor extends React.Component {
       .insertInline({
         type: 'mediaproxy',
         isVoid: true,
-        data: { src: mediaProxy.path }
+        data: { src: mediaProxy.public_path }
       })
       .collapseToEnd()
       .insertBlock(DEFAULT_NODE)

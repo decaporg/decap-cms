@@ -1,0 +1,53 @@
+.container {
+  display: table;
+  width: 100%;
+}
+
+.column {
+  display: table-cell;
+  text-align: center;
+  width: 33%;
+  height: 100%;
+  transition: background-color .5s ease;
+  & h2 {
+    font-size: 16px;
+  }
+}
+
+.highlighted {
+  background-color: #e1eeea;
+}
+
+.column:not(:last-child) {
+  padding-right: 20px;
+}
+
+.card {
+  width: 100% !important;
+  margin: 7px 0;
+
+  & h2 {
+    font-size: 17px;
+    & small {
+      font-weight: normal;
+    }
+  }
+
+  & p {
+    color: #555;
+    font-size: 12px;
+    margin-top: 5px;
+  }
+
+  & button {
+    margin: 10px 10px 0 0;
+    float: right;
+  }
+}
+
+
+.clear::after {
+    content:"";
+    display:block;
+    clear:both;
+}

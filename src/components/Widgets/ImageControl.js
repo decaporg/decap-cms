@@ -53,7 +53,7 @@ export default class ImageControl extends React.Component {
     if (file) {
       const mediaProxy = new MediaProxy(file.name, file);
       this.props.onAddMedia(mediaProxy);
-      this.props.onChange(mediaProxy.path);
+      this.props.onChange(mediaProxy.public_path);
     } else {
       this.props.onChange(null);
     }

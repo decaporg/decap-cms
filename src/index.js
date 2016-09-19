@@ -1,31 +1,38 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { Provider } from 'react-redux';
-import { Router } from 'react-router';
-import configureStore from './store/configureStore';
-import routes from './routing/routes';
-import history, { syncHistory } from './routing/history';
-import { initPluginAPI } from './plugins';
+import { AppContainer } from 'react-hot-loader';
+import Root from './root';
+import registry from './lib/registry';
 import 'file?name=index.html!../example/index.html';
+import 'react-toolbox/lib/commons.scss';
 import './index.css';
 
-const store = configureStore();
-
-// Create an enhanced history that syncs navigation events with the store
-syncHistory(store);
-
-const Plugin = initPluginAPI();
-
+// Create mount element dynamically
 const el = document.createElement('div');
 el.id = 'root';
 document.body.appendChild(el);
 
 render((
-  <Provider store={store}>
-    <Plugin>
-      <Router history={history}>
-        {routes}
-      </Router>
-    </Plugin>
-  </Provider>
+  <AppContainer>
+    <Root />
+  </AppContainer>
 ), el);
+
+if (module.hot) {
+  module.hot.accept('./root', () => {
+    const NextRoot = require('./root').default;
+    render((
+      <AppContainer>
+        <NextRoot />
+      </AppContainer>
+    ), el);
+  });
+}
+
+window.CMS = {};
+console.log('reg: ', registry);
+for (const method in registry) {
+  window.CMS[method] = registry[method];
+}
+window.createClass = React.createClass;
+window.h = React.createElement;
