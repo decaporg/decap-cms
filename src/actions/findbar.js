@@ -1,5 +1,5 @@
 import history from '../routing/history';
-import { SEARCH } from '../components/UI/FindBar/FindBar';
+import { SEARCH } from '../components/FindBar/FindBar';
 
 export const RUN_COMMAND = 'RUN_COMMAND';
 export const SHOW_COLLECTION = 'SHOW_COLLECTION';

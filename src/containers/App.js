@@ -13,7 +13,8 @@ import {
   navigateToCollection,
   createNewEntryInCollection
 } from '../actions/findbar';
-import { AppHeader, Loader } from '../components/UI/index';
+import AppHeader from '../components/AppHeader/AppHeader';
+import { Loader } from '../components/UI/index';
 import styles from './App.css';
 
 class App extends React.Component {

@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import fuzzy from 'fuzzy';
 import _ from 'lodash';
-import { Icon } from '../index';
+import { Icon } from '../UI';
 import styles from './FindBar.css';
 
 export const SEARCH = 'SEARCH';
@@ -99,8 +99,6 @@ class FindBar extends Component {
 
     const paramName = command && command.param ? command.param.name : null;
     const enteredParamValue = command && command.param && match[1] ? match[1].trim() : null;
-
-    console.log(this.props.runCommand);
 
     if (command.search) {
       this.setState({
