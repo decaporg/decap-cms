@@ -1,7 +1,7 @@
 import expect from 'expect';
 import Immutable from 'immutable';
-import { configLoaded, configLoading, configFailed } from '../../src/actions/config';
-import { config } from '../../src/reducers/config';
+import { configLoaded, configLoading, configFailed } from '../../actions/config';
+import config from '../config';
 
 describe('config', () => {
   it('should handle an empty state', () => {
