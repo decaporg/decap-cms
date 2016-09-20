@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, TextButton } from '../UI/index';
+import { Button, TextButton, FloatingButton } from '../UI/index';
 import { storiesOf } from '@kadira/storybook';
 
 storiesOf('Button', module)
@@ -11,6 +11,11 @@ storiesOf('Button', module)
   .add('Primary', () => (
     <div>
       <Button primary>Primary</Button>
+    </div>
+  ))
+  .add('Accent', () => (
+    <div>
+      <Button accent>Accent</Button>
     </div>
   ))
   .add('Disabled', () => (
@@ -30,8 +35,35 @@ storiesOf('TextButton', module)
       <TextButton primary>Primary</TextButton>
     </div>
   ))
+  .add('Accent', () => (
+    <div>
+      <TextButton accent>Accent</TextButton>
+    </div>
+  ))
   .add('Disabled', () => (
     <div>
       <TextButton disabled>Disabled</TextButton>
+    </div>
+  ));
+
+storiesOf('FloatingButton', module)
+  .add('Default', () => (
+    <div>
+      <FloatingButton icon="add"/>
+    </div>
+  ))
+  .add('Primary', () => (
+    <div>
+      <FloatingButton icon="add" primary/>
+    </div>
+  ))
+  .add('Accent', () => (
+    <div>
+      <FloatingButton icon="add" accent/>
+    </div>
+  ))
+  .add('Disabled', () => (
+    <div>
+      <FloatingButton icon="add" disabled/>
     </div>
   ));

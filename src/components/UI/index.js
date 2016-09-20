@@ -1,5 +1,6 @@
 export { default as Button } from './Button/Button';
 export { default as TextButton } from './Button/TextButton';
+export { default as FloatingButton } from './Button/FloatingButton';
 export { default as Card } from './card/Card';
 export { default as Loader } from './loader/Loader';
 export { default as Icon } from './icon/Icon';

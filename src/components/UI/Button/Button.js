@@ -11,4 +11,8 @@ const Button = ({ children, ...props }) => (
   </RTButton>
 );
 
+Button.propTypes = {
+  children: React.PropTypes.node
+};
+
 export default Button;
