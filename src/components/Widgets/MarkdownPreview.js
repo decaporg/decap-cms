@@ -1,28 +1,23 @@
 import React, { PropTypes } from 'react';
-import MarkupIt from 'markup-it';
 import { getSyntaxes } from './richText';
+import MarkitupReactRenderer from './MarkitupReactRenderer';
 
-export default class MarkdownPreview extends React.Component {
-
-  constructor(props) {
-    super(props);
-
-    const { markdown, html } = getSyntaxes();
-    this.markdown = new MarkupIt(markdown);
-    this.html = new MarkupIt(html);
+const MarkdownPreview = ({ value }) => {
+  if (value == null) {
+    return null;
   }
-  render() {
-    const { value } = this.props;
-    if (value == null) { return null; }
-    const content = this.markdown.toContent(value);
-    const contentHtml =  { __html: this.html.toText(content) };
 
-    return (
-      <div dangerouslySetInnerHTML={contentHtml} />
-    );
-  }
-}
+  const { markdown } = getSyntaxes();
+  return (
+    <MarkitupReactRenderer
+        value={value}
+        syntax={markdown}
+    />
+  );
+};
 
 MarkdownPreview.propTypes = {
-  value: PropTypes.node,
+  value: PropTypes.string,
 };
+
+export default MarkdownPreview;
