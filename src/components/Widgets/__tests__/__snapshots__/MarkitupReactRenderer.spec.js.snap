@@ -1,0 +1,90 @@
+exports[`MarkitupReactRenderer should render HTML 1`] = `
+<div>
+  <article>
+    <p>
+      Paragraph with 
+      <em>
+        inline
+      </em>
+       element
+    </p>
+  </article>
+</div>
+`;
+
+exports[`MarkitupReactRenderer should render markdown 1`] = `
+<div>
+  <article>
+    <h1
+      id={null}>
+      H1
+    </h1>
+    <p>
+      Text with 
+      <strong>
+        bold
+      </strong>
+       & 
+      <em>
+        em
+      </em>
+       elements
+    </p>
+    <h2
+      id={null}>
+      H2
+    </h2>
+    <ul>
+      <li
+        loose={false}>
+        ul item 1
+      </li>
+      <li
+        loose={false}>
+        ul item 2
+      </li>
+    </ul>
+    <h3
+      id={null}>
+      H3
+    </h3>
+    <ol>
+      <li
+        loose={false}>
+        ol item 1
+      </li>
+      <li
+        loose={false}>
+        ol item 2
+      </li>
+      <li
+        loose={false}>
+        ol item 3
+      </li>
+    </ol>
+    <h4
+      id={null}>
+      H4
+    </h4>
+    <p>
+      <a
+        href="http://google.com">
+        link title
+      </a>
+    </p>
+    <h5
+      id={null}>
+      H5
+    </h5>
+    <p>
+      <img
+        alt="alt text"
+        src="https://pbs.twimg.com/profile_images/678903331176214528/TQTdqGwD.jpg" />
+    </p>
+    <h6
+      id={null}>
+      H6
+    </h6>
+  </article>
+</div>
+`;
