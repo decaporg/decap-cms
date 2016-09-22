@@ -51,13 +51,20 @@ function renderToken(token, index = 0, key = '0') {
 
 export default class MarkitupReactRenderer extends React.Component {
 
-  render() {
-    const { value, syntax } = this.props;
+  constructor(props) {
+    super(props);
+    const { syntax } = props;
+    this.parser = new MarkupIt(syntax);
+  }
 
-    if (typeof this.parser === 'undefined') {
-      this.parser = new MarkupIt(syntax);
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.syntax != this.props.syntax) {
+      this.parser = new MarkupIt(nextProps.syntax);
     }
+  }
 
+  render() {
+    const { value } = this.props;
     const content = this.parser.toContent(value);
     const json = JSONUtils.encode(content);
     // console.log(JSON.stringify(json, null, 2));
