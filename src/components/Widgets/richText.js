@@ -15,7 +15,6 @@ import { Icon } from '../UI';
 
 let processedPlugins = List([]);
 
-
 const nodes = {};
 let augmentedMarkdownSyntax = markdownSyntax;
 let augmentedHTMLSyntax = htmlSyntax;
@@ -27,7 +26,7 @@ function processEditorPlugins(plugins) {
 
   plugins.forEach(plugin => {
     const basicRule = MarkupIt.Rule(plugin.id).regExp(plugin.pattern, (state, match) => (
-      { data: plugin.fromBlock(match) }
+    { data: plugin.fromBlock(match) }
     ));
 
     const markdownRule = basicRule.toText((state, token) => (
@@ -68,8 +67,8 @@ function processMediaProxyPlugins(getMedia) {
     }
 
     var imgData = Map({
-      alt:   match[1],
-      src:   match[2],
+      alt: match[1],
+      src: match[2],
       title: match[3]
     }).filter(Boolean);
 
@@ -78,9 +77,9 @@ function processMediaProxyPlugins(getMedia) {
     };
   });
   const mediaProxyMarkdownRule = mediaProxyRule.toText((state, token) => {
-    var data  = token.getData();
-    var alt   = data.get('alt', '');
-    var src   = data.get('src', '');
+    var data = token.getData();
+    var alt = data.get('alt', '');
+    var src = data.get('src', '');
     var title = data.get('title', '');
 
     if (title) {
@@ -90,9 +89,9 @@ function processMediaProxyPlugins(getMedia) {
     }
   });
   const mediaProxyHTMLRule = mediaProxyRule.toText((state, token) => {
-    var data  = token.getData();
-    var alt   = data.get('alt', '');
-    var src   = data.get('src', '');
+    var data = token.getData();
+    var alt = data.get('alt', '');
+    var src = data.get('src', '');
     return `<img src=${getMedia(src)} alt=${alt} />`;
   });
 
@@ -103,7 +102,7 @@ function processMediaProxyPlugins(getMedia) {
     const className = isFocused ? 'active' : null;
     const src = node.data.get('src');
     return (
-      <img {...props.attributes} src={getMedia(src)} className={className} />
+      <img {...props.attributes} src={getMedia(src)} className={className}/>
     );
   };
   augmentedMarkdownSyntax = augmentedMarkdownSyntax.addInlineRules(mediaProxyMarkdownRule);
@@ -111,9 +110,11 @@ function processMediaProxyPlugins(getMedia) {
 }
 
 function getPlugins() {
-  return processedPlugins.map(plugin => (
-    { id: plugin.id, icon: plugin.icon, fields: plugin.fields }
-  )).toArray();
+  return processedPlugins.map(plugin => ({
+    id: plugin.id,
+    icon: plugin.icon,
+    fields: plugin.fields
+  })).toArray();
 }
 
 function getNodes() {
@@ -124,7 +125,7 @@ function getSyntaxes(getMedia) {
   if (getMedia) {
     processMediaProxyPlugins(getMedia);
   }
-  return { markdown: augmentedMarkdownSyntax, html:augmentedHTMLSyntax };
+  return { markdown: augmentedMarkdownSyntax, html: augmentedHTMLSyntax };
 }
 
 export { processEditorPlugins, getNodes, getSyntaxes, getPlugins };
