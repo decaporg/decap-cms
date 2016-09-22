@@ -24,8 +24,9 @@ export const ENTRY_PERSIST_FAILURE = 'ENTRY_PERSIST_FAILURE';
 
 /*
  * Simple Action Creators (Internal)
+ * We still need to export them for tests
  */
-function entryLoading(collection, slug) {
+export function entryLoading(collection, slug) {
   return {
     type: ENTRY_REQUEST,
     payload: {
@@ -35,7 +36,7 @@ function entryLoading(collection, slug) {
   };
 }
 
-function entryLoaded(collection, entry) {
+export function entryLoaded(collection, entry) {
   return {
     type: ENTRY_SUCCESS,
     payload: {
@@ -45,7 +46,7 @@ function entryLoaded(collection, entry) {
   };
 }
 
-function entriesLoading(collection) {
+export function entriesLoading(collection) {
   return {
     type: ENTRIES_REQUEST,
     payload: {
@@ -54,7 +55,7 @@ function entriesLoading(collection) {
   };
 }
 
-function entriesLoaded(collection, entries, pagination) {
+export function entriesLoaded(collection, entries, pagination) {
   return {
     type: ENTRIES_SUCCESS,
     payload: {
@@ -65,7 +66,7 @@ function entriesLoaded(collection, entries, pagination) {
   };
 }
 
-function entriesFailed(collection, error) {
+export function entriesFailed(collection, error) {
   return {
     type: ENTRIES_FAILURE,
     error: 'Failed to load entries',
@@ -74,7 +75,7 @@ function entriesFailed(collection, error) {
   };
 }
 
-function entryPersisting(collection, entry) {
+export function entryPersisting(collection, entry) {
   return {
     type: ENTRY_PERSIST_REQUEST,
     payload: {
@@ -84,7 +85,7 @@ function entryPersisting(collection, entry) {
   };
 }
 
-function entryPersisted(collection, entry) {
+export function entryPersisted(collection, entry) {
   return {
     type: ENTRY_PERSIST_SUCCESS,
     payload: {
@@ -94,7 +95,7 @@ function entryPersisted(collection, entry) {
   };
 }
 
-function entryPersistFail(collection, entry, error) {
+export function entryPersistFail(collection, entry, error) {
   return {
     type: ENTRIES_FAILURE,
     error: 'Failed to persist entry',
@@ -102,7 +103,7 @@ function entryPersistFail(collection, entry, error) {
   };
 }
 
-function emmptyDraftCreated(entry) {
+export function emmptyDraftCreated(entry) {
   return {
     type: DRAFT_CREATE_EMPTY,
     payload: entry
