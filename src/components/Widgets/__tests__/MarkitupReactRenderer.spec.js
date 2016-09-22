@@ -44,8 +44,7 @@ Text with **bold** & _em_ elements
   });
 
   it('should support custom syntax', () => {
-    const value = `
-`;
+    const value = '';
     const component = renderer.create(
       <MarkitupReactRenderer
           value={value}

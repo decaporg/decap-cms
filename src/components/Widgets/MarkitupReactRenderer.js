@@ -21,30 +21,30 @@ const defaultRenderers = {
   'unstyled': null,
 };
 
-export default class MarkitupReactRenderer extends React.Component {
+function renderToken(token) {
+  const { type, data, text, tokens } = token;
+  const element = defaultRenderers[type];
 
-  renderToken = (token) => {
-    const { type, data, text, tokens } = token;
-    const element = defaultRenderers[type];
-
-    // Only render if type is registered as renderer
-    if (typeof element !== 'undefined') {
-      let children = null;
-      if (Array.isArray(tokens) && tokens.length) {
-        children = tokens.map(this.renderToken);
-      } else if (type === 'text') {
-        children = text;
-      }
-      if (element !== null) {
-        // If this is a react element
-        return React.createElement(element, data, children);
-      } else {
-        // If this is a text node
-        return children;
-      }
+  // Only render if type is registered as renderer
+  if (typeof element !== 'undefined') {
+    let children = null;
+    if (Array.isArray(tokens) && tokens.length) {
+      children = tokens.map(renderToken);
+    } else if (type === 'text') {
+      children = text;
     }
-    return null;
+    if (element !== null) {
+      // If this is a react element
+      return React.createElement(element, data, children);
+    } else {
+      // If this is a text node
+      return children;
+    }
   }
+  return null;
+}
+
+export default class MarkitupReactRenderer extends React.Component {
 
   render() {
     const { value, syntax } = this.props;
@@ -57,9 +57,7 @@ export default class MarkitupReactRenderer extends React.Component {
     const json = JSONUtils.encode(content);
     // console.log(JSON.stringify(json, null, 2));
 
-    return (
-      <div>{this.renderToken(json.token)}</div>
-    );
+    return renderToken(json.token);
   }
 }
 
