@@ -3,6 +3,7 @@ process.env.BABEL_ENV = 'test';
 module.exports = wallaby => ({
   files: [
     { pattern: 'src/**/*.js' },
+    { pattern: 'src/**/*.js.snap' },
     { pattern: 'src/**/*.spec.js', ignore: true }
   ],
 
