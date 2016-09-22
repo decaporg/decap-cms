@@ -21,21 +21,26 @@ const defaultRenderers = {
   'unstyled': null,
 };
 
-function renderToken(token) {
+function renderToken(token, index = 0, key = '0') {
   const { type, data, text, tokens } = token;
   const element = defaultRenderers[type];
+  key = `${key}.${index}`;
 
   // Only render if type is registered as renderer
   if (typeof element !== 'undefined') {
     let children = null;
     if (Array.isArray(tokens) && tokens.length) {
-      children = tokens.map(renderToken);
+      children = tokens.map((token, idx) => renderToken(token, idx, key));
     } else if (type === 'text') {
       children = text;
     }
     if (element !== null) {
       // If this is a react element
-      return React.createElement(element, data, children);
+      return React.createElement(
+        element,
+        { key, ...data }, // Add key as a prop
+        Array.isArray(children) && children.length === 1
+          ? children[0] : children); // Pass single child if possible
     } else {
       // If this is a text node
       return children;
