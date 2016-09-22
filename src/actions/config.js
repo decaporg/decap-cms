@@ -1,8 +1,6 @@
 import yaml from 'js-yaml';
-import _ from 'lodash';
 import { currentBackend } from '../backends/backend';
 import { authenticate } from '../actions/auth';
-import * as publishModes from '../constants/publishModes';
 import * as MediaProxy from '../valueObjects/MediaProxy';
 
 export const CONFIG_REQUEST = 'CONFIG_REQUEST';
@@ -70,20 +68,6 @@ function parseConfig(data) {
         config[key] = config[CMS_ENV][key];
       }
     }
-  }
-
-  if (!('publish_mode' in config) || _.values(publishModes).indexOf(config.publish_mode) === -1) {
-    // Make sure there is a publish workflow mode set
-    config.publish_mode = publishModes.SIMPLE;
-  }
-
-  if (!('public_folder' in config)) {
-    // Make sure there is a public folder
-    config.public_folder = config.media_folder;
-  }
-
-  if (config.public_folder.charAt(0) !== '/') {
-    config.public_folder = '/' + config.public_folder;
   }
 
   return config;
