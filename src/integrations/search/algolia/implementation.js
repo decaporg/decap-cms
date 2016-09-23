@@ -1,3 +1,10 @@
+import { createEntry } from '../../../valueObjects/Entry';
+
+function getSlug(path) {
+  const m = path.match(/([^\/]+?)(\.[^\/\.]+)?$/);
+  return m && m[1];
+}
+
 export default class Algolia {
   constructor(config) {
     this.config = config;
@@ -59,6 +66,18 @@ export default class Algolia {
   search(collection, query) {
     return this.request(`${this.searchURL}/indexes/${collection}`, {
       params: { query }
+    });
+  }
+
+  entries(collection, page = 0) {
+    return this.request(`${this.searchURL}/indexes/${collection.get('name')}`, {
+      params: { page }
+    }).then(response => {
+      const entries = response.hits.map(hit => {
+        const slug = hit.slug || getSlug(hit.path);
+        return createEntry(collection.get('name'), slug, hit.path, { data: hit.data, partial: true });
+      });
+      return { page: response.page, entries };
     });
   }
 }

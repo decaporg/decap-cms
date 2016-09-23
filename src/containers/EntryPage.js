@@ -3,6 +3,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 import {
   loadEntry,
+  loadEntryRemainingData,
   createDraftFromEntry,
   createEmptyDraft,
   discardDraft,
@@ -22,18 +23,25 @@ class EntryPage extends React.Component {
   }
 
   componentDidMount() {
-    if (!this.props.newEntry) {
-      this.props.loadEntry(this.props.collection, this.props.slug);
-
-      this.createDraft(this.props.entry);
-    } else {
+    if (this.props.newEntry) {
       this.props.createEmptyDraft(this.props.collection);
+      return;
     }
+
+    const { entry } = this.props;
+
+    if (entry === undefined) {
+      this.props.loadEntry(this.props.collection, this.props.slug);
+    } else if (entry.get('partial', false)) {
+      this.props.loadEntryRemainingData(entry);
+    } else {
+      this.createDraft(entry);
+    }
+
   }
 
   componentWillReceiveProps(nextProps) {
     if (this.props.entry === nextProps.entry) return;
-
     if (nextProps.entry && !nextProps.entry.get('isFetching')) {
       this.createDraft(nextProps.entry);
     } else if (nextProps.newEntry) {
@@ -86,11 +94,17 @@ EntryPage.propTypes = {
   entry: ImmutablePropTypes.map,
   entryDraft: ImmutablePropTypes.map.isRequired,
   loadEntry: PropTypes.func.isRequired,
+  loadEntryRemainingData: PropTypes.func.isRequired,
   persistEntry: PropTypes.func.isRequired,
   removeMedia: PropTypes.func.isRequired,
   slug: PropTypes.string,
   newEntry: PropTypes.bool.isRequired,
 };
+/*
+ * Instead of checking the publish mode everywhere to dispatch & render the additional editorial workflow stuff,
+ * We delegate it to a Higher Order Component
+ */
+EntryPage = EntryPageHOC(EntryPage);
 
 function mapStateToProps(state, ownProps) {
   const { collections, entryDraft } = state;
@@ -102,12 +116,6 @@ function mapStateToProps(state, ownProps) {
   return { collection, collections, newEntry, entryDraft, boundGetMedia, slug, entry };
 }
 
-/*
- * Instead of checking the publish mode everywhere to dispatch & render the additional editorial workflow stuff,
- * We delegate it to a Higher Order Component
- */
-EntryPage = EntryPageHOC(EntryPage);
-
 export default connect(
   mapStateToProps,
   {
@@ -115,6 +123,7 @@ export default connect(
     addMedia,
     removeMedia,
     loadEntry,
+    loadEntryRemainingData,
     createDraftFromEntry,
     createEmptyDraft,
     discardDraft,

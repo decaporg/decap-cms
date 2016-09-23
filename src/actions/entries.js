@@ -1,4 +1,5 @@
 import { currentBackend } from '../backends/backend';
+import { currentSearchIntegration } from '../integrations/search';
 import { getMedia } from '../reducers';
 
 /*
@@ -21,25 +22,24 @@ export const ENTRY_PERSIST_REQUEST = 'ENTRY_PERSIST_REQUEST';
 export const ENTRY_PERSIST_SUCCESS = 'ENTRY_PERSIST_SUCCESS';
 export const ENTRY_PERSIST_FAILURE = 'ENTRY_PERSIST_FAILURE';
 
-
 /*
  * Simple Action Creators (Internal)
  */
-function entryLoading(collection, slug) {
+function entryLoading(collectionStr, slug) {
   return {
     type: ENTRY_REQUEST,
     payload: {
-      collection: collection.get('name'),
+      collection: collectionStr,
       slug: slug
     }
   };
 }
 
-function entryLoaded(collection, entry) {
+function entryLoaded(collectionStr, entry) {
   return {
     type: ENTRY_SUCCESS,
     payload: {
-      collection: collection.get('name'),
+      collection: collectionStr,
       entry: entry
     }
   };
@@ -135,14 +135,25 @@ export function changeDraft(entry) {
 /*
  * Exported Thunk Action Creators
  */
-export function loadEntry(collection, slug) {
+export function loadEntry(collection, slug, path) {
   return (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
+    dispatch(entryLoading(collection.get('name'), slug));
+    return backend.entry(collection, slug)
+      .then((entry) => dispatch(entryLoaded(collection.get('name'), entry)));
+  };
+}
 
-    dispatch(entryLoading(collection, slug));
-    backend.entry(collection, slug)
-      .then((entry) => dispatch(entryLoaded(collection, entry)));
+export function loadEntryRemainingData(entry) {
+  return (dispatch, getState) => {
+    const state = getState();
+    const config = state.config;
+    const backend = currentBackend(config);
+    dispatch(entryLoading(entry.get('collection'), entry.get('path')));
+
+    return backend.getEntry(entry.get('collection'), entry.get('slug'), entry.get('path'))
+      .then((completeEntry) => dispatch(entryLoaded(entry.get('collection'), completeEntry)));
   };
 }
 
@@ -150,10 +161,13 @@ export function loadEntries(collection) {
   return (dispatch, getState) => {
     if (collection.get('isFetching')) { return; }
     const state = getState();
-    const backend = currentBackend(state.config);
+    const config = state.config;
+    const useSearch = config.getIn(['integrations', 'search', 'use_for_listing'], false);
+
+    const provider = useSearch ? currentSearchIntegration(state.config) : currentBackend(state.config);
 
     dispatch(entriesLoading(collection));
-    backend.entries(collection).then(
+    provider.entries(collection).then(
       (response) => dispatch(entriesLoaded(collection, response.entries, response.pagination)),
       (error) => dispatch(entriesFailed(collection, error))
     );

@@ -35,7 +35,7 @@ export default class NetlifyGit {
       files.map((file) => {
         promises.push(new Promise((resolve, reject) => {
           return sem.take(() => this.api.readFile(file.path, file.sha).then((data) => {
-            resolve(createEntry(file.path, file.path.split('/').pop().replace(/\.[^\.]+$/, ''), data));
+            resolve(createEntry(collection.get('name'), file.path.split('/').pop().replace(/\.[^\.]+$/, ''), file.path, { raw: data }));
             sem.leave();
           }).catch((err) => {
             sem.leave();

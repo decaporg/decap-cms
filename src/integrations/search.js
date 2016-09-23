@@ -8,10 +8,14 @@ class Search {
   search(collection, query) {
     return this.implementation.search(collection, query).then((response) => {
       return {
-        pagination: response.pagination,
+        pagination: response.page,
         entries: response.entries.map(this.entryWithFormat(collection))
       };
     });
+  }
+
+  entries(collection, page, perPage) {
+    return this.implementation.entries(collection, page, perPage);
   }
 
 }

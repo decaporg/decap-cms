@@ -2,8 +2,6 @@ import React, { PropTypes } from 'react';
 import { Editor, Plain, Mark } from 'slate';
 import Prism from 'prismjs';
 import marks from './prismMarkdown';
-import styles from './index.css';
-
 
 Prism.languages.markdown = Prism.languages.extend('markup', {});
 Prism.languages.insertBefore('markdown', 'prolog', marks);
@@ -76,7 +74,6 @@ class RawEditor extends React.Component {
 
   constructor(props) {
     super(props);
-
     const content = props.value ? Plain.deserialize(props.value) : Plain.deserialize('');
 
     this.state = {

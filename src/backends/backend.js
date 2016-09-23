@@ -17,6 +17,25 @@ class LocalStorageAuthStore {
   }
 }
 
+const slugFormatter = (template, entryData) => {
+  var date = new Date();
+  return template.replace(/\{\{([^\}]+)\}\}/g, function(_, name) {
+    switch (name) {
+      case 'year':
+        return date.getFullYear();
+      case 'month':
+        return ('0' + (date.getMonth() + 1)).slice(-2);
+      case 'day':
+        return ('0' + date.getDate()).slice(-2);
+      case 'slug':
+        const identifier = entryData.get('title', entryData.get('path'));
+        return identifier.trim().toLowerCase().replace(/[^a-z0-9\.\-\_]+/gi, '-');
+      default:
+        return entryData.get(name);
+    }
+  });
+};
+
 class Backend {
   constructor(implementation, authStore = null) {
     this.implementation = implementation;
@@ -55,8 +74,15 @@ class Backend {
     });
   }
 
+  // Will fetch the whole list of files from GitHub and download all files.
+  // (Files are persisted in local storage - only expensive on the first run for each file).
   entry(collection, slug) {
     return this.implementation.entry(collection, slug).then(this.entryWithFormat(collection));
+  }
+
+  // Entry is already partially loaded (at least with a collction, slug and path). Fetch and parse the file.
+  getEntry(collection, slug, path) {
+    return this.implementation.getEntry(collection, slug, path).then(this.entryWithFormat(collection));
   }
 
   newEntry(collection) {
@@ -87,24 +113,6 @@ class Backend {
     return this.implementation.unpublishedEntry(collection, slug).then(this.entryWithFormat(collection));
   }
 
-  slugFormatter(template, entry) {
-    var date = new Date();
-    return template.replace(/\{\{([^\}]+)\}\}/g, function(_, name) {
-      switch (name) {
-        case 'year':
-          return date.getFullYear();
-        case 'month':
-          return ('0' + (date.getMonth() + 1)).slice(-2);
-        case 'day':
-          return ('0' + date.getDate()).slice(-2);
-        case 'slug':
-          return entry.getIn(['data', 'title']).trim().toLowerCase().replace(/[^a-z0-9\.\-\_]+/gi, '-');
-        default:
-          return entry.getIn(['data', name]);
-      }
-    });
-  }
-
   persistEntry(config, collection, entryDraft, MediaFiles, options) {
     const newEntry = entryDraft.getIn(['entry', 'newRecord']) || false;
 
@@ -116,7 +124,7 @@ class Backend {
     const entryData = entryDraft.getIn(['entry', 'data']).toJS();
     let entryObj;
     if (newEntry) {
-      const slug = this.slugFormatter(collection.get('slug'), entryDraft.get('entry'));
+      const slug = slugFormatter(collection.get('slug'), entryDraft.getIn(['entry', 'data']));
       entryObj = {
         path: `${collection.get('folder')}/${slug}.md`,
         slug: slug,
@@ -172,11 +180,11 @@ export function resolveBackend(config) {
 
   switch (name) {
     case 'test-repo':
-      return new Backend(new TestRepoBackend(config), authStore);
+      return new Backend(new TestRepoBackend(config, slugFormatter), authStore);
     case 'github':
-      return new Backend(new GitHubBackend(config), authStore);
+      return new Backend(new GitHubBackend(config, slugFormatter), authStore);
     case 'netlify-git':
-      return new Backend(new NetlifyGitBackend(config), authStore);
+      return new Backend(new NetlifyGitBackend(config, slugFormatter), authStore);
     default:
       throw `Backend not found: ${name}`;
   }

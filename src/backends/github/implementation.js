@@ -38,7 +38,7 @@ export default class GitHub {
       files.map((file) => {
         promises.push(new Promise((resolve, reject) => {
           return sem.take(() => this.api.readFile(file.path, file.sha).then((data) => {
-            resolve(createEntry(file.path, file.path.split('/').pop().replace(/\.[^\.]+$/, ''), data));
+            resolve(createEntry(collection.get('name'), file.path.split('/').pop().replace(/\.[^\.]+$/, ''), file.path, { raw: data }));
             sem.leave();
           }).catch((err) => {
             sem.leave();
@@ -53,10 +53,17 @@ export default class GitHub {
     }));
   }
 
+
+  // Requires that the list of entries is being fetched from github. (Not from another integration like Search)
   entry(collection, slug) {
     return this.entries(collection).then((response) => (
       response.entries.filter((entry) => entry.slug === slug)[0]
     ));
+  }
+
+  // Fetches a single entry regardless of where the list of entries is being fetched from.
+  getEntry(collection, slug, path) {
+    return this.api.readFile(path).then(data => createEntry(collection, slug, path, { raw: data }));
   }
 
   persistEntry(entry, mediaFiles = [], options = {}) {
@@ -72,7 +79,7 @@ export default class GitHub {
           const contentKey = branch.ref.split('refs/heads/cms/').pop();
           return sem.take(() => this.api.readUnpublishedBranchFile(contentKey).then((data) => {
             const entryPath = data.metaData.objects.entry;
-            const entry = createEntry(entryPath, entryPath.split('/').pop().replace(/\.[^\.]+$/, ''), data.file);
+            const entry = createEntry('draft', entryPath.split('/').pop().replace(/\.[^\.]+$/, ''), entryPath, { raw: data.file });
             entry.metaData = data.metaData;
             resolve(entry);
             sem.leave();
