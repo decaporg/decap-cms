@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import MarkupIt, { Syntax, JSONUtils, BLOCKS, STYLES, ENTITIES } from 'markup-it';
+import MarkupIt, { Syntax, BLOCKS, STYLES, ENTITIES } from 'markup-it';
 
 const defaultRenderers = {
   [BLOCKS.DOCUMENT]: 'article',
@@ -36,14 +36,17 @@ const defaultRenderers = {
 };
 
 function renderToken(token, index = 0, key = '0') {
-  const { type, data, text, tokens } = token;
+  const type = token.get('type');
+  const data = token.get('data');
+  const text = token.get('text');
+  const tokens = token.get('tokens');
   const nodeType = defaultRenderers[type];
   key = `${key}.${index}`;
 
   // Only render if type is registered as renderer
   if (typeof nodeType !== 'undefined') {
     let children = null;
-    if (Array.isArray(tokens) && tokens.length) {
+    if (tokens.size) {
       children = tokens.map((token, idx) => renderToken(token, idx, key));
     } else if (type === 'text') {
       children = text;
@@ -52,9 +55,9 @@ function renderToken(token, index = 0, key = '0') {
       // If this is a react element
       return React.createElement(
         nodeType,
-        { key, ...data }, // Add key as a prop
-        Array.isArray(children) && children.length === 1
-          ? children[0] : children); // Pass single child if possible
+        { key, ...data.toJS() }, // Add key as a prop
+        children
+      );
     } else {
       // If this is a text node
       return children;
@@ -80,10 +83,7 @@ export default class MarkitupReactRenderer extends React.Component {
   render() {
     const { value } = this.props;
     const content = this.parser.toContent(value);
-    const json = JSONUtils.encode(content);
-    // console.log(JSON.stringify(json, null, 2));
-
-    return renderToken(json.token);
+    return renderToken(content.get('token'));
   }
 }
 

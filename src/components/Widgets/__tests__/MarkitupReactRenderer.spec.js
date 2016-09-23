@@ -81,6 +81,30 @@ Text with **bold** & _em_ elements
       });
     });
 
+    describe('Lists', () => {
+      it('should render lists', () => {
+        const value = `
+1. ol item 1
+1. ol item 2
+  * Sublist 1
+  * Sublist 2
+  * Sublist 3
+    1. Sub-Sublist 1
+    1. Sub-Sublist 2
+    1. Sub-Sublist 3
+1. ol item 3
+`;
+        const component = shallow(
+          <MarkitupReactRenderer
+              value={value}
+              syntax={markdownSyntax}
+          />
+        );
+        const tree = component.html();
+        expect(tree).toMatchSnapshot();
+      });
+    });
+
     describe('Links', () => {
       it('should render links', () => {
         const value = `
