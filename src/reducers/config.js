@@ -41,4 +41,7 @@ const config = (state = null, action) => {
   }
 };
 
+export const hasSearchIntegration = (state) => state.hasIn(['integrations', 'search']);
+export const useSearchForListing = (state) => state.getIn(['integrations', 'search', 'use_for_listing'], false);
+
 export default config;

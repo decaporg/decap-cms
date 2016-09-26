@@ -3,7 +3,6 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 import {
   loadEntry,
-  loadEntryRemainingData,
   createDraftFromEntry,
   createEmptyDraft,
   discardDraft,
@@ -23,21 +22,14 @@ class EntryPage extends React.Component {
   }
 
   componentDidMount() {
+    const { entry, collection, slug } = this.props;
+
     if (this.props.newEntry) {
       this.props.createEmptyDraft(this.props.collection);
-      return;
-    }
-
-    const { entry } = this.props;
-
-    if (entry === undefined) {
-      this.props.loadEntry(this.props.collection, this.props.slug);
-    } else if (entry.get('partial', false)) {
-      this.props.loadEntryRemainingData(entry);
     } else {
+      this.props.loadEntry(entry, collection, slug);
       this.createDraft(entry);
     }
-
   }
 
   componentWillReceiveProps(nextProps) {
@@ -94,7 +86,6 @@ EntryPage.propTypes = {
   entry: ImmutablePropTypes.map,
   entryDraft: ImmutablePropTypes.map.isRequired,
   loadEntry: PropTypes.func.isRequired,
-  loadEntryRemainingData: PropTypes.func.isRequired,
   persistEntry: PropTypes.func.isRequired,
   removeMedia: PropTypes.func.isRequired,
   slug: PropTypes.string,
@@ -123,7 +114,6 @@ export default connect(
     addMedia,
     removeMedia,
     loadEntry,
-    loadEntryRemainingData,
     createDraftFromEntry,
     createEmptyDraft,
     discardDraft,

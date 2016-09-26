@@ -1,6 +1,6 @@
 import { currentBackend } from '../backends/backend';
 import { currentSearchIntegration } from '../integrations/search';
-import { getMedia } from '../reducers';
+import { getMedia, hasSearchIntegration, useSearchForListing } from '../reducers';
 
 /*
  * Contant Declarations
@@ -25,21 +25,21 @@ export const ENTRY_PERSIST_FAILURE = 'ENTRY_PERSIST_FAILURE';
 /*
  * Simple Action Creators (Internal)
  */
-function entryLoading(collectionStr, slug) {
+function entryLoading(collection, slug) {
   return {
     type: ENTRY_REQUEST,
     payload: {
-      collection: collectionStr,
+      collection: collection.get('name'),
       slug: slug
     }
   };
 }
 
-function entryLoaded(collectionStr, entry) {
+function entryLoaded(collection, entry) {
   return {
     type: ENTRY_SUCCESS,
     payload: {
-      collection: collectionStr,
+      collection: collection.get('name'),
       entry: entry
     }
   };
@@ -135,25 +135,24 @@ export function changeDraft(entry) {
 /*
  * Exported Thunk Action Creators
  */
-export function loadEntry(collection, slug, path) {
+
+export function loadEntry(entry, collection, slug) {
   return (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
-    dispatch(entryLoading(collection.get('name'), slug));
-    return backend.entry(collection, slug)
-      .then((entry) => dispatch(entryLoaded(collection.get('name'), entry)));
-  };
-}
+    dispatch(entryLoading(collection, slug));
 
-export function loadEntryRemainingData(entry) {
-  return (dispatch, getState) => {
-    const state = getState();
-    const config = state.config;
-    const backend = currentBackend(config);
-    dispatch(entryLoading(entry.get('collection'), entry.get('path')));
+    let returnPromise;
+    if (hasSearchIntegration(state) && useSearchForListing(state)) {
+      const search = currentSearchIntegration(state.config);
+      const loadEntriesPromise = entry ? Promise.resolve(entry.toJS()) : search.entry(collection, slug);
+      returnPromise = loadEntriesPromise
+        .then(loadedEntry => backend.getEntry(loadedEntry.collection, loadedEntry.slug, loadedEntry.path));
+    } else {
+      returnPromise = backend.entry(collection, slug);
+    }
 
-    return backend.getEntry(entry.get('collection'), entry.get('slug'), entry.get('path'))
-      .then((completeEntry) => dispatch(entryLoaded(entry.get('collection'), completeEntry)));
+    return returnPromise.then((loadedEntry) => dispatch(entryLoaded(collection, loadedEntry)));
   };
 }
 
@@ -161,11 +160,8 @@ export function loadEntries(collection) {
   return (dispatch, getState) => {
     if (collection.get('isFetching')) { return; }
     const state = getState();
-    const config = state.config;
-    const useSearch = config.getIn(['integrations', 'search', 'use_for_listing'], false);
-
-    const provider = useSearch ? currentSearchIntegration(state.config) : currentBackend(state.config);
-
+    const provider = hasSearchIntegration(state) && useSearchForListing(state) ?
+      currentSearchIntegration(state.config) : currentBackend(state.config);
     dispatch(entriesLoading(collection));
     provider.entries(collection).then(
       (response) => dispatch(entriesLoaded(collection, response.entries, response.pagination)),

@@ -1,5 +1,5 @@
 import auth from './auth';
-import config from './config';
+import config, * as fromConfig from './config';
 import editor from './editor';
 import entries, * as fromEntries  from './entries';
 import editorialWorkflow, * as fromEditorialWorkflow  from './editorialWorkflow';
@@ -34,6 +34,13 @@ export const selectUnpublishedEntry = (state, status, slug) =>
 
 export const selectUnpublishedEntries = (state, status) =>
   fromEditorialWorkflow.selectUnpublishedEntries(state.editorialWorkflow, status);
+
+export const hasSearchIntegration = (state) =>
+  fromConfig.hasSearchIntegration(state.config);
+
+export const useSearchForListing = (state) =>
+  fromConfig.useSearchForListing(state.config);
+
 
 export const getMedia = (state, path) =>
   fromMedias.getMedia(state.medias, path);

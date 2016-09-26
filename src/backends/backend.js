@@ -74,13 +74,13 @@ class Backend {
     });
   }
 
-  // Will fetch the whole list of files from GitHub and download all files.
+  // Will fetch the whole list of files from GitHub and load each file.
   // (Files are persisted in local storage - only expensive on the first run for each file).
   entry(collection, slug) {
     return this.implementation.entry(collection, slug).then(this.entryWithFormat(collection));
   }
 
-  // Entry is already partially loaded (at least with a collction, slug and path). Fetch and parse the file.
+  // Entry is already partially loaded (at least with a collection, slug and path). Fetch and parse the file.
   getEntry(collection, slug, path) {
     return this.implementation.getEntry(collection, slug, path).then(this.entryWithFormat(collection));
   }

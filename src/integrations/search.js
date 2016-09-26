@@ -18,6 +18,10 @@ class Search {
     return this.implementation.entries(collection, page, perPage);
   }
 
+  entry(collection, slug) {
+    return this.implementation.entry(collection, slug);
+  }
+
 }
 
 export function resolveSearchIntegration(config) {
