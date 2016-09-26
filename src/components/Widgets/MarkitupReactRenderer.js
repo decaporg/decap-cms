@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import MarkupIt, { Syntax, BLOCKS, STYLES, ENTITIES } from 'markup-it';
+import { pick } from 'lodash';
 import htmlSyntax from 'markup-it/syntaxes/html';
 
 const defaultSchema = {
@@ -9,7 +10,7 @@ const defaultSchema = {
   [BLOCKS.BLOCKQUOTE]: 'blockquote',
   [BLOCKS.PARAGRAPH]: 'p',
   [BLOCKS.FOOTNOTE]: 'footnote',
-  [BLOCKS.HTML]: (token) => {
+  [BLOCKS.HTML]: ({ token }) => {
     return <MarkitupReactRenderer
         value={token.get('raw')}
         syntax={htmlSyntax}
@@ -41,6 +42,12 @@ const defaultSchema = {
   [ENTITIES.HARD_BREAK]: 'br'
 };
 
+const allowedProps = ['className', 'id', 'name', 'title', 'src', 'alt', 'href'];
+
+function sanitizeProps(props) {
+  return pick(props, allowedProps);
+}
+
 function renderToken(schema, token, index = 0, key = '0') {
   const type = token.get('type');
   const data = token.get('data');
@@ -58,16 +65,12 @@ function renderToken(schema, token, index = 0, key = '0') {
       children = text;
     }
     if (nodeType !== null) {
-      // If this is a function we want to pass the `token` as an argument
-      if (typeof nodeType === 'function') {
-        return nodeType(token);
+      let props = { key, token };
+      if (typeof nodeType !== 'function') {
+        props = { key, ...sanitizeProps(data.toJS()) };
       }
       // If this is a react element
-      return React.createElement(
-        nodeType,
-        { key, ...data.toJS() }, // Add key as a prop
-        children
-      );
+      return React.createElement(nodeType, props, children);
     } else {
       // If this is a text node
       return children;
@@ -100,5 +103,8 @@ export default class MarkitupReactRenderer extends React.Component {
 MarkitupReactRenderer.propTypes = {
   value: PropTypes.string,
   syntax: PropTypes.instanceOf(Syntax).isRequired,
-  schema: PropTypes.objectOf(PropTypes.node)
+  schema: PropTypes.objectOf(PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.func
+  ]))
 };

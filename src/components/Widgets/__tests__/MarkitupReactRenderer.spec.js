@@ -204,7 +204,7 @@ I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3]
         });
 
       const myCustomSchema = {
-        'mediaproxy': (token) => {
+        'mediaproxy': ({ token }) => {
           const src = token.getIn(['data', 'src']);
           const alt = token.getIn(['data', 'alt']);
           return <img src={src} alt={alt}/>;
