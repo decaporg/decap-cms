@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import MarkupIt, { Syntax, BLOCKS, STYLES, ENTITIES } from 'markup-it';
+import htmlSyntax from 'markup-it/syntaxes/html';
 
 const defaultRenderers = {
   [BLOCKS.DOCUMENT]: 'article',
@@ -8,7 +9,12 @@ const defaultRenderers = {
   [BLOCKS.BLOCKQUOTE]: 'blockquote',
   [BLOCKS.PARAGRAPH]: 'p',
   [BLOCKS.FOOTNOTE]: 'footnote',
-  [BLOCKS.HTML]: (props) => null,
+  [BLOCKS.HTML]: (token) => {
+    return <MarkitupReactRenderer
+        value={token.get('raw')}
+        syntax={htmlSyntax}
+           />;
+  },
   [BLOCKS.HR]: 'hr',
   [BLOCKS.HEADING_1]: 'h1',
   [BLOCKS.HEADING_2]: 'h2',
@@ -39,6 +45,7 @@ function renderToken(token, index = 0, key = '0') {
   const type = token.get('type');
   const data = token.get('data');
   const text = token.get('text');
+  const raw = token.get('raw');
   const tokens = token.get('tokens');
   const nodeType = defaultRenderers[type];
   key = `${key}.${index}`;
@@ -52,7 +59,12 @@ function renderToken(token, index = 0, key = '0') {
       children = text;
     }
     if (nodeType !== null) {
+
+      if (typeof nodeType === 'function') {
+        return nodeType(token);
+      }
       // If this is a react element
+      console.log(data.toJS());
       return React.createElement(
         nodeType,
         { key, ...data.toJS() }, // Add key as a prop

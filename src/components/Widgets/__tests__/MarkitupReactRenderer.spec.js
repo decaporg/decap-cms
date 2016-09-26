@@ -81,6 +81,22 @@ Text with **bold** & _em_ elements
       });
     });
 
+    describe('Headings', () => {
+      for (const heading of [...Array(6).keys()]) {
+        it(`should render Heading ${heading + 1}`, () => {
+          const value = padStart(' Title', heading + 7, '#')
+          const component = shallow(
+            <MarkitupReactRenderer
+              value={value}
+              syntax={markdownSyntax}
+            />
+          );
+          const tree = component.html();
+          expect(tree).toMatchSnapshot()
+        })
+      }
+    })
+
     describe('Lists', () => {
       it('should render lists', () => {
         const value = `
@@ -121,8 +137,7 @@ I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3]
           />
         );
         const tree = component.html();
-        const expected = '<article><p>I get 10 times more traffic from <a href="http://google.com/" title="Google">Google</a> than from <a href="http://search.yahoo.com/" title="Yahoo Search">Yahoo</a> or <a href="http://search.msn.com/" title="MSN Search">MSN</a>.</p></article>';
-        expect(tree).toEqual(expected);
+        expect(tree).toMatchSnapshot();
       });
     });
 
@@ -136,8 +151,7 @@ I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3]
           />
         );
         const tree = component.html();
-        const expected = '<article><p>Use the <code>printf()</code> function.</p></article>';
-        expect(tree).toEqual(expected);
+        expect(tree).toMatchSnapshot();
       });
 
       it('should render code 2', () => {
@@ -149,8 +163,7 @@ I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3]
           />
         );
         const tree = component.html();
-        const expected = '<article><p><code>There is a literal backtick (`) here.</code></p></article>';
-        expect(tree).toEqual(expected);
+        expect(tree).toMatchSnapshot();
       });
     });
 
@@ -159,10 +172,10 @@ I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3]
         const value = `
 # Title
 
-<dl>
-    <dt>Test HTML content</dt>
-    <dd>Testing HTML in Markdown</dd>
-</dl>
+<ul>
+    <li>Test HTML content</li>
+    <li>Testing HTML in Markdown</li>
+</ul>
 `;
         const component = shallow(
           <MarkitupReactRenderer
@@ -192,7 +205,7 @@ I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3]
 
   describe('HTML rendering', () => {
     it('should render HTML', () => {
-      const value = '<p class="test class">Paragraph with <em>inline</em> element</p>';
+      const value = '<p>Paragraph with <em>inline</em> element</p>';
       const component = shallow(
         <MarkitupReactRenderer
             value={value}
