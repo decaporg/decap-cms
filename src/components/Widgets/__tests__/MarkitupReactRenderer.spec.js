@@ -2,8 +2,12 @@
 
 import React from 'react';
 import { shallow } from 'enzyme';
+import { padStart } from 'lodash';
+import { Map } from 'immutable';
+import MarkupIt from 'markup-it';
 import markdownSyntax from 'markup-it/syntaxes/markdown';
 import htmlSyntax from 'markup-it/syntaxes/html';
+import reInline from 'markup-it/syntaxes/markdown/re/inline';
 import MarkitupReactRenderer from '../MarkitupReactRenderer';
 
 describe('MarkitupReactRenderer', () => {
@@ -76,26 +80,24 @@ Text with **bold** & _em_ elements
               syntax={markdownSyntax}
           />
         );
-        const tree = component.html();
-        expect(tree).toMatchSnapshot();
+        expect(component.html()).toMatchSnapshot();
       });
     });
 
     describe('Headings', () => {
       for (const heading of [...Array(6).keys()]) {
         it(`should render Heading ${heading + 1}`, () => {
-          const value = padStart(' Title', heading + 7, '#')
+          const value = padStart(' Title', heading + 7, '#');
           const component = shallow(
             <MarkitupReactRenderer
-              value={value}
-              syntax={markdownSyntax}
+                value={value}
+                syntax={markdownSyntax}
             />
           );
-          const tree = component.html();
-          expect(tree).toMatchSnapshot()
-        })
+          expect(component.html()).toMatchSnapshot();
+        });
       }
-    })
+    });
 
     describe('Lists', () => {
       it('should render lists', () => {
@@ -116,8 +118,7 @@ Text with **bold** & _em_ elements
               syntax={markdownSyntax}
           />
         );
-        const tree = component.html();
-        expect(tree).toMatchSnapshot();
+        expect(component.html()).toMatchSnapshot();
       });
     });
 
@@ -136,8 +137,7 @@ I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3]
               syntax={markdownSyntax}
           />
         );
-        const tree = component.html();
-        expect(tree).toMatchSnapshot();
+        expect(component.html()).toMatchSnapshot();
       });
     });
 
@@ -150,8 +150,7 @@ I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3]
               syntax={markdownSyntax}
           />
         );
-        const tree = component.html();
-        expect(tree).toMatchSnapshot();
+        expect(component.html()).toMatchSnapshot();
       });
 
       it('should render code 2', () => {
@@ -162,8 +161,7 @@ I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3]
               syntax={markdownSyntax}
           />
         );
-        const tree = component.html();
-        expect(tree).toMatchSnapshot();
+        expect(component.html()).toMatchSnapshot();
       });
     });
 
@@ -183,23 +181,50 @@ I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3]
               syntax={markdownSyntax}
           />
         );
-        const tree = component.html();
-        expect(tree).toMatchSnapshot();
+        expect(component.html()).toMatchSnapshot();
       });
     });
   });
 
   describe('custom elements', () => {
-    it('should support custom syntax', () => {
-      const value = '';
+    it('should extend default renderers with custom ones', () => {
+      const myRule = MarkupIt.Rule('mediaproxy')
+        .regExp(reInline.link, (state, match) => {
+          if (match[0].charAt(0) !== '!') {
+            return;
+          }
+
+          return {
+            data: Map({
+              alt: match[1],
+              src: match[2],
+              title: match[3]
+            }).filter(Boolean)
+          };
+        });
+
+      const myCustomSchema = {
+        'mediaproxy': (token) => {
+          const src = token.getIn(['data', 'src']);
+          const alt = token.getIn(['data', 'alt']);
+          return <img src={src} alt={alt}/>;
+        }
+      };
+
+      const myMarkdownSyntax = markdownSyntax.addInlineRules(myRule);
+      const value = `
+## Title
+
+![mediaproxy test](http://url.to.image)
+`;
       const component = shallow(
         <MarkitupReactRenderer
             value={value}
-            syntax={markdownSyntax}
+            syntax={myMarkdownSyntax}
+            schema={myCustomSchema}
         />
       );
-      const tree = component.html();
-      expect(tree).toMatchSnapshot();
+      expect(component.html()).toMatchSnapshot();
     });
   });
 
@@ -212,8 +237,7 @@ I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3]
             syntax={htmlSyntax}
         />
       );
-      const tree = component.html();
-      expect(tree).toMatchSnapshot();
+      expect(component.html()).toMatchSnapshot();
     });
   });
 });

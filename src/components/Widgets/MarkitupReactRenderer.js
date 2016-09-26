@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import MarkupIt, { Syntax, BLOCKS, STYLES, ENTITIES } from 'markup-it';
 import htmlSyntax from 'markup-it/syntaxes/html';
 
-const defaultRenderers = {
+const defaultSchema = {
   [BLOCKS.DOCUMENT]: 'article',
   [BLOCKS.TEXT]: null,
   [BLOCKS.CODE]: 'code',
@@ -41,30 +41,28 @@ const defaultRenderers = {
   [ENTITIES.HARD_BREAK]: 'br'
 };
 
-function renderToken(token, index = 0, key = '0') {
+function renderToken(schema, token, index = 0, key = '0') {
   const type = token.get('type');
   const data = token.get('data');
   const text = token.get('text');
-  const raw = token.get('raw');
   const tokens = token.get('tokens');
-  const nodeType = defaultRenderers[type];
+  const nodeType = schema[type];
   key = `${key}.${index}`;
 
   // Only render if type is registered as renderer
   if (typeof nodeType !== 'undefined') {
     let children = null;
     if (tokens.size) {
-      children = tokens.map((token, idx) => renderToken(token, idx, key));
+      children = tokens.map((token, idx) => renderToken(schema, token, idx, key));
     } else if (type === 'text') {
       children = text;
     }
     if (nodeType !== null) {
-
+      // If this is a function we want to pass the `token` as an argument
       if (typeof nodeType === 'function') {
         return nodeType(token);
       }
       // If this is a react element
-      console.log(data.toJS());
       return React.createElement(
         nodeType,
         { key, ...data.toJS() }, // Add key as a prop
@@ -93,13 +91,14 @@ export default class MarkitupReactRenderer extends React.Component {
   }
 
   render() {
-    const { value } = this.props;
+    const { value, schema } = this.props;
     const content = this.parser.toContent(value);
-    return renderToken(content.get('token'));
+    return renderToken({ ...defaultSchema, ...schema }, content.get('token'));
   }
 }
 
 MarkitupReactRenderer.propTypes = {
   value: PropTypes.string,
-  syntax: PropTypes.instanceOf(Syntax).isRequired
+  syntax: PropTypes.instanceOf(Syntax).isRequired,
+  schema: PropTypes.objectOf(PropTypes.node)
 };

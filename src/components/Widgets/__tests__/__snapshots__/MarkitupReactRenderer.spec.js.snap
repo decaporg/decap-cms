@@ -24,8 +24,4 @@ exports[`MarkitupReactRenderer Markdown rendering Links should render links 1`] 
 
 exports[`MarkitupReactRenderer Markdown rendering Lists should render lists 1`] = `"<article><ol><li>ol item 1</li><li>ol item 2<ul><li>Sublist 1</li><li>Sublist 2</li><li>Sublist 3<ol><li>Sub-Sublist 1</li><li>Sub-Sublist 2</li><li>Sub-Sublist 3</li></ol></li></ul></li><li>ol item 3</li></ol></article>"`;
 
-exports[`MarkitupReactRenderer custom elements should extend default renderers with custom ones 1`] = `"<article><p></p></article>"`;
-
-exports[`MarkitupReactRenderer custom elements should support custom syntax 1`] = `"<article></article>"`;
-
-exports[`MarkitupReactRenderer custom elements should support custom syntaxes 1`] = `"<article><p></p></article>"`;
+exports[`MarkitupReactRenderer custom elements should extend default renderers with custom ones 1`] = `"<article><h2>Title</h2><p><img src=\"http://url.to.image\" alt=\"mediaproxy test\"/></p></article>"`;
