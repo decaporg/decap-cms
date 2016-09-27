@@ -91,7 +91,7 @@ class RawEditor extends React.Component {
   /**
    * Slate keeps track of selections, scroll position etc.
    * So, onChange gets dispatched on every interaction (click, arrows, everything...)
-   * It also have an onDocumentChange, that get's dispached only when the actual
+   * It also have an onDocumentChange, that get's dispatched only when the actual
    * content changes
    */
   handleChange(state) {
