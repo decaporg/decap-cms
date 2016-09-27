@@ -8,7 +8,7 @@ import MarkupIt from 'markup-it';
 import markdownSyntax from 'markup-it/syntaxes/markdown';
 import htmlSyntax from 'markup-it/syntaxes/html';
 import reInline from 'markup-it/syntaxes/markdown/re/inline';
-import MarkupItReactRenderer from '../MarkupItReactRenderer';
+import MarkupItReactRenderer from '../../UI/MarkupItReactRenderer/MarkupItReactRenderer';
 
 describe('MarkitupReactRenderer', () => {
 
