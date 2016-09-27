@@ -7,26 +7,21 @@ import { connect } from 'react-redux';
 import { switchVisualMode } from '../../actions/editor';
 
 class MarkdownControl extends React.Component {
-  constructor(props, context) {
-    super(props, context);
-    this.useVisualEditor = this.useVisualEditor.bind(this);
-    this.useRawEditor = this.useRawEditor.bind(this);
-  }
 
   componentWillMount() {
     this.useRawEditor();
     processEditorPlugins(registry.getEditorComponents());
   }
 
-  useVisualEditor() {
+  useVisualEditor = () => {
     this.props.switchVisualMode(true);
   }
 
-  useRawEditor() {
+  useRawEditor = () => {
     this.props.switchVisualMode(false);
   }
 
-  renderEditor() {
+  render() {
     const { editor, onChange, onAddMedia, getMedia, value } = this.props;
     if (editor.get('useVisualMode')) {
       return (
@@ -54,15 +49,6 @@ class MarkdownControl extends React.Component {
         </div>
       );
     }
-  }
-
-  render() {
-    return (
-      <div>
-
-        {this.renderEditor()}
-      </div>
-    );
   }
 }
 
