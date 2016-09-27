@@ -166,7 +166,7 @@ I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3]
     });
 
     describe('HTML', () => {
-      it('should render HTML as is using Markdown', () => {
+      it('should render HTML as is when using Markdown', () => {
         const value = `
 # Title
 
@@ -179,6 +179,8 @@ I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3]
       <dt>Testing HTML in Markdown</dt>
   </dl>
 </form>
+
+<h1 style="display: block; border: 10px solid #f00; width: 100%">Test</h1>
 `;
         const component = shallow(
           <MarkitupReactRenderer

@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import reactParser from 'react-htmlparser2';
 import MarkupIt, { Syntax, BLOCKS, STYLES, ENTITIES } from 'markup-it';
 import { omit } from 'lodash';
 
@@ -11,7 +10,7 @@ const defaultSchema = {
   [BLOCKS.PARAGRAPH]: 'p',
   [BLOCKS.FOOTNOTE]: 'footnote',
   [BLOCKS.HTML]: ({ token }) => {
-    return reactParser(token.get('raw'), React);
+    return <div dangerouslySetInnerHTML={{ __html: token.get('raw') }}/>;
   },
   [BLOCKS.HR]: 'hr',
   [BLOCKS.HEADING_1]: 'h1',
