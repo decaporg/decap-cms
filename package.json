@@ -97,6 +97,7 @@
     "prismjs": "^1.5.1",
     "react-addons-css-transition-group": "^15.3.1",
     "react-datetime": "^2.6.0",
+    "react-htmlparser2": "^0.1.0",
     "react-portal": "^2.2.1",
     "react-simple-dnd": "^0.1.2",
     "react-toolbox": "^1.2.1",

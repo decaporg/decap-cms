@@ -170,10 +170,15 @@ I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3]
         const value = `
 # Title
 
-<ul>
-    <li>Test HTML content</li>
-    <li>Testing HTML in Markdown</li>
-</ul>
+<form action="test">
+  <label for="input">
+    <input type="checkbox" checked="checked" id="input"/> My label
+  </label> 
+  <dl class="test-class another-class" style="width: 100%">
+      <dt data-attr="test">Test HTML content</dt>
+      <dt>Testing HTML in Markdown</dt>
+  </dl>
+</form>
 `;
         const component = shallow(
           <MarkitupReactRenderer

@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
+import reactParser from 'react-htmlparser2';
 import MarkupIt, { Syntax, BLOCKS, STYLES, ENTITIES } from 'markup-it';
 import { pick } from 'lodash';
-import htmlSyntax from 'markup-it/syntaxes/html';
 
 const defaultSchema = {
   [BLOCKS.DOCUMENT]: 'article',
@@ -11,10 +11,7 @@ const defaultSchema = {
   [BLOCKS.PARAGRAPH]: 'p',
   [BLOCKS.FOOTNOTE]: 'footnote',
   [BLOCKS.HTML]: ({ token }) => {
-    return <MarkitupReactRenderer
-        value={token.get('raw')}
-        syntax={htmlSyntax}
-           />;
+    return reactParser(token.get('raw'), React);
   },
   [BLOCKS.HR]: 'hr',
   [BLOCKS.HEADING_1]: 'h1',
