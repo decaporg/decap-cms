@@ -8,14 +8,14 @@ import MarkupIt from 'markup-it';
 import markdownSyntax from 'markup-it/syntaxes/markdown';
 import htmlSyntax from 'markup-it/syntaxes/html';
 import reInline from 'markup-it/syntaxes/markdown/re/inline';
-import MarkitupReactRenderer from '../MarkitupReactRenderer';
+import MarkupItReactRenderer from '../MarkupItReactRenderer';
 
 describe('MarkitupReactRenderer', () => {
 
   describe('basics', () => {
     it('should re-render properly after a value and syntax update', () => {
       const component = shallow(
-        <MarkitupReactRenderer
+        <MarkupItReactRenderer
             value="# Title"
             syntax={markdownSyntax}
         />
@@ -31,7 +31,7 @@ describe('MarkitupReactRenderer', () => {
 
     it('should not update the parser if syntax didn\'t change', () => {
       const component = shallow(
-        <MarkitupReactRenderer
+        <MarkupItReactRenderer
             value="# Title"
             syntax={markdownSyntax}
         />
@@ -75,7 +75,7 @@ Text with **bold** & _em_ elements
 ###### H6
 `;
         const component = shallow(
-          <MarkitupReactRenderer
+          <MarkupItReactRenderer
               value={value}
               syntax={markdownSyntax}
           />
@@ -89,7 +89,7 @@ Text with **bold** & _em_ elements
         it(`should render Heading ${heading + 1}`, () => {
           const value = padStart(' Title', heading + 7, '#');
           const component = shallow(
-            <MarkitupReactRenderer
+            <MarkupItReactRenderer
                 value={value}
                 syntax={markdownSyntax}
             />
@@ -113,7 +113,7 @@ Text with **bold** & _em_ elements
 1. ol item 3
 `;
         const component = shallow(
-          <MarkitupReactRenderer
+          <MarkupItReactRenderer
               value={value}
               syntax={markdownSyntax}
           />
@@ -132,7 +132,7 @@ I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3]
   [3]: http://search.msn.com/    "MSN Search"
 `;
         const component = shallow(
-          <MarkitupReactRenderer
+          <MarkupItReactRenderer
               value={value}
               syntax={markdownSyntax}
           />
@@ -145,7 +145,7 @@ I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3]
       it('should render code', () => {
         const value = 'Use the `printf()` function.';
         const component = shallow(
-          <MarkitupReactRenderer
+          <MarkupItReactRenderer
               value={value}
               syntax={markdownSyntax}
           />
@@ -156,7 +156,7 @@ I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3]
       it('should render code 2', () => {
         const value = '``There is a literal backtick (`) here.``';
         const component = shallow(
-          <MarkitupReactRenderer
+          <MarkupItReactRenderer
               value={value}
               syntax={markdownSyntax}
           />
@@ -183,7 +183,7 @@ I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3]
 <h1 style="display: block; border: 10px solid #f00; width: 100%">Test</h1>
 `;
         const component = shallow(
-          <MarkitupReactRenderer
+          <MarkupItReactRenderer
               value={value}
               syntax={markdownSyntax}
           />
@@ -225,7 +225,7 @@ I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3]
 ![mediaproxy test](http://url.to.image)
 `;
       const component = shallow(
-        <MarkitupReactRenderer
+        <MarkupItReactRenderer
             value={value}
             syntax={myMarkdownSyntax}
             schema={myCustomSchema}
@@ -239,7 +239,7 @@ I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3]
     it('should render HTML', () => {
       const value = '<p>Paragraph with <em>inline</em> element</p>';
       const component = shallow(
-        <MarkitupReactRenderer
+        <MarkupItReactRenderer
             value={value}
             syntax={htmlSyntax}
         />

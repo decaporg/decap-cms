@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { getSyntaxes } from './richText';
-import MarkitupReactRenderer from './MarkitupReactRenderer';
+import MarkupItReactRenderer from './MarkupItReactRenderer';
 
 const schema = {
   'mediaproxy': ({ token }) => (
@@ -18,7 +18,7 @@ const MarkdownPreview = ({ value }) => {
 
   const { markdown } = getSyntaxes();
   return (
-    <MarkitupReactRenderer
+    <MarkupItReactRenderer
         value={value}
         syntax={markdown}
         schema={schema}

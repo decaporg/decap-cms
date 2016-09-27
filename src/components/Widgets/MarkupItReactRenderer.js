@@ -75,7 +75,7 @@ function renderToken(schema, token, index = 0, key = '0') {
   return null;
 }
 
-export default class MarkitupReactRenderer extends React.Component {
+export default class MarkupItReactRenderer extends React.Component {
 
   constructor(props) {
     super(props);
@@ -96,7 +96,7 @@ export default class MarkitupReactRenderer extends React.Component {
   }
 }
 
-MarkitupReactRenderer.propTypes = {
+MarkupItReactRenderer.propTypes = {
   value: PropTypes.string,
   syntax: PropTypes.instanceOf(Syntax).isRequired,
   schema: PropTypes.objectOf(PropTypes.oneOfType([
