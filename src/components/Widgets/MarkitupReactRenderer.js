@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import reactParser from 'react-htmlparser2';
 import MarkupIt, { Syntax, BLOCKS, STYLES, ENTITIES } from 'markup-it';
-import { pick } from 'lodash';
+import { omit } from 'lodash';
 
 const defaultSchema = {
   [BLOCKS.DOCUMENT]: 'article',
@@ -39,10 +39,10 @@ const defaultSchema = {
   [ENTITIES.HARD_BREAK]: 'br'
 };
 
-const allowedProps = ['className', 'id', 'name', 'title', 'src', 'alt', 'href'];
+const notAllowedAttributes = ['loose'];
 
 function sanitizeProps(props) {
-  return pick(props, allowedProps);
+  return omit(props, notAllowedAttributes);
 }
 
 function renderToken(schema, token, index = 0, key = '0') {

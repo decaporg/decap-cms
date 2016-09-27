@@ -4,7 +4,7 @@ exports[`MarkitupReactRenderer Markdown rendering Code should render code 1`] = 
 
 exports[`MarkitupReactRenderer Markdown rendering Code should render code 2 1`] = `"<article><p><code>There is a literal backtick (\`) here.</code></p></article>"`;
 
-exports[`MarkitupReactRenderer Markdown rendering General should render markdown 1`] = `"<article><h1>H1</h1><p>Text with <strong>bold</strong> &amp; <em>em</em> elements</p><h2>H2</h2><ul><li>ul item 1</li><li>ul item 2</li></ul><h3>H3</h3><ol><li>ol item 1</li><li>ol item 2</li><li>ol item 3</li></ol><h4>H4</h4><p><a href=\"http://google.com\">link title</a></p><h5>H5</h5><p><img src=\"https://pbs.twimg.com/profile_images/678903331176214528/TQTdqGwD.jpg\" alt=\"alt text\"/></p><h6>H6</h6></article>"`;
+exports[`MarkitupReactRenderer Markdown rendering General should render markdown 1`] = `"<article><h1>H1</h1><p>Text with <strong>bold</strong> &amp; <em>em</em> elements</p><h2>H2</h2><ul><li>ul item 1</li><li>ul item 2</li></ul><h3>H3</h3><ol><li>ol item 1</li><li>ol item 2</li><li>ol item 3</li></ol><h4>H4</h4><p><a href=\"http://google.com\">link title</a></p><h5>H5</h5><p><img alt=\"alt text\" src=\"https://pbs.twimg.com/profile_images/678903331176214528/TQTdqGwD.jpg\"/></p><h6>H6</h6></article>"`;
 
 exports[`MarkitupReactRenderer Markdown rendering HTML should render HTML as is using Markdown 1`] = `
 "<article><h1>Title</h1><form action=\"test\">
@@ -30,7 +30,7 @@ exports[`MarkitupReactRenderer Markdown rendering Headings should render Heading
 
 exports[`MarkitupReactRenderer Markdown rendering Headings should render Heading 6 1`] = `"<article><h6>Title</h6></article>"`;
 
-exports[`MarkitupReactRenderer Markdown rendering Links should render links 1`] = `"<article><p>I get 10 times more traffic from <a title=\"Google\" href=\"http://google.com/\">Google</a> than from <a title=\"Yahoo Search\" href=\"http://search.yahoo.com/\">Yahoo</a> or <a title=\"MSN Search\" href=\"http://search.msn.com/\">MSN</a>.</p></article>"`;
+exports[`MarkitupReactRenderer Markdown rendering Links should render links 1`] = `"<article><p>I get 10 times more traffic from <a href=\"http://google.com/\" title=\"Google\">Google</a> than from <a href=\"http://search.yahoo.com/\" title=\"Yahoo Search\">Yahoo</a> or <a href=\"http://search.msn.com/\" title=\"MSN Search\">MSN</a>.</p></article>"`;
 
 exports[`MarkitupReactRenderer Markdown rendering Lists should render lists 1`] = `"<article><ol><li>ol item 1</li><li>ol item 2<ul><li>Sublist 1</li><li>Sublist 2</li><li>Sublist 3<ol><li>Sub-Sublist 1</li><li>Sub-Sublist 2</li><li>Sub-Sublist 3</li></ol></li></ul></li><li>ol item 3</li></ol></article>"`;
 
