@@ -84,7 +84,7 @@ export default class Algolia {
     });
   }
 
-  entries(collection, page = 0) {
+  entries(collection, page) {
     if (this.entriesCache.collection === collection && this.entriesCache.page === page) {
       return Promise.resolve({ page: this.entriesCache.page, entries: this.entriesCache.entries });
     } else {
@@ -96,7 +96,7 @@ export default class Algolia {
           return createEntry(collection.get('name'), slug, hit.path, { data: hit.data, partial: true });
         });
         this.entriesCache = { collection, page, entries };
-        return { page: response.page, entries };
+        return { entries, pagination: response.page };
       });
     }
   }

@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import Bricks from 'bricks.js';
+import Waypoint from 'react-waypoint';
 import history from '../routing/history';
 import Cards from './Cards';
 import _ from 'lodash';
@@ -24,6 +25,7 @@ export default class EntryListing extends React.Component {
     };
 
     this.updateBricks = _.throttle(this.updateBricks.bind(this), 30);
+    this.loadMore = this.loadMore.bind(this);
   }
 
   componentDidMount() {
@@ -73,6 +75,10 @@ export default class EntryListing extends React.Component {
     });
   }
 
+  loadMore() {
+    this.props.onPaginate(this.props.page + 1);
+  }
+
   render() {
     const { collection, entries } = this.props;
     const name = collection.get('name');
@@ -84,6 +90,7 @@ export default class EntryListing extends React.Component {
           const path = `/collections/${name}/entries/${entry.get('slug')}`;
           return this.cardFor(collection, entry, path);
         })}
+        <Waypoint onEnter={this.loadMore} />
       </div>
     </div>;
   }
@@ -92,4 +99,6 @@ export default class EntryListing extends React.Component {
 EntryListing.propTypes = {
   collection: ImmutablePropTypes.map.isRequired,
   entries: ImmutablePropTypes.list,
+  onPaginate: PropTypes.func.isRequired,
+  page: PropTypes.number,
 };

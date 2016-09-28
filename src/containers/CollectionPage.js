@@ -9,6 +9,12 @@ import styles from './CollectionPage.css';
 import CollectionPageHOC from './editorialWorkflow/CollectionPageHOC';
 
 class DashboardPage extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.loadMore = this.loadMore.bind(this);
+  }
+
   componentDidMount() {
     const { collection, dispatch } = this.props;
     if (collection) {
@@ -23,16 +29,20 @@ class DashboardPage extends React.Component {
     }
   }
 
+  loadMore(page) {
+    const { collection, dispatch } = this.props;
+    dispatch(loadEntries(collection, page));
+  }
+
   render() {
-    const { collections, collection, entries } = this.props;
+    const { collections, collection, page, entries } = this.props;
     if (collections == null) {
       return <h1>No collections defined in your config.yml</h1>;
     }
 
-
     return <div className={styles.alignable}>
       {entries ?
-        <EntryListing collection={collection} entries={entries}/>
+        <EntryListing collection={collection} entries={entries} page={page} onPaginate={this.loadMore} />
         :
         <Loader active>{['Loading Entries', 'Caching Entries', 'This might take several minutes']}</Loader>
       }
@@ -43,6 +53,7 @@ DashboardPage.propTypes = {
   collection: ImmutablePropTypes.map.isRequired,
   collections: ImmutablePropTypes.orderedMap.isRequired,
   dispatch: PropTypes.func.isRequired,
+  page: PropTypes.number,
   entries: ImmutablePropTypes.list,
 };
 
@@ -57,9 +68,11 @@ function mapStateToProps(state, ownProps) {
   const { collections } = state;
   const { name, slug } = ownProps.params;
   const collection = name ? collections.get(name) : collections.first();
+  const page = state.entries.getIn(['pages', collection.get('name'), 'page']);
+
   const entries = selectEntries(state, collection.get('name'));
 
-  return { slug, collection, collections, entries };
+  return { slug, collection, collections, page, entries };
 }
 
 export default connect(mapStateToProps)(DashboardPage);

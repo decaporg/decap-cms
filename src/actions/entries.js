@@ -60,7 +60,7 @@ function entriesLoaded(collection, entries, pagination) {
     payload: {
       collection: collection.get('name'),
       entries: entries,
-      pages: pagination
+      page: pagination
     }
   };
 }
@@ -156,14 +156,14 @@ export function loadEntry(entry, collection, slug) {
   };
 }
 
-export function loadEntries(collection) {
+export function loadEntries(collection, page = 0) {
   return (dispatch, getState) => {
     if (collection.get('isFetching')) { return; }
     const state = getState();
     const provider = hasSearchIntegration(state) && useSearchForListing(state) ?
       currentSearchIntegration(state.config) : currentBackend(state.config);
     dispatch(entriesLoading(collection));
-    provider.entries(collection).then(
+    provider.entries(collection, page).then(
       (response) => dispatch(entriesLoaded(collection, response.entries, response.pagination)),
       (error) => dispatch(entriesFailed(collection, error))
     );

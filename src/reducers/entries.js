@@ -18,14 +18,14 @@ const entries = (state = Map({ entities: Map(), pages: Map() }), action) => {
       return state.setIn(['pages', action.payload.collection, 'isFetching'], true);
 
     case ENTRIES_SUCCESS:
-      const { collection, entries, pages } = action.payload;
+      const { collection, entries, page } = action.payload;
       return state.withMutations((map) => {
         entries.forEach((entry) => (
           map.setIn(['entities', `${collection}.${entry.slug}`], fromJS(entry).set('isFetching', false))
         ));
         map.setIn(['pages', collection], Map({
-          ...pages,
-          ids: List(entries.map((entry) => entry.slug))
+          page: page,
+          ids: map.getIn(['pages', collection, 'ids'], List()).concat(List(entries.map((entry) => entry.slug)))
         }));
       });
 
