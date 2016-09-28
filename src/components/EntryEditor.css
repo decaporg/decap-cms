@@ -1,26 +1,27 @@
-.entryEditor {
+.root {
+  position: absolute;
+  top: 64px;
+  bottom: 0;
   display: flex;
   flex-direction: column;
-  height: 100%;
 }
 .container {
+  flex: 1;
   display: flex;
-  height: 100%;
 }
 .footer {
+  flex: 0;
   background: #fff;
   height: 45px;
   border-top: 1px solid #e8eae8;
   padding: 10px 20px;
-  z-index: 10;
 }
 .controlPane {
-  width: 50%;
-  max-height: 100%;
+  flex: 1;
   overflow: auto;
   padding: 0 20px;
   border-right: 1px solid #e8eae8;
 }
 .previewPane {
-  width: 50%;
+  flex: 1;
 }
