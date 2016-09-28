@@ -8,7 +8,6 @@ import { DEFAULT_NODE, SCHEMA } from './schema';
 import { getNodes, getSyntaxes, getPlugins } from '../../richText';
 import StylesMenu from './StylesMenu';
 import BlockTypesMenu from './BlockTypesMenu';
-import styles from './index.css';
 
 /**
  * Slate Render Configuration
@@ -178,11 +177,11 @@ class VisualEditor extends React.Component {
   }
 
   /**
- * When clicking a link, if the selection has a link in it, remove the link.
- * Otherwise, add a new link with an href and text.
- *
- * @param {Event} e
- */
+   * When clicking a link, if the selection has a link in it, remove the link.
+   * Otherwise, add a new link with an href and text.
+   *
+   * @param {Event} e
+   */
 
   handleInlineClick(type, isActive) {
     let { state } = this.state;
@@ -212,17 +211,16 @@ class VisualEditor extends React.Component {
     this.setState({ state });
   }
 
-
   handleBlockTypeClick(type) {
     let { state } = this.state;
 
     state = state
-    .transform()
-    .insertBlock({
-      type: type,
-      isVoid: true
-    })
-    .apply();
+      .transform()
+      .insertBlock({
+        type: type,
+        isVoid: true
+      })
+      .apply();
 
     this.setState({ state }, this.focusAndAddParagraph);
   }
@@ -277,18 +275,17 @@ class VisualEditor extends React.Component {
       .apply({
         snapshot: false
       });
-    this.setState({ state:normalized });
+    this.setState({ state: normalized });
   }
-
 
   handleKeyDown(evt) {
     if (evt.shiftKey && evt.key === 'Enter') {
       this.blockEdit = true;
       let { state } = this.state;
       state = state
-      .transform()
-      .insertText('  \n')
-      .apply();
+        .transform()
+        .insertText('  \n')
+        .apply();
 
       this.setState({ state });
     }
@@ -300,12 +297,12 @@ class VisualEditor extends React.Component {
 
     return (
       <BlockTypesMenu
-          isOpen={isOpen}
-          plugins={getPlugins()}
-          position={this.menuPositions.blockTypesMenu}
-          onClickBlock={this.handleBlockTypeClick}
-          onClickPlugin={this.handlePluginClick}
-          onClickImage={this.handleImageClick}
+        isOpen={isOpen}
+        plugins={getPlugins()}
+        position={this.menuPositions.blockTypesMenu}
+        onClickBlock={this.handleBlockTypeClick}
+        onClickPlugin={this.handlePluginClick}
+        onClickImage={this.handleImageClick}
       />
     );
   }
@@ -316,14 +313,14 @@ class VisualEditor extends React.Component {
 
     return (
       <StylesMenu
-          isOpen={isOpen}
-          position={this.menuPositions.stylesMenu}
-          marks={this.state.state.marks}
-          blocks={this.state.state.blocks}
-          inlines={this.state.state.inlines}
-          onClickMark={this.handleMarkStyleClick}
-          onClickInline={this.handleInlineClick}
-          onClickBlock={this.handleBlockStyleClick}
+        isOpen={isOpen}
+        position={this.menuPositions.stylesMenu}
+        marks={this.state.state.marks}
+        blocks={this.state.state.blocks}
+        inlines={this.state.state.inlines}
+        onClickMark={this.handleMarkStyleClick}
+        onClickInline={this.handleInlineClick}
+        onClickBlock={this.handleBlockStyleClick}
       />
     );
   }
@@ -334,12 +331,12 @@ class VisualEditor extends React.Component {
         {this.renderStylesMenu()}
         {this.renderBlockTypesMenu()}
         <Editor
-            placeholder={'Enter some rich text...'}
-            state={this.state.state}
-            schema={SCHEMA}
-            onChange={this.handleChange}
-            onKeyDown={this.handleKeyDown}
-            onDocumentChange={this.handleDocumentChange}
+          placeholder={'Enter some rich text...'}
+          state={this.state.state}
+          schema={SCHEMA}
+          onChange={this.handleChange}
+          onKeyDown={this.handleKeyDown}
+          onDocumentChange={this.handleDocumentChange}
         />
       </div>
     );
@@ -352,5 +349,5 @@ VisualEditor.propTypes = {
   onChange: PropTypes.func.isRequired,
   onAddMedia: PropTypes.func.isRequired,
   getMedia: PropTypes.func.isRequired,
-  value: PropTypes.node,
+  value: PropTypes.string,
 };

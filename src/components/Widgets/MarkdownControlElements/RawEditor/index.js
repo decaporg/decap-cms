@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { Editor, Plain, Mark } from 'slate';
 import Prism from 'prismjs';
 import PluginDropImages from 'slate-drop-or-paste-images';
+import MediaProxy from '../../../../valueObjects/MediaProxy';
 import marks from './prismMarkdown';
 import styles from './index.css';
 
@@ -71,16 +72,6 @@ const SCHEMA = {
   }
 };
 
-const plugins = [
-  PluginDropImages({
-    applyTransform: (transform, file) => {
-      const state = Plain.deserialize(`\n\n![${file.name}](${file.name})\n\n`);
-      return transform
-        .insertFragment(state.get('document'));
-    }
-  })
-];
-
 class RawEditor extends React.Component {
 
   constructor(props) {
@@ -92,9 +83,18 @@ class RawEditor extends React.Component {
       state: content
     };
 
-    this.handleChange = this.handleChange.bind(this);
-    this.handleDocumentChange = this.handleDocumentChange.bind(this);
-
+    this.plugins = [
+      PluginDropImages({
+        applyTransform: (transform, file) => {
+          const mediaProxy = new MediaProxy(file.name, file);
+          console.log(mediaProxy);
+          const state = Plain.deserialize(`\n\n![${file.name}](${mediaProxy.public_path})\n\n`);
+          props.onAddMedia(mediaProxy);
+          return transform
+            .insertFragment(state.get('document'));
+        }
+      })
+    ];
   }
 
   /**
@@ -103,11 +103,11 @@ class RawEditor extends React.Component {
    * It also have an onDocumentChange, that get's dispatched only when the actual
    * content changes
    */
-  handleChange(state) {
+  handleChange = state => {
     this.setState({ state });
   }
 
-  handleDocumentChange(document, state) {
+  handleDocumentChange = (document, state) => {
     const content = Plain.serialize(state, { terse: true });
     this.props.onChange(content);
   }
@@ -121,7 +121,7 @@ class RawEditor extends React.Component {
         schema={SCHEMA}
         onChange={this.handleChange}
         onDocumentChange={this.handleDocumentChange}
-        plugins={plugins}
+        plugins={this.plugins}
       />
     );
   }
@@ -130,6 +130,8 @@ class RawEditor extends React.Component {
 export default RawEditor;
 
 RawEditor.propTypes = {
+  onAddMedia: PropTypes.func.isRequired,
+  getMedia: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
-  value: PropTypes.node,
+  value: PropTypes.string,
 };
