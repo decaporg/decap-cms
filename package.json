@@ -102,6 +102,7 @@
     "react-toolbox": "^1.2.1",
     "selection-position": "^1.0.0",
     "semaphore": "^1.0.5",
-    "slate": "^0.13.6"
+    "slate": "^0.14.14",
+    "slate-drop-or-paste-images": "^0.2.0"
   }
 }

@@ -1,9 +1,8 @@
 import React, { PropTypes } from 'react';
 import { Editor, Plain, Mark } from 'slate';
 import Prism from 'prismjs';
+import PluginDropImages from 'slate-drop-or-paste-images';
 import marks from './prismMarkdown';
-import styles from './index.css';
-
 
 Prism.languages.markdown = Prism.languages.extend('markup', {});
 Prism.languages.insertBefore('markdown', 'prolog', marks);
@@ -43,7 +42,6 @@ function renderDecorations(text, block) {
   return characters.asImmutable();
 }
 
-
 const SCHEMA = {
   rules: [
     {
@@ -71,6 +69,16 @@ const SCHEMA = {
     }
   }
 };
+
+const plugins = [
+  PluginDropImages({
+    applyTransform: (transform, file) => {
+      const state = Plain.deserialize(`\n\n![${file.name}](${file.name})\n\n`);
+      return transform
+        .insertFragment(state.get('document'));
+    }
+  })
+];
 
 class RawEditor extends React.Component {
 
@@ -111,7 +119,7 @@ class RawEditor extends React.Component {
           schema={SCHEMA}
           onChange={this.handleChange}
           onDocumentChange={this.handleDocumentChange}
-          renderDecorations={this.renderDecorations}
+          plugins={plugins}
       />
     );
   }
