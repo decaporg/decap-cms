@@ -37,59 +37,6 @@ h1 {
 }
 
 :global {
-  & .cms-widget {
-    border-bottom: 1px solid #e8eae8;
-    position: relative;
-  }
-  & .cms-widget:after {
-    content: '';
-    position: absolute;
-    left: 42px;
-    bottom: -7px;
-    width: 12px;
-    height: 12px;
-    background-color: #f2f5f4;
-    -webkit-transform: rotate(45deg);
-    transform: rotate(45deg);
-    z-index: 1;
-    border-right: 1px solid #e8eae8;
-    border-bottom: 1px solid #e8eae8;
-  }
-  & .cms-widget:last-child {
-    border-bottom: none;
-  }
-  & .cms-widget:last-child:after {
-    display: none;
-  }
-  & .cms-control {
-    color: #7c8382;
-    position: relative;
-    padding: 20px 0;
-    & label {
-      color: #AAB0AF;
-      font-size: 12px;
-      margin-bottom: 18px;
-    }
-    & input,
-    & textarea,
-    & select,
-    & .cms-editor-raw {
-      font-family: monospace;
-      display: block;
-      width: 100%;
-      padding: 0;
-      margin: 0;
-      border: none;
-      outline: 0;
-      box-shadow: none;
-      background: 0 0;
-      font-size: 18px;
-      color: #7c8382;
-    }
-  }
-}
-
-:global {
   & .rdt {
     position: relative;
   }

@@ -3,6 +3,7 @@ import { Editor, Plain, Mark } from 'slate';
 import Prism from 'prismjs';
 import PluginDropImages from 'slate-drop-or-paste-images';
 import marks from './prismMarkdown';
+import styles from './index.css';
 
 Prism.languages.markdown = Prism.languages.extend('markup', {});
 Prism.languages.insertBefore('markdown', 'prolog', marks);
@@ -114,12 +115,13 @@ class RawEditor extends React.Component {
   render() {
     return (
       <Editor
-          placeholder={'Enter some rich text...'}
-          state={this.state.state}
-          schema={SCHEMA}
-          onChange={this.handleChange}
-          onDocumentChange={this.handleDocumentChange}
-          plugins={plugins}
+        className={styles.root}
+        placeholder={'Enter some rich text...'}
+        state={this.state.state}
+        schema={SCHEMA}
+        onChange={this.handleChange}
+        onDocumentChange={this.handleDocumentChange}
+        plugins={plugins}
       />
     );
   }
