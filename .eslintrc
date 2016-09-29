@@ -33,6 +33,8 @@ rules:
 
   # Stylistic Issues
   # https://github.com/eslint/eslint/tree/master/docs/rules#stylistic-issues
+  no-alert: 2
+  no-console: [2, { allow: ["warn", "error"] }]
   comma-spacing: 2
   eol-last: 2
   indent: [2, 2, {SwitchCase: 1}]
@@ -101,8 +103,6 @@ rules:
 # Global scoped method and vars
 globals:
   netlify: true
-  describe: true
-  it: true
   require: true
   process: true
   module: true
