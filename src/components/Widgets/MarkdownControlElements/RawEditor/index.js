@@ -87,7 +87,6 @@ class RawEditor extends React.Component {
       PluginDropImages({
         applyTransform: (transform, file) => {
           const mediaProxy = new MediaProxy(file.name, file);
-          console.log(mediaProxy);
           const state = Plain.deserialize(`\n\n![${file.name}](${mediaProxy.public_path})\n\n`);
           props.onAddMedia(mediaProxy);
           return transform
