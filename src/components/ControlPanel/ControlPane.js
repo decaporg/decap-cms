@@ -1,23 +1,26 @@
-import React, { PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { resolveWidget } from '../Widgets';
 import styles from './ControlPane.css';
 
-export default class ControlPane extends React.Component {
+export default class ControlPane extends Component {
+
   controlFor(field) {
     const { entry, getMedia, onChange, onAddMedia, onRemoveMedia } = this.props;
     const widget = resolveWidget(field.get('widget'));
     return (
       <div className={styles.control}>
         <label className={styles.label}>{field.get('label')}</label>
-        {React.createElement(widget.control, {
-          field: field,
-          value: entry.getIn(['data', field.get('name')]),
-          onChange: (value) => onChange(entry.setIn(['data', field.get('name')], value)),
-          onAddMedia: onAddMedia,
-          onRemoveMedia: onRemoveMedia,
-          getMedia: getMedia
-        })}
+        {
+          React.createElement(widget.control, {
+            field: field,
+            value: entry.getIn(['data', field.get('name')]),
+            onChange: (value) => onChange(entry.setIn(['data', field.get('name')], value)),
+            onAddMedia: onAddMedia,
+            onRemoveMedia: onRemoveMedia,
+            getMedia: getMedia
+          })
+        }
       </div>
     );
   }
