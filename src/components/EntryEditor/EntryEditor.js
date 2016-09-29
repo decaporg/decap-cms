@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import ControlPane from './ControlPanel/ControlPane';
-import PreviewPane from './PreviewPane';
+import ControlPane from '../ControlPanel/ControlPane';
+import PreviewPane from '../PreviewPane';
 import styles from './EntryEditor.css';
 
 export default function EntryEditor(props) {

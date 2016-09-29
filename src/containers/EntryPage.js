@@ -11,7 +11,7 @@ import {
 } from '../actions/entries';
 import { addMedia, removeMedia } from '../actions/media';
 import { selectEntry, getMedia } from '../reducers';
-import EntryEditor from '../components/EntryEditor';
+import EntryEditor from '../components/EntryEditor/EntryEditor';
 import EntryPageHOC from './editorialWorkflow/EntryPageHOC';
 
 class EntryPage extends React.Component {
@@ -63,13 +63,13 @@ class EntryPage extends React.Component {
     }
     return (
       <EntryEditor
-          entry={entryDraft.get('entry')}
-          getMedia={boundGetMedia}
-          collection={collection}
-          onChange={changeDraft}
-          onAddMedia={addMedia}
-          onRemoveMedia={removeMedia}
-          onPersist={this.handlePersistEntry}
+        entry={entryDraft.get('entry')}
+        getMedia={boundGetMedia}
+        collection={collection}
+        onChange={changeDraft}
+        onAddMedia={addMedia}
+        onRemoveMedia={removeMedia}
+        onPersist={this.handlePersistEntry}
       />
     );
   }
