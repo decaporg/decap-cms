@@ -25,9 +25,10 @@ export default class PreviewPane extends React.Component {
     const field = collection.get('fields').find((field) => field.get('name') === name);
     const widget = resolveWidget(field.get('widget'));
     return React.createElement(widget.preview, {
-      field: field,
+      key: field.get('name'),
       value: entry.getIn(['data', field.get('name')]),
-      getMedia: getMedia,
+      field,
+      getMedia,
     });
   }
 
