@@ -20,11 +20,20 @@ import styles from './App.css';
 class App extends React.Component {
 
   state = {
-    navDrawerIsVisible: false
+    navDrawerIsVisible: true
   }
 
   componentDidMount() {
     this.props.dispatch(loadConfig());
+    window.addEventListener('resize', this.closeDrawer);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.closeDrawer);
+  }
+
+  closeDrawer = () => {
+    this.setState({ navDrawerIsVisible: false });
   }
 
   configError(config) {
@@ -137,10 +146,11 @@ class App extends React.Component {
         <NavDrawer
             active={navDrawerIsVisible}
             scrollY
-            permanentAt="md"
+            permanentAt={navDrawerIsVisible && 'lg'}
+            theme={styles}
         >
           <nav className={styles.nav}>
-            <h1>Collections</h1>
+            <h1 className={styles.heading}>Collections</h1>
             <Navigation type='vertical'>
               {
                 collections.valueSeq().map(collection =>
@@ -164,7 +174,7 @@ class App extends React.Component {
               onCreateEntryClick={createNewEntryInCollection}
               toggleNavDrawer={this.toggleNavDrawer}
           />
-          <div className={`${styles.alignable} ${styles.main}`}>
+          <div className={styles.main}>
             {children}
           </div>
         </Panel>

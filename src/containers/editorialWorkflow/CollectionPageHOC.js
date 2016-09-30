@@ -24,12 +24,14 @@ export default function CollectionPageHOC(CollectionPage) {
       if (!isEditorialWorkflow) return super.render();
 
       return (
-        <div className={styles.alignable}>
-          <UnpublishedListing
-              entries={unpublishedEntries}
-              handleChangeStatus={updateUnpublishedEntryStatus}
-              handlePublish={publishUnpublishedEntry}
-          />
+        <div>
+          <div className={styles.root}>
+            <UnpublishedListing
+                entries={unpublishedEntries}
+                handleChangeStatus={updateUnpublishedEntryStatus}
+                handlePublish={publishUnpublishedEntry}
+            />
+          </div>
           {super.render()}
         </div>
       );

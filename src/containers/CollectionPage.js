@@ -30,7 +30,7 @@ class DashboardPage extends React.Component {
     }
 
 
-    return <div className={styles.alignable}>
+    return <div className={styles.root}>
       {entries ?
         <EntryListing collection={collection} entries={entries}/>
         :
