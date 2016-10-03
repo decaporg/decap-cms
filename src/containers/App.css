@@ -4,7 +4,17 @@
 .nav {
   display: block;
   padding: 1rem;
+  & .heading {
+    border: none;
+  }
 }
 .main {
   padding-top: 54px;
+}
+
+.navDrawer {
+  max-width: 240px !important;
+  & .drawerContent {
+    max-width: 240px !important;
+  }
 }

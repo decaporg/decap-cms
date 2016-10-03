@@ -53,10 +53,10 @@ class UnpublishedListing extends React.Component {
             <DragSource key={slug} slug={slug} collection={collection} ownStatus={ownStatus}>
               <div className={styles.drag}>
                 <Card className={styles.card}>
-                  <h2><Link to={link}>{entry.getIn(['data', 'title'])}</Link> <small>by {author}</small></h2>
-                  <p>Last updated: {timeStamp} by {entry.getIn(['metaData', 'user'])}</p>
+                  <span className={styles.cardHeading}><Link to={link}>{entry.getIn(['data', 'title'])}</Link> <small>by {author}</small></span>
+                  <p className={styles.cardText}>Last updated: {timeStamp} by {entry.getIn(['metaData', 'user'])}</p>
                   {(ownStatus === status.last()) &&
-                    <button onClick={this.requestPublish.bind(this, collection, slug, status)}>Publish now</button>
+                    <button className={styles.button} onClick={this.requestPublish.bind(this, collection, slug, status)}>Publish now</button>
                   }
                 </Card>
               </div>
