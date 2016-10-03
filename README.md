@@ -3,6 +3,9 @@
 A CMS for static site generators. Give non-technical users a simple way to edit
 and add content to any site built with a static site generator.
 
+Netlify CMS is released under the [MIT License](LICENSE).
+Please make sure you understand its [implications and guarantees](https://writing.kemitchell.com/2016/09/21/MIT-License-Line-by-Line.html).
+
 ## How it works
 
 Netlify CMS is a single-page app that you pull into the `/admin` part of your site.
