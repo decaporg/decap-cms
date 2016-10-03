@@ -25,15 +25,6 @@ class App extends React.Component {
 
   componentDidMount() {
     this.props.dispatch(loadConfig());
-    window.addEventListener('resize', this.closeDrawer);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.closeDrawer);
-  }
-
-  closeDrawer = () => {
-    this.setState({ navDrawerIsVisible: false });
   }
 
   configError(config) {
@@ -146,7 +137,7 @@ class App extends React.Component {
         <NavDrawer
             active={navDrawerIsVisible}
             scrollY
-            permanentAt={navDrawerIsVisible && 'lg'}
+            permanentAt={navDrawerIsVisible ? 'lg' : null}
             theme={styles}
         >
           <nav className={styles.nav}>
