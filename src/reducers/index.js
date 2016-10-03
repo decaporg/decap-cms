@@ -29,6 +29,9 @@ export const selectEntry = (state, collection, slug) =>
 export const selectEntries = (state, collection) =>
   fromEntries.selectEntries(state.entries, collection);
 
+export const selectSearchedEntries = (state) =>
+  fromEntries.selectSearchedEntries(state.entries);
+
 export const selectUnpublishedEntry = (state, status, slug) =>
   fromEditorialWorkflow.selectUnpublishedEntry(state.editorialWorkflow, status, slug);
 

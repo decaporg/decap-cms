@@ -1,4 +1,5 @@
 import { createEntry } from '../../../valueObjects/Entry';
+import _ from 'lodash';
 
 function getSlug(path) {
   const m = path.match(/([^\/]+?)(\.[^\/\.]+)?$/);
@@ -69,9 +70,23 @@ export default class Algolia {
     });
   }
 
-  search(collection, query) {
-    return this.request(`${this.searchURL}/indexes/${collection}`, {
-      params: { query }
+  search(collectionsList, searchTerm, page) {
+    const collections = collectionsList.toJS();
+    const searchCollections = collections.map(collection => (
+      { indexName: collection, params: `query=${searchTerm}` }
+    ));
+
+    return this.request(`${this.searchURL}/indexes/*/queries`, {
+      method: 'POST',
+      body: JSON.stringify({ requests: searchCollections, strategy: 'stopIfEnoughMatches' }),
+      params: { page }
+    }).then(response => {
+      const entries = response.results.map((result, index) => result.hits.map(hit => {
+        const slug = hit.slug || getSlug(hit.path);
+        return createEntry(collections[index], slug, hit.path, { data: hit.data, partial: true });
+      }));
+
+      return { entries: _.flatten(entries), pagination: page };
     });
   }
 

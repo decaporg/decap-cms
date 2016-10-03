@@ -13,7 +13,7 @@ export default (
     <Route path="/collections/:name/entries/new" component={EntryPage} newRecord />
     <Route path="/collections/:name/entries/:slug" component={EntryPage} />
     <Route path="/editorialworkflow/:name/:status/:slug" component={EntryPage} unpublishedEntry />
-    <Route path="/search" component={SearchPage}/>
+    <Route path="/search/:searchTerm" component={SearchPage}/>
     <Route path="*" component={NotFoundPage}/>
   </Route>
 );

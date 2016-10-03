@@ -1,5 +1,4 @@
 import history from '../routing/history';
-import { search } from './integrations';
 import { SEARCH } from '../components/FindBar/FindBar';
 
 export const RUN_COMMAND = 'RUN_COMMAND';
@@ -32,7 +31,7 @@ export function runCommand(commandName, payload) {
         window.alert('Find Bar Help (PLACEHOLDER)\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit.');
         break;
       case SEARCH:
-        dispatch(search('articles', payload.searchTerm));
+        history.push(`/search/${payload.searchTerm}`);
         break;
     }
     dispatch(run(commandName, payload));

@@ -5,13 +5,8 @@ class Search {
     this.implementation = implementation;
   }
 
-  search(collection, query) {
-    return this.implementation.search(collection, query).then((response) => {
-      return {
-        pagination: response.page,
-        entries: response.entries.map(this.entryWithFormat(collection))
-      };
-    });
+  search(collections, searchTerm, page) {
+    return this.implementation.search(collections, searchTerm, page);
   }
 
   entries(collection, page, perPage) {

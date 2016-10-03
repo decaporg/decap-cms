@@ -86,6 +86,7 @@ export default class EntryListing extends React.Component {
       <div ref={(c) => this._entries = c}>
         {entries.map((entry) => {
           const path = `/collections/${name}/entries/${entry.get('slug')}`;
+          console.log(entry.get('path'), path);
           return this.cardFor(collection, entry, path);
         })}
         <Waypoint onEnter={this.handleLoadMore} />

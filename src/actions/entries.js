@@ -22,6 +22,10 @@ export const ENTRY_PERSIST_REQUEST = 'ENTRY_PERSIST_REQUEST';
 export const ENTRY_PERSIST_SUCCESS = 'ENTRY_PERSIST_SUCCESS';
 export const ENTRY_PERSIST_FAILURE = 'ENTRY_PERSIST_FAILURE';
 
+export const SEARCH_ENTRIES_REQUEST = 'SEARCH_ENTRIES_REQUEST';
+export const SEARCH_ENTRIES_SUCCESS = 'SEARCH_ENTRIES_SUCCESS';
+export const SEARCH_ENTRIES_FAILURE = 'SEARCH_ENTRIES_FAILURE';
+
 /*
  * Simple Action Creators (Internal)
  * We still need to export them for tests
@@ -110,6 +114,34 @@ export function emmptyDraftCreated(entry) {
   };
 }
 
+export function searchingEntries(searchTerm) {
+  return {
+    type: SEARCH_ENTRIES_REQUEST,
+    payload: { searchTerm }
+  };
+}
+
+export function SearchSuccess(searchTerm, entries, page) {
+  return {
+    type: SEARCH_ENTRIES_SUCCESS,
+    payload: {
+      searchTerm,
+      entries,
+      page
+    }
+  };
+}
+
+export function SearchFailure(searchTerm, error) {
+  return {
+    type: SEARCH_ENTRIES_FAILURE,
+    payload: {
+      searchTerm,
+      error
+    }
+  };
+}
+
 /*
  * Exported simple Action Creators
  */
@@ -191,6 +223,20 @@ export function persistEntry(collection, entry) {
         dispatch(entryPersisted(collection, entry));
       },
       (error) => dispatch(entryPersistFail(collection, entry, error))
+    );
+  };
+}
+
+export function searchEntries(searchTerm, page = 0) {
+  return (dispatch, getState) => {
+    const state = getState();
+    const collections = state.collections.keySeq().toArray();
+    const provider = hasSearchIntegration(state) ?
+      currentSearchIntegration(state.config) : currentBackend(state.config);
+    dispatch(searchingEntries(searchTerm));
+    provider.search(collections, searchTerm, page).then(
+      (response) => dispatch(SearchSuccess(searchTerm, response.entries, response.pagination)),
+      (error) => dispatch(SearchFailure(searchTerm, error))
     );
   };
 }
