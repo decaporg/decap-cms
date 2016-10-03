@@ -15,12 +15,6 @@ import EntryEditor from '../components/EntryEditor';
 import EntryPageHOC from './editorialWorkflow/EntryPageHOC';
 
 class EntryPage extends React.Component {
-  constructor(props) {
-    super(props);
-    this.createDraft = this.createDraft.bind(this);
-    this.handlePersistEntry = this.handlePersistEntry.bind(this);
-  }
-
   componentDidMount() {
     if (!this.props.newEntry) {
       this.props.loadEntry(this.props.collection, this.props.slug);
@@ -45,13 +39,13 @@ class EntryPage extends React.Component {
     this.props.discardDraft();
   }
 
-  createDraft(entry) {
+  createDraft = entry => {
     if (entry) this.props.createDraftFromEntry(entry);
-  }
+  };
 
-  handlePersistEntry() {
+  handlePersistEntry = () => {
     this.props.persistEntry(this.props.collection, this.props.entryDraft);
-  }
+  };
 
   render() {
     const {

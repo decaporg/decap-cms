@@ -5,21 +5,16 @@ export default class AuthenticationPage extends React.Component {
     onLogin: React.PropTypes.func.isRequired
   };
 
-  constructor(props) {
-    super(props);
-    this.state = { email: '' };
-    this.handleLogin = this.handleLogin.bind(this);
-    this.handleEmailChange = this.handleEmailChange.bind(this);
-  }
+  state = { email: '' };
 
-  handleLogin(e) {
+  handleLogin = e => {
     e.preventDefault();
     this.props.onLogin(this.state);
-  }
+  };
 
-  handleEmailChange(e) {
+  handleEmailChange = e => {
     this.setState({ email: e.target.value });
-  }
+  };
 
   render() {
     return <form onSubmit={this.handleLogin}>

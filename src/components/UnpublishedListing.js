@@ -8,28 +8,21 @@ import { status, statusDescriptions } from '../constants/publishModes';
 import styles from './UnpublishedListing.css';
 
 class UnpublishedListing extends React.Component {
-  constructor(props) {
-    super(props);
-    this.renderColumns = this.renderColumns.bind(this);
-    this.handleChangeStatus = this.handleChangeStatus.bind(this);
-    this.requestPublish = this.requestPublish.bind(this);
-  }
-
-  handleChangeStatus(newStatus, dragProps) {
+  handleChangeStatus = (newStatus, dragProps) => {
     const slug = dragProps.slug;
     const collection = dragProps.collection;
     const oldStatus = dragProps.ownStatus;
     this.props.handleChangeStatus(collection, slug, oldStatus, newStatus);
-  }
+  };
 
-  requestPublish(collection, slug, ownStatus) {
+  requestPublish = (collection, slug, ownStatus) => {
     if (ownStatus !== status.last()) return;
     if (window.confirm('Are you sure you want to publish this entry?')) {
       this.props.handlePublish(collection, slug, ownStatus);
     }
-  }
+  };
 
-  renderColumns(entries, column) {
+  renderColumns = (entries, column) => {
     if (!entries) return;
 
     if (!column) {
@@ -74,7 +67,7 @@ class UnpublishedListing extends React.Component {
         )}
       </div>;
     }
-  }
+  };
 
   render() {
     const columns = this.renderColumns(this.props.entries);

@@ -8,8 +8,8 @@ export const SEARCH = 'SEARCH';
 const PLACEHOLDER = 'Search or enter a command';
 
 class FindBar extends Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     this._compiledCommands = [];
     this._searchCommand = {
       search: true,
@@ -26,18 +26,6 @@ class FindBar extends Component {
     };
 
     this._getSuggestions = _.memoize(this._getSuggestions, (value, activeScope) => value + activeScope);
-    this.compileCommand = this.compileCommand.bind(this);
-    this.matchCommand = this.matchCommand.bind(this);
-    this.maybeRemoveActiveScope = this.maybeRemoveActiveScope.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleKeyDown = this.handleKeyDown.bind(this);
-    this.handleInputBlur = this.handleInputBlur.bind(this);
-    this.handleInputFocus = this.handleInputFocus.bind(this);
-    this.handleInputClick = this.handleInputClick.bind(this);
-    this.getSuggestions = this.getSuggestions.bind(this);
-    this.highlightCommandFromMouse = this.highlightCommandFromMouse.bind(this);
-    this.selectCommandFromMouse = this.selectCommandFromMouse.bind(this);
-    this.setIgnoreBlur = this.setIgnoreBlur.bind(this);
   }
 
   componentWillMount() {
@@ -58,7 +46,7 @@ class FindBar extends Component {
   }
 
   // Generates a regexp and splits a token and param details for a command
-  compileCommand(command) {
+  compileCommand = command => {
     let regexp = '';
     let param = null;
 
@@ -79,11 +67,11 @@ class FindBar extends Component {
       token,
       param
     });
-  }
+  };
 
   // Check if the entered string matches any command.
   // adds a scope (so user can type param value) and dispatches action for fully matched commands
-  matchCommand() {
+  matchCommand = () => {
     const string = this.state.activeScope ? this.state.activeScope + this.state.value : this.state.value;
     let match;
     let command = this._compiledCommands.find(command => {
@@ -133,20 +121,20 @@ class FindBar extends Component {
       }
       this.props.runCommand(command.type, payload);
     }
-  }
+  };
 
-  maybeRemoveActiveScope() {
+  maybeRemoveActiveScope = () => {
     if (this.state.value.length === 0 && this.state.activeScope) {
       this.setState({
         activeScope: null,
         placeholder: PLACEHOLDER
       });
     }
-  }
+  };
 
-  getSuggestions() {
+  getSuggestions = () => {
     return this._getSuggestions(this.state.value, this.state.activeScope, this._compiledCommands, this.props.defaultCommands);
-  }
+  };
 
   // Memoized version
   _getSuggestions(value, scope, commands, defaultCommands) {
@@ -173,7 +161,7 @@ class FindBar extends Component {
     return returnResults;
   }
 
-  handleKeyDown(event) {
+  handleKeyDown = event => {
     let highlightedIndex, index;
     switch (event.key) {
       case 'ArrowDown':
@@ -240,37 +228,37 @@ class FindBar extends Component {
           isOpen: true
         });
     }
-  }
+  };
 
-  handleChange(event) {
+  handleChange = event => {
     this.setState({
       value: event.target.value,
     });
-  }
+  };
 
-  handleInputBlur() {
+  handleInputBlur = () => {
     if (this._ignoreBlur) return;
     this.setState({
       isOpen: false,
       highlightedIndex: 0
     });
-  }
+  };
 
-  handleInputFocus() {
+  handleInputFocus = () => {
     if (this._ignoreBlur) return;
     this.setState({ isOpen: true });
-  }
+  };
 
-  handleInputClick() {
+  handleInputClick = () => {
     if (this.state.isOpen === false)
       this.setState({ isOpen: true });
-  }
+  };
 
-  highlightCommandFromMouse(index) {
+  highlightCommandFromMouse = index => {
     this.setState({ highlightedIndex: index });
-  }
+  };
 
-  selectCommandFromMouse(command) {
+  selectCommandFromMouse = command => {
     const newState = {
       isOpen: false,
       highlightedIndex: 0
@@ -283,11 +271,11 @@ class FindBar extends Component {
       this._input.focus();
       this.setIgnoreBlur(false);
     });
-  }
+  };
 
-  setIgnoreBlur(ignore) {
+  setIgnoreBlur = ignore => {
     this._ignoreBlur = ignore;
-  }
+  };
 
   renderMenu() {
     const commands = this.getSuggestions().map((command, index) => {
