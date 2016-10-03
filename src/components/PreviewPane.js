@@ -6,6 +6,12 @@ import { resolveWidget } from './Widgets';
 import styles from './PreviewPane.css';
 
 class Preview extends React.Component {
+  static propTypes = {
+    collection: ImmutablePropTypes.map.isRequired,
+    entry: ImmutablePropTypes.map.isRequired,
+    getMedia: PropTypes.func.isRequired,
+  };
+
   previewFor(field) {
     const { entry, getMedia } = this.props;
     const widget = resolveWidget(field.get('widget'));
@@ -26,24 +32,12 @@ class Preview extends React.Component {
   }
 }
 
-Preview.propTypes = {
-  collection: ImmutablePropTypes.map.isRequired,
-  entry: ImmutablePropTypes.map.isRequired,
-  getMedia: PropTypes.func.isRequired,
-};
-
 export default class PreviewPane extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleIframeRef = this.handleIframeRef.bind(this);
-    this.widgetFor = this.widgetFor.bind(this);
-  }
-
   componentDidUpdate() {
     this.renderPreview();
   }
 
-  widgetFor(name) {
+  widgetFor = name => {
     const { collection, entry, getMedia } = this.props;
     const field  = collection.get('fields').find((field) => field.get('name') === name);
     const widget = resolveWidget(field.get('widget'));
@@ -52,7 +46,7 @@ export default class PreviewPane extends React.Component {
       value: entry.getIn(['data', field.get('name')]),
       getMedia: getMedia,
     });
-  }
+  };
 
   renderPreview() {
     const props = Object.assign({}, this.props, { widgetFor: this.widgetFor });
@@ -61,7 +55,7 @@ export default class PreviewPane extends React.Component {
     render(React.createElement(component, props), this.previewEl);
   }
 
-  handleIframeRef(ref) {
+  handleIframeRef = ref => {
     if (ref) {
       registry.getPreviewStyles().forEach((style) => {
         const linkEl = document.createElement('link');
@@ -73,7 +67,7 @@ export default class PreviewPane extends React.Component {
       ref.contentDocument.body.appendChild(this.previewEl);
       this.renderPreview();
     }
-  }
+  };
 
   render() {
     const { collection } = this.props;

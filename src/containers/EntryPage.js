@@ -15,11 +15,22 @@ import EntryEditor from '../components/EntryEditor';
 import EntryPageHOC from './editorialWorkflow/EntryPageHOC';
 
 class EntryPage extends React.Component {
-  constructor(props) {
-    super(props);
-    this.createDraft = this.createDraft.bind(this);
-    this.handlePersistEntry = this.handlePersistEntry.bind(this);
-  }
+  static propTypes = {
+    addMedia: PropTypes.func.isRequired,
+    boundGetMedia: PropTypes.func.isRequired,
+    changeDraft: PropTypes.func.isRequired,
+    collection: ImmutablePropTypes.map.isRequired,
+    createDraftFromEntry: PropTypes.func.isRequired,
+    createEmptyDraft: PropTypes.func.isRequired,
+    discardDraft: PropTypes.func.isRequired,
+    entry: ImmutablePropTypes.map,
+    entryDraft: ImmutablePropTypes.map.isRequired,
+    loadEntry: PropTypes.func.isRequired,
+    persistEntry: PropTypes.func.isRequired,
+    removeMedia: PropTypes.func.isRequired,
+    slug: PropTypes.string,
+    newEntry: PropTypes.bool.isRequired,
+  };
 
   componentDidMount() {
     if (!this.props.newEntry) {
@@ -45,13 +56,13 @@ class EntryPage extends React.Component {
     this.props.discardDraft();
   }
 
-  createDraft(entry) {
+  createDraft = entry => {
     if (entry) this.props.createDraftFromEntry(entry);
-  }
+  };
 
-  handlePersistEntry() {
+  handlePersistEntry = () => {
     this.props.persistEntry(this.props.collection, this.props.entryDraft);
-  }
+  };
 
   render() {
     const {
@@ -74,23 +85,6 @@ class EntryPage extends React.Component {
     );
   }
 }
-
-EntryPage.propTypes = {
-  addMedia: PropTypes.func.isRequired,
-  boundGetMedia: PropTypes.func.isRequired,
-  changeDraft: PropTypes.func.isRequired,
-  collection: ImmutablePropTypes.map.isRequired,
-  createDraftFromEntry: PropTypes.func.isRequired,
-  createEmptyDraft: PropTypes.func.isRequired,
-  discardDraft: PropTypes.func.isRequired,
-  entry: ImmutablePropTypes.map,
-  entryDraft: ImmutablePropTypes.map.isRequired,
-  loadEntry: PropTypes.func.isRequired,
-  persistEntry: PropTypes.func.isRequired,
-  removeMedia: PropTypes.func.isRequired,
-  slug: PropTypes.string,
-  newEntry: PropTypes.bool.isRequired,
-};
 
 function mapStateToProps(state, ownProps) {
   const { collections, entryDraft } = state;

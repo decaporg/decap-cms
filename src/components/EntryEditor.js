@@ -5,11 +5,8 @@ import PreviewPane from './PreviewPane';
 import styles from './EntryEditor.css';
 
 export default class EntryEditor extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-    this.handleResize = this.handleResize.bind(this);
-  }
+
+  state = {};
 
   componentDidMount() {
     this.calculateHeight();
@@ -20,9 +17,9 @@ export default class EntryEditor extends React.Component {
     window.removeEventListener('resize', this.handleResize);
   }
 
-  handleResize() {
+  handleResize = () => {
     this.calculateHeight();
-  }
+  };
 
   calculateHeight() {
     const height = window.innerHeight - 54;
