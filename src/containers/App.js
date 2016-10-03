@@ -20,8 +20,8 @@ import styles from './App.css';
 class App extends React.Component {
 
   state = {
-    navDrawerIsVisible: false
-  }
+    navDrawerIsVisible: true
+  };
 
   componentDidMount() {
     this.props.dispatch(loadConfig());
@@ -100,7 +100,7 @@ class App extends React.Component {
     this.setState({
       navDrawerIsVisible: !this.state.navDrawerIsVisible
     });
-  }
+  };
 
   render() {
     const { navDrawerIsVisible } = this.state;
@@ -135,18 +135,19 @@ class App extends React.Component {
     return (
       <Layout theme={styles}>
         <NavDrawer
-            active={navDrawerIsVisible}
-            scrollY
-            permanentAt="md"
+          active={navDrawerIsVisible}
+          scrollY
+          permanentAt={navDrawerIsVisible ? 'lg' : null}
+          theme={styles}
         >
           <nav className={styles.nav}>
-            <h1>Collections</h1>
+            <h1 className={styles.heading}>Collections</h1>
             <Navigation type='vertical'>
               {
                 collections.valueSeq().map(collection =>
                   <Link
-                      key={collection.get('name')}
-                      onClick={navigateToCollection.bind(this, collection.get('name'))}
+                    key={collection.get('name')}
+                    onClick={navigateToCollection.bind(this, collection.get('name'))}
                   >
                     {collection.get('label')}
                   </Link>
@@ -157,14 +158,14 @@ class App extends React.Component {
         </NavDrawer>
         <Panel scrollY>
           <AppHeader
-              collections={collections}
-              commands={commands}
-              defaultCommands={defaultCommands}
-              runCommand={runCommand}
-              onCreateEntryClick={createNewEntryInCollection}
-              toggleNavDrawer={this.toggleNavDrawer}
+            collections={collections}
+            commands={commands}
+            defaultCommands={defaultCommands}
+            runCommand={runCommand}
+            onCreateEntryClick={createNewEntryInCollection}
+            toggleNavDrawer={this.toggleNavDrawer}
           />
-          <div className={`${styles.alignable} ${styles.main}`}>
+          <div className={styles.main}>
             {children}
           </div>
         </Panel>

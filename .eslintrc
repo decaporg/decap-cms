@@ -4,7 +4,10 @@ env:
   jest: true
 
 parser: babel-eslint
-plugins: [ "react" ]
+plugins: [
+  "react",
+  "class-property"
+]
 
 rules:
   # Possible Errors
@@ -99,6 +102,8 @@ rules:
   react/require-extension: 1
   react/self-closing-comp: 1
   react/sort-comp: 1
+
+  class-property/class-property-semicolon: 2
 
 # Global scoped method and vars
 globals:

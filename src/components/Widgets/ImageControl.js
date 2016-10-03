@@ -5,36 +5,25 @@ import MediaProxy from '../../valueObjects/MediaProxy';
 const MAX_DISPLAY_LENGTH = 50;
 
 export default class ImageControl extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.handleChange = this.handleChange.bind(this);
-    this.handleFileInputRef = this.handleFileInputRef.bind(this);
-    this.handleClick = this.handleClick.bind(this);
-    this.handleDragEnter = this.handleDragEnter.bind(this);
-    this.handleDragOver = this.handleDragOver.bind(this);
-    this.renderImageName = this.renderImageName.bind(this);
-  }
-
-  handleFileInputRef(el) {
+  handleFileInputRef = el => {
     this._fileInput = el;
-  }
+  };
 
-  handleClick(e) {
+  handleClick = e => {
     this._fileInput.click();
-  }
+  };
 
-  handleDragEnter(e) {
+  handleDragEnter = e => {
     e.stopPropagation();
     e.preventDefault();
-  }
+  };
 
-  handleDragOver(e) {
+  handleDragOver = e => {
     e.stopPropagation();
     e.preventDefault();
-  }
+  };
 
-  handleChange(e) {
+  handleChange = e => {
     e.stopPropagation();
     e.preventDefault();
 
@@ -58,9 +47,9 @@ export default class ImageControl extends React.Component {
       this.props.onChange(null);
     }
 
-  }
+  };
 
-  renderImageName() {
+  renderImageName = () => {
     if (!this.props.value) return null;
     if (this.value instanceof MediaProxy) {
       return truncateMiddle(this.props.value.path, MAX_DISPLAY_LENGTH);
@@ -68,25 +57,25 @@ export default class ImageControl extends React.Component {
       return truncateMiddle(this.props.value, MAX_DISPLAY_LENGTH);
     }
 
-  }
+  };
 
   render() {
     const imageName = this.renderImageName();
     return (
       <div
-          onDragEnter={this.handleDragEnter}
-          onDragOver={this.handleDragOver}
-          onDrop={this.handleChange}
+        onDragEnter={this.handleDragEnter}
+        onDragOver={this.handleDragOver}
+        onDrop={this.handleChange}
       >
         <span style={styles.imageUpload} onClick={this.handleClick}>
           {imageName ? imageName : 'Tip: Click here to upload an image from your file browser, or drag an image directly into this box from your desktop'}
         </span>
         <input
-            type="file"
-            accept="image/*"
-            onChange={this.handleChange}
-            style={styles.input}
-            ref={this.handleFileInputRef}
+          type="file"
+          accept="image/*"
+          onChange={this.handleChange}
+          style={styles.input}
+          ref={this.handleFileInputRef}
         />
       </div>
     );

@@ -10,6 +10,11 @@ import styles from '../CollectionPage.css';
 
 export default function CollectionPageHOC(CollectionPage) {
   class CollectionPageHOC extends CollectionPage {
+    static propTypes = {
+      dispatch: PropTypes.func.isRequired,
+      isEditorialWorkflow: PropTypes.bool.isRequired,
+      unpublishedEntries: ImmutablePropTypes.map,
+    };
 
     componentDidMount() {
       const { dispatch, isEditorialWorkflow } = this.props;
@@ -24,23 +29,19 @@ export default function CollectionPageHOC(CollectionPage) {
       if (!isEditorialWorkflow) return super.render();
 
       return (
-        <div className={styles.alignable}>
-          <UnpublishedListing
+        <div>
+          <div className={styles.root}>
+            <UnpublishedListing
               entries={unpublishedEntries}
               handleChangeStatus={updateUnpublishedEntryStatus}
               handlePublish={publishUnpublishedEntry}
-          />
+            />
+          </div>
           {super.render()}
         </div>
       );
     }
   }
-
-  CollectionPageHOC.propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    isEditorialWorkflow: PropTypes.bool.isRequired,
-    unpublishedEntries: ImmutablePropTypes.map,
-  };
 
   function mapStateToProps(state) {
     const publish_mode = state.config.get('publish_mode');

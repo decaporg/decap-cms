@@ -72,7 +72,14 @@ const SCHEMA = {
   }
 };
 
-class RawEditor extends React.Component {
+export default class RawEditor extends React.Component {
+
+  static propTypes = {
+    onAddMedia: PropTypes.func.isRequired,
+    getMedia: PropTypes.func.isRequired,
+    onChange: PropTypes.func.isRequired,
+    value: PropTypes.string,
+  };
 
   constructor(props) {
     super(props);
@@ -104,12 +111,12 @@ class RawEditor extends React.Component {
    */
   handleChange = state => {
     this.setState({ state });
-  }
+  };
 
   handleDocumentChange = (document, state) => {
     const content = Plain.serialize(state, { terse: true });
     this.props.onChange(content);
-  }
+  };
 
   render() {
     return (
@@ -125,12 +132,3 @@ class RawEditor extends React.Component {
     );
   }
 }
-
-export default RawEditor;
-
-RawEditor.propTypes = {
-  onAddMedia: PropTypes.func.isRequired,
-  getMedia: PropTypes.func.isRequired,
-  onChange: PropTypes.func.isRequired,
-  value: PropTypes.string,
-};

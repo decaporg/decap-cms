@@ -5,21 +5,17 @@ import MediaProxy from '../../../../valueObjects/MediaProxy';
 import styles from './BlockTypesMenu.css';
 
 class BlockTypesMenu extends Component {
-  constructor(props) {
-    super(props);
 
-    this.state = {
-      expanded: false
-    };
+  static propTypes = {
+    plugins: PropTypes.array.isRequired,
+    onClickBlock: PropTypes.func.isRequired,
+    onClickPlugin: PropTypes.func.isRequired,
+    onClickImage: PropTypes.func.isRequired
+  };
 
-    this.toggleMenu = this.toggleMenu.bind(this);
-    this.handleBlockTypeClick = this.handleBlockTypeClick.bind(this);
-    this.handlePluginClick = this.handlePluginClick.bind(this);
-    this.handleFileUploadClick = this.handleFileUploadClick.bind(this);
-    this.handleFileUploadChange = this.handleFileUploadChange.bind(this);
-    this.renderBlockTypeButton = this.renderBlockTypeButton.bind(this);
-    this.renderPluginButton = this.renderPluginButton.bind(this);
-  }
+  state = {
+    expanded: false
+  };
 
   componentWillUpdate() {
     if (this.state.expanded) {
@@ -27,27 +23,27 @@ class BlockTypesMenu extends Component {
     }
   }
 
-  toggleMenu() {
+  toggleMenu = () => {
     this.setState({ expanded: !this.state.expanded });
-  }
+  };
 
-  handleBlockTypeClick(e, type) {
+  handleBlockTypeClick = (e, type) => {
     this.props.onClickBlock(type);
-  }
+  };
 
-  handlePluginClick(e, plugin) {
+  handlePluginClick = (e, plugin) => {
     const data = {};
     plugin.fields.forEach(field => {
       data[field.name] = window.prompt(field.label); // eslint-disable-line
     });
     this.props.onClickPlugin(plugin.id, data);
-  }
+  };
 
-  handleFileUploadClick() {
+  handleFileUploadClick = () => {
     this._fileInput.click();
-  }
+  };
 
-  handleFileUploadChange(e) {
+  handleFileUploadChange = e => {
     e.stopPropagation();
     e.preventDefault();
 
@@ -67,21 +63,21 @@ class BlockTypesMenu extends Component {
       this.props.onClickImage(mediaProxy);
     }
 
-  }
+  };
 
-  renderBlockTypeButton(type, icon) {
+  renderBlockTypeButton = (type, icon) => {
     const onClick = e => this.handleBlockTypeClick(e, type);
     return (
       <Icon key={type} type={icon} onClick={onClick} className={styles.icon}/>
     );
-  }
+  };
 
-  renderPluginButton(plugin) {
+  renderPluginButton = plugin => {
     const onClick = e => this.handlePluginClick(e, plugin);
     return (
       <Icon key={plugin.id} type={plugin.icon} onClick={onClick} className={styles.icon}/>
     );
-  }
+  };
 
   renderMenu() {
     const { plugins } = this.props;
@@ -116,12 +112,5 @@ class BlockTypesMenu extends Component {
     );
   }
 }
-
-BlockTypesMenu.propTypes = {
-  plugins: PropTypes.array.isRequired,
-  onClickBlock: PropTypes.func.isRequired,
-  onClickPlugin: PropTypes.func.isRequired,
-  onClickImage: PropTypes.func.isRequired
-};
 
 export default withPortalAtCursorPosition(BlockTypesMenu);

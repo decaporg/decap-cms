@@ -13,11 +13,18 @@ import BlockTypesMenu from './BlockTypesMenu';
 /**
  * Slate Render Configuration
  */
-class VisualEditor extends React.Component {
+export default class VisualEditor extends React.Component {
+
+  static propTypes = {
+    onChange: PropTypes.func.isRequired,
+    onAddMedia: PropTypes.func.isRequired,
+    getMedia: PropTypes.func.isRequired,
+    value: PropTypes.string,
+  };
+
   constructor(props) {
     super(props);
 
-    this.getMedia = this.getMedia.bind(this);
     const MarkdownSyntax = getSyntaxes(this.getMedia).markdown;
     this.markdown = new MarkupIt(MarkdownSyntax);
 
@@ -46,48 +53,36 @@ class VisualEditor extends React.Component {
         }
       })
     ];
-
-    this.handleChange = this.handleChange.bind(this);
-    this.handleDocumentChange = this.handleDocumentChange.bind(this);
-    this.handleMarkStyleClick = this.handleMarkStyleClick.bind(this);
-    this.handleBlockStyleClick = this.handleBlockStyleClick.bind(this);
-    this.handleInlineClick = this.handleInlineClick.bind(this);
-    this.handleBlockTypeClick = this.handleBlockTypeClick.bind(this);
-    this.handlePluginClick = this.handlePluginClick.bind(this);
-    this.handleImageClick = this.handleImageClick.bind(this);
-    this.focusAndAddParagraph = this.focusAndAddParagraph.bind(this);
-    this.handleKeyDown = this.handleKeyDown.bind(this);
-    this.renderBlockTypesMenu = this.renderBlockTypesMenu.bind(this);
   }
 
-  getMedia(src) {
+  getMedia = src => {
     return this.props.getMedia(src);
-  }
+  };
 
   /**
    * Slate keeps track of selections, scroll position etc.
    * So, onChange gets dispatched on every interaction (click, arrows, everything...)
-   * It also have an onDocumentChange, that get's dispached only when the actual
+   * It also have an onDocumentChange, that get's dispatched only when the actual
    * content changes
    */
-  handleChange(state) {
+  handleChange = state => {
     if (this.blockEdit) {
       this.blockEdit = false;
     } else {
       this.setState({ state });
     }
-  }
+  };
 
-  handleDocumentChange(document, state) {
+  handleDocumentChange = (document, state) => {
     const rawJson = Raw.serialize(state, { terse: true });
     const content = SlateUtils.decode(rawJson);
     this.props.onChange(this.markdown.toText(content));
-  }
+  };
 
   /**
    * Toggle marks / blocks when button is clicked
    */
-  handleMarkStyleClick(type) {
+  handleMarkStyleClick = type => {
     let { state } = this.state;
 
     state = state
@@ -96,9 +91,9 @@ class VisualEditor extends React.Component {
       .apply();
 
     this.setState({ state });
-  }
+  };
 
-  handleBlockStyleClick(type, isActive, isList) {
+  handleBlockStyleClick = (type, isActive, isList) => {
     let { state } = this.state;
     let transform = state.transform();
     const { document } = state;
@@ -142,7 +137,7 @@ class VisualEditor extends React.Component {
 
     state = transform.apply();
     this.setState({ state });
-  }
+  };
 
   /**
    * When clicking a link, if the selection has a link in it, remove the link.
@@ -151,7 +146,7 @@ class VisualEditor extends React.Component {
    * @param {Event} e
    */
 
-  handleInlineClick(type, isActive) {
+  handleInlineClick = (type, isActive) => {
     let { state } = this.state;
 
     if (type === 'link') {
@@ -177,9 +172,9 @@ class VisualEditor extends React.Component {
       }
     }
     this.setState({ state });
-  }
+  };
 
-  handleBlockTypeClick(type) {
+  handleBlockTypeClick = type => {
     let { state } = this.state;
 
     state = state
@@ -191,9 +186,9 @@ class VisualEditor extends React.Component {
       .apply();
 
     this.setState({ state }, this.focusAndAddParagraph);
-  }
+  };
 
-  handlePluginClick(type, data) {
+  handlePluginClick = (type, data) => {
     let { state } = this.state;
 
     state = state
@@ -209,9 +204,9 @@ class VisualEditor extends React.Component {
       .apply();
 
     this.setState({ state });
-  }
+  };
 
-  handleImageClick(mediaProxy) {
+  handleImageClick = mediaProxy => {
     let { state } = this.state;
     this.props.onAddMedia(mediaProxy);
 
@@ -221,9 +216,9 @@ class VisualEditor extends React.Component {
       .apply();
 
     this.setState({ state });
-  }
+  };
 
-  focusAndAddParagraph() {
+  focusAndAddParagraph = () => {
     const { state } = this.state;
     const blocks = state.document.getBlocks();
     const last = blocks.last();
@@ -237,9 +232,9 @@ class VisualEditor extends React.Component {
         snapshot: false
       });
     this.setState({ state: normalized });
-  }
+  };
 
-  handleKeyDown(evt) {
+  handleKeyDown = evt => {
     if (evt.shiftKey && evt.key === 'Enter') {
       this.blockEdit = true;
       let { state } = this.state;
@@ -250,9 +245,9 @@ class VisualEditor extends React.Component {
 
       this.setState({ state });
     }
-  }
+  };
 
-  renderBlockTypesMenu() {
+  renderBlockTypesMenu = () => {
     const currentBlock = this.state.state.blocks.get(0);
     const isOpen = (this.props.value !== undefined && currentBlock.isEmpty && currentBlock.type !== 'horizontal-rule');
 
@@ -265,7 +260,7 @@ class VisualEditor extends React.Component {
         onClickImage={this.handleImageClick}
       />
     );
-  }
+  };
 
   renderStylesMenu() {
     const { state } = this.state;
@@ -302,12 +297,3 @@ class VisualEditor extends React.Component {
     );
   }
 }
-
-export default VisualEditor;
-
-VisualEditor.propTypes = {
-  onChange: PropTypes.func.isRequired,
-  onAddMedia: PropTypes.func.isRequired,
-  getMedia: PropTypes.func.isRequired,
-  value: PropTypes.string,
-};

@@ -3,14 +3,10 @@ import { Icon } from '../index';
 import styles from './Toast.css';
 
 export default class Toast extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      shown: false
-    };
 
-    this.autoHideTimeout = this.autoHideTimeout.bind(this);
-  }
+  state = {
+    shown: false
+  };
 
   componentWillMount() {
     if (this.props.show) {
@@ -32,12 +28,12 @@ export default class Toast extends React.Component {
     }
   }
 
-  autoHideTimeout() {
+  autoHideTimeout = () => {
     clearTimeout(this.timeOut);
     this.timeOut = setTimeout(() => {
       this.setState({ shown: false });
     }, 4000);
-  }
+  };
 
   render() {
     const { style, type, className, children } = this.props;

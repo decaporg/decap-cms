@@ -18,6 +18,14 @@ const EditorComponent = Record({
 
 
 class Plugin extends Component {
+  static propTypes = {
+    children: PropTypes.element.isRequired
+  };
+
+  static childContextTypes = {
+    plugins: PropTypes.object
+  };
+
   getChildContext() {
     return { plugins: plugins };
   }
@@ -26,13 +34,6 @@ class Plugin extends Component {
     return Children.only(this.props.children);
   }
 }
-
-Plugin.propTypes = {
-  children: PropTypes.element.isRequired
-};
-Plugin.childContextTypes = {
-  plugins: PropTypes.object
-};
 
 export function newEditorPlugin(config) {
   const configObj = new EditorComponent({

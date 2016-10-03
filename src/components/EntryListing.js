@@ -17,9 +17,8 @@ export default class EntryListing extends React.Component {
         { mq: '495px', columns: 2, gutter: 15 },
         { mq: '750px', columns: 3, gutter: 15 },
         { mq: '1005px', columns: 4, gutter: 15 },
-        { mq: '1260px', columns: 5, gutter: 15 },
-        { mq: '1515px', columns: 6, gutter: 15 },
-        { mq: '1770px', columns: 7, gutter: 15 },
+        { mq: '1515px', columns: 5, gutter: 15 },
+        { mq: '1770px', columns: 6, gutter: 15 },
       ]
     };
 
