@@ -9,6 +9,13 @@ import styles from './CollectionPage.css';
 import CollectionPageHOC from './editorialWorkflow/CollectionPageHOC';
 
 class DashboardPage extends React.Component {
+  static propTypes = {
+    collection: ImmutablePropTypes.map.isRequired,
+    collections: ImmutablePropTypes.orderedMap.isRequired,
+    dispatch: PropTypes.func.isRequired,
+    entries: ImmutablePropTypes.list,
+  };
+
   componentDidMount() {
     const { collection, dispatch } = this.props;
     if (collection) {
@@ -39,12 +46,6 @@ class DashboardPage extends React.Component {
     </div>;
   }
 }
-DashboardPage.propTypes = {
-  collection: ImmutablePropTypes.map.isRequired,
-  collections: ImmutablePropTypes.orderedMap.isRequired,
-  dispatch: PropTypes.func.isRequired,
-  entries: ImmutablePropTypes.list,
-};
 
 /*
  * Instead of checking the publish mode everywhere to dispatch & render the additional editorial workflow stuff,

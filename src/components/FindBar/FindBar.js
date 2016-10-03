@@ -8,6 +8,16 @@ export const SEARCH = 'SEARCH';
 const PLACEHOLDER = 'Search or enter a command';
 
 class FindBar extends Component {
+  static propTypes = {
+    commands: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      type: PropTypes.string.isRequired,
+      pattern: PropTypes.string.isRequired
+    })).isRequired,
+    defaultCommands: PropTypes.arrayOf(PropTypes.string),
+    runCommand: PropTypes.func.isRequired,
+  };
+
   constructor() {
     super();
     this._compiledCommands = [];
@@ -351,15 +361,5 @@ class FindBar extends Component {
     );
   }
 }
-
-FindBar.propTypes = {
-  commands: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    type: PropTypes.string.isRequired,
-    pattern: PropTypes.string.isRequired
-  })).isRequired,
-  defaultCommands: PropTypes.arrayOf(PropTypes.string),
-  runCommand: PropTypes.func.isRequired,
-};
 
 export default FindBar;

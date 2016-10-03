@@ -69,6 +69,12 @@ class UnpublishedListing extends React.Component {
     }
   };
 
+  static propTypes = {
+    entries: ImmutablePropTypes.orderedMap,
+    handleChangeStatus: PropTypes.func.isRequired,
+    handlePublish: PropTypes.func.isRequired,
+  };
+
   render() {
     const columns = this.renderColumns(this.props.entries);
     return (
@@ -81,11 +87,5 @@ class UnpublishedListing extends React.Component {
     );
   }
 }
-
-UnpublishedListing.propTypes = {
-  entries: ImmutablePropTypes.orderedMap,
-  handleChangeStatus: PropTypes.func.isRequired,
-  handlePublish: PropTypes.func.isRequired,
-};
 
 export default HTML5DragDrop(UnpublishedListing);

@@ -6,6 +6,12 @@ import { resolveWidget } from './Widgets';
 import styles from './PreviewPane.css';
 
 class Preview extends React.Component {
+  static propTypes = {
+    collection: ImmutablePropTypes.map.isRequired,
+    entry: ImmutablePropTypes.map.isRequired,
+    getMedia: PropTypes.func.isRequired,
+  };
+
   previewFor(field) {
     const { entry, getMedia } = this.props;
     const widget = resolveWidget(field.get('widget'));
@@ -25,12 +31,6 @@ class Preview extends React.Component {
     </div>;
   }
 }
-
-Preview.propTypes = {
-  collection: ImmutablePropTypes.map.isRequired,
-  entry: ImmutablePropTypes.map.isRequired,
-  getMedia: PropTypes.func.isRequired,
-};
 
 export default class PreviewPane extends React.Component {
   componentDidUpdate() {
