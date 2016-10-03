@@ -21,7 +21,7 @@ class App extends React.Component {
 
   state = {
     navDrawerIsVisible: false
-  }
+  };
 
   componentDidMount() {
     this.props.dispatch(loadConfig());
@@ -100,7 +100,7 @@ class App extends React.Component {
     this.setState({
       navDrawerIsVisible: !this.state.navDrawerIsVisible
     });
-  }
+  };
 
   render() {
     const { navDrawerIsVisible } = this.state;
