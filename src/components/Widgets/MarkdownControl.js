@@ -7,24 +7,31 @@ import { connect } from 'react-redux';
 import { switchVisualMode } from '../../actions/editor';
 
 class MarkdownControl extends React.Component {
-  constructor(props, context) {
-    super(props, context);
-    this.useVisualEditor = this.useVisualEditor.bind(this);
-    this.useRawEditor = this.useRawEditor.bind(this);
-  }
+  static propTypes = {
+    editor: PropTypes.object.isRequired,
+    onChange: PropTypes.func.isRequired,
+    onAddMedia: PropTypes.func.isRequired,
+    getMedia: PropTypes.func.isRequired,
+    switchVisualMode: PropTypes.func.isRequired,
+    value: PropTypes.node,
+  };
+
+  static contextTypes = {
+    plugins: PropTypes.object,
+  };
 
   componentWillMount() {
     this.useRawEditor();
     processEditorPlugins(registry.getEditorComponents());
   }
 
-  useVisualEditor() {
+  useVisualEditor = () => {
     this.props.switchVisualMode(true);
-  }
+  };
 
-  useRawEditor() {
+  useRawEditor = () => {
     this.props.switchVisualMode(false);
-  }
+  };
 
   renderEditor() {
     const { editor, onChange, onAddMedia, getMedia, value } = this.props;
@@ -65,19 +72,6 @@ class MarkdownControl extends React.Component {
     );
   }
 }
-
-MarkdownControl.propTypes = {
-  editor: PropTypes.object.isRequired,
-  onChange: PropTypes.func.isRequired,
-  onAddMedia: PropTypes.func.isRequired,
-  getMedia: PropTypes.func.isRequired,
-  switchVisualMode: PropTypes.func.isRequired,
-  value: PropTypes.node,
-};
-
-MarkdownControl.contextTypes = {
-  plugins: PropTypes.object,
-};
 
 export default connect(
   state => ({ editor: state.editor }),

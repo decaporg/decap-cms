@@ -4,24 +4,12 @@ import { Icon } from '../../../UI';
 import styles from './StylesMenu.css';
 
 export default class StylesMenu extends Component {
-
   constructor(props) {
     super(props);
 
     this.state = {
       menu: null
     };
-
-    this.hasMark = this.hasMark.bind(this);
-    this.hasBlock = this.hasBlock.bind(this);
-    this.renderMarkButton = this.renderMarkButton.bind(this);
-    this.renderBlockButton = this.renderBlockButton.bind(this);
-    this.renderLinkButton = this.renderLinkButton.bind(this);
-    this.updateMenuPosition = this.updateMenuPosition.bind(this);
-    this.handleMarkClick = this.handleMarkClick.bind(this);
-    this.handleInlineClick = this.handleInlineClick.bind(this);
-    this.handleBlockClick = this.handleBlockClick.bind(this);
-    this.handleOpen = this.handleOpen.bind(this);
   }
 
   /**
@@ -35,7 +23,7 @@ export default class StylesMenu extends Component {
     this.updateMenuPosition();
   }
 
-  updateMenuPosition() {
+  updateMenuPosition = () => {
     const { menu } = this.state;
     const { position } = this.props;
     if (!menu) return;
@@ -43,30 +31,32 @@ export default class StylesMenu extends Component {
     menu.style.opacity = 1;
     menu.style.top = `${position.top - menu.offsetHeight}px`;
     menu.style.left = `${position.left - menu.offsetWidth / 2 + position.width / 2}px`;
-  }
+  };
 
   /**
    * Used to set toolbar buttons to active state
    */
-  hasMark(type) {
+  hasMark = type => {
     const { marks } = this.props;
     return marks.some(mark => mark.type == type);
-  }
-  hasBlock(type) {
+  };
+
+  hasBlock = type => {
     const { blocks } = this.props;
     return blocks.some(node => node.type == type);
-  }
+  };
+
   hasLinks(type) {
     const { inlines } = this.props;
     return inlines.some(inline => inline.type == 'link');
   }
 
-  handleMarkClick(e, type) {
+  handleMarkClick = (e, type) => {
     e.preventDefault();
     this.props.onClickMark(type);
-  }
+  };
 
-  renderMarkButton(type, icon) {
+  renderMarkButton = (type, icon) => {
     const isActive = this.hasMark(type);
     const onMouseDown = e => this.handleMarkClick(e, type);
     return (
@@ -74,14 +64,14 @@ export default class StylesMenu extends Component {
         <Icon type={icon}/>
       </span>
     );
-  }
+  };
 
-  handleInlineClick(e, type, isActive) {
+  handleInlineClick = (e, type, isActive) => {
     e.preventDefault();
     this.props.onClickInline(type, isActive);
-  }
+  };
 
-  renderLinkButton() {
+  renderLinkButton = () => {
     const isActive = this.hasLinks();
     const onMouseDown = e => this.handleInlineClick(e, 'link', isActive);
     return (
@@ -89,16 +79,16 @@ export default class StylesMenu extends Component {
         <Icon type="link"/>
       </span>
     );
-  }
+  };
 
-  handleBlockClick(e, type) {
+  handleBlockClick = (e, type) => {
     e.preventDefault();
     const isActive = this.hasBlock(type);
     const isList = this.hasBlock('list-item');
     this.props.onClickBlock(type, isActive, isList);
-  }
+  };
 
-  renderBlockButton(type, icon, checkType) {
+  renderBlockButton = (type, icon, checkType) => {
     checkType = checkType || type;
     const isActive = this.hasBlock(checkType);
     const onMouseDown = e => this.handleBlockClick(e, type);
@@ -107,14 +97,14 @@ export default class StylesMenu extends Component {
         <Icon type={icon}/>
       </span>
     );
-  }
+  };
 
   /**
    * When the portal opens, cache the menu element.
    */
-  handleOpen(portal) {
+  handleOpen = portal => {
     this.setState({ menu: portal.firstChild });
-  }
+  };
 
   render() {
     const { isOpen } = this.props;
@@ -133,7 +123,6 @@ export default class StylesMenu extends Component {
       </Portal>
     );
   }
-
 }
 
 StylesMenu.propTypes = {

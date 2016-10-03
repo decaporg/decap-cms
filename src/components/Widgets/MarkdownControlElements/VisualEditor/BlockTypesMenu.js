@@ -12,16 +12,6 @@ export default class BlockTypesMenu extends Component {
       expanded: false,
       menu: null
     };
-
-    this.updateMenuPosition = this.updateMenuPosition.bind(this);
-    this.toggleMenu = this.toggleMenu.bind(this);
-    this.handleOpen = this.handleOpen.bind(this);
-    this.handleBlockTypeClick = this.handleBlockTypeClick.bind(this);
-    this.handlePluginClick = this.handlePluginClick.bind(this);
-    this.handleFileUploadClick = this.handleFileUploadClick.bind(this);
-    this.handleFileUploadChange = this.handleFileUploadChange.bind(this);
-    this.renderBlockTypeButton = this.renderBlockTypeButton.bind(this);
-    this.renderPluginButton = this.renderPluginButton.bind(this);
   }
 
   /**
@@ -41,7 +31,7 @@ export default class BlockTypesMenu extends Component {
     this.updateMenuPosition();
   }
 
-  updateMenuPosition() {
+  updateMenuPosition = () => {
     const { menu } = this.state;
     const { position } = this.props;
     if (!menu) return;
@@ -50,29 +40,29 @@ export default class BlockTypesMenu extends Component {
     menu.style.top = `${position.top}px`;
     menu.style.left = `${position.left - menu.offsetWidth * 2}px`;
 
-  }
+  };
 
-  toggleMenu() {
+  toggleMenu = () => {
     this.setState({ expanded: !this.state.expanded });
-  }
+  };
 
-  handleBlockTypeClick(e, type) {
+  handleBlockTypeClick = (e, type) => {
     this.props.onClickBlock(type);
-  }
+  };
 
-  handlePluginClick(e, plugin) {
+  handlePluginClick = (e, plugin) => {
     const data = {};
     plugin.fields.forEach(field => {
       data[field.name] = window.prompt(field.label);
     });
     this.props.onClickPlugin(plugin.id, data);
-  }
+  };
 
-  handleFileUploadClick() {
+  handleFileUploadClick = () => {
     this._fileInput.click();
-  }
+  };
 
-  handleFileUploadChange(e) {
+  handleFileUploadChange = e => {
     e.stopPropagation();
     e.preventDefault();
 
@@ -92,21 +82,21 @@ export default class BlockTypesMenu extends Component {
       this.props.onClickImage(mediaProxy);
     }
 
-  }
+  };
 
-  renderBlockTypeButton(type, icon) {
+  renderBlockTypeButton = (type, icon) => {
     const onClick = e => this.handleBlockTypeClick(e, type);
     return (
       <Icon key={type} type={icon} onClick={onClick} className={styles.icon} />
     );
-  }
+  };
 
-  renderPluginButton(plugin) {
+  renderPluginButton = plugin => {
     const onClick = e => this.handlePluginClick(e, plugin);
     return (
       <Icon key={plugin.id} type={plugin.icon} onClick={onClick} className={styles.icon} />
     );
-  }
+  };
 
   renderMenu() {
     const { plugins } = this.props;
@@ -133,9 +123,9 @@ export default class BlockTypesMenu extends Component {
   /**
    * When the portal opens, cache the menu element.
    */
-  handleOpen(portal) {
+  handleOpen = portal => {
     this.setState({ menu: portal.firstChild });
-  }
+  };
 
   render() {
     const { isOpen } = this.props;

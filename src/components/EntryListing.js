@@ -24,7 +24,7 @@ export default class EntryListing extends React.Component {
     };
 
     this.updateBricks = _.throttle(this.updateBricks.bind(this), 30);
-    this.loadMore = this.loadMore.bind(this);
+    this.handleLoadMore = this.handleLoadMore.bind(this);
   }
 
   componentDidMount() {
@@ -74,14 +74,13 @@ export default class EntryListing extends React.Component {
     });
   }
 
-  loadMore() {
+  handleLoadMore() {
     this.props.onPaginate(this.props.page + 1);
   }
 
   render() {
     const { collection, entries } = this.props;
     const name = collection.get('name');
-
     return <div>
       <h1>Listing {name}</h1>
       <div ref={(c) => this._entries = c}>
@@ -89,7 +88,7 @@ export default class EntryListing extends React.Component {
           const path = `/collections/${name}/entries/${entry.get('slug')}`;
           return this.cardFor(collection, entry, path);
         })}
-        <Waypoint onEnter={this.loadMore} />
+        <Waypoint onEnter={this.handleLoadMore} />
       </div>
     </div>;
   }

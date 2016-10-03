@@ -5,13 +5,9 @@ export default class AuthenticationPage extends React.Component {
     onLogin: React.PropTypes.func.isRequired
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {};
-    this.handleLogin = this.handleLogin.bind(this);
-  }
+  state = {};
 
-  handleLogin(e) {
+  handleLogin = e => {
     e.preventDefault();
     const { email, password } = this.state;
     this.setState({ authenticating: true });
@@ -32,7 +28,7 @@ export default class AuthenticationPage extends React.Component {
         this.setState({ loginError: data.msg });
       });
     });
-  }
+  };
 
   handleChange(key) {
     return (e) => {

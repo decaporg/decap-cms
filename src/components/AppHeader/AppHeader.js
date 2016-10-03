@@ -10,26 +10,26 @@ export default class AppHeader extends React.Component {
 
   state = {
     createMenuActive: false
-  }
+  };
 
   handleCreatePostClick = collectionName => {
     const { onCreateEntryClick } = this.props;
     if (onCreateEntryClick) {
       onCreateEntryClick(collectionName);
     }
-  }
+  };
 
   handleCreateButtonClick = () => {
     this.setState({
       createMenuActive: true
     });
-  }
+  };
 
   handleCreateMenuHide = () => {
     this.setState({
       createMenuActive: false
     });
-  }
+  };
 
   render() {
     const {

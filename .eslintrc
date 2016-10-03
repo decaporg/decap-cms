@@ -3,7 +3,10 @@ env:
   es6: true
 
 parser: babel-eslint
-plugins: [ "react" ]
+plugins: [
+  "react",
+  "class-property"
+]
 
 rules:
   # Possible Errors
@@ -75,7 +78,7 @@ rules:
   react/jsx-handler-names: 1
   react/jsx-indent-props: 1
   react/jsx-indent: [2, 2]
-  react/jsx-no-bind: 1
+  react/jsx-no-bind: [1, ignoreRefs: true]
   react/jsx-no-duplicate-props: 1
   react/jsx-no-undef: 1
   react/jsx-pascal-case: 1
@@ -96,6 +99,8 @@ rules:
   react/require-extension: 1
   react/self-closing-comp: 1
   react/sort-comp: 1
+
+  class-property/class-property-semicolon: 2
 
 # Global scoped method and vars
 globals:

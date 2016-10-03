@@ -71,7 +71,6 @@ const SCHEMA = {
 };
 
 class RawEditor extends React.Component {
-
   constructor(props) {
     super(props);
     const content = props.value ? Plain.deserialize(props.value) : Plain.deserialize('');
@@ -79,10 +78,6 @@ class RawEditor extends React.Component {
     this.state = {
       state: content
     };
-
-    this.handleChange = this.handleChange.bind(this);
-    this.handleDocumentChange = this.handleDocumentChange.bind(this);
-
   }
 
   /**
@@ -91,14 +86,14 @@ class RawEditor extends React.Component {
    * It also have an onDocumentChange, that get's dispached only when the actual
    * content changes
    */
-  handleChange(state) {
+  handleChange = state => {
     this.setState({ state });
-  }
+  };
 
-  handleDocumentChange(document, state) {
+  handleDocumentChange = (document, state) => {
     const content = Plain.serialize(state, { terse: true });
     this.props.onChange(content);
-  }
+  };
 
   render() {
     return (
