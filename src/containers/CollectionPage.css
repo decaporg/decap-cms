@@ -1,39 +1,39 @@
-.alignable {
-  margin: 0px auto;
+.root {
+  margin: auto;
 }
 
 @media (max-width: 749px) and (min-width: 495px) {
-  .alignable {
+  .root {
     width: 495px;
+    margin: auto;
   }
 }
 
 @media (max-width: 1004px) and (min-width: 750px) {
-  .alignable {
+  .root {
     width: 750px;
+    margin: auto;
   }
 }
 
-@media (max-width: 1259px) and (min-width: 1005px) {
-  .alignable {
+@media (max-width: 1514px) and (min-width: 1005px) {
+  .root {
     width: 1005px;
+    margin: auto;
   }
 }
 
-@media (max-width: 1514px) and (min-width: 1260px) {
-  .alignable {
-    width: 1260px;
-  }
-}
 
 @media (max-width: 1769px) and (min-width: 1515px) {
-  .alignable {
+  .root {
     width: 1515px;
+    margin: auto;
   }
 }
 
 @media (min-width: 1770px) {
-  .alignable {
+  .root {
     width: 1770px;
+    margin: auto;
   }
 }

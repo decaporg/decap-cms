@@ -39,8 +39,7 @@ class DashboardPage extends React.Component {
     if (collections == null) {
       return <h1>No collections defined in your config.yml</h1>;
     }
-
-    return <div className={styles.alignable}>
+    return <div className={styles.root}>
       {entries ?
         <EntryListing collection={collection} entries={entries} page={page} onPaginate={this.loadMore} />
         :
