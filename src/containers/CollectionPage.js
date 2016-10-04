@@ -31,7 +31,7 @@ class DashboardPage extends React.Component {
     }
   }
 
-  loadMore = (page) => {
+  handleLoadMore = (page) => {
     const { collection, dispatch } = this.props;
     dispatch(loadEntries(collection, page));
   };
@@ -43,7 +43,9 @@ class DashboardPage extends React.Component {
     }
     return <div className={styles.root}>
       {entries ?
-        <EntryListing collection={collection} entries={entries} page={page} onPaginate={this.loadMore} />
+        <EntryListing collections={collection} entries={entries} page={page} onPaginate={this.handleLoadMore}>
+          Listing {collection.get('name')}
+        </EntryListing>
         :
         <Loader active>{['Loading Entries', 'Caching Entries', 'This might take several minutes']}</Loader>
       }

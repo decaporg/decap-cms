@@ -70,8 +70,7 @@ export default class Algolia {
     });
   }
 
-  search(collectionsList, searchTerm, page) {
-    const collections = collectionsList.toJS();
+  search(collections, searchTerm, page) {
     const searchCollections = collections.map(collection => (
       { indexName: collection, params: `query=${searchTerm}` }
     ));

@@ -34,7 +34,7 @@ const entries = (state = Map({ entities: Map(), pages: Map() }), action) => {
       });
 
     case SEARCH_ENTRIES_REQUEST:
-      return state.setIn(['search', 'isFetching'], true);
+      return state.set('search', Map({ isFetching: true }));
 
     case SEARCH_ENTRIES_SUCCESS:
       loadedEntries = action.payload.entries;

@@ -15,4 +15,8 @@ const collections = (state = null, action) => {
   }
 };
 
+export const selectCollection = (state, name) => (
+  state.getIn(['collections', name])
+);
+
 export default collections;
