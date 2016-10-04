@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
-import { render } from 'react-dom';
+import ReactDOM from 'react-dom';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import { ScrollSyncPane } from '../ScrollSync';
 import registry from '../../lib/registry';
 import { resolveWidget } from '../Widgets';
 import Preview from './Preview';
@@ -8,16 +9,8 @@ import styles from './PreviewPane.css';
 
 export default class PreviewPane extends React.Component {
 
-  componentDidUpdate(prevProps) {
-    // Update scroll position of the iframe
-    const { scrollTop, scrollHeight, offsetHeight, ...rest } = this.props;
-    const frameHeight = this.iframeBody.scrollHeight - offsetHeight;
-    this.iframeBody.scrollTop = frameHeight * scrollTop / (scrollHeight - offsetHeight);
-
-    // We don't want to re-render on scroll
-    if (prevProps.collection !== this.props.collection || prevProps.entry !== this.props.entry) {
-      this.renderPreview(rest);
-    }
+  componentDidUpdate() {
+    this.renderPreview();
   }
 
   widgetFor = name => {
@@ -30,15 +23,21 @@ export default class PreviewPane extends React.Component {
       field,
       getMedia,
     });
-  }
+  };
 
-  renderPreview(props) {
-    const component = registry.getPreviewTemplate(props.collection.get('name')) || Preview;
+  renderPreview() {
+    const component = registry.getPreviewTemplate(this.props.collection.get('name')) || Preview;
     const previewProps = {
-      ...props,
+      ...this.props,
       widgetFor: this.widgetFor
     };
-    render(React.createElement(component, previewProps), this.previewEl);
+    // We need to use this API in order to pass context to the iframe
+    ReactDOM.unstable_renderSubtreeIntoContainer(
+      this,
+      <ScrollSyncPane attachTo={this.iframeBody}>
+        {React.createElement(component, previewProps)}
+      </ScrollSyncPane>
+      , this.previewEl);
   }
 
   handleIframeRef = ref => {
@@ -52,9 +51,9 @@ export default class PreviewPane extends React.Component {
       this.previewEl = document.createElement('div');
       this.iframeBody = ref.contentDocument.body;
       this.iframeBody.appendChild(this.previewEl);
-      this.renderPreview(this.props);
+      this.renderPreview();
     }
-  }
+  };
 
   render() {
     const { collection } = this.props;

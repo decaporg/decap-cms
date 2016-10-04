@@ -1,63 +1,44 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import { ScrollSync, ScrollSyncPane } from '../ScrollSync';
 import ControlPane from '../ControlPanel/ControlPane';
 import PreviewPane from '../PreviewPane/PreviewPane';
 import styles from './EntryEditor.css';
 
-export default class EntryEditor extends Component {
-
-  state = {
-    scrollTop: 0,
-    scrollHeight: 0,
-    offsetHeight: 0,
-  }
-
-  handleControlPaneScroll = evt => {
-    const { scrollTop, scrollHeight, offsetHeight } = evt.target;
-    this.setState({
-      scrollTop,
-      scrollHeight,
-      offsetHeight,
-    });
-  }
-
-  render() {
-    const { collection, entry, getMedia, onChange, onAddMedia, onRemoveMedia, onPersist } = this.props;
-    const { scrollTop, scrollHeight, offsetHeight } = this.state;
-
-    return (
-      <div className={styles.root}>
+export default function EntryEditor(
+  {
+    collection, entry, getMedia, onChange, onAddMedia, onRemoveMedia, onPersist
+  }) {
+  return (
+    <div className={styles.root}>
+      <ScrollSync>
         <div className={styles.container}>
-          <div
-            className={styles.controlPane}
-            onScroll={this.handleControlPaneScroll}
-          >
-            <ControlPane
-              collection={collection}
-              entry={entry}
-              getMedia={getMedia}
-              onChange={onChange}
-              onAddMedia={onAddMedia}
-              onRemoveMedia={onRemoveMedia}
-            />
-          </div>
+          <ScrollSyncPane>
+            <div className={styles.controlPane}>
+              <ControlPane
+                collection={collection}
+                entry={entry}
+                getMedia={getMedia}
+                onChange={onChange}
+                onAddMedia={onAddMedia}
+                onRemoveMedia={onRemoveMedia}
+              />
+            </div>
+          </ScrollSyncPane>
           <div className={styles.previewPane}>
             <PreviewPane
               collection={collection}
               entry={entry}
               getMedia={getMedia}
-              scrollTop={scrollTop}
-              scrollHeight={scrollHeight}
-              offsetHeight={offsetHeight}
             />
           </div>
         </div>
-        <div className={styles.footer}>
-          <button onClick={onPersist}>Save</button>
-        </div>
+      </ScrollSync>
+      <div className={styles.footer}>
+        <button onClick={onPersist}>Save</button>
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 EntryEditor.propTypes = {
