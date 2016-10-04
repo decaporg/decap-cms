@@ -21,9 +21,9 @@ class SearchPage extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.route === nextProps.route) return;
+    if (this.props.searchTerm === nextProps.searchTerm) return;
     const { searchEntries } = this.props;
-    searchEntries(nextProps.route.searchTerm);
+    searchEntries(nextProps.searchTerm);
   }
 
   handleLoadMore() {
@@ -32,7 +32,6 @@ class SearchPage extends React.Component {
   render() {
     const { collections, searchTerm, entries, page } = this.props;
     return <div className={styles.root}>
-      <h1>Search for {searchTerm}</h1>
       {entries ?
         <EntryListing collections={collections} entries={entries} page={page} onPaginate={this.handleLoadMore}>
           Results for “{searchTerm}”
