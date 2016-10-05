@@ -18,7 +18,7 @@
     "lint:staged": "lint-staged"
   },
   "lint-staged": {
-    "*.@(js|jsx)": [
+    "*.js": [
       "eslint --fix",
       "git add"
     ],
