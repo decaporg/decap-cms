@@ -17,7 +17,6 @@
     "property-no-vendor-prefix": true,
     "selector-attribute-quotes": "always",
     "selector-no-attribute": true,
-    "selector-no-combinator": true,
     "selector-no-qualifying-type": true,
     "selector-no-id": true,
     "selector-no-type": true,
