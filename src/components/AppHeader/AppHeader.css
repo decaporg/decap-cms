@@ -10,8 +10,9 @@
   background-color: var(--backgroundColor);
 }
 
-.createBtn {
-  position: fixed;
-  right: 2rem;
-  top: 3.5rem;
+.logo {
+  background: url('./logo.svg');
+  background-size: 100% 100%;
+  width: 32px;
+  height: 32px;
 }

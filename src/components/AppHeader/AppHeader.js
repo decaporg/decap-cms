@@ -1,7 +1,7 @@
 import React from 'react';
 import pluralize from 'pluralize';
 import { IndexLink } from 'react-router';
-import { Menu, MenuItem, Button, IconButton } from 'react-toolbox';
+import { Menu, MenuItem } from 'react-toolbox';
 import AppBar from 'react-toolbox/lib/app_bar';
 import FindBar from '../FindBar/FindBar';
 import styles from './AppHeader.css';
@@ -45,45 +45,34 @@ export default class AppHeader extends React.Component {
       <AppBar
           fixed
           theme={styles}
+          leftIcon="menu"
+          rightIcon="create"
+          onLeftIconClick={toggleNavDrawer}
+          onRightIconClick={this.handleCreateButtonClick}
       >
-        <IconButton
-            icon="menu"
-            inverse
-            onClick={toggleNavDrawer}
-        />
-        <IndexLink to="/">
-          Dashboard
-        </IndexLink>
+        <IndexLink to="/" className={styles.logo}/>
         <FindBar
             commands={commands}
             defaultCommands={defaultCommands}
             runCommand={runCommand}
         />
-        <Button
-            className={styles.createBtn}
-            icon='add'
-            floating
-            accent
-            onClick={this.handleCreateButtonClick}
-        >
-          <Menu
-              active={createMenuActive}
-              position="topRight"
-              onHide={this.handleCreateMenuHide}
-          >
-            {
-              collections.valueSeq().map(collection =>
-                <MenuItem
-                    key={collection.get('name')}
-                    value={collection.get('name')}
-                    onClick={this.handleCreatePostClick.bind(this, collection.get('name'))}
-                    caption={pluralize(collection.get('label'), 1)}
-                />
-              )
-            }
-          </Menu>
-        </Button>
 
+        <Menu
+            active={createMenuActive}
+            position="topRight"
+            onHide={this.handleCreateMenuHide}
+        >
+          {
+            collections.valueSeq().map(collection =>
+              <MenuItem
+                  key={collection.get('name')}
+                  value={collection.get('name')}
+                  onClick={this.handleCreatePostClick.bind(this, collection.get('name'))}
+                  caption={pluralize(collection.get('label'), 1)}
+              />
+            )
+          }
+        </Menu>
       </AppBar>
     );
   }
