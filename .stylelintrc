@@ -32,6 +32,7 @@
 
     "declaration-block-properties-order": [
       [
+        "composes",
         "position",
         "top",
         "right",
