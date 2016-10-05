@@ -1,0 +1,41 @@
+{
+  "extends": [
+    "stylelint-config-standard",
+    "stylelint-config-css-modules"
+  ],
+  "plugins": [
+    "stylelint-declaration-block-order"
+  ],
+  "rules": {
+    "at-rule-no-vendor-prefix": true,
+    "function-url-no-scheme-relative": true,
+    "function-url-quotes": "always",
+    "max-nesting-depth": 3,
+    "media-feature-name-no-vendor-prefix": true,
+    "property-no-vendor-prefix": true,
+    "selector-attribute-quotes": "always",
+    "selector-no-attribute": true,
+    "selector-no-combinator": true,
+    "selector-no-qualifying-type": true,
+    "selector-no-id": true,
+    "selector-no-type": true,
+    "selector-no-universal": true,
+    "selector-no-vendor-prefix": true,
+    "selector-pseudo-element-colon-notation": "double",
+    "selector-pseudo-element-no-unknown": true,
+    "selector-root-no-composition": true,
+    "selector-type-no-unknown": true,
+    "string-quotes": "single",
+    "value-no-vendor-prefix": true,
+    "stylelint-disable-reason": "always-after",
+
+
+    "plugin/declaration-block-order": [
+      "custom-properties",
+      "dollar-variables",
+      "declarations",
+      "rules",
+      "at-rules"
+    ]
+  }
+}
