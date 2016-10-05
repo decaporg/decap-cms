@@ -1,8 +1,9 @@
 import React from 'react';
 import pluralize from 'pluralize';
 import { IndexLink } from 'react-router';
-import { Menu, MenuItem, Button, IconButton } from 'react-toolbox';
+import { Menu, MenuItem, IconButton } from 'react-toolbox';
 import AppBar from 'react-toolbox/lib/app_bar';
+import { FloatingButton } from '../UI/index';
 import FindBar from '../FindBar/FindBar';
 import styles from './AppHeader.css';
 
@@ -59,10 +60,9 @@ export default class AppHeader extends React.Component {
             defaultCommands={defaultCommands}
             runCommand={runCommand}
         />
-        <Button
+        <FloatingButton
             className={styles.createBtn}
             icon='add'
-            floating
             accent
             onClick={this.handleCreateButtonClick}
         >
@@ -82,8 +82,7 @@ export default class AppHeader extends React.Component {
               )
             }
           </Menu>
-        </Button>
-
+        </FloatingButton>
       </AppBar>
     );
   }

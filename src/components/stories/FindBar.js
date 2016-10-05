@@ -1,7 +1,7 @@
 import React from 'react';
 import { storiesOf, action } from '@kadira/storybook';
 
-import FindBar from '../UI/FindBar/FindBar';
+import FindBar from '../FindBar/FindBar';
 
 const CREATE_COLLECTION = 'CREATE_COLLECTION';
 const CREATE_POST = 'CREATE_POST';
