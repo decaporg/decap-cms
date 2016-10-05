@@ -5,10 +5,11 @@
 
 .column {
   display: table-cell;
-  text-align: center;
   width: 33%;
   height: 100%;
+  text-align: center;
   transition: background-color .5s ease;
+
   & h2 {
     font-size: 16px;
   }
@@ -23,32 +24,32 @@
 }
 
 .card {
-  width: 100% !important;
   margin: 7px 0 0 10px;
   padding: 7px 0;
+  width: 100% !important;
 }
 
 .cardHeading {
   font-size: 17px;
+
   & small {
     font-weight: normal;
   }
 }
 
 .cardText {
+  margin-top: 5px;
   color: #555;
   font-size: 12px;
-  margin-top: 5px;
 }
 
 .button {
-  margin: 10px 10px 0 0;
   float: right;
+  margin: 10px 10px 0 0;
 }
 
-
 .clear::after {
-    content:"";
-    display:block;
-    clear:both;
+  display: block;
+  clear: both;
+  content: '';
 }

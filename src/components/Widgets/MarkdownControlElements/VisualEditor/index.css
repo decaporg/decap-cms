@@ -3,22 +3,22 @@
 }
 
 :global .plugin {
+  padding: 8px;
+  width: 200px;
+  border-radius: 2px;
   background-color: #ddd;
   color: #555;
   text-align: center;
-  width: 200px;
-  padding: 8px;
-  border-radius: 2px;
 }
 
 :global .plugin_icon {
-  font-size: 50px;
   margin: 12px 0;
+  font-size: 50px;
 }
 
 :global .plugin_fields {
+  outline: none;
   font-size: 11px;
-  outline:none;
 }
 
 :global .active {

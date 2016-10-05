@@ -1,20 +1,19 @@
 .root {
-    border: dotted 1px #ddd;
-    position: relative;
-    margin: 9px 0 15px 0;
+  position: relative;
+  margin: 9px 0 15px 0;
+  border: dotted 1px #ddd;
 }
 
-
 .type:after {
-  content: attr(data-type);
-  font-size: 10px;
-  color: #aaa;
   position: absolute;
-  top : -7px;;
+  top: -7px;
+  display: inline;
   margin-left: 1em;
   padding: 0 3px;
-  display: inline;
   background-color: #fafafa;
+  color: #aaa;
+  content: attr(data-type);
+  font-size: 10px;
   pointer-events: none;
 }
 
@@ -22,18 +21,22 @@
   padding: 8px;
 }
 
-.body img{
+.body img {
   max-width: 100%;
   height: auto;
 }
 
 .Paragraph {
-
 }
 
-.Heading1, .Heading2, .Heading3, .Heading4, .Heading5, .Heading6 {
+.Heading1,
+.Heading2,
+.Heading3,
+.Heading4,
+.Heading5,
+.Heading6 {
   margin: 0;
-  font-weight: bold
+  font-weight: bold;
 }
 
 .Heading1 {
@@ -66,6 +69,6 @@
 }
 
 .body ul {
-  padding-left: 20px;
   margin: 0;
+  padding-left: 20px;
 }

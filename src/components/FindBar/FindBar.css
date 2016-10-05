@@ -7,40 +7,41 @@
 }
 
 .root {
-  flex: 1;
   position: relative;
-  background-color: var(--backgroundColor);
+  flex: 1;
   padding: 5px;
+  background-color: var(--backgroundColor);
 }
+
 .inputArea {
   display: table;
   width: 100%;
-  color: var(--foregroundColor);
-  background-color: #fff;
   border: 1px solid var(--textFieldBorderColor);
+  background-color: #fff;
+  color: var(--foregroundColor);
 }
 
 .inputScope {
   display: table-cell;
-  width: 1%;
+  margin: 0;
   padding: 0 6px 0 8px;
-  color: #767676;
-  font-size: 16px;
-  white-space: nowrap;
-  vertical-align: middle;
+  width: 1%;
   border-right: 1px solid var(--textFieldBorderColor);
-  margin:0;
+  color: #767676;
+  vertical-align: middle;
+  white-space: nowrap;
+  font-size: 16px;
 }
 
 .inputField {
   display: table-cell;
-  width: 99%;
   padding: 6px;
-  font-size: 16px;
-  background: none transparent;
-  border: 0 none;
-  box-shadow: none;
+  width: 99%;
   outline: none;
+  border: 0 none;
+  background: none transparent;
+  box-shadow: none;
+  font-size: 16px;
   font-size: inherit;
 }
 
@@ -50,49 +51,50 @@
   left: 0;
   z-index: 9999;
   display: table;
-  width: 100%;
-  background: var(--backgroundColor);
-  font-size: 13px;
-  font-weight: 400;
   padding: 5px;
+  width: 100%;
   height: 100%;
+  background: var(--backgroundColor);
+  font-weight: 400;
+  font-size: 13px;
 }
 
 .suggestions {
   display: table-cell;
-  width: 50%;
   padding-right: 10px;
+  width: 50%;
 }
 
 .history {
   display: table-cell;
-  width: 50%;
   padding-left: 10px;
+  width: 50%;
 }
 
 .command {
   padding: 6px;
-  cursor: default;
   color: var(--foregroundColor);
+  cursor: default;
 }
 
-.command strong, .highlightedCommand strong {
+.command strong,
+.highlightedCommand strong {
   color: #000;
 }
 
 .command .faded {
-  font-weight: 300;
   color: #888;
+  font-weight: 300;
 }
 
 .highlightedCommand {
-  color: var(--highlightFGColor);
-  background: var(--highlightBGColor);
   padding: 6px;
+  background: var(--highlightBGColor);
+  color: var(--highlightFGColor);
   cursor: default;
 }
 
 .highlightedCommand .faded {
-  font-weight: 300;
   color: #282c34;
+  font-weight: 300;
 }

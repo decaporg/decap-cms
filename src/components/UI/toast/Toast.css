@@ -6,12 +6,12 @@
   top: 10px;
   right: 10px;
   z-index: 100;
-  width: 350px;
-  padding: 20px 10px;
-  font-size: 0.9rem;
-  text-align: center;
-  color: var(--defaultColorLight);
   overflow: hidden;
+  padding: 20px 10px;
+  width: 350px;
+  color: var(--defaultColorLight);
+  text-align: center;
+  font-size: 0.9rem;
   opacity: 1;
   transition: opacity .3s ease-in;
 }
