@@ -72,13 +72,12 @@ export default class Algolia {
 
   search(collections, searchTerm, page) {
     const searchCollections = collections.map(collection => (
-      { indexName: collection, params: `query=${searchTerm}` }
+      { indexName: collection, params: `query=${searchTerm}&page=${page}` }
     ));
 
     return this.request(`${this.searchURL}/indexes/*/queries`, {
       method: 'POST',
-      body: JSON.stringify({ requests: searchCollections, strategy: 'stopIfEnoughMatches' }),
-      params: { page }
+      body: JSON.stringify({ requests: searchCollections })
     }).then(response => {
       const entries = response.results.map((result, index) => result.hits.map(hit => {
         const slug = hit.slug || getSlug(hit.path);
