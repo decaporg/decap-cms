@@ -15,6 +15,7 @@
     "function-url-quotes": "always",
     "max-nesting-depth": 3,
     "media-feature-name-no-vendor-prefix": true,
+    "number-leading-zero": "never",
     "property-no-vendor-prefix": true,
     "selector-attribute-quotes": "always",
     "selector-no-attribute": true,
