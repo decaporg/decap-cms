@@ -21,6 +21,11 @@
     "*.@(js|jsx)": [
       "eslint --fix",
       "git add"
+    ],
+    "*.css": [
+      "stylefmt",
+      "stylelint",
+      "git add"
     ]
   },
   "pre-commit": "lint:staged",
