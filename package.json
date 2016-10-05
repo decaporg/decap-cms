@@ -88,6 +88,7 @@
     "stylelint-config-css-modules": "^0.1.0",
     "stylelint-config-standard": "^13.0.2",
     "stylelint-declaration-block-order": "^0.1.0",
+    "stylelint-declaration-use-variable": "^1.6.0",
     "url-loader": "^0.5.7",
     "webpack": "^1.13.2",
     "webpack-dev-server": "^1.15.1",

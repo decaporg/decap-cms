@@ -4,7 +4,8 @@
     "stylelint-config-css-modules"
   ],
   "plugins": [
-    "stylelint-declaration-block-order"
+    "stylelint-declaration-block-order",
+    "stylelint-declaration-use-variable"
   ],
   "rules": {
     "at-rule-no-vendor-prefix": true,
@@ -252,6 +253,16 @@
       "declarations",
       "rules",
       "at-rules"
+    ],
+
+    "sh-waqar/declaration-use-variable": [
+      [
+        "/color/",
+        "z-index",
+        "font-size",
+        "border-radius",
+        "/background/"
+      ]
     ]
   }
 }
