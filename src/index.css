@@ -9,8 +9,8 @@ html {
 }
 
 *,
-*:before,
-*:after {
+*::before,
+*::after {
   box-sizing: inherit;
 }
 
@@ -51,7 +51,7 @@ h1 {
     border-bottom: 1px solid #e8eae8;
   }
 
-  & .cms-widget:after {
+  & .cms-widget::after {
     position: absolute;
     bottom: -7px;
     left: 42px;
@@ -70,7 +70,7 @@ h1 {
     border-bottom: none;
   }
 
-  & .cms-widget:last-child:after {
+  & .cms-widget:last-child::after {
     display: none;
   }
 
@@ -167,7 +167,7 @@ h1 {
     position: relative;
   }
 
-  & .rdtPicker td.rdtToday:before {
+  & .rdtPicker td.rdtToday::before {
     position: absolute;
     right: 4px;
     bottom: 4px;
@@ -185,7 +185,7 @@ h1 {
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
   }
 
-  & .rdtPicker td.rdtActive.rdtToday:before {
+  & .rdtPicker td.rdtActive.rdtToday::before {
     border-bottom-color: #fff;
   }
 

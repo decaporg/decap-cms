@@ -4,7 +4,7 @@
   border: dotted 1px #ddd;
 }
 
-.type:after {
+.type::after {
   position: absolute;
   top: -7px;
   display: inline;

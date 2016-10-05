@@ -13,7 +13,7 @@
 
 /* Static Shape */
 
-.loader:before {
+.loader::before {
   position: absolute;
   top: 0%;
   left: 50%;
@@ -26,7 +26,7 @@
 
 /* Active Shape */
 
-.loader:after {
+.loader::after {
   position: absolute;
   top: 0%;
   left: 50%;
@@ -68,8 +68,8 @@
   }
 }
 
-.loader:before,
-.loader:after {
+.loader::before,
+.loader::after {
   margin: 0em 0em 0em -1.14285714rem;
   width: 2.28571429rem;
   height: 2.28571429rem;
