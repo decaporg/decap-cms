@@ -14,7 +14,7 @@
     "lint:js": "eslint .",
     "lint:js:fix": "npm run lint:js -- --fix",
     "lint:css": "stylelint 'src/**/*.css'",
-    "lint:css:fix": "stylelint **/*.css",
+    "lint:css:fix": "stylefmt --recursive src/",
     "lint:staged": "lint-staged"
   },
   "lint-staged": {
@@ -75,6 +75,7 @@
     "redux-thunk": "^1.0.3",
     "sass-loader": "^4.0.2",
     "style-loader": "^0.13.0",
+    "stylefmt": "^4.3.1",
     "stylelint": "^7.3.1",
     "stylelint-config-css-modules": "^0.1.0",
     "stylelint-config-standard": "^13.0.2",
