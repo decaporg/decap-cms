@@ -10,6 +10,7 @@
   "rules": {
     "at-rule-no-vendor-prefix": true,
     "comment-empty-line-before": "never",
+    "declaration-no-important": true,
     "function-url-no-scheme-relative": true,
     "function-url-quotes": "always",
     "max-nesting-depth": 3,
