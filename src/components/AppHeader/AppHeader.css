@@ -9,10 +9,3 @@
 .appBar {
   background-color: var(--backgroundColor);
 }
-
-.logo {
-  background: url('./logo.svg');
-  background-size: 100% 100%;
-  width: 32px;
-  height: 32px;
-}

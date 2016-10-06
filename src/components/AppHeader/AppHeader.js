@@ -50,7 +50,10 @@ export default class AppHeader extends React.Component {
           onLeftIconClick={toggleNavDrawer}
           onRightIconClick={this.handleCreateButtonClick}
       >
-        <IndexLink to="/" className={styles.logo}/>
+        <IndexLink to="/">
+          Dashboard
+        </IndexLink>
+
         <FindBar
             commands={commands}
             defaultCommands={defaultCommands}
