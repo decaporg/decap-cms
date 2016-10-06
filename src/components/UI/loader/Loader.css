@@ -1,11 +1,11 @@
 .loader {
-  display: none;
   position: absolute;
   top: 50%;
   left: 50%;
-  margin: 0px;
-  text-align: center;
   z-index: 1000;
+  display: none;
+  margin: 0;
+  text-align: center;
   -webkit-transform: translateX(-50%) translateY(-50%);
   -ms-transform: translateX(-50%) translateY(-50%);
   transform: translateX(-50%) translateY(-50%);
@@ -13,33 +13,33 @@
 
 /* Static Shape */
 
-.loader:before {
+.loader::before {
   position: absolute;
-  content: '';
-  top: 0%;
+  top: 0;
   left: 50%;
   width: 100%;
   height: 100%;
+  border: .2em solid rgba(0, 0, 0, .1);
   border-radius: 500rem;
-  border: 0.2em solid rgba(0, 0, 0, 0.1);
+  content: '';
 }
 
 /* Active Shape */
 
-.loader:after {
+.loader::after {
   position: absolute;
-  content: '';
-  top: 0%;
+  top: 0;
   left: 50%;
   width: 100%;
   height: 100%;
-  animation: loader 0.6s linear;
-  animation-iteration-count: infinite;
-  border-radius: 500rem;
-  border-color: #767676 transparent transparent;
+  border-width: .2em;
   border-style: solid;
-  border-width: 0.2em;
-  box-shadow: 0px 0px 0px 1px transparent;
+  border-color: #767676 transparent transparent;
+  border-radius: 500rem;
+  box-shadow: 0 0 0 1px transparent;
+  content: '';
+  animation: loader .6s linear;
+  animation-iteration-count: infinite;
 }
 
 /* Active Animation */
@@ -68,20 +68,19 @@
   }
 }
 
-.loader:before,
-.loader:after {
-  width: 2.28571429rem;
-  height: 2.28571429rem;
-  margin: 0em 0em 0em -1.14285714rem;
+.loader::before,
+.loader::after {
+  margin: 0 0 0 -1.143rem;
+  width: 2.286rem;
+  height: 2.286rem;
 }
 
-
 .text {
+  margin-top: 35px;
   width: auto !important;
   height: auto !important;
-  text-align: center;
   color: #767676;
-  margin-top: 35px;
+  text-align: center;
 }
 
 .active {
@@ -93,23 +92,26 @@
 }
 
 /*Animations*/
-.animateItem{
+.animateItem {
   position: absolute;
   white-space: nowrap;
   transform: translateX(-50%);
 }
 
 .enter {
-  opacity: 0.01;
+  opacity: .01;
 }
+
 .enter.enterActive {
   opacity: 1;
   transition: opacity 500ms ease-in;
 }
+
 .leave {
   opacity: 1;
 }
+
 .leave.leaveActive {
-  opacity: 0.01;
+  opacity: .01;
   transition: opacity 300ms ease-in;
 }

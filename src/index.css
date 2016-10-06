@@ -2,89 +2,104 @@
 
 html {
   box-sizing: border-box;
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', HelveticaNeue, Helvetica, Arial, sans-serif;
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
-  margin: 0;
-  font-family: Roboto, "Helvetica Neue", HelveticaNeue, Helvetica, Arial, sans-serif;
 }
 
-*, *:before, *:after {
+*,
+*::before,
+*::after {
   box-sizing: inherit;
 }
 
 body {
-  font-family: 'Roboto', sans-serif;
+  margin: 0;
   height: 100%;
   background-color: #f2f5f4;
   color: #7c8382;
-  margin: 0;
+  font-family: 'Roboto', sans-serif;
 }
 
-:global #root, :global #root > * {
+:global #root,
+:global #root > * {
   height: 100%;
 }
 
-h1, h2, h3, h4, h5, h6, p {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
   margin: 0;
 }
 
 h1 {
-  color: #3ab7a5;
-  border-bottom: 1px solid #3ab7a5;
   margin: 30px auto 25px;
   padding-bottom: 15px;
+  border-bottom: 1px solid #3ab7a5;
+  color: #3ab7a5;
   font-size: 25px;
 }
 
 :global {
   & .cms-widget {
-    border-bottom: 1px solid #e8eae8;
     position: relative;
+    border-bottom: 1px solid #e8eae8;
   }
-  & .cms-widget:after {
-    content: '';
+
+  & .cms-widget::after {
     position: absolute;
-    left: 42px;
     bottom: -7px;
+    left: 42px;
+    z-index: 1;
     width: 12px;
     height: 12px;
-    background-color: #f2f5f4;
-    -webkit-transform: rotate(45deg);
-    transform: rotate(45deg);
-    z-index: 1;
     border-right: 1px solid #e8eae8;
     border-bottom: 1px solid #e8eae8;
+    background-color: #f2f5f4;
+    content: '';
+    -webkit-transform: rotate(45deg);
+    transform: rotate(45deg);
   }
+
   & .cms-widget:last-child {
     border-bottom: none;
   }
-  & .cms-widget:last-child:after {
+
+  & .cms-widget:last-child::after {
     display: none;
   }
+
   & .cms-control {
-    color: #7c8382;
     position: relative;
     padding: 20px 0;
+    color: #7c8382;
+
     & label {
-      color: #AAB0AF;
-      font-size: 12px;
       margin-bottom: 18px;
+      color: #aab0af;
+      font-size: 12px;
     }
+
     & input,
     & textarea,
     & select,
     & .cms-editor-raw {
-      font-family: monospace;
       display: block;
-      width: 100%;
-      padding: 0;
       margin: 0;
-      border: none;
+      padding: 0;
+      width: 100%;
       outline: 0;
-      box-shadow: none;
+      border: none;
       background: 0 0;
-      font-size: 18px;
+      box-shadow: none;
       color: #7c8382;
+      font-size: 18px;
+      font-family: monospace;
     }
   }
 }
@@ -93,23 +108,26 @@ h1 {
   & .rdt {
     position: relative;
   }
+
   & .rdtPicker {
-    display: none;
     position: absolute;
-    width: 250px;
-    padding: 4px;
-    margin-top: 1px;
     z-index: 99999 !important;
+    display: none;
+    margin-top: 1px;
+    padding: 4px;
+    width: 250px;
+    border: 1px solid #f9f9f9;
     background: #fff;
     box-shadow: 0 1px 3px rgba(0, 0, 0, .1);
-    border: 1px solid #f9f9f9;
   }
+
   & .rdtOpen .rdtPicker {
     display: block;
   }
+
   & .rdtStatic .rdtPicker {
-    box-shadow: none;
     position: static;
+    box-shadow: none;
   }
 
   & .rdtPicker .rdtTimeToggle {
@@ -117,17 +135,20 @@ h1 {
   }
 
   & .rdtPicker table {
-    width: 100%;
     margin: 0;
+    width: 100%;
   }
+
   & .rdtPicker td,
   & .rdtPicker th {
-    text-align: center;
     height: 28px;
+    text-align: center;
   }
+
   & .rdtPicker td {
     cursor: pointer;
   }
+
   & .rdtPicker td.rdtDay:hover,
   & .rdtPicker td.rdtHour:hover,
   & .rdtPicker td.rdtMinute:hover,
@@ -136,32 +157,38 @@ h1 {
     background: #eeeeee;
     cursor: pointer;
   }
+
   & .rdtPicker td.rdtOld,
   & .rdtPicker td.rdtNew {
     color: #999999;
   }
+
   & .rdtPicker td.rdtToday {
     position: relative;
   }
-  & .rdtPicker td.rdtToday:before {
-    content: '';
-    display: inline-block;
-    border-left: 7px solid transparent;
-    border-bottom: 7px solid #428bca;
-    border-top-color: rgba(0, 0, 0, 0.2);
+
+  & .rdtPicker td.rdtToday::before {
     position: absolute;
-    bottom: 4px;
     right: 4px;
+    bottom: 4px;
+    display: inline-block;
+    border-top-color: rgba(0, 0, 0, 0.2);
+    border-bottom: 7px solid #428bca;
+    border-left: 7px solid transparent;
+    content: '';
   }
+
   & .rdtPicker td.rdtActive,
   & .rdtPicker td.rdtActive:hover {
     background-color: #428bca;
     color: #fff;
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
   }
-  & .rdtPicker td.rdtActive.rdtToday:before {
+
+  & .rdtPicker td.rdtActive.rdtToday::before {
     border-bottom-color: #fff;
   }
+
   & .rdtPicker td.rdtDisabled,
   & .rdtPicker td.rdtDisabled:hover {
     background: none;
@@ -172,37 +199,42 @@ h1 {
   & .rdtPicker td span.rdtOld {
     color: #999999;
   }
+
   & .rdtPicker td span.rdtDisabled,
   & .rdtPicker td span.rdtDisabled:hover {
     background: none;
     color: #999999;
     cursor: not-allowed;
   }
+
   & .rdtPicker th {
     border-bottom: 1px solid #f9f9f9;
   }
+
   & .rdtPicker .dow {
     width: 14.2857%;
     border-bottom: none;
   }
+
   & .rdtPicker th.rdtSwitch {
     width: 100px;
   }
+
   & .rdtPicker th.rdtNext,
   & .rdtPicker th.rdtPrev {
-    font-size: 21px;
     vertical-align: top;
+    font-size: 21px;
   }
 
   & .rdtPrev span,
   & .rdtNext span {
     display: block;
-    -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Chrome/Safari/Opera */
     -khtml-user-select: none; /* Konqueror */
     -moz-user-select: none; /* Firefox */
     -ms-user-select: none; /* Internet Explorer/Edge */
     user-select: none;
+    -webkit-touch-callout: none; /* iOS Safari */
   }
 
   & .rdtPicker th.rdtDisabled,
@@ -211,9 +243,11 @@ h1 {
     color: #999999;
     cursor: not-allowed;
   }
+
   & .rdtPicker thead tr:first-child th {
     cursor: pointer;
   }
+
   & .rdtPicker thead tr:first-child th:hover {
     background: #eeeeee;
   }
@@ -227,6 +261,7 @@ h1 {
     background: none;
     cursor: pointer;
   }
+
   & .rdtPicker button:hover {
     background-color: #eee;
   }
@@ -238,10 +273,11 @@ h1 {
 
   & td.rdtMonth,
   & td.rdtYear {
-    height: 50px;
     width: 25%;
+    height: 50px;
     cursor: pointer;
   }
+
   & td.rdtMonth:hover,
   & td.rdtYear:hover {
     background: #eee;
@@ -268,35 +304,36 @@ h1 {
   }
 
   & .rdtCounter .rdtBtn {
+    display: block;
     height: 40%;
     line-height: 40px;
     cursor: pointer;
-    display: block;
-
-    -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Chrome/Safari/Opera */
     -khtml-user-select: none; /* Konqueror */
     -moz-user-select: none; /* Firefox */
     -ms-user-select: none; /* Internet Explorer/Edge */
     user-select: none;
+    -webkit-touch-callout: none; /* iOS Safari */
   }
+
   & .rdtCounter .rdtBtn:hover {
     background: #eee;
   }
+
   & .rdtCounter .rdtCount {
     height: 20%;
     font-size: 1.2em;
   }
 
   & .rdtMilli {
-    vertical-align: middle;
     padding-left: 8px;
     width: 48px;
+    vertical-align: middle;
   }
 
   & .rdtMilli input {
+    margin-top: 37px;
     width: 100%;
     font-size: 1.2em;
-    margin-top: 37px;
   }
 }

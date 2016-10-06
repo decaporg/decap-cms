@@ -13,8 +13,8 @@
 }
 
 .container {
-  color: var(--defaultColor);
   background-color: var(--backgroundColor);
+  color: var(--defaultColor);
 }
 
 .rounded {

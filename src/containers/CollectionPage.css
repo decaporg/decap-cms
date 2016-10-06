@@ -4,36 +4,35 @@
 
 @media (max-width: 749px) and (min-width: 495px) {
   .root {
-    width: 495px;
     margin: auto;
+    width: 495px;
   }
 }
 
 @media (max-width: 1004px) and (min-width: 750px) {
   .root {
-    width: 750px;
     margin: auto;
+    width: 750px;
   }
 }
 
 @media (max-width: 1514px) and (min-width: 1005px) {
   .root {
-    width: 1005px;
     margin: auto;
+    width: 1005px;
   }
 }
 
-
 @media (max-width: 1769px) and (min-width: 1515px) {
   .root {
-    width: 1515px;
     margin: auto;
+    width: 1515px;
   }
 }
 
 @media (min-width: 1770px) {
   .root {
-    width: 1770px;
     margin: auto;
+    width: 1770px;
   }
 }

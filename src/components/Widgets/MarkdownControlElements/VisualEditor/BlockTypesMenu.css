@@ -5,9 +5,10 @@
 .button {
   margin-top: 2px;
   color: #ddd;
-  transition: color 0.5s ease;
   cursor: pointer;
+  transition: color 0.5s ease;
 }
+
 .button:hover {
   color: #aaa;
 }
@@ -17,14 +18,14 @@
   top: -5px;
   left: 20px;
   height: 32px;
-  white-space: nowrap;
   background-color: rgba(126, 126, 126, 0.1);
+  white-space: nowrap;
 }
 
 .icon {
   margin: 8px;
-  cursor: pointer;
   color: #555;
+  cursor: pointer;
 }
 
 .input {

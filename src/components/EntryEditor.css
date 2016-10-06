@@ -3,24 +3,28 @@
   flex-direction: column;
   height: 100%;
 }
+
 .container {
   display: flex;
   height: 100%;
 }
+
 .footer {
-  background: #fff;
+  z-index: 10;
+  padding: 10px 20px;
   height: 45px;
   border-top: 1px solid #e8eae8;
-  padding: 10px 20px;
-  z-index: 10;
+  background: #fff;
 }
+
 .controlPane {
-  width: 50%;
-  max-height: 100%;
   overflow: auto;
   padding: 0 20px;
+  max-height: 100%;
+  width: 50%;
   border-right: 1px solid #e8eae8;
 }
+
 .previewPane {
   width: 50%;
 }
