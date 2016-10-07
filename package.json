@@ -22,6 +22,7 @@
   "lint-staged": {
     "*.js": [
       "eslint --fix",
+      "jest --findRelatedTests",
       "git add"
     ],
     "*.css": [
