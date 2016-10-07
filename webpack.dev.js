@@ -2,6 +2,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const merge = require('webpack-merge');
+
 const HOST = 'localhost';
 const PORT = '8080';
 

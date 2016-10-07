@@ -1,4 +1,6 @@
 const webpack = require('webpack');
+const postcssImportPlugin = require('postcss-import');
+const postcssCssnextPlugin = require('postcss-cssnext');
 
 module.exports = {
   module: {
@@ -39,7 +41,7 @@ module.exports = {
   },
 
   postcss: [
-    require('postcss-import')({ addDependencyTo: webpack }),
-    require('postcss-cssnext'),
+    postcssImportPlugin({ addDependencyTo: webpack }),
+    postcssCssnextPlugin,
   ],
 };
