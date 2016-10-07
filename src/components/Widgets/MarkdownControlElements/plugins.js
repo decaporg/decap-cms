@@ -11,23 +11,23 @@ const EditorComponent = Record({
   icon: 'exclamation-triangle',
   fields: [],
   pattern: catchesNothing,
-  fromBlock: function(match) { return {}; },
-  toBlock: function(attributes) { return 'Plugin'; },
-  toPreview: function(attributes) { return 'Plugin'; }
+  fromBlock(match) { return {}; },
+  toBlock(attributes) { return 'Plugin'; },
+  toPreview(attributes) { return 'Plugin'; },
 });
 
 
 class Plugin extends Component {
   static propTypes = {
-    children: PropTypes.element.isRequired
+    children: PropTypes.element.isRequired,
   };
 
   static childContextTypes = {
-    plugins: PropTypes.object
+    plugins: PropTypes.object,
   };
 
   getChildContext() {
-    return { plugins: plugins };
+    return { plugins };
   }
 
   render() {
@@ -44,7 +44,7 @@ export function newEditorPlugin(config) {
     pattern: config.pattern,
     fromBlock: _.isFunction(config.fromBlock) ? config.fromBlock.bind(null) : null,
     toBlock: _.isFunction(config.toBlock) ? config.toBlock.bind(null) : null,
-    toPreview: _.isFunction(config.toPreview) ? config.toPreview.bind(null) : config.toBlock.bind(null)
+    toPreview: _.isFunction(config.toPreview) ? config.toPreview.bind(null) : config.toBlock.bind(null),
   });
 
 

@@ -5,25 +5,25 @@ import MediaProxy from '../../valueObjects/MediaProxy';
 const MAX_DISPLAY_LENGTH = 50;
 
 export default class ImageControl extends React.Component {
-  handleFileInputRef = el => {
+  handleFileInputRef = (el) => {
     this._fileInput = el;
   };
 
-  handleClick = e => {
+  handleClick = (e) => {
     this._fileInput.click();
   };
 
-  handleDragEnter = e => {
+  handleDragEnter = (e) => {
     e.stopPropagation();
     e.preventDefault();
   };
 
-  handleDragOver = e => {
+  handleDragOver = (e) => {
     e.stopPropagation();
     e.preventDefault();
   };
 
-  handleChange = e => {
+  handleChange = (e) => {
     e.stopPropagation();
     e.preventDefault();
 
@@ -46,7 +46,6 @@ export default class ImageControl extends React.Component {
     } else {
       this.props.onChange(null);
     }
-
   };
 
   renderImageName = () => {
@@ -56,26 +55,25 @@ export default class ImageControl extends React.Component {
     } else {
       return truncateMiddle(this.props.value, MAX_DISPLAY_LENGTH);
     }
-
   };
 
   render() {
     const imageName = this.renderImageName();
     return (
       <div
-          onDragEnter={this.handleDragEnter}
-          onDragOver={this.handleDragOver}
-          onDrop={this.handleChange}
+        onDragEnter={this.handleDragEnter}
+        onDragOver={this.handleDragOver}
+        onDrop={this.handleChange}
       >
         <span style={styles.imageUpload} onClick={this.handleClick}>
           {imageName ? imageName : 'Tip: Click here to upload an image from your file browser, or drag an image directly into this box from your desktop'}
         </span>
         <input
-            type="file"
-            accept="image/*"
-            onChange={this.handleChange}
-            style={styles.input}
-            ref={this.handleFileInputRef}
+          type="file"
+          accept="image/*"
+          onChange={this.handleChange}
+          style={styles.input}
+          ref={this.handleFileInputRef}
         />
       </div>
     );
@@ -84,7 +82,7 @@ export default class ImageControl extends React.Component {
 
 const styles = {
   input: {
-    display: 'none'
+    display: 'none',
   },
   imageUpload: {
     backgroundColor: '#fff',
@@ -94,8 +92,8 @@ const styles = {
     display: 'block',
     border: '1px dashed #eee',
     cursor: 'pointer',
-    fontSize: '12px'
-  }
+    fontSize: '12px',
+  },
 };
 
 ImageControl.propTypes = {

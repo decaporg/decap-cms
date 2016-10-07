@@ -10,14 +10,14 @@ const AVAILABLE_TYPES = [
   'Heading5',
   'Heading6',
   'List',
-  'blockquote'
+  'blockquote',
 ];
 
 export function Block({ type, children }) {
   return (
     <div className={styles.root}>
-      <div contentEditable={false} className={styles.type} data-type={type}/>
-      <div className={`${styles.body} ${styles[type]}`}>
+      <div contentEditable={false} className={styles.type} data-type={type} />
+      <div className={`${ styles.body } ${ styles[type] }`}>
         {children}
       </div>
     </div>
@@ -26,7 +26,7 @@ export function Block({ type, children }) {
 
 Block.propTypes = {
   children: PropTypes.node.isRequired,
-  type: PropTypes.oneOf(AVAILABLE_TYPES).isRequired
+  type: PropTypes.oneOf(AVAILABLE_TYPES).isRequired,
 };
 
 export default Block;

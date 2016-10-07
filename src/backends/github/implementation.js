@@ -47,15 +47,15 @@ export default class GitHub {
         }));
       });
       return Promise.all(promises);
-    }).then((entries) => ({
+    }).then(entries => ({
       pagination: {},
-      entries
+      entries,
     }));
   }
 
   entry(collection, slug) {
-    return this.entries(collection).then((response) => (
-      response.entries.filter((entry) => entry.slug === slug)[0]
+    return this.entries(collection).then(response => (
+      response.entries.filter(entry => entry.slug === slug)[0]
     ));
   }
 
@@ -86,14 +86,14 @@ export default class GitHub {
     }).then((entries) => {
       return {
         pagination: {},
-        entries
+        entries,
       };
     });
   }
 
   unpublishedEntry(collection, slug) {
-    return this.unpublishedEntries().then((response) => (
-      response.entries.filter((entry) => (
+    return this.unpublishedEntries().then(response => (
+      response.entries.filter(entry => (
         entry.metaData && entry.metaData.collection === collection.get('name') && entry.slug === slug
       ))[0]
     ));

@@ -1,15 +1,17 @@
 const webpack = require('webpack');
+const postcssImportPlugin = require('postcss-import');
+const postcssCssnextPlugin = require('postcss-cssnext');
 
 module.exports = {
   module: {
     loaders: [
       {
         test: /\.((png)|(eot)|(woff)|(woff2)|(ttf)|(svg)|(gif))(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'url-loader?limit=100000'
+        loader: 'url-loader?limit=100000',
       },
       {
         test: /\.json$/,
-        loader: 'json-loader'
+        loader: 'json-loader',
       },
       {
         test: /\.scss$/,
@@ -31,15 +33,15 @@ module.exports = {
             'transform-object-assign',
             'transform-object-rest-spread',
             'lodash',
-            'react-hot-loader/babel'
-          ]
-        }
-      }
-    ]
+            'react-hot-loader/babel',
+          ],
+        },
+      },
+    ],
   },
 
   postcss: [
-    require('postcss-import')({ addDependencyTo: webpack }),
-    require('postcss-cssnext')
+    postcssImportPlugin({ addDependencyTo: webpack }),
+    postcssCssnextPlugin,
   ],
 };

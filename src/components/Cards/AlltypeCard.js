@@ -8,7 +8,6 @@ export default class AlltypeCard extends React.Component {
   // Based on the Slabtype Algorithm by Erik Loyer
   // http://erikloyer.com/index.php/blog/the_slabtype_algorithm_part_1_background/
   renderInscription(inscription) {
-
     const idealCharPerLine = 22;
 
     // segment the text into lines
@@ -28,7 +27,7 @@ export default class AlltypeCard extends React.Component {
       // per line, while the length of the other is greater than that ideal
       while (postText.length < idealCharPerLine) {
         preText = postText;
-        postText += words[wordIndex] + ' ';
+        postText += `${ words[wordIndex] } `;
         wordIndex++;
         if (wordIndex >= words.length) {
           break;
@@ -73,9 +72,9 @@ export default class AlltypeCard extends React.Component {
 
 AlltypeCard.propTypes = {
   onClick: PropTypes.func,
-  text: PropTypes.string.isRequired
+  text: PropTypes.string.isRequired,
 };
 
 AlltypeCard.defaultProps = {
-  onClick: function() {},
+  onClick() {},
 };

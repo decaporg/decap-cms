@@ -22,11 +22,11 @@ export default class ScaledLine extends React.Component {
     const { children } = this.props;
 
     const styles = {
-      fontSize: ratio.toFixed(3) + 'em'
+      fontSize: `${ ratio.toFixed(3) }em`,
     };
 
     return (
-      <div ref={(c) => this._content = c} style={styles}>
+      <div ref={c => this._content = c} style={styles}>
         <span>{children}</span>
       </div>
     );
@@ -35,5 +35,5 @@ export default class ScaledLine extends React.Component {
 
 ScaledLine.propTypes = {
   children: PropTypes.node.isRequired,
-  toWidth: PropTypes.number.isRequired
+  toWidth: PropTypes.number.isRequired,
 };

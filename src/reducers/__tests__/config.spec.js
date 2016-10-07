@@ -14,9 +14,9 @@ describe('config', () => {
 
   it('should handle an update', () => {
     expect(
-      config(Immutable.Map({ 'a': 'b', 'c': 'd' }), configLoaded({ 'a': 'changed', 'e': 'new' }))
+      config(Immutable.Map({ a: 'b', c: 'd' }), configLoaded({ a: 'changed', e: 'new' }))
     ).toEqual(
-      Immutable.Map({ 'a': 'changed', 'e': 'new' })
+      Immutable.Map({ a: 'changed', e: 'new' })
     );
   });
 

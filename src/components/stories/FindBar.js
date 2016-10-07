@@ -27,16 +27,16 @@ const commands = [
 
 const style = {
   width: 800,
-  margin: 20
+  margin: 20,
 };
 
 storiesOf('FindBar', module)
   .add('Default View', () => (
     <div style={style}>
       <FindBar
-          commands={commands}
-          defaultCommands={[CREATE_POST, CREATE_COLLECTION, OPEN_SETTINGS, HELP, MORE_COMMANDS]}
-          runCommand={action}
+        commands={commands}
+        defaultCommands={[CREATE_POST, CREATE_COLLECTION, OPEN_SETTINGS, HELP, MORE_COMMANDS]}
+        runCommand={action}
       />
     </div>
   ));

@@ -7,7 +7,7 @@ import {
   createEmptyDraft,
   discardDraft,
   changeDraft,
-  persistEntry
+  persistEntry,
 } from '../actions/entries';
 import { addMedia, removeMedia } from '../actions/media';
 import { selectEntry, getMedia } from '../reducers';
@@ -56,7 +56,7 @@ class EntryPage extends React.Component {
     this.props.discardDraft();
   }
 
-  createDraft = entry => {
+  createDraft = (entry) => {
     if (entry) this.props.createDraftFromEntry(entry);
   };
 
@@ -66,7 +66,7 @@ class EntryPage extends React.Component {
 
   render() {
     const {
-      entry, entryDraft, boundGetMedia, collection, changeDraft, addMedia, removeMedia
+      entry, entryDraft, boundGetMedia, collection, changeDraft, addMedia, removeMedia,
     } = this.props;
 
     if (entryDraft == null || entryDraft.get('entry') == undefined || entry && entry.get('isFetching')) {
@@ -74,13 +74,13 @@ class EntryPage extends React.Component {
     }
     return (
       <EntryEditor
-          entry={entryDraft.get('entry')}
-          getMedia={boundGetMedia}
-          collection={collection}
-          onChange={changeDraft}
-          onAddMedia={addMedia}
-          onRemoveMedia={removeMedia}
-          onPersist={this.handlePersistEntry}
+        entry={entryDraft.get('entry')}
+        getMedia={boundGetMedia}
+        collection={collection}
+        onChange={changeDraft}
+        onAddMedia={addMedia}
+        onRemoveMedia={removeMedia}
+        onPersist={this.handlePersistEntry}
       />
     );
   }
@@ -112,6 +112,6 @@ export default connect(
     createDraftFromEntry,
     createEmptyDraft,
     discardDraft,
-    persistEntry
+    persistEntry,
   }
 )(EntryPage);

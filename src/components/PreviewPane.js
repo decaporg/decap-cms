@@ -16,9 +16,9 @@ class Preview extends React.Component {
     const { entry, getMedia } = this.props;
     const widget = resolveWidget(field.get('widget'));
     return React.createElement(widget.preview, {
-      field: field,
+      field,
       value: entry.getIn(['data', field.get('name')]),
-      getMedia: getMedia,
+      getMedia,
     });
   }
 
@@ -26,9 +26,9 @@ class Preview extends React.Component {
     const { collection } = this.props;
     if (!collection) { return null; }
 
-    return <div>
-      {collection.get('fields').map((field) => <div key={field.get('name')}>{this.previewFor(field)}</div>)}
-    </div>;
+    return (<div>
+      {collection.get('fields').map(field => <div key={field.get('name')}>{this.previewFor(field)}</div>)}
+    </div>);
   }
 }
 
@@ -37,14 +37,14 @@ export default class PreviewPane extends React.Component {
     this.renderPreview();
   }
 
-  widgetFor = name => {
+  widgetFor = (name) => {
     const { collection, entry, getMedia } = this.props;
-    const field  = collection.get('fields').find((field) => field.get('name') === name);
+    const field = collection.get('fields').find(field => field.get('name') === name);
     const widget = resolveWidget(field.get('widget'));
     return React.createElement(widget.preview, {
-      field: field,
+      field,
       value: entry.getIn(['data', field.get('name')]),
-      getMedia: getMedia,
+      getMedia,
     });
   };
 
@@ -55,7 +55,7 @@ export default class PreviewPane extends React.Component {
     render(React.createElement(component, props), this.previewEl);
   }
 
-  handleIframeRef = ref => {
+  handleIframeRef = (ref) => {
     if (ref) {
       registry.getPreviewStyles().forEach((style) => {
         const linkEl = document.createElement('link');
@@ -73,7 +73,7 @@ export default class PreviewPane extends React.Component {
     const { collection } = this.props;
     if (!collection) { return null; }
 
-    return <iframe className={styles.frame} ref={this.handleIframeRef}></iframe>;
+    return <iframe className={styles.frame} ref={this.handleIframeRef} />;
   }
 }
 

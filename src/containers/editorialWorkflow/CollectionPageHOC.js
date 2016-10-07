@@ -32,9 +32,9 @@ export default function CollectionPageHOC(CollectionPage) {
         <div>
           <div className={styles.root}>
             <UnpublishedListing
-                entries={unpublishedEntries}
-                handleChangeStatus={updateUnpublishedEntryStatus}
-                handlePublish={publishUnpublishedEntry}
+              entries={unpublishedEntries}
+              handleChangeStatus={updateUnpublishedEntryStatus}
+              handlePublish={publishUnpublishedEntry}
             />
           </div>
           {super.render()}
@@ -63,6 +63,6 @@ export default function CollectionPageHOC(CollectionPage) {
 
   return connect(mapStateToProps, {
     updateUnpublishedEntryStatus,
-    publishUnpublishedEntry
+    publishUnpublishedEntry,
   })(CollectionPageHOC);
 }

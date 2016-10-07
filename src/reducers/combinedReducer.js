@@ -4,5 +4,5 @@ import reducers from '.';
 
 export default combineReducers({
   ...reducers,
-  routing: routerReducer
+  routing: routerReducer,
 });

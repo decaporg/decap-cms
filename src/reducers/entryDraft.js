@@ -8,17 +8,17 @@ const entryDraft = (state = Map(), action) => {
   switch (action.type) {
     case DRAFT_CREATE_FROM_ENTRY:
       // Existing Entry
-      return state.withMutations((state) => {
-        state.set('entry', action.payload);
-        state.setIn(['entry', 'newRecord'], false);
-        state.set('mediaFiles', List());
+      return state.withMutations((s) => {
+        s.set('entry', action.payload);
+        s.setIn(['entry', 'newRecord'], false);
+        s.set('mediaFiles', List());
       });
     case DRAFT_CREATE_EMPTY:
       // New Entry
-      return state.withMutations((state) => {
-        state.set('entry', fromJS(action.payload));
-        state.setIn(['entry', 'newRecord'], true);
-        state.set('mediaFiles', List());
+      return state.withMutations((s) => {
+        s.set('entry', fromJS(action.payload));
+        s.setIn(['entry', 'newRecord'], true);
+        s.set('mediaFiles', List());
       });
     case DRAFT_DISCARD:
       return initialState;
@@ -26,9 +26,9 @@ const entryDraft = (state = Map(), action) => {
       return state.set('entry', action.payload);
 
     case ADD_MEDIA:
-      return state.update('mediaFiles', (list) => list.push(action.payload.public_path));
+      return state.update('mediaFiles', list => list.push(action.payload.public_path));
     case REMOVE_MEDIA:
-      return state.update('mediaFiles', (list) => list.filterNot((path) => path === action.payload));
+      return state.update('mediaFiles', list => list.filterNot(path => path === action.payload));
 
     default:
       return state;

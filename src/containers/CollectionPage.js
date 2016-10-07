@@ -37,13 +37,13 @@ class DashboardPage extends React.Component {
     }
 
 
-    return <div className={styles.root}>
+    return (<div className={styles.root}>
       {entries ?
-        <EntryListing collection={collection} entries={entries}/>
+        <EntryListing collection={collection} entries={entries} />
         :
         <Loader active>{['Loading Entries', 'Caching Entries', 'This might take several minutes']}</Loader>
       }
-    </div>;
+    </div>);
   }
 }
 

@@ -15,7 +15,7 @@ export default class MarkdownPreview extends React.Component {
     const { value } = this.props;
     if (value == null) { return null; }
     const content = this.markdown.toContent(value);
-    const contentHtml =  { __html: this.html.toText(content) };
+    const contentHtml = { __html: this.html.toText(content) };
 
     return (
       <div dangerouslySetInnerHTML={contentHtml} />

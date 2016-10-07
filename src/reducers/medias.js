@@ -19,7 +19,6 @@ export default medias;
 export const getMedia = (state, path) => {
   if (state.has(path)) {
     return state.get(path);
-  } else {
-    return new MediaProxy(path, null, true);
   }
+  return new MediaProxy(path, null, true);
 };

@@ -19,7 +19,7 @@ export default class EntryListing extends React.Component {
         { mq: '1005px', columns: 4, gutter: 15 },
         { mq: '1515px', columns: 5, gutter: 15 },
         { mq: '1770px', columns: 6, gutter: 15 },
-      ]
+      ],
     };
 
     this.updateBricks = _.throttle(this.updateBricks.bind(this), 30);
@@ -29,7 +29,7 @@ export default class EntryListing extends React.Component {
     this.bricksInstance = Bricks({
       container: this._entries,
       packed: this.bricksConfig.packed,
-      sizes: this.bricksConfig.sizes
+      sizes: this.bricksConfig.sizes,
     });
 
     this.bricksInstance.resize(true);
@@ -58,12 +58,12 @@ export default class EntryListing extends React.Component {
   }
 
   cardFor(collection, entry, link) {
-    //const { entry, getMedia, onChange, onAddMedia, onRemoveMedia } = this.props;
+    // const { entry, getMedia, onChange, onAddMedia, onRemoveMedia } = this.props;
     const cartType = collection.getIn(['card', 'type']) || 'alltype';
     const card = Cards[cartType] || Cards._unknown;
     return React.createElement(card, {
       key: entry.get('slug'),
-      collection: collection,
+      collection,
       onClick: history.push.bind(this, link),
       onImageLoaded: this.updateBricks,
       text: entry.getIn(['data', collection.getIn(['card', 'text'])]),
@@ -76,15 +76,15 @@ export default class EntryListing extends React.Component {
     const { collection, entries } = this.props;
     const name = collection.get('name');
 
-    return <div>
+    return (<div>
       <h1>Listing {name}</h1>
-      <div ref={(c) => this._entries = c}>
+      <div ref={c => this._entries = c}>
         {entries.map((entry) => {
-          const path = `/collections/${name}/entries/${entry.get('slug')}`;
+          const path = `/collections/${ name }/entries/${ entry.get('slug') }`;
           return this.cardFor(collection, entry, path);
         })}
       </div>
-    </div>;
+    </div>);
   }
 }
 

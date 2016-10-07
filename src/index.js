@@ -1,10 +1,10 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
+import 'react-toolbox/lib/commons.scss';
 import Root from './root';
 import registry from './lib/registry';
-import 'file?name=index.html!../example/index.html';
-import 'react-toolbox/lib/commons.scss';
+import 'file?name=index.html!../example/index.html'; // eslint-disable-line
 import './index.css';
 
 // Create mount element dynamically
@@ -20,7 +20,7 @@ render((
 
 if (module.hot) {
   module.hot.accept('./root', () => {
-    const NextRoot = require('./root').default;
+    const NextRoot = require('./root').default; // eslint-disable-line
     render((
       <AppContainer>
         <NextRoot />
@@ -30,9 +30,8 @@ if (module.hot) {
 }
 
 window.CMS = {};
-console.log('reg: ', registry);
-for (const method in registry) {
+registry.forEach((method) => {
   window.CMS[method] = registry[method];
-}
+});
 window.createClass = React.createClass;
 window.h = React.createElement;

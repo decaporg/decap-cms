@@ -2,13 +2,12 @@ import { createHashHistory } from 'history';
 import { useRouterHistory } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
 
-let history = useRouterHistory(createHashHistory)({
-  queryKey: false
+const history = useRouterHistory(createHashHistory)({
+  queryKey: false,
 });
 
-const syncHistory = (store) => {
-  history = syncHistoryWithStore(history, store);
-};
+const getSyncedHistoryInstance =
+  (historyInstance, store) => syncHistoryWithStore(historyInstance, store);
 
-export { syncHistory };
+export { getSyncedHistoryInstance };
 export default history;
