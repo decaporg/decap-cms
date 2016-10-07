@@ -20,4 +20,12 @@ module.exports = wallaby => ({
   },
 
   testFramework: 'jest',
+
+  setup: (wb) => {
+    wb.testFramework.configure({
+      globals: {
+        CMS_ENV: 'development',
+      },
+    });
+  },
 });

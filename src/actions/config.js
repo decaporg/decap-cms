@@ -1,8 +1,6 @@
-import yaml from 'js-yaml';
-import _ from 'lodash';
+import parseConfig from '../lib/parseConfig';
 import { currentBackend } from '../backends/backend';
 import { authenticate } from '../actions/auth';
-import * as publishModes from '../constants/publishModes';
 import * as MediaProxy from '../valueObjects/MediaProxy';
 
 export const CONFIG_REQUEST = 'CONFIG_REQUEST';
@@ -37,24 +35,25 @@ export function configDidLoad(config) {
   };
 }
 
-
-export function loadConfig(config) {
+export function loadConfig() {
   if (window.CMS_CONFIG) {
     return configDidLoad(window.CMS_CONFIG);
   }
-  return (dispatch, getState) => {
+  return (dispatch) => {
     dispatch(configLoading());
 
     fetch('config.yml').then((response) => {
       if (response.status !== 200) {
-        throw `Failed to load config.yml (${ response.status })`;
+        throw new Error(`Failed to load config.yml (${ response.status })`);
       }
 
       response.text().then(parseConfig).then((config) => {
         dispatch(configDidLoad(config));
         const backend = currentBackend(config);
         const user = backend && backend.currentUser();
-        user && dispatch(authenticate(user));
+        if (user) {
+          dispatch(authenticate(user));
+        }
       });
     }).catch((err) => {
       dispatch(configFailed(err));
@@ -62,29 +61,3 @@ export function loadConfig(config) {
   };
 }
 
-function parseConfig(data) {
-  const config = yaml.safeLoad(data);
-  if (typeof CMS_ENV === 'string' && config[CMS_ENV]) {
-    for (const key in config[CMS_ENV]) {
-      if (config[CMS_ENV].hasOwnProperty(key)) {
-        config[key] = config[CMS_ENV][key];
-      }
-    }
-  }
-
-  if (!('publish_mode' in config) || _.values(publishModes).indexOf(config.publish_mode) === -1) {
-    // Make sure there is a publish workflow mode set
-    config.publish_mode = publishModes.SIMPLE;
-  }
-
-  if (!('public_folder' in config)) {
-    // Make sure there is a public folder
-    config.public_folder = config.media_folder;
-  }
-
-  if (config.public_folder.charAt(0) !== '/') {
-    config.public_folder = `/${ config.public_folder }`;
-  }
-
-  return config;
-}
