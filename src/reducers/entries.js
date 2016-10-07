@@ -3,7 +3,7 @@ import {
   ENTRY_REQUEST, ENTRY_SUCCESS, ENTRIES_REQUEST, ENTRIES_SUCCESS,
 } from '../actions/entries';
 
-const entries = (state = Map({ entities: Map(), pages: Map() }), action) => {
+const entriesReducer = (state = Map({ entities: Map(), pages: Map() }), action) => {
   switch (action.type) {
     case ENTRY_REQUEST:
       return state.setIn(['entities', `${ action.payload.collection }.${ action.payload.slug }`, 'isFetching'], true);
@@ -17,7 +17,7 @@ const entries = (state = Map({ entities: Map(), pages: Map() }), action) => {
     case ENTRIES_REQUEST:
       return state.setIn(['pages', action.payload.collection, 'isFetching'], true);
 
-    case ENTRIES_SUCCESS:
+    case ENTRIES_SUCCESS: {
       const { collection, entries, pages } = action.payload;
       return state.withMutations((map) => {
         entries.forEach(entry => (
@@ -28,7 +28,7 @@ const entries = (state = Map({ entities: Map(), pages: Map() }), action) => {
           ids: List(entries.map(entry => entry.slug)),
         }));
       });
-
+    }
     default:
       return state;
   }
@@ -43,4 +43,4 @@ export const selectEntries = (state, collection) => {
   return slugs && slugs.map(slug => selectEntry(state, collection, slug));
 };
 
-export default entries;
+export default entriesReducer;
