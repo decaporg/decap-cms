@@ -10,7 +10,7 @@ export default class BlockTypesMenu extends Component {
 
     this.state = {
       expanded: false,
-      menu: null
+      menu: null,
     };
   }
 
@@ -37,9 +37,8 @@ export default class BlockTypesMenu extends Component {
     if (!menu) return;
 
     menu.style.opacity = 1;
-    menu.style.top = `${position.top}px`;
-    menu.style.left = `${position.left - menu.offsetWidth * 2}px`;
-
+    menu.style.top = `${ position.top }px`;
+    menu.style.left = `${ position.left - menu.offsetWidth * 2 }px`;
   };
 
   toggleMenu = () => {
@@ -52,7 +51,7 @@ export default class BlockTypesMenu extends Component {
 
   handlePluginClick = (e, plugin) => {
     const data = {};
-    plugin.fields.forEach(field => {
+    plugin.fields.forEach((field) => {
       data[field.name] = window.prompt(field.label);
     });
     this.props.onClickPlugin(plugin.id, data);
@@ -62,7 +61,7 @@ export default class BlockTypesMenu extends Component {
     this._fileInput.click();
   };
 
-  handleFileUploadChange = e => {
+  handleFileUploadChange = (e) => {
     e.stopPropagation();
     e.preventDefault();
 
@@ -81,7 +80,6 @@ export default class BlockTypesMenu extends Component {
       const mediaProxy = new MediaProxy(file.name, file);
       this.props.onClickImage(mediaProxy);
     }
-
   };
 
   renderBlockTypeButton = (type, icon) => {
@@ -91,7 +89,7 @@ export default class BlockTypesMenu extends Component {
     );
   };
 
-  renderPluginButton = plugin => {
+  renderPluginButton = (plugin) => {
     const onClick = e => this.handlePluginClick(e, plugin);
     return (
       <Icon key={plugin.id} type={plugin.icon} onClick={onClick} className={styles.icon} />
@@ -107,11 +105,11 @@ export default class BlockTypesMenu extends Component {
           {plugins.map(plugin => this.renderPluginButton(plugin))}
           <Icon type="picture" onClick={this.handleFileUploadClick} className={styles.icon} />
           <input
-              type="file"
-              accept="image/*"
-              onChange={this.handleFileUploadChange}
-              className={styles.input}
-              ref={(el) => this._fileInput = el}
+            type="file"
+            accept="image/*"
+            onChange={this.handleFileUploadChange}
+            className={styles.input}
+            ref={el => this._fileInput = el}
           />
         </div>
       );
@@ -123,7 +121,7 @@ export default class BlockTypesMenu extends Component {
   /**
    * When the portal opens, cache the menu element.
    */
-  handleOpen = portal => {
+  handleOpen = (portal) => {
     this.setState({ menu: portal.firstChild });
   };
 
@@ -145,9 +143,9 @@ BlockTypesMenu.propTypes = {
   plugins: PropTypes.array.isRequired,
   position: PropTypes.shape({
     top: PropTypes.number.isRequired,
-    left: PropTypes.number.isRequired
+    left: PropTypes.number.isRequired,
   }),
   onClickBlock: PropTypes.func.isRequired,
   onClickPlugin: PropTypes.func.isRequired,
-  onClickImage: PropTypes.func.isRequired
+  onClickImage: PropTypes.func.isRequired,
 };

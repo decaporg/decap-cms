@@ -3,7 +3,7 @@ import { useRouterHistory } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
 
 let history = useRouterHistory(createHashHistory)({
-  queryKey: false
+  queryKey: false,
 });
 
 const syncHistory = (store) => {

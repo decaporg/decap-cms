@@ -31,8 +31,8 @@ export function entryLoading(collection, slug) {
     type: ENTRY_REQUEST,
     payload: {
       collection: collection.get('name'),
-      slug: slug
-    }
+      slug,
+    },
   };
 }
 
@@ -41,8 +41,8 @@ export function entryLoaded(collection, entry) {
     type: ENTRY_SUCCESS,
     payload: {
       collection: collection.get('name'),
-      entry: entry
-    }
+      entry,
+    },
   };
 }
 
@@ -50,8 +50,8 @@ export function entriesLoading(collection) {
   return {
     type: ENTRIES_REQUEST,
     payload: {
-      collection: collection.get('name')
-    }
+      collection: collection.get('name'),
+    },
   };
 }
 
@@ -60,9 +60,9 @@ export function entriesLoaded(collection, entries, pagination) {
     type: ENTRIES_SUCCESS,
     payload: {
       collection: collection.get('name'),
-      entries: entries,
-      pages: pagination
-    }
+      entries,
+      pages: pagination,
+    },
   };
 }
 
@@ -71,7 +71,7 @@ export function entriesFailed(collection, error) {
     type: ENTRIES_FAILURE,
     error: 'Failed to load entries',
     payload: error.toString(),
-    meta: { collection: collection.get('name') }
+    meta: { collection: collection.get('name') },
   };
 }
 
@@ -79,9 +79,9 @@ export function entryPersisting(collection, entry) {
   return {
     type: ENTRY_PERSIST_REQUEST,
     payload: {
-      collection: collection,
-      entry: entry
-    }
+      collection,
+      entry,
+    },
   };
 }
 
@@ -89,9 +89,9 @@ export function entryPersisted(collection, entry) {
   return {
     type: ENTRY_PERSIST_SUCCESS,
     payload: {
-      collection: collection,
-      entry: entry
-    }
+      collection,
+      entry,
+    },
   };
 }
 
@@ -99,14 +99,14 @@ export function entryPersistFail(collection, entry, error) {
   return {
     type: ENTRIES_FAILURE,
     error: 'Failed to persist entry',
-    payload: error.toString()
+    payload: error.toString(),
   };
 }
 
 export function emmptyDraftCreated(entry) {
   return {
     type: DRAFT_CREATE_EMPTY,
-    payload: entry
+    payload: entry,
   };
 }
 
@@ -116,20 +116,20 @@ export function emmptyDraftCreated(entry) {
 export function createDraftFromEntry(entry) {
   return {
     type: DRAFT_CREATE_FROM_ENTRY,
-    payload: entry
+    payload: entry,
   };
 }
 
 export function discardDraft() {
   return {
-    type: DRAFT_DISCARD
+    type: DRAFT_DISCARD,
   };
 }
 
 export function changeDraft(entry) {
   return {
     type: DRAFT_CHANGE,
-    payload: entry
+    payload: entry,
   };
 }
 
@@ -143,7 +143,7 @@ export function loadEntry(collection, slug) {
 
     dispatch(entryLoading(collection, slug));
     backend.entry(collection, slug)
-      .then((entry) => dispatch(entryLoaded(collection, entry)));
+      .then(entry => dispatch(entryLoaded(collection, entry)));
   };
 }
 
@@ -155,8 +155,8 @@ export function loadEntries(collection) {
 
     dispatch(entriesLoading(collection));
     backend.entries(collection).then(
-      (response) => dispatch(entriesLoaded(collection, response.entries, response.pagination)),
-      (error) => dispatch(entriesFailed(collection, error))
+      response => dispatch(entriesLoaded(collection, response.entries, response.pagination)),
+      error => dispatch(entriesFailed(collection, error))
     );
   };
 }
@@ -180,7 +180,7 @@ export function persistEntry(collection, entry) {
       () => {
         dispatch(entryPersisted(collection, entry));
       },
-      (error) => dispatch(entryPersistFail(collection, entry, error))
+      error => dispatch(entryPersistFail(collection, entry, error))
     );
   };
 }

@@ -8,8 +8,8 @@ const styles = {
     backgroundColor: '#555',
     textAlign: 'center',
     marginTop: 5,
-    padding: 10
-  }
+    padding: 10,
+  },
 };
 
 storiesOf('Card', module)
@@ -18,7 +18,7 @@ storiesOf('Card', module)
       <h1>A Card</h1>
       <h2>Subtitle</h2>
       <p>
-        Margins are applied to all elements inside a card. <br/>
+        Margins are applied to all elements inside a card. <br />
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. lobortis vel. Nulla porttitor enim at tellus eget
         malesuada eleifend. Nunc tellus turpis, tincidunt sed felis facilisis, lacinia condimentum quam. Cras quis
         tortor fermentum, aliquam tortor eu, consequat ligula. Nulla eget nulla act odio varius ullamcorper turpis.

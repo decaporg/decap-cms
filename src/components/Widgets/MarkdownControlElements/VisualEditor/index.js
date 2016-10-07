@@ -28,14 +28,14 @@ class VisualEditor extends React.Component {
         top: 0,
         left: 0,
         width: 0,
-        height: 0
+        height: 0,
       },
       blockTypesMenu: {
         top: 0,
         left: 0,
         width: 0,
-        height: 0
-      }
+        height: 0,
+      },
     };
 
     let rawJson;
@@ -47,14 +47,14 @@ class VisualEditor extends React.Component {
       rawJson = emptyParagraphBlock;
     }
     this.state = {
-      state: Raw.deserialize(rawJson, { terse: true })
+      state: Raw.deserialize(rawJson, { terse: true }),
     };
 
     this.calculateHoverMenuPosition = _.throttle(this.calculateHoverMenuPosition.bind(this), 30);
     this.calculateBlockMenuPosition = _.throttle(this.calculateBlockMenuPosition.bind(this), 100);
   }
 
-  getMedia = src => {
+  getMedia = (src) => {
     return this.props.getMedia(src);
   };
 
@@ -64,7 +64,7 @@ class VisualEditor extends React.Component {
    * It also have an onDocumentChange, that get's dispached only when the actual
    * content changes
    */
-  handleChange = state => {
+  handleChange = (state) => {
     if (this.blockEdit) {
       this.blockEdit = false;
     } else {
@@ -85,19 +85,19 @@ class VisualEditor extends React.Component {
       top: rect.top + window.scrollY,
       left: rect.left + window.scrollX,
       width: rect.width,
-      height: rect.height
+      height: rect.height,
     };
   }
 
   calculateBlockMenuPosition() {
     // Don't bother calculating position if block is not empty
     if (this.state.state.blocks.get(0).isEmpty) {
-      const blockElement = document.querySelectorAll(`[data-key='${this.state.state.selection.focusKey}']`);
+      const blockElement = document.querySelectorAll(`[data-key='${ this.state.state.selection.focusKey }']`);
       if (blockElement.length > 0) {
         const rect = blockElement[0].getBoundingClientRect();
         this.menuPositions.blockTypesMenu = {
           top: rect.top + window.scrollY,
-          left: rect.left + window.scrollX
+          left: rect.left + window.scrollX,
         };
         // Force re-render so the menu is positioned on these new coordinates
         this.forceUpdate();
@@ -108,7 +108,7 @@ class VisualEditor extends React.Component {
   /**
    * Toggle marks / blocks when button is clicked
    */
-  handleMarkStyleClick = type => {
+  handleMarkStyleClick = (type) => {
     let { state } = this.state;
 
     state = state
@@ -126,7 +126,6 @@ class VisualEditor extends React.Component {
 
     // Handle everything but list buttons.
     if (type != 'unordered_list' && type != 'ordered_list') {
-
       if (isList) {
         transform = transform
           .setBlock(isActive ? DEFAULT_NODE : type)
@@ -191,7 +190,7 @@ class VisualEditor extends React.Component {
           .transform()
           .wrapInline({
             type: 'link',
-            data: { href }
+            data: { href },
           })
           .collapseToEnd()
           .apply();
@@ -200,14 +199,14 @@ class VisualEditor extends React.Component {
     this.setState({ state });
   };
 
-  handleBlockTypeClick = type => {
+  handleBlockTypeClick = (type) => {
     let { state } = this.state;
 
     state = state
     .transform()
     .insertBlock({
-      type: type,
-      isVoid: true
+      type,
+      isVoid: true,
     })
     .apply();
 
@@ -220,9 +219,9 @@ class VisualEditor extends React.Component {
     state = state
       .transform()
       .insertInline({
-        type: type,
-        data: data,
-        isVoid: true
+        type,
+        data,
+        isVoid: true,
       })
       .collapseToEnd()
       .insertBlock(DEFAULT_NODE)
@@ -232,7 +231,7 @@ class VisualEditor extends React.Component {
     this.setState({ state });
   };
 
-  handleImageClick = mediaProxy => {
+  handleImageClick = (mediaProxy) => {
     let { state } = this.state;
     this.props.onAddMedia(mediaProxy);
 
@@ -241,7 +240,7 @@ class VisualEditor extends React.Component {
       .insertInline({
         type: 'mediaproxy',
         isVoid: true,
-        data: { src: mediaProxy.public_path }
+        data: { src: mediaProxy.public_path },
       })
       .collapseToEnd()
       .insertBlock(DEFAULT_NODE)
@@ -262,12 +261,12 @@ class VisualEditor extends React.Component {
       .splitBlock()
       .setBlock(DEFAULT_NODE)
       .apply({
-        snapshot: false
+        snapshot: false,
       });
-    this.setState({ state:normalized });
+    this.setState({ state: normalized });
   };
 
-  handleKeyDown = evt => {
+  handleKeyDown = (evt) => {
     if (evt.shiftKey && evt.key === 'Enter') {
       this.blockEdit = true;
       let { state } = this.state;
@@ -286,12 +285,12 @@ class VisualEditor extends React.Component {
 
     return (
       <BlockTypesMenu
-          isOpen={isOpen}
-          plugins={getPlugins()}
-          position={this.menuPositions.blockTypesMenu}
-          onClickBlock={this.handleBlockTypeClick}
-          onClickPlugin={this.handlePluginClick}
-          onClickImage={this.handleImageClick}
+        isOpen={isOpen}
+        plugins={getPlugins()}
+        position={this.menuPositions.blockTypesMenu}
+        onClickBlock={this.handleBlockTypeClick}
+        onClickPlugin={this.handlePluginClick}
+        onClickImage={this.handleImageClick}
       />
     );
   };
@@ -302,14 +301,14 @@ class VisualEditor extends React.Component {
 
     return (
       <StylesMenu
-          isOpen={isOpen}
-          position={this.menuPositions.stylesMenu}
-          marks={this.state.state.marks}
-          blocks={this.state.state.blocks}
-          inlines={this.state.state.inlines}
-          onClickMark={this.handleMarkStyleClick}
-          onClickInline={this.handleInlineClick}
-          onClickBlock={this.handleBlockStyleClick}
+        isOpen={isOpen}
+        position={this.menuPositions.stylesMenu}
+        marks={this.state.state.marks}
+        blocks={this.state.state.blocks}
+        inlines={this.state.state.inlines}
+        onClickMark={this.handleMarkStyleClick}
+        onClickInline={this.handleInlineClick}
+        onClickBlock={this.handleBlockStyleClick}
       />
     );
   }
@@ -320,12 +319,12 @@ class VisualEditor extends React.Component {
         {this.renderStylesMenu()}
         {this.renderBlockTypesMenu()}
         <Editor
-            placeholder={'Enter some rich text...'}
-            state={this.state.state}
-            schema={SCHEMA}
-            onChange={this.handleChange}
-            onKeyDown={this.handleKeyDown}
-            onDocumentChange={this.handleDocumentChange}
+          placeholder={'Enter some rich text...'}
+          state={this.state.state}
+          schema={SCHEMA}
+          onChange={this.handleChange}
+          onKeyDown={this.handleKeyDown}
+          onDocumentChange={this.handleDocumentChange}
         />
       </div>
     );

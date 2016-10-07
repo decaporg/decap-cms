@@ -37,26 +37,26 @@ class MarkdownControl extends React.Component {
     const { editor, onChange, onAddMedia, getMedia, value } = this.props;
     if (editor.get('useVisualMode')) {
       return (
-        <div className='cms-editor-visual'>
+        <div className="cms-editor-visual">
           {null && <button onClick={this.useRawEditor}>Switch to Raw Editor</button>}
           <VisualEditor
-              onChange={onChange}
-              onAddMedia={onAddMedia}
-              getMedia={getMedia}
-              registeredComponents={editor.get('registeredComponents')}
-              value={value}
+            onChange={onChange}
+            onAddMedia={onAddMedia}
+            getMedia={getMedia}
+            registeredComponents={editor.get('registeredComponents')}
+            value={value}
           />
         </div>
       );
     } else {
       return (
-        <div className='cms-editor-raw'>
+        <div className="cms-editor-raw">
           {null && <button onClick={this.useVisualEditor}>Switch to Visual Editor</button>}
           <RawEditor
-              onChange={onChange}
-              onAddMedia={onAddMedia}
-              getMedia={getMedia}
-              value={value}
+            onChange={onChange}
+            onAddMedia={onAddMedia}
+            getMedia={getMedia}
+            value={value}
           />
         </div>
       );

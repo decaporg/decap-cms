@@ -12,17 +12,17 @@ function formatByType(type) {
 
 function formatByExtension(extension) {
   return {
-    'yml': yamlFormatter,
-    'md': YamlFrontmatterFormatter,
-    'markdown': YamlFrontmatterFormatter,
-    'html': YamlFrontmatterFormatter
+    yml: yamlFormatter,
+    md: YamlFrontmatterFormatter,
+    markdown: YamlFrontmatterFormatter,
+    html: YamlFrontmatterFormatter,
   }[extension] || YamlFrontmatterFormatter;
 }
 
 function formatByName(name) {
   return {
-    'yaml': yamlFormatter,
-    'frontmatter': YamlFrontmatterFormatter
+    yaml: yamlFormatter,
+    frontmatter: YamlFrontmatterFormatter,
   }[name] || YamlFrontmatterFormatter;
 }
 

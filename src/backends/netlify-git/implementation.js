@@ -44,15 +44,15 @@ export default class NetlifyGit {
         }));
       });
       return Promise.all(promises);
-    }).then((entries) => ({
+    }).then(entries => ({
       pagination: {},
-      entries
+      entries,
     }));
   }
 
   entry(collection, slug) {
-    return this.entries(collection).then((response) => (
-      response.entries.filter((entry) => entry.slug === slug)[0]
+    return this.entries(collection).then(response => (
+      response.entries.filter(entry => entry.slug === slug)[0]
     ));
   }
 

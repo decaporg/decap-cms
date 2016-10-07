@@ -33,7 +33,7 @@ describe('auth', () => {
       auth(undefined, authError(new Error('Bad credentials')))
     ).toEqual(
       Immutable.Map({
-        error: 'Error: Bad credentials'
+        error: 'Error: Bad credentials',
       })
     );
   });

@@ -5,7 +5,7 @@ import styles from './Toast.css';
 export default class Toast extends React.Component {
 
   state = {
-    shown: false
+    shown: false,
   };
 
   componentWillMount() {
@@ -40,7 +40,7 @@ export default class Toast extends React.Component {
     const icons = {
       success: 'check',
       warning: 'attention',
-      error: 'alert'
+      error: 'alert',
     };
     const classes = [styles.toast];
     if (className) classes.push(className);
@@ -66,5 +66,5 @@ Toast.propTypes = {
   type: PropTypes.oneOf(['success', 'warning', 'error']).isRequired,
   className: PropTypes.string,
   show: PropTypes.bool,
-  children: PropTypes.node
+  children: PropTypes.node,
 };

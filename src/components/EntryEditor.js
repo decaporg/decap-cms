@@ -31,16 +31,16 @@ export default class EntryEditor extends React.Component {
     const { collection, entry, getMedia, onChange, onAddMedia, onRemoveMedia, onPersist } = this.props;
     const { height } = this.state;
 
-    return <div className={styles.entryEditor} style={{ height }}>
+    return (<div className={styles.entryEditor} style={{ height }}>
       <div className={styles.container}>
         <div className={styles.controlPane}>
           <ControlPane
-              collection={collection}
-              entry={entry}
-              getMedia={getMedia}
-              onChange={onChange}
-              onAddMedia={onAddMedia}
-              onRemoveMedia={onRemoveMedia}
+            collection={collection}
+            entry={entry}
+            getMedia={getMedia}
+            onChange={onChange}
+            onAddMedia={onAddMedia}
+            onRemoveMedia={onRemoveMedia}
           />
         </div>
         <div className={styles.previewPane}>
@@ -50,7 +50,7 @@ export default class EntryEditor extends React.Component {
       <div className={styles.footer}>
         <button onClick={onPersist}>Save</button>
       </div>
-    </div>;
+    </div>);
   }
 }
 

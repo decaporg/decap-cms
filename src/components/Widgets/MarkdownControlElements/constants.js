@@ -5,9 +5,9 @@ export const emptyParagraphBlock = {
       nodes: [{
         kind: 'text',
         ranges: [{
-          text: ''
-        }]
-      }]
-    }
-  ]
+          text: '',
+        }],
+      }],
+    },
+  ],
 };

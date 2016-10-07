@@ -50,7 +50,7 @@ class Backend {
     return this.implementation.entries(collection, page, perPage).then((response) => {
       return {
         pagination: response.pagination,
-        entries: response.entries.map(this.entryWithFormat(collection))
+        entries: response.entries.map(this.entryWithFormat(collection)),
       };
     });
   }
@@ -78,7 +78,7 @@ class Backend {
     return this.implementation.unpublishedEntries(page, perPage).then((response) => {
       return {
         pagination: response.pagination,
-        entries: response.entries.map(this.entryWithFormat('editorialWorkflow'))
+        entries: response.entries.map(this.entryWithFormat('editorialWorkflow')),
       };
     });
   }
@@ -88,15 +88,15 @@ class Backend {
   }
 
   slugFormatter(template, entry) {
-    var date = new Date();
-    return template.replace(/\{\{([^\}]+)\}\}/g, function(_, name) {
+    const date = new Date();
+    return template.replace(/\{\{([^\}]+)\}\}/g, (_, name) => {
       switch (name) {
         case 'year':
           return date.getFullYear();
         case 'month':
-          return ('0' + (date.getMonth() + 1)).slice(-2);
+          return (`0${ date.getMonth() + 1 }`).slice(-2);
         case 'day':
-          return ('0' + date.getDate()).slice(-2);
+          return (`0${ date.getDate() }`).slice(-2);
         case 'slug':
           return entry.getIn(['data', 'title']).trim().toLowerCase().replace(/[^a-z0-9\.\-\_]+/gi, '-');
         default:
@@ -118,28 +118,28 @@ class Backend {
     if (newEntry) {
       const slug = this.slugFormatter(collection.get('slug'), entryDraft.get('entry'));
       entryObj = {
-        path: `${collection.get('folder')}/${slug}.md`,
-        slug: slug,
-        raw: this.entryToRaw(collection, entryData)
+        path: `${ collection.get('folder') }/${ slug }.md`,
+        slug,
+        raw: this.entryToRaw(collection, entryData),
       };
     } else {
       entryObj = {
         path: entryDraft.getIn(['entry', 'path']),
         slug: entryDraft.getIn(['entry', 'slug']),
-        raw: this.entryToRaw(collection, entryData)
+        raw: this.entryToRaw(collection, entryData),
       };
     }
 
-    const commitMessage = (newEntry ? 'Created ' : 'Updated ') +
-          collection.get('label') + ' “' +
-          entryDraft.getIn(['entry', 'data', 'title']) + '”';
+    const commitMessage = `${ (newEntry ? 'Created ' : 'Updated ') +
+          collection.get('label') } “${
+          entryDraft.getIn(['entry', 'data', 'title']) }”`;
 
     const mode = config.get('publish_mode');
 
     const collectionName = collection.get('name');
 
     return this.implementation.persistEntry(entryObj, MediaFiles, {
-      newEntry, parsedData, commitMessage, collectionName, mode, ...options
+      newEntry, parsedData, commitMessage, collectionName, mode, ...options,
     });
   }
 
@@ -178,11 +178,11 @@ export function resolveBackend(config) {
     case 'netlify-git':
       return new Backend(new NetlifyGitBackend(config), authStore);
     default:
-      throw `Backend not found: ${name}`;
+      throw `Backend not found: ${ name }`;
   }
 }
 
-export const currentBackend = (function() {
+export const currentBackend = (function () {
   let backend = null;
 
   return (config) => {
@@ -191,4 +191,4 @@ export const currentBackend = (function() {
       return backend = resolveBackend(config);
     }
   };
-})();
+}());

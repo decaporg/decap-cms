@@ -6,7 +6,7 @@ import {
   UNPUBLISHED_ENTRIES_REQUEST,
   UNPUBLISHED_ENTRIES_SUCCESS,
   UNPUBLISHED_ENTRY_STATUS_CHANGE_SUCCESS,
-  UNPUBLISHED_ENTRY_PUBLISH_SUCCESS
+  UNPUBLISHED_ENTRY_PUBLISH_SUCCESS,
 } from '../actions/editorialWorkflow';
 import { CONFIG_SUCCESS } from '../actions/config';
 
@@ -21,11 +21,11 @@ const unpublishedEntries = (state = null, action) => {
         return state;
       }
     case UNPUBLISHED_ENTRY_REQUEST:
-      return state.setIn(['entities', `${action.payload.status}.${action.payload.slug}`, 'isFetching'], true);
+      return state.setIn(['entities', `${ action.payload.status }.${ action.payload.slug }`, 'isFetching'], true);
 
     case UNPUBLISHED_ENTRY_SUCCESS:
       return state.setIn(
-        ['entities', `${action.payload.status}.${action.payload.entry.slug}`],
+        ['entities', `${ action.payload.status }.${ action.payload.entry.slug }`],
         fromJS(action.payload.entry)
       );
 
@@ -36,30 +36,30 @@ const unpublishedEntries = (state = null, action) => {
     case UNPUBLISHED_ENTRIES_SUCCESS:
       const { entries, pages } = action.payload;
       return state.withMutations((map) => {
-        entries.forEach((entry) => (
-          map.setIn(['entities', `${entry.metaData.status}.${entry.slug}`], fromJS(entry).set('isFetching', false))
+        entries.forEach(entry => (
+          map.setIn(['entities', `${ entry.metaData.status }.${ entry.slug }`], fromJS(entry).set('isFetching', false))
         ));
         map.set('pages', Map({
           ...pages,
-          ids: List(entries.map((entry) => entry.slug))
+          ids: List(entries.map(entry => entry.slug)),
         }));
       });
 
     case UNPUBLISHED_ENTRY_STATUS_CHANGE_SUCCESS:
       return state.withMutations((map) => {
-        let entry = map.getIn(['entities', `${action.payload.oldStatus}.${action.payload.slug}`]);
+        let entry = map.getIn(['entities', `${ action.payload.oldStatus }.${ action.payload.slug }`]);
         entry = entry.setIn(['metaData', 'status'], action.payload.newStatus);
 
         let entities = map.get('entities').filter((val, key) => (
-          key !== `${action.payload.oldStatus}.${action.payload.slug}`
+          key !== `${ action.payload.oldStatus }.${ action.payload.slug }`
         ));
-        entities = entities.set(`${action.payload.newStatus}.${action.payload.slug}`, entry);
+        entities = entities.set(`${ action.payload.newStatus }.${ action.payload.slug }`, entry);
 
         map.set('entities', entities);
       });
 
     case UNPUBLISHED_ENTRY_PUBLISH_SUCCESS:
-      return state.deleteIn(['entities', `${action.payload.status}.${action.payload.slug}`]);
+      return state.deleteIn(['entities', `${ action.payload.status }.${ action.payload.slug }`]);
 
     default:
       return state;
@@ -67,7 +67,7 @@ const unpublishedEntries = (state = null, action) => {
 };
 
 export const selectUnpublishedEntry = (state, status, slug) => {
-  return state && state.getIn(['entities', `${status}.${slug}`]);
+  return state && state.getIn(['entities', `${ status }.${ slug }`]);
 };
 
 export const selectUnpublishedEntries = (state, status) => {

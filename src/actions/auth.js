@@ -6,14 +6,14 @@ export const AUTH_FAILURE = 'AUTH_FAILURE';
 
 export function authenticating() {
   return {
-    type: AUTH_REQUEST
+    type: AUTH_REQUEST,
   };
 }
 
 export function authenticate(userData) {
   return {
     type: AUTH_SUCCESS,
-    payload: userData
+    payload: userData,
   };
 }
 
@@ -32,6 +32,6 @@ export function loginUser(credentials) {
 
     dispatch(authenticating());
     return backend.authenticate(credentials)
-      .then((user) => dispatch(authenticate(user)));
+      .then(user => dispatch(authenticate(user)));
   };
 }

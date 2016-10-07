@@ -8,15 +8,15 @@ export default function MediaProxy(value, file, uploaded = false) {
   this.file = file;
   this.uploaded = uploaded;
   this.sha = null;
-  this.path = config.media_folder && !uploaded ? config.media_folder + '/' + value : value;
-  this.public_path = config.public_folder && !uploaded ? config.public_folder + '/' + value : value;
+  this.path = config.media_folder && !uploaded ? `${ config.media_folder }/${ value }` : value;
+  this.public_path = config.public_folder && !uploaded ? `${ config.public_folder }/${ value }` : value;
 }
 
-MediaProxy.prototype.toString = function() {
+MediaProxy.prototype.toString = function () {
   return this.uploaded ? this.public_path : window.URL.createObjectURL(this.file, { oneTimeOnly: true });
 };
 
-MediaProxy.prototype.toBase64 = function() {
+MediaProxy.prototype.toBase64 = function () {
   return new Promise((resolve, reject) => {
     const fr = new FileReader();
     fr.onload = (readerEvt) => {

@@ -6,7 +6,7 @@ const collections = (state = null, action) => {
     case CONFIG_SUCCESS:
       const collections = action.payload && action.payload.collections;
       return OrderedMap().withMutations((map) => {
-        (collections || []).forEach(function(collection) {
+        (collections || []).forEach((collection) => {
           map.set(collection.name, fromJS(collection));
         });
       });

@@ -183,7 +183,7 @@ const availableIcons = [
   'smashing',
   'sweden',
   'db-shape',
-  'logo-db'
+  'logo-db',
 ];
 
 const iconPropType = (props, propName) => {
@@ -191,16 +191,16 @@ const iconPropType = (props, propName) => {
     const value = props[propName];
     if (typeof value !== 'string' || availableIcons.indexOf(value) === -1) {
       return new Error(
-        `Invalid type "${value}" supplied to Icon Component.`
+        `Invalid type "${ value }" supplied to Icon Component.`
       );
     }
   }
 };
 
-const noop = function() {};
+const noop = function () {};
 
 export default function Icon({ style, className = '', type, onClick = noop }) {
-  return <span className={`${styles.root} ${styles[type]} ${className}`} style={style} onClick={onClick} />;
+  return <span className={`${ styles.root } ${ styles[type] } ${ className }`} style={style} onClick={onClick} />;
 }
 
 Icon.propTypes = {

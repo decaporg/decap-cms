@@ -1,8 +1,8 @@
 import auth from './auth';
 import config from './config';
 import editor from './editor';
-import entries, * as fromEntries  from './entries';
-import editorialWorkflow, * as fromEditorialWorkflow  from './editorialWorkflow';
+import entries, * as fromEntries from './entries';
+import editorialWorkflow, * as fromEditorialWorkflow from './editorialWorkflow';
 import entryDraft from './entryDraft';
 import collections from './collections';
 import medias, * as fromMedias from './medias';
@@ -15,7 +15,7 @@ const reducers = {
   entries,
   editorialWorkflow,
   entryDraft,
-  medias
+  medias,
 };
 
 export default reducers;

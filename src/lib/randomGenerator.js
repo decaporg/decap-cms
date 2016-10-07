@@ -17,7 +17,7 @@ if (window.crypto && crypto.getRandomValues) {
 if (!rng) {
   // Math.random()-based (RNG)
   // If no Crypto available, use Math.random().
-  rng = function() {
+  rng = function () {
     const r = Math.random() * 0x100000000;
     const _rnds = r >>> 0;
     return _rnds;

@@ -14,7 +14,7 @@ export default class YAMLFrontmatter {
     const meta = {};
     let body = '';
     let content = '';
-    for (var key in data) {
+    for (const key in data) {
       if (key === 'body') {
         body = data[key];
       } else {

@@ -27,20 +27,20 @@ export const UNPUBLISHED_ENTRY_PUBLISH_SUCCESS = 'UNPUBLISHED_ENTRY_PUBLISH_SUCC
 function unpublishedEntryLoading(status, slug) {
   return {
     type: UNPUBLISHED_ENTRY_REQUEST,
-    payload: { status,  slug }
+    payload: { status, slug },
   };
 }
 
 function unpublishedEntryLoaded(status, entry) {
   return {
     type: UNPUBLISHED_ENTRY_SUCCESS,
-    payload: { status, entry }
+    payload: { status, entry },
   };
 }
 
 function unpublishedEntriesLoading() {
   return {
-    type: UNPUBLISHED_ENTRIES_REQUEST
+    type: UNPUBLISHED_ENTRIES_REQUEST,
   };
 }
 
@@ -48,9 +48,9 @@ function unpublishedEntriesLoaded(entries, pagination) {
   return {
     type: UNPUBLISHED_ENTRIES_SUCCESS,
     payload: {
-      entries: entries,
-      pages: pagination
-    }
+      entries,
+      pages: pagination,
+    },
   };
 }
 
@@ -66,49 +66,49 @@ function unpublishedEntriesFailed(error) {
 function unpublishedEntryPersisting(entry) {
   return {
     type: UNPUBLISHED_ENTRY_PERSIST_REQUEST,
-    payload: { entry }
+    payload: { entry },
   };
 }
 
 function unpublishedEntryPersisted(entry) {
   return {
     type: UNPUBLISHED_ENTRY_PERSIST_SUCCESS,
-    payload: { entry }
+    payload: { entry },
   };
 }
 
 function unpublishedEntryPersistedFail(error) {
   return {
     type: UNPUBLISHED_ENTRY_PERSIST_SUCCESS,
-    payload: { error }
+    payload: { error },
   };
 }
 
 function unpublishedEntryStatusChangeRequest(collection, slug, oldStatus, newStatus) {
   return {
     type: UNPUBLISHED_ENTRY_STATUS_CHANGE_REQUEST,
-    payload: { collection, slug, oldStatus, newStatus }
+    payload: { collection, slug, oldStatus, newStatus },
   };
 }
 
 function unpublishedEntryStatusChangePersisted(collection, slug, oldStatus, newStatus) {
   return {
     type: UNPUBLISHED_ENTRY_STATUS_CHANGE_SUCCESS,
-    payload: { collection, slug, oldStatus, newStatus }
+    payload: { collection, slug, oldStatus, newStatus },
   };
 }
 
 function unpublishedEntryPublishRequest(collection, slug, status) {
   return {
     type: UNPUBLISHED_ENTRY_PUBLISH_REQUEST,
-    payload: { collection, slug, status }
+    payload: { collection, slug, status },
   };
 }
 
 function unpublishedEntryPublished(collection, slug, status) {
   return {
     type: UNPUBLISHED_ENTRY_PUBLISH_SUCCESS,
-    payload: { collection, slug, status }
+    payload: { collection, slug, status },
   };
 }
 
@@ -122,7 +122,7 @@ export function loadUnpublishedEntry(collection, status, slug) {
     const backend = currentBackend(state.config);
     dispatch(unpublishedEntryLoading(status, slug));
     backend.unpublishedEntry(collection, slug)
-      .then((entry) => dispatch(unpublishedEntryLoaded(status, entry)));
+      .then(entry => dispatch(unpublishedEntryLoaded(status, entry)));
   };
 }
 
@@ -133,8 +133,8 @@ export function loadUnpublishedEntries() {
     const backend = currentBackend(state.config);
     dispatch(unpublishedEntriesLoading());
     backend.unpublishedEntries().then(
-      (response) => dispatch(unpublishedEntriesLoaded(response.entries, response.pagination)),
-      (error) => dispatch(unpublishedEntriesFailed(error))
+      response => dispatch(unpublishedEntriesLoaded(response.entries, response.pagination)),
+      error => dispatch(unpublishedEntriesFailed(error))
     );
   };
 }
@@ -149,7 +149,7 @@ export function persistUnpublishedEntry(collection, entry) {
       () => {
         dispatch(unpublishedEntryPersisted(entry));
       },
-      (error) => dispatch(unpublishedEntryPersistedFail(error))
+      error => dispatch(unpublishedEntryPersistedFail(error))
     );
   };
 }

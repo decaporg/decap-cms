@@ -11,7 +11,7 @@ import {
   HELP,
   runCommand,
   navigateToCollection,
-  createNewEntryInCollection
+  createNewEntryInCollection,
 } from '../actions/findbar';
 import AppHeader from '../components/AppHeader/AppHeader';
 import { Loader } from '../components/UI/index';
@@ -20,7 +20,7 @@ import styles from './App.css';
 class App extends React.Component {
 
   state = {
-    navDrawerIsVisible: true
+    navDrawerIsVisible: true,
   };
 
   componentDidMount() {
@@ -28,20 +28,20 @@ class App extends React.Component {
   }
 
   configError(config) {
-    return <div>
+    return (<div>
       <h1>Error loading the CMS configuration</h1>
 
       <div>
         <p>The "config.yml" file could not be loaded or failed to parse properly.</p>
         <p><strong>Error message:</strong> {config.get('error')}</p>
       </div>
-    </div>;
+    </div>);
   }
 
   configLoading() {
-    return <div>
+    return (<div>
       <Loader active>Loading configuration...</Loader>
-    </div>;
+    </div>);
   }
 
   handleLogin(credentials) {
@@ -56,13 +56,13 @@ class App extends React.Component {
       return <div><h1>Waiting for backend...</h1></div>;
     }
 
-    return <div>
+    return (<div>
       {React.createElement(backend.authComponent(), {
         onLogin: this.handleLogin.bind(this),
         error: auth && auth.get('error'),
-        isFetching: auth && auth.get('isFetching')
+        isFetching: auth && auth.get('isFetching'),
       })}
-    </div>;
+    </div>);
   }
 
   generateFindBarCommands() {
@@ -70,22 +70,22 @@ class App extends React.Component {
     const commands = [];
     const defaultCommands = [];
 
-    this.props.collections.forEach(collection => {
+    this.props.collections.forEach((collection) => {
       commands.push({
-        id: `show_${collection.get('name')}`,
-        pattern: `Show ${pluralize(collection.get('label'))}`,
+        id: `show_${ collection.get('name') }`,
+        pattern: `Show ${ pluralize(collection.get('label')) }`,
         type: SHOW_COLLECTION,
-        payload: { collectionName: collection.get('name') }
+        payload: { collectionName: collection.get('name') },
       });
 
-      if (defaultCommands.length < 5) defaultCommands.push(`show_${collection.get('name')}`);
+      if (defaultCommands.length < 5) defaultCommands.push(`show_${ collection.get('name') }`);
 
       if (collection.get('create') === true) {
         commands.push({
-          id: `create_${collection.get('name')}`,
-          pattern: `Create new ${pluralize(collection.get('label'), 1)}(:itemName as ${pluralize(collection.get('label'), 1)} Name)`,
+          id: `create_${ collection.get('name') }`,
+          pattern: `Create new ${ pluralize(collection.get('label'), 1) }(:itemName as ${ pluralize(collection.get('label'), 1) } Name)`,
           type: CREATE_COLLECTION,
-          payload: { collectionName: collection.get('name') }
+          payload: { collectionName: collection.get('name') },
         });
       }
     });
@@ -98,7 +98,7 @@ class App extends React.Component {
 
   toggleNavDrawer = () => {
     this.setState({
-      navDrawerIsVisible: !this.state.navDrawerIsVisible
+      navDrawerIsVisible: !this.state.navDrawerIsVisible,
     });
   };
 
@@ -111,7 +111,7 @@ class App extends React.Component {
       collections,
       runCommand,
       navigateToCollection,
-      createNewEntryInCollection
+      createNewEntryInCollection,
     } = this.props;
 
     if (config === null) {
@@ -135,19 +135,19 @@ class App extends React.Component {
     return (
       <Layout theme={styles}>
         <NavDrawer
-            active={navDrawerIsVisible}
-            scrollY
-            permanentAt={navDrawerIsVisible ? 'lg' : null}
-            theme={styles}
+          active={navDrawerIsVisible}
+          scrollY
+          permanentAt={navDrawerIsVisible ? 'lg' : null}
+          theme={styles}
         >
           <nav className={styles.nav}>
             <h1 className={styles.heading}>Collections</h1>
-            <Navigation type='vertical'>
+            <Navigation type="vertical">
               {
                 collections.valueSeq().map(collection =>
                   <Link
-                      key={collection.get('name')}
-                      onClick={navigateToCollection.bind(this, collection.get('name'))}
+                    key={collection.get('name')}
+                    onClick={navigateToCollection.bind(this, collection.get('name'))}
                   >
                     {collection.get('label')}
                   </Link>
@@ -158,12 +158,12 @@ class App extends React.Component {
         </NavDrawer>
         <Panel scrollY>
           <AppHeader
-              collections={collections}
-              commands={commands}
-              defaultCommands={defaultCommands}
-              runCommand={runCommand}
-              onCreateEntryClick={createNewEntryInCollection}
-              toggleNavDrawer={this.toggleNavDrawer}
+            collections={collections}
+            commands={commands}
+            defaultCommands={defaultCommands}
+            runCommand={runCommand}
+            onCreateEntryClick={createNewEntryInCollection}
+            toggleNavDrawer={this.toggleNavDrawer}
           />
           <div className={styles.main}>
             {children}
@@ -192,7 +192,7 @@ function mapDispatchToProps(dispatch) {
     },
     createNewEntryInCollection: (collectionName) => {
       dispatch(createNewEntryInCollection(collectionName));
-    }
+    },
   };
 }
 

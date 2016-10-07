@@ -22,10 +22,10 @@ ImageCard.propTypes = {
   onClick: PropTypes.func,
   onImageLoaded: PropTypes.func,
   text: PropTypes.string.isRequired,
-  description: PropTypes.string
+  description: PropTypes.string,
 };
 
 ImageCard.defaultProps = {
-  onClick: function() {},
-  onImageLoaded: function() {}
+  onClick() {},
+  onImageLoaded() {},
 };

@@ -4,35 +4,35 @@ import MediaProxy from '../valueObjects/MediaProxy';
 
 const MomentType = new yaml.Type('date', {
   kind: 'scalar',
-  predicate: function(value) {
+  predicate(value) {
     return moment.isMoment(value);
   },
-  represent: function(value) {
+  represent(value) {
     return value.format(value._f);
   },
-  resolve: function(value) {
+  resolve(value) {
     return moment.isMoment(value) && value._f;
-  }
+  },
 });
 
 const ImageType = new yaml.Type('image', {
   kind: 'scalar',
   instanceOf: MediaProxy,
-  represent: function(value) {
-    return `${value.path}`;
+  represent(value) {
+    return `${ value.path }`;
   },
-  resolve: function(value) {
+  resolve(value) {
     if (value === null) return false;
     if (value instanceof MediaProxy) return true;
     return false;
-  }
+  },
 });
 
 
 const OutputSchema = new yaml.Schema({
   include: yaml.DEFAULT_SAFE_SCHEMA.include,
   implicit: [MomentType, ImageType].concat(yaml.DEFAULT_SAFE_SCHEMA.implicit),
-  explicit: yaml.DEFAULT_SAFE_SCHEMA.explicit
+  explicit: yaml.DEFAULT_SAFE_SCHEMA.explicit,
 });
 
 export default class YAML {

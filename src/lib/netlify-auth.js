@@ -12,20 +12,20 @@ class NetlifyError {
 const PROVIDERS = {
   github: {
     width: 960,
-    height: 600
+    height: 600,
   },
   gitlab: {
     width: 960,
-    height: 600
+    height: 600,
   },
   bitbucket: {
     width: 960,
-    height: 500
+    height: 500,
   },
   email: {
     width: 500,
-    height: 400
-  }
+    height: 400,
+  },
 };
 
 class Authenticator {
@@ -36,7 +36,7 @@ class Authenticator {
 
   handshakeCallback(options, cb) {
     const fn = (e) => {
-      if (e.data === ('authorizing:' + options.provider) && e.origin === this.base_url) {
+      if (e.data === (`authorizing:${ options.provider }`) && e.origin === this.base_url) {
         window.removeEventListener('message', fn, false);
         window.addEventListener('message', this.authorizeCallback(options, cb), false);
         return this.authWindow.postMessage(e.data, e.origin);
@@ -47,17 +47,17 @@ class Authenticator {
 
   authorizeCallback(options, cb) {
     const fn = (e) => {
-      var data, err;
+      let data, err;
       if (e.origin !== this.base_url) { return; }
-      if (e.data.indexOf('authorization:' + options.provider + ':success:') === 0) {
-        data = JSON.parse(e.data.match(new RegExp('^authorization:' + options.provider + ':success:(.+)$'))[1]);
+      if (e.data.indexOf(`authorization:${ options.provider }:success:`) === 0) {
+        data = JSON.parse(e.data.match(new RegExp(`^authorization:${ options.provider }:success:(.+)$`))[1]);
         window.removeEventListener('message', fn, false);
         this.authWindow.close();
         cb(null, data);
       }
-      if (e.data.indexOf('authorization:' + options.provider + ':error:') === 0) {
+      if (e.data.indexOf(`authorization:${ options.provider }:error:`) === 0) {
         console.log('Got authorization error');
-        err = JSON.parse(e.data.match(new RegExp('^authorization:' + options.provider + ':error:(.+)$'))[1]);
+        err = JSON.parse(e.data.match(new RegExp(`^authorization:${ options.provider }:error:(.+)$`))[1]);
         window.removeEventListener('message', fn, false);
         this.authWindow.close();
         cb(new NetlifyError(err));
@@ -75,17 +75,17 @@ class Authenticator {
   }
 
   authenticate(options, cb) {
-    var left, top, url,
+    let left, top, url,
       siteID = this.getSiteID(),
       provider = options.provider;
     if (!provider) {
       return cb(new NetlifyError({
-        message: 'You must specify a provider when calling netlify.authenticate'
+        message: 'You must specify a provider when calling netlify.authenticate',
       }));
     }
     if (!siteID) {
       return cb(new NetlifyError({
-        message: 'You must set a site_id with netlify.configure({site_id: \'your-site-id\'}) to make authentication work from localhost'
+        message: 'You must set a site_id with netlify.configure({site_id: \'your-site-id\'}) to make authentication work from localhost',
       }));
     }
 
@@ -93,24 +93,24 @@ class Authenticator {
     left = (screen.width / 2) - (conf.width / 2);
     top = (screen.height / 2) - (conf.height / 2);
     window.addEventListener('message', this.handshakeCallback(options, cb), false);
-    url = this.base_url + '/auth?provider=' + options.provider + '&site_id=' + siteID;
+    url = `${ this.base_url }/auth?provider=${ options.provider }&site_id=${ siteID }`;
     if (options.scope) {
-      url += '&scope=' + options.scope;
+      url += `&scope=${ options.scope }`;
     }
     if (options.login === true) {
       url += '&login=true';
     }
     if (options.beta_invite) {
-      url += '&beta_invite=' + options.beta_invite;
+      url += `&beta_invite=${ options.beta_invite }`;
     }
     if (options.invite_code) {
-      url += '&invite_code=' + options.invite_code;
+      url += `&invite_code=${ options.invite_code }`;
     }
     this.authWindow = window.open(
       url,
       'Netlify Authorization',
       'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, ' +
-      ('width=' + conf.width + ', height=' + conf.height + ', top=' + top + ', left=' + left + ');')
+      `width=${ conf.width }, height=${ conf.height }, top=${ top }, left=${ left });`
     );
     this.authWindow.focus();
   }
