@@ -12,14 +12,14 @@ import { CONFIG_SUCCESS } from '../actions/config';
 
 const unpublishedEntries = (state = null, action) => {
   switch (action.type) {
-    case CONFIG_SUCCESS:
-      const publish_mode = action.payload && action.payload.publish_mode;
-      if (publish_mode === EDITORIAL_WORKFLOW) {
-        //  Editorial workflow state is explicetelly initiated after the config.
+    case CONFIG_SUCCESS: {
+      const publishMode = action.payload && action.payload.publish_mode;
+      if (publishMode === EDITORIAL_WORKFLOW) {
+        //  Editorial workflow state is explicitly initiated after the config.
         return Map({ entities: Map(), pages: Map() });
-      } else {
-        return state;
       }
+      return state;
+    }
     case UNPUBLISHED_ENTRY_REQUEST:
       return state.setIn(['entities', `${ action.payload.status }.${ action.payload.slug }`, 'isFetching'], true);
 
@@ -29,11 +29,10 @@ const unpublishedEntries = (state = null, action) => {
         fromJS(action.payload.entry)
       );
 
-
     case UNPUBLISHED_ENTRIES_REQUEST:
       return state.setIn(['pages', 'isFetching'], true);
 
-    case UNPUBLISHED_ENTRIES_SUCCESS:
+    case UNPUBLISHED_ENTRIES_SUCCESS: {
       const { entries, pages } = action.payload;
       return state.withMutations((map) => {
         entries.forEach(entry => (
@@ -44,6 +43,7 @@ const unpublishedEntries = (state = null, action) => {
           ids: List(entries.map(entry => entry.slug)),
         }));
       });
+    }
 
     case UNPUBLISHED_ENTRY_STATUS_CHANGE_SUCCESS:
       return state.withMutations((map) => {
@@ -66,23 +66,19 @@ const unpublishedEntries = (state = null, action) => {
   }
 };
 
-export const selectUnpublishedEntry = (state, status, slug) => {
-  return state && state.getIn(['entities', `${ status }.${ slug }`]);
-};
+export const selectUnpublishedEntry =
+  (state, status, slug) => state && state.getIn(['entities', `${ status }.${ slug }`]);
 
 export const selectUnpublishedEntries = (state, status) => {
-  if (!state) return;
+  if (!state) return null; // TODO: Not sure why state can be null?
   const slugs = state.getIn(['pages', 'ids']);
-
   return slugs && slugs.reduce((acc, slug) => {
     const entry = selectUnpublishedEntry(state, status, slug);
     if (entry) {
       return acc.push(entry);
-    } else {
-      return acc;
     }
+    return acc;
   }, List());
 };
-
 
 export default unpublishedEntries;
