@@ -7,22 +7,11 @@ const defaults = {
   publish_mode: publishModes.SIMPLE
 };
 
-const searchDefaults = {
-  use_for_filter: true,
-  use_for_listing: true
-};
-
 const applyDefaults = (config) => {
   // Make sure there is a public folder
   _.set(defaults,
         'public_folder',
         config.media_folder.charAt(0) === '/' ? config.media_folder : '/' + config.media_folder);
-
-
-  // If the user configured Search integration, apply default search configs
-  if (config.integrations && config.integrations.search) {
-    _.set(defaults, 'integrations.search', searchDefaults);
-  }
 
   return _.defaultsDeep(config, defaults);
 };
@@ -40,8 +29,5 @@ const config = (state = null, action) => {
       return state;
   }
 };
-
-export const hasSearchIntegration = (state) => state.hasIn(['integrations', 'search']);
-export const useSearchForListing = (state) => state.getIn(['integrations', 'search', 'use_for_listing'], false);
 
 export default config;

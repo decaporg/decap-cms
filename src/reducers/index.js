@@ -1,16 +1,18 @@
 import auth from './auth';
-import config, * as fromConfig from './config';
+import config from './config';
 import editor from './editor';
+import integrations, * as fromIntegrations from './integrations';
 import entries, * as fromEntries  from './entries';
-import editorialWorkflow, * as fromEditorialWorkflow  from './editorialWorkflow';
+import editorialWorkflow, * as fromEditorialWorkflow from './editorialWorkflow';
 import entryDraft from './entryDraft';
-import collections, * as fromCollections from './collections';
+import collections from './collections';
 import medias, * as fromMedias from './medias';
 
 const reducers = {
   auth,
   config,
   collections,
+  integrations,
   editor,
   entries,
   editorialWorkflow,
@@ -38,14 +40,8 @@ export const selectUnpublishedEntry = (state, status, slug) =>
 export const selectUnpublishedEntries = (state, status) =>
   fromEditorialWorkflow.selectUnpublishedEntries(state.editorialWorkflow, status);
 
-export const selectCollection = (state, name) =>
-  fromCollections.selectCollection(state.collections, name);
-
-export const hasSearchIntegration = (state) =>
-  fromConfig.hasSearchIntegration(state.config);
-
-export const useSearchForListing = (state) =>
-  fromConfig.useSearchForListing(state.config);
+export const selectIntegration = (state, collection, hook) =>
+  fromIntegrations.selectIntegration(state.integrations, collection, hook);
 
 export const getMedia = (state, path) =>
   fromMedias.getMedia(state.medias, path);

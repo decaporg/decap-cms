@@ -65,7 +65,7 @@ class Backend {
     });
   }
 
-  entries(collection, page, perPage) {
+  listEntries(collection, page, perPage) {
     return this.implementation.entries(collection, page, perPage).then((response) => {
       return {
         pagination: response.pagination,
