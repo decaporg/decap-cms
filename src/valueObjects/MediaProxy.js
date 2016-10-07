@@ -17,11 +17,10 @@ MediaProxy.prototype.toString = function () {
 };
 
 MediaProxy.prototype.toBase64 = function () {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     const fr = new FileReader();
     fr.onload = (readerEvt) => {
       const binaryString = readerEvt.target.result;
-
       resolve(binaryString.split('base64,')[1]);
     };
     fr.readAsDataURL(this.file);
