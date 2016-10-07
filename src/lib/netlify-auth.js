@@ -41,13 +41,15 @@ class Authenticator {
         window.addEventListener('message', this.authorizeCallback(options, cb), false);
         return this.authWindow.postMessage(e.data, e.origin);
       }
+      return null;
     };
     return fn;
   }
 
   authorizeCallback(options, cb) {
     const fn = (e) => {
-      let data, err;
+      let data;
+      let err;
       if (e.origin !== this.base_url) { return; }
       if (e.data.indexOf(`authorization:${ options.provider }:success:`) === 0) {
         data = JSON.parse(e.data.match(new RegExp(`^authorization:${ options.provider }:success:(.+)$`))[1]);
@@ -56,7 +58,6 @@ class Authenticator {
         cb(null, data);
       }
       if (e.data.indexOf(`authorization:${ options.provider }:error:`) === 0) {
-        console.log('Got authorization error');
         err = JSON.parse(e.data.match(new RegExp(`^authorization:${ options.provider }:error:(.+)$`))[1]);
         window.removeEventListener('message', fn, false);
         this.authWindow.close();
@@ -75,9 +76,13 @@ class Authenticator {
   }
 
   authenticate(options, cb) {
-    let left, top, url,
-      siteID = this.getSiteID(),
-      provider = options.provider;
+    const siteID = this.getSiteID();
+    const provider = options.provider;
+    const conf = PROVIDERS[provider] || PROVIDERS.github;
+    const left = (screen.width / 2) - (conf.width / 2);
+    const top = (screen.height / 2) - (conf.height / 2);
+    let url;
+
     if (!provider) {
       return cb(new NetlifyError({
         message: 'You must specify a provider when calling netlify.authenticate',
@@ -89,9 +94,6 @@ class Authenticator {
       }));
     }
 
-    const conf = PROVIDERS[provider] || PROVIDERS.github;
-    left = (screen.width / 2) - (conf.width / 2);
-    top = (screen.height / 2) - (conf.height / 2);
     window.addEventListener('message', this.handshakeCallback(options, cb), false);
     url = `${ this.base_url }/auth?provider=${ options.provider }&site_id=${ siteID }`;
     if (options.scope) {
@@ -113,6 +115,7 @@ class Authenticator {
       `width=${ conf.width }, height=${ conf.height }, top=${ top }, left=${ left });`
     );
     this.authWindow.focus();
+    return false;
   }
 }
 
