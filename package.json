@@ -10,13 +10,23 @@
     "build": "webpack --config webpack.config.js",
     "storybook": "start-storybook -p 9001",
     "storybook-build": "build-storybook -o dist",
-    "lint": "eslint .",
-    "lint:fix": "npm run lint -- --fix",
-    "lint:staged": "lint-staged"
+    "lint": "npm run lint:js & npm run lint:css",
+    "lint:js": "eslint .",
+    "lint:js:fix": "npm run lint:js -- --fix",
+    "lint:css": "stylelint 'src/**/*.css'",
+    "lint:css:fix": "stylefmt --recursive src/",
+    "lint:staged": "lint-staged",
+    "deps": "npm-check -s",
+    "deps:update": "npm-check -u"
   },
   "lint-staged": {
-    "*.@(js|jsx)": [
+    "*.js": [
       "eslint --fix",
+      "git add"
+    ],
+    "*.css": [
+      "stylefmt",
+      "stylelint",
       "git add"
     ]
   },
@@ -31,7 +41,6 @@
     "@kadira/storybook": "^1.36.0",
     "autoprefixer": "^6.3.3",
     "babel-core": "^6.5.1",
-    "babel-eslint": "^6.1.2",
     "babel-loader": "^6.2.2",
     "babel-plugin-lodash": "^3.2.0",
     "babel-plugin-transform-class-properties": "^6.5.2",
@@ -41,9 +50,8 @@
     "babel-preset-react": "^6.5.0",
     "babel-runtime": "^6.5.0",
     "css-loader": "^0.23.1",
-    "eslint": "^3.5.0",
-    "eslint-plugin-class-property": "^1.0.1",
-    "eslint-plugin-react": "^5.1.1",
+    "eslint": "^3.7.1",
+    "eslint-config-netlify": "github:netlify/eslint-config-netlify",
     "expect": "^1.20.2",
     "exports-loader": "^0.6.3",
     "file-loader": "^0.8.5",
@@ -55,6 +63,7 @@
     "moment": "^2.11.2",
     "node-sass": "^3.10.0",
     "normalizr": "^2.0.0",
+    "npm-check": "^5.2.3",
     "postcss-cssnext": "^2.7.0",
     "postcss-import": "^8.1.2",
     "postcss-loader": "^0.9.1",
@@ -72,6 +81,12 @@
     "redux-thunk": "^1.0.3",
     "sass-loader": "^4.0.2",
     "style-loader": "^0.13.0",
+    "stylefmt": "^4.3.1",
+    "stylelint": "^7.3.1",
+    "stylelint-config-css-modules": "^0.1.0",
+    "stylelint-config-standard": "^13.0.2",
+    "stylelint-declaration-block-order": "^0.1.0",
+    "stylelint-declaration-use-variable": "^1.6.0",
     "url-loader": "^0.5.7",
     "webpack": "^1.13.2",
     "webpack-dev-server": "^1.15.1",

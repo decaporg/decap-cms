@@ -1,113 +1,12 @@
-env:
-  browser: true
-  es6: true
-
-parser: babel-eslint
-plugins: [
-  "react",
-  "class-property"
-]
-
-rules:
-  # Possible Errors
-  # https://github.com/eslint/eslint/tree/master/docs/rules#possible-errors
-  no-control-regex: 2
-  no-debugger: 2
-  no-dupe-args: 2
-  no-dupe-keys: 2
-  no-duplicate-case: 2
-  no-empty-character-class: 2
-  no-ex-assign: 2
-  no-extra-boolean-cast : 2
-  no-extra-semi: 2
-  no-invalid-regexp: 2
-  no-irregular-whitespace: 2
-  no-proto: 2
-  no-unexpected-multiline: 2
-  no-unreachable: 2
-  valid-typeof: 2
-
-  # Best Practices
-  # https://github.com/eslint/eslint/tree/master/docs/rules#best-practices
-  no-fallthrough: 2
-  no-redeclare: 2
-  no-constant-condition: 2
-
-  # Stylistic Issues
-  # https://github.com/eslint/eslint/tree/master/docs/rules#stylistic-issues
-  comma-spacing: 2
-  eol-last: 2
-  indent: [2, 2, {SwitchCase: 1}]
-  max-len: [2, 160, 2]
-  new-parens: 2
-  no-mixed-spaces-and-tabs: 2
-  no-multiple-empty-lines: [2, {max: 2}]
-  no-trailing-spaces: 2
-  object-curly-spacing: [1, "always"]
-  quotes: [2, "single", "avoid-escape"]
-  semi: 2
-  keyword-spacing: 2
-  space-before-blocks: [2, "always"]
-  space-before-function-paren: [2, "never"]
-  space-in-parens: [2, "never"]
-  space-infix-ops: 2
-  space-unary-ops: 2
-
-  # ECMAScript 6
-  # http://eslint.org/docs/rules/#ecmascript-6
-  arrow-spacing: [2, {"before": true, "after": true}]
-  no-confusing-arrow: 2
-  prefer-const: 2
-
-  # Strict Mode
-  # https://github.com/eslint/eslint/tree/master/docs/rules#strict-mode
-  strict: [2, "global"]
-
-  # Variables
-  # https://github.com/eslint/eslint/tree/master/docs/rules#variables
-  no-undef: 2
-  no-unused-vars: [2, {"args": "none"}]
-
-
-  react/prop-types: 1
-  react/forbid-prop-types: 1
-  react/jsx-boolean-value: 1
-  react/jsx-closing-bracket-location: 1
-  react/jsx-curly-spacing: 1
-  react/jsx-equals-spacing: 1
-  react/jsx-handler-names: 1
-  react/jsx-indent-props: 1
-  react/jsx-indent: [2, 2]
-  react/jsx-no-bind: [1, ignoreRefs: true]
-  react/jsx-no-duplicate-props: 1
-  react/jsx-no-undef: 1
-  react/jsx-pascal-case: 1
-  react/jsx-uses-react: 1
-  react/jsx-uses-vars: 1
-  react/no-danger: 1
-  react/no-deprecated: 1
-  react/no-did-mount-set-state: 1
-  react/no-did-update-set-state: 1
-  react/no-direct-mutation-state: 1
-  react/no-is-mounted: 1
-  react/no-multi-comp: 1
-  react/no-string-refs: 1
-  react/no-unknown-property: 1
-  react/prefer-es6-class: 1
-  react/prefer-stateless-function: 1
-  react/react-in-jsx-scope: 1
-  react/require-extension: 1
-  react/self-closing-comp: 1
-  react/sort-comp: 1
-
-  class-property/class-property-semicolon: 2
-
-# Global scoped method and vars
-globals:
-  netlify: true
-  describe: true
-  it: true
-  require: true
-  process: true
-  module: true
-  CMS_ENV: true
+{
+  "extends": [
+    "eslint-config-netlify"
+  ],
+  "settings": {
+    "import/resolver": {
+      "webpack": {
+        "config": "webpack.dev.js"
+      }
+    }
+  }
+}
