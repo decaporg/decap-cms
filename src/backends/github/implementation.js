@@ -47,17 +47,17 @@ export default class GitHub {
         }));
       });
       return Promise.all(promises);
-    }).then((entries) => ({
-      pagination: {},
-      entries
+    }).then(entries => ({
+      pagination: 0,
+      entries,
     }));
   }
 
 
   // Will fetch the entire list of entries from github.
   lookupEntry(collection, slug) {
-    return this.entries(collection).then((response) => (
-      response.entries.filter((entry) => entry.slug === slug)[0]
+    return this.entries(collection).then(response => (
+      response.entries.filter(entry => entry.slug === slug)[0]
     ));
   }
 
@@ -93,14 +93,14 @@ export default class GitHub {
     }).then((entries) => {
       return {
         pagination: {},
-        entries
+        entries,
       };
     });
   }
 
   unpublishedEntry(collection, slug) {
-    return this.unpublishedEntries().then((response) => (
-      response.entries.filter((entry) => (
+    return this.unpublishedEntries().then(response => (
+      response.entries.filter(entry => (
         entry.metaData && entry.metaData.collection === collection.get('name') && entry.slug === slug
       ))[0]
     ));
