@@ -54,14 +54,14 @@ export default class GitHub {
   }
 
 
-  // Requires that the list of entries is being fetched from github. (Not from another integration like Search)
-  entry(collection, slug) {
+  // Will fetch the entire list of entries from github.
+  lookupEntry(collection, slug) {
     return this.entries(collection).then((response) => (
       response.entries.filter((entry) => entry.slug === slug)[0]
     ));
   }
 
-  // Fetches a single entry regardless of where the list of entries is being fetched from.
+  // Fetches a single entry.
   getEntry(collection, slug, path) {
     return this.api.readFile(path).then(data => createEntry(collection, slug, path, { raw: data }));
   }

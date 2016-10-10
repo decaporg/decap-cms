@@ -39,7 +39,7 @@ export default class TestRepo {
     });
   }
 
-  entry(collection, slug) {
+  lookupEntry(collection, slug) {
     return this.entries(collection).then((response) => (
       response.entries.filter((entry) => entry.slug === slug)[0]
     ));

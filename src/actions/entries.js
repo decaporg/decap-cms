@@ -171,21 +171,16 @@ export function changeDraft(entry) {
 
 export function loadEntry(entry, collection, slug) {
   return (dispatch, getState) => {
-    // const state = getState();
-    // const backend = currentBackend(state.config);
-    // dispatch(entryLoading(collection, slug));
-    //
-    // let returnPromise;
-    // if (hasSearchIntegration(state) && useSearchForListing(state)) {
-    //   const search = currentSearchIntegration(state.config);
-    //   const loadEntriesPromise = entry ? Promise.resolve(entry.toJS()) : search.entry(collection, slug);
-    //   returnPromise = loadEntriesPromise
-    //     .then(loadedEntry => backend.getEntry(loadedEntry.collection, loadedEntry.slug, loadedEntry.path));
-    // } else {
-    // const returnPromise = backend.entry(collection, slug);
-    // }
-    //
-    // return returnPromise.then((loadedEntry) => dispatch(entryLoaded(collection, loadedEntry)));
+    const state = getState();
+    const backend = currentBackend(state.config);
+    dispatch(entryLoading(collection, slug));
+    let getPromise;
+    if (entry && entry.get('path')) {
+      getPromise = backend.getEntry(entry.get('collection'), entry.get('slug'), entry.get('path'));
+    } else {
+      getPromise = backend.lookupEntry(collection, slug);
+    }
+    return getPromise.then((loadedEntry) => dispatch(entryLoaded(collection, loadedEntry)));
   };
 }
 
@@ -229,14 +224,16 @@ export function persistEntry(collection, entry) {
 
 export function searchEntries(searchTerm, page = 0) {
   return (dispatch, getState) => {
-    // const state = getState();
-    // const collections = state.collections.keySeq().toArray();
-    // const provider = hasSearchIntegration(state) ?
-    //   currentSearchIntegration(state.config) : currentBackend(state.config);
-    // dispatch(searchingEntries(searchTerm));
-    // provider.search(collections, searchTerm, page).then(
-    //   (response) => dispatch(SearchSuccess(searchTerm, response.entries, response.pagination)),
-    //   (error) => dispatch(SearchFailure(searchTerm, error))
-    // );
+    const state = getState();
+    let collections = state.collections.keySeq().toArray();
+    collections = collections.filter(collection => selectIntegration(state, collection, 'search'));
+    const integration = selectIntegration(state, collections[0], 'search');
+    if (!integration) console.warn('There isn\'t a search integration configured.');
+    const provider = integration ? getIntegrationProvider(state.integrations, integration) : currentBackend(state.config);
+    dispatch(searchingEntries(searchTerm));
+    provider.search(collections, searchTerm, page).then(
+      (response) => dispatch(SearchSuccess(searchTerm, response.entries, response.pagination)),
+      (error) => dispatch(SearchFailure(searchTerm, error))
+    );
   };
 }
