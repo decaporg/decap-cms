@@ -1,0 +1,29 @@
+import { fromJS } from 'immutable';
+import { CONFIG_SUCCESS } from '../actions/config';
+
+const integrations = (state = null, action) => {
+  switch (action.type) {
+    case CONFIG_SUCCESS:
+      const integrations = action.payload.integrations || [];
+      const newState = integrations.reduce((acc, integration) => {
+        const { hooks, collections, provider, ...providerData } = integration;
+        acc.providers[provider] = { ...providerData };
+        collections.forEach(collection => {
+          hooks.forEach(hook => {
+            acc.hooks[collection] ? acc.hooks[collection][hook] = provider : acc.hooks[collection] = { [hook]: provider };
+          });
+        });
+        return acc;
+      }, { providers:{}, hooks: {} });
+      return fromJS(newState);
+    default:
+      return state;
+  }
+};
+
+export const selectIntegration = (state, collection, hook) => {
+  return state.getIn(['hooks', collection, hook], false);
+};
+
+
+export default integrations;

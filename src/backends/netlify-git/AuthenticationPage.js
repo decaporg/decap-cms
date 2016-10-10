@@ -19,7 +19,6 @@ export default class AuthenticationPage extends React.Component {
         'Authorization': 'Basic ' + btoa(`${email}:${password}`)
       }
     }).then((response) => {
-      console.log(response);
       if (response.ok) {
         return response.json().then((data) => {
           this.props.onLogin(Object.assign({ email }, data));

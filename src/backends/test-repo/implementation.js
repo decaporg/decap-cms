@@ -29,7 +29,7 @@ export default class TestRepo {
     const folder = collection.get('folder');
     if (folder) {
       for (var path in window.repoFiles[folder]) {
-        entries.push(createEntry(folder + '/' + path, getSlug(path), window.repoFiles[folder][path].content));
+        entries.push(createEntry(collection.get('name'), getSlug(path), folder + '/' + path, { raw: window.repoFiles[folder][path].content }));
       }
     }
 
@@ -39,7 +39,7 @@ export default class TestRepo {
     });
   }
 
-  entry(collection, slug) {
+  lookupEntry(collection, slug) {
     return this.entries(collection).then((response) => (
       response.entries.filter((entry) => entry.slug === slug)[0]
     ));
