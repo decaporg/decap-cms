@@ -14,6 +14,7 @@ class DashboardPage extends React.Component {
     collection: ImmutablePropTypes.map.isRequired,
     collections: ImmutablePropTypes.orderedMap.isRequired,
     dispatch: PropTypes.func.isRequired,
+    page: PropTypes.number,
     entries: ImmutablePropTypes.list,
   };
 
@@ -41,15 +42,20 @@ class DashboardPage extends React.Component {
     if (collections == null) {
       return <h1>No collections defined in your config.yml</h1>;
     }
-    return <div className={styles.root}>
+    return (<div className={styles.root}>
       {entries ?
-        <EntryListing collections={collection} entries={entries} page={page} onPaginate={this.handleLoadMore}>
-          Listing {collection.get('name')}
+        <EntryListing
+          collections={collection}
+          entries={entries}
+          page={page}
+          onPaginate={this.handleLoadMore}
+        >
+          {collection.get('name')}
         </EntryListing>
         :
-        <Loader active>{['Loading Entries', 'Caching Entries', 'This might take several minutes']}</Loader>
+          <Loader active>{['Loading Entries', 'Caching Entries', 'This might take several minutes']}</Loader>
       }
-    </div>;
+    </div>);
   }
 }
 
@@ -57,7 +63,7 @@ class DashboardPage extends React.Component {
  * Instead of checking the publish mode everywhere to dispatch & render the additional editorial workflow stuff,
  * We delegate it to a Higher Order Component
  */
-DashboardPage = CollectionPageHOC(DashboardPage);
+DashboardPage = CollectionPageHOC(DashboardPage); // eslint-disable-line
 
 
 function mapStateToProps(state, ownProps) {
