@@ -11,7 +11,7 @@ export default class API {
     this.token = token;
     this.repo = repo;
     this.branch = branch;
-    this.repoURL = `/repos/${this.repo}`;
+    this.repoURL = `/repos/${ this.repo }`;
   }
 
   user() {
@@ -20,9 +20,9 @@ export default class API {
 
   requestHeaders(headers = {}) {
     return {
-      Authorization: `token ${this.token}`,
+      Authorization: `token ${ this.token }`,
       'Content-Type': 'application/json',
-      ...headers
+      ...headers,
     };
   }
 
@@ -40,11 +40,11 @@ export default class API {
     const params = [];
     if (options.params) {
       for (const key in options.params) {
-        params.push(`${key}=${encodeURIComponent(options.params[key])}`);
+        params.push(`${ key }=${ encodeURIComponent(options.params[key]) }`);
       }
     }
     if (params.length) {
-      path += `?${params.join('&')}`;
+      path += `?${ params.join('&') }`;
     }
     return API_ROOT + path;
   }
@@ -52,7 +52,7 @@ export default class API {
   request(path, options = {}) {
     const headers = this.requestHeaders(options.headers || {});
     const url = this.urlFor(path, options);
-    return fetch(url, { ...options, headers: headers }).then((response) => {
+    return fetch(url, { ...options, headers }).then((response) => {
       const contentType = response.headers.get('Content-Type');
       if (contentType && contentType.match(/json/)) {
         return this.parseJsonResponse(response);
@@ -63,20 +63,20 @@ export default class API {
   }
 
   checkMetadataRef() {
-    return this.request(`${this.repoURL}/git/refs/meta/_netlify_cms?${Date.now()}`, {
+    return this.request(`${ this.repoURL }/git/refs/meta/_netlify_cms?${ Date.now() }`, {
       cache: 'no-store',
     })
     .then(response => response.object)
-    .catch(error => {
+    .catch((error) => {
       // Meta ref doesn't exist
       const readme = {
-        raw: '# Netlify CMS\n\nThis tree is used by the Netlify CMS to store metadata information for specific files and branches.'
+        raw: '# Netlify CMS\n\nThis tree is used by the Netlify CMS to store metadata information for specific files and branches.',
       };
 
       return this.uploadBlob(readme)
-      .then(item => this.request(`${this.repoURL}/git/trees`, {
+      .then(item => this.request(`${ this.repoURL }/git/trees`, {
         method: 'POST',
-        body: JSON.stringify({ tree: [{ path: 'README.md', mode: '100644', type: 'blob', sha: item.sha }] })
+        body: JSON.stringify({ tree: [{ path: 'README.md', mode: '100644', type: 'blob', sha: item.sha }] }),
       }))
       .then(tree => this.commit('First Commit', tree))
       .then(response => this.createRef('meta', '_netlify_cms', response.sha))
@@ -88,32 +88,32 @@ export default class API {
     return this.checkMetadataRef()
     .then((branchData) => {
       const fileTree = {
-        [`${key}.json`]: {
-          path: `${key}.json`,
+        [`${ key }.json`]: {
+          path: `${ key }.json`,
           raw: JSON.stringify(data),
-          file: true
-        }
+          file: true,
+        },
       };
 
-      return this.uploadBlob(fileTree[`${key}.json`])
+      return this.uploadBlob(fileTree[`${ key }.json`])
       .then(item => this.updateTree(branchData.sha, '/', fileTree))
-      .then(changeTree => this.commit(`Updating “${key}” metadata`, changeTree))
+      .then(changeTree => this.commit(`Updating “${ key }” metadata`, changeTree))
       .then(response => this.patchRef('meta', '_netlify_cms', response.sha))
       .then(() => {
-        LocalForage.setItem(`gh.meta.${key}`, {
+        LocalForage.setItem(`gh.meta.${ key }`, {
           expires: Date.now() + 300000, // In 5 minutes
-          data
+          data,
         });
       });
     });
   }
 
   retrieveMetadata(key) {
-    const cache = LocalForage.getItem(`gh.meta.${key}`);
+    const cache = LocalForage.getItem(`gh.meta.${ key }`);
     return cache.then((cached) => {
       if (cached && cached.expires > Date.now()) { return cached.data; }
 
-      return this.request(`${this.repoURL}/contents/${key}.json`, {
+      return this.request(`${ this.repoURL }/contents/${ key }.json`, {
         params: { ref: 'refs/meta/_netlify_cms' },
         headers: { Accept: 'application/vnd.github.VERSION.raw' },
         cache: 'no-store',
@@ -123,17 +123,17 @@ export default class API {
   }
 
   readFile(path, sha, branch = this.branch) {
-    const cache = sha ? LocalForage.getItem(`gh.${sha}`) : Promise.resolve(null);
+    const cache = sha ? LocalForage.getItem(`gh.${ sha }`) : Promise.resolve(null);
     return cache.then((cached) => {
       if (cached) { return cached; }
 
-      return this.request(`${this.repoURL}/contents/${path}`, {
+      return this.request(`${ this.repoURL }/contents/${ path }`, {
         headers: { Accept: 'application/vnd.github.VERSION.raw' },
         params: { ref: branch },
-        cache: false
+        cache: false,
       }).then((result) => {
         if (sha) {
-          LocalForage.setItem(`gh.${sha}`, result);
+          LocalForage.setItem(`gh.${ sha }`, result);
         }
         return result;
       });
@@ -141,25 +141,27 @@ export default class API {
   }
 
   listFiles(path) {
-    return this.request(`${this.repoURL}/contents/${path}`, {
-      params: { ref: this.branch }
+    return this.request(`${ this.repoURL }/contents/${ path }`, {
+      params: { ref: this.branch },
     });
   }
 
   readUnpublishedBranchFile(contentKey) {
     let metaData;
-    return this.retrieveMetadata(contentKey)
-    .then(data => {
+    const unpublishedPromise = this.retrieveMetadata(contentKey)
+    .then((data) => {
       metaData = data;
       return this.readFile(data.objects.entry, null, data.branch);
     })
-    .then(file => {
-      return { metaData, file };
+    .then(file => ({ metaData, file }))
+    .catch((error) => {
+      return null;
     });
+    return unpublishedPromise;
   }
 
   listUnpublishedBranches() {
-    return this.request(`${this.repoURL}/git/refs/heads/cms`);
+    return this.request(`${ this.repoURL }/git/refs/heads/cms`);
   }
 
   persistFiles(entry, mediaFiles, options) {
@@ -172,7 +174,7 @@ export default class API {
     files.forEach((file) => {
       if (file.uploaded) { return; }
       uploadPromises.push(this.uploadBlob(file));
-      parts = file.path.split('/').filter((part) => part);
+      parts = file.path.split('/').filter(part => part);
       filename = parts.pop();
       subtree = fileTree;
       while (part = parts.shift()) {
@@ -196,14 +198,14 @@ export default class API {
   }
 
   editorialWorkflowGit(fileTree, entry, filesList, options) {
-    const contentKey = options.collectionName ? `${options.collectionName}-${entry.slug}` : entry.slug;
-    const branchName = `cms/${contentKey}`;
+    const contentKey = options.collectionName ? `${ options.collectionName }-${ entry.slug }` : entry.slug;
+    const branchName = `cms/${ contentKey }`;
     const unpublished = options.unpublished || false;
 
     if (!unpublished) {
       // Open new editorial review workflow for this entry - Create new metadata and commit to new branch
-      const contentKey = options.collectionName ? `${options.collectionName}-${entry.slug}` : entry.slug;
-      const branchName = `cms/${contentKey}`;
+      const contentKey = options.collectionName ? `${ options.collectionName }-${ entry.slug }` : entry.slug;
+      const branchName = `cms/${ contentKey }`;
 
       return this.getBranch()
       .then(branchData => this.updateTree(branchData.commit.sha, '/', fileTree))
@@ -211,14 +213,14 @@ export default class API {
       .then(commitResponse => this.createBranch(branchName, commitResponse.sha))
       .then(branchResponse => this.createPR(options.commitMessage, branchName))
       .then((prResponse) => {
-        return this.user().then(user => {
+        return this.user().then((user) => {
           return user.name ? user.name : user.login;
         })
         .then(username => this.storeMetadata(contentKey, {
           type: 'PR',
           pr: {
             number: prResponse.number,
-            head: prResponse.head && prResponse.head.sha
+            head: prResponse.head && prResponse.head.sha,
           },
           user: username,
           status: status.first(),
@@ -228,9 +230,9 @@ export default class API {
           description: options.parsedData && options.parsedData.description,
           objects: {
             entry: entry.path,
-            files: filesList
+            files: filesList,
           },
-          timeStamp: new Date().toISOString()
+          timeStamp: new Date().toISOString(),
         }));
       });
     } else {
@@ -239,13 +241,13 @@ export default class API {
       .then(branchData => this.updateTree(branchData.commit.sha, '/', fileTree))
       .then(changeTree => this.commit(options.commitMessage, changeTree))
       .then((response) => {
-        const contentKey = options.collectionName ? `${options.collectionName}-${entry.slug}` : entry.slug;
-        const branchName = `cms/${contentKey}`;
-        return this.user().then(user => {
+        const contentKey = options.collectionName ? `${ options.collectionName }-${ entry.slug }` : entry.slug;
+        const branchName = `cms/${ contentKey }`;
+        return this.user().then((user) => {
           return user.name ? user.name : user.login;
         })
         .then(username => this.retrieveMetadata(contentKey))
-        .then(metadata => {
+        .then((metadata) => {
           let files = metadata.objects && metadata.objects.files || [];
           files = files.concat(filesList);
 
@@ -255,9 +257,9 @@ export default class API {
             description: options.parsedData && options.parsedData.description,
             objects: {
               entry: entry.path,
-              files: _.uniq(files)
+              files: _.uniq(files),
             },
-            timeStamp: new Date().toISOString()
+            timeStamp: new Date().toISOString(),
           };
         })
         .then(updatedMetadata => this.storeMetadata(contentKey, updatedMetadata))
@@ -267,50 +269,50 @@ export default class API {
   }
 
   updateUnpublishedEntryStatus(collection, slug, status) {
-    const contentKey = collection ? `${collection}-${slug}` : slug;
+    const contentKey = collection ? `${ collection }-${ slug }` : slug;
     return this.retrieveMetadata(contentKey)
-    .then(metadata => {
+    .then((metadata) => {
       return {
         ...metadata,
-        status
+        status,
       };
     })
     .then(updatedMetadata => this.storeMetadata(contentKey, updatedMetadata));
   }
 
   publishUnpublishedEntry(collection, slug, status) {
-    const contentKey = collection ? `${collection}-${slug}` : slug;
+    const contentKey = collection ? `${ collection }-${ slug }` : slug;
     return this.retrieveMetadata(contentKey)
-    .then(metadata => {
+    .then((metadata) => {
       const headSha = metadata.pr && metadata.pr.head;
       const number = metadata.pr && metadata.pr.number;
       return this.mergePR(headSha, number);
     })
-    .then(() => this.deleteBranch(`cms/${contentKey}`));
+    .then(() => this.deleteBranch(`cms/${ contentKey }`));
   }
 
   createRef(type, name, sha) {
-    return this.request(`${this.repoURL}/git/refs`, {
+    return this.request(`${ this.repoURL }/git/refs`, {
       method: 'POST',
-      body: JSON.stringify({ ref: `refs/${type}/${name}`, sha }),
+      body: JSON.stringify({ ref: `refs/${ type }/${ name }`, sha }),
     });
   }
 
   patchRef(type, name, sha) {
-    return this.request(`${this.repoURL}/git/refs/${type}/${name}`, {
+    return this.request(`${ this.repoURL }/git/refs/${ type }/${ name }`, {
       method: 'PATCH',
-      body: JSON.stringify({ sha })
+      body: JSON.stringify({ sha }),
     });
   }
 
   deleteRef(type, name, sha) {
-    return this.request(`${this.repoURL}/git/refs/${type}/${name}`, {
+    return this.request(`${ this.repoURL }/git/refs/${ type }/${ name }`, {
       method: 'DELETE',
     });
   }
 
   getBranch(branch = this.branch) {
-    return this.request(`${this.repoURL}/branches/${branch}`);
+    return this.request(`${ this.repoURL }/branches/${ branch }`);
   }
 
   createBranch(branchName, sha) {
@@ -327,24 +329,24 @@ export default class API {
 
   createPR(title, head, base = 'master') {
     const body = 'Automatically generated by Netlify CMS';
-    return this.request(`${this.repoURL}/pulls`, {
+    return this.request(`${ this.repoURL }/pulls`, {
       method: 'POST',
       body: JSON.stringify({ title, body, head, base }),
     });
   }
 
   mergePR(headSha, number) {
-    return this.request(`${this.repoURL}/pulls/${number}/merge`, {
+    return this.request(`${ this.repoURL }/pulls/${ number }/merge`, {
       method: 'PUT',
       body: JSON.stringify({
         commit_message: 'Automatically generated. Merged on Netlify CMS.',
-        sha: headSha
+        sha: headSha,
       }),
     });
   }
 
   getTree(sha) {
-    return sha ? this.request(`${this.repoURL}/git/trees/${sha}`) : Promise.resolve({ tree: [] });
+    return sha ? this.request(`${ this.repoURL }/git/trees/${ sha }`) : Promise.resolve({ tree: [] });
   }
 
   toBase64(str) {
@@ -357,12 +359,12 @@ export default class API {
     const content = item instanceof MediaProxy ? item.toBase64() : this.toBase64(item.raw);
 
     return content.then((contentBase64) => {
-      return this.request(`${this.repoURL}/git/blobs`, {
+      return this.request(`${ this.repoURL }/git/blobs`, {
         method: 'POST',
         body: JSON.stringify({
           content: contentBase64,
-          encoding: 'base64'
-        })
+          encoding: 'base64',
+        }),
       }).then((response) => {
         item.sha = response.sha;
         item.uploaded = true;
@@ -374,11 +376,11 @@ export default class API {
   updateTree(sha, path, fileTree) {
     return this.getTree(sha)
       .then((tree) => {
-        var obj, filename, fileOrDir;
-        var updates = [];
-        var added = {};
+        let obj, filename, fileOrDir;
+        const updates = [];
+        const added = {};
 
-        for (var i = 0, len = tree.tree.length; i < len; i++) {
+        for (let i = 0, len = tree.tree.length; i < len; i++) {
           obj = tree.tree[i];
           if (fileOrDir = fileTree[obj.path]) {
             added[obj.path] = true;
@@ -400,12 +402,12 @@ export default class API {
         }
         return Promise.all(updates)
           .then((updates) => {
-            return this.request(`${this.repoURL}/git/trees`, {
+            return this.request(`${ this.repoURL }/git/trees`, {
               method: 'POST',
-              body: JSON.stringify({ base_tree: sha, tree: updates })
+              body: JSON.stringify({ base_tree: sha, tree: updates }),
             });
           }).then((response) => {
-            return { path: path, mode: '040000', type: 'tree', sha: response.sha, parentSha: sha };
+            return { path, mode: '040000', type: 'tree', sha: response.sha, parentSha: sha };
           });
       });
   }
@@ -413,9 +415,9 @@ export default class API {
   commit(message, changeTree) {
     const tree = changeTree.sha;
     const parents = changeTree.parentSha ? [changeTree.parentSha] : [];
-    return this.request(`${this.repoURL}/git/commits`, {
+    return this.request(`${ this.repoURL }/git/commits`, {
       method: 'POST',
-      body: JSON.stringify({ message, tree, parents })
+      body: JSON.stringify({ message, tree, parents }),
     });
   }
 
