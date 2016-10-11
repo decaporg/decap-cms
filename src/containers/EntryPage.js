@@ -33,18 +33,18 @@ class EntryPage extends React.Component {
   };
 
   componentDidMount() {
-    if (!this.props.newEntry) {
-      this.props.loadEntry(this.props.collection, this.props.slug);
+    const { entry, collection, slug } = this.props;
 
-      this.createDraft(this.props.entry);
-    } else {
+    if (this.props.newEntry) {
       this.props.createEmptyDraft(this.props.collection);
+    } else {
+      this.props.loadEntry(entry, collection, slug);
+      this.createDraft(entry);
     }
   }
 
   componentWillReceiveProps(nextProps) {
     if (this.props.entry === nextProps.entry) return;
-
     if (nextProps.entry && !nextProps.entry.get('isFetching')) {
       this.createDraft(nextProps.entry);
     } else if (nextProps.newEntry) {
@@ -86,6 +86,13 @@ class EntryPage extends React.Component {
   }
 }
 
+
+/*
+ * Instead of checking the publish mode everywhere to dispatch & render the additional editorial workflow stuff,
+ * We delegate it to a Higher Order Component
+ */
+EntryPage = EntryPageHOC(EntryPage);
+
 function mapStateToProps(state, ownProps) {
   const { collections, entryDraft } = state;
   const collection = collections.get(ownProps.params.name);
@@ -95,12 +102,6 @@ function mapStateToProps(state, ownProps) {
   const boundGetMedia = getMedia.bind(null, state);
   return { collection, collections, newEntry, entryDraft, boundGetMedia, slug, entry };
 }
-
-/*
- * Instead of checking the publish mode everywhere to dispatch & render the additional editorial workflow stuff,
- * We delegate it to a Higher Order Component
- */
-EntryPage = EntryPageHOC(EntryPage);
 
 export default connect(
   mapStateToProps,

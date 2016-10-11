@@ -1,5 +1,6 @@
 import { currentBackend } from '../backends/backend';
-import { getMedia } from '../reducers';
+import { getIntegrationProvider } from '../integrations';
+import { getMedia, selectIntegration } from '../reducers';
 
 /*
  * Contant Declarations
@@ -21,6 +22,9 @@ export const ENTRY_PERSIST_REQUEST = 'ENTRY_PERSIST_REQUEST';
 export const ENTRY_PERSIST_SUCCESS = 'ENTRY_PERSIST_SUCCESS';
 export const ENTRY_PERSIST_FAILURE = 'ENTRY_PERSIST_FAILURE';
 
+export const SEARCH_ENTRIES_REQUEST = 'SEARCH_ENTRIES_REQUEST';
+export const SEARCH_ENTRIES_SUCCESS = 'SEARCH_ENTRIES_SUCCESS';
+export const SEARCH_ENTRIES_FAILURE = 'SEARCH_ENTRIES_FAILURE';
 
 /*
  * Simple Action Creators (Internal)
@@ -61,7 +65,7 @@ export function entriesLoaded(collection, entries, pagination) {
     payload: {
       collection: collection.get('name'),
       entries: entries,
-      pages: pagination
+      page: pagination
     }
   };
 }
@@ -110,6 +114,34 @@ export function emmptyDraftCreated(entry) {
   };
 }
 
+export function searchingEntries(searchTerm) {
+  return {
+    type: SEARCH_ENTRIES_REQUEST,
+    payload: { searchTerm }
+  };
+}
+
+export function SearchSuccess(searchTerm, entries, page) {
+  return {
+    type: SEARCH_ENTRIES_SUCCESS,
+    payload: {
+      searchTerm,
+      entries,
+      page
+    }
+  };
+}
+
+export function SearchFailure(searchTerm, error) {
+  return {
+    type: SEARCH_ENTRIES_FAILURE,
+    payload: {
+      searchTerm,
+      error
+    }
+  };
+}
+
 /*
  * Exported simple Action Creators
  */
@@ -136,25 +168,30 @@ export function changeDraft(entry) {
 /*
  * Exported Thunk Action Creators
  */
-export function loadEntry(collection, slug) {
+
+export function loadEntry(entry, collection, slug) {
   return (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
-
     dispatch(entryLoading(collection, slug));
-    backend.entry(collection, slug)
-      .then((entry) => dispatch(entryLoaded(collection, entry)));
+    let getPromise;
+    if (entry && entry.get('path')) {
+      getPromise = backend.getEntry(entry.get('collection'), entry.get('slug'), entry.get('path'));
+    } else {
+      getPromise = backend.lookupEntry(collection, slug);
+    }
+    return getPromise.then((loadedEntry) => dispatch(entryLoaded(collection, loadedEntry)));
   };
 }
 
-export function loadEntries(collection) {
+export function loadEntries(collection, page = 0) {
   return (dispatch, getState) => {
     if (collection.get('isFetching')) { return; }
     const state = getState();
-    const backend = currentBackend(state.config);
-
+    const integration = selectIntegration(state, collection.get('name'), 'listEntries');
+    const provider = integration ? getIntegrationProvider(state.integrations, integration) : currentBackend(state.config);
     dispatch(entriesLoading(collection));
-    backend.entries(collection).then(
+    provider.listEntries(collection, page).then(
       (response) => dispatch(entriesLoaded(collection, response.entries, response.pagination)),
       (error) => dispatch(entriesFailed(collection, error))
     );
@@ -181,6 +218,22 @@ export function persistEntry(collection, entry) {
         dispatch(entryPersisted(collection, entry));
       },
       (error) => dispatch(entryPersistFail(collection, entry, error))
+    );
+  };
+}
+
+export function searchEntries(searchTerm, page = 0) {
+  return (dispatch, getState) => {
+    const state = getState();
+    let collections = state.collections.keySeq().toArray();
+    collections = collections.filter(collection => selectIntegration(state, collection, 'search'));
+    const integration = selectIntegration(state, collections[0], 'search');
+    if (!integration) console.warn('There isn\'t a search integration configured.');
+    const provider = integration ? getIntegrationProvider(state.integrations, integration) : currentBackend(state.config);
+    dispatch(searchingEntries(searchTerm));
+    provider.search(collections, searchTerm, page).then(
+      (response) => dispatch(SearchSuccess(searchTerm, response.entries, response.pagination)),
+      (error) => dispatch(SearchFailure(searchTerm, error))
     );
   };
 }

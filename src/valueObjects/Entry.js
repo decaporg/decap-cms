@@ -1,9 +1,11 @@
-export function createEntry(path = '', slug = '', raw = '') {
+export function createEntry(collection, slug = '', path = '', options = {}) {
   const returnObj = {};
-  returnObj.path = path;
+  returnObj.collection = collection;
   returnObj.slug = slug;
-  returnObj.raw = raw;
-  returnObj.data = {};
-  returnObj.metaData = {};
+  returnObj.path = path;
+  returnObj.partial = options.partial || false;
+  returnObj.raw = options.raw || '';
+  returnObj.data = options.data || {};
+  returnObj.metaData = options.metaData || null;
   return returnObj;
 }

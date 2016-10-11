@@ -83,7 +83,6 @@ export default class RawEditor extends React.Component {
 
   constructor(props) {
     super(props);
-
     const content = props.value ? Plain.deserialize(props.value) : Plain.deserialize('');
 
     this.state = {

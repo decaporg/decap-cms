@@ -16,6 +16,9 @@ class UnpublishedListing extends React.Component {
   };
 
   requestPublish = (collection, slug, ownStatus) => {
+    console.log('HERE');
+    console.log(ownStatus);
+    console.log(status.last());
     if (ownStatus !== status.last()) return;
     if (window.confirm('Are you sure you want to publish this entry?')) {
       this.props.handlePublish(collection, slug, ownStatus);
@@ -39,12 +42,12 @@ class UnpublishedListing extends React.Component {
         /* eslint-enable */
       ));
     } else {
-      return <div>
-        {entries.map(entry => {
+      return (<div>
+        {entries.map((entry) => {
           // Look for an "author" field. Fallback to username on backend implementation;
           const author = entry.getIn(['data', 'author'], entry.getIn(['metaData', 'user']));
           const timeStamp = moment(entry.getIn(['metaData', 'timeStamp'])).format('llll');
-          const link = `/editorialworkflow/${entry.getIn(['metaData', 'collection'])}/${entry.getIn(['metaData', 'status'])}/${entry.get('slug')}`;
+          const link = `/editorialworkflow/${ entry.getIn(['metaData', 'collection']) }/${ entry.getIn(['metaData', 'status']) }/${ entry.get('slug') }`;
           const slug = entry.get('slug');
           const ownStatus = entry.getIn(['metaData', 'status']);
           const collection = entry.getIn(['metaData', 'collection']);
@@ -56,7 +59,7 @@ class UnpublishedListing extends React.Component {
                   <span className={styles.cardHeading}><Link to={link}>{entry.getIn(['data', 'title'])}</Link> <small>by {author}</small></span>
                   <p className={styles.cardText}>Last updated: {timeStamp} by {entry.getIn(['metaData', 'user'])}</p>
                   {(ownStatus === status.last()) &&
-                    <button className={styles.button} onClick={this.requestPublish.bind(this, collection, slug, status)}>Publish now</button>
+                    <button className={styles.button} onClick={this.requestPublish.bind(this, collection, slug, ownStatus)}>Publish now</button>
                   }
                 </Card>
               </div>
@@ -65,7 +68,7 @@ class UnpublishedListing extends React.Component {
           );
         }
         )}
-      </div>;
+      </div>);
     }
   };
 
@@ -81,7 +84,7 @@ class UnpublishedListing extends React.Component {
       <div className={styles.clear}>
         <h1>Editorial Workflow</h1>
         <div className={styles.container}>
-        {columns}
+          {columns}
         </div>
       </div>
     );
