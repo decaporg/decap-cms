@@ -1,3 +1,8 @@
+:root {
+  --defaultColorLight: #eee;
+  --backgroundColor: #fff;
+}
+
 .root {
   position: absolute;
   top: 64px;
@@ -5,23 +10,27 @@
   display: flex;
   flex-direction: column;
 }
+
 .container {
-  flex: 1;
   display: flex;
+  flex: 1;
 }
+
 .footer {
   flex: 0;
-  background: #fff;
-  height: 45px;
-  border-top: 1px solid #e8eae8;
   padding: 10px 20px;
+  border-top: 1px solid var(--defaultColorLight);
+  background: var(--backgroundColor);
+  text-align: right;
 }
+
 .controlPane {
   flex: 1;
   overflow: auto;
   padding: 0 20px;
-  border-right: 1px solid #e8eae8;
+  border-right: 1px solid var(--defaultColorLight);
 }
+
 .previewPane {
   flex: 1;
 }

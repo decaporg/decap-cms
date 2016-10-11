@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import { Button } from 'react-toolbox/lib/button';
 import { ScrollSync, ScrollSyncPane } from '../ScrollSync';
 import ControlPane from '../ControlPanel/ControlPane';
 import PreviewPane from '../PreviewPane/PreviewPane';
@@ -7,7 +8,14 @@ import styles from './EntryEditor.css';
 
 export default function EntryEditor(
   {
-    collection, entry, getMedia, onChange, onAddMedia, onRemoveMedia, onPersist
+    collection,
+    entry,
+    getMedia,
+    onChange,
+    onAddMedia,
+    onRemoveMedia,
+    onPersist,
+    onCancelEdit,
   }) {
   return (
     <div className={styles.root}>
@@ -35,7 +43,17 @@ export default function EntryEditor(
         </div>
       </ScrollSync>
       <div className={styles.footer}>
-        <button onClick={onPersist}>Save</button>
+        <Button
+          primary
+          raised
+          onClick={onPersist}
+        >
+          Save
+        </Button>
+        {' '}
+        <Button onClick={onCancelEdit}>
+          Cancel
+        </Button>
       </div>
     </div>
   );
@@ -49,4 +67,5 @@ EntryEditor.propTypes = {
   onChange: PropTypes.func.isRequired,
   onPersist: PropTypes.func.isRequired,
   onRemoveMedia: PropTypes.func.isRequired,
+  onCancelEdit: PropTypes.func.isRequired,
 };

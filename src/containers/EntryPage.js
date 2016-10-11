@@ -7,12 +7,13 @@ import {
   createEmptyDraft,
   discardDraft,
   changeDraft,
-  persistEntry
+  persistEntry,
 } from '../actions/entries';
+import { cancelEdit } from '../actions/editor';
 import { addMedia, removeMedia } from '../actions/media';
 import { selectEntry, getMedia } from '../reducers';
 import EntryEditor from '../components/EntryEditor/EntryEditor';
-import EntryPageHOC from './editorialWorkflow/EntryPageHOC';
+import entryPageHOC from './editorialWorkflow/EntryPageHOC';
 
 class EntryPage extends React.Component {
   static propTypes = {
@@ -28,6 +29,7 @@ class EntryPage extends React.Component {
     loadEntry: PropTypes.func.isRequired,
     persistEntry: PropTypes.func.isRequired,
     removeMedia: PropTypes.func.isRequired,
+    cancelEdit: PropTypes.func.isRequired,
     slug: PropTypes.string,
     newEntry: PropTypes.bool.isRequired,
   };
@@ -56,7 +58,7 @@ class EntryPage extends React.Component {
     this.props.discardDraft();
   }
 
-  createDraft = entry => {
+  createDraft = (entry) => {
     if (entry) this.props.createDraftFromEntry(entry);
   };
 
@@ -66,10 +68,19 @@ class EntryPage extends React.Component {
 
   render() {
     const {
-      entry, entryDraft, boundGetMedia, collection, changeDraft, addMedia, removeMedia
+      entry,
+      entryDraft,
+      boundGetMedia,
+      collection,
+      changeDraft,
+      addMedia,
+      removeMedia,
+      cancelEdit,
     } = this.props;
 
-    if (entryDraft == null || entryDraft.get('entry') == undefined || entry && entry.get('isFetching')) {
+    if (entryDraft == null
+      || entryDraft.get('entry') === undefined
+      || (entry && entry.get('isFetching'))) {
       return <div>Loading...</div>;
     }
     return (
@@ -81,17 +92,11 @@ class EntryPage extends React.Component {
         onAddMedia={addMedia}
         onRemoveMedia={removeMedia}
         onPersist={this.handlePersistEntry}
+        onCancelEdit={cancelEdit}
       />
     );
   }
 }
-
-
-/*
- * Instead of checking the publish mode everywhere to dispatch & render the additional editorial workflow stuff,
- * We delegate it to a Higher Order Component
- */
-EntryPage = EntryPageHOC(EntryPage);
 
 function mapStateToProps(state, ownProps) {
   const { collections, entryDraft } = state;
@@ -113,6 +118,7 @@ export default connect(
     createDraftFromEntry,
     createEmptyDraft,
     discardDraft,
-    persistEntry
+    persistEntry,
+    cancelEdit,
   }
-)(EntryPage);
+)(entryPageHOC(EntryPage));
