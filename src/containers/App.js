@@ -122,9 +122,9 @@ class App extends React.Component {
       config,
       children,
       collections,
-      runCommand, // eslint-disable-line
-      navigateToCollection, // eslint-disable-line
-      createNewEntryInCollection, // eslint-disable-line
+      runCommand,
+      navigateToCollection,
+      createNewEntryInCollection,
     } = this.props;
 
     if (config === null) {
