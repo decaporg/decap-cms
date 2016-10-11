@@ -10,7 +10,7 @@ import styles from './AppHeader.css';
 export default class AppHeader extends React.Component {
 
   static propTypes = {
-    collections: ImmutablePropTypes.list.isRequired,
+    collections: ImmutablePropTypes.orderedMap.isRequired,
     commands: PropTypes.array.isRequired, // eslint-disable-line
     defaultCommands: PropTypes.array.isRequired, // eslint-disable-line
     runCommand: PropTypes.func.isRequired,
