@@ -9,9 +9,3 @@
 .appBar {
   background-color: var(--backgroundColor);
 }
-
-.createBtn {
-  position: fixed;
-  right: 2rem;
-  top: 3.5rem;
-}
