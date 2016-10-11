@@ -46,7 +46,7 @@ class App extends React.Component {
   }
 
   state = {
-    navDrawerIsVisible: true,
+    navDrawerIsVisible: false,
   };
 
   componentDidMount() {
@@ -150,7 +150,8 @@ class App extends React.Component {
         <NavDrawer
           active={navDrawerIsVisible}
           scrollY
-          permanentAt={navDrawerIsVisible ? 'lg' : null}
+          permanentAt="lg"
+          onOverlayClick={this.toggleNavDrawer} // eslint-disable-line
           theme={styles}
         >
           <nav className={styles.nav}>
