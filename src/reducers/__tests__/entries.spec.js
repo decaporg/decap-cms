@@ -1,7 +1,8 @@
-import expect from 'expect';
-import { Map, OrderedMap, fromJS } from 'immutable';
-import { entriesLoading, entriesLoaded } from '../../actions/entries';
+import Immutable, { Map, OrderedMap, fromJS } from 'immutable';
+import * as actions from '../../actions/entries';
 import reducer from '../entries';
+
+let initialState;
 
 describe('entries', () => {
   it('should mark entries as fetching', () => {
@@ -9,7 +10,7 @@ describe('entries', () => {
       posts: Map({ name: 'posts' }),
     });
     expect(
-      reducer(state, entriesLoading(Map({ name: 'posts' })))
+      reducer(state, actions.entriesLoading(Map({ name: 'posts' })))
     ).toEqual(
       OrderedMap(fromJS({
         posts: { name: 'posts' },
@@ -26,7 +27,7 @@ describe('entries', () => {
     });
     const entries = [{ slug: 'a', path: '' }, { slug: 'b', title: 'B' }];
     expect(
-      reducer(state, entriesLoaded(Map({ name: 'posts' }), entries, 0))
+      reducer(state, actions.entriesLoaded(Map({ name: 'posts' }), entries, 0))
     ).toEqual(
       OrderedMap(fromJS(
         {
@@ -44,5 +45,52 @@ describe('entries', () => {
         }
       ))
     );
+  });
+
+  describe('entry persisting', () => {
+    beforeEach(() => {
+      initialState = Immutable.fromJS({
+        entities: {
+          'posts.slug': {
+            collection: 'posts',
+            slug: 'slug',
+            path: 'content/blog/art-and-wine-festival.md',
+            partial: false,
+            raw: '',
+            data: {},
+            metaData: null,
+          },
+        },
+        pages: {},
+      });
+    });
+
+    it('should handle persisting request', () => {
+      const newState = reducer(
+        initialState,
+        actions.entryPersisting(Map({ name: 'posts' }), Map({ slug: 'slug' }))
+      );
+      expect(newState.getIn(['entities', 'posts.slug', 'isPersisting'])).toBe(true);
+    });
+
+    it('should handle persisting success', () => {
+      let newState = reducer(initialState,
+        actions.entryPersisting(Map({ name: 'posts' }), Map({ slug: 'slug' }))
+      );
+      newState = reducer(newState,
+        actions.entryPersisted(Map({ name: 'posts' }), Map({ slug: 'slug' }))
+      );
+      expect(newState.getIn(['entities', 'posts.slug', 'isPersisting'])).toBeUndefined();
+    });
+
+    it('should handle persisting error', () => {
+      let newState = reducer(initialState,
+        actions.entryPersisting(Map({ name: 'posts' }), Map({ slug: 'slug' }))
+      );
+      newState = reducer(newState,
+        actions.entryPersistFail(Map({ name: 'posts' }), Map({ slug: 'slug' }), 'Error message')
+      );
+      expect(newState.getIn(['entities', 'posts.slug', 'isPersisting'])).toBeUndefined();
+    });
   });
 });

@@ -83,8 +83,8 @@ export function entryPersisting(collection, entry) {
   return {
     type: ENTRY_PERSIST_REQUEST,
     payload: {
-      collection,
-      entry,
+      collectionName: collection.get('name'),
+      entrySlug: entry.get('slug'),
     },
   };
 }
@@ -93,17 +93,21 @@ export function entryPersisted(collection, entry) {
   return {
     type: ENTRY_PERSIST_SUCCESS,
     payload: {
-      collection,
-      entry,
+      collectionName: collection.get('name'),
+      entrySlug: entry.get('slug'),
     },
   };
 }
 
 export function entryPersistFail(collection, entry, error) {
   return {
-    type: ENTRIES_FAILURE,
+    type: ENTRY_PERSIST_FAILURE,
     error: 'Failed to persist entry',
-    payload: error.toString(),
+    payload: {
+      collectionName: collection.get('name'),
+      entrySlug: entry.get('slug'),
+      error: error.toString(),
+    },
   };
 }
 
@@ -211,12 +215,10 @@ export function persistEntry(collection, entry) {
   return (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
-    const MediaProxies = entry.get('mediaFiles').map(path => getMedia(state, path));
+    const mediaProxies = entry.get('mediaFiles').map(path => getMedia(state, path));
     dispatch(entryPersisting(collection, entry));
-    backend.persistEntry(state.config, collection, entry, MediaProxies.toJS()).then(
-      () => {
-        dispatch(entryPersisted(collection, entry));
-      },
+    backend.persistEntry(state.config, collection, entry, mediaProxies.toJS()).then(
+      () => dispatch(entryPersisted(collection, entry)),
       error => dispatch(entryPersistFail(collection, entry, error))
     );
   };
