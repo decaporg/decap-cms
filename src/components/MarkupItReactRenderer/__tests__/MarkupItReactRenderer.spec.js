@@ -8,22 +8,21 @@ import MarkupIt from 'markup-it';
 import markdownSyntax from 'markup-it/syntaxes/markdown';
 import htmlSyntax from 'markup-it/syntaxes/html';
 import reInline from 'markup-it/syntaxes/markdown/re/inline';
-import MarkupItReactRenderer from '../../UI/MarkupItReactRenderer/MarkupItReactRenderer';
+import MarkupItReactRenderer from '../';
 
 describe('MarkitupReactRenderer', () => {
-
   describe('basics', () => {
     it('should re-render properly after a value and syntax update', () => {
       const component = shallow(
         <MarkupItReactRenderer
-            value="# Title"
-            syntax={markdownSyntax}
+          value="# Title"
+          syntax={markdownSyntax}
         />
       );
       const tree1 = component.html();
       component.setProps({
         value: '<h1>Title</h1>',
-        syntax: htmlSyntax
+        syntax: htmlSyntax,
       });
       const tree2 = component.html();
       expect(tree1).toEqual(tree2);
@@ -32,8 +31,8 @@ describe('MarkitupReactRenderer', () => {
     it('should not update the parser if syntax didn\'t change', () => {
       const component = shallow(
         <MarkupItReactRenderer
-            value="# Title"
-            syntax={markdownSyntax}
+          value="# Title"
+          syntax={markdownSyntax}
         />
       );
       const syntax1 = component.instance().props.syntax;
@@ -76,8 +75,8 @@ Text with **bold** & _em_ elements
 `;
         const component = shallow(
           <MarkupItReactRenderer
-              value={value}
-              syntax={markdownSyntax}
+            value={value}
+            syntax={markdownSyntax}
           />
         );
         expect(component.html()).toMatchSnapshot();
@@ -86,12 +85,12 @@ Text with **bold** & _em_ elements
 
     describe('Headings', () => {
       for (const heading of [...Array(6).keys()]) {
-        it(`should render Heading ${heading + 1}`, () => {
+        it(`should render Heading ${ heading + 1 }`, () => {
           const value = padStart(' Title', heading + 7, '#');
           const component = shallow(
             <MarkupItReactRenderer
-                value={value}
-                syntax={markdownSyntax}
+              value={value}
+              syntax={markdownSyntax}
             />
           );
           expect(component.html()).toMatchSnapshot();
@@ -114,8 +113,8 @@ Text with **bold** & _em_ elements
 `;
         const component = shallow(
           <MarkupItReactRenderer
-              value={value}
-              syntax={markdownSyntax}
+            value={value}
+            syntax={markdownSyntax}
           />
         );
         expect(component.html()).toMatchSnapshot();
@@ -133,8 +132,8 @@ I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3]
 `;
         const component = shallow(
           <MarkupItReactRenderer
-              value={value}
-              syntax={markdownSyntax}
+            value={value}
+            syntax={markdownSyntax}
           />
         );
         expect(component.html()).toMatchSnapshot();
@@ -146,8 +145,8 @@ I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3]
         const value = 'Use the `printf()` function.';
         const component = shallow(
           <MarkupItReactRenderer
-              value={value}
-              syntax={markdownSyntax}
+            value={value}
+            syntax={markdownSyntax}
           />
         );
         expect(component.html()).toMatchSnapshot();
@@ -157,8 +156,8 @@ I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3]
         const value = '``There is a literal backtick (`) here.``';
         const component = shallow(
           <MarkupItReactRenderer
-              value={value}
-              syntax={markdownSyntax}
+            value={value}
+            syntax={markdownSyntax}
           />
         );
         expect(component.html()).toMatchSnapshot();
@@ -184,8 +183,8 @@ I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3]
 `;
         const component = shallow(
           <MarkupItReactRenderer
-              value={value}
-              syntax={markdownSyntax}
+            value={value}
+            syntax={markdownSyntax}
           />
         );
         expect(component.html()).toMatchSnapshot();
@@ -195,27 +194,27 @@ I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3]
 
   describe('custom elements', () => {
     it('should extend default renderers with custom ones', () => {
-      const myRule = MarkupIt.Rule('mediaproxy')
+      const myRule = MarkupIt.Rule('mediaproxy') // eslint-disable-line
         .regExp(reInline.link, (state, match) => {
           if (match[0].charAt(0) !== '!') {
-            return;
+            return null;
           }
 
           return {
             data: Map({
               alt: match[1],
               src: match[2],
-              title: match[3]
-            }).filter(Boolean)
+              title: match[3],
+            }).filter(Boolean),
           };
         });
 
       const myCustomSchema = {
-        'mediaproxy': ({ token }) => {
+        mediaproxy: ({ token }) => { //eslint-disable-line
           const src = token.getIn(['data', 'src']);
           const alt = token.getIn(['data', 'alt']);
-          return <img src={src} alt={alt}/>;
-        }
+          return <img src={src} alt={alt} />;
+        },
       };
 
       const myMarkdownSyntax = markdownSyntax.addInlineRules(myRule);
@@ -226,9 +225,9 @@ I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3]
 `;
       const component = shallow(
         <MarkupItReactRenderer
-            value={value}
-            syntax={myMarkdownSyntax}
-            schema={myCustomSchema}
+          value={value}
+          syntax={myMarkdownSyntax}
+          schema={myCustomSchema}
         />
       );
       expect(component.html()).toMatchSnapshot();
@@ -240,8 +239,8 @@ I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3]
       const value = '<p>Paragraph with <em>inline</em> element</p>';
       const component = shallow(
         <MarkupItReactRenderer
-            value={value}
-            syntax={htmlSyntax}
+          value={value}
+          syntax={htmlSyntax}
         />
       );
       expect(component.html()).toMatchSnapshot();
