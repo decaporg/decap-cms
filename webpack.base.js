@@ -6,7 +6,7 @@ module.exports = {
   module: {
     loaders: [
       {
-        test: /\.((png)|(eot)|(woff)|(woff2)|(ttf)|(svg)|(gif))(\?v=\d+\.\d+\.\d+)?$/,
+        test: /\.(png|eot|woff|woff2|ttf|svg|gif)(\?v=\d+\.\d+\.\d+)?$/,
         loader: 'url-loader?limit=100000',
       },
       {
