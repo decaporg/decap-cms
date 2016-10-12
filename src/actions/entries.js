@@ -35,8 +35,8 @@ export function entryLoading(collection, slug) {
     type: ENTRY_REQUEST,
     payload: {
       collection: collection.get('name'),
-      slug: slug
-    }
+      slug,
+    },
   };
 }
 
@@ -45,8 +45,8 @@ export function entryLoaded(collection, entry) {
     type: ENTRY_SUCCESS,
     payload: {
       collection: collection.get('name'),
-      entry: entry
-    }
+      entry,
+    },
   };
 }
 
@@ -54,8 +54,8 @@ export function entriesLoading(collection) {
   return {
     type: ENTRIES_REQUEST,
     payload: {
-      collection: collection.get('name')
-    }
+      collection: collection.get('name'),
+    },
   };
 }
 
@@ -64,9 +64,9 @@ export function entriesLoaded(collection, entries, pagination) {
     type: ENTRIES_SUCCESS,
     payload: {
       collection: collection.get('name'),
-      entries: entries,
-      page: pagination
-    }
+      entries,
+      page: pagination,
+    },
   };
 }
 
@@ -75,7 +75,7 @@ export function entriesFailed(collection, error) {
     type: ENTRIES_FAILURE,
     error: 'Failed to load entries',
     payload: error.toString(),
-    meta: { collection: collection.get('name') }
+    meta: { collection: collection.get('name') },
   };
 }
 
@@ -83,9 +83,9 @@ export function entryPersisting(collection, entry) {
   return {
     type: ENTRY_PERSIST_REQUEST,
     payload: {
-      collection: collection,
-      entry: entry
-    }
+      collection,
+      entry,
+    },
   };
 }
 
@@ -93,9 +93,9 @@ export function entryPersisted(collection, entry) {
   return {
     type: ENTRY_PERSIST_SUCCESS,
     payload: {
-      collection: collection,
-      entry: entry
-    }
+      collection,
+      entry,
+    },
   };
 }
 
@@ -103,42 +103,42 @@ export function entryPersistFail(collection, entry, error) {
   return {
     type: ENTRIES_FAILURE,
     error: 'Failed to persist entry',
-    payload: error.toString()
+    payload: error.toString(),
   };
 }
 
 export function emmptyDraftCreated(entry) {
   return {
     type: DRAFT_CREATE_EMPTY,
-    payload: entry
+    payload: entry,
   };
 }
 
 export function searchingEntries(searchTerm) {
   return {
     type: SEARCH_ENTRIES_REQUEST,
-    payload: { searchTerm }
+    payload: { searchTerm },
   };
 }
 
-export function SearchSuccess(searchTerm, entries, page) {
+export function searchSuccess(searchTerm, entries, page) {
   return {
     type: SEARCH_ENTRIES_SUCCESS,
     payload: {
       searchTerm,
       entries,
-      page
-    }
+      page,
+    },
   };
 }
 
-export function SearchFailure(searchTerm, error) {
+export function searchFailure(searchTerm, error) {
   return {
     type: SEARCH_ENTRIES_FAILURE,
     payload: {
       searchTerm,
-      error
-    }
+      error,
+    },
   };
 }
 
@@ -148,20 +148,20 @@ export function SearchFailure(searchTerm, error) {
 export function createDraftFromEntry(entry) {
   return {
     type: DRAFT_CREATE_FROM_ENTRY,
-    payload: entry
+    payload: entry,
   };
 }
 
 export function discardDraft() {
   return {
-    type: DRAFT_DISCARD
+    type: DRAFT_DISCARD,
   };
 }
 
 export function changeDraft(entry) {
   return {
     type: DRAFT_CHANGE,
-    payload: entry
+    payload: entry,
   };
 }
 
@@ -180,7 +180,7 @@ export function loadEntry(entry, collection, slug) {
     } else {
       getPromise = backend.lookupEntry(collection, slug);
     }
-    return getPromise.then((loadedEntry) => dispatch(entryLoaded(collection, loadedEntry)));
+    return getPromise.then(loadedEntry => dispatch(entryLoaded(collection, loadedEntry)));
   };
 }
 
@@ -192,8 +192,8 @@ export function loadEntries(collection, page = 0) {
     const provider = integration ? getIntegrationProvider(state.integrations, integration) : currentBackend(state.config);
     dispatch(entriesLoading(collection));
     provider.listEntries(collection, page).then(
-      (response) => dispatch(entriesLoaded(collection, response.entries, response.pagination)),
-      (error) => dispatch(entriesFailed(collection, error))
+      response => dispatch(entriesLoaded(collection, response.entries, response.pagination)),
+      error => dispatch(entriesFailed(collection, error))
     );
   };
 }
@@ -217,7 +217,7 @@ export function persistEntry(collection, entry) {
       () => {
         dispatch(entryPersisted(collection, entry));
       },
-      (error) => dispatch(entryPersistFail(collection, entry, error))
+      error => dispatch(entryPersistFail(collection, entry, error))
     );
   };
 }
@@ -228,12 +228,16 @@ export function searchEntries(searchTerm, page = 0) {
     let collections = state.collections.keySeq().toArray();
     collections = collections.filter(collection => selectIntegration(state, collection, 'search'));
     const integration = selectIntegration(state, collections[0], 'search');
-    if (!integration) console.warn('There isn\'t a search integration configured.');
-    const provider = integration ? getIntegrationProvider(state.integrations, integration) : currentBackend(state.config);
+    if (!integration) {
+      dispatch(searchFailure(searchTerm, 'Search integration is not configured.'));
+    }
+    const provider = integration ?
+      getIntegrationProvider(state.integrations, integration)
+      : currentBackend(state.config);
     dispatch(searchingEntries(searchTerm));
     provider.search(collections, searchTerm, page).then(
-      (response) => dispatch(SearchSuccess(searchTerm, response.entries, response.pagination)),
-      (error) => dispatch(SearchFailure(searchTerm, error))
+      response => dispatch(searchSuccess(searchTerm, response.entries, response.pagination)),
+      error => dispatch(searchFailure(searchTerm, error))
     );
   };
 }
