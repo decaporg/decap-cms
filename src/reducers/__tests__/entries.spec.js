@@ -6,27 +6,27 @@ import reducer from '../entries';
 describe('entries', () => {
   it('should mark entries as fetching', () => {
     const state = OrderedMap({
-      'posts': Map({ name: 'posts' })
+      posts: Map({ name: 'posts' }),
     });
     expect(
       reducer(state, entriesLoading(Map({ name: 'posts' })))
     ).toEqual(
       OrderedMap(fromJS({
-        'posts': { name: 'posts' },
-        'pages': {
-          'posts': { isFetching: true }
-        }
+        posts: { name: 'posts' },
+        pages: {
+          posts: { isFetching: true },
+        },
       }))
     );
   });
 
   it('should handle loaded entries', () => {
     const state = OrderedMap({
-      'posts': Map({ name: 'posts' })
+      posts: Map({ name: 'posts' }),
     });
     const entries = [{ slug: 'a', path: '' }, { slug: 'b', title: 'B' }];
     expect(
-      reducer(state, entriesLoaded(Map({ name: 'posts' }), entries))
+      reducer(state, entriesLoaded(Map({ name: 'posts' }), entries, 0))
     ).toEqual(
       OrderedMap(fromJS(
         {
@@ -37,9 +37,10 @@ describe('entries', () => {
           },
           pages: {
             posts: {
-              ids: ['a', 'b']
-            }
-          }
+              page: 0,
+              ids: ['a', 'b'],
+            },
+          },
         }
       ))
     );

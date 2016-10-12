@@ -1,18 +1,26 @@
 import { Map, List, fromJS } from 'immutable';
 import {
-  ENTRY_REQUEST, ENTRY_SUCCESS, ENTRIES_REQUEST, ENTRIES_SUCCESS, SEARCH_ENTRIES_REQUEST, SEARCH_ENTRIES_SUCCESS
+  ENTRY_REQUEST,
+  ENTRY_SUCCESS,
+  ENTRIES_REQUEST,
+  ENTRIES_SUCCESS,
+  SEARCH_ENTRIES_REQUEST,
+  SEARCH_ENTRIES_SUCCESS,
 } from '../actions/entries';
 
-let collection, loadedEntries, page, searchTerm;
+let collection;
+let loadedEntries;
+let page;
+let searchTerm;
 
 const entries = (state = Map({ entities: Map(), pages: Map() }), action) => {
   switch (action.type) {
     case ENTRY_REQUEST:
-      return state.setIn(['entities', `${action.payload.collection}.${action.payload.slug}`, 'isFetching'], true);
+      return state.setIn(['entities', `${ action.payload.collection }.${ action.payload.slug }`, 'isFetching'], true);
 
     case ENTRY_SUCCESS:
       return state.setIn(
-        ['entities', `${action.payload.collection}.${action.payload.entry.slug}`],
+        ['entities', `${ action.payload.collection }.${ action.payload.entry.slug }`],
         fromJS(action.payload.entry)
       );
 
@@ -24,15 +32,15 @@ const entries = (state = Map({ entities: Map(), pages: Map() }), action) => {
       loadedEntries = action.payload.entries;
       page = action.payload.page;
       return state.withMutations((map) => {
-        loadedEntries.forEach((entry) => (
-          map.setIn(['entities', `${collection}.${entry.slug}`], fromJS(entry).set('isFetching', false))
+        loadedEntries.forEach(entry => (
+          map.setIn(['entities', `${ collection }.${ entry.slug }`], fromJS(entry).set('isFetching', false))
         ));
 
-        const ids = List(loadedEntries.map((entry) => entry.slug));
+        const ids = List(loadedEntries.map(entry => entry.slug));
 
         map.setIn(['pages', collection], Map({
-          page: page,
-          ids: page === 0 ? ids : map.getIn(['pages', collection, 'ids'], List()).concat(ids)
+          page,
+          ids: page === 0 ? ids : map.getIn(['pages', collection, 'ids'], List()).concat(ids),
         }));
       });
 
@@ -42,23 +50,22 @@ const entries = (state = Map({ entities: Map(), pages: Map() }), action) => {
           map.setIn(['search', 'isFetching'], true);
           map.setIn(['search', 'term'], action.payload.searchTerm);
         });
-      } else {
-        return state;
       }
+      return state;
 
     case SEARCH_ENTRIES_SUCCESS:
       loadedEntries = action.payload.entries;
       page = action.payload.page;
       searchTerm = action.payload.searchTerm;
       return state.withMutations((map) => {
-        loadedEntries.forEach((entry) => (
-          map.setIn(['entities', `${entry.collection}.${entry.slug}`], fromJS(entry).set('isFetching', false))
+        loadedEntries.forEach(entry => (
+          map.setIn(['entities', `${ entry.collection }.${ entry.slug }`], fromJS(entry).set('isFetching', false))
         ));
         const ids = List(loadedEntries.map(entry => ({ collection: entry.collection, slug: entry.slug })));
         map.set('search', Map({
-          page: page,
+          page,
           term: searchTerm,
-          ids: page === 0 ? ids : map.getIn(['search', 'ids'], List()).concat(ids)
+          ids: page === 0 ? ids : map.getIn(['search', 'ids'], List()).concat(ids),
         }));
       });
 
@@ -68,12 +75,12 @@ const entries = (state = Map({ entities: Map(), pages: Map() }), action) => {
 };
 
 export const selectEntry = (state, collection, slug) => (
-  state.getIn(['entities', `${collection}.${slug}`])
+  state.getIn(['entities', `${ collection }.${ slug }`])
 );
 
 export const selectEntries = (state, collection) => {
   const slugs = state.getIn(['pages', collection, 'ids']);
-  return slugs && slugs.map((slug) => selectEntry(state, collection, slug));
+  return slugs && slugs.map(slug => selectEntry(state, collection, slug));
 };
 
 export const selectSearchedEntries = (state) => {
