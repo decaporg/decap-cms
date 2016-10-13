@@ -22,6 +22,7 @@
   "lint-staged": {
     "*.js": [
       "eslint --fix",
+      "jest --findRelatedTests",
       "git add"
     ],
     "*.css": [
@@ -66,8 +67,8 @@
     "fsevents": "^1.0.14",
     "identity-obj-proxy": "^3.0.0",
     "imports-loader": "^0.6.5",
-    "jest-cli": "^15.1.1",
-    "lint-staged": "^3.0.3",
+    "jest-cli": "^16.0.1",
+    "lint-staged": "^3.1.0",
     "node-sass": "^3.10.0",
     "npm-check": "^5.2.3",
     "postcss-cssnext": "^2.7.0",
