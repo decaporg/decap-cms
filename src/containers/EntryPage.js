@@ -35,12 +35,12 @@ class EntryPage extends React.Component {
   };
 
   componentDidMount() {
-    const { entry, collection, slug } = this.props;
+    const { entry, newEntry, collection, slug, createEmptyDraft, loadEntry } = this.props;
 
-    if (this.props.newEntry) {
-      this.props.createEmptyDraft(this.props.collection);
+    if (newEntry) {
+      createEmptyDraft(collection);
     } else {
-      this.props.loadEntry(entry, collection, slug);
+      loadEntry(entry, collection, slug);
       this.createDraft(entry);
     }
   }
@@ -63,7 +63,8 @@ class EntryPage extends React.Component {
   };
 
   handlePersistEntry = () => {
-    this.props.persistEntry(this.props.collection, this.props.entryDraft);
+    const { persistEntry, collection, entryDraft } = this.props;
+    persistEntry(collection, entryDraft);
   };
 
   render() {
@@ -105,7 +106,15 @@ function mapStateToProps(state, ownProps) {
   const slug = ownProps.params.slug;
   const entry = newEntry ? null : selectEntry(state, collection.get('name'), slug);
   const boundGetMedia = getMedia.bind(null, state);
-  return { collection, collections, newEntry, entryDraft, boundGetMedia, slug, entry };
+  return {
+    collection,
+    collections,
+    newEntry,
+    entryDraft,
+    boundGetMedia,
+    slug,
+    entry,
+  };
 }
 
 export default connect(

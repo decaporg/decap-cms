@@ -2,9 +2,6 @@ import { Map, List, fromJS } from 'immutable';
 import {
   ENTRY_REQUEST,
   ENTRY_SUCCESS,
-  ENTRY_PERSIST_REQUEST,
-  ENTRY_PERSIST_SUCCESS,
-  ENTRY_PERSIST_FAILURE,
   ENTRIES_REQUEST,
   ENTRIES_SUCCESS,
   SEARCH_ENTRIES_REQUEST,
@@ -16,10 +13,6 @@ let loadedEntries;
 let page;
 let searchTerm;
 
-function getEntryPath(collectionName, entrySlug) {
-  return `${ collectionName }.${ entrySlug }`;
-}
-
 const entries = (state = Map({ entities: Map(), pages: Map() }), action) => {
   switch (action.type) {
     case ENTRY_REQUEST:
@@ -30,17 +23,6 @@ const entries = (state = Map({ entities: Map(), pages: Map() }), action) => {
         ['entities', `${ action.payload.collection }.${ action.payload.entry.slug }`],
         fromJS(action.payload.entry)
       );
-
-    case ENTRY_PERSIST_REQUEST: {
-      const { collectionName, entrySlug } = action.payload;
-      return state.setIn(['entities', getEntryPath(collectionName, entrySlug), 'isPersisting'], true);
-    }
-
-    case ENTRY_PERSIST_SUCCESS:
-    case ENTRY_PERSIST_FAILURE: {
-      const { collectionName, entrySlug } = action.payload;
-      return state.deleteIn(['entities', getEntryPath(collectionName, entrySlug), 'isPersisting']);
-    }
 
     case ENTRIES_REQUEST:
       return state.setIn(['pages', action.payload.collection, 'isFetching'], true);

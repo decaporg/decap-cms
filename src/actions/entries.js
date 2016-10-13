@@ -211,13 +211,14 @@ export function createEmptyDraft(collection) {
   };
 }
 
-export function persistEntry(collection, entry) {
+export function persistEntry(collection, entryDraft) {
   return (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
-    const mediaProxies = entry.get('mediaFiles').map(path => getMedia(state, path));
+    const mediaProxies = entryDraft.get('mediaFiles').map(path => getMedia(state, path));
+    const entry = entryDraft.get('entry');
     dispatch(entryPersisting(collection, entry));
-    backend.persistEntry(state.config, collection, entry, mediaProxies.toJS()).then(
+    backend.persistEntry(state.config, collection, entryDraft, mediaProxies.toJS()).then(
       () => dispatch(entryPersisted(collection, entry)),
       error => dispatch(entryPersistFail(collection, entry, error))
     );
