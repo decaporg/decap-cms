@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --config webpack.dev.js",
-    "test": "NODE_ENV=test npm run lint && jest",
+    "test": "NODE_ENV=test jest",
     "test:watch": "NODE_ENV=test jest --watch",
     "build": "webpack --config webpack.config.js",
     "storybook": "start-storybook -p 9001",
