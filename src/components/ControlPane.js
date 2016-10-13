@@ -6,11 +6,13 @@ export default class ControlPane extends React.Component {
   controlFor(field) {
     const { entry, getMedia, onChange, onAddMedia, onRemoveMedia } = this.props;
     const widget = resolveWidget(field.get('widget'));
+    const value = entry.getIn(['data', field.get('name')]);
+    if (!value) return null;
     return <div className="cms-control">
       <label>{field.get('label')}</label>
       {React.createElement(widget.control, {
         field: field,
-        value: entry.getIn(['data', field.get('name')]),
+        value: value,
         onChange: (value) => onChange(entry.setIn(['data', field.get('name')], value)),
         onAddMedia: onAddMedia,
         onRemoveMedia: onRemoveMedia,

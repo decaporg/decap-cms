@@ -8,7 +8,7 @@ import { DEFAULT_NODE, SCHEMA } from './schema';
 import { getNodes, getSyntaxes, getPlugins } from '../../richText';
 import StylesMenu from './StylesMenu';
 import BlockTypesMenu from './BlockTypesMenu';
-import styles from './index.css';
+//import styles from './index.css';
 
 /**
  * Slate Render Configuration

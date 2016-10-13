@@ -1,11 +1,15 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
-import Root from './root';
-import registry from './lib/registry';
 import 'file?name=index.html!../example/index.html';
 import 'react-toolbox/lib/commons.scss';
+import Root from './root';
+import registry from './lib/registry';
 import './index.css';
+
+if (process.env.NODE_ENV !== 'production') {
+  require('./utils.css'); // eslint-disable-line
+}
 
 // Create mount element dynamically
 const el = document.createElement('div');

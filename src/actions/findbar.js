@@ -31,7 +31,7 @@ export function runCommand(commandName, payload) {
         window.alert('Find Bar Help (PLACEHOLDER)\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit.');
         break;
       case SEARCH:
-        history.push('/search');
+        history.push(`/search/${payload.searchTerm}`);
         break;
     }
     dispatch(run(commandName, payload));
