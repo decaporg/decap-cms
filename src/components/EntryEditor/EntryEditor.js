@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { Button } from 'react-toolbox/lib/button';
 import { ScrollSync, ScrollSyncPane } from '../ScrollSync';
 import ControlPane from '../ControlPanel/ControlPane';
 import PreviewPane from '../PreviewPane/PreviewPane';
+import Toolbar from './EntryEditorToolbar';
 import styles from './EntryEditor.css';
 
 export default function EntryEditor(
@@ -43,17 +43,11 @@ export default function EntryEditor(
         </div>
       </ScrollSync>
       <div className={styles.footer}>
-        <Button
-          primary
-          raised
-          onClick={onPersist}
-        >
-          Save
-        </Button>
-        {' '}
-        <Button onClick={onCancelEdit}>
-          Cancel
-        </Button>
+        <Toolbar
+          isPersisting={entry.get('isPersisting')}
+          onPersist={onPersist}
+          onCancelEdit={onCancelEdit}
+        />
       </div>
     </div>
   );
