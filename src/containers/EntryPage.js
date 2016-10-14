@@ -14,6 +14,7 @@ import { addMedia, removeMedia } from '../actions/media';
 import { selectEntry, getMedia } from '../reducers';
 import EntryEditor from '../components/EntryEditor/EntryEditor';
 import entryPageHOC from './editorialWorkflow/EntryPageHOC';
+import { Loader } from '../components/UI';
 
 class EntryPage extends React.Component {
   static propTypes = {
@@ -82,7 +83,7 @@ class EntryPage extends React.Component {
     if (entryDraft == null
       || entryDraft.get('entry') === undefined
       || (entry && entry.get('isFetching'))) {
-      return <div>Loading...</div>;
+      return <Loader active>Loading entry...</Loader>;
     }
     return (
       <EntryEditor
