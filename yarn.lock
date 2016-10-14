@@ -512,13 +512,13 @@ babel-helpers@^6.16.0:
     babel-runtime "^6.0.0"
     babel-template "^6.16.0"
 
-babel-jest@^15.0.0:
-  version "15.0.0"
-  resolved "https://registry.yarnpkg.com/babel-jest/-/babel-jest-15.0.0.tgz#6a9e2e3999f241383db9ab1e2ef6704401d74242"
+babel-jest@^16.0.0:
+  version "16.0.0"
+  resolved "https://registry.yarnpkg.com/babel-jest/-/babel-jest-16.0.0.tgz#348729aea6d624a4774b8a934d07a40dd2cfd640"
   dependencies:
     babel-core "^6.0.0"
     babel-plugin-istanbul "^2.0.0"
-    babel-preset-jest "^15.0.0"
+    babel-preset-jest "^16.0.0"
 
 babel-loader@^6.2.2, babel-loader@^6.2.4:
   version "6.2.5"
@@ -549,9 +549,9 @@ babel-plugin-istanbul@^2.0.0:
     lodash.assign "^4.2.0"
     test-exclude "^2.1.1"
 
-babel-plugin-jest-hoist@^15.0.0:
-  version "15.0.0"
-  resolved "https://registry.yarnpkg.com/babel-plugin-jest-hoist/-/babel-plugin-jest-hoist-15.0.0.tgz#7b2fdbd0cd12fc36a84d3f5ff001ec504262bb59"
+babel-plugin-jest-hoist@^16.0.0:
+  version "16.0.0"
+  resolved "https://registry.yarnpkg.com/babel-plugin-jest-hoist/-/babel-plugin-jest-hoist-16.0.0.tgz#b58ca3f770982a7e7c25b5614b2e57e9dafc6e76"
 
 babel-plugin-lodash@^3.2.0:
   version "3.2.9"
@@ -974,11 +974,11 @@ babel-preset-es2015@^6.5.0, babel-preset-es2015@^6.9.0:
     babel-plugin-transform-es2015-unicode-regex "^6.3.13"
     babel-plugin-transform-regenerator "^6.16.0"
 
-babel-preset-jest@^15.0.0:
-  version "15.0.0"
-  resolved "https://registry.yarnpkg.com/babel-preset-jest/-/babel-preset-jest-15.0.0.tgz#f23988f1f918673ff9b470fdfd60fcc19bc618f5"
+babel-preset-jest@^16.0.0:
+  version "16.0.0"
+  resolved "https://registry.yarnpkg.com/babel-preset-jest/-/babel-preset-jest-16.0.0.tgz#417aabc2d7d93170f43c20ef1ea0145e8f7f2db5"
   dependencies:
-    babel-plugin-jest-hoist "^15.0.0"
+    babel-plugin-jest-hoist "^16.0.0"
 
 babel-preset-react@^6.11.1, babel-preset-react@^6.5.0:
   version "6.16.0"
@@ -1789,6 +1789,13 @@ cross-spawn-async@^2.0.0, cross-spawn-async@^2.1.1:
 cross-spawn@^3.0.0:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-3.0.1.tgz#1256037ecb9f0c5f79e3d6ef135e30770184b982"
+  dependencies:
+    lru-cache "^4.0.1"
+    which "^1.2.9"
+
+cross-spawn@^4.0.0:
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-4.0.2.tgz#7b9247621c23adfdd3856004a823cbe397424d41"
   dependencies:
     lru-cache "^4.0.1"
     which "^1.2.9"
@@ -2737,15 +2744,15 @@ execa@^0.2.2:
     path-key "^1.0.0"
     strip-eof "^1.0.0"
 
-execa@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/execa/-/execa-0.4.0.tgz#4eb6467a36a095fabb2970ff9d5e3fb7bce6ebc3"
+execa@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/execa/-/execa-0.5.0.tgz#a57456764b990e3e52f6eff7f17a9cc2ff2e7ccc"
   dependencies:
-    cross-spawn-async "^2.1.1"
+    cross-spawn "^4.0.0"
+    get-stream "^2.2.0"
     is-stream "^1.1.0"
-    npm-run-path "^1.0.0"
-    object-assign "^4.0.1"
-    path-key "^1.0.0"
+    npm-run-path "^2.0.0"
+    signal-exit "^3.0.0"
     strip-eof "^1.0.0"
 
 execall@^1.0.0:
@@ -3133,6 +3140,13 @@ get-stdin@^4.0.1:
 get-stdin@^5.0.0:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/get-stdin/-/get-stdin-5.0.1.tgz#122e161591e21ff4c52530305693f20e6393a398"
+
+get-stream@^2.2.0:
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/get-stream/-/get-stream-2.3.1.tgz#5f38f93f346009666ee0150a054167f91bdd95de"
+  dependencies:
+    object-assign "^4.0.1"
+    pinkie-promise "^2.0.0"
 
 get-window@^1.1.1:
   version "1.1.1"
@@ -3657,7 +3671,7 @@ is-callable@^1.0.4, is-callable@^1.1.1, is-callable@^1.1.3:
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/is-callable/-/is-callable-1.1.3.tgz#86eb75392805ddc33af71c92a0eedf74ee7604b2"
 
-is-ci@^1.0.8:
+is-ci@^1.0.8, is-ci@^1.0.9:
   version "1.0.9"
   resolved "https://registry.yarnpkg.com/is-ci/-/is-ci-1.0.9.tgz#de2c5ffe49ab3237fda38c47c8a3bbfd55bbcca7"
 
@@ -4008,171 +4022,179 @@ jasmine-check@^0.1.4:
   dependencies:
     testcheck "^0.1.0"
 
-jest-changed-files@^15.0.0:
-  version "15.0.0"
-  resolved "https://registry.yarnpkg.com/jest-changed-files/-/jest-changed-files-15.0.0.tgz#3ac99d97dc4ac045ad4adae8d967cc1317382571"
+jest-changed-files@^16.0.0:
+  version "16.0.0"
+  resolved "https://registry.yarnpkg.com/jest-changed-files/-/jest-changed-files-16.0.0.tgz#7931deff4424182b8173d80e06800d7363b19c45"
 
-jest-cli@^15.1.1:
-  version "15.1.1"
-  resolved "https://registry.yarnpkg.com/jest-cli/-/jest-cli-15.1.1.tgz#53f271281f90d3b4043eca9ce9af69dd04bbda3e"
+jest-cli@^16.0.1:
+  version "16.0.1"
+  resolved "https://registry.yarnpkg.com/jest-cli/-/jest-cli-16.0.1.tgz#c8c48ce0d1ece34d470562105b236f4f34f39f9d"
   dependencies:
     ansi-escapes "^1.4.0"
     callsites "^2.0.0"
     chalk "^1.1.1"
     graceful-fs "^4.1.6"
+    is-ci "^1.0.9"
     istanbul-api "^1.0.0-aplha.10"
     istanbul-lib-coverage "^1.0.0"
     istanbul-lib-instrument "^1.1.1"
-    jest-changed-files "^15.0.0"
-    jest-config "^15.1.1"
-    jest-environment-jsdom "^15.1.1"
+    jest-changed-files "^16.0.0"
+    jest-config "^16.0.0"
+    jest-environment-jsdom "^16.0.0"
     jest-file-exists "^15.0.0"
-    jest-haste-map "^15.0.1"
-    jest-jasmine2 "^15.1.1"
-    jest-mock "^15.0.0"
-    jest-resolve "^15.0.1"
-    jest-resolve-dependencies "^15.0.1"
-    jest-runtime "^15.1.1"
-    jest-snapshot "^15.1.1"
-    jest-util "^15.1.1"
+    jest-haste-map "^16.0.0"
+    jest-jasmine2 "^16.0.0"
+    jest-mock "^16.0.0"
+    jest-resolve "^16.0.0"
+    jest-resolve-dependencies "^16.0.0"
+    jest-runtime "^16.0.0"
+    jest-snapshot "^16.0.0"
+    jest-util "^16.0.0"
     json-stable-stringify "^1.0.0"
     node-notifier "^4.6.1"
     sane "~1.4.1"
+    strip-ansi "^3.0.1"
+    throat "^3.0.0"
     which "^1.1.1"
     worker-farm "^1.3.1"
     yargs "^5.0.0"
 
-jest-config@^15.1.1:
-  version "15.1.1"
-  resolved "https://registry.yarnpkg.com/jest-config/-/jest-config-15.1.1.tgz#abdbe5b4a49a404d04754d42d7d88b94e58009f7"
+jest-config@^16.0.0:
+  version "16.0.0"
+  resolved "https://registry.yarnpkg.com/jest-config/-/jest-config-16.0.0.tgz#9be05c331c43a972ab03f9efd582dceefc998386"
   dependencies:
     chalk "^1.1.1"
     istanbul "^0.4.5"
-    jest-environment-jsdom "^15.1.1"
-    jest-environment-node "^15.1.1"
-    jest-jasmine2 "^15.1.1"
-    jest-mock "^15.0.0"
-    jest-resolve "^15.0.1"
-    jest-util "^15.1.1"
+    jest-environment-jsdom "^16.0.0"
+    jest-environment-node "^16.0.0"
+    jest-jasmine2 "^16.0.0"
+    jest-mock "^16.0.0"
+    jest-resolve "^16.0.0"
+    jest-util "^16.0.0"
     json-stable-stringify "^1.0.0"
 
-jest-diff@^15.1.0:
-  version "15.1.0"
-  resolved "https://registry.yarnpkg.com/jest-diff/-/jest-diff-15.1.0.tgz#bda40ad77c6beec1e6b8b5e46e3bbaed6e81c9f4"
+jest-diff@^16.0.0:
+  version "16.0.0"
+  resolved "https://registry.yarnpkg.com/jest-diff/-/jest-diff-16.0.0.tgz#4a5d13b1e36c5b8020d5d9e69639e486a675ce14"
   dependencies:
     chalk "^1.1.3"
     diff "^3.0.0"
-    jest-matcher-utils "^15.1.0"
-    pretty-format "^3.7.0"
+    jest-matcher-utils "^16.0.0"
+    pretty-format "~4.2.1"
 
-jest-environment-jsdom@^15.1.1:
-  version "15.1.1"
-  resolved "https://registry.yarnpkg.com/jest-environment-jsdom/-/jest-environment-jsdom-15.1.1.tgz#f0368c13e8e0b81adad123a051b94294338b97e0"
+jest-environment-jsdom@^16.0.0:
+  version "16.0.0"
+  resolved "https://registry.yarnpkg.com/jest-environment-jsdom/-/jest-environment-jsdom-16.0.0.tgz#1fc405a249583281ad6b8ef8863ebe2b9d47b57e"
   dependencies:
-    jest-util "^15.1.1"
-    jsdom "^9.4.0"
+    jest-mock "^16.0.0"
+    jest-util "^16.0.0"
+    jsdom "^9.5.0"
 
-jest-environment-node@^15.1.1:
-  version "15.1.1"
-  resolved "https://registry.yarnpkg.com/jest-environment-node/-/jest-environment-node-15.1.1.tgz#7a8d4868e027e5d16026468e248dd5946fe43c04"
+jest-environment-node@^16.0.0:
+  version "16.0.0"
+  resolved "https://registry.yarnpkg.com/jest-environment-node/-/jest-environment-node-16.0.0.tgz#470776f814e8997b143708e98ff58b830e374827"
   dependencies:
-    jest-util "^15.1.1"
+    jest-mock "^16.0.0"
+    jest-util "^16.0.0"
 
 jest-file-exists@^15.0.0:
   version "15.0.0"
   resolved "https://registry.yarnpkg.com/jest-file-exists/-/jest-file-exists-15.0.0.tgz#b7fefdd3f4b227cb686bb156ecc7661ee6935a88"
 
-jest-haste-map@^15.0.1:
-  version "15.0.1"
-  resolved "https://registry.yarnpkg.com/jest-haste-map/-/jest-haste-map-15.0.1.tgz#1d1c342fa6f6d62d9bc2af76428d2e20f74a44d3"
+jest-haste-map@^16.0.0:
+  version "16.0.0"
+  resolved "https://registry.yarnpkg.com/jest-haste-map/-/jest-haste-map-16.0.0.tgz#2dd23905a9dbefd0e6baf08523ea9931089a33ff"
   dependencies:
     fb-watchman "^1.9.0"
     graceful-fs "^4.1.6"
     multimatch "^2.1.0"
     worker-farm "^1.3.1"
 
-jest-jasmine2@^15.1.1:
-  version "15.1.1"
-  resolved "https://registry.yarnpkg.com/jest-jasmine2/-/jest-jasmine2-15.1.1.tgz#cac8b016ab6ce16d95b291875773c2494a1b4672"
+jest-jasmine2@^16.0.0:
+  version "16.0.0"
+  resolved "https://registry.yarnpkg.com/jest-jasmine2/-/jest-jasmine2-16.0.0.tgz#825efed2b4c3236ef1af0ab8d78d52c45a963323"
   dependencies:
     graceful-fs "^4.1.6"
     jasmine-check "^0.1.4"
-    jest-matchers "^15.1.1"
-    jest-snapshot "^15.1.1"
-    jest-util "^15.1.1"
+    jest-matchers "^16.0.0"
+    jest-snapshot "^16.0.0"
+    jest-util "^16.0.0"
 
-jest-matcher-utils@^15.1.0:
-  version "15.1.0"
-  resolved "https://registry.yarnpkg.com/jest-matcher-utils/-/jest-matcher-utils-15.1.0.tgz#2c506ab9f396d286afa74872f2a3afe3ff454986"
+jest-matcher-utils@^16.0.0:
+  version "16.0.0"
+  resolved "https://registry.yarnpkg.com/jest-matcher-utils/-/jest-matcher-utils-16.0.0.tgz#705af3ff85944bec1c25bc813f427aff8642b0cd"
   dependencies:
     chalk "^1.1.3"
+    pretty-format "~4.2.1"
 
-jest-matchers@^15.1.1:
-  version "15.1.1"
-  resolved "https://registry.yarnpkg.com/jest-matchers/-/jest-matchers-15.1.1.tgz#faff50acbbf9743323ec2270a24743cb59d638f0"
+jest-matchers@^16.0.0:
+  version "16.0.0"
+  resolved "https://registry.yarnpkg.com/jest-matchers/-/jest-matchers-16.0.0.tgz#8f65d99e716ba8f4544479601ae4cfaaa4866d16"
   dependencies:
-    jest-diff "^15.1.0"
-    jest-matcher-utils "^15.1.0"
-    jest-util "^15.1.1"
+    jest-diff "^16.0.0"
+    jest-matcher-utils "^16.0.0"
+    jest-util "^16.0.0"
 
-jest-mock@^15.0.0:
-  version "15.0.0"
-  resolved "https://registry.yarnpkg.com/jest-mock/-/jest-mock-15.0.0.tgz#b6639699eb0f021aa3648803432ebd950f75dc02"
+jest-mock@^16.0.0:
+  version "16.0.0"
+  resolved "https://registry.yarnpkg.com/jest-mock/-/jest-mock-16.0.0.tgz#39fa77d18b430a9c940d571131961085e2030a6c"
 
-jest-resolve-dependencies@^15.0.1:
-  version "15.0.1"
-  resolved "https://registry.yarnpkg.com/jest-resolve-dependencies/-/jest-resolve-dependencies-15.0.1.tgz#43ebc69b7d81d2cdc70474d4bf634304b06ea411"
+jest-resolve-dependencies@^16.0.0:
+  version "16.0.0"
+  resolved "https://registry.yarnpkg.com/jest-resolve-dependencies/-/jest-resolve-dependencies-16.0.0.tgz#7779e36109b571ef0661482efac0c8f2c3a61a80"
   dependencies:
     jest-file-exists "^15.0.0"
-    jest-resolve "^15.0.1"
+    jest-resolve "^16.0.0"
 
-jest-resolve@^15.0.1:
-  version "15.0.1"
-  resolved "https://registry.yarnpkg.com/jest-resolve/-/jest-resolve-15.0.1.tgz#18a32d5ebfb7883c2eac16830917a37c5102ffa1"
+jest-resolve@^16.0.0:
+  version "16.0.0"
+  resolved "https://registry.yarnpkg.com/jest-resolve/-/jest-resolve-16.0.0.tgz#9a819b02c3d1581716aac7d5bcdab36df4f30f68"
   dependencies:
     browser-resolve "^1.11.2"
     jest-file-exists "^15.0.0"
-    jest-haste-map "^15.0.1"
+    jest-haste-map "^16.0.0"
     resolve "^1.1.6"
 
-jest-runtime@^15.1.1:
-  version "15.1.1"
-  resolved "https://registry.yarnpkg.com/jest-runtime/-/jest-runtime-15.1.1.tgz#3907b8d46e5fe21b4395f3f884031fae22267191"
+jest-runtime@^16.0.0:
+  version "16.0.0"
+  resolved "https://registry.yarnpkg.com/jest-runtime/-/jest-runtime-16.0.0.tgz#c5af0c4957198256abcd3d8c5c003188eabb037d"
   dependencies:
     babel-core "^6.11.4"
-    babel-jest "^15.0.0"
+    babel-jest "^16.0.0"
     babel-plugin-istanbul "^2.0.0"
     chalk "^1.1.3"
     graceful-fs "^4.1.6"
-    jest-config "^15.1.1"
+    jest-config "^16.0.0"
     jest-file-exists "^15.0.0"
-    jest-haste-map "^15.0.1"
-    jest-mock "^15.0.0"
-    jest-resolve "^15.0.1"
-    jest-snapshot "^15.1.1"
-    jest-util "^15.1.1"
+    jest-haste-map "^16.0.0"
+    jest-mock "^16.0.0"
+    jest-resolve "^16.0.0"
+    jest-snapshot "^16.0.0"
+    jest-util "^16.0.0"
     json-stable-stringify "^1.0.0"
     multimatch "^2.1.0"
     yargs "^5.0.0"
 
-jest-snapshot@^15.1.1:
-  version "15.1.1"
-  resolved "https://registry.yarnpkg.com/jest-snapshot/-/jest-snapshot-15.1.1.tgz#95d0d2729512d64d1a1a42724ca551c1d2079a71"
+jest-snapshot@^16.0.0:
+  version "16.0.0"
+  resolved "https://registry.yarnpkg.com/jest-snapshot/-/jest-snapshot-16.0.0.tgz#a71060d62534e3eb9e61807119b47f971230eb4b"
   dependencies:
-    jest-diff "^15.1.0"
+    jest-diff "^16.0.0"
     jest-file-exists "^15.0.0"
-    jest-util "^15.1.1"
-    pretty-format "^3.7.0"
+    jest-matcher-utils "^16.0.0"
+    jest-util "^16.0.0"
+    natural-compare "^1.4.0"
+    pretty-format "~4.2.1"
 
-jest-util@^15.1.1:
-  version "15.1.1"
-  resolved "https://registry.yarnpkg.com/jest-util/-/jest-util-15.1.1.tgz#5e19edab2c573f992c9d45ba118fa8d90f9d220e"
+jest-util@^16.0.0:
+  version "16.0.0"
+  resolved "https://registry.yarnpkg.com/jest-util/-/jest-util-16.0.0.tgz#a72abcd23ba9be1a02c450324f9beb711f61c9c9"
   dependencies:
     chalk "^1.1.1"
     diff "^3.0.0"
     graceful-fs "^4.1.6"
     jest-file-exists "^15.0.0"
-    jest-mock "^15.0.0"
+    jest-mock "^16.0.0"
     mkdirp "^0.5.1"
 
 jju@^1.1.0:
@@ -4208,7 +4230,7 @@ jsbn@~0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/jsbn/-/jsbn-0.1.0.tgz#650987da0dd74f4ebf5a11377a2aa2d273e97dfd"
 
-jsdom@^9.4.0:
+jsdom@^9.5.0:
   version "9.6.0"
   resolved "https://registry.yarnpkg.com/jsdom/-/jsdom-9.6.0.tgz#e0e9b15ba07e90b1d9ec083f9bedee0f6800a4fb"
   dependencies:
@@ -4463,16 +4485,16 @@ liftoff@^2.2.0:
     rechoir "^0.6.2"
     resolve "^1.1.7"
 
-lint-staged@^3.0.2:
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/lint-staged/-/lint-staged-3.0.3.tgz#0bde028a3a6abbeaef9511d7d039dbd550a0c8d1"
+lint-staged@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/lint-staged/-/lint-staged-3.1.0.tgz#4bb3da3b98135b0a076606c5e4f129af034bfe48"
   dependencies:
     app-root-path "^2.0.0"
-    execa "^0.4.0"
+    cosmiconfig "^1.1.0"
+    execa "^0.5.0"
     listr "^0.6.0"
     minimatch "^3.0.0"
     npm-which "^3.0.1"
-    object-assign "^4.1.0"
     staged-git-files "0.0.4"
     which "^1.2.11"
 
@@ -5468,6 +5490,12 @@ npm-run-path@^1.0.0:
   dependencies:
     path-key "^1.0.0"
 
+npm-run-path@^2.0.0:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/npm-run-path/-/npm-run-path-2.0.2.tgz#35a9232dfa35d7067b4cb2ddf2357b1871536c5f"
+  dependencies:
+    path-key "^2.0.0"
+
 npm-which@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/npm-which/-/npm-which-3.0.1.tgz#9225f26ec3a285c209cae67c3b11a6b4ab7140aa"
@@ -5767,6 +5795,10 @@ path-is-inside@^1.0.1:
 path-key@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/path-key/-/path-key-1.0.0.tgz#5d53d578019646c0d68800db4e146e6bdc2ac7af"
+
+path-key@^2.0.0:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/path-key/-/path-key-2.0.1.tgz#411cadb574c5a140d3a4b1910d40d80cc9f40b40"
 
 path-parse@^1.0.5:
   version "1.0.5"
@@ -6376,9 +6408,9 @@ preserve@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/preserve/-/preserve-0.2.0.tgz#815ed1f6ebc65926f865b310c0713bcb3315ce4b"
 
-pretty-format@^3.7.0:
-  version "3.8.0"
-  resolved "https://registry.yarnpkg.com/pretty-format/-/pretty-format-3.8.0.tgz#bfbed56d5e9a776645f4b1ff7aa1a3ac4fa3c385"
+pretty-format@~4.2.1:
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/pretty-format/-/pretty-format-4.2.1.tgz#b1dad18c3be0c8209e64c7791fa67e252d2d3e07"
 
 prismjs@^1.5.1:
   version "1.5.1"
@@ -7855,6 +7887,10 @@ text-table@^0.2.0, text-table@~0.2.0:
 throat@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/throat/-/throat-2.0.2.tgz#a9fce808b69e133a632590780f342c30a6249b02"
+
+throat@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/throat/-/throat-3.0.0.tgz#e7c64c867cbb3845f10877642f7b60055b8ec0d6"
 
 through@^2.3.6, "through@>=2.2.7 <3", through@~2.3.4, through@~2.3.8:
   version "2.3.8"
