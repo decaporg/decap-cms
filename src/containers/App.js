@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { Layout, Panel, NavDrawer } from 'react-toolbox/lib/layout';
 import { Navigation } from 'react-toolbox/lib/navigation';
 import { Link } from 'react-toolbox/lib/link';
+import { Notifs } from 'redux-notifications';
 import { loadConfig } from '../actions/config';
 import { loginUser } from '../actions/auth';
 import { currentBackend } from '../backends/backend';
@@ -17,7 +18,7 @@ import {
   createNewEntryInCollection,
 } from '../actions/findbar';
 import AppHeader from '../components/AppHeader/AppHeader';
-import { Loader } from '../components/UI/index';
+import { Loader, Toast } from '../components/UI/index';
 import styles from './App.css';
 
 class App extends React.Component {
@@ -147,6 +148,10 @@ class App extends React.Component {
 
     return (
       <Layout theme={styles}>
+        <Notifs
+          className={styles.notifsContainer}
+          CustomComponent={Toast}
+        />
         <NavDrawer
           active={navDrawerIsVisible}
           scrollY

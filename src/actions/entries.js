@@ -1,6 +1,9 @@
+import { actions as notifActions } from 'redux-notifications';
 import { currentBackend } from '../backends/backend';
 import { getIntegrationProvider } from '../integrations';
 import { getMedia, selectIntegration } from '../reducers';
+
+const { notifSend } = notifActions;
 
 /*
  * Contant Declarations
@@ -190,7 +193,9 @@ export function loadEntry(entry, collection, slug) {
 
 export function loadEntries(collection, page = 0) {
   return (dispatch, getState) => {
-    if (collection.get('isFetching')) { return; }
+    if (collection.get('isFetching')) {
+      return;
+    }
     const state = getState();
     const integration = selectIntegration(state, collection.get('name'), 'listEntries');
     const provider = integration ? getIntegrationProvider(state.integrations, integration) : currentBackend(state.config);
@@ -218,10 +223,24 @@ export function persistEntry(collection, entryDraft) {
     const mediaProxies = entryDraft.get('mediaFiles').map(path => getMedia(state, path));
     const entry = entryDraft.get('entry');
     dispatch(entryPersisting(collection, entry));
-    backend.persistEntry(state.config, collection, entryDraft, mediaProxies.toJS()).then(
-      () => dispatch(entryPersisted(collection, entry)),
-      error => dispatch(entryPersistFail(collection, entry, error))
-    );
+    backend
+      .persistEntry(state.config, collection, entryDraft, mediaProxies.toJS())
+      .then(() => {
+        dispatch(notifSend({
+          message: 'Entry saved',
+          kind: 'success',
+          dismissAfter: 4000,
+        }));
+        dispatch(entryPersisted(collection, entry));
+      })
+      .catch((error) => {
+        dispatch(notifSend({
+          message: 'Failed to persist entry',
+          kind: 'danger',
+          dismissAfter: 4000,
+        }));
+        dispatch(entryPersistFail(collection, entry, error));
+      });
   };
 }
 

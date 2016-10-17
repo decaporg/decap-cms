@@ -1,20 +1,30 @@
+@import '../components/UI/theme.css';
+
 .layout .navDrawer .drawerContent {
   padding-top: 54px;
+  max-width: 240px;
 }
+
 .nav {
   display: block;
   padding: 1rem;
+
   & .heading {
     border: none;
   }
 }
+
 .main {
   padding-top: 54px;
 }
 
-.navDrawer {
-  max-width: 240px !important;
-  & .drawerContent {
-    max-width: 240px !important;
-  }
+.notifsContainer {
+  position: fixed;
+  top: 60px;
+  right: 0;
+  bottom: 60px;
+  z-index: var(--topmostZindex);
+  width: 360px;
+  pointer-events: none;
 }
+
