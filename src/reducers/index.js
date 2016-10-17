@@ -2,7 +2,7 @@ import auth from './auth';
 import config from './config';
 import editor from './editor';
 import integrations, * as fromIntegrations from './integrations';
-import entries, * as fromEntries  from './entries';
+import entries, * as fromEntries from './entries';
 import editorialWorkflow, * as fromEditorialWorkflow from './editorialWorkflow';
 import entryDraft from './entryDraft';
 import collections from './collections';
@@ -17,7 +17,7 @@ const reducers = {
   entries,
   editorialWorkflow,
   entryDraft,
-  medias
+  medias,
 };
 
 export default reducers;
@@ -31,7 +31,7 @@ export const selectEntry = (state, collection, slug) =>
 export const selectEntries = (state, collection) =>
   fromEntries.selectEntries(state.entries, collection);
 
-export const selectSearchedEntries = (state) =>
+export const selectSearchedEntries = state =>
   fromEntries.selectSearchedEntries(state.entries);
 
 export const selectUnpublishedEntry = (state, status, slug) =>

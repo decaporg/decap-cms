@@ -165,7 +165,10 @@ export default class API {
   }
 
   persistFiles(entry, mediaFiles, options) {
-    let filename, part, parts, subtree;
+    let filename,
+      part,
+      parts,
+      subtree;
     const fileTree = {};
     const uploadPromises = [];
 
@@ -269,7 +272,7 @@ export default class API {
   }
 
   updateUnpublishedEntryStatus(collection, slug, status) {
-    const contentKey = collection ? `${ collection }-${ slug }` : slug;
+    const contentKey = slug;
     return this.retrieveMetadata(contentKey)
     .then((metadata) => {
       return {
@@ -281,7 +284,7 @@ export default class API {
   }
 
   publishUnpublishedEntry(collection, slug, status) {
-    const contentKey = collection ? `${ collection }-${ slug }` : slug;
+    const contentKey = slug;
     return this.retrieveMetadata(contentKey)
     .then((metadata) => {
       const headSha = metadata.pr && metadata.pr.head;
@@ -376,7 +379,9 @@ export default class API {
   updateTree(sha, path, fileTree) {
     return this.getTree(sha)
       .then((tree) => {
-        let obj, filename, fileOrDir;
+        let obj,
+          filename,
+          fileOrDir;
         const updates = [];
         const added = {};
 

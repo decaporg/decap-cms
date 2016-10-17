@@ -16,9 +16,6 @@ class UnpublishedListing extends React.Component {
   };
 
   requestPublish = (collection, slug, ownStatus) => {
-    console.log('HERE');
-    console.log(ownStatus);
-    console.log(status.last());
     if (ownStatus !== status.last()) return;
     if (window.confirm('Are you sure you want to publish this entry?')) {
       this.props.handlePublish(collection, slug, ownStatus);
