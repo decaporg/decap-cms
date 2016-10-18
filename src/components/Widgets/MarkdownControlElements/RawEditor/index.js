@@ -1,7 +1,10 @@
 import React, { PropTypes } from 'react';
 import { Editor, Plain, Mark } from 'slate';
 import Prism from 'prismjs';
+import PluginDropImages from 'slate-drop-or-paste-images';
+import MediaProxy from '../../../../valueObjects/MediaProxy';
 import marks from './prismMarkdown';
+import styles from './index.css';
 
 Prism.languages.markdown = Prism.languages.extend('markup', {});
 Prism.languages.insertBefore('markdown', 'prolog', marks);
@@ -41,7 +44,6 @@ function renderDecorations(text, block) {
   return characters.asImmutable();
 }
 
-
 const SCHEMA = {
   rules: [
     {
@@ -70,7 +72,15 @@ const SCHEMA = {
   }
 };
 
-class RawEditor extends React.Component {
+export default class RawEditor extends React.Component {
+
+  static propTypes = {
+    onAddMedia: PropTypes.func.isRequired,
+    getMedia: PropTypes.func.isRequired,
+    onChange: PropTypes.func.isRequired,
+    value: PropTypes.string,
+  };
+
   constructor(props) {
     super(props);
     const content = props.value ? Plain.deserialize(props.value) : Plain.deserialize('');
@@ -78,12 +88,24 @@ class RawEditor extends React.Component {
     this.state = {
       state: content
     };
+
+    this.plugins = [
+      PluginDropImages({
+        applyTransform: (transform, file) => {
+          const mediaProxy = new MediaProxy(file.name, file);
+          const state = Plain.deserialize(`\n\n![${file.name}](${mediaProxy.public_path})\n\n`);
+          props.onAddMedia(mediaProxy);
+          return transform
+            .insertFragment(state.get('document'));
+        }
+      })
+    ];
   }
 
   /**
    * Slate keeps track of selections, scroll position etc.
    * So, onChange gets dispatched on every interaction (click, arrows, everything...)
-   * It also have an onDocumentChange, that get's dispached only when the actual
+   * It also have an onDocumentChange, that get's dispatched only when the actual
    * content changes
    */
   handleChange = state => {
@@ -98,20 +120,14 @@ class RawEditor extends React.Component {
   render() {
     return (
       <Editor
-          placeholder={'Enter some rich text...'}
-          state={this.state.state}
-          schema={SCHEMA}
-          onChange={this.handleChange}
-          onDocumentChange={this.handleDocumentChange}
-          renderDecorations={this.renderDecorations}
+        className={styles.root}
+        placeholder={'Enter some rich text...'}
+        state={this.state.state}
+        schema={SCHEMA}
+        onChange={this.handleChange}
+        onDocumentChange={this.handleDocumentChange}
+        plugins={this.plugins}
       />
     );
   }
 }
-
-export default RawEditor;
-
-RawEditor.propTypes = {
-  onChange: PropTypes.func.isRequired,
-  value: PropTypes.node,
-};

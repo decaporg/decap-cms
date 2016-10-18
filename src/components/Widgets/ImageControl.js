@@ -63,19 +63,19 @@ export default class ImageControl extends React.Component {
     const imageName = this.renderImageName();
     return (
       <div
-          onDragEnter={this.handleDragEnter}
-          onDragOver={this.handleDragOver}
-          onDrop={this.handleChange}
+        onDragEnter={this.handleDragEnter}
+        onDragOver={this.handleDragOver}
+        onDrop={this.handleChange}
       >
         <span style={styles.imageUpload} onClick={this.handleClick}>
           {imageName ? imageName : 'Tip: Click here to upload an image from your file browser, or drag an image directly into this box from your desktop'}
         </span>
         <input
-            type="file"
-            accept="image/*"
-            onChange={this.handleChange}
-            style={styles.input}
-            ref={this.handleFileInputRef}
+          type="file"
+          accept="image/*"
+          onChange={this.handleChange}
+          style={styles.input}
+          ref={this.handleFileInputRef}
         />
       </div>
     );

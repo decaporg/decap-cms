@@ -36,9 +36,9 @@ export default class Loader extends React.Component {
       this.setAnimation();
       return <div className={styles.text}>
         <ReactCSSTransitionGroup
-            transitionName={styles}
-            transitionEnterTimeout={500}
-            transitionLeaveTimeout={500}
+          transitionName={styles}
+          transitionEnterTimeout={500}
+          transitionLeaveTimeout={500}
         >
           <div key={currentItem} className={styles.animateItem}>{children[currentItem]}</div>
         </ReactCSSTransitionGroup>

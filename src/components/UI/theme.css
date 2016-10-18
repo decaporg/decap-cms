@@ -2,10 +2,13 @@
   --defaultColor: #333;
   --defaultColorLight: #eee;
   --backgroundColor: #fff;
-  --shadowColor: rgba(0, 0, 0, 0.117647);
+  --shadowColor: rgba(0, 0, 0, .25);
+  --infoColor: #69c;
   --successColor: #1c7;
   --warningColor: #fa0;
   --errorColor: #f52;
+  --borderRadius: 2px;
+  --topmostZindex: 99999;
 }
 
 .base {
@@ -13,14 +16,14 @@
 }
 
 .container {
-  color: var(--defaultColor);
   background-color: var(--backgroundColor);
+  color: var(--defaultColor);
 }
 
 .rounded {
-  border-radius: 2px;
+  border-radius: var(--borderRadius);
 }
 
 .depth {
-  box-shadow: var(--shadowColor) 0px 1px 6px, var(--shadowColor) 0px 1px 4px;
+  box-shadow: var(--shadowColor) 0 1px 6px;
 }

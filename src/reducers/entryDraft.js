@@ -1,10 +1,21 @@
 import { Map, List, fromJS } from 'immutable';
-import { DRAFT_CREATE_FROM_ENTRY, DRAFT_CREATE_EMPTY, DRAFT_DISCARD, DRAFT_CHANGE } from '../actions/entries';
-import { ADD_MEDIA, REMOVE_MEDIA } from '../actions/media';
+import {
+  DRAFT_CREATE_FROM_ENTRY,
+  DRAFT_CREATE_EMPTY,
+  DRAFT_DISCARD,
+  DRAFT_CHANGE,
+  ENTRY_PERSIST_REQUEST,
+  ENTRY_PERSIST_SUCCESS,
+  ENTRY_PERSIST_FAILURE,
+} from '../actions/entries';
+import {
+  ADD_MEDIA,
+  REMOVE_MEDIA,
+} from '../actions/media';
 
 const initialState = Map({ entry: Map(), mediaFiles: List() });
 
-const entryDraft = (state = Map(), action) => {
+const entryDraftReducer = (state = Map(), action) => {
   switch (action.type) {
     case DRAFT_CREATE_FROM_ENTRY:
       // Existing Entry
@@ -25,14 +36,23 @@ const entryDraft = (state = Map(), action) => {
     case DRAFT_CHANGE:
       return state.set('entry', action.payload);
 
+    case ENTRY_PERSIST_REQUEST: {
+      return state.setIn(['entry', 'isPersisting'], true);
+    }
+
+    case ENTRY_PERSIST_SUCCESS:
+    case ENTRY_PERSIST_FAILURE: {
+      return state.deleteIn(['entry', 'isPersisting']);
+    }
+
     case ADD_MEDIA:
-      return state.update('mediaFiles', (list) => list.push(action.payload.public_path));
+      return state.update('mediaFiles', list => list.push(action.payload.public_path));
     case REMOVE_MEDIA:
-      return state.update('mediaFiles', (list) => list.filterNot((path) => path === action.payload));
+      return state.update('mediaFiles', list => list.filterNot(path => path === action.payload));
 
     default:
       return state;
   }
 };
 
-export default entryDraft;
+export default entryDraftReducer;

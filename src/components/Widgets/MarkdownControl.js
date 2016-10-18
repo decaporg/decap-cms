@@ -16,10 +16,6 @@ class MarkdownControl extends React.Component {
     value: PropTypes.node,
   };
 
-  static contextTypes = {
-    plugins: PropTypes.object,
-  };
-
   componentWillMount() {
     this.useRawEditor();
     processEditorPlugins(registry.getEditorComponents());
@@ -33,18 +29,18 @@ class MarkdownControl extends React.Component {
     this.props.switchVisualMode(false);
   };
 
-  renderEditor() {
+  render() {
     const { editor, onChange, onAddMedia, getMedia, value } = this.props;
     if (editor.get('useVisualMode')) {
       return (
         <div className='cms-editor-visual'>
           {null && <button onClick={this.useRawEditor}>Switch to Raw Editor</button>}
           <VisualEditor
-              onChange={onChange}
-              onAddMedia={onAddMedia}
-              getMedia={getMedia}
-              registeredComponents={editor.get('registeredComponents')}
-              value={value}
+            onChange={onChange}
+            onAddMedia={onAddMedia}
+            getMedia={getMedia}
+            registeredComponents={editor.get('registeredComponents')}
+            value={value}
           />
         </div>
       );
@@ -53,23 +49,14 @@ class MarkdownControl extends React.Component {
         <div className='cms-editor-raw'>
           {null && <button onClick={this.useVisualEditor}>Switch to Visual Editor</button>}
           <RawEditor
-              onChange={onChange}
-              onAddMedia={onAddMedia}
-              getMedia={getMedia}
-              value={value}
+            onChange={onChange}
+            onAddMedia={onAddMedia}
+            getMedia={getMedia}
+            value={value}
           />
         </div>
       );
     }
-  }
-
-  render() {
-    return (
-      <div>
-
-        {this.renderEditor()}
-      </div>
-    );
   }
 }
 

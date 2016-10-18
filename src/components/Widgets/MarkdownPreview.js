@@ -1,28 +1,34 @@
 import React, { PropTypes } from 'react';
-import MarkupIt from 'markup-it';
 import { getSyntaxes } from './richText';
+import MarkupItReactRenderer from '../MarkupItReactRenderer/index';
 
-export default class MarkdownPreview extends React.Component {
-
-  constructor(props) {
-    super(props);
-
-    const { markdown, html } = getSyntaxes();
-    this.markdown = new MarkupIt(markdown);
-    this.html = new MarkupIt(html);
+const MarkdownPreview = ({ value, getMedia }) => {
+  if (value == null) {
+    return null;
   }
-  render() {
-    const { value } = this.props;
-    if (value == null) { return null; }
-    const content = this.markdown.toContent(value);
-    const contentHtml =  { __html: this.html.toText(content) };
 
-    return (
-      <div dangerouslySetInnerHTML={contentHtml} />
-    );
-  }
-}
+  const schema = {
+    'mediaproxy': ({ token }) => ( // eslint-disable-line
+      <img
+        src={getMedia(token.getIn(['data', 'src']))}
+        alt={token.getIn(['data', 'alt'])}
+      />
+    )
+  };
+
+  const { markdown } = getSyntaxes();
+  return (
+    <MarkupItReactRenderer
+      value={value}
+      syntax={markdown}
+      schema={schema}
+    />
+  );
+};
 
 MarkdownPreview.propTypes = {
-  value: PropTypes.node,
+  getMedia: PropTypes.func.isRequired,
+  value: PropTypes.string,
 };
+
+export default MarkdownPreview;

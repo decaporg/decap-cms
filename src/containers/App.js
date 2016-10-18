@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 import pluralize from 'pluralize';
 import { connect } from 'react-redux';
-import { Layout, Panel, NavDrawer, Navigation, Link } from 'react-toolbox';
+import { Layout, Panel, NavDrawer } from 'react-toolbox/lib/layout';
+import { Navigation } from 'react-toolbox/lib/navigation';
+import { Link } from 'react-toolbox/lib/link';
+import { Notifs } from 'redux-notifications';
 import { loadConfig } from '../actions/config';
 import { loginUser } from '../actions/auth';
 import { currentBackend } from '../backends/backend';
@@ -11,37 +15,43 @@ import {
   HELP,
   runCommand,
   navigateToCollection,
-  createNewEntryInCollection
+  createNewEntryInCollection,
 } from '../actions/findbar';
 import AppHeader from '../components/AppHeader/AppHeader';
-import { Loader } from '../components/UI/index';
+import { Loader, Toast } from '../components/UI/index';
 import styles from './App.css';
 
 class App extends React.Component {
 
+  static propTypes = {
+    auth: ImmutablePropTypes.map,
+    children: PropTypes.node,
+    config: ImmutablePropTypes.map,
+    collections: ImmutablePropTypes.orderedMap,
+    createNewEntryInCollection: PropTypes.func.isRequired,
+    dispatch: PropTypes.func.isRequired,
+    navigateToCollection: PropTypes.func.isRequired,
+    user: ImmutablePropTypes.map,
+    runCommand: PropTypes.func.isRequired,
+  };
+
+  static configError(config) {
+    return (<div>
+      <h1>Error loading the CMS configuration</h1>
+
+      <div>
+        <p>The <code>config.yml</code> file could not be loaded or failed to parse properly.</p>
+        <p><strong>Error message:</strong> {config.get('error')}</p>
+      </div>
+    </div>);
+  }
+
   state = {
-    navDrawerIsVisible: true
+    navDrawerIsVisible: false,
   };
 
   componentDidMount() {
     this.props.dispatch(loadConfig());
-  }
-
-  configError(config) {
-    return <div>
-      <h1>Error loading the CMS configuration</h1>
-
-      <div>
-        <p>The "config.yml" file could not be loaded or failed to parse properly.</p>
-        <p><strong>Error message:</strong> {config.get('error')}</p>
-      </div>
-    </div>;
-  }
-
-  configLoading() {
-    return <div>
-      <Loader active>Loading configuration...</Loader>
-    </div>;
   }
 
   handleLogin(credentials) {
@@ -56,13 +66,17 @@ class App extends React.Component {
       return <div><h1>Waiting for backend...</h1></div>;
     }
 
-    return <div>
-      {React.createElement(backend.authComponent(), {
-        onLogin: this.handleLogin.bind(this),
-        error: auth && auth.get('error'),
-        isFetching: auth && auth.get('isFetching')
-      })}
-    </div>;
+    return (
+      <div>
+        {
+          React.createElement(backend.authComponent(), {
+            onLogin: this.handleLogin.bind(this),
+            error: auth && auth.get('error'),
+            isFetching: auth && auth.get('isFetching'),
+          })
+        }
+      </div>
+    );
   }
 
   generateFindBarCommands() {
@@ -70,22 +84,22 @@ class App extends React.Component {
     const commands = [];
     const defaultCommands = [];
 
-    this.props.collections.forEach(collection => {
+    this.props.collections.forEach((collection) => {
       commands.push({
-        id: `show_${collection.get('name')}`,
-        pattern: `Show ${pluralize(collection.get('label'))}`,
+        id: `show_${ collection.get('name') }`,
+        pattern: `Show ${ pluralize(collection.get('label')) }`,
         type: SHOW_COLLECTION,
-        payload: { collectionName: collection.get('name') }
+        payload: { collectionName: collection.get('name') },
       });
 
-      if (defaultCommands.length < 5) defaultCommands.push(`show_${collection.get('name')}`);
+      if (defaultCommands.length < 5) defaultCommands.push(`show_${ collection.get('name') }`);
 
       if (collection.get('create') === true) {
         commands.push({
-          id: `create_${collection.get('name')}`,
-          pattern: `Create new ${pluralize(collection.get('label'), 1)}(:itemName as ${pluralize(collection.get('label'), 1)} Name)`,
+          id: `create_${ collection.get('name') }`,
+          pattern: `Create new ${ pluralize(collection.get('label'), 1) }(:itemName as ${ pluralize(collection.get('label'), 1) } Name)`,
           type: CREATE_COLLECTION,
-          payload: { collectionName: collection.get('name') }
+          payload: { collectionName: collection.get('name') },
         });
       }
     });
@@ -98,7 +112,7 @@ class App extends React.Component {
 
   toggleNavDrawer = () => {
     this.setState({
-      navDrawerIsVisible: !this.state.navDrawerIsVisible
+      navDrawerIsVisible: !this.state.navDrawerIsVisible,
     });
   };
 
@@ -111,7 +125,7 @@ class App extends React.Component {
       collections,
       runCommand,
       navigateToCollection,
-      createNewEntryInCollection
+      createNewEntryInCollection,
     } = this.props;
 
     if (config === null) {
@@ -119,11 +133,11 @@ class App extends React.Component {
     }
 
     if (config.get('error')) {
-      return this.configError(config);
+      return App.configError(config);
     }
 
     if (config.get('isFetching')) {
-      return this.configLoading();
+      return <Loader active>Loading configuration...</Loader>;
     }
 
     if (user == null) {
@@ -134,20 +148,25 @@ class App extends React.Component {
 
     return (
       <Layout theme={styles}>
+        <Notifs
+          className={styles.notifsContainer}
+          CustomComponent={Toast}
+        />
         <NavDrawer
-            active={navDrawerIsVisible}
-            scrollY
-            permanentAt={navDrawerIsVisible ? 'lg' : null}
-            theme={styles}
+          active={navDrawerIsVisible}
+          scrollY
+          permanentAt="lg"
+          onOverlayClick={this.toggleNavDrawer} // eslint-disable-line
+          theme={styles}
         >
           <nav className={styles.nav}>
             <h1 className={styles.heading}>Collections</h1>
-            <Navigation type='vertical'>
+            <Navigation type="vertical">
               {
                 collections.valueSeq().map(collection =>
                   <Link
-                      key={collection.get('name')}
-                      onClick={navigateToCollection.bind(this, collection.get('name'))}
+                    key={collection.get('name')}
+                    onClick={navigateToCollection.bind(this, collection.get('name'))} // eslint-disable-line
                   >
                     {collection.get('label')}
                   </Link>
@@ -158,12 +177,12 @@ class App extends React.Component {
         </NavDrawer>
         <Panel scrollY>
           <AppHeader
-              collections={collections}
-              commands={commands}
-              defaultCommands={defaultCommands}
-              runCommand={runCommand}
-              onCreateEntryClick={createNewEntryInCollection}
-              toggleNavDrawer={this.toggleNavDrawer}
+            collections={collections}
+            commands={commands}
+            defaultCommands={defaultCommands}
+            runCommand={runCommand}
+            onCreateEntryClick={createNewEntryInCollection}
+            toggleNavDrawer={this.toggleNavDrawer}
           />
           <div className={styles.main}>
             {children}
@@ -192,7 +211,7 @@ function mapDispatchToProps(dispatch) {
     },
     createNewEntryInCollection: (collectionName) => {
       dispatch(createNewEntryInCollection(collectionName));
-    }
+    },
   };
 }
 
