@@ -22,13 +22,13 @@ const htmlContent = `
 storiesOf('MarkupItReactRenderer', module)
   .add('Markdown', () => (
     <MarkupItReactRenderer
-        value={mdContent}
-        syntax={markdownSyntax}
+      value={mdContent}
+      syntax={markdownSyntax}
     />
 
   )).add('HTML', () => (
     <MarkupItReactRenderer
-        value={htmlContent}
-        syntax={htmlSyntax}
+      value={htmlContent}
+      syntax={htmlSyntax}
     />
   ));

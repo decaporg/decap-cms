@@ -8,10 +8,10 @@ import styles from './index.css';
 
 Prism.languages.markdown = Prism.languages.extend('markup', {});
 Prism.languages.insertBefore('markdown', 'prolog', marks);
-Prism.languages.markdown['bold'].inside['url'] = Prism.util.clone(Prism.languages.markdown['url']);
-Prism.languages.markdown['italic'].inside['url'] = Prism.util.clone(Prism.languages.markdown['url']);
-Prism.languages.markdown['bold'].inside['italic'] = Prism.util.clone(Prism.languages.markdown['italic']);
-Prism.languages.markdown['italic'].inside['bold'] = Prism.util.clone(Prism.languages.markdown['bold']);
+Prism.languages.markdown.bold.inside.url = Prism.util.clone(Prism.languages.markdown.url);
+Prism.languages.markdown.italic.inside.url = Prism.util.clone(Prism.languages.markdown.url);
+Prism.languages.markdown.bold.inside.italic = Prism.util.clone(Prism.languages.markdown.italic);
+Prism.languages.markdown.italic.inside.bold = Prism.util.clone(Prism.languages.markdown.bold);
 
 function renderDecorations(text, block) {
   let characters = text.characters.asMutable();
@@ -28,7 +28,7 @@ function renderDecorations(text, block) {
 
     const length = offset + token.matchedStr.length;
     const name = token.alias || token.type;
-    const type = `highlight-${name}`;
+    const type = `highlight-${ name }`;
 
     for (let i = offset; i < length; i++) {
       let char = characters.get(i);
@@ -47,13 +47,13 @@ function renderDecorations(text, block) {
 const SCHEMA = {
   rules: [
     {
-      match: (object) => object.kind == 'block',
-      decorate: renderDecorations
-    }
+      match: object => object.kind == 'block',
+      decorate: renderDecorations,
+    },
   ],
   marks: {
     'highlight-comment': {
-      opacity: '0.33'
+      opacity: '0.33',
     },
     'highlight-important': {
       fontWeight: 'bold',
@@ -68,8 +68,8 @@ const SCHEMA = {
     },
     'highlight-punctuation': {
       color: '#006',
-    }
-  }
+    },
+  },
 };
 
 export default class RawEditor extends React.Component {
@@ -86,19 +86,19 @@ export default class RawEditor extends React.Component {
     const content = props.value ? Plain.deserialize(props.value) : Plain.deserialize('');
 
     this.state = {
-      state: content
+      state: content,
     };
 
     this.plugins = [
       PluginDropImages({
         applyTransform: (transform, file) => {
           const mediaProxy = new MediaProxy(file.name, file);
-          const state = Plain.deserialize(`\n\n![${file.name}](${mediaProxy.public_path})\n\n`);
+          const state = Plain.deserialize(`\n\n![${ file.name }](${ mediaProxy.public_path })\n\n`);
           props.onAddMedia(mediaProxy);
           return transform
             .insertFragment(state.get('document'));
-        }
-      })
+        },
+      }),
     ];
   }
 
@@ -108,7 +108,7 @@ export default class RawEditor extends React.Component {
    * It also have an onDocumentChange, that get's dispatched only when the actual
    * content changes
    */
-  handleChange = state => {
+  handleChange = (state) => {
     this.setState({ state });
   };
 

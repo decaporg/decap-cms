@@ -10,7 +10,7 @@ const defaultSchema = {
   [BLOCKS.PARAGRAPH]: 'p',
   [BLOCKS.FOOTNOTE]: 'footnote',
   [BLOCKS.HTML]: ({ token }) => {
-    return <div dangerouslySetInnerHTML={{ __html: token.get('raw') }}/>;
+    return <div dangerouslySetInnerHTML={{ __html: token.get('raw') }} />;
   },
   [BLOCKS.HR]: 'hr',
   [BLOCKS.HEADING_1]: 'h1',
@@ -35,7 +35,7 @@ const defaultSchema = {
   [ENTITIES.LINK]: 'a',
   [ENTITIES.IMAGE]: 'img',
   [ENTITIES.FOOTNOTE_REF]: 'sup',
-  [ENTITIES.HARD_BREAK]: 'br'
+  [ENTITIES.HARD_BREAK]: 'br',
 };
 
 const notAllowedAttributes = ['loose'];
@@ -50,7 +50,7 @@ function renderToken(schema, token, index = 0, key = '0') {
   const text = token.get('text');
   const tokens = token.get('tokens');
   const nodeType = schema[type];
-  key = `${key}.${index}`;
+  key = `${ key }.${ index }`;
 
   // Only render if type is registered as renderer
   if (typeof nodeType !== 'undefined') {
@@ -101,6 +101,6 @@ MarkupItReactRenderer.propTypes = {
   syntax: PropTypes.instanceOf(Syntax).isRequired,
   schema: PropTypes.objectOf(PropTypes.oneOfType([
     PropTypes.string,
-    PropTypes.func
-  ]))
+    PropTypes.func,
+  ])),
 };

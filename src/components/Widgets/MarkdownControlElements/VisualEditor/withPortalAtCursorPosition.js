@@ -6,13 +6,13 @@ export default function withPortalAtCursorPosition(WrappedComponent) {
   return class extends React.Component {
 
     static propTypes = {
-      isOpen: React.PropTypes.bool.isRequired
-    }
+      isOpen: React.PropTypes.bool.isRequired,
+    };
 
     state = {
       menu: null,
-      cursorPosition: null
-    }
+      cursorPosition: null,
+    };
 
     componentDidMount() {
       this.adjustPosition();
@@ -36,22 +36,22 @@ export default function withPortalAtCursorPosition(WrappedComponent) {
       );
       const centerY = cursorPosition.top + window.scrollY;
       menu.style.opacity = 1;
-      menu.style.top = `${centerY}px`;
-      menu.style.left = `${centerX}px`;
-    }
+      menu.style.top = `${ centerY }px`;
+      menu.style.left = `${ centerX }px`;
+    };
 
     /**
      * When the portal opens, cache the menu element.
      */
     handleOpen = (portal) => {
       this.setState({ menu: portal.firstChild });
-    }
+    };
 
     render() {
       const { isOpen, ...rest } = this.props;
       return (
         <Portal isOpened={isOpen} onOpen={this.handleOpen}>
-          <WrappedComponent {...rest}/>
+          <WrappedComponent {...rest} />
         </Portal>
       );
     }

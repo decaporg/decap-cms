@@ -13,9 +13,9 @@ export default class PreviewPane extends React.Component {
     this.renderPreview();
   }
 
-  widgetFor = name => {
+  widgetFor = (name) => {
     const { collection, entry, getMedia } = this.props;
-    const field = collection.get('fields').find((field) => field.get('name') === name);
+    const field = collection.get('fields').find(field => field.get('name') === name);
     const widget = resolveWidget(field.get('widget'));
     return React.createElement(widget.preview, {
       key: field.get('name'),
@@ -29,7 +29,7 @@ export default class PreviewPane extends React.Component {
     const component = registry.getPreviewTemplate(this.props.collection.get('name')) || Preview;
     const previewProps = {
       ...this.props,
-      widgetFor: this.widgetFor
+      widgetFor: this.widgetFor,
     };
     // We need to use this API in order to pass context to the iframe
     ReactDOM.unstable_renderSubtreeIntoContainer(
@@ -40,7 +40,7 @@ export default class PreviewPane extends React.Component {
       , this.previewEl);
   }
 
-  handleIframeRef = ref => {
+  handleIframeRef = (ref) => {
     if (ref) {
       registry.getPreviewStyles().forEach((style) => {
         const linkEl = document.createElement('link');
@@ -61,7 +61,7 @@ export default class PreviewPane extends React.Component {
       return null;
     }
 
-    return <iframe className={styles.frame} ref={this.handleIframeRef}></iframe>;
+    return <iframe className={styles.frame} ref={this.handleIframeRef} />;
   }
 }
 

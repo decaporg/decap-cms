@@ -1,30 +1,280 @@
-@import '../components/UI/theme.css';
+@import "material-icons.css";
 
-.layout .navDrawer .drawerContent {
-  padding-top: 54px;
-  max-width: 240px;
+html {
+  box-sizing: border-box;
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', HelveticaNeue, Helvetica, Arial, sans-serif;
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
 }
 
-.nav {
-  display: block;
-  padding: 1rem;
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
 
-  & .heading {
+body {
+  margin: 0;
+  height: 100%;
+  background-color: #f2f5f4;
+  color: #7c8382;
+  font-family: 'Roboto', sans-serif;
+}
+
+:global #root,
+:global #root > * {
+  height: 100%;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+}
+
+h1 {
+  margin: 30px auto 25px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #3ab7a5;
+  color: #3ab7a5;
+  font-size: 25px;
+}
+
+:global {
+  & .rdt {
+    position: relative;
+  }
+
+  & .rdtPicker {
+    position: absolute;
+    z-index: 99999 !important;
+    display: none;
+    margin-top: 1px;
+    padding: 4px;
+    width: 250px;
+    border: 1px solid #f9f9f9;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .1);
+  }
+
+  & .rdtOpen .rdtPicker {
+    display: block;
+  }
+
+  & .rdtStatic .rdtPicker {
+    position: static;
+    box-shadow: none;
+  }
+
+  & .rdtPicker .rdtTimeToggle {
+    text-align: center;
+  }
+
+  & .rdtPicker table {
+    margin: 0;
+    width: 100%;
+  }
+
+  & .rdtPicker td,
+  & .rdtPicker th {
+    height: 28px;
+    text-align: center;
+  }
+
+  & .rdtPicker td {
+    cursor: pointer;
+  }
+
+  & .rdtPicker td.rdtDay:hover,
+  & .rdtPicker td.rdtHour:hover,
+  & .rdtPicker td.rdtMinute:hover,
+  & .rdtPicker td.rdtSecond:hover,
+  & .rdtPicker .rdtTimeToggle:hover {
+    background: #eeeeee;
+    cursor: pointer;
+  }
+
+  & .rdtPicker td.rdtOld,
+  & .rdtPicker td.rdtNew {
+    color: #999999;
+  }
+
+  & .rdtPicker td.rdtToday {
+    position: relative;
+  }
+
+  & .rdtPicker td.rdtToday:before {
+    position: absolute;
+    right: 4px;
+    bottom: 4px;
+    display: inline-block;
+    border-top-color: rgba(0, 0, 0, .2);
+    border-bottom: 7px solid #428bca;
+    border-left: 7px solid transparent;
+    content: '';
+  }
+
+  & .rdtPicker td.rdtActive,
+  & .rdtPicker td.rdtActive:hover {
+    background-color: #428bca;
+    color: #fff;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, .25);
+  }
+
+  & .rdtPicker td.rdtActive.rdtToday:before {
+    border-bottom-color: #fff;
+  }
+
+  & .rdtPicker td.rdtDisabled,
+  & .rdtPicker td.rdtDisabled:hover {
+    background: none;
+    color: #999999;
+    cursor: not-allowed;
+  }
+
+  & .rdtPicker td span.rdtOld {
+    color: #999999;
+  }
+
+  & .rdtPicker td span.rdtDisabled,
+  & .rdtPicker td span.rdtDisabled:hover {
+    background: none;
+    color: #999999;
+    cursor: not-allowed;
+  }
+
+  & .rdtPicker th {
+    border-bottom: 1px solid #f9f9f9;
+  }
+
+  & .rdtPicker .dow {
+    width: 14.2857%;
+    border-bottom: none;
+  }
+
+  & .rdtPicker th.rdtSwitch {
+    width: 100px;
+  }
+
+  & .rdtPicker th.rdtNext,
+  & .rdtPicker th.rdtPrev {
+    vertical-align: top;
+    font-size: 21px;
+  }
+
+  & .rdtPrev span,
+  & .rdtNext span {
+    display: block;
+    -webkit-user-select: none; /* Chrome/Safari/Opera */
+    -khtml-user-select: none; /* Konqueror */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none;
+    -webkit-touch-callout: none; /* iOS Safari */
+  }
+
+  & .rdtPicker th.rdtDisabled,
+  & .rdtPicker th.rdtDisabled:hover {
+    background: none;
+    color: #999999;
+    cursor: not-allowed;
+  }
+
+  & .rdtPicker thead tr:first-child th {
+    cursor: pointer;
+  }
+
+  & .rdtPicker thead tr:first-child th:hover {
+    background: #eeeeee;
+  }
+
+  & .rdtPicker tfoot {
+    border-top: 1px solid #f9f9f9;
+  }
+
+  & .rdtPicker button {
     border: none;
+    background: none;
+    cursor: pointer;
+  }
+
+  & .rdtPicker button:hover {
+    background-color: #eee;
+  }
+
+  & .rdtPicker thead button {
+    width: 100%;
+    height: 100%;
+  }
+
+  & td.rdtMonth,
+  & td.rdtYear {
+    width: 25%;
+    height: 50px;
+    cursor: pointer;
+  }
+
+  & td.rdtMonth:hover,
+  & td.rdtYear:hover {
+    background: #eee;
+  }
+
+  & .rdtCounters {
+    display: inline-block;
+  }
+
+  & .rdtCounters > div {
+    float: left;
+  }
+
+  & .rdtCounter {
+    height: 100px;
+  }
+
+  & .rdtCounter {
+    width: 40px;
+  }
+
+  & .rdtCounterSeparator {
+    line-height: 100px;
+  }
+
+  & .rdtCounter .rdtBtn {
+    display: block;
+    height: 40%;
+    line-height: 40px;
+    cursor: pointer;
+    -webkit-user-select: none; /* Chrome/Safari/Opera */
+    -khtml-user-select: none; /* Konqueror */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none;
+    -webkit-touch-callout: none; /* iOS Safari */
+  }
+
+  & .rdtCounter .rdtBtn:hover {
+    background: #eee;
+  }
+
+  & .rdtCounter .rdtCount {
+    height: 20%;
+    font-size: 1.2em;
+  }
+
+  & .rdtMilli {
+    padding-left: 8px;
+    width: 48px;
+    vertical-align: middle;
+  }
+
+  & .rdtMilli input {
+    margin-top: 37px;
+    width: 100%;
+    font-size: 1.2em;
   }
 }
-
-.main {
-  padding-top: 54px;
-}
-
-.notifsContainer {
-  position: fixed;
-  top: 60px;
-  right: 0;
-  bottom: 60px;
-  z-index: var(--topmostZindex);
-  width: 360px;
-  pointer-events: none;
-}
-

@@ -5,7 +5,7 @@ export default class ScrollSyncPane extends Component {
 
   static propTypes = {
     children: PropTypes.node.isRequired,
-    attachTo: PropTypes.any
+    attachTo: PropTypes.any,
   };
 
   static contextTypes = {
