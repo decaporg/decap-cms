@@ -32,6 +32,13 @@
     ]
   },
   "pre-commit": "lint:staged",
+  "jest": {
+    "moduleNameMapper": {
+      "^.+\\.(png|eot|woff|woff2|ttf|svg|gif)$": "<rootDir>/__mocks__/fileLoaderMock.js",
+      "^.+\\.scss$": "<rootDir>/__mocks__/styleLoaderMock.js",
+      "^.+\\.css$": "identity-obj-proxy"
+    }
+  },
   "keywords": [
     "netlify",
     "cms"
@@ -39,8 +46,8 @@
   "author": "Netlify",
   "license": "MIT",
   "devDependencies": {
-    "@kadira/storybook": "^1.36.0",
     "babel-core": "^6.5.1",
+    "babel-jest": "^15.0.0",
     "babel-loader": "^6.2.2",
     "babel-plugin-lodash": "^3.2.0",
     "babel-plugin-transform-class-properties": "^6.5.2",
@@ -50,11 +57,14 @@
     "babel-preset-react": "^6.5.0",
     "babel-runtime": "^6.5.0",
     "css-loader": "^0.23.1",
+    "enzyme": "^2.4.1",
     "eslint": "^3.7.1",
     "eslint-config-netlify": "github:netlify/eslint-config-netlify",
     "expect": "^1.20.2",
     "exports-loader": "^0.6.3",
     "file-loader": "^0.8.5",
+    "fsevents": "^1.0.14",
+    "identity-obj-proxy": "^3.0.0",
     "imports-loader": "^0.6.5",
     "jest-cli": "^16.0.1",
     "lint-staged": "^3.1.0",
@@ -64,6 +74,7 @@
     "postcss-import": "^8.1.2",
     "postcss-loader": "^0.9.1",
     "pre-commit": "^1.1.3",
+    "react-addons-test-utils": "^15.3.2",
     "sass-loader": "^4.0.2",
     "style-loader": "^0.13.0",
     "stylefmt": "^4.3.1",
@@ -79,6 +90,7 @@
     "webpack-postcss-tools": "^1.1.1"
   },
   "dependencies": {
+    "@kadira/storybook": "^1.36.0",
     "autoprefixer": "^6.3.3",
     "bricks.js": "^1.7.0",
     "dateformat": "^1.0.12",
@@ -113,10 +125,12 @@
     "react-waypoint": "^3.1.3",
     "redux": "^3.3.1",
     "redux-optimist": "^0.0.2",
+    "redux-notifications": "^2.1.1",
     "redux-thunk": "^1.0.3",
     "selection-position": "^1.0.0",
     "semaphore": "^1.0.5",
-    "slate": "^0.13.6",
+    "slate": "^0.14.14",
+    "slate-drop-or-paste-images": "^0.2.0",
     "uuid": "^2.0.3",
     "whatwg-fetch": "^1.0.0"
   }

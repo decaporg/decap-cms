@@ -1,0 +1,3 @@
+exports[`EntryEditorToolbar should disable and update label of Save button when persisting 1`] = `"<div><button disabled=\"\" class=\"\" data-react-toolbox=\"button\">Saving...</button> <button class=\"\" data-react-toolbox=\"button\">Cancel</button></div>"`;
+
+exports[`EntryEditorToolbar should have both buttons enabled initially 1`] = `"<div><button class=\"\" data-react-toolbox=\"button\">Save</button> <button class=\"\" data-react-toolbox=\"button\">Cancel</button></div>"`;

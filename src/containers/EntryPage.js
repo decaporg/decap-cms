@@ -7,12 +7,14 @@ import {
   createEmptyDraft,
   discardDraft,
   changeDraft,
-  persistEntry
+  persistEntry,
 } from '../actions/entries';
+import { cancelEdit } from '../actions/editor';
 import { addMedia, removeMedia } from '../actions/media';
 import { selectEntry, getMedia } from '../reducers';
-import EntryEditor from '../components/EntryEditor';
-import EntryPageHOC from './editorialWorkflow/EntryPageHOC';
+import EntryEditor from '../components/EntryEditor/EntryEditor';
+import entryPageHOC from './editorialWorkflow/EntryPageHOC';
+import { Loader } from '../components/UI';
 
 class EntryPage extends React.Component {
   static propTypes = {
@@ -28,17 +30,18 @@ class EntryPage extends React.Component {
     loadEntry: PropTypes.func.isRequired,
     persistEntry: PropTypes.func.isRequired,
     removeMedia: PropTypes.func.isRequired,
+    cancelEdit: PropTypes.func.isRequired,
     slug: PropTypes.string,
     newEntry: PropTypes.bool.isRequired,
   };
 
   componentDidMount() {
-    const { entry, collection, slug } = this.props;
+    const { entry, newEntry, collection, slug, createEmptyDraft, loadEntry } = this.props;
 
-    if (this.props.newEntry) {
-      this.props.createEmptyDraft(this.props.collection);
+    if (newEntry) {
+      createEmptyDraft(collection);
     } else {
-      this.props.loadEntry(entry, collection, slug);
+      loadEntry(entry, collection, slug);
       this.createDraft(entry);
     }
   }
@@ -56,42 +59,46 @@ class EntryPage extends React.Component {
     this.props.discardDraft();
   }
 
-  createDraft = entry => {
+  createDraft = (entry) => {
     if (entry) this.props.createDraftFromEntry(entry);
   };
 
   handlePersistEntry = () => {
-    this.props.persistEntry(this.props.collection, this.props.entryDraft);
+    const { persistEntry, collection, entryDraft } = this.props;
+    persistEntry(collection, entryDraft);
   };
 
   render() {
     const {
-      entry, entryDraft, boundGetMedia, collection, changeDraft, addMedia, removeMedia
+      entry,
+      entryDraft,
+      boundGetMedia,
+      collection,
+      changeDraft,
+      addMedia,
+      removeMedia,
+      cancelEdit,
     } = this.props;
 
-    if (entryDraft == null || entryDraft.get('entry') == undefined || entry && entry.get('isFetching')) {
-      return <div>Loading...</div>;
+    if (entryDraft == null
+      || entryDraft.get('entry') === undefined
+      || (entry && entry.get('isFetching'))) {
+      return <Loader active>Loading entry...</Loader>;
     }
     return (
       <EntryEditor
-          entry={entryDraft.get('entry')}
-          getMedia={boundGetMedia}
-          collection={collection}
-          onChange={changeDraft}
-          onAddMedia={addMedia}
-          onRemoveMedia={removeMedia}
-          onPersist={this.handlePersistEntry}
+        entry={entryDraft.get('entry')}
+        getMedia={boundGetMedia}
+        collection={collection}
+        onChange={changeDraft}
+        onAddMedia={addMedia}
+        onRemoveMedia={removeMedia}
+        onPersist={this.handlePersistEntry}
+        onCancelEdit={cancelEdit}
       />
     );
   }
 }
-
-
-/*
- * Instead of checking the publish mode everywhere to dispatch & render the additional editorial workflow stuff,
- * We delegate it to a Higher Order Component
- */
-EntryPage = EntryPageHOC(EntryPage);
 
 function mapStateToProps(state, ownProps) {
   const { collections, entryDraft } = state;
@@ -100,7 +107,15 @@ function mapStateToProps(state, ownProps) {
   const slug = ownProps.params.slug;
   const entry = newEntry ? null : selectEntry(state, collection.get('name'), slug);
   const boundGetMedia = getMedia.bind(null, state);
-  return { collection, collections, newEntry, entryDraft, boundGetMedia, slug, entry };
+  return {
+    collection,
+    collections,
+    newEntry,
+    entryDraft,
+    boundGetMedia,
+    slug,
+    entry,
+  };
 }
 
 export default connect(
@@ -113,6 +128,7 @@ export default connect(
     createDraftFromEntry,
     createEmptyDraft,
     discardDraft,
-    persistEntry
+    persistEntry,
+    cancelEdit,
   }
-)(EntryPage);
+)(entryPageHOC(EntryPage));

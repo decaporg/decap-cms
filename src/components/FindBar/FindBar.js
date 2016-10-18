@@ -307,11 +307,11 @@ class FindBar extends Component {
       }
       return (
         <div
-            className={this.state.highlightedIndex === index ? styles.highlightedCommand : styles.command}
-            key={command.token.trim().replace(/[^a-z0-9]+/gi, '-')}
-            onMouseDown={() => this.setIgnoreBlur(true)}
-            onMouseEnter={() => this.highlightCommandFromMouse(index)}
-            onClick={() => this.selectCommandFromMouse(command)}
+          className={this.state.highlightedIndex === index ? styles.highlightedCommand : styles.command}
+          key={command.token.trim().replace(/[^a-z0-9]+/gi, '-')}
+          onMouseDown={() => this.setIgnoreBlur(true)}
+          onMouseEnter={() => this.highlightCommandFromMouse(index)}
+          onClick={() => this.selectCommandFromMouse(command)}
         >
           {children}
         </div>
@@ -345,15 +345,15 @@ class FindBar extends Component {
         <label className={styles.inputArea}>
           {scope}
           <input
-              className={styles.inputField}
-              ref={(c) => this._input = c}
-              onFocus={this.handleInputFocus}
-              onBlur={this.handleInputBlur}
-              onChange={this.handleChange}
-              onKeyDown={this.handleKeyDown}
-              onClick={this.handleInputClick}
-              placeholder={this.state.placeholder}
-              value={this.state.value}
+            className={styles.inputField}
+            ref={(c) => this._input = c}
+            onFocus={this.handleInputFocus}
+            onBlur={this.handleInputBlur}
+            onChange={this.handleChange}
+            onKeyDown={this.handleKeyDown}
+            onClick={this.handleInputClick}
+            placeholder={this.state.placeholder}
+            value={this.state.value}
           />
         </label>
         {menu}

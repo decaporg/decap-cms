@@ -1,6 +1,7 @@
 export const emptyParagraphBlock = {
   nodes: [
-    { kind: 'block',
+    {
+      kind: 'block',
       type: 'paragraph',
       nodes: [{
         kind: 'text',
@@ -11,3 +12,17 @@ export const emptyParagraphBlock = {
     }
   ]
 };
+
+export const mediaproxyBlock = mediaproxy => ({
+  kind: 'block',
+  type: 'paragraph',
+  nodes: [{
+    kind: 'inline',
+    type: 'mediaproxy',
+    isVoid: true,
+    data: {
+      alt: mediaproxy.name,
+      src: mediaproxy.public_path
+    }
+  }]
+});

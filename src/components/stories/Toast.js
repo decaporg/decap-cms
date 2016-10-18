@@ -1,19 +1,41 @@
 import React from 'react';
-import { Toast } from '../UI';
 import { storiesOf } from '@kadira/storybook';
+import { Toast } from '../UI';
 
+const containerStyle = {
+  position: 'fixed',
+  top: 0,
+  right: 0,
+  width: 360,
+  height: '100%',
+};
 
 storiesOf('Toast', module)
+  .add('All kinds stacked', () => (
+    <div style={containerStyle}>
+      <Toast kind="info" message="A Toast Message" />
+      <Toast kind="success" message="A Toast Message" />
+      <Toast kind="warning" message="A Toast Message" />
+      <Toast kind="danger" message="A Toast Message" />
+    </div>
+  ))
+  .add('Info', () => (
+    <div style={containerStyle}>
+      <Toast kind="info" message="A Toast Message" />
+    </div>
+  ))
   .add('Success', () => (
-    <div>
-      <Toast type='success' show>A Toast Message</Toast>
+    <div style={containerStyle}>
+      <Toast kind="success" message="A Toast Message" />
     </div>
-  )).add('Waring', () => (
-    <div>
-      <Toast type='warning' show>A Toast Message</Toast>
+  ))
+  .add('Waring', () => (
+    <div style={containerStyle}>
+      <Toast kind="warning" message="A Toast Message" />
     </div>
-  )).add('Error', () => (
-    <div>
-      <Toast type='error' show>A Toast Message</Toast>
+  ))
+  .add('Error', () => (
+    <div style={containerStyle}>
+      <Toast kind="danger" message="A Toast Message" />
     </div>
   ));

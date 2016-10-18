@@ -1,4 +1,3 @@
-import expect from 'expect';
 import Immutable from 'immutable';
 import { configLoaded, configLoading, configFailed } from '../../actions/config';
 import config from '../config';
@@ -14,9 +13,9 @@ describe('config', () => {
 
   it('should handle an update', () => {
     expect(
-      config(Immutable.Map({ 'a': 'b', 'c': 'd' }), configLoaded({ 'a': 'changed', 'e': 'new' }))
+      config(Immutable.Map({ a: 'b', c: 'd' }), configLoaded({ a: 'changed', e: 'new' }))
     ).toEqual(
-      Immutable.Map({ 'a': 'changed', 'e': 'new' })
+      Immutable.Map({ a: 'changed', e: 'new' })
     );
   });
 

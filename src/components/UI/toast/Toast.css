@@ -1,40 +1,41 @@
-@import "../theme.css";
+@import '../theme.css';
 
-.toast {
-  composes: base container rounded depth;
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  z-index: 100;
-  width: 350px;
-  padding: 20px 10px;
-  font-size: 0.9rem;
-  text-align: center;
-  color: var(--defaultColorLight);
-  overflow: hidden;
-  opacity: 1;
-  transition: opacity .3s ease-in;
+:root {
+  --iconSize: 30px;
 }
 
-.hidden {
-  opacity: 0;
+.root {
+  composes: base container rounded depth from '../theme.css';
+  overflow: hidden;
+  margin: 10px;
+  padding: 10px 10px 15px;
+  color: var(--defaultColorLight);
 }
 
 .icon {
-  position: absolute;
-  top: calc(50% - 15px);
-  left: 15px;
-  font-size: 30px;
+  position: relative;
+  top: .15em;
+  margin-right: .25em;
+  font-size: var(--iconSize);
+  line-height: var(--iconSize);
+}
+
+.info {
+  composes: root;
+  background-color: var(--infoColor);
 }
 
 .success {
+  composes: root;
   background-color: var(--successColor);
 }
 
 .warning {
+  composes: root;
   background-color: var(--warningColor);
 }
 
-.error {
+.danger {
+  composes: root;
   background-color: var(--errorColor);
 }
