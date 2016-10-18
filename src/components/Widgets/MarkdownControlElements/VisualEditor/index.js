@@ -40,7 +40,7 @@ export default class VisualEditor extends React.Component {
       rawJson = emptyParagraphBlock;
     }
     this.state = {
-      state: Raw.deserialize(rawJson, { terse: true })
+      state: Raw.deserialize(rawJson, { terse: true }),
     };
 
     this.plugins = [
@@ -50,12 +50,12 @@ export default class VisualEditor extends React.Component {
           props.onAddMedia(mediaProxy);
           return transform
             .insertBlock(mediaproxyBlock(mediaProxy));
-        }
-      })
+        },
+      }),
     ];
   }
 
-  getMedia = src => {
+  getMedia = (src) => {
     return this.props.getMedia(src);
   };
 
@@ -65,7 +65,7 @@ export default class VisualEditor extends React.Component {
    * It also have an onDocumentChange, that get's dispatched only when the actual
    * content changes
    */
-  handleChange = state => {
+  handleChange = (state) => {
     if (this.blockEdit) {
       this.blockEdit = false;
     } else {
@@ -82,7 +82,7 @@ export default class VisualEditor extends React.Component {
   /**
    * Toggle marks / blocks when button is clicked
    */
-  handleMarkStyleClick = type => {
+  handleMarkStyleClick = (type) => {
     let { state } = this.state;
 
     state = state
@@ -100,7 +100,6 @@ export default class VisualEditor extends React.Component {
 
     // Handle everything but list buttons.
     if (type != 'unordered_list' && type != 'ordered_list') {
-
       if (isList) {
         transform = transform
           .setBlock(isActive ? DEFAULT_NODE : type)
@@ -165,7 +164,7 @@ export default class VisualEditor extends React.Component {
           .transform()
           .wrapInline({
             type: 'link',
-            data: { href }
+            data: { href },
           })
           .collapseToEnd()
           .apply();
@@ -174,14 +173,14 @@ export default class VisualEditor extends React.Component {
     this.setState({ state });
   };
 
-  handleBlockTypeClick = type => {
+  handleBlockTypeClick = (type) => {
     let { state } = this.state;
 
     state = state
       .transform()
       .insertBlock({
-        type: type,
-        isVoid: true
+        type,
+        isVoid: true,
       })
       .apply();
 
@@ -194,9 +193,9 @@ export default class VisualEditor extends React.Component {
     state = state
       .transform()
       .insertInline({
-        type: type,
-        data: data,
-        isVoid: true
+        type,
+        data,
+        isVoid: true,
       })
       .collapseToEnd()
       .insertBlock(DEFAULT_NODE)
@@ -206,7 +205,7 @@ export default class VisualEditor extends React.Component {
     this.setState({ state });
   };
 
-  handleImageClick = mediaProxy => {
+  handleImageClick = (mediaProxy) => {
     let { state } = this.state;
     this.props.onAddMedia(mediaProxy);
 
@@ -229,12 +228,12 @@ export default class VisualEditor extends React.Component {
       .splitBlock()
       .setBlock(DEFAULT_NODE)
       .apply({
-        snapshot: false
+        snapshot: false,
       });
     this.setState({ state: normalized });
   };
 
-  handleKeyDown = evt => {
+  handleKeyDown = (evt) => {
     if (evt.shiftKey && evt.key === 'Enter') {
       this.blockEdit = true;
       let { state } = this.state;

@@ -63,6 +63,6 @@ export default function CollectionPageHOC(CollectionPage) {
 
   return connect(mapStateToProps, {
     updateUnpublishedEntryStatus,
-    publishUnpublishedEntry
+    publishUnpublishedEntry,
   })(CollectionPageHOC);
 }

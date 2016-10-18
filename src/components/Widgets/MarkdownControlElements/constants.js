@@ -6,11 +6,11 @@ export const emptyParagraphBlock = {
       nodes: [{
         kind: 'text',
         ranges: [{
-          text: ''
-        }]
-      }]
-    }
-  ]
+          text: '',
+        }],
+      }],
+    },
+  ],
 };
 
 export const mediaproxyBlock = mediaproxy => ({
@@ -22,7 +22,7 @@ export const mediaproxyBlock = mediaproxy => ({
     isVoid: true,
     data: {
       alt: mediaproxy.name,
-      src: mediaproxy.public_path
-    }
-  }]
+      src: mediaproxy.public_path,
+    },
+  }],
 });

@@ -5,25 +5,25 @@ import MediaProxy from '../../valueObjects/MediaProxy';
 const MAX_DISPLAY_LENGTH = 50;
 
 export default class ImageControl extends React.Component {
-  handleFileInputRef = el => {
+  handleFileInputRef = (el) => {
     this._fileInput = el;
   };
 
-  handleClick = e => {
+  handleClick = (e) => {
     this._fileInput.click();
   };
 
-  handleDragEnter = e => {
+  handleDragEnter = (e) => {
     e.stopPropagation();
     e.preventDefault();
   };
 
-  handleDragOver = e => {
+  handleDragOver = (e) => {
     e.stopPropagation();
     e.preventDefault();
   };
 
-  handleChange = e => {
+  handleChange = (e) => {
     e.stopPropagation();
     e.preventDefault();
 
@@ -46,7 +46,6 @@ export default class ImageControl extends React.Component {
     } else {
       this.props.onChange(null);
     }
-
   };
 
   renderImageName = () => {
@@ -56,7 +55,6 @@ export default class ImageControl extends React.Component {
     } else {
       return truncateMiddle(this.props.value, MAX_DISPLAY_LENGTH);
     }
-
   };
 
   render() {
@@ -84,7 +82,7 @@ export default class ImageControl extends React.Component {
 
 const styles = {
   input: {
-    display: 'none'
+    display: 'none',
   },
   imageUpload: {
     backgroundColor: '#fff',
@@ -94,8 +92,8 @@ const styles = {
     display: 'block',
     border: '1px dashed #eee',
     cursor: 'pointer',
-    fontSize: '12px'
-  }
+    fontSize: '12px',
+  },
 };
 
 ImageControl.propTypes = {
