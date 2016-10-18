@@ -200,8 +200,8 @@ export function publishUnpublishedEntry(collection, slug, status) {
     const state = getState();
     const backend = currentBackend(state.config);
     const transactionID = uuid.v4();
-    dispatch(unpublishedEntryPublishRequest(collection, slug, status));
-    backend.publishUnpublishedEntry(collection, slug, status, transactionID)
+    dispatch(unpublishedEntryPublishRequest(collection, slug, status, transactionID));
+    backend.publishUnpublishedEntry(collection, slug, status)
     .then(() => {
       dispatch(unpublishedEntryPublished(collection, slug, status, transactionID));
     })
