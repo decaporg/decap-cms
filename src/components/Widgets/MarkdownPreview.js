@@ -13,7 +13,7 @@ const MarkdownPreview = ({ value, getMedia }) => {
         src={getMedia(token.getIn(['data', 'src']))}
         alt={token.getIn(['data', 'alt'])}
       />
-    )
+    ),
   };
 
   const { markdown } = getSyntaxes();

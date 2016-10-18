@@ -21,44 +21,44 @@ export default class ScrollSync extends Component {
     };
   }
 
-  registerPane = node => {
+  registerPane = (node) => {
     if (!this.findPane(node)) {
       this.addEvents(node);
       this.panes.push(node);
     }
   };
 
-  unregisterPane = node => {
+  unregisterPane = (node) => {
     if (this.findPane(node)) {
       this.removeEvents(node);
       this.panes = without(this.panes, node);
     }
   };
 
-  addEvents = node => {
+  addEvents = (node) => {
     node.onscroll = this.handlePaneScroll.bind(this, node);
     // node.addEventListener('scroll', this.handlePaneScroll, false)
   };
 
-  removeEvents = node => {
+  removeEvents = (node) => {
     node.onscroll = null;
     // node.removeEventListener('scroll', this.handlePaneScroll, false)
   };
 
-  findPane = node => {
+  findPane = (node) => {
     return this.panes.find(p => p === node);
   };
 
-  handlePaneScroll = node => {
+  handlePaneScroll = (node) => {
     // const node = evt.target
     window.requestAnimationFrame(() => {
       this.syncScrollPositions(node);
     });
   };
 
-  syncScrollPositions = scrolledPane => {
+  syncScrollPositions = (scrolledPane) => {
     const { scrollTop, scrollHeight, clientHeight } = scrolledPane;
-    this.panes.forEach(pane => {
+    this.panes.forEach((pane) => {
       /* For all panes beside the currently scrolling one */
       if (scrolledPane !== pane) {
         /* Remove event listeners from the node that we'll manipulate */

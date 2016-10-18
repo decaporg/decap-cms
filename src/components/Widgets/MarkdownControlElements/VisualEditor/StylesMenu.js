@@ -11,23 +11,23 @@ class StylesMenu extends Component {
     inlines: PropTypes.object.isRequired,
     onClickBlock: PropTypes.func.isRequired,
     onClickMark: PropTypes.func.isRequired,
-    onClickInline: PropTypes.func.isRequired
+    onClickInline: PropTypes.func.isRequired,
   };
 
   /**
    * Used to set toolbar buttons to active state
    */
-  hasMark = type => {
+  hasMark = (type) => {
     const { marks } = this.props;
     return marks.some(mark => mark.type == type);
   };
 
-  hasBlock = type => {
+  hasBlock = (type) => {
     const { blocks } = this.props;
     return blocks.some(node => node.type == type);
   };
 
-  hasLinks = type => {
+  hasLinks = (type) => {
     const { inlines } = this.props;
     return inlines.some(inline => inline.type == 'link');
   };
@@ -42,7 +42,7 @@ class StylesMenu extends Component {
     const onMouseDown = e => this.handleMarkClick(e, type);
     return (
       <span className={styles.button} onMouseDown={onMouseDown} data-active={isActive}>
-        <Icon type={icon}/>
+        <Icon type={icon} />
       </span>
     );
   };
@@ -57,7 +57,7 @@ class StylesMenu extends Component {
     const onMouseDown = e => this.handleInlineClick(e, 'link', isActive);
     return (
       <span className={styles.button} onMouseDown={onMouseDown} data-active={isActive}>
-        <Icon type="link"/>
+        <Icon type="link" />
       </span>
     );
   };
@@ -75,14 +75,14 @@ class StylesMenu extends Component {
     const onMouseDown = e => this.handleBlockClick(e, type);
     return (
       <span className={styles.button} onMouseDown={onMouseDown} data-active={isActive}>
-        <Icon type={icon}/>
+        <Icon type={icon} />
       </span>
     );
   };
 
   render() {
     return (
-      <div className={`${styles.menu} ${styles.hoverMenu}`}>
+      <div className={`${ styles.menu } ${ styles.hoverMenu }`}>
         {this.renderMarkButton('BOLD', 'bold')}
         {this.renderMarkButton('ITALIC', 'italic')}
         {this.renderMarkButton('CODE', 'code')}

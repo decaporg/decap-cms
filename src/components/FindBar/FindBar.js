@@ -12,7 +12,7 @@ class FindBar extends Component {
     commands: PropTypes.arrayOf(PropTypes.shape({
       id: PropTypes.string.isRequired,
       type: PropTypes.string.isRequired,
-      pattern: PropTypes.string.isRequired
+      pattern: PropTypes.string.isRequired,
     })).isRequired,
     defaultCommands: PropTypes.arrayOf(PropTypes.string),
     runCommand: PropTypes.func.isRequired,
@@ -23,9 +23,9 @@ class FindBar extends Component {
     this._compiledCommands = [];
     this._searchCommand = {
       search: true,
-      regexp: `(?:${SEARCH})?(.*)`,
+      regexp: `(?:${ SEARCH })?(.*)`,
       param: { name: 'searchTerm', display: '' },
-      token: SEARCH
+      token: SEARCH,
     };
     this.state = {
       value: '',
@@ -56,7 +56,7 @@ class FindBar extends Component {
   }
 
   // Generates a regexp and splits a token and param details for a command
-  compileCommand = command => {
+  compileCommand = (command) => {
     let regexp = '';
     let param = null;
 
@@ -75,7 +75,7 @@ class FindBar extends Component {
     return Object.assign({}, command, {
       regexp,
       token,
-      param
+      param,
     });
   };
 
@@ -84,15 +84,15 @@ class FindBar extends Component {
   matchCommand = () => {
     const string = this.state.activeScope ? this.state.activeScope + this.state.value : this.state.value;
     let match;
-    let command = this._compiledCommands.find(command => {
-      match = string.match(RegExp(`^${command.regexp}`, 'i'));
+    let command = this._compiledCommands.find((command) => {
+      match = string.match(RegExp(`^${ command.regexp }`, 'i'));
       return match;
     });
 
     // If no command was found, trigger a search command
     if (!command) {
       command = this._searchCommand;
-      match = string.match(RegExp(`^${this._searchCommand.regexp}`, 'i'));
+      match = string.match(RegExp(`^${ this._searchCommand.regexp }`, 'i'));
     }
 
     const paramName = command && command.param ? command.param.name : null;
@@ -101,7 +101,7 @@ class FindBar extends Component {
     if (command.search) {
       this.setState({
         activeScope: SEARCH,
-        placeholder: ''
+        placeholder: '',
       });
 
       enteredParamValue && this.props.runCommand(SEARCH, { searchTerm: enteredParamValue });
@@ -112,7 +112,7 @@ class FindBar extends Component {
       this.setState({
         value: '',
         activeScope: command.token,
-        placeholder: command.param.display
+        placeholder: command.param.display,
       });
     } else {
       // Match
@@ -121,7 +121,7 @@ class FindBar extends Component {
       this.setState({
         value: '',
         placeholder: PLACEHOLDER,
-        activeScope: null
+        activeScope: null,
       }, () => {
         this._input.blur();
       });
@@ -137,7 +137,7 @@ class FindBar extends Component {
     if (this.state.value.length === 0 && this.state.activeScope) {
       this.setState({
         activeScope: null,
-        placeholder: PLACEHOLDER
+        placeholder: PLACEHOLDER,
       });
     }
   };
@@ -160,7 +160,7 @@ class FindBar extends Component {
     const results = fuzzy.filter(value, commands, {
       pre: '<strong>',
       post: '</strong>',
-      extract: el => el.token
+      extract: el => el.token,
     });
 
     const returnResults = results.slice(0, 4).map(result => (
@@ -171,8 +171,9 @@ class FindBar extends Component {
     return returnResults;
   }
 
-  handleKeyDown = event => {
-    let highlightedIndex, index;
+  handleKeyDown = (event) => {
+    let highlightedIndex,
+      index;
     switch (event.key) {
       case 'ArrowDown':
         event.preventDefault();
@@ -202,7 +203,7 @@ class FindBar extends Component {
           const command = this.getSuggestions()[this.state.highlightedIndex];
           const newState = {
             isOpen: false,
-            highlightedIndex: 0
+            highlightedIndex: 0,
           };
           if (command && !command.search) {
             newState.value = command.token;
@@ -223,24 +224,24 @@ class FindBar extends Component {
           highlightedIndex: 0,
           isOpen: false,
           activeScope: null,
-          placeholder: PLACEHOLDER
+          placeholder: PLACEHOLDER,
         });
         break;
       case 'Backspace':
         this.setState({
           highlightedIndex: 0,
-          isOpen: true
+          isOpen: true,
         }, this.maybeRemoveActiveScope);
         break;
       default:
         this.setState({
           highlightedIndex: 0,
-          isOpen: true
+          isOpen: true,
         });
     }
   };
 
-  handleChange = event => {
+  handleChange = (event) => {
     this.setState({
       value: event.target.value,
     });
@@ -250,7 +251,7 @@ class FindBar extends Component {
     if (this._ignoreBlur) return;
     this.setState({
       isOpen: false,
-      highlightedIndex: 0
+      highlightedIndex: 0,
     });
   };
 
@@ -261,17 +262,17 @@ class FindBar extends Component {
 
   handleInputClick = () => {
     if (this.state.isOpen === false)
-      this.setState({ isOpen: true });
+      { this.setState({ isOpen: true }); }
   };
 
-  highlightCommandFromMouse = index => {
+  highlightCommandFromMouse = (index) => {
     this.setState({ highlightedIndex: index });
   };
 
-  selectCommandFromMouse = command => {
+  selectCommandFromMouse = (command) => {
     const newState = {
       isOpen: false,
-      highlightedIndex: 0
+      highlightedIndex: 0,
     };
     if (command && !command.search) {
       newState.value = command.token;
@@ -283,7 +284,7 @@ class FindBar extends Component {
     });
   };
 
-  setIgnoreBlur = ignore => {
+  setIgnoreBlur = (ignore) => {
     this._ignoreBlur = ignore;
   };
 
@@ -292,14 +293,14 @@ class FindBar extends Component {
       let children;
       if (!command.search) {
         children = (
-          <span><span dangerouslySetInnerHTML={{ __html: command.string }}/></span>
+          <span><span dangerouslySetInnerHTML={{ __html: command.string }} /></span>
         );
       } else {
         children = (
           <span>
-          {this.state.value.length === 0 ?
-            <span><Icon type="search"/>Search... </span> :
-            <span className={styles.faded}><Icon type="search"/>Search for: </span>
+            {this.state.value.length === 0 ?
+              <span><Icon type="search" />Search... </span> :
+                <span className={styles.faded}><Icon type="search" />Search for: </span>
           }
             <strong>{this.state.value}</strong>
           </span>
@@ -331,7 +332,7 @@ class FindBar extends Component {
 
   renderActiveScope() {
     if (this.state.activeScope === SEARCH) {
-      return <div className={styles.inputScope}><Icon type="search"/></div>;
+      return <div className={styles.inputScope}><Icon type="search" /></div>;
     } else {
       return <div className={styles.inputScope}>{this.state.activeScope}</div>;
     }
@@ -346,7 +347,7 @@ class FindBar extends Component {
           {scope}
           <input
             className={styles.inputField}
-            ref={(c) => this._input = c}
+            ref={c => this._input = c}
             onFocus={this.handleInputFocus}
             onBlur={this.handleInputBlur}
             onChange={this.handleChange}

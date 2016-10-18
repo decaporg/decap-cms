@@ -83,7 +83,7 @@ export default class GitHub {
               sem.leave();
             } else {
               const entryPath = data.metaData.objects.entry;
-              const entry = createEntry('draft', entryPath.split('/').pop().replace(/\.[^\.]+$/, ''), entryPath, { raw: data.file });
+              const entry = createEntry('draft', contentKey, entryPath, { raw: data.file });
               entry.metaData = data.metaData;
               resolve(entry);
               sem.leave();
