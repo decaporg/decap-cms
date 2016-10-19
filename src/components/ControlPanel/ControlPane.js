@@ -10,8 +10,7 @@ export default class ControlPane extends Component {
     const widget = resolveWidget(field.get('widget'));
     const fieldName = field.get('name');
     const value = entry.getIn(['data', fieldName]);
-    if (entry.size === 0) return null;
-
+    if (entry.size === 0 || entry.get('partial') === true) return null;
     return (
       <div className={styles.control}>
         <label className={styles.label} htmlFor={fieldName}>{field.get('label')}</label>
