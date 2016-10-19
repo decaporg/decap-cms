@@ -29,9 +29,12 @@ body {
   }
 }
 
+:global #root {
+  padding-top: 64px;
+}
+
 :global #root,
 :global #root > * {
-  margin-top: 64px;
   height: 100%;
 }
 
