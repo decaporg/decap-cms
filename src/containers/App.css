@@ -1,3 +1,5 @@
+@import '../components/UI/theme.css';
+
 .nav {
   display: block;
   padding: 1rem;
@@ -13,4 +15,14 @@
   & .drawerContent {
     max-width: 240px !important;
   }
+}
+
+.notifsContainer {
+  position: fixed;
+  top: 60px;
+  right: 0;
+  bottom: 60px;
+  z-index: var(--topmostZindex);
+  width: 360px;
+  pointer-events: none;
 }
