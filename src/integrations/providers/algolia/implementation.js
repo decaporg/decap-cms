@@ -16,12 +16,12 @@ export default class Algolia {
 
     this.applicationID = config.get('applicationID');
     this.apiKey = config.get('apiKey');
-    this.searchURL = `https://${this.applicationID}-dsn.algolia.net/1`;
+    this.searchURL = `https://${ this.applicationID }-dsn.algolia.net/1`;
 
     this.entriesCache = {
       collection: null,
       page: null,
-      entries: []
+      entries: [],
     };
   }
 
@@ -30,7 +30,7 @@ export default class Algolia {
       'X-Algolia-API-Key': this.apiKey,
       'X-Algolia-Application-Id': this.applicationID,
       'Content-Type': 'application/json',
-      ...headers
+      ...headers,
     };
   }
 
@@ -48,11 +48,11 @@ export default class Algolia {
     const params = [];
     if (options.params) {
       for (const key in options.params) {
-        params.push(`${key}=${encodeURIComponent(options.params[key])}`);
+        params.push(`${ key }=${ encodeURIComponent(options.params[key]) }`);
       }
     }
     if (params.length) {
-      path += `?${params.join('&')}`;
+      path += `?${ params.join('&') }`;
     }
     return path;
   }
@@ -60,7 +60,7 @@ export default class Algolia {
   request(path, options = {}) {
     const headers = this.requestHeaders(options.headers || {});
     const url = this.urlFor(path, options);
-    return fetch(url, { ...options, headers: headers }).then((response) => {
+    return fetch(url, { ...options, headers }).then((response) => {
       const contentType = response.headers.get('Content-Type');
       if (contentType && contentType.match(/json/)) {
         return this.parseJsonResponse(response);
@@ -72,14 +72,14 @@ export default class Algolia {
 
   search(collections, searchTerm, page) {
     const searchCollections = collections.map(collection => (
-      { indexName: collection, params: `query=${searchTerm}&page=${page}` }
+      { indexName: collection, params: `query=${ searchTerm }&page=${ page }` }
     ));
 
-    return this.request(`${this.searchURL}/indexes/*/queries`, {
+    return this.request(`${ this.searchURL }/indexes/*/queries`, {
       method: 'POST',
-      body: JSON.stringify({ requests: searchCollections })
-    }).then(response => {
-      const entries = response.results.map((result, index) => result.hits.map(hit => {
+      body: JSON.stringify({ requests: searchCollections }),
+    }).then((response) => {
+      const entries = response.results.map((result, index) => result.hits.map((hit) => {
         const slug = hit.slug || getSlug(hit.path);
         return createEntry(collections[index], slug, hit.path, { data: hit.data, partial: true });
       }));
@@ -89,11 +89,11 @@ export default class Algolia {
   }
 
   searchBy(field, collection, query) {
-    return this.request(`${this.searchURL}/indexes/${collection}`, {
+    return this.request(`${ this.searchURL }/indexes/${ collection }`, {
       params: {
         restrictSearchableAttributes: field,
-        query
-      }
+        query,
+      },
     });
   }
 
@@ -101,14 +101,14 @@ export default class Algolia {
     if (this.entriesCache.collection === collection && this.entriesCache.page === page) {
       return Promise.resolve({ page: this.entriesCache.page, entries: this.entriesCache.entries });
     } else {
-      return this.request(`${this.searchURL}/indexes/${collection.get('name')}`, {
-        params: { page }
-      }).then(response => {
-        const entries = response.hits.map(hit => {
+      return this.request(`${ this.searchURL }/indexes/${ collection.get('name') }`, {
+        params: { page },
+      }).then((response) => {
+        const entries = response.hits.map((hit) => {
           const slug = hit.slug || getSlug(hit.path);
           return createEntry(collection.get('name'), slug, hit.path, { data: hit.data, partial: true });
         });
-        this.entriesCache = { collection, page, entries };
+        this.entriesCache = { collection, pagination: response.page, entries };
         return { entries, pagination: response.page };
       });
     }
@@ -116,7 +116,7 @@ export default class Algolia {
 
   getEntry(collection, slug) {
     return this.searchBy('slug', collection.get('name'), slug).then((response) => {
-      const entry = response.hits.filter((hit) => hit.slug === slug)[0];
+      const entry = response.hits.filter(hit => hit.slug === slug)[0];
       return createEntry(collection.get('name'), slug, entry.path, { data: entry.data, partial: true });
     });
   }
