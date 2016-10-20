@@ -48,7 +48,6 @@ export default class GitHub {
       });
       return Promise.all(promises);
     }).then(entries => ({
-      pagination: 0,
       entries,
     }));
   }

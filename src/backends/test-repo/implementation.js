@@ -28,20 +28,19 @@ export default class TestRepo {
     const entries = [];
     const folder = collection.get('folder');
     if (folder) {
-      for (var path in window.repoFiles[folder]) {
-        entries.push(createEntry(collection.get('name'), getSlug(path), folder + '/' + path, { raw: window.repoFiles[folder][path].content }));
+      for (const path in window.repoFiles[folder]) {
+        entries.push(createEntry(collection.get('name'), getSlug(path), `${ folder }/${ path }`, { raw: window.repoFiles[folder][path].content }));
       }
     }
 
     return Promise.resolve({
-      pagination: {},
-      entries
+      entries,
     });
   }
 
   lookupEntry(collection, slug) {
-    return this.entries(collection).then((response) => (
-      response.entries.filter((entry) => entry.slug === slug)[0]
+    return this.entries(collection).then(response => (
+      response.entries.filter(entry => entry.slug === slug)[0]
     ));
   }
 
@@ -52,7 +51,7 @@ export default class TestRepo {
     if (newEntry) {
       window.repoFiles[folder][fileName] = { content: entry.raw };
     } else {
-      window.repoFiles[folder][fileName]['content'] = entry.raw;
+      window.repoFiles[folder][fileName].content = entry.raw;
     }
     mediaFiles.forEach(media => media.uploaded = true);
     return Promise.resolve();
