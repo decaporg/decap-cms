@@ -50,7 +50,7 @@ class DashboardPage extends React.Component {
           page={page}
           onPaginate={this.handleLoadMore}
         >
-          {collection.get('name')}
+          {collection.get('label')}
         </EntryListing>
         :
           <Loader active>{['Loading Entries', 'Caching Entries', 'This might take several minutes']}</Loader>
