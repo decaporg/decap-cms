@@ -6,6 +6,7 @@ import { Layout, Panel, NavDrawer } from 'react-toolbox/lib/layout';
 import { Navigation } from 'react-toolbox/lib/navigation';
 import { Link } from 'react-toolbox/lib/link';
 import { Notifs } from 'redux-notifications';
+import TopBarProgress from 'react-topbar-progress-indicator';
 import { loadConfig } from '../actions/config';
 import { loginUser } from '../actions/auth';
 import { currentBackend } from '../backends/backend';
@@ -21,6 +22,14 @@ import AppHeader from '../components/AppHeader/AppHeader';
 import { Loader, Toast } from '../components/UI/index';
 import styles from './App.css';
 
+TopBarProgress.config({
+  barColors: {
+    0: '#3ab7a5',
+    '1.0': '#3ab7a5',
+  },
+  shadowBlur: 5,
+});
+
 class App extends React.Component {
 
   static propTypes = {
@@ -33,6 +42,7 @@ class App extends React.Component {
     navigateToCollection: PropTypes.func.isRequired,
     user: ImmutablePropTypes.map,
     runCommand: PropTypes.func.isRequired,
+    isFetching: PropTypes.bool.isRequired,
   };
 
   static configError(config) {
@@ -126,6 +136,7 @@ class App extends React.Component {
       runCommand,
       navigateToCollection,
       createNewEntryInCollection,
+      isFetching,
     } = this.props;
 
     if (config === null) {
@@ -184,6 +195,7 @@ class App extends React.Component {
           toggleNavDrawer={this.toggleNavDrawer}
         />
         <Panel scrollY>
+          { isFetching && <TopBarProgress /> }
           <div className={styles.main}>
             {children}
           </div>
@@ -194,10 +206,10 @@ class App extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { auth, config, collections } = state;
+  const { auth, config, collections, global } = state;
   const user = auth && auth.get('user');
-
-  return { auth, config, collections, user };
+  const { isFetching } = global;
+  return { auth, config, collections, user, isFetching };
 }
 
 function mapDispatchToProps(dispatch) {
