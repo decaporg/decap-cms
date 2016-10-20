@@ -512,6 +512,14 @@ babel-helpers@^6.16.0:
     babel-runtime "^6.0.0"
     babel-template "^6.16.0"
 
+babel-jest@^15.0.0:
+  version "15.0.0"
+  resolved "https://registry.yarnpkg.com/babel-jest/-/babel-jest-15.0.0.tgz#6a9e2e3999f241383db9ab1e2ef6704401d74242"
+  dependencies:
+    babel-core "^6.0.0"
+    babel-plugin-istanbul "^2.0.0"
+    babel-preset-jest "^15.0.0"
+
 babel-jest@^16.0.0:
   version "16.0.0"
   resolved "https://registry.yarnpkg.com/babel-jest/-/babel-jest-16.0.0.tgz#348729aea6d624a4774b8a934d07a40dd2cfd640"
@@ -548,6 +556,10 @@ babel-plugin-istanbul@^2.0.0:
     istanbul-lib-instrument "^1.1.1"
     lodash.assign "^4.2.0"
     test-exclude "^2.1.1"
+
+babel-plugin-jest-hoist@^15.0.0:
+  version "15.0.0"
+  resolved "https://registry.yarnpkg.com/babel-plugin-jest-hoist/-/babel-plugin-jest-hoist-15.0.0.tgz#7b2fdbd0cd12fc36a84d3f5ff001ec504262bb59"
 
 babel-plugin-jest-hoist@^16.0.0:
   version "16.0.0"
@@ -973,6 +985,12 @@ babel-preset-es2015@^6.5.0, babel-preset-es2015@^6.9.0:
     babel-plugin-transform-es2015-typeof-symbol "^6.6.0"
     babel-plugin-transform-es2015-unicode-regex "^6.3.13"
     babel-plugin-transform-regenerator "^6.16.0"
+
+babel-preset-jest@^15.0.0:
+  version "15.0.0"
+  resolved "https://registry.yarnpkg.com/babel-preset-jest/-/babel-preset-jest-15.0.0.tgz#f23988f1f918673ff9b470fdfd60fcc19bc618f5"
+  dependencies:
+    babel-plugin-jest-hoist "^15.0.0"
 
 babel-preset-jest@^16.0.0:
   version "16.0.0"
@@ -2009,6 +2027,14 @@ dashdash@^1.12.0:
   dependencies:
     assert-plus "^1.0.0"
 
+data-uri-regex@^0.1.2:
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/data-uri-regex/-/data-uri-regex-0.1.4.tgz#1e1db6c8397eca8a48ecdb55ad1b927ec0bbac2e"
+
+data-uri-to-blob@0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/data-uri-to-blob/-/data-uri-to-blob-0.0.4.tgz#087a7bff42f41a6cc0b2e2fb7312a7c29904fbaa"
+
 data-uri-to-buffer@0.0.4:
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/data-uri-to-buffer/-/data-uri-to-buffer-0.0.4.tgz#46e13ab9da8e309745c8d01ce547213ebdb2fe3f"
@@ -2323,6 +2349,17 @@ enhanced-resolve@~0.9.0:
 entities@^1.1.1, entities@~1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/entities/-/entities-1.1.1.tgz#6e5c2d0a5621b5dadaecef80b90edfb5cd7772f0"
+
+enzyme@^2.4.1:
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/enzyme/-/enzyme-2.5.1.tgz#d7c8e2352c04c27fcf2523fb17bc7e0569352743"
+  dependencies:
+    cheerio "^0.22.0"
+    is-subset "^0.1.1"
+    lodash "^4.15.0"
+    object-is "^1.0.1"
+    object.assign "^4.0.4"
+    object.values "^1.0.3"
 
 err-code@^1.0.0:
   version "1.1.1"
@@ -3051,7 +3088,7 @@ fs.realpath@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/fs.realpath/-/fs.realpath-1.0.0.tgz#1504ad2523158caa40db4a2787cb01411994ea4f"
 
-fsevents@^1.0.0:
+fsevents@^1.0.0, fsevents@^1.0.14:
   version "1.0.14"
   resolved "https://registry.yarnpkg.com/fsevents/-/fsevents-1.0.14.tgz#558e8cc38643d8ef40fe45158486d0d25758eee4"
   dependencies:
@@ -3346,6 +3383,10 @@ har-validator@~2.0.6:
     is-my-json-valid "^2.12.4"
     pinkie-promise "^2.0.0"
 
+harmony-reflect@^1.4.6:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/harmony-reflect/-/harmony-reflect-1.5.0.tgz#fbcc7c6ba2ddb5ea94da23934d677bb020a4187c"
+
 has-ansi@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/has-ansi/-/has-ansi-2.0.0.tgz#34f5049ce1ecdf2b0649af3ef24e45ed35416d91"
@@ -3499,6 +3540,12 @@ icss-replace-symbols@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/icss-replace-symbols/-/icss-replace-symbols-1.0.2.tgz#cb0b6054eb3af6edc9ab1d62d01933e2d4c8bfa5"
 
+identity-obj-proxy@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/identity-obj-proxy/-/identity-obj-proxy-3.0.0.tgz#94d2bda96084453ef36fbc5aaec37e0f79f1fc14"
+  dependencies:
+    harmony-reflect "^1.4.6"
+
 ieee754@^1.1.4:
   version "1.1.8"
   resolved "https://registry.yarnpkg.com/ieee754/-/ieee754-1.1.8.tgz#be33d40ac10ef1926701f6f08a2d86fbfd1ad3e4"
@@ -3506,6 +3553,14 @@ ieee754@^1.1.4:
 ignore@^3.1.2, ignore@^3.1.3, ignore@^3.1.5:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-3.2.0.tgz#8d88f03c3002a0ac52114db25d2c673b0bf1e435"
+
+image-extensions@^1.0.1:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/image-extensions/-/image-extensions-1.1.0.tgz#b8e6bf6039df0056e333502a00b6637a3105d894"
+
+image-to-data-uri@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/image-to-data-uri/-/image-to-data-uri-1.0.0.tgz#104f19cf78955c9da875c965b310342aa67fd4fa"
 
 immediate@~3.0.5:
   version "3.0.6"
@@ -3675,6 +3730,12 @@ is-ci@^1.0.8, is-ci@^1.0.9:
   version "1.0.9"
   resolved "https://registry.yarnpkg.com/is-ci/-/is-ci-1.0.9.tgz#de2c5ffe49ab3237fda38c47c8a3bbfd55bbcca7"
 
+is-data-uri@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/is-data-uri/-/is-data-uri-0.1.0.tgz#46ee67b63c18c1ffa0bd4dfab2cd2c81c728237f"
+  dependencies:
+    data-uri-regex "^0.1.2"
+
 is-date-object@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/is-date-object/-/is-date-object-1.0.1.tgz#9aa20eb6aeebbff77fbd33e74ca01b33581d3a16"
@@ -3760,6 +3821,12 @@ is-glob@^3.0.0:
   resolved "https://registry.yarnpkg.com/is-glob/-/is-glob-3.0.0.tgz#e433c222db9d77844084d72db1eff047845985c1"
   dependencies:
     is-extglob "^2.0.0"
+
+is-image@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/is-image/-/is-image-1.0.1.tgz#6fd51a752a1a111506d060d952118b0b989b426e"
+  dependencies:
+    image-extensions "^1.0.1"
 
 is-my-json-valid@^2.10.0, is-my-json-valid@^2.12.4:
   version "2.15.0"
@@ -3860,6 +3927,10 @@ is-string@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/is-string/-/is-string-1.0.4.tgz#cc3a9b69857d621e963725a24caeec873b826e64"
 
+is-subset@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/is-subset/-/is-subset-0.1.1.tgz#8a59117d932de1de00f245fcdd39ce43f1e939a6"
+
 is-supported-regexp-flag@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/is-supported-regexp-flag/-/is-supported-regexp-flag-1.0.0.tgz#8b520c85fae7a253382d4b02652e045576e13bb8"
@@ -3883,6 +3954,10 @@ is-unc-path@^0.1.1:
   resolved "https://registry.yarnpkg.com/is-unc-path/-/is-unc-path-0.1.1.tgz#ab2533d77ad733561124c3dc0f5cd8b90054c86b"
   dependencies:
     unc-path-regex "^0.1.0"
+
+is-url@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/is-url/-/is-url-1.2.2.tgz#498905a593bf47cc2d9e7f738372bbf7696c7f26"
 
 is-utf8@^0.2.0:
   version "0.2.1"
@@ -5556,7 +5631,11 @@ object-inspect@^1.1.0, object-inspect@~1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/object-inspect/-/object-inspect-1.2.1.tgz#3b62226eb8f6d441751c7d8f22a20ff80ac9dc3f"
 
-object-keys@^1.0.6, object-keys@^1.0.8, object-keys@^1.0.9:
+object-is@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/object-is/-/object-is-1.0.1.tgz#0aa60ec9989a0b3ed795cf4d06f62cf1ad6539b6"
+
+object-keys@^1.0.10, object-keys@^1.0.6, object-keys@^1.0.8, object-keys@^1.0.9:
   version "1.0.11"
   resolved "https://registry.yarnpkg.com/object-keys/-/object-keys-1.0.11.tgz#c54601778ad560f1142ce0e01bcca8b56d13426d"
 
@@ -5567,6 +5646,14 @@ object-keys@~0.4.0:
 object-values@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/object-values/-/object-values-1.0.0.tgz#72af839630119e5b98c3b02bb8c27e3237158105"
+
+object.assign@^4.0.4:
+  version "4.0.4"
+  resolved "https://registry.yarnpkg.com/object.assign/-/object.assign-4.0.4.tgz#b1c9cc044ef1b9fe63606fc141abbb32e14730cc"
+  dependencies:
+    define-properties "^1.1.2"
+    function-bind "^1.1.0"
+    object-keys "^1.0.10"
 
 object.entries@^1.0.3:
   version "1.0.3"
@@ -6559,9 +6646,13 @@ rc@^1.0.1, rc@^1.1.6, rc@~1.1.0:
     minimist "^1.2.0"
     strip-json-comments "~1.0.4"
 
-react-addons-css-transition-group@^15.3.1:
+react-addons-css-transition-group@^15.0.2, react-addons-css-transition-group@^15.3.1:
   version "15.3.2"
   resolved "https://registry.yarnpkg.com/react-addons-css-transition-group/-/react-addons-css-transition-group-15.3.2.tgz#d8fa52bec9bb61bdfde8b9e4652b80297cbff667"
+
+react-addons-test-utils@^15.3.2:
+  version "15.3.2"
+  resolved "https://registry.yarnpkg.com/react-addons-test-utils/-/react-addons-test-utils-15.3.2.tgz#c09a44f583425a4a9c1b38444d7a6c3e6f0f41f6"
 
 react-css-themr@~1.4.1:
   version "1.4.1"
@@ -6879,6 +6970,16 @@ reduce-function-call@^1.0.1:
   resolved "https://registry.yarnpkg.com/reduce-function-call/-/reduce-function-call-1.0.1.tgz#fa02e126e695824263cab91d3a5b0fdc1dd27a9a"
   dependencies:
     balanced-match "~0.1.0"
+
+redux-notifications@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/redux-notifications/-/redux-notifications-2.1.1.tgz#b317a38ad9fa712b278b502ca3856c522b377904"
+  dependencies:
+    react-addons-css-transition-group "^15.0.2"
+
+redux-optimist@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/redux-optimist/-/redux-optimist-0.0.2.tgz#70da17e863c53a8604d581ca20a26908bda1697e"
 
 redux-thunk@^1.0.3:
   version "1.0.3"
@@ -7279,9 +7380,20 @@ slash@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/slash/-/slash-1.0.0.tgz#c41f2f6c39fc16d1cd17ad4b5d896114ae470d55"
 
-slate@^0.13.6:
-  version "0.13.9"
-  resolved "https://registry.yarnpkg.com/slate/-/slate-0.13.9.tgz#d3192dcd2a664f4b7e5d8db26b32ade96a72d6b7"
+slate-drop-or-paste-images@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/slate-drop-or-paste-images/-/slate-drop-or-paste-images-0.2.0.tgz#a866d9c19155cef7e21ef72075cd624eb63dc189"
+  dependencies:
+    data-uri-to-blob "0.0.4"
+    image-to-data-uri "^1.0.0"
+    is-data-uri "^0.1.0"
+    is-image "^1.0.1"
+    is-url "^1.2.2"
+    mime-types "^2.1.11"
+
+slate@^0.14.14:
+  version "0.14.15"
+  resolved "https://registry.yarnpkg.com/slate/-/slate-0.14.15.tgz#1a64d2ecd2824151fbc0312aa84960b02a25d260"
   dependencies:
     uid "0.0.2"
     cheerio "^0.22.0"
@@ -8134,7 +8246,7 @@ utils-merge@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/utils-merge/-/utils-merge-1.0.0.tgz#0294fb922bb9375153541c4f7096231f287c8af8"
 
-uuid@^2.0.1, uuid@^2.0.2:
+uuid@^2.0.1, uuid@^2.0.2, uuid@^2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-2.0.3.tgz#67e2e863797215530dff318e5bf9dcebfd47b21a"
 
