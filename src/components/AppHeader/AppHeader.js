@@ -2,14 +2,17 @@ import React, { PropTypes } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import pluralize from 'pluralize';
 import { IndexLink } from 'react-router';
-import { Menu, MenuItem } from 'react-toolbox';
+import { Menu, MenuItem } from 'react-toolbox/lib/menu';
+import Avatar from 'react-toolbox/lib/avatar';
 import AppBar from 'react-toolbox/lib/app_bar';
+import Button from 'react-toolbox/lib/button';
 import FindBar from '../FindBar/FindBar';
 import styles from './AppHeader.css';
 
 export default class AppHeader extends React.Component {
 
   static propTypes = {
+    user: ImmutablePropTypes.map.isRequired,
     collections: ImmutablePropTypes.orderedMap.isRequired,
     commands: PropTypes.array.isRequired, // eslint-disable-line
     defaultCommands: PropTypes.array.isRequired, // eslint-disable-line
@@ -20,6 +23,7 @@ export default class AppHeader extends React.Component {
 
   state = {
     createMenuActive: false,
+    userMenuActive: false,
   };
 
   handleCreatePostClick = (collectionName) => {
@@ -41,24 +45,35 @@ export default class AppHeader extends React.Component {
     });
   };
 
+  handleRightIconClick = () => {
+    this.setState({
+      userMenuActive: !this.state.userMenuActive,
+    });
+  };
+
   render() {
     const {
+      user,
       collections,
       commands,
       defaultCommands,
       runCommand,
       toggleNavDrawer,
     } = this.props;
-    const { createMenuActive } = this.state;
+
+    const {
+      createMenuActive,
+      userMenuActive,
+    } = this.state;
 
     return (
       <AppBar
         fixed
         theme={styles}
         leftIcon="menu"
-        rightIcon="create"
+        rightIcon="more_vert"
         onLeftIconClick={toggleNavDrawer}
-        onRightIconClick={this.handleCreateButtonClick}
+        onRightIconClick={this.handleRightIconClick}
       >
         <IndexLink to="/">
           Dashboard
@@ -69,21 +84,41 @@ export default class AppHeader extends React.Component {
           defaultCommands={defaultCommands}
           runCommand={runCommand}
         />
-        <Menu
-          active={createMenuActive}
-          position="topRight"
-          onHide={this.handleCreateMenuHide}
+        <Button
+          icon="create"
+          inverse
+          mini
+          floating
+          onClick={this.handleCreateButtonClick}
         >
-          {
-            collections.valueSeq().map(collection =>
-              <MenuItem
-                key={collection.get('name')}
-                value={collection.get('name')}
-                onClick={this.handleCreatePostClick.bind(this, collection.get('name'))} // eslint-disable-line
-                caption={pluralize(collection.get('label'), 1)}
-              />
-            )
-          }
+          <Menu
+            active={createMenuActive}
+            position="topRight"
+            onHide={this.handleCreateMenuHide}
+          >
+            {
+              collections.valueSeq().map(collection =>
+                <MenuItem
+                  key={collection.get('name')}
+                  value={collection.get('name')}
+                  onClick={this.handleCreatePostClick.bind(this, collection.get('name'))} // eslint-disable-line
+                  caption={pluralize(collection.get('label'), 1)}
+                />
+              )
+            }
+          </Menu>
+        </Button>
+
+        <Avatar
+          title={user.get('name')}
+          image={user.get('avatar_url')}
+        />
+        <Menu
+          active={userMenuActive}
+          position="topRight"
+          onHide={this.handleRightIconClick}
+        >
+          <MenuItem>Log out</MenuItem>
         </Menu>
       </AppBar>
     );

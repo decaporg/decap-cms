@@ -176,6 +176,7 @@ class App extends React.Component {
           </nav>
         </NavDrawer>
         <AppHeader
+          user={user}
           collections={collections}
           commands={commands}
           defaultCommands={defaultCommands}
