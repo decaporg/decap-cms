@@ -100,8 +100,6 @@ class Backend {
 
   // Will fetch the whole list of files from GitHub and load each file, then looks up for entry.
   // (Files are persisted in local storage - only expensive on the first run for each file).
-
-  // Will fetch the entire list of entries from github.
   lookupEntry(collection, slug) {
     const type = collection.get('type');
     if (type === FOLDER) {

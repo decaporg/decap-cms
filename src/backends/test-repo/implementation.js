@@ -24,18 +24,25 @@ export default class TestRepo {
     return Promise.resolve({ email: state.email });
   }
 
-  entries(collection) {
+  entriesByFolder(collection) {
     const entries = [];
     const folder = collection.get('folder');
     if (folder) {
       for (const path in window.repoFiles[folder]) {
-        entries.push(createEntry(collection.get('name'), getSlug(path), `${ folder }/${ path }`, { raw: window.repoFiles[folder][path].content }));
+        const file = { path: `${ folder }/${ path }` };
+        entries.push(
+          {
+            file,
+            data: window.repoFiles[folder][path].content,
+          }
+        );
       }
     }
+    return Promise.resolve(entries);
+  }
 
-    return Promise.resolve({
-      entries,
-    });
+  entriesByFiles(collection, files) {
+    throw new Error('Not implemented yet');
   }
 
   lookupEntry(collection, slug) {
