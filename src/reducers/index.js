@@ -7,6 +7,7 @@ import editorialWorkflow, * as fromEditorialWorkflow from './editorialWorkflow';
 import entryDraft from './entryDraft';
 import collections from './collections';
 import medias, * as fromMedias from './medias';
+import global from './global';
 
 const reducers = {
   auth,
@@ -18,6 +19,7 @@ const reducers = {
   editorialWorkflow,
   entryDraft,
   medias,
+  global,
 };
 
 export default reducers;
