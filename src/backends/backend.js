@@ -105,8 +105,7 @@ class Backend {
   }
 
   newEntry(collection) {
-    const newEntry = createEntry();
-    return this.entryWithFormat(collection)(newEntry);
+    return createEntry(collection.get('name'));
   }
 
   entryWithFormat(collectionOrEntity) {

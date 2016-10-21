@@ -182,7 +182,7 @@ export function loadEntry(entry, collection, slug) {
     const backend = currentBackend(state.config);
     dispatch(entryLoading(collection, slug));
     let getPromise;
-    if (entry && entry.get('path') && entry.get('partial')) {
+    if (entry && entry.get('path')) {
       getPromise = backend.getEntry(entry.get('collection'), entry.get('slug'), entry.get('path'));
     } else {
       getPromise = backend.lookupEntry(collection, slug);
