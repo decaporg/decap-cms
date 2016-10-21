@@ -3,6 +3,7 @@ import GitHubBackend from './github/implementation';
 import NetlifyGitBackend from './netlify-git/implementation';
 import { resolveFormat } from '../formats/formats';
 import { createEntry } from '../valueObjects/Entry';
+import { FILE, FOLDER } from '../constants/collectionTypes';
 
 class LocalStorageAuthStore {
   storageKey = 'nf-cms-user';
@@ -18,15 +19,15 @@ class LocalStorageAuthStore {
 }
 
 const slugFormatter = (template, entryData) => {
-  var date = new Date();
-  return template.replace(/\{\{([^\}]+)\}\}/g, function(_, name) {
+  const date = new Date();
+  return template.replace(/\{\{([^\}]+)\}\}/g, (_, name) => {
     switch (name) {
       case 'year':
         return date.getFullYear();
       case 'month':
-        return ('0' + (date.getMonth() + 1)).slice(-2);
+        return (`0${ date.getMonth() + 1 }`).slice(-2);
       case 'day':
-        return ('0' + date.getDate()).slice(-2);
+        return (`0${ date.getDate() }`).slice(-2);
       case 'slug':
         const identifier = entryData.get('title', entryData.get('path'));
         return identifier.trim().toLowerCase().replace(/[^a-z0-9\.\-\_]+/gi, '-');
@@ -66,12 +67,29 @@ class Backend {
   }
 
   listEntries(collection, page, perPage) {
-    return this.implementation.entries(collection, page, perPage).then((response) => {
-      return {
-        pagination: response.pagination,
-        entries: response.entries.map(this.entryWithFormat(collection))
-      };
-    });
+    const type = collection.get('type');
+    if (type === FOLDER) {
+      return this.implementation.entriesByFolder(collection, page, perPage)
+      .then(files => (
+        files.map(file => createEntry(collection.get('name'), file.path.split('/').pop().replace(/\.[^\.]+$/, ''), file.path, { raw: file.data }))
+      ))
+      .then(entries => (
+        {
+          entries: entries.map(this.entryWithFormat(collection)),
+        }
+      ));
+    } else if (type === FILE) {
+      const format = resolveFormat(collection);
+      return this.implementation.entriesByFile(collection)
+      .then(format.fromFile)
+      .then(formattedEntries => (
+        {
+          pagination: null,
+          entries: formattedEntries.map(entry => createEntry(collection.get('name'), entry, collection.get('file'), { data: entry })),
+        }
+      ));
+    }
+    return Promise.reject(`Couldn't process collection type ${ type }`);
   }
 
   // We have the file path. Fetch and parse the file.
@@ -95,8 +113,10 @@ class Backend {
       const format = resolveFormat(collectionOrEntity, entry);
       if (entry && entry.raw) {
         entry.data = format && format.fromFile(entry.raw);
+        return entry;
+      } else {
+        return format.fromFile(entry);
       }
-      return entry;
     };
   }
 
@@ -104,7 +124,7 @@ class Backend {
     return this.implementation.unpublishedEntries(page, perPage).then((response) => {
       return {
         pagination: response.pagination,
-        entries: response.entries.map(this.entryWithFormat('editorialWorkflow'))
+        entries: response.entries.map(this.entryWithFormat('editorialWorkflow')),
       };
     });
   }
@@ -126,28 +146,28 @@ class Backend {
     if (newEntry) {
       const slug = slugFormatter(collection.get('slug'), entryDraft.getIn(['entry', 'data']));
       entryObj = {
-        path: `${collection.get('folder')}/${slug}.md`,
-        slug: slug,
-        raw: this.entryToRaw(collection, entryData)
+        path: `${ collection.get('folder') }/${ slug }.md`,
+        slug,
+        raw: this.entryToRaw(collection, entryData),
       };
     } else {
       entryObj = {
         path: entryDraft.getIn(['entry', 'path']),
         slug: entryDraft.getIn(['entry', 'slug']),
-        raw: this.entryToRaw(collection, entryData)
+        raw: this.entryToRaw(collection, entryData),
       };
     }
 
-    const commitMessage = (newEntry ? 'Created ' : 'Updated ') +
-          collection.get('label') + ' “' +
-          entryDraft.getIn(['entry', 'data', 'title']) + '”';
+    const commitMessage = `${ (newEntry ? 'Created ' : 'Updated ') +
+          collection.get('label') } “${
+          entryDraft.getIn(['entry', 'data', 'title']) }”`;
 
     const mode = config.get('publish_mode');
 
     const collectionName = collection.get('name');
 
     return this.implementation.persistEntry(entryObj, MediaFiles, {
-      newEntry, parsedData, commitMessage, collectionName, mode, ...options
+      newEntry, parsedData, commitMessage, collectionName, mode, ...options,
     });
   }
 
@@ -186,11 +206,11 @@ export function resolveBackend(config) {
     case 'netlify-git':
       return new Backend(new NetlifyGitBackend(config, slugFormatter), authStore);
     default:
-      throw `Backend not found: ${name}`;
+      throw `Backend not found: ${ name }`;
   }
 }
 
-export const currentBackend = (function() {
+export const currentBackend = (function () {
   let backend = null;
 
   return (config) => {
@@ -199,4 +219,4 @@ export const currentBackend = (function() {
       return backend = resolveBackend(config);
     }
   };
-})();
+}());

@@ -31,14 +31,19 @@ export default class GitHub {
     });
   }
 
-  entries(collection) {
+  entriesByFolder(collection) {
     return this.api.listFiles(collection.get('folder')).then((files) => {
       const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
       const promises = [];
       files.map((file) => {
         promises.push(new Promise((resolve, reject) => {
           return sem.take(() => this.api.readFile(file.path, file.sha).then((data) => {
-            resolve(createEntry(collection.get('name'), file.path.split('/').pop().replace(/\.[^\.]+$/, ''), file.path, { raw: data }));
+            resolve(
+              {
+                path: file.path,
+                data,
+              }
+            );
             sem.leave();
           }).catch((err) => {
             sem.leave();
@@ -47,11 +52,12 @@ export default class GitHub {
         }));
       });
       return Promise.all(promises);
-    }).then(entries => ({
-      entries,
-    }));
+    });
   }
 
+  entriesByFile(collection) {
+    return this.api.readFile(collection.get('file'));
+  }
 
   // Will fetch the entire list of entries from github.
   lookupEntry(collection, slug) {
