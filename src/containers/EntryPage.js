@@ -12,6 +12,7 @@ import {
 import { cancelEdit } from '../actions/editor';
 import { addMedia, removeMedia } from '../actions/media';
 import { selectEntry, getMedia } from '../reducers';
+import { FOLDER, FILES } from '../constants/collectionTypes';
 import EntryEditor from '../components/EntryEditor/EntryEditor';
 import entryPageHOC from './editorialWorkflow/EntryPageHOC';
 import { Loader } from '../components/UI';
@@ -31,6 +32,7 @@ class EntryPage extends React.Component {
     persistEntry: PropTypes.func.isRequired,
     removeMedia: PropTypes.func.isRequired,
     cancelEdit: PropTypes.func.isRequired,
+    fields: ImmutablePropTypes.list.isRequired,
     slug: PropTypes.string,
     newEntry: PropTypes.bool.isRequired,
   };
@@ -41,7 +43,7 @@ class EntryPage extends React.Component {
     if (newEntry) {
       createEmptyDraft(collection);
     } else {
-      loadEntry(entry, collection, slug);
+      if (collection.get('type') === FOLDER) loadEntry(entry, collection, slug);
       this.createDraft(entry);
     }
   }
@@ -72,6 +74,7 @@ class EntryPage extends React.Component {
     const {
       entry,
       entryDraft,
+      fields,
       boundGetMedia,
       collection,
       changeDraft,
@@ -90,6 +93,7 @@ class EntryPage extends React.Component {
         entry={entryDraft.get('entry')}
         getMedia={boundGetMedia}
         collection={collection}
+        fields={fields}
         onChange={changeDraft}
         onAddMedia={addMedia}
         onRemoveMedia={removeMedia}
@@ -102,9 +106,19 @@ class EntryPage extends React.Component {
 
 function mapStateToProps(state, ownProps) {
   const { collections, entryDraft } = state;
-  const collection = collections.get(ownProps.params.name);
-  const newEntry = ownProps.route && ownProps.route.newRecord === true;
   const slug = ownProps.params.slug;
+  const collection = collections.get(ownProps.params.name);
+
+  let fields;
+  if (collection.get('type') === FOLDER) {
+    fields = collection.get('fields');
+  } else {
+    const files = collection.get('files');
+    const file = files.filter(f => f.get('name') === slug);
+    fields = file.getIn([0, 'fields']);
+  }
+  const newEntry = ownProps.route && ownProps.route.newRecord === true;
+
   const entry = newEntry ? null : selectEntry(state, collection.get('name'), slug);
   const boundGetMedia = getMedia.bind(null, state);
   return {
@@ -113,6 +127,7 @@ function mapStateToProps(state, ownProps) {
     newEntry,
     entryDraft,
     boundGetMedia,
+    fields,
     slug,
     entry,
   };

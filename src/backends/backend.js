@@ -103,12 +103,15 @@ class Backend {
 
   // Will fetch the entire list of entries from github.
   lookupEntry(collection, slug) {
-    return this.implementation.entriesByFolder(collection)
-    .then(loadedEntries => (
-      loadedEntries.map(loadedEntry => createEntry(collection.get('name'), loadedEntry.file.path.split('/').pop().replace(/\.[^\.]+$/, ''), loadedEntry.file.path, { raw: loadedEntry.data }))
-    ))
-    .then(response => response.filter(entry => entry.slug === slug)[0])
-    .then(this.entryWithFormat(collection));
+    const type = collection.get('type');
+    if (type === FOLDER) {
+      return this.implementation.entriesByFolder(collection)
+      .then(loadedEntries => (
+        loadedEntries.map(loadedEntry => createEntry(collection.get('name'), loadedEntry.file.path.split('/').pop().replace(/\.[^\.]+$/, ''), loadedEntry.file.path, { raw: loadedEntry.data }))
+      ))
+      .then(response => response.filter(entry => entry.slug === slug)[0])
+      .then(this.entryWithFormat(collection));
+    }
   }
 
   newEntry(collection) {

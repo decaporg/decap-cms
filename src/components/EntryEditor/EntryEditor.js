@@ -10,6 +10,7 @@ export default function EntryEditor(
   {
     collection,
     entry,
+    fields,
     getMedia,
     onChange,
     onAddMedia,
@@ -26,6 +27,7 @@ export default function EntryEditor(
               <ControlPane
                 collection={collection}
                 entry={entry}
+                fields={fields}
                 getMedia={getMedia}
                 onChange={onChange}
                 onAddMedia={onAddMedia}
@@ -37,6 +39,7 @@ export default function EntryEditor(
             <PreviewPane
               collection={collection}
               entry={entry}
+              fields={fields}
               getMedia={getMedia}
             />
           </div>
@@ -56,6 +59,7 @@ export default function EntryEditor(
 EntryEditor.propTypes = {
   collection: ImmutablePropTypes.map.isRequired,
   entry: ImmutablePropTypes.map.isRequired,
+  fields: ImmutablePropTypes.list.isRequired,
   getMedia: PropTypes.func.isRequired,
   onAddMedia: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
