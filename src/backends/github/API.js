@@ -112,13 +112,14 @@ export default class API {
     const cache = LocalForage.getItem(`gh.meta.${ key }`);
     return cache.then((cached) => {
       if (cached && cached.expires > Date.now()) { return cached.data; }
-
+      console.log("%c Checking for MetaData files", "line-height: 30px;text-align: center;font-weight: bold"); // eslint-disable-line
       return this.request(`${ this.repoURL }/contents/${ key }.json`, {
         params: { ref: 'refs/meta/_netlify_cms' },
         headers: { Accept: 'application/vnd.github.VERSION.raw' },
         cache: 'no-store',
       })
-      .then(response => JSON.parse(response));
+      .then(response => JSON.parse(response))
+      .catch(error => console.log("%c %s does not have metadata", "line-height: 30px;text-align: center;font-weight: bold", key)); // eslint-disable-line
     });
   }
 

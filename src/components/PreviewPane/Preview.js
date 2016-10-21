@@ -1,14 +1,13 @@
 import React, { PropTypes } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 
-export default function Preview({ collection, widgetFor }) {
-  if (!collection) {
+export default function Preview({ collection, fields, widgetFor }) {
+  if (!collection || !fields) {
     return null;
   }
-
   return (
     <div>
-      {collection.get('fields').map(field => widgetFor(field.get('name')))}
+      {fields.map(field => widgetFor(field.get('name')))}
     </div>
   );
 }
@@ -16,6 +15,7 @@ export default function Preview({ collection, widgetFor }) {
 Preview.propTypes = {
   collection: ImmutablePropTypes.map.isRequired,
   entry: ImmutablePropTypes.map.isRequired,
+  fields: ImmutablePropTypes.list.isRequired,
   getMedia: PropTypes.func.isRequired,
   widgetFor: PropTypes.func.isRequired,
 };

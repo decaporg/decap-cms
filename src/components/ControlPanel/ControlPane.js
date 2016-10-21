@@ -6,7 +6,7 @@ import styles from './ControlPane.css';
 export default class ControlPane extends Component {
 
   controlFor(field) {
-    const { entry, getMedia, onChange, onAddMedia, onRemoveMedia } = this.props;
+    const { entry, fields, getMedia, onChange, onAddMedia, onRemoveMedia } = this.props;
     const widget = resolveWidget(field.get('widget'));
     const fieldName = field.get('name');
     const value = entry.getIn(['data', fieldName]);
@@ -29,23 +29,22 @@ export default class ControlPane extends Component {
   }
 
   render() {
-    const { collection } = this.props;
-    if (!collection) {
+    const { collection, fields } = this.props;
+    if (!collection || !fields) {
       return null;
     }
+
     return (
       <div>
         {
-          collection
-            .get('fields')
-            .map(field =>
-              <div
-                key={field.get('name')}
-                className={styles.widget}
-              >
-                {this.controlFor(field)}
-              </div>
-            )
+          fields.map(field =>
+            <div
+              key={field.get('name')}
+              className={styles.widget}
+            >
+              {this.controlFor(field)}
+            </div>
+          )
         }
       </div>
     );
@@ -55,6 +54,7 @@ export default class ControlPane extends Component {
 ControlPane.propTypes = {
   collection: ImmutablePropTypes.map.isRequired,
   entry: ImmutablePropTypes.map.isRequired,
+  fields: ImmutablePropTypes.list.isRequired,
   getMedia: PropTypes.func.isRequired,
   onAddMedia: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
