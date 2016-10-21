@@ -1,6 +1,6 @@
 import { OrderedMap, fromJS } from 'immutable';
 import { CONFIG_SUCCESS } from '../actions/config';
-import { FILE, FOLDER } from '../constants/collectionTypes';
+import { FILES, FOLDER } from '../constants/collectionTypes';
 
 const hasProperty = (config, property) => ({}.hasOwnProperty.call(config, property));
 
@@ -13,7 +13,7 @@ const collections = (state = null, action) => {
           if (hasProperty(configCollection, 'folder')) {
             configCollection.type = FOLDER; // eslint-disable-line no-param-reassign
           } else if (hasProperty(configCollection, 'files')) {
-            configCollection.type = FILE; // eslint-disable-line no-param-reassign
+            configCollection.type = FILES; // eslint-disable-line no-param-reassign
           }
           map.set(configCollection.name, fromJS(configCollection));
         });

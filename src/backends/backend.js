@@ -3,7 +3,7 @@ import GitHubBackend from './github/implementation';
 import NetlifyGitBackend from './netlify-git/implementation';
 import { resolveFormat } from '../formats/formats';
 import { createEntry } from '../valueObjects/Entry';
-import { FILE, FOLDER } from '../constants/collectionTypes';
+import { FILES, FOLDER } from '../constants/collectionTypes';
 
 class LocalStorageAuthStore {
   storageKey = 'nf-cms-user';
@@ -66,26 +66,27 @@ class Backend {
     });
   }
 
-  listEntries(collection, page, perPage) {
+  listEntries(collection) {
     const type = collection.get('type');
     if (type === FOLDER) {
-      return this.implementation.entriesByFolder(collection, page, perPage)
-      .then(files => (
-        files.map(file => createEntry(collection.get('name'), file.path.split('/').pop().replace(/\.[^\.]+$/, ''), file.path, { raw: file.data }))
+      return this.implementation.entriesByFolder(collection)
+      .then(loadedEntries => (
+        loadedEntries.map(loadedEntry => createEntry(collection.get('name'), loadedEntry.file.path.split('/').pop().replace(/\.[^\.]+$/, ''), loadedEntry.file.path, { raw: loadedEntry.data }))
       ))
       .then(entries => (
         {
           entries: entries.map(this.entryWithFormat(collection)),
         }
       ));
-    } else if (type === FILE) {
-      const format = resolveFormat(collection);
-      return this.implementation.entriesByFile(collection)
-      .then(format.fromFile)
-      .then(formattedEntries => (
+    } else if (type === FILES) {
+      const collectionFiles = collection.get('files').map(collectionFile => ({ path: collectionFile.get('file'), label: collectionFile.get('label') }));
+      return this.implementation.entriesByFiles(collection, collectionFiles)
+      .then(loadedEntries => (
+        loadedEntries.map(loadedEntry => createEntry(collection.get('name'), loadedEntry.file.path.split('/').pop().replace(/\.[^\.]+$/, ''), loadedEntry.file.path, { raw: loadedEntry.data, label: loadedEntry.file.label }))
+      ))
+      .then(entries => (
         {
-          pagination: null,
-          entries: formattedEntries.map(entry => createEntry(collection.get('name'), entry, collection.get('file'), { data: entry })),
+          entries: entries.map(this.entryWithFormat(collection)),
         }
       ));
     }

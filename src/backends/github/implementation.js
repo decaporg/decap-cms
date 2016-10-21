@@ -32,31 +32,29 @@ export default class GitHub {
   }
 
   entriesByFolder(collection) {
-    return this.api.listFiles(collection.get('folder')).then((files) => {
-      const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
-      const promises = [];
-      files.map((file) => {
-        promises.push(new Promise((resolve, reject) => {
-          return sem.take(() => this.api.readFile(file.path, file.sha).then((data) => {
-            resolve(
-              {
-                path: file.path,
-                data,
-              }
-            );
-            sem.leave();
-          }).catch((err) => {
-            sem.leave();
-            reject(err);
-          }));
-        }));
-      });
-      return Promise.all(promises);
-    });
+    return this.api.listFiles(collection.get('folder')).then(files => this.entriesByFiles(collection, files));
   }
 
-  entriesByFile(collection) {
-    return this.api.readFile(collection.get('file'));
+  entriesByFiles(collection, files) {
+    const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
+    const promises = [];
+    files.forEach((file) => {
+      promises.push(new Promise((resolve, reject) => {
+        return sem.take(() => this.api.readFile(file.path, file.sha).then((data) => {
+          resolve(
+            {
+              file,
+              data,
+            }
+          );
+          sem.leave();
+        }).catch((err) => {
+          sem.leave();
+          reject(err);
+        }));
+      }));
+    });
+    return Promise.all(promises);
   }
 
   // Will fetch the entire list of entries from github.
