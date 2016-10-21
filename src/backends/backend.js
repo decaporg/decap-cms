@@ -100,8 +100,15 @@ class Backend {
 
   // Will fetch the whole list of files from GitHub and load each file, then looks up for entry.
   // (Files are persisted in local storage - only expensive on the first run for each file).
+
+  // Will fetch the entire list of entries from github.
   lookupEntry(collection, slug) {
-    return this.implementation.lookupEntry(collection, slug).then(this.entryWithFormat(collection));
+    return this.implementation.entriesByFolder(collection)
+    .then(loadedEntries => (
+      loadedEntries.map(loadedEntry => createEntry(collection.get('name'), loadedEntry.file.path.split('/').pop().replace(/\.[^\.]+$/, ''), loadedEntry.file.path, { raw: loadedEntry.data }))
+    ))
+    .then(response => response.filter(entry => entry.slug === slug)[0])
+    .then(this.entryWithFormat(collection));
   }
 
   newEntry(collection) {

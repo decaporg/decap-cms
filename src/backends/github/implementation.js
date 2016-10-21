@@ -57,13 +57,6 @@ export default class GitHub {
     return Promise.all(promises);
   }
 
-  // Will fetch the entire list of entries from github.
-  lookupEntry(collection, slug) {
-    return this.entries(collection).then(response => (
-      response.entries.filter(entry => entry.slug === slug)[0]
-    ));
-  }
-
   // Fetches a single entry.
   getEntry(collection, slug, path) {
     return this.api.readFile(path).then(data => createEntry(collection, slug, path, { raw: data }));
