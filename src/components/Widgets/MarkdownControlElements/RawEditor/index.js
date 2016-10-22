@@ -34,13 +34,6 @@ export default class RawEditor extends React.Component {
     this.element.addEventListener('drop', this.handleDrop, false);
   }
 
-  componentWillUnmount() {
-    console.log('unmounting');
-    this.element.removeEventListener('dragenter', preventDefault);
-    this.element.removeEventListener('dragover', preventDefault);
-    this.element.removeEventListener('drop', this.handleDrop);
-  }
-
   componentDidUpdate() {
     if (this.newSelection) {
       this.element.selectionStart = this.newSelection.start;
@@ -49,73 +42,11 @@ export default class RawEditor extends React.Component {
     }
   }
 
-  handleChange = (e) => {
-    this.props.onChange(e.target.value);
-    this.updateHeight();
-  };
-
-  handleDrop = (e) => {
-    e.preventDefault();
-    let data;
-
-    if (e.dataTransfer.files && e.dataTransfer.files.length) {
-      data = Array.from(e.dataTransfer.files).map((file) => {
-        const mediaProxy = new MediaProxy(file.name, file);
-        this.props.onAddMedia(mediaProxy);
-        const link = `[${ file.name }](${ mediaProxy.public_path })`;
-        if (file.type.split('/')[0] === 'image') {
-          return `!${ link }`;
-        }
-        return link;
-      }).join('\n\n');
-    } else {
-      data = e.dataTransfer.getData('text/plain');
-    }
-    this.replaceSelection(data);
-  };
-
-  updateHeight() {
-    if (this.element.scrollHeight > this.element.clientHeight) {
-      this.element.style.height = `${ this.element.scrollHeight }px`;
-    }
+  componentWillUnmount() {
+    this.element.removeEventListener('dragenter', preventDefault);
+    this.element.removeEventListener('dragover', preventDefault);
+    this.element.removeEventListener('drop', this.handleDrop);
   }
-
-  handleRef = (ref) => {
-    this.element = ref;
-  };
-
-  handleToolbarRef = (ref) => {
-    this.toolbar = ref;
-  };
-
-  handleKey = (e) => {
-    if (e.metaKey) {
-      const action = this.shortcuts.meta[e.key];
-      if (action) {
-        e.preventDefault();
-        action();
-      }
-    }
-  };
-
-  handleBold = () => {
-    this.surroundSelection('**');
-  };
-
-  handleItalic = () => {
-    this.surroundSelection('*');
-  };
-
-  handleLink = () => {
-    const url = prompt('URL:');
-    const selection = this.getSelection();
-    this.replaceSelection(`[${ selection.selected }](${ processUrl(url) })`);
-  };
-
-  handleSelection = () => {
-    const selection = this.getSelection();
-    this.setState({ showToolbar: selection.start !== selection.end });
-  };
 
   getSelection() {
     const start = this.element.selectionStart;
@@ -163,6 +94,74 @@ export default class RawEditor extends React.Component {
     this.newSelection = newSelection;
     this.props.onChange(beforeSelection + chars + afterSelection);
   }
+
+  updateHeight() {
+    if (this.element.scrollHeight > this.element.clientHeight) {
+      this.element.style.height = `${ this.element.scrollHeight }px`;
+    }
+  }
+
+  handleRef = (ref) => {
+    this.element = ref;
+  };
+
+  handleToolbarRef = (ref) => {
+    this.toolbar = ref;
+  };
+
+  handleKey = (e) => {
+    if (e.metaKey) {
+      const action = this.shortcuts.meta[e.key];
+      if (action) {
+        e.preventDefault();
+        action();
+      }
+    }
+  };
+
+  handleBold = () => {
+    this.surroundSelection('**');
+  };
+
+  handleItalic = () => {
+    this.surroundSelection('*');
+  };
+
+  handleLink = () => {
+    const url = prompt('URL:');
+    const selection = this.getSelection();
+    this.replaceSelection(`[${ selection.selected }](${ processUrl(url) })`);
+  };
+
+  handleSelection = () => {
+    const selection = this.getSelection();
+    this.setState({ showToolbar: selection.start !== selection.end });
+  };
+
+  handleChange = (e) => {
+    this.props.onChange(e.target.value);
+    this.updateHeight();
+  };
+
+  handleDrop = (e) => {
+    e.preventDefault();
+    let data;
+
+    if (e.dataTransfer.files && e.dataTransfer.files.length) {
+      data = Array.from(e.dataTransfer.files).map((file) => {
+        const mediaProxy = new MediaProxy(file.name, file);
+        this.props.onAddMedia(mediaProxy);
+        const link = `[${ file.name }](${ mediaProxy.public_path })`;
+        if (file.type.split('/')[0] === 'image') {
+          return `!${ link }`;
+        }
+        return link;
+      }).join('\n\n');
+    } else {
+      data = e.dataTransfer.getData('text/plain');
+    }
+    this.replaceSelection(data);
+  };
 
   render() {
     const { showToolbar } = this.state;
