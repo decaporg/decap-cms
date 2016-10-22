@@ -1,7 +1,10 @@
 import React, { PropTypes } from 'react';
+import { fromJS } from 'immutable';
 import CaretPosition from 'textarea-caret-position';
-import Toolbar from './Toolbar';
+import registry from '../../../../lib/registry';
 import MediaProxy from '../../../../valueObjects/MediaProxy';
+import Toolbar from './Toolbar';
+import BlockMenu from './BlockMenu';
 import styles from './index.css';
 
 const HAS_LINE_BREAK = /\n/m;
@@ -20,10 +23,36 @@ function preventDefault(e) {
   e.preventDefault();
 }
 
+const buildtInPlugins = fromJS([{
+  label: 'Image',
+  id: 'image',
+  fromBlock: (data) => {
+    const m = data.match(/^!\[([^\]]+)\]\(([^\)]+)\)$/);
+    return m && {
+      image: m[2],
+      alt: m[1],
+    };
+  },
+  toBlock: data => `![${ data.alt }](${ data.image })`,
+  toPreview: data => `<img src="${ data.image }" alt="${ data.alt }" />`,
+  pattern: /^!\[([^\]]+)\]\(([^\)]+)\)$/,
+  fields: [{
+    label: 'Image',
+    name: 'image',
+    widget: 'image',
+  }, {
+    label: 'Alt Text',
+    name: 'alt',
+  }],
+}]);
+
 export default class RawEditor extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    const plugins = registry.getEditorComponents();
+    this.state = {
+      plugins: buildtInPlugins.concat(plugins),
+    };
     this.shortcuts = {
       meta: {
         b: this.handleBold,
@@ -111,10 +140,6 @@ export default class RawEditor extends React.Component {
     }
   };
 
-  handleToolbarRef = (ref) => {
-    this.toolbar = ref;
-  };
-
   handleKey = (e) => {
     if (e.metaKey) {
       const action = this.shortcuts.meta[e.key];
@@ -140,22 +165,45 @@ export default class RawEditor extends React.Component {
   };
 
   handleSelection = () => {
+    const { value } = this.props;
     const selection = this.getSelection();
     if (selection.start !== selection.end && !HAS_LINE_BREAK.test(selection.selected)) {
       try {
         const position = this.caretPosition.get(selection.start, selection.end);
-        this.setState({ showToolbar: true, selectionPosition: position });
+        this.setState({ showToolbar: true, showBlockMenu: false, selectionPosition: position });
       } catch (e) {
-        this.setState({ showToolbar: false });
+        this.setState({ showToolbar: false, showBlockMenu: false });
+      }
+    } else if (selection.start === selection.end) {
+      const newBlock =
+        (
+          selection.start === 0 ||
+          value.substr(selection.start - 2, 2) === '\n\n') &&
+        (
+          selection.end === (value.length - 1) ||
+          value.substr(selection.end, 2) === '\n\n' ||
+          value.substr(selection.end).match(/\n*$/m)
+        );
+
+      if (newBlock) {
+        const position = this.caretPosition.get(selection.start, selection.end);
+        this.setState({ showToolbar: false, showBlockMenu: true, selectionPosition: position });
+      } else {
+        this.setState({ showToolbar: false, showBlockMenu: false });
       }
     } else {
-      this.setState({ showToolbar: false });
+      this.setState({ showToolbar: false, showBlockMenu: false });
     }
   };
 
   handleChange = (e) => {
     this.props.onChange(e.target.value);
     this.updateHeight();
+  };
+
+  handleBlock = (chars) => {
+    this.replaceSelection(chars);
+    this.setState({ showBlockMenu: false });
   };
 
   handleDrop = (e) => {
@@ -179,15 +227,24 @@ export default class RawEditor extends React.Component {
   };
 
   render() {
-    const { showToolbar, selectionPosition } = this.state;
+    const { onAddMedia, onRemoveMedia, getMedia } = this.props;
+    const { showToolbar, showBlockMenu, plugins, selectionPosition } = this.state;
     return (<div className={styles.root}>
       <Toolbar
-        ref={this.handleToolbarRef}
         isOpen={showToolbar}
         selectionPosition={selectionPosition}
         onBold={this.handleBold}
         onItalic={this.handleItalic}
         onLink={this.handleLink}
+      />
+      <BlockMenu
+        isOpen={showBlockMenu}
+        selectionPosition={selectionPosition}
+        plugins={plugins}
+        onBlock={this.handleBlock}
+        onAddMedia={onAddMedia}
+        onRemoveMedia={onRemoveMedia}
+        getMedia={getMedia}
       />
       <textarea
         ref={this.handleRef}
@@ -202,6 +259,8 @@ export default class RawEditor extends React.Component {
 
 RawEditor.propTypes = {
   onAddMedia: PropTypes.func.isRequired,
+  onRemoveMedia: PropTypes.func.isRequired,
+  getMedia: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   value: PropTypes.node,
 };

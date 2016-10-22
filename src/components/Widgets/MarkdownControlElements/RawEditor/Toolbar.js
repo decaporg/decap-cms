@@ -10,7 +10,7 @@ function button(label, action) {
 export default class Toolbar extends Component {
   static propTypes = {
     isOpen: PropTypes.bool,
-    selectionPosition: PropTypes.node,
+    selectionPosition: PropTypes.object,
     onBold: PropTypes.func.isRequired,
     onItalic: PropTypes.func.isRequired,
     onLink: PropTypes.func.isRequired,
