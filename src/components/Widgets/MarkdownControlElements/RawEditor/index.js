@@ -1,7 +1,10 @@
 import React, { PropTypes } from 'react';
+import CaretPosition from 'textarea-caret-position';
 import Toolbar from './Toolbar';
 import MediaProxy from '../../../../valueObjects/MediaProxy';
+import styles from './index.css';
 
+const HAS_LINE_BREAK = /\n/m;
 
 function processUrl(url) {
   if (url.match(/^(https?:\/\/|mailto:|\/)/)) {
@@ -103,6 +106,9 @@ export default class RawEditor extends React.Component {
 
   handleRef = (ref) => {
     this.element = ref;
+    if (ref) {
+      this.caretPosition = new CaretPosition(ref);
+    }
   };
 
   handleToolbarRef = (ref) => {
@@ -135,7 +141,16 @@ export default class RawEditor extends React.Component {
 
   handleSelection = () => {
     const selection = this.getSelection();
-    this.setState({ showToolbar: selection.start !== selection.end });
+    if (selection.start !== selection.end && !HAS_LINE_BREAK.test(selection.selected)) {
+      try {
+        const position = this.caretPosition.get(selection.start, selection.end);
+        this.setState({ showToolbar: true, selectionPosition: position });
+      } catch (e) {
+        this.setState({ showToolbar: false });
+      }
+    } else {
+      this.setState({ showToolbar: false });
+    }
   };
 
   handleChange = (e) => {
@@ -164,11 +179,12 @@ export default class RawEditor extends React.Component {
   };
 
   render() {
-    const { showToolbar } = this.state;
-    return (<div>
+    const { showToolbar, selectionPosition } = this.state;
+    return (<div className={styles.root}>
       <Toolbar
         ref={this.handleToolbarRef}
         isOpen={showToolbar}
+        selectionPosition={selectionPosition}
         onBold={this.handleBold}
         onItalic={this.handleItalic}
         onLink={this.handleLink}

@@ -1,13 +1,3 @@
 .root {
-  font-family: monospace;
-  display: block;
-  width: 100%;
-  padding: 0;
-  margin: 0;
-  border: none;
-  outline: 0;
-  box-shadow: none;
-  background: 0 0;
-  font-size: 18px;
-  color: #7c8382;
+  position: relative;
 }
