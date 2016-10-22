@@ -1,15 +1,21 @@
-html, body {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 14px;
+html,
+body {
   color: #444;
+  font-size: 14px;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
+
 body {
   padding: 20px;
 }
 
 h1 {
-  font-weight: bold;
-  color: #666;
-  font-size: 32px;
   margin-top: 20px;
+  color: #666;
+  font-weight: bold;
+  font-size: 32px;
+}
+
+img {
+  max-width: 100%;
 }

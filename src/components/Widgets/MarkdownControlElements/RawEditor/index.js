@@ -1,5 +1,7 @@
 import React, { PropTypes } from 'react';
 import Toolbar from './Toolbar';
+import MediaProxy from '../../../../valueObjects/MediaProxy';
+
 
 function processUrl(url) {
   if (url.match(/^(https?:\/\/|mailto:|\/)/)) {
@@ -9,6 +11,10 @@ function processUrl(url) {
     return `https://${ url }`;
   }
   return `/${ url }`;
+}
+
+function preventDefault(e) {
+  e.preventDefault();
 }
 
 export default class RawEditor extends React.Component {
@@ -23,6 +29,16 @@ export default class RawEditor extends React.Component {
   }
   componentDidMount() {
     this.updateHeight();
+    this.element.addEventListener('dragenter', preventDefault, false);
+    this.element.addEventListener('dragover', preventDefault, false);
+    this.element.addEventListener('drop', this.handleDrop, false);
+  }
+
+  componentWillUnmount() {
+    console.log('unmounting');
+    this.element.removeEventListener('dragenter', preventDefault);
+    this.element.removeEventListener('dragover', preventDefault);
+    this.element.removeEventListener('drop', this.handleDrop);
   }
 
   componentDidUpdate() {
@@ -36,6 +52,26 @@ export default class RawEditor extends React.Component {
   handleChange = (e) => {
     this.props.onChange(e.target.value);
     this.updateHeight();
+  };
+
+  handleDrop = (e) => {
+    e.preventDefault();
+    let data;
+
+    if (e.dataTransfer.files && e.dataTransfer.files.length) {
+      data = Array.from(e.dataTransfer.files).map((file) => {
+        const mediaProxy = new MediaProxy(file.name, file);
+        this.props.onAddMedia(mediaProxy);
+        const link = `[${ file.name }](${ mediaProxy.public_path })`;
+        if (file.type.split('/')[0] === 'image') {
+          return `!${ link }`;
+        }
+        return link;
+      }).join('\n\n');
+    } else {
+      data = e.dataTransfer.getData('text/plain');
+    }
+    this.replaceSelection(data);
   };
 
   updateHeight() {
@@ -150,6 +186,7 @@ export default class RawEditor extends React.Component {
 }
 
 RawEditor.propTypes = {
+  onAddMedia: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   value: PropTypes.node,
 };
