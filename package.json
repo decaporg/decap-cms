@@ -1,5 +1,5 @@
 {
-  "name": "netlify-react-cms",
+  "name": "netlify-cms",
   "version": "0.1.0",
   "description": "Netlify CMS lets content editors work on structured content stored in git",
   "main": "index.js",
