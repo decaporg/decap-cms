@@ -20,6 +20,7 @@
   }
 }
 .label {
+  display: block;
   color: #AAB0AF;
   font-size: 12px;
   margin-bottom: 18px;

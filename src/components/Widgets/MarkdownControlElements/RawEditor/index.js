@@ -1,133 +1,155 @@
 import React, { PropTypes } from 'react';
-import { Editor, Plain, Mark } from 'slate';
-import Prism from 'prismjs';
-import PluginDropImages from 'slate-drop-or-paste-images';
-import MediaProxy from '../../../../valueObjects/MediaProxy';
-import marks from './prismMarkdown';
-import styles from './index.css';
+import Toolbar from './Toolbar';
 
-Prism.languages.markdown = Prism.languages.extend('markup', {});
-Prism.languages.insertBefore('markdown', 'prolog', marks);
-Prism.languages.markdown.bold.inside.url = Prism.util.clone(Prism.languages.markdown.url);
-Prism.languages.markdown.italic.inside.url = Prism.util.clone(Prism.languages.markdown.url);
-Prism.languages.markdown.bold.inside.italic = Prism.util.clone(Prism.languages.markdown.italic);
-Prism.languages.markdown.italic.inside.bold = Prism.util.clone(Prism.languages.markdown.bold);
-
-function renderDecorations(text, block) {
-  let characters = text.characters.asMutable();
-  const string = text.text;
-  const grammar = Prism.languages.markdown;
-  const tokens = Prism.tokenize(string, grammar);
-  let offset = 0;
-
-  for (const token of tokens) {
-    if (typeof token == 'string') {
-      offset += token.length;
-      continue;
-    }
-
-    const length = offset + token.matchedStr.length;
-    const name = token.alias || token.type;
-    const type = `highlight-${ name }`;
-
-    for (let i = offset; i < length; i++) {
-      let char = characters.get(i);
-      let { marks } = char;
-      marks = marks.add(Mark.create({ type }));
-      char = char.merge({ marks });
-      characters = characters.set(i, char);
-    }
-
-    offset = length;
+function processUrl(url) {
+  if (url.match(/^(https?:\/\/|mailto:|\/)/)) {
+    return url;
   }
-
-  return characters.asImmutable();
+  if (url.match(/^[^\/]+\.[^\/]+/)) {
+    return `https://${ url }`;
+  }
+  return `/${ url }`;
 }
-
-const SCHEMA = {
-  rules: [
-    {
-      match: object => object.kind == 'block',
-      decorate: renderDecorations,
-    },
-  ],
-  marks: {
-    'highlight-comment': {
-      opacity: '0.33',
-    },
-    'highlight-important': {
-      fontWeight: 'bold',
-      color: '#006',
-    },
-    'highlight-keyword': {
-      fontWeight: 'bold',
-      color: '#006',
-    },
-    'highlight-url': {
-      color: '#006',
-    },
-    'highlight-punctuation': {
-      color: '#006',
-    },
-  },
-};
 
 export default class RawEditor extends React.Component {
-
-  static propTypes = {
-    onAddMedia: PropTypes.func.isRequired,
-    getMedia: PropTypes.func.isRequired,
-    onChange: PropTypes.func.isRequired,
-    value: PropTypes.string,
-  };
-
   constructor(props) {
     super(props);
-    const content = props.value ? Plain.deserialize(props.value) : Plain.deserialize('');
-
-    this.state = {
-      state: content,
+    this.state = {};
+    this.shortcuts = {
+      meta: {
+        b: this.handleBold,
+      },
     };
-
-    this.plugins = [
-      PluginDropImages({
-        applyTransform: (transform, file) => {
-          const mediaProxy = new MediaProxy(file.name, file);
-          const state = Plain.deserialize(`\n\n![${ file.name }](${ mediaProxy.public_path })\n\n`);
-          props.onAddMedia(mediaProxy);
-          return transform
-            .insertFragment(state.get('document'));
-        },
-      }),
-    ];
+  }
+  componentDidMount() {
+    this.updateHeight();
   }
 
-  /**
-   * Slate keeps track of selections, scroll position etc.
-   * So, onChange gets dispatched on every interaction (click, arrows, everything...)
-   * It also have an onDocumentChange, that get's dispatched only when the actual
-   * content changes
-   */
-  handleChange = (state) => {
-    this.setState({ state });
+  componentDidUpdate() {
+    if (this.newSelection) {
+      this.element.selectionStart = this.newSelection.start;
+      this.element.selectionEnd = this.newSelection.end;
+      this.newSelection = null;
+    }
+  }
+
+  handleChange = (e) => {
+    this.props.onChange(e.target.value);
+    this.updateHeight();
   };
 
-  handleDocumentChange = (document, state) => {
-    const content = Plain.serialize(state, { terse: true });
-    this.props.onChange(content);
+  updateHeight() {
+    if (this.element.scrollHeight > this.element.clientHeight) {
+      this.element.style.height = `${ this.element.scrollHeight }px`;
+    }
+  }
+
+  handleRef = (ref) => {
+    this.element = ref;
   };
+
+  handleToolbarRef = (ref) => {
+    this.toolbar = ref;
+  };
+
+  handleKey = (e) => {
+    if (e.metaKey) {
+      const action = this.shortcuts.meta[e.key];
+      if (action) {
+        e.preventDefault();
+        action();
+      }
+    }
+  };
+
+  handleBold = () => {
+    this.surroundSelection('**');
+  };
+
+  handleItalic = () => {
+    this.surroundSelection('*');
+  };
+
+  handleLink = () => {
+    const url = prompt('URL:');
+    const selection = this.getSelection();
+    this.replaceSelection(`[${ selection.selected }](${ processUrl(url) })`);
+  };
+
+  handleSelection = () => {
+    const selection = this.getSelection();
+    this.setState({ showToolbar: selection.start !== selection.end });
+  };
+
+  getSelection() {
+    const start = this.element.selectionStart;
+    const end = this.element.selectionEnd;
+    const selected = (this.props.value || '').substr(start, end - start);
+    return { start, end, selected };
+  }
+
+  surroundSelection(chars) {
+    const selection = this.getSelection();
+    const newSelection = Object.assign({}, selection);
+    const { value } = this.props;
+    const escapedChars = chars.replace(/\*/g, '\\*');
+    const regexp = new RegExp(`^${ escapedChars }.*${ escapedChars }$`);
+    let changed = chars + selection.selected + chars;
+
+    if (regexp.test(selection.selected)) {
+      changed = selection.selected.substr(chars.length, selection.selected.length - (chars.length * 2));
+      newSelection.end = selection.end - (chars.length * 2);
+    } else if (
+      value.substr(selection.start - chars.length, chars.length) === chars &&
+      value.substr(selection.end, chars.length) === chars
+    ) {
+      newSelection.start = selection.start - chars.length;
+      newSelection.end = selection.end + chars.length;
+      changed = selection.selected;
+    } else {
+      newSelection.end = selection.end + (chars.length * 2);
+    }
+
+    const beforeSelection = value.substr(0, selection.start);
+    const afterSelection = value.substr(selection.end);
+
+    this.newSelection = newSelection;
+    this.props.onChange(beforeSelection + changed + afterSelection);
+  }
+
+  replaceSelection(chars) {
+    const { value } = this.props;
+    const selection = this.getSelection();
+    const newSelection = Object.assign({}, selection);
+    const beforeSelection = value.substr(0, selection.start);
+    const afterSelection = value.substr(selection.end);
+    newSelection.end = selection.start + chars.length;
+    this.newSelection = newSelection;
+    this.props.onChange(beforeSelection + chars + afterSelection);
+  }
 
   render() {
-    return (
-      <Editor
-        className={styles.root}
-        placeholder={'Enter some rich text...'}
-        state={this.state.state}
-        schema={SCHEMA}
-        onChange={this.handleChange}
-        onDocumentChange={this.handleDocumentChange}
-        plugins={this.plugins}
+    const { showToolbar } = this.state;
+    return (<div>
+      <Toolbar
+        ref={this.handleToolbarRef}
+        isOpen={showToolbar}
+        onBold={this.handleBold}
+        onItalic={this.handleItalic}
+        onLink={this.handleLink}
       />
-    );
+      <textarea
+        ref={this.handleRef}
+        value={this.props.value || ''}
+        onKeyDown={this.handleKey}
+        onChange={this.handleChange}
+        onSelect={this.handleSelection}
+      />
+    </div>);
   }
 }
+
+RawEditor.propTypes = {
+  onChange: PropTypes.func.isRequired,
+  value: PropTypes.node,
+};
