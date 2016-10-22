@@ -177,7 +177,7 @@ export default class RawEditor extends React.Component {
     } else if (selection.start === selection.end) {
       const newBlock =
         (
-          selection.start === 0 ||
+          (selection.start === 0 && value.substr(0,1).match(/^\n?$/)) ||
           value.substr(selection.start - 2, 2) === '\n\n') &&
         (
           selection.end === (value.length - 1) ||
