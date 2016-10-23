@@ -3,17 +3,18 @@ import { currentBackend } from '../backends/backend';
 export const AUTH_REQUEST = 'AUTH_REQUEST';
 export const AUTH_SUCCESS = 'AUTH_SUCCESS';
 export const AUTH_FAILURE = 'AUTH_FAILURE';
+export const LOGOUT = 'LOGOUT';
 
 export function authenticating() {
   return {
-    type: AUTH_REQUEST
+    type: AUTH_REQUEST,
   };
 }
 
 export function authenticate(userData) {
   return {
     type: AUTH_SUCCESS,
-    payload: userData
+    payload: userData,
   };
 }
 
@@ -25,6 +26,12 @@ export function authError(error) {
   };
 }
 
+export function logout() {
+  return {
+    type: LOGOUT,
+  };
+}
+
 export function loginUser(credentials) {
   return (dispatch, getState) => {
     const state = getState();
@@ -32,6 +39,17 @@ export function loginUser(credentials) {
 
     dispatch(authenticating());
     return backend.authenticate(credentials)
-      .then((user) => dispatch(authenticate(user)));
+      .then((user) => {
+        dispatch(authenticate(user));
+      });
+  };
+}
+
+export function logoutUser() {
+  return (dispatch, getState) => {
+    const state = getState();
+    const backend = currentBackend(state.config);
+    backend.logout();
+    dispatch(logout());
   };
 }

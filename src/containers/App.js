@@ -7,7 +7,7 @@ import { Navigation } from 'react-toolbox/lib/navigation';
 import { Link } from 'react-toolbox/lib/link';
 import { Notifs } from 'redux-notifications';
 import { loadConfig } from '../actions/config';
-import { loginUser } from '../actions/auth';
+import { loginUser, logoutUser } from '../actions/auth';
 import { currentBackend } from '../backends/backend';
 import {
   SHOW_COLLECTION,
@@ -29,6 +29,7 @@ class App extends React.Component {
     config: ImmutablePropTypes.map,
     collections: ImmutablePropTypes.orderedMap,
     createNewEntryInCollection: PropTypes.func.isRequired,
+    logoutUser: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
     navigateToCollection: PropTypes.func.isRequired,
     user: ImmutablePropTypes.map,
@@ -126,6 +127,7 @@ class App extends React.Component {
       runCommand,
       navigateToCollection,
       createNewEntryInCollection,
+      logoutUser,
     } = this.props;
 
     if (config === null) {
@@ -182,6 +184,7 @@ class App extends React.Component {
           defaultCommands={defaultCommands}
           runCommand={runCommand}
           onCreateEntryClick={createNewEntryInCollection}
+          onLogoutClick={logoutUser}
           toggleNavDrawer={this.toggleNavDrawer}
         />
         <Panel scrollY>
@@ -212,6 +215,9 @@ function mapDispatchToProps(dispatch) {
     },
     createNewEntryInCollection: (collectionName) => {
       dispatch(createNewEntryInCollection(collectionName));
+    },
+    logoutUser: () => {
+      dispatch(logoutUser());
     },
   };
 }

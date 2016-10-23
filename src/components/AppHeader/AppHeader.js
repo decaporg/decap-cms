@@ -19,6 +19,7 @@ export default class AppHeader extends React.Component {
     runCommand: PropTypes.func.isRequired,
     toggleNavDrawer: PropTypes.func.isRequired,
     onCreateEntryClick: PropTypes.func.isRequired,
+    onLogoutClick: PropTypes.func.isRequired,
   };
 
   state = {
@@ -59,6 +60,7 @@ export default class AppHeader extends React.Component {
       defaultCommands,
       runCommand,
       toggleNavDrawer,
+      onLogoutClick,
     } = this.props;
 
     const {
@@ -71,7 +73,21 @@ export default class AppHeader extends React.Component {
         fixed
         theme={styles}
         leftIcon="menu"
-        rightIcon="more_vert"
+        rightIcon={
+          <div>
+            <Avatar
+              title={user.get('name')}
+              image={user.get('avatar_url')}
+            />
+            <Menu
+              active={userMenuActive}
+              position="topRight"
+              onHide={this.handleRightIconClick}
+            >
+              <MenuItem onClick={onLogoutClick}>Log out</MenuItem>
+            </Menu>
+          </div>
+        }
         onLeftIconClick={toggleNavDrawer}
         onRightIconClick={this.handleRightIconClick}
       >
@@ -108,18 +124,6 @@ export default class AppHeader extends React.Component {
             }
           </Menu>
         </Button>
-
-        <Avatar
-          title={user.get('name')}
-          image={user.get('avatar_url')}
-        />
-        <Menu
-          active={userMenuActive}
-          position="topRight"
-          onHide={this.handleRightIconClick}
-        >
-          <MenuItem>Log out</MenuItem>
-        </Menu>
       </AppBar>
     );
   }

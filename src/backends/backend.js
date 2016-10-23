@@ -15,18 +15,22 @@ class LocalStorageAuthStore {
   store(userData) {
     window.localStorage.setItem(this.storageKey, JSON.stringify(userData));
   }
+
+  logout() {
+    window.localStorage.removeItem(this.storageKey);
+  }
 }
 
 const slugFormatter = (template, entryData) => {
-  var date = new Date();
-  return template.replace(/\{\{([^\}]+)\}\}/g, function(_, name) {
+  const date = new Date();
+  return template.replace(/\{\{([^\}]+)\}\}/g, (_, name) => {
     switch (name) {
       case 'year':
         return date.getFullYear();
       case 'month':
-        return ('0' + (date.getMonth() + 1)).slice(-2);
+        return (`0${ date.getMonth() + 1 }`).slice(-2);
       case 'day':
-        return ('0' + date.getDate()).slice(-2);
+        return (`0${ date.getDate() }`).slice(-2);
       case 'slug':
         const identifier = entryData.get('title', entryData.get('path'));
         return identifier.trim().toLowerCase().replace(/[^a-z0-9\.\-\_]+/gi, '-');
@@ -65,11 +69,19 @@ class Backend {
     });
   }
 
+  logout() {
+    if (this.authStore) {
+      this.authStore.logout();
+    } else {
+      throw new Error('User isn\'t authenticated.');
+    }
+  }
+
   listEntries(collection, page, perPage) {
     return this.implementation.entries(collection, page, perPage).then((response) => {
       return {
         pagination: response.pagination,
-        entries: response.entries.map(this.entryWithFormat(collection))
+        entries: response.entries.map(this.entryWithFormat(collection)),
       };
     });
   }
@@ -104,7 +116,7 @@ class Backend {
     return this.implementation.unpublishedEntries(page, perPage).then((response) => {
       return {
         pagination: response.pagination,
-        entries: response.entries.map(this.entryWithFormat('editorialWorkflow'))
+        entries: response.entries.map(this.entryWithFormat('editorialWorkflow')),
       };
     });
   }
@@ -126,28 +138,28 @@ class Backend {
     if (newEntry) {
       const slug = slugFormatter(collection.get('slug'), entryDraft.getIn(['entry', 'data']));
       entryObj = {
-        path: `${collection.get('folder')}/${slug}.md`,
-        slug: slug,
-        raw: this.entryToRaw(collection, entryData)
+        path: `${ collection.get('folder') }/${ slug }.md`,
+        slug,
+        raw: this.entryToRaw(collection, entryData),
       };
     } else {
       entryObj = {
         path: entryDraft.getIn(['entry', 'path']),
         slug: entryDraft.getIn(['entry', 'slug']),
-        raw: this.entryToRaw(collection, entryData)
+        raw: this.entryToRaw(collection, entryData),
       };
     }
 
-    const commitMessage = (newEntry ? 'Created ' : 'Updated ') +
-          collection.get('label') + ' “' +
-          entryDraft.getIn(['entry', 'data', 'title']) + '”';
+    const commitMessage = `${ (newEntry ? 'Created ' : 'Updated ') +
+          collection.get('label') } “${
+          entryDraft.getIn(['entry', 'data', 'title']) }”`;
 
     const mode = config.get('publish_mode');
 
     const collectionName = collection.get('name');
 
     return this.implementation.persistEntry(entryObj, MediaFiles, {
-      newEntry, parsedData, commitMessage, collectionName, mode, ...options
+      newEntry, parsedData, commitMessage, collectionName, mode, ...options,
     });
   }
 
@@ -186,11 +198,11 @@ export function resolveBackend(config) {
     case 'netlify-git':
       return new Backend(new NetlifyGitBackend(config, slugFormatter), authStore);
     default:
-      throw `Backend not found: ${name}`;
+      throw `Backend not found: ${ name }`;
   }
 }
 
-export const currentBackend = (function() {
+export const currentBackend = (function () {
   let backend = null;
 
   return (config) => {
@@ -199,4 +211,4 @@ export const currentBackend = (function() {
       return backend = resolveBackend(config);
     }
   };
-})();
+}());
