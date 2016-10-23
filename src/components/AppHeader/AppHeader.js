@@ -2,10 +2,10 @@ import React, { PropTypes } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import pluralize from 'pluralize';
 import { IndexLink } from 'react-router';
-import { Menu, MenuItem } from 'react-toolbox/lib/menu';
+import { IconMenu, Menu, MenuItem } from 'react-toolbox/lib/menu';
 import Avatar from 'react-toolbox/lib/avatar';
 import AppBar from 'react-toolbox/lib/app_bar';
-import Button from 'react-toolbox/lib/button';
+import FontIcon from 'react-toolbox/lib/font_icon';
 import FindBar from '../FindBar/FindBar';
 import styles from './AppHeader.css';
 
@@ -92,7 +92,7 @@ export default class AppHeader extends React.Component {
         onRightIconClick={this.handleRightIconClick}
       >
         <IndexLink to="/">
-          Dashboard
+          <FontIcon value="home" />
         </IndexLink>
 
         <FindBar
@@ -100,30 +100,24 @@ export default class AppHeader extends React.Component {
           defaultCommands={defaultCommands}
           runCommand={runCommand}
         />
-        <Button
+        <IconMenu
+          theme={styles}
+          active={createMenuActive}
           icon="create"
-          inverse
-          mini
-          floating
           onClick={this.handleCreateButtonClick}
+          onHide={this.handleCreateMenuHide}
         >
-          <Menu
-            active={createMenuActive}
-            position="topRight"
-            onHide={this.handleCreateMenuHide}
-          >
-            {
-              collections.valueSeq().map(collection =>
-                <MenuItem
-                  key={collection.get('name')}
-                  value={collection.get('name')}
-                  onClick={this.handleCreatePostClick.bind(this, collection.get('name'))} // eslint-disable-line
-                  caption={pluralize(collection.get('label'), 1)}
-                />
-              )
-            }
-          </Menu>
-        </Button>
+          {
+            collections.valueSeq().map(collection =>
+              <MenuItem
+                key={collection.get('name')}
+                value={collection.get('name')}
+                onClick={this.handleCreatePostClick.bind(this, collection.get('name'))} // eslint-disable-line
+                caption={pluralize(collection.get('label'), 1)}
+              />
+            )
+          }
+        </IconMenu>
       </AppBar>
     );
   }

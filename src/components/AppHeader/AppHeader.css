@@ -9,3 +9,11 @@
 .appBar {
   background-color: var(--backgroundColor);
 }
+
+.icon {
+  /* stylelint-disable */
+  /* Cascade is evil :( */
+  color: var(--foregroundColor) !important;
+
+  /* stylelint-enable */
+}
