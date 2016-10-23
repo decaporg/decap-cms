@@ -20,6 +20,11 @@ body {
   margin: 0;
 }
 
+:global #root {
+  padding-top: 64px;
+}
+
+
 :global #root, :global #root > * {
   height: 100%;
 }

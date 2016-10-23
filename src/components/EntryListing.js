@@ -21,7 +21,7 @@ export default class EntryListing extends React.Component {
         { mq: '1005px', columns: 4, gutter: 15 },
         { mq: '1515px', columns: 5, gutter: 15 },
         { mq: '1770px', columns: 6, gutter: 15 },
-      ]
+      ],
     };
 
     this.updateBricks = _.throttle(this.updateBricks.bind(this), 30);
@@ -32,7 +32,7 @@ export default class EntryListing extends React.Component {
     this.bricksInstance = Bricks({
       container: this._entries,
       packed: this.bricksConfig.packed,
-      sizes: this.bricksConfig.sizes
+      sizes: this.bricksConfig.sizes,
     });
 
     this.bricksInstance.resize(true);
@@ -65,10 +65,10 @@ export default class EntryListing extends React.Component {
     const card = Cards[cartType] || Cards._unknown;
     return React.createElement(card, {
       key: entry.get('slug'),
-      collection: collection,
+      collection,
       onClick: history.push.bind(this, link),
       onImageLoaded: this.updateBricks,
-      text: entry.getIn(['data', collection.getIn(['card', 'text'])]),
+      text: entry.get('label') ? entry.get('label') : entry.getIn(['data', collection.getIn(['card', 'text'])]),
       description: entry.getIn(['data', collection.getIn(['card', 'description'])]),
       image: entry.getIn(['data', collection.getIn(['card', 'image'])]),
     });
@@ -83,13 +83,13 @@ export default class EntryListing extends React.Component {
     if (Map.isMap(collections)) {
       const collectionName = collections.get('name');
       return entries.map((entry) => {
-        const path = `/collections/${collectionName}/entries/${entry.get('slug')}`;
+        const path = `/collections/${ collectionName }/entries/${ entry.get('slug') }`;
         return this.cardFor(collections, entry, path);
       });
     } else {
       return entries.map((entry) => {
         const collection = collections.filter(collection => collection.get('name') === entry.get('collection')).first();
-        const path = `/collections/${collection.get('name')}/entries/${entry.get('slug')}`;
+        const path = `/collections/${ collection.get('name') }/entries/${ entry.get('slug') }`;
         return this.cardFor(collection, entry, path);
       });
     }
@@ -98,13 +98,13 @@ export default class EntryListing extends React.Component {
   render() {
     const { children } = this.props;
     const cards = this.renderCards();
-    return <div>
+    return (<div>
       <h1>{children}</h1>
-      <div ref={(c) => this._entries = c}>
+      <div ref={c => this._entries = c}>
         {cards}
         <Waypoint onEnter={this.handleLoadMore} />
       </div>
-    </div>;
+    </div>);
   }
 }
 
@@ -112,7 +112,7 @@ EntryListing.propTypes = {
   children: PropTypes.node.isRequired,
   collections: PropTypes.oneOfType([
     ImmutablePropTypes.map,
-    ImmutablePropTypes.iterable
+    ImmutablePropTypes.iterable,
   ]).isRequired,
   entries: ImmutablePropTypes.list,
   onPaginate: PropTypes.func.isRequired,

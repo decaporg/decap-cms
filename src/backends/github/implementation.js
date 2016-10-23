@@ -31,34 +31,30 @@ export default class GitHub {
     });
   }
 
-  entries(collection) {
-    return this.api.listFiles(collection.get('folder')).then((files) => {
-      const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
-      const promises = [];
-      files.map((file) => {
-        promises.push(new Promise((resolve, reject) => {
-          return sem.take(() => this.api.readFile(file.path, file.sha).then((data) => {
-            resolve(createEntry(collection.get('name'), file.path.split('/').pop().replace(/\.[^\.]+$/, ''), file.path, { raw: data }));
-            sem.leave();
-          }).catch((err) => {
-            sem.leave();
-            reject(err);
-          }));
-        }));
-      });
-      return Promise.all(promises);
-    }).then(entries => ({
-      pagination: 0,
-      entries,
-    }));
+  entriesByFolder(collection) {
+    return this.api.listFiles(collection.get('folder')).then(files => this.entriesByFiles(collection, files));
   }
 
-
-  // Will fetch the entire list of entries from github.
-  lookupEntry(collection, slug) {
-    return this.entries(collection).then(response => (
-      response.entries.filter(entry => entry.slug === slug)[0]
-    ));
+  entriesByFiles(collection, files) {
+    const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
+    const promises = [];
+    files.forEach((file) => {
+      promises.push(new Promise((resolve, reject) => {
+        return sem.take(() => this.api.readFile(file.path, file.sha).then((data) => {
+          resolve(
+            {
+              file,
+              data,
+            }
+          );
+          sem.leave();
+        }).catch((err) => {
+          sem.leave();
+          reject(err);
+        }));
+      }));
+    });
+    return Promise.all(promises);
   }
 
   // Fetches a single entry.

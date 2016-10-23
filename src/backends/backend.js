@@ -3,6 +3,7 @@ import GitHubBackend from './github/implementation';
 import NetlifyGitBackend from './netlify-git/implementation';
 import { resolveFormat } from '../formats/formats';
 import { createEntry } from '../valueObjects/Entry';
+import { FILES, FOLDER } from '../constants/collectionTypes';
 
 class LocalStorageAuthStore {
   storageKey = 'nf-cms-user';
@@ -77,13 +78,31 @@ class Backend {
     }
   }
 
-  listEntries(collection, page, perPage) {
-    return this.implementation.entries(collection, page, perPage).then((response) => {
-      return {
-        pagination: response.pagination,
-        entries: response.entries.map(this.entryWithFormat(collection)),
-      };
-    });
+  listEntries(collection) {
+    const type = collection.get('type');
+    if (type === FOLDER) {
+      return this.implementation.entriesByFolder(collection)
+      .then(loadedEntries => (
+        loadedEntries.map(loadedEntry => createEntry(collection.get('name'), loadedEntry.file.path.split('/').pop().replace(/\.[^\.]+$/, ''), loadedEntry.file.path, { raw: loadedEntry.data }))
+      ))
+      .then(entries => (
+        {
+          entries: entries.map(this.entryWithFormat(collection)),
+        }
+      ));
+    } else if (type === FILES) {
+      const collectionFiles = collection.get('files').map(collectionFile => ({ path: collectionFile.get('file'), label: collectionFile.get('label') }));
+      return this.implementation.entriesByFiles(collection, collectionFiles)
+      .then(loadedEntries => (
+        loadedEntries.map(loadedEntry => createEntry(collection.get('name'), loadedEntry.file.path.split('/').pop().replace(/\.[^\.]+$/, ''), loadedEntry.file.path, { raw: loadedEntry.data, label: loadedEntry.file.label }))
+      ))
+      .then(entries => (
+        {
+          entries: entries.map(this.entryWithFormat(collection)),
+        }
+      ));
+    }
+    return Promise.reject(`Couldn't process collection type ${ type }`);
   }
 
   // We have the file path. Fetch and parse the file.
@@ -94,12 +113,19 @@ class Backend {
   // Will fetch the whole list of files from GitHub and load each file, then looks up for entry.
   // (Files are persisted in local storage - only expensive on the first run for each file).
   lookupEntry(collection, slug) {
-    return this.implementation.lookupEntry(collection, slug).then(this.entryWithFormat(collection));
+    const type = collection.get('type');
+    if (type === FOLDER) {
+      return this.implementation.entriesByFolder(collection)
+      .then(loadedEntries => (
+        loadedEntries.map(loadedEntry => createEntry(collection.get('name'), loadedEntry.file.path.split('/').pop().replace(/\.[^\.]+$/, ''), loadedEntry.file.path, { raw: loadedEntry.data }))
+      ))
+      .then(response => response.filter(entry => entry.slug === slug)[0])
+      .then(this.entryWithFormat(collection));
+    }
   }
 
   newEntry(collection) {
-    const newEntry = createEntry();
-    return this.entryWithFormat(collection)(newEntry);
+    return createEntry(collection.get('name'));
   }
 
   entryWithFormat(collectionOrEntity) {
@@ -107,8 +133,10 @@ class Backend {
       const format = resolveFormat(collectionOrEntity, entry);
       if (entry && entry.raw) {
         entry.data = format && format.fromFile(entry.raw);
+        return entry;
+      } else {
+        return format.fromFile(entry);
       }
-      return entry;
     };
   }
 
