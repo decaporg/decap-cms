@@ -33,15 +33,18 @@ your public directory and use this `index.html` as a template:
 
   <title>Content Manager</title>
   <!-- Include the stylesheets from your site here -->
-  <link rel="stylesheet" href="//cms.netlify.com/assets/main.css" />
+  <link rel="stylesheet" href="https://unpkg.com/netlify-cms@^0.1.1/dist/cms.css" />
   <!-- Include a CMS specific stylesheet here -->
 
 </head>
 <body>
-  <script src="//cms.netlify.com/assets/main.js"></script>
+  <script src="https://unpkg.com/netlify-cms@^0.1.1/dist/cms.js"></script>
 </body>
 </html>
 ```
+
+> Note: Unpkg is a CDN for javascript modules, and it let's you point to semantic versions of files (so backwards-compatible bug fixes will loaded as soon as they're made available).
+
 
 Add a `config.yml` file to the `/admin` folder and configure your content model:
 
