@@ -88,4 +88,4 @@ class UnpublishedListing extends React.Component {
   }
 }
 
-export default HTML5DragDrop(UnpublishedListing);
+export default HTML5DragDrop(UnpublishedListing); // eslint-disable-line

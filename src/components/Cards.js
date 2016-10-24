@@ -3,9 +3,9 @@ import ImageCard from './Cards/ImageCard';
 import AlltypeCard from './Cards/AlltypeCard';
 
 const Cards = {
-  _unknown: UnknownCard,
+  unknown: UnknownCard,
   image: ImageCard,
-  alltype: AlltypeCard
+  alltype: AlltypeCard,
 };
 
 export default Cards;

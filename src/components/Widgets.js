@@ -20,8 +20,8 @@ registry.registerWidget('list', ListControl, ListPreview);
 registry.registerWidget('markdown', MarkdownControl, MarkdownPreview);
 registry.registerWidget('image', ImageControl, ImagePreview);
 registry.registerWidget('datetime', DateTimeControl, DateTimePreview);
-registry.registerWidget('_unknown', UnknownControl, UnknownPreview);
+registry.registerWidget('unknown', UnknownControl, UnknownPreview);
 
 export function resolveWidget(name) {
-  return registry.getWidget(name) || registry.getWidget('_unknown');
+  return registry.getWidget(name) || registry.getWidget('unknown');
 }

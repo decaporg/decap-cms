@@ -1,13 +1,24 @@
 import React, { PropTypes } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Map } from 'immutable';
-import Bricks from 'bricks.js';
+import { throttle } from 'lodash';
+import bricks from 'bricks.js';
 import Waypoint from 'react-waypoint';
 import history from '../routing/history';
 import Cards from './Cards';
-import _ from 'lodash';
 
 export default class EntryListing extends React.Component {
+  static propTypes = {
+    children: PropTypes.node.isRequired,
+    collections: PropTypes.oneOfType([
+      ImmutablePropTypes.map,
+      ImmutablePropTypes.iterable,
+    ]).isRequired,
+    entries: ImmutablePropTypes.list,
+    onPaginate: PropTypes.func.isRequired,
+    page: PropTypes.number,
+  };
+
   constructor(props) {
     super(props);
     this.bricksInstance = null;
@@ -24,13 +35,13 @@ export default class EntryListing extends React.Component {
       ],
     };
 
-    this.updateBricks = _.throttle(this.updateBricks.bind(this), 30);
+    this.updateBricks = throttle(this.updateBricks.bind(this), 30);
     this.handleLoadMore = this.handleLoadMore.bind(this);
   }
 
   componentDidMount() {
-    this.bricksInstance = Bricks({
-      container: this._entries,
+    this.bricksInstance = bricks({
+      container: this.containerNode,
       packed: this.bricksConfig.packed,
       sizes: this.bricksConfig.sizes,
     });
@@ -45,7 +56,8 @@ export default class EntryListing extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if ((prevProps.entries === undefined || prevProps.entries.size === 0) && this.props.entries.size === 0) {
+    if ((prevProps.entries === undefined || prevProps.entries.size === 0)
+      && this.props.entries.size === 0) {
       return;
     }
 
@@ -62,7 +74,7 @@ export default class EntryListing extends React.Component {
 
   cardFor(collection, entry, link) {
     const cartType = collection.getIn(['card', 'type']) || 'alltype';
-    const card = Cards[cartType] || Cards._unknown;
+    const card = Cards[cartType] || Cards.unknown;
     return React.createElement(card, {
       key: entry.get('slug'),
       collection,
@@ -78,6 +90,10 @@ export default class EntryListing extends React.Component {
     this.props.onPaginate(this.props.page + 1);
   }
 
+  handleRef = (node) => {
+    this.containerNode = node;
+  };
+
   renderCards = () => {
     const { collections, entries } = this.props;
     if (Map.isMap(collections)) {
@@ -86,35 +102,25 @@ export default class EntryListing extends React.Component {
         const path = `/collections/${ collectionName }/entries/${ entry.get('slug') }`;
         return this.cardFor(collections, entry, path);
       });
-    } else {
-      return entries.map((entry) => {
-        const collection = collections.filter(collection => collection.get('name') === entry.get('collection')).first();
-        const path = `/collections/${ collection.get('name') }/entries/${ entry.get('slug') }`;
-        return this.cardFor(collection, entry, path);
-      });
     }
+    return entries.map((entry) => {
+      const collection = collections
+        .filter(collection => collection.get('name') === entry.get('collection')).first();
+      const path = `/collections/${ collection.get('name') }/entries/${ entry.get('slug') }`;
+      return this.cardFor(collection, entry, path);
+    });
   };
 
   render() {
     const { children } = this.props;
-    const cards = this.renderCards();
-    return (<div>
-      <h1>{children}</h1>
-      <div ref={c => this._entries = c}>
-        {cards}
-        <Waypoint onEnter={this.handleLoadMore} />
+    return (
+      <div>
+        <h1>{children}</h1>
+        <div ref={this.handleRef}>
+          { this.renderCards() }
+          <Waypoint onEnter={this.handleLoadMore} />
+        </div>
       </div>
-    </div>);
+    );
   }
 }
-
-EntryListing.propTypes = {
-  children: PropTypes.node.isRequired,
-  collections: PropTypes.oneOfType([
-    ImmutablePropTypes.map,
-    ImmutablePropTypes.iterable,
-  ]).isRequired,
-  entries: ImmutablePropTypes.list,
-  onPaginate: PropTypes.func.isRequired,
-  page: PropTypes.number,
-};
