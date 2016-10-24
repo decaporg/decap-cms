@@ -73,16 +73,18 @@ export default class EntryListing extends React.Component {
   }
 
   cardFor(collection, entry, link) {
-    const cartType = collection.getIn(['card', 'type']) || 'alltype';
-    const card = Cards[cartType] || Cards.unknown;
+    const cardType = collection.getIn(['card', 'type']) || 'alltype';
+    const card = Cards[cardType] || Cards.unknown;
     return React.createElement(card, {
       key: entry.get('slug'),
+      author: entry.getIn(['data', 'author']),
       collection,
-      onClick: history.push.bind(this, link),
-      onImageLoaded: this.updateBricks,
-      text: entry.get('label') ? entry.get('label') : entry.getIn(['data', collection.getIn(['card', 'text'])]),
       description: entry.getIn(['data', collection.getIn(['card', 'description'])]),
       image: entry.getIn(['data', collection.getIn(['card', 'image'])]),
+      link,
+      text: entry.get('label') ? entry.get('label') : entry.getIn(['data', collection.getIn(['card', 'text'])]),
+      onClick: history.push.bind(this, link),
+      onImageLoaded: this.updateBricks,
     });
   }
 
