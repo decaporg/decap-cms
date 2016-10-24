@@ -42,7 +42,9 @@ module.exports = {
   },
   postcss: [
     require('postcss-import')({ addDependencyTo: webpack }),
-    require('postcss-cssnext'),
+    require('postcss-cssnext')({
+      browsers: ['last 2 versions', 'IE > 10']
+    }),
   ],
   plugins: [
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/), // Ignore all optional deps of moment.js
