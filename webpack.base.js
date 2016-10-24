@@ -45,6 +45,7 @@ module.exports = {
     require('postcss-cssnext'),
   ],
   plugins: [
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/), // Ignore all optional deps of moment.js
     new webpack.ProvidePlugin({
       fetch: 'imports?this=>global!exports?global.fetch!whatwg-fetch',
     }),
