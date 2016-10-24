@@ -22,7 +22,7 @@ render((
   </AppContainer>
 ), el);
 
-if (module.hot) {
+if (process.env.NODE_ENV !== 'production' && module.hot) {
   module.hot.accept('./root', () => {
     const NextRoot = require('./root').default;
     render((
