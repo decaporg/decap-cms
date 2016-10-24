@@ -659,7 +659,7 @@ babel-plugin-transform-class-constructor-call@^6.3.13:
     babel-runtime "^6.0.0"
     babel-template "^6.8.0"
 
-babel-plugin-transform-class-properties@^6.16.0, babel-plugin-transform-class-properties@^6.5.2:
+babel-plugin-transform-class-properties@^6.16.0:
   version "6.16.0"
   resolved "https://registry.yarnpkg.com/babel-plugin-transform-class-properties/-/babel-plugin-transform-class-properties-6.16.0.tgz#969bca24d34e401d214f36b8af5c1346859bc904"
   dependencies:
@@ -889,13 +889,7 @@ babel-plugin-transform-global-system-wrapper@0.0.1:
   dependencies:
     babel-template "^6.9.0"
 
-babel-plugin-transform-object-assign@^6.5.0:
-  version "6.8.0"
-  resolved "https://registry.yarnpkg.com/babel-plugin-transform-object-assign/-/babel-plugin-transform-object-assign-6.8.0.tgz#76e17f2dc0f36f14f548b9afd7aaef58d29ebb75"
-  dependencies:
-    babel-runtime "^6.0.0"
-
-babel-plugin-transform-object-rest-spread@^6.16.0, babel-plugin-transform-object-rest-spread@^6.5.0:
+babel-plugin-transform-object-rest-spread@^6.16.0:
   version "6.16.0"
   resolved "https://registry.yarnpkg.com/babel-plugin-transform-object-rest-spread/-/babel-plugin-transform-object-rest-spread-6.16.0.tgz#db441d56fffc1999052fdebe2e2f25ebd28e36a9"
   dependencies:
@@ -1018,7 +1012,7 @@ babel-preset-stage-0@^6.5.0:
     babel-plugin-transform-function-bind "^6.3.13"
     babel-preset-stage-1 "^6.16.0"
 
-babel-preset-stage-1@^6.16.0:
+babel-preset-stage-1, babel-preset-stage-1@^6.16.0:
   version "6.16.0"
   resolved "https://registry.yarnpkg.com/babel-preset-stage-1/-/babel-preset-stage-1-6.16.0.tgz#9d31fbbdae7b17c549fd3ac93e3cf6902695e479"
   dependencies:

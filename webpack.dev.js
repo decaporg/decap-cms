@@ -22,6 +22,20 @@ module.exports = merge.smart(require('./webpack.base.js'), {
     publicPath: `http://${ HOST }:${ PORT }/`,
   },
   context: path.join(__dirname, 'src'),
+  module: {
+    loaders: [
+      {
+        loader: 'babel',
+        test: /\.js?$/,
+        exclude: /node_modules/,
+        query: {
+          plugins: [
+            'react-hot-loader/babel',
+          ],
+        },
+      },
+    ],
+  },
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {

@@ -25,25 +25,14 @@ module.exports = {
       {
         loader: 'babel',
         test: /\.js?$/,
-        exclude: /(node_modules|bower_components)/,
-        query: {
-          cacheDirectory: true,
-          presets: ['react', 'es2015'],
-          plugins: [
-            'transform-class-properties',
-            'transform-object-assign',
-            'transform-object-rest-spread',
-            'lodash',
-            'react-hot-loader/babel',
-          ],
-        },
+        exclude: /node_modules/,
       },
     ],
   },
   postcss: [
     require('postcss-import')({ addDependencyTo: webpack }),
     require('postcss-cssnext')({
-      browsers: ['last 2 versions', 'IE > 10']
+      browsers: ['last 2 versions', 'IE > 10'],
     }),
   ],
   plugins: [
