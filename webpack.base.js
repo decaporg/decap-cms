@@ -1,6 +1,7 @@
 /* eslint global-require: 0 */
 
 const webpack = require('webpack');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
   module: {
@@ -15,11 +16,11 @@ module.exports = {
       },
       {
         test: /\.scss$/,
-        loader: 'style!css?modules!sass',
+        loader: ExtractTextPlugin.extract('style', 'css?modules!sass'),
       },
       {
         test: /\.css$/,
-        loader: 'style!css?modules&importLoaders=1&&localIdentName=cms__[name]__[local]!postcss',
+        loader: ExtractTextPlugin.extract('style', 'css?modules&importLoaders=1&&localIdentName=cms__[name]__[local]!postcss'),
       },
       {
         loader: 'babel',
@@ -44,10 +45,8 @@ module.exports = {
     require('postcss-cssnext'),
   ],
   plugins: [
-    new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: JSON.stringify(process.env.NODE_ENV),
-      },
+    new webpack.ProvidePlugin({
+      fetch: 'imports?this=>global!exports?global.fetch!whatwg-fetch',
     }),
   ],
 };
