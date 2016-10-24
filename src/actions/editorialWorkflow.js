@@ -8,6 +8,7 @@ import { EDITORIAL_WORKFLOW } from '../constants/publishModes';
  */
 export const UNPUBLISHED_ENTRY_REQUEST = 'UNPUBLISHED_ENTRY_REQUEST';
 export const UNPUBLISHED_ENTRY_SUCCESS = 'UNPUBLISHED_ENTRY_SUCCESS';
+export const UNPUBLISHED_ENTRY_FAILURE = 'UNPUBLISHED_ENTRY_FAILURE';
 
 export const UNPUBLISHED_ENTRIES_REQUEST = 'UNPUBLISHED_ENTRIES_REQUEST';
 export const UNPUBLISHED_ENTRIES_SUCCESS = 'UNPUBLISHED_ENTRIES_SUCCESS';
@@ -19,7 +20,6 @@ export const UNPUBLISHED_ENTRY_PERSIST_SUCCESS = 'UNPUBLISHED_ENTRY_PERSIST_SUCC
 export const UNPUBLISHED_ENTRY_STATUS_CHANGE_REQUEST = 'UNPUBLISHED_ENTRY_STATUS_CHANGE_REQUEST';
 export const UNPUBLISHED_ENTRY_STATUS_CHANGE_SUCCESS = 'UNPUBLISHED_ENTRY_STATUS_CHANGE_SUCCESS';
 export const UNPUBLISHED_ENTRY_STATUS_CHANGE_FAILURE = 'UNPUBLISHED_ENTRY_STATUS_CHANGE_FAILURE';
-
 
 export const UNPUBLISHED_ENTRY_PUBLISH_REQUEST = 'UNPUBLISHED_ENTRY_PUBLISH_REQUEST';
 export const UNPUBLISHED_ENTRY_PUBLISH_SUCCESS = 'UNPUBLISHED_ENTRY_PUBLISH_SUCCESS';
@@ -42,6 +42,15 @@ function unpublishedEntryLoaded(status, entry) {
     payload: { status, entry },
   };
 }
+
+function unpublishedEntryFailed(error) {
+  return {
+    type: UNPUBLISHED_ENTRY_FAILURE,
+    error: 'Failed to load entry',
+    payload: error.toString(),
+  };
+}
+
 
 function unpublishedEntriesLoading() {
   return {
@@ -66,7 +75,6 @@ function unpublishedEntriesFailed(error) {
     payload: error.toString(),
   };
 }
-
 
 function unpublishedEntryPersisting(entry) {
   return {
@@ -147,7 +155,8 @@ export function loadUnpublishedEntry(collection, status, slug) {
     const backend = currentBackend(state.config);
     dispatch(unpublishedEntryLoading(status, slug));
     backend.unpublishedEntry(collection, slug)
-      .then(entry => dispatch(unpublishedEntryLoaded(status, entry)));
+      .then(entry => dispatch(unpublishedEntryLoaded(status, entry)))
+      .catch(error => dispatch(unpublishedEntryFailed(error)));
   };
 }
 
@@ -186,12 +195,12 @@ export function updateUnpublishedEntryStatus(collection, slug, oldStatus, newSta
     const transactionID = uuid.v4();
     dispatch(unpublishedEntryStatusChangeRequest(collection, slug, oldStatus, newStatus, transactionID));
     backend.updateUnpublishedEntryStatus(collection, slug, newStatus)
-    .then(() => {
-      dispatch(unpublishedEntryStatusChangePersisted(collection, slug, oldStatus, newStatus, transactionID));
-    })
-    .catch(() => {
-      dispatch(unpublishedEntryStatusChangeError(collection, slug, transactionID));
-    });
+      .then(() => {
+        dispatch(unpublishedEntryStatusChangePersisted(collection, slug, oldStatus, newStatus, transactionID));
+      })
+      .catch(() => {
+        dispatch(unpublishedEntryStatusChangeError(collection, slug, transactionID));
+      });
   };
 }
 
@@ -202,11 +211,11 @@ export function publishUnpublishedEntry(collection, slug, status) {
     const transactionID = uuid.v4();
     dispatch(unpublishedEntryPublishRequest(collection, slug, status, transactionID));
     backend.publishUnpublishedEntry(collection, slug, status)
-    .then(() => {
-      dispatch(unpublishedEntryPublished(collection, slug, status, transactionID));
-    })
-    .catch(() => {
-      dispatch(unpublishedEntryPublishError(collection, slug, transactionID));
-    });
+      .then(() => {
+        dispatch(unpublishedEntryPublished(collection, slug, status, transactionID));
+      })
+      .catch(() => {
+        dispatch(unpublishedEntryPublishError(collection, slug, transactionID));
+      });
   };
 }
