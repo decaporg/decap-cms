@@ -1,0 +1,16 @@
+.Toolbar {
+  position: absolute;
+  z-index: 1000;
+  display: none;  
+  margin: none;
+  padding: none;
+  list-style: none;
+}
+
+.Button {
+  display: inline-block;
+}
+
+.Visible {
+  display: block;
+}

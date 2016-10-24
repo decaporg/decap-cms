@@ -93,6 +93,7 @@
     "@kadira/storybook": "^1.36.0",
     "autoprefixer": "^6.3.3",
     "bricks.js": "^1.7.0",
+    "textarea-caret-position": "^0.1.1",
     "dateformat": "^1.0.12",
     "fuzzy": "^0.1.1",
     "immutability-helper": "^2.0.0",

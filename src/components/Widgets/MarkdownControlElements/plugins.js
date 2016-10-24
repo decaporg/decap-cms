@@ -1,5 +1,5 @@
 import { Component, PropTypes, Children } from 'react';
-import { List, Record } from 'immutable';
+import { List, Record, fromJS } from 'immutable';
 import _ from 'lodash';
 
 const plugins = { editor: List() };
@@ -11,23 +11,23 @@ const EditorComponent = Record({
   icon: 'exclamation-triangle',
   fields: [],
   pattern: catchesNothing,
-  fromBlock: function(match) { return {}; },
-  toBlock: function(attributes) { return 'Plugin'; },
-  toPreview: function(attributes) { return 'Plugin'; }
+  fromBlock(match) { return {}; },
+  toBlock(attributes) { return 'Plugin'; },
+  toPreview(attributes) { return 'Plugin'; },
 });
 
 
 class Plugin extends Component { // eslint-disable-line
   static propTypes = {
-    children: PropTypes.element.isRequired
+    children: PropTypes.element.isRequired,
   };
 
   static childContextTypes = {
-    plugins: PropTypes.object
+    plugins: PropTypes.object,
   };
 
   getChildContext() {
-    return { plugins: plugins };
+    return { plugins };
   }
 
   render() {
@@ -40,11 +40,11 @@ export function newEditorPlugin(config) {
     id: config.id || config.label.replace(/[^A-Z0-9]+/ig, '_'),
     label: config.label,
     icon: config.icon,
-    fields: config.fields,
+    fields: fromJS(config.fields),
     pattern: config.pattern,
     fromBlock: _.isFunction(config.fromBlock) ? config.fromBlock.bind(null) : null,
     toBlock: _.isFunction(config.toBlock) ? config.toBlock.bind(null) : null,
-    toPreview: _.isFunction(config.toPreview) ? config.toPreview.bind(null) : config.toBlock.bind(null)
+    toPreview: _.isFunction(config.toPreview) ? config.toPreview.bind(null) : config.toBlock.bind(null),
   });
 
 
