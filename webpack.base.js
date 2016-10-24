@@ -50,4 +50,5 @@ module.exports = {
       fetch: 'imports?this=>global!exports?global.fetch!whatwg-fetch',
     }),
   ],
+  target: 'web', // Make web variables accessible to webpack, e.g. window
 };
