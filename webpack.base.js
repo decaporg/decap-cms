@@ -8,7 +8,7 @@ module.exports = {
     loaders: [
       {
         test: /\.(png|eot|woff|woff2|ttf|svg|gif)(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'url-loader?limit=100000',
+        loader: 'url-loader?limit=10000',
       },
       {
         test: /\.json$/,
