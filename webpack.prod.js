@@ -28,6 +28,7 @@ module.exports = merge.smart(require('./webpack.base.js'), {
       },
     }),
     new webpack.optimize.OccurenceOrderPlugin(),
+
     // Minify and optimize the JavaScript
     new webpack.optimize.UglifyJsPlugin({
       compress: {
@@ -35,6 +36,14 @@ module.exports = merge.smart(require('./webpack.base.js'), {
         warnings: false,
       },
     }),
+
+    // Extract CSS
     new ExtractTextPlugin('[name].css', { allChunks: true }),
+
+    // Automatically extract all 3rd party modules into a separate 'vendor' chunk
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendor',
+      minChunks: ({ resource }) => /node_modules/.test(resource),
+    }),
   ],
 });
