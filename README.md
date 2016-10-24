@@ -43,7 +43,7 @@ your public directory and use this `index.html` as a template:
 </html>
 ```
 
-> Note: Unpkg is a CDN for javascript modules, and it let's you point to semantic versions of files (so backwards-compatible bug fixes will loaded as soon as they're made available).
+> Note: Unpkg is a CDN for javascript modules, and it let's you point to semantic versions of files using prefix characters (so backwards-compatible bug fixes will loaded as soon as they're made available).
 
 
 Add a `config.yml` file to the `/admin` folder and configure your content model:
