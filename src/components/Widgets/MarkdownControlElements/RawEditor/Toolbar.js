@@ -1,9 +1,12 @@
 import React, { Component, PropTypes } from 'react';
+import { Icon } from '../../../UI';
 import styles from './Toolbar.css';
 
-function button(label, action) {
+function button(label, icon, action) {
   return (<li className={styles.Button}>
-    <button className={styles[label]} onClick={action}>{label}</button>
+    <button className={styles[label]} onClick={action} title={label}>
+      <Icon type={icon} />
+    </button>
   </li>);
 }
 
@@ -45,9 +48,9 @@ export default class Toolbar extends Component {
 
     return (
       <ul className={classNames.join(' ')} ref={this.handleRef}>
-        {button('Bold', onBold)}
-        {button('Italic', onItalic)}
-        {button('Link', onLink)}
+        {button('Bold', 'bold', onBold)}
+        {button('Italic', 'italic', onItalic)}
+        {button('Link', 'link', onLink)}
       </ul>
     );
   }
