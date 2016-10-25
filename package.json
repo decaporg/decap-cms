@@ -135,5 +135,8 @@
     "slate-drop-or-paste-images": "^0.2.0",
     "uuid": "^2.0.3",
     "whatwg-fetch": "^1.0.0"
+  },
+  "optionalDependencies": {
+    "fsevents": "^1.0.14"
   }
 }
