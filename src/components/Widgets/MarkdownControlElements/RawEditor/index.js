@@ -127,6 +127,31 @@ export default class RawEditor extends React.Component {
     this.props.onChange(beforeSelection + chars + afterSelection);
   }
 
+  toggleHeader(header) {
+    const { value } = this.props;
+    const selection = this.getSelection();
+    const newSelection = Object.assign({}, selection);
+    const lastNewline = value.lastIndexOf('\n', selection.start);
+    const currentMatch = value.substr(lastNewline + 1).match(/^(#+)\s/);
+    const beforeHeader = value.substr(0, lastNewline + 1);
+    let afterHeader;
+    let chars;
+    if (currentMatch) {
+      afterHeader = value.substr(lastNewline + 1 + currentMatch[0].length);
+      chars = currentMatch[1] === header ? '' : `${ header } `;
+      const diff = chars.length - currentMatch[0].length;
+      newSelection.start += diff;
+      newSelection.end += diff;
+    } else {
+      afterHeader = value.substr(lastNewline + 1);
+      chars = `${ header } `;
+      newSelection.start += header.length + 1;
+      newSelection.end += header.length + 1;
+    }
+    this.newSelection = newSelection;
+    this.props.onChange(beforeHeader + chars + afterHeader);
+  }
+
   updateHeight() {
     if (this.element.scrollHeight > this.element.clientHeight) {
       this.element.style.height = `${ this.element.scrollHeight }px`;
@@ -206,6 +231,12 @@ export default class RawEditor extends React.Component {
     this.setState({ showBlockMenu: false });
   };
 
+  handleHeader(header) {
+    return () => {
+      this.toggleHeader(header);
+    };
+  }
+
   handleDrop = (e) => {
     e.preventDefault();
     let data;
@@ -233,6 +264,8 @@ export default class RawEditor extends React.Component {
       <Toolbar
         isOpen={showToolbar}
         selectionPosition={selectionPosition}
+        onH1={this.handleHeader('#')}
+        onH2={this.handleHeader('##')}
         onBold={this.handleBold}
         onItalic={this.handleItalic}
         onLink={this.handleLink}

@@ -13,6 +13,7 @@
 
   & button {
     padding: 5px;
+    border: none;
     border-right: 1px solid #eee;
     background: #fff;
   }

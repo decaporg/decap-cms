@@ -14,6 +14,8 @@ export default class Toolbar extends Component {
   static propTypes = {
     isOpen: PropTypes.bool,
     selectionPosition: PropTypes.object,
+    onH1: PropTypes.func.isRequired,
+    onH2: PropTypes.func.isRequired,
     onBold: PropTypes.func.isRequired,
     onItalic: PropTypes.func.isRequired,
     onLink: PropTypes.func.isRequired,
@@ -39,7 +41,7 @@ export default class Toolbar extends Component {
   };
 
   render() {
-    const { isOpen, onBold, onItalic, onLink } = this.props;
+    const { isOpen, onH1, onH2, onBold, onItalic, onLink } = this.props;
     const classNames = [styles.Toolbar];
 
     if (isOpen) {
@@ -48,6 +50,8 @@ export default class Toolbar extends Component {
 
     return (
       <ul className={classNames.join(' ')} ref={this.handleRef}>
+        {button('Header 1', 'h1', onH1)}
+        {button('Header 2', 'h2', onH2)}
         {button('Bold', 'bold', onBold)}
         {button('Italic', 'italic', onItalic)}
         {button('Link', 'link', onLink)}
