@@ -6,9 +6,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = merge.smart(require('./webpack.base.js'), {
   entry: {
-    cms: [
-      './index',
-    ],
+    cms: './index',
   },
   output: {
     path: path.join(__dirname, 'dist'),
@@ -17,25 +15,35 @@ module.exports = merge.smart(require('./webpack.base.js'), {
   module: {
     loaders: [
       {
-        test: /\.scss$/,
-        loader: ExtractTextPlugin.extract('style', 'css?modules!sass'),
-      },
-      {
         test: /\.css$/,
-        loader: ExtractTextPlugin.extract('style', 'css?modules&importLoaders=1&&localIdentName=cms__[name]__[local]!postcss'),
+        loader: ExtractTextPlugin.extract('style', 'css?modules&importLoaders=1!postcss'), // Use minified class names on production
       },
     ],
   },
   context: path.join(__dirname, 'src'),
   plugins: [
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
-    }),
-    new webpack.ProvidePlugin({
-      'fetch': 'imports?this=>global!exports?global.fetch!whatwg-fetch'
+      'process.env': {
+        NODE_ENV: JSON.stringify('production'),
+      },
     }),
     new webpack.optimize.OccurenceOrderPlugin(),
-    new webpack.optimize.UglifyJsPlugin(),
+
+    // Minify and optimize the JavaScript
+    new webpack.optimize.UglifyJsPlugin({
+      compress: {
+        // ...but do not show warnings in the console (there is a lot of them)
+        warnings: false,
+      },
+    }),
+
+    // Extract CSS
     new ExtractTextPlugin('[name].css', { allChunks: true }),
+
+    // Automatically extract all 3rd party modules into a separate 'vendor' chunk
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendor',
+      minChunks: ({ resource }) => /node_modules/.test(resource),
+    }),
   ],
 });
