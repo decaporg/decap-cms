@@ -102,9 +102,9 @@ export default class GitHub {
 
   unpublishedEntry(collection, slug) {
     return this.unpublishedEntries().then(response => (
-      response.entries.filter(entry => (
-        entry.metaData && entry.metaData.collection === collection.get('name') && entry.slug === slug
-      ))[0]
+      response.entries.filter((entry) => {
+        return entry.metaData && entry.slug === slug;
+      })[0]
     ));
   }
 

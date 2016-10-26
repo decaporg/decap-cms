@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 export default function EntryPageHOC(EntryPage) {
   class EntryPageHOC extends React.Component {
     render() {
-      return <EntryPage {...this.props}/>;
+      return <EntryPage {...this.props} />;
     }
   }
 
@@ -20,7 +20,7 @@ export default function EntryPageHOC(EntryPage) {
     if (isEditorialWorkflow && unpublishedEntry) {
       const status = ownProps.params.status;
       const slug = ownProps.params.slug;
-      const entry =  selectUnpublishedEntry(state, status, slug);
+      const entry = selectUnpublishedEntry(state, status, slug);
       returnObj.entry = entry;
     }
     return returnObj;
@@ -32,7 +32,7 @@ export default function EntryPageHOC(EntryPage) {
     if (unpublishedEntry) {
       // Overwrite loadEntry to loadUnpublishedEntry
       const status = ownProps.params.status;
-      returnObj.loadEntry = (collection, slug) => {
+      returnObj.loadEntry = (entry, collection, slug) => {
         dispatch(loadUnpublishedEntry(collection, status, slug));
       };
 

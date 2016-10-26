@@ -202,13 +202,13 @@ export default class API {
   }
 
   editorialWorkflowGit(fileTree, entry, filesList, options) {
-    const contentKey = options.collectionName ? `${ options.collectionName }-${ entry.slug }` : entry.slug;
+    const contentKey = entry.slug;
     const branchName = `cms/${ contentKey }`;
     const unpublished = options.unpublished || false;
 
     if (!unpublished) {
       // Open new editorial review workflow for this entry - Create new metadata and commit to new branch
-      const contentKey = options.collectionName ? `${ options.collectionName }-${ entry.slug }` : entry.slug;
+      const contentKey = entry.slug;
       const branchName = `cms/${ contentKey }`;
 
       return this.getBranch()
@@ -245,7 +245,7 @@ export default class API {
       .then(branchData => this.updateTree(branchData.commit.sha, '/', fileTree))
       .then(changeTree => this.commit(options.commitMessage, changeTree))
       .then((response) => {
-        const contentKey = options.collectionName ? `${ options.collectionName }-${ entry.slug }` : entry.slug;
+        const contentKey = entry.slug;
         const branchName = `cms/${ contentKey }`;
         return this.user().then((user) => {
           return user.name ? user.name : user.login;
