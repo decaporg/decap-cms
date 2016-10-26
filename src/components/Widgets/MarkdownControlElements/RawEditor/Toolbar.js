@@ -1,9 +1,12 @@
 import React, { Component, PropTypes } from 'react';
+import { Icon } from '../../../UI';
 import styles from './Toolbar.css';
 
-function button(label, action) {
+function button(label, icon, action) {
   return (<li className={styles.Button}>
-    <button className={styles[label]} onClick={action}>{label}</button>
+    <button className={styles[label]} onClick={action} title={label}>
+      <Icon type={icon} />
+    </button>
   </li>);
 }
 
@@ -11,6 +14,8 @@ export default class Toolbar extends Component {
   static propTypes = {
     isOpen: PropTypes.bool,
     selectionPosition: PropTypes.object,
+    onH1: PropTypes.func.isRequired,
+    onH2: PropTypes.func.isRequired,
     onBold: PropTypes.func.isRequired,
     onItalic: PropTypes.func.isRequired,
     onLink: PropTypes.func.isRequired,
@@ -36,7 +41,7 @@ export default class Toolbar extends Component {
   };
 
   render() {
-    const { isOpen, onBold, onItalic, onLink } = this.props;
+    const { isOpen, onH1, onH2, onBold, onItalic, onLink } = this.props;
     const classNames = [styles.Toolbar];
 
     if (isOpen) {
@@ -45,9 +50,11 @@ export default class Toolbar extends Component {
 
     return (
       <ul className={classNames.join(' ')} ref={this.handleRef}>
-        {button('Bold', onBold)}
-        {button('Italic', onItalic)}
-        {button('Link', onLink)}
+        {button('Header 1', 'h1', onH1)}
+        {button('Header 2', 'h2', onH2)}
+        {button('Bold', 'bold', onBold)}
+        {button('Italic', 'italic', onItalic)}
+        {button('Link', 'link', onLink)}
       </ul>
     );
   }

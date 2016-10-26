@@ -1,5 +1,8 @@
 import React, { PropTypes } from 'react';
 import { fromJS } from 'immutable';
+import MarkupIt from 'markup-it';
+import markdownSyntax from 'markup-it/syntaxes/markdown';
+import htmlSyntax from 'markup-it/syntaxes/html';
 import CaretPosition from 'textarea-caret-position';
 import registry from '../../../../lib/registry';
 import MediaProxy from '../../../../valueObjects/MediaProxy';
@@ -8,6 +11,9 @@ import BlockMenu from './BlockMenu';
 import styles from './index.css';
 
 const HAS_LINE_BREAK = /\n/m;
+
+const markdown = new MarkupIt(markdownSyntax);
+const html = new MarkupIt(htmlSyntax);
 
 function processUrl(url) {
   if (url.match(/^(https?:\/\/|mailto:|\/)/)) {
@@ -21,6 +27,42 @@ function processUrl(url) {
 
 function preventDefault(e) {
   e.preventDefault();
+}
+
+function cleanupPaste(paste) {
+  const content = html.toContent(paste);
+  return markdown.toText(content);
+}
+
+function getCleanPaste(e) {
+  const transfer = e.clipboardData;
+  return new Promise((resolve) => {
+    const isHTML = !!Array.from(transfer.types).find(type => type === 'text/html');
+
+    if (isHTML) {
+      const data = transfer.getData('text/html');
+      // Avoid trying to clean up full HTML documents with head/body/etc
+      if (!data.match(/^\s*<!doctype/i)) {
+        e.preventDefault();
+        resolve(cleanupPaste(data));
+      } else {
+        // Handle complex pastes by stealing focus with a contenteditable div
+        const div = document.createElement('div');
+        div.contentEditable = true;
+        div.setAttribute('style', 'opacity: 0; overflow: hidden; width: 1px; height: 1px; position: fixed; top: 50%; left: 0;');
+        document.body.appendChild(div);
+        div.focus();
+        setTimeout(() => {
+          resolve(cleanupPaste(div.innerHTML));
+          document.body.removeChild(div);
+        }, 50);
+        return null;
+      }
+    }
+
+    e.preventDefault();
+    return resolve(transfer.getData(transfer.types[0]));
+  });
 }
 
 const buildtInPlugins = fromJS([{
@@ -64,6 +106,7 @@ export default class RawEditor extends React.Component {
     this.element.addEventListener('dragenter', preventDefault, false);
     this.element.addEventListener('dragover', preventDefault, false);
     this.element.addEventListener('drop', this.handleDrop, false);
+    this.element.addEventListener('paste', this.handlePaste, false);
   }
 
   componentDidUpdate() {
@@ -125,6 +168,31 @@ export default class RawEditor extends React.Component {
     newSelection.end = selection.start + chars.length;
     this.newSelection = newSelection;
     this.props.onChange(beforeSelection + chars + afterSelection);
+  }
+
+  toggleHeader(header) {
+    const { value } = this.props;
+    const selection = this.getSelection();
+    const newSelection = Object.assign({}, selection);
+    const lastNewline = value.lastIndexOf('\n', selection.start);
+    const currentMatch = value.substr(lastNewline + 1).match(/^(#+)\s/);
+    const beforeHeader = value.substr(0, lastNewline + 1);
+    let afterHeader;
+    let chars;
+    if (currentMatch) {
+      afterHeader = value.substr(lastNewline + 1 + currentMatch[0].length);
+      chars = currentMatch[1] === header ? '' : `${ header } `;
+      const diff = chars.length - currentMatch[0].length;
+      newSelection.start += diff;
+      newSelection.end += diff;
+    } else {
+      afterHeader = value.substr(lastNewline + 1);
+      chars = `${ header } `;
+      newSelection.start += header.length + 1;
+      newSelection.end += header.length + 1;
+    }
+    this.newSelection = newSelection;
+    this.props.onChange(beforeHeader + chars + afterHeader);
   }
 
   updateHeight() {
@@ -206,6 +274,12 @@ export default class RawEditor extends React.Component {
     this.setState({ showBlockMenu: false });
   };
 
+  handleHeader(header) {
+    return () => {
+      this.toggleHeader(header);
+    };
+  }
+
   handleDrop = (e) => {
     e.preventDefault();
     let data;
@@ -226,6 +300,20 @@ export default class RawEditor extends React.Component {
     this.replaceSelection(data);
   };
 
+  handlePaste = (e) => {
+    const { value, onChange } = this.props;
+    const selection = this.getSelection();
+    const beforeSelection = value.substr(0, selection.start);
+    const afterSelection = value.substr(selection.end);
+
+    getCleanPaste(e).then((paste) => {
+      const newSelection = Object.assign({}, selection);
+      newSelection.start = newSelection.end = beforeSelection.length + paste.length;
+      this.newSelection = newSelection;
+      onChange(beforeSelection + paste + afterSelection);
+    });
+  }
+
   render() {
     const { onAddMedia, onRemoveMedia, getMedia } = this.props;
     const { showToolbar, showBlockMenu, plugins, selectionPosition } = this.state;
@@ -233,6 +321,8 @@ export default class RawEditor extends React.Component {
       <Toolbar
         isOpen={showToolbar}
         selectionPosition={selectionPosition}
+        onH1={this.handleHeader('#')}
+        onH2={this.handleHeader('##')}
         onBold={this.handleBold}
         onItalic={this.handleItalic}
         onLink={this.handleLink}
