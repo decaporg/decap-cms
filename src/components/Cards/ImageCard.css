@@ -1,18 +1,4 @@
 .root {
+  width: 240px;
   cursor: pointer;
-}
-
-.root h1 {
-  font-size: 17px;
-}
-
-.root h2 {
-  font-weight: 400;
-  font-size: 15px;
-}
-
-.root p {
-  color: #555;
-  font-size: 14px;
-  margin-top: 5px;
 }

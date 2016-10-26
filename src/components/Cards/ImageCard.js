@@ -1,31 +1,51 @@
 import React, { PropTypes } from 'react';
-import { Card } from '../UI';
+import { Card, CardMedia, CardTitle, CardText } from 'react-toolbox/lib/card';
 import styles from './ImageCard.css';
 
-export default class ImageCard extends React.Component {
-
-  render() {
-    const { onClick, onImageLoaded, image, text, description } = this.props;
-    return (
-      <Card onClick={onClick} className={styles.root}>
-        <img src={image} onLoad={onImageLoaded} />
-        <h2>{text}</h2>
-
-        {description ? <p>{description}</p> : null}
-      </Card>
-    );
-  }
-}
+const ImageCard = (
+  {
+    author,
+    description,
+    image,
+    text,
+    onClick,
+    onImageLoaded,
+  }) => (
+    <Card
+      onClick={onClick}
+      className={styles.root}
+    >
+      <CardTitle
+        title={text}
+        subtitle={`by ${ author }`}
+      />
+      {
+      image && <CardMedia aspectRatio="wide">
+        <img
+          src={image}
+          alt={text}
+          onLoad={onImageLoaded}
+        />
+      </CardMedia>
+    }
+      { description && <CardText>{ description }</CardText> }
+    </Card>
+);
 
 ImageCard.propTypes = {
+  author: PropTypes.string,
   image: PropTypes.string,
   onClick: PropTypes.func,
   onImageLoaded: PropTypes.func,
   text: PropTypes.string.isRequired,
-  description: PropTypes.string
+  description: PropTypes.string,
 };
 
 ImageCard.defaultProps = {
-  onClick: function() {},
-  onImageLoaded: function() {}
+  onClick: () => {
+  },
+  onImageLoaded: () => {
+  },
 };
+
+export default ImageCard;

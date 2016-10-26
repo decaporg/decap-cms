@@ -1,54 +1,34 @@
+:root {
+  --highlightColor: #e1eeea;
+  --defaultFontSize: 1em;
+}
+
 .container {
-  display: table;
-  width: 100%;
+  display: flex;
+  justify-content: space-between;
 }
 
 .column {
-  display: table-cell;
-  text-align: center;
-  width: 33%;
-  height: 100%;
+  flex: 1 33%;
+  margin: -10px;
+  padding: 10px;
+  max-width: 33%;
   transition: background-color .5s ease;
-  & h2 {
-    font-size: 16px;
-  }
 }
 
-.highlighted {
-  background-color: #e1eeea;
+.columnHovered {
+  composes: column;
+  background-color: var(--highlightColor);
 }
 
-.column:not(:last-child) {
-  padding-right: 20px;
+.columnHeading {
+  font-size: var(--defaultFontSize);
+}
+
+.draggable {
+  cursor: move;
 }
 
 .card {
-  width: 100% !important;
-  margin: 7px 0 0 10px;
-  padding: 7px 0;
-}
-
-.cardHeading {
-  font-size: 17px;
-  & small {
-    font-weight: normal;
-  }
-}
-
-.cardText {
-  color: #555;
-  font-size: 12px;
-  margin-top: 5px;
-}
-
-.button {
-  margin: 10px 10px 0 0;
-  float: right;
-}
-
-
-.clear::after {
-    content:"";
-    display:block;
-    clear:both;
+  margin-bottom: 10px;
 }
