@@ -87,19 +87,18 @@ class Backend {
 
   // We have the file path. Fetch and parse the file.
   getEntry(collection, slug, path) {
-    return this.implementation.getEntry(collection, slug, path).then(this.entryWithFormat(collection));
-  }
-
-  lookupEntry(collection, slug) {
-    const collectionModel = new Collection(collection);
-    return this.implementation.getEntry(collection, slug, collectionModel.entryPath(slug))
-      .then(loadedEntry => this.entryWithFormat(collection)(createEntry(
+    return this.implementation.getEntry(collection, slug, path)
+      .then(loadedEntry => this.entryWithFormat(collection, slug)(createEntry(
         collection.get('name'),
         slug,
         loadedEntry.file.path,
         { raw: loadedEntry.data, label: loadedEntry.file.label }
       ))
     );
+  }
+
+  lookupEntry(collection, slug) {
+    return this.getEntry(collection, slug, new Collection(collection).entryPath(slug));
   }
 
   newEntry(collection) {

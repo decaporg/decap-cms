@@ -36,7 +36,7 @@ collections: # A list of collections the CMS should be able to edit
         file: "_data/settings.json"
         description: "General Site Settings"
         fields:
-          - {label: "Global title", name: site_title, widget: "string"}
+          - {label: "Global title", name: "site_title", widget: "string"}
 
       - name: "authors"
         label: "Authors"
