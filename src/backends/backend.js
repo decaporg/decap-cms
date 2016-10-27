@@ -4,7 +4,6 @@ import NetlifyGitBackend from './netlify-git/implementation';
 import { resolveFormat } from '../formats/formats';
 import { createEntry } from '../valueObjects/Entry';
 import Collection from '../valueObjects/Collection';
-import { FILES, FOLDER } from '../constants/collectionTypes';
 
 class LocalStorageAuthStore {
   storageKey = 'nf-cms-user';
@@ -43,7 +42,7 @@ class Backend {
     this.implementation = implementation;
     this.authStore = authStore;
     if (this.implementation === null) {
-      throw 'Cannot instantiate a Backend with no implementation';
+      throw new Error('Cannot instantiate a Backend with no implementation');
     }
   }
 
@@ -94,13 +93,12 @@ class Backend {
   lookupEntry(collection, slug) {
     const collectionModel = new Collection(collection);
     return this.implementation.getEntry(collection, slug, collectionModel.entryPath(slug))
-      .then(loadedEntry => {
-        return this.entryWithFormat(collection)(createEntry(
+      .then(loadedEntry => this.entryWithFormat(collection)(createEntry(
         collection.get('name'),
         slug,
         loadedEntry.file.path,
         { raw: loadedEntry.data, label: loadedEntry.file.label }
-      ))}
+      ))
     );
   }
 
@@ -112,21 +110,17 @@ class Backend {
     return (entry) => {
       const format = resolveFormat(collectionOrEntity, entry);
       if (entry && entry.raw) {
-        entry.data = format && format.fromFile(entry.raw);
-        return entry;
-      } else {
-        return format.fromFile(entry);
+        return Object.assign(entry, { data: format && format.fromFile(entry.raw) });
       }
+      return format.fromFile(entry);
     };
   }
 
   unpublishedEntries(page, perPage) {
-    return this.implementation.unpublishedEntries(page, perPage).then((response) => {
-      return {
-        pagination: response.pagination,
-        entries: response.entries.map(this.entryWithFormat('editorialWorkflow')),
-      };
-    });
+    return this.implementation.unpublishedEntries(page, perPage).then(response => ({
+      pagination: response.pagination,
+      entries: response.entries.map(this.entryWithFormat('editorialWorkflow')),
+    }));
   }
 
   unpublishedEntry(collection, slug) {
@@ -146,7 +140,7 @@ class Backend {
     let entryObj;
     if (newEntry) {
       if (!collectionModel.allowNewEntries()) {
-        throw ('Not allowed to create new entries in this collection');
+        throw (new Error('Not allowed to create new entries in this collection'));
       }
       const slug = slugFormatter(collection.get('slug'), entryDraft.getIn(['entry', 'data']));
       entryObj = {
@@ -197,7 +191,7 @@ class Backend {
 export function resolveBackend(config) {
   const name = config.getIn(['backend', 'name']);
   if (name == null) {
-    throw 'No backend defined in configuration';
+    throw new Error('No backend defined in configuration');
   }
 
   const authStore = new LocalStorageAuthStore();
@@ -210,7 +204,7 @@ export function resolveBackend(config) {
     case 'netlify-git':
       return new Backend(new NetlifyGitBackend(config, slugFormatter), authStore);
     default:
-      throw `Backend not found: ${ name }`;
+      throw new Error(`Backend not found: ${ name }`);
   }
 }
 
