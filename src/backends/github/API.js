@@ -154,7 +154,7 @@ export default class API {
       metaData = data;
       return this.readFile(data.objects.entry, null, data.branch);
     })
-    .then(file => ({ metaData, file }))
+    .then(fileData => ({ metaData, fileData }))
     .catch((error) => {
       return null;
     });

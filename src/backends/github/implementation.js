@@ -79,16 +79,19 @@ export default class GitHub {
       const promises = [];
       branches.map((branch) => {
         promises.push(new Promise((resolve, reject) => {
-          const contentKey = branch.ref.split('refs/heads/cms/').pop();
-          return sem.take(() => this.api.readUnpublishedBranchFile(contentKey).then((data) => {
+          const slug = branch.ref.split('refs/heads/cms/').pop();
+          return sem.take(() => this.api.readUnpublishedBranchFile(slug).then((data) => {
             if (data === null || data === undefined) {
               resolve(null);
               sem.leave();
             } else {
-              const entryPath = data.metaData.objects.entry;
-              const entry = createEntry('draft', contentKey, entryPath, { raw: data.file });
-              entry.metaData = data.metaData;
-              resolve(entry);
+              const path = data.metaData.objects.entry;
+              resolve({
+                slug,
+                file: { path },
+                data: data.fileData,
+                metaData: data.metaData,
+              });
               sem.leave();
             }
           }).catch((err) => {
@@ -98,18 +101,12 @@ export default class GitHub {
         }));
       });
       return Promise.all(promises);
-    }).then((entries) => {
-      const filteredEntries = entries.filter(entry => entry !== null);
-      return {
-        pagination: 0,
-        entries: filteredEntries,
-      };
-    });
+    })
   }
 
   unpublishedEntry(collection, slug) {
     return this.unpublishedEntries().then(response => (
-      response.entries.filter((entry) => {
+      response.filter((entry) => {
         return entry.metaData && entry.slug === slug;
       })[0]
     ));

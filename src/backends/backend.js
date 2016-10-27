@@ -85,7 +85,6 @@ class Backend {
       ));
   }
 
-  // We have the file path. Fetch and parse the file.
   getEntry(collection, slug) {
     return this.implementation.getEntry(collection, slug, new Collection(collection).entryPath(slug))
       .then(loadedEntry => this.entryWithFormat(collection, slug)(createEntry(
@@ -112,14 +111,31 @@ class Backend {
   }
 
   unpublishedEntries(page, perPage) {
-    return this.implementation.unpublishedEntries(page, perPage).then(response => ({
-      pagination: response.pagination,
-      entries: response.entries.map(this.entryWithFormat('editorialWorkflow')),
-    }));
+    return this.implementation.unpublishedEntries(page, perPage)
+    .then(loadedEntries => (
+      loadedEntries.map((loadedEntry) => {
+        const entry = createEntry('draft', loadedEntry.slug, loadedEntry.file.path, { raw: loadedEntry.data })
+        entry.metaData = loadedEntry.metaData;
+        return entry;
+      })
+    ))
+    .then((entries) => {
+      const filteredEntries = entries.filter(entry => entry !== null);
+      return {
+        pagination: 0,
+        entries: filteredEntries.map(this.entryWithFormat('editorialWorkflow')),
+      };
+    });
   }
 
   unpublishedEntry(collection, slug) {
-    return this.implementation.unpublishedEntry(collection, slug).then(this.entryWithFormat(collection));
+    return this.implementation.unpublishedEntry(collection, slug)
+    .then(loadedEntry => this.entryWithFormat(collection, slug)(createEntry(
+      collection.get('name'),
+      slug,
+      loadedEntry.file.path,
+      { raw: loadedEntry.data }
+    )));
   }
 
   persistEntry(config, collection, entryDraft, MediaFiles, options) {
