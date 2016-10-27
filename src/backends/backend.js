@@ -3,6 +3,7 @@ import GitHubBackend from './github/implementation';
 import NetlifyGitBackend from './netlify-git/implementation';
 import { resolveFormat } from '../formats/formats';
 import { createEntry } from '../valueObjects/Entry';
+import Collection from '../valueObjects/Collection';
 import { FILES, FOLDER } from '../constants/collectionTypes';
 
 class LocalStorageAuthStore {
@@ -67,30 +68,22 @@ class Backend {
   }
 
   listEntries(collection) {
-    const type = collection.get('type');
-    if (type === FOLDER) {
-      return this.implementation.entriesByFolder(collection)
+    const collectionModel = new Collection(collection);
+    const listMethod = this.implementation[collectionModel.listMethod()];
+    return listMethod.call(this.implementation, collection)
       .then(loadedEntries => (
-        loadedEntries.map(loadedEntry => createEntry(collection.get('name'), loadedEntry.file.path.split('/').pop().replace(/\.[^\.]+$/, ''), loadedEntry.file.path, { raw: loadedEntry.data }))
+        loadedEntries.map(loadedEntry => createEntry(
+          collection.get('name'),
+          collectionModel.entrySlug(loadedEntry.file.path),
+          loadedEntry.file.path,
+          { raw: loadedEntry.data, label: loadedEntry.file.label }
+        ))
       ))
       .then(entries => (
         {
           entries: entries.map(this.entryWithFormat(collection)),
         }
       ));
-    } else if (type === FILES) {
-      const collectionFiles = collection.get('files').map(collectionFile => ({ path: collectionFile.get('file'), label: collectionFile.get('label') }));
-      return this.implementation.entriesByFiles(collection, collectionFiles)
-      .then(loadedEntries => (
-        loadedEntries.map(loadedEntry => createEntry(collection.get('name'), loadedEntry.file.path.split('/').pop().replace(/\.[^\.]+$/, ''), loadedEntry.file.path, { raw: loadedEntry.data, label: loadedEntry.file.label }))
-      ))
-      .then(entries => (
-        {
-          entries: entries.map(this.entryWithFormat(collection)),
-        }
-      ));
-    }
-    return Promise.reject(`Couldn't process collection type ${ type }`);
   }
 
   // We have the file path. Fetch and parse the file.
@@ -98,18 +91,17 @@ class Backend {
     return this.implementation.getEntry(collection, slug, path).then(this.entryWithFormat(collection));
   }
 
-  // Will fetch the whole list of files from GitHub and load each file, then looks up for entry.
-  // (Files are persisted in local storage - only expensive on the first run for each file).
   lookupEntry(collection, slug) {
-    const type = collection.get('type');
-    if (type === FOLDER) {
-      return this.implementation.entriesByFolder(collection)
-      .then(loadedEntries => (
-        loadedEntries.map(loadedEntry => createEntry(collection.get('name'), loadedEntry.file.path.split('/').pop().replace(/\.[^\.]+$/, ''), loadedEntry.file.path, { raw: loadedEntry.data }))
-      ))
-      .then(response => response.filter(entry => entry.slug === slug)[0])
-      .then(this.entryWithFormat(collection));
-    }
+    const collectionModel = new Collection(collection);
+    return this.implementation.getEntry(collection, slug, collectionModel.entryPath(slug))
+      .then(loadedEntry => {
+        return this.entryWithFormat(collection)(createEntry(
+        collection.get('name'),
+        slug,
+        loadedEntry.file.path,
+        { raw: loadedEntry.data, label: loadedEntry.file.label }
+      ))}
+    );
   }
 
   newEntry(collection) {
@@ -142,6 +134,7 @@ class Backend {
   }
 
   persistEntry(config, collection, entryDraft, MediaFiles, options) {
+    const collectionModel = new Collection(collection);
     const newEntry = entryDraft.getIn(['entry', 'newRecord']) || false;
 
     const parsedData = {
@@ -152,9 +145,12 @@ class Backend {
     const entryData = entryDraft.getIn(['entry', 'data']).toJS();
     let entryObj;
     if (newEntry) {
+      if (!collectionModel.allowNewEntries()) {
+        throw ('Not allowed to create new entries in this collection');
+      }
       const slug = slugFormatter(collection.get('slug'), entryDraft.getIn(['entry', 'data']));
       entryObj = {
-        path: `${ collection.get('folder') }/${ slug }.md`,
+        path: collectionModel.entryPath(slug),
         slug,
         raw: this.entryToRaw(collection, entryData),
       };

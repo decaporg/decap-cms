@@ -187,7 +187,10 @@ export function loadEntry(entry, collection, slug) {
     } else {
       getPromise = backend.lookupEntry(collection, slug);
     }
-    return getPromise.then(loadedEntry => dispatch(entryLoaded(collection, loadedEntry)));
+    return getPromise
+      .then((loadedEntry) => {
+        return dispatch(entryLoaded(collection, loadedEntry));
+      });
   };
 }
 

@@ -35,7 +35,11 @@ export default class GitHub {
     return this.api.listFiles(collection.get('folder')).then(files => this.entriesByFiles(collection, files));
   }
 
-  entriesByFiles(collection, files) {
+  entriesByFiles(collection) {
+    const files = collection.get('files').map(collectionFile => ({
+      path: collectionFile.get('file'),
+      label: collectionFile.get('label'),
+    }));
     const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
     const promises = [];
     files.forEach((file) => {
@@ -59,7 +63,10 @@ export default class GitHub {
 
   // Fetches a single entry.
   getEntry(collection, slug, path) {
-    return this.api.readFile(path).then(data => createEntry(collection, slug, path, { raw: data }));
+    return this.api.readFile(path).then(data => ({
+      file: { path },
+      data,
+    }));
   }
 
   persistEntry(entry, mediaFiles = [], options = {}) {

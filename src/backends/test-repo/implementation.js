@@ -50,17 +50,22 @@ export default class TestRepo {
     return Promise.resolve(entries);
   }
 
-  entriesByFiles(collection, files) {
+  entriesByFiles(collection) {
+    const files = collection.get('files').map(collectionFile => ({
+      path: collectionFile.get('file'),
+      label: collectionFile.get('label'),
+    }));
     return Promise.all(files.map(file => ({
       file,
       data: getFile(file.path).content,
     })));
   }
 
-  lookupEntry(collection, slug) {
-    return this.entries(collection).then(response => (
-      response.entries.filter(entry => entry.slug === slug)[0]
-    ));
+  getEntry(collection, slug, path) {
+    return Promise.resolve({
+      file: { path },
+      data: getFile(path).content
+    });
   }
 
   persistEntry(entry, mediaFiles = [], options) {

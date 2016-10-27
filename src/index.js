@@ -34,7 +34,6 @@ if (process.env.NODE_ENV !== 'production' && module.hot) {
 }
 
 window.CMS = {};
-console.log('reg: ', registry);
 for (const method in registry) {
   window.CMS[method] = registry[method];
 }
