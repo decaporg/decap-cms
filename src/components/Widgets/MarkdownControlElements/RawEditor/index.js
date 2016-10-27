@@ -98,6 +98,7 @@ export default class RawEditor extends React.Component {
     this.shortcuts = {
       meta: {
         b: this.handleBold,
+        i: this.handleItalic,
       },
     };
   }
