@@ -12,7 +12,7 @@ import {
 import { cancelEdit } from '../actions/editor';
 import { addMedia, removeMedia } from '../actions/media';
 import { selectEntry, getMedia } from '../reducers';
-import Collection from '../valueObjects/collection';
+import Collection from '../valueObjects/Collection';
 import EntryEditor from '../components/EntryEditor/EntryEditor';
 import entryPageHOC from './editorialWorkflow/EntryPageHOC';
 import { Loader } from '../components/UI';
