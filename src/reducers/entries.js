@@ -31,7 +31,6 @@ const entries = (state = Map({ entities: Map(), pages: Map() }), action) => {
       collection = action.payload.collection;
       loadedEntries = action.payload.entries;
       page = action.payload.page;
-
       return state.withMutations((map) => {
         loadedEntries.forEach(entry => (
           map.setIn(['entities', `${ collection }.${ entry.slug }`], fromJS(entry).set('isFetching', false))

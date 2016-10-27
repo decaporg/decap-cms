@@ -86,8 +86,8 @@ class Backend {
   }
 
   // We have the file path. Fetch and parse the file.
-  getEntry(collection, slug, path) {
-    return this.implementation.getEntry(collection, slug, path)
+  getEntry(collection, slug) {
+    return this.implementation.getEntry(collection, slug, new Collection(collection).entryPath(slug))
       .then(loadedEntry => this.entryWithFormat(collection, slug)(createEntry(
         collection.get('name'),
         slug,
@@ -95,10 +95,6 @@ class Backend {
         { raw: loadedEntry.data, label: loadedEntry.file.label }
       ))
     );
-  }
-
-  lookupEntry(collection, slug) {
-    return this.getEntry(collection, slug, new Collection(collection).entryPath(slug));
   }
 
   newEntry(collection) {
@@ -197,11 +193,11 @@ export function resolveBackend(config) {
 
   switch (name) {
     case 'test-repo':
-      return new Backend(new TestRepoBackend(config, slugFormatter), authStore);
+      return new Backend(new TestRepoBackend(config), authStore);
     case 'github':
-      return new Backend(new GitHubBackend(config, slugFormatter), authStore);
+      return new Backend(new GitHubBackend(config), authStore);
     case 'netlify-git':
-      return new Backend(new NetlifyGitBackend(config, slugFormatter), authStore);
+      return new Backend(new NetlifyGitBackend(config), authStore);
     default:
       throw new Error(`Backend not found: ${ name }`);
   }

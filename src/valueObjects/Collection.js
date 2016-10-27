@@ -9,6 +9,26 @@ function formatToExtension(format) {
   }[format];
 }
 
+function slugFormatter(template, entryData) {
+  const date = new Date();
+  const entry = (typeof entryData === 'string') ? entryData : entryData.get('title', entryData.get('path'));
+  const identifier = entry.match(/([^:\\/]*?)(?:\.([^ :\\/.]*))?$/)[1];
+  return template.replace(/\{\{([^\}]+)\}\}/g, (_, name) => {
+    switch (name) {
+      case 'year':
+        return date.getFullYear();
+      case 'month':
+        return (`0${ date.getMonth() + 1 }`).slice(-2);
+      case 'day':
+        return (`0${ date.getDate() }`).slice(-2);
+      case 'slug':
+        return identifier.trim().toLowerCase().replace(/[^a-z0-9\.\-_]+/gi, '-');
+      default:
+        return identifier.trim().toLowerCase().replace(/[^a-z0-9\.\-_]+/gi, '-');
+    }
+  });
+}
+
 class FolderCollection {
   constructor(collection) {
     this.collection = collection;
@@ -23,7 +43,7 @@ class FolderCollection {
   }
 
   entrySlug(path) {
-    return path.split('/').pop().replace(/\.[^\.]+$/, '');
+    return slugFormatter(this.collection.get('slug'), path);
   }
 
   listMethod() {
