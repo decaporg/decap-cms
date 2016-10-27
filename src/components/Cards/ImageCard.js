@@ -17,7 +17,6 @@ const ImageCard = (
     >
       <CardTitle
         title={text}
-        subtitle={`by ${ author }`}
       />
       {
       image && <CardMedia aspectRatio="wide">
@@ -33,7 +32,6 @@ const ImageCard = (
 );
 
 ImageCard.propTypes = {
-  author: PropTypes.string,
   image: PropTypes.string,
   onClick: PropTypes.func,
   onImageLoaded: PropTypes.func,

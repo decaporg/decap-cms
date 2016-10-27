@@ -77,7 +77,6 @@ export default class EntryListing extends React.Component {
     const card = Cards[cardType] || Cards.unknown;
     return React.createElement(card, {
       key: entry.get('slug'),
-      author: entry.getIn(['data', 'author']),
       collection,
       description: entry.getIn(['data', collection.getIn(['card', 'description'])]),
       image: entry.getIn(['data', collection.getIn(['card', 'image'])]),
