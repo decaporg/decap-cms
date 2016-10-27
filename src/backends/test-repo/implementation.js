@@ -1,10 +1,4 @@
 import AuthenticationPage from './AuthenticationPage';
-import { createEntry } from '../../valueObjects/Entry';
-
-function getSlug(path) {
-  const m = path.match(/([^\/]+?)(\.[^\/\.]+)?$/);
-  return m && m[1];
-}
 
 function getFile(path) {
   const segments = path.split('/');
