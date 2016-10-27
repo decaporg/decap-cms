@@ -6,6 +6,15 @@ function getSlug(path) {
   return m && m[1];
 }
 
+function getFile(path) {
+  const segments = path.split('/');
+  let obj = window.repoFiles;
+  while (obj && segments.length) {
+    obj = obj[segments.shift()];
+  }
+  return obj;
+}
+
 export default class TestRepo {
   constructor(config) {
     this.config = config;
@@ -42,7 +51,10 @@ export default class TestRepo {
   }
 
   entriesByFiles(collection, files) {
-    throw new Error('Not implemented yet');
+    return Promise.all(files.map(file => ({
+      file,
+      data: getFile(file.path).content,
+    })));
   }
 
   lookupEntry(collection, slug) {
