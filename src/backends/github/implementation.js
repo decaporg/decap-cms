@@ -1,5 +1,4 @@
 import semaphore from 'semaphore';
-import { createEntry } from '../../valueObjects/Entry';
 import AuthenticationPage from './AuthenticationPage';
 import API from './API';
 
@@ -9,7 +8,7 @@ export default class GitHub {
   constructor(config) {
     this.config = config;
     if (config.getIn(['backend', 'repo']) == null) {
-      throw 'The GitHub backend needs a "repo" in the backend configuration.';
+      throw new Error('The GitHub backend needs a "repo" in the backend configuration.');
     }
     this.repo = config.getIn(['backend', 'repo']);
     this.branch = config.getIn(['backend', 'branch']) || 'master';
@@ -101,15 +100,17 @@ export default class GitHub {
         }));
       });
       return Promise.all(promises);
-    })
+    });
   }
 
   unpublishedEntry(collection, slug) {
-    return this.unpublishedEntries().then(response => (
-      response.filter((entry) => {
-        return entry.metaData && entry.slug === slug;
-      })[0]
-    ));
+    return this.api.readUnpublishedBranchFile(slug)
+    .then(data => ({
+      slug,
+      file: { path: data.metaData.objects.entry },
+      data: data.fileData,
+      metaData: data.metaData,
+    }));
   }
 
   updateUnpublishedEntryStatus(collection, slug, newStatus) {

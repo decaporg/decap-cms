@@ -20,8 +20,9 @@ class LocalStorageAuthStore {
 
 const slugFormatter = (template, entryData) => {
   const date = new Date();
-  return template.replace(/\{\{([^\}]+)\}\}/g, (_, name) => {
-    switch (name) {
+  const identifier = entryData.get('title', entryData.get('path'));
+  return template.replace(/\{\{([^\}]+)\}\}/g, (_, field) => {
+    switch (field) {
       case 'year':
         return date.getFullYear();
       case 'month':
@@ -29,10 +30,9 @@ const slugFormatter = (template, entryData) => {
       case 'day':
         return (`0${ date.getDate() }`).slice(-2);
       case 'slug':
-        const identifier = entryData.get('title', entryData.get('path'));
-        return identifier.trim().toLowerCase().replace(/[^a-z0-9\.\-\_]+/gi, '-');
+        return identifier.trim().toLowerCase().replace(/[^a-z0-9\.\-_]+/gi, '-');
       default:
-        return entryData.get(name);
+        return entryData.get(field);
     }
   });
 };
@@ -53,6 +53,7 @@ class Backend {
       this.implementation.setUser(stored);
       return stored;
     }
+    return null;
   }
 
   authComponent() {
@@ -112,30 +113,28 @@ class Backend {
 
   unpublishedEntries(page, perPage) {
     return this.implementation.unpublishedEntries(page, perPage)
-    .then(loadedEntries => (
-      loadedEntries.map((loadedEntry) => {
-        const entry = createEntry('draft', loadedEntry.slug, loadedEntry.file.path, { raw: loadedEntry.data })
+    .then(loadedEntries => loadedEntries.filter(entry => entry !== null))
+    .then(entries => (
+      entries.map((loadedEntry) => {
+        const entry = createEntry('draft', loadedEntry.slug, loadedEntry.file.path, { raw: loadedEntry.data });
         entry.metaData = loadedEntry.metaData;
         return entry;
       })
     ))
-    .then((entries) => {
-      const filteredEntries = entries.filter(entry => entry !== null);
-      return {
-        pagination: 0,
-        entries: filteredEntries.map(this.entryWithFormat('editorialWorkflow')),
-      };
-    });
+    .then(entries => ({
+      pagination: 0,
+      entries: entries.map(this.entryWithFormat('editorialWorkflow')),
+    }));
   }
 
   unpublishedEntry(collection, slug) {
     return this.implementation.unpublishedEntry(collection, slug)
-    .then(loadedEntry => this.entryWithFormat(collection, slug)(createEntry(
-      collection.get('name'),
-      slug,
-      loadedEntry.file.path,
-      { raw: loadedEntry.data }
-    )));
+    .then((loadedEntry) => {
+      const entry = createEntry('draft', loadedEntry.slug, loadedEntry.file.path, { raw: loadedEntry.data });
+      entry.metaData = loadedEntry.metaData;
+      return entry;
+    })
+    .then(this.entryWithFormat(collection, slug));
   }
 
   persistEntry(config, collection, entryDraft, MediaFiles, options) {
@@ -144,7 +143,7 @@ class Backend {
 
     const parsedData = {
       title: entryDraft.getIn(['entry', 'data', 'title'], 'No Title'),
-      description: entryDraft.getIn(['entry', 'data', 'description'], 'No Description'),
+      description: entryDraft.getIn(['entry', 'data', 'description'], 'No Description!'),
     };
 
     const entryData = entryDraft.getIn(['entry', 'data']).toJS();
