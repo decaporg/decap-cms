@@ -1,6 +1,6 @@
 .root {
   position: relative;
+  border: 1px solid #e8eae8;
   margin-bottom: 20px;
   padding: 20px;
-  border: 1px solid #e8eae8;
 }

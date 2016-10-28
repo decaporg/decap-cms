@@ -37,6 +37,10 @@ class FolderCollection {
   allowNewEntries() {
     return this.collection.get('create');
   }
+
+  templateName() {
+    return this.props.collection.get('name');
+  }
 }
 
 class FilesCollection {
@@ -70,6 +74,10 @@ class FilesCollection {
 
   allowNewEntries() {
     return false;
+  }
+
+  templateName(slug) {
+    return slug;
   }
 }
 
@@ -105,5 +113,9 @@ export default class Collection {
 
   allowNewEntries() {
     return this.collection.allowNewEntries();
+  }
+
+  templateName(slug) {
+    return this.collection.templateName(slug);
   }
 }

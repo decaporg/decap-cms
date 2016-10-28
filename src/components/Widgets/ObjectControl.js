@@ -1,7 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import { Map } from 'immutable';
 import { resolveWidget } from '../Widgets';
-import styles from '../ControlPanel/ControlPane.css';
+import controlStyles from '../ControlPanel/ControlPane.css';
+import styles from './ObjectControl.css';
 
 export default class ObjectControl extends Component {
   static propTypes = {
@@ -17,9 +18,9 @@ export default class ObjectControl extends Component {
     const widget = resolveWidget(field.get('widget') || 'string');
     const fieldValue = value && value.get(field.get('name'));
 
-    return (
-      <div className={styles.control} key={field.get('name')}>
-        <label className={styles.label}>{field.get('label')}</label>
+    return (<div className={controlStyles.widget}>
+      <div className={controlStyles.control} key={field.get('name')}>
+        <label className={controlStyles.label}>{field.get('label')}</label>
         {
           React.createElement(widget.control, {
             field,
@@ -33,7 +34,7 @@ export default class ObjectControl extends Component {
           })
         }
       </div>
-    );
+    </div>);
   }
 
   render() {
@@ -44,7 +45,7 @@ export default class ObjectControl extends Component {
       return <h3>No fields defined for this widget</h3>;
     }
 
-    return (<div>
+    return (<div className={styles.root}>
       {field.get('fields').map(field => this.controlFor(field))}
     </div>);
   }
