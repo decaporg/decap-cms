@@ -39,7 +39,7 @@ class FolderCollection {
   }
 
   templateName() {
-    return this.props.collection.get('name');
+    return this.collection.get('name');
   }
 }
 
