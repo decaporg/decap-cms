@@ -4,6 +4,6 @@ export default class JSONFormatter {
   }
 
   toFile(data) {
-    return JSON.generate(data);
+    return JSON.stringify(data);
   }
 }

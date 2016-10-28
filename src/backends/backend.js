@@ -154,16 +154,18 @@ class Backend {
         throw (new Error('Not allowed to create new entries in this collection'));
       }
       const slug = slugFormatter(collection.get('slug'), entryDraft.getIn(['entry', 'data']));
+      const path = collectionModel.entryPath(slug);
       entryObj = {
-        path: collectionModel.entryPath(slug),
+        path,
         slug,
-        raw: this.entryToRaw(collection, entryData),
+        raw: this.entryToRaw(collection, Object.assign({ path }, entryData)),
       };
     } else {
+      const path = entryDraft.getIn(['entry', 'path']);
       entryObj = {
-        path: entryDraft.getIn(['entry', 'path']),
+        path,
         slug: entryDraft.getIn(['entry', 'slug']),
-        raw: this.entryToRaw(collection, entryData),
+        raw: this.entryToRaw(collection, Object.assign({ path }, entryData)),
       };
     }
 
