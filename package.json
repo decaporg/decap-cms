@@ -91,7 +91,6 @@
     "@kadira/storybook": "^1.36.0",
     "autoprefixer": "^6.3.3",
     "bricks.js": "^1.7.0",
-    "textarea-caret-position": "^0.1.1",
     "dateformat": "^1.0.12",
     "fuzzy": "^0.1.1",
     "immutability-helper": "^2.0.0",
@@ -120,6 +119,7 @@
     "react-router": "^2.5.1",
     "react-router-redux": "^4.0.5",
     "react-simple-dnd": "^0.1.2",
+    "react-sortable": "^1.2.0",
     "react-toolbox": "^1.2.1",
     "react-topbar-progress-indicator": "^1.0.0",
     "react-waypoint": "^3.1.3",
@@ -131,6 +131,7 @@
     "semaphore": "^1.0.5",
     "slate": "^0.14.14",
     "slate-drop-or-paste-images": "^0.2.0",
+    "textarea-caret-position": "^0.1.1",
     "uuid": "^2.0.3",
     "whatwg-fetch": "^1.0.0"
   },

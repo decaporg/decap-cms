@@ -1,11 +1,33 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
+import { resolveWidget } from '../Widgets';
 
-export default function ListPreview({ value }) {
-  return (<ul>
-    { value && value.map(item => <li key={item}>{item}</li>) }
-  </ul>);
+export default class ObjectPreview extends Component {
+  widgetFor = (field, value) => {
+    const { getMedia } = this.props;
+    const widget = resolveWidget(field.get('widget'));
+    return (<div key={field.get('name')}>{React.createElement(widget.preview, {
+      key: field.get('name'),
+      value: value && value.get(field.get('name')),
+      field,
+      getMedia,
+    })}</div>);
+  };
+
+  render() {
+    const { field, value } = this.props;
+    const fields = field && field.get('fields');
+    if (fields) {
+      return value ? (<div>{value.map((val, index) => <div key={index}>
+        {fields && fields.map(f => this.widgetFor(f, val))}
+      </div>)}</div>) : null;
+    }
+
+    return value ? value.join(', ') : null;
+  }
 }
 
-ListPreview.propTypes = {
+ObjectPreview.propTypes = {
   value: PropTypes.node,
+  field: PropTypes.node,
+  getMedia: PropTypes.func.isRequired,
 };

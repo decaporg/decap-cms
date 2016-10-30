@@ -18,7 +18,7 @@ export default class ObjectControl extends Component {
     const widget = resolveWidget(field.get('widget') || 'string');
     const fieldValue = value && value.get(field.get('name'));
 
-    return (<div className={controlStyles.widget}>
+    return (<div className={controlStyles.widget} key={field.get('name')}>
       <div className={controlStyles.control} key={field.get('name')}>
         <label className={controlStyles.label}>{field.get('label')}</label>
         {

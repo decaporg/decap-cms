@@ -1,3 +1,7 @@
+:global(.list-item-dragging) {
+  opacity: 0.5;
+}
+
 .addButton {
   display: block;
   cursor: pointer;

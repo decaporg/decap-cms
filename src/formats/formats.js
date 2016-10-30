@@ -33,7 +33,6 @@ export function resolveFormat(collectionOrEntity, entry) {
   if (typeof collectionOrEntity === 'string') {
     return formatByType(collectionOrEntity);
   }
-  console.log('entry: %o', entry);
   const path = entry && entry.path;
   if (path) {
     return formatByExtension(path.split('.').pop());
