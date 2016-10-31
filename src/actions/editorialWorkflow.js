@@ -1,8 +1,12 @@
 import uuid from 'uuid';
+import { actions as notifActions } from 'redux-notifications';
 import { BEGIN, COMMIT, REVERT } from 'redux-optimist';
 import { currentBackend } from '../backends/backend';
 import { getMedia } from '../reducers';
-import { EDITORIAL_WORKFLOW } from '../constants/publishModes';
+import { status, EDITORIAL_WORKFLOW } from '../constants/publishModes';
+
+const { notifSend } = notifActions;
+
 /*
  * Contant Declarations
  */
@@ -15,11 +19,11 @@ export const UNPUBLISHED_ENTRIES_FAILURE = 'UNPUBLISHED_ENTRIES_FAILURE';
 
 export const UNPUBLISHED_ENTRY_PERSIST_REQUEST = 'UNPUBLISHED_ENTRY_PERSIST_REQUEST';
 export const UNPUBLISHED_ENTRY_PERSIST_SUCCESS = 'UNPUBLISHED_ENTRY_PERSIST_SUCCESS';
+export const UNPUBLISHED_ENTRY_PERSIST_FAILURE = 'UNPUBLISHED_ENTRY_PERSIST_FAILURE';
 
 export const UNPUBLISHED_ENTRY_STATUS_CHANGE_REQUEST = 'UNPUBLISHED_ENTRY_STATUS_CHANGE_REQUEST';
 export const UNPUBLISHED_ENTRY_STATUS_CHANGE_SUCCESS = 'UNPUBLISHED_ENTRY_STATUS_CHANGE_SUCCESS';
 export const UNPUBLISHED_ENTRY_STATUS_CHANGE_FAILURE = 'UNPUBLISHED_ENTRY_STATUS_CHANGE_FAILURE';
-
 
 export const UNPUBLISHED_ENTRY_PUBLISH_REQUEST = 'UNPUBLISHED_ENTRY_PUBLISH_REQUEST';
 export const UNPUBLISHED_ENTRY_PUBLISH_SUCCESS = 'UNPUBLISHED_ENTRY_PUBLISH_SUCCESS';
@@ -68,24 +72,27 @@ function unpublishedEntriesFailed(error) {
 }
 
 
-function unpublishedEntryPersisting(entry) {
+function unpublishedEntryPersisting(collection, entry, transactionID) {
   return {
     type: UNPUBLISHED_ENTRY_PERSIST_REQUEST,
-    payload: { entry },
+    payload: { collection, entry },
+    optimist: { type: BEGIN, id: transactionID },
   };
 }
 
-function unpublishedEntryPersisted(entry) {
+function unpublishedEntryPersisted(collection, entry, transactionID) {
   return {
     type: UNPUBLISHED_ENTRY_PERSIST_SUCCESS,
-    payload: { entry },
+    payload: { collection, entry },
+    optimist: { type: COMMIT, id: transactionID },
   };
 }
 
-function unpublishedEntryPersistedFail(error) {
+function unpublishedEntryPersistedFail(error, transactionID) {
   return {
-    type: UNPUBLISHED_ENTRY_PERSIST_SUCCESS,
+    type: UNPUBLISHED_ENTRY_PERSIST_FAILURE,
     payload: { error },
+    optimist: { type: REVERT, id: transactionID },
   };
 }
 
@@ -164,18 +171,33 @@ export function loadUnpublishedEntries() {
   };
 }
 
-export function persistUnpublishedEntry(collection, entry) {
+export function persistUnpublishedEntry(collection, entryDraft, existingUnpublishedEntry) {
   return (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
-    const MediaProxies = entry && entry.get('mediaFiles').map(path => getMedia(state, path));
-    dispatch(unpublishedEntryPersisting(entry));
-    backend.persistUnpublishedEntry(state.config, collection, entry, MediaProxies.toJS()).then(
-      () => {
-        dispatch(unpublishedEntryPersisted(entry));
-      },
-      error => dispatch(unpublishedEntryPersistedFail(error))
-    );
+    const mediaProxies = entryDraft.get('mediaFiles').map(path => getMedia(state, path));
+    const entry = entryDraft.get('entry');
+    const transactionID = uuid.v4();
+
+    dispatch(unpublishedEntryPersisting(collection, entry, transactionID));
+    const persistAction = existingUnpublishedEntry ? backend.persistUnpublishedEntry : backend.persistEntry;
+    persistAction.call(backend, state.config, collection, entryDraft, mediaProxies.toJS())
+    .then(() => {
+      dispatch(notifSend({
+        message: 'Entry saved',
+        kind: 'success',
+        dismissAfter: 4000,
+      }));
+      dispatch(unpublishedEntryPersisted(collection, entry, transactionID));
+    })
+    .catch((error) => {
+      dispatch(notifSend({
+        message: 'Failed to persist entry',
+        kind: 'danger',
+        dismissAfter: 4000,
+      }));
+      dispatch(unpublishedEntryPersistedFail(error, transactionID));
+    });
   };
 }
 
