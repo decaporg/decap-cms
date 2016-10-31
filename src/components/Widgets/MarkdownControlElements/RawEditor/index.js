@@ -65,18 +65,17 @@ function getCleanPaste(e) {
   });
 }
 
-const buildtInPlugins = fromJS([{
+const buildtInPlugins = [{
   label: 'Image',
   id: 'image',
-  fromBlock: (data) => {
-    const m = data.match(/^!\[([^\]]+)\]\(([^\)]+)\)$/);
-    return m && {
-      image: m[2],
-      alt: m[1],
-    };
+  fromBlock: match => match && {
+    image: match[2],
+    alt: match[1],
   },
   toBlock: data => `![${ data.alt }](${ data.image })`,
-  toPreview: data => `<img src="${ data.image }" alt="${ data.alt }" />`,
+  toPreview: (data) => {
+    return <img src={data.image} alt={data.alt} />;
+  },
   pattern: /^!\[([^\]]+)\]\(([^\)]+)\)$/,
   fields: [{
     label: 'Image',
@@ -86,18 +85,20 @@ const buildtInPlugins = fromJS([{
     label: 'Alt Text',
     name: 'alt',
   }],
-}]);
+}];
+buildtInPlugins.forEach(plugin => registry.registerEditorComponent(plugin));
 
 export default class RawEditor extends React.Component {
   constructor(props) {
     super(props);
     const plugins = registry.getEditorComponents();
     this.state = {
-      plugins: buildtInPlugins.concat(plugins),
+      plugins: plugins,
     };
     this.shortcuts = {
       meta: {
         b: this.handleBold,
+        i: this.handleItalic,
       },
     };
   }
@@ -160,7 +161,7 @@ export default class RawEditor extends React.Component {
   }
 
   replaceSelection(chars) {
-    const { value } = this.props;
+    const value = this.props.value || '';
     const selection = this.getSelection();
     const newSelection = Object.assign({}, selection);
     const beforeSelection = value.substr(0, selection.start);
@@ -171,7 +172,7 @@ export default class RawEditor extends React.Component {
   }
 
   toggleHeader(header) {
-    const { value } = this.props;
+    const value = this.props.value || '';
     const selection = this.getSelection();
     const newSelection = Object.assign({}, selection);
     const lastNewline = value.lastIndexOf('\n', selection.start);
@@ -233,7 +234,7 @@ export default class RawEditor extends React.Component {
   };
 
   handleSelection = () => {
-    const { value } = this.props;
+    const value = this.props.value || '';
     const selection = this.getSelection();
     if (selection.start !== selection.end && !HAS_LINE_BREAK.test(selection.selected)) {
       try {

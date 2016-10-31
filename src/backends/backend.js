@@ -3,7 +3,7 @@ import GitHubBackend from './github/implementation';
 import NetlifyGitBackend from './netlify-git/implementation';
 import { resolveFormat } from '../formats/formats';
 import { createEntry } from '../valueObjects/Entry';
-import { FILES, FOLDER } from '../constants/collectionTypes';
+import Collection from '../valueObjects/Collection';
 
 class LocalStorageAuthStore {
   storageKey = 'nf-cms-user';
@@ -20,8 +20,9 @@ class LocalStorageAuthStore {
 
 const slugFormatter = (template, entryData) => {
   const date = new Date();
-  return template.replace(/\{\{([^\}]+)\}\}/g, (_, name) => {
-    switch (name) {
+  const identifier = entryData.get('title', entryData.get('path'));
+  return template.replace(/\{\{([^\}]+)\}\}/g, (_, field) => {
+    switch (field) {
       case 'year':
         return date.getFullYear();
       case 'month':
@@ -29,10 +30,9 @@ const slugFormatter = (template, entryData) => {
       case 'day':
         return (`0${ date.getDate() }`).slice(-2);
       case 'slug':
-        const identifier = entryData.get('title', entryData.get('path'));
-        return identifier.trim().toLowerCase().replace(/[^a-z0-9\.\-\_]+/gi, '-');
+        return identifier.trim().toLowerCase().replace(/[^a-z0-9\.\-_]+/gi, '-');
       default:
-        return entryData.get(name);
+        return entryData.get(field);
     }
   });
 };
@@ -42,7 +42,7 @@ class Backend {
     this.implementation = implementation;
     this.authStore = authStore;
     if (this.implementation === null) {
-      throw 'Cannot instantiate a Backend with no implementation';
+      throw new Error('Cannot instantiate a Backend with no implementation');
     }
   }
 
@@ -53,6 +53,7 @@ class Backend {
       this.implementation.setUser(stored);
       return stored;
     }
+    return null;
   }
 
   authComponent() {
@@ -67,49 +68,33 @@ class Backend {
   }
 
   listEntries(collection) {
-    const type = collection.get('type');
-    if (type === FOLDER) {
-      return this.implementation.entriesByFolder(collection)
+    const collectionModel = new Collection(collection);
+    const listMethod = this.implementation[collectionModel.listMethod()];
+    return listMethod.call(this.implementation, collection)
       .then(loadedEntries => (
-        loadedEntries.map(loadedEntry => createEntry(collection.get('name'), loadedEntry.file.path.split('/').pop().replace(/\.[^\.]+$/, ''), loadedEntry.file.path, { raw: loadedEntry.data }))
+        loadedEntries.map(loadedEntry => createEntry(
+          collection.get('name'),
+          collectionModel.entrySlug(loadedEntry.file.path),
+          loadedEntry.file.path,
+          { raw: loadedEntry.data, label: loadedEntry.file.label }
+        ))
       ))
       .then(entries => (
         {
           entries: entries.map(this.entryWithFormat(collection)),
         }
       ));
-    } else if (type === FILES) {
-      const collectionFiles = collection.get('files').map(collectionFile => ({ path: collectionFile.get('file'), label: collectionFile.get('label') }));
-      return this.implementation.entriesByFiles(collection, collectionFiles)
-      .then(loadedEntries => (
-        loadedEntries.map(loadedEntry => createEntry(collection.get('name'), loadedEntry.file.path.split('/').pop().replace(/\.[^\.]+$/, ''), loadedEntry.file.path, { raw: loadedEntry.data, label: loadedEntry.file.label }))
-      ))
-      .then(entries => (
-        {
-          entries: entries.map(this.entryWithFormat(collection)),
-        }
-      ));
-    }
-    return Promise.reject(`Couldn't process collection type ${ type }`);
   }
 
-  // We have the file path. Fetch and parse the file.
-  getEntry(collection, slug, path) {
-    return this.implementation.getEntry(collection, slug, path).then(this.entryWithFormat(collection));
-  }
-
-  // Will fetch the whole list of files from GitHub and load each file, then looks up for entry.
-  // (Files are persisted in local storage - only expensive on the first run for each file).
-  lookupEntry(collection, slug) {
-    const type = collection.get('type');
-    if (type === FOLDER) {
-      return this.implementation.entriesByFolder(collection)
-      .then(loadedEntries => (
-        loadedEntries.map(loadedEntry => createEntry(collection.get('name'), loadedEntry.file.path.split('/').pop().replace(/\.[^\.]+$/, ''), loadedEntry.file.path, { raw: loadedEntry.data }))
+  getEntry(collection, slug) {
+    return this.implementation.getEntry(collection, slug, new Collection(collection).entryPath(slug))
+      .then(loadedEntry => this.entryWithFormat(collection, slug)(createEntry(
+        collection.get('name'),
+        slug,
+        loadedEntry.file.path,
+        { raw: loadedEntry.data, label: loadedEntry.file.label }
       ))
-      .then(response => response.filter(entry => entry.slug === slug)[0])
-      .then(this.entryWithFormat(collection));
-    }
+    );
   }
 
   newEntry(collection) {
@@ -120,49 +105,66 @@ class Backend {
     return (entry) => {
       const format = resolveFormat(collectionOrEntity, entry);
       if (entry && entry.raw) {
-        entry.data = format && format.fromFile(entry.raw);
-        return entry;
-      } else {
-        return format.fromFile(entry);
+        return Object.assign(entry, { data: format && format.fromFile(entry.raw) });
       }
+      return format.fromFile(entry);
     };
   }
 
   unpublishedEntries(page, perPage) {
-    return this.implementation.unpublishedEntries(page, perPage).then((response) => {
-      return {
-        pagination: response.pagination,
-        entries: response.entries.map(this.entryWithFormat('editorialWorkflow')),
-      };
-    });
+    return this.implementation.unpublishedEntries(page, perPage)
+    .then(loadedEntries => loadedEntries.filter(entry => entry !== null))
+    .then(entries => (
+      entries.map((loadedEntry) => {
+        const entry = createEntry('draft', loadedEntry.slug, loadedEntry.file.path, { raw: loadedEntry.data });
+        entry.metaData = loadedEntry.metaData;
+        return entry;
+      })
+    ))
+    .then(entries => ({
+      pagination: 0,
+      entries: entries.map(this.entryWithFormat('editorialWorkflow')),
+    }));
   }
 
   unpublishedEntry(collection, slug) {
-    return this.implementation.unpublishedEntry(collection, slug).then(this.entryWithFormat(collection));
+    return this.implementation.unpublishedEntry(collection, slug)
+    .then((loadedEntry) => {
+      const entry = createEntry('draft', loadedEntry.slug, loadedEntry.file.path, { raw: loadedEntry.data });
+      entry.metaData = loadedEntry.metaData;
+      return entry;
+    })
+    .then(this.entryWithFormat(collection, slug));
   }
 
   persistEntry(config, collection, entryDraft, MediaFiles, options) {
+    const collectionModel = new Collection(collection);
     const newEntry = entryDraft.getIn(['entry', 'newRecord']) || false;
 
     const parsedData = {
       title: entryDraft.getIn(['entry', 'data', 'title'], 'No Title'),
-      description: entryDraft.getIn(['entry', 'data', 'description'], 'No Description'),
+      description: entryDraft.getIn(['entry', 'data', 'description'], 'No Description!'),
     };
 
     const entryData = entryDraft.getIn(['entry', 'data']).toJS();
     let entryObj;
     if (newEntry) {
+      if (!collectionModel.allowNewEntries()) {
+        throw (new Error('Not allowed to create new entries in this collection'));
+      }
       const slug = slugFormatter(collection.get('slug'), entryDraft.getIn(['entry', 'data']));
+      const path = collectionModel.entryPath(slug);
       entryObj = {
-        path: `${ collection.get('folder') }/${ slug }.md`,
+        path,
         slug,
-        raw: this.entryToRaw(collection, entryData),
+        raw: this.entryToRaw(collection, Object.assign({ path }, entryData)),
       };
     } else {
+      const path = entryDraft.getIn(['entry', 'path']);
       entryObj = {
-        path: entryDraft.getIn(['entry', 'path']),
+        path,
         slug: entryDraft.getIn(['entry', 'slug']),
-        raw: this.entryToRaw(collection, entryData),
+        raw: this.entryToRaw(collection, Object.assign({ path }, entryData)),
       };
     }
 
@@ -201,20 +203,20 @@ class Backend {
 export function resolveBackend(config) {
   const name = config.getIn(['backend', 'name']);
   if (name == null) {
-    throw 'No backend defined in configuration';
+    throw new Error('No backend defined in configuration');
   }
 
   const authStore = new LocalStorageAuthStore();
 
   switch (name) {
     case 'test-repo':
-      return new Backend(new TestRepoBackend(config, slugFormatter), authStore);
+      return new Backend(new TestRepoBackend(config), authStore);
     case 'github':
-      return new Backend(new GitHubBackend(config, slugFormatter), authStore);
+      return new Backend(new GitHubBackend(config), authStore);
     case 'netlify-git':
-      return new Backend(new NetlifyGitBackend(config, slugFormatter), authStore);
+      return new Backend(new NetlifyGitBackend(config), authStore);
     default:
-      throw `Backend not found: ${ name }`;
+      throw new Error(`Backend not found: ${ name }`);
   }
 }
 

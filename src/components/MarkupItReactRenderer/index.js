@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import MarkupIt, { Syntax, BLOCKS, STYLES, ENTITIES } from 'markup-it';
 import { omit } from 'lodash';
+import registry from '../../lib/registry';
 
 const defaultSchema = {
   [BLOCKS.DOCUMENT]: 'article',
@@ -44,43 +45,16 @@ function sanitizeProps(props) {
   return omit(props, notAllowedAttributes);
 }
 
-function renderToken(schema, token, index = 0, key = '0') {
-  const type = token.get('type');
-  const data = token.get('data');
-  const text = token.get('text');
-  const tokens = token.get('tokens');
-  const nodeType = schema[type];
-  key = `${ key }.${ index }`;
-
-  // Only render if type is registered as renderer
-  if (typeof nodeType !== 'undefined') {
-    let children = null;
-    if (tokens.size) {
-      children = tokens.map((token, idx) => renderToken(schema, token, idx, key));
-    } else if (type === 'text') {
-      children = text;
-    }
-    if (nodeType !== null) {
-      let props = { key, token };
-      if (typeof nodeType !== 'function') {
-        props = { key, ...sanitizeProps(data.toJS()) };
-      }
-      // If this is a react element
-      return React.createElement(nodeType, props, children);
-    } else {
-      // If this is a text node
-      return children;
-    }
-  }
-  return null;
-}
-
 export default class MarkupItReactRenderer extends React.Component {
 
   constructor(props) {
     super(props);
     const { syntax } = props;
     this.parser = new MarkupIt(syntax);
+    this.plugins = {};
+    registry.getEditorComponents().forEach((component) => {
+      this.plugins[component.get('id')] = component;
+    });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -89,10 +63,51 @@ export default class MarkupItReactRenderer extends React.Component {
     }
   }
 
+  renderToken(schema, token, index = 0, key = '0') {
+    const type = token.get('type');
+    const data = token.get('data');
+    const text = token.get('text');
+    const tokens = token.get('tokens');
+    const nodeType = schema[type];
+    key = `${ key }.${ index }`;
+
+    // Only render if type is registered as renderer
+    if (typeof nodeType !== 'undefined') {
+      let children = null;
+      if (tokens.size) {
+        children = tokens.map((token, idx) => this.renderToken(schema, token, idx, key));
+      } else if (type === 'text') {
+        children = text;
+      }
+      if (nodeType !== null) {
+        let props = { key, token };
+        if (typeof nodeType !== 'function') {
+          props = { key, ...sanitizeProps(data.toJS()) };
+        }
+        // If this is a react element
+        return React.createElement(nodeType, props, children);
+      } else {
+        // If this is a text node
+        return children;
+      }
+    }
+
+    const plugin = this.plugins[token.get('type')];
+    if (plugin) {
+      const output = plugin.toPreview(token.get('data').toJS());
+      return typeof output === 'string' ?
+        <span dangerouslySetInnerHTML={{ __html: output}} /> :
+        output;
+    }
+
+    return null;
+  }
+
+
   render() {
     const { value, schema } = this.props;
     const content = this.parser.toContent(value);
-    return renderToken({ ...defaultSchema, ...schema }, content.get('token'));
+    return this.renderToken({ ...defaultSchema, ...schema }, content.get('token'));
   }
 }
 

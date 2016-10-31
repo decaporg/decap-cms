@@ -33,7 +33,7 @@
         content: '{"site_title": "CMS Demo"}'
       },
       "authors.yml": {
-        content: 'authors:\n  - name: Mathias\n    description: Co-founder @ Netlify\n'
+        content: 'authors:\n  - name: Mathias\n    description: Co-founder @ Netlify\n  - name: Chris\n    description: Co-founder @ Netlify\n'
       }
     }
   }
@@ -87,7 +87,31 @@
       }
     });
 
+    var GeneralPreview = createClass({
+      render: function() {
+        var entry = this.props.entry;
+        var title = entry.getIn(['data', 'site_title']);
+        var posts = entry.getIn(['data', 'posts']);
+        var thumb = posts && posts.get('thumb');
+
+        return h('div', {},
+          h('h1', {}, title),
+          h('dl', {},
+            h('dt', {}, 'Posts on Frontpage'),
+            h('dd', {}, posts && posts.get('front_limit') || '0'),
+
+            h('dt', {}, 'Default Author'),
+            h('dd', {}, posts && posts.get('author') || 'None'),
+
+            h('dt', {}, 'Default Thumbnail'),
+            h('dd', {}, thumb && h('img', {src: this.props.getMedia(thumb).toString()}))
+          )
+        );
+      }
+    });
+
     CMS.registerPreviewTemplate("posts", PostPreview);
+    CMS.registerPreviewTemplate("general", GeneralPreview);
     CMS.registerPreviewStyle("/example.css");
     CMS.registerEditorComponent({
       id: "youtube",

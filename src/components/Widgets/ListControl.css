@@ -1,0 +1,72 @@
+:global(.list-item-dragging) {
+  opacity: 0.5;
+}
+
+.addButton {
+  display: block;
+  cursor: pointer;
+  margin: 20px 0;
+  border: none;
+  background: transparent;
+  &::before {
+    content: "+";
+    display: inline-block;
+    margin-right: 5px;
+    width: 15px;
+    height: 15px;
+    border: 1px solid #444;
+    border-radius: 100%;
+    background: transparent;
+    line-height: 13px;
+  }
+}
+
+.removeButton {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  display: inline-block;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  width: 15px;
+  height: 15px;
+  border: 1px solid #444;
+  border-radius: 100%;
+  line-height: 13px;
+}
+
+.toggleButton {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+}
+
+.item {
+  position: relative;
+  padding-left: 20px;
+  cursor: move;
+}
+
+.objectLabel {
+  border: 1px solid #e8eae8;
+  margin-bottom: 20px;
+  padding: 20px;
+  display: none;
+}
+
+.objectControl {
+  display: block;
+}
+
+.expanded {
+}
+
+.collapsed {
+  & .objectLabel {
+    display: block;
+  }
+  & .objectControl {
+    display: none;
+  }
+}

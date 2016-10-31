@@ -3,6 +3,7 @@
   left: -18px;
   display: none;
   width: 100%;
+  z-index: 1000;
 }
 
 .visible {

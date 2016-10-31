@@ -1,7 +1,9 @@
 import YAML from './yaml';
+import JSONFormatter from './json';
 import YAMLFrontmatter from './yaml-frontmatter';
 
 const yamlFormatter = new YAML();
+const jsonFormatter = new JSONFormatter();
 const YamlFrontmatterFormatter = new YAMLFrontmatter();
 
 function formatByType(type) {
@@ -12,17 +14,18 @@ function formatByType(type) {
 
 function formatByExtension(extension) {
   return {
-    'yml': yamlFormatter,
-    'md': YamlFrontmatterFormatter,
-    'markdown': YamlFrontmatterFormatter,
-    'html': YamlFrontmatterFormatter
+    yml: yamlFormatter,
+    json: jsonFormatter,
+    md: YamlFrontmatterFormatter,
+    markdown: YamlFrontmatterFormatter,
+    html: YamlFrontmatterFormatter,
   }[extension] || YamlFrontmatterFormatter;
 }
 
 function formatByName(name) {
   return {
-    'yaml': yamlFormatter,
-    'frontmatter': YamlFrontmatterFormatter
+    yaml: yamlFormatter,
+    frontmatter: YamlFrontmatterFormatter,
   }[name] || YamlFrontmatterFormatter;
 }
 
@@ -30,8 +33,9 @@ export function resolveFormat(collectionOrEntity, entry) {
   if (typeof collectionOrEntity === 'string') {
     return formatByType(collectionOrEntity);
   }
-  if (entry && entry.path) {
-    return formatByExtension(entry.path.split('.').pop());
+  const path = entry && entry.path;
+  if (path) {
+    return formatByExtension(path.split('.').pop());
   }
   return formatByName(collectionOrEntity.get('format'));
 }

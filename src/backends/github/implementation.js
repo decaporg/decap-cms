@@ -1,5 +1,4 @@
 import semaphore from 'semaphore';
-import { createEntry } from '../../valueObjects/Entry';
 import AuthenticationPage from './AuthenticationPage';
 import API from './API';
 
@@ -9,7 +8,7 @@ export default class GitHub {
   constructor(config) {
     this.config = config;
     if (config.getIn(['backend', 'repo']) == null) {
-      throw 'The GitHub backend needs a "repo" in the backend configuration.';
+      throw new Error('The GitHub backend needs a "repo" in the backend configuration.');
     }
     this.repo = config.getIn(['backend', 'repo']);
     this.branch = config.getIn(['backend', 'branch']) || 'master';
@@ -32,34 +31,41 @@ export default class GitHub {
   }
 
   entriesByFolder(collection) {
-    return this.api.listFiles(collection.get('folder')).then(files => this.entriesByFiles(collection, files));
+    return this.api.listFiles(collection.get('folder'))
+    .then(this.fetchFiles);
   }
 
-  entriesByFiles(collection, files) {
+  entriesByFiles(collection) {
+    const files = collection.get('files').map(collectionFile => ({
+      path: collectionFile.get('file'),
+      label: collectionFile.get('label'),
+    }));
+    return this.fetchFiles(files);
+  }
+
+  fetchFiles = (files) => {
     const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
     const promises = [];
     files.forEach((file) => {
-      promises.push(new Promise((resolve, reject) => {
-        return sem.take(() => this.api.readFile(file.path, file.sha).then((data) => {
-          resolve(
-            {
-              file,
-              data,
-            }
-          );
+      promises.push(new Promise((resolve, reject) => (
+        sem.take(() => this.api.readFile(file.path, file.sha).then((data) => {
+          resolve({ file, data });
           sem.leave();
         }).catch((err) => {
           sem.leave();
           reject(err);
-        }));
-      }));
+        }))
+      )));
     });
     return Promise.all(promises);
-  }
+  };
 
   // Fetches a single entry.
   getEntry(collection, slug, path) {
-    return this.api.readFile(path).then(data => createEntry(collection, slug, path, { raw: data }));
+    return this.api.readFile(path).then(data => ({
+      file: { path },
+      data,
+    }));
   }
 
   persistEntry(entry, mediaFiles = [], options = {}) {
@@ -72,16 +78,19 @@ export default class GitHub {
       const promises = [];
       branches.map((branch) => {
         promises.push(new Promise((resolve, reject) => {
-          const contentKey = branch.ref.split('refs/heads/cms/').pop();
-          return sem.take(() => this.api.readUnpublishedBranchFile(contentKey).then((data) => {
+          const slug = branch.ref.split('refs/heads/cms/').pop();
+          return sem.take(() => this.api.readUnpublishedBranchFile(slug).then((data) => {
             if (data === null || data === undefined) {
               resolve(null);
               sem.leave();
             } else {
-              const entryPath = data.metaData.objects.entry;
-              const entry = createEntry('draft', contentKey, entryPath, { raw: data.file });
-              entry.metaData = data.metaData;
-              resolve(entry);
+              const path = data.metaData.objects.entry;
+              resolve({
+                slug,
+                file: { path },
+                data: data.fileData,
+                metaData: data.metaData,
+              });
               sem.leave();
             }
           }).catch((err) => {
@@ -91,21 +100,17 @@ export default class GitHub {
         }));
       });
       return Promise.all(promises);
-    }).then((entries) => {
-      const filteredEntries = entries.filter(entry => entry !== null);
-      return {
-        pagination: 0,
-        entries: filteredEntries,
-      };
     });
   }
 
   unpublishedEntry(collection, slug) {
-    return this.unpublishedEntries().then(response => (
-      response.entries.filter((entry) => {
-        return entry.metaData && entry.slug === slug;
-      })[0]
-    ));
+    return this.api.readUnpublishedBranchFile(slug)
+    .then(data => ({
+      slug,
+      file: { path: data.metaData.objects.entry },
+      data: data.fileData,
+      metaData: data.metaData,
+    }));
   }
 
   updateUnpublishedEntryStatus(collection, slug, newStatus) {

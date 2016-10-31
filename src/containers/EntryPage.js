@@ -12,7 +12,7 @@ import {
 import { cancelEdit } from '../actions/editor';
 import { addMedia, removeMedia } from '../actions/media';
 import { selectEntry, getMedia } from '../reducers';
-import { FOLDER, FILES } from '../constants/collectionTypes';
+import Collection from '../valueObjects/Collection';
 import EntryEditor from '../components/EntryEditor/EntryEditor';
 import entryPageHOC from './editorialWorkflow/EntryPageHOC';
 import { Loader } from '../components/UI';
@@ -39,11 +39,10 @@ class EntryPage extends React.Component {
 
   componentDidMount() {
     const { entry, newEntry, collection, slug, createEmptyDraft, loadEntry } = this.props;
-
     if (newEntry) {
       createEmptyDraft(collection);
     } else {
-      if (collection.get('type') === FOLDER) loadEntry(entry, collection, slug);
+      loadEntry(entry, collection, slug);
       this.createDraft(entry);
     }
   }
@@ -108,15 +107,7 @@ function mapStateToProps(state, ownProps) {
   const { collections, entryDraft } = state;
   const slug = ownProps.params.slug;
   const collection = collections.get(ownProps.params.name);
-
-  let fields;
-  if (collection.get('type') === FOLDER) {
-    fields = collection.get('fields');
-  } else {
-    const files = collection.get('files');
-    const file = files.filter(f => f.get('name') === slug);
-    fields = file.getIn([0, 'fields']);
-  }
+  const collectionModel = new Collection(collection);
   const newEntry = ownProps.route && ownProps.route.newRecord === true;
 
   const entry = newEntry ? null : selectEntry(state, collection.get('name'), slug);
@@ -127,7 +118,7 @@ function mapStateToProps(state, ownProps) {
     newEntry,
     entryDraft,
     boundGetMedia,
-    fields,
+    fields: collectionModel.entryFields(slug),
     slug,
     entry,
   };
