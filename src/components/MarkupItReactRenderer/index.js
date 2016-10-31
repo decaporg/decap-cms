@@ -95,9 +95,9 @@ export default class MarkupItReactRenderer extends React.Component {
     const plugin = this.plugins[token.get('type')];
     if (plugin) {
       const output = plugin.toPreview(token.get('data').toJS());
-      return output instanceof React.Component ?
-          output :
-          <span dangerouslySetInnerHTML={{ __html: output}} />;
+      return typeof output === 'string' ?
+        <span dangerouslySetInnerHTML={{ __html: output}} /> :
+        output;
     }
 
     return null;
