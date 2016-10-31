@@ -39,11 +39,5 @@ module.exports = merge.smart(require('./webpack.base.js'), {
 
     // Extract CSS
     new ExtractTextPlugin('[name].css', { allChunks: true }),
-
-    // Automatically extract all 3rd party modules into a separate 'vendor' chunk
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'vendor',
-      minChunks: ({ resource }) => /node_modules/.test(resource),
-    }),
   ],
 });
