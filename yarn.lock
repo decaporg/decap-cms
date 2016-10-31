@@ -6804,6 +6804,10 @@ react-simple-dnd@^0.1.2:
     react-dnd "^2.1.4"
     react-dnd-html5-backend "^2.1.2"
 
+react-sortable@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/react-sortable/-/react-sortable-1.2.0.tgz#5acd7e1910df665408957035acb5f2354519d849"
+
 react-toolbox@^1.2.1:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/react-toolbox/-/react-toolbox-1.2.2.tgz#ae8f3290da9e053625df97a63df7224943b79679"
@@ -8003,6 +8007,10 @@ testcheck@^0.1.0:
 text-table@^0.2.0, text-table@~0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
+
+textarea-caret-position@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/textarea-caret-position/-/textarea-caret-position-0.1.1.tgz#34372aa755008b1a8451b8a1bb8f07795270fd70"
 
 throat@^2.0.2:
   version "2.0.2"
