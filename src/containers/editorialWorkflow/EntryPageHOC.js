@@ -51,6 +51,7 @@ export default function EntryPageHOC(EntryPage) {
 
     return {
       ...ownProps,
+      ...stateProps,
       ...returnObj,
     };
   }

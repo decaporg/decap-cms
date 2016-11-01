@@ -38,17 +38,17 @@ class EntryPage extends React.Component {
   };
 
   componentDidMount() {
-    const { entry, newEntry, collection, slug, createEmptyDraft, loadEntry } = this.props;
+    const { entry, newEntry, collection, slug, loadEntry } = this.props;
     if (newEntry) {
       createEmptyDraft(collection);
     } else {
       loadEntry(entry, collection, slug);
-      this.createDraft(entry);
     }
   }
 
   componentWillReceiveProps(nextProps) {
     if (this.props.entry === nextProps.entry) return;
+
     if (nextProps.entry && !nextProps.entry.get('isFetching')) {
       this.createDraft(nextProps.entry);
     } else if (nextProps.newEntry) {
@@ -81,6 +81,7 @@ class EntryPage extends React.Component {
       removeMedia,
       cancelEdit,
     } = this.props;
+
 
     if (entryDraft == null
       || entryDraft.get('entry') === undefined
