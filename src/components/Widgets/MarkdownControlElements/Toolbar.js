@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Icon } from '../../../UI';
+import { Icon } from '../../UI';
 import styles from './Toolbar.css';
 
 function button(label, icon, action) {
@@ -19,6 +19,7 @@ export default class Toolbar extends Component {
     onBold: PropTypes.func.isRequired,
     onItalic: PropTypes.func.isRequired,
     onLink: PropTypes.func.isRequired,
+    onToggleMode: PropTypes.func.isRequired,
   };
 
   componentDidUpdate() {
@@ -41,7 +42,7 @@ export default class Toolbar extends Component {
   };
 
   render() {
-    const { isOpen, onH1, onH2, onBold, onItalic, onLink } = this.props;
+    const { isOpen, onH1, onH2, onBold, onItalic, onLink, onToggleMode } = this.props;
     const classNames = [styles.Toolbar];
 
     if (isOpen) {
@@ -55,6 +56,7 @@ export default class Toolbar extends Component {
         {button('Bold', 'bold', onBold)}
         {button('Italic', 'italic', onItalic)}
         {button('Link', 'link', onLink)}
+        {button('View Code', 'code', onToggleMode)}
       </ul>
     );
   }

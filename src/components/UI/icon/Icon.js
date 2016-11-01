@@ -5,7 +5,7 @@ const availableIcons = [
   // Font Awesome Editor Icons
   'bold', 'italic', 'list', 'font', 'text-height', 'text-width', 'align-left', 'align-center', 'align-right',
   'align-justify', 'indent-left', 'indent-right', 'list-bullet', 'list-numbered', 'strike', 'underline', 'table',
-  'superscript', 'subscript', 'header', 'h1', 'h2', 'paragraph', 'link', 'unlink', 'quote-left', 'quote-right', 'code',
+  'superscript', 'subscript', 'header', 'h1', 'h2', 'h3', 'paragraph', 'link', 'unlink', 'quote-left', 'quote-right', 'code',
   'picture', 'video',
   // Entypo
   'note', 'note-beamed',

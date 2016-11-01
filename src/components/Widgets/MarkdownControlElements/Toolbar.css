@@ -1,32 +1,42 @@
 .editor {
   position: relative;
-  & h1, & h2, & h3 {
+
+  & h1,
+  & h2,
+  & h3 {
+    margin-bottom: 20px;
     padding: 0;
+    border-bottom: none;
     color: #7c8382;
     text-decoration: none;
-    border-bottom: none;
-    margin-bottom: 20px;
     line-height: 1.45;
+
     &:before {
-      content: "# ";
       color: #a5afad;
+      content: '# ';
     }
   }
+
   & h1 {
     font-size: 2.5rem;
   }
+
   & h2 {
     font-size: 2rem;
   }
+
   & h3 {
     font-size: 1.8rem;
   }
+
   & h2:before {
-    content: "## ";
+    content: '## ';
   }
+
   & h3:before {
-    content: "### ";
+    content: '### ';
   }
+
   & p {
     margin-bottom: 20px;
   }
@@ -48,15 +58,17 @@
     pointer-events: none;
   }
 
-  & .ProseMirror-content ul, & .ProseMirror-content ol {
+  & .ProseMirror-content ul,
+  & .ProseMirror-content ol {
     padding-left: 30px;
     cursor: default;
   }
 
   & .ProseMirror-content blockquote {
+    margin-right: 0;
+    margin-left: 0;
     padding-left: 1em;
     border-left: 3px solid #eee;
-    margin-left: 0; margin-right: 0;
   }
 
   & .ProseMirror-content pre {
@@ -67,29 +79,35 @@
     position: relative;
     pointer-events: none; /* Don't do weird stuff with marker clicks */
   }
+
   & .ProseMirror-content li > * {
     pointer-events: auto;
   }
 
-  & .ProseMirror-nodeselection *::selection { background: transparent; }
-  & .ProseMirror-nodeselection *::-moz-selection { background: transparent; }
+  & .ProseMirror-nodeselection *::selection {
+    background: transparent;
+  }
+
+  & .ProseMirror-nodeselection *::-moz-selection {
+    background: transparent;
+  }
 
   & .ProseMirror-selectednode {
     outline: 2px solid #8cf;
   }
-
   /* Make sure li selections wrap around markers */
-
   & li.ProseMirror-selectednode {
     outline: none;
   }
 
   & li.ProseMirror-selectednode:after {
-    content: "";
     position: absolute;
+    top: -2px;
+    right: -2px;
+    bottom: -2px;
     left: -32px;
-    right: -2px; top: -2px; bottom: -2px;
     border: 2px solid #8cf;
+    content: '';
     pointer-events: none;
   }
 }

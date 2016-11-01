@@ -1,298 +1,120 @@
-import React, { PropTypes } from 'react';
-import _ from 'lodash';
-import { Editor, Raw } from 'slate';
-import PluginDropImages from 'slate-drop-or-paste-images';
-import MarkupIt, { SlateUtils } from 'markup-it';
-import MediaProxy from '../../../../valueObjects/MediaProxy';
-import { emptyParagraphBlock, mediaproxyBlock } from '../constants';
-import { DEFAULT_NODE, SCHEMA } from './schema';
-import { getNodes, getSyntaxes, getPlugins } from '../../richText';
-import StylesMenu from './StylesMenu';
-import BlockTypesMenu from './BlockTypesMenu';
+import React, { Component } from 'react';
+import { EditorState } from 'prosemirror-state';
+import { EditorView } from 'prosemirror-view';
+import history from 'prosemirror-history';
+import {
+  blockQuoteRule, orderedListRule, bulletListRule, codeBlockRule, headingRule,
+  inputRules, allInputRules,
+} from 'prosemirror-inputrules';
+import { keymap } from 'prosemirror-keymap';
+import { schema, defaultMarkdownParser, defaultMarkdownSerializer } from 'prosemirror-markdown';
+import { baseKeymap, setBlockType, toggleMark } from 'prosemirror-commands';
+import { buildKeymap } from './keymap';
+import Toolbar from '../Toolbar';
+import styles from './index.css';
 
-/**
- * Slate Render Configuration
- */
-export default class VisualEditor extends React.Component {
+function buildInputRules(schema) {
+  let result = [], type;
+  if (type = schema.nodes.blockquote) result.push(blockQuoteRule(type));
+  if (type = schema.nodes.ordered_list) result.push(orderedListRule(type));
+  if (type = schema.nodes.bullet_list) result.push(bulletListRule(type));
+  if (type = schema.nodes.code_block) result.push(codeBlockRule(type));
+  if (type = schema.nodes.heading) result.push(headingRule(type, 6));
+  return result;
+}
 
-  static propTypes = {
-    onChange: PropTypes.func.isRequired,
-    onAddMedia: PropTypes.func.isRequired,
-    getMedia: PropTypes.func.isRequired,
-    value: PropTypes.string,
-  };
-
+export default class Editor extends Component {
   constructor(props) {
     super(props);
+    this.state = {};
+  }
 
-    const MarkdownSyntax = getSyntaxes(this.getMedia).markdown;
-    this.markdown = new MarkupIt(MarkdownSyntax);
-
-    SCHEMA.nodes = _.merge(SCHEMA.nodes, getNodes());
-
-    this.blockEdit = false;
-
-    let rawJson;
-    if (props.value !== undefined) {
-      const content = this.markdown.toContent(props.value);
-      rawJson = SlateUtils.encode(content, null, ['mediaproxy'].concat(getPlugins().map(plugin => plugin.id)));
-    } else {
-      rawJson = emptyParagraphBlock;
-    }
-    this.state = {
-      state: Raw.deserialize(rawJson, { terse: true }),
-    };
-
-    this.plugins = [
-      PluginDropImages({
-        applyTransform: (transform, file) => {
-          const mediaProxy = new MediaProxy(file.name, file);
-          props.onAddMedia(mediaProxy);
-          return transform
-            .insertBlock(mediaproxyBlock(mediaProxy));
-        },
+  componentDidMount() {
+    this.view = new EditorView(this.ref, {
+      state: EditorState.create({
+        doc: defaultMarkdownParser.parse(this.props.value || ''),
+        schema,
+        plugins: [
+          inputRules({
+            rules: allInputRules.concat(buildInputRules(schema)),
+          }),
+          keymap(buildKeymap(schema, {
+            'Mod-z': history.undo,
+            'Mod-y': history.redo,
+          })),
+          keymap(baseKeymap),
+          history.history(),
+        ],
       }),
-    ];
+      onAction: this.handleAction,
+    });
   }
 
-  getMedia = (src) => {
-    return this.props.getMedia(src);
+  handleAction = (action) => {
+    const newState = this.view.state.applyAction(action);
+    switch (action.type) {
+      case 'selection':
+        this.handleSelection(newState);
+      default:
+        const md = defaultMarkdownSerializer.serialize(newState.doc);
+        this.props.onChange(md);
+    }
+    this.view.updateState(newState);
+    this.view.focus();
   };
 
-  /**
-   * Slate keeps track of selections, scroll position etc.
-   * So, onChange gets dispatched on every interaction (click, arrows, everything...)
-   * It also have an onDocumentChange, that get's dispatched only when the actual
-   * content changes
-   */
-  handleChange = (state) => {
-    if (this.blockEdit) {
-      this.blockEdit = false;
+  handleSelection = (state) => {
+    const { selection } = state;
+    if (selection.from === selection.to) {
+      const pos = this.view.coordsAtPos(selection.from);
+      const editorPos = this.view.content.getBoundingClientRect();
+      const selectionPosition = { top: pos.top - editorPos.top, left: pos.left - editorPos.left };
+      this.setState({ showToolbar: false, selectionPosition });
     } else {
-      this.setState({ state });
+      this.setState({ showToolbar: true });
     }
   };
 
-  handleDocumentChange = (document, state) => {
-    const rawJson = Raw.serialize(state, { terse: true });
-    const content = SlateUtils.decode(rawJson);
-    this.props.onChange(this.markdown.toText(content));
+  handleRef = (ref) => {
+    this.ref = ref;
   };
 
-  /**
-   * Toggle marks / blocks when button is clicked
-   */
-  handleMarkStyleClick = (type) => {
-    let { state } = this.state;
-
-    state = state
-      .transform()
-      .toggleMark(type)
-      .apply();
-
-    this.setState({ state });
-  };
-
-  handleBlockStyleClick = (type, isActive, isList) => {
-    let { state } = this.state;
-    let transform = state.transform();
-    const { document } = state;
-
-    // Handle everything but list buttons.
-    if (type != 'unordered_list' && type != 'ordered_list') {
-      if (isList) {
-        transform = transform
-          .setBlock(isActive ? DEFAULT_NODE : type)
-          .unwrapBlock('unordered_list')
-          .unwrapBlock('ordered_list');
-      }
-
-      else {
-        transform = transform
-          .setBlock(isActive ? DEFAULT_NODE : type);
-      }
+  handleHeader = level => (
+    () => {
+      const command = setBlockType(schema.nodes.heading, { level });
+      command(this.view.state, this.handleAction);
     }
+  );
 
-    // Handle the extra wrapping required for list buttons.
-    else {
-      const isType = state.blocks.some((block) => {
-        return !!document.getClosest(block, parent => parent.type == type);
-      });
-
-      if (isList && isType) {
-        transform = transform
-          .setBlock(DEFAULT_NODE)
-          .unwrapBlock('unordered_list');
-      } else if (isList) {
-        transform = transform
-          .unwrapBlock(type == 'unordered_list')
-          .wrapBlock(type);
-      } else {
-        transform = transform
-          .setBlock('list_item')
-          .wrapBlock(type);
-      }
-    }
-
-    state = transform.apply();
-    this.setState({ state });
+  handleBold = () => {
+    const command = toggleMark(schema.marks.strong);
+    command(this.view.state, this.handleAction);
   };
 
-  /**
-   * When clicking a link, if the selection has a link in it, remove the link.
-   * Otherwise, add a new link with an href and text.
-   *
-   * @param {Event} e
-   */
-
-  handleInlineClick = (type, isActive) => {
-    let { state } = this.state;
-
-    if (type === 'link') {
-      if (!state.isExpanded) return;
-
-      if (isActive) {
-        state = state
-          .transform()
-          .unwrapInline('link')
-          .apply();
-      }
-
-      else {
-        const href = window.prompt('Enter the URL of the link:', 'http://www.'); // eslint-disable-line
-        state = state
-          .transform()
-          .wrapInline({
-            type: 'link',
-            data: { href },
-          })
-          .collapseToEnd()
-          .apply();
-      }
-    }
-    this.setState({ state });
+  handleItalic = () => {
+    const command = toggleMark(schema.marks.em);
+    command(this.view.state, this.handleAction);
   };
 
-  handleBlockTypeClick = (type) => {
-    let { state } = this.state;
-
-    state = state
-      .transform()
-      .insertBlock({
-        type,
-        isVoid: true,
-      })
-      .apply();
-
-    this.setState({ state }, this.focusAndAddParagraph);
+  handleToggle = () => {
+    this.props.onMode('raw');
   };
-
-  handlePluginClick = (type, data) => {
-    let { state } = this.state;
-
-    state = state
-      .transform()
-      .insertInline({
-        type,
-        data,
-        isVoid: true,
-      })
-      .collapseToEnd()
-      .insertBlock(DEFAULT_NODE)
-      .focus()
-      .apply();
-
-    this.setState({ state });
-  };
-
-  handleImageClick = (mediaProxy) => {
-    let { state } = this.state;
-    this.props.onAddMedia(mediaProxy);
-
-    state = state
-      .transform()
-      .insertBlock(mediaproxyBlock(mediaProxy))
-      .apply();
-
-    this.setState({ state });
-  };
-
-  focusAndAddParagraph = () => {
-    const { state } = this.state;
-    const blocks = state.document.getBlocks();
-    const last = blocks.last();
-    const normalized = state
-      .transform()
-      .focus()
-      .collapseToEndOf(last)
-      .splitBlock()
-      .setBlock(DEFAULT_NODE)
-      .apply({
-        snapshot: false,
-      });
-    this.setState({ state: normalized });
-  };
-
-  handleKeyDown = (evt) => {
-    if (evt.shiftKey && evt.key === 'Enter') {
-      this.blockEdit = true;
-      let { state } = this.state;
-      state = state
-        .transform()
-        .insertText('\n')
-        .apply();
-
-      this.setState({ state });
-    }
-  };
-
-  renderBlockTypesMenu = () => {
-    const currentBlock = this.state.state.blocks.get(0);
-    const isOpen = (this.props.value !== undefined && currentBlock.isEmpty && currentBlock.type !== 'horizontal-rule');
-
-    return (
-      <BlockTypesMenu
-        isOpen={isOpen}
-        plugins={getPlugins()}
-        onClickBlock={this.handleBlockTypeClick}
-        onClickPlugin={this.handlePluginClick}
-        onClickImage={this.handleImageClick}
-      />
-    );
-  };
-
-  renderStylesMenu() {
-    const { state } = this.state;
-    const isOpen = !(state.isBlurred || state.isCollapsed);
-
-    return (
-      <StylesMenu
-        isOpen={isOpen}
-        marks={this.state.state.marks}
-        blocks={this.state.state.blocks}
-        inlines={this.state.state.inlines}
-        onClickMark={this.handleMarkStyleClick}
-        onClickInline={this.handleInlineClick}
-        onClickBlock={this.handleBlockStyleClick}
-      />
-    );
-  }
 
   render() {
-    return (
-      <div>
-        {this.renderStylesMenu()}
-        {this.renderBlockTypesMenu()}
-        <Editor
-          placeholder={'Enter some rich text...'}
-          state={this.state.state}
-          schema={SCHEMA}
-          plugins={this.plugins}
-          onChange={this.handleChange}
-          onKeyDown={this.handleKeyDown}
-          onDocumentChange={this.handleDocumentChange}
-        />
-      </div>
-    );
+    const { showToolbar, selectionPosition } = this.state;
+
+    return (<div className={styles.editor}>
+      <Toolbar
+        isOpen={showToolbar}
+        selectionPosition={selectionPosition}
+        onH1={this.handleHeader(1)}
+        onH2={this.handleHeader(2)}
+        onBold={this.handleBold}
+        onItalic={this.handleItalic}
+        onLink={this.handleLink}
+        onToggleMode={this.handleToggle}
+      />
+      <div ref={this.handleRef} />
+    </div>);
   }
 }

@@ -6,7 +6,7 @@ import htmlSyntax from 'markup-it/syntaxes/html';
 import CaretPosition from 'textarea-caret-position';
 import registry from '../../../../lib/registry';
 import MediaProxy from '../../../../valueObjects/MediaProxy';
-import Toolbar from './Toolbar';
+import Toolbar from '../Toolbar';
 import BlockMenu from './BlockMenu';
 import styles from './index.css';
 
@@ -238,8 +238,9 @@ export default class RawEditor extends React.Component {
     const selection = this.getSelection();
     if (selection.start !== selection.end && !HAS_LINE_BREAK.test(selection.selected)) {
       try {
-        const position = this.caretPosition.get(selection.start, selection.end);
-        this.setState({ showToolbar: true, showBlockMenu: false, selectionPosition: position });
+        const selectionPosition = this.caretPosition.get(selection.start, selection.end);
+        console.log('pos: %o', selectionPosition);
+        this.setState({ showToolbar: true, showBlockMenu: false, selectionPosition });
       } catch (e) {
         this.setState({ showToolbar: false, showBlockMenu: false });
       }
@@ -313,7 +314,11 @@ export default class RawEditor extends React.Component {
       this.newSelection = newSelection;
       onChange(beforeSelection + paste + afterSelection);
     });
-  }
+  };
+
+  handleToggle = () => {
+    this.props.onMode('visual');
+  };
 
   render() {
     const { onAddMedia, onRemoveMedia, getMedia } = this.props;
@@ -327,6 +332,7 @@ export default class RawEditor extends React.Component {
         onBold={this.handleBold}
         onItalic={this.handleItalic}
         onLink={this.handleLink}
+        onToggleMode={this.handleToggle}
       />
       <BlockMenu
         isOpen={showBlockMenu}
@@ -353,5 +359,6 @@ RawEditor.propTypes = {
   onRemoveMedia: PropTypes.func.isRequired,
   getMedia: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
+  onMode: PropTypes.func.isRequired,
   value: PropTypes.node,
 };
