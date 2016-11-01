@@ -1,25 +1,25 @@
 import { Map, List, fromJS } from 'immutable';
-import { EDITORIAL_WORKFLOW } from '../constants/publishModes';
+import { status, EDITORIAL_WORKFLOW } from '../constants/publishModes';
 import {
   UNPUBLISHED_ENTRY_REQUEST,
   UNPUBLISHED_ENTRY_SUCCESS,
   UNPUBLISHED_ENTRIES_REQUEST,
   UNPUBLISHED_ENTRIES_SUCCESS,
+  UNPUBLISHED_ENTRY_PERSIST_REQUEST,
   UNPUBLISHED_ENTRY_STATUS_CHANGE_REQUEST,
   UNPUBLISHED_ENTRY_PUBLISH_REQUEST,
 } from '../actions/editorialWorkflow';
 import { CONFIG_SUCCESS } from '../actions/config';
 
 const unpublishedEntries = (state = null, action) => {
+  const publishMode = action.payload && action.payload.publish_mode;
   switch (action.type) {
     case CONFIG_SUCCESS:
-      const publish_mode = action.payload && action.payload.publish_mode;
-      if (publish_mode === EDITORIAL_WORKFLOW) {
+      if (publishMode === EDITORIAL_WORKFLOW) {
         //  Editorial workflow state is explicetelly initiated after the config.
         return Map({ entities: Map(), pages: Map() });
-      } else {
-        return state;
       }
+      return state;
     case UNPUBLISHED_ENTRY_REQUEST:
       return state.setIn(['entities', `${ action.payload.status }.${ action.payload.slug }`, 'isFetching'], true);
 
@@ -43,6 +43,15 @@ const unpublishedEntries = (state = null, action) => {
           ...pages,
           ids: List(entries.map(entry => entry.slug)),
         }));
+      });
+
+    case UNPUBLISHED_ENTRY_PERSIST_REQUEST:
+      // Update Optimistically
+      const { collection, entry } = action.payload;
+      const ownStatus = entry.getIn(['metaData', 'status'], status.first());
+      return state.withMutations((map) => {
+        map.setIn(['entities', `${ ownStatus }.${ entry.get('slug') }`], fromJS(entry));
+        map.updateIn(['pages', 'ids'], List(), list => list.push(entry.get('slug')));
       });
 
     case UNPUBLISHED_ENTRY_STATUS_CHANGE_REQUEST:
