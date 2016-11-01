@@ -16,6 +16,10 @@ class LocalStorageAuthStore {
   store(userData) {
     window.localStorage.setItem(this.storageKey, JSON.stringify(userData));
   }
+
+  logout() {
+    window.localStorage.removeItem(this.storageKey);
+  }
 }
 
 const slugFormatter = (template, entryData) => {
@@ -65,6 +69,14 @@ class Backend {
       if (this.authStore) { this.authStore.store(user); }
       return user;
     });
+  }
+
+  logout() {
+    if (this.authStore) {
+      this.authStore.logout();
+    } else {
+      throw new Error('User isn\'t authenticated.');
+    }
   }
 
   listEntries(collection) {

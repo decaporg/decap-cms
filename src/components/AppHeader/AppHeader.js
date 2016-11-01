@@ -2,24 +2,29 @@ import React, { PropTypes } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import pluralize from 'pluralize';
 import { IndexLink } from 'react-router';
-import { Menu, MenuItem } from 'react-toolbox';
+import { IconMenu, Menu, MenuItem } from 'react-toolbox/lib/menu';
+import Avatar from 'react-toolbox/lib/avatar';
 import AppBar from 'react-toolbox/lib/app_bar';
+import FontIcon from 'react-toolbox/lib/font_icon';
 import FindBar from '../FindBar/FindBar';
 import styles from './AppHeader.css';
 
 export default class AppHeader extends React.Component {
 
   static propTypes = {
+    user: ImmutablePropTypes.map.isRequired,
     collections: ImmutablePropTypes.orderedMap.isRequired,
     commands: PropTypes.array.isRequired, // eslint-disable-line
     defaultCommands: PropTypes.array.isRequired, // eslint-disable-line
     runCommand: PropTypes.func.isRequired,
     toggleNavDrawer: PropTypes.func.isRequired,
     onCreateEntryClick: PropTypes.func.isRequired,
+    onLogoutClick: PropTypes.func.isRequired,
   };
 
   state = {
     createMenuActive: false,
+    userMenuActive: false,
   };
 
   handleCreatePostClick = (collectionName) => {
@@ -41,27 +46,53 @@ export default class AppHeader extends React.Component {
     });
   };
 
+  handleRightIconClick = () => {
+    this.setState({
+      userMenuActive: !this.state.userMenuActive,
+    });
+  };
+
   render() {
     const {
+      user,
       collections,
       commands,
       defaultCommands,
       runCommand,
       toggleNavDrawer,
+      onLogoutClick,
     } = this.props;
-    const { createMenuActive } = this.state;
+
+    const {
+      createMenuActive,
+      userMenuActive,
+    } = this.state;
 
     return (
       <AppBar
         fixed
         theme={styles}
         leftIcon="menu"
-        rightIcon="create"
+        rightIcon={
+          <div>
+            <Avatar
+              title={user.get('name')}
+              image={user.get('avatar_url')}
+            />
+            <Menu
+              active={userMenuActive}
+              position="topRight"
+              onHide={this.handleRightIconClick}
+            >
+              <MenuItem onClick={onLogoutClick}>Log out</MenuItem>
+            </Menu>
+          </div>
+        }
         onLeftIconClick={toggleNavDrawer}
-        onRightIconClick={this.handleCreateButtonClick}
+        onRightIconClick={this.handleRightIconClick}
       >
         <IndexLink to="/">
-          Dashboard
+          <FontIcon value="home" />
         </IndexLink>
 
         <FindBar
@@ -69,9 +100,11 @@ export default class AppHeader extends React.Component {
           defaultCommands={defaultCommands}
           runCommand={runCommand}
         />
-        <Menu
+        <IconMenu
+          theme={styles}
           active={createMenuActive}
-          position="topRight"
+          icon="create"
+          onClick={this.handleCreateButtonClick}
           onHide={this.handleCreateMenuHide}
         >
           {
@@ -84,7 +117,7 @@ export default class AppHeader extends React.Component {
               />
             )
           }
-        </Menu>
+        </IconMenu>
       </AppBar>
     );
   }

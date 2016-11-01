@@ -1,6 +1,5 @@
-import expect from 'expect';
 import Immutable from 'immutable';
-import { authenticating, authenticate, authError } from '../../actions/auth';
+import { authenticating, authenticate, authError, logout } from '../../actions/auth';
 import auth from '../auth';
 
 describe('auth', () => {
@@ -33,8 +32,14 @@ describe('auth', () => {
       auth(undefined, authError(new Error('Bad credentials')))
     ).toEqual(
       Immutable.Map({
-        error: 'Error: Bad credentials'
+        error: 'Error: Bad credentials',
       })
     );
+  });
+
+  it('should handle logout', () => {
+    const initialState = Immutable.fromJS({ user: { email: 'joe@example.com' } });
+    const newState = auth(initialState, logout());
+    expect(newState.get('user')).toBeUndefined();
   });
 });
