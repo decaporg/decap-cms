@@ -6611,7 +6611,7 @@ prosemirror-markdown:
     markdown-it "^6.0.4"
     prosemirror-model "~0.12.0"
 
-prosemirror-model@^0.12.0, prosemirror-model@~0.12.0:
+prosemirror-model, prosemirror-model@^0.12.0, prosemirror-model@~0.12.0:
   version "0.12.0"
   resolved "https://registry.yarnpkg.com/prosemirror-model/-/prosemirror-model-0.12.0.tgz#5430c4056f2d3fe87d36de3f73aa9d9d07b0e8a7"
 
@@ -6642,6 +6642,12 @@ prosemirror-state@^0.12.0:
   dependencies:
     prosemirror-model "^0.12.0"
     prosemirror-transform "^0.12.0"
+
+prosemirror-transform:
+  version "0.12.1"
+  resolved "https://registry.yarnpkg.com/prosemirror-transform/-/prosemirror-transform-0.12.1.tgz#69bca7e55976815e59281fbd8af4518f5ab90844"
+  dependencies:
+    prosemirror-model "^0.12.0"
 
 prosemirror-transform@^0.12.0:
   version "0.12.0"

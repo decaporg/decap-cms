@@ -7,7 +7,7 @@ import CaretPosition from 'textarea-caret-position';
 import registry from '../../../../lib/registry';
 import MediaProxy from '../../../../valueObjects/MediaProxy';
 import Toolbar from '../Toolbar';
-import BlockMenu from './BlockMenu';
+import BlockMenu from '../BlockMenu';
 import styles from './index.css';
 
 const HAS_LINE_BREAK = /\n/m;
@@ -92,9 +92,7 @@ export default class RawEditor extends React.Component {
   constructor(props) {
     super(props);
     const plugins = registry.getEditorComponents();
-    this.state = {
-      plugins: plugins,
-    };
+    this.state = { plugins };
     this.shortcuts = {
       meta: {
         b: this.handleBold,
@@ -271,8 +269,9 @@ export default class RawEditor extends React.Component {
     this.updateHeight();
   };
 
-  handleBlock = (chars) => {
-    this.replaceSelection(chars);
+  handleBlock = (plugin, data) => {
+    const toBlock = plugin.get('toBlock');
+    this.replaceSelection(toBlock.call(toBlock, data.toJS()));
     this.setState({ showBlockMenu: false });
   };
 

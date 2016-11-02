@@ -7,10 +7,6 @@
     border-bottom: none;
     margin-bottom: 20px;
     line-height: 1.45;
-    &:before {
-      content: "# ";
-      color: #a5afad;
-    }
   }
   & h1 {
     font-size: 2.5rem;
@@ -21,13 +17,13 @@
   & h3 {
     font-size: 1.8rem;
   }
-  & h2:before {
-    content: "## ";
-  }
-  & h3:before {
-    content: "### ";
-  }
   & p {
+    margin-bottom: 20px;
+  }
+  & div[data-plugin] {
+    background: #fff;
+    border: 1px solid #aaa;
+    padding: 10px;
     margin-bottom: 20px;
   }
 }

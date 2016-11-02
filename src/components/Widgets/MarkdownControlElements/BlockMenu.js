@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { fromJS } from 'immutable';
 import { Button } from 'react-toolbox/lib/button';
-import { resolveWidget } from '../../../Widgets';
+import { resolveWidget } from '../../Widgets';
 import styles from './BlockMenu.css';
 
 export default class BlockMenu extends Component {
@@ -49,7 +49,7 @@ export default class BlockMenu extends Component {
   }
 
   buttonFor(plugin) {
-    return (<li key={plugin.get('id')}>
+    return (<li key={`plugin-${plugin.get('id')}`}>
       <button onClick={this.handlePlugin(plugin)}>{plugin.get('label')}</button>
     </li>);
   }
@@ -57,8 +57,7 @@ export default class BlockMenu extends Component {
   handleSubmit = (e) => {
     e.preventDefault();
     const { openPlugin, pluginData } = this.state;
-    const toBlock = openPlugin.get('toBlock');
-    this.props.onBlock(toBlock.call(toBlock, pluginData.toJS()));
+    this.props.onBlock(openPlugin, pluginData);
     this.setState({ openPlugin: null, isExpanded: false });
   };
 
@@ -74,7 +73,7 @@ export default class BlockMenu extends Component {
     const value = pluginData.get(field.get('name'));
 
     return (
-      <div className={styles.control} key={field.get('name')}>
+      <div className={styles.control} key={`field-${field.get('name')}`}>
         <label className={styles.label}>{field.get('label')}</label>
         {
           React.createElement(widget.control, {
