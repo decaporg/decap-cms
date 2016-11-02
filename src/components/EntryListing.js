@@ -5,7 +5,8 @@ import { throttle } from 'lodash';
 import bricks from 'bricks.js';
 import Waypoint from 'react-waypoint';
 import history from '../routing/history';
-import Cards from './Cards';
+import { inferTitle } from '../valueObjects/Entry';
+import { Card } from './UI';
 
 export default class EntryListing extends React.Component {
   static propTypes = {
@@ -73,18 +74,38 @@ export default class EntryListing extends React.Component {
   }
 
   cardFor(collection, entry, link) {
-    const cardType = collection.getIn(['card', 'type']) || 'alltype';
-    const card = Cards[cardType] || Cards.unknown;
-    return React.createElement(card, {
-      key: entry.get('slug'),
-      collection,
-      description: entry.getIn(['data', collection.getIn(['card', 'description'])]),
-      image: entry.getIn(['data', collection.getIn(['card', 'image'])]),
-      link,
-      text: entry.get('label') ? entry.get('label') : entry.getIn(['data', collection.getIn(['card', 'text'])]),
-      onClick: history.push.bind(this, link),
-      onImageLoaded: this.updateBricks,
-    });
+    console.log();
+
+    return (
+      // <Card
+      //   key={entry.get('slug')}
+      //   onClick={history.push.bind(this, link)}
+      // >
+      //   <img src={image} onLoad={onImageLoaded} />
+      //   <h1>{text}</h1>
+      //
+      //   {description ? <p>{description}</p> : null}
+      // </Card>
+
+      <Card
+        key={entry.get('slug')}
+        onClick={history.push.bind(this, link)}
+      >
+        <h1>{inferTitle(collection, entry)}</h1>
+      </Card>
+    );
+
+
+    // return React.createElement(card, {
+    //   key: entry.get('slug'),
+    //   collection,
+    //   description: entry.getIn(['data', collection.getIn(['card', 'description'])]),
+    //   image: entry.getIn(['data', collection.getIn(['card', 'image'])]),
+    //   link,
+    //   text: entry.get('label') ? entry.get('label') : entry.getIn(['data', collection.getIn(['card', 'text'])]),
+    //   onClick: history.push.bind(this, link),
+    //   onImageLoaded: this.updateBricks,
+    // });
   }
 
   handleLoadMore() {
