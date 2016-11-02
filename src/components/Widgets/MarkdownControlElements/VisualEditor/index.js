@@ -38,12 +38,13 @@ export default class Editor extends Component {
           inputRules({
             rules: allInputRules.concat(buildInputRules(schema)),
           }),
-          keymap(buildKeymap(schema, {
-            'Mod-z': history.undo,
-            'Mod-y': history.redo,
-          })),
+          keymap(buildKeymap(schema)),
           keymap(baseKeymap),
           history.history(),
+          keymap({
+            'Mod-z': history.undo,
+            'Mod-y': history.redo,
+          }),
         ],
       }),
       onAction: this.handleAction,
