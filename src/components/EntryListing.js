@@ -5,7 +5,7 @@ import { throttle } from 'lodash';
 import bricks from 'bricks.js';
 import Waypoint from 'react-waypoint';
 import history from '../routing/history';
-import { inferTitle } from '../valueObjects/Entry';
+import { inferTitle, inferBody, inferImage } from '../valueObjects/Entry';
 import { Card } from './UI';
 
 export default class EntryListing extends React.Component {
@@ -74,8 +74,8 @@ export default class EntryListing extends React.Component {
   }
 
   cardFor(collection, entry, link) {
-    console.log();
-
+    const image = inferImage(collection, entry);
+    const title = inferTitle(collection, entry);
     return (
       // <Card
       //   key={entry.get('slug')}
@@ -91,7 +91,9 @@ export default class EntryListing extends React.Component {
         key={entry.get('slug')}
         onClick={history.push.bind(this, link)}
       >
-        <h1>{inferTitle(collection, entry)}</h1>
+        { image && <img src={image} alt={title} /> }
+        <h1>{title}</h1>
+        <p>{inferBody(collection, entry)}</p>
       </Card>
     );
 
