@@ -82,8 +82,21 @@ export default class Editor extends Component {
 
   handleHeader = level => (
     () => {
-      const command = setBlockType(schema.nodes.heading, { level });
-      command(this.view.state, this.handleAction);
+      const state = this.view.state;
+      const { $from, to, node } = state.selection;
+      let nodeType = schema.nodes.heading;
+      let attrs = { level };
+      let inHeader = node && node.hasMarkup(nodeType, attrs);
+      if (!inHeader) {
+        inHeader = to <= $from.end() && $from.parent.hasMarkup(nodeType, attrs);
+      }
+      if (inHeader) {
+        nodeType = schema.nodes.paragraph;
+        attrs = {};
+      }
+
+      const command = setBlockType(nodeType, { level });
+      command(state, this.handleAction);
     }
   );
 
