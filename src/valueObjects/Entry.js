@@ -1,3 +1,4 @@
+import { List } from 'immutable';
 import consoleError from '../lib/consoleError';
 
 function tryFields(tries, entry) {
@@ -19,7 +20,7 @@ export function inferTitle(collection, entry) {
     'title',
     'name',
     'label',
-    collection.get('fields').filter(field => field.get('widget') === 'string').getIn([0, 'name'], null),
+    collection.get('fields', List()).filter(field => field.get('widget') === 'string').getIn([0, 'name'], null),
   ], entry);
 
   if (tentativeTitle) return tentativeTitle;
@@ -45,12 +46,13 @@ export function inferBody(collection, entry) {
 }
 
 export function inferImage(collection, entry) {
+  console.log(collection)
   const tentativeImage = tryFields([
     'image',
     'thumbnail',
     'thumb',
     'picture',
-    collection.get('fields').filter(field => field.get('widget') === 'image').getIn([0, 'name'], null),
+    collection.get('fields', List()).filter(field => field.get('widget') === 'image').getIn([0, 'name'], null),
   ], entry);
   if (tentativeImage) return tentativeImage;
   return null;

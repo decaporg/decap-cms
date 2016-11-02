@@ -7,6 +7,7 @@ import Waypoint from 'react-waypoint';
 import history from '../routing/history';
 import { inferTitle, inferBody, inferImage } from '../valueObjects/Entry';
 import { Card } from './UI';
+import styles from './EntryListing.css';
 
 export default class EntryListing extends React.Component {
   static propTypes = {
@@ -91,11 +92,14 @@ export default class EntryListing extends React.Component {
         key={entry.get('slug')}
         onClick={history.push.bind(this, link)}
       >
-        { image && <img src={image} alt={title} /> }
+        { image &&
+        <header className={styles.cardImage} style={{ backgroundImage: `url(${ image })` }} />
+        }
         <h1>{title}</h1>
         <p>{inferBody(collection, entry)}</p>
       </Card>
     );
+
 
 
     // return React.createElement(card, {

@@ -1,0 +1,12 @@
+.card {
+  width: 240px;
+  cursor: pointer;
+}
+
+.cardImage {
+  width: 240px;
+  height: 135px;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
