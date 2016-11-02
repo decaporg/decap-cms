@@ -5,10 +5,9 @@ import { loadEntries } from '../actions/entries';
 import { selectEntries } from '../reducers';
 import { Loader } from '../components/UI';
 import EntryListing from '../components/EntryListing';
-import styles from './CollectionPage.css';
-import CollectionPageHOC from './editorialWorkflow/CollectionPageHOC';
+import styles from './breakpoints.css';
 
-class DashboardPage extends React.Component {
+class CollectionPage extends React.Component {
 
   static propTypes = {
     collection: ImmutablePropTypes.map.isRequired,
@@ -59,12 +58,6 @@ class DashboardPage extends React.Component {
   }
 }
 
-/*
- * Instead of checking the publish mode everywhere to dispatch & render the additional editorial workflow stuff,
- * We delegate it to a Higher Order Component
- */
-DashboardPage = CollectionPageHOC(DashboardPage); // eslint-disable-line
-
 
 function mapStateToProps(state, ownProps) {
   const { collections } = state;
@@ -77,4 +70,4 @@ function mapStateToProps(state, ownProps) {
   return { slug, collection, collections, page, entries };
 }
 
-export default connect(mapStateToProps)(DashboardPage);
+export default connect(mapStateToProps)(CollectionPage);
