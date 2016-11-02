@@ -13,6 +13,16 @@ import { buildKeymap } from './keymap';
 import Toolbar from '../Toolbar';
 import styles from './index.css';
 
+function processUrl(url) {
+  if (url.match(/^(https?:\/\/|mailto:|\/)/)) {
+    return url;
+  }
+  if (url.match(/^[^\/]+\.[^\/]+/)) {
+    return `https://${ url }`;
+  }
+  return `/${ url }`;
+}
+
 function buildInputRules(schema) {
   let result = [], type;
   if (type = schema.nodes.blockquote) result.push(blockQuoteRule(type));
@@ -21,6 +31,14 @@ function buildInputRules(schema) {
   if (type = schema.nodes.code_block) result.push(codeBlockRule(type));
   if (type = schema.nodes.heading) result.push(headingRule(type, 6));
   return result;
+}
+
+function markActive(state, type) {
+  const { from, to, empty } = state.selection;
+  if (empty) {
+    return type.isInSet(state.storedMarks || state.doc.marksAt(from));
+  }
+  return state.doc.rangeHasMark(from, to, type);
 }
 
 export default class Editor extends Component {
@@ -107,6 +125,15 @@ export default class Editor extends Component {
 
   handleItalic = () => {
     const command = toggleMark(schema.marks.em);
+    command(this.view.state, this.handleAction);
+  };
+
+  handleLink = () => {
+    let url = null;
+    if (!markActive(this.view.state, schema.marks.link)) {
+      url = prompt('Link URL:');
+    }
+    const command = toggleMark(schema.marks.link, { href: url ? processUrl(url) : null });
     command(this.view.state, this.handleAction);
   };
 
