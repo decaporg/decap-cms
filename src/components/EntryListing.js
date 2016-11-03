@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { Map } from 'immutable';
 import { throttle } from 'lodash';
 import bricks from 'bricks.js';
 import Waypoint from 'react-waypoint';
@@ -12,10 +11,7 @@ import styles from './EntryListing.css';
 export default class EntryListing extends React.Component {
   static propTypes = {
     children: PropTypes.node.isRequired,
-    collections: PropTypes.oneOfType([
-      ImmutablePropTypes.map,
-      ImmutablePropTypes.iterable,
-    ]).isRequired,
+    collection: ImmutablePropTypes.map.isRequired,
     entries: ImmutablePropTypes.list,
     onPaginate: PropTypes.func.isRequired,
     page: PropTypes.number,
@@ -123,18 +119,10 @@ export default class EntryListing extends React.Component {
   };
 
   renderCards = () => {
-    const { collections, entries } = this.props;
-    if (Map.isMap(collections)) {
-      const collectionName = collections.get('name');
-      return entries.map((entry) => {
-        const path = `/collections/${ collectionName }/entries/${ entry.get('slug') }`;
-        return this.cardFor(collections, entry, path);
-      });
-    }
+    const { collection, entries } = this.props;
+    const collectionName = collection.get('name');
     return entries.map((entry) => {
-      const collection = collections
-        .filter(collection => collection.get('name') === entry.get('collection')).first();
-      const path = `/collections/${ collection.get('name') }/entries/${ entry.get('slug') }`;
+      const path = `/collections/${ collectionName }/entries/${ entry.get('slug') }`;
       return this.cardFor(collection, entry, path);
     });
   };
