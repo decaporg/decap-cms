@@ -46,7 +46,6 @@ export function inferBody(collection, entry) {
 }
 
 export function inferImage(collection, entry) {
-  console.log(collection)
   const tentativeImage = tryFields([
     'image',
     'thumbnail',
