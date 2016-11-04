@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { Schema } from 'prosemirror-model';
 import { EditorState } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
@@ -8,7 +8,6 @@ import {
   inputRules, allInputRules,
 } from 'prosemirror-inputrules';
 import { keymap } from 'prosemirror-keymap';
-import { replaceWith } from 'prosemirror-transform';
 import { schema, defaultMarkdownSerializer } from 'prosemirror-markdown';
 import { baseKeymap, setBlockType, toggleMark } from 'prosemirror-commands';
 import registry from '../../../../lib/registry';
@@ -28,13 +27,23 @@ function processUrl(url) {
   return `/${ url }`;
 }
 
+const ruleset = {
+  blockquote: [blockQuoteRule],
+  ordered_list: [orderedListRule],
+  bullet_list: [bulletListRule],
+  code_block: [codeBlockRule],
+  heading: [headingRule, 6],
+};
+
 function buildInputRules(schema) {
-  let result = [], type;
-  if (type = schema.nodes.blockquote) result.push(blockQuoteRule(type));
-  if (type = schema.nodes.ordered_list) result.push(orderedListRule(type));
-  if (type = schema.nodes.bullet_list) result.push(bulletListRule(type));
-  if (type = schema.nodes.code_block) result.push(codeBlockRule(type));
-  if (type = schema.nodes.heading) result.push(headingRule(type, 6));
+  const result = [];
+  for (const rule in ruleset) {
+    const type = schema.nodes[rule];
+    if (type) {
+      const fn = ruleset[rule];
+      result.push(fn[0].apply(fn.slice(1)));
+    }
+  }
   return result;
 }
 
@@ -93,16 +102,17 @@ export default class Editor extends Component {
     this.state = {
       plugins,
       schema: s,
-      parser: createMarkdownParser(s),
+      parser: createMarkdownParser(s, plugins),
       serializer: createSerializer(s, plugins),
     };
   }
 
   componentDidMount() {
     const { schema, parser } = this.state;
+    const doc = parser.parse(this.props.value || '');
     this.view = new EditorView(this.ref, {
       state: EditorState.create({
-        doc: parser.parse(this.props.value || ''),
+        doc,
         schema,
         plugins: [
           inputRules({
@@ -235,3 +245,12 @@ export default class Editor extends Component {
     </div>);
   }
 }
+
+Editor.propTypes = {
+  onAddMedia: PropTypes.func.isRequired,
+  onRemoveMedia: PropTypes.func.isRequired,
+  getMedia: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
+  onMode: PropTypes.func.isRequired,
+  value: PropTypes.node,
+};
