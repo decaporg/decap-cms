@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { ScrollSyncPane } from '../ScrollSync';
 import registry from '../../lib/registry';
-import Collection from '../../valueObjects/Collection';
 import { resolveWidget } from '../Widgets';
+import { selectTemplateName } from '../../reducers/collections';
 import Preview from './Preview';
 import styles from './PreviewPane.css';
 
@@ -28,8 +28,8 @@ export default class PreviewPane extends React.Component {
 
   renderPreview() {
     const { entry, collection } = this.props;
-    const collectionModel = new Collection(collection);
-    const component = registry.getPreviewTemplate(collectionModel.templateName(entry.get('slug'))) || Preview;
+    const component = registry.getPreviewTemplate(selectTemplateName(collection, entry.get('slug'))) || Preview;
+
     const previewProps = {
       ...this.props,
       widgetFor: this.widgetFor,

@@ -1,6 +1,6 @@
-import { createEntry } from '../../../valueObjects/Entry';
 import _ from 'lodash';
-import Collection from '../../../valueObjects/Collection';
+import { createEntry } from '../../../valueObjects/Entry';
+import { selectEntrySlug } from '../../../reducers/collections';
 
 function getSlug(path) {
   const m = path.match(/([^\/]+?)(\.[^\/\.]+)?$/);
@@ -102,12 +102,11 @@ export default class Algolia {
     if (this.entriesCache.collection === collection && this.entriesCache.page === page) {
       return Promise.resolve({ page: this.entriesCache.page, entries: this.entriesCache.entries });
     } else {
-      const collectionModel = new Collection(collection);
       return this.request(`${ this.searchURL }/indexes/${ collection.get('name') }`, {
         params: { page },
       }).then((response) => {
         const entries = response.hits.map((hit) => {
-          const slug = collectionModel.entrySlug(hit.path);
+          const slug = selectEntrySlug(collection, hit.path);
           return createEntry(collection.get('name'), slug, hit.path, { data: hit.data, partial: true });
         });
         this.entriesCache = { collection, pagination: response.page, entries };
