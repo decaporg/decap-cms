@@ -1,6 +1,9 @@
 .card {
   width: 240px;
+  height: 290px;
+  margin-bottom: 10px;
   cursor: pointer;
+  overflow: hidden;
 }
 
 .cardImage {
@@ -9,4 +12,10 @@
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
+}
+
+.cardsGrid {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
 }
