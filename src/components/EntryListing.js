@@ -4,7 +4,7 @@ import { throttle } from 'lodash';
 import bricks from 'bricks.js';
 import Waypoint from 'react-waypoint';
 import history from '../routing/history';
-import { inferTitle, inferBody, inferImage } from '../valueObjects/Entry';
+import { selectFields, selectInferedField } from '../reducers/collections';
 import { Card } from './UI';
 import styles from './EntryListing.css';
 
@@ -55,7 +55,7 @@ export default class EntryListing extends React.Component {
 
   componentDidUpdate(prevProps) {
     if ((prevProps.entries === undefined || prevProps.entries.size === 0)
-      && this.props.entries.size === 0) {
+    && this.props.entries.size === 0) {
       return;
     }
 
@@ -70,46 +70,6 @@ export default class EntryListing extends React.Component {
     this.bricksInstance.pack();
   }
 
-  cardFor(collection, entry, link) {
-    const image = inferImage(collection, entry);
-    const title = inferTitle(collection, entry);
-    return (
-      // <Card
-      //   key={entry.get('slug')}
-      //   onClick={history.push.bind(this, link)}
-      // >
-      //   <img src={image} onLoad={onImageLoaded} />
-      //   <h1>{text}</h1>
-      //
-      //   {description ? <p>{description}</p> : null}
-      // </Card>
-
-      <Card
-        key={entry.get('slug')}
-        onClick={history.push.bind(this, link)}
-      >
-        { image &&
-        <header className={styles.cardImage} style={{ backgroundImage: `url(${ image })` }} />
-        }
-        <h1>{title}</h1>
-        <p>{inferBody(collection, entry)}</p>
-      </Card>
-    );
-
-
-
-    // return React.createElement(card, {
-    //   key: entry.get('slug'),
-    //   collection,
-    //   description: entry.getIn(['data', collection.getIn(['card', 'description'])]),
-    //   image: entry.getIn(['data', collection.getIn(['card', 'image'])]),
-    //   link,
-    //   text: entry.get('label') ? entry.get('label') : entry.getIn(['data', collection.getIn(['card', 'text'])]),
-    //   onClick: history.push.bind(this, link),
-    //   onImageLoaded: this.updateBricks,
-    // });
-  }
-
   handleLoadMore() {
     this.props.onPaginate(this.props.page + 1);
   }
@@ -121,9 +81,33 @@ export default class EntryListing extends React.Component {
   renderCards = () => {
     const { collection, entries } = this.props;
     const collectionName = collection.get('name');
+    // Infered Fields
+    const titleField = selectInferedField(collection, 'title');
+    const descriptionField = selectInferedField(collection, 'description');
+    const imageField = selectInferedField(collection, 'image');
+    const fields = selectFields(collection);
+    const inferedFields = [titleField, descriptionField, imageField];
+    const remainingFields = fields.filter(f => inferedFields.indexOf(f.get('name')) === -1);
+
     return entries.map((entry) => {
       const path = `/collections/${ collectionName }/entries/${ entry.get('slug') }`;
-      return this.cardFor(collection, entry, path);
+      const image = entry.getIn(['data', imageField]);
+      return (
+        <Card key={entry.get('slug')} onClick={history.push.bind(this, path)}>
+          { image &&
+          <header className={styles.cardImage} style={{ backgroundImage: `url(${ image })` }} />
+          }
+          <h1>{entry.getIn(['data', titleField])}</h1>
+          {descriptionField ?
+            <p>{entry.getIn(['data', descriptionField])}</p>
+            : remainingFields.map(f => (
+              <p key={f.get('name')}>
+                <strong>{f.get('label')}:</strong> {entry.getIn(['data', f.get('name')])}
+              </p>
+            ))
+          }
+        </Card>
+      );
     });
   };
 

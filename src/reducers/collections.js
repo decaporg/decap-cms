@@ -1,4 +1,5 @@
 import { OrderedMap, List, fromJS } from 'immutable';
+import consoleError from '../lib/consoleError';
 import { CONFIG_SUCCESS } from '../actions/config';
 import { FILES, FOLDER } from '../constants/collectionTypes';
 
@@ -37,16 +38,22 @@ const inferables = {
     type: 'string',
     secondaryTypes: [],
     synonyms: ['title', 'name', 'label', 'headline'],
+    fallbackToFirstField: true,
+    showError: true,
   },
   description: {
     type: 'string',
-    secondaryTypes: ['markdown'],
+    secondaryTypes: ['text', 'markdown'],
     synonyms: ['shortDescription', 'short_description', 'shortdescription', 'description', 'brief', 'body', 'content'],
+    fallbackToFirstField: false,
+    showError: false,
   },
   image: {
     type: 'image',
-    secondaryTypes: ['string'],
+    secondaryTypes: [],
     synonyms: ['image', 'thumbnail', 'thumb', 'picture', 'avatar'],
+    fallbackToFirstField: false,
+    showError: false,
   },
 };
 
@@ -111,7 +118,7 @@ export const selectAllowNewEntries = collection => selectors[collection.get('typ
 export const selectTemplateName = (collection, slug) => selectors[collection.get('type')].templateName(collection, slug);
 export const selectInferedField = (collection, fieldName) => {
   const inferableField = inferables[fieldName];
-  let key;
+  let field;
 
   // If fieldName is not defined within inferables list, return null
   if (!inferableField) return null;
@@ -120,16 +127,24 @@ export const selectInferedField = (collection, fieldName) => {
 
   // Try to return a field of the specified type with one of the synonyms
   const mainTypeFields = fields.filter(f => f.get('widget') === inferableField.type).map(f => f.get('name'));
-  key = mainTypeFields.filter(f => inferableField.synonyms.indexOf(f) !== -1);
-  if (key) return key;
+  field = mainTypeFields.filter(f => inferableField.synonyms.indexOf(f) !== -1);
+  if (field && field.size > 0) return field.first();
 
   // Try to return a field for each of the specified secondary types
   const secondaryTypeFields = fields.filter(f => inferableField.secondaryTypes.indexOf(f.get('widget')) !== -1).map(f => f.get('name'));
-  key = secondaryTypeFields.filter(f => inferableField.synonyms.indexOf(f) !== -1);
-  if (key) return key;
+  field = secondaryTypeFields.filter(f => inferableField.synonyms.indexOf(f) !== -1);
+  if (field && field.size > 0) return field.first();
 
   // Try to return the first field of the specified type
-  if (mainTypeFields.size > 0) return mainTypeFields.first();
+  if (inferableField.fallbackToFirstField && mainTypeFields.size > 0) return mainTypeFields.first();
+
+  // Coundn't infer the field. Show error and return null.
+  if (inferableField.showError) {
+    consoleError(
+      `The Field ${ fieldName } is missing for the collection “${ collection.get('name') }”`,
+      `Netlify CMS tries to infer the entry ${ fieldName } automatically, but one couldn\'t be found for entries of the collection “${ collection.get('name') }”. Please check your site configuration.`
+    );
+  }
 
   return null;
 };
