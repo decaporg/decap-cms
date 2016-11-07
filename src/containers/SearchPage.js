@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { selectSearchedEntries } from '../reducers';
 import { searchEntries } from '../actions/entries';
 import { Loader } from '../components/UI';
-import EntryListing from '../components/EntryListing';
+import EntryListing from '../components/EntryListing/EntryListing';
 import styles from './breakpoints.css';
 
 class SearchPage extends React.Component {

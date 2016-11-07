@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { loadUnpublishedEntries, updateUnpublishedEntryStatus, publishUnpublishedEntry } from '../../actions/editorialWorkflow';
 import { selectUnpublishedEntries } from '../../reducers';
 import { EDITORIAL_WORKFLOW, status } from '../../constants/publishModes';
-import UnpublishedListing from '../../components/UnpublishedListing';
+import UnpublishedListing from '../../components/UnpublishedListing/UnpublishedListing';
 
 class unpublishedEntriesPanel extends Component {
   static propTypes = {

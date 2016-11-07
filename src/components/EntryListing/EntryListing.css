@@ -1,16 +1,16 @@
 .card {
-  width: 240px;
-  height: 290px;
-  margin-bottom: 10px;
-  cursor: pointer;
   overflow: hidden;
+  margin-bottom: 10px;
+  max-height: 290px;
+  width: 240px;
+  cursor: pointer;
 }
 
 .cardImage {
   width: 240px;
   height: 135px;
-  background-size: cover;
   background-position: center center;
+  background-size: cover;
   background-repeat: no-repeat;
 }
 

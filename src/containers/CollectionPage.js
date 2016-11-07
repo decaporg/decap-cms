@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { loadEntries } from '../actions/entries';
 import { selectEntries } from '../reducers';
 import { Loader } from '../components/UI';
-import EntryListing from '../components/EntryListing';
+import EntryListing from '../components/EntryListing/EntryListing';
 import styles from './breakpoints.css';
 
 class CollectionPage extends React.Component {

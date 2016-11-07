@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import Waypoint from 'react-waypoint';
-import history from '../routing/history';
-import { selectFields, selectInferedField } from '../reducers/collections';
-import { Card } from './UI';
+import history from '../../routing/history';
+import { selectFields, selectInferedField } from '../../reducers/collections';
+import { Card } from '../UI';
 import styles from './EntryListing.css';
 
 export default class EntryListing extends React.Component {
