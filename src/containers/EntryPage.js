@@ -11,6 +11,7 @@ import {
 } from '../actions/entries';
 import { cancelEdit } from '../actions/editor';
 import { addMedia, removeMedia } from '../actions/media';
+import { openSidebar } from '../actions/globalUI';
 import { selectEntry, getMedia } from '../reducers';
 import { selectFields } from '../reducers/collections';
 import EntryEditor from '../components/EntryEditor/EntryEditor';
@@ -32,6 +33,7 @@ class EntryPage extends React.Component {
     persistEntry: PropTypes.func.isRequired,
     removeMedia: PropTypes.func.isRequired,
     cancelEdit: PropTypes.func.isRequired,
+    openSidebar: PropTypes.func.isRequired,
     fields: ImmutablePropTypes.list.isRequired,
     slug: PropTypes.string,
     newEntry: PropTypes.bool.isRequired,
@@ -39,6 +41,7 @@ class EntryPage extends React.Component {
 
   componentDidMount() {
     const { entry, newEntry, collection, slug, loadEntry } = this.props;
+    this.props.openSidebar();
     if (newEntry) {
       createEmptyDraft(collection);
     } else {
@@ -136,5 +139,6 @@ export default connect(
     discardDraft,
     persistEntry,
     cancelEdit,
+    openSidebar,
   }
 )(entryPageHOC(EntryPage));

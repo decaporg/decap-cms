@@ -17,7 +17,7 @@ export default class AppHeader extends React.Component {
     commands: PropTypes.array.isRequired, // eslint-disable-line
     defaultCommands: PropTypes.array.isRequired, // eslint-disable-line
     runCommand: PropTypes.func.isRequired,
-    toggleNavDrawer: PropTypes.func.isRequired,
+    toggleDrawer: PropTypes.func.isRequired,
     onCreateEntryClick: PropTypes.func.isRequired,
     onLogoutClick: PropTypes.func.isRequired,
   };
@@ -59,7 +59,7 @@ export default class AppHeader extends React.Component {
       commands,
       defaultCommands,
       runCommand,
-      toggleNavDrawer,
+      toggleDrawer,
       onLogoutClick,
     } = this.props;
 
@@ -88,7 +88,7 @@ export default class AppHeader extends React.Component {
             </Menu>
           </div>
         }
-        onLeftIconClick={toggleNavDrawer}
+        onLeftIconClick={toggleDrawer}
         onRightIconClick={this.handleRightIconClick}
       >
         <IndexLink to="/">

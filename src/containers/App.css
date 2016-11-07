@@ -1,19 +1,18 @@
 @import '../components/UI/theme.css';
+.root {
+  margin-top: 64px;
+}
 
+.sidebar {
+  width: 200px;
+  background-color: #fff
+}
 .nav {
   display: block;
   padding: 1rem;
 
   & .heading {
     border: none;
-  }
-}
-
-.navDrawer {
-  max-width: 240px !important;
-
-  & .drawerContent {
-    max-width: 240px !important;
   }
 }
 
