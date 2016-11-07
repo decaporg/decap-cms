@@ -36,7 +36,11 @@ export default class EntryListing extends React.Component {
       const title = label || entry.getIn(['data', titleField]);
       const image = entry.getIn(['data', imageField]);
       return (
-        <Card key={entry.get('slug')} onClick={history.push.bind(this, path)} className={styles.card}>
+        <Card
+          key={entry.get('slug')}
+          onClick={history.push.bind(this, path)} // eslint-disable-line
+          className={styles.card}
+        >
           { image &&
           <header className={styles.cardImage} style={{ backgroundImage: `url(${ image })` }} />
           }
