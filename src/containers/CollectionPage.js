@@ -44,7 +44,7 @@ class CollectionPage extends React.Component {
     return (<div className={styles.root}>
       {entries ?
         <EntryListing
-          collection={collection}
+          collections={collection}
           entries={entries}
           page={page}
           onPaginate={this.handleLoadMore}
