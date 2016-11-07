@@ -1,4 +1,4 @@
-import { OrderedMap, List, fromJS } from 'immutable';
+import { OrderedMap, fromJS } from 'immutable';
 import consoleError from '../lib/consoleError';
 import { CONFIG_SUCCESS } from '../actions/config';
 import { FILES, FOLDER } from '../constants/collectionTypes';
@@ -6,9 +6,9 @@ import { FILES, FOLDER } from '../constants/collectionTypes';
 const hasProperty = (config, property) => ({}.hasOwnProperty.call(config, property));
 
 const collections = (state = null, action) => {
+  const configCollections = action.payload && action.payload.collections;
   switch (action.type) {
     case CONFIG_SUCCESS:
-      const configCollections = action.payload && action.payload.collections;
       return OrderedMap().withMutations((map) => {
         (configCollections || []).forEach((configCollection) => {
           if (hasProperty(configCollection, 'folder')) {
@@ -118,12 +118,11 @@ export const selectAllowNewEntries = collection => selectors[collection.get('typ
 export const selectTemplateName = (collection, slug) => selectors[collection.get('type')].templateName(collection, slug);
 export const selectInferedField = (collection, fieldName) => {
   const inferableField = inferables[fieldName];
+  const fields = collection.get('fields');
   let field;
 
-  // If fieldName is not defined within inferables list, return null
-  if (!inferableField) return null;
-
-  const fields = collection.get('fields', List());
+  // If colllection has no fields or fieldName is not defined within inferables list, return null
+  if (!fields || !inferableField) return null;
 
   // Try to return a field of the specified type with one of the synonyms
   const mainTypeFields = fields.filter(f => f.get('widget') === inferableField.type).map(f => f.get('name'));

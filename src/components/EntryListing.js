@@ -28,20 +28,22 @@ export default class EntryListing extends React.Component {
     const imageField = selectInferedField(collection, 'image');
     const fields = selectFields(collection);
     const inferedFields = [titleField, descriptionField, imageField];
-    const remainingFields = fields.filter(f => inferedFields.indexOf(f.get('name')) === -1);
+    const remainingFields = fields && fields.filter(f => inferedFields.indexOf(f.get('name')) === -1);
 
     return entries.map((entry) => {
       const path = `/collections/${ collectionName }/entries/${ entry.get('slug') }`;
+      const label = entry.get('label');
+      const title = label || entry.getIn(['data', titleField]);
       const image = entry.getIn(['data', imageField]);
       return (
         <Card key={entry.get('slug')} onClick={history.push.bind(this, path)} className={styles.card}>
           { image &&
           <header className={styles.cardImage} style={{ backgroundImage: `url(${ image })` }} />
           }
-          <h1>{entry.getIn(['data', titleField])}</h1>
+          <h1>{title}</h1>
           {descriptionField ?
             <p>{entry.getIn(['data', descriptionField])}</p>
-            : remainingFields.map(f => (
+            : remainingFields && remainingFields.map(f => (
               <p key={f.get('name')}>
                 <strong>{f.get('label')}:</strong> {entry.getIn(['data', f.get('name')])}
               </p>
