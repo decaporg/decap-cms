@@ -16,7 +16,7 @@ const collections = (state = null, action) => {
           } else if (hasProperty(configCollection, 'files')) {
             configCollection.type = FILES; // eslint-disable-line no-param-reassign
           } else {
-            throw ('Unknown collection type. Collections can be either Folder based or File based. Please verify your site configuration');
+            throw new Error('Unknown collection type. Collections can be either Folder based or File based. Please verify your site configuration');
           }
           map.set(configCollection.name, fromJS(configCollection));
         });
