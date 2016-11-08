@@ -5,13 +5,12 @@ import { connect } from 'react-redux';
 import { Layout, Panel } from 'react-toolbox/lib/layout';
 import { Navigation } from 'react-toolbox/lib/navigation';
 import { Link } from 'react-toolbox/lib/link';
-import Sidebar from 'react-sidebar';
 import { Notifs } from 'redux-notifications';
 import TopBarProgress from 'react-topbar-progress-indicator';
-import _ from 'lodash';
+import Sidebar from './Sidebar';
 import { loadConfig } from '../actions/config';
 import { loginUser, logoutUser } from '../actions/auth';
-import { openSidebar, toggleSidebar } from '../actions/globalUI';
+import { toggleSidebar } from '../actions/globalUI';
 import { currentBackend } from '../backends/backend';
 import {
   SHOW_COLLECTION,
@@ -45,8 +44,6 @@ class App extends React.Component {
     createNewEntryInCollection: PropTypes.func.isRequired,
     logoutUser: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
-    showSideBar: PropTypes.bool.isRequired,
-    openSidebar: PropTypes.func.isRequired,
     toggleSidebar: PropTypes.func.isRequired,
     navigateToCollection: PropTypes.func.isRequired,
     user: ImmutablePropTypes.map,
@@ -65,20 +62,8 @@ class App extends React.Component {
     </div>);
   }
 
-  state = { sidebarDocked: false };
-
-  componentWillMount() {
-    this.mql = window.matchMedia('(min-width: 1200px)');
-    this.mql.addListener(this.mediaQueryChanged);
-    this.setState({ sidebarDocked: this.mql.matches });
-  }
-
   componentDidMount() {
     this.props.dispatch(loadConfig());
-  }
-
-  componentWillUnmount() {
-    this.mql.removeListener(this.mediaQueryChanged);
   }
 
   handleLogin(credentials) {
@@ -137,19 +122,12 @@ class App extends React.Component {
     return { commands, defaultCommands };
   }
 
-  mediaQueryChanged = _.throttle(() => {
-    this.setState({ sidebarDocked: this.mql.matches });
-  }, 500);
-
-
   render() {
     const {
       user,
       config,
       children,
       collections,
-      showSideBar,
-      openSidebar,
       toggleSidebar,
       runCommand,
       navigateToCollection,
@@ -194,13 +172,7 @@ class App extends React.Component {
     );
 
     return (
-      <Sidebar sidebar={sidebarContent}
-        rootClassName={styles.root}
-        sidebarClassName={styles.sidebar}
-        docked={showSideBar && this.state.sidebarDocked} // ALWAYS can hide sidebar
-        open={showSideBar}
-        onSetOpen={openSidebar}
-      >
+      <Sidebar content={sidebarContent}>
         <Layout theme={styles}>
           <Notifs
             className={styles.notifsContainer}
@@ -233,14 +205,12 @@ function mapStateToProps(state) {
   const { auth, config, collections, globalUI } = state;
   const user = auth && auth.get('user');
   const isFetching = globalUI.get('isFetching');
-  const showSideBar = globalUI.get('showSideBar');
-  return { auth, config, collections, user, isFetching, showSideBar };
+  return { auth, config, collections, user, isFetching };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     dispatch,
-    openSidebar: open => dispatch(openSidebar(open)),
     toggleSidebar: () => dispatch(toggleSidebar()),
     runCommand: (type, payload) => {
       dispatch(runCommand(type, payload));
