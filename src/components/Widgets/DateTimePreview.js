@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
 
-export default function StringPreview({ value }) {
-  return <span>{value}</span>;
+export default function DatePreview({ value }) {
+  return <span>{value ? value.toString() : null}</span>;
 }
 
-StringPreview.propTypes = {
+DatePreview.propTypes = {
   value: PropTypes.node,
 };

@@ -9,7 +9,6 @@ import Preview from './Preview';
 import styles from './PreviewPane.css';
 
 export default class PreviewPane extends React.Component {
-
   componentDidUpdate() {
     this.renderPreview();
   }
