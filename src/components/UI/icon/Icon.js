@@ -5,7 +5,7 @@ const availableIcons = [
   // Font Awesome Editor Icons
   'bold', 'italic', 'list', 'font', 'text-height', 'text-width', 'align-left', 'align-center', 'align-right',
   'align-justify', 'indent-left', 'indent-right', 'list-bullet', 'list-numbered', 'strike', 'underline', 'table',
-  'superscript', 'subscript', 'header', 'h1', 'h2', 'paragraph', 'link', 'unlink', 'quote-left', 'quote-right', 'code',
+  'superscript', 'subscript', 'header', 'h1', 'h2', 'h3', 'paragraph', 'link', 'unlink', 'quote-left', 'quote-right', 'code',
   'picture', 'video',
   // Entypo
   'note', 'note-beamed',
@@ -183,7 +183,7 @@ const availableIcons = [
   'smashing',
   'sweden',
   'db-shape',
-  'logo-db'
+  'logo-db',
 ];
 
 const iconPropType = (props, propName) => {
@@ -191,16 +191,16 @@ const iconPropType = (props, propName) => {
     const value = props[propName];
     if (typeof value !== 'string' || availableIcons.indexOf(value) === -1) {
       return new Error(
-        `Invalid type "${value}" supplied to Icon Component.`
+        `Invalid type "${ value }" supplied to Icon Component.`
       );
     }
   }
 };
 
-const noop = function() {};
+const noop = function () {};
 
 export default function Icon({ style, className = '', type, onClick = noop }) {
-  return <span className={`${styles.root} ${styles[type]} ${className}`} style={style} onClick={onClick} />;
+  return <span className={`${ styles.root } ${ styles[type] } ${ className }`} style={style} onClick={onClick} />;
 }
 
 Icon.propTypes = {

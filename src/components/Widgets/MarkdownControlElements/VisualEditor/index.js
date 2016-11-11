@@ -1,298 +1,256 @@
-import React, { PropTypes } from 'react';
-import _ from 'lodash';
-import { Editor, Raw } from 'slate';
-import PluginDropImages from 'slate-drop-or-paste-images';
-import MarkupIt, { SlateUtils } from 'markup-it';
-import MediaProxy from '../../../../valueObjects/MediaProxy';
-import { emptyParagraphBlock, mediaproxyBlock } from '../constants';
-import { DEFAULT_NODE, SCHEMA } from './schema';
-import { getNodes, getSyntaxes, getPlugins } from '../../richText';
-import StylesMenu from './StylesMenu';
-import BlockTypesMenu from './BlockTypesMenu';
+import React, { Component, PropTypes } from 'react';
+import { Schema } from 'prosemirror-model';
+import { EditorState } from 'prosemirror-state';
+import { EditorView } from 'prosemirror-view';
+import history from 'prosemirror-history';
+import {
+  blockQuoteRule, orderedListRule, bulletListRule, codeBlockRule, headingRule,
+  inputRules, allInputRules,
+} from 'prosemirror-inputrules';
+import { keymap } from 'prosemirror-keymap';
+import { schema, defaultMarkdownSerializer } from 'prosemirror-markdown';
+import { baseKeymap, setBlockType, toggleMark } from 'prosemirror-commands';
+import registry from '../../../../lib/registry';
+import { buildKeymap } from './keymap';
+import createMarkdownParser from './parser';
+import Toolbar from '../Toolbar';
+import BlockMenu from '../BlockMenu';
+import styles from './index.css';
 
-/**
- * Slate Render Configuration
- */
-export default class VisualEditor extends React.Component {
+function processUrl(url) {
+  if (url.match(/^(https?:\/\/|mailto:|\/)/)) {
+    return url;
+  }
+  if (url.match(/^[^\/]+\.[^\/]+/)) {
+    return `https://${ url }`;
+  }
+  return `/${ url }`;
+}
 
-  static propTypes = {
-    onChange: PropTypes.func.isRequired,
-    onAddMedia: PropTypes.func.isRequired,
-    getMedia: PropTypes.func.isRequired,
-    value: PropTypes.string,
-  };
+const ruleset = {
+  blockquote: [blockQuoteRule],
+  ordered_list: [orderedListRule],
+  bullet_list: [bulletListRule],
+  code_block: [codeBlockRule],
+  heading: [headingRule, 6],
+};
 
+function buildInputRules(schema) {
+  const result = [];
+  for (const rule in ruleset) {
+    const type = schema.nodes[rule];
+    if (type) {
+      const fn = ruleset[rule];
+      result.push(fn[0].apply(fn.slice(1)));
+    }
+  }
+  return result;
+}
+
+function markActive(state, type) {
+  const { from, to, empty } = state.selection;
+  if (empty) {
+    return type.isInSet(state.storedMarks || state.doc.marksAt(from));
+  }
+  return state.doc.rangeHasMark(from, to, type);
+}
+
+function schemaWithPlugins(schema, plugins) {
+  let nodeSpec = schema.nodeSpec;
+  plugins.forEach((plugin) => {
+    const attrs = {};
+    plugin.get('fields').forEach((field) => {
+      attrs[field.get('name')] = { default: null };
+    });
+    nodeSpec = nodeSpec.addToEnd(`plugin_${ plugin.get('id') }`, {
+      attrs,
+      group: 'block',
+      parseDOM: [{
+        tag: 'div[data-plugin]',
+        getAttrs(dom) {
+          return JSON.parse(dom.getAttribute('data-plugin'));
+        },
+      }],
+      toDOM(node) {
+        return ['div', { 'data-plugin': JSON.stringify(node.attrs) }, plugin.get('label')];
+      },
+    });
+  });
+
+  return new Schema({
+    nodes: nodeSpec,
+    marks: schema.markSpec,
+  });
+}
+
+function createSerializer(schema, plugins) {
+  const serializer = Object.create(defaultMarkdownSerializer);
+  plugins.forEach((plugin) => {
+    serializer.nodes[`plugin_${ plugin.get('id') }`] = (state, node) => {
+      const toBlock = plugin.get('toBlock');
+      state.write(toBlock.call(plugin, node.attrs));
+    };
+  });
+  return serializer;
+}
+
+export default class Editor extends Component {
   constructor(props) {
     super(props);
-
-    const MarkdownSyntax = getSyntaxes(this.getMedia).markdown;
-    this.markdown = new MarkupIt(MarkdownSyntax);
-
-    SCHEMA.nodes = _.merge(SCHEMA.nodes, getNodes());
-
-    this.blockEdit = false;
-
-    let rawJson;
-    if (props.value !== undefined) {
-      const content = this.markdown.toContent(props.value);
-      rawJson = SlateUtils.encode(content, null, ['mediaproxy'].concat(getPlugins().map(plugin => plugin.id)));
-    } else {
-      rawJson = emptyParagraphBlock;
-    }
+    const plugins = registry.getEditorComponents();
+    const s = schemaWithPlugins(schema, plugins);
     this.state = {
-      state: Raw.deserialize(rawJson, { terse: true }),
+      plugins,
+      schema: s,
+      parser: createMarkdownParser(s, plugins),
+      serializer: createSerializer(s, plugins),
     };
+  }
 
-    this.plugins = [
-      PluginDropImages({
-        applyTransform: (transform, file) => {
-          const mediaProxy = new MediaProxy(file.name, file);
-          props.onAddMedia(mediaProxy);
-          return transform
-            .insertBlock(mediaproxyBlock(mediaProxy));
-        },
+  componentDidMount() {
+    const { schema, parser } = this.state;
+    const doc = parser.parse(this.props.value || '');
+    this.view = new EditorView(this.ref, {
+      state: EditorState.create({
+        doc,
+        schema,
+        plugins: [
+          inputRules({
+            rules: allInputRules.concat(buildInputRules(schema)),
+          }),
+          keymap(buildKeymap(schema)),
+          keymap(baseKeymap),
+          history.history(),
+          keymap({
+            'Mod-z': history.undo,
+            'Mod-y': history.redo,
+          }),
+        ],
       }),
-    ];
+      onAction: this.handleAction,
+    });
   }
 
-  getMedia = (src) => {
-    return this.props.getMedia(src);
-  };
-
-  /**
-   * Slate keeps track of selections, scroll position etc.
-   * So, onChange gets dispatched on every interaction (click, arrows, everything...)
-   * It also have an onDocumentChange, that get's dispatched only when the actual
-   * content changes
-   */
-  handleChange = (state) => {
-    if (this.blockEdit) {
-      this.blockEdit = false;
-    } else {
-      this.setState({ state });
+  handleAction = (action) => {
+    const { schema, serializer } = this.state;
+    const newState = this.view.state.applyAction(action);
+    const md = serializer.serialize(newState.doc);
+    this.props.onChange(md);
+    this.view.updateState(newState);
+    if (newState.selection !== this.state.selection) {
+      this.handleSelection(newState);
     }
+    this.view.focus();
   };
 
-  handleDocumentChange = (document, state) => {
-    const rawJson = Raw.serialize(state, { terse: true });
-    const content = SlateUtils.decode(rawJson);
-    this.props.onChange(this.markdown.toText(content));
-  };
-
-  /**
-   * Toggle marks / blocks when button is clicked
-   */
-  handleMarkStyleClick = (type) => {
-    let { state } = this.state;
-
-    state = state
-      .transform()
-      .toggleMark(type)
-      .apply();
-
-    this.setState({ state });
-  };
-
-  handleBlockStyleClick = (type, isActive, isList) => {
-    let { state } = this.state;
-    let transform = state.transform();
-    const { document } = state;
-
-    // Handle everything but list buttons.
-    if (type != 'unordered_list' && type != 'ordered_list') {
-      if (isList) {
-        transform = transform
-          .setBlock(isActive ? DEFAULT_NODE : type)
-          .unwrapBlock('unordered_list')
-          .unwrapBlock('ordered_list');
-      }
-
-      else {
-        transform = transform
-          .setBlock(isActive ? DEFAULT_NODE : type);
-      }
-    }
-
-    // Handle the extra wrapping required for list buttons.
-    else {
-      const isType = state.blocks.some((block) => {
-        return !!document.getClosest(block, parent => parent.type == type);
-      });
-
-      if (isList && isType) {
-        transform = transform
-          .setBlock(DEFAULT_NODE)
-          .unwrapBlock('unordered_list');
-      } else if (isList) {
-        transform = transform
-          .unwrapBlock(type == 'unordered_list')
-          .wrapBlock(type);
+  handleSelection = (state) => {
+    const { schema, selection } = state;
+    if (selection.from === selection.to) {
+      const { $from } = selection;
+      if ($from.parent && $from.parent.type === schema.nodes.paragraph && $from.parent.textContent === '') {
+        const pos = this.view.coordsAtPos(selection.from);
+        const editorPos = this.view.content.getBoundingClientRect();
+        const selectionPosition = { top: pos.top - editorPos.top, left: pos.left - editorPos.left };
+        this.setState({ showToolbar: false, showBlockMenu: true, selectionPosition });
       } else {
-        transform = transform
-          .setBlock('list_item')
-          .wrapBlock(type);
+        this.setState({ showToolbar: false, showBlockMenu: false });
       }
-    }
-
-    state = transform.apply();
-    this.setState({ state });
-  };
-
-  /**
-   * When clicking a link, if the selection has a link in it, remove the link.
-   * Otherwise, add a new link with an href and text.
-   *
-   * @param {Event} e
-   */
-
-  handleInlineClick = (type, isActive) => {
-    let { state } = this.state;
-
-    if (type === 'link') {
-      if (!state.isExpanded) return;
-
-      if (isActive) {
-        state = state
-          .transform()
-          .unwrapInline('link')
-          .apply();
-      }
-
-      else {
-        const href = window.prompt('Enter the URL of the link:', 'http://www.'); // eslint-disable-line
-        state = state
-          .transform()
-          .wrapInline({
-            type: 'link',
-            data: { href },
-          })
-          .collapseToEnd()
-          .apply();
-      }
-    }
-    this.setState({ state });
-  };
-
-  handleBlockTypeClick = (type) => {
-    let { state } = this.state;
-
-    state = state
-      .transform()
-      .insertBlock({
-        type,
-        isVoid: true,
-      })
-      .apply();
-
-    this.setState({ state }, this.focusAndAddParagraph);
-  };
-
-  handlePluginClick = (type, data) => {
-    let { state } = this.state;
-
-    state = state
-      .transform()
-      .insertInline({
-        type,
-        data,
-        isVoid: true,
-      })
-      .collapseToEnd()
-      .insertBlock(DEFAULT_NODE)
-      .focus()
-      .apply();
-
-    this.setState({ state });
-  };
-
-  handleImageClick = (mediaProxy) => {
-    let { state } = this.state;
-    this.props.onAddMedia(mediaProxy);
-
-    state = state
-      .transform()
-      .insertBlock(mediaproxyBlock(mediaProxy))
-      .apply();
-
-    this.setState({ state });
-  };
-
-  focusAndAddParagraph = () => {
-    const { state } = this.state;
-    const blocks = state.document.getBlocks();
-    const last = blocks.last();
-    const normalized = state
-      .transform()
-      .focus()
-      .collapseToEndOf(last)
-      .splitBlock()
-      .setBlock(DEFAULT_NODE)
-      .apply({
-        snapshot: false,
-      });
-    this.setState({ state: normalized });
-  };
-
-  handleKeyDown = (evt) => {
-    if (evt.shiftKey && evt.key === 'Enter') {
-      this.blockEdit = true;
-      let { state } = this.state;
-      state = state
-        .transform()
-        .insertText('\n')
-        .apply();
-
-      this.setState({ state });
+    } else {
+      const pos = this.view.coordsAtPos(selection.from);
+      const editorPos = this.view.content.getBoundingClientRect();
+      const selectionPosition = { top: pos.top - editorPos.top, left: pos.left - editorPos.left };
+      this.setState({ showToolbar: true, showBlockMenu: false, selectionPosition });
     }
   };
 
-  renderBlockTypesMenu = () => {
-    const currentBlock = this.state.state.blocks.get(0);
-    const isOpen = (this.props.value !== undefined && currentBlock.isEmpty && currentBlock.type !== 'horizontal-rule');
-
-    return (
-      <BlockTypesMenu
-        isOpen={isOpen}
-        plugins={getPlugins()}
-        onClickBlock={this.handleBlockTypeClick}
-        onClickPlugin={this.handlePluginClick}
-        onClickImage={this.handleImageClick}
-      />
-    );
+  handleRef = (ref) => {
+    this.ref = ref;
   };
 
-  renderStylesMenu() {
-    const { state } = this.state;
-    const isOpen = !(state.isBlurred || state.isCollapsed);
+  handleHeader = level => (
+    () => {
+      const { schema } = this.state;
+      const state = this.view.state;
+      const { $from, to, node } = state.selection;
+      let nodeType = schema.nodes.heading;
+      let attrs = { level };
+      let inHeader = node && node.hasMarkup(nodeType, attrs);
+      if (!inHeader) {
+        inHeader = to <= $from.end() && $from.parent.hasMarkup(nodeType, attrs);
+      }
+      if (inHeader) {
+        nodeType = schema.nodes.paragraph;
+        attrs = {};
+      }
 
-    return (
-      <StylesMenu
-        isOpen={isOpen}
-        marks={this.state.state.marks}
-        blocks={this.state.state.blocks}
-        inlines={this.state.state.inlines}
-        onClickMark={this.handleMarkStyleClick}
-        onClickInline={this.handleInlineClick}
-        onClickBlock={this.handleBlockStyleClick}
-      />
-    );
-  }
+      const command = setBlockType(nodeType, { level });
+      command(state, this.handleAction);
+    }
+  );
+
+  handleBold = () => {
+    const command = toggleMark(this.state.schema.marks.strong);
+    command(this.view.state, this.handleAction);
+  };
+
+  handleItalic = () => {
+    const command = toggleMark(this.state.schema.marks.em);
+    command(this.view.state, this.handleAction);
+  };
+
+  handleLink = () => {
+    let url = null;
+    if (!markActive(this.view.state, this.state.schema.marks.link)) {
+      url = prompt('Link URL:');
+    }
+    const command = toggleMark(this.state.schema.marks.link, { href: url ? processUrl(url) : null });
+    command(this.view.state, this.handleAction);
+  };
+
+  handleBlock = (plugin, data) => {
+    const { schema } = this.state;
+    const nodeType = schema.nodes[`plugin_${ plugin.get('id') }`];
+    this.view.props.onAction(this.view.state.tr.replaceSelection(nodeType.create(data.toJS())).action());
+  };
+
+  handleToggle = () => {
+    this.props.onMode('raw');
+  };
 
   render() {
-    return (
-      <div>
-        {this.renderStylesMenu()}
-        {this.renderBlockTypesMenu()}
-        <Editor
-          placeholder={'Enter some rich text...'}
-          state={this.state.state}
-          schema={SCHEMA}
-          plugins={this.plugins}
-          onChange={this.handleChange}
-          onKeyDown={this.handleKeyDown}
-          onDocumentChange={this.handleDocumentChange}
-        />
-      </div>
-    );
+    const { onAddMedia, onRemoveMedia, getMedia } = this.props;
+    const { plugins, showToolbar, showBlockMenu, selectionPosition } = this.state;
+
+    return (<div className={styles.editor}>
+      <Toolbar
+        isOpen={showToolbar}
+        selectionPosition={selectionPosition}
+        onH1={this.handleHeader(1)}
+        onH2={this.handleHeader(2)}
+        onBold={this.handleBold}
+        onItalic={this.handleItalic}
+        onLink={this.handleLink}
+        onToggleMode={this.handleToggle}
+      />
+      <BlockMenu
+        isOpen={showBlockMenu}
+        selectionPosition={selectionPosition}
+        plugins={plugins}
+        onBlock={this.handleBlock}
+        onAddMedia={onAddMedia}
+        onRemoveMedia={onRemoveMedia}
+        getMedia={getMedia}
+      />
+      <div ref={this.handleRef} />
+    </div>);
   }
 }
+
+Editor.propTypes = {
+  onAddMedia: PropTypes.func.isRequired,
+  onRemoveMedia: PropTypes.func.isRequired,
+  getMedia: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
+  onMode: PropTypes.func.isRequired,
+  value: PropTypes.node,
+};

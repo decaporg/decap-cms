@@ -2872,6 +2872,10 @@ extend@^3.0.0, extend@~3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/extend/-/extend-3.0.0.tgz#5a474353b9f3353ddd8176dfd37b91c83a46f1d4"
 
+extending-char@^1.0.0:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/extending-char/-/extending-char-1.0.1.tgz#4c6c0eee3658a49df1600b32fc73876f418c7c6c"
+
 extglob@^0.3.1:
   version "0.3.2"
   resolved "https://registry.yarnpkg.com/extglob/-/extglob-0.3.2.tgz#2e18ff3d2f49ab2765cec9023f011daa8d8349a1"
@@ -4733,6 +4737,12 @@ liftoff@^2.2.0:
     rechoir "^0.6.2"
     resolve "^1.1.7"
 
+linkify-it@~1.2.2:
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/linkify-it/-/linkify-it-1.2.4.tgz#0773526c317c8fd13bd534ee1d180ff88abf881a"
+  dependencies:
+    uc.micro "^1.0.1"
+
 lint-staged@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/lint-staged/-/lint-staged-3.1.0.tgz#4bb3da3b98135b0a076606c5e4f129af034bfe48"
@@ -5271,6 +5281,16 @@ map-obj@^1.0.0, map-obj@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/map-obj/-/map-obj-1.0.1.tgz#d933ceb9205d82bdcf4886f6742bdc2b4dea146d"
 
+markdown-it@^6.0.4:
+  version "6.1.1"
+  resolved "https://registry.yarnpkg.com/markdown-it/-/markdown-it-6.1.1.tgz#ced037f4473ee9f5153ac414f77dc83c91ba927c"
+  dependencies:
+    argparse "^1.0.7"
+    entities "~1.1.1"
+    linkify-it "~1.2.2"
+    mdurl "~1.0.1"
+    uc.micro "^1.0.1"
+
 marked-terminal@^1.6.2:
   version "1.6.2"
   resolved "https://registry.yarnpkg.com/marked-terminal/-/marked-terminal-1.6.2.tgz#44c128d69b5d9776c848314cdf69d4ec96322973"
@@ -5309,6 +5329,10 @@ math-expression-evaluator@^1.2.14:
   resolved "https://registry.yarnpkg.com/math-expression-evaluator/-/math-expression-evaluator-1.2.14.tgz#39511771ed9602405fba9affff17eb4d2a3843ab"
   dependencies:
     lodash.indexof "^4.0.5"
+
+mdurl@~1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/mdurl/-/mdurl-1.0.1.tgz#fe85b2ec75a59037f2adfec100fd6c601761152e"
 
 media-typer@0.3.0:
   version "0.3.0"
@@ -6711,6 +6735,89 @@ proper-lockfile@^1.1.2:
     graceful-fs "^4.1.2"
     retry "^0.10.0"
 
+prosemirror-commands@^0.12.0:
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/prosemirror-commands/-/prosemirror-commands-0.12.0.tgz#d790fe3dbabb5221e4d87e82834835e0f65881b2"
+  dependencies:
+    extending-char "^1.0.0"
+    prosemirror-model "^0.12.0"
+    prosemirror-state "^0.12.0"
+    prosemirror-transform "^0.12.0"
+
+prosemirror-history@^0.12.0:
+  version "0.12.1"
+  resolved "https://registry.yarnpkg.com/prosemirror-history/-/prosemirror-history-0.12.1.tgz#cbcdb536455b6af36bd2ba3ccced5387e5cfbfe1"
+  dependencies:
+    prosemirror-state "^0.12.0"
+    prosemirror-transform "^0.12.0"
+    rope-sequence "^1.2.0"
+
+prosemirror-inputrules@^0.12.0:
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/prosemirror-inputrules/-/prosemirror-inputrules-0.12.0.tgz#2e07b5cb1bfc7007c2b51ea5394303204b4b34df"
+  dependencies:
+    prosemirror-state "^0.12.0"
+    prosemirror-transform "^0.12.0"
+
+prosemirror-keymap@^0.12.0:
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/prosemirror-keymap/-/prosemirror-keymap-0.12.0.tgz#b70645b5d3f5ff4843bc6d26a74fa0022b504221"
+  dependencies:
+    prosemirror-state "^0.12.0"
+    w3c-keyname "^1.1.0"
+
+prosemirror-markdown@^0.12.0:
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/prosemirror-markdown/-/prosemirror-markdown-0.12.0.tgz#7ff8557c159168dcb532833c0b23b5b2866715c8"
+  dependencies:
+    markdown-it "^6.0.4"
+    prosemirror-model "~0.12.0"
+
+prosemirror-model@^0.12.0, prosemirror-model@~0.12.0:
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/prosemirror-model/-/prosemirror-model-0.12.0.tgz#5430c4056f2d3fe87d36de3f73aa9d9d07b0e8a7"
+
+prosemirror-schema-basic@^0.12.0:
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/prosemirror-schema-basic/-/prosemirror-schema-basic-0.12.0.tgz#9af876f8a915e75ba65847c794eebfc0df9f274e"
+  dependencies:
+    prosemirror-model "^0.12.0"
+
+prosemirror-schema-list@^0.12.0:
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/prosemirror-schema-list/-/prosemirror-schema-list-0.12.0.tgz#d93ba425ed202fc113d7b3388e5d9be1f698c276"
+  dependencies:
+    prosemirror-model "^0.12.0"
+    prosemirror-transform "^0.12.0"
+
+prosemirror-schema-table@^0.12.0:
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/prosemirror-schema-table/-/prosemirror-schema-table-0.12.0.tgz#a665dcb66bbd4c0ff2eac492d82991c6c410b5f3"
+  dependencies:
+    prosemirror-model "^0.12.0"
+    prosemirror-state "^0.12.0"
+    prosemirror-transform "^0.12.0"
+
+prosemirror-state@^0.12.0:
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/prosemirror-state/-/prosemirror-state-0.12.0.tgz#16e13d57d91840d0c3c340d47694efabeb77e987"
+  dependencies:
+    prosemirror-model "^0.12.0"
+    prosemirror-transform "^0.12.0"
+
+prosemirror-transform@^0.12.0, prosemirror-transform@^0.12.1:
+  version "0.12.1"
+  resolved "https://registry.yarnpkg.com/prosemirror-transform/-/prosemirror-transform-0.12.1.tgz#69bca7e55976815e59281fbd8af4518f5ab90844"
+  dependencies:
+    prosemirror-model "^0.12.0"
+
+prosemirror-view@^0.12.0:
+  version "0.12.2"
+  resolved "https://registry.yarnpkg.com/prosemirror-view/-/prosemirror-view-0.12.2.tgz#4a48bfe2ae3119b8c0c79166d7cd73e82284c99d"
+  dependencies:
+    prosemirror-model "^0.12.0"
+    prosemirror-state "^0.12.0"
+
 proxy-addr@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/proxy-addr/-/proxy-addr-1.1.2.tgz#b4cc5f22610d9535824c123aef9d3cf73c40ba37"
@@ -7390,6 +7497,10 @@ rollup@^0.36.0:
   resolved "https://registry.yarnpkg.com/rollup/-/rollup-0.36.3.tgz#c89ac479828924ff8f69c1d44541cb4ea2fc11fc"
   dependencies:
     source-map-support "^0.4.0"
+
+rope-sequence@^1.2.0:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/rope-sequence/-/rope-sequence-1.2.1.tgz#7da14c04fdc06f60bacdb9d26936c56265ffee2e"
 
 rsvp@^3.0.13, rsvp@^3.0.18:
   version "3.3.3"
@@ -8297,6 +8408,10 @@ ua-parser-js@^0.7.10, ua-parser-js@^0.7.9:
   version "0.7.10"
   resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.10.tgz#917559ddcce07cbc09ece7d80495e4c268f4ef9f"
 
+uc.micro@^1.0.1:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/uc.micro/-/uc.micro-1.0.3.tgz#7ed50d5e0f9a9fb0a573379259f2a77458d50192"
+
 uglify-js@^2.6, uglify-js@^2.6.1:
   version "2.7.3"
   resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-2.7.3.tgz#39b3a7329b89f5ec507e344c6e22568698ef4868"
@@ -8467,6 +8582,10 @@ vm-browserify@0.0.4:
   resolved "https://registry.yarnpkg.com/vm-browserify/-/vm-browserify-0.0.4.tgz#5d7ea45bbef9e4a6ff65f95438e0a87c357d5a73"
   dependencies:
     indexof "0.0.1"
+
+w3c-keyname@^1.1.0:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/w3c-keyname/-/w3c-keyname-1.1.1.tgz#0bb8566fbba0e414c2b798b696a71e1726967661"
 
 walkdir@0.0.11:
   version "0.0.11"

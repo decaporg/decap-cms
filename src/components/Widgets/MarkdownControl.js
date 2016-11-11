@@ -16,48 +16,49 @@ class MarkdownControl extends React.Component {
     value: PropTypes.node,
   };
 
+  constructor(props) {
+    super(props);
+    this.state = { mode: 'visual' };
+  }
+
   componentWillMount() {
-    this.useRawEditor();
     processEditorPlugins(registry.getEditorComponents());
   }
 
-  useVisualEditor = () => {
-    this.props.switchVisualMode(true);
-  };
-
-  useRawEditor = () => {
-    this.props.switchVisualMode(false);
+  handleMode = (mode) => {
+    this.setState({ mode });
   };
 
   render() {
-    const { editor, onChange, onAddMedia, onRemoveMedia, getMedia, value } = this.props;
-    if (editor.get('useVisualMode')) {
+    const { onChange, onAddMedia, onRemoveMedia, getMedia, value } = this.props;
+    const { mode } = this.state;
+    if (mode === 'visual') {
       return (
         <div className="cms-editor-visual">
-          {null && <button onClick={this.useRawEditor}>Switch to Raw Editor</button>}
           <VisualEditor
             onChange={onChange}
             onAddMedia={onAddMedia}
-            getMedia={getMedia}
-            registeredComponents={editor.get('registeredComponents')}
-            value={value}
-          />
-        </div>
-      );
-    } else {
-      return (
-        <div className="cms-editor-raw">
-          {null && <button onClick={this.useVisualEditor}>Switch to Visual Editor</button>}
-          <RawEditor
-            onChange={onChange}
-            onAddMedia={onAddMedia}
             onRemoveMedia={onRemoveMedia}
+            onMode={this.handleMode}
             getMedia={getMedia}
             value={value}
           />
         </div>
       );
     }
+
+    return (
+      <div className="cms-editor-raw">
+        <RawEditor
+          onChange={onChange}
+          onAddMedia={onAddMedia}
+          onRemoveMedia={onRemoveMedia}
+          onMode={this.handleMode}
+          getMedia={getMedia}
+          value={value}
+        />
+      </div>
+    );
   }
 }
 
