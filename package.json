@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --config webpack.dev.js",
-    "test": "NODE_ENV=test jest",
-    "test:watch": "NODE_ENV=test jest --watch",
+    "test": "jest",
+    "test:watch": "jest --watch",
     "build": "NODE_ENV=production webpack --config webpack.prod.js",
     "storybook": "start-storybook -p 9001",
     "storybook-build": "build-storybook -o dist",
