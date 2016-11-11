@@ -57,7 +57,6 @@
     "enzyme": "^2.4.1",
     "eslint": "^3.7.1",
     "eslint-config-netlify": "github:netlify/eslint-config-netlify",
-    "expect": "^1.20.2",
     "exports-loader": "^0.6.3",
     "extract-text-webpack-plugin": "^1.0.1",
     "file-loader": "^0.8.5",
