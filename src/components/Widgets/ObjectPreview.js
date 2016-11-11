@@ -17,7 +17,7 @@ export default class ObjectPreview extends Component {
     const { field } = this.props;
     const fields = field && field.get('fields');
 
-    return <div>{fields && fields.map(f => this.widgetFor(f))}</div>;
+    return <div>{fields ? fields.map(f => this.widgetFor(f)) : null}</div>;
   }
 }
 

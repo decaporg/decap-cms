@@ -1,4 +1,4 @@
-@import "../theme.css";
+@import '../theme.css';
 
 .card {
   composes: base container rounded depth;
@@ -7,8 +7,8 @@
 }
 
 .card > *:not(iframe, video, img, header, footer) {
-  margin-left: 10px;
   margin-right: 10px;
+  margin-left: 10px;
 }
 
 .card > *:not(iframe, video, img, header, footer):first-child {
@@ -19,6 +19,16 @@
   margin-bottom: 10px;
 }
 
-.card > iframe, .card > video, .card > img {
+.card > iframe,
+.card > video,
+.card > img {
   max-width: 100%;
+}
+
+.card h1 {
+  border: none;
+  color: var(--defaultColor);
+  font-size: 18px;
+  margin: 15px 0;
+  padding: 0;
 }

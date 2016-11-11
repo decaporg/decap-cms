@@ -3,6 +3,10 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { resolveWidget } from '../Widgets';
 import styles from './ControlPane.css';
 
+function isHidden(field) {
+  return field.get('widget') === 'hidden';
+}
+
 export default class ControlPane extends Component {
 
   controlFor(field) {
@@ -38,7 +42,7 @@ export default class ControlPane extends Component {
       <div>
         {
           fields.map(field =>
-            <div
+            isHidden(field) ? null : <div
               key={field.get('name')}
               className={styles.widget}
             >

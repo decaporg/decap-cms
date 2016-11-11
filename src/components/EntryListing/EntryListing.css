@@ -1,0 +1,21 @@
+.card {
+  overflow: hidden;
+  margin-bottom: 10px;
+  max-height: 290px;
+  width: 240px;
+  cursor: pointer;
+}
+
+.cardImage {
+  width: 240px;
+  height: 135px;
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.cardsGrid {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+}

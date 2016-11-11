@@ -1,7 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import { resolveWidget } from '../Widgets';
 
-export default class ObjectPreview extends Component {
+export default class ListPreview extends Component {
   widgetFor = (field, value) => {
     const { getMedia } = this.props;
     const widget = resolveWidget(field.get('widget'));
@@ -22,11 +22,11 @@ export default class ObjectPreview extends Component {
       </div>)}</div>) : null;
     }
 
-    return value ? value.join(', ') : null;
+    return <span>{value ? value.join(', ') : null}</span>;
   }
 }
 
-ObjectPreview.propTypes = {
+ListPreview.propTypes = {
   value: PropTypes.node,
   field: PropTypes.node,
   getMedia: PropTypes.func.isRequired,

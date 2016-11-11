@@ -117,6 +117,7 @@
     "react-redux": "^4.4.0",
     "react-router": "^2.5.1",
     "react-router-redux": "^4.0.5",
+    "react-sidebar": "^2.2.1",
     "react-simple-dnd": "^0.1.2",
     "react-sortable": "^1.2.0",
     "react-toolbox": "^1.2.1",

@@ -1,13 +1,17 @@
 import React, { PropTypes } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 
+function isVisible(field) {
+  return field.get('widget') !== 'hidden';
+}
+
 export default function Preview({ collection, fields, widgetFor }) {
   if (!collection || !fields) {
     return null;
   }
   return (
     <div>
-      {fields.map(field => widgetFor(field.get('name')))}
+      {fields.filter(isVisible).map(field => widgetFor(field.get('name')))}
     </div>
   );
 }

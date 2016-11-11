@@ -5,11 +5,13 @@ import { connect } from 'react-redux';
 import { loadUnpublishedEntries, updateUnpublishedEntryStatus, publishUnpublishedEntry } from '../../actions/editorialWorkflow';
 import { selectUnpublishedEntries } from '../../reducers';
 import { EDITORIAL_WORKFLOW, status } from '../../constants/publishModes';
-import UnpublishedListing from '../../components/UnpublishedListing';
+import UnpublishedListing from '../../components/UnpublishedListing/UnpublishedListing';
+import { Loader } from '../../components/UI';
 
 class unpublishedEntriesPanel extends Component {
   static propTypes = {
     isEditorialWorkflow: PropTypes.bool.isRequired,
+    isFetching: PropTypes.bool.isRequired,
     unpublishedEntries: ImmutablePropTypes.map,
     loadUnpublishedEntries: PropTypes.func.isRequired,
     updateUnpublishedEntryStatus: PropTypes.func.isRequired,
@@ -24,9 +26,9 @@ class unpublishedEntriesPanel extends Component {
   }
 
   render() {
-    const { isEditorialWorkflow, unpublishedEntries, updateUnpublishedEntryStatus, publishUnpublishedEntry } = this.props;
+    const { isEditorialWorkflow, isFetching, unpublishedEntries, updateUnpublishedEntryStatus, publishUnpublishedEntry } = this.props;
     if (!isEditorialWorkflow) return null;
-
+    if (isFetching) return <Loader active>Loading Editorial Workflow Entries</Loader>;
     return (
       <UnpublishedListing
         entries={unpublishedEntries}
@@ -42,6 +44,8 @@ function mapStateToProps(state) {
   const returnObj = { isEditorialWorkflow };
 
   if (isEditorialWorkflow) {
+    returnObj.isFetching = state.editorialWorkflow.getIn(['pages', 'isFetching'], false);
+
     /*
      * Generates an ordered Map of the available status as keys.
      * Each key containing a List of available unpubhlished entries

@@ -1,4 +1,9 @@
-import StringPreview from './StringPreview';
+import React, { PropTypes } from 'react';
 
-export default class TextPreview extends StringPreview {
+export default function TextPreview({ value }) {
+  return <span>{value ? value.toString() : null}</span>;
 }
+
+TextPreview.propTypes = {
+  value: PropTypes.node,
+};

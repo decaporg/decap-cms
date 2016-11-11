@@ -2,8 +2,8 @@ import TestRepoBackend from './test-repo/implementation';
 import GitHubBackend from './github/implementation';
 import NetlifyGitBackend from './netlify-git/implementation';
 import { resolveFormat } from '../formats/formats';
+import { selectListMethod, selectEntrySlug, selectEntryPath, selectAllowNewEntries } from '../reducers/collections';
 import { createEntry } from '../valueObjects/Entry';
-import Collection from '../valueObjects/Collection';
 
 class LocalStorageAuthStore {
   storageKey = 'nf-cms-user';
@@ -80,13 +80,12 @@ class Backend {
   }
 
   listEntries(collection) {
-    const collectionModel = new Collection(collection);
-    const listMethod = this.implementation[collectionModel.listMethod()];
+    const listMethod = this.implementation[selectListMethod(collection)];
     return listMethod.call(this.implementation, collection)
       .then(loadedEntries => (
         loadedEntries.map(loadedEntry => createEntry(
           collection.get('name'),
-          collectionModel.entrySlug(loadedEntry.file.path),
+          selectEntrySlug(collection, loadedEntry.file.path),
           loadedEntry.file.path,
           { raw: loadedEntry.data, label: loadedEntry.file.label }
         ))
@@ -99,7 +98,7 @@ class Backend {
   }
 
   getEntry(collection, slug) {
-    return this.implementation.getEntry(collection, slug, new Collection(collection).entryPath(slug))
+    return this.implementation.getEntry(collection, slug, selectEntryPath(collection, slug))
       .then(loadedEntry => this.entryWithFormat(collection, slug)(createEntry(
         collection.get('name'),
         slug,
@@ -150,7 +149,6 @@ class Backend {
   }
 
   persistEntry(config, collection, entryDraft, MediaFiles, options) {
-    const collectionModel = new Collection(collection);
     const newEntry = entryDraft.getIn(['entry', 'newRecord']) || false;
 
     const parsedData = {
@@ -161,11 +159,11 @@ class Backend {
     const entryData = entryDraft.getIn(['entry', 'data']).toJS();
     let entryObj;
     if (newEntry) {
-      if (!collectionModel.allowNewEntries()) {
+      if (!selectAllowNewEntries(collection)) {
         throw (new Error('Not allowed to create new entries in this collection'));
       }
       const slug = slugFormatter(collection.get('slug'), entryDraft.getIn(['entry', 'data']));
-      const path = collectionModel.entryPath(slug);
+      const path = selectEntryPath(collection, slug);
       entryObj = {
         path,
         slug,
