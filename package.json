@@ -35,8 +35,7 @@
   "jest": {
     "moduleNameMapper": {
       "^.+\\.(png|eot|woff|woff2|ttf|svg|gif)$": "<rootDir>/__mocks__/fileLoaderMock.js",
-      "^.+\\.scss$": "<rootDir>/__mocks__/styleLoaderMock.js",
-      "^.+\\.css$": "identity-obj-proxy"
+      "^.+\\.s?css$": "<rootDir>/__mocks__/styleLoaderMock.js"
     }
   },
   "keywords": [
