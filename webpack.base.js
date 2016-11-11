@@ -20,6 +20,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
+        exclude: /node_modules/,
         loader: ExtractTextPlugin.extract('style', 'css?modules&importLoaders=1&&localIdentName=cms__[name]__[local]!postcss'),
       },
       {
