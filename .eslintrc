@@ -8,5 +8,8 @@
         "config": "webpack.dev.js"
       }
     }
+  },
+  "globals": {
+    "CMS_ENV": true
   }
 }

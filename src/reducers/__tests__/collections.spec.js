@@ -13,12 +13,23 @@ describe('collections', () => {
 
   it('should load the collections from the config', () => {
     expect(
-      collections(undefined, configLoaded({ collections: [
-        { name: 'posts', folder: '_posts', fields: [{ name: 'title', widget: 'string' }] },
-      ] }))
+      collections(undefined, configLoaded({
+        collections: [
+          {
+            name: 'posts',
+            folder: '_posts',
+            fields: [{ name: 'title', widget: 'string' }],
+          },
+        ],
+      }))
     ).toEqual(
       OrderedMap({
-        posts: fromJS({ name: 'posts', folder: '_posts', fields: [{ name: 'title', widget: 'string' }] }),
+        posts: fromJS({
+          name: 'posts',
+          folder: '_posts',
+          fields: [{ name: 'title', widget: 'string' }],
+          type: 'folder_based_collection',
+        }),
       })
     );
   });
