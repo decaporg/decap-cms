@@ -1,107 +1,28 @@
-.editor {
-  position: relative;
+.Toolbar {
+  position: absolute;
+  z-index: 1000;
+  display: none;
+  margin: none;
+  padding: none;
+  box-shadow: 1px 1px 5px;
+  list-style: none;
+}
 
-  & h1,
-  & h2,
-  & h3 {
-    margin-bottom: 20px;
-    padding: 0;
-    border-bottom: none;
-    color: #7c8382;
-    text-decoration: none;
-    line-height: 1.45;
-  }
+.Button {
+  display: inline-block;
 
-  & h1 {
-    font-size: 2.5rem;
-  }
-
-  & h2 {
-    font-size: 2rem;
-  }
-
-  & h3 {
-    font-size: 1.8rem;
-  }
-
-  & p {
-    margin-bottom: 20px;
-  }
-
-  & div[data-plugin] {
-    margin-bottom: 20px;
-    padding: 10px;
-    border: 1px solid #aaa;
+  & button {
+    padding: 5px;
+    border: none;
+    border-right: 1px solid #eee;
     background: #fff;
   }
 }
 
-:global {
-  & .ProseMirror {
-    position: relative;
-  }
+.Button:last-child button {
+  border-right: none;
+}
 
-  & .ProseMirror-content {
-    white-space: pre-wrap;
-  }
-
-  & .ProseMirror-drop-target {
-    position: absolute;
-    width: 1px;
-    background: #666;
-    pointer-events: none;
-  }
-
-  & .ProseMirror-content ul,
-  & .ProseMirror-content ol {
-    padding-left: 30px;
-    cursor: default;
-  }
-
-  & .ProseMirror-content blockquote {
-    margin-right: 0;
-    margin-left: 0;
-    padding-left: 1em;
-    border-left: 3px solid #eee;
-  }
-
-  & .ProseMirror-content pre {
-    white-space: pre-wrap;
-  }
-
-  & .ProseMirror-content li {
-    position: relative;
-    pointer-events: none; /* Don't do weird stuff with marker clicks */
-  }
-
-  & .ProseMirror-content li > * {
-    pointer-events: auto;
-  }
-
-  & .ProseMirror-nodeselection *::selection {
-    background: transparent;
-  }
-
-  & .ProseMirror-nodeselection *::-moz-selection {
-    background: transparent;
-  }
-
-  & .ProseMirror-selectednode {
-    outline: 2px solid #8cf;
-  }
-  /* Make sure li selections wrap around markers */
-  & li.ProseMirror-selectednode {
-    outline: none;
-  }
-
-  & li.ProseMirror-selectednode:after {
-    position: absolute;
-    top: -2px;
-    right: -2px;
-    bottom: -2px;
-    left: -32px;
-    border: 2px solid #8cf;
-    content: '';
-    pointer-events: none;
-  }
+.Visible {
+  display: block;
 }
