@@ -4,6 +4,7 @@
   max-height: 290px;
   width: 240px;
   cursor: pointer;
+  margin-left: 15px;
 }
 
 .cardImage {
@@ -17,5 +18,5 @@
 .cardsGrid {
   display: flex;
   flex-flow: row wrap;
-  justify-content: space-around;
+  margin-left: -15px;
 }
