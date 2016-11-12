@@ -40,4 +40,5 @@ module.exports = merge.smart(require('./webpack.base.js'), {
     // Extract CSS
     new ExtractTextPlugin('[name].css', { allChunks: true }),
   ],
+  devTool: 'source-map',
 });

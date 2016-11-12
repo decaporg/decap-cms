@@ -1,6 +1,6 @@
 {
   "name": "netlify-cms",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Netlify CMS lets content editors work on structured content stored in git",
   "main": "index.js",
   "scripts": {
@@ -8,6 +8,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "build": "NODE_ENV=production webpack --config webpack.prod.js",
+    "prepublish": "npm run build",
     "storybook": "start-storybook -p 9001",
     "storybook-build": "build-storybook -o dist",
     "lint": "npm run lint:js & npm run lint:css",
@@ -31,6 +32,7 @@
       "git add"
     ]
   },
+  "files": ["dist/", "README.md"],
   "pre-commit": "lint:staged",
   "jest": {
     "moduleNameMapper": {
@@ -40,7 +42,10 @@
   },
   "keywords": [
     "netlify",
-    "cms"
+    "cms",
+    "content editing",
+    "static site generators",
+    "jamstack"
   ],
   "author": "Netlify",
   "license": "MIT",
