@@ -50,7 +50,7 @@ Add a `config.yml` file to the `/admin` folder and configure your content model:
 
 ```yaml
 backend:
-  name: github-api
+  name: github
   repo: owner/repo # Path to your Github repository
   branch: master # Branch to update (master by default)
 
@@ -65,7 +65,6 @@ collections: # A list of collections the CMS should be able to edit
       - {label: "Title", name: "title", widget: "string", tagname: "h1"}
       - {label: "Body", name: "body", widget: "markdown"}
       - {label: "Foo", name: "foo", widget: "foo"}
-    meta: # Meta data fields. Just like fields, but without any preview element
       - {label: "Publish Date", name: "date", widget: "datetime"}
   - name: "settings"
     label: "Settings"
@@ -130,10 +129,15 @@ content will look in the context of the published site.
 
 Currently these widgets are built-in:
 
-* **string** A basic text input
-* **markdown** A markdown editor
+* **string** A basic string input
+* **text** A text area input
+* **markdown** A markdown editor (both visual and raw mode)
 * **datetime** A date and time input
 * **image** An uploaded image
+* **number** An integer input
+* **object** A compound object, must have an inner `fields` attribute with more fields
+* **list** A list of items. Can have an inner `fields` attribute if each element is an object
+* **hidden** Hidden element - typically only useful with a `default` attribute
 
 
 ## Extending Netlify CMS
@@ -142,6 +146,7 @@ The Netlify CMS exposes an `window.CMS` global object that you can use to regist
 * **registerPreviewStyle** Register a custom stylesheet to use on the preview pane.
 * **regsiterPreviewTemplate** Registers a template for a collection.
 * **registerWidget** lets you register a custom widget.
+* **registerEditorComponent** lets you add a block component to the Markdown editor
 
 **Writing React Components inline**
 
@@ -234,10 +239,44 @@ CMS.registerWidget('categories', CategoriesControl);
 </script>
 ```
 
+### `registerEditorComponent`
 
-## Coming Soon:
+lets your register a block level component for the Markdown editor
 
-More built-in Widgets, CMS registry extendability endpoints, Docs on file formats, internal APIs etc...
+`CMS.registerEditorComponent(definition)`
 
-This is obviously still early days for Netlify CMS, there's a long list of features
-and improvements on the roadmap.
+**Params**
+
+* definition: The component definition, must specify: id, label, fields, patterns, fromBlock, toBlock, toPreview
+
+**Example:**
+
+```js
+CMS.registerEditorComponent({
+  // Internal id of the component
+  id: "youtube",
+  // Visible label
+  label: "Youtube",
+  // Fields the user need to fill out when adding an instance of the component
+  fields: [{name: 'id', label: 'Youtube Video ID', widget: 'string'}],
+  // Pattern to identify a block as being an instance of this component
+  pattern: /^{{<\s?youtube (\S+)\s?>}}/,
+  // Function to extract data elements from the regexp match
+  fromBlock: function(match) {
+    return {
+      id: match[1]
+    };
+  },
+  // Function to create a text block from an instance of this component
+  toBlock: function(obj) {
+    return '{{< youtube ' + obj.id + ' >}}';
+  },
+  // Preview output for this component. Can either be a string or a React component
+  // (Component gives better render performance)
+  toPreview: function(obj) {
+    return (
+      '<img src="http://img.youtube.com/vi/' + obj.id + '/maxresdefault.jpg" alt="Youtube Video"/>'
+    );
+  }
+});
+```
