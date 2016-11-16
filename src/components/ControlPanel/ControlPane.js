@@ -11,7 +11,7 @@ export default class ControlPane extends Component {
 
   controlFor(field) {
     const { entry, fields, getMedia, onChange, onAddMedia, onRemoveMedia } = this.props;
-    const widget = resolveWidget(field.get('widget'));
+    const widget = resolveWidget(field.get('widget' || 'string'));
     const fieldName = field.get('name');
     const value = entry.getIn(['data', fieldName]);
     if (entry.size === 0 || entry.get('partial') === true) return null;
