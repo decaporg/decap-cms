@@ -10,7 +10,7 @@ function isHidden(field) {
 export default class ControlPane extends Component {
 
   controlFor(field) {
-    const { entry, fields, getMedia, onChange, onAddMedia, onRemoveMedia } = this.props;
+    const { entry, getMedia, onChange, onAddMedia, onRemoveMedia } = this.props;
     const widget = resolveWidget(field.get('widget' || 'string'));
     const fieldName = field.get('name');
     const value = entry.getIn(['data', fieldName]);
@@ -41,14 +41,12 @@ export default class ControlPane extends Component {
     return (
       <div>
         {
-          fields.map(field =>
-            isHidden(field) ? null : <div
-              key={field.get('name')}
-              className={styles.widget}
-            >
-              {this.controlFor(field)}
-            </div>
-          )
+          fields.map((field) => {
+            if (isHidden(field)) {
+              return null;
+            }
+            return <div key={field.get('name')} className={styles.widget}>{this.controlFor(field)}</div>;
+          })
         }
       </div>
     );
