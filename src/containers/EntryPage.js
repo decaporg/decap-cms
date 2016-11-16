@@ -40,7 +40,7 @@ class EntryPage extends React.Component {
   };
 
   componentDidMount() {
-    const { entry, newEntry, collection, slug, loadEntry } = this.props;
+    const { entry, newEntry, collection, slug, loadEntry, createEmptyDraft } = this.props;
     this.props.openSidebar();
     if (newEntry) {
       createEmptyDraft(collection);
