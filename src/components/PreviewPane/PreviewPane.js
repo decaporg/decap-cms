@@ -16,7 +16,7 @@ export default class PreviewPane extends React.Component {
   widgetFor = (name) => {
     const { fields, entry, getMedia } = this.props;
     const field = fields.find(f => f.get('name') === name);
-    const widget = resolveWidget(field.get('widget') || 'string');
+    const widget = resolveWidget(field.get('widget'));
     return React.createElement(widget.preview, {
       key: field.get('name'),
       value: entry.getIn(['data', field.get('name')]),

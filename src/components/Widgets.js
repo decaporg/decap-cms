@@ -13,6 +13,8 @@ import MarkdownControl from './Widgets/MarkdownControl';
 import MarkdownPreview from './Widgets/MarkdownPreview';
 import ImageControl from './Widgets/ImageControl';
 import ImagePreview from './Widgets/ImagePreview';
+import DateControl from './Widgets/DateControl';
+import DatePreview from './Widgets/DatePreview';
 import DateTimeControl from './Widgets/DateTimeControl';
 import DateTimePreview from './Widgets/DateTimePreview';
 import ObjectControl from './Widgets/ObjectControl';
@@ -24,10 +26,11 @@ registry.registerWidget('number', NumberControl, NumberPreview);
 registry.registerWidget('list', ListControl, ListPreview);
 registry.registerWidget('markdown', MarkdownControl, MarkdownPreview);
 registry.registerWidget('image', ImageControl, ImagePreview);
+registry.registerWidget('date', DateControl, DatePreview);
 registry.registerWidget('datetime', DateTimeControl, DateTimePreview);
 registry.registerWidget('object', ObjectControl, ObjectPreview);
 registry.registerWidget('unknown', UnknownControl, UnknownPreview);
 
 export function resolveWidget(name) {
-  return registry.getWidget(name) || registry.getWidget('unknown');
+  return registry.getWidget(name || 'string') || registry.getWidget('unknown');
 }
