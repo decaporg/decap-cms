@@ -6989,9 +6989,9 @@ react-hot-loader@^3.0.0-beta.2:
     redbox-react "^1.2.5"
     source-map "^0.4.4"
 
-react-immutable-proptypes@^1.6.0:
-  version "1.7.2"
-  resolved "https://registry.yarnpkg.com/react-immutable-proptypes/-/react-immutable-proptypes-1.7.2.tgz#fb1fdca24e30501617732781f4341b704ef7c320"
+react-immutable-proptypes:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/react-immutable-proptypes/-/react-immutable-proptypes-2.1.0.tgz#023d6f39bb15c97c071e9e60d00d136eac5fa0b4"
 
 react-inspector@^1.1.0:
   version "1.1.0"

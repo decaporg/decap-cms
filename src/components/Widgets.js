@@ -17,6 +17,8 @@ import DateControl from './Widgets/DateControl';
 import DatePreview from './Widgets/DatePreview';
 import DateTimeControl from './Widgets/DateTimeControl';
 import DateTimePreview from './Widgets/DateTimePreview';
+import SelectControl from './Widgets/SelectControl';
+import SelectPreview from './Widgets/SelectPreview';
 import ObjectControl from './Widgets/ObjectControl';
 import ObjectPreview from './Widgets/ObjectPreview';
 
@@ -28,6 +30,7 @@ registry.registerWidget('markdown', MarkdownControl, MarkdownPreview);
 registry.registerWidget('image', ImageControl, ImagePreview);
 registry.registerWidget('date', DateControl, DatePreview);
 registry.registerWidget('datetime', DateTimeControl, DateTimePreview);
+registry.registerWidget('select', SelectControl, SelectPreview);
 registry.registerWidget('object', ObjectControl, ObjectPreview);
 registry.registerWidget('unknown', UnknownControl, UnknownPreview);
 
