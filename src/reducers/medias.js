@@ -1,4 +1,5 @@
 import { Map } from 'immutable';
+import { resolvePath } from '../lib/pathHelper';
 import { ADD_MEDIA, REMOVE_MEDIA } from '../actions/media';
 import MediaProxy from '../valueObjects/MediaProxy';
 
@@ -17,13 +18,14 @@ const medias = (state = Map(), action) => {
 export default medias;
 
 export const getMedia = (publicFolder, state, path) => {
+  // No path provided, skip
+  if (!path) return null;
+
   if (state.has(path)) {
+    // There is already a MediaProxy in memmory for this path. Use it.
     return state.get(path);
   }
 
-  let localPath = path;
-  if (path && path.indexOf('/') === -1) {
-    localPath = `/${ publicFolder }/${ localPath }`;
-  }
-  return new MediaProxy(localPath, null, true);
+  // Create a new MediaProxy (for consistency) and return it.
+  return new MediaProxy(resolvePath(path, publicFolder), null, true);
 };
