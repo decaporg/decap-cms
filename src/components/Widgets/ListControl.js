@@ -24,6 +24,9 @@ export default class ListControl extends Component {
     onChange: PropTypes.func.isRequired,
     value: PropTypes.node,
     field: PropTypes.node,
+    getMedia: PropTypes.func.isRequired,
+    onAddMedia: PropTypes.func.isRequired,
+    onRemoveMedia: PropTypes.func.isRequired,
   };
 
   constructor(props) {
@@ -98,13 +101,13 @@ export default class ListControl extends Component {
 
   renderItem(item, index) {
     const { value, field, getMedia, onAddMedia, onRemoveMedia } = this.props;
-    const { itemStates, draggedItem } = this.state;
+    const { itemStates } = this.state;
     const collapsed = itemStates.getIn([index, 'collapsed']);
     const classNames = [styles.item, collapsed ? styles.collapsed : styles.expanded];
 
     return (<SortableListItem
       key={index}
-      updateState={this.handleSort}
+      updateState={this.handleSort} // eslint-disable-line
       items={value ? value.toJS() : []}
       draggingIndex={this.state.draggingIndex}
       sortId={index}
@@ -131,7 +134,7 @@ export default class ListControl extends Component {
   }
 
   renderListControl() {
-    const { value, field } = this.props;
+    const { value } = this.props;
     return (<div>
       {value && value.map((item, index) => this.renderItem(item, index))}
       <div><button className={styles.addButton} onClick={this.handleAdd}>new</button></div>
