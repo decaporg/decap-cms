@@ -13,7 +13,8 @@ export default class ControlPane extends Component {
     const { entry, getMedia, onChange, onAddMedia, onRemoveMedia } = this.props;
     const widget = resolveWidget(field.get('widget'));
     const fieldName = field.get('name');
-    const value = entry.getIn(['data', fieldName]);
+    const fieldDefaultValue = field.get('default');
+    const value = entry.getIn(['data', fieldName], fieldDefaultValue);
     if (entry.size === 0 || entry.get('partial') === true) return null;
     return (
       <div className={styles.control}>
