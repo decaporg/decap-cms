@@ -34,6 +34,6 @@ registry.registerWidget('select', SelectControl, SelectPreview);
 registry.registerWidget('object', ObjectControl, ObjectPreview);
 registry.registerWidget('unknown', UnknownControl, UnknownPreview);
 
-export function resolveWidget(name) {
+export function resolveWidget(name) { // eslint-disable-line
   return registry.getWidget(name || 'string') || registry.getWidget('unknown');
 }
