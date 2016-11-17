@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import { fromJS } from 'immutable';
 import MarkupIt from 'markup-it';
 import markdownSyntax from 'markup-it/syntaxes/markdown';
 import htmlSyntax from 'markup-it/syntaxes/html';
@@ -64,29 +63,6 @@ function getCleanPaste(e) {
     return resolve(transfer.getData(transfer.types[0]));
   });
 }
-
-const buildtInPlugins = [{
-  label: 'Image',
-  id: 'image',
-  fromBlock: match => match && {
-    image: match[2],
-    alt: match[1],
-  },
-  toBlock: data => `![${ data.alt }](${ data.image })`,
-  toPreview: (data) => {
-    return <img src={data.image} alt={data.alt} />;
-  },
-  pattern: /^!\[([^\]]+)\]\(([^\)]+)\)$/,
-  fields: [{
-    label: 'Image',
-    name: 'image',
-    widget: 'image',
-  }, {
-    label: 'Alt Text',
-    name: 'alt',
-  }],
-}];
-buildtInPlugins.forEach(plugin => registry.registerEditorComponent(plugin));
 
 export default class RawEditor extends React.Component {
   constructor(props) {
@@ -237,7 +213,6 @@ export default class RawEditor extends React.Component {
     if (selection.start !== selection.end && !HAS_LINE_BREAK.test(selection.selected)) {
       try {
         const selectionPosition = this.caretPosition.get(selection.start, selection.end);
-        console.log('pos: %o', selectionPosition);
         this.setState({ showToolbar: true, showBlockMenu: false, selectionPosition });
       } catch (e) {
         this.setState({ showToolbar: false, showBlockMenu: false });
