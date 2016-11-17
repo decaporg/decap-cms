@@ -10,6 +10,7 @@ import styles from './EntryListing.css';
 export default class EntryListing extends React.Component {
   static propTypes = {
     children: PropTypes.node.isRequired,
+    publicFolder: PropTypes.string.isRequired,
     collections: PropTypes.oneOfType([
       ImmutablePropTypes.map,
       ImmutablePropTypes.iterable,
@@ -23,7 +24,7 @@ export default class EntryListing extends React.Component {
     this.props.onPaginate(this.props.page + 1);
   };
 
-  inferFields(collection) {
+  inferFields(collection) { //eslint-disable-line
     const titleField = selectInferedField(collection, 'title');
     const descriptionField = selectInferedField(collection, 'description');
     const imageField = selectInferedField(collection, 'image');
@@ -33,11 +34,14 @@ export default class EntryListing extends React.Component {
     return { titleField, descriptionField, imageField, remainingFields };
   }
 
-  renderCard(collection, entry, inferedFields) {
+  renderCard(collection, entry, inferedFields, publicFolder) {
     const path = `/collections/${ collection.get('name') }/entries/${ entry.get('slug') }`;
     const label = entry.get('label');
     const title = label || entry.getIn(['data', inferedFields.titleField]);
-    const image = entry.getIn(['data', inferedFields.imageField]);
+    let image = entry.getIn(['data', inferedFields.imageField]);
+    if (image && image.indexOf('/') === -1) {
+      image = `/${ publicFolder }/${ image }`;
+    }
     return (
       <Card
         key={entry.get('slug')}
@@ -60,11 +64,11 @@ export default class EntryListing extends React.Component {
     );
   }
   renderCards = () => {
-    const { collections, entries } = this.props;
+    const { collections, entries, publicFolder } = this.props;
 
     if (Map.isMap(collections)) {
       const inferedFields = this.inferFields(collections);
-      return entries.map(entry => this.renderCard(collections, entry, inferedFields));
+      return entries.map(entry => this.renderCard(collections, entry, inferedFields, publicFolder));
     }
     return entries.map((entry) => {
       const collection = collections
