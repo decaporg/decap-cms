@@ -16,10 +16,14 @@ const medias = (state = Map(), action) => {
 
 export default medias;
 
-export const getMedia = (state, path) => {
+export const getMedia = (publicFolder, state, path) => {
   if (state.has(path)) {
     return state.get(path);
-  } else {
-    return new MediaProxy(path, null, true);
   }
+
+  let localPath = path;
+  if (path && path.indexOf('/') === -1) {
+    localPath = `/${ publicFolder }/${ localPath }`;
+  }
+  return new MediaProxy(localPath, null, true);
 };
