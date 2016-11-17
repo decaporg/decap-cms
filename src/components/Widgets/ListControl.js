@@ -13,6 +13,10 @@ ListItem.propTypes = {
 };
 ListItem.displayName = 'list-item';
 
+function valueToString(value) {
+  return value ? value.join(',').replace(/,([^\s]|$)/g, ', $1') : '';
+}
+
 const SortableListItem = sortable(ListItem);
 
 export default class ListControl extends Component {
@@ -20,15 +24,32 @@ export default class ListControl extends Component {
     onChange: PropTypes.func.isRequired,
     value: PropTypes.node,
     field: PropTypes.node,
+    getMedia: PropTypes.func.isRequired,
+    onAddMedia: PropTypes.func.isRequired,
+    onRemoveMedia: PropTypes.func.isRequired,
   };
 
   constructor(props) {
     super(props);
-    this.state = { itemStates: Map() };
+    this.state = { itemStates: Map(), value: valueToString(props.value) };
   }
 
   handleChange = (e) => {
-    this.props.onChange(e.target.value.split(',').map(item => item.trim()));
+    const oldValue = this.state.value;
+    const newValue = e.target.value;
+    const listValue = e.target.value.split(',');
+    if (newValue.match(/,$/) && oldValue.match(/, $/)) {
+      listValue.pop();
+    }
+
+    this.setState({ value: valueToString(listValue) });
+    this.props.onChange(listValue);
+  };
+
+  handleCleanup = (e) => {
+    const listValue = e.target.value.split(',').map(el => el.trim()).filter(el => el);
+    this.setState({ value: valueToString(listValue) });
+    this.props.onChange(listValue);
   };
 
   handleAdd = (e) => {
@@ -80,13 +101,13 @@ export default class ListControl extends Component {
 
   renderItem(item, index) {
     const { value, field, getMedia, onAddMedia, onRemoveMedia } = this.props;
-    const { itemStates, draggedItem } = this.state;
+    const { itemStates } = this.state;
     const collapsed = itemStates.getIn([index, 'collapsed']);
     const classNames = [styles.item, collapsed ? styles.collapsed : styles.expanded];
 
     return (<SortableListItem
       key={index}
-      updateState={this.handleSort}
+      updateState={this.handleSort} // eslint-disable-line
       items={value ? value.toJS() : []}
       draggingIndex={this.state.draggingIndex}
       sortId={index}
@@ -113,7 +134,7 @@ export default class ListControl extends Component {
   }
 
   renderListControl() {
-    const { value, field } = this.props;
+    const { value } = this.props;
     return (<div>
       {value && value.map((item, index) => this.renderItem(item, index))}
       <div><button className={styles.addButton} onClick={this.handleAdd}>new</button></div>
@@ -121,12 +142,18 @@ export default class ListControl extends Component {
   }
 
   render() {
-    const { value, field } = this.props;
+    const { field } = this.props;
+    const { value } = this.state;
 
     if (field.get('fields')) {
       return this.renderListControl();
     }
 
-    return <input type="text" value={value ? value.join(', ') : ''} onChange={this.handleChange} />;
+    return (<input
+      type="text"
+      value={value}
+      onChange={this.handleChange}
+      onBlur={this.handleCleanup}
+    />);
   }
 }

@@ -32,7 +32,10 @@
       "git add"
     ]
   },
-  "files": ["dist/", "README.md"],
+  "files": [
+    "dist/",
+    "README.md"
+  ],
   "pre-commit": "lint:staged",
   "jest": {
     "moduleNameMapper": {
@@ -127,7 +130,7 @@
     "react-datetime": "^2.6.0",
     "react-dom": "^15.1.0",
     "react-hot-loader": "^3.0.0-beta.2",
-    "react-immutable-proptypes": "^1.6.0",
+    "react-immutable-proptypes": "^2.1.0",
     "react-lazy-load": "^3.0.3",
     "react-portal": "^2.2.1",
     "react-pure-render": "^1.0.2",

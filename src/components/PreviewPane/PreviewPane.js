@@ -15,7 +15,7 @@ export default class PreviewPane extends React.Component {
 
   widgetFor = (name) => {
     const { fields, entry, getMedia } = this.props;
-    const field = fields.find(field => field.get('name') === name);
+    const field = fields.find(f => f.get('name') === name);
     const widget = resolveWidget(field.get('widget'));
     return React.createElement(widget.preview, {
       key: field.get('name'),
@@ -23,6 +23,21 @@ export default class PreviewPane extends React.Component {
       field,
       getMedia,
     });
+  };
+
+  handleIframeRef = (ref) => {
+    if (ref) {
+      registry.getPreviewStyles().forEach((style) => {
+        const linkEl = document.createElement('link');
+        linkEl.setAttribute('rel', 'stylesheet');
+        linkEl.setAttribute('href', style);
+        ref.contentDocument.head.appendChild(linkEl);
+      });
+      this.previewEl = document.createElement('div');
+      this.iframeBody = ref.contentDocument.body;
+      this.iframeBody.appendChild(this.previewEl);
+      this.renderPreview();
+    }
   };
 
   renderPreview() {
@@ -42,21 +57,6 @@ export default class PreviewPane extends React.Component {
       , this.previewEl);
   }
 
-  handleIframeRef = (ref) => {
-    if (ref) {
-      registry.getPreviewStyles().forEach((style) => {
-        const linkEl = document.createElement('link');
-        linkEl.setAttribute('rel', 'stylesheet');
-        linkEl.setAttribute('href', style);
-        ref.contentDocument.head.appendChild(linkEl);
-      });
-      this.previewEl = document.createElement('div');
-      this.iframeBody = ref.contentDocument.body;
-      this.iframeBody.appendChild(this.previewEl);
-      this.renderPreview();
-    }
-  };
-
   render() {
     const { collection } = this.props;
     if (!collection) {
@@ -72,7 +72,4 @@ PreviewPane.propTypes = {
   fields: ImmutablePropTypes.list.isRequired,
   entry: ImmutablePropTypes.map.isRequired,
   getMedia: PropTypes.func.isRequired,
-  scrollTop: PropTypes.number,
-  scrollHeight: PropTypes.number,
-  offsetHeight: PropTypes.number,
 };
