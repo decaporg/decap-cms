@@ -11,7 +11,7 @@ import { Loader } from '../../components/UI';
 class unpublishedEntriesPanel extends Component {
   static propTypes = {
     isEditorialWorkflow: PropTypes.bool.isRequired,
-    isFetching: PropTypes.bool.isRequired,
+    isFetching: PropTypes.bool,
     unpublishedEntries: ImmutablePropTypes.map,
     loadUnpublishedEntries: PropTypes.func.isRequired,
     updateUnpublishedEntryStatus: PropTypes.func.isRequired,
