@@ -41,6 +41,7 @@ export default class EntryListing extends React.Component {
     const title = label || entry.getIn(['data', inferedFields.titleField]);
     let image = entry.getIn(['data', inferedFields.imageField]);
     image = resolvePath(image, publicFolder);
+
     return (
       <Card
         key={entry.get('slug')}
@@ -54,8 +55,9 @@ export default class EntryListing extends React.Component {
         {inferedFields.descriptionField ?
           <p>{entry.getIn(['data', inferedFields.descriptionField])}</p>
           : inferedFields.remainingFields && inferedFields.remainingFields.map(f => (
-            <p key={f.get('name')}>
-              <strong>{f.get('label')}:</strong> {entry.getIn(['data', f.get('name')])}
+            <p key={f.get('name')} className={styles.cardList}>
+              <span className={styles.cardListLabel}>{f.get('label')}:</span>{' '}
+              { entry.getIn(['data', f.get('name')], '').toString() }
             </p>
           ))
         }

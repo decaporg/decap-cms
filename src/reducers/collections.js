@@ -44,7 +44,7 @@ const inferables = {
   description: {
     type: 'string',
     secondaryTypes: ['text', 'markdown'],
-    synonyms: ['shortDescription', 'short_description', 'shortdescription', 'description', 'brief', 'body', 'content', 'biography', 'bio'],
+    synonyms: ['shortDescription', 'short_description', 'shortdescription', 'description', 'intro', 'introduction', 'brief', 'body', 'content', 'biography', 'bio'],
     fallbackToFirstField: false,
     showError: false,
   },

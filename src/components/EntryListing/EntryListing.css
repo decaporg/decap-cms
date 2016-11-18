@@ -1,10 +1,10 @@
 .card {
   overflow: hidden;
   margin-bottom: 10px;
+  margin-left: 15px;
   max-height: 290px;
   width: 240px;
   cursor: pointer;
-  margin-left: 15px;
 }
 
 .cardImage {
@@ -19,4 +19,13 @@
   display: flex;
   flex-flow: row wrap;
   margin-left: -15px;
+}
+
+.cardList {
+  margin-bottom: 1.1rem;
+}
+
+.cardListLabel {
+  white-space: nowrap;
+  font-weight: bold;
 }
