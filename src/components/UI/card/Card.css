@@ -3,7 +3,6 @@
 .card {
   composes: base container rounded depth;
   overflow: hidden;
-  width: 240px;
 }
 
 .card > *:not(iframe, video, img, header, footer) {
