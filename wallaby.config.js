@@ -10,7 +10,7 @@ module.exports = wallaby => ({
     'src/**/*.js.snap',
     '!src/**/*.spec.js',
     { pattern: 'src/**/*.css', instrument: false },
-    {pattern: '__mocks__/*.js', instrument: false}
+    { pattern: '__mocks__/*.js', instrument: false },
   ],
 
   tests: ['src/**/*.spec.js'],
