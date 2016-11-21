@@ -10,6 +10,7 @@ module.exports = wallaby => ({
     'src/**/*.js.snap',
     '!src/**/*.spec.js',
     { pattern: 'src/**/*.css', instrument: false },
+    {pattern: '__mocks__/*.js', instrument: false}
   ],
 
   tests: ['src/**/*.spec.js'],
@@ -29,12 +30,7 @@ module.exports = wallaby => ({
   testFramework: 'jest',
 
   setup: () => {
-    wallaby.testFramework.configure({
-      moduleNameMapper: {
-        '^.+\\.(png|eot|woff|woff2|ttf|svg|gif)$': require('path').join(wallaby.localProjectDir, '__mocks__', 'fileLoaderMock.js'),
-        '^.+\\.s?css$': require('path').join(wallaby.localProjectDir, '__mocks__', 'styleLoaderMock.js'),
-      },
-    });
+    wallaby.testFramework.configure(require('./package.json').jest);
   },
 
 });
