@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 
 export default function TextPreview({ value }) {
-  return <span>{value ? value.toString() : null}</span>;
+  return <div>{value ? value.toString() : null}</div>;
 }
 
 TextPreview.propTypes = {

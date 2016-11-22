@@ -22,7 +22,7 @@ export default class ListPreview extends Component {
       </div>)}</div>) : null;
     }
 
-    return <span>{value ? value.join(', ') : null}</span>;
+    return <div>{value ? value.join(', ') : null}</div>;
   }
 }
 
