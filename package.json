@@ -25,11 +25,6 @@
       "eslint --fix",
       "jest --findRelatedTests",
       "git add"
-    ],
-    "*.css": [
-      "stylefmt",
-      "stylelint",
-      "git add"
     ]
   },
   "files": [
