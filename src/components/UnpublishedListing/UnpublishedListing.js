@@ -107,7 +107,7 @@ class UnpublishedListing extends React.Component {
   render() {
     const columns = this.renderColumns(this.props.entries);
     return (
-      <div className={styles.clear}>
+      <div>
         <h5>Editorial Workflow</h5>
         <div className={styles.container}>
           {columns}

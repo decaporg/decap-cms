@@ -4,22 +4,44 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { ScrollSyncPane } from '../ScrollSync';
 import registry from '../../lib/registry';
 import { resolveWidget } from '../Widgets';
-import { selectTemplateName } from '../../reducers/collections';
+import { selectTemplateName, selectInferedField } from '../../reducers/collections';
+import { INFERABLE_FIELDS } from '../../constants/fieldInference';
 import Preview from './Preview';
 import styles from './PreviewPane.css';
 
 export default class PreviewPane extends React.Component {
+
   componentDidUpdate() {
     this.renderPreview();
+  }
+
+  inferedFields = {};
+
+  inferFields() {
+    const titleField = selectInferedField(this.props.collection, 'title');
+    const shortTitleField = selectInferedField(this.props.collection, 'shortTitle');
+    const authorField = selectInferedField(this.props.collection, 'author');
+
+    this.inferedFields = {};
+    if (titleField) this.inferedFields[titleField] = INFERABLE_FIELDS.title;
+    if (shortTitleField) this.inferedFields[shortTitleField] = INFERABLE_FIELDS.shortTitle;
+    if (authorField) this.inferedFields[authorField] = INFERABLE_FIELDS.author;
   }
 
   widgetFor = (name) => {
     const { fields, entry, getMedia } = this.props;
     const field = fields.find(f => f.get('name') === name);
+    let value = entry.getIn(['data', field.get('name')]);
+    const labelledWidgets = ['string', 'text', 'number'];
+    if (Object.keys(this.inferedFields).indexOf(name) !== -1) {
+      value = this.inferedFields[name].defaultPreview(value);
+    } else if (value && labelledWidgets.indexOf(field.get('widget')) !== -1 && value.toString().length < 50) {
+      value = <div><strong>{field.get('label')}:</strong> {value}</div>;
+    }
     const widget = resolveWidget(field.get('widget'));
     return React.createElement(widget.preview, {
       key: field.get('name'),
-      value: entry.getIn(['data', field.get('name')]),
+      value,
       field,
       getMedia,
     });
@@ -43,6 +65,8 @@ export default class PreviewPane extends React.Component {
   renderPreview() {
     const { entry, collection } = this.props;
     const component = registry.getPreviewTemplate(selectTemplateName(collection, entry.get('slug'))) || Preview;
+
+    this.inferFields();
 
     const previewProps = {
       ...this.props,

@@ -1,5 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import { resolveWidget } from '../Widgets';
+import previewStyle from './defaultPreviewStyle';
 
 export default class ListPreview extends Component {
   widgetFor = (field, value) => {
@@ -17,12 +18,14 @@ export default class ListPreview extends Component {
     const { field, value } = this.props;
     const fields = field && field.get('fields');
     if (fields) {
-      return value ? (<div>{value.map((val, index) => <div key={index}>
-        {fields && fields.map(f => this.widgetFor(f, val))}
-      </div>)}</div>) : null;
+      return value ? (<div style={previewStyle}>
+        {value.map((val, index) => <div key={index}>
+          {fields && fields.map(f => this.widgetFor(f, val))}
+        </div>)}
+      </div>) : null;
     }
 
-    return <span>{value ? value.join(', ') : null}</span>;
+    return <div style={previewStyle}>{value ? value.join(', ') : null}</div>;
   }
 }
 

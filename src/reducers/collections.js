@@ -2,6 +2,7 @@ import { OrderedMap, fromJS } from 'immutable';
 import consoleError from '../lib/consoleError';
 import { CONFIG_SUCCESS } from '../actions/config';
 import { FILES, FOLDER } from '../constants/collectionTypes';
+import { INFERABLE_FIELDS } from '../constants/fieldInference';
 
 const hasProperty = (config, property) => ({}.hasOwnProperty.call(config, property));
 
@@ -32,30 +33,6 @@ const formatToExtension = format => ({
   json: 'json',
   html: 'html',
 }[format]);
-
-const inferables = {
-  title: {
-    type: 'string',
-    secondaryTypes: [],
-    synonyms: ['title', 'name', 'label', 'headline'],
-    fallbackToFirstField: true,
-    showError: true,
-  },
-  description: {
-    type: 'string',
-    secondaryTypes: ['text', 'markdown'],
-    synonyms: ['shortDescription', 'short_description', 'shortdescription', 'description', 'brief', 'body', 'content', 'biography', 'bio'],
-    fallbackToFirstField: false,
-    showError: false,
-  },
-  image: {
-    type: 'image',
-    secondaryTypes: [],
-    synonyms: ['image', 'thumbnail', 'thumb', 'picture', 'avatar'],
-    fallbackToFirstField: false,
-    showError: false,
-  },
-};
 
 const selectors = {
   [FOLDER]: {
@@ -117,7 +94,7 @@ export const selectListMethod = collection => selectors[collection.get('type')].
 export const selectAllowNewEntries = collection => selectors[collection.get('type')].allowNewEntries(collection);
 export const selectTemplateName = (collection, slug) => selectors[collection.get('type')].templateName(collection, slug);
 export const selectInferedField = (collection, fieldName) => {
-  const inferableField = inferables[fieldName];
+  const inferableField = INFERABLE_FIELDS[fieldName];
   const fields = collection.get('fields');
   let field;
 

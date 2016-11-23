@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { getSyntaxes } from './richText';
 import MarkupItReactRenderer from '../MarkupItReactRenderer/index';
+import previewStyle from './defaultPreviewStyle';
 
 const MarkdownPreview = ({ value, getMedia }) => {
   if (value == null) {
@@ -18,11 +19,13 @@ const MarkdownPreview = ({ value, getMedia }) => {
 
   const { markdown } = getSyntaxes();
   return (
-    <MarkupItReactRenderer
-      value={value}
-      syntax={markdown}
-      schema={schema}
-    />
+    <div style={previewStyle}>
+      <MarkupItReactRenderer
+        value={value}
+        syntax={markdown}
+        schema={schema}
+      />
+    </div>
   );
 };
 

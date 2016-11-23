@@ -3,7 +3,6 @@
 .card {
   composes: base container rounded depth;
   overflow: hidden;
-  width: 240px;
 }
 
 .card > *:not(iframe, video, img, header, footer) {
@@ -26,9 +25,9 @@
 }
 
 .card h1 {
+  margin: 15px 0;
+  padding: 0;
   border: none;
   color: var(--defaultColor);
   font-size: 18px;
-  margin: 15px 0;
-  padding: 0;
 }
