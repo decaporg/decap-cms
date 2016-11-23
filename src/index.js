@@ -24,7 +24,7 @@ render((
 
 if (process.env.NODE_ENV !== 'production' && module.hot) {
   module.hot.accept('./root', () => {
-    const NextRoot = require('./root').default;
+    const NextRoot = require('./root').default; // eslint-disable-line
     render((
       <AppContainer>
         <NextRoot />
@@ -32,13 +32,6 @@ if (process.env.NODE_ENV !== 'production' && module.hot) {
     ), el);
   });
 }
-
-window.CMS = {};
-for (const method in registry) {
-  window.CMS[method] = registry[method];
-}
-window.createClass = React.createClass;
-window.h = React.createElement;
 
 const buildtInPlugins = [{
   label: 'Image',
@@ -48,9 +41,7 @@ const buildtInPlugins = [{
     alt: match[1],
   },
   toBlock: data => `![${ data.alt }](${ data.image })`,
-  toPreview: (data) => {
-    return <img src={data.image} alt={data.alt} />;
-  },
+  toPreview: data => <img src={data.image} alt={data.alt} />,
   pattern: /^!\[([^\]]+)\]\(([^\)]+)\)$/,
   fields: [{
     label: 'Image',
@@ -62,3 +53,16 @@ const buildtInPlugins = [{
   }],
 }];
 buildtInPlugins.forEach(plugin => registry.registerEditorComponent(plugin));
+
+const CMS = {};
+for (const method in registry) { // eslint-disable-line
+  CMS[method] = registry[method];
+}
+
+if (typeof window !== 'undefined') {
+  window.CMS = CMS;
+  window.createClass = window.createClass || React.createClass;
+  window.h = window.h || React.createElement;
+}
+
+export default CMS;
