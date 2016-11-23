@@ -11,9 +11,6 @@ module.exports = merge.smart(require('./webpack.base.js'), {
   output: {
     path: path.join(__dirname, 'dist'),
     filename: '[name].js',
-    library: 'netlify-cms',
-    libraryTarget: 'umd',
-    umdNamedDefine: true,
   },
   module: {
     loaders: [

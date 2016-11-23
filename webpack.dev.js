@@ -20,9 +20,6 @@ module.exports = merge.smart(require('./webpack.base.js'), {
     path: path.join(__dirname, 'dist'),
     filename: '[name].js',
     publicPath: `http://${ HOST }:${ PORT }/`,
-    library: 'netlify-cms',
-    libraryTarget: 'umd',
-    umdNamedDefine: true,
   },
   context: path.join(__dirname, 'src'),
   module: {
