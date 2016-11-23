@@ -1,7 +1,8 @@
 import React, { PropTypes } from 'react';
+import previewStyle from './defaultPreviewStyle';
 
 export default function NumberPreview({ value }) {
-  return <div>{value ? value.toString() : null}</div>;
+  return <div style={previewStyle}>{value}</div>;
 }
 
 NumberPreview.propTypes = {

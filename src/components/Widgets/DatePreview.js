@@ -1,7 +1,8 @@
 import React, { PropTypes } from 'react';
+import previewStyle from './defaultPreviewStyle';
 
 export default function DatePreview({ value }) {
-  return <div>{value ? value.toString() : null}</div>;
+  return <div style={previewStyle}>{value ? value.toString() : null}</div>;
 }
 
 DatePreview.propTypes = {

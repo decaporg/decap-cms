@@ -1,16 +1,12 @@
 import React, { PropTypes } from 'react';
-
-const style = {
-  width: '100%',
-  height: 'auto',
-};
+import previewStyle, { imagePreviewStyle } from './defaultPreviewStyle';
 
 export default function ImagePreview({ value, getMedia }) {
-  return (<div>
+  return (<div style={previewStyle}>
     { value ?
       <img
         src={getMedia(value)}
-        style={style}
+        style={imagePreviewStyle}
         role="presentation"
       />
       : null}

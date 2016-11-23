@@ -22,7 +22,7 @@ export const INFERABLE_FIELDS = {
     type: 'string',
     secondaryTypes: [],
     synonyms: ['author', 'name', 'by'],
-    defaultPreview: value => <strong>By { value }</strong>,
+    defaultPreview: value => <strong>{ value }</strong>,
     fallbackToFirstField: false,
     showError: false,
   },
