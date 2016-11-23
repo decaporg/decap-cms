@@ -1,8 +1,8 @@
 {
   "name": "netlify-cms",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Netlify CMS lets content editors work on structured content stored in git",
-  "main": "index.js",
+  "main": "dist/cms.js",
   "scripts": {
     "start": "webpack-dev-server --config webpack.dev.js",
     "test": "jest",
@@ -24,11 +24,6 @@
     "*.js": [
       "eslint --fix",
       "jest --findRelatedTests",
-      "git add"
-    ],
-    "*.css": [
-      "stylefmt",
-      "stylelint",
       "git add"
     ]
   },
