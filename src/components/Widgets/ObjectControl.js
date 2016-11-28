@@ -16,7 +16,7 @@ export default class ObjectControl extends Component {
   controlFor(field) {
     const { onAddMedia, onRemoveMedia, getMedia, value, onChange } = this.props;
     const widget = resolveWidget(field.get('widget') || 'string');
-    const fieldValue = value && value.get(field.get('name'));
+    const fieldValue = value && Map.isMap(value) ? value.get(field.get('name')) : value;
 
     return (<div className={controlStyles.widget} key={field.get('name')}>
       <div className={controlStyles.control} key={field.get('name')}>
@@ -39,14 +39,17 @@ export default class ObjectControl extends Component {
 
   render() {
     const { field } = this.props;
-    const fields = field.get('fields');
+    const multiFields = field.get('fields');
+    const singleField = field.get('field');
 
-    if (!fields) {
-      return <h3>No fields defined for this widget</h3>;
+    if (multiFields) {
+      return (<div className={styles.root}>
+        {multiFields.map(field => this.controlFor(field))}
+      </div>);
+    } else if (singleField) {
+      return this.controlFor(singleField);
     }
 
-    return (<div className={styles.root}>
-      {field.get('fields').map(field => this.controlFor(field))}
-    </div>);
+    return <h3>No field(s) defined for this widget</h3>;
   }
 }
