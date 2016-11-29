@@ -112,7 +112,7 @@ export default class ListControl extends Component {
     const { field } = this.props;
     const multiFields = field.get('fields');
     const singleField = field.get('field');
-
+    const labelField = (multiFields && multiFields.first()) || singleField;
     const value = multiFields ? item.get(multiFields.first().get('name')) : singleField.get('label');
     return value || `No ${ labelField.get('name') }`;
   }
