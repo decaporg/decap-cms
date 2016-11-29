@@ -5,7 +5,7 @@ describe('config', () => {
     it('should throw if media_folder is not defined in config', () => {
       expect(() => {
         config.applyDefaults({ foo: 'bar' });
-      }).toThrowError('Config: `media_folder` setting could not be found in config.');
+      }).toThrowError('Error in configuration file: A `media_folder` wasn\'t found. Check your config.yml file.');
     });
 
     it('should set publish_mode if not set', () => {

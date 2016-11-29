@@ -15,7 +15,7 @@ const defaults = {
 
 export function applyDefaults(config) {
   if (!('media_folder' in config)) {
-    throw new Error('Config: `media_folder` setting could not be found in config.');
+    throw new Error('Error in configuration file: A `media_folder` wasn\'t found. Check your config.yml file.');
   }
 
   // Make sure there is a public folder
