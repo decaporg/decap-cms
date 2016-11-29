@@ -22,7 +22,7 @@ class LocalStorageAuthStore {
   }
 }
 
-const slugFormatter = (template, entryData) => {
+const slugFormatter = (template = '{{slug}}', entryData) => {
   const date = new Date();
   const identifier = entryData.get('title', entryData.get('path'));
   return template.replace(/\{\{([^\}]+)\}\}/g, (_, field) => {
