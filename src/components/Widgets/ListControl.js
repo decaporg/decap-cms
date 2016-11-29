@@ -19,6 +19,11 @@ function valueToString(value) {
 
 const SortableListItem = sortable(ListItem);
 
+const valueTypes = {
+  SINGLE: 'SINGLE',
+  MULTIPLE: 'MULTIPLE',
+};
+
 export default class ListControl extends Component {
   static propTypes = {
     onChange: PropTypes.func.isRequired,
@@ -32,6 +37,26 @@ export default class ListControl extends Component {
   constructor(props) {
     super(props);
     this.state = { itemStates: Map(), value: valueToString(props.value) };
+    this.valueType = null;
+  }
+
+  componentDidMount() {
+    const { field } = this.props;
+    if (field.get('fields')) {
+      this.valueType = valueTypes.MULTIPLE;
+    } else if (field.get('field')) {
+      this.valueType = valueTypes.SINGLE;
+    }
+  }
+
+  componentWillUpdate(nextProps) {
+    if (this.props.field === nextProps.field) return;
+
+    if (nextProps.field.get('fields')) {
+      this.valueType = valueTypes.MULTIPLE;
+    } else if (nextProps.field.get('field')) {
+      this.valueType = valueTypes.SINGLE;
+    }
   }
 
   handleChange = (e) => {
@@ -43,26 +68,25 @@ export default class ListControl extends Component {
     }
 
     this.setState({ value: valueToString(listValue) });
-    this.props.onChange(listValue);
   };
 
   handleCleanup = (e) => {
     const listValue = e.target.value.split(',').map(el => el.trim()).filter(el => el);
     this.setState({ value: valueToString(listValue) });
-    this.props.onChange(listValue);
   };
 
   handleAdd = (e) => {
     e.preventDefault();
     const { value, onChange } = this.props;
-
-    onChange((value || List()).push(Map()));
+    const parsedValue = (this.valueType === valueTypes.SINGLE) ? null : Map();
+    onChange((value || List()).push(parsedValue));
   };
 
   handleChangeFor(index) {
     return (newValue) => {
       const { value, onChange } = this.props;
-      onChange(value.set(index, newValue));
+      const parsedValue = (this.valueType === valueTypes.SINGLE) ? newValue.first() : newValue;
+      onChange(value.set(index, parsedValue));
     };
   }
 
@@ -86,10 +110,11 @@ export default class ListControl extends Component {
 
   objectLabel(item) {
     const { field } = this.props;
-    const fields = field.get('fields');
-    const first = fields.first();
-    const value = item.get(first.get('name'));
-    return value || `No ${ first.get('name') }`;
+    const multiFields = field.get('fields');
+    const singleField = field.get('field');
+    const labelField = (multiFields && multiFields.first()) || singleField;
+    const value = multiFields ? item.get(multiFields.first().get('name')) : singleField.get('label');
+    return value || `No ${ labelField.get('name') }`;
   }
 
   handleSort = (obj) => {
@@ -145,7 +170,7 @@ export default class ListControl extends Component {
     const { field } = this.props;
     const { value } = this.state;
 
-    if (field.get('fields')) {
+    if (field.get('field') || field.get('fields')) {
       return this.renderListControl();
     }
 
