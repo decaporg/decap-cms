@@ -55,6 +55,11 @@ export default class PreviewPane extends React.Component {
         linkEl.setAttribute('href', style);
         ref.contentDocument.head.appendChild(linkEl);
       });
+
+      const base = document.createElement('base');
+      base.setAttribute('target', '_blank');
+      ref.contentDocument.head.appendChild(base);
+
       this.previewEl = document.createElement('div');
       this.iframeBody = ref.contentDocument.body;
       this.iframeBody.appendChild(this.previewEl);
