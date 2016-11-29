@@ -53,5 +53,10 @@ module.exports = {
       fetch: 'imports?this=>global!exports?global.fetch!whatwg-fetch',
     }),
   ],
+  output: {
+    library: 'netlify-cms',
+    libraryTarget: 'umd',
+    umdNamedDefine: true,
+  },
   target: 'web', // Make web variables accessible to webpack, e.g. window
 };
