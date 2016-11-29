@@ -33,12 +33,12 @@ your public directory and use this `index.html` as a template:
 
   <title>Content Manager</title>
   <!-- Include the stylesheets from your site here -->
-  <link rel="stylesheet" href="https://unpkg.com/netlify-cms@^0.1.2/dist/cms.css" />
+  <link rel="stylesheet" href="https://unpkg.com/netlify-cms@^0.1/dist/cms.css" />
   <!-- Include a CMS specific stylesheet here -->
 
 </head>
 <body>
-  <script src="https://unpkg.com/netlify-cms@^0.1.2/dist/cms.js"></script>
+  <script src="https://unpkg.com/netlify-cms@^0.1/dist/cms.js"></script>
 </body>
 </html>
 ```
