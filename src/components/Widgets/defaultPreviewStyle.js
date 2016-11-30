@@ -3,7 +3,7 @@ const defaultPrevieStyle = {
 };
 
 export const imagePreviewStyle = {
-  width: '100%',
+  maxWidth: '100%',
   height: 'auto',
 };
 
