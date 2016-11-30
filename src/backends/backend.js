@@ -167,14 +167,14 @@ class Backend {
       entryObj = {
         path,
         slug,
-        raw: this.entryToRaw(collection, Object.assign({ path }, entryData)),
+        raw: this.entryToRaw(collection, entryData),
       };
     } else {
       const path = entryDraft.getIn(['entry', 'path']);
       entryObj = {
         path,
         slug: entryDraft.getIn(['entry', 'slug']),
-        raw: this.entryToRaw(collection, Object.assign({ path }, entryData)),
+        raw: this.entryToRaw(collection, entryData),
       };
     }
 
