@@ -108,10 +108,6 @@ class Backend {
     );
   }
 
-  newEntry(collection) {
-    return createEntry(collection.get('name'));
-  }
-
   entryWithFormat(collectionOrEntity) {
     return (entry) => {
       const format = resolveFormat(collectionOrEntity, entry);

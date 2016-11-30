@@ -1,7 +1,9 @@
+import { List } from 'immutable';
 import { actions as notifActions } from 'redux-notifications';
 import { currentBackend } from '../backends/backend';
 import { getIntegrationProvider } from '../integrations';
 import { getMedia, selectIntegration } from '../reducers';
+import { createEntry } from '../valueObjects/Entry';
 
 const { notifSend } = notifActions;
 
@@ -205,10 +207,12 @@ export function loadEntries(collection, page = 0) {
 }
 
 export function createEmptyDraft(collection) {
-  return (dispatch, getState) => {
-    const state = getState();
-    const backend = currentBackend(state.config);
-    const newEntry = backend.newEntry(collection);
+  return (dispatch) => {
+    const dataFields = {};
+    collection.get('fields', List()).forEach((field) => {
+      dataFields[field.get('name')] = field.get('default', null);
+    });
+    const newEntry = createEntry(collection.get('name'), '', '', { data: dataFields });
     dispatch(emmptyDraftCreated(newEntry));
   };
 }
