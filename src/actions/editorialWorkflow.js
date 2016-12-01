@@ -67,7 +67,7 @@ function unpublishedEntriesFailed(error) {
   return {
     type: UNPUBLISHED_ENTRIES_FAILURE,
     error: 'Failed to load entries',
-    payload: error.toString(),
+    payload: error,
   };
 }
 

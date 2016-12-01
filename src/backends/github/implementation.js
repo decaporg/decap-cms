@@ -100,6 +100,12 @@ export default class GitHub {
         }));
       });
       return Promise.all(promises);
+    })
+    .catch((error) => {
+      if (error.message === 'Not Found') {
+        return Promise.resolve([]);
+      }
+      return error;
     });
   }
 
