@@ -6,7 +6,10 @@ import registry from '../../lib/registry';
 const defaultSchema = {
   [BLOCKS.DOCUMENT]: 'article',
   [BLOCKS.TEXT]: null,
-  [BLOCKS.CODE]: 'code',
+  [BLOCKS.CODE]: ({ token }) => {
+    const className = token.getIn(['data', 'syntax']) && `language-${ token.getIn(['data', 'syntax']) }`;
+    return <pre><code className={className} dangerouslySetInnerHTML={{ __html: token.get('tokens').map(token => token.text).join('') }} /></pre>;
+  },
   [BLOCKS.BLOCKQUOTE]: 'blockquote',
   [BLOCKS.PARAGRAPH]: 'p',
   [BLOCKS.FOOTNOTE]: 'footnote',
@@ -96,7 +99,7 @@ export default class MarkupItReactRenderer extends React.Component {
     if (plugin) {
       const output = plugin.toPreview(token.get('data').toJS());
       return typeof output === 'string' ?
-        <span dangerouslySetInnerHTML={{ __html: output}} /> :
+        <span dangerouslySetInnerHTML={{ __html: output }} /> :
         output;
     }
 
