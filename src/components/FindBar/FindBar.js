@@ -100,8 +100,11 @@ class FindBar extends Component {
 
     if (command.search) {
       this.setState({
-        activeScope: SEARCH,
-        placeholder: '',
+        value: '',
+        placeholder: PLACEHOLDER,
+        activeScope: null,
+      }, () => {
+        this._input.blur();
       });
 
       enteredParamValue && this.props.runCommand(SEARCH, { searchTerm: enteredParamValue });
