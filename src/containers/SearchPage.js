@@ -13,7 +13,10 @@ class SearchPage extends React.Component {
     isFetching: PropTypes.bool,
     searchEntries: PropTypes.func.isRequired,
     searchTerm: PropTypes.string.isRequired,
+    collections: ImmutablePropTypes.seq,
     entries: ImmutablePropTypes.list,
+    page: PropTypes.number,
+    publicFolder: PropTypes.string,
   };
 
   componentDidMount() {
@@ -33,13 +36,19 @@ class SearchPage extends React.Component {
   };
 
   render() {
-    const { collections, searchTerm, entries, isFetching, page } = this.props;
+    const { collections, searchTerm, entries, isFetching, page, publicFolder } = this.props;
     return (<div className={styles.root}>
       {(isFetching === true || !entries) ?
         <Loader active>{['Loading Entries', 'Caching Entries', 'This might take several minutes']}</Loader>
         :
-          <EntryListing collections={collections} entries={entries} page={page} onPaginate={this.handleLoadMore}>
-          Results for “                   {searchTerm}”
+          <EntryListing
+            collections={collections}
+            entries={entries}
+            page={page}
+            publicFolder={publicFolder}
+            onPaginate={this.handleLoadMore}
+          >
+            Results for “{searchTerm}”
           </EntryListing>
       }
     </div>);
@@ -52,9 +61,10 @@ function mapStateToProps(state, ownProps) {
   const page = state.entries.getIn(['search', 'page']);
   const entries = selectSearchedEntries(state);
   const collections = state.collections.toIndexedSeq();
+  const publicFolder = state.config.get('public_folder');
   const searchTerm = ownProps.params && ownProps.params.searchTerm;
 
-  return { isFetching, page, collections, entries, searchTerm };
+  return { isFetching, page, collections, entries, publicFolder, searchTerm };
 }
 
 
