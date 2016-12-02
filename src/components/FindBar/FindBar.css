@@ -60,7 +60,7 @@
 
 .suggestions {
   display: table-cell;
-  width: 50%;
+  width: 100%;
   padding-right: 10px;
 }
 

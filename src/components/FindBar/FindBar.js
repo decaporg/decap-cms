@@ -326,9 +326,6 @@ class FindBar extends Component {
         <div className={styles.suggestions}>
           {commands}
         </div>
-        <div className={styles.history}>
-          Your past searches and commands
-        </div>
       </div>
     );
   }

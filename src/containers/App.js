@@ -106,14 +106,14 @@ class App extends React.Component {
 
       if (defaultCommands.length < 5) defaultCommands.push(`show_${ collection.get('name') }`);
 
-      if (collection.get('create') === true) {
-        commands.push({
-          id: `create_${ collection.get('name') }`,
-          pattern: `Create new ${ pluralize(collection.get('label'), 1) }(:itemName as ${ pluralize(collection.get('label'), 1) } Name)`,
-          type: CREATE_COLLECTION,
-          payload: { collectionName: collection.get('name') },
-        });
-      }
+      // if (collection.get('create') === true) {
+      //   commands.push({
+      //     id: `create_${ collection.get('name') }`,
+      //     pattern: `Create new ${ pluralize(collection.get('label'), 1) }(:itemName as ${ pluralize(collection.get('label'), 1) } Name)`,
+      //     type: CREATE_COLLECTION,
+      //     payload: { collectionName: collection.get('name') },
+      //   });
+      // }
     });
 
     commands.push({ id: HELP, type: HELP, pattern: 'Help' });
