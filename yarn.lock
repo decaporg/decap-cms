@@ -1201,12 +1201,6 @@ braces@^1.8.2:
     preserve "^0.2.0"
     repeat-element "^1.1.2"
 
-bricks.js@^1.7.0:
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/bricks.js/-/bricks.js-1.7.0.tgz#2863bde2f03cd48d41dcca88bea1a198c839f608"
-  dependencies:
-    knot.js "^1.1.1"
-
 brorand@^1.0.1:
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/brorand/-/brorand-1.0.6.tgz#4028706b915f91f7b349a2e0bf3c376039d216e5"
@@ -2229,6 +2223,10 @@ doiuse@^2.3.0, doiuse@^2.4.1:
     source-map "^0.4.2"
     through2 "^0.6.3"
     yargs "^3.5.4"
+
+dom-scroll-into-view@1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/dom-scroll-into-view/-/dom-scroll-into-view-1.0.1.tgz#32abb92f0d8feca6215162aef43e4b449ab8d99c"
 
 dom-serializer@~0.1.0, dom-serializer@0:
   version "0.1.0"
@@ -4676,10 +4674,6 @@ kind-of@^3.0.2:
   dependencies:
     is-buffer "^1.0.2"
 
-knot.js@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/knot.js/-/knot.js-1.1.1.tgz#35dc900d3c62813f0ca119c3d6a0a598e5cb6896"
-
 known-css-properties@^0.0.5:
   version "0.0.5"
   resolved "https://registry.yarnpkg.com/known-css-properties/-/known-css-properties-0.0.5.tgz#33de5b8279010a72db917d33119e4c27c078490a"
@@ -6933,6 +6927,12 @@ react-addons-css-transition-group@^15.0.2, react-addons-css-transition-group@^15
 react-addons-test-utils@^15.3.2:
   version "15.3.2"
   resolved "https://registry.yarnpkg.com/react-addons-test-utils/-/react-addons-test-utils-15.3.2.tgz#c09a44f583425a4a9c1b38444d7a6c3e6f0f41f6"
+
+react-autocomplete:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/react-autocomplete/-/react-autocomplete-1.4.0.tgz#700ec01774a4e5c4a31ed2d058955ac0d9b56474"
+  dependencies:
+    dom-scroll-into-view "1.0.1"
 
 react-css-themr@~1.4.1:
   version "1.4.1"

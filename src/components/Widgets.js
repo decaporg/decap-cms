@@ -21,6 +21,9 @@ import SelectControl from './Widgets/SelectControl';
 import SelectPreview from './Widgets/SelectPreview';
 import ObjectControl from './Widgets/ObjectControl';
 import ObjectPreview from './Widgets/ObjectPreview';
+import RelationControl from './Widgets/RelationControl';
+import RelationPreview from './Widgets/RelationPreview';
+
 
 registry.registerWidget('string', StringControl, StringPreview);
 registry.registerWidget('text', TextControl, TextPreview);
@@ -32,6 +35,7 @@ registry.registerWidget('date', DateControl, DatePreview);
 registry.registerWidget('datetime', DateTimeControl, DateTimePreview);
 registry.registerWidget('select', SelectControl, SelectPreview);
 registry.registerWidget('object', ObjectControl, ObjectPreview);
+registry.registerWidget('relation', RelationControl, RelationPreview);
 registry.registerWidget('unknown', UnknownControl, UnknownPreview);
 
 export function resolveWidget(name) { // eslint-disable-line
