@@ -3,14 +3,17 @@ import { Map, List } from 'immutable';
 import {
   SEARCH_ENTRIES_REQUEST,
   SEARCH_ENTRIES_SUCCESS,
+  QUERY_REQUEST,
+  QUERY_SUCCESS,
   SEARCH_CLEAR,
 } from '../actions/search';
 
 let loadedEntries;
+let response;
 let page;
 let searchTerm;
 
-const defaultState = Map({ isFetching: false, term: null, page: 0, entryIds: [] });
+const defaultState = Map({ isFetching: false, term: null, page: 0, entryIds: [], queryHits: [] });
 
 const entries = (state = defaultState, action) => {
   switch (action.type) {
@@ -18,7 +21,7 @@ const entries = (state = defaultState, action) => {
       return defaultState;
 
     case SEARCH_ENTRIES_REQUEST:
-      if (action.payload.searchTerm !== state.getIn(['search', 'term'])) {
+      if (action.payload.searchTerm !== state.get('term')) {
         return state.withMutations((map) => {
           map.set('isFetching', true);
           map.set('term', action.payload.searchTerm);
@@ -36,6 +39,24 @@ const entries = (state = defaultState, action) => {
         map.set('page', page);
         map.set('term', searchTerm);
         map.set('entryIds', page === 0 ? entryIds : map.get('entryIds', List()).concat(entryIds));
+      });
+
+    case QUERY_REQUEST:
+      if (action.payload.searchTerm !== state.get('term')) {
+        return state.withMutations((map) => {
+          map.set('isFetching', true);
+          map.set('term', action.payload.searchTerm);
+        });
+      }
+      return state;
+
+    case QUERY_SUCCESS:
+      searchTerm = action.payload.searchTerm;
+      response = action.payload.response;
+      return state.withMutations((map) => {
+        map.set('isFetching', false);
+        map.set('term', searchTerm);
+        map.set('queryHits', response.hits);
       });
 
     default:
