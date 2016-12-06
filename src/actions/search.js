@@ -9,6 +9,8 @@ export const SEARCH_ENTRIES_REQUEST = 'SEARCH_ENTRIES_REQUEST';
 export const SEARCH_ENTRIES_SUCCESS = 'SEARCH_ENTRIES_SUCCESS';
 export const SEARCH_ENTRIES_FAILURE = 'SEARCH_ENTRIES_FAILURE';
 
+export const SEARCH_CLEAR = 'SEARCH_CLEAR';
+
 /*
  * Simple Action Creators (Internal)
  * We still need to export them for tests
@@ -39,6 +41,14 @@ export function searchFailure(searchTerm, error) {
       error,
     },
   };
+}
+
+/*
+ * Exported simple Action Creators
+ */
+
+export function clearSearch() {
+  return { type: SEARCH_CLEAR };
 }
 
 

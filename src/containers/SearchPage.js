@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 import { selectSearchedEntries } from '../reducers';
-import { searchEntries } from '../actions/search';
+import { searchEntries, clearSearch } from '../actions/search';
 import { Loader } from '../components/UI';
 import EntryListing from '../components/EntryListing/EntryListing';
 import styles from './breakpoints.css';
@@ -12,6 +12,7 @@ class SearchPage extends React.Component {
   static propTypes = {
     isFetching: PropTypes.bool,
     searchEntries: PropTypes.func.isRequired,
+    clearSearch: PropTypes.func.isRequired,
     searchTerm: PropTypes.string.isRequired,
     collections: ImmutablePropTypes.seq,
     entries: ImmutablePropTypes.list,
@@ -28,6 +29,10 @@ class SearchPage extends React.Component {
     if (this.props.searchTerm === nextProps.searchTerm) return;
     const { searchEntries } = this.props;
     searchEntries(nextProps.searchTerm);
+  }
+
+  componentWillUnmount() {
+    this.props.clearSearch();
   }
 
   handleLoadMore = (page) => {
@@ -70,5 +75,8 @@ function mapStateToProps(state, ownProps) {
 
 export default connect(
   mapStateToProps,
-  { searchEntries }
+  {
+    searchEntries,
+    clearSearch,
+  }
 )(SearchPage);

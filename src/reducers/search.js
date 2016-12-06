@@ -3,14 +3,20 @@ import { Map, List } from 'immutable';
 import {
   SEARCH_ENTRIES_REQUEST,
   SEARCH_ENTRIES_SUCCESS,
+  SEARCH_CLEAR,
 } from '../actions/search';
 
 let loadedEntries;
 let page;
 let searchTerm;
 
-const entries = (state = Map({ isFetching: false, term: null, page: 0, entryIds: [] }), action) => {
+const defaultState = Map({ isFetching: false, term: null, page: 0, entryIds: [] });
+
+const entries = (state = defaultState, action) => {
   switch (action.type) {
+    case SEARCH_CLEAR:
+      return defaultState;
+
     case SEARCH_ENTRIES_REQUEST:
       if (action.payload.searchTerm !== state.getIn(['search', 'term'])) {
         return state.withMutations((map) => {
