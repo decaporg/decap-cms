@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import SplitPane from 'react-split-pane';
 import { ScrollSync, ScrollSyncPane } from '../ScrollSync';
 import ControlPane from '../ControlPanel/ControlPane';
 import PreviewPane from '../PreviewPane/PreviewPane';
@@ -20,21 +21,21 @@ export default function EntryEditor(
   }) {
   return (
     <div className={styles.root}>
-      <ScrollSync>
-        <div className={styles.container}>
-          <ScrollSyncPane>
-            <div className={styles.controlPane}>
-              <ControlPane
-                collection={collection}
-                entry={entry}
-                fields={fields}
-                getMedia={getMedia}
-                onChange={onChange}
-                onAddMedia={onAddMedia}
-                onRemoveMedia={onRemoveMedia}
-              />
-            </div>
-          </ScrollSyncPane>
+
+
+      <div className={styles.container}>
+        <SplitPane defaultSize="50%">
+          <div className={styles.controlPane}>
+            <ControlPane
+              collection={collection}
+              entry={entry}
+              fields={fields}
+              getMedia={getMedia}
+              onChange={onChange}
+              onAddMedia={onAddMedia}
+              onRemoveMedia={onRemoveMedia}
+            />
+          </div>
           <div className={styles.previewPane}>
             <PreviewPane
               collection={collection}
@@ -43,8 +44,9 @@ export default function EntryEditor(
               getMedia={getMedia}
             />
           </div>
-        </div>
-      </ScrollSync>
+        </SplitPane>
+      </div>
+
       <div className={styles.footer}>
         <Toolbar
           isPersisting={entry.get('isPersisting')}
@@ -52,6 +54,7 @@ export default function EntryEditor(
           onCancelEdit={onCancelEdit}
         />
       </div>
+
     </div>
   );
 }

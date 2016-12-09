@@ -80,9 +80,9 @@ export default class PreviewPane extends React.Component {
     // We need to use this API in order to pass context to the iframe
     ReactDOM.unstable_renderSubtreeIntoContainer(
       this,
-      <ScrollSyncPane attachTo={this.iframeBody}>
-        {React.createElement(component, previewProps)}
-      </ScrollSyncPane>
+
+        React.createElement(component, previewProps)
+
       , this.previewEl);
   }
 

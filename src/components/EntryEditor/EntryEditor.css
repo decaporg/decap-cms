@@ -12,10 +12,6 @@
   width: 100%;
 }
 
-.container {
-  display: flex;
-  flex: 1;
-}
 
 .footer {
   flex: 0;
@@ -26,12 +22,13 @@
 }
 
 .controlPane {
-  flex: 1;
+  height: 100%;
   overflow: auto;
   padding: 0 20px;
   border-right: 1px solid var(--defaultColorLight);
 }
 
 .previewPane {
-  flex: 1;
+  height: 100%;
+  
 }
