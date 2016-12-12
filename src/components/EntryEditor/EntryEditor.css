@@ -30,5 +30,11 @@
 
 .previewPane {
   height: 100%;
-  
+}
+
+.blocker {
+}
+
+.blocker > * {
+  pointer-events: none;
 }
