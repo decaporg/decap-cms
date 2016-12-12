@@ -4,34 +4,37 @@
 }
 
 .root {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-}
 
-.container {
-  display: flex;
-  flex: 1;
-}
-
-.footer {
-  flex: 0;
-  padding: 10px 20px;
-  border-top: 1px solid var(--defaultColorLight);
-  background: var(--backgroundColor);
-  text-align: right;
 }
 
 .controlPane {
-  flex: 1;
+  height: calc(100% - 55px);
   overflow: auto;
   padding: 0 20px;
   border-right: 1px solid var(--defaultColorLight);
 }
 
 .previewPane {
-  flex: 1;
+  height: calc(100% - 55px);
+}
+
+.blocker {
+}
+
+.blocker > * {
+  pointer-events: none;
+}
+
+
+.footer {
+  height: 55px;
+  padding: 10px 20px;
+  position: absolute;
+  z-index: 9999;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-top: 1px solid var(--defaultColorLight);
+  background: var(--backgroundColor);
+  text-align: right;
 }
