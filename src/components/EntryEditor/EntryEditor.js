@@ -37,34 +37,39 @@ class EntryEditor extends Component {
     const previewClassName = `${ styles.previewPane } ${ this.state.showEventBlocker && styles.blocker }`;
     return (
       <div className={styles.root}>
-        <div className={styles.container}>
-          <SplitPane
-            defaultSize="50%"
-            onDragStarted={this.handleSplitPaneDragStart}
-            onDragFinished={this.handleSplitPaneDragFinished}
-          >
-            <div className={controlClassName}>
-              <ControlPane
-                collection={collection}
-                entry={entry}
-                fields={fields}
-                getMedia={getMedia}
-                onChange={onChange}
-                onAddMedia={onAddMedia}
-                onRemoveMedia={onRemoveMedia}
-              />
-            </div>
-            <div className={previewClassName}>
-              <PreviewPane
-                collection={collection}
-                entry={entry}
-                fields={fields}
-                getMedia={getMedia}
-              />
-            </div>
-          </SplitPane>
-        </div>
+        <ScrollSync>
+          <div className={styles.container}>
+            <SplitPane
+              defaultSize="50%"
+              onDragStarted={this.handleSplitPaneDragStart}
+              onDragFinished={this.handleSplitPaneDragFinished}
+            >
+              <ScrollSyncPane>
+                <div className={controlClassName}>
 
+                  <ControlPane
+                    collection={collection}
+                    entry={entry}
+                    fields={fields}
+                    getMedia={getMedia}
+                    onChange={onChange}
+                    onAddMedia={onAddMedia}
+                    onRemoveMedia={onRemoveMedia}
+                  />
+
+                </div>
+              </ScrollSyncPane>
+              <div className={previewClassName}>
+                <PreviewPane
+                  collection={collection}
+                  entry={entry}
+                  fields={fields}
+                  getMedia={getMedia}
+                />
+              </div>
+            </SplitPane>
+          </div>
+        </ ScrollSync>
         <div className={styles.footer}>
           <Toolbar
             isPersisting={entry.get('isPersisting')}
