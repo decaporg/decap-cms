@@ -36,7 +36,7 @@ const slugFormatter = (template = '{{slug}}', entryData) => {
       case 'slug':
         return identifier.trim().toLowerCase().replace(/[^a-z0-9\.\-_]+/gi, '-');
       default:
-        return entryData.get(field);
+        return entryData.get(field, '').trim().toLowerCase().replace(/[^a-z0-9\.\-_]+/gi, '-');
     }
   });
 };
@@ -175,8 +175,7 @@ class Backend {
     }
 
     const commitMessage = `${ (newEntry ? 'Created ' : 'Updated ') +
-          collection.get('label') } “${
-          entryDraft.getIn(['entry', 'data', 'title']) }”`;
+          collection.get('label') } “${ entryObj.slug }”`;
 
     const mode = config.get('publish_mode');
 
