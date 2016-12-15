@@ -97,7 +97,7 @@
     "immutable": "^3.7.6",
     "jest": "^17.0.0",
     "js-base64": "^2.1.9",
-    "js-yaml": "^3.5.3",
+    "js-yaml": "^3.7.0",
     "json-loader": "^0.5.4",
     "localforage": "^1.4.2",
     "lodash": "^4.13.1",
