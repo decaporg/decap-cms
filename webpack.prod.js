@@ -42,6 +42,15 @@ module.exports = merge.smart(require('./webpack.base.js'), {
 
     // Extract CSS
     new ExtractTextPlugin('[name].css', { allChunks: true }),
+
+    // During beta phase, generate source maps for better errors
+    new webpack.SourceMapDevToolPlugin({
+      // asset matching
+      test: /\.js?$/,
+      exclude: /node_modules/,
+
+      // file and reference
+      filename: '[file].map',
+    }),
   ],
-  devTool: 'source-map',
 });
