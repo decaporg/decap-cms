@@ -5,6 +5,15 @@
   height: 100vh;
 }
 
+.card {
+  width: 350px;
+}
+
+.card img {
+  display: block;
+  margin: auto;
+}
+
 .button {
   padding: .25em 1em;
   height: auto;

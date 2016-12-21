@@ -5524,6 +5524,10 @@ negotiator@0.6.1:
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.1.tgz#2b327184e8992101177b28563fb5e7102acd0ca9"
 
+netlify-auth-js:
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/netlify-auth-js/-/netlify-auth-js-0.5.2.tgz#4baf99de0082e31a69f773abf60f849666a71e04"
+
 netrc@^0.1.3:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/netrc/-/netrc-0.1.4.tgz#6be94fcaca8d77ade0a9670dc460914c94472444"

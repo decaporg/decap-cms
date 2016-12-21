@@ -4,13 +4,12 @@ import { Base64 } from 'js-base64';
 import _ from 'lodash';
 import { SIMPLE, EDITORIAL_WORKFLOW, status } from '../../constants/publishModes';
 
-const API_ROOT = 'https://api.github.com';
-
 export default class API {
-  constructor(token, repo, branch) {
-    this.token = token;
-    this.repo = repo;
-    this.branch = branch;
+  constructor(config) {
+    this.api_root = config.api_root || 'https://api.github.com';
+    this.token = config.token || false;
+    this.branch = config.branch || 'master';
+    this.repo = config.repo;
     this.repoURL = `/repos/${ this.repo }`;
   }
 
@@ -19,11 +18,17 @@ export default class API {
   }
 
   requestHeaders(headers = {}) {
-    return {
-      Authorization: `token ${ this.token }`,
+    const baseHeader = {
       'Content-Type': 'application/json',
       ...headers,
     };
+
+    if (this.token) {
+      baseHeader.Authorization = `token ${ this.token }`;
+      return baseHeader;
+    }
+
+    return baseHeader;
   }
 
   parseJsonResponse(response) {
@@ -46,7 +51,7 @@ export default class API {
     if (params.length) {
       path += `?${ params.join('&') }`;
     }
-    return API_ROOT + path;
+    return this.api_root + path;
   }
 
   request(path, options = {}) {
