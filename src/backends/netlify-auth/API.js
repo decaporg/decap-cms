@@ -6,8 +6,6 @@ export default class API extends GithubAPI {
     this.api_root = config.api_root;
     this.jwtToken = config.jwtToken;
     this.repoURL = "";
-
-    console.log(config);
   }
 
 
@@ -32,15 +30,12 @@ export default class API extends GithubAPI {
     if (params.length) {
       path += `?${ params.join("&") }`;
     }
-    console.log(this.api_root, path);
     return this.api_root + path;
   }
 
   request(path, options = {}) {
     const headers = this.requestHeaders(options.headers || {});
-    console.log(path, options);
     const url = this.urlFor(path, options);
-    console.log(url);
     return fetch(url, { ...options, headers }).then((response) => {
       const contentType = response.headers.get("Content-Type");
       if (contentType && contentType.match(/json/)) {
