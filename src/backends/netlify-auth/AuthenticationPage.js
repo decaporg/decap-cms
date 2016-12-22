@@ -1,16 +1,16 @@
-import React from 'react';
-import Input from 'react-toolbox/lib/input';
-import Button from 'react-toolbox/lib/button';
-import { Card, Icon } from '../../components/UI';
-import logo from './netlify_logo.svg';
-import styles from './AuthenticationPage.css';
+import React from "react";
+import Input from "react-toolbox/lib/input";
+import Button from "react-toolbox/lib/button";
+import { Card, Icon } from "../../components/UI";
+import logo from "./netlify_logo.svg";
+import styles from "./AuthenticationPage.css";
 
 export default class AuthenticationPage extends React.Component {
   static propTypes = {
     onLogin: React.PropTypes.func.isRequired,
   };
 
-  state = { username: '', password: '' };
+  state = { username: "", password: "" };
 
   handleChange = (name, value) => {
     this.setState({ ...this.state, [name]: value });
@@ -19,10 +19,10 @@ export default class AuthenticationPage extends React.Component {
   handleLogin = (e) => {
     e.preventDefault();
     AuthenticationPage.authClient.login(this.state.username, this.state.password, true)
-    .then(user => {
+    .then((user) => {
       this.props.onLogin(user);
     })
-    .catch(err => {throw err});
+    .catch((err) => { throw err; });
   };
 
   render() {
@@ -34,8 +34,8 @@ export default class AuthenticationPage extends React.Component {
 
         <Card className={styles.card}>
           <img src={logo} width={100} />
-          <Input type="text" label="Username" name="username" value={this.state.username} onChange={this.handleChange.bind(this, 'username')} />
-          <Input type="password" label="Password" name="password" value={this.state.password} onChange={this.handleChange.bind(this, 'password')} />
+          <Input type="text" label="Username" name="username" value={this.state.username} onChange={this.handleChange.bind(this, "username")} />
+          <Input type="password" label="Password" name="password" value={this.state.password} onChange={this.handleChange.bind(this, "password")} />
           <Button
             className={styles.button}
             raised

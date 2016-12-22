@@ -1,13 +1,13 @@
-import React, { PropTypes } from 'react';
-import ImmutablePropTypes from 'react-immutable-proptypes';
-import pluralize from 'pluralize';
-import { IndexLink } from 'react-router';
-import { IconMenu, Menu, MenuItem } from 'react-toolbox/lib/menu';
-import Avatar from 'react-toolbox/lib/avatar';
-import AppBar from 'react-toolbox/lib/app_bar';
-import FontIcon from 'react-toolbox/lib/font_icon';
-import FindBar from '../FindBar/FindBar';
-import styles from './AppHeader.css';
+import React, { PropTypes } from "react";
+import ImmutablePropTypes from "react-immutable-proptypes";
+import pluralize from "pluralize";
+import { IndexLink } from "react-router";
+import { IconMenu, Menu, MenuItem } from "react-toolbox/lib/menu";
+import Avatar from "react-toolbox/lib/avatar";
+import AppBar from "react-toolbox/lib/app_bar";
+import FontIcon from "react-toolbox/lib/font_icon";
+import FindBar from "../FindBar/FindBar";
+import styles from "./AppHeader.css";
 
 export default class AppHeader extends React.Component {
 
@@ -76,8 +76,8 @@ export default class AppHeader extends React.Component {
         rightIcon={
           <div>
             <Avatar
-              title={user.get('name')}
-              image={user.get('avatar_url')}
+              title={user.get("name")}
+              image={user.get("avatar_url")}
             />
             <Menu
               active={userMenuActive}
@@ -109,10 +109,10 @@ export default class AppHeader extends React.Component {
           {
             collections.valueSeq().map(collection =>
               <MenuItem
-                key={collection.get('name')}
-                value={collection.get('name')}
+                key={collection.get("name")}
+                value={collection.get("name")}
                 onClick={this.handleCreatePostClick.bind(this, collection.get('name'))} // eslint-disable-line
-                caption={pluralize(collection.get('label'), 1)}
+                caption={pluralize(collection.get("label"), 1)}
               />
             )
           }
