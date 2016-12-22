@@ -7,6 +7,7 @@ import Avatar from "react-toolbox/lib/avatar";
 import AppBar from "react-toolbox/lib/app_bar";
 import FontIcon from "react-toolbox/lib/font_icon";
 import FindBar from "../FindBar/FindBar";
+import { stringToRGB } from "../../lib/textHelper";
 import styles from "./AppHeader.css";
 
 export default class AppHeader extends React.Component {
@@ -68,6 +69,10 @@ export default class AppHeader extends React.Component {
       userMenuActive,
     } = this.state;
 
+    const avatarStyle = {
+      backgroundColor: `#${ stringToRGB(user.get("name")) }`,
+    };
+
     return (
       <AppBar
         fixed
@@ -76,6 +81,7 @@ export default class AppHeader extends React.Component {
         rightIcon={
           <div>
             <Avatar
+              style={avatarStyle}
               title={user.get("name")}
               image={user.get("avatar_url")}
             />

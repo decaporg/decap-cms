@@ -31,7 +31,8 @@ export default class NetlifyAuth extends GitHubBackend {
   authenticate(user) {
     return user.jwt().then((token) => {
       this.api = new API({ api_root: this.github_proxy_url, jwtToken: token });
-      return { ...user.user_metadata };
+      const userData = { name: `${ user.user_metadata.firstname } ${ user.user_metadata.lastname }`, ...user.user_metadata };
+      return userData;
     });
   }
 
