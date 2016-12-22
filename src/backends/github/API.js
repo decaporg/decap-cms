@@ -9,7 +9,7 @@ export default class API {
     this.api_root = config.api_root || 'https://api.github.com';
     this.token = config.token || false;
     this.branch = config.branch || 'master';
-    this.repo = config.repo;
+    this.repo = config.repo || '';
     this.repoURL = `/repos/${ this.repo }`;
   }
 

@@ -1,5 +1,4 @@
 import React from 'react';
-import NetlifyAuthClient from 'netlify-auth-js';
 import Input from 'react-toolbox/lib/input';
 import Button from 'react-toolbox/lib/button';
 import { Card, Icon } from '../../components/UI';
@@ -19,6 +18,11 @@ export default class AuthenticationPage extends React.Component {
 
   handleLogin = (e) => {
     e.preventDefault();
+    AuthenticationPage.authClient.login(this.state.username, this.state.password, true)
+    .then(user => {
+      this.props.onLogin(user);
+    })
+    .catch(err => {throw err});
   };
 
   render() {

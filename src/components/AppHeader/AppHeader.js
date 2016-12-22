@@ -102,7 +102,6 @@ export default class AppHeader extends React.Component {
         />
         <IconMenu
           theme={styles}
-          active={createMenuActive}
           icon="create"
           onClick={this.handleCreateButtonClick}
           onHide={this.handleCreateMenuHide}
