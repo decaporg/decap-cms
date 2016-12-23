@@ -1,7 +1,7 @@
 import LocalForage from "localforage";
-import MediaProxy from "../../valueObjects/MediaProxy";
 import { Base64 } from "js-base64";
 import _ from "lodash";
+import MediaProxy from "../../valueObjects/MediaProxy";
 import { SIMPLE, EDITORIAL_WORKFLOW, status } from "../../constants/publishModes";
 
 export default class API {
@@ -90,6 +90,7 @@ export default class API {
   }
 
   storeMetadata(key, data) {
+    console.log('Trying to store Metadata');
     return this.checkMetadataRef()
     .then((branchData) => {
       const fileTree = {

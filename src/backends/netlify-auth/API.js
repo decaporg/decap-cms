@@ -34,6 +34,10 @@ export default class API extends GithubAPI {
     return this.api_root + path;
   }
 
+  user() {
+    return Promise.resolve(this.commitAuthor);
+  }
+
   request(path, options = {}) {
     const headers = this.requestHeaders(options.headers || {});
     const url = this.urlFor(path, options);
