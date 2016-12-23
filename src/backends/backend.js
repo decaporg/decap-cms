@@ -1,12 +1,13 @@
-import TestRepoBackend from './test-repo/implementation';
-import GitHubBackend from './github/implementation';
-import NetlifyGitBackend from './netlify-git/implementation';
-import { resolveFormat } from '../formats/formats';
-import { selectListMethod, selectEntrySlug, selectEntryPath, selectAllowNewEntries } from '../reducers/collections';
-import { createEntry } from '../valueObjects/Entry';
+import TestRepoBackend from "./test-repo/implementation";
+import GitHubBackend from "./github/implementation";
+import NetlifyGitBackend from "./netlify-git/implementation";
+import NetlifyAuthBackend from "./netlify-auth/implementation";
+import { resolveFormat } from "../formats/formats";
+import { selectListMethod, selectEntrySlug, selectEntryPath, selectAllowNewEntries } from "../reducers/collections";
+import { createEntry } from "../valueObjects/Entry";
 
 class LocalStorageAuthStore {
-  storageKey = 'nf-cms-user';
+  storageKey = "nf-cms-user";
 
   retrieve() {
     const data = window.localStorage.getItem(this.storageKey);
@@ -22,21 +23,21 @@ class LocalStorageAuthStore {
   }
 }
 
-const slugFormatter = (template = '{{slug}}', entryData) => {
+const slugFormatter = (template = "{{slug}}", entryData) => {
   const date = new Date();
-  const identifier = entryData.get('title', entryData.get('path'));
+  const identifier = entryData.get("title", entryData.get("path"));
   return template.replace(/\{\{([^\}]+)\}\}/g, (_, field) => {
     switch (field) {
-      case 'year':
+      case "year":
         return date.getFullYear();
-      case 'month':
+      case "month":
         return (`0${ date.getMonth() + 1 }`).slice(-2);
-      case 'day':
+      case "day":
         return (`0${ date.getDate() }`).slice(-2);
-      case 'slug':
-        return identifier.trim().toLowerCase().replace(/[^a-z0-9\.\-_]+/gi, '-');
+      case "slug":
+        return identifier.trim().toLowerCase().replace(/[^a-z0-9\.\-_]+/gi, "-");
       default:
-        return entryData.get(field, '').trim().toLowerCase().replace(/[^a-z0-9\.\-_]+/gi, '-');
+        return entryData.get(field, "").trim().toLowerCase().replace(/[^a-z0-9\.\-_]+/gi, "-");
     }
   });
 };
@@ -46,7 +47,7 @@ class Backend {
     this.implementation = implementation;
     this.authStore = authStore;
     if (this.implementation === null) {
-      throw new Error('Cannot instantiate a Backend with no implementation');
+      throw new Error("Cannot instantiate a Backend with no implementation");
     }
   }
 
@@ -54,10 +55,9 @@ class Backend {
     if (this.user) { return this.user; }
     const stored = this.authStore && this.authStore.retrieve();
     if (stored) {
-      this.implementation.setUser(stored);
-      return stored;
+      return Promise.resolve(this.implementation.setUser(stored)).then(() => stored);
     }
-    return null;
+    return Promise.resolve(null);
   }
 
   authComponent() {
@@ -75,7 +75,7 @@ class Backend {
     if (this.authStore) {
       this.authStore.logout();
     } else {
-      throw new Error('User isn\'t authenticated.');
+      throw new Error("User isn't authenticated.");
     }
   }
 
@@ -84,7 +84,7 @@ class Backend {
     return listMethod.call(this.implementation, collection)
       .then(loadedEntries => (
         loadedEntries.map(loadedEntry => createEntry(
-          collection.get('name'),
+          collection.get("name"),
           selectEntrySlug(collection, loadedEntry.file.path),
           loadedEntry.file.path,
           { raw: loadedEntry.data, label: loadedEntry.file.label }
@@ -100,7 +100,7 @@ class Backend {
   getEntry(collection, slug) {
     return this.implementation.getEntry(collection, slug, selectEntryPath(collection, slug))
       .then(loadedEntry => this.entryWithFormat(collection, slug)(createEntry(
-        collection.get('name'),
+        collection.get("name"),
         slug,
         loadedEntry.file.path,
         { raw: loadedEntry.data, label: loadedEntry.file.label }
@@ -123,21 +123,21 @@ class Backend {
     .then(loadedEntries => loadedEntries.filter(entry => entry !== null))
     .then(entries => (
       entries.map((loadedEntry) => {
-        const entry = createEntry('draft', loadedEntry.slug, loadedEntry.file.path, { raw: loadedEntry.data });
+        const entry = createEntry("draft", loadedEntry.slug, loadedEntry.file.path, { raw: loadedEntry.data });
         entry.metaData = loadedEntry.metaData;
         return entry;
       })
     ))
     .then(entries => ({
       pagination: 0,
-      entries: entries.map(this.entryWithFormat('editorialWorkflow')),
+      entries: entries.map(this.entryWithFormat("editorialWorkflow")),
     }));
   }
 
   unpublishedEntry(collection, slug) {
     return this.implementation.unpublishedEntry(collection, slug)
     .then((loadedEntry) => {
-      const entry = createEntry('draft', loadedEntry.slug, loadedEntry.file.path, { raw: loadedEntry.data });
+      const entry = createEntry("draft", loadedEntry.slug, loadedEntry.file.path, { raw: loadedEntry.data });
       entry.metaData = loadedEntry.metaData;
       return entry;
     })
@@ -145,20 +145,20 @@ class Backend {
   }
 
   persistEntry(config, collection, entryDraft, MediaFiles, options) {
-    const newEntry = entryDraft.getIn(['entry', 'newRecord']) || false;
+    const newEntry = entryDraft.getIn(["entry", "newRecord"]) || false;
 
     const parsedData = {
-      title: entryDraft.getIn(['entry', 'data', 'title'], 'No Title'),
-      description: entryDraft.getIn(['entry', 'data', 'description'], 'No Description!'),
+      title: entryDraft.getIn(["entry", "data", "title"], "No Title"),
+      description: entryDraft.getIn(["entry", "data", "description"], "No Description!"),
     };
 
-    const entryData = entryDraft.getIn(['entry', 'data']).toJS();
+    const entryData = entryDraft.getIn(["entry", "data"]).toJS();
     let entryObj;
     if (newEntry) {
       if (!selectAllowNewEntries(collection)) {
-        throw (new Error('Not allowed to create new entries in this collection'));
+        throw (new Error("Not allowed to create new entries in this collection"));
       }
-      const slug = slugFormatter(collection.get('slug'), entryDraft.getIn(['entry', 'data']));
+      const slug = slugFormatter(collection.get("slug"), entryDraft.getIn(["entry", "data"]));
       const path = selectEntryPath(collection, slug);
       entryObj = {
         path,
@@ -166,20 +166,20 @@ class Backend {
         raw: this.entryToRaw(collection, entryData),
       };
     } else {
-      const path = entryDraft.getIn(['entry', 'path']);
+      const path = entryDraft.getIn(["entry", "path"]);
       entryObj = {
         path,
-        slug: entryDraft.getIn(['entry', 'slug']),
+        slug: entryDraft.getIn(["entry", "slug"]),
         raw: this.entryToRaw(collection, entryData),
       };
     }
 
-    const commitMessage = `${ (newEntry ? 'Created ' : 'Updated ') +
-          collection.get('label') } “${ entryObj.slug }”`;
+    const commitMessage = `${ (newEntry ? "Created " : "Updated ") +
+          collection.get("label") } “${ entryObj.slug }”`;
 
-    const mode = config.get('publish_mode');
+    const mode = config.get("publish_mode");
 
-    const collectionName = collection.get('name');
+    const collectionName = collection.get("name");
 
     return this.implementation.persistEntry(entryObj, MediaFiles, {
       newEntry, parsedData, commitMessage, collectionName, mode, ...options,
@@ -206,20 +206,22 @@ class Backend {
 }
 
 export function resolveBackend(config) {
-  const name = config.getIn(['backend', 'name']);
+  const name = config.getIn(["backend", "name"]);
   if (name == null) {
-    throw new Error('No backend defined in configuration');
+    throw new Error("No backend defined in configuration");
   }
 
   const authStore = new LocalStorageAuthStore();
 
   switch (name) {
-    case 'test-repo':
+    case "test-repo":
       return new Backend(new TestRepoBackend(config), authStore);
-    case 'github':
+    case "github":
       return new Backend(new GitHubBackend(config), authStore);
-    case 'netlify-git':
+    case "netlify-git":
       return new Backend(new NetlifyGitBackend(config), authStore);
+    case "netlify-auth":
+      return new Backend(new NetlifyAuthBackend(config), authStore);
     default:
       throw new Error(`Backend not found: ${ name }`);
   }
@@ -230,7 +232,7 @@ export const currentBackend = (function () {
 
   return (config) => {
     if (backend) { return backend; }
-    if (config.get('backend')) {
+    if (config.get("backend")) {
       return backend = resolveBackend(config);
     }
   };

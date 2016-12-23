@@ -1,34 +1,34 @@
-import yaml from 'js-yaml';
-import { set, defaultsDeep } from 'lodash';
-import { currentBackend } from '../backends/backend';
-import { authenticate } from '../actions/auth';
-import * as MediaProxy from '../valueObjects/MediaProxy';
-import * as publishModes from '../constants/publishModes';
+import yaml from "js-yaml";
+import { set, defaultsDeep } from "lodash";
+import { currentBackend } from "../backends/backend";
+import { authenticate } from "../actions/auth";
+import * as MediaProxy from "../valueObjects/MediaProxy";
+import * as publishModes from "../constants/publishModes";
 
-export const CONFIG_REQUEST = 'CONFIG_REQUEST';
-export const CONFIG_SUCCESS = 'CONFIG_SUCCESS';
-export const CONFIG_FAILURE = 'CONFIG_FAILURE';
+export const CONFIG_REQUEST = "CONFIG_REQUEST";
+export const CONFIG_SUCCESS = "CONFIG_SUCCESS";
+export const CONFIG_FAILURE = "CONFIG_FAILURE";
 
 const defaults = {
   publish_mode: publishModes.SIMPLE,
 };
 
 export function applyDefaults(config) {
-  if (!('media_folder' in config)) {
-    throw new Error('Error in configuration file: A `media_folder` wasn\'t found. Check your config.yml file.');
+  if (!("media_folder" in config)) {
+    throw new Error("Error in configuration file: A `media_folder` wasn't found. Check your config.yml file.");
   }
 
   // Make sure there is a public folder
   set(defaults,
-    'public_folder',
-    config.media_folder.charAt(0) === '/' ? config.media_folder : `/${ config.media_folder }`);
+    "public_folder",
+    config.media_folder.charAt(0) === "/" ? config.media_folder : `/${ config.media_folder }`);
 
   return defaultsDeep(config, defaults);
 }
 
 function parseConfig(data) {
   const config = yaml.safeLoad(data);
-  if (typeof CMS_ENV === 'string' && config[CMS_ENV]) {
+  if (typeof CMS_ENV === "string" && config[CMS_ENV]) {
     // TODO: Add tests and refactor
     for (const key in config[CMS_ENV]) { // eslint-disable-line no-restricted-syntax
       if (config[CMS_ENV].hasOwnProperty(key)) { // eslint-disable-line no-prototype-builtins
@@ -57,7 +57,7 @@ export function configLoading() {
 export function configFailed(err) {
   return {
     type: CONFIG_FAILURE,
-    error: 'Error loading config',
+    error: "Error loading config",
     payload: err,
   };
 }
@@ -76,7 +76,7 @@ export function loadConfig() {
   return (dispatch) => {
     dispatch(configLoading());
 
-    fetch('config.yml').then((response) => {
+    fetch("config.yml").then((response) => {
       if (response.status !== 200) {
         throw new Error(`Failed to load config.yml (${ response.status })`);
       }
@@ -88,7 +88,9 @@ export function loadConfig() {
         .then((config) => {
           dispatch(configDidLoad(config));
           const backend = currentBackend(config);
-          const user = backend && backend.currentUser();
+          return backend && backend.currentUser();
+        })
+        .then((user) => {
           if (user) dispatch(authenticate(user));
         });
     }).catch((err) => {
