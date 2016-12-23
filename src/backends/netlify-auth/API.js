@@ -5,6 +5,7 @@ export default class API extends GithubAPI {
     super(config);
     this.api_root = config.api_root;
     this.jwtToken = config.jwtToken;
+    this.commitAuthor = config.commitAuthor;
     this.repoURL = "";
   }
 
@@ -46,5 +47,24 @@ export default class API extends GithubAPI {
     });
   }
 
+  commit(message, changeTree) {
+    const commitParams = {
+      message,
+      tree: changeTree.sha,
+      parents: changeTree.parentSha ? [changeTree.parentSha] : [],
+    };
+
+    if (this.commitAuthor) {
+      commitParams.author = {
+        ...this.commitAuthor,
+        date: new Date().toISOString(),
+      };
+    }
+
+    return this.request("/git/commits", {
+      method: "POST",
+      body: JSON.stringify(commitParams),
+    });
+  }
 
 }

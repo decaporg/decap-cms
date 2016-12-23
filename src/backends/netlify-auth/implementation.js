@@ -1,4 +1,5 @@
 import NetlifyAuthClient from "netlify-auth-js";
+import { omit } from "lodash";
 import GitHubBackend from "../github/implementation";
 import API from "./API";
 import AuthenticationPage from "./AuthenticationPage";
@@ -30,8 +31,12 @@ export default class NetlifyAuth extends GitHubBackend {
 
   authenticate(user) {
     return user.jwt().then((token) => {
-      this.api = new API({ api_root: this.github_proxy_url, jwtToken: token });
-      const userData = { name: `${ user.user_metadata.firstname } ${ user.user_metadata.lastname }`, ...user.user_metadata };
+      const userData = {
+        name: `${ user.user_metadata.firstname } ${ user.user_metadata.lastname }`,
+        email: user.email,
+        metadata: user.user_metadata,
+      };
+      this.api = new API({ api_root: this.github_proxy_url, jwtToken: token, commitAuthor: omit(userData, ["metadata"]) });
       return userData;
     });
   }
