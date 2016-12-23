@@ -1,10 +1,11 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import thunkMiddleware from 'redux-thunk';
+import searchIndexing from '../middlewares/searchIndexing';
 import reducer from '../reducers/combinedReducer';
 
 export default function configureStore(initialState) {
   const store = createStore(reducer, initialState, compose(
-    applyMiddleware(thunkMiddleware),
+    applyMiddleware(thunkMiddleware, searchIndexing),
     window.devToolsExtension ? window.devToolsExtension() : f => f
   ));
 

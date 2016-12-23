@@ -17,7 +17,7 @@ export default class Algolia {
 
     this.applicationID = config.get('applicationID');
     this.apiKey = config.get('apiKey');
-    this.searchURL = `https://${ this.applicationID }-dsn.algolia.net/1`;
+    this.apiURL = `https://${ this.applicationID }-dsn.algolia.net/1`;
 
     this.entriesCache = {
       collection: null,
@@ -71,12 +71,20 @@ export default class Algolia {
     });
   }
 
+  addOrUpdateIndex(collection, entry) {
+    const { raw, ...parsedEntry } = entry.toJS();
+    return this.request(`${ this.apiURL }/indexes/${ collection.get('name') }/${ entry.get('slug') }`, {
+      method: 'PUT',
+      body: JSON.stringify(parsedEntry),
+    });
+  }
+
   search(collections, searchTerm, page) {
     const searchCollections = collections.map(collection => (
       { indexName: collection, params: `query=${ searchTerm }&page=${ page }` }
     ));
 
-    return this.request(`${ this.searchURL }/indexes/*/queries`, {
+    return this.request(`${ this.apiURL }/indexes/*/queries`, {
       method: 'POST',
       body: JSON.stringify({ requests: searchCollections }),
     }).then((response) => {
@@ -90,7 +98,7 @@ export default class Algolia {
   }
 
   searchBy(field, collection, query) {
-    return this.request(`${ this.searchURL }/indexes/${ collection }`, {
+    return this.request(`${ this.apiURL }/indexes/${ collection }`, {
       params: {
         restrictSearchableAttributes: field,
         query,
@@ -102,7 +110,7 @@ export default class Algolia {
     if (this.entriesCache.collection === collection && this.entriesCache.page === page) {
       return Promise.resolve({ page: this.entriesCache.page, entries: this.entriesCache.entries });
     } else {
-      return this.request(`${ this.searchURL }/indexes/${ collection.get('name') }`, {
+      return this.request(`${ this.apiURL }/indexes/${ collection.get('name') }`, {
         params: { page },
       }).then((response) => {
         const entries = response.hits.map((hit) => {

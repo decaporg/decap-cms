@@ -77,6 +77,7 @@ function unpublishedEntryPersisting(collection, entry, transactionID) {
     type: UNPUBLISHED_ENTRY_PERSIST_REQUEST,
     payload: { collection, entry },
     optimist: { type: BEGIN, id: transactionID },
+    indexSearch: true,
   };
 }
 
@@ -85,6 +86,7 @@ function unpublishedEntryPersisted(collection, entry, transactionID) {
     type: UNPUBLISHED_ENTRY_PERSIST_SUCCESS,
     payload: { collection, entry },
     optimist: { type: COMMIT, id: transactionID },
+    indexSearch: true,
   };
 }
 

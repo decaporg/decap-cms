@@ -83,20 +83,15 @@ export function entriesFailed(collection, error) {
 export function entryPersisting(collection, entry) {
   return {
     type: ENTRY_PERSIST_REQUEST,
-    payload: {
-      collectionName: collection.get('name'),
-      entrySlug: entry.get('slug'),
-    },
+    payload: { collection, entry },
   };
 }
 
 export function entryPersisted(collection, entry) {
   return {
     type: ENTRY_PERSIST_SUCCESS,
-    payload: {
-      collectionName: collection.get('name'),
-      entrySlug: entry.get('slug'),
-    },
+    payload: { collection, entry },
+    indexSearch: true,
   };
 }
 
@@ -105,8 +100,8 @@ export function entryPersistFail(collection, entry, error) {
     type: ENTRY_PERSIST_FAILURE,
     error: 'Failed to persist entry',
     payload: {
-      collectionName: collection.get('name'),
-      entrySlug: entry.get('slug'),
+      collection,
+      entry,
       error: error.toString(),
     },
   };
