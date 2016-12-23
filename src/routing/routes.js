@@ -5,6 +5,7 @@ import DashboardPage from '../containers/DashboardPage';
 import CollectionPage from '../containers/CollectionPage';
 import EntryPage from '../containers/EntryPage';
 import SearchPage from '../containers/SearchPage';
+import ConfigurationPage from '../containers/ConfigurationPage';
 import NotFoundPage from '../containers/NotFoundPage';
 
 export default (
@@ -31,6 +32,10 @@ export default (
     <Route
       path="/search/:searchTerm"
       component={SearchPage}
+    />
+    <Route
+      path="/configuration"
+      component={ConfigurationPage}
     />
     <Route
       path="*"
