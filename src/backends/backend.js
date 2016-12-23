@@ -7,7 +7,7 @@ import { selectListMethod, selectEntrySlug, selectEntryPath, selectAllowNewEntri
 import { createEntry } from "../valueObjects/Entry";
 
 class LocalStorageAuthStore {
-  storageKey = "nf-cms-user";
+  storageKey = "netlify-cms-user";
 
   retrieve() {
     const data = window.localStorage.getItem(this.storageKey);
