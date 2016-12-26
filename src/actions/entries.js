@@ -22,6 +22,7 @@ export const DRAFT_CREATE_FROM_ENTRY = 'DRAFT_CREATE_FROM_ENTRY';
 export const DRAFT_CREATE_EMPTY = 'DRAFT_CREATE_EMPTY';
 export const DRAFT_DISCARD = 'DRAFT_DISCARD';
 export const DRAFT_CHANGE = 'DRAFT_CHANGE';
+export const DRAFT_CHANGE_FIELD = 'DRAFT_CHANGE_FIELD';
 
 export const ENTRY_PERSIST_REQUEST = 'ENTRY_PERSIST_REQUEST';
 export const ENTRY_PERSIST_SUCCESS = 'ENTRY_PERSIST_SUCCESS';
@@ -112,7 +113,7 @@ export function entryPersistFail(collection, entry, error) {
   };
 }
 
-export function emmptyDraftCreated(entry) {
+export function emptyDraftCreated(entry) {
   return {
     type: DRAFT_CREATE_EMPTY,
     payload: entry,
@@ -138,6 +139,13 @@ export function changeDraft(entry) {
   return {
     type: DRAFT_CHANGE,
     payload: entry,
+  };
+}
+
+export function changeDraftField(field, value, metadata) {
+  return {
+    type: DRAFT_CHANGE_FIELD,
+    payload: { field, value, metadata },
   };
 }
 
@@ -180,7 +188,7 @@ export function createEmptyDraft(collection) {
       dataFields[field.get('name')] = field.get('default', null);
     });
     const newEntry = createEntry(collection.get('name'), '', '', { data: dataFields });
-    dispatch(emmptyDraftCreated(newEntry));
+    dispatch(emptyDraftCreated(newEntry));
   };
 }
 

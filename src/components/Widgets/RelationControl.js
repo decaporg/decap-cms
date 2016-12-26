@@ -25,6 +25,10 @@ class RelationControl extends Component {
     this.props.onChange(newValue);
   };
 
+  onSuggestionSelected = (event, { suggestion }) => {
+    this.props.onChange(this.getSuggestionValue(suggestion), suggestion.data);
+  };
+
   onSuggestionsFetchRequested = debounce(({ value }) => {
     if (value.length < 3) return;
     const { field } = this.props;
@@ -81,8 +85,9 @@ class RelationControl extends Component {
       <div>
         <Autosuggest
           suggestions={queryHits}
-          onSuggestionsFetchRequested={this.onSuggestionsFetchRequested} // eslint-disable-line
-          onSuggestionsClearRequested={this.onSuggestionsClearRequested} // eslint-disable-line
+          onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+          onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+          onSuggestionSelected={this.onSuggestionSelected}
           getSuggestionValue={this.getSuggestionValue}
           renderSuggestion={this.renderSuggestion}
           inputProps={inputProps}
