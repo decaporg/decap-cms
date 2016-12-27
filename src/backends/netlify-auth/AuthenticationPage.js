@@ -10,7 +10,8 @@ export default class AuthenticationPage extends React.Component {
     onLogin: React.PropTypes.func.isRequired,
   };
 
-  state = { username: "", password: "" };
+  state = { username: "", password: "", errors: {} };
+  
 
   handleChange = (name, value) => {
     this.setState({ ...this.state, [name]: value });
@@ -18,24 +19,56 @@ export default class AuthenticationPage extends React.Component {
 
   handleLogin = (e) => {
     e.preventDefault();
+
+    const { username, password } = this.state;
+    const errors = {};
+    if (!username) {
+      errors.username = 'Make sure to enter your user name';
+    }
+    if (!password) {
+      errors.password = 'Please enter your password';
+    }
+
+    if (Object.keys(errors).length > 0) {
+      this.setState({ errors });
+      return;
+    }
+
     AuthenticationPage.authClient.login(this.state.username, this.state.password, true)
     .then((user) => {
       this.props.onLogin(user);
     })
-    .catch((err) => { throw err; });
+    .catch((error) => { 
+      this.setState({ errors: { server: error.description || error.msg || error }, loggingIn: false });
+    });
   };
 
   render() {
-    const { loginError } = this.state;
+    const { errors } = this.state;
 
     return (
       <section className={styles.root}>
-        {loginError && <p>{loginError}</p>}
-
         <Card className={styles.card}>
-          <img src={logo} width={100} />
-          <Input type="text" label="Username" name="username" value={this.state.username} onChange={this.handleChange.bind(this, "username")} />
-          <Input type="password" label="Password" name="password" value={this.state.password} onChange={this.handleChange.bind(this, "password")} />
+          <img src={logo} width={100} role="presentation" />
+          {errors.server && <p>
+            <span className={styles.errorMsg}>{errors.server}</span>
+          </p>}
+          <Input 
+            type="text"
+            label="Username"
+            name="username"
+            value={this.state.username}
+            error={errors.username}
+            onChange={this.handleChange.bind(this, "username")} // eslint-disable-line
+          />
+          <Input
+            type="password"
+            label="Password"
+            name="password"
+            value={this.state.password}
+            error={errors.password}
+            onChange={this.handleChange.bind(this, "password")} // eslint-disable-line
+          />
           <Button
             className={styles.button}
             raised

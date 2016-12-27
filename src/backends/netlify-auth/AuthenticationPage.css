@@ -13,6 +13,11 @@
 .card img {
   display: block;
   margin: auto;
+  padding-bottom: 5px;
+}
+
+.errorMsg {
+  color: #dd0000;
 }
 
 .button {
