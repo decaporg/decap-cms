@@ -39,6 +39,7 @@ export default class PreviewPane extends React.Component {
     } else if (value && labelledWidgets.indexOf(field.get('widget')) !== -1 && value.toString().length < 50) {
       value = <div><strong>{field.get('label')}:</strong> {value}</div>;
     }
+    if (!value) return null;
     const widget = resolveWidget(field.get('widget'));
     return React.createElement(widget.preview, {
       key: field.get('name'),
