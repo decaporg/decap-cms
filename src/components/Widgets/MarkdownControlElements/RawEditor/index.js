@@ -24,10 +24,6 @@ function processUrl(url) {
   return `/${ url }`;
 }
 
-function preventDefault(e) {
-  e.preventDefault();
-}
-
 function cleanupPaste(paste) {
   const content = html.toContent(paste);
   return markdown.toText(content);
@@ -76,11 +72,9 @@ export default class RawEditor extends React.Component {
       },
     };
   }
+
   componentDidMount() {
     this.updateHeight();
-    this.element.addEventListener('dragenter', preventDefault, false);
-    this.element.addEventListener('dragover', preventDefault, false);
-    this.element.addEventListener('drop', this.handleDrop, false);
     this.element.addEventListener('paste', this.handlePaste, false);
   }
 
@@ -93,9 +87,7 @@ export default class RawEditor extends React.Component {
   }
 
   componentWillUnmount() {
-    this.element.removeEventListener('dragenter', preventDefault);
-    this.element.removeEventListener('dragover', preventDefault);
-    this.element.removeEventListener('drop', this.handleDrop);
+    this.element.removeEventListener('paste', this.handlePaste);
   }
 
   getSelection() {
@@ -256,8 +248,25 @@ export default class RawEditor extends React.Component {
     };
   }
 
+  handleDragEnter = (e) => {
+    e.preventDefault();
+    this.setState({ dragging: true });
+  };
+
+  handleDragLeave = (e) => {
+    e.preventDefault();
+    this.setState({ dragging: false });
+  };
+
+  handleDragOver = (e) => {
+    e.preventDefault();
+  };
+
   handleDrop = (e) => {
     e.preventDefault();
+
+    this.setState({ dragging: false });
+
     let data;
 
     if (e.dataTransfer.files && e.dataTransfer.files.length) {
@@ -296,8 +305,19 @@ export default class RawEditor extends React.Component {
 
   render() {
     const { onAddMedia, onRemoveMedia, getMedia } = this.props;
-    const { showToolbar, showBlockMenu, plugins, selectionPosition } = this.state;
-    return (<div className={styles.root}>
+    const { showToolbar, showBlockMenu, plugins, selectionPosition, dragging } = this.state;
+    const classNames = [styles.root];
+    if (dragging) {
+      classNames.push(styles.dragging);
+    }
+
+    return (<div
+      className={classNames.join(' ')}
+      onDragEnter={this.handleDragEnter}
+      onDragLeave={this.handleDragLeave}
+      onDragOver={this.handleDragOver}
+      onDrop={this.handleDrop}
+    >
       <Toolbar
         isOpen={showToolbar}
         selectionPosition={selectionPosition}
@@ -324,6 +344,7 @@ export default class RawEditor extends React.Component {
         onChange={this.handleChange}
         onSelect={this.handleSelection}
       />
+      <div className={styles.shim}/>
     </div>);
   }
 }

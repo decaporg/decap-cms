@@ -11,6 +11,7 @@ import { keymap } from 'prosemirror-keymap';
 import { schema, defaultMarkdownSerializer } from 'prosemirror-markdown';
 import { baseKeymap, setBlockType, toggleMark } from 'prosemirror-commands';
 import registry from '../../../../lib/registry';
+import MediaProxy from '../../../../valueObjects/MediaProxy';
 import { buildKeymap } from './keymap';
 import createMarkdownParser from './parser';
 import Toolbar from '../Toolbar';
@@ -213,15 +214,71 @@ export default class Editor extends Component {
     this.view.props.onAction(this.view.state.tr.replaceSelectionWith(nodeType.create(data.toJS())).action());
   };
 
+  handleDragEnter = (e) => {
+    e.preventDefault();
+    this.setState({ dragging: true });
+  };
+
+  handleDragLeave = (e) => {
+    e.preventDefault();
+    this.setState({ dragging: false });
+  };
+
+  handleDragOver = (e) => {
+    e.preventDefault();
+  };
+
+  handleDrop = (e) => {
+    e.preventDefault();
+
+    this.setState({ dragging: false });
+
+    const { schema } = this.state;
+
+    const nodes = [];
+
+    if (e.dataTransfer.files && e.dataTransfer.files.length) {
+      Array.from(e.dataTransfer.files).forEach((file) => {
+        const mediaProxy = new MediaProxy(file.name, file);
+        this.props.onAddMedia(mediaProxy);
+        if (file.type.split('/')[0] === 'image') {
+          nodes.push(
+            schema.nodes.image.create({ src: mediaProxy.public_path, alt: file.name })
+          );
+        } else {
+          nodes.push(
+            schema.marks.link.create({ href: mediaProxy.public_path, title: file.name })
+          );
+        }
+      });
+    } else {
+      nodes.push(schema.nodes.paragraph.create({}, e.dataTransfer.getData('text/plain')));
+    }
+
+    nodes.forEach((node) => {
+      this.view.props.onAction(this.view.state.tr.replaceSelectionWith(node).action());
+    });
+  };
+
   handleToggle = () => {
     this.props.onMode('raw');
   };
 
   render() {
     const { onAddMedia, onRemoveMedia, getMedia } = this.props;
-    const { plugins, showToolbar, showBlockMenu, selectionPosition } = this.state;
+    const { plugins, showToolbar, showBlockMenu, selectionPosition, dragging } = this.state;
+    const classNames = [styles.editor];
+    if (dragging) {
+      classNames.push(styles.dragging);
+    }
 
-    return (<div className={styles.editor}>
+    return (<div
+      className={classNames.join(' ')}
+      onDragEnter={this.handleDragEnter}
+      onDragLeave={this.handleDragLeave}
+      onDragOver={this.handleDragOver}
+      onDrop={this.handleDrop}
+    >
       <Toolbar
         isOpen={showToolbar}
         selectionPosition={selectionPosition}
@@ -242,6 +299,7 @@ export default class Editor extends Component {
         getMedia={getMedia}
       />
       <div ref={this.handleRef} />
+      <div className={styles.shim} />
     </div>);
   }
 }
