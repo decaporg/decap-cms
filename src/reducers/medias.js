@@ -17,15 +17,18 @@ const medias = (state = Map(), action) => {
 
 export default medias;
 
+const memoizedProxies = {};
 export const getMedia = (publicFolder, state, path) => {
   // No path provided, skip
   if (!path) return null;
 
-  if (state.has(path)) {
+  let proxy = state.get(path) || memoizedProxies[path];
+  if (proxy) {
     // There is already a MediaProxy in memmory for this path. Use it.
-    return state.get(path);
+    return proxy;
   }
 
   // Create a new MediaProxy (for consistency) and return it.
-  return new MediaProxy(resolvePath(path, publicFolder), null, true);
+  proxy = memoizedProxies[path] = new MediaProxy(resolvePath(path, publicFolder), null, true);
+  return proxy;
 };
