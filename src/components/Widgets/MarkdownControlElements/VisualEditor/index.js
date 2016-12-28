@@ -88,7 +88,7 @@ function createSerializer(schema, plugins) {
   plugins.forEach((plugin) => {
     serializer.nodes[`plugin_${ plugin.get('id') }`] = (state, node) => {
       const toBlock = plugin.get('toBlock');
-      state.write(toBlock.call(plugin, node.attrs));
+      state.write(toBlock.call(plugin, node.attrs) + '\n\n');
     };
   });
   return serializer;
@@ -210,7 +210,7 @@ export default class Editor extends Component {
   handleBlock = (plugin, data) => {
     const { schema } = this.state;
     const nodeType = schema.nodes[`plugin_${ plugin.get('id') }`];
-    this.view.props.onAction(this.view.state.tr.replaceSelection(nodeType.create(data.toJS())).action());
+    this.view.props.onAction(this.view.state.tr.replaceSelectionWith(nodeType.create(data.toJS())).action());
   };
 
   handleToggle = () => {
