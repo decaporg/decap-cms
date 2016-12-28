@@ -17,6 +17,10 @@ export default class Algolia {
 
     this.applicationID = config.get('applicationID');
     this.apiKey = config.get('apiKey');
+
+    const prefix = config.get('indexPrefix');
+    this.indexPrefix = prefix ? `${ prefix }-` : '';
+
     this.searchURL = `https://${ this.applicationID }-dsn.algolia.net/1`;
 
     this.entriesCache = {
@@ -73,7 +77,7 @@ export default class Algolia {
 
   search(collections, searchTerm, page) {
     const searchCollections = collections.map(collection => (
-      { indexName: collection, params: `query=${ searchTerm }&page=${ page }` }
+      { indexName: `${ this.indexPrefix }${ collection }`, params: `query=${ searchTerm }&page=${ page }` }
     ));
 
     return this.request(`${ this.searchURL }/indexes/*/queries`, {
@@ -90,7 +94,7 @@ export default class Algolia {
   }
 
   searchBy(field, collection, query) {
-    return this.request(`${ this.searchURL }/indexes/${ collection }`, {
+    return this.request(`${ this.searchURL }/indexes/${ this.indexPrefix }${ collection }`, {
       params: {
         restrictSearchableAttributes: field,
         query,
@@ -102,7 +106,7 @@ export default class Algolia {
     if (this.entriesCache.collection === collection && this.entriesCache.page === page) {
       return Promise.resolve({ page: this.entriesCache.page, entries: this.entriesCache.entries });
     } else {
-      return this.request(`${ this.searchURL }/indexes/${ collection.get('name') }`, {
+      return this.request(`${ this.searchURL }/indexes/${ this.indexPrefix }${ collection.get('name') }`, {
         params: { page },
       }).then((response) => {
         const entries = response.hits.map((hit) => {
