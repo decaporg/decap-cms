@@ -38,7 +38,7 @@ const entryDraftReducer = (state = Map(), action) => {
     case DRAFT_CHANGE_FIELD:
       return state.withMutations((state) => {
         state.setIn(['entry', 'data', action.payload.field], action.payload.value);
-        state.setIn(['fieldsMetaData', action.payload.field], action.payload.metadata);
+        state.mergeIn(['fieldsMetaData'], action.payload.metadata);
       });
     case ENTRY_PERSIST_REQUEST: {
       return state.setIn(['entry', 'isPersisting'], true);

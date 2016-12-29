@@ -1,5 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import Autosuggest from 'react-autosuggest';
+import uuid from 'uuid';
+import { Map } from 'immutable';
 import { connect } from 'react-redux';
 import { debounce } from 'lodash';
 import { Loader } from '../../components/UI/index';
@@ -15,26 +17,57 @@ class RelationControl extends Component {
     onChange: PropTypes.func.isRequired,
     value: PropTypes.node,
     field: PropTypes.node,
-    isFetching: PropTypes.bool,
+    isFetching: PropTypes.node,
     query: PropTypes.func.isRequired,
     clearSearch: PropTypes.func.isRequired,
-    queryHits: PropTypes.array, // eslint-disable-line
+    queryHits: PropTypes.oneOfType([
+      PropTypes.array,
+      PropTypes.object,
+    ]),
   };
+
+  constructor(props, ctx) {
+    super(props, ctx);
+    this.controlID = uuid.v4();
+  }
+
+  componentDidMount() {
+    const { value, field } = this.props;
+    if (value) {
+      const collection = field.get('collection');
+      const searchFields = field.get('searchFields').map(f => `data.${ f }`).toJS();
+      console.log("Making Query")
+      
+      this.props.query(this.controlID, collection, searchFields, value);
+      
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.queryHits !== this.props.queryHits && nextProps.queryHits.get(this.controlID)) {
+      const suggestion = nextProps.queryHits.get(this.controlID)[0];
+      if (suggestion) {
+        const val = this.getSuggestionValue(suggestion);
+        this.props.onChange(val, Map({ [val]: suggestion.data }));  
+      }
+    }
+  }
 
   onChange = (event, { newValue }) => {
     this.props.onChange(newValue);
   };
 
   onSuggestionSelected = (event, { suggestion }) => {
-    this.props.onChange(this.getSuggestionValue(suggestion), suggestion.data);
+    const value = this.getSuggestionValue(suggestion);
+    this.props.onChange(value, Map({ [value]: suggestion.data }));
   };
 
   onSuggestionsFetchRequested = debounce(({ value }) => {
-    if (value.length < 3) return;
+    if (value.length < 2) return;
     const { field } = this.props;
     const collection = field.get('collection');
     const searchFields = field.get('searchFields').map(f => `data.${ f }`).toJS();
-    this.props.query(collection, searchFields, value);
+    this.props.query(this.controlID, collection, searchFields, value);
   }, 80);
 
   onSuggestionsClearRequested = () => {
@@ -51,7 +84,7 @@ class RelationControl extends Component {
       return [];
     }
 
-    return queryHits.filter((hit) => {
+    return queryHits[this.controlID].filter((hit) => {
       let testResult = false;
       searchFields.forEach((f) => {
         testResult = testResult || regex.test(hit.data[f]);
@@ -80,11 +113,10 @@ class RelationControl extends Component {
       value: value || '',
       onChange: this.onChange,
     };
-
     return (
       <div>
         <Autosuggest
-          suggestions={queryHits}
+          suggestions={queryHits[this.controlID] || []}
           onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
           onSuggestionsClearRequested={this.onSuggestionsClearRequested}
           onSuggestionSelected={this.onSuggestionSelected}
@@ -92,7 +124,7 @@ class RelationControl extends Component {
           renderSuggestion={this.renderSuggestion}
           inputProps={inputProps}
         />
-        <Loader active={isFetching} />
+        <Loader active={isFetching === this.controlID} />
       </div>
     );
   }
