@@ -122,7 +122,6 @@ export function searchEntries(searchTerm, page = 0) {
 // Instead of searching for complete entries, query will search for specific fields
 // in specific collections and return raw data (no entries).
 export function query(namespace, collection, searchFields, searchTerm) {
-  console.log("Querying")
   return (dispatch, getState) => {
     const state = getState();
     const integration = selectIntegration(state, collection, 'search');
