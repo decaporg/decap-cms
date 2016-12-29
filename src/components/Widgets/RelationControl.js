@@ -29,6 +29,7 @@ class RelationControl extends Component {
   constructor(props, ctx) {
     super(props, ctx);
     this.controlID = uuid.v4();
+    this.didInitialSearch = false;
   }
 
   componentDidMount() {
@@ -36,19 +37,18 @@ class RelationControl extends Component {
     if (value) {
       const collection = field.get('collection');
       const searchFields = field.get('searchFields').map(f => `data.${ f }`).toJS();
-      console.log("Making Query")
-      
       this.props.query(this.controlID, collection, searchFields, value);
-      
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.queryHits !== this.props.queryHits && nextProps.queryHits.get(this.controlID)) {
-      const suggestion = nextProps.queryHits.get(this.controlID)[0];
-      if (suggestion) {
-        const val = this.getSuggestionValue(suggestion);
-        this.props.onChange(val, Map({ [val]: suggestion.data }));  
+    if (this.didInitialSearch) return;
+    if (nextProps.queryHits !== this.props.queryHits && nextProps.queryHits.get && nextProps.queryHits.get(this.controlID)) {
+      this.didInitialSearch = true;
+      const suggestion = nextProps.queryHits.get(this.controlID);
+      if (suggestion && suggestion.length === 1) {
+        const val = this.getSuggestionValue(suggestion[0]);
+        this.props.onChange(val, Map({ [val]: suggestion[0].data }));
       }
     }
   }
@@ -83,8 +83,7 @@ class RelationControl extends Component {
     if (escapedValue === '') {
       return [];
     }
-
-    return queryHits[this.controlID].filter((hit) => {
+    return queryHits.get(this.controlID).filter((hit) => {
       let testResult = false;
       searchFields.forEach((f) => {
         testResult = testResult || regex.test(hit.data[f]);
@@ -113,10 +112,14 @@ class RelationControl extends Component {
       value: value || '',
       onChange: this.onChange,
     };
+
+    const suggestions = (queryHits.get) ? queryHits.get(this.controlID, []) : [];
+    console.log(this.controlID, suggestions);
+
     return (
       <div>
         <Autosuggest
-          suggestions={queryHits[this.controlID] || []}
+          suggestions={suggestions}
           onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
           onSuggestionsClearRequested={this.onSuggestionsClearRequested}
           onSuggestionSelected={this.onSuggestionSelected}
