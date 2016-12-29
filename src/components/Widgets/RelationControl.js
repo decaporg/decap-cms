@@ -48,7 +48,7 @@ class RelationControl extends Component {
       const suggestion = nextProps.queryHits.get(this.controlID);
       if (suggestion && suggestion.length === 1) {
         const val = this.getSuggestionValue(suggestion[0]);
-        this.props.onChange(val, Map({ [val]: suggestion[0].data }));
+        this.props.onChange(val, { [val]: suggestion[0].data });
       }
     }
   }
@@ -59,7 +59,7 @@ class RelationControl extends Component {
 
   onSuggestionSelected = (event, { suggestion }) => {
     const value = this.getSuggestionValue(suggestion);
-    this.props.onChange(value, Map({ [value]: suggestion.data }));
+    this.props.onChange(value, { [value]: suggestion.data });
   };
 
   onSuggestionsFetchRequested = debounce(({ value }) => {
@@ -114,7 +114,6 @@ class RelationControl extends Component {
     };
 
     const suggestions = (queryHits.get) ? queryHits.get(this.controlID, []) : [];
-    console.log(this.controlID, suggestions);
 
     return (
       <div>
