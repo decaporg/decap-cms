@@ -29,20 +29,23 @@ export default class PreviewPane extends React.Component {
   }
 
   widgetFor = (name) => {
-    const { fields, entry, getMedia } = this.props;
+    const { fields, entry, fieldsMetaData, getMedia } = this.props;
     const field = fields.find(f => f.get('name') === name);
     let value = entry.getIn(['data', field.get('name')]);
+    const metadata = fieldsMetaData.get(field.get('name'));
     const labelledWidgets = ['string', 'text', 'number'];
     if (Object.keys(this.inferedFields).indexOf(name) !== -1) {
       value = this.inferedFields[name].defaultPreview(value);
     } else if (value && labelledWidgets.indexOf(field.get('widget')) !== -1 && value.toString().length < 50) {
       value = <div><strong>{field.get('label')}:</strong> {value}</div>;
     }
+    if (!value) return null;
     const widget = resolveWidget(field.get('widget'));
     return React.createElement(widget.preview, {
       key: field.get('name'),
       value,
       field,
+      metadata,
       getMedia,
     });
   };
@@ -100,5 +103,6 @@ PreviewPane.propTypes = {
   collection: ImmutablePropTypes.map.isRequired,
   fields: ImmutablePropTypes.list.isRequired,
   entry: ImmutablePropTypes.map.isRequired,
+  fieldsMetaData: ImmutablePropTypes.map.isRequired,
   getMedia: PropTypes.func.isRequired,
 };

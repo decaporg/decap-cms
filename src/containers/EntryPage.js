@@ -6,7 +6,7 @@ import {
   createDraftFromEntry,
   createEmptyDraft,
   discardDraft,
-  changeDraft,
+  changeDraftField,
   persistEntry,
 } from '../actions/entries';
 import { cancelEdit } from '../actions/editor';
@@ -22,7 +22,7 @@ class EntryPage extends React.Component {
   static propTypes = {
     addMedia: PropTypes.func.isRequired,
     boundGetMedia: PropTypes.func.isRequired,
-    changeDraft: PropTypes.func.isRequired,
+    changeDraftField: PropTypes.func.isRequired,
     collection: ImmutablePropTypes.map.isRequired,
     createDraftFromEntry: PropTypes.func.isRequired,
     createEmptyDraft: PropTypes.func.isRequired,
@@ -79,7 +79,7 @@ class EntryPage extends React.Component {
       fields,
       boundGetMedia,
       collection,
-      changeDraft,
+      changeDraftField,
       addMedia,
       removeMedia,
       cancelEdit,
@@ -97,7 +97,8 @@ class EntryPage extends React.Component {
         getMedia={boundGetMedia}
         collection={collection}
         fields={fields}
-        onChange={changeDraft}
+        fieldsMetaData={entryDraft.get('fieldsMetaData')}
+        onChange={changeDraftField}
         onAddMedia={addMedia}
         onRemoveMedia={removeMedia}
         onPersist={this.handlePersistEntry}
@@ -130,7 +131,7 @@ function mapStateToProps(state, ownProps) {
 export default connect(
   mapStateToProps,
   {
-    changeDraft,
+    changeDraftField,
     addMedia,
     removeMedia,
     loadEntry,

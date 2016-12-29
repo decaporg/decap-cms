@@ -25,6 +25,7 @@ class EntryEditor extends Component {
         collection,
         entry,
         fields,
+        fieldsMetaData,
         getMedia,
         onChange,
         onAddMedia,
@@ -51,6 +52,7 @@ class EntryEditor extends Component {
                     collection={collection}
                     entry={entry}
                     fields={fields}
+                    fieldsMetaData={fieldsMetaData}
                     getMedia={getMedia}
                     onChange={onChange}
                     onAddMedia={onAddMedia}
@@ -64,6 +66,7 @@ class EntryEditor extends Component {
                   collection={collection}
                   entry={entry}
                   fields={fields}
+                  fieldsMetaData={fieldsMetaData}
                   getMedia={getMedia}
                 />
               </div>
@@ -87,6 +90,7 @@ EntryEditor.propTypes = {
   collection: ImmutablePropTypes.map.isRequired,
   entry: ImmutablePropTypes.map.isRequired,
   fields: ImmutablePropTypes.list.isRequired,
+  fieldsMetaData: ImmutablePropTypes.map.isRequired,
   getMedia: PropTypes.func.isRequired,
   onAddMedia: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,

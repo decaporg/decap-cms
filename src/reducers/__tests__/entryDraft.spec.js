@@ -2,7 +2,7 @@ import { Map, List, fromJS } from 'immutable';
 import * as actions from '../../actions/entries';
 import reducer from '../entryDraft';
 
-let initialState = Map({ entry: Map(), mediaFiles: List() });
+let initialState = Map({ entry: Map(), mediaFiles: List(), fieldsMetaData: Map() });
 
 const entry = {
   collection: 'posts',
@@ -29,6 +29,7 @@ describe('entryDraft reducer', () => {
             newRecord: false,
           },
           mediaFiles: [],
+          fieldsMetaData: Map(),
         })
       );
     });
@@ -39,7 +40,7 @@ describe('entryDraft reducer', () => {
       expect(
         reducer(
           initialState,
-          actions.emmptyDraftCreated(fromJS(entry))
+          actions.emptyDraftCreated(fromJS(entry))
         )
       ).toEqual(
         fromJS({
@@ -48,6 +49,7 @@ describe('entryDraft reducer', () => {
             newRecord: true,
           },
           mediaFiles: [],
+          fieldsMetaData: Map(),
         })
       );
     });

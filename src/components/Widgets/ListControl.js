@@ -83,10 +83,10 @@ export default class ListControl extends Component {
   };
 
   handleChangeFor(index) {
-    return (newValue) => {
+    return (newValue, newMetadata) => {
       const { value, onChange } = this.props;
       const parsedValue = (this.valueType === valueTypes.SINGLE) ? newValue.first() : newValue;
-      onChange(value.set(index, parsedValue));
+      onChange(value.set(index, parsedValue), newMetadata);
     };
   }
 

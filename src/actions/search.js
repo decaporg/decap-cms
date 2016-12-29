@@ -9,9 +9,9 @@ export const SEARCH_ENTRIES_REQUEST = 'SEARCH_ENTRIES_REQUEST';
 export const SEARCH_ENTRIES_SUCCESS = 'SEARCH_ENTRIES_SUCCESS';
 export const SEARCH_ENTRIES_FAILURE = 'SEARCH_ENTRIES_FAILURE';
 
-export const QUERY_REQUEST = 'QUERY_REQUEST';
-export const QUERY_SUCCESS = 'QUERY_SUCCESS';
-export const QUERY_FAILURE = 'QUERY_FAILURE';
+export const QUERY_REQUEST = 'INIT_QUERY';
+export const QUERY_SUCCESS = 'QUERY_OK';
+export const QUERY_FAILURE = 'QUERY_ERROR';
 
 export const SEARCH_CLEAR = 'SEARCH_CLEAR';
 
@@ -47,10 +47,11 @@ export function searchFailure(searchTerm, error) {
   };
 }
 
-export function querying(collection, searchFields, searchTerm) {
+export function querying(namespace, collection, searchFields, searchTerm) {
   return {
     type: QUERY_REQUEST,
     payload: {
+      namespace,
       collection,
       searchFields,
       searchTerm,
@@ -58,10 +59,11 @@ export function querying(collection, searchFields, searchTerm) {
   };
 }
 
-export function querySuccess(collection, searchFields, searchTerm, response) {
+export function querySuccess(namespace, collection, searchFields, searchTerm, response) {
   return {
     type: QUERY_SUCCESS,
     payload: {
+      namespace,
       collection,
       searchFields,
       searchTerm,
@@ -70,10 +72,11 @@ export function querySuccess(collection, searchFields, searchTerm, response) {
   };
 }
 
-export function queryFailure(collection, searchFields, searchTerm, error) {
+export function queryFailure(namespace, collection, searchFields, searchTerm, error) {
   return {
     type: QUERY_SUCCESS,
     payload: {
+      namespace,
       collection,
       searchFields,
       searchTerm,
@@ -118,20 +121,20 @@ export function searchEntries(searchTerm, page = 0) {
 
 // Instead of searching for complete entries, query will search for specific fields
 // in specific collections and return raw data (no entries).
-export function query(collection, searchFields, searchTerm) {
+export function query(namespace, collection, searchFields, searchTerm) {
   return (dispatch, getState) => {
     const state = getState();
     const integration = selectIntegration(state, collection, 'search');
     if (!integration) {
-      dispatch(searchFailure(searchTerm, 'Search integration is not configured.'));
+      dispatch(searchFailure(namespace, searchTerm, 'Search integration is not configured.'));
     }
     const provider = integration ?
       getIntegrationProvider(state.integrations, integration)
       : currentBackend(state.config);
-    dispatch(querying(collection, searchFields, searchTerm));
+    dispatch(querying(namespace, collection, searchFields, searchTerm));
     provider.searchBy(searchFields, collection, searchTerm).then(
-      response => dispatch(querySuccess(collection, searchFields, searchTerm, response)),
-      error => dispatch(queryFailure(collection, searchFields, searchTerm, error))
+      response => dispatch(querySuccess(namespace, collection, searchFields, searchTerm, response)),
+      error => dispatch(queryFailure(namespace, collection, searchFields, searchTerm, error))
     );
   };
 }
