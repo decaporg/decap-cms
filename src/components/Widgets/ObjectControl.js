@@ -25,8 +25,8 @@ export default class ObjectControl extends Component {
           React.createElement(widget.control, {
             field,
             value: fieldValue,
-            onChange: (val) => {
-              onChange((value || Map()).set(field.get('name'), val));
+            onChange: (val, metadata) => {
+              onChange((value || Map()).set(field.get('name'), val), metadata);
             },
             onAddMedia,
             onRemoveMedia,
