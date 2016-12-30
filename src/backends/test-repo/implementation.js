@@ -9,6 +9,15 @@ function getFile(path) {
   return obj;
 }
 
+function nameFromEmail(email) {
+  return email
+    .split('@').shift().replace(/[.-_]/g, ' ')
+    .split(' ')
+    .filter(f => f)
+    .map(s => s.substr(0, 1).toUpperCase() + (s.substr(1) || ''))
+    .join(' ');
+}
+
 export default class TestRepo {
   constructor(config) {
     this.config = config;
@@ -24,7 +33,7 @@ export default class TestRepo {
   }
 
   authenticate(state) {
-    return Promise.resolve({ email: state.email });
+    return Promise.resolve({ email: state.email, name: nameFromEmail(state.email) });
   }
 
   entriesByFolder(collection) {
@@ -71,7 +80,6 @@ export default class TestRepo {
     } else {
       window.repoFiles[folder][fileName].content = entry.raw;
     }
-    mediaFiles.forEach(media => media.uploaded = true);
     return Promise.resolve();
   }
 
