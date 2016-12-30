@@ -228,8 +228,11 @@ export default function createMarkdownParser(schema, plugins) {
     blockquote: {block: "blockquote"},
     paragraph: {block: "paragraph"},
     list_item: {block: "list_item"},
-    bullet_list: {block: "bullet_list"},
-    ordered_list: {block: "ordered_list", attrs: tok => ({order: +tok.attrGet("order") || 1})},
+    // Note - we force lists to be tight here, while that's not ProseMirror's default
+    // The default behavior means list elements always have a `p` inside, and we want
+    // to avoid tha.
+    bullet_list: {block: "bullet_list", attrs: tok => ({tight: true})},
+    ordered_list: {block: "ordered_list", attrs: tok => ({tight: true, order: +tok.attrGet("order") || 1})},
     heading: {block: "heading", attrs: tok => ({level: +tok.tag.slice(1)})},
     code_block: {block: "code_block"},
     fence: {block: "code_block"},

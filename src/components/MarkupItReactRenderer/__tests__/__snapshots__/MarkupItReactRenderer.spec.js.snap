@@ -10,7 +10,7 @@ exports[`MarkitupReactRenderer Markdown rendering HTML should render HTML as is 
 "<article><h1>Title</h1><div><form action=\"test\">
   <label for=\"input\">
     <input type=\"checkbox\" checked=\"checked\" id=\"input\"/> My label
-  </label> 
+  </label>
   <dl class=\"test-class another-class\" style=\"width: 100%\">
       <dt data-attr=\"test\">Test HTML content</dt>
       <dt>Testing HTML in Markdown</dt>

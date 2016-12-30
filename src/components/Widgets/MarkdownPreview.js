@@ -24,6 +24,7 @@ const MarkdownPreview = ({ value, getMedia }) => {
         value={value}
         syntax={markdown}
         schema={schema}
+        getMedia={getMedia}
       />
     </div>
   );

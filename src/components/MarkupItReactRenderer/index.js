@@ -42,11 +42,7 @@ const defaultSchema = {
   [ENTITIES.HARD_BREAK]: 'br',
 };
 
-const notAllowedAttributes = ['loose'];
-
-function sanitizeProps(props) {
-  return omit(props, notAllowedAttributes);
-}
+const notAllowedAttributes = ['loose', 'image'];
 
 export default class MarkupItReactRenderer extends React.Component {
 
@@ -65,6 +61,17 @@ export default class MarkupItReactRenderer extends React.Component {
       this.parser = new MarkupIt(nextProps.syntax);
     }
   }
+
+  sanitizeProps(props) {
+    const { getMedia } = this.props;
+
+    if (props.image) {
+      props = Object.assign({}, props, { src: getMedia(props.image).toString() });
+    }
+
+    return omit(props, notAllowedAttributes);
+  }
+
 
   renderToken(schema, token, index = 0, key = '0') {
     const type = token.get('type');
@@ -85,7 +92,7 @@ export default class MarkupItReactRenderer extends React.Component {
       if (nodeType !== null) {
         let props = { key, token };
         if (typeof nodeType !== 'function') {
-          props = { key, ...sanitizeProps(data.toJS()) };
+          props = { key, ...this.sanitizeProps(data.toJS()) };
         }
         // If this is a react element
         return React.createElement(nodeType, props, children);
@@ -108,7 +115,7 @@ export default class MarkupItReactRenderer extends React.Component {
 
 
   render() {
-    const { value, schema } = this.props;
+    const { value, schema, getMedia } = this.props;
     const content = this.parser.toContent(value);
     return this.renderToken({ ...defaultSchema, ...schema }, content.get('token'));
   }
@@ -121,4 +128,5 @@ MarkupItReactRenderer.propTypes = {
     PropTypes.string,
     PropTypes.func,
   ])),
+  getMedia: PropTypes.func.isRequired,
 };

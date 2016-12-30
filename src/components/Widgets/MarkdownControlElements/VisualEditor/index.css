@@ -20,12 +20,38 @@
   & p {
     margin-bottom: 20px;
   }
+  & hr {
+    border: 1px solid;
+    margin-bottom: 20px;
+  }
+  & li > p {
+    margin: 0;
+  }
   & div[data-plugin] {
     background: #fff;
     border: 1px solid #aaa;
     padding: 10px;
     margin-bottom: 20px;
   }
+}
+
+.dragging { }
+
+.shim {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: none;
+  border: 2px dashed #aaa;
+  background: rgba(0,0,0,0.2);
+}
+
+.dragging .shim {
+  z-index: 1000;
+  display: block;
+  pointer-events: none;
 }
 
 :global {

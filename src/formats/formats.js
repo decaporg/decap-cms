@@ -12,7 +12,7 @@ function formatByType(type) {
   return YamlFrontmatterFormatter;
 }
 
-function formatByExtension(extension) {
+export function formatByExtension(extension) {
   return {
     yml: yamlFormatter,
     json: jsonFormatter,
