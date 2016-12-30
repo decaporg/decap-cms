@@ -17,14 +17,15 @@ export default class AuthenticationPage extends React.Component {
     this.props.onLogin(this.state);
   };
 
-  handleEmailChange = (e) => {
-    this.setState({ email: e.target.value });
+  handleEmailChange = (value) => {
+    this.setState({ email: value });
   };
 
   render() {
     return (<section className={styles.root}>
       <Card className={styles.card}>
         <img src={logo} width={100} role="presentation" />
+        <p className={styles.message}>This is a demo, enter your email to start</p>
         <Input
           type="text"
           label="Email"
