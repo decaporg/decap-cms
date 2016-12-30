@@ -1,29 +1,45 @@
 import React from 'react';
+import Input from "react-toolbox/lib/input";
+import Button from "react-toolbox/lib/button";
+import { Card, Icon } from "../../components/UI";
+import logo from "../netlify-auth/netlify_logo.svg";
+import styles from "../netlify-auth/AuthenticationPage.css";
 
 export default class AuthenticationPage extends React.Component {
   static propTypes = {
-    onLogin: React.PropTypes.func.isRequired
+    onLogin: React.PropTypes.func.isRequired,
   };
 
   state = { email: '' };
 
-  handleLogin = e => {
+  handleLogin = (e) => {
     e.preventDefault();
     this.props.onLogin(this.state);
   };
 
-  handleEmailChange = e => {
+  handleEmailChange = (e) => {
     this.setState({ email: e.target.value });
   };
 
   render() {
-    return <form onSubmit={this.handleLogin}>
-      <p>
-        <label>Your name or email: <input type='text' onChange={this.handleEmailChange}/></label>
-      </p>
-      <p>
-        <button type='submit'>Login</button>
-      </p>
-    </form>;
+    return (<section className={styles.root}>
+      <Card className={styles.card}>
+        <img src={logo} width={100} role="presentation" />
+        <Input
+          type="text"
+          label="Email"
+          name="email"
+          value={this.state.email}
+          onChange={this.handleEmailChange}
+        />
+        <Button
+          className={styles.button}
+          raised
+          onClick={this.handleLogin}
+        >
+          <Icon type="login" /> Login
+        </Button>
+      </Card>
+    </section>);
   }
 }
