@@ -20,6 +20,11 @@
   color: #dd0000;
 }
 
+.message {
+  font-size: 1.1em;
+  margin: 20px 10px;
+}
+
 .button {
   padding: .25em 1em;
   height: auto;

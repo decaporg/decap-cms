@@ -10,6 +10,10 @@ import htmlSyntax from 'markup-it/syntaxes/html';
 import reInline from 'markup-it/syntaxes/markdown/re/inline';
 import MarkupItReactRenderer from '../';
 
+function getMedia(path) {
+  return path;
+}
+
 describe('MarkitupReactRenderer', () => {
   describe('basics', () => {
     it('should re-render properly after a value and syntax update', () => {
@@ -17,6 +21,7 @@ describe('MarkitupReactRenderer', () => {
         <MarkupItReactRenderer
           value="# Title"
           syntax={markdownSyntax}
+          getMedia={getMedia}
         />
       );
       const tree1 = component.html();
@@ -33,6 +38,7 @@ describe('MarkitupReactRenderer', () => {
         <MarkupItReactRenderer
           value="# Title"
           syntax={markdownSyntax}
+          getMedia={getMedia}
         />
       );
       const syntax1 = component.instance().props.syntax;
@@ -77,6 +83,7 @@ Text with **bold** & _em_ elements
           <MarkupItReactRenderer
             value={value}
             syntax={markdownSyntax}
+            getMedia={getMedia}
           />
         );
         expect(component.html()).toMatchSnapshot();
@@ -91,6 +98,7 @@ Text with **bold** & _em_ elements
             <MarkupItReactRenderer
               value={value}
               syntax={markdownSyntax}
+              getMedia={getMedia}
             />
           );
           expect(component.html()).toMatchSnapshot();
@@ -115,6 +123,7 @@ Text with **bold** & _em_ elements
           <MarkupItReactRenderer
             value={value}
             syntax={markdownSyntax}
+            getMedia={getMedia}
           />
         );
         expect(component.html()).toMatchSnapshot();
@@ -134,6 +143,7 @@ I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3]
           <MarkupItReactRenderer
             value={value}
             syntax={markdownSyntax}
+            getMedia={getMedia}
           />
         );
         expect(component.html()).toMatchSnapshot();
@@ -147,6 +157,7 @@ I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3]
           <MarkupItReactRenderer
             value={value}
             syntax={markdownSyntax}
+            getMedia={getMedia}
           />
         );
         expect(component.html()).toMatchSnapshot();
@@ -158,6 +169,7 @@ I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3]
           <MarkupItReactRenderer
             value={value}
             syntax={markdownSyntax}
+            getMedia={getMedia}
           />
         );
         expect(component.html()).toMatchSnapshot();
@@ -172,7 +184,7 @@ I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3]
 <form action="test">
   <label for="input">
     <input type="checkbox" checked="checked" id="input"/> My label
-  </label> 
+  </label>
   <dl class="test-class another-class" style="width: 100%">
       <dt data-attr="test">Test HTML content</dt>
       <dt>Testing HTML in Markdown</dt>
@@ -185,6 +197,7 @@ I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3]
           <MarkupItReactRenderer
             value={value}
             syntax={markdownSyntax}
+            getMedia={getMedia}
           />
         );
         expect(component.html()).toMatchSnapshot();
@@ -228,6 +241,7 @@ I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3]
           value={value}
           syntax={myMarkdownSyntax}
           schema={myCustomSchema}
+          getMedia={getMedia}
         />
       );
       expect(component.html()).toMatchSnapshot();
@@ -241,6 +255,7 @@ I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3]
         <MarkupItReactRenderer
           value={value}
           syntax={htmlSyntax}
+          getMedia={getMedia}
         />
       );
       expect(component.html()).toMatchSnapshot();

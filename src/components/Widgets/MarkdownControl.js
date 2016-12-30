@@ -6,6 +6,8 @@ import { processEditorPlugins } from './richText';
 import { connect } from 'react-redux';
 import { switchVisualMode } from '../../actions/editor';
 
+const MODE_STORAGE_KEY = 'cms.md-mode';
+
 class MarkdownControl extends React.Component {
   static propTypes = {
     editor: PropTypes.object.isRequired,
@@ -18,7 +20,7 @@ class MarkdownControl extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { mode: 'visual' };
+    this.state = { mode: localStorage.getItem(MODE_STORAGE_KEY) || 'visual' };
   }
 
   componentWillMount() {
@@ -27,6 +29,7 @@ class MarkdownControl extends React.Component {
 
   handleMode = (mode) => {
     this.setState({ mode });
+    localStorage.setItem(MODE_STORAGE_KEY, mode);
   };
 
   render() {

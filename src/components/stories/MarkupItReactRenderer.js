@@ -19,16 +19,22 @@ const htmlContent = `
 </ol>
 `;
 
+function getMedia(path) {
+  return path;
+}
+
 storiesOf('MarkupItReactRenderer', module)
   .add('Markdown', () => (
     <MarkupItReactRenderer
       value={mdContent}
       syntax={markdownSyntax}
+      getMedia={getMedia}
     />
 
   )).add('HTML', () => (
     <MarkupItReactRenderer
       value={htmlContent}
       syntax={htmlSyntax}
+      getMedia={getMedia}
     />
   ));
