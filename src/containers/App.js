@@ -26,7 +26,7 @@ import styles from './App.css';
 
 TopBarProgress.config({
   barColors: {
-    0: '#3ab7a5',
+    "0": '#3ab7a5',
     '1.0': '#3ab7a5',
   },
   shadowBlur: 5,
@@ -116,8 +116,8 @@ class App extends React.Component {
       // }
     });
 
-    commands.push({ id: HELP, type: HELP, pattern: 'Help' });
-    defaultCommands.push(HELP);
+    // commands.push({ id: HELP, type: HELP, pattern: 'Help' });
+    // defaultCommands.push(HELP);
 
     return { commands, defaultCommands };
   }
@@ -135,6 +135,7 @@ class App extends React.Component {
       logoutUser,
       isFetching,
     } = this.props;
+
 
     if (config === null) {
       return null;
