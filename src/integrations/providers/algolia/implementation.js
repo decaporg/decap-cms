@@ -3,8 +3,7 @@ import { createEntry } from '../../../valueObjects/Entry';
 import { selectEntrySlug } from '../../../reducers/collections';
 
 function getSlug(path) {
-  const m = path.match(/([^\/]+?)(\.[^\/\.]+)?$/);
-  return m && m[1];
+  return path.split('/').pop().replace(/\.[^\.]+$/, '');
 }
 
 export default class Algolia {
@@ -85,7 +84,7 @@ export default class Algolia {
       body: JSON.stringify({ requests: searchCollections }),
     }).then((response) => {
       const entries = response.results.map((result, index) => result.hits.map((hit) => {
-        const slug = hit.slug || getSlug(hit.path);
+        const slug = getSlug(hit.path);
         return createEntry(collections[index], slug, hit.path, { data: hit.data, partial: true });
       }));
 
