@@ -1,12 +1,12 @@
 import { Map } from 'immutable';
 import { resolvePath } from '../lib/pathHelper';
-import { ADD_MEDIA, REMOVE_MEDIA } from '../actions/media';
+import { ADDED_MEDIA, REMOVE_MEDIA } from '../actions/media';
 import MediaProxy from '../valueObjects/MediaProxy';
 
 const medias = (state = Map(), action) => {
   switch (action.type) {
-    case ADD_MEDIA:
-      return state.set(action.payload.public_path, action.payload);
+    case ADDED_MEDIA:
+      return state.set(action.payload.mediaProxy.public_path, action.payload.mediaProxy);
     case REMOVE_MEDIA:
       return state.delete(action.payload);
 
