@@ -16,8 +16,9 @@ module.exports = {
            List all of theme in the array
         */
         test: /\.css$/,
-        include: [/redux-notifications/],
+        include: [/redux-notifications/, /codemirror/],
         loader: ExtractTextPlugin.extract('style', 'css'),
+        //loader: "style-loader!css-loader",
       },
       {
         /* React-toolbox still relies on SCSS and css-modules */

@@ -1,19 +1,21 @@
 import React, { PropTypes } from 'react';
+import CodeMirror from 'react-codemirror';
+
+import 'codemirror/mode/htmlmixed/htmlmixed';
+import 'codemirror/lib/codemirror.css';
+import 'codemirror/theme/monokai.css';
 
 export default class StringControl extends React.Component {
   componentDidMount() {
     this.updateHeight();
   }
 
-  handleChange = (e) => {
-    this.props.onChange(e.target.value);
-    this.updateHeight();
+  handleChange = (newValue) => {
+    this.props.onChange(newValue);
   };
 
   updateHeight() {
-    if (this.element.scrollHeight > this.element.clientHeight) {
-      this.element.style.height = `${ this.element.scrollHeight }px`;
-    }
+    this.element.codeMirror.setSize(null, 'auto');
   }
 
   handleRef = (ref) => {
@@ -21,7 +23,18 @@ export default class StringControl extends React.Component {
   };
 
   render() {
-    return <textarea ref={this.handleRef} value={this.props.value || ''} onChange={this.handleChange} />;
+    const options = {
+      lineNumbers: false,
+    };
+
+    return (
+      <CodeMirror
+        ref={this.handleRef}
+        value={this.props.value || ''}
+        onChange={this.handleChange}
+        options={options}
+      />
+    );
   }
 }
 

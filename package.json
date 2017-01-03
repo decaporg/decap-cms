@@ -91,6 +91,7 @@
   "dependencies": {
     "@kadira/storybook": "^1.36.0",
     "autoprefixer": "^6.3.3",
+    "codemirror": "^5.22.0",
     "dateformat": "^1.0.12",
     "fuzzy": "^0.1.1",
     "immutability-helper": "^2.0.0",
@@ -123,6 +124,7 @@
     "react": "^15.1.0",
     "react-addons-css-transition-group": "^15.3.1",
     "react-autosuggest": "^7.0.1",
+    "react-codemirror": "^0.3.0",
     "react-datetime": "^2.6.0",
     "react-dom": "^15.1.0",
     "react-hot-loader": "^3.0.0-beta.2",
