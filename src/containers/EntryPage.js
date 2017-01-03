@@ -72,6 +72,11 @@ class EntryPage extends React.Component {
     persistEntry(collection, entryDraft);
   };
 
+  handleAddMedia = (mediaProxy) => {
+    const { collection, addMedia } = this.props;
+    addMedia(collection.get('name'), mediaProxy);
+  };
+
   render() {
     const {
       entry,
@@ -84,7 +89,6 @@ class EntryPage extends React.Component {
       removeMedia,
       cancelEdit,
     } = this.props;
-
 
     if (entryDraft == null
       || entryDraft.get('entry') === undefined
@@ -99,7 +103,7 @@ class EntryPage extends React.Component {
         fields={fields}
         fieldsMetaData={entryDraft.get('fieldsMetaData')}
         onChange={changeDraftField}
-        onAddMedia={addMedia}
+        onAddMedia={this.handleAddMedia}
         onRemoveMedia={removeMedia}
         onPersist={this.handlePersistEntry}
         onCancelEdit={cancelEdit}

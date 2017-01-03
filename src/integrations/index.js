@@ -1,4 +1,5 @@
 import Algolia from './providers/algolia/implementation';
+import NetlifyAsset from './providers/netlifyAsset/implementation';
 import { Map } from 'immutable';
 
 export function resolveIntegrations(interationsConfig) {
@@ -7,6 +8,9 @@ export function resolveIntegrations(interationsConfig) {
     switch (providerName) {
       case 'algolia':
         integrationInstances = integrationInstances.set('algolia', new Algolia(providerData));
+        break;
+      case 'netlifyAsset':
+        integrationInstances = integrationInstances.set('netlifyAsset', new NetlifyAsset(providerData));
         break;
     }
   });
@@ -25,4 +29,4 @@ export const getIntegrationProvider = (function() {
       return integrations.get(provider);
     }
   };
-})();
+}());

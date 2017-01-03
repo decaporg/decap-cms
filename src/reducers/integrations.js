@@ -8,8 +8,10 @@ const integrations = (state = null, action) => {
       const newState = integrations.reduce((acc, integration) => {
         const { hooks, collections, provider, ...providerData } = integration;
         acc.providers[provider] = { ...providerData };
-        collections.forEach(collection => {
-          hooks.forEach(hook => {
+        if (!collections) return acc;
+        const integrationCollections = collections === "*" ? action.payload.collections.map(collection => collection.name) : collections;
+        integrationCollections.forEach((collection) => {
+          hooks.forEach((hook) => {
             acc.hooks[collection] ? acc.hooks[collection][hook] = provider : acc.hooks[collection] = { [hook]: provider };
           });
         });
@@ -21,9 +23,7 @@ const integrations = (state = null, action) => {
   }
 };
 
-export const selectIntegration = (state, collection, hook) => {
-  return state.getIn(['hooks', collection, hook], false);
-};
+export const selectIntegration = (state, collection, hook) => state.getIn(['hooks', collection, hook], false);
 
 
 export default integrations;
