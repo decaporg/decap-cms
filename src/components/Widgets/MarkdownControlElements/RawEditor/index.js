@@ -4,7 +4,7 @@ import markdownSyntax from 'markup-it/syntaxes/markdown';
 import htmlSyntax from 'markup-it/syntaxes/html';
 import CaretPosition from 'textarea-caret-position';
 import registry from '../../../../lib/registry';
-import MediaProxy from '../../../../valueObjects/MediaProxy';
+import { createMediaProxy } from '../../../../valueObjects/MediaProxy';
 import Toolbar from '../Toolbar';
 import BlockMenu from '../BlockMenu';
 import styles from './index.css';
@@ -271,12 +271,16 @@ export default class RawEditor extends React.Component {
 
     if (e.dataTransfer.files && e.dataTransfer.files.length) {
       data = Array.from(e.dataTransfer.files).map((file) => {
-        const mediaProxy = new MediaProxy(file.name, file);
-        this.props.onAddMedia(mediaProxy);
-        const link = `[${ file.name }](${ mediaProxy.public_path })`;
+        const link = `[Uploading ${ file.name }...]()`;
         if (file.type.split('/')[0] === 'image') {
           return `!${ link }`;
         }
+
+        createMediaProxy(file.name, file)
+        .then((mediaProxy) => {
+          this.props.onAddMedia(mediaProxy);
+          // TODO: Change the link text
+        });
         return link;
       }).join('\n\n');
     } else {
@@ -344,7 +348,7 @@ export default class RawEditor extends React.Component {
         onChange={this.handleChange}
         onSelect={this.handleSelection}
       />
-      <div className={styles.shim}/>
+      <div className={styles.shim} />
     </div>);
   }
 }

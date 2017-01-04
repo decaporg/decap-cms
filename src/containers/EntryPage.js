@@ -72,11 +72,6 @@ class EntryPage extends React.Component {
     persistEntry(collection, entryDraft);
   };
 
-  handleAddMedia = (mediaProxy) => {
-    const { collection, addMedia } = this.props;
-    addMedia(collection.get('name'), mediaProxy);
-  };
-
   render() {
     const {
       entry,
@@ -103,7 +98,7 @@ class EntryPage extends React.Component {
         fields={fields}
         fieldsMetaData={entryDraft.get('fieldsMetaData')}
         onChange={changeDraftField}
-        onAddMedia={this.handleAddMedia}
+        onAddMedia={addMedia}
         onRemoveMedia={removeMedia}
         onPersist={this.handlePersistEntry}
         onCancelEdit={cancelEdit}

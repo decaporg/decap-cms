@@ -1,11 +1,14 @@
 import { resolvePath } from '../lib/pathHelper';
+import { getIntegrationProvider } from '../integrations';
+import { selectIntegration } from '../reducers';
 
-let config;
-export const setConfig = (configObj) => {
-  config = configObj;
+let store;
+export const setStore = (storeObj) => {
+  store = storeObj;
 };
 
 export default function MediaProxy(value, file, uploaded = false) {
+  const config = store.getState().config;
   this.value = value;
   this.file = file;
   this.uploaded = uploaded;
@@ -29,3 +32,19 @@ MediaProxy.prototype.toBase64 = function () {
     fr.readAsDataURL(this.file);
   });
 };
+
+export function createMediaProxy(value, file, uploaded = false) {
+  const state = store.getState();
+  const integration = selectIntegration(state, null, 'assetProxy');
+  if (integration && !uploaded) {
+    const provider = integration && getIntegrationProvider(state.integrations, integration);
+    return provider.upload(file).then(
+      response => (
+        new MediaProxy(response.assetURL.replace(/^(https?|ftp):/, ''), null, true)
+      ),
+      error => new MediaProxy(value, file, false)
+    );  
+  }
+  
+  return Promise.resolve(new MediaProxy(state.config, value, file, uploaded));
+}

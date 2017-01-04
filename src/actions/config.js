@@ -2,7 +2,6 @@ import yaml from "js-yaml";
 import { set, defaultsDeep } from "lodash";
 import { currentBackend } from "../backends/backend";
 import { authenticate } from "../actions/auth";
-import * as MediaProxy from "../valueObjects/MediaProxy";
 import * as publishModes from "../constants/publishModes";
 
 export const CONFIG_REQUEST = "CONFIG_REQUEST";
@@ -64,7 +63,6 @@ export function configFailed(err) {
 
 export function configDidLoad(config) {
   return (dispatch) => {
-    MediaProxy.setConfig(config);
     dispatch(configLoaded(config));
   };
 }

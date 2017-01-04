@@ -1,5 +1,3 @@
-import { basename } from '../../../lib/pathHelper';
-
 export default class NetlifyAsset {
   constructor(config) {
     this.config = config;
@@ -57,8 +55,7 @@ export default class NetlifyAsset {
     });
   }
 
-  upload(mediaProxy) {
-    const name = basename(mediaProxy.value);
+  upload(file) {
     return this.request(this.assetURL, {
       method: 'POST',
       headers: {
@@ -66,18 +63,19 @@ export default class NetlifyAsset {
         'Authorization': `Bearer ${ this.apiToken }`,
       },
       body: JSON.stringify({
-        name,
-        size: mediaProxy.file.size,
-        content_type: mediaProxy.file.type,
+        name: file.name,
+        size: file.size,
+        content_type: file.type,
       }),
     })
     .then((response) => {
       const formURL = response.form.url;
       const formFields = response.form.fields;
+      const assetURL = response.asset.url;
       
       const formData = new FormData();
       Object.keys(formFields).forEach(key => formData.append(key, formFields[key]));
-      formData.append('file', mediaProxy.file, name);
+      formData.append('file', file, file.name);
 
       return this.request(formURL, {
         method: 'POST',
@@ -85,7 +83,7 @@ export default class NetlifyAsset {
           Accept: 'application/xml',
         },
         body: formData,
-      });
+      }).then(() => ({ success: true, assetURL }));
     });
   }
 }

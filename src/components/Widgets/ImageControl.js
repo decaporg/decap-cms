@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { truncateMiddle } from '../../lib/textHelper';
-import MediaProxy from '../../valueObjects/MediaProxy';
+import MediaProxy, { createMediaProxy } from '../../valueObjects/MediaProxy';
 
 const MAX_DISPLAY_LENGTH = 50;
 
@@ -40,9 +40,14 @@ export default class ImageControl extends React.Component {
 
     this.props.onRemoveMedia(this.props.value);
     if (file) {
-      const mediaProxy = new MediaProxy(file.name, file);
-      this.props.onAddMedia(mediaProxy);
-      this.props.onChange(mediaProxy.public_path);
+      // TODO: Start Loader
+      createMediaProxy(file.name, file)
+      .then((mediaProxy) => {
+        console.log('--mediaProxy--', mediaProxy);
+        // TODO: Stop Loader
+        this.props.onAddMedia(mediaProxy);
+        this.props.onChange(mediaProxy.public_path);
+      });
     } else {
       this.props.onChange(null);
     }

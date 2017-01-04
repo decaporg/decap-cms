@@ -11,7 +11,7 @@ import { keymap } from 'prosemirror-keymap';
 import { schema, defaultMarkdownSerializer } from 'prosemirror-markdown';
 import { baseKeymap, setBlockType, toggleMark } from 'prosemirror-commands';
 import registry from '../../../../lib/registry';
-import MediaProxy from '../../../../valueObjects/MediaProxy';
+import { createMediaProxy } from '../../../../valueObjects/MediaProxy';
 import { buildKeymap } from './keymap';
 import createMarkdownParser from './parser';
 import Toolbar from '../Toolbar';
@@ -89,7 +89,7 @@ function createSerializer(schema, plugins) {
   plugins.forEach((plugin) => {
     serializer.nodes[`plugin_${ plugin.get('id') }`] = (state, node) => {
       const toBlock = plugin.get('toBlock');
-      state.write(toBlock.call(plugin, node.attrs) + '\n\n');
+      state.write(`${ toBlock.call(plugin, node.attrs) }\n\n`);
     };
   });
   return serializer;
@@ -239,17 +239,19 @@ export default class Editor extends Component {
 
     if (e.dataTransfer.files && e.dataTransfer.files.length) {
       Array.from(e.dataTransfer.files).forEach((file) => {
-        const mediaProxy = new MediaProxy(file.name, file);
-        this.props.onAddMedia(mediaProxy);
-        if (file.type.split('/')[0] === 'image') {
-          nodes.push(
-            schema.nodes.image.create({ src: mediaProxy.public_path, alt: file.name })
-          );
-        } else {
-          nodes.push(
-            schema.marks.link.create({ href: mediaProxy.public_path, title: file.name })
-          );
-        }
+        createMediaProxy(file.name, file)
+        .then((mediaProxy) => {
+          this.props.onAddMedia(mediaProxy);
+          if (file.type.split('/')[0] === 'image') {
+            nodes.push(
+              schema.nodes.image.create({ src: mediaProxy.public_path, alt: file.name })
+            );
+          } else {
+            nodes.push(
+              schema.marks.link.create({ href: mediaProxy.public_path, title: file.name })
+            );
+          }
+        });
       });
     } else {
       nodes.push(schema.nodes.paragraph.create({}, e.dataTransfer.getData('text/plain')));
