@@ -1,10 +1,15 @@
 import React, { PropTypes } from 'react';
 import { truncateMiddle } from '../../lib/textHelper';
+import { Loader } from '../UI';
 import MediaProxy, { createMediaProxy } from '../../valueObjects/MediaProxy';
 
 const MAX_DISPLAY_LENGTH = 50;
 
 export default class ImageControl extends React.Component {
+  state = {
+    processing: false,
+  };
+
   handleFileInputRef = (el) => {
     this._fileInput = el;
   };
@@ -40,11 +45,10 @@ export default class ImageControl extends React.Component {
 
     this.props.onRemoveMedia(this.props.value);
     if (file) {
-      // TODO: Start Loader
+      this.setState({ processing: true });
       createMediaProxy(file.name, file)
       .then((mediaProxy) => {
-        console.log('--mediaProxy--', mediaProxy);
-        // TODO: Stop Loader
+        this.setState({ processing: false });
         this.props.onAddMedia(mediaProxy);
         this.props.onChange(mediaProxy.public_path);
       });
@@ -63,14 +67,25 @@ export default class ImageControl extends React.Component {
   };
 
   render() {
+    const { processing } = this.state;
     const imageName = this.renderImageName();
+    if (processing) {
+      return (
+        <div style={styles.imageUpload}>
+          <span style={styles.message}>
+            <Loader active />
+          </span>
+        </div>
+      );
+    }
     return (
       <div
+        style={styles.imageUpload}
         onDragEnter={this.handleDragEnter}
         onDragOver={this.handleDragOver}
         onDrop={this.handleChange}
       >
-        <span style={styles.imageUpload} onClick={this.handleClick}>
+        <span style={styles.message} onClick={this.handleClick}>
           {imageName ? imageName : 'Tip: Click here to upload an image from your file browser, or drag an image directly into this box from your desktop'}
         </span>
         <input
@@ -89,15 +104,17 @@ const styles = {
   input: {
     display: 'none',
   },
+  message: {
+    padding: '20px',
+    display: 'block',
+    fontSize: '12px',
+  },
   imageUpload: {
     backgroundColor: '#fff',
     textAlign: 'center',
     color: '#999',
-    padding: '20px',
-    display: 'block',
     border: '1px dashed #eee',
     cursor: 'pointer',
-    fontSize: '12px',
   },
 };
 
