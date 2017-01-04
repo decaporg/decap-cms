@@ -43,13 +43,13 @@ export default class ImageControl extends React.Component {
       }
     });
 
-    this.props.onRemoveMedia(this.props.value);
+    this.props.onRemoveAsset(this.props.value);
     if (file) {
       this.setState({ processing: true });
       createAssetProxy(file.name, file)
       .then((assetProxy) => {
         this.setState({ processing: false });
-        this.props.onAddMedia(assetProxy);
+        this.props.onAddAsset(assetProxy);
         this.props.onChange(assetProxy.public_path);
       });
     } else {
@@ -119,8 +119,8 @@ const styles = {
 };
 
 ImageControl.propTypes = {
-  onAddMedia: PropTypes.func.isRequired,
+  onAddAsset: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
-  onRemoveMedia: PropTypes.func.isRequired,
+  onRemoveAsset: PropTypes.func.isRequired,
   value: PropTypes.node,
 };

@@ -29,9 +29,9 @@ export default class ListControl extends Component {
     onChange: PropTypes.func.isRequired,
     value: PropTypes.node,
     field: PropTypes.node,
-    getMedia: PropTypes.func.isRequired,
-    onAddMedia: PropTypes.func.isRequired,
-    onRemoveMedia: PropTypes.func.isRequired,
+    getAsset: PropTypes.func.isRequired,
+    onAddAsset: PropTypes.func.isRequired,
+    onRemoveAsset: PropTypes.func.isRequired,
   };
 
   constructor(props) {
@@ -125,7 +125,7 @@ export default class ListControl extends Component {
   };
 
   renderItem(item, index) {
-    const { value, field, getMedia, onAddMedia, onRemoveMedia } = this.props;
+    const { value, field, getAsset, onAddAsset, onRemoveAsset } = this.props;
     const { itemStates } = this.state;
     const collapsed = itemStates.getIn([index, 'collapsed']);
     const classNames = [styles.item, collapsed ? styles.collapsed : styles.expanded];
@@ -145,9 +145,9 @@ export default class ListControl extends Component {
             value={item}
             field={field}
             onChange={this.handleChangeFor(index)}
-            getMedia={getMedia}
-            onAddMedia={onAddMedia}
-            onRemoveMedia={onRemoveMedia}
+            getAsset={getAsset}
+            onAddAsset={onAddAsset}
+            onRemoveAsset={onRemoveAsset}
           />
         </div>
         <button className={styles.toggleButton} onClick={this.handleToggle(index)}>

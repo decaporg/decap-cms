@@ -1,10 +1,10 @@
-export const ADD_MEDIA = 'ADD_MEDIA';
-export const REMOVE_MEDIA = 'REMOVE_MEDIA';
+export const ADD_ASSET = 'ADD_ASSET';
+export const REMOVE_ASSET = 'REMOVE_ASSET';
 
-export function addMedia(mediaProxy) {
-  return { type: ADD_MEDIA, payload: mediaProxy };
+export function addAsset(assetProxy) {
+  return { type: ADD_ASSET, payload: assetProxy };
 }
 
-export function removeMedia(path) {
-  return { type: REMOVE_MEDIA, payload: path };
+export function removeAsset(path) {
+  return { type: REMOVE_ASSET, payload: path };
 }

@@ -9,8 +9,8 @@ import {
   ENTRY_PERSIST_FAILURE,
 } from '../actions/entries';
 import {
-  ADD_MEDIA,
-  REMOVE_MEDIA,
+  ADD_ASSET,
+  REMOVE_ASSET,
 } from '../actions/media';
 
 const initialState = Map({ entry: Map(), mediaFiles: List(), fieldsMetaData: Map() });
@@ -49,9 +49,9 @@ const entryDraftReducer = (state = Map(), action) => {
       return state.deleteIn(['entry', 'isPersisting']);
     }
 
-    case ADD_MEDIA:
+    case ADD_ASSET:
       return state.update('mediaFiles', list => list.push(action.payload.public_path));
-    case REMOVE_MEDIA:
+    case REMOVE_ASSET:
       return state.update('mediaFiles', list => list.filterNot(path => path === action.payload));
 
     default:

@@ -10,7 +10,7 @@ function isHidden(field) {
 export default class ControlPane extends Component {
 
   controlFor(field) {
-    const { entry, fieldsMetaData, getMedia, onChange, onAddMedia, onRemoveMedia } = this.props;
+    const { entry, fieldsMetaData, getAsset, onChange, onAddAsset, onRemoveAsset } = this.props;
     const widget = resolveWidget(field.get('widget'));
     const fieldName = field.get('name');
     const value = entry.getIn(['data', fieldName]);
@@ -25,9 +25,9 @@ export default class ControlPane extends Component {
             value,
             metadata,
             onChange: (newValue, newMetadata) => onChange(fieldName, newValue, newMetadata),
-            onAddMedia,
-            onRemoveMedia,
-            getMedia,
+            onAddAsset,
+            onRemoveAsset,
+            getAsset,
           })
         }
       </div>
@@ -60,8 +60,8 @@ ControlPane.propTypes = {
   entry: ImmutablePropTypes.map.isRequired,
   fields: ImmutablePropTypes.list.isRequired,
   fieldsMetaData: ImmutablePropTypes.map.isRequired,
-  getMedia: PropTypes.func.isRequired,
-  onAddMedia: PropTypes.func.isRequired,
+  getAsset: PropTypes.func.isRequired,
+  onAddAsset: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
-  onRemoveMedia: PropTypes.func.isRequired,
+  onRemoveAsset: PropTypes.func.isRequired,
 };

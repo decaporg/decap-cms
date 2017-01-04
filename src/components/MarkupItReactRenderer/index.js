@@ -13,9 +13,7 @@ const defaultSchema = {
   [BLOCKS.BLOCKQUOTE]: 'blockquote',
   [BLOCKS.PARAGRAPH]: 'p',
   [BLOCKS.FOOTNOTE]: 'footnote',
-  [BLOCKS.HTML]: ({ token }) => {
-    return <div dangerouslySetInnerHTML={{ __html: token.get('raw') }} />;
-  },
+  [BLOCKS.HTML]: ({ token }) => <div dangerouslySetInnerHTML={{ __html: token.get('raw') }} />,
   [BLOCKS.HR]: 'hr',
   [BLOCKS.HEADING_1]: 'h1',
   [BLOCKS.HEADING_2]: 'h2',
@@ -63,10 +61,10 @@ export default class MarkupItReactRenderer extends React.Component {
   }
 
   sanitizeProps(props) {
-    const { getMedia } = this.props;
+    const { getAsset } = this.props;
 
     if (props.image) {
-      props = Object.assign({}, props, { src: getMedia(props.image).toString() });
+      props = Object.assign({}, props, { src: getAsset(props.image).toString() });
     }
 
     return omit(props, notAllowedAttributes);
@@ -115,7 +113,7 @@ export default class MarkupItReactRenderer extends React.Component {
 
 
   render() {
-    const { value, schema, getMedia } = this.props;
+    const { value, schema, getAsset } = this.props;
     const content = this.parser.toContent(value);
     return this.renderToken({ ...defaultSchema, ...schema }, content.get('token'));
   }
@@ -128,5 +126,5 @@ MarkupItReactRenderer.propTypes = {
     PropTypes.string,
     PropTypes.func,
   ])),
-  getMedia: PropTypes.func.isRequired,
+  getAsset: PropTypes.func.isRequired,
 };

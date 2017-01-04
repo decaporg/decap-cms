@@ -2,7 +2,7 @@ import { List } from 'immutable';
 import { actions as notifActions } from 'redux-notifications';
 import { currentBackend } from '../backends/backend';
 import { getIntegrationProvider } from '../integrations';
-import { getMedia, selectIntegration } from '../reducers';
+import { getAsset, selectIntegration } from '../reducers';
 import { createEntry } from '../valueObjects/Entry';
 
 const { notifSend } = notifActions;
@@ -196,11 +196,11 @@ export function persistEntry(collection, entryDraft) {
   return (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
-    const mediaProxies = entryDraft.get('mediaFiles').map(path => getMedia(state, path));
+    const assetProxies = entryDraft.get('mediaFiles').map(path => getAsset(state, path));
     const entry = entryDraft.get('entry');
     dispatch(entryPersisting(collection, entry));
     backend
-      .persistEntry(state.config, collection, entryDraft, mediaProxies.toJS())
+      .persistEntry(state.config, collection, entryDraft, assetProxies.toJS())
       .then(() => {
         dispatch(notifSend({
           message: 'Entry saved',

@@ -278,7 +278,7 @@ export default class RawEditor extends React.Component {
 
         createAssetProxy(file.name, file)
         .then((assetProxy) => {
-          this.props.onAddMedia(assetProxy);
+          this.props.onAddAsset(assetProxy);
           // TODO: Change the link text
         });
         return link;
@@ -308,7 +308,7 @@ export default class RawEditor extends React.Component {
   };
 
   render() {
-    const { onAddMedia, onRemoveMedia, getMedia } = this.props;
+    const { onAddAsset, onRemoveAsset, getAsset } = this.props;
     const { showToolbar, showBlockMenu, plugins, selectionPosition, dragging } = this.state;
     const classNames = [styles.root];
     if (dragging) {
@@ -337,9 +337,9 @@ export default class RawEditor extends React.Component {
         selectionPosition={selectionPosition}
         plugins={plugins}
         onBlock={this.handleBlock}
-        onAddMedia={onAddMedia}
-        onRemoveMedia={onRemoveMedia}
-        getMedia={getMedia}
+        onAddAsset={onAddAsset}
+        onRemoveAsset={onRemoveAsset}
+        getAsset={getAsset}
       />
       <textarea
         ref={this.handleRef}
@@ -354,9 +354,9 @@ export default class RawEditor extends React.Component {
 }
 
 RawEditor.propTypes = {
-  onAddMedia: PropTypes.func.isRequired,
-  onRemoveMedia: PropTypes.func.isRequired,
-  getMedia: PropTypes.func.isRequired,
+  onAddAsset: PropTypes.func.isRequired,
+  onRemoveAsset: PropTypes.func.isRequired,
+  getAsset: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   onMode: PropTypes.func.isRequired,
   value: PropTypes.node,

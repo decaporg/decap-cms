@@ -1,11 +1,11 @@
 import React, { PropTypes } from 'react';
 import previewStyle, { imagePreviewStyle } from './defaultPreviewStyle';
 
-export default function ImagePreview({ value, getMedia }) {
+export default function ImagePreview({ value, getAsset }) {
   return (<div style={previewStyle}>
     { value ?
       <img
-        src={getMedia(value)}
+        src={getAsset(value)}
         style={imagePreviewStyle}
         role="presentation"
       />
@@ -14,6 +14,6 @@ export default function ImagePreview({ value, getMedia }) {
 }
 
 ImagePreview.propTypes = {
-  getMedia: PropTypes.func.isRequired,
+  getAsset: PropTypes.func.isRequired,
   value: PropTypes.node,
 };

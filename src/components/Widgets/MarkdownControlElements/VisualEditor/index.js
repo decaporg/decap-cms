@@ -241,7 +241,7 @@ export default class Editor extends Component {
       Array.from(e.dataTransfer.files).forEach((file) => {
         createAssetProxy(file.name, file)
         .then((assetProxy) => {
-          this.props.onAddMedia(assetProxy);
+          this.props.onAddAsset(assetProxy);
           if (file.type.split('/')[0] === 'image') {
             nodes.push(
               schema.nodes.image.create({ src: assetProxy.public_path, alt: file.name })
@@ -267,7 +267,7 @@ export default class Editor extends Component {
   };
 
   render() {
-    const { onAddMedia, onRemoveMedia, getMedia } = this.props;
+    const { onAddAsset, onRemoveAsset, getAsset } = this.props;
     const { plugins, showToolbar, showBlockMenu, selectionPosition, dragging } = this.state;
     const classNames = [styles.editor];
     if (dragging) {
@@ -296,9 +296,9 @@ export default class Editor extends Component {
         selectionPosition={selectionPosition}
         plugins={plugins}
         onBlock={this.handleBlock}
-        onAddMedia={onAddMedia}
-        onRemoveMedia={onRemoveMedia}
-        getMedia={getMedia}
+        onAddAsset={onAddAsset}
+        onRemoveAsset={onRemoveAsset}
+        getAsset={getAsset}
       />
       <div ref={this.handleRef} />
       <div className={styles.shim} />
@@ -307,9 +307,9 @@ export default class Editor extends Component {
 }
 
 Editor.propTypes = {
-  onAddMedia: PropTypes.func.isRequired,
-  onRemoveMedia: PropTypes.func.isRequired,
-  getMedia: PropTypes.func.isRequired,
+  onAddAsset: PropTypes.func.isRequired,
+  onRemoveAsset: PropTypes.func.isRequired,
+  getAsset: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   onMode: PropTypes.func.isRequired,
   value: PropTypes.node,
