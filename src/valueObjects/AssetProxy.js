@@ -13,8 +13,8 @@ export default function AssetProxy(value, file, uploaded = false) {
   this.file = file;
   this.uploaded = uploaded;
   this.sha = null;
-  this.path = config.media_folder && !uploaded ? `${ config.media_folder }/${ value }` : value;
-  this.public_path = !uploaded ? resolvePath(value, config.public_folder) : value;
+  this.path = config.media_folder && !uploaded ? `${ config.get('media_folder') }/${ value }` : value;
+  this.public_path = !uploaded ? resolvePath(value, config.get('public_folder')) : value;
 }
 
 AssetProxy.prototype.toString = function () {
@@ -35,16 +35,16 @@ AssetProxy.prototype.toBase64 = function () {
 
 export function createAssetProxy(value, file, uploaded = false) {
   const state = store.getState();
-  const integration = selectIntegration(state, null, 'assetProxy');
+  const integration = selectIntegration(state, null, 'assetStore');
   if (integration && !uploaded) {
     const provider = integration && getIntegrationProvider(state.integrations, integration);
     return provider.upload(file).then(
       response => (
-        new AssetProxy(response.assetURL.replace(/^(https?|ftp):/, ''), null, true)
+        new AssetProxy(response.assetURL.replace(/^(https?):/, ''), null, true)
       ),
       error => new AssetProxy(value, file, false)
     );  
   }
   
-  return Promise.resolve(new AssetProxy(state.config, value, file, uploaded));
+  return Promise.resolve(new AssetProxy(value, file, uploaded));
 }
