@@ -109,7 +109,7 @@ export function searchEntries(searchTerm, page = 0) {
       dispatch(searchFailure(searchTerm, 'Search integration is not configured.'));
     }
     const provider = integration ?
-      getIntegrationProvider(state.integrations, integration)
+      getIntegrationProvider(state.integrations, state.auth.getIn(['user', 'token']), integration)
       : currentBackend(state.config);
     dispatch(searchingEntries(searchTerm));
     provider.search(collections, searchTerm, page).then(
@@ -129,7 +129,7 @@ export function query(namespace, collection, searchFields, searchTerm) {
       dispatch(searchFailure(namespace, searchTerm, 'Search integration is not configured.'));
     }
     const provider = integration ?
-      getIntegrationProvider(state.integrations, integration)
+      getIntegrationProvider(state.integrations, state.auth.getIn(['user', 'token']), integration)
       : currentBackend(state.config);
     dispatch(querying(namespace, collection, searchFields, searchTerm));
     provider.searchBy(searchFields, collection, searchTerm).then(

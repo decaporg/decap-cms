@@ -2,7 +2,7 @@ import Algolia from './providers/algolia/implementation';
 import AssetStore from './providers/assetStore/implementation';
 import { Map } from 'immutable';
 
-export function resolveIntegrations(interationsConfig) {
+export function resolveIntegrations(interationsConfig, authToken) {
   let integrationInstances = Map({});
   interationsConfig.get('providers').forEach((providerData, providerName) => {
     switch (providerName) {
@@ -10,7 +10,7 @@ export function resolveIntegrations(interationsConfig) {
         integrationInstances = integrationInstances.set('algolia', new Algolia(providerData));
         break;
       case 'assetStore':
-        integrationInstances = integrationInstances.set('assetStore', new AssetStore(providerData));
+        integrationInstances = integrationInstances.set('assetStore', new AssetStore(providerData, authToken));
         break;
     }
   });
@@ -21,11 +21,11 @@ export function resolveIntegrations(interationsConfig) {
 export const getIntegrationProvider = (function() {
   let integrations = null;
 
-  return (interationsConfig, provider) => {
+  return (interationsConfig, authToken, provider) => {
     if (integrations) {
       return integrations.get(provider);
     } else {
-      integrations = resolveIntegrations(interationsConfig);
+      integrations = resolveIntegrations(interationsConfig, authToken);
       return integrations.get(provider);
     }
   };

@@ -172,7 +172,7 @@ export function loadEntries(collection, page = 0) {
     }
     const state = getState();
     const integration = selectIntegration(state, collection.get('name'), 'listEntries');
-    const provider = integration ? getIntegrationProvider(state.integrations, integration) : currentBackend(state.config);
+    const provider = integration ? getIntegrationProvider(state.integrations, state.auth.getIn(['user', 'token']), integration) : currentBackend(state.config);
     dispatch(entriesLoading(collection));
     provider.listEntries(collection, page).then(
       response => dispatch(entriesLoaded(collection, response.entries, response.pagination)),

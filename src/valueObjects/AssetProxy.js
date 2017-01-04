@@ -37,7 +37,7 @@ export function createAssetProxy(value, file, uploaded = false) {
   const state = store.getState();
   const integration = selectIntegration(state, null, 'assetStore');
   if (integration && !uploaded) {
-    const provider = integration && getIntegrationProvider(state.integrations, integration);
+    const provider = integration && getIntegrationProvider(state.integrations, state.auth.getIn(['user', 'token']), integration);
     return provider.upload(file).then(
       response => (
         new AssetProxy(response.assetURL.replace(/^(https?):/, ''), null, true)

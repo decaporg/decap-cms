@@ -1,10 +1,12 @@
 export default class AssetStore {
-  constructor(config) {
+  constructor(config, authToken) {
     this.config = config;
     if (config.get('getSignedFormURL') == null) {
       throw 'The AssetStore integration needs the getSignedFormURL in the integration configuration.';
     }
-
+    this.token = authToken;
+    
+    this.shouldConfirmUpload = config.get('shouldConfirmUpload', false);
     this.getSignedFormURL = config.get('getSignedFormURL');
   }
 
@@ -38,7 +40,6 @@ export default class AssetStore {
     };
   }
 
-
   request(path, options = {}) {
     const headers = this.requestHeaders(options.headers || {});
     const url = this.urlFor(path, options);
@@ -57,7 +58,7 @@ export default class AssetStore {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${ this.apiToken }`,
+        'Authorization': `Bearer ${ this.token }`,
       },
       body: JSON.stringify({
         name: file.name,
@@ -68,6 +69,7 @@ export default class AssetStore {
     .then((response) => {
       const formURL = response.form.url;
       const formFields = response.form.fields;
+      const assetID = response.asset.id;
       const assetURL = response.asset.url;
       
       const formData = new FormData();
@@ -76,11 +78,11 @@ export default class AssetStore {
 
       return this.request(formURL, {
         method: 'POST',
-        headers: {
-          Accept: 'application/xml',
-        },
         body: formData,
-      }).then(() => ({ success: true, assetURL }));
+      })
+      .then(() => {
+        return { success: true, assetURL };
+      });
     });
   }
 }
