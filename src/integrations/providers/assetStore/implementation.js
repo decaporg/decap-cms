@@ -40,6 +40,18 @@ export default class AssetStore {
     };
   }
 
+  confirmRequest(assetID) {
+    this.request(`${ this.getSignedFormURL }/${ assetID }`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${ this.token }`,
+      },
+      body: JSON.stringify({ state: 'uploaded' }),
+    });
+  }
+
+
   request(path, options = {}) {
     const headers = this.requestHeaders(options.headers || {});
     const url = this.urlFor(path, options);
@@ -80,7 +92,8 @@ export default class AssetStore {
         method: 'POST',
         body: formData,
       })
-      .then(() => {
+      .then(() => { 
+        if (this.shouldConfirmUpload) this.confirmRequest(assetID);
         return { success: true, assetURL };
       });
     });
