@@ -1,14 +1,11 @@
-export default class NetlifyAsset {
+export default class AssetStore {
   constructor(config) {
     this.config = config;
-    if (config.get('applicationID') == null) {
-      throw 'The NetlifyAsset integration needs the applicationID in the integration configuration.';
+    if (config.get('getSignedFormURL') == null) {
+      throw 'The AssetStore integration needs the getSignedFormURL in the integration configuration.';
     }
 
-    this.applicationID = config.get('applicationID');
-    this.apiToken = config.get('apiToken');
-
-    this.assetURL = `https://api.netlify.com/api/v1/sites/${ this.applicationID }/assets`;
+    this.getSignedFormURL = config.get('getSignedFormURL');
   }
 
   parseJsonResponse(response) {
@@ -56,7 +53,7 @@ export default class NetlifyAsset {
   }
 
   upload(file) {
-    return this.request(this.assetURL, {
+    return this.request(this.getSignedFormURL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
