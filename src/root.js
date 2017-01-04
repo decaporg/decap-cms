@@ -4,7 +4,7 @@ import { Router } from 'react-router';
 import routes from './routing/routes';
 import history, { syncHistory } from './routing/history';
 import configureStore from './store/configureStore';
-import { setStore } from './valueObjects/MediaProxy';
+import { setStore } from './valueObjects/AssetProxy';
 
 const store = configureStore();
 

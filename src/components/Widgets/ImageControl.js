@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { truncateMiddle } from '../../lib/textHelper';
 import { Loader } from '../UI';
-import MediaProxy, { createMediaProxy } from '../../valueObjects/MediaProxy';
+import AssetProxy, { createAssetProxy } from '../../valueObjects/AssetProxy';
 
 const MAX_DISPLAY_LENGTH = 50;
 
@@ -46,11 +46,11 @@ export default class ImageControl extends React.Component {
     this.props.onRemoveMedia(this.props.value);
     if (file) {
       this.setState({ processing: true });
-      createMediaProxy(file.name, file)
-      .then((mediaProxy) => {
+      createAssetProxy(file.name, file)
+      .then((assetProxy) => {
         this.setState({ processing: false });
-        this.props.onAddMedia(mediaProxy);
-        this.props.onChange(mediaProxy.public_path);
+        this.props.onAddMedia(assetProxy);
+        this.props.onChange(assetProxy.public_path);
       });
     } else {
       this.props.onChange(null);
@@ -59,7 +59,7 @@ export default class ImageControl extends React.Component {
 
   renderImageName = () => {
     if (!this.props.value) return null;
-    if (this.value instanceof MediaProxy) {
+    if (this.value instanceof AssetProxy) {
       return truncateMiddle(this.props.value.path, MAX_DISPLAY_LENGTH);
     } else {
       return truncateMiddle(this.props.value, MAX_DISPLAY_LENGTH);

@@ -4,7 +4,7 @@ import markdownSyntax from 'markup-it/syntaxes/markdown';
 import htmlSyntax from 'markup-it/syntaxes/html';
 import CaretPosition from 'textarea-caret-position';
 import registry from '../../../../lib/registry';
-import { createMediaProxy } from '../../../../valueObjects/MediaProxy';
+import { createAssetProxy } from '../../../../valueObjects/AssetProxy';
 import Toolbar from '../Toolbar';
 import BlockMenu from '../BlockMenu';
 import styles from './index.css';
@@ -276,9 +276,9 @@ export default class RawEditor extends React.Component {
           return `!${ link }`;
         }
 
-        createMediaProxy(file.name, file)
-        .then((mediaProxy) => {
-          this.props.onAddMedia(mediaProxy);
+        createAssetProxy(file.name, file)
+        .then((assetProxy) => {
+          this.props.onAddMedia(assetProxy);
           // TODO: Change the link text
         });
         return link;

@@ -1,7 +1,7 @@
 import { Map } from 'immutable';
 import { resolvePath } from '../lib/pathHelper';
 import { ADD_MEDIA, REMOVE_MEDIA } from '../actions/media';
-import MediaProxy from '../valueObjects/MediaProxy';
+import AssetProxy from '../valueObjects/AssetProxy';
 
 const medias = (state = Map(), action) => {
   switch (action.type) {
@@ -29,6 +29,6 @@ export const getMedia = (publicFolder, state, path) => {
   }
 
   // Create a new MediaProxy (for consistency) and return it.
-  proxy = memoizedProxies[path] = new MediaProxy(resolvePath(path, publicFolder), null, true);
+  proxy = memoizedProxies[path] = new AssetProxy(resolvePath(path, publicFolder), null, true);
   return proxy;
 };

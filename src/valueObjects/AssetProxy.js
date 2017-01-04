@@ -7,7 +7,7 @@ export const setStore = (storeObj) => {
   store = storeObj;
 };
 
-export default function MediaProxy(value, file, uploaded = false) {
+export default function AssetProxy(value, file, uploaded = false) {
   const config = store.getState().config;
   this.value = value;
   this.file = file;
@@ -17,11 +17,11 @@ export default function MediaProxy(value, file, uploaded = false) {
   this.public_path = !uploaded ? resolvePath(value, config.public_folder) : value;
 }
 
-MediaProxy.prototype.toString = function () {
+AssetProxy.prototype.toString = function () {
   return this.uploaded ? this.public_path : window.URL.createObjectURL(this.file, { oneTimeOnly: true });
 };
 
-MediaProxy.prototype.toBase64 = function () {
+AssetProxy.prototype.toBase64 = function () {
   return new Promise((resolve, reject) => {
     const fr = new FileReader();
     fr.onload = (readerEvt) => {
@@ -33,18 +33,18 @@ MediaProxy.prototype.toBase64 = function () {
   });
 };
 
-export function createMediaProxy(value, file, uploaded = false) {
+export function createAssetProxy(value, file, uploaded = false) {
   const state = store.getState();
   const integration = selectIntegration(state, null, 'assetProxy');
   if (integration && !uploaded) {
     const provider = integration && getIntegrationProvider(state.integrations, integration);
     return provider.upload(file).then(
       response => (
-        new MediaProxy(response.assetURL.replace(/^(https?|ftp):/, ''), null, true)
+        new AssetProxy(response.assetURL.replace(/^(https?|ftp):/, ''), null, true)
       ),
-      error => new MediaProxy(value, file, false)
+      error => new AssetProxy(value, file, false)
     );  
   }
   
-  return Promise.resolve(new MediaProxy(state.config, value, file, uploaded));
+  return Promise.resolve(new AssetProxy(state.config, value, file, uploaded));
 }

@@ -1,5 +1,5 @@
 import LocalForage from 'localforage';
-import MediaProxy from '../../valueObjects/MediaProxy';
+import AssetProxy from '../../valueObjects/AssetProxy';
 import { Base64 } from 'js-base64';
 
 export default class API {
@@ -12,9 +12,9 @@ export default class API {
 
   requestHeaders(headers = {}) {
     return {
-      Authorization: `Bearer ${this.token}`,
+      "Authorization": `Bearer ${ this.token }`,
       'Content-Type': 'application/json',
-      ...headers
+      ...headers,
     };
   }
 
@@ -32,11 +32,11 @@ export default class API {
     const params = [];
     if (options.params) {
       for (const key in options.params) {
-        params.push(`${key}=${encodeURIComponent(options.params[key])}`);
+        params.push(`${ key }=${ encodeURIComponent(options.params[key]) }`);
       }
     }
     if (params.length) {
-      path += `?${params.join('&')}`;
+      path += `?${ params.join('&') }`;
     }
     return this.url + path;
   }
@@ -44,7 +44,7 @@ export default class API {
   request(path, options = {}) {
     const headers = this.requestHeaders(options.headers || {});
     const url = this.urlFor(path, options);
-    return fetch(url, { ...options, headers: headers }).then((response) => {
+    return fetch(url, { ...options, headers }).then((response) => {
       if (response.headers.get('Content-Type').match(/json/) && !options.raw) {
         return this.parseJsonResponse(response);
       }
@@ -54,20 +54,20 @@ export default class API {
   }
 
   checkMetadataRef() {
-    return this.request(`${this.repoURL}/refs/meta/_netlify_cms`, {
+    return this.request(`${ this.repoURL }/refs/meta/_netlify_cms`, {
       cache: 'no-store',
     })
     .then(response => response.object)
-    .catch(error => {
+    .catch((error) => {
       // Meta ref doesn't exist
       const readme = {
-        raw: '# Netlify CMS\n\nThis tree is used by the Netlify CMS to store metadata information for specific files and branches.'
+        raw: '# Netlify CMS\n\nThis tree is used by the Netlify CMS to store metadata information for specific files and branches.',
       };
 
       return this.uploadBlob(readme)
-      .then(item => this.request(`${this.repoURL}/trees`, {
+      .then(item => this.request(`${ this.repoURL }/trees`, {
         method: 'POST',
-        body: JSON.stringify({ tree: [{ path: 'README.md', mode: '100644', type: 'blob', sha: item.sha }] })
+        body: JSON.stringify({ tree: [{ path: 'README.md', mode: '100644', type: 'blob', sha: item.sha }] }),
       }))
       .then(tree => this.commit('First Commit', tree))
       .then(response => this.createRef('meta', '_netlify_cms', response.sha))
@@ -79,31 +79,31 @@ export default class API {
     return this.checkMetadataRef()
     .then((branchData) => {
       const fileTree = {
-        [`${key}.json`]: {
-          path: `${key}.json`,
+        [`${ key }.json`]: {
+          path: `${ key }.json`,
           raw: JSON.stringify(data),
-          file: true
-        }
+          file: true,
+        },
       };
 
-      return this.uploadBlob(fileTree[`${key}.json`])
+      return this.uploadBlob(fileTree[`${ key }.json`])
       .then(item => this.updateTree(branchData.sha, '/', fileTree))
-      .then(changeTree => this.commit(`Updating “${key}” metadata`, changeTree))
+      .then(changeTree => this.commit(`Updating “${ key }” metadata`, changeTree))
       .then(response => this.patchRef('meta', '_netlify_cms', response.sha));
     }).then(() => {
-      LocalForage.setItem(`gh.meta.${key}`, {
+      LocalForage.setItem(`gh.meta.${ key }`, {
         expires: Date.now() + 300000, // In 5 minutes
-        data
+        data,
       });
     });
   }
 
   retrieveMetadata(key, data) {
-    const cache = LocalForage.getItem(`gh.meta.${key}`);
+    const cache = LocalForage.getItem(`gh.meta.${ key }`);
     return cache.then((cached) => {
       if (cached && cached.expires > Date.now()) { return cached.data; }
 
-      return this.request(`${this.repoURL}/files/${key}.json?ref=refs/meta/_netlify_cms`, {
+      return this.request(`${ this.repoURL }/files/${ key }.json?ref=refs/meta/_netlify_cms`, {
         params: { ref: 'refs/meta/_netlify_cms' },
         headers: { 'Content-Type': 'application/vnd.netlify.raw' },
         cache: 'no-store',
@@ -113,18 +113,18 @@ export default class API {
   }
 
   readFile(path, sha, branch = this.branch) {
-    const cache = sha ? LocalForage.getItem(`gh.${sha}`) : Promise.resolve(null);
+    const cache = sha ? LocalForage.getItem(`gh.${ sha }`) : Promise.resolve(null);
     return cache.then((cached) => {
       if (cached) { return cached; }
 
-      return this.request(`${this.repoURL}/files/${path}`, {
+      return this.request(`${ this.repoURL }/files/${ path }`, {
         headers: { 'Content-Type': 'application/vnd.netlify.raw' },
         params: { ref: branch },
         cache: false,
-        raw: true
+        raw: true,
       }).then((result) => {
         if (sha) {
-          LocalForage.setItem(`gh.${sha}`, result);
+          LocalForage.setItem(`gh.${ sha }`, result);
         }
         return result;
       });
@@ -132,13 +132,16 @@ export default class API {
   }
 
   listFiles(path) {
-    return this.request(`${this.repoURL}/files/${path}`, {
-      params: { ref: this.branch }
+    return this.request(`${ this.repoURL }/files/${ path }`, {
+      params: { ref: this.branch },
     });
   }
 
   persistFiles(entry, mediaFiles, options) {
-    let filename, part, parts, subtree;
+    let filename, 
+      part, 
+      parts, 
+      subtree;
     const fileTree = {};
     const uploadPromises = [];
 
@@ -147,7 +150,7 @@ export default class API {
     files.forEach((file) => {
       if (file.uploaded) { return; }
       uploadPromises.push(this.uploadBlob(file));
-      parts = file.path.split('/').filter((part) => part);
+      parts = file.path.split('/').filter(part => part);
       filename = parts.pop();
       subtree = fileTree;
       while (part = parts.shift()) {
@@ -161,31 +164,31 @@ export default class API {
       .then(() => this.getBranch())
       .then(branchData => this.updateTree(branchData.commit.sha, '/', fileTree))
       .then(changeTree => this.commit(options.commitMessage, changeTree))
-      .then((response) => this.patchBranch(this.branch, response.sha));
+      .then(response => this.patchBranch(this.branch, response.sha));
   }
 
   createRef(type, name, sha) {
-    return this.request(`${this.repoURL}/refs`, {
+    return this.request(`${ this.repoURL }/refs`, {
       method: 'POST',
-      body: JSON.stringify({ ref: `refs/${type}/${name}`, sha }),
+      body: JSON.stringify({ ref: `refs/${ type }/${ name }`, sha }),
     });
   }
 
   patchRef(type, name, sha) {
-    return this.request(`${this.repoURL}/refs/${type}/${name}`, {
+    return this.request(`${ this.repoURL }/refs/${ type }/${ name }`, {
       method: 'PATCH',
-      body: JSON.stringify({ sha })
+      body: JSON.stringify({ sha }),
     });
   }
 
   deleteRef(type, name, sha) {
-    return this.request(`${this.repoURL}/refs/${type}/${name}`, {
+    return this.request(`${ this.repoURL }/refs/${ type }/${ name }`, {
       method: 'DELETE',
     });
   }
 
   getBranch(branch = this.branch) {
-    return this.request(`${this.repoURL}/refs/heads/${this.branch}`);
+    return this.request(`${ this.repoURL }/refs/heads/${ this.branch }`);
   }
 
   createBranch(branchName, sha) {
@@ -202,14 +205,14 @@ export default class API {
 
   createPR(title, head, base = 'master') {
     const body = 'Automatically generated by Netlify CMS';
-    return this.request(`${this.repoURL}/pulls`, {
+    return this.request(`${ this.repoURL }/pulls`, {
       method: 'POST',
       body: JSON.stringify({ title, body, head, base }),
     });
   }
 
   getTree(sha) {
-    return sha ? this.request(`${this.repoURL}/trees/${sha}`) : Promise.resolve({ tree: [] });
+    return sha ? this.request(`${ this.repoURL }/trees/${ sha }`) : Promise.resolve({ tree: [] });
   }
 
   toBase64(str) {
@@ -219,31 +222,31 @@ export default class API {
   }
 
   uploadBlob(item) {
-    const content = item instanceof MediaProxy ? item.toBase64() : this.toBase64(item.raw);
+    const content = item instanceof AssetProxy ? item.toBase64() : this.toBase64(item.raw);
 
-    return content.then((contentBase64) => {
-      return this.request(`${this.repoURL}/blobs`, {
-        method: 'POST',
-        body: JSON.stringify({
-          content: contentBase64,
-          encoding: 'base64'
-        })
-      }).then((response) => {
-        item.sha = response.sha;
-        item.uploaded = true;
-        return item;
-      });
-    });
+    return content.then(contentBase64 => this.request(`${ this.repoURL }/blobs`, {
+      method: 'POST',
+      body: JSON.stringify({
+        content: contentBase64,
+        encoding: 'base64',
+      }),
+    }).then((response) => {
+      item.sha = response.sha;
+      item.uploaded = true;
+      return item;
+    }));
   }
 
   updateTree(sha, path, fileTree) {
     return this.getTree(sha)
       .then((tree) => {
-        var obj, filename, fileOrDir;
-        var updates = [];
-        var added = {};
+        let obj, 
+          filename, 
+          fileOrDir;
+        const updates = [];
+        const added = {};
 
-        for (var i = 0, len = tree.tree.length; i < len; i++) {
+        for (let i = 0, len = tree.tree.length; i < len; i++) {
           obj = tree.tree[i];
           if (fileOrDir = fileTree[obj.path]) {
             added[obj.path] = true;
@@ -264,23 +267,19 @@ export default class API {
           );
         }
         return Promise.all(updates)
-          .then((updates) => {
-            return this.request(`${this.repoURL}/trees`, {
-              method: 'POST',
-              body: JSON.stringify({ base_tree: sha, tree: updates })
-            });
-          }).then((response) => {
-            return { path: path, mode: '040000', type: 'tree', sha: response.sha, parentSha: sha };
-          });
+          .then(updates => this.request(`${ this.repoURL }/trees`, {
+            method: 'POST',
+            body: JSON.stringify({ base_tree: sha, tree: updates }),
+          })).then(response => ({ path, mode: '040000', type: 'tree', sha: response.sha, parentSha: sha }));
       });
   }
 
   commit(message, changeTree) {
     const tree = changeTree.sha;
     const parents = changeTree.parentSha ? [changeTree.parentSha] : [];
-    return this.request(`${this.repoURL}/commits`, {
+    return this.request(`${ this.repoURL }/commits`, {
       method: 'POST',
-      body: JSON.stringify({ message, tree, parents })
+      body: JSON.stringify({ message, tree, parents }),
     });
   }
 

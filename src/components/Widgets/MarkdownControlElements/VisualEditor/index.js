@@ -11,7 +11,7 @@ import { keymap } from 'prosemirror-keymap';
 import { schema, defaultMarkdownSerializer } from 'prosemirror-markdown';
 import { baseKeymap, setBlockType, toggleMark } from 'prosemirror-commands';
 import registry from '../../../../lib/registry';
-import { createMediaProxy } from '../../../../valueObjects/MediaProxy';
+import { createAssetProxy } from '../../../../valueObjects/AssetProxy';
 import { buildKeymap } from './keymap';
 import createMarkdownParser from './parser';
 import Toolbar from '../Toolbar';
@@ -239,16 +239,16 @@ export default class Editor extends Component {
 
     if (e.dataTransfer.files && e.dataTransfer.files.length) {
       Array.from(e.dataTransfer.files).forEach((file) => {
-        createMediaProxy(file.name, file)
-        .then((mediaProxy) => {
-          this.props.onAddMedia(mediaProxy);
+        createAssetProxy(file.name, file)
+        .then((assetProxy) => {
+          this.props.onAddMedia(assetProxy);
           if (file.type.split('/')[0] === 'image') {
             nodes.push(
-              schema.nodes.image.create({ src: mediaProxy.public_path, alt: file.name })
+              schema.nodes.image.create({ src: assetProxy.public_path, alt: file.name })
             );
           } else {
             nodes.push(
-              schema.marks.link.create({ href: mediaProxy.public_path, title: file.name })
+              schema.marks.link.create({ href: assetProxy.public_path, title: file.name })
             );
           }
         });
