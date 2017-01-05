@@ -40,11 +40,11 @@ export const selectSearchedEntries = (state) => {
   return searchItems && searchItems.map(({ collection, slug }) => fromEntries.selectEntry(state.entries, collection, slug));
 };
 
-export const selectUnpublishedEntry = (state, status, slug) =>
-  fromEditorialWorkflow.selectUnpublishedEntry(state.editorialWorkflow, status, slug);
+export const selectUnpublishedEntry = (state, slug) =>
+  fromEditorialWorkflow.selectUnpublishedEntry(state.editorialWorkflow, slug);
 
-export const selectUnpublishedEntries = (state, status) =>
-  fromEditorialWorkflow.selectUnpublishedEntries(state.editorialWorkflow, status);
+export const selectUnpublishedEntriesByStatus = (state, status) =>
+  fromEditorialWorkflow.selectUnpublishedEntriesByStatus(state.editorialWorkflow, status);
 
 export const selectIntegration = (state, collection, hook) =>
   fromIntegrations.selectIntegration(state.integrations, collection, hook);

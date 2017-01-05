@@ -1,5 +1,5 @@
 import { Map, List, fromJS } from 'immutable';
-import { status, EDITORIAL_WORKFLOW } from '../constants/publishModes';
+import { EDITORIAL_WORKFLOW } from '../constants/publishModes';
 import {
   UNPUBLISHED_ENTRY_REQUEST,
   UNPUBLISHED_ENTRY_SUCCESS,
@@ -21,78 +21,60 @@ const unpublishedEntries = (state = null, action) => {
       }
       return state;
     case UNPUBLISHED_ENTRY_REQUEST:
-      return state.setIn(['entities', `${ action.payload.status }.${ action.payload.slug }`, 'isFetching'], true);
+      return state.setIn(['entities', `${ action.payload.collection }.${ action.payload.slug }`, 'isFetching'], true);
 
     case UNPUBLISHED_ENTRY_SUCCESS:
       return state.setIn(
-        ['entities', `${ action.payload.status }.${ action.payload.entry.slug }`],
+        ['entities', `${ action.payload.collection }.${ action.payload.entry.slug }`],
         fromJS(action.payload.entry)
       );
-
 
     case UNPUBLISHED_ENTRIES_REQUEST:
       return state.setIn(['pages', 'isFetching'], true);
 
     case UNPUBLISHED_ENTRIES_SUCCESS:
-      const { entries, pages } = action.payload;
       return state.withMutations((map) => {
-        entries.forEach(entry => (
-          map.setIn(['entities', `${ entry.metaData.status }.${ entry.slug }`], fromJS(entry).set('isFetching', false))
+        action.payload.entries.forEach(entry => (
+          map.setIn(['entities', `${ entry.collection }.${ entry.slug }`], fromJS(entry).set('isFetching', false))
         ));
         map.set('pages', Map({
-          ...pages,
-          ids: List(entries.map(entry => entry.slug)),
+          ...action.payload.pages,
+          ids: List(action.payload.entries.map(entry => entry.slug)),
         }));
       });
 
     case UNPUBLISHED_ENTRY_PERSIST_REQUEST:
       // Update Optimistically
-      const { collection, entry } = action.payload;
-      const ownStatus = entry.getIn(['metaData', 'status'], status.first());
       return state.withMutations((map) => {
-        map.setIn(['entities', `${ ownStatus }.${ entry.get('slug') }`], fromJS(entry));
-        map.updateIn(['pages', 'ids'], List(), list => list.push(entry.get('slug')));
+        map.setIn(['entities', `${ action.payload.collection }.${ action.payload.entry.get('slug') }`], fromJS(action.payload.entry));
+        map.updateIn(['pages', 'ids'], List(), list => list.push(action.payload.entry.get('slug')));
       });
 
     case UNPUBLISHED_ENTRY_STATUS_CHANGE_REQUEST:
       // Update Optimistically
-      return state.withMutations((map) => {
-        let entry = map.getIn(['entities', `${ action.payload.oldStatus }.${ action.payload.slug }`]);
-        entry = entry.setIn(['metaData', 'status'], action.payload.newStatus);
-
-        let entities = map.get('entities').filter((val, key) => (
-          key !== `${ action.payload.oldStatus }.${ action.payload.slug }`
-        ));
-        entities = entities.set(`${ action.payload.newStatus }.${ action.payload.slug }`, entry);
-
-        map.set('entities', entities);
-      });
+      return state.setIn(
+        ['entities', `${ action.payload.collection }.${ action.payload.slug }`, 'metaData', 'status'],
+        action.payload.newStatus
+      );
 
     case UNPUBLISHED_ENTRY_PUBLISH_REQUEST:
       // Update Optimistically
-      return state.deleteIn(['entities', `${ action.payload.status }.${ action.payload.slug }`]);
+      return state.deleteIn(['entities', `${ action.payload.collection }.${ action.payload.slug }`]);
 
     default:
       return state;
   }
 };
 
-export const selectUnpublishedEntry = (state, status, slug) => {
-  return state && state.getIn(['entities', `${ status }.${ slug }`]);
+export const selectUnpublishedEntry = (state, collection, slug) => {
+  return state && state.getIn(['entities', `${ collection }.${ slug }`]);
 };
 
-export const selectUnpublishedEntries = (state, status) => {
-  if (!state) return;
-  const slugs = state.getIn(['pages', 'ids']);
-
-  return slugs && slugs.reduce((acc, slug) => {
-    const entry = selectUnpublishedEntry(state, status, slug);
-    if (entry) {
-      return acc.push(entry);
-    } else {
-      return acc;
-    }
-  }, List());
+export const selectUnpublishedEntriesByStatus = (state, status) => {
+  if (!state) return null;
+  return state.get('entities').filter(entry => {
+    return entry.getIn(['metaData', 'status']) === status
+  }).valueSeq();
 };
 
 

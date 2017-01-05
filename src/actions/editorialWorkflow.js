@@ -33,17 +33,23 @@ export const UNPUBLISHED_ENTRY_PUBLISH_FAILURE = 'UNPUBLISHED_ENTRY_PUBLISH_FAIL
  * Simple Action Creators (Internal)
  */
 
-function unpublishedEntryLoading(status, slug) {
+function unpublishedEntryLoading(collection, slug) {
   return {
     type: UNPUBLISHED_ENTRY_REQUEST,
-    payload: { status, slug },
+    payload: {
+      collection: collection.get('name'),
+      slug,
+    },
   };
 }
 
-function unpublishedEntryLoaded(status, entry) {
+function unpublishedEntryLoaded(collection, entry) {
   return {
     type: UNPUBLISHED_ENTRY_SUCCESS,
-    payload: { status, entry },
+    payload: { 
+      collection: collection.get('name'),
+      entry,
+    },
   };
 }
 
@@ -75,7 +81,10 @@ function unpublishedEntriesFailed(error) {
 function unpublishedEntryPersisting(collection, entry, transactionID) {
   return {
     type: UNPUBLISHED_ENTRY_PERSIST_REQUEST,
-    payload: { collection, entry },
+    payload: {
+      collection: collection.get('name'),
+      entry,
+    },
     optimist: { type: BEGIN, id: transactionID },
   };
 }
@@ -83,7 +92,10 @@ function unpublishedEntryPersisting(collection, entry, transactionID) {
 function unpublishedEntryPersisted(collection, entry, transactionID) {
   return {
     type: UNPUBLISHED_ENTRY_PERSIST_SUCCESS,
-    payload: { collection, entry },
+    payload: { 
+      collection: collection.get('name'),
+      entry,
+    },
     optimist: { type: COMMIT, id: transactionID },
   };
 }
@@ -99,7 +111,12 @@ function unpublishedEntryPersistedFail(error, transactionID) {
 function unpublishedEntryStatusChangeRequest(collection, slug, oldStatus, newStatus, transactionID) {
   return {
     type: UNPUBLISHED_ENTRY_STATUS_CHANGE_REQUEST,
-    payload: { collection, slug, oldStatus, newStatus },
+    payload: { 
+      collection: collection.get('name'),
+      slug,
+      oldStatus,
+      newStatus,
+    },
     optimist: { type: BEGIN, id: transactionID },
   };
 }
@@ -107,7 +124,12 @@ function unpublishedEntryStatusChangeRequest(collection, slug, oldStatus, newSta
 function unpublishedEntryStatusChangePersisted(collection, slug, oldStatus, newStatus, transactionID) {
   return {
     type: UNPUBLISHED_ENTRY_STATUS_CHANGE_SUCCESS,
-    payload: { collection, slug, oldStatus, newStatus },
+    payload: { 
+      collection: collection.get('name'),
+      slug,
+      oldStatus,
+      newStatus,
+    },
     optimist: { type: COMMIT, id: transactionID },
   };
 }
@@ -115,23 +137,23 @@ function unpublishedEntryStatusChangePersisted(collection, slug, oldStatus, newS
 function unpublishedEntryStatusChangeError(collection, slug, transactionID) {
   return {
     type: UNPUBLISHED_ENTRY_STATUS_CHANGE_FAILURE,
-    payload: { collection, slug },
+    payload: { collection: collection.get('name'), slug },
     optimist: { type: REVERT, id: transactionID },
   };
 }
 
-function unpublishedEntryPublishRequest(collection, slug, status, transactionID) {
+function unpublishedEntryPublishRequest(collection, slug, transactionID) {
   return {
     type: UNPUBLISHED_ENTRY_PUBLISH_REQUEST,
-    payload: { collection, slug, status },
+    payload: { collection: collection.get('name'), slug },
     optimist: { type: BEGIN, id: transactionID },
   };
 }
 
-function unpublishedEntryPublished(collection, slug, status, transactionID) {
+function unpublishedEntryPublished(collection, slug, transactionID) {
   return {
     type: UNPUBLISHED_ENTRY_PUBLISH_SUCCESS,
-    payload: { collection, slug, status },
+    payload: { collection: collection.get('name'), slug },
     optimist: { type: COMMIT, id: transactionID },
   };
 }
@@ -139,7 +161,7 @@ function unpublishedEntryPublished(collection, slug, status, transactionID) {
 function unpublishedEntryPublishError(collection, slug, transactionID) {
   return {
     type: UNPUBLISHED_ENTRY_PUBLISH_FAILURE,
-    payload: { collection, slug },
+    payload: { collection: collection.get('name'), slug },
     optimist: { type: REVERT, id: transactionID },
   };
 }
@@ -148,13 +170,13 @@ function unpublishedEntryPublishError(collection, slug, transactionID) {
  * Exported Thunk Action Creators
  */
 
-export function loadUnpublishedEntry(collection, status, slug) {
+export function loadUnpublishedEntry(collection, slug) {
   return (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
-    dispatch(unpublishedEntryLoading(status, slug));
+    dispatch(unpublishedEntryLoading(collection, slug));
     backend.unpublishedEntry(collection, slug)
-      .then(entry => dispatch(unpublishedEntryLoaded(status, entry)));
+      .then(entry => dispatch(unpublishedEntryLoaded(collection, entry)));
   };
 }
 
@@ -217,15 +239,15 @@ export function updateUnpublishedEntryStatus(collection, slug, oldStatus, newSta
   };
 }
 
-export function publishUnpublishedEntry(collection, slug, status) {
+export function publishUnpublishedEntry(collection, slug) {
   return (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
     const transactionID = uuid.v4();
-    dispatch(unpublishedEntryPublishRequest(collection, slug, status, transactionID));
-    backend.publishUnpublishedEntry(collection, slug, status)
+    dispatch(unpublishedEntryPublishRequest(collection, slug, transactionID));
+    backend.publishUnpublishedEntry(collection, slug)
     .then(() => {
-      dispatch(unpublishedEntryPublished(collection, slug, status, transactionID));
+      dispatch(unpublishedEntryPublished(collection, slug, transactionID));
     })
     .catch(() => {
       dispatch(unpublishedEntryPublishError(collection, slug, transactionID));

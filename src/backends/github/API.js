@@ -280,7 +280,7 @@ export default class API {
     .then(updatedMetadata => this.storeMetadata(contentKey, updatedMetadata));
   }
 
-  publishUnpublishedEntry(collection, slug, status) {
+  publishUnpublishedEntry(collection, slug) {
     const contentKey = slug;
     return this.retrieveMetadata(contentKey)
     .then((metadata) => {

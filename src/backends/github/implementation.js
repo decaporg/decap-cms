@@ -125,7 +125,7 @@ export default class GitHub {
     return this.api.updateUnpublishedEntryStatus(collection, slug, newStatus);
   }
 
-  publishUnpublishedEntry(collection, slug, status) {
-    return this.api.publishUnpublishedEntry(collection, slug, status);
+  publishUnpublishedEntry(collection, slug) {
+    return this.api.publishUnpublishedEntry(collection, slug);
   }
 }
