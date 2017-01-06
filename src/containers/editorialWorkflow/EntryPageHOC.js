@@ -13,14 +13,15 @@ export default function EntryPageHOC(EntryPage) {
   }
 
   function mapStateToProps(state, ownProps) {
+    const { collections } = state;
     const isEditorialWorkflow = (state.config.get('publish_mode') === EDITORIAL_WORKFLOW);
     const unpublishedEntry = ownProps.route && ownProps.route.unpublishedEntry === true;
 
     const returnObj = { isEditorialWorkflow };
     if (isEditorialWorkflow && unpublishedEntry) {
-      const status = ownProps.params.status;
       const slug = ownProps.params.slug;
-      const entry = selectUnpublishedEntry(state, status, slug);
+      const collection = collections.get(ownProps.params.name);
+      const entry = selectUnpublishedEntry(state, collection, slug);
       returnObj.entry = entry;
     }
     return returnObj;
@@ -38,7 +39,7 @@ export default function EntryPageHOC(EntryPage) {
     if (unpublishedEntry) {
       // Overwrite loadEntry to loadUnpublishedEntry
       returnObj.loadEntry = (entry, collection, slug) => {
-        dispatch(loadUnpublishedEntry(collection, status, slug));
+        dispatch(loadUnpublishedEntry(collection, slug));
       };
     }
 
