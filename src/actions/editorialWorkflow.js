@@ -112,7 +112,7 @@ function unpublishedEntryStatusChangeRequest(collection, slug, oldStatus, newSta
   return {
     type: UNPUBLISHED_ENTRY_STATUS_CHANGE_REQUEST,
     payload: { 
-      collection: collection.get('name'),
+      collection,
       slug,
       oldStatus,
       newStatus,
@@ -125,7 +125,7 @@ function unpublishedEntryStatusChangePersisted(collection, slug, oldStatus, newS
   return {
     type: UNPUBLISHED_ENTRY_STATUS_CHANGE_SUCCESS,
     payload: { 
-      collection: collection.get('name'),
+      collection,
       slug,
       oldStatus,
       newStatus,
@@ -137,7 +137,7 @@ function unpublishedEntryStatusChangePersisted(collection, slug, oldStatus, newS
 function unpublishedEntryStatusChangeError(collection, slug, transactionID) {
   return {
     type: UNPUBLISHED_ENTRY_STATUS_CHANGE_FAILURE,
-    payload: { collection: collection.get('name'), slug },
+    payload: { collection: collection, slug },
     optimist: { type: REVERT, id: transactionID },
   };
 }
@@ -225,6 +225,7 @@ export function persistUnpublishedEntry(collection, entryDraft, existingUnpublis
 
 export function updateUnpublishedEntryStatus(collection, slug, oldStatus, newStatus) {
   return (dispatch, getState) => {
+    console.log(collection);
     const state = getState();
     const backend = currentBackend(state.config);
     const transactionID = uuid.v4();
