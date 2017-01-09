@@ -14,6 +14,7 @@ const { notifSend } = notifActions;
  */
 export const UNPUBLISHED_ENTRY_REQUEST = 'UNPUBLISHED_ENTRY_REQUEST';
 export const UNPUBLISHED_ENTRY_SUCCESS = 'UNPUBLISHED_ENTRY_SUCCESS';
+export const UNPUBLISHED_ENTRY_REDIRECT = 'UNPUBLISHED_ENTRY_REDIRECT';
 
 export const UNPUBLISHED_ENTRIES_REQUEST = 'UNPUBLISHED_ENTRIES_REQUEST';
 export const UNPUBLISHED_ENTRIES_SUCCESS = 'UNPUBLISHED_ENTRIES_SUCCESS';
@@ -51,6 +52,16 @@ function unpublishedEntryLoaded(collection, entry) {
     payload: { 
       collection: collection.get('name'),
       entry,
+    },
+  };
+}
+
+function unpublishedEntryRedirected(collection, slug) {
+  return {
+    type: UNPUBLISHED_ENTRY_REDIRECT,
+    payload: { 
+      collection: collection.get('name'),
+      slug,
     },
   };
 }
@@ -181,6 +192,7 @@ export function loadUnpublishedEntry(collection, slug) {
     .then(entry => dispatch(unpublishedEntryLoaded(collection, entry)))
     .catch((error) => {
       if (error.message === NOT_ON_EDITORIAL_WORKFLOW) {
+        dispatch(unpublishedEntryRedirected(collection, slug));
         dispatch(loadEntry(null, collection, slug));
       } else {
         dispatch(notifSend({

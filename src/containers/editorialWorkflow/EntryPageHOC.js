@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { EDITORIAL_WORKFLOW } from '../../constants/publishModes';
-import { selectUnpublishedEntry } from '../../reducers';
+import { selectUnpublishedEntry, selectEntry } from '../../reducers';
 import { loadUnpublishedEntry, persistUnpublishedEntry } from '../../actions/editorialWorkflow';
 
 
@@ -19,8 +19,10 @@ export default function EntryPageHOC(EntryPage) {
     if (isEditorialWorkflow) {
       const slug = ownProps.params.slug;
       const collection = collections.get(ownProps.params.name);
-      const entry = selectUnpublishedEntry(state, collection, slug);
-      returnObj.entry = entry;
+      const unpublishedEntry = selectUnpublishedEntry(state, collection.get('name'), slug);
+      if (unpublishedEntry) {
+        returnObj.entry = unpublishedEntry;
+      }
     }
     return returnObj;
   }

@@ -40,7 +40,7 @@ export const selectSearchedEntries = (state) => {
   return searchItems && searchItems.map(({ collection, slug }) => fromEntries.selectEntry(state.entries, collection, slug));
 };
 
-export const selectUnpublishedEntry = (state, slug) =>
+export const selectUnpublishedEntry = (state, collection, slug) =>
   fromEditorialWorkflow.selectUnpublishedEntry(state.editorialWorkflow, slug);
 
 export const selectUnpublishedEntriesByStatus = (state, status) =>

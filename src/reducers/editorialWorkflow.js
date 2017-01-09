@@ -2,6 +2,7 @@ import { Map, List, fromJS } from 'immutable';
 import { EDITORIAL_WORKFLOW } from '../constants/publishModes';
 import {
   UNPUBLISHED_ENTRY_REQUEST,
+  UNPUBLISHED_ENTRY_REDIRECT,
   UNPUBLISHED_ENTRY_SUCCESS,
   UNPUBLISHED_ENTRIES_REQUEST,
   UNPUBLISHED_ENTRIES_SUCCESS,
@@ -22,6 +23,9 @@ const unpublishedEntries = (state = null, action) => {
       return state;
     case UNPUBLISHED_ENTRY_REQUEST:
       return state.setIn(['entities', `${ action.payload.collection }.${ action.payload.slug }`, 'isFetching'], true);
+    
+    case UNPUBLISHED_ENTRY_REDIRECT:
+      return state.deleteIn(['entities', `${ action.payload.collection }.${ action.payload.slug }`]);
 
     case UNPUBLISHED_ENTRY_SUCCESS:
       return state.setIn(
@@ -66,15 +70,11 @@ const unpublishedEntries = (state = null, action) => {
   }
 };
 
-export const selectUnpublishedEntry = (state, collection, slug) => {
-  return state && state.getIn(['entities', `${ collection }.${ slug }`]);
-};
+export const selectUnpublishedEntry = (state, collection, slug) => state && state.getIn(['entities', `${ collection }.${ slug }`]);
 
 export const selectUnpublishedEntriesByStatus = (state, status) => {
   if (!state) return null;
-  return state.get('entities').filter(entry => {
-    return entry.getIn(['metaData', 'status']) === status
-  }).valueSeq();
+  return state.get('entities').filter(entry => entry.getIn(['metaData', 'status']) === status).valueSeq();
 };
 
 
