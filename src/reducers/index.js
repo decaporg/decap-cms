@@ -41,7 +41,7 @@ export const selectSearchedEntries = (state) => {
 };
 
 export const selectUnpublishedEntry = (state, collection, slug) =>
-  fromEditorialWorkflow.selectUnpublishedEntry(state.editorialWorkflow, slug);
+  fromEditorialWorkflow.selectUnpublishedEntry(state.editorialWorkflow, collection, slug);
 
 export const selectUnpublishedEntriesByStatus = (state, status) =>
   fromEditorialWorkflow.selectUnpublishedEntriesByStatus(state.editorialWorkflow, status);
