@@ -3,7 +3,9 @@ import { actions as notifActions } from 'redux-notifications';
 import { BEGIN, COMMIT, REVERT } from 'redux-optimist';
 import { currentBackend } from '../backends/backend';
 import { getMedia } from '../reducers';
+import { loadEntry } from './entries';
 import { status, EDITORIAL_WORKFLOW } from '../constants/publishModes';
+import { NOT_ON_EDITORIAL_WORKFLOW } from '../constants/errors';
 
 const { notifSend } = notifActions;
 
@@ -137,7 +139,7 @@ function unpublishedEntryStatusChangePersisted(collection, slug, oldStatus, newS
 function unpublishedEntryStatusChangeError(collection, slug, transactionID) {
   return {
     type: UNPUBLISHED_ENTRY_STATUS_CHANGE_FAILURE,
-    payload: { collection: collection, slug },
+    payload: { collection, slug },
     optimist: { type: REVERT, id: transactionID },
   };
 }
@@ -176,7 +178,18 @@ export function loadUnpublishedEntry(collection, slug) {
     const backend = currentBackend(state.config);
     dispatch(unpublishedEntryLoading(collection, slug));
     backend.unpublishedEntry(collection, slug)
-      .then(entry => dispatch(unpublishedEntryLoaded(collection, entry)));
+    .then(entry => dispatch(unpublishedEntryLoaded(collection, entry)))
+    .catch((error) => {
+      if (error.message === NOT_ON_EDITORIAL_WORKFLOW) {
+        dispatch(loadEntry(null, collection, slug));
+      } else {
+        dispatch(notifSend({
+          message: `Error loading entry: ${ error }`,
+          kind: 'danger',
+          dismissAfter: 4000,
+        }));
+      }
+    });
   };
 }
 

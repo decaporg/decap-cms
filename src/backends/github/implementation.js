@@ -113,12 +113,15 @@ export default class GitHub {
 
   unpublishedEntry(collection, slug) {
     return this.api.readUnpublishedBranchFile(slug)
-    .then(data => ({
-      slug,
-      file: { path: data.metaData.objects.entry },
-      data: data.fileData,
-      metaData: data.metaData,
-    }));
+    .then((data) => {
+      if (!data) return null;
+      return {
+        slug,
+        file: { path: data.metaData.objects.entry },
+        data: data.fileData,
+        metaData: data.metaData,
+      };
+    });
   }
 
   updateUnpublishedEntryStatus(collection, slug, newStatus) {

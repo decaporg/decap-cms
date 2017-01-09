@@ -3,6 +3,7 @@ import { Base64 } from "js-base64";
 import _ from "lodash";
 import MediaProxy from "../../valueObjects/MediaProxy";
 import { SIMPLE, EDITORIAL_WORKFLOW, status } from "../../constants/publishModes";
+import { NOT_ON_EDITORIAL_WORKFLOW } from "../../constants/errors";
 
 export default class API {
   constructor(config) {
@@ -161,7 +162,9 @@ export default class API {
       return this.readFile(data.objects.entry, null, data.branch);
     })
     .then(fileData => ({ metaData, fileData }))
-    .catch(error => null);
+    .catch(() => {
+      throw new Error(NOT_ON_EDITORIAL_WORKFLOW);
+    });
     return unpublishedPromise;
   }
 

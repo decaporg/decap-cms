@@ -15,10 +15,8 @@ export default function EntryPageHOC(EntryPage) {
   function mapStateToProps(state, ownProps) {
     const { collections } = state;
     const isEditorialWorkflow = (state.config.get('publish_mode') === EDITORIAL_WORKFLOW);
-    const unpublishedEntry = ownProps.route && ownProps.route.unpublishedEntry === true;
-
     const returnObj = { isEditorialWorkflow };
-    if (isEditorialWorkflow && unpublishedEntry) {
+    if (isEditorialWorkflow) {
       const slug = ownProps.params.slug;
       const collection = collections.get(ownProps.params.name);
       const entry = selectUnpublishedEntry(state, collection, slug);
@@ -32,18 +30,14 @@ export default function EntryPageHOC(EntryPage) {
     const { dispatch } = dispatchProps;
 
     const unpublishedEntry = ownProps.route && ownProps.route.unpublishedEntry === true;
-    const status = ownProps.params.status;
-
     const returnObj = {};
 
-    if (unpublishedEntry) {
+    if (isEditorialWorkflow) {
       // Overwrite loadEntry to loadUnpublishedEntry
       returnObj.loadEntry = (entry, collection, slug) => {
         dispatch(loadUnpublishedEntry(collection, slug));
       };
-    }
-
-    if (isEditorialWorkflow) {
+      
       // Overwrite persistEntry to persistUnpublishedEntry
       returnObj.persistEntry = (collection, entryDraft) => {
         dispatch(persistUnpublishedEntry(collection, entryDraft, unpublishedEntry));
