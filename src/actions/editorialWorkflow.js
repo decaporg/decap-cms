@@ -193,7 +193,7 @@ export function loadUnpublishedEntry(collection, slug) {
     .catch((error) => {
       if (error.message === NOT_ON_EDITORIAL_WORKFLOW) {
         dispatch(unpublishedEntryRedirected(collection, slug));
-        dispatch(loadEntry(null, collection, slug));
+        dispatch(loadEntry(collection, slug));
       } else {
         dispatch(notifSend({
           message: `Error loading entry: ${ error }`,

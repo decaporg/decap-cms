@@ -21,6 +21,7 @@ export default function EntryPageHOC(EntryPage) {
       const collection = collections.get(ownProps.params.name);
       const unpublishedEntry = selectUnpublishedEntry(state, collection.get('name'), slug);
       if (unpublishedEntry) {
+        returnObj.unpublishedEntry = true;
         returnObj.entry = unpublishedEntry;
       }
     }
@@ -28,15 +29,13 @@ export default function EntryPageHOC(EntryPage) {
   }
 
   function mergeProps(stateProps, dispatchProps, ownProps) {
-    const { isEditorialWorkflow } = stateProps;
+    const { isEditorialWorkflow, unpublishedEntry } = stateProps;
     const { dispatch } = dispatchProps;
-
-    const unpublishedEntry = ownProps.route && ownProps.route.unpublishedEntry === true;
     const returnObj = {};
 
     if (isEditorialWorkflow) {
       // Overwrite loadEntry to loadUnpublishedEntry
-      returnObj.loadEntry = (entry, collection, slug) => {
+      returnObj.loadEntry = (collection, slug) => {
         dispatch(loadUnpublishedEntry(collection, slug));
       };
       

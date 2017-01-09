@@ -153,7 +153,7 @@ export function changeDraftField(field, value, metadata) {
  * Exported Thunk Action Creators
  */
 
-export function loadEntry(entry, collection, slug) {
+export function loadEntry(collection, slug) {
   return (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);

@@ -45,7 +45,7 @@ class EntryPage extends React.Component {
     if (newEntry) {
       createEmptyDraft(collection);
     } else {
-      loadEntry(entry, collection, slug);
+      loadEntry(collection, slug);
     }
   }
 
