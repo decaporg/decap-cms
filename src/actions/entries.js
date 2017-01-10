@@ -1,5 +1,6 @@
 import { List } from 'immutable';
 import { actions as notifActions } from 'redux-notifications';
+import { closeEntry } from './editor';
 import { currentBackend } from '../backends/backend';
 import { getIntegrationProvider } from '../integrations';
 import { getMedia, selectIntegration } from '../reducers';
@@ -207,6 +208,7 @@ export function persistEntry(collection, entryDraft) {
           kind: 'success',
           dismissAfter: 4000,
         }));
+        dispatch(closeEntry(collection));
         dispatch(entryPersisted(collection, entry));
       })
       .catch((error) => {

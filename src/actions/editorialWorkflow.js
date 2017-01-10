@@ -1,5 +1,6 @@
 import uuid from 'uuid';
 import { actions as notifActions } from 'redux-notifications';
+import { closeEntry } from './editor';
 import { BEGIN, COMMIT, REVERT } from 'redux-optimist';
 import { currentBackend } from '../backends/backend';
 import { getMedia } from '../reducers';
@@ -235,6 +236,7 @@ export function persistUnpublishedEntry(collection, entryDraft, existingUnpublis
         kind: 'success',
         dismissAfter: 4000,
       }));
+      dispatch(closeEntry());
       dispatch(unpublishedEntryPersisted(collection, entry, transactionID));
     })
     .catch((error) => {

@@ -9,7 +9,7 @@ import {
   changeDraftField,
   persistEntry,
 } from '../actions/entries';
-import { cancelEdit } from '../actions/editor';
+import { closeEntry } from '../actions/editor';
 import { addMedia, removeMedia } from '../actions/media';
 import { openSidebar } from '../actions/globalUI';
 import { selectEntry, getMedia } from '../reducers';
@@ -32,7 +32,7 @@ class EntryPage extends React.Component {
     loadEntry: PropTypes.func.isRequired,
     persistEntry: PropTypes.func.isRequired,
     removeMedia: PropTypes.func.isRequired,
-    cancelEdit: PropTypes.func.isRequired,
+    closeEntry: PropTypes.func.isRequired,
     openSidebar: PropTypes.func.isRequired,
     fields: ImmutablePropTypes.list.isRequired,
     slug: PropTypes.string,
@@ -67,6 +67,10 @@ class EntryPage extends React.Component {
     if (entry) this.props.createDraftFromEntry(entry);
   };
 
+  handleCloseEntry = () => {
+    this.props.closeEntry();
+  };
+
   handlePersistEntry = () => {
     const { persistEntry, collection, entryDraft } = this.props;
     persistEntry(collection, entryDraft);
@@ -82,7 +86,7 @@ class EntryPage extends React.Component {
       changeDraftField,
       addMedia,
       removeMedia,
-      cancelEdit,
+      closeEntry,
     } = this.props;
 
 
@@ -102,7 +106,7 @@ class EntryPage extends React.Component {
         onAddMedia={addMedia}
         onRemoveMedia={removeMedia}
         onPersist={this.handlePersistEntry}
-        onCancelEdit={cancelEdit}
+        onCancelEdit={this.handleCloseEntry}
       />
     );
   }
@@ -139,7 +143,7 @@ export default connect(
     createEmptyDraft,
     discardDraft,
     persistEntry,
-    cancelEdit,
+    closeEntry,
     openSidebar,
   }
 )(entryPageHOC(EntryPage));
