@@ -6,7 +6,7 @@ import { currentBackend } from '../backends/backend';
 import { getMedia } from '../reducers';
 import { loadEntry } from './entries';
 import { status, EDITORIAL_WORKFLOW } from '../constants/publishModes';
-import { NOT_ON_EDITORIAL_WORKFLOW } from '../constants/errors';
+import { EditorialWorkflowError } from "../valueObjects/errors";
 
 const { notifSend } = notifActions;
 
@@ -159,7 +159,7 @@ function unpublishedEntryStatusChangeError(collection, slug, transactionID) {
 function unpublishedEntryPublishRequest(collection, slug, transactionID) {
   return {
     type: UNPUBLISHED_ENTRY_PUBLISH_REQUEST,
-    payload: { collection: collection.get('name'), slug },
+    payload: { collection, slug },
     optimist: { type: BEGIN, id: transactionID },
   };
 }
@@ -167,7 +167,7 @@ function unpublishedEntryPublishRequest(collection, slug, transactionID) {
 function unpublishedEntryPublished(collection, slug, transactionID) {
   return {
     type: UNPUBLISHED_ENTRY_PUBLISH_SUCCESS,
-    payload: { collection: collection.get('name'), slug },
+    payload: { collection, slug },
     optimist: { type: COMMIT, id: transactionID },
   };
 }
@@ -175,7 +175,7 @@ function unpublishedEntryPublished(collection, slug, transactionID) {
 function unpublishedEntryPublishError(collection, slug, transactionID) {
   return {
     type: UNPUBLISHED_ENTRY_PUBLISH_FAILURE,
-    payload: { collection: collection.get('name'), slug },
+    payload: { collection, slug },
     optimist: { type: REVERT, id: transactionID },
   };
 }
@@ -192,7 +192,7 @@ export function loadUnpublishedEntry(collection, slug) {
     backend.unpublishedEntry(collection, slug)
     .then(entry => dispatch(unpublishedEntryLoaded(collection, entry)))
     .catch((error) => {
-      if (error.message === NOT_ON_EDITORIAL_WORKFLOW) {
+      if (error instanceof EditorialWorkflowError && error.notUnderEditorialWorkflow) {
         dispatch(unpublishedEntryRedirected(collection, slug));
         dispatch(loadEntry(collection, slug));
       } else {

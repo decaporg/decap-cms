@@ -3,7 +3,7 @@ import { Base64 } from "js-base64";
 import _ from "lodash";
 import MediaProxy from "../../valueObjects/MediaProxy";
 import { SIMPLE, EDITORIAL_WORKFLOW, status } from "../../constants/publishModes";
-import { NOT_ON_EDITORIAL_WORKFLOW } from "../../constants/errors";
+import { APIError, EditorialWorkflowError } from "../../valueObjects/errors";
 
 export default class API {
   constructor(config) {
@@ -58,13 +58,17 @@ export default class API {
   request(path, options = {}) {
     const headers = this.requestHeaders(options.headers || {});
     const url = this.urlFor(path, options);
+    let responseStatus;
     return fetch(url, { ...options, headers }).then((response) => {
+      responseStatus = response.status;
       const contentType = response.headers.get("Content-Type");
       if (contentType && contentType.match(/json/)) {
         return this.parseJsonResponse(response);
       }
-
       return response.text();
+    })
+    .catch((error) => {
+      throw new APIError(error.message, responseStatus, 'GitHub');
     });
   }
 
@@ -163,7 +167,7 @@ export default class API {
     })
     .then(fileData => ({ metaData, fileData }))
     .catch(() => {
-      throw new Error(NOT_ON_EDITORIAL_WORKFLOW);
+      throw new EditorialWorkflowError('content is not under editorial workflow', true);
     });
     return unpublishedPromise;
   }
@@ -285,14 +289,18 @@ export default class API {
 
   publishUnpublishedEntry(collection, slug) {
     const contentKey = slug;
+    let prNumber;
     return this.retrieveMetadata(contentKey)
     .then((metadata) => {
       const headSha = metadata.pr && metadata.pr.head;
-      const number = metadata.pr && metadata.pr.number;
-      return this.mergePR(headSha, number);
+      prNumber = metadata.pr && metadata.pr.number;
+      return this.mergePR(headSha, prNumber);
     })
     .then(() => this.deleteBranch(`cms/${ contentKey }`));
   }
+
+
+
 
   createRef(type, name, sha) {
     return this.request(`${ this.repoURL }/git/refs`, {
@@ -338,13 +346,28 @@ export default class API {
     });
   }
 
-  mergePR(headSha, number) {
-    return this.request(`${ this.repoURL }/pulls/${ number }/merge`, {
+  mergePR(headSha, prNumber) {
+    return this.request(`${ this.repoURL }/pulls/${ prNumber }/merge`, {
       method: "PUT",
       body: JSON.stringify({
         commit_message: "Automatically generated. Merged on Netlify CMS.",
         sha: headSha,
       }),
+    })
+    .catch((error) => {
+      if (error instanceof APIError && error.status === 405) {
+        this.forceMergePR(prNumber);
+      } else {
+        throw error;
+      }
+    });
+  }
+
+  forceMergePR(prNumber) {
+    return this.request(`${ this.repoURL }/pulls/${ prNumber }/files`)
+    .then(response => {
+      console.log(response);
+      throw 'WIP'; // Interrupt the chain otherwise branch will be deleted
     });
   }
 
