@@ -1,10 +1,10 @@
 export default class AssetStore {
-  constructor(config, authToken) {
+  constructor(config, getToken) {
     this.config = config;
     if (config.get('getSignedFormURL') == null) {
       throw 'The AssetStore integration needs the getSignedFormURL in the integration configuration.';
     }
-    this.token = authToken;
+    this.getToken = getToken;
     
     this.shouldConfirmUpload = config.get('shouldConfirmUpload', false);
     this.getSignedFormURL = config.get('getSignedFormURL');
@@ -41,14 +41,15 @@ export default class AssetStore {
   }
 
   confirmRequest(assetID) {
-    this.request(`${ this.getSignedFormURL }/${ assetID }`, {
+    this.getToken()
+    .then(token => this.request(`${ this.getSignedFormURL }/${ assetID }`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${ this.token }`,
+        'Authorization': `Bearer ${ token }`,
       },
       body: JSON.stringify({ state: 'uploaded' }),
-    });
+    }));
   }
 
 
@@ -66,18 +67,19 @@ export default class AssetStore {
   }
 
   upload(file) {
-    return this.request(this.getSignedFormURL, {
+    return this.getToken()
+    .then(token => this.request(this.getSignedFormURL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${ this.token }`,
+        'Authorization': `Bearer ${ token }`,
       },
       body: JSON.stringify({
         name: file.name,
         size: file.size,
         content_type: file.type,
       }),
-    })
+    }))
     .then((response) => {
       const formURL = response.form.url;
       const formFields = response.form.fields;

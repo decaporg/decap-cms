@@ -14,6 +14,7 @@ export default class GitHub {
 
     this.repo = config.getIn(["backend", "repo"], "");
     this.branch = config.getIn(["backend", "branch"], "master");
+    this.token = '';
   }
 
   authComponent() {
@@ -21,15 +22,21 @@ export default class GitHub {
   }
 
   setUser(user) {
-    this.api = new API({ token: user.token, branch: this.branch, repo: this.repo });
+    this.token = user.token;
+    this.api = new API({ token: this.token, branch: this.branch, repo: this.repo });
   }
 
   authenticate(state) {
-    this.api = new API({ token: state.token, branch: this.branch, repo: this.repo });
+    this.token = state.token;
+    this.api = new API({ token: this.token, branch: this.branch, repo: this.repo });
     return this.api.user().then((user) => {
       user.token = state.token;
       return user;
     });
+  }
+
+  getToken() {
+    return Promise.resolve(this.token);
   }
 
   entriesByFolder(collection) {

@@ -36,6 +36,10 @@ export default class TestRepo {
     return Promise.resolve({ email: state.email, name: nameFromEmail(state.email) });
   }
 
+  getToken() {
+    return Promise.resolve('');
+  }
+
   entriesByFolder(collection) {
     const entries = [];
     const folder = collection.get('folder');
@@ -67,7 +71,7 @@ export default class TestRepo {
   getEntry(collection, slug, path) {
     return Promise.resolve({
       file: { path },
-      data: getFile(path).content
+      data: getFile(path).content,
     });
   }
 
