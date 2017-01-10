@@ -34,17 +34,19 @@ AssetProxy.prototype.toBase64 = function () {
   });
 };
 
-export function createAssetProxy(value, file, uploaded = false) {
+export function createAssetProxy(value, file, uploaded = false, privateUpload = false) {
   const state = store.getState();
   const integration = selectIntegration(state, null, 'assetStore');
   if (integration && !uploaded) {
     const provider = integration && getIntegrationProvider(state.integrations, currentBackend(state.config).getToken, integration);
-    return provider.upload(file).then(
+    return provider.upload(file, privateUpload).then(
       response => (
         new AssetProxy(response.assetURL.replace(/^(https?):/, ''), null, true)
       ),
       error => new AssetProxy(value, file, false)
     );  
+  } else if (privateUpload) {
+    throw new Error('The Private Upload option is only avaible for Asset Store Integration');
   }
   
   return Promise.resolve(new AssetProxy(value, file, uploaded));

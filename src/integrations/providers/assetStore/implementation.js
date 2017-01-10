@@ -66,7 +66,17 @@ export default class AssetStore {
     });
   }
 
-  upload(file) {
+  upload(file, privateUpload = false) {
+    const fileData = {
+      name: file.name,
+      size: file.size,
+      content_type: file.type,
+    };
+
+    if (privateUpload) {
+      fileData.visibility = 'private';
+    }
+
     return this.getToken()
     .then(token => this.request(this.getSignedFormURL, {
       method: 'POST',
@@ -74,11 +84,7 @@ export default class AssetStore {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${ token }`,
       },
-      body: JSON.stringify({
-        name: file.name,
-        size: file.size,
-        content_type: file.type,
-      }),
+      body: JSON.stringify(fileData),
     }))
     .then((response) => {
       const formURL = response.form.url;
