@@ -118,5 +118,5 @@ FileControl.propTypes = {
   onChange: PropTypes.func.isRequired,
   onRemoveAsset: PropTypes.func.isRequired,
   value: PropTypes.node,
-  field: PropTypes.node,
+  field: PropTypes.object,
 };
