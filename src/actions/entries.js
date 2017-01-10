@@ -52,6 +52,17 @@ export function entryLoaded(collection, entry) {
   };
 }
 
+export function entryLoadError(error, collection, slug) {
+  return {
+    type: ENTRY_FAILURE,
+    payload: {
+      error,
+      collection: collection.get('name'),
+      slug,
+    },
+  };
+}
+
 export function entriesLoading(collection) {
   return {
     type: ENTRIES_REQUEST,
@@ -161,7 +172,15 @@ export function loadEntry(entry, collection, slug) {
     return backend.getEntry(collection, slug)
       .then(loadedEntry => (
         dispatch(entryLoaded(collection, loadedEntry))
-      ));
+      ))
+      .catch((error) => {
+        dispatch(notifSend({
+          message: `Failed to load entry: ${ error.message }`,
+          kind: 'danger',
+          dismissAfter: 4000,
+        }));
+        dispatch(entryLoadError(error, collection, slug));
+      });
   };
 }
 

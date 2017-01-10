@@ -52,7 +52,7 @@ class EntryPage extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (this.props.entry === nextProps.entry) return;
 
-    if (nextProps.entry && !nextProps.entry.get('isFetching')) {
+    if (nextProps.entry && !nextProps.entry.get('isFetching') && !nextProps.entry.get('error')) {
       this.createDraft(nextProps.entry);
     } else if (nextProps.newEntry) {
       this.props.createEmptyDraft(nextProps.collection);
@@ -85,11 +85,14 @@ class EntryPage extends React.Component {
       cancelEdit,
     } = this.props;
 
-    if (entryDraft == null
+    if (entry && entry.get('error')) {
+      return <div><h3>{ entry.get('error') }</h3></div>;
+    } else if (entryDraft == null
       || entryDraft.get('entry') === undefined
       || (entry && entry.get('isFetching'))) {
       return <Loader active>Loading entry...</Loader>;
     }
+
     return (
       <EntryEditor
         entry={entryDraft.get('entry')}
