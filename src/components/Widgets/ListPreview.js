@@ -4,13 +4,13 @@ import previewStyle from './defaultPreviewStyle';
 
 export default class ListPreview extends Component {
   widgetFor = (field, value) => {
-    const { getMedia } = this.props;
+    const { getAsset } = this.props;
     const widget = resolveWidget(field.get('widget'));
     return (<div key={field.get('name')}>{React.createElement(widget.preview, {
       key: field.get('name'),
       value: value && value.get(field.get('name')),
       field,
-      getMedia,
+      getAsset,
     })}</div>);
   };
 
@@ -32,5 +32,5 @@ export default class ListPreview extends Component {
 ListPreview.propTypes = {
   value: PropTypes.node,
   field: PropTypes.node,
-  getMedia: PropTypes.func.isRequired,
+  getAsset: PropTypes.func.isRequired,
 };

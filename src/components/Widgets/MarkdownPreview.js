@@ -3,7 +3,7 @@ import { getSyntaxes } from './richText';
 import MarkupItReactRenderer from '../MarkupItReactRenderer/index';
 import previewStyle from './defaultPreviewStyle';
 
-const MarkdownPreview = ({ value, getMedia }) => {
+const MarkdownPreview = ({ value, getAsset }) => {
   if (value == null) {
     return null;
   }
@@ -11,7 +11,7 @@ const MarkdownPreview = ({ value, getMedia }) => {
   const schema = {
     'mediaproxy': ({ token }) => ( // eslint-disable-line
       <img
-        src={getMedia(token.getIn(['data', 'src']))}
+        src={getAsset(token.getIn(['data', 'src']))}
         alt={token.getIn(['data', 'alt'])}
       />
     ),
@@ -24,14 +24,14 @@ const MarkdownPreview = ({ value, getMedia }) => {
         value={value}
         syntax={markdown}
         schema={schema}
-        getMedia={getMedia}
+        getAsset={getAsset}
       />
     </div>
   );
 };
 
 MarkdownPreview.propTypes = {
-  getMedia: PropTypes.func.isRequired,
+  getAsset: PropTypes.func.isRequired,
   value: PropTypes.string,
 };
 

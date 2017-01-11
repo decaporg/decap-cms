@@ -4,20 +4,23 @@ export default class API extends GithubAPI {
   constructor(config) {
     super(config);
     this.api_root = config.api_root;
-    this.jwtToken = config.jwtToken;
+    this.tokenPromise = config.tokenPromise;
     this.commitAuthor = config.commitAuthor;
     this.repoURL = "";
   }
 
 
-  requestHeaders(headers = {}) {
-    const baseHeader = {
-      Authorization: `Bearer ${ this.jwtToken }`,
-      "Content-Type": "application/json",
-      ...headers,
-    };
+  getRequestHeaders(headers = {}) {
+    return this.tokenPromise()
+    .then((jwtToken) => {
+      const baseHeader = {
+        "Authorization": `Bearer ${ jwtToken }`,
+        "Content-Type": "application/json",
+        ...headers,
+      };
 
-    return baseHeader;
+      return baseHeader;
+    });
   }
 
 
@@ -39,9 +42,10 @@ export default class API extends GithubAPI {
   }
 
   request(path, options = {}) {
-    const headers = this.requestHeaders(options.headers || {});
     const url = this.urlFor(path, options);
-    return fetch(url, { ...options, headers }).then((response) => {
+    return this.getRequestHeaders(options.headers || {})
+    .then(headers => fetch(url, { ...options, headers }))
+    .then((response) => {
       const contentType = response.headers.get("Content-Type");
       if (contentType && contentType.match(/json/)) {
         return this.parseJsonResponse(response);

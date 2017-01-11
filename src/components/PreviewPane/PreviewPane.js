@@ -29,7 +29,7 @@ export default class PreviewPane extends React.Component {
   }
 
   widgetFor = (name) => {
-    const { fields, entry, fieldsMetaData, getMedia } = this.props;
+    const { fields, entry, fieldsMetaData, getAsset } = this.props;
     const field = fields.find(f => f.get('name') === name);
     let value = entry.getIn(['data', field.get('name')]);
     const metadata = fieldsMetaData.get(field.get('name'));
@@ -46,7 +46,7 @@ export default class PreviewPane extends React.Component {
       value,
       field,
       metadata,
-      getMedia,
+      getAsset,
     });
   };
 
@@ -72,6 +72,7 @@ export default class PreviewPane extends React.Component {
 
   renderPreview() {
     const { entry, collection } = this.props;
+    if (!entry || !entry.get('data')) return;
     const component = registry.getPreviewTemplate(selectTemplateName(collection, entry.get('slug'))) || Preview;
 
     this.inferFields();
@@ -104,5 +105,5 @@ PreviewPane.propTypes = {
   fields: ImmutablePropTypes.list.isRequired,
   entry: ImmutablePropTypes.map.isRequired,
   fieldsMetaData: ImmutablePropTypes.map.isRequired,
-  getMedia: PropTypes.func.isRequired,
+  getAsset: PropTypes.func.isRequired,
 };

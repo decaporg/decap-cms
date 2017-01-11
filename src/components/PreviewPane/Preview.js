@@ -24,6 +24,6 @@ Preview.propTypes = {
   collection: ImmutablePropTypes.map.isRequired,
   entry: ImmutablePropTypes.map.isRequired,
   fields: ImmutablePropTypes.list.isRequired,
-  getMedia: PropTypes.func.isRequired,
+  getAsset: PropTypes.func.isRequired,
   widgetFor: PropTypes.func.isRequired,
 };

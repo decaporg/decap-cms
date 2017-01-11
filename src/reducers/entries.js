@@ -2,6 +2,7 @@ import { Map, List, fromJS } from 'immutable';
 import {
   ENTRY_REQUEST,
   ENTRY_SUCCESS,
+  ENTRY_FAILURE,
   ENTRIES_REQUEST,
   ENTRIES_SUCCESS,
 } from '../actions/entries';
@@ -40,6 +41,12 @@ const entries = (state = Map({ entities: Map(), pages: Map() }), action) => {
           page,
           ids: (!page || page === 0) ? ids : map.getIn(['pages', collection, 'ids'], List()).concat(ids),
         }));
+      });
+    
+    case ENTRY_FAILURE:
+      return state.withMutations((map) => {
+        map.setIn(['entities', `${ action.payload.collection }.${ action.payload.slug }`, 'isFetching'], false);
+        map.setIn(['entities', `${ action.payload.collection }.${ action.payload.slug }`, 'error'], action.payload.error.message);
       });
 
     case SEARCH_ENTRIES_SUCCESS:

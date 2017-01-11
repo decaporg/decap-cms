@@ -10,9 +10,9 @@ import {
   persistEntry,
 } from '../actions/entries';
 import { cancelEdit } from '../actions/editor';
-import { addMedia, removeMedia } from '../actions/media';
+import { addAsset, removeAsset } from '../actions/media';
 import { openSidebar } from '../actions/globalUI';
-import { selectEntry, getMedia } from '../reducers';
+import { selectEntry, getAsset } from '../reducers';
 import { selectFields } from '../reducers/collections';
 import EntryEditor from '../components/EntryEditor/EntryEditor';
 import entryPageHOC from './editorialWorkflow/EntryPageHOC';
@@ -20,8 +20,8 @@ import { Loader } from '../components/UI';
 
 class EntryPage extends React.Component {
   static propTypes = {
-    addMedia: PropTypes.func.isRequired,
-    boundGetMedia: PropTypes.func.isRequired,
+    addAsset: PropTypes.func.isRequired,
+    boundGetAsset: PropTypes.func.isRequired,
     changeDraftField: PropTypes.func.isRequired,
     collection: ImmutablePropTypes.map.isRequired,
     createDraftFromEntry: PropTypes.func.isRequired,
@@ -31,7 +31,7 @@ class EntryPage extends React.Component {
     entryDraft: ImmutablePropTypes.map.isRequired,
     loadEntry: PropTypes.func.isRequired,
     persistEntry: PropTypes.func.isRequired,
-    removeMedia: PropTypes.func.isRequired,
+    removeAsset: PropTypes.func.isRequired,
     cancelEdit: PropTypes.func.isRequired,
     openSidebar: PropTypes.func.isRequired,
     fields: ImmutablePropTypes.list.isRequired,
@@ -52,7 +52,7 @@ class EntryPage extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (this.props.entry === nextProps.entry) return;
 
-    if (nextProps.entry && !nextProps.entry.get('isFetching')) {
+    if (nextProps.entry && !nextProps.entry.get('isFetching') && !nextProps.entry.get('error')) {
       this.createDraft(nextProps.entry);
     } else if (nextProps.newEntry) {
       this.props.createEmptyDraft(nextProps.collection);
@@ -77,30 +77,32 @@ class EntryPage extends React.Component {
       entry,
       entryDraft,
       fields,
-      boundGetMedia,
+      boundGetAsset,
       collection,
       changeDraftField,
-      addMedia,
-      removeMedia,
+      addAsset,
+      removeAsset,
       cancelEdit,
     } = this.props;
 
-
-    if (entryDraft == null
+    if (entry && entry.get('error')) {
+      return <div><h3>{ entry.get('error') }</h3></div>;
+    } else if (entryDraft == null
       || entryDraft.get('entry') === undefined
       || (entry && entry.get('isFetching'))) {
       return <Loader active>Loading entry...</Loader>;
     }
+
     return (
       <EntryEditor
         entry={entryDraft.get('entry')}
-        getMedia={boundGetMedia}
+        getAsset={boundGetAsset}
         collection={collection}
         fields={fields}
         fieldsMetaData={entryDraft.get('fieldsMetaData')}
         onChange={changeDraftField}
-        onAddMedia={addMedia}
-        onRemoveMedia={removeMedia}
+        onAddAsset={addAsset}
+        onRemoveAsset={removeAsset}
         onPersist={this.handlePersistEntry}
         onCancelEdit={cancelEdit}
       />
@@ -115,13 +117,13 @@ function mapStateToProps(state, ownProps) {
   const newEntry = ownProps.route && ownProps.route.newRecord === true;
   const fields = selectFields(collection, slug);
   const entry = newEntry ? null : selectEntry(state, collection.get('name'), slug);
-  const boundGetMedia = getMedia.bind(null, state);
+  const boundGetAsset = getAsset.bind(null, state);
   return {
     collection,
     collections,
     newEntry,
     entryDraft,
-    boundGetMedia,
+    boundGetAsset,
     fields,
     slug,
     entry,
@@ -132,8 +134,8 @@ export default connect(
   mapStateToProps,
   {
     changeDraftField,
-    addMedia,
-    removeMedia,
+    addAsset,
+    removeAsset,
     loadEntry,
     createDraftFromEntry,
     createEmptyDraft,

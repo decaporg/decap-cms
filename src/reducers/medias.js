@@ -1,13 +1,13 @@
 import { Map } from 'immutable';
 import { resolvePath } from '../lib/pathHelper';
-import { ADD_MEDIA, REMOVE_MEDIA } from '../actions/media';
-import MediaProxy from '../valueObjects/MediaProxy';
+import { ADD_ASSET, REMOVE_ASSET } from '../actions/media';
+import AssetProxy from '../valueObjects/AssetProxy';
 
 const medias = (state = Map(), action) => {
   switch (action.type) {
-    case ADD_MEDIA:
+    case ADD_ASSET:
       return state.set(action.payload.public_path, action.payload);
-    case REMOVE_MEDIA:
+    case REMOVE_ASSET:
       return state.delete(action.payload);
 
     default:
@@ -18,17 +18,17 @@ const medias = (state = Map(), action) => {
 export default medias;
 
 const memoizedProxies = {};
-export const getMedia = (publicFolder, state, path) => {
+export const getAsset = (publicFolder, state, path) => {
   // No path provided, skip
   if (!path) return null;
 
   let proxy = state.get(path) || memoizedProxies[path];
   if (proxy) {
-    // There is already a MediaProxy in memmory for this path. Use it.
+    // There is already an AssetProxy in memmory for this path. Use it.
     return proxy;
   }
 
-  // Create a new MediaProxy (for consistency) and return it.
-  proxy = memoizedProxies[path] = new MediaProxy(resolvePath(path, publicFolder), null, true);
+  // Create a new AssetProxy (for consistency) and return it.
+  proxy = memoizedProxies[path] = new AssetProxy(resolvePath(path, publicFolder), null, true);
   return proxy;
 };

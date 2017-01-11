@@ -49,5 +49,5 @@ export const selectUnpublishedEntries = (state, status) =>
 export const selectIntegration = (state, collection, hook) =>
   fromIntegrations.selectIntegration(state.integrations, collection, hook);
 
-export const getMedia = (state, path) =>
-  fromMedias.getMedia(state.config.get('public_folder'), state.medias, path);
+export const getAsset = (state, path) =>
+  fromMedias.getAsset(state.config.get('public_folder'), state.medias, path);

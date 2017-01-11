@@ -2,7 +2,7 @@ import { List } from 'immutable';
 import { actions as notifActions } from 'redux-notifications';
 import { currentBackend } from '../backends/backend';
 import { getIntegrationProvider } from '../integrations';
-import { getMedia, selectIntegration } from '../reducers';
+import { getAsset, selectIntegration } from '../reducers';
 import { createEntry } from '../valueObjects/Entry';
 
 const { notifSend } = notifActions;
@@ -48,6 +48,17 @@ export function entryLoaded(collection, entry) {
     payload: {
       collection: collection.get('name'),
       entry,
+    },
+  };
+}
+
+export function entryLoadError(error, collection, slug) {
+  return {
+    type: ENTRY_FAILURE,
+    payload: {
+      error,
+      collection: collection.get('name'),
+      slug,
     },
   };
 }
@@ -161,7 +172,15 @@ export function loadEntry(entry, collection, slug) {
     return backend.getEntry(collection, slug)
       .then(loadedEntry => (
         dispatch(entryLoaded(collection, loadedEntry))
-      ));
+      ))
+      .catch((error) => {
+        dispatch(notifSend({
+          message: `Failed to load entry: ${ error.message }`,
+          kind: 'danger',
+          dismissAfter: 4000,
+        }));
+        dispatch(entryLoadError(error, collection, slug));
+      });
   };
 }
 
@@ -171,8 +190,9 @@ export function loadEntries(collection, page = 0) {
       return;
     }
     const state = getState();
+    const backend = currentBackend(state.config);
     const integration = selectIntegration(state, collection.get('name'), 'listEntries');
-    const provider = integration ? getIntegrationProvider(state.integrations, integration) : currentBackend(state.config);
+    const provider = integration ? getIntegrationProvider(state.integrations, backend.getToken, integration) : backend;
     dispatch(entriesLoading(collection));
     provider.listEntries(collection, page).then(
       response => dispatch(entriesLoaded(collection, response.entries, response.pagination)),
@@ -196,11 +216,11 @@ export function persistEntry(collection, entryDraft) {
   return (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
-    const mediaProxies = entryDraft.get('mediaFiles').map(path => getMedia(state, path));
+    const assetProxies = entryDraft.get('mediaFiles').map(path => getAsset(state, path));
     const entry = entryDraft.get('entry');
     dispatch(entryPersisting(collection, entry));
     backend
-      .persistEntry(state.config, collection, entryDraft, mediaProxies.toJS())
+      .persistEntry(state.config, collection, entryDraft, assetProxies.toJS())
       .then(() => {
         dispatch(notifSend({
           message: 'Entry saved',

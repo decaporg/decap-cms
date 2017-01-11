@@ -10,9 +10,9 @@ export default class BlockMenu extends Component {
     selectionPosition: PropTypes.object,
     plugins: PropTypes.object.isRequired,
     onBlock: PropTypes.func.isRequired,
-    onAddMedia: PropTypes.func.isRequired,
-    onRemoveMedia: PropTypes.func.isRequired,
-    getMedia: PropTypes.func.isRequired,
+    onAddAsset: PropTypes.func.isRequired,
+    onRemoveAsset: PropTypes.func.isRequired,
+    getAsset: PropTypes.func.isRequired,
   };
 
   constructor(props) {
@@ -67,7 +67,7 @@ export default class BlockMenu extends Component {
   };
 
   controlFor(field) {
-    const { onAddMedia, onRemoveMedia, getMedia } = this.props;
+    const { onAddAsset, onRemoveAsset, getAsset } = this.props;
     const { pluginData } = this.state;
     const widget = resolveWidget(field.get('widget') || 'string');
     const value = pluginData.get(field.get('name'));
@@ -84,9 +84,9 @@ export default class BlockMenu extends Component {
                 pluginData: pluginData.set(field.get('name'), val),
               });
             },
-            onAddMedia,
-            onRemoveMedia,
-            getMedia,
+            onAddAsset,
+            onRemoveAsset,
+            getAsset,
           })
         }
       </div>

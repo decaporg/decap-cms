@@ -1,6 +1,5 @@
 import TestRepoBackend from "./test-repo/implementation";
 import GitHubBackend from "./github/implementation";
-import NetlifyGitBackend from "./netlify-git/implementation";
 import NetlifyAuthBackend from "./netlify-auth/implementation";
 import { resolveFormat } from "../formats/formats";
 import { selectListMethod, selectEntrySlug, selectEntryPath, selectAllowNewEntries } from "../reducers/collections";
@@ -78,6 +77,8 @@ class Backend {
       throw new Error("User isn't authenticated.");
     }
   }
+
+  getToken = () => this.implementation.getToken();
 
   listEntries(collection) {
     const listMethod = this.implementation[selectListMethod(collection)];
@@ -218,8 +219,6 @@ export function resolveBackend(config) {
       return new Backend(new TestRepoBackend(config), authStore);
     case "github":
       return new Backend(new GitHubBackend(config), authStore);
-    case "netlify-git":
-      return new Backend(new NetlifyGitBackend(config), authStore);
     case "netlify-auth":
       return new Backend(new NetlifyAuthBackend(config), authStore);
     default:

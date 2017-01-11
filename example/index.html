@@ -73,7 +73,7 @@
       render: function() {
         var entry = this.props.entry;
         var image = entry.getIn(['data', 'image']);
-        var bg = image && this.props.getMedia(image);
+        var bg = image && this.props.getAsset(image);
         return h('div', {},
           h('div', {className: "cover"},
             h('h1', {}, entry.getIn(['data', 'title'])),
@@ -104,7 +104,7 @@
             h('dd', {}, posts && posts.get('author') || 'None'),
 
             h('dt', {}, 'Default Thumbnail'),
-            h('dd', {}, thumb && h('img', {src: this.props.getMedia(thumb).toString()}))
+            h('dd', {}, thumb && h('img', {src: this.props.getAsset(thumb).toString()}))
           )
         );
       }
