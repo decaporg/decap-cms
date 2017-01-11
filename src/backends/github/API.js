@@ -95,7 +95,6 @@ export default class API {
   }
 
   storeMetadata(key, data) {
-    console.log(data);
     return this.checkMetadataRef()
     .then((branchData) => {
       const fileTree = {
