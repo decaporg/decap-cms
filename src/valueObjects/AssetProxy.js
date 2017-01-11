@@ -8,10 +8,10 @@ export const setStore = (storeObj) => {
   store = storeObj;
 };
 
-export default function AssetProxy(value, file, uploaded = false) {
+export default function AssetProxy(value, fileObj, uploaded = false) {
   const config = store.getState().config;
   this.value = value;
-  this.file = file;
+  this.fileObj = fileObj;
   this.uploaded = uploaded;
   this.sha = null;
   this.path = config.media_folder && !uploaded ? `${ config.get('media_folder') }/${ value }` : value;
@@ -19,7 +19,12 @@ export default function AssetProxy(value, file, uploaded = false) {
 }
 
 AssetProxy.prototype.toString = function () {
-  return this.uploaded ? this.public_path : window.URL.createObjectURL(this.file, { oneTimeOnly: true });
+  if (this.uploaded) return this.public_path;
+  try {
+    return window.URL.createObjectURL(this.fileObj);
+  } catch (error) {
+    return null;
+  }
 };
 
 AssetProxy.prototype.toBase64 = function () {
@@ -30,24 +35,24 @@ AssetProxy.prototype.toBase64 = function () {
 
       resolve(binaryString.split('base64,')[1]);
     };
-    fr.readAsDataURL(this.file);
+    fr.readAsDataURL(this.fileObj);
   });
 };
 
-export function createAssetProxy(value, file, uploaded = false, privateUpload = false) {
+export function createAssetProxy(value, fileObj, uploaded = false, privateUpload = false) {
   const state = store.getState();
   const integration = selectIntegration(state, null, 'assetStore');
   if (integration && !uploaded) {
     const provider = integration && getIntegrationProvider(state.integrations, currentBackend(state.config).getToken, integration);
-    return provider.upload(file, privateUpload).then(
+    return provider.upload(fileObj, privateUpload).then(
       response => (
         new AssetProxy(response.assetURL.replace(/^(https?):/, ''), null, true)
       ),
-      error => new AssetProxy(value, file, false)
+      error => new AssetProxy(value, fileObj, false)
     );  
   } else if (privateUpload) {
     throw new Error('The Private Upload option is only avaible for Asset Store Integration');
   }
   
-  return Promise.resolve(new AssetProxy(value, file, uploaded));
+  return Promise.resolve(new AssetProxy(value, fileObj, uploaded));
 }
