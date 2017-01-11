@@ -163,7 +163,7 @@ export default class API {
     const unpublishedPromise = this.retrieveMetadata(contentKey)
     .then((data) => {
       metaData = data;
-      return this.readFile(data.objects.entry, null, data.branch);
+      return this.readFile(data.objects.entry.path, null, data.branch);
     })
     .then(fileData => ({ metaData, fileData }))
     .catch(() => {
@@ -206,7 +206,7 @@ export default class API {
         .then(changeTree => this.commit(options.commitMessage, changeTree))
         .then(response => this.patchBranch(this.branch, response.sha));
       } else if (options.mode && options.mode === EDITORIAL_WORKFLOW) {
-        const mediaFilesList = mediaFiles.map(file => file.path);
+        const mediaFilesList = mediaFiles.map(file => ({ path: file.path, sha: file.sha }));
         return this.editorialWorkflowGit(fileTree, entry, mediaFilesList, options);
       }
     });
@@ -216,9 +216,8 @@ export default class API {
     const contentKey = entry.slug;
     const branchName = `cms/${ contentKey }`;
     const unpublished = options.unpublished || false;
-
     if (!unpublished) {
-      // Open new editorial review workflow for this entry - Create new metadata and commit to new branch
+      // Open new editorial review workflow for this entry - Create new metadata and commit to new branch`
       const contentKey = entry.slug;
       const branchName = `cms/${ contentKey }`;
 
@@ -241,7 +240,10 @@ export default class API {
           title: options.parsedData && options.parsedData.title,
           description: options.parsedData && options.parsedData.description,
           objects: {
-            entry: entry.path,
+            entry: {
+              path: entry.path,
+              sha: entry.sha,
+            },
             files: filesList,
           },
           timeStamp: new Date().toISOString(),
@@ -265,7 +267,10 @@ export default class API {
             title: options.parsedData && options.parsedData.title,
             description: options.parsedData && options.parsedData.description,
             objects: {
-              entry: entry.path,
+              entry: {
+                path: entry.path,
+                sha: entry.sha,
+              },
               files: _.uniq(files),
             },
             timeStamp: new Date().toISOString(),
@@ -298,8 +303,6 @@ export default class API {
     })
     .then(() => this.deleteBranch(`cms/${ contentKey }`));
   }
-
-
 
 
   createRef(type, name, sha) {
@@ -365,7 +368,7 @@ export default class API {
 
   forceMergePR(prNumber) {
     return this.request(`${ this.repoURL }/pulls/${ prNumber }/files`)
-    .then(response => {
+    .then((response) => {
       console.log(response);
       throw 'WIP'; // Interrupt the chain otherwise branch will be deleted
     });

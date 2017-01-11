@@ -86,7 +86,7 @@ export default class GitHub {
               resolve(null);
               sem.leave();
             } else {
-              const path = data.metaData.objects.entry;
+              const path = data.metaData.objects.entry.path;
               resolve({
                 slug,
                 file: { path },
@@ -97,7 +97,7 @@ export default class GitHub {
             }
           }).catch((err) => {
             sem.leave();
-            reject(err);
+            resolve(null);
           }));
         }));
       });
@@ -117,7 +117,7 @@ export default class GitHub {
       if (!data) return null;
       return {
         slug,
-        file: { path: data.metaData.objects.entry },
+        file: { path: data.metaData.objects.entry.path },
         data: data.fileData,
         metaData: data.metaData,
       };
