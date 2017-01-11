@@ -95,7 +95,7 @@ export default class API {
   }
 
   storeMetadata(key, data) {
-    console.log('Trying to store Metadata'); // eslint-disable-line
+    console.log(data);
     return this.checkMetadataRef()
     .then((branchData) => {
       const fileTree = {
@@ -259,7 +259,8 @@ export default class API {
             files: filesList,
           },
           timeStamp: new Date().toISOString(),
-        })));
+        }
+        )));
     } else {
       // Entry is already on editorial review workflow - just update metadata and commit to existing branch
       return this.getBranch(branchName)
@@ -273,9 +274,11 @@ export default class API {
         .then((metadata) => {
           let files = metadata.objects && metadata.objects.files || [];
           files = files.concat(filesList);
-
+          const updatedPR = metadata.pr;
+          updatedPR.head = response.sha;
           return {
             ...metadata,
+            pr: updatedPR,
             title: options.parsedData && options.parsedData.title,
             description: options.parsedData && options.parsedData.description,
             objects: {
@@ -360,7 +363,7 @@ export default class API {
   mergePR(pullrequest, objects) {
     const headSha = pullrequest.head;
     const prNumber = pullrequest.number;
-
+    console.log("%c Merging PR", "line-height: 30px;text-align: center;font-weight: bold"); // eslint-disable-line
     return this.request(`${ this.repoURL }/pulls/${ prNumber }/merge`, {
       method: "PUT",
       body: JSON.stringify({
@@ -380,10 +383,14 @@ export default class API {
   forceMergePR(pullrequest, objects) {
     const files = objects.files.concat(objects.entry);
     const fileTree = this.composeFileTree(files);
-    
+    let commitMessage = "Automatically generated. Merged on Netlify CMS\n\nForce merge of:";
+    files.forEach((file) => {
+      commitMessage += `\n* "${ file.path }"`;
+    });
+    console.log("%c Automatic merge not possible - Forcing merge.", "line-height: 30px;text-align: center;font-weight: bold"); // eslint-disable-line
     return this.getBranch()
     .then(branchData => this.updateTree(branchData.commit.sha, "/", fileTree))
-    .then(changeTree => this.commit("Automatically generated. Force merged on Netlify CMS.", changeTree))
+    .then(changeTree => this.commit(commitMessage, changeTree))
     .then(response => this.patchBranch(this.branch, response.sha));
   }
 
