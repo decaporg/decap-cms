@@ -166,7 +166,12 @@ export default class API {
   }
 
   listUnpublishedBranches() {
-    return this.request(`${ this.repoURL }/git/refs/heads/cms`);
+    console.log("%c Checking for Unpublished entries", "line-height: 30px;text-align: center;font-weight: bold"); // eslint-disable-line
+    return this.request(`${ this.repoURL }/git/refs/heads/cms`)
+    .catch((error) => {
+      console.log("%c No Unpublished entries", "line-height: 30px;text-align: center;font-weight: bold"); // eslint-disable-line
+      throw error;
+    });
   }
 
   persistFiles(entry, mediaFiles, options) {
