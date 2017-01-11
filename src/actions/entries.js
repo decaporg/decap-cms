@@ -1,5 +1,6 @@
 import { List } from 'immutable';
 import { actions as notifActions } from 'redux-notifications';
+import { closeEntry } from './editor';
 import { currentBackend } from '../backends/backend';
 import { getIntegrationProvider } from '../integrations';
 import { getAsset, selectIntegration } from '../reducers';
@@ -164,7 +165,7 @@ export function changeDraftField(field, value, metadata) {
  * Exported Thunk Action Creators
  */
 
-export function loadEntry(entry, collection, slug) {
+export function loadEntry(collection, slug) {
   return (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
@@ -177,7 +178,7 @@ export function loadEntry(entry, collection, slug) {
         dispatch(notifSend({
           message: `Failed to load entry: ${ error.message }`,
           kind: 'danger',
-          dismissAfter: 4000,
+          dismissAfter: 8000,
         }));
         dispatch(entryLoadError(error, collection, slug));
       });
@@ -227,13 +228,14 @@ export function persistEntry(collection, entryDraft) {
           kind: 'success',
           dismissAfter: 4000,
         }));
+        dispatch(closeEntry(collection));
         dispatch(entryPersisted(collection, entry));
       })
       .catch((error) => {
         dispatch(notifSend({
-          message: 'Failed to persist entry',
+          message: `Failed to persist entry: ${ error }`,
           kind: 'danger',
-          dismissAfter: 4000,
+          dismissAfter: 8000,
         }));
         dispatch(entryPersistFail(collection, entry, error));
       });

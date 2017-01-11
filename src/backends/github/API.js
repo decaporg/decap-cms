@@ -3,6 +3,7 @@ import { Base64 } from "js-base64";
 import _ from "lodash";
 import AssetProxy from "../../valueObjects/AssetProxy";
 import { SIMPLE, EDITORIAL_WORKFLOW, status } from "../../constants/publishModes";
+import { APIError, EditorialWorkflowError } from "../../valueObjects/errors";
 
 export default class API {
   constructor(config) {
@@ -57,13 +58,17 @@ export default class API {
   request(path, options = {}) {
     const headers = this.requestHeaders(options.headers || {});
     const url = this.urlFor(path, options);
+    let responseStatus;
     return fetch(url, { ...options, headers }).then((response) => {
+      responseStatus = response.status;
       const contentType = response.headers.get("Content-Type");
       if (contentType && contentType.match(/json/)) {
         return this.parseJsonResponse(response);
       }
-
       return response.text();
+    })
+    .catch((error) => {
+      throw new APIError(error.message, responseStatus, 'GitHub');
     });
   }
 
@@ -90,7 +95,6 @@ export default class API {
   }
 
   storeMetadata(key, data) {
-    console.log('Trying to store Metadata');
     return this.checkMetadataRef()
     .then((branchData) => {
       const fileTree = {
@@ -158,10 +162,12 @@ export default class API {
     const unpublishedPromise = this.retrieveMetadata(contentKey)
     .then((data) => {
       metaData = data;
-      return this.readFile(data.objects.entry, null, data.branch);
+      return this.readFile(data.objects.entry.path, null, data.branch);
     })
     .then(fileData => ({ metaData, fileData }))
-    .catch(error => null);
+    .catch(() => {
+      throw new EditorialWorkflowError('content is not under editorial workflow', true);
+    });
     return unpublishedPromise;
   }
 
@@ -174,19 +180,15 @@ export default class API {
     });
   }
 
-  persistFiles(entry, mediaFiles, options) {
-    let filename,
-      part,
-      parts,
-      subtree;
+  composeFileTree(files) {
+    let filename;
+    let part;
+    let parts;
+    let subtree;
     const fileTree = {};
-    const uploadPromises = [];
-
-    const files = mediaFiles.concat(entry);
 
     files.forEach((file) => {
       if (file.uploaded) { return; }
-      uploadPromises.push(this.uploadBlob(file));
       parts = file.path.split("/").filter(part => part);
       filename = parts.pop();
       subtree = fileTree;
@@ -197,6 +199,22 @@ export default class API {
       subtree[filename] = file;
       file.file = true;
     });
+
+    return fileTree;
+  }
+
+  persistFiles(entry, mediaFiles, options) {
+    const uploadPromises = [];
+    const files = mediaFiles.concat(entry);
+    
+
+    files.forEach((file) => {
+      if (file.uploaded) { return; }
+      uploadPromises.push(this.uploadBlob(file));
+    });
+
+    const fileTree = this.composeFileTree(files);
+
     return Promise.all(uploadPromises).then(() => {
       if (!options.mode || (options.mode && options.mode === SIMPLE)) {
         return this.getBranch()
@@ -204,7 +222,7 @@ export default class API {
         .then(changeTree => this.commit(options.commitMessage, changeTree))
         .then(response => this.patchBranch(this.branch, response.sha));
       } else if (options.mode && options.mode === EDITORIAL_WORKFLOW) {
-        const mediaFilesList = mediaFiles.map(file => file.path);
+        const mediaFilesList = mediaFiles.map(file => ({ path: file.path, sha: file.sha }));
         return this.editorialWorkflowGit(fileTree, entry, mediaFilesList, options);
       }
     });
@@ -214,9 +232,8 @@ export default class API {
     const contentKey = entry.slug;
     const branchName = `cms/${ contentKey }`;
     const unpublished = options.unpublished || false;
-
     if (!unpublished) {
-      // Open new editorial review workflow for this entry - Create new metadata and commit to new branch
+      // Open new editorial review workflow for this entry - Create new metadata and commit to new branch`
       const contentKey = entry.slug;
       const branchName = `cms/${ contentKey }`;
 
@@ -239,11 +256,15 @@ export default class API {
           title: options.parsedData && options.parsedData.title,
           description: options.parsedData && options.parsedData.description,
           objects: {
-            entry: entry.path,
+            entry: {
+              path: entry.path,
+              sha: entry.sha,
+            },
             files: filesList,
           },
           timeStamp: new Date().toISOString(),
-        })));
+        }
+        )));
     } else {
       // Entry is already on editorial review workflow - just update metadata and commit to existing branch
       return this.getBranch(branchName)
@@ -257,13 +278,18 @@ export default class API {
         .then((metadata) => {
           let files = metadata.objects && metadata.objects.files || [];
           files = files.concat(filesList);
-
+          const updatedPR = metadata.pr;
+          updatedPR.head = response.sha;
           return {
             ...metadata,
+            pr: updatedPR,
             title: options.parsedData && options.parsedData.title,
             description: options.parsedData && options.parsedData.description,
             objects: {
-              entry: entry.path,
+              entry: {
+                path: entry.path,
+                sha: entry.sha,
+              },
               files: _.uniq(files),
             },
             timeStamp: new Date().toISOString(),
@@ -285,16 +311,14 @@ export default class API {
     .then(updatedMetadata => this.storeMetadata(contentKey, updatedMetadata));
   }
 
-  publishUnpublishedEntry(collection, slug, status) {
+  publishUnpublishedEntry(collection, slug) {
     const contentKey = slug;
+    let prNumber;
     return this.retrieveMetadata(contentKey)
-    .then((metadata) => {
-      const headSha = metadata.pr && metadata.pr.head;
-      const number = metadata.pr && metadata.pr.number;
-      return this.mergePR(headSha, number);
-    })
+    .then(metadata => this.mergePR(metadata.pr, metadata.objects))
     .then(() => this.deleteBranch(`cms/${ contentKey }`));
   }
+
 
   createRef(type, name, sha) {
     return this.request(`${ this.repoURL }/git/refs`, {
@@ -340,14 +364,38 @@ export default class API {
     });
   }
 
-  mergePR(headSha, number) {
-    return this.request(`${ this.repoURL }/pulls/${ number }/merge`, {
+  mergePR(pullrequest, objects) {
+    const headSha = pullrequest.head;
+    const prNumber = pullrequest.number;
+    console.log("%c Merging PR", "line-height: 30px;text-align: center;font-weight: bold"); // eslint-disable-line
+    return this.request(`${ this.repoURL }/pulls/${ prNumber }/merge`, {
       method: "PUT",
       body: JSON.stringify({
         commit_message: "Automatically generated. Merged on Netlify CMS.",
         sha: headSha,
       }),
+    })
+    .catch((error) => {
+      if (error instanceof APIError && error.status === 405) {
+        this.forceMergePR(pullrequest, objects);
+      } else {
+        throw error;
+      }
     });
+  }
+
+  forceMergePR(pullrequest, objects) {
+    const files = objects.files.concat(objects.entry);
+    const fileTree = this.composeFileTree(files);
+    let commitMessage = "Automatically generated. Merged on Netlify CMS\n\nForce merge of:";
+    files.forEach((file) => {
+      commitMessage += `\n* "${ file.path }"`;
+    });
+    console.log("%c Automatic merge not possible - Forcing merge.", "line-height: 30px;text-align: center;font-weight: bold"); // eslint-disable-line
+    return this.getBranch()
+    .then(branchData => this.updateTree(branchData.commit.sha, "/", fileTree))
+    .then(changeTree => this.commit(commitMessage, changeTree))
+    .then(response => this.patchBranch(this.branch, response.sha));
   }
 
   getTree(sha) {
@@ -379,9 +427,9 @@ export default class API {
   updateTree(sha, path, fileTree) {
     return this.getTree(sha)
       .then((tree) => {
-        let obj,
-          filename,
-          fileOrDir;
+        let obj;
+        let filename;
+        let fileOrDir;
         const updates = [];
         const added = {};
 

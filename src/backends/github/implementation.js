@@ -93,7 +93,7 @@ export default class GitHub {
               resolve(null);
               sem.leave();
             } else {
-              const path = data.metaData.objects.entry;
+              const path = data.metaData.objects.entry.path;
               resolve({
                 slug,
                 file: { path },
@@ -104,7 +104,7 @@ export default class GitHub {
             }
           }).catch((err) => {
             sem.leave();
-            reject(err);
+            resolve(null);
           }));
         }));
       });
@@ -120,19 +120,22 @@ export default class GitHub {
 
   unpublishedEntry(collection, slug) {
     return this.api.readUnpublishedBranchFile(slug)
-    .then(data => ({
-      slug,
-      file: { path: data.metaData.objects.entry },
-      data: data.fileData,
-      metaData: data.metaData,
-    }));
+    .then((data) => {
+      if (!data) return null;
+      return {
+        slug,
+        file: { path: data.metaData.objects.entry.path },
+        data: data.fileData,
+        metaData: data.metaData,
+      };
+    });
   }
 
   updateUnpublishedEntryStatus(collection, slug, newStatus) {
     return this.api.updateUnpublishedEntryStatus(collection, slug, newStatus);
   }
 
-  publishUnpublishedEntry(collection, slug, status) {
-    return this.api.publishUnpublishedEntry(collection, slug, status);
+  publishUnpublishedEntry(collection, slug) {
+    return this.api.publishUnpublishedEntry(collection, slug);
   }
 }

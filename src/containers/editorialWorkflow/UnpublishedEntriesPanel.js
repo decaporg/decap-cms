@@ -3,7 +3,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { OrderedMap } from 'immutable';
 import { connect } from 'react-redux';
 import { loadUnpublishedEntries, updateUnpublishedEntryStatus, publishUnpublishedEntry } from '../../actions/editorialWorkflow';
-import { selectUnpublishedEntries } from '../../reducers';
+import { selectUnpublishedEntriesByStatus } from '../../reducers';
 import { EDITORIAL_WORKFLOW, status } from '../../constants/publishModes';
 import UnpublishedListing from '../../components/UnpublishedListing/UnpublishedListing';
 import { Loader } from '../../components/UI';
@@ -48,11 +48,11 @@ function mapStateToProps(state) {
 
     /*
      * Generates an ordered Map of the available status as keys.
-     * Each key containing a List of available unpubhlished entries
-     * Eg.: OrderedMap{'draft':List(), 'pending_review':List(), 'pending_publish':List()}
+     * Each key containing a Sequence of available unpubhlished entries
+     * Eg.: OrderedMap{'draft':Seq(), 'pending_review':Seq(), 'pending_publish':Seq()}
      */
     returnObj.unpublishedEntries = status.reduce((acc, currStatus) => (
-      acc.set(currStatus, selectUnpublishedEntries(state, currStatus))
+      acc.set(currStatus, selectUnpublishedEntriesByStatus(state, currStatus))
     ), OrderedMap());
   }
   return returnObj;

@@ -24,11 +24,6 @@ export default (
       component={EntryPage}
     />
     <Route
-      path="/editorialworkflow/:name/:status/:slug"
-      component={EntryPage}
-      unpublishedEntry
-    />
-    <Route
       path="/search/:searchTerm"
       component={SearchPage}
     />

@@ -9,7 +9,7 @@ import {
   changeDraftField,
   persistEntry,
 } from '../actions/entries';
-import { cancelEdit } from '../actions/editor';
+import { closeEntry } from '../actions/editor';
 import { addAsset, removeAsset } from '../actions/media';
 import { openSidebar } from '../actions/globalUI';
 import { selectEntry, getAsset } from '../reducers';
@@ -32,7 +32,7 @@ class EntryPage extends React.Component {
     loadEntry: PropTypes.func.isRequired,
     persistEntry: PropTypes.func.isRequired,
     removeAsset: PropTypes.func.isRequired,
-    cancelEdit: PropTypes.func.isRequired,
+    closeEntry: PropTypes.func.isRequired,
     openSidebar: PropTypes.func.isRequired,
     fields: ImmutablePropTypes.list.isRequired,
     slug: PropTypes.string,
@@ -45,7 +45,7 @@ class EntryPage extends React.Component {
     if (newEntry) {
       createEmptyDraft(collection);
     } else {
-      loadEntry(entry, collection, slug);
+      loadEntry(collection, slug);
     }
   }
 
@@ -67,6 +67,10 @@ class EntryPage extends React.Component {
     if (entry) this.props.createDraftFromEntry(entry);
   };
 
+  handleCloseEntry = () => {
+    this.props.closeEntry();
+  };
+
   handlePersistEntry = () => {
     const { persistEntry, collection, entryDraft } = this.props;
     persistEntry(collection, entryDraft);
@@ -82,7 +86,7 @@ class EntryPage extends React.Component {
       changeDraftField,
       addAsset,
       removeAsset,
-      cancelEdit,
+      closeEntry,
     } = this.props;
 
     if (entry && entry.get('error')) {
@@ -104,7 +108,7 @@ class EntryPage extends React.Component {
         onAddAsset={addAsset}
         onRemoveAsset={removeAsset}
         onPersist={this.handlePersistEntry}
-        onCancelEdit={cancelEdit}
+        onCancelEdit={this.handleCloseEntry}
       />
     );
   }
@@ -141,7 +145,7 @@ export default connect(
     createEmptyDraft,
     discardDraft,
     persistEntry,
-    cancelEdit,
+    closeEntry,
     openSidebar,
   }
 )(entryPageHOC(EntryPage));

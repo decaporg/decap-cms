@@ -58,7 +58,7 @@ class UnpublishedListing extends React.Component {
             // Look for an "author" field. Fallback to username on backend implementation;
             const author = entry.getIn(['data', 'author'], entry.getIn(['metaData', 'user']));
             const timeStamp = moment(entry.getIn(['metaData', 'timeStamp'])).format('llll');
-            const link = `editorialworkflow/${ entry.getIn(['metaData', 'collection']) }/${ entry.getIn(['metaData', 'status']) }/${ entry.get('slug') }`;
+            const link = `collections/${ entry.getIn(['metaData', 'collection']) }/entries/${ entry.get('slug') }`;
             const slug = entry.get('slug');
             const ownStatus = entry.getIn(['metaData', 'status']);
             const collection = entry.getIn(['metaData', 'collection']);
