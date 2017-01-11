@@ -296,11 +296,7 @@ export default class API {
     const contentKey = slug;
     let prNumber;
     return this.retrieveMetadata(contentKey)
-    .then((metadata) => {
-      const headSha = metadata.pr && metadata.pr.head;
-      prNumber = metadata.pr && metadata.pr.number;
-      return this.mergePR(headSha, prNumber);
-    })
+    .then(metadata => this.mergePR(metadata.pr, metadata.objects))
     .then(() => this.deleteBranch(`cms/${ contentKey }`));
   }
 
@@ -349,7 +345,9 @@ export default class API {
     });
   }
 
-  mergePR(headSha, prNumber) {
+  mergePR(pullrequest, objects) {
+    const headSha = pullrequest.head;
+    const prNumber = pullrequest.number;
     return this.request(`${ this.repoURL }/pulls/${ prNumber }/merge`, {
       method: "PUT",
       body: JSON.stringify({
@@ -359,19 +357,39 @@ export default class API {
     })
     .catch((error) => {
       if (error instanceof APIError && error.status === 405) {
-        this.forceMergePR(prNumber);
+        this.forceMergePR(pullrequest, objects);
       } else {
         throw error;
       }
     });
   }
 
-  forceMergePR(prNumber) {
-    return this.request(`${ this.repoURL }/pulls/${ prNumber }/files`)
-    .then((response) => {
-      console.log(response);
-      throw 'WIP'; // Interrupt the chain otherwise branch will be deleted
+  forceMergePR(pullrequest, objects) {
+    let filename,
+      part,
+      parts,
+      subtree;
+    const fileTree = {};
+
+    const files = objects.files.concat(objects.entry);
+
+    files.forEach((file) => {
+      if (file.uploaded) { return; }
+      parts = file.path.split("/").filter(part => part);
+      filename = parts.pop();
+      subtree = fileTree;
+      while (part = parts.shift()) {
+        subtree[part] = subtree[part] || {};
+        subtree = subtree[part];
+      }
+      subtree[filename] = file;
+      file.file = true;
     });
+    
+    return this.getBranch()
+    .then(branchData => this.updateTree(branchData.commit.sha, "/", fileTree))
+    .then(changeTree => this.commit("Automatically generated. Force merged on Netlify CMS.", changeTree))
+    .then(response => this.patchBranch(this.branch, response.sha));
   }
 
   getTree(sha) {
