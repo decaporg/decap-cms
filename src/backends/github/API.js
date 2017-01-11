@@ -95,7 +95,7 @@ export default class API {
   }
 
   storeMetadata(key, data) {
-    console.log('Trying to store Metadata');
+    console.log('Trying to store Metadata'); // eslint-disable-line
     return this.checkMetadataRef()
     .then((branchData) => {
       const fileTree = {
@@ -176,19 +176,15 @@ export default class API {
     return this.request(`${ this.repoURL }/git/refs/heads/cms`);
   }
 
-  persistFiles(entry, mediaFiles, options) {
-    let filename,
-      part,
-      parts,
-      subtree;
+  composeFileTree(files) {
+    let filename;
+    let part;
+    let parts;
+    let subtree;
     const fileTree = {};
-    const uploadPromises = [];
-
-    const files = mediaFiles.concat(entry);
 
     files.forEach((file) => {
       if (file.uploaded) { return; }
-      uploadPromises.push(this.uploadBlob(file));
       parts = file.path.split("/").filter(part => part);
       filename = parts.pop();
       subtree = fileTree;
@@ -199,6 +195,22 @@ export default class API {
       subtree[filename] = file;
       file.file = true;
     });
+
+    return fileTree;
+  }
+
+  persistFiles(entry, mediaFiles, options) {
+    const uploadPromises = [];
+    const files = mediaFiles.concat(entry);
+    
+
+    files.forEach((file) => {
+      if (file.uploaded) { return; }
+      uploadPromises.push(this.uploadBlob(file));
+    });
+
+    const fileTree = this.composeFileTree(files);
+
     return Promise.all(uploadPromises).then(() => {
       if (!options.mode || (options.mode && options.mode === SIMPLE)) {
         return this.getBranch()
@@ -348,6 +360,7 @@ export default class API {
   mergePR(pullrequest, objects) {
     const headSha = pullrequest.head;
     const prNumber = pullrequest.number;
+
     return this.request(`${ this.repoURL }/pulls/${ prNumber }/merge`, {
       method: "PUT",
       body: JSON.stringify({
@@ -365,26 +378,8 @@ export default class API {
   }
 
   forceMergePR(pullrequest, objects) {
-    let filename,
-      part,
-      parts,
-      subtree;
-    const fileTree = {};
-
     const files = objects.files.concat(objects.entry);
-
-    files.forEach((file) => {
-      if (file.uploaded) { return; }
-      parts = file.path.split("/").filter(part => part);
-      filename = parts.pop();
-      subtree = fileTree;
-      while (part = parts.shift()) {
-        subtree[part] = subtree[part] || {};
-        subtree = subtree[part];
-      }
-      subtree[filename] = file;
-      file.file = true;
-    });
+    const fileTree = this.composeFileTree(files);
     
     return this.getBranch()
     .then(branchData => this.updateTree(branchData.commit.sha, "/", fileTree))
@@ -421,9 +416,9 @@ export default class API {
   updateTree(sha, path, fileTree) {
     return this.getTree(sha)
       .then((tree) => {
-        let obj,
-          filename,
-          fileOrDir;
+        let obj;
+        let filename;
+        let fileOrDir;
         const updates = [];
         const added = {};
 
