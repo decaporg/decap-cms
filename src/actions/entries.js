@@ -178,7 +178,7 @@ export function loadEntry(collection, slug) {
         dispatch(notifSend({
           message: `Failed to load entry: ${ error.message }`,
           kind: 'danger',
-          dismissAfter: 4000,
+          dismissAfter: 8000,
         }));
         dispatch(entryLoadError(error, collection, slug));
       });
@@ -233,9 +233,9 @@ export function persistEntry(collection, entryDraft) {
       })
       .catch((error) => {
         dispatch(notifSend({
-          message: 'Failed to persist entry',
+          message: `Failed to persist entry: ${ error }`,
           kind: 'danger',
-          dismissAfter: 4000,
+          dismissAfter: 8000,
         }));
         dispatch(entryPersistFail(collection, entry, error));
       });

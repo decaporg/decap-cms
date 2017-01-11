@@ -199,7 +199,7 @@ export function loadUnpublishedEntry(collection, slug) {
         dispatch(notifSend({
           message: `Error loading entry: ${ error }`,
           kind: 'danger',
-          dismissAfter: 4000,
+          dismissAfter: 8000,
         }));
       }
     });
@@ -241,9 +241,9 @@ export function persistUnpublishedEntry(collection, entryDraft, existingUnpublis
     })
     .catch((error) => {
       dispatch(notifSend({
-        message: 'Failed to persist entry',
+        message: `Failed to persist entry: ${ error }`,
         kind: 'danger',
-        dismissAfter: 4000,
+        dismissAfter: 8000,
       }));
       dispatch(unpublishedEntryPersistedFail(error, transactionID));
     });
@@ -276,7 +276,12 @@ export function publishUnpublishedEntry(collection, slug) {
     .then(() => {
       dispatch(unpublishedEntryPublished(collection, slug, transactionID));
     })
-    .catch(() => {
+    .catch((error) => {
+      dispatch(notifSend({
+        message: `Failed to merge: ${ error }`,
+        kind: 'danger',
+        dismissAfter: 8000,
+      }));
       dispatch(unpublishedEntryPublishError(collection, slug, transactionID));
     });
   };
