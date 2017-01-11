@@ -10,7 +10,7 @@ import htmlSyntax from 'markup-it/syntaxes/html';
 import reInline from 'markup-it/syntaxes/markdown/re/inline';
 import MarkupItReactRenderer from '../';
 
-function getMedia(path) {
+function getAsset(path) {
   return path;
 }
 
@@ -21,7 +21,7 @@ describe('MarkitupReactRenderer', () => {
         <MarkupItReactRenderer
           value="# Title"
           syntax={markdownSyntax}
-          getMedia={getMedia}
+          getAsset={getAsset}
         />
       );
       const tree1 = component.html();
@@ -38,7 +38,7 @@ describe('MarkitupReactRenderer', () => {
         <MarkupItReactRenderer
           value="# Title"
           syntax={markdownSyntax}
-          getMedia={getMedia}
+          getAsset={getAsset}
         />
       );
       const syntax1 = component.instance().props.syntax;
@@ -83,7 +83,7 @@ Text with **bold** & _em_ elements
           <MarkupItReactRenderer
             value={value}
             syntax={markdownSyntax}
-            getMedia={getMedia}
+            getAsset={getAsset}
           />
         );
         expect(component.html()).toMatchSnapshot();
@@ -98,7 +98,7 @@ Text with **bold** & _em_ elements
             <MarkupItReactRenderer
               value={value}
               syntax={markdownSyntax}
-              getMedia={getMedia}
+              getAsset={getAsset}
             />
           );
           expect(component.html()).toMatchSnapshot();
@@ -123,7 +123,7 @@ Text with **bold** & _em_ elements
           <MarkupItReactRenderer
             value={value}
             syntax={markdownSyntax}
-            getMedia={getMedia}
+            getAsset={getAsset}
           />
         );
         expect(component.html()).toMatchSnapshot();
@@ -143,7 +143,7 @@ I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3]
           <MarkupItReactRenderer
             value={value}
             syntax={markdownSyntax}
-            getMedia={getMedia}
+            getAsset={getAsset}
           />
         );
         expect(component.html()).toMatchSnapshot();
@@ -157,7 +157,7 @@ I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3]
           <MarkupItReactRenderer
             value={value}
             syntax={markdownSyntax}
-            getMedia={getMedia}
+            getAsset={getAsset}
           />
         );
         expect(component.html()).toMatchSnapshot();
@@ -169,7 +169,7 @@ I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3]
           <MarkupItReactRenderer
             value={value}
             syntax={markdownSyntax}
-            getMedia={getMedia}
+            getAsset={getAsset}
           />
         );
         expect(component.html()).toMatchSnapshot();
@@ -197,7 +197,7 @@ I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3]
           <MarkupItReactRenderer
             value={value}
             syntax={markdownSyntax}
-            getMedia={getMedia}
+            getAsset={getAsset}
           />
         );
         expect(component.html()).toMatchSnapshot();
@@ -241,7 +241,7 @@ I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3]
           value={value}
           syntax={myMarkdownSyntax}
           schema={myCustomSchema}
-          getMedia={getMedia}
+          getAsset={getAsset}
         />
       );
       expect(component.html()).toMatchSnapshot();
@@ -255,7 +255,7 @@ I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3]
         <MarkupItReactRenderer
           value={value}
           syntax={htmlSyntax}
-          getMedia={getMedia}
+          getAsset={getAsset}
         />
       );
       expect(component.html()).toMatchSnapshot();

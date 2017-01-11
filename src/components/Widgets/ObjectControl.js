@@ -7,14 +7,14 @@ import styles from './ObjectControl.css';
 export default class ObjectControl extends Component {
   static propTypes = {
     onChange: PropTypes.func.isRequired,
-    onAddMedia: PropTypes.func.isRequired,
-    getMedia: PropTypes.func.isRequired,
+    onAddAsset: PropTypes.func.isRequired,
+    getAsset: PropTypes.func.isRequired,
     value: PropTypes.node,
     field: PropTypes.node,
   };
 
   controlFor(field) {
-    const { onAddMedia, onRemoveMedia, getMedia, value, onChange } = this.props;
+    const { onAddAsset, onRemoveAsset, getAsset, value, onChange } = this.props;
     const widget = resolveWidget(field.get('widget') || 'string');
     const fieldValue = value && Map.isMap(value) ? value.get(field.get('name')) : value;
 
@@ -28,9 +28,9 @@ export default class ObjectControl extends Component {
             onChange: (val, metadata) => {
               onChange((value || Map()).set(field.get('name'), val), metadata);
             },
-            onAddMedia,
-            onRemoveMedia,
-            getMedia,
+            onAddAsset,
+            onRemoveAsset,
+            getAsset,
           })
         }
       </div>

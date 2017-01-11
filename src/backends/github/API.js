@@ -1,7 +1,7 @@
 import LocalForage from "localforage";
 import { Base64 } from "js-base64";
 import _ from "lodash";
-import MediaProxy from "../../valueObjects/MediaProxy";
+import AssetProxy from "../../valueObjects/AssetProxy";
 import { SIMPLE, EDITORIAL_WORKFLOW, status } from "../../constants/publishModes";
 import { APIError, EditorialWorkflowError } from "../../valueObjects/errors";
 
@@ -398,7 +398,7 @@ export default class API {
   }
 
   uploadBlob(item) {
-    const content = item instanceof MediaProxy ? item.toBase64() : this.toBase64(item.raw);
+    const content = item instanceof AssetProxy ? item.toBase64() : this.toBase64(item.raw);
 
     return content.then(contentBase64 => this.request(`${ this.repoURL }/git/blobs`, {
       method: "POST",

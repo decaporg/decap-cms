@@ -12,8 +12,8 @@ class MarkdownControl extends React.Component {
   static propTypes = {
     editor: PropTypes.object.isRequired,
     onChange: PropTypes.func.isRequired,
-    onAddMedia: PropTypes.func.isRequired,
-    getMedia: PropTypes.func.isRequired,
+    onAddAsset: PropTypes.func.isRequired,
+    getAsset: PropTypes.func.isRequired,
     switchVisualMode: PropTypes.func.isRequired,
     value: PropTypes.node,
   };
@@ -33,17 +33,17 @@ class MarkdownControl extends React.Component {
   };
 
   render() {
-    const { onChange, onAddMedia, onRemoveMedia, getMedia, value } = this.props;
+    const { onChange, onAddAsset, onRemoveAsset, getAsset, value } = this.props;
     const { mode } = this.state;
     if (mode === 'visual') {
       return (
         <div className="cms-editor-visual">
           <VisualEditor
             onChange={onChange}
-            onAddMedia={onAddMedia}
-            onRemoveMedia={onRemoveMedia}
+            onAddAsset={onAddAsset}
+            onRemoveAsset={onRemoveAsset}
             onMode={this.handleMode}
-            getMedia={getMedia}
+            getAsset={getAsset}
             value={value}
           />
         </div>
@@ -54,10 +54,10 @@ class MarkdownControl extends React.Component {
       <div className="cms-editor-raw">
         <RawEditor
           onChange={onChange}
-          onAddMedia={onAddMedia}
-          onRemoveMedia={onRemoveMedia}
+          onAddAsset={onAddAsset}
+          onRemoveAsset={onRemoveAsset}
           onMode={this.handleMode}
-          getMedia={getMedia}
+          getAsset={getAsset}
           value={value}
         />
       </div>

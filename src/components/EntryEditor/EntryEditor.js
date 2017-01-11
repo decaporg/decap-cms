@@ -26,10 +26,10 @@ class EntryEditor extends Component {
         entry,
         fields,
         fieldsMetaData,
-        getMedia,
+        getAsset,
         onChange,
-        onAddMedia,
-        onRemoveMedia,
+        onAddAsset,
+        onRemoveAsset,
         onPersist,
         onCancelEdit,
     } = this.props;
@@ -53,10 +53,10 @@ class EntryEditor extends Component {
                     entry={entry}
                     fields={fields}
                     fieldsMetaData={fieldsMetaData}
-                    getMedia={getMedia}
+                    getAsset={getAsset}
                     onChange={onChange}
-                    onAddMedia={onAddMedia}
-                    onRemoveMedia={onRemoveMedia}
+                    onAddAsset={onAddAsset}
+                    onRemoveAsset={onRemoveAsset}
                   />
 
                 </div>
@@ -67,7 +67,7 @@ class EntryEditor extends Component {
                   entry={entry}
                   fields={fields}
                   fieldsMetaData={fieldsMetaData}
-                  getMedia={getMedia}
+                  getAsset={getAsset}
                 />
               </div>
             </SplitPane>
@@ -91,11 +91,11 @@ EntryEditor.propTypes = {
   entry: ImmutablePropTypes.map.isRequired,
   fields: ImmutablePropTypes.list.isRequired,
   fieldsMetaData: ImmutablePropTypes.map.isRequired,
-  getMedia: PropTypes.func.isRequired,
-  onAddMedia: PropTypes.func.isRequired,
+  getAsset: PropTypes.func.isRequired,
+  onAddAsset: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   onPersist: PropTypes.func.isRequired,
-  onRemoveMedia: PropTypes.func.isRequired,
+  onRemoveAsset: PropTypes.func.isRequired,
   onCancelEdit: PropTypes.func.isRequired,
 };
 

@@ -5,7 +5,7 @@ import AssetProxy, { createAssetProxy } from '../../valueObjects/AssetProxy';
 
 const MAX_DISPLAY_LENGTH = 50;
 
-export default class ImageControl extends React.Component {
+export default class FileControl extends React.Component {
   state = {
     processing: false,
   };
@@ -36,17 +36,13 @@ export default class ImageControl extends React.Component {
     const files = [...fileList];
     const imageType = /^image\//;
 
-    // Iterate through the list of files and return the first image on the list
-    const file = files.find((currentFile) => {
-      if (imageType.test(currentFile.type)) {
-        return currentFile;
-      }
-    });
+    // Return the first file on the list
+    const file = files[0];
 
     this.props.onRemoveAsset(this.props.value);
     if (file) {
       this.setState({ processing: true });
-      createAssetProxy(file.name, file)
+      createAssetProxy(file.name, file, false, this.props.field.get('private', false))
       .then((assetProxy) => {
         this.setState({ processing: false });
         this.props.onAddAsset(assetProxy);
@@ -57,7 +53,7 @@ export default class ImageControl extends React.Component {
     }
   };
 
-  renderImageName = () => {
+  renderFileName = () => {
     if (!this.props.value) return null;
     if (this.value instanceof AssetProxy) {
       return truncateMiddle(this.props.value.path, MAX_DISPLAY_LENGTH);
@@ -68,7 +64,7 @@ export default class ImageControl extends React.Component {
 
   render() {
     const { processing } = this.state;
-    const imageName = this.renderImageName();
+    const fileName = this.renderFileName();
     if (processing) {
       return (
         <div style={styles.imageUpload}>
@@ -86,11 +82,10 @@ export default class ImageControl extends React.Component {
         onDrop={this.handleChange}
       >
         <span style={styles.message} onClick={this.handleClick}>
-          {imageName ? imageName : 'Tip: Click here to upload an image from your file browser, or drag an image directly into this box from your desktop'}
+          {fileName ? fileName : 'Tip: Click here to select a file to upload, or drag an image directly into this box from your desktop'}
         </span>
         <input
           type="file"
-          accept="image/*"
           onChange={this.handleChange}
           style={styles.input}
           ref={this.handleFileInputRef}
@@ -118,9 +113,10 @@ const styles = {
   },
 };
 
-ImageControl.propTypes = {
+FileControl.propTypes = {
   onAddAsset: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   onRemoveAsset: PropTypes.func.isRequired,
   value: PropTypes.node,
+  field: PropTypes.object,
 };

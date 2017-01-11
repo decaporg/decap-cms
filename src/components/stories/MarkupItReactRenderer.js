@@ -19,7 +19,7 @@ const htmlContent = `
 </ol>
 `;
 
-function getMedia(path) {
+function getAsset(path) {
   return path;
 }
 
@@ -28,13 +28,13 @@ storiesOf('MarkupItReactRenderer', module)
     <MarkupItReactRenderer
       value={mdContent}
       syntax={markdownSyntax}
-      getMedia={getMedia}
+      getAsset={getAsset}
     />
 
   )).add('HTML', () => (
     <MarkupItReactRenderer
       value={htmlContent}
       syntax={htmlSyntax}
-      getMedia={getMedia}
+      getAsset={getAsset}
     />
   ));

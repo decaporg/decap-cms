@@ -4,7 +4,7 @@ import markdownSyntax from 'markup-it/syntaxes/markdown';
 import htmlSyntax from 'markup-it/syntaxes/html';
 import CaretPosition from 'textarea-caret-position';
 import registry from '../../../../lib/registry';
-import MediaProxy from '../../../../valueObjects/MediaProxy';
+import { createAssetProxy } from '../../../../valueObjects/AssetProxy';
 import Toolbar from '../Toolbar';
 import BlockMenu from '../BlockMenu';
 import styles from './index.css';
@@ -271,12 +271,16 @@ export default class RawEditor extends React.Component {
 
     if (e.dataTransfer.files && e.dataTransfer.files.length) {
       data = Array.from(e.dataTransfer.files).map((file) => {
-        const mediaProxy = new MediaProxy(file.name, file);
-        this.props.onAddMedia(mediaProxy);
-        const link = `[${ file.name }](${ mediaProxy.public_path })`;
+        const link = `[Uploading ${ file.name }...]()`;
         if (file.type.split('/')[0] === 'image') {
           return `!${ link }`;
         }
+
+        createAssetProxy(file.name, file)
+        .then((assetProxy) => {
+          this.props.onAddAsset(assetProxy);
+          // TODO: Change the link text
+        });
         return link;
       }).join('\n\n');
     } else {
@@ -304,7 +308,7 @@ export default class RawEditor extends React.Component {
   };
 
   render() {
-    const { onAddMedia, onRemoveMedia, getMedia } = this.props;
+    const { onAddAsset, onRemoveAsset, getAsset } = this.props;
     const { showToolbar, showBlockMenu, plugins, selectionPosition, dragging } = this.state;
     const classNames = [styles.root];
     if (dragging) {
@@ -333,9 +337,9 @@ export default class RawEditor extends React.Component {
         selectionPosition={selectionPosition}
         plugins={plugins}
         onBlock={this.handleBlock}
-        onAddMedia={onAddMedia}
-        onRemoveMedia={onRemoveMedia}
-        getMedia={getMedia}
+        onAddAsset={onAddAsset}
+        onRemoveAsset={onRemoveAsset}
+        getAsset={getAsset}
       />
       <textarea
         ref={this.handleRef}
@@ -344,15 +348,15 @@ export default class RawEditor extends React.Component {
         onChange={this.handleChange}
         onSelect={this.handleSelection}
       />
-      <div className={styles.shim}/>
+      <div className={styles.shim} />
     </div>);
   }
 }
 
 RawEditor.propTypes = {
-  onAddMedia: PropTypes.func.isRequired,
-  onRemoveMedia: PropTypes.func.isRequired,
-  getMedia: PropTypes.func.isRequired,
+  onAddAsset: PropTypes.func.isRequired,
+  onRemoveAsset: PropTypes.func.isRequired,
+  getAsset: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   onMode: PropTypes.func.isRequired,
   value: PropTypes.node,

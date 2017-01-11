@@ -33,12 +33,12 @@ your public directory and use this `index.html` as a template:
 
   <title>Content Manager</title>
   <!-- Include the stylesheets from your site here -->
-  <link rel="stylesheet" href="https://unpkg.com/netlify-cms@^0.1/dist/cms.css" />
+  <link rel="stylesheet" href="https://unpkg.com/netlify-cms@^0.2/dist/cms.css" />
   <!-- Include a CMS specific stylesheet here -->
 
 </head>
 <body>
-  <script src="https://unpkg.com/netlify-cms@^0.1/dist/cms.js"></script>
+  <script src="https://unpkg.com/netlify-cms@^0.2/dist/cms.js"></script>
 </body>
 </html>
 ```
@@ -182,7 +182,7 @@ Registers a template for a collection.
 * react_component: A React component that renders the collection data. Three props will be passed to your component during render:
   * entry: Immutable collection containing the entry data.
   * widgetFor: Returns the appropriate widget preview component for a given field.
-  * getMedia: Returns the correct filePath or in-memory preview for uploaded images.
+  * getAsset: Returns the correct filePath or in-memory preview for uploaded images.
 
 **Example:**
 
@@ -192,7 +192,7 @@ var PostPreview = createClass({
   render: function() {
     var entry = this.props.entry;
     var image = entry.getIn(['data', 'image']);
-    var bg = this.props.getMedia(image);
+    var bg = this.props.getAsset(image);
     return h('div', {},
       h('h1', {}, entry.getIn(['data', 'title'])),
       h('img', {src: bg.toString()}),

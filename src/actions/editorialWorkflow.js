@@ -3,7 +3,7 @@ import { actions as notifActions } from 'redux-notifications';
 import { closeEntry } from './editor';
 import { BEGIN, COMMIT, REVERT } from 'redux-optimist';
 import { currentBackend } from '../backends/backend';
-import { getMedia } from '../reducers';
+import { getAsset } from '../reducers';
 import { loadEntry } from './entries';
 import { status, EDITORIAL_WORKFLOW } from '../constants/publishModes';
 import { EditorialWorkflowError } from "../valueObjects/errors";
@@ -223,13 +223,13 @@ export function persistUnpublishedEntry(collection, entryDraft, existingUnpublis
   return (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
-    const mediaProxies = entryDraft.get('mediaFiles').map(path => getMedia(state, path));
+    const assetProxies = entryDraft.get('mediaFiles').map(path => getAsset(state, path));
     const entry = entryDraft.get('entry');
     const transactionID = uuid.v4();
 
     dispatch(unpublishedEntryPersisting(collection, entry, transactionID));
     const persistAction = existingUnpublishedEntry ? backend.persistUnpublishedEntry : backend.persistEntry;
-    persistAction.call(backend, state.config, collection, entryDraft, mediaProxies.toJS())
+    persistAction.call(backend, state.config, collection, entryDraft, assetProxies.toJS())
     .then(() => {
       dispatch(notifSend({
         message: 'Entry saved',

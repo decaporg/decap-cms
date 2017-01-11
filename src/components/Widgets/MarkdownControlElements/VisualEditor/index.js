@@ -11,7 +11,7 @@ import { keymap } from 'prosemirror-keymap';
 import { schema, defaultMarkdownSerializer } from 'prosemirror-markdown';
 import { baseKeymap, setBlockType, toggleMark } from 'prosemirror-commands';
 import registry from '../../../../lib/registry';
-import MediaProxy from '../../../../valueObjects/MediaProxy';
+import { createAssetProxy } from '../../../../valueObjects/AssetProxy';
 import { buildKeymap } from './keymap';
 import createMarkdownParser from './parser';
 import Toolbar from '../Toolbar';
@@ -89,7 +89,7 @@ function createSerializer(schema, plugins) {
   plugins.forEach((plugin) => {
     serializer.nodes[`plugin_${ plugin.get('id') }`] = (state, node) => {
       const toBlock = plugin.get('toBlock');
-      state.write(toBlock.call(plugin, node.attrs) + '\n\n');
+      state.write(`${ toBlock.call(plugin, node.attrs) }\n\n`);
     };
   });
   return serializer;
@@ -239,17 +239,19 @@ export default class Editor extends Component {
 
     if (e.dataTransfer.files && e.dataTransfer.files.length) {
       Array.from(e.dataTransfer.files).forEach((file) => {
-        const mediaProxy = new MediaProxy(file.name, file);
-        this.props.onAddMedia(mediaProxy);
-        if (file.type.split('/')[0] === 'image') {
-          nodes.push(
-            schema.nodes.image.create({ src: mediaProxy.public_path, alt: file.name })
-          );
-        } else {
-          nodes.push(
-            schema.marks.link.create({ href: mediaProxy.public_path, title: file.name })
-          );
-        }
+        createAssetProxy(file.name, file)
+        .then((assetProxy) => {
+          this.props.onAddAsset(assetProxy);
+          if (file.type.split('/')[0] === 'image') {
+            nodes.push(
+              schema.nodes.image.create({ src: assetProxy.public_path, alt: file.name })
+            );
+          } else {
+            nodes.push(
+              schema.marks.link.create({ href: assetProxy.public_path, title: file.name })
+            );
+          }
+        });
       });
     } else {
       nodes.push(schema.nodes.paragraph.create({}, e.dataTransfer.getData('text/plain')));
@@ -265,7 +267,7 @@ export default class Editor extends Component {
   };
 
   render() {
-    const { onAddMedia, onRemoveMedia, getMedia } = this.props;
+    const { onAddAsset, onRemoveAsset, getAsset } = this.props;
     const { plugins, showToolbar, showBlockMenu, selectionPosition, dragging } = this.state;
     const classNames = [styles.editor];
     if (dragging) {
@@ -294,9 +296,9 @@ export default class Editor extends Component {
         selectionPosition={selectionPosition}
         plugins={plugins}
         onBlock={this.handleBlock}
-        onAddMedia={onAddMedia}
-        onRemoveMedia={onRemoveMedia}
-        getMedia={getMedia}
+        onAddAsset={onAddAsset}
+        onRemoveAsset={onRemoveAsset}
+        getAsset={getAsset}
       />
       <div ref={this.handleRef} />
       <div className={styles.shim} />
@@ -305,9 +307,9 @@ export default class Editor extends Component {
 }
 
 Editor.propTypes = {
-  onAddMedia: PropTypes.func.isRequired,
-  onRemoveMedia: PropTypes.func.isRequired,
-  getMedia: PropTypes.func.isRequired,
+  onAddAsset: PropTypes.func.isRequired,
+  onRemoveAsset: PropTypes.func.isRequired,
+  getAsset: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   onMode: PropTypes.func.isRequired,
   value: PropTypes.node,

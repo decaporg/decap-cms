@@ -4,11 +4,14 @@ import { Router } from 'react-router';
 import routes from './routing/routes';
 import history, { syncHistory } from './routing/history';
 import configureStore from './store/configureStore';
+import { setStore } from './valueObjects/AssetProxy';
 
 const store = configureStore();
 
 // Create an enhanced history that syncs navigation events with the store
 syncHistory(store);
+
+setStore(store);
 
 const Root = () => (
   <Provider store={store}>

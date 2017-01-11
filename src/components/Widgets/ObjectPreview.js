@@ -4,7 +4,7 @@ import previewStyle from './defaultPreviewStyle';
 
 export default class ObjectPreview extends Component {
   widgetFor = (field) => {
-    const { value, getMedia } = this.props;
+    const { value, getAsset } = this.props;
     const widget = resolveWidget(field.get('widget'));
     return (
       <div key={field.get('name')}>
@@ -12,7 +12,7 @@ export default class ObjectPreview extends Component {
           key: field.get('name'),
           value: value && value.get(field.get('name')),
           field,
-          getMedia,
+          getAsset,
         })}
       </div>
     );
@@ -29,5 +29,5 @@ export default class ObjectPreview extends Component {
 ObjectPreview.propTypes = {
   value: PropTypes.node,
   field: PropTypes.node,
-  getMedia: PropTypes.func.isRequired,
+  getAsset: PropTypes.func.isRequired,
 };

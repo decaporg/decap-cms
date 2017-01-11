@@ -59,8 +59,8 @@ function processEditorPlugins(plugins) {
   processedPlugins = plugins;
 }
 
-function processMediaProxyPlugins(getMedia) {
-  const mediaProxyRule = MarkupIt.Rule('mediaproxy').regExp(reInline.link, (state, match) => {
+function processAssetProxyPlugins(getAsset) {
+  const assetProxyRule = MarkupIt.Rule('assetproxy').regExp(reInline.link, (state, match) => {
     if (match[0].charAt(0) !== '!') {
       // Return if this is not an image
       return;
@@ -76,7 +76,7 @@ function processMediaProxyPlugins(getMedia) {
       data: imgData,
     };
   });
-  const mediaProxyMarkdownRule = mediaProxyRule.toText((state, token) => {
+  const assetProxyMarkdownRule = assetProxyRule.toText((state, token) => {
     const data = token.getData();
     const alt = data.get('alt', '');
     const src = data.get('src', '');
@@ -88,25 +88,25 @@ function processMediaProxyPlugins(getMedia) {
       return `![${ alt }](${ src })`;
     }
   });
-  const mediaProxyHTMLRule = mediaProxyRule.toText((state, token) => {
+  const assetProxyHTMLRule = assetProxyRule.toText((state, token) => {
     const data = token.getData();
     const alt = data.get('alt', '');
     const src = data.get('src', '');
-    return `<img src=${ getMedia(src) } alt=${ alt } />`;
+    return `<img src=${ getAsset(src) } alt=${ alt } />`;
   });
 
-  nodes.mediaproxy = (props) => {
+  nodes.assetproxy = (props) => {
     /* eslint react/prop-types: 0 */
     const { node, state } = props;
     const isFocused = state.selection.hasEdgeIn(node);
     const className = isFocused ? 'active' : null;
     const src = node.data.get('src');
     return (
-      <img {...props.attributes} src={getMedia(src)} className={className} />
+      <img {...props.attributes} src={getAsset(src)} className={className} />
     );
   };
-  augmentedMarkdownSyntax = augmentedMarkdownSyntax.addInlineRules(mediaProxyMarkdownRule);
-  augmentedHTMLSyntax = augmentedHTMLSyntax.addInlineRules(mediaProxyHTMLRule);
+  augmentedMarkdownSyntax = augmentedMarkdownSyntax.addInlineRules(assetProxyMarkdownRule);
+  augmentedHTMLSyntax = augmentedHTMLSyntax.addInlineRules(assetProxyHTMLRule);
 }
 
 function getPlugins() {
@@ -121,9 +121,9 @@ function getNodes() {
   return nodes;
 }
 
-function getSyntaxes(getMedia) {
-  if (getMedia) {
-    processMediaProxyPlugins(getMedia);
+function getSyntaxes(getAsset) {
+  if (getAsset) {
+    processAssetProxyPlugins(getAsset);
   }
   return { markdown: augmentedMarkdownSyntax, html: augmentedHTMLSyntax };
 }
