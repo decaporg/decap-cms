@@ -83,7 +83,7 @@ class UnpublishedListing extends React.Component {
                         <Button>Edit</Button>
                       </Link>
                       {
-                        ownStatus === status.last() &&
+                        (ownStatus === status.last() && !entry.get('isPersisting', false)) &&
                         <Button
                           accent
                           /* eslint-disable */
