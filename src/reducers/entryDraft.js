@@ -14,7 +14,7 @@ import {
   REMOVE_ASSET,
 } from '../actions/media';
 
-const initialState = Map({ entry: Map(), mediaFiles: List(), fieldsMetaData: Map() });
+const initialState = Map({ entry: Map(), mediaFiles: List(), fieldsMetaData: Map(), fieldsErrors: Map() });
 
 const entryDraftReducer = (state = Map(), action) => {
   switch (action.type) {

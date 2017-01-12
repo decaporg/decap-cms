@@ -2,7 +2,7 @@ import { Map, List, fromJS } from 'immutable';
 import * as actions from '../../actions/entries';
 import reducer from '../entryDraft';
 
-let initialState = Map({ entry: Map(), mediaFiles: List(), fieldsMetaData: Map() });
+let initialState = Map({ entry: Map(), mediaFiles: List(), fieldsMetaData: Map(), fieldsErrors: Map() });
 
 const entry = {
   collection: 'posts',
@@ -30,6 +30,7 @@ describe('entryDraft reducer', () => {
           },
           mediaFiles: [],
           fieldsMetaData: Map(),
+          fieldsErrors: Map(),
         })
       );
     });
@@ -50,6 +51,7 @@ describe('entryDraft reducer', () => {
           },
           mediaFiles: [],
           fieldsMetaData: Map(),
+          fieldsErrors: Map(),
         })
       );
     });
