@@ -9,11 +9,16 @@ function isHidden(field) {
 }
 
 export default class ControlPane extends Component {
-  isValid = {};
+  componentValidation = {};
   processControlRef(fieldName, wrappedControl) {
     if (!wrappedControl) return;
-    this.isValid[fieldName] = wrappedControl.isValid;
+    this.componentValidation[fieldName] = wrappedControl.isValid;
   }
+
+  isValid = () => this.props.fields.reduce((acc, field) => {
+    const componentIsValid = this.componentValidation[field.get("name")]();
+    return acc && componentIsValid;
+  }, true);
 
   controlFor(field) {
     const { entry, fieldsMetaData, getAsset, onChange, onAddAsset, onRemoveAsset } = this.props;

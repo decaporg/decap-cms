@@ -20,6 +20,10 @@ class EntryEditor extends Component {
     this.setState({ showEventBlocker: false });
   };
 
+  handleOnPersist = () => {
+    if (this.controlPaneRef.isValid()) this.props.onPersist();
+  };
+
   render() {
     const {
         collection,
@@ -30,7 +34,6 @@ class EntryEditor extends Component {
         onChange,
         onAddAsset,
         onRemoveAsset,
-        onPersist,
         onCancelEdit,
     } = this.props;
 
@@ -57,6 +60,7 @@ class EntryEditor extends Component {
                     onChange={onChange}
                     onAddAsset={onAddAsset}
                     onRemoveAsset={onRemoveAsset}
+                    ref={c => this.controlPaneRef = c} // eslint-disable-line
                   />
 
                 </div>
@@ -76,7 +80,7 @@ class EntryEditor extends Component {
         <div className={styles.footer}>
           <Toolbar
             isPersisting={entry.get('isPersisting')}
-            onPersist={onPersist}
+            onPersist={this.handleOnPersist}
             onCancelEdit={onCancelEdit}
           />
         </div>

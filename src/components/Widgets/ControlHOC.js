@@ -14,10 +14,13 @@ class ControlHOC extends Component {
   };
 
   isValid = () => {
-    if (this.props.value && this.props.value.length > 3) {
-      return true;
-    }
-    return false;
+    const { field, value } = this.props;
+    let valid = true;
+    const isRequired = field.get('required', true);
+    const pattern = field.get('pattern', false);
+    if (isRequired) valid = valid && (value !== null && value.length > 0);
+    if (pattern) valid = valid && RegExp(pattern).test(value);
+    return valid;
   };
 
   render() {
