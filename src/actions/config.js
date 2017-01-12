@@ -74,7 +74,7 @@ export function loadConfig() {
   return (dispatch) => {
     dispatch(configLoading());
 
-    fetch("config.yml").then((response) => {
+    fetch("config.yml", { credentials: 'same-origin' }).then((response) => {
       if (response.status !== 200) {
         throw new Error(`Failed to load config.yml (${ response.status })`);
       }
