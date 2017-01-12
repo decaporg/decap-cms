@@ -10,6 +10,13 @@ export default class FileControl extends React.Component {
     processing: false,
   };
 
+  isValid = () => {
+    if (this.state.processing) {
+      return { error: "Processing File Upload" };
+    }
+    return { error: false };
+  };
+
   handleFileInputRef = (el) => {
     this._fileInput = el;
   };
