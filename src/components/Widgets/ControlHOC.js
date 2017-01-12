@@ -29,21 +29,22 @@ class ControlHOC extends Component {
       const response = func(field, value);
       if (response.error) errors.push(response.error);
     });
-    return errors.length === 0;
+
+    return errors;
   };
 
   validatePresence(field, value) {
     const isRequired = field.get('required', true);
     if (isRequired && (value === null || value.length === 0)) {
-      return { error: `${ field.get('title', field.get('name')) } is required.` };
+      return { error: true };
     }
     return { error: false };  
   }
 
   validatePattern(field, value) {
     const pattern = field.get('pattern', false);
-    if (pattern && !RegExp(pattern).test(value)) {
-      return { error: `${ field.get('title', field.get('name')) } didn't match the pattern: ${ field.get('patternTitle') }` };
+    if (pattern && !RegExp(pattern.first()).test(value)) {
+      return { error: `${ field.get('label', field.get('name')) } didn't match the pattern: ${ pattern.last() }` };
     }
     return { error: false };
   }

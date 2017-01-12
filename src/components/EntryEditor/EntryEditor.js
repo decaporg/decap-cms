@@ -30,8 +30,10 @@ class EntryEditor extends Component {
         entry,
         fields,
         fieldsMetaData,
+        fieldsErrors,
         getAsset,
         onChange,
+        onValidate,
         onAddAsset,
         onRemoveAsset,
         onCancelEdit,
@@ -56,8 +58,10 @@ class EntryEditor extends Component {
                     entry={entry}
                     fields={fields}
                     fieldsMetaData={fieldsMetaData}
+                    fieldsErrors={fieldsErrors}
                     getAsset={getAsset}
                     onChange={onChange}
+                    onValidate={onValidate}
                     onAddAsset={onAddAsset}
                     onRemoveAsset={onRemoveAsset}
                     ref={c => this.controlPaneRef = c} // eslint-disable-line
@@ -95,9 +99,11 @@ EntryEditor.propTypes = {
   entry: ImmutablePropTypes.map.isRequired,
   fields: ImmutablePropTypes.list.isRequired,
   fieldsMetaData: ImmutablePropTypes.map.isRequired,
+  fieldsErrors: ImmutablePropTypes.map.isRequired,
   getAsset: PropTypes.func.isRequired,
   onAddAsset: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
+  onValidate: PropTypes.func.isRequired,
   onPersist: PropTypes.func.isRequired,
   onRemoveAsset: PropTypes.func.isRequired,
   onCancelEdit: PropTypes.func.isRequired,

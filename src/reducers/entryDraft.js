@@ -4,6 +4,7 @@ import {
   DRAFT_CREATE_EMPTY,
   DRAFT_DISCARD,
   DRAFT_CHANGE_FIELD,
+  DRAFT_VALIDATION_ERRORS,
   ENTRY_PERSIST_REQUEST,
   ENTRY_PERSIST_SUCCESS,
   ENTRY_PERSIST_FAILURE,
@@ -24,6 +25,7 @@ const entryDraftReducer = (state = Map(), action) => {
         state.setIn(['entry', 'newRecord'], false);
         state.set('mediaFiles', List());
         state.set('fieldsMetaData', Map());
+        state.set('fieldsErrors', Map());
       });
     case DRAFT_CREATE_EMPTY:
       // New Entry
@@ -32,6 +34,7 @@ const entryDraftReducer = (state = Map(), action) => {
         state.setIn(['entry', 'newRecord'], true);
         state.set('mediaFiles', List());
         state.set('fieldsMetaData', Map());
+        state.set('fieldsErrors', Map());
       });
     case DRAFT_DISCARD:
       return initialState;
@@ -40,6 +43,10 @@ const entryDraftReducer = (state = Map(), action) => {
         state.setIn(['entry', 'data', action.payload.field], action.payload.value);
         state.mergeIn(['fieldsMetaData'], fromJS(action.payload.metadata));
       });
+    
+    case DRAFT_VALIDATION_ERRORS:
+      return state.setIn(['fieldsErrors'], action.payload.errors);
+
     case ENTRY_PERSIST_REQUEST: {
       return state.setIn(['entry', 'isPersisting'], true);
     }

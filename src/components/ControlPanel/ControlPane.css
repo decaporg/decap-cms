@@ -19,12 +19,26 @@
     color: #7c8382;
   }
 }
+
 .label {
   display: block;
   color: #AAB0AF;
   font-size: 12px;
+  margin-bottom: 8px;
+}
+
+.labelWithError {
+  composes: label;
+  color: #FF706F;
+}
+
+.errors {
+  list-style-type: none;
+  font-size: 10px;
+  color: #FF706F;
   margin-bottom: 18px;
 }
+
 .widget {
   border-bottom: 1px solid #e8eae8;
   position: relative;

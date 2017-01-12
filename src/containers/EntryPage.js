@@ -7,6 +7,7 @@ import {
   createEmptyDraft,
   discardDraft,
   changeDraftField,
+  changeDraftValidationErrors,
   persistEntry,
 } from '../actions/entries';
 import { closeEntry } from '../actions/editor';
@@ -23,6 +24,7 @@ class EntryPage extends React.Component {
     addAsset: PropTypes.func.isRequired,
     boundGetAsset: PropTypes.func.isRequired,
     changeDraftField: PropTypes.func.isRequired,
+    changeDraftValidationErrors: PropTypes.func.isRequired,
     collection: ImmutablePropTypes.map.isRequired,
     createDraftFromEntry: PropTypes.func.isRequired,
     createEmptyDraft: PropTypes.func.isRequired,
@@ -84,6 +86,7 @@ class EntryPage extends React.Component {
       boundGetAsset,
       collection,
       changeDraftField,
+      changeDraftValidationErrors,
       addAsset,
       removeAsset,
       closeEntry,
@@ -104,7 +107,9 @@ class EntryPage extends React.Component {
         collection={collection}
         fields={fields}
         fieldsMetaData={entryDraft.get('fieldsMetaData')}
+        fieldsErrors={entryDraft.get('fieldsErrors')}
         onChange={changeDraftField}
+        onValidate={changeDraftValidationErrors}
         onAddAsset={addAsset}
         onRemoveAsset={removeAsset}
         onPersist={this.handlePersistEntry}
@@ -138,6 +143,7 @@ export default connect(
   mapStateToProps,
   {
     changeDraftField,
+    changeDraftValidationErrors,
     addAsset,
     removeAsset,
     loadEntry,

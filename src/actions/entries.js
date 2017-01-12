@@ -24,6 +24,7 @@ export const DRAFT_CREATE_EMPTY = 'DRAFT_CREATE_EMPTY';
 export const DRAFT_DISCARD = 'DRAFT_DISCARD';
 export const DRAFT_CHANGE = 'DRAFT_CHANGE';
 export const DRAFT_CHANGE_FIELD = 'DRAFT_CHANGE_FIELD';
+export const DRAFT_VALIDATION_ERRORS = 'DRAFT_VALIDATION_ERRORS';
 
 export const ENTRY_PERSIST_REQUEST = 'ENTRY_PERSIST_REQUEST';
 export const ENTRY_PERSIST_SUCCESS = 'ENTRY_PERSIST_SUCCESS';
@@ -141,6 +142,7 @@ export function createDraftFromEntry(entry) {
   };
 }
 
+
 export function discardDraft() {
   return {
     type: DRAFT_DISCARD,
@@ -160,6 +162,14 @@ export function changeDraftField(field, value, metadata) {
     payload: { field, value, metadata },
   };
 }
+
+export function changeDraftValidationErrors(errors) {
+  return {
+    type: DRAFT_VALIDATION_ERRORS,
+    payload: { errors },
+  };
+}
+
 
 /*
  * Exported Thunk Action Creators
