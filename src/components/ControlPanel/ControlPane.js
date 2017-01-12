@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { resolveWidget } from '../Widgets';
+import ControlHOC from '../Widgets/ControlHOC';
 import styles from './ControlPane.css';
 
 function isHidden(field) {
@@ -8,6 +9,11 @@ function isHidden(field) {
 }
 
 export default class ControlPane extends Component {
+  isValid = {};
+  processControlRef(fieldName, wrappedControl) {
+    if (!wrappedControl) return;
+    this.isValid[fieldName] = wrappedControl.isValid;
+  }
 
   controlFor(field) {
     const { entry, fieldsMetaData, getAsset, onChange, onAddAsset, onRemoveAsset } = this.props;
@@ -19,17 +25,17 @@ export default class ControlPane extends Component {
     return (
       <div className={styles.control}>
         <label className={styles.label} htmlFor={fieldName}>{field.get('label')}</label>
-        {
-          React.createElement(widget.control, {
-            field,
-            value,
-            metadata,
-            onChange: (newValue, newMetadata) => onChange(fieldName, newValue, newMetadata),
-            onAddAsset,
-            onRemoveAsset,
-            getAsset,
-          })
-        }
+        <ControlHOC 
+          controlComponent={widget.control}
+          field={field}
+          value={value}
+          metadata={metadata}
+          onChange={(newValue, newMetadata) => onChange(fieldName, newValue, newMetadata)}
+          onAddAsset={onAddAsset}
+          onRemoveAsset={onRemoveAsset}
+          getAsset={getAsset}
+          ref={this.processControlRef.bind(this, fieldName)}
+        />
       </div>
     );
   }
