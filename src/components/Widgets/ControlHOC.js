@@ -58,6 +58,9 @@ class ControlHOC extends Component {
   validateWrappedControl = (field) => {
     const response = this.wrappedControlValid();
     if (typeof response === "boolean") {
+      const isValid = response;
+      return { error: (!isValid) };
+    } else if (response.hasOwnProperty('error')) {
       return response;
     } else if (response instanceof Promise) {
       response.then(
