@@ -75,7 +75,9 @@ class EntryPage extends React.Component {
 
   handlePersistEntry = () => {
     const { persistEntry, collection } = this.props;
-    persistEntry(collection);
+    setTimeout(() => {
+      persistEntry(collection);  
+    }, 0);
   };
 
   render() {
