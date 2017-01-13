@@ -10,12 +10,15 @@ export default class FileControl extends React.Component {
     processing: false,
   };
 
+  promise = null;
+
   isValid = () => {
-    if (this.state.processing) {
-      return { error: "Processing File Upload" };
+    if (this.promise) {
+      return this.promise;
     }
     return { error: false };
   };
+
 
   handleFileInputRef = (el) => {
     this._fileInput = el;
@@ -49,7 +52,7 @@ export default class FileControl extends React.Component {
     this.props.onRemoveAsset(this.props.value);
     if (file) {
       this.setState({ processing: true });
-      createAssetProxy(file.name, file, false, this.props.field.get('private', false))
+      this.promise = createAssetProxy(file.name, file, false, this.props.field.get('private', false))
       .then((assetProxy) => {
         this.setState({ processing: false });
         this.props.onAddAsset(assetProxy);

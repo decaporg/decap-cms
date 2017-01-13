@@ -10,9 +10,11 @@ export default class ImageControl extends React.Component {
     processing: false,
   };
 
+  promise = null;
+
   isValid = () => {
-    if (this.state.processing) {
-      return { error: "Processing Image Upload" };
+    if (this.promise) {
+      return this.promise;
     }
     return { error: false };
   };
@@ -54,7 +56,7 @@ export default class ImageControl extends React.Component {
     this.props.onRemoveAsset(this.props.value);
     if (file) {
       this.setState({ processing: true });
-      createAssetProxy(file.name, file)
+      this.promise = createAssetProxy(file.name, file)
       .then((assetProxy) => {
         this.setState({ processing: false });
         this.props.onAddAsset(assetProxy);
