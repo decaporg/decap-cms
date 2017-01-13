@@ -20,17 +20,23 @@ class EntryEditor extends Component {
     this.setState({ showEventBlocker: false });
   };
 
+  handleOnPersist = () => {
+    this.controlPaneRef.validate();
+    this.props.onPersist();
+  };
+
   render() {
     const {
         collection,
         entry,
         fields,
         fieldsMetaData,
+        fieldsErrors,
         getAsset,
         onChange,
+        onValidate,
         onAddAsset,
         onRemoveAsset,
-        onPersist,
         onCancelEdit,
     } = this.props;
 
@@ -53,10 +59,13 @@ class EntryEditor extends Component {
                     entry={entry}
                     fields={fields}
                     fieldsMetaData={fieldsMetaData}
+                    fieldsErrors={fieldsErrors}
                     getAsset={getAsset}
                     onChange={onChange}
+                    onValidate={onValidate}
                     onAddAsset={onAddAsset}
                     onRemoveAsset={onRemoveAsset}
+                    ref={c => this.controlPaneRef = c} // eslint-disable-line
                   />
 
                 </div>
@@ -76,7 +85,7 @@ class EntryEditor extends Component {
         <div className={styles.footer}>
           <Toolbar
             isPersisting={entry.get('isPersisting')}
-            onPersist={onPersist}
+            onPersist={this.handleOnPersist}
             onCancelEdit={onCancelEdit}
           />
         </div>
@@ -91,9 +100,11 @@ EntryEditor.propTypes = {
   entry: ImmutablePropTypes.map.isRequired,
   fields: ImmutablePropTypes.list.isRequired,
   fieldsMetaData: ImmutablePropTypes.map.isRequired,
+  fieldsErrors: ImmutablePropTypes.map.isRequired,
   getAsset: PropTypes.func.isRequired,
   onAddAsset: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
+  onValidate: PropTypes.func.isRequired,
   onPersist: PropTypes.func.isRequired,
   onRemoveAsset: PropTypes.func.isRequired,
   onCancelEdit: PropTypes.func.isRequired,

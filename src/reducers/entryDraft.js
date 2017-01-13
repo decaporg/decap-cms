@@ -4,6 +4,7 @@ import {
   DRAFT_CREATE_EMPTY,
   DRAFT_DISCARD,
   DRAFT_CHANGE_FIELD,
+  DRAFT_VALIDATION_ERRORS,
   ENTRY_PERSIST_REQUEST,
   ENTRY_PERSIST_SUCCESS,
   ENTRY_PERSIST_FAILURE,
@@ -18,7 +19,7 @@ import {
   REMOVE_ASSET,
 } from '../actions/media';
 
-const initialState = Map({ entry: Map(), mediaFiles: List(), fieldsMetaData: Map() });
+const initialState = Map({ entry: Map(), mediaFiles: List(), fieldsMetaData: Map(), fieldsErrors: Map() });
 
 const entryDraftReducer = (state = Map(), action) => {
   switch (action.type) {
@@ -29,6 +30,7 @@ const entryDraftReducer = (state = Map(), action) => {
         state.setIn(['entry', 'newRecord'], false);
         state.set('mediaFiles', List());
         state.set('fieldsMetaData', Map());
+        state.set('fieldsErrors', Map());
       });
     case DRAFT_CREATE_EMPTY:
       // New Entry
@@ -37,6 +39,7 @@ const entryDraftReducer = (state = Map(), action) => {
         state.setIn(['entry', 'newRecord'], true);
         state.set('mediaFiles', List());
         state.set('fieldsMetaData', Map());
+        state.set('fieldsErrors', Map());
       });
     case DRAFT_DISCARD:
       return initialState;
@@ -45,6 +48,14 @@ const entryDraftReducer = (state = Map(), action) => {
         state.setIn(['entry', 'data', action.payload.field], action.payload.value);
         state.mergeIn(['fieldsMetaData'], fromJS(action.payload.metadata));
       });
+    
+    case DRAFT_VALIDATION_ERRORS:
+      if (action.payload.errors.length === 0) {
+        return state.deleteIn(['fieldsErrors', action.payload.field]);
+      } else {
+        return state.setIn(['fieldsErrors', action.payload.field], action.payload.errors);
+      }
+
     case ENTRY_PERSIST_REQUEST:
     case UNPUBLISHED_ENTRY_PERSIST_REQUEST: {
       return state.setIn(['entry', 'isPersisting'], true);

@@ -219,9 +219,14 @@ export function loadUnpublishedEntries() {
   };
 }
 
-export function persistUnpublishedEntry(collection, entryDraft, existingUnpublishedEntry) {
+export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
   return (dispatch, getState) => {
     const state = getState();
+    const entryDraft = state.entryDraft;
+
+    // Early return if draft contains validation errors
+    if (!entryDraft.get('fieldsErrors').isEmpty()) return;
+
     const backend = currentBackend(state.config);
     const assetProxies = entryDraft.get('mediaFiles').map(path => getAsset(state, path));
     const entry = entryDraft.get('entry');
