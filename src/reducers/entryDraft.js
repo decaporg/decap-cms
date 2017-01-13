@@ -9,6 +9,11 @@ import {
   ENTRY_PERSIST_FAILURE,
 } from '../actions/entries';
 import {
+  UNPUBLISHED_ENTRY_PERSIST_REQUEST,
+  UNPUBLISHED_ENTRY_PERSIST_SUCCESS,
+  UNPUBLISHED_ENTRY_PERSIST_FAILURE,
+} from '../actions/editorialWorkflow';
+import {
   ADD_ASSET,
   REMOVE_ASSET,
 } from '../actions/media';
@@ -40,12 +45,15 @@ const entryDraftReducer = (state = Map(), action) => {
         state.setIn(['entry', 'data', action.payload.field], action.payload.value);
         state.mergeIn(['fieldsMetaData'], fromJS(action.payload.metadata));
       });
-    case ENTRY_PERSIST_REQUEST: {
+    case ENTRY_PERSIST_REQUEST:
+    case UNPUBLISHED_ENTRY_PERSIST_REQUEST: {
       return state.setIn(['entry', 'isPersisting'], true);
     }
 
     case ENTRY_PERSIST_SUCCESS:
-    case ENTRY_PERSIST_FAILURE: {
+    case ENTRY_PERSIST_FAILURE:
+    case UNPUBLISHED_ENTRY_PERSIST_SUCCESS:
+    case UNPUBLISHED_ENTRY_PERSIST_FAILURE: {
       return state.deleteIn(['entry', 'isPersisting']);
     }
 
