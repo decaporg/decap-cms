@@ -11,6 +11,7 @@ class ControlHOC extends Component {
     value: PropTypes.node,
     metadata: ImmutablePropTypes.map,
     onChange: PropTypes.func.isRequired,
+    onAsyncValidate: PropTypes.func.isRequired,
     onAddAsset: PropTypes.func.isRequired,
     onRemoveAsset: PropTypes.func.isRequired,
     getAsset: PropTypes.func.isRequired,
@@ -18,18 +19,23 @@ class ControlHOC extends Component {
 
   processInnerControlRef = (wrappedControl) => {
     if (!wrappedControl) return;
-    this.innerControlValid = wrappedControl.isValid || truthy;
+    this.wrappedControlValid = wrappedControl.isValid || truthy;
   };
 
-  isValid = () => {
+  isValid = (skipWrapped = false) => {
     const { field, value } = this.props;
     const errors = [];
-    const validations = [this.validatePresence, this.validatePattern, this.innerControlValid];
+    const validations = [this.validatePresence, this.validatePattern];
     validations.forEach((func) => {
       const response = func(field, value);
       if (response.error) errors.push(response.error);
     });
-
+    if (skipWrapped) {
+      if (skipWrapped.error) errors.push(skipWrapped.error);
+    } else {
+      const wrappedError = this.validateWrappedControl(field);
+      if (wrappedError.error) errors.push(wrappedError.error);
+    }
     return errors;
   };
 
@@ -48,6 +54,22 @@ class ControlHOC extends Component {
     }
     return { error: false };
   }
+
+  validateWrappedControl = (field) => {
+    const response = this.wrappedControlValid();
+    if (typeof response === "boolean") {
+      return response;
+    } else if (response instanceof Promise) {
+      response.then(
+        () => { this.props.onAsyncValidate(this.isValid({ error: false })); },
+        (error) => { 
+          this.props.onAsyncValidate(this.isValid({ error: `${ field.get('label', field.get('name')) } - ${ error }.` }));
+        }
+      );
+      return { error: `${ field.get('label', field.get('name')) } is processing.` };
+    }
+    return { error: false };
+  };
 
   render() {
     const { controlComponent, field, value, metadata, onChange, onAddAsset, onRemoveAsset, getAsset } = this.props;

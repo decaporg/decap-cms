@@ -24,9 +24,17 @@ export default class ControlPane extends Component {
       }
       return acc;
     }, Map());
-
     this.props.onValidate(errors);
     return errors.isEmpty();
+  };
+
+  handleAsyncFieldValidation = (field, errors) => {
+    const { fieldsErrors } = this.props;
+    if (errors.length > 0) {
+      this.props.onValidate(fieldsErrors.set(field, fromJS(errors)));
+    } else {
+      this.props.onValidate(fieldsErrors.delete(field));
+    }
   };
 
   controlFor(field) {
@@ -54,6 +62,7 @@ export default class ControlPane extends Component {
           value={value}
           metadata={metadata}
           onChange={(newValue, newMetadata) => onChange(fieldName, newValue, newMetadata)}
+          onAsyncValidate={this.handleAsyncFieldValidation.bind(this, fieldName)}
           onAddAsset={onAddAsset}
           onRemoveAsset={onRemoveAsset}
           getAsset={getAsset}
