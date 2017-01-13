@@ -21,7 +21,8 @@ class EntryEditor extends Component {
   };
 
   handleOnPersist = () => {
-    if (this.controlPaneRef.isValid()) this.props.onPersist();
+    this.controlPaneRef.validate();
+    this.props.onPersist();
   };
 
   render() {

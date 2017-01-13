@@ -40,8 +40,8 @@ export default function EntryPageHOC(EntryPage) {
       };
       
       // Overwrite persistEntry to persistUnpublishedEntry
-      returnObj.persistEntry = (collection, entryDraft) => {
-        dispatch(persistUnpublishedEntry(collection, entryDraft, unpublishedEntry));
+      returnObj.persistEntry = (collection) => {
+        dispatch(persistUnpublishedEntry(collection, unpublishedEntry));
       };
     }
 

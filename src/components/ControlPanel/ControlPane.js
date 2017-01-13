@@ -10,31 +10,14 @@ function isHidden(field) {
 }
 
 export default class ControlPane extends Component {
-  componentValidation = {};
+  componentValidate = {};
   processControlRef(fieldName, wrappedControl) {
     if (!wrappedControl) return;
-    this.componentValidation[fieldName] = wrappedControl.isValid;
+    this.componentValidate[fieldName] = wrappedControl.validate;
   }
 
-  isValid = () => {
-    const errors = this.props.fields.reduce((acc, field) => {
-      const fieldErrors = this.componentValidation[field.get("name")]();
-      if (fieldErrors.length > 0) {
-        return acc.set(field.get("name"), fromJS(fieldErrors));
-      }
-      return acc;
-    }, Map());
-    this.props.onValidate(errors);
-    return errors.isEmpty();
-  };
-
-  handleAsyncFieldValidation = (field, errors) => {
-    const { fieldsErrors } = this.props;
-    if (errors.length > 0) {
-      this.props.onValidate(fieldsErrors.set(field, fromJS(errors)));
-    } else {
-      this.props.onValidate(fieldsErrors.delete(field));
-    }
+  validate = () => {
+    this.props.fields.forEach(field => this.componentValidate[field.get("name")]());
   };
 
   controlFor(field) {
@@ -62,7 +45,7 @@ export default class ControlPane extends Component {
           value={value}
           metadata={metadata}
           onChange={(newValue, newMetadata) => onChange(fieldName, newValue, newMetadata)}
-          onAsyncValidate={this.handleAsyncFieldValidation.bind(this, fieldName)}
+          onValidate={this.props.onValidate.bind(this, fieldName)}
           onAddAsset={onAddAsset}
           onRemoveAsset={onRemoveAsset}
           getAsset={getAsset}

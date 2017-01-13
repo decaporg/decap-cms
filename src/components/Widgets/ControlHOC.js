@@ -11,7 +11,7 @@ class ControlHOC extends Component {
     value: PropTypes.node,
     metadata: ImmutablePropTypes.map,
     onChange: PropTypes.func.isRequired,
-    onAsyncValidate: PropTypes.func.isRequired,
+    onValidate: PropTypes.func.isRequired,
     onAddAsset: PropTypes.func.isRequired,
     onRemoveAsset: PropTypes.func.isRequired,
     getAsset: PropTypes.func.isRequired,
@@ -22,7 +22,7 @@ class ControlHOC extends Component {
     this.wrappedControlValid = wrappedControl.isValid || truthy;
   };
 
-  isValid = (skipWrapped = false) => {
+  validate = (skipWrapped = false) => {
     const { field, value } = this.props;
     const errors = [];
     const validations = [this.validatePresence, this.validatePattern];
@@ -36,7 +36,7 @@ class ControlHOC extends Component {
       const wrappedError = this.validateWrappedControl(field);
       if (wrappedError.error) errors.push(wrappedError.error);
     }
-    return errors;
+    this.props.onValidate(errors);
   };
 
   validatePresence(field, value) {
@@ -61,9 +61,9 @@ class ControlHOC extends Component {
       return response;
     } else if (response instanceof Promise) {
       response.then(
-        () => { this.props.onAsyncValidate(this.isValid({ error: false })); },
+        () => { this.validate({ error: false }); },
         (error) => { 
-          this.props.onAsyncValidate(this.isValid({ error: `${ field.get('label', field.get('name')) } - ${ error }.` }));
+          this.validate({ error: `${ field.get('label', field.get('name')) } - ${ error }.` });
         }
       );
       return { error: `${ field.get('label', field.get('name')) } is processing.` };

@@ -163,10 +163,10 @@ export function changeDraftField(field, value, metadata) {
   };
 }
 
-export function changeDraftValidationErrors(errors) {
+export function changeDraftFieldValidation(field, errors) {
   return {
     type: DRAFT_VALIDATION_ERRORS,
-    payload: { errors },
+    payload: { field, errors },
   };
 }
 
@@ -223,9 +223,14 @@ export function createEmptyDraft(collection) {
   };
 }
 
-export function persistEntry(collection, entryDraft) {
+export function persistEntry(collection) {
   return (dispatch, getState) => {
     const state = getState();
+    const entryDraft = state.entryDraft;
+
+    // Early return if draft contains validation errors
+    if (!entryDraft.get('fieldsErrors').isEmpty()) return;
+    
     const backend = currentBackend(state.config);
     const assetProxies = entryDraft.get('mediaFiles').map(path => getAsset(state, path));
     const entry = entryDraft.get('entry');
