@@ -60,14 +60,17 @@ export default class ListControl extends Component {
   }
 
   handleChange = (e) => {
+    const { onChange } = this.props;
     const oldValue = this.state.value;
     const newValue = e.target.value;
     const listValue = e.target.value.split(',');
     if (newValue.match(/,$/) && oldValue.match(/, $/)) {
       listValue.pop();
     }
-
-    this.setState({ value: valueToString(listValue) });
+    
+    const parsedValue = valueToString(listValue);
+    this.setState({ value: parsedValue });
+    onChange(listValue.map(val => val.trim()));
   };
 
   handleCleanup = (e) => {
