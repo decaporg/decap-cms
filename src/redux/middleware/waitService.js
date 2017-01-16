@@ -1,6 +1,5 @@
-/* This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+// Based on wait-service by Mozilla: 
+// https://github.com/mozilla/gecko-dev/blob/master/devtools/client/shared/redux/middleware/wait-service.js
  
 /**
  * A middleware which acts like a service, because it is stateful
@@ -8,23 +7,10 @@
  * for actions to install a function to be run once when a specific
  * condition is met by an action coming through the system. Think of
  * it as a thunk that blocks until the condition is met. Example:
- *
- * ```js
- * const services = { WAIT_UNTIL: require('wait-service').NAME };
- *
- * { type: services.WAIT_UNTIL,
- *   predicate: action => action.type === constants.ADD_ITEM,
- *   run: (dispatch, getState, action) => {
- *     // Do anything here. You only need to accept the arguments
- *     // if you need them. `action` is the action that satisfied
- *     // the predicate.
- *   }
- * }
- * ```
  */
-const NAME = exports.NAME = "@@service/waitUntil";
+export const WAIT_UNTIL_SERVICE = 'WAIT_UNTIL_SERVICE';
 
-function waitUntilService({ dispatch, getState }) {
+export default function waitUntilService({ dispatch, getState }) {
   let pending = [];
 
   function checkPending(action) {
@@ -51,7 +37,7 @@ function waitUntilService({ dispatch, getState }) {
   }
 
   return next => (action) => {
-    if (action.type === NAME) {
+    if (action.type === WAIT_UNTIL_SERVICE) {
       pending.push(action);
       return null;
     }
@@ -60,4 +46,3 @@ function waitUntilService({ dispatch, getState }) {
     return result;
   };
 }
-exports.waitUntilService = waitUntilService;

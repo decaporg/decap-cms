@@ -1,6 +1,8 @@
 import { currentBackend } from '../backends/backend';
 import { getIntegrationProvider } from '../integrations';
 import { selectIntegration } from '../reducers';
+import { WAIT_UNTIL_SERVICE } from '../redux/middleware/waitService';
+import { loadEntries, ENTRIES_SUCCESS } from './entries';
 
 /*
  * Contant Declarations
@@ -125,16 +127,45 @@ export function query(namespace, collection, searchFields, searchTerm) {
   return (dispatch, getState) => {
     const state = getState();
     const integration = selectIntegration(state, collection, 'search');
-    if (!integration) {
-      dispatch(searchFailure(namespace, searchTerm, 'Search integration is not configured.'));
-    }
-    const provider = integration ?
-      getIntegrationProvider(state.integrations, currentBackend(state.config).getToken, integration)
-      : currentBackend(state.config);
     dispatch(querying(namespace, collection, searchFields, searchTerm));
-    provider.searchBy(searchFields, collection, searchTerm).then(
-      response => dispatch(querySuccess(namespace, collection, searchFields, searchTerm, response)),
-      error => dispatch(queryFailure(namespace, collection, searchFields, searchTerm, error))
-    );
+    if (!integration) {
+      if (state.entries.hasIn(['pages', collection, 'ids'])) {
+        // TODO: Response format
+        // {
+        //   "hits": [
+        //     {
+        //       "slug": "zeno-rocha",
+        //       "path": "zeno-rocha",
+        //       "data": {/* entry data */},
+        //     },
+        //     {
+        //       "slug": "senongo-akpem",
+        //       "path": "senongo-akpem",
+        //       "data": {/* entry data */},
+        //     }
+        //   ],
+        //   "query": "zeno",
+        // }
+      } else {
+        // Collection entries aren't loaded yet.
+        // Dispatch loadEntries and wait before redispatching this action again.
+        dispatch({
+          type: WAIT_UNTIL_SERVICE,
+          predicate: action => (action.type === ENTRIES_SUCCESS &&
+                                action.payload.collection === collection),
+          run: dispatch => dispatch(query(namespace, collection, searchFields, searchTerm)),
+        });
+
+        dispatch(loadEntries(state.collections.get(collection)));
+      }
+
+      // // Actually fire a request to eat a burger
+    } else {
+      const provider = getIntegrationProvider(state.integrations, currentBackend(state.config).getToken, integration);
+      provider.searchBy(searchFields, collection, searchTerm).then(
+        response => dispatch(querySuccess(namespace, collection, searchFields, searchTerm, response)),
+        error => dispatch(queryFailure(namespace, collection, searchFields, searchTerm, error))
+      );
+    }
   };
 }

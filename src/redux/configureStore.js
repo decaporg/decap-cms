@@ -1,10 +1,11 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import thunkMiddleware from 'redux-thunk';
+import waitService from './middleware/waitService';
 import reducer from '../reducers/combinedReducer';
 
 export default function configureStore(initialState) {
   const store = createStore(reducer, initialState, compose(
-    applyMiddleware(thunkMiddleware),
+    applyMiddleware(thunkMiddleware, waitService),
     window.devToolsExtension ? window.devToolsExtension() : f => f
   ));
 
