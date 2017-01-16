@@ -41,7 +41,12 @@ class ControlHOC extends Component {
 
   validatePresence(field, value) {
     const isRequired = field.get('required', true);
-    if (isRequired && (value === null || value.length === 0)) {
+    if (isRequired && (
+      value === null ||
+      value === undefined ||
+      (value.hasOwnProperty('length') && value.length === 0) ||
+      (value.constructor === Object && Object.keys(value).length === 0)
+    )) {
       return { error: true };
     }
     return { error: false };  
