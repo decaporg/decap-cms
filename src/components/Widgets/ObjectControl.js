@@ -10,7 +10,7 @@ export default class ObjectControl extends Component {
     onAddAsset: PropTypes.func.isRequired,
     getAsset: PropTypes.func.isRequired,
     value: PropTypes.node,
-    field: PropTypes.node,
+    field: PropTypes.object,
   };
 
   controlFor(field) {
