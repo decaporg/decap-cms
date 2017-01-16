@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import { Router } from 'react-router';
 import routes from './routing/routes';
 import history, { syncHistory } from './routing/history';
-import configureStore from './store/configureStore';
+import configureStore from './redux/configureStore';
 import { setStore } from './valueObjects/AssetProxy';
 
 const store = configureStore();
