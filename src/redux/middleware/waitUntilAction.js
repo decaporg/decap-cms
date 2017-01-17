@@ -2,15 +2,14 @@
 // https://github.com/mozilla/gecko-dev/blob/master/devtools/client/shared/redux/middleware/wait-service.js
  
 /**
- * A middleware which acts like a service, because it is stateful
- * and "long-running" in the background. It provides the ability
- * for actions to install a function to be run once when a specific
- * condition is met by an action coming through the system. Think of
- * it as a thunk that blocks until the condition is met. Example:
+ * A middleware that provides the ability for actions to install a 
+ * function to be run once when a specific condition is met by an
+ * action coming through the system. Think of it as a thunk that
+ * blocks until the condition is met.
  */
-export const WAIT_UNTIL_SERVICE = 'WAIT_UNTIL_SERVICE';
+export const WAIT_UNTIL_ACTION = 'WAIT_UNTIL_ACTION';
 
-export default function waitUntilService({ dispatch, getState }) {
+export default function waitUntilAction({ dispatch, getState }) {
   let pending = [];
 
   function checkPending(action) {
@@ -37,7 +36,7 @@ export default function waitUntilService({ dispatch, getState }) {
   }
 
   return next => (action) => {
-    if (action.type === WAIT_UNTIL_SERVICE) {
+    if (action.type === WAIT_UNTIL_ACTION) {
       pending.push(action);
       return null;
     }

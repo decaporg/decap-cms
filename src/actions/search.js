@@ -2,7 +2,7 @@ import fuzzy from 'fuzzy';
 import { currentBackend } from '../backends/backend';
 import { getIntegrationProvider } from '../integrations';
 import { selectIntegration, selectEntries } from '../reducers';
-import { WAIT_UNTIL_SERVICE } from '../redux/middleware/waitService';
+import { WAIT_UNTIL_ACTION } from '../redux/middleware/waitUntilAction';
 import { loadEntries, ENTRIES_SUCCESS } from './entries';
 
 /*
@@ -130,34 +130,7 @@ export function query(namespace, collection, searchFields, searchTerm) {
     const integration = selectIntegration(state, collection, 'search');
     dispatch(querying(namespace, collection, searchFields, searchTerm));
     if (!integration) {
-      if (state.entries.hasIn(['pages', collection, 'ids'])) {
-        const entries = selectEntries(state, collection).toJS();
-        const filteredEntries = fuzzy.filter(searchTerm, entries, {
-          extract: entry => searchFields.reduce((acc, field) => {
-            const f = entry.data[field];
-            return f ? `${ acc } ${ f }` : acc;
-          }, ""),
-        }).filter(entry => entry.score > 5);
-
-        const resultObj = {
-          query: searchTerm,
-          hits: [],
-        };
-
-        resultObj.hits = filteredEntries.map(f => f.original);
-        dispatch(querySuccess(namespace, collection, searchFields, searchTerm, resultObj));
-      } else {
-        // Collection entries aren't loaded yet.
-        // Dispatch loadEntries and wait before redispatching this action again.
-        dispatch({
-          type: WAIT_UNTIL_SERVICE,
-          predicate: action => (action.type === ENTRIES_SUCCESS &&
-                                action.payload.collection === collection),
-          run: dispatch => dispatch(query(namespace, collection, searchFields, searchTerm)),
-        });
-
-        dispatch(loadEntries(state.collections.get(collection)));
-      }
+      localQuery(namespace, collection, searchFields, searchTerm, state, dispatch);
     } else {
       const provider = getIntegrationProvider(state.integrations, currentBackend(state.config).getToken, integration);
       provider.searchBy(searchFields.map(f => `data.${ f }`), collection, searchTerm).then(
@@ -166,4 +139,35 @@ export function query(namespace, collection, searchFields, searchTerm) {
       );
     }
   };
+}
+
+
+function localQuery(namespace, collection, searchFields, searchTerm, state, dispatch) {
+  // Check if entries in this collection were already loaded
+  if (state.entries.hasIn(['pages', collection, 'ids'])) {
+    const entries = selectEntries(state, collection).toJS();
+    const filteredEntries = fuzzy.filter(searchTerm, entries, {
+      extract: entry => searchFields.reduce((acc, field) => {
+        const f = entry.data[field];
+        return f ? `${ acc } ${ f }` : acc;
+      }, ""),
+    }).filter(entry => entry.score > 5);
+
+    const resultObj = {
+      query: searchTerm,
+      hits: [],
+    };
+
+    resultObj.hits = filteredEntries.map(f => f.original);
+    dispatch(querySuccess(namespace, collection, searchFields, searchTerm, resultObj));
+  } else {
+    // Collection entries aren't loaded yet.
+    // Dispatch loadEntries and wait before redispatching this action again.
+    dispatch({
+      type: WAIT_UNTIL_ACTION,
+      predicate: action => (action.type === ENTRIES_SUCCESS && action.payload.collection === collection),
+      run: dispatch => dispatch(query(namespace, collection, searchFields, searchTerm)),
+    });
+    dispatch(loadEntries(state.collections.get(collection)));
+  }
 }
