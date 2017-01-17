@@ -36,7 +36,7 @@ class RelationControl extends Component {
     const { value, field } = this.props;
     if (value) {
       const collection = field.get('collection');
-      const searchFields = field.get('searchFields').map(f => `data.${ f }`).toJS();
+      const searchFields = field.get('searchFields').toJS();
       this.props.query(this.controlID, collection, searchFields, value);
     }
   }
@@ -66,30 +66,12 @@ class RelationControl extends Component {
     if (value.length < 2) return;
     const { field } = this.props;
     const collection = field.get('collection');
-    const searchFields = field.get('searchFields').map(f => `data.${ f }`).toJS();
+    const searchFields = field.get('searchFields').toJS();
     this.props.query(this.controlID, collection, searchFields, value);
   }, 80);
 
   onSuggestionsClearRequested = () => {
     this.props.clearSearch();
-  };
-
-  getMatchingHits = (value) => {
-    const { field, queryHits } = this.props;
-    const searchFields = field.get('searchFields').toJS();
-    const escapedValue = escapeRegexCharacters(value.trim());
-    const regex = new RegExp(`^ ${ escapedValue }`, 'i');
-
-    if (escapedValue === '') {
-      return [];
-    }
-    return queryHits.get(this.controlID).filter((hit) => {
-      let testResult = false;
-      searchFields.forEach((f) => {
-        testResult = testResult || regex.test(hit.data[f]);
-      });
-      return testResult;
-    });
   };
 
   getSuggestionValue = (suggestion) => {
