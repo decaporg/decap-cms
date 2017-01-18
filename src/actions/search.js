@@ -6,8 +6,6 @@ import { selectInferedField } from '../reducers/collections';
 import { WAIT_UNTIL_ACTION } from '../redux/middleware/waitUntilAction';
 import { loadEntries, ENTRIES_SUCCESS } from './entries';
 
-let localSearchResults;
-
 /*
  * Contant Declarations
  */
@@ -112,10 +110,7 @@ export function searchEntries(searchTerm, page = 0) {
     const collections = allCollections.filter(collection => selectIntegration(state, collection, 'search'));
     const integration = selectIntegration(state, collections[0], 'search');
     if (!integration) {
-      localSearchResults = {
-        entries: [],
-      };
-      allCollections.forEach(collectionKey => localSearch(searchTerm, state.collections, collectionKey, getState, dispatch));
+      localSearch(searchTerm, getState, dispatch);
     } else {
       const provider = getIntegrationProvider(state.integrations, currentBackend(state.config).getToken, integration);
       dispatch(searchingEntries(searchTerm));
@@ -125,55 +120,6 @@ export function searchEntries(searchTerm, page = 0) {
       );
     }
   };
-}
-
-function localSearch(searchTerm, collections, collection, getState, dispatch) {
-  const state = getState();
-  if (state.entries.hasIn(['pages', collection, 'ids'])) {
-    const searchFields = [
-      selectInferedField(collections.get(collection), 'title'),
-      selectInferedField(collections.get(collection), 'shortTitle'),
-      selectInferedField(collections.get(collection), 'author'),
-    ];
-    const collectionEntries = selectEntries(state, collection).toJS();
-    const filteredEntries = fuzzy.filter(searchTerm, collectionEntries, {
-      extract: entry => searchFields.reduce((acc, field) => {
-        const f = entry.data[field];
-        return f ? `${ acc } ${ f }` : acc;
-      }, ""),
-    }).filter(entry => entry.score > 5);
-    accumulateAndDisplayLocalSearch(searchTerm, collections, collection, filteredEntries, dispatch);
-  } else {
-    // Collection entries aren't loaded yet.
-    // Dispatch loadEntries and wait before redispatching this action again.
-    dispatch({
-      type: WAIT_UNTIL_ACTION,
-      predicate: action => (action.type === ENTRIES_SUCCESS && action.payload.collection === collection),
-      run: dispatch => localSearch(searchTerm, collections, collection, getState, dispatch),
-    });
-    dispatch(loadEntries(state.collections.get(collection)));
-  }
-}
-
-
-function accumulateAndDisplayLocalSearch(searchTerm, collections, collection, entries, dispatch) {
-  localSearchResults[collection] = true;
-  localSearchResults.entries = localSearchResults.entries.concat(entries);
-  const returnedKeys = Object.keys(localSearchResults);
-  const allCollections = collections.keySeq().toArray();
-  if (allCollections.every(v => returnedKeys.indexOf(v) !== -1)) {
-    if (collections.size > 3 || localSearchResults.entries.length > 30) {
-      console.warn('The Netlify CMS is currently using a Built-in search.' +
-      '\nWhile this works great for small sites, bigger projects might benefit from a separate search integration.' + 
-      '\nPlease refer to the documentation for more information');
-    }
-    const sortedResults = localSearchResults.entries.sort((a, b) => {
-      if (a.score > b.score) return -1;
-      if (a.score < b.score) return 1;
-      return 0;
-    }).map(f => f.original);
-    dispatch(searchSuccess(searchTerm, sortedResults, 0));
-  }
 }
 
 // Instead of searching for complete entries, query will search for specific fields
@@ -193,6 +139,58 @@ export function query(namespace, collection, searchFields, searchTerm) {
       );
     }
   };
+}
+
+// Local Query & Search functions
+
+function localSearch(searchTerm, getState, dispatch) {
+  return (function acc(localResults = { entries: [] }) {
+    function processCollection(collection, collectionKey) {
+      const state = getState();
+      if (state.entries.hasIn(['pages', collectionKey, 'ids'])) {
+        const searchFields = [
+          selectInferedField(collection, 'title'),
+          selectInferedField(collection, 'shortTitle'),
+          selectInferedField(collection, 'author'),
+        ];
+        const collectionEntries = selectEntries(state, collectionKey).toJS();
+        const filteredEntries = fuzzy.filter(searchTerm, collectionEntries, {
+          extract: entry => searchFields.reduce((acc, field) => {
+            const f = entry.data[field];
+            return f ? `${ acc } ${ f }` : acc;
+          }, ""),
+        }).filter(entry => entry.score > 5);
+        localResults[collectionKey] = true;
+        localResults.entries = localResults.entries.concat(filteredEntries);
+        
+        const returnedKeys = Object.keys(localResults);
+        const allCollections = state.collections.keySeq().toArray();
+        if (allCollections.every(v => returnedKeys.indexOf(v) !== -1)) {
+          const sortedResults = localResults.entries.sort((a, b) => {
+            if (a.score > b.score) return -1;
+            if (a.score < b.score) return 1;
+            return 0;
+          }).map(f => f.original);
+          if (allCollections.size > 3 || localResults.entries.length > 30) {
+            console.warn('The Netlify CMS is currently using a Built-in search.' +
+            '\nWhile this works great for small sites, bigger projects might benefit from a separate search integration.' + 
+            '\nPlease refer to the documentation for more information');
+          }
+          dispatch(searchSuccess(searchTerm, sortedResults, 0));
+        }
+      } else {
+        // Collection entries aren't loaded yet.
+        // Dispatch loadEntries and wait before redispatching this action again.
+        dispatch({
+          type: WAIT_UNTIL_ACTION,
+          predicate: action => (action.type === ENTRIES_SUCCESS && action.payload.collection === collectionKey),
+          run: () => processCollection(collection, collectionKey),
+        });
+        dispatch(loadEntries(collection));
+      }
+    }
+    getState().collections.forEach(processCollection);
+  }());
 }
 
 
