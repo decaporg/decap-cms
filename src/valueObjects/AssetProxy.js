@@ -14,7 +14,7 @@ export default function AssetProxy(value, fileObj, uploaded = false) {
   this.fileObj = fileObj;
   this.uploaded = uploaded;
   this.sha = null;
-  this.path = config.media_folder && !uploaded ? `${ config.get('media_folder') }/${ value }` : value;
+  this.path = config.get('media_folder') && !uploaded ? resolvePath(value, config.get('media_folder')) : value;
   this.public_path = !uploaded ? resolvePath(value, config.get('public_folder')) : value;
 }
 
