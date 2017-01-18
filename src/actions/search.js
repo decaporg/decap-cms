@@ -2,8 +2,11 @@ import fuzzy from 'fuzzy';
 import { currentBackend } from '../backends/backend';
 import { getIntegrationProvider } from '../integrations';
 import { selectIntegration, selectEntries } from '../reducers';
+import { selectInferedField } from '../reducers/collections';
 import { WAIT_UNTIL_ACTION } from '../redux/middleware/waitUntilAction';
 import { loadEntries, ENTRIES_SUCCESS } from './entries';
+
+let localSearchResults;
 
 /*
  * Contant Declarations
@@ -105,21 +108,72 @@ export function clearSearch() {
 export function searchEntries(searchTerm, page = 0) {
   return (dispatch, getState) => {
     const state = getState();
-    let collections = state.collections.keySeq().toArray();
-    collections = collections.filter(collection => selectIntegration(state, collection, 'search'));
+    const allCollections = state.collections.keySeq().toArray();
+    const collections = allCollections.filter(collection => selectIntegration(state, collection, 'search'));
     const integration = selectIntegration(state, collections[0], 'search');
     if (!integration) {
-      dispatch(searchFailure(searchTerm, 'Search integration is not configured.'));
+      localSearchResults = {
+        entries: [],
+      };
+      allCollections.forEach(collectionKey => localSearch(searchTerm, state.collections, collectionKey, getState, dispatch));
+    } else {
+      const provider = getIntegrationProvider(state.integrations, currentBackend(state.config).getToken, integration);
+      dispatch(searchingEntries(searchTerm));
+      provider.search(collections, searchTerm, page).then(
+        response => dispatch(searchSuccess(searchTerm, response.entries, response.pagination)),
+        error => dispatch(searchFailure(searchTerm, error))
+      );
     }
-    const provider = integration ?
-      getIntegrationProvider(state.integrations, currentBackend(state.config).getToken, integration)
-      : currentBackend(state.config);
-    dispatch(searchingEntries(searchTerm));
-    provider.search(collections, searchTerm, page).then(
-      response => dispatch(searchSuccess(searchTerm, response.entries, response.pagination)),
-      error => dispatch(searchFailure(searchTerm, error))
-    );
   };
+}
+
+function localSearch(searchTerm, collections, collection, getState, dispatch) {
+  const state = getState();
+  if (state.entries.hasIn(['pages', collection, 'ids'])) {
+    const searchFields = [
+      selectInferedField(collections.get(collection), 'title'),
+      selectInferedField(collections.get(collection), 'shortTitle'),
+      selectInferedField(collections.get(collection), 'author'),
+    ];
+    const collectionEntries = selectEntries(state, collection).toJS();
+    const filteredEntries = fuzzy.filter(searchTerm, collectionEntries, {
+      extract: entry => searchFields.reduce((acc, field) => {
+        const f = entry.data[field];
+        return f ? `${ acc } ${ f }` : acc;
+      }, ""),
+    }).filter(entry => entry.score > 5);
+    accumulateAndDisplayLocalSearch(searchTerm, collections, collection, filteredEntries, dispatch);
+  } else {
+    // Collection entries aren't loaded yet.
+    // Dispatch loadEntries and wait before redispatching this action again.
+    dispatch({
+      type: WAIT_UNTIL_ACTION,
+      predicate: action => (action.type === ENTRIES_SUCCESS && action.payload.collection === collection),
+      run: dispatch => localSearch(searchTerm, collections, collection, getState, dispatch),
+    });
+    dispatch(loadEntries(state.collections.get(collection)));
+  }
+}
+
+
+function accumulateAndDisplayLocalSearch(searchTerm, collections, collection, entries, dispatch) {
+  localSearchResults[collection] = true;
+  localSearchResults.entries = localSearchResults.entries.concat(entries);
+  const returnedKeys = Object.keys(localSearchResults);
+  const allCollections = collections.keySeq().toArray();
+  if (allCollections.every(v => returnedKeys.indexOf(v) !== -1)) {
+    if (collections.size > 3 || localSearchResults.entries.length > 30) {
+      console.warn('The Netlify CMS is currently using a Built-in search.' +
+      '\nWhile this works great for small sites, bigger projects might benefit from a separate search integration.' + 
+      '\nPlease refer to the documentation for more information');
+    }
+    const sortedResults = localSearchResults.entries.sort((a, b) => {
+      if (a.score > b.score) return -1;
+      if (a.score < b.score) return 1;
+      return 0;
+    }).map(f => f.original);
+    dispatch(searchSuccess(searchTerm, sortedResults, 0));
+  }
 }
 
 // Instead of searching for complete entries, query will search for specific fields
