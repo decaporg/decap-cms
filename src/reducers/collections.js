@@ -100,14 +100,13 @@ export const selectInferedField = (collection, fieldName) => {
 
   // If colllection has no fields or fieldName is not defined within inferables list, return null
   if (!fields || !inferableField) return null;
-
   // Try to return a field of the specified type with one of the synonyms
-  const mainTypeFields = fields.filter(f => f.get('widget') === inferableField.type).map(f => f.get('name'));
+  const mainTypeFields = fields.filter(f => f.get('widget', 'string') === inferableField.type).map(f => f.get('name'));
   field = mainTypeFields.filter(f => inferableField.synonyms.indexOf(f) !== -1);
   if (field && field.size > 0) return field.first();
 
   // Try to return a field for each of the specified secondary types
-  const secondaryTypeFields = fields.filter(f => inferableField.secondaryTypes.indexOf(f.get('widget')) !== -1).map(f => f.get('name'));
+  const secondaryTypeFields = fields.filter(f => inferableField.secondaryTypes.indexOf(f.get('widget', 'string')) !== -1).map(f => f.get('name'));
   field = secondaryTypeFields.filter(f => inferableField.synonyms.indexOf(f) !== -1);
   if (field && field.size > 0) return field.first();
 

@@ -13,7 +13,7 @@ let response;
 let page;
 let searchTerm;
 
-const defaultState = Map({ isFetching: false, term: null, page: 0, entryIds: [], queryHits: [] });
+const defaultState = Map({ isFetching: false, term: null, page: 0, entryIds: List([]), queryHits: Map({}) });
 
 const entries = (state = defaultState, action) => {
   switch (action.type) {
