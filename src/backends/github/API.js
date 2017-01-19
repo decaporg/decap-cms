@@ -162,7 +162,10 @@ export default class API {
     const unpublishedPromise = this.retrieveMetadata(contentKey)
     .then((data) => {
       metaData = data;
-      return this.readFile(data.objects.entry.path, null, data.branch);
+      if (data.objects.entry.path) {
+        return this.readFile(data.objects.entry.path, null, data.branch);
+      }
+      return Promise.reject(null);
     })
     .then(fileData => ({ metaData, fileData }))
     .catch(() => {
