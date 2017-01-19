@@ -75,7 +75,7 @@ export default class EntryListing extends React.Component {
       const collection = collections
         .filter(collection => collection.get('name') === entry.get('collection')).first();
       const inferedFields = this.inferFields(collection);
-      return this.renderCard(collection, entry, inferedFields);
+      return this.renderCard(collection, entry, inferedFields, publicFolder);
     });
   };
 
