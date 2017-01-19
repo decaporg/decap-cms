@@ -6,7 +6,7 @@ export function resolvePath(path, basePath) { // eslint-disable-line
   if (!path) return null;
 
   // It's an absolute path.
-  if (absolutePath.test(path)) return normalizePath(path);
+  if (absolutePath.test(path)) return path;
 
   if (path.indexOf('/') === -1) {
     // It's a single file name, no directories. Prepend public folder
