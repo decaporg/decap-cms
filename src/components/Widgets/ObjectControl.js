@@ -11,6 +11,7 @@ export default class ObjectControl extends Component {
     getAsset: PropTypes.func.isRequired,
     value: PropTypes.node,
     field: PropTypes.object,
+    forID: PropTypes.string.isRequired,
   };
 
   controlFor(field) {
@@ -38,12 +39,12 @@ export default class ObjectControl extends Component {
   }
 
   render() {
-    const { field } = this.props;
+    const { field, forID } = this.props;
     const multiFields = field.get('fields');
     const singleField = field.get('field');
 
     if (multiFields) {
-      return (<div className={styles.root}>
+      return (<div id={forID} className={styles.root}>
         {multiFields.map(field => this.controlFor(field))}
       </div>);
     } else if (singleField) {

@@ -29,6 +29,7 @@ export default class ListControl extends Component {
     onChange: PropTypes.func.isRequired,
     value: PropTypes.node,
     field: PropTypes.node,
+    forID: PropTypes.string.isRequired,
     getAsset: PropTypes.func.isRequired,
     onAddAsset: PropTypes.func.isRequired,
     onRemoveAsset: PropTypes.func.isRequired,
@@ -162,15 +163,15 @@ export default class ListControl extends Component {
   }
 
   renderListControl() {
-    const { value } = this.props;
-    return (<div>
+    const { value, forID } = this.props;
+    return (<div id={forID}>
       {value && value.map((item, index) => this.renderItem(item, index))}
       <div><button className={styles.addButton} onClick={this.handleAdd}>new</button></div>
     </div>);
   }
 
   render() {
-    const { field } = this.props;
+    const { field, forID } = this.props;
     const { value } = this.state;
 
     if (field.get('field') || field.get('fields')) {
@@ -179,6 +180,7 @@ export default class ListControl extends Component {
 
     return (<input
       type="text"
+      id={forID}
       value={value}
       onChange={this.handleChange}
       onBlur={this.handleCleanup}

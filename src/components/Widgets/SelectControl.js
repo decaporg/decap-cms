@@ -7,7 +7,7 @@ export default class SelectControl extends React.Component {
   };
 
   render() {
-    const { field, value } = this.props;
+    const { field, value, forID } = this.props;
     const fieldOptions = field.get('options');
 
     if (!fieldOptions) {
@@ -21,7 +21,7 @@ export default class SelectControl extends React.Component {
       return option;
     });
 
-    return (<select value={value || ''} onChange={this.handleChange}>
+    return (<select id={forID} value={value || ''} onChange={this.handleChange}>
       {options.map((option, idx) => <option key={idx} value={option.value}>
         {option.label}
       </option>)}
@@ -32,6 +32,7 @@ export default class SelectControl extends React.Component {
 SelectControl.propTypes = {
   onChange: PropTypes.func.isRequired,
   value: PropTypes.node,
+  forID: PropTypes.string.isRequired,
   field: ImmutablePropTypes.contains({
     options: ImmutablePropTypes.listOf(PropTypes.oneOf([
       PropTypes.string,

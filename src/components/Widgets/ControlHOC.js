@@ -89,6 +89,7 @@ class ControlHOC extends Component {
       onAddAsset,
       onRemoveAsset,
       getAsset,
+      forID: field.get('name'),
       ref: this.processInnerControlRef,
     });
   }

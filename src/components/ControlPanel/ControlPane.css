@@ -1,7 +1,7 @@
 .control {
   color: #7c8382;
   position: relative;
-  padding: 20px 0;
+  padding: 20px 0 10px 0;
 
   & input,
   & textarea,
@@ -9,7 +9,7 @@
     font-family: monospace;
     display: block;
     width: 100%;
-    padding: 0;
+    padding: 12px 0 10px 0;
     margin: 0;
     border: none;
     outline: 0;
@@ -24,7 +24,6 @@
   display: block;
   color: #AAB0AF;
   font-size: 12px;
-  margin-bottom: 8px;
 }
 
 .labelWithError {
@@ -36,7 +35,7 @@
   list-style-type: none;
   font-size: 10px;
   color: #FF706F;
-  margin-bottom: 18px;
+  margin-bottom: 5px;
 }
 
 .widget {
