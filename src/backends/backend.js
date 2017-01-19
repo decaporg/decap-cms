@@ -202,7 +202,8 @@ class Backend {
 
   entryToRaw(collection, entry) {
     const format = resolveFormat(collection, entry);
-    return format && format.toFile(entry);
+    const fieldsOrder = collection.get('fields').map(f => f.get('name')).toArray();
+    return format && format.toFile(entry, fieldsOrder);
   }
 }
 

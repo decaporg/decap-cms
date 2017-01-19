@@ -10,7 +10,7 @@ export default class YAMLFrontmatter {
     return obj;
   }
 
-  toFile(data) {
+  toFile(data, sortedKeys) {
     const meta = {};
     let body = '';
     let content = '';
@@ -23,7 +23,7 @@ export default class YAMLFrontmatter {
     }
 
     content += '---\n';
-    content += new YAML().toFile(meta);
+    content += new YAML().toFile(meta, sortedKeys);
     content += '---\n\n';
     content += body;
     return content;
