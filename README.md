@@ -139,6 +139,18 @@ Currently these widgets are built-in:
 * **list** A list of items. Can have an inner `fields` attribute if each element is an object
 * **hidden** Hidden element - typically only useful with a `default` attribute
 
+### Authorizing GitHub as Provider
+
+When you're setting up a new CMS configuration you will need to authorize GitHub as your provider. Here's how:
+
+1. Go to your GitHub Settings page.
+2. On the left menu, click “Oauth Applications”.
+3. Create a new OAuth application (you can name it anything you want), authorization callback must be: `https://api.netlify.com/auth/done`.
+4. Next, you need to go to your app settings on Netlify:
+	1. Go to “Access” menu.
+	2. On "Authentication Providers”, click “Install Provider”.
+	3. Choose “GitHub” and copy the "API Client ID” and "API Secret” that GitHub gave you when you created an Oauth application there.
+
 
 ## Extending Netlify CMS
 The Netlify CMS exposes an `window.CMS` global object that you can use to register custom widgets, previews and editor plugins. The available methods are:
