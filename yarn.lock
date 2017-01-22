@@ -5587,9 +5587,9 @@ negotiator@0.6.1:
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.1.tgz#2b327184e8992101177b28563fb5e7102acd0ca9"
 
-netlify-auth-js@^0.5.4:
-  version "0.5.4"
-  resolved "https://registry.yarnpkg.com/netlify-auth-js/-/netlify-auth-js-0.5.4.tgz#c716d55b09afe475c72763a313c38078470fcb11"
+netlify-auth-js@^0.5.5:
+  version "0.5.5"
+  resolved "https://registry.yarnpkg.com/netlify-auth-js/-/netlify-auth-js-0.5.5.tgz#8753018407c08757b941df9c1e8dd5fc99c4ad29"
   dependencies:
     micro-api-client "^2.0.0"
 
