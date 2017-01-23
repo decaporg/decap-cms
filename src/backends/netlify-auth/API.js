@@ -11,7 +11,6 @@ export default class API extends GithubAPI {
 
 
   getRequestHeaders(headers = {}) {
-    console.log("Getting request headers");
     return this.tokenPromise()
     .then((jwtToken) => {
       const baseHeader = {
