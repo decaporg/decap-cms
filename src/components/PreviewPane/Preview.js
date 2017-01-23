@@ -6,7 +6,7 @@ function isVisible(field) {
 }
 
 const style = {
-  fontFamily: 'Roboto, "Helvetica Neue", HelveticaNeue, Helvetica, Arial, sans-serif',
+  fontFamily: '"Helvetica Neue", HelveticaNeue, Helvetica, Arial, sans-serif',
 };
 
 export default function Preview({ collection, fields, widgetFor }) {

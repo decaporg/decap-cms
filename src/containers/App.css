@@ -1,8 +1,15 @@
-.root {
+.panel  {
   margin-top: 64px;
+  height: calc(100% - 64px) !important; 
 }
 
-.sidebar {
-  width: 200px;
-  background-color: #fff;
+.navDrawer {
+  padding-top: 64px;
+  
+  max-width: 240px !important;
+
+  & .drawerContent {
+    background-color: #f7f9fa !important;
+    max-width: 240px !important;
+  }
 }
