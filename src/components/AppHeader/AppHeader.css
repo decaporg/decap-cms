@@ -8,6 +8,13 @@
 
 .appBar {
   background-color: var(--backgroundColor);
+  color: var(--foregroundColor);
+  & .leftIcon {
+    color: var(--foregroundColor) !important;
+  }
+  & .rightIcon {
+    color: var(--foregroundColor) !important;
+  }
 }
 
 .icon {

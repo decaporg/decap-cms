@@ -1,7 +1,7 @@
 :root {
-  --foregroundColor: #fff;
-  --backgroundColor: #272e30;
-  --textFieldBorderColor: #e7e7e7;
+  --foregroundColor: #3d3d3d;
+  --backgroundColor: #f7f9fa;
+  --textFieldBorderColor: #f7f9fa;
   --highlightFGColor: #fff;
   --highlightBGColor: #3ab7a5;
 }
