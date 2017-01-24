@@ -1,7 +1,6 @@
 :root {
   --foregroundColor: #3d3d3d;
-  --backgroundColor: #f7f9fa;
-  --textFieldBorderColor: #f7f9fa;
+  --backgroundColor: #ececec;
   --highlightFGColor: #fff;
   --highlightBGColor: #3ab7a5;
 }
@@ -10,14 +9,14 @@
   flex: 1;
   position: relative;
   background-color: var(--backgroundColor);
-  padding: 5px;
+  margin-left: 4px;
+  padding: 2px;
 }
 .inputArea {
   display: table;
   width: 100%;
   color: var(--foregroundColor);
   background-color: #fff;
-  border: 1px solid var(--textFieldBorderColor);
 }
 
 .inputScope {
@@ -28,7 +27,6 @@
   font-size: 16px;
   white-space: nowrap;
   vertical-align: middle;
-  border-right: 1px solid var(--textFieldBorderColor);
   margin:0;
 }
 
@@ -46,7 +44,7 @@
 
 .menu {
   position: absolute;
-  top: 44px;
+  top: 34px;
   left: 0;
   z-index: 9999;
   display: table;
