@@ -1,7 +1,6 @@
 import yaml from "js-yaml";
 import { set, defaultsDeep } from "lodash";
-import { currentBackend } from "../backends/backend";
-import { authenticate } from "../actions/auth";
+import { authenticateUser } from "../actions/auth";
 import * as publishModes from "../constants/publishModes";
 
 export const CONFIG_REQUEST = "CONFIG_REQUEST";
@@ -85,11 +84,7 @@ export function loadConfig() {
         .then(applyDefaults)
         .then((config) => {
           dispatch(configDidLoad(config));
-          const backend = currentBackend(config);
-          return backend && backend.currentUser();
-        })
-        .then((user) => {
-          if (user) dispatch(authenticate(user));
+          dispatch(authenticateUser());
         });
     }).catch((err) => {
       dispatch(configFailed(err));
