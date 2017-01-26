@@ -45,11 +45,14 @@ export default class AuthenticationPage extends React.Component {
 
   render() {
     const { errors } = this.state;
-
+    const { error } = this.props;
     return (
       <section className={styles.root}>
         <Card className={styles.card}>
           <img src={logo} width={100} role="presentation" />
+          {error && <p>
+            <span className={styles.errorMsg}>{error}</span>
+          </p>}
           {errors.server && <p>
             <span className={styles.errorMsg}>{errors.server}</span>
           </p>}

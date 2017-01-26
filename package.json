@@ -104,6 +104,7 @@
     "js-base64": "^2.1.9",
     "js-yaml": "^3.7.0",
     "json-loader": "^0.5.4",
+    "jwt-decode": "^2.1.0",
     "localforage": "^1.4.2",
     "lodash": "^4.13.1",
     "markup-it": "git+https://github.com/cassiozen/markup-it.git",

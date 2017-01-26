@@ -32,6 +32,23 @@ export function logout() {
   };
 }
 
+// Check if user data token is cached and is valid
+export function authenticateUser() {
+  return (dispatch, getState) => {
+    const state = getState();
+    const backend = currentBackend(state.config);
+    dispatch(authenticating());
+    return backend.currentUser()
+      .then((user) => {
+        if (user) dispatch(authenticate(user));
+      })
+      .catch((error) => {
+        dispatch(authError(error));
+        dispatch(logoutUser());
+      });
+  };
+}
+
 export function loginUser(credentials) {
   return (dispatch, getState) => {
     const state = getState();
@@ -41,6 +58,9 @@ export function loginUser(credentials) {
     return backend.authenticate(credentials)
       .then((user) => {
         dispatch(authenticate(user));
+      })
+      .catch((error) => {
+        dispatch(authError(error));
       });
   };
 }
