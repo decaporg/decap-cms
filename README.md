@@ -96,12 +96,26 @@ Setting up the right collections is the main part of integrating netlify CMS wit
 
 ### GitHub as a Backend
 
+When you're setting up a new CMS configuration you will need to authorize GitHub as your provider.
 The default Github-based authenticator integrates with Netlify's [Authentication Provider feature](https://www.netlify.com/docs/authentication-providers) and the repository
 backend integrates directly with Github's API.
 
-To get everything hooked up, setup continuous deployment from Github to Netlify
-and then follow [the documentation](https://www.netlify.com/docs/authentication-providers)
-to setup Github as an authentication provider.
+
+#### Authorizing GitHub as Provider
+
+If you already have your site on Netlify with continuous deployment from Github activated, you can setup the authentication with these steps:
+
+1. Go to your GitHub Settings page.
+2. On the left menu, click “Oauth Applications”.
+3. Create a new OAuth application (you can name it anything you want), authorization callback must be: `https://api.netlify.com/auth/done`.
+4. Next, you need to go to your app settings on Netlify:
+	1. Go to “Access” menu.
+	2. On "Authentication Providers”, click “Install Provider”.
+	3. Choose “GitHub” and copy the "API Client ID” and "API Secret” that GitHub gave you when you created an Oauth application there.
+
+For detailed information on how to get everything hooked up, follow [the documentation](https://www.netlify.com/docs/authentication-providers).
+
+
 
 That's it, now you should be able to go to the `/admin` section of your site and
 log in.
@@ -138,6 +152,7 @@ Currently these widgets are built-in:
 * **object** A compound object, must have an inner `fields` attribute with more fields
 * **list** A list of items. Can have an inner `fields` attribute if each element is an object
 * **hidden** Hidden element - typically only useful with a `default` attribute
+
 
 
 ## Extending Netlify CMS
