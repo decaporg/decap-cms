@@ -17,7 +17,10 @@ export default class ControlPane extends Component {
   }
 
   validate = () => {
-    this.props.fields.forEach(field => this.componentValidate[field.get("name")]());
+    this.props.fields.forEach((field) => {
+      if (isHidden(field)) return;
+      this.componentValidate[field.get("name")]();
+    });
   };
 
   controlFor(field) {
