@@ -13,18 +13,17 @@ In order to use Nelify's authentication provider service, you'll need to connect
 ### Authenticating with GitHub
 
 In order to connect Netlify CMS with your GitHub repo, you'll first need to register it as an authorized application with your GitHub account:
-1. Go to your account **Settings** page on GitHub, and click **Oauth Applications** under **Developer Settings** (or use [this shortcut](https://github.com/settings/developers)).
-2. Click **Register a new application**.
-3. For the **Authorization callback URL**, enter `https://api.netlify.com/auth/done`. The other fields can contain anything you want.
+ 1. Go to your account **Settings** page on GitHub, and click **Oauth Applications** under **Developer Settings** (or use [this shortcut](https://github.com/settings/developers)).
+ 2. Click **Register a new application**.
+ 3. For the **Authorization callback URL**, enter `https://api.netlify.com/auth/done`. The other fields can contain anything you want.
+
 ![GitHub Oauth Application setup example](images/github-oauth.png?raw=true)
 
 When you complete the registration, you'll be given a **Client ID** and a **Client Secret** for the app. You'll need to add these to your Netlify project:
-1. Go to your [**Netlify dashboard**](https://app.netlify.com/) and click on your project.
-2. Click the **Access** tab.
-3. Under **Authentication Providers**, click **Install Provider**.
-4. Select GitHub and enter the **Client ID** and **Client Secret**, then save.
-
-You've now set up all the parts of the "backend." Now we'll need to install the Netlify CMS app's frontend, and wire it up.
+ 1. Go to your [**Netlify dashboard**](https://app.netlify.com/) and click on your project.
+ 2. Click the **Access** tab.
+ 3. Under **Authentication Providers**, click **Install Provider**.
+ 4. Select GitHub and enter the **Client ID** and **Client Secret**, then save.
 
 ## App File Structure
 All Netlify CMS files are contained in a static `admin` folder, stored at the root of the generated site. Where you store this in the source files depends on your static site generator. Here's the the static file location for a few of the most popular static site generators:
@@ -63,7 +62,6 @@ The first file, `admin/index.html`, is the entry point for the Netlify CMS admin
 </body>
 </html>
 ```
->Note: Unpkg is a CDN for javascript modules that lets you point to semantic versions of files using prefix characters (so backwards-compatible bug fixes will load as soon as they're available).
 
 The second file, `admin/config.yml`, is the heart of your Netlify CMS installation, and a bit more complex. The next section covers the details.
 
@@ -90,7 +88,7 @@ publish_mode: editorial_workflow
 ```
 
 ### Media and Public Folders
-Netlify CMS allows users to upload images directly within the editor. To enable this, you'll need to tell the CMS where to save them. If you already have an `images` folder in your project, you could use its path, possibly creating an `uploads` sub-folder, for example:
+Netlify CMS allows users to upload images directly within the editor. For this to work, the CMS needs to know where to save them. If you already have an `images` folder in your project, you could use its path, possibly creating an `uploads` sub-folder, for example:
 
 ``` yaml
 media_folder: "images/uploads" # Media files will be stored in the repo under images/uploads
@@ -98,7 +96,7 @@ media_folder: "images/uploads" # Media files will be stored in the repo under im
 
 If you're creating a new folder for uploaded media, you'll need to know where your static site generator expects static files. You can refer to the paths outlined above in [App File Structure](#app-file-structure), and put your media folder in the same location where you put the `admin` folder.
 
-Note that the file path is relative to the project root, so the `media_folder` example above would work for Jekyll, GitBook, or any other generator that stores static files at the project root. It would not, however, work for Hugo, Hexo, Middleman, or others that use a different path. Here's an example that could work for a Hugo site:
+Note that the`media_folder` file path is relative to the project root, so the  example above would work for Jekyll, GitBook, or any other generator that stores static files at the project root. It would not, however, work for Hugo, Hexo, Middleman, or others that use a different path. Here's an example that could work for a Hugo site:
 
 ``` yaml
 media_folder: "static/images/uploads" # Media files will be stored in the repo under static/images/uploads
@@ -110,7 +108,7 @@ This configuration adds a new setting, `public_folder`. While `media_folder` spe
 >If `public_folder` is not set, Netlify CMS will default to the same value as `media_folder`, adding an opening `/` if one is not included.
 
 ### Collections
-Collections define the structure for the different content types on your static site. Since every site is different, the `collections` settings will be very different from one site to the next. Let's say your site has a blog, with the posts stored in `_posts/blog`, with files saved in a url-encoded date-title format, like `1999-12-31-lets-party.md`. Each post 
+Collections define the structure for the different content types on your static site. Since every site is different, the `collections` settings will be very different from one site to the next. Let's say your site has a blog, with the posts stored in `_posts/blog`, and files saved in a date-title format, like `1999-12-31-lets-party.md`. Each post 
 begins with settings in yaml-formatted front matter, like so:
 
 ``` yaml
@@ -129,11 +127,11 @@ Given this example, our `collections` settings would look like this:
 
 ``` yaml
 collections:
-  - name: "blog" # Used in routes, ie.: /admin/collections/blog/edit
+  - name: "blog" # Used in routes, e.g. /admin/collections/blog
     label: "Blog" # Used in the UI
     folder: "_posts/blog" # The path to the folder where the documents are stored
     create: true # Allow users to create new documents in this collection
-    slug: "{{year}}-{{month}}-{{day}}-{{slug}}" # Filename template
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}" # Filename template i.e. YYYY-MM-DD-title.md
     fields: # The fields for each document, usually in front matter
       - {label: "Layout", name: "layout", widget: "hidden", default: "blog"}
       - {label: "Title", name: "title", widget: "string"}
@@ -164,7 +162,7 @@ Let's break that down:
   </tr>
   <tr>
     <td><code>slug</code></td>
-    <td>Format for filenames. <code>{{year}}</code>, <code>{{month}}</code>, and <code>{{day}}</code> will pull from the post's <code>date</code> field or save date. <code>{{slug}}</code> is a url-safe version of the post's <code>title</code>. Default is simply <code>{{slug}}</code>.
+    <td>Template for filenames. <code>{{year}}</code>, <code>{{month}}</code>, and <code>{{day}}</code> will pull from the post's <code>date</code> field or save date. <code>{{slug}}</code> is a url-safe version of the post's <code>title</code>. Default is simply <code>{{slug}}</code>.
 </td>
   </tr>
   <tr>
@@ -196,6 +194,6 @@ Based on this example, you can go through the post types in your site and add th
 
 ## Accessing the App
 
-With your configuration complete, it's time to try it out! Go to `<site-address>/admin` and complete the login prompt to access the admin interface. To add users, simply add them as collaborators on the GitHub repo.
+With your configuration complete, it's time to try it out! Go to `yoursite.com/admin` and complete the login prompt to access the admin interface. To add users, simply add them as collaborators on the GitHub repo.
 
 Happy posting!
