@@ -331,20 +331,20 @@ export default class API {
   }
 
   patchRef(type, name, sha) {
-    return this.request(`${ this.repoURL }/git/refs/${ type }/${ name }`, {
+    return this.request(`${ this.repoURL }/git/refs/${ type }/${ encodeURIComponent(name) }`, {
       method: "PATCH",
       body: JSON.stringify({ sha }),
     });
   }
 
   deleteRef(type, name, sha) {
-    return this.request(`${ this.repoURL }/git/refs/${ type }/${ name }`, {
+    return this.request(`${ this.repoURL }/git/refs/${ type }/${ encodeURIComponent(name) }`, {
       method: "DELETE",
     });
   }
 
   getBranch(branch = this.branch) {
-    return this.request(`${ this.repoURL }/branches/${ branch }`);
+    return this.request(`${ this.repoURL }/branches/${ encodeURIComponent(branch) }`);
   }
 
   createBranch(branchName, sha) {
