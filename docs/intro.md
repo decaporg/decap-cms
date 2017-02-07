@@ -42,12 +42,9 @@ Netlify CMS has an optional [editorial workflow](https://github.com/netlify/netl
 
 Actions in Netlify UI...	| Perform these Git actions
 --- | ---
-Save draft | Creates a branch and pushes a commit to it
-Edit draft | Pushes another commit to the draft branch
-Mark draft as Waiting for Review | Opens a pull request
+Save draft | Commits to a new branch, and opens a pull request
+Edit draft | Pushes another commit to the draft branch/pull request
 Approve and publish draft | Merges pull request and deletes branch
-
-If you prefer to use Git, you can push additional commits and open and merge PRs directly, and the Netlify CMS interface will update to match.
 
 ## Configuration
 
