@@ -98,7 +98,7 @@ export default class AppHeader extends React.Component {
         onRightIconClick={this.handleRightIconClick}
       >
         <IndexLink to="/">
-          <FontIcon value="home" />
+          <FontIcon className={styles.icon} value="home" />
         </IndexLink>
 
         <FindBar

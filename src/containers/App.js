@@ -2,12 +2,11 @@ import React, { PropTypes } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import pluralize from 'pluralize';
 import { connect } from 'react-redux';
-import { Layout, Panel } from 'react-toolbox/lib/layout';
+import { Layout, Panel, NavDrawer } from 'react-toolbox/lib/layout';
 import { Navigation } from 'react-toolbox/lib/navigation';
 import { Link } from 'react-toolbox/lib/link';
 import { Notifs } from 'redux-notifications';
 import TopBarProgress from 'react-topbar-progress-indicator';
-import Sidebar from './Sidebar';
 import { loadConfig } from '../actions/config';
 import { loginUser, logoutUser } from '../actions/auth';
 import { toggleSidebar } from '../actions/globalUI';
@@ -31,7 +30,7 @@ TopBarProgress.config({
   },
   shadowBlur: 5,
   shadowColor: '#3ab7a5',
-  barThickness: 2,
+  barThickness: 3,
 });
 
 class App extends React.Component {
@@ -134,6 +133,7 @@ class App extends React.Component {
       createNewEntryInCollection,
       logoutUser,
       isFetching,
+      sidebarIsOpen,
     } = this.props;
 
 
@@ -154,50 +154,54 @@ class App extends React.Component {
     }
 
     const { commands, defaultCommands } = this.generateFindBarCommands();
-    const sidebarContent = (
-      <nav className={styles.nav}>
-        <h1 className={styles.heading}>Collections</h1>
-        <Navigation type="vertical">
-          {
-            collections.valueSeq().map(collection =>
-              <Link
-                key={collection.get('name')}
-                onClick={navigateToCollection.bind(this, collection.get('name'))} // eslint-disable-line
-              >
-                {collection.get('label')}
-              </Link>
-            )
-          }
-        </Navigation>
-      </nav>
-    );
 
     return (
-      <Sidebar content={sidebarContent}>
-        <Layout theme={styles}>
-          <Notifs
-            className={styles.notifsContainer}
-            CustomComponent={Toast}
-          />
-          <AppHeader
-            user={user}
-            collections={collections}
-            commands={commands}
-            defaultCommands={defaultCommands}
-            runCommand={runCommand}
-            onCreateEntryClick={createNewEntryInCollection}
-            onLogoutClick={logoutUser}
-            toggleDrawer={toggleSidebar}
-          />
-          <Panel scrollY>
-            { isFetching && <TopBarProgress /> }
-            <div className={styles.main}>
-              {children}
-            </div>
-          </Panel>
+      <Layout theme={styles}>
+        <Notifs
+          className={styles.notifsContainer}
+          CustomComponent={Toast}
+        />
+        <NavDrawer
+          active={sidebarIsOpen}
+          scrollY
+          permanentAt={sidebarIsOpen ? 'lg' : null}
+          onOverlayClick={toggleSidebar}
+          theme={styles}
+        >
+          <nav className={styles.nav}>
+            <h1 className={styles.heading}>Collections</h1>
+            <Navigation type="vertical">
+              {
+                collections.valueSeq().map(collection =>
+                  <Link
+                    key={collection.get('name')}
+                    onClick={navigateToCollection.bind(this, collection.get('name'))} // eslint-disable-line
+                  >
+                    {collection.get('label')}
+                  </Link>
+                )
+              }
+            </Navigation>
+          </nav>
+        </NavDrawer>
+        <AppHeader
+          user={user}
+          collections={collections}
+          commands={commands}
+          defaultCommands={defaultCommands}
+          runCommand={runCommand}
+          onCreateEntryClick={createNewEntryInCollection}
+          onLogoutClick={logoutUser}
+          toggleDrawer={toggleSidebar}
+        />
+        <Panel className={styles.panel} scrollY>
+          { isFetching && <TopBarProgress /> }
+          <div>
+            {children}
+          </div>
+        </Panel>
 
-        </Layout>
-      </Sidebar>
+      </Layout>
     );
   }
 }
@@ -206,7 +210,8 @@ function mapStateToProps(state) {
   const { auth, config, collections, globalUI } = state;
   const user = auth && auth.get('user');
   const isFetching = globalUI.get('isFetching');
-  return { auth, config, collections, user, isFetching };
+  const sidebarIsOpen = globalUI.get('sidebarIsOpen');
+  return { auth, config, collections, user, isFetching, sidebarIsOpen };
 }
 
 function mapDispatchToProps(dispatch) {

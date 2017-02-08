@@ -5,7 +5,6 @@ html {
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", HelveticaNeue, Helvetica, Arial, sans-serif;
 }
 
 *, *:before, *:after {
@@ -13,24 +12,37 @@ html {
 }
 
 body {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Helvetica Neue", HelveticaNeue, Helvetica, Arial, sans-serif;
   height: 100%;
-  background-color: #f2f5f4;
-  color: #7c8382;
+  background-color: #ffffff;
+  color: #3d3d3d;
   margin: 0;
+}
+
+body > div {
+  height: 100%;
 }
 
 h1, h2, h3, h4, h5, h6, p {
-  margin: 0;
+  font-family: inherit !important;
 }
 
-h1 {
-  color: #3ab7a5;
-  border-bottom: 1px solid #3ab7a5;
-  margin: 30px auto 25px;
-  padding-bottom: 15px;
-  font-size: 25px;
+h1 {  
+  font-size: 1.6rem;
+  margin: 18px 0;
+  font-weight: bold;
 }
+
+h2 {  
+  font-size: 1.4rem;
+  font-weight: normal;
+}
+
+h3 {  
+  font-size: 1.2rem;
+  font-weight: normal;
+}
+
 
 :global {
 
