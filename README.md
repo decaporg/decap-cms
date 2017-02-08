@@ -3,9 +3,6 @@
 A CMS for static site generators. Give non-technical users a simple way to edit
 and add content to any site built with a static site generator.
 
-Netlify CMS is released under the [MIT License](LICENSE).
-Please make sure you understand its [implications and guarantees](https://writing.kemitchell.com/2016/09/21/MIT-License-Line-by-Line.html).
-
 ## How it works
 
 Netlify CMS is a single-page app that you pull into the `/admin` part of your site.
@@ -18,280 +15,24 @@ tweak the main layout of the CMS a bit to fit your own site.
 When a user navigates to `/admin` she'll be prompted to login, and once authenticated
 she'll be able to create new content or edit existing content.
 
+Read more about Netlify CMS [Core Concepts](docs/intro.md).
 
-## Installing
+# Installation and Configuration
 
-Netlify CMS is a React app. To install it in your site, add an `/admin` folder in
-your public directory and use this `index.html` as a template:
+The Netlify CMS can be used in two different ways.
 
-```html
-<!doctype html>
-<html>
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+* A Quick and easy install, that just requires you to create a single HTML file and a configuration file. All the CMS Javascript and CSS are loaded from a CDN.
+To learn more about this installation method, refer to the [Quick Start Guide](docs/quick-start.md)
+* A complete, more complex install, that gives you more flexibility but requires that you use a static site builder with a build system with supports npm packages.
 
-  <title>Content Manager</title>
-  <!-- Include the stylesheets from your site here -->
-  <link rel="stylesheet" href="https://unpkg.com/netlify-cms@^0.3/dist/cms.css" />
-  <!-- Include a CMS specific stylesheet here -->
+# Change Log
 
-</head>
-<body>
-  <script src="https://unpkg.com/netlify-cms@^0.3/dist/cms.js"></script>
-</body>
-</html>
-```
+This project adheres to [Semantic Versioning](http://semver.org/).  
+Every release is documented on the Github [Releases](https://github.com/netlify/netlify-cms/releases) page.
 
-> Note: Unpkg is a CDN for javascript modules, and it let's you point to semantic versions of files using prefix characters (so backwards-compatible bug fixes will loaded as soon as they're made available).
+# License
 
+Netlify CMS is released under the [MIT License](LICENSE).
+Please make sure you understand its [implications and guarantees](https://writing.kemitchell.com/2016/09/21/MIT-License-Line-by-Line.html).
 
-Add a `config.yml` file to the `/admin` folder and configure your content model:
 
-```yaml
-backend:
-  name: github
-  repo: owner/repo # Path to your Github repository
-  branch: master # Branch to update (master by default)
-
-media_folder: "img/uploads" # Folder where user uploaded files should go
-
-collections: # A list of collections the CMS should be able to edit
-  - name: "post" # Used in routes, ie.: /admin/collections/:slug/edit
-    label: "Post" # Used in the UI, ie.: "New Post"
-    folder: "_posts" # The path to the folder where the documents are stored
-    create: true # Allow users to create new documents in this collection
-    fields: # The fields each document in this collection have
-      - {label: "Title", name: "title", widget: "string", tagname: "h1"}
-      - {label: "Body", name: "body", widget: "markdown"}
-      - {label: "Foo", name: "foo", widget: "foo"}
-      - {label: "Publish Date", name: "date", widget: "datetime"}
-  - name: "settings"
-    label: "Settings"
-    files:
-      - name: "general"
-        label: "General settings"
-        file: "_settings/general.json"
-        fields:
-          - {label: "Main site title", name: "site_title", widget: "string"}
-          - {label: "Number of fronpage posts", name: "post_count", widget: "number"}
-          - {label: "Site cover image", name: "cover", widget: "image"}
-```
-
-Netlify CMS works with the concept of collections of documents that a user can edit.
-
-Collections basically comes in three forms:
-
-1. A `folder`. Set the `folder` attribute on the collection. Each document will be a
-   file in this folder. Each document will have the same format, fields and meta fields.
-2. A list of `files`. Set the `files` attribute on the collection. You can set fields that
-   all files in the folder shares directly on the collection, and set specific fields for
-   each file. This is great when you have files with a different structure.
-3. A `file`. **Warning, not implemented yet**. This is a collection stored in a single file.
-   Typically a YAML file or a CSV with an array of items.
-
-Each collection has a list of fields (or files with their individual fields). Each field has a `label`, a `name` and a `widget`.
-
-Setting up the right collections is the main part of integrating netlify CMS with your site. It's where you decide exactly what content editors can work with, and what widgets should be used to edit each field of your various files or content types.
-
-### GitHub as a Backend
-
-When you're setting up a new CMS configuration you will need to authorize GitHub as your provider.
-The default Github-based authenticator integrates with Netlify's [Authentication Provider feature](https://www.netlify.com/docs/authentication-providers) and the repository
-backend integrates directly with Github's API.
-
-
-#### Authorizing GitHub as Provider
-
-If you already have your site on Netlify with continuous deployment from Github activated, you can setup the authentication with these steps:
-
-1. Go to your GitHub Settings page.
-2. On the left menu, click “Oauth Applications”.
-3. Create a new OAuth application (you can name it anything you want), authorization callback must be: `https://api.netlify.com/auth/done`.
-4. Next, you need to go to your app settings on Netlify:
-	1. Go to “Access” menu.
-	2. On "Authentication Providers”, click “Install Provider”.
-	3. Choose “GitHub” and copy the "API Client ID” and "API Secret” that GitHub gave you when you created an Oauth application there.
-
-For detailed information on how to get everything hooked up, follow [the documentation](https://www.netlify.com/docs/authentication-providers).
-
-
-
-That's it, now you should be able to go to the `/admin` section of your site and
-log in.
-
-### Media folder and Public folder
-
-Most static file generators, except from Jekyll, don't keep the files that'll be
-copied into the build folder when generating in their root folder.
-
-This can create a problem for image and file paths when uploaded through the CMS.
-
-Use the `public_folder` setting in `config.yml` to tell the CMS where the public
-folder is located in the sources. A typical Middleman setup would look like this:
-
-```yml
-media_folder: "source/uploads" # Media files will be stored in the repo under source/uploads
-public_folder: "source" # CMS now knows 'source' is the public folder and will strip this from the path
-```
-
-### Widgets
-
-Actual content editing happens with a side by side view where each `widget` has
-a control for editing and a preview to give the content editor an idea of how the
-content will look in the context of the published site.
-
-Currently these widgets are built-in:
-
-* **string** A basic string input
-* **text** A text area input
-* **markdown** A markdown editor (both visual and raw mode)
-* **datetime** A date and time input
-* **image** An uploaded image
-* **number** An integer input
-* **object** A compound object, must have an inner `fields` attribute with more fields
-* **list** A list of items. Can have an inner `fields` attribute if each element is an object
-* **hidden** Hidden element - typically only useful with a `default` attribute
-
-
-
-## Extending Netlify CMS
-The Netlify CMS exposes an `window.CMS` global object that you can use to register custom widgets, previews and editor plugins. The available methods are:
-
-* **registerPreviewStyle** Register a custom stylesheet to use on the preview pane.
-* **registerPreviewTemplate** Registers a template for a collection.
-* **registerWidget** lets you register a custom widget.
-* **registerEditorComponent** lets you add a block component to the Markdown editor
-
-**Writing React Components inline**
-
-Both registerPreviewTemplate and registerWidget requires you to provide a React component. If you have a build process in place for your project, it is possible to integrate webpack and Babel for a complete React build flow.
-
-Although possible, it may be cumbersome or even impractical to add a React build phase. For this reason, Netlify CMS exposes two React constructs globally to allow you to create components inline: ‘createClass’ and ‘h’ (alias for React.createElement).
-
-
-### `registerPreviewStyle`
-
-Register a custom stylesheet to use on the preview pane.
-
-`CMS.registerPreviewStyle(file);`
-
-**Params:**
-
-* file: css file path.
-
-**Example:**
-
-`CMS.registerPreviewStyle("/example.css");`
-
-
-### `registerPreviewTemplate`
-
-Registers a template for a collection.
-
-`CMS.registerPreviewTemplate(collection, react_component);`
-
-**Params:**
-
-* collection: The name of the collection which this preview component will be used for.
-* react_component: A React component that renders the collection data. Three props will be passed to your component during render:
-  * entry: Immutable collection containing the entry data.
-  * widgetFor: Returns the appropriate widget preview component for a given field.
-  * getAsset: Returns the correct filePath or in-memory preview for uploaded images.
-
-**Example:**
-
-```html
-<script>
-var PostPreview = createClass({
-  render: function() {
-    var entry = this.props.entry;
-    var image = entry.getIn(['data', 'image']);
-    var bg = this.props.getAsset(image);
-    return h('div', {},
-      h('h1', {}, entry.getIn(['data', 'title'])),
-      h('img', {src: bg.toString()}),
-      h('div', {"className": "text"}, this.props.widgetFor('body'))
-    );
-  }
-});
-
-CMS.registerPreviewTemplate("posts", PostPreview);
-</script>
-```
-
-### `registerWidget`
-
-lets you register a custom widget.
-
-`CMS.registerWidget(field, control, [preview])`
-
-**Params:**
-
-* field: The field type which this widget will be used for.
-* control: A React component that renders the editing interface for this field. Two props will be passed:
-  * value: The current value for this field.
-  * onChange: Callback function to update the field value.
-* preview (optional): A React component that renders the preview of how the content will look. A `value` prop will be passed to this component.
-
-
-**Example:**
-
-```html
-<script>
-var CategoriesControl = createClass({
-  handleChange: function(e) {
-    this.props.onChange(e.target.value.split(',').map((e) => e.trim()));
-  },
-
-  render: function() {
-    var value = this.props.value;
-    return h('input', { type: 'text', value: value ? value.join(', ') : '', onChange: this.handleChange });
-  }
-});
-
-CMS.registerWidget('categories', CategoriesControl);
-</script>
-```
-
-### `registerEditorComponent`
-
-lets your register a block level component for the Markdown editor
-
-`CMS.registerEditorComponent(definition)`
-
-**Params**
-
-* definition: The component definition, must specify: id, label, fields, patterns, fromBlock, toBlock, toPreview
-
-**Example:**
-
-```js
-CMS.registerEditorComponent({
-  // Internal id of the component
-  id: "youtube",
-  // Visible label
-  label: "Youtube",
-  // Fields the user need to fill out when adding an instance of the component
-  fields: [{name: 'id', label: 'Youtube Video ID', widget: 'string'}],
-  // Pattern to identify a block as being an instance of this component
-  pattern: /^{{<\s?youtube (\S+)\s?>}}/,
-  // Function to extract data elements from the regexp match
-  fromBlock: function(match) {
-    return {
-      id: match[1]
-    };
-  },
-  // Function to create a text block from an instance of this component
-  toBlock: function(obj) {
-    return '{{< youtube ' + obj.id + ' >}}';
-  },
-  // Preview output for this component. Can either be a string or a React component
-  // (Component gives better render performance)
-  toPreview: function(obj) {
-    return (
-      '<img src="http://img.youtube.com/vi/' + obj.id + '/maxresdefault.jpg" alt="Youtube Video"/>'
-    );
-  }
-});
-```
