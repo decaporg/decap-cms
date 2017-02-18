@@ -32,6 +32,10 @@ h1 {
   font-size: 25px;
 }
 
+img {
+  max-width: 100%;
+}
+
 :global {
 
   & .react-autosuggest__container {
