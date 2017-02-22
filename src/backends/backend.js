@@ -218,7 +218,7 @@ class Backend {
     if (file == null) {
       throw new Error(`No file found for ${ entry.get("slug") } in ${ collection.get('name') }`);
     }
-    return file.get('fields');
+    return file.get('fields').toArray();
   }
 }
 
