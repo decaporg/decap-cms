@@ -164,14 +164,15 @@ class Backend {
       entryObj = {
         path,
         slug,
-        raw: this.entryToRaw(collection, entryData),
+        raw: this.entryToRaw(collection, entryDraft.get("entry")),
       };
     } else {
       const path = entryDraft.getIn(["entry", "path"]);
+      const slug = entryDraft.getIn(["entry", "slug"]);
       entryObj = {
         path,
-        slug: entryDraft.getIn(["entry", "slug"]),
-        raw: this.entryToRaw(collection, entryData),
+        slug,
+        raw: this.entryToRaw(collection, entryDraft.get("entry")),
       };
     }
 
@@ -201,9 +202,23 @@ class Backend {
 
 
   entryToRaw(collection, entry) {
-    const format = resolveFormat(collection, entry);
-    const fieldsOrder = collection.get('fields').map(f => f.get('name')).toArray();
-    return format && format.toFile(entry, fieldsOrder);
+    const format = resolveFormat(collection, entry.toJS());
+    const fieldsOrder = this.fieldsOrder(collection, entry);
+    return format && format.toFile(entry.get("data").toJS(), fieldsOrder);
+  }
+
+  fieldsOrder(collection, entry) {
+    const fields = collection.get('fields');
+    if (fields) {
+      return collection.get('fields').map(f => f.get('name')).toArray();
+    }
+
+    const files = collection.get('files');
+    const file = (files || []).filter(f => f.get("name") === entry.get("slug")).get(0);
+    if (file == null) {
+      throw new Error(`No file found for ${ entry.get("slug") } in ${ collection.get('name') }`);
+    }
+    return file.get('fields');
   }
 }
 
