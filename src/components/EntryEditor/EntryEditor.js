@@ -37,6 +37,8 @@ class EntryEditor extends Component {
         onValidate,
         onAddAsset,
         onRemoveAsset,
+        onAddDependency,
+        onRemoveDependency,
         onCancelEdit,
     } = this.props;
 
@@ -65,6 +67,8 @@ class EntryEditor extends Component {
                     onValidate={onValidate}
                     onAddAsset={onAddAsset}
                     onRemoveAsset={onRemoveAsset}
+                    onAddDependency={onAddDependency}
+                    onRemoveDependency={onRemoveDependency}
                     ref={c => this.controlPaneRef = c} // eslint-disable-line
                   />
 
@@ -107,6 +111,8 @@ EntryEditor.propTypes = {
   onValidate: PropTypes.func.isRequired,
   onPersist: PropTypes.func.isRequired,
   onRemoveAsset: PropTypes.func.isRequired,
+  onAddDependency: PropTypes.func,
+  onRemoveDependency: PropTypes.func,
   onCancelEdit: PropTypes.func.isRequired,
 };
 

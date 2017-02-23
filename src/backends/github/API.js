@@ -258,6 +258,7 @@ export default class API {
           collection: options.collectionName,
           title: options.parsedData && options.parsedData.title,
           description: options.parsedData && options.parsedData.description,
+          dependencies: options.dependencies,
           objects: {
             entry: {
               path: entry.path,
@@ -288,6 +289,7 @@ export default class API {
             pr: updatedPR,
             title: options.parsedData && options.parsedData.title,
             description: options.parsedData && options.parsedData.description,
+            dependencies: options.dependencies,
             objects: {
               entry: {
                 path: entry.path,

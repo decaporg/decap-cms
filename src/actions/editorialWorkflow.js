@@ -33,6 +33,9 @@ export const UNPUBLISHED_ENTRY_PUBLISH_REQUEST = 'UNPUBLISHED_ENTRY_PUBLISH_REQU
 export const UNPUBLISHED_ENTRY_PUBLISH_SUCCESS = 'UNPUBLISHED_ENTRY_PUBLISH_SUCCESS';
 export const UNPUBLISHED_ENTRY_PUBLISH_FAILURE = 'UNPUBLISHED_ENTRY_PUBLISH_FAILURE';
 
+export const UNPUBLISHED_ENTRY_REGISTER_DEPENDENCY = 'UNPUBLISHED_ENTRY_REGISTER_DEPENDENCY';
+export const UNPUBLISHED_ENTRY_UNREGISTER_DEPENDENCY = 'UNPUBLISHED_ENTRY_UNREGISTER_DEPENDENCY';
+
 /*
  * Simple Action Creators (Internal)
  */
@@ -180,9 +183,26 @@ function unpublishedEntryPublishError(collection, slug, transactionID) {
   };
 }
 
+function unpublishedEntryRegisterDependency(field, collection, slug) {
+  return {
+    type: UNPUBLISHED_ENTRY_REGISTER_DEPENDENCY,
+    payload: { field, collection, slug },
+  };
+}
+
+function unpublishedEntryUnregisterDependency(field) {
+  return {
+    type: UNPUBLISHED_ENTRY_UNREGISTER_DEPENDENCY,
+    payload: { field },
+  };
+}
+
 /*
  * Exported Thunk Action Creators
  */
+
+export const registerUnpublishedEntryDependency = unpublishedEntryRegisterDependency;
+export const unregisterUnpublishedEntryDependency = unpublishedEntryUnregisterDependency;
 
 export function loadUnpublishedEntry(collection, slug) {
   return (dispatch, getState) => {

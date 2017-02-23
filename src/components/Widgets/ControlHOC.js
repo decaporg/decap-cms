@@ -15,6 +15,8 @@ class ControlHOC extends Component {
     onAddAsset: PropTypes.func.isRequired,
     onRemoveAsset: PropTypes.func.isRequired,
     getAsset: PropTypes.func.isRequired,
+    onAddDependency: PropTypes.func,
+    onRemoveDependency: PropTypes.func,
   };
 
   processInnerControlRef = (wrappedControl) => {
@@ -80,7 +82,18 @@ class ControlHOC extends Component {
   };
 
   render() {
-    const { controlComponent, field, value, metadata, onChange, onAddAsset, onRemoveAsset, getAsset } = this.props;
+    const {
+      controlComponent,
+      field,
+      value,
+      metadata,
+      onChange,
+      onAddAsset,
+      onRemoveAsset,
+      getAsset,
+      onAddDependency,
+      onRemoveDependency,
+    } = this.props;
     return React.createElement(controlComponent, {
       field,
       value,
@@ -88,6 +101,8 @@ class ControlHOC extends Component {
       onChange,
       onAddAsset,
       onRemoveAsset,
+      onAddDependency,
+      onRemoveDependency,
       getAsset,
       forID: field.get('name'),
       ref: this.processInnerControlRef,

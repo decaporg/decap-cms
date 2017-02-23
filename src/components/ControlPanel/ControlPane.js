@@ -24,7 +24,17 @@ export default class ControlPane extends Component {
   };
 
   controlFor(field) {
-    const { entry, fieldsMetaData, fieldsErrors, getAsset, onChange, onAddAsset, onRemoveAsset } = this.props;
+    const {
+      entry,
+      fieldsMetaData,
+      fieldsErrors,
+      getAsset,
+      onChange,
+      onAddAsset,
+      onRemoveAsset,
+      onAddDependency,
+      onRemoveDependency,
+    } = this.props;
     const widget = resolveWidget(field.get('widget'));
     const fieldName = field.get('name');
     const value = entry.getIn(['data', fieldName]);
@@ -51,6 +61,8 @@ export default class ControlPane extends Component {
           onValidate={this.props.onValidate.bind(this, fieldName)}
           onAddAsset={onAddAsset}
           onRemoveAsset={onRemoveAsset}
+          onAddDependency={onAddDependency}
+          onRemoveDependency={onRemoveDependency}
           getAsset={getAsset}
           ref={this.processControlRef.bind(this, fieldName)}
         />
@@ -90,4 +102,6 @@ ControlPane.propTypes = {
   onChange: PropTypes.func.isRequired,
   onValidate: PropTypes.func.isRequired,
   onRemoveAsset: PropTypes.func.isRequired,
+  onAddDependency: PropTypes.func,
+  onRemoveDependency: PropTypes.func,
 };
