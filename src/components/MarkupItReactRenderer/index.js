@@ -23,8 +23,8 @@ export default class MarkupItReactRenderer extends React.Component {
 
   render() {
     const { value } = this.props;
-    const mast = remark.parse(value);
-    const hast = toHAST(mast, { allowDangerousHTML: true });
+    const mdast = remark.parse(value);
+    const hast = toHAST(mdast, { allowDangerousHTML: true });
     const html = hastToHTML(hast, { allowDangerousHTML: true });
     return <div dangerouslySetInnerHTML={{ __html: html }} />; // eslint-disable-line react/no-danger
   }

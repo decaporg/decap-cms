@@ -5,8 +5,13 @@ import { EditorState } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 import history from 'prosemirror-history';
 import {
-  blockQuoteRule, orderedListRule, bulletListRule, codeBlockRule, headingRule,
-  inputRules, allInputRules,
+  blockQuoteRule,
+  orderedListRule,
+  bulletListRule,
+  codeBlockRule,
+  headingRule,
+  inputRules,
+  allInputRules,
 } from 'prosemirror-inputrules';
 import { keymap } from 'prosemirror-keymap';
 import { schema as markdownSchema, defaultMarkdownSerializer } from 'prosemirror-markdown';
@@ -56,20 +61,26 @@ function schemaWithPlugins(schema, plugins) {
   let nodeSpec = schema.nodeSpec;
   plugins.forEach((plugin) => {
     const attrs = {};
-    plugin.get('fields').forEach((field) => {
-      attrs[field.get('name')] = { default: null };
+    plugin.get("fields").forEach((field) => {
+      attrs[field.get("name")] = { default: null };
     });
-    nodeSpec = nodeSpec.addToEnd(`plugin_${ plugin.get('id') }`, {
+    nodeSpec = nodeSpec.addToEnd(`plugin_${ plugin.get("id") }`, {
       attrs,
-      group: 'block',
-      parseDOM: [{
-        tag: 'div[data-plugin]',
-        getAttrs(dom) {
-          return JSON.parse(dom.getAttribute('data-plugin'));
+      group: "block",
+      parseDOM: [
+        {
+          tag: "div[data-plugin]",
+          getAttrs(dom) {
+            return JSON.parse(dom.getAttribute("data-plugin"));
+          },
         },
-      }],
+      ],
       toDOM(node) {
-        return ['div', { 'data-plugin': JSON.stringify(node.attrs) }, plugin.get('label')];
+        return [
+          "div",
+          { "data-plugin": JSON.stringify(node.attrs) },
+          plugin.get("label"),
+        ];
       },
     });
   });
@@ -83,8 +94,8 @@ function schemaWithPlugins(schema, plugins) {
 function createSerializer(schema, plugins) {
   const serializer = Object.create(defaultMarkdownSerializer);
   plugins.forEach((plugin) => {
-    serializer.nodes[`plugin_${ plugin.get('id') }`] = (state, node) => {
-      const toBlock = plugin.get('toBlock');
+    serializer.nodes[`plugin_${ plugin.get("id") }`] = (state, node) => {
+      const toBlock = plugin.get("toBlock");
       state.write(`${ toBlock.call(plugin, node.attrs) }\n\n`);
     };
   });
@@ -159,16 +170,30 @@ export default class Editor extends Component {
     const { schema, selection } = state;
     if (selection.from === selection.to) {
       const { $from } = selection;
-      if ($from.parent && $from.parent.type === schema.nodes.paragraph && $from.parent.textContent === '') {
+      if (
+        $from.parent &&
+        $from.parent.type === schema.nodes.paragraph &&
+        $from.parent.textContent === ""
+      ) {
         const pos = this.view.coordsAtPos(selection.from);
         const editorPos = this.view.content.getBoundingClientRect();
-        const selectionPosition = { top: pos.top - editorPos.top, left: pos.left - editorPos.left };
+        const selectionPosition = {
+          top: pos.top - editorPos.top,
+          left: pos.left - editorPos.left,
+        };
         this.setState({ selectionPosition });
+      } else {
+        this.setState({ showToolbar: false, showBlockMenu: false });
       }
     } else {
       const pos = this.view.coordsAtPos(selection.from);
       const editorPos = this.view.content.getBoundingClientRect();
       const selectionPosition = { top: pos.top - editorPos.top, left: pos.left - editorPos.left };
+      this.setState({ selectionPosition });
+      const selectionPosition = {
+        top: pos.top - editorPos.top,
+        left: pos.left - editorPos.left,
+      };
       this.setState({ selectionPosition });
     }
   };
@@ -177,26 +202,24 @@ export default class Editor extends Component {
     this.ref = ref;
   };
 
-  handleHeader = level => (
-    () => {
-      const { schema } = this.state;
-      const state = this.view.state;
-      const { $from, to, node } = state.selection;
-      let nodeType = schema.nodes.heading;
-      let attrs = { level };
-      let inHeader = node && node.hasMarkup(nodeType, attrs);
-      if (!inHeader) {
-        inHeader = to <= $from.end() && $from.parent.hasMarkup(nodeType, attrs);
-      }
-      if (inHeader) {
-        nodeType = schema.nodes.paragraph;
-        attrs = {};
-      }
-
-      const command = setBlockType(nodeType, { level });
-      command(state, this.handleAction);
+  handleHeader = level => () => {
+    const { schema } = this.state;
+    const state = this.view.state;
+    const { $from, to, node } = state.selection;
+    let nodeType = schema.nodes.heading;
+    let attrs = { level };
+    let inHeader = node && node.hasMarkup(nodeType, attrs);
+    if (!inHeader) {
+      inHeader = to <= $from.end() && $from.parent.hasMarkup(nodeType, attrs);
     }
-  );
+    if (inHeader) {
+      nodeType = schema.nodes.paragraph;
+      attrs = {};
+    }
+
+    const command = setBlockType(nodeType, { level });
+    command(state, this.handleAction);
+  };
 
   handleBold = () => {
     const command = toggleMark(this.state.schema.marks.strong);
@@ -213,14 +236,20 @@ export default class Editor extends Component {
     if (!markActive(this.view.state, this.state.schema.marks.link)) {
       url = prompt('Link URL:'); // eslint-disable-line no-alert
     }
-    const command = toggleMark(this.state.schema.marks.link, { href: url ? processUrl(url) : null });
+    const command = toggleMark(this.state.schema.marks.link, {
+      href: url ? processUrl(url) : null,
+    });
     command(this.view.state, this.handleAction);
   };
 
   handlePluginSubmit = (plugin, data) => {
     const { schema } = this.state;
-    const nodeType = schema.nodes[`plugin_${ plugin.get('id') }`];
-    this.view.props.onAction(this.view.state.tr.replaceSelectionWith(nodeType.create(data.toJS())).action());
+    const nodeType = schema.nodes[`plugin_${ plugin.get("id") }`];
+    this.view.props.onAction(
+      this.view.state.tr
+        .replaceSelectionWith(nodeType.create(data.toJS()))
+        .action()
+    );
   };
 
   handleDragEnter = (e) => {
@@ -248,31 +277,40 @@ export default class Editor extends Component {
 
     if (e.dataTransfer.files && e.dataTransfer.files.length) {
       Array.from(e.dataTransfer.files).forEach((file) => {
-        createAssetProxy(file.name, file)
-        .then((assetProxy) => {
+        createAssetProxy(file.name, file).then((assetProxy) => {
           this.props.onAddAsset(assetProxy);
-          if (file.type.split('/')[0] === 'image') {
+          if (file.type.split("/")[0] === "image") {
             nodes.push(
-              schema.nodes.image.create({ src: assetProxy.public_path, alt: file.name })
+              schema.nodes.image.create({
+                src: assetProxy.public_path,
+                alt: file.name,
+              })
             );
           } else {
             nodes.push(
-              schema.marks.link.create({ href: assetProxy.public_path, title: file.name })
+              schema.marks.link.create({
+                href: assetProxy.public_path,
+                title: file.name,
+              })
             );
           }
         });
       });
     } else {
-      nodes.push(schema.nodes.paragraph.create({}, e.dataTransfer.getData('text/plain')));
+      nodes.push(
+        schema.nodes.paragraph.create({}, e.dataTransfer.getData("text/plain"))
+      );
     }
 
     nodes.forEach((node) => {
-      this.view.props.onAction(this.view.state.tr.replaceSelectionWith(node).action());
+      this.view.props.onAction(
+        this.view.state.tr.replaceSelectionWith(node).action()
+      );
     });
   };
 
   handleToggle = () => {
-    this.props.onMode('raw');
+    this.props.onMode("raw");
   };
 
   render() {
@@ -283,36 +321,38 @@ export default class Editor extends Component {
       classNames.push(styles.dragging);
     }
 
-    return (<div
-      className={classNames.join(' ')}
-      onDragEnter={this.handleDragEnter}
-      onDragLeave={this.handleDragLeave}
-      onDragOver={this.handleDragOver}
-      onDrop={this.handleDrop}
-    >
-      <Sticky
-        className={styles.editorControlBar}
-        classNameActive={styles.editorControlBarSticky}
-        fillContainerWidth
+    return (
+      <div
+        className={classNames.join(' ')}
+        onDragEnter={this.handleDragEnter}
+        onDragLeave={this.handleDragLeave}
+        onDragOver={this.handleDragOver}
+        onDrop={this.handleDrop}
       >
-        <Toolbar
-          selectionPosition={selectionPosition}
-          onH1={this.handleHeader(1)}
-          onH2={this.handleHeader(2)}
-          onBold={this.handleBold}
-          onItalic={this.handleItalic}
-          onLink={this.handleLink}
-          onToggleMode={this.handleToggle}
-          plugins={plugins}
-          onSubmit={this.handlePluginSubmit}
-          onAddAsset={onAddAsset}
-          onRemoveAsset={onRemoveAsset}
-          getAsset={getAsset}
-        />
-      </Sticky>
-      <div ref={this.handleRef} />
-      <div className={styles.shim} />
-    </div>);
+        <Sticky
+          className={styles.editorControlBar}
+          classNameActive={styles.editorControlBarSticky}
+          fillContainerWidth
+        >
+          <Toolbar
+            selectionPosition={selectionPosition}
+            onH1={this.handleHeader(1)}
+            onH2={this.handleHeader(2)}
+            onBold={this.handleBold}
+            onItalic={this.handleItalic}
+            onLink={this.handleLink}
+            onToggleMode={this.handleToggle}
+            plugins={plugins}
+            onSubmit={this.handlePluginSubmit}
+            onAddAsset={onAddAsset}
+            onRemoveAsset={onRemoveAsset}
+            getAsset={getAsset}
+          />
+        </Sticky>
+        <div ref={this.handleRef} />
+        <div className={styles.shim} />
+      </div>
+    );
   }
 }
 

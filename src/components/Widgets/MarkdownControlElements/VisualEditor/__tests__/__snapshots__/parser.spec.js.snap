@@ -1,0 +1,324 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Compile markdown to Prosemirror document structure should compile a markdown ordered list 1`] = `
+Object {
+  "content": Array [
+    Object {
+      "attrs": Object {
+        "level": 1,
+      },
+      "content": Array [
+        Object {
+          "text": "H1",
+          "type": "text",
+        },
+      ],
+      "type": "heading",
+    },
+    Object {
+      "attrs": Object {
+        "order": 1,
+        "tight": true,
+      },
+      "content": Array [
+        Object {
+          "content": Array [
+            Object {
+              "content": Array [
+                Object {
+                  "text": "yo",
+                  "type": "text",
+                },
+              ],
+              "type": "paragraph",
+            },
+          ],
+          "type": "list_item",
+        },
+        Object {
+          "content": Array [
+            Object {
+              "content": Array [
+                Object {
+                  "text": "bro",
+                  "type": "text",
+                },
+              ],
+              "type": "paragraph",
+            },
+          ],
+          "type": "list_item",
+        },
+        Object {
+          "content": Array [
+            Object {
+              "content": Array [
+                Object {
+                  "text": "fro",
+                  "type": "text",
+                },
+              ],
+              "type": "paragraph",
+            },
+          ],
+          "type": "list_item",
+        },
+      ],
+      "type": "ordered_list",
+    },
+  ],
+  "type": "doc",
+}
+`;
+
+exports[`Compile markdown to Prosemirror document structure should compile bulleted lists 1`] = `
+Object {
+  "content": Array [
+    Object {
+      "attrs": Object {
+        "level": 1,
+      },
+      "content": Array [
+        Object {
+          "text": "H1",
+          "type": "text",
+        },
+      ],
+      "type": "heading",
+    },
+    Object {
+      "attrs": Object {
+        "tight": false,
+      },
+      "content": Array [
+        Object {
+          "content": Array [
+            Object {
+              "content": Array [
+                Object {
+                  "text": "yo",
+                  "type": "text",
+                },
+              ],
+              "type": "paragraph",
+            },
+          ],
+          "type": "list_item",
+        },
+        Object {
+          "content": Array [
+            Object {
+              "content": Array [
+                Object {
+                  "text": "bro",
+                  "type": "text",
+                },
+              ],
+              "type": "paragraph",
+            },
+          ],
+          "type": "list_item",
+        },
+        Object {
+          "content": Array [
+            Object {
+              "content": Array [
+                Object {
+                  "text": "fro",
+                  "type": "text",
+                },
+              ],
+              "type": "paragraph",
+            },
+          ],
+          "type": "list_item",
+        },
+      ],
+      "type": "bullet_list",
+    },
+  ],
+  "type": "doc",
+}
+`;
+
+exports[`Compile markdown to Prosemirror document structure should compile hard breaks (double space) 1`] = `
+Object {
+  "content": Array [
+    Object {
+      "content": Array [
+        Object {
+          "text": "blue moon",
+          "type": "text",
+        },
+        Object {
+          "type": "hard_break",
+        },
+        Object {
+          "text": "footballs",
+          "type": "text",
+        },
+      ],
+      "type": "paragraph",
+    },
+  ],
+  "type": "doc",
+}
+`;
+
+exports[`Compile markdown to Prosemirror document structure should compile horizontal rules 1`] = `
+Object {
+  "content": Array [
+    Object {
+      "attrs": Object {
+        "level": 1,
+      },
+      "content": Array [
+        Object {
+          "text": "H1",
+          "type": "text",
+        },
+      ],
+      "type": "heading",
+    },
+    Object {
+      "type": "horizontal_rule",
+    },
+    Object {
+      "content": Array [
+        Object {
+          "text": "blue moon",
+          "type": "text",
+        },
+      ],
+      "type": "paragraph",
+    },
+  ],
+  "type": "doc",
+}
+`;
+
+exports[`Compile markdown to Prosemirror document structure should compile horizontal rules 2`] = `
+Object {
+  "content": Array [
+    Object {
+      "attrs": Object {
+        "level": 1,
+      },
+      "content": Array [
+        Object {
+          "text": "H1",
+          "type": "text",
+        },
+      ],
+      "type": "heading",
+    },
+    Object {
+      "type": "horizontal_rule",
+    },
+    Object {
+      "content": Array [
+        Object {
+          "text": "blue moon",
+          "type": "text",
+        },
+      ],
+      "type": "paragraph",
+    },
+  ],
+  "type": "doc",
+}
+`;
+
+exports[`Compile markdown to Prosemirror document structure should compile images 1`] = `
+Object {
+  "content": Array [
+    Object {
+      "content": Array [
+        Object {
+          "attrs": Object {
+            "alt": "super",
+            "src": "duper.jpg",
+            "title": null,
+          },
+          "type": "image",
+        },
+      ],
+      "type": "paragraph",
+    },
+  ],
+  "type": "doc",
+}
+`;
+
+exports[`Compile markdown to Prosemirror document structure should compile multiple header levels 1`] = `
+Object {
+  "content": Array [
+    Object {
+      "attrs": Object {
+        "level": 1,
+      },
+      "content": Array [
+        Object {
+          "text": "H1",
+          "type": "text",
+        },
+      ],
+      "type": "heading",
+    },
+    Object {
+      "attrs": Object {
+        "level": 2,
+      },
+      "content": Array [
+        Object {
+          "text": "H2",
+          "type": "text",
+        },
+      ],
+      "type": "heading",
+    },
+    Object {
+      "attrs": Object {
+        "level": 3,
+      },
+      "content": Array [
+        Object {
+          "text": "H3",
+          "type": "text",
+        },
+      ],
+      "type": "heading",
+    },
+  ],
+  "type": "doc",
+}
+`;
+
+exports[`Compile markdown to Prosemirror document structure should compile simple markdown 1`] = `
+Object {
+  "content": Array [
+    Object {
+      "attrs": Object {
+        "level": 1,
+      },
+      "content": Array [
+        Object {
+          "text": "H1",
+          "type": "text",
+        },
+      ],
+      "type": "heading",
+    },
+    Object {
+      "content": Array [
+        Object {
+          "text": "sweet body",
+          "type": "text",
+        },
+      ],
+      "type": "paragraph",
+    },
+  ],
+  "type": "doc",
+}
+`;
