@@ -523,3 +523,21 @@ export function getUnpublishedEntryDependencies(collection, slug) {
       .catch(err => dispatch(unpublishedEntryDependenciesError(collection, slug, err)));
   };
 }
+
+export function publishUnpublishedEntryAndDependencies(collection, slug) {
+  return (dispatch, getState) => dispatch(getUnpublishedEntryDependencies(collection, slug))
+  .then(({ payload }) => {
+    if (payload.dependencies.size === 1) {
+      return dispatch(publishUnpublishedEntry(collection, slug));
+    }
+
+    const confirmationMessage = `\
+This entry has dependencies, and cannot be published on its own. Publish all the following posts?
+${ payload.dependencies.join("\n") }`;
+
+    if (window.confirm(confirmationMessage)) {
+      return dispatch(publishUnpublishedEntries(payload.dependencies.map(
+        dep => dep.split("."))));
+    }
+  });
+}
