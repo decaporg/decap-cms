@@ -9,6 +9,9 @@ include the BUG REPORT INFORMATION shown below. If you fail to provide this
 information within 7 days, we cannot debug your issue and will close it. We
 will, however, reopen it if you later provide the information.
 
+If you have an issue that can be shown visually, please provide a screenshot or
+gif of the problem as well.
+
 ---------------------------------------------------
 BUG REPORT INFORMATION
 ---------------------------------------------------
