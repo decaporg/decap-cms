@@ -101,7 +101,7 @@
             h('dd', {}, this.props.widgetsFor('posts').getIn(['widgets', 'front_limit']) || 0),
 
             h('dt', {}, 'Default Author'),
-            h('dd', {}, this.props.widgetsFor('posts').getIn(['data', 'front_limit']) || 'None'),
+            h('dd', {}, this.props.widgetsFor('posts').getIn(['data', 'author']) || 'None'),
 
             h('dt', {}, 'Default Thumbnail'),
             h('dd', {}, thumb && h('img', {src: this.props.getAsset(thumb).toString()}))

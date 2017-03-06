@@ -29,54 +29,48 @@ export default class PreviewPane extends React.Component {
     if (authorField) this.inferedFields[authorField] = INFERABLE_FIELDS.author;
   }
 
+  _getWidget = (field, value, props) => {
+    const { fieldsMetaData, getAsset } = props;
+    const widget = resolveWidget(field.get('widget'));
+    return React.createElement(widget.preview, {
+      field,
+      key: field.get('name'),
+      value: value && Map.isMap(value) ? value.get(field.get('name')) : value,
+      metadata: fieldsMetaData && fieldsMetaData.get(field.get('name')),
+      getAsset,
+    });
+  };
+
   widgetFor = (name) => {
-    const { fields, entry, fieldsMetaData, getAsset } = this.props;
+    const { fields, entry } = this.props;
     const field = fields.find(f => f.get('name') === name);
     let value = entry.getIn(['data', field.get('name')]);
-    const metadata = fieldsMetaData.get(field.get('name'));
     const labelledWidgets = ['string', 'text', 'number'];
     if (Object.keys(this.inferedFields).indexOf(name) !== -1) {
       value = this.inferedFields[name].defaultPreview(value);
     } else if (value && labelledWidgets.indexOf(field.get('widget')) !== -1 && value.toString().length < 50) {
       value = <div><strong>{field.get('label')}:</strong> {value}</div>;
     }
-    if (!value) return null;
-    const widget = resolveWidget(field.get('widget'));
-    return React.createElement(widget.preview, {
-      key: field.get('name'),
-      value,
-      field,
-      metadata,
-      getAsset,
-    });
+
+    return value ? this._getWidget(field, value, this.props) : null;
   };
 
   widgetsFor = (name) => {
-    const { fields, entry, getAsset } = this.props;
-    const field = fields && fields.find(f => f.get('name') === name);
+    const { fields, entry } = this.props;
+    const field = fields.find(f => f.get('name') === name);
     const nestedFields = field && field.get('fields');
     const value = entry.getIn(['data', field.get('name')]);
 
-    const widgetFor = (field, value) => {
-      const widget = resolveWidget(field.get('widget'));
-      return (<div key={field.get('name')}>{React.createElement(widget.preview, {
-        key: field.get('name'),
-        value: value && List.isList(value) ? value.get(field.get('name')) : value,
-        field,
-        getAsset,
-      })}</div>);
-    };
-
     if (List.isList(value)) {
       return value.map((val, index) => {
-        const widgets = nestedFields && Map(nestedFields.map(f => [f.get('name'), widgetFor(f, val)]));
+        const widgets = nestedFields && Map(nestedFields.map((f, i) => [f.get('name'), <div key={i}>{this._getWidget(f, val, this.props)}</div>]));
         return Map({ data: val, widgets });
       });
     }
 
     return Map({
       data: value,
-      widgets: nestedFields && Map(nestedFields.map(f => [f.get('name'), widgetFor(f, value)])),
+      widgets: nestedFields && Map(nestedFields.map(f => [f.get('name'), this._getWidget(f, value, this.props)])),
     });
   };
 
