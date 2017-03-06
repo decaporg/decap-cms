@@ -11,6 +11,7 @@ import {
   UNPUBLISHED_ENTRY_STATUS_CHANGE_REQUEST,
   UNPUBLISHED_ENTRY_STATUS_CHANGE_SUCCESS,
   UNPUBLISHED_ENTRY_PUBLISH_REQUEST,
+  UNPUBLISHED_ENTRIES_PUBLISH_REQUEST,
   UNPUBLISHED_ENTRY_REGISTER_DEPENDENCY,
 } from '../actions/editorialWorkflow';
 import { CONFIG_SUCCESS } from '../actions/config';
@@ -76,6 +77,14 @@ const unpublishedEntries = (state = null, action) => {
     case UNPUBLISHED_ENTRY_PUBLISH_REQUEST:
       // Update Optimistically
       return state.deleteIn(['entities', `${ action.payload.collection }.${ action.payload.slug }`]);
+
+    case UNPUBLISHED_ENTRIES_PUBLISH_REQUEST:
+      // Update Optimistically
+      return state.withMutations((map) => {
+        action.payload.entries.forEach((entry) => {
+          map.deleteIn(['entities', `${ entry[0] }.${ entry[1] }`]);
+        });
+      });
 
     default:
       return state;

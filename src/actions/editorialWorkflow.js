@@ -34,6 +34,10 @@ export const UNPUBLISHED_ENTRY_PUBLISH_REQUEST = 'UNPUBLISHED_ENTRY_PUBLISH_REQU
 export const UNPUBLISHED_ENTRY_PUBLISH_SUCCESS = 'UNPUBLISHED_ENTRY_PUBLISH_SUCCESS';
 export const UNPUBLISHED_ENTRY_PUBLISH_FAILURE = 'UNPUBLISHED_ENTRY_PUBLISH_FAILURE';
 
+export const UNPUBLISHED_ENTRIES_PUBLISH_REQUEST = 'UNPUBLISHED_ENTRIES_PUBLISH_REQUEST';
+export const UNPUBLISHED_ENTRIES_PUBLISH_SUCCESS = 'UNPUBLISHED_ENTRIES_PUBLISH_SUCCESS';
+export const UNPUBLISHED_ENTRIES_PUBLISH_FAILURE = 'UNPUBLISHED_ENTRIES_PUBLISH_FAILURE';
+
 export const UNPUBLISHED_ENTRY_REGISTER_DEPENDENCY = 'UNPUBLISHED_ENTRY_REGISTER_DEPENDENCY';
 export const UNPUBLISHED_ENTRY_UNREGISTER_DEPENDENCY = 'UNPUBLISHED_ENTRY_UNREGISTER_DEPENDENCY';
 
@@ -184,6 +188,30 @@ function unpublishedEntryPublishError(collection, slug, transactionID) {
   return {
     type: UNPUBLISHED_ENTRY_PUBLISH_FAILURE,
     payload: { collection, slug },
+    optimist: { type: REVERT, id: transactionID },
+  };
+}
+
+function unpublishedEntriesPublishRequest(entries, transactionID) {
+  return {
+    type: UNPUBLISHED_ENTRIES_PUBLISH_REQUEST,
+    payload: { entries },
+    optimist: { type: BEGIN, id: transactionID },
+  };
+}
+
+function unpublishedEntriesPublished(entries, transactionID) {
+  return {
+    type: UNPUBLISHED_ENTRIES_PUBLISH_SUCCESS,
+    payload: { entries },
+    optimist: { type: COMMIT, id: transactionID },
+  };
+}
+
+function unpublishedEntriesPublishError(entries, transactionID) {
+  return {
+    type: UNPUBLISHED_ENTRIES_PUBLISH_FAILURE,
+    payload: { entries },
     optimist: { type: REVERT, id: transactionID },
   };
 }
@@ -356,6 +384,28 @@ export function publishUnpublishedEntry(collection, slug) {
       }));
       dispatch(unpublishedEntryPublishError(collection, slug, transactionID));
     });
+  };
+}
+
+export function publishUnpublishedEntries(entries) {
+  return (dispatch, getState) => {
+    const state = getState();
+    const backend = currentBackend(state.config);
+    const transactionID = uuid.v4();
+
+    dispatch(unpublishedEntriesPublishRequest(entries, transactionID));
+    backend.publishUnpublishedEntries(entries)
+      .then(() => {
+        dispatch(unpublishedEntriesPublished(entries, transactionID));
+      })
+      .catch((error) => {
+        dispatch(notifSend({
+          message: `Failed to merge: ${ error }`,
+          kind: 'danger',
+          dismissAfter: 8000,
+        }));
+        dispatch(unpublishedEntriesPublishError(entries, transactionID));
+      });
   };
 }
 

@@ -203,6 +203,10 @@ class Backend {
     return this.implementation.publishUnpublishedEntry(collection, slug);
   }
 
+  publishUnpublishedEntries(entries) {
+    return this.implementation.publishUnpublishedEntries(entries);
+  }
+
   deleteUnpublishedEntry(collection, slug) {
     return this.implementation.deleteUnpublishedEntry(collection, slug);
   }
