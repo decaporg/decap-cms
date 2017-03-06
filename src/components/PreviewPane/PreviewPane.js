@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import { Map } from 'immutable';
+import { List, Map } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { ScrollSyncPane } from '../ScrollSync';
 import registry from '../../lib/registry';
@@ -55,22 +55,29 @@ export default class PreviewPane extends React.Component {
     const { fields, entry, getAsset } = this.props;
     const field = fields && fields.find(f => f.get('name') === name);
     const nestedFields = field && field.get('fields');
-    const values = entry.getIn(['data', field.get('name')]);
+    const value = entry.getIn(['data', field.get('name')]);
 
     const widgetFor = (field, value) => {
       const widget = resolveWidget(field.get('widget'));
       return (<div key={field.get('name')}>{React.createElement(widget.preview, {
         key: field.get('name'),
-        value: value && value.get(field.get('name')),
+        value: value && List.isList(value) ? value.get(field.get('name')) : value,
         field,
         getAsset,
       })}</div>);
     };
 
-    return values ? values.map((value, index) => {
-      const widgets = nestedFields && Map(nestedFields.map(f => [f.get('name'), widgetFor(f, value)]));
-      return Map({ data: value, widgets });
-    }) : null;
+    if (List.isList(value)) {
+      return value.map((val, index) => {
+        const widgets = nestedFields && Map(nestedFields.map(f => [f.get('name'), widgetFor(f, val)]));
+        return Map({ data: val, widgets });
+      });
+    }
+
+    return Map({
+      data: value,
+      widgets: nestedFields && Map(nestedFields.map(f => [f.get('name'), widgetFor(f, value)])),
+    });
   };
 
   handleIframeRef = (ref) => {
