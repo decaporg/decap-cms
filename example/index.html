@@ -110,8 +110,24 @@
       }
     });
 
+    var AuthorsPreview = createClass({
+      render: function() {
+        return h('div', {},
+          h('h1', {}, 'Authors'),
+          this.props.widgetsFor('authors').map(function(author, index) {
+            return h('div', {key: index},
+              h('hr', {}),
+              h('strong', {}, author.getIn(['data', 'name'])),
+              author.getIn(['widgets', 'description'])
+            );
+          })
+        );
+      }
+    });
+
     CMS.registerPreviewTemplate("posts", PostPreview);
     CMS.registerPreviewTemplate("general", GeneralPreview);
+    CMS.registerPreviewTemplate("authors", AuthorsPreview);
     CMS.registerPreviewStyle("/example.css");
     CMS.registerEditorComponent({
       id: "youtube",
