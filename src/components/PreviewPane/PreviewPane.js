@@ -16,6 +16,18 @@ export default class PreviewPane extends React.Component {
     this.renderPreview();
   }
 
+  getWidget = (field, value, props) => {
+    const { fieldsMetaData, getAsset } = props;
+    const widget = resolveWidget(field.get('widget'));
+    return React.createElement(widget.preview, {
+      field,
+      key: field.get('name'),
+      value: value && Map.isMap(value) ? value.get(field.get('name')) : value,
+      metadata: fieldsMetaData && fieldsMetaData.get(field.get('name')),
+      getAsset,
+    });
+  };
+
   inferedFields = {};
 
   inferFields() {
@@ -29,18 +41,6 @@ export default class PreviewPane extends React.Component {
     if (authorField) this.inferedFields[authorField] = INFERABLE_FIELDS.author;
   }
 
-  _getWidget = (field, value, props) => {
-    const { fieldsMetaData, getAsset } = props;
-    const widget = resolveWidget(field.get('widget'));
-    return React.createElement(widget.preview, {
-      field,
-      key: field.get('name'),
-      value: value && Map.isMap(value) ? value.get(field.get('name')) : value,
-      metadata: fieldsMetaData && fieldsMetaData.get(field.get('name')),
-      getAsset,
-    });
-  };
-
   widgetFor = (name) => {
     const { fields, entry } = this.props;
     const field = fields.find(f => f.get('name') === name);
@@ -52,7 +52,7 @@ export default class PreviewPane extends React.Component {
       value = <div><strong>{field.get('label')}:</strong> {value}</div>;
     }
 
-    return value ? this._getWidget(field, value, this.props) : null;
+    return value ? this.getWidget(field, value, this.props) : null;
   };
 
   widgetsFor = (name) => {
@@ -63,14 +63,14 @@ export default class PreviewPane extends React.Component {
 
     if (List.isList(value)) {
       return value.map((val, index) => {
-        const widgets = nestedFields && Map(nestedFields.map((f, i) => [f.get('name'), <div key={i}>{this._getWidget(f, val, this.props)}</div>]));
+        const widgets = nestedFields && Map(nestedFields.map((f, i) => [f.get('name'), <div key={i}>{this.getWidget(f, val, this.props)}</div>]));
         return Map({ data: val, widgets });
       });
     }
 
     return Map({
       data: value,
-      widgets: nestedFields && Map(nestedFields.map(f => [f.get('name'), this._getWidget(f, value, this.props)])),
+      widgets: nestedFields && Map(nestedFields.map(f => [f.get('name'), this.getWidget(f, value, this.props)])),
     });
   };
 
