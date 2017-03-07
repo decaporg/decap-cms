@@ -1,6 +1,7 @@
 import LocalForage from "localforage";
 import { Base64 } from "js-base64";
 import _ from "lodash";
+import { filterPromises } from "../../lib/promiseHelper";
 import AssetProxy from "../../valueObjects/AssetProxy";
 import { SIMPLE, EDITORIAL_WORKFLOW, status } from "../../constants/publishModes";
 import { APIError, EditorialWorkflowError } from "../../valueObjects/errors";
@@ -177,6 +178,15 @@ export default class API {
   listUnpublishedBranches() {
     console.log("%c Checking for Unpublished entries", "line-height: 30px;text-align: center;font-weight: bold"); // eslint-disable-line
     return this.request(`${ this.repoURL }/git/refs/heads/cms`)
+    .then(branches => filterPromises(branches, (branch) => {
+      const branchName = branch.ref.substring("/refs/heads/".length - 1);
+
+      // Get PRs with a `head` of `branchName`. Note that this is a
+      // substring match, so we need to check that the `head.ref` of
+      // at least one of the returned objects matches `branchName`.
+      return this.request(`${ this.repoURL }/pulls?head=${ branchName }&state=open`)
+        .then(prs => prs.some(pr => pr.head.ref === branchName));
+    }))
     .catch((error) => {
       console.log("%c No Unpublished entries", "line-height: 30px;text-align: center;font-weight: bold"); // eslint-disable-line
       throw error;
