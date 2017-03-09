@@ -33,6 +33,7 @@ These generators... | store static files in
 Jekyll, GitBook | `/` (project root)
 Hugo | `/static`
 Hexo, Middleman | `/source`
+Spike | `/views`
 
 If your generator isn't listed here, you can check its documentation, or as a shortcut, look in your project for a `CSS` or `images` folder. They're usually processed as static files, so it's likely you can store your `admin` folder next to those. (When you've found the location, feel free to add it to these docs!).
 
