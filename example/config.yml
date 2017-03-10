@@ -2,7 +2,6 @@ backend:
   name: test-repo
   delay: 0.1
 
-publish_mode: editorial_workflow
 
 media_folder: "assets/uploads"
 
