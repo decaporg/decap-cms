@@ -210,7 +210,6 @@ export default class API {
     const uploadPromises = [];
     const files = mediaFiles.concat(entry);
 
-
     files.forEach((file) => {
       if (file.uploaded) { return; }
       uploadPromises.push(this.uploadBlob(file));
