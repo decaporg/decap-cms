@@ -50,7 +50,7 @@ function unpublishedEntryLoading(collection, slug) {
 function unpublishedEntryLoaded(collection, entry) {
   return {
     type: UNPUBLISHED_ENTRY_SUCCESS,
-    payload: {
+    payload: { 
       collection: collection.get('name'),
       entry,
     },
@@ -60,7 +60,7 @@ function unpublishedEntryLoaded(collection, entry) {
 function unpublishedEntryRedirected(collection, slug) {
   return {
     type: UNPUBLISHED_ENTRY_REDIRECT,
-    payload: {
+    payload: { 
       collection: collection.get('name'),
       slug,
     },
