@@ -209,7 +209,6 @@ export default class API {
   persistFiles(entry, mediaFiles, options) {
     const uploadPromises = [];
     const files = mediaFiles.concat(entry);
-
     files.forEach((file) => {
       if (file.uploaded) { return; }
       uploadPromises.push(this.uploadBlob(file));
