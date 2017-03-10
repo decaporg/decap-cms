@@ -270,17 +270,16 @@ export function updateUnpublishedEntryStatus(collection, slug, oldStatus, newSta
     });
   };
 }
-// create deleteUnpublishedEntry
+
 export function deleteUnpublishedEntry(collection, slug) {
   return (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
     const transactionID = uuid.v4();
-    dispatch(unpublishedEntryPublishRequest(collection, slug, transactionID)); //need change?
+    dispatch(unpublishedEntryPublishRequest(collection, slug, transactionID)); 
     backend.deleteUnpublishedEntry(collection, slug)
-    .then((res) => {
-      console.log("Deleted!", res);
-      dispatch(unpublishedEntryPublished(collection, slug, transactionID)); // rename??? - removes card
+    .then(() => {
+      dispatch(unpublishedEntryPublished(collection, slug, transactionID)); 
     })
     .catch((error) => {
       dispatch(notifSend({
@@ -288,7 +287,7 @@ export function deleteUnpublishedEntry(collection, slug) {
         kind: 'danger',
         dismissAfter: 8000,
       }));
-      dispatch(unpublishedEntryPublishError(collection, slug, transactionID)); // rename / do we need this?
+      dispatch(unpublishedEntryPublishError(collection, slug, transactionID)); 
     });
   };
 }
@@ -301,7 +300,7 @@ export function publishUnpublishedEntry(collection, slug) {
     dispatch(unpublishedEntryPublishRequest(collection, slug, transactionID));
     backend.publishUnpublishedEntry(collection, slug)
     .then(() => {
-      dispatch(unpublishedEntryPublished(collection, slug, transactionID)); // remove card
+      dispatch(unpublishedEntryPublished(collection, slug, transactionID)); 
     })
     .catch((error) => {
       dispatch(notifSend({
