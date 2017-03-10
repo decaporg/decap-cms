@@ -300,7 +300,7 @@ export function publishUnpublishedEntry(collection, slug) {
     dispatch(unpublishedEntryPublishRequest(collection, slug, transactionID));
     backend.publishUnpublishedEntry(collection, slug)
     .then(() => {
-      dispatch(unpublishedEntryPublished(collection, slug, transactionID)); 
+      dispatch(unpublishedEntryPublished(collection, slug, transactionID));
     })
     .catch((error) => {
       dispatch(notifSend({
