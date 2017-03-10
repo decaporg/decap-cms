@@ -22,6 +22,7 @@ class UnpublishedListing extends React.Component {
     const oldStatus = dragProps.ownStatus;
     this.props.handleChangeStatus(collection, slug, oldStatus, newStatus);
   };
+
   requestDelete = (collection, slug, ownStatus) => {
     if (window.confirm('Are you sure you want to delete this entry?')) {
       this.props.handleDelete(collection, slug, ownStatus);
