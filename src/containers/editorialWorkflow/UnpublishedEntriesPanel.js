@@ -31,7 +31,7 @@ class unpublishedEntriesPanel extends Component {
     const { isEditorialWorkflow, isFetching, unpublishedEntries, updateUnpublishedEntryStatus, publishUnpublishedEntry, deleteUnpublishedEntry } = this.props;
     if (!isEditorialWorkflow) return null;
     if (isFetching) return <Loader active>Loading Editorial Workflow Entries</Loader>;
-    // adding function prop here
+   
     return (
       <UnpublishedListing
         entries={unpublishedEntries}
