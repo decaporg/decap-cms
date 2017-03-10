@@ -209,7 +209,7 @@ export default class API {
   persistFiles(entry, mediaFiles, options) {
     const uploadPromises = [];
     const files = mediaFiles.concat(entry);
-    
+
 
     files.forEach((file) => {
       if (file.uploaded) { return; }
@@ -314,6 +314,14 @@ export default class API {
     .then(updatedMetadata => this.storeMetadata(contentKey, updatedMetadata));
   }
 
+  deleteUnpublishedEntry(collection, slug) {
+    const contentKey = slug;
+    let prNumber; // do we need this?
+    return this.retrieveMetadata(contentKey)
+    .then(metadata => this.closePR(metadata.pr, metadata.objects))
+    .then(() => this.deleteBranch(`cms/${ contentKey }`));
+  }
+
   publishUnpublishedEntry(collection, slug) {
     const contentKey = slug;
     let prNumber;
@@ -364,6 +372,21 @@ export default class API {
     return this.request(`${ this.repoURL }/pulls`, {
       method: "POST",
       body: JSON.stringify({ title, body, head, base }),
+    });
+  }
+
+  closePR(pullrequest, objects) {
+    const headSha = pullrequest.head;
+    const prNumber = pullrequest.number;
+    console.log("%c Deleting PR", "line-height: 30px;text-align: center;font-weight: bold"); // eslint-disable-line
+    return this.request(`${ this.repoURL }/pulls/${ prNumber }`, {
+      method: "PATCH",
+      body: JSON.stringify({
+        state: closed,
+      }),
+    })
+    .catch((error) => {
+      throw error;
     });
   }
 

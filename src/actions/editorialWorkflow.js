@@ -50,7 +50,7 @@ function unpublishedEntryLoading(collection, slug) {
 function unpublishedEntryLoaded(collection, entry) {
   return {
     type: UNPUBLISHED_ENTRY_SUCCESS,
-    payload: { 
+    payload: {
       collection: collection.get('name'),
       entry,
     },
@@ -60,7 +60,7 @@ function unpublishedEntryLoaded(collection, entry) {
 function unpublishedEntryRedirected(collection, slug) {
   return {
     type: UNPUBLISHED_ENTRY_REDIRECT,
-    payload: { 
+    payload: {
       collection: collection.get('name'),
       slug,
     },
@@ -106,7 +106,7 @@ function unpublishedEntryPersisting(collection, entry, transactionID) {
 function unpublishedEntryPersisted(collection, entry, transactionID) {
   return {
     type: UNPUBLISHED_ENTRY_PERSIST_SUCCESS,
-    payload: { 
+    payload: {
       collection: collection.get('name'),
       entry,
     },
@@ -125,7 +125,7 @@ function unpublishedEntryPersistedFail(error, transactionID) {
 function unpublishedEntryStatusChangeRequest(collection, slug, oldStatus, newStatus, transactionID) {
   return {
     type: UNPUBLISHED_ENTRY_STATUS_CHANGE_REQUEST,
-    payload: { 
+    payload: {
       collection,
       slug,
       oldStatus,
@@ -138,7 +138,7 @@ function unpublishedEntryStatusChangeRequest(collection, slug, oldStatus, newSta
 function unpublishedEntryStatusChangePersisted(collection, slug, oldStatus, newStatus, transactionID) {
   return {
     type: UNPUBLISHED_ENTRY_STATUS_CHANGE_SUCCESS,
-    payload: { 
+    payload: {
       collection,
       slug,
       oldStatus,
@@ -270,6 +270,28 @@ export function updateUnpublishedEntryStatus(collection, slug, oldStatus, newSta
     });
   };
 }
+// create deleteUnpublishedEntry
+export function deleteUnpublishedEntry(collection, slug) {
+  return (dispatch, getState) => {
+    const state = getState();
+    const backend = currentBackend(state.config);
+    const transactionID = uuid.v4();
+    dispatch(unpublishedEntryPublishRequest(collection, slug, transactionID)); //need change?
+    backend.deleteUnpublishedEntry(collection, slug)
+    .then((res) => {
+      console.log("Deleted!", res);
+      dispatch(unpublishedEntryPublished(collection, slug, transactionID)); // rename??? - removes card
+    })
+    .catch((error) => {
+      dispatch(notifSend({
+        message: `Failed to close PR: ${ error }`,
+        kind: 'danger',
+        dismissAfter: 8000,
+      }));
+      dispatch(unpublishedEntryPublishError(collection, slug, transactionID)); // rename / do we need this?
+    });
+  };
+}
 
 export function publishUnpublishedEntry(collection, slug) {
   return (dispatch, getState) => {
@@ -279,7 +301,7 @@ export function publishUnpublishedEntry(collection, slug) {
     dispatch(unpublishedEntryPublishRequest(collection, slug, transactionID));
     backend.publishUnpublishedEntry(collection, slug)
     .then(() => {
-      dispatch(unpublishedEntryPublished(collection, slug, transactionID));
+      dispatch(unpublishedEntryPublished(collection, slug, transactionID)); // remove card
     })
     .catch((error) => {
       dispatch(notifSend({

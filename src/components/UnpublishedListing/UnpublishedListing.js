@@ -13,6 +13,7 @@ class UnpublishedListing extends React.Component {
     entries: ImmutablePropTypes.orderedMap,
     handleChangeStatus: PropTypes.func.isRequired,
     handlePublish: PropTypes.func.isRequired,
+    handleDelete: PropTypes.func.isRequired,
   };
 
   handleChangeStatus = (newStatus, dragProps) => {
@@ -21,7 +22,11 @@ class UnpublishedListing extends React.Component {
     const oldStatus = dragProps.ownStatus;
     this.props.handleChangeStatus(collection, slug, oldStatus, newStatus);
   };
-
+  requestDelete = (collection, slug, ownStatus) => {
+    if (window.confirm('Are you sure you want to delete this entry?')) {
+      this.props.handleDelete(collection, slug, ownStatus);
+    }
+  };
   requestPublish = (collection, slug, ownStatus) => {
     if (ownStatus !== status.last()) return;
     if (window.confirm('Are you sure you want to publish this entry?')) {
@@ -82,6 +87,10 @@ class UnpublishedListing extends React.Component {
                       <Link to={link}>
                         <Button>Edit</Button>
                       </Link>
+                      <Button
+                      onClick={this.requestDelete.bind(this, collection, slug, ownStatus)}>
+                        Delete
+                      </Button>
                       {
                         (ownStatus === status.last() && !entry.get('isPersisting', false)) &&
                         <Button

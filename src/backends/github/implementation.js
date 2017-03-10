@@ -135,6 +135,9 @@ export default class GitHub {
     return this.api.updateUnpublishedEntryStatus(collection, slug, newStatus);
   }
 
+  deleteUnpublishedEntry(collection, slug) {
+    return this.api.deleteUnpublishedEntry(collection, slug);
+  }
   publishUnpublishedEntry(collection, slug) {
     return this.api.publishUnpublishedEntry(collection, slug);
   }

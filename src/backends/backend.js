@@ -200,6 +200,9 @@ class Backend {
     return this.implementation.publishUnpublishedEntry(collection, slug);
   }
 
+  deleteUnpublishedEntry(collection, slug) {
+    return this.implementation.deleteUnpublishedEntry(collection, slug);
+  }
 
   entryToRaw(collection, entry) {
     const format = resolveFormat(collection, entry.toJS());
