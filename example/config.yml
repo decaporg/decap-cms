@@ -2,7 +2,6 @@ backend:
   name: test-repo
   delay: 0.1
 
-
 media_folder: "assets/uploads"
 
 collections: # A list of collections the CMS should be able to edit
