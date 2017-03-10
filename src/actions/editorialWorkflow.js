@@ -106,7 +106,7 @@ function unpublishedEntryPersisting(collection, entry, transactionID) {
 function unpublishedEntryPersisted(collection, entry, transactionID) {
   return {
     type: UNPUBLISHED_ENTRY_PERSIST_SUCCESS,
-    payload: {
+    payload: { 
       collection: collection.get('name'),
       entry,
     },
@@ -125,7 +125,7 @@ function unpublishedEntryPersistedFail(error, transactionID) {
 function unpublishedEntryStatusChangeRequest(collection, slug, oldStatus, newStatus, transactionID) {
   return {
     type: UNPUBLISHED_ENTRY_STATUS_CHANGE_REQUEST,
-    payload: {
+    payload: { 
       collection,
       slug,
       oldStatus,
@@ -138,7 +138,7 @@ function unpublishedEntryStatusChangeRequest(collection, slug, oldStatus, newSta
 function unpublishedEntryStatusChangePersisted(collection, slug, oldStatus, newStatus, transactionID) {
   return {
     type: UNPUBLISHED_ENTRY_STATUS_CHANGE_SUCCESS,
-    payload: {
+    payload: { 
       collection,
       slug,
       oldStatus,
@@ -279,7 +279,7 @@ export function deleteUnpublishedEntry(collection, slug) {
     dispatch(unpublishedEntryPublishRequest(collection, slug, transactionID)); 
     backend.deleteUnpublishedEntry(collection, slug)
     .then(() => {
-      dispatch(unpublishedEntryPublished(collection, slug, transactionID)); 
+      dispatch(unpublishedEntryPublished(collection, slug, transactionID));
     })
     .catch((error) => {
       dispatch(notifSend({
