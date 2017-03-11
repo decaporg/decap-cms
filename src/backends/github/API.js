@@ -384,9 +384,6 @@ export default class API {
       body: JSON.stringify({
         state: closed,
       }),
-    })
-    .catch((error) => {
-      throw error;
     });
   }
 
