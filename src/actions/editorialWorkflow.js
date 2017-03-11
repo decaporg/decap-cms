@@ -271,6 +271,27 @@ export function updateUnpublishedEntryStatus(collection, slug, oldStatus, newSta
   };
 }
 
+export function deleteUnpublishedEntry(collection, slug) {
+  return (dispatch, getState) => {
+    const state = getState();
+    const backend = currentBackend(state.config);
+    const transactionID = uuid.v4();
+    dispatch(unpublishedEntryPublishRequest(collection, slug, transactionID)); 
+    backend.deleteUnpublishedEntry(collection, slug)
+    .then(() => {
+      dispatch(unpublishedEntryPublished(collection, slug, transactionID));
+    })
+    .catch((error) => {
+      dispatch(notifSend({
+        message: `Failed to close PR: ${ error }`,
+        kind: 'danger',
+        dismissAfter: 8000,
+      }));
+      dispatch(unpublishedEntryPublishError(collection, slug, transactionID)); 
+    });
+  };
+}
+
 export function publishUnpublishedEntry(collection, slug) {
   return (dispatch, getState) => {
     const state = getState();

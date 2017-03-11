@@ -2,7 +2,12 @@ import React, { Component, PropTypes } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { OrderedMap } from 'immutable';
 import { connect } from 'react-redux';
-import { loadUnpublishedEntries, updateUnpublishedEntryStatus, publishUnpublishedEntry } from '../../actions/editorialWorkflow';
+import { 
+  loadUnpublishedEntries,
+  updateUnpublishedEntryStatus,
+  publishUnpublishedEntry,
+  deleteUnpublishedEntry 
+} from '../../actions/editorialWorkflow';
 import { selectUnpublishedEntriesByStatus } from '../../reducers';
 import { EDITORIAL_WORKFLOW, status } from '../../constants/publishModes';
 import UnpublishedListing from '../../components/UnpublishedListing/UnpublishedListing';
@@ -16,6 +21,7 @@ class unpublishedEntriesPanel extends Component {
     loadUnpublishedEntries: PropTypes.func.isRequired,
     updateUnpublishedEntryStatus: PropTypes.func.isRequired,
     publishUnpublishedEntry: PropTypes.func.isRequired,
+    deleteUnpublishedEntry: PropTypes.func.isRequired,
   };
 
   componentDidMount() {
@@ -26,14 +32,16 @@ class unpublishedEntriesPanel extends Component {
   }
 
   render() {
-    const { isEditorialWorkflow, isFetching, unpublishedEntries, updateUnpublishedEntryStatus, publishUnpublishedEntry } = this.props;
+    const { isEditorialWorkflow, isFetching, unpublishedEntries, updateUnpublishedEntryStatus, publishUnpublishedEntry, deleteUnpublishedEntry } = this.props;
     if (!isEditorialWorkflow) return null;
     if (isFetching) return <Loader active>Loading Editorial Workflow Entries</Loader>;
+   
     return (
       <UnpublishedListing
         entries={unpublishedEntries}
         handleChangeStatus={updateUnpublishedEntryStatus}
         handlePublish={publishUnpublishedEntry}
+        handleDelete={deleteUnpublishedEntry}
       />
     );
   }
@@ -62,4 +70,5 @@ export default connect(mapStateToProps, {
   loadUnpublishedEntries,
   updateUnpublishedEntryStatus,
   publishUnpublishedEntry,
+  deleteUnpublishedEntry,
 })(unpublishedEntriesPanel);
