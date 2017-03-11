@@ -98,10 +98,10 @@
           h('h1', {}, title),
           h('dl', {},
             h('dt', {}, 'Posts on Frontpage'),
-            h('dd', {}, posts && posts.get('front_limit') || '0'),
+            h('dd', {}, this.props.widgetsFor('posts').getIn(['widgets', 'front_limit']) || 0),
 
             h('dt', {}, 'Default Author'),
-            h('dd', {}, posts && posts.get('author') || 'None'),
+            h('dd', {}, this.props.widgetsFor('posts').getIn(['data', 'author']) || 'None'),
 
             h('dt', {}, 'Default Thumbnail'),
             h('dd', {}, thumb && h('img', {src: this.props.getAsset(thumb).toString()}))
@@ -110,8 +110,24 @@
       }
     });
 
+    var AuthorsPreview = createClass({
+      render: function() {
+        return h('div', {},
+          h('h1', {}, 'Authors'),
+          this.props.widgetsFor('authors').map(function(author, index) {
+            return h('div', {key: index},
+              h('hr', {}),
+              h('strong', {}, author.getIn(['data', 'name'])),
+              author.getIn(['widgets', 'description'])
+            );
+          })
+        );
+      }
+    });
+
     CMS.registerPreviewTemplate("posts", PostPreview);
     CMS.registerPreviewTemplate("general", GeneralPreview);
+    CMS.registerPreviewTemplate("authors", AuthorsPreview);
     CMS.registerPreviewStyle("/example.css");
     CMS.registerEditorComponent({
       id: "youtube",
