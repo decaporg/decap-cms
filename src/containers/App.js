@@ -2,27 +2,27 @@ import React, { PropTypes } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import pluralize from 'pluralize';
 import { connect } from 'react-redux';
+import FontIcon from 'react-toolbox/lib/font_icon';
 import { Layout, Panel } from 'react-toolbox/lib/layout';
 import { Navigation } from 'react-toolbox/lib/navigation';
-import { Link } from 'react-toolbox/lib/link';
 import { Notifs } from 'redux-notifications';
 import TopBarProgress from 'react-topbar-progress-indicator';
 import Sidebar from './Sidebar';
-import { loadConfig } from '../actions/config';
-import { loginUser, logoutUser } from '../actions/auth';
-import { toggleSidebar } from '../actions/globalUI';
+import { loadConfig as actionLoadConfig } from '../actions/config';
+import { loginUser as actionLoginUser, logoutUser as actionLogoutUser } from '../actions/auth';
+import { toggleSidebar as actionToggleSidebar } from '../actions/globalUI';
 import { currentBackend } from '../backends/backend';
 import {
   SHOW_COLLECTION,
-  CREATE_COLLECTION,
-  HELP,
-  runCommand,
-  navigateToCollection,
-  createNewEntryInCollection,
+  runCommand as actionRunCommand,
+  navigateToCollection as actionNavigateToCollection,
+  createNewEntryInCollection as actionCreateNewEntryInCollection,
 } from '../actions/findbar';
 import AppHeader from '../components/AppHeader/AppHeader';
 import { Loader, Toast } from '../components/UI/index';
+import { getCollectionUrl, getNewEntryUrl } from '../lib/urlHelper';
 import styles from './App.css';
+import sidebarStyles from './Sidebar.css';
 
 TopBarProgress.config({
   barColors: {
@@ -63,11 +63,11 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    this.props.dispatch(loadConfig());
+    this.props.dispatch(actionLoadConfig());
   }
 
   handleLogin(credentials) {
-    this.props.dispatch(loginUser(credentials));
+    this.props.dispatch(actionLoginUser(credentials));
   }
 
   authenticating() {
@@ -89,6 +89,11 @@ class App extends React.Component {
         }
       </div>
     );
+  }
+
+  handleLinkClick(event, handler, ...args) {
+    event.preventDefault();
+    handler(...args);
   }
 
   generateFindBarCommands() {
@@ -155,21 +160,38 @@ class App extends React.Component {
 
     const { commands, defaultCommands } = this.generateFindBarCommands();
     const sidebarContent = (
-      <nav className={styles.nav}>
-        <h1 className={styles.heading}>Collections</h1>
-        <Navigation type="vertical">
+      <div>
+        <h1 className={sidebarStyles.heading}>Collections</h1>
+        <Navigation type="vertical" className={sidebarStyles.nav}>
           {
-            collections.valueSeq().map(collection =>
-              <Link
-                key={collection.get('name')}
-                onClick={navigateToCollection.bind(this, collection.get('name'))} // eslint-disable-line
-              >
-                {collection.get('label')}
-              </Link>
-            )
+            collections.valueSeq().map((collection) => {
+              const collectionName = collection.get('name');
+              return (
+                <div key={collectionName} className={sidebarStyles.linkWrapper}>
+                  <a
+                    href={getCollectionUrl(collectionName, true)}
+                    className={sidebarStyles.viewEntriesLink}
+                    onClick={e => this.handleLinkClick(e, navigateToCollection, collectionName)}
+                  >
+                    {pluralize(collection.get('label'))}
+                  </a>
+                  {
+                    collection.get('create') ? (
+                      <a
+                        href={getNewEntryUrl(collectionName, true)}
+                        className={sidebarStyles.createEntryLink}
+                        onClick={e => this.handleLinkClick(e, createNewEntryInCollection, collectionName)}
+                      >
+                        <FontIcon value="add_circle_outline" className={sidebarStyles.newEntryIcon} />
+                      </a>
+                    ) : null
+                  }
+                </div>
+              );
+            })
           }
         </Navigation>
-      </nav>
+      </div>
     );
 
     return (
@@ -212,18 +234,18 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     dispatch,
-    toggleSidebar: () => dispatch(toggleSidebar()),
+    toggleSidebar: () => dispatch(actionToggleSidebar()),
     runCommand: (type, payload) => {
-      dispatch(runCommand(type, payload));
+      dispatch(actionRunCommand(type, payload));
     },
     navigateToCollection: (collection) => {
-      dispatch(navigateToCollection(collection));
+      dispatch(actionNavigateToCollection(collection));
     },
     createNewEntryInCollection: (collectionName) => {
-      dispatch(createNewEntryInCollection(collectionName));
+      dispatch(actionCreateNewEntryInCollection(collectionName));
     },
     logoutUser: () => {
-      dispatch(logoutUser());
+      dispatch(actionLogoutUser());
     },
   };
 }
