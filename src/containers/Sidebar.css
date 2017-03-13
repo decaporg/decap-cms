@@ -27,10 +27,6 @@
 
   &:hover {
     background-color: var(--defaultColorLight);
-
-    & .createEntryLink {
-      visibility: visible;
-    }
   }
 }
 
@@ -44,7 +40,6 @@
 
 .createEntryLink {
   color: inherit;
-  visibility: hidden;
   padding: 0 6px;
   display: block;
   position: relative;

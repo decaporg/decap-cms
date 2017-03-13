@@ -182,7 +182,7 @@ class App extends React.Component {
                         className={sidebarStyles.createEntryLink}
                         onClick={e => this.handleLinkClick(e, createNewEntryInCollection, collectionName)}
                       >
-                        <FontIcon value="add_circle_outline" className={sidebarStyles.newEntryIcon} />
+                        <FontIcon value="add_circle_outline" />
                       </a>
                     ) : null
                   }
