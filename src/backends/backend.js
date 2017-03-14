@@ -34,7 +34,7 @@ const slugFormatter = (template = "{{slug}}", entryData) => {
       case "day":
         return (`0${ date.getDate() }`).slice(-2);
       case "slug":
-        return identifier.trim().toLowerCase().replace(/[^a-z0-9\.\-_]+/gi, "-");
+        return identifier.trim().toLowerCase().replace(/[^a-z0-9\-_]+/gi, "-");
       default:
         return entryData.get(field, "").trim().toLowerCase().replace(/[^a-z0-9\.\-_]+/gi, "-");
     }
