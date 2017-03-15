@@ -142,7 +142,7 @@ export default class API {
       return this.request(`${ this.repoURL }/contents/${ path }`, {
         headers: { Accept: "application/vnd.github.VERSION.raw" },
         params: { ref: branch },
-        cache: false,
+        cache: "no-store",
       }).then((result) => {
         if (sha) {
           LocalForage.setItem(`gh.${ sha }`, result);
