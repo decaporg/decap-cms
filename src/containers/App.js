@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import pluralize from 'pluralize';
 import { connect } from 'react-redux';
+import { IndexLink } from "react-router";
 import FontIcon from 'react-toolbox/lib/font_icon';
 import { Layout, Panel } from 'react-toolbox/lib/layout';
 import { Navigation } from 'react-toolbox/lib/navigation';
@@ -13,7 +14,6 @@ import { loginUser as actionLoginUser, logoutUser as actionLogoutUser } from '..
 import { toggleSidebar as actionToggleSidebar } from '../actions/globalUI';
 import { currentBackend } from '../backends/backend';
 import {
-  SHOW_COLLECTION,
   runCommand as actionRunCommand,
   navigateToCollection as actionNavigateToCollection,
   createNewEntryInCollection as actionCreateNewEntryInCollection,
@@ -21,6 +21,7 @@ import {
 import AppHeader from '../components/AppHeader/AppHeader';
 import { Loader, Toast } from '../components/UI/index';
 import { getCollectionUrl, getNewEntryUrl } from '../lib/urlHelper';
+import { SIMPLE, EDITORIAL_WORKFLOW } from '../constants/publishModes';
 import styles from './App.css';
 import sidebarStyles from './Sidebar.css';
 
@@ -49,6 +50,7 @@ class App extends React.Component {
     user: ImmutablePropTypes.map,
     runCommand: PropTypes.func.isRequired,
     isFetching: PropTypes.bool.isRequired,
+    publishMode: PropTypes.oneOf([SIMPLE, EDITORIAL_WORKFLOW]),
   };
 
   static configError(config) {
@@ -96,37 +98,6 @@ class App extends React.Component {
     handler(...args);
   }
 
-  generateFindBarCommands() {
-    // Generate command list
-    const commands = [];
-    const defaultCommands = [];
-
-    this.props.collections.forEach((collection) => {
-      commands.push({
-        id: `show_${ collection.get('name') }`,
-        pattern: `Show ${ pluralize(collection.get('label')) }`,
-        type: SHOW_COLLECTION,
-        payload: { collectionName: collection.get('name') },
-      });
-
-      if (defaultCommands.length < 5) defaultCommands.push(`show_${ collection.get('name') }`);
-
-      // if (collection.get('create') === true) {
-      //   commands.push({
-      //     id: `create_${ collection.get('name') }`,
-      //     pattern: `Create new ${ pluralize(collection.get('label'), 1) }(:itemName as ${ pluralize(collection.get('label'), 1) } Name)`,
-      //     type: CREATE_COLLECTION,
-      //     payload: { collectionName: collection.get('name') },
-      //   });
-      // }
-    });
-
-    // commands.push({ id: HELP, type: HELP, pattern: 'Help' });
-    // defaultCommands.push(HELP);
-
-    return { commands, defaultCommands };
-  }
-
   render() {
     const {
       user,
@@ -139,6 +110,7 @@ class App extends React.Component {
       createNewEntryInCollection,
       logoutUser,
       isFetching,
+      publishMode,
     } = this.props;
 
 
@@ -158,62 +130,67 @@ class App extends React.Component {
       return this.authenticating();
     }
 
-    const { commands, defaultCommands } = this.generateFindBarCommands();
     const sidebarContent = (
       <div>
-        <h1 className={sidebarStyles.heading}>Collections</h1>
         <Navigation type="vertical" className={sidebarStyles.nav}>
           {
-            collections.valueSeq().map((collection) => {
-              const collectionName = collection.get('name');
-              return (
-                <div key={collectionName} className={sidebarStyles.linkWrapper}>
-                  <a
-                    href={getCollectionUrl(collectionName, true)}
-                    className={sidebarStyles.viewEntriesLink}
-                    onClick={e => this.handleLinkClick(e, navigateToCollection, collectionName)}
-                  >
-                    {pluralize(collection.get('label'))}
-                  </a>
-                  {
-                    collection.get('create') ? (
-                      <a
-                        href={getNewEntryUrl(collectionName, true)}
-                        className={sidebarStyles.createEntryLink}
-                        onClick={e => this.handleLinkClick(e, createNewEntryInCollection, collectionName)}
-                      >
-                        <FontIcon value="add_circle_outline" />
-                      </a>
-                    ) : null
-                  }
-                </div>
-              );
-            })
+            publishMode === SIMPLE ? null :
+            <section>
+              <h1 className={sidebarStyles.heading}>Publishing</h1>
+              <div className={sidebarStyles.linkWrapper}>
+                <IndexLink to="/" className={sidebarStyles.viewEntriesLink}>Editorial Workflow</IndexLink>
+              </div>
+            </section>
           }
+          <section>
+            <h1 className={sidebarStyles.heading}>Collections</h1>
+            {
+              collections.valueSeq().map((collection) => {
+                const collectionName = collection.get('name');
+                return (
+                  <div key={collectionName} className={sidebarStyles.linkWrapper}>
+                    <a
+                      href={getCollectionUrl(collectionName, true)}
+                      className={sidebarStyles.viewEntriesLink}
+                      onClick={e => this.handleLinkClick(e, navigateToCollection, collectionName)}
+                    >
+                      {pluralize(collection.get('label'))}
+                    </a>
+                    {
+                      collection.get('create') ? (
+                        <a
+                          href={getNewEntryUrl(collectionName, true)}
+                          className={sidebarStyles.createEntryLink}
+                          onClick={e => this.handleLinkClick(e, createNewEntryInCollection, collectionName)}
+                        >
+                          <FontIcon value="add_circle_outline" />
+                        </a>
+                      ) : null
+                    }
+                  </div>
+                );
+              })
+            }
+          </section>
         </Navigation>
       </div>
     );
 
     return (
       <Sidebar content={sidebarContent}>
-        <Layout theme={styles}>
-          <Notifs
-            className={styles.notifsContainer}
-            CustomComponent={Toast}
-          />
+        <Layout>
+          <Notifs CustomComponent={Toast} />
           <AppHeader
             user={user}
             collections={collections}
-            commands={commands}
-            defaultCommands={defaultCommands}
             runCommand={runCommand}
             onCreateEntryClick={createNewEntryInCollection}
             onLogoutClick={logoutUser}
             toggleDrawer={toggleSidebar}
           />
-          <Panel scrollY>
+          <Panel scrollY className={styles.entriesPanel}>
             { isFetching && <TopBarProgress /> }
-            <div className={styles.main}>
+            <div>
               {children}
             </div>
           </Panel>
@@ -228,7 +205,8 @@ function mapStateToProps(state) {
   const { auth, config, collections, globalUI } = state;
   const user = auth && auth.get('user');
   const isFetching = globalUI.get('isFetching');
-  return { auth, config, collections, user, isFetching };
+  const publishMode = config && config.get('publish_mode');
+  return { auth, config, collections, user, isFetching, publishMode };
 }
 
 function mapDispatchToProps(dispatch) {

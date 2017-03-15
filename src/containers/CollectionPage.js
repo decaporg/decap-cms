@@ -5,7 +5,6 @@ import { loadEntries } from '../actions/entries';
 import { selectEntries } from '../reducers';
 import { Loader } from '../components/UI';
 import EntryListing from '../components/EntryListing/EntryListing';
-import styles from './breakpoints.css';
 
 class CollectionPage extends React.Component {
 
@@ -42,7 +41,7 @@ class CollectionPage extends React.Component {
     if (collections == null) {
       return <h1>No collections defined in your config.yml</h1>;
     }
-    return (<div className={styles.root}>
+    return (<div>
       {entries ?
         <EntryListing
           collections={collection}
@@ -54,7 +53,7 @@ class CollectionPage extends React.Component {
           {collection.get('label')}
         </EntryListing>
         :
-          <Loader active>{['Loading Entries', 'Caching Entries', 'This might take several minutes']}</Loader>
+        <Loader active>{['Loading Entries', 'Caching Entries', 'This might take several minutes']}</Loader>
       }
     </div>);
   }

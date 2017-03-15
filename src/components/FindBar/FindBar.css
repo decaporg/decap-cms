@@ -2,91 +2,18 @@
 
 .root {
   flex: 1;
-  position: relative;
   background-color: var(--backgroundAltColor);
-  padding: 5px;
-}
-.inputArea {
-  display: table;
-  width: 100%;
-  color: var(--foregroundAltColor);
-  background-color: #fff;
-  border: 1px solid var(--textFieldBorderColor);
-}
-
-.inputScope {
-  display: table-cell;
-  width: 1%;
-  padding: 0 6px 0 8px;
-  color: #767676;
-  font-size: 16px;
-  white-space: nowrap;
-  vertical-align: middle;
-  border-right: 1px solid var(--textFieldBorderColor);
-  margin:0;
 }
 
 .inputField {
-  display: table-cell;
-  width: 99%;
-  padding: 6px;
-  font-size: 16px;
-  background: none transparent;
-  border: 0 none;
+  width: 80%;
+  max-width: 800px;
+  display: block;
+  margin: 0 auto;
+  padding: 10px 14px;
+  border: 0;
+  border-radius: var(--borderRadius);
   box-shadow: none;
   outline: none;
-  font-size: inherit;
-}
-
-.menu {
-  position: absolute;
-  top: 44px;
-  left: 0;
-  z-index: 9999;
-  display: table;
-  width: 100%;
-  background: var(--backgroundAltColor);
-  font-size: 13px;
-  font-weight: 400;
-  padding: 5px;
-  height: 100%;
-}
-
-.suggestions {
-  display: table-cell;
-  width: 100%;
-  padding-right: 10px;
-}
-
-.history {
-  display: table-cell;
-  width: 50%;
-  padding-left: 10px;
-}
-
-.command {
-  padding: 6px;
-  cursor: default;
-  color: var(--foregroundAltColor);
-}
-
-.command strong, .highlightedCommand strong {
-  color: #000;
-}
-
-.command .faded {
-  font-weight: 300;
-  color: #888;
-}
-
-.highlightedCommand {
-  color: var(--highlightFGColor);
-  background: var(--highlightBGColor);
-  padding: 6px;
-  cursor: default;
-}
-
-.highlightedCommand .faded {
-  font-weight: 300;
-  color: #282c34;
+  font-size: 18px;
 }

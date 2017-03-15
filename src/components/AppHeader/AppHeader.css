@@ -4,10 +4,23 @@
   background-color: var(--backgroundAltColor);
 }
 
-.icon {
+/* Gross stuff below, React Toolbox hacks */
+.homeLink,
+.iconMenu {
+  margin-left: 2%;
+}
+
+.homeLink .icon {
+  vertical-align: top;
+}
+
+.icon,
+.icon span,
+.leftIcon span {
   /* stylelint-disable */
-  /* Cascade is evil :(  - conflict w/ React Toolbox */
+
   color: var(--foregroundAltColor) !important;
+  font-size: 30px !important;
 
   /* stylelint-enable */
 }
