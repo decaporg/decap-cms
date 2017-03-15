@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
+import history from '../routing/history';
 import {
   loadEntry,
   createDraftFromEntry,
@@ -49,6 +50,13 @@ class EntryPage extends React.Component {
     } else {
       loadEntry(collection, slug);
     }
+
+    this.unlisten = history.listenBefore((location) => {
+      if (this.props.entryDraft.get('hasChanged')) {
+        return "Are you sure you want to leave this page?";
+      }
+      return true;
+    });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -63,6 +71,7 @@ class EntryPage extends React.Component {
 
   componentWillUnmount() {
     this.props.discardDraft();
+    this.unlisten();
   }
 
   createDraft = (entry) => {
