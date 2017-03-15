@@ -1,8 +1,47 @@
+@import '../components/UI/theme';
+
 .root {
   margin-top: 64px;
 }
 
 .sidebar {
-  width: 200px;
-  background-color: #fff
+  width: 220px;
+  background-color: #fff;
+  padding: 0 16px;
+}
+
+.heading {
+  margin-bottom: 8px;
+}
+
+.nav {
+  padding: 0;
+}
+
+.linkWrapper {
+  color: var(--defaultColor);
+  border-radius: var(--borderRadius);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  &:hover {
+    background-color: var(--defaultColorLight);
+  }
+}
+
+.viewEntriesLink {
+  font-size: 18px;
+  color: inherit;
+  padding: 10px 6px;
+  display: block;
+  width: 100%;
+}
+
+.createEntryLink {
+  color: inherit;
+  padding: 0 6px;
+  display: block;
+  position: relative;
+  top: 2px;
 }

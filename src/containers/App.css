@@ -1,8 +1,4 @@
-.root {
-  margin-top: 64px;
+.entriesPanel {
+  padding: 0 40px;
 }
 
-.sidebar {
-  width: 200px;
-  background-color: #fff;
-}

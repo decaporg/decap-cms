@@ -9,6 +9,11 @@
   --errorColor: #f52;
   --borderRadius: 2px;
   --topmostZindex: 99999;
+  --foregroundAltColor: #fff;
+  --backgroundAltColor: #272e30;
+  --textFieldBorderColor: #e7e7e7;
+  --highlightFGColor: #fff;
+  --highlightBGColor: #3ab7a5;
 }
 
 .base {

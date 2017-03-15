@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { SIMPLE, EDITORIAL_WORKFLOW } from '../constants/publishModes';
 import history from '../routing/history';
 import UnpublishedEntriesPanel from './editorialWorkflow/UnpublishedEntriesPanel';
-import styles from './breakpoints.css';
 
 
 class DashboardPage extends Component {
@@ -15,7 +14,7 @@ class DashboardPage extends Component {
 
   render() {
     return (
-      <div className={styles.root}>
+      <div>
         <h1>Dashboard</h1>
         <UnpublishedEntriesPanel />
       </div>

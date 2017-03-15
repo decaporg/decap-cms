@@ -2,10 +2,9 @@ import React, { PropTypes } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 import { selectSearchedEntries } from '../reducers';
-import { searchEntries, clearSearch } from '../actions/search';
+import { searchEntries as actionSearchEntries, clearSearch as actionClearSearch } from '../actions/search';
 import { Loader } from '../components/UI';
 import EntryListing from '../components/EntryListing/EntryListing';
-import styles from './breakpoints.css';
 
 class SearchPage extends React.Component {
 
@@ -42,17 +41,17 @@ class SearchPage extends React.Component {
 
   render() {
     const { collections, searchTerm, entries, isFetching, page, publicFolder } = this.props;
-    return (<div className={styles.root}>
+    return (<div>
       {(isFetching === true || !entries) ?
         <Loader active>{['Loading Entries', 'Caching Entries', 'This might take several minutes']}</Loader>
         :
-          <EntryListing
-            collections={collections}
-            entries={entries}
-            page={page}
-            publicFolder={publicFolder}
-            onPaginate={this.handleLoadMore}
-          >
+        <EntryListing
+          collections={collections}
+          entries={entries}
+          page={page}
+          publicFolder={publicFolder}
+          onPaginate={this.handleLoadMore}
+        >
             Results for “{searchTerm}”
           </EntryListing>
       }
@@ -76,7 +75,7 @@ function mapStateToProps(state, ownProps) {
 export default connect(
   mapStateToProps,
   {
-    searchEntries,
-    clearSearch,
+    searchEntries: actionSearchEntries,
+    clearSearch: actionClearSearch,
   }
 )(SearchPage);

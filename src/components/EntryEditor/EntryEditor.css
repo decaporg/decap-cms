@@ -1,11 +1,4 @@
-:root {
-  --defaultColorLight: #eee;
-  --backgroundColor: #fff;
-}
-
-.root {
-
-}
+@import '../UI/theme';
 
 .controlPane {
   height: calc(100% - 55px);
@@ -18,13 +11,9 @@
   height: calc(100% - 55px);
 }
 
-.blocker {
-}
-
 .blocker > * {
   pointer-events: none;
 }
-
 
 .footer {
   height: 55px;
