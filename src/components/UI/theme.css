@@ -14,6 +14,8 @@
   --textFieldBorderColor: #e7e7e7;
   --highlightFGColor: #fff;
   --highlightBGColor: #3ab7a5;
+  --controlLabelColor: #272e30;
+  --controlBGColor: #fff;
 }
 
 .base {

@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { List, Map, fromJS } from 'immutable';
 import { sortable } from 'react-sortable';
+import FontIcon from 'react-toolbox/lib/font_icon';
 import ObjectControl from './ObjectControl';
 import styles from './ListControl.css';
 
@@ -143,21 +144,23 @@ export default class ListControl extends Component {
       outline="list"
     >
       <div className={classNames.join(' ')}>
-        <div className={styles.objectLabel}>{this.objectLabel(item)}</div>
-        <div className={styles.objectControl}>
-          <ObjectControl
-            value={item}
-            field={field}
-            onChange={this.handleChangeFor(index)}
-            getAsset={getAsset}
-            onAddAsset={onAddAsset}
-            onRemoveAsset={onRemoveAsset}
-          />
-        </div>
         <button className={styles.toggleButton} onClick={this.handleToggle(index)}>
-          {collapsed ? '+' : '-'}
+          <FontIcon value={collapsed ? 'expand_more' : 'expand_less'} />
         </button>
-        <button className={styles.removeButton} onClick={this.handleRemove(index)}>x</button>
+        <FontIcon value="drag_handle" className={styles.dragIcon} />
+        <button className={styles.removeButton} onClick={this.handleRemove(index)}>
+          <FontIcon value="close" />
+        </button>
+        <div className={styles.objectLabel}>{this.objectLabel(item)}</div>
+        <ObjectControl
+          value={item}
+          field={field}
+          className={styles.objectControl}
+          onChange={this.handleChangeFor(index)}
+          getAsset={getAsset}
+          onAddAsset={onAddAsset}
+          onRemoveAsset={onRemoveAsset}
+        />
       </div>
     </SortableListItem>);
   }
@@ -166,7 +169,10 @@ export default class ListControl extends Component {
     const { value, forID } = this.props;
     return (<div id={forID}>
       {value && value.map((item, index) => this.renderItem(item, index))}
-      <div><button className={styles.addButton} onClick={this.handleAdd}>new</button></div>
+      <button className={styles.addButton} onClick={this.handleAdd}>
+        <FontIcon value="add" className={styles.addButtonIcon} />
+        <span className={styles.addButtonText}>new</span>
+      </button>
     </div>);
   }
 
