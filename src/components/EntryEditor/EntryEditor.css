@@ -5,6 +5,7 @@
   overflow: auto;
   padding: 0 20px;
   border-right: 1px solid var(--defaultColorLight);
+  background-color: color(#f2f5f4 lightness(90%));
 }
 
 .previewPane {

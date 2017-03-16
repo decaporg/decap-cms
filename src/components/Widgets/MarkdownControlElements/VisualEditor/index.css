@@ -1,3 +1,5 @@
+@import "../../../UI/theme";
+
 .editor {
   position: relative;
   & h1, & h2, & h3 {
@@ -57,6 +59,9 @@
 :global {
   & .ProseMirror {
     position: relative;
+    background-color: var(--controlBGColor);
+    padding: 12px;
+    border-radius: var(--borderRadius);
   }
 
   & .ProseMirror-content {
