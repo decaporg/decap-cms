@@ -37,6 +37,7 @@ const entryDraftReducer = (state = Map(), action) => {
         state.set('mediaFiles', List());
         state.set('fieldsMetaData', Map());
         state.set('fieldsErrors', Map());
+        state.set('hasChanged', false);
       });
     case DRAFT_CREATE_EMPTY:
       // New Entry
@@ -46,6 +47,7 @@ const entryDraftReducer = (state = Map(), action) => {
         state.set('mediaFiles', List());
         state.set('fieldsMetaData', Map());
         state.set('fieldsErrors', Map());
+        state.set('hasChanged', false);
       });
     case DRAFT_DISCARD:
       return initialState;
@@ -68,16 +70,16 @@ const entryDraftReducer = (state = Map(), action) => {
       return state.setIn(['entry', 'isPersisting'], true);
     }
 
-    case ENTRY_PERSIST_SUCCESS:
     case ENTRY_PERSIST_FAILURE:
     case UNPUBLISHED_ENTRY_PERSIST_FAILURE: {
       return state.deleteIn(['entry', 'isPersisting']);
     }
 
+    case ENTRY_PERSIST_SUCCESS:
     case UNPUBLISHED_ENTRY_PERSIST_SUCCESS:
       return state.withMutations((state) => {
         state.deleteIn(['entry', 'isPersisting']);
-        state.setIn(['entry', 'hasChanged'], false);
+        state.set('hasChanged', false);
       });
 
     case ADD_ASSET:

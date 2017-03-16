@@ -243,8 +243,8 @@ export function persistEntry(collection) {
           kind: 'success',
           dismissAfter: 4000,
         }));
-        dispatch(closeEntry(collection));
         dispatch(entryPersisted(collection, entry));
+        dispatch(closeEntry(collection));
       })
       .catch((error) => {
         dispatch(notifSend({

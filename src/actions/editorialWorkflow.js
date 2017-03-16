@@ -241,8 +241,8 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
         kind: 'success',
         dismissAfter: 4000,
       }));
-      dispatch(closeEntry());
       dispatch(unpublishedEntryPersisted(collection, entry, transactionID));
+      dispatch(closeEntry());
     })
     .catch((error) => {
       dispatch(notifSend({
