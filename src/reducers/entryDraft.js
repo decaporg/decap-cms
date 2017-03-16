@@ -70,10 +70,15 @@ const entryDraftReducer = (state = Map(), action) => {
 
     case ENTRY_PERSIST_SUCCESS:
     case ENTRY_PERSIST_FAILURE:
-    case UNPUBLISHED_ENTRY_PERSIST_SUCCESS:
     case UNPUBLISHED_ENTRY_PERSIST_FAILURE: {
       return state.deleteIn(['entry', 'isPersisting']);
     }
+
+    case UNPUBLISHED_ENTRY_PERSIST_SUCCESS:
+      return state.withMutations((state) => {
+        state.deleteIn(['entry', 'isPersisting']);
+        state.setIn(['entry', 'hasChanged'], false);
+      });
 
     case ADD_ASSET:
       return state.update('mediaFiles', list => list.push(action.payload.public_path));
