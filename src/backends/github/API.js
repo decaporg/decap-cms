@@ -159,7 +159,7 @@ export default class API {
   }
 
   readUnpublishedBranchFile(contentKey) {
-    let metaData;
+    let metaData, fileData;
     const unpublishedPromise = this.retrieveMetadata(contentKey)
     .then((data) => {
       metaData = data;
@@ -168,11 +168,26 @@ export default class API {
       }
       return Promise.reject(null);
     })
-    .then(fileData => ({ metaData, fileData }))
+    .then((file) => {
+      fileData = file;
+      return this.isUnpublishedEntryModification(metaData.objects.entry.path);
+    })
+    .then(isModification => ({ metaData, fileData, isModification }))
     .catch(() => {
       throw new EditorialWorkflowError('content is not under editorial workflow', true);
     });
     return unpublishedPromise;
+  }
+
+  isUnpublishedEntryModification(path, branch) {
+    return this.readFile(path, null, branch)
+    .then(data => true)
+    .catch((err) => {
+      if (err.message && err.message === "Not Found") {
+        return false;
+      }
+      throw err;
+    });
   }
 
   listUnpublishedBranches() {

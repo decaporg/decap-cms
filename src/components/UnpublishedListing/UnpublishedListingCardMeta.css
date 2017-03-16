@@ -1,0 +1,25 @@
+@import '../UI/theme.css';
+
+.cardMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  height: 34px;
+  padding: 0 16px;
+  margin-bottom: -6px;
+
+  font-size: .75em;
+  text-transform: uppercase;
+
+  background: var(--backgroundColorShaded);
+}
+
+.meta {}
+.label {
+  padding: 5px 8px 4px 8px;
+  border-radius: var(--borderRadiusLarge);
+
+  background: var(--backgroundAltColor);
+  color: var(--defaultColorLight)
+}

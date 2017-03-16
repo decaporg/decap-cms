@@ -124,7 +124,15 @@ class Backend {
     .then(loadedEntries => loadedEntries.filter(entry => entry !== null))
     .then(entries => (
       entries.map((loadedEntry) => {
-        const entry = createEntry(loadedEntry.metaData.collection, loadedEntry.slug, loadedEntry.file.path, { raw: loadedEntry.data });
+        const entry = createEntry(
+          loadedEntry.metaData.collection,
+          loadedEntry.slug,
+          loadedEntry.file.path,
+          {
+            raw: loadedEntry.data,
+            isModification: loadedEntry.isModification,
+          }
+        );
         entry.metaData = loadedEntry.metaData;
         return entry;
       })
@@ -138,7 +146,14 @@ class Backend {
   unpublishedEntry(collection, slug) {
     return this.implementation.unpublishedEntry(collection, slug)
     .then((loadedEntry) => {
-      const entry = createEntry("draft", loadedEntry.slug, loadedEntry.file.path, { raw: loadedEntry.data });
+      const entry = createEntry(
+        "draft",
+        loadedEntry.slug,
+        loadedEntry.file.path,
+        {
+          raw: loadedEntry.data,
+          isModification: loadedEntry.isModification,
+        });
       entry.metaData = loadedEntry.metaData;
       return entry;
     })
