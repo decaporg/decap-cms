@@ -1,5 +1,11 @@
 @import "../../../UI/theme";
 
+.editorControlBar {
+  background-color: var(--controlBGColor);
+  margin-bottom: 1px;
+  border-radius: var(--borderRadius) var(--borderRadius) 0 0;
+}
+
 .editor {
   position: relative;
   & h1, & h2, & h3 {
@@ -61,7 +67,11 @@
     position: relative;
     background-color: var(--controlBGColor);
     padding: 12px;
-    border-radius: var(--borderRadius);
+    border-radius: 0 0 var(--borderRadius) var(--borderRadius);
+
+    & ul {
+      padding-left: 20px;
+    }
   }
 
   & .ProseMirror-content {

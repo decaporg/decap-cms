@@ -8,16 +8,23 @@
   --successColor: #1c7;
   --warningColor: #fa0;
   --errorColor: #f52;
+  --textColor: #272e30;
   --borderRadius: 2px;
   --borderRadiusLarge: 10px;
+  --dropShadow:
+    0 2px 2px 0 rgba(0, 0, 0, 0.14),
+    0 3px 1px -2px rgba(0, 0, 0, 0.2),
+    0 1px 5px 0 rgba(0, 0, 0, 0.12);
   --topmostZindex: 99999;
   --foregroundAltColor: #fff;
   --backgroundAltColor: #272e30;
   --textFieldBorderColor: #e7e7e7;
   --highlightFGColor: #fff;
   --highlightBGColor: #3ab7a5;
-  --controlLabelColor: #272e30;
+  --controlLabelColor: var(--textColor);
   --controlBGColor: #fff;
+  --backgroundTertiaryColor: #f2f5f4;
+  --backgroundTertiaryColorDark: color(var(--backgroundTertiaryColor) lightness(90%));
 }
 
 .base {

@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import { Map } from 'immutable';
 import { Schema } from 'prosemirror-model';
 import { EditorState } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
@@ -8,21 +9,21 @@ import {
   inputRules, allInputRules,
 } from 'prosemirror-inputrules';
 import { keymap } from 'prosemirror-keymap';
-import { schema, defaultMarkdownSerializer } from 'prosemirror-markdown';
+import { schema as markdownSchema, defaultMarkdownSerializer } from 'prosemirror-markdown';
 import { baseKeymap, setBlockType, toggleMark } from 'prosemirror-commands';
 import registry from '../../../../lib/registry';
 import { createAssetProxy } from '../../../../valueObjects/AssetProxy';
 import { buildKeymap } from './keymap';
 import createMarkdownParser from './parser';
 import Toolbar from '../Toolbar';
-import BlockMenu from '../BlockMenu';
+import ToolbarPlugins from '../ToolbarPlugins';
 import styles from './index.css';
 
 function processUrl(url) {
   if (url.match(/^(https?:\/\/|mailto:|\/)/)) {
     return url;
   }
-  if (url.match(/^[^\/]+\.[^\/]+/)) {
+  if (url.match(/^[^/]+\.[^/]+/)) {
     return `https://${ url }`;
   }
   return `/${ url }`;
@@ -37,15 +38,10 @@ const ruleset = {
 };
 
 function buildInputRules(schema) {
-  const result = [];
-  for (const rule in ruleset) {
-    const type = schema.nodes[rule];
-    if (type) {
-      const fn = ruleset[rule];
-      result.push(fn[0].apply(fn.slice(1)));
-    }
-  }
-  return result;
+  return Map(ruleset)
+    .filter(rule => schema.nodes[rule])
+    .map(rule => rule[0].apply(rule[0].slice(1)))
+    .toArray();
 }
 
 function markActive(state, type) {
@@ -99,12 +95,12 @@ export default class Editor extends Component {
   constructor(props) {
     super(props);
     const plugins = registry.getEditorComponents();
-    const s = schemaWithPlugins(schema, plugins);
+    const schema = schemaWithPlugins(markdownSchema, plugins);
     this.state = {
       plugins,
-      schema: s,
-      parser: createMarkdownParser(s, plugins),
-      serializer: createSerializer(s, plugins),
+      schema,
+      parser: createMarkdownParser(schema, plugins),
+      serializer: createSerializer(schema, plugins),
     };
   }
 
@@ -133,7 +129,7 @@ export default class Editor extends Component {
   }
 
   handleAction = (action) => {
-    const { schema, serializer } = this.state;
+    const { serializer } = this.state;
     const newState = this.view.state.applyAction(action);
     const md = serializer.serialize(newState.doc);
     this.props.onChange(md);
@@ -152,15 +148,13 @@ export default class Editor extends Component {
         const pos = this.view.coordsAtPos(selection.from);
         const editorPos = this.view.content.getBoundingClientRect();
         const selectionPosition = { top: pos.top - editorPos.top, left: pos.left - editorPos.left };
-        this.setState({ showToolbar: false, showBlockMenu: true, selectionPosition });
-      } else {
-        this.setState({ showToolbar: false, showBlockMenu: false });
+        this.setState({ selectionPosition });
       }
     } else {
       const pos = this.view.coordsAtPos(selection.from);
       const editorPos = this.view.content.getBoundingClientRect();
       const selectionPosition = { top: pos.top - editorPos.top, left: pos.left - editorPos.left };
-      this.setState({ showToolbar: true, showBlockMenu: false, selectionPosition });
+      this.setState({ selectionPosition });
     }
   };
 
@@ -202,13 +196,13 @@ export default class Editor extends Component {
   handleLink = () => {
     let url = null;
     if (!markActive(this.view.state, this.state.schema.marks.link)) {
-      url = prompt('Link URL:');
+      url = prompt('Link URL:'); // eslint-disable-line no-alert
     }
     const command = toggleMark(this.state.schema.marks.link, { href: url ? processUrl(url) : null });
     command(this.view.state, this.handleAction);
   };
 
-  handleBlock = (plugin, data) => {
+  handlePlugin = (plugin, data) => {
     const { schema } = this.state;
     const nodeType = schema.nodes[`plugin_${ plugin.get('id') }`];
     this.view.props.onAction(this.view.state.tr.replaceSelectionWith(nodeType.create(data.toJS())).action());
@@ -268,7 +262,7 @@ export default class Editor extends Component {
 
   render() {
     const { onAddAsset, onRemoveAsset, getAsset } = this.props;
-    const { plugins, showToolbar, showBlockMenu, selectionPosition, dragging } = this.state;
+    const { plugins, selectionPosition, dragging } = this.state;
     const classNames = [styles.editor];
     if (dragging) {
       classNames.push(styles.dragging);
@@ -281,25 +275,25 @@ export default class Editor extends Component {
       onDragOver={this.handleDragOver}
       onDrop={this.handleDrop}
     >
-      <Toolbar
-        isOpen={showToolbar}
-        selectionPosition={selectionPosition}
-        onH1={this.handleHeader(1)}
-        onH2={this.handleHeader(2)}
-        onBold={this.handleBold}
-        onItalic={this.handleItalic}
-        onLink={this.handleLink}
-        onToggleMode={this.handleToggle}
-      />
-      <BlockMenu
-        isOpen={showBlockMenu}
-        selectionPosition={selectionPosition}
-        plugins={plugins}
-        onBlock={this.handleBlock}
-        onAddAsset={onAddAsset}
-        onRemoveAsset={onRemoveAsset}
-        getAsset={getAsset}
-      />
+      <div className={styles.editorControlBar}>
+        <Toolbar
+          selectionPosition={selectionPosition}
+          onH1={this.handleHeader(1)}
+          onH2={this.handleHeader(2)}
+          onBold={this.handleBold}
+          onItalic={this.handleItalic}
+          onLink={this.handleLink}
+          onToggleMode={this.handleToggle}
+        />
+        <ToolbarPlugins
+          selectionPosition={selectionPosition}
+          plugins={plugins}
+          onPlugin={this.handlePlugin}
+          onAddAsset={onAddAsset}
+          onRemoveAsset={onRemoveAsset}
+          getAsset={getAsset}
+        />
+      </div>
       <div ref={this.handleRef} />
       <div className={styles.shim} />
     </div>);

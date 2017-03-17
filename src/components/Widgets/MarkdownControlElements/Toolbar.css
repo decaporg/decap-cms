@@ -1,28 +1,20 @@
 .Toolbar {
-  position: absolute;
   z-index: 1000;
-  display: none;
-  margin: none;
-  padding: none;
-  box-shadow: 1px 1px 5px;
   list-style: none;
+  display: inline-block;
 }
 
 .Button {
   display: inline-block;
 
   & button {
-    padding: 5px;
+    padding: 6px;
     border: none;
-    border-right: 1px solid #eee;
-    background: #fff;
+    background-color: transparent;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #eee;
+    }
   }
-}
-
-.Button:last-child button {
-  border-right: none;
-}
-
-.Visible {
-  display: block;
 }

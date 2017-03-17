@@ -1,15 +1,15 @@
 import React, { Component, PropTypes } from 'react';
 import { fromJS } from 'immutable';
 import { Button } from 'react-toolbox/lib/button';
+import { Icon } from '../../UI';
 import { resolveWidget } from '../../Widgets';
-import styles from './BlockMenu.css';
+import toolbarStyles from './Toolbar.css';
+import styles from './ToolbarPlugins.css';
 
-export default class BlockMenu extends Component {
+export default class ToolbarPlugins extends Component {
   static propTypes = {
-    isOpen: PropTypes.bool,
-    selectionPosition: PropTypes.object,
     plugins: PropTypes.object.isRequired,
-    onBlock: PropTypes.func.isRequired,
+    onPlugin: PropTypes.func.isRequired,
     onAddAsset: PropTypes.func.isRequired,
     onRemoveAsset: PropTypes.func.isRequired,
     getAsset: PropTypes.func.isRequired,
@@ -18,28 +18,10 @@ export default class BlockMenu extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isExpanded: false,
       openPlugin: null,
       pluginData: fromJS({}),
     };
   }
-
-  componentDidUpdate() {
-    const { selectionPosition } = this.props;
-    if (selectionPosition) {
-      const style = this.element.style;
-      style.setProperty('top', `${ selectionPosition.top }px`);
-    }
-  }
-
-  handleToggle = (e) => {
-    e.preventDefault();
-    this.setState({ isExpanded: !this.state.isExpanded });
-  };
-
-  handleRef = (ref) => {
-    this.element = ref;
-  };
 
   handlePlugin(plugin) {
     return (e) => {
@@ -49,21 +31,23 @@ export default class BlockMenu extends Component {
   }
 
   buttonFor(plugin) {
-    return (<li key={`plugin-${ plugin.get('id') }`}>
-      <button onClick={this.handlePlugin(plugin)}>{plugin.get('label')}</button>
+    return (<li key={`plugin-${ plugin.get('id') }`} className={toolbarStyles.Button}>
+      <button className={styles[plugin.get('label')]} onClick={this.handlePlugin(plugin)} title={plugin.get('label')}>
+        <Icon type={plugin.get('icon')} />
+      </button>
     </li>);
   }
 
   handleSubmit = (e) => {
     e.preventDefault();
     const { openPlugin, pluginData } = this.state;
-    this.props.onBlock(openPlugin, pluginData);
-    this.setState({ openPlugin: null, isExpanded: false });
+    this.props.onPlugin(openPlugin, pluginData);
+    this.setState({ openPlugin: null });
   };
 
   handleCancel = (e) => {
     e.preventDefault();
-    this.setState({ openPlugin: null, isExpanded: false });
+    this.setState({ openPlugin: null });
   };
 
   controlFor(field) {
@@ -71,10 +55,11 @@ export default class BlockMenu extends Component {
     const { pluginData } = this.state;
     const widget = resolveWidget(field.get('widget') || 'string');
     const value = pluginData.get(field.get('name'));
+    const key = `field-${ field.get('name') }`;
 
     return (
-      <div className={styles.control} key={`field-${ field.get('name') }`}>
-        <label className={styles.label}>{field.get('label')}</label>
+      <div className={styles.control} key={key}>
+        <label className={styles.label} htmlFor={key}>{field.get('label')}</label>
         {
           React.createElement(widget.control, {
             field,
@@ -95,8 +80,10 @@ export default class BlockMenu extends Component {
 
   pluginForm(plugin) {
     return (<form className={styles.pluginForm} onSubmit={this.handleSubmit}>
-      <h3>Insert {plugin.get('label')}</h3>
-      {plugin.get('fields').map(field => this.controlFor(field))}
+      <h3 className={styles.header}>Insert {plugin.get('label')}</h3>
+      <div className={styles.body}>
+        {plugin.get('fields').map(field => this.controlFor(field))}
+      </div>
       <div className={styles.footer}>
         <Button
           raised
@@ -113,19 +100,16 @@ export default class BlockMenu extends Component {
   }
 
   render() {
-    const { isOpen, plugins } = this.props;
-    const { isExpanded, openPlugin } = this.state;
+    const { plugins } = this.props;
+    const { openPlugin } = this.state;
     const classNames = [styles.root];
-    if (isOpen) {
-      classNames.push(styles.visible);
-    }
+
     if (openPlugin) {
       classNames.push(styles.openPlugin);
     }
 
-    return (<div className={classNames.join(' ')} ref={this.handleRef}>
-      <button className={styles.button} onClick={this.handleToggle}>+</button>
-      <ul className={[styles.menu, isExpanded && !openPlugin ? styles.expanded : styles.collapsed].join(' ')}>
+    return (<div className={classNames.join(' ')}>
+      <ul className={styles.menu}>
         {plugins.map(plugin => this.buttonFor(plugin))}
       </ul>
       {openPlugin && this.pluginForm(openPlugin)}

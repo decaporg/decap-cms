@@ -39,13 +39,14 @@ if (process.env.NODE_ENV !== 'production' && module.hot) {
 const buildtInPlugins = [{
   label: 'Image',
   id: 'image',
+  icon: 'picture',
   fromBlock: match => match && {
     image: match[2],
     alt: match[1],
   },
   toBlock: data => `![${ data.alt }](${ data.image })`,
   toPreview: data => <img src={data.image} alt={data.alt} />,
-  pattern: /^!\[([^\]]+)\]\(([^\)]+)\)$/,
+  pattern: /^!\[([^\]]+)]\(([^)]+)\)$/,
   fields: [{
     label: 'Image',
     name: 'image',

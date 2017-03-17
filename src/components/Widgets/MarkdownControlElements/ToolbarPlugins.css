@@ -1,0 +1,62 @@
+@import "../../UI/theme";
+
+.root {
+  z-index: 1000;
+  display: inline-block;
+}
+
+.button {
+  width: 15px;
+  height: 15px;
+  border: 1px solid #444;
+  border-radius: 100%;
+  background: transparent;
+  line-height: 13px;
+}
+
+.pluginForm {
+  position: absolute;
+  background-color: var(--backgroundTertiaryColorDark);
+  margin-top: -20px;
+  margin-bottom: 30px;
+  margin-left: 20px;
+  border-radius: var(--borderRadius);
+  box-shadow: var(--dropShadow);
+  overflow: hidden;
+  z-index: 1;
+
+  /* Nested to override high specificity React Toolbox styles */
+  & .header {
+    padding: 12px;
+    margin: 0;
+    color: var(--textColor);
+    background-color: var(--backgroundColor);
+  }
+}
+
+
+.body {
+  padding: 0 12px 16px;
+}
+
+.menu {
+  list-style: none;
+}
+
+.menuItem {
+  display: inline-block;
+}
+
+.control {
+  composes: control from "../../ControlPanel/ControlPane.css"
+}
+
+.label {
+  composes: label from "../../ControlPanel/ControlPane.css";
+}
+
+.footer {
+  background-color: var(--backgroundColor);
+  padding: 10px 20px;
+  text-align: right;
+}
