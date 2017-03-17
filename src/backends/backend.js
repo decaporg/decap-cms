@@ -176,7 +176,7 @@ class Backend {
       };
     }
 
-    const commitMessage = `${ (newEntry ? "Created " : "Updated ") +
+    const commitMessage = `${ (newEntry ? "Create " : "Update ") +
           collection.get("label") } “${ entryObj.slug }”`;
 
     const mode = config.get("publish_mode");
