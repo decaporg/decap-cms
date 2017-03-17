@@ -12,8 +12,8 @@ It presents a clean UI for editing content stored in a Git repository.
 You setup a YAML config to describe the content model of your site, and typically
 tweak the main layout of the CMS a bit to fit your own site.
 
-When a user navigates to `/admin` she'll be prompted to login, and once authenticated
-she'll be able to create new content or edit existing content.
+When a user navigates to `/admin` they'll be prompted to login, and once authenticated
+they'll be able to create new content or edit existing content.
 
 Read more about Netlify CMS [Core Concepts](docs/intro.md).
 
