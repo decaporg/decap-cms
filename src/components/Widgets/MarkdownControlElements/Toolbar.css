@@ -1,3 +1,5 @@
+@import "../../UI/theme";
+
 .Toolbar {
   z-index: 1000;
   list-style: none;
@@ -13,8 +15,9 @@
     background-color: transparent;
     cursor: pointer;
 
-    &:hover {
-      background-color: #eee;
+    @nest .ButtonActive& {
+      background-color: var(--highlightFGAltColor);
     }
   }
 }
+

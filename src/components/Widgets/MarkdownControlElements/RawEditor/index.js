@@ -305,7 +305,7 @@ export default class RawEditor extends React.Component {
   };
 
   render() {
-    const { onAddAsset, onRemoveAsset, getAsset } = this.props;
+    const { onAddAsset, onRemoveAsset, getAsset, rawMode } = this.props;
     const { plugins, selectionPosition, dragging } = this.state;
     const classNames = [styles.root];
     if (dragging) {
@@ -328,6 +328,7 @@ export default class RawEditor extends React.Component {
           onItalic={this.handleItalic}
           onLink={this.handleLink}
           onToggleMode={this.handleToggle}
+          rawMode={rawMode}
         />
         <ToolbarPlugins
           selectionPosition={selectionPosition}
@@ -357,5 +358,6 @@ RawEditor.propTypes = {
   getAsset: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   onMode: PropTypes.func.isRequired,
+  rawMode: PropTypes.bool,
   value: PropTypes.node,
 };
