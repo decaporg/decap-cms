@@ -1,14 +1,14 @@
 /* eslint max-len:0 */
 
-import React from "react";
-import { shallow } from "enzyme";
-import { padStart } from "lodash";
-import MarkupItReactRenderer from "../";
+import React from 'react';
+import { shallow } from 'enzyme';
+import { padStart } from 'lodash';
+import MarkupItReactRenderer from '../';
 
-describe("MarkitupReactRenderer", () => {
-  describe("Markdown rendering", () => {
-    describe("General", () => {
-      it("should render markdown", () => {
+describe('MarkitupReactRenderer', () => {
+  describe('Markdown rendering', () => {
+    describe('General', () => {
+      it('should render markdown', () => {
         const value = `
 # H1
 
@@ -40,18 +40,18 @@ Text with **bold** & _em_ elements
       });
     });
 
-    describe("Headings", () => {
+    describe('Headings', () => {
       for (const heading of [...Array(6).keys()]) {
         it(`should render Heading ${ heading + 1 }`, () => {
-          const value = padStart(" Title", heading + 7, "#");
+          const value = padStart(' Title', heading + 7, '#');
           const component = shallow(<MarkupItReactRenderer value={value} />);
           expect(component.html()).toMatchSnapshot();
         });
       }
     });
 
-    describe("Lists", () => {
-      it("should render lists", () => {
+    describe('Lists', () => {
+      it('should render lists', () => {
         const value = `
 1. ol item 1
 1. ol item 2
@@ -68,8 +68,8 @@ Text with **bold** & _em_ elements
       });
     });
 
-    describe("Links", () => {
-      it("should render links", () => {
+    describe('Links', () => {
+      it('should render links', () => {
         const value = `
 I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3].
 
@@ -82,22 +82,22 @@ I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3]
       });
     });
 
-    describe("Code", () => {
-      it("should render code", () => {
-        const value = "Use the `printf()` function.";
+    describe('Code', () => {
+      it('should render code', () => {
+        const value = 'Use the `printf()` function.';
         const component = shallow(<MarkupItReactRenderer value={value} />);
         expect(component.html()).toMatchSnapshot();
       });
 
-      it("should render code 2", () => {
-        const value = "``There is a literal backtick (`) here.``";
+      it('should render code 2', () => {
+        const value = '``There is a literal backtick (`) here.``';
         const component = shallow(<MarkupItReactRenderer value={value} />);
         expect(component.html()).toMatchSnapshot();
       });
     });
 
-    describe("HTML", () => {
-      it("should render HTML as is when using Markdown", () => {
+    describe('HTML', () => {
+      it('should render HTML as is when using Markdown', () => {
         const value = `
 # Title
 
@@ -119,9 +119,9 @@ I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3]
     });
   });
 
-  describe("HTML rendering", () => {
-    it("should render HTML", () => {
-      const value = "<p>Paragraph with <em>inline</em> element</p>";
+  describe('HTML rendering', () => {
+    it('should render HTML', () => {
+      const value = '<p>Paragraph with <em>inline</em> element</p>';
       const component = shallow(<MarkupItReactRenderer value={value} />);
       expect(component.html()).toMatchSnapshot();
     });

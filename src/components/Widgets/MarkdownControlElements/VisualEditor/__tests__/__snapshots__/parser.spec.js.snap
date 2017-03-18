@@ -88,7 +88,7 @@ Object {
     },
     Object {
       "attrs": Object {
-        "tight": false,
+        "tight": true,
       },
       "content": Array [
         Object {
@@ -141,20 +141,33 @@ Object {
 }
 `;
 
+exports[`Compile markdown to Prosemirror document structure should compile code blocks 1`] = `
+Object {
+  "content": Array [
+    Object {
+      "attrs": Object {
+        "params": "javascript",
+      },
+      "content": Array [
+        Object {
+          "text": "var a = 1;",
+          "type": "text",
+        },
+      ],
+      "type": "code_block",
+    },
+  ],
+  "type": "doc",
+}
+`;
+
 exports[`Compile markdown to Prosemirror document structure should compile hard breaks (double space) 1`] = `
 Object {
   "content": Array [
     Object {
       "content": Array [
         Object {
-          "text": "blue moon",
-          "type": "text",
-        },
-        Object {
-          "type": "hard_break",
-        },
-        Object {
-          "text": "footballs",
+          "text": "blue moonfootballs",
           "type": "text",
         },
       ],
@@ -233,14 +246,701 @@ exports[`Compile markdown to Prosemirror document structure should compile image
 Object {
   "content": Array [
     Object {
+      "type": "paragraph",
+    },
+  ],
+  "type": "doc",
+}
+`;
+
+exports[`Compile markdown to Prosemirror document structure should compile inline code 1`] = `
+Object {
+  "content": Array [
+    Object {
+      "attrs": Object {
+        "level": 1,
+      },
       "content": Array [
         Object {
-          "attrs": Object {
-            "alt": "super",
-            "src": "duper.jpg",
-            "title": null,
-          },
-          "type": "image",
+          "text": "Word",
+          "type": "text",
+        },
+      ],
+      "type": "heading",
+    },
+    Object {
+      "content": Array [
+        Object {
+          "text": "This is some sweet ",
+          "type": "text",
+        },
+        Object {
+          "marks": Array [
+            Object {
+              "type": "code",
+            },
+          ],
+          "text": "inline code",
+          "type": "text",
+        },
+        Object {
+          "text": " yo!",
+          "type": "text",
+        },
+      ],
+      "type": "paragraph",
+    },
+  ],
+  "type": "doc",
+}
+`;
+
+exports[`Compile markdown to Prosemirror document structure should compile kitchen sink example 1`] = `
+Object {
+  "content": Array [
+    Object {
+      "attrs": Object {
+        "level": 1,
+      },
+      "content": Array [
+        Object {
+          "text": "An exhibit of Markdown",
+          "type": "text",
+        },
+      ],
+      "type": "heading",
+    },
+    Object {
+      "content": Array [
+        Object {
+          "text": "This note demonstrates some of what Markdown is capable of doing.",
+          "type": "text",
+        },
+      ],
+      "type": "paragraph",
+    },
+    Object {
+      "content": Array [
+        Object {
+          "marks": Array [
+            Object {
+              "type": "em",
+            },
+          ],
+          "text": "Note: Feel free to play with this page. Unlike regular notes, this doesn't
+automatically save itself.",
+          "type": "text",
+        },
+      ],
+      "type": "paragraph",
+    },
+    Object {
+      "attrs": Object {
+        "level": 2,
+      },
+      "content": Array [
+        Object {
+          "text": "Basic formatting",
+          "type": "text",
+        },
+      ],
+      "type": "heading",
+    },
+    Object {
+      "content": Array [
+        Object {
+          "text": "Paragraphs can be written like so. A paragraph is the basic block of Markdown.
+A paragraph is what text will turn into when there is no reason it should
+become anything else.",
+          "type": "text",
+        },
+      ],
+      "type": "paragraph",
+    },
+    Object {
+      "content": Array [
+        Object {
+          "text": "Paragraphs must be separated by a blank line. Basic formatting of ",
+          "type": "text",
+        },
+        Object {
+          "marks": Array [
+            Object {
+              "type": "em",
+            },
+          ],
+          "text": "italics",
+          "type": "text",
+        },
+        Object {
+          "text": " and
+",
+          "type": "text",
+        },
+        Object {
+          "marks": Array [
+            Object {
+              "type": "strong",
+            },
+          ],
+          "text": "bold",
+          "type": "text",
+        },
+        Object {
+          "text": " is supported. This ",
+          "type": "text",
+        },
+        Object {
+          "marks": Array [
+            Object {
+              "type": "em",
+            },
+          ],
+          "text": "can be ",
+          "type": "text",
+        },
+        Object {
+          "marks": Array [
+            Object {
+              "type": "em",
+            },
+            Object {
+              "type": "strong",
+            },
+          ],
+          "text": "nested",
+          "type": "text",
+        },
+        Object {
+          "marks": Array [
+            Object {
+              "type": "em",
+            },
+          ],
+          "text": " like",
+          "type": "text",
+        },
+        Object {
+          "text": " so.",
+          "type": "text",
+        },
+      ],
+      "type": "paragraph",
+    },
+    Object {
+      "attrs": Object {
+        "level": 2,
+      },
+      "content": Array [
+        Object {
+          "text": "Lists",
+          "type": "text",
+        },
+      ],
+      "type": "heading",
+    },
+    Object {
+      "attrs": Object {
+        "level": 3,
+      },
+      "content": Array [
+        Object {
+          "text": "Ordered list",
+          "type": "text",
+        },
+      ],
+      "type": "heading",
+    },
+    Object {
+      "attrs": Object {
+        "order": 1,
+        "tight": true,
+      },
+      "content": Array [
+        Object {
+          "content": Array [
+            Object {
+              "content": Array [
+                Object {
+                  "text": "Item 1 2. A second item 3. Number 3 4. Ⅳ",
+                  "type": "text",
+                },
+              ],
+              "type": "paragraph",
+            },
+          ],
+          "type": "list_item",
+        },
+      ],
+      "type": "ordered_list",
+    },
+    Object {
+      "content": Array [
+        Object {
+          "marks": Array [
+            Object {
+              "type": "em",
+            },
+          ],
+          "text": "Note: the fourth item uses the Unicode character for Roman numeral four.",
+          "type": "text",
+        },
+      ],
+      "type": "paragraph",
+    },
+    Object {
+      "attrs": Object {
+        "level": 3,
+      },
+      "content": Array [
+        Object {
+          "text": "Unordered list",
+          "type": "text",
+        },
+      ],
+      "type": "heading",
+    },
+    Object {
+      "attrs": Object {
+        "tight": true,
+      },
+      "content": Array [
+        Object {
+          "content": Array [
+            Object {
+              "content": Array [
+                Object {
+                  "text": "An item Another item Yet another item And there's more...",
+                  "type": "text",
+                },
+              ],
+              "type": "paragraph",
+            },
+          ],
+          "type": "list_item",
+        },
+      ],
+      "type": "bullet_list",
+    },
+    Object {
+      "attrs": Object {
+        "level": 2,
+      },
+      "content": Array [
+        Object {
+          "text": "Paragraph modifiers",
+          "type": "text",
+        },
+      ],
+      "type": "heading",
+    },
+    Object {
+      "attrs": Object {
+        "level": 3,
+      },
+      "content": Array [
+        Object {
+          "text": "Code block",
+          "type": "text",
+        },
+      ],
+      "type": "heading",
+    },
+    Object {
+      "attrs": Object {
+        "params": "",
+      },
+      "content": Array [
+        Object {
+          "text": "Code blocks are very useful for developers and other people who look at
+code or other things that are written in plain text. As you can see, it
+uses a fixed-width font.",
+          "type": "text",
+        },
+      ],
+      "type": "code_block",
+    },
+    Object {
+      "content": Array [
+        Object {
+          "text": "You can also make ",
+          "type": "text",
+        },
+        Object {
+          "marks": Array [
+            Object {
+              "type": "code",
+            },
+          ],
+          "text": "inline code",
+          "type": "text",
+        },
+        Object {
+          "text": " to add code into other things.",
+          "type": "text",
+        },
+      ],
+      "type": "paragraph",
+    },
+    Object {
+      "attrs": Object {
+        "level": 3,
+      },
+      "content": Array [
+        Object {
+          "text": "Quote",
+          "type": "text",
+        },
+      ],
+      "type": "heading",
+    },
+    Object {
+      "content": Array [
+        Object {
+          "content": Array [
+            Object {
+              "text": "Here is a quote. What this is should be self explanatory. Quotes are
+automatically indented when they are used.",
+              "type": "text",
+            },
+          ],
+          "type": "paragraph",
+        },
+      ],
+      "type": "blockquote",
+    },
+    Object {
+      "attrs": Object {
+        "level": 2,
+      },
+      "content": Array [
+        Object {
+          "text": "Headings",
+          "type": "text",
+        },
+      ],
+      "type": "heading",
+    },
+    Object {
+      "content": Array [
+        Object {
+          "text": "There are six levels of headings. They correspond with the six levels of HTML
+headings. You've probably noticed them already in the page. Each level down
+uses one more hash character.",
+          "type": "text",
+        },
+      ],
+      "type": "paragraph",
+    },
+    Object {
+      "attrs": Object {
+        "level": 3,
+      },
+      "content": Array [
+        Object {
+          "text": "Headings ",
+          "type": "text",
+        },
+        Object {
+          "marks": Array [
+            Object {
+              "type": "em",
+            },
+          ],
+          "text": "can",
+          "type": "text",
+        },
+        Object {
+          "text": " also contain ",
+          "type": "text",
+        },
+        Object {
+          "marks": Array [
+            Object {
+              "type": "strong",
+            },
+          ],
+          "text": "formatting",
+          "type": "text",
+        },
+      ],
+      "type": "heading",
+    },
+    Object {
+      "attrs": Object {
+        "level": 3,
+      },
+      "content": Array [
+        Object {
+          "text": "They can even contain ",
+          "type": "text",
+        },
+        Object {
+          "marks": Array [
+            Object {
+              "type": "code",
+            },
+          ],
+          "text": "inline code",
+          "type": "text",
+        },
+      ],
+      "type": "heading",
+    },
+    Object {
+      "content": Array [
+        Object {
+          "text": "Of course, demonstrating what headings look like messes up the structure of the
+page.",
+          "type": "text",
+        },
+      ],
+      "type": "paragraph",
+    },
+    Object {
+      "content": Array [
+        Object {
+          "text": "I don't recommend using more than three or four levels of headings here,
+because, when you're smallest heading isn't too small, and you're largest
+heading isn't too big, and you want each size up to look noticeably larger and
+more important, there there are only so many sizes that you can use.",
+          "type": "text",
+        },
+      ],
+      "type": "paragraph",
+    },
+    Object {
+      "attrs": Object {
+        "level": 2,
+      },
+      "content": Array [
+        Object {
+          "text": "URLs",
+          "type": "text",
+        },
+      ],
+      "type": "heading",
+    },
+    Object {
+      "content": Array [
+        Object {
+          "text": "URLs can be made in a handful of ways:",
+          "type": "text",
+        },
+      ],
+      "type": "paragraph",
+    },
+    Object {
+      "attrs": Object {
+        "tight": true,
+      },
+      "content": Array [
+        Object {
+          "content": Array [
+            Object {
+              "content": Array [
+                Object {
+                  "text": "A named link to MarkItDown. The easiest way to do these is to select what you",
+                  "type": "text",
+                },
+              ],
+              "type": "paragraph",
+            },
+          ],
+          "type": "list_item",
+        },
+        Object {
+          "content": Array [
+            Object {
+              "content": Array [
+                Object {
+                  "text": "want to make a link and hit ",
+                  "type": "text",
+                },
+                Object {
+                  "marks": Array [
+                    Object {
+                      "type": "code",
+                    },
+                  ],
+                  "text": "Ctrl+L",
+                  "type": "text",
+                },
+                Object {
+                  "text": ".  Another named link to",
+                  "type": "text",
+                },
+              ],
+              "type": "paragraph",
+            },
+          ],
+          "type": "list_item",
+        },
+        Object {
+          "content": Array [
+            Object {
+              "content": Array [
+                Object {
+                  "marks": Array [
+                    Object {
+                      "type": "strong",
+                    },
+                  ],
+                  "text": "MarkItDown",
+                  "type": "text",
+                },
+                Object {
+                  "text": " Sometimes you just want a URL like",
+                  "type": "text",
+                },
+              ],
+              "type": "paragraph",
+            },
+          ],
+          "type": "list_item",
+        },
+        Object {
+          "content": Array [
+            Object {
+              "content": Array [
+                Object {
+                  "marks": Array [
+                    Object {
+                      "type": "strong",
+                    },
+                  ],
+                  "text": "http://www.markitdown.net/",
+                  "type": "text",
+                },
+                Object {
+                  "text": ".",
+                  "type": "text",
+                },
+              ],
+              "type": "paragraph",
+            },
+          ],
+          "type": "list_item",
+        },
+      ],
+      "type": "bullet_list",
+    },
+    Object {
+      "attrs": Object {
+        "level": 2,
+      },
+      "content": Array [
+        Object {
+          "text": "Horizontal rule",
+          "type": "text",
+        },
+      ],
+      "type": "heading",
+    },
+    Object {
+      "content": Array [
+        Object {
+          "text": "A horizontal rule is a line that goes across the middle of the page.",
+          "type": "text",
+        },
+      ],
+      "type": "paragraph",
+    },
+    Object {
+      "type": "horizontal_rule",
+    },
+    Object {
+      "content": Array [
+        Object {
+          "text": "It's sometimes handy for breaking things up.",
+          "type": "text",
+        },
+      ],
+      "type": "paragraph",
+    },
+    Object {
+      "attrs": Object {
+        "level": 2,
+      },
+      "content": Array [
+        Object {
+          "text": "Images",
+          "type": "text",
+        },
+      ],
+      "type": "heading",
+    },
+    Object {
+      "content": Array [
+        Object {
+          "text": "Markdown can also contain images. I'll need to add something here sometime.",
+          "type": "text",
+        },
+      ],
+      "type": "paragraph",
+    },
+    Object {
+      "attrs": Object {
+        "level": 2,
+      },
+      "content": Array [
+        Object {
+          "text": "Finally",
+          "type": "text",
+        },
+      ],
+      "type": "heading",
+    },
+    Object {
+      "content": Array [
+        Object {
+          "text": "There's actually a lot more to Markdown than this. See the official
+introduction and syntax for more information. However, be aware that this is
+not using the official implementation, and this might work subtly differently
+  in some of the little things.",
+          "type": "text",
+        },
+      ],
+      "type": "paragraph",
+    },
+  ],
+  "type": "doc",
+}
+`;
+
+exports[`Compile markdown to Prosemirror document structure should compile links 1`] = `
+Object {
+  "content": Array [
+    Object {
+      "attrs": Object {
+        "level": 1,
+      },
+      "content": Array [
+        Object {
+          "text": "Word",
+          "type": "text",
+        },
+      ],
+      "type": "heading",
+    },
+    Object {
+      "content": Array [
+        Object {
+          "text": "How far is it to ",
+          "type": "text",
+        },
+        Object {
+          "marks": Array [
+            Object {
+              "type": "strong",
+            },
+          ],
+          "text": "Google",
+          "type": "text",
+        },
+        Object {
+          "text": " land?",
+          "type": "text",
         },
       ],
       "type": "paragraph",
@@ -288,6 +988,87 @@ Object {
         },
       ],
       "type": "heading",
+    },
+  ],
+  "type": "doc",
+}
+`;
+
+exports[`Compile markdown to Prosemirror document structure should compile nested inline markup 1`] = `
+Object {
+  "content": Array [
+    Object {
+      "attrs": Object {
+        "level": 1,
+      },
+      "content": Array [
+        Object {
+          "text": "Word",
+          "type": "text",
+        },
+      ],
+      "type": "heading",
+    },
+    Object {
+      "content": Array [
+        Object {
+          "text": "This is ",
+          "type": "text",
+        },
+        Object {
+          "marks": Array [
+            Object {
+              "type": "strong",
+            },
+          ],
+          "text": "some ",
+          "type": "text",
+        },
+        Object {
+          "marks": Array [
+            Object {
+              "type": "em",
+            },
+            Object {
+              "type": "strong",
+            },
+          ],
+          "text": "hot",
+          "type": "text",
+        },
+        Object {
+          "marks": Array [
+            Object {
+              "type": "strong",
+            },
+          ],
+          "text": " content",
+          "type": "text",
+        },
+      ],
+      "type": "paragraph",
+    },
+    Object {
+      "content": Array [
+        Object {
+          "text": "perhaps ",
+          "type": "text",
+        },
+        Object {
+          "marks": Array [
+            Object {
+              "type": "strong",
+            },
+          ],
+          "text": "scalding",
+          "type": "text",
+        },
+        Object {
+          "text": " even",
+          "type": "text",
+        },
+      ],
+      "type": "paragraph",
     },
   ],
   "type": "doc",

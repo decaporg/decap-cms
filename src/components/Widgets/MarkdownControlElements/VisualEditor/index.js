@@ -12,17 +12,17 @@ import {
   headingRule,
   inputRules,
   allInputRules,
-} from 'prosemirror-inputrules';
-import { keymap } from 'prosemirror-keymap';
+} from "prosemirror-inputrules";
+import { keymap } from "prosemirror-keymap";
 import { schema as markdownSchema, defaultMarkdownSerializer } from 'prosemirror-markdown';
-import { baseKeymap, setBlockType, toggleMark } from 'prosemirror-commands';
-import registry from '../../../../lib/registry';
-import { createAssetProxy } from '../../../../valueObjects/AssetProxy';
-import { buildKeymap } from './keymap';
-import createMarkdownParser from './parser';
-import Toolbar from '../Toolbar/Toolbar';
+import { baseKeymap, setBlockType, toggleMark } from "prosemirror-commands";
+import registry from "../../../../lib/registry";
+import { createAssetProxy } from "../../../../valueObjects/AssetProxy";
+import { buildKeymap } from "./keymap";
+import createMarkdownParser from "./parser";
+import Toolbar from "../Toolbar/Toolbar";
 import { Sticky } from '../../../UI/Sticky/Sticky';
-import styles from './index.css';
+import styles from "./index.css";
 
 function processUrl(url) {
   if (url.match(/^(https?:\/\/|mailto:|\/)/)) {
@@ -202,24 +202,25 @@ export default class Editor extends Component {
     this.ref = ref;
   };
 
-  handleHeader = level => () => {
-    const { schema } = this.state;
-    const state = this.view.state;
-    const { $from, to, node } = state.selection;
-    let nodeType = schema.nodes.heading;
-    let attrs = { level };
-    let inHeader = node && node.hasMarkup(nodeType, attrs);
-    if (!inHeader) {
-      inHeader = to <= $from.end() && $from.parent.hasMarkup(nodeType, attrs);
-    }
-    if (inHeader) {
-      nodeType = schema.nodes.paragraph;
-      attrs = {};
-    }
+  handleHeader = level =>
+    () => {
+      const { schema } = this.state;
+      const state = this.view.state;
+      const { $from, to, node } = state.selection;
+      let nodeType = schema.nodes.heading;
+      let attrs = { level };
+      let inHeader = node && node.hasMarkup(nodeType, attrs);
+      if (!inHeader) {
+        inHeader = to <= $from.end() && $from.parent.hasMarkup(nodeType, attrs);
+      }
+      if (inHeader) {
+        nodeType = schema.nodes.paragraph;
+        attrs = {};
+      }
 
-    const command = setBlockType(nodeType, { level });
-    command(state, this.handleAction);
-  };
+      const command = setBlockType(nodeType, { level });
+      command(state, this.handleAction);
+    };
 
   handleBold = () => {
     const command = toggleMark(this.state.schema.marks.strong);
