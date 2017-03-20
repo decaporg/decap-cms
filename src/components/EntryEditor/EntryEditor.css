@@ -1,5 +1,10 @@
 @import '../UI/theme';
 
+/* Quick fix for preview pane not fully displaying in Safari */
+:global(.SplitPane .Pane) {
+  height: 100%;
+}
+
 .controlPane {
   height: calc(100% - 55px);
   overflow: auto;
