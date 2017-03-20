@@ -25,6 +25,10 @@ The Netlify CMS can be used in two different ways.
 To learn more about this installation method, refer to the [Quick Start Guide](docs/quick-start.md)
 * A complete, more complex install, that gives you more flexibility but requires that you use a static site builder with a build system with supports npm packages.
 
+# Community
+
+Netlify CMS has a [public Gitter channel](https://gitter.im/netlify/NetlifyCMS) where members of the community hang out and share things about the project.
+
 # Change Log
 
 This project adheres to [Semantic Versioning](http://semver.org/).  
