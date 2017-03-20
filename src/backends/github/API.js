@@ -1,7 +1,7 @@
 import LocalForage from "localforage";
 import { Base64 } from "js-base64";
 import _ from "lodash";
-import { filterPromises } from "../../lib/promiseHelper";
+import { filterPromises, resolvePromiseProperties } from "../../lib/promiseHelper";
 import AssetProxy from "../../valueObjects/AssetProxy";
 import { SIMPLE, EDITORIAL_WORKFLOW, status } from "../../constants/publishModes";
 import { APIError, EditorialWorkflowError } from "../../valueObjects/errors";
@@ -159,24 +159,18 @@ export default class API {
   }
 
   readUnpublishedBranchFile(contentKey) {
-    let metaData, fileData;
-    const unpublishedPromise = this.retrieveMetadata(contentKey)
-    .then((data) => {
-      metaData = data;
-      if (data.objects.entry.path) {
-        return this.readFile(data.objects.entry.path, null, data.branch);
-      }
-      return Promise.reject(null);
+    const metaDataPromise = this.retrieveMetadata(contentKey)
+      .then(data => (data.objects.entry.path ? data : Promise.reject(null)));
+    return resolvePromiseProperties({
+      metaData: metaDataPromise,
+      fileData: metaDataPromise.then(
+        data => this.readFile(data.objects.entry.path, null, data.branch)),
+      isModification: metaDataPromise.then(
+        data => this.isUnpublishedEntryModification(data.objects.entry.path, this.branch)),
     })
-    .then((file) => {
-      fileData = file;
-      return this.isUnpublishedEntryModification(metaData.objects.entry.path);
-    })
-    .then(isModification => ({ metaData, fileData, isModification }))
     .catch(() => {
       throw new EditorialWorkflowError('content is not under editorial workflow', true);
     });
-    return unpublishedPromise;
   }
 
   isUnpublishedEntryModification(path, branch) {
