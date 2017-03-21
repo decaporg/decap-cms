@@ -7,6 +7,7 @@ import ControlPane from '../ControlPanel/ControlPane';
 import PreviewPane from '../PreviewPane/PreviewPane';
 import Toolbar from './EntryEditorToolbar';
 import styles from './EntryEditor.css';
+import stickyStyles from '../UI/Sticky/Sticky.css';
 
 const PREVIEW_VISIBLE = 'cms.preview-visible';
 
@@ -35,6 +36,35 @@ class EntryEditor extends Component {
     localStorage.setItem(PREVIEW_VISIBLE, newPreviewVisible);
   };
 
+  setSticky = (contextTop, containerRect, sticky) => {
+    if (contextTop >= containerRect.top) {
+      if (contextTop < containerRect.bottom - 60) {
+        sticky.classList.add(stickyStyles.top);
+        sticky.classList.remove(stickyStyles.bottom);
+      } else if (contextTop >= containerRect.bottom - 60) {
+        sticky.classList.remove(stickyStyles.top);
+        sticky.classList.add(stickyStyles.bottom);
+      }
+    } else {
+      sticky.classList.remove(stickyStyles.top);
+      sticky.classList.remove(stickyStyles.bottom);
+    }
+  };
+
+  handleControlPaneRef = (ref) => {
+    const sticky = ref.querySelector('.cms__index__editorControlBar');
+    const stickyContainer = ref.querySelector('.stickyContainer');
+    stickyContainer.style.paddingTop = `${ sticky.offsetHeight }px`;
+    sticky.style.position = 'absolute';
+    sticky.style.top = `${ -sticky.offsetHeight }px`;
+    sticky.style.width = `${ stickyContainer.getBoundingClientRect().width }px`;
+
+    ref && ref.addEventListener('scroll', (e) => {
+      const contextTop = e.target.getBoundingClientRect().top;
+      this.setSticky(contextTop, stickyContainer.getBoundingClientRect(), sticky);
+    });
+  };
+
   render() {
     const {
         collection,
@@ -60,7 +90,7 @@ class EntryEditor extends Component {
     );
 
     const editor = (
-      <div className={controlClassName}>
+      <div className={controlClassName} ref={this.handleControlPaneRef}>
         { collectionPreviewEnabled ? togglePreviewButton : null }
         <ControlPane
           collection={collection}

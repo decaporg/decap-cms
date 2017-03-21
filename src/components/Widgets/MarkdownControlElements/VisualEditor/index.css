@@ -2,7 +2,7 @@
 
 .editorControlBar {
   background-color: var(--controlBGColor);
-  margin-bottom: 1px;
+  border-bottom: 1px solid var(--backgroundTertiaryColorDark);
   border-radius: var(--borderRadius) var(--borderRadius) 0 0;
 }
 

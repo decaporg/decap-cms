@@ -1,0 +1,10 @@
+.top {
+  position: fixed !important;
+  top: 64px !important;
+}
+
+.bottom {
+  top: auto !important;
+  bottom: 30px !important;
+}
+

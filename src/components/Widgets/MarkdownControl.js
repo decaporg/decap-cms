@@ -34,7 +34,7 @@ export default class MarkdownControl extends React.Component {
     const { mode } = this.state;
     if (mode === 'visual') {
       return (
-        <div className="cms-editor-visual">
+        <div className="cms-editor-visual stickyContainer">
           <VisualEditor
             onChange={onChange}
             onAddAsset={onAddAsset}
@@ -48,7 +48,7 @@ export default class MarkdownControl extends React.Component {
     }
 
     return (
-      <div className="cms-editor-raw">
+      <div className="cms-editor-raw stickyContainer">
         <RawEditor
           onChange={onChange}
           onAddAsset={onAddAsset}
