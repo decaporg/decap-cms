@@ -2,12 +2,14 @@
   --defaultColor: #333;
   --defaultColorLight: #eee;
   --backgroundColor: #fff;
+  --backgroundColorShaded: #eee;
   --shadowColor: rgba(0, 0, 0, .25);
   --infoColor: #69c;
   --successColor: #1c7;
   --warningColor: #fa0;
   --errorColor: #f52;
   --borderRadius: 2px;
+  --borderRadiusLarge: 10px;
   --topmostZindex: 99999;
   --foregroundAltColor: #fff;
   --backgroundAltColor: #272e30;

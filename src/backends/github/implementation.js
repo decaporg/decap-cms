@@ -99,6 +99,7 @@ export default class GitHub {
                 file: { path },
                 data: data.fileData,
                 metaData: data.metaData,
+                isModification: data.isModification,
               });
               sem.leave();
             }
@@ -127,6 +128,7 @@ export default class GitHub {
         file: { path: data.metaData.objects.entry.path },
         data: data.fileData,
         metaData: data.metaData,
+        isModification: data.isModification,
       };
     });
   }

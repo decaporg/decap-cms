@@ -1,3 +1,5 @@
+import { isBoolean } from "lodash";
+
 export function createEntry(collection, slug = '', path = '', options = {}) {
   const returnObj = {};
   returnObj.collection = collection;
@@ -8,5 +10,8 @@ export function createEntry(collection, slug = '', path = '', options = {}) {
   returnObj.data = options.data || {};
   returnObj.label = options.label || null;
   returnObj.metaData = options.metaData || null;
+  returnObj.isModification = isBoolean(options.isModification)
+    ? options.isModification
+    : null;
   return returnObj;
 }
