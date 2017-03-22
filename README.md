@@ -23,7 +23,7 @@ The Netlify CMS can be used in two different ways.
 
 * A Quick and easy install, that just requires you to create a single HTML file and a configuration file. All the CMS Javascript and CSS are loaded from a CDN.
 To learn more about this installation method, refer to the [Quick Start Guide](docs/quick-start.md)
-* A complete, more complex install, that gives you more flexibility but requires that you use a static site builder with a build system with supports npm packages.
+* A complete, more complex install, that gives you more flexibility but requires that you use a static site builder with a build system that supports npm packages.
 
 # Community
 
