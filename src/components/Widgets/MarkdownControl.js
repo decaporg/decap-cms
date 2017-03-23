@@ -3,6 +3,7 @@ import registry from '../../lib/registry';
 import RawEditor from './MarkdownControlElements/RawEditor';
 import VisualEditor from './MarkdownControlElements/VisualEditor';
 import { processEditorPlugins } from './richText';
+import { StickyContainer } from '../UI/Sticky/Sticky';
 
 const MODE_STORAGE_KEY = 'cms.md-mode';
 
@@ -32,23 +33,20 @@ export default class MarkdownControl extends React.Component {
   render() {
     const { onChange, onAddAsset, onRemoveAsset, getAsset, value } = this.props;
     const { mode } = this.state;
-    if (mode === 'visual') {
-      return (
-        <div className="cms-editor-visual stickyContainer">
-          <VisualEditor
-            onChange={onChange}
-            onAddAsset={onAddAsset}
-            onRemoveAsset={onRemoveAsset}
-            onMode={this.handleMode}
-            getAsset={getAsset}
-            value={value}
-          />
-        </div>
-      );
-    }
-
-    return (
-      <div className="cms-editor-raw stickyContainer">
+    const visualEditor = (
+      <div className="cms-editor-visual">
+        <VisualEditor
+          onChange={onChange}
+          onAddAsset={onAddAsset}
+          onRemoveAsset={onRemoveAsset}
+          onMode={this.handleMode}
+          getAsset={getAsset}
+          value={value}
+        />
+      </div>
+    );
+    const rawEditor = (
+      <div className="cms-editor-raw">
         <RawEditor
           onChange={onChange}
           onAddAsset={onAddAsset}
@@ -60,5 +58,6 @@ export default class MarkdownControl extends React.Component {
         />
       </div>
     );
+    return <StickyContainer>{ mode === 'visual' ? visualEditor : rawEditor }</StickyContainer>;
   }
 }

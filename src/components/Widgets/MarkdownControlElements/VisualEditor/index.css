@@ -4,6 +4,7 @@
   background-color: var(--controlBGColor);
   border-bottom: 1px solid var(--backgroundTertiaryColorDark);
   border-radius: var(--borderRadius) var(--borderRadius) 0 0;
+  z-index: 1;
 }
 
 .editor {

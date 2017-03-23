@@ -17,6 +17,7 @@ import { buildKeymap } from './keymap';
 import createMarkdownParser from './parser';
 import Toolbar from '../Toolbar';
 import ToolbarPlugins from '../ToolbarPlugins';
+import { Sticky } from '../../../UI/Sticky/Sticky';
 import styles from './index.css';
 
 function processUrl(url) {
@@ -275,7 +276,7 @@ export default class Editor extends Component {
       onDragOver={this.handleDragOver}
       onDrop={this.handleDrop}
     >
-      <div className={styles.editorControlBar}>
+      <Sticky className={styles.editorControlBar} fillContainerWidth={true}>
         <Toolbar
           selectionPosition={selectionPosition}
           onH1={this.handleHeader(1)}
@@ -293,7 +294,7 @@ export default class Editor extends Component {
           onRemoveAsset={onRemoveAsset}
           getAsset={getAsset}
         />
-      </div>
+      </Sticky>
       <div ref={this.handleRef} />
       <div className={styles.shim} />
     </div>);

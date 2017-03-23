@@ -7,6 +7,7 @@ import registry from '../../../../lib/registry';
 import { createAssetProxy } from '../../../../valueObjects/AssetProxy';
 import Toolbar from '../Toolbar';
 import ToolbarPlugins from '../ToolbarPlugins';
+import { Sticky } from '../../../UI/Sticky/Sticky';
 import styles from './index.css';
 
 const HAS_LINE_BREAK = /\n/m;
@@ -319,7 +320,7 @@ export default class RawEditor extends React.Component {
       onDragOver={this.handleDragOver}
       onDrop={this.handleDrop}
     >
-      <div className={styles.editorControlBar}>
+      <Sticky className={styles.editorControlBar} fillContainerWidth={true}>
         <Toolbar
           selectionPosition={selectionPosition}
           onH1={this.handleHeader('#')}
@@ -339,7 +340,7 @@ export default class RawEditor extends React.Component {
           getAsset={getAsset}
           rawMode
         />
-      </div>
+      </Sticky>
       <textarea
         ref={this.handleRef}
         value={this.props.value || ''}
