@@ -198,3 +198,4 @@ Based on this example, you can go through the post types in your site and add th
 With your configuration complete, it's time to try it out! Go to `yoursite.com/admin` and complete the login prompt to access the admin interface. To add users, simply add them as collaborators on the GitHub repo.
 
 Happy posting!
+

@@ -112,3 +112,4 @@ Netlify CMS exposes a `window.CMS` global object that you can use to register cu
 * `registerWidget` - registers a custom widget
 
 * `registerEditorComponent` - adds a block component to the Markdown editor
+
