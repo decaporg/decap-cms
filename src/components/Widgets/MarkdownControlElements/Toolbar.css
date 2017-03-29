@@ -21,3 +21,15 @@
   }
 }
 
+.Toggle {
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  & .Button button {
+    font-size: 12px;
+    text-transform: uppercase;
+    padding-top: 10px;
+    padding-bottom: 8px;
+  }
+}

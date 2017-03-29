@@ -7,9 +7,13 @@ function button(label, icon, action, active) {
   const classNames = List([styles.Button]);
   return (<li className={(active ? classNames.push(styles.ButtonActive) : classNames).join(' ')}>
     <button className={styles[label]} onClick={action} title={label}>
-      <Icon type={icon} />
+      { icon ? <Icon type={icon} /> : 'Toggle Markdown' }
     </button>
   </li>);
+}
+
+function toggle(...args) {
+  return <div className={styles.Toggle}>{button(...args)}</div>;
 }
 
 function Toolbar(props) {
@@ -21,7 +25,7 @@ function Toolbar(props) {
       {button('Bold', 'bold', onBold)}
       {button('Italic', 'italic', onItalic)}
       {button('Link', 'link', onLink)}
-      {button('View Code', 'code', onToggleMode, rawMode)}
+      {toggle('View Code', null, onToggleMode, rawMode)}
     </ul>
   );
 }
