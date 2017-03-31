@@ -45,12 +45,6 @@ export default class AppHeader extends React.Component {
     });
   };
 
-  handleRightIconClick = () => {
-    this.setState({
-      userMenuActive: !this.state.userMenuActive,
-    });
-  };
-
   render() {
     const {
       user,
@@ -59,8 +53,6 @@ export default class AppHeader extends React.Component {
       toggleDrawer,
       onLogoutClick,
     } = this.props;
-
-    const { userMenuActive } = this.state;
 
     const avatarStyle = {
       backgroundColor: `#${ stringToRGB(user.get("name")) }`,
@@ -71,22 +63,6 @@ export default class AppHeader extends React.Component {
         fixed
         theme={styles}
         leftIcon="menu"
-        rightIcon={
-          <div>
-            <Avatar
-              style={avatarStyle}
-              title={user.get("name")}
-              image={user.get("avatar_url")}
-            />
-            <Menu
-              active={userMenuActive}
-              position="topRight"
-              onHide={this.handleRightIconClick}
-            >
-              <MenuItem onClick={onLogoutClick}>Log out</MenuItem>
-            </Menu>
-          </div>
-        }
         onLeftIconClick={toggleDrawer}
         onRightIconClick={this.handleRightIconClick}
       >
@@ -111,6 +87,10 @@ export default class AppHeader extends React.Component {
           }
         </IconMenu>
         <FindBar runCommand={runCommand} />
+        <Avatar style={avatarStyle} title={user.get("name")} image={user.get("avatar_url")} />
+        <IconMenu icon="settings" position="topRight" theme={styles}>
+          <MenuItem onClick={onLogoutClick} value="log out" caption="Log Out" />
+        </IconMenu>
       </AppBar>
     );
   }
