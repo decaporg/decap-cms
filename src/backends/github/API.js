@@ -1,6 +1,7 @@
 import LocalForage from "localforage";
 import { Base64 } from "js-base64";
 import _ from "lodash";
+import Immutable from "immutable";
 import { filterPromises, resolvePromiseProperties } from "../../lib/promiseHelper";
 import AssetProxy from "../../valueObjects/AssetProxy";
 import { SIMPLE, EDITORIAL_WORKFLOW, status } from "../../constants/publishModes";
@@ -119,6 +120,10 @@ export default class API {
     });
   }
 
+  storeGlobalMetadata(data) {
+    return this.storeMetadata(".netlify-cms-global-meta", data);
+  }
+
   retrieveMetadata(key) {
     const cache = LocalForage.getItem(`gh.meta.${ key }`);
     return cache.then((cached) => {
@@ -132,6 +137,10 @@ export default class API {
       .then(response => JSON.parse(response))
       .catch(error => console.log("%c %s does not have metadata", "line-height: 30px;text-align: center;font-weight: bold", key)); // eslint-disable-line
     });
+  }
+
+  retrieveGlobalMetadata() {
+    return this.retrieveMetadata(".netlify-cms-global-meta").then(metadata => metadata || {});
   }
 
   readFile(path, sha, branch = this.branch) {
@@ -250,6 +259,21 @@ export default class API {
     });
   }
 
+  deleteFile(path, message, options={}) {
+    const branch = options.branch || this.branch;
+    // We need to request the file first to get the SHA
+    return this.request(`${ this.repoURL }/contents/${ path }`)
+    .then(({ sha }) => this.request(
+      `${ this.repoURL }/contents/${ path }?sha=${ sha }&message=${ message }&branch=${ branch }`,
+      { method: "DELETE" }
+    ))
+    .then(response => this.retrieveGlobalMetadata())
+    .then((metadata) => {
+      const deleted = Object.assign({}, metadata.deleted || {}, { [path]: true });
+      return this.storeGlobalMetadata({ ...metadata, deleted });
+    });
+  }
+
   editorialWorkflowGit(fileTree, entry, filesList, options) {
     const contentKey = entry.slug;
     const branchName = `cms/${ contentKey }`;
@@ -335,10 +359,19 @@ export default class API {
 
   deleteUnpublishedEntry(collection, slug) {
     const contentKey = slug;
-    let prNumber; 
+    let prNumber;
     return this.retrieveMetadata(contentKey)
     .then(metadata => this.closePR(metadata.pr, metadata.objects))
-    .then(() => this.deleteBranch(`cms/${ contentKey }`));
+    .then(() => this.deleteBranch(`cms/${ contentKey }`))
+    // If the PR doesn't exist, then this has already been deleted -
+    // deletion should be idempotent, so we can consider this a
+    // success.
+    .catch((err) => {
+      if (err.message === "Reference does not exist") {
+        return Promise.resolve();
+      }
+      return Promise.reject(err);
+    });
   }
 
   publishUnpublishedEntry(collection, slug) {

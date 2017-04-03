@@ -1,4 +1,5 @@
 import semaphore from "semaphore";
+import { resolvePromiseProperties } from "../../lib/promiseHelper";
 import AuthenticationPage from "./AuthenticationPage";
 import API from "./API";
 
@@ -40,7 +41,14 @@ export default class GitHub {
   }
 
   entriesByFolder(collection) {
-    return this.api.listFiles(collection.get("folder"))
+    return resolvePromiseProperties({
+      files: this.api.listFiles(collection.get("folder")),
+      globalMetadata: this.api.retrieveGlobalMetadata(),
+    })
+    .then(({ files, globalMetadata }) => {
+      const deleted = globalMetadata.deleted || [];
+      return files.filter(file => deleted[file.path] !== true);
+    })
     .then(this.fetchFiles);
   }
 
@@ -79,6 +87,10 @@ export default class GitHub {
 
   persistEntry(entry, mediaFiles = [], options = {}) {
     return this.api.persistFiles(entry, mediaFiles, options);
+  }
+
+  deleteFile(path, commitMessage, options) {
+    return this.api.deleteFile(path, commitMessage, options);
   }
 
   unpublishedEntries() {

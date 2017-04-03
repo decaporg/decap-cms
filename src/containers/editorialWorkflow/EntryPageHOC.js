@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { EDITORIAL_WORKFLOW } from '../../constants/publishModes';
 import { selectUnpublishedEntry, selectEntry } from '../../reducers';
-import { loadUnpublishedEntry, persistUnpublishedEntry } from '../../actions/editorialWorkflow';
+import { loadUnpublishedEntry, persistUnpublishedEntry, deleteUnpublishedEntry } from '../../actions/editorialWorkflow';
 
 
 export default function EntryPageHOC(EntryPage) {
@@ -35,14 +35,16 @@ export default function EntryPageHOC(EntryPage) {
 
     if (isEditorialWorkflow) {
       // Overwrite loadEntry to loadUnpublishedEntry
-      returnObj.loadEntry = (collection, slug) => {
+      returnObj.loadEntry = (collection, slug) =>
         dispatch(loadUnpublishedEntry(collection, slug));
-      };
       
       // Overwrite persistEntry to persistUnpublishedEntry
-      returnObj.persistEntry = (collection) => {
+      returnObj.persistEntry = collection =>
         dispatch(persistUnpublishedEntry(collection, unpublishedEntry));
-      };
+
+      // Overwrite deleteEntry to deleteUnpublishedEntry
+      returnObj.deleteEntry = (collection, slug) =>
+        dispatch(deleteUnpublishedEntry(collection, slug));
     }
 
     return {

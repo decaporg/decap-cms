@@ -34,6 +34,7 @@ class EntryEditor extends Component {
         fieldsErrors,
         getAsset,
         onChange,
+        onDelete,
         onValidate,
         onAddAsset,
         onRemoveAsset,
@@ -87,6 +88,7 @@ class EntryEditor extends Component {
             isPersisting={entry.get('isPersisting')}
             onPersist={this.handleOnPersist}
             onCancelEdit={onCancelEdit}
+            onDelete={onDelete}
           />
         </div>
 
@@ -106,6 +108,7 @@ EntryEditor.propTypes = {
   onChange: PropTypes.func.isRequired,
   onValidate: PropTypes.func.isRequired,
   onPersist: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
   onRemoveAsset: PropTypes.func.isRequired,
   onCancelEdit: PropTypes.func.isRequired,
 };

@@ -5,6 +5,7 @@ import {
   ENTRY_FAILURE,
   ENTRIES_REQUEST,
   ENTRIES_SUCCESS,
+  ENTRY_DELETE_SUCCESS,
 } from '../actions/entries';
 
 import { SEARCH_ENTRIES_SUCCESS } from '../actions/search';
@@ -55,6 +56,13 @@ const entries = (state = Map({ entities: Map(), pages: Map() }), action) => {
         loadedEntries.forEach(entry => (
           map.setIn(['entities', `${ entry.collection }.${ entry.slug }`], fromJS(entry).set('isFetching', false))
         ));
+      });
+
+    case ENTRY_DELETE_SUCCESS:
+      return state.withMutations((map) => {
+        map.deleteIn(['entities', `${ action.payload.collectionName }.${ action.payload.entrySlug }`]);
+        map.updateIn(['pages', action.payload.collectionName, 'ids'],
+          ids => ids.filter(id => id !== action.payload.entrySlug));
       });
 
     default:
