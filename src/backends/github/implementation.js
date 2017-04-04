@@ -52,10 +52,11 @@ export default class GitHub {
     return this.fetchFiles(files);
   }
 
-  fetchFiles = (files) => {
+  fetchFiles = (filesOrDirs) => {
     const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
     const promises = [];
-    files.forEach((file) => {
+
+    const readFile = (file) => {
       promises.push(new Promise((resolve, reject) => (
         sem.take(() => this.api.readFile(file.path, file.sha).then((data) => {
           resolve({ file, data });
@@ -65,8 +66,31 @@ export default class GitHub {
           reject(err);
         }))
       )));
-    });
-    return Promise.all(promises);
+    };
+
+    const readDir = (dir) => {
+      promises.push(this.api.listFiles(dir.path).then(this.fetchFiles));
+    };
+
+    const process = fileOrDir => fileOrDir.type === 'file' ? readFile(fileOrDir) : readDir(fileOrDir);
+
+    const flatten = (results) => {
+      let flattened = [];
+
+      results.forEach((r) => {
+        if (r.constructor === Array) {
+          flattened = flattened.concat(flatten(r));
+        } else {
+          flattened.push(r);
+        }
+      });
+
+      return flattened;
+    };
+
+    filesOrDirs.forEach(process);
+
+    return Promise.all(promises).then(flatten);
   };
 
   // Fetches a single entry.
