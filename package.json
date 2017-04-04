@@ -4,7 +4,7 @@
   "description": "Netlify CMS lets content editors work on structured content stored in git",
   "main": "dist/cms.js",
   "scripts": {
-    "start": "webpack-dev-server --config webpack.dev.js",
+    "start": "webpack-dev-server -d --config webpack.dev.js",
     "test": "jest",
     "test:watch": "jest --watch",
     "build": "NODE_ENV=production webpack --config webpack.prod.js",
