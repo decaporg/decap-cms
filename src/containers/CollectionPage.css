@@ -1,0 +1,10 @@
+.noEntries {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: 0px;
+  text-align: center;
+  z-index: 1000;
+  transform: translateX(-50%) translateY(-50%);
+  margin-top: 28px;
+}
