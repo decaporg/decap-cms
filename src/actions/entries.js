@@ -206,7 +206,7 @@ export function loadEntries(collection, page = 0) {
     const provider = integration ? getIntegrationProvider(state.integrations, backend.getToken, integration) : backend;
     dispatch(entriesLoading(collection));
     provider.listEntries(collection, page).then(
-      response => dispatch(entriesLoaded(collection, response.entries, response.pagination)),
+      response => dispatch(entriesLoaded(collection, response.entries.reverse(), response.pagination)),
       error => dispatch(entriesFailed(collection, error))
     );
   };
