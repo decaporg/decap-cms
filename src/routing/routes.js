@@ -20,7 +20,7 @@ export default (
       newRecord
     />
     <Route
-      path="/collections/:name/entries/:slug"
+      path="/collections/:name/entries/:slug*"
       component={EntryPage}
     />
     <Route
