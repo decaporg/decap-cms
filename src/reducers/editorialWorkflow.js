@@ -39,7 +39,8 @@ const unpublishedEntries = (state = null, action) => {
       return state.setIn(['pages', 'isFetching'], true);
 
     case UNPUBLISHED_ENTRIES_SUCCESS:
-      return state.withMutations((map) => {
+      // reset the state when unpublished entries are fetched anew.
+      return fromJS({ entities: {}, pages: {} }).withMutations((map) => {
         action.payload.entries.forEach(entry => (
           map.setIn(['entities', `${ entry.collection }.${ entry.slug }`], fromJS(entry).set('isFetching', false))
         ));
