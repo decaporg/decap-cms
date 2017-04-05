@@ -34,6 +34,7 @@ class EntryPage extends React.Component {
     entry: ImmutablePropTypes.map,
     entryDraft: ImmutablePropTypes.map.isRequired,
     loadEntry: PropTypes.func.isRequired,
+    deleteEntry: PropTypes.func.isRequired,
     persistEntry: PropTypes.func.isRequired,
     removeAsset: PropTypes.func.isRequired,
     closeEntry: PropTypes.func.isRequired,
@@ -44,7 +45,7 @@ class EntryPage extends React.Component {
   };
 
   componentDidMount() {
-    const { entry, newEntry, collection, slug, loadEntry, createEmptyDraft } = this.props;
+    const { newEntry, collection, slug, loadEntry, createEmptyDraft } = this.props;
     this.props.openSidebar();
     if (newEntry) {
       createEmptyDraft(collection);
@@ -79,9 +80,7 @@ class EntryPage extends React.Component {
     if (entry) this.props.createDraftFromEntry(entry);
   };
 
-  handleCloseEntry = () => {
-    return this.props.closeEntry();
-  };
+  handleCloseEntry = () => this.props.closeEntry();
 
   handlePersistEntry = () => {
     const { persistEntry, collection } = this.props;
@@ -93,15 +92,15 @@ class EntryPage extends React.Component {
   handleDeleteEntry = () => {
     if (!window.confirm("Are you sure you want to delete this entry?")) { return; }
     if (this.props.newEntry) {
-      return this.handleCloseEntry();
+      this.handleCloseEntry();
+    } else {
+      const { deleteEntry, entry, collection } = this.props;
+      const slug = entry.get('slug');
+      setTimeout(() => {
+        deleteEntry(collection, slug).then(() => this.handleCloseEntry());
+      }, 0);
     }
-
-    const { deleteEntry, entry, collection } = this.props;
-    const slug = entry.get('slug');
-    setTimeout(() => {
-      deleteEntry(collection, slug).then(() => this.handleCloseEntry());
-    }, 0);
-  }
+  };
 
   render() {
     const {

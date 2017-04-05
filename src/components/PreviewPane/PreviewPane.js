@@ -57,7 +57,7 @@ export default class PreviewPane extends React.Component {
 
   widgetsFor = (name) => {
     const { fields, entry } = this.props;
-    const field = fields.find(f => f.get('name') === name);
+    const field = fields.find(f => f.get('name') === name) || Map();
     const nestedFields = field && field.get('fields');
     const value = entry.getIn(['data', field.get('name')]);
 

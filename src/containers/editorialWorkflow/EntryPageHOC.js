@@ -6,11 +6,7 @@ import { loadUnpublishedEntry, persistUnpublishedEntry, deleteUnpublishedEntry }
 
 
 export default function EntryPageHOC(EntryPage) {
-  class EntryPageHOC extends React.Component {
-    render() {
-      return <EntryPage {...this.props} />;
-    }
-  }
+  const EntryPageHOC = () => (<EntryPage {...this.props} />);
 
   function mapStateToProps(state, ownProps) {
     const { collections } = state;
@@ -33,7 +29,7 @@ export default function EntryPageHOC(EntryPage) {
     const { dispatch } = dispatchProps;
     const returnObj = {};
 
-    if (isEditorialWorkflow) {
+    if (isEditorialWorkflow && unpublishedEntry) {
       // Overwrite loadEntry to loadUnpublishedEntry
       returnObj.loadEntry = (collection, slug) =>
         dispatch(loadUnpublishedEntry(collection, slug));
