@@ -8,12 +8,12 @@ import PreviewPane from '../PreviewPane/PreviewPane';
 import Toolbar from './EntryEditorToolbar';
 import styles from './EntryEditor.css';
 
-const PREVIEW_STATE = 'cms.preview-state';
+const PREVIEW_HIDE = 'cms.preview-state';
 
 class EntryEditor extends Component {
   state = {
     showEventBlocker: false,
-    previewOpen: localStorage.getItem(PREVIEW_STATE) === "open",
+    previewOpen: localStorage.getItem(PREVIEW_HIDE) === "false",
   };
 
   handleSplitPaneDragStart = () => {
@@ -31,10 +31,10 @@ class EntryEditor extends Component {
 
   handleTogglePreview = () => {
     const { previewOpen } = this.state;
-    const newPreviewState = !previewOpen ? "open" : "closed";
+    const newPreviewState = !previewOpen ? "false" : "true";
     this.setState(
       { previewOpen: !previewOpen },
-      localStorage.setItem(PREVIEW_STATE, newPreviewState)
+      localStorage.setItem(PREVIEW_HIDE, newPreviewState)
     );
   };
 
@@ -59,7 +59,7 @@ class EntryEditor extends Component {
 
     const editor = (
       <div className={controlClassName}>
-        <Button onClick={this.handleTogglePreview}> TOGGLE PREVIEW </Button>
+        <Button onClick={this.handleTogglePreview}>TOGGLE PREVIEW</Button>
         <ControlPane
           collection={collection}
           entry={entry}
@@ -76,7 +76,7 @@ class EntryEditor extends Component {
       </div>
     );
 
-    const editorWithPreivew = (
+    const editorWithPreview = (
       <ScrollSync>
         <div className={styles.container}>
           <SplitPane
@@ -102,7 +102,7 @@ class EntryEditor extends Component {
     );
     return (
       <div className={styles.root}>
-        {previewOpen === true ? editorWithPreivew : editor}
+        {previewOpen === true ? editorWithPreview : editor}
         <div className={styles.footer}>
           <Toolbar
             isPersisting={entry.get('isPersisting')}
