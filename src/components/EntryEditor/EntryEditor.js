@@ -8,12 +8,12 @@ import PreviewPane from '../PreviewPane/PreviewPane';
 import Toolbar from './EntryEditorToolbar';
 import styles from './EntryEditor.css';
 
-const PREVIEW_HIDE = 'cms.preview-state';
+const PREVIEW_VISIBLE = 'cms.preview-visible';
 
 class EntryEditor extends Component {
   state = {
     showEventBlocker: false,
-    previewOpen: localStorage.getItem(PREVIEW_HIDE) === "false",
+    previewVisible: localStorage.getItem(PREVIEW_VISIBLE) !== "false",
   };
 
   handleSplitPaneDragStart = () => {
@@ -30,12 +30,9 @@ class EntryEditor extends Component {
   };
 
   handleTogglePreview = () => {
-    const { previewOpen } = this.state;
-    const newPreviewState = !previewOpen ? "false" : "true";
-    this.setState(
-      { previewOpen: !previewOpen },
-      localStorage.setItem(PREVIEW_HIDE, newPreviewState)
-    );
+    const newPreviewVisible = !this.state.previewVisible;
+    this.setState({ previewVisible: newPreviewVisible });
+    localStorage.setItem(PREVIEW_VISIBLE, newPreviewVisible);
   };
 
   render() {
@@ -53,13 +50,12 @@ class EntryEditor extends Component {
         onCancelEdit,
     } = this.props;
 
-    const { previewOpen } = this.state;
     const controlClassName = `${ styles.controlPane } ${ this.state.showEventBlocker && styles.blocker }`;
     const previewClassName = `${ styles.previewPane } ${ this.state.showEventBlocker && styles.blocker }`;
 
     const editor = (
       <div className={controlClassName}>
-        <Button onClick={this.handleTogglePreview}>TOGGLE PREVIEW</Button>
+        <Button className={styles.previewToggle} onClick={this.handleTogglePreview}>Toggle Preview</Button>
         <ControlPane
           collection={collection}
           entry={entry}
@@ -84,9 +80,7 @@ class EntryEditor extends Component {
             onDragStarted={this.handleSplitPaneDragStart}
             onDragFinished={this.handleSplitPaneDragFinished}
           >
-            <ScrollSyncPane>
-              {editor}
-            </ScrollSyncPane>
+            <ScrollSyncPane>{editor}</ScrollSyncPane>
             <div className={previewClassName}>
               <PreviewPane
                 collection={collection}
@@ -100,9 +94,10 @@ class EntryEditor extends Component {
         </div>
       </ScrollSync>
     );
+
     return (
       <div className={styles.root}>
-        {previewOpen === true ? editorWithPreview : editor}
+        { this.state.previewVisible ? editorWithPreview : editor }
         <div className={styles.footer}>
           <Toolbar
             isPersisting={entry.get('isPersisting')}
