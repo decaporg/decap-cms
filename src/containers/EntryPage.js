@@ -35,6 +35,7 @@ class EntryPage extends React.Component {
     loadEntry: PropTypes.func.isRequired,
     persistEntry: PropTypes.func.isRequired,
     removeAsset: PropTypes.func.isRequired,
+    registerDependency: PropTypes.func,
     closeEntry: PropTypes.func.isRequired,
     openSidebar: PropTypes.func.isRequired,
     fields: ImmutablePropTypes.list.isRequired,
@@ -100,6 +101,8 @@ class EntryPage extends React.Component {
       changeDraftFieldValidation,
       addAsset,
       removeAsset,
+      onAddDependency,
+      onRemoveDependency,
       closeEntry,
     } = this.props;
 
@@ -123,6 +126,8 @@ class EntryPage extends React.Component {
         onValidate={changeDraftFieldValidation}
         onAddAsset={addAsset}
         onRemoveAsset={removeAsset}
+        onAddDependency={onAddDependency}
+        onRemoveDependency={onRemoveDependency}
         onPersist={this.handlePersistEntry}
         onCancelEdit={this.handleCloseEntry}
       />

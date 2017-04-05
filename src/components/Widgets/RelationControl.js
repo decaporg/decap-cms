@@ -15,6 +15,8 @@ function escapeRegexCharacters(str) {
 class RelationControl extends Component {
   static propTypes = {
     onChange: PropTypes.func.isRequired,
+    onAddDependency: PropTypes.func,
+    onRemoveDependency: PropTypes.func,
     forID: PropTypes.string.isRequired,
     value: PropTypes.node,
     field: PropTypes.node,
@@ -60,6 +62,11 @@ class RelationControl extends Component {
 
   onSuggestionSelected = (event, { suggestion }) => {
     const value = this.getSuggestionValue(suggestion);
+
+    if (this.props.onAddDependency) {
+      this.props.onAddDependency(this.props.field.get('name'), suggestion.collection, suggestion.slug);
+    }
+
     this.props.onChange(value, { [this.props.field.get('collection')]: { [value]: suggestion.data } });
   };
 

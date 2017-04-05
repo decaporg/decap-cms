@@ -143,4 +143,8 @@ export default class GitHub {
   publishUnpublishedEntry(collection, slug) {
     return this.api.publishUnpublishedEntry(collection, slug);
   }
+
+  publishUnpublishedEntries(entries) {
+    return this.api.publishUnpublishedEntries(entries);
+  }
 }

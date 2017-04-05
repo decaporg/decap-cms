@@ -1,4 +1,5 @@
 import uuid from 'uuid';
+import Immutable from 'immutable';
 import { actions as notifActions } from 'redux-notifications';
 import { closeEntry } from './editor';
 import { BEGIN, COMMIT, REVERT } from 'redux-optimist';
@@ -32,6 +33,17 @@ export const UNPUBLISHED_ENTRY_STATUS_CHANGE_FAILURE = 'UNPUBLISHED_ENTRY_STATUS
 export const UNPUBLISHED_ENTRY_PUBLISH_REQUEST = 'UNPUBLISHED_ENTRY_PUBLISH_REQUEST';
 export const UNPUBLISHED_ENTRY_PUBLISH_SUCCESS = 'UNPUBLISHED_ENTRY_PUBLISH_SUCCESS';
 export const UNPUBLISHED_ENTRY_PUBLISH_FAILURE = 'UNPUBLISHED_ENTRY_PUBLISH_FAILURE';
+
+export const UNPUBLISHED_ENTRIES_PUBLISH_REQUEST = 'UNPUBLISHED_ENTRIES_PUBLISH_REQUEST';
+export const UNPUBLISHED_ENTRIES_PUBLISH_SUCCESS = 'UNPUBLISHED_ENTRIES_PUBLISH_SUCCESS';
+export const UNPUBLISHED_ENTRIES_PUBLISH_FAILURE = 'UNPUBLISHED_ENTRIES_PUBLISH_FAILURE';
+
+export const UNPUBLISHED_ENTRY_REGISTER_DEPENDENCY = 'UNPUBLISHED_ENTRY_REGISTER_DEPENDENCY';
+export const UNPUBLISHED_ENTRY_UNREGISTER_DEPENDENCY = 'UNPUBLISHED_ENTRY_UNREGISTER_DEPENDENCY';
+
+export const UNPUBLISHED_ENTRY_DEPENDENCIES_REQUEST = 'UNPUBLISHED_ENTRY_DEPENDENCIES_REQUEST';
+export const UNPUBLISHED_ENTRY_DEPENDENCIES_SUCCESS = 'UNPUBLISHED_ENTRY_DEPENDENCIES_SUCCESS';
+export const UNPUBLISHED_ENTRY_DEPENDENCIES_FAILURE = 'UNPUBLISHED_ENTRY_DEPENDENCIES_FAILURE';
 
 /*
  * Simple Action Creators (Internal)
@@ -180,16 +192,78 @@ function unpublishedEntryPublishError(collection, slug, transactionID) {
   };
 }
 
+function unpublishedEntriesPublishRequest(entries, transactionID) {
+  return {
+    type: UNPUBLISHED_ENTRIES_PUBLISH_REQUEST,
+    payload: { entries },
+    optimist: { type: BEGIN, id: transactionID },
+  };
+}
+
+function unpublishedEntriesPublished(entries, transactionID) {
+  return {
+    type: UNPUBLISHED_ENTRIES_PUBLISH_SUCCESS,
+    payload: { entries },
+    optimist: { type: COMMIT, id: transactionID },
+  };
+}
+
+function unpublishedEntriesPublishError(entries, transactionID) {
+  return {
+    type: UNPUBLISHED_ENTRIES_PUBLISH_FAILURE,
+    payload: { entries },
+    optimist: { type: REVERT, id: transactionID },
+  };
+}
+
+function unpublishedEntryRegisterDependency(field, collection, slug) {
+  return {
+    type: UNPUBLISHED_ENTRY_REGISTER_DEPENDENCY,
+    payload: { field, collection, slug },
+  };
+}
+
+function unpublishedEntryUnregisterDependency(field) {
+  return {
+    type: UNPUBLISHED_ENTRY_UNREGISTER_DEPENDENCY,
+    payload: { field },
+  };
+}
+
+function unpublishedEntryDependenciesRequest(collection, slug) {
+  return {
+    type: UNPUBLISHED_ENTRY_DEPENDENCIES_REQUEST,
+    payload: { collection, slug },
+  };
+}
+
+function unpublishedEntryDependenciesSuccess(collection, slug, dependencies) {
+  return {
+    type: UNPUBLISHED_ENTRY_DEPENDENCIES_SUCCESS,
+    payload: { collection, slug, dependencies },
+  };
+}
+
+function unpublishedEntryDependenciesError(collection, slug, error) {
+  return {
+    type: UNPUBLISHED_ENTRY_DEPENDENCIES_FAILURE,
+    payload: { collection, slug, error },
+  };
+}
+
 /*
  * Exported Thunk Action Creators
  */
+
+export const registerUnpublishedEntryDependency = unpublishedEntryRegisterDependency;
+export const unregisterUnpublishedEntryDependency = unpublishedEntryUnregisterDependency;
 
 export function loadUnpublishedEntry(collection, slug) {
   return (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
     dispatch(unpublishedEntryLoading(collection, slug));
-    backend.unpublishedEntry(collection, slug)
+    return backend.unpublishedEntry(collection, slug)
     .then(entry => dispatch(unpublishedEntryLoaded(collection, entry)))
     .catch((error) => {
       if (error instanceof EditorialWorkflowError && error.notUnderEditorialWorkflow) {
@@ -311,4 +385,159 @@ export function publishUnpublishedEntry(collection, slug) {
       dispatch(unpublishedEntryPublishError(collection, slug, transactionID));
     });
   };
+}
+
+export function publishUnpublishedEntries(entries) {
+  return (dispatch, getState) => {
+    const state = getState();
+    const backend = currentBackend(state.config);
+    const transactionID = uuid.v4();
+
+    dispatch(unpublishedEntriesPublishRequest(entries, transactionID));
+    backend.publishUnpublishedEntries(entries)
+      .then(() => {
+        dispatch(unpublishedEntriesPublished(entries, transactionID));
+      })
+      .catch((error) => {
+        dispatch(notifSend({
+          message: `Failed to merge: ${ error }`,
+          kind: 'danger',
+          dismissAfter: 8000,
+        }));
+        dispatch(unpublishedEntriesPublishError(entries, transactionID));
+      });
+  };
+}
+
+const getDepsPath = dep => [
+  "entities",
+  dep,
+  "metaData",
+  "dependencies",
+];
+
+const getEventualDependencies = (paths, loadedDeps, state, dispatch) =>
+   // Filter paths to remove those we've already checked. This
+   // prevents traverse from loading posts we don't need or looping
+   // infinitely over cyclic dependencies.
+   paths.filter(path => !loadedDeps.includes(path)).map((path) => {
+     const [pathCollectionName, pathSlug] = path.split(".");
+     const pathCollection = state.collections.get(pathCollectionName);
+     // Wait for the entry to load
+     return dispatch(loadUnpublishedEntry(pathCollection, pathSlug))
+     // Return the path at the end so we can use it in .thens later
+       .then(() => path);
+   });
+
+const pathHasDependencies = (state, path) => {
+  if (!state.editorialWorkflow.hasIn(path) ||
+      state.editorialWorkflow.getIn(path) === null) {
+    return false;
+  }
+
+  if (state.editorialWorkflow.getIn(path).size === 0) {
+    return false;
+  }
+
+  return true;
+};
+
+const reducePromises = (promises, fn, initPromise) => {
+  // If the array is empty and we aren't given an init value, we don't
+  // have anything to return.
+  if (promises.length === 0 && initPromise === undefined) {
+    throw new Error("Reduce of empty promise array with no initial value.");
+  }
+
+  // If we weren't given an init value, then the init value should be
+  // the first item in `promises`
+  const [initValue, skipFirstPromise] = (initPromise !== undefined)
+     ? [initPromise, false]
+     : [promises[0], true];
+
+  // If we are using the first promise as our init value, we need to
+  // remove it from the promises we'll reduce over.
+  const promisesToReduce = skipFirstPromise
+     ? promises.slice(1)
+     : promises;
+
+  return promisesToReduce.reduce((accumulatedPromises, currentPromise) =>
+      Promise.all([accumulatedPromises, currentPromise]).then(
+        (([accumulated, current]) => fn(accumulated, current))),
+    initValue);
+};
+
+const traverse = (collectedDeps, path, getState, dispatch) => {
+  const state = getState();
+
+  if (collectedDeps.get(path) === true) {
+    return Promise.resolve(collectedDeps);
+  }
+
+  // Add this entry to the dependency list
+  const newDeps = collectedDeps.set(path, true);
+  const newDepsPromise = Promise.resolve(newDeps);
+
+  // Get the full state path to this entries dependencies
+  const depsPath = getDepsPath(path);
+
+  // If the entry has no dependencies, return the collected dependency
+  // list (including the current entry)
+  if (!pathHasDependencies(state, depsPath)) {
+    return newDepsPromise;
+  }
+
+  const theseDependencies = state.editorialWorkflow.getIn(depsPath);
+
+  // Gets a list of promises for all unrecorded dependencies. Each
+  // promise resolves once its entry is loaded.
+  const eventualDeps = getEventualDependencies(theseDependencies, collectedDeps, state, dispatch);
+
+  // Reduce over the list of dependency promises. allDepsPromise is
+  // the accumulation value. Each time we reduce, we call traverse to
+  // get the dependencies of the current dependency, then continue to
+  // the next one. This makes traversal recurse until all the
+  // dependencies are collected.
+  return reducePromises(
+    eventualDeps,
+    (deps, dep) => traverse(deps, dep, getState, dispatch),
+    newDepsPromise
+  );
+};
+
+export function getUnpublishedEntryDependencies(collection, slug) {
+  return (dispatch, getState) => {
+    dispatch(unpublishedEntryDependenciesRequest(collection, slug));
+
+    // Begin traversal
+    return traverse(new Immutable.Map(), `${ collection }.${ slug }`, getState, dispatch)
+      .then((dependencyMap) => {
+        const state = getState();
+        const dependencies = dependencyMap.keySeq().toList();
+
+        // Remove any dependencies which are already published
+        const filteredDependencies = dependencies.filter(
+          dep => state.editorialWorkflow.hasIn(["entities", dep]));
+        return dispatch(unpublishedEntryDependenciesSuccess(collection, slug, filteredDependencies));
+      })
+      .catch(err => dispatch(unpublishedEntryDependenciesError(collection, slug, err)));
+  };
+}
+
+export function publishUnpublishedEntryAndDependencies(collection, slug) {
+  return (dispatch, getState) => dispatch(getUnpublishedEntryDependencies(collection, slug))
+  .then(({ payload }) => {
+    if (payload.dependencies.size === 1) {
+      return dispatch(publishUnpublishedEntry(collection, slug));
+    }
+
+    const confirmationMessage = `\
+This entry has dependencies, and cannot be published on its own. Publish all the following posts?
+${ payload.dependencies.join("\n") }`;
+
+    if (window.confirm(confirmationMessage)) {
+      return dispatch(publishUnpublishedEntries(payload.dependencies.map(
+        dep => dep.split("."))));
+    }
+  });
 }

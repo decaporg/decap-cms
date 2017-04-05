@@ -163,6 +163,9 @@ class Backend {
   persistEntry(config, collection, entryDraft, MediaFiles, options) {
     const newEntry = entryDraft.getIn(["entry", "newRecord"]) || false;
 
+    const maybeDeps = entryDraft.getIn(["entry", "dependencies"]);
+    const dependencies = (maybeDeps !== undefined) ? maybeDeps.toJS() : null;
+
     const parsedData = {
       title: entryDraft.getIn(["entry", "data", "title"], "No Title"),
       description: entryDraft.getIn(["entry", "data", "description"], "No Description!"),
@@ -199,7 +202,7 @@ class Backend {
     const collectionName = collection.get("name");
 
     return this.implementation.persistEntry(entryObj, MediaFiles, {
-      newEntry, parsedData, commitMessage, collectionName, mode, ...options,
+      newEntry, parsedData, commitMessage, collectionName, mode, dependencies, ...options,
     });
   }
 
@@ -213,6 +216,10 @@ class Backend {
 
   publishUnpublishedEntry(collection, slug) {
     return this.implementation.publishUnpublishedEntry(collection, slug);
+  }
+
+  publishUnpublishedEntries(entries) {
+    return this.implementation.publishUnpublishedEntries(entries);
   }
 
   deleteUnpublishedEntry(collection, slug) {

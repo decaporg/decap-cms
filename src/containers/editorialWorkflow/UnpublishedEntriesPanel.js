@@ -2,11 +2,12 @@ import React, { Component, PropTypes } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { OrderedMap } from 'immutable';
 import { connect } from 'react-redux';
-import { 
+import {
   loadUnpublishedEntries,
   updateUnpublishedEntryStatus,
   publishUnpublishedEntry,
-  deleteUnpublishedEntry 
+  publishUnpublishedEntryAndDependencies,
+  deleteUnpublishedEntry
 } from '../../actions/editorialWorkflow';
 import { selectUnpublishedEntriesByStatus } from '../../reducers';
 import { EDITORIAL_WORKFLOW, status } from '../../constants/publishModes';
@@ -69,6 +70,6 @@ function mapStateToProps(state) {
 export default connect(mapStateToProps, {
   loadUnpublishedEntries,
   updateUnpublishedEntryStatus,
-  publishUnpublishedEntry,
+  publishUnpublishedEntry: publishUnpublishedEntryAndDependencies,
   deleteUnpublishedEntry,
 })(unpublishedEntriesPanel);

@@ -13,6 +13,8 @@ import {
   UNPUBLISHED_ENTRY_PERSIST_REQUEST,
   UNPUBLISHED_ENTRY_PERSIST_SUCCESS,
   UNPUBLISHED_ENTRY_PERSIST_FAILURE,
+  UNPUBLISHED_ENTRY_REGISTER_DEPENDENCY,
+  UNPUBLISHED_ENTRY_UNREGISTER_DEPENDENCY,
 } from '../actions/editorialWorkflow';
 import {
   ADD_ASSET,
@@ -86,6 +88,12 @@ const entryDraftReducer = (state = Map(), action) => {
       return state.update('mediaFiles', list => list.push(action.payload.public_path));
     case REMOVE_ASSET:
       return state.update('mediaFiles', list => list.filterNot(path => path === action.payload));
+
+    case UNPUBLISHED_ENTRY_REGISTER_DEPENDENCY:
+      return state.setIn(['entry', 'dependencies', action.payload.field],
+        `${ action.payload.collection }.${ action.payload.slug }`);
+    case UNPUBLISHED_ENTRY_UNREGISTER_DEPENDENCY:
+      return state.deleteIn(['entry', 'dependencies', action.payload.field]);
 
     default:
       return state;

@@ -1,5 +1,6 @@
 import LocalForage from "localforage";
 import { Base64 } from "js-base64";
+import Immutable from "immutable";
 import _ from "lodash";
 import { filterPromises, resolvePromiseProperties } from "../../lib/promiseHelper";
 import AssetProxy from "../../valueObjects/AssetProxy";
@@ -277,6 +278,7 @@ export default class API {
           collection: options.collectionName,
           title: options.parsedData && options.parsedData.title,
           description: options.parsedData && options.parsedData.description,
+          dependencies: options.dependencies,
           objects: {
             entry: {
               path: entry.path,
@@ -307,6 +309,7 @@ export default class API {
             pr: updatedPR,
             title: options.parsedData && options.parsedData.title,
             description: options.parsedData && options.parsedData.description,
+            dependencies: options.dependencies,
             objects: {
               entry: {
                 path: entry.path,
@@ -349,6 +352,61 @@ export default class API {
     .then(() => this.deleteBranch(`cms/${ contentKey }`));
   }
 
+  publishUnpublishedEntries(entries) {
+    const entriesMetadataPromise = Promise.all(entries.map(([collection, slug]) => {
+      const contentKey = slug;
+      return this.retrieveMetadata(contentKey);
+    }));
+
+    const entryObjectsPromise = entriesMetadataPromise
+       .then(metadata =>
+          metadata.map(m => [
+            {
+              ...m.objects.entry,
+              mode: "100644",
+              type: "blob",
+            },
+            ...(m.objects.files ? m.objects.files.map(file => ({
+              sha: file.sha,
+              path: (file.path[0] === "/" ? file.path.slice(1) : file.path),
+              mode: "100644",
+              type: "blob",
+            })) : []),
+          ]))
+       // Flatten list of objects
+       .then(objectCollections => [].concat.apply([], objectCollections));
+
+    const entryPrsPromise = entriesMetadataPromise
+       .then(metadata => metadata.map(m => m.pr.head));
+
+    const baseShaPromise = this.getBranch("master")
+       .then(({ commit }) => commit.sha);
+
+    const treePromise = Promise.all([entryObjectsPromise, baseShaPromise])
+       .then(([entryObjects, baseSha]) => this.createTree(baseSha, entryObjects));
+
+    const commitPromise = Promise.all([baseShaPromise, treePromise, entryPrsPromise])
+       .then(([baseSha, tree, entryPrs]) =>
+          this.commit("Publish posts", { sha: tree.sha }, entryPrs.concat([baseSha])));
+
+    const pushCommitPromise = commitPromise
+       .then(commit => this.patchRef("heads", "master", commit.sha));
+
+    const deletePrBranchesPromise = pushCommitPromise
+      .then(pushCommit => Promise.all(entries.map(entry => this.deleteBranch(`cms/${ entry[1] }`))));
+
+    return deletePrBranchesPromise;
+  }
+
+  createTree(baseSha, treeObjects) {
+    return this.request(`${ this.repoURL }/git/trees`, {
+      method: "POST",
+      body: JSON.stringify({
+        base_tree: baseSha,
+        tree: treeObjects,
+      }),
+    });
+  }
 
   createRef(type, name, sha) {
     return this.request(`${ this.repoURL }/git/refs`, {
@@ -503,9 +561,11 @@ export default class API {
       });
   }
 
-  commit(message, changeTree) {
+  commit(message, changeTree, parentArray=[]) {
     const tree = changeTree.sha;
-    const parents = changeTree.parentSha ? [changeTree.parentSha] : [];
+    const parentSha = changeTree.parentSha ? [changeTree.parentSha] : [];
+    const parents = (parentSha !== [] && parentArray.indexOf(parentSha[0] !== 0))
+       ? parentArray.concat(parentSha) : parentArray;
     return this.request(`${ this.repoURL }/git/commits`, {
       method: "POST",
       body: JSON.stringify({ message, tree, parents }),
