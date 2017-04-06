@@ -5,10 +5,17 @@
   height: 100%;
 }
 
+.previewToggle {
+  position: absolute;
+  top: 0;
+  right: 40px;
+  z-index: 1000;
+}
+
 .controlPane {
   height: calc(100% - 55px);
   overflow: auto;
-  padding: 0 20px;
+  padding: 20px 20px 0;
   border-right: 1px solid var(--defaultColorLight);
   background-color: color(#f2f5f4 lightness(90%));
 }
