@@ -1,31 +1,31 @@
-import YAML from './yaml';
+import preliminaries from 'preliminaries';
+import yamlParser from 'preliminaries-parser-yaml';
+import tomlParser from 'preliminaries-parser-toml';
 
-const regexp = /^---\n([^]*?)\n---\n([^]*)$/;
+// Automatically register parsers
+preliminaries(true);
+yamlParser(true);
+tomlParser(true);
 
 export default class YAMLFrontmatter {
   fromFile(content) {
-    const match = content.match(regexp);
-    const obj = match ? new YAML().fromFile(match[1]) : {};
-    obj.body = match ? (match[2] || '').replace(/^\n+/, '') : content;
-    return obj;
+    const result = preliminaries.parse(content);
+    const data = result.data;
+    data.body = result.content;
+    return data;
   }
 
   toFile(data, sortedKeys) {
     const meta = {};
     let body = '';
-    let content = '';
-    for (var key in data) {
+    Object.keys(data).forEach((key) => {
       if (key === 'body') {
         body = data[key];
       } else {
         meta[key] = data[key];
       }
-    }
-
-    content += '---\n';
-    content += new YAML().toFile(meta, sortedKeys);
-    content += '---\n\n';
-    content += body;
-    return content;
+    });
+    // always stringify to YAML
+    return preliminaries.stringify(body, meta, { lang: 'yaml', delims: '---' });
   }
 }
