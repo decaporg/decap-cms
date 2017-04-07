@@ -5,6 +5,7 @@ import {
   ENTRY_FAILURE,
   ENTRIES_REQUEST,
   ENTRIES_SUCCESS,
+  ENTRIES_FAILURE,
 } from '../actions/entries';
 
 import { SEARCH_ENTRIES_SUCCESS } from '../actions/search';
@@ -42,7 +43,10 @@ const entries = (state = Map({ entities: Map(), pages: Map() }), action) => {
           ids: (!page || page === 0) ? ids : map.getIn(['pages', collection, 'ids'], List()).concat(ids),
         }));
       });
-    
+
+    case ENTRIES_FAILURE:
+      return state.setIn(['pages', action.meta.collection, 'isFetching'], false);
+
     case ENTRY_FAILURE:
       return state.withMutations((map) => {
         map.setIn(['entities', `${ action.payload.collection }.${ action.payload.slug }`, 'isFetching'], false);
