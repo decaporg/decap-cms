@@ -7,7 +7,7 @@ preliminaries(true);
 yamlParser(true);
 tomlParser(true);
 
-export default class YAMLFrontmatter {
+export default class Frontmatter {
   fromFile(content) {
     const result = preliminaries.parse(content);
     const data = result.data;

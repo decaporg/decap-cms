@@ -1,11 +1,11 @@
-import YAMLFrontmatter from '../yaml-frontmatter';
+import Frontmatter from '../frontmatter';
 
-const YamlFrontmatterFormatter = new YAMLFrontmatter();
+const FrontmatterFormatter = new Frontmatter();
 
-describe('YAMLFrontmatter', () => {
+describe('Frontmatter', () => {
   it('should parse YAML with --- delimiters', () => {
     expect(
-      YamlFrontmatterFormatter.fromFile('---\ntitle: YAML\ndescription: Something longer\n---\nContent')
+      FrontmatterFormatter.fromFile('---\ntitle: YAML\ndescription: Something longer\n---\nContent')
     ).toEqual(
       {
         title: 'YAML',
@@ -17,7 +17,7 @@ describe('YAMLFrontmatter', () => {
 
   it('should parse YAML with ---yaml delimiters', () => {
     expect(
-      YamlFrontmatterFormatter.fromFile('---yaml\ntitle: YAML\ndescription: Something longer\n---\nContent')
+      FrontmatterFormatter.fromFile('---yaml\ntitle: YAML\ndescription: Something longer\n---\nContent')
     ).toEqual(
       {
         title: 'YAML',
@@ -29,7 +29,7 @@ describe('YAMLFrontmatter', () => {
 
   it('should overwrite any body param in the front matter', () => {
     expect(
-      YamlFrontmatterFormatter.fromFile('---\ntitle: The Title\nbody: Something longer\n---\nContent')
+      FrontmatterFormatter.fromFile('---\ntitle: The Title\nbody: Something longer\n---\nContent')
     ).toEqual(
       {
         title: 'The Title',
@@ -40,7 +40,7 @@ describe('YAMLFrontmatter', () => {
 
   it('should parse TOML with +++ delimiters', () => {
     expect(
-      YamlFrontmatterFormatter.fromFile('+++\ntitle = "TOML"\ndescription = "Front matter"\n+++\nContent')
+      FrontmatterFormatter.fromFile('+++\ntitle = "TOML"\ndescription = "Front matter"\n+++\nContent')
     ).toEqual(
       {
         title: 'TOML',
@@ -52,7 +52,7 @@ describe('YAMLFrontmatter', () => {
 
   it('should parse TOML with ---toml delimiters', () => {
     expect(
-      YamlFrontmatterFormatter.fromFile('---toml\ntitle = "TOML"\ndescription = "Something longer"\n---\nContent')
+      FrontmatterFormatter.fromFile('---toml\ntitle = "TOML"\ndescription = "Something longer"\n---\nContent')
     ).toEqual(
       {
         title: 'TOML',
@@ -64,7 +64,7 @@ describe('YAMLFrontmatter', () => {
 
   it('should parse JSON with { } delimiters', () => {
     expect(
-      YamlFrontmatterFormatter.fromFile('{\n"title": "The Title",\n"description": "Something longer"\n}\nContent')
+      FrontmatterFormatter.fromFile('{\n"title": "The Title",\n"description": "Something longer"\n}\nContent')
     ).toEqual(
       {
         title: 'The Title',
@@ -76,7 +76,7 @@ describe('YAMLFrontmatter', () => {
 
   it('should parse JSON with ---json delimiters', () => {
     expect(
-      YamlFrontmatterFormatter.fromFile('---json\n{\n"title": "The Title",\n"description": "Something longer"\n}\n---\nContent')
+      FrontmatterFormatter.fromFile('---json\n{\n"title": "The Title",\n"description": "Something longer"\n}\n---\nContent')
     ).toEqual(
       {
         title: 'The Title',
@@ -88,7 +88,7 @@ describe('YAMLFrontmatter', () => {
 
   it('should stringify YAML with --- delimiters', () => {
     expect(
-      YamlFrontmatterFormatter.toFile({ body: 'Some content\nOn another line', tags: ['front matter', 'yaml'], title: 'YAML' })
+      FrontmatterFormatter.toFile({ body: 'Some content\nOn another line', tags: ['front matter', 'yaml'], title: 'YAML' })
     ).toEqual(
       [
         '---',
