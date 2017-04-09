@@ -2940,12 +2940,6 @@ express@^4.13.3:
     utils-merge "1.0.0"
     vary "~1.1.0"
 
-extend-shallow@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/extend-shallow/-/extend-shallow-2.0.1.tgz#51af7d614ad9a9f610ea1bafbb989d6b1c56890f"
-  dependencies:
-    is-extendable "^0.1.0"
-
 extend@^3.0.0, extend@~3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/extend/-/extend-3.0.0.tgz#5a474353b9f3353ddd8176dfd37b91c83a46f1d4"
@@ -3880,7 +3874,7 @@ is-es2016-keyword@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/is-es2016-keyword/-/is-es2016-keyword-1.0.0.tgz#f6e54e110c5e4f8d265e69d2ed0eaf8cf5f47718"
 
-is-extendable@^0.1.0, is-extendable@^0.1.1:
+is-extendable@^0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/is-extendable/-/is-extendable-0.1.1.tgz#62b110e289a471418e3ec36a617d472e301dfc89"
 
@@ -6796,25 +6790,22 @@ pre-commit@^1.1.3:
     spawn-sync "^1.0.15"
     which "1.2.x"
 
-preliminaries-parser-toml@1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/preliminaries-parser-toml/-/preliminaries-parser-toml-1.0.1.tgz#009cadc4d801428a05eada48d8ec438a3f690a5f"
+preliminaries-parser-toml@1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/preliminaries-parser-toml/-/preliminaries-parser-toml-1.1.0.tgz#00cacf5ab619561380e0f6f2495b2ec449b8e70e"
   dependencies:
     toml "^2.3.2"
     toml-js "0.0.8"
 
-preliminaries-parser-yaml@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/preliminaries-parser-yaml/-/preliminaries-parser-yaml-1.0.0.tgz#80da4ed54278fdf2f1e9ce379ab6cdce15cd7b54"
+preliminaries-parser-yaml@1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/preliminaries-parser-yaml/-/preliminaries-parser-yaml-1.1.0.tgz#cd0968d10e0220f55477cc8cbeb428aa27e9f84f"
   dependencies:
-    extend-shallow "^2.0.1"
     js-yaml "^3.8.1"
 
-preliminaries@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/preliminaries/-/preliminaries-1.0.0.tgz#973aead5fbc2c8371bcba7de4413c3e8afe16cc1"
-  dependencies:
-    extend-shallow "^2.0.1"
+preliminaries@1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/preliminaries/-/preliminaries-1.1.0.tgz#28ceb5f988b83594de0a7b155124693b0c4a777f"
 
 prelude-ls@~1.1.2:
   version "1.1.2"
