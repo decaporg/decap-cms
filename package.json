@@ -107,7 +107,7 @@
     "jwt-decode": "^2.1.0",
     "localforage": "^1.4.2",
     "lodash": "^4.13.1",
-    "markup-it": "git+https://github.com/cassiozen/markup-it.git",
+    "markup-it": "^2.0.0",
     "material-design-icons": "^3.0.1",
     "moment": "^2.11.2",
     "netlify-auth-js": "^0.5.5",
