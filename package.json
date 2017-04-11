@@ -94,6 +94,7 @@
     "@kadira/storybook": "^1.36.0",
     "autoprefixer": "^6.3.3",
     "babel-plugin-transform-builtin-extend": "^1.1.0",
+    "classnames": "^2.2.5",
     "dateformat": "^1.0.12",
     "deep-equal": "^1.0.1",
     "fuzzy": "^0.1.1",

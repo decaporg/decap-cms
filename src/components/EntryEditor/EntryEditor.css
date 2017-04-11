@@ -7,9 +7,14 @@
 
 .previewToggle {
   position: absolute;
-  top: 0;
+  top: 8px;
   right: 40px;
   z-index: 1000;
+  opacity: 0.8;
+}
+
+.previewToggleShow {
+  right: 60px;
 }
 
 .controlPane {
