@@ -1,32 +1,32 @@
 import YAML from './yaml';
 import JSONFormatter from './json';
-import YAMLFrontmatter from './yaml-frontmatter';
+import Frontmatter from './frontmatter';
 
 const yamlFormatter = new YAML();
 const jsonFormatter = new JSONFormatter();
-const YamlFrontmatterFormatter = new YAMLFrontmatter();
+const FrontmatterFormatter = new Frontmatter();
 
 function formatByType(type) {
   // Right now the only type is "editorialWorkflow" and
   // we always returns the same format
-  return YamlFrontmatterFormatter;
+  return FrontmatterFormatter;
 }
 
 export function formatByExtension(extension) {
   return {
     yml: yamlFormatter,
     json: jsonFormatter,
-    md: YamlFrontmatterFormatter,
-    markdown: YamlFrontmatterFormatter,
-    html: YamlFrontmatterFormatter,
-  }[extension] || YamlFrontmatterFormatter;
+    md: FrontmatterFormatter,
+    markdown: FrontmatterFormatter,
+    html: FrontmatterFormatter,
+  }[extension] || FrontmatterFormatter;
 }
 
 function formatByName(name) {
   return {
     yaml: yamlFormatter,
-    frontmatter: YamlFrontmatterFormatter,
-  }[name] || YamlFrontmatterFormatter;
+    frontmatter: FrontmatterFormatter,
+  }[name] || FrontmatterFormatter;
 }
 
 export function resolveFormat(collectionOrEntity, entry) {
