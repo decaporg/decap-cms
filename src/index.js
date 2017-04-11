@@ -5,32 +5,48 @@ import 'file?name=index.html!../example/index.html';
 import 'react-toolbox/lib/commons.scss';
 import Root from './root';
 import registry from './lib/registry';
+import { forceTrailingSlash } from './lib/pathHelper';
 import './index.css';
 
 if (process.env.NODE_ENV !== 'production') {
   require('./utils.css'); // eslint-disable-line
 }
 
-// Create mount element dynamically
-const el = document.createElement('div');
-el.id = 'root';
-document.body.appendChild(el);
+const fixUrl = (pathname) => {
+  window.location.href = 
+      `${ window.location.protocol }//${ window.location.host }${ pathname }` 
+    + `${ window.location.search }${ window.location.hash }`;
+};
 
-render((
-  <AppContainer>
-    <Root />
-  </AppContainer>
-), el);
+const init = () => {
+  // Create mount element dynamically
+  const el = document.createElement('div');
+  el.id = 'root';
+  document.body.appendChild(el);
 
-if (process.env.NODE_ENV !== 'production' && module.hot) {
-  module.hot.accept('./root', () => {
-    const NextRoot = require('./root').default; // eslint-disable-line
-    render((
-      <AppContainer>
-        <NextRoot />
-      </AppContainer>
-    ), el);
-  });
+  render((
+    <AppContainer>
+      <Root />
+    </AppContainer>
+  ), el);
+
+  if (process.env.NODE_ENV !== 'production' && module.hot) {
+    module.hot.accept('./root', () => {
+      const NextRoot = require('./root').default; // eslint-disable-line
+      render((
+        <AppContainer>
+          <NextRoot />
+        </AppContainer>
+      ), el);
+    });
+  }
+};
+
+const fixedPathname = forceTrailingSlash(window.location.pathname);
+if (fixedPathname !== window.location.pathname) {
+  fixUrl(fixedPathname);
+} else {
+  init();
 }
 
 const buildtInPlugins = [{
