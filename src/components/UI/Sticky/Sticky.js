@@ -34,6 +34,7 @@ export class StickyContext extends Component {
 
   componentDidMount() {
     this.updateStickies(this.ref);
+    this.props.registerListener(this.updateStickies.bind(this, this.ref));
   }
 
   handleScroll = (event) => {
@@ -144,7 +145,11 @@ export class Sticky extends Component {
               [styles.stickyAtBottom]: state.shouldStickAtBottom,
             },
           )}
-          style={props.fillContainerWidth && state.containerWidth ? { width: state.containerWidth } : null}
+          style={
+            props.fillContainerWidth && state.containerWidth && state.shouldStick ?
+            { width: state.containerWidth } :
+            null
+          }
           ref={(ref) => {this.ref = ref}}
         >
           {props.children}
