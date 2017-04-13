@@ -17,7 +17,7 @@ In order to connect Netlify CMS with your GitHub repo, you'll first need to regi
  2. Click **Register a new application**.
  3. For the **Authorization callback URL**, enter `https://api.netlify.com/auth/done`. The other fields can contain anything you want.
 
-![GitHub Oauth Application setup example](images/github-oauth.png?raw=true)
+![GitHub Oauth Application setup example](/img/github-oauth.png?raw=true)
 
 When you complete the registration, you'll be given a **Client ID** and a **Client Secret** for the app. You'll need to add these to your Netlify project:
  1. Go to your [**Netlify dashboard**](https://app.netlify.com/) and click on your project.
