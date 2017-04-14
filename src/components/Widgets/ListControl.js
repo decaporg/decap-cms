@@ -89,17 +89,21 @@ export default class ListControl extends Component {
 
   handleChangeFor(index) {
     return (newValue, newMetadata) => {
-      const { value, onChange } = this.props;
+      const { value, metadata, onChange, forID } = this.props;
       const parsedValue = (this.valueType === valueTypes.SINGLE) ? newValue.first() : newValue;
-      onChange(value.set(index, parsedValue), newMetadata);
+      const parsedMetadata = {
+        [forID]: Object.assign(metadata ? metadata.toJS() : {}, newMetadata ? newMetadata[forID] : {}),
+      };
+      onChange(value.set(index, parsedValue), parsedMetadata);
     };
   }
 
   handleRemove(index) {
     return (e) => {
       e.preventDefault();
-      const { value, onChange } = this.props;
-      onChange(value.remove(index));
+      const { value, metadata, onChange, forID } = this.props;
+      const parsedMetadata = { [forID]: metadata.removeIn(value.get(index).valueSeq()) };
+      onChange(value.remove(index), parsedMetadata);
     };
   }
 
