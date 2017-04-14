@@ -101,9 +101,15 @@ class EntryEditor extends Component {
       </ScrollSync>
     );
 
+    const editorWithoutPreview = (
+      <div className={styles.noPreviewEditorContainer}>
+        {editor}
+      </div>
+    );
+
     return (
       <div className={styles.root}>
-        { collectionPreviewEnabled && this.state.previewVisible ? editorWithPreview : editor }
+        { collectionPreviewEnabled && this.state.previewVisible ? editorWithPreview : editorWithoutPreview }
         <div className={styles.footer}>
           <Toolbar
             isPersisting={entry.get('isPersisting')}

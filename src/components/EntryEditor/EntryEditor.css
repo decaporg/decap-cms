@@ -40,3 +40,10 @@
   background: var(--backgroundColor);
   text-align: right;
 }
+
+.noPreviewEditorContainer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 100%;
+}
