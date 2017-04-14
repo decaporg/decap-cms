@@ -197,7 +197,3 @@ export default class ListControl extends Component {
     />);
   }
 }
-
-
-// WEBPACK FOOTER //
-// ./components/Widgets/ListControl.js
