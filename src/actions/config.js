@@ -73,20 +73,20 @@ export function loadConfig() {
   return (dispatch) => {
     dispatch(configLoading());
 
-    fetch("config.yml", { credentials: 'same-origin' }).then((response) => {
+    fetch("config.yml", { credentials: 'same-origin' })
+    .then((response) => {
       if (response.status !== 200) {
         throw new Error(`Failed to load config.yml (${ response.status })`);
       }
-
-      response
-        .text()
-        .then(parseConfig)
-        .then(applyDefaults)
-        .then((config) => {
-          dispatch(configDidLoad(config));
-          dispatch(authenticateUser());
-        });
-    }).catch((err) => {
+      return response.text();
+    })
+    .then(parseConfig)
+    .then(applyDefaults)
+    .then((config) => {
+      dispatch(configDidLoad(config));
+      dispatch(authenticateUser());
+    })
+    .catch((err) => {
       dispatch(configFailed(err));
     });
   };
