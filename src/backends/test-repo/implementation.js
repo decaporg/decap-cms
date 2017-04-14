@@ -22,7 +22,7 @@ export default class TestRepo {
   constructor(config) {
     this.config = config;
     if (window.repoFiles == null) {
-      throw 'The TestRepo backend needs a "window.repoFiles" object.';
+      throw new Error('The TestRepo backend needs a "window.repoFiles" object.');
     }
   }
 
@@ -44,7 +44,7 @@ export default class TestRepo {
     const entries = [];
     const folder = collection.get('folder');
     if (folder) {
-      for (const path in window.repoFiles[folder]) {
+      Object.keys(window.repoFiles[folder]).forEach((path) => {
         const file = { path: `${ folder }/${ path }` };
         entries.push(
           {
@@ -52,7 +52,7 @@ export default class TestRepo {
             data: window.repoFiles[folder][path].content,
           }
         );
-      }
+      });
     }
     return Promise.resolve(entries);
   }

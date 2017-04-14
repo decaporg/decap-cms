@@ -45,9 +45,7 @@ export default class ScrollSync extends Component {
     // node.removeEventListener('scroll', this.handlePaneScroll, false)
   };
 
-  findPane = (node) => {
-    return this.panes.find(p => p === node);
-  };
+  findPane = node => this.panes.find(p => p === node);
 
   handlePaneScroll = (node) => {
     // const node = evt.target
@@ -66,7 +64,7 @@ export default class ScrollSync extends Component {
         /* Calculate the actual pane height */
         const paneHeight = pane.scrollHeight - clientHeight;
         /* Adjust the scrollTop position of it accordingly */
-        pane.scrollTop = paneHeight * scrollTop / (scrollHeight - clientHeight);
+        pane.scrollTop = (paneHeight * scrollTop) / (scrollHeight - clientHeight);
         /* Re-attach event listeners after we're done scrolling */
         window.requestAnimationFrame(() => {
           this.addEvents(pane);

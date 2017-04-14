@@ -12,11 +12,12 @@ export function resolveIntegrations(interationsConfig, getToken) {
       case 'assetStore':
         integrationInstances = integrationInstances.set('assetStore', new AssetStore(providerData, getToken));
         break;
+      default:
+        // Do nothing
     }
   });
   return integrationInstances;
 }
-
 
 export const getIntegrationProvider = (function() {
   let integrations = null;

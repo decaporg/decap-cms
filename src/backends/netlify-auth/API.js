@@ -27,9 +27,9 @@ export default class API extends GithubAPI {
   urlFor(path, options) {
     const params = [];
     if (options.params) {
-      for (const key in options.params) {
+      Object.keys(options.params).forEach((key) => {
         params.push(`${ key }=${ encodeURIComponent(options.params[key]) }`);
-      }
+      });
     }
     if (params.length) {
       path += `?${ params.join("&") }`;

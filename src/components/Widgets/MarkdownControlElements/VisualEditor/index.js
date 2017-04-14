@@ -38,13 +38,13 @@ const ruleset = {
 
 function buildInputRules(schema) {
   const result = [];
-  for (const rule in ruleset) {
+  Object.keys(ruleset).forEach((rule) => {
     const type = schema.nodes[rule];
     if (type) {
       const fn = ruleset[rule];
       result.push(fn[0].apply(fn.slice(1)));
     }
-  }
+  });
   return result;
 }
 

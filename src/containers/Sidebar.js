@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import ReactSidebar from 'react-sidebar';
-import _ from 'lodash';
+import { throttle } from 'lodash';
 import { openSidebar } from '../actions/globalUI';
 import styles from './Sidebar.css';
 
@@ -26,7 +26,7 @@ class Sidebar extends React.Component {
     this.mql.removeListener(this.mediaQueryChanged);
   }
 
-  mediaQueryChanged = _.throttle(() => {
+  mediaQueryChanged = throttle(() => {
     this.setState({ sidebarDocked: this.mql.matches });
   }, 500);
 

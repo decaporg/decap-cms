@@ -266,7 +266,8 @@ export const currentBackend = (function () {
   return (config) => {
     if (backend) { return backend; }
     if (config.get("backend")) {
-      return backend = resolveBackend(config);
+      backend = resolveBackend(config);
+      return backend;
     }
   };
 }());
