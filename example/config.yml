@@ -30,6 +30,8 @@ collections: # A list of collections the CMS should be able to edit
 
   - name: "settings"
     label: "Settings"
+    editor:
+      preview: false
     files:
       - name: "general"
         label: "Site Settings"

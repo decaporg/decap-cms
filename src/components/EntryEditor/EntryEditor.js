@@ -53,9 +53,15 @@ class EntryEditor extends Component {
     const controlClassName = `${ styles.controlPane } ${ this.state.showEventBlocker && styles.blocker }`;
     const previewClassName = `${ styles.previewPane } ${ this.state.showEventBlocker && styles.blocker }`;
 
+    const collectionPreviewEnabled = collection.getIn(['editor', 'preview'], true);
+
+    const togglePreviewButton = (
+      <Button className={styles.previewToggle} onClick={this.handleTogglePreview}>Toggle Preview</Button>
+    );
+
     const editor = (
       <div className={controlClassName}>
-        <Button className={styles.previewToggle} onClick={this.handleTogglePreview}>Toggle Preview</Button>
+        { collectionPreviewEnabled ? togglePreviewButton : null }
         <ControlPane
           collection={collection}
           entry={entry}
@@ -97,7 +103,7 @@ class EntryEditor extends Component {
 
     return (
       <div className={styles.root}>
-        { this.state.previewVisible ? editorWithPreview : editor }
+        { collectionPreviewEnabled && this.state.previewVisible ? editorWithPreview : editor }
         <div className={styles.footer}>
           <Toolbar
             isPersisting={entry.get('isPersisting')}
@@ -124,6 +130,5 @@ EntryEditor.propTypes = {
   onRemoveAsset: PropTypes.func.isRequired,
   onCancelEdit: PropTypes.func.isRequired,
 };
-
 
 export default EntryEditor;
