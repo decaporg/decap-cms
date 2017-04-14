@@ -1,5 +1,5 @@
 import yaml from "js-yaml";
-import { set, defaultsDeep } from "lodash";
+import { set, defaultsDeep, get } from "lodash";
 import { authenticateUser } from "../actions/auth";
 import * as publishModes from "../constants/publishModes";
 
@@ -12,10 +12,6 @@ const defaults = {
 };
 
 export function applyDefaults(config) {
-  if (!("media_folder" in config)) {
-    throw new Error("Error in configuration file: A `media_folder` wasn't found. Check your config.yml file.");
-  }
-
   // Make sure there is a public folder
   set(defaults,
     "public_folder",
@@ -24,20 +20,40 @@ export function applyDefaults(config) {
   return defaultsDeep(config, defaults);
 }
 
-function parseConfig(data) {
-  const config = yaml.safeLoad(data);
-  if (typeof CMS_ENV === "string" && config[CMS_ENV]) {
-    // TODO: Add tests and refactor
-    for (const key in config[CMS_ENV]) { // eslint-disable-line no-restricted-syntax
-      if (config[CMS_ENV].hasOwnProperty(key)) { // eslint-disable-line no-prototype-builtins
-        config[key] = config[CMS_ENV][key];
-      }
-    }
+export function validateConfig(config) {
+  if (!get(config, 'backend')) {
+    throw new Error("Error in configuration file: A `backend` wasn't found. Check your config.yml file.");
   }
-
+  if (!get(config, ['backend', 'name'])) {
+    throw new Error("Error in configuration file: A `backend.name` wasn't found. Check your config.yml file.");
+  }
+  if (typeof config.backend.name !== 'string') {
+    throw new Error("Error in configuration file: Your `backend.name` must be a string. Check your config.yml file.");
+  }
+  if (!get(config, 'media_folder')) {
+    throw new Error("Error in configuration file: A `media_folder` wasn\'t found. Check your config.yml file.");
+  }
+  if (typeof config.media_folder !== 'string') {
+    throw new Error("Error in configuration file: Your `media_folder` must be a string. Check your config.yml file.");
+  }
+  if (!get(config, 'collections')) {
+    throw new Error("Error in configuration file: A `collections` wasn\'t found. Check your config.yml file.");
+  }
+  if (!Array.isArray(config.collections) || config.collections.length === 0 || !config.collections[0]) {
+    throw new Error("Error in configuration file: Your `collections` must be an array with at least one element. Check your config.yml file.");
+  }
   return config;
 }
 
+function parseConfig(data) {
+  const config = yaml.safeLoad(data);
+  if (typeof CMS_ENV === "string" && config[CMS_ENV]) {
+    Object.keys(config[CMS_ENV]).forEach((key) => {
+      config[key] = config[CMS_ENV][key];
+    });
+  }
+  return config;
+}
 
 export function configLoaded(config) {
   return {
@@ -81,6 +97,7 @@ export function loadConfig() {
       return response.text();
     })
     .then(parseConfig)
+    .then(validateConfig)
     .then(applyDefaults)
     .then((config) => {
       dispatch(configDidLoad(config));
