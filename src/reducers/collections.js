@@ -1,10 +1,9 @@
 import { OrderedMap, fromJS } from 'immutable';
+import { has } from 'lodash';
 import consoleError from '../lib/consoleError';
 import { CONFIG_SUCCESS } from '../actions/config';
 import { FILES, FOLDER } from '../constants/collectionTypes';
 import { INFERABLE_FIELDS } from '../constants/fieldInference';
-
-const hasProperty = (config, property) => ({}.hasOwnProperty.call(config, property));
 
 const collections = (state = null, action) => {
   const configCollections = action.payload && action.payload.collections;
@@ -12,9 +11,9 @@ const collections = (state = null, action) => {
     case CONFIG_SUCCESS:
       return OrderedMap().withMutations((map) => {
         (configCollections || []).forEach((configCollection) => {
-          if (hasProperty(configCollection, 'folder')) {
+          if (has(configCollection, 'folder')) {
             configCollection.type = FOLDER; // eslint-disable-line no-param-reassign
-          } else if (hasProperty(configCollection, 'files')) {
+          } else if (has(configCollection, 'files')) {
             configCollection.type = FILES; // eslint-disable-line no-param-reassign
           } else {
             throw new Error('Unknown collection type. Collections can be either Folder based or File based. Please verify your site configuration');
