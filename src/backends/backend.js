@@ -2,7 +2,7 @@ import TestRepoBackend from "./test-repo/implementation";
 import GitHubBackend from "./github/implementation";
 import NetlifyAuthBackend from "./netlify-auth/implementation";
 import { resolveFormat } from "../formats/formats";
-import { selectListMethod, selectEntrySlug, selectEntryPath, selectAllowNewEntries } from "../reducers/collections";
+import { selectListMethod, selectEntrySlug, selectEntryPath, selectAllowNewEntries, selectFolderEntryExtension } from "../reducers/collections";
 import { createEntry } from "../valueObjects/Entry";
 
 class LocalStorageAuthStore {
@@ -82,7 +82,8 @@ class Backend {
 
   listEntries(collection) {
     const listMethod = this.implementation[selectListMethod(collection)];
-    return listMethod.call(this.implementation, collection)
+    const extension = selectFolderEntryExtension(collection);
+    return listMethod.call(this.implementation, collection, extension)
       .then(loadedEntries => (
         loadedEntries.map(loadedEntry => createEntry(
           collection.get("name"),

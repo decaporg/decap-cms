@@ -88,6 +88,7 @@ const selectors = {
 };
 
 export const selectFields = (collection, slug) => selectors[collection.get('type')].fields(collection, slug);
+export const selectFolderEntryExtension = (collection) => selectors[FOLDER].entryExtension(collection);
 export const selectEntryPath = (collection, slug) => selectors[collection.get('type')].entryPath(collection, slug);
 export const selectEntrySlug = (collection, path) => selectors[collection.get('type')].entrySlug(collection, path);
 export const selectListMethod = collection => selectors[collection.get('type')].listMethod();
