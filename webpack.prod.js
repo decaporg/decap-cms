@@ -30,6 +30,9 @@ module.exports = merge.smart(require('./webpack.base.js'), {
         NODE_ENV: JSON.stringify('production'),
       },
     }),
+    new webpack.DefinePlugin({
+      NETLIFY_CMS_VERSION: JSON.stringify(require("./package.json").version)
+    }),
     new webpack.optimize.OccurenceOrderPlugin(),
 
     // Minify and optimize the JavaScript
