@@ -11,6 +11,9 @@ if (process.env.NODE_ENV !== 'production') {
   require('./utils.css'); // eslint-disable-line
 }
 
+// Log the version number
+console.log(`Netlify CMS version ${NETLIFY_CMS_VERSION}`);
+
 // Create mount element dynamically
 const el = document.createElement('div');
 el.id = 'root';

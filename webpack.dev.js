@@ -45,6 +45,9 @@ module.exports = merge.smart(require('./webpack.base.js'), {
         NODE_ENV: JSON.stringify('development'),
       },
     }),
+    new webpack.DefinePlugin({
+      NETLIFY_CMS_VERSION: JSON.stringify(require("./package.json").version + "-dev")
+    }),
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin(),
