@@ -28,7 +28,7 @@ export class StickyContext extends Component {
   }
 
   updateStickies = (ref) => {
-    const stickyContextTop = ref.getBoundingClientRect().top;
+    const stickyContextTop = ref && ref.getBoundingClientRect().top;
     this.subscriptions.forEach((fn) => { fn(stickyContextTop); });
   };
 
