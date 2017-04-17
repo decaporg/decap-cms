@@ -6,27 +6,12 @@
   display: inline-block;
 }
 
-.Button {
-  display: inline-block;
-
-  & button {
-    padding: 6px;
-    border: none;
-    background-color: transparent;
-    cursor: pointer;
-
-    @nest .ButtonActive& {
-      background-color: var(--highlightFGAltColor);
-    }
-  }
-}
-
 .Toggle {
   position: absolute;
   top: 0;
   right: 0;
 
-  & .Button button {
+  & button {
     font-size: 12px;
     text-transform: uppercase;
     padding-top: 10px;

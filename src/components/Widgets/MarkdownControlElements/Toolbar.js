@@ -7,7 +7,7 @@ import styles from './Toolbar.css';
 function Toolbar(props) {
   const { onH1, onH2, onBold, onItalic, onLink, onToggleMode, rawMode } = props;
   return (
-    <ul className={styles.Toolbar}>
+    <div className={styles.Toolbar}>
       <ToolbarButton label="Header 1" icon="h1" action={onH1}/>
       <ToolbarButton label="Header 2" icon="h2" action={onH2}/>
       <ToolbarButton label="Bold" icon="bold" action={onBold}/>
@@ -16,7 +16,7 @@ function Toolbar(props) {
       <div className={styles.Toggle}>
         <ToolbarButton label="Toggle Markdown" action={onToggleMode} active={rawMode}/>
       </div>
-    </ul>
+    </div>
   );
 }
 

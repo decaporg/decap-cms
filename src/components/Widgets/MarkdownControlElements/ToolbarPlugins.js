@@ -3,6 +3,7 @@ import { fromJS } from 'immutable';
 import { Button } from 'react-toolbox/lib/button';
 import { Icon } from '../../UI';
 import { resolveWidget } from '../../Widgets';
+import ToolbarButton from './ToolbarButton';
 import toolbarStyles from './Toolbar.css';
 import styles from './ToolbarPlugins.css';
 
@@ -28,14 +29,6 @@ export default class ToolbarPlugins extends Component {
       e.preventDefault();
       this.setState({ openPlugin: plugin, pluginData: fromJS({}) });
     };
-  }
-
-  buttonFor(plugin) {
-    return (<li key={`plugin-${ plugin.get('id') }`} className={toolbarStyles.Button}>
-      <button className={styles[plugin.get('label')]} onClick={this.handlePlugin(plugin)} title={plugin.get('label')}>
-        <Icon type={plugin.get('icon')} />
-      </button>
-    </li>);
   }
 
   handleSubmit = (e) => {
@@ -109,9 +102,14 @@ export default class ToolbarPlugins extends Component {
     }
 
     return (<div className={classNames.join(' ')}>
-      <ul className={styles.menu}>
-        {plugins.map(plugin => this.buttonFor(plugin))}
-      </ul>
+      {plugins.map(plugin => (
+        <ToolbarButton
+          key={`plugin-${plugin.get('id')}`}
+          label={plugin.get('label')}
+          icon={plugin.get('icon')}
+          action={this.handlePlugin(plugin)}
+        />
+      ))}
       {openPlugin && this.pluginForm(openPlugin)}
     </div>);
   }
