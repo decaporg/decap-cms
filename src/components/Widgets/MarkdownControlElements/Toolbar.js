@@ -1,31 +1,21 @@
 import React, { PropTypes } from 'react';
 import { List } from 'immutable';
+import ToolbarButton from './ToolbarButton';
 import { Icon } from '../../UI';
 import styles from './Toolbar.css';
-
-function button(label, icon, action, active) {
-  const classNames = List([styles.Button]);
-  return (<li className={(active ? classNames.push(styles.ButtonActive) : classNames).join(' ')}>
-    <button className={styles[label]} onClick={action} title={label}>
-      { icon ? <Icon type={icon} /> : 'Toggle Markdown' }
-    </button>
-  </li>);
-}
-
-function toggle(...args) {
-  return <div className={styles.Toggle}>{button(...args)}</div>;
-}
 
 function Toolbar(props) {
   const { onH1, onH2, onBold, onItalic, onLink, onToggleMode, rawMode } = props;
   return (
     <ul className={styles.Toolbar}>
-      {button('Header 1', 'h1', onH1)}
-      {button('Header 2', 'h2', onH2)}
-      {button('Bold', 'bold', onBold)}
-      {button('Italic', 'italic', onItalic)}
-      {button('Link', 'link', onLink)}
-      {toggle('View Code', null, onToggleMode, rawMode)}
+      <ToolbarButton label="Header 1" icon="h1" action={onH1}/>
+      <ToolbarButton label="Header 2" icon="h2" action={onH2}/>
+      <ToolbarButton label="Bold" icon="bold" action={onBold}/>
+      <ToolbarButton label="Italic" icon="italic" action={onItalic}/>
+      <ToolbarButton label="Link" icon="link" action={onLink}/>
+      <div className={styles.Toggle}>
+        <ToolbarButton label="Toggle Markdown" action={onToggleMode} active={rawMode}/>
+      </div>
     </ul>
   );
 }
