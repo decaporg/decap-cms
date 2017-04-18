@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { Map } from 'immutable';
 import { Button } from 'react-toolbox/lib/button';
 import ToolbarPluginFormControl from './ToolbarPluginFormControl';
-import styles from './ToolbarPlugins.css';
+import styles from './ToolbarPluginForm.css';
 
 export default class ToolbarPluginForm extends React.Component {
   constructor(props) {

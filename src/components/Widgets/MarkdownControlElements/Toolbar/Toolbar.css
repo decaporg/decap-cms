@@ -1,4 +1,4 @@
-@import "../../UI/theme";
+@import "../../../UI/theme";
 
 .Toolbar {
   z-index: 1000;

@@ -15,8 +15,7 @@ import registry from '../../../../lib/registry';
 import { createAssetProxy } from '../../../../valueObjects/AssetProxy';
 import { buildKeymap } from './keymap';
 import createMarkdownParser from './parser';
-import Toolbar from '../Toolbar';
-import ToolbarPlugins from '../ToolbarPlugins';
+import Toolbar from '../Toolbar/Toolbar';
 import { Sticky } from '../../../UI/Sticky/Sticky';
 import styles from './index.css';
 
@@ -285,9 +284,6 @@ export default class Editor extends Component {
           onItalic={this.handleItalic}
           onLink={this.handleLink}
           onToggleMode={this.handleToggle}
-        />
-        <ToolbarPlugins
-          selectionPosition={selectionPosition}
           plugins={plugins}
           onSubmit={this.handlePluginSubmit}
           onAddAsset={onAddAsset}

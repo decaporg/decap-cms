@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import classnames from 'classnames';
-import { Icon } from '../../UI';
+import { Icon } from '../../../UI';
 import styles from './ToolbarButton.css';
 
 const ToolbarButton = ({ label, icon, action, active }) => (

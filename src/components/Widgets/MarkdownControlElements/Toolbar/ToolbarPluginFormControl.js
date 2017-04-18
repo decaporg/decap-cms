@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { resolveWidget } from '../../Widgets';
+import { resolveWidget } from '../../../Widgets';
 import styles from './ToolbarPluginFormControl.css';
 
 const ToolbarPluginFormControl = ({

@@ -5,8 +5,7 @@ import htmlSyntax from 'markup-it/syntaxes/html';
 import CaretPosition from 'textarea-caret-position';
 import registry from '../../../../lib/registry';
 import { createAssetProxy } from '../../../../valueObjects/AssetProxy';
-import Toolbar from '../Toolbar';
-import ToolbarPlugins from '../ToolbarPlugins';
+import Toolbar from '../Toolbar/Toolbar';
 import { Sticky } from '../../../UI/Sticky/Sticky';
 import styles from './index.css';
 
@@ -330,9 +329,6 @@ export default class RawEditor extends React.Component {
           onLink={this.handleLink}
           onToggleMode={this.handleToggle}
           rawMode={rawMode}
-        />
-        <ToolbarPlugins
-          selectionPosition={selectionPosition}
           plugins={plugins}
           onSubmit={this.handlePluginSubmit}
           onAddAsset={onAddAsset}
