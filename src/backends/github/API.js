@@ -155,7 +155,14 @@ export default class API {
   listFiles(path) {
     return this.request(`${ this.repoURL }/contents/${ path }`, {
       params: { ref: this.branch },
-    });
+    })
+    .then(files => {
+      if (!Array.isArray(files)) {
+        throw new Error(`Cannot list files, path ${path} is not a directory but a ${files.type}`);
+      }
+      return files;
+    })
+    .then(files => files.filter(file => file.type === "file"));
   }
 
   readUnpublishedBranchFile(contentKey) {

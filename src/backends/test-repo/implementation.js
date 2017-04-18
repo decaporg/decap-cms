@@ -1,4 +1,5 @@
 import AuthenticationPage from './AuthenticationPage';
+import { fileExtension } from '../../lib/pathHelper'
 
 function getFile(path) {
   const segments = path.split('/');
@@ -40,11 +41,15 @@ export default class TestRepo {
     return Promise.resolve('');
   }
 
-  entriesByFolder(collection) {
+  entriesByFolder(collection, extension) {
     const entries = [];
     const folder = collection.get('folder');
     if (folder) {
       for (const path in window.repoFiles[folder]) {
+        if (fileExtension(path) !== extension) {
+          continue;
+        }
+
         const file = { path: `${ folder }/${ path }` };
         entries.push(
           {

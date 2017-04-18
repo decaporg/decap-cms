@@ -1,6 +1,7 @@
 import semaphore from "semaphore";
 import AuthenticationPage from "./AuthenticationPage";
 import API from "./API";
+import { fileExtension } from '../../lib/pathHelper'
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
 
@@ -39,8 +40,9 @@ export default class GitHub {
     return Promise.resolve(this.token);
   }
 
-  entriesByFolder(collection) {
+  entriesByFolder(collection, extension) {
     return this.api.listFiles(collection.get("folder"))
+    .then(files => files.filter(fileExtension(file.name) === extension))
     .then(this.fetchFiles);
   }
 

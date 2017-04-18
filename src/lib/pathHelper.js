@@ -58,11 +58,11 @@ export function basename(p, ext = "") {
  * last portion of the path. If there is no '.' in the last portion of the path
  * or the first character of it is '.', then it returns an empty string.
  * @example Usage example
- *   path.extname('index.html')
+ *   path.fileExtensionWithSeparator('index.html')
  *   // returns
  *   '.html'
  */
-export function extname(p) {
+export function fileExtensionWithSeparator(p) {
   p = normalizePath(p);
   const sections = p.split('/');
   p = sections.pop();
@@ -78,4 +78,18 @@ export function extname(p) {
     return '';
   }
   return p.substr(i);
+}
+
+/**
+ * Return the extension of the path, from after the last '.' to end of string in the
+ * last portion of the path. If there is no '.' in the last portion of the path
+ * or the first character of it is '.', then it returns an empty string.
+ * @example Usage example
+ *   path.fileExtension('index.html')
+ *   // returns
+ *   'html'
+ */
+export function fileExtension(p) {
+  const ext = fileExtensionWithSeparator(p);
+  return ext === '' ? ext : ext.substr(1);
 }
