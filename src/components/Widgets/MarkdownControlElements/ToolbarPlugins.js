@@ -2,8 +2,8 @@ import React, { Component, PropTypes } from 'react';
 import { fromJS } from 'immutable';
 import { Button } from 'react-toolbox/lib/button';
 import { Icon } from '../../UI';
-import { resolveWidget } from '../../Widgets';
 import ToolbarButton from './ToolbarButton';
+import ToolbarPluginFormControl from './ToolbarPluginFormControl';
 import toolbarStyles from './Toolbar.css';
 import styles from './ToolbarPlugins.css';
 
@@ -43,39 +43,23 @@ export default class ToolbarPlugins extends Component {
     this.setState({ openPlugin: null });
   };
 
-  controlFor(field) {
-    const { onAddAsset, onRemoveAsset, getAsset } = this.props;
-    const { pluginData } = this.state;
-    const widget = resolveWidget(field.get('widget') || 'string');
-    const value = pluginData.get(field.get('name'));
-    const key = `field-${ field.get('name') }`;
-
-    return (
-      <div className={styles.control} key={key}>
-        <label className={styles.label} htmlFor={key}>{field.get('label')}</label>
-        {
-          React.createElement(widget.control, {
-            field,
-            value,
-            onChange: (val) => {
-              this.setState({
-                pluginData: pluginData.set(field.get('name'), val),
-              });
-            },
-            onAddAsset,
-            onRemoveAsset,
-            getAsset,
-          })
-        }
-      </div>
-    );
-  }
-
   pluginForm(plugin) {
     return (<form className={styles.pluginForm} onSubmit={this.handleSubmit}>
       <h3 className={styles.header}>Insert {plugin.get('label')}</h3>
       <div className={styles.body}>
-        {plugin.get('fields').map(field => this.controlFor(field))}
+        {plugin.get('fields').map((field, index) => (
+          <ToolbarPluginFormControl
+            key={index}
+            field={field}
+            value={this.state.pluginData.get(field.get('name'))}
+            onAddAsset={this.props.onAddAsset}
+            onRemoveAsset={this.props.onRemoveAsset}
+            getAsset={this.props.getAsset}
+            onChange={(val) => {
+              this.setState({ pluginData: this.state.pluginData.set(field.get('name'), val) });
+            }}
+          />
+        ))}
       </div>
       <div className={styles.footer}>
         <Button

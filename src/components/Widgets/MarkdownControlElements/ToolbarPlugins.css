@@ -47,14 +47,6 @@
   display: inline-block;
 }
 
-.control {
-  composes: control from "../../ControlPanel/ControlPane.css"
-}
-
-.label {
-  composes: label from "../../ControlPanel/ControlPane.css";
-}
-
 .footer {
   background-color: var(--backgroundColor);
   padding: 10px 20px;
