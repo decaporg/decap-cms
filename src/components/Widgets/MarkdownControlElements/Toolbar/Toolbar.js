@@ -19,24 +19,24 @@ export default class Toolbar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      openPlugin: null,
+      activePlugin: null,
     };
   }
 
-  handlePlugin(plugin) {
+  handlePluginFormDisplay(plugin) {
     return (e) => {
       e.preventDefault();
-      this.setState({ openPlugin: plugin });
+      this.setState({ activePlugin: plugin });
     };
   }
 
-  handleSubmit = (plugin, pluginData) => {
+  handlePluginFormSubmit = (plugin, pluginData) => {
     this.props.onSubmit(plugin, pluginData);
-    this.setState({ openPlugin: null });
+    this.setState({ activePlugin: null });
   };
 
-  handleCancel = (e) => {
-    this.setState({ openPlugin: null });
+  handlePluginFormCancel = (e) => {
+    this.setState({ activePlugin: null });
   };
 
   render() {
@@ -54,7 +54,7 @@ export default class Toolbar extends React.Component {
       getAsset,
     } = this.props;
 
-    const { openPlugin } = this.state;
+    const { activePlugin } = this.state;
 
     return (
       <div className={styles.Toolbar}>
@@ -63,27 +63,27 @@ export default class Toolbar extends React.Component {
         <ToolbarButton label="Bold" icon="bold" action={onBold}/>
         <ToolbarButton label="Italic" icon="italic" action={onItalic}/>
         <ToolbarButton label="Link" icon="link" action={onLink}/>
-        <div className={styles.Toggle}>
-          <ToolbarButton label="Toggle Markdown" action={onToggleMode} active={rawMode}/>
-        </div>
         {plugins.map(plugin => (
           <ToolbarButton
             key={`plugin-${plugin.get('id')}`}
             label={plugin.get('label')}
             icon={plugin.get('icon')}
-            action={this.handlePlugin(plugin)}
+            action={this.handlePluginFormDisplay(plugin)}
           />
         ))}
-        {openPlugin &&
+        {activePlugin &&
           <ToolbarPluginForm
-            plugin={openPlugin}
-            onSubmit={this.handleSubmit}
-            onCancel={this.handleCancel}
+            plugin={activePlugin}
+            onSubmit={this.handlePluginFormSubmit}
+            onCancel={this.handlePluginFormCancel}
             onAddAsset={onAddAsset}
             onRemoveAsset={onRemoveAsset}
             getAsset={getAsset}
           />
         }
+        <div className={styles.Toggle}>
+          <ToolbarButton label="Toggle Markdown" action={onToggleMode} active={rawMode}/>
+        </div>
       </div>
     );
   }

@@ -1,15 +1,12 @@
 @import "../../../UI/theme";
 
 .Toolbar {
+  composes: clearfix;
   z-index: 1000;
-  list-style: none;
-  display: inline-block;
 }
 
 .Toggle {
-  position: absolute;
-  top: 0;
-  right: 0;
+  float: right;
 
   & button {
     font-size: 12px;

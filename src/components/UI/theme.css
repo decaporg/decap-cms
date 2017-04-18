@@ -44,3 +44,9 @@
 .depth {
   box-shadow: var(--shadowColor) 0 1px 6px;
 }
+
+.clearfix:after {
+  content: '';
+  display: table;
+  clear: both;
+}
