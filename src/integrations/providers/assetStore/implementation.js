@@ -2,7 +2,7 @@ export default class AssetStore {
   constructor(config, getToken) {
     this.config = config;
     if (config.get('getSignedFormURL') == null) {
-      throw 'The AssetStore integration needs the getSignedFormURL in the integration configuration.';
+      throw new Error('The AssetStore integration needs the getSignedFormURL in the integration configuration.');
     }
     this.getToken = getToken;
     
@@ -23,9 +23,9 @@ export default class AssetStore {
   urlFor(path, options) {
     const params = [];
     if (options.params) {
-      for (const key in options.params) {
+      Object.keys(options.params).forEach((key) => {
         params.push(`${ key }=${ encodeURIComponent(options.params[key]) }`);
-      }
+      });
     }
     if (params.length) {
       path += `?${ params.join('&') }`;

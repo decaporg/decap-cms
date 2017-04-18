@@ -55,7 +55,7 @@ class CollectionPage extends React.Component {
     </EntryListing>);
 
     const fetchingEntriesContent = (<Loader active>
-        {['Loading Entries', 'Caching Entries', 'This might take several minutes']}
+      {['Loading Entries', 'Caching Entries', 'This might take several minutes']}
     </Loader>);
     const noEntriesContent = <div className={styles.noEntries}>No Entries</div>;
     const fallbackContent = isFetching ? fetchingEntriesContent : noEntriesContent;

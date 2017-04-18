@@ -5,7 +5,7 @@ const _registry = {
   templates: {},
   previewStyles: [],
   widgets: {},
-  editorComponents: List([])
+  editorComponents: List([]),
 };
 
 export default {
@@ -32,5 +32,5 @@ export default {
   },
   getEditorComponents() {
     return _registry.editorComponents;
-  }
+  },
 };

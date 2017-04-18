@@ -1,6 +1,6 @@
 import LocalForage from "localforage";
 import { Base64 } from "js-base64";
-import _ from "lodash";
+import { uniq } from "lodash";
 import { filterPromises, resolvePromiseProperties } from "../../lib/promiseHelper";
 import AssetProxy from "../../valueObjects/AssetProxy";
 import { SIMPLE, EDITORIAL_WORKFLOW, status } from "../../constants/publishModes";
@@ -46,9 +46,9 @@ export default class API {
   urlFor(path, options) {
     const params = [];
     if (options.params) {
-      for (const key in options.params) {
+      Object.keys(options.params).forEach((key) => {
         params.push(`${ key }=${ encodeURIComponent(options.params[key]) }`);
-      }
+      });
     }
     if (params.length) {
       path += `?${ params.join("&") }`;
@@ -298,7 +298,7 @@ export default class API {
         return this.user().then(user => user.name ? user.name : user.login)
         .then(username => this.retrieveMetadata(contentKey))
         .then((metadata) => {
-          let files = metadata.objects && metadata.objects.files || [];
+          let files = (metadata.objects && metadata.objects.files) || [];
           files = files.concat(filesList);
           const updatedPR = metadata.pr;
           updatedPR.head = response.sha;
@@ -312,7 +312,7 @@ export default class API {
                 path: entry.path,
                 sha: entry.sha,
               },
-              files: _.uniq(files),
+              files: uniq(files),
             },
             timeStamp: new Date().toISOString(),
           };
@@ -486,15 +486,16 @@ export default class API {
             }
           }
         }
-        for (filename in fileTree) {
+        Object.keys(fileTree).forEach((filename) => {
           fileOrDir = fileTree[filename];
-          if (added[filename]) { continue; }
-          updates.push(
-            fileOrDir.file ?
-              { path: filename, mode: "100644", type: "blob", sha: fileOrDir.sha } :
-              this.updateTree(null, filename, fileOrDir)
-          );
-        }
+          if (!added[filename]) {
+            updates.push(
+              fileOrDir.file ?
+                { path: filename, mode: "100644", type: "blob", sha: fileOrDir.sha } :
+                this.updateTree(null, filename, fileOrDir)
+            );
+          }
+        });
         return Promise.all(updates)
           .then(updates => this.request(`${ this.repoURL }/git/trees`, {
             method: "POST",

@@ -4,10 +4,10 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Link } from 'react-router';
 import moment from 'moment';
 import pluralize from 'pluralize';
-import { capitalize } from 'lodash'
+import { capitalize } from 'lodash';
 import { Card, CardTitle, CardText, CardActions } from 'react-toolbox/lib/card';
 import Button from 'react-toolbox/lib/button';
-import UnpublishedListingCardMeta from './UnpublishedListingCardMeta.js';
+import UnpublishedListingCardMeta from './UnpublishedListingCardMeta';
 import { status, statusDescriptions } from '../../constants/publishModes';
 import styles from './UnpublishedListing.css';
 
@@ -97,7 +97,8 @@ class UnpublishedListing extends React.Component {
                         <Button>Edit</Button>
                       </Link>
                       <Button
-                      onClick={this.requestDelete.bind(this, collection, slug, ownStatus)}>
+                        onClick={this.requestDelete.bind(this, collection, slug, ownStatus)}
+                      >
                         Delete
                       </Button>
                       {

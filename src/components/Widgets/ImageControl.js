@@ -47,11 +47,7 @@ export default class ImageControl extends React.Component {
     const imageType = /^image\//;
 
     // Iterate through the list of files and return the first image on the list
-    const file = files.find((currentFile) => {
-      if (imageType.test(currentFile.type)) {
-        return currentFile;
-      }
-    });
+    const file = files.find(currentFile => imageType.test(currentFile.type));
 
     this.props.onRemoveAsset(this.props.value);
     if (file) {
@@ -96,7 +92,7 @@ export default class ImageControl extends React.Component {
         onDrop={this.handleChange}
       >
         <span style={styles.message} onClick={this.handleClick}>
-          {imageName ? imageName : 'Tip: Click here to upload an image from your file browser, or drag an image directly into this box from your desktop'}
+          {imageName || 'Tip: Click here to upload an image from your file browser, or drag an image directly into this box from your desktop'}
         </span>
         <input
           type="file"

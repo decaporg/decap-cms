@@ -2,6 +2,36 @@
   "extends": [
     "eslint-config-netlify"
   ],
+  "rules": {
+    "consistent-return": "warn",
+    "jsx-a11y/img-has-alt": "warn",
+    "jsx-a11y/label-has-for": "warn",
+    "no-confusing-arrow": "warn",
+    "jsx-a11y/no-static-element-interactions": "warn",
+    "no-unused-expressions": "warn",
+    "no-unneeded-ternary": "warn",
+    "react/no-danger": "warn",
+    "react/no-find-dom-node": "warn",
+    "react/no-unescaped-entities": "warn",
+    "react/jsx-no-bind": "warn",
+    "import/prefer-default-export": "off",
+    "import/imports-first": [ "warn", "DISABLE-absolute-first" ],
+    "max-len": "off",
+    "no-alert": "off",
+    "no-console": "off",
+    "no-cond-assign": "off",
+    "no-continue": "off",
+    "no-else-return": "off",
+    "no-shadow": "off",
+    "no-unused-vars": "off",
+    "no-use-before-define": "off",
+    "no-useless-escape": "off",
+    "one-var": "off",
+    "prefer-const": "off",
+    "react/prefer-stateless-function": "off",
+    "react/no-unused-prop-types": "off",
+    "react/sort-comp": "off"
+  },
   "settings": {
     "import/resolver": {
       "webpack": {

@@ -55,7 +55,7 @@ export default class MarkupItReactRenderer extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.syntax != this.props.syntax) {
+    if (nextProps.syntax !== this.props.syntax) {
       this.parser = new MarkupIt(nextProps.syntax);
     }
   }

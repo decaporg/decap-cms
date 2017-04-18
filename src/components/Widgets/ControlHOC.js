@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import ImmutablePropTypes from "react-immutable-proptypes";
+import { has } from "lodash";
 
 const truthy = () => ({ error: false });
 
@@ -44,7 +45,7 @@ class ControlHOC extends Component {
     if (isRequired && (
       value === null ||
       value === undefined ||
-      (value.hasOwnProperty('length') && value.length === 0) ||
+      (has(value, 'length') && value.length === 0) ||
       (value.constructor === Object && Object.keys(value).length === 0)
     )) {
       return { error: true };
@@ -65,7 +66,7 @@ class ControlHOC extends Component {
     if (typeof response === "boolean") {
       const isValid = response;
       return { error: (!isValid) };
-    } else if (response.hasOwnProperty('error')) {
+    } else if (has(response, 'error')) {
       return response;
     } else if (response instanceof Promise) {
       response.then(

@@ -1,6 +1,6 @@
 import { Component, PropTypes, Children } from 'react';
 import { List, Record, fromJS } from 'immutable';
-import _ from 'lodash';
+import { isFunction } from 'lodash';
 
 const plugins = { editor: List() };
 
@@ -42,9 +42,9 @@ export function newEditorPlugin(config) {
     icon: config.icon,
     fields: fromJS(config.fields),
     pattern: config.pattern,
-    fromBlock: _.isFunction(config.fromBlock) ? config.fromBlock.bind(null) : null,
-    toBlock: _.isFunction(config.toBlock) ? config.toBlock.bind(null) : null,
-    toPreview: _.isFunction(config.toPreview) ? config.toPreview.bind(null) : config.toBlock.bind(null),
+    fromBlock: isFunction(config.fromBlock) ? config.fromBlock.bind(null) : null,
+    toBlock: isFunction(config.toBlock) ? config.toBlock.bind(null) : null,
+    toPreview: isFunction(config.toPreview) ? config.toPreview.bind(null) : config.toBlock.bind(null),
   });
 
 

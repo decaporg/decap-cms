@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { flatten } from 'lodash';
 import { createEntry } from '../../../valueObjects/Entry';
 import { selectEntrySlug } from '../../../reducers/collections';
 
@@ -11,7 +11,7 @@ export default class Algolia {
     this.config = config;
     if (config.get('applicationID') == null ||
         config.get('apiKey') == null) {
-      throw 'The Algolia search integration needs the credentials (applicationID and apiKey) in the integration configuration.';
+      throw new Error('The Algolia search integration needs the credentials (applicationID and apiKey) in the integration configuration.');
     }
 
     this.applicationID = config.get('applicationID');
@@ -51,9 +51,9 @@ export default class Algolia {
   urlFor(path, options) {
     const params = [];
     if (options.params) {
-      for (const key in options.params) {
+      Object.keys(options.params).forEach((key) => {
         params.push(`${ key }=${ encodeURIComponent(options.params[key]) }`);
-      }
+      });
     }
     if (params.length) {
       path += `?${ params.join('&') }`;
@@ -88,7 +88,7 @@ export default class Algolia {
         return createEntry(collections[index], slug, hit.path, { data: hit.data, partial: true });
       }));
 
-      return { entries: _.flatten(entries), pagination: page };
+      return { entries: flatten(entries), pagination: page };
     });
   }
 

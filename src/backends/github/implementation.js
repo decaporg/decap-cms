@@ -85,7 +85,7 @@ export default class GitHub {
     return this.api.listUnpublishedBranches().then((branches) => {
       const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
       const promises = [];
-      branches.map((branch) => {
+      branches.forEach((branch) => {
         promises.push(new Promise((resolve, reject) => {
           const slug = branch.ref.split("refs/heads/cms/").pop();
           return sem.take(() => this.api.readUnpublishedBranchFile(slug).then((data) => {

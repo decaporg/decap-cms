@@ -2,20 +2,20 @@ const marks = {
   'blockquote': {
     // > ...
     pattern: /^>(?:[\t ]*>)*/m,
-    alias: 'punctuation'
+    alias: 'punctuation',
   },
   'code': [
     {
       // Prefixed by 4 spaces or 1 tab
       pattern: /^(?: {4}|\t).+/m,
-      alias: 'keyword'
+      alias: 'keyword',
     },
     {
       // `code`
       // ``code``
       pattern: /``.+?``|`[^`\n]+`/,
-      alias: 'keyword'
-    }
+      alias: 'keyword',
+    },
   ],
   'title': [
     {
@@ -27,8 +27,8 @@ const marks = {
       pattern: /\w+.*(?:\r?\n|\r)(?:==+|--+)/,
       alias: 'important',
       inside: {
-        punctuation: /==+$|--+$/
-      }
+        punctuation: /==+$|--+$/,
+      },
     },
     {
       // # title 1
@@ -37,9 +37,9 @@ const marks = {
       lookbehind: true,
       alias: 'important',
       inside: {
-        punctuation: /^#+|#+$/
-      }
-    }
+        punctuation: /^#+|#+$/,
+      },
+    },
   ],
   'hr': {
     // ***
@@ -48,7 +48,7 @@ const marks = {
     // -----------
     pattern: /(^\s*)([*-])([\t ]*\2){2,}(?=\s*$)/m,
     lookbehind: true,
-    alias: 'punctuation'
+    alias: 'punctuation',
   },
   'list': {
     // * item
@@ -57,7 +57,7 @@ const marks = {
     // 1. item
     pattern: /(^\s*)(?:[*+-]|\d+\.)(?=[\t ].)/m,
     lookbehind: true,
-    alias: 'punctuation'
+    alias: 'punctuation',
   },
   'url-reference': {
     // [id]: http://example.com "Optional title"
@@ -66,14 +66,14 @@ const marks = {
     // [id]: <http://example.com> "Optional title"
     pattern: /!?\[[^\]]+\]:[\t ]+(?:\S+|<(?:\\.|[^>\\])+>)(?:[\t ]+(?:"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|\((?:\\.|[^)\\])*\)))?/,
     inside: {
-      'variable': {
+      variable: {
         pattern: /^(!?\[)[^\]]+/,
-        lookbehind: true
+        lookbehind: true,
       },
-      'string': /(?:"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|\((?:\\.|[^)\\])*\))$/,
-      'punctuation': /^[\[\]!:]|[<>]/
+      string: /(?:"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|\((?:\\.|[^)\\])*\))$/,
+      punctuation: /^[\[\]!:]|[<>]/,
     },
-    alias: 'url'
+    alias: 'url',
   },
   'bold': {
     // **strong**
@@ -83,8 +83,8 @@ const marks = {
     pattern: /(^|[^\\])(\*\*|__)(?:(?:\r?\n|\r)(?!\r?\n|\r)|.)+?\2/,
     lookbehind: true,
     inside: {
-      'punctuation': /^\*\*|^__|\*\*$|__$/
-    }
+      punctuation: /^\*\*|^__|\*\*$|__$/,
+    },
   },
   'italic': {
     // *em*
@@ -94,23 +94,23 @@ const marks = {
     pattern: /(^|[^\\])([*_])(?:(?:\r?\n|\r)(?!\r?\n|\r)|.)+?\2/,
     lookbehind: true,
     inside: {
-      'punctuation': /^[*_]|[*_]$/
-    }
+      punctuation: /^[*_]|[*_]$/,
+    },
   },
   'url': {
     // [example](http://example.com "Optional title")
     // [example] [id]
     pattern: /!?\[[^\]]+\](?:\([^\s)]+(?:[\t ]+"(?:\\.|[^"\\])*")?\)| ?\[[^\]\n]*\])/,
     inside: {
-      'variable': {
+      variable: {
         pattern: /(!?\[)[^\]]+(?=\]$)/,
-        lookbehind: true
+        lookbehind: true,
       },
-      'string': {
-        pattern: /"(?:\\.|[^"\\])*"(?=\)$)/
-      }
-    }
-  }
+      string: {
+        pattern: /"(?:\\.|[^"\\])*"(?=\)$)/,
+      },
+    },
+  },
 };
 
 export default marks;
