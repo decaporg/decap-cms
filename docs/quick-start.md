@@ -54,7 +54,7 @@ The first file, `admin/index.html`, is the entry point for the Netlify CMS admin
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Content Manager</title>
-  
+
   <link rel="stylesheet" href="https://unpkg.com/netlify-cms@^0.3/dist/cms.css" />
 
 </head>
@@ -77,6 +77,7 @@ backend:
   name: github
   repo: owner-name/repo-name # Path to your Github repository
   branch: master # Branch to update
+  site_domain: site-name.netlify.com # Your Netlify site address if different from host
 ```
 
 This names GitHub as the authentication provider, points to the repo location on github.com, and declares the branch where you want to merge changes. If you leave out the `branch` declaration, it will default to `master`.
@@ -109,7 +110,7 @@ This configuration adds a new setting, `public_folder`. While `media_folder` spe
 >If `public_folder` is not set, Netlify CMS will default to the same value as `media_folder`, adding an opening `/` if one is not included.
 
 ### Collections
-Collections define the structure for the different content types on your static site. Since every site is different, the `collections` settings will be very different from one site to the next. Let's say your site has a blog, with the posts stored in `_posts/blog`, and files saved in a date-title format, like `1999-12-31-lets-party.md`. Each post 
+Collections define the structure for the different content types on your static site. Since every site is different, the `collections` settings will be very different from one site to the next. Let's say your site has a blog, with the posts stored in `_posts/blog`, and files saved in a date-title format, like `1999-12-31-lets-party.md`. Each post
 begins with settings in yaml-formatted front matter, like so:
 
 ``` yaml
@@ -198,4 +199,3 @@ Based on this example, you can go through the post types in your site and add th
 With your configuration complete, it's time to try it out! Go to `yoursite.com/admin` and complete the login prompt to access the admin interface. To add users, simply add them as collaborators on the GitHub repo.
 
 Happy posting!
-
