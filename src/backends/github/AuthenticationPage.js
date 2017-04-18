@@ -17,7 +17,7 @@ export default class AuthenticationPage extends React.Component {
     if (document.location.host.split(':')[0] === 'localhost') {
       auth = new Authenticator({ site_id: 'cms.netlify.com' });
     } else {
-      auth = new Authenticator();
+      auth = new Authenticator({ site_id: this.props.siteId });
     }
 
     auth.authenticate({ provider: 'github', scope: 'repo' }, (err, data) => {

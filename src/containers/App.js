@@ -51,6 +51,7 @@ class App extends React.Component {
     runCommand: PropTypes.func.isRequired,
     isFetching: PropTypes.bool.isRequired,
     publishMode: PropTypes.oneOf([SIMPLE, EDITORIAL_WORKFLOW]),
+    siteId: PropTypes.string,
   };
 
   static configError(config) {
@@ -87,6 +88,7 @@ class App extends React.Component {
             onLogin: this.handleLogin.bind(this),
             error: auth && auth.get('error'),
             isFetching: auth && auth.get('isFetching'),
+            siteId: this.props.config.getIn(["backend", "site_domain"]),
           })
         }
       </div>
