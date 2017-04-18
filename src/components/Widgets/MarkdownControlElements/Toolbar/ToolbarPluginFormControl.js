@@ -24,4 +24,16 @@ const ToolbarPluginFormControl = ({
   );
 };
 
+ToolbarPluginFormControl.propTypes = {
+  field: PropTypes.object.isRequired,
+  value: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]),
+  onAddAsset: PropTypes.func.isRequired,
+  onRemoveAsset: PropTypes.func.isRequired,
+  getAsset: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
+};
+
 export default ToolbarPluginFormControl;

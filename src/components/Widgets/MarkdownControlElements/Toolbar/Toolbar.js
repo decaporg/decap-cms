@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { List } from 'immutable';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 import Switch from 'react-toolbox/lib/switch';
 import ToolbarButton from './ToolbarButton';
 import ToolbarPluginForm from './ToolbarPluginForm';
@@ -8,6 +9,7 @@ import styles from './Toolbar.css';
 
 export default class Toolbar extends React.Component {
   static propTypes = {
+    selectionPosition: PropTypes.object,
     onH1: PropTypes.func.isRequired,
     onH2: PropTypes.func.isRequired,
     onBold: PropTypes.func.isRequired,
@@ -15,6 +17,11 @@ export default class Toolbar extends React.Component {
     onLink: PropTypes.func.isRequired,
     onToggleMode: PropTypes.func.isRequired,
     rawMode: PropTypes.bool,
+    plugins: ImmutablePropTypes.listOf(ImmutablePropTypes.record),
+    onSubmit: PropTypes.func.isRequired,
+    onAddAsset: PropTypes.func.isRequired,
+    onRemoveAsset: PropTypes.func.isRequired,
+    getAsset: PropTypes.func.isRequired,
   };
 
   constructor(props) {

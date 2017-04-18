@@ -5,6 +5,15 @@ import ToolbarPluginFormControl from './ToolbarPluginFormControl';
 import styles from './ToolbarPluginForm.css';
 
 export default class ToolbarPluginForm extends React.Component {
+  static propTypes = {
+    plugin: PropTypes.object.isRequired,
+    onSubmit: PropTypes.func.isRequired,
+    onCancel: PropTypes.func.isRequired,
+    onAddAsset: PropTypes.func.isRequired,
+    onRemoveAsset: PropTypes.func.isRequired,
+    getAsset: PropTypes.func.isRequired,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
