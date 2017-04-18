@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { List } from 'immutable';
+import Switch from 'react-toolbox/lib/switch';
 import ToolbarButton from './ToolbarButton';
 import ToolbarPluginForm from './ToolbarPluginForm';
 import { Icon } from '../../../UI';
@@ -81,9 +82,7 @@ export default class Toolbar extends React.Component {
             getAsset={getAsset}
           />
         }
-        <div className={styles.Toggle}>
-          <ToolbarButton label="Toggle Markdown" action={onToggleMode} active={rawMode}/>
-        </div>
+        <Switch label="Markdown" onChange={onToggleMode} checked={rawMode} className={styles.Toggle}/>
       </div>
     );
   }
