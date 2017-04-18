@@ -203,7 +203,7 @@ export default class Editor extends Component {
     command(this.view.state, this.handleAction);
   };
 
-  handlePlugin = (plugin, data) => {
+  handlePluginSubmit = (plugin, data) => {
     const { schema } = this.state;
     const nodeType = schema.nodes[`plugin_${ plugin.get('id') }`];
     this.view.props.onAction(this.view.state.tr.replaceSelectionWith(nodeType.create(data.toJS())).action());
@@ -289,7 +289,7 @@ export default class Editor extends Component {
         <ToolbarPlugins
           selectionPosition={selectionPosition}
           plugins={plugins}
-          onPlugin={this.handlePlugin}
+          onSubmit={this.handlePluginSubmit}
           onAddAsset={onAddAsset}
           onRemoveAsset={onRemoveAsset}
           getAsset={getAsset}

@@ -235,7 +235,7 @@ export default class RawEditor extends React.Component {
     this.updateHeight();
   };
 
-  handlePlugin = (plugin, data) => {
+  handlePluginSubmit = (plugin, data) => {
     const toBlock = plugin.get('toBlock');
     this.replaceSelection(toBlock.call(toBlock, data.toJS()));
   };
@@ -334,7 +334,7 @@ export default class RawEditor extends React.Component {
         <ToolbarPlugins
           selectionPosition={selectionPosition}
           plugins={plugins}
-          onPlugin={this.handlePlugin}
+          onSubmit={this.handlePluginSubmit}
           onAddAsset={onAddAsset}
           onRemoveAsset={onRemoveAsset}
           getAsset={getAsset}
