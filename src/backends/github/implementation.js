@@ -42,7 +42,7 @@ export default class GitHub {
 
   entriesByFolder(collection, extension) {
     return this.api.listFiles(collection.get("folder"))
-    .then(files => files.filter(fileExtension(file.name) === extension))
+    .then(files => files.filter(file => fileExtension(file.name) === extension))
     .then(this.fetchFiles);
   }
 
