@@ -147,6 +147,7 @@
     "react-simple-dnd": "^0.1.2",
     "react-sortable": "^1.2.0",
     "react-split-pane": "^0.1.57",
+    "react-textarea-autosize-inputref": "^4.1.0",
     "react-toolbox": "^1.2.1",
     "react-topbar-progress-indicator": "^1.0.0",
     "react-waypoint": "^3.1.3",

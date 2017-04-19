@@ -3,6 +3,7 @@ import MarkupIt from 'markup-it';
 import markdownSyntax from 'markup-it/syntaxes/markdown';
 import htmlSyntax from 'markup-it/syntaxes/html';
 import CaretPosition from 'textarea-caret-position';
+import TextareaAutosize from 'react-textarea-autosize-inputref';
 import registry from '../../../../lib/registry';
 import { createAssetProxy } from '../../../../valueObjects/AssetProxy';
 import Toolbar from '../Toolbar/Toolbar';
@@ -171,6 +172,7 @@ export default class RawEditor extends React.Component {
   }
 
   handleRef = (ref) => {
+    console.log(ref);
     this.element = ref;
     if (ref) {
       this.caretPosition = new CaretPosition(ref);
@@ -337,8 +339,8 @@ export default class RawEditor extends React.Component {
           rawMode
         />
       </Sticky>
-      <textarea
-        ref={this.handleRef}
+      <TextareaAutosize
+        inputRef={this.handleRef}
         value={this.props.value || ''}
         onKeyDown={this.handleKey}
         onChange={this.handleChange}

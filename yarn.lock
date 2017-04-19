@@ -7249,6 +7249,10 @@ react-style-proptype@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/react-style-proptype/-/react-style-proptype-1.4.0.tgz#d82c4093b73767e3efaacba013cea22a50e7b5ee"
 
+react-textarea-autosize-inputref@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/react-textarea-autosize-inputref/-/react-textarea-autosize-inputref-4.1.0.tgz#4a12921f9c992a8e2c6ce569ab46982a96ca48f6"
+
 react-themeable@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/react-themeable/-/react-themeable-1.1.0.tgz#7d4466dd9b2b5fa75058727825e9f152ba379a0e"
