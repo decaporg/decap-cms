@@ -3,6 +3,7 @@ import { List } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import Switch from 'react-toolbox/lib/switch';
 import ToolbarButton from './ToolbarButton';
+import ToolbarComponentsMenu from './ToolbarComponentsMenu';
 import ToolbarPluginForm from './ToolbarPluginForm';
 import { Icon } from '../../../UI';
 import styles from './Toolbar.css';
@@ -31,11 +32,8 @@ export default class Toolbar extends React.Component {
     };
   }
 
-  handlePluginFormDisplay(plugin) {
-    return (e) => {
-      e.preventDefault();
-      this.setState({ activePlugin: plugin });
-    };
+  handlePluginFormDisplay = (plugin) => {
+    this.setState({ activePlugin: plugin });
   }
 
   handlePluginFormSubmit = (plugin, pluginData) => {
@@ -71,14 +69,10 @@ export default class Toolbar extends React.Component {
         <ToolbarButton label="Bold" icon="bold" action={onBold}/>
         <ToolbarButton label="Italic" icon="italic" action={onItalic}/>
         <ToolbarButton label="Link" icon="link" action={onLink}/>
-        {plugins.map(plugin => (
-          <ToolbarButton
-            key={`plugin-${plugin.get('id')}`}
-            label={plugin.get('label')}
-            icon={plugin.get('icon')}
-            action={this.handlePluginFormDisplay(plugin)}
-          />
-        ))}
+        <ToolbarComponentsMenu
+          plugins={plugins}
+          onComponentMenuItemClick={this.handlePluginFormDisplay}
+        />
         {activePlugin &&
           <ToolbarPluginForm
             plugin={activePlugin}

@@ -39,7 +39,6 @@ if (process.env.NODE_ENV !== 'production' && module.hot) {
 const buildtInPlugins = [{
   label: 'Image',
   id: 'image',
-  icon: 'picture',
   fromBlock: match => match && {
     image: match[2],
     alt: match[1],
