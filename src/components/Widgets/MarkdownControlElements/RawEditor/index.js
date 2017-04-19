@@ -319,7 +319,7 @@ export default class RawEditor extends React.Component {
       onDragOver={this.handleDragOver}
       onDrop={this.handleDrop}
     >
-      <Sticky className={styles.editorControlBar} fillContainerWidth={true}>
+      <Sticky className={styles.editorControlBar} fillContainerWidth>
         <Toolbar
           selectionPosition={selectionPosition}
           onH1={this.handleHeader('#')}

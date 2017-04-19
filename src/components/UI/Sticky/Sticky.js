@@ -3,12 +3,55 @@ import classnames from 'classnames';
 import { partial, without } from 'lodash';
 import styles from './Sticky.css';
 
+/**
+ * Sticky is a collection of three components meant to facilitate "sticky" UI
+ * behavior for nested components. It uses React Context to provide an isolated,
+ * children-accessible state machine. It was specifically built for the rich
+ * text editor toolbar to achieve the following:
+ *
+ * - work within a scrollable section as if it were the window
+ * - remain at the top of the scrollable section if the rich text field begins
+ *   to scroll up and out
+ * - scroll away with the rich text field when it is almost out of view
+ * - work when multiple rich text fields are present
+ *
+ * No available solution was near facilitating this for a React app. Eventually,
+ * if use continues, it should be improved to be more abstract and potentially
+ * split off to a separate library unto itself, covering more use cases than
+ * just the rich text toolbar.
+ *
+ * Sticky consists of three components, which are documented right here to
+ * facilitate a concise, high level overview:
+ *
+ * - StickyContext: the scrollable area that essentially serves as the window
+ *   should be wrapped in StickyContext
+ * - StickyContainer: wraps the secondary container that the sticky element is
+ *   bound within, eg. the rich text field
+ * - Sticky: wraps the sticky element itself
+ */
+
 export class StickyContext extends Component {
   static childContextTypes = {
     subscribeToStickyContext: PropTypes.func,
     unsubscribeToStickyContext: PropTypes.func,
     requestUpdate: PropTypes.func,
   };
+
+  static propTypes = {
+    className: PropTypes.string,
+
+    /**
+     * registerListener: accepts a function that is called with the `updateStickies` method as an
+     * arg, so it can be accessed from the component implementation site similar to how refs are
+     * accessed:
+     *
+     * <StickyContext registerListener={fn => this.updateStickyContext = fn}>
+     *
+     * This function can then be used from the component implementation site to force update the
+     * entire Sticky instance, which is sometimes necessary.
+     */
+    registerListener: PropTypes.func,
+  }
 
   constructor(props) {
     super(props);
@@ -76,6 +119,12 @@ export class StickyContainer extends Component {
     };
   }
 
+  /**
+   * getPosition: used for updating the sticky element to stick or not stick, and also provides
+   * width info. Because a sticky element uses fixed positioning, it may not be able to be sized
+   * relative to a parent, so the StickyContainer width is provided to allow the Sticky to be sized
+   * accordingly.
+   */
   getPosition = (contextTop) => {
     const rect = this.ref.getBoundingClientRect();
     const shouldStick = rect.top < contextTop;
@@ -110,6 +159,16 @@ export class Sticky extends Component {
     unsubscribeToStickyContainer: PropTypes.func,
     requestUpdate: PropTypes.func,
   };
+
+  static propTypes = {
+    className: PropTypes.string,
+
+    /**
+     * fillContainerWidth: allows the sticky width to be dynamically set to the width of it's
+     * StickyContainer when sticky (fixed positioning).
+     */
+    fillContainerWidth: PropTypes.bool,
+  }
 
   constructor(props, context) {
     super(props, context);
