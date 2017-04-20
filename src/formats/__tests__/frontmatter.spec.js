@@ -92,16 +92,17 @@ describe('Frontmatter', () => {
     expect(
       FrontmatterFormatter.toFile({ body: 'Some content\nOn another line', tags: ['front matter', 'yaml'], title: 'YAML' })
     ).toEqual(
-      [
-        '---',
-        'tags:',
-        '  - front matter',
-        '  - yaml',
-        'title: YAML',
-        '---',
-        'Some content',
-        'On another line\n',
-      ].join('\n')
+      `\
+---
+tags:
+  - front matter
+  - yaml
+title: YAML
+---
+
+Some content
+On another line\
+`,
     );
   });
 });
