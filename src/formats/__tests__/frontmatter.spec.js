@@ -1,5 +1,7 @@
 import Frontmatter from '../frontmatter';
 
+jest.mock("../../valueObjects/AssetProxy.js");
+
 const FrontmatterFormatter = new Frontmatter();
 
 describe('Frontmatter', () => {
