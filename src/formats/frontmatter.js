@@ -1,6 +1,7 @@
 import preliminaries from 'preliminaries';
 import yamlParser from 'preliminaries-parser-yaml';
 import tomlParser from 'preliminaries-parser-toml';
+import YAML from './yaml';
 
 // Automatically register parsers
 preliminaries(true);
@@ -25,7 +26,13 @@ export default class Frontmatter {
         meta[key] = data[key];
       }
     });
+
     // always stringify to YAML
-    return preliminaries.stringify(body, meta, { lang: 'yaml', delims: '---' });
+    const parser = {
+      stringify(metadata) {
+        return new YAML().toFile(metadata, sortedKeys);
+      },
+    };
+    return preliminaries.stringify(body, meta, { lang: "yaml", delims: "---", parser });
   }
 }
