@@ -35,7 +35,7 @@ Selectors are functions defined within reducers used to compute derived data fro
 **getAsset:** Selects a single AssetProxy object for the given URI.
 
 ## Value Objects:
-**AssetProxy:** AssetProxy is a Value Object that holds information regarding an asset file (such as an image, for example), whether it's persisted online or hold locally in cache.
+**AssetProxy:** AssetProxy is a Value Object that holds information regarding an asset file (such as an image, for example), whether it's persisted online or held locally in cache.
 
 For files persisted online, the AssetProxy only keeps information about it's URI. For local files, the AssetProxy will keep a reference to the actual File object while generating the expected final URIs and on-demand blobs for local preview.
 
