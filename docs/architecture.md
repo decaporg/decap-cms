@@ -4,7 +4,7 @@ Netlify CMS is a React Application, using Redux for state management with immuta
 
 The core abstractions for content editing are `collections`, `entries` and `widgets`.
 
-Each `collection` represents a collection of entries. This can either be a collection of similar entries with the same structure, or a set of entries that each of their own structure.
+Each `collection` represents a collection of entries. This can either be a collection of similar entries with the same structure, or a set of entries that each have their own structure.
 
 The structure of an entry is defined as a series of fields, each with a `name`, a `label` and a `widget` .
 
