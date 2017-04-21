@@ -102,7 +102,7 @@ export default class ListControl extends Component {
     return (e) => {
       e.preventDefault();
       const { value, metadata, onChange, forID } = this.props;
-      const parsedMetadata = { [forID]: metadata.removeIn(value.get(index).valueSeq()) };
+      const parsedMetadata = metadata && { [forID]: metadata.removeIn(value.get(index).valueSeq()) };
       onChange(value.remove(index), parsedMetadata);
     };
   }
