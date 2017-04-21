@@ -37,7 +37,7 @@ Selectors are functions defined within reducers used to compute derived data fro
 ## Value Objects:
 **AssetProxy:** AssetProxy is a Value Object that holds information regarding an asset file (such as an image, for example), whether it's persisted online or held locally in cache.
 
-For files persisted online, the AssetProxy only keeps information about it's URI. For local files, the AssetProxy will keep a reference to the actual File object while generating the expected final URIs and on-demand blobs for local preview.
+For a file persisted online, the AssetProxy only keeps information about its URI. For local files, the AssetProxy will keep a reference to the actual File object while generating the expected final URIs and on-demand blobs for local preview.
 
 The AssetProxy object can be used directly inside a media tag (such as `<img>`), as it will always return something that can be used by the media tag to render correctly (either the URI for the online file or a single-use blob).
 
