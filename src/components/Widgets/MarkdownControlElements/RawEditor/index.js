@@ -172,7 +172,6 @@ export default class RawEditor extends React.Component {
   }
 
   handleRef = (ref) => {
-    console.log(ref);
     this.element = ref;
     if (ref) {
       this.caretPosition = new CaretPosition(ref);
@@ -307,7 +306,7 @@ export default class RawEditor extends React.Component {
   };
 
   render() {
-    const { onAddAsset, onRemoveAsset, getAsset, rawMode } = this.props;
+    const { onAddAsset, onRemoveAsset, getAsset } = this.props;
     const { plugins, selectionPosition, dragging } = this.state;
     const classNames = [styles.root];
     if (dragging) {
@@ -330,7 +329,6 @@ export default class RawEditor extends React.Component {
           onItalic={this.handleItalic}
           onLink={this.handleLink}
           onToggleMode={this.handleToggle}
-          rawMode={rawMode}
           plugins={plugins}
           onSubmit={this.handlePluginSubmit}
           onAddAsset={onAddAsset}
@@ -357,6 +355,5 @@ RawEditor.propTypes = {
   getAsset: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   onMode: PropTypes.func.isRequired,
-  rawMode: PropTypes.bool,
   value: PropTypes.node,
 };

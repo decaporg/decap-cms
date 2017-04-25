@@ -52,7 +52,6 @@ export default class MarkdownControl extends React.Component {
           onAddAsset={onAddAsset}
           onRemoveAsset={onRemoveAsset}
           onMode={this.handleMode}
-          rawMode
           getAsset={getAsset}
           value={value}
         />
