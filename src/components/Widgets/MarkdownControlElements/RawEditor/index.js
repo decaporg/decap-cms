@@ -3,10 +3,11 @@ import MarkupIt from 'markup-it';
 import markdownSyntax from 'markup-it/syntaxes/markdown';
 import htmlSyntax from 'markup-it/syntaxes/html';
 import CaretPosition from 'textarea-caret-position';
+import TextareaAutosize from 'react-textarea-autosize-inputref';
 import registry from '../../../../lib/registry';
 import { createAssetProxy } from '../../../../valueObjects/AssetProxy';
-import Toolbar from '../Toolbar';
-import BlockMenu from '../BlockMenu';
+import Toolbar from '../Toolbar/Toolbar';
+import { Sticky } from '../../../UI/Sticky/Sticky';
 import styles from './index.css';
 
 const HAS_LINE_BREAK = /\n/m;
@@ -18,7 +19,7 @@ function processUrl(url) {
   if (url.match(/^(https?:\/\/|mailto:|\/)/)) {
     return url;
   }
-  if (url.match(/^[^\/]+\.[^\/]+/)) {
+  if (url.match(/^[^/]+\.[^/]+/)) {
     return `https://${ url }`;
   }
   return `/${ url }`;
@@ -44,7 +45,9 @@ function getCleanPaste(e) {
         // Handle complex pastes by stealing focus with a contenteditable div
         const div = document.createElement('div');
         div.contentEditable = true;
-        div.setAttribute('style', 'opacity: 0; overflow: hidden; width: 1px; height: 1px; position: fixed; top: 50%; left: 0;');
+        div.setAttribute(
+          'style', 'opacity: 0; overflow: hidden; width: 1px; height: 1px; position: fixed; top: 50%; left: 0;'
+        );
         document.body.appendChild(div);
         div.focus();
         setTimeout(() => {
@@ -194,7 +197,7 @@ export default class RawEditor extends React.Component {
   };
 
   handleLink = () => {
-    const url = prompt('URL:');
+    const url = prompt('URL:'); // eslint-disable-line no-alert
     const selection = this.getSelection();
     this.replaceSelection(`[${ selection.selected }](${ processUrl(url) })`);
   };
@@ -205,9 +208,9 @@ export default class RawEditor extends React.Component {
     if (selection.start !== selection.end && !HAS_LINE_BREAK.test(selection.selected)) {
       try {
         const selectionPosition = this.caretPosition.get(selection.start, selection.end);
-        this.setState({ showToolbar: true, showBlockMenu: false, selectionPosition });
+        this.setState({ selectionPosition });
       } catch (e) {
-        this.setState({ showToolbar: false, showBlockMenu: false });
+        console.log(e); // eslint-disable-line no-console
       }
     } else if (selection.start === selection.end) {
       const newBlock =
@@ -222,12 +225,8 @@ export default class RawEditor extends React.Component {
 
       if (newBlock) {
         const position = this.caretPosition.get(selection.start, selection.end);
-        this.setState({ showToolbar: false, showBlockMenu: true, selectionPosition: position });
-      } else {
-        this.setState({ showToolbar: false, showBlockMenu: false });
+        this.setState({ selectionPosition: position });
       }
-    } else {
-      this.setState({ showToolbar: false, showBlockMenu: false });
     }
   };
 
@@ -236,10 +235,9 @@ export default class RawEditor extends React.Component {
     this.updateHeight();
   };
 
-  handleBlock = (plugin, data) => {
+  handlePluginSubmit = (plugin, data) => {
     const toBlock = plugin.get('toBlock');
     this.replaceSelection(toBlock.call(toBlock, data.toJS()));
-    this.setState({ showBlockMenu: false });
   };
 
   handleHeader(header) {
@@ -309,7 +307,7 @@ export default class RawEditor extends React.Component {
 
   render() {
     const { onAddAsset, onRemoveAsset, getAsset } = this.props;
-    const { showToolbar, showBlockMenu, plugins, selectionPosition, dragging } = this.state;
+    const { plugins, selectionPosition, dragging } = this.state;
     const classNames = [styles.root];
     if (dragging) {
       classNames.push(styles.dragging);
@@ -322,27 +320,25 @@ export default class RawEditor extends React.Component {
       onDragOver={this.handleDragOver}
       onDrop={this.handleDrop}
     >
-      <Toolbar
-        isOpen={showToolbar}
-        selectionPosition={selectionPosition}
-        onH1={this.handleHeader('#')}
-        onH2={this.handleHeader('##')}
-        onBold={this.handleBold}
-        onItalic={this.handleItalic}
-        onLink={this.handleLink}
-        onToggleMode={this.handleToggle}
-      />
-      <BlockMenu
-        isOpen={showBlockMenu}
-        selectionPosition={selectionPosition}
-        plugins={plugins}
-        onBlock={this.handleBlock}
-        onAddAsset={onAddAsset}
-        onRemoveAsset={onRemoveAsset}
-        getAsset={getAsset}
-      />
-      <textarea
-        ref={this.handleRef}
+      <Sticky className={styles.editorControlBar} fillContainerWidth>
+        <Toolbar
+          selectionPosition={selectionPosition}
+          onH1={this.handleHeader('#')}
+          onH2={this.handleHeader('##')}
+          onBold={this.handleBold}
+          onItalic={this.handleItalic}
+          onLink={this.handleLink}
+          onToggleMode={this.handleToggle}
+          plugins={plugins}
+          onSubmit={this.handlePluginSubmit}
+          onAddAsset={onAddAsset}
+          onRemoveAsset={onRemoveAsset}
+          getAsset={getAsset}
+          rawMode
+        />
+      </Sticky>
+      <TextareaAutosize
+        inputRef={this.handleRef}
         value={this.props.value || ''}
         onKeyDown={this.handleKey}
         onChange={this.handleChange}

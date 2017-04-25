@@ -2,11 +2,14 @@ import React, { Component, PropTypes } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import SplitPane from 'react-split-pane';
 import Button from 'react-toolbox/lib/button';
+import classnames from 'classnames';
 import { ScrollSync, ScrollSyncPane } from '../ScrollSync';
 import ControlPane from '../ControlPanel/ControlPane';
 import PreviewPane from '../PreviewPane/PreviewPane';
 import Toolbar from './EntryEditorToolbar';
+import { StickyContext } from '../UI/Sticky/Sticky';
 import styles from './EntryEditor.css';
+import stickyStyles from '../UI/Sticky/Sticky.css';
 
 const PREVIEW_VISIBLE = 'cms.preview-visible';
 
@@ -50,17 +53,25 @@ class EntryEditor extends Component {
         onCancelEdit,
     } = this.props;
 
-    const controlClassName = `${ styles.controlPane } ${ this.state.showEventBlocker && styles.blocker }`;
-    const previewClassName = `${ styles.previewPane } ${ this.state.showEventBlocker && styles.blocker }`;
+    const { previewVisible, showEventBlocker } = this.state;
 
     const collectionPreviewEnabled = collection.getIn(['editor', 'preview'], true);
 
     const togglePreviewButton = (
-      <Button className={styles.previewToggle} onClick={this.handleTogglePreview}>Toggle Preview</Button>
+      <Button
+        className={classnames(styles.previewToggle, { previewVisible: styles.previewToggleShow })}
+        onClick={this.handleTogglePreview}
+        icon={previewVisible ? 'visibility_off' : 'visibility'}
+        floating
+        mini
+      />
     );
 
     const editor = (
-      <div className={controlClassName}>
+      <StickyContext
+        className={classnames(styles.controlPane, { [styles.blocker]: showEventBlocker })}
+        registerListener={fn => this.updateStickyContext = fn}
+      >
         { collectionPreviewEnabled ? togglePreviewButton : null }
         <ControlPane
           collection={collection}
@@ -75,7 +86,7 @@ class EntryEditor extends Component {
           onRemoveAsset={onRemoveAsset}
           ref={c => this.controlPaneRef = c} // eslint-disable-line
         />
-      </div>
+      </StickyContext>
     );
 
     const editorWithPreview = (
@@ -85,9 +96,10 @@ class EntryEditor extends Component {
             defaultSize="50%"
             onDragStarted={this.handleSplitPaneDragStart}
             onDragFinished={this.handleSplitPaneDragFinished}
+            onChange={this.updateStickyContext}
           >
             <ScrollSyncPane>{editor}</ScrollSyncPane>
-            <div className={previewClassName}>
+            <div className={classnames(styles.previewPane, { [styles.blocker]: showEventBlocker })}>
               <PreviewPane
                 collection={collection}
                 entry={entry}

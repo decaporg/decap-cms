@@ -7,9 +7,14 @@
 
 .previewToggle {
   position: absolute;
-  top: 0;
+  top: 8px;
   right: 40px;
   z-index: 1000;
+  opacity: 0.8;
+}
+
+.previewToggleShow {
+  right: 60px;
 }
 
 .controlPane {
@@ -17,7 +22,7 @@
   overflow: auto;
   padding: 20px 20px 0;
   border-right: 1px solid var(--defaultColorLight);
-  background-color: color(#f2f5f4 lightness(90%));
+  background-color: var(--backgroundTertiaryColorDark);
 }
 
 .previewPane {

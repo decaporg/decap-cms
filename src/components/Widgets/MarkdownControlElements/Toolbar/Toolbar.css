@@ -1,0 +1,13 @@
+@import "../../../UI/theme";
+
+.Toolbar {
+  composes: clearfix;
+  z-index: 1000;
+}
+
+.Toggle {
+  float: right;
+  margin-bottom: 0;
+  padding-top: 4px;
+  padding-right: 10px;
+}

@@ -1,0 +1,7 @@
+.control {
+  composes: control from "../../../ControlPanel/ControlPane.css"
+}
+
+.label {
+  composes: label from "../../../ControlPanel/ControlPane.css";
+}

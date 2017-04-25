@@ -2,6 +2,10 @@
   position: relative;
 }
 
+.editorControlBar {
+  composes: editorControlBar from "../VisualEditor/index.css";
+}
+
 .dragging { }
 
 .shim {

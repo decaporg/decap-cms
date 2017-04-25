@@ -45,7 +45,7 @@ const buildtInPlugins = [{
   },
   toBlock: data => `![${ data.alt }](${ data.image })`,
   toPreview: data => <img src={data.image} alt={data.alt} />,
-  pattern: /^!\[([^\]]+)\]\(([^\)]+)\)$/,
+  pattern: /^!\[([^\]]+)]\(([^)]+)\)$/,
   fields: [{
     label: 'Image',
     name: 'image',

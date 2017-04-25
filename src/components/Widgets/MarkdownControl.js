@@ -3,18 +3,16 @@ import registry from '../../lib/registry';
 import RawEditor from './MarkdownControlElements/RawEditor';
 import VisualEditor from './MarkdownControlElements/VisualEditor';
 import { processEditorPlugins } from './richText';
-import { connect } from 'react-redux';
-import { switchVisualMode } from '../../actions/editor';
+import { StickyContainer } from '../UI/Sticky/Sticky';
 
 const MODE_STORAGE_KEY = 'cms.md-mode';
 
-class MarkdownControl extends React.Component {
+export default class MarkdownControl extends React.Component {
   static propTypes = {
-    editor: PropTypes.object.isRequired,
     onChange: PropTypes.func.isRequired,
     onAddAsset: PropTypes.func.isRequired,
+    onRemoveAsset: PropTypes.func.isRequired,
     getAsset: PropTypes.func.isRequired,
-    switchVisualMode: PropTypes.func.isRequired,
     value: PropTypes.node,
   };
 
@@ -35,22 +33,19 @@ class MarkdownControl extends React.Component {
   render() {
     const { onChange, onAddAsset, onRemoveAsset, getAsset, value } = this.props;
     const { mode } = this.state;
-    if (mode === 'visual') {
-      return (
-        <div className="cms-editor-visual">
-          <VisualEditor
-            onChange={onChange}
-            onAddAsset={onAddAsset}
-            onRemoveAsset={onRemoveAsset}
-            onMode={this.handleMode}
-            getAsset={getAsset}
-            value={value}
-          />
-        </div>
-      );
-    }
-
-    return (
+    const visualEditor = (
+      <div className="cms-editor-visual">
+        <VisualEditor
+          onChange={onChange}
+          onAddAsset={onAddAsset}
+          onRemoveAsset={onRemoveAsset}
+          onMode={this.handleMode}
+          getAsset={getAsset}
+          value={value}
+        />
+      </div>
+    );
+    const rawEditor = (
       <div className="cms-editor-raw">
         <RawEditor
           onChange={onChange}
@@ -62,10 +57,6 @@ class MarkdownControl extends React.Component {
         />
       </div>
     );
+    return <StickyContainer>{ mode === 'visual' ? visualEditor : rawEditor }</StickyContainer>;
   }
 }
-
-export default connect(
-  state => ({ editor: state.editor }),
-  { switchVisualMode }
-)(MarkdownControl);
