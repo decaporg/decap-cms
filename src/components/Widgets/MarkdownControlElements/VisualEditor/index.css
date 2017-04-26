@@ -69,6 +69,7 @@
     background-color: var(--controlBGColor);
     padding: 12px;
     border-radius: 0 0 var(--borderRadius) var(--borderRadius);
+    overflow-x: auto;
 
     & ul {
       padding-left: 20px;
