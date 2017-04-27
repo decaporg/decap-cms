@@ -7,6 +7,8 @@ import ToolbarComponentsMenu from './ToolbarComponentsMenu';
 import ToolbarPluginForm from './ToolbarPluginForm';
 import { Icon } from '../../../UI';
 import styles from './Toolbar.css';
+import { __ } from '../../../../i18n';
+
 
 export default class Toolbar extends React.Component {
   static propTypes = {
@@ -64,11 +66,11 @@ export default class Toolbar extends React.Component {
 
     return (
       <div className={styles.Toolbar}>
-        <ToolbarButton label="Header 1" icon="h1" action={onH1}/>
-        <ToolbarButton label="Header 2" icon="h2" action={onH2}/>
-        <ToolbarButton label="Bold" icon="bold" action={onBold}/>
-        <ToolbarButton label="Italic" icon="italic" action={onItalic}/>
-        <ToolbarButton label="Link" icon="link" action={onLink}/>
+        <ToolbarButton label={__('Header 1')} icon="h1" action={onH1}/>
+        <ToolbarButton label={__('Header 2')} icon="h2" action={onH2}/>
+        <ToolbarButton label={__('Bold')} icon="bold" action={onBold}/>
+        <ToolbarButton label={__('Italic')} icon="italic" action={onItalic}/>
+        <ToolbarButton label={__('Link')} icon="link" action={onLink}/>
         <ToolbarComponentsMenu
           plugins={plugins}
           onComponentMenuItemClick={this.handlePluginFormDisplay}

@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { truncateMiddle } from '../../lib/textHelper';
 import { Loader } from '../UI';
 import AssetProxy, { createAssetProxy } from '../../valueObjects/AssetProxy';
+import { __ } from '../../i18n';
 
 const MAX_DISPLAY_LENGTH = 50;
 
@@ -96,7 +97,7 @@ export default class ImageControl extends React.Component {
         onDrop={this.handleChange}
       >
         <span style={styles.message} onClick={this.handleClick}>
-          {imageName ? imageName : 'Tip: Click here to upload an image from your file browser, or drag an image directly into this box from your desktop'}
+          {imageName ? imageName : __('Tip: Click here to upload an image from your file browser, or drag an image directly into this box from your desktop')}
         </span>
         <input
           type="file"

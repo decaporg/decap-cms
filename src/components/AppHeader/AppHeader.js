@@ -9,6 +9,7 @@ import FontIcon from "react-toolbox/lib/font_icon";
 import FindBar from "../FindBar/FindBar";
 import { stringToRGB } from "../../lib/textHelper";
 import styles from "./AppHeader.css";
+import { __ } from '../../i18n';
 
 export default class AppHeader extends React.Component {
 
@@ -89,7 +90,7 @@ export default class AppHeader extends React.Component {
         <FindBar runCommand={runCommand} />
         <Avatar style={avatarStyle} title={user.get("name")} image={user.get("avatar_url")} />
         <IconMenu icon="settings" position="topRight" theme={styles}>
-          <MenuItem onClick={onLogoutClick} value="log out" caption="Log Out" />
+          <MenuItem onClick={onLogoutClick} value="log out" caption={__('Log Out')} />
         </IconMenu>
       </AppBar>
     );

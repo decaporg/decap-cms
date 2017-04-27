@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Button } from 'react-toolbox/lib/button';
+import { __ } from '../../i18n';
 
 const EntryEditorToolbar = (
   {
@@ -16,7 +17,7 @@ const EntryEditorToolbar = (
         onClick={onPersist}
         disabled={disabled}
       >
-        { isPersisting ? 'Saving...' : 'Save' }
+        { isPersisting ? __('Saving...') : __('Save') }
       </Button>
       {' '}
       <Button onClick={onCancelEdit}>
