@@ -7,3 +7,12 @@ While we work on building this page (and you can help!), here are some links wit
 * [Project Roadmap](https://github.com/netlify/netlify-cms/projects/3)
 * [Code of Conduct](https://github.com/netlify/netlify-cms/blob/master/CODE_OF_CONDUCT.md)
 * [Setup instructions and Contribution Guidelines](https://github.com/netlify/netlify-cms/blob/master/CONTRIBUTING.md)
+
+
+## i18n
+
+to extract/update i18n string run:
+
+```
+npm run extract --lang <code of your language>
+```
