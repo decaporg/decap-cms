@@ -1,4 +1,4 @@
 
 exports.__ = function(str) {
-  return '**' + str
+  return window.langStrings ? window.langStrings[str] : str
 }
