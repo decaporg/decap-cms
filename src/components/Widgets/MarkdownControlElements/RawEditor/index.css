@@ -24,3 +24,8 @@
   display: block;
   pointer-events: none;
 }
+
+.textarea {
+  overflow: hidden;
+  resize: none;
+}

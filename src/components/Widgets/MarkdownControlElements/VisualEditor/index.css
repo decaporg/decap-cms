@@ -27,6 +27,7 @@
     font-size: 1.8rem;
   }
   & p {
+    margin-top: 20px;
     margin-bottom: 20px;
   }
   & hr {
@@ -69,10 +70,21 @@
     background-color: var(--controlBGColor);
     padding: 12px;
     border-radius: 0 0 var(--borderRadius) var(--borderRadius);
-    overflow-x: auto;
+    overflow: hidden;
 
-    & ul {
+    & ul,
+    & ol {
       padding-left: 20px;
+    }
+
+    & pre > code {
+      display: block;
+      width: 100%;
+      overflow-y: auto;
+      background-color: #000;
+      color: #ccc;
+      border-radius: var(--borderRadius);
+      padding: 10px;
     }
   }
 
