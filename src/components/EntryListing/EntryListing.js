@@ -56,7 +56,6 @@ export default class EntryListing extends React.Component {
           <p>{entry.getIn(['data', inferedFields.descriptionField])}</p>
           : inferedFields.remainingFields && inferedFields.remainingFields.map(f => (
             <p key={f.get('name')} className={styles.cardList}>
-              <span className={styles.cardListLabel}>{f.get('label')}:</span>{' '}
               { entry.getIn(['data', f.get('name')], '').toString() }
             </p>
           ))

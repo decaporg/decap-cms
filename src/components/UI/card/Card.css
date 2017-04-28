@@ -3,7 +3,14 @@
 .card {
   composes: base container rounded depth;
   overflow: hidden;
-  border: 1px solid #F7F8F8;
+  border: 1px solid #f7f8f8;
+  transition: all .1s ease-in-out;
+  transform: translateY(0);
+}
+
+.card:hover {
+  background: #f8f9fa;
+  transform: translateY(-8px);
 }
 
 .card > *:not(iframe, video, img, header, footer) {
@@ -26,9 +33,22 @@
 }
 
 .card h1 {
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 24px;
   margin: 15px 0;
   padding: 0;
   border: none;
   color: var(--defaultColor);
-  font-size: 18px;
+}
+
+.card p {
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 24px;
+  padding: 0;
+  color: var(--defaultColor);
+  opacity: .5;
 }
