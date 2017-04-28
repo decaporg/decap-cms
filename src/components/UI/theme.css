@@ -1,30 +1,27 @@
 :root {
   --defaultColor: #333;
-  --defaultColorLight: #eee;
+  --defaultColorLight: #fff;
   --backgroundColor: #fff;
   --backgroundColorShaded: #eee;
-  --shadowColor: rgba(0, 0, 0, .25);
+  --shadowColor: rgba(19, 39, 48, .12);
   --infoColor: #69c;
   --successColor: #1c7;
   --warningColor: #fa0;
   --errorColor: #f52;
-  --textColor: #272e30;
-  --borderRadius: 2px;
-  --borderRadiusLarge: 10px;
-  --dropShadow:
-    0 2px 2px 0 rgba(0, 0, 0, 0.14),
-    0 3px 1px -2px rgba(0, 0, 0, 0.2),
-    0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  --textColor: #191919;
+  --borderRadius: 4px;
+  --borderRadiusLarge: 8px;
+  --dropShadow: 0 2px 4px 0 rgba(19, 39, 48, .12);
   --topmostZindex: 99999;
   --foregroundAltColor: #fff;
-  --backgroundAltColor: #272e30;
+  --backgroundAltColor: #191919;
   --textFieldBorderColor: #e7e7e7;
   --highlightFGColor: #fff;
   --highlightBGColor: #3ab7a5;
   --highlightFGAltColor: #eee;
   --controlLabelColor: var(--textColor);
   --controlBGColor: #fff;
-  --backgroundTertiaryColor: #f2f5f4;
+  --backgroundTertiaryColor: #fff;
   --backgroundTertiaryColorDark: color(var(--backgroundTertiaryColor) lightness(90%));
 }
 
@@ -42,7 +39,7 @@
 }
 
 .depth {
-  box-shadow: var(--shadowColor) 0 1px 6px;
+  box-shadow: var(--dropShadow);
 }
 
 .clearfix:after {
