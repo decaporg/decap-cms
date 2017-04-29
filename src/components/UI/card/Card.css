@@ -6,6 +6,7 @@
   border: 1px solid #f7f8f8;
   transition: all .1s ease-in-out;
   transform: translateY(0);
+  padding: 16px 24px;
 }
 
 .card:hover {
@@ -13,7 +14,7 @@
   transform: translateY(-8px);
 }
 
-.card > *:not(iframe, video, img, header, footer) {
+/*.card > *:not(iframe, video, img, header, footer) {
   margin-right: 10px;
   margin-left: 10px;
 }
@@ -24,20 +25,21 @@
 
 .card > *:not(iframe, video, img, header, footer):last-child {
   margin-bottom: 10px;
-}
+}*/
 
 .card > iframe,
 .card > video,
 .card > img {
-  max-width: 100%;
+  margin: -16px -24px 16px -24px;
+  width: calc(100% + 16px + 16px);
 }
 
 .card h1 {
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: 0;
   line-height: 24px;
-  margin: 15px 0;
+  margin: 0;
   padding: 0;
   border: none;
   color: var(--defaultColor);
@@ -49,6 +51,5 @@
   letter-spacing: 0;
   line-height: 24px;
   padding: 0;
-  color: var(--defaultColor);
-  opacity: .5;
+  color: #8c8c8c;
 }

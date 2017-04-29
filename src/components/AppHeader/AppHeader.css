@@ -19,7 +19,7 @@
 .leftIcon span {
   /* stylelint-disable */
 
-  color: var(--foregroundAltColor) !important;
+  color: var(--textColor) !important;
   font-size: 30px !important;
 
   /* stylelint-enable */

@@ -25,11 +25,13 @@ h1, h2, h3, h4, h5, h6, p {
 }
 
 h1 {
-  color: #3ab7a5;
-  border-bottom: 1px solid #3ab7a5;
   margin: 30px auto 25px;
   padding-bottom: 15px;
-  font-size: 25px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #313D3E;
+  letter-spacing: 0;
+  line-height: 24px;
 }
 
 img {
