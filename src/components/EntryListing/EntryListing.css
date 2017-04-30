@@ -5,7 +5,7 @@
   overflow: hidden;
   margin-bottom: 16px;
   margin-left: 16px;
-  max-width: 31%;
+  /*max-width: 31%;*/
   max-height: 290px;
   cursor: pointer;
 }
