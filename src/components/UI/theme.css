@@ -5,6 +5,7 @@
   --backgroundColorShaded: #eee;
   --shadowColor: rgba(19, 39, 48, .12);
   --infoColor: #69c;
+  --primaryColor: #4990e2;
   --successColor: #1c7;
   --warningColor: #fa0;
   --errorColor: #f52;
@@ -19,7 +20,7 @@
   --highlightFGColor: #fff;
   --highlightBGColor: #3ab7a5;
   --highlightFGAltColor: #eee;
-  --controlLabelColor: var(--textColor);
+  --controlLabelColor: #8b8b8b;
   --controlBGColor: #fff;
   --backgroundTertiaryColor: #fff;
   --backgroundTertiaryColorDark: color(var(--backgroundTertiaryColor) lightness(90%));

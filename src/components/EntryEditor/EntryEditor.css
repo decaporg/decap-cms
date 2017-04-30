@@ -18,11 +18,11 @@
 }
 
 .controlPane {
-  height: calc(100% - 55px);
   overflow: auto;
   padding: 20px 20px 0;
+  height: calc(100% - 55px);
   border-right: 1px solid var(--defaultColorLight);
-  background-color: var(--backgroundTertiaryColorDark);
+  background-color: var(--backgroundColor);
 }
 
 .previewPane {

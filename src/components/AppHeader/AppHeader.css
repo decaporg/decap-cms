@@ -2,6 +2,8 @@
 
 .appBar {
   background-color: var(--backgroundAltColor);
+  height: auto;
+  padding: 8px 2.4rem;
 }
 
 /* Gross stuff below, React Toolbox hacks */
@@ -20,7 +22,7 @@
   /* stylelint-disable */
 
   color: var(--textColor) !important;
-  font-size: 30px !important;
+  font-size: 24px !important;
 
   /* stylelint-enable */
 }

@@ -9,24 +9,6 @@
   padding: 16px 24px;
 }
 
-.card:hover {
-  background: #f8f9fa;
-  transform: translateY(-8px);
-}
-
-/*.card > *:not(iframe, video, img, header, footer) {
-  margin-right: 10px;
-  margin-left: 10px;
-}
-
-.card > *:not(iframe, video, img, header, footer):first-child {
-  margin-top: 10px;
-}
-
-.card > *:not(iframe, video, img, header, footer):last-child {
-  margin-bottom: 10px;
-}*/
-
 .card > iframe,
 .card > video,
 .card > img {

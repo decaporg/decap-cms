@@ -5,8 +5,14 @@
   overflow: hidden;
   margin-bottom: 16px;
   margin-left: 16px;
+  max-width: 31%;
   max-height: 290px;
   cursor: pointer;
+}
+
+.card:hover {
+  background: #f8f9fa;
+  transform: translateY(-8px);
 }
 
 .cardImage {
