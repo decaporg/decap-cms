@@ -32,7 +32,7 @@ There are no other configuration options right now. There are always three possi
 
 Netlify CMS embraces the idea of Git-as-backend for storing metadata. The first time it runs with the editorial_workflow setup, it creates a new ref called `meta/_netlify_cms`, pointing to an empty, orphan tree.
 
-Actual data are stored in individual `json` files committed to this three.
+Actual data are stored in individual `json` files committed to this tree.
 
 
 ## Implementation
