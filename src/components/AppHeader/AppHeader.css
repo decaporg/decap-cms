@@ -1,12 +1,13 @@
 @import '../UI/theme';
 
 .appBar {
-  background-color: var(--backgroundAltColor);
+  padding: 8px 24px;
   height: auto;
-  padding: 8px 2.4rem;
+  background-color: var(--backgroundAltColor);
 }
 
 /* Gross stuff below, React Toolbox hacks */
+
 .homeLink,
 .iconMenu {
   margin-left: 2%;
