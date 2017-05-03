@@ -6,14 +6,14 @@
 }
 
 .inputField {
-  width: 80%;
-  max-width: 800px;
+  width: 100%;
+  max-width: 500px;
   display: block;
-  margin: 0 auto;
+  margin: 0 24px;
   padding: 10px 14px;
   border: 0;
   border-radius: var(--borderRadius);
   box-shadow: none;
   outline: none;
-  font-size: 18px;
+  font-size: 14px;
 }
