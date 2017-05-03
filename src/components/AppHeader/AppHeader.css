@@ -4,6 +4,7 @@
   padding: 8px 24px;
   height: auto;
   background-color: var(--backgroundAltColor);
+  color: var(--defaultColorLight);
 }
 
 /* Gross stuff below, React Toolbox hacks */
@@ -22,7 +23,7 @@
 .leftIcon span {
   /* stylelint-disable */
 
-  color: var(--textColor) !important;
+  color: var(--defaultColorLight) !important;
   font-size: 24px !important;
 
   /* stylelint-enable */
