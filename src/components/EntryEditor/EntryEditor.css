@@ -41,7 +41,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  border-top: 1px solid var(--defaultColorLight);
+  border-top: 1px solid var(--textMutedColor);
   background: var(--backgroundColor);
   text-align: right;
 }
