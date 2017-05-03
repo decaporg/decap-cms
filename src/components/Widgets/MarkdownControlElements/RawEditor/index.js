@@ -339,6 +339,7 @@ export default class RawEditor extends React.Component {
       </Sticky>
       <TextareaAutosize
         inputRef={this.handleRef}
+        className={styles.textarea}
         value={this.props.value || ''}
         onKeyDown={this.handleKey}
         onChange={this.handleChange}
