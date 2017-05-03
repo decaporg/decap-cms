@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
-import ReactDOM from 'react-dom';
 import { List, Map } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import Frame from 'react-frame-component';
 import { ScrollSyncPane } from '../ScrollSync';
 import registry from '../../lib/registry';
 import { resolveWidget } from '../Widgets';
@@ -11,10 +11,6 @@ import Preview from './Preview';
 import styles from './PreviewPane.css';
 
 export default class PreviewPane extends React.Component {
-
-  componentDidUpdate() {
-    this.renderPreview();
-  }
 
   getWidget = (field, value, props) => {
     const { fieldsMetaData, getAsset } = props;
@@ -66,7 +62,7 @@ export default class PreviewPane extends React.Component {
         const widgets = nestedFields && Map(nestedFields.map((f, i) => [f.get('name'), <div key={i}>{this.getWidget(f, val, this.props)}</div>]));
         return Map({ data: val, widgets });
       });
-    }
+    };
 
     return Map({
       data: value,
@@ -74,27 +70,7 @@ export default class PreviewPane extends React.Component {
     });
   };
 
-  handleIframeRef = (ref) => {
-    if (ref) {
-      registry.getPreviewStyles().forEach((style) => {
-        const linkEl = document.createElement('link');
-        linkEl.setAttribute('rel', 'stylesheet');
-        linkEl.setAttribute('href', style);
-        ref.contentDocument.head.appendChild(linkEl);
-      });
-
-      const base = document.createElement('base');
-      base.setAttribute('target', '_blank');
-      ref.contentDocument.head.appendChild(base);
-
-      this.previewEl = document.createElement('div');
-      this.iframeBody = ref.contentDocument.body;
-      this.iframeBody.appendChild(this.previewEl);
-      this.renderPreview();
-    }
-  };
-
-  renderPreview() {
+  render() {
     const { entry, collection } = this.props;
     if (!entry || !entry.get('data')) return;
     const component = registry.getPreviewTemplate(selectTemplateName(collection, entry.get('slug'))) || Preview;
@@ -107,22 +83,35 @@ export default class PreviewPane extends React.Component {
       widgetsFor: this.widgetsFor,
     };
 
-    // We need to use this API in order to pass context to the iframe
-    ReactDOM.unstable_renderSubtreeIntoContainer(
-      this,
-      <ScrollSyncPane attachTo={this.iframeBody}>
-        {React.createElement(component, previewProps)}
-      </ScrollSyncPane>
-      , this.previewEl);
-  }
+    const styleEls = registry.getPreviewStyles()
+       .map(style => <link href={style} type="text/css" rel="stylesheet" />);
 
-  render() {
-    const { collection } = this.props;
     if (!collection) {
-      return null;
+      return <Frame className={styles.frame} head={styleEl} />;
     }
 
-    return <iframe className={styles.frame} ref={this.handleIframeRef} />;
+    // We need to create a lightweight component here so that we can
+    // access the context within the Frame. This allows us to attach
+    // the ScrollSyncPane to the body.
+    const PreviewContent = (props, { document: iFrameDocument }) => (
+      <ScrollSyncPane attachTo={iFrameDocument.scrollingElement}>
+        {React.createElement(component, previewProps)}
+      </ScrollSyncPane>);
+
+    PreviewContent.contextTypes = {
+      document: PropTypes.any,
+    };
+
+    return (<Frame
+      className={styles.frame}
+      head={styleEls}
+      initialContent={`
+<!DOCTYPE html>
+<html>
+  <head><base target="_blank"/></head>
+  <body><div></div></body>
+</html>`}
+    ><PreviewContent /></Frame>);
   }
 }
 
