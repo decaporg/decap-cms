@@ -52,3 +52,7 @@
   right: 0;
   height: 100%;
 }
+
+.ProseMirror {
+  border: 2px solid rgb(230, 230, 230);
+}

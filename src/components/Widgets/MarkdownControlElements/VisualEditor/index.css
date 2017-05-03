@@ -69,8 +69,11 @@
     position: relative;
     background-color: var(--controlBGColor);
     padding: 12px;
-    border-radius: 0 0 var(--borderRadius) var(--borderRadius);
     overflow: hidden;
+    border-radius: var(--borderRadius);
+    border: 2px solid rgb(230, 230, 230);
+    border-top: 1px solid rgb(230, 230, 230);
+    min-height: 500px;
 
     & ul,
     & ol {
