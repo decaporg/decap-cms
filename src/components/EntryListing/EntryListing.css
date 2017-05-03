@@ -1,7 +1,5 @@
 .card {
-  flex-grow: 1;
-  flex-basis: 31%;
-  flex-basis: 300px;
+  flex: 0 300px;
   overflow: hidden;
   margin-bottom: 16px;
   margin-left: 16px;

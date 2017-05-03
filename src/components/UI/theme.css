@@ -17,7 +17,7 @@
   --topmostZindex: 99999;
   --foregroundAltColor: #fff;
   --backgroundAltColor: #232528;
-  --textFieldBorderColor: #e7e7e7;
+  --textFieldBorderColor: #e6e6e6;
   --highlightFGColor: #fff;
   --highlightBGColor: #3ab7a5;
   --highlightFGAltColor: #eee;
@@ -38,10 +38,6 @@
 
 .rounded {
   border-radius: var(--borderRadius);
-}
-
-.depth {
-  box-shadow: var(--dropShadow);
 }
 
 .clearfix:after {

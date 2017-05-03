@@ -14,7 +14,7 @@
     width: 100%;
     padding: 12px;
     margin: 0;
-    border: 2px solid rgb(230, 230, 230);
+    border: 2px solid var(--textFieldBorderColor);
     border-radius: var(--borderRadius);
     outline: 0;
     box-shadow: none;

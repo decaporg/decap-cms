@@ -1,9 +1,9 @@
 @import '../theme.css';
 
 .card {
-  composes: base container rounded depth;
+  composes: base container rounded;
   overflow: hidden;
-  border: 1px solid #f7f8f8;
+  border: 2px solid var(--textFieldBorderColor);
   transition: all .1s ease-in-out;
   transform: translateY(0);
   padding: 16px 24px;

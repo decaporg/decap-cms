@@ -54,5 +54,5 @@
 }
 
 .ProseMirror {
-  border: 2px solid rgb(230, 230, 230);
+  border: 2px solid var(--textFieldBorderColor);
 }
