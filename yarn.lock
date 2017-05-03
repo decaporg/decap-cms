@@ -6934,6 +6934,10 @@ react-dom@^15.1.0:
     object-assign "^4.1.0"
     prop-types "~15.5.7"
 
+react-frame-component@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/react-frame-component/-/react-frame-component-1.0.3.tgz#00a5deea81671927ea973954a0d8eb19ecc339de"
+
 react-fuzzy@^0.2.3:
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/react-fuzzy/-/react-fuzzy-0.2.3.tgz#4fa08729524cd491e2b589509e8d2de7e3adfb9e"
