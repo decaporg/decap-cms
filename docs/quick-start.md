@@ -77,7 +77,6 @@ backend:
   name: github
   repo: owner-name/repo-name # Path to your Github repository
   branch: master # Branch to update
-  site_domain: site-name.netlify.com # Your Netlify site address if different from host
 ```
 
 This names GitHub as the authentication provider, points to the repo location on github.com, and declares the branch where you want to merge changes. If you leave out the `branch` declaration, it will default to `master`.
