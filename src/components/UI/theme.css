@@ -25,6 +25,7 @@
   --controlBGColor: #fff;
   --backgroundTertiaryColor: #fff;
   --backgroundTertiaryColorDark: color(var(--backgroundTertiaryColor) lightness(90%));
+  --richTextEditorMinHeight: 300px;
 }
 
 .base {

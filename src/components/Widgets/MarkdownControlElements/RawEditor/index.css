@@ -1,9 +1,15 @@
+@import "../../../UI/theme";
+
 .root {
   position: relative;
 }
 
 .editorControlBar {
   composes: editorControlBar from "../VisualEditor/index.css";
+}
+
+.editorControlBarSticky {
+  composes: editorControlBarSticky from "../VisualEditor/index.css";
 }
 
 .dragging { }
@@ -28,4 +34,5 @@
 .textarea {
   overflow: hidden;
   resize: none;
+  min-height: var(--richTextEditorMinHeight);
 }

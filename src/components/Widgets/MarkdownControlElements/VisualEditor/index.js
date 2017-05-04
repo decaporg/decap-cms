@@ -275,7 +275,11 @@ export default class Editor extends Component {
       onDragOver={this.handleDragOver}
       onDrop={this.handleDrop}
     >
-      <Sticky className={styles.editorControlBar} fillContainerWidth>
+      <Sticky
+        className={styles.editorControlBar}
+        classNameActive={styles.editorControlBarSticky}
+        fillContainerWidth
+      >
         <Toolbar
           selectionPosition={selectionPosition}
           onH1={this.handleHeader(1)}

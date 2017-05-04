@@ -164,6 +164,11 @@ export class Sticky extends Component {
     className: PropTypes.string,
 
     /**
+     * classNameActive: class to apply when Sticky is active.
+     */
+    classNameActive: PropTypes.string,
+
+    /**
      * fillContainerWidth: allows the sticky width to be dynamically set to the width of it's
      * StickyContainer when sticky (fixed positioning).
      */
@@ -201,6 +206,7 @@ export class Sticky extends Component {
             styles.sticky,
             {
               [styles.stickyActive]: state.shouldStick,
+              [props.classNameActive]: state.shouldStick,
               [styles.stickyAtBottom]: state.shouldStickAtBottom,
             },
           )}
