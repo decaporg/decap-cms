@@ -11,19 +11,22 @@
   window.repoFiles = {
     _posts: {
       "2015-02-14-this-is-a-post.md": {
-        content: "---\ntitle: This is a YAML front matter post\nimage: /nf-logo.png\ndate: 2015-02-14T00:00:00.000Z\n---\n\n# I Am a Title in Markdown\n\nHello, world\n\n* One Thing\n* Another Thing\n* A Third Thing\n"
+        content: "---\nlanguage: en\ntitle: This is a YAML front matter post\nimage: /nf-logo.png\ndate: 2015-02-14T00:00:00.000Z\n---\n\n# I Am a Title in Markdown\n\nHello, world\n\n* One Thing\n* Another Thing\n* A Third Thing\n"
       },
 	  "2015-02-14-this-is-test-post.md": {
         content: "---\ntitle: This is a test post\nimage: /Photo 1-lobby_FS.jpg\ndate: 2015-02-14T00:00:00.000Z\n---\n\n# I Am a Title in Markdown\n\nHello, world\n\n* One Thing\n* Another Thing\n* A Third Thing\n"
       },
       "2015-02-15-this-is-a-json-frontmatter-post.md": {
-        content: "{\n\"title\": \"This is a JSON front matter post\",\n\"image\": \"/nf-logo.png\",\n\"date\": \"2015-02-15T00:00:00.000Z\"\n}\n\n# I Am a Title in Markdown\n\nHello, world\n\n* One Thing\n* Another Thing\n* A Third Thing\n"
+        content: "{\n\"language\": \"en\",\n\"title\": \"This is a JSON front matter post\",\n\"image\": \"/nf-logo.png\",\n\"date\": \"2015-02-15T00:00:00.000Z\"\n}\n\n# I Am a Title in Markdown\n\nHello, world\n\n* One Thing\n* Another Thing\n* A Third Thing\n"
       },
       "2015-02-16-this-is-a-toml-frontmatter-post.md": {
-        content: "+++\ntitle = \"This is a TOML front matter post\"\nimage = \"/nf-logo.png\"\n\"date\" = \"2015-02-16T00:00:00.000Z\"\n+++\n\n# I Am a Title in Markdown\n\nHello, world\n\n* One Thing\n* Another Thing\n* A Third Thing\n"
+        content: "+++\nlanguage = \"en\"\ntitle = \"This is a TOML front matter post\"\nimage = \"/nf-logo.png\"\n\"date\" = \"2015-02-16T00:00:00.000Z\"\n+++\n\n# I Am a Title in Markdown\n\nHello, world\n\n* One Thing\n* Another Thing\n* A Third Thing\n"
       },
       "2015-02-14-this-is-a-post-with-a-different-extension.other": {
-        content: "---\ntitle: This post should not appear because the extension is different\nimage: /nf-logo.png\ndate: 2015-02-14T00:00:00.000Z\n---\n\n# I Am a Title in Markdown\n\nHello, world\n\n* One Thing\n* Another Thing\n* A Third Thing\n"
+        content: "---\nlanguage: en\ntitle: This post should not appear because the extension is different\nimage: /nf-logo.png\ndate: 2015-02-14T00:00:00.000Z\n---\n\n# I Am a Title in Markdown\n\nHello, world\n\n* One Thing\n* Another Thing\n* A Third Thing\n"
+      },
+      "2017-05-15-this-is-a-post-with-a-different-language.pt.md": {
+        content: "---\nlanguage: pt\ntitle: This post should appear in a separate collection because the language is different\nimage: /nf-logo.png\ndate: 2015-02-14T00:00:00.000Z\n---\n\n# I Am a Title in Markdown\n\nHello, world\n\n* One Thing\n* Another Thing\n* A Third Thing\n"
       }
     },
     _faqs: {
@@ -60,7 +63,7 @@
     var slug = dateString + "-post-number-" + i + ".md";
 
     window.repoFiles._posts[slug] = {
-      content: "---\ntitle: \"This is post # " + i + "\"\ndate: " + dateString + "T00:99:99.999Z\n---\n\n# The post is number " + i + "\n\nAnd this is yet another identical post body"
+      content: "---\nlanguage: \"en\"\ntitle: \"This is post # " + i + "\"\ndate: " + dateString + "T00:99:99.999Z\n---\n\n# The post is number " + i + "\n\nAnd this is yet another identical post body"
     }
   }
 
