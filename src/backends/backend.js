@@ -84,6 +84,7 @@ class Backend {
   listEntries(collection) {
     const listMethod = this.implementation[selectListMethod(collection)];
     const extension = selectFolderEntryExtension(collection);
+    const collectionFilter = collection.get('filter');
     return listMethod.call(this.implementation, collection, extension)
       .then(loadedEntries => (
         loadedEntries.map(loadedEntry => createEntry(
@@ -96,6 +97,14 @@ class Backend {
       .then(entries => (
         {
           entries: entries.map(this.entryWithFormat(collection)),
+        }
+      ))
+      // If this collection has a "filter" property, filter entries accordingly
+      .then(loadedCollection => (
+        {
+          entries: loadedCollection.entries.filter(
+            entry => (!collectionFilter || entry.data[collectionFilter.get('field')] === collectionFilter.get('value'))
+          ),
         }
       ));
   }
