@@ -160,6 +160,7 @@
     "semaphore": "^1.0.5",
     "slate": "^0.14.14",
     "slate-drop-or-paste-images": "^0.2.0",
+    "slug": "^0.9.1",
     "textarea-caret-position": "^0.1.1",
     "uuid": "^2.0.3",
     "whatwg-fetch": "^1.0.0"

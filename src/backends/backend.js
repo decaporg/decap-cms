@@ -4,6 +4,7 @@ import NetlifyAuthBackend from "./netlify-auth/implementation";
 import { resolveFormat } from "../formats/formats";
 import { selectListMethod, selectEntrySlug, selectEntryPath, selectAllowNewEntries, selectFolderEntryExtension } from "../reducers/collections";
 import { createEntry } from "../valueObjects/Entry";
+import slug from 'slug';
 
 class LocalStorageAuthStore {
   storageKey = "netlify-cms-user";
@@ -34,9 +35,9 @@ const slugFormatter = (template = "{{slug}}", entryData) => {
       case "day":
         return (`0${ date.getDate() }`).slice(-2);
       case "slug":
-        return identifier.trim().toLowerCase().replace(/[^a-z0-9\-_]+/gi, "-");
+        return slug(identifier.trim(), {lower: true});
       default:
-        return entryData.get(field, "").trim().toLowerCase().replace(/[^a-z0-9\.\-_]+/gi, "-");
+        return slug(entryData.get(field, "").trim(), {lower: true});
     }
   });
 };
