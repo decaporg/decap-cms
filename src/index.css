@@ -142,7 +142,7 @@ img {
     margin-top: 1px;
     z-index: 99999 !important;
     background: #fff;
-    border: 2px solid rgb(230, 230, 230);
+    border: 2px solid rgba(0, 0, 0, .15);
     border-radius: 2px;
   }
   & .rdtOpen .rdtPicker {

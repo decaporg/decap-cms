@@ -17,7 +17,7 @@
   --topmostZindex: 99999;
   --foregroundAltColor: #fff;
   --backgroundAltColor: #232528;
-  --textFieldBorderColor: #e6e6e6;
+  --textFieldBorderColor: rgba(0, 0, 0, .15);
   --highlightFGColor: #fff;
   --highlightBGColor: #3ab7a5;
   --highlightFGAltColor: #eee;
