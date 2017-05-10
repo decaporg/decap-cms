@@ -3,7 +3,7 @@
   --defaultColorLight: #fff;
   --backgroundColor: #fff;
   --backgroundColorShaded: #eee;
-  --shadowColor: rgba(19, 39, 48, .12);
+  --shadowColor: rgba(19, 39, 48, .24);
   --infoColor: #69c;
   --primaryColor: #4990e2;
   --successColor: #1c7;
@@ -13,7 +13,7 @@
   --textMutedColor: #8c8c8c;
   --borderRadius: 4px;
   --borderRadiusLarge: 8px;
-  --dropShadow: 0 2px 4px 0 rgba(19, 39, 48, .12);
+  --dropShadow: 0 2px 8px 0 rgba(0, 0, 0, .16);
   --topmostZindex: 99999;
   --foregroundAltColor: #fff;
   --backgroundAltColor: #232528;
