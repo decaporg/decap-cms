@@ -96,7 +96,7 @@ export default class ImageControl extends React.Component {
         onDrop={this.handleChange}
       >
         <span style={styles.message} onClick={this.handleClick}>
-          {imageName ? imageName : 'Tip: Click here to upload an image from your file browser, or drag an image directly into this box from your desktop'}
+          {imageName ? imageName : 'Click here to upload an image from your computer, or drag and drop a file directly into this box'}
         </span>
         <input
           type="file"
@@ -123,7 +123,8 @@ const styles = {
     backgroundColor: '#fff',
     textAlign: 'center',
     color: '#999',
-    border: '1px dashed #eee',
+    border: '2px dashed rgba(0, 0, 0, .15)',
+    borderRadius: '4px',
     cursor: 'pointer',
   },
 };
