@@ -4,6 +4,11 @@
   --iconSize: 30px;
 }
 
+/* redux-notifications override */
+:global(.notif__container) {
+  z-index: 10000;
+}
+
 .root {
   composes: base container rounded depth from '../theme.css';
   overflow: hidden;

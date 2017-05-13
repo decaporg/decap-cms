@@ -41,6 +41,10 @@
   border-radius: var(--borderRadius);
 }
 
+.depth {
+  box-shadow: var(--dropShadow);
+}
+
 .clearfix:after {
   content: '';
   display: table;
