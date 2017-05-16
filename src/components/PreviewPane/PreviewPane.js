@@ -72,7 +72,11 @@ export default class PreviewPane extends React.Component {
 
   render() {
     const { entry, collection } = this.props;
-    if (!entry || !entry.get('data')) return;
+
+    if (!entry || !entry.get('data')) {
+      return null;
+    }
+
     const component = registry.getPreviewTemplate(selectTemplateName(collection, entry.get('slug'))) || Preview;
 
     this.inferFields();
