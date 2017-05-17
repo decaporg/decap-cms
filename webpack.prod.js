@@ -55,5 +55,13 @@ module.exports = merge.smart(require('./webpack.base.js'), {
       // file and reference
       filename: '[file].map',
     }),
+
   ],
+  resolve: {
+    alias: {
+      "react":"preact-compat",
+      "react-dom":"preact-compat",
+      'react-addons-css-transition-group': 'rc-css-transition-group'
+    },
+  },
 });
