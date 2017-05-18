@@ -19,7 +19,8 @@
     "lint:css:fix": "stylefmt --recursive src/",
     "lint:staged": "lint-staged",
     "deps": "npm-check -s",
-    "deps:update": "npm-check -u"
+    "deps:update": "npm-check -u",
+    "extract": "./node_modules/.bin/extract-gettext -p 'var langStrings = ' -o src/i18n src/"
   },
   "lint-staged": {
     "*.js": [
@@ -64,6 +65,7 @@
     "eslint": "^3.7.1",
     "eslint-config-netlify": "github:netlify/eslint-config-netlify",
     "exports-loader": "^0.6.3",
+    "extract-gettext": "github:blueskydigital/extract-gettext",
     "extract-text-webpack-plugin": "^1.0.1",
     "file-loader": "^0.8.5",
     "identity-obj-proxy": "^3.0.0",

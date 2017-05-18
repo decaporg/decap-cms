@@ -1,8 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import styles from './FindBar.css';
+import { __ } from '../../i18n';
 
 export const SEARCH = 'SEARCH';
-const PLACEHOLDER = 'Search entry titles...';
 
 class FindBar extends Component {
   static propTypes = {
@@ -17,7 +17,7 @@ class FindBar extends Component {
     };
     this.state = {
       value: '',
-      placeholder: PLACEHOLDER,
+      placeholder: __('Search entry titles...'),
     };
   }
 

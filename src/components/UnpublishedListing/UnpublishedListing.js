@@ -10,6 +10,8 @@ import Button from 'react-toolbox/lib/button';
 import UnpublishedListingCardMeta from './UnpublishedListingCardMeta.js';
 import { status, statusDescriptions } from '../../constants/publishModes';
 import styles from './UnpublishedListing.css';
+import { __ } from '../../i18n';
+
 
 class UnpublishedListing extends React.Component {
   static propTypes = {
@@ -27,13 +29,13 @@ class UnpublishedListing extends React.Component {
   };
 
   requestDelete = (collection, slug, ownStatus) => {
-    if (window.confirm('Are you sure you want to delete this entry?')) {
+    if (window.confirm(__('Are you sure you want to delete this entry?'))) {
       this.props.handleDelete(collection, slug, ownStatus);
     }
   };
   requestPublish = (collection, slug, ownStatus) => {
     if (ownStatus !== status.last()) return;
-    if (window.confirm('Are you sure you want to publish this entry?')) {
+    if (window.confirm(__('Are you sure you want to publish this entry?'))) {
       this.props.handlePublish(collection, slug, ownStatus);
     }
   };

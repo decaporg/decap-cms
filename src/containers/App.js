@@ -24,6 +24,8 @@ import { getCollectionUrl, getNewEntryUrl } from '../lib/urlHelper';
 import { SIMPLE, EDITORIAL_WORKFLOW } from '../constants/publishModes';
 import styles from './App.css';
 import sidebarStyles from './Sidebar.css';
+import { __ } from '../i18n';
+
 
 TopBarProgress.config({
   barColors: {
@@ -125,7 +127,7 @@ class App extends React.Component {
     }
 
     if (config.get('isFetching')) {
-      return <Loader active>Loading configuration...</Loader>;
+      return <Loader active>{__('Loading configuration...')}</Loader>;
     }
 
     if (user == null) {
@@ -145,7 +147,7 @@ class App extends React.Component {
             </section>
           }
           <section>
-            <h1 className={sidebarStyles.heading}>Collections</h1>
+            <h1 className={sidebarStyles.heading}>{__('Collections')}</h1>
             {
               collections.valueSeq().map((collection) => {
                 const collectionName = collection.get('name');
