@@ -1,11 +1,11 @@
 @import "material-icons.css";
+@import "components/UI/theme.css";
 
 html {
   box-sizing: border-box;
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", HelveticaNeue, Helvetica, Arial, sans-serif;
 }
 
 *, *:before, *:after {
@@ -13,23 +13,26 @@ html {
 }
 
 body {
-  font-family: 'Roboto', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   height: 100%;
-  background-color: #f2f5f4;
+  background-color: #fff;
   color: #7c8382;
   margin: 0;
 }
 
 h1, h2, h3, h4, h5, h6, p {
   margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
 h1 {
-  color: #3ab7a5;
-  border-bottom: 1px solid #3ab7a5;
   margin: 30px auto 25px;
   padding-bottom: 15px;
-  font-size: 25px;
+  font-size: 24px;
+  font-weight: 800;
+  color: #313D3E;
+  letter-spacing: 0;
+  line-height: 24px;
 }
 
 img {
@@ -140,8 +143,9 @@ img {
     margin-top: 1px;
     z-index: 99999 !important;
     background: #fff;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, .1);
-    border: 1px solid #f9f9f9;
+    border: 2px solid var(--secondaryColor);
+    border-radius: 2px;
+    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, .16);
   }
   & .rdtOpen .rdtPicker {
     display: block;

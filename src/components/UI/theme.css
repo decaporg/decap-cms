@@ -1,31 +1,35 @@
 :root {
   --defaultColor: #333;
-  --defaultColorLight: #eee;
+  --defaultColorLight: #fff;
   --backgroundColor: #fff;
   --backgroundColorShaded: #eee;
-  --shadowColor: rgba(0, 0, 0, .25);
+  --shadowColor: rgba(19, 39, 48, .24);
   --infoColor: #69c;
+  --primaryColor: #4990e2;
   --successColor: #1c7;
   --warningColor: #fa0;
   --errorColor: #f52;
-  --textColor: #272e30;
-  --borderRadius: 2px;
-  --borderRadiusLarge: 10px;
-  --dropShadow:
-    0 2px 2px 0 rgba(0, 0, 0, 0.14),
-    0 3px 1px -2px rgba(0, 0, 0, 0.2),
-    0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  --textColor: #191919;
+  --textMutedColor: #8c8c8c;
+  --borderRadius: 4px;
+  --borderRadiusLarge: 8px;
+  --secondaryColor: #d9d9d9;
+  --dropShadow: 0 2px 8px 0 var(--secondaryColor);
   --topmostZindex: 99999;
   --foregroundAltColor: #fff;
-  --backgroundAltColor: #272e30;
-  --textFieldBorderColor: #e7e7e7;
+  --backgroundAltColor: #232528;
+  --textFieldBorderColor: var(--secondaryColor);
   --highlightFGColor: #fff;
   --highlightBGColor: #3ab7a5;
   --highlightFGAltColor: #eee;
-  --controlLabelColor: var(--textColor);
+  --controlLabelColor: #8b8b8b;
   --controlBGColor: #fff;
-  --backgroundTertiaryColor: #f2f5f4;
+  --backgroundTertiaryColor: #fff;
   --backgroundTertiaryColorDark: color(var(--backgroundTertiaryColor) lightness(90%));
+  --richTextEditorMinHeight: 300px;
+  --borderWidth: 2px;
+  --border: solid var(--borderWidth) var(--secondaryColor);
+  --textFieldBorder: var(--border);
 }
 
 .base {
@@ -42,7 +46,7 @@
 }
 
 .depth {
-  box-shadow: var(--shadowColor) 0 1px 6px;
+  box-shadow: var(--dropShadow);
 }
 
 .clearfix:after {

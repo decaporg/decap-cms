@@ -1,8 +1,39 @@
 @import '../theme.css';
 
 .card {
-  composes: base container rounded depth;
+  composes: base container rounded;
   overflow: hidden;
+  border: var(--textFieldBorder);
+  transition: all .1s ease-in-out;
+  transform: translateY(0);
+  padding: 16px 24px;
+}
+
+.card > iframe,
+.card > video,
+.card > img {
+  margin: -16px -24px 16px;
+  width: calc(100% + 16px + 16px);
+}
+
+.card h1 {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 24px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  color: var(--defaultColor);
+}
+
+.card p {
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 24px;
+  padding: 0;
+  color: var(--textMutedColor);
 }
 
 .card > *:not(iframe, video, img, header, footer) {
@@ -16,18 +47,4 @@
 
 .card > *:not(iframe, video, img, header, footer):last-child {
   margin-bottom: 10px;
-}
-
-.card > iframe,
-.card > video,
-.card > img {
-  max-width: 100%;
-}
-
-.card h1 {
-  margin: 15px 0;
-  padding: 0;
-  border: none;
-  color: var(--defaultColor);
-  font-size: 18px;
 }

@@ -1,5 +1,7 @@
+@import '../UI/theme.css';
+
 :root {
-  --highlightColor: #e1eeea;
+  --highlightColor: #38ab9b;
   --defaultFontSize: 1em;
 }
 
@@ -11,6 +13,7 @@
 .column {
   flex: 1 33%;
   margin: -10px;
+  margin-top: 24px;
   padding: 10px;
   max-width: 33%;
   transition: background-color .5s ease;
@@ -18,7 +21,8 @@
 
 .columnHovered {
   composes: column;
-  background-color: var(--highlightColor);
+  border: 2px dashed var(--highlightColor);
+  border-radius: 4px;
 }
 
 .columnHeading {
@@ -31,4 +35,12 @@
 
 .card {
   margin-bottom: 10px;
+}
+
+/* Gross stuff below, React Toolbox hacks */
+
+.cardTitle h5 {
+  color: var(--backgroundAltColor) !important;
+  font-weight: 500 !important;
+  font-size: 21px !important;
 }

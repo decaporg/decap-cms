@@ -2,10 +2,11 @@
 
 .pluginForm {
   position: absolute;
-  background-color: var(--backgroundTertiaryColorDark);
+  background-color: var(--backgroundColor);
   margin-top: -20px;
   margin-bottom: 30px;
   margin-left: 20px;
+  border: var(--border);
   border-radius: var(--borderRadius);
   box-shadow: var(--dropShadow);
   overflow: hidden;

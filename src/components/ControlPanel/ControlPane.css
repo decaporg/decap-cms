@@ -1,32 +1,41 @@
 @import "../UI/theme";
 
 .control {
-  color: #7c8382;
+  color: var(--textColor);
   position: relative;
   padding: 20px 0 10px 0;
+  margin-top: 16px;
 
   & input,
   & textarea,
   & select {
-    font-family: monospace;
+    font-family: 'SFMono-Regular', Consolas, "Liberation Mono", Menlo, Courier, monospace;
     display: block;
     width: 100%;
     padding: 12px;
     margin: 0;
-    border: none;
+    border: var(--textFieldBorder);
     border-radius: var(--borderRadius);
     outline: 0;
     box-shadow: none;
     background-color: var(--controlBGColor);
-    font-size: 18px;
-    color: #7c8382;
+    font-size: 16px;
+    color: var(--textColor);
+    transition: border-color .3s ease;
+
+    &:focus,
+    &:active {
+      border-color: var(--primaryColor);
+    }
   }
 }
 
 .label {
   display: block;
   color: var(--controlLabelColor);
-  font-size: 14px;
+  font-size: 12px;
+  text-transform: uppercase;
+  font-weight: 600;
 }
 
 .labelWithError {
@@ -39,4 +48,8 @@
   font-size: 10px;
   color: #FF706F;
   margin-bottom: 5px;
+}
+
+p {
+  font-size: 16px;
 }

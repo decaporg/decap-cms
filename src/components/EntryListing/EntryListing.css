@@ -1,14 +1,21 @@
 .card {
+  flex: 0 300px;
   overflow: hidden;
-  margin-bottom: 10px;
-  margin-left: 15px;
+  margin-bottom: 16px;
+  margin-left: 16px;
+  max-width: 50%;
   max-height: 290px;
-  width: 240px;
   cursor: pointer;
 }
 
+.card:hover {
+  background: #f8f9fa;
+  transform: translateY(-8px);
+}
+
 .cardImage {
-  width: 240px;
+  margin: -16px -24px 16px -24px;
+  width: calc(100% + 24px + 24px);
   height: 135px;
   background-position: center center;
   background-size: cover;
@@ -18,7 +25,7 @@
 .cardsGrid {
   display: flex;
   flex-flow: row wrap;
-  margin-left: -15px;
+  margin-left: -16px;
 }
 
 .cardList {

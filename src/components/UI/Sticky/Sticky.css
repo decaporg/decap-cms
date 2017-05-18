@@ -8,7 +8,7 @@
 
 .stickyActive:not(.stickyAtBottom) {
   position: fixed !important;
-  top: 64px !important;
+  top: 54px !important;
 }
 
 .stickyAtBottom {

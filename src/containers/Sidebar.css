@@ -1,17 +1,19 @@
 @import '../components/UI/theme';
 
 .root {
-  margin-top: 64px;
+  margin-top: 54px;
 }
 
 .sidebar {
-  width: 220px;
-  background-color: #fff;
   padding: 0 16px;
+  width: 220px;
+  background-color: var(--backgroundAltColor);
+  color: var(--defaultColorLight);
 }
 
 .heading {
   margin-bottom: 8px;
+  color: var(--defaultColorLight);
 }
 
 .nav {
@@ -19,14 +21,14 @@
 }
 
 .linkWrapper {
-  color: var(--defaultColor);
+  color: #fff;
   border-radius: var(--borderRadius);
   display: flex;
   align-items: center;
   justify-content: space-between;
 
   &:hover {
-    background-color: var(--defaultColorLight);
+    background-color: var(--textColor);
   }
 }
 
