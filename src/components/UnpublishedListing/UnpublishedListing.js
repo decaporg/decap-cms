@@ -88,6 +88,7 @@ class UnpublishedListing extends React.Component {
                     <CardTitle
                       title={entry.getIn(['data', 'title'])}
                       subtitle={`by ${ author }`}
+                      className={styles.cardTitle}
                     />
                     <CardText>
                       Last updated: {timeStamp} by {entry.getIn(['metaData', 'user'])}

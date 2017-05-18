@@ -12,7 +12,8 @@
   font-size: .75em;
   text-transform: uppercase;
 
-  background: var(--backgroundColorShaded);
+  background: var(--backgroundAltColor);
+  color: #fff;
 }
 
 .meta {}
