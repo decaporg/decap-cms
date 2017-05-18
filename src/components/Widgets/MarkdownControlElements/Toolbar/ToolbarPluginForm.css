@@ -6,7 +6,7 @@
   margin-top: -20px;
   margin-bottom: 30px;
   margin-left: 20px;
-  border: 2px solid rgba(0, 0, 0, .15);
+  border: var(--border);
   border-radius: var(--borderRadius);
   box-shadow: var(--dropShadow);
   overflow: hidden;

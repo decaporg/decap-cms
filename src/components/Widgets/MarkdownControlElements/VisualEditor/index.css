@@ -76,7 +76,7 @@
     overflow: hidden;
     border-radius: var(--borderRadius);
     overflow-x: auto;
-    border: 2px solid var(--textFieldBorderColor);
+    border: var(--textFieldBorder);
     min-height: var(--richTextEditorMinHeight);
 
     & ul,

@@ -3,7 +3,7 @@
 .card {
   composes: base container rounded;
   overflow: hidden;
-  border: 2px solid var(--textFieldBorderColor);
+  border: var(--textFieldBorder);
   transition: all .1s ease-in-out;
   transform: translateY(0);
   padding: 16px 24px;

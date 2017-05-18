@@ -1,4 +1,5 @@
 @import "material-icons.css";
+@import "components/UI/theme.css";
 
 html {
   box-sizing: border-box;
@@ -142,7 +143,7 @@ img {
     margin-top: 1px;
     z-index: 99999 !important;
     background: #fff;
-    border: 2px solid rgba(0, 0, 0, .15);
+    border: 2px solid var(--secondaryColor);
     border-radius: 2px;
     box-shadow: 0 2px 8px 0 rgba(0, 0, 0, .16);
   }

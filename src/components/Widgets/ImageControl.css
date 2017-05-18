@@ -1,0 +1,21 @@
+@import "../UI/theme.css";
+
+.input {
+  display: none !important;
+}
+
+.message {
+  padding: 20px;
+  display: block;
+  font-size: 12px;
+}
+
+.imageUpload {
+  background-color: #fff;
+  text-align: center;
+  color: #999;
+  border: var(--border);
+  border-style: dashed;
+  border-radius: var(--borderRadius);
+  cursor: pointer;
+}

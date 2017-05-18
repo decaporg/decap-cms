@@ -13,11 +13,12 @@
   --textMutedColor: #8c8c8c;
   --borderRadius: 4px;
   --borderRadiusLarge: 8px;
-  --dropShadow: 0 2px 8px 0 rgba(0, 0, 0, .16);
+  --secondaryColor: #d9d9d9;
+  --dropShadow: 0 2px 8px 0 var(--secondaryColor);
   --topmostZindex: 99999;
   --foregroundAltColor: #fff;
   --backgroundAltColor: #232528;
-  --textFieldBorderColor: rgba(0, 0, 0, .15);
+  --textFieldBorderColor: var(--secondaryColor);
   --highlightFGColor: #fff;
   --highlightBGColor: #3ab7a5;
   --highlightFGAltColor: #eee;
@@ -26,6 +27,9 @@
   --backgroundTertiaryColor: #fff;
   --backgroundTertiaryColorDark: color(var(--backgroundTertiaryColor) lightness(90%));
   --richTextEditorMinHeight: 300px;
+  --borderWidth: 2px;
+  --border: solid var(--borderWidth) var(--secondaryColor);
+  --textFieldBorder: var(--border);
 }
 
 .base {

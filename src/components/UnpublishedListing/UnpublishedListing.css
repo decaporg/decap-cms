@@ -1,6 +1,7 @@
+@import '../UI/theme.css';
+
 :root {
   --highlightColor: #38ab9b;
-  --backgroundAltColor: #232528;
   --defaultFontSize: 1em;
 }
 

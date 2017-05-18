@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { truncateMiddle } from '../../lib/textHelper';
 import { Loader } from '../UI';
 import AssetProxy, { createAssetProxy } from '../../valueObjects/AssetProxy';
+import styles from './ImageControl.css';
 
 const MAX_DISPLAY_LENGTH = 50;
 
@@ -81,8 +82,8 @@ export default class ImageControl extends React.Component {
     const imageName = this.renderImageName();
     if (processing) {
       return (
-        <div style={styles.imageUpload}>
-          <span style={styles.message}>
+        <div className={styles.imageUpload}>
+          <span className={styles.message}>
             <Loader active />
           </span>
         </div>
@@ -90,44 +91,25 @@ export default class ImageControl extends React.Component {
     }
     return (
       <div
-        style={styles.imageUpload}
+        className={styles.imageUpload}
         onDragEnter={this.handleDragEnter}
         onDragOver={this.handleDragOver}
         onDrop={this.handleChange}
       >
-        <span style={styles.message} onClick={this.handleClick}>
+        <span className={styles.message} onClick={this.handleClick}>
           {imageName ? imageName : 'Click here to upload an image from your computer, or drag and drop a file directly into this box'}
         </span>
         <input
           type="file"
           accept="image/*"
           onChange={this.handleChange}
-          style={styles.input}
+          className={styles.input}
           ref={this.handleFileInputRef}
         />
       </div>
     );
   }
 }
-
-const styles = {
-  input: {
-    display: 'none',
-  },
-  message: {
-    padding: '20px',
-    display: 'block',
-    fontSize: '12px',
-  },
-  imageUpload: {
-    backgroundColor: '#fff',
-    textAlign: 'center',
-    color: '#999',
-    border: '2px dashed rgba(0, 0, 0, .15)',
-    borderRadius: '4px',
-    cursor: 'pointer',
-  },
-};
 
 ImageControl.propTypes = {
   onAddAsset: PropTypes.func.isRequired,
