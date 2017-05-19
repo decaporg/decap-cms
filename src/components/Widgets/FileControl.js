@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { truncateMiddle } from '../../lib/textHelper';
 import { Loader } from '../UI';
 import AssetProxy, { createAssetProxy } from '../../valueObjects/AssetProxy';
-import { __ } from '../../i18n';
+
 
 
 const MAX_DISPLAY_LENGTH = 50;
@@ -94,7 +94,7 @@ export default class FileControl extends React.Component {
         onDrop={this.handleChange}
       >
         <span style={styles.message} onClick={this.handleClick}>
-          {fileName ? fileName : __('Tip: Click here to select a file to upload, or drag an image directly into this box from your desktop')}
+          {fileName ? fileName : polyglot.t('filecontrol_tip')}
         </span>
         <input
           type="file"

@@ -127,7 +127,7 @@ class App extends React.Component {
     }
 
     if (config.get('isFetching')) {
-      return <Loader active>{__('Loading configuration...')}</Loader>;
+      return <Loader active>{polyglot.t('loading_configuration')}</Loader>;
     }
 
     if (user == null) {
@@ -147,7 +147,7 @@ class App extends React.Component {
             </section>
           }
           <section>
-            <h1 className={sidebarStyles.heading}>{__('Collections')}</h1>
+            <h1 className={sidebarStyles.heading}>{polyglot.t('collections')}</h1>
             {
               collections.valueSeq().map((collection) => {
                 const collectionName = collection.get('name');

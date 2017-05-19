@@ -59,9 +59,9 @@ export default class ToolbarPluginForm extends React.Component {
           ))}
         </div>
         <div className={styles.footer}>
-          <Button raised onClick={this.handleSubmit}>{__('Insert')}</Button>
+          <Button raised onClick={this.handleSubmit}>{polyglot.t('insert')}</Button>
           {' '}
-          <Button onClick={onCancel}>{__('Cancel')}</Button>
+          <Button onClick={onCancel}>{polyglot.t('cancel')}</Button>
         </div>
       </form>
     );

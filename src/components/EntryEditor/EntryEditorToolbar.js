@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Button } from 'react-toolbox/lib/button';
-import { __ } from '../../i18n';
+
 
 const EntryEditorToolbar = (
   {
@@ -17,7 +17,7 @@ const EntryEditorToolbar = (
         onClick={onPersist}
         disabled={disabled}
       >
-        { isPersisting ? __('Saving...') : __('Save') }
+        { isPersisting ? polyglot.t('saving') + ' ...' : polyglot.t('save') }
       </Button>
       {' '}
       <Button onClick={onCancelEdit}>

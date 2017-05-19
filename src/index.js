@@ -48,11 +48,11 @@ const buildtInPlugins = [{
   toPreview: data => <img src={data.image} alt={data.alt} />,
   pattern: /^!\[([^\]]+)]\(([^)]+)\)$/,
   fields: [{
-    label: __('Image'),
+    label: polyglot.t('image'),
     name: 'image',
     widget: 'image',
   }, {
-    label: __('Alt Text'),
+    label: polyglot.t('alttext'),
     name: 'alt',
   }],
 }];

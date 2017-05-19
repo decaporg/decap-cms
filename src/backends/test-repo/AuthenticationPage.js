@@ -4,7 +4,7 @@ import Button from "react-toolbox/lib/button";
 import { Card, Icon } from "../../components/UI";
 import logo from "../netlify-auth/netlify_logo.svg";
 import styles from "../netlify-auth/AuthenticationPage.css";
-import { __ } from '../../i18n';
+
 
 
 export default class AuthenticationPage extends React.Component {
@@ -27,10 +27,10 @@ export default class AuthenticationPage extends React.Component {
     return (<section className={styles.root}>
       <Card className={styles.card}>
         <img src={logo} width={100} role="presentation" />
-        <p className={styles.message}>{__('This is a demo, enter your email to start')}</p>
+        <p className={styles.message}>{polyglot.t('demo_message')}</p>
         <Input
           type="text"
-          label={__('Email')}
+          label={polyglot.t('email')}
           name="email"
           value={this.state.email}
           onChange={this.handleEmailChange}
@@ -40,7 +40,7 @@ export default class AuthenticationPage extends React.Component {
           raised
           onClick={this.handleLogin}
         >
-          <Icon type="login" /> {__('Login')}
+          <Icon type="login" /> {polyglot.t('login')}
         </Button>
       </Card>
     </section>);
