@@ -1,7 +1,7 @@
 const i18n = require('i18n-extract');
 const path = require('path');
 const fs = require('fs');
-const _ = require('lodash')
+const _ = require('lodash').mixin(require('lodash-keyarrange'))
 const i18nFolder = path.join(__dirname, 'src/i18n');
 
 const keys = i18n.extractFromFiles([
@@ -10,12 +10,17 @@ const keys = i18n.extractFromFiles([
   marker: 'polyglot.t',
 });
 
-function _mergeMissing(transls, missing) {
+function _mergeMissing(transls, missing, makeVal) {
   _.each(missing, (i) => {
     if (transls[i.key] === undefined) {
-      transls[i.key] = i.type;
+      transls[i.key] = makeVal(i);
     }
   });
+}
+
+function _writeTransls(file, transls) {
+  const sorted = _.keyArrange(transls)
+  fs.writeFileSync(file, JSON.stringify(sorted, {}, 2));
 }
 
 // check english trans first, they MUST be complete !!!
@@ -25,8 +30,8 @@ const enTransls = JSON.parse(fs.readFileSync(enFilePath));
 
 const enMissing = i18n.findMissing(enTransls, keys);
 if (enMissing.length > 0) {
-  _mergeMissing(enTransls, enMissing);
-  fs.writeFileSync(enFilePath, JSON.stringify(enTransls, {}, 2));
+  _mergeMissing(enTransls, enMissing, (i) => i.type);
+  _writeTransls(enFilePath, enTransls);
   console.log('Some errors in english translation. Correct them:');
   console.log(JSON.stringify(enMissing, {}, 2));
   return -1;
@@ -43,8 +48,8 @@ fs.readdirSync(i18nFolder).forEach(file => {
 
   const missing = i18n.findMissing(transls, keys);
   if (missing.length > 0) {
-    _mergeMissing(transls, missing)
-    fs.writeFileSync(filePath, JSON.stringify(transls, {}, 2));
+    _mergeMissing(transls, missing, (i) => enTransls[i.key])
+    _writeTransls(filePath, transls);
     errors.push({file: file, missing: missing})
   }
 });
