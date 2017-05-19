@@ -1,5 +1,4 @@
 import { Map, OrderedMap } from 'immutable';
-import { __ } from '../i18n';
 
 
 // Create/edit workflow modes

@@ -3,7 +3,6 @@ import { Map } from 'immutable';
 import { Button } from 'react-toolbox/lib/button';
 import ToolbarPluginFormControl from './ToolbarPluginFormControl';
 import styles from './ToolbarPluginForm.css';
-import { __ } from '../../../../i18n';
 
 export default class ToolbarPluginForm extends React.Component {
   static propTypes = {

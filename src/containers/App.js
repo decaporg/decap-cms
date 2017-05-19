@@ -24,7 +24,6 @@ import { getCollectionUrl, getNewEntryUrl } from '../lib/urlHelper';
 import { SIMPLE, EDITORIAL_WORKFLOW } from '../constants/publishModes';
 import styles from './App.css';
 import sidebarStyles from './Sidebar.css';
-import { __ } from '../i18n';
 
 
 TopBarProgress.config({

@@ -5,7 +5,6 @@ import 'file?name=index.html!../example/index.html';
 import 'react-toolbox/lib/commons.scss';
 import Root from './root';
 import registry from './lib/registry';
-import { __ } from './i18n';
 import './index.css';
 
 if (process.env.NODE_ENV !== 'production') {
