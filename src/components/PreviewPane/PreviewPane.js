@@ -15,7 +15,7 @@ export default class PreviewPane extends React.Component {
   getWidget = (field, value, props) => {
     const { fieldsMetaData, getAsset } = props;
     const widget = resolveWidget(field.get('widget'));
-    return React.createElement(widget.preview, {
+    return !widget.preview ? null : React.createElement(widget.preview, {
       field,
       key: field.get('name'),
       value: value && Map.isMap(value) ? value.get(field.get('name')) : value,

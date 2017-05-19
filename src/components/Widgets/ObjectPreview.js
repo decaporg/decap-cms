@@ -6,7 +6,7 @@ export default class ObjectPreview extends Component {
   widgetFor = (field) => {
     const { value, getAsset } = this.props;
     const widget = resolveWidget(field.get('widget'));
-    return (
+    return !widget.preview ? null : (
       <div key={field.get('name')}>
         {React.createElement(widget.preview, {
           key: field.get('name'),

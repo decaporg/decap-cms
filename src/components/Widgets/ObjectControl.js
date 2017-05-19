@@ -10,7 +10,11 @@ export default class ObjectControl extends Component {
     onAddAsset: PropTypes.func.isRequired,
     onRemoveAsset: PropTypes.func.isRequired,
     getAsset: PropTypes.func.isRequired,
-    value: PropTypes.node,
+    value: PropTypes.oneOfType([
+      PropTypes.node,
+      PropTypes.object,
+      PropTypes.bool,
+    ]),
     field: PropTypes.object,
     forID: PropTypes.string,
     className: PropTypes.string,
@@ -35,6 +39,7 @@ export default class ObjectControl extends Component {
             onAddAsset,
             onRemoveAsset,
             getAsset,
+            forID: field.get('name'),
           })
         }
       </div>

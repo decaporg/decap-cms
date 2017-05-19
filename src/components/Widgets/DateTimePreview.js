@@ -1,10 +1,10 @@
 import React, { PropTypes } from 'react';
 import previewStyle from './defaultPreviewStyle';
 
-export default function DatePreview({ value }) {
+export default function DateTimePreview({ value }) {
   return <div style={previewStyle}>{value ? value.toString() : null}</div>;
 }
 
-DatePreview.propTypes = {
-  value: PropTypes.node,
+DateTimePreview.propTypes = {
+  value: PropTypes.object,
 };
