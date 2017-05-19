@@ -9,6 +9,7 @@ export const CONFIG_FAILURE = "CONFIG_FAILURE";
 
 const defaults = {
   publish_mode: publishModes.SIMPLE,
+  lang: 'en'
 };
 
 export function applyDefaults(config) {
@@ -82,6 +83,25 @@ export function configDidLoad(config) {
   };
 }
 
+const URL_BASE = 'https://raw.githubusercontent.com/netlify/netlify-cms/master/src/'
+function _loadTransls(config) {
+  const translURL = `${URL_BASE}/i18n/${config.lang}.json`
+  return fetch(translURL)
+  .then((res) => {
+    if (res.status === 404) {
+      // try fallback en
+      console.error(`Translations for lang: ${config.lang} not exist, defaulting to english`);
+      config.lang = 'en';
+      return fetch(`${URL_BASE}/i18n/en.json`).then(res => res.json());
+    }
+    return res.json();
+  })
+  .then(transls => {
+    polyglot.replace(transls);
+    return config;
+  });
+}
+
 export function loadConfig() {
   if (window.CMS_CONFIG) {
     return configDidLoad(window.CMS_CONFIG);
@@ -99,6 +119,7 @@ export function loadConfig() {
     .then(parseConfig)
     .then(validateConfig)
     .then(applyDefaults)
+    .then(_loadTransls)
     .then((config) => {
       dispatch(configDidLoad(config));
       dispatch(authenticateUser());
