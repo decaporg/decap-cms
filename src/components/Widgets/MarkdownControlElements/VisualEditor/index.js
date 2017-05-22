@@ -12,17 +12,17 @@ import {
   headingRule,
   inputRules,
   allInputRules,
-} from "prosemirror-inputrules";
-import { keymap } from "prosemirror-keymap";
+} from 'prosemirror-inputrules';
+import { keymap } from 'prosemirror-keymap';
 import { schema as markdownSchema, defaultMarkdownSerializer } from 'prosemirror-markdown';
-import { baseKeymap, setBlockType, toggleMark } from "prosemirror-commands";
-import registry from "../../../../lib/registry";
-import { createAssetProxy } from "../../../../valueObjects/AssetProxy";
-import { buildKeymap } from "./keymap";
-import createMarkdownParser from "./parser";
-import Toolbar from "../Toolbar/Toolbar";
+import { baseKeymap, setBlockType, toggleMark } from 'prosemirror-commands';
+import registry from '../../../../lib/registry';
+import { createAssetProxy } from '../../../../valueObjects/AssetProxy';
+import { buildKeymap } from './keymap';
+import createMarkdownParser from './parser';
+import Toolbar from '../Toolbar/Toolbar';
 import { Sticky } from '../../../UI/Sticky/Sticky';
-import styles from "./index.css";
+import styles from './index.css';
 
 function processUrl(url) {
   if (url.match(/^(https?:\/\/|mailto:|\/)/)) {
@@ -61,25 +61,25 @@ function schemaWithPlugins(schema, plugins) {
   let nodeSpec = schema.nodeSpec;
   plugins.forEach((plugin) => {
     const attrs = {};
-    plugin.get("fields").forEach((field) => {
-      attrs[field.get("name")] = { default: null };
+    plugin.get('fields').forEach((field) => {
+      attrs[field.get('name')] = { default: null };
     });
-    nodeSpec = nodeSpec.addToEnd(`plugin_${ plugin.get("id") }`, {
+    nodeSpec = nodeSpec.addToEnd(`plugin_${ plugin.get('id') }`, {
       attrs,
-      group: "block",
+      group: 'block',
       parseDOM: [
         {
-          tag: "div[data-plugin]",
+          tag: 'div[data-plugin]',
           getAttrs(dom) {
-            return JSON.parse(dom.getAttribute("data-plugin"));
+            return JSON.parse(dom.getAttribute('data-plugin'));
           },
         },
       ],
       toDOM(node) {
         return [
-          "div",
-          { "data-plugin": JSON.stringify(node.attrs) },
-          plugin.get("label"),
+          'div',
+          { 'data-plugin': JSON.stringify(node.attrs) },
+          plugin.get('label'),
         ];
       },
     });
@@ -94,8 +94,8 @@ function schemaWithPlugins(schema, plugins) {
 function createSerializer(schema, plugins) {
   const serializer = Object.create(defaultMarkdownSerializer);
   plugins.forEach((plugin) => {
-    serializer.nodes[`plugin_${ plugin.get("id") }`] = (state, node) => {
-      const toBlock = plugin.get("toBlock");
+    serializer.nodes[`plugin_${ plugin.get('id') }`] = (state, node) => {
+      const toBlock = plugin.get('toBlock');
       state.write(`${ toBlock.call(plugin, node.attrs) }\n\n`);
     };
   });
@@ -173,7 +173,7 @@ export default class Editor extends Component {
       if (
         $from.parent &&
         $from.parent.type === schema.nodes.paragraph &&
-        $from.parent.textContent === ""
+        $from.parent.textContent === ''
       ) {
         const pos = this.view.coordsAtPos(selection.from);
         const editorPos = this.view.content.getBoundingClientRect();
@@ -188,8 +188,6 @@ export default class Editor extends Component {
     } else {
       const pos = this.view.coordsAtPos(selection.from);
       const editorPos = this.view.content.getBoundingClientRect();
-      const selectionPosition = { top: pos.top - editorPos.top, left: pos.left - editorPos.left };
-      this.setState({ selectionPosition });
       const selectionPosition = {
         top: pos.top - editorPos.top,
         left: pos.left - editorPos.left,
@@ -245,7 +243,7 @@ export default class Editor extends Component {
 
   handlePluginSubmit = (plugin, data) => {
     const { schema } = this.state;
-    const nodeType = schema.nodes[`plugin_${ plugin.get("id") }`];
+    const nodeType = schema.nodes[`plugin_${ plugin.get('id') }`];
     this.view.props.onAction(
       this.view.state.tr
         .replaceSelectionWith(nodeType.create(data.toJS()))
@@ -280,7 +278,7 @@ export default class Editor extends Component {
       Array.from(e.dataTransfer.files).forEach((file) => {
         createAssetProxy(file.name, file).then((assetProxy) => {
           this.props.onAddAsset(assetProxy);
-          if (file.type.split("/")[0] === "image") {
+          if (file.type.split('/')[0] === 'image') {
             nodes.push(
               schema.nodes.image.create({
                 src: assetProxy.public_path,
@@ -299,7 +297,7 @@ export default class Editor extends Component {
       });
     } else {
       nodes.push(
-        schema.nodes.paragraph.create({}, e.dataTransfer.getData("text/plain"))
+        schema.nodes.paragraph.create({}, e.dataTransfer.getData('text/plain'))
       );
     }
 
@@ -311,7 +309,7 @@ export default class Editor extends Component {
   };
 
   handleToggle = () => {
-    this.props.onMode("raw");
+    this.props.onMode('raw');
   };
 
   render() {
