@@ -58,5 +58,7 @@ module.exports = merge.smart(require('./webpack.base.js'), {
     contentBase: 'example/',
     historyApiFallback: true,
     devTool: 'cheap-module-source-map',
+    disableHostCheck: true,
+    headers: {"Access-Control-Allow-Origin": "*"},
   },
 });
