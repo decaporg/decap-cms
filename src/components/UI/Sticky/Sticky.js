@@ -81,7 +81,9 @@ export class StickyContext extends Component {
   }
 
   handleScroll = (event) => {
-    this.updateStickies(event.target);
+    if (event.target === this.ref) {
+      this.updateStickies(this.ref);
+    }
   };
 
   render() {
