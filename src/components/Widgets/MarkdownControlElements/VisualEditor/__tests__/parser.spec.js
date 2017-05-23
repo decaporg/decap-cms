@@ -1,3 +1,4 @@
+import { fromJS } from 'immutable';
 import { Schema } from "prosemirror-model";
 import { schema } from "prosemirror-markdown";
 
@@ -7,7 +8,51 @@ const testSchema = new Schema({
   nodes: schema.nodeSpec,
   marks: schema.markSpec,
 });
-const parser = makeParser(testSchema);
+
+// Temporary plugins test, uses preloaded plugins from ../parser
+// TODO: make the parser more testable
+const testPlugins = fromJS([
+  {
+    label: 'Image',
+    id: 'image',
+    fromBlock: match => match && {
+      image: match[2],
+      alt: match[1],
+    },
+    toBlock: data => `![${ data.alt }](${ data.image })`,
+    toPreview: data => <img src={data.image} alt={data.alt} />,
+    pattern: /^!\[([^\]]+)]\(([^)]+)\)$/,
+    fields: [{
+      label: 'Image',
+      name: 'image',
+      widget: 'image',
+    }, {
+      label: 'Alt Text',
+      name: 'alt',
+    }],
+  },
+  {
+    id: "youtube",
+    label: "Youtube",
+    fields: [{name: 'id', label: 'Youtube Video ID'}],
+    pattern: /^{{<\s?youtube (\S+)\s?>}}/,
+    fromBlock: function(match) {
+      return {
+        id: match[1]
+      };
+    },
+    toBlock: function(obj) {
+      return '{{< youtube ' + obj.id + ' >}}';
+    },
+    toPreview: function(obj) {
+      return (
+        '<img src="http://img.youtube.com/vi/' + obj.id + '/maxresdefault.jpg" alt="Youtube Video"/>'
+      );
+    }
+  },
+]);
+
+const parser = makeParser(testSchema, testPlugins);
 
 describe("Compile markdown to Prosemirror document structure", () => {
   it("should compile simple markdown", () => {
@@ -123,6 +168,15 @@ This is some sweet \`inline code\` yo!
 # Word
 
 How far is it to [Google](https://google.com) land?
+`;
+    expect(parser(value)).toMatchSnapshot();
+  });
+
+  it("should compile plugins", () => {
+    const value = `
+![test](test.png)
+
+{{< test >}}
 `;
     expect(parser(value)).toMatchSnapshot();
   });

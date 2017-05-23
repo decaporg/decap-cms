@@ -1075,6 +1075,26 @@ Object {
 }
 `;
 
+exports[`Compile markdown to Prosemirror document structure should compile plugins 1`] = `
+Object {
+  "content": Array [
+    Object {
+      "type": "paragraph",
+    },
+    Object {
+      "content": Array [
+        Object {
+          "text": "{{< test >}}",
+          "type": "text",
+        },
+      ],
+      "type": "paragraph",
+    },
+  ],
+  "type": "doc",
+}
+`;
+
 exports[`Compile markdown to Prosemirror document structure should compile simple markdown 1`] = `
 Object {
   "content": Array [

@@ -9,6 +9,7 @@ const visit = require("unist-util-visit");
 const { Mark } = require("prosemirror-model");
 
 let schema;
+let plugins
 let activeMarks = Mark.none;
 let textsArray = [];
 
@@ -36,6 +37,38 @@ const processMdastNode = node => {
     textsArray = [];
     return pNode;
   } else if (node.type === "paragraph") {
+
+    // TODO: improve plugin handling
+
+    // Handle externally defined plugins (they'll be wrapped in paragraphs)
+    if (node.children.length === 1 && node.children[0].type === 'text') {
+      const value = node.children[0].value;
+      const plugin = plugins.find(plugin => plugin.get('pattern').test(value));
+      if (plugin) {
+        const nodeType = schema.nodes[`plugin_${plugin.get('id')}`];
+        const data = plugin.get('fromBlock').call(plugin, value.match(plugin.get('pattern')));
+        return nodeType.create(data);
+      }
+    }
+
+    // Handle the internally defined image plugin. At this point the token has
+    // already been parsed as an image by Remark, so we have to catch it by
+    // checking for the 'image' type.
+    if (node.children.length === 1 && node.children[0].type === 'image') {
+      const { url, alt } = node.children[0];
+
+      // Until we improve the editor components API for built in components,
+      // we'll mock the result of String.prototype.match to pass in to the image
+      // plugin's fromBlock method.
+      const matches = [ , alt, url ];
+      const plugin = plugins.find(plugin => plugin.id === 'image');
+      if (plugin) {
+        const nodeType = schema.nodes.plugin_image;
+        const data = plugin.get('fromBlock').call(plugin, matches);
+        return nodeType.create(data);
+      }
+    }
+
     node.children.forEach(childNode => processMdastNode(childNode));
     const pNode = schema.node("paragraph", {}, textsArray);
     textsArray = [];
@@ -121,9 +154,10 @@ const compileMarkdownToProseMirror = src => {
   return doc;
 };
 
-module.exports = (s, plugins) => {
+module.exports = (s, p) => {
   //console.log(s)
   //console.log(s.nodes.code_block.create({ params: { language: 'javascript' } }))
   schema = s;
+  plugins = p;
   return compileMarkdownToProseMirror;
 };
