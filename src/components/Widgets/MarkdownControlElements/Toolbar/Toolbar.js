@@ -18,7 +18,7 @@ export default class Toolbar extends React.Component {
     onLink: PropTypes.func.isRequired,
     onToggleMode: PropTypes.func.isRequired,
     rawMode: PropTypes.bool,
-    plugins: ImmutablePropTypes.listOf(ImmutablePropTypes.record),
+    plugins: ImmutablePropTypes.map,
     onSubmit: PropTypes.func.isRequired,
     onAddAsset: PropTypes.func.isRequired,
     onRemoveAsset: PropTypes.func.isRequired,

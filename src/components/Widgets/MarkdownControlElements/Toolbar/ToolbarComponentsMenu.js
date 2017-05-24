@@ -6,7 +6,7 @@ import styles from './ToolbarComponentsMenu.css';
 
 export default class ToolbarComponentsMenu extends React.Component {
   static PropTypes = {
-    plugins: ImmutablePropTypes.list.isRequired,
+    plugins: ImmutablePropTypes.map.isRequired,
     onComponentMenuItemClick: PropTypes.func.isRequired,
   };
 
