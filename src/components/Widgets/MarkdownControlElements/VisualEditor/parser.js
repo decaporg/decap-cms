@@ -4,21 +4,15 @@
   https://github.com/ProseMirror/prosemirror-markdown/blob/master/src/from_markdown.js
 */
 
-import Remark from "remark";
-const visit = require("unist-util-visit");
-const { Mark } = require("prosemirror-model");
+import unified from 'unified';
+import markdown from 'remark-parse';
+import visit from 'unist-util-visit';
+import { Mark } from 'prosemirror-model';
 
 let schema;
 let plugins
 let activeMarks = Mark.none;
 let textsArray = [];
-
-// Setup Remark.
-const remark = new Remark({
-  commonmark: true,
-  footnotes: true,
-  pedantic: true,
-});
 
 const processMdastNode = node => {
   if (node.type === "root") {
@@ -139,25 +133,28 @@ const processMdastNode = node => {
     activeMarks = mark.removeFromSet(activeMarks);
     return;
   }
-
-  return doc;
 };
 
 const compileMarkdownToProseMirror = src => {
-  // console.log(src);
   // Clear out any old state.
   let activeMarks = Mark.none;
   let textsArray = [];
 
-  const mdast = remark.parse(src);
-  const doc = processMdastNode(mdast);
-  return doc;
+  const result = unified()
+    .use(markdown, { commonmark: true, footnotes: true, pedantic: true })
+    .parse(src);
+
+  const output = unified()
+    .use(() => processMdastNode)
+    .runSync(result);
+
+  return output;
 };
 
-module.exports = (s, p) => {
-  //console.log(s)
-  //console.log(s.nodes.code_block.create({ params: { language: 'javascript' } }))
+const parser = (s, p) => {
   schema = s;
   plugins = p;
   return compileMarkdownToProseMirror;
 };
+
+export default parser;

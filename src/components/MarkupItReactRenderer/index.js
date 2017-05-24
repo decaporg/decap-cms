@@ -1,15 +1,9 @@
 import React, { PropTypes } from "react";
-import Remark from "remark";
-import toHAST from "mdast-util-to-hast";
-import hastToHTML from "hast-util-to-html";
+import unified from 'unified';
+import markdown from 'remark-parse';
+import rehype from 'remark-rehype';
+import html from 'rehype-stringify';
 import registry from "../../lib/registry";
-
-// Setup Remark.
-const remark = new Remark({
-  commonmark: true,
-  footnotes: true,
-  pedantic: true,
-});
 
 export default class MarkupItReactRenderer extends React.Component {
   constructor(props) {
@@ -22,11 +16,12 @@ export default class MarkupItReactRenderer extends React.Component {
   }
 
   render() {
-    const { value } = this.props;
-    const mdast = remark.parse(value);
-    const hast = toHAST(mdast, { allowDangerousHTML: true });
-    const html = hastToHTML(hast, { allowDangerousHTML: true });
-    return <div dangerouslySetInnerHTML={{ __html: html }} />; // eslint-disable-line react/no-danger
+    const doc = unified()
+      .use(markdown, { commonmark: true, footnotes: true, pedantic: true })
+      .use(rehype, { allowDangerousHTML: true })
+      .use(html, { allowDangerousHTML: true })
+      .processSync(this.props.value);
+    return <div dangerouslySetInnerHTML={{ __html: doc }} />; // eslint-disable-line react/no-danger
   }
 }
 
