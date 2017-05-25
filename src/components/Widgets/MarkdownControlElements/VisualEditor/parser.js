@@ -6,7 +6,6 @@
 
 import unified from 'unified';
 import markdown from 'remark-parse';
-import visit from 'unist-util-visit';
 import { Mark } from 'prosemirror-model';
 
 let schema;
@@ -133,6 +132,8 @@ const processMdastNode = node => {
     activeMarks = mark.removeFromSet(activeMarks);
     return;
   }
+
+  return node;
 };
 
 const compileMarkdownToProseMirror = src => {

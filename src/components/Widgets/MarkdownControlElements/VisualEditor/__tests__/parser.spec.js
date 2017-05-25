@@ -1,8 +1,7 @@
 import { fromJS } from 'immutable';
 import { Schema } from "prosemirror-model";
 import { schema } from "prosemirror-markdown";
-
-const makeParser = require("../parser");
+import makeParser from '../parser';
 
 const testSchema = new Schema({
   nodes: schema.nodeSpec,
