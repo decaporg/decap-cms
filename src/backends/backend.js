@@ -102,9 +102,7 @@ class Backend {
       // If this collection has a "filter" property, filter entries accordingly
       .then(loadedCollection => (
         {
-          entries: loadedCollection.entries.filter(
-            entry => (!collectionFilter || entry.data[collectionFilter.get('field')] === collectionFilter.get('value'))
-          ),
+          entries: collectionFilter ? this.filterEntries(loadedCollection, collectionFilter) : loadedCollection.entries
         }
       ));
   }
@@ -248,6 +246,12 @@ class Backend {
       throw new Error(`No file found for ${ entry.get("slug") } in ${ collection.get('name') }`);
     }
     return file.get('fields').map(f => f.get('name')).toArray();
+  }
+
+  filterEntries(collection, filterRule) {
+    return collection.entries.filter(entry => (
+      entry.data[filterRule.get('field')] === filterRule.get('value')
+    ));
   }
 }
 
