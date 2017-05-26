@@ -41,7 +41,7 @@ $ npm run start
 
 ## Pull Requests
 
-We actively welcome your pull requests.
+We actively welcome your pull requests. Each pull request must be approved by 2 contributors (not including yourself).
 
 1. Fork the repo and create your branch from `master`.
 2. If you've added code that should be tested, add tests.
