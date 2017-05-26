@@ -45,7 +45,7 @@ const selectors = {
       return `${ collection.get('folder') }/${ slug }.${ this.entryExtension(collection) }`;
     },
     entrySlug(collection, path) {
-      return path.split('/').pop().replace(/\.[^\.]+$/, '');
+      return path.replace(collection.get('folder'), "").replace(/\.[^.]+$/, '').replace(/^\//, '');
     },
     listMethod() {
       return 'entriesByFolder';
@@ -117,7 +117,7 @@ export const selectInferedField = (collection, fieldName) => {
   if (inferableField.showError) {
     consoleError(
       `The Field ${ fieldName } is missing for the collection “${ collection.get('name') }”`,
-      `Netlify CMS tries to infer the entry ${ fieldName } automatically, but one couldn\'t be found for entries of the collection “${ collection.get('name') }”. Please check your site configuration.`
+      `Netlify CMS tries to infer the entry ${ fieldName } automatically, but one couldn't be found for entries of the collection “${ collection.get('name') }”. Please check your site configuration.`
     );
   }
 

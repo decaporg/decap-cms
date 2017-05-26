@@ -132,7 +132,7 @@ class EntryPage extends React.Component {
 
 function mapStateToProps(state, ownProps) {
   const { collections, entryDraft } = state;
-  const slug = ownProps.params.slug;
+  const slug = ownProps.params.slug + ownProps.params.splat; // we append splat for the case we're dealing with a nested folder
   const collection = collections.get(ownProps.params.name);
   const newEntry = ownProps.route && ownProps.route.newRecord === true;
   const fields = selectFields(collection, slug);
