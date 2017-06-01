@@ -195,6 +195,21 @@ Widget | UI | Data Type
 
 Based on this example, you can go through the post types in your site and add the appropriate settings to your `config.yml` file. Each post type should be listed as a separate node under the `collections` field.
 
+### Filter
+The entries for any collection can be filtered based on the value of a single field. The example
+collection below would only show post entries with the value "en" in the language field.
+
+``` yaml
+collections:
+  - name: "posts"
+    label: "Post"
+    folder: "_posts"
+    filter:
+      field: language
+      value: en
+    fields:
+      - {label: "Language", name: "language"}
+```
 ## Accessing the App
 
 With your configuration complete, it's time to try it out! Go to `yoursite.com/admin` and complete the login prompt to access the admin interface. To add users, simply add them as collaborators on the GitHub repo.
