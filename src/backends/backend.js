@@ -1,3 +1,4 @@
+import { attempt, isError } from 'lodash';
 import TestRepoBackend from "./test-repo/implementation";
 import GitHubBackend from "./github/implementation";
 import NetlifyAuthBackend from "./netlify-auth/implementation";
@@ -91,7 +92,7 @@ class Backend {
           collection.get("name"),
           selectEntrySlug(collection, loadedEntry.file.path),
           loadedEntry.file.path,
-          { raw: loadedEntry.data, label: loadedEntry.file.label }
+          { raw: loadedEntry.data || '', label: loadedEntry.file.label }
         ))
       ))
       .then(entries => (
@@ -121,8 +122,9 @@ class Backend {
   entryWithFormat(collectionOrEntity) {
     return (entry) => {
       const format = resolveFormat(collectionOrEntity, entry);
-      if (entry && entry.raw) {
-        return Object.assign(entry, { data: format && format.fromFile(entry.raw) });
+      if (entry && entry.raw !== undefined) {
+        const data = (format && attempt(format.fromFile.bind(null, entry.raw))) || {};
+        return Object.assign(entry, { data: isError(data) ? {} : data });
       }
       return format.fromFile(entry);
     };
