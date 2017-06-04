@@ -19,5 +19,8 @@ export default class DateTimeControl extends React.Component {
 
 DateTimeControl.propTypes = {
   onChange: PropTypes.func.isRequired,
-  value: PropTypes.object, // eslint-disable-line
+  value: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.string,
+  ]),
 };
