@@ -12,7 +12,7 @@ export default class ObjectControl extends Component {
     getAsset: PropTypes.func.isRequired,
     value: PropTypes.node,
     field: PropTypes.object,
-    forID: PropTypes.string.isRequired,
+    forID: PropTypes.string,
     className: PropTypes.string,
   };
 

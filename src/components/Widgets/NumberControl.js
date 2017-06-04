@@ -13,5 +13,5 @@ export default class StringControl extends React.Component {
 StringControl.propTypes = {
   onChange: PropTypes.func.isRequired,
   value: PropTypes.node,
-  forID: PropTypes.string.isRequired,
+  forID: PropTypes.string,
 };
