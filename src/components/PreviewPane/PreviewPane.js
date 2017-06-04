@@ -88,10 +88,10 @@ export default class PreviewPane extends React.Component {
     };
 
     const styleEls = registry.getPreviewStyles()
-       .map(style => <link href={style} type="text/css" rel="stylesheet" />);
+       .map((style, i) => <link key={i} href={style} type="text/css" rel="stylesheet" />);
 
     if (!collection) {
-      return <Frame className={styles.frame} head={styleEl} />;
+      return <Frame className={styles.frame} head={styleEls} />;
     }
 
     // We need to create a lightweight component here so that we can
