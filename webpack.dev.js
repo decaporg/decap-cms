@@ -26,6 +26,7 @@ module.exports = merge.smart(require('./webpack.base.js'), {
   },
   context: path.join(__dirname, 'src'),
   module: {
+    noParse: /localforage\.js/,
     loaders: [
       {
         loader: 'babel',
