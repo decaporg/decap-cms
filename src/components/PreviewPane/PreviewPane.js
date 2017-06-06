@@ -15,6 +15,7 @@ export default class PreviewPane extends React.Component {
   getWidget = (field, value, props) => {
     const { fieldsMetaData, getAsset } = props;
     const widget = resolveWidget(field.get('widget'));
+
     return !widget.preview ? null : React.createElement(widget.preview, {
       field,
       key: field.get('name'),
@@ -43,7 +44,8 @@ export default class PreviewPane extends React.Component {
     let nestedFields = field.get('fields');
 
     if (nestedFields) {
-      field = field.set('fields', nestedFields.map(f => this.widgetFor(f.get('name'), nestedFields, value)));
+      const mapFields = v => nestedFields.map(f => this.widgetFor(f.get('name'), nestedFields, v));
+      field = field.set('fields', List.isList(value) ? value.map(v => mapFields(v)) : mapFields(value));
     }
 
     const labelledWidgets = ['string', 'text', 'number'];

@@ -7,9 +7,7 @@ const ObjectPreview = ({ field }) => (
 );
 
 ObjectPreview.propTypes = {
-  value: PropTypes.node,
   field: PropTypes.node,
-  getAsset: PropTypes.func.isRequired,
 };
 
 export default ObjectPreview;
