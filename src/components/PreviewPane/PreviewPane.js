@@ -37,10 +37,15 @@ export default class PreviewPane extends React.Component {
     if (authorField) this.inferedFields[authorField] = INFERABLE_FIELDS.author;
   }
 
-  widgetFor = (name) => {
-    const { fields, entry } = this.props;
-    const field = fields.find(f => f.get('name') === name);
-    let value = entry.getIn(['data', field.get('name')]);
+  widgetFor = (name, fields = this.props.fields, values = this.props.entry.get('data')) => {
+    let field = fields && fields.find(f => f.get('name') === name);
+    let value = values && values.get(field.get('name'));
+    let nestedFields = field.get('fields');
+
+    if (nestedFields) {
+      field = field.set('fields', nestedFields.map(f => this.widgetFor(f.get('name'), nestedFields, value)));
+    }
+
     const labelledWidgets = ['string', 'text', 'number'];
     if (Object.keys(this.inferedFields).indexOf(name) !== -1) {
       value = this.inferedFields[name].defaultPreview(value);
