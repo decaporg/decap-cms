@@ -5,7 +5,7 @@ window.repoFiles = window.repoFiles || {};
 
 function getFile(path) {
   const segments = path.split('/');
-  let obj = window.repoFiles;
+  let obj = window.repoFiles || {};
   while (obj && segments.length) {
     obj = obj[segments.shift()];
   }
@@ -43,8 +43,10 @@ export default class TestRepo {
   entriesByFolder(collection, extension) {
     const entries = [];
     const folder = collection.get('folder');
+    const obj = window.repoFiles;
     if (folder) {
-      for (const path in window.repoFiles[folder]) {
+      obj[folder] = obj[folder] || {};
+      for (const path in obj[folder]) {
         if (fileExtension(path) !== extension) {
           continue;
         }
@@ -53,7 +55,7 @@ export default class TestRepo {
         entries.push(
           {
             file,
-            data: window.repoFiles[folder][path].content,
+            data: obj[folder][path].content,
           }
         );
       }
