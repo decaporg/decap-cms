@@ -38,14 +38,21 @@ export default class PreviewPane extends React.Component {
     if (authorField) this.inferedFields[authorField] = INFERABLE_FIELDS.author;
   }
 
+  /**
+   * Returns the widget component for a named field, and makes recursive calls
+   * to retrieve components for nested and deeply nested fields, which occur in
+   * object and list type fields. Used internally to retrieve widgets, and also
+   * exposed for use in custom preview templates.
+   */
   widgetFor = (name, fields = this.props.fields, values = this.props.entry.get('data')) => {
+    // We retrieve the field by name so that this function can also be used in
+    // custom preview templates, where the field object can't be passed in.
     let field = fields && fields.find(f => f.get('name') === name);
     let value = values && values.get(field.get('name'));
     let nestedFields = field.get('fields');
 
     if (nestedFields) {
-      const mapFields = v => nestedFields.map(f => this.widgetFor(f.get('name'), nestedFields, v));
-      field = field.set('fields', List.isList(value) ? value.map(v => mapFields(v)) : mapFields(value));
+      field = field.set('fields', this.getNestedWidgets(nestedFields, value));
     }
 
     const labelledWidgets = ['string', 'text', 'number'];
@@ -58,6 +65,31 @@ export default class PreviewPane extends React.Component {
     return value ? this.getWidget(field, value, this.props) : null;
   };
 
+  /**
+   * Retrieves widgets for nested fields (children of object/list fields)
+   */
+  getNestedWidgets = (fields, values) => {
+    // Fields nested within a list field will be paired with a List of value Maps.
+    if (List.isList(values)) {
+      return values.map(value => this.widgetsForNestedFields(fields, value));
+    }
+    // Fields nested within an object field will be paired with a single Map of values.
+    return this.widgetsForNestedFields(fields, values);
+  };
+
+  /**
+   * Use widgetFor as a mapping function for recursive widget retrieval
+   */
+  widgetsForNestedFields = (fields, values) => {
+    return fields.map(field => this.widgetFor(field.get('name'), fields, values));
+  };
+
+  /**
+   * This function exists entirely to expose nested widgets for object and list
+   * fields to custom preview templates.
+   *
+   * TODO: see if widgetFor can now provide this functionality for preview templates
+   */
   widgetsFor = (name) => {
     const { fields, entry } = this.props;
     const field = fields.find(f => f.get('name') === name);
