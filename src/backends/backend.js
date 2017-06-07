@@ -124,6 +124,7 @@ class Backend {
       const format = resolveFormat(collectionOrEntity, entry);
       if (entry && entry.raw !== undefined) {
         const data = (format && attempt(format.fromFile.bind(null, entry.raw))) || {};
+        if (isError(data)) console.error(data);
         return Object.assign(entry, { data: isError(data) ? {} : data });
       }
       return format.fromFile(entry);
