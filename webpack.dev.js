@@ -29,13 +29,11 @@ module.exports = merge.smart(require('./webpack.base.js'), {
     noParse: /localforage\.js/,
     loaders: [
       {
-        loader: 'babel',
+        loader: path.resolve(__dirname, './node_modules/babel-loader'),
         test: /\.js?$/,
         exclude: /node_modules/,
         query: {
-          plugins: [
-            'react-hot-loader/babel',
-          ],
+          plugins: [path.resolve(__dirname, './node_modules/react-hot-loader/babel')]
         },
       },
     ],
