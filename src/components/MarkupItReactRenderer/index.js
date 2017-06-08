@@ -30,15 +30,8 @@ const renderEditorPluginsProcessor = (node, getAsset) => {
       if (plugin) {
         const data = plugin.get('fromBlock')(value.match(plugin.get('pattern')));
         const preview = plugin.get('toPreview')(data);
-        const output = typeof preview === 'string' ?
-          <div dangerouslySetInnerHTML={{ __html: preview }}/> :
-          preview;
-
-        const result = unified()
-          .use(parseHtml, { fragment: true })
-          .parse(renderToStaticMarkup(output));
-
-        return result.children[0];
+        const output = `<div>${typeof preview === 'string' ? preview : renderToStaticMarkup(preview)}</div>`;
+        return unified().use(parseHtml, { fragment: true }).parse(output);
       }
     }
   }
