@@ -34,7 +34,7 @@ SelectControl.propTypes = {
   value: PropTypes.node,
   forID: PropTypes.string.isRequired,
   field: ImmutablePropTypes.contains({
-    options: ImmutablePropTypes.listOf(PropTypes.oneOf([
+    options: ImmutablePropTypes.listOf(PropTypes.oneOfType([
       PropTypes.string,
       ImmutablePropTypes.contains({
         label: PropTypes.string.isRequired,

@@ -3,7 +3,7 @@ import MarkupIt from 'markup-it';
 import markdownSyntax from 'markup-it/syntaxes/markdown';
 import htmlSyntax from 'markup-it/syntaxes/html';
 import CaretPosition from 'textarea-caret-position';
-import TextareaAutosize from 'react-textarea-autosize-inputref';
+import TextareaAutosize from 'react-textarea-autosize';
 import registry from '../../../../lib/registry';
 import { createAssetProxy } from '../../../../valueObjects/AssetProxy';
 import Toolbar from '../Toolbar/Toolbar';

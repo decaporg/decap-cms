@@ -6,5 +6,5 @@ export default function DatePreview({ value }) {
 }
 
 DatePreview.propTypes = {
-  value: PropTypes.node,
+  value: PropTypes.object,
 };

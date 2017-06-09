@@ -7090,9 +7090,11 @@ react-style-proptype@^3.0.0:
   dependencies:
     prop-types "^15.5.4"
 
-react-textarea-autosize-inputref@^4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/react-textarea-autosize-inputref/-/react-textarea-autosize-inputref-4.1.0.tgz#4a12921f9c992a8e2c6ce569ab46982a96ca48f6"
+react-textarea-autosize@^4.3.2:
+  version "4.3.2"
+  resolved "https://registry.yarnpkg.com/react-textarea-autosize/-/react-textarea-autosize-4.3.2.tgz#962a52c68caceae408c18acecec29049b81e42fa"
+  dependencies:
+    prop-types "^15.5.8"
 
 react-themeable@^1.1.0:
   version "1.1.0"

@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { truncateMiddle } from '../../lib/textHelper';
 import { Loader } from '../UI';
 import AssetProxy, { createAssetProxy } from '../../valueObjects/AssetProxy';
-import styles from './ImageControl.css';
+import styles from './FileControl.css';
 
 const MAX_DISPLAY_LENGTH = 50;
 
