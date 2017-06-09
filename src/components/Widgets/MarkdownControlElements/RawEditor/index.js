@@ -1,7 +1,8 @@
 import React, { PropTypes } from 'react';
-import MarkupIt from 'markup-it';
-import markdownSyntax from 'markup-it/syntaxes/markdown';
-import htmlSyntax from 'markup-it/syntaxes/html';
+import unified from 'unified';
+import htmlToRehype from 'rehype-parse';
+import rehypeToRemark from 'rehype-remark';
+import remarkToMarkdown from 'remark-stringify';
 import CaretPosition from 'textarea-caret-position';
 import TextareaAutosize from 'react-textarea-autosize';
 import registry from '../../../../lib/registry';
@@ -11,9 +12,6 @@ import { Sticky } from '../../../UI/Sticky/Sticky';
 import styles from './index.css';
 
 const HAS_LINE_BREAK = /\n/m;
-
-const markdown = new MarkupIt(markdownSyntax);
-const html = new MarkupIt(htmlSyntax);
 
 function processUrl(url) {
   if (url.match(/^(https?:\/\/|mailto:|\/)/)) {
@@ -26,8 +24,11 @@ function processUrl(url) {
 }
 
 function cleanupPaste(paste) {
-  const content = html.toContent(paste);
-  return markdown.toText(content);
+  return unified()
+    .use(htmlToRehype)
+    .use(rehypeToRemark)
+    .use(remarkToMarkdown)
+    .process(paste);
 }
 
 function getCleanPaste(e) {
