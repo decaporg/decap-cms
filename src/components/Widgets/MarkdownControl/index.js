@@ -1,9 +1,8 @@
 import React, { PropTypes } from 'react';
-import registry from '../../lib/registry';
-import RawEditor from './MarkdownControlElements/RawEditor';
-import VisualEditor from './MarkdownControlElements/VisualEditor';
-import { processEditorPlugins } from './richText';
-import { StickyContainer } from '../UI/Sticky/Sticky';
+import registry from '../../../lib/registry';
+import RawEditor from './RawEditor';
+import VisualEditor from './VisualEditor';
+import { StickyContainer } from '../../UI/Sticky/Sticky';
 
 const MODE_STORAGE_KEY = 'cms.md-mode';
 
@@ -19,10 +18,6 @@ export default class MarkdownControl extends React.Component {
   constructor(props) {
     super(props);
     this.state = { mode: localStorage.getItem(MODE_STORAGE_KEY) || 'visual' };
-  }
-
-  componentWillMount() {
-    processEditorPlugins(registry.getEditorComponents());
   }
 
   handleMode = (mode) => {

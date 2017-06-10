@@ -3,6 +3,8 @@ import unified from 'unified';
 import htmlToRehype from 'rehype-parse';
 import rehypeToRemark from 'rehype-remark';
 import remarkToMarkdown from 'remark-stringify';
+import rehypeSanitize from 'rehype-sanitize';
+import rehypeReparse from 'rehype-raw';
 import CaretPosition from 'textarea-caret-position';
 import TextareaAutosize from 'react-textarea-autosize';
 import registry from '../../../../lib/registry';
@@ -25,9 +27,11 @@ function processUrl(url) {
 
 function cleanupPaste(paste) {
   return unified()
-    .use(htmlToRehype)
+    .use(htmlToRehype, { fragment: true })
+    .use(rehypeSanitize)
+    .use(rehypeReparse)
     .use(rehypeToRemark)
-    .use(remarkToMarkdown)
+    .use(remarkToMarkdown, { commonmark: true, footnotes: true, pedantic: true })
     .process(paste);
 }
 

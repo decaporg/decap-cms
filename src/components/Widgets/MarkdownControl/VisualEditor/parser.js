@@ -1,5 +1,5 @@
 import unified from 'unified';
-import markdown from 'remark-parse';
+import remarkToMarkdown from 'remark-parse';
 import { Mark } from 'prosemirror-model';
 import markdownToProseMirror from './markdownToProseMirror';
 
@@ -12,7 +12,7 @@ const state = { activeMarks: Mark.none, textsArray: [] };
  */
 function parser(src) {
   const result = unified()
-    .use(markdown, { commonmark: true, footnotes: true, pedantic: true })
+    .use(remarkToMarkdown, { commonmark: true, footnotes: true, pedantic: true })
     .parse(src);
 
   return unified()

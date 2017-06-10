@@ -11,6 +11,9 @@ import {
 import { keymap } from 'prosemirror-keymap';
 import { schema as markdownSchema, defaultMarkdownSerializer } from 'prosemirror-markdown';
 import { baseKeymap, setBlockType, toggleMark } from 'prosemirror-commands';
+import unified from 'unified';
+import markdownToRemark from 'remark-parse';
+import remarkToMarkdown from 'remark-stringify';
 import registry from '../../../../lib/registry';
 import { createAssetProxy } from '../../../../valueObjects/AssetProxy';
 import { buildKeymap } from './keymap';
@@ -147,7 +150,11 @@ export default class Editor extends Component {
     const { serializer } = this.state;
     const newState = this.view.state.applyAction(action);
     const md = serializer.serialize(newState.doc);
-    this.props.onChange(md);
+    const processedMarkdown = unified()
+      .use(markdownToRemark)
+      .use(remarkToMarkdown, { commonmark: true, footnotes: true, pedantic: true })
+      .processSync(md);
+    this.props.onChange(processedMarkdown.contents);
     this.view.updateState(newState);
     if (newState.selection !== this.state.selection) {
       this.handleSelection(newState);
