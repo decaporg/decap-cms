@@ -12,7 +12,7 @@ const state = { activeMarks: Mark.none, textsArray: [] };
  */
 function parser(src) {
   const result = unified()
-    .use(remarkToMarkdown, { commonmark: true, footnotes: true, pedantic: true })
+    .use(remarkToMarkdown, { fences: true, footnotes: true, pedantic: true })
     .parse(src);
 
   return unified()

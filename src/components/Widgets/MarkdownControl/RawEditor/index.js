@@ -31,7 +31,7 @@ function cleanupPaste(paste) {
     .use(rehypeSanitize)
     .use(rehypeReparse)
     .use(rehypeToRemark)
-    .use(remarkToMarkdown, { commonmark: true, footnotes: true, pedantic: true })
+    .use(remarkToMarkdown, { fences: true, footnotes: true, pedantic: true })
     .process(paste);
 }
 

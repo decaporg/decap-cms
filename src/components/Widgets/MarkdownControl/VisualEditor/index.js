@@ -150,10 +150,12 @@ export default class Editor extends Component {
     const { serializer } = this.state;
     const newState = this.view.state.applyAction(action);
     const md = serializer.serialize(newState.doc);
+    console.log(md);
     const processedMarkdown = unified()
       .use(markdownToRemark)
-      .use(remarkToMarkdown, { commonmark: true, footnotes: true, pedantic: true })
+      .use(remarkToMarkdown, { fences: true, commonmark: true, footnotes: true, pedantic: true })
       .processSync(md);
+    console.log(processedMarkdown.contents);
     this.props.onChange(processedMarkdown.contents);
     this.view.updateState(newState);
     if (newState.selection !== this.state.selection) {

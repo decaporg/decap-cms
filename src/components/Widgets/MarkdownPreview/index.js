@@ -9,7 +9,7 @@ import previewStyle from '../defaultPreviewStyle';
 
 const MarkdownPreview = ({ value, getAsset }) => {
   const Markdown = unified()
-    .use(markdownToRemark, { commonmark: true, footnotes: true, pedantic: true })
+    .use(markdownToRemark, { footnotes: true, pedantic: true })
     .use(remarkToRehype, { allowDangerousHTML: true })
     .use(cmsPluginToRehype, { getAsset })
     .use(rehypeToReact, { createElement: React.createElement })
