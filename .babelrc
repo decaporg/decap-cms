@@ -1,6 +1,10 @@
 {
-  "presets": ["es2015", "stage-1", "react"],
-  "plugins": ["lodash", ["babel-plugin-transform-builtin-extend", {
-    "globals": ["Error"]
-  }]]
+  "presets": [["es2015", { "modules": false }], "stage-1", "react"],
+  "plugins": [
+    "react-hot-loader/babel",
+    "lodash",
+    ["babel-plugin-transform-builtin-extend", {
+      "globals": ["Error"]
+    }],
+  ]
 }

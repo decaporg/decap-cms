@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
-import 'file?name=index.html!../example/index.html';
+import 'file-loader?name=index.html!../example/index.html';
 import 'react-toolbox/lib/commons.scss';
 import Root from './root';
 import registry from './lib/registry';
@@ -25,15 +25,8 @@ render((
   </AppContainer>
 ), el);
 
-if (process.env.NODE_ENV !== 'production' && module.hot) {
-  module.hot.accept('./root', () => {
-    const NextRoot = require('./root').default; // eslint-disable-line
-    render((
-      <AppContainer>
-        <NextRoot />
-      </AppContainer>
-    ), el);
-  });
+if (module.hot) {
+  module.hot.accept('./root', () => { render(Root); });
 }
 
 const buildtInPlugins = [{

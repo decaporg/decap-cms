@@ -16,10 +16,16 @@ module.exports = merge.smart(require('./webpack.base.js'), {
     umdNamedDefine: true,
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.css$/,
-        loader: ExtractTextPlugin.extract('style', 'css?modules&importLoaders=1!postcss'), // Use minified class names on production
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: [
+            { loader: 'css-loader', options: { modules: true, importLoaders: 1 } },
+            { loader: 'postcss-loader' },
+          ],
+        }), // Use minified class names on production
       },
     ],
   },
@@ -31,9 +37,8 @@ module.exports = merge.smart(require('./webpack.base.js'), {
       },
     }),
     new webpack.DefinePlugin({
-      NETLIFY_CMS_VERSION: JSON.stringify(require("./package.json").version)
+      NETLIFY_CMS_VERSION: JSON.stringify(require("./package.json").version),
     }),
-    new webpack.optimize.OccurenceOrderPlugin(),
 
     // Minify and optimize the JavaScript
     new webpack.optimize.UglifyJsPlugin({
@@ -44,7 +49,10 @@ module.exports = merge.smart(require('./webpack.base.js'), {
     }),
 
     // Extract CSS
-    new ExtractTextPlugin('[name].css', { allChunks: true }),
+    new ExtractTextPlugin({
+      filename: '[name].css',
+      allChunks: true
+    }),
 
     // During beta phase, generate source maps for better errors
     new webpack.SourceMapDevToolPlugin({
