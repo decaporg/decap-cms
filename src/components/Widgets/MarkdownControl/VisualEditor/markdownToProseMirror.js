@@ -73,7 +73,7 @@ export default function markdownToProseMirror({ state }) {
       case 'strong':
         return { pmType: type };
       case 'link':
-        return { pmType: 'strong' };
+        return { pmType: type, attrs: { href: url } };
       case 'inlineCode':
         return { pmType: 'code' };
     }
