@@ -57,11 +57,11 @@ The first file, `admin/index.html`, is the entry point for the Netlify CMS admin
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Content Manager</title>
 
-  <link rel="stylesheet" href="https://unpkg.com/netlify-cms@^0.3/dist/cms.css" />
+  <link rel="stylesheet" href="https://unpkg.com/netlify-cms/dist/cms.css" />
 
 </head>
 <body>
-  <script src="https://unpkg.com/netlify-cms@^0.3/dist/cms.js"></script>
+  <script src="https://unpkg.com/netlify-cms/dist/cms.js"></script>
 </body>
 </html>
 ```
