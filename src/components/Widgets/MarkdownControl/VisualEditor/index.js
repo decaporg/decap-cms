@@ -48,9 +48,9 @@ function buildInputRules(schema) {
 }
 
 function markActive(state, type) {
-  const { from, to, empty } = state.selection;
+  const { from, to, empty, $from } = state.selection;
   if (empty) {
-    return type.isInSet(state.storedMarks || state.doc.marksAt(from));
+    return type.isInSet(state.storedMarks || $from.marks());
   }
   return state.doc.rangeHasMark(from, to, type);
 }
@@ -111,6 +111,7 @@ export default class Editor extends Component {
     this.view = new EditorView(this.ref, {
       state: this.createEditorState(),
       onAction: this.handleAction,
+      dispatchTransaction: this.handleTransaction,
     });
   }
 
@@ -121,18 +122,6 @@ export default class Editor extends Component {
     return EditorState.create({
       doc,
       schema,
-      plugins: [
-        inputRules({
-          rules: allInputRules.concat(buildInputRules(schema)),
-        }),
-        keymap(buildKeymap(schema)),
-        keymap(baseKeymap),
-        history.history(),
-        keymap({
-          'Mod-z': history.undo,
-          'Mod-y': history.redo,
-        }),
-      ],
     });
   }
 
@@ -146,16 +135,14 @@ export default class Editor extends Component {
     }
   }
 
-  handleAction = (action) => {
+  handleTransaction = (transaction) => {
     const { serializer } = this.state;
-    const newState = this.view.state.applyAction(action);
+    const newState = this.view.state.apply(transaction);
     const md = serializer.serialize(newState.doc);
-    console.log(md);
     const processedMarkdown = unified()
       .use(markdownToRemark)
       .use(remarkToMarkdown, { fences: true, commonmark: true, footnotes: true, pedantic: true })
       .processSync(md);
-    console.log(processedMarkdown.contents);
     this.props.onChange(processedMarkdown.contents);
     this.view.updateState(newState);
     if (newState.selection !== this.state.selection) {

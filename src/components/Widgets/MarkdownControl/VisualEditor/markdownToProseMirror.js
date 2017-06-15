@@ -14,7 +14,12 @@ export default function markdownToProseMirror({ state }) {
   // on the state object.
   const { schema, plugins } = state;
 
-  return transform;
+  // return transform;
+
+  return node => {
+    const result = transform(node);
+    return result;
+  };
 
   /**
    * The MDAST transformer function.

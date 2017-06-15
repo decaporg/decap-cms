@@ -4,8 +4,8 @@ import { schema } from "prosemirror-markdown";
 import makeParser from '../parser';
 
 const testSchema = new Schema({
-  nodes: schema.nodeSpec,
-  marks: schema.markSpec,
+  nodes: schema.spec.nodes,
+  marks: schema.spec.marks,
 });
 
 // Temporary plugins test, uses preloaded plugins from ../parser
