@@ -15,20 +15,6 @@ module.exports = merge.smart(require('./webpack.base.js'), {
     libraryTarget: 'umd',
     umdNamedDefine: true,
   },
-  module: {
-    rules: [
-      {
-        test: /\.css$/,
-        use: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: [
-            { loader: 'css-loader', options: { modules: true, importLoaders: 1 } },
-            { loader: 'postcss-loader' },
-          ],
-        }), // Use minified class names on production
-      },
-    ],
-  },
   context: path.join(__dirname, 'src'),
   plugins: [
     new webpack.DefinePlugin({
