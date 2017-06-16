@@ -30,7 +30,7 @@ CMS.registerWidget(field, control, \[preview\])
 **Example:**
 
 ```html
-<script src="https://unpkg.com/netlify-cms/dist/cms.js"></script>
+<script src="https://unpkg.com/netlify-cms@~0.4/dist/cms.js"></script>
 <script>
 var CategoriesControl = createClass({
   handleChange: function(e) {
@@ -60,7 +60,7 @@ Register a block level component for the Markdown editor
 **Example:**
 
 ```html
-<script src="https://unpkg.com/netlify-cms/dist/cms.js"></script>
+<script src="https://unpkg.com/netlify-cms@~0.4/dist/cms.js"></script>
 <script>
 CMS.registerEditorComponent({
   // Internal id of the component
