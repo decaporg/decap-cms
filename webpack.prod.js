@@ -15,14 +15,6 @@ module.exports = merge.smart(require('./webpack.base.js'), {
     libraryTarget: 'umd',
     umdNamedDefine: true,
   },
-  module: {
-    loaders: [
-      {
-        test: /\.css$/,
-        loader: ExtractTextPlugin.extract('style', 'css?modules&importLoaders=1!postcss'), // Use minified class names on production
-      },
-    ],
-  },
   context: path.join(__dirname, 'src'),
   plugins: [
     new webpack.DefinePlugin({
@@ -31,9 +23,8 @@ module.exports = merge.smart(require('./webpack.base.js'), {
       },
     }),
     new webpack.DefinePlugin({
-      NETLIFY_CMS_VERSION: JSON.stringify(require("./package.json").version)
+      NETLIFY_CMS_VERSION: JSON.stringify(require("./package.json").version),
     }),
-    new webpack.optimize.OccurenceOrderPlugin(),
 
     // Minify and optimize the JavaScript
     new webpack.optimize.UglifyJsPlugin({
@@ -44,7 +35,10 @@ module.exports = merge.smart(require('./webpack.base.js'), {
     }),
 
     // Extract CSS
-    new ExtractTextPlugin('[name].css', { allChunks: true }),
+    new ExtractTextPlugin({
+      filename: '[name].css',
+      allChunks: true
+    }),
 
     // During beta phase, generate source maps for better errors
     new webpack.SourceMapDevToolPlugin({

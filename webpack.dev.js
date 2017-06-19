@@ -10,9 +10,8 @@ const PORT = '8080';
 module.exports = merge.smart(require('./webpack.base.js'), {
   entry: {
     cms: [
-      'webpack/hot/dev-server',
-      `webpack-dev-server/client?http://${ HOST }:${ PORT }/`,
       'react-hot-loader/patch',
+      `webpack-dev-server/client?http://${ HOST }:${ PORT }/`,
       './index',
     ],
   },
@@ -33,7 +32,7 @@ module.exports = merge.smart(require('./webpack.base.js'), {
         test: /\.js?$/,
         exclude: /node_modules/,
         query: {
-          plugins: [path.resolve(__dirname, './node_modules/react-hot-loader/babel')]
+          plugins: [path.resolve(__dirname, './node_modules/react-hot-loader/babel')],
         },
       },
     ],
@@ -45,18 +44,20 @@ module.exports = merge.smart(require('./webpack.base.js'), {
       },
     }),
     new webpack.DefinePlugin({
-      NETLIFY_CMS_VERSION: JSON.stringify(require("./package.json").version + "-dev")
+      NETLIFY_CMS_VERSION: JSON.stringify(require("./package.json").version + "-dev"),
     }),
-    new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoErrorsPlugin(),
-    new ExtractTextPlugin('[name].css', { disable: true }),
+    new webpack.NoEmitOnErrorsPlugin(),
+    new ExtractTextPlugin({
+      filename: '[name].css',
+      disable: true,
+    }),
   ],
+  devtool: 'cheap-module-source-map',
   devServer: {
     hot: true,
     contentBase: 'example/',
     historyApiFallback: true,
-    devTool: 'cheap-module-source-map',
     disableHostCheck: true,
     headers: {"Access-Control-Allow-Origin": "*"},
   },
