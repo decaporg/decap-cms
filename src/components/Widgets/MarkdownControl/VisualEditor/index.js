@@ -1,19 +1,13 @@
 import React, { Component, PropTypes } from 'react';
-import { Map } from 'immutable';
-import { Schema } from 'prosemirror-model';
-import { EditorState } from 'prosemirror-state';
-import { EditorView } from 'prosemirror-view';
-import history from 'prosemirror-history';
-import {
-  blockQuoteRule, orderedListRule, bulletListRule, codeBlockRule, headingRule,
-  inputRules, allInputRules,
-} from 'prosemirror-inputrules';
-import { keymap } from 'prosemirror-keymap';
-import { schema as markdownSchema, defaultMarkdownSerializer } from 'prosemirror-markdown';
-import { baseKeymap, setBlockType, toggleMark } from 'prosemirror-commands';
+import { Map, List } from 'immutable';
+import { Editor as SlateEditor, Html as SlateHtml, Raw as SlateRaw} from 'slate';
 import unified from 'unified';
 import markdownToRemark from 'remark-parse';
+import remarkToRehype from 'remark-rehype';
+import rehypeToHtml from 'rehype-stringify';
 import remarkToMarkdown from 'remark-stringify';
+import htmlToRehype from 'rehype-parse';
+import rehypeToRemark from 'rehype-remark';
 import registry from '../../../../lib/registry';
 import { createAssetProxy } from '../../../../valueObjects/AssetProxy';
 import { buildKeymap } from './keymap';
@@ -32,28 +26,7 @@ function processUrl(url) {
   return `/${ url }`;
 }
 
-const ruleset = {
-  blockquote: [blockQuoteRule],
-  ordered_list: [orderedListRule],
-  bullet_list: [bulletListRule],
-  code_block: [codeBlockRule],
-  heading: [headingRule, 6],
-};
-
-function buildInputRules(schema) {
-  return Map(ruleset)
-    .filter(rule => schema.nodes[rule])
-    .map(rule => rule[0].apply(rule[0].slice(1)))
-    .toArray();
-}
-
-function markActive(state, type) {
-  const { from, to, empty, $from } = state.selection;
-  if (empty) {
-    return type.isInSet(state.storedMarks || $from.marks());
-  }
-  return state.doc.rangeHasMark(from, to, type);
-}
+const DEFAULT_NODE = 'paragraph';
 
 function schemaWithPlugins(schema, plugins) {
   let nodeSpec = schema.nodeSpec;
@@ -94,115 +67,229 @@ function createSerializer(schema, plugins) {
   return serializer;
 }
 
+const BLOCK_TAGS = {
+  p: 'paragraph',
+  li: 'list-item',
+  ul: 'bulleted-list',
+  ol: 'numbered-list',
+  blockquote: 'quote',
+  pre: 'code',
+  h1: 'heading-one',
+  h2: 'heading-two',
+  h3: 'heading-three',
+  h4: 'heading-four',
+  h5: 'heading-five',
+  h6: 'heading-six'
+}
+
+const MARK_TAGS = {
+  strong: 'bold',
+  em: 'italic',
+  u: 'underline',
+  s: 'strikethrough',
+  code: 'code'
+}
+
+const NODE_COMPONENTS = {
+  'quote': props => <blockquote {...props.attributes}>{props.children}</blockquote>,
+  'bulleted-list': props => <ul {...props.attributes}>{props.children}</ul>,
+  'heading-one': props => <h1 {...props.attributes}>{props.children}</h1>,
+  'heading-two': props => <h2 {...props.attributes}>{props.children}</h2>,
+  'heading-three': props => <h3 {...props.attributes}>{props.children}</h3>,
+  'heading-four': props => <h4 {...props.attributes}>{props.children}</h4>,
+  'heading-five': props => <h5 {...props.attributes}>{props.children}</h5>,
+  'heading-six': props => <h6 {...props.attributes}>{props.children}</h6>,
+  'list-item': props => <li {...props.attributes}>{props.children}</li>,
+  'numbered-list': props => <ol {...props.attributes}>{props.children}</ol>,
+  'code': props => <pre {...props.attributes}><code>{props.children}</code></pre>,
+  'link': props => <a href={props.node.data.href} {...props.attributes}>{props.children}</a>,
+  'paragraph': props => <p>{props.children}</p>,
+};
+
+const MARK_COMPONENTS = {
+  bold: props => <strong>{props.children}</strong>,
+  code: props => <code>{props.children}</code>,
+  italic: props => <em>{props.children}</em>,
+  underlined: props => <u>{props.children}</u>,
+};
+
+const RULES = [
+  {
+    deserialize(el, next) {
+      const block = BLOCK_TAGS[el.tagName]
+      if (!block) return
+      return {
+        kind: 'block',
+        type: block,
+        nodes: next(el.children)
+      }
+    },
+    serialize(entity, children) {
+      const component = NODE_COMPONENTS[entity.type]
+      if (!component) {
+        return;
+      }
+      return component({ children });
+    }
+  },
+  {
+    deserialize(el, next) {
+      const mark = MARK_TAGS[el.tagName]
+      if (!mark) return
+      return {
+        kind: 'mark',
+        type: mark,
+        nodes: next(el.children)
+      }
+    },
+    serialize(entity, children) {
+      const component = MARK_COMPONENTS[entity.type]
+      if (!component) {
+        return;
+      }
+      return component({ children });
+    }
+  },
+  {
+    // Special case for code blocks, which need to grab the nested children.
+    deserialize(el, next) {
+      if (el.tagName != 'pre') return
+      const code = el.children[0]
+      const children = code && code.tagName == 'code'
+        ? code.children
+        : el.children
+
+      return {
+        kind: 'block',
+        type: 'code',
+        nodes: next(children)
+      }
+    },
+  },
+  {
+    // Special case for links, to grab their href.
+    deserialize(el, next) {
+      if (el.tagName != 'a') return
+      return {
+        kind: 'inline',
+        type: 'link',
+        nodes: next(el.children),
+        data: {
+          href: el.attribs.href
+        }
+      }
+    },
+  },
+]
+
+const serializer = new SlateHtml({ rules: RULES });
+
 export default class Editor extends Component {
   constructor(props) {
     super(props);
     const plugins = registry.getEditorComponents();
-    const schema = schemaWithPlugins(markdownSchema, plugins);
+    const html = unified()
+      .use(markdownToRemark)
+      .use(remarkToRehype)
+      .use(rehypeToHtml)
+      .processSync(this.props.value || '')
+      .contents;
     this.state = {
+      editorState: serializer.deserialize(html),
+      schema: {
+        nodes: NODE_COMPONENTS,
+        marks: MARK_COMPONENTS,
+      },
       plugins,
-      schema,
-      parser: createMarkdownParser(schema, plugins),
-      serializer: createSerializer(schema, plugins),
     };
   }
 
-  componentDidMount() {
-    this.view = new EditorView(this.ref, {
-      state: this.createEditorState(),
-      onAction: this.handleAction,
-      dispatchTransaction: this.handleTransaction,
-    });
-  }
-
-  createEditorState() {
-    const { schema, parser } = this.state;
-    const doc = parser.parse(this.props.value || '');
-
-    return EditorState.create({
-      doc,
-      schema,
-    });
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    const editorValue = this.state.serializer.serialize(this.view.state.doc);
-    // Check that the content of the editor is well synchronized with the props value after rendering.
-    // Sometimes the editor isn't well updated (eg. after items reordering)
-    if (editorValue !== this.props.value && editorValue !== prevProps.value) {
-      // If the content of the editor isn't correct, we update its state with a new one.
-      this.view.updateState(this.createEditorState());
-    }
-  }
-
-  handleTransaction = (transaction) => {
-    const { serializer } = this.state;
-    const newState = this.view.state.apply(transaction);
-    const md = serializer.serialize(newState.doc);
-    const processedMarkdown = unified()
-      .use(markdownToRemark)
-      .use(remarkToMarkdown, { fences: true, commonmark: true, footnotes: true, pedantic: true })
-      .processSync(md);
-    this.props.onChange(processedMarkdown.contents);
-    this.view.updateState(newState);
-    if (newState.selection !== this.state.selection) {
-      this.handleSelection(newState);
-    }
-    this.view.focus();
+  handleDocumentChange = (doc, editorState) => {
+    const html = serializer.serialize(editorState);
+    const markdown = unified()
+      .use(htmlToRehype)
+      .use(rehypeToRemark)
+      .use(remarkToMarkdown)
+      .processSync(html)
+      .contents;
+    this.props.onChange(markdown);
   };
 
-  handleSelection = (state) => {
-    const { schema, selection } = state;
-    if (selection.from === selection.to) {
-      const { $from } = selection;
-      if ($from.parent && $from.parent.type === schema.nodes.paragraph && $from.parent.textContent === '') {
-        const pos = this.view.coordsAtPos(selection.from);
-        const editorPos = this.view.content.getBoundingClientRect();
-        const selectionPosition = { top: pos.top - editorPos.top, left: pos.left - editorPos.left };
-        this.setState({ selectionPosition });
+  hasMark = type => this.state.editorState.marks.some(mark => mark.type === type);
+  hasBlock = type => this.state.editorState.blocks.some(node => node.type === type);
+
+  handleKeyDown = (e, data, state) => {
+    if (!data.isMod) {
+      return;
+    }
+    const marks = {
+      b: 'bold',
+      i: 'italic',
+      u: 'underlined',
+      '`': 'code',
+    };
+
+    const mark = marks[data.key];
+
+    if (mark) {
+      state = state.transform().toggleMark(mark).apply();
+    }
+    return;
+  };
+
+  handleMarkClick = (event, type) => {
+    event.preventDefault();
+    const resolvedState = this.state.editorState.transform().toggleMark(type).apply();
+    this.ref.onChange(resolvedState);
+    this.setState({ editorState: resolvedState });
+  };
+
+  handleBlockClick = (event, type) => {
+    event.preventDefault();
+    let { editorState } = this.state;
+    const transform = editorState.transform();
+    const doc = editorState.document;
+    const isList = this.hasBlock('list-item')
+
+    // Handle everything except list buttons.
+    if (!['bulleted-list', 'numbered-list'].includes(type)) {
+      const isActive = this.hasBlock(type);
+      const transformed = transform.setBlock(isActive ? DEFAULT_NODE : type);
+
+      if (isList) {
+        transformed
+          .unwrapBlock('bulleted-list')
+          .unwrapBlock('numbered-list');
       }
-    } else {
-      const pos = this.view.coordsAtPos(selection.from);
-      const editorPos = this.view.content.getBoundingClientRect();
-      const selectionPosition = { top: pos.top - editorPos.top, left: pos.left - editorPos.left };
-      this.setState({ selectionPosition });
     }
-  };
 
-  handleRef = (ref) => {
-    this.ref = ref;
-  };
+    // Handle the extra wrapping required for list buttons.
+    else {
+      const isType = editorState.blocks.some(block => {
+        return !!doc.getClosest(block.key, parent => parent.type === type);
+      });
 
-  handleHeader = level => (
-    () => {
-      const { schema } = this.state;
-      const state = this.view.state;
-      const { $from, to, node } = state.selection;
-      let nodeType = schema.nodes.heading;
-      let attrs = { level };
-      let inHeader = node && node.hasMarkup(nodeType, attrs);
-      if (!inHeader) {
-        inHeader = to <= $from.end() && $from.parent.hasMarkup(nodeType, attrs);
+      if (isList && isType) {
+        transform
+          .setBlock(DEFAULT_NODE)
+          .unwrapBlock('bulleted-list')
+          .unwrapBlock('numbered-list');
+      } else if (isList) {
+        transform
+          .unwrapBlock(type === 'bulleted-list' ? 'numbered-list' : 'bulleted-list')
+          .wrapBlock(type);
+      } else {
+        transform
+          .setBlock('list-item')
+          .wrapBlock(type);
       }
-      if (inHeader) {
-        nodeType = schema.nodes.paragraph;
-        attrs = {};
-      }
-
-      const command = setBlockType(nodeType, { level });
-      command(state, this.handleAction);
     }
-  );
 
-  handleBold = () => {
-    const command = toggleMark(this.state.schema.marks.strong);
-    command(this.view.state, this.handleAction);
+    const resolvedState = transform.focus().apply();
+    this.ref.onChange(resolvedState);
+    this.setState({ editorState: resolvedState });
   };
 
-  handleItalic = () => {
-    const command = toggleMark(this.state.schema.marks.em);
-    command(this.view.state, this.handleAction);
-  };
 
   handleLink = () => {
     let url = null;
@@ -216,7 +303,7 @@ export default class Editor extends Component {
   handlePluginSubmit = (plugin, data) => {
     const { schema } = this.state;
     const nodeType = schema.nodes[`plugin_${ plugin.get('id') }`];
-    this.view.props.onAction(this.view.state.tr.replaceSelectionWith(nodeType.create(data.toJS())).action());
+    //this.view.props.onAction(this.view.state.tr.replaceSelectionWith(nodeType.create(data.toJS())).action());
   };
 
   handleDragEnter = (e) => {
@@ -263,12 +350,18 @@ export default class Editor extends Component {
     }
 
     nodes.forEach((node) => {
-      this.view.props.onAction(this.view.state.tr.replaceSelectionWith(node).action());
+      //this.view.props.onAction(this.view.state.tr.replaceSelectionWith(node).action());
     });
   };
 
   handleToggle = () => {
     this.props.onMode('raw');
+  };
+
+  getButtonProps = (type, isBlock) => {
+    const handler = isBlock ? this.handleBlockClick: this.handleMarkClick;
+    const isActive = isBlock ? this.hasBlock : this.hasMark;
+    return { onAction: e => handler(e, type), active: isActive(type) };
   };
 
   render() {
@@ -293,11 +386,13 @@ export default class Editor extends Component {
       >
         <Toolbar
           selectionPosition={selectionPosition}
-          onH1={this.handleHeader(1)}
-          onH2={this.handleHeader(2)}
-          onBold={this.handleBold}
-          onItalic={this.handleItalic}
-          onLink={this.handleLink}
+          buttons={{
+            h1: this.getButtonProps('heading-one', true),
+            h2: this.getButtonProps('heading-two', true),
+            bold: this.getButtonProps('bold'),
+            italic: this.getButtonProps('italic'),
+            link: this.getButtonProps('link'),
+          }}
           onToggleMode={this.handleToggle}
           plugins={plugins}
           onSubmit={this.handlePluginSubmit}
@@ -306,7 +401,16 @@ export default class Editor extends Component {
           getAsset={getAsset}
         />
       </Sticky>
-      <div ref={this.handleRef} />
+      <SlateEditor
+        className={styles.slateEditor}
+        state={this.state.editorState}
+        schema={this.state.schema}
+        onChange={editorState => this.setState({ editorState })}
+        onDocumentChange={this.handleDocumentChange}
+        onKeyDown={this.onKeyDown}
+        ref={ref => this.ref = ref}
+        spellCheck
+      />
       <div className={styles.shim} />
     </div>);
   }

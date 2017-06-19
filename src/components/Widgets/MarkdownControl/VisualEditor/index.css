@@ -68,86 +68,38 @@
   pointer-events: none;
 }
 
-:global {
-  & .ProseMirror {
-    position: relative;
-    background-color: var(--controlBGColor);
-    padding: 12px;
-    overflow: hidden;
-    border-radius: var(--borderRadius);
-    overflow-x: auto;
-    border: var(--textFieldBorder);
-    min-height: var(--richTextEditorMinHeight);
+.slateEditor {
+  position: relative;
+  background-color: var(--controlBGColor);
+  padding: 12px;
+  overflow: hidden;
+  border-radius: var(--borderRadius);
+  overflow-x: auto;
+  border: var(--textFieldBorder);
+  min-height: var(--richTextEditorMinHeight);
 
-    & ul,
-    & ol {
-      padding-left: 20px;
-    }
-
-    & pre > code {
-      display: block;
-      width: 100%;
-      overflow-y: auto;
-      background-color: #000;
-      color: #ccc;
-      border-radius: var(--borderRadius);
-      padding: 10px;
-    }
+  & ul,
+  & ol {
+    padding-left: 30px;
   }
 
-  & .ProseMirror-content {
+  & pre {
     white-space: pre-wrap;
   }
 
-  & .ProseMirror-drop-target {
-    position: absolute;
-    width: 1px;
-    background: #666;
-    pointer-events: none;
+  & pre > code {
+    display: block;
+    width: 100%;
+    overflow-y: auto;
+    background-color: #000;
+    color: #ccc;
+    border-radius: var(--borderRadius);
+    padding: 10px;
   }
 
-  & .ProseMirror-content ul, & .ProseMirror-content ol {
-    padding-left: 30px;
-    cursor: default;
-  }
-
-  & .ProseMirror-content blockquote {
+  & blockquote {
     padding-left: 1em;
     border-left: 3px solid #eee;
     margin-left: 0; margin-right: 0;
-  }
-
-  & .ProseMirror-content pre {
-    white-space: pre-wrap;
-  }
-
-  & .ProseMirror-content li {
-    position: relative;
-    pointer-events: none; /* Don't do weird stuff with marker clicks */
-  }
-  & .ProseMirror-content li > * {
-    pointer-events: auto;
-  }
-
-  & .ProseMirror-nodeselection *::selection { background: transparent; }
-  & .ProseMirror-nodeselection *::-moz-selection { background: transparent; }
-
-  & .ProseMirror-selectednode {
-    outline: 2px solid #8cf;
-  }
-
-  /* Make sure li selections wrap around markers */
-
-  & li.ProseMirror-selectednode {
-    outline: none;
-  }
-
-  & li.ProseMirror-selectednode:after {
-    content: "";
-    position: absolute;
-    left: -32px;
-    right: -2px; top: -2px; bottom: -2px;
-    border: 2px solid #8cf;
-    pointer-events: none;
   }
 }

@@ -332,11 +332,13 @@ export default class RawEditor extends React.Component {
       >
         <Toolbar
           selectionPosition={selectionPosition}
-          onH1={this.handleHeader('#')}
-          onH2={this.handleHeader('##')}
-          onBold={this.handleBold}
-          onItalic={this.handleItalic}
-          onLink={this.handleLink}
+          buttons={{
+            h1: { onAction: this.handleHeader('#') },
+            h2: { onAction: this.handleHeader('##') },
+            bold: { onAction: this.handleBold },
+            italic: { onAction: this.handleItalic },
+            link: { onAction: this.handleLink },
+          }}
           onToggleMode={this.handleToggle}
           plugins={plugins}
           onSubmit={this.handlePluginSubmit}

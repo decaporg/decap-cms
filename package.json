@@ -169,7 +169,7 @@
     "remark-stringify": "^3.0.1",
     "selection-position": "^1.0.0",
     "semaphore": "^1.0.5",
-    "slate": "^0.14.14",
+    "slate": "^0.20.3",
     "slate-drop-or-paste-images": "^0.2.0",
     "slug": "^0.9.1",
     "textarea-caret-position": "^0.1.1",

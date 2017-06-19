@@ -10,12 +10,7 @@ import styles from './Toolbar.css';
 
 export default class Toolbar extends React.Component {
   static propTypes = {
-    selectionPosition: PropTypes.object,
-    onH1: PropTypes.func.isRequired,
-    onH2: PropTypes.func.isRequired,
-    onBold: PropTypes.func.isRequired,
-    onItalic: PropTypes.func.isRequired,
-    onLink: PropTypes.func.isRequired,
+    buttons: PropTypes.object.isRequired,
     onToggleMode: PropTypes.func.isRequired,
     rawMode: PropTypes.bool,
     plugins: ImmutablePropTypes.map,
@@ -47,11 +42,7 @@ export default class Toolbar extends React.Component {
 
   render() {
     const {
-      onH1,
-      onH2,
-      onBold,
-      onItalic,
-      onLink,
+      buttons,
       onToggleMode,
       rawMode,
       plugins,
@@ -62,13 +53,19 @@ export default class Toolbar extends React.Component {
 
     const { activePlugin } = this.state;
 
+    const buttonsConfig = [
+      { label: 'Header 1', icon: 'h1', state: buttons.h1 },
+      { label: 'Header 2', icon: 'h2', state: buttons.h2 },
+      { label: 'Bold', icon: 'bold', state: buttons.bold },
+      { label: 'Italic', icon: 'italic', state: buttons.italic },
+      { label: 'Link', icon: 'link', state: buttons.link },
+    ];
+
     return (
       <div className={styles.Toolbar}>
-        <ToolbarButton label="Header 1" icon="h1" action={onH1}/>
-        <ToolbarButton label="Header 2" icon="h2" action={onH2}/>
-        <ToolbarButton label="Bold" icon="bold" action={onBold}/>
-        <ToolbarButton label="Italic" icon="italic" action={onItalic}/>
-        <ToolbarButton label="Link" icon="link" action={onLink}/>
+        { buttonsConfig.map((btn, i) => (
+          <ToolbarButton key={i} action={btn.state.onAction} active={btn.state.active} {...btn}/>
+        ))}
         <ToolbarComponentsMenu
           plugins={plugins}
           onComponentMenuItemClick={this.handlePluginFormDisplay}
