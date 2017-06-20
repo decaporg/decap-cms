@@ -101,7 +101,7 @@ Widget | UI | Data Type
 
 We’re always adding new widgets, and you can also create your own.
 
-### Customization
+## Customization
 
 Netlify CMS exposes a `window.CMS` global object that you can use to register custom widgets, previews, and editor plugins. The available methods are:
 
