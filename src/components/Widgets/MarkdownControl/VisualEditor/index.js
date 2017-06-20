@@ -195,7 +195,7 @@ export default class Editor extends Component {
       .processSync(this.props.value || '')
       .contents;
     this.state = {
-      editorState: serializer.deserialize(html),
+      editorState: serializer.deserialize(html || '<p></p>'),
       schema: {
         nodes: NODE_COMPONENTS,
         marks: MARK_COMPONENTS,
