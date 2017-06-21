@@ -1,5 +1,8 @@
 import React, { PropTypes } from 'react';
 import unified from 'unified';
+import markdownToRemark from 'remark-parse';
+import remarkToRehype from 'remark-rehype';
+import rehypeToHtml from 'rehype-stringify';
 import htmlToRehype from 'rehype-parse';
 import rehypeToRemark from 'rehype-remark';
 import remarkToMarkdown from 'remark-stringify';
@@ -31,7 +34,7 @@ function cleanupPaste(paste) {
     .use(rehypeSanitize)
     .use(rehypeReparse)
     .use(rehypeToRemark)
-    .use(remarkToMarkdown, { fences: true, footnotes: true, pedantic: true })
+    .use(remarkToMarkdown)
     .process(paste);
 }
 
@@ -72,7 +75,10 @@ export default class RawEditor extends React.Component {
   constructor(props) {
     super(props);
     const plugins = registry.getEditorComponents();
-    this.state = { plugins };
+    this.state = {
+      value: this.props.value,
+      plugins,
+    };
     this.shortcuts = {
       meta: {
         b: this.handleBold,
@@ -84,6 +90,13 @@ export default class RawEditor extends React.Component {
   componentDidMount() {
     this.updateHeight();
     this.element.addEventListener('paste', this.handlePaste, false);
+    const markdown = unified()
+      .use(htmlToRehype)
+      .use(rehypeToRemark)
+      .use(remarkToMarkdown)
+      .processSync(this.state.value)
+      .contents;
+    this.setState({ value: markdown });
   }
 
   componentDidUpdate() {
@@ -101,7 +114,7 @@ export default class RawEditor extends React.Component {
   getSelection() {
     const start = this.element.selectionStart;
     const end = this.element.selectionEnd;
-    const selected = (this.props.value || '').substr(start, end - start);
+    const selected = (this.state.value || '').substr(start, end - start);
     return { start, end, selected };
   }
 
@@ -131,22 +144,22 @@ export default class RawEditor extends React.Component {
     const afterSelection = value.substr(selection.end);
 
     this.newSelection = newSelection;
-    this.props.onChange(beforeSelection + changed + afterSelection);
+    this.handleChange(beforeSelection + changed + afterSelection);
   }
 
   replaceSelection(chars) {
-    const value = this.props.value || '';
+    const value = this.state.value || '';
     const selection = this.getSelection();
     const newSelection = Object.assign({}, selection);
     const beforeSelection = value.substr(0, selection.start);
     const afterSelection = value.substr(selection.end);
     newSelection.end = selection.start + chars.length;
     this.newSelection = newSelection;
-    this.props.onChange(beforeSelection + chars + afterSelection);
+    this.handleChange(beforeSelection + chars + afterSelection);
   }
 
   toggleHeader(header) {
-    const value = this.props.value || '';
+    const value = this.state.value || '';
     const selection = this.getSelection();
     const newSelection = Object.assign({}, selection);
     const lastNewline = value.lastIndexOf('\n', selection.start);
@@ -167,7 +180,7 @@ export default class RawEditor extends React.Component {
       newSelection.end += header.length + 1;
     }
     this.newSelection = newSelection;
-    this.props.onChange(beforeHeader + chars + afterHeader);
+    this.handleChange(beforeHeader + chars + afterHeader);
   }
 
   updateHeight() {
@@ -208,7 +221,7 @@ export default class RawEditor extends React.Component {
   };
 
   handleSelection = () => {
-    const value = this.props.value || '';
+    const value = this.state.value || '';
     const selection = this.getSelection();
     if (selection.start !== selection.end && !HAS_LINE_BREAK.test(selection.selected)) {
       try {
@@ -236,8 +249,15 @@ export default class RawEditor extends React.Component {
   };
 
   handleChange = (e) => {
-    this.props.onChange(e.target.value);
+    const html = unified()
+      .use(markdownToRemark)
+      .use(remarkToRehype)
+      .use(rehypeToHtml)
+      .processSync(e.target.value)
+      .contents;
+    this.props.onChange(html);
     this.updateHeight();
+    this.setState({ value: e.target.value });
   };
 
   handlePluginSubmit = (plugin, data) => {
@@ -293,7 +313,7 @@ export default class RawEditor extends React.Component {
   };
 
   handlePaste = (e) => {
-    const { value, onChange } = this.props;
+    const { value } = this.props;
     const selection = this.getSelection();
     const beforeSelection = value.substr(0, selection.start);
     const afterSelection = value.substr(selection.end);
@@ -302,7 +322,7 @@ export default class RawEditor extends React.Component {
       const newSelection = Object.assign({}, selection);
       newSelection.start = newSelection.end = beforeSelection.length + paste.length;
       this.newSelection = newSelection;
-      onChange(beforeSelection + paste + afterSelection);
+      this.handleChange(beforeSelection + paste + afterSelection);
     });
   };
 
@@ -352,7 +372,7 @@ export default class RawEditor extends React.Component {
         className={styles.textarea}
         inputRef={this.handleRef}
         className={styles.textarea}
-        value={this.props.value || ''}
+        value={this.state.value || ''}
         onKeyDown={this.handleKey}
         onChange={this.handleChange}
         onSelect={this.handleSelection}

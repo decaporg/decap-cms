@@ -9,12 +9,30 @@ import remarkToMarkdown from 'remark-stringify';
 import htmlToRehype from 'rehype-parse';
 import rehypeToRemark from 'rehype-remark';
 import registry from '../../../../lib/registry';
+import { registerControlValueSerializer } from '../../serializers';
 import { createAssetProxy } from '../../../../valueObjects/AssetProxy';
 import { buildKeymap } from './keymap';
 import createMarkdownParser from './parser';
 import Toolbar from '../Toolbar/Toolbar';
 import { Sticky } from '../../../UI/Sticky/Sticky';
 import styles from './index.css';
+
+// Register handler to transform html to markdown before persist
+registerControlValueSerializer('markdown', {
+  serialize: value => unified()
+    .use(htmlToRehype)
+    .use(htmlToRehype)
+    .use(rehypeToRemark)
+    .use(remarkToMarkdown)
+    .processSync(value)
+    .contents,
+  deserialize: value => unified()
+    .use(markdownToRemark)
+    .use(remarkToRehype)
+    .use(rehypeToHtml)
+    .processSync(value)
+    .contents
+});
 
 function processUrl(url) {
   if (url.match(/^(https?:\/\/|mailto:|\/)/)) {
@@ -209,14 +227,8 @@ export default class Editor extends Component {
   constructor(props) {
     super(props);
     const plugins = registry.getEditorComponents();
-    const html = unified()
-      .use(markdownToRemark)
-      .use(remarkToRehype)
-      .use(rehypeToHtml)
-      .processSync(this.props.value || '')
-      .contents;
     this.state = {
-      editorState: serializer.deserialize(html || '<p></p>'),
+      editorState: serializer.deserialize(this.props.value || '<p></p>'),
       schema: {
         nodes: NODE_COMPONENTS,
         marks: MARK_COMPONENTS,
@@ -227,13 +239,7 @@ export default class Editor extends Component {
 
   handleDocumentChange = (doc, editorState) => {
     const html = serializer.serialize(editorState);
-    const markdown = unified()
-      .use(htmlToRehype)
-      .use(rehypeToRemark)
-      .use(remarkToMarkdown)
-      .processSync(html)
-      .contents;
-    this.props.onChange(markdown);
+    this.props.onChange(html);
   };
 
   hasMark = type => this.state.editorState.marks.some(mark => mark.type === type);

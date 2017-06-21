@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import ImmutablePropTypes from "react-immutable-proptypes";
+import isEqual from 'lodash/isEqual';
 
 const truthy = () => ({ error: false });
 
@@ -23,7 +24,7 @@ class ControlHOC extends Component {
   };
 
   shouldComponentUpdate(nextProps) {
-    return nextProps.value !== this.props.value;
+    return this.props.value !== nextProps.value;
   }
 
   processInnerControlRef = (wrappedControl) => {

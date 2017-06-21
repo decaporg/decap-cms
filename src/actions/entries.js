@@ -1,10 +1,12 @@
-import { List } from 'immutable';
+import { List, Map } from 'immutable';
+import { isArray, isObject, isEmpty, isNil } from 'lodash';
 import { actions as notifActions } from 'redux-notifications';
 import { closeEntry } from './editor';
 import { currentBackend } from '../backends/backend';
 import { getIntegrationProvider } from '../integrations';
 import { getAsset, selectIntegration } from '../reducers';
 import { createEntry } from '../valueObjects/Entry';
+import { controlValueSerializers } from '../components/Widgets/serializers';
 
 const { notifSend } = notifActions;
 
@@ -216,9 +218,27 @@ export function loadEntry(collection, slug) {
     const backend = currentBackend(state.config);
     dispatch(entryLoading(collection, slug));
     return backend.getEntry(collection, slug)
-      .then(loadedEntry => (
-        dispatch(entryLoaded(collection, loadedEntry))
-      ))
+      .then(loadedEntry => {
+        const deserializeValues = (values, fields) => {
+          return fields.reduce((acc, field) => {
+            const fieldName = field.get('name');
+            const value = values[fieldName];
+            const serializer = controlValueSerializers[field.get('widget')];
+            if (isArray(value) && !isEmpty(value)) {
+              acc[fieldName] = value.map(val => deserializeValues(val, field.get('fields')));
+            } else if (isObject(value) && !isEmpty(value)) {
+              acc[fieldName] = deserializeValues(value, field.get('fields'));
+            } else if (serializer && !isNil(value)) {
+              acc[fieldName] = serializer.deserialize(value);
+            } else if (!isNil(value)) {
+              acc[fieldName] = value;
+            }
+            return acc;
+          }, {});
+        };
+        loadedEntry.data = deserializeValues(loadedEntry.data, collection.get('fields'));
+        return dispatch(entryLoaded(collection, loadedEntry))
+      })
       .catch((error) => {
         dispatch(notifSend({
           message: `Failed to load entry: ${ error.message }`,
@@ -265,20 +285,40 @@ export function persistEntry(collection) {
 
     // Early return if draft contains validation errors
     if (!entryDraft.get('fieldsErrors').isEmpty()) return Promise.reject();
-    
+
     const backend = currentBackend(state.config);
     const assetProxies = entryDraft.get('mediaFiles').map(path => getAsset(state, path));
     const entry = entryDraft.get('entry');
-    dispatch(entryPersisting(collection, entry));
+    const serializeValues = (values, fields) => {
+      return fields.reduce((acc, field) => {
+        const fieldName = field.get('name');
+        const value = values.get(fieldName);
+        const serializer = controlValueSerializers[field.get('widget')];
+        if (List.isList(value)) {
+          return acc.set(fieldName, value.map(val => serializeValues(val, field.get('fields'))));
+        } else if (Map.isMap(value)) {
+          return acc.set(fieldName, serializeValues(value, field.get('fields')));
+        } else if (serializer && !isNil(value)) {
+          return acc.set(fieldName, serializer.serialize(value));
+        } else if (!isNil(value)) {
+          return acc.set(fieldName, value);
+        }
+        return acc;
+      }, Map());
+    };
+    const transformedData = serializeValues(entryDraft.getIn(['entry', 'data']), collection.get('fields'));
+    const transformedEntry = entry.set('data', transformedData);
+    const transformedEntryDraft = entryDraft.set('entry', transformedEntry);
+    dispatch(entryPersisting(collection, transformedEntry));
     return backend
-      .persistEntry(state.config, collection, entryDraft, assetProxies.toJS())
+      .persistEntry(state.config, collection, transformedEntryDraft, assetProxies.toJS())
       .then(() => {
         dispatch(notifSend({
           message: 'Entry saved',
           kind: 'success',
           dismissAfter: 4000,
         }));
-        return dispatch(entryPersisted(collection, entry));
+        return dispatch(entryPersisted(collection, transformedEntry));
       })
       .catch((error) => {
         dispatch(notifSend({
@@ -286,7 +326,7 @@ export function persistEntry(collection) {
           kind: 'danger',
           dismissAfter: 8000,
         }));
-        return dispatch(entryPersistFail(collection, entry, error));
+        return dispatch(entryPersistFail(collection, transformedEntry, error));
       });
   };
 }
