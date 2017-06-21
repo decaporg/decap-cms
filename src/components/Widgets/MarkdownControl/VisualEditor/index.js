@@ -260,7 +260,7 @@ export default class Editor extends Component {
 
   handleMarkClick = (event, type) => {
     event.preventDefault();
-    const resolvedState = this.state.editorState.transform().toggleMark(type).apply();
+    const resolvedState = this.state.editorState.transform().focus().toggleMark(type).apply();
     this.ref.onChange(resolvedState);
     this.setState({ editorState: resolvedState });
   };
@@ -268,7 +268,7 @@ export default class Editor extends Component {
   handleBlockClick = (event, type) => {
     event.preventDefault();
     let { editorState } = this.state;
-    const transform = editorState.transform();
+    const transform = editorState.transform().focus();
     const doc = editorState.document;
     const isList = this.hasBlock('list-item')
 
@@ -306,7 +306,7 @@ export default class Editor extends Component {
       }
     }
 
-    const resolvedState = transform.focus().apply();
+    const resolvedState = transform.apply();
     this.ref.onChange(resolvedState);
     this.setState({ editorState: resolvedState });
   };
