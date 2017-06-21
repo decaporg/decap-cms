@@ -90,27 +90,36 @@ const MARK_TAGS = {
   code: 'code'
 }
 
-const NODE_COMPONENTS = {
-  'quote': props => <blockquote {...props.attributes}>{props.children}</blockquote>,
+const BLOCK_COMPONENTS = {
+  'paragraph': props => <p>{props.children}</p>,
+  'list-item': props => <li {...props.attributes}>{props.children}</li>,
   'bulleted-list': props => <ul {...props.attributes}>{props.children}</ul>,
+  'numbered-list': props => <ol {...props.attributes}>{props.children}</ol>,
+  'quote': props => <blockquote {...props.attributes}>{props.children}</blockquote>,
+  'code': props => <pre {...props.attributes}><code>{props.children}</code></pre>,
   'heading-one': props => <h1 {...props.attributes}>{props.children}</h1>,
   'heading-two': props => <h2 {...props.attributes}>{props.children}</h2>,
   'heading-three': props => <h3 {...props.attributes}>{props.children}</h3>,
   'heading-four': props => <h4 {...props.attributes}>{props.children}</h4>,
   'heading-five': props => <h5 {...props.attributes}>{props.children}</h5>,
   'heading-six': props => <h6 {...props.attributes}>{props.children}</h6>,
-  'list-item': props => <li {...props.attributes}>{props.children}</li>,
-  'numbered-list': props => <ol {...props.attributes}>{props.children}</ol>,
-  'code': props => <pre {...props.attributes}><code>{props.children}</code></pre>,
-  'link': props => <a href={props.node.data.href} {...props.attributes}>{props.children}</a>,
-  'paragraph': props => <p>{props.children}</p>,
 };
+
+const NODE_COMPONENTS = {
+  ...BLOCK_COMPONENTS,
+  'link': props => {
+    const href = props.node && props.node.getIn(['data', 'href']) || props.href;
+    return <a href={href} {...props.attributes}>{props.children}</a>;
+  },
+}
+
 
 const MARK_COMPONENTS = {
   bold: props => <strong>{props.children}</strong>,
-  code: props => <code>{props.children}</code>,
   italic: props => <em>{props.children}</em>,
   underlined: props => <u>{props.children}</u>,
+  strikethrough: props => <s>{props.children}</s>,
+  code: props => <code>{props.children}</code>,
 };
 
 const RULES = [
@@ -125,7 +134,7 @@ const RULES = [
       }
     },
     serialize(entity, children) {
-      const component = NODE_COMPONENTS[entity.type]
+      const component = BLOCK_COMPONENTS[entity.type]
       if (!component) {
         return;
       }
@@ -166,7 +175,6 @@ const RULES = [
       }
     },
   },
-  /*
   {
     // Special case for links, to grab their href.
     deserialize(el, next) {
@@ -180,8 +188,19 @@ const RULES = [
         }
       }
     },
+    serialize(entity, children) {
+      if (entity.type !== 'link') {
+        return;
+      }
+      const data = entity.get('data');
+      const props = {
+        href: data.get('href'),
+        attributes: data.get('attributes'),
+        children,
+      };
+      return NODE_COMPONENTS.link(props);
+    }
   },
-  */
 ]
 
 const serializer = new SlateHtml({ rules: RULES });
