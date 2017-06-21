@@ -166,6 +166,7 @@ const RULES = [
       }
     },
   },
+  /*
   {
     // Special case for links, to grab their href.
     deserialize(el, next) {
@@ -180,6 +181,7 @@ const RULES = [
       }
     },
   },
+  */
 ]
 
 const serializer = new SlateHtml({ rules: RULES });
