@@ -30,7 +30,7 @@ const slugFormatter = (template = "{{slug}}", entryData) => {
   const getIdentifier = (entryData) => {
     const validIdentifierFields = ["title", "path"];
     const identifiers = validIdentifierFields.map((field) =>
-      entryData.find((_, key) => key.toLowerCase() === field)
+      entryData.find((_, key) => key.toLowerCase().trim() === field)
     );
 
     const identifier = identifiers.find(ident => ident !== undefined);
