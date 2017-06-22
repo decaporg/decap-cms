@@ -29,19 +29,17 @@ const slugFormatter = (template = "{{slug}}", entryData) => {
 
   const getIdentifier = (entryData) => {
 	  const validIdentifierFields = ["title", "path"];
-	  const identifiers = validIdentifierFields.map((field) => {
-	  	return entryData.find((_, key) => {
-	  		return key.toLowerCase() === field;
-	  	});
-	  });
-	  
-	  const identifier = identifiers.find(i => typeof i !== 'undefined');
+	  const identifiers = validIdentifierFields.map((field) =>
+	  	entryData.find((_, key) => key.toLowerCase() === field)
+	  );
 
-	  if (typeof identifier === 'undefined') {
+	  const identifier = identifiers.find(ident => ident !== undefined);
+
+	  if (identifier === undefined) {
 	      throw new Error("Collection must have a field name that is a valid entry identifier"); 
-	  } else {
-	  	return identifier;
 	  }
+	  
+	  return identifier;
   };
   
   return template.replace(/\{\{([^\}]+)\}\}/g, (_, field) => {
