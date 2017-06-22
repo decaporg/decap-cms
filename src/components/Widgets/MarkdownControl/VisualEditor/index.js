@@ -16,7 +16,12 @@ import Toolbar from '../Toolbar/Toolbar';
 import { Sticky } from '../../../UI/Sticky/Sticky';
 import styles from './index.css';
 
-// Register handler to transform html to markdown before persist
+/**
+ * Slate can serialize to html, but we persist the value as markdown. Serializing
+ * the html to markdown on every keystroke is a big perf hit, so we'll register
+ * functions to perform those actions only when necessary, such as after loading
+ * and before persisting.
+ */
 registry.registerWidgetValueSerializer('markdown', {
   serialize: value => unified()
     .use(htmlToRehype)
