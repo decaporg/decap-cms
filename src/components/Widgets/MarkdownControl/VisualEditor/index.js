@@ -9,7 +9,6 @@ import remarkToMarkdown from 'remark-stringify';
 import htmlToRehype from 'rehype-parse';
 import rehypeToRemark from 'rehype-remark';
 import registry from '../../../../lib/registry';
-import { registerControlValueSerializer } from '../../serializers';
 import { createAssetProxy } from '../../../../valueObjects/AssetProxy';
 import { buildKeymap } from './keymap';
 import createMarkdownParser from './parser';
@@ -18,7 +17,7 @@ import { Sticky } from '../../../UI/Sticky/Sticky';
 import styles from './index.css';
 
 // Register handler to transform html to markdown before persist
-registerControlValueSerializer('markdown', {
+registry.registerWidgetValueSerializer('markdown', {
   serialize: value => unified()
     .use(htmlToRehype)
     .use(htmlToRehype)

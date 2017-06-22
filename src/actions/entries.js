@@ -6,7 +6,7 @@ import { currentBackend } from '../backends/backend';
 import { getIntegrationProvider } from '../integrations';
 import { getAsset, selectIntegration } from '../reducers';
 import { createEntry } from '../valueObjects/Entry';
-import { controlValueSerializers } from '../components/Widgets/serializers';
+import registry from '../lib/registry';
 
 const { notifSend } = notifActions;
 
@@ -223,7 +223,7 @@ export function loadEntry(collection, slug) {
           return fields.reduce((acc, field) => {
             const fieldName = field.get('name');
             const value = values[fieldName];
-            const serializer = controlValueSerializers[field.get('widget')];
+            const serializer = registry.getWidgetValueSerializer(field.get('widget'));
             if (isArray(value) && !isEmpty(value)) {
               acc[fieldName] = value.map(val => deserializeValues(val, field.get('fields')));
             } else if (isObject(value) && !isEmpty(value)) {
@@ -293,7 +293,7 @@ export function persistEntry(collection) {
       return fields.reduce((acc, field) => {
         const fieldName = field.get('name');
         const value = values.get(fieldName);
-        const serializer = controlValueSerializers[field.get('widget')];
+        const serializer = registry.getWidgetValueSerializer(field.get('widget'));
         if (List.isList(value)) {
           return acc.set(fieldName, value.map(val => serializeValues(val, field.get('fields'))));
         } else if (Map.isMap(value)) {

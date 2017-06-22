@@ -6,6 +6,7 @@ const _registry = {
   previewStyles: [],
   widgets: {},
   editorComponents: Map(),
+  widgetValueSerializers: {},
 };
 
 export default {
@@ -36,5 +37,11 @@ export default {
   },
   getEditorComponents() {
     return _registry.editorComponents;
-  }
+  },
+  registerWidgetValueSerializer(widgetName, serializer) {
+    _registry.widgetValueSerializers[widgetName] = serializer;
+  },
+  getWidgetValueSerializer(widgetName) {
+    return _registry.widgetValueSerializers[widgetName];
+  },
 };
