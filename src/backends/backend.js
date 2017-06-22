@@ -26,7 +26,24 @@ class LocalStorageAuthStore {
 
 const slugFormatter = (template = "{{slug}}", entryData) => {
   const date = new Date();
-  const identifier = entryData.get("title", entryData.get("path"));
+
+  const getIdentifier = (entryData) => {
+	  const validIdentifierFields = ["title", "path"];
+	  const identifiers = validIdentifierFields.map((field) => {
+	  	return entryData.find((_, key) => {
+	  		return key.toLowerCase() === field;
+	  	});
+	  });
+	  
+	  const identifier = identifiers.find(i => typeof i !== 'undefined');
+
+	  if (typeof identifier === 'undefined') {
+	      throw new Error("Collection must have a field name that is a valid entry identifier"); 
+	  } else {
+	  	return identifier;
+	  }
+  };
+  
   return template.replace(/\{\{([^\}]+)\}\}/g, (_, field) => {
     switch (field) {
       case "year":
@@ -36,7 +53,7 @@ const slugFormatter = (template = "{{slug}}", entryData) => {
       case "day":
         return (`0${ date.getDate() }`).slice(-2);
       case "slug":
-        return slug(identifier.trim(), {lower: true});
+        return slug(getIdentifier(entryData).trim(), {lower: true});
       default:
         return slug(entryData.get(field, "").trim(), {lower: true});
     }
