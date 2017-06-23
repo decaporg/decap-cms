@@ -83,7 +83,12 @@ export default class RawEditor extends React.Component {
     super(props);
     const plugins = registry.getEditorComponents();
     this.state = {
-      value: this.props.value,
+      value: unified()
+        .use(htmlToRehype, rehypeParseConfig)
+        .use(rehypeToRemark)
+        .use(remarkToMarkdown, remarkStringifyConfig)
+        .processSync(this.props.value)
+        .contents,
       plugins,
     };
     this.shortcuts = {
@@ -97,13 +102,6 @@ export default class RawEditor extends React.Component {
   componentDidMount() {
     this.updateHeight();
     this.element.addEventListener('paste', this.handlePaste, false);
-    const markdown = unified()
-      .use(htmlToRehype, rehypeParseConfig)
-      .use(rehypeToRemark)
-      .use(remarkToMarkdown, remarkStringifyConfig)
-      .processSync(this.state.value)
-      .contents;
-    this.setState({ value: markdown });
   }
 
   componentDidUpdate() {

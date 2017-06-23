@@ -247,6 +247,14 @@ export default class Editor extends Component {
     };
   }
 
+  handlePaste = (e, data, state) => {
+    if (data.type !== 'html' || data.isShift) {
+      return;
+    }
+    const fragment = serializer.deserialize(data.html).document;
+    return state.transform().insertFragment(fragment).apply();
+  }
+
   handleDocumentChange = (doc, editorState) => {
     const html = serializer.serialize(editorState);
     this.props.onChange(html);
@@ -445,6 +453,7 @@ export default class Editor extends Component {
         onChange={editorState => this.setState({ editorState })}
         onDocumentChange={this.handleDocumentChange}
         onKeyDown={this.onKeyDown}
+        onPaste={this.handlePaste}
         ref={ref => this.ref = ref}
         spellCheck
       />
