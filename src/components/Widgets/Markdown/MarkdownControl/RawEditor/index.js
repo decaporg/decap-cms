@@ -128,7 +128,7 @@ export default class RawEditor extends React.Component {
   surroundSelection(chars) {
     const selection = this.getSelection();
     const newSelection = Object.assign({}, selection);
-    const { value } = this.props;
+    const { value } = this.state;
     const escapedChars = chars.replace(/\*/g, '\\*');
     const regexp = new RegExp(`^${ escapedChars }.*${ escapedChars }$`);
     let changed = chars + selection.selected + chars;
