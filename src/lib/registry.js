@@ -1,5 +1,5 @@
 import { Map } from 'immutable';
-import { newEditorPlugin } from '../components/Widgets/MarkdownControl/plugins';
+import { newEditorPlugin } from '../components/Widgets/Markdown/MarkdownControl/plugins';
 
 const _registry = {
   templates: {},

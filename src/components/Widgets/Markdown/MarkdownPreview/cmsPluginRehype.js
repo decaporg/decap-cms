@@ -5,7 +5,7 @@ import isString from 'lodash/isString';
 import isEmpty from 'lodash/isEmpty';
 import unified from 'unified';
 import htmlToRehype from 'rehype-parse';
-import registry from "../../../lib/registry";
+import registry from "../../../../lib/registry";
 
 const cmsPluginRehype = ({ getAsset }) => {
 

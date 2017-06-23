@@ -5,7 +5,7 @@ import remarkToRehype from 'remark-rehype';
 import htmlToRehype from 'rehype-parse';
 import rehypeToReact from 'rehype-react';
 import cmsPluginToRehype from './cmsPluginRehype';
-import previewStyle from '../defaultPreviewStyle';
+import previewStyle from '../../defaultPreviewStyle';
 
 const MarkdownPreview = ({ value, getAsset }) => {
   return value === null ? null : <div style={previewStyle} dangerouslySetInnerHTML={{__html: value}}></div>;

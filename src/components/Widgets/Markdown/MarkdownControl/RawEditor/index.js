@@ -10,10 +10,16 @@ import rehypeSanitize from 'rehype-sanitize';
 import rehypeReparse from 'rehype-raw';
 import CaretPosition from 'textarea-caret-position';
 import TextareaAutosize from 'react-textarea-autosize';
-import registry from '../../../../lib/registry';
-import { createAssetProxy } from '../../../../valueObjects/AssetProxy';
+import registry from '../../../../../lib/registry';
+import {
+  remarkParseConfig,
+  remarkStringifyConfig,
+  rehypeParseConfig,
+  rehypeStringifyConfig,
+} from '../../unifiedConfig';
+import { createAssetProxy } from '../../../../../valueObjects/AssetProxy';
 import Toolbar from '../Toolbar/Toolbar';
-import { Sticky } from '../../../UI/Sticky/Sticky';
+import { Sticky } from '../../../../UI/Sticky/Sticky';
 import styles from './index.css';
 
 const HAS_LINE_BREAK = /\n/m;
@@ -30,11 +36,11 @@ function processUrl(url) {
 
 function cleanupPaste(paste) {
   return unified()
-    .use(htmlToRehype, { fragment: true })
+    .use(htmlToRehype, rehypeParseConfig)
     .use(rehypeSanitize)
     .use(rehypeReparse)
     .use(rehypeToRemark)
-    .use(remarkToMarkdown)
+    .use(remarkToMarkdown, remarkStringifyConfig)
     .process(paste);
 }
 
@@ -91,9 +97,9 @@ export default class RawEditor extends React.Component {
     this.updateHeight();
     this.element.addEventListener('paste', this.handlePaste, false);
     const markdown = unified()
-      .use(htmlToRehype)
+      .use(htmlToRehype, rehypeParseConfig)
       .use(rehypeToRemark)
-      .use(remarkToMarkdown)
+      .use(remarkToMarkdown, remarkStringifyConfig)
       .processSync(this.state.value)
       .contents;
     this.setState({ value: markdown });
@@ -250,9 +256,9 @@ export default class RawEditor extends React.Component {
 
   handleChange = (e) => {
     const html = unified()
-      .use(markdownToRemark)
+      .use(markdownToRemark, remarkParseConfig)
       .use(remarkToRehype)
-      .use(rehypeToHtml)
+      .use(rehypeToHtml, rehypeStringifyConfig)
       .processSync(e.target.value)
       .contents;
     this.props.onChange(html);

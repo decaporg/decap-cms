@@ -5,7 +5,7 @@ import Switch from 'react-toolbox/lib/switch';
 import ToolbarButton from './ToolbarButton';
 import ToolbarComponentsMenu from './ToolbarComponentsMenu';
 import ToolbarPluginForm from './ToolbarPluginForm';
-import { Icon } from '../../../UI';
+import { Icon } from '../../../../UI';
 import styles from './Toolbar.css';
 
 export default class Toolbar extends React.Component {

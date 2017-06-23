@@ -8,12 +8,18 @@ import rehypeToHtml from 'rehype-stringify';
 import remarkToMarkdown from 'remark-stringify';
 import htmlToRehype from 'rehype-parse';
 import rehypeToRemark from 'rehype-remark';
-import registry from '../../../../lib/registry';
-import { createAssetProxy } from '../../../../valueObjects/AssetProxy';
+import registry from '../../../../../lib/registry';
+import { createAssetProxy } from '../../../../../valueObjects/AssetProxy';
+import {
+  remarkParseConfig,
+  remarkStringifyConfig,
+  rehypeParseConfig,
+  rehypeStringifyConfig,
+} from '../../unifiedConfig';
 import { buildKeymap } from './keymap';
 import createMarkdownParser from './parser';
 import Toolbar from '../Toolbar/Toolbar';
-import { Sticky } from '../../../UI/Sticky/Sticky';
+import { Sticky } from '../../../../UI/Sticky/Sticky';
 import styles from './index.css';
 
 /**
@@ -24,16 +30,16 @@ import styles from './index.css';
  */
 registry.registerWidgetValueSerializer('markdown', {
   serialize: value => unified()
-    .use(htmlToRehype)
+    .use(htmlToRehype, rehypeParseConfig)
     .use(htmlToRehype)
     .use(rehypeToRemark)
-    .use(remarkToMarkdown)
+    .use(remarkToMarkdown, remarkStringifyConfig)
     .processSync(value)
     .contents,
   deserialize: value => unified()
-    .use(markdownToRemark)
+    .use(markdownToRemark, remarkParseConfig)
     .use(remarkToRehype)
-    .use(rehypeToHtml)
+    .use(rehypeToHtml, rehypeStringifyConfig)
     .processSync(value)
     .contents
 });

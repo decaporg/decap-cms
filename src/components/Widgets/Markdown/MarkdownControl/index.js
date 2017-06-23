@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
-import registry from '../../../lib/registry';
+import registry from '../../../../lib/registry';
 import RawEditor from './RawEditor';
 import VisualEditor from './VisualEditor';
-import { StickyContainer } from '../../UI/Sticky/Sticky';
+import { StickyContainer } from '../../../UI/Sticky/Sticky';
 
 const MODE_STORAGE_KEY = 'cms.md-mode';
 

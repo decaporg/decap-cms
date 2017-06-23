@@ -1,4 +1,4 @@
-@import "../../../UI/theme";
+@import "../../../../UI/theme";
 
 .editorControlBar {
   z-index: 1;
