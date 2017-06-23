@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import get from 'lodash/get';
 import unified from 'unified';
 import markdownToRemark from 'remark-parse';
 import remarkToRehype from 'remark-rehype';
@@ -255,15 +256,17 @@ export default class RawEditor extends React.Component {
   };
 
   handleChange = (e) => {
+    // handleChange may receive an event or a value
+    const value = get(e, ['target', 'value']) || e;
     const html = unified()
       .use(markdownToRemark, remarkParseConfig)
       .use(remarkToRehype)
       .use(rehypeToHtml, rehypeStringifyConfig)
-      .processSync(e.target.value)
+      .processSync(value)
       .contents;
     this.props.onChange(html);
     this.updateHeight();
-    this.setState({ value: e.target.value });
+    this.setState({ value });
   };
 
   handlePluginSubmit = (plugin, data) => {
@@ -319,7 +322,7 @@ export default class RawEditor extends React.Component {
   };
 
   handlePaste = (e) => {
-    const { value } = this.props;
+    const { value } = this.state;
     const selection = this.getSelection();
     const beforeSelection = value.substr(0, selection.start);
     const afterSelection = value.substr(selection.end);
