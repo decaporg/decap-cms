@@ -59,3 +59,5 @@ The control component receives 3 callbacks as props: `onChange`, `onAddAsset` & 
 Both control and preview widgets receive a `getAsset` selector via props. Displaying the media (or its URI) for the user should always be done via `getAsset`, as it returns an AssetProxy that can return the correct value for both medias already persisted on the server and cached media not yet uploaded.
 
 The actual persistence of the content and medias inserted into the control component are delegated to the backend implementation. The backend will be called with the updated values and a a list of assetProxy objects for each field of the entry, and should return a promise that can resolve into the persisted entry object and the list of the persisted media URIs.
+
+test
