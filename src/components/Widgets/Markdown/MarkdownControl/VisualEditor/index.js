@@ -107,7 +107,7 @@ const BLOCK_TAGS = {
   h3: 'heading-three',
   h4: 'heading-four',
   h5: 'heading-five',
-  h6: 'heading-six'
+  h6: 'heading-six',
 }
 
 const MARK_TAGS = {
@@ -115,6 +115,7 @@ const MARK_TAGS = {
   em: 'italic',
   u: 'underline',
   s: 'strikethrough',
+  del: 'strikethrough',
   code: 'code'
 }
 
@@ -131,6 +132,12 @@ const BLOCK_COMPONENTS = {
   'heading-four': props => <h4 {...props.attributes}>{props.children}</h4>,
   'heading-five': props => <h5 {...props.attributes}>{props.children}</h5>,
   'heading-six': props => <h6 {...props.attributes}>{props.children}</h6>,
+  'image': props => {
+    const data = props.node && props.node.get('data');
+    const src = data && data.get('src', props.src);
+    const alt = data && data.get('alt', props.alt);
+    return <img src={src} alt={alt} {...props.attributes}/>;
+  },
 };
 
 const NODE_COMPONENTS = {
@@ -139,8 +146,7 @@ const NODE_COMPONENTS = {
     const href = props.node && props.node.getIn(['data', 'href']) || props.href;
     return <a href={href} {...props.attributes}>{props.children}</a>;
   },
-}
-
+};
 
 const MARK_COMPONENTS = {
   bold: props => <strong>{props.children}</strong>,
@@ -162,6 +168,9 @@ const RULES = [
       }
     },
     serialize(entity, children) {
+      if (['bulleted-list', 'numbered-list'].includes(entity.type)) {
+        return;
+      }
       const component = BLOCK_COMPONENTS[entity.type]
       if (!component) {
         return;
@@ -204,6 +213,32 @@ const RULES = [
     },
   },
   {
+    deserialize(el, next) {
+      if (el.tagName != 'img') return
+      return {
+        kind: 'inline',
+        type: 'image',
+        nodes: [],
+        data: {
+          src: el.attribs.src,
+          alt: el.attribs.alt,
+        }
+      }
+    },
+    serialize(entity, children) {
+      if (entity.type !== 'image') {
+        return;
+      }
+      const data = entity.get('data');
+      const props = {
+        src: data.get('src'),
+        alt: data.get('alt'),
+        attributes: data.get('attributes'),
+      };
+      return NODE_COMPONENTS.image(props);
+    }
+  },
+  {
     // Special case for links, to grab their href.
     deserialize(el, next) {
       if (el.tagName != 'a') return
@@ -229,6 +264,15 @@ const RULES = [
       return NODE_COMPONENTS.link(props);
     }
   },
+  {
+    serialize(entity, children) {
+      if (!['bulleted-list', 'unordered-list'].includes(entity.type)) {
+        return;
+      }
+      return NODE_COMPONENTS[entity.type]({ children });
+    }
+  }
+
 ]
 
 const serializer = new SlateHtml({ rules: RULES });
@@ -237,6 +281,7 @@ export default class Editor extends Component {
   constructor(props) {
     super(props);
     const plugins = registry.getEditorComponents();
+    console.log(this.props.value);
     this.state = {
       editorState: serializer.deserialize(this.props.value || '<p></p>'),
       schema: {
@@ -271,6 +316,7 @@ export default class Editor extends Component {
       b: 'bold',
       i: 'italic',
       u: 'underlined',
+      s: 'strikethrough',
       '`': 'code',
     };
 

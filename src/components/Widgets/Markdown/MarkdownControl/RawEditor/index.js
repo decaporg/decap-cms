@@ -8,6 +8,7 @@ import htmlToRehype from 'rehype-parse';
 import rehypeToRemark from 'rehype-remark';
 import remarkToMarkdown from 'remark-stringify';
 import rehypeSanitize from 'rehype-sanitize';
+import rehypeMinifyWhitespace from 'rehype-minify-whitespace';
 import rehypeReparse from 'rehype-raw';
 import CaretPosition from 'textarea-caret-position';
 import TextareaAutosize from 'react-textarea-autosize';
@@ -41,6 +42,8 @@ function cleanupPaste(paste) {
     .use(rehypeSanitize)
     .use(rehypeReparse)
     .use(rehypeToRemark)
+    .use(rehypeSanitize)
+    .use(rehypeMinifyWhitespace)
     .use(remarkToMarkdown, remarkStringifyConfig)
     .process(paste);
 }
@@ -84,7 +87,7 @@ export default class RawEditor extends React.Component {
     const plugins = registry.getEditorComponents();
     this.state = {
       value: unified()
-        .use(htmlToRehype, rehypeParseConfig)
+        .use(htmlToRehype)
         .use(rehypeToRemark)
         .use(remarkToMarkdown, remarkStringifyConfig)
         .processSync(this.props.value)
@@ -255,13 +258,17 @@ export default class RawEditor extends React.Component {
 
   handleChange = (e) => {
     // handleChange may receive an event or a value
-    const value = get(e, ['target', 'value']) || e;
+    const value = typeof e === 'object' ? e.target.value : e;
     const html = unified()
       .use(markdownToRemark, remarkParseConfig)
       .use(remarkToRehype)
+      .use(rehypeSanitize)
+      .use(rehypeMinifyWhitespace)
       .use(rehypeToHtml, rehypeStringifyConfig)
+
       .processSync(value)
       .contents;
+    console.log(html);
     this.props.onChange(html);
     this.updateHeight();
     this.setState({ value });

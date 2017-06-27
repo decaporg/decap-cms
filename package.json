@@ -157,6 +157,7 @@
     "redux-notifications": "^2.1.1",
     "redux-optimist": "^0.0.2",
     "redux-thunk": "^1.0.3",
+    "rehype-minify-whitespace": "^2.0.0",
     "rehype-parse": "^3.1.0",
     "rehype-raw": "^1.0.0",
     "rehype-react": "^3.0.0",
