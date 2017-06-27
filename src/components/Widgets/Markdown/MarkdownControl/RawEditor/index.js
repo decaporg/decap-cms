@@ -1,24 +1,10 @@
 import React, { PropTypes } from 'react';
 import get from 'lodash/get';
 import unified from 'unified';
-import markdownToRemark from 'remark-parse';
-import remarkToRehype from 'remark-rehype';
-import rehypeToHtml from 'rehype-stringify';
-import htmlToRehype from 'rehype-parse';
-import rehypeToRemark from 'rehype-remark';
-import remarkToMarkdown from 'remark-stringify';
-import rehypeSanitize from 'rehype-sanitize';
-import rehypeMinifyWhitespace from 'rehype-minify-whitespace';
-import rehypeReparse from 'rehype-raw';
 import CaretPosition from 'textarea-caret-position';
 import TextareaAutosize from 'react-textarea-autosize';
 import registry from '../../../../../lib/registry';
-import {
-  remarkParseConfig,
-  remarkStringifyConfig,
-  rehypeParseConfig,
-  rehypeStringifyConfig,
-} from '../../unifiedConfig';
+import { markdownToHtml, htmlToMarkdown } from '../../unified';
 import { createAssetProxy } from '../../../../../valueObjects/AssetProxy';
 import Toolbar from '../Toolbar/Toolbar';
 import { Sticky } from '../../../../UI/Sticky/Sticky';
@@ -36,18 +22,6 @@ function processUrl(url) {
   return `/${ url }`;
 }
 
-function cleanupPaste(paste) {
-  return unified()
-    .use(htmlToRehype, rehypeParseConfig)
-    .use(rehypeSanitize)
-    .use(rehypeReparse)
-    .use(rehypeToRemark)
-    .use(rehypeSanitize)
-    .use(rehypeMinifyWhitespace)
-    .use(remarkToMarkdown, remarkStringifyConfig)
-    .process(paste);
-}
-
 function getCleanPaste(e) {
   const transfer = e.clipboardData;
   return new Promise((resolve) => {
@@ -58,7 +32,7 @@ function getCleanPaste(e) {
       // Avoid trying to clean up full HTML documents with head/body/etc
       if (!data.match(/^\s*<!doctype/i)) {
         e.preventDefault();
-        resolve(cleanupPaste(data));
+        resolve(htmlToMarkdown(data));
       } else {
         // Handle complex pastes by stealing focus with a contenteditable div
         const div = document.createElement('div');
@@ -69,7 +43,7 @@ function getCleanPaste(e) {
         document.body.appendChild(div);
         div.focus();
         setTimeout(() => {
-          resolve(cleanupPaste(div.innerHTML));
+          resolve(htmlToMarkdown(div.innerHTML));
           document.body.removeChild(div);
         }, 50);
         return null;
@@ -86,12 +60,7 @@ export default class RawEditor extends React.Component {
     super(props);
     const plugins = registry.getEditorComponents();
     this.state = {
-      value: unified()
-        .use(htmlToRehype)
-        .use(rehypeToRemark)
-        .use(remarkToMarkdown, remarkStringifyConfig)
-        .processSync(this.props.value)
-        .contents,
+      value: htmlToMarkdown(this.props.value),
       plugins,
     };
     this.shortcuts = {
@@ -259,16 +228,7 @@ export default class RawEditor extends React.Component {
   handleChange = (e) => {
     // handleChange may receive an event or a value
     const value = typeof e === 'object' ? e.target.value : e;
-    const html = unified()
-      .use(markdownToRemark, remarkParseConfig)
-      .use(remarkToRehype)
-      .use(rehypeSanitize)
-      .use(rehypeMinifyWhitespace)
-      .use(rehypeToHtml, rehypeStringifyConfig)
-
-      .processSync(value)
-      .contents;
-    console.log(html);
+    const html = markdownToHtml(value);
     this.props.onChange(html);
     this.updateHeight();
     this.setState({ value });

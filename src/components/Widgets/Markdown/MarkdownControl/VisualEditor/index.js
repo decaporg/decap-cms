@@ -1,23 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import { Map, List } from 'immutable';
 import { Editor as SlateEditor, Html as SlateHtml, Raw as SlateRaw} from 'slate';
-import unified from 'unified';
-import markdownToRemark from 'remark-parse';
-import remarkToRehype from 'remark-rehype';
-import rehypeToHtml from 'rehype-stringify';
-import remarkToMarkdown from 'remark-stringify';
-import htmlToRehype from 'rehype-parse';
-import rehypeToRemark from 'rehype-remark';
+import { markdownToHtml, htmlToMarkdown } from '../../unified';
 import registry from '../../../../../lib/registry';
 import { createAssetProxy } from '../../../../../valueObjects/AssetProxy';
-import {
-  remarkParseConfig,
-  remarkStringifyConfig,
-  rehypeParseConfig,
-  rehypeStringifyConfig,
-} from '../../unifiedConfig';
-import { buildKeymap } from './keymap';
-import createMarkdownParser from './parser';
 import Toolbar from '../Toolbar/Toolbar';
 import { Sticky } from '../../../../UI/Sticky/Sticky';
 import styles from './index.css';
@@ -29,19 +15,8 @@ import styles from './index.css';
  * and before persisting.
  */
 registry.registerWidgetValueSerializer('markdown', {
-  serialize: value => unified()
-    .use(htmlToRehype, rehypeParseConfig)
-    .use(htmlToRehype)
-    .use(rehypeToRemark)
-    .use(remarkToMarkdown, remarkStringifyConfig)
-    .processSync(value)
-    .contents,
-  deserialize: value => unified()
-    .use(markdownToRemark, remarkParseConfig)
-    .use(remarkToRehype)
-    .use(rehypeToHtml, rehypeStringifyConfig)
-    .processSync(value)
-    .contents
+  serialize: htmlToMarkdown,
+  deserialize: markdownToHtml,
 });
 
 function processUrl(url) {
@@ -281,7 +256,6 @@ export default class Editor extends Component {
   constructor(props) {
     super(props);
     const plugins = registry.getEditorComponents();
-    console.log(this.props.value);
     this.state = {
       editorState: serializer.deserialize(this.props.value || '<p></p>'),
       schema: {
