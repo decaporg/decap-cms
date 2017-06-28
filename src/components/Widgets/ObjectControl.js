@@ -22,6 +22,9 @@ export default class ObjectControl extends Component {
 
   controlFor(field) {
     const { onAddAsset, onRemoveAsset, getAsset, value, onChange } = this.props;
+    if (field.get('widget') === 'hidden') {
+      return null;
+    }
     const widget = resolveWidget(field.get('widget') || 'string');
     const fieldValue = value && Map.isMap(value) ? value.get(field.get('name')) : value;
 
