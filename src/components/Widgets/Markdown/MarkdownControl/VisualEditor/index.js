@@ -270,7 +270,9 @@ export default class Editor extends Component {
     if (data.type !== 'html' || data.isShift) {
       return;
     }
-    const fragment = serializer.deserialize(data.html).document;
+    const markdown = htmlToMarkdown(data.html);
+    const html = markdownToHtml(markdown);
+    const fragment = serializer.deserialize(html).document;
     return state.transform().insertFragment(fragment).apply();
   }
 
