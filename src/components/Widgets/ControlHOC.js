@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import ImmutablePropTypes from "react-immutable-proptypes";
+import repeatable from "./RepeatableHOC";
 
 const truthy = () => ({ error: false });
 
@@ -85,18 +86,15 @@ class ControlHOC extends Component {
   };
 
   render() {
-    const { controlComponent, field, value, metadata, onChange, onAddAsset, onRemoveAsset, getAsset } = this.props;
-    return React.createElement(controlComponent, {
-      field,
-      value,
-      metadata,
-      onChange,
-      onAddAsset,
-      onRemoveAsset,
-      getAsset,
-      forID: field.get('name'),
-      ref: this.processInnerControlRef,
-    });
+    const ControlComponent = this.props.field.get('repeat', false)
+      ? repeatable(this.props.controlComponent)
+      : this.props.controlComponent;
+
+    return (<ControlComponent
+      {...this.props}
+      forID={this.props.field.get('name')}
+      ref={this.processInnerControlRef}
+    />);
   }
 }
 
