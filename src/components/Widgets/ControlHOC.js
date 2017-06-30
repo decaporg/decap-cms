@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
-import ImmutablePropTypes from "react-immutable-proptypes";
-import repeatable from "./RepeatableHOC";
+import ImmutablePropTypes from 'react-immutable-proptypes';
+import { applyHOCs } from './WidgetHOCs';
 
 const truthy = () => ({ error: false });
 
@@ -86,9 +86,7 @@ class ControlHOC extends Component {
   };
 
   render() {
-    const ControlComponent = this.props.field.get('repeat', false)
-      ? repeatable(this.props.controlComponent)
-      : this.props.controlComponent;
+    const ControlComponent = applyHOCs(this.props.controlComponent);
 
     return (<ControlComponent
       {...this.props}
