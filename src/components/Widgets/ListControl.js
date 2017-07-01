@@ -171,11 +171,13 @@ export default class ListControl extends Component {
 
   renderListControl() {
     const { value, forID } = this.props;
+    const listLabel = this.props.field._root.entries[0][1];
+
     return (<div id={forID}>
       {value && value.map((item, index) => this.renderItem(item, index))}
       <button className={styles.addButton} onClick={this.handleAdd}>
         <FontIcon value="add" className={styles.addButtonIcon} />
-        <span className={styles.addButtonText}>new</span>
+        <span className={styles.addButtonText}>new {listLabel}</span>
       </button>
     </div>);
   }

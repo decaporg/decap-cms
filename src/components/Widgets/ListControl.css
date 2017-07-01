@@ -22,6 +22,7 @@
 
 .addButtonText {
   margin-left: 4px;
+  text-transform: lowercase;
 }
 
 .removeButton {
