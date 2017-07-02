@@ -19,4 +19,4 @@ Widget | UI | Data Type
 `select` | select input | dropdown filled with `options` from the config
 `object` | custom | `fields` as a list defined in the config
 
-We’re always adding new widgets, and you can also [create your own](/docs/extending).
+We’re always adding new widgets, and you can also [create your own](/docs/extending.md).
