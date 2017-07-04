@@ -170,8 +170,8 @@ export default class ListControl extends Component {
   }
 
   renderListControl() {
-    const { value, forID } = this.props;
-    const listLabel = this.props.field._root.entries[0][1];
+    const { value, forID, field } = this.props;
+    const listLabel = field.get('label');
 
     return (<div id={forID}>
       {value && value.map((item, index) => this.renderItem(item, index))}
