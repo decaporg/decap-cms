@@ -53,22 +53,11 @@
   border-top-left-radius: 0;
 }
 
-.expanded {
-}
-
-.collapsed {
-  & .objectLabel {
-    display: block;
-  }
-  & .objectControl {
-    display: none;
-  }
-}
-
 .dragIcon {
-  position: absolute;
+  /* position: absolute; */
   top: 2px;
   display: block;
   width: 100%;
   text-align: center;
+  cursor: grab;
 }

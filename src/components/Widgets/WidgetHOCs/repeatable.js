@@ -1,16 +1,27 @@
 import React, { Component, PropTypes } from 'react';
-import { fromJS, List, Map } from 'immutable';
+import { fromJS, List } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { sortable } from 'react-sortable';
+import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 import FontIcon from 'react-toolbox/lib/font_icon';
 import styles from './repeatable.css';
 
-const RepeatableItem = sortable(
-  props => <div {...props}>{props.children}</div>
+const RepeatableContainer = SortableContainer(
+  ({ items, renderItem }) => <div>{items.map(renderItem)}</div>
 );
 
-const repeatable = WrappedComponent =>
-  class extends Component {
+const DragHandle = SortableHandle(
+  () => <FontIcon value="drag_handle" className={styles.dragIcon} />
+);
+
+const repeatable = (WrappedComponent) => {
+  const RepeatableItem = SortableElement(
+    props => (<div {...props}>
+      <DragHandle />
+      {props.children}
+    </div>)
+  );
+
+  return class extends Component {
     static propTypes = {
       field: ImmutablePropTypes.map.isRequired,
       value: PropTypes.oneOfType([
@@ -26,81 +37,74 @@ const repeatable = WrappedComponent =>
 
     constructor(props) {
       super(props);
-      this.state = {};
     }
 
-    handleChangeFor = (index) => {
-      return (newValueForIndex, newMetadata) => {
-        const { value, onChange } = this.props;
-        const newValue = value.set(index, newValueForIndex);
-        onChange(fromJS(newValue));
-      };
+    handleChangeFor = index => (newValueForIndex, newMetadata) => {
+      const { value, onChange } = this.props;
+      const newValue = value.set(index, newValueForIndex);
+      onChange(fromJS(newValue));
     };
 
-    handleRemoveFor = (index) => {
-      return (e) => {
-        e.preventDefault();
-        const { value, metadata, onChange, forID } = this.props;
-        const parsedMetadata = metadata && {
-          [forID]: metadata.removeIn(value.get(index).valueSeq()),
-        };
-        onChange(value.remove(index), parsedMetadata);
+    handleRemoveFor = index => (e) => {
+      e.preventDefault();
+      const { value, metadata, onChange, forID } = this.props;
+      const parsedMetadata = metadata && {
+        [forID]: metadata.removeIn(value.get(index).valueSeq()),
       };
+      onChange(value.remove(index), parsedMetadata);
     };
 
     handleAdd = (e) => {
       e.preventDefault();
       const { value, onChange } = this.props;
       onChange((value || List()).push(null));
-    }
-
-    handleSort = (obj) => {
-      this.setState({ draggingIndex: obj.draggingIndex });
-      if (obj.items) {
-        this.props.onChange(fromJS(obj.items));
-      }
     };
 
-    renderItem = (item, index) => {
-      return (<RepeatableItem
-        key={index}
-        sortId={index}
-        draggingIndex={this.state.draggingIndex}
-        outline="list"
-        updateState={this.handleSort}
-        items={this.props.value ? this.props.value.toJS() : []}
-      >
-        <FontIcon value="drag_handle" className={styles.dragIcon} />
-        <button className={styles.removeButton} onClick={this.handleRemoveFor(index)}>
+    renderItem = (item, i) =>
+      (<RepeatableItem key={`item-${ i }`} index={i}>
+        <button className={styles.removeButton} onClick={this.handleRemoveFor(i)}>
           <FontIcon value="close" />
         </button>
         <WrappedComponent
           {...this.props}
           className={styles.repeatedComponent}
           value={item}
-          onChange={this.handleChangeFor(index)}
+          onChange={this.handleChangeFor(i)}
         />
       </RepeatableItem>);
+
+    onSortEnd = ({ oldIndex, newIndex }) => {
+      const oldItem = this.props.value.get(oldIndex);
+      const newValue = this.props.value.delete(oldIndex).insert(newIndex, oldItem);
+      this.props.onChange(newValue);
     };
 
     renderItems() {
-      const { value, forID } = this.props;
+      const { value, field, forID } = this.props;
       return (<div id={forID}>
-        {value && value.map(this.renderItem).toJS()}
-        <button className={styles.addButton} onClick={this.handleAdd}>=
+        <RepeatableContainer
+          items={value || List()}
+          renderItem={this.renderItem}
+          onSortEnd={this.onSortEnd}
+          useDragHandle={true}
+        />
+        <button className={styles.addButton} onClick={this.handleAdd}>
           <FontIcon value="add" className={styles.addButtonText} />
-          <span className={styles.addButtonText}>new</span>
+          <span className={styles.addButtonText}>
+            new {field.get('label', '').toLowerCase()}
+          </span>
         </button>
       </div>);
     }
 
     render() {
       if (this.props.field.get("repeat", false)) {
-        return <div id={this.props.forID}>{this.renderItems()}</div>;
+        return this.renderItems();
       }
 
       return <WrappedComponent {...this.props} />;
     }
   };
+};
 
 export default repeatable;
