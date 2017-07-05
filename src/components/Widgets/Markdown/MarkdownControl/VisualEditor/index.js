@@ -193,6 +193,7 @@ const RULES = [
       return {
         kind: 'inline',
         type: 'image',
+        isVoid: true,
         nodes: [],
         data: {
           src: el.attribs.src,
