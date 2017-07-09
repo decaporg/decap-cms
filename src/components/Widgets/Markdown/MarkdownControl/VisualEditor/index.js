@@ -242,7 +242,7 @@ const RULES = [
   },
   {
     serialize(entity, children) {
-      if (!['bulleted-list', 'unordered-list'].includes(entity.type)) {
+      if (!['bulleted-list', 'numbered-list'].includes(entity.type)) {
         return;
       }
       return NODE_COMPONENTS[entity.type]({ children });
@@ -455,11 +455,15 @@ export default class Editor extends Component {
         <Toolbar
           selectionPosition={selectionPosition}
           buttons={{
-            h1: this.getButtonProps('heading-one', true),
-            h2: this.getButtonProps('heading-two', true),
             bold: this.getButtonProps('bold'),
             italic: this.getButtonProps('italic'),
+            code: this.getButtonProps('code'),
             link: this.getButtonProps('link'),
+            h1: this.getButtonProps('heading-one', true),
+            h2: this.getButtonProps('heading-two', true),
+            list: this.getButtonProps('bulleted-list', true),
+            listNumbered: this.getButtonProps('numbered-list', true),
+            codeBlock: this.getButtonProps('code', true),
           }}
           onToggleMode={this.handleToggle}
           plugins={plugins}
