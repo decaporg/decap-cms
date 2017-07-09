@@ -70,13 +70,10 @@
 
 .slateEditor {
   position: relative;
-  background-color: var(--controlBGColor);
-  padding: 12px;
   overflow: hidden;
-  border-radius: var(--borderRadius);
   overflow-x: auto;
-  border: var(--textFieldBorder);
   min-height: var(--richTextEditorMinHeight);
+  font-family: var(--fontFamily);
 
   & ul,
   & ol {

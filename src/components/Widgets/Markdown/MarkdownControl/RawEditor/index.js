@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import TextareaAutosize from 'react-textarea-autosize';
+import { Editor as SlateEditor, Plain as SlatePlain } from 'slate';
 import { markdownToHtml, htmlToMarkdown } from '../../unified';
 import Toolbar from '../Toolbar/Toolbar';
 import { Sticky } from '../../../../UI/Sticky/Sticky';
@@ -8,15 +8,20 @@ import styles from './index.css';
 export default class RawEditor extends React.Component {
   constructor(props) {
     super(props);
+    const value = htmlToMarkdown(this.props.value);
     this.state = {
-      value: htmlToMarkdown(this.props.value) || '',
+      editorState: SlatePlain.deserialize(value || ''),
     };
   }
 
-  handleChange = (e) => {
-    const html = markdownToHtml(e.target.value);
+  handleChange = editorState => {
+    this.setState({ editorState });
+  }
+
+  handleDocumentChange = (doc, editorState) => {
+    const value = SlatePlain.serialize(editorState);
+    const html = markdownToHtml(value);
     this.props.onChange(html);
-    this.setState({ value: e.target.value });
   };
 
   handleToggleMode = () => {
@@ -33,10 +38,11 @@ export default class RawEditor extends React.Component {
         >
           <Toolbar onToggleMode={this.handleToggleMode} disabled rawMode />
         </Sticky>
-        <TextareaAutosize
-          className={styles.textarea}
-          value={this.state.value}
+        <SlateEditor
+          className={styles.SlateEditor}
+          state={this.state.editorState}
           onChange={this.handleChange}
+          onDocumentChange={this.handleDocumentChange}
         />
       </div>
     );

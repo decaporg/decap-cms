@@ -12,8 +12,10 @@
   composes: editorControlBarSticky from "../VisualEditor/index.css";
 }
 
-.textarea {
+.SlateEditor {
+  position: relative;
   overflow: hidden;
-  resize: none;
+  overflow-x: auto;
   min-height: var(--richTextEditorMinHeight);
+  font-family: var(--fontFamilyMono);
 }
