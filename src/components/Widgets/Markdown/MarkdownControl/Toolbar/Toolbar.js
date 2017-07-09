@@ -10,14 +10,15 @@ import styles from './Toolbar.css';
 
 export default class Toolbar extends React.Component {
   static propTypes = {
-    buttons: PropTypes.object.isRequired,
+    buttons: PropTypes.object,
     onToggleMode: PropTypes.func.isRequired,
     rawMode: PropTypes.bool,
     plugins: ImmutablePropTypes.map,
-    onSubmit: PropTypes.func.isRequired,
-    onAddAsset: PropTypes.func.isRequired,
-    onRemoveAsset: PropTypes.func.isRequired,
-    getAsset: PropTypes.func.isRequired,
+    onSubmit: PropTypes.func,
+    onAddAsset: PropTypes.func,
+    onRemoveAsset: PropTypes.func,
+    getAsset: PropTypes.func,
+    disabled: PropTypes.bool,
   };
 
   constructor(props) {
@@ -42,14 +43,16 @@ export default class Toolbar extends React.Component {
 
   render() {
     const {
-      buttons,
       onToggleMode,
       rawMode,
       plugins,
       onAddAsset,
       onRemoveAsset,
       getAsset,
+      disabled,
     } = this.props;
+
+    const buttons = this.props.buttons || {};
 
     const { activePlugin } = this.state;
 
@@ -64,11 +67,18 @@ export default class Toolbar extends React.Component {
     return (
       <div className={styles.Toolbar}>
         { buttonsConfig.map((btn, i) => (
-          <ToolbarButton key={i} action={btn.state.onAction} active={btn.state.active} {...btn}/>
+          <ToolbarButton
+            key={i}
+            action={btn.state && btn.state.onAction || (() => {})}
+            active={btn.state && btn.state.active}
+            disabled={disabled}
+            {...btn}
+          />
         ))}
         <ToolbarComponentsMenu
           plugins={plugins}
           onComponentMenuItemClick={this.handlePluginFormDisplay}
+          disabled={disabled}
         />
         {activePlugin &&
           <ToolbarPluginForm

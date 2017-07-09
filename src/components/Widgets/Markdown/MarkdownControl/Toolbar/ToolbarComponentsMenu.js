@@ -6,7 +6,7 @@ import styles from './ToolbarComponentsMenu.css';
 
 export default class ToolbarComponentsMenu extends React.Component {
   static PropTypes = {
-    plugins: ImmutablePropTypes.map.isRequired,
+    plugins: ImmutablePropTypes.map,
     onComponentMenuItemClick: PropTypes.func.isRequired,
   };
 
@@ -26,17 +26,22 @@ export default class ToolbarComponentsMenu extends React.Component {
   };
 
   render() {
-    const { plugins, onComponentMenuItemClick } = this.props;
+    const { plugins, onComponentMenuItemClick, disabled } = this.props;
     return (
       <div className={styles.root}>
-        <ToolbarButton label="Add Component" icon="plus" action={this.handleComponentsMenuToggle}/>
+        <ToolbarButton
+          label="Add Component"
+          icon="plus"
+          action={this.handleComponentsMenuToggle}
+          disabled={disabled}
+        />
         <Menu
           active={this.state.componentsMenuActive}
           position="auto"
           onHide={this.handleComponentsMenuHide}
           ripple={false}
         >
-          {plugins.map(plugin => (
+          {plugins && plugins.map(plugin => (
             <MenuItem
               key={plugin.get('id')}
               value={plugin.get('id')}

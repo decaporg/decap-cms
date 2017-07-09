@@ -5,7 +5,10 @@
   padding: 6px;
   border: none;
   background-color: transparent;
-  cursor: pointer;
+
+  &:not(:disabled) {
+    cursor: pointer;
+  }
 }
 
 .active {
