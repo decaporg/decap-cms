@@ -22,7 +22,10 @@ export default {
     return _registry.previewStyles;
   },
   registerWidget(name, control, preview) {
-    _registry.widgets[name] = { control, preview };
+    // A registered widget control can be reused by a new widget, allowing
+    // multiple copies with different previews.
+    const newControl = typeof control === 'string' ? _registry.widgets[control].control : control;
+    _registry.widgets[name] = { control: newControl, preview };
   },
   getWidget(name) {
     return _registry.widgets[name];
