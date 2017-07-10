@@ -4,19 +4,19 @@
 
 Widgets define the data type and interface for entry fields. Netlify CMS comes with several built-in widgets, including:
 
-Widget | UI | Data Type
---- | --- | ---
-`string` | text input | string
-`boolean` | select input | switch for true and false
-`text` | text area input | plain text, multiline input
-`number` | text input with `+` and `-` buttons | number
-`markdown` | rich text editor with raw option | markdown-formatted string
-`datetime` | date picker widget | ISO date string
-`image` | file picker widget with drag-and-drop | file path saved as string, image uploaded to media folder
-`hidden` | No UI | Hidden element, typically only useful with a `default` attribute
-`list` | text input | strings separated by commas
-`file` | file input | input file upload
-`select` | select input | dropdown filled with `options` from the config
-`object` | custom | `fields` as a list defined in the config
+| Name       | UI                                | Data Type                                         |
+| --------   | --------------------------------- | --------------------------------------------------|
+| `string`   | text input                        | string                                            |
+| `boolean`  | toggle switch                     | boolean                                           |
+| `text`     | textarea input                    | string (multiline)                                |
+| `number`   | number input                      | number                                            |
+| `markdown` | rich text editor                  | string (markdown)                                 |
+| `datetime` | date picker                       | string (ISO date)                                 |
+| `select`   | select input (dropdown)           | string                                            |
+| `image`    | file picker w/ drag and drop      | image file                                        |
+| `file`     | file picker w/ drag and drop      | file                                              |
+| `hidden`   | none                              | string                                            |
+| `object`   | group of other widgets            | Immutable Map containing field values             |
+| `list`     | repeatable group of other widgets | Immutable List of objects containing field values |
 
-We’re always adding new widgets, and you can also [create your own](/docs/extending).
+We’re always adding new widgets, and you can also [create your own](/docs/extending)!
