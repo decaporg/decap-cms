@@ -5,7 +5,7 @@ please read the [code of conduct](CODE_OF_CONDUCT.md).
 
 ## Setup
 
-> Install yarn on your system: https://yarnpkg.com/en/docs/install
+> Install yarn on your system: [https://yarnpkg.com/en/docs/install](https://yarnpkg.com/en/docs/install)
 
 ```sh
 $ git clone https://github.com/netlify/netlify-cms
@@ -33,7 +33,7 @@ $ npm run test:watch
 $ npm run lint
 ```
 
-## Runing the server
+## Running the server
 
 ```sh
 $ npm run start
