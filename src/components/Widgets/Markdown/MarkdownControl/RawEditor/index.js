@@ -24,6 +24,13 @@ export default class RawEditor extends React.Component {
     this.props.onChange(html);
   };
 
+  handlePaste = (e, data, state) => {
+    if (data.text) {
+      const fragment = SlatePlain.deserialize(data.text).document;
+      return state.transform().insertFragment(fragment).apply();
+    }
+  };
+
   handleToggleMode = () => {
     this.props.onMode('visual');
   };
@@ -43,6 +50,7 @@ export default class RawEditor extends React.Component {
           state={this.state.editorState}
           onChange={this.handleChange}
           onDocumentChange={this.handleDocumentChange}
+          onPaste={this.handlePaste}
         />
       </div>
     );
