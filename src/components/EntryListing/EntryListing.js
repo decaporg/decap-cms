@@ -41,6 +41,9 @@ export default class EntryListing extends React.Component {
     const title = label || entry.getIn(['data', inferedFields.titleField]);
     let image = entry.getIn(['data', inferedFields.imageField]);
     image = resolvePath(image, publicFolder);
+    if(image) {
+      image = encodeURI(image);
+    }
 
     return (
       <Card
