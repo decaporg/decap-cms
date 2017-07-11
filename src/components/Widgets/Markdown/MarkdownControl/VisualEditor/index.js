@@ -253,6 +253,35 @@ const RULES = [
 
 const serializer = new SlateHtml({ rules: RULES });
 
+const SoftBreak = (options = {}) => ({
+  onKeyDown(e, data, state) {
+    if (data.key != 'enter') return;
+    if (options.shift && e.shiftKey == false) return;
+
+    const { onlyIn, ignoreIn, closeAfter, unwrapBlocks, defaultBlock = 'paragraph' } = options;
+    const { type, nodes } = state.startBlock;
+    if (onlyIn && !onlyIn.includes(type)) return;
+    if (ignoreIn && ignoreIn.includes(type)) return;
+
+    const shouldClose = nodes.last().characters.takeLast(closeAfter).every(c => c.text === '\n');
+    if (closeAfter && shouldClose) {
+      const trimmed = state.transform().deleteBackward(closeAfter);
+      const unwrapped = unwrapBlocks
+        ? unwrapBlocks.reduce((acc, blockType) => acc.unwrapBlock(blockType), trimmed)
+        : trimmed;
+      return unwrapped.insertBlock(defaultBlock).apply();
+    }
+
+    return state.transform().insertText('\n').apply();
+  }
+});
+
+const slatePlugins = [
+  SoftBreak({ ignoreIn: ['paragraph', 'list-item'], closeAfter: 2 }),
+  SoftBreak({ onlyIn: ['list-item'], shift: true}),
+  SoftBreak({ onlyIn: ['paragraph'], closeAfter: 1 }),
+];
+
 export default class Editor extends Component {
   constructor(props) {
     super(props);
@@ -477,6 +506,7 @@ export default class Editor extends Component {
         className={styles.slateEditor}
         state={this.state.editorState}
         schema={this.state.schema}
+        plugins={slatePlugins}
         onChange={editorState => this.setState({ editorState })}
         onDocumentChange={this.handleDocumentChange}
         onKeyDown={this.onKeyDown}
