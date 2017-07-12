@@ -146,6 +146,9 @@ const RULES = [
       if (['bulleted-list', 'numbered-list'].includes(entity.type)) {
         return;
       }
+      if (entity.kind !== 'block') {
+        return;
+      }
       const component = BLOCK_COMPONENTS[entity.type]
       if (!component) {
         return;
@@ -164,6 +167,9 @@ const RULES = [
       }
     },
     serialize(entity, children) {
+      if (entity.kind !== 'mark') {
+        return;
+      }
       const component = MARK_COMPONENTS[entity.type]
       if (!component) {
         return;
