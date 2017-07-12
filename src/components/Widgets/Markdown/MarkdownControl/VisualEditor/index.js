@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { Map, List } from 'immutable';
 import { Editor as SlateEditor, Html as SlateHtml, Raw as SlateRaw} from 'slate';
+import EditList from 'slate-edit-list';
 import { markdownToHtml, htmlToMarkdown } from '../../unified';
 import registry from '../../../../../lib/registry';
 import { createAssetProxy } from '../../../../../valueObjects/AssetProxy';
@@ -284,36 +285,28 @@ const SoftBreak = (options = {}) => ({
 
 const BackspaceCloseBlock = (options = {}) => ({
   onKeyDown(e, data, state) {
-    if (data.key != 'backspace' || state.startBlock.type === 'paragraph') return;
+    if (data.key != 'backspace') return;
 
-    const { defaultBlock = 'paragraph', wrapped = {} } = options;
+    const { defaultBlock = 'paragraph', ignoreIn, onlyIn } = options;
     const { startBlock } = state;
     const { type } = startBlock;
+
+    if (onlyIn && !onlyIn.includes(type)) return;
+    if (ignoreIn && ignoreIn.includes(type)) return;
 
     const characters = startBlock.getFirstText().characters;
     const isEmpty = !characters || characters.isEmpty();
 
     if (isEmpty) {
-      const transform = state.transform();
-
-      if (wrapped[type] && state.document.getPreviousSibling(startBlock.key)) {
-        return;
-      }
-
-      if (wrapped[type]) {
-        wrapped[type].forEach(wrapper => transform.unwrapBlock(wrapper));
-      }
-
-      return transform.insertBlock(defaultBlock).focus().apply();
+      return state.transform().insertBlock(defaultBlock).focus().apply();
     }
   }
 });
 
 const slatePlugins = [
-  SoftBreak({ ignoreIn: ['paragraph', 'list-item'], closeAfter: 2 }),
-  SoftBreak({ onlyIn: ['list-item'], shift: true}),
-  SoftBreak({ onlyIn: ['paragraph'], closeAfter: 1 }),
-  BackspaceCloseBlock({ wrapped: { 'list-item': ['bulleted-list', 'numbered-list'] } }),
+  SoftBreak({ ignoreIn: ['paragraph', 'list-item', 'numbered-list', 'bulleted-list'], closeAfter: 1 }),
+  BackspaceCloseBlock({ ignoreIn: ['paragraph', 'list-item', 'bulleted-list', 'numbered-list'] }),
+  EditList({ types: ['bulleted-list', 'numbered-list'], typeItem: 'list-item' }),
 ];
 
 export default class Editor extends Component {
