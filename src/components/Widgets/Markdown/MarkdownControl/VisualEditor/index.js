@@ -276,10 +276,38 @@ const SoftBreak = (options = {}) => ({
   }
 });
 
+const BackspaceCloseBlock = (options = {}) => ({
+  onKeyDown(e, data, state) {
+    if (data.key != 'backspace' || state.startBlock.type === 'paragraph') return;
+
+    const { defaultBlock = 'paragraph', wrapped = {} } = options;
+    const { startBlock } = state;
+    const { type } = startBlock;
+
+    const characters = startBlock.getFirstText().characters;
+    const isEmpty = !characters || characters.isEmpty();
+
+    if (isEmpty) {
+      const transform = state.transform();
+
+      if (wrapped[type] && state.document.getPreviousSibling(startBlock.key)) {
+        return;
+      }
+
+      if (wrapped[type]) {
+        wrapped[type].forEach(wrapper => transform.unwrapBlock(wrapper));
+      }
+
+      return transform.insertBlock(defaultBlock).focus().apply();
+    }
+  }
+});
+
 const slatePlugins = [
   SoftBreak({ ignoreIn: ['paragraph', 'list-item'], closeAfter: 2 }),
   SoftBreak({ onlyIn: ['list-item'], shift: true}),
   SoftBreak({ onlyIn: ['paragraph'], closeAfter: 1 }),
+  BackspaceCloseBlock({ wrapped: { 'list-item': ['bulleted-list', 'numbered-list'] } }),
 ];
 
 export default class Editor extends Component {
