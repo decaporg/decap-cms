@@ -7,29 +7,29 @@ import htmlToRehype from 'rehype-parse';
 import rehypeToRemark from 'rehype-remark';
 import remarkToMarkdown from 'remark-stringify';
 import rehypeSanitize from 'rehype-sanitize';
+import rehypeReparse from 'rehype-raw';
 import rehypeMinifyWhitespace from 'rehype-minify-whitespace';
 
-const remarkParseConfig = { fences: true };
-const remarkStringifyConfig = { listItemIndent: '1', fences: true };
-const rehypeParseConfig = { fragment: true };
 
 /**
  * Remove empty nodes, including the top level parents of deeply nested empty nodes.
  */
 const rehypeRemoveEmpty = () => {
   const isVoidElement = node => ['img', 'hr'].includes(node.tagName);
-  const isNonEmptyText = node => node.type === 'text' && node.value;
+  const isNonEmptyLeaf = node => ['text', 'raw'].includes(node.type) && node.value;
   const isNonEmptyNode =  node => {
-    return isVoidElement(node) || isNonEmptyText(node) || find(node.children, isNonEmptyNode);
+    return isVoidElement(node)
+      || isNonEmptyLeaf(node)
+      || find(node.children, isNonEmptyNode);
   };
 
   const transform = node => {
-    if (isVoidElement(node) || isNonEmptyText(node)) {
+    if (isVoidElement(node) || isNonEmptyLeaf(node)) {
       return node;
     }
     if (node.children) {
       node.children = node.children.reduce((acc, childNode) => {
-        if (isVoidElement(childNode) || isNonEmptyText(childNode)) {
+        if (isVoidElement(childNode) || isNonEmptyLeaf(childNode)) {
           return acc.concat(childNode);
         }
         return find(childNode.children, isNonEmptyNode) ? acc.concat(transform(childNode)) : acc;
@@ -91,12 +91,13 @@ const rehypePaperEmoji = () => {
 
 export const markdownToHtml = markdown => {
   const result = unified()
-    .use(markdownToRemark, remarkParseConfig)
-    .use(remarkToRehype)
+    .use(markdownToRemark, { fences: true })
+    .use(remarkToRehype, { allowDangerousHTML: true })
+    .use(rehypeReparse)
     .use(rehypeRemoveEmpty)
     .use(rehypeSanitize)
     .use(rehypeMinifyWhitespace)
-    .use(rehypeToHtml)
+    .use(rehypeToHtml, { allowDangerousHTML: true })
     .processSync(markdown)
     .contents;
   return result;
@@ -104,14 +105,14 @@ export const markdownToHtml = markdown => {
 
 export const htmlToMarkdown = html => {
   const result = unified()
-    .use(htmlToRehype, rehypeParseConfig)
+    .use(htmlToRehype, { fragment: true })
     .use(rehypePaperEmoji)
     .use(rehypeSanitize)
     .use(rehypeRemoveEmpty)
     .use(rehypeMinifyWhitespace)
     .use(rehypeToRemark)
     .use(remarkNestedList)
-    .use(remarkToMarkdown, remarkStringifyConfig)
+    .use(remarkToMarkdown, { listItemIndent: '1', fences: true })
     .processSync(html)
     .contents;
   return result;
