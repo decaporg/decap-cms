@@ -201,7 +201,12 @@ export default class API {
       // Get PRs with a `head` of `branchName`. Note that this is a
       // substring match, so we need to check that the `head.ref` of
       // at least one of the returned objects matches `branchName`.
-      return this.request(`${ this.repoURL }/pulls?head=${ branchName }&state=open`)
+      return this.request(`${ this.repoURL }/pulls`, {
+        params: {
+          head: branchName,
+          state: "open",
+        },
+      })
         .then(prs => prs.some(pr => pr.head.ref === branchName));
     }))
     .catch((error) => {
@@ -256,6 +261,23 @@ export default class API {
         return this.editorialWorkflowGit(fileTree, entry, mediaFilesList, options);
       }
     });
+  }
+
+  deleteFile(path, message, options={}) {
+    const branch = options.branch || this.branch;
+    // We need to request the file first to get the SHA
+    return this.request(`${ this.repoURL }/contents/${ path }`)
+    .then(({ sha }) => this.request(
+      `${ this.repoURL }/contents/${ path }`,
+      {
+        method: "DELETE",
+        params: {
+          sha,
+          message,
+          branch,
+        },
+      }
+    ));
   }
 
   editorialWorkflowGit(fileTree, entry, filesList, options) {
@@ -343,10 +365,18 @@ export default class API {
 
   deleteUnpublishedEntry(collection, slug) {
     const contentKey = slug;
-    let prNumber; 
     return this.retrieveMetadata(contentKey)
     .then(metadata => this.closePR(metadata.pr, metadata.objects))
-    .then(() => this.deleteBranch(`cms/${ contentKey }`));
+    .then(() => this.deleteBranch(`cms/${ contentKey }`))
+    // If the PR doesn't exist, then this has already been deleted -
+    // deletion should be idempotent, so we can consider this a
+    // success.
+    .catch((err) => {
+      if (err.message === "Reference does not exist") {
+        return Promise.resolve();
+      }
+      return Promise.reject(err);
+    });
   }
 
   publishUnpublishedEntry(collection, slug) {
