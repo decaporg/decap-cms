@@ -9,7 +9,15 @@ import remarkToMarkdown from 'remark-stringify';
 import rehypeSanitize from 'rehype-sanitize';
 import rehypeReparse from 'rehype-raw';
 import rehypeMinifyWhitespace from 'rehype-minify-whitespace';
+import ReactDOMServer from 'react-dom/server';
+import registry from '../../../lib/registry';
+import merge from 'deepmerge';
+import rehypeSanitizeSchemaDefault from 'hast-util-sanitize/lib/github';
+import hastFromString from 'hast-util-from-string';
+import hastToMdastHandlerAll from 'hast-util-to-mdast/all';
+import { reduce, capitalize } from 'lodash';
 
+const shortcodeAttributePrefix = 'ncp';
 
 /**
  * Remove empty nodes, including the top level parents of deeply nested empty nodes.
@@ -17,19 +25,21 @@ import rehypeMinifyWhitespace from 'rehype-minify-whitespace';
 const rehypeRemoveEmpty = () => {
   const isVoidElement = node => ['img', 'hr'].includes(node.tagName);
   const isNonEmptyLeaf = node => ['text', 'raw'].includes(node.type) && node.value;
+  const isShortcode = node => node.properties && node.properties[`data${capitalize(shortcodeAttributePrefix)}`];
   const isNonEmptyNode =  node => {
     return isVoidElement(node)
       || isNonEmptyLeaf(node)
+      || isShortcode(node)
       || find(node.children, isNonEmptyNode);
   };
 
   const transform = node => {
-    if (isVoidElement(node) || isNonEmptyLeaf(node)) {
+    if (isVoidElement(node) || isNonEmptyLeaf(node) || isShortcode(node)) {
       return node;
     }
     if (node.children) {
       node.children = node.children.reduce((acc, childNode) => {
-        if (isVoidElement(childNode) || isNonEmptyLeaf(childNode)) {
+        if (isVoidElement(childNode) || isNonEmptyLeaf(childNode) || isShortcode(node)) {
           return acc.concat(childNode);
         }
         return find(childNode.children, isNonEmptyNode) ? acc.concat(transform(childNode)) : acc;
@@ -89,16 +99,91 @@ const rehypePaperEmoji = () => {
   return transform;
 };
 
+const rehypeShortcodes = () => {
+  const plugins = registry.getEditorComponents();
+  const transform = node => {
+    const { properties } = node;
+    const dataPrefix = `data${capitalize(shortcodeAttributePrefix)}`;
+    const pluginId = properties && properties[dataPrefix];
+    const plugin = plugins.get(pluginId);
+
+    if (plugin) {
+      const data = reduce(properties, (acc, value, key) => {
+        if (key.startsWith(dataPrefix)) {
+          const dataKey = key.slice(dataPrefix.length).toLowerCase();
+          if (dataKey) {
+            acc[dataKey] = value;
+          }
+        }
+        return acc;
+      }, {});
+
+      node.data = node.data || {};
+      node.data[shortcodeAttributePrefix] = true;
+
+      return hastFromString(node, plugin.toBlock(data));
+    }
+
+    node.children = node.children ? node.children.map(transform) : node.children;
+
+    return node;
+  };
+  return transform;
+}
+
+function remarkPrecompileShortcodes() {
+  const Compiler = this.Compiler;
+  const visitors = Compiler.prototype.visitors;
+  const textVisitor = visitors.text;
+
+  visitors.text = newTextVisitor;
+
+  function newTextVisitor(node, parent) {
+    if (parent.data && parent.data[shortcodeAttributePrefix]) {
+      return node.value;
+    }
+    return textVisitor.call(this, node, parent);
+  }
+}
+
+const parseShortcodesFromMarkdown = markdown => {
+  const plugins = registry.getEditorComponents();
+  const markdownLines = markdown.split('\n');
+  const markdownLinesParsed = plugins.reduce((lines, plugin) => {
+    const result = lines.map(line => {
+      return line.replace(plugin.pattern, (...match) => {
+        const data = plugin.fromBlock(match);
+        const preview = plugin.toPreview(data);
+        const html = typeof preview === 'string' ? preview : ReactDOMServer.renderToStaticMarkup(preview);
+        const dataAttrs = reduce(data, (attrs, val, key) => {
+          attrs.push(`data-${shortcodeAttributePrefix}-${key}="${val}"`);
+          return attrs;
+        }, [`data-${shortcodeAttributePrefix}="${plugin.id}"`]);
+        const result = `<div ${dataAttrs.join(' ')}>${html}</div>`;
+        return result;
+      });
+    });
+    return result;
+  }, markdownLines);
+  return markdownLinesParsed.join('\n');
+};
+
+const rehypeSanitizeSchema = merge(rehypeSanitizeSchemaDefault, { attributes: { '*': [ 'data*' ] } });
+
 export const markdownToHtml = markdown => {
+  // Parse shortcodes from the raw markdown rather than via Unified plugin.
+  // This ensures against conflicts between shortcode syntax and Unified
+  // parsing rules.
+  const markdownWithParsedShortcodes = parseShortcodesFromMarkdown(markdown);
   const result = unified()
     .use(markdownToRemark, { fences: true })
     .use(remarkToRehype, { allowDangerousHTML: true })
     .use(rehypeReparse)
     .use(rehypeRemoveEmpty)
-    .use(rehypeSanitize)
+    .use(rehypeSanitize, rehypeSanitizeSchema)
     .use(rehypeMinifyWhitespace)
     .use(rehypeToHtml, { allowDangerousHTML: true })
-    .processSync(markdown)
+    .processSync(markdownWithParsedShortcodes)
     .contents;
   return result;
 }
@@ -106,13 +191,32 @@ export const markdownToHtml = markdown => {
 export const htmlToMarkdown = html => {
   const result = unified()
     .use(htmlToRehype, { fragment: true })
-    .use(rehypePaperEmoji)
-    .use(rehypeSanitize)
+    .use(rehypeSanitize, rehypeSanitizeSchema)
     .use(rehypeRemoveEmpty)
     .use(rehypeMinifyWhitespace)
-    .use(rehypeToRemark)
+    .use(rehypePaperEmoji)
+    .use(rehypeShortcodes)
+    .use(rehypeToRemark, { handlers: { div: (h, node) => {
+      const dataPrefix = `data${capitalize(shortcodeAttributePrefix)}`;
+      const isShortcode = node.properties[dataPrefix];
+      if (isShortcode) {
+        const paragraph = h(node, 'paragraph', hastToMdastHandlerAll(h, node));
+        paragraph.data = paragraph.data || {};
+        paragraph.data[shortcodeAttributePrefix] = true;
+        return paragraph;
+      }
+    }}})
+    .use(() => node => {
+      return node;
+    })
     .use(remarkNestedList)
     .use(remarkToMarkdown, { listItemIndent: '1', fences: true })
+    .use(remarkPrecompileShortcodes)
+    /*
+    .use(() => node => {
+      return node;
+    })
+    */
     .processSync(html)
     .contents;
   return result;
