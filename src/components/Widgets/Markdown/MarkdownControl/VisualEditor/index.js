@@ -1,6 +1,9 @@
 import React, { Component, PropTypes } from 'react';
-import { Map, List } from 'immutable';
-import { Editor as SlateEditor, Html as SlateHtml, Raw as SlateRaw} from 'slate';
+import ReactDOMServer from 'react-dom/server';
+import { Map, List, fromJS } from 'immutable';
+import { reduce, mapValues } from 'lodash';
+import cn from 'classnames';
+import { Editor as SlateEditor, Html as SlateHtml, Raw as SlateRaw, Text as SlateText, Block as SlateBlock, Selection as SlateSelection} from 'slate';
 import EditList from 'slate-edit-list';
 import { markdownToHtml, htmlToMarkdown } from '../../unified';
 import registry from '../../../../../lib/registry';
@@ -96,7 +99,8 @@ const MARK_TAGS = {
 }
 
 const BLOCK_COMPONENTS = {
-  'paragraph': props => <p>{props.children}</p>,
+  'container': props => <div {...props.attributes}>{props.children}</div>,
+  'paragraph': props => <p {...props.attributes}>{props.children}</p>,
   'list-item': props => <li {...props.attributes}>{props.children}</li>,
   'bulleted-list': props => <ul {...props.attributes}>{props.children}</ul>,
   'numbered-list': props => <ol {...props.attributes}>{props.children}</ol>,
@@ -110,17 +114,39 @@ const BLOCK_COMPONENTS = {
   'heading-six': props => <h6 {...props.attributes}>{props.children}</h6>,
   'image': props => {
     const data = props.node && props.node.get('data');
-    const src = data && data.get('src', props.src);
-    const alt = data && data.get('alt', props.alt);
+    const src = data && data.get('src') || props.src;
+    const alt = data && data.get('alt') || props.alt;
     return <img src={src} alt={alt} {...props.attributes}/>;
   },
 };
+const getShortcodeId = props => {
+  if (props.node) {
+    const result = props.node.getIn(['data', 'shortcode', 'shortcodeId']);
+    return result || props.node.getIn(['data', 'shortcode']).shortcodeId;
+  }
+  return null;
+}
+
+const shortcodeStyles = {border: '2px solid black', padding: '8px', margin: '2px 0', cursor: 'pointer'};
 
 const NODE_COMPONENTS = {
   ...BLOCK_COMPONENTS,
   'link': props => {
     const href = props.node && props.node.getIn(['data', 'href']) || props.href;
     return <a href={href} {...props.attributes}>{props.children}</a>;
+  },
+  'shortcode': props => {
+    const { attributes, node, state: editorState } = props;
+    const isSelected = editorState.selection.hasFocusIn(node);
+    return (
+      <div
+        className={cn(styles.shortcode, { [styles.shortcodeSelected]: isSelected })}
+        {...attributes}
+        draggable
+      >
+        {getShortcodeId(props)}
+      </div>
+    );
   },
 };
 
@@ -133,6 +159,50 @@ const MARK_COMPONENTS = {
 };
 
 const RULES = [
+  {
+    deserialize(el, next) {
+      const shortcodeId = el.attribs && el.attribs['data-ncp'];
+      if (!shortcodeId) {
+        return;
+      }
+      const plugin = registry.getEditorComponents().get(shortcodeId);
+      if (!plugin) {
+        return;
+      }
+      const shortcodeData = Map(el.attribs).reduce((acc, value, key) => {
+        if (key.startsWith('data-ncp-')) {
+          const dataKey = key.slice('data-ncp-'.length).toLowerCase();
+          if (dataKey) {
+            return acc.set(dataKey, value);
+          }
+        }
+        return acc;
+      }, Map({ shortcodeId }));
+
+      const result = {
+        kind: 'block',
+        isVoid: true,
+        type: 'shortcode',
+        data: { shortcode: shortcodeData },
+      };
+      return result;
+    },
+    serialize(entity, children) {
+      if (entity.type !== 'shortcode') {
+        return;
+      }
+
+      const data = Map(entity.data.get('shortcode'));
+      const shortcodeId = data.get('shortcodeId');
+      const plugin = registry.getEditorComponents().get(shortcodeId);
+      const dataAttrs = data.delete('shortcodeId').mapKeys(key => `data-ncp-${key}`).set('data-ncp', shortcodeId);
+      const preview = plugin.toPreview(data.toJS());
+      const component = typeof preview === 'string'
+        ? <div { ...dataAttrs.toJS() } dangerouslySetInnerHTML={ { __html: preview } }></div>
+        : <div { ...dataAttrs.toJS() }>{preview}</div>;
+      return component;
+    },
+  },
   {
     deserialize(el, next) {
       const block = BLOCK_TAGS[el.tagName]
@@ -216,9 +286,9 @@ const RULES = [
       const props = {
         src: data.get('src'),
         alt: data.get('alt'),
-        attributes: data.get('attributes'),
       };
-      return NODE_COMPONENTS.image(props);
+      const result = NODE_COMPONENTS.image(props);
+      return result;
     }
   },
   {
@@ -313,11 +383,44 @@ export default class Editor extends Component {
   constructor(props) {
     super(props);
     const plugins = registry.getEditorComponents();
+    // Wrap value in div to ensure against trailing text outside of top level html element
+    const initialValue = this.props.value ? `<div>${this.props.value}</div>` : '<p></p>';
     this.state = {
-      editorState: serializer.deserialize(this.props.value || '<p></p>'),
+      editorState: serializer.deserialize(initialValue),
       schema: {
         nodes: NODE_COMPONENTS,
         marks: MARK_COMPONENTS,
+        rules: [
+          {
+            match: object => object.kind === 'document',
+            validate: doc => {
+              const blocks = doc.getBlocks();
+              const firstBlock = blocks.first();
+              const lastBlock = blocks.last();
+              const firstBlockIsVoid = firstBlock.isVoid;
+              const lastBlockIsVoid = lastBlock.isVoid;
+
+              if (firstBlockIsVoid || lastBlockIsVoid) {
+                return { blocks, firstBlock, lastBlock, firstBlockIsVoid, lastBlockIsVoid };
+              }
+            },
+            normalize: (transform, doc, { blocks, firstBlock, lastBlock, firstBlockIsVoid, lastBlockIsVoid }) => {
+              const block = SlateBlock.create({
+                type: 'paragraph',
+                nodes: [SlateText.createFromString('')],
+              });
+              if (firstBlockIsVoid) {
+                const { key } = transform.state.document;
+                transform.insertNodeByKey(key, 0, block);
+              }
+              if (lastBlockIsVoid) {
+                const { key, nodes } = transform.state.document;
+                transform.insertNodeByKey(key, nodes.size, block);
+              }
+              return transform;
+            },
+          }
+        ],
       },
       plugins,
     };
@@ -425,57 +528,13 @@ export default class Editor extends Component {
   };
 
   handlePluginSubmit = (plugin, data) => {
-    const { schema } = this.state;
-    const nodeType = schema.nodes[`plugin_${ plugin.get('id') }`];
-    //this.view.props.onAction(this.view.state.tr.replaceSelectionWith(nodeType.create(data.toJS())).action());
-  };
-
-  handleDragEnter = (e) => {
-    e.preventDefault();
-    this.setState({ dragging: true });
-  };
-
-  handleDragLeave = (e) => {
-    e.preventDefault();
-    this.setState({ dragging: false });
-  };
-
-  handleDragOver = (e) => {
-    e.preventDefault();
-  };
-
-  handleDrop = (e) => {
-    e.preventDefault();
-
-    this.setState({ dragging: false });
-
-    const { schema } = this.state;
-
-    const nodes = [];
-
-    if (e.dataTransfer.files && e.dataTransfer.files.length) {
-      Array.from(e.dataTransfer.files).forEach((file) => {
-        createAssetProxy(file.name, file)
-        .then((assetProxy) => {
-          this.props.onAddAsset(assetProxy);
-          if (file.type.split('/')[0] === 'image') {
-            nodes.push(
-              schema.nodes.image.create({ src: assetProxy.public_path, alt: file.name })
-            );
-          } else {
-            nodes.push(
-              schema.marks.link.create({ href: assetProxy.public_path, title: file.name })
-            );
-          }
-        });
-      });
-    } else {
-      nodes.push(schema.nodes.paragraph.create({}, e.dataTransfer.getData('text/plain')));
-    }
-
-    nodes.forEach((node) => {
-      //this.view.props.onAction(this.view.state.tr.replaceSelectionWith(node).action());
-    });
+    const { editorState } = this.state;
+    const markdown = plugin.toBlock(data.toJS());
+    const html = markdownToHtml(markdown);
+    const block = serializer.deserialize(html).document.getBlocks().first();
+    const resolvedState = editorState.transform().insertBlock(block).apply();
+    this.ref.onChange(resolvedState);
+    this.setState({ editorState: resolvedState });
   };
 
   handleToggle = () => {
@@ -491,58 +550,49 @@ export default class Editor extends Component {
   render() {
     const { onAddAsset, onRemoveAsset, getAsset } = this.props;
     const { plugins, selectionPosition, dragging } = this.state;
-    const classNames = [styles.editor];
-    if (dragging) {
-      classNames.push(styles.dragging);
-    }
 
-    return (<div
-      className={classNames.join(' ')}
-      onDragEnter={this.handleDragEnter}
-      onDragLeave={this.handleDragLeave}
-      onDragOver={this.handleDragOver}
-      onDrop={this.handleDrop}
-    >
-      <Sticky
-        className={styles.editorControlBar}
-        classNameActive={styles.editorControlBarSticky}
-        fillContainerWidth
-      >
-        <Toolbar
-          selectionPosition={selectionPosition}
-          buttons={{
-            bold: this.getButtonProps('bold'),
-            italic: this.getButtonProps('italic'),
-            code: this.getButtonProps('code'),
-            link: this.getButtonProps('link'),
-            h1: this.getButtonProps('heading-one', true),
-            h2: this.getButtonProps('heading-two', true),
-            list: this.getButtonProps('bulleted-list', true),
-            listNumbered: this.getButtonProps('numbered-list', true),
-            codeBlock: this.getButtonProps('code', true),
-          }}
-          onToggleMode={this.handleToggle}
-          plugins={plugins}
-          onSubmit={this.handlePluginSubmit}
-          onAddAsset={onAddAsset}
-          onRemoveAsset={onRemoveAsset}
-          getAsset={getAsset}
+    return (
+      <div className={styles.editor}>
+        <Sticky
+          className={styles.editorControlBar}
+          classNameActive={styles.editorControlBarSticky}
+          fillContainerWidth
+        >
+          <Toolbar
+            selectionPosition={selectionPosition}
+            buttons={{
+              bold: this.getButtonProps('bold'),
+              italic: this.getButtonProps('italic'),
+              code: this.getButtonProps('code'),
+              link: this.getButtonProps('link'),
+              h1: this.getButtonProps('heading-one', true),
+              h2: this.getButtonProps('heading-two', true),
+              list: this.getButtonProps('bulleted-list', true),
+              listNumbered: this.getButtonProps('numbered-list', true),
+              codeBlock: this.getButtonProps('code', true),
+            }}
+            onToggleMode={this.handleToggle}
+            plugins={plugins}
+            onSubmit={this.handlePluginSubmit}
+            onAddAsset={onAddAsset}
+            onRemoveAsset={onRemoveAsset}
+            getAsset={getAsset}
+          />
+        </Sticky>
+        <SlateEditor
+          className={styles.slateEditor}
+          state={this.state.editorState}
+          schema={this.state.schema}
+          plugins={slatePlugins}
+          onChange={editorState => this.setState({ editorState })}
+          onDocumentChange={this.handleDocumentChange}
+          onKeyDown={this.onKeyDown}
+          onPaste={this.handlePaste}
+          ref={ref => this.ref = ref}
+          spellCheck
         />
-      </Sticky>
-      <SlateEditor
-        className={styles.slateEditor}
-        state={this.state.editorState}
-        schema={this.state.schema}
-        plugins={slatePlugins}
-        onChange={editorState => this.setState({ editorState })}
-        onDocumentChange={this.handleDocumentChange}
-        onKeyDown={this.onKeyDown}
-        onPaste={this.handlePaste}
-        ref={ref => this.ref = ref}
-        spellCheck
-      />
-      <div className={styles.shim} />
-    </div>);
+      </div>
+    );
   }
 }
 

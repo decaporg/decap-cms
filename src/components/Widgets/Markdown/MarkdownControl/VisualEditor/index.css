@@ -100,3 +100,15 @@
     margin-left: 0; margin-right: 0;
   }
 }
+
+.shortcode {
+  border: 2px solid black;
+  padding: 8px;
+  margin: 2px 0;
+  cursor: pointer;
+}
+
+.shortcodeSelected {
+  border-color: var(--primaryColor);
+  color: var(--primaryColor);
+}

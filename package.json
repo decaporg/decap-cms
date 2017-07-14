@@ -162,7 +162,7 @@
     "remark-stringify": "^3.0.1",
     "selection-position": "^1.0.0",
     "semaphore": "^1.0.5",
-    "slate": "^0.20.3",
+    "slate": "^0.20.6",
     "slate-drop-or-paste-images": "^0.2.0",
     "slate-edit-list": "^0.7.1",
     "slug": "^0.9.1",

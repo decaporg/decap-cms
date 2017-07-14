@@ -103,6 +103,9 @@ const rehypeShortcodes = () => {
   const plugins = registry.getEditorComponents();
   const transform = node => {
     const { properties } = node;
+
+    // Convert this logic into a parseShortcodeDataFromHtml shared function, as
+    // this is also used in the visual editor serializer
     const dataPrefix = `data${capitalize(shortcodeAttributePrefix)}`;
     const pluginId = properties && properties[dataPrefix];
     const plugin = plugins.get(pluginId);
@@ -131,6 +134,15 @@ const rehypeShortcodes = () => {
   return transform;
 }
 
+/**
+ * we can't escape the less than symbol
+ * which means how do we know {{<thing attr>}} from <tag attr> ?
+ * maybe we escape nothing
+ * then we can check for shortcodes in a unified plugin
+ * and only check against text nodes
+ * and maybe narrow the target text nodes even further somehow
+ * and make shortcode parsing faster
+ */
 function remarkPrecompileShortcodes() {
   const Compiler = this.Compiler;
   const visitors = Compiler.prototype.visitors;
