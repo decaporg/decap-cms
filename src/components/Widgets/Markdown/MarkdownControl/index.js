@@ -1,10 +1,22 @@
 import React, { PropTypes } from 'react';
 import registry from '../../../../lib/registry';
+import { markdownToRemark, remarkToMarkdown } from '../unified';
 import RawEditor from './RawEditor';
 import VisualEditor from './VisualEditor';
 import { StickyContainer } from '../../../UI/Sticky/Sticky';
 
 const MODE_STORAGE_KEY = 'cms.md-mode';
+
+/**
+ * Slate can serialize to html, but we persist the value as markdown. Serializing
+ * the html to markdown on every keystroke is a big perf hit, so we'll register
+ * functions to perform those actions only when necessary, such as after loading
+ * and before persisting.
+ */
+registry.registerWidgetValueSerializer('markdown', {
+  serialize: remarkToMarkdown,
+  deserialize: markdownToRemark,
+});
 
 export default class MarkdownControl extends React.Component {
   static propTypes = {
@@ -12,7 +24,7 @@ export default class MarkdownControl extends React.Component {
     onAddAsset: PropTypes.func.isRequired,
     onRemoveAsset: PropTypes.func.isRequired,
     getAsset: PropTypes.func.isRequired,
-    value: PropTypes.node,
+    value: PropTypes.object,
   };
 
   constructor(props) {

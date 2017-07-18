@@ -1,12 +1,11 @@
-import { List, Map } from 'immutable';
-import { isArray, isObject, isEmpty, isNil } from 'lodash';
+import { List } from 'immutable';
 import { actions as notifActions } from 'redux-notifications';
+import { serializeValues } from '../lib/serializeEntryValues';
 import { closeEntry } from './editor';
 import { currentBackend } from '../backends/backend';
 import { getIntegrationProvider } from '../integrations';
 import { getAsset, selectIntegration } from '../reducers';
 import { createEntry } from '../valueObjects/Entry';
-import registry from '../lib/registry';
 
 const { notifSend } = notifActions;
 
@@ -219,27 +218,10 @@ export function loadEntry(collection, slug) {
     dispatch(entryLoading(collection, slug));
     return backend.getEntry(collection, slug)
       .then(loadedEntry => {
-        const deserializeValues = (values, fields) => {
-          return fields.reduce((acc, field) => {
-            const fieldName = field.get('name');
-            const value = values[fieldName];
-            const serializer = registry.getWidgetValueSerializer(field.get('widget'));
-            if (isArray(value) && !isEmpty(value)) {
-              acc[fieldName] = value.map(val => deserializeValues(val, field.get('fields')));
-            } else if (isObject(value) && !isEmpty(value)) {
-              acc[fieldName] = deserializeValues(value, field.get('fields'));
-            } else if (serializer && !isNil(value)) {
-              acc[fieldName] = serializer.deserialize(value);
-            } else if (!isNil(value)) {
-              acc[fieldName] = value;
-            }
-            return acc;
-          }, {});
-        };
-        loadedEntry.data = deserializeValues(loadedEntry.data, collection.get('fields'));
         return dispatch(entryLoaded(collection, loadedEntry))
       })
       .catch((error) => {
+        console.error(error);
         dispatch(notifSend({
           message: `Failed to load entry: ${ error.message }`,
           kind: 'danger',
@@ -289,23 +271,6 @@ export function persistEntry(collection) {
     const backend = currentBackend(state.config);
     const assetProxies = entryDraft.get('mediaFiles').map(path => getAsset(state, path));
     const entry = entryDraft.get('entry');
-    const serializeValues = (values, fields) => {
-      return fields.reduce((acc, field) => {
-        const fieldName = field.get('name');
-        const value = values.get(fieldName);
-        const serializer = registry.getWidgetValueSerializer(field.get('widget'));
-        if (List.isList(value)) {
-          return acc.set(fieldName, value.map(val => serializeValues(val, field.get('fields'))));
-        } else if (Map.isMap(value)) {
-          return acc.set(fieldName, serializeValues(value, field.get('fields')));
-        } else if (serializer && !isNil(value)) {
-          return acc.set(fieldName, serializer.serialize(value));
-        } else if (!isNil(value)) {
-          return acc.set(fieldName, value);
-        }
-        return acc;
-      }, Map());
-    };
     const transformedData = serializeValues(entryDraft.getIn(['entry', 'data']), collection.get('fields'));
     const transformedEntry = entry.set('data', transformedData);
     const transformedEntryDraft = entryDraft.set('entry', transformedEntry);
@@ -321,6 +286,7 @@ export function persistEntry(collection) {
         return dispatch(entryPersisted(collection, transformedEntry));
       })
       .catch((error) => {
+        console.error(error);
         dispatch(notifSend({
           message: `Failed to persist entry: ${ error }`,
           kind: 'danger',

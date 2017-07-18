@@ -228,20 +228,23 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
     if (!entryDraft.get('fieldsErrors').isEmpty()) return Promise.resolve();
 
     const backend = currentBackend(state.config);
+    const transactionID = uuid.v4();
     const assetProxies = entryDraft.get('mediaFiles').map(path => getAsset(state, path));
     const entry = entryDraft.get('entry');
-    const transactionID = uuid.v4();
+    const transformedData = serializeValues(entryDraft.getIn(['entry', 'data']), collection.get('fields'));
+    const transformedEntry = entry.set('data', transformedData);
+    const transformedEntryDraft = entryDraft.set('entry', transformedEntry);
 
-    dispatch(unpublishedEntryPersisting(collection, entry, transactionID));
+    dispatch(unpublishedEntryPersisting(collection, transformedEntry, transactionID));
     const persistAction = existingUnpublishedEntry ? backend.persistUnpublishedEntry : backend.persistEntry;
-    return persistAction.call(backend, state.config, collection, entryDraft, assetProxies.toJS())
+    return persistAction.call(backend, state.config, collection, transformedEntryDraft, assetProxies.toJS())
     .then(() => {
       dispatch(notifSend({
         message: 'Entry saved',
         kind: 'success',
         dismissAfter: 4000,
       }));
-      return dispatch(unpublishedEntryPersisted(collection, entry, transactionID));
+      return dispatch(unpublishedEntryPersisted(collection, transformedEntry, transactionID));
     })
     .catch((error) => {
       dispatch(notifSend({

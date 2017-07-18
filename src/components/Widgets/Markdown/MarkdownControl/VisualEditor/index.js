@@ -1,27 +1,18 @@
 import React, { Component, PropTypes } from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { Map, List, fromJS } from 'immutable';
-import { reduce, mapValues } from 'lodash';
+import { get, reduce, mapValues } from 'lodash';
 import cn from 'classnames';
 import { Editor as SlateEditor, Html as SlateHtml, Raw as SlateRaw, Text as SlateText, Block as SlateBlock, Selection as SlateSelection} from 'slate';
 import EditList from 'slate-edit-list';
-import { markdownToHtml, htmlToMarkdown } from '../../unified';
+import EditTable from 'slate-edit-table';
+import { markdownToRemark, remarkToMarkdown, slateToRemark, remarkToSlate, markdownToHtml, htmlToMarkdown } from '../../unified';
 import registry from '../../../../../lib/registry';
 import { createAssetProxy } from '../../../../../valueObjects/AssetProxy';
 import Toolbar from '../Toolbar/Toolbar';
 import { Sticky } from '../../../../UI/Sticky/Sticky';
 import styles from './index.css';
 
-/**
- * Slate can serialize to html, but we persist the value as markdown. Serializing
- * the html to markdown on every keystroke is a big perf hit, so we'll register
- * functions to perform those actions only when necessary, such as after loading
- * and before persisting.
- */
-registry.registerWidgetValueSerializer('markdown', {
-  serialize: htmlToMarkdown,
-  deserialize: markdownToHtml,
-});
 
 function processUrl(url) {
   if (url.match(/^(https?:\/\/|mailto:|\/)/)) {
@@ -102,10 +93,14 @@ const BLOCK_COMPONENTS = {
   'container': props => <div {...props.attributes}>{props.children}</div>,
   'paragraph': props => <p {...props.attributes}>{props.children}</p>,
   'list-item': props => <li {...props.attributes}>{props.children}</li>,
+  'numbered-list': props => {
+    const { data } = props.node;
+    const start = data.get('start') || 1;
+    return <ol {...props.attributes} start={start}>{props.children}</ol>;
+  },
   'bulleted-list': props => <ul {...props.attributes}>{props.children}</ul>,
-  'numbered-list': props => <ol {...props.attributes}>{props.children}</ol>,
   'quote': props => <blockquote {...props.attributes}>{props.children}</blockquote>,
-  'code': props => <pre {...props.attributes}><code>{props.children}</code></pre>,
+  'code': props => <pre><code {...props.attributes}>{props.children}</code></pre>,
   'heading-one': props => <h1 {...props.attributes}>{props.children}</h1>,
   'heading-two': props => <h2 {...props.attributes}>{props.children}</h2>,
   'heading-three': props => <h3 {...props.attributes}>{props.children}</h3>,
@@ -116,8 +111,13 @@ const BLOCK_COMPONENTS = {
     const data = props.node && props.node.get('data');
     const src = data && data.get('src') || props.src;
     const alt = data && data.get('alt') || props.alt;
-    return <img src={src} alt={alt} {...props.attributes}/>;
+    const title = data && data.get('title') || props.title;
+    return <div><img src={src} alt={alt} title={title}{...props.attributes}/></div>;
   },
+  'table': props => <table><tbody {...props.attributes}>{props.children}</tbody></table>,
+  'table-row': props => <tr {...props.attributes}>{props.children}</tr>,
+  'table-cell': props => <td {...props.attributes}>{props.children}</td>,
+  'thematic-break': props => <hr {...props.attributes}/>,
 };
 const getShortcodeId = props => {
   if (props.node) {
@@ -132,8 +132,10 @@ const shortcodeStyles = {border: '2px solid black', padding: '8px', margin: '2px
 const NODE_COMPONENTS = {
   ...BLOCK_COMPONENTS,
   'link': props => {
-    const href = props.node && props.node.getIn(['data', 'href']) || props.href;
-    return <a href={href} {...props.attributes}>{props.children}</a>;
+    const data = props.node.get('data');
+    const href = data && data.get('url') || props.href;
+    const title = data && data.get('title') || props.title;
+    return <a href={href} title={title} {...props.attributes}>{props.children}</a>;
   },
   'shortcode': props => {
     const { attributes, node, state: editorState } = props;
@@ -153,7 +155,6 @@ const NODE_COMPONENTS = {
 const MARK_COMPONENTS = {
   bold: props => <strong>{props.children}</strong>,
   italic: props => <em>{props.children}</em>,
-  underlined: props => <u>{props.children}</u>,
   strikethrough: props => <s>{props.children}</s>,
   code: props => <code>{props.children}</code>,
 };
@@ -217,9 +218,6 @@ const RULES = [
       if (['bulleted-list', 'numbered-list'].includes(entity.type)) {
         return;
       }
-      if (entity.kind !== 'block') {
-        return;
-      }
       const component = BLOCK_COMPONENTS[entity.type]
       if (!component) {
         return;
@@ -242,9 +240,6 @@ const RULES = [
         return;
       }
       const component = MARK_COMPONENTS[entity.type]
-      if (!component) {
-        return;
-      }
       return component({ children });
     }
   },
@@ -268,13 +263,14 @@ const RULES = [
     deserialize(el, next) {
       if (el.tagName != 'img') return
       return {
-        kind: 'inline',
+        kind: 'block',
         type: 'image',
         isVoid: true,
         nodes: [],
         data: {
           src: el.attribs.src,
           alt: el.attribs.alt,
+          title: el.attribs.title,
         }
       }
     },
@@ -286,6 +282,7 @@ const RULES = [
       const props = {
         src: data.get('src'),
         alt: data.get('alt'),
+        title: data.get('title'),
       };
       const result = NODE_COMPONENTS.image(props);
       return result;
@@ -300,7 +297,8 @@ const RULES = [
         type: 'link',
         nodes: next(el.children),
         data: {
-          href: el.attribs.href
+          href: el.attribs.href,
+          title: el.attribs.title,
         }
       }
     },
@@ -311,6 +309,7 @@ const RULES = [
       const data = entity.get('data');
       const props = {
         href: data.get('href'),
+        title: data.get('title'),
         attributes: data.get('attributes'),
         children,
       };
@@ -328,7 +327,7 @@ const RULES = [
 
 ]
 
-const serializer = new SlateHtml({ rules: RULES });
+const htmlSerializer = new SlateHtml({ rules: RULES });
 
 const SoftBreak = (options = {}) => ({
   onKeyDown(e, data, state) {
@@ -374,53 +373,29 @@ const BackspaceCloseBlock = (options = {}) => ({
 });
 
 const slatePlugins = [
-  SoftBreak({ ignoreIn: ['paragraph', 'list-item', 'numbered-list', 'bulleted-list'], closeAfter: 1 }),
-  BackspaceCloseBlock({ ignoreIn: ['paragraph', 'list-item', 'bulleted-list', 'numbered-list'] }),
+  SoftBreak({ ignoreIn: ['list-item', 'numbered-list', 'bulleted-list', 'table', 'table-row', 'table-cell'], closeAfter: 1 }),
+  BackspaceCloseBlock({ ignoreIn: ['paragraph', 'list-item', 'bulleted-list', 'numbered-list', 'table', 'table-row', 'table-cell'] }),
   EditList({ types: ['bulleted-list', 'numbered-list'], typeItem: 'list-item' }),
+  EditTable({ typeTable: 'table', typeRow: 'table-row', typeCell: 'table-cell' }),
 ];
 
 export default class Editor extends Component {
   constructor(props) {
     super(props);
     const plugins = registry.getEditorComponents();
-    // Wrap value in div to ensure against trailing text outside of top level html element
-    const initialValue = this.props.value ? `<div>${this.props.value}</div>` : '<p></p>';
+    const emptyRaw = {
+      nodes: [{ kind: 'block', type: 'paragraph', nodes: [
+        { kind: 'text', ranges: [{ text: '' }] }
+      ]}],
+    };
+    const remark = this.props.value && remarkToSlate(this.props.value);
+    const initialValue = get(remark, ['nodes', 'length']) ? remark : emptyRaw;
+    const editorState = SlateRaw.deserialize(initialValue, { terse: true });
     this.state = {
-      editorState: serializer.deserialize(initialValue),
+      editorState,
       schema: {
         nodes: NODE_COMPONENTS,
         marks: MARK_COMPONENTS,
-        rules: [
-          {
-            match: object => object.kind === 'document',
-            validate: doc => {
-              const blocks = doc.getBlocks();
-              const firstBlock = blocks.first();
-              const lastBlock = blocks.last();
-              const firstBlockIsVoid = firstBlock.isVoid;
-              const lastBlockIsVoid = lastBlock.isVoid;
-
-              if (firstBlockIsVoid || lastBlockIsVoid) {
-                return { blocks, firstBlock, lastBlock, firstBlockIsVoid, lastBlockIsVoid };
-              }
-            },
-            normalize: (transform, doc, { blocks, firstBlock, lastBlock, firstBlockIsVoid, lastBlockIsVoid }) => {
-              const block = SlateBlock.create({
-                type: 'paragraph',
-                nodes: [SlateText.createFromString('')],
-              });
-              if (firstBlockIsVoid) {
-                const { key } = transform.state.document;
-                transform.insertNodeByKey(key, 0, block);
-              }
-              if (lastBlockIsVoid) {
-                const { key, nodes } = transform.state.document;
-                transform.insertNodeByKey(key, nodes.size, block);
-              }
-              return transform;
-            },
-          }
-        ],
       },
       plugins,
     };
@@ -437,8 +412,9 @@ export default class Editor extends Component {
   }
 
   handleDocumentChange = (doc, editorState) => {
-    const html = serializer.serialize(editorState);
-    this.props.onChange(html);
+    const raw = SlateRaw.serialize(editorState, { terse: true });
+    const mdast = slateToRemark(raw);
+    this.props.onChange(mdast);
   };
 
   hasMark = type => this.state.editorState.marks.some(mark => mark.type === type);
@@ -602,5 +578,5 @@ Editor.propTypes = {
   getAsset: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   onMode: PropTypes.func.isRequired,
-  value: PropTypes.node,
+  value: PropTypes.object,
 };

@@ -99,6 +99,17 @@
     border-left: 3px solid #eee;
     margin-left: 0; margin-right: 0;
   }
+
+  & table {
+    border-collapse: collapse;
+  }
+
+  & td,
+  & th {
+    border: 2px solid black;
+    padding: 8px;
+    text-align: left;
+  }
 }
 
 .shortcode {

@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Editor as SlateEditor, Plain as SlatePlain } from 'slate';
-import { markdownToHtml, htmlToMarkdown } from '../../unified';
+import { markdownToRemark, remarkToMarkdown } from '../../unified';
 import Toolbar from '../Toolbar/Toolbar';
 import { Sticky } from '../../../../UI/Sticky/Sticky';
 import styles from './index.css';
@@ -8,7 +8,7 @@ import styles from './index.css';
 export default class RawEditor extends React.Component {
   constructor(props) {
     super(props);
-    const value = htmlToMarkdown(this.props.value);
+    const value = remarkToMarkdown(this.props.value);
     this.state = {
       editorState: SlatePlain.deserialize(value || ''),
     };
@@ -20,7 +20,7 @@ export default class RawEditor extends React.Component {
 
   handleDocumentChange = (doc, editorState) => {
     const value = SlatePlain.serialize(editorState);
-    const html = markdownToHtml(value);
+    const html = markdownToRemark(value);
     this.props.onChange(html);
   };
 
@@ -60,5 +60,5 @@ export default class RawEditor extends React.Component {
 RawEditor.propTypes = {
   onChange: PropTypes.func.isRequired,
   onMode: PropTypes.func.isRequired,
-  value: PropTypes.node,
+  value: PropTypes.object,
 };

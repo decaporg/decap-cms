@@ -1,21 +1,26 @@
-import find from 'lodash/find';
+import { get, find, isEmpty } from 'lodash';
 import unified from 'unified';
-import markdownToRemark from 'remark-parse';
+import u from 'unist-builder';
+import markdownToRemarkPlugin from 'remark-parse';
+import remarkToMarkdownPlugin from 'remark-stringify';
+import mdastDefinitions from 'mdast-util-definitions';
+import modifyChildren from 'unist-util-modify-children';
 import remarkToRehype from 'remark-rehype';
 import rehypeToHtml from 'rehype-stringify';
 import htmlToRehype from 'rehype-parse';
 import rehypeToRemark from 'rehype-remark';
-import remarkToMarkdown from 'remark-stringify';
-import rehypeSanitize from 'rehype-sanitize';
 import rehypeReparse from 'rehype-raw';
 import rehypeMinifyWhitespace from 'rehype-minify-whitespace';
 import ReactDOMServer from 'react-dom/server';
 import registry from '../../../lib/registry';
 import merge from 'deepmerge';
-import rehypeSanitizeSchemaDefault from 'hast-util-sanitize/lib/github';
 import hastFromString from 'hast-util-from-string';
 import hastToMdastHandlerAll from 'hast-util-to-mdast/all';
 import { reduce, capitalize } from 'lodash';
+
+// Remove the yaml tokenizer, as the rich text editor doesn't support frontmatter
+delete markdownToRemarkPlugin.Parser.prototype.blockTokenizers.yamlFrontMatter;
+console.log(markdownToRemarkPlugin.Parser.prototype.blockTokenizers);
 
 const shortcodeAttributePrefix = 'ncp';
 
@@ -23,7 +28,7 @@ const shortcodeAttributePrefix = 'ncp';
  * Remove empty nodes, including the top level parents of deeply nested empty nodes.
  */
 const rehypeRemoveEmpty = () => {
-  const isVoidElement = node => ['img', 'hr'].includes(node.tagName);
+  const isVoidElement = node => ['img', 'hr', 'br'].includes(node.tagName);
   const isNonEmptyLeaf = node => ['text', 'raw'].includes(node.type) && node.value;
   const isShortcode = node => node.properties && node.properties[`data${capitalize(shortcodeAttributePrefix)}`];
   const isNonEmptyNode =  node => {
@@ -135,28 +140,15 @@ const rehypeShortcodes = () => {
 }
 
 /**
- * we can't escape the less than symbol
- * which means how do we know {{<thing attr>}} from <tag attr> ?
- * maybe we escape nothing
- * then we can check for shortcodes in a unified plugin
- * and only check against text nodes
- * and maybe narrow the target text nodes even further somehow
- * and make shortcode parsing faster
+ * Rewrite the remark-stringify text visitor to simply return the text value,
+ * without encoding or escaping any characters. This means we're completely
+ * trusting the markdown that we receive.
  */
 function remarkPrecompileShortcodes() {
   const Compiler = this.Compiler;
   const visitors = Compiler.prototype.visitors;
-  const textVisitor = visitors.text;
-
-  visitors.text = newTextVisitor;
-
-  function newTextVisitor(node, parent) {
-    if (parent.data && parent.data[shortcodeAttributePrefix]) {
-      return node.value;
-    }
-    return textVisitor.call(this, node, parent);
-  }
-}
+  visitors.text = node => node.value;
+};
 
 const parseShortcodesFromMarkdown = markdown => {
   const plugins = registry.getEditorComponents();
@@ -180,7 +172,302 @@ const parseShortcodesFromMarkdown = markdown => {
   return markdownLinesParsed.join('\n');
 };
 
-const rehypeSanitizeSchema = merge(rehypeSanitizeSchemaDefault, { attributes: { '*': [ 'data*' ] } });
+const remarkToSlatePlugin = () => {
+  const typeMap = {
+    paragraph: 'paragraph',
+    blockquote: 'quote',
+    code: 'code',
+    listItem: 'list-item',
+    table: 'table',
+    tableRow: 'table-row',
+    tableCell: 'table-cell',
+    thematicBreak: 'thematic-break',
+    link: 'link',
+    image: 'image',
+  };
+  const markMap = {
+    strong: 'bold',
+    emphasis: 'italic',
+    delete: 'strikethrough',
+    inlineCode: 'code',
+  };
+  const toTextNode = text => ({ kind: 'text', text });
+  const wrapText = (node, index, parent) => {
+    if (['text', 'html'].includes(node.type)) {
+      parent.children.splice(index, 1, u('paragraph', [node]));
+    }
+  };
+
+  let getDefinition;
+  const transform = node => {
+    let nodes;
+
+    if (node.type === 'root') {
+      getDefinition = mdastDefinitions(node);
+      modifyChildren(wrapText)(node);
+    }
+
+    if (isEmpty(node.children)) {
+      nodes = node.children;
+    } else {
+      // If a node returns a falsey value, exclude it. Some nodes do not
+      // translate from MDAST to Slate, such as definitions for link/image
+      // references or footnotes.
+      nodes = node.children.reduce((acc, childNode) => {
+        const transformed = transform(childNode);
+        if (transformed) {
+          acc.push(transformed);
+        }
+        return acc;
+      }, []);
+    }
+
+    if (node.type === 'root') {
+      return { nodes };
+    }
+
+    // Process raw html as text, since it's valid markdown
+    if (['text', 'html'].includes(node.type)) {
+      return toTextNode(node.value);
+    }
+
+    if (node.type === 'inlineCode') {
+      return { kind: 'text', ranges: [{ text: node.value, marks: [{ type: 'code' }] }] };
+    }
+
+    if (['strong', 'emphasis', 'delete'].includes(node.type)) {
+      const remarkToSlateMarks = (markNode, parentMarks = []) => {
+        const marks = [...parentMarks, { type: markMap[markNode.type] }];
+        const ranges = [];
+        markNode.children.forEach(childNode => {
+          if (['html', 'text'].includes(childNode.type)) {
+            ranges.push({ text: childNode.value, marks });
+            return;
+          }
+          const nestedRanges = remarkToSlateMarks(childNode, marks);
+          ranges.push(...nestedRanges);
+        });
+        return ranges;
+      };
+
+      return { kind: 'text', ranges: remarkToSlateMarks(node) };
+    }
+
+    if (node.type === 'heading') {
+      const depths = { 1: 'one', 2: 'two', 3: 'three', 4: 'four', 5: 'five', 6: 'six' };
+      return { kind: 'block', type: `heading-${depths[node.depth]}`, nodes };
+    }
+
+    if (['paragraph', 'blockquote', 'tableRow', 'tableCell'].includes(node.type)) {
+      return { kind: 'block', type: typeMap[node.type], nodes };
+    }
+
+    if (node.type === 'code') {
+      const data = { lang: node.lang };
+      const text = toTextNode(node.value);
+      const nodes = [text];
+      return { kind: 'block', type: typeMap[node.type], data, nodes };
+    }
+
+    if (node.type === 'list') {
+      const slateType = node.ordered ? 'numbered-list' : 'bulleted-list';
+      const data = { start: node.start };
+      return { kind: 'block', type: slateType, data, nodes };
+    }
+
+    if (node.type === 'listItem') {
+      const data = { checked: node.checked };
+      return { kind: 'block', type: typeMap[node.type], data, nodes };
+    }
+
+    if (node.type === 'table') {
+      const data = { align: node.align };
+      return { kind: 'block', type: typeMap[node.type], data, nodes };
+    }
+
+    if (node.type === 'thematicBreak') {
+      return { kind: 'block', type: typeMap[node.type], isVoid: true };
+    }
+
+    if (node.type === 'link') {
+      const { title, url } = node;
+      const data = { title, url };
+      return { kind: 'inline', type: typeMap[node.type], data, nodes };
+    }
+
+    if (node.type === 'linkReference') {
+      const definition = getDefinition(node.identifier);
+      const { title, url } = definition;
+      const data = { title, url };
+      return { kind: 'inline', type: typeMap['link'], data, nodes };
+    }
+
+    if (node.type === 'image') {
+      const { title, url, alt } = node;
+      const data = { title, url, alt };
+      return { kind: 'block', type: typeMap[node.type], data };
+    }
+
+    if (node.type === 'imageReference') {
+      const definition = getDefinition(node.identifier);
+      const { title, url } = definition;
+      const data = { title, url };
+      return { kind: 'block', type: typeMap['image'], data };
+    }
+  };
+  return transform;
+};
+
+const slateToRemarkPlugin = () => {
+  const transform = node => {
+    console.log(node);
+    return node;
+  };
+  return transform;
+};
+
+export const markdownToRemark = markdown => {
+  const result = unified()
+    .use(markdownToRemarkPlugin, { fences: true, pedantic: true, footnotes: true, commonmark: true })
+    .parse(markdown);
+  return result;
+};
+
+export const remarkToMarkdown = obj => {
+  const mdast = obj || u('root', [u('paragraph', [u('text', '')])]);
+
+  const result = unified()
+    .use(remarkToMarkdownPlugin, { listItemIndent: '1', fences: true, pedantic: true, commonmark: true })
+    .use(remarkPrecompileShortcodes)
+    .stringify(mdast);
+  return result;
+};
+
+export const remarkToSlate = mdast => {
+  const result = unified()
+    .use(remarkToSlatePlugin)
+    .runSync(mdast);
+  return result;
+};
+
+export const slateToRemark = raw => {
+  const typeMap = {
+    'paragraph': 'paragraph',
+    'heading-one': 'heading',
+    'heading-two': 'heading',
+    'heading-three': 'heading',
+    'heading-four': 'heading',
+    'heading-five': 'heading',
+    'heading-six': 'heading',
+    'quote': 'blockquote',
+    'code': 'code',
+    'numbered-list': 'list',
+    'bulleted-list': 'list',
+    'list-item': 'listItem',
+    'table': 'table',
+    'table-row': 'tableRow',
+    'table-cell': 'tableCell',
+    'thematic-break': 'thematicBreak',
+    'link': 'link',
+    'image': 'image',
+  };
+  const markMap = {
+    bold: 'strong',
+    italic: 'emphasis',
+    strikethrough: 'delete',
+    code: 'inlineCode',
+  };
+  const transform = node => {
+    const children = isEmpty(node.nodes) ? node.nodes : node.nodes.reduce((acc, childNode) => {
+      if (childNode.kind !== 'text') {
+        acc.push(transform(childNode));
+        return acc;
+      }
+      if (childNode.ranges) {
+        childNode.ranges.forEach(range => {
+          const { marks = [], text } = range;
+          const markTypes = marks.map(mark => markMap[mark.type]);
+          if (markTypes.includes('inlineCode')) {
+            acc.push(u('inlineCode', text));
+          } else {
+            const textNode = u('html', text);
+            const nestedText = !markTypes.length ? textNode : markTypes.reduce((acc, markType) => {
+              const nested = u(markType, [acc]);
+              return nested;
+            }, textNode);
+            acc.push(nestedText);
+          }
+        });
+      } else {
+        acc.push(u('html', childNode.text));
+      }
+      return acc;
+    }, []);
+
+    if (node.type === 'root') {
+      return u('root', children);
+    }
+
+    if (node.type.startsWith('heading')) {
+      const depths = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6 };
+      const depth = node.type.split('-')[1];
+      const props = { depth: depths[depth] };
+      return u(typeMap[node.type], props, children);
+    }
+
+    if (['paragraph', 'quote', 'list-item', 'table', 'table-row', 'table-cell'].includes(node.type)) {
+      return u(typeMap[node.type], children);
+    }
+
+    if (node.type === 'code') {
+      const value = get(node.nodes, [0, 'text']);
+      const props = { lang: get(node.data, 'lang') };
+      return u(typeMap[node.type], props, value);
+    }
+
+    if (['numbered-list', 'bulleted-list'].includes(node.type)) {
+      const ordered = node.type === 'numbered-list';
+      const props = { ordered, start: get(node.data, 'start') || 1 };
+      return u(typeMap[node.type], props, children);
+    }
+
+    if (node.type === 'thematic-break') {
+      return u(typeMap[node.type]);
+    }
+
+    if (node.type === 'link') {
+      const data = get(node, 'data', {});
+      const { url, title } = data;
+      return u(typeMap[node.type], data, children);
+    }
+
+    if (node.type === 'image') {
+      const data = get(node, 'data', {});
+      const { url, title, alt } = data;
+      return u(typeMap[node.type], data);
+    }
+  }
+  raw.type = 'root';
+  const result = transform(raw);
+  return result;
+};
+
+export const remarkToHtml = mdast => {
+  const result = unified()
+    .use(remarkToRehype, { allowDangerousHTML: true })
+    .use(rehypeReparse)
+    .use(rehypeRemoveEmpty)
+    .use(rehypeMinifyWhitespace)
+    .use(() => node => {
+      return node;
+    })
+    .runSync(mdast);
+
+  const output = unified()
+    .use(rehypeToHtml, { allowDangerousHTML: true, allowDangerousCharacters: true, entities: { subset: [] } })
+    .stringify(result);
+  return output
+}
 
 export const markdownToHtml = markdown => {
   // Parse shortcodes from the raw markdown rather than via Unified plugin.
@@ -188,11 +475,9 @@ export const markdownToHtml = markdown => {
   // parsing rules.
   const markdownWithParsedShortcodes = parseShortcodesFromMarkdown(markdown);
   const result = unified()
-    .use(markdownToRemark, { fences: true })
+    .use(markdownToRemarkPlugin, { fences: true, pedantic: true, footnotes: true, commonmark: true })
     .use(remarkToRehype, { allowDangerousHTML: true })
-    .use(rehypeReparse)
     .use(rehypeRemoveEmpty)
-    .use(rehypeSanitize, rehypeSanitizeSchema)
     .use(rehypeMinifyWhitespace)
     .use(rehypeToHtml, { allowDangerousHTML: true })
     .processSync(markdownWithParsedShortcodes)
@@ -203,7 +488,6 @@ export const markdownToHtml = markdown => {
 export const htmlToMarkdown = html => {
   const result = unified()
     .use(htmlToRehype, { fragment: true })
-    .use(rehypeSanitize, rehypeSanitizeSchema)
     .use(rehypeRemoveEmpty)
     .use(rehypeMinifyWhitespace)
     .use(rehypePaperEmoji)
@@ -222,7 +506,7 @@ export const htmlToMarkdown = html => {
       return node;
     })
     .use(remarkNestedList)
-    .use(remarkToMarkdown, { listItemIndent: '1', fences: true })
+    .use(remarkToMarkdownPlugin, { listItemIndent: '1', fences: true, pedantic: true, commonmark: true })
     .use(remarkPrecompileShortcodes)
     /*
     .use(() => node => {
