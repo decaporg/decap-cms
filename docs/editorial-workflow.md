@@ -36,4 +36,4 @@ Actual data are stored in individual `json` files committed to this tree.
 
 Instead of adding logic to `CollectionPage` and `EntryPage`, the Editorial Workflow is implemented as Higher Order Components, adding UI and dispatching additional actions.
 
-Furthermore, all editorial workflow states are managed in Redux - there are the `actions/editorialWorkflow.js` and the `reducers/editorialWorkflow.js` files.
+Furthermore, all editorial workflow state is managed in Redux - there's an `actions/editorialWorkflow.js` file and a `reducers/editorialWorkflow.js` file.

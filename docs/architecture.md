@@ -6,13 +6,13 @@ The core abstractions for content editing are `collections`, `entries` and `widg
 
 Each `collection` represents a collection of entries. This can either be a collection of similar entries with the same structure, or a set of entries where each has its own structure.
 
-The structure of an entry is defined as a series of fields, each with a `name`, a `label` and a `widget` .
+The structure of an entry is defined as a series of fields, each with a `name`, a `label`, and a `widget` .
 
 The `widget` determines the UI widget that the content editor will use when editing this field of an entry, as well as how the content of the field is presented in the editing preview.
 
 Entries are loaded and persisted through a `backend` that will typically represent a `git` repository. 
 
-## State shape / reducers:
+## State shape / reducers
 **Auth:** Keeps track of the logged state and the current user.
 
 **Config:** Holds the environment configuration (backend type, available collections and fields).
@@ -25,7 +25,7 @@ Entries are loaded and persisted through a `backend` that will typically represe
 
 **Medias:** Keeps references to all media files uploaded by the user during the current session.
 
-## Selectors:
+## Selectors
 Selectors are functions defined within reducers used to compute derived data from the Redux store. The available selectors are:
 
 **selectEntry:** Selects a single entry, given the collection and a slug.
@@ -34,7 +34,7 @@ Selectors are functions defined within reducers used to compute derived data fro
 
 **getAsset:** Selects a single AssetProxy object for the given URI.
 
-## Value Objects:
+## Value Objects
 **AssetProxy:** AssetProxy is a Value Object that holds information regarding an asset file (such as an image, for example), whether it's persisted online or held locally in cache.
 
 For a file persisted online, the AssetProxy only keeps information about its URI. For local files, the AssetProxy will keep a reference to the actual File object while generating the expected final URIs and on-demand blobs for local preview.
@@ -44,14 +44,14 @@ The AssetProxy object can be used directly inside a media tag (such as `<img>`),
 ## Components structure and Workflows
 Components are separated into two main categories: Container components and Presentational components.
 
-### Entry Editing:
+### Entry Editing
 For either updating an existing entry or creating a new one, the `EntryEditor` is used and the flow is the same:
 * When mounted, the `EntryPage` container component dispatches the `createDraft` action, setting the `entryDraft` state to a blank state (in case of a new entry) or to a copy of the selected entry (in case of an edit).
 * The `EntryPage` will also render widgets for each field type in the given entry.
 * Widgets are used for editing entry fields. There are different widgets for different field types, and they are always defined in a pair containing a `control` and a `preview` component. The control component is responsible for presenting the user with the appropriate interface for manipulating the current field value, while the preview component is responsible for displaying the value with the appropriate styling.
 
-#### Widget components implementation:
-The control component receives three (3) callbacks as props: `onChange`, `onAddAsset` and `onRemoveAsset`.
+#### Widget components implementation
+The control component receives three (3) callbacks as props: `onChange`, `onAddAsset`, and `onRemoveAsset`.
 * onChange (required): Should be called when the users changes the current value. It will ultimately end up updating the EntryDraft object in the Redux Store, thus updating the preview component.
 * onAddAsset & onRemoveAsset (optionals): If the field accepts file uploads for media (images, for example), these callbacks should be invoked with a `AssetProxy` value object. `onAddAsset` will get the current media stored in the Redux state tree while `onRemoveAsset` will remove it. AssetProxy objects are stored in the `Medias` object and referenced in the `EntryDraft` object on the state tree.
 

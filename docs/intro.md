@@ -1,6 +1,6 @@
 # Introduction
 
-Netlify CMS is a Content Management System for static sites, allowing collaborators to create, edit, review and publish content without writing code or dealing with version control. It brings the ease of WordPress-style editing to the simplicity and speed of static sites.
+Netlify CMS is a Content Management System for static sites, allowing collaborators to create, edit, review, and publish content without writing code or dealing with version control. It brings the ease of WordPress-style editing to the simplicity and speed of static sites.
 
 At its core, Netlify CMS is an open-source React app that acts as a wrapper for the Git workflow, using the GitHub API. This provides many advantages, including:
 
@@ -9,7 +9,7 @@ At its core, Netlify CMS is an open-source React app that acts as a wrapper for 
 * **Easy installation:** add two files to your site and hook up the backend by including in your build process or linking to our CDN.
 * **Modern authentication:** using GitHub and JSON web tokens.
 * **Flexible content types:** specify an unlimited number of content types with custom fields.
-* **Fully extensible:** create custom-styled previews, UI widgets and editor plugins.
+* **Fully extensible:** create custom-styled previews, UI widgets, and editor plugins.
 
 # Core Concepts
 
@@ -38,7 +38,7 @@ The JS is also available via npm and can be integrated into your regular build p
 
 ### Editorial Workflow
 
-Netlify CMS has an optional [editorial workflow](https://github.com/netlify/netlify-cms/blob/master/docs/editorial-workflow.md) that translates common Git commands into familiar language in a simple UI:
+Netlify CMS has an optional [editorial workflow](/docs/editorial-workflow.md) that translates common Git commands into familiar language in a simple UI:
 
 Actions in Netlify UI ...	| Perform these Git actions
 --- | ---
@@ -59,8 +59,8 @@ backend:
 media_folder: "img/uploads" # Folder where user uploaded files should go
 
 collections: # A list of collections the CMS should be able to edit
-  - name: "post" # Used in routes, i.e.,: /admin/collections/:slug/edit
-    label: "Post" # Used in the UI, i.e.,: "New Post"
+  - name: "post" # Used in routes, e.g., /admin/collections/:slug/edit
+    label: "Post" # Used in the UI, e.g., "New Post"
     folder: "_posts" # The path to the folder where the documents are stored
     create: true # Allow users to create new documents in this collection
     fields: # The fields each document in this collection have
@@ -91,7 +91,7 @@ Widgets define the data type and interface for entry fields. Netlify CMS comes w
 
 ## Customization
 
-Netlify CMS exposes a `window.CMS` global object that you can use to register custom widgets, previews and editor plugins. The available methods are:
+Netlify CMS exposes a `window.CMS` global object that you can use to register custom widgets, previews, and editor plugins. The available methods are:
 
 * `registerPreviewStyle`: register a custom stylesheet to match the editor preview pane to your site style.
 
