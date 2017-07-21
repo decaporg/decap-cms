@@ -10,16 +10,16 @@ const keys = i18n.extractFromFiles([
   marker: 'polyglot.t',
 });
 
-function _mergeMissing(transls, missing, makeVal) {
+function mergeMissing(translations, missing, makeVal) {
   _.each(missing, (i) => {
-    if (transls[i.key] === undefined) {
-      transls[i.key] = makeVal(i);
+    if (translations[i.key] === undefined) {
+      translations[i.key] = makeVal(i);
     }
   });
 }
 
-function _writeTransls(file, transls) {
-  const sorted = _.keyArrange(transls)
+function writeTranslations(file, translations) {
+  const sorted = _.keyArrange(translations)
   fs.writeFileSync(file, JSON.stringify(sorted, {}, 2));
 }
 
@@ -30,8 +30,8 @@ const enTransls = JSON.parse(fs.readFileSync(enFilePath));
 
 const enMissing = i18n.findMissing(enTransls, keys);
 if (enMissing.length > 0) {
-  _mergeMissing(enTransls, enMissing, (i) => i.type);
-  _writeTransls(enFilePath, enTransls);
+  mergeMissing(enTransls, enMissing, (i) => i.type);
+  writeTranslations(enFilePath, enTransls);
   console.log('Some errors in english translation. Correct them:');
   console.log(JSON.stringify(enMissing, {}, 2));
   return -1;
@@ -44,12 +44,12 @@ fs.readdirSync(i18nFolder).forEach(file => {
     return
   }
   const filePath = path.join(i18nFolder, file);
-  const transls = JSON.parse(fs.readFileSync(filePath));
+  const translations = JSON.parse(fs.readFileSync(filePath));
 
-  const missing = i18n.findMissing(transls, keys);
+  const missing = i18n.findMissing(translations, keys);
   if (missing.length > 0) {
-    _mergeMissing(transls, missing, (i) => enTransls[i.key])
-    _writeTransls(filePath, transls);
+    mergeMissing(translations, missing, (i) => enTransls[i.key])
+    writeTranslations(filePath, translations);
     errors.push({file: file, missing: missing})
   }
 });
