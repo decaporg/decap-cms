@@ -9,10 +9,24 @@ While we work on building this page (and you can help!), here are some links wit
 * [Setup instructions and Contribution Guidelines](https://github.com/netlify/netlify-cms/blob/master/CONTRIBUTING.md)
 
 
-## i18n
+## I18N
 
-to extract/update i18n string run:
+I18N strings are managed by [polyglot](http://airbnb.io/polyglot.js/).
+Strings are extracted from source code with static analysis by [i18n-extract](https://github.com/oliviertassinari/i18n-extract).
+Code is searched for regex /polyglot.t('[^']')/ so if you want particular string to be translated,
+you have to follow this rule.
+For more info see [polyglot](http://airbnb.io/polyglot.js/) or [example](../src/components/FindBar/FindBar.js)
+
+Extractions shall be extracted manually extra for each language.
+By one extraction run, one file (JSON) is produced (or updated if it already exists).
+to extract/update i18n strings run:
 
 ```
 npm run extract --lang <code of your language>
+```
+
+E.g. czech language strings (international code cs) run:
+
+```
+npm run extract --lang cs
 ```
