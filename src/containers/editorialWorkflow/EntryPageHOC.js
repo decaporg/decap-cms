@@ -15,7 +15,7 @@ export default function EntryPageHOC(EntryPage) {
   function mapStateToProps(state, ownProps) {
     const { collections } = state;
     const isEditorialWorkflow = (state.config.get('publish_mode') === EDITORIAL_WORKFLOW);
-    const returnObj = { isEditorialWorkflow, showDelete: true };
+    const returnObj = { isEditorialWorkflow, showDelete: !ownProps.newEntry };
     if (isEditorialWorkflow) {
       returnObj.showDelete = false;
       const slug = ownProps.params.slug;
