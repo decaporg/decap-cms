@@ -83,10 +83,12 @@ export function configDidLoad(config) {
   };
 }
 
-const URL_BASE = 'https://raw.githubusercontent.com/netlify/netlify-cms/master/src/'
-function _loadTransls(config) {
-  const translURL = `${URL_BASE}/i18n/${config.lang}.json`
-  return fetch(translURL)
+const DEFAULT_I18N_URL = 'https://raw.githubusercontent.com/netlify/netlify-cms/master/src';
+
+function loadTranslations(config) {
+  const URL_BASE = config.default_i18n_urlbase || DEFAULT_I18N_URL;
+  const translationsURL = `${URL_BASE}/i18n/${config.lang}.json`;
+  return fetch(translationsURL)
   .then((res) => {
     if (res.status === 404) {
       // try fallback en
@@ -119,7 +121,7 @@ export function loadConfig() {
     .then(parseConfig)
     .then(validateConfig)
     .then(applyDefaults)
-    .then(_loadTransls)
+    .then(loadTranslations)
     .then((config) => {
       dispatch(configDidLoad(config));
       dispatch(authenticateUser());
