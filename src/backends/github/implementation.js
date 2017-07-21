@@ -1,5 +1,4 @@
 import semaphore from "semaphore";
-import { resolvePromiseProperties } from "../../lib/promiseHelper";
 import AuthenticationPage from "./AuthenticationPage";
 import API from "./API";
 import { fileExtension } from '../../lib/pathHelper'

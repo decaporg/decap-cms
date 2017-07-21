@@ -93,7 +93,7 @@ class EntryPage extends React.Component {
   };
 
   handleDeleteEntry = () => {
-    if (!window.confirm("Are you sure you want to delete this entry?")) { return; }
+    if (!window.confirm('Are you sure you want to delete this entry?')) { return; }
     if (this.props.newEntry) {
       return this.handleCloseEntry();
     }

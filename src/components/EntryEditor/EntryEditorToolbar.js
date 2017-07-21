@@ -25,8 +25,8 @@ const EntryEditorToolbar = (
         ? (<Button accent onClick={onDelete}>
             Delete
            </Button>)
-        : "" }
-      { showDelete ? " " : "" }
+        : '' }
+      { showDelete ? ' ' : '' }
       <Button onClick={onCancelEdit}>
         Cancel
       </Button>

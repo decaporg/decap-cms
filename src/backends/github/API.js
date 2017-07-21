@@ -204,7 +204,7 @@ export default class API {
       return this.request(`${ this.repoURL }/pulls`, {
         params: {
           head: branchName,
-          state: "open",
+          state: 'open',
         },
       })
         .then(prs => prs.some(pr => pr.head.ref === branchName));
@@ -265,19 +265,17 @@ export default class API {
 
   deleteFile(path, message, options={}) {
     const branch = options.branch || this.branch;
+    const fileURL = `${ this.repoURL }/contents/${ path }`;
     // We need to request the file first to get the SHA
-    return this.request(`${ this.repoURL }/contents/${ path }`)
-    .then(({ sha }) => this.request(
-      `${ this.repoURL }/contents/${ path }`,
-      {
-        method: "DELETE",
-        params: {
-          sha,
-          message,
-          branch,
-        },
-      }
-    ));
+    return this.request(fileURL)
+    .then(({ sha }) => this.request(fileURL, {
+      method: "DELETE",
+      params: {
+        sha,
+        message,
+        branch,
+      },
+    }));
   }
 
   editorialWorkflowGit(fileTree, entry, filesList, options) {
@@ -404,7 +402,7 @@ export default class API {
 
   deleteRef(type, name, sha) {
     return this.request(`${ this.repoURL }/git/refs/${ type }/${ encodeURIComponent(name) }`, {
-      method: "DELETE",
+      method: 'DELETE',
     });
   }
 

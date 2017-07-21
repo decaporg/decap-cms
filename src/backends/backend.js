@@ -232,7 +232,7 @@ class Backend {
 
   deleteEntry(config, collection, slug) {
     const path = selectEntryPath(collection, slug);
-    const commitMessage = `Delete ${ collection.get("label") } “${ slug }”`;
+    const commitMessage = `Delete ${ collection.get('label') } “${ slug }”`;
     return this.implementation.deleteFile(path, commitMessage);
   }
 
