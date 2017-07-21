@@ -19,6 +19,10 @@ export default class API {
     return this.request("/user");
   }
 
+  collaborator(user) {
+    return this.request(`${ this.repoURL }/collaborators/${ user }`);
+  }
+
   requestHeaders(headers = {}) {
     const baseHeader = {
       "Content-Type": "application/json",
@@ -64,7 +68,9 @@ export default class API {
     return fetch(url, { ...options, headers }).then((response) => {
       responseStatus = response.status;
       const contentType = response.headers.get("Content-Type");
-      if (contentType && contentType.match(/json/)) {
+      if (url.indexOf('/collaborators/') >= 0) {
+        return responseStatus;
+      } else if (contentType && contentType.match(/json/)) {
         return this.parseJsonResponse(response);
       }
       return response.text();
@@ -236,7 +242,6 @@ export default class API {
   persistFiles(entry, mediaFiles, options) {
     const uploadPromises = [];
     const files = mediaFiles.concat(entry);
-    
 
     files.forEach((file) => {
       if (file.uploaded) { return; }
@@ -343,7 +348,7 @@ export default class API {
 
   deleteUnpublishedEntry(collection, slug) {
     const contentKey = slug;
-    let prNumber; 
+    let prNumber;
     return this.retrieveMetadata(contentKey)
     .then(metadata => this.closePR(metadata.pr, metadata.objects))
     .then(() => this.deleteBranch(`cms/${ contentKey }`));
