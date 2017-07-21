@@ -57,7 +57,7 @@ export default class ImageControl extends React.Component {
     this.props.onRemoveAsset(this.props.value);
     if (file) {
       this.setState({ processing: true });
-      this.promise = createAssetProxy(file.name, file)
+      this.promise = createAssetProxy(file.name, file, false, this.props.field)
       .then((assetProxy) => {
         this.setState({ processing: false });
         this.props.onAddAsset(assetProxy);
