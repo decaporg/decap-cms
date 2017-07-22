@@ -5,8 +5,6 @@ import { Card, Icon } from "../../components/UI";
 import logo from "../netlify-auth/netlify_logo.svg";
 import styles from "../netlify-auth/AuthenticationPage.css";
 
-
-
 export default class AuthenticationPage extends React.Component {
   static propTypes = {
     onLogin: React.PropTypes.func.isRequired,

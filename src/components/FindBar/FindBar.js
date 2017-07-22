@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import styles from './FindBar.css';
 
-
 export const SEARCH = 'SEARCH';
 
 class FindBar extends Component {

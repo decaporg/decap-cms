@@ -25,7 +25,6 @@ import { SIMPLE, EDITORIAL_WORKFLOW } from '../constants/publishModes';
 import styles from './App.css';
 import sidebarStyles from './Sidebar.css';
 
-
 TopBarProgress.config({
   barColors: {
     "0": '#3ab7a5',

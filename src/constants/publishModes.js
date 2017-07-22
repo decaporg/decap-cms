@@ -1,6 +1,5 @@
 import { Map, OrderedMap } from 'immutable';
 
-
 // Create/edit workflow modes
 export const SIMPLE = 'simple';
 export const EDITORIAL_WORKFLOW = 'editorial_workflow';

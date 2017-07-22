@@ -8,7 +8,6 @@ import ToolbarPluginForm from './ToolbarPluginForm';
 import { Icon } from '../../../UI';
 import styles from './Toolbar.css';
 
-
 export default class Toolbar extends React.Component {
   static propTypes = {
     selectionPosition: PropTypes.object,

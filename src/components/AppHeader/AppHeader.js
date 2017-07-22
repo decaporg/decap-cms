@@ -10,7 +10,6 @@ import FindBar from "../FindBar/FindBar";
 import { stringToRGB } from "../../lib/textHelper";
 import styles from "./AppHeader.css";
 
-
 export default class AppHeader extends React.Component {
 
   static propTypes = {
