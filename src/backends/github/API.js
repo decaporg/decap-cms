@@ -19,8 +19,17 @@ export default class API {
     return this.request("/user");
   }
 
-  collaborator(user) {
-    return this.request(`${ this.repoURL }/collaborators/${ user }`);
+  isCollaborator(user) {
+    return this.request(`${ this.repoURL }/collaborators/${ user }`).catch((error) => {
+      if (error.status === 403 || error.status === 404) {
+        // Unauthorized user
+        return false;
+      } else if (error.status === 204) {
+        // Authorized user
+        return true;
+      }
+      throw error;
+    });
   }
 
   requestHeaders(headers = {}) {
@@ -68,9 +77,7 @@ export default class API {
     return fetch(url, { ...options, headers }).then((response) => {
       responseStatus = response.status;
       const contentType = response.headers.get("Content-Type");
-      if (url.indexOf('/collaborators/') >= 0) {
-        return responseStatus;
-      } else if (contentType && contentType.match(/json/)) {
+      if (contentType && contentType.match(/json/)) {
         return this.parseJsonResponse(response);
       }
       return response.text();

@@ -32,16 +32,12 @@ export default class GitHub {
     this.token = state.token;
     this.api = new API({ token: this.token, branch: this.branch, repo: this.repo, api_root: this.api_root });
     return this.api.user().then(user =>
-      this.api.collaborator(user.login).then((status) => {
-        if (status === 404 || status === 403) {
-          // Unauthorized user
-          throw new Error("Your GitHub user account does not have access to this repo.");
-        } else if (status === 204) {
-          // Authorized user
-          user.token = state.token;
-          return user;
-        }
-        throw new Error('GitHub is not responding, please try again.');
+      this.api.isCollaborator(user.login).then((isCollab) => {
+        // Unauthorized user
+        if (!isCollab) throw new Error("Your GitHub user account does not have access to this repo.");
+        // Authorized user
+        user.token = state.token;
+        return user;
       })
     );
   }
