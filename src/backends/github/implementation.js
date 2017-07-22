@@ -83,6 +83,10 @@ export default class GitHub {
     return this.api.persistFiles(entry, mediaFiles, options);
   }
 
+  deleteFile(path, commitMessage, options) {
+    return this.api.deleteFile(path, commitMessage, options);
+  }
+
   unpublishedEntries() {
     return this.api.listUnpublishedBranches().then((branches) => {
       const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);

@@ -15,8 +15,9 @@ export default function EntryPageHOC(EntryPage) {
   function mapStateToProps(state, ownProps) {
     const { collections } = state;
     const isEditorialWorkflow = (state.config.get('publish_mode') === EDITORIAL_WORKFLOW);
-    const returnObj = { isEditorialWorkflow };
+    const returnObj = { isEditorialWorkflow, showDelete: !ownProps.newEntry };
     if (isEditorialWorkflow) {
+      returnObj.showDelete = false;
       const slug = ownProps.params.slug;
       const collection = collections.get(ownProps.params.name);
       const unpublishedEntry = selectUnpublishedEntry(state, collection.get('name'), slug);
@@ -35,14 +36,16 @@ export default function EntryPageHOC(EntryPage) {
 
     if (isEditorialWorkflow) {
       // Overwrite loadEntry to loadUnpublishedEntry
-      returnObj.loadEntry = (collection, slug) => {
+      returnObj.loadEntry = (collection, slug) =>
         dispatch(loadUnpublishedEntry(collection, slug));
-      };
-      
+
       // Overwrite persistEntry to persistUnpublishedEntry
-      returnObj.persistEntry = (collection) => {
+      returnObj.persistEntry = collection =>
         dispatch(persistUnpublishedEntry(collection, unpublishedEntry));
-      };
+
+      // Overwrite deleteEntry to a noop (deletion is currently
+      // disabled in the editorial workflow)
+      returnObj.deleteEntry = () => undefined;
     }
 
     return {
