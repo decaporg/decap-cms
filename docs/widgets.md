@@ -61,3 +61,14 @@ collections:
         searchFields: [name, twitterHandle]
         valueField: name
 ```
+
+### Image/File Widget
+
+If you store your files in different folders e.g. cover images for your posts in **assets/postcovers** folder you can add __media_folder__ and __public_folder__ to your widged conf allowing the media go into appropriate folder.
+It would then look like this:
+
+```
+...
+  - {label: "Cover Image", name: "image", widget: "image", media_folder: "assets/postcovers", public_folder: "/assets/postcovers"}
+...
+```
