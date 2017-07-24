@@ -1,4 +1,5 @@
-import { get, find, isEmpty } from 'lodash';
+import { get, has, find, isEmpty } from 'lodash';
+import { renderToString } from 'react-dom/server';
 import unified from 'unified';
 import u from 'unist-builder';
 import markdownToRemarkPlugin from 'remark-parse';
@@ -20,7 +21,6 @@ import { reduce, capitalize } from 'lodash';
 
 // Remove the yaml tokenizer, as the rich text editor doesn't support frontmatter
 delete markdownToRemarkPlugin.Parser.prototype.blockTokenizers.yamlFrontMatter;
-console.log(markdownToRemarkPlugin.Parser.prototype.blockTokenizers);
 
 const shortcodeAttributePrefix = 'ncp';
 
@@ -150,6 +150,90 @@ function remarkPrecompileShortcodes() {
   visitors.text = node => node.value;
 };
 
+const remarkShortcodes = ({ plugins }) => {
+  return transform;
+
+  function transform(node) {
+    if (node.children) {
+      node.children = node.children.reduce(reducer, []);
+    }
+    return node;
+
+    function reducer(newChildren, childNode) {
+      if (!['text', 'html'].includes(childNode.type)) {
+        const processedNode = childNode.children ? transform(childNode) : childNode;
+        newChildren.push(processedNode);
+        return newChildren;
+      }
+
+      const text = childNode.value;
+      let lastPlugin;
+      let match;
+      const plugin = plugins.find(p => {
+        match = text.match(p.pattern);
+        return match;
+      });
+      if (!plugin) {
+        newChildren.push(childNode);
+        return newChildren;
+      }
+      const matchValue = match[0];
+      const matchLength = matchValue.length;
+      const matchAll = matchLength === text.length;
+
+      if (matchAll) {
+        const shortcodeNode = createShortcodeNode(text, plugin, match);
+        newChildren.push(shortcodeNode);
+        return newChildren;
+      }
+
+      const tempChildren = [];
+      const matchAtStart = match.index === 0;
+      const matchAtEnd = match.index + matchLength === text.length;
+
+      if (!matchAtStart) {
+        const textBeforeMatch = text.slice(0, match.index);
+        const result = reducer([], { type: 'text', value: textBeforeMatch });
+        tempChildren.push(...result);
+      }
+
+      const matchNode = createShortcodeNode(matchValue, plugin, match);
+      tempChildren.push(matchNode);
+
+      if (!matchAtEnd) {
+        const textAfterMatch = text.slice(match.index + matchLength);
+        const result = reducer([], { type: 'text', value: textAfterMatch });
+        tempChildren.push(...result);
+      }
+
+      newChildren.push(...tempChildren);
+      return newChildren;
+    }
+
+    function createShortcodeNode(text, plugin, match) {
+      const shortcode = plugin.id;
+      const shortcodeData = plugin.fromBlock(match);
+      return { type: 'html', value: text, data: { shortcode, shortcodeData } };
+    }
+  }
+};
+
+const remarkToRehypeShortcodes = ({ plugins }) => {
+  return transform;
+
+  function transform(node) {
+    const children = node.children ? node.children.map(transform) : node.children;
+    if (!has(node, ['data', 'shortcode'])) {
+      return { ...node, children };
+    }
+    const { shortcode, shortcodeData } = node.data;
+    const plugin = plugins.get(shortcode);
+    const value = plugin.toPreview(shortcodeData);
+    const valueHtml = typeof value === 'string' ? value : renderToString(value);
+    return { ...node, value: valueHtml };
+  }
+};
+
 const parseShortcodesFromMarkdown = markdown => {
   const plugins = registry.getEditorComponents();
   const markdownLines = markdown.split('\n');
@@ -191,7 +275,7 @@ const remarkToSlatePlugin = () => {
     delete: 'strikethrough',
     inlineCode: 'code',
   };
-  const toTextNode = text => ({ kind: 'text', text });
+  const toTextNode = (text, data) => ({ kind: 'text', text, data });
   const wrapText = (node, index, parent) => {
     if (['text', 'html'].includes(node.type)) {
       parent.children.splice(index, 1, u('paragraph', [node]));
@@ -199,11 +283,13 @@ const remarkToSlatePlugin = () => {
   };
 
   let getDefinition;
-  const transform = node => {
+  const transform = (node, index, siblings, parent) => {
     let nodes;
 
     if (node.type === 'root') {
+      // Create definition getter for link and image references
       getDefinition = mdastDefinitions(node);
+      // Ensure top level text nodes are wrapped in paragraphs
       modifyChildren(wrapText)(node);
     }
 
@@ -213,8 +299,10 @@ const remarkToSlatePlugin = () => {
       // If a node returns a falsey value, exclude it. Some nodes do not
       // translate from MDAST to Slate, such as definitions for link/image
       // references or footnotes.
-      nodes = node.children.reduce((acc, childNode) => {
-        const transformed = transform(childNode);
+      //
+      // Consider using unist-util-remove instead for this.
+      nodes = node.children.reduce((acc, childNode, idx, sibs) => {
+        const transformed = transform(childNode, idx, sibs, node);
         if (transformed) {
           acc.push(transformed);
         }
@@ -228,7 +316,17 @@ const remarkToSlatePlugin = () => {
 
     // Process raw html as text, since it's valid markdown
     if (['text', 'html'].includes(node.type)) {
-      return toTextNode(node.value);
+      const { value, data } = node;
+      const shortcode = get(data, 'shortcode');
+      if (shortcode) {
+        const isBlock = parent.type === 'paragraph' && siblings.length === 1;
+        data.shortcodeValue = value;
+
+        if (isBlock) {
+          return { kind: 'block', type: 'shortcode', data, isVoid: true, nodes: [toTextNode('')] };
+        }
+      }
+      return toTextNode(value, data);
     }
 
     if (node.type === 'inlineCode') {
@@ -315,7 +413,10 @@ const remarkToSlatePlugin = () => {
       return { kind: 'block', type: typeMap['image'], data };
     }
   };
-  return transform;
+
+  // Since `transform` is used for recursive child mapping, ensure that only the
+  // first argument is supplied on the initial call.
+  return node => transform(node);
 };
 
 const slateToRemarkPlugin = () => {
@@ -327,9 +428,14 @@ const slateToRemarkPlugin = () => {
 };
 
 export const markdownToRemark = markdown => {
-  const result = unified()
+  const parsed = unified()
     .use(markdownToRemarkPlugin, { fences: true, pedantic: true, footnotes: true, commonmark: true })
     .parse(markdown);
+
+  const result = unified()
+    .use(remarkShortcodes, { plugins: registry.getEditorComponents() })
+    .runSync(parsed);
+
   return result;
 };
 
@@ -399,6 +505,7 @@ export const slateToRemark = raw => {
           }
         });
       } else {
+
         acc.push(u('html', childNode.text));
       }
       return acc;
@@ -406,6 +513,10 @@ export const slateToRemark = raw => {
 
     if (node.type === 'root') {
       return u('root', children);
+    }
+
+    if (node.type === 'shortcode') {
+      return u('html', { data: node.data }, node.data.shortcodeValue);
     }
 
     if (node.type.startsWith('heading')) {
@@ -448,19 +559,21 @@ export const slateToRemark = raw => {
     }
   }
   raw.type = 'root';
-  const result = transform(raw);
+  const mdast = transform(raw);
+
+  const result = unified()
+    .use(remarkShortcodes, { plugins: registry.getEditorComponents() })
+    .runSync(mdast);
+
   return result;
 };
 
 export const remarkToHtml = mdast => {
   const result = unified()
+    .use(remarkToRehypeShortcodes, { plugins: registry.getEditorComponents() })
     .use(remarkToRehype, { allowDangerousHTML: true })
-    .use(rehypeReparse)
     .use(rehypeRemoveEmpty)
     .use(rehypeMinifyWhitespace)
-    .use(() => node => {
-      return node;
-    })
     .runSync(mdast);
 
   const output = unified()

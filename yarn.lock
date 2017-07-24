@@ -5321,7 +5321,7 @@ mdast-util-compact@^1.0.0:
     unist-util-modify-children "^1.0.0"
     unist-util-visit "^1.1.0"
 
-mdast-util-definitions@^1.2.0:
+mdast-util-definitions@^1.2.0, mdast-util-definitions@^1.2.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/mdast-util-definitions/-/mdast-util-definitions-1.2.2.tgz#673f4377c3e23d3de7af7a4fe2214c0e221c5ac7"
   dependencies:
@@ -9010,7 +9010,13 @@ unist-util-is@^2.0.0, unist-util-is@^2.1.0:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/unist-util-is/-/unist-util-is-2.1.1.tgz#0c312629e3f960c66e931e812d3d80e77010947b"
 
-unist-util-modify-children@^1.0.0:
+unist-util-map@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/unist-util-map/-/unist-util-map-1.0.3.tgz#26a913d7cddb3cd3e9a886d135d37a3d1f54e514"
+  dependencies:
+    object-assign "^4.0.1"
+
+unist-util-modify-children@^1.0.0, unist-util-modify-children@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/unist-util-modify-children/-/unist-util-modify-children-1.1.1.tgz#66d7e6a449e6f67220b976ab3cb8b5ebac39e51d"
   dependencies:

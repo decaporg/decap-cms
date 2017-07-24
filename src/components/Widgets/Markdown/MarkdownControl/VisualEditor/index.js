@@ -139,6 +139,7 @@ const NODE_COMPONENTS = {
   },
   'shortcode': props => {
     const { attributes, node, state: editorState } = props;
+    const { data } = node;
     const isSelected = editorState.selection.hasFocusIn(node);
     return (
       <div
@@ -146,7 +147,7 @@ const NODE_COMPONENTS = {
         {...attributes}
         draggable
       >
-        {getShortcodeId(props)}
+        {data.get('shortcode')}
       </div>
     );
   },
