@@ -375,10 +375,6 @@ export default class API {
 
   deleteUnpublishedEntry(collection, slug) {
     const contentKey = slug;
-<<<<<<< HEAD
-    let prNumber;
-=======
->>>>>>> netlify/master
     return this.retrieveMetadata(contentKey)
     .then(metadata => this.closePR(metadata.pr, metadata.objects))
     .then(() => this.deleteBranch(`cms/${ contentKey }`))
