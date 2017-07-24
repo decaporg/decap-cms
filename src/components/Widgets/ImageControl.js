@@ -46,6 +46,10 @@ export default class ImageControl extends React.Component {
     const fileList = e.dataTransfer ? e.dataTransfer.files : e.target.files;
     const files = [...fileList];
     const imageType = /^image\//;
+    const assetProxyOpts = {
+      mediaFolder: this.props.field.get('media_folder'),
+      publicFolder: this.props.field.get('public_folder'),
+    };
 
     // Iterate through the list of files and return the first image on the list
     const file = files.find((currentFile) => {
@@ -57,7 +61,7 @@ export default class ImageControl extends React.Component {
     this.props.onRemoveAsset(this.props.value);
     if (file) {
       this.setState({ processing: true });
-      this.promise = createAssetProxy(file.name, file, false, this.props.field)
+      this.promise = createAssetProxy(file.name, file, false, assetProxyOpts)
       .then((assetProxy) => {
         this.setState({ processing: false });
         this.props.onAddAsset(assetProxy);

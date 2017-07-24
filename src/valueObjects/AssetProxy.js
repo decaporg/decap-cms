@@ -8,16 +8,16 @@ export const setStore = (storeObj) => {
   store = storeObj;
 };
 
-export default function AssetProxy(value, fileObj, uploaded = false, field = null) {
+export default function AssetProxy(value, fileObj, uploaded = false, opts = {}) {
   const config = store.getState().config;
-  const media_folder = (field && field.has('media_folder')) ? field.get('media_folder') : config.get('media_folder');
-  const public_folder = (field && field.has('public_folder')) ? field.get('public_folder') : '/' + media_folder;
+  const mediaFolder = opts.mediaFolder || config.get('media_folder');
+  const publicFolder = opts.mediaFolder || config.get('public_folder');
   this.value = value;
   this.fileObj = fileObj;
   this.uploaded = uploaded;
   this.sha = null;
-  this.path = media_folder && !uploaded ? resolvePath(value, media_folder) : value;
-  this.public_path = !uploaded ? resolvePath(value, public_folder) : value;
+  this.path = mediaFolder && !uploaded ? resolvePath(value, mediaFolder) : value;
+  this.public_path = !uploaded ? resolvePath(value, publicFolder) : value;
 }
 
 AssetProxy.prototype.toString = function () {
@@ -41,15 +41,16 @@ AssetProxy.prototype.toBase64 = function () {
   });
 };
 
-export function createAssetProxy(value, fileObj, uploaded = false, field = null) {
+export function createAssetProxy(value, fileObj, uploaded = false, opts = {}) {
   const state = store.getState();
-  const privateUpload = field ? field.get('private', false) : false;
+  const privateUpload = opts.isPrivate || false;
+  const assetProxyOpts = { mediaFolder: opts.mediaFolder, publicFolder: opts.publicFolder };
   const integration = selectIntegration(state, null, 'assetStore');
   if (integration && !uploaded) {
     const provider = integration && getIntegrationProvider(state.integrations, currentBackend(state.config).getToken, integration);
     return provider.upload(fileObj, privateUpload).then(
       response => (
-        new AssetProxy(response.assetURL.replace(/^(https?):/, ''), null, true, field)
+        new AssetProxy(response.assetURL.replace(/^(https?):/, ''), null, true, assetProxyOpts)
       ),
       error => new AssetProxy(value, fileObj, false, field)
     );
