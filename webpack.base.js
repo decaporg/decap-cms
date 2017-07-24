@@ -54,12 +54,4 @@ module.exports = {
     }),
   ],
   target: 'web', // Make web variables accessible to webpack, e.g. window
-  externals: {
-    'polyglot': {
-      commonjs: 'polyglot',
-      commonjs2: 'polyglot',
-      amd: 'polyglot',
-      root: 'Polyglot'
-    }
-  }
 };

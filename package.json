@@ -116,6 +116,7 @@
     "material-design-icons": "^3.0.1",
     "moment": "^2.11.2",
     "netlify-auth-js": "^0.5.5",
+    "node-polyglot": "^2.2.2",
     "normalize.css": "^4.2.0",
     "pluralize": "^3.0.0",
     "preliminaries": "1.1.0",
