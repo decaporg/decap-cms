@@ -16,11 +16,15 @@ export default class BlockControl extends React.Component {
 
   handleChange = (e) => {
     this.props.onChange(e.target.value);
-    let widget = resolveWidget(e.target.value || 'string');
-
-    this.setState({
-      'widget': widget
-    });
+    if (!e.target.value) {
+      this.setState({
+        widget: null,
+      });
+    } else {
+      this.setState({
+        widget: resolveWidget(e.target.value),
+      });
+    }
   };
 
   render() {
@@ -43,14 +47,14 @@ export default class BlockControl extends React.Component {
 
     return (
       <div>
-          <div>
-            <select id={forID} value={value || ''} onChange={this.handleChange}>
-              {options.map((option, idx) => <option key={idx} value={option.value}>
-                {option.label}
-              </option>)}
-            </select>
-          </div>
-          <div>
+        <div>
+          <select id={forID} value={value || ''} onChange={this.handleChange}>
+            {options.map((option, idx) => <option key={idx} value={option.value}>
+              {option.label}
+            </option>)}
+          </select>
+        </div>
+        <div>
           {
             widget ?
               React.createElement(widget.control, {
@@ -68,7 +72,7 @@ export default class BlockControl extends React.Component {
             :
               ''
           }
-          </div>
+        </div>
       </div>
     );
   }
