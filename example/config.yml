@@ -62,11 +62,11 @@ collections: # A list of collections the CMS should be able to edit
     folder: "_sink"
     create: true
     fields:
-      - name: customblocks
-        label: CustomBlocks
-        widget: list
-        fields:
-          - {label: "Single Block", name: "block", widget: "block"}
+      # - name: customblocks
+      #   label: CustomBlocks
+      #   widget: list
+      #   fields:
+      #     - {label: "Single Block", name: "block", widget: "block"}
       - {label: "Single Block", name: "block", widget: "block"}
       - label: "Related Post"
         name: "post"
