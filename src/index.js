@@ -6,6 +6,7 @@ import 'react-toolbox/lib/commons.scss';
 import Root from './root';
 import registry from './lib/registry';
 import './index.css';
+import polyglot from './i18n';
 
 if (process.env.NODE_ENV !== 'production') {
   require('./utils.css'); // eslint-disable-line

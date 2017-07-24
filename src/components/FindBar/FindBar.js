@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import styles from './FindBar.css';
+import polyglot from '../../i18n';
 
 export const SEARCH = 'SEARCH';
 

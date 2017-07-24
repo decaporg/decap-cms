@@ -9,6 +9,7 @@ import FontIcon from "react-toolbox/lib/font_icon";
 import FindBar from "../FindBar/FindBar";
 import { stringToRGB } from "../../lib/textHelper";
 import styles from "./AppHeader.css";
+import polyglot from '../../i18n';
 
 export default class AppHeader extends React.Component {
 

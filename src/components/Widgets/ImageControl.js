@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { truncateMiddle } from '../../lib/textHelper';
 import { Loader } from '../UI';
 import AssetProxy, { createAssetProxy } from '../../valueObjects/AssetProxy';
+import polyglot from '../../i18n';
 
 const MAX_DISPLAY_LENGTH = 50;
 

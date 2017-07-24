@@ -4,6 +4,7 @@ import Button from "react-toolbox/lib/button";
 import { Card, Icon } from "../../components/UI";
 import logo from "../netlify-auth/netlify_logo.svg";
 import styles from "../netlify-auth/AuthenticationPage.css";
+import polyglot from '../../i18n'
 
 export default class AuthenticationPage extends React.Component {
   static propTypes = {

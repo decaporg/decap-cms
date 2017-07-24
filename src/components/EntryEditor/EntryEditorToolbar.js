@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Button } from 'react-toolbox/lib/button';
+import polyglot from '../../i18n';
 
 const EntryEditorToolbar = (
   {

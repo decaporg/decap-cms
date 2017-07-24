@@ -1,4 +1,5 @@
 import { Map, OrderedMap } from 'immutable';
+import polyglot from '../i18n';
 
 // Create/edit workflow modes
 export const SIMPLE = 'simple';

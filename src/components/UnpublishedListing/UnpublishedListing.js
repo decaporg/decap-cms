@@ -10,6 +10,7 @@ import Button from 'react-toolbox/lib/button';
 import UnpublishedListingCardMeta from './UnpublishedListingCardMeta.js';
 import { status, statusDescriptions } from '../../constants/publishModes';
 import styles from './UnpublishedListing.css';
+import polyglot from '../../i18n';
 
 class UnpublishedListing extends React.Component {
   static propTypes = {
