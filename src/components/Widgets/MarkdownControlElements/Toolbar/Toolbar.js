@@ -7,6 +7,7 @@ import ToolbarComponentsMenu from './ToolbarComponentsMenu';
 import ToolbarPluginForm from './ToolbarPluginForm';
 import { Icon } from '../../../UI';
 import styles from './Toolbar.css';
+import polyglot from '../../../../i18n';
 
 export default class Toolbar extends React.Component {
   static propTypes = {
