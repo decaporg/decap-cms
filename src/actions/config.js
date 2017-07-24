@@ -85,17 +85,16 @@ export function configDidLoad(config) {
 }
 
 function loadTranslations(config) {
-  // if config has translations_url, try to load it and replace the polyglot strings
-  return (config.translations_url) ? fetch(config.translations_url).then((res) => {
-    if (res.status === 200) {
-      return res.json();
-    }
-  }).then((translations) => {
-    if (translations) {
+  const lang = config.lang || 'en';
+  if (lang !== 'en') {
+    try {
+      const translations = require(`../i18n/${lang}.json`);
       polyglot.replace(translations);
+    } catch (err) {
+      console.warn(`Could not load ${lang} translation. Probably missing. Leaving with english.`)
     }
-    return config;
-  }) : config;
+  }
+  return config;
 }
 
 export function loadConfig() {
