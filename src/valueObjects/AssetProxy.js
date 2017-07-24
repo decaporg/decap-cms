@@ -11,7 +11,7 @@ export const setStore = (storeObj) => {
 export default function AssetProxy(value, fileObj, uploaded = false, opts = {}) {
   const config = store.getState().config;
   const mediaFolder = opts.mediaFolder || config.get('media_folder');
-  const publicFolder = opts.mediaFolder || config.get('public_folder');
+  const publicFolder = opts.publicFolder || config.get('public_folder');
   this.value = value;
   this.fileObj = fileObj;
   this.uploaded = uploaded;
@@ -44,7 +44,10 @@ AssetProxy.prototype.toBase64 = function () {
 export function createAssetProxy(value, fileObj, uploaded = false, opts = {}) {
   const state = store.getState();
   const privateUpload = opts.isPrivate || false;
-  const assetProxyOpts = { mediaFolder: opts.mediaFolder, publicFolder: opts.publicFolder };
+  const assetProxyOpts = {
+    mediaFolder: opts.mediaFolder,
+    publicFolder: opts.publicFolder
+  };
   const integration = selectIntegration(state, null, 'assetStore');
   if (integration && !uploaded) {
     const provider = integration && getIntegrationProvider(state.integrations, currentBackend(state.config).getToken, integration);
@@ -52,11 +55,11 @@ export function createAssetProxy(value, fileObj, uploaded = false, opts = {}) {
       response => (
         new AssetProxy(response.assetURL.replace(/^(https?):/, ''), null, true, assetProxyOpts)
       ),
-      error => new AssetProxy(value, fileObj, false, field)
+      error => new AssetProxy(value, fileObj, false, assetProxyOpts)
     );
   } else if (privateUpload) {
     throw new Error('The Private Upload option is only avaible for Asset Store Integration');
   }
 
-  return Promise.resolve(new AssetProxy(value, fileObj, uploaded, field));
+  return Promise.resolve(new AssetProxy(value, fileObj, uploaded, assetProxyOpts));
 }
