@@ -373,7 +373,7 @@ const BackspaceCloseBlock = (options = {}) => ({
 });
 
 const slatePlugins = [
-  SoftBreak({ ignoreIn: ['list-item', 'numbered-list', 'bulleted-list', 'table', 'table-row', 'table-cell'], closeAfter: 1 }),
+  SoftBreak({ ignoreIn: ['paragraph', 'list-item', 'numbered-list', 'bulleted-list', 'table', 'table-row', 'table-cell'], closeAfter: 1 }),
   BackspaceCloseBlock({ ignoreIn: ['paragraph', 'list-item', 'bulleted-list', 'numbered-list', 'table', 'table-row', 'table-cell'] }),
   EditList({ types: ['bulleted-list', 'numbered-list'], typeItem: 'list-item' }),
   EditTable({ typeTable: 'table', typeRow: 'table-row', typeCell: 'table-cell' }),
