@@ -110,7 +110,7 @@ This configuration adds a new setting, `public_folder`. While `media_folder` spe
 
 >If `public_folder` is not set, Netlify CMS will default to the same value as `media_folder`, adding an opening `/` if one is not included.
 
-The same settings can be applied on [Image/File widget](../widgets#imagefile-widget) if you store your file in different folders.
+The `media_folder` and `public_folder` settings can also be applied for individual [Image and File widgets](widgets#imagefile-widget).
 
 ### Collections
 Collections define the structure for the different content types on your static site. Since every site is different, the `collections` settings will be very different from one site to the next. Let's say your site has a blog, with the posts stored in `_posts/blog`, and files saved in a date-title format, like `1999-12-31-lets-party.md`. Each post
