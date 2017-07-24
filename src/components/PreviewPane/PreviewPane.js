@@ -13,7 +13,7 @@ import styles from './PreviewPane.css';
 export default class PreviewPane extends React.Component {
 
   getWidget = (field, value, props) => {
-    const { fieldsMetaData, getAsset } = props;
+    const { fieldsMetaData, getAsset, entry } = props;
     const widget = resolveWidget(field.get('widget'));
 
     return !widget.preview ? null : React.createElement(widget.preview, {
@@ -22,6 +22,8 @@ export default class PreviewPane extends React.Component {
       value: value && Map.isMap(value) ? value.get(field.get('name')) : value,
       metadata: fieldsMetaData && fieldsMetaData.get(field.get('name')),
       getAsset,
+      entry,
+      fieldsMetaData,
     });
   };
 

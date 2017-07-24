@@ -62,6 +62,12 @@ collections: # A list of collections the CMS should be able to edit
     folder: "_sink"
     create: true
     fields:
+      - label: "Related Post"
+        name: "post"
+        widget: "relationKitchenSinkPost"
+        collection: "posts"
+        searchFields: ["title", "body"]
+        valueField: "title"
       - {label: "Title", name: "title", widget: "string"}
       - {label: "Boolean", name: "boolean", widget: "boolean", default: true}
       - {label: "Text", name: "text", widget: "text"}
@@ -77,6 +83,12 @@ collections: # A list of collections the CMS should be able to edit
         name: "object"
         widget: "object"
         fields:
+          - label: "Related Post"
+            name: "post"
+            widget: "relationKitchenSinkPost"
+            collection: "posts"
+            searchFields: ["title", "body"]
+            valueField: "title"
           - {label: "String", name: "string", widget: "string"}
           - {label: "Boolean", name: "boolean", widget: "boolean", default: false}
           - {label: "Text", name: "text", widget: "text"}
@@ -119,6 +131,12 @@ collections: # A list of collections the CMS should be able to edit
                 name: "list"
                 widget: "list"
                 fields:
+                  - label: "Related Post"
+                    name: "post"
+                    widget: "relationKitchenSinkPost"
+                    collection: "posts"
+                    searchFields: ["title", "body"]
+                    valueField: "title"
                   - {label: "String", name: "string", widget: "string"}
                   - {label: "Boolean", name: "boolean", widget: "boolean"}
                   - {label: "Text", name: "text", widget: "text"}

@@ -30,6 +30,10 @@ export const ENTRY_PERSIST_REQUEST = 'ENTRY_PERSIST_REQUEST';
 export const ENTRY_PERSIST_SUCCESS = 'ENTRY_PERSIST_SUCCESS';
 export const ENTRY_PERSIST_FAILURE = 'ENTRY_PERSIST_FAILURE';
 
+export const ENTRY_DELETE_REQUEST = 'ENTRY_DELETE_REQUEST';
+export const ENTRY_DELETE_SUCCESS = 'ENTRY_DELETE_SUCCESS';
+export const ENTRY_DELETE_FAILURE = 'ENTRY_DELETE_FAILURE';
+
 /*
  * Simple Action Creators (Internal)
  * We still need to export them for tests
@@ -121,6 +125,37 @@ export function entryPersistFail(collection, entry, error) {
     payload: {
       collectionName: collection.get('name'),
       entrySlug: entry.get('slug'),
+      error: error.toString(),
+    },
+  };
+}
+
+export function entryDeleting(collection, slug) {
+  return {
+    type: ENTRY_DELETE_REQUEST,
+    payload: {
+      collectionName: collection.get('name'),
+      entrySlug: slug,
+    },
+  };
+}
+
+export function entryDeleted(collection, slug) {
+  return {
+    type: ENTRY_DELETE_SUCCESS,
+    payload: {
+      collectionName: collection.get('name'),
+      entrySlug: slug,
+    },
+  };
+}
+
+export function entryDeleteFail(collection, slug, error) {
+  return {
+    type: ENTRY_DELETE_FAILURE,
+    payload: {
+      collectionName: collection.get('name'),
+      entrySlug: slug,
       error: error.toString(),
     },
   };
@@ -229,13 +264,13 @@ export function persistEntry(collection) {
     const entryDraft = state.entryDraft;
 
     // Early return if draft contains validation errors
-    if (!entryDraft.get('fieldsErrors').isEmpty()) return;
+    if (!entryDraft.get('fieldsErrors').isEmpty()) return Promise.reject();
     
     const backend = currentBackend(state.config);
     const assetProxies = entryDraft.get('mediaFiles').map(path => getAsset(state, path));
     const entry = entryDraft.get('entry');
     dispatch(entryPersisting(collection, entry));
-    backend
+    return backend
       .persistEntry(state.config, collection, entryDraft, assetProxies.toJS())
       .then(() => {
         dispatch(notifSend({
@@ -243,8 +278,7 @@ export function persistEntry(collection) {
           kind: 'success',
           dismissAfter: 4000,
         }));
-        dispatch(entryPersisted(collection, entry));
-        dispatch(closeEntry(collection));
+        return dispatch(entryPersisted(collection, entry));
       })
       .catch((error) => {
         dispatch(notifSend({
@@ -252,7 +286,29 @@ export function persistEntry(collection) {
           kind: 'danger',
           dismissAfter: 8000,
         }));
-        dispatch(entryPersistFail(collection, entry, error));
+        return dispatch(entryPersistFail(collection, entry, error));
       });
+  };
+}
+
+export function deleteEntry(collection, slug) {
+  return (dispatch, getState) => {
+    const state = getState();
+    const backend = currentBackend(state.config);
+
+    dispatch(entryDeleting(collection, slug));
+    return backend.deleteEntry(state.config, collection, slug)
+    .then(() => {
+      return dispatch(entryDeleted(collection, slug));
+    })
+    .catch((error) => {
+      dispatch(notifSend({
+        message: `Failed to delete entry: ${ error }`,
+        kind: 'danger',
+        dismissAfter: 8000,
+      }));
+      console.error(error);
+      return dispatch(entryDeleteFail(collection, slug, error));
+    });
   };
 }

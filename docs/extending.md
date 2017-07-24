@@ -16,11 +16,16 @@ Although possible, it may be cumbersome or even impractical to add a React build
 Register a custom widget.
 
 ```js
-CMS.registerWidget(field, control, \[preview\])
+CMS.registerWidget(name, control, \[preview\])
 ```
 
 **Params:**
 
+Param | Type | Description
+--- | --- | ---
+`name` | string | Widget name, allows this widget to be used via the field `widget` property in config
+`control` | React.Component \| string | <ul><li>React component that renders the control, receives the following props: <ul><li>**value:** Current field value</li><li>**onChange**: Callback function to update the field value</li></ul></li><li>Name of a registered widget whose control should be used (includes built in widgets).</li></ul>
+[`preview`] | React.Component, optional | Renders the widget preview, receives the following props: <ul><li>**value:** Current preview value</li><li>**field:** Immutable map of current field configuration</li><li>**metadata:** Immutable map of any available metadata for the current field</li><li>**getAsset:** Function for retrieving an asset url for image/file fields</li><li>**entry:** Immutable Map of all entry data</li><li>**fieldsMetaData:** Immutable map of metadata from all fields.</li></ul>
 * **field:** The field type which this widget will be used for.
 * **control:** A React component that renders the editing interface for this field. Two props will be passed:
   * **value:** The current value for this field.
@@ -43,7 +48,17 @@ var CategoriesControl = createClass({
   }
 });
 
-CMS.registerWidget('categories', CategoriesControl);
+var CategoriesPreview = createClass({
+  render: function() {
+    return h('ul', {},
+      this.props.value.map(function(val, index) {
+        return h('li', {key: index}, val);
+      })
+    );
+  }
+});
+
+CMS.registerWidget('categories', CategoriesControl, CategoriesPreview);
 </script>
 ```
 

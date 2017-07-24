@@ -5,6 +5,8 @@ const EntryEditorToolbar = (
   {
     isPersisting,
     onPersist,
+    showDelete,
+    onDelete,
     onCancelEdit,
   }) => {
   const disabled = isPersisting;
@@ -19,6 +21,12 @@ const EntryEditorToolbar = (
         { isPersisting ? 'Saving...' : 'Save' }
       </Button>
       {' '}
+      { showDelete
+        ? (<Button accent onClick={onDelete}>
+            Delete
+           </Button>)
+        : '' }
+      { showDelete ? ' ' : '' }
       <Button onClick={onCancelEdit}>
         Cancel
       </Button>
@@ -29,6 +37,8 @@ const EntryEditorToolbar = (
 EntryEditorToolbar.propTypes = {
   isPersisting: PropTypes.bool,
   onPersist: PropTypes.func.isRequired,
+  showDelete: PropTypes.bool.isRequired,
+  onDelete: PropTypes.func.isRequired,
   onCancelEdit: PropTypes.func.isRequired,
 };
 

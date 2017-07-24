@@ -8,6 +8,7 @@ describe('EntryEditorToolbar', () => {
       <EntryEditorToolbar
         onPersist={() => {}}
         onCancelEdit={() => {}}
+        onDelete={() => {}}
       />
     );
     const tree = component.html();
@@ -20,6 +21,7 @@ describe('EntryEditorToolbar', () => {
         isPersisting
         onPersist={() => {}}
         onCancelEdit={() => {}}
+        onDelete={() => {}}
       />
     );
     const tree = component.html();

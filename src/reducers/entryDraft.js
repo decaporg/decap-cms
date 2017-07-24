@@ -8,6 +8,7 @@ import {
   ENTRY_PERSIST_REQUEST,
   ENTRY_PERSIST_SUCCESS,
   ENTRY_PERSIST_FAILURE,
+  ENTRY_DELETE_SUCCESS,
 } from '../actions/entries';
 import {
   UNPUBLISHED_ENTRY_PERSIST_REQUEST,
@@ -76,6 +77,7 @@ const entryDraftReducer = (state = Map(), action) => {
     }
 
     case ENTRY_PERSIST_SUCCESS:
+    case ENTRY_DELETE_SUCCESS:
     case UNPUBLISHED_ENTRY_PERSIST_SUCCESS:
       return state.withMutations((state) => {
         state.deleteIn(['entry', 'isPersisting']);
