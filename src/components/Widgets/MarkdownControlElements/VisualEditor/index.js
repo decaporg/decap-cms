@@ -135,8 +135,10 @@ export default class Editor extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     const editorValue = this.state.serializer.serialize(this.view.state.doc);
-
+    // Check that the content of the editor is well synchronized with the props value after rendering.
+    // Sometimes the editor isn't well updated (eg. after items reordering)
     if (editorValue !== this.props.value && editorValue !== prevProps.value) {
+      // If the content of the editor isn't correct, we update its state with a new one.
       this.view.updateState(this.createEditorState());
     }
   }
