@@ -30,7 +30,13 @@ export default class BlockControl extends Component {
   }
 
   handleChange = (e) => {
+    console.log(e.target);
+    this.props.onChange(Map().set(e.target.id, e.target.value));
+
+    console.log(e.target.id);
+
     // this.props.onChange(e.target.value);
+    // (value || Map()).set(field.get('name'), val), metadata
     if (!e.target.value) {
       this.setState({
         widget: null,
@@ -47,6 +53,9 @@ export default class BlockControl extends Component {
     // const { onAddAsset, onRemoveAsset, getAsset, value, onChange } = this.props;
     const { widget } = this.state;
     const fieldValue = value && Map.isMap(value) ? value.get(field.get('name')) : value;
+    const fieldValueSelected = value && Map.isMap(value) ? value.get(field.get('name') + '_selected') : value;
+
+    console.log(value);
 
     const fieldOptions = [
       '',
@@ -64,7 +73,7 @@ export default class BlockControl extends Component {
     return (
       <div>
         <div>
-          <select id={forID} value={value || ''} onChange={this.handleChange}>
+          <select id={forID} value={fieldValue || ''} onChange={this.handleChange}>
             {options.map((option, idx) => <option key={idx} value={option.value}>
               {option.label}
             </option>)}
@@ -78,16 +87,16 @@ export default class BlockControl extends Component {
                   <label className={controlStyles.label} htmlFor={field.get('name')}>{field.get('label')}</label>
                   {
                     React.createElement(widget.control, {
-                      id: field.get('name'),
+                      id: field.get('name') + '_selected',
                       field,
-                      value: fieldValue,
+                      value: fieldValueSelected,
                       onChange: (val, metadata) => {
-                        onChange((value || Map()).set(field.get('name'), val), metadata);
+                        onChange((value || Map()).set(field.get('name') + '_selected', val), metadata);
                       },
                       onAddAsset,
                       onRemoveAsset,
                       getAsset,
-                      forID: field.get('name'),
+                      forID: field.get('name') + '_selected',
                     })
                   }
                 </div>
