@@ -4,6 +4,12 @@ backend:
 
 media_folder: "assets/uploads"
 
+blocks:
+  - string
+  - text
+  - markdown
+  - number
+
 collections: # A list of collections the CMS should be able to edit
   - name: "posts" # Used in routes, ie.: /admin/collections/:slug/edit
     label: "Post" # Used in the UI, ie.: "New Post"
@@ -63,11 +69,11 @@ collections: # A list of collections the CMS should be able to edit
     create: true
     fields:
       - name: customblocks
-        label: CustomBlocks
+        label: Custom Blocks
         widget: list
         fields:
-          - {label: "Single Block", name: "block", widget: "block"}
-      - {label: "Single Block", name: "block", widget: "block"}
+          - {label: "Block", name: "block", widget: "block"}
+      - {label: "Block", name: "block", widget: "block"}
       - label: "Related Post"
         name: "post"
         widget: "relationKitchenSinkPost"

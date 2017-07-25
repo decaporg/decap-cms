@@ -1,12 +1,20 @@
 import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 import ReactDOM from 'react-dom';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import registry from '../../lib/registry';
 import { resolveWidget } from '../Widgets';
 import { Map } from 'immutable';
 import controlStyles from '../ControlPanel/ControlPane.css';
+import { loadConfig } from '../../actions/config';
 
-export default class BlockControl extends Component {
+// @connect(
+//   state => ({
+//     config: state.config,
+//   }),
+//   { loadConfig }
+// )
+class BlockControl extends Component {
   static propTypes = {
     onChange: PropTypes.func.isRequired,
     onAddAsset: PropTypes.func.isRequired,
@@ -19,14 +27,15 @@ export default class BlockControl extends Component {
     ]),
     field: PropTypes.object,
     forID: PropTypes.string,
+    loadConfig: PropTypes.func.isRequired,
   };
 
   constructor(props) {
     super(props);
-
-    const fieldValue = this.props.value && Map.isMap(this.props.value) ? this.props.value.get(this.props.field.get('name')) : this.props.value;
-    console.log(fieldValue);
-    if(!fieldValue)  {
+    const fieldValue = this.props.value && Map.isMap(this.props.value) ?
+      this.props.value.get(this.props.field.get('name')) :
+      this.props.value;
+    if (!fieldValue) {
       this.state = {
         widget: null,
       };
@@ -35,7 +44,6 @@ export default class BlockControl extends Component {
         widget: resolveWidget(fieldValue),
       };
     }
-
   }
 
   handleChange = (e) => {
@@ -53,23 +61,18 @@ export default class BlockControl extends Component {
   };
 
   render() {
-    const { field, value, forID, onChange, onAddAsset, onRemoveAsset, getAsset } = this.props;
-    // const { onAddAsset, onRemoveAsset, getAsset, value, onChange } = this.props;
-    const { widget } = this.state;
-    const fieldValue = value && Map.isMap(value) ? value.get(field.get('name')) : value;
-    const fieldValueSelected = value && Map.isMap(value) ? value.get(field.get('name') + '_selected') : value;
+    const { field, value, forID, onChange, onAddAsset, onRemoveAsset, getAsset, config } = this.props;
+    const { widget, collections } = this.state;
+    const fieldValue = value && Map.isMap(value) ?
+      value.get(field.get('name')) :
+      value;
+    const fieldValueSelected = value && Map.isMap(value) ?
+      value.get(field.get('name') + '_selected') :
+      value;
 
-    // console.log(fieldValue);
-    // console.log(fieldValueSelected);
-    // console.log(value);
+    const blocks = config.get('blocks');
 
-    const fieldOptions = [
-      '',
-      'string',
-      'text',
-    ];
-
-    const options = fieldOptions.map((option) => {
+    const options = blocks.map((option) => {
       if (typeof option === 'string') {
         return { label: option, value: option };
       }
@@ -88,9 +91,9 @@ export default class BlockControl extends Component {
         <div>
           {
             widget ?
-              <div className={controlStyles.widget} key={field.get('name')}>
-                <div className={controlStyles.control} key={field.get('name')}>
-                  <label className={controlStyles.label} htmlFor={field.get('name')}>{field.get('label')}</label>
+              <div className={controlStyles.widget} key={field.get('name') + '_selected'}>
+                <div className={controlStyles.control} key={field.get('name') + '_selected'}>
+                  <label className={controlStyles.label} htmlFor={field.get('name') + '_selected'}>{field.get('label') + ' Data'}</label>
                   {
                     React.createElement(widget.control, {
                       id: field.get('name') + '_selected',
@@ -115,3 +118,10 @@ export default class BlockControl extends Component {
     );
   }
 }
+
+export default connect(
+  state => ({
+    config: state.config,
+  }),
+  { loadConfig }
+)(BlockControl);
