@@ -105,27 +105,42 @@ export default class Editor extends Component {
   }
 
   componentDidMount() {
-    const { schema, parser } = this.state;
-    const doc = parser.parse(this.props.value || '');
     this.view = new EditorView(this.ref, {
-      state: EditorState.create({
-        doc,
-        schema,
-        plugins: [
-          inputRules({
-            rules: allInputRules.concat(buildInputRules(schema)),
-          }),
-          keymap(buildKeymap(schema)),
-          keymap(baseKeymap),
-          history.history(),
-          keymap({
-            'Mod-z': history.undo,
-            'Mod-y': history.redo,
-          }),
-        ],
-      }),
+      state: this.createEditorState(),
       onAction: this.handleAction,
     });
+  }
+
+  createEditorState() {
+    const { schema, parser } = this.state;
+    const doc = parser.parse(this.props.value || '');
+
+    return EditorState.create({
+      doc,
+      schema,
+      plugins: [
+        inputRules({
+          rules: allInputRules.concat(buildInputRules(schema)),
+        }),
+        keymap(buildKeymap(schema)),
+        keymap(baseKeymap),
+        history.history(),
+        keymap({
+          'Mod-z': history.undo,
+          'Mod-y': history.redo,
+        }),
+      ],
+    });
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const editorValue = this.state.serializer.serialize(this.view.state.doc);
+    // Check that the content of the editor is well synchronized with the props value after rendering.
+    // Sometimes the editor isn't well updated (eg. after items reordering)
+    if (editorValue !== this.props.value && editorValue !== prevProps.value) {
+      // If the content of the editor isn't correct, we update its state with a new one.
+      this.view.updateState(this.createEditorState());
+    }
   }
 
   handleAction = (action) => {
