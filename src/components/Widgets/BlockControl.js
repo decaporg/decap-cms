@@ -19,24 +19,28 @@ export default class BlockControl extends Component {
     ]),
     field: PropTypes.object,
     forID: PropTypes.string,
-    className: PropTypes.string,
   };
 
   constructor(props) {
     super(props);
-    this.state = {
-      widget: null
-    };
+
+    const fieldValue = this.props.value && Map.isMap(this.props.value) ? this.props.value.get(this.props.field.get('name')) : this.props.value;
+    console.log(fieldValue);
+    if(!fieldValue)  {
+      this.state = {
+        widget: null,
+      };
+    } else {
+      this.state = {
+        widget: resolveWidget(fieldValue),
+      };
+    }
+
   }
 
   handleChange = (e) => {
-    console.log(e.target);
     this.props.onChange(Map().set(e.target.id, e.target.value));
 
-    console.log(e.target.id);
-
-    // this.props.onChange(e.target.value);
-    // (value || Map()).set(field.get('name'), val), metadata
     if (!e.target.value) {
       this.setState({
         widget: null,
@@ -55,7 +59,9 @@ export default class BlockControl extends Component {
     const fieldValue = value && Map.isMap(value) ? value.get(field.get('name')) : value;
     const fieldValueSelected = value && Map.isMap(value) ? value.get(field.get('name') + '_selected') : value;
 
-    console.log(value);
+    // console.log(fieldValue);
+    // console.log(fieldValueSelected);
+    // console.log(value);
 
     const fieldOptions = [
       '',
