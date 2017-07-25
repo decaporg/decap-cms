@@ -62,11 +62,16 @@ class BlockControl extends Component {
 
     const blocks = config.get('blocks');
 
-    const options = blocks.map((option) => {
+    let options = blocks.map((option) => {
       if (typeof option === 'string') {
         return { label: option, value: option };
       }
       return option;
+    });
+
+    options = options.insert(0, {
+      label: 'Please Select',
+      value: '',
     });
 
     return (

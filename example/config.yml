@@ -9,6 +9,7 @@ blocks:
   - text
   - markdown
   - number
+  - slider
 
 collections: # A list of collections the CMS should be able to edit
   - name: "posts" # Used in routes, ie.: /admin/collections/:slug/edit
@@ -73,7 +74,6 @@ collections: # A list of collections the CMS should be able to edit
         widget: list
         fields:
           - {label: "Block", name: "block", widget: "block"}
-      - {label: "Block", name: "block", widget: "block"}
       - label: "Related Post"
         name: "post"
         widget: "relationKitchenSinkPost"
