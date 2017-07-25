@@ -1,19 +1,10 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import ReactDOM from 'react-dom';
-import ImmutablePropTypes from 'react-immutable-proptypes';
-import registry from '../../lib/registry';
-import { resolveWidget } from '../Widgets';
 import { Map } from 'immutable';
-import controlStyles from '../ControlPanel/ControlPane.css';
 import { loadConfig } from '../../actions/config';
+import { resolveWidget } from '../Widgets';
+import controlStyles from '../ControlPanel/ControlPane.css';
 
-// @connect(
-//   state => ({
-//     config: state.config,
-//   }),
-//   { loadConfig }
-// )
 class BlockControl extends Component {
   static propTypes = {
     onChange: PropTypes.func.isRequired,
@@ -27,7 +18,6 @@ class BlockControl extends Component {
     ]),
     field: PropTypes.object,
     forID: PropTypes.string,
-    loadConfig: PropTypes.func.isRequired,
   };
 
   constructor(props) {
