@@ -397,6 +397,23 @@ export default class Editor extends Component {
       schema: {
         nodes: NODE_COMPONENTS,
         marks: MARK_COMPONENTS,
+        rules: [
+          {
+            match: object => object.kind === 'document',
+            validate: doc => {
+              const hasBlocks = !doc.getBlocks().isEmpty();
+              return hasBlocks ? null : {};
+            },
+            normalize: transform => {
+              const block = SlateBlock.create({
+                type: 'paragraph',
+                nodes: [SlateText.createFromString('')],
+              });
+              const { key } = transform.state.document;
+              return transform.insertNodeByKey(key, 0, block).focus();
+            },
+          },
+        ],
       },
       plugins,
     };
@@ -504,11 +521,15 @@ export default class Editor extends Component {
     command(this.view.state, this.handleAction);
   };
 
-  handlePluginSubmit = (plugin, data) => {
+  handlePluginSubmit = (plugin, shortcodeData) => {
     const { editorState } = this.state;
-    const markdown = plugin.toBlock(data.toJS());
-    const html = markdownToHtml(markdown);
-    const block = serializer.deserialize(html).document.getBlocks().first();
+    const data = {
+      shortcode: plugin.id,
+      shortcodeValue: plugin.toBlock(shortcodeData.toJS()),
+      shortcodeData,
+    };
+    const nodes = [SlateText.createFromString('')];
+    const block = { kind: 'block', type: 'shortcode', data, isVoid: true, nodes };
     const resolvedState = editorState.transform().insertBlock(block).apply();
     this.ref.onChange(resolvedState);
     this.setState({ editorState: resolvedState });
