@@ -26,8 +26,8 @@ import ObjectPreview from './Widgets/ObjectPreview';
 import RelationControl from './Widgets/RelationControl';
 import RelationPreview from './Widgets/RelationPreview';
 import BooleanControl from './Widgets/BooleanControl';
-import BlockControl from './Widgets/BlockControl';
-import BlockPreview from './Widgets/BlockPreview';
+import DynamicControl from './Widgets/DynamicControl';
+import DynamicPreview from './Widgets/DynamicPreview';
 import SliderControl from './Widgets/SliderControl';
 import SliderPreview from './Widgets/SliderPreview';
 
@@ -45,7 +45,7 @@ registry.registerWidget('select', SelectControl, SelectPreview);
 registry.registerWidget('object', ObjectControl, ObjectPreview);
 registry.registerWidget('relation', RelationControl, RelationPreview);
 registry.registerWidget('boolean', BooleanControl);
-registry.registerWidget('block', BlockControl, BlockPreview);
+registry.registerWidget('dynamic', DynamicControl, DynamicPreview);
 registry.registerWidget('slider', SliderControl, SliderPreview);
 registry.registerWidget('unknown', UnknownControl, UnknownPreview);
 

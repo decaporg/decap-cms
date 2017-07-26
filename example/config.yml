@@ -4,11 +4,10 @@ backend:
 
 media_folder: "assets/uploads"
 
-blocks:
+dynamic_widgets:
   - string
   - text
   - markdown
-  - number
   - slider
 
 collections: # A list of collections the CMS should be able to edit
@@ -69,11 +68,11 @@ collections: # A list of collections the CMS should be able to edit
     folder: "_sink"
     create: true
     fields:
-      - name: customblocks
-        label: Custom Blocks
+      - name: dynamic_block
+        label: Dynamic Block
         widget: list
         fields:
-          - {label: "Block", name: "block", widget: "block"}
+          - {label: "Dynamic", name: "dynamic", widget: "dynamic"}
       - label: "Related Post"
         name: "post"
         widget: "relationKitchenSinkPost"

@@ -5,7 +5,7 @@ import { loadConfig } from '../../actions/config';
 import { resolveWidget } from '../Widgets';
 import controlStyles from '../ControlPanel/ControlPane.css';
 
-class BlockControl extends Component {
+class DynamicControl extends Component {
   static propTypes = {
     onChange: PropTypes.func.isRequired,
     onAddAsset: PropTypes.func.isRequired,
@@ -60,7 +60,7 @@ class BlockControl extends Component {
       value.get(field.get('name') + '_selected') :
       value;
 
-    const blocks = config.get('blocks');
+    const blocks = config.get('dynamic_widgets');
 
     let options = blocks.map((option) => {
       if (typeof option === 'string') {
@@ -119,4 +119,4 @@ export default connect(
     config: state.config,
   }),
   { loadConfig }
-)(BlockControl);
+)(DynamicControl);
