@@ -439,23 +439,55 @@ export default class Editor extends Component {
   hasBlock = type => this.state.editorState.blocks.some(node => node.type === type);
 
   handleKeyDown = (e, data, state) => {
-    if (!data.isMod) {
-      return;
-    }
-    const marks = {
-      b: 'bold',
-      i: 'italic',
-      u: 'underlined',
-      s: 'strikethrough',
-      '`': 'code',
+    const createDefaultBlock = () => {
+      return SlateBlock.create({
+        type: 'paragraph',
+        nodes: [SlateText.createFromString('')]
+      });
     };
+    if (data.key === 'enter') {
+      /**
+       * If a single void block is selected, and it's a direct descendant of the
+       * document (top level), a new paragraph should be added above or below it
+       * when 'Enter' is pressed, and the current selection should move to the
+       * new paragraph.
+       *
+       * If the selected block is the first block in the document, create the
+       * new block above it. If not, create the new block below it.
+       */
+      const { document: doc, selection, anchorBlock, focusBlock } = state;
+      const focusBlockIndex = doc.nodes.indexOf(focusBlock);
+      const focusBlockIsTopLevel = focusBlockIndex > -1;
+      const focusBlockIsFirstChild = focusBlockIndex === 0;
+      const singleBlockSelected = anchorBlock === focusBlock;
 
-    const mark = marks[data.key];
-
-    if (mark) {
-      state = state.transform().toggleMark(mark).apply();
+      if (focusBlock.isVoid && focusBlockIsTopLevel && singleBlockSelected) {
+        e.preventDefault();
+        const newBlock = createDefaultBlock();
+        const newBlockIndex = focusBlockIsFirstChild ? 0 : focusBlockIndex + 1;
+        return state.transform()
+          .insertNodeByKey(doc.key, newBlockIndex, newBlock)
+          .collapseToStartOf(newBlock)
+          .apply();
+      }
     }
-    return;
+
+    if (data.isMod) {
+      const marks = {
+        b: 'bold',
+        i: 'italic',
+        u: 'underlined',
+        s: 'strikethrough',
+        '`': 'code',
+      };
+
+      const mark = marks[data.key];
+
+      if (mark) {
+        e.preventDefault();
+        return state.transform().toggleMark(mark).apply();
+      }
+    }
   };
 
   handleMarkClick = (event, type) => {
@@ -584,7 +616,7 @@ export default class Editor extends Component {
           plugins={slatePlugins}
           onChange={editorState => this.setState({ editorState })}
           onDocumentChange={this.handleDocumentChange}
-          onKeyDown={this.onKeyDown}
+          onKeyDown={this.handleKeyDown}
           onPaste={this.handlePaste}
           ref={ref => this.ref = ref}
           spellCheck
