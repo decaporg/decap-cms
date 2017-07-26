@@ -11,6 +11,7 @@ export default class ScrollSyncPane extends Component {
   static contextTypes = {
     registerPane: PropTypes.func.isRequired,
     unregisterPane: PropTypes.func.isRequired,
+    syncScrollPositions: PropTypes.func.isRequired
   };
 
   componentDidMount() {
@@ -20,6 +21,17 @@ export default class ScrollSyncPane extends Component {
 
   componentWillUnmount() {
     this.context.unregisterPane(this.node);
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    this.context.unregisterPane(this.node);
+  }
+
+  componentDidUpdate(nextProps, nextState) {
+    window.requestAnimationFrame(() => {
+      this.context.registerPane(this.node);
+      this.context.syncScrollPositions(this.node);
+    });
   }
 
   render() {

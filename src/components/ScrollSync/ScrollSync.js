@@ -10,6 +10,7 @@ export default class ScrollSync extends Component {
   static childContextTypes = {
     registerPane: PropTypes.func,
     unregisterPane: PropTypes.func,
+    syncScrollPositions: PropTypes.func
   };
 
   panes = [];
@@ -18,6 +19,7 @@ export default class ScrollSync extends Component {
     return {
       registerPane: this.registerPane,
       unregisterPane: this.unregisterPane,
+      syncScrollPositions: this.syncScrollPositions
     };
   }
 
