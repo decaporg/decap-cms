@@ -18,6 +18,7 @@ class DynamicControl extends Component {
     ]),
     field: PropTypes.object,
     forID: PropTypes.string,
+    config: PropTypes.object
   };
 
   constructor(props) {
@@ -25,6 +26,7 @@ class DynamicControl extends Component {
     const fieldValue = this.props.value && Map.isMap(this.props.value) ?
       this.props.value.get(this.props.field.get('name')) :
       this.props.value;
+
     if (!fieldValue) {
       this.state = {
         widget: null,
@@ -52,17 +54,19 @@ class DynamicControl extends Component {
 
   render() {
     const { field, value, forID, onChange, onAddAsset, onRemoveAsset, getAsset, config } = this.props;
-    const { widget, collections } = this.state;
+    const { widget } = this.state;
+
+    const name = field.get('name');
+    const selectedName = `${ field.get('name') }_selected`;
+
     const fieldValue = value && Map.isMap(value) ?
-      value.get(field.get('name')) :
+      value.get(name) :
       value;
     const fieldValueSelected = value && Map.isMap(value) ?
-      value.get(field.get('name') + '_selected') :
+      value.get(selectedName) :
       value;
 
-    const blocks = config.get('dynamic_widgets');
-
-    let options = blocks.map((option) => {
+    let options = config.get('dynamic_widgets').map((option) => {
       if (typeof option === 'string') {
         return { label: option, value: option };
       }
@@ -86,21 +90,21 @@ class DynamicControl extends Component {
         <div>
           {
             widget ?
-              <div className={controlStyles.widget} key={field.get('name') + '_selected'}>
-                <div className={controlStyles.control} key={field.get('name') + '_selected'}>
-                  <label className={controlStyles.label} htmlFor={field.get('name') + '_selected'}>{field.get('label') + ' Data'}</label>
+              <div className={controlStyles.widget} key={selectedName}>
+                <div className={controlStyles.control} key={selectedName}>
+                  <label className={controlStyles.label} htmlFor={selectedName}>{`${ field.get('label') } Data`}</label>
                   {
                     React.createElement(widget.control, {
-                      id: field.get('name') + '_selected',
+                      id: selectedName,
                       field,
                       value: fieldValueSelected,
                       onChange: (val, metadata) => {
-                        onChange((value || Map()).set(field.get('name') + '_selected', val), metadata);
+                        onChange((value || Map()).set(selectedName, val), metadata);
                       },
                       onAddAsset,
                       onRemoveAsset,
                       getAsset,
-                      forID: field.get('name') + '_selected',
+                      forID: selectedName,
                     })
                   }
                 </div>
