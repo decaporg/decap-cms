@@ -19,9 +19,6 @@ import hastFromString from 'hast-util-from-string';
 import hastToMdastHandlerAll from 'hast-util-to-mdast/all';
 import { reduce, capitalize } from 'lodash';
 
-// Remove the yaml tokenizer, as the rich text editor doesn't support frontmatter
-delete markdownToRemarkPlugin.Parser.prototype.blockTokenizers.yamlFrontMatter;
-
 const shortcodeAttributePrefix = 'ncp';
 
 /**
@@ -427,12 +424,37 @@ const slateToRemarkPlugin = () => {
   return transform;
 };
 
+/**
+ * Images must be parsed as shortcodes for asset proxying. This plugin converts
+ * MDAST image nodes back to text to allow shortcode pattern matching.
+ */
+const remarkImagesToText = () => {
+  return transform;
+
+  function transform(node) {
+    const children = node.children ? node.children.map(transform) : node.children;
+    if (node.type === 'image') {
+      const alt = node.alt || '';
+      const url = node.url || '';
+      const title = node.title ? ` "${node.title}"` : '';
+      return { type: 'text', value: `![${alt}](${url}${title})` };
+    }
+    return { ...node, children };
+  }
+}
+
 export const markdownToRemark = markdown => {
   const parsed = unified()
     .use(markdownToRemarkPlugin, { fences: true, pedantic: true, footnotes: true, commonmark: true })
+    .use(function() {
+      const { blockMethods } = this.Parser.prototype;
+      // Remove the yaml tokenizer, as the rich text editor doesn't support frontmatter
+      blockMethods.splice(blockMethods.indexOf('yamlFrontMatter'), 1);
+    })
     .parse(markdown);
 
   const result = unified()
+    .use(remarkImagesToText)
     .use(remarkShortcodes, { plugins: registry.getEditorComponents() })
     .runSync(parsed);
 
