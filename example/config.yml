@@ -4,12 +4,6 @@ backend:
 
 media_folder: "assets/uploads"
 
-dynamic_widgets:
-  - string
-  - text
-  - markdown
-  - slider
-
 collections: # A list of collections the CMS should be able to edit
   - name: "posts" # Used in routes, ie.: /admin/collections/:slug/edit
     label: "Post" # Used in the UI, ie.: "New Post"
@@ -72,7 +66,14 @@ collections: # A list of collections the CMS should be able to edit
         label: Dynamic Block
         widget: list
         fields:
-          - {label: "Dynamic", name: "dynamic", widget: "dynamic"}
+          - label: "Dynamic"
+            name: "dynamic"
+            widget: "dynamic"
+            dynamicWidgets:
+              - string
+              - text
+              - markdown
+              - slider
       - label: "Related Post"
         name: "post"
         widget: "relationKitchenSinkPost"

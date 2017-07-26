@@ -1,11 +1,10 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Map } from 'immutable';
-import { loadConfig } from '../../actions/config';
 import { resolveWidget } from '../Widgets';
 import controlStyles from '../ControlPanel/ControlPane.css';
 
-class DynamicControl extends Component {
+export default class DynamicControl extends Component {
   static propTypes = {
     onChange: PropTypes.func.isRequired,
     onAddAsset: PropTypes.func.isRequired,
@@ -18,7 +17,7 @@ class DynamicControl extends Component {
     ]),
     field: PropTypes.object,
     forID: PropTypes.string,
-    config: PropTypes.object
+    dynamicWidgets: PropTypes.object
   };
 
   constructor(props) {
@@ -53,7 +52,7 @@ class DynamicControl extends Component {
   };
 
   render() {
-    const { field, value, forID, onChange, onAddAsset, onRemoveAsset, getAsset, config } = this.props;
+    const { field, value, forID, onChange, onAddAsset, onRemoveAsset, getAsset, dynamicWidgets } = this.props;
     const { widget } = this.state;
 
     const name = field.get('name');
@@ -66,7 +65,7 @@ class DynamicControl extends Component {
       value.get(selectedName) :
       value;
 
-    let options = config.get('dynamic_widgets').map((option) => {
+    let options = field.get('dynamicWidgets').map((option) => {
       if (typeof option === 'string') {
         return { label: option, value: option };
       }
@@ -117,10 +116,3 @@ class DynamicControl extends Component {
     );
   }
 }
-
-export default connect(
-  state => ({
-    config: state.config,
-  }),
-  { loadConfig }
-)(DynamicControl);
