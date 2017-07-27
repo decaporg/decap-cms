@@ -473,6 +473,17 @@ export default class Editor extends Component {
     }
 
     if (data.isMod) {
+
+      if (data.key === 'y') {
+        e.preventDefault();
+        return state.transform().redo().focus().apply({ save: false });
+      }
+
+      if (data.key === 'z') {
+        e.preventDefault();
+        return state.transform()[data.isShift ? 'redo' : 'undo']().focus().apply({ save: false });
+      }
+
       const marks = {
         b: 'bold',
         i: 'italic',
