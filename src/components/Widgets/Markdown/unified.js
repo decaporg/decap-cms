@@ -620,35 +620,20 @@ export const markdownToHtml = markdown => {
   return result;
 }
 
-export const htmlToMarkdown = html => {
-  const result = unified()
+export const htmlToSlate = html => {
+  const hast = unified()
     .use(htmlToRehype, { fragment: true })
+    .parse(html);
+
+  const result = unified()
     .use(rehypeRemoveEmpty)
     .use(rehypeMinifyWhitespace)
     .use(rehypePaperEmoji)
     .use(rehypeShortcodes)
-    .use(rehypeToRemark, { handlers: { div: (h, node) => {
-      const dataPrefix = `data${capitalize(shortcodeAttributePrefix)}`;
-      const isShortcode = node.properties[dataPrefix];
-      if (isShortcode) {
-        const paragraph = h(node, 'paragraph', hastToMdastHandlerAll(h, node));
-        paragraph.data = paragraph.data || {};
-        paragraph.data[shortcodeAttributePrefix] = true;
-        return paragraph;
-      }
-    }}})
-    .use(() => node => {
-      return node;
-    })
+    .use(rehypeToRemark)
     .use(remarkNestedList)
-    .use(remarkToMarkdownPlugin, { listItemIndent: '1', fences: true, pedantic: true, commonmark: true })
-    .use(remarkPrecompileShortcodes)
-    /*
-    .use(() => node => {
-      return node;
-    })
-    */
-    .processSync(html)
-    .contents;
+    .use(remarkToSlatePlugin)
+    .runSync(hast);
+
   return result;
 };

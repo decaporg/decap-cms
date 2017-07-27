@@ -3,10 +3,10 @@ import ReactDOMServer from 'react-dom/server';
 import { Map, List, fromJS } from 'immutable';
 import { get, reduce, mapValues } from 'lodash';
 import cn from 'classnames';
-import { Editor as SlateEditor, Html as SlateHtml, Raw as SlateRaw, Text as SlateText, Block as SlateBlock, Selection as SlateSelection} from 'slate';
+import { Editor as SlateEditor, Raw as SlateRaw, Text as SlateText, Block as SlateBlock, Selection as SlateSelection} from 'slate';
 import EditList from 'slate-edit-list';
 import EditTable from 'slate-edit-table';
-import { markdownToRemark, remarkToMarkdown, slateToRemark, remarkToSlate, markdownToHtml, htmlToMarkdown } from '../../unified';
+import { markdownToRemark, remarkToMarkdown, slateToRemark, remarkToSlate, markdownToHtml, htmlToSlate } from '../../unified';
 import registry from '../../../../../lib/registry';
 import { createAssetProxy } from '../../../../../valueObjects/AssetProxy';
 import Toolbar from '../Toolbar/Toolbar';
@@ -160,176 +160,6 @@ const MARK_COMPONENTS = {
   code: props => <code>{props.children}</code>,
 };
 
-const RULES = [
-  {
-    deserialize(el, next) {
-      const shortcodeId = el.attribs && el.attribs['data-ncp'];
-      if (!shortcodeId) {
-        return;
-      }
-      const plugin = registry.getEditorComponents().get(shortcodeId);
-      if (!plugin) {
-        return;
-      }
-      const shortcodeData = Map(el.attribs).reduce((acc, value, key) => {
-        if (key.startsWith('data-ncp-')) {
-          const dataKey = key.slice('data-ncp-'.length).toLowerCase();
-          if (dataKey) {
-            return acc.set(dataKey, value);
-          }
-        }
-        return acc;
-      }, Map({ shortcodeId }));
-
-      const result = {
-        kind: 'block',
-        isVoid: true,
-        type: 'shortcode',
-        data: { shortcode: shortcodeData },
-      };
-      return result;
-    },
-    serialize(entity, children) {
-      if (entity.type !== 'shortcode') {
-        return;
-      }
-
-      const data = Map(entity.data.get('shortcode'));
-      const shortcodeId = data.get('shortcodeId');
-      const plugin = registry.getEditorComponents().get(shortcodeId);
-      const dataAttrs = data.delete('shortcodeId').mapKeys(key => `data-ncp-${key}`).set('data-ncp', shortcodeId);
-      const preview = plugin.toPreview(data.toJS());
-      const component = typeof preview === 'string'
-        ? <div { ...dataAttrs.toJS() } dangerouslySetInnerHTML={ { __html: preview } }></div>
-        : <div { ...dataAttrs.toJS() }>{preview}</div>;
-      return component;
-    },
-  },
-  {
-    deserialize(el, next) {
-      const block = BLOCK_TAGS[el.tagName]
-      if (!block) return
-      return {
-        kind: 'block',
-        type: block,
-        nodes: next(el.children)
-      }
-    },
-    serialize(entity, children) {
-      if (['bulleted-list', 'numbered-list'].includes(entity.type)) {
-        return;
-      }
-      const component = BLOCK_COMPONENTS[entity.type]
-      if (!component) {
-        return;
-      }
-      return component({ children });
-    }
-  },
-  {
-    deserialize(el, next) {
-      const mark = MARK_TAGS[el.tagName]
-      if (!mark) return
-      return {
-        kind: 'mark',
-        type: mark,
-        nodes: next(el.children)
-      }
-    },
-    serialize(entity, children) {
-      if (entity.kind !== 'mark') {
-        return;
-      }
-      const component = MARK_COMPONENTS[entity.type]
-      return component({ children });
-    }
-  },
-  {
-    // Special case for code blocks, which need to grab the nested children.
-    deserialize(el, next) {
-      if (el.tagName != 'pre') return
-      const code = el.children[0]
-      const children = code && code.tagName == 'code'
-        ? code.children
-        : el.children
-
-      return {
-        kind: 'block',
-        type: 'code',
-        nodes: next(children)
-      }
-    },
-  },
-  {
-    deserialize(el, next) {
-      if (el.tagName != 'img') return
-      return {
-        kind: 'block',
-        type: 'image',
-        isVoid: true,
-        nodes: [],
-        data: {
-          src: el.attribs.src,
-          alt: el.attribs.alt,
-          title: el.attribs.title,
-        }
-      }
-    },
-    serialize(entity, children) {
-      if (entity.type !== 'image') {
-        return;
-      }
-      const data = entity.get('data');
-      const props = {
-        src: data.get('src'),
-        alt: data.get('alt'),
-        title: data.get('title'),
-      };
-      const result = NODE_COMPONENTS.image(props);
-      return result;
-    }
-  },
-  {
-    // Special case for links, to grab their href.
-    deserialize(el, next) {
-      if (el.tagName != 'a') return
-      return {
-        kind: 'inline',
-        type: 'link',
-        nodes: next(el.children),
-        data: {
-          href: el.attribs.href,
-          title: el.attribs.title,
-        }
-      }
-    },
-    serialize(entity, children) {
-      if (entity.type !== 'link') {
-        return;
-      }
-      const data = entity.get('data');
-      const props = {
-        href: data.get('href'),
-        title: data.get('title'),
-        attributes: data.get('attributes'),
-        children,
-      };
-      return NODE_COMPONENTS.link(props);
-    }
-  },
-  {
-    serialize(entity, children) {
-      if (!['bulleted-list', 'numbered-list'].includes(entity.type)) {
-        return;
-      }
-      return NODE_COMPONENTS[entity.type]({ children });
-    }
-  }
-
-]
-
-const htmlSerializer = new SlateHtml({ rules: RULES });
-
 const SoftBreak = (options = {}) => ({
   onKeyDown(e, data, state) {
     if (data.key != 'enter') return;
@@ -423,10 +253,9 @@ export default class Editor extends Component {
     if (data.type !== 'html' || data.isShift) {
       return;
     }
-    const markdown = htmlToMarkdown(data.html);
-    const html = markdownToHtml(markdown);
-    const fragment = serializer.deserialize(html).document;
-    return state.transform().insertFragment(fragment).apply();
+    const ast = htmlToSlate(data.html);
+    const { document: doc } = SlateRaw.deserialize(ast, { terse: true });
+    return state.transform().insertFragment(doc).apply();
   }
 
   handleDocumentChange = (doc, editorState) => {
