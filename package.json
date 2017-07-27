@@ -18,7 +18,8 @@
     "lint:css:fix": "stylefmt --recursive src/",
     "lint:staged": "lint-staged",
     "deps": "npm-check -s",
-    "deps:update": "npm-check -u"
+    "deps:update": "npm-check -u",
+    "prepublishOnly": "npm run build"
   },
   "lint-staged": {
     "*.js": [
