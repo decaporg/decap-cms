@@ -446,11 +446,6 @@ const remarkImagesToText = () => {
 export const markdownToRemark = markdown => {
   const parsed = unified()
     .use(markdownToRemarkPlugin, { fences: true, pedantic: true, footnotes: true, commonmark: true })
-    .use(function() {
-      const { blockMethods } = this.Parser.prototype;
-      // Remove the yaml tokenizer, as the rich text editor doesn't support frontmatter
-      blockMethods.splice(blockMethods.indexOf('yamlFrontMatter'), 1);
-    })
     .parse(markdown);
 
   const result = unified()
