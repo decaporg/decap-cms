@@ -203,10 +203,12 @@ const BackspaceCloseBlock = (options = {}) => ({
   }
 });
 
+const EditListPlugin = EditList({ types: ['bulleted-list', 'numbered-list'], typeItem: 'list-item' });
+
 const slatePlugins = [
   SoftBreak({ ignoreIn: ['paragraph', 'list-item', 'numbered-list', 'bulleted-list', 'table', 'table-row', 'table-cell'], closeAfter: 1 }),
   BackspaceCloseBlock({ ignoreIn: ['paragraph', 'list-item', 'bulleted-list', 'numbered-list', 'table', 'table-row', 'table-cell'] }),
-  EditList({ types: ['bulleted-list', 'numbered-list'], typeItem: 'list-item' }),
+  EditListPlugin,
   EditTable({ typeTable: 'table', typeRow: 'table-row', typeCell: 'table-cell' }),
 ];
 
@@ -228,6 +230,10 @@ export default class Editor extends Component {
         nodes: NODE_COMPONENTS,
         marks: MARK_COMPONENTS,
         rules: [
+          /**
+           * If the editor is ever in an empty state, insert an empty
+           * paragraph block.
+           */
           {
             match: object => object.kind === 'document',
             validate: doc => {
@@ -276,29 +282,30 @@ export default class Editor extends Component {
     };
     if (data.key === 'enter') {
       /**
-       * If a single void block is selected, and it's a direct descendant of the
-       * document (top level), a new paragraph should be added above or below it
-       * when 'Enter' is pressed, and the current selection should move to the
-       * new paragraph.
+       * If "Enter" is pressed while a single void block is selected, a new
+       * paragraph should be added above or below it, and the current selection
+       * should be collapsed to the start of the new paragraph.
        *
        * If the selected block is the first block in the document, create the
        * new block above it. If not, create the new block below it.
        */
       const { document: doc, selection, anchorBlock, focusBlock } = state;
-      const focusBlockIndex = doc.nodes.indexOf(focusBlock);
-      const focusBlockIsTopLevel = focusBlockIndex > -1;
-      const focusBlockIsFirstChild = focusBlockIndex === 0;
       const singleBlockSelected = anchorBlock === focusBlock;
+      if (!singleBlockSelected || !focusBlock.isVoid) return;
 
-      if (focusBlock.isVoid && focusBlockIsTopLevel && singleBlockSelected) {
-        e.preventDefault();
-        const newBlock = createDefaultBlock();
-        const newBlockIndex = focusBlockIsFirstChild ? 0 : focusBlockIndex + 1;
-        return state.transform()
-          .insertNodeByKey(doc.key, newBlockIndex, newBlock)
-          .collapseToStartOf(newBlock)
-          .apply();
-      }
+      e.preventDefault();
+
+      const focusBlockParent = doc.getParent(focusBlock.key);
+      const focusBlockIndex = focusBlockParent.nodes.indexOf(focusBlock);
+      const focusBlockIsFirstChild = focusBlockIndex === 0;
+
+      const newBlock = createDefaultBlock();
+      const newBlockIndex = focusBlockIsFirstChild ? 0 : focusBlockIndex + 1;
+
+      return state.transform()
+        .insertNodeByKey(focusBlockParent.key, newBlockIndex, newBlock)
+        .collapseToStartOf(newBlock)
+        .apply();
     }
 
     if (data.isMod) {
@@ -340,41 +347,30 @@ export default class Editor extends Component {
   handleBlockClick = (event, type) => {
     event.preventDefault();
     let { editorState } = this.state;
+    const { document: doc, selection } = editorState;
     const transform = editorState.transform();
-    const doc = editorState.document;
-    const isList = this.hasBlock('list-item')
 
     // Handle everything except list buttons.
     if (!['bulleted-list', 'numbered-list'].includes(type)) {
       const isActive = this.hasBlock(type);
       const transformed = transform.setBlock(isActive ? DEFAULT_NODE : type);
-
-      if (isList) {
-        transformed
-          .unwrapBlock('bulleted-list')
-          .unwrapBlock('numbered-list');
-      }
     }
 
     // Handle the extra wrapping required for list buttons.
     else {
-      const isType = editorState.blocks.some(block => {
+      const isSameListType = editorState.blocks.some(block => {
         return !!doc.getClosest(block.key, parent => parent.type === type);
       });
+      const isInList = EditListPlugin.utils.isSelectionInList(editorState);
 
-      if (isList && isType) {
-        transform
-          .setBlock(DEFAULT_NODE)
-          .unwrapBlock('bulleted-list')
-          .unwrapBlock('numbered-list');
-      } else if (isList) {
-        transform
-          .unwrapBlock(type === 'bulleted-list' ? 'numbered-list' : 'bulleted-list')
-          .wrapBlock(type);
+      if (isInList && isSameListType) {
+        EditListPlugin.transforms.unwrapList(transform, type);
+      } else if (isInList) {
+        const currentListType = type === 'bulleted-list' ? 'numbered-list' : 'bulleted-list';
+        EditListPlugin.transforms.unwrapList(transform, currentListType);
+        EditListPlugin.transforms.wrapInList(transform, type);
       } else {
-        transform
-          .setBlock('list-item')
-          .wrapBlock(type);
+        EditListPlugin.transforms.wrapInList(transform, type);
       }
     }
 
