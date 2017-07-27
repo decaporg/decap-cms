@@ -500,7 +500,7 @@ export default class Editor extends Component {
   handleBlockClick = (event, type) => {
     event.preventDefault();
     let { editorState } = this.state;
-    const transform = editorState.transform().focus();
+    const transform = editorState.transform();
     const doc = editorState.document;
     const isList = this.hasBlock('list-item')
 
@@ -538,7 +538,7 @@ export default class Editor extends Component {
       }
     }
 
-    const resolvedState = transform.apply();
+    const resolvedState = transform.focus().apply();
     this.ref.onChange(resolvedState);
     this.setState({ editorState: resolvedState });
   };
