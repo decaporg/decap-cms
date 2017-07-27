@@ -589,8 +589,6 @@ export const remarkToHtml = mdast => {
   const result = unified()
     .use(remarkToRehypeShortcodes, { plugins: registry.getEditorComponents() })
     .use(remarkToRehype, { allowDangerousHTML: true })
-    .use(rehypeRemoveEmpty)
-    .use(rehypeMinifyWhitespace)
     .runSync(mdast);
 
   const output = unified()
