@@ -81,7 +81,7 @@ class UnpublishedListing extends React.Component {
                 <div className={styles.draggable}>
                   <Card className={styles.card}>
                     <UnpublishedListingCardMeta
-                      meta={pluralize(collection)}
+                      meta={capitalize(collection)}
                       label={isModification ? "" : "New"}
                     />
                     <CardTitle
