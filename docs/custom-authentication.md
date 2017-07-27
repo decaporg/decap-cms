@@ -26,8 +26,8 @@ backend:
   base_url: https://auth.server.url.com
 ```
 
-* **name** name of the auth provider, varies by implementation. `github` when using GitHub auth, even with a third party auth client.
-* **repo** repo where content is to be stored.
-* **api_root (optional)** the API endpoint. Defaults to `https://api.github.com` when used with the `github` provider. Only necessary in certain cases, eg. when using with GitHub Enterprise.
-* **site_domain (optional)** sets `site_id` query param sent to API endpoint, defaults to `location.hostname`, minus any port, or `cms.netlify.com` on localhost so that auth "just works" during local development. Sites with custom authentication will often need to set this for local development to work properly.
-* **base_url (optional)** OAuth client URL, defaults to `https:/api.netlify.com` as a convenience. This is **required** when using an external OAuth server.
+* **name:** name of the auth provider, varies by implementation. `github` when using GitHub auth, even with a third party auth client.
+* **repo:** repo where content is to be stored.
+* **api_root (optional):** the API endpoint. Defaults to `https://api.github.com` when used with the `github` provider. Only necessary in certain cases, e.g., when using with GitHub Enterprise.
+* **site_domain (optional):** sets `site_id` query param sent to API endpoint. Defaults to `location.hostname`, minus any port, or `cms.netlify.com` on localhost so that auth "just works" during local development. Sites with custom authentication will often need to set this for local development to work properly.
+* **base_url (optional):** OAuth client URL, defaults to `https:/api.netlify.com` as a convenience. This is **required** when using an external OAuth server.
