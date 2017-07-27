@@ -13,57 +13,7 @@ import Toolbar from '../Toolbar/Toolbar';
 import { Sticky } from '../../../../UI/Sticky/Sticky';
 import styles from './index.css';
 
-
-function processUrl(url) {
-  if (url.match(/^(https?:\/\/|mailto:|\/)/)) {
-    return url;
-  }
-  if (url.match(/^[^/]+\.[^/]+/)) {
-    return `https://${ url }`;
-  }
-  return `/${ url }`;
-}
-
 const DEFAULT_NODE = 'paragraph';
-
-function schemaWithPlugins(schema, plugins) {
-  let nodeSpec = schema.nodeSpec;
-  plugins.forEach((plugin) => {
-    const attrs = {};
-    plugin.get('fields').forEach((field) => {
-      attrs[field.get('name')] = { default: null };
-    });
-    nodeSpec = nodeSpec.addToEnd(`plugin_${ plugin.get('id') }`, {
-      attrs,
-      group: 'block',
-      parseDOM: [{
-        tag: 'div[data-plugin]',
-        getAttrs(dom) {
-          return JSON.parse(dom.getAttribute('data-plugin'));
-        },
-      }],
-      toDOM(node) {
-        return ['div', { 'data-plugin': JSON.stringify(node.attrs) }, plugin.get('label')];
-      },
-    });
-  });
-
-  return new Schema({
-    nodes: nodeSpec,
-    marks: schema.markSpec,
-  });
-}
-
-function createSerializer(schema, plugins) {
-  const serializer = Object.create(defaultMarkdownSerializer);
-  plugins.forEach((plugin) => {
-    serializer.nodes[`plugin_${ plugin.get('id') }`] = (state, node) => {
-      const toBlock = plugin.get('toBlock');
-      state.write(`${ toBlock.call(plugin, node.attrs) }\n\n`);
-    };
-  });
-  return serializer;
-}
 
 const BLOCK_TAGS = {
   p: 'paragraph',
@@ -109,9 +59,9 @@ const BLOCK_COMPONENTS = {
   'heading-six': props => <h6 {...props.attributes}>{props.children}</h6>,
   'image': props => {
     const data = props.node && props.node.get('data');
-    const src = data && data.get('src') || props.src;
-    const alt = data && data.get('alt') || props.alt;
-    const title = data && data.get('title') || props.title;
+    const src = data.get('url');
+    const alt = data.get('alt');
+    const title = data.get('title');
     return <div><img src={src} alt={alt} title={title}{...props.attributes}/></div>;
   },
   'table': props => <table><tbody {...props.attributes}>{props.children}</tbody></table>,
@@ -133,8 +83,8 @@ const NODE_COMPONENTS = {
   ...BLOCK_COMPONENTS,
   'link': props => {
     const data = props.node.get('data');
-    const href = data && data.get('url') || props.href;
-    const title = data && data.get('title') || props.title;
+    const href = data.get('url');
+    const title = data.get('title');
     return <a href={href} title={title} {...props.attributes}>{props.children}</a>;
   },
   'shortcode': props => {
@@ -386,14 +336,42 @@ export default class Editor extends Component {
     this.setState({ editorState: resolvedState });
   };
 
+  hasLinks = () => {
+    return this.state.editorState.inlines.some(inline => inline.type === 'link');
+  };
 
   handleLink = () => {
-    let url = null;
-    if (!markActive(this.view.state, this.state.schema.marks.link)) {
-      url = prompt('Link URL:'); // eslint-disable-line no-alert
+    let { editorState } = this.state;
+
+    // If the current selection contains links, clicking the "link" button
+    // should simply unlink them.
+    if (this.hasLinks()) {
+      editorState = editorState.transform().unwrapInline('link').apply();
     }
-    const command = toggleMark(this.state.schema.marks.link, { href: url ? processUrl(url) : null });
-    command(this.view.state, this.handleAction);
+
+    else {
+      const url = window.prompt('Enter the URL of the link');
+
+      // If nothing is entered in the URL prompt, do nothing.
+      if (!url) return;
+
+      let transform = editorState.transform();
+
+      // If no text is selected, use the entered URL as text.
+      if (editorState.isCollapsed) {
+        transform = transform
+          .insertText(url)
+          .extend(0 - url.length);
+      }
+
+      editorState = transform
+        .wrapInline({ type: 'link', data: { url } })
+        .collapseToEnd()
+        .apply();
+    }
+
+    this.ref.onChange(editorState);
+    this.setState({ editorState });
   };
 
   handlePluginSubmit = (plugin, shortcodeData) => {
@@ -414,9 +392,10 @@ export default class Editor extends Component {
     this.props.onMode('raw');
   };
 
-  getButtonProps = (type, isBlock) => {
-    const handler = isBlock ? this.handleBlockClick: this.handleMarkClick;
-    const isActive = isBlock ? this.hasBlock : this.hasMark;
+  getButtonProps = (type, opts = {}) => {
+    const { isBlock } = opts;
+    const handler = opts.handler || (isBlock ? this.handleBlockClick: this.handleMarkClick);
+    const isActive = opts.isActive || (isBlock ? this.hasBlock : this.hasMark);
     return { onAction: e => handler(e, type), active: isActive(type) };
   };
 
@@ -437,12 +416,12 @@ export default class Editor extends Component {
               bold: this.getButtonProps('bold'),
               italic: this.getButtonProps('italic'),
               code: this.getButtonProps('code'),
-              link: this.getButtonProps('link'),
-              h1: this.getButtonProps('heading-one', true),
-              h2: this.getButtonProps('heading-two', true),
-              list: this.getButtonProps('bulleted-list', true),
-              listNumbered: this.getButtonProps('numbered-list', true),
-              codeBlock: this.getButtonProps('code', true),
+              link: this.getButtonProps('link', { handler: this.handleLink, isActive: this.hasLinks }),
+              h1: this.getButtonProps('heading-one', { isBlock: true }),
+              h2: this.getButtonProps('heading-two', { isBlock: true }),
+              list: this.getButtonProps('bulleted-list', { isBlock: true }),
+              listNumbered: this.getButtonProps('numbered-list', { isBlock: true }),
+              codeBlock: this.getButtonProps('code', { isBlock: true }),
             }}
             onToggleMode={this.handleToggle}
             plugins={plugins}
