@@ -6,7 +6,7 @@ const MarkdownPreview = ({ value, getAsset }) => {
   if (value === null) {
     return null;
   }
-  const html = remarkToHtml(value);
+  const html = remarkToHtml(value, getAsset);
   return <div style={previewStyle} dangerouslySetInnerHTML={{__html: html}}></div>;
 };
 

@@ -215,7 +215,7 @@ const remarkShortcodes = ({ plugins }) => {
   }
 };
 
-const remarkToRehypeShortcodes = ({ plugins }) => {
+const remarkToRehypeShortcodes = ({ plugins, getAsset }) => {
   return transform;
 
   function transform(node) {
@@ -225,7 +225,7 @@ const remarkToRehypeShortcodes = ({ plugins }) => {
     }
     const { shortcode, shortcodeData } = node.data;
     const plugin = plugins.get(shortcode);
-    const value = plugin.toPreview(shortcodeData);
+    const value = plugin.toPreview(shortcodeData, getAsset);
     const valueHtml = typeof value === 'string' ? value : renderToString(value);
     return { ...node, value: valueHtml };
   }
@@ -585,9 +585,9 @@ export const slateToRemark = raw => {
   return result;
 };
 
-export const remarkToHtml = mdast => {
+export const remarkToHtml = (mdast, getAsset) => {
   const result = unified()
-    .use(remarkToRehypeShortcodes, { plugins: registry.getEditorComponents() })
+    .use(remarkToRehypeShortcodes, { plugins: registry.getEditorComponents(), getAsset })
     .use(remarkToRehype, { allowDangerousHTML: true })
     .runSync(mdast);
 
