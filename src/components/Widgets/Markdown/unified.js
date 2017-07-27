@@ -392,8 +392,11 @@ const remarkToSlatePlugin = () => {
 
     if (node.type === 'linkReference') {
       const definition = getDefinition(node.identifier);
-      const { title, url } = definition;
-      const data = { title, url };
+      const data = {};
+      if (definition) {
+        data.title = definition.title;
+        data.url = definition.url;
+      }
       return { kind: 'inline', type: typeMap['link'], data, nodes };
     }
 
@@ -405,8 +408,11 @@ const remarkToSlatePlugin = () => {
 
     if (node.type === 'imageReference') {
       const definition = getDefinition(node.identifier);
-      const { title, url } = definition;
-      const data = { title, url };
+      const data = {};
+      if (definition) {
+        data.title = definition.title;
+        data.url = definition.url;
+      }
       return { kind: 'block', type: typeMap['image'], data };
     }
   };
@@ -536,6 +542,10 @@ export const slateToRemark = raw => {
       return u('html', { data: node.data }, node.data.shortcodeValue);
     }
 
+    if (node.type === 'shortcode-wrapper') {
+      return u('paragraph', children);
+    }
+
     if (node.type.startsWith('heading')) {
       const depths = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6 };
       const depth = node.type.split('-')[1];
@@ -595,22 +605,6 @@ export const remarkToHtml = (mdast, getAsset) => {
     .use(rehypeToHtml, { allowDangerousHTML: true, allowDangerousCharacters: true, entities: { subset: [] } })
     .stringify(result);
   return output
-}
-
-export const markdownToHtml = markdown => {
-  // Parse shortcodes from the raw markdown rather than via Unified plugin.
-  // This ensures against conflicts between shortcode syntax and Unified
-  // parsing rules.
-  const markdownWithParsedShortcodes = parseShortcodesFromMarkdown(markdown);
-  const result = unified()
-    .use(markdownToRemarkPlugin, { fences: true, pedantic: true, footnotes: true, commonmark: true })
-    .use(remarkToRehype, { allowDangerousHTML: true })
-    .use(rehypeRemoveEmpty)
-    .use(rehypeMinifyWhitespace)
-    .use(rehypeToHtml, { allowDangerousHTML: true })
-    .processSync(markdownWithParsedShortcodes)
-    .contents;
-  return result;
 }
 
 export const htmlToSlate = html => {

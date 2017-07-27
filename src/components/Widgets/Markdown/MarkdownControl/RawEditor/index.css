@@ -1,6 +1,6 @@
 @import "../../../../UI/theme";
 
-.root {
+.rawWrapper {
   position: relative;
 }
 
@@ -12,7 +12,7 @@
   composes: editorControlBarSticky from "../VisualEditor/index.css";
 }
 
-.SlateEditor {
+.rawEditor {
   position: relative;
   overflow: hidden;
   overflow-x: auto;

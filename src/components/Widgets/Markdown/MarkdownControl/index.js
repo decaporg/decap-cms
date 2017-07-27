@@ -8,10 +8,10 @@ import { StickyContainer } from '../../../UI/Sticky/Sticky';
 const MODE_STORAGE_KEY = 'cms.md-mode';
 
 /**
- * Slate can serialize to html, but we persist the value as markdown. Serializing
- * the html to markdown on every keystroke is a big perf hit, so we'll register
- * functions to perform those actions only when necessary, such as after loading
- * and before persisting.
+ * The markdown field value is persisted as a markdown string, but stringifying
+ * on every keystroke is a big perf hit, so we'll register functions to perform
+ * those actions only when necessary, such as after loading and before
+ * persisting.
  */
 registry.registerWidgetValueSerializer('markdown', {
   serialize: remarkToMarkdown,
