@@ -14,6 +14,13 @@ export default class RawEditor extends React.Component {
     };
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.state.editorState.equals(nextState.editorState)) {
+      return false
+    }
+    return true;
+  }
+
   handleChange = editorState => {
     this.setState({ editorState });
   }

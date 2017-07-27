@@ -255,6 +255,13 @@ export default class Editor extends Component {
     };
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.state.editorState.equals(nextState.editorState)) {
+      return false
+    }
+    return true;
+  }
+
   handlePaste = (e, data, state) => {
     if (data.type !== 'html' || data.isShift) {
       return;
