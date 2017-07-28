@@ -1,6 +1,7 @@
 import LocalForage from "localforage";
 import { Base64 } from "js-base64";
 import _ from "lodash";
+import { Map } from 'immutable';
 import { filterPromises, resolvePromiseProperties } from "../../lib/promiseHelper";
 import AssetProxy from "../../valueObjects/AssetProxy";
 import { SIMPLE, EDITORIAL_WORKFLOW, status } from "../../constants/publishModes";
@@ -206,50 +207,26 @@ export default class API {
   }
 
   composeFileTree(files) {
-    let filename;
-    let part;
-    let parts;
-    let subtree;
-    const fileTree = {};
-
-    files.forEach((file) => {
-      if (file.uploaded) { return; }
-      parts = file.path.split("/").filter(part => part);
-      filename = parts.pop();
-      subtree = fileTree;
-      while (part = parts.shift()) {
-        subtree[part] = subtree[part] || {};
-        subtree = subtree[part];
-      }
-      subtree[filename] = file;
-      file.file = true;
-    });
-
-    return fileTree;
+    return files
+      .map(file => ({ ...file, file: true }))
+      .reduce((tree, file) => tree.setIn(file.path.split("/"), file), Map())
+      .toJS();
   }
 
   persistFiles(entry, mediaFiles, options) {
-    const uploadPromises = [];
-    const files = mediaFiles.concat(entry);
+    const newFiles = [...mediaFiles, entry].filter(file => !file.uploaded);
+    const uploadsPromise = Promise.all(newFiles.map(file => this.uploadBlob(file)));
+    const fileTreePromise = uploadsPromise.then(files => this.composeFileTree(files));
 
-    files.forEach((file) => {
-      if (file.uploaded) { return; }
-      uploadPromises.push(this.uploadBlob(file));
-    });
+    if (options.mode === EDITORIAL_WORKFLOW) {
+      const mediaFilesList = mediaFiles.map(file => ({ path: file.path, sha: file.sha }));
+      return fileTreePromise
+        .then(fileTree => this.editorialWorkflowGit(fileTree, entry, mediaFilesList, options));
+    }
 
-    const fileTree = this.composeFileTree(files);
-
-    return Promise.all(uploadPromises).then(() => {
-      if (!options.mode || (options.mode && options.mode === SIMPLE)) {
-        return this.getBranch()
-        .then(branchData => this.updateTree(branchData.commit.sha, "/", fileTree))
-        .then(changeTree => this.commit(options.commitMessage, changeTree))
-        .then(response => this.patchBranch(this.branch, response.sha));
-      } else if (options.mode && options.mode === EDITORIAL_WORKFLOW) {
-        const mediaFilesList = mediaFiles.map(file => ({ path: file.path, sha: file.sha }));
-        return this.editorialWorkflowGit(fileTree, entry, mediaFilesList, options);
-      }
-    });
+    return Promise.all([fileTreePromise, this.getBranch()])
+      .then(([fileTree, branchData]) => this.updateTree(branchData.commit.sha, "/", fileTree))
+      .then(changeTree => this.commit(options.commitMessage, changeTree));
   }
 
   deleteFile(path, message, options={}) {
@@ -484,10 +461,9 @@ export default class API {
         content: contentBase64,
         encoding: "base64",
       }),
-    }).then((response) => {
-      item.sha = response.sha;
-      item.uploaded = true;
-      return item;
+    })).then(response => Object.assign({}, item, {
+      sha: response.sha,
+      uploaded: true,
     }));
   }
 
