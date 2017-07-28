@@ -1,10 +1,11 @@
-import { get, has, find, isEmpty } from 'lodash';
+import { get, has, find, isEmpty, every, map } from 'lodash';
 import { renderToString } from 'react-dom/server';
 import unified from 'unified';
 import u from 'unist-builder';
 import markdownToRemarkPlugin from 'remark-parse';
 import remarkToMarkdownPlugin from 'remark-stringify';
 import mdastDefinitions from 'mdast-util-definitions';
+import mdastToString from 'mdast-util-to-string';
 import modifyChildren from 'unist-util-modify-children';
 import remarkToRehype from 'remark-rehype';
 import rehypeToHtml from 'rehype-stringify';
@@ -101,41 +102,6 @@ const rehypePaperEmoji = () => {
   return transform;
 };
 
-const rehypeShortcodes = () => {
-  const plugins = registry.getEditorComponents();
-  const transform = node => {
-    const { properties } = node;
-
-    // Convert this logic into a parseShortcodeDataFromHtml shared function, as
-    // this is also used in the visual editor serializer
-    const dataPrefix = `data${capitalize(shortcodeAttributePrefix)}`;
-    const pluginId = properties && properties[dataPrefix];
-    const plugin = plugins.get(pluginId);
-
-    if (plugin) {
-      const data = reduce(properties, (acc, value, key) => {
-        if (key.startsWith(dataPrefix)) {
-          const dataKey = key.slice(dataPrefix.length).toLowerCase();
-          if (dataKey) {
-            acc[dataKey] = value;
-          }
-        }
-        return acc;
-      }, {});
-
-      node.data = node.data || {};
-      node.data[shortcodeAttributePrefix] = true;
-
-      return hastFromString(node, plugin.toBlock(data));
-    }
-
-    node.children = node.children ? node.children.map(transform) : node.children;
-
-    return node;
-  };
-  return transform;
-}
-
 /**
  * Rewrite the remark-stringify text visitor to simply return the text value,
  * without encoding or escaping any characters. This means we're completely
@@ -147,71 +113,92 @@ function remarkPrecompileShortcodes() {
   visitors.text = node => node.value;
 };
 
+
+/**
+ * Parse shortcodes from an MDAST.
+ *
+ * Shortcodes are plain text, and must be the lone content of a paragraph. The
+ * paragraph must also be a direct child of the root node. When a shortcode is
+ * found, we just need to add data to the node so the shortcode can be
+ * identified and processed when serializing to a new format. The paragraph
+ * containing the node is also recreated to ensure normalization.
+ */
 const remarkShortcodes = ({ plugins }) => {
   return transform;
 
-  function transform(node) {
-    if (node.children) {
-      node.children = node.children.reduce(reducer, []);
-    }
-    return node;
+  /**
+   * Map over children of the root node and convert any found shortcode nodes.
+   */
+  function transform(root) {
+    const transformedChildren = map(root.children, processShortcodes);
+    return { ...root, children: transformedChildren };
+  }
 
-    function reducer(newChildren, childNode) {
-      if (!['text', 'html'].includes(childNode.type)) {
-        const processedNode = childNode.children ? transform(childNode) : childNode;
-        newChildren.push(processedNode);
-        return newChildren;
-      }
+  /**
+   * Mapping function to transform nodes that contain shortcodes.
+   */
+  function processShortcodes(node) {
+    /**
+     * If the node is not eligible to contain a shortcode, return the original
+     * node unchanged.
+     */
+    if (!nodeMayContainShortcode(node)) return node;
 
-      const text = childNode.value;
-      let lastPlugin;
-      let match;
-      const plugin = plugins.find(p => {
-        match = text.match(p.pattern);
-        return match;
+    /**
+     * Combine the text values of all children to a single string, then
+     * check that string for a shortcode pattern match.
+     */
+    const text = mdastToString(node);
+    const { plugin, match } = matchTextToPlugin(text);
+
+    /**
+     * If a matching shortcode plugin is found, return a new node with shortcode
+     * data included. Otherwise, return the original node.
+     */
+    return plugin ? createShortcodeNode(text, plugin, match) : node;
+  };
+
+  /**
+   * Ensure that the node and it's children are acceptable types to contain
+   * shortcodes. Currently, only a paragraph containing text and/or html nodes
+   * may contain shortcodes.
+   */
+  function nodeMayContainShortcode(node) {
+    const validNodeTypes = ['paragraph'];
+    const validChildTypes = ['text', 'html'];
+
+    if (validNodeTypes.includes(node.type)) {
+      return every(node.children, child => {
+        return validChildTypes.includes(child.type);
       });
-      if (!plugin) {
-        newChildren.push(childNode);
-        return newChildren;
-      }
-      const matchValue = match[0];
-      const matchLength = matchValue.length;
-      const matchAll = matchLength === text.length;
-
-      if (matchAll) {
-        const shortcodeNode = createShortcodeNode(text, plugin, match);
-        newChildren.push(shortcodeNode);
-        return newChildren;
-      }
-
-      const tempChildren = [];
-      const matchAtStart = match.index === 0;
-      const matchAtEnd = match.index + matchLength === text.length;
-
-      if (!matchAtStart) {
-        const textBeforeMatch = text.slice(0, match.index);
-        const result = reducer([], { type: 'text', value: textBeforeMatch });
-        tempChildren.push(...result);
-      }
-
-      const matchNode = createShortcodeNode(matchValue, plugin, match);
-      tempChildren.push(matchNode);
-
-      if (!matchAtEnd) {
-        const textAfterMatch = text.slice(match.index + matchLength);
-        const result = reducer([], { type: 'text', value: textAfterMatch });
-        tempChildren.push(...result);
-      }
-
-      newChildren.push(...tempChildren);
-      return newChildren;
     }
+  }
 
-    function createShortcodeNode(text, plugin, match) {
-      const shortcode = plugin.id;
-      const shortcodeData = plugin.fromBlock(match);
-      return { type: 'html', value: text, data: { shortcode, shortcodeData } };
-    }
+  /**
+   * Return the plugin and RegExp.match result from the first plugin with a
+   * pattern that matches the given text.
+   */
+  function matchTextToPlugin(text) {
+    let match;
+    const plugin = plugins.find(p => {
+      match = text.match(p.pattern);
+      return !!match;
+    });
+    return { plugin, match };
+  }
+
+  /**
+   * Create a new node with shortcode data included. Use an 'html' node instead
+   * of a 'text' node as the child to ensure the node content is not parsed by
+   * Remark or Rehype. Include the child as an array because an MDAST paragraph
+   * node must have it's children in an array.
+   */
+  function createShortcodeNode(text, plugin, match) {
+    const shortcode = plugin.id;
+    const shortcodeData = plugin.fromBlock(match);
+    const data = { shortcode, shortcodeData };
+    const textNode = u('html', text);
+    return u('paragraph', { data }, [textNode]);
   }
 };
 
@@ -229,28 +216,6 @@ const remarkToRehypeShortcodes = ({ plugins, getAsset }) => {
     const valueHtml = typeof value === 'string' ? value : renderToString(value);
     return { ...node, value: valueHtml };
   }
-};
-
-const parseShortcodesFromMarkdown = markdown => {
-  const plugins = registry.getEditorComponents();
-  const markdownLines = markdown.split('\n');
-  const markdownLinesParsed = plugins.reduce((lines, plugin) => {
-    const result = lines.map(line => {
-      return line.replace(plugin.pattern, (...match) => {
-        const data = plugin.fromBlock(match);
-        const preview = plugin.toPreview(data);
-        const html = typeof preview === 'string' ? preview : ReactDOMServer.renderToStaticMarkup(preview);
-        const dataAttrs = reduce(data, (attrs, val, key) => {
-          attrs.push(`data-${shortcodeAttributePrefix}-${key}="${val}"`);
-          return attrs;
-        }, [`data-${shortcodeAttributePrefix}="${plugin.id}"`]);
-        const result = `<div ${dataAttrs.join(' ')}>${html}</div>`;
-        return result;
-      });
-    });
-    return result;
-  }, markdownLines);
-  return markdownLinesParsed.join('\n');
 };
 
 const remarkToSlatePlugin = () => {
@@ -616,7 +581,6 @@ export const htmlToSlate = html => {
     .use(rehypeRemoveEmpty)
     .use(rehypeMinifyWhitespace)
     .use(rehypePaperEmoji)
-    .use(rehypeShortcodes)
     .use(rehypeToRemark)
     .use(remarkNestedList)
     .use(remarkToSlatePlugin)

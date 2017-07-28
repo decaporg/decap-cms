@@ -117,6 +117,7 @@
     "markup-it": "^2.0.0",
     "material-design-icons": "^3.0.1",
     "mdast-util-definitions": "^1.2.2",
+    "mdast-util-to-string": "^1.0.4",
     "moment": "^2.11.2",
     "netlify-auth-js": "^0.5.5",
     "normalize.css": "^4.2.0",
