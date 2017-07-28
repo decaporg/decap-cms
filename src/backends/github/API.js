@@ -51,17 +51,12 @@ export default class API {
   }
 
   urlFor(path, options) {
-    const cacheBuster = new Date().getTime();
-    const params = [`ts=${cacheBuster}`];
-    if (options.params) {
-      for (const key in options.params) {
-        params.push(`${ key }=${ encodeURIComponent(options.params[key]) }`);
-      }
-    }
-    if (params.length) {
-      path += `?${ params.join("&") }`;
-    }
-    return this.api_root + path;
+    const cacheBuster = `ts=${ new Date().getTime() }`;
+    const encodedParams = options.params
+          ? Object.entries(options.params).map(
+            ([key, val]) => `${ key }=${ encodeURIComponent(val) }`)
+          : [];
+    return this.api_root + path + `?${ [cacheBuster, ...encodedParams].join("&") }`;
   }
 
   request(path, options = {}) {
