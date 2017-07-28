@@ -40,16 +40,6 @@ export default class API {
     };
   }
 
-  parseJsonResponse(response) {
-    return response.json().then((json) => {
-      if (!response.ok) {
-        return Promise.reject(json);
-      }
-
-      return json;
-    });
-  }
-
   urlFor(path, options) {
     const cacheBuster = `ts=${ new Date().getTime() }`;
     const encodedParams = options.params
@@ -62,17 +52,17 @@ export default class API {
   request(path, options = {}) {
     const headers = this.requestHeaders(options.headers || {});
     const url = this.urlFor(path, options);
-    let responseStatus;
     return fetch(url, { ...options, headers }).then((response) => {
-      responseStatus = response.status;
       const contentType = response.headers.get("Content-Type");
       if (contentType && contentType.match(/json/)) {
-        return this.parseJsonResponse(response);
+        return Promise.all([response, response.json()]);
       }
-      return response.text();
+      return Promise.all([response, response.text()]);
     })
-    .catch((error) => {
-      throw new APIError(error.message, responseStatus, 'GitHub');
+    .then(([response, value]) => (response.ok ? value : Promise.reject([value, response])))
+    .catch(([errorValue, response]) => {
+      const message = _.isString(errorValue) ? errorValue : errorValue.message;
+      throw new APIError(message, response.status, 'GitHub', { response });
     });
   }
 
