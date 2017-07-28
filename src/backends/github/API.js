@@ -431,10 +431,12 @@ export default class API {
   forceMergePR(pullrequest, objects) {
     const files = objects.files.concat(objects.entry);
     const fileTree = this.composeFileTree(files);
-    let commitMessage = "Automatically generated. Merged on Netlify CMS\n\nForce merge of:";
-    files.forEach((file) => {
-      commitMessage += `\n* "${ file.path }"`;
-    });
+    const commitMessage = `\
+Automatically generated. Merged on Netlify CMS
+
+Force merge of:
+${ files.map(file => `* "${ file.path }"`).join("\n") }\
+`;
     console.log("%c Automatic merge not possible - Forcing merge.", "line-height: 30px;text-align: center;font-weight: bold"); // eslint-disable-line
     return this.getBranch()
     .then(branchData => this.updateTree(branchData.commit.sha, "/", fileTree))
