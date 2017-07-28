@@ -33,17 +33,11 @@ export default class API {
   }
 
   requestHeaders(headers = {}) {
-    const baseHeader = {
-      "Content-Type": "application/json",
+    return {
       ...headers,
+      ...(this.token ? { Authorization: `token ${ this.token }` } : {}),
+      "Content-Type": "application/json",
     };
-
-    if (this.token) {
-      baseHeader.Authorization = `token ${ this.token }`;
-      return baseHeader;
-    }
-
-    return baseHeader;
   }
 
   parseJsonResponse(response) {
