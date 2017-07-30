@@ -33,17 +33,10 @@ export const NODE_COMPONENTS = {
   'table-row': props => <tr {...props.attributes}>{props.children}</tr>,
   'table-cell': props => <td {...props.attributes}>{props.children}</td>,
   'thematic-break': props => <hr {...props.attributes}/>,
-  'shortcode-wrapper': props => <div {...props.attributes}>{props.children}</div>,
-  link: props => {
-    const data = props.node.get('data');
-    const url = data.get('url');
-    const title = data.get('title');
-    return <a href={href} title={title} {...props.attributes}>{props.children}</a>;
-  },
   shortcode: props => {
     const { attributes, node, state: editorState } = props;
     const isSelected = editorState.selection.hasFocusIn(node);
     const className = cn(styles.shortcode, { [styles.shortcodeSelected]: isSelected });
-    return <span {...attributes} className={className} draggable >{node.data.get('shortcode')}</span>;
+    return <div {...attributes} className={className} draggable >{node.data.get('shortcode')}</div>;
   },
 };

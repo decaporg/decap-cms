@@ -25,6 +25,21 @@ const enforceNeverEmpty = {
   },
 };
 
-const rules = [ enforceNeverEmpty ];
+/**
+ * Ensure that shortcodes are children of the root node.
+ */
+const shortcodesAtRoot = {
+  match: object => object.kind === 'document',
+  validate: doc => {
+    return doc.findDescendant(node => {
+      return node.type === 'shortcode' && doc.getParent(node.key).key !== doc.key;
+    });
+  },
+  normalize: (transform, doc, node) => {
+    return transform.unwrapNodeByKey(node.key);
+  },
+};
+
+const rules = [ enforceNeverEmpty, shortcodesAtRoot ];
 
 export default rules;

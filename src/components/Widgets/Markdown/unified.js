@@ -143,17 +143,18 @@ const remarkShortcodes = ({ plugins }) => {
     if (!nodeMayContainShortcode(node)) return node;
 
     /**
-     * Combine the text values of all children to a single string, then
-     * check that string for a shortcode pattern match.
+     * Combine the text values of all children to a single string, check the
+     * string for a shortcode pattern match, and validate the match.
      */
-    const text = mdastToString(node);
+    const text = mdastToString(node).trim();
     const { plugin, match } = matchTextToPlugin(text);
+    const matchIsValid = validateMatch(text, match);
 
     /**
-     * If a matching shortcode plugin is found, return a new node with shortcode
-     * data included. Otherwise, return the original node.
+     * If a valid match is found, return a new node with shortcode data
+     * included. Otherwise, return the original node.
      */
-    return plugin ? createShortcodeNode(text, plugin, match) : node;
+    return matchIsValid ? createShortcodeNode(text, plugin, match) : node;
   };
 
   /**
@@ -183,6 +184,13 @@ const remarkShortcodes = ({ plugins }) => {
       return !!match;
     });
     return { plugin, match };
+  }
+
+  /**
+   * A match is only valid if it takes up the entire paragraph.
+   */
+  function validateMatch(text, match) {
+    return match && match[0].length === text.length;
   }
 
   /**
@@ -242,7 +250,9 @@ const remarkToRehypeShortcodes = ({ plugins, getAsset }) => {
     /**
      * Return a new 'html' type node containing the shortcode preview markup.
      */
-    return u('html', valueHtml);
+    const textNode = u('html', valueHtml);
+    const children = [ textNode ];
+    return { ...node, children };
   }
 };
 
@@ -471,7 +481,7 @@ export const remarkToSlate = mdast => {
   return result;
 };
 
-export const slateToRemark = raw => {
+export const slateToRemark = (raw, shortcodePlugins) => {
   const typeMap = {
     'paragraph': 'paragraph',
     'heading-one': 'heading',
@@ -532,7 +542,9 @@ export const slateToRemark = raw => {
 
     if (node.type === 'shortcode') {
       const { data } = node;
-      const textNode = u('html', data.shortcodeValue);
+      const plugin = shortcodePlugins.get(data.shortcode);
+      const text = plugin.toBlock(data.shortcodeData);
+      const textNode = u('html', text);
       return u('paragraph', { data }, [ textNode ]);
     }
 

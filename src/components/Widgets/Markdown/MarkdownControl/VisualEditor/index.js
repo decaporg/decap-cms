@@ -26,7 +26,7 @@ export default class Editor extends Component {
         marks: MARK_COMPONENTS,
         rules: RULES,
       },
-      shortcodes: registry.getEditorComponents(),
+      shortcodePlugins: registry.getEditorComponents(),
     };
   }
 
@@ -45,7 +45,8 @@ export default class Editor extends Component {
 
   handleDocumentChange = (doc, editorState) => {
     const raw = Raw.serialize(editorState, { terse: true });
-    const mdast = slateToRemark(raw);
+    const plugins = this.state.shortcodePlugins;
+    const mdast = slateToRemark(raw, plugins);
     this.props.onChange(mdast);
   };
 
@@ -136,12 +137,11 @@ export default class Editor extends Component {
     const { editorState } = this.state;
     const data = {
       shortcode: plugin.id,
-      shortcodeValue: plugin.toBlock(shortcodeData.toJS()),
       shortcodeData,
     };
     const nodes = [Text.createFromString('')];
     const block = { kind: 'block', type: 'shortcode', data, isVoid: true, nodes };
-    const resolvedState = editorState.transform().insertBlock(block).apply();
+    const resolvedState = editorState.transform().insertBlock(block).focus().apply();
     this.ref.onChange(resolvedState);
     this.setState({ editorState: resolvedState });
   };
@@ -180,7 +180,7 @@ export default class Editor extends Component {
               codeBlock: this.getButtonProps('code', { isBlock: true }),
             }}
             onToggleMode={this.handleToggle}
-            plugins={this.state.shortcodes}
+            plugins={this.state.shortcodePlugins}
             onSubmit={this.handlePluginSubmit}
             onAddAsset={onAddAsset}
             onRemoveAsset={onRemoveAsset}
