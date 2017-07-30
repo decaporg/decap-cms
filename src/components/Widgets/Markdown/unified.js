@@ -20,8 +20,6 @@ import hastFromString from 'hast-util-from-string';
 import hastToMdastHandlerAll from 'hast-util-to-mdast/all';
 import { reduce, capitalize } from 'lodash';
 
-const shortcodeAttributePrefix = 'ncp';
-
 /**
  * Remove empty nodes, including the top level parents of deeply nested empty nodes.
  */
@@ -306,19 +304,18 @@ const remarkToSlatePlugin = () => {
       return { nodes };
     }
 
+    /**
+     * Convert MDAST shortcode nodes to Slate 'shortcode' type nodes.
+     */
+    if (get(node, ['data', 'shortcode'])) {
+      const { data } = node;
+      const nodes = [ toTextNode('') ];
+      return { kind: 'block', type: 'shortcode', data, isVoid: true, nodes };
+    }
+
     // Process raw html as text, since it's valid markdown
     if (['text', 'html'].includes(node.type)) {
-      const { value, data } = node;
-      const shortcode = get(data, 'shortcode');
-      if (shortcode) {
-        const isBlock = parent.type === 'paragraph' && siblings.length === 1;
-        data.shortcodeValue = value;
-
-        if (isBlock) {
-          return { kind: 'block', type: 'shortcode', data, isVoid: true, nodes: [toTextNode('')] };
-        }
-      }
-      return toTextNode(value, data);
+      return toTextNode(node.value, node.data);
     }
 
     if (node.type === 'inlineCode') {
@@ -534,11 +531,9 @@ export const slateToRemark = raw => {
     }
 
     if (node.type === 'shortcode') {
-      return u('html', { data: node.data }, node.data.shortcodeValue);
-    }
-
-    if (node.type === 'shortcode-wrapper') {
-      return u('paragraph', children);
+      const { data } = node;
+      const textNode = u('html', data.shortcodeValue);
+      return u('paragraph', { data }, [ textNode ]);
     }
 
     if (node.type.startsWith('heading')) {
