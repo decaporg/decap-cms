@@ -33,6 +33,12 @@ export const NODE_COMPONENTS = {
   'table-row': props => <tr {...props.attributes}>{props.children}</tr>,
   'table-cell': props => <td {...props.attributes}>{props.children}</td>,
   'thematic-break': props => <hr {...props.attributes}/>,
+  link: props => {
+    const data = props.node.get('data');
+    const url = data.get('url');
+    const title = data.get('title');
+    return <a href={url} title={title} {...props.attributes}>{props.children}</a>;
+  },
   shortcode: props => {
     const { attributes, node, state: editorState } = props;
     const isSelected = editorState.selection.hasFocusIn(node);
