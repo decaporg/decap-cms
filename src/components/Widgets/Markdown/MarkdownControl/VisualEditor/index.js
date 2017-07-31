@@ -178,6 +178,7 @@ export default class Editor extends Component {
               list: this.getButtonProps('bulleted-list', { isBlock: true }),
               listNumbered: this.getButtonProps('numbered-list', { isBlock: true }),
               codeBlock: this.getButtonProps('code', { isBlock: true }),
+              quote: this.getButtonProps('quote', { isBlock: true }),
             }}
             onToggleMode={this.handleToggle}
             plugins={this.state.shortcodePlugins}

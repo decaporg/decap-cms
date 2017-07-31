@@ -62,9 +62,10 @@ export default class Toolbar extends React.Component {
       { label: 'Code', icon: 'code-alt', state: buttons.code },
       { label: 'Header 1', icon: 'h1', state: buttons.h1 },
       { label: 'Header 2', icon: 'h2', state: buttons.h2 },
+      { label: 'Code Block', icon: 'code', state: buttons.codeBlock },
+      { label: 'Quote', icon: 'quote', state: buttons.quote },
       { label: 'Bullet List', icon: 'list-bullet', state: buttons.list },
       { label: 'Numbered List', icon: 'list-numbered', state: buttons.listNumbered },
-      { label: 'Code Block', icon: 'code', state: buttons.codeBlock },
       { label: 'Link', icon: 'link', state: buttons.link },
     ];
 
