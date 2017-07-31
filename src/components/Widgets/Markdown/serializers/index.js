@@ -1,4 +1,4 @@
-import { get, isEmpty, reduce } from 'lodash';
+import { get, isEmpty, reduce, pull } from 'lodash';
 import unified from 'unified';
 import u from 'unist-builder';
 import markdownToRemarkPlugin from 'remark-parse';
@@ -7,51 +7,133 @@ import remarkToRehype from 'remark-rehype';
 import rehypeToHtml from 'rehype-stringify';
 import htmlToRehype from 'rehype-parse';
 import rehypeToRemark from 'rehype-remark';
-import rehypeMinifyWhitespace from 'rehype-minify-whitespace';
-import remarkToRehypeShortcodes from './remark-rehype-shortcodes';
-import rehypeRemoveEmpty from './rehype-remove-empty';
-import rehypePaperEmoji from './rehype-paper-emoji';
-import remarkNestedList from './remark-nested-list';
-import remarkToSlatePlugin from './remark-slate';
-import remarkImagesToText from './remark-images-to-text';
-import remarkShortcodes from './remark-shortcodes';
+import remarkToRehypeShortcodes from './remarkRehypeShortcodes';
+import rehypePaperEmoji from './rehypePaperEmoji';
+import remarkWrapHtml from './remarkWrapHtml';
+import remarkToSlatePlugin from './remarkSlate';
+import remarkSquashReferences from './remarkSquashReferences';
+import remarkImagesToText from './remarkImagesToText';
+import remarkShortcodes from './remarkShortcodes';
+import slateToRemarkParser from './slateRemark';
 import registry from '../../../../lib/registry';
 
-export const remarkToHtml = (mdast, getAsset) => {
-  const result = unified()
-    .use(remarkToRehypeShortcodes, { plugins: registry.getEditorComponents(), getAsset })
-    .use(remarkToRehype, { allowDangerousHTML: true })
-    .runSync(mdast);
+/**
+ * This module contains all serializers for the Markdown widget.
+ *
+ * The value of a Markdown widget is transformed to various formats during
+ * editing, and these formats are referenced throughout serializer source
+ * documentation. Below is brief glossary of the formats used.
+ *
+ * - Markdown {string}
+ *   The stringified Markdown value. The value of the field is persisted
+ *   (stored) in this format, and the stringified value is also used when the
+ *   editor is in "raw" Markdown mode.
+ *
+ * - MDAST {object}
+ *   Also loosely referred to as "Remark". MDAST stands for MarkDown AST
+ *   (Abstract Syntax Tree), and is an object representation of a Markdown
+ *   document. Underneath, it's a Unist tree with a Markdown-specific schema. An
+ *   MDAST is used as the source of truth for any Markdown field within the CMS
+ *   once the Markdown string value is loaded.  MDAST syntax is a part of the
+ *   Unified ecosystem, and powers the Remark processor, so Remark plugins may
+ *   be used.
+ *
+ * - HAST {object}
+ *   Also loosely referred to as "Rehype". HAST, similar to MDAST, is an object
+ *   representation of an HTML document.  The field value takes this format
+ *   temporarily before the document is stringified to HTML.
+ *
+ * - HTML {string}
+ *   The field value is stringifed to HTML for preview purposes - the HTML value
+ *   is never parsed, it is output only.
+ *
+ * - Slate Raw AST {object}
+ *   Slate's Raw AST is a very simple and unopinionated object representation of
+ *   a document in a Slate editor. We define our own Markdown-specific schema
+ *   for serialization to/from Slate's Raw AST and MDAST.
+ *
+ * Overview of the Markdown widget serialization life cycle:
+ *
+ * - Entry Load
+ *   When an entry is loaded, all Markdown widget values are serialized to
+ *   MDAST within the entry draft.
+ *
+ * - Visual Editor Render
+ *   When a Markdown widget using the visual editor renders, it converts the
+ *   MDAST value from the entry draft to Slate's Raw AST, and renders that.
+ *
+ * - Visual Editor Update
+ *   When the value of a Markdown field is changed in the visual editor, the
+ *   resulting Slate Raw AST is converted back to MDAST, and the MDAST value is
+ *   set as the new state of the field in the entry draft.
+ *
+ * - Visual Editor Paste
+ *   When a value is pasted to the visual editor, the pasted value is checked
+ *   for HTML data. If HTML is found, the value is deserialized to an HAST, then
+ *   to MDAST, and finally to Slate's Raw AST. If no HTML is found, the plain
+ *   text value of the paste is serialized to Slate's Raw AST via the Slate
+ *   Plain serializer. The deserialized fragment is then inserted to the Slate
+ *   document.
+ *
+ * - Raw Editor Render
+ *   When a Markdown widget using the raw editor (Markdown switch activated),
+ *   it stringifies the MDAST from the entry draft to Markdown, and runs the
+ *   stringified Markdown through Slate's Plain serializer, which outputs a
+ *   Slate Raw AST of the plain text, which is then rendered in the editor.
+ *
+ * - Raw Editor Update
+ *   When the value of a Markdown field is changed in the raw editor, the
+ *   resulting Slate Raw AST is stringified back to a string, and the string
+ *   value is then parsed as Markdown into an MDAST. The MDAST value is
+ *   set as the new state of the field in the entry draft.
+ *
+ * - Raw Editor Paste
+ *   When a value is pasted to the raw editor, the text value of the paste is
+ *   serialized to Slate's Raw AST via the Slate Plain serializer. The
+ *   deserialized fragment is then inserted to the Slate document.
+ *
+ * - Preview Pane Render
+ *   When the preview pane renders the value of a Markdown widget, it first
+ *   converts the MDAST value to HAST, stringifies the HAST to HTML, and
+ *   renders that.
+ *
+ * - Entry Persist (Save)
+ *   On persist, the MDAST value in the entry draft is stringified back to
+ *   a Markdown string for storage.
+ */
 
-  const output = unified()
-    .use(rehypeToHtml, { allowDangerousHTML: true, allowDangerousCharacters: true })
-    .stringify(result);
-  return output
-}
 
-export const htmlToSlate = html => {
-  const hast = unified()
-    .use(htmlToRehype, { fragment: true })
-    .parse(html);
-
-  const result = unified()
-    .use(rehypeRemoveEmpty)
-    .use(rehypeMinifyWhitespace)
-    .use(rehypePaperEmoji)
-    .use(rehypeToRemark)
-    .use(remarkNestedList)
-    .use(remarkToSlatePlugin)
-    .runSync(hast);
-
-  return result;
-};
-
+/**
+ * Deserialize a Markdown string to an MDAST.
+ */
 export const markdownToRemark = markdown => {
+
+  /**
+   * Disabling tokenizers allows us to turn off features within the Remark
+   * parser.
+   */
+  function disableTokenizers() {
+
+    /**
+     * Turn off soft breaks until we can properly support them across both
+     * editors.
+     */
+    pull(this.Parser.prototype.inlineMethods, 'break');
+  }
+
+  /**
+   * Parse the Markdown string input to an MDAST.
+   */
   const parsed = unified()
-    .use(markdownToRemarkPlugin, { fences: true, pedantic: true, footnotes: true, commonmark: true })
+    .use(markdownToRemarkPlugin, { fences: true, pedantic: true, commonmark: true })
+    .use(disableTokenizers)
     .parse(markdown);
 
+  /**
+   * Further transform the MDAST with plugins.
+   */
   const result = unified()
+    .use(remarkSquashReferences)
     .use(remarkImagesToText)
     .use(remarkShortcodes, { plugins: registry.getEditorComponents() })
     .runSync(parsed);
@@ -59,6 +141,10 @@ export const markdownToRemark = markdown => {
   return result;
 };
 
+
+/**
+ * Serialize an MDAST to a Markdown string.
+ */
 export const remarkToMarkdown = obj => {
   /**
    * Rewrite the remark-stringify text visitor to simply return the text value,
@@ -71,133 +157,84 @@ export const remarkToMarkdown = obj => {
     visitors.text = node => node.value;
   };
 
+  /**
+   * Provide an empty MDAST if no value is provided.
+   */
   const mdast = obj || u('root', [u('paragraph', [u('text', '')])]);
-  const result = unified()
+
+  const markdown = unified()
     .use(remarkToMarkdownPlugin, { listItemIndent: '1', fences: true, pedantic: true, commonmark: true })
     .use(remarkAllowAllText)
     .stringify(mdast);
-  return result;
+
+  return markdown;
 };
 
+
+/**
+ * Convert an MDAST to an HTML string.
+ */
+export const remarkToHtml = (mdast, getAsset) => {
+  const hast = unified()
+    .use(remarkToRehypeShortcodes, { plugins: registry.getEditorComponents(), getAsset })
+    .use(remarkToRehype, { allowDangerousHTML: true })
+    .runSync(mdast);
+
+  const html = unified()
+    .use(rehypeToHtml, { allowDangerousHTML: true, allowDangerousCharacters: true })
+    .stringify(hast);
+
+  return html;
+}
+
+
+/**
+ * Deserialize an HTML string to Slate's Raw AST. Currently used for HTML
+ * pastes.
+ */
+export const htmlToSlate = html => {
+  const hast = unified()
+    .use(htmlToRehype, { fragment: true })
+    .parse(html);
+
+  const mdast = unified()
+    .use(rehypePaperEmoji)
+    .use(rehypeToRemark)
+    .runSync(hast);
+
+  const slateRaw = unified()
+    .use(remarkImagesToText)
+    .use(remarkShortcodes, { plugins: registry.getEditorComponents() })
+    .use(remarkWrapHtml)
+    .use(remarkToSlatePlugin)
+    .runSync(mdast);
+
+  return slateRaw;
+};
+
+
+/**
+ * Convert an MDAST to Slate's Raw AST.
+ */
 export const remarkToSlate = mdast => {
   const result = unified()
+    .use(remarkWrapHtml)
     .use(remarkToSlatePlugin)
     .runSync(mdast);
   return result;
 };
 
-export const slateToRemark = (raw, shortcodePlugins) => {
-  const typeMap = {
-    'paragraph': 'paragraph',
-    'heading-one': 'heading',
-    'heading-two': 'heading',
-    'heading-three': 'heading',
-    'heading-four': 'heading',
-    'heading-five': 'heading',
-    'heading-six': 'heading',
-    'quote': 'blockquote',
-    'code': 'code',
-    'numbered-list': 'list',
-    'bulleted-list': 'list',
-    'list-item': 'listItem',
-    'table': 'table',
-    'table-row': 'tableRow',
-    'table-cell': 'tableCell',
-    'thematic-break': 'thematicBreak',
-    'link': 'link',
-    'image': 'image',
-  };
-  const markMap = {
-    bold: 'strong',
-    italic: 'emphasis',
-    strikethrough: 'delete',
-    code: 'inlineCode',
-  };
-  const transform = node => {
-    const children = isEmpty(node.nodes) ? node.nodes : node.nodes.reduce((acc, childNode) => {
-      if (childNode.kind !== 'text') {
-        acc.push(transform(childNode));
-        return acc;
-      }
-      if (childNode.ranges) {
-        childNode.ranges.forEach(range => {
-          const { marks = [], text } = range;
-          const markTypes = marks.map(mark => markMap[mark.type]);
-          if (markTypes.includes('inlineCode')) {
-            acc.push(u('inlineCode', text));
-          } else {
-            const textNode = u('html', text);
-            const nestedText = !markTypes.length ? textNode : markTypes.reduce((acc, markType) => {
-              const nested = u(markType, [acc]);
-              return nested;
-            }, textNode);
-            acc.push(nestedText);
-          }
-        });
-      } else {
 
-        acc.push(u('html', childNode.text));
-      }
-      return acc;
-    }, []);
-
-    if (node.type === 'root') {
-      return u('root', children);
-    }
-
-    if (node.type === 'shortcode') {
-      const { data } = node;
-      const plugin = shortcodePlugins.get(data.shortcode);
-      const text = plugin.toBlock(data.shortcodeData);
-      const textNode = u('html', text);
-      return u('paragraph', { data }, [ textNode ]);
-    }
-
-    if (node.type.startsWith('heading')) {
-      const depths = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6 };
-      const depth = node.type.split('-')[1];
-      const props = { depth: depths[depth] };
-      return u(typeMap[node.type], props, children);
-    }
-
-    if (['paragraph', 'quote', 'list-item', 'table', 'table-row', 'table-cell'].includes(node.type)) {
-      return u(typeMap[node.type], children);
-    }
-
-    if (node.type === 'code') {
-      const value = get(node.nodes, [0, 'text']);
-      const props = { lang: get(node.data, 'lang') };
-      return u(typeMap[node.type], props, value);
-    }
-
-    if (['numbered-list', 'bulleted-list'].includes(node.type)) {
-      const ordered = node.type === 'numbered-list';
-      const props = { ordered, start: get(node.data, 'start') || 1 };
-      return u(typeMap[node.type], props, children);
-    }
-
-    if (node.type === 'thematic-break') {
-      return u(typeMap[node.type]);
-    }
-
-    if (node.type === 'link') {
-      const data = get(node, 'data', {});
-      const { url, title } = data;
-      return u(typeMap[node.type], data, children);
-    }
-
-    if (node.type === 'image') {
-      const data = get(node, 'data', {});
-      const { url, title, alt } = data;
-      return u(typeMap[node.type], data);
-    }
-  }
-  raw.type = 'root';
-  const mdast = transform(raw);
-
-  const result = unified()
-    .use(remarkShortcodes, { plugins: registry.getEditorComponents() })
-    .runSync(mdast);
-
-  return result;
+/**
+ * Convert a Slate Raw AST to MDAST.
+ *
+ * Requires shortcode plugins to parse shortcode nodes back to text.
+ *
+ * Note that Unified is not utilized for the conversion from Slate's Raw AST to
+ * MDAST. The conversion is manual because Unified can only operate on Unist
+ * trees.
+ */
+export const slateToRemark = (raw) => {
+  const mdast = slateToRemarkParser(raw, { shortcodePlugins: registry.getEditorComponents() });
+  return mdast;
 };
