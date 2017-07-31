@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { remarkToHtml } from '../unified';
+import { remarkToHtml } from '../serializers';
 import previewStyle from '../../defaultPreviewStyle';
 
 const MarkdownPreview = ({ value, getAsset }) => {

@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import registry from '../../../../lib/registry';
-import { markdownToRemark, remarkToMarkdown } from '../unified';
+import { markdownToRemark, remarkToMarkdown } from '../serializers'
 import RawEditor from './RawEditor';
 import VisualEditor from './VisualEditor';
 import { StickyContainer } from '../../../UI/Sticky/Sticky';

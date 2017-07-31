@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Editor as Slate, Plain } from 'slate';
-import { markdownToRemark, remarkToMarkdown } from '../../unified';
+import { markdownToRemark, remarkToMarkdown } from '../../serializers';
 import Toolbar from '../Toolbar/Toolbar';
 import { Sticky } from '../../../../UI/Sticky/Sticky';
 import styles from './index.css';

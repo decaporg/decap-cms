@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { get, isEmpty } from 'lodash';
 import { Editor as Slate, Raw, Block, Text } from 'slate';
-import { slateToRemark, remarkToSlate, htmlToSlate } from '../../unified';
+import { slateToRemark, remarkToSlate, htmlToSlate } from '../../serializers';
 import registry from '../../../../../lib/registry';
 import Toolbar from '../Toolbar/Toolbar';
 import { Sticky } from '../../../../UI/Sticky/Sticky';
