@@ -1,6 +1,6 @@
 # Take a test drive
 
-You can easily try out Netlify CMS by running it on a pre-configured starter site. Our example in the intro is the [Kaldi small business Hugo template](https://github.com/netlify-templates/kaldi-hugo-cms-template). Use the deploy button below to build and deploy your own copy of the repository:
+You can easily try out Netlify CMS by running it on a pre-configured starter site. Our example in the [intro](/docs/intro) is the [Kaldi small business Hugo template](https://github.com/netlify-templates/kaldi-hugo-cms-template). Use the deploy button below to build and deploy your own copy of the repository:
 
 [![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/netlify-templates/kaldi-hugo-cms-template)
 

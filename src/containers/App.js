@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import pluralize from 'pluralize';
 import { connect } from 'react-redux';
 import { IndexLink } from "react-router";
 import FontIcon from 'react-toolbox/lib/font_icon';
@@ -157,7 +156,7 @@ class App extends React.Component {
                       className={sidebarStyles.viewEntriesLink}
                       onClick={e => this.handleLinkClick(e, navigateToCollection, collectionName)}
                     >
-                      {pluralize(collection.get('label'))}
+                      {collection.get('label')}
                     </a>
                     {
                       collection.get('create') ? (

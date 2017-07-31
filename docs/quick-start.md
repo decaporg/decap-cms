@@ -1,10 +1,10 @@
 # Quick Start
 
-There are many ways to add Netlify CMS to your static site. This guide will take you through one of the quickest, which takes advantage of Netlify's hosting and authentication provider services.
+There are many ways to add Netlify CMS to your static site. This guide will take you through one of the quickest methods, which takes advantage of Netlify's hosting and authentication provider services.
 
 ## Storage and Authentication
 
-Netlify CMS relies on the GitHub API for managing files, so you'll need to have your site stored in a GitHub repo. (If you're partial to another Git hosting service, you can file a [feature request](https://github.com/netlify/netlify-cms/issues), or [help us add it](https://github.com/netlify/netlify-cms/blob/master/CONTRIBUTING.md).) To connect to the repo and make changes, the app needs to authenticate with the GitHub API. You can roll your own service for doing this, but we're going to use Netlify.
+Netlify CMS relies on the GitHub API for managing files, so you'll need to have your site stored in a GitHub repo. (If you're partial to another Git hosting service, you can file a [feature request](https://github.com/netlify/netlify-cms/issues), or [help us add it](https://github.com/netlify/netlify-cms/blob/master/CONTRIBUTING.md).) To connect to the repo and make changes, the app needs to authenticate with the GitHub API. You can roll your own service for doing this, but we're going to use Netlify in this example.
 
 ### Hosting with Netlify
 
@@ -30,14 +30,14 @@ When you complete the registration, you'll be given a **Client ID** and a **Clie
 ## App File Structure
 All Netlify CMS files are contained in a static `admin` folder, stored at the root of the generated site. Where you store this in the source files depends on your static site generator. Here's the the static file location for a few of the most popular static site generators:
 
-These generators... | store static files in
+These generators ... | store static files in
 --- | ---
 Jekyll, GitBook | `/` (project root)
 Hugo | `/static`
 Hexo, Middleman | `/source`
 Spike | `/views`
 
-If your generator isn't listed here, you can check its documentation, or as a shortcut, look in your project for a `CSS` or `images` folder. They're usually processed as static files, so it's likely you can store your `admin` folder next to those. (When you've found the location, feel free to add it to these docs!).
+If your generator isn't listed here, you can check its documentation, or as a shortcut, look in your project for a `CSS` or `images` folder. They're usually processed as static files, so it's likely you can store your `admin` folder next to those. (When you've found the location, feel free to add it to these docs by [filing a pull request](https://github.com/netlify/netlify-cms/blob/master/CONTRIBUTING.md)!).
 
 Inside the `admin` folder, you'll create two files:
 
@@ -84,7 +84,7 @@ backend:
 This names GitHub as the authentication provider, points to the repo location on github.com, and declares the branch where you want to merge changes. If you leave out the `branch` declaration, it will default to `master`.
 
 ### Editorial Workflow
-By default, saving a post in the CMS interface will push a commit directly to the branch specified in `backend`. However, you also have the option to enable the [Editorial Workflow](editorial-workflow.md), which adds an interface for drafting, reviewing, and approving posts. To do this, simply add this line to your `config.yml`:
+By default, saving a post in the CMS interface will push a commit directly to the branch specified in `backend`. However, you also have the option to enable the [Editorial Workflow](editorial-workflow.md), which adds an interface for drafting, reviewing, and approving posts. To do this, simply add the following line to your `config.yml`:
 
 ``` yaml
 publish_mode: editorial_workflow
@@ -99,7 +99,7 @@ media_folder: "images/uploads" # Media files will be stored in the repo under im
 
 If you're creating a new folder for uploaded media, you'll need to know where your static site generator expects static files. You can refer to the paths outlined above in [App File Structure](#app-file-structure), and put your media folder in the same location where you put the `admin` folder.
 
-Note that the`media_folder` file path is relative to the project root, so the  example above would work for Jekyll, GitBook, or any other generator that stores static files at the project root. It would not, however, work for Hugo, Hexo, Middleman, or others that use a different path. Here's an example that could work for a Hugo site:
+Note that the`media_folder` file path is relative to the project root, so the  example above would work for Jekyll, GitBook or any other generator that stores static files at the project root. It would not, however, work for Hugo, Hexo, Middleman or others that use a different path. Here's an example that could work for a Hugo site:
 
 ``` yaml
 media_folder: "static/images/uploads" # Media files will be stored in the repo under static/images/uploads
@@ -111,8 +111,9 @@ This configuration adds a new setting, `public_folder`. While `media_folder` spe
 >If `public_folder` is not set, Netlify CMS will default to the same value as `media_folder`, adding an opening `/` if one is not included.
 
 ### Collections
-Collections define the structure for the different content types on your static site. Since every site is different, the `collections` settings will be very different from one site to the next. Let's say your site has a blog, with the posts stored in `_posts/blog`, and files saved in a date-title format, like `1999-12-31-lets-party.md`. Each post
-begins with settings in yaml-formatted front matter, like so:
+Collections define the structure for the different content types on your static site. Since every site is different, the `collections` settings will be very different from one site to the next.
+
+Let's say your site has a blog, with the posts stored in `_posts/blog`, and files saved in a date-title format, like `1999-12-31-lets-party.md`. Each post begins with settings in yaml-formatted front matter, like so:
 
 ``` yaml
 ---
@@ -130,11 +131,11 @@ Given this example, our `collections` settings would look like this:
 
 ``` yaml
 collections:
-  - name: "blog" # Used in routes, e.g. /admin/collections/blog
+  - name: "blog" # Used in routes, e.g., /admin/collections/blog
     label: "Blog" # Used in the UI
     folder: "_posts/blog" # The path to the folder where the documents are stored
     create: true # Allow users to create new documents in this collection
-    slug: "{{year}}-{{month}}-{{day}}-{{slug}}" # Filename template i.e. YYYY-MM-DD-title.md
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}" # Filename template, e.g., YYYY-MM-DD-title.md
     fields: # The fields for each document, usually in front matter
       - {label: "Layout", name: "layout", widget: "hidden", default: "blog"}
       - {label: "Title", name: "title", widget: "string"}
@@ -172,10 +173,10 @@ Let's break that down:
     <td><code>fields</code></td>
     <td>Fields listed here are shown as fields in the content editor, then saved as front matter at the beginning of the document (except for <code>body</code>, which follows the front matter). Each field contains the following properties:
       <ul>
-        <li><code>label</code>: Field label in the editor UI</li>
-        <li><code>name</code>: Field name in the document front matter</li>
-        <li><code>widget</code>: Determines UI style and value data type (details below)</li>
-        <li><code>default</code> (optional): Sets a default value for the field</li>
+        <li><code>label</code>: Field label in the editor UI.</li>
+        <li><code>name</code>: Field name in the document front matter.</li>
+        <li><code>widget</code>: Determines UI style and value data type (details below).</li>
+        <li><code>default</code> (optional): Sets a default value for the field.</li>
       </ul>
     </td>
   </tr>
@@ -191,13 +192,10 @@ Widget | UI | Data Type
 `number` | text input with `+` and `-` buttons | number
 `markdown` | rich text editor with raw option | markdown-formatted string
 
-
-
 Based on this example, you can go through the post types in your site and add the appropriate settings to your `config.yml` file. Each post type should be listed as a separate node under the `collections` field.
 
 ### Filter
-The entries for any collection can be filtered based on the value of a single field. The example
-collection below would only show post entries with the value "en" in the language field.
+The entries for any collection can be filtered based on the value of a single field. The example collection, below, would only show post entries with the value "en" in the language field.
 
 ``` yaml
 collections:
