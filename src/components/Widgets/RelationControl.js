@@ -69,7 +69,7 @@ class RelationControl extends Component {
     const collection = field.get('collection');
     const searchFields = field.get('searchFields').toJS();
     this.props.query(this.controlID, collection, searchFields, value);
-  }, 100);
+  }, 500);
 
   onSuggestionsClearRequested = () => {
     this.props.clearSearch();

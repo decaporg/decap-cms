@@ -1,6 +1,5 @@
 import React, { PropTypes } from "react";
 import ImmutablePropTypes from "react-immutable-proptypes";
-import pluralize from "pluralize";
 import { IndexLink } from "react-router";
 import { IconMenu, Menu, MenuItem } from "react-toolbox/lib/menu";
 import Avatar from "react-toolbox/lib/avatar";
@@ -81,7 +80,7 @@ export default class AppHeader extends React.Component {
                 key={collection.get("name")}
                 value={collection.get("name")}
                 onClick={this.handleCreatePostClick.bind(this, collection.get('name'))} // eslint-disable-line
-                caption={pluralize(collection.get("label"), 1)}
+                caption={collection.get("label")}
               />
             )
           }
