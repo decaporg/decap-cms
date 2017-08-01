@@ -8,4 +8,3 @@ yarn-error.log
 .vscode/
 manifest.yml
 .imdone/
-config.local.yml
