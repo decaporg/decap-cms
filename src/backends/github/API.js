@@ -80,9 +80,6 @@ export default class API {
       if (contentType && contentType.match(/json/)) {
         return this.parseJsonResponse(response);
       }
-      if (responseStatus !== 200) {
-        return responseStatus
-      }
       return response.text();
     })
     .catch((error) => {
