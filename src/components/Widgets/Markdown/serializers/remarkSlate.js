@@ -1,6 +1,5 @@
 import { get, isEmpty, isArray } from 'lodash';
 import u from 'unist-builder';
-import modifyChildren from 'unist-util-modify-children';
 
 /**
  * Map of MDAST node types to Slate node types.
