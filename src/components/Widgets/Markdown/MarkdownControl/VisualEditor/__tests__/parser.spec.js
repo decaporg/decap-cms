@@ -1,12 +1,5 @@
 import { fromJS } from 'immutable';
-import { Schema } from "prosemirror-model";
-import { schema } from "prosemirror-markdown";
-import makeParser from '../parser';
-
-const testSchema = new Schema({
-  nodes: schema.spec.nodes,
-  marks: schema.spec.marks,
-});
+import { markdownToRemark, remarkToSlate } from '../../../serializers';
 
 // Temporary plugins test, uses preloaded plugins from ../parser
 // TODO: make the parser more testable
@@ -51,7 +44,7 @@ const testPlugins = fromJS([
   },
 ]);
 
-const parser = makeParser(testSchema, testPlugins);
+const parser = markdown => remarkToSlate(markdownToRemark(markdown));
 
 describe("Compile markdown to Prosemirror document structure", () => {
   it("should compile simple markdown", () => {
