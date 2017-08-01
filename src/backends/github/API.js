@@ -20,16 +20,16 @@ export default class API {
   }
 
   isCollaborator(user) {
-    return this.request(`${ this.repoURL }/collaborators/${ user }`).catch((error) => {
-      if (error.status === 403 || error.status === 404) {
-        // Unauthorized user
-        return false;
-      } else if (error.status === 204) {
-        // Authorized user
-        return true;
+    return this.request('/user/repos').then((repos) => {
+      let contributor = false
+      for (const repo of repos) {
+        if (repo.full_name === this.repo && repo.permissions.push) contributor = true;
       }
+      return contributor;
+    }).catch((error) => {
+      console.error("Problem with response of /user/repos from GitHub");
       throw error;
-    });
+    })
   }
 
   requestHeaders(headers = {}) {
@@ -79,6 +79,9 @@ export default class API {
       const contentType = response.headers.get("Content-Type");
       if (contentType && contentType.match(/json/)) {
         return this.parseJsonResponse(response);
+      }
+      if (responseStatus !== 200) {
+        return responseStatus
       }
       return response.text();
     })
