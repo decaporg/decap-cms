@@ -21,16 +21,11 @@ export default class API {
   }
 
   isCollaborator(user) {
-    return this.request('/user/repos').then((repos) => {
-      let contributor = false
-      for (const repo of repos) {
-        if (repo.full_name === this.repo && repo.permissions.push) contributor = true;
-      }
-      return contributor;
-    }).catch((error) => {
-      console.error("Problem with response of /user/repos from GitHub");
-      throw error;
-    })
+    return this.request('/user/repos').then(repos =>
+      Object.keys(repos).some(
+        key => (repos[key].full_name === this.repo) && repos[key].permissions.push
+      )
+    );
   }
 
   requestHeaders(headers = {}) {
