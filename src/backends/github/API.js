@@ -232,11 +232,7 @@ export default class API {
     return this.request(fileURL)
     .then(({ sha }) => this.request(fileURL, {
       method: "DELETE",
-      params: {
-        sha,
-        message,
-        branch,
-      },
+      params: { sha, message, branch },
     }));
   }
 
@@ -316,10 +312,7 @@ export default class API {
   updateUnpublishedEntryStatus(collection, slug, status) {
     const contentKey = slug;
     return this.retrieveMetadata(contentKey)
-    .then(metadata => ({
-      ...metadata,
-      status,
-    }))
+    .then(metadata => ({ ...metadata, status }))
     .then(updatedMetadata => this.storeMetadata(contentKey, updatedMetadata));
   }
 
@@ -341,7 +334,6 @@ export default class API {
 
   publishUnpublishedEntry(collection, slug) {
     const contentKey = slug;
-    let prNumber;
     return this.retrieveMetadata(contentKey)
     .then(metadata => this.mergePR(metadata.pr, metadata.objects))
     .then(() => this.deleteBranch(`cms/${ contentKey }`));
