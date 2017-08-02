@@ -303,6 +303,7 @@
 .paragraph:before { content: '\f1dd'; } /* '' */
 .github:before { content: '\f300'; } /* '' */
 .github-circled:before { content: '\f301'; } /* '' */
+.bitbucket:before { content: '\f171'; } /* '' */
 .flickr:before { content: '\f303'; } /* '' */
 .flickr-circled:before { content: '\f304'; } /* '' */
 .vimeo:before { content: '\f306'; } /* '' */

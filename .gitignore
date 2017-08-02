@@ -6,3 +6,4 @@ npm-debug.log
 .tern-project
 yarn-error.log
 .vscode/
+.idea/

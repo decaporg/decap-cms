@@ -1,6 +1,7 @@
 import { attempt, isError } from 'lodash';
 import TestRepoBackend from "./test-repo/implementation";
 import GitHubBackend from "./github/implementation";
+import BitbucketBackend from "./bitbucket/implementation";
 import NetlifyAuthBackend from "./netlify-auth/implementation";
 import { resolveFormat } from "../formats/formats";
 import { selectListMethod, selectEntrySlug, selectEntryPath, selectAllowNewEntries, selectFolderEntryExtension } from "../reducers/collections";
@@ -36,12 +37,12 @@ const slugFormatter = (template = "{{slug}}", entryData) => {
     const identifier = identifiers.find(ident => ident !== undefined);
 
     if (identifier === undefined) {
-      throw new Error("Collection must have a field name that is a valid entry identifier"); 
+      throw new Error("Collection must have a field name that is a valid entry identifier");
     }
 
     return identifier;
   };
-  
+
   return template.replace(/\{\{([^\}]+)\}\}/g, (_, field) => {
     switch (field) {
       case "year":
@@ -290,6 +291,8 @@ export function resolveBackend(config) {
   switch (name) {
     case "test-repo":
       return new Backend(new TestRepoBackend(config), authStore);
+    case "bitbucket":
+      return new Backend(new BitbucketBackend(config), authStore);
     case "github":
       return new Backend(new GitHubBackend(config), authStore);
     case "netlify-auth":

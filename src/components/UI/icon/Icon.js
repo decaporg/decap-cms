@@ -7,6 +7,8 @@ const availableIcons = [
   'align-justify', 'indent-left', 'indent-right', 'list-bullet', 'list-numbered', 'strike', 'underline', 'table',
   'superscript', 'subscript', 'header', 'h1', 'h2', 'h3', 'paragraph', 'link', 'unlink', 'quote-left', 'quote-right', 'code',
   'picture', 'video',
+  // Font Awesome Other Icons
+  'bitbucket',
   // Entypo
   'note', 'note-beamed',
   'music',
