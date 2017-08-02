@@ -271,19 +271,24 @@ export function persistEntry(collection) {
     const backend = currentBackend(state.config);
     const assetProxies = entryDraft.get('mediaFiles').map(path => getAsset(state, path));
     const entry = entryDraft.get('entry');
-    const transformedData = serializeValues(entryDraft.getIn(['entry', 'data']), collection.get('fields'));
-    const transformedEntry = entry.set('data', transformedData);
-    const transformedEntryDraft = entryDraft.set('entry', transformedEntry);
-    dispatch(entryPersisting(collection, transformedEntry));
+
+    /**
+     * Serialize the values of any fields with registered serializers, and
+     * update the entry and entryDraft with the serialized values.
+     */
+    const serializedData = serializeValues(entryDraft.getIn(['entry', 'data']), collection.get('fields'));
+    const serializedEntry = entry.set('data', serializedData);
+    const serializedEntryDraft = entryDraft.set('entry', serializedEntry);
+    dispatch(entryPersisting(collection, serializedEntry));
     return backend
-      .persistEntry(state.config, collection, transformedEntryDraft, assetProxies.toJS())
+      .persistEntry(state.config, collection, serializedEntryDraft, assetProxies.toJS())
       .then(() => {
         dispatch(notifSend({
           message: 'Entry saved',
           kind: 'success',
           dismissAfter: 4000,
         }));
-        return dispatch(entryPersisted(collection, transformedEntry));
+        return dispatch(entryPersisted(collection, serializedEntry));
       })
       .catch((error) => {
         console.error(error);
@@ -292,7 +297,7 @@ export function persistEntry(collection) {
           kind: 'danger',
           dismissAfter: 8000,
         }));
-        return dispatch(entryPersistFail(collection, transformedEntry, error));
+        return dispatch(entryPersistFail(collection, serializedEntry, error));
       });
   };
 }

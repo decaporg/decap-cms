@@ -19,7 +19,7 @@ import mdastDefinitions from 'mdast-util-definitions';
  * Yields:
  *
  * ```
- * ![alpha][http://example.com/example.jpg]
+ * ![alpha](http://example.com/example.jpg)
  * ```
  *
  */

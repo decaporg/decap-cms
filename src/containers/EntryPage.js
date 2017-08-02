@@ -68,6 +68,11 @@ class EntryPage extends React.Component {
     const { entry, newEntry, fields, collection } = nextProps;
 
     if (entry && !entry.get('isFetching') && !entry.get('error')) {
+
+      /**
+       * Deserialize entry values for widgets with registered serializers before
+       * creating the entry draft.
+       */
       const values = deserializeValues(entry.get('data'), fields);
       const deserializedEntry = entry.set('data', values);
       this.createDraft(deserializedEntry);

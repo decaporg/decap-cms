@@ -9,6 +9,10 @@ const style = {
   fontFamily: 'Roboto, "Helvetica Neue", HelveticaNeue, Helvetica, Arial, sans-serif',
 };
 
+/**
+ * Use a stateful component so that child components can effectively utilize
+ * `shouldComponentUpdate`.
+ */
 export default class Preview extends React.Component {
   render() {
     const { collection, fields, widgetFor } = this.props;

@@ -1,9 +1,11 @@
 import React, { PropTypes } from 'react';
 import { ScrollSyncPane } from '../ScrollSync';
 
-// We need to create a lightweight component here so that we can
-// access the context within the Frame. This allows us to attach
-// the ScrollSyncPane to the body.
+/**
+ * We need to create a lightweight component here so that we can access the
+ * context within the Frame. This allows us to attach the ScrollSyncPane to the
+ * body.
+ */
 class PreviewContent extends React.Component {
   render() {
     const { previewComponent, previewProps } = this.props;

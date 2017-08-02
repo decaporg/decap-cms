@@ -21,11 +21,10 @@ const entries = (state = Map({ entities: Map(), pages: Map() }), action) => {
       return state.setIn(['entities', `${ action.payload.collection }.${ action.payload.slug }`, 'isFetching'], true);
 
     case ENTRY_SUCCESS:
-      const result = state.setIn(
+      return state.setIn(
         ['entities', `${ action.payload.collection }.${ action.payload.entry.slug }`],
         fromJS(action.payload.entry)
       );
-      return result;
 
     case ENTRIES_REQUEST:
       return state.setIn(['pages', action.payload.collection, 'isFetching'], true);

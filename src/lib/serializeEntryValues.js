@@ -20,22 +20,40 @@ import registry from './registry';
  * registered deserialization handlers run on entry load, and serialization
  * handlers run on persist.
  */
-
 const runSerializer = (values, fields, method) => {
+
+  /**
+   * Reduce the list of fields to a map where keys are field names and values
+   * are field values, serializing the values of fields whose widgets have
+   * registered serializers.  If the field is a list or object, call recursively
+   * for nested fields.
+   */
   return fields.reduce((acc, field) => {
     const fieldName = field.get('name');
     const value = values.get(fieldName);
     const serializer = registry.getWidgetValueSerializer(field.get('widget'));
     const nestedFields = field.get('fields');
+
+    // Call recursively for fields within lists
     if (nestedFields && List.isList(value)) {
       return acc.set(fieldName, value.map(val => runSerializer(val, nestedFields, method)));
-    } else if (nestedFields && Map.isMap(value)) {
+    }
+
+    // Call recursively for fields within objects
+    if (nestedFields && Map.isMap(value)) {
       return acc.set(fieldName, runSerializer(value, nestedFields, method));
-    } else if (serializer && !isNil(value)) {
+    }
+
+    // Run serialization method on value if not null or undefined
+    if (serializer && !isNil(value)) {
       return acc.set(fieldName, serializer[method](value));
-    } else if (!isNil(value)) {
+    }
+
+    // If no serializer is registered for the field's widget, use the field as is
+    if (!isNil(value)) {
       return acc.set(fieldName, value);
     }
+
     return acc;
   }, Map());
 };

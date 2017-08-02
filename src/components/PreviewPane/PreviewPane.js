@@ -17,6 +17,9 @@ export default class PreviewPane extends React.Component {
     const { fieldsMetaData, getAsset, entry } = props;
     const widget = resolveWidget(field.get('widget'));
 
+    /**
+     * Use an HOC to provide conditional updates for all previews.
+     */
     return !widget.preview ? null : (
       <PreviewHOC
         previewComponent={widget.preview}
