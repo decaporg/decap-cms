@@ -69,14 +69,15 @@ function convertMarkNode(node, parentMarks = []) {
    * Add the current node's mark type to the marks collected from parent
    * mark nodes, if any.
    */
-  const marks = [...parentMarks, { type: markMap[node.type] }];
+  const markType = markMap[node.type];
+  const marks = markType ? [...parentMarks, { type: markMap[node.type] }] : parentMarks;
 
   /**
    * Set an array to collect sections of text.
    */
   const ranges = [];
 
-  node.children.forEach(childNode => {
+  node.children && node.children.forEach(childNode => {
 
     /**
      * If a text node is a direct child of the current node, it should be
