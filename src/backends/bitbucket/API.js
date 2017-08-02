@@ -502,45 +502,12 @@ export default class API {
     );
   }
 
-  /*
-
-   uploadBlob(item) {
-   const content = item instanceof AssetProxy ? item.toBase64() : this.toBase64(item.raw);
-
-   return content.then(contentBase64 => this.request(`${ this.repoURL }/git/blobs`, {
-   method: "POST",
-   body: JSON.stringify({
-   content: contentBase64,
-   encoding: "base64",
-   }),
-   }).then((response) => {
-   item.sha = response.sha;
-   item.uploaded = true;
-   return item;
-   }));
-   }
-
-   */
-
   uploadBlob(item) {
     console.log("item: ", item);
-    const content = item instanceof AssetProxy ? item.getImageUrl() : Promise.resolve(item.raw);
+    const content = item instanceof AssetProxy ? item.toRawData() : Promise.resolve(item.raw);
     // const content = Promise.resolve(item.raw);
 
     return content.then(contentBase64 => {
-      // const postBody = dashdash+boundary+crlf+'Content-Disposition: form-data; name="'+item.path+'=@'+item.slug+'.md;";"'+crlf+crlf+contentBase64+crlf+dashdash+boundary+dashdash+crlf;
-      // let postFields = [
-      //   {
-      //     name: item.path,
-      //     value: item.slug+'.md'
-      //   }
-      // ];
-      // var multipost = require("multipost");
-      // let req = new multipost("http://posttestserver.com/post.php", postFields);
-      //
-      // req.post(function(res) {
-      //   console.log(res.data);
-      // });
 
       let formData = new FormData();
       formData.append(item.path, contentBase64);
@@ -553,11 +520,6 @@ export default class API {
         item.uploaded = true;
         return item;
       })
-
-
-
-
-
     });
   }
 
