@@ -239,73 +239,56 @@ export default class API {
     const contentKey = entry.slug;
     const branchName = `cms/${ contentKey }`;
     const unpublished = options.unpublished || false;
-    if (!unpublished) {
-      // Open new editorial review workflow for this entry - Create new metadata and commit to new branch`
-      const contentKey = entry.slug;
-      const branchName = `cms/${ contentKey }`;
 
-      return this.getBranch()
+    const commitPromise = this.getBranch()
       .then(branchData => this.updateTree(branchData.commit.sha, "/", fileTree))
-      .then(changeTree => this.commit(options.commitMessage, changeTree))
-      .then(commitResponse => this.createBranch(branchName, commitResponse.sha))
-      .then(branchResponse => this.createPR(options.commitMessage, branchName))
-      .then(prResponse => this.user().then(user => user.name ? user.name : user.login)
-        .then(username => this.storeMetadata(contentKey, {
-          type: "PR",
-          pr: {
-            number: prResponse.number,
-            head: prResponse.head && prResponse.head.sha,
-          },
-          user: username,
-          status: status.first(),
-          branch: branchName,
-          collection: options.collectionName,
-          title: options.parsedData && options.parsedData.title,
-          description: options.parsedData && options.parsedData.description,
-          objects: {
-            entry: {
-              path: entry.path,
-              sha: entry.sha,
-            },
-            files: filesList,
-          },
-          timeStamp: new Date().toISOString(),
-        }
-        )));
-    } else {
-      // Entry is already on editorial review workflow - just update metadata and commit to existing branch
-      return this.getBranch(branchName)
-      .then(branchData => this.updateTree(branchData.commit.sha, "/", fileTree))
-      .then(changeTree => this.commit(options.commitMessage, changeTree))
-      .then((response) => {
-        const contentKey = entry.slug;
-        const branchName = `cms/${ contentKey }`;
-        return this.user().then(user => user.name ? user.name : user.login)
-        .then(username => this.retrieveMetadata(contentKey))
-        .then((metadata) => {
-          let files = metadata.objects && metadata.objects.files || [];
-          files = files.concat(filesList);
-          const updatedPR = metadata.pr;
-          updatedPR.head = response.sha;
-          return {
-            ...metadata,
-            pr: updatedPR,
-            title: options.parsedData && options.parsedData.title,
-            description: options.parsedData && options.parsedData.description,
-            objects: {
-              entry: {
-                path: entry.path,
-                sha: entry.sha,
-              },
-              files: uniq(files),
-            },
-            timeStamp: new Date().toISOString(),
-          };
-        })
-        .then(updatedMetadata => this.storeMetadata(contentKey, updatedMetadata))
-        .then(this.patchBranch(branchName, response.sha));
-      });
-    }
+      .then(changeTree => this.commit(options.commitMessage, changeTree));
+
+    const usernamePromise = this.user().then(user => (user.name ? user.name : user.login));
+
+    const initialMetadata = {
+      title: options.parsedData && options.parsedData.title,
+      description: options.parsedData && options.parsedData.description,
+      timeStamp: new Date().toISOString(),
+    };
+
+    return (unpublished
+
+      // Entry is already on editorial review workflow - just update
+      // metadata and commit to existing branch
+      ? this.retrieveMetadata(contentKey).then(existingMetadata => resolvePromiseProperties({
+        ...existingMetadata,
+        ...initialMetadata,
+        pr: commitPromise.then(commit => ({ ...existingMetadata.pr, head: commit.sha })),
+        objects: {
+          entry: pick(entry, ['path', 'sha']),
+          files: uniq(
+            ((existingMetadata.objects && existingMetadata.objects.files) || []).concat(filesList)
+          ),
+        },
+      }))
+        .then(newMetadata => Promise.all([newMetadata, commitPromise]))
+        .then(([newMetadata, commit]) =>
+          this.patchBranch(branchName, commit.sha).then(() => newMetadata)
+        )
+
+      // Open new editorial review workflow for this entry - Create new
+      // metadata and commit to new branch
+      : resolvePromiseProperties({
+        ...initialMetadata,
+        type: "PR",
+        pr: commitPromise
+          .then(commit => this.createBranch(branchName, commit.sha))
+          .then(() => this.createPR(options.commitMessage, branchName))
+          .then(pr => ({ number: pr.number, head: pr.head && pr.head.sha })),
+        user: usernamePromise,
+        status: status.first(),
+        branch: branchName,
+        collection: options.collectionName,
+        objects: { entry: pick(entry, ['path', 'sha']), files: filesList },
+      })
+
+    ).then(metadata => this.storeMetadata(contentKey, metadata));
   }
 
   updateUnpublishedEntryStatus(collection, slug, status) {
