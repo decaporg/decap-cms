@@ -1,6 +1,6 @@
 import LocalForage from "localforage";
 import { Base64 } from "js-base64";
-import _ from "lodash";
+import { entries, isString, partition, pick, uniq, zipObject } from "lodash";
 import { Map } from 'immutable';
 import { filterPromises, resolvePromiseProperties } from "../../lib/promiseHelper";
 import AssetProxy from "../../valueObjects/AssetProxy";
@@ -57,7 +57,7 @@ export default class API {
     })
     .then(([response, value]) => (response.ok ? value : Promise.reject([value, response])))
     .catch(([errorValue, response]) => {
-      const message = _.isString(errorValue) ? errorValue : errorValue.message;
+      const message = isString(errorValue) ? errorValue : errorValue.message;
       throw new APIError(message, response.status, 'GitHub', { response });
     });
   }
@@ -302,7 +302,7 @@ export default class API {
                 path: entry.path,
                 sha: entry.sha,
               },
-              files: _.uniq(files),
+              files: uniq(files),
             },
             timeStamp: new Date().toISOString(),
           };
@@ -473,15 +473,15 @@ ${ files.map(file => `* "${ file.path }"`).join("\n") }\
     return this.getTree(sha)
       .then(({ tree: dirContents }) => {
         const updatedItems = dirContents.filter(item => fileTree[item.path]);
-        const added = _.zipObject(updatedItems.map(item => item.path), Array(updatedItems.length).fill(true));
-        const [updatedFiles, updatedDirs] = _.partition(updatedItems, this.isFile);
+        const added = zipObject(updatedItems.map(item => item.path), Array(updatedItems.length).fill(true));
+        const [updatedFiles, updatedDirs] = partition(updatedItems, this.isFile);
         const updatePromises = [
           ...updatedDirs.map(dir => this.updateTree(dir.sha, dir.path, fileTree[dir.path])),
-          ...updatedFiles.map(file => ({ ..._.pick(file, ['path', 'mode', 'type']), sha: fileTree[file.path].sha })),
+          ...updatedFiles.map(file => ({ ...pick(file, ['path', 'mode', 'type']), sha: fileTree[file.path].sha })),
         ];
 
-        const newItems = _.entries(fileTree).filter(([filename]) => !added[filename]);
-        const [newFiles, newDirs] = _.partition(newItems, ([, file]) => this.isFile(file));
+        const newItems = entries(fileTree).filter(([filename]) => !added[filename]);
+        const [newFiles, newDirs] = partition(newItems, ([, file]) => this.isFile(file));
         const newPromises = [
           ...newDirs.map(([dirName, dir]) => this.updateTree(null, dirName, dir)),
           ...newFiles.map(([fileName, file]) => ({ path: fileName, mode: "100644", type: "blob", sha: file.sha })),
