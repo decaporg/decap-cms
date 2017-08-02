@@ -225,7 +225,7 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
     const entryDraft = state.entryDraft;
 
     // Early return if draft contains validation errors
-    if (!entryDraft.get('fieldsErrors').isEmpty()) return;
+    if (!entryDraft.get('fieldsErrors').isEmpty()) return Promise.resolve();
 
     const backend = currentBackend(state.config);
     const assetProxies = entryDraft.get('mediaFiles').map(path => getAsset(state, path));
@@ -234,15 +234,14 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
 
     dispatch(unpublishedEntryPersisting(collection, entry, transactionID));
     const persistAction = existingUnpublishedEntry ? backend.persistUnpublishedEntry : backend.persistEntry;
-    persistAction.call(backend, state.config, collection, entryDraft, assetProxies.toJS())
+    return persistAction.call(backend, state.config, collection, entryDraft, assetProxies.toJS())
     .then(() => {
       dispatch(notifSend({
         message: 'Entry saved',
         kind: 'success',
         dismissAfter: 4000,
       }));
-      dispatch(unpublishedEntryPersisted(collection, entry, transactionID));
-      dispatch(closeEntry());
+      return dispatch(unpublishedEntryPersisted(collection, entry, transactionID));
     })
     .catch((error) => {
       dispatch(notifSend({
@@ -250,7 +249,7 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
         kind: 'danger',
         dismissAfter: 8000,
       }));
-      dispatch(unpublishedEntryPersistedFail(error, transactionID));
+      return dispatch(unpublishedEntryPersistedFail(error, transactionID));
     });
   };
 }
