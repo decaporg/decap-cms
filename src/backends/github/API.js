@@ -101,16 +101,14 @@ export default class API {
   storeMetadata(key, data) {
     return this.checkMetadataRef()
     .then((branchData) => {
-      const fileTree = {
-        [`${ key }.json`]: {
-          path: `${ key }.json`,
-          raw: JSON.stringify(data),
-          file: true,
-        },
+      const fileName = `${ key }.json`;
+      const file = {
+        path: fileName,
+        raw: JSON.stringify(data),
+        file: true,
       };
-
-      return this.uploadBlob(fileTree[`${ key }.json`])
-      .then(item => this.updateTree(branchData.sha, "/", fileTree))
+      return this.uploadBlob(file)
+      .then(uploadedFile => this.updateTree(branchData.sha, "/", { [fileName]: uploadedFile }))
       .then(changeTree => this.commit(`Updating “${ key }” metadata`, changeTree))
       .then(response => this.patchRef("meta", "_netlify_cms", response.sha))
       .then(() => {
