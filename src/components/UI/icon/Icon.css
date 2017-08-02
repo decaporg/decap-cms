@@ -1,0 +1,24 @@
+.nc-icon {
+  display: inline-block;
+  line-height: 0;
+
+  & > span {
+    display: block;
+  }
+
+  & path:not(.no-fill),
+  & circle:not(.no-fill),
+  & polygon:not(.no-fill),
+  & rect:not(.no-fill) {
+    fill: currentColor;
+  }
+
+  & path.clipped {
+    fill: transparent;
+  }
+}
+
+.nc-icon svg {
+  width: 100%;
+  height: 100%;
+}

@@ -10,3 +10,4 @@ manifest.yml
 .imdone/
 website/site/data/contributors.yml
 /coverage/
+.idea/

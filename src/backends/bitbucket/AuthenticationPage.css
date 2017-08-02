@@ -1,0 +1,11 @@
+.root {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.button {
+  padding: .25em 1em;
+  height: auto;
+}

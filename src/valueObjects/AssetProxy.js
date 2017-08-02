@@ -41,6 +41,22 @@ AssetProxy.prototype.toBase64 = function () {
   });
 };
 
+//todo: finish implementing this function so it works with bitbucket api
+AssetProxy.prototype.toRawData = function () {
+  return new Promise((resolve, reject) => {
+    const fr = new FileReader();
+    fr.onload = (readerEvt) => {
+      const binaryString = readerEvt.target.result;
+
+      resolve(binaryString);
+    };
+    //todo: bitbucket api does not seem to allow for base64.
+    // i've tried every possible method with FileReader but it always comes out corrupt on the bitbucket side..
+    // I have a bitbucket community post on these issues at https://community.atlassian.com/t5/Bitbucket-questions/Bitbucket-API-commit-image-and-base64-encoding/qaq-p/618009#M18095
+    fr.readAsDataURL(this.fileObj);
+  });
+};
+
 export function createAssetProxy(value, fileObj, uploaded = false, privateUpload = false) {
   const state = store.getState();
   const integration = selectIntegration(state, null, 'assetStore');
@@ -51,10 +67,10 @@ export function createAssetProxy(value, fileObj, uploaded = false, privateUpload
         new AssetProxy(response.asset.url.replace(/^(https?):/, ''), null, true, response.asset)
       ),
       error => new AssetProxy(value, fileObj, false)
-    );  
+    );
   } else if (privateUpload) {
     throw new Error('The Private Upload option is only avaible for Asset Store Integration');
   }
-  
+
   return Promise.resolve(new AssetProxy(value, fileObj, uploaded));
 }
