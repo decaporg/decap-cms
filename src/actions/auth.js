@@ -1,4 +1,7 @@
 import { currentBackend } from '../backends/backend';
+import { actions as notifActions } from 'redux-notifications';
+
+const { notifSend } = notifActions;
 
 export const AUTH_REQUEST = 'AUTH_REQUEST';
 export const AUTH_SUCCESS = 'AUTH_SUCCESS';
@@ -60,6 +63,11 @@ export function loginUser(credentials) {
         dispatch(authenticate(user));
       })
       .catch((error) => {
+        dispatch(notifSend({
+          message: `${ error.message }`,
+          kind: 'warning',
+          dismissAfter: 8000,
+        }));
         dispatch(authError(error));
       });
   };
