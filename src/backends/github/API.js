@@ -465,35 +465,29 @@ ${ files.map(file => `* "${ file.path }"`).join("\n") }\
     }));
   }
 
+  isFile(obj) {
+    return obj.file;
+  }
+
   updateTree(sha, path, fileTree) {
     return this.getTree(sha)
-      .then((tree) => {
-        let obj;
-        let filename;
-        let fileOrDir;
-        const updates = [];
-        const added = {};
+      .then(({ tree: dirContents }) => {
+        const updatedItems = dirContents.filter(item => fileTree[item.path]);
+        const added = _.zipObject(updatedItems.map(item => item.path), Array(updatedItems.length).fill(true));
+        const [updatedFiles, updatedDirs] = _.partition(updatedItems, this.isFile);
+        const updatePromises = [
+          ...updatedDirs.map(dir => this.updateTree(dir.sha, dir.path, fileTree[dir.path])),
+          ...updatedFiles.map(file => ({ ..._.pick(file, ['path', 'mode', 'type']), sha: fileTree[file.path].sha })),
+        ];
 
-        for (let i = 0, len = tree.tree.length; i < len; i++) {
-          obj = tree.tree[i];
-          if (fileOrDir = fileTree[obj.path]) {
-            added[obj.path] = true;
-            if (fileOrDir.file) {
-              updates.push({ path: obj.path, mode: obj.mode, type: obj.type, sha: fileOrDir.sha });
-            } else {
-              updates.push(this.updateTree(obj.sha, obj.path, fileOrDir));
-            }
-          }
-        }
-        for (filename in fileTree) {
-          fileOrDir = fileTree[filename];
-          if (added[filename]) { continue; }
-          updates.push(
-            fileOrDir.file ?
-              { path: filename, mode: "100644", type: "blob", sha: fileOrDir.sha } :
-              this.updateTree(null, filename, fileOrDir)
-          );
-        }
+        const newItems = _.entries(fileTree).filter(([filename]) => !added[filename]);
+        const [newFiles, newDirs] = _.partition(newItems, ([, file]) => this.isFile(file));
+        const newPromises = [
+          ...newDirs.map(([dirName, dir]) => this.updateTree(null, dirName, dir)),
+          ...newFiles.map(([fileName, file]) => ({ path: fileName, mode: "100644", type: "blob", sha: file.sha })),
+        ];
+
+        const updates = [...updatePromises, ...newPromises];
         return Promise.all(updates)
           .then(updates => this.request(`${ this.repoURL }/git/trees`, {
             method: "POST",
