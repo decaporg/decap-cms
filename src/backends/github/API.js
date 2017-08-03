@@ -70,7 +70,10 @@ export default class API {
     .catch((error) => {
       // Meta ref doesn't exist
       const readme = {
-        raw: "# Netlify CMS\n\nThis tree is used by the Netlify CMS to store metadata information for specific files and branches.",
+        raw: `\
+# Netlify CMS
+
+This tree is used by the Netlify CMS to store metadata information for specific files and branches.`,
       };
 
       return this.uploadBlob(readme)
@@ -143,7 +146,7 @@ export default class API {
     return this.request(`${ this.repoURL }/contents/${ path }`, {
       params: { ref: this.branch },
     })
-    .then(files => {
+    .then((files) => {
       if (!Array.isArray(files)) {
         throw new Error(`Cannot list files, path ${path} is not a directory but a ${files.type}`);
       }
@@ -169,7 +172,7 @@ export default class API {
 
   isUnpublishedEntryModification(path, branch) {
     return this.readFile(path, null, branch)
-    .then(data => true)
+    .then(() => true)
     .catch((err) => {
       if (err.message && err.message === "Not Found") {
         return false;
@@ -419,9 +422,7 @@ ${ files.map(file => `* "${ file.path }"`).join("\n") }\
   }
 
   toBase64(str) {
-    return Promise.resolve(
-      Base64.encode(str)
-    );
+    return Promise.resolve(Base64.encode(str));
   }
 
   uploadBlob(item) {
