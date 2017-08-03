@@ -9,6 +9,7 @@ import htmlToRehype from 'rehype-parse';
 import rehypeToRemark from 'rehype-remark';
 import remarkToRehypeShortcodes from './remarkRehypeShortcodes';
 import rehypePaperEmoji from './rehypePaperEmoji';
+import remarkAssertParents from './remarkAssertParents';
 import remarkWrapHtml from './remarkWrapHtml';
 import remarkToSlatePlugin from './remarkSlate';
 import remarkSquashReferences from './remarkSquashReferences';
@@ -199,10 +200,11 @@ export const htmlToSlate = html => {
 
   const mdast = unified()
     .use(rehypePaperEmoji)
-    .use(rehypeToRemark)
+    .use(rehypeToRemark, { minify: false })
     .runSync(hast);
 
   const slateRaw = unified()
+    .use(remarkAssertParents)
     .use(remarkImagesToText)
     .use(remarkShortcodes, { plugins: registry.getEditorComponents() })
     .use(remarkWrapHtml)
