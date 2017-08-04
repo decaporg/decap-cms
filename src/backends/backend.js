@@ -14,6 +14,7 @@ import { createEntry } from "ValueObjects/Entry";
 import { sanitizeSlug } from "Lib/urlHelper";
 import TestRepoBackend from "./test-repo/implementation";
 import GitHubBackend from "./github/implementation";
+import GitLabBackend from "./gitlab/implementation";
 import GitGatewayBackend from "./git-gateway/implementation";
 import { registerBackend, getBackend } from 'Lib/registry';
 import Cursor, { CURSOR_COMPATIBILITY_SYMBOL } from '../valueObjects/Cursor';
@@ -23,6 +24,7 @@ import Cursor, { CURSOR_COMPATIBILITY_SYMBOL } from '../valueObjects/Cursor';
  */
 registerBackend('git-gateway', GitGatewayBackend);
 registerBackend('github', GitHubBackend);
+registerBackend('gitlab', GitLabBackend);
 registerBackend('test-repo', TestRepoBackend);
 
 
