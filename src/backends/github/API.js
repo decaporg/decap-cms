@@ -48,17 +48,21 @@ export default class API {
   request(path, options = {}) {
     const headers = this.requestHeaders(options.headers || {});
     const url = this.urlFor(path, options);
-    return fetch(url, { ...options, headers }).then((response) => {
+    return fetch(url, { ...options, headers })
+    .then((response) => {
       const contentType = response.headers.get("Content-Type");
       if (contentType && contentType.match(/json/)) {
         return Promise.all([response, response.json()]);
       }
       return Promise.all([response, response.text()]);
     })
+    .catch(err => [err, null])
     .then(([response, value]) => (response.ok ? value : Promise.reject([value, response])))
     .catch(([errorValue, response]) => {
-      const message = isString(errorValue) ? errorValue : errorValue.message;
-      throw new APIError(message, response.status, 'GitHub', { response });
+      const message = (errorValue && errorValue.message)
+        ? errorValue.message
+        : (isString(errorValue) ? errorValue : "");
+      throw new APIError(message, response && response.status, 'GitHub', { response, errorValue });
     });
   }
 
