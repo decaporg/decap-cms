@@ -1,0 +1,12 @@
+.root {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.button {
+  padding: .25em 1em;
+  height: auto;
+}
