@@ -18,10 +18,21 @@ export default class API {
     return this.request("/user");
   }
 
-  /* TODO */
   isCollaborator(user) {
+    const WRITE_ACCESS = 30;
     return this.request(`${ this.repoURL }/members/${ user.id }`)
-      .then(member =>(member.access_level >= 30));
+      .then(member => (member.access_level >= WRITE_ACCESS))
+      .catch((err) => {
+        // Member does not have any access. We cannot just check for 404,
+        //   because a 404 is also returned if we have the wrong URI,
+        //   just with an "error" key instead of a "message" key.
+        if (err.status === 404 && err.meta.errorValue["message"] === "404 Not found") {
+          return false;
+        } else {
+          // Otherwise, it is actually an API error.
+          throw err;
+        }
+      });
   }
 
   requestHeaders(headers = {}) {
