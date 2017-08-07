@@ -19,6 +19,19 @@ export default class API {
     return this.request("/user");
   }
 
+  isCollaborator(user) {
+    return this.request('/user/repos').then((repos) => {
+      let contributor = false
+      for (const repo of repos) {
+        if (repo.full_name === this.repo && repo.permissions.push) contributor = true;
+      }
+      return contributor;
+    }).catch((error) => {
+      console.error("Problem with response of /user/repos from GitHub");
+      throw error;
+    })
+  }
+
   requestHeaders(headers = {}) {
     const baseHeader = {
       "Content-Type": "application/json",
@@ -241,7 +254,6 @@ export default class API {
   persistFiles(entry, mediaFiles, options) {
     const uploadPromises = [];
     const files = mediaFiles.concat(entry);
-    
 
     files.forEach((file) => {
       if (file.uploaded) { return; }
