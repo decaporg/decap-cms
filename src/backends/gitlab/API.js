@@ -57,13 +57,22 @@ export default class API {
     
     return fetch(url, { ...options, headers }).then((response) => {
       const contentType = response.headers.get("Content-Type");
+      if (options.method === "HEAD") {
+        return Promise.all([response]);
+      }
       if (contentType && contentType.match(/json/)) {
         return Promise.all([response, response.json()]);
       }
       return Promise.all([response, response.text()]);
     })
     .catch(err => [err, null])
-    .then(([response, value]) => (response.ok ? value : Promise.reject([value, response])))
+    .then(([response, value]) => {
+      if (!response.ok) return Promise.reject([value, response]);
+      /* TODO: remove magic. */
+      if (value === undefined) return response;
+      /* OK */
+      return value;
+    })
     .catch(([errorValue, response]) => {
       const message = (errorValue && errorValue.message)
         ? errorValue.message
@@ -92,12 +101,16 @@ export default class API {
     });
   }
   
-  /* TODO */
-  fileExists(path) {
+  fileExists(path, branch = this.branch) {
     return this.request(`${ this.repoURL }/repository/files/${ encodeURIComponent(path) }`, {
+      method: "HEAD",
       params: { ref: branch },
       cache: "no-store",
-    }).then;
+    }).then(() => true).catch((err) => {
+      // TODO: 404 can mean either the file does not exist, or if an API
+      //   endpoint doesn't exist. Is there a better way to check for this?
+      if (err.status === 404) {return false;} else {throw err;}
+    });
   }
 
   listFiles(path) {
@@ -114,15 +127,21 @@ export default class API {
   }
 
   persistFiles(entry, mediaFiles, options) {
-    /* TODO */
     const newMedia = mediaFiles.filter(file => !file.uploaded);
-    
-    const mediaUploads = newMedia.map(file => this.uploadAndCommit(file, `${ options.commitMessage }: create ${ file.value }.`));
+    const mediaUploads = newMedia.map(file => this.fileExists(file.path).then(exists => {
+      return this.uploadAndCommit(file, {
+        commitMessage: `${ options.commitMessage }: create ${ file.value }.`,
+        newFile: !exists
+      });
+    }));
     
     // Wait until media files are uploaded before we commit the main entry.
     //   This should help avoid inconsistent state.
     return Promise.all(mediaUploads)
-      .then(() => this.uploadAndCommit({ ...entry, update: !options.newEntry }, options.commitMessage));
+    .then(() => this.uploadAndCommit(entry, {
+      commitMessage: options.commitMessage,
+      newFile: options.newEntry
+    }));
   }
 
   deleteFile(path, commit_message, options={}) {
@@ -143,7 +162,7 @@ export default class API {
     return Base64.decode(str);
   }
 
-  uploadAndCommit(item, commitMessage, branch = this.branch) {
+  uploadAndCommit(item, {commitMessage, newFile = true, branch = this.branch}) {
     const content = item instanceof AssetProxy ? item.toBase64() : this.toBase64(item.raw);
     // Remove leading slash from path if exists.
     const file_path = item.path.replace(/^\//, '');
@@ -159,7 +178,7 @@ export default class API {
         branch,
         commit_message: commitMessage,
         actions: [{
-          action: (item.update ? "update" : "create"),
+          action: (newFile ? "create" : "update"),
           file_path,
           content: contentBase64,
           encoding: "base64",
