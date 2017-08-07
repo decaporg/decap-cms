@@ -98,6 +98,7 @@
     "classnames": "^2.2.5",
     "dateformat": "^1.0.12",
     "deep-equal": "^1.0.1",
+    "fetch-mock": "^5.12.1",
     "fuzzy": "^0.1.1",
     "history": "^2.1.2",
     "immutability-helper": "^2.0.0",
