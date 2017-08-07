@@ -20,6 +20,19 @@ export default class API {
     return this.request("/user");
   }
 
+  isCollaborator(user) {
+    return this.request('/user/repos').then((repos) => {
+      let contributor = false
+      for (const repo of repos) {
+        if (repo.full_name === this.repo && repo.permissions.push) contributor = true;
+      }
+      return contributor;
+    }).catch((error) => {
+      console.error("Problem with response of /user/repos from GitHub");
+      throw error;
+    })
+  }
+
   requestHeaders(headers = {}) {
     const baseHeader = {
       "Content-Type": "application/json",
@@ -302,6 +315,21 @@ export default class API {
     });
   }
 
+  deleteFile(path, message, options={}) {
+    const branch = options.branch || this.branch;
+    const fileURL = `${ this.repoURL }/contents/${ path }`;
+    // We need to request the file first to get the SHA
+    return this.request(fileURL)
+    .then(({ sha }) => this.request(fileURL, {
+      method: "DELETE",
+      params: {
+        sha,
+        message,
+        branch,
+      },
+    }));
+  }
+
   editorialWorkflowGit(fileTree, entry, filesList, options) {
     const contentKey = entry.slug;
     const branchName = `cms/${ contentKey }`;
@@ -387,10 +415,18 @@ export default class API {
 
   deleteUnpublishedEntry(collection, slug) {
     const contentKey = slug;
-    let prNumber;
     return this.retrieveMetadata(contentKey)
     .then(metadata => this.closePR(metadata.pr, metadata.objects))
-    .then(() => this.deleteBranch(`cms/${ contentKey }`));
+    .then(() => this.deleteBranch(`cms/${ contentKey }`))
+    // If the PR doesn't exist, then this has already been deleted -
+    // deletion should be idempotent, so we can consider this a
+    // success.
+    .catch((err) => {
+      if (err.message === "Reference does not exist") {
+        return Promise.resolve();
+      }
+      return Promise.reject(err);
+    });
   }
 
   publishUnpublishedEntry(collection, slug) {
