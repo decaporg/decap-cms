@@ -1,5 +1,5 @@
 import fetchMock from 'fetch-mock';
-import { curry, escapeRegExp, merge } from 'lodash';
+import { curry, escapeRegExp, isMatch, merge } from 'lodash';
 import { Map } from 'immutable';
 
 import AssetProxy from "../../../valueObjects/AssetProxy";
@@ -30,10 +30,12 @@ const matchURL = curry((urlRoot, forAllParams, url) => pipe(
 const mockRequest = curry((urlRoot, url, response, options={}) => {
   const mergedOptions = merge({}, {
     forAllParams: true,
+    fetchMockOptions: {},
   }, options);
   return fetchMock.mock(
     matchURL(urlRoot, mergedOptions.forAllParams, url),
     response,
+    options.fetchMockOptions,
   );
 });
 
@@ -131,7 +133,7 @@ describe('github API', () => {
       }],
       ['/repos/my-repo/git/refs', {
         headers: defaultResponseHeaders,
-        body: { here: "instead?" },
+        body: {},
       }],
       ['/repos/my-repo/pulls', (url, pullRequest) => {
         prBaseBranch = JSON.parse(pullRequest.body).base;
@@ -160,5 +162,113 @@ describe('github API', () => {
       api.editorialWorkflowGit(null, { slug: 'entry', sha: 'abc' }, null, {})
         .then(() => prBaseBranch)
     ).resolves.toEqual('gh-pages');
+  });
+
+  it('should correctly update a tree', () => {
+    const api = new API({ branch: 'gh-pages', repo: 'my-repo' });
+    const responses = [
+      ['/repos/my-repo/git/trees/abc', {
+        headers: defaultResponseHeaders,
+        body: {
+          sha: 'abc',
+          tree: [
+            {
+              path: 'file.txt',
+              mode: '100644',
+              type: 'blob',
+              size: 30,
+              sha: 'bcd',
+            },
+            {
+              path: 'subdir',
+              mode: '040000',
+              type: 'tree',
+              'sha': 'cde',
+            },
+          ],
+        },
+      }],
+      ['/repos/my-repo/git/trees/cde', {
+        headers: defaultResponseHeaders,
+        body: {
+          sha: 'cde',
+          tree: [
+            {
+              path: 'subdir/file.txt',
+              mode: "100644",
+              type: "blob",
+              size: 132,
+              sha: "def",
+            },
+          ],
+        },
+      }],
+      ['/repos/my-repo/git/trees', (url, request) => {
+        const treeData = JSON.parse(request.body);
+        const expectedRequests = {
+          cde: {
+            expectedTree: [{
+              path: 'file2.txt',
+              mode: '100644',
+              type: 'blob',
+              sha: 'ghi',
+            }],
+            responseBody: {
+              sha: 'efg',
+            },
+          },
+          abc: {
+            expectedTree: [{
+              path: 'subdir',
+              mode: '040000',
+              type: 'tree',
+              sha: 'efg',
+              parentSha: 'cde',
+            }],
+            responseBody: {
+              sha: 'fgh',
+            },
+          },
+        };
+        if (treeData.base_tree && expectedRequests[treeData.base_tree]) {
+          if (isMatch(treeData.tree, expectedRequests[treeData.base_tree].expectedTree)) {
+            return {
+              headers: defaultResponseHeaders,
+              body: expectedRequests[treeData.base_tree].responseBody,
+            };
+          }
+
+          throw new Error(`Received bad update to tree:
+Received tree: ${ JSON.stringify(treeData.tree, null, 2) }
+Expected tree: ${ JSON.stringify(expectedRequests[treeData.base_tree].expectedTree, null, 2) }`);
+        }
+
+        throw new Error(`Received update to unexpected tree: ${ treeData.base_tree }:
+${ JSON.stringify(treeData, null, 2) }`);
+      }, {
+        fetchMockOptions: { method: "POST" },
+      }],
+    ];
+    responses.forEach(([url, response, options]) =>
+      mockRequest(api.api_root, url, response, options));
+
+    return expect(
+      api.updateTree('abc', '/', {
+        subdir: {
+          'file2.txt': {
+            file: true,
+            path: 'subdir/file2.txt',
+            raw: 'file 2',
+            sha: 'ghi',
+            slug: 'file2',
+            uploaded: true,
+          },
+        },
+      })
+    ).resolves.toMatchObject({
+      path: '/',
+      sha: 'fgh',
+      parentSha: 'abc',
+    });
   });
 });
