@@ -183,9 +183,6 @@ export default class API {
           encoding: "base64",
         }]
       }),
-    })).then(response => Object.assign({}, item, {
-      sha: response.sha,
-      uploaded: true,
-    }));
+    })).then(() => Object.assign({}, item, {uploaded: true}));
   }
 }
