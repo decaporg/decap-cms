@@ -1,9 +1,8 @@
 import LocalForage from "localforage";
 import { Base64 } from "js-base64";
-import { fill, isString } from "lodash";
+import { isString } from "lodash";
 import AssetProxy from "../../valueObjects/AssetProxy";
-import { SIMPLE, EDITORIAL_WORKFLOW, status } from "../../constants/publishModes";
-import { APIError, EditorialWorkflowError } from "../../valueObjects/errors";
+import { APIError } from "../../valueObjects/errors";
 
 export default class API {
   constructor(config) {
