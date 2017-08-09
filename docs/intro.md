@@ -15,7 +15,7 @@ At its core, Netlify CMS is an open-source React app that acts as a wrapper for 
 
 ## The Admin Interface
 
-The admin interface is a single-page app with the entry point stored in a static `/admin` folder you add to the root of your site. You can include it with a simple `index.html` file that loads the necessary CSS and JS files from from a CDN:
+The admin interface is a single-page app with the entry point stored in a static `/admin` folder you add to the root of your site. You can include it with a simple `index.html` file that loads the necessary CSS and JS files from a CDN:
 
 ``` html
 <!doctype html>
