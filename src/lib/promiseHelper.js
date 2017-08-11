@@ -7,7 +7,7 @@ export const filterPromises = (arr, filter) =>
 export const resolvePromiseProperties = (obj) => {
   // Get the keys which represent promises
   const promiseKeys = Object.keys(obj).filter(
-    key => typeof obj[key].then === "function");
+    key => obj[key] && typeof obj[key].then === "function");
 
   const promises = promiseKeys.map(key => obj[key]);
 
