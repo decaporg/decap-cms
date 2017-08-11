@@ -4,7 +4,7 @@ import { entries, isString, partition, pick, uniq, zipObject } from "lodash";
 import { Map } from 'immutable';
 import { filterPromises, resolvePromiseProperties } from "../../lib/promiseHelper";
 import AssetProxy from "../../valueObjects/AssetProxy";
-import { SIMPLE, EDITORIAL_WORKFLOW, status } from "../../constants/publishModes";
+import { EDITORIAL_WORKFLOW, status } from "../../constants/publishModes";
 import { APIError, EditorialWorkflowError } from "../../valueObjects/errors";
 
 export default class API {
@@ -42,7 +42,7 @@ export default class API {
           ? Object.entries(options.params).map(
             ([key, val]) => `${ key }=${ encodeURIComponent(val) }`)
           : [];
-    return this.api_root + path + `?${ [cacheBuster, ...encodedParams].join("&") }`;
+    return `${ this.api_root }${ path }?${ [cacheBuster, ...encodedParams].join("&") }`;
   }
 
   request(path, options = {}) {
@@ -59,9 +59,8 @@ export default class API {
     .catch(err => [err, null])
     .then(([response, value]) => (response.ok ? value : Promise.reject([value, response])))
     .catch(([errorValue, response]) => {
-      const message = (errorValue && errorValue.message)
-        ? errorValue.message
-        : (isString(errorValue) ? errorValue : "");
+      const errorMessageProp = (errorValue && errorValue.message) ? errorValue.message : null;
+      const message = errorMessageProp || (isString(errorValue) ? errorValue : "");
       throw new APIError(message, response && response.status, 'GitHub', { response, errorValue });
     });
   }
@@ -152,7 +151,7 @@ This tree is used by the Netlify CMS to store metadata information for specific 
     })
     .then((files) => {
       if (!Array.isArray(files)) {
-        throw new Error(`Cannot list files, path ${path} is not a directory but a ${files.type}`);
+        throw new Error(`Cannot list files, path ${ path } is not a directory but a ${ files.type }`);
       }
       return files;
     })
@@ -374,7 +373,6 @@ This tree is used by the Netlify CMS to store metadata information for specific 
   }
 
   closePR(pullrequest, objects) {
-    const headSha = pullrequest.head;
     const prNumber = pullrequest.number;
     console.log("%c Deleting PR", "line-height: 30px;text-align: center;font-weight: bold"); // eslint-disable-line
     return this.request(`${ this.repoURL }/pulls/${ prNumber }`, {
@@ -468,7 +466,7 @@ ${ files.map(file => `* "${ file.path }"`).join("\n") }\
 
         const updates = [...updatePromises, ...newPromises];
         return Promise.all(updates)
-          .then(updates => this.request(`${ this.repoURL }/git/trees`, {
+          .then(resolvedUpdates => this.request(`${ this.repoURL }/git/trees`, {
             method: "POST",
             body: JSON.stringify({ base_tree: sha, tree: updates }),
           })).then(response => ({ path, mode: "040000", type: "tree", sha: response.sha, parentSha: sha }));
