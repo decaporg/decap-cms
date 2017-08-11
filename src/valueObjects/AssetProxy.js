@@ -29,6 +29,30 @@ AssetProxy.prototype.toString = function () {
   }
 };
 
+AssetProxy.prototype.dataURItoBlob = function(dataURI) {
+  // convert base64 to raw binary data held in a string
+  // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
+  var byteString = atob(dataURI.split(',')[1]);
+
+  // separate out the mime component
+  var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+
+  // write the bytes of the string to an ArrayBuffer
+  var ab = new ArrayBuffer(byteString.length);
+
+  // create a view into the buffer
+  var ia = new Uint8Array(ab);
+
+  // set the bytes of the buffer to the correct values
+  for (var i = 0; i < byteString.length; i++) {
+    ia[i] = byteString.charCodeAt(i);
+  }
+
+  // write the ArrayBuffer to a blob, and you're done
+  return new Blob([ab], {type: mimeString});
+
+}
+
 AssetProxy.prototype.toBase64 = function () {
   return new Promise((resolve, reject) => {
     const fr = new FileReader();
@@ -41,18 +65,15 @@ AssetProxy.prototype.toBase64 = function () {
   });
 };
 
-//todo: finish implementing this function so it works with bitbucket api
-AssetProxy.prototype.toRawData = function () {
+
+AssetProxy.prototype.toBlob = function () {
   return new Promise((resolve, reject) => {
     const fr = new FileReader();
     fr.onload = (readerEvt) => {
       const binaryString = readerEvt.target.result;
 
-      resolve(binaryString);
+      resolve(this.dataURItoBlob(binaryString));
     };
-    //todo: bitbucket api does not seem to allow for base64.
-    // i've tried every possible method with FileReader but it always comes out corrupt on the bitbucket side..
-    // I have a bitbucket community post on these issues at https://community.atlassian.com/t5/Bitbucket-questions/Bitbucket-API-commit-image-and-base64-encoding/qaq-p/618009#M18095
     fr.readAsDataURL(this.fileObj);
   });
 };

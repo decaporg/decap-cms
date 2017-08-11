@@ -538,39 +538,10 @@ export default class API {
     );
   }
 
-  dataURItoBlob(dataURI) {
-    // convert base64 to raw binary data held in a string
-    // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
-    var byteString = atob(dataURI.split(',')[1]);
-
-    // separate out the mime component
-    var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0]
-
-    // write the bytes of the string to an ArrayBuffer
-    var ab = new ArrayBuffer(byteString.length);
-
-    // create a view into the buffer
-    var ia = new Uint8Array(ab);
-
-    // set the bytes of the buffer to the correct values
-    for (var i = 0; i < byteString.length; i++) {
-        ia[i] = byteString.charCodeAt(i);
-    }
-
-    // write the ArrayBuffer to a blob, and you're done
-    var blob = new Blob([ab], {type: mimeString});
-    return blob;
-
-  }
-
   uploadBlob(item) {
-    const content = item instanceof AssetProxy ? item.toRawData() : Promise.resolve(item.raw);
-    // const content = Promise.resolve(item.raw);
-    let isAsset = item instanceof AssetProxy
+    const content = item instanceof AssetProxy ? item.toBlob() : Promise.resolve(item.raw);
+
     return content.then(contentBase64 => {
-      if (isAsset) {
-        contentBase64 = this.dataURItoBlob(contentBase64);
-      }
       let formData = new FormData();
       formData.append(item.path, contentBase64);
 
