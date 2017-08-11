@@ -47,14 +47,14 @@ export default class API {
           ? Object.entries(options.params).map(
             ([key, val]) => `${ key }=${ encodeURIComponent(val) }`)
           : [];
-    return this.api_root + path + `?${ [cacheBuster, ...encodedParams].join("&") }`;
+    return `${ this.api_root }${ path }?${ [cacheBuster, ...encodedParams].join("&") }`;
   }
 
   request(path, options = {}) {
     const headers = this.requestHeaders(options.headers || {});
     const url = this.urlFor(path, options);
-    
-    return fetch(url, { ...options, headers }).then((response) => {
+    return fetch(url, { ...options, headers })
+    .then((response) => {
       const contentType = response.headers.get("Content-Type");
       if (options.method === "HEAD") {
         return Promise.all([response]);
@@ -73,10 +73,9 @@ export default class API {
       return value;
     })
     .catch(([errorValue, response]) => {
-      const message = (errorValue && errorValue.message)
-        ? errorValue.message
-        : (isString(errorValue) ? errorValue : "");
-      throw new APIError(message, response && response.status, 'GitLab', { response, errorValue });
+      const errorMessageProp = (errorValue && errorValue.message) ? errorValue.message : null;
+      const message = errorMessageProp || (isString(errorValue) ? errorValue : "");
+      throw new APIError(message, response && response.status, 'GitHub', { response, errorValue });
     });
   }
   
@@ -152,9 +151,7 @@ export default class API {
   }
 
   toBase64(str) {
-    return Promise.resolve(
-      Base64.encode(str)
-    );
+    return Promise.resolve(Base64.encode(str));
   }
 
   fromBase64(str) {
@@ -183,6 +180,6 @@ export default class API {
           encoding: "base64",
         }]
       }),
-    })).then(() => Object.assign({}, item, {uploaded: true}));
+    })).then(response => Object.assign({}, item, { uploaded: true }));
   }
 }

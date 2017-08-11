@@ -41,8 +41,7 @@ export default class GitLab {
         // Unauthorized user
         if (!isCollab) throw new Error("Your GitLab user account does not have access to this repo.");
         // Authorized user
-        user.token = state.token;
-        return user;
+        return Object.assign({}, user, { token: state.token });
       })
     );
   }
