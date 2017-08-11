@@ -1,7 +1,7 @@
 import semaphore from "semaphore";
 import AuthenticationPage from "./AuthenticationPage";
 import API from "./API";
-import { fileExtension } from '../../lib/pathHelper'
+import { fileExtension } from '../../lib/pathHelper';
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
 
@@ -36,8 +36,7 @@ export default class GitHub {
         // Unauthorized user
         if (!isCollab) throw new Error("Your GitHub user account does not have access to this repo.");
         // Authorized user
-        user.token = state.token;
-        return user;
+        return Object.assign({}, user, { token: state.token });
       })
     );
   }
@@ -96,31 +95,28 @@ export default class GitHub {
   unpublishedEntries() {
     return this.api.listUnpublishedBranches().then((branches) => {
       const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
-      const promises = [];
-      branches.map((branch) => {
-        promises.push(new Promise((resolve, reject) => {
-          const slug = branch.ref.split("refs/heads/cms/").pop();
-          return sem.take(() => this.api.readUnpublishedBranchFile(slug).then((data) => {
-            if (data === null || data === undefined) {
-              resolve(null);
-              sem.leave();
-            } else {
-              const path = data.metaData.objects.entry.path;
-              resolve({
-                slug,
-                file: { path },
-                data: data.fileData,
-                metaData: data.metaData,
-                isModification: data.isModification,
-              });
-              sem.leave();
-            }
-          }).catch((err) => {
-            sem.leave();
+      const promises = branches.map(branch => new Promise((resolve, reject) => {
+        const slug = branch.ref.split("refs/heads/cms/").pop();
+        return sem.take(() => this.api.readUnpublishedBranchFile(slug).then((data) => {
+          if (data === null || data === undefined) {
             resolve(null);
-          }));
+            sem.leave();
+          } else {
+            const path = data.metaData.objects.entry.path;
+            resolve({
+              slug,
+              file: { path },
+              data: data.fileData,
+              metaData: data.metaData,
+              isModification: data.isModification,
+            });
+            sem.leave();
+          }
+        }).catch((err) => {
+          sem.leave();
+          resolve(null);
         }));
-      });
+      }));
       return Promise.all(promises);
     })
     .catch((error) => {
