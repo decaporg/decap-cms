@@ -20,18 +20,8 @@ export default class API {
     return this.request("/user");
   }
 
-  isCollaborator(user) {
-    return this.request('/user/repos').then((repos) => {
-      let contributor = false
-      for (const repo of repos) {
-        if (repo.full_name === this.repo && repo.permissions.push) contributor = true;
-      }
-      return contributor;
-    }).catch((error) => {
-      console.error("Problem with response of /user/repos from GitHub");
-      throw error;
-    })
-  }
+  //bitbucket doesn't provide way to check repo permissions (scopes)
+  //isCollaborator(user) {}
 
   requestHeaders(headers = {}) {
     const baseHeader = {
@@ -71,16 +61,16 @@ export default class API {
   }
 
   urlFor(path, options) {
-    // const cacheBuster = new Date().getTime();
-    // const params = [`ts=${cacheBuster}`];
-    // if (options.params) {
-    //   for (const key in options.params) {
-    //     params.push(`${ key }=${ encodeURIComponent(options.params[key]) }`);
-    //   }
-    // }
-    // if (params.length) {
-    //   path += `?${ params.join("&") }`;
-    // }
+    const cacheBuster = new Date().getTime();
+    const params = [`ts=${cacheBuster}`];
+    if (options.params) {
+      for (const key in options.params) {
+        params.push(`${ key }=${ encodeURIComponent(options.params[key]) }`);
+      }
+    }
+    if (params.length) {
+      path += `?${ params.join("&") }`;
+    }
     return this.api_root + path;
   }
 
@@ -88,8 +78,22 @@ export default class API {
     const headers = this.requestHeaders(options.headers || {});
     const url = this.urlFor(path, options);
     let responseStatus;
-    // console.log("options: ",options);
-    // console.log("headers: ",headers);
+    return fetch(url, { ...options, headers }).then((response) => {
+      responseStatus = response.status;
+      const contentType = response.headers.get("Content-Type");
+      if (contentType && contentType.match(/json/)) {
+        return this.parseJsonResponse(response);
+      }
+      return response.text();
+    })
+    .catch((error) => {
+      throw new APIError(error.message, responseStatus, 'Bitbucket');
+    });
+  }
+
+  requestUrl(url, options = {}) {
+    const headers = this.requestHeaders(options.headers || {});
+    let responseStatus;
     return fetch(url, { ...options, headers }).then((response) => {
       responseStatus = response.status;
       const contentType = response.headers.get("Content-Type");
@@ -107,10 +111,7 @@ export default class API {
     // const headers = options.headers;
     const headers = this.formRequestHeaders(options.headers || {});
     const url = this.urlFor(path, options);
-    // const url = path;
     let responseStatus;
-    // console.log("options: ",options);
-    // console.log("headers: ",headers);
     return fetch(url, { ...options, headers }).then((response) => {
       responseStatus = response.status;
       const contentType = response.headers.get("Content-Type");
@@ -125,7 +126,8 @@ export default class API {
   }
 
   checkMetadataRef() {
-    return this.request(`${ this.repoURL }/git/refs/meta/_netlify_cms?${ Date.now() }`, {
+    console.log("checking metadata ref");
+    return this.request(`${ this.repoURL }/refs/meta/_netlify_cms?${ Date.now() }`, {
       cache: "no-store",
     })
     .then(response => response.object)
@@ -147,6 +149,7 @@ export default class API {
   }
 
   storeMetadata(key, data) {
+    console.log("store metadata: ", key, data);
     return this.checkMetadataRef()
     .then((branchData) => {
       const fileTree = {
@@ -171,6 +174,7 @@ export default class API {
   }
 
   retrieveMetadata(key) {
+    console.log("retrieving metadata: ", key);
     const cache = LocalForage.getItem(`gh.meta.${ key }`);
     return cache.then((cached) => {
       if (cached && cached.expires > Date.now()) { return cached.data; }
@@ -187,7 +191,6 @@ export default class API {
 
   readFile(path, sha, branch = this.branch) {
     const cache = sha ? LocalForage.getItem(`gh.${ sha }`) : Promise.resolve(null);
-    // console.log("getting cache: ",cache);
     return cache.then((cached) => {
       if (cached) { return cached; }
 
@@ -205,20 +208,14 @@ export default class API {
   }
 
   listFiles(path) {
-    return this.request(`${ this.repoURL }/src/${ this.branch }/${ path }`, {
-      // params: { ref: this.branch },
-    })
+    return this.request(`${ this.repoURL }/src/${ this.branch }/${ path }`, {})
     .then(files => {
-      // console.log("files: ",files);
       if (!Array.isArray(files.values)) {
         throw new Error(`Cannot list files, path ${path} is not a directory but a ${files.type}`);
       }
-      // console.log("files.values: ",files.values);
       return files.values;
     })
     .then(files => {
-      // console.log("files again: ",files);
-      // console.log("files filtered: ",files.filter(file => file.type === "commit_file"))
       return files.filter(file => file.type === "commit_file")
     });
   }
@@ -251,14 +248,19 @@ export default class API {
 
   listUnpublishedBranches() {
     console.log("%c Checking for Unpublished entries", "line-height: 30px;text-align: center;font-weight: bold"); // eslint-disable-line
-    return this.request(`${ this.repoURL }/git/refs/heads/cms`)
+    return this.request(`${ this.repoURL }/refs/heads/cms`)
     .then(branches => filterPromises(branches, (branch) => {
       const branchName = branch.ref.substring("/refs/heads/".length - 1);
 
       // Get PRs with a `head` of `branchName`. Note that this is a
       // substring match, so we need to check that the `head.ref` of
       // at least one of the returned objects matches `branchName`.
-      return this.request(`${ this.repoURL }/pulls?head=${ branchName }&state=open`)
+      return this.request(`${ this.repoURL }/pulls`, {
+        params: {
+          head: branchName,
+          state: 'open',
+        },
+      })
         .then(prs => prs.some(pr => pr.head.ref === branchName));
     }))
     .catch((error) => {
@@ -291,9 +293,9 @@ export default class API {
   }
 
   persistFiles(entry, mediaFiles, options) {
+    console.log("persisting files: ", entry, mediaFiles, options);
     const uploadPromises = [];
     const files = mediaFiles.concat(entry);
-
 
     files.forEach((file) => {
       if (file.uploaded) { return; }
@@ -305,9 +307,13 @@ export default class API {
     return Promise.all(uploadPromises).then(() => {
       if (!options.mode || (options.mode && options.mode === SIMPLE)) {
         return this.getBranch()
-        .then(branchData => this.updateTree(branchData.commit.sha, "/", fileTree))
-        .then(changeTree => this.commit(options.commitMessage, changeTree))
-        .then(response => this.patchBranch(this.branch, response.sha));
+        //todo: can we do any of this with bitbucket api?
+        // .then( function(){
+        //     console.log("branchData: ", branchData);
+        //     return branchData => this.updateTree(branchData.commit.sha, "/", fileTree)
+        // })
+        // .then(changeTree => this.commit(options.commitMessage, changeTree))
+        // .then(response => this.patchBranch(this.branch, response.sha));
       } else if (options.mode && options.mode === EDITORIAL_WORKFLOW) {
         const mediaFilesList = mediaFiles.map(file => ({ path: file.path, sha: file.sha }));
         return this.editorialWorkflowGit(fileTree, entry, mediaFilesList, options);
@@ -439,27 +445,27 @@ export default class API {
 
 
   createRef(type, name, sha) {
-    return this.request(`${ this.repoURL }/git/refs`, {
+    return this.request(`${ this.repoURL }/refs`, {
       method: "POST",
       body: JSON.stringify({ ref: `refs/${ type }/${ name }`, sha }),
     });
   }
 
   patchRef(type, name, sha) {
-    return this.request(`${ this.repoURL }/git/refs/${ type }/${ encodeURIComponent(name) }`, {
+    return this.request(`${ this.repoURL }/refs/${ type }/${ encodeURIComponent(name) }`, {
       method: "PATCH",
       body: JSON.stringify({ sha }),
     });
   }
 
   deleteRef(type, name, sha) {
-    return this.request(`${ this.repoURL }/git/refs/${ type }/${ encodeURIComponent(name) }`, {
-      method: "DELETE",
+    return this.request(`${ this.repoURL }/refs/${ type }/${ encodeURIComponent(name) }`, {
+      method: 'DELETE',
     });
   }
 
   getBranch(branch = this.branch) {
-    return this.request(`${ this.repoURL }/src/${ encodeURIComponent(branch) }`);
+    return this.request(`${ this.repoURL }/refs/branches/${ encodeURIComponent(branch) }`);
   }
 
   createBranch(branchName, sha) {
@@ -549,7 +555,7 @@ export default class API {
         method: 'POST',
         body: formData
       }).then((response) => {
-        item.sha = response.sha;
+        //item.sha = response.sha; //todo: get commit sha from bitbucket
         item.uploaded = true;
         return item;
       })
@@ -596,9 +602,18 @@ export default class API {
   commit(message, changeTree) {
     const tree = changeTree.sha;
     const parents = changeTree.parentSha ? [changeTree.parentSha] : [];
-    return this.request(`${ this.repoURL }/git/commits`, {
-      method: "POST",
-      body: JSON.stringify({ message, tree, parents }),
+
+    let formData = new FormData();
+    formData.append(JSON.stringify({ message, tree, parents }));
+
+    return this.formRequest(`${ this.repoURL }/src`, {
+      method: 'POST',
+      body: formData
     });
+
+    // return this.request(`${ this.repoURL }/src`, {
+    //   method: "POST",
+    //   body: JSON.stringify({ message, tree, parents }),
+    // });
   }
 }
