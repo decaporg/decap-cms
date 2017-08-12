@@ -15,6 +15,7 @@ export default class Bitbucket {
 
     this.repo = config.getIn(["backend", "repo"], "");
     this.branch = config.getIn(["backend", "branch"], "master");
+    this.api_root = config.getIn(["backend", "api_root"], "https://api.bitbucket.org/2.0");
     this.token = '';
   }
 
@@ -41,7 +42,6 @@ export default class Bitbucket {
   }
 
   entriesByFolder(collection, extension) {
-    // console.log("collection: ",collection.get("folder"));
     return this.api.listFiles(collection.get("folder"))
     .then(files => files.filter(file => fileExtension(file.path) === extension))
     .then(this.fetchFiles);
