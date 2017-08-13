@@ -23,6 +23,7 @@ export default class Toolbar extends React.Component {
     onAddAsset: PropTypes.func.isRequired,
     onRemoveAsset: PropTypes.func.isRequired,
     getAsset: PropTypes.func.isRequired,
+    onActivePlugin: PropTypes.func
   };
 
   constructor(props) {
@@ -33,16 +34,23 @@ export default class Toolbar extends React.Component {
   }
 
   handlePluginFormDisplay = (plugin) => {
-    this.setState({ activePlugin: plugin });
-  }
+    this.setState({ activePlugin: plugin }, () => {
+      if (this.props.onActivePlugin) this.props.onActivePlugin(plugin);
+    });
+  };
 
   handlePluginFormSubmit = (plugin, pluginData) => {
     this.props.onSubmit(plugin, pluginData);
-    this.setState({ activePlugin: null });
+
+    this.setState({ activePlugin: null }, () => {
+      if (this.props.onActivePlugin) this.props.onActivePlugin(null);
+    });
   };
 
   handlePluginFormCancel = (e) => {
-    this.setState({ activePlugin: null });
+    this.setState({ activePlugin: null }, () => {
+      if (this.props.onActivePlugin) this.props.onActivePlugin(null);
+    });
   };
 
   render() {
@@ -57,7 +65,7 @@ export default class Toolbar extends React.Component {
       plugins,
       onAddAsset,
       onRemoveAsset,
-      getAsset,
+      getAsset
     } = this.props;
 
     const { activePlugin } = this.state;
