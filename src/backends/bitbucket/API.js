@@ -154,17 +154,15 @@ export default class API {
 
   deleteFile(path, message, options={}) {
     const branch = options.branch || this.branch;
-    const fileURL = `${ this.repoURL }/contents/${ path }`;
-    // We need to request the file first to get the SHA
-    return this.request(fileURL)
-    .then(({ sha }) => this.request(fileURL, {
+    const fileURL = `${ this.repoURL }/src/${ this.branch }/${ path }`;
+    //TODO: figure out bitbucket api delete?
+    return this.request(fileURL, {
       method: "DELETE",
       params: {
-        sha,
         message,
         branch,
       },
-    }));
+    });
   }
 
   getBranch(branch = this.branch) {
