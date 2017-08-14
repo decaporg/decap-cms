@@ -18,7 +18,9 @@ import {
   navigateToCollection as actionNavigateToCollection,
   createNewEntryInCollection as actionCreateNewEntryInCollection,
 } from '../actions/findbar';
+import { openMediaLibrary as actionOpenMediaLibrary } from '../actions/mediaLibrary';
 import AppHeader from '../components/AppHeader/AppHeader';
+import MediaLibrary from '../components/MediaLibrary/MediaLibrary';
 import { Loader, Toast } from '../components/UI/index';
 import { getCollectionUrl, getNewEntryUrl } from '../lib/urlHelper';
 import { SIMPLE, EDITORIAL_WORKFLOW } from '../constants/publishModes';
@@ -114,6 +116,7 @@ class App extends React.Component {
       logoutUser,
       isFetching,
       publishMode,
+      openMediaLibrary,
     } = this.props;
 
 
@@ -190,14 +193,15 @@ class App extends React.Component {
             onCreateEntryClick={createNewEntryInCollection}
             onLogoutClick={logoutUser}
             toggleDrawer={toggleSidebar}
+            openMediaLibrary={openMediaLibrary}
           />
           <Panel scrollY className={styles.entriesPanel}>
             { isFetching && <TopBarProgress /> }
             <div>
               {children}
+              <MediaLibrary/>
             </div>
           </Panel>
-
         </Layout>
       </Sidebar>
     );
@@ -224,6 +228,9 @@ function mapDispatchToProps(dispatch) {
     },
     createNewEntryInCollection: (collectionName) => {
       dispatch(actionCreateNewEntryInCollection(collectionName));
+    },
+    openMediaLibrary: () => {
+      dispatch(actionOpenMediaLibrary());
     },
     logoutUser: () => {
       dispatch(actionLogoutUser());

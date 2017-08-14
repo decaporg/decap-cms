@@ -1,0 +1,11 @@
+@import '../UI/theme';
+
+.dialog {
+  & h1 {
+    margin-top: 10px;
+  }
+}
+
+.buttonRight {
+  float: right;
+}

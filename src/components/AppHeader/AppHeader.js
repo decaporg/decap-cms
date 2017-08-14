@@ -35,6 +35,7 @@ export default class AppHeader extends React.Component {
       runCommand,
       toggleDrawer,
       onLogoutClick,
+      openMediaLibrary,
     } = this.props;
 
     const avatarStyle = {
@@ -48,9 +49,12 @@ export default class AppHeader extends React.Component {
         leftIcon="menu"
         onLeftIconClick={toggleDrawer}
       >
-        <IndexLink to="/" className={styles.homeLink}>
+        <IndexLink to="/" className={styles.button}>
           <FontIcon value="home" className={styles.icon} />
         </IndexLink>
+        <button onClick={openMediaLibrary} className={styles.button}>
+          <FontIcon value="perm_media" className={styles.icon} />
+        </button>
         <IconMenu icon="add" theme={styles}>
           {
             collections.filter(collection => collection.get('create')).valueSeq().map(collection =>

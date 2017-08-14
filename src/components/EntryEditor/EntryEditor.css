@@ -9,7 +9,7 @@
   position: absolute;
   top: 8px;
   right: 40px;
-  z-index: 1000;
+  z-index: 299;
   opacity: 0.8;
 }
 
@@ -37,7 +37,7 @@
   height: 55px;
   padding: 10px 20px;
   position: absolute;
-  z-index: 9999;
+  z-index: 299;
   left: 0;
   right: 0;
   bottom: 0;

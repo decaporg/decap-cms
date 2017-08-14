@@ -9,13 +9,22 @@
 
 /* Gross stuff below, React Toolbox hacks */
 
-.homeLink,
+.button,
 .iconMenu {
-  margin-left: 2%;
+  margin-left: 16px;
 }
 
-.homeLink .icon {
-  vertical-align: top;
+.button {
+  cursor: pointer;
+  border: 0;
+  background-color: transparent;
+  width: 36px;
+  padding: 6px 0;
+  text-align: center;
+
+  & .icon {
+    vertical-align: top;
+  }
 }
 
 .icon,
