@@ -1,0 +1,25 @@
+.nc-mediaLibrary-footer-buttonRight {
+  float: right;
+  margin-left: 10px;
+}
+
+.nc-mediaLibrary-footer-buttonLeft {
+  float: left;
+  margin-right: 10px;
+}
+
+.nc-mediaLibrary-footer-button-loader {
+  float: left;
+  margin: 8px 20px;
+}
+
+.nc-mediaLibrary-footer-button-loaderSpinner {
+  position: static;
+}
+
+.nc-mediaLibrary-footer-button-loaderText {
+  position: relative;
+  top: 2px;
+  margin-left: 18px;
+}
+

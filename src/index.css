@@ -16,6 +16,7 @@
 @import "./components/UI/icon/Icon.css";
 @import "./components/UI/loader/Loader.css";
 @import "./components/UI/toast/Toast.css";
+@import "./components/UI/Dialog/Dialog.css";
 @import "./components/UnpublishedListing/UnpublishedListing.css";
 @import "./components/UnpublishedListing/UnpublishedListingCardMeta.css";
 @import "./components/Widgets/BooleanControl.css";
@@ -32,6 +33,7 @@
 @import "./containers/App.css";
 @import "./containers/CollectionPage.css";
 @import "./containers/Sidebar.css";
+@import "./components/MediaLibrary/MediaLibrary.css";
 
 html {
   box-sizing: border-box;
@@ -45,7 +47,7 @@ html {
 }
 
 body {
-  font-family: var(--fontFamily);
+  font-family: var(--fontFamilyPrimary);
   height: 100%;
   background-color: #fff;
   color: #7c8382;
@@ -54,7 +56,7 @@ body {
 
 h1, h2, h3, h4, h5, h6, p {
   margin: 0;
-  font-family: var(--fontFamily);
+  font-family: var(--fontFamilyPrimary);
 }
 
 h1 {

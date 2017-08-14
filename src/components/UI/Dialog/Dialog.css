@@ -1,0 +1,52 @@
+.nc-dialog-wrapper {
+  z-index: 99999;
+}
+
+.nc-dialog-root {
+  height: 80%;
+  text-align: center;
+  max-width: 2200px;
+}
+
+.nc-dialog-body {
+  height: 100%;
+}
+
+.nc-dialog-contentWrapper {
+  height: 100%;
+}
+
+.nc-dialog-footer {
+  margin: 24px 0;
+  width: calc(100% - 48px);
+  position: absolute;
+  bottom: 0;
+}
+
+
+/**
+ * Progress Bar
+ */
+.nc-dialog-progressOverlay {
+  background-color: rgba(255, 255, 255, 0.75);
+  z-index: 1;
+  height: 100%;
+  width: 100%;
+}
+
+.nc-dialog-progressOverlay-active {
+  opacity: 1 !important;
+}
+
+.nc-dialog-progressBarContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.nc-dialog-progressBar-linear {
+  width: 80%;
+}
+

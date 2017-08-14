@@ -121,6 +121,7 @@ function unpublishedEntryPersistedFail(error, transactionID) {
     type: UNPUBLISHED_ENTRY_PERSIST_FAILURE,
     payload: { error },
     optimist: { type: REVERT, id: transactionID },
+    error,
   };
 }
 

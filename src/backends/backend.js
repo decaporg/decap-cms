@@ -148,6 +148,10 @@ class Backend {
     );
   }
 
+  getMedia() {
+    return this.implementation.getMedia();
+  }
+
   entryWithFormat(collectionOrEntity) {
     return (entry) => {
       const format = resolveFormat(collectionOrEntity, entry);
@@ -244,6 +248,13 @@ class Backend {
     });
   }
 
+  persistMedia(file) {
+    const options = {
+      commitMessage: `Upload ${file.path}`,
+    };
+    return this.implementation.persistMedia(file, options);
+  }
+
   deleteEntry(config, collection, slug) {
     const path = selectEntryPath(collection, slug);
 
@@ -252,6 +263,11 @@ class Backend {
     }
 
     const commitMessage = `Delete ${ collection.get('label') } “${ slug }”`;
+    return this.implementation.deleteFile(path, commitMessage);
+  }
+
+  deleteMedia(path) {
+    const commitMessage = `Delete ${path}`;
     return this.implementation.deleteFile(path, commitMessage);
   }
 

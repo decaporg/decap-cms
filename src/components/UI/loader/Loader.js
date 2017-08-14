@@ -1,6 +1,6 @@
 import React from 'react';
 import CSSTransition from 'react-transition-group/CSSTransition';
-import classnames from 'classnames';
+import c from 'classnames';
 
 export default class Loader extends React.Component {
 
@@ -50,8 +50,8 @@ export default class Loader extends React.Component {
   };
 
   render() {
-    const { active } = this.props;
-    const className = classnames('nc-loader-root', { 'nc-loader-active': active });
-    return <div className={className}>{this.renderChild()}</div>;
+    const { active, className } = this.props;
+    const combinedClassName = c('nc-loader-root', { 'nc-loader-active': active }, className);
+    return <div className={combinedClassName}>{this.renderChild()}</div>;
   }
 }
