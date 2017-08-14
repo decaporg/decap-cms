@@ -155,13 +155,13 @@ export default class API {
   deleteFile(path, message, options={}) {
     const branch = options.branch || this.branch;
     const fileURL = `${ this.repoURL }/src/${ this.branch }/${ path }`;
-    //TODO: figure out bitbucket api delete?
-    return this.request(fileURL, {
-      method: "DELETE",
-      params: {
-        message,
-        branch,
-      },
+
+    let formData = new FormData();
+    formData.append('files', path);
+
+    return this.formRequest(`${ this.repoURL }/src`, {
+      method: 'POST',
+      body: formData
     });
   }
 
