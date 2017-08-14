@@ -134,7 +134,7 @@ export default class API {
     }));
     
     // Wait until media files are uploaded before we commit the main entry.
-    //   This should help avoid inconsistent state.
+    //   This should help avoid inconsistent repository/website state.
     return Promise.all(mediaUploads)
     .then(() => this.uploadAndCommit(entry, {
       commitMessage: options.commitMessage,
