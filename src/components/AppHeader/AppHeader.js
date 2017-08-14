@@ -21,28 +21,11 @@ export default class AppHeader extends React.Component {
     onLogoutClick: PropTypes.func.isRequired,
   };
 
-  state = {
-    createMenuActive: false,
-    userMenuActive: false,
-  };
-
   handleCreatePostClick = (collectionName) => {
     const { onCreateEntryClick } = this.props;
     if (onCreateEntryClick) {
       onCreateEntryClick(collectionName);
     }
-  };
-
-  handleCreateButtonClick = () => {
-    this.setState({
-      createMenuActive: true,
-    });
-  };
-
-  handleCreateMenuHide = () => {
-    this.setState({
-      createMenuActive: false,
-    });
   };
 
   render() {
@@ -64,17 +47,11 @@ export default class AppHeader extends React.Component {
         theme={styles}
         leftIcon="menu"
         onLeftIconClick={toggleDrawer}
-        onRightIconClick={this.handleRightIconClick}
       >
         <IndexLink to="/" className={styles.homeLink}>
           <FontIcon value="home" className={styles.icon} />
         </IndexLink>
-        <IconMenu
-          theme={styles}
-          icon="add"
-          onClick={this.handleCreateButtonClick}
-          onHide={this.handleCreateMenuHide}
-        >
+        <IconMenu icon="add" theme={styles}>
           {
             collections.filter(collection => collection.get('create')).valueSeq().map(collection =>
               <MenuItem
