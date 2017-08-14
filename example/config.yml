@@ -1,6 +1,6 @@
 backend:
-  name: test-repo
-  delay: 0.1
+  name: github
+  repo: erquhart/blank
 
 media_folder: "assets/uploads"
 

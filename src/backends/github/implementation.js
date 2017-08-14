@@ -90,6 +90,13 @@ export default class GitHub {
     }));
   }
 
+  getMedia() {
+    const path = this.config.get('media_folder');
+    return this.api.readFile(path).then(data => {
+      return data.filter(file => file.type === 'file');
+    });
+  }
+
   persistEntry(entry, mediaFiles = [], options = {}) {
     return this.api.persistFiles(entry, mediaFiles, options);
   }
