@@ -7,13 +7,22 @@
 
 /* Gross stuff below, React Toolbox hacks */
 
-.nc-appHeader-homeLink,
+.nc-appHeader-button,
 .nc-appHeader-iconMenu {
-  margin-left: 2%;
+  margin-left: 16px;
 }
 
-.nc-appHeader-homeLink &icon {
-  vertical-align: top;
+.nc-appHeader-button {
+  cursor: pointer;
+  border: 0;
+  background-color: transparent;
+  width: 36px;
+  padding: 6px 0;
+  text-align: center;
+
+  & .nc-appHeader-icon {
+    vertical-align: top;
+  }
 }
 
 .nc-appHeader-icon,

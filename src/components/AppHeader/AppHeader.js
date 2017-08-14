@@ -20,28 +20,11 @@ export default class AppHeader extends React.Component {
     onLogoutClick: PropTypes.func.isRequired,
   };
 
-  state = {
-    createMenuActive: false,
-    userMenuActive: false,
-  };
-
   handleCreatePostClick = (collectionName) => {
     const { onCreateEntryClick } = this.props;
     if (onCreateEntryClick) {
       onCreateEntryClick(collectionName);
     }
-  };
-
-  handleCreateButtonClick = () => {
-    this.setState({
-      createMenuActive: true,
-    });
-  };
-
-  handleCreateMenuHide = () => {
-    this.setState({
-      createMenuActive: false,
-    });
   };
 
   render() {
@@ -51,6 +34,7 @@ export default class AppHeader extends React.Component {
       runCommand,
       toggleDrawer,
       onLogoutClick,
+      openMediaLibrary,
     } = this.props;
 
     const avatarStyle = {
@@ -59,7 +43,6 @@ export default class AppHeader extends React.Component {
 
     const theme = {
       appBar: 'nc-appHeader-appBar',
-      homeLink: 'nc-appHeader-homeLink',
       iconMenu: 'nc-appHeader-iconMenu',
       icon: 'nc-appHeader-icon',
       leftIcon: 'nc-appHeader-leftIcon',
@@ -76,17 +59,14 @@ export default class AppHeader extends React.Component {
         theme={theme}
         leftIcon="menu"
         onLeftIconClick={toggleDrawer}
-        onRightIconClick={this.handleRightIconClick}
       >
-        <Link to="/" className="nc-appHeader-homeLink">
+        <Link to="/" className="nc-appHeader-button">
           <FontIcon value="home" className="nc-appHeader-icon" />
         </Link>
-        <IconMenu
-          theme={theme}
-          icon="add"
-          onClick={this.handleCreateButtonClick}
-          onHide={this.handleCreateMenuHide}
-        >
+        <button onClick={openMediaLibrary} className="nc-appHeader-button">
+          <FontIcon value="perm_media" className="nc-appHeader-icon" />
+        </button>
+        <IconMenu icon="add" theme={theme}>
           {
             collections.filter(collection => collection.get('create')).toList().map(collection =>
               <MenuItem

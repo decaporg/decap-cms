@@ -18,7 +18,7 @@
   overflow: hidden;
   overflow-x: auto;
   min-height: var(--richTextEditorMinHeight);
-  font-family: var(--fontFamily);
+  font-family: var(--fontFamilyPrimary);
 }
 
 .nc-visualEditor-editor h1 {

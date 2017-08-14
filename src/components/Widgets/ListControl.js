@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { List, Map, fromJS } from 'immutable';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 import FontIcon from 'react-toolbox/lib/font_icon';
 import ObjectControl from './ObjectControl';
@@ -36,7 +37,9 @@ export default class ListControl extends Component {
     value: PropTypes.node,
     field: PropTypes.node,
     forID: PropTypes.string,
+    mediaPaths: ImmutablePropTypes.map.isRequired,
     getAsset: PropTypes.func.isRequired,
+    onOpenMediaLibrary: PropTypes.func.isRequired,
     onAddAsset: PropTypes.func.isRequired,
     onRemoveAsset: PropTypes.func.isRequired,
   };
@@ -45,6 +48,16 @@ export default class ListControl extends Component {
     super(props);
     this.state = { itemsCollapsed: List(), value: valueToString(props.value) };
     this.valueType = null;
+  }
+
+  /**
+   * Always update so that each nested widget has the option to update. This is
+   * required because ControlHOC provides a default `shouldComponentUpdate`
+   * which only updates if the value changes, but every widget must be allowed
+   * to override this.
+   */
+  shouldComponentUpdate() {
+    return true;
   }
 
   componentDidMount() {
@@ -147,7 +160,7 @@ export default class ListControl extends Component {
   };
 
   renderItem = (item, index) => {
-    const { field, getAsset, onAddAsset, onRemoveAsset } = this.props;
+    const { field, getAsset, mediaPaths, onOpenMediaLibrary, onAddAsset, onRemoveAsset } = this.props;
     const { itemsCollapsed } = this.state;
     const collapsed = itemsCollapsed.get(index);
     const classNames = ['nc-listControl-item', collapsed ? 'nc-listControl-collapsed' : ''];
@@ -167,6 +180,8 @@ export default class ListControl extends Component {
         className="nc-listControl-objectControl"
         onChange={this.handleChangeFor(index)}
         getAsset={getAsset}
+        onOpenMediaLibrary={onOpenMediaLibrary}
+        mediaPaths={mediaPaths}
         onAddAsset={onAddAsset}
         onRemoveAsset={onRemoveAsset}
       />

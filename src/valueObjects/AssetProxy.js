@@ -8,7 +8,7 @@ export const setStore = (storeObj) => {
   store = storeObj;
 };
 
-export default function AssetProxy(value, fileObj, uploaded = false) {
+export default function AssetProxy(value, fileObj, uploaded = false, asset) {
   const config = store.getState().config;
   this.value = value;
   this.fileObj = fileObj;
@@ -16,6 +16,7 @@ export default function AssetProxy(value, fileObj, uploaded = false) {
   this.sha = null;
   this.path = config.get('media_folder') && !uploaded ? resolvePath(value, config.get('media_folder')) : value;
   this.public_path = !uploaded ? resolvePath(value, config.get('public_folder')) : value;
+  this.asset = asset;
 }
 
 AssetProxy.prototype.toString = function () {
@@ -46,7 +47,7 @@ export function createAssetProxy(value, fileObj, uploaded = false, privateUpload
     const provider = integration && getIntegrationProvider(state.integrations, currentBackend(state.config).getToken, integration);
     return provider.upload(fileObj, privateUpload).then(
       response => (
-        new AssetProxy(response.assetURL.replace(/^(https?):/, ''), null, true)
+        new AssetProxy(response.asset.url.replace(/^(https?):/, ''), null, true, response.asset)
       ),
       error => new AssetProxy(value, fileObj, false)
     );  

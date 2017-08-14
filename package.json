@@ -82,6 +82,7 @@
     "babel-loader": "^7.0.0",
     "babel-plugin-lodash": "^3.2.0",
     "babel-plugin-transform-builtin-extend": "^1.1.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.6.0",
     "babel-preset-react": "^6.23.0",
     "babel-preset-stage-1": "^6.22.0",
@@ -108,8 +109,8 @@
     "postcss-cssnext": "^3.0.2",
     "postcss-import": "^11.0.0",
     "postcss-loader": "^2.0.7",
-    "react-test-renderer": "^16.0.0",
     "react-hot-loader": "^3.0.0-beta.7",
+    "react-test-renderer": "^16.0.0",
     "style-loader": "^0.18.2",
     "stylefmt": "^4.3.1",
     "stylelint": "^7.9.0",
@@ -126,6 +127,7 @@
   "dependencies": {
     "classnames": "^2.2.5",
     "create-react-class": "^15.6.0",
+    "focus-trap-react": "^3.0.3",
     "fuzzy": "^0.1.1",
     "gotrue-js": "^0.9.11",
     "gray-matter": "^3.0.6",
@@ -184,6 +186,7 @@
     "unified": "^6.1.4",
     "unist-builder": "^1.0.2",
     "unist-util-visit-parents": "^1.1.1",
+    "url": "^0.11.0",
     "uuid": "^3.1.0"
   },
   "optionalDependencies": {

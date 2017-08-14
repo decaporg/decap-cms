@@ -85,7 +85,11 @@ const entryDraftReducer = (state = Map(), action) => {
       });
 
     case ADD_ASSET:
-      return state.update('mediaFiles', list => list.push(action.payload.public_path));
+      if (state.has('mediaFiles')) {
+        return state.update('mediaFiles', list => list.push(action.payload.public_path));
+      }
+      return state;
+
     case REMOVE_ASSET:
       return state.update('mediaFiles', list => list.filterNot(path => path === action.payload));
 
