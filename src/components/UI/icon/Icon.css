@@ -303,7 +303,6 @@
 .paragraph:before { content: '\f1dd'; } /* '' */
 .github:before { content: '\f300'; } /* '' */
 .github-circled:before { content: '\f301'; } /* '' */
-.bitbucket:before { content: '\f171'; } /* '' */
 .flickr:before { content: '\f303'; } /* '' */
 .flickr-circled:before { content: '\f304'; } /* '' */
 .vimeo:before { content: '\f306'; } /* '' */
@@ -351,3 +350,17 @@
 .db-shape:before { content: '\f600'; } /* '' */
 .sweden:before { content: '\f601'; } /* '' */
 .logo-db:before { content: '\f603'; } /* '' */
+
+/* temporary until we can move to a font icon */
+.bitbucket:before {
+  content: ' ';
+  background-image: url(./bitbucket_icon.png);
+  height: 28px;
+  width: 28px;
+  top: 3px;
+  left: -10px;
+  position: relative;
+  background-size: contain;
+  background-repeat: no-repeat;
+  display: block;
+}
