@@ -124,7 +124,7 @@ export default class API {
     return this.request(`${ this.repoURL }/src/${ this.branch }/${ path }`, {})
     .then(files => {
       if (!Array.isArray(files.values)) {
-        throw new Error(`Cannot list files, path ${path} is not a directory but a ${files.type}`);
+        throw new Error(`Cannot list files, path ${path} is not a directory`);
       }
       return files.values;
     })
@@ -161,7 +161,7 @@ export default class API {
     if (message && message != "") {
       formData.append('message', message) ;
     }
-    return this.formRequest(`${ this.repoURL }/src/${ this.branch }`, {
+    return this.formRequest(`${ this.repoURL }/src`, {
       method: 'POST',
       body: formData
     });
