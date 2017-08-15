@@ -39,6 +39,8 @@ Save draft | Commits to a new branch (named according to the pattern `cms/collec
 Edit draft | Pushes another commit to the draft branch/pull request
 Approve and publish draft | Merges pull request and deletes branch
 
+**NOTE:** Editorial workflow does not work for the Bitbucket backend at this time.
+
 
 ## Media and Public Folders
 
