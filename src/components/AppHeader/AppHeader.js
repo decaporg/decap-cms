@@ -86,7 +86,7 @@ export default class AppHeader extends React.Component {
           }
         </IconMenu>
         <FindBar runCommand={runCommand} />
-        <Avatar style={avatarStyle} title={user.get("name")} image={user.get("avatar_url")} />
+        <Avatar style={avatarStyle} title={user.get("name")} image={user.get("avatar_url") || user.getIn(["links", "avatar", "href"])} />
         <IconMenu icon="settings" position="topRight" theme={styles}>
           <MenuItem onClick={onLogoutClick} value="log out" caption="Log Out" />
         </IconMenu>

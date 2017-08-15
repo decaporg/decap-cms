@@ -355,10 +355,10 @@
 .bitbucket:before {
   content: ' ';
   background-image: url(./bitbucket_icon.png);
-  height: 28px;
-  width: 28px;
-  top: 3px;
-  left: -10px;
+  height: 23px;
+  width: 23px;
+  top: 6px;
+  left: -8px;
   position: relative;
   background-size: contain;
   background-repeat: no-repeat;
