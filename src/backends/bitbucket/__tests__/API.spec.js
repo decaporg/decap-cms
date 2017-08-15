@@ -1,7 +1,6 @@
 import fetchMock from 'fetch-mock';
 import { curry, escapeRegExp, isMatch, merge } from 'lodash';
 import { Map } from 'immutable';
-
 import AssetProxy from "../../../valueObjects/AssetProxy";
 import API from '../API';
 
@@ -72,4 +71,18 @@ describe('bitbucket API', () => {
       }
     ]);
   });
+
+  it('should throw error if there no files to list', () => {
+    const api = new API({ branch: 'test-branch', repo: 'test-user/test-repo' });
+    mockRequest(api.api_root)(`${ api.repoURL }/src/${ api.branch }/test-directory`, {
+      headers: defaultResponseHeaders,
+      body: {
+        "pagelen": 10,
+        "page": 1,
+        "size": 1
+      }
+    });
+    return expect(api.listFiles('test-directory')).rejects.toBeDefined();
+  });
+
 });
