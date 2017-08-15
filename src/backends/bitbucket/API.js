@@ -86,6 +86,7 @@ export default class API {
     });
   }
 
+  //formrequest uses different headers for a form request vs normal json request
   formRequest(path, options = {}) {
     const headers = this.formRequestHeaders(options.headers || {});
     const url = this.urlFor(path, options);
@@ -154,12 +155,13 @@ export default class API {
 
   deleteFile(path, message, options={}) {
     const branch = options.branch || this.branch;
-    const fileURL = `${ this.repoURL }/src/${ this.branch }/${ path }`;
 
     let formData = new FormData();
     formData.append('files', path);
-
-    return this.formRequest(`${ this.repoURL }/src`, {
+    if (message && message != "") {
+      formData.append('message', message) ;
+    }
+    return this.formRequest(`${ this.repoURL }/src/${ this.branch }`, {
       method: 'POST',
       body: formData
     });
