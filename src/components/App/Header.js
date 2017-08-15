@@ -32,7 +32,7 @@ export default class Header extends React.Component {
       displayUrl,
     } = this.props;
 
-    const avatarUrl = user.get('avatar_url');
+    const avatarUrl = user.get('avatar_url') || user.getIn(['links', 'avatar', 'href']);
 
     return (
       <div className="nc-appHeader-container">
