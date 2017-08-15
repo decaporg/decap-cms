@@ -85,6 +85,7 @@ This names GitHub as the authentication provider, points to the repo location on
 
 ### Editorial Workflow
 By default, saving a post in the CMS interface will push a commit directly to the branch specified in `backend`. However, you also have the option to enable the [Editorial Workflow](editorial-workflow.md), which adds an interface for drafting, reviewing, and approving posts. To do this, simply add the following line to your `config.yml`:
+NOTE: editorial workflow does not work for bitbucket backend at this time.
 
 ``` yaml
 publish_mode: editorial_workflow

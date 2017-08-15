@@ -24,6 +24,8 @@ To enable the editorial workflow, add this line to your `admin/config.yml` file:
 publish_mode: editorial_workflow
 ```
 
+NOTE: editorial workflow does not work for bitbucket backend at this time.
+
 There are no other configuration options right now. There are always three possible statuses, and new branch names are created according to the pattern `cms/collectionName-entrySlug`.
 
 ## About metadata
