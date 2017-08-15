@@ -10,10 +10,12 @@
 
 .buttonRight {
   float: right;
+  margin-left: 10px;
 }
 
 .buttonLeft {
   float: left;
+  margin-right: 10px;
 }
 
 .footer {

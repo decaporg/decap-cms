@@ -234,6 +234,13 @@ class Backend {
     });
   }
 
+  persistMedia(files) {
+    const options = {
+      commitMessage: `Add media files\n${files.map(file => file.path).join('\n')}`,
+    };
+    return this.implementation.persistMedia(files, options);
+  }
+
   deleteEntry(config, collection, slug) {
     const path = selectEntryPath(collection, slug);
     const commitMessage = `Delete ${ collection.get('label') } “${ slug }”`;

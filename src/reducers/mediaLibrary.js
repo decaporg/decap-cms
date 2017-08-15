@@ -5,6 +5,9 @@ import {
   MEDIA_REQUEST,
   MEDIA_LOAD_SUCCESS,
   MEDIA_LOAD_ERROR,
+  MEDIA_PERSIST_REQUEST,
+  MEDIA_PERSIST_SUCCESS,
+  MEDIA_PERSIST_FAILURE,
   MEDIA_DELETE_SUCCESS,
 } from '../actions/mediaLibrary';
 
@@ -23,6 +26,11 @@ const mediaLibrary = (state = Map({ isVisible: false }), action) => {
       );
     case MEDIA_LOAD_ERROR:
       return state.set('isLoading', false);
+    case MEDIA_PERSIST_REQUEST:
+      return state.set('isPersisting', true);
+    case MEDIA_PERSIST_SUCCESS:
+    case MEDIA_PERSIST_FAILURE:
+      return state.set('isPersisting', false);
     case MEDIA_DELETE_SUCCESS:
       const key = state.get('files').findIndex(file => file.path === action.payload.path);
       return state.deleteIn('files', key);

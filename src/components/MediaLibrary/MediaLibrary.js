@@ -2,9 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Dialog from 'react-toolbox/lib/dialog';
 import Table from 'react-toolbox/lib/table';
-import { Button } from 'react-toolbox/lib/button';
+import { Button, BrowseButton } from 'react-toolbox/lib/button';
 import bytes from 'bytes';
-import { loadMedia, deleteMedia, closeMediaLibrary } from '../../actions/mediaLibrary';
+import { createAssetProxy } from '../../valueObjects/AssetProxy';
+import { addAsset } from '../../actions/media';
+import { loadMedia, persistMedia, deleteMedia, closeMediaLibrary } from '../../actions/mediaLibrary';
 import styles from './MediaLibrary.css';
 
 class MediaLibrary extends React.Component {
@@ -24,7 +26,23 @@ class MediaLibrary extends React.Component {
     this.setState({ selection });
   };
 
-  deleteMedia = () => {
+  handlePersistMedia = (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+    const { selection } = this.state;
+    const { dispatch } = this.props;
+    const { files: fileList } = event.dataTransfer || event.target;
+    const files = [...fileList];
+    const file = files[0];
+    return createAssetProxy(file.name, file)
+      .then(assetProxy => {
+        dispatch(addAsset(assetProxy));
+        return dispatch(persistMedia([assetProxy]));
+      })
+      .then(() => dispatch(loadMedia()));
+  };
+
+  handleDeleteMedia = () => {
     const { selection } = this.state;
     const { files, dispatch } = this.props;
     if (!window.confirm('Are you sure you want to delete all selected media?')) {
@@ -37,6 +55,8 @@ class MediaLibrary extends React.Component {
         dispatch(loadMedia());
       });
   }
+
+
 
   render() {
     const { isVisible, files } = this.props;
@@ -69,8 +89,9 @@ class MediaLibrary extends React.Component {
         />
 
         <div className={styles.footer}>
-          <Button label="Cancel" onClick={this.closeMediaLibrary} className={styles.buttonRight}/>
-          <Button label="Delete" onClick={this.deleteMedia} className={styles.buttonLeft} accent />
+          <Button label="Delete" onClick={this.handleDeleteMedia} className={styles.buttonLeft} accent raised />
+          <Button label="Close" onClick={this.closeMediaLibrary} className={styles.buttonRight}/>
+          <BrowseButton label="Add New" multiple onChange={this.handlePersistMedia} className={styles.buttonRight} primary raised />
         </div>
       </Dialog>
     );
