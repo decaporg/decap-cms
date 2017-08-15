@@ -1,6 +1,8 @@
 @import '../UI/theme';
 
 .dialog {
+  overflow-y: auto;
+
   & h1 {
     margin-top: 10px;
   }
@@ -8,4 +10,12 @@
 
 .buttonRight {
   float: right;
+}
+
+.buttonLeft {
+  float: left;
+}
+
+.footer {
+  margin-top: 16px;
 }

@@ -240,6 +240,11 @@ class Backend {
     return this.implementation.deleteFile(path, commitMessage);
   }
 
+  deleteMedia(path) {
+    const commitMessage = `Delete ${path}`;
+    return this.implementation.deleteFile(path, commitMessage);
+  }
+
   persistUnpublishedEntry(config, collection, entryDraft, MediaFiles) {
     return this.persistEntry(config, collection, entryDraft, MediaFiles, { unpublished: true });
   }
