@@ -89,7 +89,8 @@
     "webpack": "^2.6.1",
     "webpack-dev-server": "^2.4.5",
     "webpack-merge": "^4.1.0",
-    "webpack-postcss-tools": "^1.1.1"
+    "webpack-postcss-tools": "^1.1.1",
+    "fetch-mock": "^5.12.1"
   },
   "dependencies": {
     "@kadira/storybook": "^1.36.0",
