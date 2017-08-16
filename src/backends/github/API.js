@@ -1,6 +1,6 @@
 import LocalForage from "localforage";
 import { Base64 } from "js-base64";
-import _ from "lodash";
+import { uniq, initial, last } from "lodash";
 import { filterPromises, resolvePromiseProperties } from "../../lib/promiseHelper";
 import AssetProxy from "../../valueObjects/AssetProxy";
 import { SIMPLE, EDITORIAL_WORKFLOW, status } from "../../constants/publishModes";
@@ -273,19 +273,20 @@ export default class API {
 
   deleteFile(path, message, options={}) {
     const branch = options.branch || this.branch;
+    const pathArray = path.split('/');
+    const filename = last(pathArray);
+    const directory = initial(pathArray).join('/');
+    const fileDataPath = encodeURIComponent(directory);
+    const fileDataURL = `${this.repoURL}/git/trees/${branch}:${fileDataPath}`;
     const fileURL = `${ this.repoURL }/contents/${ path }`;
-    // We need to request the file first to get the SHA
-    return this.request(fileURL, {
-      params: { ref: branch },
-      cache: "no-store",
-    }).then(({ sha }) => this.request(fileURL, {
-      method: "DELETE",
-      params: {
-        sha,
-        message,
-        branch,
-      },
-    }));
+
+    // We need to request the tree first to get the SHA
+    return this.request(fileDataURL, { cache: 'no-store' })
+      .then(resp => {
+        const { sha } = resp.tree.find(file => file.path === filename);
+        const opts = { method: 'DELETE', params: { sha, message, branch } };
+        return this.request(fileURL, opts);
+      });
   }
 
   editorialWorkflowGit(fileTree, entry, filesList, options) {
@@ -350,7 +351,7 @@ export default class API {
                 path: entry.path,
                 sha: entry.sha,
               },
-              files: _.uniq(files),
+              files: uniq(files),
             },
             timeStamp: new Date().toISOString(),
           };
