@@ -17,10 +17,20 @@ export default class API {
     return this.request("/user");
   }
 
+  isGroupProject() {
+    return this.request(this.repoURL).then(({ namespace }) => (namespace.kind === "group" ? `/groups/${ encodeURIComponent(namespace.full_path) }` : false));
+  }
+
   isCollaborator(user) {
     const WRITE_ACCESS = 30;
-    return this.request(`${ this.repoURL }/members/${ user.id }`)
-      .then(member => (member.access_level >= WRITE_ACCESS))
+    return this.isGroupProject().then((group) => {
+      /* TODO: cleanup? */
+      if (group === false) {
+        return this.request(`${ this.repoURL }/members/${ user.id }`);
+      } else {
+        return this.request(`${ group }/members/${ user.id }`);
+      }
+    }).then(member => (member.access_level >= WRITE_ACCESS))
       .catch((err) => {
         // Member does not have any access. We cannot just check for 404,
         //   because a 404 is also returned if we have the wrong URI,
