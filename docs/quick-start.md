@@ -38,7 +38,7 @@ Hexo, Middleman | `/source`
 Spike | `/views`
 
 Notes:
-- Gatsby treats `static` folder more strictly and will not render the admin page as the others. You will have to make a [page component](https://www.gatsbyjs.org/docs/building-with-components/) contining the necessary contents of the admin page. However, the `config.yml` is to be placed in the `static` folder in the same way. 
+- Gatsby treats the `static` folder more strictly and will not render the admin page as the other generators. You will have to make a [page component](https://www.gatsbyjs.org/docs/building-with-components/) containing the necessary scripts of the Netlify CMS app in the admin page. However, the `config.yml` is to be placed in the `static` folder in the same way.
 
 If your generator isn't listed here, you can check its documentation, or as a shortcut, look in your project for a `CSS` or `images` folder. They're usually processed as static files, so it's likely you can store your `admin` folder next to those. (When you've found the location, feel free to add it to these docs by [filing a pull request](https://github.com/netlify/netlify-cms/blob/master/CONTRIBUTING.md)!).
 
