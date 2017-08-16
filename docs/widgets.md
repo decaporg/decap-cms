@@ -22,6 +22,44 @@ Widgets define the data type and interface for entry fields. Netlify CMS comes w
 
 We’re always adding new widgets, and you can also [create your own](/docs/extending)!
 
+### List Widget
+
+The list widget allows you to map a user-provided string with a comma delimiter into a list. Consider the following example that also demonstrates how to set default values:
+
+```yaml
+collections:
+  - name: posts
+    label: Post
+    folder: "_posts"
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    create: true
+    fields:
+      - {label: Title, name: title, widget: string, tagname: h1}
+      - {label: Body, name: body, widget: markdown}
+      - {label: Categories, name: categories, widget: list}
+      - {label: Tags, name: tags, widget: list, default: ['term_1', 'term_2']}
+```
+
+Lists of objects are supported as well and require a nested field list.
+
+```yaml
+collections:
+  - name: posts
+    label: Post
+    folder: "_posts"
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    create: true
+    fields:
+      - {label: Title, name: title, widget: string, tagname: h1}
+      - {label: Body, name: body, widget: markdown}
+      - name: authors
+        label: Authors
+        widget: list
+        fields:
+          - {label: Name, name: name, widget: string}
+          - {label: Description, name: description, widget: markdown}
+```
+
 ### Relation Widget
 
 The relation widget allows you to reference an existing entry from within the entry you're editing. It provides a search input with a list of entries from the collection you're referencing, and the list automatically updates with matched entries based on what you've typed.
