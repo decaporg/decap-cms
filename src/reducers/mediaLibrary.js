@@ -1,3 +1,4 @@
+import { get } from 'lodash';
 import { Map } from 'immutable';
 import {
   OPEN_MEDIA_LIBRARY,
@@ -14,9 +15,15 @@ import {
 const mediaLibrary = (state = Map({ isVisible: false }), action) => {
   switch (action.type) {
     case OPEN_MEDIA_LIBRARY:
-      return state.set('isVisible', true);
+      return state.withMutations(map => map
+        .set('isVisible', true)
+        .set('fieldName', get(action, ['payload', 'fieldName']))
+      );
     case CLOSE_MEDIA_LIBRARY:
-      return state.set('isVisible', false);
+      return state.withMutations(map => map
+        .set('isVisible', false)
+        .delete('fieldName')
+      );
     case MEDIA_REQUEST:
       return state.set('isLoading', true);
     case MEDIA_LOAD_SUCCESS:
