@@ -20,7 +20,7 @@ Widgets define the data type and interface for entry fields. Netlify CMS comes w
 | `list`     | repeatable group of other widgets  | Immutable List of objects containing field values  |
 | `relation` | text input w/ suggestions dropdown | value of `valueField` in related entry (see below) |
 
-We’re always adding new widgets, and you can also [create your own](/docs/extending)!
+We’re always adding new widgets, and you can also [create your own](/docs/extending.md)!
 
 ### Relation Widget
 
