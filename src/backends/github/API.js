@@ -23,7 +23,7 @@ export default class API {
     return this.request('/user/repos').then((repos) => {
       let contributor = false
       for (const repo of repos) {
-        if (repo.full_name === this.repo && repo.permissions.push) contributor = true;
+        if (repo.full_name.toLowerCase() === this.repo.toLowerCase() && repo.permissions.push) contributor = true;
       }
       return contributor;
     }).catch((error) => {
