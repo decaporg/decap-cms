@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Map } from 'immutable';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 import { resolveWidget } from '../Widgets';
 import controlStyles from '../ControlPanel/ControlPane.css';
 import styles from './ObjectControl.css';
@@ -8,6 +9,8 @@ import styles from './ObjectControl.css';
 export default class ObjectControl extends Component {
   static propTypes = {
     onChange: PropTypes.func.isRequired,
+    onOpenMediaLibrary: PropTypes.func.isRequired,
+    mediaPaths: ImmutablePropTypes.map.isRequired,
     onAddAsset: PropTypes.func.isRequired,
     onRemoveAsset: PropTypes.func.isRequired,
     getAsset: PropTypes.func.isRequired,
@@ -22,7 +25,7 @@ export default class ObjectControl extends Component {
   };
 
   controlFor(field) {
-    const { onAddAsset, onRemoveAsset, getAsset, value, onChange } = this.props;
+    const { onAddAsset, onOpenMediaLibrary, mediaPaths, onRemoveAsset, getAsset, value, onChange } = this.props;
     if (field.get('widget') === 'hidden') {
       return null;
     }
@@ -40,6 +43,8 @@ export default class ObjectControl extends Component {
             onChange: (val, metadata) => {
               onChange((value || Map()).set(field.get('name'), val), metadata);
             },
+            onOpenMediaLibrary,
+            mediaPaths,
             onAddAsset,
             onRemoveAsset,
             getAsset,

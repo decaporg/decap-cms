@@ -1,4 +1,6 @@
 import React, { PropTypes } from 'react';
+import ImmutablePropTypes from "react-immutable-proptypes";
+import uuid from 'uuid';
 import { truncateMiddle } from '../../lib/textHelper';
 import AssetProxy from '../../valueObjects/AssetProxy';
 import styles from './FileControl.css';
@@ -6,18 +8,27 @@ import styles from './FileControl.css';
 const MAX_DISPLAY_LENGTH = 50;
 
 export default class MediaControl extends React.Component {
+  constructor(props) {
+    super(props);
+    this.controlID = uuid.v4();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { mediaPaths, value } = nextProps;
+    const mediaPath = mediaPaths.get(this.controlID);
+    if (mediaPath && mediaPath !== value) {
+      this.props.onChange(mediaPath);
+    }
+  }
+
   handleClick = (e) => {
     const { field, onOpenMediaLibrary } = this.props;
-    return onOpenMediaLibrary(field.get('name'));
+    return onOpenMediaLibrary(this.controlID);
   };
 
   renderImageName = () => {
-    if (!this.props.value) return null;
-    if (this.value instanceof AssetProxy) {
-      return truncateMiddle(this.props.value.path, MAX_DISPLAY_LENGTH);
-    } else {
-      return truncateMiddle(this.props.value, MAX_DISPLAY_LENGTH);
-    }
+    const { value } = this.props;
+    return value ? truncateMiddle(value, MAX_DISPLAY_LENGTH) : null;
   };
 
   render() {
@@ -34,6 +45,7 @@ export default class MediaControl extends React.Component {
 
 MediaControl.propTypes = {
   field: PropTypes.object.isRequired,
+  mediaPaths: ImmutablePropTypes.map.isRequired,
   onAddAsset: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   onRemoveAsset: PropTypes.func.isRequired,

@@ -29,6 +29,7 @@ export default class ControlPane extends Component {
       entry,
       fieldsMetaData,
       fieldsErrors,
+      mediaPaths,
       getAsset,
       onChange,
       onOpenMediaLibrary,
@@ -56,6 +57,7 @@ export default class ControlPane extends Component {
           controlComponent={widget.control}
           field={field}
           value={value}
+          mediaPaths={mediaPaths}
           metadata={metadata}
           onChange={(newValue, newMetadata) => onChange(fieldName, newValue, newMetadata)}
           onValidate={this.props.onValidate.bind(this, fieldName)}
@@ -96,6 +98,7 @@ ControlPane.propTypes = {
   fields: ImmutablePropTypes.list.isRequired,
   fieldsMetaData: ImmutablePropTypes.map.isRequired,
   fieldsErrors: ImmutablePropTypes.map.isRequired,
+  mediaPaths: ImmutablePropTypes.map.isRequired,
   getAsset: PropTypes.func.isRequired,
   onOpenMediaLibrary: PropTypes.func.isRequired,
   onAddAsset: PropTypes.func.isRequired,

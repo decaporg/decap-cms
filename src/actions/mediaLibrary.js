@@ -6,6 +6,7 @@ const { notifSend } = notifActions;
 
 export const OPEN_MEDIA_LIBRARY = 'OPEN_MEDIA_LIBRARY';
 export const CLOSE_MEDIA_LIBRARY = 'CLOSE_MEDIA_LIBRARY';
+export const MEDIA_INSERT = 'MEDIA_INSERT';
 export const MEDIA_REQUEST = 'MEDIA_REQUEST';
 export const MEDIA_LOAD_SUCCESS = 'MEDIA_LOAD_SUCCESS';
 export const MEDIA_LOAD_ERROR = 'MEDIA_LOAD_ERROR';
@@ -14,12 +15,16 @@ export const MEDIA_PERSIST_SUCCESS = 'MEDIA_PERSIST_SUCCESS';
 export const MEDIA_PERSIST_FAILURE = 'MEDIA_PERSIST_FAILURE';
 export const MEDIA_DELETE_SUCCESS = 'MEDIA_DELETE_SUCCESS';
 
-export function openMediaLibrary(fieldName) {
-  return { type: OPEN_MEDIA_LIBRARY, payload: { fieldName } };
+export function openMediaLibrary(controlID) {
+  return { type: OPEN_MEDIA_LIBRARY, payload: { controlID } };
 }
 
 export function closeMediaLibrary() {
   return { type: CLOSE_MEDIA_LIBRARY };
+}
+
+export function insertMedia(mediaPath) {
+  return { type: MEDIA_INSERT, payload: { mediaPath } };
 }
 
 export function loadMedia() {

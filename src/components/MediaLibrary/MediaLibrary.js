@@ -8,7 +8,7 @@ import { resolvePath } from '../../lib/pathHelper';
 import { createAssetProxy } from '../../valueObjects/AssetProxy';
 import { changeDraftField } from '../../actions/entries';
 import { addAsset } from '../../actions/media';
-import { loadMedia, persistMedia, deleteMedia, closeMediaLibrary } from '../../actions/mediaLibrary';
+import { loadMedia, persistMedia, deleteMedia, insertMedia, closeMediaLibrary } from '../../actions/mediaLibrary';
 import styles from './MediaLibrary.css';
 
 class MediaLibrary extends React.Component {
@@ -49,7 +49,7 @@ class MediaLibrary extends React.Component {
     const { files, dispatch, fieldName, config } = this.props;
     const file = files.find((file, key) => selection[0] === key);
     const publicPath = resolvePath(file.name, config.get('public_folder'));
-    dispatch(changeDraftField(fieldName, publicPath));
+    dispatch(insertMedia(publicPath));
     return this.handleClose();
   };
 

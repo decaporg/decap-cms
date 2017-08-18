@@ -3,6 +3,7 @@ import { Map } from 'immutable';
 import {
   OPEN_MEDIA_LIBRARY,
   CLOSE_MEDIA_LIBRARY,
+  MEDIA_INSERT,
   MEDIA_REQUEST,
   MEDIA_LOAD_SUCCESS,
   MEDIA_LOAD_ERROR,
@@ -12,18 +13,22 @@ import {
   MEDIA_DELETE_SUCCESS,
 } from '../actions/mediaLibrary';
 
-const mediaLibrary = (state = Map({ isVisible: false }), action) => {
+const mediaLibrary = (state = Map({ isVisible: false, controlMedia: Map() }), action) => {
   switch (action.type) {
     case OPEN_MEDIA_LIBRARY:
-      return state.withMutations(map => map
-        .set('isVisible', true)
-        .set('fieldName', get(action, ['payload', 'fieldName']))
-      );
+      return state.withMutations(map => {
+        map.set('isVisible', true)
+        map.set('controlID', get(action, ['payload', 'controlID']));
+      });
     case CLOSE_MEDIA_LIBRARY:
       return state.withMutations(map => map
         .set('isVisible', false)
-        .delete('fieldName')
+        .delete('controlID')
       );
+    case MEDIA_INSERT:
+      const controlID = state.get('controlID');
+      const mediaPath = get(action, ['payload', 'mediaPath']);
+      return state.setIn(['controlMedia', controlID], mediaPath);
     case MEDIA_REQUEST:
       return state.set('isLoading', true);
     case MEDIA_LOAD_SUCCESS:
