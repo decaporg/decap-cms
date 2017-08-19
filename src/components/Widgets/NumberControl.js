@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 
-export default class StringControl extends React.Component {
+export default class NumberControl extends React.Component {
   handleChange = (e) => {
-    this.props.onChange(e.target.value);
+    this.props.onChange(parseInt(e.target.value, 10));
   };
 
   render() {
@@ -10,7 +10,7 @@ export default class StringControl extends React.Component {
   }
 }
 
-StringControl.propTypes = {
+NumberControl.propTypes = {
   onChange: PropTypes.func.isRequired,
   value: PropTypes.node,
   forID: PropTypes.string,
