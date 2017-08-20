@@ -1,0 +1,20 @@
+@import "../../UI/theme";
+
+.toggleButton {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  height: 28px;
+  border: none;
+  border-radius: var(--borderRadius) var(--borderRadius) 0 0;
+  background: rgba(0,0,0,0.1);
+}
+
+.summary {
+  border: 2px solid rgba(0,0,0,0.1);
+  border-top-width: 28px;
+  border-radius: var(--borderRadius);
+  border-top-left-radius: 0;
+  margin-bottom: 20px;
+  padding: 20px;
+}

@@ -148,6 +148,7 @@
     "react-sidebar": "^2.2.1",
     "react-simple-dnd": "^0.1.2",
     "react-sortable": "^1.2.0",
+    "react-sortable-hoc": "^0.6.5",
     "react-split-pane": "^0.1.57",
     "react-textarea-autosize": "^4.3.2",
     "react-toolbox": "^1.2.1",
