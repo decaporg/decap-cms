@@ -207,9 +207,9 @@ export class Sticky extends Component {
             props.className,
             styles.sticky,
             {
-              [styles.stickyActive]: state.shouldStick,
-              [props.classNameActive]: state.shouldStick,
-              [styles.stickyAtBottom]: state.shouldStickAtBottom,
+              [styles.stickyActive]: (state.shouldStick && !props.disableSticky),
+              [props.classNameActive]: (state.shouldStick && !props.disableSticky),
+              [styles.stickyAtBottom]: (state.shouldStickAtBottom && !props.disableSticky)
             },
           )}
           style={

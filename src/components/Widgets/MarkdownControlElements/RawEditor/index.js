@@ -67,7 +67,10 @@ export default class RawEditor extends React.Component {
   constructor(props) {
     super(props);
     const plugins = registry.getEditorComponents();
-    this.state = { plugins };
+    this.state = {
+      plugins,
+      activePlugin: null
+    };
     this.shortcuts = {
       meta: {
         b: this.handleBold,
@@ -92,6 +95,10 @@ export default class RawEditor extends React.Component {
   componentWillUnmount() {
     this.element.removeEventListener('paste', this.handlePaste);
   }
+
+  onActivePlugin = (plugin) => {
+    this.setState({ activePlugin: plugin });
+  };
 
   getSelection() {
     const start = this.element.selectionStart;
@@ -307,7 +314,7 @@ export default class RawEditor extends React.Component {
 
   render() {
     const { onAddAsset, onRemoveAsset, getAsset } = this.props;
-    const { plugins, selectionPosition, dragging } = this.state;
+    const { plugins, selectionPosition, dragging, activePlugin } = this.state;
     const classNames = [styles.root];
     if (dragging) {
       classNames.push(styles.dragging);
@@ -324,6 +331,7 @@ export default class RawEditor extends React.Component {
         className={styles.editorControlBar}
         classNameActive={styles.editorControlBarSticky}
         fillContainerWidth
+        disableSticky={activePlugin !== null}
       >
         <Toolbar
           selectionPosition={selectionPosition}
@@ -338,6 +346,7 @@ export default class RawEditor extends React.Component {
           onAddAsset={onAddAsset}
           onRemoveAsset={onRemoveAsset}
           getAsset={getAsset}
+          onActivePlugin={this.onActivePlugin}
           rawMode
         />
       </Sticky>

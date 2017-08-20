@@ -101,6 +101,7 @@ export default class Editor extends Component {
       schema,
       parser: createMarkdownParser(schema, plugins),
       serializer: createSerializer(schema, plugins),
+      activePlugin: null
     };
   }
 
@@ -275,9 +276,13 @@ export default class Editor extends Component {
     this.props.onMode('raw');
   };
 
+  onActivePlugin = (plugin) => {
+    this.setState({ activePlugin: plugin });
+  };
+
   render() {
     const { onAddAsset, onRemoveAsset, getAsset } = this.props;
-    const { plugins, selectionPosition, dragging } = this.state;
+    const { plugins, selectionPosition, dragging, activePlugin } = this.state;
     const classNames = [styles.editor];
     if (dragging) {
       classNames.push(styles.dragging);
@@ -294,6 +299,7 @@ export default class Editor extends Component {
         className={styles.editorControlBar}
         classNameActive={styles.editorControlBarSticky}
         fillContainerWidth
+        disableSticky={activePlugin !== null}
       >
         <Toolbar
           selectionPosition={selectionPosition}
@@ -308,6 +314,7 @@ export default class Editor extends Component {
           onAddAsset={onAddAsset}
           onRemoveAsset={onRemoveAsset}
           getAsset={getAsset}
+          onActivePlugin={this.onActivePlugin}
         />
       </Sticky>
       <div ref={this.handleRef} />
