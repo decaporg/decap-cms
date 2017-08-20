@@ -9,7 +9,9 @@ Widgets define the data type and interface for entry fields. Netlify CMS comes w
 | `string`   | text input                         | string                                             |
 | `boolean`  | toggle switch                      | boolean                                            |
 | `text`     | textarea input                     | string (multiline)                                 |
-| `number`   | number input                       | number                                             |
+| `number`   | number input                       | string (numeric)                                   |
+| `integer`  | number input (step 1)              | number (parseInt)                                  |
+| `float`    | number input                       | number (parseFloat)                                |
 | `markdown` | rich text editor                   | string (markdown)                                  |
 | `datetime` | date picker                        | string (ISO date)                                  |
 | `select`   | select input (dropdown)            | string                                             |
