@@ -19,7 +19,7 @@ export default class API {
     return this.request("/user");
   }
 
-  isCollaborator(user) {
+  hasWriteAccess() {
     return this.request(this.repoURL)
       .then(repo => repo.permissions.push)
       .catch(error => {
