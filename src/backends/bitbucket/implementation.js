@@ -4,6 +4,7 @@ import API from "./API";
 import { fileExtension } from '../../lib/pathHelper'
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
+const TOKEN_EXPIRE_TIME_DEFAULT = 3600;
 const SUPPORTS_WORKFLOW = false;
 
 export default class Bitbucket {
@@ -39,6 +40,9 @@ export default class Bitbucket {
         if (!isCollab) throw new Error("Your Bitbucket user account does not have access to this repo.");
         // Authorized user
         user.token = state.token;
+        let timeObject = new Date();
+        timeObject = new Date(timeObject.getTime() + (TOKEN_EXPIRE_TIME_DEFAULT*1000));
+        user.expires_at = state.expires_at || timeObject;
         return user;
       })
     );
