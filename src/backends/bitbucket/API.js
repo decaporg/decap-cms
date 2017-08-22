@@ -18,7 +18,7 @@ export default class API {
     return this.request("/user");
   }
 
-  isCollaborator(user) {
+  hasWriteAccess(user) {
     return this.request(`/repositories/${ user.username }`, {
       params: { role: "contributor", q: `full_name="${ this.repo }"` },
     }).then((r) => {
