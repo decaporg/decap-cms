@@ -31,10 +31,16 @@ export default class Bitbucket {
   authenticate(state) {
     this.token = state.token;
     this.api = new API({ token: this.token, branch: this.branch, repo: this.repo });
-    return this.api.user().then((user) => {
-      user.token = state.token;
-      return user;
-    });
+
+    return this.api.user().then(user =>
+      this.api.isCollaborator(user).then((isCollab) => {
+        // Unauthorized user
+        if (!isCollab) throw new Error("Your Bitbucket user account does not have access to this repo.");
+        // Authorized user
+        user.token = state.token;
+        return user;
+      })
+    );
   }
 
   getToken() {
