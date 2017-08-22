@@ -77,6 +77,7 @@ export function loginUser(credentials) {
   };
 }
 export function refreshToken(user, dispatch) {
+  // TODO: Find the way to refresh token in silent
   const expireTime = new Date(user.expires_at);
   const current = new Date();
   const diff = (expireTime.getTime() - current.getTime());
