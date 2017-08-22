@@ -17,14 +17,17 @@ const mediaLibrary = (state = Map({ isVisible: false, controlMedia: Map() }), ac
   switch (action.type) {
     case OPEN_MEDIA_LIBRARY:
       return state.withMutations(map => {
+        const controlID = get(action, ['payload', 'controlID']);
         map.set('isVisible', true)
-        map.set('controlID', get(action, ['payload', 'controlID']));
+        map.set('controlID', controlID);
+        map.set('canInsert', !!controlID);
       });
     case CLOSE_MEDIA_LIBRARY:
-      return state.withMutations(map => map
-        .set('isVisible', false)
-        .delete('controlID')
-      );
+      return state.withMutations(map => {
+        map.set('isVisible', false);
+        map.delete('controlID');
+        map.delete('canInsert');
+      });
     case MEDIA_INSERT:
       const controlID = state.get('controlID');
       const mediaPath = get(action, ['payload', 'mediaPath']);
@@ -32,10 +35,10 @@ const mediaLibrary = (state = Map({ isVisible: false, controlMedia: Map() }), ac
     case MEDIA_REQUEST:
       return state.set('isLoading', true);
     case MEDIA_LOAD_SUCCESS:
-      return state.withMutations(map => map
-        .set('isLoading', false)
-        .set('files', action.payload.files)
-      );
+      return state.withMutations(map => {
+        map.set('isLoading', false)
+        map.set('files', action.payload.files)
+      });
     case MEDIA_LOAD_ERROR:
       return state.set('isLoading', false);
     case MEDIA_PERSIST_REQUEST:

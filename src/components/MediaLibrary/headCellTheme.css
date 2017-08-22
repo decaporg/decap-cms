@@ -1,0 +1,4 @@
+.headCell {
+  user-select: none;
+  cursor: pointer;
+}
