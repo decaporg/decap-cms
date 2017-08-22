@@ -80,24 +80,16 @@ export function refreshToken(user, dispatch) {
   // TODO: Find the way to refresh token in silent
   const expireTime = new Date(user.expires_at);
   const current = new Date();
-  const diff = (expireTime.getTime() - current.getTime());
-  if (diff > 0) {
-    setTimeout(() => {
-      dispatch(logoutUser());
-      dispatch(notifSend({
-        message: `Token was expired.`,
-        kind: 'warning',
-        dismissAfter: 8000,
-      }));
-    }, diff);
-  } else {
+  let diff = (expireTime.getTime() - current.getTime());
+  if (diff < 1000) diff = 1000;
+  setTimeout(() => {
     dispatch(logoutUser());
     dispatch(notifSend({
       message: `Token was expired.`,
       kind: 'warning',
       dismissAfter: 8000,
     }));
-  }
+  }, diff);
 }
 
 export function logoutUser() {
