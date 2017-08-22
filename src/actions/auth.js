@@ -43,7 +43,10 @@ export function authenticateUser() {
     dispatch(authenticating());
     return backend.currentUser()
       .then((user) => {
-        if (user) dispatch(authenticate(user));
+        if (user) {
+          dispatch(authenticate(user));
+          refreshToken(user, dispatch);
+        }
       })
       .catch((error) => {
         dispatch(authError(error));
@@ -61,6 +64,7 @@ export function loginUser(credentials) {
     return backend.authenticate(credentials)
       .then((user) => {
         dispatch(authenticate(user));
+        refreshToken(user, dispatch);
       })
       .catch((error) => {
         dispatch(notifSend({
@@ -71,6 +75,21 @@ export function loginUser(credentials) {
         dispatch(authError(error));
       });
   };
+}
+export function refreshToken(user, dispatch) {
+  // TODO: Find the way to refresh token in silent
+  const expireTime = new Date(user.expires_at);
+  const current = new Date();
+  let diff = (expireTime.getTime() - current.getTime());
+  if (diff < 1000) diff = 1000;
+  setTimeout(() => {
+    dispatch(logoutUser());
+    dispatch(notifSend({
+      message: `Token was expired.`,
+      kind: 'warning',
+      dismissAfter: 8000,
+    }));
+  }, diff);
 }
 
 export function logoutUser() {
