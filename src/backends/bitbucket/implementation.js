@@ -34,7 +34,7 @@ export default class Bitbucket {
     this.api = new API({ token: this.token, branch: this.branch, repo: this.repo });
 
     return this.api.user().then(user =>
-      this.api.isCollaborator(user).then((isCollab) => {
+      this.api.hasWriteAccess(user).then((isCollab) => {
         // Unauthorized user
         if (!isCollab) throw new Error("Your Bitbucket user account does not have access to this repo.");
         // Authorized user
