@@ -4,6 +4,7 @@ import API from "./API";
 import { fileExtension } from '../../lib/pathHelper'
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
+const SUPPORTS_WORKFLOW = false;
 
 export default class Bitbucket {
   constructor(config, proxied = false) {
@@ -93,5 +94,9 @@ export default class Bitbucket {
 
   deleteFile(path, commitMessage, options) {
     return this.api.deleteFile(path, commitMessage, options);
+  }
+
+  supportsWorkflow() {
+    return SUPPORTS_WORKFLOW;
   }
 }

@@ -278,6 +278,13 @@ class Backend {
       entry.data[filterRule.get('field')] === filterRule.get('value')
     ));
   }
+
+  supportsWorkflow() {
+    if(typeof this.implementation.supportsWorkflow === "function")
+      return this.implementation.supportsWorkflow();
+    else
+      return true;
+  }
 }
 
 export function resolveBackend(config) {
