@@ -18,33 +18,17 @@ export default class API {
     return this.request("/user");
   }
 
-  runRepoRequest(user, pageparam) {
-    let contributor = false;
-    let page = (typeof pageparam === 'undefined') ? 1 : pageparam;
-
+  isCollaborator(user) {
     return this.request(`/repositories/${ user.username }`, {
-      params: { role: "contributor", page: page },
+      params: { role: "contributor", q: `full_name="${ this.repo }"` },
     }).then((r) => {
       const repos = r.values;
-      const reposSize = r.size;
-      const reposPagelen = r.pagelen;
-
+      let contributor = false;
       for (const repo of repos) {
-        if (`${ user.username }/${ repo.name }` === this.repo) {
-          contributor = true;
-        }
+        if (this.repo === `${ repo.full_name }`) contributor = true;
       }
-
-      if(!contributor && Math.ceil(reposSize/reposPagelen) > page) {
-        return this.runRepoRequest(user, page+1);
-      } else {
-        return contributor;
-      }
+      return contributor;
     });
-  }
-
-  isCollaborator(user) {
-    return this.runRepoRequest(user);
   }
 
   requestHeaders(headers = {}) {
