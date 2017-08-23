@@ -3,7 +3,7 @@ import createReactClass from 'create-react-class';
 import { render } from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
 import 'file-loader?name=index.html!../example/index.html';
-import 'react-toolbox/lib/commons.scss';
+import 'normalize.css';
 import Root from './root';
 import registry from './lib/registry';
 import './index.css';

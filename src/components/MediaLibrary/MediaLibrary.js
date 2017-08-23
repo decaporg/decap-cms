@@ -10,6 +10,7 @@ import { changeDraftField } from '../../actions/entries';
 import { addAsset } from '../../actions/media';
 import { loadMedia, persistMedia, deleteMedia, insertMedia, closeMediaLibrary } from '../../actions/mediaLibrary';
 import styles from './MediaLibrary.css';
+import theme from './MediaLibraryTheme.css';
 
 class MediaLibrary extends React.Component {
 
@@ -87,6 +88,7 @@ class MediaLibrary extends React.Component {
         active={isVisible}
         onEscKeyDown={this.handleClose}
         onOverlayClick={this.handleClose}
+        theme={theme}
         className={styles.dialog}
       >
         <h1>Assets</h1>
