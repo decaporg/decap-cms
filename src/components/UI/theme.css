@@ -32,6 +32,28 @@
   --borderWidth: 2px;
   --border: solid var(--borderWidth) var(--secondaryColor);
   --textFieldBorder: var(--border);
+  --fontFamilyPrimary: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+
+  --input: {
+    font-family: 'SFMono-Regular', Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin: 0;
+    border: var(--textFieldBorder);
+    border-radius: var(--borderRadius);
+    outline: 0;
+    box-shadow: none;
+    background-color: var(--controlBGColor);
+    font-size: 16px;
+    color: var(--textColor);
+    transition: border-color .3s ease;
+
+    &:focus,
+    &:active {
+      border-color: var(--primaryColor);
+    }
+  }
 }
 
 .base {

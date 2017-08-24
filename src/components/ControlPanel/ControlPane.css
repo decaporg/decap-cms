@@ -10,23 +10,7 @@
   & textarea,
   & select,
   & div[contenteditable=true] {
-    display: block;
-    width: 100%;
-    padding: 12px;
-    margin: 0;
-    border: var(--textFieldBorder);
-    border-radius: var(--borderRadius);
-    outline: 0;
-    box-shadow: none;
-    background-color: var(--controlBGColor);
-    font-size: 16px;
-    color: var(--textColor);
-    transition: border-color .3s ease;
-
-    &:focus,
-    &:active {
-      border-color: var(--primaryColor);
-    }
+    @apply --input;
   }
 
   & input,

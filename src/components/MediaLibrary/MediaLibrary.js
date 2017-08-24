@@ -5,6 +5,7 @@ import Dialog from 'react-toolbox/lib/dialog';
 import { Table, TableHead, TableRow, TableCell } from 'react-toolbox/lib/table';
 import { Button, BrowseButton } from 'react-toolbox/lib/button';
 import bytes from 'bytes';
+import fuzzy from 'fuzzy';
 import { resolvePath } from '../../lib/pathHelper';
 import { createAssetProxy } from '../../valueObjects/AssetProxy';
 import { changeDraftField } from '../../actions/entries';
@@ -19,6 +20,7 @@ class MediaLibrary extends React.Component {
   state = {
     selectedFileName: '',
     sortFields: [{ fieldName: 'name', direction: 'asc' }],
+    query: '',
   };
 
   componentDidMount() {
@@ -32,22 +34,24 @@ class MediaLibrary extends React.Component {
   };
 
   toTableData = files => {
-    const tableData = files && files.map(file => ({
-      name: file.name,
-      type: last(file.name.split('.')).toUpperCase(),
-      size: file.size
+    const tableData = files && files.map(({ name, size, queryOrder }) => ({
+      name,
+      type: last(name.split('.')).toUpperCase(),
+      size,
+      queryOrder,
     }));
     const sort = this.state.sortFields.reduce((acc, { fieldName, direction }) => {
       acc[0].push(fieldName);
       acc[1].push(direction);
       return acc;
     }, [[], []]);
+    sort[0].push('queryOrder');
+    sort[1].push('asc');
     return orderBy(tableData, ...sort);
   };
 
   handleClose = () => {
     this.props.dispatch(closeMediaLibrary());
-    this.setState({ selectedFileName: '' });
   };
 
   handleRowSelect = row => {
@@ -122,12 +126,33 @@ class MediaLibrary extends React.Component {
         this.setState({ selectedFileName: '' });
         dispatch(loadMedia());
       });
+  };
+
+  handleSearch = event => {
+    this.setState({ query: event.target.value });
+  };
+
+  queryFilter = (query, files) => {
+    /**
+     * Because file names don't have spaces, typing a space eliminates all
+     * potential matches, so we strip them all out internally before running the
+     * query.
+     */
+    const strippedQuery = query.replace(/ /g, '');
+    const matches = fuzzy.filter(strippedQuery, files, { extract: file => file.name });
+    const matchFiles = matches.map((match, queryIndex) => {
+      const file = files[match.index];
+      return { ...file, queryIndex };
+    });
+    return matchFiles;
   }
 
   render() {
     const { isVisible, canInsert, files, forImage } = this.props;
+    const { query } = this.state;
     const filteredFiles = forImage ? this.filterImages(files) : files;
-    const tableData = files ? this.toTableData(filteredFiles) : [];
+    const queriedFiles = query ? this.queryFilter(query, filteredFiles) : filteredFiles;
+    const tableData = this.toTableData(queriedFiles);
     return (
       <Dialog
         type="large"
@@ -138,6 +163,7 @@ class MediaLibrary extends React.Component {
         className={styles.dialog}
       >
         <h1>{forImage ? 'Images' : 'Assets'}</h1>
+        <input className={styles.searchInput} type="text" value={this.state.query} onChange={this.handleSearch.bind(this)} placeholder="Search..."/>
         <Table onRowSelect={idx => this.handleRowSelect(tableData[idx])}>
           <TableHead>
             <TableCell

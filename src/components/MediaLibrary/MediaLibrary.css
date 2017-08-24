@@ -1,10 +1,12 @@
 @import '../UI/theme';
 
 .dialog {
-  overflow-y: auto;
+  height: 80%;
+  text-align: center;
 
   & h1 {
-    margin-top: 10px;
+    margin-top: 20px;
+    position: absolute;
   }
 }
 
@@ -19,5 +21,17 @@
 }
 
 .footer {
-  margin-top: 16px;
+  margin: 24px 0;
+  width: calc(100% - 48px);
+  position: absolute;
+  bottom: 0;
+}
+
+.searchInput {
+  @apply --input;
+  font-family: var(--fontFamilyPrimary);
+  width: 50%;
+  max-width: 800px;
+  margin: 12px auto;
+  display: inline-block;
 }

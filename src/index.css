@@ -14,7 +14,7 @@ html {
 }
 
 body {
-  font-family: var(--fontFamily);
+  font-family: var(--fontFamilyPrimary);
   height: 100%;
   background-color: #fff;
   color: #7c8382;
@@ -23,7 +23,7 @@ body {
 
 h1, h2, h3, h4, h5, h6, p {
   margin: 0;
-  font-family: var(--fontFamily);
+  font-family: var(--fontFamilyPrimary);
 }
 
 h1 {
