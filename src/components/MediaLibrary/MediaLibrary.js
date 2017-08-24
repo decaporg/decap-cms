@@ -51,7 +51,8 @@ class MediaLibrary extends React.Component {
   };
 
   handleRowSelect = row => {
-    this.setState({ selectedFileName: row && row.name });
+    const selectedFileName = this.state.selectedFileName === row.name ? null : row.name;
+    this.setState({ selectedFileName });
   };
 
   handleSortClick = fieldName => {
@@ -129,7 +130,7 @@ class MediaLibrary extends React.Component {
     const tableData = files ? this.toTableData(filteredFiles) : [];
     return (
       <Dialog
-        type="fullscreen"
+        type="large"
         active={isVisible}
         onEscKeyDown={this.handleClose}
         onOverlayClick={this.handleClose}

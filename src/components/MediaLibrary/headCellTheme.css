@@ -1,4 +1,22 @@
 .headCell {
   user-select: none;
   cursor: pointer;
+  position: relative;
+
+  &:hover {
+    background-color: #eee;
+
+    & .sortIcon {
+      color: inherit !important;
+    }
+  }
+}
+
+.sortIcon {
+  font-size: 12px !important;
+  font-weight: bold !important;
+  position: absolute;
+  bottom: 14px;
+  left: 4px;
+  vertical-align: middle;
 }
