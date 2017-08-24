@@ -1,3 +1,7 @@
 .wrapper {
   z-index: 300;
 }
+
+.body {
+  height: 100%;
+}

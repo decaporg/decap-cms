@@ -4,6 +4,7 @@ import { orderBy, get, last } from 'lodash';
 import Dialog from 'react-toolbox/lib/dialog';
 import { Table, TableHead, TableRow, TableCell } from 'react-toolbox/lib/table';
 import { Button, BrowseButton } from 'react-toolbox/lib/button';
+import FocusTrap from 'focus-trap-react';
 import bytes from 'bytes';
 import fuzzy from 'fuzzy';
 import { resolvePath } from '../../lib/pathHelper';
@@ -145,7 +146,40 @@ class MediaLibrary extends React.Component {
       return { ...file, queryIndex };
     });
     return matchFiles;
-  }
+  };
+
+  handleRowFocus = event => {
+    const scrollContainer = this.tableScrollRef.parentElement;
+    const scrollContainerInnerHeight = scrollContainer.clientHeight;
+    const scrollContainerBottomPadding = 130;
+    const scrollElement = this.tableScrollRef;
+    const scrollPosition = scrollElement.scrollTop;
+    const row = event.currentTarget;
+    const rowHeight = row.offsetHeight;
+    const rowPosition = row.offsetTop;
+
+    event.currentTarget.classList.add('mediaLibraryRowFocused');
+
+    const rowAboveVisibleArea = scrollPosition > rowPosition;
+
+    if (rowAboveVisibleArea) {
+      scrollElement.scrollTop = rowPosition;
+      return;
+    }
+
+    const effectiveScrollPosition = scrollContainerInnerHeight + scrollPosition;
+    const effectiveRowPosition = rowPosition + rowHeight + scrollContainerBottomPadding;
+    const rowBelowVisibleArea = effectiveScrollPosition < effectiveRowPosition;
+
+    if (rowBelowVisibleArea) {
+      const scrollTopOffset = scrollContainerInnerHeight - scrollContainerBottomPadding - rowHeight;
+      scrollElement.scrollTop = rowPosition - scrollTopOffset;
+    }
+  };
+
+  handleRowBlur = event => {
+    event.currentTarget.classList.remove('mediaLibraryRowFocused');
+  };
 
   render() {
     const { isVisible, canInsert, files, forImage } = this.props;
@@ -162,55 +196,61 @@ class MediaLibrary extends React.Component {
         theme={dialogTheme}
         className={styles.dialog}
       >
-        <h1>{forImage ? 'Images' : 'Assets'}</h1>
-        <input className={styles.searchInput} type="text" value={this.state.query} onChange={this.handleSearch.bind(this)} placeholder="Search..."/>
-        <Table onRowSelect={idx => this.handleRowSelect(tableData[idx])}>
-          <TableHead>
-            <TableCell
-              theme={headCellTheme}
-              sorted={this.getSortDirection('name')}
-              onClick={() => this.handleSortClick('name')}
-            >
-                Name
-            </TableCell>
-            <TableCell
-              theme={headCellTheme}
-              sorted={this.getSortDirection('type')}
-              onClick={() => this.handleSortClick('type')}
-            >
-                Type
-            </TableCell>
-            <TableCell
-              theme={headCellTheme}
-              sorted={this.getSortDirection('size')}
-              onClick={() => this.handleSortClick('size')}
-            >
-                Size
-            </TableCell>
-          </TableHead>
-          {
-            tableData.map((file, idx) =>
-              <TableRow key={idx} selected={this.state.selectedFileName === file.name }>
-                <TableCell>{file.name}</TableCell>
-                <TableCell>{file.type}</TableCell>
-                <TableCell>{bytes(file.size, { decimalPlaces: 0 })}</TableCell>
-              </TableRow>
-            )
-          }
-        </Table>
-        <div className={styles.footer}>
-          <Button label="Delete" onClick={this.handleDelete} className={styles.buttonLeft} accent raised />
-          <BrowseButton label="Upload" accept={forImage ? 'image/*' : '*'} onChange={this.handlePersist} className={styles.buttonLeft} primary raised />
-          <Button label="Close" onClick={this.handleClose} className={styles.buttonRight}/>
-          {!canInsert ? null :
-            <Button
-              label="Insert"
-              onClick={this.handleInsert}
-              className={styles.buttonRight}
-              primary
-              raised
-            />}
-        </div>
+        <FocusTrap active={isVisible} focusTrapOptions={{ clickOutsideDeactivates: true }} style={{ height: '100%' }}>
+          <h1>{forImage ? 'Images' : 'Assets'}</h1>
+          <input className={styles.searchInput} type="text" value={this.state.query} onChange={this.handleSearch.bind(this)} placeholder="Search..." autoFocus/>
+          <div style={{ height: '100%', paddingBottom: '130px' }}>
+            <div style={{ height: '100%', overflowY: 'auto' }} ref={ref => this.tableScrollRef = ref}>
+              <Table onRowSelect={idx => this.handleRowSelect(tableData[idx])}>
+                <TableHead>
+                  <TableCell
+                    theme={headCellTheme}
+                    sorted={this.getSortDirection('name')}
+                    onClick={() => this.handleSortClick('name')}
+                  >
+                      Name
+                  </TableCell>
+                  <TableCell
+                    theme={headCellTheme}
+                    sorted={this.getSortDirection('type')}
+                    onClick={() => this.handleSortClick('type')}
+                  >
+                      Type
+                  </TableCell>
+                  <TableCell
+                    theme={headCellTheme}
+                    sorted={this.getSortDirection('size')}
+                    onClick={() => this.handleSortClick('size')}
+                  >
+                      Size
+                  </TableCell>
+                </TableHead>
+                {
+                  tableData.map((file, idx) =>
+                    <TableRow key={idx} selected={this.state.selectedFileName === file.name } onFocus={this.handleRowFocus} onBlur={this.handleRowBlur}>
+                      <TableCell>{file.name}</TableCell>
+                      <TableCell>{file.type}</TableCell>
+                      <TableCell>{bytes(file.size, { decimalPlaces: 0 })}</TableCell>
+                    </TableRow>
+                  )
+                }
+              </Table>
+            </div>
+          </div>
+          <div className={styles.footer}>
+            <Button label="Delete" onClick={this.handleDelete} className={styles.buttonLeft} accent raised />
+            <BrowseButton label="Upload" accept={forImage ? 'image/*' : '*'} onChange={this.handlePersist} className={styles.buttonLeft} primary raised />
+            <Button label="Close" onClick={this.handleClose} className={styles.buttonRight}/>
+            {!canInsert ? null :
+              <Button
+                label="Insert"
+                onClick={this.handleInsert}
+                className={styles.buttonRight}
+                primary
+                raised
+              />}
+          </div>
+        </FocusTrap>
       </Dialog>
     );
   }

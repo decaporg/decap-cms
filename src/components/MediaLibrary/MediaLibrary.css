@@ -35,3 +35,10 @@
   margin: 12px auto;
   display: inline-block;
 }
+
+/**
+ * Focus styles for keyboard navigation
+ */
+:global(.mediaLibraryRowFocused) {
+  background-color: #eee;
+}
