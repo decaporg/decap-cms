@@ -32,7 +32,11 @@ class MediaLibrary extends React.Component {
   };
 
   toTableData = files => {
-    const tableData = files && files.map(file => ({ name: file.name, size: file.size }));
+    const tableData = files && files.map(file => ({
+      name: file.name,
+      type: last(file.name.split('.')).toUpperCase(),
+      size: file.size
+    }));
     const sort = this.state.sortFields.reduce((acc, { fieldName, direction }) => {
       acc[0].push(fieldName);
       acc[1].push(direction);
@@ -144,6 +148,13 @@ class MediaLibrary extends React.Component {
             </TableCell>
             <TableCell
               theme={headCellTheme}
+              sorted={this.getSortDirection('type')}
+              onClick={() => this.handleSortClick('type')}
+            >
+                Type
+            </TableCell>
+            <TableCell
+              theme={headCellTheme}
               sorted={this.getSortDirection('size')}
               onClick={() => this.handleSortClick('size')}
             >
@@ -154,6 +165,7 @@ class MediaLibrary extends React.Component {
             tableData.map((file, idx) =>
               <TableRow key={idx} selected={this.state.selectedFileName === file.name }>
                 <TableCell>{file.name}</TableCell>
+                <TableCell>{file.type}</TableCell>
                 <TableCell>{bytes(file.size, { decimalPlaces: 0 })}</TableCell>
               </TableRow>
             )
