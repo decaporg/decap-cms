@@ -16,12 +16,15 @@ import styles from './MediaLibrary.css';
 import dialogTheme from './dialogTheme.css';
 import headCellTheme from './headCellTheme.css';
 
+const MEDIA_LIBRARY_SORT_KEY = 'cms.medlib-sort';
+const defaultSort = [{ fieldName: 'name', direction: 'asc' }];
+
 class MediaLibrary extends React.Component {
 
   state = {
     selectedFileName: '',
-    sortFields: [{ fieldName: 'name', direction: 'asc' }],
     query: '',
+    sortFields: JSON.parse(localStorage.getItem(MEDIA_LIBRARY_SORT_KEY)) || defaultSort,
   };
 
   componentDidMount() {
@@ -41,14 +44,26 @@ class MediaLibrary extends React.Component {
       size,
       queryOrder,
     }));
-    const sort = this.state.sortFields.reduce((acc, { fieldName, direction }) => {
+    const sort = this.getSort(this.state.sortFields);
+    return orderBy(tableData, ...sort);
+  };
+
+  getSort = sortFields => {
+    const sort = sortFields.reduce((acc, { fieldName, direction }) => {
       acc[0].push(fieldName);
       acc[1].push(direction);
       return acc;
     }, [[], []]);
+
+    /**
+     * The `queryOrder` field set on the file during media library search is
+     * always the lowest priority order. Has no effect if no query has been
+     * entered.
+     */
     sort[0].push('queryOrder');
     sort[1].push('asc');
-    return orderBy(tableData, ...sort);
+
+    return sort;
   };
 
   handleClose = () => {
@@ -62,26 +77,14 @@ class MediaLibrary extends React.Component {
 
   handleSortClick = fieldName => {
     const { sortFields } = this.state;
-    const currentSort = sortFields.find(sort => sort.fieldName === fieldName);
-
-    if (!currentSort) {
-      const newSort = { fieldName, direction: 'asc' };
-      const filteredSortFields = sortFields.filter(sort => sort.fieldName !== fieldName);
-      const newSortFields = [newSort, ...filteredSortFields];
-      this.setState({ sortFields: newSortFields });
-    }
-
-    else if (currentSort && currentSort.direction === 'asc') {
-      const newSort = { fieldName, direction: 'desc' };
-      const filteredSortFields = sortFields.filter(sort => sort.fieldName !== fieldName);
-      const newSortFields = [newSort, ...filteredSortFields];
-      this.setState({ sortFields: newSortFields });
-    }
-
-    else {
-      const filteredSortFields = sortFields.filter(sort => sort.fieldName !== fieldName);
-      this.setState({ sortFields: filteredSortFields });
-    }
+    const currentSort = sortFields.find(sort => sort.fieldName === fieldName) || {};
+    const { direction } = currentSort;
+    const shouldSort = !direction || direction === 'asc';
+    const newSortField = shouldSort && { fieldName, direction: !direction ? 'asc' : 'desc' };
+    const remainingSorts = sortFields.filter(sort => sort.fieldName !== fieldName);
+    const newSort = shouldSort ? [newSortField, ...remainingSorts] : remainingSorts;
+    localStorage.setItem(MEDIA_LIBRARY_SORT_KEY, JSON.stringify(newSort));
+    this.setState({ sortFields: newSort });
   }
 
   getSortDirection = fieldName => {
