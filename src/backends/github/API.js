@@ -8,6 +8,19 @@ import { APIError, EditorialWorkflowError } from "ValueObjects/errors";
 
 const CMS_BRANCH_PREFIX = 'cms/';
 
+function LocalForageTest() {
+  const testKey = 'LocalForageTest';
+  LocalForage.setItem(testKey, {expires: Date.now() + 300000}).then(() => {
+    LocalForage.removeItem(testKey);
+  }).catch((err) => {
+    if (err.code === 22) {
+      const message = `Uable to set localStorage key. Quota exceeded! Full disk?`;
+      return alert(message);
+    }
+    console.log(err);
+  })
+}
+
 export default class API {
   constructor(config) {
     this.api_root = config.api_root || "https://api.github.com";
@@ -15,6 +28,7 @@ export default class API {
     this.branch = config.branch || "master";
     this.repo = config.repo || "";
     this.repoURL = `/repos/${ this.repo }`;
+    LocalForageTest()
   }
 
   user() {
