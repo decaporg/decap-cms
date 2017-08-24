@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { orderBy, get } from 'lodash';
+import { orderBy, get, last } from 'lodash';
 import Dialog from 'react-toolbox/lib/dialog';
 import { Table, TableHead, TableRow, TableCell } from 'react-toolbox/lib/table';
 import { Button, BrowseButton } from 'react-toolbox/lib/button';
@@ -26,6 +26,11 @@ class MediaLibrary extends React.Component {
     dispatch(loadMedia());
   }
 
+  filterImages = files => {
+    const imageExtensions = [ 'jpg', 'jpeg', 'webp', 'gif', 'png', 'bmp', 'svg', 'tiff' ];
+    return files.filter(file => imageExtensions.includes(last(file.name.split('.'))));
+  };
+
   toTableData = files => {
     const tableData = files && files.map(file => ({ name: file.name, size: file.size }));
     const sort = this.state.sortFields.reduce((acc, { fieldName, direction }) => {
@@ -37,8 +42,8 @@ class MediaLibrary extends React.Component {
   };
 
   handleClose = () => {
+    this.props.dispatch(closeMediaLibrary());
     this.setState({ selectedFileName: '' });
-    return this.props.dispatch(closeMediaLibrary());
   };
 
   handleRowSelect = row => {
@@ -115,8 +120,9 @@ class MediaLibrary extends React.Component {
   }
 
   render() {
-    const { isVisible, canInsert, files } = this.props;
-    const tableData = files ? this.toTableData(files) : [];
+    const { isVisible, canInsert, files, forImage } = this.props;
+    const filteredFiles = forImage ? this.filterImages(files) : files;
+    const tableData = files ? this.toTableData(filteredFiles) : [];
     return (
       <Dialog
         type="fullscreen"
@@ -126,7 +132,7 @@ class MediaLibrary extends React.Component {
         theme={dialogTheme}
         className={styles.dialog}
       >
-        <h1>Assets</h1>
+        <h1>{forImage ? 'Images' : 'Assets'}</h1>
         <Table onRowSelect={idx => this.handleRowSelect(tableData[idx])}>
           <TableHead>
             <TableCell
@@ -155,7 +161,7 @@ class MediaLibrary extends React.Component {
         </Table>
         <div className={styles.footer}>
           <Button label="Delete" onClick={this.handleDelete} className={styles.buttonLeft} accent raised />
-          <BrowseButton label="Upload" onChange={this.handlePersist} className={styles.buttonLeft} primary raised />
+          <BrowseButton label="Upload" accept={forImage ? 'image/*' : '*'} onChange={this.handlePersist} className={styles.buttonLeft} primary raised />
           <Button label="Close" onClick={this.handleClose} className={styles.buttonRight}/>
           {!canInsert ? null :
             <Button

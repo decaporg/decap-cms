@@ -23,7 +23,7 @@ export default class MediaControl extends React.Component {
 
   handleClick = (e) => {
     const { field, onOpenMediaLibrary } = this.props;
-    return onOpenMediaLibrary(this.controlID);
+    return onOpenMediaLibrary({ controlID: this.controlID, forImage: true });
   };
 
   renderImageName = () => {

@@ -17,17 +17,14 @@ const mediaLibrary = (state = Map({ isVisible: false, controlMedia: Map() }), ac
   switch (action.type) {
     case OPEN_MEDIA_LIBRARY:
       return state.withMutations(map => {
-        const controlID = get(action, ['payload', 'controlID']);
-        map.set('isVisible', true)
+        const { controlID, forImage } = action.payload || {};
+        map.set('isVisible', true);
+        map.set('forImage', forImage);
         map.set('controlID', controlID);
         map.set('canInsert', !!controlID);
       });
     case CLOSE_MEDIA_LIBRARY:
-      return state.withMutations(map => {
-        map.set('isVisible', false);
-        map.delete('controlID');
-        map.delete('canInsert');
-      });
+      return state.set('isVisible', false);
     case MEDIA_INSERT:
       const controlID = state.get('controlID');
       const mediaPath = get(action, ['payload', 'mediaPath']);

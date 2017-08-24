@@ -15,8 +15,8 @@ export const MEDIA_PERSIST_SUCCESS = 'MEDIA_PERSIST_SUCCESS';
 export const MEDIA_PERSIST_FAILURE = 'MEDIA_PERSIST_FAILURE';
 export const MEDIA_DELETE_SUCCESS = 'MEDIA_DELETE_SUCCESS';
 
-export function openMediaLibrary(controlID) {
-  return { type: OPEN_MEDIA_LIBRARY, payload: { controlID } };
+export function openMediaLibrary(payload) {
+  return { type: OPEN_MEDIA_LIBRARY, payload };
 }
 
 export function closeMediaLibrary() {
