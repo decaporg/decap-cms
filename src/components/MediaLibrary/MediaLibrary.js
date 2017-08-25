@@ -193,10 +193,17 @@ class MediaLibrary extends React.Component {
     const filteredFiles = forImage ? this.filterImages(files) : files;
     const queriedFiles = query ? this.queryFilter(query, filteredFiles) : filteredFiles;
     const tableData = this.toTableData(queriedFiles);
+    const hasFiles = files && !!files.length;
+    const hasImages = filteredFiles && !!filteredFiles.length;
+    const hasSearchResults = queriedFiles && !!queriedFiles.length;
+    const hasMedia = hasSearchResults;
     const shouldShowProgressBar = isPersisting || isDeleting || isLoading;
     const loadingMessage = (isPersisting && 'Uploading...')
       || (isDeleting && 'Deleting...')
       || (isLoading && 'Loading...');
+    const emptyMessage = (!hasFiles && 'No files found.')
+      || (!hasImages && 'No images found.')
+      || (!hasSearchResults && 'No results.');
 
     return (
       <Dialog
@@ -223,7 +230,7 @@ class MediaLibrary extends React.Component {
           className={styles.tableContainer}
         >
           <h1>{forImage ? 'Images' : 'Assets'}</h1>
-          <input className={styles.searchInput} type="text" value={this.state.query} onChange={this.handleSearch.bind(this)} placeholder="Search..." autoFocus/>
+          <input className={styles.searchInput} type="text" value={this.state.query} onChange={this.handleSearch.bind(this)} placeholder="Search..." disabled={!hasFiles || !hasImages} autoFocus/>
           <div style={{ height: '100%', paddingBottom: '130px' }}>
             <div style={{ height: '100%', overflowY: 'auto' }} ref={ref => this.tableScrollRef = ref}>
               <Table onRowSelect={idx => this.handleRowSelect(tableData[idx])}>
@@ -231,21 +238,24 @@ class MediaLibrary extends React.Component {
                   <TableCell
                     theme={headCellTheme}
                     sorted={this.getSortDirection('name')}
-                    onClick={() => this.handleSortClick('name')}
+                    onClick={() => hasMedia && this.handleSortClick('name')}
+                    style={{ cursor: hasMedia ? 'pointer' : 'auto' }}
                   >
                       Name
                   </TableCell>
                   <TableCell
                     theme={headCellTheme}
                     sorted={this.getSortDirection('type')}
-                    onClick={() => this.handleSortClick('type')}
+                    onClick={() => hasMedia && this.handleSortClick('type')}
+                    style={{ cursor: hasMedia ? 'pointer' : 'auto' }}
                   >
                       Type
                   </TableCell>
                   <TableCell
                     theme={headCellTheme}
                     sorted={this.getSortDirection('size')}
-                    onClick={() => this.handleSortClick('size')}
+                    onClick={() => hasMedia && this.handleSortClick('size')}
+                    style={{ cursor: hasMedia ? 'pointer' : 'auto' }}
                   >
                       Size
                   </TableCell>
@@ -260,12 +270,13 @@ class MediaLibrary extends React.Component {
                   )
                 }
               </Table>
+              {hasMedia || shouldShowProgressBar ? null : <div style={{ height: '100%', width: '100%', position: 'absolute', top: '0', left: '0', display: 'flex', justifyContent: 'center', alignItems: 'center' }}><h1>{emptyMessage}</h1></div>}
             </div>
           </div>
           <div className={styles.footer}>
             <Button label="Delete" onClick={this.handleDelete} className={styles.buttonLeft} accent raised />
             <BrowseButton label="Upload" accept={forImage ? 'image/*' : '*'} onChange={this.handlePersist} className={styles.buttonLeft} primary raised />
-            <Button label="Close" onClick={this.handleClose} className={styles.buttonRight}/>
+            <Button label="Close" onClick={this.handleClose} className={styles.buttonRight} raised/>
             {!canInsert ? null :
               <Button
                 label="Insert"

@@ -9,7 +9,7 @@ export const MEDIA_LIBRARY_CLOSE = 'MEDIA_LIBRARY_CLOSE';
 export const MEDIA_INSERT = 'MEDIA_INSERT';
 export const MEDIA_LOAD_REQUEST = 'MEDIA_LOAD_REQUEST';
 export const MEDIA_LOAD_SUCCESS = 'MEDIA_LOAD_SUCCESS';
-export const MEDIA_LOAD_ERROR = 'MEDIA_LOAD_ERROR';
+export const MEDIA_LOAD_FAILURE = 'MEDIA_LOAD_FAILURE';
 export const MEDIA_PERSIST_REQUEST = 'MEDIA_PERSIST_REQUEST';
 export const MEDIA_PERSIST_SUCCESS = 'MEDIA_PERSIST_SUCCESS';
 export const MEDIA_PERSIST_FAILURE = 'MEDIA_PERSIST_FAILURE';
@@ -41,7 +41,11 @@ export function loadMedia(delay = 0) {
             dispatch(mediaLoaded(files));
           })
           .catch((error) => {
-            dispatch(mediaLoadFailed());
+            if (error.status === 404) {
+              dispatch(mediaLoaded());
+            } else {
+              dispatch(mediaLoadFailed());
+            }
           })
       ));
     }, delay);
@@ -104,7 +108,7 @@ export function mediaLoaded(files) {
 }
 
 export function mediaLoadFailed(error) {
-  return { type: MEDIA_LOAD_ERROR };
+  return { type: MEDIA_LOAD_FAILURE };
 }
 
 export function mediaPersisting() {

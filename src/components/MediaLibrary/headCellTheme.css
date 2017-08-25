@@ -1,6 +1,5 @@
 .headCell {
   user-select: none;
-  cursor: pointer;
   position: relative;
 
   &:hover {

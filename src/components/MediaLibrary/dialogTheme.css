@@ -1,5 +1,5 @@
 .wrapper {
-  z-index: 300;
+  z-index: 99999;
 }
 
 .body {

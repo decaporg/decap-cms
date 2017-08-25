@@ -6,7 +6,7 @@ import {
   MEDIA_INSERT,
   MEDIA_LOAD_REQUEST,
   MEDIA_LOAD_SUCCESS,
-  MEDIA_LOAD_ERROR,
+  MEDIA_LOAD_FAILURE,
   MEDIA_PERSIST_REQUEST,
   MEDIA_PERSIST_SUCCESS,
   MEDIA_PERSIST_FAILURE,
@@ -40,7 +40,7 @@ const mediaLibrary = (state = Map({ isVisible: false, controlMedia: Map() }), ac
         map.set('isLoading', false)
         map.set('files', action.payload.files)
       });
-    case MEDIA_LOAD_ERROR:
+    case MEDIA_LOAD_FAILURE:
       return state.set('isLoading', false);
     case MEDIA_PERSIST_REQUEST:
       return state.set('isPersisting', true);
