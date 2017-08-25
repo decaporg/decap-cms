@@ -48,6 +48,13 @@
   height: 100%;
 }
 
+.thumbnail {
+  max-height: 48px;
+  max-width: 48px;
+  margin: -13px 0;
+  display: block;
+}
+
 /**
  * Focus styles for keyboard navigation
  */

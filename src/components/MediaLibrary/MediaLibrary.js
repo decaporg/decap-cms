@@ -21,14 +21,15 @@ import progressBarTheme from './progressBarTheme.css';
 import progressOverlayTheme from './progressOverlayTheme.css';
 
 const MEDIA_LIBRARY_SORT_KEY = 'cms.medlib-sort';
-const defaultSort = [{ fieldName: 'name', direction: 'asc' }];
+const DEFAULT_SORT = [{ fieldName: 'name', direction: 'asc' }];
+const IMAGE_EXTENSIONS = [ 'jpg', 'jpeg', 'webp', 'gif', 'png', 'bmp', 'svg', 'tiff' ];
 
 class MediaLibrary extends React.Component {
 
   state = {
     selectedFileName: '',
     query: '',
-    sortFields: JSON.parse(localStorage.getItem(MEDIA_LIBRARY_SORT_KEY)) || defaultSort,
+    sortFields: JSON.parse(localStorage.getItem(MEDIA_LIBRARY_SORT_KEY)) || DEFAULT_SORT,
   };
 
   componentDidMount() {
@@ -44,17 +45,21 @@ class MediaLibrary extends React.Component {
   }
 
   filterImages = files => {
-    const imageExtensions = [ 'jpg', 'jpeg', 'webp', 'gif', 'png', 'bmp', 'svg', 'tiff' ];
-    return files.filter(file => imageExtensions.includes(last(file.name.split('.'))));
+    return files.filter(file => IMAGE_EXTENSIONS.includes(last(file.name.split('.'))));
   };
 
   toTableData = files => {
-    const tableData = files && files.map(({ name, size, queryOrder }) => ({
-      name,
-      type: last(name.split('.')).toUpperCase(),
-      size,
-      queryOrder,
-    }));
+    const tableData = files && files.map(({ name, size, queryOrder, download_url }) => {
+      const ext = last(name.split('.'));
+      return {
+        name,
+        type: ext.toUpperCase(),
+        size,
+        queryOrder,
+        url: download_url,
+        isImage: IMAGE_EXTENSIONS.includes(ext),
+      };
+    });
     const sort = this.getSort(this.state.sortFields);
     return orderBy(tableData, ...sort);
   };
@@ -248,7 +253,7 @@ class MediaLibrary extends React.Component {
                     onClick={() => hasMedia && this.handleSortClick('name')}
                     style={{ cursor: hasMedia ? 'pointer' : 'auto' }}
                   >
-                      Name
+                    Name
                   </TableCell>
                   <TableCell
                     theme={headCellTheme}
@@ -256,7 +261,7 @@ class MediaLibrary extends React.Component {
                     onClick={() => hasMedia && this.handleSortClick('type')}
                     style={{ cursor: hasMedia ? 'pointer' : 'auto' }}
                   >
-                      Type
+                    Type
                   </TableCell>
                   <TableCell
                     theme={headCellTheme}
@@ -264,7 +269,10 @@ class MediaLibrary extends React.Component {
                     onClick={() => hasMedia && this.handleSortClick('size')}
                     style={{ cursor: hasMedia ? 'pointer' : 'auto' }}
                   >
-                      Size
+                    Size
+                  </TableCell>
+                  <TableCell theme={headCellTheme}>
+                    Image
                   </TableCell>
                 </TableHead>
                 {
@@ -273,6 +281,9 @@ class MediaLibrary extends React.Component {
                       <TableCell>{file.name}</TableCell>
                       <TableCell>{file.type}</TableCell>
                       <TableCell>{bytes(file.size, { decimalPlaces: 0 })}</TableCell>
+                      <TableCell>
+                        {file.isImage ? <img src={file.url} className={styles.thumbnail}/> : null}
+                      </TableCell>
                     </TableRow>
                   )
                 }
