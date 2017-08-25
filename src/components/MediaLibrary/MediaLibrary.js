@@ -119,7 +119,7 @@ class MediaLibrary extends React.Component {
     const { dispatch, config } = this.props;
     const publicPath = resolvePath(selectedFileName, config.get('public_folder'));
     dispatch(insertMedia(publicPath));
-    return this.handleClose();
+    this.handleClose();
   };
 
   handleDelete = () => {
@@ -129,10 +129,9 @@ class MediaLibrary extends React.Component {
       return;
     }
     const fileToDelete = files.find(file => file.name === selectedFileName);
-    return dispatch(deleteMedia([fileToDelete]))
+    dispatch(deleteMedia(fileToDelete))
       .then(() => {
         this.setState({ selectedFileName: '' });
-        dispatch(loadMedia());
       });
   };
 
