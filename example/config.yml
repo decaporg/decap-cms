@@ -1,6 +1,7 @@
 backend:
   name: github
-  repo: erquhart/blank
+  repo: netlify/netlify-cms
+  branch: pr-554-backend
 
 media_folder: "assets/uploads"
 
