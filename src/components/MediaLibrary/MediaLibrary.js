@@ -249,7 +249,7 @@ class MediaLibrary extends React.Component {
                 <TableHead>
                   <TableCell
                     theme={headCellTheme}
-                    sorted={this.getSortDirection('name')}
+                    sorted={hasMedia && this.getSortDirection('name')}
                     onClick={() => hasMedia && this.handleSortClick('name')}
                     style={{ cursor: hasMedia ? 'pointer' : 'auto' }}
                   >
@@ -257,7 +257,7 @@ class MediaLibrary extends React.Component {
                   </TableCell>
                   <TableCell
                     theme={headCellTheme}
-                    sorted={this.getSortDirection('type')}
+                    sorted={hasMedia && this.getSortDirection('type')}
                     onClick={() => hasMedia && this.handleSortClick('type')}
                     style={{ cursor: hasMedia ? 'pointer' : 'auto' }}
                   >
@@ -265,7 +265,7 @@ class MediaLibrary extends React.Component {
                   </TableCell>
                   <TableCell
                     theme={headCellTheme}
-                    sorted={this.getSortDirection('size')}
+                    sorted={hasMedia && this.getSortDirection('size')}
                     onClick={() => hasMedia && this.handleSortClick('size')}
                     style={{ cursor: hasMedia ? 'pointer' : 'auto' }}
                   >

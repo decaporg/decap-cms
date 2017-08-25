@@ -49,10 +49,11 @@
 }
 
 .thumbnail {
-  max-height: 48px;
-  max-width: 48px;
-  margin: -13px 0;
+  max-height: 44px;
+  max-width: 120px;
+  margin: -10px auto;
   display: block;
+  border-radius: 4px;
 }
 
 /**
