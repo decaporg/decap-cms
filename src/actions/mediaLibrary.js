@@ -13,7 +13,9 @@ export const MEDIA_LOAD_ERROR = 'MEDIA_LOAD_ERROR';
 export const MEDIA_PERSIST_REQUEST = 'MEDIA_PERSIST_REQUEST';
 export const MEDIA_PERSIST_SUCCESS = 'MEDIA_PERSIST_SUCCESS';
 export const MEDIA_PERSIST_FAILURE = 'MEDIA_PERSIST_FAILURE';
+export const MEDIA_DELETE_REQUEST = 'MEDIA_DELETE_REQUEST';
 export const MEDIA_DELETE_SUCCESS = 'MEDIA_DELETE_SUCCESS';
+export const MEDIA_DELETE_FAILURE = 'MEDIA_DELETE_FAILURE';
 
 export function openMediaLibrary(payload) {
   return { type: OPEN_MEDIA_LIBRARY, payload };
@@ -48,7 +50,7 @@ export function persistMedia(files) {
     const backend = currentBackend(state.config);
 
     const assetProxies = files.map(file => getAsset(state, file.path));
-    //dispatch(mediaPersisting());
+    dispatch(mediaPersisting());
     return backend
       .persistMedia(assetProxies)
       .then(() => dispatch(mediaPersisted()))

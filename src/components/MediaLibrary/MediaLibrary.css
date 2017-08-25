@@ -36,6 +36,18 @@
   display: inline-block;
 }
 
+.progressBarContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tableContainer {
+  height: 100%;
+}
+
 /**
  * Focus styles for keyboard navigation
  */

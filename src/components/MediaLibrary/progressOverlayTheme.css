@@ -1,0 +1,10 @@
+.overlay {
+  background-color: rgba(255, 255, 255, 0.75);
+  z-index: 1;
+  height: 100%;
+  width: 100%;
+}
+
+.active {
+  opacity: 1 !important;
+}

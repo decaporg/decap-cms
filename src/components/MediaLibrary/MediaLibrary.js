@@ -4,6 +4,8 @@ import { orderBy, get, last } from 'lodash';
 import Dialog from 'react-toolbox/lib/dialog';
 import { Table, TableHead, TableRow, TableCell } from 'react-toolbox/lib/table';
 import { Button, BrowseButton } from 'react-toolbox/lib/button';
+import Overlay from 'react-toolbox/lib/overlay';
+import ProgressBar from 'react-toolbox/lib/progress_bar';
 import FocusTrap from 'focus-trap-react';
 import bytes from 'bytes';
 import fuzzy from 'fuzzy';
@@ -15,6 +17,8 @@ import { loadMedia, persistMedia, deleteMedia, insertMedia, closeMediaLibrary } 
 import styles from './MediaLibrary.css';
 import dialogTheme from './dialogTheme.css';
 import headCellTheme from './headCellTheme.css';
+import progressBarTheme from './progressBarTheme.css';
+import progressOverlayTheme from './progressOverlayTheme.css';
 
 const MEDIA_LIBRARY_SORT_KEY = 'cms.medlib-sort';
 const defaultSort = [{ fieldName: 'name', direction: 'asc' }];
@@ -185,11 +189,16 @@ class MediaLibrary extends React.Component {
   };
 
   render() {
-    const { isVisible, canInsert, files, forImage } = this.props;
+    const { isVisible, canInsert, files, forImage, isLoading, isPersisting, isDeleting } = this.props;
     const { query } = this.state;
     const filteredFiles = forImage ? this.filterImages(files) : files;
     const queriedFiles = query ? this.queryFilter(query, filteredFiles) : filteredFiles;
     const tableData = this.toTableData(queriedFiles);
+    const shouldShowProgressBar = isPersisting || isDeleting || isLoading;
+    const loadingMessage = (isPersisting && 'Uploading...')
+      || (isDeleting && 'Deleting...')
+      || (isLoading && 'Loading...');
+
     return (
       <Dialog
         type="large"
@@ -199,7 +208,21 @@ class MediaLibrary extends React.Component {
         theme={dialogTheme}
         className={styles.dialog}
       >
-        <FocusTrap active={isVisible} focusTrapOptions={{ clickOutsideDeactivates: true }} style={{ height: '100%' }}>
+        <Overlay active={shouldShowProgressBar} theme={progressOverlayTheme}>
+          <FocusTrap
+            paused={!isVisible || !shouldShowProgressBar}
+            focusTrapOptions={{ clickOutsideDeactivates: true, initialFocus: 'h1' }}
+            className={styles.progressBarContainer}
+          >
+            <h1 style={{ marginTop: '-40px' }} tabIndex="-1">{ loadingMessage }</h1>
+            <ProgressBar type="linear" mode="indeterminate" theme={progressBarTheme}/>
+          </FocusTrap>
+        </Overlay>
+        <FocusTrap
+          paused={!isVisible || shouldShowProgressBar}
+          focusTrapOptions={{ clickOutsideDeactivates: true }}
+          className={styles.tableContainer}
+        >
           <h1>{forImage ? 'Images' : 'Assets'}</h1>
           <input className={styles.searchInput} type="text" value={this.state.query} onChange={this.handleSearch.bind(this)} placeholder="Search..." autoFocus/>
           <div style={{ height: '100%', paddingBottom: '130px' }}>
