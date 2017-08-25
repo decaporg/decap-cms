@@ -36,6 +36,13 @@ class MediaLibrary extends React.Component {
     dispatch(loadMedia());
   }
 
+  componentWillReceiveProps(nextProps) {
+    const isOpening = !this.props.isVisible && nextProps.isVisible;
+    if (isOpening) {
+      this.setState({ selectedFileName: '', query: '' });
+    }
+  }
+
   filterImages = files => {
     const imageExtensions = [ 'jpg', 'jpeg', 'webp', 'gif', 'png', 'bmp', 'svg', 'tiff' ];
     return files.filter(file => imageExtensions.includes(last(file.name.split('.'))));
