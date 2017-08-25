@@ -22,6 +22,10 @@ class ControlHOC extends Component {
     getAsset: PropTypes.func.isRequired,
   };
 
+  shouldComponentUpdate(nextProps) {
+    return this.props.value !== nextProps.value;
+  }
+
   processInnerControlRef = (wrappedControl) => {
     if (!wrappedControl) return;
     this.wrappedControlValid = wrappedControl.isValid || truthy;

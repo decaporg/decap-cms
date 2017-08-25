@@ -9,15 +9,22 @@ const style = {
   fontFamily: 'Roboto, "Helvetica Neue", HelveticaNeue, Helvetica, Arial, sans-serif',
 };
 
-export default function Preview({ collection, fields, widgetFor }) {
-  if (!collection || !fields) {
-    return null;
+/**
+ * Use a stateful component so that child components can effectively utilize
+ * `shouldComponentUpdate`.
+ */
+export default class Preview extends React.Component {
+  render() {
+    const { collection, fields, widgetFor } = this.props;
+    if (!collection || !fields) {
+      return null;
+    }
+    return (
+      <div style={style}>
+        {fields.filter(isVisible).map(field => widgetFor(field.get('name')))}
+      </div>
+    );
   }
-  return (
-    <div style={style}>
-      {fields.filter(isVisible).map(field => widgetFor(field.get('name')))}
-    </div>
-  );
 }
 
 Preview.propTypes = {
