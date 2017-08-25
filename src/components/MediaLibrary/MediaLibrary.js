@@ -45,7 +45,7 @@ class MediaLibrary extends React.Component {
   }
 
   filterImages = files => {
-    return files.filter(file => IMAGE_EXTENSIONS.includes(last(file.name.split('.'))));
+    return files ? files.filter(file => IMAGE_EXTENSIONS.includes(last(file.name.split('.')))) : [];
   };
 
   toTableData = files => {
