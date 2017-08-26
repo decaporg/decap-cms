@@ -201,7 +201,7 @@ class MediaLibrary extends React.Component {
 
   render() {
     const { isVisible, canInsert, files, forImage, isLoading, isPersisting, isDeleting } = this.props;
-    const { query } = this.state;
+    const { query, selectedFileName } = this.state;
     const filteredFiles = forImage ? this.filterImages(files) : files;
     const queriedFiles = query ? this.queryFilter(query, filteredFiles) : filteredFiles;
     const tableData = this.toTableData(queriedFiles);
@@ -292,7 +292,7 @@ class MediaLibrary extends React.Component {
             </div>
           </div>
           <div className={styles.footer}>
-            <Button label="Delete" onClick={this.handleDelete} className={styles.buttonLeft} accent raised />
+            <Button label="Delete" onClick={this.handleDelete} className={styles.buttonLeft} disabled={!selectedFileName || !hasMedia} accent raised />
             <BrowseButton label="Upload" accept={forImage ? 'image/*' : '*'} onChange={this.handlePersist} className={styles.buttonLeft} primary raised />
             <Button label="Close" onClick={this.handleClose} className={styles.buttonRight} raised/>
             {!canInsert ? null :
