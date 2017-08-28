@@ -26,12 +26,14 @@ export default class TestRepo {
     this.config = config;
   }
 
-  setUser() {}
-
   authComponent() {
     return AuthenticationPage;
   }
 
+  setUser(user) {
+    return this.authenticate(user);
+  }
+  
   authenticate(state) {
     return Promise.resolve({ email: state.email, name: nameFromEmail(state.email) });
   }
