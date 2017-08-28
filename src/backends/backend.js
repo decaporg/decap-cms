@@ -78,7 +78,10 @@ class Backend {
     if (this.user) { return this.user; }
     const stored = this.authStore && this.authStore.retrieve();
     if (stored) {
-      return Promise.resolve(this.implementation.setUser(stored)).then(() => stored);
+      return Promise.resolve(this.implementation.setUser(stored)).then((user) => {
+        this.authStore.store(user);
+        return user;
+      });
     }
     return Promise.resolve(null);
   }

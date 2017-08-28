@@ -24,8 +24,7 @@ export default class GitHub {
   }
 
   setUser(user) {
-    this.token = user.token;
-    this.api = new API({ token: this.token, branch: this.branch, repo: this.repo });
+    return this.authenticate(user);
   }
 
   authenticate(state) {
