@@ -233,20 +233,28 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
     if (!entryDraft.get('fieldsErrors').isEmpty()) return Promise.resolve();
 
     const backend = currentBackend(state.config);
+    const transactionID = uuid.v4();
     const assetProxies = entryDraft.get('mediaFiles').map(path => getAsset(state, path));
     const entry = entryDraft.get('entry');
-    const transactionID = uuid.v4();
 
-    dispatch(unpublishedEntryPersisting(collection, entry, transactionID));
+    /**
+     * Serialize the values of any fields with registered serializers, and
+     * update the entry and entryDraft with the serialized values.
+     */
+    const serializedData = serializeValues(entryDraft.getIn(['entry', 'data']), collection.get('fields'));
+    const serializedEntry = entry.set('data', serializedData);
+    const serializedEntryDraft = entryDraft.set('entry', serializedEntry);
+
+    dispatch(unpublishedEntryPersisting(collection, serializedEntry, transactionID));
     const persistAction = existingUnpublishedEntry ? backend.persistUnpublishedEntry : backend.persistEntry;
-    return persistAction.call(backend, state.config, collection, entryDraft, assetProxies.toJS())
+    return persistAction.call(backend, state.config, collection, serializedEntryDraft, assetProxies.toJS())
     .then(() => {
       dispatch(notifSend({
         message: 'Entry saved',
         kind: 'success',
         dismissAfter: 4000,
       }));
-      return dispatch(unpublishedEntryPersisted(collection, entry, transactionID));
+      return dispatch(unpublishedEntryPersisted(collection, serializedEntry, transactionID));
     })
     .catch((error) => {
       dispatch(notifSend({

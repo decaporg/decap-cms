@@ -1,0 +1,21 @@
+@import "../../../../UI/theme";
+
+.rawWrapper {
+  position: relative;
+}
+
+.editorControlBar {
+  composes: editorControlBar from "../VisualEditor/index.css";
+}
+
+.editorControlBarSticky {
+  composes: editorControlBarSticky from "../VisualEditor/index.css";
+}
+
+.rawEditor {
+  position: relative;
+  overflow: hidden;
+  overflow-x: auto;
+  min-height: var(--richTextEditorMinHeight);
+  font-family: var(--fontFamilyMono);
+}
