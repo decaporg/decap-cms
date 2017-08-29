@@ -20,7 +20,7 @@ const PROVIDERS = {
   },
   bitbucket: {
     width: 960,
-    height: 500
+    height: 600
   },
   email: {
     width: 500,
@@ -72,6 +72,25 @@ class Authenticator {
     }
     const host = document.location.host.split(':')[0];
     return host === 'localhost' ? null : host;
+  }
+
+  //NOTE the auth server needs to have CORS enabled for this direct request to work
+  //todo: is this the best place for this refresh auth token code to live?
+  //todo: will netlify auth server use cors and direct request?
+  refreshAuthToken(options) {
+    // const base_url = this.base_url; //todo: how to get proper config base_url from app/props config.base_url
+    const base_url = "https://netlify-bitbucket-oauth.now.sh";
+    //todo: is this the same endpoint that netlify server will use (/refresh) or will it use a grant_type instead?
+    const url = base_url + '/refresh?access_token=' + options.access_token + '&refresh_token=' + options.refresh_token;
+
+    return fetch(url).then((response) => {
+      return response.json().then((json) => {
+        if (!response.ok) {
+          return Promise.reject(json);
+        }
+        return json;
+      });
+    });
   }
 
   authenticate(options, cb) {
