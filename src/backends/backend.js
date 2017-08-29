@@ -79,7 +79,7 @@ class Backend {
     if (this.user) { return this.user; }
     const stored = this.authStore && this.authStore.retrieve();
     if (stored && stored.backendName === this.backendName) {
-      return Promise.resolve(this.implementation.setUser(stored)).then((user) => {
+      return Promise.resolve(this.implementation.restoreUser(stored)).then((user) => {
         const newUser = {...user, backendName: this.backendName};
         // return confirmed/rehydrated user object instead of stored
         this.authStore.store(newUser);

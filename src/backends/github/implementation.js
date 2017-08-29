@@ -23,7 +23,7 @@ export default class GitHub {
     return AuthenticationPage;
   }
 
-  setUser(user) {
+  restoreUser(user) {
     return this.authenticate(user);
   }
 
