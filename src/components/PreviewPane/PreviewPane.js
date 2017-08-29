@@ -2,11 +2,12 @@ import React, { PropTypes } from 'react';
 import { List, Map } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import Frame from 'react-frame-component';
-import { ScrollSyncPane } from '../ScrollSync';
 import registry from '../../lib/registry';
 import { resolveWidget } from '../Widgets';
 import { selectTemplateName, selectInferedField } from '../../reducers/collections';
 import { INFERABLE_FIELDS } from '../../constants/fieldInference';
+import PreviewContent from './PreviewContent.js';
+import PreviewHOC from '../Widgets/PreviewHOC';
 import Preview from './Preview';
 import styles from './PreviewPane.css';
 
@@ -16,15 +17,21 @@ export default class PreviewPane extends React.Component {
     const { fieldsMetaData, getAsset, entry } = props;
     const widget = resolveWidget(field.get('widget'));
 
-    return !widget.preview ? null : React.createElement(widget.preview, {
-      field,
-      key: field.get('name'),
-      value: value && Map.isMap(value) ? value.get(field.get('name')) : value,
-      metadata: fieldsMetaData && fieldsMetaData.get(field.get('name')),
-      getAsset,
-      entry,
-      fieldsMetaData,
-    });
+    /**
+     * Use an HOC to provide conditional updates for all previews.
+     */
+    return !widget.preview ? null : (
+      <PreviewHOC
+        previewComponent={widget.preview}
+        key={field.get('name')}
+        field={field}
+        getAsset={getAsset}
+        value={value && Map.isMap(value) ? value.get(field.get('name')) : value}
+        metadata={fieldsMetaData && fieldsMetaData.get(field.get('name'))}
+        entry={entry}
+        fieldsMetaData={fieldsMetaData}
+      />
+    );
   };
 
   inferedFields = {};
@@ -118,7 +125,9 @@ export default class PreviewPane extends React.Component {
       return null;
     }
 
-    const component = registry.getPreviewTemplate(selectTemplateName(collection, entry.get('slug'))) || Preview;
+    const previewComponent =
+      registry.getPreviewTemplate(selectTemplateName(collection, entry.get('slug'))) ||
+      Preview;
 
     this.inferFields();
 
@@ -135,18 +144,6 @@ export default class PreviewPane extends React.Component {
       return <Frame className={styles.frame} head={styleEls} />;
     }
 
-    // We need to create a lightweight component here so that we can
-    // access the context within the Frame. This allows us to attach
-    // the ScrollSyncPane to the body.
-    const PreviewContent = (props, { document: iFrameDocument }) => (
-      <ScrollSyncPane attachTo={iFrameDocument.scrollingElement}>
-        {React.createElement(component, previewProps)}
-      </ScrollSyncPane>);
-
-    PreviewContent.contextTypes = {
-      document: PropTypes.any,
-    };
-
     return (<Frame
       className={styles.frame}
       head={styleEls}
@@ -156,7 +153,7 @@ export default class PreviewPane extends React.Component {
   <head><base target="_blank"/></head>
   <body><div></div></body>
 </html>`}
-    ><PreviewContent /></Frame>);
+    ><PreviewContent {...{ previewComponent, previewProps }}/></Frame>);
   }
 }
 

@@ -13,6 +13,7 @@ import {
   deleteEntry,
 } from '../actions/entries';
 import { closeEntry } from '../actions/editor';
+import { deserializeValues } from '../lib/serializeEntryValues';
 import { addAsset, removeAsset } from '../actions/media';
 import { openSidebar } from '../actions/globalUI';
 import { selectEntry, getAsset } from '../reducers';
@@ -64,11 +65,19 @@ class EntryPage extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (this.props.entry === nextProps.entry) return;
+    const { entry, newEntry, fields, collection } = nextProps;
 
-    if (nextProps.entry && !nextProps.entry.get('isFetching') && !nextProps.entry.get('error')) {
-      this.createDraft(nextProps.entry);
-    } else if (nextProps.newEntry) {
-      this.props.createEmptyDraft(nextProps.collection);
+    if (entry && !entry.get('isFetching') && !entry.get('error')) {
+
+      /**
+       * Deserialize entry values for widgets with registered serializers before
+       * creating the entry draft.
+       */
+      const values = deserializeValues(entry.get('data'), fields);
+      const deserializedEntry = entry.set('data', values);
+      this.createDraft(deserializedEntry);
+    } else if (newEntry) {
+      this.props.createEmptyDraft(collection);
     }
   }
 

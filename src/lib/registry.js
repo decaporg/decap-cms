@@ -1,11 +1,12 @@
-import { List } from 'immutable';
-import { newEditorPlugin } from '../components/Widgets/MarkdownControlElements/plugins';
+import { Map } from 'immutable';
+import { newEditorPlugin } from '../components/Widgets/Markdown/MarkdownControl/plugins';
 
 const _registry = {
   templates: {},
   previewStyles: [],
   widgets: {},
-  editorComponents: List([])
+  editorComponents: Map(),
+  widgetValueSerializers: {},
 };
 
 export default {
@@ -31,9 +32,16 @@ export default {
     return _registry.widgets[name];
   },
   registerEditorComponent(component) {
-    _registry.editorComponents = _registry.editorComponents.push(newEditorPlugin(component));
+    const plugin = newEditorPlugin(component);
+    _registry.editorComponents = _registry.editorComponents.set(plugin.get('id'), plugin);
   },
   getEditorComponents() {
     return _registry.editorComponents;
-  }
+  },
+  registerWidgetValueSerializer(widgetName, serializer) {
+    _registry.widgetValueSerializers[widgetName] = serializer;
+  },
+  getWidgetValueSerializer(widgetName) {
+    return _registry.widgetValueSerializers[widgetName];
+  },
 };

@@ -1,0 +1,1298 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Compile markdown to Prosemirror document structure should compile a markdown ordered list 1`] = `
+Object {
+  "kind": "block",
+  "nodes": Array [
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "H1",
+        },
+      ],
+      "type": "heading-one",
+    },
+    Object {
+      "data": Object {
+        "start": 1,
+      },
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "kind": "block",
+          "nodes": Array [
+            Object {
+              "kind": "block",
+              "nodes": Array [
+                Object {
+                  "data": undefined,
+                  "kind": "text",
+                  "text": "yo",
+                },
+              ],
+              "type": "paragraph",
+            },
+          ],
+          "type": "list-item",
+        },
+        Object {
+          "kind": "block",
+          "nodes": Array [
+            Object {
+              "kind": "block",
+              "nodes": Array [
+                Object {
+                  "data": undefined,
+                  "kind": "text",
+                  "text": "bro",
+                },
+              ],
+              "type": "paragraph",
+            },
+          ],
+          "type": "list-item",
+        },
+        Object {
+          "kind": "block",
+          "nodes": Array [
+            Object {
+              "kind": "block",
+              "nodes": Array [
+                Object {
+                  "data": undefined,
+                  "kind": "text",
+                  "text": "fro",
+                },
+              ],
+              "type": "paragraph",
+            },
+          ],
+          "type": "list-item",
+        },
+      ],
+      "type": "numbered-list",
+    },
+  ],
+  "type": "root",
+}
+`;
+
+exports[`Compile markdown to Prosemirror document structure should compile bulleted lists 1`] = `
+Object {
+  "kind": "block",
+  "nodes": Array [
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "H1",
+        },
+      ],
+      "type": "heading-one",
+    },
+    Object {
+      "data": Object {
+        "start": null,
+      },
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "kind": "block",
+          "nodes": Array [
+            Object {
+              "kind": "block",
+              "nodes": Array [
+                Object {
+                  "data": undefined,
+                  "kind": "text",
+                  "text": "yo",
+                },
+              ],
+              "type": "paragraph",
+            },
+          ],
+          "type": "list-item",
+        },
+        Object {
+          "kind": "block",
+          "nodes": Array [
+            Object {
+              "kind": "block",
+              "nodes": Array [
+                Object {
+                  "data": undefined,
+                  "kind": "text",
+                  "text": "bro",
+                },
+              ],
+              "type": "paragraph",
+            },
+          ],
+          "type": "list-item",
+        },
+        Object {
+          "kind": "block",
+          "nodes": Array [
+            Object {
+              "kind": "block",
+              "nodes": Array [
+                Object {
+                  "data": undefined,
+                  "kind": "text",
+                  "text": "fro",
+                },
+              ],
+              "type": "paragraph",
+            },
+          ],
+          "type": "list-item",
+        },
+      ],
+      "type": "bulleted-list",
+    },
+  ],
+  "type": "root",
+}
+`;
+
+exports[`Compile markdown to Prosemirror document structure should compile code blocks 1`] = `
+Object {
+  "kind": "block",
+  "nodes": Array [
+    Object {
+      "data": Object {
+        "lang": "javascript",
+      },
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "var a = 1;",
+        },
+      ],
+      "type": "code",
+    },
+  ],
+  "type": "root",
+}
+`;
+
+exports[`Compile markdown to Prosemirror document structure should compile hard breaks (double space) 1`] = `
+Object {
+  "kind": "block",
+  "nodes": Array [
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "blue moon  
+footballs",
+        },
+      ],
+      "type": "paragraph",
+    },
+  ],
+  "type": "root",
+}
+`;
+
+exports[`Compile markdown to Prosemirror document structure should compile horizontal rules 1`] = `
+Object {
+  "kind": "block",
+  "nodes": Array [
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "H1",
+        },
+      ],
+      "type": "heading-one",
+    },
+    Object {
+      "isVoid": true,
+      "kind": "block",
+      "nodes": undefined,
+      "type": "thematic-break",
+    },
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "blue moon",
+        },
+      ],
+      "type": "paragraph",
+    },
+  ],
+  "type": "root",
+}
+`;
+
+exports[`Compile markdown to Prosemirror document structure should compile horizontal rules 2`] = `
+Object {
+  "kind": "block",
+  "nodes": Array [
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "H1",
+        },
+      ],
+      "type": "heading-one",
+    },
+    Object {
+      "isVoid": true,
+      "kind": "block",
+      "nodes": undefined,
+      "type": "thematic-break",
+    },
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "blue moon",
+        },
+      ],
+      "type": "paragraph",
+    },
+  ],
+  "type": "root",
+}
+`;
+
+exports[`Compile markdown to Prosemirror document structure should compile images 1`] = `
+Object {
+  "kind": "block",
+  "nodes": Array [
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "![super](duper.jpg)",
+        },
+      ],
+      "type": "paragraph",
+    },
+  ],
+  "type": "root",
+}
+`;
+
+exports[`Compile markdown to Prosemirror document structure should compile inline code 1`] = `
+Object {
+  "kind": "block",
+  "nodes": Array [
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "Word",
+        },
+      ],
+      "type": "heading-one",
+    },
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "This is some sweet ",
+        },
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "ranges": Array [
+            Object {
+              "marks": Array [
+                Object {
+                  "type": "code",
+                },
+              ],
+              "text": "inline code",
+            },
+          ],
+        },
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": " yo!",
+        },
+      ],
+      "type": "paragraph",
+    },
+  ],
+  "type": "root",
+}
+`;
+
+exports[`Compile markdown to Prosemirror document structure should compile kitchen sink example 1`] = `
+Object {
+  "kind": "block",
+  "nodes": Array [
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "An exhibit of Markdown",
+        },
+      ],
+      "type": "heading-one",
+    },
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "This note demonstrates some of what Markdown is capable of doing.",
+        },
+      ],
+      "type": "paragraph",
+    },
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "ranges": Array [
+            Object {
+              "marks": Array [
+                Object {
+                  "type": "italic",
+                },
+              ],
+              "text": "Note: Feel free to play with this page. Unlike regular notes, this doesn't
+automatically save itself.",
+            },
+          ],
+        },
+      ],
+      "type": "paragraph",
+    },
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "Basic formatting",
+        },
+      ],
+      "type": "heading-two",
+    },
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "Paragraphs can be written like so. A paragraph is the basic block of Markdown.
+A paragraph is what text will turn into when there is no reason it should
+become anything else.",
+        },
+      ],
+      "type": "paragraph",
+    },
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "Paragraphs must be separated by a blank line. Basic formatting of ",
+        },
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "ranges": Array [
+            Object {
+              "marks": Array [
+                Object {
+                  "type": "italic",
+                },
+              ],
+              "text": "italics",
+            },
+          ],
+        },
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": " and
+",
+        },
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "ranges": Array [
+            Object {
+              "marks": Array [
+                Object {
+                  "type": "bold",
+                },
+              ],
+              "text": "bold",
+            },
+          ],
+        },
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": " is supported. This *can be ",
+        },
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "ranges": Array [
+            Object {
+              "marks": Array [
+                Object {
+                  "type": "bold",
+                },
+              ],
+              "text": "nested",
+            },
+          ],
+        },
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": " like* so.",
+        },
+      ],
+      "type": "paragraph",
+    },
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "Lists",
+        },
+      ],
+      "type": "heading-two",
+    },
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "Ordered list",
+        },
+      ],
+      "type": "heading-three",
+    },
+    Object {
+      "data": Object {
+        "start": 1,
+      },
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "kind": "block",
+          "nodes": Array [
+            Object {
+              "kind": "block",
+              "nodes": Array [
+                Object {
+                  "data": undefined,
+                  "kind": "text",
+                  "text": "Item 1 2. A second item 3. Number 3 4. Ⅳ",
+                },
+              ],
+              "type": "paragraph",
+            },
+          ],
+          "type": "list-item",
+        },
+      ],
+      "type": "numbered-list",
+    },
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "ranges": Array [
+            Object {
+              "marks": Array [
+                Object {
+                  "type": "italic",
+                },
+              ],
+              "text": "Note: the fourth item uses the Unicode character for Roman numeral four.",
+            },
+          ],
+        },
+      ],
+      "type": "paragraph",
+    },
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "Unordered list",
+        },
+      ],
+      "type": "heading-three",
+    },
+    Object {
+      "data": Object {
+        "start": null,
+      },
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "kind": "block",
+          "nodes": Array [
+            Object {
+              "kind": "block",
+              "nodes": Array [
+                Object {
+                  "data": undefined,
+                  "kind": "text",
+                  "text": "An item Another item Yet another item And there's more...",
+                },
+              ],
+              "type": "paragraph",
+            },
+          ],
+          "type": "list-item",
+        },
+      ],
+      "type": "bulleted-list",
+    },
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "Paragraph modifiers",
+        },
+      ],
+      "type": "heading-two",
+    },
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "Code block",
+        },
+      ],
+      "type": "heading-three",
+    },
+    Object {
+      "data": Object {
+        "lang": null,
+      },
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "Code blocks are very useful for developers and other people who look at
+code or other things that are written in plain text. As you can see, it
+uses a fixed-width font.",
+        },
+      ],
+      "type": "code",
+    },
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "You can also make ",
+        },
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "ranges": Array [
+            Object {
+              "marks": Array [
+                Object {
+                  "type": "code",
+                },
+              ],
+              "text": "inline code",
+            },
+          ],
+        },
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": " to add code into other things.",
+        },
+      ],
+      "type": "paragraph",
+    },
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "Quote",
+        },
+      ],
+      "type": "heading-three",
+    },
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "kind": "block",
+          "nodes": Array [
+            Object {
+              "data": undefined,
+              "kind": "text",
+              "text": "Here is a quote. What this is should be self explanatory. Quotes are
+automatically indented when they are used.",
+            },
+          ],
+          "type": "paragraph",
+        },
+      ],
+      "type": "quote",
+    },
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "Headings",
+        },
+      ],
+      "type": "heading-two",
+    },
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "There are six levels of headings. They correspond with the six levels of HTML
+headings. You've probably noticed them already in the page. Each level down
+uses one more hash character.",
+        },
+      ],
+      "type": "paragraph",
+    },
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "Headings ",
+        },
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "ranges": Array [
+            Object {
+              "marks": Array [
+                Object {
+                  "type": "italic",
+                },
+              ],
+              "text": "can",
+            },
+          ],
+        },
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": " also contain ",
+        },
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "ranges": Array [
+            Object {
+              "marks": Array [
+                Object {
+                  "type": "bold",
+                },
+              ],
+              "text": "formatting",
+            },
+          ],
+        },
+      ],
+      "type": "heading-three",
+    },
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "They can even contain ",
+        },
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "ranges": Array [
+            Object {
+              "marks": Array [
+                Object {
+                  "type": "code",
+                },
+              ],
+              "text": "inline code",
+            },
+          ],
+        },
+      ],
+      "type": "heading-three",
+    },
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "Of course, demonstrating what headings look like messes up the structure of the
+page.",
+        },
+      ],
+      "type": "paragraph",
+    },
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "I don't recommend using more than three or four levels of headings here,
+because, when you're smallest heading isn't too small, and you're largest
+heading isn't too big, and you want each size up to look noticeably larger and
+more important, there there are only so many sizes that you can use.",
+        },
+      ],
+      "type": "paragraph",
+    },
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "URLs",
+        },
+      ],
+      "type": "heading-two",
+    },
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "URLs can be made in a handful of ways:",
+        },
+      ],
+      "type": "paragraph",
+    },
+    Object {
+      "data": Object {
+        "start": null,
+      },
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "kind": "block",
+          "nodes": Array [
+            Object {
+              "kind": "block",
+              "nodes": Array [
+                Object {
+                  "data": undefined,
+                  "kind": "text",
+                  "text": "A named link to MarkItDown. The easiest way to do these is to select what you",
+                },
+              ],
+              "type": "paragraph",
+            },
+          ],
+          "type": "list-item",
+        },
+        Object {
+          "kind": "block",
+          "nodes": Array [
+            Object {
+              "kind": "block",
+              "nodes": Array [
+                Object {
+                  "data": undefined,
+                  "kind": "text",
+                  "text": "want to make a link and hit ",
+                },
+                Object {
+                  "data": undefined,
+                  "kind": "text",
+                  "ranges": Array [
+                    Object {
+                      "marks": Array [
+                        Object {
+                          "type": "code",
+                        },
+                      ],
+                      "text": "Ctrl+L",
+                    },
+                  ],
+                },
+                Object {
+                  "data": undefined,
+                  "kind": "text",
+                  "text": ".  Another named link to",
+                },
+              ],
+              "type": "paragraph",
+            },
+          ],
+          "type": "list-item",
+        },
+        Object {
+          "kind": "block",
+          "nodes": Array [
+            Object {
+              "kind": "block",
+              "nodes": Array [
+                Object {
+                  "data": Object {
+                    "title": null,
+                    "url": "http://www.markitdown.net/",
+                  },
+                  "kind": "inline",
+                  "nodes": Array [
+                    Object {
+                      "data": undefined,
+                      "kind": "text",
+                      "text": "MarkItDown",
+                    },
+                  ],
+                  "type": "link",
+                },
+                Object {
+                  "data": undefined,
+                  "kind": "text",
+                  "text": " Sometimes you just want a URL like",
+                },
+              ],
+              "type": "paragraph",
+            },
+          ],
+          "type": "list-item",
+        },
+        Object {
+          "kind": "block",
+          "nodes": Array [
+            Object {
+              "kind": "block",
+              "nodes": Array [
+                Object {
+                  "data": Object {
+                    "title": null,
+                    "url": "http://www.markitdown.net/",
+                  },
+                  "kind": "inline",
+                  "nodes": Array [
+                    Object {
+                      "data": undefined,
+                      "kind": "text",
+                      "text": "http://www.markitdown.net/",
+                    },
+                  ],
+                  "type": "link",
+                },
+                Object {
+                  "data": undefined,
+                  "kind": "text",
+                  "text": ".",
+                },
+              ],
+              "type": "paragraph",
+            },
+          ],
+          "type": "list-item",
+        },
+      ],
+      "type": "bulleted-list",
+    },
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "Horizontal rule",
+        },
+      ],
+      "type": "heading-two",
+    },
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "A horizontal rule is a line that goes across the middle of the page.",
+        },
+      ],
+      "type": "paragraph",
+    },
+    Object {
+      "isVoid": true,
+      "kind": "block",
+      "nodes": undefined,
+      "type": "thematic-break",
+    },
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "It's sometimes handy for breaking things up.",
+        },
+      ],
+      "type": "paragraph",
+    },
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "Images",
+        },
+      ],
+      "type": "heading-two",
+    },
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "Markdown can also contain images. I'll need to add something here sometime.",
+        },
+      ],
+      "type": "paragraph",
+    },
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "Finally",
+        },
+      ],
+      "type": "heading-two",
+    },
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "There's actually a lot more to Markdown than this. See the official
+introduction and syntax for more information. However, be aware that this is
+not using the official implementation, and this might work subtly differently
+  in some of the little things.",
+        },
+      ],
+      "type": "paragraph",
+    },
+  ],
+  "type": "root",
+}
+`;
+
+exports[`Compile markdown to Prosemirror document structure should compile links 1`] = `
+Object {
+  "kind": "block",
+  "nodes": Array [
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "Word",
+        },
+      ],
+      "type": "heading-one",
+    },
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "How far is it to ",
+        },
+        Object {
+          "data": Object {
+            "title": null,
+            "url": "https://google.com",
+          },
+          "kind": "inline",
+          "nodes": Array [
+            Object {
+              "data": undefined,
+              "kind": "text",
+              "text": "Google",
+            },
+          ],
+          "type": "link",
+        },
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": " land?",
+        },
+      ],
+      "type": "paragraph",
+    },
+  ],
+  "type": "root",
+}
+`;
+
+exports[`Compile markdown to Prosemirror document structure should compile multiple header levels 1`] = `
+Object {
+  "kind": "block",
+  "nodes": Array [
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "H1",
+        },
+      ],
+      "type": "heading-one",
+    },
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "H2",
+        },
+      ],
+      "type": "heading-two",
+    },
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "H3",
+        },
+      ],
+      "type": "heading-three",
+    },
+  ],
+  "type": "root",
+}
+`;
+
+exports[`Compile markdown to Prosemirror document structure should compile nested inline markup 1`] = `
+Object {
+  "kind": "block",
+  "nodes": Array [
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "Word",
+        },
+      ],
+      "type": "heading-one",
+    },
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "This is ",
+        },
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "ranges": Array [
+            Object {
+              "marks": Array [
+                Object {
+                  "type": "bold",
+                },
+              ],
+              "text": "some ",
+            },
+            Object {
+              "marks": Array [
+                Object {
+                  "type": "bold",
+                },
+                Object {
+                  "type": "italic",
+                },
+              ],
+              "text": "hot",
+            },
+            Object {
+              "marks": Array [
+                Object {
+                  "type": "bold",
+                },
+              ],
+              "text": " content",
+            },
+          ],
+        },
+      ],
+      "type": "paragraph",
+    },
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "perhaps ",
+        },
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "ranges": Array [
+            Object {
+              "marks": Array [
+                Object {
+                  "type": "bold",
+                },
+              ],
+              "text": "scalding",
+            },
+          ],
+        },
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": " even",
+        },
+      ],
+      "type": "paragraph",
+    },
+  ],
+  "type": "root",
+}
+`;
+
+exports[`Compile markdown to Prosemirror document structure should compile plugins 1`] = `
+Object {
+  "kind": "block",
+  "nodes": Array [
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "![test](test.png)",
+        },
+      ],
+      "type": "paragraph",
+    },
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "{{< test >}}",
+        },
+      ],
+      "type": "paragraph",
+    },
+  ],
+  "type": "root",
+}
+`;
+
+exports[`Compile markdown to Prosemirror document structure should compile simple markdown 1`] = `
+Object {
+  "kind": "block",
+  "nodes": Array [
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "H1",
+        },
+      ],
+      "type": "heading-one",
+    },
+    Object {
+      "kind": "block",
+      "nodes": Array [
+        Object {
+          "data": undefined,
+          "kind": "text",
+          "text": "sweet body",
+        },
+      ],
+      "type": "paragraph",
+    },
+  ],
+  "type": "root",
+}
+`;

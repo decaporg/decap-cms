@@ -45,7 +45,8 @@ afterEach(() => fetchMock.restore());
 describe('bitbucket API', () => {
 
   it('should list the files in a directory', () => {
-    const api = new API({ branch: 'test-branch', repo: 'test-user/test-repo' });
+    const dateInFuture = new Date(Date.now() + (1000 * 60 * 60 * 24 * 10));
+    const api = new API({ branch: 'test-branch', repo: 'test-user/test-repo', expires_at:dateInFuture });
     mockRequest(api.api_root)(`${ api.repoURL }/src/${ api.branch }/test-directory`, {
       headers: defaultResponseHeaders,
       body: {

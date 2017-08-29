@@ -1,7 +1,7 @@
 import semaphore from "semaphore";
 import AuthenticationPage from "./AuthenticationPage";
 import API from "./API";
-import { fileExtension } from '../../lib/pathHelper'
+import { fileExtension } from '../../lib/pathHelper';
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
 const SUPPORTS_WORKFLOW = false;
@@ -26,12 +26,12 @@ export default class Bitbucket {
 
   setUser(user) {
     this.token = user.token;
-    this.api = new API({ token: this.token, branch: this.branch, repo: this.repo });
+    this.api = new API({ token: this.token, branch: this.branch, repo: this.repo, refresh_token : user.refresh_token, expires_at : user.expires_at }, this.setUser);
   }
 
   authenticate(state) {
     this.token = state.token;
-    this.api = new API({ token: this.token, branch: this.branch, repo: this.repo });
+    this.api = new API({ token: this.token, branch: this.branch, repo: this.repo, refresh_token : state.refresh_token, expires_at : state.expires_at }, this.setUser);
 
     return this.api.user().then(user =>
       this.api.hasWriteAccess(user).then((isCollab) => {
@@ -39,6 +39,8 @@ export default class Bitbucket {
         if (!isCollab) throw new Error("Your Bitbucket user account does not have access to this repo.");
         // Authorized user
         user.token = state.token;
+        user.expires_at = state.expires_at;
+        user.refresh_token = state.refresh_token;
         return user;
       })
     );

@@ -43,7 +43,9 @@ export function authenticateUser() {
     dispatch(authenticating());
     return backend.currentUser()
       .then((user) => {
-        if (user) dispatch(authenticate(user));
+        if (user) {
+          dispatch(authenticate(user));
+        }
       })
       .catch((error) => {
         dispatch(authError(error));

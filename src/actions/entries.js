@@ -1,5 +1,6 @@
 import { List } from 'immutable';
 import { actions as notifActions } from 'redux-notifications';
+import { serializeValues } from '../lib/serializeEntryValues';
 import { closeEntry } from './editor';
 import { currentBackend } from '../backends/backend';
 import { getIntegrationProvider } from '../integrations';
@@ -216,10 +217,11 @@ export function loadEntry(collection, slug) {
     const backend = currentBackend(state.config);
     dispatch(entryLoading(collection, slug));
     return backend.getEntry(collection, slug)
-      .then(loadedEntry => (
-        dispatch(entryLoaded(collection, loadedEntry))
-      ))
+      .then(loadedEntry => {
+        return dispatch(entryLoaded(collection, loadedEntry))
+      })
       .catch((error) => {
+        console.error(error);
         dispatch(notifSend({
           message: `Failed to load entry: ${ error.message }`,
           kind: 'danger',
@@ -265,28 +267,37 @@ export function persistEntry(collection) {
 
     // Early return if draft contains validation errors
     if (!entryDraft.get('fieldsErrors').isEmpty()) return Promise.reject();
-    
+
     const backend = currentBackend(state.config);
     const assetProxies = entryDraft.get('mediaFiles').map(path => getAsset(state, path));
     const entry = entryDraft.get('entry');
-    dispatch(entryPersisting(collection, entry));
+
+    /**
+     * Serialize the values of any fields with registered serializers, and
+     * update the entry and entryDraft with the serialized values.
+     */
+    const serializedData = serializeValues(entryDraft.getIn(['entry', 'data']), collection.get('fields'));
+    const serializedEntry = entry.set('data', serializedData);
+    const serializedEntryDraft = entryDraft.set('entry', serializedEntry);
+    dispatch(entryPersisting(collection, serializedEntry));
     return backend
-      .persistEntry(state.config, collection, entryDraft, assetProxies.toJS())
+      .persistEntry(state.config, collection, serializedEntryDraft, assetProxies.toJS())
       .then(() => {
         dispatch(notifSend({
           message: 'Entry saved',
           kind: 'success',
           dismissAfter: 4000,
         }));
-        return dispatch(entryPersisted(collection, entry));
+        return dispatch(entryPersisted(collection, serializedEntry));
       })
       .catch((error) => {
+        console.error(error);
         dispatch(notifSend({
           message: `Failed to persist entry: ${ error }`,
           kind: 'danger',
           dismissAfter: 8000,
         }));
-        return dispatch(entryPersistFail(collection, entry, error));
+        return dispatch(entryPersistFail(collection, serializedEntry, error));
       });
   };
 }

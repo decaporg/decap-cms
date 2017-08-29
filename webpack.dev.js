@@ -53,7 +53,7 @@ module.exports = merge.smart(require('./webpack.base.js'), {
       disable: true,
     }),
   ],
-  devtool: 'cheap-module-source-map',
+  devtool: 'source-map',
   devServer: {
     hot: true,
     contentBase: 'example/',

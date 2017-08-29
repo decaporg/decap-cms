@@ -4,9 +4,14 @@ import FormData from "form-data";
 import AssetProxy from "../../valueObjects/AssetProxy";
 import { SIMPLE, EDITORIAL_WORKFLOW, } from "../../constants/publishModes";
 import { APIError } from "../../valueObjects/errors";
+import Authenticator from '../../lib/netlify-auth';
 
 export default class API {
-  constructor(config) {
+  //todo: here I pass in setUser because api has no notion of implementation's user
+  constructor(config, setUser) {
+    this.setUser = setUser;
+    this.refresh_token = config.refresh_token || false;
+    this.expires_at = config.expires_at || false;
     this.api_root = config.api_root || "https://api.bitbucket.org/2.0";
     this.token = config.token || false;
     this.branch = config.branch || "master";
@@ -82,38 +87,71 @@ export default class API {
     return this.api_root + path;
   }
 
-  request(path, options = {}) {
-    const headers = this.requestHeaders(options.headers || {});
-    const url = this.urlFor(path, options);
-    let responseStatus;
-    return fetch(url, { ...options, headers }).then((response) => {
-      responseStatus = response.status;
-      const contentType = response.headers.get("Content-Type");
-      if (contentType && contentType.match(/json/)) {
-        return this.parseJsonResponse(response);
+  isTokenExpired() {
+    const expirationWindowInSeconds = 300; //gives us a small buffer for edge cases like network latency
+    const expirationTimeInSeconds = (new Date(this.expires_at)).getTime() / 1000;
+    const expirationWindowStart = expirationTimeInSeconds - expirationWindowInSeconds;
+    const nowInSeconds = (new Date()).getTime() / 1000;
+    return nowInSeconds >= expirationWindowStart;
+  }
+
+  checkRefreshToken(){
+    return new Promise((resolve, reject) => {
+      let token = this.token;
+      let refreshToken = this.refresh_token;
+
+      const tokenExpired = this.isTokenExpired();
+      if (tokenExpired) {
+        const auth = new Authenticator();
+        auth.refreshAuthToken({ access_token: token, refresh_token: refreshToken }).then((data) => {
+          this.token = data.result.token.access_token;
+          this.expires_at = data.result.token.expires_at;
+          this.setUser({token:this.token, refresh_token:refreshToken, expires_at:this.expires_at});
+          resolve(true);
+        });
+      } else {
+        resolve(true);
       }
-      return response.text();
-    })
-    .catch((error) => {
-      throw new APIError(error.message, responseStatus, 'Bitbucket');
+    });
+
+  }
+
+  request(path, options = {}) {
+    return this.checkRefreshToken().then(() => {
+      const headers = this.requestHeaders(options.headers || {});
+      const url = this.urlFor(path, options);
+      let responseStatus;
+      return fetch(url, { ...options, headers }).then((response) => {
+        responseStatus = response.status;
+        const contentType = response.headers.get("Content-Type");
+        if (contentType && contentType.match(/json/)) {
+          return this.parseJsonResponse(response);
+        }
+        return response.text();
+      })
+      .catch((error) => {
+        throw new APIError(error.message, responseStatus, 'Bitbucket');
+      });
     });
   }
 
   //formrequest uses different headers for a form request vs normal json request
   formRequest(path, options = {}) {
-    const headers = this.formRequestHeaders(options.headers || {});
-    const url = this.urlFor(path, options);
-    let responseStatus;
-    return fetch(url, { ...options, headers }).then((response) => {
-      responseStatus = response.status;
-      const contentType = response.headers.get("Content-Type");
-      if (contentType && contentType.match(/json/)) {
-        return this.parseJsonResponse(response);
-      }
-      return response.text();
-    })
-    .catch((error) => {
-      throw new APIError(error.message, responseStatus, 'Bitbucket');
+    return this.checkRefreshToken().then(() => {
+      const headers = this.formRequestHeaders(options.headers || {});
+      const url = this.urlFor(path, options);
+      let responseStatus;
+      return fetch(url, { ...options, headers }).then((response) => {
+        responseStatus = response.status;
+        const contentType = response.headers.get("Content-Type");
+        if (contentType && contentType.match(/json/)) {
+          return this.parseJsonResponse(response);
+        }
+        return response.text();
+      })
+      .catch((error) => {
+        throw new APIError(error.message, responseStatus, 'Bitbucket');
+      });
     });
   }
 
