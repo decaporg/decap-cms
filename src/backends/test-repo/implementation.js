@@ -30,10 +30,10 @@ export default class TestRepo {
     return AuthenticationPage;
   }
 
-  setUser(user) {
+  restoreUser(user) {
     return this.authenticate(user);
   }
-  
+
   authenticate(state) {
     return Promise.resolve({ email: state.email, name: nameFromEmail(state.email) });
   }

@@ -43,7 +43,7 @@ export default class GitGateway extends GitHubBackend {
     AuthenticationPage.authClient = this.authClient;
   }
 
-  setUser() {
+  restoreUser() {
     const user = this.authClient && this.authClient.currentUser();
     if (!user) return Promise.reject();
     return this.authenticate(user);
