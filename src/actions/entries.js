@@ -286,7 +286,7 @@ export function persistEntry(collection) {
           kind: 'danger',
           dismissAfter: 8000,
         }));
-        return dispatch(entryPersistFail(collection, entry, error));
+        return Promise.reject(dispatch(entryPersistFail(collection, entry, error)));
       });
   };
 }
@@ -308,7 +308,7 @@ export function deleteEntry(collection, slug) {
         dismissAfter: 8000,
       }));
       console.error(error);
-      return dispatch(entryDeleteFail(collection, slug, error));
+      return Promise.reject(dispatch(entryDeleteFail(collection, slug, error)));
     });
   };
 }
