@@ -26,12 +26,25 @@ class ControlHOC extends Component {
   };
 
   shouldComponentUpdate(nextProps) {
+    /**
+     * Allow widgets to provide their own `shouldComponentUpdate` method.
+     */
+    if (this.wrappedControlShouldComponentUpdate) {
+      return this.wrappedControlShouldComponentUpdate(nextProps);
+    }
     return this.props.value !== nextProps.value;
   }
 
   processInnerControlRef = (wrappedControl) => {
     if (!wrappedControl) return;
     this.wrappedControlValid = wrappedControl.isValid || truthy;
+
+    /**
+     * Get the `shouldComponentUpdate` method from the wrapped control, and
+     * provide the control instance is the `this` binding.
+     */
+    const { shouldComponentUpdate: scu } = wrappedControl;
+    this.wrappedControlShouldComponentUpdate = scu && scu.bind(wrappedControl);
   };
 
   validate = (skipWrapped = false) => {

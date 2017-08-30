@@ -13,6 +13,26 @@ export default class MediaControl extends React.Component {
     this.controlID = uuid.v4();
   }
 
+  shouldComponentUpdate(nextProps) {
+    /**
+     * Always update if the value changes.
+     */
+    if (this.props.value !== nextProps.value) {
+      return true;
+    }
+
+    /**
+     * If there is a media path for this control in the state object, and that
+     * path is different than the value in `nextProps`, update.
+     */
+    const mediaPath = nextProps.mediaPaths.get(this.controlID);
+    if (mediaPath && (nextProps.value !== mediaPath)) {
+      return true;
+    }
+
+    return false;
+  }
+
   componentWillReceiveProps(nextProps) {
     const { mediaPaths, value } = nextProps;
     const mediaPath = mediaPaths.get(this.controlID);
