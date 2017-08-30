@@ -18,20 +18,21 @@ export default class API {
   }
 
   isGroupProject() {
-    return this.request(this.repoURL).then(({ namespace }) => (namespace.kind === "group" ? `/groups/${ encodeURIComponent(namespace.full_path) }` : false));
+    return this.request(this.repoURL)
+      .then(({ namespace }) => (namespace.kind === "group" ? `/groups/${ encodeURIComponent(namespace.full_path) }` : false));
   }
 
   isCollaborator(user) {
     const WRITE_ACCESS = 30;
     return this.isGroupProject().then((group) => {
-      /* TODO: cleanup? */
       if (group === false) {
         return this.request(`${ this.repoURL }/members/${ user.id }`);
       } else {
         return this.request(`${ group }/members/${ user.id }`);
       }
-    }).then(member => (member.access_level >= WRITE_ACCESS))
-      .catch((err) => {
+    })
+    .then(member => (member.access_level >= WRITE_ACCESS))
+    .catch((err) => {
         // Member does not have any access. We cannot just check for 404,
         //   because a 404 is also returned if we have the wrong URI,
         //   just with an "error" key instead of a "message" key.
@@ -41,7 +42,7 @@ export default class API {
           // Otherwise, it is actually an API error.
           throw err;
         }
-      });
+    });
   }
 
   requestHeaders(headers = {}) {
@@ -74,18 +75,12 @@ export default class API {
       }
       return Promise.all([response, response.text()]);
     })
-    .catch(err => [err, null])
-    .then(([response, value]) => {
-      if (!response.ok) return Promise.reject([value, response]);
-      /* TODO: remove magic. */
-      if (value === undefined) return response;
-      /* OK */
-      return value;
-    })
+    .catch(err => Promise.reject([err, null]))
+    .then(([response, value]) => (response.ok ? value : Promise.reject([value, response])))
     .catch(([errorValue, response]) => {
       const errorMessageProp = (errorValue && errorValue.message) ? errorValue.message : null;
       const message = errorMessageProp || (isString(errorValue) ? errorValue : "");
-      throw new APIError(message, response && response.status, 'GitHub', { response, errorValue });
+      throw new APIError(message, response && response.status, 'GitLab', { response, errorValue });
     });
   }
   
@@ -114,11 +109,12 @@ export default class API {
       method: "HEAD",
       params: { ref: branch },
       cache: "no-store",
-    }).then(() => true).catch((err) => {
-      // TODO: 404 can mean either the file does not exist, or if an API
-      //   endpoint doesn't exist. Is there a better way to check for this?
-      if (err.status === 404) {return false;} else {throw err;}
-    });
+    }).then(() => true).catch(err => 
+      // 404 can mean either the file does not exist, or if an API
+      //   endpoint doesn't exist. We can't check this becaue we are
+      //   not getting the content with a HEAD request.
+      (err.status === 404 ? false : Promise.reject(err))
+    );
   }
 
   listFiles(path) {
