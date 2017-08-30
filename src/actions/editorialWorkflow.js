@@ -242,16 +242,11 @@ export function loadUnpublishedEntries(collections) {
     const state = getState();
     if (state.config.get('publish_mode') !== EDITORIAL_WORKFLOW) return;
     const backend = currentBackend(state.config);
-    if (backend.supportsWorkflow()) {
-      dispatch(unpublishedEntriesLoading());
-      backend.unpublishedEntries(collections).then(
-        response => dispatch(unpublishedEntriesLoaded(response.entries, response.pagination)),
-        error => dispatch(unpublishedEntriesFailed(error))
-      );
-    }
-    else {
-      throw new EditorialWorkflowError('Backend does not support editorial workflow', true);
-    }
+    dispatch(unpublishedEntriesLoading());
+    backend.unpublishedEntries(collections).then(
+      response => dispatch(unpublishedEntriesLoaded(response.entries, response.pagination)),
+      error => dispatch(unpublishedEntriesFailed(error))
+    );
   };
 }
 

@@ -2,7 +2,7 @@ import LocalForage from "localforage";
 import { Base64 } from "js-base64";
 import FormData from "form-data";
 import AssetProxy from "../../valueObjects/AssetProxy";
-import { SIMPLE, EDITORIAL_WORKFLOW, } from "../../constants/publishModes";
+import { SIMPLE } from "../../constants/publishModes";
 import { APIError } from "../../valueObjects/errors";
 
 export default class API {
@@ -154,10 +154,6 @@ export default class API {
       if (file.uploaded) { return; }
       uploadPromises.push(this.uploadBlob(file));
     });
-
-    if (options.mode && options.mode === EDITORIAL_WORKFLOW) {
-      console.warn("Editorial worflow is not supported yet with Bitbucket API.")
-    }
 
     return Promise.all(uploadPromises).then(() => {
       if (!options.mode || (options.mode && options.mode === SIMPLE)) {

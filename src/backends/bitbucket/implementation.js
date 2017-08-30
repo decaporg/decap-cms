@@ -1,14 +1,18 @@
 import semaphore from "semaphore";
 import AuthenticationPage from "./AuthenticationPage";
 import API from "./API";
-import { fileExtension } from '../../lib/pathHelper'
+import { fileExtension } from '../../lib/pathHelper';
+import { EDITORIAL_WORKFLOW } from "../../constants/publishModes";
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
-const SUPPORTS_WORKFLOW = false;
 
 export default class Bitbucket {
   constructor(config, proxied = false) {
     this.config = config;
+
+    if (config.getIn(["publish_mode"]) === EDITORIAL_WORKFLOW) {
+      throw new Error("The Bitbucket backend does not support the Editorial Workflow.")
+    }
 
     if (!proxied && config.getIn(["backend", "repo"]) == null) {
       throw new Error("The Bitbucket backend needs a \"repo\" in the backend configuration.");
@@ -94,9 +98,5 @@ export default class Bitbucket {
 
   deleteFile(path, commitMessage, options) {
     return this.api.deleteFile(path, commitMessage, options);
-  }
-
-  supportsWorkflow() {
-    return SUPPORTS_WORKFLOW;
   }
 }
