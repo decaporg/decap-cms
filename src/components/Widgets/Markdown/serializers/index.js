@@ -16,6 +16,7 @@ import remarkToSlatePlugin from './remarkSlate';
 import remarkSquashReferences from './remarkSquashReferences';
 import remarkImagesToText from './remarkImagesToText';
 import remarkShortcodes from './remarkShortcodes';
+import remarkEscapeMarkdownEntities from './remarkEscapeMarkdownEntities'
 import slateToRemarkParser from './slateRemark';
 import registry from '../../../../lib/registry';
 
@@ -164,10 +165,30 @@ export const remarkToMarkdown = obj => {
    */
   const mdast = obj || u('root', [u('paragraph', [u('text', '')])]);
 
+  const remarkToMarkdownPluginOpts = {
+    commonmark: true,
+    fences: true,
+    pedantic: true,
+    listItemIndent: '1',
+
+    // Settings to emulate the defaults from the Prosemirror editor, not
+    // necessarily optimal. Should eventually be configurable.
+    bullet: '*',
+    strong: '*',
+    rule: '-',
+  };
+
+  /**
+   * Escape markdown entities found in text and html nodes within the MDAST.
+   */
+  const escapedMdast = unified()
+    .use(remarkEscapeMarkdownEntities)
+    .runSync(mdast);
+
   const markdown = unified()
-    .use(remarkToMarkdownPlugin, { listItemIndent: '1', fences: true, pedantic: true, commonmark: true })
+    .use(remarkToMarkdownPlugin, remarkToMarkdownPluginOpts)
     .use(remarkAllowAllText)
-    .stringify(mdast);
+    .stringify(escapedMdast);
 
   return markdown;
 };
