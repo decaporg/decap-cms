@@ -1,4 +1,4 @@
-import { get, isEmpty, concat, without, flatten } from 'lodash';
+import { get, isEmpty, concat, without, flatten, flatMap, initial } from 'lodash';
 import u from 'unist-builder';
 
 /**
@@ -53,6 +53,24 @@ function processCodeMark(markTypes) {
   const filteredMarkTypes = isInlineCode ? without(markTypes, 'inlineCode') : markTypes;
   const textNodeType = isInlineCode ? 'inlineCode' : 'html';
   return { filteredMarkTypes, textNodeType };
+}
+
+
+/**
+ * Returns an array of one or more MDAST text nodes of the given type, derived
+ * from the text received. Certain transformations, such as line breaks, cause
+ * multiple nodes to be returned.
+ */
+function createTextNodes(text, type = 'html') {
+  /**
+   * Split the text string at line breaks, then map each substring to an array
+   * pair consisting of an MDAST text node followed by a break node. This will
+   * result in nested arrays, so we use `flatMap` to produce a flattened array,
+   * and `initial` to leave off the superfluous trailing break.
+   */
+  const brokenText = text.split('\n');
+  const toPair = str => [u(type, str), u('break')];
+  return initial(flatMap(brokenText, toPair));
 }
 
 
@@ -130,7 +148,7 @@ function convertTextNode(node) {
    * MDAST node.
    */
   if (!node.ranges) {
-    return u('html', node.text);
+    return createTextNodes(node.text);
   }
 
   /**
@@ -154,13 +172,13 @@ function convertTextNode(node) {
     /**
      * Create the base text node.
      */
-    const textNode = u(textNodeType, text);
+    const textNodes = createTextNodes(text, textNodeType);
 
     /**
      * Recursively wrap the base text node in the individual mark nodes, if
      * any exist.
      */
-    return wrapTextWithMarks(textNode, filteredMarkTypes);
+    return textNodes.map(textNode => wrapTextWithMarks(textNode, filteredMarkTypes));
   });
 
   /**

@@ -156,6 +156,7 @@
     "slate": "^0.21.0",
     "slate-edit-list": "^0.7.1",
     "slate-edit-table": "^0.10.1",
+    "slate-soft-break": "^0.3.0",
     "slug": "^0.9.1",
     "unified": "^6.1.4",
     "unist-builder": "^1.0.2",

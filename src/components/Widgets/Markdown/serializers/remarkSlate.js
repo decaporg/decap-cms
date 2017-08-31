@@ -231,6 +231,16 @@ function convertNode(node, nodes) {
       return createBlock(slateType, nodes, { data });
     }
 
+    /**
+     * Breaks
+     *
+     * MDAST soft break nodes represent a trailing double space or trailing
+     * slash from a Markdown document. In Slate, these are simply transformed to
+     * line breaks within a text node.
+     */
+    case 'break': {
+      return createText('\n');
+    }
 
     /**
      * Thematic Breaks

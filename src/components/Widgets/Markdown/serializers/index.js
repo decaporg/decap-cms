@@ -110,26 +110,11 @@ import registry from '../../../../lib/registry';
  * Deserialize a Markdown string to an MDAST.
  */
 export const markdownToRemark = markdown => {
-
-  /**
-   * Disabling tokenizers allows us to turn off features within the Remark
-   * parser.
-   */
-  function disableTokenizers() {
-
-    /**
-     * Turn off soft breaks until we can properly support them across both
-     * editors.
-     */
-    pull(this.Parser.prototype.inlineMethods, 'break');
-  }
-
   /**
    * Parse the Markdown string input to an MDAST.
    */
   const parsed = unified()
     .use(markdownToRemarkPlugin, { fences: true, pedantic: true, commonmark: true })
-    .use(disableTokenizers)
     .parse(markdown);
 
   /**
