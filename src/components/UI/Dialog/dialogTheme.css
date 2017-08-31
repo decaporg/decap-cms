@@ -1,0 +1,17 @@
+.wrapper {
+  z-index: 99999;
+}
+
+.dialog {
+  height: 80%;
+  text-align: center;
+
+  & h1 {
+    margin-top: 20px;
+    position: absolute;
+  }
+}
+
+.body {
+  height: 100%;
+}

@@ -1,24 +1,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { orderBy, get, last } from 'lodash';
-import Dialog from 'react-toolbox/lib/dialog';
 import { Table, TableHead, TableRow, TableCell } from 'react-toolbox/lib/table';
 import { Button, BrowseButton } from 'react-toolbox/lib/button';
-import Overlay from 'react-toolbox/lib/overlay';
-import ProgressBar from 'react-toolbox/lib/progress_bar';
 import bytes from 'bytes';
 import fuzzy from 'fuzzy';
+import Dialog from '../UI/Dialog';
 import { resolvePath } from '../../lib/pathHelper';
 import { createAssetProxy } from '../../valueObjects/AssetProxy';
 import { changeDraftField } from '../../actions/entries';
 import { addAsset } from '../../actions/media';
 import { loadMedia, persistMedia, deleteMedia, insertMedia, closeMediaLibrary } from '../../actions/mediaLibrary';
-import FocusTrap from './FocusTrap';
 import styles from './MediaLibrary.css';
-import dialogTheme from './dialogTheme.css';
 import headCellTheme from './headCellTheme.css';
-import progressBarTheme from './progressBarTheme.css';
-import progressOverlayTheme from './progressOverlayTheme.css';
 
 const MEDIA_LIBRARY_SORT_KEY = 'cms.medlib-sort';
 const DEFAULT_SORT = [{ fieldName: 'name', direction: 'asc' }];
@@ -216,101 +210,80 @@ class MediaLibrary extends React.Component {
     const emptyMessage = (!hasFiles && 'No files found.')
       || (!hasImages && 'No images found.')
       || (!hasSearchResults && 'No results.');
+    const footer =
+      <div>
+        <Button label="Delete" onClick={this.handleDelete} className={styles.buttonLeft} disabled={!selectedFileName || !hasMedia} accent raised />
+        <BrowseButton label="Upload" accept={forImage ? 'image/*' : '*'} onChange={this.handlePersist} className={styles.buttonLeft} primary raised />
+        <Button label="Close" onClick={this.handleClose} className={styles.buttonRight} raised/>
+        {
+          !canInsert ? null :
+            <Button label="Insert" onClick={this.handleInsert} className={styles.buttonRight} disabled={!selectedFileName || !hasMedia} primary raised />
+        }
+      </div>;
 
     return (
       <Dialog
-        type="large"
-        active={isVisible}
-        onEscKeyDown={this.handleClose}
-        onOverlayClick={this.handleClose}
-        theme={dialogTheme}
-        className={styles.dialog}
+        isVisible={isVisible}
+        isLoading={shouldShowProgressBar}
+        loadingMessage={loadingMessage}
+        onClose={this.handleClose}
+        footer={footer}
       >
-        <FocusTrap
-          active={isVisible && !shouldShowProgressBar}
-          focusTrapOptions={{ clickOutsideDeactivates: true }}
-          className={styles.tableContainer}
-        >
-          <Overlay active={shouldShowProgressBar} theme={progressOverlayTheme}>
-            <FocusTrap
-              active={isVisible && shouldShowProgressBar}
-              focusTrapOptions={{ clickOutsideDeactivates: true, initialFocus: 'h1' }}
-              className={styles.progressBarContainer}
-            >
-              <h1 style={{ marginTop: '-40px' }} tabIndex="-1">{ loadingMessage }</h1>
-              <ProgressBar type="linear" mode="indeterminate" theme={progressBarTheme}/>
-            </FocusTrap>
-          </Overlay>
-          <h1>{forImage ? 'Images' : 'Assets'}</h1>
-          <input className={styles.searchInput} type="text" value={this.state.query} onChange={this.handleSearch.bind(this)} placeholder="Search..." disabled={!hasFiles || !hasImages} autoFocus/>
-          <div style={{ height: '100%', paddingBottom: '130px' }}>
-            <div style={{ height: '100%', overflowY: 'auto' }} ref={ref => this.tableScrollRef = ref}>
-              <Table onRowSelect={idx => this.handleRowSelect(tableData[idx])}>
-                <TableHead>
-                  <TableCell theme={headCellTheme} style={{ width: '92px' }}>
-                    Image
-                  </TableCell>
-                  <TableCell
-                    theme={headCellTheme}
-                    sorted={hasMedia && this.getSortDirection('name')}
-                    onClick={() => hasMedia && this.handleSortClick('name')}
-                    style={{ cursor: hasMedia ? 'pointer' : 'auto' }}
-                  >
-                    Name
-                  </TableCell>
-                  <TableCell
-                    theme={headCellTheme}
-                    sorted={hasMedia && this.getSortDirection('type')}
-                    onClick={() => hasMedia && this.handleSortClick('type')}
-                    style={{ cursor: hasMedia ? 'pointer' : 'auto' }}
-                  >
-                    Type
-                  </TableCell>
-                  <TableCell
-                    theme={headCellTheme}
-                    sorted={hasMedia && this.getSortDirection('size')}
-                    onClick={() => hasMedia && this.handleSortClick('size')}
-                    style={{ cursor: hasMedia ? 'pointer' : 'auto' }}
-                  >
-                    Size
-                  </TableCell>
-                </TableHead>
-                {
-                  tableData.map((file, idx) =>
-                    <TableRow key={idx} selected={this.state.selectedFileName === file.name } onFocus={this.handleRowFocus} onBlur={this.handleRowBlur}>
-                      <TableCell>
-                        {
-                          !file.isImage ? null :
-                            <a href={file.url} target="_blank" tabIndex="-1">
-                              <img src={file.url} className={styles.thumbnail}/>
-                            </a>
-                        }
-                      </TableCell>
-                      <TableCell>{file.name}</TableCell>
-                      <TableCell>{file.type}</TableCell>
-                      <TableCell>{bytes(file.size, { decimalPlaces: 0 })}</TableCell>
-                    </TableRow>
-                  )
-                }
-              </Table>
-              {hasMedia || shouldShowProgressBar ? null : <div style={{ height: '100%', width: '100%', position: 'absolute', top: '0', left: '0', display: 'flex', justifyContent: 'center', alignItems: 'center' }}><h1>{emptyMessage}</h1></div>}
-            </div>
+        <h1>{forImage ? 'Images' : 'Assets'}</h1>
+        <input className={styles.searchInput} type="text" value={this.state.query} onChange={this.handleSearch.bind(this)} placeholder="Search..." disabled={!hasFiles || !hasImages} autoFocus/>
+        <div style={{ height: '100%', paddingBottom: '130px' }}>
+          <div style={{ height: '100%', overflowY: 'auto' }} ref={ref => this.tableScrollRef = ref}>
+            <Table onRowSelect={idx => this.handleRowSelect(tableData[idx])}>
+              <TableHead>
+                <TableCell theme={headCellTheme} style={{ width: '92px' }}>
+                  Image
+                </TableCell>
+                <TableCell
+                  theme={headCellTheme}
+                  sorted={hasMedia && this.getSortDirection('name')}
+                  onClick={() => hasMedia && this.handleSortClick('name')}
+                  style={{ cursor: hasMedia ? 'pointer' : 'auto' }}
+                >
+                  Name
+                </TableCell>
+                <TableCell
+                  theme={headCellTheme}
+                  sorted={hasMedia && this.getSortDirection('type')}
+                  onClick={() => hasMedia && this.handleSortClick('type')}
+                  style={{ cursor: hasMedia ? 'pointer' : 'auto' }}
+                >
+                  Type
+                </TableCell>
+                <TableCell
+                  theme={headCellTheme}
+                  sorted={hasMedia && this.getSortDirection('size')}
+                  onClick={() => hasMedia && this.handleSortClick('size')}
+                  style={{ cursor: hasMedia ? 'pointer' : 'auto' }}
+                >
+                  Size
+                </TableCell>
+              </TableHead>
+              {
+                tableData.map((file, idx) =>
+                  <TableRow key={idx} selected={this.state.selectedFileName === file.name } onFocus={this.handleRowFocus} onBlur={this.handleRowBlur}>
+                    <TableCell>
+                      {
+                        !file.isImage ? null :
+                          <a href={file.url} target="_blank" tabIndex="-1">
+                            <img src={file.url} className={styles.thumbnail}/>
+                          </a>
+                      }
+                    </TableCell>
+                    <TableCell>{file.name}</TableCell>
+                    <TableCell>{file.type}</TableCell>
+                    <TableCell>{bytes(file.size, { decimalPlaces: 0 })}</TableCell>
+                  </TableRow>
+                )
+              }
+            </Table>
+            {hasMedia || shouldShowProgressBar ? null : <div style={{ height: '100%', width: '100%', position: 'absolute', top: '0', left: '0', display: 'flex', justifyContent: 'center', alignItems: 'center' }}><h1>{emptyMessage}</h1></div>}
           </div>
-          <div className={styles.footer}>
-            <Button label="Delete" onClick={this.handleDelete} className={styles.buttonLeft} disabled={!selectedFileName || !hasMedia} accent raised />
-            <BrowseButton label="Upload" accept={forImage ? 'image/*' : '*'} onChange={this.handlePersist} className={styles.buttonLeft} primary raised />
-            <Button label="Close" onClick={this.handleClose} className={styles.buttonRight} raised/>
-            {!canInsert ? null :
-              <Button
-                label="Insert"
-                onClick={this.handleInsert}
-                className={styles.buttonRight}
-                disabled={!selectedFileName || !hasMedia}
-                primary
-                raised
-              />}
-          </div>
-        </FocusTrap>
+        </div>
       </Dialog>
     );
   }
