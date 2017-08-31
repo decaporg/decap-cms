@@ -54,6 +54,7 @@ export default class AuthenticationPage extends React.Component {
 
   static propTypes = {
     onLogin: PropTypes.func.isRequired,
+    inProgress: PropTypes.bool.isRequired,
   };
 
   state = { email: "", password: "", errors: {} };
@@ -90,7 +91,7 @@ export default class AuthenticationPage extends React.Component {
 
   render() {
     const { errors } = this.state;
-    const { error } = this.props;
+    const { error, inProgress } = this.props;
 
     if (window.netlifyIdentity) {
       return <section className="nc-gitGatewayAuthenticationPage-root">
@@ -131,8 +132,9 @@ export default class AuthenticationPage extends React.Component {
             <Button
               className="nc-gitGatewayAuthenticationPage-button"
               raised
+              disabled={inProgress}
             >
-              <Icon type="login" /> Login
+              <Icon type="login" /> {inProgress ? "Logging in..." : "Login"}
             </Button>
           </form>
         </Card>

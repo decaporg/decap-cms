@@ -8,6 +8,7 @@ import logo from "../git-gateway/netlify_logo.svg";
 export default class AuthenticationPage extends React.Component {
   static propTypes = {
     onLogin: PropTypes.func.isRequired,
+    inProgress: PropTypes.bool.isRequired,
   };
 
   state = { email: '' };
@@ -22,6 +23,8 @@ export default class AuthenticationPage extends React.Component {
   };
 
   render() {
+    const { inProgress } = this.props;
+
     return (<section className="nc-gitGatewayAuthenticationPage-root">
       <Card className="nc-gitGatewayAuthenticationPage-card">
         <img src={logo} width={100} role="presentation" />
@@ -36,9 +39,10 @@ export default class AuthenticationPage extends React.Component {
         <Button
           className="nc-gitGatewayAuthenticationPage-button"
           raised
+          disabled={inProgress}
           onClick={this.handleLogin}
         >
-          <Icon type="login" /> Login
+          <Icon type="login" /> {inProgress ? "Logging in..." : "Login"}
         </Button>
       </Card>
     </section>);

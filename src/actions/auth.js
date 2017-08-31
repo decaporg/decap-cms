@@ -43,7 +43,11 @@ export function authenticateUser() {
     dispatch(authenticating());
     return backend.currentUser()
       .then((user) => {
-        if (user) dispatch(authenticate(user));
+        if (user) {
+          dispatch(authenticate(user));
+        } else {
+          dispatch(logoutUser());
+        }
       })
       .catch((error) => {
         dispatch(authError(error));
