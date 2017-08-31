@@ -9,6 +9,7 @@ import { Toast } from '../../components/UI/index';
 export default class AuthenticationPage extends React.Component {
   static propTypes = {
     onLogin: PropTypes.func.isRequired,
+    inProgress: PropTypes.bool.isRequired,
   };
 
   state = {};
@@ -32,6 +33,7 @@ export default class AuthenticationPage extends React.Component {
 
   render() {
     const { loginError } = this.state;
+    const { inProgress } = this.props;
 
     return (
       <section className="nc-githubAuthenticationPage-root">
@@ -40,9 +42,10 @@ export default class AuthenticationPage extends React.Component {
         <Button
           className="nc-githubAuthenticationPage-button"
           raised
+          disabled={inProgress}
           onClick={this.handleLogin}
         >
-          <Icon type="github" /> Login with GitHub
+          <Icon type="github" /> {inProgress ? "Logging in..." : "Login with GitHub"}
         </Button>
       </section>
     );
