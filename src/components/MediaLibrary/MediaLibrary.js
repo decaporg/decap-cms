@@ -6,7 +6,6 @@ import { Table, TableHead, TableRow, TableCell } from 'react-toolbox/lib/table';
 import { Button, BrowseButton } from 'react-toolbox/lib/button';
 import Overlay from 'react-toolbox/lib/overlay';
 import ProgressBar from 'react-toolbox/lib/progress_bar';
-import FocusTrap from 'focus-trap-react';
 import bytes from 'bytes';
 import fuzzy from 'fuzzy';
 import { resolvePath } from '../../lib/pathHelper';
@@ -14,6 +13,7 @@ import { createAssetProxy } from '../../valueObjects/AssetProxy';
 import { changeDraftField } from '../../actions/entries';
 import { addAsset } from '../../actions/media';
 import { loadMedia, persistMedia, deleteMedia, insertMedia, closeMediaLibrary } from '../../actions/mediaLibrary';
+import FocusTrap from './FocusTrap';
 import styles from './MediaLibrary.css';
 import dialogTheme from './dialogTheme.css';
 import headCellTheme from './headCellTheme.css';
@@ -226,27 +226,30 @@ class MediaLibrary extends React.Component {
         theme={dialogTheme}
         className={styles.dialog}
       >
-        <Overlay active={shouldShowProgressBar} theme={progressOverlayTheme}>
-          <FocusTrap
-            paused={!isVisible || !shouldShowProgressBar}
-            focusTrapOptions={{ clickOutsideDeactivates: true, initialFocus: 'h1' }}
-            className={styles.progressBarContainer}
-          >
-            <h1 style={{ marginTop: '-40px' }} tabIndex="-1">{ loadingMessage }</h1>
-            <ProgressBar type="linear" mode="indeterminate" theme={progressBarTheme}/>
-          </FocusTrap>
-        </Overlay>
         <FocusTrap
-          paused={!isVisible || shouldShowProgressBar}
+          active={isVisible && !shouldShowProgressBar}
           focusTrapOptions={{ clickOutsideDeactivates: true }}
           className={styles.tableContainer}
         >
+          <Overlay active={shouldShowProgressBar} theme={progressOverlayTheme}>
+            <FocusTrap
+              active={isVisible && shouldShowProgressBar}
+              focusTrapOptions={{ clickOutsideDeactivates: true, initialFocus: 'h1' }}
+              className={styles.progressBarContainer}
+            >
+              <h1 style={{ marginTop: '-40px' }} tabIndex="-1">{ loadingMessage }</h1>
+              <ProgressBar type="linear" mode="indeterminate" theme={progressBarTheme}/>
+            </FocusTrap>
+          </Overlay>
           <h1>{forImage ? 'Images' : 'Assets'}</h1>
           <input className={styles.searchInput} type="text" value={this.state.query} onChange={this.handleSearch.bind(this)} placeholder="Search..." disabled={!hasFiles || !hasImages} autoFocus/>
           <div style={{ height: '100%', paddingBottom: '130px' }}>
             <div style={{ height: '100%', overflowY: 'auto' }} ref={ref => this.tableScrollRef = ref}>
               <Table onRowSelect={idx => this.handleRowSelect(tableData[idx])}>
                 <TableHead>
+                  <TableCell theme={headCellTheme} style={{ width: '92px' }}>
+                    Image
+                  </TableCell>
                   <TableCell
                     theme={headCellTheme}
                     sorted={hasMedia && this.getSortDirection('name')}
@@ -271,19 +274,21 @@ class MediaLibrary extends React.Component {
                   >
                     Size
                   </TableCell>
-                  <TableCell theme={headCellTheme}>
-                    Image
-                  </TableCell>
                 </TableHead>
                 {
                   tableData.map((file, idx) =>
                     <TableRow key={idx} selected={this.state.selectedFileName === file.name } onFocus={this.handleRowFocus} onBlur={this.handleRowBlur}>
+                      <TableCell>
+                        {
+                          !file.isImage ? null :
+                            <a href={file.url} target="_blank" tabIndex="-1">
+                              <img src={file.url} className={styles.thumbnail}/>
+                            </a>
+                        }
+                      </TableCell>
                       <TableCell>{file.name}</TableCell>
                       <TableCell>{file.type}</TableCell>
                       <TableCell>{bytes(file.size, { decimalPlaces: 0 })}</TableCell>
-                      <TableCell>
-                        {file.isImage ? <img src={file.url} className={styles.thumbnail}/> : null}
-                      </TableCell>
                     </TableRow>
                   )
                 }
@@ -300,6 +305,7 @@ class MediaLibrary extends React.Component {
                 label="Insert"
                 onClick={this.handleInsert}
                 className={styles.buttonRight}
+                disabled={!selectedFileName || !hasMedia}
                 primary
                 raised
               />}
