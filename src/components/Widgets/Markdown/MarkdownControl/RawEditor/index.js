@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Editor as Slate, Plain } from 'slate';
+import { debounce } from 'lodash';
 import Toolbar from '../Toolbar/Toolbar';
 import { Sticky } from '../../../../UI/Sticky/Sticky';
 import styles from './index.css';
@@ -20,13 +21,15 @@ export default class RawEditor extends React.Component {
     this.setState({ editorState });
   }
 
+  onChange = debounce(this.props.onChange, 250);
+
   /**
    * When the document value changes, serialize from Slate's AST back to plain
    * text (which is Markdown) and pass that up as the new value.
    */
   handleDocumentChange = (doc, editorState) => {
     const value = Plain.serialize(editorState);
-    this.props.onChange(value);
+    this.onChange(value);
   };
 
   /**

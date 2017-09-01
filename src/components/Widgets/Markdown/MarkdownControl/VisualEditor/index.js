@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { get, isEmpty } from 'lodash';
+import { get, isEmpty, debounce } from 'lodash';
 import { Editor as Slate, Raw, Block, Text } from 'slate';
 import { slateToMarkdown, markdownToSlate, htmlToSlate } from '../../serializers';
 import registry from '../../../../../lib/registry';
@@ -43,11 +43,13 @@ export default class Editor extends Component {
     return state.transform().insertFragment(doc).apply();
   }
 
+  onChange = debounce(this.props.onChange, 250);
+
   handleDocumentChange = (doc, editorState) => {
     const raw = Raw.serialize(editorState, { terse: true });
     const plugins = this.state.shortcodePlugins;
     const markdown = slateToMarkdown(raw, plugins);
-    this.props.onChange(markdown);
+    this.onChange(markdown);
   };
 
   hasMark = type => this.state.editorState.marks.some(mark => mark.type === type);
