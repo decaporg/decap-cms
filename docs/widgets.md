@@ -99,3 +99,15 @@ collections:
         searchFields: [name, twitterHandle]
         valueField: name
 ```
+
+### Image/File Widget
+
+If you store your images and files in different folders, you can add `media_folder` and `public_folder` properties to the widget configuration:
+
+```yaml
+  - label: Image
+    name: image
+    widget: image
+    media_folder: repo/path/to/assets
+    public_folder: /public/path/to/assets
+```

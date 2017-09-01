@@ -8,14 +8,16 @@ export const setStore = (storeObj) => {
   store = storeObj;
 };
 
-export default function AssetProxy(value, fileObj, uploaded = false) {
+export default function AssetProxy(value, fileObj, uploaded = false, opts = {}) {
   const config = store.getState().config;
+  const mediaFolder = opts.mediaFolder || config.get('media_folder');
+  const publicFolder = opts.publicFolder || config.get('public_folder');
   this.value = value;
   this.fileObj = fileObj;
   this.uploaded = uploaded;
   this.sha = null;
-  this.path = config.get('media_folder') && !uploaded ? resolvePath(value, config.get('media_folder')) : value;
-  this.public_path = !uploaded ? resolvePath(value, config.get('public_folder')) : value;
+  this.path = mediaFolder && !uploaded ? resolvePath(value, mediaFolder) : value;
+  this.public_path = !uploaded ? resolvePath(value, publicFolder) : value;
 }
 
 AssetProxy.prototype.toString = function () {
@@ -39,20 +41,25 @@ AssetProxy.prototype.toBase64 = function () {
   });
 };
 
-export function createAssetProxy(value, fileObj, uploaded = false, privateUpload = false) {
+export function createAssetProxy(value, fileObj, uploaded = false, opts = {}) {
   const state = store.getState();
+  const privateUpload = opts.isPrivate || false;
+  const assetProxyOpts = {
+    mediaFolder: opts.mediaFolder,
+    publicFolder: opts.publicFolder
+  };
   const integration = selectIntegration(state, null, 'assetStore');
   if (integration && !uploaded) {
     const provider = integration && getIntegrationProvider(state.integrations, currentBackend(state.config).getToken, integration);
     return provider.upload(fileObj, privateUpload).then(
       response => (
-        new AssetProxy(response.assetURL.replace(/^(https?):/, ''), null, true)
+        new AssetProxy(response.assetURL.replace(/^(https?):/, ''), null, true, assetProxyOpts)
       ),
-      error => new AssetProxy(value, fileObj, false)
-    );  
+      error => new AssetProxy(value, fileObj, false, assetProxyOpts)
+    );
   } else if (privateUpload) {
     throw new Error('The Private Upload option is only avaible for Asset Store Integration');
   }
-  
-  return Promise.resolve(new AssetProxy(value, fileObj, uploaded));
+
+  return Promise.resolve(new AssetProxy(value, fileObj, uploaded, assetProxyOpts));
 }
