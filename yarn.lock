@@ -7844,6 +7844,10 @@ slate-edit-table@^0.10.1:
   dependencies:
     immutable "^3.8.1"
 
+slate-soft-break@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/slate-soft-break/-/slate-soft-break-0.3.0.tgz#3d28dea9e0aa4783ddcea785ff5db7277214d65f"
+
 slate@^0.21.0:
   version "0.21.4"
   resolved "https://registry.yarnpkg.com/slate/-/slate-0.21.4.tgz#ae6113379cd838b7ec68ecd94834ce9741bc36f3"

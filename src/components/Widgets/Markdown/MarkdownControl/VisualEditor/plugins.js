@@ -1,3 +1,4 @@
+import SlateSoftBreak from 'slate-soft-break';
 import EditList from 'slate-edit-list';
 import EditTable from 'slate-edit-table';
 
@@ -30,6 +31,8 @@ const SoftBreakOpts = {
 };
 
 export const SoftBreakConfigured = SoftBreak(SoftBreakOpts);
+
+export const ParagraphSoftBreakConfigured = SlateSoftBreak({ onlyIn: ['paragraph'], shift: true });
 
 const BackspaceCloseBlock = (options = {}) => ({
   onKeyDown(e, data, state) {
@@ -82,6 +85,7 @@ export const EditTableConfigured = EditTable(EditTableOpts);
 
 const plugins = [
   SoftBreakConfigured,
+  ParagraphSoftBreakConfigured,
   BackspaceCloseBlockConfigured,
   EditListConfigured,
   EditTableConfigured,

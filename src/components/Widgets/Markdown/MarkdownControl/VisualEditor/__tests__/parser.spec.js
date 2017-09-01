@@ -46,7 +46,7 @@ const testPlugins = fromJS([
 
 const parser = markdown => remarkToSlate(markdownToRemark(markdown));
 
-describe("Compile markdown to Prosemirror document structure", () => {
+describe("Compile markdown to Slate Raw AST", () => {
   it("should compile simple markdown", () => {
     const value = `
 # H1
@@ -111,7 +111,7 @@ blue moon
     expect(parser(value)).toMatchSnapshot();
   });
 
-  it("should compile hard breaks (double space)", () => {
+  it("should compile soft breaks (double space)", () => {
     const value = `
 blue moon  
 footballs
