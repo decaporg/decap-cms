@@ -1,18 +1,18 @@
 import React, { PropTypes } from 'react';
-import { remarkToHtml } from '../serializers';
+import { markdownToHtml } from '../serializers';
 import previewStyle from '../../defaultPreviewStyle';
 
 const MarkdownPreview = ({ value, getAsset }) => {
   if (value === null) {
     return null;
   }
-  const html = remarkToHtml(value, getAsset);
+  const html = markdownToHtml(value, getAsset);
   return <div style={previewStyle} dangerouslySetInnerHTML={{__html: html}}></div>;
 };
 
 MarkdownPreview.propTypes = {
   getAsset: PropTypes.func.isRequired,
-  value: PropTypes.object,
+  value: PropTypes.string,
 };
 
 export default MarkdownPreview;

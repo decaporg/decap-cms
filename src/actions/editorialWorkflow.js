@@ -1,5 +1,6 @@
 import uuid from 'uuid';
 import { actions as notifActions } from 'redux-notifications';
+import { serializeValues } from '../lib/serializeEntryValues';
 import { closeEntry } from './editor';
 import { BEGIN, COMMIT, REVERT } from 'redux-optimist';
 import { currentBackend } from '../backends/backend';
