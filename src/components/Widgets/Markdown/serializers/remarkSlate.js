@@ -281,7 +281,7 @@ function convertNode(node, nodes) {
  * A Remark plugin for converting an MDAST to Slate Raw AST. Remark plugins
  * return a `transform` function that receives the MDAST as it's first argument.
  */
-export default function remarkToSlatePlugin() {
+export default function remarkToSlate() {
   function transform(node) {
 
     /**

@@ -1,8 +1,9 @@
 import { fromJS } from 'immutable';
-import { markdownToRemark, remarkToSlate } from '../../../serializers';
+import { markdownToSlate } from '../../../serializers';
 
-// Temporary plugins test, uses preloaded plugins from ../parser
-// TODO: make the parser more testable
+const parser = markdownToSlate;
+
+// Temporary plugins test
 const testPlugins = fromJS([
   {
     label: 'Image',
@@ -43,8 +44,6 @@ const testPlugins = fromJS([
     }
   },
 ]);
-
-const parser = markdown => remarkToSlate(markdownToRemark(markdown));
 
 describe("Compile markdown to Slate Raw AST", () => {
   it("should compile simple markdown", () => {

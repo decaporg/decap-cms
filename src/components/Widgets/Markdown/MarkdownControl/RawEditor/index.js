@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Editor as Slate, Plain } from 'slate';
-import { markdownToRemark, remarkToMarkdown } from '../../serializers';
+import { debounce } from 'lodash';
 import Toolbar from '../Toolbar/Toolbar';
 import { Sticky } from '../../../../UI/Sticky/Sticky';
 import styles from './index.css';
@@ -8,14 +8,8 @@ import styles from './index.css';
 export default class RawEditor extends React.Component {
   constructor(props) {
     super(props);
-    /**
-     * The value received is a Remark AST (MDAST), and must be stringified
-     * to plain text before Slate's Plain serializer can convert it to the
-     * Slate AST.
-     */
-    const value = remarkToMarkdown(this.props.value);
     this.state = {
-      editorState: Plain.deserialize(value || ''),
+      editorState: Plain.deserialize(this.props.value || ''),
     };
   }
 
@@ -27,15 +21,15 @@ export default class RawEditor extends React.Component {
     this.setState({ editorState });
   }
 
+  onChange = debounce(this.props.onChange, 250);
+
   /**
    * When the document value changes, serialize from Slate's AST back to plain
-   * text (which is Markdown), and then deserialize from that to a Remark MDAST,
-   * before passing up as the new value.
+   * text (which is Markdown) and pass that up as the new value.
    */
   handleDocumentChange = (doc, editorState) => {
     const value = Plain.serialize(editorState);
-    const mdast = markdownToRemark(value);
-    this.props.onChange(mdast);
+    this.onChange(value);
   };
 
   /**
@@ -79,5 +73,5 @@ export default class RawEditor extends React.Component {
 RawEditor.propTypes = {
   onChange: PropTypes.func.isRequired,
   onMode: PropTypes.func.isRequired,
-  value: PropTypes.object,
+  value: PropTypes.string,
 };

@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
-import { get, isEmpty } from 'lodash';
+import { get, isEmpty, debounce } from 'lodash';
 import { Editor as Slate, Raw, Block, Text } from 'slate';
-import { slateToRemark, remarkToSlate, htmlToSlate } from '../../serializers';
+import { slateToMarkdown, markdownToSlate, htmlToSlate } from '../../serializers';
 import registry from '../../../../../lib/registry';
 import Toolbar from '../Toolbar/Toolbar';
 import { Sticky } from '../../../../UI/Sticky/Sticky';
@@ -15,10 +15,10 @@ export default class Editor extends Component {
   constructor(props) {
     super(props);
     const emptyBlock = Block.create({ kind: 'block', type: 'paragraph'});
-    const emptyRaw = { nodes: [emptyBlock] };
-    const mdast = this.props.value && remarkToSlate(this.props.value);
-    const mdastHasNodes = !isEmpty(get(mdast, 'nodes'))
-    const editorState = Raw.deserialize(mdastHasNodes ? mdast : emptyRaw, { terse: true });
+    const emptyRawDoc = { nodes: [emptyBlock] };
+    const rawDoc = this.props.value && markdownToSlate(this.props.value);
+    const rawDocHasNodes = !isEmpty(get(rawDoc, 'nodes'))
+    const editorState = Raw.deserialize(rawDocHasNodes ? rawDoc : emptyRawDoc, { terse: true });
     this.state = {
       editorState,
       schema: {
@@ -43,11 +43,13 @@ export default class Editor extends Component {
     return state.transform().insertFragment(doc).apply();
   }
 
+  onChange = debounce(this.props.onChange, 250);
+
   handleDocumentChange = (doc, editorState) => {
     const raw = Raw.serialize(editorState, { terse: true });
     const plugins = this.state.shortcodePlugins;
-    const mdast = slateToRemark(raw, plugins);
-    this.props.onChange(mdast);
+    const markdown = slateToMarkdown(raw, plugins);
+    this.onChange(markdown);
   };
 
   hasMark = type => this.state.editorState.marks.some(mark => mark.type === type);
@@ -211,5 +213,5 @@ Editor.propTypes = {
   getAsset: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   onMode: PropTypes.func.isRequired,
-  value: PropTypes.object,
+  value: PropTypes.string,
 };

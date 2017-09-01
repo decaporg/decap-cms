@@ -7,24 +7,13 @@ import { StickyContainer } from '../../../UI/Sticky/Sticky';
 
 const MODE_STORAGE_KEY = 'cms.md-mode';
 
-/**
- * The markdown field value is persisted as a markdown string, but stringifying
- * on every keystroke is a big perf hit, so we'll register functions to perform
- * those actions only when necessary, such as after loading and before
- * persisting.
- */
-registry.registerWidgetValueSerializer('markdown', {
-  serialize: remarkToMarkdown,
-  deserialize: markdownToRemark,
-});
-
 export default class MarkdownControl extends React.Component {
   static propTypes = {
     onChange: PropTypes.func.isRequired,
     onAddAsset: PropTypes.func.isRequired,
     onRemoveAsset: PropTypes.func.isRequired,
     getAsset: PropTypes.func.isRequired,
-    value: PropTypes.object,
+    value: PropTypes.string,
   };
 
   constructor(props) {
