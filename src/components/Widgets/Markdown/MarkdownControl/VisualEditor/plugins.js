@@ -34,6 +34,21 @@ export const SoftBreakConfigured = SoftBreak(SoftBreakOpts);
 
 export const ParagraphSoftBreakConfigured = SlateSoftBreak({ onlyIn: ['paragraph'], shift: true });
 
+const BreakToDefaultBlock = ({ onlyIn = [], defaultBlock = 'paragraph' }) => ({
+  onKeyDown(e, data, state) {
+    if (data.key != 'enter' || e.shiftKey == true || state.isExpanded) return;
+    if (onlyIn.includes(state.startBlock.type)) {
+      return state.transform().insertBlock(defaultBlock).apply();
+    }
+  }
+});
+
+const BreakToDefaultBlockOpts = {
+  onlyIn: ['heading-one', 'heading-two', 'heading-three', 'heading-four', 'heading-five', 'heading-six'],
+};
+
+export const BreakToDefaultBlockConfigured = BreakToDefaultBlock(BreakToDefaultBlockOpts);
+
 const BackspaceCloseBlock = (options = {}) => ({
   onKeyDown(e, data, state) {
     if (data.key != 'backspace') return;
@@ -87,6 +102,7 @@ const plugins = [
   SoftBreakConfigured,
   ParagraphSoftBreakConfigured,
   BackspaceCloseBlockConfigured,
+  BreakToDefaultBlockConfigured,
   EditListConfigured,
   EditTableConfigured,
 ];
