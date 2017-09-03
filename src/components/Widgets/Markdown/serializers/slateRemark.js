@@ -57,24 +57,6 @@ function processCodeMark(markTypes) {
 
 
 /**
- * Returns an array of one or more MDAST text nodes of the given type, derived
- * from the text received. Certain transformations, such as line breaks, cause
- * multiple nodes to be returned.
- */
-function createTextNodes(text, type = 'html') {
-  /**
-   * Split the text string at line breaks, then map each substring to an array
-   * pair consisting of an MDAST text node followed by a break node. This will
-   * result in nested arrays, so we use `flatMap` to produce a flattened array,
-   * and `initial` to leave off the superfluous trailing break.
-   */
-  const brokenText = text.split('\n');
-  const toPair = str => [u(type, str), u('break')];
-  return initial(flatMap(brokenText, toPair));
-}
-
-
-/**
  * Wraps a text node in one or more mark nodes by placing the text node in an
  * array and using that as the `children` value of a mark node. The resulting
  * mark node is then placed in an array and used as the child of a mark node for
@@ -143,12 +125,15 @@ function wrapTextWithMarks(textNode, markTypes) {
  */
 function convertTextNode(node) {
 
+  if (get(node.data, 'isBreak')) {
+    return u('break');
+  }
   /**
    * If the Slate text node has no "ranges" property, just return an equivalent
    * MDAST node.
    */
   if (!node.ranges) {
-    return createTextNodes(node.text);
+    return u('html', node.text);
   }
 
   /**
@@ -172,13 +157,13 @@ function convertTextNode(node) {
     /**
      * Create the base text node.
      */
-    const textNodes = createTextNodes(text, textNodeType);
+    const textNode = u(textNodeType, text);
 
     /**
      * Recursively wrap the base text node in the individual mark nodes, if
      * any exist.
      */
-    return textNodes.map(textNode => wrapTextWithMarks(textNode, filteredMarkTypes));
+    return wrapTextWithMarks(textNode, filteredMarkTypes);
   });
 
   /**
