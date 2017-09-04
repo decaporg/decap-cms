@@ -1,116 +1,77 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import ImmutablePropTypes from "react-immutable-proptypes";
+import { get } from 'lodash';
+import uuid from 'uuid';
 import { truncateMiddle } from '../../lib/textHelper';
-import { Loader } from '../UI';
 import AssetProxy, { createAssetProxy } from '../../valueObjects/AssetProxy';
 import styles from './FileControl.css';
 
 const MAX_DISPLAY_LENGTH = 50;
 
 export default class FileControl extends React.Component {
-  state = {
-    processing: false,
-  };
+  constructor(props) {
+    super(props);
+    this.controlID = uuid.v4();
+  }
 
-  promise = null;
 
-  isValid = () => {
-    if (this.promise) {
-      return this.promise;
+  shouldComponentUpdate(nextProps) {
+    /**
+     * Always update if the value changes.
+     */
+    if (this.props.value !== nextProps.value) {
+      return true;
     }
-    return { error: false };
-  };
 
+    /**
+     * If there is a media path for this control in the state object, and that
+     * path is different than the value in `nextProps`, update.
+     */
+    const mediaPath = nextProps.mediaPaths.get(this.controlID);
+    if (mediaPath && (nextProps.value !== mediaPath)) {
+      return true;
+    }
 
-  handleFileInputRef = (el) => {
-    this._fileInput = el;
-  };
+    return false;
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { mediaPaths, value } = nextProps;
+    const mediaPath = mediaPaths.get(this.controlID);
+    if (mediaPath && mediaPath !== value) {
+      this.props.onChange(mediaPath);
+    }
+  }
 
   handleClick = (e) => {
-    this._fileInput.click();
-  };
-
-  handleDragEnter = (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-  };
-
-  handleDragOver = (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-  };
-
-  handleChange = (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-
-    const fileList = e.dataTransfer ? e.dataTransfer.files : e.target.files;
-    const files = [...fileList];
-    const imageType = /^image\//;
-
-    // Return the first file on the list
-    const file = files[0];
-
-    this.props.onRemoveAsset(this.props.value);
-    if (file) {
-      this.setState({ processing: true });
-      this.promise = createAssetProxy(file.name, file, false, this.props.field.get('private', false))
-      .then((assetProxy) => {
-        this.setState({ processing: false });
-        this.props.onAddAsset(assetProxy);
-        this.props.onChange(assetProxy.public_path);
-      });
-    } else {
-      this.props.onChange(null);
-    }
+    const { field, onOpenMediaLibrary } = this.props;
+    return onOpenMediaLibrary({ controlID: this.controlID });
   };
 
   renderFileName = () => {
-    if (!this.props.value) return null;
-    if (this.value instanceof AssetProxy) {
-      return truncateMiddle(this.props.value.path, MAX_DISPLAY_LENGTH);
-    } else {
-      return truncateMiddle(this.props.value, MAX_DISPLAY_LENGTH);
-    }
+    const { value } = this.props;
+    return value ? truncateMiddle(value, MAX_DISPLAY_LENGTH) : null;
   };
 
   render() {
-    const { processing } = this.state;
     const fileName = this.renderFileName();
-    if (processing) {
-      return (
-        <div className={styles.imageUpload}>
-          <span className={styles.message}>
-            <Loader active />
-          </span>
-        </div>
-      );
-    }
     return (
-      <div
-        className={styles.imageUpload}
-        onDragEnter={this.handleDragEnter}
-        onDragOver={this.handleDragOver}
-        onDrop={this.handleChange}
-      >
+      <div className={styles.wrapper}>
         <span className={styles.message} onClick={this.handleClick}>
-          {fileName ? fileName : 'Click here to upload a file from your computer, or drag and drop a file directly into this box'}
+          {fileName ? fileName : 'Click here to select an asset from the asset library'}
         </span>
-        <input
-          type="file"
-          onChange={this.handleChange}
-          className={styles.input}
-          ref={this.handleFileInputRef}
-        />
       </div>
     );
   }
 }
 
 FileControl.propTypes = {
+  field: PropTypes.object.isRequired,
+  mediaPaths: ImmutablePropTypes.map.isRequired,
   onAddAsset: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   onRemoveAsset: PropTypes.func.isRequired,
+  onOpenMediaLibrary: PropTypes.func.isRequired,
   value: PropTypes.node,
-  field: PropTypes.object,
 };

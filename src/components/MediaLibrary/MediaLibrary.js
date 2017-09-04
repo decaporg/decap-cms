@@ -112,7 +112,7 @@ class MediaLibrary extends React.Component {
     const { files: fileList } = event.dataTransfer || event.target;
     const files = [...fileList];
     const file = files[0];
-    return createAssetProxy(file.name, file)
+    return createAssetProxy(file.name, file, false, this.props.field.get('private', false))
       .then(assetProxy => {
         dispatch(addAsset(assetProxy));
         return dispatch(persistMedia([assetProxy]));

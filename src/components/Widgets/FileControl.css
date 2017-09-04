@@ -1,16 +1,12 @@
 @import "../UI/theme.css";
 
-.input {
-  display: none !important;
-}
-
 .message {
   padding: 20px;
   display: block;
   font-size: 12px;
 }
 
-.imageUpload {
+.wrapper {
   background-color: #fff;
   text-align: center;
   color: #999;
