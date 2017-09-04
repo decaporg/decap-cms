@@ -91,10 +91,8 @@ export default class GitHub {
   }
 
   getMedia() {
-    const path = this.config.get('media_folder');
-    return this.api.readFile(path).then(data => {
-      return data.filter(file => file.type === 'file');
-    });
+    return this.api.listFiles(this.config.get('media_folder'))
+      .then(files => files.filter(file => file.type === 'file'));
   }
 
   persistEntry(entry, mediaFiles = [], options = {}) {
