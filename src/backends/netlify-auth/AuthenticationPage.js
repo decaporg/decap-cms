@@ -8,8 +8,6 @@ import styles from "./AuthenticationPage.css";
 export default class AuthenticationPage extends React.Component {
   constructor(props) {
     super(props);
-    this.identity = window.netlifyIdentity;
-    this.state = {user: this.identity && this.identity.gotrue && this.identity.gotrue.currentUser()};
   }
 
   componentDidMount() {
@@ -42,7 +40,7 @@ export default class AuthenticationPage extends React.Component {
     const { email, password } = this.state;
     const errors = {};
     if (!email) {
-      errors.email = 'Make sure to enter your email.';
+      errors.email = 'Make sure to enter your user name';
     }
     if (!password) {
       errors.password = 'Please enter your password.';
