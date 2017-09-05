@@ -66,6 +66,29 @@ export default class AssetStore {
     });
   }
 
+  retrieve() {
+    return this.getToken()
+      .then(token => this.request(this.getSignedFormURL, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${ token }`,
+        },
+      }));
+  }
+
+  delete(assetID) {
+    const url = `${ this.getSignedFormURL }/${ assetID }`
+    return this.getToken()
+      .then(token => this.request(url, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${ token }`,
+        },
+      }));
+  }
+
   upload(file, privateUpload = false) {
     const fileData = {
       name: file.name,

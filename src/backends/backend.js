@@ -234,11 +234,11 @@ class Backend {
     });
   }
 
-  persistMedia(files) {
+  persistMedia(file) {
     const options = {
-      commitMessage: `Add media files\n${files.map(file => file.path).join('\n')}`,
+      commitMessage: `Upload ${file.path}`,
     };
-    return this.implementation.persistMedia(files, options);
+    return this.implementation.persistMedia(file, options);
   }
 
   deleteEntry(config, collection, slug) {

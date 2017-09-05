@@ -1,6 +1,9 @@
 import { actions as notifActions } from 'redux-notifications';
 import { currentBackend } from '../backends/backend';
-import { getAsset } from '../reducers';
+import { createAssetProxy } from '../valueObjects/AssetProxy';
+import { getAsset, selectIntegration } from '../reducers';
+import { addAsset } from './media';
+import { getIntegrationProvider } from '../integrations';
 
 const { notifSend } = notifActions;
 
@@ -33,12 +36,26 @@ export function loadMedia(delay = 0) {
   return (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
+    const integration = selectIntegration(state, null, 'assetStore');
+    if (integration) {
+      const provider = getIntegrationProvider(state.integrations, backend.getToken, integration);
+      dispatch(mediaLoading());
+      return provider.retrieve()
+        .then(files => {
+          const normalizedFiles = files.map(({ id, name, size, url }) => ({ id, name, size, url, urlIsPublicPath: true }));
+          dispatch(mediaLoaded(normalizedFiles))
+        })
+        .catch(error => {
+          dispatch(mediaLoadFailed());
+        });
+    }
     dispatch(mediaLoading());
     return new Promise(resolve => {
       setTimeout(() => resolve(
         backend.getMedia()
           .then(files => {
-            dispatch(mediaLoaded(files));
+            const normalizedFiles = files.map(({ sha, name, size, download_url, path }) => ({ id: sha, name, size, url: download_url, path }));
+            dispatch(mediaLoaded(normalizedFiles));
           })
           .catch((error) => {
             if (error.status === 404) {
@@ -52,15 +69,21 @@ export function loadMedia(delay = 0) {
   };
 }
 
-export function persistMedia(files) {
+export function persistMedia(file, privateUpload) {
   return (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
+    const integration = selectIntegration(state, null, 'assetStore');
 
-    const assetProxies = files.map(file => getAsset(state, file.path));
     dispatch(mediaPersisting());
-    return backend
-      .persistMedia(assetProxies)
+
+    return createAssetProxy(file.name, file, false, privateUpload)
+      .then(assetProxy => {
+        dispatch(addAsset(assetProxy));
+        if (!integration) {
+          return backend.persistMedia(assetProxy);
+        }
+      })
       .then(() => dispatch(mediaPersisted()))
       .catch((error) => {
         console.error(error);
@@ -78,7 +101,27 @@ export function deleteMedia(file) {
   return (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
+    const integration = selectIntegration(state, null, 'assetStore');
+    if (integration) {
+      const provider = getIntegrationProvider(state.integrations, backend.getToken, integration);
+      dispatch(mediaDeleting());
+      return provider.delete(file.id)
+        .then(() => {
+          dispatch(mediaDeleted());
+          return dispatch(loadMedia(500));
+        })
+        .catch(error => {
+          console.error(error);
+          dispatch(notifSend({
+            message: `Failed to delete media: ${ error.message }`,
+            kind: 'danger',
+            dismissAfter: 8000,
+          }));
+          return dispatch(mediaDeleteFailed());
+        });
+    }
     dispatch(mediaDeleting());
+    console.log(file);
     return backend.deleteMedia(file.path)
       .then(() => {
         dispatch(mediaDeleted());

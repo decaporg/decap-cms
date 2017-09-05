@@ -1,15 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { orderBy, get, last } from 'lodash';
+import { orderBy, get, last, isEmpty } from 'lodash';
 import { Table, TableHead, TableRow, TableCell } from 'react-toolbox/lib/table';
 import { Button, BrowseButton } from 'react-toolbox/lib/button';
 import bytes from 'bytes';
 import fuzzy from 'fuzzy';
 import Dialog from '../UI/Dialog';
 import { resolvePath } from '../../lib/pathHelper';
-import { createAssetProxy } from '../../valueObjects/AssetProxy';
 import { changeDraftField } from '../../actions/entries';
-import { addAsset } from '../../actions/media';
 import { loadMedia, persistMedia, deleteMedia, insertMedia, closeMediaLibrary } from '../../actions/mediaLibrary';
 import styles from './MediaLibrary.css';
 import headCellTheme from './headCellTheme.css';
@@ -21,7 +19,7 @@ const IMAGE_EXTENSIONS = [ 'jpg', 'jpeg', 'webp', 'gif', 'png', 'bmp', 'svg', 't
 class MediaLibrary extends React.Component {
 
   state = {
-    selectedFileName: '',
+    selectedFile: {},
     query: '',
     sortFields: JSON.parse(localStorage.getItem(MEDIA_LIBRARY_SORT_KEY)) || DEFAULT_SORT,
   };
@@ -34,7 +32,7 @@ class MediaLibrary extends React.Component {
   componentWillReceiveProps(nextProps) {
     const isOpening = !this.props.isVisible && nextProps.isVisible;
     if (isOpening) {
-      this.setState({ selectedFileName: '', query: '' });
+      this.setState({ selectedFile: {}, query: '' });
     }
   }
 
@@ -43,14 +41,16 @@ class MediaLibrary extends React.Component {
   };
 
   toTableData = files => {
-    const tableData = files && files.map(({ name, size, queryOrder, download_url }) => {
+    const tableData = files && files.map(({ id, name, size, queryOrder, url, urlIsPublicPath }) => {
       const ext = last(name.split('.'));
       return {
+        id,
         name,
         type: ext.toUpperCase(),
         size,
         queryOrder,
-        url: download_url,
+        url,
+        urlIsPublicPath,
         isImage: IMAGE_EXTENSIONS.includes(ext),
       };
     });
@@ -81,8 +81,8 @@ class MediaLibrary extends React.Component {
   };
 
   handleRowSelect = row => {
-    const selectedFileName = this.state.selectedFileName === row.name ? null : row.name;
-    this.setState({ selectedFileName });
+    const selectedFile = this.state.selectedFile.id === row.id ? {} : row;
+    this.setState({ selectedFile });
   };
 
   handleSortClick = fieldName => {
@@ -108,36 +108,33 @@ class MediaLibrary extends React.Component {
   handlePersist = event => {
     event.stopPropagation();
     event.preventDefault();
-    const { dispatch } = this.props;
+    const { dispatch, privateUpload } = this.props;
     const { files: fileList } = event.dataTransfer || event.target;
     const files = [...fileList];
     const file = files[0];
-    return createAssetProxy(file.name, file, false, this.props.field.get('private', false))
-      .then(assetProxy => {
-        dispatch(addAsset(assetProxy));
-        return dispatch(persistMedia([assetProxy]));
-      })
+    return dispatch(persistMedia(file, privateUpload))
       .then(() => dispatch(loadMedia()));
   };
 
   handleInsert = () => {
-    const { selectedFileName } = this.state;
+    const { selectedFile } = this.state;
+    const { name, url, urlIsPublicPath } = selectedFile;
     const { dispatch, config } = this.props;
-    const publicPath = resolvePath(selectedFileName, config.get('public_folder'));
+    const publicPath = urlIsPublicPath ? url : resolvePath(name, config.get('public_folder'));
     dispatch(insertMedia(publicPath));
     this.handleClose();
   };
 
   handleDelete = () => {
-    const { selectedFileName } = this.state;
+    const { selectedFile } = this.state;
     const { files, dispatch } = this.props;
     if (!window.confirm('Are you sure you want to delete selected media?')) {
       return;
     }
-    const fileToDelete = files.find(file => file.name === selectedFileName);
-    dispatch(deleteMedia(fileToDelete))
+    const file = files.find(file => selectedFile.id === file.id);
+    dispatch(deleteMedia(file))
       .then(() => {
-        this.setState({ selectedFileName: '' });
+        this.setState({ selectedFile: {} });
       });
   };
 
@@ -195,7 +192,7 @@ class MediaLibrary extends React.Component {
 
   render() {
     const { isVisible, canInsert, files, forImage, isLoading, isPersisting, isDeleting } = this.props;
-    const { query, selectedFileName } = this.state;
+    const { query, selectedFile } = this.state;
     const filteredFiles = forImage ? this.filterImages(files) : files;
     const queriedFiles = query ? this.queryFilter(query, filteredFiles) : filteredFiles;
     const tableData = this.toTableData(queriedFiles);
@@ -212,12 +209,12 @@ class MediaLibrary extends React.Component {
       || (!hasSearchResults && 'No results.');
     const footer =
       <div>
-        <Button label="Delete" onClick={this.handleDelete} className={styles.buttonLeft} disabled={!selectedFileName || !hasMedia} accent raised />
+        <Button label="Delete" onClick={this.handleDelete} className={styles.buttonLeft} disabled={isEmpty(selectedFile) || !hasMedia} accent raised />
         <BrowseButton label="Upload" accept={forImage ? 'image/*' : '*'} onChange={this.handlePersist} className={styles.buttonLeft} primary raised />
         <Button label="Close" onClick={this.handleClose} className={styles.buttonRight} raised/>
         {
           !canInsert ? null :
-            <Button label="Insert" onClick={this.handleInsert} className={styles.buttonRight} disabled={!selectedFileName || !hasMedia} primary raised />
+            <Button label="Insert" onClick={this.handleInsert} className={styles.buttonRight} disabled={isEmpty(selectedFile) || !hasMedia} primary raised />
         }
       </div>;
 
@@ -240,7 +237,7 @@ class MediaLibrary extends React.Component {
                 </TableCell>
                 <TableCell
                   theme={headCellTheme}
-                  sorted={hasMedia && this.getSortDirection('name')}
+                  sorted={hasMedia ? this.getSortDirection('name') : null}
                   onClick={() => hasMedia && this.handleSortClick('name')}
                   style={{ cursor: hasMedia ? 'pointer' : 'auto' }}
                 >
@@ -248,7 +245,7 @@ class MediaLibrary extends React.Component {
                 </TableCell>
                 <TableCell
                   theme={headCellTheme}
-                  sorted={hasMedia && this.getSortDirection('type')}
+                  sorted={hasMedia ? this.getSortDirection('type') : null}
                   onClick={() => hasMedia && this.handleSortClick('type')}
                   style={{ cursor: hasMedia ? 'pointer' : 'auto' }}
                 >
@@ -256,7 +253,7 @@ class MediaLibrary extends React.Component {
                 </TableCell>
                 <TableCell
                   theme={headCellTheme}
-                  sorted={hasMedia && this.getSortDirection('size')}
+                  sorted={hasMedia ? this.getSortDirection('size') : null}
                   onClick={() => hasMedia && this.handleSortClick('size')}
                   style={{ cursor: hasMedia ? 'pointer' : 'auto' }}
                 >
@@ -265,7 +262,7 @@ class MediaLibrary extends React.Component {
               </TableHead>
               {
                 tableData.map((file, idx) =>
-                  <TableRow key={idx} selected={this.state.selectedFileName === file.name } onFocus={this.handleRowFocus} onBlur={this.handleRowBlur}>
+                  <TableRow key={idx} selected={this.state.selectedFile.id === file.id } onFocus={this.handleRowFocus} onBlur={this.handleRowBlur}>
                     <TableCell>
                       {
                         !file.isImage ? null :

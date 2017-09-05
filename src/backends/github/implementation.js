@@ -99,8 +99,8 @@ export default class GitHub {
     return this.api.persistFiles(entry, mediaFiles, options);
   }
 
-  persistMedia(mediaFiles = [], options = {}) {
-    return this.api.persistFiles(null, mediaFiles, options);
+  persistMedia(mediaFile, options = {}) {
+    return this.api.persistFiles(null, [mediaFile], options);
   }
 
   deleteFile(path, commitMessage, options) {
