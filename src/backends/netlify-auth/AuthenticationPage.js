@@ -12,7 +12,6 @@ export default class AuthenticationPage extends React.Component {
 
   state = { username: "", password: "", errors: {} };
   
-
   handleChange = (name, value) => {
     this.setState({ ...this.state, [name]: value });
   };
@@ -38,7 +37,7 @@ export default class AuthenticationPage extends React.Component {
     .then((user) => {
       this.props.onLogin(user);
     })
-    .catch((error) => { 
+    .catch((error) => {
       this.setState({ errors: { server: error.description || error.msg || error }, loggingIn: false });
     });
   };
@@ -49,36 +48,37 @@ export default class AuthenticationPage extends React.Component {
     return (
       <section className={styles.root}>
         <Card className={styles.card}>
-          <img src={logo} width={100} role="presentation" />
-          {error && <p>
-            <span className={styles.errorMsg}>{error}</span>
-          </p>}
-          {errors.server && <p>
-            <span className={styles.errorMsg}>{errors.server}</span>
-          </p>}
-          <Input 
-            type="text"
-            label="Username"
-            name="username"
-            value={this.state.username}
-            error={errors.username}
-            onChange={this.handleChange.bind(this, "username")} // eslint-disable-line
-          />
-          <Input
-            type="password"
-            label="Password"
-            name="password"
-            value={this.state.password}
-            error={errors.password}
-            onChange={this.handleChange.bind(this, "password")} // eslint-disable-line
-          />
-          <Button
-            className={styles.button}
-            raised
-            onClick={this.handleLogin}
-          >
-            <Icon type="login" /> Login
-          </Button>
+          <form onSubmit={this.handleLogin}>
+            <img src={logo} width={100} role="presentation" />
+            {error && <p>
+              <span className={styles.errorMsg}>{error}</span>
+            </p>}
+            {errors.server && <p>
+              <span className={styles.errorMsg}>{errors.server}</span>
+            </p>}
+            <Input
+              type="text"
+              label="Username"
+              name="username"
+              value={this.state.username}
+              error={errors.username}
+              onChange={this.handleChange.bind(this, "username")} // eslint-disable-line
+            />
+            <Input
+              type="password"
+              label="Password"
+              name="password"
+              value={this.state.password}
+              error={errors.password}
+              onChange={this.handleChange.bind(this, "password")} // eslint-disable-line
+            />
+            <Button
+              className={styles.button}
+              raised
+            >
+              <Icon type="login" /> Login
+            </Button>
+          </form>
         </Card>
       </section>
     );
