@@ -66,10 +66,6 @@ export default class AuthenticationPage extends React.Component {
     const { errors } = this.state;
     const { error } = this.props;
 
-    if (this.identity) {
-      return <section className={styles.root}></section>;
-    }
-
     return (
       <section className={styles.root}>
         <Card className={styles.card}>

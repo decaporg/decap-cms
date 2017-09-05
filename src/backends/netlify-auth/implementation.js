@@ -36,7 +36,7 @@ export default class NetlifyAuth extends GitHubBackend {
     const netlifySiteURL = localStorage.getItem("netlifySiteURL");
     const APIUrl = getEndpoint(config.getIn(["backend", "auth_url"]), netlifySiteURL);
     this.github_proxy_url = getEndpoint(config.getIn(["backend", "github_proxy_url"]), netlifySiteURL);
-    this.authClient = new Gotrue({APIUrl});
+    this.authClient = new GoTrue({APIUrl});
 
     AuthenticationPage.authClient = this.authClient;
   }
@@ -51,10 +51,14 @@ export default class NetlifyAuth extends GitHubBackend {
     this.tokenPromise = user.jwt.bind(user);
     return this.tokenPromise()
     .then((token) => {
+      let validRole = true;
+      if (this.accept_roles && this.accept_roles.length > 0) {
+        validRole = intersection(userRoles, this.accept_roles).length > 0;
+      }
       const userRoles = get(jwtDecode(token), 'app_metadata.roles', []);
-      if (intersection(userRoles, this.accept_roles).length > 0) {
+      if (validRole) {
         const userData = {
-          name: `${ user.user_metadata.firstname } ${ user.user_metadata.lastname }`,
+          name: user.user_metadata.name,
           email: user.email,
           metadata: user.user_metadata,
         };
@@ -65,7 +69,7 @@ export default class NetlifyAuth extends GitHubBackend {
         });
         return userData;
       } else {
-        throw new Error("User is not authorized");
+        throw new Error("You don't have sufficient permissions to access Netlify CMS");
       }
     });
   }

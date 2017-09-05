@@ -1,6 +1,7 @@
 backend:
-  name: test-repo
-  delay: 0.1
+  name: netlify-auth
+  auth_url: "/.netlify/identity"
+  github_proxy_url: "/.netlify/git/github"
 
 media_folder: "assets/uploads"
 
