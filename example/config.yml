@@ -14,7 +14,7 @@ collections: # A list of collections the CMS should be able to edit
     fields: # The fields each document in this collection have
       - {label: "Title", name: "title", widget: "string", tagname: "h1"}
       - {label: "Publish Date", name: "date", widget: "datetime", format: "YYYY-MM-DD hh:mma"}
-      - {label: "Cover Image", name: "image", widget: "media"}
+      - {label: "Cover Image", name: "image", widget: "image"}
       - {label: "Body", name: "body", widget: "markdown"}
     meta:
       - {label: "SEO Description", name: "description", widget: "text"}
@@ -97,7 +97,7 @@ collections: # A list of collections the CMS should be able to edit
           - {label: "Markdown", name: "markdown", widget: "markdown"}
           - {label: "Datetime", name: "datetime", widget: "datetime"}
           - {label: "Date", name: "date", widget: "date"}
-          - {label: "Image", name: "image", widget: "media"}
+          - {label: "Image", name: "image", widget: "image"}
           - {label: "File", name: "file", widget: "file"}
           - {label: "Select", name: "select", widget: "select", options: ["a", "b", "c"]}
       - label: "List"
