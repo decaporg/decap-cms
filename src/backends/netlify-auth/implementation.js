@@ -1,9 +1,26 @@
-import NetlifyAuthClient from "netlify-auth-js";
+import GoTrue from "gotrue-js";
 import jwtDecode from 'jwt-decode';
+import {List} from 'immutable';
 import { get, pick, intersection } from "lodash";
 import GitHubBackend from "../github/implementation";
 import API from "./API";
 import AuthenticationPage from "./AuthenticationPage";
+
+const localHosts = {
+  localhost: true,
+  '127.0.0.1': true,
+  '0.0.0.0': true
+}
+
+function getEndpoint(endpoint, netlifySiteURL) {
+  if (localHosts[document.location.host] && netlifySiteURL && endpoint.match(/^\/\.netlify\//)) {
+    const parts = [netlifySiteURL];
+    if (!netlifySiteURL.match(/\/$/)) { parts.push("/"); }
+    parts.push(endpoint);
+    return parts.join("");
+  }
+  return endpoint;
+}
 
 export default class NetlifyAuth extends GitHubBackend {
   constructor(config) {
@@ -13,16 +30,13 @@ export default class NetlifyAuth extends GitHubBackend {
     if (config.getIn(["backend", "github_proxy_url"]) == null) {
       throw new Error("The NetlifyAuth backend needs an \"github_proxy_url\" in the backend configuration.");
     }
-    this.github_proxy_url = config.getIn(["backend", "github_proxy_url"]);
 
-    if (config.getIn(["backend", "accept_roles"]) == null) {
-      throw new Error("The NetlifyAuth backend needs an \"accept_roles\" in the backend configuration.");
-    }
-    this.accept_roles = config.getIn(["backend", "accept_roles"]).toArray();
+    this.accept_roles = (config.getIn(["backend", "accept_roles"]) || new List()).toArray();
 
-    this.authClient = new NetlifyAuthClient({
-      APIUrl: config.getIn(["backend", "auth_url"]),
-    });
+    const netlifySiteURL = localStorage.getItem("netlifySiteURL");
+    const APIUrl = getEndpoint(config.getIn(["backend", "auth_url"]), netlifySiteURL);
+    this.github_proxy_url = getEndpoint(config.getIn(["backend", "github_proxy_url"]), netlifySiteURL);
+    this.authClient = new Gotrue({APIUrl});
 
     AuthenticationPage.authClient = this.authClient;
   }
@@ -53,7 +67,7 @@ export default class NetlifyAuth extends GitHubBackend {
       } else {
         throw new Error("User is not authorized");
       }
-    });    
+    });
   }
 
   getToken() {
