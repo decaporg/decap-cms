@@ -5,7 +5,7 @@ export default class AssetStore {
       throw 'The AssetStore integration needs the getSignedFormURL in the integration configuration.';
     }
     this.getToken = getToken;
-    
+
     this.shouldConfirmUpload = config.get('shouldConfirmUpload', false);
     this.getSignedFormURL = config.get('getSignedFormURL');
   }
@@ -69,9 +69,11 @@ export default class AssetStore {
   upload(file, privateUpload = false) {
     const fileData = {
       name: file.name,
-      size: file.size,
-      content_type: file.type,
+      size: file.size
     };
+    if (file.type) {
+      fileData.content_type = file.type;
+    }
 
     if (privateUpload) {
       fileData.visibility = 'private';
@@ -91,7 +93,7 @@ export default class AssetStore {
       const formFields = response.form.fields;
       const assetID = response.asset.id;
       const assetURL = response.asset.url;
-      
+
       const formData = new FormData();
       Object.keys(formFields).forEach(key => formData.append(key, formFields[key]));
       formData.append('file', file, file.name);
@@ -100,11 +102,10 @@ export default class AssetStore {
         method: 'POST',
         body: formData,
       })
-      .then(() => { 
+      .then(() => {
         if (this.shouldConfirmUpload) this.confirmRequest(assetID);
         return { success: true, assetURL };
       });
     });
   }
 }
-
