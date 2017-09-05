@@ -18,7 +18,7 @@ class ControlHOC extends Component {
     mediaPaths: ImmutablePropTypes.map.isRequired,
     metadata: ImmutablePropTypes.map,
     onChange: PropTypes.func.isRequired,
-    onValidate: PropTypes.func.isRequired,
+    onValidate: PropTypes.func,
     onOpenMediaLibrary: PropTypes.func.isRequired,
     onAddAsset: PropTypes.func.isRequired,
     onRemoveAsset: PropTypes.func.isRequired,

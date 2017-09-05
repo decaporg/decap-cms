@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Map } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import ControlHOC from './ControlHOC';
 import { resolveWidget } from '../Widgets';
 import controlStyles from '../ControlPanel/ControlPane.css';
 import styles from './ObjectControl.css';
@@ -24,6 +25,23 @@ export default class ObjectControl extends Component {
     className: PropTypes.string,
   };
 
+  /**
+   * Always update so that each nested widget has the option to update. This is
+   * required because ControlHOC provides a default `shouldComponentUpdate`
+   * which only updates if the value changes, but every widget must be allowed
+   * to override this.
+   */
+  shouldComponentUpdate() {
+    return true;
+  }
+
+  onChange = (fieldName, newValue, newMetadata) => {
+    const { value, onChange } = this.props;
+    const objectValue = value || Map();
+    const newObjectValue = objectValue.set(fieldName, newValue);
+    return this.props.onChange(newObjectValue, newMetadata);
+  };
+
   controlFor(field) {
     const { onAddAsset, onOpenMediaLibrary, mediaPaths, onRemoveAsset, getAsset, value, onChange } = this.props;
     if (field.get('widget') === 'hidden') {
@@ -35,22 +53,18 @@ export default class ObjectControl extends Component {
     return (<div className={controlStyles.widget} key={field.get('name')}>
       <div className={controlStyles.control} key={field.get('name')}>
         <label className={controlStyles.label} htmlFor={field.get('name')}>{field.get('label')}</label>
-        {
-          React.createElement(widget.control, {
-            id: field.get('name'),
-            field,
-            value: fieldValue,
-            onChange: (val, metadata) => {
-              onChange((value || Map()).set(field.get('name'), val), metadata);
-            },
-            onOpenMediaLibrary,
-            mediaPaths,
-            onAddAsset,
-            onRemoveAsset,
-            getAsset,
-            forID: field.get('name'),
-          })
-        }
+        <ControlHOC
+          controlComponent={widget.control}
+          field={field}
+          value={fieldValue}
+          onChange={this.onChange.bind(this, field.get('name'))}
+          mediaPaths={mediaPaths}
+          onOpenMediaLibrary={onOpenMediaLibrary}
+          onAddAsset={onAddAsset}
+          onRemoveAsset={onRemoveAsset}
+          getAsset={getAsset}
+          forID={field.get('name')}
+        />
       </div>
     </div>);
   }

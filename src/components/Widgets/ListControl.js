@@ -46,6 +46,16 @@ export default class ListControl extends Component {
     this.valueType = null;
   }
 
+  /**
+   * Always update so that each nested widget has the option to update. This is
+   * required because ControlHOC provides a default `shouldComponentUpdate`
+   * which only updates if the value changes, but every widget must be allowed
+   * to override this.
+   */
+  shouldComponentUpdate() {
+    return true;
+  }
+
   componentDidMount() {
     const { field } = this.props;
     if (field.get('fields')) {
