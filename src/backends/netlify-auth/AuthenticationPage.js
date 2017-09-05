@@ -6,12 +6,32 @@ import logo from "./netlify_logo.svg";
 import styles from "./AuthenticationPage.css";
 
 export default class AuthenticationPage extends React.Component {
+  constructor(props) {
+    super(props);
+    this.identity = window.identity;
+    this.state = {user: this.identity && this.identity.gotrue && this.identity.gotrue.currentUser()};
+  }
+
+  componentDidMount() {
+    if (this.identity && !this.state.user) {
+      this.identity.on('login', (user) => {
+        this.props.onLogin(user);
+        this.identity.close();
+      });
+      this.identity.on('signup', (user) => {
+        this.props.onLogin(user);
+        this.identity.close();
+      });
+      this.identity.open();
+    }
+  }
+
   static propTypes = {
     onLogin: React.PropTypes.func.isRequired,
   };
 
-  state = { username: "", password: "", errors: {} };
-  
+  state = { email: "", password: "", errors: {} };
+
   handleChange = (name, value) => {
     this.setState({ ...this.state, [name]: value });
   };
@@ -19,10 +39,10 @@ export default class AuthenticationPage extends React.Component {
   handleLogin = (e) => {
     e.preventDefault();
 
-    const { username, password } = this.state;
+    const { email, password } = this.state;
     const errors = {};
-    if (!username) {
-      errors.username = 'Make sure to enter your user name';
+    if (!email) {
+      errors.email = 'Make sure to enter your user name';
     }
     if (!password) {
       errors.password = 'Please enter your password';
@@ -33,7 +53,7 @@ export default class AuthenticationPage extends React.Component {
       return;
     }
 
-    AuthenticationPage.authClient.login(this.state.username, this.state.password, true)
+    AuthenticationPage.authClient.login(this.state.email, this.state.password, true)
     .then((user) => {
       this.props.onLogin(user);
     })
@@ -45,6 +65,11 @@ export default class AuthenticationPage extends React.Component {
   render() {
     const { errors } = this.state;
     const { error } = this.props;
+
+    if (this.identity) {
+      return <section className={styles.root}>;
+    }
+
     return (
       <section className={styles.root}>
         <Card className={styles.card}>
@@ -58,11 +83,11 @@ export default class AuthenticationPage extends React.Component {
             </p>}
             <Input
               type="text"
-              label="Username"
-              name="username"
-              value={this.state.username}
-              error={errors.username}
-              onChange={this.handleChange.bind(this, "username")} // eslint-disable-line
+              label="Email"
+              name="email"
+              value={this.state.email}
+              error={errors.email}
+              onChange={this.handleChange.bind(this, "email")} // eslint-disable-line
             />
             <Input
               type="password"
