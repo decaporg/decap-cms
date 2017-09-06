@@ -42,10 +42,10 @@ export default class AuthenticationPage extends React.Component {
     const { email, password } = this.state;
     const errors = {};
     if (!email) {
-      errors.email = 'Make sure to enter your user name';
+      errors.email = 'Make sure to enter your email.';
     }
     if (!password) {
-      errors.password = 'Please enter your password';
+      errors.password = 'Please enter your password.';
     }
 
     if (Object.keys(errors).length > 0) {
