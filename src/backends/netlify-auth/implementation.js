@@ -31,7 +31,7 @@ export default class NetlifyAuth extends GitHubBackend {
       throw new Error("The NetlifyAuth backend needs an \"github_proxy_url\" in the backend configuration.");
     }
 
-    this.accept_roles = (config.getIn(["backend", "accept_roles"]) || new List()).toArray();
+    this.accept_roles = (config.getIn(["backend", "accept_roles"]) || List()).toArray();
 
     const netlifySiteURL = localStorage.getItem("netlifySiteURL");
     const APIUrl = getEndpoint(config.getIn(["backend", "auth_url"]), netlifySiteURL);
