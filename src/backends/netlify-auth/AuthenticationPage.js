@@ -8,7 +8,7 @@ import styles from "./AuthenticationPage.css";
 export default class AuthenticationPage extends React.Component {
   constructor(props) {
     super(props);
-    this.identity = window.identity;
+    this.identity = window.netlifyIdentity;
     this.state = {user: this.identity && this.identity.gotrue && this.identity.gotrue.currentUser()};
   }
 
