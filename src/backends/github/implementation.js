@@ -42,6 +42,11 @@ export default class GitHub {
     );
   }
 
+  logout() {
+    this.token = null;
+    return;
+  }
+
   getToken() {
     return Promise.resolve(this.token);
   }

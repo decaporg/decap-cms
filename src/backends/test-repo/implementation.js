@@ -36,6 +36,10 @@ export default class TestRepo {
     return Promise.resolve({ email: state.email, name: nameFromEmail(state.email) });
   }
 
+  logotu() {
+    return null;
+  }
+
   getToken() {
     return Promise.resolve('');
   }

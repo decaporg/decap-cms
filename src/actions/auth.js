@@ -77,7 +77,8 @@ export function logoutUser() {
   return (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
-    backend.logout();
-    dispatch(logout());
+    Promise.resolve(backend.logout()).then(() => {
+      dispatch(logout());
+    });
   };
 }

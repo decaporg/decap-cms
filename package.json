@@ -1,6 +1,6 @@
 {
   "name": "netlify-cms",
-  "version": "0.4.6",
+  "version": "0.5.0-beta.5",
   "description": "Netlify CMS lets content editors work on structured content stored in git",
   "main": "dist/cms.js",
   "scripts": {
@@ -68,6 +68,7 @@
     "exports-loader": "^0.6.3",
     "extract-text-webpack-plugin": "^2.1.2",
     "file-loader": "^0.11.2",
+    "gotrue-js": "^0.9.3",
     "identity-obj-proxy": "^3.0.0",
     "imports-loader": "^0.7.1",
     "jest": "^20.0.4",
@@ -101,7 +102,6 @@
     "dateformat": "^1.0.12",
     "deep-equal": "^1.0.1",
     "fuzzy": "^0.1.1",
-    "gotrue-js": "^0.9.3",
     "history": "^2.1.2",
     "immutability-helper": "^2.0.0",
     "immutable": "^3.7.6",
@@ -114,6 +114,7 @@
     "markup-it": "^2.0.0",
     "material-design-icons": "^3.0.1",
     "moment": "^2.11.2",
+    "node-sass": "^3.10.0",
     "normalize.css": "^4.2.0",
     "preliminaries": "1.1.0",
     "preliminaries-parser-toml": "1.1.0",
