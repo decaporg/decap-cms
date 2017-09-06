@@ -5,23 +5,44 @@ import { Card, Icon } from "../../components/UI";
 import logo from "./netlify_logo.svg";
 import styles from "./AuthenticationPage.css";
 
+let component = null;
+
+if (window.netlifyIdentity) {
+  window.netlifyIdentity.on('login', (user) => {
+    component && component.handleIdentityLogin(user);
+  });
+  window.netlifyIdentity.on('logout', () => {
+    component && component.handleIdentityLogout();
+  });
+}
+
 export default class AuthenticationPage extends React.Component {
   constructor(props) {
     super(props);
   }
 
   componentDidMount() {
-    if (this.identity && !this.state.user) {
-      this.identity.on('login', (user) => {
-        this.props.onLogin(user);
-        this.identity.close();
-      });
-      this.identity.on('signup', (user) => {
-        this.props.onLogin(user);
-        this.identity.close();
-      });
-      this.identity.open();
+    component = this;
+    if (!this.loggedIn && window.netlifyIdentity && window.netlifyIdentity.currentUser()) {
+      this.props.onLogin(window.netlifyIdentity.currentUser());
     }
+    if (window.netlifyIdentity && !window.netlifyIdentity.currentUser()) {
+      window.netlifyIdentity.open('login');
+    }
+  }
+
+  componentWillUnmount() {
+    component = null;
+  }
+
+  handleIdentityLogin = (user) => {
+    console.log('logging in ', user);
+    this.props.onLogin(user);
+    window.netlifyIdentity.close();
+  }
+
+  handleIdentityLogout = () => {
+    window.netlifyIdentity.open();
   }
 
   static propTypes = {
@@ -63,6 +84,10 @@ export default class AuthenticationPage extends React.Component {
   render() {
     const { errors } = this.state;
     const { error } = this.props;
+
+    if (window.netlifyIdentity) {
+      return null;
+    }
 
     return (
       <section className={styles.root}>

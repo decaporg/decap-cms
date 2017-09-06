@@ -11,38 +11,40 @@ const localHosts = {
   '127.0.0.1': true,
   '0.0.0.0': true
 }
+const defaults = {
+  identity: '/.netlify/identity',
+  gateway: '/.netlify/git/github'
+}
 
 function getEndpoint(endpoint, netlifySiteURL) {
-  if (localHosts[document.location.host] && netlifySiteURL && endpoint.match(/^\/\.netlify\//)) {
-    const parts = [netlifySiteURL];
-    if (!netlifySiteURL.match(/\/$/)) { parts.push("/"); }
-    parts.push(endpoint);
+  if (localHosts[document.location.host.split(":").shift()] && netlifySiteURL && endpoint.match(/^\/\.netlify\//)) {
+    const parts = [];
+    if (netlifySiteURL) {
+      parts.push(netlifySiteURL);
+      if (!netlifySiteURL.match(/\/$/)) { parts.push("/"); }
+    }
+    parts.push(endpoint.replace(/^\//, ''));
     return parts.join("");
   }
   return endpoint;
 }
 
-export default class NetlifyAuth extends GitHubBackend {
+export default class GitGateway extends GitHubBackend {
   constructor(config) {
     super(config, true);
-    if (config.getIn(["backend", "auth_url"]) == null) { throw new Error("The NetlifyAuth backend needs an \"auth_url\" in the backend configuration."); }
-
-    if (config.getIn(["backend", "github_proxy_url"]) == null) {
-      throw new Error("The NetlifyAuth backend needs an \"github_proxy_url\" in the backend configuration.");
-    }
 
     this.accept_roles = (config.getIn(["backend", "accept_roles"]) || List()).toArray();
 
     const netlifySiteURL = localStorage.getItem("netlifySiteURL");
-    const APIUrl = getEndpoint(config.getIn(["backend", "auth_url"]), netlifySiteURL);
-    this.github_proxy_url = getEndpoint(config.getIn(["backend", "github_proxy_url"]), netlifySiteURL);
-    this.authClient = new GoTrue({APIUrl});
+    const APIUrl = getEndpoint(config.getIn(["backend", "identity_url"], defaults.identity), netlifySiteURL);
+    this.github_proxy_url = getEndpoint(config.getIn(["backend", "gateway_url"], defaults.gateway), netlifySiteURL);
+    this.authClient = window.netlifyIdentity ? window.netlifyIdentity.gotrue : new GoTrue({APIUrl});
 
     AuthenticationPage.authClient = this.authClient;
   }
 
   setUser() {
-    const user = this.authClient.currentUser();
+    const user = this.authClient && this.authClient.currentUser();
     if (!user) return Promise.reject();
     return this.authenticate(user);
   }
@@ -72,6 +74,14 @@ export default class NetlifyAuth extends GitHubBackend {
         throw new Error("You don't have sufficient permissions to access Netlify CMS");
       }
     });
+  }
+
+  logout() {
+    if (window.netlifyIdentity) {
+      return window.netlifyIdentity.logout();
+    }
+    const user = this.authClient.currentUser();
+    return user && user.logout();
   }
 
   getToken() {
