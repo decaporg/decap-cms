@@ -19,9 +19,10 @@ First, register the site CMS as an authorized application with your GitHub accou
 When you complete the registration, you'll be given a **Client ID** and a **Client Secret** for the app. You'll need to add these to your Netlify project:
  
  1. Go to your [**Netlify dashboard**](https://app.netlify.com/) and click on your project.
- 2. Click the **Access** tab.
- 3. Under **Authentication Providers**, click **Install Provider**.
- 4. Select GitHub and enter the **Client ID** and **Client Secret**, then save.
+ 2. Click the **Settings** tab.
+ 3. Click on the **Access control** tab, then scroll down to **OAuth**.
+ 4. Under **Authentication providers**, click **Install Provider**.
+ 5. Select GitHub and enter the **Client ID** and **Client Secret**, then save.
 
 ## Access the CMS
 
