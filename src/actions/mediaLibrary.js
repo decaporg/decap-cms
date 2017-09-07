@@ -63,7 +63,7 @@ export function persistMedia(file, privateUpload) {
 
     dispatch(mediaPersisting());
 
-    return createAssetProxy(file.name, file, false, privateUpload)
+    return createAssetProxy(file.name.toLowerCase(), file, false, privateUpload)
       .then(assetProxy => {
         dispatch(addAsset(assetProxy));
         if (!integration) {
