@@ -33,7 +33,7 @@ export default class GitGateway extends GitHubBackend {
   constructor(config) {
     super(config, true);
 
-    this.accept_roles = (config.getIn(["backend", "accept_roles"]) || List()).toArray();
+    this.accept_roles = (config.getIn(["backend", "accept_roles"]) || new List()).toArray();
 
     const netlifySiteURL = localStorage.getItem("netlifySiteURL");
     const APIUrl = getEndpoint(config.getIn(["backend", "identity_url"], defaults.identity), netlifySiteURL);
@@ -60,7 +60,7 @@ export default class GitGateway extends GitHubBackend {
       const userRoles = get(jwtDecode(token), 'app_metadata.roles', []);
       if (validRole) {
         const userData = {
-          name: user.user_metadata.name,
+          name: user.user_metadata.name || user.email.split('@').shift(),
           email: user.email,
           metadata: user.user_metadata,
         };
