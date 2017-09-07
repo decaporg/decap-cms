@@ -1,28 +1,54 @@
 import React from "react";
 import Input from "react-toolbox/lib/input";
 import Button from "react-toolbox/lib/button";
+import { Notifs } from 'redux-notifications';
+import { Toast } from '../../components/UI/index';
 import { Card, Icon } from "../../components/UI";
 import logo from "./netlify_logo.svg";
 import styles from "./AuthenticationPage.css";
 
+let component = null;
+
+if (window.netlifyIdentity) {
+  window.netlifyIdentity.on('login', (user) => {
+    component && component.handleIdentityLogin(user);
+  });
+  window.netlifyIdentity.on('logout', () => {
+    component && component.handleIdentityLogout();
+  });
+}
+
 export default class AuthenticationPage extends React.Component {
   constructor(props) {
     super(props);
-    this.identity = window.netlifyIdentity;
-    this.state = {user: this.identity && this.identity.gotrue && this.identity.gotrue.currentUser()};
+    component = this;
   }
 
   componentDidMount() {
-    if (this.identity && !this.state.user) {
-      this.identity.on('login', (user) => {
-        this.props.onLogin(user);
-        this.identity.close();
-      });
-      this.identity.on('signup', (user) => {
-        this.props.onLogin(user);
-        this.identity.close();
-      });
-      this.identity.open();
+    if (!this.loggedIn && window.netlifyIdentity && window.netlifyIdentity.currentUser()) {
+      this.props.onLogin(window.netlifyIdentity.currentUser());
+      window.netlifyIdentity.close();
+    }
+  }
+
+  componentWillUnmount() {
+    component = null;
+  }
+
+  handleIdentityLogin = (user) => {
+    this.props.onLogin(user);
+    window.netlifyIdentity.close();
+  }
+
+  handleIdentityLogout = () => {
+    window.netlifyIdentity.open();
+  }
+
+  handleIdentity = () => {
+    if (window.netlifyIdentity.currentUser()) {
+      this.props.onLogin(user);
+    } else {
+      window.netlifyIdentity.open();
     }
   }
 
@@ -65,6 +91,15 @@ export default class AuthenticationPage extends React.Component {
   render() {
     const { errors } = this.state;
     const { error } = this.props;
+
+    if (window.netlifyIdentity) {
+      return <section className={styles.root}>
+        <Notifs CustomComponent={Toast} />
+        <Button className={styles.button} raised onClick={this.handleIdentity}>
+          Login with Netlify Identity
+        </Button>
+      </section>
+    }
 
     return (
       <section className={styles.root}>

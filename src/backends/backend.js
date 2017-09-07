@@ -1,7 +1,7 @@
 import { attempt, isError } from 'lodash';
 import TestRepoBackend from "./test-repo/implementation";
 import GitHubBackend from "./github/implementation";
-import NetlifyAuthBackend from "./netlify-auth/implementation";
+import GitGatewayBackend from "./git-gateway/implementation";
 import { resolveFormat } from "../formats/formats";
 import { selectListMethod, selectEntrySlug, selectEntryPath, selectAllowNewEntries, selectFolderEntryExtension } from "../reducers/collections";
 import { createEntry } from "../valueObjects/Entry";
@@ -36,12 +36,12 @@ const slugFormatter = (template = "{{slug}}", entryData) => {
     const identifier = identifiers.find(ident => ident !== undefined);
 
     if (identifier === undefined) {
-      throw new Error("Collection must have a field name that is a valid entry identifier"); 
+      throw new Error("Collection must have a field name that is a valid entry identifier");
     }
 
     return identifier;
   };
-  
+
   return template.replace(/\{\{([^\}]+)\}\}/g, (_, field) => {
     switch (field) {
       case "year":
@@ -88,11 +88,11 @@ class Backend {
   }
 
   logout() {
-    if (this.authStore) {
-      this.authStore.logout();
-    } else {
-      throw new Error("User isn't authenticated.");
-    }
+    return Promise.resolve(this.implementation.logout()).then(() => {
+      if (this.authStore) {
+        this.authStore.logout();
+      }
+    });
   }
 
   getToken = () => this.implementation.getToken();
@@ -292,8 +292,8 @@ export function resolveBackend(config) {
       return new Backend(new TestRepoBackend(config), authStore);
     case "github":
       return new Backend(new GitHubBackend(config), authStore);
-    case "netlify-auth":
-      return new Backend(new NetlifyAuthBackend(config), authStore);
+    case "git-gateway":
+      return new Backend(new GitGatewayBackend(config), authStore);
     default:
       throw new Error(`Backend not found: ${ name }`);
   }
