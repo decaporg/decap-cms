@@ -12,6 +12,12 @@ export function getNewEntryUrl(collectionName, direct) {
   return getUrl(`/collections/${ collectionName }/entries/new`, direct);
 }
 
+export function addParams(urlString, params) {
+  const parsedUrl = url.parse(urlString, true);
+  parsedUrl.query = { ...parsedUrl.query, ...params };
+  return url.format(parsedUrl);
+}
+
 export function urlize(string) {
   const sanitized = makePathSanitized(string);
   const parsedURL = url.parse(sanitized);

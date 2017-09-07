@@ -32,7 +32,7 @@ export function insertMedia(mediaPath) {
   return { type: MEDIA_INSERT, payload: { mediaPath } };
 }
 
-export function loadMedia(delay = 0) {
+export function loadMedia(delay = 0, query) {
   return (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
@@ -40,8 +40,8 @@ export function loadMedia(delay = 0) {
     if (integration) {
       const provider = getIntegrationProvider(state.integrations, backend.getToken, integration);
       dispatch(mediaLoading());
-      return provider.retrieve()
-        .then(files => dispatch(mediaLoaded(files)))
+      return provider.retrieve(query)
+        .then(files => dispatch(mediaLoaded(files, true)))
         .catch(error => dispatch(mediaLoadFailed()));
     }
     dispatch(mediaLoading());
@@ -128,10 +128,10 @@ export function mediaLoading() {
   return { type: MEDIA_LOAD_REQUEST };
 }
 
-export function mediaLoaded(files) {
+export function mediaLoaded(files, dynamicSearch) {
   return {
     type: MEDIA_LOAD_SUCCESS,
-    payload: { files }
+    payload: { files, dynamicSearch }
   };
 }
 

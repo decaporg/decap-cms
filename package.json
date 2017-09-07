@@ -168,6 +168,7 @@
     "unified": "^6.1.4",
     "unist-builder": "^1.0.2",
     "unist-util-visit-parents": "^1.1.1",
+    "url": "^0.11.0",
     "uuid": "^2.0.3",
     "whatwg-fetch": "^1.0.0"
   },

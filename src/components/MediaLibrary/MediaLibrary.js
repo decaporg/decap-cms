@@ -26,7 +26,7 @@ class MediaLibrary extends React.Component {
 
   componentDidMount() {
     const { dispatch, closeMediaLibrary } = this.props;
-    dispatch(loadMedia());
+    dispatch(loadMedia(0, this.state.query));
   }
 
   componentWillReceiveProps(nextProps) {
@@ -113,7 +113,7 @@ class MediaLibrary extends React.Component {
     const files = [...fileList];
     const file = files[0];
     return dispatch(persistMedia(file, privateUpload))
-      .then(() => dispatch(loadMedia()));
+      .then(() => dispatch(0, loadMedia(this.state.query)));
   };
 
   handleInsert = () => {
@@ -138,7 +138,13 @@ class MediaLibrary extends React.Component {
       });
   };
 
-  handleSearch = event => {
+  handleSearchKeyDown = (event, dynamicSearch) => {
+    if (event.key === 'Enter' && dynamicSearch) {
+      this.props.dispatch(loadMedia(0, this.state.query));
+    }
+  };
+
+  handleSearchChange = event => {
     this.setState({ query: event.target.value });
   };
 
@@ -191,10 +197,10 @@ class MediaLibrary extends React.Component {
   };
 
   render() {
-    const { isVisible, canInsert, files, forImage, isLoading, isPersisting, isDeleting } = this.props;
+    const { isVisible, canInsert, files, dynamicSearch, forImage, isLoading, isPersisting, isDeleting } = this.props;
     const { query, selectedFile } = this.state;
     const filteredFiles = forImage ? this.filterImages(files) : files;
-    const queriedFiles = query ? this.queryFilter(query, filteredFiles) : filteredFiles;
+    const queriedFiles = query && !dynamicSearch ? this.queryFilter(query, filteredFiles) : filteredFiles;
     const tableData = this.toTableData(queriedFiles);
     const hasFiles = files && !!files.length;
     const hasImages = filteredFiles && !!filteredFiles.length;
@@ -227,7 +233,15 @@ class MediaLibrary extends React.Component {
         footer={footer}
       >
         <h1>{forImage ? 'Images' : 'Assets'}</h1>
-        <input className={styles.searchInput} type="text" value={this.state.query} onChange={this.handleSearch.bind(this)} placeholder="Search..." disabled={!hasFiles || !hasImages} autoFocus/>
+        <input
+          className={styles.searchInput}
+          value={this.state.query}
+          onChange={this.handleSearchChange}
+          onKeyDown={event => this.handleSearchKeyDown(event, dynamicSearch)}
+          placeholder="Search..."
+          disabled={!hasFiles || !hasImages}
+          autoFocus
+        />
         <div style={{ height: '100%', paddingBottom: '130px' }}>
           <div style={{ height: '100%', overflowY: 'auto' }} ref={ref => this.tableScrollRef = ref}>
             <Table onRowSelect={idx => this.handleRowSelect(tableData[idx])}>

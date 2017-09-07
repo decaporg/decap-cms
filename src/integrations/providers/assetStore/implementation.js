@@ -1,3 +1,5 @@
+import { addParams } from '../../../lib/urlHelper';
+
 export default class AssetStore {
   constructor(config, getToken) {
     this.config = config;
@@ -66,9 +68,12 @@ export default class AssetStore {
     });
   }
 
-  retrieve() {
+  retrieve(query) {
+    const url = query ? addParams(this.getSignedFormURL, { search: query }) : this.getSignedFormURL;
+    console.log(url);
+
     return this.getToken()
-      .then(token => this.request(this.getSignedFormURL, {
+      .then(token => this.request(url, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
