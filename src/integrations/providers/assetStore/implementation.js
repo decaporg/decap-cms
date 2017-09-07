@@ -74,6 +74,9 @@ export default class AssetStore {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${ token }`,
         },
+      }))
+      .then(files => files.map(({ id, name, size, url }) => {
+        return { id, name, size, url, urlIsPublicPath: true };
       }));
   }
 

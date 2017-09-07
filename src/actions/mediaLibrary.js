@@ -41,29 +41,15 @@ export function loadMedia(delay = 0) {
       const provider = getIntegrationProvider(state.integrations, backend.getToken, integration);
       dispatch(mediaLoading());
       return provider.retrieve()
-        .then(files => {
-          const normalizedFiles = files.map(({ id, name, size, url }) => ({ id, name, size, url, urlIsPublicPath: true }));
-          dispatch(mediaLoaded(normalizedFiles))
-        })
-        .catch(error => {
-          dispatch(mediaLoadFailed());
-        });
+        .then(files => dispatch(mediaLoaded(files)))
+        .catch(error => dispatch(mediaLoadFailed()));
     }
     dispatch(mediaLoading());
     return new Promise(resolve => {
       setTimeout(() => resolve(
         backend.getMedia()
-          .then(files => {
-            const normalizedFiles = files.map(({ sha, name, size, download_url, path }) => ({ id: sha, name, size, url: download_url, path }));
-            dispatch(mediaLoaded(normalizedFiles));
-          })
-          .catch((error) => {
-            if (error.status === 404) {
-              dispatch(mediaLoaded());
-            } else {
-              dispatch(mediaLoadFailed());
-            }
-          })
+          .then(files => dispatch(mediaLoaded(files)))
+          .catch((error) => dispatch(error.status === 404 ? mediaLoaded() : mediaLoadFailed()))
       ));
     }, delay);
   };
@@ -121,7 +107,6 @@ export function deleteMedia(file) {
         });
     }
     dispatch(mediaDeleting());
-    console.log(file);
     return backend.deleteMedia(file.path)
       .then(() => {
         dispatch(mediaDeleted());

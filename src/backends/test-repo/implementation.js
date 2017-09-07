@@ -1,3 +1,5 @@
+import { remove, attempt, isError } from 'lodash';
+import uuid from 'uuid';
 import AuthenticationPage from './AuthenticationPage';
 import { fileExtension } from '../../lib/pathHelper'
 
@@ -24,6 +26,7 @@ function nameFromEmail(email) {
 export default class TestRepo {
   constructor(config) {
     this.config = config;
+    this.assets = [];
   }
 
   setUser() {}
@@ -97,10 +100,32 @@ export default class TestRepo {
     return Promise.resolve();
   }
 
+  getMedia() {
+    return Promise.resolve(this.assets);
+  }
+
+  persistMedia({ fileObj }) {
+    const { name, size } = fileObj;
+    const objectUrl = attempt(window.URL.createObjectURL, fileObj);
+    const url = isError(objectUrl) ? '' : objectUrl;
+    const normalizedAsset = { id: uuid.v4(), name, size, path: url, url };
+
+    this.assets.push(normalizedAsset);
+    return Promise.resolve();
+  }
+
   deleteFile(path, commitMessage) {
-    const folder = path.substring(0, path.lastIndexOf('/'));
-    const fileName = path.substring(path.lastIndexOf('/') + 1);
-    delete window.repoFiles[folder][fileName];
+    const assetIndex = this.assets.findIndex(asset => asset.path === path);
+    if (assetIndex > -1) {
+      this.assets.splice(assetIndex, 1);
+    }
+
+    else {
+      const folder = path.substring(0, path.lastIndexOf('/'));
+      const fileName = path.substring(path.lastIndexOf('/') + 1);
+      delete window.repoFiles[folder][fileName];
+    }
+
     return Promise.resolve();
   }
 }
