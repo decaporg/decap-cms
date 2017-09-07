@@ -36,7 +36,7 @@ export default class TestRepo {
     return Promise.resolve({ email: state.email, name: nameFromEmail(state.email) });
   }
 
-  logotu() {
+  logout() {
     return null;
   }
 
