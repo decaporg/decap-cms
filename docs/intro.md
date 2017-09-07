@@ -34,6 +34,14 @@ The admin interface is a single-page app with the entry point stored in a static
 </html>
 ```
 
+The example above uses the latest stable released version of Netlify CMS. If you want to a different release, you can explicitly declare it by editing `@~0.4`. If you want to use the latest version of Netlify CMS you can just omit the version declaration as such:
+
+```
+https://unpkg.com/netlify-cms/dist/cms.js
+https://unpkg.com/netlify-cms/dist/cms.css
+```
+Just keep in mind that the latest version might not be stable yet. Find out more about each version at the [releases page](https://github.com/netlify/netlify-cms/releases)
+
 The JS is also available via npm and can be integrated into your regular build process.
 
 ### Editorial Workflow
