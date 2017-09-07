@@ -33,7 +33,7 @@ export default class GitGateway extends GitHubBackend {
   constructor(config) {
     super(config, true);
 
-    this.accept_roles = (config.getIn(["backend", "accept_roles"]) || new List()).toArray();
+    this.accept_roles = (config.getIn(["backend", "accept_roles"]) || List()).toArray();
 
     const netlifySiteURL = localStorage.getItem("netlifySiteURL");
     const APIUrl = getEndpoint(config.getIn(["backend", "identity_url"], defaults.identity), netlifySiteURL);
