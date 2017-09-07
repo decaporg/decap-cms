@@ -1,6 +1,8 @@
 import React from "react";
 import Input from "react-toolbox/lib/input";
 import Button from "react-toolbox/lib/button";
+import { Notifs } from 'redux-notifications';
+import { Toast } from '../../components/UI/index';
 import { Card, Icon } from "../../components/UI";
 import logo from "./netlify_logo.svg";
 import styles from "./AuthenticationPage.css";
@@ -19,15 +21,13 @@ if (window.netlifyIdentity) {
 export default class AuthenticationPage extends React.Component {
   constructor(props) {
     super(props);
+    component = this;
   }
 
   componentDidMount() {
-    component = this;
     if (!this.loggedIn && window.netlifyIdentity && window.netlifyIdentity.currentUser()) {
       this.props.onLogin(window.netlifyIdentity.currentUser());
-    }
-    if (window.netlifyIdentity && !window.netlifyIdentity.currentUser()) {
-      window.netlifyIdentity.open('login');
+      window.netlifyIdentity.close();
     }
   }
 
@@ -36,13 +36,20 @@ export default class AuthenticationPage extends React.Component {
   }
 
   handleIdentityLogin = (user) => {
-    console.log('logging in ', user);
     this.props.onLogin(user);
     window.netlifyIdentity.close();
   }
 
   handleIdentityLogout = () => {
     window.netlifyIdentity.open();
+  }
+
+  handleIdentity = () => {
+    if (window.netlifyIdentity.currentUser()) {
+      this.props.onLogin(user);
+    } else {
+      window.netlifyIdentity.open();
+    }
   }
 
   static propTypes = {
@@ -64,7 +71,7 @@ export default class AuthenticationPage extends React.Component {
       errors.email = 'Make sure to enter your user name';
     }
     if (!password) {
-      errors.password = 'Please enter your password.';
+      errors.password = 'Please enter your password';
     }
 
     if (Object.keys(errors).length > 0) {
@@ -86,7 +93,12 @@ export default class AuthenticationPage extends React.Component {
     const { error } = this.props;
 
     if (window.netlifyIdentity) {
-      return null;
+      return <section className={styles.root}>
+        <Notifs CustomComponent={Toast} />
+        <Button className={styles.button} raised onClick={this.handleIdentity}>
+          Login with Netlify Identity
+        </Button>
+      </section>
     }
 
     return (
