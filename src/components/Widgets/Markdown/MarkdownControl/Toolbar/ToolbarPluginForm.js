@@ -1,11 +1,14 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import ImmutablePropTypes from "react-immutable-proptypes";
+import { connect } from 'react-redux';
 import { Map } from 'immutable';
 import { Button } from 'react-toolbox/lib/button';
+import { openMediaLibrary } from '../../../../../actions/mediaLibrary';
 import ToolbarPluginFormControl from './ToolbarPluginFormControl';
 import styles from './ToolbarPluginForm.css';
 
-export default class ToolbarPluginForm extends React.Component {
+class ToolbarPluginForm extends React.Component {
   static propTypes = {
     plugin: PropTypes.object.isRequired,
     onSubmit: PropTypes.func.isRequired,
@@ -13,6 +16,8 @@ export default class ToolbarPluginForm extends React.Component {
     onAddAsset: PropTypes.func.isRequired,
     onRemoveAsset: PropTypes.func.isRequired,
     getAsset: PropTypes.func.isRequired,
+    mediaPaths: ImmutablePropTypes.map.isRequired,
+    onOpenMediaLibrary: PropTypes.func.isRequired,
   };
 
   constructor(props) {
@@ -38,6 +43,8 @@ export default class ToolbarPluginForm extends React.Component {
       onRemoveAsset,
       getAsset,
       onChange,
+      onOpenMediaLibrary,
+      mediaPaths,
     } = this.props;
 
     return (
@@ -55,6 +62,8 @@ export default class ToolbarPluginForm extends React.Component {
               onChange={(val) => {
                 this.setState({ data: this.state.data.set(field.get('name'), val) });
               }}
+              mediaPaths={mediaPaths}
+              onOpenMediaLibrary={onOpenMediaLibrary}
             />
           ))}
         </div>
@@ -67,3 +76,13 @@ export default class ToolbarPluginForm extends React.Component {
     );
   }
 }
+
+const mapStateToProps = state => ({
+  mediaPaths: state.mediaLibrary.get('controlMedia'),
+});
+
+const mapDispatchToProps = {
+  onOpenMediaLibrary: openMediaLibrary,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ToolbarPluginForm);

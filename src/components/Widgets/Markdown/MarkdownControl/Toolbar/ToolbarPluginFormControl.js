@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import ImmutablePropTypes from "react-immutable-proptypes";
 import { resolveWidget } from '../../../../Widgets';
 import styles from './ToolbarPluginFormControl.css';
 
@@ -11,11 +12,13 @@ const ToolbarPluginFormControl = ({
   onRemoveAsset,
   getAsset,
   onChange,
+  mediaPaths,
+  onOpenMediaLibrary,
 }) => {
   const widget = resolveWidget(field.get('widget') || 'string');
   const key = `field-${ field.get('name') }`;
   const Control = widget.control;
-  const controlProps = { field, value, onAddAsset, onRemoveAsset, getAsset, onChange };
+  const controlProps = { field, value, onAddAsset, onRemoveAsset, getAsset, onChange, mediaPaths, onOpenMediaLibrary };
 
   return (
     <div className={styles.control} key={key}>
@@ -35,6 +38,8 @@ ToolbarPluginFormControl.propTypes = {
   onRemoveAsset: PropTypes.func.isRequired,
   getAsset: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
+  mediaPaths: ImmutablePropTypes.map.isRequired,
+  onOpenMediaLibrary: PropTypes.func.isRequired,
 };
 
 export default ToolbarPluginFormControl;
