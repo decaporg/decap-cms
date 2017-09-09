@@ -63,7 +63,7 @@ export const markdownToRemark = markdown => {
    * Parse the Markdown string input to an MDAST.
    */
   const parsed = unified()
-    .use(markdownToRemarkPlugin, { fences: true, pedantic: true, commonmark: true })
+    .use(markdownToRemarkPlugin, { fences: true, commonmark: true })
     .parse(markdown);
 
   /**
@@ -102,7 +102,6 @@ export const remarkToMarkdown = obj => {
   const remarkToMarkdownPluginOpts = {
     commonmark: true,
     fences: true,
-    pedantic: true,
     listItemIndent: '1',
 
     // Settings to emulate the defaults from the Prosemirror editor, not
