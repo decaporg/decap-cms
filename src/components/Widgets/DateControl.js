@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import DateTime from 'react-datetime';
 
 export default class DateControl extends React.Component {

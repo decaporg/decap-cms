@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import registry from '../../../../lib/registry';
 import { markdownToRemark, remarkToMarkdown } from '../serializers'
 import RawEditor from './RawEditor';

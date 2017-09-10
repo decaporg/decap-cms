@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { DragSource, DropTarget, HTML5DragDrop } from 'react-simple-dnd';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Link } from 'react-router';

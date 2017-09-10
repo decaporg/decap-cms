@@ -1,4 +1,5 @@
-import { Component, PropTypes, Children } from 'react';
+import PropTypes from 'prop-types';
+import { Component, Children } from 'react';
 import { List, Record, fromJS } from 'immutable';
 import _ from 'lodash';
 

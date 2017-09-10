@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import Autosuggest from 'react-autosuggest';
 import uuid from 'uuid';
 import { Map } from 'immutable';

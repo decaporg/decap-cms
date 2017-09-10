@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { SIMPLE, EDITORIAL_WORKFLOW } from '../constants/publishModes';
 import history from '../routing/history';

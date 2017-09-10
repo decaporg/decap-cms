@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { Map } from 'immutable';
 import { resolveWidget } from '../Widgets';
 import controlStyles from '../ControlPanel/ControlPane.css';

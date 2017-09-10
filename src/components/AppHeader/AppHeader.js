@@ -1,4 +1,5 @@
-import React, { PropTypes } from "react";
+import PropTypes from 'prop-types';
+import React from "react";
 import ImmutablePropTypes from "react-immutable-proptypes";
 import { IndexLink } from "react-router";
 import { IconMenu, Menu, MenuItem } from "react-toolbox/lib/menu";

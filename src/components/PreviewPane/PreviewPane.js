@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { List, Map } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import Frame from 'react-frame-component';

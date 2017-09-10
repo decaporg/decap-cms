@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Menu, MenuItem } from 'react-toolbox/lib/menu';
 import ToolbarButton from './ToolbarButton';

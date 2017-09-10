@@ -121,6 +121,7 @@
     "preliminaries-parser-toml": "1.1.0",
     "preliminaries-parser-yaml": "1.1.0",
     "prismjs": "^1.5.1",
+    "prop-types": "^15.5.10",
     "react": "^15.1.0",
     "react-addons-css-transition-group": "^15.3.1",
     "react-autosuggest": "^7.0.1",
