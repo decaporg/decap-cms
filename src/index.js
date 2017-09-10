@@ -1,4 +1,5 @@
 import React from 'react';
+import createReactClass from 'create-react-class';
 import { render } from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
 import 'file-loader?name=index.html!../example/index.html';
@@ -57,7 +58,7 @@ for (const method in registry) { // eslint-disable-line
 
 if (typeof window !== 'undefined') {
   window.CMS = CMS;
-  window.createClass = window.createClass || React.createClass;
+  window.createClass = window.createClass || createReactClass;
   window.h = window.h || React.createElement;
 }
 
