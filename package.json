@@ -106,7 +106,7 @@
     "immutability-helper": "^2.0.0",
     "immutable": "^3.7.6",
     "js-base64": "^2.1.9",
-    "js-yaml": "^3.7.0",
+    "js-yaml": "^3.10.0",
     "json-loader": "^0.5.4",
     "jwt-decode": "^2.1.0",
     "localforage": "^1.4.2",
