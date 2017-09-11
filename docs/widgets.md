@@ -71,6 +71,7 @@ Property | Accepted Values | Description
 `collection` | string | name of the collection being referenced
 `searchFields` | list | one or more names of fields in the referenced colleciton to search for the typed value
 `valueField` | string | name a field from the referenced collection whose value will be stored for the relation
+`displayField` | string | name a field from the referenced collection whose value will be displayed to the user for the relation
 `name` | text input | string
 
 Let's say we have a "posts" collection and an "authors" collection, and we want to select an author for each post - our config might look something like this:
@@ -83,6 +84,7 @@ collections:
     create: true
     fields:
       - {name: name, label: Name}
+      - {name: username, label: Username}
       - {name: twitterHandle, label: "Twitter Handle"}
       - {name: bio, label: Bio, widget: text}
   - name: posts
@@ -97,5 +99,6 @@ collections:
         widget: relation
         collection: authors
         searchFields: [name, twitterHandle]
-        valueField: name
+        valueField: username
+        displayField: name
 ```
