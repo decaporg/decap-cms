@@ -26,13 +26,19 @@ class RelationControl extends Component {
     super(props, ctx);
     this.controlID = uuid.v4();
     this.didInitialSearch = false;
+    this.state = { displayValue: '' };
   }
 
   componentDidMount() {
     const { value, field } = this.props;
     if (value) {
       const collection = field.get('collection');
-      const searchFields = field.get('searchFields').toJS();
+      const searchFields = [...new Set(
+        [
+          ...field.get('searchFields').toJS(),
+          field.get('valueField'),
+        ]
+      )];
       this.props.query(this.controlID, collection, searchFields, value);
     }
   }
@@ -46,19 +52,22 @@ class RelationControl extends Component {
       this.didInitialSearch = true;
       const suggestion = nextProps.queryHits.get(this.controlID);
       if (suggestion && suggestion.length === 1) {
-        const val = this.getSuggestionValue(suggestion[0]);
-        this.props.onChange(val, { [nextProps.field.get('collection')]: { [val]: suggestion[0].data } });
+        const { value, displayValue } = this.getSuggestionValues(suggestion[0]);
+        this.props.onChange(value, { [nextProps.field.get('collection')]: { [value]: suggestion[0].data } });
+        this.setState({ displayValue });
       }
     }
   }
 
   onChange = (event, { newValue }) => {
     this.props.onChange(newValue);
+    this.setState({ displayValue: newValue });
   };
 
   onSuggestionSelected = (event, { suggestion }) => {
-    const value = this.getSuggestionValue(suggestion);
+    const { value, displayValue } = this.getSuggestionValues(suggestion);
     this.props.onChange(value, { [this.props.field.get('collection')]: { [value]: suggestion.data } });
+    this.setState({ displayValue });
   };
 
   onSuggestionsFetchRequested = debounce(({ value }) => {
@@ -73,16 +82,27 @@ class RelationControl extends Component {
     this.props.clearSearch();
   };
 
-  getSuggestionValue = (suggestion) => {
+  getSuggestionValues = (suggestion) => {
     const { field } = this.props;
     const valueField = field.get('valueField');
-    return suggestion.data[valueField];
+    const displayField = field.get('displayField');
+    return { value: suggestion.data[valueField], displayValue: suggestion.data[displayField] };
   };
 
   renderSuggestion = (suggestion) => {
     const { field } = this.props;
-    const valueField = field.get('valueField');
-    return <span>{suggestion.data[valueField]}</span>;
+    const displayField = field.get('displayField');
+    return <span>{suggestion.data[displayField]}</span>;
+  };
+
+  renderInputComponent = (inputProps) => {
+    const { value, displayValue, id, ...otherInputProps } = inputProps;
+    return (
+      <div>
+        <input {...otherInputProps} value={displayValue} />
+        <input type="hidden" id={id} value={value} />
+      </div>
+    );
   };
 
   render() {
@@ -91,6 +111,7 @@ class RelationControl extends Component {
     const inputProps = {
       placeholder: '',
       value: value || '',
+      displayValue: this.state.displayValue || '',
       onChange: this.onChange,
       id: forID,
     };
@@ -106,6 +127,7 @@ class RelationControl extends Component {
           onSuggestionSelected={this.onSuggestionSelected}
           getSuggestionValue={this.getSuggestionValue}
           renderSuggestion={this.renderSuggestion}
+          renderInputComponent={this.renderInputComponent}
           inputProps={inputProps}
         />
         <Loader active={isFetching === this.controlID} />
