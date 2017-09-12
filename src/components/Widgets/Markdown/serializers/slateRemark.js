@@ -1,4 +1,4 @@
-import { get, isEmpty, concat, without, flatten, flatMap, initial } from 'lodash';
+import { get, isEmpty, concat, without, flatten, flatMap, initial, last, difference, reverse, sortBy } from 'lodash';
 import u from 'unist-builder';
 
 /**
@@ -137,10 +137,9 @@ function convertTextNode(node) {
   }
 
   /**
-   * If there is no "text" property, convert the text range(s) to an array of
-   * one or more nested MDAST nodes.
+   * Process Slate node ranges in preparation for MDAST transformation.
    */
-  const textNodes = node.ranges.map(range => {
+  const processedRanges = node.ranges.map(range => {
     /**
      * Get an array of the mark types, converted to their MDAST equivalent
      * types.
@@ -154,23 +153,102 @@ function convertTextNode(node) {
      */
     const { filteredMarkTypes, textNodeType } = processCodeMark(markTypes);
 
+    return { text, marks: filteredMarkTypes, textNodeType };
+  });
+
+  /**
+   * Slate's AST doesn't group adjacent text nodes with the same marks - a
+   * change in marks from letter to letter, even if some are in common, results
+   * in a separate range. For example, given "**a_b_**", transformation to and
+   * from Slate's AST will result in "**a****_b_**".
+   *
+   * MDAST treats styling entities as distinct nodes that contain children, so a
+   * "strong" node can contain a plain text node with a sibling "emphasis" node,
+   * which contains more text. This reducer serves to create an optimized nested
+   * MDAST without the typical redundancies that Slate's AST would produce if
+   * transformed as-is. The reducer can be called recursively to produce nested
+   * structures.
+   */
+  const nodeGroupReducer = (acc, node, idx, nodes) => {
     /**
-     * Create the base text node.
+     * Skip any nodes that are being processed as children of an MDAST node
+     * through recursive calls.
      */
-    const textNode = u(textNodeType, text);
+    if (typeof acc.nextIndex === 'number' && acc.nextIndex > idx) {
+      return acc;
+    }
+
+    /**
+     * Processing for nodes with marks.
+     */
+    if (node.marks && node.marks.length > 0) {
+
+      /**
+       * For each mark on the current node, get the number of consecutive nodes
+       * (starting with this one) that have the mark. Whichever mark covers the
+       * most nodes is used as the parent node, and the nodes with that mark are
+       * processed as children. If the greatest number of consecutive nodes is
+       * tied between multiple marks, there is no priority as to which goes
+       * first.
+       */
+      const markLengths = node.marks.map(mark => getMarkLength(mark, nodes.slice(idx)));
+      const parentMarkLength = last(sortBy(markLengths, 'length'));
+      const { markType: parentType, length: parentLength } = parentMarkLength;
+
+      /**
+       * Since this and any consecutive nodes with the parent mark are going to
+       * be processed as children of the parent mark, this reducer should simply
+       * return the accumulator until after the last node to be covered by the
+       * new parent node. Here we set the next index that should be processed,
+       * if any.
+       */
+      const newNextIndex = idx + parentLength;
+
+      /**
+       * Get the set of nodes that should be processed as children of the new
+       * parent mark node, run each through the reducer as children of the
+       * parent node, and create the parent MDAST node with the resulting
+       * children.
+       */
+      const children = nodes.slice(idx, newNextIndex);
+      const denestedChildren = children.map(child => ({ ...child, marks: without(child.marks, parentType) }));
+      const mdastChildren = denestedChildren.reduce(nodeGroupReducer, { nodes: [], parentType }).nodes;
+      const mdastNode = u(parentType, mdastChildren);
+
+      return { ...acc, nodes: [ ...acc.nodes, mdastNode ], nextIndex: newNextIndex };
+    }
+
+    /**
+     * Create the base text node, and pass in the array of mark types as data
+     * (helpful when optimizing/condensing the final structure).
+     */
+    const textNode = u(node.textNodeType, { marks: node.marks }, node.text);
 
     /**
      * Recursively wrap the base text node in the individual mark nodes, if
      * any exist.
      */
-    return wrapTextWithMarks(textNode, filteredMarkTypes);
-  });
+    return { ...acc, nodes: [ ...acc.nodes, textNode ] };
+  };
+
+  const nodeGroups = processedRanges.reduce(nodeGroupReducer, { nodes: [] });
 
   /**
    * Since each range will be mapped into an array, we flatten the result to
    * return a single array of all nodes.
    */
-  return flatten(textNodes);
+  return nodeGroups.nodes;
+}
+
+
+/**
+ * Get the number of consecutive Slate nodes containing a given mark beginning
+ * from the first received node.
+ */
+function getMarkLength(markType, nodes) {
+  let length = 0;
+  while(nodes[length] && nodes[length].marks.includes(markType)) { ++length; }
+  return { markType, length };
 }
 
 
