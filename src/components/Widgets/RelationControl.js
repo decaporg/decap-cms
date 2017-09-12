@@ -52,8 +52,9 @@ class RelationControl extends Component {
       this.didInitialSearch = true;
       const suggestion = nextProps.queryHits.get(this.controlID);
       if (suggestion && suggestion.length === 1) {
-        const { value, displayValue } = this.getSuggestionValues(suggestion[0]);
+        const value = this.getSuggestionValue(suggestion[0]);
         this.props.onChange(value, { [nextProps.field.get('collection')]: { [value]: suggestion[0].data } });
+        const displayValue = this.getSuggestionDisplayValue(suggestion[0]);
         this.setState({ displayValue });
       }
     }
@@ -65,8 +66,9 @@ class RelationControl extends Component {
   };
 
   onSuggestionSelected = (event, { suggestion }) => {
-    const { value, displayValue } = this.getSuggestionValues(suggestion);
+    const value = this.getSuggestionValue(suggestion);
     this.props.onChange(value, { [this.props.field.get('collection')]: { [value]: suggestion.data } });
+    const displayValue = this.getSuggestionDisplayValue(suggestion);
     this.setState({ displayValue });
   };
 
@@ -82,11 +84,16 @@ class RelationControl extends Component {
     this.props.clearSearch();
   };
 
-  getSuggestionValues = (suggestion) => {
+  getSuggestionValue = (suggestion) => {
     const { field } = this.props;
     const valueField = field.get('valueField');
+    return suggestion.data[valueField];
+  };
+
+  getSuggestionDisplayValue = (suggestion) => {
+    const { field } = this.props;
     const displayField = field.get('displayField');
-    return { value: suggestion.data[valueField], displayValue: suggestion.data[displayField] };
+    return suggestion.data[displayField];
   };
 
   renderSuggestion = (suggestion) => {
