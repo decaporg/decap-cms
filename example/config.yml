@@ -68,6 +68,7 @@ collections: # A list of collections the CMS should be able to edit
         collection: "posts"
         searchFields: ["title", "body"]
         valueField: "title"
+        displayField: "title"
       - {label: "Title", name: "title", widget: "string"}
       - {label: "Boolean", name: "boolean", widget: "boolean", default: true}
       - {label: "Text", name: "text", widget: "text"}
@@ -89,6 +90,7 @@ collections: # A list of collections the CMS should be able to edit
             collection: "posts"
             searchFields: ["title", "body"]
             valueField: "title"
+            displayField: "title"
           - {label: "String", name: "string", widget: "string"}
           - {label: "Boolean", name: "boolean", widget: "boolean", default: false}
           - {label: "Text", name: "text", widget: "text"}
@@ -137,6 +139,7 @@ collections: # A list of collections the CMS should be able to edit
                     collection: "posts"
                     searchFields: ["title", "body"]
                     valueField: "title"
+                    displayField: "title"
                   - {label: "String", name: "string", widget: "string"}
                   - {label: "Boolean", name: "boolean", widget: "boolean"}
                   - {label: "Text", name: "text", widget: "text"}
