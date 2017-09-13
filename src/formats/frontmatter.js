@@ -1,28 +1,22 @@
-import preliminaries from 'preliminaries';
-import yamlParser from 'preliminaries-parser-yaml';
-import tomlParser from 'preliminaries-parser-toml';
+import matter from 'gray-matter';
+import tomlEng from 'toml';
 import YAML from './yaml';
-
-// Automatically register parsers
-preliminaries(true);
-yamlParser(true);
-tomlParser(true);
 
 function inferFrontmatterFormat(str) {
   const firstLine = str.substr(0, str.indexOf('\n')).trim();
   switch (firstLine) {
     case "---":
-      return { lang: "yaml", delims: "---" };
+      return { language: "yaml", delimiters: "---" };
     case "+++":
-      return { lang: "toml", delims: "+++" };
+      return { language: "toml", delimiters: "+++", engines: { toml: tomlEng.parse.bind(tomlEng) } };
     case "{":
-      return { lang: "json", delims: ["{", "}"] };
+      return { language: "json", delimiters: ["{", "}"] };
   }
 }
 
 export default class Frontmatter {
   fromFile(content) {
-    const result = preliminaries.parse(content, inferFrontmatterFormat(content));
+    const result = matter(content, inferFrontmatterFormat(content));
     const data = result.data;
     data.body = result.content;
     return data;
@@ -45,6 +39,6 @@ export default class Frontmatter {
         return new YAML().toFile(metadata, sortedKeys);
       },
     };
-    return preliminaries.stringify(body, meta, { lang: "yaml", delims: "---", parser });
+    return matter.stringify(body, meta, { language: "yaml", delimiters: "---", engines: { yaml: parser } });
   }
 }
