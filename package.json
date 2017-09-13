@@ -9,6 +9,8 @@
     "test:watch": "jest --watch",
     "build": "cross-env NODE_ENV=production webpack --config webpack.prod.js --display-error-details",
     "build:scripts": "cross-env NODE_ENV=production webpack --config webpack.cli.js",
+    "contributors:add": "all-contributors add",
+    "contributors:generate": "all-contributors generate",
     "storybook": "start-storybook -p 9001",
     "storybook-build": "build-storybook -o dist",
     "lint": "npm run lint:js & npm run lint:css",
@@ -49,6 +51,7 @@
   "author": "Netlify",
   "license": "MIT",
   "devDependencies": {
+    "all-contributors-cli": "^4.4.0",
     "babel": "^6.5.2",
     "babel-cli": "^6.18.0",
     "babel-core": "^6.23.1",
