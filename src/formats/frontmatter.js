@@ -8,9 +8,21 @@ preliminaries(true);
 yamlParser(true);
 tomlParser(true);
 
+function inferFrontmatterFormat(str) {
+  const firstLine = str.substr(0, str.indexOf('\n')).trim();
+  switch (firstLine) {
+    case "---":
+      return { lang: "yaml", delims: "---" };
+    case "+++":
+      return { lang: "toml", delims: "+++" };
+    case "{":
+      return { lang: "json", delims: ["{", "}"] };
+  }
+}
+
 export default class Frontmatter {
   fromFile(content) {
-    const result = preliminaries.parse(content);
+    const result = preliminaries.parse(content, inferFrontmatterFormat(content));
     const data = result.data;
     data.body = result.content;
     return data;
