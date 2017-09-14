@@ -37,6 +37,98 @@ const markMap = {
   code: 'inlineCode',
 };
 
+let shortcodePlugins;
+
+export default function slateToRemark(raw, opts) {
+  /**
+   * Set shortcode plugins in outer scope.
+   */
+  ({ shortcodePlugins } = opts);
+
+  /**
+   * The Slate Raw AST generally won't have a top level type, so we set it to
+   * "root" for clarity.
+   */
+  raw.type = 'root';
+
+  return transform(raw);
+}
+
+
+/**
+ * The transform function mimics the approach of a Remark plugin for
+ * conformity with the other serialization functions. This function converts
+ * Slate nodes to MDAST nodes, and recursively calls itself to process child
+ * nodes to arbitrary depth.
+ */
+function transform(node) {
+  /**
+   * Combine adjacent text and inline nodes before processing so they can
+   * share marks.
+   */
+  const combinedChildren = node.nodes && combineTextAndInline(node.nodes);
+
+  /**
+   * Call `transform` recursively on child nodes, and flatten the resulting
+   * array.
+   */
+  const children = !isEmpty(combinedChildren) && flatMap(combinedChildren, transform);
+
+  /**
+   * Run individual nodes through conversion factories.
+   */
+  return ['text'].includes(node.kind)
+    ? convertTextNode(node)
+    : convertNode(node, children, shortcodePlugins);
+}
+
+
+/**
+ * Includes inline nodes as ranges in adjacent text nodes where appropriate, so
+ * that mark node combining logic can apply to both text and inline nodes. This
+ * is necessary because Slate doesn't allow inline nodes to have marks while
+ * inline nodes in MDAST may be nested within mark nodes. Treating them as if
+ * they were text is a bit of a necessary hack.
+ */
+function combineTextAndInline(nodes) {
+  return nodes.reduce((acc, node, idx, nodes) => {
+    const prevNode = last(acc);
+    const prevNodeRanges = get(prevNode, 'ranges');
+    const data = node.data || {};
+
+    /**
+     * If the previous node has ranges and the current node has marks in data
+     * (only happens when we place them on inline nodes here in the parser), or
+     * the current node also has ranges (because the previous node was
+     * originally an inline node that we've already squashed into a range)
+     * combine the current node into the previous.
+     */
+    if (!isEmpty(prevNodeRanges) && !isEmpty(data.marks)) {
+      prevNodeRanges.push({ node, marks: data.marks });
+      return acc;
+    }
+
+    if (!isEmpty(prevNodeRanges) && !isEmpty(node.ranges)) {
+      prevNode.ranges = prevNodeRanges.concat(node.ranges);
+      return acc;
+    }
+
+    /**
+     * Convert remaining inline nodes to standalone text nodes with ranges.
+     */
+    if (node.kind === 'inline') {
+      acc.push({ kind: 'text', ranges: [{ node, marks: data.marks }] });
+      return acc;
+    }
+
+    /**
+     * Only remaining case is an actual text node, can be pushed as is.
+     */
+    acc.push(node);
+    return acc;
+  }, []);
+}
+
 
 /**
  * Slate treats inline code decoration as a standard mark, but MDAST does
@@ -124,120 +216,131 @@ function wrapTextWithMarks(textNode, markTypes) {
  * replaced with multiple MDAST nodes, so the resulting array must be flattened.
  */
 function convertTextNode(node) {
-
+  /**
+   * Translate soft breaks, which are just newline escape sequences. We track
+   * them with an `isBreak` boolean in the node data.
+   */
   if (get(node.data, 'isBreak')) {
     return u('break');
   }
+
   /**
-   * If the Slate text node has no "ranges" property, just return an equivalent
-   * MDAST node.
+   * If the Slate text node has a "ranges" property, translate the Slate AST to
+   * a nested MDAST structure. Otherwise, just return an equivalent MDAST text
+   * node.
    */
-  if (!node.ranges) {
-    return u('html', node.text);
+  if (node.ranges) {
+    const processedRanges = node.ranges.map(processRanges);
+    const condensedNodes = processedRanges.reduce(condenseNodesReducer, { nodes: [] });
+    return condensedNodes.nodes;
   }
 
-  /**
-   * Process Slate node ranges in preparation for MDAST transformation.
-   */
-  const processedRanges = node.ranges.map(range => {
-    /**
-     * Get an array of the mark types, converted to their MDAST equivalent
-     * types.
-     */
-    const { marks = [], text } = range;
-    const markTypes = marks.map(mark => markMap[mark.type]);
+  if (node.kind === 'inline') {
+    return transform(node);
+  }
 
+  return u('html', node.text);
+}
+
+
+/**
+ * Process Slate node ranges in preparation for MDAST transformation.
+ */
+function processRanges(range) {
+  /**
+   * Get an array of the mark types, converted to their MDAST equivalent
+   * types.
+   */
+  const { marks = [], text } = range;
+  const markTypes = marks.map(mark => markMap[mark.type]);
+
+  if (typeof range.text === 'string') {
     /**
      * Code marks must be removed from the marks array, and the presence of a
      * code mark changes the text node type that should be used.
      */
     const { filteredMarkTypes, textNodeType } = processCodeMark(markTypes);
-
     return { text, marks: filteredMarkTypes, textNodeType };
-  });
+  }
+
+  return { node: range.node, marks: markTypes };
+}
+
+
+/**
+ * Slate's AST doesn't group adjacent text nodes with the same marks - a
+ * change in marks from letter to letter, even if some are in common, results
+ * in a separate range. For example, given "**a_b_**", transformation to and
+ * from Slate's AST will result in "**a****_b_**".
+ *
+ * MDAST treats styling entities as distinct nodes that contain children, so a
+ * "strong" node can contain a plain text node with a sibling "emphasis" node,
+ * which contains more text. This reducer serves to create an optimized nested
+ * MDAST without the typical redundancies that Slate's AST would produce if
+ * transformed as-is. The reducer can be called recursively to produce nested
+ * structures.
+ */
+function condenseNodesReducer(acc, node, idx, nodes) {
+  /**
+   * Skip any nodes that are being processed as children of an MDAST node
+   * through recursive calls.
+   */
+  if (typeof acc.nextIndex === 'number' && acc.nextIndex > idx) {
+    return acc;
+  }
 
   /**
-   * Slate's AST doesn't group adjacent text nodes with the same marks - a
-   * change in marks from letter to letter, even if some are in common, results
-   * in a separate range. For example, given "**a_b_**", transformation to and
-   * from Slate's AST will result in "**a****_b_**".
-   *
-   * MDAST treats styling entities as distinct nodes that contain children, so a
-   * "strong" node can contain a plain text node with a sibling "emphasis" node,
-   * which contains more text. This reducer serves to create an optimized nested
-   * MDAST without the typical redundancies that Slate's AST would produce if
-   * transformed as-is. The reducer can be called recursively to produce nested
-   * structures.
+   * Processing for nodes with marks.
    */
-  const nodeGroupReducer = (acc, node, idx, nodes) => {
+  if (node.marks && node.marks.length > 0) {
     /**
-     * Skip any nodes that are being processed as children of an MDAST node
-     * through recursive calls.
+     * For each mark on the current node, get the number of consecutive nodes
+     * (starting with this one) that have the mark. Whichever mark covers the
+     * most nodes is used as the parent node, and the nodes with that mark are
+     * processed as children. If the greatest number of consecutive nodes is
+     * tied between multiple marks, there is no priority as to which goes
+     * first.
      */
-    if (typeof acc.nextIndex === 'number' && acc.nextIndex > idx) {
-      return acc;
-    }
-
-    /**
-     * Processing for nodes with marks.
-     */
-    if (node.marks && node.marks.length > 0) {
-
-      /**
-       * For each mark on the current node, get the number of consecutive nodes
-       * (starting with this one) that have the mark. Whichever mark covers the
-       * most nodes is used as the parent node, and the nodes with that mark are
-       * processed as children. If the greatest number of consecutive nodes is
-       * tied between multiple marks, there is no priority as to which goes
-       * first.
-       */
-      const markLengths = node.marks.map(mark => getMarkLength(mark, nodes.slice(idx)));
-      const parentMarkLength = last(sortBy(markLengths, 'length'));
-      const { markType: parentType, length: parentLength } = parentMarkLength;
-
-      /**
-       * Since this and any consecutive nodes with the parent mark are going to
-       * be processed as children of the parent mark, this reducer should simply
-       * return the accumulator until after the last node to be covered by the
-       * new parent node. Here we set the next index that should be processed,
-       * if any.
-       */
-      const newNextIndex = idx + parentLength;
-
-      /**
-       * Get the set of nodes that should be processed as children of the new
-       * parent mark node, run each through the reducer as children of the
-       * parent node, and create the parent MDAST node with the resulting
-       * children.
-       */
-      const children = nodes.slice(idx, newNextIndex);
-      const denestedChildren = children.map(child => ({ ...child, marks: without(child.marks, parentType) }));
-      const mdastChildren = denestedChildren.reduce(nodeGroupReducer, { nodes: [], parentType }).nodes;
-      const mdastNode = u(parentType, mdastChildren);
-
-      return { ...acc, nodes: [ ...acc.nodes, mdastNode ], nextIndex: newNextIndex };
-    }
+    const markLengths = node.marks.map(mark => getMarkLength(mark, nodes.slice(idx)));
+    const parentMarkLength = last(sortBy(markLengths, 'length'));
+    const { markType: parentType, length: parentLength } = parentMarkLength;
 
     /**
-     * Create the base text node, and pass in the array of mark types as data
-     * (helpful when optimizing/condensing the final structure).
+     * Since this and any consecutive nodes with the parent mark are going to
+     * be processed as children of the parent mark, this reducer should simply
+     * return the accumulator until after the last node to be covered by the
+     * new parent node. Here we set the next index that should be processed,
+     * if any.
      */
-    const textNode = u(node.textNodeType, { marks: node.marks }, node.text);
+    const newNextIndex = idx + parentLength;
 
     /**
-     * Recursively wrap the base text node in the individual mark nodes, if
-     * any exist.
+     * Get the set of nodes that should be processed as children of the new
+     * parent mark node, run each through the reducer as children of the
+     * parent node, and create the parent MDAST node with the resulting
+     * children.
      */
-    return { ...acc, nodes: [ ...acc.nodes, textNode ] };
-  };
+    const children = nodes.slice(idx, newNextIndex);
+    const denestedChildren = children.map(child => ({ ...child, marks: without(child.marks, parentType) }));
+    const mdastChildren = denestedChildren.reduce(condenseNodesReducer, { nodes: [], parentType }).nodes;
+    const mdastNode = u(parentType, mdastChildren);
 
-  const nodeGroups = processedRanges.reduce(nodeGroupReducer, { nodes: [] });
+    return { ...acc, nodes: [ ...acc.nodes, mdastNode ], nextIndex: newNextIndex };
+  }
 
   /**
-   * Since each range will be mapped into an array, we flatten the result to
-   * return a single array of all nodes.
+   * Create the base text node, and pass in the array of mark types as data
+   * (helpful when optimizing/condensing the final structure).
    */
-  return nodeGroups.nodes;
+  const baseNode = typeof node.text === 'string'
+    ? u(node.textNodeType, { marks: node.marks }, node.text)
+    : transform(node.node);
+
+  /**
+   * Recursively wrap the base text node in the individual mark nodes, if
+   * any exist.
+   */
+  return { ...acc, nodes: [ ...acc.nodes, baseNode ] };
 }
 
 
@@ -330,8 +433,8 @@ function convertNode(node, children, shortcodePlugins) {
      */
     case 'code': {
       const value = get(node.nodes, [0, 'text']);
-      const lang = get(node.data, 'lang');
-      return u(typeMap[node.type], { lang }, value);
+      const { lang, ...data } = get(node, 'data', {});
+      return u(typeMap[node.type], { lang, data }, value);
     }
 
     /**
@@ -367,8 +470,8 @@ function convertNode(node, children, shortcodePlugins) {
      * the node for both Slate and Remark schemas.
      */
     case 'link': {
-      const { url, title } = get(node, 'data', {});
-      return u(typeMap[node.type], { url, title }, children);
+      const { url, title, ...data } = get(node, 'data', {});
+      return u(typeMap[node.type], { url, title, data }, children);
     }
 
     /**
@@ -376,36 +479,4 @@ function convertNode(node, children, shortcodePlugins) {
      * occur. In the event that it does, let the error throw (for now).
      */
   }
-}
-
-
-export default function slateToRemark(raw, { shortcodePlugins }) {
-  /**
-   * The transform function mimics the approach of a Remark plugin for
-   * conformity with the other serialization functions. This function converts
-   * Slate nodes to MDAST nodes, and recursively calls itself to process child
-   * nodes to arbitrary depth.
-   */
-  function transform(node) {
-
-    /**
-     * Call `transform` recursively on child nodes, and flatten the resulting
-     * array.
-     */
-    const children = !isEmpty(node.nodes) && flatten(node.nodes.map(transform));
-
-    /**
-     * Run individual nodes through conversion factories.
-     */
-    return node.kind === 'text' ? convertTextNode(node) : convertNode(node, children, shortcodePlugins);
-  }
-
-  /**
-   * The Slate Raw AST generally won't have a top level type, so we set it to
-   * "root" for clarity.
-   */
-  raw.type = 'root';
-
-  const mdast = transform(raw);
-  return mdast;
 }
