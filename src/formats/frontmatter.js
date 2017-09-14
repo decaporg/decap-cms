@@ -10,7 +10,7 @@ function inferFrontmatterFormat(str) {
     case "+++":
       return { language: "toml", delimiters: "+++", engines: { toml: tomlEng.parse.bind(tomlEng) } };
     case "{":
-      return { language: "json", delimiters: ["{", "}"] };
+      return { language: "json", delimiters: ["{", "}"], engines: { json: ((input) => matter.engines.json.parse('{' + input + '}')) } };
   }
 }
 
