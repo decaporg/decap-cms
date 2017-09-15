@@ -275,8 +275,10 @@ export default class API {
     const branch = options.branch || this.branch;
     const fileURL = `${ this.repoURL }/contents/${ path }`;
     // We need to request the file first to get the SHA
-    return this.request(fileURL)
-    .then(({ sha }) => this.request(fileURL, {
+    return this.request(fileURL, {
+      params: { ref: branch },
+      cache: "no-store",
+    }).then(({ sha }) => this.request(fileURL, {
       method: "DELETE",
       params: {
         sha,
