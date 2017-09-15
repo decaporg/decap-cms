@@ -59,4 +59,58 @@ describe('queries', () => {
       }))
     );
   });
+
+  it('should handle concurrent successful queries', () => {
+    const namespace1 = uuid.v4();
+    const namespace2 = uuid.v4();
+
+    const stateAfterReducer1 = reducer(initialState, actions.querySuccess(
+      namespace1,
+      collection,
+      searchFields,
+      searchTerm,
+      {
+        query: searchTerm,
+        hits: [
+          resultObject,
+        ],
+      },
+    ));
+
+    expect(
+      reducer(stateAfterReducer1, actions.querySuccess(
+        namespace2,
+        collection,
+        searchFields,
+        searchTerm,
+        {
+          query: searchTerm,
+          hits: [
+            resultObject,
+          ],
+        },
+      ))
+    ).toEqual(
+      OrderedMap(fromJS({
+        isFetching: Map({
+          [namespace1]: Map({
+            isFetching: false,
+            term: searchTerm,
+          }),
+          [namespace2]: Map({
+            isFetching: false,
+            term: searchTerm,
+          }),
+        }),
+        queryHits: Map({
+          [namespace1]: [
+            resultObject,
+          ],
+          [namespace2]: [
+            resultObject,
+          ],
+        }),
+      }))
+    );
+  });
 });
