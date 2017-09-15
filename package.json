@@ -106,7 +106,7 @@
     "dateformat": "^1.0.12",
     "deep-equal": "^1.0.1",
     "fuzzy": "^0.1.1",
-    "gray-matter": "^3.0.3",
+    "gray-matter": "^3.0.6",
     "history": "^2.1.2",
     "immutability-helper": "^2.0.0",
     "immutable": "^3.7.6",

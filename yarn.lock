@@ -3513,9 +3513,9 @@ graceful-fs@^4.1.11, graceful-fs@^4.1.2, graceful-fs@^4.1.4:
   version "4.1.11"
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.1.11.tgz#0e8bdfe4d1ddb8854d64e04ea7c00e2a026e5658"
 
-gray-matter@^3.0.3:
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/gray-matter/-/gray-matter-3.0.3.tgz#0451a7eacdcb4f13fcbe12b14725422bc86b1030"
+gray-matter@^3.0.6:
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/gray-matter/-/gray-matter-3.0.6.tgz#43480310bca9965009cbd844fa04de6756dd1ccf"
   dependencies:
     js-yaml "^3.8.1"
     kind-of "^5.0.0"
