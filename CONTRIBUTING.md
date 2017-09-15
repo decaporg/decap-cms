@@ -48,6 +48,8 @@ We actively welcome your pull requests.
 3. If you've changed APIs, update the documentation.
 4. Ensure the test suite passes.
 5. Make sure your code lints.
+6. PR's must be rebased before merge (feel free to ask for help)
+7. PR should be reviewed by two maintainers (@erquhart, @Benaiah, @tech4him1) prior to merging. 
 
 ## License
 
