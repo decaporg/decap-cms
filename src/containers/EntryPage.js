@@ -151,6 +151,7 @@ class EntryPage extends React.Component {
         onPersist={this.handlePersistEntry}
         onDelete={this.handleDeleteEntry}
         showDelete={this.props.showDelete}
+        enableSave={entryDraft.get('hasChanged')}
         onCancelEdit={this.handleCloseEntry}
       />
     );

@@ -47,6 +47,7 @@ class EntryEditor extends Component {
         fieldsErrors,
         getAsset,
         onChange,
+        enableSave,
         showDelete,
         onDelete,
         onValidate,
@@ -131,6 +132,7 @@ class EntryEditor extends Component {
             onCancelEdit={onCancelEdit}
             onDelete={onDelete}
             showDelete={showDelete}
+            enableSave={enableSave}
           />
         </div>
       </div>
@@ -149,6 +151,7 @@ EntryEditor.propTypes = {
   onChange: PropTypes.func.isRequired,
   onValidate: PropTypes.func.isRequired,
   onPersist: PropTypes.func.isRequired,
+  enableSave: PropTypes.bool.isRequired,
   showDelete: PropTypes.bool.isRequired,
   onDelete: PropTypes.func.isRequired,
   onRemoveAsset: PropTypes.func.isRequired,
