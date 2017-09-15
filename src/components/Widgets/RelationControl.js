@@ -95,6 +95,7 @@ class RelationControl extends Component {
       id: forID,
     };
 
+    const fetching = (isFetching.getIn) ? isFetching.getIn([this.controlID, 'isFetching'], false) : false;
     const suggestions = (queryHits.get) ? queryHits.get(this.controlID, []) : [];
 
     return (
@@ -108,7 +109,7 @@ class RelationControl extends Component {
           renderSuggestion={this.renderSuggestion}
           inputProps={inputProps}
         />
-        <Loader active={isFetching === this.controlID} />
+        <Loader active={fetching} />
       </div>
     );
   }
