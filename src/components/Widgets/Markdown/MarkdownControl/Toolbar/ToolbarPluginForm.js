@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { Map } from 'immutable';
 import { Button } from 'react-toolbox/lib/button';
 import ToolbarPluginFormControl from './ToolbarPluginFormControl';

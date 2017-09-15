@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { get, isEmpty, debounce } from 'lodash';
 import { Editor as Slate, Raw, Block, Text } from 'slate';
 import { slateToMarkdown, markdownToSlate, htmlToSlate } from '../../serializers';

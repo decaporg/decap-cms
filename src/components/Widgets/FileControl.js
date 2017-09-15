@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { truncateMiddle } from '../../lib/textHelper';
 import { Loader } from '../UI';
 import AssetProxy, { createAssetProxy } from '../../valueObjects/AssetProxy';

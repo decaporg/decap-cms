@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import Input from "react-toolbox/lib/input";
 import Button from "react-toolbox/lib/button";
@@ -7,7 +8,7 @@ import styles from "../git-gateway/AuthenticationPage.css";
 
 export default class AuthenticationPage extends React.Component {
   static propTypes = {
-    onLogin: React.PropTypes.func.isRequired,
+    onLogin: PropTypes.func.isRequired,
   };
 
   state = { email: '' };

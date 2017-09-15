@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { List, Map, fromJS } from 'immutable';
 import { sortable } from 'react-sortable';
 import FontIcon from 'react-toolbox/lib/font_icon';

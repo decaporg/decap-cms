@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import SplitPane from 'react-split-pane';
 import Button from 'react-toolbox/lib/button';

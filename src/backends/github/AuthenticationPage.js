@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import Button from 'react-toolbox/lib/button';
 import Authenticator from '../../lib/netlify-auth';
@@ -8,7 +9,7 @@ import styles from './AuthenticationPage.css';
 
 export default class AuthenticationPage extends React.Component {
   static propTypes = {
-    onLogin: React.PropTypes.func.isRequired,
+    onLogin: PropTypes.func.isRequired,
   };
 
   state = {};
