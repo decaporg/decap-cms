@@ -8,7 +8,7 @@ import { setStore } from './valueObjects/AssetProxy';
 
 const store = configureStore();
 
-// Create an enhanced history that syncs navigation events with the store
+// Create an enhanced history that syncs navigation events with the store, changed a comment. 
 syncHistory(store);
 
 setStore(store);
