@@ -5,7 +5,7 @@
   "main": "dist/cms.js",
   "scripts": {
     "start": "webpack-dev-server -d --config webpack.dev.js",
-    "test": "jest",
+    "test": "jest --coverage",
     "test:watch": "jest --watch",
     "build": "cross-env NODE_ENV=production webpack --config webpack.prod.js --display-error-details",
     "build:scripts": "cross-env NODE_ENV=production webpack --config webpack.cli.js",
@@ -39,7 +39,11 @@
     "moduleNameMapper": {
       "^.+\\.(png|eot|woff|woff2|ttf|svg|gif)$": "<rootDir>/__mocks__/fileLoaderMock.js",
       "^.+\\.s?css$": "<rootDir>/__mocks__/styleLoaderMock.js"
-    }
+    },
+    "mapCoverage": true,
+    "coverageReporters": ["lcov"],
+    "collectCoverageFrom": [ "src/**/*.js" ],
+    "coveragePathIgnorePatterns": [ "/__tests__/" ]
   },
   "keywords": [
     "netlify",
