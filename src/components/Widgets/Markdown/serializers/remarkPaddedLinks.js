@@ -97,7 +97,9 @@ export default function remarkPaddedLinks() {
    * nesting. If `end` is truthy, get the last node, otherwise first.
    */
   function getEdgeTextChild(node, end) {
-    const findFn = end ? findLast : find;
+    let findFn;
+    if (end) { findFn = findLast } 
+    else { findFn = find }; 
 
     let edgeChildWithValue;
     setEdgeChildWithValue(node);
