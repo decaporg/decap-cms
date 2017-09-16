@@ -4582,7 +4582,14 @@ js-tokens@^3.0.0, js-tokens@^3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-3.0.2.tgz#9866df395102130e38f7f996bceb65443209c25b"
 
-js-yaml@^3.4.2, js-yaml@^3.4.3, js-yaml@^3.5.1, js-yaml@^3.7.0, js-yaml@^3.8.1:
+js-yaml@^3.10.0, js-yaml@^3.8.1:
+  version "3.10.0"
+  resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-3.10.0.tgz#2e78441646bd4682e963f22b6e92823c309c62dc"
+  dependencies:
+    argparse "^1.0.7"
+    esprima "^4.0.0"
+
+js-yaml@^3.4.2, js-yaml@^3.4.3, js-yaml@^3.5.1, js-yaml@^3.7.0:
   version "3.9.1"
   resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-3.9.1.tgz#08775cebdfdd359209f0d2acd383c8f86a6904a0"
   dependencies:
@@ -6671,22 +6678,22 @@ postcss@^6.0.1, postcss@^6.0.2:
     source-map "^0.5.6"
     supports-color "^4.2.1"
 
-preliminaries-parser-toml@1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/preliminaries-parser-toml/-/preliminaries-parser-toml-1.1.0.tgz#00cacf5ab619561380e0f6f2495b2ec449b8e70e"
+preliminaries-parser-toml@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/preliminaries-parser-toml/-/preliminaries-parser-toml-1.3.0.tgz#e62203c45d1c5bf5908b02fb8830336b59a0ebe6"
   dependencies:
     toml "^2.3.2"
     toml-js "0.0.8"
 
-preliminaries-parser-yaml@1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/preliminaries-parser-yaml/-/preliminaries-parser-yaml-1.1.0.tgz#cd0968d10e0220f55477cc8cbeb428aa27e9f84f"
+preliminaries-parser-yaml@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/preliminaries-parser-yaml/-/preliminaries-parser-yaml-1.3.0.tgz#72b5c69c930e322b07ed78a6696d4bf61de73585"
   dependencies:
     js-yaml "^3.8.1"
 
-preliminaries@1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/preliminaries/-/preliminaries-1.1.0.tgz#28ceb5f988b83594de0a7b155124693b0c4a777f"
+preliminaries@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/preliminaries/-/preliminaries-1.3.0.tgz#da1602e704c36da5dde59b7f4aea2a5380ee6357"
 
 prelude-ls@~1.1.2:
   version "1.1.2"
@@ -8544,8 +8551,8 @@ toml-js@0.0.8:
   resolved "https://registry.yarnpkg.com/toml-js/-/toml-js-0.0.8.tgz#648ea6f1a4d63b19c0bb30b8ed03e40d09473b0a"
 
 toml@^2.3.2:
-  version "2.3.2"
-  resolved "https://registry.yarnpkg.com/toml/-/toml-2.3.2.tgz#5eded5ca42887924949fd06eb0e955656001e834"
+  version "2.3.3"
+  resolved "https://registry.yarnpkg.com/toml/-/toml-2.3.3.tgz#8d683d729577cb286231dfc7a8affe58d31728fb"
 
 topbar@^0.1.3:
   version "0.1.3"
