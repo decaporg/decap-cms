@@ -97,7 +97,15 @@ export default function remarkPaddedLinks() {
    * nesting. If `end` is truthy, get the last node, otherwise first.
    */
   function getEdgeTextChild(node, end) {
-    const findFn = end ? findLast : find;
+    /**
+     * This was changed from a ternary to a long form if due to issues with istanbul's instrumentation and babel's code 
+     * generation. 
+     * TODO: watch https://github.com/istanbuljs/babel-plugin-istanbul/issues/95
+     * when it is resolved then revert to ```const findFn = end ? findLast : find;```
+     */
+    let findFn;
+    if (end) { findFn = findLast } 
+    else { findFn = find }; 
 
     let edgeChildWithValue;
     setEdgeChildWithValue(node);
