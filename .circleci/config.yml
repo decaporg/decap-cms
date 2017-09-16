@@ -5,8 +5,6 @@
 version: 2
 jobs:
   build:
-    environment: 
-      CC_TEST_REPORTER_ID: 40a922a43ffebb30aab93b58ea2ea20d45e1504c2fec5234dc6b36dc9f99e869
     docker:
       # specify the version you desire here
       - image: circleci/node:7.10
@@ -24,24 +22,31 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "package.json" }}
+          - node-dependencies-{{ checksum "yarn.lock" }}
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
       - run: yarn install
+
+      # codecov fetch reporter
+      - run: yarn add codecov --dev
       
       - save_cache:
           paths:
             - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
+            - $HOME/.yarn-cache
+          key: node-dependencies-{{ checksum "yarn.lock" }}
       
       # codeclimate: fetch and init coverage reporter.
       - run: curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
       - run: chmod +x ./cc-test-reporter
       - run: ./cc-test-reporter before-build
-      
+
       # run tests!
       - run: yarn test
 
-      # codeclimate: upload coverate 
+      # codeclimate: upload coverage 
       - run: ./cc-test-reporter -t lcov after-build --exit-code $? 
+
+      # codecov: upload coverage
+      - run: ./node_modules/.bin/codecov
