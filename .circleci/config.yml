@@ -44,4 +44,4 @@ jobs:
       - run: yarn test
 
       # codeclimate: upload coverate 
-      - run: ./cc-test-reporter after-build --exit-code $? 
+      - run: ./cc-test-reporter -t lcov after-build --exit-code $? 
