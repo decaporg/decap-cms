@@ -8,3 +8,5 @@ yarn-error.log
 .vscode/
 manifest.yml
 .imdone/
+
+/coverage/
