@@ -33,12 +33,7 @@ class RelationControl extends Component {
     const { value, field } = this.props;
     if (value) {
       const collection = field.get('collection');
-      const searchFields = [...new Set(
-        [
-          ...field.get('searchFields').toJS(),
-          field.get('valueField'),
-        ]
-      )];
+      const searchFields = [ field.get('valueField') ];
       this.props.query(this.controlID, collection, searchFields, value);
     }
   }
@@ -52,8 +47,6 @@ class RelationControl extends Component {
       this.didInitialSearch = true;
       const suggestion = nextProps.queryHits.get(this.controlID);
       if (suggestion && suggestion.length === 1) {
-        const value = this.getSuggestionValue(suggestion[0]);
-        this.props.onChange(value, { [nextProps.field.get('collection')]: { [value]: suggestion[0].data } });
         const displayValue = this.getSuggestionDisplayValue(suggestion[0]);
         this.setState({ displayValue });
       }
