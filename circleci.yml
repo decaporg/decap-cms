@@ -27,11 +27,19 @@ jobs:
           - v1-dependencies-
 
       - run: yarn install
-
+      
       - save_cache:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
-        
+      
+      # codeclimate: fetch and init coverage reporter.
+      - run: curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+      - run: chmod +x ./cc-test-reporter
+      - run: ./cc-test-reporter before-build
+      
       # run tests!
       - run: yarn test
+
+      # codeclimate: upload coverate 
+      - run: ./cc-test-reporter after-build --exit-code $? 
