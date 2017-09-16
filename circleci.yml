@@ -5,6 +5,8 @@
 version: 2
 jobs:
   build:
+    environment: 
+      CC_TEST_REPORTER_ID: 40a922a43ffebb30aab93b58ea2ea20d45e1504c2fec5234dc6b36dc9f99e869
     docker:
       # specify the version you desire here
       - image: circleci/node:7.10
