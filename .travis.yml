@@ -12,3 +12,7 @@ install:
   - yarn
 notifications:
     email: false
+before_script:
+  - yarn add codecov --dev
+after_script:
+  - codecov
