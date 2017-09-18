@@ -42,7 +42,7 @@ const selectors = {
       return collection.get('fields');
     },
     entryPath(collection, slug) {
-      return `${ collection.get('folder') }/${ slug }.${ this.entryExtension(collection) }`;
+      return `${ collection.get('folder').replace(/\/$/, '') }/${ slug }.${ this.entryExtension(collection) }`;
     },
     entrySlug(collection, path) {
       return path.split('/').pop().replace(/\.[^\.]+$/, '');
