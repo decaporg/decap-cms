@@ -26,7 +26,7 @@ class MediaLibrary extends React.Component {
 
   componentDidMount() {
     const { dispatch, closeMediaLibrary } = this.props;
-    dispatch(loadMedia(0, this.state.query));
+    dispatch(loadMedia({ query: this.state.query }));
   }
 
   componentWillReceiveProps(nextProps) {
@@ -113,7 +113,7 @@ class MediaLibrary extends React.Component {
     const files = [...fileList];
     const file = files[0];
     return dispatch(persistMedia(file, privateUpload))
-      .then(() => dispatch(0, loadMedia(this.state.query)));
+      .then(() => dispatch(loadMedia({ query: this.state.query })));
   };
 
   handleInsert = () => {
@@ -140,7 +140,7 @@ class MediaLibrary extends React.Component {
 
   handleSearchKeyDown = (event, dynamicSearch) => {
     if (event.key === 'Enter' && dynamicSearch) {
-      this.props.dispatch(loadMedia(0, this.state.query));
+      this.props.dispatch(loadMedia({ query: this.state.query }));
     }
   };
 

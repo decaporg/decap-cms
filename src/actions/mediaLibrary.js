@@ -32,7 +32,7 @@ export function insertMedia(mediaPath) {
   return { type: MEDIA_INSERT, payload: { mediaPath } };
 }
 
-export function loadMedia(delay = 0, query) {
+export function loadMedia({ delay = 0, query }) {
   return (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
@@ -94,7 +94,7 @@ export function deleteMedia(file) {
       return provider.delete(file.id)
         .then(() => {
           dispatch(mediaDeleted());
-          return dispatch(loadMedia(500));
+          return dispatch(loadMedia({ delay: 500 }));
         })
         .catch(error => {
           console.error(error);
@@ -110,7 +110,7 @@ export function deleteMedia(file) {
     return backend.deleteMedia(file.path)
       .then(() => {
         dispatch(mediaDeleted());
-        return dispatch(loadMedia(500));
+        return dispatch(loadMedia({ delay: 500 }));
       })
       .catch(error => {
         console.error(error);
