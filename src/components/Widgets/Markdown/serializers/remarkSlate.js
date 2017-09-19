@@ -98,39 +98,48 @@ function processMarkNode(node, parentMarks = []) {
   const markType = markMap[node.type];
   const marks = markType ? [...parentMarks, { type: markMap[node.type] }] : parentMarks;
 
-  /**
-   * Set an array to collect sections of text.
-   */
-  const slateNodes = [];
+  const children = flatMap(node.children, childNode => {
+    switch (childNode.type) {
+      /**
+       * If a text node is a direct child of the current node, it should be
+       * set aside as a range, and all marks that have been collected in the
+       * `marks` array should apply to that specific range.
+       */
+      case 'html':
+      case 'text':
+        return { text: childNode.value, marks };
 
-  node.children && node.children.forEach(childNode => {
-    /**
-     * If a text node is a direct child of the current node, it should be
-     * set aside as a range, and all marks that have been collected in the
-     * `marks` array should apply to that specific range.
-     */
-    if (['html', 'text'].includes(childNode.type)) {
-      slateNodes.push({ text: childNode.value, marks });
-      return;
+      /**
+       * MDAST inline code nodes don't have children, just a text value, similar
+       * to a text node, so it receives the same treatment as a text node, but we
+       * first add the inline code mark to the marks array.
+       */
+      case 'inlineCode': {
+        const childMarks = [ ...marks, { type: markMap['inlineCode'] } ];
+        return { text: childNode.value, marks: childMarks };
+      }
+
+      /**
+       * Process nested style nodes. The recursive results should be pushed into
+       * the ranges array. This way, every MDAST nested text structure becomes a
+       * flat array of ranges that can serve as the value of a single Slate Raw
+       * text node.
+       */
+      case 'strong':
+      case 'emphasis':
+      case 'delete':
+        return processMarkNode(childNode, marks);
+
+      /**
+       * Remaining nodes simply need mark data added to them, and to then be
+       * added into the cumulative children array.
+       */
+      default:
+        return { ...childNode, data: { marks } };
     }
-
-    /**
-     * Process nested style nodes. The recursive results should be pushed into
-     * the ranges array. This way, every MDAST nested text structure becomes a
-     * flat array of ranges that can serve as the value of a single Slate Raw
-     * text node.
-     */
-    if (['strong', 'emphasis', 'delete'].includes(childNode.type)) {
-      const nestedSlateNodes = processMarkNode(childNode, marks);
-      slateNodes.push(...nestedSlateNodes);
-      return;
-    }
-
-    const nestedSlateNode = { ...childNode, data: { marks } };
-    slateNodes.push(nestedSlateNode);
   });
 
-  return slateNodes;
+  return children;
 }
 
 function convertMarkNode(node) {

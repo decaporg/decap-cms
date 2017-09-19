@@ -17,6 +17,7 @@ describe('slate', () => {
     expect(process('**[a](b)**')).toEqual('**[a](b)**\n');
     expect(process('**![a](b)**')).toEqual('**![a](b)**\n');
     expect(process('_`a`_')).toEqual('_`a`_\n');
+    expect(process('_`a`b_')).toEqual('_`a`b_\n');
   });
 
   it('should condense adjacent, identically styled text and inline nodes', () => {
