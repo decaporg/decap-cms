@@ -28,4 +28,8 @@ describe('slate', () => {
     expect(process('**a**b**c**')).toEqual('**a**b**c**\n');
     expect(process('**a _b_ c**')).toEqual('**a _b_ c**\n');
   });
+
+  it('should parse inline images as images', () => {
+    expect(process('a ![b](c)')).toEqual('a ![b](c)\n');
+  });
 });

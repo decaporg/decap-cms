@@ -475,6 +475,21 @@ function convertNode(node, children, shortcodePlugins) {
     }
 
     /**
+     * Images
+     *
+     * This transformation is almost identical to that of links, except for the
+     * lack of child nodes and addition of `alt` attribute data. Currently the
+     * CMS handles block images by shortcode, so this case will only apply to
+     * inline images, which currently can only occur through raw markdown
+     * insertion.
+     */
+    case 'image': {
+      const { url, title, alt, ...data } = get(node, 'data', {});
+      return u(typeMap[node.type], { url, title, alt, data });
+    }
+
+
+    /**
      * No default case is supplied because an unhandled case should never
      * occur. In the event that it does, let the error throw (for now).
      */

@@ -35,7 +35,6 @@ export const NODE_COMPONENTS = {
   'numbered-list': props =>
     <ol {...props.attributes} start={props.node.data.get('start') || 1}>{props.children}</ol>,
   'link': props => {
-    // Need to wrap this in mark components for any marks found in data.
     const data = props.node.get('data');
     const marks = data.get('marks');
     const url = data.get('url');
@@ -45,6 +44,19 @@ export const NODE_COMPONENTS = {
       const MarkComponent = MARK_COMPONENTS[mark.type];
       return <MarkComponent>{acc}</MarkComponent>;
     }, link);
+    return result;
+  },
+  'image': props => {
+    const data = props.node.get('data');
+    const marks = data.get('marks');
+    const url = data.get('url');
+    const title = data.get('title');
+    const alt = data.get('alt');
+    const image = <img src={url} title={title} alt={alt} {...props.attributes}/>;
+    const result = !marks ? image : marks.reduce((acc, mark) => {
+      const MarkComponent = MARK_COMPONENTS[mark.type];
+      return <MarkComponent>{acc}</MarkComponent>;
+    }, image);
     return result;
   },
   'shortcode': props => {

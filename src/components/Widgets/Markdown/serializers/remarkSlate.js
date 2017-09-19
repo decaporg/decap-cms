@@ -74,7 +74,7 @@ function createBlock(type, nodes, props = {}) {
 /**
  * Create a Slate Block node.
  */
-function createInline(type, nodes, props = {}) {
+function createInline(type, props = {}, nodes) {
   return { kind: 'inline', type, nodes, ...props };
 }
 
@@ -312,8 +312,22 @@ function convertNode(node, nodes) {
     case 'link': {
       const { title, url, data } = node;
       const newData = { ...data, title, url };
-      return createInline(typeMap[type], nodes, { data: newData });
+      return createInline(typeMap[type], { data: newData }, nodes);
     }
+
+    /**
+     * Images
+     *
+     * Identical to link nodes except for the lack of child nodes and addition
+     * of alt attribute data MDAST stores the link attributes directly on the
+     * node, while our Slate schema references them in the data object.
+     */
+    case 'image': {
+      const { title, url, alt, data } = node;
+      const newData = { ...data, title, alt, url };
+      return createInline(typeMap[type], { isVoid: true, data: newData });
+    }
+
 
     /**
      * Tables
