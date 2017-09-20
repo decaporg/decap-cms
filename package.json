@@ -124,7 +124,6 @@
     "mdast-util-definitions": "^1.2.2",
     "mdast-util-to-string": "^1.0.4",
     "moment": "^2.11.2",
-    "node-sass": "^3.10.0",
     "normalize.css": "^4.2.0",
     "prismjs": "^1.5.1",
     "prop-types": "^15.5.10",
