@@ -8,7 +8,7 @@ describe('slate', () => {
     expect(process('a\n')).toEqual('a\n');
   });
 
-  it('should not decode encoded html entities in inline code', () => {
+  xit('should not decode encoded html entities in inline code', () => {
     expect(process('<code>&lt;div&gt;</code>')).toEqual('<code>&lt;div&gt;</code>\n');
   });
 
@@ -32,5 +32,9 @@ describe('slate', () => {
 
   it('should parse inline images as images', () => {
     expect(process('a ![b](c)')).toEqual('a ![b](c)\n');
+  });
+
+  it('should not escape markdown entities in html', () => {
+    expect(process('<span>*</span>')).toEqual('<span>*</span>\n');
   });
 });

@@ -443,7 +443,7 @@ become anything else.",
         Object {
           "data": undefined,
           "kind": "text",
-          "text": " is supported. This *can be ",
+          "text": " is supported. This ",
         },
         Object {
           "data": undefined,
@@ -452,17 +452,36 @@ become anything else.",
             Object {
               "marks": Array [
                 Object {
+                  "type": "italic",
+                },
+              ],
+              "text": "can be ",
+            },
+            Object {
+              "marks": Array [
+                Object {
+                  "type": "italic",
+                },
+                Object {
                   "type": "bold",
                 },
               ],
               "text": "nested",
+            },
+            Object {
+              "marks": Array [
+                Object {
+                  "type": "italic",
+                },
+              ],
+              "text": " like",
             },
           ],
         },
         Object {
           "data": undefined,
           "kind": "text",
-          "text": " like* so.",
+          "text": " so.",
         },
       ],
       "type": "paragraph",
@@ -1289,7 +1308,9 @@ Object {
           "text": "blue moon",
         },
         Object {
-          "data": undefined,
+          "data": Object {
+            "isBreak": true,
+          },
           "kind": "text",
           "text": "
 ",
