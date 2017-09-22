@@ -12,11 +12,11 @@ After clicking that button, you’ll authenticate with GitHub and choose a repos
 2. Select **Invite users**, enter your email address, and select Send.
 3. Check your email for the invitation. It will be sent from `no-reply@netlify.com`.
 
-![Sample email subject line: You've been invited to join radiologist-amanda-53841.netlify.com](/img/email-subject.png?raw=true)
+    ![Sample email subject line: You've been invited to join radiologist-amanda-53841.netlify.com](/img/email-subject.png?raw=true)
 
 4. Click the link to accept the invite, and you’ll be directed to your new site, with a prompt to create a password.
 
-!["Complete your signup" modal on the Kaldi coffee site](/img/create-password.png?raw=true)
+    !["Complete your signup" modal on the Kaldi coffee site](/img/create-password.png?raw=true)
 
 5. Enter a password, sign in, and you’ll be directed straight to the CMS!
 
