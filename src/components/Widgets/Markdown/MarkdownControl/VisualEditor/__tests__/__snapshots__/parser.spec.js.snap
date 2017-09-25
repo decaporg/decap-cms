@@ -1308,12 +1308,16 @@ Object {
           "text": "blue moon",
         },
         Object {
-          "data": Object {
-            "isBreak": true,
-          },
-          "kind": "text",
-          "text": "
+          "kind": "inline",
+          "nodes": Array [
+            Object {
+              "data": undefined,
+              "kind": "text",
+              "text": "
 ",
+            },
+          ],
+          "type": "break",
         },
         Object {
           "data": undefined,

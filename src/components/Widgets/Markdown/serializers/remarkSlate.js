@@ -300,7 +300,8 @@ function convertNode(node, nodes) {
      * line breaks within a text node.
      */
     case 'break': {
-      return createText('\n', { isBreak: true });
+      const textNode = createText('\n');
+      return createInline('break', {}, [ textNode ]);
     }
 
     /**

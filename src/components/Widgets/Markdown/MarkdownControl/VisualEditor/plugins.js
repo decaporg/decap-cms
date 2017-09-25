@@ -1,3 +1,4 @@
+import { Text, Inline } from 'slate';
 import SlateSoftBreak from 'slate-soft-break';
 import EditList from 'slate-edit-list';
 import EditTable from 'slate-edit-table';
@@ -21,7 +22,13 @@ const SoftBreak = (options = {}) => ({
       return unwrapped.insertBlock(defaultBlock).apply();
     }
 
-    return state.transform().insertText('\n').apply();
+    const textNode = Text.createFromString('\n');
+    const breakNode = Inline.create({ type: 'break', nodes: [ textNode ] });
+    return state.transform()
+      .insertInline(breakNode)
+      .insertText('')
+      .collapseToStartOfNextText()
+      .apply();
   }
 });
 
@@ -32,7 +39,7 @@ const SoftBreakOpts = {
 
 export const SoftBreakConfigured = SoftBreak(SoftBreakOpts);
 
-export const ParagraphSoftBreakConfigured = SlateSoftBreak({ onlyIn: ['paragraph'], shift: true });
+export const ParagraphSoftBreakConfigured = SoftBreak({ onlyIn: ['paragraph'], shift: true });
 
 const BreakToDefaultBlock = ({ onlyIn = [], defaultBlock = 'paragraph' }) => ({
   onKeyDown(e, data, state) {

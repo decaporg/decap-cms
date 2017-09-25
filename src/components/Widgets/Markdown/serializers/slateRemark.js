@@ -21,6 +21,7 @@ const typeMap = {
   'table': 'table',
   'table-row': 'tableRow',
   'table-cell': 'tableCell',
+  'break': 'break',
   'thematic-break': 'thematicBreak',
   'link': 'link',
   'image': 'image',
@@ -110,6 +111,16 @@ function combineTextAndInline(nodes) {
 
     if (!isEmpty(prevNodeRanges) && !isEmpty(node.ranges)) {
       prevNode.ranges = prevNodeRanges.concat(node.ranges);
+      return acc;
+    }
+
+    /**
+     * Break nodes contain a single child text node with a newline character
+     * for visual purposes in the editor, but Remark break nodes have no
+     * children, so we remove the child node here.
+     */
+    if (node.type === 'break') {
+      acc.push({ kind: 'inline', type: 'break' });
       return acc;
     }
 
@@ -216,14 +227,6 @@ function wrapTextWithMarks(textNode, markTypes) {
  * replaced with multiple MDAST nodes, so the resulting array must be flattened.
  */
 function convertTextNode(node) {
-  /**
-   * Translate soft breaks, which are just newline escape sequences. We track
-   * them with an `isBreak` boolean in the node data.
-   */
-  if (get(node.data, 'isBreak')) {
-    return u('break');
-  }
-
   /**
    * If the Slate text node has a "ranges" property, translate the Slate AST to
    * a nested MDAST structure. Otherwise, just return an equivalent MDAST text
@@ -454,11 +457,11 @@ function convertNode(node, children, shortcodePlugins) {
     }
 
     /**
-     * Thematic Breaks
+     * Breaks
      *
-     * Thematic breaks don't have children. We parse them separately for
-     * clarity.
+     * Breaks don't have children. We parse them separately for clarity.
      */
+    case 'break':
     case 'thematic-break': {
       return u(typeMap[node.type]);
     }

@@ -16,7 +16,8 @@ import remarkToSlate from './remarkSlate';
 import remarkSquashReferences from './remarkSquashReferences';
 import remarkImagesToText from './remarkImagesToText';
 import remarkShortcodes from './remarkShortcodes';
-import remarkEscapeMarkdownEntities from './remarkEscapeMarkdownEntities'
+import remarkEscapeMarkdownEntities from './remarkEscapeMarkdownEntities';
+import remarkStripTrailingBreaks from './remarkStripTrailingBreaks';
 import slateToRemark from './slateRemark';
 import registry from '../../../../lib/registry';
 
@@ -127,6 +128,7 @@ export const remarkToMarkdown = obj => {
    */
   const escapedMdast = unified()
     .use(remarkEscapeMarkdownEntities)
+    .use(remarkStripTrailingBreaks)
     .runSync(mdast);
 
   const markdown = unified()
