@@ -8,7 +8,7 @@ import { getAsset } from '../reducers';
 import { selectFields } from '../reducers/collections';
 import { loadEntry } from './entries';
 import { status, EDITORIAL_WORKFLOW } from '../constants/publishModes';
-import { EditorialWorkflowError } from "../valueObjects/errors";
+import { NotUnderEditorialWorkflowError } from "../valueObjects/errors";
 
 const { notifSend } = notifActions;
 
@@ -194,7 +194,7 @@ export function loadUnpublishedEntry(collection, slug) {
     backend.unpublishedEntry(collection, slug)
     .then(entry => dispatch(unpublishedEntryLoaded(collection, entry)))
     .catch((error) => {
-      if (error instanceof EditorialWorkflowError && error.notUnderEditorialWorkflow) {
+      if (error instanceof NotUnderEditorialWorkflowError) {
         dispatch(unpublishedEntryRedirected(collection, slug));
         dispatch(loadEntry(collection, slug));
       } else {
