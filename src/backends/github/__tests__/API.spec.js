@@ -1,5 +1,6 @@
 import AssetProxy from "../../../valueObjects/AssetProxy";
 import API from "../API";
+import NotUnderEditorialWorkflowError from "../../../valueObjects/errors/NotUnderEditorialWorkflowError";
 
 describe('github API', () => {
   const mockAPI = (api, responses) => {
@@ -36,4 +37,13 @@ describe('github API', () => {
         .then(() => prBaseBranch)
     ).resolves.toEqual('gh-pages')
   });
+
+  it(`should throw a NotUnderEditorialWorkflowError when a file doesn't exist on a branch.`, () => {
+    const api = new API({ branch: 'gh-pages', repo: 'my-repo' });
+    const responses = {};
+    mockAPI(api, responses);
+    return expect(api.readUnpublishedBranchFile('test'))
+    .rejects.toEqual(new NotUnderEditorialWorkflowError('content is not under editorial workflow'));
+  });
+
 });
