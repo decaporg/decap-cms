@@ -5,6 +5,7 @@ import { closeEntry } from './editor';
 import { currentBackend } from '../backends/backend';
 import { getIntegrationProvider } from '../integrations';
 import { getAsset, selectIntegration } from '../reducers';
+import { selectFields } from '../reducers/collections';
 import { createEntry } from '../valueObjects/Entry';
 
 const { notifSend } = notifActions;
@@ -276,7 +277,8 @@ export function persistEntry(collection) {
      * Serialize the values of any fields with registered serializers, and
      * update the entry and entryDraft with the serialized values.
      */
-    const serializedData = serializeValues(entryDraft.getIn(['entry', 'data']), collection.get('fields'));
+    const fields = selectFields(collection, entry.get('slug'));
+    const serializedData = serializeValues(entryDraft.getIn(['entry', 'data']), fields);
     const serializedEntry = entry.set('data', serializedData);
     const serializedEntryDraft = entryDraft.set('entry', serializedEntry);
     dispatch(entryPersisting(collection, serializedEntry));
