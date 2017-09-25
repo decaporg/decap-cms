@@ -21,6 +21,13 @@ export default class ObjectControl extends Component {
     className: PropTypes.string,
   };
 
+  /**
+   * In case the `onChange` function is frozen by a child widget implementation,
+   * e.g. when debounced, always get the latest object value instead of usin
+   * `this.props.value` directly.
+   */
+  getObjectValue = () => this.props.value;
+
   controlFor(field) {
     const { onAddAsset, onRemoveAsset, getAsset, value, onChange } = this.props;
     if (field.get('widget') === 'hidden') {
@@ -38,7 +45,7 @@ export default class ObjectControl extends Component {
             field,
             value: fieldValue,
             onChange: (val, metadata) => {
-              onChange((value || Map()).set(field.get('name'), val), metadata);
+              onChange((this.getObjectValue() || Map()).set(field.get('name'), val), metadata);
             },
             onAddAsset,
             onRemoveAsset,
