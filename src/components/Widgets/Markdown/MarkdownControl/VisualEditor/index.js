@@ -44,14 +44,12 @@ export default class Editor extends Component {
     return state.transform().insertFragment(doc).apply();
   }
 
-  onChange = debounce(this.props.onChange, 250);
-
-  handleDocumentChange = (doc, editorState) => {
+  handleDocumentChange = debounce((doc, editorState) => {
     const raw = Raw.serialize(editorState, { terse: true });
     const plugins = this.state.shortcodePlugins;
     const markdown = slateToMarkdown(raw, plugins);
-    this.onChange(markdown);
-  };
+    this.props.onChange(markdown);
+  }, 150);
 
   hasMark = type => this.state.editorState.marks.some(mark => mark.type === type);
   hasBlock = type => this.state.editorState.blocks.some(node => node.type === type);
