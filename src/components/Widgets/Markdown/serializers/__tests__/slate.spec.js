@@ -8,7 +8,7 @@ describe('slate', () => {
     expect(process('a\n')).toEqual('a\n');
   });
 
-  xit('should not decode encoded html entities in inline code', () => {
+  it('should not decode encoded html entities in inline code', () => {
     expect(process('<code>&lt;div&gt;</code>')).toEqual('<code>&lt;div&gt;</code>\n');
   });
 

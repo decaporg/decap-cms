@@ -18,6 +18,7 @@ import remarkImagesToText from './remarkImagesToText';
 import remarkShortcodes from './remarkShortcodes';
 import remarkEscapeMarkdownEntities from './remarkEscapeMarkdownEntities';
 import remarkStripTrailingBreaks from './remarkStripTrailingBreaks';
+import remarkAllowHtmlEntities from './remarkAllowHtmlEntities';
 import slateToRemark from './slateRemark';
 import registry from '../../../../lib/registry';
 
@@ -66,6 +67,7 @@ export const markdownToRemark = markdown => {
   const parsed = unified()
     .use(markdownToRemarkPlugin, { fences: true, commonmark: true })
     .use(markdownToRemarkRemoveTokenizers, { inlineTokenizers: ['url'] })
+    .use(remarkAllowHtmlEntities)
     .parse(markdown);
 
   /**
