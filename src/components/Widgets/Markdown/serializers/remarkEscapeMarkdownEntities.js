@@ -1,4 +1,4 @@
-import { flow, partial, flatMap, flatten } from 'lodash';
+import { flow, partial, flatMap, flatten, map } from 'lodash';
 import { joinPatternSegments, combinePatterns, replaceWhen } from '../../../../lib/regexHelper';
 
 /**
@@ -139,6 +139,100 @@ const escapePatterns = [
 
 
 /**
+ * Generate new non-escape expression. The non-escape expression matches
+ * substrings whose contents should not be processed for escaping.
+ */
+const joinedNonEscapePatterns = map(nonEscapePatterns, pattern => {
+  return new RegExp(joinPatternSegments(pattern));
+});
+const nonEscapePattern = combinePatterns(joinedNonEscapePatterns);
+
+
+/**
+ * Create chain of successive escape functions for various markdown entities.
+ */
+const escapeFunctions = escapePatterns.map(pattern => partial(escapeDelimiters, pattern));
+const escapeAll = flow(escapeFunctions);
+
+
+/**
+ * Executes both the `escapeCommonChars` and `escapeLeadingChars` functions.
+ */
+function escapeAllChars(text) {
+  const partiallyEscapedMarkdown = escapeCommonChars(text);
+  return escapeLeadingChars(partiallyEscapedMarkdown);
+}
+
+
+/**
+ * escapeLeadingChars
+ *
+ * Handles escaping for characters that must be positioned at the beginning of
+ * the string, such as headers and list items.
+ *
+ * Escapes '#', '*', '-', '>', '=', '|', and sequences of 3+ backticks or 4+
+ * spaces when found at the beginning of a string, preceded by zero or more
+ * whitespace characters.
+ */
+function escapeLeadingChars(text) {
+  return text.replace(/^\s*([-#*>=|]| {4,}|`{3,})/, '$`\\$1');
+}
+
+
+/**
+ * escapeCommonChars
+ *
+ * Escapes active markdown entities. See escape pattern groups for details on
+ * which entities are replaced.
+ */
+function escapeCommonChars(text) {
+  /**
+   * Generate new non-escape expression (must happen at execution time because
+   * we use `RegExp.exec`, which tracks it's own state internally).
+   */
+  const nonEscapeExpression = new RegExp(nonEscapePattern, 'gm');
+
+  /**
+   * Use `replaceWhen` to escape markdown entities only within substrings that
+   * are eligible for escaping.
+   */
+  return replaceWhen(nonEscapeExpression, escapeAll, text, true);
+}
+
+
+/**
+ * escapeDelimiters
+ *
+ * Executes `String.replace` for a given pattern, but only on the first two
+ * capture groups. Specifically intended for escaping opening (and optionally
+ * closing) markdown entities without escaping the content in between.
+ */
+function escapeDelimiters(pattern, text) {
+  return text.replace(pattern, (match, start, end) => {
+    const hasEnd = typeof end === 'string';
+    const matchSliceEnd = hasEnd ? match.length - end.length : match.length;
+    const content = match.slice(start.length, matchSliceEnd);
+    return `${escape(start)}${content}${hasEnd ? escape(end) : ''}`;
+  });
+}
+
+
+/**
+ * escape
+ *
+ * Simple replacement function for escaping markdown entities. Prepends every
+ * character in the received string with a backslash.
+ */
+function escape(delim) {
+  let result = '';
+  for (const char of delim) {
+    result += `\\${char}`;
+  }
+  return result;
+}
+
+
+/**
  * A Remark plugin for escaping markdown entities.
  *
  * When markdown entities are entered in raw markdown, they don't appear as
@@ -177,91 +271,4 @@ export default function remarkEscapeMarkdownEntities() {
   };
 
   return transform;
-}
-
-
-/**
- * Executes both the `escapeCommonChars` and `escapeLeadingChars` functions.
- */
-function escapeAllChars(text) {
-  const partiallyEscapedMarkdown = escapeCommonChars(text);
-  return escapeLeadingChars(partiallyEscapedMarkdown);
-}
-
-
-/**
- * escapeLeadingChars
- *
- * Handles escaping for characters that must be positioned at the beginning of
- * the string, such as headers and list items.
- *
- * Escapes '#', '*', '-', '>', '=', '|', and sequences of 3+ backticks or 4+
- * spaces when found at the beginning of a string, preceded by zero or more
- * whitespace characters.
- */
-function escapeLeadingChars(text) {
-  return text.replace(/^\s*([-#*>=|]| {4,}|`{3,})/, '$`\\$1');
-}
-
-
-/**
- * escapeCommonChars
- *
- * Escapes active markdown entities. See escape pattern groups for details on
- * which entities are replaced.
- */
-function escapeCommonChars(text) {
-  /**
-   * Generate new non-escape expression (must happen at execution time because
-   * we use `RegExp.exec`, which tracks it's own state internally). The
-   * non-escape expression matches substrings whose contents should not be
-   * processed for escaping.
-   */
-  const { htmlTags, preformattedHtmlBlocks } = nonEscapePatterns;
-  const joinedNonEscapePatterns = [ htmlTags, preformattedHtmlBlocks ].map(p => joinPatternSegments(p));
-  const nonEscapePattern = combinePatterns(joinedNonEscapePatterns, 'gm');
-
-  /**
-   * Create chain of successive escape functions for various markdown entities.
-   */
-  const escapeFunctions = escapePatterns.map(pattern => partial(escapeDelimiters, pattern));
-  const escapeAll = flow(escapeFunctions);
-
-  /**
-   * Use `replaceWhen` to escape markdown entities only within substrings that
-   * are eligible for escaping.
-   */
-  return replaceWhen(nonEscapePattern, escapeAll, text, true);
-}
-
-
-/**
- * escapeDelimiters
- *
- * Executes `String.replace` for a given pattern, but only on the first two
- * capture groups. Specifically intended for escaping opening (and optionally
- * closing) markdown entities without escaping the content in between.
- */
-function escapeDelimiters(pattern, text) {
-  return text.replace(pattern, (match, start, end) => {
-    const hasEnd = typeof end === 'string';
-    const matchSliceEnd = hasEnd ? match.length - end.length : match.length;
-    const content = match.slice(start.length, matchSliceEnd);
-    return `${escape(start)}${content}${hasEnd ? escape(end) : ''}`;
-  });
-}
-
-
-/**
- * escape
- *
- * Simple replacement function for escaping markdown entities. Prepends every
- * character in the received string with a backslash.
- */
-function escape(delim) {
-  let result = '';
-  for (const char of delim) {
-    result += `\\${char}`;
-  }
-  return result;
 }

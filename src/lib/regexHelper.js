@@ -2,24 +2,20 @@ import { last } from 'lodash';
 
 /**
  * Joins an array of regular expressions into a single expression, without
- * altering the received expressions. Only flags passed as an argument will
- * apply to the resulting regular expression.
+ * altering the received expressions.
  */
-export function joinPatternSegments(patterns, flags = '') {
-  const pattern = patterns.map(p => p.source).join('');
-  return new RegExp(pattern, flags);
+export function joinPatternSegments(patterns) {
+  return patterns.map(p => p.source).join('');
 }
 
 
 /**
  * Combines an array of regular expressions into a single expression, wrapping
  * each in a non-capturing group and interposing alternation characters (|) so
- * that each expression is executed separately. Only flags passed as an argument
- * will apply to the resulting regular expression.
+ * that each expression is executed separately.
  */
 export function combinePatterns(patterns, flags = '') {
-  const pattern = patterns.map(p => `(?:${p.source})`).join('|');
-  return new RegExp(pattern, flags);
+  return patterns.map(p => `(?:${p.source})`).join('|');
 }
 
 
