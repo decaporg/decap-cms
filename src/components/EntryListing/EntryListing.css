@@ -1,4 +1,4 @@
-.card {
+.ncms-entryListing-card {
   flex: 0 300px;
   overflow: hidden;
   margin-bottom: 16px;
@@ -8,12 +8,12 @@
   cursor: pointer;
 }
 
-.card:hover {
+.ncms-entryListing-card:hover {
   background: #f8f9fa;
   transform: translateY(-8px);
 }
 
-.cardImage {
+.ncms-entryListing-cardImage {
   margin: -16px -24px 16px -24px;
   width: calc(100% + 24px + 24px);
   height: 135px;
@@ -22,17 +22,17 @@
   background-repeat: no-repeat;
 }
 
-.cardsGrid {
+.ncms-entryListing-cardsGrid {
   display: flex;
   flex-flow: row wrap;
   margin-left: -16px;
 }
 
-.cardList {
+.ncms-entryListing-cardList {
   margin-bottom: 1.1rem;
 }
 
-.cardListLabel {
+.ncms-entryListing-cardListLabel {
   white-space: nowrap;
   font-weight: bold;
 }

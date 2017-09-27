@@ -6,7 +6,9 @@ import { Notifs } from 'redux-notifications';
 import { Toast } from '../../components/UI/index';
 import { Card, Icon } from "../../components/UI";
 import logo from "./netlify_logo.svg";
-import styles from "./AuthenticationPage.css";
+import { prefixer } from '../../lib/styleHelper';
+
+const styles = prefixer('gitGatewayAuthenticationPage');
 
 let component = null;
 
@@ -94,24 +96,24 @@ export default class AuthenticationPage extends React.Component {
     const { error } = this.props;
 
     if (window.netlifyIdentity) {
-      return <section className={styles.root}>
+      return <section className={styles("root")}>
         <Notifs CustomComponent={Toast} />
-        <Button className={styles.button} raised onClick={this.handleIdentity}>
+        <Button className={styles("button")} raised onClick={this.handleIdentity}>
           Login with Netlify Identity
         </Button>
       </section>
     }
 
     return (
-      <section className={styles.root}>
-        <Card className={styles.card}>
+      <section className={styles("root")}>
+        <Card className={styles("card")}>
           <form onSubmit={this.handleLogin}>
             <img src={logo} width={100} role="presentation" />
             {error && <p>
-              <span className={styles.errorMsg}>{error}</span>
+              <span className={styles("errorMsg")}>{error}</span>
             </p>}
             {errors.server && <p>
-              <span className={styles.errorMsg}>{errors.server}</span>
+              <span className={styles("errorMsg")}>{errors.server}</span>
             </p>}
             <Input
               type="text"
@@ -130,7 +132,7 @@ export default class AuthenticationPage extends React.Component {
               onChange={this.handleChange.bind(this, "password")} // eslint-disable-line
             />
             <Button
-              className={styles.button}
+              className={styles("button")}
               raised
             >
               <Icon type="login" /> Login

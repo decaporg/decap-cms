@@ -1,6 +1,6 @@
-@import "../../../../UI/theme";
+@import '../../../../UI/theme.css';
 
-.pluginForm {
+.ncms-toolbarPluginForm-pluginForm {
   position: absolute;
   background-color: var(--backgroundColor);
   margin-top: -20px;
@@ -12,20 +12,21 @@
   overflow: hidden;
   z-index: 1;
 
-  /* Nested to override high specificity React Toolbox styles */
-  & .header {
-    padding: 12px;
-    margin: 0;
-    color: var(--textColor);
-    background-color: var(--backgroundColor);
-  }
 }
 
-.body {
+/* Nested to override high specificity React Toolbox styles */
+.ncms-toolbarPluginForm-pluginForm .ncms-toolbarPluginForm-header {
+  padding: 12px;
+  margin: 0;
+  color: var(--textColor);
+  background-color: var(--backgroundColor);
+}
+
+.ncms-toolbarPluginForm-body {
   padding: 0 12px 16px;
 }
 
-.footer {
+.ncms-toolbarPluginForm-footer {
   background-color: var(--backgroundColor);
   padding: 10px 20px;
   text-align: right;

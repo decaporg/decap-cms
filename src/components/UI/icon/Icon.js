@@ -1,5 +1,7 @@
 import React from 'react';
-import styles from './Icon.css';
+import { prefixer } from '../../../lib/styleHelper';
+
+const styles = prefixer('icon');
 
 const availableIcons = [
   // Font Awesome Editor Icons
@@ -200,7 +202,7 @@ const iconPropType = (props, propName) => {
 const noop = function () {};
 
 export default function Icon({ style, className = '', type, onClick = noop }) {
-  return <span className={`${ styles.root } ${ styles[type] } ${ className }`} style={style} onClick={onClick} />;
+  return <span className={`${ styles("root") } ${ styles(type) } ${ className }`} style={style} onClick={onClick} />;
 }
 
 Icon.propTypes = {

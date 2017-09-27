@@ -1,9 +1,9 @@
-.root {
+.ncms-toolbarComponentsMenu-root {
   display: inline-block;
   position: relative;
 }
 
-.menuItem {
+.ncms-toolbarComponentsMenu-menuItem {
   height: auto;
   padding-top: 6px;
   padding-bottom: 6px;

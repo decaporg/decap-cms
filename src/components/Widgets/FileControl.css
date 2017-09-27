@@ -1,16 +1,16 @@
 @import "../UI/theme.css";
 
-.input {
+.ncms-fileControlinput {
   display: none !important;
 }
 
-.message {
+.ncms-fileControlmessage {
   padding: 20px;
   display: block;
   font-size: 12px;
 }
 
-.imageUpload {
+.ncms-fileControlimageUpload {
   background-color: #fff;
   text-align: center;
   color: #999;

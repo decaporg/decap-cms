@@ -1,38 +1,38 @@
-@import '../components/UI/theme';
+@import '../components/UI/theme.css';
 
-.root {
+.ncms-sidebar-root {
   margin-top: 54px;
 }
 
-.sidebar {
+.ncms-sidebar-sidebar {
   padding: 0 16px;
   width: 220px;
   background-color: var(--backgroundAltColor);
   color: var(--defaultColorLight);
 }
 
-.heading {
+.ncms-sidebar-heading {
   margin-bottom: 8px;
   color: var(--defaultColorLight);
 }
 
-.nav {
+.ncms-sidebar-nav {
   padding: 0;
 }
 
-.linkWrapper {
+.ncms-sidebar-linkWrapper {
   color: #fff;
   border-radius: var(--borderRadius);
   display: flex;
   align-items: center;
   justify-content: space-between;
 
-  &:hover {
+  .ncms-sidebar-:hover {
     background-color: var(--textColor);
   }
 }
 
-.viewEntriesLink {
+.ncms-sidebar-viewEntriesLink {
   font-size: 18px;
   color: inherit;
   padding: 10px 6px;
@@ -40,7 +40,7 @@
   width: 100%;
 }
 
-.createEntryLink {
+.ncms-sidebar-createEntryLink {
   color: inherit;
   padding: 0 6px;
   display: block;

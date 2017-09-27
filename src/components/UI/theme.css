@@ -34,24 +34,24 @@
   --textFieldBorder: var(--border);
 }
 
-.base {
+.ncms-theme-base {
   box-sizing: border-box;
 }
 
-.container {
+.ncms-theme-container {
   background-color: var(--backgroundColor);
   color: var(--defaultColor);
 }
 
-.rounded {
+.ncms-theme-rounded {
   border-radius: var(--borderRadius);
 }
 
-.depth {
+.ncms-theme-depth {
   box-shadow: var(--dropShadow);
 }
 
-.clearfix:after {
+.ncms-theme-clearfix:after {
   content: '';
   display: table;
   clear: both;

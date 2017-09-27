@@ -10,7 +10,9 @@ import { INFERABLE_FIELDS } from '../../constants/fieldInference';
 import PreviewContent from './PreviewContent.js';
 import PreviewHOC from '../Widgets/PreviewHOC';
 import Preview from './Preview';
-import styles from './PreviewPane.css';
+import { prefixer } from '../../lib/styleHelper';
+
+const styles = prefixer('previewPane');
 
 export default class PreviewPane extends React.Component {
 
@@ -142,11 +144,11 @@ export default class PreviewPane extends React.Component {
        .map((style, i) => <link key={i} href={style} type="text/css" rel="stylesheet" />);
 
     if (!collection) {
-      return <Frame className={styles.frame} head={styleEls} />;
+      return <Frame className={styles("frame")} head={styleEls} />;
     }
 
     return (<Frame
-      className={styles.frame}
+      className={styles("frame")}
       head={styleEls}
       initialContent={`
 <!DOCTYPE html>

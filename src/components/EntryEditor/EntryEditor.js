@@ -9,8 +9,11 @@ import ControlPane from '../ControlPanel/ControlPane';
 import PreviewPane from '../PreviewPane/PreviewPane';
 import Toolbar from './EntryEditorToolbar';
 import { StickyContext } from '../UI/Sticky/Sticky';
-import styles from './EntryEditor.css';
 import stickyStyles from '../UI/Sticky/Sticky.css';
+
+import { prefixer } from '../../lib/styleHelper';
+
+const styles = prefixer('entryEditor');
 
 const PREVIEW_VISIBLE = 'cms.preview-visible';
 
@@ -63,7 +66,7 @@ class EntryEditor extends Component {
 
     const togglePreviewButton = (
       <Button
-        className={classnames(styles.previewToggle, { previewVisible: styles.previewToggleShow })}
+        className={classnames(styles("previewToggle"), { previewVisible: styles("previewToggleShow") })}
         onClick={this.handleTogglePreview}
         icon={previewVisible ? 'visibility_off' : 'visibility'}
         floating
@@ -73,7 +76,7 @@ class EntryEditor extends Component {
 
     const editor = (
       <StickyContext
-        className={classnames(styles.controlPane, { [styles.blocker]: showEventBlocker })}
+        className={classnames(styles("controlPane"), { [styles("blocker")]: showEventBlocker })}
         registerListener={fn => this.updateStickyContext = fn}
       >
         { collectionPreviewEnabled ? togglePreviewButton : null }
@@ -95,7 +98,7 @@ class EntryEditor extends Component {
 
     const editorWithPreview = (
       <ScrollSync>
-        <div className={styles.container}>
+        <div className={styles("container")}>
           <SplitPane
             defaultSize="50%"
             onDragStarted={this.handleSplitPaneDragStart}
@@ -103,7 +106,7 @@ class EntryEditor extends Component {
             onChange={this.updateStickyContext}
           >
             <ScrollSyncPane>{editor}</ScrollSyncPane>
-            <div className={classnames(styles.previewPane, { [styles.blocker]: showEventBlocker })}>
+            <div className={classnames(styles("previewPane"), { [styles("blocker")]: showEventBlocker })}>
               <PreviewPane
                 collection={collection}
                 entry={entry}
@@ -118,15 +121,15 @@ class EntryEditor extends Component {
     );
 
     const editorWithoutPreview = (
-      <div className={styles.noPreviewEditorContainer}>
+      <div className={styles("noPreviewEditorContainer")}>
         {editor}
       </div>
     );
 
     return (
-      <div className={styles.root}>
+      <div className={styles("root")}>
         { collectionPreviewEnabled && this.state.previewVisible ? editorWithPreview : editorWithoutPreview }
-        <div className={styles.footer}>
+        <div className={styles("footer")}>
           <Toolbar
             isPersisting={entry.get('isPersisting')}
             onPersist={this.handleOnPersist}

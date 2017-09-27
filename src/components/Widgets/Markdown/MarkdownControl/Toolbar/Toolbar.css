@@ -1,11 +1,9 @@
-@import "../../../../UI/theme";
-
-.Toolbar {
-  composes: clearfix;
+.ncms-toolbar-Toolbar {
+  /* composes: clearfix; */
   z-index: 1000;
 }
 
-.Toggle {
+.ncms-toolbar-Toggle {
   float: right;
   margin-bottom: 0;
   padding-top: 4px;

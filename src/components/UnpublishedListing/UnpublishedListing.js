@@ -9,7 +9,9 @@ import { Card, CardTitle, CardText, CardActions } from 'react-toolbox/lib/card';
 import Button from 'react-toolbox/lib/button';
 import UnpublishedListingCardMeta from './UnpublishedListingCardMeta.js';
 import { status, statusDescriptions } from '../../constants/publishModes';
-import styles from './UnpublishedListing.css';
+import { prefixer } from '../../lib/styleHelper';
+
+const styles = prefixer('unpublishedListing');
 
 class UnpublishedListing extends React.Component {
   static propTypes = {
@@ -50,8 +52,8 @@ class UnpublishedListing extends React.Component {
           /* eslint-enable */
         >
           {isHovered => (
-            <div className={isHovered ? styles.columnHovered : styles.column}>
-              <h2 className={styles.columnHeading}>
+            <div className={isHovered ? styles("columnHovered") : styles("column")}>
+              <h2 className={styles("columnHeading")}>
                 {statusDescriptions.get(currColumn)}
               </h2>
               {this.renderColumns(currEntries, currColumn)}
@@ -79,8 +81,8 @@ class UnpublishedListing extends React.Component {
                 collection={collection}
                 ownStatus={ownStatus}
               >
-                <div className={styles.draggable}>
-                  <Card className={styles.card}>
+                <div className={styles("draggable")}>
+                  <Card className={styles("card")}>
                     <UnpublishedListingCardMeta
                       meta={capitalize(collection)}
                       label={isModification ? "" : "New"}
@@ -88,7 +90,7 @@ class UnpublishedListing extends React.Component {
                     <CardTitle
                       title={entry.getIn(['data', 'title'])}
                       subtitle={`by ${ author }`}
-                      className={styles.cardTitle}
+                      className={styles("cardTitle")}
                     />
                     <CardText>
                       Last updated: {timeStamp} by {entry.getIn(['metaData', 'user'])}
@@ -128,7 +130,7 @@ class UnpublishedListing extends React.Component {
     return (
       <div>
         <h5>Editorial Workflow</h5>
-        <div className={styles.container}>
+        <div className={styles("container")}>
           {columns}
         </div>
       </div>

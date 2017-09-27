@@ -4,7 +4,9 @@ import { List, Map, fromJS } from 'immutable';
 import { sortable } from 'react-sortable';
 import FontIcon from 'react-toolbox/lib/font_icon';
 import ObjectControl from './ObjectControl';
-import styles from './ListControl.css';
+import { prefixer } from '../../lib/styleHelper';
+
+const styles = prefixer('listControl');
 
 function ListItem(props) {
   return <div {...props} className={`list-item ${ props.className }`}>{props.children}</div>;
@@ -138,7 +140,7 @@ export default class ListControl extends Component {
     const { value, field, getAsset, onAddAsset, onRemoveAsset } = this.props;
     const { itemStates } = this.state;
     const collapsed = itemStates.getIn([index, 'collapsed']);
-    const classNames = [styles.item, collapsed ? styles.collapsed : styles.expanded];
+    const classNames = [styles("item"), collapsed ? styles("collapsed") : styles("expanded")];
 
     return (<SortableListItem
       key={index}
@@ -149,18 +151,18 @@ export default class ListControl extends Component {
       outline="list"
     >
       <div className={classNames.join(' ')}>
-        <button className={styles.toggleButton} onClick={this.handleToggle(index)}>
+        <button className={styles("toggleButton")} onClick={this.handleToggle(index)}>
           <FontIcon value={collapsed ? 'expand_more' : 'expand_less'} />
         </button>
-        <FontIcon value="drag_handle" className={styles.dragIcon} />
-        <button className={styles.removeButton} onClick={this.handleRemove(index)}>
+        <FontIcon value="drag_handle" className={styles("dragIcon")} />
+        <button className={styles("removeButton")} onClick={this.handleRemove(index)}>
           <FontIcon value="close" />
         </button>
-        <div className={styles.objectLabel}>{this.objectLabel(item)}</div>
+        <div className={styles("objectLabel")}>{this.objectLabel(item)}</div>
         <ObjectControl
           value={item}
           field={field}
-          className={styles.objectControl}
+          className={styles("objectControl")}
           onChange={this.handleChangeFor(index)}
           getAsset={getAsset}
           onAddAsset={onAddAsset}
@@ -176,9 +178,9 @@ export default class ListControl extends Component {
 
     return (<div id={forID}>
       {value && value.map((item, index) => this.renderItem(item, index))}
-      <button className={styles.addButton} onClick={this.handleAdd}>
-        <FontIcon value="add" className={styles.addButtonIcon} />
-        <span className={styles.addButtonText}>new {listLabel}</span>
+      <button className={styles("addButton")} onClick={this.handleAdd}>
+        <FontIcon value="add" className={styles("addButtonIcon")} />
+        <span className={styles("addButtonText")}>new {listLabel}</span>
       </button>
     </div>);
   }

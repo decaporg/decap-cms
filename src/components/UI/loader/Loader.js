@@ -1,6 +1,8 @@
 import React from 'react';
 import CSSTransition from 'react-transition-group/CSSTransition';
-import styles from './Loader.css';
+import { prefixer } from '../../../lib/styleHelper';
+
+const styles = prefixer('loader');
 
 export default class Loader extends React.Component {
 
@@ -30,15 +32,20 @@ export default class Loader extends React.Component {
     if (!children) {
       return null;
     } else if (typeof children == 'string') {
-      return <div className={styles.text}>{children}</div>;
+      return <div className={styles("text")}>{children}</div>;
     } else if (Array.isArray(children)) {
       this.setAnimation();
-      return (<div className={styles.text}>
+      return (<div className={styles("text")}>
         <CSSTransition
-          classNames={styles}
+          classNames={{
+            enter: styles('enter'),
+            enterActive: styles('enterActive'),
+            exit: styles('exit'),
+            exitActive: styles('exitActive'),
+          }}
           timeout={500}
         >
-          <div key={currentItem} className={styles.animateItem}>{children[currentItem]}</div>
+          <div key={currentItem} className={styles("animateItem")}>{children[currentItem]}</div>
         </CSSTransition>
       </div>);
     }
@@ -48,9 +55,9 @@ export default class Loader extends React.Component {
     const { active, style, className = '' } = this.props;
 
     // Class names
-    let classNames = styles.loader;
+    let classNames = styles("loader");
     if (active) {
-      classNames += ` ${ styles.active }`;
+      classNames += ` ${ styles("active") }`;
     }
     if (className.length > 0) {
       classNames += ` ${ className }`;

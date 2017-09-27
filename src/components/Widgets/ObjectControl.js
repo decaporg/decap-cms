@@ -2,8 +2,10 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Map } from 'immutable';
 import { resolveWidget } from '../Widgets';
-import controlStyles from '../ControlPanel/ControlPane.css';
-import styles from './ObjectControl.css';
+import { prefixer } from '../../lib/styleHelper';
+
+const controlStyles = prefixer('controlPane');
+const styles = prefixer('objectControl');
 
 export default class ObjectControl extends Component {
   static propTypes = {
@@ -36,9 +38,9 @@ export default class ObjectControl extends Component {
     const widget = resolveWidget(field.get('widget') || 'string');
     const fieldValue = value && Map.isMap(value) ? value.get(field.get('name')) : value;
 
-    return (<div className={controlStyles.widget} key={field.get('name')}>
-      <div className={controlStyles.control} key={field.get('name')}>
-        <label className={controlStyles.label} htmlFor={field.get('name')}>{field.get('label')}</label>
+    return (<div className={controlStyles("widget")} key={field.get('name')}>
+      <div className={controlStyles("control")} key={field.get('name')}>
+        <label className={controlStyles("label")} htmlFor={field.get('name')}>{field.get('label')}</label>
         {
           React.createElement(widget.control, {
             id: field.get('name'),
@@ -64,7 +66,7 @@ export default class ObjectControl extends Component {
     const className = this.props.className || '';
 
     if (multiFields) {
-      return (<div id={forID} className={`${ className } ${ styles.root }`}>
+      return (<div id={forID} className={`${ className } ${ styles("root") }`}>
         {multiFields.map(f => this.controlFor(f))}
       </div>);
     } else if (singleField) {

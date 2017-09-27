@@ -6,7 +6,9 @@ import { loadEntries } from '../actions/entries';
 import { selectEntries } from '../reducers';
 import { Loader } from '../components/UI';
 import EntryListing from '../components/EntryListing/EntryListing';
-import styles from "./CollectionPage.css";
+import { prefixer } from '../lib/styleHelper';
+
+const styles = prefixer('collectionPage');
 
 class CollectionPage extends React.Component {
 
@@ -58,7 +60,7 @@ class CollectionPage extends React.Component {
     const fetchingEntriesContent = (<Loader active>
         {['Loading Entries', 'Caching Entries', 'This might take several minutes']}
     </Loader>);
-    const noEntriesContent = <div className={styles.noEntries}>No Entries</div>;
+    const noEntriesContent = <div className={styles("noEntries")}>No Entries</div>;
     const fallbackContent = isFetching ? fetchingEntriesContent : noEntriesContent;
 
     return (<div>{entries ? entriesContent : fallbackContent}</div>);

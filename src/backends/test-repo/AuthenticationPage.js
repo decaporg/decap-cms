@@ -4,7 +4,9 @@ import Input from "react-toolbox/lib/input";
 import Button from "react-toolbox/lib/button";
 import { Card, Icon } from "../../components/UI";
 import logo from "../git-gateway/netlify_logo.svg";
-import styles from "../git-gateway/AuthenticationPage.css";
+import { prefixer } from '../../lib/styleHelper';
+
+const styles = prefixer('gitGatewayAuthenticationPage');
 
 export default class AuthenticationPage extends React.Component {
   static propTypes = {
@@ -23,10 +25,10 @@ export default class AuthenticationPage extends React.Component {
   };
 
   render() {
-    return (<section className={styles.root}>
-      <Card className={styles.card}>
+    return (<section className={styles("root")}>
+      <Card className={styles("card")}>
         <img src={logo} width={100} role="presentation" />
-        <p className={styles.message}>This is a demo, enter your email to start</p>
+        <p className={styles("message")}>This is a demo, enter your email to start</p>
         <Input
           type="text"
           label="Email"
@@ -35,7 +37,7 @@ export default class AuthenticationPage extends React.Component {
           onChange={this.handleEmailChange}
         />
         <Button
-          className={styles.button}
+          className={styles("button")}
           raised
           onClick={this.handleLogin}
         >

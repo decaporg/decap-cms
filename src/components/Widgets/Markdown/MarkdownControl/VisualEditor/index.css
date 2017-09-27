@@ -1,133 +1,138 @@
-@import "../../../../UI/theme";
+@import '../../../../UI/theme.css';
 
-.editorControlBar {
+.ncms-visualEditor-editorControlBar {
   z-index: 1;
   border: 2px solid transparent;
   border-top: 0;
   background-color: var(--controlBGColor);
 }
 
-.editorControlBarSticky {
+.ncms-visualEditor-editorControlBarSticky {
   border-color: var(--textFieldBorderColor);
 }
 
-.wrapper {
+.ncms-visualEditor-wrapper {
   position: relative;
 }
 
-.editor {
+.ncms-visualEditor-editor {
   position: relative;
   overflow: hidden;
   overflow-x: auto;
   min-height: var(--richTextEditorMinHeight);
   font-family: var(--fontFamily);
-
-  & h1 {
-    font-size: 32px;
-    margin-top: 16px;
-  }
-
-  & h2 {
-    font-size: 24px;
-    margin-top: 12px;
-  }
-
-  & h3 {
-    font-size: 20px;
-    margin-top: 8px;
-  }
-
-  & h4 {
-    font-size: 18px;
-    margin-top: 8px;
-  }
-
-  & h5,
-  & h6 {
-    font-size: 16px;
-    margin-top: 8px;
-  }
-
-  & h1, & h2, & h3, & h4, & h5, & h6 {
-    font-weight: 700;
-    line-height: 1;
-  }
-
-  & p,
-  & pre,
-  & blockquote,
-  & ul,
-  & ol {
-    margin-top: 16px;
-    margin-bottom: 16px;
-  }
-
-  & a {
-    text-decoration: underline;
-  }
-
-  & hr {
-    border: 1px solid;
-    margin-bottom: 16px;
-  }
-
-  & li > p {
-    margin: 0;
-  }
-
-  & ul,
-  & ol {
-    padding-left: 30px;
-  }
-
-  & pre {
-    white-space: pre-wrap;
-  }
-
-  & pre > code {
-    display: block;
-    width: 100%;
-    overflow-y: auto;
-    background-color: #000;
-    color: #ccc;
-    border-radius: var(--borderRadius);
-    padding: 10px;
-  }
-
-  & code {
-    background-color: var(--backgroundColorShaded);
-    border-radius: var(--borderRadius);
-    padding: 0 2px;
-    font-size: 85%;
-  }
-
-  & blockquote {
-    padding-left: 16px;
-    border-left: 3px solid var(--backgroundColorShaded);
-    margin-left: 0;
-    margin-right: 0;
-  }
-
-  & table {
-    border-collapse: collapse;
-  }
-
-  & td,
-  & th {
-    border: 2px solid black;
-    padding: 8px;
-    text-align: left;
-  }
 }
 
-.shortcode {
+.ncms-visualEditor-editor h1 {
+  font-size: 32px;
+  margin-top: 16px;
+}
+
+.ncms-visualEditor-editor h2 {
+  font-size: 24px;
+  margin-top: 12px;
+}
+
+.ncms-visualEditor-editor h3 {
+  font-size: 20px;
+  margin-top: 8px;
+}
+
+.ncms-visualEditor-editor h4 {
+  font-size: 18px;
+  margin-top: 8px;
+}
+
+.ncms-visualEditor-editor h5,
+.ncms-visualEditor-editor h6 {
+  font-size: 16px;
+  margin-top: 8px;
+}
+
+.ncms-visualEditor-editor h1,
+.ncms-visualEditor-editor h2,
+.ncms-visualEditor-editor h3,
+.ncms-visualEditor-editor h4,
+.ncms-visualEditor-editor h5,
+.ncms-visualEditor-editor h6 {
+  font-weight: 700;
+  line-height: 1;
+}
+
+.ncms-visualEditor-editor p,
+.ncms-visualEditor-editor pre,
+.ncms-visualEditor-editor blockquote,
+.ncms-visualEditor-editor ul,
+.ncms-visualEditor-editor ol {
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+.ncms-visualEditor-editor a {
+  text-decoration: underline;
+}
+
+.ncms-visualEditor-editor hr {
+  border: 1px solid;
+  margin-bottom: 16px;
+}
+
+.ncms-visualEditor-editor li > p {
+  margin: 0;
+}
+
+.ncms-visualEditor-editor ul,
+.ncms-visualEditor-editor ol {
+  padding-left: 30px;
+}
+
+.ncms-visualEditor-editor pre {
+  white-space: pre-wrap;
+}
+
+.ncms-visualEditor-editor pre > code {
+  display: block;
+  width: 100%;
+  overflow-y: auto;
+  background-color: #000;
+  color: #ccc;
+  border-radius: var(--borderRadius);
+  padding: 10px;
+}
+
+.ncms-visualEditor-editor code {
+  background-color: var(--backgroundColorShaded);
+  border-radius: var(--borderRadius);
+  padding: 0 2px;
+  font-size: 85%;
+}
+
+.ncms-visualEditor-editor blockquote {
+  padding-left: 16px;
+  border-left: 3px solid var(--backgroundColorShaded);
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.ncms-visualEditor-editor table {
+  border-collapse: collapse;
+}
+
+.ncms-visualEditor-editor td,
+.ncms-visualEditor-editor th {
+  border: 2px solid black;
+  padding: 8px;
+  text-align: left;
+}
+
+.ncms-visualEditor-shortcode {
   border: 2px solid black;
   padding: 8px;
   margin: 2px 0;
   cursor: pointer;
 }
 
-.shortcodeSelected {
+.ncms-visualEditor-shortcodeSelected {
   border-color: var(--primaryColor);
   color: var(--primaryColor);
 }

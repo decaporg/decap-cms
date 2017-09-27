@@ -1,6 +1,6 @@
-@import "../UI/theme";
+@import '../UI/theme.css';
 
-.root {
+.ncms-objectControl-root {
   position: relative;
   border: 2px solid rgba(0,0,0,0.1);
   border-radius: var(--borderRadius);

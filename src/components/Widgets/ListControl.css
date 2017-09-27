@@ -1,10 +1,10 @@
-@import "../UI/theme";
+@import '../UI/theme.css';
 
-:global(.list-item-dragging) {
+.list-item-dragging {
   opacity: 0.5;
 }
 
-.addButton {
+.ncms-listControl-addButton {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -16,16 +16,16 @@
   background-color: var(--controlBGColor);
 }
 
-.addButtonIcon {
+.ncms-listControl-addButtonIcon {
   font-size: 18px;
 }
 
-.addButtonText {
+.ncms-listControl-addButtonText {
   margin-left: 4px;
   text-transform: lowercase;
 }
 
-.removeButton {
+.ncms-listControl-removeButton {
   position: absolute;
   top: 2px;
   right: 2px;
@@ -38,7 +38,7 @@
   z-index: 1;
 }
 
-.toggleButton {
+.ncms-listControl-toggleButton {
   position: absolute;
   top: 0;
   left: 0;
@@ -51,13 +51,13 @@
   background: rgba(0,0,0,0.1);
 }
 
-.item {
+.ncms-listControl-item {
   position: relative;
   padding-left: 24px;
   cursor: move;
 }
 
-.objectLabel {
+.ncms-listControl-objectLabel {
   border: 2px solid rgba(0,0,0,0.1);
   border-top-width: 28px;
   border-radius: var(--borderRadius);
@@ -67,25 +67,24 @@
   display: none;
 }
 
-.objectControl {
+.ncms-listControl-objectControl {
   display: block;
   border-top: 28px solid rgba(0,0,0,0.1);
   border-top-left-radius: 0;
 }
 
-.expanded {
-}
+.ncms-listControl-expanded {}
 
-.collapsed {
-  & .objectLabel {
+.ncms-listControl-collapsed {
+  & .ncms-listControl-objectLabel {
     display: block;
   }
-  & .objectControl {
+  & .ncms-listControl-objectControl {
     display: none;
   }
 }
 
-.dragIcon {
+.ncms-listControl-dragIcon {
   position: absolute;
   top: 2px;
   display: block;

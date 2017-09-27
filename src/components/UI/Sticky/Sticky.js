@@ -2,7 +2,9 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import { partial, without } from 'lodash';
-import styles from './Sticky.css';
+import { prefixer } from '../../../lib/styleHelper';
+
+const styles = prefixer('sticky');
 
 /**
  * Sticky is a collection of three components meant to facilitate "sticky" UI
@@ -147,7 +149,7 @@ export class StickyContainer extends Component {
     return (
       <div
         id={this.context.string}
-        className={classnames(this.props.className, styles.stickyContainer)}
+        className={classnames(this.props.className, styles("stickyContainer"))}
         ref={(ref) => { this.ref = ref }}
       >
         {this.props.children}
@@ -206,11 +208,11 @@ export class Sticky extends Component {
         <div
           className={classnames(
             props.className,
-            styles.sticky,
+            styles("sticky"),
             {
-              [styles.stickyActive]: state.shouldStick,
+              [styles("stickyActive")]: state.shouldStick,
               [props.classNameActive]: state.shouldStick,
-              [styles.stickyAtBottom]: state.shouldStickAtBottom,
+              [styles("stickyAtBottom")]: state.shouldStickAtBottom,
             },
           )}
           style={

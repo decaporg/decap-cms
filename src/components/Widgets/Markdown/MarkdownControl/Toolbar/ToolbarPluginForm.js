@@ -3,7 +3,9 @@ import React from 'react';
 import { Map } from 'immutable';
 import { Button } from 'react-toolbox/lib/button';
 import ToolbarPluginFormControl from './ToolbarPluginFormControl';
-import styles from './ToolbarPluginForm.css';
+import { prefixer } from '../../../../../lib/styleHelper';
+
+const styles = prefixer('toolbarPluginForm');
 
 export default class ToolbarPluginForm extends React.Component {
   static propTypes = {
@@ -41,9 +43,9 @@ export default class ToolbarPluginForm extends React.Component {
     } = this.props;
 
     return (
-      <form className={styles.pluginForm} onSubmit={this.handleSubmit}>
-        <h3 className={styles.header}>Insert {plugin.get('label')}</h3>
-        <div className={styles.body}>
+      <form className={styles("pluginForm")} onSubmit={this.handleSubmit}>
+        <h3 className={styles("header")}>Insert {plugin.get('label')}</h3>
+        <div className={styles("body")}>
           {plugin.get('fields').map((field, index) => (
             <ToolbarPluginFormControl
               key={index}
@@ -58,7 +60,7 @@ export default class ToolbarPluginForm extends React.Component {
             />
           ))}
         </div>
-        <div className={styles.footer}>
+        <div className={styles("footer")}>
           <Button raised onClick={this.handleSubmit}>Insert</Button>
           {' '}
           <Button onClick={onCancel}>Cancel</Button>

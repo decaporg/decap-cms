@@ -11,7 +11,9 @@ import { MARK_COMPONENTS, NODE_COMPONENTS } from './components';
 import RULES from './rules';
 import plugins, { EditListConfigured } from './plugins';
 import onKeyDown from './keys';
-import styles from './index.css';
+import { prefixer } from '../../../../../lib/styleHelper';
+
+const styles = prefixer('visualEditor');
 
 export default class Editor extends Component {
   constructor(props) {
@@ -179,10 +181,10 @@ export default class Editor extends Component {
     const { onAddAsset, onRemoveAsset, getAsset } = this.props;
 
     return (
-      <div className={styles.wrapper}>
+      <div className={styles("wrapper")}>
         <Sticky
-          className={styles.editorControlBar}
-          classNameActive={styles.editorControlBarSticky}
+          className={styles("editorControlBar")}
+          classNameActive={styles("editorControlBarSticky")}
           fillContainerWidth
         >
           <Toolbar
@@ -207,7 +209,7 @@ export default class Editor extends Component {
           />
         </Sticky>
         <Slate
-          className={styles.editor}
+          className={styles("editor")}
           state={this.state.editorState}
           schema={this.state.schema}
           plugins={plugins}

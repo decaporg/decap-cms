@@ -4,7 +4,9 @@ import { connect } from 'react-redux';
 import ReactSidebar from 'react-sidebar';
 import _ from 'lodash';
 import { openSidebar } from '../actions/globalUI';
-import styles from './Sidebar.css';
+import { prefixer } from '../lib/styleHelper';
+
+const styles = prefixer('sidebar');
 
 class Sidebar extends React.Component {
 
@@ -43,8 +45,8 @@ class Sidebar extends React.Component {
     return (
       <ReactSidebar
         sidebar={content}
-        rootClassName={styles.root}
-        sidebarClassName={styles.sidebar}
+        rootClassName={styles("root")}
+        sidebarClassName={styles("sidebar")}
         docked={sidebarIsOpen && this.state.sidebarDocked} // ALWAYS can hide sidebar
         open={sidebarIsOpen}
         onSetOpen={openSidebar}

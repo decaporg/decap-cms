@@ -7,7 +7,9 @@ import history from '../../routing/history';
 import { resolvePath } from '../../lib/pathHelper';
 import { selectFields, selectInferedField } from '../../reducers/collections';
 import { Card } from '../UI';
-import styles from './EntryListing.css';
+import { prefixer } from '../../lib/styleHelper';
+
+const styles = prefixer('entryListing');
 
 export default class EntryListing extends React.Component {
   static propTypes = {
@@ -50,17 +52,17 @@ export default class EntryListing extends React.Component {
       <Card
         key={entry.get('slug')}
         onClick={history.push.bind(this, path)} // eslint-disable-line
-        className={styles.card}
+        className={styles("card")}
       >
         { image &&
-        <header className={styles.cardImage} style={{ backgroundImage: `url(${ image })` }} />
+        <header className={styles("cardImage")} style={{ backgroundImage: `url(${ image })` }} />
         }
         <h1>{title}</h1>
         {inferedFields.descriptionField ?
           <p>{entry.getIn(['data', inferedFields.descriptionField])}</p>
           : inferedFields.remainingFields && inferedFields.remainingFields.map(f => (
-            <p key={f.get('name')} className={styles.cardList}>
-              <span className={styles.cardListLabel}>{f.get('label')}:</span>{' '}
+            <p key={f.get('name')} className={styles("cardList")}>
+              <span className={styles("cardListLabel")}>{f.get('label')}:</span>{' '}
               { (entry.getIn(['data', f.get('name')]) || '').toString() }
             </p>
           ))
@@ -88,7 +90,7 @@ export default class EntryListing extends React.Component {
     return (
       <div>
         <h1>{children}</h1>
-        <div className={styles.cardsGrid}>
+        <div className={styles("cardsGrid")}>
           { this.renderCards() }
           <Waypoint onEnter={this.handleLoadMore} />
         </div>

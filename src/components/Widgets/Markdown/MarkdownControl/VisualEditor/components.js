@@ -1,7 +1,9 @@
 import React from 'react';
 import { List } from 'immutable';
 import cn from 'classnames';
-import styles from './index.css';
+import { prefixer } from '../../../../../lib/styleHelper';
+
+const styles = prefixer('visualEditor');
 
 /**
  * Slate uses React components to render each type of node that it receives.
@@ -62,7 +64,7 @@ export const NODE_COMPONENTS = {
   'shortcode': props => {
     const { attributes, node, state: editorState } = props;
     const isSelected = editorState.selection.hasFocusIn(node);
-    const className = cn(styles.shortcode, { [styles.shortcodeSelected]: isSelected });
+    const className = cn(styles("shortcode"), { [styles("shortcodeSelected")]: isSelected });
     return <div {...attributes} className={className} draggable >{node.data.get('shortcode')}</div>;
   },
 };

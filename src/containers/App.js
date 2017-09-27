@@ -26,8 +26,10 @@ import CollectionPage from './CollectionPage';
 import EntryPage from './EntryPage';
 import SearchPage from './SearchPage';
 import NotFoundPage from './NotFoundPage';
-import styles from './App.css';
-import sidebarStyles from './Sidebar.css';
+import { prefixer } from '../lib/styleHelper';
+
+const styles = prefixer('app');
+const sidebarStyles = prefixer('sidebar');
 
 TopBarProgress.config({
   barColors: {
@@ -137,26 +139,26 @@ class App extends React.Component {
 
     const sidebarContent = (
       <div>
-        <Navigation type="vertical" className={sidebarStyles.nav}>
+        <Navigation type="vertical" className={sidebarStyles("nav")}>
           {
             publishMode === SIMPLE ? null :
             <section>
-              <h1 className={sidebarStyles.heading}>Publishing</h1>
-              <div className={sidebarStyles.linkWrapper}>
-                <Link to="/" className={sidebarStyles.viewEntriesLink}>Editorial Workflow</Link>
+              <h1 className={sidebarStyles("heading")}>Publishing</h1>
+              <div className={sidebarStyles("linkWrapper")}>
+                <Link to="/" className={sidebarStyles("viewEntriesLink")}>Editorial Workflow</Link>
               </div>
             </section>
           }
           <section>
-            <h1 className={sidebarStyles.heading}>Collections</h1>
+            <h1 className={sidebarStyles("heading")}>Collections</h1>
             {
               collections.valueSeq().map((collection) => {
                 const collectionName = collection.get('name');
                 return (
-                  <div key={collectionName} className={sidebarStyles.linkWrapper}>
+                  <div key={collectionName} className={sidebarStyles("linkWrapper")}>
                     <a
                       href={getCollectionUrl(collectionName, true)}
-                      className={sidebarStyles.viewEntriesLink}
+                      className={sidebarStyles("viewEntriesLink")}
                       onClick={e => this.handleLinkClick(e, navigateToCollection, collectionName)}
                     >
                       {collection.get('label')}
@@ -165,7 +167,7 @@ class App extends React.Component {
                       collection.get('create') ? (
                         <a
                           href={getNewEntryUrl(collectionName, true)}
-                          className={sidebarStyles.createEntryLink}
+                          className={sidebarStyles("createEntryLink")}
                           onClick={e => this.handleLinkClick(e, createNewEntryInCollection, collectionName)}
                         >
                           <FontIcon value="add_circle_outline" />
@@ -193,7 +195,7 @@ class App extends React.Component {
             onLogoutClick={logoutUser}
             toggleDrawer={toggleSidebar}
           />
-          <div className={styles.entriesPanel}>
+          <div className={styles("entriesPanel")}>
             { isFetching && <TopBarProgress /> }
             <div>
               <Switch>

@@ -7,7 +7,10 @@ import ToolbarButton from './ToolbarButton';
 import ToolbarComponentsMenu from './ToolbarComponentsMenu';
 import ToolbarPluginForm from './ToolbarPluginForm';
 import { Icon } from '../../../../UI';
-import styles from './Toolbar.css';
+import { prefixer } from '../../../../../lib/styleHelper';
+
+const styles = prefixer('toolbar');
+const themeStyles = prefixer('theme');
 
 export default class Toolbar extends React.Component {
   static propTypes = {
@@ -71,7 +74,7 @@ export default class Toolbar extends React.Component {
     ];
 
     return (
-      <div className={styles.Toolbar}>
+      <div className={`${styles("Toolbar")} ${themeStyles("clearfix")}`}>
         { buttonsConfig.map((btn, i) => (
           <ToolbarButton
             key={i}
@@ -96,7 +99,7 @@ export default class Toolbar extends React.Component {
             getAsset={getAsset}
           />
         }
-        <Switch label="Markdown" onChange={onToggleMode} checked={rawMode} className={styles.Toggle}/>
+        <Switch label="Markdown" onChange={onToggleMode} checked={rawMode} className={styles("Toggle")}/>
       </div>
     );
   }

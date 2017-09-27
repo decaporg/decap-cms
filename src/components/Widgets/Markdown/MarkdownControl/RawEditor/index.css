@@ -1,18 +1,10 @@
-@import "../../../../UI/theme";
+@import '../../../../UI/theme.css';
 
-.rawWrapper {
+.ncms-rawEditor-rawWrapper {
   position: relative;
 }
 
-.editorControlBar {
-  composes: editorControlBar from "../VisualEditor/index.css";
-}
-
-.editorControlBarSticky {
-  composes: editorControlBarSticky from "../VisualEditor/index.css";
-}
-
-.rawEditor {
+.ncms-rawEditor-rawEditor {
   position: relative;
   overflow: hidden;
   overflow-x: auto;

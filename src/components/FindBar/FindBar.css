@@ -1,11 +1,11 @@
-@import '../UI/theme';
+@import '../UI/theme.css';
 
-.root {
+.ncms-findBar-root {
   flex: 1;
   background-color: var(--backgroundAltColor);
 }
 
-.inputField {
+.ncms-findBar-inputField {
   width: 100%;
   max-width: 500px;
   display: block;
