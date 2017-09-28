@@ -160,6 +160,8 @@
     "slate": "^0.24.0",
     "slate-edit-list": "^0.8.0",
     "slate-edit-table": "^0.11.0",
+    "slate-plain-serializer": "^0.1.10",
+    "slate-react": "^0.1.10",
     "slate-soft-break": "^0.4.0",
     "slug": "^0.9.1",
     "toml-j0.4": "^1.1.1",

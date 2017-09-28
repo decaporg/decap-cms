@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Editor as Slate, Plain } from 'slate';
+import { Editor as Slate } from 'slate-react';
+import Plain from 'slate-plain-serializer';
 import { debounce } from 'lodash';
 import Toolbar from '../Toolbar/Toolbar';
 import { Sticky } from '../../../../UI/Sticky/Sticky';

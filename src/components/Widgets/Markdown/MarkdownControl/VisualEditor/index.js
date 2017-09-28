@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { get, isEmpty, debounce } from 'lodash';
-import { Editor as Slate, State, Document, Block, Text } from 'slate';
+import { State, Document, Block, Text } from 'slate';
+import { Editor as Slate } from 'slate-react';
 import { slateToMarkdown, markdownToSlate, htmlToSlate } from '../../serializers';
 import registry from '../../../../../lib/registry';
 import Toolbar from '../Toolbar/Toolbar';
