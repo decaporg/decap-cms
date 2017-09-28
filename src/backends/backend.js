@@ -5,7 +5,7 @@ import GitGatewayBackend from "./git-gateway/implementation";
 import { resolveFormat } from "../formats/formats";
 import { selectListMethod, selectEntrySlug, selectEntryPath, selectAllowNewEntries, selectFolderEntryExtension } from "../reducers/collections";
 import { createEntry } from "../valueObjects/Entry";
-import slug from 'slug';
+import { urlize } from "../lib/urlHelper";
 
 class LocalStorageAuthStore {
   storageKey = "netlify-cms-user";
@@ -51,9 +51,9 @@ const slugFormatter = (template = "{{slug}}", entryData) => {
       case "day":
         return (`0${ date.getDate() }`).slice(-2);
       case "slug":
-        return slug(getIdentifier(entryData).trim(), {lower: true});
+        return urlize(getIdentifier(entryData).trim());
       default:
-        return slug(entryData.get(field, "").trim(), {lower: true});
+        return urlize(entryData.get(field, "").trim());
     }
   });
 };
