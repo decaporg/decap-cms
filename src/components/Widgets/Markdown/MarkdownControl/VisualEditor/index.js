@@ -135,9 +135,19 @@ export default class Editor extends Component {
     };
     const nodes = [Text.createFromString('')];
     const block = { kind: 'block', type: 'shortcode', data, isVoid: true, nodes };
-    const resolvedChange = editorState.change().insertBlock(block).focus();
-    this.ref.onChange(resolvedChange);
-    this.setState({ editorState: resolvedChange.state });
+    let change = editorState.change();
+    const { focusBlock } = change.state;
+
+    if (focusBlock.text === '') {
+      change = change.setNodeByKey(focusBlock.key, block);
+    } else {
+      change = change.insertBlock(block);
+    }
+
+    change = change.focus();
+
+    this.ref.onChange(change);
+    this.setState({ editorState: change.state });
   };
 
   handleToggle = () => {

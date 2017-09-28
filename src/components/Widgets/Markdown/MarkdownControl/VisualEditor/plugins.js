@@ -8,18 +8,15 @@ const SoftBreak = (options = {}) => ({
     if (data.key != 'enter') return;
     if (options.shift && e.shiftKey == false) return;
 
-    const { onlyIn, ignoreIn, closeAfter, unwrapBlocks, defaultBlock = 'paragraph' } = options;
+    const { onlyIn, ignoreIn, defaultBlock = 'paragraph' } = options;
     const { type, nodes } = change.state.startBlock;
     if (onlyIn && !onlyIn.includes(type)) return;
     if (ignoreIn && ignoreIn.includes(type)) return;
 
-    const shouldClose = nodes.last().characters.takeLast(closeAfter).every(c => c.text === '\n');
-    if (closeAfter && shouldClose) {
-      const trimmed = change.deleteBackward(closeAfter);
-      const unwrapped = unwrapBlocks
-        ? unwrapBlocks.reduce((acc, blockType) => acc.unwrapBlock(blockType), trimmed)
-        : trimmed;
-      return unwrapped.insertBlock(defaultBlock);
+    const shouldClose = nodes.last().characters.last() === '\n';
+    if (shouldClose) {
+      const trimmed = change.deleteBackward(1);
+      return trimmed.insertBlock(defaultBlock);
     }
 
     const textNode = Text.createFromString('\n');
@@ -33,7 +30,6 @@ const SoftBreak = (options = {}) => ({
 
 const SoftBreakOpts = {
   onlyIn: ['quote', 'code'],
-  closeAfter: 1
 };
 
 export const SoftBreakConfigured = SoftBreak(SoftBreakOpts);
@@ -67,11 +63,8 @@ const BackspaceCloseBlock = (options = {}) => ({
     if (onlyIn && !onlyIn.includes(type)) return;
     if (ignoreIn && ignoreIn.includes(type)) return;
 
-    const characters = startBlock.getFirstText().characters;
-    const isEmpty = !characters || characters.isEmpty();
-
-    if (isEmpty) {
-      return change.insertBlock(defaultBlock).focus();
+    if (startBlock.text === '') {
+      return change.setBlock(defaultBlock).focus();
     }
   }
 });
