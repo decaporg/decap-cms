@@ -10,7 +10,11 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "H1",
+          "ranges": Array [
+            Object {
+              "text": "H1",
+            },
+          ],
         },
       ],
       "type": "heading-one",
@@ -30,7 +34,11 @@ Object {
                 Object {
                   "data": undefined,
                   "kind": "text",
-                  "text": "yo",
+                  "ranges": Array [
+                    Object {
+                      "text": "yo",
+                    },
+                  ],
                 },
               ],
               "type": "paragraph",
@@ -47,7 +55,11 @@ Object {
                 Object {
                   "data": undefined,
                   "kind": "text",
-                  "text": "bro",
+                  "ranges": Array [
+                    Object {
+                      "text": "bro",
+                    },
+                  ],
                 },
               ],
               "type": "paragraph",
@@ -64,7 +76,11 @@ Object {
                 Object {
                   "data": undefined,
                   "kind": "text",
-                  "text": "fro",
+                  "ranges": Array [
+                    Object {
+                      "text": "fro",
+                    },
+                  ],
                 },
               ],
               "type": "paragraph",
@@ -90,7 +106,11 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "H1",
+          "ranges": Array [
+            Object {
+              "text": "H1",
+            },
+          ],
         },
       ],
       "type": "heading-one",
@@ -110,7 +130,11 @@ Object {
                 Object {
                   "data": undefined,
                   "kind": "text",
-                  "text": "yo",
+                  "ranges": Array [
+                    Object {
+                      "text": "yo",
+                    },
+                  ],
                 },
               ],
               "type": "paragraph",
@@ -127,7 +151,11 @@ Object {
                 Object {
                   "data": undefined,
                   "kind": "text",
-                  "text": "bro",
+                  "ranges": Array [
+                    Object {
+                      "text": "bro",
+                    },
+                  ],
                 },
               ],
               "type": "paragraph",
@@ -144,7 +172,11 @@ Object {
                 Object {
                   "data": undefined,
                   "kind": "text",
-                  "text": "fro",
+                  "ranges": Array [
+                    Object {
+                      "text": "fro",
+                    },
+                  ],
                 },
               ],
               "type": "paragraph",
@@ -173,7 +205,11 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "var a = 1;",
+          "ranges": Array [
+            Object {
+              "text": "var a = 1;",
+            },
+          ],
         },
       ],
       "type": "code",
@@ -193,7 +229,11 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "H1",
+          "ranges": Array [
+            Object {
+              "text": "H1",
+            },
+          ],
         },
       ],
       "type": "heading-one",
@@ -210,7 +250,11 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "blue moon",
+          "ranges": Array [
+            Object {
+              "text": "blue moon",
+            },
+          ],
         },
       ],
       "type": "paragraph",
@@ -230,7 +274,11 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "H1",
+          "ranges": Array [
+            Object {
+              "text": "H1",
+            },
+          ],
         },
       ],
       "type": "heading-one",
@@ -247,7 +295,11 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "blue moon",
+          "ranges": Array [
+            Object {
+              "text": "blue moon",
+            },
+          ],
         },
       ],
       "type": "paragraph",
@@ -267,7 +319,11 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "![super](duper.jpg)",
+          "ranges": Array [
+            Object {
+              "text": "![super](duper.jpg)",
+            },
+          ],
         },
       ],
       "type": "paragraph",
@@ -287,7 +343,11 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "Word",
+          "ranges": Array [
+            Object {
+              "text": "Word",
+            },
+          ],
         },
       ],
       "type": "heading-one",
@@ -298,7 +358,11 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "This is some sweet ",
+          "ranges": Array [
+            Object {
+              "text": "This is some sweet ",
+            },
+          ],
         },
         Object {
           "data": undefined,
@@ -317,7 +381,11 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "text": " yo!",
+          "ranges": Array [
+            Object {
+              "text": " yo!",
+            },
+          ],
         },
       ],
       "type": "paragraph",
@@ -337,7 +405,11 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "An exhibit of Markdown",
+          "ranges": Array [
+            Object {
+              "text": "An exhibit of Markdown",
+            },
+          ],
         },
       ],
       "type": "heading-one",
@@ -348,7 +420,11 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "This note demonstrates some of what Markdown is capable of doing.",
+          "ranges": Array [
+            Object {
+              "text": "This note demonstrates some of what Markdown is capable of doing.",
+            },
+          ],
         },
       ],
       "type": "paragraph",
@@ -380,7 +456,11 @@ automatically save itself.",
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "Basic formatting",
+          "ranges": Array [
+            Object {
+              "text": "Basic formatting",
+            },
+          ],
         },
       ],
       "type": "heading-two",
@@ -391,9 +471,13 @@ automatically save itself.",
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "Paragraphs can be written like so. A paragraph is the basic block of Markdown.
+          "ranges": Array [
+            Object {
+              "text": "Paragraphs can be written like so. A paragraph is the basic block of Markdown.
 A paragraph is what text will turn into when there is no reason it should
 become anything else.",
+            },
+          ],
         },
       ],
       "type": "paragraph",
@@ -404,7 +488,11 @@ become anything else.",
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "Paragraphs must be separated by a blank line. Basic formatting of ",
+          "ranges": Array [
+            Object {
+              "text": "Paragraphs must be separated by a blank line. Basic formatting of ",
+            },
+          ],
         },
         Object {
           "data": undefined,
@@ -423,8 +511,12 @@ become anything else.",
         Object {
           "data": undefined,
           "kind": "text",
-          "text": " and
+          "ranges": Array [
+            Object {
+              "text": " and
 ",
+            },
+          ],
         },
         Object {
           "data": undefined,
@@ -443,7 +535,11 @@ become anything else.",
         Object {
           "data": undefined,
           "kind": "text",
-          "text": " is supported. This ",
+          "ranges": Array [
+            Object {
+              "text": " is supported. This ",
+            },
+          ],
         },
         Object {
           "data": undefined,
@@ -481,7 +577,11 @@ become anything else.",
         Object {
           "data": undefined,
           "kind": "text",
-          "text": " so.",
+          "ranges": Array [
+            Object {
+              "text": " so.",
+            },
+          ],
         },
       ],
       "type": "paragraph",
@@ -492,7 +592,11 @@ become anything else.",
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "Lists",
+          "ranges": Array [
+            Object {
+              "text": "Lists",
+            },
+          ],
         },
       ],
       "type": "heading-two",
@@ -503,7 +607,11 @@ become anything else.",
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "Ordered list",
+          "ranges": Array [
+            Object {
+              "text": "Ordered list",
+            },
+          ],
         },
       ],
       "type": "heading-three",
@@ -523,7 +631,11 @@ become anything else.",
                 Object {
                   "data": undefined,
                   "kind": "text",
-                  "text": "Item 1 2. A second item 3. Number 3 4. Ⅳ",
+                  "ranges": Array [
+                    Object {
+                      "text": "Item 1 2. A second item 3. Number 3 4. Ⅳ",
+                    },
+                  ],
                 },
               ],
               "type": "paragraph",
@@ -560,7 +672,11 @@ become anything else.",
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "Unordered list",
+          "ranges": Array [
+            Object {
+              "text": "Unordered list",
+            },
+          ],
         },
       ],
       "type": "heading-three",
@@ -580,7 +696,11 @@ become anything else.",
                 Object {
                   "data": undefined,
                   "kind": "text",
-                  "text": "An item Another item Yet another item And there's more...",
+                  "ranges": Array [
+                    Object {
+                      "text": "An item Another item Yet another item And there's more...",
+                    },
+                  ],
                 },
               ],
               "type": "paragraph",
@@ -597,7 +717,11 @@ become anything else.",
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "Paragraph modifiers",
+          "ranges": Array [
+            Object {
+              "text": "Paragraph modifiers",
+            },
+          ],
         },
       ],
       "type": "heading-two",
@@ -608,7 +732,11 @@ become anything else.",
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "Code block",
+          "ranges": Array [
+            Object {
+              "text": "Code block",
+            },
+          ],
         },
       ],
       "type": "heading-three",
@@ -622,9 +750,13 @@ become anything else.",
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "Code blocks are very useful for developers and other people who look at
+          "ranges": Array [
+            Object {
+              "text": "Code blocks are very useful for developers and other people who look at
 code or other things that are written in plain text. As you can see, it
 uses a fixed-width font.",
+            },
+          ],
         },
       ],
       "type": "code",
@@ -635,7 +767,11 @@ uses a fixed-width font.",
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "You can also make ",
+          "ranges": Array [
+            Object {
+              "text": "You can also make ",
+            },
+          ],
         },
         Object {
           "data": undefined,
@@ -654,7 +790,11 @@ uses a fixed-width font.",
         Object {
           "data": undefined,
           "kind": "text",
-          "text": " to add code into other things.",
+          "ranges": Array [
+            Object {
+              "text": " to add code into other things.",
+            },
+          ],
         },
       ],
       "type": "paragraph",
@@ -665,7 +805,11 @@ uses a fixed-width font.",
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "Quote",
+          "ranges": Array [
+            Object {
+              "text": "Quote",
+            },
+          ],
         },
       ],
       "type": "heading-three",
@@ -679,8 +823,12 @@ uses a fixed-width font.",
             Object {
               "data": undefined,
               "kind": "text",
-              "text": "Here is a quote. What this is should be self explanatory. Quotes are
+              "ranges": Array [
+                Object {
+                  "text": "Here is a quote. What this is should be self explanatory. Quotes are
 automatically indented when they are used.",
+                },
+              ],
             },
           ],
           "type": "paragraph",
@@ -694,7 +842,11 @@ automatically indented when they are used.",
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "Headings",
+          "ranges": Array [
+            Object {
+              "text": "Headings",
+            },
+          ],
         },
       ],
       "type": "heading-two",
@@ -705,9 +857,13 @@ automatically indented when they are used.",
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "There are six levels of headings. They correspond with the six levels of HTML
+          "ranges": Array [
+            Object {
+              "text": "There are six levels of headings. They correspond with the six levels of HTML
 headings. You've probably noticed them already in the page. Each level down
 uses one more hash character.",
+            },
+          ],
         },
       ],
       "type": "paragraph",
@@ -718,7 +874,11 @@ uses one more hash character.",
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "Headings ",
+          "ranges": Array [
+            Object {
+              "text": "Headings ",
+            },
+          ],
         },
         Object {
           "data": undefined,
@@ -737,7 +897,11 @@ uses one more hash character.",
         Object {
           "data": undefined,
           "kind": "text",
-          "text": " also contain ",
+          "ranges": Array [
+            Object {
+              "text": " also contain ",
+            },
+          ],
         },
         Object {
           "data": undefined,
@@ -762,7 +926,11 @@ uses one more hash character.",
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "They can even contain ",
+          "ranges": Array [
+            Object {
+              "text": "They can even contain ",
+            },
+          ],
         },
         Object {
           "data": undefined,
@@ -787,8 +955,12 @@ uses one more hash character.",
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "Of course, demonstrating what headings look like messes up the structure of the
+          "ranges": Array [
+            Object {
+              "text": "Of course, demonstrating what headings look like messes up the structure of the
 page.",
+            },
+          ],
         },
       ],
       "type": "paragraph",
@@ -799,10 +971,14 @@ page.",
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "I don't recommend using more than three or four levels of headings here,
+          "ranges": Array [
+            Object {
+              "text": "I don't recommend using more than three or four levels of headings here,
 because, when you're smallest heading isn't too small, and you're largest
 heading isn't too big, and you want each size up to look noticeably larger and
 more important, there there are only so many sizes that you can use.",
+            },
+          ],
         },
       ],
       "type": "paragraph",
@@ -813,7 +989,11 @@ more important, there there are only so many sizes that you can use.",
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "URLs",
+          "ranges": Array [
+            Object {
+              "text": "URLs",
+            },
+          ],
         },
       ],
       "type": "heading-two",
@@ -824,7 +1004,11 @@ more important, there there are only so many sizes that you can use.",
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "URLs can be made in a handful of ways:",
+          "ranges": Array [
+            Object {
+              "text": "URLs can be made in a handful of ways:",
+            },
+          ],
         },
       ],
       "type": "paragraph",
@@ -844,7 +1028,11 @@ more important, there there are only so many sizes that you can use.",
                 Object {
                   "data": undefined,
                   "kind": "text",
-                  "text": "A named link to MarkItDown. The easiest way to do these is to select what you",
+                  "ranges": Array [
+                    Object {
+                      "text": "A named link to MarkItDown. The easiest way to do these is to select what you",
+                    },
+                  ],
                 },
               ],
               "type": "paragraph",
@@ -861,7 +1049,11 @@ more important, there there are only so many sizes that you can use.",
                 Object {
                   "data": undefined,
                   "kind": "text",
-                  "text": "want to make a link and hit ",
+                  "ranges": Array [
+                    Object {
+                      "text": "want to make a link and hit ",
+                    },
+                  ],
                 },
                 Object {
                   "data": undefined,
@@ -880,7 +1072,11 @@ more important, there there are only so many sizes that you can use.",
                 Object {
                   "data": undefined,
                   "kind": "text",
-                  "text": ".  Another named link to",
+                  "ranges": Array [
+                    Object {
+                      "text": ".  Another named link to",
+                    },
+                  ],
                 },
               ],
               "type": "paragraph",
@@ -904,7 +1100,11 @@ more important, there there are only so many sizes that you can use.",
                     Object {
                       "data": undefined,
                       "kind": "text",
-                      "text": "MarkItDown",
+                      "ranges": Array [
+                        Object {
+                          "text": "MarkItDown",
+                        },
+                      ],
                     },
                   ],
                   "type": "link",
@@ -912,7 +1112,11 @@ more important, there there are only so many sizes that you can use.",
                 Object {
                   "data": undefined,
                   "kind": "text",
-                  "text": " Sometimes you just want a URL like",
+                  "ranges": Array [
+                    Object {
+                      "text": " Sometimes you just want a URL like",
+                    },
+                  ],
                 },
               ],
               "type": "paragraph",
@@ -936,7 +1140,11 @@ more important, there there are only so many sizes that you can use.",
                     Object {
                       "data": undefined,
                       "kind": "text",
-                      "text": "http://www.markitdown.net/",
+                      "ranges": Array [
+                        Object {
+                          "text": "http://www.markitdown.net/",
+                        },
+                      ],
                     },
                   ],
                   "type": "link",
@@ -944,7 +1152,11 @@ more important, there there are only so many sizes that you can use.",
                 Object {
                   "data": undefined,
                   "kind": "text",
-                  "text": ".",
+                  "ranges": Array [
+                    Object {
+                      "text": ".",
+                    },
+                  ],
                 },
               ],
               "type": "paragraph",
@@ -961,7 +1173,11 @@ more important, there there are only so many sizes that you can use.",
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "Horizontal rule",
+          "ranges": Array [
+            Object {
+              "text": "Horizontal rule",
+            },
+          ],
         },
       ],
       "type": "heading-two",
@@ -972,7 +1188,11 @@ more important, there there are only so many sizes that you can use.",
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "A horizontal rule is a line that goes across the middle of the page.",
+          "ranges": Array [
+            Object {
+              "text": "A horizontal rule is a line that goes across the middle of the page.",
+            },
+          ],
         },
       ],
       "type": "paragraph",
@@ -989,7 +1209,11 @@ more important, there there are only so many sizes that you can use.",
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "It's sometimes handy for breaking things up.",
+          "ranges": Array [
+            Object {
+              "text": "It's sometimes handy for breaking things up.",
+            },
+          ],
         },
       ],
       "type": "paragraph",
@@ -1000,7 +1224,11 @@ more important, there there are only so many sizes that you can use.",
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "Images",
+          "ranges": Array [
+            Object {
+              "text": "Images",
+            },
+          ],
         },
       ],
       "type": "heading-two",
@@ -1011,7 +1239,11 @@ more important, there there are only so many sizes that you can use.",
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "Markdown can also contain images. I'll need to add something here sometime.",
+          "ranges": Array [
+            Object {
+              "text": "Markdown can also contain images. I'll need to add something here sometime.",
+            },
+          ],
         },
       ],
       "type": "paragraph",
@@ -1022,7 +1254,11 @@ more important, there there are only so many sizes that you can use.",
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "Finally",
+          "ranges": Array [
+            Object {
+              "text": "Finally",
+            },
+          ],
         },
       ],
       "type": "heading-two",
@@ -1033,10 +1269,14 @@ more important, there there are only so many sizes that you can use.",
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "There's actually a lot more to Markdown than this. See the official
+          "ranges": Array [
+            Object {
+              "text": "There's actually a lot more to Markdown than this. See the official
 introduction and syntax for more information. However, be aware that this is
 not using the official implementation, and this might work subtly differently
   in some of the little things.",
+            },
+          ],
         },
       ],
       "type": "paragraph",
@@ -1056,7 +1296,11 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "Word",
+          "ranges": Array [
+            Object {
+              "text": "Word",
+            },
+          ],
         },
       ],
       "type": "heading-one",
@@ -1067,7 +1311,11 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "How far is it to ",
+          "ranges": Array [
+            Object {
+              "text": "How far is it to ",
+            },
+          ],
         },
         Object {
           "data": Object {
@@ -1079,7 +1327,11 @@ Object {
             Object {
               "data": undefined,
               "kind": "text",
-              "text": "Google",
+              "ranges": Array [
+                Object {
+                  "text": "Google",
+                },
+              ],
             },
           ],
           "type": "link",
@@ -1087,7 +1339,11 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "text": " land?",
+          "ranges": Array [
+            Object {
+              "text": " land?",
+            },
+          ],
         },
       ],
       "type": "paragraph",
@@ -1107,7 +1363,11 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "H1",
+          "ranges": Array [
+            Object {
+              "text": "H1",
+            },
+          ],
         },
       ],
       "type": "heading-one",
@@ -1118,7 +1378,11 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "H2",
+          "ranges": Array [
+            Object {
+              "text": "H2",
+            },
+          ],
         },
       ],
       "type": "heading-two",
@@ -1129,7 +1393,11 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "H3",
+          "ranges": Array [
+            Object {
+              "text": "H3",
+            },
+          ],
         },
       ],
       "type": "heading-three",
@@ -1149,7 +1417,11 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "Word",
+          "ranges": Array [
+            Object {
+              "text": "Word",
+            },
+          ],
         },
       ],
       "type": "heading-one",
@@ -1160,7 +1432,11 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "This is ",
+          "ranges": Array [
+            Object {
+              "text": "This is ",
+            },
+          ],
         },
         Object {
           "data": undefined,
@@ -1204,7 +1480,11 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "perhaps ",
+          "ranges": Array [
+            Object {
+              "text": "perhaps ",
+            },
+          ],
         },
         Object {
           "data": undefined,
@@ -1223,7 +1503,11 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "text": " even",
+          "ranges": Array [
+            Object {
+              "text": " even",
+            },
+          ],
         },
       ],
       "type": "paragraph",
@@ -1243,7 +1527,11 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "![test](test.png)",
+          "ranges": Array [
+            Object {
+              "text": "![test](test.png)",
+            },
+          ],
         },
       ],
       "type": "paragraph",
@@ -1254,7 +1542,11 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "{{< test >}}",
+          "ranges": Array [
+            Object {
+              "text": "{{< test >}}",
+            },
+          ],
         },
       ],
       "type": "paragraph",
@@ -1274,7 +1566,11 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "H1",
+          "ranges": Array [
+            Object {
+              "text": "H1",
+            },
+          ],
         },
       ],
       "type": "heading-one",
@@ -1285,7 +1581,11 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "sweet body",
+          "ranges": Array [
+            Object {
+              "text": "sweet body",
+            },
+          ],
         },
       ],
       "type": "paragraph",
@@ -1305,7 +1605,11 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "blue moon",
+          "ranges": Array [
+            Object {
+              "text": "blue moon",
+            },
+          ],
         },
         Object {
           "kind": "inline",
@@ -1313,8 +1617,12 @@ Object {
             Object {
               "data": undefined,
               "kind": "text",
-              "text": "
+              "ranges": Array [
+                Object {
+                  "text": "
 ",
+                },
+              ],
             },
           ],
           "type": "break",
@@ -1322,7 +1630,11 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "text": "footballs",
+          "ranges": Array [
+            Object {
+              "text": "footballs",
+            },
+          ],
         },
       ],
       "type": "paragraph",
