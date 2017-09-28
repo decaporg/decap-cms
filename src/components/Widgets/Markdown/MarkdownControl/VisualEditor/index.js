@@ -44,13 +44,6 @@ export default class Editor extends Component {
     return change.insertFragment(doc);
   }
 
-  handleDocumentChange = debounce((doc, change) => {
-    const raw = Raw.serialize(change.state, { terse: true });
-    const plugins = this.state.shortcodePlugins;
-    const markdown = slateToMarkdown(raw, plugins);
-    this.props.onChange(markdown);
-  }, 150);
-
   hasMark = type => this.state.editorState.marks.some(mark => mark.type === type);
   hasBlock = type => this.state.editorState.blocks.some(node => node.type === type);
 
@@ -155,7 +148,17 @@ export default class Editor extends Component {
     return { onAction: e => handler(e, type), active: isActive(type) };
   };
 
+  handleDocumentChange = debounce(change => {
+    const raw = change.state.document.toJSON({ terse: true });
+    const plugins = this.state.shortcodePlugins;
+    const markdown = slateToMarkdown(raw, plugins);
+    this.props.onChange(markdown);
+  }, 150);
+
   handleChange = change => {
+    if (!this.state.editorState.document.equals(change.state.document)) {
+      this.handleDocumentChange(change);
+    }
     this.setState({ editorState: change.state });
   };
 
@@ -196,7 +199,6 @@ export default class Editor extends Component {
           schema={this.state.schema}
           plugins={plugins}
           onChange={this.handleChange}
-          onDocumentChange={this.handleDocumentChange}
           onKeyDown={onKeyDown}
           onPaste={this.handlePaste}
           ref={ref => this.ref = ref}
