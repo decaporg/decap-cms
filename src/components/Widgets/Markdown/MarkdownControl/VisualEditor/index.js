@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { get, isEmpty, debounce } from 'lodash';
-import { Editor as Slate, Raw, Block, Text } from 'slate';
+import { Editor as Slate, State, Document, Block, Text } from 'slate';
 import { slateToMarkdown, markdownToSlate, htmlToSlate } from '../../serializers';
 import registry from '../../../../../lib/registry';
 import Toolbar from '../Toolbar/Toolbar';
@@ -19,7 +19,8 @@ export default class Editor extends Component {
     const emptyRawDoc = { nodes: [emptyBlock] };
     const rawDoc = this.props.value && markdownToSlate(this.props.value);
     const rawDocHasNodes = !isEmpty(get(rawDoc, 'nodes'))
-    const editorState = Raw.deserialize(rawDocHasNodes ? rawDoc : emptyRawDoc, { terse: true });
+    const document = Document.fromJSON(rawDocHasNodes ? rawDoc : emptyRawDoc, { terse: true });
+    const editorState = State.create({ document });
     this.state = {
       editorState,
       schema: {
@@ -40,7 +41,7 @@ export default class Editor extends Component {
       return;
     }
     const ast = htmlToSlate(data.html);
-    const { document: doc } = Raw.deserialize(ast, { terse: true });
+    const doc = Document.fromJSON(ast, { terse: true });
     return change.insertFragment(doc);
   }
 
