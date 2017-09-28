@@ -16,7 +16,7 @@ import styles from './index.css';
 export default class Editor extends Component {
   constructor(props) {
     super(props);
-    const emptyText = Text.createFromString('');
+    const emptyText = Text.create('');
     const emptyBlock = Block.create({ kind: 'block', type: 'paragraph', nodes: [ emptyText ] });
     const emptyRawDoc = { nodes: [emptyBlock] };
     const rawDoc = this.props.value && markdownToSlate(this.props.value);
@@ -133,7 +133,7 @@ export default class Editor extends Component {
       shortcode: plugin.id,
       shortcodeData,
     };
-    const nodes = [Text.createFromString('')];
+    const nodes = [Text.create('')];
     const block = { kind: 'block', type: 'shortcode', data, isVoid: true, nodes };
     let change = editorState.change();
     const { focusBlock } = change.state;

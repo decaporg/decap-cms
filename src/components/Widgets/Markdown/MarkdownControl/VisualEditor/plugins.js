@@ -19,7 +19,7 @@ const SoftBreak = (options = {}) => ({
       return trimmed.insertBlock(defaultBlock);
     }
 
-    const textNode = Text.createFromString('\n');
+    const textNode = Text.create('\n');
     const breakNode = Inline.create({ type: 'break', nodes: [ textNode ] });
     return change
       .insertInline(breakNode)

@@ -6,7 +6,7 @@ function onKeyDown(e, data, change) {
   const createDefaultBlock = () => {
     return Block.create({
       type: 'paragraph',
-      nodes: [Text.createFromString('')]
+      nodes: [Text.create('')]
     });
   };
   if (data.key === 'enter') {

@@ -18,7 +18,7 @@ const enforceNeverEmpty = {
   normalize: change => {
     const block = Block.create({
       type: 'paragraph',
-      nodes: [Text.createFromString('')],
+      nodes: [Text.create('')],
     });
     const { key } = change.state.document;
     return change.insertNodeByKey(key, 0, block).focus();
