@@ -43,7 +43,7 @@ function makePathSanitized(string, { pathToLower = true, removePathAccents = fal
 }
 
 function makePath(string) {
-  return unicodeSanitize(string.trim().replace(/[ ]/g, '-'));
+  return unicodeSanitize(string.trim().replace(/[\s]/g, '-'));
 }
 
 function unicodeSanitize(string) {
