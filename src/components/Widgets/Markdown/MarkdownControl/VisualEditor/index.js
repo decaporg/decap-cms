@@ -16,7 +16,8 @@ import styles from './index.css';
 export default class Editor extends Component {
   constructor(props) {
     super(props);
-    const emptyBlock = Block.create({ kind: 'block', type: 'paragraph'});
+    const emptyText = Text.createFromString('');
+    const emptyBlock = Block.create({ kind: 'block', type: 'paragraph', nodes: [ emptyText ] });
     const emptyRawDoc = { nodes: [emptyBlock] };
     const rawDoc = this.props.value && markdownToSlate(this.props.value);
     const rawDocHasNodes = !isEmpty(get(rawDoc, 'nodes'))
