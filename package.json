@@ -157,7 +157,7 @@
     "remark-stringify": "^3.0.1",
     "sanitize-filename": "^1.6.1",
     "semaphore": "^1.0.5",
-    "slate": "^0.23.0",
+    "slate": "^0.24.0",
     "slate-edit-list": "^0.8.0",
     "slate-edit-table": "^0.11.0",
     "slate-soft-break": "^0.4.0",
