@@ -435,7 +435,9 @@ function convertNode(node, children, shortcodePlugins) {
      * value and the "lang" data property to the new MDAST node.
      */
     case 'code': {
-      const value = get(node.nodes, [0, 'text']);
+      const value = flatMap(node.nodes, child => {
+        return flatMap(child.ranges, 'text');
+      }).join('');
       const { lang, ...data } = get(node, 'data', {});
       return u(typeMap[node.type], { lang, data }, value);
     }
