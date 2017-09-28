@@ -19,7 +19,7 @@ export default class Editor extends Component {
     const emptyRawDoc = { nodes: [emptyBlock] };
     const rawDoc = this.props.value && markdownToSlate(this.props.value);
     const rawDocHasNodes = !isEmpty(get(rawDoc, 'nodes'))
-    const document = Document.fromJSON(rawDocHasNodes ? rawDoc : emptyRawDoc, { terse: true });
+    const document = Document.fromJSON(rawDocHasNodes ? rawDoc : emptyRawDoc);
     const editorState = State.create({ document });
     this.state = {
       editorState,
@@ -41,7 +41,7 @@ export default class Editor extends Component {
       return;
     }
     const ast = htmlToSlate(data.html);
-    const doc = Document.fromJSON(ast, { terse: true });
+    const doc = Document.fromJSON(ast);
     return change.insertFragment(doc);
   }
 
@@ -150,7 +150,7 @@ export default class Editor extends Component {
   };
 
   handleDocumentChange = debounce(change => {
-    const raw = change.state.document.toJSON({ terse: true });
+    const raw = change.state.document.toJSON();
     const plugins = this.state.shortcodePlugins;
     const markdown = slateToMarkdown(raw, plugins);
     this.props.onChange(markdown);
