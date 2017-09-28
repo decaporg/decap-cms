@@ -7523,6 +7523,12 @@ remark-stringify@^3.0.1:
     unherit "^1.0.4"
     xtend "^4.0.1"
 
+remove-nonspacing@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/remove-nonspacing/-/remove-nonspacing-0.2.0.tgz#2f02063d657aeafc7b9e302ab9fff36165411791"
+  dependencies:
+    unicode-tables "^10.0.0"
+
 remove-trailing-separator@^1.0.1:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/remove-trailing-separator/-/remove-trailing-separator-1.1.0.tgz#c24bce2a283adad5bc3f58e0d48249b92379d8ef"
@@ -8766,6 +8772,9 @@ unherit@^1.0.4:
     inherits "^2.0.1"
     xtend "^4.0.1"
 
+unicode-tables@^10.0.0:
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/unicode-tables/-/unicode-tables-10.0.0.tgz#d49680fcfe362d39e5b862b23874490d35110f9c"
 
 unified@^6.1.4:
   version "6.1.5"
