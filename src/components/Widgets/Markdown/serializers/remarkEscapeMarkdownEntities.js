@@ -1,4 +1,4 @@
-import { flow, partial, flatMap, flatten, map } from 'lodash';
+import { has, flow, partial, flatMap, flatten, map } from 'lodash';
 import { joinPatternSegments, combinePatterns, replaceWhen } from '../../../../lib/regexHelper';
 
 /**
@@ -248,6 +248,12 @@ function escape(delim) {
  */
 export default function remarkEscapeMarkdownEntities() {
   const transform = (node, index) => {
+    /**
+     * Shortcode nodes will intentionally inject markdown entities in text node
+     * children not be escaped.
+     */
+    if (has(node.data, 'shortcode')) return node;
+
     const children = node.children && node.children.map(transform);
 
     /**
