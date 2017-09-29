@@ -22,16 +22,14 @@ export default class RawEditor extends React.Component {
     this.setState({ editorState });
   }
 
-  onChange = debounce(this.props.onChange, 250);
-
   /**
    * When the document value changes, serialize from Slate's AST back to plain
    * text (which is Markdown) and pass that up as the new value.
    */
-  handleDocumentChange = (doc, editorState) => {
+  handleDocumentChange = debounce((doc, editorState) => {
     const value = Plain.serialize(editorState);
-    this.onChange(value);
-  };
+    this.props.onChange(value);
+  }, 150);
 
   /**
    * If a paste contains plain text, deserialize it to Slate's AST and insert
