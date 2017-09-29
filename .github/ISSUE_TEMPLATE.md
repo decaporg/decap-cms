@@ -27,4 +27,5 @@ You do NOT have to include this information if this is a FEATURE REQUEST
 
 **- What is the expected behavior?**
 
-**- Please mention your node.js, and operating system version.**
+**- Please mention your CMS, node.js, and operating system version.**
+<!-- You can find the CMS version by checking your web browser's developer tools console while in the CMS. -->
