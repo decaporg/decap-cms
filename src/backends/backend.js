@@ -51,9 +51,9 @@ const slugFormatter = (template = "{{slug}}", entryData) => {
       case "day":
         return (`0${ date.getDate() }`).slice(-2);
       case "slug":
-        return urlize(getIdentifier(entryData).trim(), {removePathAccents: true});
+        return urlize(getIdentifier(entryData).trim());
       default:
-        return urlize(entryData.get(field, "").trim(), {removePathAccents: true});
+        return urlize(entryData.get(field, "").trim());
     }
   });
 };
