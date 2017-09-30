@@ -56,6 +56,7 @@ const slugFormatter = (template = "{{slug}}", entryData) => {
         return urlize(entryData.get(field, "").trim());
     }
   });
+  //test
 };
 
 class Backend {
