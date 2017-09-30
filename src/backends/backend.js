@@ -51,9 +51,9 @@ const slugFormatter = (template = "{{slug}}", entryData) => {
       case "day":
         return (`0${ date.getDate() }`).slice(-2);
       case "slug":
-        return sanitize(getIdentifier(entryData).trim().toLowerCase(), {replacement: "-"});
+        return sanitize(getIdentifier(entryData).trim().toLowerCase(), {replacement: "-"}).replace('.', '-');
       default:
-        return sanitize(entryData.get(field, "").trim().toLowerCase(), {replacement: "-"});
+        return sanitize(entryData.get(field, "").trim().toLowerCase(), {replacement: "-"}).replace('.', '-');
     }
   });
 };
