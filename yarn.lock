@@ -7457,6 +7457,12 @@ remark-stringify@^3.0.1:
     unherit "^1.0.4"
     xtend "^4.0.1"
 
+remove-nonspacing@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/remove-nonspacing/-/remove-nonspacing-0.2.0.tgz#2f02063d657aeafc7b9e302ab9fff36165411791"
+  dependencies:
+    unicode-tables "^10.0.0"
+
 remove-trailing-separator@^1.0.1:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/remove-trailing-separator/-/remove-trailing-separator-1.1.0.tgz#c24bce2a283adad5bc3f58e0d48249b92379d8ef"
@@ -7885,12 +7891,6 @@ slate@^0.21.0:
 slice-ansi@0.0.4:
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/slice-ansi/-/slice-ansi-0.0.4.tgz#edbf8903f66f7ce2f8eafd6ceed65e264c831b35"
-
-slug@^0.9.1:
-  version "0.9.1"
-  resolved "https://registry.yarnpkg.com/slug/-/slug-0.9.1.tgz#af08f608a7c11516b61778aa800dce84c518cfda"
-  dependencies:
-    unicode ">= 0.3.1"
 
 sntp@1.x.x:
   version "1.0.9"
@@ -8698,9 +8698,9 @@ unherit@^1.0.4:
     inherits "^2.0.1"
     xtend "^4.0.1"
 
-"unicode@>= 0.3.1":
-  version "9.0.1"
-  resolved "https://registry.yarnpkg.com/unicode/-/unicode-9.0.1.tgz#104706272c6464c574801be1b086f7245cf25158"
+unicode-tables@^10.0.0:
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/unicode-tables/-/unicode-tables-10.0.0.tgz#d49680fcfe362d39e5b862b23874490d35110f9c"
 
 unified@^6.1.4:
   version "6.1.5"
