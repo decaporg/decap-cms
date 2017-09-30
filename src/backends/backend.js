@@ -42,7 +42,7 @@ const slugFormatter = (template = "{{slug}}", entryData) => {
     return identifier;
   };
 
-  return template.replace(/\{\{([^\}]+)\}\}/g, (_, field) => {
+  let slug = template.replace(/\{\{([^\}]+)\}\}/g, (_, field) => {
     switch (field) {
       case "year":
         return date.getFullYear();
@@ -51,11 +51,13 @@ const slugFormatter = (template = "{{slug}}", entryData) => {
       case "day":
         return (`0${ date.getDate() }`).slice(-2);
       case "slug":
-        return sanitize(getIdentifier(entryData).trim().toLowerCase(), {replacement: "-"}).replace(/[\.\s]/g, '-');
+        return getIdentifier(entryData).trim();
       default:
-        return sanitize(entryData.get(field, "").trim().toLowerCase(), {replacement: "-"}).replace(/[\.\s]/g, '-');
+        return entryData.get(field, "").trim();
     }
   });
+
+  return sanitize(slug, {replacement: "-"}).replace(/[.]/g, '-');
 };
 
 class Backend {
