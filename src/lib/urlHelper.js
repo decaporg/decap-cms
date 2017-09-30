@@ -31,7 +31,7 @@ export function urlize(string, options) {
   return url.format(parsedURL);
 }
 
-function makePathSanitized(string, { pathToLower = true, removePathAccents = false }) {
+function makePathSanitized(string, { pathToLower = true, removePathAccents = false } = {}) {
   let result = makePath(string);
   if (removePathAccents) {
     result = removeAccents(result);
