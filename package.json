@@ -40,6 +40,9 @@
       "^.+\\.(png|eot|woff|woff2|ttf|svg|gif)$": "<rootDir>/__mocks__/fileLoaderMock.js",
       "^.+\\.s?css$": "<rootDir>/__mocks__/styleLoaderMock.js"
     },
+    "setupFiles": [
+      "./setupTests.js"
+    ],
     "mapCoverage": true,
     "coverageReporters": [
       "lcov"
@@ -78,7 +81,8 @@
     "cross-env": "^5.0.2",
     "css-loader": "^0.28.7",
     "deep-equal": "^1.0.1",
-    "enzyme": "^2.4.1",
+    "enzyme": "^3.0.0",
+    "enzyme-adapter-react-15": "^1.0.0",
     "eslint": "^3.7.1",
     "eslint-config-netlify": "github:netlify/eslint-config-netlify",
     "eslint-import-resolver-webpack": "^0.8.3",
@@ -95,6 +99,7 @@
     "postcss-import": "^10.0.0",
     "postcss-loader": "^2.0.5",
     "react-addons-test-utils": "^15.4.2",
+    "react-test-renderer": "^15.5.0",
     "style-loader": "^0.18.2",
     "stylefmt": "^4.3.1",
     "stylelint": "^7.9.0",
@@ -127,10 +132,10 @@
     "moment": "^2.11.2",
     "normalize.css": "^4.2.0",
     "prop-types": "^15.5.10",
-    "react": "^15.1.0",
+    "react": "^15.5.0",
     "react-autosuggest": "^7.0.1",
     "react-datetime": "^2.6.0",
-    "react-dom": "^15.1.0",
+    "react-dom": "^15.5.0",
     "react-frame-component": "^1.0.3",
     "react-hot-loader": "^3.0.0-beta.7",
     "react-immutable-proptypes": "^2.1.0",
