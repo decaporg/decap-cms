@@ -41,9 +41,15 @@
       "^.+\\.s?css$": "<rootDir>/__mocks__/styleLoaderMock.js"
     },
     "mapCoverage": true,
-    "coverageReporters": ["lcov"],
-    "collectCoverageFrom": [ "src/**/*.js" ],
-    "coveragePathIgnorePatterns": [ "/__tests__/" ]
+    "coverageReporters": [
+      "lcov"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.js"
+    ],
+    "coveragePathIgnorePatterns": [
+      "/__tests__/"
+    ]
   },
   "keywords": [
     "netlify",
@@ -151,10 +157,11 @@
     "remark-stringify": "^3.0.1",
     "sanitize-filename": "^1.6.1",
     "semaphore": "^1.0.5",
-    "slate": "^0.21.0",
-    "slate-edit-list": "^0.7.1",
-    "slate-edit-table": "^0.10.1",
-    "slate-soft-break": "^0.3.0",
+    "slate": "^0.22.0",
+    "slate-edit-list": "^0.8.0",
+    "slate-edit-table": "^0.11.0",
+    "slate-soft-break": "^0.4.0",
+    "slug": "^0.9.1",
     "toml-j0.4": "^1.1.1",
     "unified": "^6.1.4",
     "unist-builder": "^1.0.2",
