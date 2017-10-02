@@ -1,5 +1,5 @@
 import matter from 'gray-matter';
-import tomlEng from 'toml';
+import tomlEng from 'toml-j0.4';
 import YAML from './yaml';
 
 const parsers = {
