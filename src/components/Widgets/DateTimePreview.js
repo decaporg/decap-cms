@@ -7,5 +7,8 @@ export default function DateTimePreview({ value }) {
 }
 
 DateTimePreview.propTypes = {
-  value: PropTypes.object,
+  value: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.string,
+  ]),
 };
