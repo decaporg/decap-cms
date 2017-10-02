@@ -55,7 +55,8 @@ export default function remarkSquashReferences() {
 
       const pre = u('text', node.type === 'imageReference' ? '![' : '[');
       const post = u('text', ']');
-      return [ pre, ...children, post];
+      const nodes = children || [ u('text', node.alt) ];
+      return [ pre, ...nodes, post];
     }
 
     /**

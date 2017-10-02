@@ -241,7 +241,6 @@ Object {
     Object {
       "isVoid": true,
       "kind": "block",
-      "nodes": undefined,
       "type": "thematic-break",
     },
     Object {
@@ -286,7 +285,6 @@ Object {
     Object {
       "isVoid": true,
       "kind": "block",
-      "nodes": undefined,
       "type": "thematic-break",
     },
     Object {
@@ -1200,7 +1198,6 @@ more important, there there are only so many sizes that you can use.",
     Object {
       "isVoid": true,
       "kind": "block",
-      "nodes": undefined,
       "type": "thematic-break",
     },
     Object {
