@@ -18,16 +18,16 @@ export default class RawEditor extends React.Component {
     return !this.state.editorState.equals(nextState.editorState);
   }
 
-  handleChange = editorState => {
-    this.setState({ editorState });
-  }
+  handleChange = change => {
+    this.setState({ editorState: change.state });
+  };
 
   /**
    * When the document value changes, serialize from Slate's AST back to plain
    * text (which is Markdown) and pass that up as the new value.
    */
-  handleDocumentChange = debounce((doc, editorState) => {
-    const value = Plain.serialize(editorState);
+  handleDocumentChange = debounce((doc, change) => {
+    const value = Plain.serialize(change.state);
     this.props.onChange(value);
   }, 150);
 
@@ -36,10 +36,10 @@ export default class RawEditor extends React.Component {
    * to the document. Selection logic (where to insert, whether to replace) is
    * handled by Slate.
    */
-  handlePaste = (e, data, state) => {
+  handlePaste = (e, data, change) => {
     if (data.text) {
       const fragment = Plain.deserialize(data.text).document;
-      return state.transform().insertFragment(fragment).apply();
+      return change.insertFragment(fragment);
     }
   };
 

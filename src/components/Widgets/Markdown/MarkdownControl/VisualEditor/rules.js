@@ -15,13 +15,13 @@ const enforceNeverEmpty = {
     const hasBlocks = !doc.getBlocks().isEmpty();
     return hasBlocks ? null : {};
   },
-  normalize: transform => {
+  normalize: change => {
     const block = Block.create({
       type: 'paragraph',
       nodes: [Text.createFromString('')],
     });
-    const { key } = transform.state.document;
-    return transform.insertNodeByKey(key, 0, block).focus();
+    const { key } = change.state.document;
+    return change.insertNodeByKey(key, 0, block).focus();
   },
 };
 
@@ -35,8 +35,8 @@ const shortcodesAtRoot = {
       return node.type === 'shortcode' && doc.getParent(node.key).key !== doc.key;
     });
   },
-  normalize: (transform, doc, node) => {
-    return transform.unwrapNodeByKey(node.key);
+  normalize: (change, doc, node) => {
+    return change.unwrapNodeByKey(node.key);
   },
 };
 

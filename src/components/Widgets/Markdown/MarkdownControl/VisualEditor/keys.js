@@ -2,7 +2,7 @@ import { Block, Text } from 'slate';
 
 export default onKeyDown;
 
-function onKeyDown(e, data, state) {
+function onKeyDown(e, data, change) {
   const createDefaultBlock = () => {
     return Block.create({
       type: 'paragraph',
@@ -18,7 +18,7 @@ function onKeyDown(e, data, state) {
      * If the selected block is the first block in the document, create the
      * new block above it. If not, create the new block below it.
      */
-    const { document: doc, selection, anchorBlock, focusBlock } = state;
+    const { document: doc, selection, anchorBlock, focusBlock } = change.state;
     const singleBlockSelected = anchorBlock === focusBlock;
     if (!singleBlockSelected || !focusBlock.isVoid) return;
 
@@ -31,10 +31,9 @@ function onKeyDown(e, data, state) {
     const newBlock = createDefaultBlock();
     const newBlockIndex = focusBlockIsFirstChild ? 0 : focusBlockIndex + 1;
 
-    return state.transform()
+    return change
       .insertNodeByKey(focusBlockParent.key, newBlockIndex, newBlock)
-      .collapseToStartOf(newBlock)
-      .apply();
+      .collapseToStartOf(newBlock);
   }
 
   if (data.isMod) {
@@ -61,7 +60,7 @@ function onKeyDown(e, data, state) {
 
     if (mark) {
       e.preventDefault();
-      return state.transform().toggleMark(mark).apply();
+      return change.toggleMark(mark);
     }
   }
 };

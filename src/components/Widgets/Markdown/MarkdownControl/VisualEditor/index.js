@@ -35,17 +35,17 @@ export default class Editor extends Component {
     return !this.state.editorState.equals(nextState.editorState);
   }
 
-  handlePaste = (e, data, state) => {
+  handlePaste = (e, data, change) => {
     if (data.type !== 'html' || data.isShift) {
       return;
     }
     const ast = htmlToSlate(data.html);
     const { document: doc } = Raw.deserialize(ast, { terse: true });
-    return state.transform().insertFragment(doc).apply();
+    return change.insertFragment(doc);
   }
 
-  handleDocumentChange = debounce((doc, editorState) => {
-    const raw = Raw.serialize(editorState, { terse: true });
+  handleDocumentChange = debounce((doc, change) => {
+    const raw = Raw.serialize(change.state, { terse: true });
     const plugins = this.state.shortcodePlugins;
     const markdown = slateToMarkdown(raw, plugins);
     this.props.onChange(markdown);
@@ -56,21 +56,22 @@ export default class Editor extends Component {
 
   handleMarkClick = (event, type) => {
     event.preventDefault();
-    const resolvedState = this.state.editorState.transform().focus().toggleMark(type).apply();
-    this.ref.onChange(resolvedState);
-    this.setState({ editorState: resolvedState });
+    const resolvedChange = this.state.editorState.change().focus().toggleMark(type);
+    this.ref.onChange(resolvedChange);
+    this.setState({ editorState: resolvedChange.state });
   };
 
   handleBlockClick = (event, type) => {
     event.preventDefault();
     let { editorState } = this.state;
     const { document: doc, selection } = editorState;
-    const transform = editorState.transform();
+    const { unwrapList, wrapInList } = EditListConfigured.changes;
+    let change = editorState.change();
 
     // Handle everything except list buttons.
     if (!['bulleted-list', 'numbered-list'].includes(type)) {
       const isActive = this.hasBlock(type);
-      const transformed = transform.setBlock(isActive ? 'paragraph' : type);
+      change = change.setBlock(isActive ? 'paragraph' : type);
     }
 
     // Handle the extra wrapping required for list buttons.
@@ -81,19 +82,18 @@ export default class Editor extends Component {
       const isInList = EditListConfigured.utils.isSelectionInList(editorState);
 
       if (isInList && isSameListType) {
-        EditListConfigured.transforms.unwrapList(transform, type);
+        change = change.call(unwrapList, type);
       } else if (isInList) {
         const currentListType = type === 'bulleted-list' ? 'numbered-list' : 'bulleted-list';
-        EditListConfigured.transforms.unwrapList(transform, currentListType);
-        EditListConfigured.transforms.wrapInList(transform, type);
+        change = change.call(unwrapList, currentListType).call(wrapInList, type);
       } else {
-        EditListConfigured.transforms.wrapInList(transform, type);
+        change = change.call(wrapInList, type);
       }
     }
 
-    const resolvedState = transform.focus().apply();
-    this.ref.onChange(resolvedState);
-    this.setState({ editorState: resolvedState });
+    const resolvedChange = change.focus();
+    this.ref.onChange(resolvedChange);
+    this.setState({ editorState: resolvedChange.state });
   };
 
   hasLinks = () => {
@@ -101,12 +101,12 @@ export default class Editor extends Component {
   };
 
   handleLink = () => {
-    let { editorState } = this.state;
+    let change = this.state.editorState.change();
 
     // If the current selection contains links, clicking the "link" button
     // should simply unlink them.
     if (this.hasLinks()) {
-      editorState = editorState.transform().unwrapInline('link').apply();
+      change = change.unwrapInline('link');
     }
 
     else {
@@ -115,23 +115,20 @@ export default class Editor extends Component {
       // If nothing is entered in the URL prompt, do nothing.
       if (!url) return;
 
-      let transform = editorState.transform();
-
       // If no text is selected, use the entered URL as text.
-      if (editorState.isCollapsed) {
-        transform = transform
+      if (change.state.isCollapsed) {
+        change = change
           .insertText(url)
           .extend(0 - url.length);
       }
 
-      editorState = transform
+      change = change
         .wrapInline({ type: 'link', data: { url } })
-        .collapseToEnd()
-        .apply();
+        .collapseToEnd();
     }
 
-    this.ref.onChange(editorState);
-    this.setState({ editorState });
+    this.ref.onChange(change);
+    this.setState({ editorState: change.state });
   };
 
   handlePluginSubmit = (plugin, shortcodeData) => {
@@ -142,9 +139,9 @@ export default class Editor extends Component {
     };
     const nodes = [Text.createFromString('')];
     const block = { kind: 'block', type: 'shortcode', data, isVoid: true, nodes };
-    const resolvedState = editorState.transform().insertBlock(block).focus().apply();
-    this.ref.onChange(resolvedState);
-    this.setState({ editorState: resolvedState });
+    const resolvedChange = editorState.change().insertBlock(block).focus();
+    this.ref.onChange(resolvedChange);
+    this.setState({ editorState: resolvedChange.state });
   };
 
   handleToggle = () => {
@@ -156,6 +153,10 @@ export default class Editor extends Component {
     const handler = opts.handler || (isBlock ? this.handleBlockClick: this.handleMarkClick);
     const isActive = opts.isActive || (isBlock ? this.hasBlock : this.hasMark);
     return { onAction: e => handler(e, type), active: isActive(type) };
+  };
+
+  handleChange = change => {
+    this.setState({ editorState: change.state });
   };
 
   render() {
@@ -194,7 +195,7 @@ export default class Editor extends Component {
           state={this.state.editorState}
           schema={this.state.schema}
           plugins={plugins}
-          onChange={editorState => this.setState({ editorState })}
+          onChange={this.handleChange}
           onDocumentChange={this.handleDocumentChange}
           onKeyDown={onKeyDown}
           onPaste={this.handlePaste}
