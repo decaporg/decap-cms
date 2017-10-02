@@ -1,18 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import DateTimeControl from './DateTimeControl';
 import DateTime from 'react-datetime';
 
-export default class DateControl extends React.Component {
-  componentDidMount() {
-    if (!this.props.value) {
-      this.props.onChange(new Date());
-    }
-  }
-
-  handleChange = (datetime) => {
-    this.props.onChange(datetime);
-  };
-
+export default class DateControl extends DateTimeControl {
   render() {
     return (<DateTime
       timeFormat={false}
@@ -22,7 +13,4 @@ export default class DateControl extends React.Component {
   }
 }
 
-DateControl.propTypes = {
-  onChange: PropTypes.func.isRequired,
-  value: PropTypes.object, // eslint-disable-line
-};
+DateControl.propTypes = DateTimeControl.propTypes;

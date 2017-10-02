@@ -4,8 +4,12 @@ import DateTime from 'react-datetime';
 
 export default class DateTimeControl extends React.Component {
   componentDidMount() {
-    if (!this.props.value) {
-      this.props.onChange(new Date());
+    const { value, onChange } = this.props;
+    if (value == null) {
+      onChange(new Date());
+    }
+    if (value === false) {
+      onChange('');
     }
   }
 

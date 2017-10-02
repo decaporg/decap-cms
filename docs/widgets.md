@@ -11,7 +11,8 @@ Widgets define the data type and interface for entry fields. Netlify CMS comes w
 | `text`     | textarea input                     | string (multiline)                                 |
 | `number`   | number input                       | number                                             |
 | `markdown` | rich text editor                   | string (markdown)                                  |
-| `datetime` | date picker                        | string (ISO date)                                  |
+| `date`     | date picker                        | string (ISO datetime)                              |
+| `datetime` | datetime picker                    | string (ISO datetime)                              |
 | `select`   | select input (dropdown)            | string                                             |
 | `image`    | file picker w/ drag-and-drop       | image file                                         |
 | `file`     | file picker w/ drag-and-drop       | file                                               |
