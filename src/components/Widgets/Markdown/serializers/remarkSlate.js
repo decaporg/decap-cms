@@ -59,6 +59,14 @@ const markMap = {
 
 
 /**
+ * Add nodes to a parent node only if `nodes` is truthy.
+ */
+function addNodes(parent, nodes) {
+  return nodes ? { ...parent, nodes } : parent;
+}
+
+
+/**
  * Create a Slate Inline node.
  */
 function createBlock(type, nodes, props = {}) {
@@ -67,7 +75,8 @@ function createBlock(type, nodes, props = {}) {
     nodes = undefined;
   }
 
-  return { kind: 'block', type, nodes, ...props };
+  const node = { kind: 'block', type, ...props };
+  return addNodes(node, nodes);
 }
 
 
@@ -75,7 +84,8 @@ function createBlock(type, nodes, props = {}) {
  * Create a Slate Block node.
  */
 function createInline(type, props = {}, nodes) {
-  return { kind: 'inline', type, nodes, ...props };
+  const node = { kind: 'inline', type, ...props };
+  return addNodes(node, nodes);
 }
 
 
@@ -143,7 +153,7 @@ function processMarkNode(node, parentMarks = []) {
 function convertMarkNode(node) {
   const slateNodes = processMarkNode(node);
 
-  const convertedSlateNodes = slateNodes.reduce((acc, node, idx, nodes) => {
+  const convertedSlateNodes = slateNodes.reduce((acc, node) => {
     const lastConvertedNode = last(acc);
     if (node.text && lastConvertedNode && lastConvertedNode.ranges) {
       lastConvertedNode.ranges.push(node);
