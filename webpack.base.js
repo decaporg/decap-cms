@@ -13,32 +13,39 @@ module.exports = {
         exclude: /node_modules/,
       },
       {
-        /* CSS loader for npm modules that are shipped with CSS.
+        /* CSS loader for npm modules that are shipped with CSS that should be loaded without processing.
            List all of theme in the array
         */
         test: /\.css$/,
-        include: [/redux-notifications/],
+        include: [/redux-notifications/, /normalize.css/],
         use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
           use: 'css-loader',
         }),
       },
       {
-        /* React-toolbox still relies on SCSS and css-modules */
-        test: /\.scss$/,
+        /* React-toolbox relies on PostCSS and css-modules */
+        test: /\.css$/,
         include: [/react-toolbox/],
         use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
           use: [
-            { loader: "css-loader", options: { modules: true } },
-            "sass-loader",
+            {
+              loader: 'css-loader',
+              options: {
+                modules: true,
+                importLoaders: 1,
+                localIdentName: "[name]__[local]__[hash:base64:8]"
+              },
+            },
+            { loader: 'postcss-loader' },
           ],
         }),
       },
       {
         /* We use CSS-modules and PostCSS for CMS styles */
         test: /\.css$/,
-        exclude: /node_modules/,
+        exclude: [/node_modules/],
         use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
           use: [
