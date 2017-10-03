@@ -13,11 +13,19 @@ module.exports = {
         exclude: /node_modules/,
       },
       {
-        /* CSS loader for npm modules that are shipped with CSS.
+        /* CSS loader for npm modules that are shipped with CSS that should be loaded without processing.
            List all of theme in the array
         */
         test: /\.css$/,
-        include: [/redux-notifications/, /react-toolbox/, /normalize.css/],
+        include: [/redux-notifications/],
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: 'css-loader',
+        }),
+      },
+      {
+        test: /\.css$/,
+        include: [/react-toolbox/, /normalize.css/],
         use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
           use: [
