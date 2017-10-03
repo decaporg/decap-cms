@@ -1,4 +1,4 @@
-import { sanitizeIRI } from '../urlHelper';
+import { sanitizeIRI, sanitizeSlug } from '../urlHelper';
 
 describe('sanitizeIRI', () => {
   // `sanitizeIRI` tests from RFC 3987
@@ -49,4 +49,42 @@ describe('sanitizeIRI', () => {
       sanitizeIRI("🎉")
     ).not.toEqual("%F0%9F%8E%89");
   });
+});
+
+
+describe('sanitizeSlug', ()=> {
+  
+  it('throws an error for non-strings', () => {
+    expect(() => sanitizeSlug({})).toThrowError("`sanitizeSlug` only accepts strings as input.");
+    expect(() => sanitizeSlug([])).toThrowError("`sanitizeSlug` only accepts strings as input.");
+    expect(() => sanitizeSlug(false)).toThrowError("`sanitizeSlug` only accepts strings as input.");
+    expect(() => sanitizeSlug(null)).toThrowError("`sanitizeSlug` only accepts strings as input.");
+    expect(() => sanitizeSlug(11234)).toThrowError("`sanitizeSlug` only accepts strings as input.");
+    expect(() => sanitizeSlug(undefined)).toThrowError("`sanitizeSlug` only accepts strings as input.");
+    expect(() => sanitizeSlug(()=>{})).toThrowError("`sanitizeSlug` only accepts strings as input.");
+  });
+
+  it('throws an error for non-string replacements', () => {
+    expect(() => sanitizeSlug('test', { replacement: {} })).toThrowError("the `sanitizeSlug` replacement character must be a string.");
+    expect(() => sanitizeSlug('test', { replacement: [] })).toThrowError("the `sanitizeSlug` replacement character must be a string.");
+    expect(() => sanitizeSlug('test', { replacement: false })).toThrowError("the `sanitizeSlug` replacement character must be a string.");
+    expect(() => sanitizeSlug('test', { replacement: null } )).toThrowError("the `sanitizeSlug` replacement character must be a string.");
+    expect(() => sanitizeSlug('test', { replacement: 11232 })).toThrowError("the `sanitizeSlug` replacement character must be a string.");
+    // do not test undefined for this variant since a default is set in the cosntructor. 
+    //expect(() => sanitizeSlug('test', { replacement: undefined })).toThrowError("the `sanitizeSlug` replacement character must be a string.");
+    expect(() => sanitizeSlug('test', { replacement: ()=>{} })).toThrowError("the `sanitizeSlug` replacement character must be a string.");
+  });
+
+  it('removes double replacements', () => {
+     expect(sanitizeSlug('test   test')).toEqual('test-test');
+  });
+
+  it('removes trailing replacemenets', () => {
+    expect(sanitizeSlug('test   test   ')).toEqual('test-test');
+  });
+
+  it('uses alternate replacements', () => {
+    expect(sanitizeSlug('test   test   ', { replacement: '_' })).toEqual('test_test');
+  });
+
 });
