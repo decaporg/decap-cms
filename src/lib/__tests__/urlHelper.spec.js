@@ -36,12 +36,9 @@ describe('sanitizeIRI', () => {
   });
   
   it('should not allow an improper replacement character', () => {
-    expect(
-      sanitizeIRI("I! like! dollars!", { replacement: '$' })
-    ).not.toEqual('I$$like$$dollars$');
-    expect(
-      sanitizeIRI("I! like! dollars!", { replacement: '$' })
-    ).toThrow();
+    expect(() => {
+      sanitizeIRI("I! like! dollars!", { replacement: '$' });
+     }).toThrow();
   });
   
   it('should not actually URI-encode the characters', () => {
