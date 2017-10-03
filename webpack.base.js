@@ -24,6 +24,7 @@ module.exports = {
         }),
       },
       {
+        /* React-toolbox relies on PostCSS and css-modules */
         test: /\.css$/,
         include: [/react-toolbox/],
         use: ExtractTextPlugin.extract({
