@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactCSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
+import CSSTransition from 'react-transition-group/CSSTransition';
 import styles from './Loader.css';
 
 export default class Loader extends React.Component {
@@ -34,13 +34,12 @@ export default class Loader extends React.Component {
     } else if (Array.isArray(children)) {
       this.setAnimation();
       return (<div className={styles.text}>
-        <ReactCSSTransitionGroup
-          transitionName={styles}
-          transitionEnterTimeout={500}
-          transitionLeaveTimeout={500}
+        <CSSTransition
+          classNames={styles}
+          timeout={500}
         >
           <div key={currentItem} className={styles.animateItem}>{children[currentItem]}</div>
-        </ReactCSSTransitionGroup>
+        </CSSTransition>
       </div>);
     }
   };

@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Icon } from '../index';
+import 'redux-notifications/lib/styles.css'; // Import default redux-notifications styles into global scope.
 import styles from './Toast.css';
 
 const icons = {
