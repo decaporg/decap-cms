@@ -14,12 +14,20 @@ export function getNewEntryUrl(collectionName, direct) {
   return getUrl(`/collections/${ collectionName }/entries/new`, direct);
 }
 
-// Unreserved chars from RFC3987.
+/* See https://www.w3.org/International/articles/idn-and-iri/#path.
+ * According to the new IRI (Internationalized Resource Identifier) spec, RFC 3987,
+ *   ASCII chars should be kept the same way as in standard URIs (letters digits _ - . ~).
+ * Non-ASCII chars (unless they are not in the allowed "ucschars" list) should be percent-encoded.
+ * If the string is not encoded in Unicode, it should be converted to UTF-8 and normalized first,
+ *   but JS stores strings as UTF-16/UCS-2 internally, so we should not normallize or re-encode.
+ */
 const uriChars = /[\w\-.~]/i;
 const ucsChars = /[\xA0-\u{D7FF}\u{F900}-\u{FDCF}\u{FDF0}-\u{FFEF}\u{10000}-\u{1FFFD}\u{20000}-\u{2FFFD}\u{30000}-\u{3FFFD}\u{40000}-\u{4FFFD}\u{50000}-\u{5FFFD}\u{60000}-\u{6FFFD}\u{70000}-\u{7FFFD}\u{80000}-\u{8FFFD}\u{90000}-\u{9FFFD}\u{A0000}-\u{AFFFD}\u{B0000}-\u{BFFFD}\u{C0000}-\u{CFFFD}\u{D0000}-\u{DFFFD}\u{E1000}-\u{EFFFD}]/u;
 export function sanitizeIRI(str, { replacement }) {
   let result = "";
-  // We cannot use a `map` function here because `string.split()` splits things like emojis into surrogate pairs.
+  // We cannot use a `map` function here because `string.split()`
+  //   splits things like emojis into UTF-16 surrogate pairs,
+  //   and we want to use UTF-8 (it isn't required, but is nicer).
   for (const char of str) {
     if (uriChars.test(char) || ucsChars.test(char)) {
       result += char;
