@@ -17,7 +17,7 @@ module.exports = {
            List all of theme in the array
         */
         test: /\.css$/,
-        include: [/redux-notifications/],
+        include: [/redux-notifications/, /normalize.css/],
         use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
           use: 'css-loader',
@@ -25,7 +25,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        include: [/react-toolbox/, /normalize.css/],
+        include: [/react-toolbox/],
         use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
           use: [
