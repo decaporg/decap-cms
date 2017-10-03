@@ -1,4 +1,6 @@
 import url from 'url';
+import sanitizeFilename from 'sanitize-filename';
+import { isString, escapeRegExp } from 'lodash';
 
 function getUrl(url, direct) {
   return `${ direct ? '/#' : '' }${ url }`;
@@ -26,6 +28,23 @@ export function sanitizeIRI(str, { replacement }) {
     }
   }
   return result;
+}
+
+export function sanitizeSlug(str, { replacement = '-' }) {
+  if (!isString(str)) throw "`sanitizeSlug` only accepts strings as input.";
+  if (!isString(replacement)) throw "the `sanitizeSlug` replacement character must be a string.";
+  let slug = str;
+
+  // Sanitize as IRI (i18n URI) and as filename.
+  slug = sanitizeIRI(slug, {replacement});
+  slug = sanitizeFilename(slug, {replacement});
+
+  // Remove any doubled or trailing replacement characters (that were added in the sanitizers).
+  const doubleReplacement = new RegExp('(?:' + escapeRegExp(replacement) + ')+', 'g');
+  const trailingReplacment = new RegExp(escapeRegExp(replacement) + '$')
+  slug = slug.replace(doubleReplacement, '-').replace(trailingReplacment, '');
+
+  return slug;
 }
 
 export function urlize(string) {

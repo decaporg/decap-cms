@@ -5,8 +5,7 @@ import GitGatewayBackend from "./git-gateway/implementation";
 import { resolveFormat } from "../formats/formats";
 import { selectListMethod, selectEntrySlug, selectEntryPath, selectAllowNewEntries, selectFolderEntryExtension } from "../reducers/collections";
 import { createEntry } from "../valueObjects/Entry";
-import { sanitizeIRI } from "../lib/urlHelper";
-import sanitizeFilename from 'sanitize-filename';
+import { sanitizeSlug } from "../lib/urlHelper";
 
 class LocalStorageAuthStore {
   storageKey = "netlify-cms-user";
@@ -43,7 +42,7 @@ const slugFormatter = (template = "{{slug}}", entryData) => {
     return identifier;
   };
 
-  let slug = template.replace(/\{\{([^\}]+)\}\}/g, (_, field) => {
+  const slug = template.replace(/\{\{([^\}]+)\}\}/g, (_, field) => {
     switch (field) {
       case "year":
         return date.getFullYear();
@@ -56,21 +55,14 @@ const slugFormatter = (template = "{{slug}}", entryData) => {
       default:
         return entryData.get(field, "").trim();
     }
-  });
-
-  // Convert slug to lower-case;
-  slug = slug.toLocaleLowerCase();
+  })
+  // Convert slug to lower-case
+  .toLocaleLowerCase()
 
   // Replace periods and spaces with dashes.
-  slug = slug.replace(/[.\s]/g, '-');
-  // Sanitize as IRI (i18n URI) and as filename.
-  slug = sanitizeIRI(slug, {replacement: "-"});
-  slug = sanitizeFilename(slug, {replacement: "-"});
+  .replace(/[.\s]/g, '-');
 
-  // Remove any doubled or trailing replacement characters (that were added in the sanitizers).
-  slug = slug.replace(/-+/g, '-').replace(/-$/, '');
-
-  return slug;
+  return sanitizeSlug(slug);
 };
 
 class Backend {
