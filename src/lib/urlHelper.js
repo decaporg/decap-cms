@@ -43,7 +43,7 @@ export function sanitizeIRI(str, { replacement = "" } = {}) {
   return result;
 }
 
-export function sanitizeSlug(str, { replacement = '-' }) {
+export function sanitizeSlug(str, { replacement = '-' } = {}) {
   if (!isString(str)) throw "`sanitizeSlug` only accepts strings as input.";
   if (!isString(replacement)) throw "the `sanitizeSlug` replacement character must be a string.";
   
