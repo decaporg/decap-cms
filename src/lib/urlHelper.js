@@ -60,7 +60,7 @@ export function sanitizeSlug(str, { replacement = '-' } = {}) {
   const doubleReplacement = new RegExp('(?:' + escapeRegExp(replacement) + ')+', 'g');
   const trailingReplacment = new RegExp(escapeRegExp(replacement) + '$');
   const normalizedSlug = sanitizedSlug
-    .replace(doubleReplacement, '-')
+    .replace(doubleReplacement, replacement)
     .replace(trailingReplacment, '');
 
   return normalizedSlug;
