@@ -24,25 +24,34 @@ export function getNewEntryUrl(collectionName, direct) {
 const uriChars = /[\w\-.~]/i;
 const ucsChars = /[\xA0-\u{D7FF}\u{F900}-\u{FDCF}\u{FDF0}-\u{FFEF}\u{10000}-\u{1FFFD}\u{20000}-\u{2FFFD}\u{30000}-\u{3FFFD}\u{40000}-\u{4FFFD}\u{50000}-\u{5FFFD}\u{60000}-\u{6FFFD}\u{70000}-\u{7FFFD}\u{80000}-\u{8FFFD}\u{90000}-\u{9FFFD}\u{A0000}-\u{AFFFD}\u{B0000}-\u{BFFFD}\u{C0000}-\u{CFFFD}\u{D0000}-\u{DFFFD}\u{E1000}-\u{EFFFD}]/u;
 // `sanitizeIRI` does not actually URI-encode the chars (that is the browser's and server's job), just removes the ones that are not allowed.
-export function sanitizeIRI(str, { replacement = "" } = {}) {
+function sanitizeIRI(str, { replacement = "" } = {}) {
+  if (!isString(str)) throw "The input slug must be a string.";
   if (!isString(replacement)) throw "`options.replacement` must be a string.";
+
+  // This is where sanitization is actually done.
+  const sanitize = (input) => {
+    let result = "";
+    // We cannot use a `map` function here because `string.split()`
+    //   splits things like emojis into UTF-16 surrogate pairs,
+    //   and we want to use UTF-8 (it isn't required, but is nicer).
+    for (const char of input) {
+      if (uriChars.test(char) || ucsChars.test(char)) {
+        result += char;
+      } else {
+        result += replacement;
+      }
+    }
+    return result;
+  }
+
+  // Check and make sure the replacement character is actually a safe char itself.
   if (replacement !== "") {
-    const validReplacement = (sanitizeIRI(replacement) === replacement);
+    const validReplacement = (sanitize(replacement) === replacement);
     if (!validReplacement) throw "The replacement character(s) (options.replacement) is itself unsafe.";
   }
 
-  let result = "";
-  // We cannot use a `map` function here because `string.split()`
-  //   splits things like emojis into UTF-16 surrogate pairs,
-  //   and we want to use UTF-8 (it isn't required, but is nicer).
-  for (const char of str) {
-    if (uriChars.test(char) || ucsChars.test(char)) {
-      result += char;
-    } else {
-      result += replacement;
-    }
-  }
-  return result;
+  // Actually do the sanitization.
+  return sanitize(str);
 }
 
 export function sanitizeSlug(str, { replacement = '-' } = {}) {
