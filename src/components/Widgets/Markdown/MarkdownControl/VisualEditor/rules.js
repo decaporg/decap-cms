@@ -73,6 +73,6 @@ const codeBlocksContainPlainText = {
   },
 };
 
-const rules = [ enforceNeverEmpty, shortcodesAtRoot, codeBlocksContainPlainText ];
+const rules = [ enforceNeverEmpty, shortcodesAtRoot, noTrailingShortcodes, codeBlocksContainPlainText ];
 
 export default rules;
