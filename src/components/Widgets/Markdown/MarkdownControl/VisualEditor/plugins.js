@@ -9,14 +9,15 @@ const SoftBreak = (options = {}) => ({
     if (options.shift && e.shiftKey == false) return;
 
     const { onlyIn, ignoreIn, defaultBlock = 'paragraph' } = options;
-    const { type, nodes } = change.state.startBlock;
+    const { type, text } = change.state.startBlock;
     if (onlyIn && !onlyIn.includes(type)) return;
     if (ignoreIn && ignoreIn.includes(type)) return;
 
-    const shouldClose = nodes.last().characters.last() === '\n';
+    const shouldClose = text.endsWith('\n');
     if (shouldClose) {
-      const trimmed = change.deleteBackward(1);
-      return trimmed.insertBlock(defaultBlock);
+      return change
+        .deleteBackward(1)
+        .insertBlock(defaultBlock);
     }
 
     const textNode = Text.create('\n');
