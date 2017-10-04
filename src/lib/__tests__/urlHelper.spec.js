@@ -55,24 +55,24 @@ describe('sanitizeIRI', () => {
 describe('sanitizeSlug', ()=> {
   
   it('throws an error for non-strings', () => {
-    expect(() => sanitizeSlug({})).toThrowError("`sanitizeSlug` only accepts strings as input.");
-    expect(() => sanitizeSlug([])).toThrowError("`sanitizeSlug` only accepts strings as input.");
-    expect(() => sanitizeSlug(false)).toThrowError("`sanitizeSlug` only accepts strings as input.");
-    expect(() => sanitizeSlug(null)).toThrowError("`sanitizeSlug` only accepts strings as input.");
-    expect(() => sanitizeSlug(11234)).toThrowError("`sanitizeSlug` only accepts strings as input.");
-    expect(() => sanitizeSlug(undefined)).toThrowError("`sanitizeSlug` only accepts strings as input.");
-    expect(() => sanitizeSlug(()=>{})).toThrowError("`sanitizeSlug` only accepts strings as input.");
+    expect(() => sanitizeSlug({})).toThrowError("The input slug must be a string.");
+    expect(() => sanitizeSlug([])).toThrowError("The input slug must be a string.");
+    expect(() => sanitizeSlug(false)).toThrowError("The input slug must be a string.");
+    expect(() => sanitizeSlug(null)).toThrowError("The input slug must be a string.");
+    expect(() => sanitizeSlug(11234)).toThrowError("The input slug must be a string.");
+    expect(() => sanitizeSlug(undefined)).toThrowError("The input slug must be a string.");
+    expect(() => sanitizeSlug(()=>{})).toThrowError("The input slug must be a string.");
   });
 
   it('throws an error for non-string replacements', () => {
-    expect(() => sanitizeSlug('test', { replacement: {} })).toThrowError("the `sanitizeSlug` replacement character must be a string.");
-    expect(() => sanitizeSlug('test', { replacement: [] })).toThrowError("the `sanitizeSlug` replacement character must be a string.");
-    expect(() => sanitizeSlug('test', { replacement: false })).toThrowError("the `sanitizeSlug` replacement character must be a string.");
-    expect(() => sanitizeSlug('test', { replacement: null } )).toThrowError("the `sanitizeSlug` replacement character must be a string.");
-    expect(() => sanitizeSlug('test', { replacement: 11232 })).toThrowError("the `sanitizeSlug` replacement character must be a string.");
+    expect(() => sanitizeSlug('test', { replacement: {} })).toThrowError("`options.replacement` must be a string.");
+    expect(() => sanitizeSlug('test', { replacement: [] })).toThrowError("`options.replacement` must be a string.");
+    expect(() => sanitizeSlug('test', { replacement: false })).toThrowError("`options.replacement` must be a string.");
+    expect(() => sanitizeSlug('test', { replacement: null } )).toThrowError("`options.replacement` must be a string.");
+    expect(() => sanitizeSlug('test', { replacement: 11232 })).toThrowError("`options.replacement` must be a string.");
     // do not test undefined for this variant since a default is set in the cosntructor. 
-    //expect(() => sanitizeSlug('test', { replacement: undefined })).toThrowError("the `sanitizeSlug` replacement character must be a string.");
-    expect(() => sanitizeSlug('test', { replacement: ()=>{} })).toThrowError("the `sanitizeSlug` replacement character must be a string.");
+    //expect(() => sanitizeSlug('test', { replacement: undefined })).toThrowError("`options.replacement` must be a string.");
+    expect(() => sanitizeSlug('test', { replacement: ()=>{} })).toThrowError("`options.replacement` must be a string.");
   });
 
   it('removes double replacements', () => {
