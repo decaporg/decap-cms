@@ -1,4 +1,4 @@
-import { get, isEmpty, reduce, pull } from 'lodash';
+import { get, isEmpty, reduce, pull, trimEnd } from 'lodash';
 import unified from 'unified';
 import u from 'unist-builder';
 import markdownToRemarkPlugin from 'remark-parse';
@@ -118,17 +118,19 @@ export const remarkToMarkdown = obj => {
     fences: true,
     listItemIndent: '1',
 
-    // Settings to emulate the defaults from the Prosemirror editor, not
-    // necessarily optimal. Should eventually be configurable.
+    /**
+     * Settings to emulate the defaults from the Prosemirror editor, not
+     * necessarily optimal. Should eventually be configurable.
+     */
     bullet: '*',
     strong: '*',
     rule: '-',
   };
 
   /**
-   * Escape markdown entities found in text and html nodes within the MDAST.
+   * Transform the MDAST with plugins.
    */
-  const escapedMdast = unified()
+  const processedMdast = unified()
     .use(remarkEscapeMarkdownEntities)
     .use(remarkStripTrailingBreaks)
     .runSync(mdast);
@@ -136,9 +138,12 @@ export const remarkToMarkdown = obj => {
   const markdown = unified()
     .use(remarkToMarkdownPlugin, remarkToMarkdownPluginOpts)
     .use(remarkAllowAllText)
-    .stringify(escapedMdast);
+    .stringify(processedMdast);
 
-  return markdown;
+  /**
+   * Return markdown with trailing whitespace removed.
+   */
+  return trimEnd(markdown);
 };
 
 
