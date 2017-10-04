@@ -75,7 +75,14 @@ describe('sanitizeSlug', ()=> {
     expect(() => sanitizeSlug('test', { replacement: ()=>{} })).toThrowError("`options.replacement` must be a string.");
   });
 
+  it('should keep valid URI chars (letters digits _ - . ~)', () => {
+    expect(
+      sanitizeSlug("This, that-one_or.the~other 123!")
+    ).toEqual('This-that-one_or.the~other-123');
+  });
+
   it('removes double replacements', () => {
+     expect(sanitizeSlug('test--test')).toEqual('test-test');
      expect(sanitizeSlug('test   test')).toEqual('test-test');
   });
 
