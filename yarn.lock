@@ -3459,12 +3459,11 @@ got@^6.7.1:
     unzip-response "^2.0.1"
     url-parse-lax "^1.0.0"
 
-gotrue-js@^0.9.3:
-  version "0.9.3"
-  resolved "https://registry.yarnpkg.com/gotrue-js/-/gotrue-js-0.9.3.tgz#5f8d4de45b10fd9e27b5739fe13e7568b9e9720b"
+gotrue-js@^0.9.11:
+  version "0.9.11"
+  resolved "https://registry.yarnpkg.com/gotrue-js/-/gotrue-js-0.9.11.tgz#c107901344d3578815ebbb917e34ebeae6d604a7"
   dependencies:
-    micro-api-client "^2.0.0"
-    prettier "^1.6.1"
+    micro-api-client "^3.0.3"
 
 graceful-fs@^4.1.11, graceful-fs@^4.1.2, graceful-fs@^4.1.4:
   version "4.1.11"
@@ -5285,9 +5284,9 @@ methods@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/methods/-/methods-1.1.2.tgz#5529a4d67654134edcc5266656835b0f851afcee"
 
-micro-api-client@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/micro-api-client/-/micro-api-client-2.0.0.tgz#c078a8003e2b70668be9c5ff331131e3fd739150"
+micro-api-client@^3.0.3:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/micro-api-client/-/micro-api-client-3.1.0.tgz#d43408850cbc6968caeb33250ec1f6a48404637f"
 
 micromatch@^2.1.5, micromatch@^2.3.11:
   version "2.3.11"
@@ -6678,10 +6677,6 @@ prepend-http@^1.0.0, prepend-http@^1.0.1:
 preserve@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/preserve/-/preserve-0.2.0.tgz#815ed1f6ebc65926f865b310c0713bcb3315ce4b"
-
-prettier@^1.6.1:
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.6.1.tgz#850f411a3116226193e32ea5acfc21c0f9a76d7d"
 
 pretty-format@^20.0.3:
   version "20.0.3"
