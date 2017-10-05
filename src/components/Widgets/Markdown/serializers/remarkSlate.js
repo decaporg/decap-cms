@@ -84,10 +84,8 @@ function createInline(type, props = {}, nodes) {
  */
 function createText(value, data) {
   const node = { kind: 'text', data };
-  if (isArray(value)) {
-    return { ...node, ranges: value };
-  }
-  return {...node, text: value };
+  const ranges = isArray(value) ? value : [{ text: value }];
+  return { ...node, ranges };
 }
 
 function processMarkNode(node, parentMarks = []) {

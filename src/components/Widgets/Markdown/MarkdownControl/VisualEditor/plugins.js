@@ -4,37 +4,32 @@ import EditList from 'slate-edit-list';
 import EditTable from 'slate-edit-table';
 
 const SoftBreak = (options = {}) => ({
-  onKeyDown(e, data, state) {
+  onKeyDown(e, data, change) {
     if (data.key != 'enter') return;
     if (options.shift && e.shiftKey == false) return;
 
-    const { onlyIn, ignoreIn, closeAfter, unwrapBlocks, defaultBlock = 'paragraph' } = options;
-    const { type, nodes } = state.startBlock;
+    const { onlyIn, ignoreIn, defaultBlock = 'paragraph' } = options;
+    const { type, nodes } = change.state.startBlock;
     if (onlyIn && !onlyIn.includes(type)) return;
     if (ignoreIn && ignoreIn.includes(type)) return;
 
-    const shouldClose = nodes.last().characters.takeLast(closeAfter).every(c => c.text === '\n');
-    if (closeAfter && shouldClose) {
-      const trimmed = state.transform().deleteBackward(closeAfter);
-      const unwrapped = unwrapBlocks
-        ? unwrapBlocks.reduce((acc, blockType) => acc.unwrapBlock(blockType), trimmed)
-        : trimmed;
-      return unwrapped.insertBlock(defaultBlock).apply();
+    const shouldClose = nodes.last().characters.last() === '\n';
+    if (shouldClose) {
+      const trimmed = change.deleteBackward(1);
+      return trimmed.insertBlock(defaultBlock);
     }
 
-    const textNode = Text.createFromString('\n');
+    const textNode = Text.create('\n');
     const breakNode = Inline.create({ type: 'break', nodes: [ textNode ] });
-    return state.transform()
+    return change
       .insertInline(breakNode)
       .insertText('')
-      .collapseToStartOfNextText()
-      .apply();
+      .collapseToStartOfNextText();
   }
 });
 
 const SoftBreakOpts = {
   onlyIn: ['quote', 'code'],
-  closeAfter: 1
 };
 
 export const SoftBreakConfigured = SoftBreak(SoftBreakOpts);
@@ -42,10 +37,11 @@ export const SoftBreakConfigured = SoftBreak(SoftBreakOpts);
 export const ParagraphSoftBreakConfigured = SoftBreak({ onlyIn: ['paragraph'], shift: true });
 
 const BreakToDefaultBlock = ({ onlyIn = [], defaultBlock = 'paragraph' }) => ({
-  onKeyDown(e, data, state) {
+  onKeyDown(e, data, change) {
+    const { state } = change;
     if (data.key != 'enter' || e.shiftKey == true || state.isExpanded) return;
     if (onlyIn.includes(state.startBlock.type)) {
-      return state.transform().insertBlock(defaultBlock).apply();
+      return change.insertBlock(defaultBlock);
     }
   }
 });
@@ -57,21 +53,18 @@ const BreakToDefaultBlockOpts = {
 export const BreakToDefaultBlockConfigured = BreakToDefaultBlock(BreakToDefaultBlockOpts);
 
 const BackspaceCloseBlock = (options = {}) => ({
-  onKeyDown(e, data, state) {
+  onKeyDown(e, data, change) {
     if (data.key != 'backspace') return;
 
     const { defaultBlock = 'paragraph', ignoreIn, onlyIn } = options;
-    const { startBlock } = state;
+    const { startBlock } = change.state;
     const { type } = startBlock;
 
     if (onlyIn && !onlyIn.includes(type)) return;
     if (ignoreIn && ignoreIn.includes(type)) return;
 
-    const characters = startBlock.getFirstText().characters;
-    const isEmpty = !characters || characters.isEmpty();
-
-    if (isEmpty) {
-      return state.transform().insertBlock(defaultBlock).focus().apply();
+    if (startBlock.text === '') {
+      return change.setBlock(defaultBlock).focus();
     }
   }
 });
