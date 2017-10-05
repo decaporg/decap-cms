@@ -2,11 +2,42 @@ import { Block, Text } from 'slate';
 
 export default onKeyDown;
 
+/**
+ * Minimal re-implementation of Slate's undo/redo functionality, but with focus
+ * forced back into editor afterward.
+ */
+function changeHistory(change, type) {
+
+  /**
+   * Get the history for undo or redo (determined via `type` param).
+   */
+  const { history } = change.state;
+  if (!history) return;
+  const historyOfType = history[`${type}s`];
+
+  /**
+   * If there is a next history item to apply, and it's valid, apply it.
+   */
+  const next = historyOfType.first();
+  const historyOfTypeIsValid = historyOfType.size > 1
+    || next.length > 1
+    || next[0].type !== 'set_selection';
+
+  if (next && historyOfTypeIsValid) {
+    change[type]();
+  }
+
+  /**
+   * Always ensure focus is set.
+   */
+  return change.focus();
+}
+
 function onKeyDown(e, data, change) {
   const createDefaultBlock = () => {
     return Block.create({
       type: 'paragraph',
-      nodes: [Text.create('')]
+      nodes: [Text.create('')],
     });
   };
   if (data.key === 'enter') {
@@ -37,6 +68,22 @@ function onKeyDown(e, data, change) {
   }
 
   if (data.isMod) {
+
+    /**
+     * Undo and redo work automatically with Slate, but focus is lost in certain
+     * actions. We override Slate's built in undo/redo here and force focus
+     * back to the editor each time.
+     */
+    if (data.key === 'y') {
+      e.preventDefault();
+      return changeHistory(change, 'redo');
+    }
+
+    if (data.key === 'z') {
+      e.preventDefault();
+      return changeHistory(change, data.isShift ? 'redo' : 'undo');
+    }
+
     const marks = {
       b: 'bold',
       i: 'italic',
