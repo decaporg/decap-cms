@@ -61,7 +61,6 @@
   "author": "Netlify",
   "license": "MIT",
   "devDependencies": {
-    "@kadira/storybook": "^1.36.0",
     "all-contributors-cli": "^4.4.0",
     "autoprefixer": "^6.3.3",
     "babel": "^6.5.2",
@@ -109,6 +108,7 @@
     "webpack-postcss-tools": "^1.1.1"
   },
   "dependencies": {
+    "@kadira/storybook": "^1.36.0",
     "classnames": "^2.2.5",
     "create-react-class": "^15.6.0",
     "fuzzy": "^0.1.1",
