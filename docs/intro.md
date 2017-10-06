@@ -25,11 +25,11 @@ The admin interface is a single-page app with the entry point stored in a static
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Content Manager</title>
   
-  <link rel="stylesheet" href="https://unpkg.com/netlify-cms@~0.4/dist/cms.css" />
+  <link rel="stylesheet" href="https://unpkg.com/netlify-cms@~0.5/dist/cms.css" />
   
 </head>
 <body>
-  <script src="https://unpkg.com/netlify-cms@~0.4/dist/cms.js"></script>
+  <script src="https://unpkg.com/netlify-cms@~0.5/dist/cms.js"></script>
 </body>
 </html>
 ```
