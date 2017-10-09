@@ -1,4 +1,4 @@
-import uuid from 'uuid';
+import uuid from 'uuid/v4';
 import { actions as notifActions } from 'redux-notifications';
 import { serializeValues } from '../lib/serializeEntryValues';
 import { closeEntry } from './editor';
@@ -230,7 +230,7 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
     if (!entryDraft.get('fieldsErrors').isEmpty()) return Promise.resolve();
 
     const backend = currentBackend(state.config);
-    const transactionID = uuid.v4();
+    const transactionID = uuid();
     const assetProxies = entryDraft.get('mediaFiles').map(path => getAsset(state, path));
     const entry = entryDraft.get('entry');
 
@@ -269,7 +269,7 @@ export function updateUnpublishedEntryStatus(collection, slug, oldStatus, newSta
   return (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
-    const transactionID = uuid.v4();
+    const transactionID = uuid();
     dispatch(unpublishedEntryStatusChangeRequest(collection, slug, oldStatus, newStatus, transactionID));
     backend.updateUnpublishedEntryStatus(collection, slug, newStatus)
     .then(() => {
@@ -285,7 +285,7 @@ export function deleteUnpublishedEntry(collection, slug) {
   return (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
-    const transactionID = uuid.v4();
+    const transactionID = uuid();
     dispatch(unpublishedEntryPublishRequest(collection, slug, transactionID)); 
     backend.deleteUnpublishedEntry(collection, slug)
     .then(() => {
@@ -306,7 +306,7 @@ export function publishUnpublishedEntry(collection, slug) {
   return (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
-    const transactionID = uuid.v4();
+    const transactionID = uuid();
     dispatch(unpublishedEntryPublishRequest(collection, slug, transactionID));
     backend.publishUnpublishedEntry(collection, slug)
     .then(() => {
