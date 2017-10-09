@@ -25,7 +25,8 @@ export default class API extends GithubAPI {
 
 
   urlFor(path, options) {
-    const params = [];
+    const cacheBuster = new Date().getTime();
+    const params = [`ts=${ cacheBuster }`];
     if (options.params) {
       for (const key in options.params) {
         params.push(`${ key }=${ encodeURIComponent(options.params[key]) }`);
