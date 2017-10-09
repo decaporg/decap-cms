@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import ImmutablePropTypes from "react-immutable-proptypes";
+import ValidationErrorTypes from '../../constants/validationErrorTypes';
 
 const truthy = () => ({ error: false });
 
@@ -57,16 +58,27 @@ class ControlHOC extends Component {
       (value.hasOwnProperty('length') && value.length === 0) ||
       (value.constructor === Object && Object.keys(value).length === 0)
     )) {
-      return { error: true };
+      const error = {
+        type: ValidationErrorTypes.PRESENCE,
+        message: `${ field.get('label', field.get('name')) } is required.`,
+      };
+
+      return { error };
     }
-    return { error: false };  
+    return { error: false };
   }
 
   validatePattern(field, value) {
     const pattern = field.get('pattern', false);
     if (pattern && !RegExp(pattern.first()).test(value)) {
-      return { error: `${ field.get('label', field.get('name')) } didn't match the pattern: ${ pattern.last() }` };
+      const error = {
+        type: ValidationErrorTypes.PATTERN,
+        message: `${ field.get('label', field.get('name')) } didn't match the pattern: ${ pattern.last() }`,
+      };
+
+      return { error };
     }
+
     return { error: false };
   }
 
@@ -80,11 +92,22 @@ class ControlHOC extends Component {
     } else if (response instanceof Promise) {
       response.then(
         () => { this.validate({ error: false }); },
-        (error) => { 
-          this.validate({ error: `${ field.get('label', field.get('name')) } - ${ error }.` });
+        (err) => { 
+          const error = {
+            type: ValidationErrorTypes.CUSTOM,
+            message: `${ field.get('label', field.get('name')) } - ${ err }.`,
+          };
+
+          this.validate({ error });
         }
       );
-      return { error: `${ field.get('label', field.get('name')) } is processing.` };
+
+      const error = {
+        type: ValidationErrorTypes.CUSTOM,
+        message: `${ field.get('label', field.get('name')) } is processing.`,
+      };
+
+      return { error };
     }
     return { error: false };
   };
