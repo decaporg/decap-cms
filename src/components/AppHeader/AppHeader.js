@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from "react";
 import ImmutablePropTypes from "react-immutable-proptypes";
-import { IndexLink } from "react-router";
+import { Link } from 'react-router-dom';
 import { IconMenu, Menu, MenuItem } from "react-toolbox/lib/menu";
 import Avatar from "react-toolbox/lib/avatar";
 import AppBar from "react-toolbox/lib/app_bar";
@@ -66,9 +66,9 @@ export default class AppHeader extends React.Component {
         onLeftIconClick={toggleDrawer}
         onRightIconClick={this.handleRightIconClick}
       >
-        <IndexLink to="/" className={styles.homeLink}>
+        <Link to="/" className={styles.homeLink}>
           <FontIcon value="home" className={styles.icon} />
-        </IndexLink>
+        </Link>
         <IconMenu
           theme={styles}
           icon="add"

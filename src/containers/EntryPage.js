@@ -161,9 +161,9 @@ class EntryPage extends React.Component {
 
 function mapStateToProps(state, ownProps) {
   const { collections, entryDraft } = state;
-  const slug = ownProps.params.slug;
-  const collection = collections.get(ownProps.params.name);
-  const newEntry = ownProps.route && ownProps.route.newRecord === true;
+  const slug = ownProps.match.params.slug;
+  const collection = collections.get(ownProps.match.params.name);
+  const newEntry = ownProps.newRecord === true;
   const fields = selectFields(collection, slug);
   const entry = newEntry ? null : selectEntry(state, collection.get('name'), slug);
   const boundGetAsset = getAsset.bind(null, state);
