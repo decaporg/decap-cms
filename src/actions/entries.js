@@ -7,6 +7,7 @@ import { getIntegrationProvider } from '../integrations';
 import { getAsset, selectIntegration } from '../reducers';
 import { selectFields } from '../reducers/collections';
 import { createEntry } from '../valueObjects/Entry';
+import ValidationErrorTypes from '../constants/validationErrorTypes';
 
 const { notifSend } = notifActions;
 
@@ -265,9 +266,23 @@ export function persistEntry(collection) {
   return (dispatch, getState) => {
     const state = getState();
     const entryDraft = state.entryDraft;
+    const fieldsErrors = entryDraft.get('fieldsErrors');
 
     // Early return if draft contains validation errors
-    if (!entryDraft.get('fieldsErrors').isEmpty()) return Promise.reject();
+    if (!fieldsErrors.isEmpty()) {
+      const hasPresenceErrors = fieldsErrors
+        .some(errors => errors.some(error => error.type && error.type === ValidationErrorTypes.PRESENCE));
+      
+      if (hasPresenceErrors) {
+        dispatch(notifSend({
+          message: 'Oops, you\'ve missed a required field. Please complete before saving.',
+          kind: 'danger',
+          dismissAfter: 8000,
+        }));
+      }
+
+      return Promise.reject();
+    }
 
     const backend = currentBackend(state.config);
     const assetProxies = entryDraft.get('mediaFiles').map(path => getAsset(state, path));
