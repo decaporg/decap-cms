@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import { isMap } from 'immutable';
 
 export default class SelectControl extends React.Component {
   handleChange = (e) => {
@@ -15,12 +16,15 @@ export default class SelectControl extends React.Component {
       return <div>Error rendering select control for {field.get('name')}: No options</div>;
     }
 
-    const options = fieldOptions.map((option) => {
-      if (typeof option === 'string') {
-        return { label: option, value: option };
-      }
-      return option;
-    });
+    const options = [
+      ...(field.get('default', false) ? [] : [{ label: '', value: '' }]),
+      ...fieldOptions.map((option) => {
+        if (typeof option === 'string') {
+          return { label: option, value: option };
+        }
+        return isMap(option) ? option.toJS() : option;
+      }),
+    ];
 
     return (<select id={forID} value={value || ''} onChange={this.handleChange}>
       {options.map((option, idx) => <option key={idx} value={option.value}>
