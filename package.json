@@ -63,6 +63,10 @@
   ],
   "author": "Netlify",
   "license": "MIT",
+  "browserslist": [
+    "last 2 versions",
+    "IE > 10"
+  ],
   "devDependencies": {
     "all-contributors-cli": "^4.4.0",
     "autoprefixer": "^6.3.3",
