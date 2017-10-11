@@ -364,6 +364,15 @@
       "avatar_url": "https://avatars1.githubusercontent.com/u/1100280?v=4",
       "profile": "https://github.com/bruce-one",
       "contributions": []
+    },
+    {
+      "login": "DirtyF",
+      "name": "Frank Taillandier",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/103008?v=4",
+      "profile": "https://frank.taillandier.me",
+      "contributions": [
+        "doc"
+      ]
     }
   ]
 }
