@@ -190,6 +190,7 @@ Netlify offers a built-in authentication service called Identity. In order to us
 
 ### Enable Identity and Git Gateway
 Netlify's Identity and Git Gateway services allow you to manage CMS admin users for your site without requiring them to have GitHub accounts or commit access on your repo. From your site dashboard on Netlify:
+
  1. Go to **Settings > Identity**, and select **Enable Identity service**.
  2. Under **Registration preferences**, select **Open** or **Invite only**. In most cases, you'll want only invited users to access your CMS, but if you're just experimenting, you can leave it open for convenience.
  3. If you'd like to allow one-click login with services like Google and GitHub, check the boxes next to the services you'd like to use, under **External providers**.
