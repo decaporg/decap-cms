@@ -1,6 +1,6 @@
 @import '../../../../UI/theme.css';
 
-.ncms-toolbarPluginForm-pluginForm {
+.nc-toolbarPluginForm-pluginForm {
   position: absolute;
   background-color: var(--backgroundColor);
   margin-top: -20px;
@@ -15,18 +15,18 @@
 }
 
 /* Nested to override high specificity React Toolbox styles */
-.ncms-toolbarPluginForm-pluginForm .ncms-toolbarPluginForm-header {
+.nc-toolbarPluginForm-pluginForm .nc-toolbarPluginForm-header {
   padding: 12px;
   margin: 0;
   color: var(--textColor);
   background-color: var(--backgroundColor);
 }
 
-.ncms-toolbarPluginForm-body {
+.nc-toolbarPluginForm-body {
   padding: 0 12px 16px;
 }
 
-.ncms-toolbarPluginForm-footer {
+.nc-toolbarPluginForm-footer {
   background-color: var(--backgroundColor);
   padding: 10px 20px;
   text-align: right;

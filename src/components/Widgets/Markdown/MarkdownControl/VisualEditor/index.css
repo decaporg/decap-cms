@@ -1,21 +1,21 @@
 @import '../../../../UI/theme.css';
 
-.ncms-visualEditor-editorControlBar {
+.nc-visualEditor-editorControlBar {
   z-index: 1;
   border: 2px solid transparent;
   border-top: 0;
   background-color: var(--controlBGColor);
 }
 
-.ncms-visualEditor-editorControlBarSticky {
+.nc-visualEditor-editorControlBarSticky {
   border-color: var(--textFieldBorderColor);
 }
 
-.ncms-visualEditor-wrapper {
+.nc-visualEditor-wrapper {
   position: relative;
 }
 
-.ncms-visualEditor-editor {
+.nc-visualEditor-editor {
   position: relative;
   overflow: hidden;
   overflow-x: auto;
@@ -23,74 +23,74 @@
   font-family: var(--fontFamily);
 }
 
-.ncms-visualEditor-editor h1 {
+.nc-visualEditor-editor h1 {
   font-size: 32px;
   margin-top: 16px;
 }
 
-.ncms-visualEditor-editor h2 {
+.nc-visualEditor-editor h2 {
   font-size: 24px;
   margin-top: 12px;
 }
 
-.ncms-visualEditor-editor h3 {
+.nc-visualEditor-editor h3 {
   font-size: 20px;
   margin-top: 8px;
 }
 
-.ncms-visualEditor-editor h4 {
+.nc-visualEditor-editor h4 {
   font-size: 18px;
   margin-top: 8px;
 }
 
-.ncms-visualEditor-editor h5,
-.ncms-visualEditor-editor h6 {
+.nc-visualEditor-editor h5,
+.nc-visualEditor-editor h6 {
   font-size: 16px;
   margin-top: 8px;
 }
 
-.ncms-visualEditor-editor h1,
-.ncms-visualEditor-editor h2,
-.ncms-visualEditor-editor h3,
-.ncms-visualEditor-editor h4,
-.ncms-visualEditor-editor h5,
-.ncms-visualEditor-editor h6 {
+.nc-visualEditor-editor h1,
+.nc-visualEditor-editor h2,
+.nc-visualEditor-editor h3,
+.nc-visualEditor-editor h4,
+.nc-visualEditor-editor h5,
+.nc-visualEditor-editor h6 {
   font-weight: 700;
   line-height: 1;
 }
 
-.ncms-visualEditor-editor p,
-.ncms-visualEditor-editor pre,
-.ncms-visualEditor-editor blockquote,
-.ncms-visualEditor-editor ul,
-.ncms-visualEditor-editor ol {
+.nc-visualEditor-editor p,
+.nc-visualEditor-editor pre,
+.nc-visualEditor-editor blockquote,
+.nc-visualEditor-editor ul,
+.nc-visualEditor-editor ol {
   margin-top: 16px;
   margin-bottom: 16px;
 }
 
-.ncms-visualEditor-editor a {
+.nc-visualEditor-editor a {
   text-decoration: underline;
 }
 
-.ncms-visualEditor-editor hr {
+.nc-visualEditor-editor hr {
   border: 1px solid;
   margin-bottom: 16px;
 }
 
-.ncms-visualEditor-editor li > p {
+.nc-visualEditor-editor li > p {
   margin: 0;
 }
 
-.ncms-visualEditor-editor ul,
-.ncms-visualEditor-editor ol {
+.nc-visualEditor-editor ul,
+.nc-visualEditor-editor ol {
   padding-left: 30px;
 }
 
-.ncms-visualEditor-editor pre {
+.nc-visualEditor-editor pre {
   white-space: pre-wrap;
 }
 
-.ncms-visualEditor-editor pre > code {
+.nc-visualEditor-editor pre > code {
   display: block;
   width: 100%;
   overflow-y: auto;
@@ -100,39 +100,39 @@
   padding: 10px;
 }
 
-.ncms-visualEditor-editor code {
+.nc-visualEditor-editor code {
   background-color: var(--backgroundColorShaded);
   border-radius: var(--borderRadius);
   padding: 0 2px;
   font-size: 85%;
 }
 
-.ncms-visualEditor-editor blockquote {
+.nc-visualEditor-editor blockquote {
   padding-left: 16px;
   border-left: 3px solid var(--backgroundColorShaded);
   margin-left: 0;
   margin-right: 0;
 }
 
-.ncms-visualEditor-editor table {
+.nc-visualEditor-editor table {
   border-collapse: collapse;
 }
 
-.ncms-visualEditor-editor td,
-.ncms-visualEditor-editor th {
+.nc-visualEditor-editor td,
+.nc-visualEditor-editor th {
   border: 2px solid black;
   padding: 8px;
   text-align: left;
 }
 
-.ncms-visualEditor-shortcode {
+.nc-visualEditor-shortcode {
   border: 2px solid black;
   padding: 8px;
   margin: 2px 0;
   cursor: pointer;
 }
 
-.ncms-visualEditor-shortcodeSelected {
+.nc-visualEditor-shortcodeSelected {
   border-color: var(--primaryColor);
   color: var(--primaryColor);
 }

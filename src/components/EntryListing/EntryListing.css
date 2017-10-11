@@ -1,4 +1,4 @@
-.ncms-entryListing-card {
+.nc-entryListing-card {
   flex: 0 300px;
   overflow: hidden;
   margin-bottom: 16px;
@@ -8,12 +8,12 @@
   cursor: pointer;
 }
 
-.ncms-entryListing-card:hover {
+.nc-entryListing-card:hover {
   background: #f8f9fa;
   transform: translateY(-8px);
 }
 
-.ncms-entryListing-cardImage {
+.nc-entryListing-cardImage {
   margin: -16px -24px 16px -24px;
   width: calc(100% + 24px + 24px);
   height: 135px;
@@ -22,17 +22,17 @@
   background-repeat: no-repeat;
 }
 
-.ncms-entryListing-cardsGrid {
+.nc-entryListing-cardsGrid {
   display: flex;
   flex-flow: row wrap;
   margin-left: -16px;
 }
 
-.ncms-entryListing-cardList {
+.nc-entryListing-cardList {
   margin-bottom: 1.1rem;
 }
 
-.ncms-entryListing-cardListLabel {
+.nc-entryListing-cardListLabel {
   white-space: nowrap;
   font-weight: bold;
 }

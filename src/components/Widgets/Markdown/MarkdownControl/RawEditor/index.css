@@ -1,10 +1,10 @@
 @import '../../../../UI/theme.css';
 
-.ncms-rawEditor-rawWrapper {
+.nc-rawEditor-rawWrapper {
   position: relative;
 }
 
-.ncms-rawEditor-rawEditor {
+.nc-rawEditor-rawEditor {
   position: relative;
   overflow: hidden;
   overflow-x: auto;

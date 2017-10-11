@@ -1,38 +1,38 @@
 @import '../components/UI/theme.css';
 
-.ncms-sidebar-root {
+.nc-sidebar-root {
   margin-top: 54px;
 }
 
-.ncms-sidebar-sidebar {
+.nc-sidebar-sidebar {
   padding: 0 16px;
   width: 220px;
   background-color: var(--backgroundAltColor);
   color: var(--defaultColorLight);
 }
 
-.ncms-sidebar-heading {
+.nc-sidebar-heading {
   margin-bottom: 8px;
   color: var(--defaultColorLight);
 }
 
-.ncms-sidebar-nav {
+.nc-sidebar-nav {
   padding: 0;
 }
 
-.ncms-sidebar-linkWrapper {
+.nc-sidebar-linkWrapper {
   color: #fff;
   border-radius: var(--borderRadius);
   display: flex;
   align-items: center;
   justify-content: space-between;
 
-  .ncms-sidebar-:hover {
+  .nc-sidebar-:hover {
     background-color: var(--textColor);
   }
 }
 
-.ncms-sidebar-viewEntriesLink {
+.nc-sidebar-viewEntriesLink {
   font-size: 18px;
   color: inherit;
   padding: 10px 6px;
@@ -40,7 +40,7 @@
   width: 100%;
 }
 
-.ncms-sidebar-createEntryLink {
+.nc-sidebar-createEntryLink {
   color: inherit;
   padding: 0 6px;
   display: block;

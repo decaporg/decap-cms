@@ -9,14 +9,14 @@
   --iconSize: 30px;
 }
 
-.ncms-toast-root {
+.nc-toast-root {
   overflow: hidden;
   margin: 10px;
   padding: 10px 10px 15px;
   color: var(--defaultColorLight);
 }
 
-.ncms-toast-icon {
+.nc-toast-icon {
   position: relative;
   top: .15em;
   margin-right: .25em;
@@ -24,18 +24,18 @@
   line-height: var(--iconSize);
 }
 
-.ncms-toast-info {
+.nc-toast-info {
   background-color: var(--infoColor);
 }
 
-.ncms-toast-success {
+.nc-toast-success {
   background-color: var(--successColor);
 }
 
-.ncms-toast-warning {
+.nc-toast-warning {
   background-color: var(--warningColor);
 }
 
-.ncms-toast-danger {
+.nc-toast-danger {
   background-color: var(--errorColor);
 }

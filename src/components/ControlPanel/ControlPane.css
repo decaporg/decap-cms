@@ -1,10 +1,10 @@
 @import '../UI/theme.css';
 
-.ncms-controlPane-root p {
+.nc-controlPane-root p {
   font-size: 16px;
 }
 
-.ncms-controlPane-control {
+.nc-controlPane-control {
   color: var(--textColor);
   position: relative;
   padding: 20px 0 10px 0;
@@ -12,10 +12,10 @@
 }
 
 
-.ncms-controlPane-control input,
-.ncms-controlPane-control textarea,
-.ncms-controlPane-control select,
-.ncms-controlPane-control div[contenteditable=true] {
+.nc-controlPane-control input,
+.nc-controlPane-control textarea,
+.nc-controlPane-control select,
+.nc-controlPane-control div[contenteditable=true] {
   display: block;
   width: 100%;
   padding: 12px;
@@ -29,20 +29,20 @@
   color: var(--textColor);
   transition: border-color .3s ease;
 
-  .ncms-controlPane-:focus,
-  .ncms-controlPane-:active {
+  .nc-controlPane-:focus,
+  .nc-controlPane-:active {
     border-color: var(--primaryColor);
   }
 }
 
-.ncms-controlPane-control input,
-.ncms-controlPane-control textarea,
-.ncms-controlPane-control select {
+.nc-controlPane-control input,
+.nc-controlPane-control textarea,
+.nc-controlPane-control select {
   font-family: var(--fontFamilyMono);
 }
 
 
-.ncms-controlPane-label {
+.nc-controlPane-label {
   display: block;
   color: var(--controlLabelColor);
   font-size: 12px;
@@ -50,11 +50,11 @@
   font-weight: 600;
 }
 
-.ncms-controlPane-labelWithError {
+.nc-controlPane-labelWithError {
   color: #FF706F;
 }
 
-.ncms-controlPane-errors {
+.nc-controlPane-errors {
   list-style-type: none;
   font-size: 10px;
   color: #FF706F;

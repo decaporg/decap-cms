@@ -1,6 +1,6 @@
 @import '../theme.css';
 
-.ncms-card-card {
+.nc-card-card {
   overflow: hidden;
   border: var(--textFieldBorder);
   transition: all .1s ease-in-out;

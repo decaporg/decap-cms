@@ -1,9 +1,9 @@
-.ncms-toolbar-Toolbar {
+.nc-toolbar-Toolbar {
   /* composes: clearfix; */
   z-index: 1000;
 }
 
-.ncms-toolbar-Toggle {
+.nc-toolbar-Toggle {
   float: right;
   margin-bottom: 0;
   padding-top: 4px;

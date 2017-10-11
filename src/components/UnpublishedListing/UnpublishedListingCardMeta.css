@@ -1,6 +1,6 @@
 @import '../UI/theme.css';
 
-.ncms-unpublishedListingCardMeta-cardMeta {
+.nc-unpublishedListingCardMeta-cardMeta {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -16,7 +16,7 @@
   color: #fff;
 }
 
-.ncms-unpublishedListingCardMeta-label {
+.nc-unpublishedListingCardMeta-label {
   padding: 5px 8px 4px 8px;
   border-radius: var(--borderRadiusLarge);
 

@@ -1,31 +1,31 @@
-.ncms-gitGatewayAuthenticationPage-root {
+.nc-gitGatewayAuthenticationPage-root {
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100vh;
 }
 
-.ncms-gitGatewayAuthenticationPage-card {
+.nc-gitGatewayAuthenticationPage-card {
   width: 350px;
   padding: 10px;
 }
 
-.ncms-gitGatewayAuthenticationPage-card img {
+.nc-gitGatewayAuthenticationPage-card img {
   display: block;
   margin: auto;
   padding-bottom: 5px;
 }
 
-.ncms-gitGatewayAuthenticationPage-errorMsg {
+.nc-gitGatewayAuthenticationPage-errorMsg {
   color: #dd0000;
 }
 
-.ncms-gitGatewayAuthenticationPage-message {
+.nc-gitGatewayAuthenticationPage-message {
   font-size: 1.1em;
   margin: 20px 10px;
 }
 
-.ncms-gitGatewayAuthenticationPage-button {
+.nc-gitGatewayAuthenticationPage-button {
   padding: .25em 1em;
   height: auto;
 }

@@ -1,17 +1,17 @@
-.ncms-sticky-stickyContainer {
+.nc-sticky-stickyContainer {
   position: relative !important;
 }
 
-.ncms-sticky-sticky {
+.nc-sticky-sticky {
   width: 100%;
 }
 
-.ncms-sticky-stickyActive:not(.stickyAtBottom) {
+.nc-sticky-stickyActive:not(.stickyAtBottom) {
   position: fixed !important;
   top: 54px !important;
 }
 
-.ncms-sticky-stickyAtBottom {
+.nc-sticky-stickyAtBottom {
   position: absolute !important;
   top: auto !important;
   bottom: 30px !important;

@@ -5,12 +5,12 @@
   --defaultFontSize: 1em;
 }
 
-.ncms-unpublishedListing-container {
+.nc-unpublishedListing-container {
   display: flex;
   justify-content: space-between;
 }
 
-.ncms-unpublishedListing-column {
+.nc-unpublishedListing-column {
   flex: 1 33%;
   margin: -10px;
   margin-top: 24px;
@@ -19,27 +19,27 @@
   transition: background-color .5s ease;
 }
 
-.ncms-unpublishedListing-columnHovered {
+.nc-unpublishedListing-columnHovered {
   /* composes: unpublishedListing--column; */
   border: 2px dashed var(--highlightColor);
   border-radius: 4px;
 }
 
-.ncms-unpublishedListing-columnHeading {
+.nc-unpublishedListing-columnHeading {
   font-size: var(--defaultFontSize);
 }
 
-.ncms-unpublishedListing-draggable {
+.nc-unpublishedListing-draggable {
   cursor: move;
 }
 
-.ncms-unpublishedListing-card {
+.nc-unpublishedListing-card {
   margin-bottom: 10px;
 }
 
 /* Gross stuff below, React Toolbox hacks */
 
-.ncms-unpublishedListing-cardTitle h5 {
+.nc-unpublishedListing-cardTitle h5 {
   color: var(--backgroundAltColor) !important;
   font-weight: 500 !important;
   font-size: 21px !important;

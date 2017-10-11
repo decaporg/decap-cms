@@ -1,16 +1,16 @@
 @import '../../../../UI/theme.css';
 
-.ncms-toolbarButton-button {
+.nc-toolbarButton-button {
   display: inline-block;
   padding: 6px;
   border: none;
   background-color: transparent;
 
-  .ncms-toolbarButton-:not(:disabled) {
+  .nc-toolbarButton-:not(:disabled) {
     cursor: pointer;
   }
 }
 
-.ncms-toolbarButton-active {
+.nc-toolbarButton-active {
   background-color: var(--highlightFGAltColor);
 }

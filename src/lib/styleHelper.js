@@ -1,1 +1,1 @@
-export const prefixer = prefix => className => `ncms-${ prefix }-${ className }`;
+export const prefixer = prefix => className => `nc-${ prefix }-${ className }`;

@@ -1,6 +1,6 @@
 @import '../UI/theme.css';
 
-.ncms-appHeader-appBar {
+.nc-appHeader-appBar {
   padding: 8px 24px;
   height: auto;
   background-color: var(--backgroundAltColor);
@@ -9,18 +9,18 @@
 
 /* Gross stuff below, React Toolbox hacks */
 
-.ncms-appHeader-homeLink,
-.ncms-appHeader-iconMenu {
+.nc-appHeader-homeLink,
+.nc-appHeader-iconMenu {
   margin-left: 2%;
 }
 
-.ncms-appHeader-homeLink &icon {
+.nc-appHeader-homeLink &icon {
   vertical-align: top;
 }
 
-.ncms-appHeader-icon,
-.ncms-appHeader-icon span,
-.ncms-appHeader-leftIcon span {
+.nc-appHeader-icon,
+.nc-appHeader-icon span,
+.nc-appHeader-leftIcon span {
   /* stylelint-disable */
 
   color: var(--defaultColorLight) !important;
