@@ -9,9 +9,7 @@ import { Card, CardTitle, CardText, CardActions } from 'react-toolbox/lib/card';
 import Button from 'react-toolbox/lib/button';
 import UnpublishedListingCardMeta from './UnpublishedListingCardMeta.js';
 import { status, statusDescriptions } from '../../constants/publishModes';
-import { prefixer } from '../../lib/styleHelper';
 
-const styles = prefixer('unpublishedListing');
 
 class UnpublishedListing extends React.Component {
   static propTypes = {

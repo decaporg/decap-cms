@@ -2,9 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import { partial, without } from 'lodash';
-import { prefixer } from '../../../lib/styleHelper';
 
-const styles = prefixer('sticky');
 
 /**
  * Sticky is a collection of three components meant to facilitate "sticky" UI

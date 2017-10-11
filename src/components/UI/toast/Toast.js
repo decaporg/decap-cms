@@ -2,10 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Icon } from '../index';
 import 'redux-notifications/lib/styles.css'; // Import default redux-notifications styles into global scope.
-import { prefixer } from '../../../lib/styleHelper';
 
-const styles = prefixer('toast');
-const themeStyles = prefixer('theme');
 const themeClasses = `nc-theme-base nc-theme-container nc-theme-rounded nc-theme-depth`;
 
 const icons = {

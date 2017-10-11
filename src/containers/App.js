@@ -26,10 +26,7 @@ import CollectionPage from './CollectionPage';
 import EntryPage from './EntryPage';
 import SearchPage from './SearchPage';
 import NotFoundPage from './NotFoundPage';
-import { prefixer } from '../lib/styleHelper';
 
-const styles = prefixer('app');
-const sidebarStyles = prefixer('sidebar');
 
 TopBarProgress.config({
   barColors: {

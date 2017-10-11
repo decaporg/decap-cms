@@ -1,8 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { prefixer } from '../../lib/styleHelper';
 
-const styles = prefixer('unpublishedListingCardMeta');
 
 const UnpublishedListingCardMeta = ({ meta, label }) =>
   <div className="nc-unpublishedListingCardMeta-cardMeta">

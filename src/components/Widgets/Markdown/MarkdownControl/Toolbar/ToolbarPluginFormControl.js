@@ -1,9 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { resolveWidget } from '../../../../Widgets';
-import { prefixer } from '../../../../../lib/styleHelper';
 
-const controlPaneStyles = prefixer('controlPane');
 
 const ToolbarPluginFormControl = ({
   field,

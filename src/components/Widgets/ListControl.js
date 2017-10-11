@@ -4,9 +4,7 @@ import { List, Map, fromJS } from 'immutable';
 import { sortable } from 'react-sortable';
 import FontIcon from 'react-toolbox/lib/font_icon';
 import ObjectControl from './ObjectControl';
-import { prefixer } from '../../lib/styleHelper';
 
-const styles = prefixer('listControl');
 
 function ListItem(props) {
   return <div {...props} className={`list-item ${ props.className }`}>{props.children}</div>;

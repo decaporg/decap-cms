@@ -3,9 +3,7 @@ import React from 'react';
 import { Map } from 'immutable';
 import { Button } from 'react-toolbox/lib/button';
 import ToolbarPluginFormControl from './ToolbarPluginFormControl';
-import { prefixer } from '../../../../../lib/styleHelper';
 
-const styles = prefixer('toolbarPluginForm');
 
 export default class ToolbarPluginForm extends React.Component {
   static propTypes = {

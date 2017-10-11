@@ -8,10 +8,7 @@ import AppBar from "react-toolbox/lib/app_bar";
 import FontIcon from "react-toolbox/lib/font_icon";
 import FindBar from "../FindBar/FindBar";
 import { stringToRGB } from "../../lib/textHelper";
-import { prefixer } from "../../lib/styleHelper";
 
-const styles = prefixer('appHeader');
-const themeStyles = prefixer('theme');
 
 export default class AppHeader extends React.Component {
 

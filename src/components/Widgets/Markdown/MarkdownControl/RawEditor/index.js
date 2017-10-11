@@ -5,10 +5,7 @@ import Plain from 'slate-plain-serializer';
 import { debounce } from 'lodash';
 import Toolbar from '../Toolbar/Toolbar';
 import { Sticky } from '../../../../UI/Sticky/Sticky';
-import { prefixer } from '../../../../../lib/styleHelper';
 
-const styles = prefixer('rawEditor');
-const visualEditorStyles = prefixer('visualEditor');
 
 export default class RawEditor extends React.Component {
   constructor(props) {

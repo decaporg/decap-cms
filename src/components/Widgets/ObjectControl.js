@@ -2,10 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Map } from 'immutable';
 import { resolveWidget } from '../Widgets';
-import { prefixer } from '../../lib/styleHelper';
 
-const controlStyles = prefixer('controlPane');
-const styles = prefixer('objectControl');
 
 export default class ObjectControl extends Component {
   static propTypes = {

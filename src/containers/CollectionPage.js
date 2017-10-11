@@ -6,9 +6,7 @@ import { loadEntries } from '../actions/entries';
 import { selectEntries } from '../reducers';
 import { Loader } from '../components/UI';
 import EntryListing from '../components/EntryListing/EntryListing';
-import { prefixer } from '../lib/styleHelper';
 
-const styles = prefixer('collectionPage');
 
 class CollectionPage extends React.Component {
 

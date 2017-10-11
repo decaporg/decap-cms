@@ -3,9 +3,7 @@ import React from 'react';
 import ImmutablePropTypes from "react-immutable-proptypes";
 import Switch from 'react-toolbox/lib/switch';
 import { isBoolean } from 'lodash';
-import { prefixer } from '../../lib/styleHelper';
 
-const styles = prefixer('booleanControl');
 
 export default class BooleanControl extends React.Component {
   render() {

@@ -7,10 +7,7 @@ import ToolbarButton from './ToolbarButton';
 import ToolbarComponentsMenu from './ToolbarComponentsMenu';
 import ToolbarPluginForm from './ToolbarPluginForm';
 import { Icon } from '../../../../UI';
-import { prefixer } from '../../../../../lib/styleHelper';
 
-const styles = prefixer('toolbar');
-const themeStyles = prefixer('theme');
 
 export default class Toolbar extends React.Component {
   static propTypes = {

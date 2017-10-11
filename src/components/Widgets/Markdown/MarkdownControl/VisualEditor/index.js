@@ -11,9 +11,7 @@ import { MARK_COMPONENTS, NODE_COMPONENTS } from './components';
 import RULES from './rules';
 import plugins, { EditListConfigured } from './plugins';
 import onKeyDown from './keys';
-import { prefixer } from '../../../../../lib/styleHelper';
 
-const styles = prefixer('visualEditor');
 
 export default class Editor extends Component {
   constructor(props) {

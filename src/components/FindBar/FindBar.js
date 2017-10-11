@@ -1,8 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { prefixer } from '../../lib/styleHelper';
 
-const styles = prefixer('findBar');
 
 export const SEARCH = 'SEARCH';
 const PLACEHOLDER = 'Search entry titles...';

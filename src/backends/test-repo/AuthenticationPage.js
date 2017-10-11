@@ -4,9 +4,7 @@ import Input from "react-toolbox/lib/input";
 import Button from "react-toolbox/lib/button";
 import { Card, Icon } from "../../components/UI";
 import logo from "../git-gateway/netlify_logo.svg";
-import { prefixer } from '../../lib/styleHelper';
 
-const styles = prefixer('gitGatewayAuthenticationPage');
 
 export default class AuthenticationPage extends React.Component {
   static propTypes = {

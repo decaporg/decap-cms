@@ -4,9 +4,7 @@ import { Map, fromJS } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { resolveWidget } from '../Widgets';
 import ControlHOC from '../Widgets/ControlHOC';
-import { prefixer } from '../../lib/styleHelper';
 
-const styles = prefixer('controlPane');
 
 function isHidden(field) {
   return field.get('widget') === 'hidden';

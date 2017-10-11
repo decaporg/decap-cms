@@ -1,8 +1,6 @@
 import React from 'react';
 import CSSTransition from 'react-transition-group/CSSTransition';
-import { prefixer } from '../../../lib/styleHelper';
 
-const styles = prefixer('loader');
 
 export default class Loader extends React.Component {
 

@@ -1,9 +1,7 @@
 import React from 'react';
 import { List } from 'immutable';
 import cn from 'classnames';
-import { prefixer } from '../../../../../lib/styleHelper';
 
-const styles = prefixer('visualEditor');
 
 /**
  * Slate uses React components to render each type of node that it receives.
