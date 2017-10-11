@@ -96,24 +96,24 @@ export default class AuthenticationPage extends React.Component {
     const { error } = this.props;
 
     if (window.netlifyIdentity) {
-      return <section className={styles("root")}>
+      return <section className="nc-gitGatewayAuthenticationPage-root">
         <Notifs CustomComponent={Toast} />
-        <Button className={styles("button")} raised onClick={this.handleIdentity}>
+        <Button className="nc-gitGatewayAuthenticationPage-button" raised onClick={this.handleIdentity}>
           Login with Netlify Identity
         </Button>
       </section>
     }
 
     return (
-      <section className={styles("root")}>
-        <Card className={styles("card")}>
+      <section className="nc-gitGatewayAuthenticationPage-root">
+        <Card className="nc-gitGatewayAuthenticationPage-card">
           <form onSubmit={this.handleLogin}>
             <img src={logo} width={100} role="presentation" />
             {error && <p>
-              <span className={styles("errorMsg")}>{error}</span>
+              <span className="nc-gitGatewayAuthenticationPage-errorMsg">{error}</span>
             </p>}
             {errors.server && <p>
-              <span className={styles("errorMsg")}>{errors.server}</span>
+              <span className="nc-gitGatewayAuthenticationPage-errorMsg">{errors.server}</span>
             </p>}
             <Input
               type="text"
@@ -132,7 +132,7 @@ export default class AuthenticationPage extends React.Component {
               onChange={this.handleChange.bind(this, "password")} // eslint-disable-line
             />
             <Button
-              className={styles("button")}
+              className="nc-gitGatewayAuthenticationPage-button"
               raised
             >
               <Icon type="login" /> Login

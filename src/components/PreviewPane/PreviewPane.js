@@ -144,11 +144,11 @@ export default class PreviewPane extends React.Component {
        .map((style, i) => <link key={i} href={style} type="text/css" rel="stylesheet" />);
 
     if (!collection) {
-      return <Frame className={styles("frame")} head={styleEls} />;
+      return <Frame className="nc-previewPane-frame" head={styleEls} />;
     }
 
     return (<Frame
-      className={styles("frame")}
+      className="nc-previewPane-frame"
       head={styleEls}
       initialContent={`
 <!DOCTYPE html>

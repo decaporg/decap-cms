@@ -66,7 +66,7 @@ class EntryEditor extends Component {
 
     const togglePreviewButton = (
       <Button
-        className={classnames(styles("previewToggle"), { previewVisible: styles("previewToggleShow") })}
+        className={classnames('nc-entryEditor-previewToggle', { previewVisible: 'nc-entryEditor-previewToggleShow' })}
         onClick={this.handleTogglePreview}
         icon={previewVisible ? 'visibility_off' : 'visibility'}
         floating
@@ -76,7 +76,7 @@ class EntryEditor extends Component {
 
     const editor = (
       <StickyContext
-        className={classnames(styles("controlPane"), { [styles("blocker")]: showEventBlocker })}
+        className={classnames('nc-entryEditor-controlPane', { ['nc-entryEditor-blocker']: showEventBlocker })}
         registerListener={fn => this.updateStickyContext = fn}
       >
         { collectionPreviewEnabled ? togglePreviewButton : null }
@@ -98,7 +98,7 @@ class EntryEditor extends Component {
 
     const editorWithPreview = (
       <ScrollSync>
-        <div className={styles("container")}>
+        <div className="nc-entryEditor-container">
           <SplitPane
             defaultSize="50%"
             onDragStarted={this.handleSplitPaneDragStart}
@@ -106,7 +106,7 @@ class EntryEditor extends Component {
             onChange={this.updateStickyContext}
           >
             <ScrollSyncPane>{editor}</ScrollSyncPane>
-            <div className={classnames(styles("previewPane"), { [styles("blocker")]: showEventBlocker })}>
+            <div className={classnames('nc-entryEditor-previewPane', { ['nc-entryEditor-blocker']: showEventBlocker })}>
               <PreviewPane
                 collection={collection}
                 entry={entry}
@@ -121,15 +121,15 @@ class EntryEditor extends Component {
     );
 
     const editorWithoutPreview = (
-      <div className={styles("noPreviewEditorContainer")}>
+      <div className="nc-entryEditor-noPreviewEditorContainer">
         {editor}
       </div>
     );
 
     return (
-      <div className={styles("root")}>
+      <div className="nc-entryEditor-root">
         { collectionPreviewEnabled && this.state.previewVisible ? editorWithPreview : editorWithoutPreview }
-        <div className={styles("footer")}>
+        <div className="nc-entryEditor-footer">
           <Toolbar
             isPersisting={entry.get('isPersisting')}
             onPersist={this.handleOnPersist}

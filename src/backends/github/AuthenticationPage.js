@@ -37,11 +37,11 @@ export default class AuthenticationPage extends React.Component {
     const { loginError } = this.state;
 
     return (
-      <section className={styles("root")}>
+      <section className="nc-githubAuthenticationPage-root">
         <Notifs CustomComponent={Toast} />
         {loginError && <p>{loginError}</p>}
         <Button
-          className={styles("button")}
+          className="nc-githubAuthenticationPage-button"
           raised
           onClick={this.handleLogin}
         >

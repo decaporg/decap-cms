@@ -25,10 +25,10 @@ export default class AuthenticationPage extends React.Component {
   };
 
   render() {
-    return (<section className={styles("root")}>
-      <Card className={styles("card")}>
+    return (<section className="nc-gitGatewayAuthenticationPage-root">
+      <Card className="nc-gitGatewayAuthenticationPage-card">
         <img src={logo} width={100} role="presentation" />
-        <p className={styles("message")}>This is a demo, enter your email to start</p>
+        <p className="nc-gitGatewayAuthenticationPage-message">This is a demo, enter your email to start</p>
         <Input
           type="text"
           label="Email"
@@ -37,7 +37,7 @@ export default class AuthenticationPage extends React.Component {
           onChange={this.handleEmailChange}
         />
         <Button
-          className={styles("button")}
+          className="nc-gitGatewayAuthenticationPage-button"
           raised
           onClick={this.handleLogin}
         >

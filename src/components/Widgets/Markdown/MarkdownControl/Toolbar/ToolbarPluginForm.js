@@ -43,9 +43,9 @@ export default class ToolbarPluginForm extends React.Component {
     } = this.props;
 
     return (
-      <form className={styles("pluginForm")} onSubmit={this.handleSubmit}>
-        <h3 className={styles("header")}>Insert {plugin.get('label')}</h3>
-        <div className={styles("body")}>
+      <form className="nc-toolbarPluginForm-pluginForm" onSubmit={this.handleSubmit}>
+        <h3 className="nc-toolbarPluginForm-header">Insert {plugin.get('label')}</h3>
+        <div className="nc-toolbarPluginForm-body">
           {plugin.get('fields').map((field, index) => (
             <ToolbarPluginFormControl
               key={index}
@@ -60,7 +60,7 @@ export default class ToolbarPluginForm extends React.Component {
             />
           ))}
         </div>
-        <div className={styles("footer")}>
+        <div className="nc-toolbarPluginForm-footer">
           <Button raised onClick={this.handleSubmit}>Insert</Button>
           {' '}
           <Button onClick={onCancel}>Cancel</Button>

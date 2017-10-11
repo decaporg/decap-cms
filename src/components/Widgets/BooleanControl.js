@@ -13,7 +13,7 @@ export default class BooleanControl extends React.Component {
     return (
       <Switch
         id={forID}
-        className={styles("switch")}
+        className="nc-booleanControl-switch"
         checked={isBoolean(value) ? value : field.get('defaultValue', false)}
         onChange={onChange}
       />

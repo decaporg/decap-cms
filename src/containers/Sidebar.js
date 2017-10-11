@@ -45,8 +45,8 @@ class Sidebar extends React.Component {
     return (
       <ReactSidebar
         sidebar={content}
-        rootClassName={styles("root")}
-        sidebarClassName={styles("sidebar")}
+        rootClassName="nc-sidebar-root"
+        sidebarClassName="nc-sidebar-sidebar"
         docked={sidebarIsOpen && this.state.sidebarDocked} // ALWAYS can hide sidebar
         open={sidebarIsOpen}
         onSetOpen={openSidebar}

@@ -74,7 +74,7 @@ export default class Toolbar extends React.Component {
     ];
 
     return (
-      <div className={`${styles("Toolbar")} ${themeStyles("clearfix")}`}>
+      <div className={`nc-toolbar-Toolbar nc-theme-clearfix`}>
         { buttonsConfig.map((btn, i) => (
           <ToolbarButton
             key={i}
@@ -99,7 +99,7 @@ export default class Toolbar extends React.Component {
             getAsset={getAsset}
           />
         }
-        <Switch label="Markdown" onChange={onToggleMode} checked={rawMode} className={styles("Toggle")}/>
+        <Switch label="Markdown" onChange={onToggleMode} checked={rawMode} className="nc-toolbar-Toggle"/>
       </div>
     );
   }

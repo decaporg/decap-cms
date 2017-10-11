@@ -56,16 +56,16 @@ export default class RawEditor extends React.Component {
 
   render() {
     return (
-      <div className={styles("rawWrapper")}>
+      <div className="nc-rawEditor-rawWrapper">
         <Sticky
-          className={visualEditorStyles("editorControlBar")}
-          classNameActive={visualEditorStyles("editorControlBarSticky")}
+          className="nc-visualEditor-editorControlBar"
+          classNameActive="nc-visualEditor-editorControlBarSticky"
           fillContainerWidth
         >
           <Toolbar onToggleMode={this.handleToggleMode} disabled rawMode />
         </Sticky>
         <Slate
-          className={styles("rawEditor")}
+          className="nc-rawEditor-rawEditor"
           state={this.state.editorState}
           onChange={this.handleChange}
           onPaste={this.handlePaste}

@@ -6,7 +6,7 @@ import { prefixer } from '../../../lib/styleHelper';
 
 const styles = prefixer('toast');
 const themeStyles = prefixer('theme');
-const themeClasses = `${ themeStyles("base") } ${ themeStyles("container") } ${ themeStyles("rounded") } ${ themeStyles("depth") }`;
+const themeClasses = `nc-theme-base nc-theme-container nc-theme-rounded nc-theme-depth`;
 
 const icons = {
   info: 'info',
@@ -17,8 +17,8 @@ const icons = {
 
 export default function Toast({ kind, message }) {
   return (
-    <div className={`${ themeClasses } ${ styles("root") } ${ styles(kind) }`}>
-      <Icon type={icons[kind]} className={styles("icon")} />
+    <div className={`${ themeClasses } nc-toast-root ${ styles(kind) }`}>
+      <Icon type={icons[kind]} className="nc-toast-icon" />
       {message}
     </div>
   );

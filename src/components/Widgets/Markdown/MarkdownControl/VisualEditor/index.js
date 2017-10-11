@@ -181,10 +181,10 @@ export default class Editor extends Component {
     const { onAddAsset, onRemoveAsset, getAsset } = this.props;
 
     return (
-      <div className={styles("wrapper")}>
+      <div className="nc-visualEditor-wrapper">
         <Sticky
-          className={styles("editorControlBar")}
-          classNameActive={styles("editorControlBarSticky")}
+          className="nc-visualEditor-editorControlBar"
+          classNameActive="nc-visualEditor-editorControlBarSticky"
           fillContainerWidth
         >
           <Toolbar
@@ -209,7 +209,7 @@ export default class Editor extends Component {
           />
         </Sticky>
         <Slate
-          className={styles("editor")}
+          className="nc-visualEditor-editor"
           state={this.state.editorState}
           schema={this.state.schema}
           plugins={plugins}

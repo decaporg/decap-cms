@@ -20,8 +20,8 @@ const ToolbarPluginFormControl = ({
   const controlProps = { field, value, onAddAsset, onRemoveAsset, getAsset, onChange };
 
   return (
-    <div className={controlPaneStyles("control")} key={key}>
-      <label className={controlPaneStyles("label")} htmlFor={key}>{field.get('label')}</label>
+    <div className="nc-controlPane-control" key={key}>
+      <label className="nc-controlPane-label" htmlFor={key}>{field.get('label')}</label>
       <Control {...controlProps}/>
     </div>
   );

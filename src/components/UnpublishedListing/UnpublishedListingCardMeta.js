@@ -5,10 +5,10 @@ import { prefixer } from '../../lib/styleHelper';
 const styles = prefixer('unpublishedListingCardMeta');
 
 const UnpublishedListingCardMeta = ({ meta, label }) =>
-  <div className={styles("cardMeta")}>
-    <span className={styles("meta")}>{meta}</span>
+  <div className="nc-unpublishedListingCardMeta-cardMeta">
+    <span className="nc-unpublishedListingCardMeta-meta">{meta}</span>
     {(label && label.length > 0)
-      ? <span className={styles("label")}>{label}</span>
+      ? <span className="nc-unpublishedListingCardMeta-label">{label}</span>
       : ""}
   </div>;
 

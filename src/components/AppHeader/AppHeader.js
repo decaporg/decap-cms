@@ -62,16 +62,16 @@ export default class AppHeader extends React.Component {
     };
 
     const theme = {
-      appBar: styles("appBar"),
-      homeLink: styles("homeLink"),
-      iconMenu: styles("iconMenu"),
-      icon: styles("icon"),
-      leftIcon: styles("leftIcon"),
-      base: themeStyles("base"),
-      container: themeStyles("container"),
-      rounded: themeStyles("rounded"),
-      depth: themeStyles("depth"),
-      clearfix: themeStyles("clearfix"),
+      appBar: 'nc-appHeader-appBar',
+      homeLink: 'nc-appHeader-homeLink',
+      iconMenu: 'nc-appHeader-iconMenu',
+      icon: 'nc-appHeader-icon',
+      leftIcon: 'nc-appHeader-leftIcon',
+      base: 'nc-theme-base',
+      container: 'nc-theme-container',
+      rounded: 'nc-theme-rounded',
+      depth: 'nc-theme-depth',
+      clearfix: 'nc-theme-clearfix',
     };
 
     return (
@@ -82,8 +82,8 @@ export default class AppHeader extends React.Component {
         onLeftIconClick={toggleDrawer}
         onRightIconClick={this.handleRightIconClick}
       >
-        <Link to="/" className={styles("homeLink")}>
-          <FontIcon value="home" className={styles("icon")} />
+        <Link to="/" className="nc-appHeader-homeLink">
+          <FontIcon value="home" className="nc-appHeader-icon" />
         </Link>
         <IconMenu
           theme={theme}

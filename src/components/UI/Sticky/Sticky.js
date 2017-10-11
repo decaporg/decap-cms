@@ -149,7 +149,7 @@ export class StickyContainer extends Component {
     return (
       <div
         id={this.context.string}
-        className={classnames(this.props.className, styles("stickyContainer"))}
+        className={classnames(this.props.className, 'nc-sticky-stickyContainer')}
         ref={(ref) => { this.ref = ref }}
       >
         {this.props.children}
@@ -208,11 +208,11 @@ export class Sticky extends Component {
         <div
           className={classnames(
             props.className,
-            styles("sticky"),
+            'nc-sticky-sticky',
             {
-              [styles("stickyActive")]: state.shouldStick,
+              ['nc-sticky-stickyActive']: state.shouldStick,
               [props.classNameActive]: state.shouldStick,
-              [styles("stickyAtBottom")]: state.shouldStickAtBottom,
+              ['nc-sticky-stickyAtBottom']: state.shouldStickAtBottom,
             },
           )}
           style={

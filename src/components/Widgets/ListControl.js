@@ -140,7 +140,7 @@ export default class ListControl extends Component {
     const { value, field, getAsset, onAddAsset, onRemoveAsset } = this.props;
     const { itemStates } = this.state;
     const collapsed = itemStates.getIn([index, 'collapsed']);
-    const classNames = [styles("item"), collapsed ? styles("collapsed") : styles("expanded")];
+    const classNames = ['nc-listControl-item', collapsed ? 'nc-listControl-collapsed' : 'nc-listControl-expanded'];
 
     return (<SortableListItem
       key={index}
@@ -151,18 +151,18 @@ export default class ListControl extends Component {
       outline="list"
     >
       <div className={classNames.join(' ')}>
-        <button className={styles("toggleButton")} onClick={this.handleToggle(index)}>
+        <button className="nc-listControl-toggleButton" onClick={this.handleToggle(index)}>
           <FontIcon value={collapsed ? 'expand_more' : 'expand_less'} />
         </button>
-        <FontIcon value="drag_handle" className={styles("dragIcon")} />
-        <button className={styles("removeButton")} onClick={this.handleRemove(index)}>
+        <FontIcon value="drag_handle" className="nc-listControl-dragIcon" />
+        <button className="nc-listControl-removeButton" onClick={this.handleRemove(index)}>
           <FontIcon value="close" />
         </button>
-        <div className={styles("objectLabel")}>{this.objectLabel(item)}</div>
+        <div className="nc-listControl-objectLabel">{this.objectLabel(item)}</div>
         <ObjectControl
           value={item}
           field={field}
-          className={styles("objectControl")}
+          className="nc-listControl-objectControl"
           onChange={this.handleChangeFor(index)}
           getAsset={getAsset}
           onAddAsset={onAddAsset}
@@ -178,9 +178,9 @@ export default class ListControl extends Component {
 
     return (<div id={forID}>
       {value && value.map((item, index) => this.renderItem(item, index))}
-      <button className={styles("addButton")} onClick={this.handleAdd}>
-        <FontIcon value="add" className={styles("addButtonIcon")} />
-        <span className={styles("addButtonText")}>new {listLabel}</span>
+      <button className="nc-listControl-addButton" onClick={this.handleAdd}>
+        <FontIcon value="add" className="nc-listControl-addButtonIcon" />
+        <span className="nc-listControl-addButtonText">new {listLabel}</span>
       </button>
     </div>);
   }

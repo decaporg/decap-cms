@@ -31,7 +31,7 @@ export default class ToolbarComponentsMenu extends React.Component {
   render() {
     const { plugins, onComponentMenuItemClick, disabled } = this.props;
     return (
-      <div className={styles("root")}>
+      <div className="nc-toolbarComponentsMenu-root">
         <ToolbarButton
           label="Add Component"
           icon="plus"
@@ -50,7 +50,7 @@ export default class ToolbarComponentsMenu extends React.Component {
               value={plugin.get('id')}
               caption={plugin.get('label')}
               onClick={() => onComponentMenuItemClick(plugin)}
-              className={styles("menuItem")}
+              className="nc-toolbarComponentsMenu-menuItem"
             />
           ))}
         </Menu>

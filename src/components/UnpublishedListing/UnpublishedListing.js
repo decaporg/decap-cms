@@ -52,8 +52,8 @@ class UnpublishedListing extends React.Component {
           /* eslint-enable */
         >
           {isHovered => (
-            <div className={isHovered ? styles("columnHovered") : styles("column")}>
-              <h2 className={styles("columnHeading")}>
+            <div className={isHovered ? 'nc-unpublishedListing-columnHovered' : 'nc-unpublishedListing-column'}>
+              <h2 className="nc-unpublishedListing-columnHeading">
                 {statusDescriptions.get(currColumn)}
               </h2>
               {this.renderColumns(currEntries, currColumn)}
@@ -81,8 +81,8 @@ class UnpublishedListing extends React.Component {
                 collection={collection}
                 ownStatus={ownStatus}
               >
-                <div className={styles("draggable")}>
-                  <Card className={styles("card")}>
+                <div className="nc-unpublishedListing-draggable">
+                  <Card className="nc-unpublishedListing-card">
                     <UnpublishedListingCardMeta
                       meta={capitalize(collection)}
                       label={isModification ? "" : "New"}
@@ -90,7 +90,7 @@ class UnpublishedListing extends React.Component {
                     <CardTitle
                       title={entry.getIn(['data', 'title'])}
                       subtitle={`by ${ author }`}
-                      className={styles("cardTitle")}
+                      className="nc-unpublishedListing-cardTitle"
                     />
                     <CardText>
                       Last updated: {timeStamp} by {entry.getIn(['metaData', 'user'])}
@@ -130,7 +130,7 @@ class UnpublishedListing extends React.Component {
     return (
       <div>
         <h5>Editorial Workflow</h5>
-        <div className={styles("container")}>
+        <div className="nc-unpublishedListing-container">
           {columns}
         </div>
       </div>

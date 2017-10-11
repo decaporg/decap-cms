@@ -32,20 +32,20 @@ export default class Loader extends React.Component {
     if (!children) {
       return null;
     } else if (typeof children == 'string') {
-      return <div className={styles("text")}>{children}</div>;
+      return <div className="nc-loader-text">{children}</div>;
     } else if (Array.isArray(children)) {
       this.setAnimation();
-      return (<div className={styles("text")}>
+      return (<div className="nc-loader-text">
         <CSSTransition
           classNames={{
-            enter: styles('enter'),
-            enterActive: styles('enterActive'),
-            exit: styles('exit'),
-            exitActive: styles('exitActive'),
+            enter: 'nc-loader-enter',
+            enterActive: 'nc-loader-enterActive',
+            exit: 'nc-loader-exit',
+            exitActive: 'nc-loader-exitActive',
           }}
           timeout={500}
         >
-          <div key={currentItem} className={styles("animateItem")}>{children[currentItem]}</div>
+          <div key={currentItem} className="nc-loader-animateItem">{children[currentItem]}</div>
         </CSSTransition>
       </div>);
     }
@@ -55,9 +55,9 @@ export default class Loader extends React.Component {
     const { active, style, className = '' } = this.props;
 
     // Class names
-    let classNames = styles("loader");
+    let classNames = 'nc-loader-loader';
     if (active) {
-      classNames += ` ${ styles("active") }`;
+      classNames += ` nc-loader-active`;
     }
     if (className.length > 0) {
       classNames += ` ${ className }`;
