@@ -33,4 +33,12 @@ describe('slate', () => {
   it('should not escape markdown entities in html', () => {
     expect(process('<span>*</span>')).toEqual('<span>*</span>');
   });
+
+  it('should condense inline link styling with surrounding text', () => {
+    expect(process('_a_[_b_](c)_d_')).toEqual('_a[b](c)d_');
+    expect(process('a[_b_](c)d')).toEqual('a_[b](c)_d');
+    expect(process('a[_b**c**_](d)e')).toEqual('a_[b**c**](d)_e');
+    expect(process('**a**[_b**c**_](d)**e**')).toEqual('**a**_[b**c**](d)_**e**');
+    expect(process('_**a**_[_b**c**_](d)_**e**_')).toEqual('_**a**[b**c**](d)**e**_');
+  });
 });
