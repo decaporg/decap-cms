@@ -10,7 +10,7 @@ export function getCollectionUrl(collectionName, direct) {
 }
 
 export function getNewEntryUrl(collectionName, direct) {
-  return getUrl(`/collections/${ collectionName }/entries/new`, direct);
+  return getUrl(`/collections/${ collectionName }/new`, direct);
 }
 
 /* See https://www.w3.org/International/articles/idn-and-iri/#path.
