@@ -18,8 +18,8 @@ export default function EntryPageHOC(EntryPage) {
     const returnObj = { isEditorialWorkflow, showDelete: !ownProps.newEntry };
     if (isEditorialWorkflow) {
       returnObj.showDelete = false;
-      const slug = ownProps.params.slug;
-      const collection = collections.get(ownProps.params.name);
+      const slug = ownProps.match.params.slug;
+      const collection = collections.get(ownProps.match.params.name);
       const unpublishedEntry = selectUnpublishedEntry(state, collection.get('name'), slug);
       if (unpublishedEntry) {
         returnObj.unpublishedEntry = true;
