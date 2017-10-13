@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-
 const UnpublishedListingCardMeta = ({ meta, label }) =>
   <div className="nc-unpublishedListingCardMeta-cardMeta">
     <span className="nc-unpublishedListingCardMeta-meta">{meta}</span>

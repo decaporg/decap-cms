@@ -12,7 +12,6 @@ import RULES from './rules';
 import plugins, { EditListConfigured } from './plugins';
 import onKeyDown from './keys';
 
-
 export default class Editor extends Component {
   constructor(props) {
     super(props);

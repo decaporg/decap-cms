@@ -5,7 +5,6 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { resolveWidget } from '../Widgets';
 import ControlHOC from '../Widgets/ControlHOC';
 
-
 function isHidden(field) {
   return field.get('widget') === 'hidden';
 }
@@ -31,7 +30,7 @@ export default class ControlPane extends Component {
     const value = entry.getIn(['data', fieldName]);
     const metadata = fieldsMetaData.get(fieldName);
     const errors = fieldsErrors.get(fieldName);
-    const labelClass = errors ? `nc-controlPane-label nc-controlPane-labelWithError` : 'nc-controlPane-label';
+    const labelClass = errors ? 'nc-controlPane-label nc-controlPane-labelWithError' : 'nc-controlPane-label';
     if (entry.size === 0 || entry.get('partial') === true) return null;
     return (
       <div className="nc-controlPane-control">

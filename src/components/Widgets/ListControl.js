@@ -5,7 +5,6 @@ import { sortable } from 'react-sortable';
 import FontIcon from 'react-toolbox/lib/font_icon';
 import ObjectControl from './ObjectControl';
 
-
 function ListItem(props) {
   return <div {...props} className={`list-item ${ props.className }`}>{props.children}</div>;
 }

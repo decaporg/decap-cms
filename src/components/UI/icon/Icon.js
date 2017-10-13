@@ -1,6 +1,5 @@
 import React from 'react';
 
-
 const availableIcons = [
   // Font Awesome Editor Icons
   'bold', 'italic', 'list', 'font', 'text-height', 'text-width', 'align-left', 'align-center', 'align-right',
@@ -200,7 +199,7 @@ const iconPropType = (props, propName) => {
 const noop = function () {};
 
 export default function Icon({ style, className = '', type, onClick = noop }) {
-  return <span className={`nc-icon-root ${ styles(type) } ${ className }`} style={style} onClick={onClick} />;
+  return <span className={`nc-icon-root nc-icon-${ type } ${ className }`} style={style} onClick={onClick} />;
 }
 
 Icon.propTypes = {

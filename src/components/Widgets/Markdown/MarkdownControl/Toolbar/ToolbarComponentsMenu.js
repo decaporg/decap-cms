@@ -4,7 +4,6 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Menu, MenuItem } from 'react-toolbox/lib/menu';
 import ToolbarButton from './ToolbarButton';
 
-
 export default class ToolbarComponentsMenu extends React.Component {
   static PropTypes = {
     plugins: ImmutablePropTypes.map,

@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
-
 export const SEARCH = 'SEARCH';
 const PLACEHOLDER = 'Search entry titles...';
 

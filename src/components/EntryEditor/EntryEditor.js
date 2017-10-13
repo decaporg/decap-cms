@@ -11,8 +11,6 @@ import Toolbar from './EntryEditorToolbar';
 import { StickyContext } from '../UI/Sticky/Sticky';
 import stickyStyles from '../UI/Sticky/Sticky.css';
 
-
-
 const PREVIEW_VISIBLE = 'cms.preview-visible';
 
 class EntryEditor extends Component {

@@ -4,7 +4,6 @@ import ImmutablePropTypes from "react-immutable-proptypes";
 import Switch from 'react-toolbox/lib/switch';
 import { isBoolean } from 'lodash';
 
-
 export default class BooleanControl extends React.Component {
   render() {
     const { value, field, forID, onChange } = this.props;

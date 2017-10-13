@@ -1,7 +1,6 @@
 import React from 'react';
 import CSSTransition from 'react-transition-group/CSSTransition';
 
-
 export default class Loader extends React.Component {
 
   state = {

@@ -10,7 +10,6 @@ import Button from 'react-toolbox/lib/button';
 import UnpublishedListingCardMeta from './UnpublishedListingCardMeta.js';
 import { status, statusDescriptions } from '../../constants/publishModes';
 
-
 class UnpublishedListing extends React.Component {
   static propTypes = {
     entries: ImmutablePropTypes.orderedMap,

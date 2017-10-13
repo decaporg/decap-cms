@@ -8,8 +8,8 @@ const styles = {
     backgroundColor: '#555',
     textAlign: 'center',
     marginTop: 5,
-    padding: 10
-  }
+    padding: 10,
+  },
 };
 
 storiesOf('Card', module)
@@ -37,6 +37,6 @@ storiesOf('Card', module)
       <img src="http://www.top13.net/wp-content/uploads/2015/10/perfectly-timed-funny-cat-pictures-5.jpg" />
       <h1>Now with footer.</h1>
       <p>header and footer elements are also not subject to margin</p>
-      <footer style={styles("footer")}>&copy; Thousand Cats Corp</footer>
+      <footer style={styles.footer}>&copy; Thousand Cats Corp</footer>
     </Card>
   ));

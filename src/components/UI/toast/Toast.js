@@ -14,7 +14,7 @@ const icons = {
 
 export default function Toast({ kind, message }) {
   return (
-    <div className={`${ themeClasses } nc-toast-root ${ styles(kind) }`}>
+    <div className={`${ themeClasses } nc-toast-root nc-toast-${ kind }`}>
       <Icon type={icons[kind]} className="nc-toast-icon" />
       {message}
     </div>

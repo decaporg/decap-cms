@@ -2,7 +2,6 @@ import React from 'react';
 import { List } from 'immutable';
 import cn from 'classnames';
 
-
 /**
  * Slate uses React components to render each type of node that it receives.
  * This is the closest thing Slate has to a schema definition. The types are set

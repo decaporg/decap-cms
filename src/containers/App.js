@@ -27,7 +27,6 @@ import EntryPage from './EntryPage';
 import SearchPage from './SearchPage';
 import NotFoundPage from './NotFoundPage';
 
-
 TopBarProgress.config({
   barColors: {
     "0": '#3ab7a5',

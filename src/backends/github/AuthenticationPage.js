@@ -6,7 +6,6 @@ import { Icon } from '../../components/UI';
 import { Notifs } from 'redux-notifications';
 import { Toast } from '../../components/UI/index';
 
-
 export default class AuthenticationPage extends React.Component {
   static propTypes = {
     onLogin: PropTypes.func.isRequired,

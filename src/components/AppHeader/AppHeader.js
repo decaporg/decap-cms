@@ -9,7 +9,6 @@ import FontIcon from "react-toolbox/lib/font_icon";
 import FindBar from "../FindBar/FindBar";
 import { stringToRGB } from "../../lib/textHelper";
 
-
 export default class AppHeader extends React.Component {
 
   static propTypes = {

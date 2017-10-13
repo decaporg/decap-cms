@@ -7,7 +7,6 @@ import { Toast } from '../../components/UI/index';
 import { Card, Icon } from "../../components/UI";
 import logo from "./netlify_logo.svg";
 
-
 let component = null;
 
 if (window.netlifyIdentity) {

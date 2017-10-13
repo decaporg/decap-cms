@@ -4,7 +4,6 @@ import { Map } from 'immutable';
 import { Button } from 'react-toolbox/lib/button';
 import ToolbarPluginFormControl from './ToolbarPluginFormControl';
 
-
 export default class ToolbarPluginForm extends React.Component {
   static propTypes = {
     plugin: PropTypes.object.isRequired,

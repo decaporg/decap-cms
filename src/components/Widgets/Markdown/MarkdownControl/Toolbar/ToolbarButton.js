@@ -3,7 +3,6 @@ import React from 'react';
 import classnames from 'classnames';
 import { Icon } from '../../../../UI';
 
-
 const ToolbarButton = ({ label, icon, action, active, disabled }) => (
   <button
     className={classnames('nc-toolbarButton-button', { ['nc-toolbarButton-active']: active })}

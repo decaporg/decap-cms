@@ -4,7 +4,6 @@ import { truncateMiddle } from '../../lib/textHelper';
 import { Loader } from '../UI';
 import AssetProxy, { createAssetProxy } from '../../valueObjects/AssetProxy';
 
-
 const MAX_DISPLAY_LENGTH = 50;
 
 export default class ImageControl extends React.Component {

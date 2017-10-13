@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import classnames from 'classnames';
 import { partial, without } from 'lodash';
 
-
 /**
  * Sticky is a collection of three components meant to facilitate "sticky" UI
  * behavior for nested components. It uses React Context to provide an isolated,

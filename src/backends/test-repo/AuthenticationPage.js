@@ -5,7 +5,6 @@ import Button from "react-toolbox/lib/button";
 import { Card, Icon } from "../../components/UI";
 import logo from "../git-gateway/netlify_logo.svg";
 
-
 export default class AuthenticationPage extends React.Component {
   static propTypes = {
     onLogin: PropTypes.func.isRequired,

@@ -6,7 +6,6 @@ import { debounce } from 'lodash';
 import Toolbar from '../Toolbar/Toolbar';
 import { Sticky } from '../../../../UI/Sticky/Sticky';
 
-
 export default class RawEditor extends React.Component {
   constructor(props) {
     super(props);

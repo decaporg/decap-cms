@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { Map } from 'immutable';
 import { resolveWidget } from '../Widgets';
 
-
 export default class ObjectControl extends Component {
   static propTypes = {
     onChange: PropTypes.func.isRequired,

@@ -11,7 +11,6 @@ import PreviewContent from './PreviewContent.js';
 import PreviewHOC from '../Widgets/PreviewHOC';
 import Preview from './Preview';
 
-
 export default class PreviewPane extends React.Component {
 
   getWidget = (field, value, props) => {

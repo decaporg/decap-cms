@@ -8,7 +8,6 @@ import { resolvePath } from '../../lib/pathHelper';
 import { selectFields, selectInferedField } from '../../reducers/collections';
 import { Card } from '../UI';
 
-
 export default class EntryListing extends React.Component {
   static propTypes = {
     children: PropTypes.node.isRequired,

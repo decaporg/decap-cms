@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { resolveWidget } from '../../../../Widgets';
 
-
 const ToolbarPluginFormControl = ({
   field,
   value,

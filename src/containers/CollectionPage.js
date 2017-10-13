@@ -7,7 +7,6 @@ import { selectEntries } from '../reducers';
 import { Loader } from '../components/UI';
 import EntryListing from '../components/EntryListing/EntryListing';
 
-
 class CollectionPage extends React.Component {
 
   static propTypes = {

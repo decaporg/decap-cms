@@ -5,7 +5,6 @@ import ReactSidebar from 'react-sidebar';
 import _ from 'lodash';
 import { openSidebar } from '../actions/globalUI';
 
-
 class Sidebar extends React.Component {
 
   static propTypes = {
