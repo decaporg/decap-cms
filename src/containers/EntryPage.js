@@ -56,11 +56,10 @@ class EntryPage extends React.Component {
       loadEntry(collection, slug);
     }
 
-    this.unlisten = history.listenBefore((location) => {
+    this.unblock = history.block((location) => {
       if (this.props.entryDraft.get('hasChanged')) {
         return "Are you sure you want to leave this page?";
       }
-      return true;
     });
   }
 
@@ -84,7 +83,7 @@ class EntryPage extends React.Component {
 
   componentWillUnmount() {
     this.props.discardDraft();
-    this.unlisten();
+    this.unblock();
   }
 
   createDraft = (entry) => {
@@ -161,9 +160,9 @@ class EntryPage extends React.Component {
 
 function mapStateToProps(state, ownProps) {
   const { collections, entryDraft } = state;
-  const slug = ownProps.params.slug;
-  const collection = collections.get(ownProps.params.name);
-  const newEntry = ownProps.route && ownProps.route.newRecord === true;
+  const slug = ownProps.match.params.slug;
+  const collection = collections.get(ownProps.match.params.name);
+  const newEntry = ownProps.newRecord === true;
   const fields = selectFields(collection, slug);
   const entry = newEntry ? null : selectEntry(state, collection.get('name'), slug);
   const boundGetAsset = getAsset.bind(null, state);

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
-import { IndexLink } from "react-router";
+import { Route, Switch, Link } from 'react-router-dom';
 import FontIcon from 'react-toolbox/lib/font_icon';
 import { Navigation } from 'react-toolbox/lib/navigation';
 import { Notifs } from 'redux-notifications';
@@ -21,6 +21,11 @@ import AppHeader from '../components/AppHeader/AppHeader';
 import { Loader, Toast } from '../components/UI/index';
 import { getCollectionUrl, getNewEntryUrl } from '../lib/urlHelper';
 import { SIMPLE, EDITORIAL_WORKFLOW } from '../constants/publishModes';
+import DashboardPage from './DashboardPage';
+import CollectionPage from './CollectionPage';
+import EntryPage from './EntryPage';
+import SearchPage from './SearchPage';
+import NotFoundPage from './NotFoundPage';
 import styles from './App.css';
 import sidebarStyles from './Sidebar.css';
 
@@ -38,7 +43,6 @@ class App extends React.Component {
 
   static propTypes = {
     auth: ImmutablePropTypes.map,
-    children: PropTypes.node,
     config: ImmutablePropTypes.map,
     collections: ImmutablePropTypes.orderedMap,
     createNewEntryInCollection: PropTypes.func.isRequired,
@@ -104,7 +108,6 @@ class App extends React.Component {
     const {
       user,
       config,
-      children,
       collections,
       toggleSidebar,
       runCommand,
@@ -140,7 +143,7 @@ class App extends React.Component {
             <section>
               <h1 className={sidebarStyles.heading}>Publishing</h1>
               <div className={sidebarStyles.linkWrapper}>
-                <IndexLink to="/" className={sidebarStyles.viewEntriesLink}>Editorial Workflow</IndexLink>
+                <Link to="/" className={sidebarStyles.viewEntriesLink}>Editorial Workflow</Link>
               </div>
             </section>
           }
@@ -193,7 +196,14 @@ class App extends React.Component {
           <div className={styles.entriesPanel}>
             { isFetching && <TopBarProgress /> }
             <div>
-              {children}
+              <Switch>
+                <Route exact path='/' component={DashboardPage} />
+                <Route exact path="/collections/:name" component={CollectionPage} />
+                <Route path="/collections/:name/entries/new" render={(props) => (<EntryPage {...props} newRecord={true}/>)} />
+                <Route path="/collections/:name/entries/:slug" component={EntryPage} />
+                <Route path="/search/:searchTerm" component={SearchPage} />
+                <Route component={NotFoundPage} />
+              </Switch>
             </div>
           </div>
         </div>

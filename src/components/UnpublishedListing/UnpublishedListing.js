@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { DragSource, DropTarget, HTML5DragDrop } from 'react-simple-dnd';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import moment from 'moment';
 import { capitalize } from 'lodash'
 import { Card, CardTitle, CardText, CardActions } from 'react-toolbox/lib/card';
