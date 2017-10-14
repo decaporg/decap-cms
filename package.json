@@ -142,7 +142,7 @@
     "normalize.css": "^4.2.0",
     "prop-types": "^15.5.10",
     "react": "^15.5.0",
-    "react-autosuggest": "^7.0.1",
+    "react-autosuggest": "^9.3.2",
     "react-datetime": "^2.6.0",
     "react-dnd": "^2.5.4",
     "react-dnd-html5-backend": "^2.5.4",
