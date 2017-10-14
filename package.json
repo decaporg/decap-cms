@@ -147,7 +147,7 @@
     "react-dnd": "^2.5.4",
     "react-dnd-html5-backend": "^2.5.4",
     "react-dom": "^15.5.0",
-    "react-frame-component": "^1.0.3",
+    "react-frame-component": "^2.0.0",
     "react-hot-loader": "^3.0.0-beta.7",
     "react-immutable-proptypes": "^2.1.0",
     "react-redux": "^4.4.0",
