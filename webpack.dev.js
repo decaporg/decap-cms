@@ -14,6 +14,11 @@ module.exports = merge.smart(require('./webpack.base.js'), {
       `webpack-dev-server/client?http://${ HOST }:${ PORT }/`,
       './index',
     ],
+    polyfills: [
+      'react-hot-loader/patch',
+      `webpack-dev-server/client?http://${ HOST }:${ PORT }/`,
+      './lib/polyfills/polyfills.js',
+    ],
   },
   output: {
     path: path.join(__dirname, 'dist'),

@@ -7,6 +7,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 module.exports = merge.smart(require('./webpack.base.js'), {
   entry: {
     cms: './index',
+    polyfills: './lib/polyfills/polyfills.js',
   },
   output: {
     path: path.join(__dirname, 'dist'),
