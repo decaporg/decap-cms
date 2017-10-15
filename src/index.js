@@ -6,6 +6,7 @@ import 'normalize.css';
 import Root from './root';
 import registry from './lib/registry';
 import './index.css';
+import * as polyfills from './lib/polyfills';
 
 if (process.env.NODE_ENV !== 'production') {
   require('./utils.css'); // eslint-disable-line
@@ -14,20 +15,24 @@ if (process.env.NODE_ENV !== 'production') {
 // Log the version number
 console.log(`Netlify CMS version ${NETLIFY_CMS_VERSION}`);
 
+function initialize() {
 // Create mount element dynamically
-const el = document.createElement('div');
-el.id = 'root';
-document.body.appendChild(el);
+  const el = document.createElement('div');
+  el.id = 'root';
+  document.body.appendChild(el);
 
-render((
-  <AppContainer>
-    <Root />
-  </AppContainer>
-), el);
+  render((
+    <AppContainer>
+      <Root />
+    </AppContainer>
+  ), el);
 
-if (module.hot) {
-  module.hot.accept('./root', () => { render(Root); });
+  if (module.hot) {
+    module.hot.accept('./root', () => { render(Root); });
+  }
 }
+
+if (polyfills.supportsAll()) initialize(); else polyfills.loadRequiredScripts(initialize);
 
 const buildtInPlugins = [{
   label: 'Image',
