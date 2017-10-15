@@ -8,9 +8,6 @@ import Root from './root';
 import registry from './lib/registry';
 import './index.css';
 
-import 'core-js/fn/typed';
-import 'core-js/fn/symbol';
-
 if (process.env.NODE_ENV !== 'production') {
   require('./utils.css'); // eslint-disable-line
 }
