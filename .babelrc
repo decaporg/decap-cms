@@ -2,7 +2,8 @@
   "presets": [
     ["env", {
       "modules": false,
-      "useBuiltIns": false,
+      // Remove unneeded shims from `babel-polyfill`
+      "useBuiltIns": true,
     }],
     "stage-1",
     "react"
