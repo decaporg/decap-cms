@@ -70,9 +70,7 @@
     "last 2 Edge versions",
     "last 2 Safari versions",
     "last 2 iOS versions",
-    "last 2 ChromeAndroid versions",
-    "IE 11",
-    "IE_mob 11"
+    "last 2 ChromeAndroid versions"
   ],
   "devDependencies": {
     "all-contributors-cli": "^4.4.0",
@@ -184,8 +182,7 @@
     "unified": "^6.1.4",
     "unist-builder": "^1.0.2",
     "unist-util-visit-parents": "^1.1.1",
-    "uuid": "^3.1.0",
-    "whatwg-fetch": "^1.0.0"
+    "uuid": "^3.1.0"
   },
   "optionalDependencies": {
     "fsevents": "^1.0.14"
