@@ -5,8 +5,8 @@ import uuid from 'uuid/v4';
 import { Map } from 'immutable';
 import { connect } from 'react-redux';
 import { debounce } from 'lodash';
-import { Loader } from '../../components/UI/index';
-import { query, clearSearch } from '../../actions/search';
+import { Loader } from '../../../components/UI/index';
+import { query, clearSearch } from '../../../actions/search';
 
 
 function escapeRegexCharacters(str) {

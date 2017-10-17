@@ -17,14 +17,14 @@ import FileControl from './Widgets/FileControl';
 import FilePreview from './Widgets/FilePreview';
 import DateControl from './Widgets/DateControl';
 import DatePreview from './Widgets/DatePreview';
-import DateTimeControl from './Widgets/DateTimeControl';
-import DateTimePreview from './Widgets/DateTimePreview';
+import DateTimeControl from './Widgets/DateTime/DateTimeControl';
+import DateTimePreview from './Widgets/DateTime/DateTimePreview';
 import SelectControl from './Widgets/SelectControl';
 import SelectPreview from './Widgets/SelectPreview';
 import ObjectControl from './Widgets/ObjectControl';
 import ObjectPreview from './Widgets/ObjectPreview';
-import RelationControl from './Widgets/RelationControl';
-import RelationPreview from './Widgets/RelationPreview';
+import RelationControl from './Widgets/Relation/RelationControl';
+import RelationPreview from './Widgets/Relation/RelationPreview';
 import BooleanControl from './Widgets/BooleanControl';
 
 

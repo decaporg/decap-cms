@@ -17,7 +17,6 @@ import { closeEntry } from '../actions/editor';
 import { deserializeValues } from '../lib/serializeEntryValues';
 import { addAsset, removeAsset } from '../actions/media';
 import { openMediaLibrary } from '../actions/mediaLibrary';
-import { openSidebar } from '../actions/globalUI';
 import { selectEntry, getAsset } from '../reducers';
 import { selectFields } from '../reducers/collections';
 import EntryEditor from '../components/EntryEditor/EntryEditor';
@@ -44,7 +43,6 @@ class EntryPage extends React.Component {
     openMediaLibrary: PropTypes.func.isRequired,
     removeAsset: PropTypes.func.isRequired,
     closeEntry: PropTypes.func.isRequired,
-    openSidebar: PropTypes.func.isRequired,
     fields: ImmutablePropTypes.list.isRequired,
     slug: PropTypes.string,
     newEntry: PropTypes.bool.isRequired,
@@ -52,7 +50,6 @@ class EntryPage extends React.Component {
 
   componentDidMount() {
     const { entry, newEntry, collection, slug, loadEntry, createEmptyDraft } = this.props;
-    this.props.openSidebar();
     if (newEntry) {
       createEmptyDraft(collection);
     } else {
@@ -222,6 +219,5 @@ export default connect(
     persistEntry,
     deleteEntry,
     closeEntry,
-    openSidebar,
   }
 )(entryPageHOC(EntryPage));

@@ -1,0 +1,71 @@
+.nc-appHeader-container {
+  background-color: var(--backgroundColorSecondary);
+  grid-area: header;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 12px;
+  box-shadow: var(--dropShadow);
+}
+
+.nc-appHeader-button {
+  background-color: transparent;
+  color: #7b8290;
+  font-size: 15px;
+  font-weight: 500;
+  display: inline-flex;
+  padding: 16px 20px;
+  align-items: center;
+
+  & .nc-icon {
+    margin-right: 4px;
+    color: #b3b9c4;
+  }
+
+  &:hover,
+  &:active,
+  &:focus,
+  &.nc-appHeader-button-active {
+    color: var(--activeColor);
+
+    & .nc-icon {
+      color: var(--activeColor);
+    }
+  }
+}
+
+.nc-appHeader-actions {
+  display: inline-flex;
+  align-items: center;
+}
+
+.nc-appHeader-siteLink {
+  font-size: 14px;
+  color: #7b8290;
+  padding: 10px 16px;
+}
+
+.nc-appHeader-quickNew {
+  font-size: 12px;
+  font-weight: 600;
+  background-color: #7d8190;
+  padding: 6px 12px;
+  margin-right: 8px;
+  color: #fff;
+
+  &:hover,
+  &:active,
+  &:focus {
+    color: #fff;
+  }
+}
+
+.nc-appHeader-avatar {
+  border: 0;
+  padding: 8px;
+  cursor: pointer;
+
+  & img {
+    width: 32px;
+    border-radius: 40px;
+  }
+}
