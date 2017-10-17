@@ -60,7 +60,13 @@ module.exports = {
         }),
       },
       {
-        test: /\.(png|eot|woff|woff2|ttf|svg|gif)(\?v=\d+\.\d+\.\d+)?$/,
+        include: [/src\/icons/],
+        test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+        loader: 'svg-inline-loader',
+      },
+      {
+        exclude: [/src\/icons/],
+        test: /\.(png|eot|woff|woff2|ttf|gif|svg)(\?v=\d+\.\d+\.\d+)?$/,
         use: { loader: "url-loader", options: { limit: 10000 } },
       },
     ],

@@ -1,0 +1,65 @@
+.nc-collectionPage-sidebar {
+  @apply(--card);
+  padding: 8px 0 12px;
+  grid-area: sidebar;
+  align-self: start;
+}
+
+.nc-collectionPage-sidebarHeading {
+  font-size: 16px;
+  font-weight: 600;
+  padding: 0;
+  margin: 8px 12px 12px;
+  color: var(--textLeadColor);
+}
+
+.nc-collectionPage-sidebarSearch {
+  display: flex;
+  align-items: center;
+  background-color: #eff0f4;
+  border-radius: var(--borderRadius);
+  margin: 0 8px;
+  position: relative;
+
+  & .nc-icon {
+    width: 18px;
+    height: 18px;
+    position: absolute;
+    left: 6px;
+  }
+
+  & input {
+    border: 0;
+    font-size: 14px;
+    background-color: transparent;
+    padding: 10px 6px 10px 32px;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+  }
+}
+
+.nc-collectionPage-sidebarLink {
+  display: flex;
+  font-size: 14px;
+  font-weight: 500;
+  align-items: center;
+  padding: 8px 12px;
+  border-left: 2px solid #fff;
+
+  & .nc-icon {
+    margin-right: 8px;
+  }
+
+  &:hover,
+  &:active,
+  &.nc-collectionPage-sidebarLink-active {
+    color: #3a69c8;
+    background-color: #e8f5fe;
+    border-left-color: #4863c6;
+  }
+
+  &:first-of-type {
+    margin-top: 16px;
+  }
+}
