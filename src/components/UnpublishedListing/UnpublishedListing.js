@@ -5,6 +5,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 import { capitalize } from 'lodash'
+import classnames from 'classnames';
 import { Card, CardTitle, CardText, CardActions } from 'react-toolbox/lib/card';
 import Button from 'react-toolbox/lib/button';
 import UnpublishedListingCardMeta from './UnpublishedListingCardMeta.js';
@@ -49,7 +50,10 @@ class UnpublishedListing extends React.Component {
           /* eslint-enable */
         >
           {isHovered => (
-            <div className={isHovered ? 'nc-unpublishedListing-columnHovered' : 'nc-unpublishedListing-column'}>
+            <div className={classnames(
+              'nc-unpublishedListing-column',
+              { 'nc-unpublishedListing-column-hovered' : isHovered },
+            )}>
               <h2 className="nc-unpublishedListing-columnHeading">
                 {statusDescriptions.get(currColumn)}
               </h2>

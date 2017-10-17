@@ -70,7 +70,7 @@ export default class Toolbar extends React.Component {
     ];
 
     return (
-      <div className={`nc-toolbar-Toolbar nc-theme-clearfix`}>
+      <div className="nc-toolbar-Toolbar nc-theme-clearfix">
         { buttonsConfig.map((btn, i) => (
           <ToolbarButton
             key={i}

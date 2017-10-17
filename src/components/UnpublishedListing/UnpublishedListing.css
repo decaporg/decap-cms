@@ -17,8 +17,7 @@
   transition: background-color .5s ease;
 }
 
-.nc-unpublishedListing-columnHovered {
-  /* composes: unpublishedListing--column; */
+.nc-unpublishedListing-column-hovered {
   border: 2px dashed var(--highlightColor);
   border-radius: 4px;
 }
