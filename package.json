@@ -154,7 +154,7 @@
     "react-router-dom": "^4.2.2",
     "react-router-redux": "^5.0.0-alpha.6",
     "react-sidebar": "^2.2.1",
-    "react-sortable": "^1.2.0",
+    "react-sortable-hoc": "^0.6.8",
     "react-split-pane": "^0.1.66",
     "react-toolbox": "^2.0.0-beta.12",
     "react-topbar-progress-indicator": "^1.0.0",
