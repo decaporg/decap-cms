@@ -1,0 +1,15 @@
+@import "./Sidebar.css";
+
+.nc-collectionPage-container {
+  display: grid;
+  grid-template-columns: 250px auto;
+  grid-template-rows: auto;
+  grid-gap: 28px;
+  grid-template-areas:
+    "sidebar main";
+  margin: 0 18px;
+}
+
+.nc-collectionPage-main {
+  grid-area: main;
+}

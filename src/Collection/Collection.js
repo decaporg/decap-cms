@@ -3,11 +3,14 @@ import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 import { loadEntries } from '../actions/entries';
+import { showCollection } from '../actions/collections';
 import { selectEntries } from '../reducers';
 import { Loader } from '../components/UI';
+import Sidebar from './Sidebar';
+import Entries from './Entries';
 import EntryListing from '../components/EntryListing/EntryListing';
 
-class CollectionPage extends React.Component {
+class Collection extends React.Component {
 
   static propTypes = {
     collection: ImmutablePropTypes.map.isRequired,
@@ -18,6 +21,8 @@ class CollectionPage extends React.Component {
     entries: ImmutablePropTypes.list,
     isFetching: PropTypes.bool.isRequired,
   };
+
+  state = { query: '' };
 
   componentDidMount() {
     const { collection, dispatch } = this.props;
@@ -40,27 +45,24 @@ class CollectionPage extends React.Component {
 
   render() {
     const { collections, collection, publicFolder, page, entries, isFetching } = this.props;
-    if (collections == null) {
-      return <h1>No collections defined in your config.yml</h1>;
-    }
+    const { query } = this.state;
 
-    const entriesContent = (<EntryListing
-      collections={collection}
-      entries={entries}
-      publicFolder={publicFolder}
-      page={page}
-      onPaginate={this.handleLoadMore}
-    >
-      {collection.get('label')}
-    </EntryListing>);
-
-    const fetchingEntriesContent = (<Loader active>
-        {['Loading Entries', 'Caching Entries', 'This might take several minutes']}
-    </Loader>);
-    const noEntriesContent = <div className="nc-collectionPage-noEntries">No Entries</div>;
-    const fallbackContent = isFetching ? fetchingEntriesContent : noEntriesContent;
-
-    return (<div>{entries ? entriesContent : fallbackContent}</div>);
+    return (
+      <div className="nc-collectionPage-container">
+        <Sidebar collections={collections}/>
+        <div className="nc-collectionPage-main">
+          <Entries
+            collections={collection}
+            entries={entries}
+            publicFolder={publicFolder}
+            page={page}
+            onPaginate={this.handleLoadMore}
+            isFetching={isFetching}
+            collectionName={collection.get('label')}
+          />
+        </div>
+      </div>
+    );
   }
 }
 
@@ -78,4 +80,4 @@ function mapStateToProps(state, ownProps) {
   return { publicFolder, collection, collections, page, entries, isFetching };
 }
 
-export default connect(mapStateToProps)(CollectionPage);
+export default connect(mapStateToProps)(Collection);

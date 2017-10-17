@@ -3,23 +3,26 @@
   --fontFamilyMono: 'SFMono-Regular', Consolas, "Liberation Mono", Menlo, Courier, monospace;
   --defaultColor: #333;
   --defaultColorLight: #fff;
-  --backgroundColor: #fff;
+  --backgroundColor: #eff0f4;
   --backgroundColorShaded: #eee;
+  --backgroundColorSecondary: #fff;
   --shadowColor: rgba(19, 39, 48, .24);
   --infoColor: #69c;
+  --activeColor: #3a69c8;
   --primaryColor: #4990e2;
   --successColor: #1c7;
   --warningColor: #fa0;
   --errorColor: #f52;
-  --textColor: #191919;
+  --textColor: #798291;
+  --textLeadColor: #313d3e;
   --textMutedColor: #8c8c8c;
-  --borderRadius: 4px;
+  --borderRadius: 6px;
   --borderRadiusLarge: 8px;
   --secondaryColor: #d9d9d9;
-  --dropShadow: 0 2px 8px 0 var(--secondaryColor);
+  --dropShadow: 0 2px 4px 0 rgba(19, 39, 48, .12);
   --topmostZindex: 99999;
   --foregroundAltColor: #fff;
-  --backgroundAltColor: #232528;
+  --backgroundAltColor: #fff;
   --textFieldBorderColor: var(--secondaryColor);
   --highlightFGColor: #fff;
   --highlightBGColor: #3ab7a5;
@@ -32,6 +35,12 @@
   --borderWidth: 2px;
   --border: solid var(--borderWidth) var(--secondaryColor);
   --textFieldBorder: var(--border);
+
+  --card: {
+    box-shadow: var(--dropShadow);
+    border-radius: 8px;
+    background-color: #fff;
+  }
 
   --input: {
     font-family: 'SFMono-Regular', Consolas, "Liberation Mono", Menlo, Courier, monospace;
@@ -53,6 +62,52 @@
       border-color: var(--primaryColor);
     }
   }
+}
+
+html {
+  box-sizing: border-box;
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  margin: 0;
+  height: 100%;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+body {
+  font-family: var(--fontFamilyPrimary);
+  height: 100%;
+  background-color: var(--backgroundColor);
+  color: var(--textColor);
+  margin: 0;
+}
+
+h1, h2, h3, h4, h5, h6, p {
+  margin: 0;
+  font-family: var(--fontFamilyPrimary);
+}
+
+h1 {
+  margin: 30px auto 25px;
+  padding-bottom: 15px;
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--textLeadColor);
+  letter-spacing: 0;
+  line-height: 24px;
+}
+
+a,
+button {
+  color: var(--textColor);
+  cursor: pointer;
+  border: 0;
+}
+
+img {
+  max-width: 100%;
 }
 
 .nc-theme-base {

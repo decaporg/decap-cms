@@ -6,11 +6,9 @@ import { Map } from 'immutable';
 import history from '../../routing/history';
 import { resolvePath } from '../../lib/pathHelper';
 import { selectFields, selectInferedField } from '../../reducers/collections';
-import { Card } from '../UI';
 
 export default class EntryListing extends React.Component {
   static propTypes = {
-    children: PropTypes.node.isRequired,
     publicFolder: PropTypes.string.isRequired,
     collections: PropTypes.oneOfType([
       ImmutablePropTypes.map,
@@ -46,7 +44,7 @@ export default class EntryListing extends React.Component {
     }
 
     return (
-      <Card
+      <div
         key={entry.get('slug')}
         onClick={() => history.push(path)} // eslint-disable-line
         className="nc-entryListing-card"
@@ -64,7 +62,7 @@ export default class EntryListing extends React.Component {
             </p>
           ))
         }
-      </Card>
+      </div>
     );
   }
   renderCards = () => {
@@ -83,10 +81,8 @@ export default class EntryListing extends React.Component {
   };
 
   render() {
-    const { children } = this.props;
     return (
       <div>
-        <h1>{children}</h1>
         <div className="nc-entryListing-cardsGrid">
           { this.renderCards() }
           <Waypoint onEnter={this.handleLoadMore} />
