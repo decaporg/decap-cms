@@ -52,7 +52,6 @@
 .nc-listControl-item {
   position: relative;
   padding-left: 24px;
-  cursor: move;
 }
 
 .nc-listControl-objectLabel {
@@ -83,9 +82,11 @@
 }
 
 .nc-listControl-dragIcon {
-  position: absolute;
-  top: 2px;
+  cursor: move;
   display: block;
-  width: 100%;
+  position: absolute;
   text-align: center;
+  top: 2px;
+  width: 100%;
+  z-index: 1;
 }
