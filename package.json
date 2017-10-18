@@ -90,6 +90,7 @@
     "caniuse-lite": "^1.0.30000745",
     "cross-env": "^5.0.2",
     "css-loader": "^0.28.7",
+    "cssnano": "^v4.0.0-rc.2",
     "deep-equal": "^1.0.1",
     "enzyme": "^3.0.0",
     "enzyme-adapter-react-15": "^1.0.0",

@@ -3,7 +3,6 @@ import React from 'react';
 import { truncateMiddle } from '../../lib/textHelper';
 import { Loader } from '../UI';
 import AssetProxy, { createAssetProxy } from '../../valueObjects/AssetProxy';
-import styles from './FileControl.css';
 
 const MAX_DISPLAY_LENGTH = 50;
 
@@ -79,8 +78,8 @@ export default class FileControl extends React.Component {
     const fileName = this.renderFileName();
     if (processing) {
       return (
-        <div className={styles.imageUpload}>
-          <span className={styles.message}>
+        <div className="nc-fileControl-imageUpload">
+          <span className="nc-fileControl-message">
             <Loader active />
           </span>
         </div>
@@ -88,18 +87,18 @@ export default class FileControl extends React.Component {
     }
     return (
       <div
-        className={styles.imageUpload}
+        className="nc-fileControl-imageUpload"
         onDragEnter={this.handleDragEnter}
         onDragOver={this.handleDragOver}
         onDrop={this.handleChange}
       >
-        <span className={styles.message} onClick={this.handleClick}>
+        <span className="nc-fileControl-message" onClick={this.handleClick}>
           {fileName ? fileName : 'Click here to upload a file from your computer, or drag and drop a file directly into this box'}
         </span>
         <input
           type="file"
           onChange={this.handleChange}
-          className={styles.input}
+          className="nc-fileControl-input"
           ref={this.handleFileInputRef}
         />
       </div>

@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { resolveWidget } from '../../../../Widgets';
-import styles from './ToolbarPluginFormControl.css';
 
 const ToolbarPluginFormControl = ({
   field,
@@ -18,8 +17,8 @@ const ToolbarPluginFormControl = ({
   const controlProps = { field, value, onAddAsset, onRemoveAsset, getAsset, onChange };
 
   return (
-    <div className={styles.control} key={key}>
-      <label className={styles.label} htmlFor={key}>{field.get('label')}</label>
+    <div className="nc-controlPane-control" key={key}>
+      <label className="nc-controlPane-label" htmlFor={key}>{field.get('label')}</label>
       <Control {...controlProps}/>
     </div>
   );

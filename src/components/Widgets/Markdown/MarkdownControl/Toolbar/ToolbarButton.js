@@ -2,11 +2,10 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import classnames from 'classnames';
 import { Icon } from '../../../../UI';
-import styles from './ToolbarButton.css';
 
 const ToolbarButton = ({ label, icon, action, active, disabled }) => (
   <button
-    className={classnames(styles.button, { [styles.active]: active })}
+    className={classnames('nc-toolbarButton-button', { ['nc-toolbarButton-active']: active })}
     onClick={action}
     title={label}
     disabled={disabled}

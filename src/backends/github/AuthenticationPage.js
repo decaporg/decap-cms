@@ -5,7 +5,6 @@ import Authenticator from '../../lib/netlify-auth';
 import { Icon } from '../../components/UI';
 import { Notifs } from 'redux-notifications';
 import { Toast } from '../../components/UI/index';
-import styles from './AuthenticationPage.css';
 
 export default class AuthenticationPage extends React.Component {
   static propTypes = {
@@ -35,11 +34,11 @@ export default class AuthenticationPage extends React.Component {
     const { loginError } = this.state;
 
     return (
-      <section className={styles.root}>
+      <section className="nc-githubAuthenticationPage-root">
         <Notifs CustomComponent={Toast} />
         {loginError && <p>{loginError}</p>}
         <Button
-          className={styles.button}
+          className="nc-githubAuthenticationPage-button"
           raised
           onClick={this.handleLogin}
         >

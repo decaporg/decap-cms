@@ -8,7 +8,6 @@ import AppBar from "react-toolbox/lib/app_bar";
 import FontIcon from "react-toolbox/lib/font_icon";
 import FindBar from "../FindBar/FindBar";
 import { stringToRGB } from "../../lib/textHelper";
-import styles from "./AppHeader.css";
 
 export default class AppHeader extends React.Component {
 
@@ -58,19 +57,32 @@ export default class AppHeader extends React.Component {
       backgroundColor: `#${ stringToRGB(user.get("name")) }`,
     };
 
+    const theme = {
+      appBar: 'nc-appHeader-appBar',
+      homeLink: 'nc-appHeader-homeLink',
+      iconMenu: 'nc-appHeader-iconMenu',
+      icon: 'nc-appHeader-icon',
+      leftIcon: 'nc-appHeader-leftIcon',
+      base: 'nc-theme-base',
+      container: 'nc-theme-container',
+      rounded: 'nc-theme-rounded',
+      depth: 'nc-theme-depth',
+      clearfix: 'nc-theme-clearfix',
+    };
+
     return (
       <AppBar
         fixed
-        theme={styles}
+        theme={theme}
         leftIcon="menu"
         onLeftIconClick={toggleDrawer}
         onRightIconClick={this.handleRightIconClick}
       >
-        <Link to="/" className={styles.homeLink}>
-          <FontIcon value="home" className={styles.icon} />
+        <Link to="/" className="nc-appHeader-homeLink">
+          <FontIcon value="home" className="nc-appHeader-icon" />
         </Link>
         <IconMenu
-          theme={styles}
+          theme={theme}
           icon="add"
           onClick={this.handleCreateButtonClick}
           onHide={this.handleCreateMenuHide}
@@ -88,7 +100,7 @@ export default class AppHeader extends React.Component {
         </IconMenu>
         <FindBar runCommand={runCommand} />
         <Avatar style={avatarStyle} title={user.get("name")} image={user.get("avatar_url")} />
-        <IconMenu icon="settings" position="topRight" theme={styles}>
+        <IconMenu icon="settings" position="topRight" theme={theme}>
           <MenuItem onClick={onLogoutClick} value="log out" caption="Log Out" />
         </IconMenu>
       </AppBar>

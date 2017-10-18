@@ -43,7 +43,7 @@ module.exports = {
         }),
       },
       {
-        /* We use CSS-modules and PostCSS for CMS styles */
+        /* We use PostCSS for CMS styles */
         test: /\.css$/,
         exclude: [/node_modules/],
         use: ExtractTextPlugin.extract({
@@ -52,9 +52,7 @@ module.exports = {
             {
               loader: 'css-loader',
               options: {
-                modules: true,
                 importLoaders: 1,
-                localIdentName: "cms__[name]__[local]"
               },
             },
             { loader: 'postcss-loader' },

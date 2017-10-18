@@ -5,11 +5,11 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 import { capitalize } from 'lodash'
+import classnames from 'classnames';
 import { Card, CardTitle, CardText, CardActions } from 'react-toolbox/lib/card';
 import Button from 'react-toolbox/lib/button';
 import UnpublishedListingCardMeta from './UnpublishedListingCardMeta.js';
 import { status, statusDescriptions } from '../../constants/publishModes';
-import styles from './UnpublishedListing.css';
 
 class UnpublishedListing extends React.Component {
   static propTypes = {
@@ -50,8 +50,11 @@ class UnpublishedListing extends React.Component {
           /* eslint-enable */
         >
           {isHovered => (
-            <div className={isHovered ? styles.columnHovered : styles.column}>
-              <h2 className={styles.columnHeading}>
+            <div className={classnames(
+              'nc-unpublishedListing-column',
+              { 'nc-unpublishedListing-column-hovered' : isHovered },
+            )}>
+              <h2 className="nc-unpublishedListing-columnHeading">
                 {statusDescriptions.get(currColumn)}
               </h2>
               {this.renderColumns(currEntries, currColumn)}
@@ -79,8 +82,8 @@ class UnpublishedListing extends React.Component {
                 collection={collection}
                 ownStatus={ownStatus}
               >
-                <div className={styles.draggable}>
-                  <Card className={styles.card}>
+                <div className="nc-unpublishedListing-draggable">
+                  <Card className="nc-unpublishedListing-card">
                     <UnpublishedListingCardMeta
                       meta={capitalize(collection)}
                       label={isModification ? "" : "New"}
@@ -88,7 +91,7 @@ class UnpublishedListing extends React.Component {
                     <CardTitle
                       title={entry.getIn(['data', 'title'])}
                       subtitle={`by ${ author }`}
-                      className={styles.cardTitle}
+                      className="nc-unpublishedListing-cardTitle"
                     />
                     <CardText>
                       Last updated: {timeStamp} by {entry.getIn(['metaData', 'user'])}
@@ -128,7 +131,7 @@ class UnpublishedListing extends React.Component {
     return (
       <div>
         <h5>Editorial Workflow</h5>
-        <div className={styles.container}>
+        <div className="nc-unpublishedListing-container">
           {columns}
         </div>
       </div>

@@ -26,8 +26,6 @@ import CollectionPage from './CollectionPage';
 import EntryPage from './EntryPage';
 import SearchPage from './SearchPage';
 import NotFoundPage from './NotFoundPage';
-import styles from './App.css';
-import sidebarStyles from './Sidebar.css';
 
 TopBarProgress.config({
   barColors: {
@@ -137,26 +135,26 @@ class App extends React.Component {
 
     const sidebarContent = (
       <div>
-        <Navigation type="vertical" className={sidebarStyles.nav}>
+        <Navigation type="vertical" className="nc-sidebar-nav">
           {
             publishMode === SIMPLE ? null :
             <section>
-              <h1 className={sidebarStyles.heading}>Publishing</h1>
-              <div className={sidebarStyles.linkWrapper}>
-                <Link to="/" className={sidebarStyles.viewEntriesLink}>Editorial Workflow</Link>
+              <h1 className="nc-sidebar-heading">Publishing</h1>
+              <div className="nc-sidebar-linkWrapper">
+                <Link to="/" className="nc-sidebar-viewEntriesLink">Editorial Workflow</Link>
               </div>
             </section>
           }
           <section>
-            <h1 className={sidebarStyles.heading}>Collections</h1>
+            <h1 className="nc-sidebar-heading">Collections</h1>
             {
               collections.valueSeq().map((collection) => {
                 const collectionName = collection.get('name');
                 return (
-                  <div key={collectionName} className={sidebarStyles.linkWrapper}>
+                  <div key={collectionName} className="nc-sidebar-linkWrapper">
                     <a
                       href={getCollectionUrl(collectionName, true)}
-                      className={sidebarStyles.viewEntriesLink}
+                      className="nc-sidebar-viewEntriesLink"
                       onClick={e => this.handleLinkClick(e, navigateToCollection, collectionName)}
                     >
                       {collection.get('label')}
@@ -165,7 +163,7 @@ class App extends React.Component {
                       collection.get('create') ? (
                         <a
                           href={getNewEntryUrl(collectionName, true)}
-                          className={sidebarStyles.createEntryLink}
+                          className="nc-sidebar-createEntryLink"
                           onClick={e => this.handleLinkClick(e, createNewEntryInCollection, collectionName)}
                         >
                           <FontIcon value="add_circle_outline" />
@@ -193,7 +191,7 @@ class App extends React.Component {
             onLogoutClick={logoutUser}
             toggleDrawer={toggleSidebar}
           />
-          <div className={styles.entriesPanel}>
+          <div className="nc-app-entriesPanel">
             { isFetching && <TopBarProgress /> }
             <div>
               <Switch>

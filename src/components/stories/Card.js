@@ -8,8 +8,8 @@ const styles = {
     backgroundColor: '#555',
     textAlign: 'center',
     marginTop: 5,
-    padding: 10
-  }
+    padding: 10,
+  },
 };
 
 storiesOf('Card', module)

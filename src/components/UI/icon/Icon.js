@@ -1,5 +1,4 @@
 import React from 'react';
-import styles from './Icon.css';
 
 const availableIcons = [
   // Font Awesome Editor Icons
@@ -200,7 +199,7 @@ const iconPropType = (props, propName) => {
 const noop = function () {};
 
 export default function Icon({ style, className = '', type, onClick = noop }) {
-  return <span className={`${ styles.root } ${ styles[type] } ${ className }`} style={style} onClick={onClick} />;
+  return <span className={`nc-icon-root nc-icon-${ type } ${ className }`} style={style} onClick={onClick} />;
 }
 
 Icon.propTypes = {

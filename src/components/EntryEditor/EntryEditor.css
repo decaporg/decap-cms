@@ -1,11 +1,9 @@
-@import '../UI/theme';
-
 /* Quick fix for preview pane not fully displaying in Safari */
-:global(.SplitPane .Pane) {
+.SplitPane .Pane {
   height: 100%;
 }
 
-.previewToggle {
+.nc-entryEditor-previewToggle {
   position: absolute;
   top: 8px;
   right: 40px;
@@ -13,11 +11,11 @@
   opacity: 0.8;
 }
 
-.previewToggleShow {
+.nc-entryEditor-previewToggleShow {
   right: 60px;
 }
 
-.controlPane {
+.nc-entryEditor-controlPane {
   overflow: auto;
   padding: 20px 20px 0;
   height: calc(100% - 55px);
@@ -25,15 +23,15 @@
   background-color: var(--backgroundColor);
 }
 
-.previewPane {
+.nc-entryEditor-previewPane {
   height: calc(100% - 55px);
 }
 
-.blocker > * {
+.nc-entryEditor-blocker > * {
   pointer-events: none;
 }
 
-.footer {
+.nc-entryEditor-footer {
   height: 55px;
   padding: 10px 20px;
   position: absolute;
@@ -46,13 +44,13 @@
   text-align: right;
 }
 
-.noPreviewEditorContainer {
+.nc-entryEditor-noPreviewEditorContainer {
   position: absolute;
   left: 0;
   right: 0;
   height: 100%;
 }
 
-.ProseMirror {
+.nc-entryEditor-ProseMirror {
   border: var(--textFieldBorder);
 }

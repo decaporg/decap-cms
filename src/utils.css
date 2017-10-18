@@ -1,25 +1,23 @@
 /* stylelint-disable */
 /* This is an utility file that should not be included in production build */
-:global {
-  & .undefined {
-    position: fixed !important;
-    top: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    background: red !important;
-    color: white !important;
-    font-weight: bold !important;
-    font-size: 30px !important;
-  }
+.undefined {
+  position: fixed !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: red !important;
+  color: white !important;
+  font-weight: bold !important;
+  font-size: 30px !important;
+}
 
-  & .undefined::after {
-    display: block !important;
-    padding: 15px 30px !important;
-    content: 'ERROR! You are missing a class definition in your css module! Inspect me to find out where.' !important;
-  }
+.undefined::after {
+  display: block !important;
+  padding: 15px 30px !important;
+  content: 'ERROR! You are missing a class definition in your css module! Inspect me to find out where.' !important;
 }
 /* stylelint-enable */

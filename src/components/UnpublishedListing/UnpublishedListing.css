@@ -1,16 +1,14 @@
-@import '../UI/theme.css';
-
 :root {
   --highlightColor: #38ab9b;
   --defaultFontSize: 1em;
 }
 
-.container {
+.nc-unpublishedListing-container {
   display: flex;
   justify-content: space-between;
 }
 
-.column {
+.nc-unpublishedListing-column {
   flex: 1 33%;
   margin: -10px;
   margin-top: 24px;
@@ -19,27 +17,26 @@
   transition: background-color .5s ease;
 }
 
-.columnHovered {
-  composes: column;
+.nc-unpublishedListing-column-hovered {
   border: 2px dashed var(--highlightColor);
   border-radius: 4px;
 }
 
-.columnHeading {
+.nc-unpublishedListing-columnHeading {
   font-size: var(--defaultFontSize);
 }
 
-.draggable {
+.nc-unpublishedListing-draggable {
   cursor: move;
 }
 
-.card {
+.nc-unpublishedListing-card {
   margin-bottom: 10px;
 }
 
 /* Gross stuff below, React Toolbox hacks */
 
-.cardTitle h5 {
+.nc-unpublishedListing-cardTitle h5 {
   color: var(--backgroundAltColor) !important;
   font-weight: 500 !important;
   font-size: 21px !important;

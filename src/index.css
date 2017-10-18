@@ -1,6 +1,37 @@
 @import "react-toolbox-global.css";
-@import "material-icons.css";
-@import "components/UI/theme.css";
+@import "./material-icons.css";
+@import "./components/UI/theme.css";
+
+@import "./backends/git-gateway/AuthenticationPage.css";
+@import "./backends/github/AuthenticationPage.css";
+
+@import "./components/AppHeader/AppHeader.css";
+@import "./components/ControlPanel/ControlPane.css";
+@import "./components/EntryEditor/EntryEditor.css";
+@import "./components/EntryListing/EntryListing.css";
+@import "./components/FindBar/FindBar.css";
+@import "./components/PreviewPane/PreviewPane.css";
+@import "./components/UI/Sticky/Sticky.css";
+@import "./components/UI/card/Card.css";
+@import "./components/UI/icon/Icon.css";
+@import "./components/UI/loader/Loader.css";
+@import "./components/UI/toast/Toast.css";
+@import "./components/UnpublishedListing/UnpublishedListing.css";
+@import "./components/UnpublishedListing/UnpublishedListingCardMeta.css";
+@import "./components/Widgets/BooleanControl.css";
+@import "./components/Widgets/FileControl.css";
+@import "./components/Widgets/ListControl.css";
+@import "./components/Widgets/Markdown/MarkdownControl/RawEditor/index.css";
+@import "./components/Widgets/Markdown/MarkdownControl/Toolbar/Toolbar.css";
+@import "./components/Widgets/Markdown/MarkdownControl/Toolbar/ToolbarButton.css";
+@import "./components/Widgets/Markdown/MarkdownControl/Toolbar/ToolbarComponentsMenu.css";
+@import "./components/Widgets/Markdown/MarkdownControl/Toolbar/ToolbarPluginForm.css";
+@import "./components/Widgets/Markdown/MarkdownControl/VisualEditor/index.css";
+@import "./components/Widgets/ObjectControl.css";
+
+@import "./containers/App.css";
+@import "./containers/CollectionPage.css";
+@import "./containers/Sidebar.css";
 
 html {
   box-sizing: border-box;
@@ -40,307 +71,304 @@ img {
   max-width: 100%;
 }
 
-:global {
+.react-autosuggest__container {
+  position: relative;
+}
 
-  & .react-autosuggest__container {
-    position: relative;
-  }
+.react-autosuggest__input {
+  width: 240px;
+  height: 30px;
+  padding: 10px 20px;
+  font-family: Helvetica, sans-serif;
+  font-weight: 300;
+  font-size: 16px;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+}
 
-  & .react-autosuggest__input {
-    width: 240px;
-    height: 30px;
-    padding: 10px 20px;
-    font-family: Helvetica, sans-serif;
-    font-weight: 300;
-    font-size: 16px;
-    border: 1px solid #aaa;
-    border-radius: 4px;
-  }
+.react-autosuggest__input:focus {
+  outline: none;
+}
 
-  & .react-autosuggest__input:focus {
-    outline: none;
-  }
+.react-autosuggest__container--open .react-autosuggest__input {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
 
-  & .react-autosuggest__container--open .react-autosuggest__input {
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-  }
+.react-autosuggest__suggestions-container {
+  display: none;
+}
 
-  & .react-autosuggest__suggestions-container {
-    display: none;
-  }
+.react-autosuggest__container--open .react-autosuggest__suggestions-container {
+  display: block;
+  position: absolute;
+  top: 51px;
+  width: 100%;
+  border: 1px solid #aaa;
+  background-color: #fff;
+  font-family: Helvetica, sans-serif;
+  font-weight: 300;
+  font-size: 16px;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  z-index: 2;
+}
 
-  & .react-autosuggest__container--open .react-autosuggest__suggestions-container {
-    display: block;
-    position: absolute;
-    top: 51px;
-    width: 100%;
-    border: 1px solid #aaa;
-    background-color: #fff;
-    font-family: Helvetica, sans-serif;
-    font-weight: 300;
-    font-size: 16px;
-    border-bottom-left-radius: 4px;
-    border-bottom-right-radius: 4px;
-    z-index: 2;
-  }
+.react-autosuggest__suggestions-list {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
 
-  & .react-autosuggest__suggestions-list {
-    margin: 0;
-    padding: 0;
-    list-style-type: none;
-  }
+.react-autosuggest__suggestion {
+  cursor: pointer;
+  padding: 10px 20px;
+}
 
-  & .react-autosuggest__suggestion {
-    cursor: pointer;
-    padding: 10px 20px;
-  }
+.react-autosuggest__suggestion--focused {
+  background-color: #ddd;
+}
 
-  & .react-autosuggest__suggestion--focused {
-    background-color: #ddd;
-  }
+.Resizer {
+  background: #000;
+  opacity: .2;
+  z-index: 1;
+  box-sizing: border-box;
+  background-clip: padding-box;
+}
 
-  & .Resizer {
-    background: #000;
-    opacity: .2;
-    z-index: 1;
-    box-sizing: border-box;
-    background-clip: padding-box;
-  }
+.Resizer:hover {
+  -webkit-transition: all 2s ease;
+  transition: all 2s ease;
+}
 
-  & .Resizer:hover {
-    -webkit-transition: all 2s ease;
-    transition: all 2s ease;
-  }
+.Resizer.vertical {
+  width: 11px;
+  margin: 0 -5px;
+  border-left: 5px solid rgba(255, 255, 255, 0);
+  border-right: 5px solid rgba(255, 255, 255, 0);
+  cursor: col-resize;
+}
 
-  & .Resizer.vertical {
-    width: 11px;
-    margin: 0 -5px;
-    border-left: 5px solid rgba(255, 255, 255, 0);
-    border-right: 5px solid rgba(255, 255, 255, 0);
-    cursor: col-resize;
-  }
-
-  & .Resizer.vertical:hover {
-    border-left: 5px solid rgba(0, 0, 0, 0.5);
-    border-right: 5px solid rgba(0, 0, 0, 0.5);
-  }
-  & .Resizer.disabled {
-    cursor: not-allowed;
-  }
-  & .Resizer.disabled:hover {
-    border-color: transparent;
-  }
+.Resizer.vertical:hover {
+  border-left: 5px solid rgba(0, 0, 0, 0.5);
+  border-right: 5px solid rgba(0, 0, 0, 0.5);
+}
+.Resizer.disabled {
+  cursor: not-allowed;
+}
+.Resizer.disabled:hover {
+  border-color: transparent;
+}
 
 
-  & .rdt {
-    position: relative;
-  }
-  & .rdtPicker {
-    display: none;
-    position: absolute;
-    width: 250px;
-    padding: 4px;
-    margin-top: 1px;
-    z-index: 99999 !important;
-    background: #fff;
-    border: 2px solid var(--secondaryColor);
-    border-radius: 2px;
-    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, .16);
-  }
-  & .rdtOpen .rdtPicker {
-    display: block;
-  }
-  & .rdtStatic .rdtPicker {
-    box-shadow: none;
-    position: static;
-  }
+.rdt {
+  position: relative;
+}
+.rdtPicker {
+  display: none;
+  position: absolute;
+  width: 250px;
+  padding: 4px;
+  margin-top: 1px;
+  z-index: 99999 !important;
+  background: #fff;
+  border: 2px solid var(--secondaryColor);
+  border-radius: 2px;
+  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, .16);
+}
+.rdtOpen .rdtPicker {
+  display: block;
+}
+.rdtStatic .rdtPicker {
+  box-shadow: none;
+  position: static;
+}
 
-  & .rdtPicker .rdtTimeToggle {
-    text-align: center;
-  }
+.rdtPicker .rdtTimeToggle {
+  text-align: center;
+}
 
-  & .rdtPicker table {
-    width: 100%;
-    margin: 0;
-  }
-  & .rdtPicker td,
-  & .rdtPicker th {
-    text-align: center;
-    height: 28px;
-  }
-  & .rdtPicker td {
-    cursor: pointer;
-  }
-  & .rdtPicker td.rdtDay:hover,
-  & .rdtPicker td.rdtHour:hover,
-  & .rdtPicker td.rdtMinute:hover,
-  & .rdtPicker td.rdtSecond:hover,
-  & .rdtPicker .rdtTimeToggle:hover {
-    background: #eeeeee;
-    cursor: pointer;
-  }
-  & .rdtPicker td.rdtOld,
-  & .rdtPicker td.rdtNew {
-    color: #999999;
-  }
-  & .rdtPicker td.rdtToday {
-    position: relative;
-  }
-  & .rdtPicker td.rdtToday:before {
-    content: '';
-    display: inline-block;
-    border-left: 7px solid transparent;
-    border-bottom: 7px solid #428bca;
-    border-top-color: rgba(0, 0, 0, 0.2);
-    position: absolute;
-    bottom: 4px;
-    right: 4px;
-  }
-  & .rdtPicker td.rdtActive,
-  & .rdtPicker td.rdtActive:hover {
-    background-color: #428bca;
-    color: #fff;
-    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-  }
-  & .rdtPicker td.rdtActive.rdtToday:before {
-    border-bottom-color: #fff;
-  }
-  & .rdtPicker td.rdtDisabled,
-  & .rdtPicker td.rdtDisabled:hover {
-    background: none;
-    color: #999999;
-    cursor: not-allowed;
-  }
+.rdtPicker table {
+  width: 100%;
+  margin: 0;
+}
+.rdtPicker td,
+.rdtPicker th {
+  text-align: center;
+  height: 28px;
+}
+.rdtPicker td {
+  cursor: pointer;
+}
+.rdtPicker td.rdtDay:hover,
+.rdtPicker td.rdtHour:hover,
+.rdtPicker td.rdtMinute:hover,
+.rdtPicker td.rdtSecond:hover,
+.rdtPicker .rdtTimeToggle:hover {
+  background: #eeeeee;
+  cursor: pointer;
+}
+.rdtPicker td.rdtOld,
+.rdtPicker td.rdtNew {
+  color: #999999;
+}
+.rdtPicker td.rdtToday {
+  position: relative;
+}
+.rdtPicker td.rdtToday:before {
+  content: '';
+  display: inline-block;
+  border-left: 7px solid transparent;
+  border-bottom: 7px solid #428bca;
+  border-top-color: rgba(0, 0, 0, 0.2);
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+}
+.rdtPicker td.rdtActive,
+.rdtPicker td.rdtActive:hover {
+  background-color: #428bca;
+  color: #fff;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+}
+.rdtPicker td.rdtActive.rdtToday:before {
+  border-bottom-color: #fff;
+}
+.rdtPicker td.rdtDisabled,
+.rdtPicker td.rdtDisabled:hover {
+  background: none;
+  color: #999999;
+  cursor: not-allowed;
+}
 
-  & .rdtPicker td span.rdtOld {
-    color: #999999;
-  }
-  & .rdtPicker td span.rdtDisabled,
-  & .rdtPicker td span.rdtDisabled:hover {
-    background: none;
-    color: #999999;
-    cursor: not-allowed;
-  }
-  & .rdtPicker th {
-    border-bottom: 1px solid #f9f9f9;
-  }
-  & .rdtPicker .dow {
-    width: 14.2857%;
-    border-bottom: none;
-  }
-  & .rdtPicker th.rdtSwitch {
-    width: 100px;
-  }
-  & .rdtPicker th.rdtNext,
-  & .rdtPicker th.rdtPrev {
-    font-size: 21px;
-    vertical-align: top;
-  }
+.rdtPicker td span.rdtOld {
+  color: #999999;
+}
+.rdtPicker td span.rdtDisabled,
+.rdtPicker td span.rdtDisabled:hover {
+  background: none;
+  color: #999999;
+  cursor: not-allowed;
+}
+.rdtPicker th {
+  border-bottom: 1px solid #f9f9f9;
+}
+.rdtPicker .dow {
+  width: 14.2857%;
+  border-bottom: none;
+}
+.rdtPicker th.rdtSwitch {
+  width: 100px;
+}
+.rdtPicker th.rdtNext,
+.rdtPicker th.rdtPrev {
+  font-size: 21px;
+  vertical-align: top;
+}
 
-  & .rdtPrev span,
-  & .rdtNext span {
-    display: block;
-    -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Chrome/Safari/Opera */
-    -khtml-user-select: none; /* Konqueror */
-    -moz-user-select: none; /* Firefox */
-    -ms-user-select: none; /* Internet Explorer/Edge */
-    user-select: none;
-  }
+.rdtPrev span,
+.rdtNext span {
+  display: block;
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Chrome/Safari/Opera */
+  -khtml-user-select: none; /* Konqueror */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none;
+}
 
-  & .rdtPicker th.rdtDisabled,
-  & .rdtPicker th.rdtDisabled:hover {
-    background: none;
-    color: #999999;
-    cursor: not-allowed;
-  }
-  & .rdtPicker thead tr:first-child th {
-    cursor: pointer;
-  }
-  & .rdtPicker thead tr:first-child th:hover {
-    background: #eeeeee;
-  }
+.rdtPicker th.rdtDisabled,
+.rdtPicker th.rdtDisabled:hover {
+  background: none;
+  color: #999999;
+  cursor: not-allowed;
+}
+.rdtPicker thead tr:first-child th {
+  cursor: pointer;
+}
+.rdtPicker thead tr:first-child th:hover {
+  background: #eeeeee;
+}
 
-  & .rdtPicker tfoot {
-    border-top: 1px solid #f9f9f9;
-  }
+.rdtPicker tfoot {
+  border-top: 1px solid #f9f9f9;
+}
 
-  & .rdtPicker button {
-    border: none;
-    background: none;
-    cursor: pointer;
-  }
-  & .rdtPicker button:hover {
-    background-color: #eee;
-  }
+.rdtPicker button {
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+.rdtPicker button:hover {
+  background-color: #eee;
+}
 
-  & .rdtPicker thead button {
-    width: 100%;
-    height: 100%;
-  }
+.rdtPicker thead button {
+  width: 100%;
+  height: 100%;
+}
 
-  & td.rdtMonth,
-  & td.rdtYear {
-    height: 50px;
-    width: 25%;
-    cursor: pointer;
-  }
-  & td.rdtMonth:hover,
-  & td.rdtYear:hover {
-    background: #eee;
-  }
+td.rdtMonth,
+td.rdtYear {
+  height: 50px;
+  width: 25%;
+  cursor: pointer;
+}
+td.rdtMonth:hover,
+td.rdtYear:hover {
+  background: #eee;
+}
 
-  & .rdtCounters {
-    display: inline-block;
-  }
+.rdtCounters {
+  display: inline-block;
+}
 
-  & .rdtCounters > div {
-    float: left;
-  }
+.rdtCounters > div {
+  float: left;
+}
 
-  & .rdtCounter {
-    height: 100px;
-  }
+.rdtCounter {
+  height: 100px;
+}
 
-  & .rdtCounter {
-    width: 40px;
-  }
+.rdtCounter {
+  width: 40px;
+}
 
-  & .rdtCounterSeparator {
-    line-height: 100px;
-  }
+.rdtCounterSeparator {
+  line-height: 100px;
+}
 
-  & .rdtCounter .rdtBtn {
-    height: 40%;
-    line-height: 40px;
-    cursor: pointer;
-    display: block;
+.rdtCounter .rdtBtn {
+  height: 40%;
+  line-height: 40px;
+  cursor: pointer;
+  display: block;
 
-    -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Chrome/Safari/Opera */
-    -khtml-user-select: none; /* Konqueror */
-    -moz-user-select: none; /* Firefox */
-    -ms-user-select: none; /* Internet Explorer/Edge */
-    user-select: none;
-  }
-  & .rdtCounter .rdtBtn:hover {
-    background: #eee;
-  }
-  & .rdtCounter .rdtCount {
-    height: 20%;
-    font-size: 1.2em;
-  }
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Chrome/Safari/Opera */
+  -khtml-user-select: none; /* Konqueror */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none;
+}
+.rdtCounter .rdtBtn:hover {
+  background: #eee;
+}
+.rdtCounter .rdtCount {
+  height: 20%;
+  font-size: 1.2em;
+}
 
-  & .rdtMilli {
-    vertical-align: middle;
-    padding-left: 8px;
-    width: 48px;
-  }
+.rdtMilli {
+  vertical-align: middle;
+  padding-left: 8px;
+  width: 48px;
+}
 
-  & .rdtMilli input {
-    width: 100%;
-    font-size: 1.2em;
-    margin-top: 37px;
-  }
+.rdtMilli input {
+  width: 100%;
+  font-size: 1.2em;
+  margin-top: 37px;
 }

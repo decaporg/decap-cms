@@ -1,6 +1,6 @@
 import React from 'react';
 import CSSTransition from 'react-transition-group/CSSTransition';
-import styles from './Loader.css';
+import classnames from 'classnames';
 
 export default class Loader extends React.Component {
 
@@ -30,32 +30,28 @@ export default class Loader extends React.Component {
     if (!children) {
       return null;
     } else if (typeof children == 'string') {
-      return <div className={styles.text}>{children}</div>;
+      return <div className="nc-loader-text">{children}</div>;
     } else if (Array.isArray(children)) {
       this.setAnimation();
-      return (<div className={styles.text}>
+      return (<div className="nc-loader-text">
         <CSSTransition
-          classNames={styles}
+          classNames={{
+            enter: 'nc-loader-enter',
+            enterActive: 'nc-loader-enterActive',
+            exit: 'nc-loader-exit',
+            exitActive: 'nc-loader-exitActive',
+          }}
           timeout={500}
         >
-          <div key={currentItem} className={styles.animateItem}>{children[currentItem]}</div>
+          <div key={currentItem} className="nc-loader-animateItem">{children[currentItem]}</div>
         </CSSTransition>
       </div>);
     }
   };
 
   render() {
-    const { active, style, className = '' } = this.props;
-
-    // Class names
-    let classNames = styles.loader;
-    if (active) {
-      classNames += ` ${ styles.active }`;
-    }
-    if (className.length > 0) {
-      classNames += ` ${ className }`;
-    }
-
-    return <div className={classNames} style={style}>{this.renderChild()}</div>;
+    const { active } = this.props;
+    const className = classnames('nc-loader-root', { 'nc-loader-active': active });
+    return <div className={className}>{this.renderChild()}</div>;
   }
 }

@@ -1,42 +1,46 @@
-@import "../UI/theme";
+.nc-controlPane-root p {
+  font-size: 16px;
+}
 
-.control {
+.nc-controlPane-control {
   color: var(--textColor);
   position: relative;
   padding: 20px 0 10px 0;
   margin-top: 16px;
+}
 
-  & input,
-  & textarea,
-  & select,
-  & div[contenteditable=true] {
-    display: block;
-    width: 100%;
-    padding: 12px;
-    margin: 0;
-    border: var(--textFieldBorder);
-    border-radius: var(--borderRadius);
-    outline: 0;
-    box-shadow: none;
-    background-color: var(--controlBGColor);
-    font-size: 16px;
-    color: var(--textColor);
-    transition: border-color .3s ease;
 
-    &:focus,
-    &:active {
-      border-color: var(--primaryColor);
-    }
-  }
+.nc-controlPane-control input,
+.nc-controlPane-control textarea,
+.nc-controlPane-control select,
+.nc-controlPane-control div[contenteditable=true] {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  margin: 0;
+  border: var(--textFieldBorder);
+  border-radius: var(--borderRadius);
+  outline: 0;
+  box-shadow: none;
+  background-color: var(--controlBGColor);
+  font-size: 16px;
+  color: var(--textColor);
+  transition: border-color .3s ease;
 
-  & input,
-  & textarea,
-  & select {
-    font-family: var(--fontFamilyMono);
+  &:focus,
+  &:active {
+    border-color: var(--primaryColor);
   }
 }
 
-.label {
+.nc-controlPane-control input,
+.nc-controlPane-control textarea,
+.nc-controlPane-control select {
+  font-family: var(--fontFamilyMono);
+}
+
+
+.nc-controlPane-label {
   display: block;
   color: var(--controlLabelColor);
   font-size: 12px;
@@ -44,18 +48,13 @@
   font-weight: 600;
 }
 
-.labelWithError {
-  composes: label;
+.nc-controlPane-labelWithError {
   color: #FF706F;
 }
 
-.errors {
+.nc-controlPane-errors {
   list-style-type: none;
   font-size: 10px;
   color: #FF706F;
   margin-bottom: 5px;
-}
-
-p {
-  font-size: 16px;
 }

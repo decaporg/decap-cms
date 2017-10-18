@@ -1,26 +1,24 @@
-@import '../components/UI/theme';
-
-.root {
+.nc-sidebar-root {
   margin-top: 54px;
 }
 
-.sidebar {
+.nc-sidebar-sidebar {
   padding: 0 16px;
   width: 220px;
   background-color: var(--backgroundAltColor);
   color: var(--defaultColorLight);
 }
 
-.heading {
+.nc-sidebar-heading {
   margin-bottom: 8px;
   color: var(--defaultColorLight);
 }
 
-.nav {
+.nc-sidebar-nav {
   padding: 0;
 }
 
-.linkWrapper {
+.nc-sidebar-linkWrapper {
   color: #fff;
   border-radius: var(--borderRadius);
   display: flex;
@@ -32,7 +30,7 @@
   }
 }
 
-.viewEntriesLink {
+.nc-sidebar-viewEntriesLink {
   font-size: 18px;
   color: inherit;
   padding: 10px 6px;
@@ -40,7 +38,7 @@
   width: 100%;
 }
 
-.createEntryLink {
+.nc-sidebar-createEntryLink {
   color: inherit;
   padding: 0 6px;
   display: block;
