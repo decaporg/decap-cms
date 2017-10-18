@@ -1,4 +1,5 @@
 dist/
+test/
 bin/
 node_modules/
 npm-debug.log
