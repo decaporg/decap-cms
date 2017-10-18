@@ -1,5 +1,3 @@
-@import '../UI/theme.css';
-
 /* Quick fix for preview pane not fully displaying in Safari */
 .SplitPane .Pane {
   height: 100%;

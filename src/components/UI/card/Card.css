@@ -1,5 +1,3 @@
-@import '../theme.css';
-
 .nc-card-card {
   overflow: hidden;
   border: var(--textFieldBorder);

@@ -1,5 +1,3 @@
-@import '../theme.css';
-
 /* redux-notifications override */
 .notif__container {
   z-index: 10000;

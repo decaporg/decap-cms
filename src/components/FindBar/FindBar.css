@@ -1,5 +1,3 @@
-@import '../UI/theme.css';
-
 .nc-findBar-root {
   flex: 1;
   background-color: var(--backgroundAltColor);
