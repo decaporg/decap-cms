@@ -9,7 +9,6 @@ import ControlPane from '../ControlPanel/ControlPane';
 import PreviewPane from '../PreviewPane/PreviewPane';
 import Toolbar from './EntryEditorToolbar';
 import { StickyContext } from '../UI/Sticky/Sticky';
-import stickyStyles from '../UI/Sticky/Sticky.css';
 
 const PREVIEW_VISIBLE = 'cms.preview-visible';
 
