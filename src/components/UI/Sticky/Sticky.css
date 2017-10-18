@@ -6,7 +6,7 @@
   width: 100%;
 }
 
-.nc-sticky-stickyActive:not(.stickyAtBottom) {
+.nc-sticky-stickyActive:not(.nc-sticky-stickyAtBottom) {
   position: fixed !important;
   top: 54px !important;
 }
