@@ -41,7 +41,7 @@ export default class ToolbarComponentsMenu extends React.Component {
           onHide={this.handleComponentsMenuHide}
           ripple={false}
         >
-          {plugins && plugins.map(plugin => (
+          {plugins && plugins.toList().map(plugin => (
             <MenuItem
               key={plugin.get('id')}
               value={plugin.get('id')}
