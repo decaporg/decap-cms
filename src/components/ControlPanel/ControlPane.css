@@ -27,8 +27,8 @@
   color: var(--textColor);
   transition: border-color .3s ease;
 
-  .nc-controlPane-:focus,
-  .nc-controlPane-:active {
+  &:focus,
+  &:active {
     border-color: var(--primaryColor);
   }
 }

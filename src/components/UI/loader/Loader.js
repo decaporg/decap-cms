@@ -1,5 +1,6 @@
 import React from 'react';
 import CSSTransition from 'react-transition-group/CSSTransition';
+import classnames from 'classnames';
 
 export default class Loader extends React.Component {
 
@@ -49,17 +50,8 @@ export default class Loader extends React.Component {
   };
 
   render() {
-    const { active, style, className = '' } = this.props;
-
-    // Class names
-    let classNames = 'nc-loader-loader';
-    if (active) {
-      classNames += ` nc-loader-active`;
-    }
-    if (className.length > 0) {
-      classNames += ` ${ className }`;
-    }
-
-    return <div className={classNames} style={style}>{this.renderChild()}</div>;
+    const { active } = this.props;
+    const className = classnames('nc-loader-root', { 'nc-loader-active': active });
+    return <div className={className}>{this.renderChild()}</div>;
   }
 }

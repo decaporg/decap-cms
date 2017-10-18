@@ -25,7 +25,7 @@
   align-items: center;
   justify-content: space-between;
 
-  .nc-sidebar-:hover {
+  &:hover {
     background-color: var(--textColor);
   }
 }
