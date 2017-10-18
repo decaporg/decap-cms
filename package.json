@@ -8,7 +8,8 @@
     "test": "jest --coverage",
     "test:watch": "jest --watch",
     "build": "cross-env NODE_ENV=production webpack --config webpack.prod.js --display-error-details",
-    "build:test": "npm run build && ncp example test && ncp dist test",
+    "build:test": "npm run build && ncp example test",
+    "preview:test": "node ./scripts/netlify-server start -p /",
     "build:scripts": "cross-env NODE_ENV=production webpack --config webpack.cli.js",
     "add-contributor": "all-contributors add",
     "generate-contributors": "all-contributors generate",
@@ -127,6 +128,7 @@
   "dependencies": {
     "@kadira/storybook": "^1.36.0",
     "classnames": "^2.2.5",
+    "commander": "^2.11.0",
     "create-react-class": "^15.6.0",
     "express": "^4.16.2",
     "fuzzy": "^0.1.1",
