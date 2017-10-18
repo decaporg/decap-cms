@@ -2,16 +2,10 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import Autosuggest from 'react-autosuggest';
 import uuid from 'uuid';
-import { Map } from 'immutable';
 import { connect } from 'react-redux';
 import { debounce } from 'lodash';
 import { Loader } from '../../components/UI/index';
 import { query, clearSearch } from '../../actions/search';
-
-
-function escapeRegexCharacters(str) {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
 
 class RelationControl extends Component {
   static propTypes = {
@@ -32,36 +26,54 @@ class RelationControl extends Component {
     super(props, ctx);
     this.controlID = uuid.v4();
     this.didInitialSearch = false;
+    // use local state to store the field's display value
+    this.state = { displayValue: '' };
   }
 
   componentDidMount() {
     const { value, field } = this.props;
     if (value) {
       const collection = field.get('collection');
-      const searchFields = field.get('searchFields').toJS();
+      // only perform the initial query on `valueField`
+      const searchFields = [ field.get('valueField') ];
+      // the goal of this query is to fetch the linked `collection` item
+      // to then show the value of it `displayValue` field to the user
       this.props.query(this.controlID, collection, searchFields, value);
     }
   }
 
   componentWillReceiveProps(nextProps) {
     if (this.didInitialSearch) return;
-    if (nextProps.queryHits !== this.props.queryHits && nextProps.queryHits.get && nextProps.queryHits.get(this.controlID)) {
+    if (
+      nextProps.queryHits !== this.props.queryHits &&
+      nextProps.queryHits.get && nextProps.queryHits.get(this.controlID)
+    ) {
       this.didInitialSearch = true;
-      const suggestion = nextProps.queryHits.get(this.controlID);
-      if (suggestion && suggestion.length === 1) {
-        const val = this.getSuggestionValue(suggestion[0]);
-        this.props.onChange(val, { [nextProps.field.get('collection')]: { [val]: suggestion[0].data } });
+      // store query results
+      const matches = nextProps.queryHits.get(this.controlID);
+      // if there is only one item found
+      // it is the linked `collection` item
+      if (matches && matches.length === 1) {
+        // get the item's `displayValue` field value
+        const displayValue = this.getSuggestionDisplayValue(matches[0]);
+        // set the field `displayValue`
+        this.setState({ displayValue });
       }
     }
   }
 
   onChange = (event, { newValue }) => {
     this.props.onChange(newValue);
+    this.setState({ displayValue: newValue });
   };
 
   onSuggestionSelected = (event, { suggestion }) => {
     const value = this.getSuggestionValue(suggestion);
     this.props.onChange(value, { [this.props.field.get('collection')]: { [value]: suggestion.data } });
+    // get the suggestion item `displayValue` field value
+    const displayValue = this.getSuggestionDisplayValue(suggestion);
+    // set the field `displayValue`
+    this.setState({ displayValue });
   };
 
   onSuggestionsFetchRequested = debounce(({ value }) => {
@@ -82,10 +94,33 @@ class RelationControl extends Component {
     return suggestion.data[valueField];
   };
 
+  getSuggestionDisplayValue = (suggestion) => {
+    const { field } = this.props;
+    const displayField = field.get('displayField');
+    return suggestion.data[displayField];
+  };
+
   renderSuggestion = (suggestion) => {
     const { field } = this.props;
-    const valueField = field.get('valueField');
-    return <span>{suggestion.data[valueField]}</span>;
+    // a suggestion should show its `displayField` value
+    const displayField = field.get('displayField');
+    return <span>{suggestion.data[displayField]}</span>;
+  };
+
+  renderInputComponent = (inputProps) => {
+    // extract the field `value`, `displayValue` and `id`
+    // separated from the other input props
+    // needed for the visible field to stay accessible
+    // https://github.com/moroshko/react-autosuggest#renderInputComponentProp
+    const { value, displayValue, id, ...otherInputProps } = inputProps;
+    // have the visible field display the `displayValue`
+    // and the hidden field store the real `value`
+    return (
+      <div>
+        <input {...otherInputProps} value={displayValue} />
+        <input type="hidden" id={id} value={value} />
+      </div>
+    );
   };
 
   render() {
@@ -94,6 +129,8 @@ class RelationControl extends Component {
     const inputProps = {
       placeholder: '',
       value: value || '',
+      // add the `displayValue` to be passed to the `renderInputComponent` function
+      displayValue: this.state.displayValue || '',
       onChange: this.onChange,
       id: forID,
     };
@@ -109,6 +146,7 @@ class RelationControl extends Component {
           onSuggestionSelected={this.onSuggestionSelected}
           getSuggestionValue={this.getSuggestionValue}
           renderSuggestion={this.renderSuggestion}
+          renderInputComponent={this.renderInputComponent}
           inputProps={inputProps}
         />
         <Loader active={isFetching === this.controlID} />
