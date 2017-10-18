@@ -8,12 +8,13 @@ import {
   SEARCH_CLEAR,
 } from '../actions/search';
 
+let namespace;
 let loadedEntries;
 let response;
 let page;
 let searchTerm;
 
-const defaultState = Map({ isFetching: false, term: null, page: 0, entryIds: List([]), queryHits: Map({}) });
+const defaultState = Map({ isFetching: Map({}), page: 0, entryIds: List([]), queryHits: Map({}) });
 
 const entries = (state = defaultState, action) => {
   switch (action.type) {
@@ -21,11 +22,9 @@ const entries = (state = defaultState, action) => {
       return defaultState;
 
     case SEARCH_ENTRIES_REQUEST:
-      if (action.payload.searchTerm !== state.get('term')) {
-        return state.withMutations((map) => {
-          map.set('isFetching', true);
-          map.set('term', action.payload.searchTerm);
-        });
+      searchTerm = action.payload.searchTerm;
+      if (searchTerm !== state.getIn(['isFetching', 'search', 'term'], '')) {
+        return state.setIn(['isFetching', 'search'], Map({ isFetching: true, term: searchTerm }));
       }
       return state;
 
@@ -35,28 +34,26 @@ const entries = (state = defaultState, action) => {
       searchTerm = action.payload.searchTerm;
       return state.withMutations((map) => {
         const entryIds = List(loadedEntries.map(entry => ({ collection: entry.collection, slug: entry.slug })));
-        map.set('isFetching', false);
+        map.setIn(['isFetching', 'search'], Map({ isFetching: false, page, term: searchTerm }));
         map.set('page', page);
-        map.set('term', searchTerm);
         map.set('entryIds', page === 0 ? entryIds : map.get('entryIds', List()).concat(entryIds));
       });
 
     case QUERY_REQUEST:
-      if (action.payload.searchTerm !== state.get('term')) {
-        return state.withMutations((map) => {
-          map.set('isFetching', action.payload.namespace);
-          map.set('term', action.payload.searchTerm);
-        });
+      namespace = action.payload.namespace;
+      searchTerm = action.payload.searchTerm;
+      if (searchTerm !== state.getIn(['isFetching', namespace, 'term'], '')) {
+        return state.setIn(['isFetching', namespace], Map({ isFetching: true, term: searchTerm }));
       }
       return state;
 
     case QUERY_SUCCESS:
+      namespace = action.payload.namespace;
       searchTerm = action.payload.searchTerm;
       response = action.payload.response;
       return state.withMutations((map) => {
-        map.set('isFetching', false);
-        map.set('term', searchTerm);
-        map.set('queryHits', Map({ [action.payload.namespace]: response.hits }));
+        map.setIn(['isFetching', namespace], Map({ isFetching: false, term: searchTerm }));
+        map.setIn(['queryHits', namespace], response.hits);
       });
 
     default:

@@ -2,16 +2,10 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import Autosuggest from 'react-autosuggest';
 import uuid from 'uuid';
-import { Map } from 'immutable';
 import { connect } from 'react-redux';
 import { debounce } from 'lodash';
 import { Loader } from '../../components/UI/index';
 import { query, clearSearch } from '../../actions/search';
-
-
-function escapeRegexCharacters(str) {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
 
 class RelationControl extends Component {
   static propTypes = {
@@ -45,7 +39,10 @@ class RelationControl extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (this.didInitialSearch) return;
-    if (nextProps.queryHits !== this.props.queryHits && nextProps.queryHits.get && nextProps.queryHits.get(this.controlID)) {
+    if (
+      nextProps.queryHits !== this.props.queryHits &&
+      nextProps.queryHits.get && nextProps.queryHits.get(this.controlID)
+    ) {
       this.didInitialSearch = true;
       const suggestion = nextProps.queryHits.get(this.controlID);
       if (suggestion && suggestion.length === 1) {
@@ -98,6 +95,7 @@ class RelationControl extends Component {
       id: forID,
     };
 
+    const fetching = (isFetching.getIn) ? isFetching.getIn([this.controlID, 'isFetching'], false) : false;
     const suggestions = (queryHits.get) ? queryHits.get(this.controlID, []) : [];
 
     return (
@@ -111,7 +109,7 @@ class RelationControl extends Component {
           renderSuggestion={this.renderSuggestion}
           inputProps={inputProps}
         />
-        <Loader active={isFetching === this.controlID} />
+        <Loader active={fetching} />
       </div>
     );
   }
