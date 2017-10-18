@@ -226,7 +226,7 @@ Note: This example script requires modern JavaScript and will not work on IE11. 
 
 Your site CMS is now fully configured and ready for login!
 
-If you set your registration preference to "Invite only," you'll need to invite yourself (and anyone else you choose) as a site user. To do this, select the **Identity** tab from your site dashboard, and then select the **Invite users** button. Invited users will receive an email invitation with a confirmation link. Clicking the link will take you to your sight with a login prompt.
+If you set your registration preference to "Invite only," you'll need to invite yourself (and anyone else you choose) as a site user. To do this, select the **Identity** tab from your site dashboard, and then select the **Invite users** button. Invited users will receive an email invitation with a confirmation link. Clicking the link will take you to your site with a login prompt.
 
 If you left your site registration open, or for return visits after comfirming an email invitation, you can access your site's CMS at `yoursite.com/admin`.
 
