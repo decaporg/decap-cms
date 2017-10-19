@@ -1,5 +1,13 @@
 {
-  "presets": [["es2015", { "modules": false }], "stage-1", "react"],
+  "presets": [
+    ["env", {
+      "modules": false,
+      // Remove unneeded shims from `babel-polyfill`
+      "useBuiltIns": true,
+    }],
+    "stage-1",
+    "react"
+  ],
   "plugins": [
     "react-hot-loader/babel",
     "lodash",
