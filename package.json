@@ -90,6 +90,7 @@
     "babel-preset-stage-1": "^6.22.0",
     "babel-runtime": "^6.23.0",
     "caniuse-lite": "^1.0.30000745",
+    "commander": "^2.11.0",
     "cross-env": "^5.0.2",
     "css-loader": "^0.28.7",
     "cssnano": "^v4.0.0-rc.2",
@@ -128,7 +129,6 @@
   "dependencies": {
     "@kadira/storybook": "^1.36.0",
     "classnames": "^2.2.5",
-    "commander": "^2.11.0",
     "create-react-class": "^15.6.0",
     "express": "^4.16.2",
     "fuzzy": "^0.1.1",
