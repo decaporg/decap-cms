@@ -38,7 +38,7 @@ The JS is also available via npm and can be integrated into your regular build p
 
 ### Editorial Workflow
 
-Netlify CMS has an optional [editorial workflow](/docs/editorial-workflow) that translates common Git commands into familiar language in a simple UI:
+Netlify CMS has an optional [editorial workflow](/docs/editorial-workflow.md) that translates common Git commands into familiar language in a simple UI:
 
 Actions in Netlify UI ...	| Perform these Git actions
 --- | ---
@@ -87,7 +87,7 @@ You point to where the files are stored, and specify the fields that define them
 
 ### Widgets
 
-Widgets define the data type and interface for entry fields. Netlify CMS comes with several built-in [widgets](/docs/widgets).
+Widgets define the data type and interface for entry fields. Netlify CMS comes with several built-in [widgets](/docs/widgets.md).
 
 ## Customization
 

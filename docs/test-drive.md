@@ -23,6 +23,6 @@ After clicking that button, you’ll authenticate with GitHub and choose a repos
 Try adding and editing posts, or changing the content of the Products page. When you save, the changes will be pushed immediately to GitHub, triggering a build on Netlify, and updating the content on your site.
 
 ## More paths to explore
-- If you’d like to learn more about how it all works, check out the [Intro](/docs/intro). 
-- To see how to integrate Netlify CMS into an existing project, go to the [Quick Start](/docs/quick-start).
+- If you’d like to learn more about how it all works, check out the [Intro](/docs/intro.md). 
+- To see how to integrate Netlify CMS into an existing project, go to the [Quick Start](/docs/quick-start.md).
 - If you’d like to change how users log in to your site, read up on [Netlify Identity service](https://www.netlify.com/docs/identity).
