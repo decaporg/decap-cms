@@ -43,7 +43,7 @@ export default class ListControl extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { itemStates: Map(), value: valueToString(props.value) };
+    this.state = { itemsCollapsed: List(), value: valueToString(props.value) };
     this.valueType = null;
   }
 
@@ -115,9 +115,9 @@ export default class ListControl extends Component {
   handleToggle(index) {
     return (e) => {
       e.preventDefault();
-      const { itemStates } = this.state;
+      const { itemsCollapsed } = this.state;
       this.setState({
-        itemStates: itemStates.setIn([index, 'collapsed'], !itemStates.getIn([index, 'collapsed'])),
+        itemsCollapsed: itemsCollapsed.set(index, !itemsCollapsed.get(index, false)),
       });
     };
   }
@@ -133,15 +133,23 @@ export default class ListControl extends Component {
 
   onSortEnd = ({ oldIndex, newIndex }) => {
     const { value, onChange } = this.props;
+
+    // Update value
     const item = value.get(oldIndex);
     const newValue = value.delete(oldIndex).insert(newIndex, item);
     this.props.onChange(newValue);
+
+    // Update collapsing
+    const { itemsCollapsed } = this.state;
+    const collapsed = itemsCollapsed.get(oldIndex);
+    const newItemsCollapsed = itemsCollapsed.delete(oldIndex).insert(newIndex, collapsed);
+    this.setState({ itemsCollapsed: newItemsCollapsed });
   };
 
   renderItem = (item, index) => {
     const { field, getAsset, onAddAsset, onRemoveAsset } = this.props;
-    const { itemStates } = this.state;
-    const collapsed = itemStates.getIn([index, 'collapsed']);
+    const { itemsCollapsed } = this.state;
+    const collapsed = itemsCollapsed.get(index);
     const classNames = ['nc-listControl-item', collapsed ? 'nc-listControl-collapsed' : 'nc-listControl-expanded'];
 
     return (<SortableListItem className={classNames.join(' ')} index={index} key={`item-${ index }`}>
