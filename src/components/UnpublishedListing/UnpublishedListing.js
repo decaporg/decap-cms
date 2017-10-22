@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { DragSource, DropTarget, HTML5DragDrop } from 'react-simple-dnd';
+import { DragSource, DropTarget, HTML5DragDrop } from '../UI/dndHelpers';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
@@ -10,6 +10,9 @@ import { Card, CardTitle, CardText, CardActions } from 'react-toolbox/lib/card';
 import Button from 'react-toolbox/lib/button';
 import UnpublishedListingCardMeta from './UnpublishedListingCardMeta.js';
 import { status, statusDescriptions } from '../../constants/publishModes';
+
+// This is a namespace so that we can only drop these elements on a DropTarget with the same
+const DNDNamespace = 'cms-unpublished-entries';
 
 class UnpublishedListing extends React.Component {
   static propTypes = {
@@ -44,12 +47,13 @@ class UnpublishedListing extends React.Component {
     if (!column) {
       return entries.entrySeq().map(([currColumn, currEntries]) => (
         <DropTarget
+          namespace={DNDNamespace}
           key={currColumn}
           /* eslint-disable */
           onDrop={this.handleChangeStatus.bind(this, currColumn)}
           /* eslint-enable */
         >
-          {isHovered => (
+          {(connect, { isHovered }) => connect(
             <div className={classnames(
               'nc-unpublishedListing-column',
               { 'nc-unpublishedListing-column-hovered' : isHovered },
@@ -77,11 +81,13 @@ class UnpublishedListing extends React.Component {
             const isModification = entry.get('isModification');
             return (
               <DragSource
+                namespace={DNDNamespace}
                 key={slug}
                 slug={slug}
                 collection={collection}
                 ownStatus={ownStatus}
               >
+              {connect => connect(
                 <div className="nc-unpublishedListing-draggable">
                   <Card className="nc-unpublishedListing-card">
                     <UnpublishedListingCardMeta
@@ -118,6 +124,7 @@ class UnpublishedListing extends React.Component {
                     </CardActions>
                   </Card>
                 </div>
+              )}
               </DragSource>
             );
           })
