@@ -86,7 +86,7 @@ class EntryEditor extends Component {
           <div className="nc-entryEditor-controlPaneButtons">
             { previewVisible && (
               <ToggleButton
-                icon={scrollSyncEnabled ? 'sync_disabled' : 'sync'}
+                icon={scrollSyncEnabled ? 'sync' : 'sync_disabled'}
                 onClick={this.handleToggleScrollSync}
               />
             ) }

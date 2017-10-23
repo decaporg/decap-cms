@@ -6,7 +6,7 @@ export default class ScrollSync extends Component {
 
   static propTypes = {
     children: PropTypes.element.isRequired,
-    enabled: PropTypes.bool.isRequired
+    enabled: PropTypes.bool.isRequired,
   };
 
   static childContextTypes = {
@@ -52,7 +52,7 @@ export default class ScrollSync extends Component {
   };
 
   handlePaneScroll = (node) => {
-    if (!this.props.enabled) return false
+    if (!this.props.enabled) return false;
     // const node = evt.target
     window.requestAnimationFrame(() => {
       this.syncScrollPositions(node);
