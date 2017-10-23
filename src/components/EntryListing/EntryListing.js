@@ -3,6 +3,7 @@ import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import Waypoint from 'react-waypoint';
 import { Map } from 'immutable';
+import c from 'classnames';
 import history from '../../routing/history';
 import { resolvePath } from '../../lib/pathHelper';
 import { selectFields, selectInferedField } from '../../reducers/collections';
@@ -52,16 +53,18 @@ export default class EntryListing extends React.Component {
         { image &&
         <header className="nc-entryListing-cardImage" style={{ backgroundImage: `url(${ image })` }} />
         }
-        <h1>{title}</h1>
-        {inferedFields.descriptionField ?
-          <p>{entry.getIn(['data', inferedFields.descriptionField])}</p>
-          : inferedFields.remainingFields && inferedFields.remainingFields.map(f => (
-            <p key={f.get('name')} className="nc-entryListing-cardList">
-              <span className="nc-entryListing-cardListLabel">{f.get('label')}:</span>{' '}
-              { (entry.getIn(['data', f.get('name')]) || '').toString() }
-            </p>
-          ))
-        }
+        <div className={c('nc-entryListing-cardBody', { 'nc-entryListing-cardBody-full': !image })}>
+          <h2 className="nc-entryListing-cardHeading">{title}</h2>
+          {inferedFields.descriptionField ?
+            <p>{entry.getIn(['data', inferedFields.descriptionField])}</p>
+            : inferedFields.remainingFields && inferedFields.remainingFields.map(f => (
+              <p key={f.get('name')} className="nc-entryListing-cardList">
+                <span className="nc-entryListing-cardListLabel">{f.get('label')}:</span>{' '}
+                { (entry.getIn(['data', f.get('name')]) || '').toString() }
+              </p>
+            ))
+          }
+        </div>
       </div>
     );
   }

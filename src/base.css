@@ -9,16 +9,16 @@
   --shadowColor: rgba(19, 39, 48, .24);
   --infoColor: #69c;
   --activeColor: #3a69c8;
+  --secondaryColor: #798291;
   --primaryColor: #4990e2;
   --successColor: #1c7;
   --warningColor: #fa0;
   --errorColor: #f52;
-  --textColor: #798291;
+  --textColor: var(--secondaryColor);
   --textLeadColor: #313d3e;
   --textMutedColor: #8c8c8c;
   --borderRadius: 6px;
   --borderRadiusLarge: 8px;
-  --secondaryColor: #d9d9d9;
   --dropShadow: 0 2px 4px 0 rgba(19, 39, 48, .12);
   --topmostZindex: 99999;
   --foregroundAltColor: #fff;
@@ -35,6 +35,8 @@
   --borderWidth: 2px;
   --border: solid var(--borderWidth) var(--secondaryColor);
   --textFieldBorder: var(--border);
+  --buttonTextColor: #fff;
+  --buttonBackgroundColor: var(--secondaryColor);
 
   --card: {
     box-shadow: var(--dropShadow);
@@ -85,8 +87,11 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6, p {
-  margin: 0;
   font-family: var(--fontFamilyPrimary);
+  color: var(--textLeadColor);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.5;
 }
 
 h1 {
@@ -95,15 +100,24 @@ h1 {
   font-size: 24px;
   font-weight: 800;
   color: var(--textLeadColor);
-  letter-spacing: 0;
-  line-height: 24px;
 }
 
 a,
 button {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+a {
   color: var(--textColor);
-  cursor: pointer;
+}
+
+button {
+  color: var(--buttonTextColor);
+  background-color: var(--buttonBackgroundColor);
+  padding: 10px 30px;
   border: 0;
+  cursor: pointer;
 }
 
 img {
