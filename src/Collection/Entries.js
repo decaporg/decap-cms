@@ -23,11 +23,11 @@ const Entries = ({ collections, entries, publicFolder, page, onPaginate, isFetch
 }
 
 Entries.propTypes = {
-  collection: ImmutablePropTypes.map.isRequired,
-  collections: ImmutablePropTypes.orderedMap.isRequired,
+  collections: ImmutablePropTypes.map.isRequired,
+  entries: ImmutablePropTypes.list,
   publicFolder: PropTypes.string.isRequired,
   page: PropTypes.number,
-  entries: ImmutablePropTypes.list,
+  isFetching: PropTypes.bool,
 };
 
 export default Entries;

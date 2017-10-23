@@ -2,6 +2,7 @@
 @import "./Top.css";
 
 .nc-collectionPage-container {
+  grid-area: main;
   display: grid;
   grid-template-columns: 250px auto;
   grid-template-rows: auto auto;

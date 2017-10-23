@@ -1,10 +1,15 @@
 .nc-appHeader-container {
-  background-color: var(--backgroundColorSecondary);
   grid-area: header;
+  background-color: var(--backgroundColorSecondary);
+  box-shadow: var(--dropShadow);
+}
+
+.nc-appHeader-content {
   display: flex;
   justify-content: space-between;
+  max-width: 1600px;
   padding: 0 12px;
-  box-shadow: var(--dropShadow);
+  margin: 0 auto;
 }
 
 .nc-appHeader-button {
