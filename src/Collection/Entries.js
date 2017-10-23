@@ -1,15 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { loadEntries } from '../actions/entries';
-import { showCollection } from '../actions/collections';
-import { selectEntries } from '../reducers';
 import { Loader } from '../components/UI';
-import Sidebar from './Sidebar';
 import EntryListing from '../components/EntryListing/EntryListing';
 
-const Entries = props => {
-  const { entries, isFetching } = props;
+const Entries = ({ collections, entries, publicFolder, page, onPaginate, isFetching }) => {
   const loadingMessages = [
     'Loading Entries',
     'Caching Entries',
@@ -17,7 +12,7 @@ const Entries = props => {
   ];
 
   if (entries) {
-    return <EntryListing {...props}/>
+    return <EntryListing {...{ collections, entries, publicFolder, page, onPaginate }}/>
   }
 
   if (isFetching) {

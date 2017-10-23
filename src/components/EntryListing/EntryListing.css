@@ -1,35 +1,50 @@
 .nc-entryListing-card {
-  flex: 0 335px;
+  @apply(--card);
+  flex: 0 0 335px;
   overflow: hidden;
   margin-bottom: 16px;
-  margin-left: 16px;
-  max-width: 50%;
-  max-height: 290px;
+  margin-left: 12px;
+  height: 240px;
   cursor: pointer;
 }
 
-.nc-entryListing-card:hover {
-  background: #f8f9fa;
-  transform: translateY(-8px);
-}
-
 .nc-entryListing-cardImage {
-  margin: -16px -24px 16px -24px;
-  width: calc(100% + 24px + 24px);
-  height: 135px;
   background-position: center center;
   background-size: cover;
   background-repeat: no-repeat;
+  height: 135px;
+}
+
+.nc-entryListing-cardBody {
+  padding: 16px 22px;
+  height: 105px;
+  position: relative;
+
+  &:after {
+    content: '';
+    position: absolute;
+    display: block;
+    z-index: 1;
+    bottom: 0;
+    left: -20%;
+    height: 140%;
+    width: 140%;
+    box-shadow: inset 0 -15px 24px #fff;
+  }
+}
+
+.nc-entryListing-cardBody-full {
+  height: 100%;
+}
+
+.nc-entryListing-cardHeading {
+  margin: 0 0 2px;
 }
 
 .nc-entryListing-cardsGrid {
   display: flex;
   flex-flow: row wrap;
-  margin-left: -16px;
-}
-
-.nc-entryListing-cardList {
-  margin-bottom: 1.1rem;
+  margin-left: -12px;
 }
 
 .nc-entryListing-cardListLabel {
