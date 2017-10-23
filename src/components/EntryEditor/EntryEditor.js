@@ -67,21 +67,11 @@ class EntryEditor extends Component {
 
     const collectionPreviewEnabled = collection.getIn(['editor', 'preview'], true);
 
-    const TogglePreviewButton = () => (
+    const ToggleButton = ({ icon, onClick }) => (
       <Button
-        className="nc-entryEditor-toggleButtons"
-        onClick={this.handleTogglePreview}
-        icon={previewVisible ? 'visibility_off' : 'visibility'}
-        floating
-        mini
-      />
-    );
-
-    const ToggleScrollSyncButton = () => (
-      <Button
-        className="nc-entryEditor-toggleButtons"
-        onClick={this.handleToggleScrollSync}
-        icon={scrollSyncEnabled ? 'sync_disabled' : 'sync'}
+        className={classnames('nc-entryEditor-toggleButton', { previewVisible: 'nc-entryEditor-toggleButtonShow' })}
+        icon={icon}
+        onClick={onClick}
         floating
         mini
       />
@@ -89,13 +79,21 @@ class EntryEditor extends Component {
 
     const editor = (
       <StickyContext
-        className={classnames('nc-entryEditor-controlPane', { ['nc-entryEditor-blocker']: showEventBlocker })}
+        className={classnames('nc-entryEditor-controlPane', { 'nc-entryEditor-blocker': showEventBlocker })}
         registerListener={fn => this.updateStickyContext = fn}
       >
         { collectionPreviewEnabled ? (
-          <div className={classnames(styles.toggleButtons)}>
-            { previewVisible && <ToggleScrollSyncButton /> }
-            <TogglePreviewButton />
+          <div className="nc-entryEditor-controlPaneButtons">
+            { previewVisible && (
+              <ToggleButton
+                icon={scrollSyncEnabled ? 'sync_disabled' : 'sync'}
+                onClick={this.handleToggleScrollSync}
+              />
+            ) }
+            <ToggleButton
+              icon={previewVisible ? 'visibility_off' : 'visibility'}
+              onClick={this.handleTogglePreview}
+            />
           </div>
         ) : null }
         <ControlPane
@@ -124,7 +122,7 @@ class EntryEditor extends Component {
             onChange={this.updateStickyContext}
           >
             <ScrollSyncPane>{editor}</ScrollSyncPane>
-            <div className={classnames('nc-entryEditor-previewPane', { ['nc-entryEditor-blocker']: showEventBlocker })}>
+            <div className={classnames('nc-entryEditor-previewPane', { 'nc-entryEditor-blocker': showEventBlocker })}>
               <PreviewPane
                 collection={collection}
                 entry={entry}

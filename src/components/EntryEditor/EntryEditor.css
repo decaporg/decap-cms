@@ -3,7 +3,7 @@
   height: 100%;
 }
 
-.nc-entryEditor-toggleButtons {
+.nc-entryEditor-controlPaneButtons {
   position: absolute;
   top: 8px;
   right: 20px;
@@ -13,8 +13,12 @@
   justify-content: flex-end;
 }
 
-.nc-entryEditor-toggleButtons > * + * {
-  margin-left: 10px;
+.nc-entryEditor-toggleButton {
+  margin-left: 5px;
+}
+
+.nc-entryEditor-toggleButtonShow {
+  right: 60px;
 }
 
 .nc-entryEditor-controlPane {
