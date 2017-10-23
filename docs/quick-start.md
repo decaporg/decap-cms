@@ -64,7 +64,7 @@ backend:
 These lines specify your backend protocol and your publication branch. Git Gateway is an open source API that acts as a proxy between authenticated users of your site and your site repo. (We'll get to the details of that in the [Authentication section](#authentication) below.) If you leave out the `branch` declaration, it will default to `master`.
 
 ### Editorial Workflow
-By default, saving a post in the CMS interface will push a commit directly to the publication branch specified in `backend`. However, you also have the option to enable the [Editorial Workflow](editorial-workflow.md), which adds an interface for drafting, reviewing, and approving posts. To do this, add the following line to your `config.yml`:
+By default, saving a post in the CMS interface will push a commit directly to the publication branch specified in `backend`. However, you also have the option to enable the [Editorial Workflow](/docs/editorial-workflow), which adds an interface for drafting, reviewing, and approving posts. To do this, add the following line to your `config.yml`:
 
 ``` yaml
 publish_mode: editorial_workflow
