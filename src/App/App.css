@@ -2,11 +2,15 @@
 
 .nc-app-container {
   display: grid;
-  grid-template-columns: 1440px;
+  grid-template-columns: auto 1440px auto;
   grid-template-rows: 56px auto;
   grid-gap: 28px;
   grid-template-areas:
-    "header"
-    "main";
-  justify-content: center;
+    "header header header"
+    ". main .";
+  justify-content: stretch;
+}
+
+.nc-app-main {
+  grid-area: main;
 }
