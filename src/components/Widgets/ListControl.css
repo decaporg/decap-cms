@@ -64,14 +64,6 @@
   display: none;
 }
 
-.nc-listControl-objectControl {
-  display: block;
-  border-top: 28px solid rgba(0,0,0,0.1);
-  border-top-left-radius: 0;
-}
-
-.nc-listControl-expanded {}
-
 .nc-listControl-collapsed {
   & .nc-listControl-objectLabel {
     display: block;
@@ -90,3 +82,13 @@
   width: 100%;
   z-index: 1;
 }
+
+/**
+ * Styles for objects nested within lists.
+ */
+.nc-listControl-item .nc-listControl-objectControl {
+  display: block;
+  border-top: 28px solid rgba(0,0,0,0.1);
+  border-top-left-radius: 0;
+}
+
