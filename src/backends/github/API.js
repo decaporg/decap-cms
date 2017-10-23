@@ -4,7 +4,7 @@ import _ from "lodash";
 import { filterPromises, resolvePromiseProperties } from "../../lib/promiseHelper";
 import AssetProxy from "../../valueObjects/AssetProxy";
 import { SIMPLE, EDITORIAL_WORKFLOW, status } from "../../constants/publishModes";
-import { APIError, EditorialWorkflowError } from "../../valueObjects/errors";
+import { APIError, NotUnderEditorialWorkflowError } from "../../valueObjects/errors";
 
 export default class API {
   constructor(config) {
@@ -186,7 +186,7 @@ export default class API {
         data => this.isUnpublishedEntryModification(data.objects.entry.path, this.branch)),
     })
     .catch(() => {
-      throw new EditorialWorkflowError('content is not under editorial workflow', true);
+      throw new NotUnderEditorialWorkflowError('content is not under editorial workflow');
     });
   }
 
