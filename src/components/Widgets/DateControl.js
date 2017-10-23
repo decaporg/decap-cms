@@ -9,7 +9,7 @@ export default class DateControl extends React.Component {
   render() {
     return (<DateTimeControl
       {...this.props}
-      options={this.props.field.updateIn([ 'options' ], (val = Map({})) => val.set('timeFormat', false))}
+      field={this.props.field.updateIn([ 'options' ], (val = Map({})) => val.set('timeFormat', false))}
       onChange={(datetime) => this.props.onChange(datetime)}
     />);
   }
