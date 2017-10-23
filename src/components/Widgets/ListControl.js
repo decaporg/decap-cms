@@ -150,7 +150,7 @@ export default class ListControl extends Component {
     const { field, getAsset, onAddAsset, onRemoveAsset } = this.props;
     const { itemsCollapsed } = this.state;
     const collapsed = itemsCollapsed.get(index);
-    const classNames = ['nc-listControl-item', collapsed ? 'nc-listControl-collapsed' : 'nc-listControl-expanded'];
+    const classNames = ['nc-listControl-item', collapsed ? 'nc-listControl-collapsed' : ''];
 
     return (<SortableListItem className={classNames.join(' ')} index={index} key={`item-${ index }`}>
       <button className="nc-listControl-toggleButton" onClick={this.handleToggle(index)}>
