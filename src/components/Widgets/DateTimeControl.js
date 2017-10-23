@@ -2,18 +2,14 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import DateTime from 'react-datetime';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import { Map } from 'immutable';
 
 export default class DateTimeControl extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { value: this.getStateValue(this.props.value) };
-  }
-
   handleChange = (datetime) => {
     this.props.onChange(datetime);
   };
 
-  getStateValue(value) {
+  getValue(value) {
     if (value === false || value === '') {
       return '';
     } else if(!value) {
@@ -24,25 +20,18 @@ export default class DateTimeControl extends React.Component {
   }
 
   componentWillReceiveProps(props) {
-    const { value: newValue } = props;
-    if(newValue !== this.props.value) {
-      this.setState({ value: this.getStateValue(newValue) }, () => {
-        this.handleChange(this.state.value);
-      });
-    }
+    this.handleChange(this.getValue(props.value));
   }
 
   componentDidMount() {
-    this.handleChange(this.state.value);
+    this.handleChange(this.getValue(this.props.value));
   }
 
   render() {
-    const _fieldProps = this.props.field.get('field');
-    const fieldProps = _fieldProps && _fieldProps.toJSON ? _fieldProps.toJSON() : _fieldProps
-    const { value } = this.state;
+    const fieldProps = this.props.field.get('options', Map()).toJS();
     return (<DateTime
       {...fieldProps}
-      value={value}
+      value={this.getValue(this.props.value)}
       onChange={this.handleChange}
     />);
   }
@@ -55,7 +44,7 @@ DateTimeControl.propTypes = {
     PropTypes.string,
     PropTypes.bool,
   ]),
-  field: ImmutablePropTypes.mapContains({
+  options: ImmutablePropTypes.mapContains({
     dateFormat: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.bool,
