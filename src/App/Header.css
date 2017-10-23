@@ -63,6 +63,7 @@
   border: 0;
   padding: 8px;
   cursor: pointer;
+  background-color: transparent;
 
   & img {
     width: 32px;

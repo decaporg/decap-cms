@@ -7,6 +7,7 @@ import { showCollection } from '../actions/collections';
 import { selectEntries } from '../reducers';
 import { Loader } from '../components/UI';
 import Sidebar from './Sidebar';
+import Top from './Top';
 import Entries from './Entries';
 import EntryListing from '../components/EntryListing/EntryListing';
 
@@ -50,17 +51,16 @@ class Collection extends React.Component {
     return (
       <div className="nc-collectionPage-container">
         <Sidebar collections={collections}/>
-        <div className="nc-collectionPage-main">
-          <Entries
-            collections={collection}
-            entries={entries}
-            publicFolder={publicFolder}
-            page={page}
-            onPaginate={this.handleLoadMore}
-            isFetching={isFetching}
-            collectionName={collection.get('label')}
-          />
-        </div>
+        <Top collectionName={collection.get('label')}/>
+        <Entries
+          collections={collection}
+          entries={entries}
+          publicFolder={publicFolder}
+          page={page}
+          onPaginate={this.handleLoadMore}
+          isFetching={isFetching}
+          collectionName={collection.get('label')}
+        />
       </div>
     );
   }
