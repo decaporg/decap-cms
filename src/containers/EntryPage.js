@@ -56,10 +56,17 @@ class EntryPage extends React.Component {
       loadEntry(collection, slug);
     }
 
-    this.unblock = history.block((location) => {
+    const unblock = history.block((location) => {
       if (this.props.entryDraft.get('hasChanged')) {
         return "Are you sure you want to leave this page?";
       }
+    });
+
+    // This will run as soon as the location actually changes.
+    //   (The confirmation above will run first.)
+    this.unlisten = history.listen(() => {
+      unblock();
+      this.unlisten();
     });
   }
 
@@ -83,7 +90,6 @@ class EntryPage extends React.Component {
 
   componentWillUnmount() {
     this.props.discardDraft();
-    this.unblock();
   }
 
   createDraft = (entry) => {
