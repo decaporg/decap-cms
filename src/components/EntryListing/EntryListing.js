@@ -48,7 +48,7 @@ export default class EntryListing extends React.Component {
     return (
       <Card
         key={entry.get('slug')}
-        onClick={history.push.bind(this, path)} // eslint-disable-line
+        onClick={() => history.push(path)} // eslint-disable-line
         className="nc-entryListing-card"
       >
         { image &&
