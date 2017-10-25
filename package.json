@@ -73,6 +73,7 @@
     "last 2 ChromeAndroid versions"
   ],
   "devDependencies": {
+    "@kadira/storybook": "^1.36.0",
     "all-contributors-cli": "^4.4.0",
     "babel": "^6.5.2",
     "babel-cli": "^6.18.0",
@@ -108,6 +109,7 @@
     "postcss-import": "^11.0.0",
     "postcss-loader": "^2.0.7",
     "react-test-renderer": "^16.0.0",
+    "react-hot-loader": "^3.0.0-beta.7",
     "style-loader": "^0.18.2",
     "stylefmt": "^4.3.1",
     "stylelint": "^7.9.0",
@@ -122,7 +124,6 @@
     "webpack-postcss-tools": "^1.1.1"
   },
   "dependencies": {
-    "@kadira/storybook": "^1.36.0",
     "classnames": "^2.2.5",
     "create-react-class": "^15.6.0",
     "fuzzy": "^0.1.1",
@@ -148,7 +149,6 @@
     "react-dnd-html5-backend": "^2.5.4",
     "react-dom": "^16.0.0",
     "react-frame-component": "^2.0.0",
-    "react-hot-loader": "^3.0.0-beta.7",
     "react-immutable-proptypes": "^2.1.0",
     "react-redux": "^4.4.0",
     "react-router-dom": "^4.2.2",
