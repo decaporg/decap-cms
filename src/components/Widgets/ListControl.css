@@ -64,15 +64,6 @@
   display: none;
 }
 
-.nc-listControl-collapsed {
-  & .nc-listControl-objectLabel {
-    display: block;
-  }
-  & .nc-listControl-objectControl {
-    display: none;
-  }
-}
-
 .nc-listControl-dragIcon {
   cursor: move;
   display: block;
@@ -92,3 +83,11 @@
   border-top-left-radius: 0;
 }
 
+.nc-listControl-collapsed {
+  & .nc-listControl-objectLabel {
+    display: block;
+  }
+  & .nc-listControl-objectControl {
+    display: none;
+  }
+}
