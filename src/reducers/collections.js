@@ -54,7 +54,7 @@ const selectors = {
       return collection.get('create');
     },
     allowDeletion(collection) {
-      return collection.get('delete');
+      return collection.get('delete', true);
     },
     templateName(collection) {
       return collection.get('name');
@@ -84,7 +84,7 @@ const selectors = {
       return false;
     },
     allowDeletion(collection) {
-      return collection.get('delete');
+      return collection.get('delete', true);
     },
     templateName(collection, slug) {
       return slug;
