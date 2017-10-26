@@ -1,6 +1,5 @@
 backend:
   name: test-repo
-  delay: 0.1
 
 media_folder: "assets/uploads"
 
