@@ -1,6 +1,6 @@
 {
   "name": "netlify-cms",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "description": "Netlify CMS lets content editors work on structured content stored in git",
   "main": "dist/cms.js",
   "scripts": {
