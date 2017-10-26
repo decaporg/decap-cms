@@ -3,15 +3,21 @@
   height: 100%;
 }
 
-.nc-entryEditor-previewToggle {
+.nc-entryEditor-controlPaneButtons {
   position: absolute;
   top: 8px;
-  right: 40px;
+  right: 20px;
   z-index: 1000;
   opacity: 0.8;
+  display: flex;
+  justify-content: flex-end;
 }
 
-.nc-entryEditor-previewToggleShow {
+.nc-entryEditor-toggleButton {
+  margin-left: 5px;
+}
+
+.nc-entryEditor-toggleButtonShow {
   right: 60px;
 }
 

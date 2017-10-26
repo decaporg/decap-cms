@@ -11,11 +11,13 @@ import Toolbar from './EntryEditorToolbar';
 import { StickyContext } from '../UI/Sticky/Sticky';
 
 const PREVIEW_VISIBLE = 'cms.preview-visible';
+const SCROLL_SYNC_ENABLED = 'cms.scroll-sync-enabled';
 
 class EntryEditor extends Component {
   state = {
     showEventBlocker: false,
     previewVisible: localStorage.getItem(PREVIEW_VISIBLE) !== "false",
+    scrollSyncEnabled: localStorage.getItem(SCROLL_SYNC_ENABLED) !== "false",
   };
 
   handleSplitPaneDragStart = () => {
@@ -37,6 +39,12 @@ class EntryEditor extends Component {
     localStorage.setItem(PREVIEW_VISIBLE, newPreviewVisible);
   };
 
+  handleToggleScrollSync = () => {
+    const newScrollSyncEnabled = !this.state.scrollSyncEnabled;
+    this.setState({ scrollSyncEnabled: newScrollSyncEnabled });
+    localStorage.setItem(SCROLL_SYNC_ENABLED, newScrollSyncEnabled);
+  };
+
   render() {
     const {
         collection,
@@ -55,15 +63,15 @@ class EntryEditor extends Component {
         onCancelEdit,
     } = this.props;
 
-    const { previewVisible, showEventBlocker } = this.state;
+    const { previewVisible, scrollSyncEnabled, showEventBlocker } = this.state;
 
     const collectionPreviewEnabled = collection.getIn(['editor', 'preview'], true);
 
-    const togglePreviewButton = (
+    const ToggleButton = ({ icon, onClick }) => (
       <Button
-        className={classnames('nc-entryEditor-previewToggle', { previewVisible: 'nc-entryEditor-previewToggleShow' })}
-        onClick={this.handleTogglePreview}
-        icon={previewVisible ? 'visibility_off' : 'visibility'}
+        className={classnames('nc-entryEditor-toggleButton', { previewVisible: 'nc-entryEditor-toggleButtonShow' })}
+        icon={icon}
+        onClick={onClick}
         floating
         mini
       />
@@ -71,10 +79,23 @@ class EntryEditor extends Component {
 
     const editor = (
       <StickyContext
-        className={classnames('nc-entryEditor-controlPane', { ['nc-entryEditor-blocker']: showEventBlocker })}
+        className={classnames('nc-entryEditor-controlPane', { 'nc-entryEditor-blocker': showEventBlocker })}
         registerListener={fn => this.updateStickyContext = fn}
       >
-        { collectionPreviewEnabled ? togglePreviewButton : null }
+        { collectionPreviewEnabled ? (
+          <div className="nc-entryEditor-controlPaneButtons">
+            { previewVisible && (
+              <ToggleButton
+                icon={scrollSyncEnabled ? 'sync' : 'sync_disabled'}
+                onClick={this.handleToggleScrollSync}
+              />
+            ) }
+            <ToggleButton
+              icon={previewVisible ? 'visibility_off' : 'visibility'}
+              onClick={this.handleTogglePreview}
+            />
+          </div>
+        ) : null }
         <ControlPane
           collection={collection}
           entry={entry}
@@ -92,7 +113,7 @@ class EntryEditor extends Component {
     );
 
     const editorWithPreview = (
-      <ScrollSync>
+      <ScrollSync enabled={this.state.scrollSyncEnabled}>
         <div className="nc-entryEditor-container">
           <SplitPane
             defaultSize="50%"
@@ -101,7 +122,7 @@ class EntryEditor extends Component {
             onChange={this.updateStickyContext}
           >
             <ScrollSyncPane>{editor}</ScrollSyncPane>
-            <div className={classnames('nc-entryEditor-previewPane', { ['nc-entryEditor-blocker']: showEventBlocker })}>
+            <div className={classnames('nc-entryEditor-previewPane', { 'nc-entryEditor-blocker': showEventBlocker })}>
               <PreviewPane
                 collection={collection}
                 entry={entry}
