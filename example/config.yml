@@ -10,7 +10,6 @@ collections: # A list of collections the CMS should be able to edit
     folder: "_posts"
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
     create: true # Allow users to create new documents in this collection
-    delete: true # Allow users to delete documents from this collection
     fields: # The fields each document in this collection have
       - {label: "Title", name: "title", widget: "string", tagname: "h1"}
       - {label: "Publish Date", name: "date", widget: "datetime", format: "YYYY-MM-DD hh:mma"}
@@ -23,14 +22,13 @@ collections: # A list of collections the CMS should be able to edit
     label: "FAQ" # Used in the UI, ie.: "New Post"
     folder: "_faqs"
     create: true # Allow users to create new documents in this collection
-    delete: true # Allow users to delete documents from this collection
     fields: # The fields each document in this collection have
       - {label: "Question", name: "title", widget: "string", tagname: "h1"}
       - {label: "Answer", name: "body", widget: "markdown"}
 
   - name: "settings"
     label: "Settings"
-    delete: false
+    delete: false # Prevent users from delteing documents in this collectoin
     editor:
       preview: false
     files:
