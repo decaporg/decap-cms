@@ -33,7 +33,7 @@ function inferFrontmatterFormat(str) {
     case "{":
       return { language: "json", delimiters: ["{", "}"] };
     default:
-      throw "Unrecgonized front-matter format.";
+      throw "Unrecognized front-matter format.";
   }
 }
 
