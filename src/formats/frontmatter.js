@@ -1,9 +1,11 @@
 import matter from 'gray-matter';
-import tomlEng from 'toml-j0.4';
+import TOML from './toml';
 import YAML from './yaml';
 
+const tomlFormatter = new TOML();
+
 const parsers = {
-  toml: tomlEng.parse.bind(tomlEng),
+  toml: tomlFormatter.fromFile.bind(tomlFormatter),
   json: (input) => {
     let JSONinput = input.trim();
     // Fix JSON if leading and trailing brackets were trimmed.

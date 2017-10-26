@@ -1,6 +1,7 @@
 import yaml from 'js-yaml';
 import moment from 'moment';
 import AssetProxy from '../valueObjects/AssetProxy';
+import { sortKeys } from './helpers';
 
 const MomentType = new yaml.Type('date', {
   kind: 'scalar',
@@ -34,20 +35,6 @@ const OutputSchema = new yaml.Schema({
   implicit: [MomentType, ImageType].concat(yaml.DEFAULT_SAFE_SCHEMA.implicit),
   explicit: yaml.DEFAULT_SAFE_SCHEMA.explicit,
 });
-
-const sortKeys = (sortedKeys = []) => (a, b) => {
-  const idxA = sortedKeys.indexOf(a);
-  const idxB = sortedKeys.indexOf(b);
-  if (idxA === -1 || idxB === -1) {
-    if (a > b) return 1;
-    if (a < b) return -1;
-    return 0;
-  }
-
-  if (idxA > idxB) return 1;
-  if (idxA < idxB) return -1;
-  return 0;
-};
 
 export default class YAML {
   fromFile(content) {

@@ -1,8 +1,10 @@
 import YAML from './yaml';
+import TOML from './toml';
 import JSONFormatter from './json';
 import Frontmatter from './frontmatter';
 
 const yamlFormatter = new YAML();
+const tomlFormatter = new TOML();
 const jsonFormatter = new JSONFormatter();
 const FrontmatterFormatter = new Frontmatter();
 
@@ -16,6 +18,7 @@ export function formatByExtension(extension) {
   return {
     yml: yamlFormatter,
     yaml: yamlFormatter,
+    toml: tomlFormatter,
     json: jsonFormatter,
     md: FrontmatterFormatter,
     markdown: FrontmatterFormatter,
@@ -27,6 +30,7 @@ function formatByName(name) {
   return {
     yml: yamlFormatter,
     yaml: yamlFormatter,
+    toml: tomlFormatter,
     frontmatter: FrontmatterFormatter,
   }[name] || FrontmatterFormatter;
 }
