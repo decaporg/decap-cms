@@ -227,7 +227,7 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
     const entryDraft = state.entryDraft;
 
     // Early return if draft contains validation errors
-    if (!entryDraft.get('fieldsErrors').isEmpty()) return Promise.resolve();
+    if (!entryDraft.get('fieldsErrors').isEmpty()) return Promise.reject();
 
     const backend = currentBackend(state.config);
     const transactionID = uuid();
@@ -260,7 +260,7 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
         kind: 'danger',
         dismissAfter: 8000,
       }));
-      return dispatch(unpublishedEntryPersistedFail(error, transactionID));
+      return Promise.reject(dispatch(unpublishedEntryPersistedFail(error, transactionID)));
     });
   };
 }
