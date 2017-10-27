@@ -75,6 +75,7 @@ class App extends React.Component {
 
     return (
       <div>
+        <Notifs CustomComponent={Toast} />
         {
           React.createElement(backend.authComponent(), {
             onLogin: this.handleLogin.bind(this),

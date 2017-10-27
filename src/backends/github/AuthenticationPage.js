@@ -1,8 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import Authenticator from 'Lib/netlify-auth';
-import { Notifs } from 'redux-notifications';
-import { Icon, Toast } from 'UI';
+import { Icon } from 'UI';
 
 export default class AuthenticationPage extends React.Component {
   static propTypes = {
@@ -36,7 +35,6 @@ export default class AuthenticationPage extends React.Component {
     return (
       <section className="nc-githubAuthenticationPage-root">
         <Icon className="nc-githubAuthenticationPage-logo" size="500px" type="netlify-cms"/>
-        <Notifs CustomComponent={Toast} />
         {loginError && <p>{loginError}</p>}
         <button
           className="nc-githubAuthenticationPage-button"
