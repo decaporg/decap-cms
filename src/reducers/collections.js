@@ -29,6 +29,7 @@ const collections = (state = null, action) => {
 const formatToExtension = format => ({
   markdown: 'md',
   yaml: 'yml',
+  toml: 'toml',
   json: 'json',
   html: 'html',
 }[format]);
