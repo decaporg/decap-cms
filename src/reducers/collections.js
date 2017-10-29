@@ -4,6 +4,7 @@ import consoleError from '../lib/consoleError';
 import { CONFIG_SUCCESS } from '../actions/config';
 import { FILES, FOLDER } from '../constants/collectionTypes';
 import { INFERABLE_FIELDS } from '../constants/fieldInference';
+import { formatToExtension } from '../formats/formats';
 
 const collections = (state = null, action) => {
   const configCollections = action.payload && action.payload.collections;
@@ -25,14 +26,6 @@ const collections = (state = null, action) => {
       return state;
   }
 };
-
-const formatToExtension = format => ({
-  markdown: 'md',
-  yaml: 'yml',
-  toml: 'toml',
-  json: 'json',
-  html: 'html',
-}[format]);
 
 const selectors = {
   [FOLDER]: {
