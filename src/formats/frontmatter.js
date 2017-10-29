@@ -16,7 +16,10 @@ const parsers = {
     }
     return jsonFormatter.fromFile(JSONinput);
   },
-  yaml: input => yamlFormatter.fromFile(input),
+  yaml: {
+    parse: input => yamlFormatter.fromFile(input),
+    stringify: (metadata, { sortedKeys }) => yamlFormatter.toFile(metadata, sortedKeys),
+  },
 }
 
 function inferFrontmatterFormat(str) {
@@ -50,11 +53,7 @@ export default {
     const { body, ...meta } = data;
 
     // always stringify to YAML
-    const parser = {
-      stringify(metadata) {
-        return yamlFormatter.toFile(metadata, sortedKeys);
-      },
-    };
-    return matter.stringify(body, meta, { language: "yaml", delimiters: "---", engines: { yaml: parser } });
+    // `sortedKeys` is not recognized by gray-matter, so it gets passed through to the parser
+    return matter.stringify(body, meta, { engines: parsers, language: "yaml", delimiters: "---", sortedKeys });
   }
 }
