@@ -1,10 +1,11 @@
 import matter from 'gray-matter';
 import tomlFormatter from './toml';
 import yamlFormatter from './yaml';
+import jsonFormatter from './json';
 
 const parsers = {
-  toml: tomlFormatter.fromFile.bind(tomlFormatter),
-  json: (input) => {
+  toml: input => tomlFormatter.fromFile(input),
+  json: input => {
     let JSONinput = input.trim();
     // Fix JSON if leading and trailing brackets were trimmed.
     if (JSONinput.substr(0, 1) !== '{') {
@@ -13,8 +14,9 @@ const parsers = {
     if (JSONinput.substr(-1) !== '}') {
       JSONinput = JSONinput + '}';
     }
-    return matter.engines.json.parse(JSONinput);
+    return jsonFormatter.fromFile(JSONinput);
   },
+  yaml: input => yamlFormatter.fromFile(input),
 }
 
 function inferFrontmatterFormat(str) {
