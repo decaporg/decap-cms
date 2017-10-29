@@ -40,21 +40,14 @@ function inferFrontmatterFormat(str) {
 export default class Frontmatter {
   fromFile(content) {
     const result = matter(content, { engines: parsers, ...inferFrontmatterFormat(content) });
-    const data = result.data;
-    data.body = result.content;
-    return data;
+    return {
+      ...result.data,
+      body: result.content,
+    };
   }
 
   toFile(data, sortedKeys) {
-    const meta = {};
-    let body = '';
-    Object.keys(data).forEach((key) => {
-      if (key === 'body') {
-        body = data[key];
-      } else {
-        meta[key] = data[key];
-      }
-    });
+    const { body, ...meta } = data;
 
     // always stringify to YAML
     const parser = {
