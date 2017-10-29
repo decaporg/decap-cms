@@ -1,7 +1,7 @@
-import YAML from './yaml';
-import TOML from './toml';
-import JSONFormatter from './json';
-import Frontmatter from './frontmatter';
+import yamlFormatter from './yaml';
+import tomlFormatter from './toml';
+import jsonFormatter from './json';
+import FrontmatterFormatter from './frontmatter';
 
 export const formatToExtension = format => ({
   markdown: 'md',
@@ -10,11 +10,6 @@ export const formatToExtension = format => ({
   json: 'json',
   html: 'html',
 }[format]);
-
-const yamlFormatter = new YAML();
-const tomlFormatter = new TOML();
-const jsonFormatter = new JSONFormatter();
-const FrontmatterFormatter = new Frontmatter();
 
 function formatByType(type) {
   // Right now the only type is "editorialWorkflow" and

@@ -36,10 +36,10 @@ const OutputSchema = new yaml.Schema({
   explicit: yaml.DEFAULT_SAFE_SCHEMA.explicit,
 });
 
-export default class YAML {
+export default {
   fromFile(content) {
     return yaml.safeLoad(content);
-  }
+  },
 
   toFile(data, sortedKeys = []) {
     return yaml.safeDump(data, { schema: OutputSchema, sortKeys: sortKeys(sortedKeys) });
