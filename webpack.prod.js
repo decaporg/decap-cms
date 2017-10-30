@@ -3,6 +3,7 @@ const path = require('path');
 const webpack = require('webpack');
 const merge = require('webpack-merge');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = merge.smart(require('./webpack.base.js'), {
   entry: {
@@ -27,11 +28,8 @@ module.exports = merge.smart(require('./webpack.base.js'), {
     }),
 
     // Minify and optimize the JavaScript
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        // ...but do not show warnings in the console (there is a lot of them)
-        warnings: false,
-      },
+    new UglifyJsPlugin({
+      sourceMap: true,
     }),
 
     // Extract CSS

@@ -118,6 +118,7 @@
     "stylelint-config-standard": "^13.0.2",
     "stylelint-declaration-block-order": "^0.1.0",
     "stylelint-declaration-use-variable": "^1.6.0",
+    "uglifyjs-webpack-plugin": "^1.0.1",
     "url-loader": "^0.5.9",
     "webpack": "^3.6.0",
     "webpack-dev-server": "^2.9.1",
