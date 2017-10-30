@@ -47,6 +47,9 @@ const selectors = {
     allowNewEntries(collection) {
       return collection.get('create');
     },
+    allowDeletion(collection) {
+      return collection.get('delete', true);
+    },
     templateName(collection) {
       return collection.get('name');
     },
@@ -74,6 +77,9 @@ const selectors = {
     allowNewEntries() {
       return false;
     },
+    allowDeletion(collection) {
+      return collection.get('delete', true);
+    },
     templateName(collection, slug) {
       return slug;
     },
@@ -86,6 +92,7 @@ export const selectEntryPath = (collection, slug) => selectors[collection.get('t
 export const selectEntrySlug = (collection, path) => selectors[collection.get('type')].entrySlug(collection, path);
 export const selectListMethod = collection => selectors[collection.get('type')].listMethod();
 export const selectAllowNewEntries = collection => selectors[collection.get('type')].allowNewEntries(collection);
+export const selectAllowDeletion = collection => selectors[collection.get('type')].allowDeletion(collection);
 export const selectTemplateName = (collection, slug) => selectors[collection.get('type')].templateName(collection, slug);
 export const selectInferedField = (collection, fieldName) => {
   const inferableField = INFERABLE_FIELDS[fieldName];

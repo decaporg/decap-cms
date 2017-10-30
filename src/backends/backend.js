@@ -3,7 +3,7 @@ import TestRepoBackend from "./test-repo/implementation";
 import GitHubBackend from "./github/implementation";
 import GitGatewayBackend from "./git-gateway/implementation";
 import { resolveFormat } from "../formats/formats";
-import { selectListMethod, selectEntrySlug, selectEntryPath, selectAllowNewEntries, selectFolderEntryExtension } from "../reducers/collections";
+import { selectListMethod, selectEntrySlug, selectEntryPath, selectAllowNewEntries, selectAllowDeletion, selectFolderEntryExtension } from "../reducers/collections";
 import { createEntry } from "../valueObjects/Entry";
 import { sanitizeSlug } from "../lib/urlHelper";
 
@@ -246,6 +246,11 @@ class Backend {
 
   deleteEntry(config, collection, slug) {
     const path = selectEntryPath(collection, slug);
+
+    if (!selectAllowDeletion(collection)) {
+      throw (new Error("Not allowed to delete entries in this collection"));
+    }
+
     const commitMessage = `Delete ${ collection.get('label') } “${ slug }”`;
     return this.implementation.deleteFile(path, commitMessage);
   }
