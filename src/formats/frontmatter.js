@@ -1,12 +1,11 @@
 import matter from 'gray-matter';
-import TOML from './toml';
-import YAML from './yaml';
-
-const tomlFormatter = new TOML();
+import tomlFormatter from './toml';
+import yamlFormatter from './yaml';
+import jsonFormatter from './json';
 
 const parsers = {
-  toml: tomlFormatter.fromFile.bind(tomlFormatter),
-  json: (input) => {
+  toml: input => tomlFormatter.fromFile(input),
+  json: input => {
     let JSONinput = input.trim();
     // Fix JSON if leading and trailing brackets were trimmed.
     if (JSONinput.substr(0, 1) !== '{') {
@@ -15,7 +14,11 @@ const parsers = {
     if (JSONinput.substr(-1) !== '}') {
       JSONinput = JSONinput + '}';
     }
-    return matter.engines.json.parse(JSONinput);
+    return jsonFormatter.fromFile(JSONinput);
+  },
+  yaml: {
+    parse: input => yamlFormatter.fromFile(input),
+    stringify: (metadata, { sortedKeys }) => yamlFormatter.toFile(metadata, sortedKeys),
   },
 }
 
@@ -37,31 +40,20 @@ function inferFrontmatterFormat(str) {
   }
 }
 
-export default class Frontmatter {
+export default {
   fromFile(content) {
     const result = matter(content, { engines: parsers, ...inferFrontmatterFormat(content) });
-    const data = result.data;
-    data.body = result.content;
-    return data;
-  }
+    return {
+      ...result.data,
+      body: result.content,
+    };
+  },
 
   toFile(data, sortedKeys) {
-    const meta = {};
-    let body = '';
-    Object.keys(data).forEach((key) => {
-      if (key === 'body') {
-        body = data[key];
-      } else {
-        meta[key] = data[key];
-      }
-    });
+    const { body, ...meta } = data;
 
     // always stringify to YAML
-    const parser = {
-      stringify(metadata) {
-        return new YAML().toFile(metadata, sortedKeys);
-      },
-    };
-    return matter.stringify(body, meta, { language: "yaml", delimiters: "---", engines: { yaml: parser } });
+    // `sortedKeys` is not recognized by gray-matter, so it gets passed through to the parser
+    return matter.stringify(body, meta, { engines: parsers, language: "yaml", delimiters: "---", sortedKeys });
   }
 }
