@@ -47,6 +47,18 @@
   border: none;
   border-radius: var(--borderRadius) 0 0 var(--borderRadius);
   background: rgba(0,0,0,0.1);
+
+  &:before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--controlBGColor);
+    border-radius: var(--borderRadius) 0 0 var(--borderRadius);
+  }
 }
 
 .nc-listControl-item {
@@ -55,6 +67,7 @@
 }
 
 .nc-listControl-objectLabel {
+  background-color: var(--controlBGColor);
   border: 2px solid rgba(0,0,0,0.1);
   border-top-width: 28px;
   border-radius: var(--borderRadius);
@@ -81,6 +94,7 @@
   display: block;
   border-top: 28px solid rgba(0,0,0,0.1);
   border-top-left-radius: 0;
+  background-color: var(--controlBGColor);
 }
 
 .nc-listControl-collapsed {
