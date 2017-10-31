@@ -1,4 +1,4 @@
-# Take a test drive
+# Take a test drive - Edit
 
 Netlify CMS can run in any frontend web environment, but the quickest way to try it out is by running it on a pre-configured starter site with Netlify. Our example here is the [Kaldi coffee company template](https://github.com/netlify-templates/one-click-hugo-cms). Use the button below to build and deploy your own copy of the repository:
 
