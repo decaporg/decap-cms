@@ -29,3 +29,5 @@ You do NOT have to include this information if this is a FEATURE REQUEST
 
 **- Please mention your CMS, node.js, and operating system version.**
 <!-- You can find the CMS version by checking your web browser's developer tools console while in the CMS. -->
+
+**- Please link or paste your `config.yml` below if applicable.**
