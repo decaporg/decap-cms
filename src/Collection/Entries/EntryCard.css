@@ -41,12 +41,6 @@
   margin: 0 0 2px;
 }
 
-.nc-entryListing-cardsGrid {
-  display: flex;
-  flex-flow: row wrap;
-  margin-left: -12px;
-}
-
 .nc-entryListing-cardListLabel {
   white-space: nowrap;
   font-weight: bold;

@@ -12,7 +12,7 @@ export default class Collection extends React.Component {
     collections: ImmutablePropTypes.orderedMap.isRequired,
   };
 
-  state = { query: '' };
+  state = { query: this.props.searchTerm || '' };
 
   renderLink = collection => {
     const collectionName = collection.get('name');

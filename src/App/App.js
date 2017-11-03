@@ -19,7 +19,6 @@ import { getCollectionUrl, getNewEntryUrl } from '../lib/urlHelper';
 import { SIMPLE, EDITORIAL_WORKFLOW } from '../constants/publishModes';
 import Collection from '../Collection/Collection';
 import EntryPage from '../containers/EntryPage';
-import SearchPage from '../containers/SearchPage';
 import NotFoundPage from '../containers/NotFoundPage';
 
 TopBarProgress.config({
@@ -136,9 +135,9 @@ class App extends React.Component {
             <Switch>
               <Redirect exact from="/" to={`/collections/${collections.first().get('name')}`} />
               <Route exact path="/collections/:name" component={Collection} />
-              <Route path="/collections/:name/new" render={(props) => (<EntryPage {...props} newRecord />)} />
+              <Route path="/collections/:name/new" render={props => <EntryPage {...props} newRecord />} />
               <Route path="/collections/:name/entries/:slug" component={EntryPage} />
-              <Route path="/search/:searchTerm" component={SearchPage} />
+              <Route path="/search/:searchTerm" render={props => <Collection {...props} isSearchResults />} />
               <Route component={NotFoundPage} />
             </Switch>
             <MediaLibrary/>
