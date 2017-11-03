@@ -14,5 +14,6 @@
   margin: 12px 0 0;
 }
 
-.nc-collectionPage-top-button {
+.nc-collectionPage-topNewButton {
+  @apply(--button);
 }

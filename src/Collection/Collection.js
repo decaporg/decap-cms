@@ -1,6 +1,7 @@
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
+import { getNewEntryUrl } from '../lib/urlHelper';
 import Sidebar from './Sidebar';
 import Top from './Top';
 import EntriesCollection from './Entries/EntriesCollection';
@@ -23,11 +24,16 @@ class Collection extends React.Component {
   };
 
   render() {
-    const { collection, collections, isSearchResults, searchTerm } = this.props;
+    const { collection, collections, collectionName, isSearchResults, searchTerm } = this.props;
+    const newEntryUrl = collection.get('create') && getNewEntryUrl(collectionName, true);
     return (
       <div className="nc-collectionPage-container">
         <Sidebar collections={collections} searchTerm={searchTerm}/>
-        { isSearchResults ? null : <Top collectionName={collection.get('label')}/> }
+        {
+          isSearchResults
+            ? null
+            : <Top collectionLabel={collection.get('label')} newEntryUrl={newEntryUrl}/>
+        }
         { isSearchResults ? this.renderEntriesSearch() : this.renderEntriesCollection() }
       </div>
     );
@@ -39,7 +45,7 @@ function mapStateToProps(state, ownProps) {
   const { isSearchResults, match } = ownProps;
   const { name, searchTerm } = match.params;
   const collection = name ? collections.get(name) : collections.first();
-  return { collection, collections, isSearchResults, searchTerm };
+  return { collection, collections, collectionName: name, isSearchResults, searchTerm };
 }
 
 export default connect(mapStateToProps)(Collection);
