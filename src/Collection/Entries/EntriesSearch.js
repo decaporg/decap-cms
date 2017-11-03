@@ -1,14 +1,15 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
-import { selectSearchedEntries } from '../reducers';
-import { searchEntries as actionSearchEntries, clearSearch as actionClearSearch } from '../actions/search';
-import { Loader } from '../components/UI';
-import EntryListing from '../components/EntryListing/EntryListing';
+import { selectSearchedEntries } from '../../reducers';
+import {
+  searchEntries as actionSearchEntries,
+  clearSearch as actionClearSearch
+} from '../../actions/search';
+import Entries from './Entries';
 
-class SearchPage extends React.Component {
-
+class EntriesSearch extends React.Component {
   static propTypes = {
     isFetching: PropTypes.bool,
     searchEntries: PropTypes.func.isRequired,
@@ -40,43 +41,35 @@ class SearchPage extends React.Component {
     if (!isNaN(page)) searchEntries(searchTerm, page);
   };
 
-  render() {
-    const { collections, searchTerm, entries, isFetching, page, publicFolder } = this.props;
-    return (<div>
-      {(isFetching === true || !entries) ?
-        <Loader active>{['Loading Entries', 'Caching Entries', 'This might take several minutes']}</Loader>
-        :
-        <EntryListing
-          collections={collections}
-          entries={entries}
-          page={page}
-          publicFolder={publicFolder}
-          onPaginate={this.handleLoadMore}
-        >
-            Results for “{searchTerm}”
-          </EntryListing>
-      }
-    </div>);
+  render () {
+    const { dispatch, collections, entries, publicFolder, page, isFetching } = this.props;
+    return (
+      <Entries
+        collections={collections}
+        entries={entries}
+        publicFolder={publicFolder}
+        page={page}
+        onPaginate={this.handleLoadMore}
+        isFetching={isFetching}
+      />
+    );
   }
 }
 
-
 function mapStateToProps(state, ownProps) {
+  const { searchTerm } = ownProps;
+  const collections = ownProps.collections.toIndexedSeq();
   const isFetching = state.entries.getIn(['search', 'isFetching']);
   const page = state.entries.getIn(['search', 'page']);
   const entries = selectSearchedEntries(state);
-  const collections = state.collections.toIndexedSeq();
   const publicFolder = state.config.get('public_folder');
-  const { searchTerm } = ownProps.match.params;
 
   return { isFetching, page, collections, entries, publicFolder, searchTerm };
 }
 
+const mapDispatchToProps = {
+  searchEntries: actionSearchEntries,
+  clearSearch: actionClearSearch,
+};
 
-export default connect(
-  mapStateToProps,
-  {
-    searchEntries: actionSearchEntries,
-    clearSearch: actionClearSearch,
-  }
-)(SearchPage);
+export default connect(mapStateToProps, mapDispatchToProps)(EntriesSearch);
