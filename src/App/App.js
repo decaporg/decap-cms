@@ -119,6 +119,8 @@ class App extends React.Component {
       return this.authenticating();
     }
 
+    const defaultPath = `/collections/${collections.first().get('name')}`;
+
     return (
       <div className="nc-app-container">
         <Notifs CustomComponent={Toast} />
@@ -133,7 +135,8 @@ class App extends React.Component {
           { isFetching && <TopBarProgress /> }
           <div>
             <Switch>
-              <Redirect exact from="/" to={`/collections/${collections.first().get('name')}`} />
+              <Redirect exact from="/" to={defaultPath} />
+              <Redirect exact from="/search/" to={defaultPath} />
               <Route exact path="/collections/:name" component={Collection} />
               <Route path="/collections/:name/new" render={props => <EntryPage {...props} newRecord />} />
               <Route path="/collections/:name/entries/:slug" component={EntryPage} />
