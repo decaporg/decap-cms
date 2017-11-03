@@ -11,7 +11,6 @@
 @import "./components/MediaLibrary/MediaLibrary.css";
 @import "./components/ControlPanel/ControlPane.css";
 @import "./components/EntryEditor/EntryEditor.css";
-@import "./components/EntryListing/EntryListing.css";
 @import "./components/PreviewPane/PreviewPane.css";
 @import "./components/UI/Sticky/Sticky.css";
 @import "./components/UI/card/Card.css";
