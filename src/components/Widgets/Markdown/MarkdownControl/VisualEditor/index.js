@@ -46,7 +46,7 @@ export default class Editor extends Component {
     return change.insertFragment(doc);
   }
 
-  hasMark = type => this.state.editorState.marks.some(mark => mark.type === type);
+  hasMark = type => this.state.editorState.activeMarks.some(mark => mark.type === type);
   hasBlock = type => this.state.editorState.blocks.some(node => node.type === type);
 
   handleMarkClick = (event, type) => {
