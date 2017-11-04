@@ -3,13 +3,9 @@
 @import "./Entries/Entries.css";
 
 .nc-collectionPage-container {
-  grid-area: main;
-  display: grid;
-  grid-template-columns: 250px auto;
-  grid-template-rows: auto auto;
-  grid-gap: 28px;
-  grid-template-areas:
-    "sidebar top"
-    "sidebar main";
   margin: 0 18px;
+}
+
+.nc-collectionPage-main {
+  padding-left: 280px;
 }

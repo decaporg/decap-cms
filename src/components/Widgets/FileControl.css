@@ -3,17 +3,12 @@
 }
 
 .nc-fileControl-message {
-  padding: 20px;
+  padding: 8px;
   display: block;
   font-size: 12px;
 }
 
 .nc-fileControl-imageUpload {
-  background-color: #fff;
-  text-align: center;
-  color: #999;
-  border: var(--border);
-  border-style: dashed;
-  border-radius: var(--borderRadius);
+  @apply(--input);
   cursor: pointer;
 }

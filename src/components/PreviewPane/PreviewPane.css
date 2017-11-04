@@ -3,4 +3,5 @@
   height: 100%;
   border: none;
   background: #fff;
+  border-radius: var(--borderRadius);
 }
