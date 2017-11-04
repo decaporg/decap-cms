@@ -44,7 +44,6 @@ export default class ControlPane extends Component {
     if (entry.size === 0 || entry.get('partial') === true) return null;
     return (
       <div className="nc-controlPane-control">
-        <label className={labelClass} htmlFor={fieldName}>{field.get('label')}</label>
         <ul className="nc-controlPane-errors">
           {
             errors && errors.map(error =>
@@ -54,6 +53,7 @@ export default class ControlPane extends Component {
             )
           }
         </ul>
+        <label className={labelClass} htmlFor={fieldName}>{field.get('label')}</label>
         <ControlHOC 
           controlComponent={widget.control}
           field={field}

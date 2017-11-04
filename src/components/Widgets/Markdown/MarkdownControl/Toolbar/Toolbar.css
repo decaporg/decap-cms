@@ -1,5 +1,9 @@
 .nc-toolbar-Toolbar {
   z-index: 1000;
+  background-color: var(--textFieldBorderColor);
+  padding: 10px 10px 16px;
+  margin-bottom: -6px;
+  border-top-right-radius: var(--borderRadius);
 }
 
 .nc-toolbar-Toggle {

@@ -1,7 +1,15 @@
 .nc-appHeader-container {
-  grid-area: header;
+  margin-bottom: 84px;
+  z-index: 300;
+}
+
+.nc-appHeader-main {
+  position: fixed;
+  width: 100%;
+  top: 0;
   background-color: var(--backgroundColorSecondary);
   box-shadow: var(--dropShadow);
+  z-index: 300;
 }
 
 .nc-appHeader-content {

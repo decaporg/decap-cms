@@ -1,8 +1,5 @@
 .nc-visualEditor-editorControlBar {
   z-index: 1;
-  border: 2px solid transparent;
-  border-top: 0;
-  background-color: var(--controlBGColor);
 }
 
 .nc-visualEditor-editorControlBarSticky {

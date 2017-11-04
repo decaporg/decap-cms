@@ -152,6 +152,7 @@ export default class PreviewPane extends React.Component {
   <body><div></div></body>
 </html>
 `;
+
     return (
       <ErrorBoundary>
         <Frame className="nc-previewPane-frame" head={styleEls} initialContent={initialContent}>

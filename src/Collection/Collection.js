@@ -29,12 +29,14 @@ class Collection extends React.Component {
     return (
       <div className="nc-collectionPage-container">
         <Sidebar collections={collections} searchTerm={searchTerm}/>
-        {
-          isSearchResults
-            ? null
-            : <Top collectionLabel={collection.get('label')} newEntryUrl={newEntryUrl}/>
-        }
-        { isSearchResults ? this.renderEntriesSearch() : this.renderEntriesCollection() }
+        <div className="nc-collectionPage-main">
+          {
+            isSearchResults
+              ? null
+              : <Top collectionLabel={collection.get('label')} newEntryUrl={newEntryUrl}/>
+          }
+          { isSearchResults ? this.renderEntriesSearch() : this.renderEntriesCollection() }
+        </div>
       </div>
     );
   }

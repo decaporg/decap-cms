@@ -3,9 +3,13 @@
   padding: 6px;
   border: none;
   background-color: transparent;
+  color: var(--controlLabelColor);
+  font-size: 16px;
+  cursor: pointer;
 
-  &:not(:disabled) {
-    cursor: pointer;
+  &:disabled {
+    cursor: auto;
+    opacity: 0.5;
   }
 }
 
