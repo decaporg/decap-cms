@@ -1,3 +1,11 @@
+.nc-controlPane-root {
+  padding: 20px 20px 0;
+  background-color: #fff;
+  height: 100%;
+  overflow-y: auto;
+  border-radius: var(--borderRadius);
+}
+
 .nc-controlPane-root p {
   font-size: 16px;
 }
@@ -5,8 +13,7 @@
 .nc-controlPane-control {
   color: var(--textColor);
   position: relative;
-  padding: 20px 0 10px 0;
-  margin-top: 16px;
+  margin-top: 14px;
 
   & input,
   & textarea,
@@ -16,11 +23,37 @@
 }
 
 .nc-controlPane-label {
-  display: block;
+  display: inline-block;
   color: var(--controlLabelColor);
   font-size: 12px;
   text-transform: uppercase;
   font-weight: 600;
+  background-color: #dfdfe3;
+  border: 0;
+  position: relative;
+  top: 6px;
+  border-radius: 3px 3px 0 0;
+  padding: 3px 8px 8px;
+
+  /**
+   * Faux outside curve into top of input
+   */
+  &:before,
+  &:after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    right: -4px;
+    height: calc(100% - 6px);
+    width: 4px;
+    background-color: inherit;
+  }
+
+  &:after {
+    border-bottom-left-radius: 3px;
+    background-color: #fff;
+  }
 }
 
 .nc-controlPane-labelWithError {

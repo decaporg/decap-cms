@@ -1,8 +1,8 @@
 .nc-collectionPage-sidebar {
   @apply(--card);
+  width: 250px;
   padding: 8px 0 12px;
-  grid-area: sidebar;
-  align-self: start;
+  position: fixed;
 }
 
 .nc-collectionPage-sidebarHeading {

@@ -48,27 +48,29 @@ export default class Header extends React.Component {
 
     return (
       <div className="nc-appHeader-container">
-        <div className="nc-appHeader-content">
-          <nav>
-            <NavLink to="/" className="nc-appHeader-button" activeClassName="nc-appHeader-button-active">
-              <Icon type="page"/>
-              Content
-            </NavLink>
-            <button onClick={openMediaLibrary} className="nc-appHeader-button">
-              <Icon type="media-alt"/>
-              Media
-            </button>
-          </nav>
-          <div className="nc-appHeader-actions">
-            <button className="nc-appHeader-button nc-appHeader-quickNew">
-              Quick new
-            </button>
-            <a className="nc-appHeader-siteLink" href="http://olddvdscreensaver.com" target="_blank">
-              olddvdscreensaver.com
-            </a>
-            <button className="nc-appHeader-avatar">
-              <img src={user.get('avatar_url')}/>
-            </button>
+        <div className="nc-appHeader-main">
+          <div className="nc-appHeader-content">
+            <nav>
+              <NavLink to="/" className="nc-appHeader-button" activeClassName="nc-appHeader-button-active">
+                <Icon type="page"/>
+                Content
+              </NavLink>
+              <button onClick={openMediaLibrary} className="nc-appHeader-button">
+                <Icon type="media-alt"/>
+                Media
+              </button>
+            </nav>
+            <div className="nc-appHeader-actions">
+              <button className="nc-appHeader-button nc-appHeader-quickNew">
+                Quick new
+              </button>
+              <a className="nc-appHeader-siteLink" href="http://olddvdscreensaver.com" target="_blank">
+                olddvdscreensaver.com
+              </a>
+              <button className="nc-appHeader-avatar">
+                <img src={user.get('avatar_url')}/>
+              </button>
+            </div>
           </div>
         </div>
       </div>

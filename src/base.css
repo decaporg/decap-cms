@@ -23,18 +23,18 @@
   --topmostZindex: 99999;
   --foregroundAltColor: #fff;
   --backgroundAltColor: #fff;
-  --textFieldBorderColor: var(--secondaryColor);
+  --textFieldBorderColor: #dfdfe3;
   --highlightFGColor: #fff;
   --highlightBGColor: #3ab7a5;
   --highlightFGAltColor: #eee;
-  --controlLabelColor: #8b8b8b;
+  --controlLabelColor: #7a8291;
   --controlBGColor: #fff;
   --backgroundTertiaryColor: #fff;
   --backgroundTertiaryColorDark: color(var(--backgroundTertiaryColor) lightness(90%));
   --richTextEditorMinHeight: 300px;
   --borderWidth: 2px;
   --border: solid var(--borderWidth) var(--secondaryColor);
-  --textFieldBorder: var(--border);
+  --textFieldBorder: solid var(--borderWidth) var(--textFieldBorderColor);
   --buttonTextColor: #fff;
   --buttonBackgroundColor: var(--secondaryColor);
 
@@ -58,6 +58,7 @@
     font-size: 16px;
     color: var(--textColor);
     transition: border-color .3s ease;
+    position: relative;
 
     &:focus,
     &:active {

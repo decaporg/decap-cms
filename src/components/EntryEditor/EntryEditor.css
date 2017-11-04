@@ -1,8 +1,22 @@
 @import "./ReactSplitPane.css";
 
+.nc-entryEditor-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  overflow: hidden;
+  top: 0;
+}
+
 /* Quick fix for preview pane not fully displaying in Safari */
 .SplitPane .Pane {
   height: 100%;
+}
+
+.nc-entryEditor-controlPane,
+.nc-entryEditor-previewPane {
+  height: 100%;
+  padding-top: 84px;
+  padding-bottom: 28px;
 }
 
 .nc-entryEditor-controlPaneButtons {
@@ -21,18 +35,6 @@
 
 .nc-entryEditor-toggleButtonShow {
   right: 60px;
-}
-
-.nc-entryEditor-controlPane {
-  overflow: auto;
-  padding: 20px 20px 0;
-  height: calc(100% - 55px);
-  border-right: 1px solid var(--defaultColorLight);
-  background-color: var(--backgroundColor);
-}
-
-.nc-entryEditor-previewPane {
-  height: calc(100% - 55px);
 }
 
 .nc-entryEditor-blocker > * {

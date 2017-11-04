@@ -1,11 +1,11 @@
 .nc-collectionPage-top {
   @apply(--card);
-  grid-area: top;
   display: flex;
   align-items: center;
   justify-content: space-between;
   max-width: 682px;
   padding: 16px 20px;
+  margin-bottom: 28px;
 }
 
 .nc-collectionPage-topHeading {
