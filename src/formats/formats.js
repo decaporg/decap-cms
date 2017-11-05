@@ -34,9 +34,19 @@ function formatByName(name) {
 }
 
 export function resolveFormat(collectionOrEntity, entry) {
-  const path = entry && entry.path;
-  if (path) {
-    return formatByExtension(path.split('.').pop());
+  // If the format is specified in the collection, use that format.
+  const format = collectionOrEntity.get('format');
+  if (format) {
+    return formatByName(format);
   }
-  return formatByName(collectionOrEntity.get('format'));
+
+  // If a file already exists, infer the format from its file extension.
+  const filePath = entry && entry.path;
+  if (filePath) {
+    const fileExtension = filePath.split('.').pop();
+    return formatByExtension(fileExtension);
+  }
+
+  // If no format is specified and it cannot be inferred, return the default.
+  return formatByName();
 }
