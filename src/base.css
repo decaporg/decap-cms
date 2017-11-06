@@ -37,6 +37,7 @@
   --textFieldBorder: solid var(--borderWidth) var(--textFieldBorderColor);
   --buttonTextColor: #fff;
   --buttonBackgroundColor: var(--secondaryColor);
+  --topBarHeight: 56px;
 
   --card: {
     box-shadow: var(--dropShadow);
