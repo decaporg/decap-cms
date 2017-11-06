@@ -5,6 +5,9 @@
   margin: 0 auto;
   overflow: hidden;
   top: 0;
+  padding-top: 84px;
+  padding-bottom: 28px;
+  position: relative;
 }
 
 /* Quick fix for preview pane not fully displaying in Safari */
@@ -14,15 +17,22 @@
 
 .nc-entryEditor-controlPane,
 .nc-entryEditor-previewPane {
+  background-color: #fff;
   height: 100%;
-  padding-top: 84px;
-  padding-bottom: 28px;
+  overflow-y: auto;
+  border-radius: var(--borderRadius);
+}
+
+.nc-entryEditor-controlPane {
+  padding: 20px 20px 0;
+  position: relative;
+  overflow-x: hidden;
 }
 
 .nc-entryEditor-controlPaneButtons {
   position: absolute;
-  top: 8px;
-  right: 20px;
+  top: 50px;
+  right: 0;
   z-index: 299;
   opacity: 0.8;
   display: flex;

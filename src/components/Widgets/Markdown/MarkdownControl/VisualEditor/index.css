@@ -4,6 +4,7 @@
 
 .nc-visualEditor-editorControlBarSticky {
   border-color: var(--textFieldBorderColor);
+  border-top-right-radius: 0;
 }
 
 .nc-visualEditor-wrapper {
