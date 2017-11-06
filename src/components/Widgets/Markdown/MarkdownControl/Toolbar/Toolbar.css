@@ -1,9 +1,24 @@
 .nc-toolbar-Toolbar {
-  z-index: 1000;
+  z-index: 0;
   background-color: var(--textFieldBorderColor);
-  padding: 10px 10px 16px;
-  margin-bottom: -6px;
+  padding: 10px;
   border-top-right-radius: var(--borderRadius);
+  position: relative;
+
+  &:after {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 6px;
+    background-color: inherit;
+    position: absolute;
+    bottom: -6px;
+    left: 0;
+  }
+}
+
+.nc-visualEditor-editorControlBarSticky .nc-toolbar-Toolbar {
+  border-top-right-radius: 0;
 }
 
 .nc-toolbar-Toggle {

@@ -84,20 +84,6 @@ class EntryEditor extends Component {
         className={classnames('nc-entryEditor-controlPane', { 'nc-entryEditor-blocker': showEventBlocker })}
         registerListener={fn => this.updateStickyContext = fn}
       >
-        { collectionPreviewEnabled ? (
-          <div className="nc-entryEditor-controlPaneButtons">
-            { previewVisible && (
-              <ToggleButton
-                icon={scrollSyncEnabled ? 'sync' : 'sync_disabled'}
-                onClick={this.handleToggleScrollSync}
-              />
-            ) }
-            <ToggleButton
-              icon={previewVisible ? 'visibility_off' : 'visibility'}
-              onClick={this.handleTogglePreview}
-            />
-          </div>
-        ) : null }
         <ControlPane
           collection={collection}
           entry={entry}
@@ -147,7 +133,29 @@ class EntryEditor extends Component {
       </div>
     );
 
-    return collectionPreviewEnabled && this.state.previewVisible ? editorWithPreview : editorWithoutPreview;
+    return (
+      <div>
+        { collectionPreviewEnabled ? (
+          <div className="nc-entryEditor-controlPaneButtons">
+            { previewVisible && (
+              <ToggleButton
+                icon={scrollSyncEnabled ? 'sync' : 'sync_disabled'}
+                onClick={this.handleToggleScrollSync}
+              />
+            ) }
+            <ToggleButton
+              icon={previewVisible ? 'visibility_off' : 'visibility'}
+              onClick={this.handleTogglePreview}
+            />
+          </div>
+        ) : null }
+        {
+          collectionPreviewEnabled && this.state.previewVisible
+            ? editorWithPreview
+            : editorWithoutPreview
+        }
+      </div>
+    );
 
     return (
       <div>

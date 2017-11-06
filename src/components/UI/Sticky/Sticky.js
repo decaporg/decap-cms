@@ -130,7 +130,7 @@ export class StickyContainer extends Component {
   getPosition = (contextTop) => {
     const rect = this.ref.getBoundingClientRect();
     const shouldStick = rect.top < contextTop;
-    const shouldStickAtBottom = rect.bottom - 60 < contextTop;
+    const shouldStickAtBottom = rect.bottom - 120 < contextTop;
     this.subscriptions.forEach((fn) => { fn(shouldStick, shouldStickAtBottom, rect.width); });
   };
 
