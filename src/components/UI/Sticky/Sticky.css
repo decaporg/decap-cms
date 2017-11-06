@@ -8,11 +8,11 @@
 
 .nc-sticky-stickyActive:not(.nc-sticky-stickyAtBottom) {
   position: fixed !important;
-  top: 54px !important;
+  top: 84px !important;
 }
 
 .nc-sticky-stickyAtBottom {
   position: absolute !important;
   top: auto !important;
-  bottom: 30px !important;
+  bottom: 70px !important;
 }
