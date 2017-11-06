@@ -110,7 +110,6 @@ class EntryEditor extends Component {
             onDragStarted={this.handleSplitPaneDragStart}
             onDragFinished={this.handleSplitPaneDragFinished}
             onChange={this.updateStickyContext}
-            className="nc-entryEditor-container"
           >
             <ScrollSyncPane>{editor}</ScrollSyncPane>
             <div className={classnames('nc-entryEditor-previewPane', { 'nc-entryEditor-blocker': showEventBlocker })}>
@@ -134,40 +133,35 @@ class EntryEditor extends Component {
     );
 
     return (
-      <div>
-        { collectionPreviewEnabled ? (
-          <div className="nc-entryEditor-controlPaneButtons">
-            { previewVisible && (
+      <div className="nc-entryEditor-containerOuter">
+        <Toolbar
+          isPersisting={entry.get('isPersisting')}
+          onPersist={this.handleOnPersist}
+          onCancelEdit={onCancelEdit}
+          onDelete={onDelete}
+          showDelete={showDelete}
+          enableSave={enableSave}
+        />
+        <div className="nc-entryEditor-container">
+          { collectionPreviewEnabled ? (
+            <div className="nc-entryEditor-controlPaneButtons">
               <ToggleButton
-                icon={scrollSyncEnabled ? 'sync' : 'sync_disabled'}
-                onClick={this.handleToggleScrollSync}
+                icon={previewVisible ? 'visibility' : 'visibility_off'}
+                onClick={this.handleTogglePreview}
               />
-            ) }
-            <ToggleButton
-              icon={previewVisible ? 'visibility_off' : 'visibility'}
-              onClick={this.handleTogglePreview}
-            />
-          </div>
-        ) : null }
-        {
-          collectionPreviewEnabled && this.state.previewVisible
-            ? editorWithPreview
-            : editorWithoutPreview
-        }
-      </div>
-    );
-
-    return (
-      <div>
-        <div className="nc-entryEditor-footer">
-          <Toolbar
-            isPersisting={entry.get('isPersisting')}
-            onPersist={this.handleOnPersist}
-            onCancelEdit={onCancelEdit}
-            onDelete={onDelete}
-            showDelete={showDelete}
-            enableSave={enableSave}
-          />
+              { previewVisible && (
+                <ToggleButton
+                  icon={scrollSyncEnabled ? 'sync' : 'sync_disabled'}
+                  onClick={this.handleToggleScrollSync}
+                />
+              ) }
+            </div>
+          ) : null }
+          {
+            collectionPreviewEnabled && this.state.previewVisible
+              ? editorWithPreview
+              : editorWithoutPreview
+          }
         </div>
       </div>
     );

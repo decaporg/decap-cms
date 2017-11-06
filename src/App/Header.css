@@ -10,6 +10,7 @@
   background-color: var(--backgroundColorSecondary);
   box-shadow: var(--dropShadow);
   z-index: 300;
+  height: var(--topBarHeight);
 }
 
 .nc-appHeader-content {
