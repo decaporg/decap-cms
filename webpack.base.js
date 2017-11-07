@@ -10,7 +10,7 @@ module.exports = {
       {
         test: /\.js?$/,
         use: 'babel-loader',
-        exclude: [/node_modules/, /example/],
+        exclude: /node_modules/,
       },
       {
         /* CSS loader for npm modules that are shipped with CSS that should be loaded without processing.
@@ -45,7 +45,7 @@ module.exports = {
       {
         /* We use PostCSS for CMS styles */
         test: /\.css$/,
-        exclude: [/node_modules/, /example/],
+        exclude: [/node_modules/],
         use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
           use: [
