@@ -1,7 +1,5 @@
 backend:
-  name: github
-  repo: netlify/netlify-cms
-  branch: pr-554-backend
+  name: file-system
 
 media_folder: "assets/uploads"
 
