@@ -1,5 +1,6 @@
 backend:
   name: github
+  repo: netlify/netlify-cms
   branch: cms-test-backend
 
 media_folder: "assets/uploads"
