@@ -1,0 +1,31 @@
+.fs-auth-page-root {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.fs-auth-page-card {
+  width: 350px;
+  padding: 10px;
+}
+
+.fs-auth-page-card img {
+  display: block;
+  margin: auto;
+  padding: 20px;
+}
+
+.fs-auth-page-errorMsg {
+  color: #dd0000;
+}
+
+.fs-auth-page-message {
+  font-size: 1.1em;
+  margin: 20px 10px;
+}
+
+.fs-auth-page-button {
+  padding: .25em 1em;
+  height: auto;
+}
