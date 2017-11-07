@@ -18,7 +18,7 @@ module.exports = merge.smart(require('./webpack.base.js'), {
   output: {
     path: path.join(__dirname, 'dist'),
     filename: '[name].js',
-    publicPath: `http://${ HOST }:${ PORT }/`,
+    publicPath: `/admin/`,
     library: 'netlify-cms',
     libraryTarget: 'umd',
     umdNamedDefine: true,
@@ -48,17 +48,14 @@ module.exports = merge.smart(require('./webpack.base.js'), {
     }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
-    new ExtractTextPlugin({
-      filename: '[name].css',
-      disable: true,
-    }),
+    new ExtractTextPlugin('[name].css'),
   ],
   devtool: 'source-map',
   devServer: {
     hot: true,
-    contentBase: 'example/',
+    contentBase: 'example/site/',
     historyApiFallback: true,
     disableHostCheck: true,
-    headers: {"Access-Control-Allow-Origin": "*"},
+    headers: { "Access-Control-Allow-Origin": "*" },
   },
 });

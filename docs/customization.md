@@ -28,7 +28,7 @@ CMS.registerPreviewStyle(file);
 // index.html
 <script src="https://unpkg.com/netlify-cms@^0.6.0/dist/cms.js"></script>
 <script>
-  CMS.registerPreviewStyle("/example.css");
+  CMS.registerPreviewStyle("example.css");
 </script>
 ```
 ```css
