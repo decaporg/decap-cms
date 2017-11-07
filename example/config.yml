@@ -1,5 +1,5 @@
 backend:
-  name: test-repo
+  name: file-system
 
 media_folder: "assets/uploads"
 
