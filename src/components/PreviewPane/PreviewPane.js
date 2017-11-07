@@ -4,6 +4,7 @@ import { List, Map } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import Frame from 'react-frame-component';
 import registry from '../../lib/registry';
+import ErrorBoundary from '../UI/ErrorBoundary/ErrorBoundary';
 import { resolveWidget } from '../Widgets';
 import { selectTemplateName, selectInferedField } from '../../reducers/collections';
 import { INFERABLE_FIELDS } from '../../constants/fieldInference';
@@ -144,16 +145,20 @@ export default class PreviewPane extends React.Component {
       return <Frame className="nc-previewPane-frame" head={styleEls} />;
     }
 
-    return (<Frame
-      className="nc-previewPane-frame"
-      head={styleEls}
-      initialContent={`
+    const initialContent = `
 <!DOCTYPE html>
 <html>
   <head><base target="_blank"/></head>
   <body><div></div></body>
-</html>`}
-    ><PreviewContent {...{ previewComponent, previewProps }}/></Frame>);
+</html>
+`;
+    return (
+      <ErrorBoundary>
+        <Frame className="nc-previewPane-frame" head={styleEls} initialContent={initialContent}>
+          <PreviewContent {...{ previewComponent, previewProps }}/>
+        </Frame>
+      </ErrorBoundary>
+    );
   }
 }
 

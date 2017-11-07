@@ -17,6 +17,7 @@
 @import "./components/UI/loader/Loader.css";
 @import "./components/UI/toast/Toast.css";
 @import "./components/UI/Dialog/Dialog.css";
+@import "./components/UI/ErrorBoundary/ErrorBoundary.css";
 @import "./components/UnpublishedListing/UnpublishedListing.css";
 @import "./components/UnpublishedListing/UnpublishedListingCardMeta.css";
 @import "./components/Widgets/BooleanControl.css";
