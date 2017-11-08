@@ -148,6 +148,7 @@
     "normalize.css": "^4.2.0",
     "prop-types": "^15.5.10",
     "react": "^16.0.0",
+    "react-aria-menubutton": "^5.1.0",
     "react-autosuggest": "^9.3.2",
     "react-datetime": "^2.6.0",
     "react-dnd": "^2.5.4",
