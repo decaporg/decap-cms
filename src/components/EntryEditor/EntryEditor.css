@@ -114,11 +114,11 @@
 .nc-entryEditor-toolbar-backSection,
 .nc-entryEditor-toolbar-metaSection {
   border: 0 solid var(--textFieldBorderColor);
-  cursor: pointer;
 }
 
 .nc-entryEditor-toolbar-backSection {
   border-right-width: 1px;
+  cursor: pointer;
 }
 
 .nc-entryEditor-toolbar-metaSection {
@@ -161,8 +161,61 @@
   padding-right: 20px;
 }
 
-.nc-entryEditor-toolbar-saveButton {
+.nc-entryEditor-toolbar-saveDropdown {
+  position: relative;
+  font-size: 14px;
+}
+
+.nc-entryEditor-toolbar-saveDropdownButton {
+  @apply --button;
+  display: block;
   background-color: #17a2b8;
   padding-left: 20px;
-  padding-right: 20px;
+  padding-right: 30px;
+  position: relative;
+
+  &:after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 16px;
+    right: 12px;
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid #fff;
+    border-radius: 2px;
+  }
+}
+
+.nc-entryEditor-toolbar-saveDropdownList {
+  position: absolute;
+  top: 40px;
+  left: 0;
+  width: 100%;
+  background-color: #fff;
+  border-radius: var(--borderRadius);
+  overflow: hidden;
+  box-shadow: 0 4px 12px 0 rgba(68,74,87,0.15), 0 1px 3px 0 rgba(68,74,87,0.25);
+}
+
+.nc-entryEditor-toolbar-saveDropdownItem {
+  @apply --button;
+  background-color: transparent;
+  border-radius: 0;
+  color: var(--textColor);
+  font-weight: normal;
+  border-bottom: 1px solid #eaebf1;
+  padding: 10px 30px 10px 14px;
+
+  &:last-of-type {
+    border-bottom: 0;
+  }
+
+  &:hover,
+  &:active,
+  &:focus {
+    background-color: #e8f5fe;
+  }
 }
