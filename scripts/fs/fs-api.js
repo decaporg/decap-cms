@@ -47,43 +47,34 @@ module.exports = {
     const read = (cb) => {
       if (!cb) throw new Error("Invalid call to file.read - requires a callback function(content)");
       if (stats.isFile()) {
-        let returnFile = "";
-        try {
-          returnFile = fs.readFileSync(thisfile, 'utf8');
-          cb(returnFile);
-        } catch (err) {
-          throw err;
-        }
+        fs.readFile(thisfile, 'utf8', (err, data) => {
+          if (err) throw err;
+          cb(data);
+        });
       } else {
         throw new Error("Invalid call to file.read - object path is not a file!");
       }
     };
     /* POST-Create a NEW file, ERROR if exists */
     const create = (body, cb) => {
-      try {
-        fs.writeFileSync(thisfile, body.content, { encoding: body.encoding, flag: 'wx' });
+      fs.writeFile(thisfile, body.content, { encoding: body.encoding, flag: 'wx' }, (err) => {
+        if (err) throw err;
         cb(body.content);
-      } catch (err) {
-        throw err;
-      }
+      });
     };
     /* PUT-Update an existing file */
     const update = (body, cb) => {
-      try {
-        fs.writeFileSync(thisfile, body.content, { encoding: body.encoding, flag: 'w' });
+      fs.writeFile(thisfile, body.content, { encoding: body.encoding, flag: 'w' }, (err) => {
+        if (err) throw err;
         cb(body.content);
-      } catch (err) {
-        throw err;
-      }
+      });
     };
     /* DELETE an existing file */
     const del = (cb) => {
-      try {
-        fs.unlinkSync(thisfile);
+      fs.unlink(thisfile, (err) => {
+        if (err) throw err;
         cb(`Deleted File ${ thisfile }`);
-      } catch (err) {
-        throw err;
-      }
+      });
     };
     return { read, create, update, del, stats };
   },
