@@ -1,10 +1,19 @@
 .nc-icon {
-  width: 24px;
-  height: 24px;
   display: inline-block;
 
   & path,
-  & circle {
+  & circle,
+  & polygon {
     fill: currentColor;
   }
+}
+
+.nc-icon-small {
+  width: 18px;
+  height: 18px;
+}
+
+.nc-icon-medium {
+  width: 24px;
+  height: 24px;
 }
