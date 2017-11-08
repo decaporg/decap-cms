@@ -96,19 +96,19 @@ export default class fs {
     return this.api.persistFiles(entry, mediaFiles, options);
   }
 
-  async persistMedia(mediaFile, options = {}) {
-    try {
-      console.log(mediaFile);
-      const response = await this.api.persistFiles([], [mediaFile], options);
-      const { value, size, path, public_path, fileObj } = mediaFile;
-      const url = public_path;
-      return { id: response.sha, name: value, size: fileObj.size, url, path: trimStart(path, '/') };
-    }
-    catch(error) {
-      console.error(error);
-      throw error;
-    }
-  }
+  // async persistMedia(mediaFile, options = {}) {
+  //   try {
+  //     console.log(mediaFile);
+  //     const response = await this.api.persistFiles([], [mediaFile], options);
+  //     const { value, size, path, public_path, fileObj } = mediaFile;
+  //     const url = public_path;
+  //     return { id: response.sha, name: value, size: fileObj.size, url, path: trimStart(path, '/') };
+  //   }
+  //   catch(error) {
+  //     console.error(error);
+  //     throw error;
+  //   }
+  // }
 
   deleteFile(path, commitMessage, options) {
     return this.api.deleteFile(path, commitMessage, options);
