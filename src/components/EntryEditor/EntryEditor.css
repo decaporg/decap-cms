@@ -92,16 +92,37 @@
   background-color: #fff;
   height: 66px;
   display: flex;
+  justify-content: space-between;
   box-shadow: var(--dropShadow);
 }
 
-.nc-entryEditor-toolbar-backSection {
+.nc-entryEditor-toolbar-mainSection,
+.nc-entryEditor-toolbar-backSection,
+.nc-entryEditor-toolbar-metaSection {
   height: 100%;
   display: flex;
   align-items: center;
   padding: 0 16px;
-  border-right: 1px solid var(--textFieldBorderColor);
+}
+
+.nc-entryEditor-toolbar-mainSection {
+  flex: 10;
+  display: flex;
+  justify-content: space-between;
+}
+
+.nc-entryEditor-toolbar-backSection,
+.nc-entryEditor-toolbar-metaSection {
+  border: 0 solid var(--textFieldBorderColor);
   cursor: pointer;
+}
+
+.nc-entryEditor-toolbar-backSection {
+  border-right-width: 1px;
+}
+
+.nc-entryEditor-toolbar-metaSection {
+  border-left-width: 1px;
 }
 
 .nc-entryEditor-toolbar-backArrow {
@@ -116,7 +137,8 @@
   font-size: 14px;
 }
 
-.nc-entryEditor-toolbar-backStatus {
+.nc-entryEditor-toolbar-backStatus,
+.nc-entryEditor-toolbar-backStatus-hasChanged {
   color: #005614;
   font-size: 13px;
   background-color: #caef6f;
@@ -125,4 +147,22 @@
   margin-top: 6px;
   text-align: center;
   display: inline-block;
+}
+
+.nc-entryEditor-toolbar-backStatus-hasChanged {
+  color: #ff003b;
+  background-color: #fbe0d7;
+}
+
+.nc-entryEditor-toolbar-deleteButton {
+  color: #ff003b;
+  background-color: #fbe0d7;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.nc-entryEditor-toolbar-saveButton {
+  background-color: #17a2b8;
+  padding-left: 20px;
+  padding-right: 20px;
 }
