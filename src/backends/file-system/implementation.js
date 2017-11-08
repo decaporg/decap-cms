@@ -1,3 +1,4 @@
+import trimStart from 'lodash/trimStart';
 import AuthenticationPage from './AuthenticationPage';
 import API from "./API";
 import { fileExtension } from '../../lib/pathHelper';
@@ -83,8 +84,30 @@ export default class fs {
     }));
   }
 
+  getMedia() {
+    return this.api.listFiles(this.config.get('media_folder'))
+      .then(files => files.filter(file => file.type === 'file'))
+      .then(files => files.map(({ sha, name, size, stats, path }) => {
+        return { id: sha, name, size: stats.size, url: path, path };
+      }));
+  }
+
   persistEntry(entry, mediaFiles = [], options = {}) {
     return this.api.persistFiles(entry, mediaFiles, options);
+  }
+
+  async persistMedia(mediaFile, options = {}) {
+    try {
+      console.log(mediaFile);
+      const response = await this.api.persistFiles([], [mediaFile], options);
+      const { value, size, path, public_path, fileObj } = mediaFile;
+      const url = public_path;
+      return { id: response.sha, name: value, size: fileObj.size, url, path: trimStart(path, '/') };
+    }
+    catch(error) {
+      console.error(error);
+      throw error;
+    }
   }
 
   deleteFile(path, commitMessage, options) {
