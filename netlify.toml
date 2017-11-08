@@ -1,3 +1,10 @@
 [build]
-Command = "npm run build && cp dist/* example/ && cp -v example/assets/config.yml example/config.yml "
-Publish = "example"
+  publish = "example"
+  command = "npm run build && cp -v dist/* example/ && cp -v example/assets/production/* example/ "
+
+[context.production]
+  command = "npm run build && cp -v dist/* example/ && cp -v example/assets/production/* example/ "
+[context.branch-deploy]
+  command = "npm run build && cp -v dist/* example/ && cp -v example/assets/preview/* example/ "
+[context.deploy-preview]
+  command = "npm run build && cp -v dist/* example/ && cp -v example/assets/preview/* example/ "
