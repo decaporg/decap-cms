@@ -26,7 +26,7 @@ function nameFromEmail(email) {
 export default class TestRepo {
   constructor(config) {
     this.config = config;
-    this.assets = [];
+    this.assets = window.repoFiles.assets || [];
   }
 
   authComponent() {
