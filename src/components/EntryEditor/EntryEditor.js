@@ -47,22 +47,24 @@ class EntryEditor extends Component {
 
   render() {
     const {
-        collection,
-        entry,
-        fields,
-        fieldsMetaData,
-        fieldsErrors,
-        mediaPaths,
-        getAsset,
-        onChange,
-        enableSave,
-        showDelete,
-        onDelete,
-        onValidate,
-        onOpenMediaLibrary,
-        onAddAsset,
-        onRemoveAsset,
-        onCancelEdit,
+      collection,
+      entry,
+      fields,
+      fieldsMetaData,
+      fieldsErrors,
+      mediaPaths,
+      getAsset,
+      onChange,
+      enableSave,
+      showDelete,
+      onDelete,
+      onValidate,
+      onOpenMediaLibrary,
+      onAddAsset,
+      onRemoveAsset,
+      onCancelEdit,
+      user,
+      hasChanged,
     } = this.props;
 
     const { previewVisible, scrollSyncEnabled, showEventBlocker } = this.state;
@@ -141,6 +143,8 @@ class EntryEditor extends Component {
           onDelete={onDelete}
           showDelete={showDelete}
           enableSave={enableSave}
+          user={user}
+          hasChanged={hasChanged}
         />
         <div className="nc-entryEditor-container">
           { collectionPreviewEnabled ? (
@@ -186,6 +190,8 @@ EntryEditor.propTypes = {
   onDelete: PropTypes.func.isRequired,
   onRemoveAsset: PropTypes.func.isRequired,
   onCancelEdit: PropTypes.func.isRequired,
+  user: ImmutablePropTypes.map,
+  hasChanged: PropTypes.bool,
 };
 
 export default EntryEditor;

@@ -148,6 +148,8 @@ class EntryPage extends React.Component {
       addAsset,
       removeAsset,
       closeEntry,
+      user,
+      hasChanged,
     } = this.props;
 
     if (entry && entry.get('error')) {
@@ -177,13 +179,15 @@ class EntryPage extends React.Component {
         showDelete={this.props.showDelete}
         enableSave={entryDraft.get('hasChanged')}
         onCancelEdit={this.handleCloseEntry}
+        user={user}
+        hasChanged={hasChanged}
       />
     );
   }
 }
 
 function mapStateToProps(state, ownProps) {
-  const { collections, entryDraft, mediaLibrary } = state;
+  const { collections, entryDraft, mediaLibrary, auth } = state;
   const slug = ownProps.match.params.slug;
   const collection = collections.get(ownProps.match.params.name);
   const newEntry = ownProps.newRecord === true;
@@ -191,6 +195,8 @@ function mapStateToProps(state, ownProps) {
   const entry = newEntry ? null : selectEntry(state, collection.get('name'), slug);
   const boundGetAsset = getAsset.bind(null, state);
   const mediaPaths = mediaLibrary.get('controlMedia');
+  const user = auth && auth.get('user');
+  const hasChanged = entryDraft.get('hasChanged');
   return {
     collection,
     collections,
@@ -201,6 +207,8 @@ function mapStateToProps(state, ownProps) {
     fields,
     slug,
     entry,
+    user,
+    hasChanged,
   };
 }
 
