@@ -26,7 +26,7 @@ module.exports = {
         const filePath = path.join(thispath, element);
         const stats = fs.statSync(filePath);
         if (stats.isFile()) {
-          filelist.push({ name: element, path: `${ dirname }/${ element }`, stats , type: "file" });
+          filelist.push({ name: element, path: `${ dirname }/${ element }`, stats, type: "file" });
         }
       }, this);
       cb(filelist);
@@ -48,8 +48,11 @@ module.exports = {
       if (!cb) throw new Error("Invalid call to file.read - requires a callback function(content)");
       if (stats.isFile()) {
         fs.readFile(thisfile, 'utf8', (err, data) => {
-          if (err) throw err;
-          cb(data);
+          if (err) {
+            cb({ error: err });
+          } else {
+            cb(data);
+          }
         });
       } else {
         throw new Error("Invalid call to file.read - object path is not a file!");
@@ -58,22 +61,31 @@ module.exports = {
     /* POST-Create a NEW file, ERROR if exists */
     const create = (body, cb) => {
       fs.writeFile(thisfile, body.content, { encoding: body.encoding, flag: 'wx' }, (err) => {
-        if (err) throw err;
-        cb(body.content);
+        if (err) {
+          cb({ error: err });
+        } else {
+          cb(body.content);
+        }
       });
     };
     /* PUT-Update an existing file */
     const update = (body, cb) => {
       fs.writeFile(thisfile, body.content, { encoding: body.encoding, flag: 'w' }, (err) => {
-        if (err) throw err;
-        cb(body.content);
+        if (err) {
+          cb({ error: err });
+        } else {
+          cb(body.content);
+        }
       });
     };
     /* DELETE an existing file */
     const del = (cb) => {
       fs.unlink(thisfile, (err) => {
-        if (err) throw err;
-        cb(`Deleted File ${ thisfile }`);
+        if (err) {
+          cb({ error: err });
+        } else {
+          cb(`Deleted File ${ thisfile }`);
+        }
       });
     };
     return { read, create, update, del, stats };
