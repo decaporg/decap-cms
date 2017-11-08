@@ -113,12 +113,12 @@ module.exports = function(app) {
 
   app.get('/api/file/:id', function(req, res, next) {
     const response = { route: '/api/file/:id', id: req.params.id };
-    const fileread = (contents) => {
+    const allDone = (contents) => {
       res.json(contents);
     };
     if (req.params.id) {
       try {
-        fsAPI.file(req.params.id).read(fileread);
+        fsAPI.file(req.params.id).read(allDone);
       } catch (err) {
         response.status = 500;
         response.error = `Could not read file ${ req.params.id } - code [${ err.code }]`;
@@ -135,12 +135,12 @@ module.exports = function(app) {
   app.get('/api/file/:id/**', function(req, res, next) {
     const response = { route: '/api/file/:id', id: req.params.id, method:req.method };
     const filePath = req.originalUrl.substring(10, req.originalUrl.split('?', 1)[0].length);
-    const fileread = (contents) => {
+    const allDone = (contents) => {
       res.json(contents);
     };
     if (filePath) {
       try {
-        fsAPI.file(filePath).read(fileread);
+        fsAPI.file(filePath).read(allDone);
       } catch (err) {
         response.status = 500;
         response.error = `Could not read file ${ filePath } - code [${ err.code }]`;
@@ -157,12 +157,12 @@ module.exports = function(app) {
   app.post('/api/file/:id/**', upload.array(), function(req, res, next) {
     const response = { route: '/api/file/:id', id: req.params.id, method:req.method };
     const filePath = req.originalUrl.substring(10, req.originalUrl.split('?', 1)[0].length);
-    const fileread = (contents) => {
+    const allDone = (contents) => {
       res.json(contents);
     };
     if (filePath) {
       try {
-        fsAPI.file(filePath).create(req.body, fileread);
+        fsAPI.file(filePath).create(req.body, allDone);
       } catch (err) {
         response.status = 500;
         response.error = `Could not create file ${ filePath } - code [${ err.code }]`;
@@ -179,12 +179,12 @@ module.exports = function(app) {
   app.put('/api/file/:id/**', upload.array(), function(req, res, next) {
     const response = { route: '/api/file/:id', id: req.params.id, method:req.method };
     const filePath = req.originalUrl.substring(10, req.originalUrl.split('?', 1)[0].length);
-    const fileread = (contents) => {
+    const allDone = (contents) => {
       res.json(contents);
     };
     if (filePath) {
       try {
-        fsAPI.file(filePath).update(req.body, fileread);
+        fsAPI.file(filePath).update(req.body, allDone);
       } catch (err) {
         response.status = 500;
         response.error = `Could not update file ${ filePath } - code [${ err.code }]`;
@@ -201,12 +201,12 @@ module.exports = function(app) {
   app.delete('/api/file/:id/**', function(req, res, next) {
     const response = { route: '/api/file/:id', id: req.params.id, method:req.method };
     const filePath = req.originalUrl.substring(10, req.originalUrl.split('?', 1)[0].length);
-    const fileread = (contents) => {
+    const allDone = (contents) => {
       res.json(contents);
     };
     if (filePath) {
       try {
-        fsAPI.file(filePath).del(fileread);
+        fsAPI.file(filePath).del(allDone);
       } catch (err) {
         response.status = 500;
         response.error = `Could not delete file ${ filePath } - code [${ err.code }]`;
