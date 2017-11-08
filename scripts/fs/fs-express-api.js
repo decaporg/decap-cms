@@ -114,17 +114,17 @@ module.exports = function(app) {
   app.get('/api/file/:id', function(req, res, next) {
     const response = { route: '/api/file/:id', id: req.params.id };
     const allDone = (contents) => {
-      res.json(contents);
+      if (contents.error) {
+        response.status = 500;
+        response.error = `Could not read file ${ req.params.id } - code [${ contents.error.code }]`;
+        response.internalError = contents.error;
+        res.status(response.status).send(response);
+      } else {
+        res.json(contents);
+      }
     };
     if (req.params.id) {
-      try {
-        fsAPI.file(req.params.id).read(allDone);
-      } catch (err) {
-        response.status = 500;
-        response.error = `Could not read file ${ req.params.id } - code [${ err.code }]`;
-        response.internalError = err;
-        res.status(response.status).send(response);
-      }
+      fsAPI.file(req.params.id).read(allDone);
     } else {
       response.status = 500;
       response.error = `Invalid id for File ${ req.params.id }`;
@@ -136,17 +136,17 @@ module.exports = function(app) {
     const response = { route: '/api/file/:id', id: req.params.id, method:req.method };
     const filePath = req.originalUrl.substring(10, req.originalUrl.split('?', 1)[0].length);
     const allDone = (contents) => {
-      res.json(contents);
+      if (contents.error) {
+        response.status = 500;
+        response.error = `Could not read file ${ filePath } - code [${ contents.error.code }]`;
+        response.internalError = contents.error;
+        res.status(response.status).send(response);
+      } else {
+        res.json(contents);
+      }
     };
     if (filePath) {
-      try {
-        fsAPI.file(filePath).read(allDone);
-      } catch (err) {
-        response.status = 500;
-        response.error = `Could not read file ${ filePath } - code [${ err.code }]`;
-        response.internalError = err;
-        res.status(response.status).send(response);
-      }
+      fsAPI.file(filePath).read(allDone);
     } else {
       response.status = 500;
       response.error = `Invalid path for File ${ filePath }`;
@@ -158,17 +158,17 @@ module.exports = function(app) {
     const response = { route: '/api/file/:id', id: req.params.id, method:req.method };
     const filePath = req.originalUrl.substring(10, req.originalUrl.split('?', 1)[0].length);
     const allDone = (contents) => {
-      res.json(contents);
+      if (contents.error) {
+        response.status = 500;
+        response.error = `Could not create file ${ filePath } - code [${ contents.error.code }]`;
+        response.internalError = contents.error;
+        res.status(response.status).send(response);
+      } else {
+        res.json(contents);
+      }
     };
     if (filePath) {
-      try {
-        fsAPI.file(filePath).create(req.body, allDone);
-      } catch (err) {
-        response.status = 500;
-        response.error = `Could not create file ${ filePath } - code [${ err.code }]`;
-        response.internalError = err;
-        res.status(response.status).send(response);
-      }
+      fsAPI.file(filePath).create(req.body, allDone);
     } else {
       response.status = 500;
       response.error = `Invalid path for File ${ filePath }`;
@@ -180,17 +180,17 @@ module.exports = function(app) {
     const response = { route: '/api/file/:id', id: req.params.id, method:req.method };
     const filePath = req.originalUrl.substring(10, req.originalUrl.split('?', 1)[0].length);
     const allDone = (contents) => {
-      res.json(contents);
+      if (contents.error) {
+        response.status = 500;
+        response.error = `Could not update file ${ filePath } - code [${ contents.error.code }]`;
+        response.internalError = contents.error;
+        res.status(response.status).send(response);
+      } else {
+        res.json(contents);
+      }
     };
     if (filePath) {
-      try {
-        fsAPI.file(filePath).update(req.body, allDone);
-      } catch (err) {
-        response.status = 500;
-        response.error = `Could not update file ${ filePath } - code [${ err.code }]`;
-        response.internalError = err;
-        res.status(response.status).send(response);
-      }
+      fsAPI.file(filePath).update(req.body, allDone);
     } else {
       response.status = 500;
       response.error = `Invalid path for File ${ filePath }`;
@@ -202,17 +202,17 @@ module.exports = function(app) {
     const response = { route: '/api/file/:id', id: req.params.id, method:req.method };
     const filePath = req.originalUrl.substring(10, req.originalUrl.split('?', 1)[0].length);
     const allDone = (contents) => {
-      res.json(contents);
+      if (contents.error) {
+        response.status = 500;
+        response.error = `Could not delete file ${ filePath } - code [${ contents.error.code }]`;
+        response.internalError = contents.error;
+        res.status(response.status).send(response);
+      } else {
+        res.json(contents);
+      }
     };
     if (filePath) {
-      try {
-        fsAPI.file(filePath).del(allDone);
-      } catch (err) {
-        response.status = 500;
-        response.error = `Could not delete file ${ filePath } - code [${ err.code }]`;
-        response.internalError = err;
-        res.status(response.status).send(response);
-      }
+      fsAPI.file(filePath).del(allDone);
     } else {
       response.status = 500;
       response.error = `Invalid path for File ${ filePath }`;
