@@ -55,6 +55,6 @@ module.exports = merge.smart(require('./webpack.base.js'), {
     historyApiFallback: true,
     disableHostCheck: true,
     headers: {"Access-Control-Allow-Origin": "*"},
-    setup: fileSystemAPIPlugin,
+    before: fileSystemAPIPlugin,
   },
 });
