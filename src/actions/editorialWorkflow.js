@@ -209,13 +209,13 @@ export function loadUnpublishedEntry(collection, slug) {
   };
 }
 
-export function loadUnpublishedEntries() {
+export function loadUnpublishedEntries(collections) {
   return (dispatch, getState) => {
     const state = getState();
     if (state.config.get('publish_mode') !== EDITORIAL_WORKFLOW) return;
     const backend = currentBackend(state.config);
     dispatch(unpublishedEntriesLoading());
-    backend.unpublishedEntries().then(
+    backend.unpublishedEntries(collections).then(
       response => dispatch(unpublishedEntriesLoaded(response.entries, response.pagination)),
       error => dispatch(unpublishedEntriesFailed(error))
     );

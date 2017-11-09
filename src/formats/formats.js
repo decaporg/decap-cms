@@ -11,12 +11,6 @@ export const formatToExtension = format => ({
   html: 'html',
 }[format]);
 
-function formatByType(type) {
-  // Right now the only type is "editorialWorkflow" and
-  // we always returns the same format
-  return FrontmatterFormatter;
-}
-
 export function formatByExtension(extension) {
   return {
     yml: yamlFormatter,
@@ -39,9 +33,6 @@ function formatByName(name) {
 }
 
 export function resolveFormat(collectionOrEntity, entry) {
-  if (typeof collectionOrEntity === 'string') {
-    return formatByType(collectionOrEntity);
-  }
   const path = entry && entry.path;
   if (path) {
     return formatByExtension(path.split('.').pop());

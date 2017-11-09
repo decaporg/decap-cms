@@ -16,6 +16,7 @@ import { Loader } from '../../components/UI';
 
 class unpublishedEntriesPanel extends Component {
   static propTypes = {
+    collections: ImmutablePropTypes.orderedMap,
     isEditorialWorkflow: PropTypes.bool.isRequired,
     isFetching: PropTypes.bool,
     unpublishedEntries: ImmutablePropTypes.map,
@@ -26,9 +27,9 @@ class unpublishedEntriesPanel extends Component {
   };
 
   componentDidMount() {
-    const { loadUnpublishedEntries, isEditorialWorkflow } = this.props;
+    const { loadUnpublishedEntries, isEditorialWorkflow, collections } = this.props;
     if (isEditorialWorkflow) {
-      loadUnpublishedEntries();
+      loadUnpublishedEntries(collections);
     }
   }
 
@@ -49,8 +50,9 @@ class unpublishedEntriesPanel extends Component {
 }
 
 function mapStateToProps(state) {
+  const { collections } = state;
   const isEditorialWorkflow = (state.config.get('publish_mode') === EDITORIAL_WORKFLOW);
-  const returnObj = { isEditorialWorkflow };
+  const returnObj = { collections, isEditorialWorkflow };
 
   if (isEditorialWorkflow) {
     returnObj.isFetching = state.editorialWorkflow.getIn(['pages', 'isFetching'], false);
