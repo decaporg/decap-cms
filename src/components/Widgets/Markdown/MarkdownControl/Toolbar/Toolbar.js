@@ -2,11 +2,10 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { List } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import Switch from 'react-toolbox/lib/switch';
+import Switch from '../../../../UI/Toggle/Toggle';
 import ToolbarButton from './ToolbarButton';
 import ToolbarComponentsMenu from './ToolbarComponentsMenu';
 import ToolbarPluginForm from './ToolbarPluginForm';
-import { Icon } from '../../../../UI';
 
 export default class Toolbar extends React.Component {
   static propTypes = {
@@ -57,45 +56,47 @@ export default class Toolbar extends React.Component {
     const { activePlugin } = this.state;
 
     const buttonsConfig = [
-      { label: 'Bold', icon: 'bold', state: buttons.bold },
-      { label: 'Italic', icon: 'italic', state: buttons.italic },
-      { label: 'Code', icon: 'code-alt', state: buttons.code },
-      { label: 'Header 1', icon: 'h1', state: buttons.h1 },
-      { label: 'Header 2', icon: 'h2', state: buttons.h2 },
-      { label: 'Code Block', icon: 'code', state: buttons.codeBlock },
-      { label: 'Quote', icon: 'quote', state: buttons.quote },
-      { label: 'Bullet List', icon: 'list-bullet', state: buttons.list },
-      { label: 'Numbered List', icon: 'list-numbered', state: buttons.listNumbered },
-      { label: 'Link', icon: 'link', state: buttons.link },
+      { label: 'Bold', icon: 'list', state: buttons.bold },
+      { label: 'Italic', icon: 'list', state: buttons.italic },
+      { label: 'Code', icon: 'list', state: buttons.code },
+      { label: 'Header 1', icon: 'list', state: buttons.h1 },
+      { label: 'Header 2', icon: 'list', state: buttons.h2 },
+      { label: 'Code Block', icon: 'list', state: buttons.codeBlock },
+      { label: 'Quote', icon: 'list', state: buttons.quote },
+      { label: 'Bullet List', icon: 'list', state: buttons.list },
+      { label: 'Numbered List', icon: 'list', state: buttons.listNumbered },
+      { label: 'Link', icon: 'list', state: buttons.link },
     ];
 
     return (
       <div className="nc-toolbar-Toolbar nc-theme-clearfix">
-        { buttonsConfig.map((btn, i) => (
-          <ToolbarButton
-            key={i}
-            action={btn.state && btn.state.onAction || (() => {})}
-            active={btn.state && btn.state.active}
+        <div>
+          { buttonsConfig.map((btn, i) => (
+            <ToolbarButton
+              key={i}
+              action={btn.state && btn.state.onAction || (() => {})}
+              active={btn.state && btn.state.active}
+              disabled={disabled}
+              {...btn}
+            />
+          ))}
+          <ToolbarComponentsMenu
+            plugins={plugins}
+            onComponentMenuItemClick={this.handlePluginFormDisplay}
             disabled={disabled}
-            {...btn}
           />
-        ))}
-        <ToolbarComponentsMenu
-          plugins={plugins}
-          onComponentMenuItemClick={this.handlePluginFormDisplay}
-          disabled={disabled}
-        />
-        {activePlugin &&
-          <ToolbarPluginForm
-            plugin={activePlugin}
-            onSubmit={this.handlePluginFormSubmit}
-            onCancel={this.handlePluginFormCancel}
-            onAddAsset={onAddAsset}
-            onRemoveAsset={onRemoveAsset}
-            getAsset={getAsset}
-          />
-        }
-        <Switch label="Markdown" onChange={onToggleMode} checked={rawMode} className="nc-toolbar-Toggle"/>
+          {activePlugin &&
+            <ToolbarPluginForm
+              plugin={activePlugin}
+              onSubmit={this.handlePluginFormSubmit}
+              onCancel={this.handlePluginFormCancel}
+              onAddAsset={onAddAsset}
+              onRemoveAsset={onRemoveAsset}
+              getAsset={getAsset}
+            />
+          }
+        </div>
+        <Switch/>
       </div>
     );
   }

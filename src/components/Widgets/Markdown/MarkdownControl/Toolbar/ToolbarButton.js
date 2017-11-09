@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import classnames from 'classnames';
-import { Icon } from '../../../../UI';
+import Icon from '../../../../../icons/Icon';
 
 const ToolbarButton = ({ label, icon, action, active, disabled }) => (
   <button
@@ -10,7 +10,7 @@ const ToolbarButton = ({ label, icon, action, active, disabled }) => (
     title={label}
     disabled={disabled}
   >
-    { icon ? <Icon type={icon} /> : label }
+    { icon ? <Icon type={icon} size="small"/> : label }
   </button>
 );
 
