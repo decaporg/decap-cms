@@ -1,0 +1,31 @@
+.nc-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 40px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.nc-toggle-background {
+  width: 34px;
+  height: 14px;
+  border-radius: 10px;
+  background-color: #3a69c7;
+}
+
+.nc-toggle-switch {
+  position: absolute;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: white;
+  transition: transform 0.2s;
+  box-shadow: 0 2px 6px 0 rgba(68,74,87,0.15), 0 1px 3px 0 rgba(68,74,87,0.30);
+}
+
+.nc-toggle-active .nc-toggle-switch {
+  transform: translateX(20px);
+}

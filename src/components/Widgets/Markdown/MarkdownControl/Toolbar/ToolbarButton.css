@@ -1,6 +1,6 @@
 .nc-toolbarButton-button {
   display: inline-block;
-  padding: 6px;
+  padding: 8px;
   border: none;
   background-color: transparent;
   color: var(--controlLabelColor);
@@ -10,6 +10,10 @@
   &:disabled {
     cursor: auto;
     opacity: 0.5;
+  }
+
+  & .nc-icon {
+    display: block;
   }
 }
 

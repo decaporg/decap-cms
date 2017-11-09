@@ -1,9 +1,11 @@
 .nc-toolbar-Toolbar {
   z-index: 0;
   background-color: var(--textFieldBorderColor);
-  padding: 10px;
   border-top-right-radius: var(--borderRadius);
   position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
   &:after {
     content: '';
@@ -22,8 +24,4 @@
 }
 
 .nc-toolbar-Toggle {
-  float: right;
-  margin-bottom: 0;
-  padding-top: 4px;
-  padding-right: 10px;
 }
