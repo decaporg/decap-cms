@@ -40,13 +40,13 @@ const mediaLibrary = (state = Map({ isVisible: false, controlMedia: Map() }), ac
         map.set('isPaginating', action.payload.page > 1);
       });
     case MEDIA_LOAD_SUCCESS: {
-      const { files, page, canPaginate, dynamicSearch, dynamicSearchQuery } = action.payload;
+      const { files = [], page, canPaginate, dynamicSearch, dynamicSearchQuery } = action.payload;
       const filesWithKeys = files.map(file => ({ ...file, key: uuid() }));
       return state.withMutations(map => {
         map.set('isLoading', false);
         map.set('isPaginating', false);
         map.set('page', page);
-        map.set('hasNextPage', canPaginate && files && files.length > 0);
+        map.set('hasNextPage', canPaginate && files.length > 0);
         map.set('dynamicSearch', dynamicSearch);
         map.set('dynamicSearchQuery', dynamicSearchQuery);
         map.set('dynamicSearchActive', !!dynamicSearchQuery);
