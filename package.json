@@ -161,6 +161,7 @@
     "react-router-redux": "^5.0.0-alpha.8",
     "react-sortable-hoc": "^0.6.8",
     "react-split-pane": "^0.1.66",
+    "react-toggled": "^1.1.2",
     "react-toolbox": "^2.0.0-beta.12",
     "react-topbar-progress-indicator": "^2.0.0",
     "react-transition-group": "^2.2.1",
