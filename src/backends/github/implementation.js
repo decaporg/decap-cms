@@ -102,11 +102,37 @@ export default class GitHub {
     return this.api.persistFiles(entry, mediaFiles, options);
   }
 
+  /**
+   * Pulls repo info from a `repos` response url property.
+   *
+   * Turns this:
+   * '<api_root>/repo/<username>/<repo>/...'
+   *
+   * Into this:
+   * '<username>/<repo>'
+   */
+  getRepoFromResponseUrl(url) {
+    return url
+
+      // -> '/repo/<username>/<repo>/...'
+      .slice(this.api_root.length)
+
+      // -> [ '', 'repo', '<username>', '<repo>', ... ]
+      .split('/')
+
+      // -> [ '<username>', '<repo>' ]
+      .slice(2, 4)
+
+      // -> '<username>/<repo>'
+      .join('/');
+  }
+
   async persistMedia(mediaFile, options = {}) {
     try {
       const response = await this.api.persistFiles(null, [mediaFile], options);
+      const repo = this.repo || this.getRepoFromResponseUrl(response.url);
       const { value, size, path, fileObj } = mediaFile;
-      const url = `https://raw.githubusercontent.com/${this.repo}/${this.branch}${path}`;
+      const url = `https://raw.githubusercontent.com/${repo}/${this.branch}${path}`;
       return { id: response.sha, name: value, size: fileObj.size, url, path: trimStart(path, '/') };
     }
     catch(error) {
