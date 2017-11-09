@@ -1,4 +1,4 @@
-import uuid from 'uuid';
+import uuid from 'uuid/v4';
 import { actions as notifActions } from 'redux-notifications';
 import { serializeValues } from '../lib/serializeEntryValues';
 import { closeEntry } from './editor';
@@ -121,6 +121,7 @@ function unpublishedEntryPersistedFail(error, transactionID) {
     type: UNPUBLISHED_ENTRY_PERSIST_FAILURE,
     payload: { error },
     optimist: { type: REVERT, id: transactionID },
+    error,
   };
 }
 
@@ -227,10 +228,10 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
     const entryDraft = state.entryDraft;
 
     // Early return if draft contains validation errors
-    if (!entryDraft.get('fieldsErrors').isEmpty()) return Promise.resolve();
+    if (!entryDraft.get('fieldsErrors').isEmpty()) return Promise.reject();
 
     const backend = currentBackend(state.config);
-    const transactionID = uuid.v4();
+    const transactionID = uuid();
     const assetProxies = entryDraft.get('mediaFiles').map(path => getAsset(state, path));
     const entry = entryDraft.get('entry');
 
@@ -260,7 +261,7 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
         kind: 'danger',
         dismissAfter: 8000,
       }));
-      return dispatch(unpublishedEntryPersistedFail(error, transactionID));
+      return Promise.reject(dispatch(unpublishedEntryPersistedFail(error, transactionID)));
     });
   };
 }
@@ -269,7 +270,7 @@ export function updateUnpublishedEntryStatus(collection, slug, oldStatus, newSta
   return (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
-    const transactionID = uuid.v4();
+    const transactionID = uuid();
     dispatch(unpublishedEntryStatusChangeRequest(collection, slug, oldStatus, newStatus, transactionID));
     backend.updateUnpublishedEntryStatus(collection, slug, newStatus)
     .then(() => {
@@ -285,7 +286,7 @@ export function deleteUnpublishedEntry(collection, slug) {
   return (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
-    const transactionID = uuid.v4();
+    const transactionID = uuid();
     dispatch(unpublishedEntryPublishRequest(collection, slug, transactionID)); 
     backend.deleteUnpublishedEntry(collection, slug)
     .then(() => {
@@ -306,7 +307,7 @@ export function publishUnpublishedEntry(collection, slug) {
   return (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
-    const transactionID = uuid.v4();
+    const transactionID = uuid();
     dispatch(unpublishedEntryPublishRequest(collection, slug, transactionID));
     backend.publishUnpublishedEntry(collection, slug)
     .then(() => {

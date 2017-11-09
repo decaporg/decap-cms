@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import ImmutablePropTypes from "react-immutable-proptypes";
+import ValidationErrorTypes from '../../constants/validationErrorTypes';
 
 const truthy = () => ({ error: false });
 
@@ -15,21 +16,36 @@ class ControlHOC extends Component {
       PropTypes.string,
       PropTypes.bool,
     ]),
+    mediaPaths: ImmutablePropTypes.map.isRequired,
     metadata: ImmutablePropTypes.map,
     onChange: PropTypes.func.isRequired,
-    onValidate: PropTypes.func.isRequired,
+    onValidate: PropTypes.func,
+    onOpenMediaLibrary: PropTypes.func.isRequired,
     onAddAsset: PropTypes.func.isRequired,
     onRemoveAsset: PropTypes.func.isRequired,
     getAsset: PropTypes.func.isRequired,
   };
 
   shouldComponentUpdate(nextProps) {
+    /**
+     * Allow widgets to provide their own `shouldComponentUpdate` method.
+     */
+    if (this.wrappedControlShouldComponentUpdate) {
+      return this.wrappedControlShouldComponentUpdate(nextProps);
+    }
     return this.props.value !== nextProps.value;
   }
 
   processInnerControlRef = (wrappedControl) => {
     if (!wrappedControl) return;
     this.wrappedControlValid = wrappedControl.isValid || truthy;
+
+    /**
+     * Get the `shouldComponentUpdate` method from the wrapped control, and
+     * provide the control instance is the `this` binding.
+     */
+    const { shouldComponentUpdate: scu } = wrappedControl;
+    this.wrappedControlShouldComponentUpdate = scu && scu.bind(wrappedControl);
   };
 
   validate = (skipWrapped = false) => {
@@ -57,16 +73,27 @@ class ControlHOC extends Component {
       (value.hasOwnProperty('length') && value.length === 0) ||
       (value.constructor === Object && Object.keys(value).length === 0)
     )) {
-      return { error: true };
+      const error = {
+        type: ValidationErrorTypes.PRESENCE,
+        message: `${ field.get('label', field.get('name')) } is required.`,
+      };
+
+      return { error };
     }
-    return { error: false };  
+    return { error: false };
   }
 
   validatePattern(field, value) {
     const pattern = field.get('pattern', false);
     if (pattern && !RegExp(pattern.first()).test(value)) {
-      return { error: `${ field.get('label', field.get('name')) } didn't match the pattern: ${ pattern.last() }` };
+      const error = {
+        type: ValidationErrorTypes.PATTERN,
+        message: `${ field.get('label', field.get('name')) } didn't match the pattern: ${ pattern.last() }`,
+      };
+
+      return { error };
     }
+
     return { error: false };
   }
 
@@ -80,22 +107,46 @@ class ControlHOC extends Component {
     } else if (response instanceof Promise) {
       response.then(
         () => { this.validate({ error: false }); },
-        (error) => { 
-          this.validate({ error: `${ field.get('label', field.get('name')) } - ${ error }.` });
+        (err) => { 
+          const error = {
+            type: ValidationErrorTypes.CUSTOM,
+            message: `${ field.get('label', field.get('name')) } - ${ err }.`,
+          };
+
+          this.validate({ error });
         }
       );
-      return { error: `${ field.get('label', field.get('name')) } is processing.` };
+
+      const error = {
+        type: ValidationErrorTypes.CUSTOM,
+        message: `${ field.get('label', field.get('name')) } is processing.`,
+      };
+
+      return { error };
     }
     return { error: false };
   };
 
   render() {
-    const { controlComponent, field, value, metadata, onChange, onAddAsset, onRemoveAsset, getAsset } = this.props;
+    const {
+      controlComponent,
+      field,
+      value,
+      mediaPaths,
+      metadata,
+      onChange,
+      onOpenMediaLibrary,
+      onAddAsset,
+      onRemoveAsset,
+      getAsset
+    } = this.props;
     return React.createElement(controlComponent, {
       field,
       value,
+      mediaPaths,
       metadata,
       onChange,
+      onOpenMediaLibrary,
       onAddAsset,
       onRemoveAsset,
       getAsset,

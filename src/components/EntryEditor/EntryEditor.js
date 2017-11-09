@@ -9,15 +9,15 @@ import ControlPane from '../ControlPanel/ControlPane';
 import PreviewPane from '../PreviewPane/PreviewPane';
 import Toolbar from './EntryEditorToolbar';
 import { StickyContext } from '../UI/Sticky/Sticky';
-import styles from './EntryEditor.css';
-import stickyStyles from '../UI/Sticky/Sticky.css';
 
 const PREVIEW_VISIBLE = 'cms.preview-visible';
+const SCROLL_SYNC_ENABLED = 'cms.scroll-sync-enabled';
 
 class EntryEditor extends Component {
   state = {
     showEventBlocker: false,
     previewVisible: localStorage.getItem(PREVIEW_VISIBLE) !== "false",
+    scrollSyncEnabled: localStorage.getItem(SCROLL_SYNC_ENABLED) !== "false",
   };
 
   handleSplitPaneDragStart = () => {
@@ -39,6 +39,12 @@ class EntryEditor extends Component {
     localStorage.setItem(PREVIEW_VISIBLE, newPreviewVisible);
   };
 
+  handleToggleScrollSync = () => {
+    const newScrollSyncEnabled = !this.state.scrollSyncEnabled;
+    this.setState({ scrollSyncEnabled: newScrollSyncEnabled });
+    localStorage.setItem(SCROLL_SYNC_ENABLED, newScrollSyncEnabled);
+  };
+
   render() {
     const {
         collection,
@@ -46,26 +52,28 @@ class EntryEditor extends Component {
         fields,
         fieldsMetaData,
         fieldsErrors,
+        mediaPaths,
         getAsset,
         onChange,
         enableSave,
         showDelete,
         onDelete,
         onValidate,
+        onOpenMediaLibrary,
         onAddAsset,
         onRemoveAsset,
         onCancelEdit,
     } = this.props;
 
-    const { previewVisible, showEventBlocker } = this.state;
+    const { previewVisible, scrollSyncEnabled, showEventBlocker } = this.state;
 
     const collectionPreviewEnabled = collection.getIn(['editor', 'preview'], true);
 
-    const togglePreviewButton = (
+    const ToggleButton = ({ icon, onClick }) => (
       <Button
-        className={classnames(styles.previewToggle, { previewVisible: styles.previewToggleShow })}
-        onClick={this.handleTogglePreview}
-        icon={previewVisible ? 'visibility_off' : 'visibility'}
+        className={classnames('nc-entryEditor-toggleButton', { previewVisible: 'nc-entryEditor-toggleButtonShow' })}
+        icon={icon}
+        onClick={onClick}
         floating
         mini
       />
@@ -73,19 +81,34 @@ class EntryEditor extends Component {
 
     const editor = (
       <StickyContext
-        className={classnames(styles.controlPane, { [styles.blocker]: showEventBlocker })}
+        className={classnames('nc-entryEditor-controlPane', { 'nc-entryEditor-blocker': showEventBlocker })}
         registerListener={fn => this.updateStickyContext = fn}
       >
-        { collectionPreviewEnabled ? togglePreviewButton : null }
+        { collectionPreviewEnabled ? (
+          <div className="nc-entryEditor-controlPaneButtons">
+            { previewVisible && (
+              <ToggleButton
+                icon={scrollSyncEnabled ? 'sync' : 'sync_disabled'}
+                onClick={this.handleToggleScrollSync}
+              />
+            ) }
+            <ToggleButton
+              icon={previewVisible ? 'visibility_off' : 'visibility'}
+              onClick={this.handleTogglePreview}
+            />
+          </div>
+        ) : null }
         <ControlPane
           collection={collection}
           entry={entry}
           fields={fields}
           fieldsMetaData={fieldsMetaData}
           fieldsErrors={fieldsErrors}
+          mediaPaths={mediaPaths}
           getAsset={getAsset}
           onChange={onChange}
           onValidate={onValidate}
+          onOpenMediaLibrary={onOpenMediaLibrary}
           onAddAsset={onAddAsset}
           onRemoveAsset={onRemoveAsset}
           ref={c => this.controlPaneRef = c} // eslint-disable-line
@@ -94,8 +117,8 @@ class EntryEditor extends Component {
     );
 
     const editorWithPreview = (
-      <ScrollSync>
-        <div className={styles.container}>
+      <ScrollSync enabled={this.state.scrollSyncEnabled}>
+        <div className="nc-entryEditor-container">
           <SplitPane
             defaultSize="50%"
             onDragStarted={this.handleSplitPaneDragStart}
@@ -103,7 +126,7 @@ class EntryEditor extends Component {
             onChange={this.updateStickyContext}
           >
             <ScrollSyncPane>{editor}</ScrollSyncPane>
-            <div className={classnames(styles.previewPane, { [styles.blocker]: showEventBlocker })}>
+            <div className={classnames('nc-entryEditor-previewPane', { 'nc-entryEditor-blocker': showEventBlocker })}>
               <PreviewPane
                 collection={collection}
                 entry={entry}
@@ -118,15 +141,15 @@ class EntryEditor extends Component {
     );
 
     const editorWithoutPreview = (
-      <div className={styles.noPreviewEditorContainer}>
+      <div className="nc-entryEditor-noPreviewEditorContainer">
         {editor}
       </div>
     );
 
     return (
-      <div className={styles.root}>
+      <div className="nc-entryEditor-root">
         { collectionPreviewEnabled && this.state.previewVisible ? editorWithPreview : editorWithoutPreview }
-        <div className={styles.footer}>
+        <div className="nc-entryEditor-footer">
           <Toolbar
             isPersisting={entry.get('isPersisting')}
             onPersist={this.handleOnPersist}
@@ -147,7 +170,9 @@ EntryEditor.propTypes = {
   fields: ImmutablePropTypes.list.isRequired,
   fieldsMetaData: ImmutablePropTypes.map.isRequired,
   fieldsErrors: ImmutablePropTypes.map.isRequired,
+  mediaPaths: ImmutablePropTypes.map.isRequired,
   getAsset: PropTypes.func.isRequired,
+  onOpenMediaLibrary: PropTypes.func.isRequired,
   onAddAsset: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   onValidate: PropTypes.func.isRequired,

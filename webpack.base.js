@@ -43,7 +43,7 @@ module.exports = {
         }),
       },
       {
-        /* We use CSS-modules and PostCSS for CMS styles */
+        /* We use PostCSS for CMS styles */
         test: /\.css$/,
         exclude: [/node_modules/],
         use: ExtractTextPlugin.extract({
@@ -52,9 +52,7 @@ module.exports = {
             {
               loader: 'css-loader',
               options: {
-                modules: true,
                 importLoaders: 1,
-                localIdentName: "cms__[name]__[local]"
               },
             },
             { loader: 'postcss-loader' },
@@ -70,9 +68,6 @@ module.exports = {
   plugins: [
     new webpack.IgnorePlugin(/^esprima$/, /js-yaml/), // Ignore Esprima import for js-yaml
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/), // Ignore all optional deps of moment.js
-    new webpack.ProvidePlugin({
-      fetch: 'imports-loader?this=>global!exports-loader?global.fetch!whatwg-fetch',
-    }),
   ],
   target: 'web', // Make web variables accessible to webpack, e.g. window
 };

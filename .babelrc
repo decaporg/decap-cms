@@ -1,11 +1,21 @@
 {
-  "presets": [["es2015", { "modules": false }], "stage-1", "react"],
+  "presets": [
+    ["env", {
+      "modules": false
+    }],
+    "stage-1",
+    "react"
+  ],
   "plugins": [
     "react-hot-loader/babel",
     "lodash",
     ["babel-plugin-transform-builtin-extend", {
       "globals": ["Error"]
     }],
+    ["transform-runtime", {
+      "useBuiltIns": true,
+      "useESModules": true
+    }]
   ],
   "env": {
     "test": {

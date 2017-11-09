@@ -67,7 +67,7 @@ function mapStateToProps(state, ownProps) {
   const entries = selectSearchedEntries(state);
   const collections = state.collections.toIndexedSeq();
   const publicFolder = state.config.get('public_folder');
-  const searchTerm = ownProps.params && ownProps.params.searchTerm;
+  const { searchTerm } = ownProps.match.params;
 
   return { isFetching, page, collections, entries, publicFolder, searchTerm };
 }

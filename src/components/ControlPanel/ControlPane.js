@@ -4,7 +4,6 @@ import { Map, fromJS } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { resolveWidget } from '../Widgets';
 import ControlHOC from '../Widgets/ControlHOC';
-import styles from './ControlPane.css';
 
 function isHidden(field) {
   return field.get('widget') === 'hidden';
@@ -25,31 +24,45 @@ export default class ControlPane extends Component {
   };
 
   controlFor(field) {
-    const { entry, fieldsMetaData, fieldsErrors, getAsset, onChange, onAddAsset, onRemoveAsset } = this.props;
+    const {
+      entry,
+      fieldsMetaData,
+      fieldsErrors,
+      mediaPaths,
+      getAsset,
+      onChange,
+      onOpenMediaLibrary,
+      onAddAsset,
+      onRemoveAsset
+    } = this.props;
     const widget = resolveWidget(field.get('widget'));
     const fieldName = field.get('name');
     const value = entry.getIn(['data', fieldName]);
     const metadata = fieldsMetaData.get(fieldName);
     const errors = fieldsErrors.get(fieldName);
-    const labelClass = errors ? styles.labelWithError : styles.label;
+    const labelClass = errors ? 'nc-controlPane-label nc-controlPane-labelWithError' : 'nc-controlPane-label';
     if (entry.size === 0 || entry.get('partial') === true) return null;
     return (
-      <div className={styles.control}>
+      <div className="nc-controlPane-control">
         <label className={labelClass} htmlFor={fieldName}>{field.get('label')}</label>
-        <ul className={styles.errors}>
+        <ul className="nc-controlPane-errors">
           {
-            errors && errors.map(error => (
-              typeof error === 'string' && <li key={error.trim().replace(/[^a-z0-9]+/gi, '-')}>{error}</li>
-            ))
+            errors && errors.map(error =>
+              error.message &&
+              typeof error.message === 'string' &&
+              <li key={error.message.trim().replace(/[^a-z0-9]+/gi, '-')}>{error.message}</li>
+            )
           }
         </ul>
         <ControlHOC 
           controlComponent={widget.control}
           field={field}
           value={value}
+          mediaPaths={mediaPaths}
           metadata={metadata}
           onChange={(newValue, newMetadata) => onChange(fieldName, newValue, newMetadata)}
           onValidate={this.props.onValidate.bind(this, fieldName)}
+          onOpenMediaLibrary={onOpenMediaLibrary}
           onAddAsset={onAddAsset}
           onRemoveAsset={onRemoveAsset}
           getAsset={getAsset}
@@ -66,13 +79,13 @@ export default class ControlPane extends Component {
     }
 
     return (
-      <div>
+      <div className="nc-controlPane-root">
         {
           fields.map((field, i) => {
             if (isHidden(field)) {
               return null;
             }
-            return <div key={i} className={styles.widget}>{this.controlFor(field)}</div>;
+            return <div key={i} className="nc-controlPane-widget">{this.controlFor(field)}</div>;
           })
         }
       </div>
@@ -86,7 +99,9 @@ ControlPane.propTypes = {
   fields: ImmutablePropTypes.list.isRequired,
   fieldsMetaData: ImmutablePropTypes.map.isRequired,
   fieldsErrors: ImmutablePropTypes.map.isRequired,
+  mediaPaths: ImmutablePropTypes.map.isRequired,
   getAsset: PropTypes.func.isRequired,
+  onOpenMediaLibrary: PropTypes.func.isRequired,
   onAddAsset: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   onValidate: PropTypes.func.isRequired,

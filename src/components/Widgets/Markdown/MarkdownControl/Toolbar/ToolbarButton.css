@@ -1,6 +1,4 @@
-@import "../../../../UI/theme";
-
-.button {
+.nc-toolbarButton-button {
   display: inline-block;
   padding: 6px;
   border: none;
@@ -11,6 +9,6 @@
   }
 }
 
-.active {
+.nc-toolbarButton-active {
   background-color: var(--highlightFGAltColor);
 }

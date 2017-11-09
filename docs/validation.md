@@ -6,7 +6,7 @@
 `- {label: "Subtitle", name: "subtitle", widget: "string", required: false}`
 
 - Pattern: Field configuration can specify a regex pattern with the appropriate error message. Example:
-`- {label: "Title", name: "title", widget: "string", pattern: [".{10,}", "Should have more than 10 characters"] }`
+`- {label: "Title", name: "title", widget: "string", pattern: ['.{10,}', "Should have more than 10 characters"] }`
 
 
 ## Advanced Guide (For widget authors)

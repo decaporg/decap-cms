@@ -1,3 +1,4 @@
+import trimStart from 'lodash/trimStart';
 import semaphore from "semaphore";
 import AuthenticationPage from "./AuthenticationPage";
 import API from "./API";
@@ -89,8 +90,29 @@ export default class GitHub {
     }));
   }
 
+  getMedia() {
+    return this.api.listFiles(this.config.get('media_folder'))
+      .then(files => files.filter(file => file.type === 'file'))
+      .then(files => files.map(({ sha, name, size, download_url, path }) => {
+        return { id: sha, name, size, url: download_url, path };
+      }));
+  }
+
   persistEntry(entry, mediaFiles = [], options = {}) {
     return this.api.persistFiles(entry, mediaFiles, options);
+  }
+
+  async persistMedia(mediaFile, options = {}) {
+    try {
+      const response = await this.api.persistFiles(null, [mediaFile], options);
+      const { value, size, path, fileObj } = mediaFile;
+      const url = `https://raw.githubusercontent.com/${this.repo}/${this.branch}${path}`;
+      return { id: response.sha, name: value, size: fileObj.size, url, path: trimStart(path, '/') };
+    }
+    catch(error) {
+      console.error(error);
+      throw error;
+    }
   }
 
   deleteFile(path, commitMessage, options) {

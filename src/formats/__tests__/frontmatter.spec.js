@@ -1,8 +1,6 @@
-import Frontmatter from '../frontmatter';
+import FrontmatterFormatter from '../frontmatter';
 
 jest.mock("../../valueObjects/AssetProxy.js");
-
-const FrontmatterFormatter = new Frontmatter();
 
 describe('Frontmatter', () => {
   it('should parse YAML with --- delimiters', () => {

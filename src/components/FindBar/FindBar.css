@@ -1,11 +1,9 @@
-@import '../UI/theme';
-
-.root {
+.nc-findBar-root {
   flex: 1;
   background-color: var(--backgroundAltColor);
 }
 
-.inputField {
+.nc-findBar-inputField {
   width: 100%;
   max-width: 500px;
   display: block;

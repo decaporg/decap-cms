@@ -37,12 +37,12 @@ The first file, `admin/index.html`, is the entry point for the Netlify CMS admin
   <title>Content Manager</title>
 
   <!-- Include the styles for the Netlify CMS UI, after your own styles -->
-  <link rel="stylesheet" href="https://unpkg.com/netlify-cms@^0.5.0/dist/cms.css" />
+  <link rel="stylesheet" href="https://unpkg.com/netlify-cms@^0.7.0/dist/cms.css" />
 
 </head>
 <body>
   <!-- Include the script that builds the page and powers Netlify CMS -->
-  <script src="https://unpkg.com/netlify-cms@^0.5.0/dist/cms.js"></script>
+  <script src="https://unpkg.com/netlify-cms@^0.7.0/dist/cms.js"></script>
 </body>
 </html>
 ```
@@ -64,7 +64,7 @@ backend:
 These lines specify your backend protocol and your publication branch. Git Gateway is an open source API that acts as a proxy between authenticated users of your site and your site repo. (We'll get to the details of that in the [Authentication section](#authentication) below.) If you leave out the `branch` declaration, it will default to `master`.
 
 ### Editorial Workflow
-By default, saving a post in the CMS interface will push a commit directly to the publication branch specified in `backend`. However, you also have the option to enable the [Editorial Workflow](editorial-workflow.md), which adds an interface for drafting, reviewing, and approving posts. To do this, add the following line to your `config.yml`:
+By default, saving a post in the CMS interface will push a commit directly to the publication branch specified in `backend`. However, you also have the option to enable the [Editorial Workflow](/docs/editorial-workflow), which adds an interface for drafting, reviewing, and approving posts. To do this, add the following line to your `config.yml`:
 
 ``` yaml
 publish_mode: editorial_workflow
@@ -186,7 +186,7 @@ collections:
 Now that you have your Netlify CMS files in place and configured, all that's left is to enable authentication. There are [many ways to do this](/docs/custom-authentication) (with or without deploying to Netlify), but this example uses Netlify because it's one of the quickest ways to get started.
 
 ### Setup on Netlify
-Netlify offers a built-in authentication service called Identity. In order to use it, you'll need to connect your site repo with Netlify. Netlify has published a general [Step-by-Step Guide](https://www.netlify.com/blog/2016/10/27/a-step-by-step-guide-deploying-a-static-site-or-single-page-app/) for this, along with detailed guides for many popular static site generators, including [Jekyll](https://www.netlify.com/blog/2015/10/28/a-step-by-step-guide-jekyll-3.0-on-netlify/), [Hugo](https://www.netlify.com/blog/2016/09/21/a-step-by-step-guide-victor-hugo-on-netlify/), [Hexo](https://www.netlify.com/blog/2015/10/26/a-step-by-step-guide-hexo-on-netlify/), [Middleman](https://www.netlify.com/blog/2015/10/01/a-step-by-step-guide-middleman-on-netlify/), [Gatsby](https://www.netlify.com/blog/2016/02/24/a-step-by-step-guide-gatsby-on-netlify/) and more.
+Netlify offers a built-in authentication service called Identity. In order to use it, you'll need to connect your site repo with Netlify. Netlify has published a general [Step-by-Step Guide](https://www.netlify.com/blog/2016/10/27/a-step-by-step-guide-deploying-a-static-site-or-single-page-app/) for this, along with detailed guides for many popular static site generators, including [Jekyll](https://www.netlify.com/blog/2015/10/28/a-step-by-step-guide-jekyll-3.0-on-netlify/), [Hugo](https://www.netlify.com/blog/20.7.09/21/a-step-by-step-guide-victor-hugo-on-netlify/), [Hexo](https://www.netlify.com/blog/2015/10/26/a-step-by-step-guide-hexo-on-netlify/), [Middleman](https://www.netlify.com/blog/2015/10/01/a-step-by-step-guide-middleman-on-netlify/), [Gatsby](https://www.netlify.com/blog/20.7.02/24/a-step-by-step-guide-gatsby-on-netlify/) and more.
 
 ### Enable Identity and Git Gateway
 Netlify's Identity and Git Gateway services allow you to manage CMS admin users for your site without requiring them to have GitHub accounts or commit access on your repo. From your site dashboard on Netlify:
@@ -226,7 +226,7 @@ Note: This example script requires modern JavaScript and will not work on IE11. 
 
 Your site CMS is now fully configured and ready for login!
 
-If you set your registration preference to "Invite only," you'll need to invite yourself (and anyone else you choose) as a site user. To do this, select the **Identity** tab from your site dashboard, and then select the **Invite users** button. Invited users will receive an email invitation with a confirmation link. Clicking the link will take you to your sight with a login prompt.
+If you set your registration preference to "Invite only," you'll need to invite yourself (and anyone else you choose) as a site user. To do this, select the **Identity** tab from your site dashboard, and then select the **Invite users** button. Invited users will receive an email invitation with a confirmation link. Clicking the link will take you to your site with a login prompt.
 
 If you left your site registration open, or for return visits after comfirming an email invitation, you can access your site's CMS at `yoursite.com/admin`.
 

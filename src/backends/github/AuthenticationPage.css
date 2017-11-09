@@ -1,4 +1,4 @@
-.root {
+.nc-githubAuthenticationPage-root {
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
@@ -6,7 +6,7 @@
   height: 100vh;
 }
 
-.button {
+.nc-githubAuthenticationPage-button {
   padding: .25em 1em;
   height: auto;
 }

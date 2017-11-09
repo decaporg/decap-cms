@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { EDITORIAL_WORKFLOW } from '../../constants/publishModes';
 import { selectUnpublishedEntry, selectEntry } from '../../reducers';
+import { selectAllowDeletion } from "../../reducers/collections";
 import { loadUnpublishedEntry, persistUnpublishedEntry } from '../../actions/editorialWorkflow';
 
 
@@ -15,11 +16,14 @@ export default function EntryPageHOC(EntryPage) {
   function mapStateToProps(state, ownProps) {
     const { collections } = state;
     const isEditorialWorkflow = (state.config.get('publish_mode') === EDITORIAL_WORKFLOW);
-    const returnObj = { isEditorialWorkflow, showDelete: !ownProps.newEntry };
+    const collection = collections.get(ownProps.match.params.name);
+    const returnObj = {
+      isEditorialWorkflow,
+      showDelete: !ownProps.newEntry && selectAllowDeletion(collection),
+    };
     if (isEditorialWorkflow) {
       returnObj.showDelete = false;
-      const slug = ownProps.params.slug;
-      const collection = collections.get(ownProps.params.name);
+      const slug = ownProps.match.params.slug;
       const unpublishedEntry = selectUnpublishedEntry(state, collection.get('name'), slug);
       if (unpublishedEntry) {
         returnObj.unpublishedEntry = true;

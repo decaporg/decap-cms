@@ -364,6 +364,42 @@
       "avatar_url": "https://avatars1.githubusercontent.com/u/1100280?v=4",
       "profile": "https://github.com/bruce-one",
       "contributions": []
+    },
+    {
+      "login": "DirtyF",
+      "name": "Frank Taillandier",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/103008?v=4",
+      "profile": "https://frank.taillandier.me",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "aquibm",
+      "name": "Aquib Master",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/2936813?v=4",
+      "profile": "http://aquibm.com/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Jinksi",
+      "name": "Eric Jinks",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/3147296?v=4",
+      "profile": "http://ericjinks.com",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "talves",
+      "name": "Tony Alves",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/784848?v=4",
+      "profile": "https://github.com/talves",
+      "contributions": [
+        "code"
+      ]
     }
   ]
 }

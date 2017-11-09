@@ -1,23 +1,20 @@
-@import '../theme.css';
+/* redux-notifications override */
+.notif__container {
+  z-index: 10000;
+}
 
 :root {
   --iconSize: 30px;
 }
 
-/* redux-notifications override */
-:global(.notif__container) {
-  z-index: 10000;
-}
-
-.root {
-  composes: base container rounded depth from '../theme.css';
+.nc-toast-root {
   overflow: hidden;
   margin: 10px;
   padding: 10px 10px 15px;
   color: var(--defaultColorLight);
 }
 
-.icon {
+.nc-toast-icon {
   position: relative;
   top: .15em;
   margin-right: .25em;
@@ -25,22 +22,18 @@
   line-height: var(--iconSize);
 }
 
-.info {
-  composes: root;
+.nc-toast-info {
   background-color: var(--infoColor);
 }
 
-.success {
-  composes: root;
+.nc-toast-success {
   background-color: var(--successColor);
 }
 
-.warning {
-  composes: root;
+.nc-toast-warning {
   background-color: var(--warningColor);
 }
 
-.danger {
-  composes: root;
+.nc-toast-danger {
   background-color: var(--errorColor);
 }

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import Autosuggest from 'react-autosuggest';
-import uuid from 'uuid';
+import uuid from 'uuid/v4';
 import { Map } from 'immutable';
 import { connect } from 'react-redux';
 import { debounce } from 'lodash';
@@ -30,7 +30,7 @@ class RelationControl extends Component {
 
   constructor(props, ctx) {
     super(props, ctx);
-    this.controlID = uuid.v4();
+    this.controlID = uuid();
     this.didInitialSearch = false;
   }
 

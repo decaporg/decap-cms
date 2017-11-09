@@ -1,13 +1,13 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { List, Map, fromJS } from 'immutable';
-import { sortable } from 'react-sortable';
+import ImmutablePropTypes from 'react-immutable-proptypes';
+import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 import FontIcon from 'react-toolbox/lib/font_icon';
 import ObjectControl from './ObjectControl';
-import styles from './ListControl.css';
 
 function ListItem(props) {
-  return <div {...props} className={`list-item ${ props.className }`}>{props.children}</div>;
+  return <div {...props} className={`list-item ${ props.className || '' }`}>{props.children}</div>;
 }
 ListItem.propTypes = {
   className: PropTypes.string,
@@ -19,7 +19,12 @@ function valueToString(value) {
   return value ? value.join(',').replace(/,([^\s]|$)/g, ', $1') : '';
 }
 
-const SortableListItem = sortable(ListItem);
+const SortableListItem = SortableElement(ListItem);
+const DragHandle = SortableHandle(
+  () => <FontIcon value="drag_handle" className="nc-listControl-dragIcon" />
+);
+const SortableList = SortableContainer(({ items, renderItem }) =>
+  (<div>{items.map(renderItem)}</div>));
 
 const valueTypes = {
   SINGLE: 'SINGLE',
@@ -32,15 +37,27 @@ export default class ListControl extends Component {
     value: PropTypes.node,
     field: PropTypes.node,
     forID: PropTypes.string,
+    mediaPaths: ImmutablePropTypes.map.isRequired,
     getAsset: PropTypes.func.isRequired,
+    onOpenMediaLibrary: PropTypes.func.isRequired,
     onAddAsset: PropTypes.func.isRequired,
     onRemoveAsset: PropTypes.func.isRequired,
   };
 
   constructor(props) {
     super(props);
-    this.state = { itemStates: Map(), value: valueToString(props.value) };
+    this.state = { itemsCollapsed: List(), value: valueToString(props.value) };
     this.valueType = null;
+  }
+
+  /**
+   * Always update so that each nested widget has the option to update. This is
+   * required because ControlHOC provides a default `shouldComponentUpdate`
+   * which only updates if the value changes, but every widget must be allowed
+   * to override this.
+   */
+  shouldComponentUpdate() {
+    return true;
   }
 
   componentDidMount() {
@@ -111,9 +128,9 @@ export default class ListControl extends Component {
   handleToggle(index) {
     return (e) => {
       e.preventDefault();
-      const { itemStates } = this.state;
+      const { itemsCollapsed } = this.state;
       this.setState({
-        itemStates: itemStates.setIn([index, 'collapsed'], !itemStates.getIn([index, 'collapsed'])),
+        itemsCollapsed: itemsCollapsed.set(index, !itemsCollapsed.get(index, false)),
       });
     };
   }
@@ -127,58 +144,65 @@ export default class ListControl extends Component {
     return value || `No ${ labelField.get('name') }`;
   }
 
-  handleSort = (obj) => {
-    this.setState({ draggingIndex: obj.draggingIndex });
-    if ('items' in obj) {
-      this.props.onChange(fromJS(obj.items));
-    }
+  onSortEnd = ({ oldIndex, newIndex }) => {
+    const { value, onChange } = this.props;
+
+    // Update value
+    const item = value.get(oldIndex);
+    const newValue = value.delete(oldIndex).insert(newIndex, item);
+    this.props.onChange(newValue);
+
+    // Update collapsing
+    const { itemsCollapsed } = this.state;
+    const collapsed = itemsCollapsed.get(oldIndex);
+    const newItemsCollapsed = itemsCollapsed.delete(oldIndex).insert(newIndex, collapsed);
+    this.setState({ itemsCollapsed: newItemsCollapsed });
   };
 
-  renderItem(item, index) {
-    const { value, field, getAsset, onAddAsset, onRemoveAsset } = this.props;
-    const { itemStates } = this.state;
-    const collapsed = itemStates.getIn([index, 'collapsed']);
-    const classNames = [styles.item, collapsed ? styles.collapsed : styles.expanded];
+  renderItem = (item, index) => {
+    const { field, getAsset, mediaPaths, onOpenMediaLibrary, onAddAsset, onRemoveAsset } = this.props;
+    const { itemsCollapsed } = this.state;
+    const collapsed = itemsCollapsed.get(index);
+    const classNames = ['nc-listControl-item', collapsed ? 'nc-listControl-collapsed' : ''];
 
-    return (<SortableListItem
-      key={index}
-      updateState={this.handleSort} // eslint-disable-line
-      items={value ? value.toJS() : []}
-      draggingIndex={this.state.draggingIndex}
-      sortId={index}
-      outline="list"
-    >
-      <div className={classNames.join(' ')}>
-        <button className={styles.toggleButton} onClick={this.handleToggle(index)}>
-          <FontIcon value={collapsed ? 'expand_more' : 'expand_less'} />
-        </button>
-        <FontIcon value="drag_handle" className={styles.dragIcon} />
-        <button className={styles.removeButton} onClick={this.handleRemove(index)}>
-          <FontIcon value="close" />
-        </button>
-        <div className={styles.objectLabel}>{this.objectLabel(item)}</div>
-        <ObjectControl
-          value={item}
-          field={field}
-          className={styles.objectControl}
-          onChange={this.handleChangeFor(index)}
-          getAsset={getAsset}
-          onAddAsset={onAddAsset}
-          onRemoveAsset={onRemoveAsset}
-        />
-      </div>
+    return (<SortableListItem className={classNames.join(' ')} index={index} key={`item-${ index }`}>
+      <button className="nc-listControl-toggleButton" onClick={this.handleToggle(index)}>
+        <FontIcon value={collapsed ? 'expand_more' : 'expand_less'} />
+      </button>
+      <DragHandle />
+      <button className="nc-listControl-removeButton" onClick={this.handleRemove(index)}>
+        <FontIcon value="close" />
+      </button>
+      <div className="nc-listControl-objectLabel">{this.objectLabel(item)}</div>
+      <ObjectControl
+        value={item}
+        field={field}
+        className="nc-listControl-objectControl"
+        onChange={this.handleChangeFor(index)}
+        getAsset={getAsset}
+        onOpenMediaLibrary={onOpenMediaLibrary}
+        mediaPaths={mediaPaths}
+        onAddAsset={onAddAsset}
+        onRemoveAsset={onRemoveAsset}
+      />
     </SortableListItem>);
-  }
+  };
 
   renderListControl() {
     const { value, forID, field } = this.props;
     const listLabel = field.get('label');
 
     return (<div id={forID}>
-      {value && value.map((item, index) => this.renderItem(item, index))}
-      <button className={styles.addButton} onClick={this.handleAdd}>
-        <FontIcon value="add" className={styles.addButtonIcon} />
-        <span className={styles.addButtonText}>new {listLabel}</span>
+      <SortableList
+        items={value || List()}
+        renderItem={this.renderItem}
+        onSortEnd={this.onSortEnd}
+        useDragHandle
+        lockAxis="y"
+      />
+      <button className="nc-listControl-addButton" onClick={this.handleAdd}>
+        <FontIcon value="add" className="nc-listControl-addButtonIcon" />
+        <span className="nc-listControl-addButtonText">new {listLabel}</span>
       </button>
     </div>);
   }
@@ -199,4 +223,4 @@ export default class ListControl extends Component {
       onBlur={this.handleCleanup}
     />);
   }
-}
+};

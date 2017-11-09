@@ -1,3 +1,4 @@
+import url from 'url';
 import sanitizeFilename from 'sanitize-filename';
 import { isString, escapeRegExp, flow, partialRight } from 'lodash';
 
@@ -10,7 +11,13 @@ export function getCollectionUrl(collectionName, direct) {
 }
 
 export function getNewEntryUrl(collectionName, direct) {
-  return getUrl(`/collections/${ collectionName }/entries/new`, direct);
+  return getUrl(`/collections/${ collectionName }/new`, direct);
+}
+
+export function addParams(urlString, params) {
+  const parsedUrl = url.parse(urlString, true);
+  parsedUrl.query = { ...parsedUrl.query, ...params };
+  return url.format(parsedUrl);
 }
 
 /* See https://www.w3.org/International/articles/idn-and-iri/#path.

@@ -6,7 +6,6 @@ import { Notifs } from 'redux-notifications';
 import { Toast } from '../../components/UI/index';
 import { Card, Icon } from "../../components/UI";
 import logo from "./netlify_logo.svg";
-import styles from "./AuthenticationPage.css";
 
 let component = null;
 
@@ -55,6 +54,7 @@ export default class AuthenticationPage extends React.Component {
 
   static propTypes = {
     onLogin: PropTypes.func.isRequired,
+    inProgress: PropTypes.bool.isRequired,
   };
 
   state = { email: "", password: "", errors: {} };
@@ -91,27 +91,27 @@ export default class AuthenticationPage extends React.Component {
 
   render() {
     const { errors } = this.state;
-    const { error } = this.props;
+    const { error, inProgress } = this.props;
 
     if (window.netlifyIdentity) {
-      return <section className={styles.root}>
+      return <section className="nc-gitGatewayAuthenticationPage-root">
         <Notifs CustomComponent={Toast} />
-        <Button className={styles.button} raised onClick={this.handleIdentity}>
+        <Button className="nc-gitGatewayAuthenticationPage-button" raised onClick={this.handleIdentity}>
           Login with Netlify Identity
         </Button>
       </section>
     }
 
     return (
-      <section className={styles.root}>
-        <Card className={styles.card}>
+      <section className="nc-gitGatewayAuthenticationPage-root">
+        <Card className="nc-gitGatewayAuthenticationPage-card">
           <form onSubmit={this.handleLogin}>
             <img src={logo} width={100} role="presentation" />
             {error && <p>
-              <span className={styles.errorMsg}>{error}</span>
+              <span className="nc-gitGatewayAuthenticationPage-errorMsg">{error}</span>
             </p>}
             {errors.server && <p>
-              <span className={styles.errorMsg}>{errors.server}</span>
+              <span className="nc-gitGatewayAuthenticationPage-errorMsg">{errors.server}</span>
             </p>}
             <Input
               type="text"
@@ -130,10 +130,11 @@ export default class AuthenticationPage extends React.Component {
               onChange={this.handleChange.bind(this, "password")} // eslint-disable-line
             />
             <Button
-              className={styles.button}
+              className="nc-gitGatewayAuthenticationPage-button"
               raised
+              disabled={inProgress}
             >
-              <Icon type="login" /> Login
+              <Icon type="login" /> {inProgress ? "Logging in..." : "Login"}
             </Button>
           </form>
         </Card>

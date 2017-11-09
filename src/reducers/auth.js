@@ -10,7 +10,7 @@ const auth = (state = null, action) => {
     case AUTH_FAILURE:
       return Immutable.Map({ error: action.payload.toString() });
     case LOGOUT:
-      return state.remove('user');
+      return state.remove('user').remove('isFetching');
     default:
       return state;
   }

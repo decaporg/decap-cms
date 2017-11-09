@@ -5,7 +5,6 @@ import Plain from 'slate-plain-serializer';
 import { debounce } from 'lodash';
 import Toolbar from '../Toolbar/Toolbar';
 import { Sticky } from '../../../../UI/Sticky/Sticky';
-import styles from './index.css';
 
 export default class RawEditor extends React.Component {
   constructor(props) {
@@ -53,16 +52,16 @@ export default class RawEditor extends React.Component {
 
   render() {
     return (
-      <div className={styles.rawWrapper}>
+      <div className="nc-rawEditor-rawWrapper">
         <Sticky
-          className={styles.editorControlBar}
-          classNameActive={styles.editorControlBarSticky}
+          className="nc-visualEditor-editorControlBar"
+          classNameActive="nc-visualEditor-editorControlBarSticky"
           fillContainerWidth
         >
           <Toolbar onToggleMode={this.handleToggleMode} disabled rawMode />
         </Sticky>
         <Slate
-          className={styles.rawEditor}
+          className="nc-rawEditor-rawEditor"
           state={this.state.editorState}
           onChange={this.handleChange}
           onPaste={this.handlePaste}

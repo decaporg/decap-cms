@@ -7,6 +7,7 @@ import editorialWorkflow, * as fromEditorialWorkflow from './editorialWorkflow';
 import entryDraft from './entryDraft';
 import collections from './collections';
 import search from './search';
+import mediaLibrary from './mediaLibrary';
 import medias, * as fromMedias from './medias';
 import globalUI from './globalUI';
 
@@ -20,6 +21,7 @@ const reducers = {
   entries,
   editorialWorkflow,
   entryDraft,
+  mediaLibrary,
   medias,
   globalUI,
 };

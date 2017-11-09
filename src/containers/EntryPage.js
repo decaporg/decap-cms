@@ -16,6 +16,7 @@ import {
 import { closeEntry } from '../actions/editor';
 import { deserializeValues } from '../lib/serializeEntryValues';
 import { addAsset, removeAsset } from '../actions/media';
+import { openMediaLibrary } from '../actions/mediaLibrary';
 import { openSidebar } from '../actions/globalUI';
 import { selectEntry, getAsset } from '../reducers';
 import { selectFields } from '../reducers/collections';
@@ -34,11 +35,13 @@ class EntryPage extends React.Component {
     createEmptyDraft: PropTypes.func.isRequired,
     discardDraft: PropTypes.func.isRequired,
     entry: ImmutablePropTypes.map,
+    mediaPaths: ImmutablePropTypes.map.isRequired,
     entryDraft: ImmutablePropTypes.map.isRequired,
     loadEntry: PropTypes.func.isRequired,
     persistEntry: PropTypes.func.isRequired,
     deleteEntry: PropTypes.func.isRequired,
     showDelete: PropTypes.bool.isRequired,
+    openMediaLibrary: PropTypes.func.isRequired,
     removeAsset: PropTypes.func.isRequired,
     closeEntry: PropTypes.func.isRequired,
     openSidebar: PropTypes.func.isRequired,
@@ -56,11 +59,17 @@ class EntryPage extends React.Component {
       loadEntry(collection, slug);
     }
 
-    this.unlisten = history.listenBefore((location) => {
+    const unblock = history.block((location) => {
       if (this.props.entryDraft.get('hasChanged')) {
         return "Are you sure you want to leave this page?";
       }
-      return true;
+    });
+
+    // This will run as soon as the location actually changes.
+    //   (The confirmation above will run first.)
+    this.unlisten = history.listen(() => {
+      unblock();
+      this.unlisten();
     });
   }
 
@@ -84,7 +93,6 @@ class EntryPage extends React.Component {
 
   componentWillUnmount() {
     this.props.discardDraft();
-    this.unlisten();
   }
 
   createDraft = (entry) => {
@@ -120,10 +128,12 @@ class EntryPage extends React.Component {
       entry,
       entryDraft,
       fields,
+      mediaPaths,
       boundGetAsset,
       collection,
       changeDraftField,
       changeDraftFieldValidation,
+      openMediaLibrary,
       addAsset,
       removeAsset,
       closeEntry,
@@ -145,8 +155,10 @@ class EntryPage extends React.Component {
         fields={fields}
         fieldsMetaData={entryDraft.get('fieldsMetaData')}
         fieldsErrors={entryDraft.get('fieldsErrors')}
+        mediaPaths={mediaPaths}
         onChange={changeDraftField}
         onValidate={changeDraftFieldValidation}
+        onOpenMediaLibrary={openMediaLibrary}
         onAddAsset={addAsset}
         onRemoveAsset={removeAsset}
         onPersist={this.handlePersistEntry}
@@ -160,18 +172,20 @@ class EntryPage extends React.Component {
 }
 
 function mapStateToProps(state, ownProps) {
-  const { collections, entryDraft } = state;
-  const slug = ownProps.params.slug;
-  const collection = collections.get(ownProps.params.name);
-  const newEntry = ownProps.route && ownProps.route.newRecord === true;
+  const { collections, entryDraft, mediaLibrary } = state;
+  const slug = ownProps.match.params.slug;
+  const collection = collections.get(ownProps.match.params.name);
+  const newEntry = ownProps.newRecord === true;
   const fields = selectFields(collection, slug);
   const entry = newEntry ? null : selectEntry(state, collection.get('name'), slug);
   const boundGetAsset = getAsset.bind(null, state);
+  const mediaPaths = mediaLibrary.get('controlMedia');
   return {
     collection,
     collections,
     newEntry,
     entryDraft,
+    mediaPaths,
     boundGetAsset,
     fields,
     slug,
@@ -184,6 +198,7 @@ export default connect(
   {
     changeDraftField,
     changeDraftFieldValidation,
+    openMediaLibrary,
     addAsset,
     removeAsset,
     loadEntry,

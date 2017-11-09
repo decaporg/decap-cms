@@ -1,11 +1,13 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import ImmutablePropTypes from "react-immutable-proptypes";
+import { connect } from 'react-redux';
 import { Map } from 'immutable';
 import { Button } from 'react-toolbox/lib/button';
+import { openMediaLibrary } from '../../../../../actions/mediaLibrary';
 import ToolbarPluginFormControl from './ToolbarPluginFormControl';
-import styles from './ToolbarPluginForm.css';
 
-export default class ToolbarPluginForm extends React.Component {
+class ToolbarPluginForm extends React.Component {
   static propTypes = {
     plugin: PropTypes.object.isRequired,
     onSubmit: PropTypes.func.isRequired,
@@ -13,6 +15,8 @@ export default class ToolbarPluginForm extends React.Component {
     onAddAsset: PropTypes.func.isRequired,
     onRemoveAsset: PropTypes.func.isRequired,
     getAsset: PropTypes.func.isRequired,
+    mediaPaths: ImmutablePropTypes.map.isRequired,
+    onOpenMediaLibrary: PropTypes.func.isRequired,
   };
 
   constructor(props) {
@@ -38,12 +42,14 @@ export default class ToolbarPluginForm extends React.Component {
       onRemoveAsset,
       getAsset,
       onChange,
+      onOpenMediaLibrary,
+      mediaPaths,
     } = this.props;
 
     return (
-      <form className={styles.pluginForm} onSubmit={this.handleSubmit}>
-        <h3 className={styles.header}>Insert {plugin.get('label')}</h3>
-        <div className={styles.body}>
+      <form className="nc-toolbarPluginForm-pluginForm" onSubmit={this.handleSubmit}>
+        <h3 className="nc-toolbarPluginForm-header">Insert {plugin.get('label')}</h3>
+        <div className="nc-toolbarPluginForm-body">
           {plugin.get('fields').map((field, index) => (
             <ToolbarPluginFormControl
               key={index}
@@ -55,10 +61,12 @@ export default class ToolbarPluginForm extends React.Component {
               onChange={(val) => {
                 this.setState({ data: this.state.data.set(field.get('name'), val) });
               }}
+              mediaPaths={mediaPaths}
+              onOpenMediaLibrary={onOpenMediaLibrary}
             />
           ))}
         </div>
-        <div className={styles.footer}>
+        <div className="nc-toolbarPluginForm-footer">
           <Button raised onClick={this.handleSubmit}>Insert</Button>
           {' '}
           <Button onClick={onCancel}>Cancel</Button>
@@ -67,3 +75,13 @@ export default class ToolbarPluginForm extends React.Component {
     );
   }
 }
+
+const mapStateToProps = state => ({
+  mediaPaths: state.mediaLibrary.get('controlMedia'),
+});
+
+const mapDispatchToProps = {
+  onOpenMediaLibrary: openMediaLibrary,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ToolbarPluginForm);

@@ -2,7 +2,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Icon } from '../index';
 import 'redux-notifications/lib/styles.css'; // Import default redux-notifications styles into global scope.
-import styles from './Toast.css';
+
+const themeClasses = `nc-theme-base nc-theme-container nc-theme-rounded nc-theme-depth`;
 
 const icons = {
   info: 'info',
@@ -13,8 +14,8 @@ const icons = {
 
 export default function Toast({ kind, message }) {
   return (
-    <div className={styles[kind]}>
-      <Icon type={icons[kind]} className={styles.icon} />
+    <div className={`${ themeClasses } nc-toast-root nc-toast-${ kind }`}>
+      <Icon type={icons[kind]} className="nc-toast-icon" />
       {message}
     </div>
   );

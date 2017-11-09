@@ -1,6 +1,4 @@
-@import '../UI/theme';
-
-.appBar {
+.nc-appHeader-appBar {
   padding: 8px 24px;
   height: auto;
   background-color: var(--backgroundAltColor);
@@ -9,18 +7,27 @@
 
 /* Gross stuff below, React Toolbox hacks */
 
-.homeLink,
-.iconMenu {
-  margin-left: 2%;
+.nc-appHeader-button,
+.nc-appHeader-iconMenu {
+  margin-left: 16px;
 }
 
-.homeLink .icon {
-  vertical-align: top;
+.nc-appHeader-button {
+  cursor: pointer;
+  border: 0;
+  background-color: transparent;
+  width: 36px;
+  padding: 6px 0;
+  text-align: center;
+
+  & .nc-appHeader-icon {
+    vertical-align: top;
+  }
 }
 
-.icon,
-.icon span,
-.leftIcon span {
+.nc-appHeader-icon,
+.nc-appHeader-icon span,
+.nc-appHeader-leftIcon span {
   /* stylelint-disable */
 
   color: var(--defaultColorLight) !important;

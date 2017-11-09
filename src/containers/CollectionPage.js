@@ -6,7 +6,6 @@ import { loadEntries } from '../actions/entries';
 import { selectEntries } from '../reducers';
 import { Loader } from '../components/UI';
 import EntryListing from '../components/EntryListing/EntryListing';
-import styles from "./CollectionPage.css";
 
 class CollectionPage extends React.Component {
 
@@ -58,7 +57,7 @@ class CollectionPage extends React.Component {
     const fetchingEntriesContent = (<Loader active>
         {['Loading Entries', 'Caching Entries', 'This might take several minutes']}
     </Loader>);
-    const noEntriesContent = <div className={styles.noEntries}>No Entries</div>;
+    const noEntriesContent = <div className="nc-collectionPage-noEntries">No Entries</div>;
     const fallbackContent = isFetching ? fetchingEntriesContent : noEntriesContent;
 
     return (<div>{entries ? entriesContent : fallbackContent}</div>);
@@ -68,7 +67,7 @@ class CollectionPage extends React.Component {
 
 function mapStateToProps(state, ownProps) {
   const { collections, config } = state;
-  const { name, slug } = ownProps.params;
+  const { name } = ownProps.match.params;
   const publicFolder = config.get('public_folder');
   const collection = name ? collections.get(name) : collections.first();
   const page = state.entries.getIn(['pages', collection.get('name'), 'page']);
@@ -76,7 +75,7 @@ function mapStateToProps(state, ownProps) {
   const entries = selectEntries(state, collection.get('name'));
   const isFetching = state.entries.getIn(['pages', collection.get('name'), 'isFetching'], false);
 
-  return { slug, publicFolder, collection, collections, page, entries, isFetching };
+  return { publicFolder, collection, collections, page, entries, isFetching };
 }
 
 export default connect(mapStateToProps)(CollectionPage);

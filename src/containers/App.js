@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
-import { IndexLink } from "react-router";
+import { Route, Switch, Link } from 'react-router-dom';
 import FontIcon from 'react-toolbox/lib/font_icon';
 import { Navigation } from 'react-toolbox/lib/navigation';
 import { Notifs } from 'redux-notifications';
@@ -17,12 +17,17 @@ import {
   navigateToCollection as actionNavigateToCollection,
   createNewEntryInCollection as actionCreateNewEntryInCollection,
 } from '../actions/findbar';
+import { openMediaLibrary as actionOpenMediaLibrary } from '../actions/mediaLibrary';
 import AppHeader from '../components/AppHeader/AppHeader';
+import MediaLibrary from '../components/MediaLibrary/MediaLibrary';
 import { Loader, Toast } from '../components/UI/index';
 import { getCollectionUrl, getNewEntryUrl } from '../lib/urlHelper';
 import { SIMPLE, EDITORIAL_WORKFLOW } from '../constants/publishModes';
-import styles from './App.css';
-import sidebarStyles from './Sidebar.css';
+import DashboardPage from './DashboardPage';
+import CollectionPage from './CollectionPage';
+import EntryPage from './EntryPage';
+import SearchPage from './SearchPage';
+import NotFoundPage from './NotFoundPage';
 
 TopBarProgress.config({
   barColors: {
@@ -38,7 +43,6 @@ class App extends React.Component {
 
   static propTypes = {
     auth: ImmutablePropTypes.map,
-    children: PropTypes.node,
     config: ImmutablePropTypes.map,
     collections: ImmutablePropTypes.orderedMap,
     createNewEntryInCollection: PropTypes.func.isRequired,
@@ -86,7 +90,7 @@ class App extends React.Component {
           React.createElement(backend.authComponent(), {
             onLogin: this.handleLogin.bind(this),
             error: auth && auth.get('error'),
-            isFetching: auth && auth.get('isFetching'),
+            inProgress: (auth && auth.get('isFetching')) || false,
             siteId: this.props.config.getIn(["backend", "site_domain"]),
             base_url: this.props.config.getIn(["backend", "base_url"], null)
           })
@@ -104,7 +108,6 @@ class App extends React.Component {
     const {
       user,
       config,
-      children,
       collections,
       toggleSidebar,
       runCommand,
@@ -113,6 +116,7 @@ class App extends React.Component {
       logoutUser,
       isFetching,
       publishMode,
+      openMediaLibrary,
     } = this.props;
 
 
@@ -134,26 +138,26 @@ class App extends React.Component {
 
     const sidebarContent = (
       <div>
-        <Navigation type="vertical" className={sidebarStyles.nav}>
+        <Navigation type="vertical" className="nc-sidebar-nav">
           {
             publishMode === SIMPLE ? null :
             <section>
-              <h1 className={sidebarStyles.heading}>Publishing</h1>
-              <div className={sidebarStyles.linkWrapper}>
-                <IndexLink to="/" className={sidebarStyles.viewEntriesLink}>Editorial Workflow</IndexLink>
+              <h1 className="nc-sidebar-heading">Publishing</h1>
+              <div className="nc-sidebar-linkWrapper">
+                <Link to="/" className="nc-sidebar-viewEntriesLink">Editorial Workflow</Link>
               </div>
             </section>
           }
           <section>
-            <h1 className={sidebarStyles.heading}>Collections</h1>
+            <h1 className="nc-sidebar-heading">Collections</h1>
             {
               collections.valueSeq().map((collection) => {
                 const collectionName = collection.get('name');
                 return (
-                  <div key={collectionName} className={sidebarStyles.linkWrapper}>
+                  <div key={collectionName} className="nc-sidebar-linkWrapper">
                     <a
                       href={getCollectionUrl(collectionName, true)}
-                      className={sidebarStyles.viewEntriesLink}
+                      className="nc-sidebar-viewEntriesLink"
                       onClick={e => this.handleLinkClick(e, navigateToCollection, collectionName)}
                     >
                       {collection.get('label')}
@@ -162,7 +166,7 @@ class App extends React.Component {
                       collection.get('create') ? (
                         <a
                           href={getNewEntryUrl(collectionName, true)}
-                          className={sidebarStyles.createEntryLink}
+                          className="nc-sidebar-createEntryLink"
                           onClick={e => this.handleLinkClick(e, createNewEntryInCollection, collectionName)}
                         >
                           <FontIcon value="add_circle_outline" />
@@ -189,11 +193,20 @@ class App extends React.Component {
             onCreateEntryClick={createNewEntryInCollection}
             onLogoutClick={logoutUser}
             toggleDrawer={toggleSidebar}
+            openMediaLibrary={openMediaLibrary}
           />
-          <div className={styles.entriesPanel}>
+          <div className="nc-app-entriesPanel">
             { isFetching && <TopBarProgress /> }
             <div>
-              {children}
+              <Switch>
+                <Route exact path='/' component={DashboardPage} />
+                <Route exact path="/collections/:name" component={CollectionPage} />
+                <Route path="/collections/:name/new" render={(props) => (<EntryPage {...props} newRecord />)} />
+                <Route path="/collections/:name/entries/:slug" component={EntryPage} />
+                <Route path="/search/:searchTerm" component={SearchPage} />
+                <Route component={NotFoundPage} />
+              </Switch>
+              <MediaLibrary/>
             </div>
           </div>
         </div>
@@ -222,6 +235,9 @@ function mapDispatchToProps(dispatch) {
     },
     createNewEntryInCollection: (collectionName) => {
       dispatch(actionCreateNewEntryInCollection(collectionName));
+    },
+    openMediaLibrary: () => {
+      dispatch(actionOpenMediaLibrary());
     },
     logoutUser: () => {
       dispatch(actionLogoutUser());
