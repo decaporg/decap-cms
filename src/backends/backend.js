@@ -164,8 +164,8 @@ class Backend {
     };
   }
 
-  unpublishedEntries(page, perPage) {
-    return this.implementation.unpublishedEntries(page, perPage)
+  unpublishedEntries(collections) {
+    return this.implementation.unpublishedEntries()
     .then(loadedEntries => loadedEntries.filter(entry => entry !== null))
     .then(entries => (
       entries.map((loadedEntry) => {
@@ -184,7 +184,10 @@ class Backend {
     ))
     .then(entries => ({
       pagination: 0,
-      entries: entries.map(this.entryWithFormat("editorialWorkflow")),
+      entries: entries.map(entry => {
+        const collection = collections.get(entry.collection);
+        return this.entryWithFormat(collection)(entry);
+      }),
     }));
   }
 
