@@ -24,5 +24,24 @@
   border-top-right-radius: 0;
 }
 
-.nc-toolbar-Toggle {
+.nc-markdownWidget-toolbar-markdownToggle {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+}
+
+.nc-markdownWidget-toolbar-markdownToggle-switch {
+  margin: 0 12px;
+}
+
+.nc-markdownWidget-toolbar-markdownToggle-label {
+  display: inline-block;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.nc-markdownWidget-toolbar-markdownToggle-label-active {
+  font-weight: 600;
+  color: #3a69c7;
 }
