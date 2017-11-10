@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { List } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import c from 'classnames';
 import Switch from '../../../../UI/Toggle/Toggle';
 import ToolbarButton from './ToolbarButton';
 import ToolbarComponentsMenu from './ToolbarComponentsMenu';
@@ -68,6 +69,16 @@ export default class Toolbar extends React.Component {
       { label: 'Link', icon: 'list', state: buttons.link },
     ];
 
+    /**
+     * Because the toggle labels change font weight for active/inactive state,
+     * we need to set estimated widths for them to maintain position without
+     * moving other inline items on font weight change.
+     */
+    const toggleOffLabel = 'Rich text';
+    const toggleOffLabelWidth = '62px';
+    const toggleOnLabel = 'Markdown';
+    const toggleOnLabelWidth = '70px';
+
     return (
       <div className="nc-toolbar-Toolbar nc-theme-clearfix">
         <div>
@@ -85,18 +96,44 @@ export default class Toolbar extends React.Component {
             onComponentMenuItemClick={this.handlePluginFormDisplay}
             disabled={disabled}
           />
-          {activePlugin &&
-            <ToolbarPluginForm
-              plugin={activePlugin}
-              onSubmit={this.handlePluginFormSubmit}
-              onCancel={this.handlePluginFormCancel}
-              onAddAsset={onAddAsset}
-              onRemoveAsset={onRemoveAsset}
-              getAsset={getAsset}
-            />
+          {
+            activePlugin
+              ? <ToolbarPluginForm
+                  plugin={activePlugin}
+                  onSubmit={this.handlePluginFormSubmit}
+                  onCancel={this.handlePluginFormCancel}
+                  onAddAsset={onAddAsset}
+                  onRemoveAsset={onRemoveAsset}
+                  getAsset={getAsset}
+                />
+              : null
           }
         </div>
-        <Switch active={rawMode} onChange={onToggleMode}/>
+        <div className="nc-markdownWidget-toolbar-markdownToggle">
+          <span
+            style={{ width: toggleOffLabelWidth }}
+            className={c(
+              'nc-markdownWidget-toolbar-markdownToggle-label',
+              { 'nc-markdownWidget-toolbar-markdownToggle-label-active': !rawMode },
+            )}
+          >
+            {toggleOffLabel}
+          </span>
+          <Switch
+            active={rawMode}
+            onChange={onToggleMode}
+            className="nc-markdownWidget-toolbar-markdownToggle-switch"
+          />
+          <span
+            style={{ width: toggleOnLabelWidth }}
+            className={c(
+              'nc-markdownWidget-toolbar-markdownToggle-label',
+              { 'nc-markdownWidget-toolbar-markdownToggle-label-active': rawMode },
+            )}
+          >
+            {toggleOnLabel}
+          </span>
+        </div>
       </div>
     );
   }
