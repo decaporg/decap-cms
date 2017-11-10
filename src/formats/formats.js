@@ -47,6 +47,13 @@ export function resolveFormat(collectionOrEntity, entry) {
     return formatByExtension(fileExtension);
   }
 
+  // If creating a new file, and an `extension` is specified in the
+  //   collection config, infer the format from that extension.
+  const extension = collectionOrEntity.get('extension');
+  if (extension) {
+    return formatByExtension(extension);
+  }
+
   // If no format is specified and it cannot be inferred, return the default.
   return formatByName();
 }
