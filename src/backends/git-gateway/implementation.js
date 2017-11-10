@@ -55,9 +55,9 @@ export default class GitGateway extends GitHubBackend {
     .then((token) => {
       let validRole = true;
       if (this.accept_roles && this.accept_roles.length > 0) {
+        const userRoles = get(jwtDecode(token), 'app_metadata.roles', []);
         validRole = intersection(userRoles, this.accept_roles).length > 0;
       }
-      const userRoles = get(jwtDecode(token), 'app_metadata.roles', []);
       if (validRole) {
         const userData = {
           name: user.user_metadata.name || user.email.split('@').shift(),
