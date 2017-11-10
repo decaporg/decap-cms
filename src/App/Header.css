@@ -77,10 +77,18 @@
   border: 0;
   padding: 8px;
   cursor: pointer;
+  color: #1e2532;
   background-color: transparent;
+}
 
-  & img {
-    width: 32px;
-    border-radius: 40px;
-  }
+.nc-appHeader-avatar-image,
+.nc-appHeader-avatar-placeholder {
+  color: #1e2532;
+  width: 32px;
+  border-radius: 32px;
+}
+
+.nc-appHeader-avatar-placeholder {
+  height: 32px;
+  background-color: var(--textFieldBorderColor);
 }
