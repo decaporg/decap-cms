@@ -21,6 +21,7 @@ const EntryEditorToolbar = (
     hasChanged,
   }) => {
   const disabled = !enableSave || isPersisting;
+  const avatarUrl = user.get('avatar_url');
   return (
     <div className="nc-entryEditor-toolbar">
       <div onClick={onCancelEdit} className="nc-entryEditor-toolbar-backSection">
@@ -67,7 +68,11 @@ const EntryEditorToolbar = (
           olddvdscreensaver.com
         </a>
         <button className="nc-appHeader-avatar">
-          <img src={user.get('avatar_url')}/>
+          {
+            avatarUrl
+              ? <img className="nc-appHeader-avatar-image" src={user.get('avatar_url')}/>
+              : <Icon className="nc-appHeader-avatar-placeholder" type="user"/>
+          }
         </button>
       </div>
     </div>
