@@ -96,7 +96,7 @@ export default class Toolbar extends React.Component {
             />
           }
         </div>
-        <Switch/>
+        <Switch active={rawMode} onChange={onToggleMode}/>
       </div>
     );
   }

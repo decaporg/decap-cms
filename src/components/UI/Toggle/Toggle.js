@@ -2,8 +2,8 @@ import React from 'react'
 import Toggle from 'react-toggled';
 import c from 'classnames';
 
-const Switch = () => (
-  <Toggle>
+const Switch = ({ active, onChange }) => (
+  <Toggle on={active} onToggle={onChange}>
     {({on, getElementTogglerProps}) => (
       <span
         className={c('nc-toggle', { 'nc-toggle-active': on })}
