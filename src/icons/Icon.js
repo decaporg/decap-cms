@@ -12,6 +12,7 @@ import iconPage from './icon-page.svg';
 import iconPages from './icon-pages.svg';
 import iconPagesAlt from './icon-pages-alt.svg';
 import iconSettings from './icon-settings.svg';
+import iconUser from './icon-user.svg';
 import iconWorkflow from './icon-workflow.svg';
 import iconWrite from './icon-write.svg';
 
@@ -55,6 +56,9 @@ const icons = {
   },
   'settings': {
     image: iconSettings,
+  },
+  'user': {
+    image: iconUser,
   },
   'workflow': {
     image: iconWorkflow,

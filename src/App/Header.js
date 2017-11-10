@@ -45,6 +45,7 @@ export default class Header extends React.Component {
           };
 
     */
+    const avatarUrl = user.get('avatar_url');
 
     return (
       <div className="nc-appHeader-container">
@@ -68,7 +69,11 @@ export default class Header extends React.Component {
                 olddvdscreensaver.com
               </a>
               <button className="nc-appHeader-avatar">
-                <img src={user.get('avatar_url')}/>
+                {
+                  avatarUrl
+                    ? <img className="nc-appHeader-avatar-image" src={user.get('avatar_url')}/>
+                    : <Icon className="nc-appHeader-avatar-placeholder" type="user"/>
+                }
               </button>
             </div>
           </div>
