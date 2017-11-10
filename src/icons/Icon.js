@@ -1,73 +1,14 @@
 import React from 'react';
-import iconAdd from './icon-add.svg';
-import iconArrow from './icon-arrow.svg';
-import iconCircle from './icon-circle.svg';
-import iconFolder from './icon-folder.svg';
-import iconGrid from './icon-grid.svg';
-import iconHome from './icon-home.svg';
-import iconList from './icon-list.svg';
-import iconMedia from './icon-media.svg';
-import iconMediaAlt from './icon-media-alt.svg';
-import iconPage from './icon-page.svg';
-import iconPages from './icon-pages.svg';
-import iconPagesAlt from './icon-pages-alt.svg';
-import iconSettings from './icon-settings.svg';
-import iconUser from './icon-user.svg';
-import iconWorkflow from './icon-workflow.svg';
-import iconWrite from './icon-write.svg';
+import icons from './icons';
 
-const icons = {
-  'add': {
-    image: iconAdd,
-  },
-  'arrow': {
-    image: iconArrow,
-    direction: 'left',
-  },
-  'circle': {
-    image: iconCircle,
-  },
-  'folder': {
-    image: iconFolder,
-  },
-  'grid': {
-    image: iconGrid,
-  },
-  'home': {
-    image: iconHome,
-  },
-  'list': {
-    image: iconList,
-  },
-  'media': {
-    image: iconMedia,
-  },
-  'media-alt': {
-    image: iconMediaAlt,
-  },
-  'page': {
-    image: iconPage,
-  },
-  'pages': {
-    image: iconPages,
-  },
-  'pages-alt': {
-    image: iconPagesAlt,
-  },
-  'settings': {
-    image: iconSettings,
-  },
-  'user': {
-    image: iconUser,
-  },
-  'workflow': {
-    image: iconWorkflow,
-  },
-  'write': {
-    image: iconWrite,
-  },
-};
-
+/**
+ * Calculates rotation for icons that have a `direction` property configured
+ * in the imported icon definition object. If no direction is configured, a
+ * neutral rotation value is returned.
+ *
+ * Returned value is a string of shape `${degrees}deg`, for use in a CSS
+ * transform.
+ */
 const getRotation = (iconDirection, newDirection) => {
   if (!iconDirection || !newDirection) {
     return '0deg';
