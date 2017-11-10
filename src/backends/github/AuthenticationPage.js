@@ -1,8 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import Button from 'react-toolbox/lib/button';
 import Authenticator from '../../lib/netlify-auth';
-import { Icon } from '../../components/UI';
+import Icon from '../../icons/Icon';
 import { Notifs } from 'redux-notifications';
 import { Toast } from '../../components/UI/index';
 
@@ -39,14 +38,13 @@ export default class AuthenticationPage extends React.Component {
       <section className="nc-githubAuthenticationPage-root">
         <Notifs CustomComponent={Toast} />
         {loginError && <p>{loginError}</p>}
-        <Button
+        <button
           className="nc-githubAuthenticationPage-button"
-          raised
           disabled={inProgress}
           onClick={this.handleLogin}
         >
           <Icon type="github" /> {inProgress ? "Logging in..." : "Login with GitHub"}
-        </Button>
+        </button>
       </section>
     );
   }
