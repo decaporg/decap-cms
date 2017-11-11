@@ -400,6 +400,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "ebello",
+      "name": "Ernie Bello",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/782?v=4",
+      "profile": "http://ern.me",
+      "contributions": [
+        "bug"
+      ]
     }
   ]
 }
