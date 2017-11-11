@@ -15,7 +15,7 @@ import iconImage from './image.svg';
 import iconItalic from './italic.svg';
 import iconLink from './link.svg';
 import iconList from './list.svg';
-import iconListDotted from './list-dotted.svg';
+import iconListBulleted from './list-bulleted.svg';
 import iconListNumbered from './list-numbered.svg';
 import iconMedia from './media.svg';
 import iconMediaAlt from './media-alt.svg';
@@ -46,7 +46,7 @@ const images = {
   'italic': iconItalic,
   'link': iconLink,
   'list': iconList,
-  'list-dotted': iconListDotted,
+  'list-bulleted': iconListBulleted,
   'list-numbered': iconListNumbered,
   'media': iconMedia,
   'media-alt': iconMediaAlt,
