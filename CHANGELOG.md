@@ -6,6 +6,11 @@
   </summary>
 </details>
 
+## 0.7.2 (November 11, 2017)
+
+* Only rebase editorial workflow pull requests if assets are stored in content repo ([@erquhart](https://github.com/erquhart) in [#804](https://github.com/pulls/804))
+* Fix Netlify Identity widget logout method being called after signup redirect ([@tech4him1](https://github.com/tech4him1) in [#805](https://github.com/pulls/805))
+
 ## 0.7.1 (November 11, 2017)
 
 * Enable sourcemaps ([@erquhart](https://github.com/erquhart) in [#803](https://github.com/pulls/803))
