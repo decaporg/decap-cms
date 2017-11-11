@@ -359,6 +359,21 @@ export default class API {
             files: uniq(files),
           };
           const updatedMetadata = { ...metadata, pr, title, description, objects };
+
+          /**
+           * If an asset store is in use, assets are always accessible, so we
+           * can just finish the persist operation here.
+           */
+          if (options.hasAssetStore) {
+            return this.storeMetadata(contentKey, updatedMetadata)
+              .then(() => this.patchBranch(branchName, newHead.sha));
+          }
+
+          /**
+           * If no asset store is in use, assets are being stored in the content
+           * repo, which means pull requests opened for editorial workflow
+           * entries must be rebased if assets have been added or removed.
+           */
           return this.rebasePullRequest(pr.number, branchName, contentKey, metadata, newHead);
         });
     }
