@@ -57,16 +57,16 @@ export default class Toolbar extends React.Component {
     const { activePlugin } = this.state;
 
     const buttonsConfig = [
-      { label: 'Bold', icon: 'list', state: buttons.bold },
-      { label: 'Italic', icon: 'list', state: buttons.italic },
-      { label: 'Code', icon: 'list', state: buttons.code },
-      { label: 'Header 1', icon: 'list', state: buttons.h1 },
-      { label: 'Header 2', icon: 'list', state: buttons.h2 },
-      { label: 'Code Block', icon: 'list', state: buttons.codeBlock },
-      { label: 'Quote', icon: 'list', state: buttons.quote },
-      { label: 'Bullet List', icon: 'list', state: buttons.list },
-      { label: 'Numbered List', icon: 'list', state: buttons.listNumbered },
-      { label: 'Link', icon: 'list', state: buttons.link },
+      { label: 'Bold', icon: 'bold', state: buttons.bold },
+      { label: 'Italic', icon: 'italic', state: buttons.italic },
+      { label: 'Code', icon: 'code', state: buttons.code },
+      { label: 'Header 1', icon: 'h1', state: buttons.h1 },
+      { label: 'Header 2', icon: 'h2', state: buttons.h2 },
+      { label: 'Code Block', icon: 'code-block', state: buttons.codeBlock },
+      { label: 'Quote', icon: 'quote', state: buttons.quote },
+      { label: 'Bullet List', icon: 'list-bulleted', state: buttons.list },
+      { label: 'Numbered List', icon: 'list-numbered', state: buttons.listNumbered },
+      { label: 'Link', icon: 'link', state: buttons.link },
     ];
 
     /**

@@ -10,7 +10,7 @@ const ToolbarButton = ({ label, icon, action, active, disabled }) => (
     title={label}
     disabled={disabled}
   >
-    { icon ? <Icon type={icon} size="small"/> : label }
+    { icon ? <Icon type={icon}/> : label }
   </button>
 );
 

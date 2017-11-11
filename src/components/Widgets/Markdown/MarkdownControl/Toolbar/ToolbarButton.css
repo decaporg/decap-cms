@@ -1,6 +1,6 @@
 .nc-toolbarButton-button {
   display: inline-block;
-  padding: 8px;
+  padding: 6px;
   border: none;
   background-color: transparent;
   color: var(--controlLabelColor);
