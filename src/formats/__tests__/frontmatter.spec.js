@@ -102,4 +102,21 @@ describe('Frontmatter', () => {
       ].join('\n')
     );
   });
+
+  it('should stringify YAML with missing body', () => {
+    expect(
+      FrontmatterFormatter.toFile({ tags: ['front matter', 'yaml'], title: 'YAML' })
+    ).toEqual(
+      [
+        '---',
+        'tags:',
+        '  - front matter',
+        '  - yaml',
+        'title: YAML',
+        '---',
+        '',
+        '',
+      ].join('\n')
+    );
+  });
 });

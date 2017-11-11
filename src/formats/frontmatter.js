@@ -50,7 +50,7 @@ export default {
   },
 
   toFile(data, sortedKeys) {
-    const { body, ...meta } = data;
+    const { body = '', ...meta } = data;
 
     // always stringify to YAML
     // `sortedKeys` is not recognized by gray-matter, so it gets passed through to the parser
