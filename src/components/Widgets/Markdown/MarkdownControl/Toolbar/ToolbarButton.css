@@ -18,5 +18,5 @@
 }
 
 .nc-toolbarButton-active {
-  background-color: var(--highlightFGAltColor);
+  color: #1e2532;
 }
