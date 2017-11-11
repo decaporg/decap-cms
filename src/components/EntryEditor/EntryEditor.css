@@ -189,38 +189,48 @@
   }
 }
 
+:root {
+  --dropdownList: {
+    background-color: #fff;
+    border-radius: var(--borderRadius);
+    overflow: hidden;
+    box-shadow: 0 4px 12px 0 rgba(68,74,87,0.15), 0 1px 3px 0 rgba(68,74,87,0.25);
+  }
+
+  --dropdownItem: {
+    @apply --button;
+    background-color: transparent;
+    border-radius: 0;
+    color: var(--textColor);
+    font-weight: normal;
+    border-bottom: 1px solid #eaebf1;
+    padding: 10px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    &:last-of-type {
+      border-bottom: 0;
+    }
+
+    &:hover,
+    &:active,
+    &:focus {
+      background-color: #e8f5fe;
+    }
+  }
+}
+
 .nc-entryEditor-toolbar-saveDropdownList {
+  @apply(--dropdownList);
   position: absolute;
   top: 39px;
   left: 0;
   width: 100%;
-  background-color: #fff;
-  border-radius: var(--borderRadius);
-  overflow: hidden;
-  box-shadow: 0 4px 12px 0 rgba(68,74,87,0.15), 0 1px 3px 0 rgba(68,74,87,0.25);
 }
 
 .nc-entryEditor-toolbar-saveDropdownItem {
-  @apply --button;
-  background-color: transparent;
-  border-radius: 0;
-  color: var(--textColor);
-  font-weight: normal;
-  border-bottom: 1px solid #eaebf1;
-  padding: 10px 14px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  &:last-of-type {
-    border-bottom: 0;
-  }
-
-  &:hover,
-  &:active,
-  &:focus {
-    background-color: #e8f5fe;
-  }
+  @apply(--dropdownItem);
 }
 
 .nc-entryEditor-toolbar-saveDropdownItemIcon {
