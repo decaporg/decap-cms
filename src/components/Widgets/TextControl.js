@@ -1,33 +1,24 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import Textarea from 'react-textarea-autosize';
 
-export default class StringControl extends React.Component {
-  componentDidMount() {
-    this.updateHeight();
-  }
-
-  handleChange = (e) => {
-    this.props.onChange(e.target.value);
-    this.updateHeight();
-  };
-
-  updateHeight() {
-    if (this.element.scrollHeight > this.element.clientHeight) {
-      this.element.style.height = `${ this.element.scrollHeight }px`;
-    }
-  }
-
-  handleRef = (ref) => {
-    this.element = ref;
+export default class TextControl extends React.Component {
+  static propTypes = {
+    onChange: PropTypes.func.isRequired,
+    forID: PropTypes.string,
+    value: PropTypes.node,
   };
 
   render() {
-    return <textarea ref={this.handleRef} id={this.props.forID} value={this.props.value || ''} onChange={this.handleChange} />;
+    const {forID, value = '', onChange } = this.props;
+
+    return (
+      <Textarea
+        id={forID}
+        value={value}
+        style={{ minHeight: '140px' }}
+        onChange={e => onChange(e.target.value)}
+      />
+    );
   }
 }
-
-StringControl.propTypes = {
-  onChange: PropTypes.func.isRequired,
-  forID: PropTypes.string,
-  value: PropTypes.node,
-};

@@ -46,7 +46,6 @@
   }
 
   --input: {
-    font-family: 'SFMono-Regular', Consolas, "Liberation Mono", Menlo, Courier, monospace;
     display: block;
     width: 100%;
     padding: 12px;
@@ -56,10 +55,10 @@
     outline: 0;
     box-shadow: none;
     background-color: var(--controlBGColor);
-    font-size: 16px;
-    color: var(--textColor);
+    color: #444a57;
     transition: border-color .3s ease;
     position: relative;
+    font-size: 15px;
 
     &:focus,
     &:active {
@@ -101,8 +100,11 @@ h1, h2, h3, h4, h5, h6, p {
   font-family: var(--fontFamilyPrimary);
   color: var(--textLeadColor);
   font-size: 15px;
-  font-weight: 500;
   line-height: 1.5;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 500;
 }
 
 h1 {
@@ -129,6 +131,10 @@ button {
 
 img {
   max-width: 100%;
+}
+
+textarea {
+  resize: none;
 }
 
 .nc-theme-base {
