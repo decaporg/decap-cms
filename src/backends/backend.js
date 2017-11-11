@@ -3,6 +3,7 @@ import TestRepoBackend from "./test-repo/implementation";
 import GitHubBackend from "./github/implementation";
 import GitGatewayBackend from "./git-gateway/implementation";
 import { resolveFormat } from "../formats/formats";
+import { selectIntegration } from '../reducers/integrations';
 import { selectListMethod, selectEntrySlug, selectEntryPath, selectAllowNewEntries, selectAllowDeletion, selectFolderEntryExtension } from "../reducers/collections";
 import { createEntry } from "../valueObjects/Entry";
 import { sanitizeSlug } from "../lib/urlHelper";
@@ -208,7 +209,7 @@ class Backend {
     .then(this.entryWithFormat(collection, slug));
   }
 
-  persistEntry(config, collection, entryDraft, MediaFiles, options) {
+  persistEntry(config, collection, entryDraft, MediaFiles, integrations, options = {}) {
     const newEntry = entryDraft.getIn(["entry", "newRecord"]) || false;
 
     const parsedData = {
@@ -246,8 +247,14 @@ class Backend {
 
     const collectionName = collection.get("name");
 
+    /**
+     * Determine whether an asset store integration is in use.
+     */
+    const hasAssetStore = !!selectIntegration(integrations, null, 'assetStore');
+    const updatedOptions = { ...options, hasAssetStore };
+
     return this.implementation.persistEntry(entryObj, MediaFiles, {
-      newEntry, parsedData, commitMessage, collectionName, mode, ...options,
+      newEntry, parsedData, commitMessage, collectionName, mode, ...updatedOptions,
     });
   }
 
@@ -274,8 +281,8 @@ class Backend {
     return this.implementation.deleteFile(path, commitMessage);
   }
 
-  persistUnpublishedEntry(config, collection, entryDraft, MediaFiles) {
-    return this.persistEntry(config, collection, entryDraft, MediaFiles, { unpublished: true });
+  persistUnpublishedEntry(...args) {
+    return this.persistEntry(...args, { unpublished: true });
   }
 
   updateUnpublishedEntryStatus(collection, slug, newStatus) {

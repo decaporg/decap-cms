@@ -246,7 +246,7 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
 
     dispatch(unpublishedEntryPersisting(collection, serializedEntry, transactionID));
     const persistAction = existingUnpublishedEntry ? backend.persistUnpublishedEntry : backend.persistEntry;
-    return persistAction.call(backend, state.config, collection, serializedEntryDraft, assetProxies.toJS())
+    return persistAction.call(backend, state.config, collection, serializedEntryDraft, assetProxies.toJS(), state.integrations)
     .then(() => {
       dispatch(notifSend({
         message: 'Entry saved',
