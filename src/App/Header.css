@@ -83,12 +83,12 @@
 
 .nc-appHeader-avatar-image,
 .nc-appHeader-avatar-placeholder {
-  color: #1e2532;
   width: 32px;
   border-radius: 32px;
 }
 
 .nc-appHeader-avatar-placeholder {
   height: 32px;
+  color: #1e2532;
   background-color: var(--textFieldBorderColor);
 }
