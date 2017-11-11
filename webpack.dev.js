@@ -4,7 +4,7 @@ const webpack = require('webpack');
 const merge = require('webpack-merge');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
-const HOST = 'localhost';
+const HOST = '127.0.0.1';
 const PORT = '8080';
 
 module.exports = merge.smart(require('./webpack.base.js'), {
@@ -55,6 +55,7 @@ module.exports = merge.smart(require('./webpack.base.js'), {
   ],
   devtool: 'source-map',
   devServer: {
+    host: HOST,
     hot: true,
     contentBase: 'example/',
     historyApiFallback: true,
