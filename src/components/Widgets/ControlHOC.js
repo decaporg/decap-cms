@@ -36,8 +36,17 @@ class ControlHOC extends Component {
     return this.props.value !== nextProps.value;
   }
 
-  processInnerControlRef = (wrappedControl) => {
-    if (!wrappedControl) return;
+  processInnerControlRef = ref => {
+    if (!ref) return;
+
+    /**
+     * If the widget is a container that receives state updates from the store,
+     * we'll need to get the ref of the actual control via the `react-redux`
+     * `getWrappedInstance` method. Note that connected widgets must pass
+     * `withRef: true` to `connect` in the options object.
+     */
+    const wrappedControl = ref.getWrappedInstance ? ref.getWrappedInstance() : ref;
+
     this.wrappedControlValid = wrappedControl.isValid || truthy;
 
     /**
