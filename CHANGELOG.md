@@ -6,6 +6,13 @@
   </summary>
 </details>
 
+## 0.7.3 (November 11, 2017)
+
+* Fix persisting files with no body/data files ([@ebello](https://github.com/ebello) in [#808](https://github.com/pulls/808))
+* Fix ControlHOC ref for redux container widgets ([@erquhart](https://github.com/erquhart) in [#812](https://github.com/pulls/812))
+* Fix entries not saving due to null integrations state ([@erquhart](https://github.com/erquhart) in [#814](https://github.com/pulls/814))
+* Fix requestAnimationFrame warnings in tests ([@tech4him1](https://github.com/tech4him1) in [#811](https://github.com/pulls/811))
+
 ## 0.7.2 (November 11, 2017)
 
 * Only rebase editorial workflow pull requests if assets are stored in content repo ([@erquhart](https://github.com/erquhart) in [#804](https://github.com/pulls/804))
