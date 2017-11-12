@@ -250,7 +250,7 @@ class Backend {
     /**
      * Determine whether an asset store integration is in use.
      */
-    const hasAssetStore = !!selectIntegration(integrations, null, 'assetStore');
+    const hasAssetStore = integrations && !!selectIntegration(integrations, null, 'assetStore');
     const updatedOptions = { ...options, hasAssetStore };
 
     return this.implementation.persistEntry(entryObj, MediaFiles, {
