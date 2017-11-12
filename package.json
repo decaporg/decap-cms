@@ -109,6 +109,7 @@
     "postcss-cssnext": "^3.0.2",
     "postcss-import": "^11.0.0",
     "postcss-loader": "^2.0.7",
+    "raf": "^3.4.0",
     "react-hot-loader": "^3.0.0-beta.7",
     "react-test-renderer": "^16.0.0",
     "style-loader": "^0.18.2",
