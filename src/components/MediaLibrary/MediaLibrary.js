@@ -1,11 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { orderBy, get, last, isEmpty, map } from 'lodash';
+import { orderBy, get, isEmpty, map } from 'lodash';
 import c from 'classnames';
 import fuzzy from 'fuzzy';
 import Waypoint from 'react-waypoint';
 import Dialog from '../UI/Dialog';
-import { resolvePath } from '../../lib/pathHelper';
+import { resolvePath, fileExtension } from '../../lib/pathHelper';
 import { changeDraftField } from '../../actions/entries';
 import {
   loadMedia as loadMediaAction,
@@ -53,8 +53,11 @@ class MediaLibrary extends React.Component {
   /**
    * Filter an array of file data to include only images.
    */
-  filterImages = files => {
-    return files ? files.filter(file => IMAGE_EXTENSIONS.includes(last(file.name.split('.')))) : [];
+  filterImages = (files = []) => {
+    return files.filter(file => {
+      const ext = fileExtension(file.name).toLowerCase();
+      return IMAGE_EXTENSIONS.includes(ext);
+    });
   };
 
   /**
@@ -62,7 +65,7 @@ class MediaLibrary extends React.Component {
    */
   toTableData = files => {
     const tableData = files && files.map(({ key, name, size, queryOrder, url, urlIsPublicPath }) => {
-      const ext = last(name.split('.'));
+      const ext = fileExtension(name).toLowerCase();
       return {
         key,
         name,
