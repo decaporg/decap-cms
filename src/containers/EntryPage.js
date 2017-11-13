@@ -59,11 +59,24 @@ class EntryPage extends React.Component {
       loadEntry(collection, slug);
     }
 
-    const unblock = history.block((location) => {
+    const leaveMessage = 'Are you sure you want to leave this page?';
+
+    this.exitBlocker = (event) => {
       if (this.props.entryDraft.get('hasChanged')) {
-        return "Are you sure you want to leave this page?";
+        // This message is ignored in most browsers, but its presence
+        // triggers the confirmation dialog
+        event.returnValue = leaveMessage;
+        return leaveMessage;
       }
-    });
+    };
+    window.addEventListener('beforeunload', this.exitBlocker);
+
+    const navigationBlocker = () => {
+      if (this.props.entryDraft.get('hasChanged')) {
+        return leaveMessage;
+      }
+    };
+    const unblock = history.block(navigationBlocker);
 
     // This will run as soon as the location actually changes.
     //   (The confirmation above will run first.)
@@ -93,6 +106,7 @@ class EntryPage extends React.Component {
 
   componentWillUnmount() {
     this.props.discardDraft();
+    window.removeEventListener('beforeunload', this.exitBlocker);
   }
 
   createDraft = (entry) => {
