@@ -1,5 +1,4 @@
 .nc-toolbar-Toolbar {
-  z-index: 0;
   background-color: var(--textFieldBorderColor);
   border-top-right-radius: var(--borderRadius);
   position: relative;

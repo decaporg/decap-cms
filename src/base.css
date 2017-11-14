@@ -10,7 +10,7 @@
   --infoColor: #69c;
   --activeColor: #3a69c8;
   --secondaryColor: #798291;
-  --primaryColor: #4990e2;
+  --primaryColor: #3a69c7;
   --successColor: #1c7;
   --warningColor: #fa0;
   --errorColor: #f52;
@@ -38,6 +38,7 @@
   --buttonTextColor: #fff;
   --buttonBackgroundColor: var(--secondaryColor);
   --topBarHeight: 56px;
+  --transition: .2s ease;
 
   --card: {
     box-shadow: var(--dropShadow);
@@ -56,7 +57,7 @@
     box-shadow: none;
     background-color: var(--controlBGColor);
     color: #444a57;
-    transition: border-color .3s ease;
+    transition: border-color var(--transition);
     position: relative;
     font-size: 15px;
     line-height: 1.5;

@@ -10,7 +10,7 @@
   & input,
   & textarea,
   & select {
-    @apply --input;
+    @apply(--input);
   }
 
   & select {
@@ -31,6 +31,7 @@
   top: 6px;
   border-radius: 3px 3px 0 0;
   padding: 3px 6px 8px;
+  transition: all var(--transition);
 
   /**
    * Faux outside curve into top of input
