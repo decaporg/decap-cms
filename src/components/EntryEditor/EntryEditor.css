@@ -137,21 +137,12 @@
   font-size: 14px;
 }
 
-.nc-entryEditor-toolbar-backStatus,
-.nc-entryEditor-toolbar-backStatus-hasChanged {
-  color: #005614;
-  font-size: 13px;
-  background-color: #caef6f;
-  border-radius: var(--borderRadius);
-  padding: 3px 10px;
-  margin-top: 6px;
-  text-align: center;
-  display: inline-block;
+.nc-entryEditor-toolbar-backStatus {
+  @apply(--textBadgeSuccess);
 }
 
 .nc-entryEditor-toolbar-backStatus-hasChanged {
-  color: #ff003b;
-  background-color: #fbe0d7;
+  @apply(--textBadgeDanger);
 }
 
 .nc-entryEditor-toolbar-deleteButton {
