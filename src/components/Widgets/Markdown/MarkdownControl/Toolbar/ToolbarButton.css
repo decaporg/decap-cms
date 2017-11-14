@@ -3,8 +3,8 @@
   padding: 6px;
   border: none;
   background-color: transparent;
-  color: var(--controlLabelColor);
   font-size: 16px;
+  color: inherit;
   cursor: pointer;
 
   &:disabled {

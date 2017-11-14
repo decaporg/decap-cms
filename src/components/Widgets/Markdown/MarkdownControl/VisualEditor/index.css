@@ -18,6 +18,9 @@
   overflow-x: auto;
   min-height: var(--richTextEditorMinHeight);
   font-family: var(--fontFamilyPrimary);
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-top: 0;
 }
 
 .nc-visualEditor-editor h1 {
