@@ -2,6 +2,10 @@
   font-size: 16px;
 }
 
+.nc-controlPane-widget {
+  overflow: auto;
+}
+
 .nc-controlPane-control {
   color: var(--textColor);
   position: relative;
@@ -25,7 +29,7 @@
   position: relative;
   top: 6px;
   border-radius: 3px 3px 0 0;
-  padding: 3px 8px 8px;
+  padding: 3px 6px 8px;
 
   /**
    * Faux outside curve into top of input

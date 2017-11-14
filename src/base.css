@@ -48,7 +48,7 @@
   --input: {
     display: block;
     width: 100%;
-    padding: 12px;
+    padding: 16px 20px;
     margin: 0;
     border: var(--textFieldBorder);
     border-radius: var(--borderRadius);
@@ -59,6 +59,7 @@
     transition: border-color .3s ease;
     position: relative;
     font-size: 15px;
+    line-height: 1.5;
 
     &:focus,
     &:active {
