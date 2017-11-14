@@ -22,7 +22,7 @@ class ControlHOC extends Component {
     onValidate: PropTypes.func,
     onOpenMediaLibrary: PropTypes.func.isRequired,
     onAddAsset: PropTypes.func.isRequired,
-    onRemoveAsset: PropTypes.func.isRequired,
+    onRemoveInsertedMedia: PropTypes.func.isRequired,
     getAsset: PropTypes.func.isRequired,
   };
 
@@ -146,7 +146,7 @@ class ControlHOC extends Component {
       onChange,
       onOpenMediaLibrary,
       onAddAsset,
-      onRemoveAsset,
+      onRemoveInsertedMedia,
       getAsset
     } = this.props;
     return React.createElement(controlComponent, {
@@ -157,7 +157,7 @@ class ControlHOC extends Component {
       onChange,
       onOpenMediaLibrary,
       onAddAsset,
-      onRemoveAsset,
+      onRemoveInsertedMedia,
       getAsset,
       forID: field.get('name'),
       ref: this.processInnerControlRef,

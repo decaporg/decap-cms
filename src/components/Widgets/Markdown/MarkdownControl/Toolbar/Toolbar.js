@@ -16,7 +16,6 @@ export default class Toolbar extends React.Component {
     plugins: ImmutablePropTypes.map,
     onSubmit: PropTypes.func,
     onAddAsset: PropTypes.func,
-    onRemoveAsset: PropTypes.func,
     getAsset: PropTypes.func,
     disabled: PropTypes.bool,
   };
@@ -47,7 +46,6 @@ export default class Toolbar extends React.Component {
       rawMode,
       plugins,
       onAddAsset,
-      onRemoveAsset,
       getAsset,
       disabled,
     } = this.props;
@@ -103,7 +101,6 @@ export default class Toolbar extends React.Component {
                   onSubmit={this.handlePluginFormSubmit}
                   onCancel={this.handlePluginFormCancel}
                   onAddAsset={onAddAsset}
-                  onRemoveAsset={onRemoveAsset}
                   getAsset={getAsset}
                 />
               : null

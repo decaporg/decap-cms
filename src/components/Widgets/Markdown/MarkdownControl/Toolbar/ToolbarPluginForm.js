@@ -4,7 +4,7 @@ import ImmutablePropTypes from "react-immutable-proptypes";
 import { connect } from 'react-redux';
 import { Map } from 'immutable';
 import { Button } from 'react-toolbox/lib/button';
-import { openMediaLibrary } from '../../../../../actions/mediaLibrary';
+import { openMediaLibrary, removeInsertedMedia } from '../../../../../actions/mediaLibrary';
 import ToolbarPluginFormControl from './ToolbarPluginFormControl';
 
 class ToolbarPluginForm extends React.Component {
@@ -13,10 +13,10 @@ class ToolbarPluginForm extends React.Component {
     onSubmit: PropTypes.func.isRequired,
     onCancel: PropTypes.func.isRequired,
     onAddAsset: PropTypes.func.isRequired,
-    onRemoveAsset: PropTypes.func.isRequired,
     getAsset: PropTypes.func.isRequired,
     mediaPaths: ImmutablePropTypes.map.isRequired,
     onOpenMediaLibrary: PropTypes.func.isRequired,
+    onRemoveInsertedMedia: PropTypes.func.isRequired,
   };
 
   constructor(props) {
@@ -39,10 +39,10 @@ class ToolbarPluginForm extends React.Component {
       onCancel,
       value,
       onAddAsset,
-      onRemoveAsset,
       getAsset,
       onChange,
       onOpenMediaLibrary,
+      onRemoveInsertedMedia,
       mediaPaths,
     } = this.props;
 
@@ -56,13 +56,13 @@ class ToolbarPluginForm extends React.Component {
               field={field}
               value={this.state.data.get(field.get('name'))}
               onAddAsset={onAddAsset}
-              onRemoveAsset={onRemoveAsset}
               getAsset={getAsset}
               onChange={(val) => {
                 this.setState({ data: this.state.data.set(field.get('name'), val) });
               }}
               mediaPaths={mediaPaths}
               onOpenMediaLibrary={onOpenMediaLibrary}
+              onRemoveInsertedMedia={onRemoveInsertedMedia}
             />
           ))}
         </div>
@@ -82,6 +82,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   onOpenMediaLibrary: openMediaLibrary,
+  onRemoveInsertedMedia: removeInsertedMedia,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ToolbarPluginForm);

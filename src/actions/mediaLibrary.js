@@ -10,6 +10,7 @@ const { notifSend } = notifActions;
 export const MEDIA_LIBRARY_OPEN = 'MEDIA_LIBRARY_OPEN';
 export const MEDIA_LIBRARY_CLOSE = 'MEDIA_LIBRARY_CLOSE';
 export const MEDIA_INSERT = 'MEDIA_INSERT';
+export const MEDIA_REMOVE_INSERTED = 'MEDIA_REMOVE_INSERTED';
 export const MEDIA_LOAD_REQUEST = 'MEDIA_LOAD_REQUEST';
 export const MEDIA_LOAD_SUCCESS = 'MEDIA_LOAD_SUCCESS';
 export const MEDIA_LOAD_FAILURE = 'MEDIA_LOAD_FAILURE';
@@ -30,6 +31,10 @@ export function closeMediaLibrary() {
 
 export function insertMedia(mediaPath) {
   return { type: MEDIA_INSERT, payload: { mediaPath } };
+}
+
+export function removeInsertedMedia(controlID) {
+  return { type: MEDIA_REMOVE_INSERTED, payload: { controlID } };
 }
 
 export function loadMedia(opts = {}) {

@@ -170,7 +170,7 @@ export default class Editor extends Component {
   };
 
   render() {
-    const { onAddAsset, onRemoveAsset, getAsset } = this.props;
+    const { onAddAsset, getAsset } = this.props;
 
     return (
       <div className="nc-visualEditor-wrapper">
@@ -196,7 +196,6 @@ export default class Editor extends Component {
             plugins={this.state.shortcodePlugins}
             onSubmit={this.handlePluginSubmit}
             onAddAsset={onAddAsset}
-            onRemoveAsset={onRemoveAsset}
             getAsset={getAsset}
           />
         </Sticky>
@@ -220,7 +219,6 @@ export default class Editor extends Component {
 
 Editor.propTypes = {
   onAddAsset: PropTypes.func.isRequired,
-  onRemoveAsset: PropTypes.func.isRequired,
   getAsset: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   onMode: PropTypes.func.isRequired,

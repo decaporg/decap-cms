@@ -61,7 +61,7 @@ class EntryEditor extends Component {
       onValidate,
       onOpenMediaLibrary,
       onAddAsset,
-      onRemoveAsset,
+      onRemoveInsertedMedia,
       onCancelEdit,
       user,
       hasChanged,
@@ -98,7 +98,7 @@ class EntryEditor extends Component {
           onValidate={onValidate}
           onOpenMediaLibrary={onOpenMediaLibrary}
           onAddAsset={onAddAsset}
-          onRemoveAsset={onRemoveAsset}
+          onRemoveInsertedMedia={onRemoveInsertedMedia}
           ref={c => this.controlPaneRef = c} // eslint-disable-line
         />
       </StickyContext>
@@ -188,7 +188,7 @@ EntryEditor.propTypes = {
   enableSave: PropTypes.bool.isRequired,
   showDelete: PropTypes.bool.isRequired,
   onDelete: PropTypes.func.isRequired,
-  onRemoveAsset: PropTypes.func.isRequired,
+  onRemoveInsertedMedia: PropTypes.func.isRequired,
   onCancelEdit: PropTypes.func.isRequired,
   user: ImmutablePropTypes.map,
   hasChanged: PropTypes.bool,

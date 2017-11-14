@@ -33,7 +33,7 @@ export default class ControlPane extends Component {
       onChange,
       onOpenMediaLibrary,
       onAddAsset,
-      onRemoveAsset
+      onRemoveInsertedMedia,
     } = this.props;
     const widget = resolveWidget(field.get('widget'));
     const fieldName = field.get('name');
@@ -63,8 +63,8 @@ export default class ControlPane extends Component {
           onChange={(newValue, newMetadata) => onChange(fieldName, newValue, newMetadata)}
           onValidate={this.props.onValidate.bind(this, fieldName)}
           onOpenMediaLibrary={onOpenMediaLibrary}
+          onRemoveInsertedMedia={onRemoveInsertedMedia}
           onAddAsset={onAddAsset}
-          onRemoveAsset={onRemoveAsset}
           getAsset={getAsset}
           ref={this.processControlRef.bind(this, fieldName)}
         />
@@ -105,5 +105,5 @@ ControlPane.propTypes = {
   onAddAsset: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   onValidate: PropTypes.func.isRequired,
-  onRemoveAsset: PropTypes.func.isRequired,
+  onRemoveInsertedMedia: PropTypes.func.isRequired,
 };

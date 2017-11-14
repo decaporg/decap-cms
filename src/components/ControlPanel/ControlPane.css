@@ -12,6 +12,11 @@
   & select {
     @apply --input;
   }
+
+  & select {
+    text-indent: 14px;
+    height: 58px;
+  }
 }
 
 .nc-controlPane-label {

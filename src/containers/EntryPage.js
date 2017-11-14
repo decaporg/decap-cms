@@ -15,8 +15,8 @@ import {
 } from '../actions/entries';
 import { closeEntry } from '../actions/editor';
 import { deserializeValues } from '../lib/serializeEntryValues';
-import { addAsset, removeAsset } from '../actions/media';
-import { openMediaLibrary } from '../actions/mediaLibrary';
+import { addAsset } from '../actions/media';
+import { openMediaLibrary, removeInsertedMedia } from '../actions/mediaLibrary';
 import { selectEntry, getAsset } from '../reducers';
 import { selectFields } from '../reducers/collections';
 import EntryEditor from '../components/EntryEditor/EntryEditor';
@@ -41,7 +41,7 @@ class EntryPage extends React.Component {
     deleteEntry: PropTypes.func.isRequired,
     showDelete: PropTypes.bool.isRequired,
     openMediaLibrary: PropTypes.func.isRequired,
-    removeAsset: PropTypes.func.isRequired,
+    removeInsertedMedia: PropTypes.func.isRequired,
     closeEntry: PropTypes.func.isRequired,
     fields: ImmutablePropTypes.list.isRequired,
     slug: PropTypes.string,
@@ -146,8 +146,8 @@ class EntryPage extends React.Component {
       changeDraftFieldValidation,
       openMediaLibrary,
       addAsset,
-      removeAsset,
       closeEntry,
+      removeInsertedMedia,
       user,
       hasChanged,
     } = this.props;
@@ -173,7 +173,7 @@ class EntryPage extends React.Component {
         onValidate={changeDraftFieldValidation}
         onOpenMediaLibrary={openMediaLibrary}
         onAddAsset={addAsset}
-        onRemoveAsset={removeAsset}
+        onRemoveInsertedMedia={removeInsertedMedia}
         onPersist={this.handlePersistEntry}
         onDelete={this.handleDeleteEntry}
         showDelete={this.props.showDelete}
@@ -218,8 +218,8 @@ export default connect(
     changeDraftField,
     changeDraftFieldValidation,
     openMediaLibrary,
+    removeInsertedMedia,
     addAsset,
-    removeAsset,
     loadEntry,
     createDraftFromEntry,
     createEmptyDraft,
