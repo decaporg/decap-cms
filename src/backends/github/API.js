@@ -169,7 +169,7 @@ export default class API {
   }
 
   listFiles(path) {
-    return this.request(`${ this.repoURL }/contents/${ path }`, {
+    return this.request(`${ this.repoURL }/contents/${ path.replace(/\/$/, '') }`, {
       params: { ref: this.branch },
     })
     .then(files => {
