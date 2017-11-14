@@ -71,7 +71,7 @@ const EntryEditorToolbar = (
           {
             avatarUrl
               ? <img className="nc-appHeader-avatar-image" src={user.get('avatar_url')}/>
-              : <Icon className="nc-appHeader-avatar-placeholder" type="user"/>
+              : <Icon className="nc-appHeader-avatar-placeholder" type="user" size="large"/>
           }
         </button>
       </div>

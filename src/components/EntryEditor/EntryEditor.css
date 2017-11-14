@@ -32,7 +32,7 @@
 }
 
 .nc-entryEditor-controlPane {
-  padding: 20px 20px 0;
+  padding: 0 14px 14px;
   position: relative;
   overflow-x: hidden;
 }

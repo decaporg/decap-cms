@@ -1,3 +1,4 @@
 .nc-booleanControl-switch {
-  display: inline-block;
+  @apply(--input);
+  border: 0;
 }
