@@ -1,13 +1,12 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import previewStyle, { imagePreviewStyle } from './defaultPreviewStyle';
 
 export default function ImagePreview({ value, getAsset }) {
-  return (<div style={previewStyle}>
+  return (<div className='nc-widgetPreview'>
     { value ?
       <img
         src={getAsset(value)}
-        style={imagePreviewStyle}
+        className='nc-imageWidget-image'
         role="presentation"
       />
       : null}

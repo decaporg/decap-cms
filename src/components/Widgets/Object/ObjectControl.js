@@ -2,8 +2,8 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Map } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import ControlHOC from './ControlHOC';
-import { resolveWidget } from '../Widgets';
+import ControlHOC from '../ControlHOC';
+import { resolveWidget } from '../../Widgets';
 
 export default class ObjectControl extends Component {
   static propTypes = {
@@ -11,7 +11,7 @@ export default class ObjectControl extends Component {
     onOpenMediaLibrary: PropTypes.func.isRequired,
     mediaPaths: ImmutablePropTypes.map.isRequired,
     onAddAsset: PropTypes.func.isRequired,
-    onRemoveAsset: PropTypes.func.isRequired,
+    onRemoveInsertedMedia: PropTypes.func.isRequired,
     getAsset: PropTypes.func.isRequired,
     value: PropTypes.oneOfType([
       PropTypes.node,
@@ -46,7 +46,7 @@ export default class ObjectControl extends Component {
   };
 
   controlFor(field) {
-    const { onAddAsset, onOpenMediaLibrary, mediaPaths, onRemoveAsset, getAsset, value, onChange } = this.props;
+    const { onAddAsset, onOpenMediaLibrary, mediaPaths, onRemoveInsertedMedia, getAsset, value, onChange } = this.props;
     if (field.get('widget') === 'hidden') {
       return null;
     }
@@ -64,7 +64,7 @@ export default class ObjectControl extends Component {
           mediaPaths={mediaPaths}
           onOpenMediaLibrary={onOpenMediaLibrary}
           onAddAsset={onAddAsset}
-          onRemoveAsset={onRemoveAsset}
+          onRemoveInsertedMedia={onRemoveInsertedMedia}
           getAsset={getAsset}
           forID={field.get('name')}
         />

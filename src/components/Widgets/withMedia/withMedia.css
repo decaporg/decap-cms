@@ -13,6 +13,7 @@
 .nc-imageControl-imageWrapper {
   width: 155px;
   height: 100px;
+  margin-right: 20px;
 
   & img {
     width: 100%;
@@ -22,17 +23,17 @@
   }
 }
 
-.nc-imageControl-details {
-  margin-left: 20px;
-}
-
 .nc-imageControl-filename {
   font-size: 16px;
 }
 
+.nc-imageControl-chooseButton,
 .nc-imageControl-changeButton {
   @apply(--textBadge);
   display: block;
+}
+
+.nc-imageControl-changeButton {
   margin-top: 20px;
 }
 

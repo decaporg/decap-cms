@@ -28,8 +28,6 @@ Entries are loaded and persisted through a `backend` that will typically represe
 
 **EntryDraft:** Reused for each entry that is edited or created. It holds the entry's temporary data until it's persisted on the backend.
 
-**Medias:** Keeps references to all media files uploaded by the user during the current session.
-
 ## Selectors
 Selectors are functions defined within reducers used to compute derived data from the Redux store. The available selectors are:
 
@@ -56,10 +54,5 @@ For either updating an existing entry or creating a new one, the `EntryEditor` i
 * Widgets are used for editing entry fields. There are different widgets for different field types, and they are always defined in a pair containing a `control` and a `preview` component. The control component is responsible for presenting the user with the appropriate interface for manipulating the current field value, while the preview component is responsible for displaying the value with the appropriate styling.
 
 #### Widget components implementation
-The control component receives three (3) callbacks as props: `onChange`, `onAddAsset`, and `onRemoveAsset`.
+The control component receives one (1) callback as a prop: `onChange`.
 * onChange (required): Should be called when the users changes the current value. It will ultimately end up updating the EntryDraft object in the Redux Store, thus updating the preview component.
-* onAddAsset & onRemoveAsset (optionals): If the field accepts file uploads for media (images, for example), these callbacks should be invoked with a `AssetProxy` value object. `onAddAsset` will get the current media stored in the Redux state tree while `onRemoveAsset` will remove it. AssetProxy objects are stored in the `Medias` object and referenced in the `EntryDraft` object on the state tree.
-
-Both control and preview widgets receive a `getAsset` selector via props. Displaying the media (or its URI) for the user should always be done via `getAsset`, as it returns an AssetProxy that can return the correct value for both medias already persisted on the server and cached media not yet uploaded.
-
-The actual persistence of the content and medias inserted into the control component is delegated to the backend implementation. The backend will be called with the updated values and a list of assetProxy objects for each field of the entry, and should return a promise that can resolve into the persisted entry object and the list of the persisted media URIs.

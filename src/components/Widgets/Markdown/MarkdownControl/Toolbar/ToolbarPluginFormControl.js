@@ -8,16 +8,25 @@ const ToolbarPluginFormControl = ({
   value,
   pluginData,
   onAddAsset,
-  onRemoveAsset,
   getAsset,
   onChange,
   mediaPaths,
   onOpenMediaLibrary,
+  onRemoveInsertedMedia,
 }) => {
   const widget = resolveWidget(field.get('widget') || 'string');
   const key = `field-${ field.get('name') }`;
   const Control = widget.control;
-  const controlProps = { field, value, onAddAsset, onRemoveAsset, getAsset, onChange, mediaPaths, onOpenMediaLibrary };
+  const controlProps = {
+    field,
+    value,
+    onAddAsset,
+    getAsset,
+    onChange,
+    mediaPaths,
+    onOpenMediaLibrary,
+    onRemoveInsertedMedia,
+  };
 
   return (
     <div className="nc-controlPane-control" key={key}>
@@ -34,11 +43,11 @@ ToolbarPluginFormControl.propTypes = {
     PropTypes.number,
   ]),
   onAddAsset: PropTypes.func.isRequired,
-  onRemoveAsset: PropTypes.func.isRequired,
   getAsset: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   mediaPaths: ImmutablePropTypes.map.isRequired,
   onOpenMediaLibrary: PropTypes.func.isRequired,
+  onRemoveInsertedMedia: PropTypes.func.isRequired,
 };
 
 export default ToolbarPluginFormControl;

@@ -4,8 +4,8 @@ import { List, Map, fromJS } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import c from 'classnames';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
-import Icon from '../../icons/Icon';
-import ObjectControl from './ObjectControl';
+import Icon from '../../../icons/Icon';
+import ObjectControl from '../Object/ObjectControl';
 
 function ListItem(props) {
   return <div {...props} className={`list-item ${ props.className || '' }`}>{props.children}</div>;
@@ -71,7 +71,7 @@ export default class ListControl extends Component {
     getAsset: PropTypes.func.isRequired,
     onOpenMediaLibrary: PropTypes.func.isRequired,
     onAddAsset: PropTypes.func.isRequired,
-    onRemoveAsset: PropTypes.func.isRequired,
+    onRemoveInsertedMedia: PropTypes.func.isRequired,
   };
 
   constructor(props) {
@@ -199,7 +199,7 @@ export default class ListControl extends Component {
   };
 
   renderItem = (item, index) => {
-    const { field, getAsset, mediaPaths, onOpenMediaLibrary, onAddAsset, onRemoveAsset } = this.props;
+    const { field, getAsset, mediaPaths, onOpenMediaLibrary, onAddAsset, onRemoveInsertedMedia } = this.props;
     const { itemsCollapsed } = this.state;
     const collapsed = itemsCollapsed.get(index);
     const classNames = ['nc-listControl-item', collapsed ? 'nc-listControl-collapsed' : ''];
@@ -221,7 +221,7 @@ export default class ListControl extends Component {
         onOpenMediaLibrary={onOpenMediaLibrary}
         mediaPaths={mediaPaths}
         onAddAsset={onAddAsset}
-        onRemoveAsset={onRemoveAsset}
+        onRemoveInsertedMedia={onRemoveInsertedMedia}
       />
     </SortableListItem>);
   };
