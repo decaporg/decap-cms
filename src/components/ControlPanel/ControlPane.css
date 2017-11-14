@@ -2,10 +2,6 @@
   font-size: 16px;
 }
 
-.nc-controlPane-widget {
-  overflow: auto;
-}
-
 .nc-controlPane-control {
   color: var(--textColor);
   position: relative;

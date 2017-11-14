@@ -1,5 +1,16 @@
 .nc-objectControl-root {
   @apply(--input);
-  padding-left: 14px;
-  padding-right: 14px;
+
+  & .nc-controlPane-control {
+    & label {
+      background: none;
+    }
+
+    & input,
+    & textarea {
+      border: 0;
+      border-radius: 0;
+      border-left: 2px solid var(--textFieldBorderColor);
+    }
+  }
 }

@@ -1,4 +1,17 @@
 .nc-booleanControl-switch {
   @apply(--input);
+
+  & .nc-toggle-background {
+    background-color: var(--textFieldBorderColor);
+  }
+
+  & .nc-toggle-active .nc-toggle-background {
+    background-color: #3a69c7;
+  }
+}
+
+.nc-objectControl-root .nc-booleanControl-switch {
   border: 0;
+  border-radius: 0;
+  border-left: 2px solid var(--textFieldBorderColor);
 }
