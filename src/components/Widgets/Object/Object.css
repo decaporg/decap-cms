@@ -1,5 +1,6 @@
 .nc-objectControl-root {
   @apply(--input);
+  padding: 0 14px 14px;
 
   & .nc-controlPane-control {
     & label {

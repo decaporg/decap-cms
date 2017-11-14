@@ -31,7 +31,7 @@ export default class ToolbarComponentsMenu extends React.Component {
       <div className="nc-toolbarComponentsMenu-root">
         <ToolbarButton
           label="Add Component"
-          icon="add"
+          icon="add-with"
           action={this.handleComponentsMenuToggle}
           disabled={disabled}
         />
