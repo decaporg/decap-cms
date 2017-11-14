@@ -12,7 +12,6 @@ export default class MarkdownControl extends React.Component {
   static propTypes = {
     onChange: PropTypes.func.isRequired,
     onAddAsset: PropTypes.func.isRequired,
-    onRemoveAsset: PropTypes.func.isRequired,
     getAsset: PropTypes.func.isRequired,
     value: PropTypes.string,
   };
@@ -28,14 +27,13 @@ export default class MarkdownControl extends React.Component {
   };
 
   render() {
-    const { onChange, onAddAsset, onRemoveAsset, getAsset, value } = this.props;
+    const { onChange, onAddAsset, getAsset, value } = this.props;
     const { mode } = this.state;
     const visualEditor = (
       <div className="cms-editor-visual">
         <VisualEditor
           onChange={onChange}
           onAddAsset={onAddAsset}
-          onRemoveAsset={onRemoveAsset}
           onMode={this.handleMode}
           getAsset={getAsset}
           value={value}
@@ -47,7 +45,6 @@ export default class MarkdownControl extends React.Component {
         <RawEditor
           onChange={onChange}
           onAddAsset={onAddAsset}
-          onRemoveAsset={onRemoveAsset}
           onMode={this.handleMode}
           getAsset={getAsset}
           value={value}

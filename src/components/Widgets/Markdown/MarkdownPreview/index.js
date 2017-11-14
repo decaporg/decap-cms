@@ -1,14 +1,13 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { markdownToHtml } from '../serializers';
-import previewStyle from '../../defaultPreviewStyle';
 
 const MarkdownPreview = ({ value, getAsset }) => {
   if (value === null) {
     return null;
   }
   const html = markdownToHtml(value, getAsset);
-  return <div style={previewStyle} dangerouslySetInnerHTML={{__html: html}}></div>;
+  return <div className="nc-widgetPreview" dangerouslySetInnerHTML={{__html: html}}></div>;
 };
 
 MarkdownPreview.propTypes = {
