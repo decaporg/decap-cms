@@ -61,8 +61,7 @@
     font-size: 15px;
     line-height: 1.5;
 
-    &:focus,
-    &:active {
+    &:focus {
       border-color: var(--primaryColor);
     }
   }
@@ -74,6 +73,30 @@
     border: 0;
     border-radius: var(--borderRadius);
     cursor: pointer;
+  }
+
+  --textBadge: {
+    color: #3a69c7;
+    font-size: 13px;
+    background-color: #e8f5fe;
+    border-radius: var(--borderRadius);
+    padding: 4px 10px;
+    margin-top: 6px;
+    text-align: center;
+    display: inline-block;
+    line-height: 1;
+  }
+
+  --textBadgeSuccess: {
+    @apply(--textBadge);
+    color: #005614;
+    background-color: #caef6f;
+  }
+
+  --textBadgeDanger: {
+    @apply(--textBadge);
+    color: #ff003b;
+    background-color: #fbe0d7;
   }
 }
 

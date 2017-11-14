@@ -21,7 +21,6 @@ export default class TextControl extends React.Component {
   }
 
   render() {
-    console.log('rendering');
     const {forID, value = '', onChange } = this.props;
 
     return (

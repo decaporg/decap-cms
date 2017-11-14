@@ -1,0 +1,43 @@
+.nc-imageControl-input {
+  display: none !important;
+}
+
+.nc-imageControl-content {
+  display: flex;
+}
+
+.nc-imageControl-imageUpload {
+  @apply(--input);
+}
+
+.nc-imageControl-imageWrapper {
+  width: 155px;
+  height: 100px;
+
+  & img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: var(--borderRadius);
+  }
+}
+
+.nc-imageControl-details {
+  margin-left: 20px;
+}
+
+.nc-imageControl-filename {
+  font-size: 16px;
+}
+
+.nc-imageControl-changeButton {
+  @apply(--textBadge);
+  display: block;
+  margin-top: 20px;
+}
+
+.nc-imageControl-removeButton {
+  @apply(--textBadgeDanger);
+  display: block;
+  margin-top: 12px;
+}

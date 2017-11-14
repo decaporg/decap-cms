@@ -41,9 +41,14 @@ export default class ImageControl extends React.Component {
     }
   }
 
-  handleClick = (e) => {
+  handleChange = (e) => {
     const { field, onOpenMediaLibrary } = this.props;
     return onOpenMediaLibrary({ controlID: this.controlID, forImage: true, privateUpload: field.get('private') });
+  };
+
+
+  handleRemove = (e) => {
+    return this.props.onChange('');
   };
 
   renderFileName = () => {
@@ -52,11 +57,31 @@ export default class ImageControl extends React.Component {
   };
 
   render() {
+    const { value, getAsset } = this.props;
     const fileName = this.renderFileName();
     return (
-      <div className="nc-fileControl-imageUpload">
-        <span className="nc-fileControl-message" onClick={this.handleClick}>
-          {fileName ? fileName : 'Click here to select an image from the image library'}
+      <div className="nc-imageControl-imageUpload">
+        <span className="nc-imageControl-message">
+          {
+            fileName
+              ? <div className="nc-imageControl-content">
+                  <div className="nc-imageControl-imageWrapper">
+                    <img src={getAsset(value)}/>
+                  </div>
+                  <div className="nc-imageControl-details">
+                    <span className="nc-imageControl-filename">{fileName}</span>
+                    <button className="nc-imageControl-changeButton" onClick={this.handleChange}>
+                      Choose different image
+                    </button>
+                    <button className="nc-imageControl-removeButton" onClick={this.handleRemove}>
+                      Remove image
+                    </button>
+                  </div>
+                </div>
+              : <button className="nc-imageControl-changeButton" onClick={this.handleChange}>
+                  Choose an image
+                </button>
+          }
         </span>
       </div>
     );
@@ -65,6 +90,7 @@ export default class ImageControl extends React.Component {
 
 ImageControl.propTypes = {
   field: PropTypes.object.isRequired,
+  getAsset: PropTypes.func.isRequired,
   mediaPaths: ImmutablePropTypes.map.isRequired,
   onAddAsset: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
