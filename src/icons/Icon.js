@@ -25,12 +25,9 @@ const Icon = props => {
   const transform = `rotate(${rotation})`;
   const style = { transform };
   return (
-    <span
-      dangerouslySetInnerHTML={{ __html: icon.image }}
-      className={`nc-icon nc-icon-${size} ${className}`}
-      style={style}
-      {...remainingProps}
-    ></span>
+    <span className={`nc-icon nc-icon-${size} ${className}`} {...remainingProps}>
+      <span dangerouslySetInnerHTML={{ __html: icon.image }} style={style}></span>
+    </span>
   );
 }
 

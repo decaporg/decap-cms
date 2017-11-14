@@ -2,9 +2,13 @@ import iconAdd from './add.svg';
 import iconAddWith from './add-with.svg';
 import iconArrow from './arrow.svg';
 import iconBold from './bold.svg';
+import iconCaret from './caret.svg';
 import iconCircle from './circle.svg';
+import iconClose from './close.svg';
 import iconCode from './code.svg';
 import iconCodeBlock from './code-block.svg';
+import iconDragHandle from './drag-handle.svg';
+import iconEye from './eye.svg';
 import iconFolder from './folder.svg';
 import iconGithub from './github.svg';
 import iconGrid from './grid.svg';
@@ -33,9 +37,13 @@ const images = {
   'add-with': iconAddWith,
   'arrow': iconArrow,
   'bold': iconBold,
+  'caret': iconCaret,
   'circle': iconCircle,
+  'close': iconClose,
   'code': iconCode,
   'code-block': iconCodeBlock,
+  'drag-handle': iconDragHandle,
+  'eye': iconEye,
   'folder': iconFolder,
   'github': iconGithub,
   'grid': iconGrid,

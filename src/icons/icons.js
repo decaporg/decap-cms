@@ -1,5 +1,5 @@
 import { mapValues } from 'lodash';
-import images from './images/index';
+import images from './images/_index';
 
 /**
  * This module outputs icon objects with the following shape:
@@ -22,6 +22,9 @@ const config = {
   'arrow': {
     direction: 'left',
   },
+  'caret': {
+    direction: 'down',
+  }
 };
 
 /**

@@ -1,5 +1,10 @@
 .nc-icon {
   display: inline-block;
+  line-height: 0;
+
+  & > span {
+    display: block;
+  }
 
   & path,
   & circle,
@@ -8,12 +13,22 @@
   }
 }
 
-.nc-icon-small {
+.nc-icon-xsmall svg {
+  width: 12px;
+  height: 12x;
+}
+
+.nc-icon-small svg {
   width: 18px;
   height: 18px;
 }
 
-.nc-icon-medium {
+.nc-icon-medium svg {
   width: 24px;
   height: 24px;
+}
+
+.nc-icon-large svg {
+  width: 32px;
+  height: 32px;
 }

@@ -2,8 +2,9 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { List, Map, fromJS } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import c from 'classnames';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
-import FontIcon from 'react-toolbox/lib/font_icon';
+import Icon from '../../icons/Icon';
 import ObjectControl from './ObjectControl';
 
 function ListItem(props) {
@@ -20,11 +21,40 @@ function valueToString(value) {
 }
 
 const SortableListItem = SortableElement(ListItem);
-const DragHandle = SortableHandle(
-  () => <FontIcon value="drag_handle" className="nc-listControl-dragIcon" />
+
+const DragHandle = SortableHandle(() => (
+  <span className="nc-listControl-dragIcon">
+    <Icon type="drag-handle" size="small"/>
+  </span>
+));
+
+const ItemTopBar = ({ index, collapsed, onCollapseToggle, onRemove }) => (
+  <div className="nc-listControl-dragHandle">
+    <button className="nc-listControl-toggleButton" onClick={onCollapseToggle(index)}>
+      <Icon type="caret" size="small" direction={collapsed ? 'up' : 'down'}/>
+    </button>
+    <DragHandle/>
+    <button className="nc-listControl-removeButton" onClick={onRemove(index)}>
+      <Icon type="close" size="small"/>
+    </button>
+  </div>
 );
-const SortableList = SortableContainer(({ items, renderItem }) =>
-  (<div>{items.map(renderItem)}</div>));
+
+const TopBar = ({ onAdd, listLabel, collapsed, onCollapseToggle, itemsCount }) => (
+  <div className="nc-listControl-topBar">
+    <div className="nc-listControl-listCollapseToggle" onClick={onCollapseToggle}>
+      <Icon type="caret" direction={collapsed ? 'up' : 'down'} size="small"/>
+      {itemsCount} {listLabel}
+    </div>
+    <button className="nc-listControl-addButton" onClick={onAdd}>
+      Add {listLabel} <Icon type="add" size="xsmall" />
+    </button>
+  </div>
+);
+
+const SortableList = SortableContainer(({ items, renderItem }) => (
+  <div>{items.map(renderItem)}</div>
+));
 
 const valueTypes = {
   SINGLE: 'SINGLE',
@@ -46,7 +76,11 @@ export default class ListControl extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { itemsCollapsed: List(), value: valueToString(props.value) };
+    this.state = {
+      collapsed: false,
+      itemsCollapsed: List(),
+      value: valueToString(props.value),
+    };
     this.valueType = null;
   }
 
@@ -102,6 +136,7 @@ export default class ListControl extends Component {
     e.preventDefault();
     const { value, onChange } = this.props;
     const parsedValue = (this.valueType === valueTypes.SINGLE) ? null : Map();
+    this.setState({ collapsed: false });
     onChange((value || List()).push(parsedValue));
   };
 
@@ -116,7 +151,7 @@ export default class ListControl extends Component {
     };
   }
 
-  handleRemove(index) {
+  handleRemove = index => {
     return (e) => {
       e.preventDefault();
       const { value, metadata, onChange, forID } = this.props;
@@ -125,7 +160,11 @@ export default class ListControl extends Component {
     };
   }
 
-  handleToggle(index) {
+  handleCollapseToggle = () => {
+    this.setState({ collapsed: !this.state.collapsed });
+  }
+
+  handleItemCollapseToggle = index => {
     return (e) => {
       e.preventDefault();
       const { itemsCollapsed } = this.state;
@@ -166,13 +205,12 @@ export default class ListControl extends Component {
     const classNames = ['nc-listControl-item', collapsed ? 'nc-listControl-collapsed' : ''];
 
     return (<SortableListItem className={classNames.join(' ')} index={index} key={`item-${ index }`}>
-      <button className="nc-listControl-toggleButton" onClick={this.handleToggle(index)}>
-        <FontIcon value={collapsed ? 'expand_more' : 'expand_less'} />
-      </button>
-      <DragHandle />
-      <button className="nc-listControl-removeButton" onClick={this.handleRemove(index)}>
-        <FontIcon value="close" />
-      </button>
+      <ItemTopBar
+        index={index}
+        collapsed={collapsed}
+        onCollapseToggle={this.handleItemCollapseToggle}
+        onRemove={this.handleRemove}
+      />
       <div className="nc-listControl-objectLabel">{this.objectLabel(item)}</div>
       <ObjectControl
         value={item}
@@ -190,21 +228,30 @@ export default class ListControl extends Component {
 
   renderListControl() {
     const { value, forID, field } = this.props;
-    const listLabel = field.get('label');
+    const { collapsed } = this.state;
+    const items = value || List();
 
-    return (<div id={forID}>
-      <SortableList
-        items={value || List()}
-        renderItem={this.renderItem}
-        onSortEnd={this.onSortEnd}
-        useDragHandle
-        lockAxis="y"
-      />
-      <button className="nc-listControl-addButton" onClick={this.handleAdd}>
-        <FontIcon value="add" className="nc-listControl-addButtonIcon" />
-        <span className="nc-listControl-addButtonText">new {listLabel}</span>
-      </button>
-    </div>);
+    return (
+      <div id={forID} className={c('nc-listControl', { 'nc-listControl-collapsed' : collapsed })}>
+        <TopBar
+          onAdd={this.handleAdd}
+          listLabel={field.get('label').toLowerCase()}
+          onCollapseToggle={this.handleCollapseToggle}
+          collapsed={collapsed}
+          itemsCount={items.size}
+        />
+        {
+          collapsed ? null :
+            <SortableList
+              items={items}
+              renderItem={this.renderItem}
+              onSortEnd={this.onSortEnd}
+              useDragHandle
+              lockAxis="y"
+            />
+        }
+      </div>
+    );
   }
 
   render() {

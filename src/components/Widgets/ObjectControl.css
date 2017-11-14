@@ -1,7 +1,5 @@
 .nc-objectControl-root {
-  position: relative;
-  border: 2px solid rgba(0,0,0,0.1);
-  border-radius: var(--borderRadius);
-  margin-bottom: 20px;
-  padding: 0 20px 12px;
+  @apply(--input);
+  padding-left: 14px;
+  padding-right: 14px;
 }

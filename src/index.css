@@ -22,16 +22,4 @@
 @import "./components/UI/Toggle/Toggle.css";
 @import "./components/UnpublishedListing/UnpublishedListing.css";
 @import "./components/UnpublishedListing/UnpublishedListingCardMeta.css";
-@import "./components/Widgets/BooleanControl.css";
-@import "./components/Widgets/FileControl.css";
-@import "./components/Widgets/ListControl.css";
-@import "./components/Widgets/Markdown/MarkdownControl/RawEditor/index.css";
-@import "./components/Widgets/Markdown/MarkdownControl/Toolbar/Toolbar.css";
-@import "./components/Widgets/Markdown/MarkdownControl/Toolbar/ToolbarButton.css";
-@import "./components/Widgets/Markdown/MarkdownControl/Toolbar/ToolbarComponentsMenu.css";
-@import "./components/Widgets/Markdown/MarkdownControl/Toolbar/ToolbarPluginForm.css";
-@import "./components/Widgets/Markdown/MarkdownControl/VisualEditor/index.css";
-@import "./components/Widgets/ObjectControl.css";
-@import "./components/Widgets/Relation/Relation.css";
-@import "./components/Widgets/DateTime/DateTime.css";
-
+@import "./components/Widgets/Widgets.css";
