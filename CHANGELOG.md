@@ -8,9 +8,9 @@
 
 ## 0.7.4 (November 15, 2017)
 
-* Remove trailing slash from directory listing path (@biilmann in #817)
-* Fix images with non-lowercase extensions not being treated as images (@erquhart in #816)
-* Prompt before closing window with unsaved changes in the editor (@benaiah in #815)
+* Remove trailing slash from directory listing path ([@biilmann](https://github.com/biilmann) in [#817](https://github.com/netlify/netlify-cms/pull/817))
+* Fix images with non-lowercase extensions not being treated as images ([@erquhart](https://github.com/erquhart) in [#816](https://github.com/netlify/netlify-cms/pull/816))
+* Prompt before closing window with unsaved changes in the editor ([@benaiah](https://github.com/benaiah) in [#815](https://github.com/netlify/netlify-cms/pull/815))
 
 ## 0.7.3 (November 11, 2017)
 
