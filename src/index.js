@@ -8,10 +8,6 @@ import Root from './root';
 import registry from './lib/registry';
 import './index.css';
 
-if (process.env.NODE_ENV !== 'production') {
-  require('./utils.css'); // eslint-disable-line
-}
-
 // Log the version number
 console.log(`Netlify CMS version ${NETLIFY_CMS_VERSION}`);
 

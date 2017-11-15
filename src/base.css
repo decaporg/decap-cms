@@ -98,6 +98,11 @@
     color: #ff003b;
     background-color: #fbe0d7;
   }
+
+  --loaderSize: {
+    width: 2.28571429rem;
+    height: 2.28571429rem;
+  }
 }
 
 html {
