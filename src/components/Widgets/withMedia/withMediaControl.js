@@ -55,7 +55,7 @@ export default function withMediaControl(forImage) {
       }
     }
 
-    handleChange = (e) => {
+    handleChange = e => {
       const { field, onOpenMediaLibrary} = this.props;
       e.preventDefault();
       return onOpenMediaLibrary({
@@ -65,7 +65,7 @@ export default function withMediaControl(forImage) {
       });
     };
 
-    handleRemove = () => {
+    handleRemove = e => {
       e.preventDefault();
       return this.props.onChange('');
     };

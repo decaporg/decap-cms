@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Map } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import c from 'classnames';
 import ControlHOC from '../ControlHOC';
 import { resolveWidget } from '../../Widgets';
 
@@ -50,11 +51,15 @@ export default class ObjectControl extends Component {
     if (field.get('widget') === 'hidden') {
       return null;
     }
-    const widget = resolveWidget(field.get('widget') || 'string');
+    const widgetName = field.get('widget') || 'string';
+    const widget = resolveWidget(widgetName);
     const fieldValue = value && Map.isMap(value) ? value.get(field.get('name')) : value;
 
     return (<div className="nc-controlPane-widget" key={field.get('name')}>
-      <div className="nc-controlPane-control" key={field.get('name')}>
+      <div
+        className={c('nc-controlPane-control', { [`nc-controlPane-control-${widgetName}`]: widgetName })}
+        key={field.get('name')}
+      >
         <label className="nc-controlPane-label" htmlFor={field.get('name')}>{field.get('label')}</label>
         <ControlHOC
           controlComponent={widget.control}

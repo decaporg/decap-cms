@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Map, fromJS } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import c from 'classnames';
 import { resolveWidget } from '../Widgets';
 import ControlHOC from '../Widgets/ControlHOC';
 
@@ -35,7 +36,8 @@ export default class ControlPane extends Component {
       onAddAsset,
       onRemoveInsertedMedia,
     } = this.props;
-    const widget = resolveWidget(field.get('widget'));
+    const widgetName = field.get('widget');
+    const widget = resolveWidget(widgetName);
     const fieldName = field.get('name');
     const value = entry.getIn(['data', fieldName]);
     const metadata = fieldsMetaData.get(fieldName);
@@ -43,7 +45,7 @@ export default class ControlPane extends Component {
     const labelClass = errors ? 'nc-controlPane-label nc-controlPane-labelWithError' : 'nc-controlPane-label';
     if (entry.size === 0 || entry.get('partial') === true) return null;
     return (
-      <div className="nc-controlPane-control">
+      <div className={c('nc-controlPane-control', { [`nc-controlPane-control-${widgetName}`]: widgetName })}>
         <ul className="nc-controlPane-errors">
           {
             errors && errors.map(error =>

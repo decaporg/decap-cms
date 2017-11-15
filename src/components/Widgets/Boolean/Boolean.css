@@ -1,5 +1,8 @@
 .nc-booleanControl-switch {
   @apply(--input);
+  border-color: transparent;
+  background-color: transparent;
+  border-radius: 0;
 
   & .nc-toggle-background {
     background-color: var(--textFieldBorderColor);
@@ -10,8 +13,34 @@
   }
 }
 
-.nc-objectControl-root .nc-booleanControl-switch {
-  border: 0;
-  border-radius: 0;
-  border-left: 2px solid var(--textFieldBorderColor);
+.nc-objectControl-root .nc-controlPane-control-boolean {
+  & .nc-booleanControl-switch {
+    border: 0;
+    border-left: 2px solid var(--textFieldBorderColor);
+  }
+
+  &:focus-within {
+    border-left-color: var(--primaryColor);
+  }
+
+  &:focus-within {
+    & .nc-booleanControl-switch {
+      border-left-color: var(--primaryColor);
+    }
+  }
+}
+
+.nc-controlPane-control-boolean {
+  margin-top: 20px;
+
+  & label {
+    top: 0;
+    padding-bottom: 4px;
+    border-radius: 3px;
+
+    &:before,
+    &:after {
+      content: none;
+    }
+  }
 }
