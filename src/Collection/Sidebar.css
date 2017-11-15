@@ -55,7 +55,7 @@
   &:active,
   &.nc-collectionPage-sidebarLink-active {
     color: #3a69c8;
-    background-color: #e8f5fe;
+    background-color: var(--colorListItemHover);
     border-left-color: #4863c6;
   }
 

@@ -1,4 +1,5 @@
 .nc-toolbarPluginForm-pluginForm {
+  @apply(--dropShadow);
   position: absolute;
   background-color: var(--backgroundColor);
   margin-top: -20px;
@@ -6,7 +7,6 @@
   margin-left: 20px;
   border: var(--border);
   border-radius: var(--borderRadius);
-  box-shadow: var(--dropShadow);
   overflow: hidden;
   z-index: 1;
 
