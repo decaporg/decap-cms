@@ -8,18 +8,11 @@
 
 @import "./App/App.css";
 @import "./Collection/Collection.css";
-@import "./components/MediaLibrary/MediaLibrary.css";
 @import "./components/ControlPanel/ControlPane.css";
 @import "./components/EntryEditor/EntryEditor.css";
 @import "./components/PreviewPane/PreviewPane.css";
-@import "./components/UI/Sticky/Sticky.css";
-@import "./components/UI/card/Card.css";
-@import "./components/UI/icon/Icon.css";
-@import "./components/UI/loader/Loader.css";
-@import "./components/UI/toast/Toast.css";
-@import "./components/UI/Dialog/Dialog.css";
-@import "./components/UI/ErrorBoundary/ErrorBoundary.css";
-@import "./components/UI/Toggle/Toggle.css";
+@import "./components/UI/UI.css";
+@import "./components/MediaLibrary/MediaLibrary.css";
 @import "./components/UnpublishedListing/UnpublishedListing.css";
 @import "./components/UnpublishedListing/UnpublishedListingCardMeta.css";
 @import "./components/Widgets/Widgets.css";

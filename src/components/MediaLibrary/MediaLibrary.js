@@ -4,7 +4,7 @@ import { orderBy, get, isEmpty, map } from 'lodash';
 import c from 'classnames';
 import fuzzy from 'fuzzy';
 import Waypoint from 'react-waypoint';
-import Dialog from '../UI/Dialog';
+import Modal from '../UI/Modal/Modal';
 import { resolvePath, fileExtension } from '../../lib/pathHelper';
 import { changeDraftField } from '../../actions/entries';
 import {
@@ -239,37 +239,26 @@ class MediaLibrary extends React.Component {
       || (!hasSearchResults && 'No results.');
 
     return (
-      <Dialog
-        isVisible={isVisible}
+      <Modal
+        isOpen={isVisible}
         onClose={this.handleClose}
         className={c('nc-mediaLibrary-dialog', { 'nc-mediaLibrary-dialogPrivate': privateUpload })}
-        footer={
-          <MediaLibraryFooter
-            onDelete={this.handleDelete}
-            onPersist={this.handlePersist}
-            onClose={this.handleClose}
-            onInsert={this.handleInsert}
-            hasSelection={hasMedia && !isEmpty(selectedFile)}
-            forImage={forImage}
-            canInsert={canInsert}
-            isPersisting={isPersisting}
-            isDeleting={isDeleting}
-          />
-        }
       >
-        <h1 className="nc-mediaLibrary-title">
-          {privateUpload ? 'Private ' : null}
-          {forImage ? 'Images' : 'Assets'}
-        </h1>
-        <input
-          className="nc-mediaLibrary-searchInput"
-          value={query}
-          onChange={this.handleSearchChange}
-          onKeyDown={event => this.handleSearchKeyDown(event)}
-          placeholder="Search..."
-          disabled={!dynamicSearchActive && !hasFilteredFiles}
-          autoFocus
-        />
+        <div>
+          <h1 className="nc-mediaLibrary-title">
+            {privateUpload ? 'Private ' : null}
+            {forImage ? 'Images' : 'Assets'}
+          </h1>
+          <input
+            className="nc-mediaLibrary-searchInput"
+            value={query}
+            onChange={this.handleSearchChange}
+            onKeyDown={event => this.handleSearchKeyDown(event)}
+            placeholder="Search..."
+            disabled={!dynamicSearchActive && !hasFilteredFiles}
+            autoFocus
+          />
+        </div>
         <div className="nc-mediaLibrary-cardGrid-container" ref={ref => (this.scrollContainerRef = ref)}>
           <div className="nc-mediaLibrary-cardGrid">
             {
@@ -304,7 +293,18 @@ class MediaLibrary extends React.Component {
           }
           { isPaginating ? <h1 className="nc-mediaLibrary-paginatingMessage">Loading...</h1> : null }
         </div>
-      </Dialog>
+        <MediaLibraryFooter
+          onDelete={this.handleDelete}
+          onPersist={this.handlePersist}
+          onClose={this.handleClose}
+          onInsert={this.handleInsert}
+          hasSelection={hasMedia && !isEmpty(selectedFile)}
+          forImage={forImage}
+          canInsert={canInsert}
+          isPersisting={isPersisting}
+          isDeleting={isDeleting}
+        />
+      </Modal>
     );
   }
 }

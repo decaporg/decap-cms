@@ -38,8 +38,7 @@
 
   &:before,
   &:after {
-    width: 2.28571429rem;
-    height: 2.28571429rem;
+    @apply(--loaderSize);
     margin: 0em 0em 0em -1.14285714rem;
   }
 
