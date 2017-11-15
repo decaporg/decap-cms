@@ -24,7 +24,9 @@
 }
 
 .nc-imageControl-filename {
+  display: block;
   font-size: 16px;
+  margin-bottom: 20px;
 }
 
 .nc-imageControl-chooseButton,
@@ -33,12 +35,17 @@
   display: block;
 }
 
-.nc-imageControl-changeButton {
-  margin-top: 20px;
-}
-
 .nc-imageControl-removeButton {
   @apply(--textBadgeDanger);
   display: block;
   margin-top: 12px;
+}
+
+.nc-controlPane-control-image,
+.nc-controlPane-control-file {
+  &:focus-within {
+    & .nc-imageControl-imageUpload {
+      border-color: var(--primaryColor);
+    }
+  }
 }

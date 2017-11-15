@@ -5,21 +5,18 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 14px;
+  padding: 11px 14px;
+  transition: background-color var(--transition), color var(--transition);
+}
 
-  &:after {
-    content: '';
-    display: block;
-    width: 100%;
-    height: 6px;
-    background-color: inherit;
-    position: absolute;
-    bottom: -6px;
-    left: 0;
+.nc-objectControl-root {
+  & .nc-toolbar-Toolbar {
+    border-top-left-radius: var(--borderRadius);
   }
 }
 
 .nc-visualEditor-editorControlBarSticky .nc-toolbar-Toolbar {
+  border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
 
@@ -43,4 +40,19 @@
 .nc-markdownWidget-toolbar-markdownToggle-label-active {
   font-weight: 600;
   color: #3a69c7;
+}
+
+.nc-controlPane-control-markdown:focus-within {
+  & .nc-toolbar-Toolbar {
+    background-color: var(--primaryColor);
+    color: #fff;
+  }
+
+  & .nc-markdownWidget-toolbar-markdownToggle-label {
+    color: #fff;
+  }
+
+  & .nc-toggle-background {
+    background-color: var(--textFieldBorderColor);
+  }
 }
