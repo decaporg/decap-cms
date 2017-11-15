@@ -6,6 +6,12 @@
   </summary>
 </details>
 
+## 0.7.4 (November 15, 2017)
+
+* Remove trailing slash from directory listing path (@biilmann in #817)
+* Fix images with non-lowercase extensions not being treated as images (@erquhart in #816)
+* Prompt before closing window with unsaved changes in the editor (@benaiah in #815)
+
 ## 0.7.3 (November 11, 2017)
 
 * Fix persisting files with no body/data files ([@ebello](https://github.com/ebello) in [#808](https://github.com/netlify/netlify-cms/pull/808))
