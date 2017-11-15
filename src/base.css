@@ -19,7 +19,6 @@
   --textMutedColor: #8c8c8c;
   --borderRadius: 6px;
   --borderRadiusLarge: 8px;
-  --dropShadow: 0 2px 4px 0 rgba(19, 39, 48, .12);
   --topmostZindex: 99999;
   --foregroundAltColor: #fff;
   --backgroundAltColor: #fff;
@@ -29,6 +28,7 @@
   --highlightFGAltColor: #eee;
   --controlLabelColor: #7a8291;
   --controlBGColor: #fff;
+  --colorListItemHover: #e8f5fe;
   --backgroundTertiaryColor: #fff;
   --backgroundTertiaryColorDark: color(var(--backgroundTertiaryColor) lightness(90%));
   --richTextEditorMinHeight: 300px;
@@ -40,8 +40,25 @@
   --topBarHeight: 56px;
   --transition: .2s ease;
 
+  --dropShadow: {
+    box-shadow: 0 2px 4px 0 rgba(19, 39, 48, .12);
+  }
+
+  --dropShadowDeep: {
+    box-shadow: 0 4px 12px 0 rgba(68,74,87,0.15), 0 1px 3px 0 rgba(68,74,87,0.25);
+  }
+
+  --caretDown: {
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid #fff;
+    border-radius: 2px;
+  }
+
   --card: {
-    box-shadow: var(--dropShadow);
+    @apply(--dropShadow);
     border-radius: 8px;
     background-color: #fff;
   }
@@ -180,5 +197,5 @@ textarea {
 }
 
 .nc-theme-depth {
-  box-shadow: var(--dropShadow);
+  @apply(--dropShadow);
 }

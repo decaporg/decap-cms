@@ -3,7 +3,7 @@ import React from 'react';
 import ImmutablePropTypes from "react-immutable-proptypes";
 import { connect } from 'react-redux';
 import { Map } from 'immutable';
-import { Button } from 'react-toolbox/lib/button';
+import Modal from '../../../../../components/UI/Modal/Modal';
 import { openMediaLibrary, removeInsertedMedia } from '../../../../../actions/mediaLibrary';
 import ToolbarPluginFormControl from './ToolbarPluginFormControl';
 
@@ -47,31 +47,32 @@ class ToolbarPluginForm extends React.Component {
     } = this.props;
 
     return (
-      <form className="nc-toolbarPluginForm-pluginForm" onSubmit={this.handleSubmit}>
-        <h3 className="nc-toolbarPluginForm-header">Insert {plugin.get('label')}</h3>
-        <div className="nc-toolbarPluginForm-body">
-          {plugin.get('fields').map((field, index) => (
-            <ToolbarPluginFormControl
-              key={index}
-              field={field}
-              value={this.state.data.get(field.get('name'))}
-              onAddAsset={onAddAsset}
-              getAsset={getAsset}
-              onChange={(val) => {
-                this.setState({ data: this.state.data.set(field.get('name'), val) });
-              }}
-              mediaPaths={mediaPaths}
-              onOpenMediaLibrary={onOpenMediaLibrary}
-              onRemoveInsertedMedia={onRemoveInsertedMedia}
-            />
-          ))}
-        </div>
-        <div className="nc-toolbarPluginForm-footer">
-          <Button raised onClick={this.handleSubmit}>Insert</Button>
-          {' '}
-          <Button onClick={onCancel}>Cancel</Button>
-        </div>
-      </form>
+      <Modal isOpen={true}>
+        <form onSubmit={this.handleSubmit}>
+          <h3>Insert {plugin.get('label')}</h3>
+          <div>
+            {plugin.get('fields').map((field, index) => (
+              <ToolbarPluginFormControl
+                key={index}
+                field={field}
+                value={this.state.data.get(field.get('name'))}
+                onAddAsset={onAddAsset}
+                getAsset={getAsset}
+                onChange={(val) => {
+                  this.setState({ data: this.state.data.set(field.get('name'), val) });
+                }}
+                mediaPaths={mediaPaths}
+                onOpenMediaLibrary={onOpenMediaLibrary}
+                onRemoveInsertedMedia={onRemoveInsertedMedia}
+              />
+            ))}
+          </div>
+          <div>
+            <button onClick={this.handleSubmit}>Insert</button>
+            <button onClick={onCancel}>Cancel</button>
+          </div>
+        </form>
+      </Modal>
     );
   }
 }
