@@ -1,25 +1,57 @@
-.nc-mediaLibrary-footer-buttonRight {
-  float: right;
-  margin-left: 10px;
+:root {
+  --mediaLibraryButtonDisabled: {
+    opacity: 0.5;
+    cursor: default;
+  }
 }
 
-.nc-mediaLibrary-footer-buttonLeft {
-  float: left;
-  margin-right: 10px;
+.nc-mediaLibrary-footer {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 0 16px;
+
+  & button {
+    display: block;
+
+    &:disabled {
+      @apply(--mediaLibraryButtonDisabled);
+      opacity: 0.5;
+    }
+
+    &:not(:first-child) {
+      margin-left: 12px;
+    }
+  }
+}
+
+.nc-mediaLibrary-footer-section {
+  display: flex;
 }
 
 .nc-mediaLibrary-footer-button-loader {
-  float: left;
-  margin: 8px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 16px;
+  user-select: none;
 }
 
 .nc-mediaLibrary-footer-button-loaderSpinner {
-  position: static;
-}
-
-.nc-mediaLibrary-footer-button-loaderText {
+  @apply(--loaderSize);
+  margin-right: 10px;
   position: relative;
-  top: 2px;
-  margin-left: 18px;
+  transform: none;
+  top: 0;
+  left: 0;
 }
 
+.nc-mediaLibrary-uploadButton {
+  display: block;
+  margin-left: 12px;
+}
+
+.nc-mediaLibrary-uploadButton-disabled {
+  @apply(--mediaLibraryButtonDisabled);
+}

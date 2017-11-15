@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, BrowseButton } from 'react-toolbox/lib/button';
+import FileUploadButton from '../UI/FileUploadButton/FileUploadButton';
 import Loader from '../UI/loader/Loader';
 
 const MediaLibraryFooter = ({
@@ -22,41 +22,38 @@ const MediaLibraryFooter = ({
     </div>
   );
   return (
-    <div>
-      <Button
-        label="Delete"
-        onClick={onDelete}
-        className="nc-mediaLibrary-footer-buttonLeft"
-        disabled={shouldShowLoader || !hasSelection}
-        accent
-        raised
-      />
-      <BrowseButton
-        label="Upload"
-        accept={forImage}
-        onChange={onPersist}
-        className="nc-mediaLibrary-footer-buttonLeft"
-        disabled={shouldShowLoader}
-        primary
-        raised
-      />
-      { shouldShowLoader ? loader : null }
-      <Button
-        label="Close"
-        onClick={onClose}
-        className="nc-mediaLibrary-footer-buttonRight"
-        raised
-      />
-      { !canInsert ? null :
-        <Button
-          label="Insert"
-          onClick={onInsert}
-          className="nc-mediaLibrary-footer-buttonRight"
-          disabled={!hasSelection}
-          primary
-          raised
+    <div className="nc-mediaLibrary-footer">
+      <div className="nc-mediaLibrary-footer-section">
+        <button
+          onClick={onDelete}
+          disabled={shouldShowLoader || !hasSelection}
+        >
+          Delete
+        </button>
+        <FileUploadButton
+          className={`nc-mediaLibrary-uploadButton ${shouldShowLoader ? 'nc-mediaLibrary-uploadButton-disabled' : ''}`}
+          label="Upload"
+          imagesOnly={forImage}
+          onChange={onPersist}
+          disabled={shouldShowLoader}
         />
-      }
+        { shouldShowLoader ? loader : null }
+      </div>
+      <div>
+        <button
+          onClick={onClose}
+        >
+          Close
+        </button>
+        { !canInsert ? null :
+          <button
+            onClick={onInsert}
+            disabled={!hasSelection}
+          >
+            Insert
+          </button>
+        }
+      </div>
     </div>
   );
 };

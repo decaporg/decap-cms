@@ -7,6 +7,10 @@
 }
 
 .nc-mediaLibrary-dialog {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  padding-bottom: 0;
   width: calc(var(--mediaLibraryCardOutsideWidth) + 48px);
 
   @media (width >= 800px) {
@@ -49,17 +53,13 @@
 .nc-mediaLibrary-emptyMessage {
   height: 100%;
   width: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .nc-mediaLibrary-cardGrid-container {
-  height: calc(100% - 150px);
-  margin: 20px auto 0;
+  flex-grow: 10;
   overflow-y: auto;
 }
 

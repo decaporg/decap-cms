@@ -1,0 +1,23 @@
+.nc-fileUploadButton {
+  @apply(--button);
+
+  & span {
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  & input {
+    height: .1px;
+    margin: 0;
+    opacity: 0;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: .1px;
+    z-index: 0;
+    outline: none;
+  }
+}
