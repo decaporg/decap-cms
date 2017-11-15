@@ -28,7 +28,7 @@ To learn more about this installation method, refer to the [Quick Start Guide](d
 
 # Community
 
-Netlify CMS has a [public Gitter channel](https://gitter.im/netlify/NetlifyCMS) where members of the community hang out and share things about the project.
+Netlify CMS has a [public Spectrum community](https://spectrum.chat/netlify-cms) where members of the community hang out and share things about the project, as well as give and receive support.
 
 # Change Log
 
