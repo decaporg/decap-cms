@@ -2,55 +2,36 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Menu, MenuItem } from 'react-toolbox/lib/menu';
+import { Dropdown, DropdownItem } from '../../../../UI/Dropdown/Dropdown';
 import ToolbarButton from './ToolbarButton';
 
 export default class ToolbarComponentsMenu extends React.Component {
   static PropTypes = {
-    plugins: ImmutablePropTypes.map,
+    plugins: ImmutablePropTypes.map.isRequired,
     onComponentMenuItemClick: PropTypes.func.isRequired,
-  };
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      componentsMenuActive: false,
-    };
-  }
-
-  handleComponentsMenuToggle = () => {
-    this.setState({ componentsMenuActive: !this.state.componentsMenuActive });
-  };
-
-  handleComponentsMenuHide = () => {
-    this.setState({ componentsMenuActive: false });
   };
 
   render() {
     const { plugins, onComponentMenuItemClick, disabled } = this.props;
     return (
       <div className="nc-toolbarComponentsMenu-root">
-        <ToolbarButton
-          label="Add Component"
-          icon="add-with"
-          action={this.handleComponentsMenuToggle}
-          disabled={disabled}
-        />
-        <Menu
-          active={this.state.componentsMenuActive}
-          position="auto"
-          onHide={this.handleComponentsMenuHide}
-          ripple={false}
+        <Dropdown
+          button={
+            <ToolbarButton
+              label="Add Component"
+              icon="add-with"
+              action={this.handleComponentsMenuToggle}
+              disabled={disabled}
+            />
+          }
         >
-          {plugins && plugins.toList().map(plugin => (
-            <MenuItem
-              key={plugin.get('id')}
-              value={plugin.get('id')}
-              caption={plugin.get('label')}
+          {plugins.toList().map(plugin => (
+            <DropdownItem
+              label={plugin.get('label')}
               onClick={() => onComponentMenuItemClick(plugin)}
-              className="nc-toolbarComponentsMenu-menuItem"
             />
           ))}
-        </Menu>
+        </Dropdown>
       </div>
     );
   }

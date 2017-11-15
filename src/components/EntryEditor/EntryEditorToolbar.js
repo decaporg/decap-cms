@@ -1,13 +1,8 @@
+import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import React from 'react';
-import {
-  Wrapper as Dropdown,
-  Button as DropdownButton,
-  Menu as DropdownList,
-  MenuItem as DropdownItem,
-} from 'react-aria-menubutton';
 import Icon from '../../icons/Icon';
+import { Dropdown, DropdownItem } from '../../components/UI/Dropdown/Dropdown';
 
 const EntryEditorToolbar = (
   {
@@ -41,26 +36,9 @@ const EntryEditorToolbar = (
             ? <button className="nc-entryEditor-toolbar-deleteButton" onClick={onDelete}>Delete</button>
             : null
         }
-        <Dropdown className="nc-entryEditor-toolbar-saveDropdown" onSelection={handler => handler()}>
-          <DropdownButton className="nc-entryEditor-toolbar-saveDropdownButton">
-            { isPersisting ? 'Saving...' : 'Save and Publish' }
-          </DropdownButton>
-          <DropdownList>
-            <ul className="nc-entryEditor-toolbar-saveDropdownList">
-              <DropdownItem className="nc-entryEditor-toolbar-saveDropdownItem" value={onPersist}>
-                <span>Save and publish</span>
-                <span className="nc-entryEditor-toolbar-saveDropdownItemIcon">
-                  <Icon type="folder" direction="right" size="small"/>
-                </span>
-              </DropdownItem>
-              <DropdownItem className="nc-entryEditor-toolbar-saveDropdownItem" value={onPersist}>
-                <span>Save, publish, and create new</span>
-                <span className="nc-entryEditor-toolbar-saveDropdownItemIcon">
-                  <Icon type="add" size="small"/>
-                </span>
-              </DropdownItem>
-            </ul>
-          </DropdownList>
+        <Dropdown label={isPersisting ? 'Saving...' : 'Save and Publish'}>
+          <DropdownItem label="Save and publish" icon="folder" onClick={onPersist}/>
+          <DropdownItem label="Save, publish, and create new" icon="add" onClick={onPersist}/>
         </Dropdown>
       </div>
       <div className="nc-entryEditor-toolbar-metaSection">

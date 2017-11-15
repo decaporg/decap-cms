@@ -24,9 +24,9 @@
 }
 
 .nc-modal-body {
+  @apply(--dropShadowDeep);
   background-color: #fff;
   border-radius: var(--borderRadius);
-  box-shadow: var(--dropShadow);
   height: 80%;
   text-align: center;
   max-width: 2200px;
