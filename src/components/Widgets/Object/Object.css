@@ -1,17 +1,11 @@
 .nc-objectControl-root {
   @apply(--input);
   padding: 0 14px 14px;
+}
 
-  & .nc-controlPane-control {
-    & label {
-      background: none;
-    }
-
-    & input,
-    & textarea {
-      border: 0;
-      border-radius: 0;
-      border-left: 2px solid var(--textFieldBorderColor);
-    }
+.nc-controlPane-control-object:focus-within {
+  & > .nc-controlPane-label {
+    background-color: var(--textFieldBorderColor);
+    color: var(--controlLabelColor);
   }
 }

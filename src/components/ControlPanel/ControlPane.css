@@ -17,6 +17,11 @@
     text-indent: 14px;
     height: 58px;
   }
+
+  &:focus-within > .nc-controlPane-label {
+    background-color: var(--primaryColor);
+    color: #fff;
+  }
 }
 
 .nc-controlPane-label {
@@ -63,4 +68,28 @@
   font-size: 10px;
   color: #FF706F;
   margin-bottom: 5px;
+}
+
+.nc-objectControl-root {
+  & .nc-controlPane-control {
+    & label {
+      background: none;
+    }
+
+    & input,
+    & textarea {
+      border: 0;
+      border-radius: 0;
+      border-left: 2px solid var(--textFieldBorderColor);
+
+      &:focus {
+        border-color: var(--primaryColor);
+      }
+    }
+
+    &:focus-within > .nc-controlPane-label {
+      background-color: transparent;
+      color: var(--primaryColor);
+    }
+  }
 }

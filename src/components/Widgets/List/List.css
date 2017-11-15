@@ -126,3 +126,10 @@
     display: none;
   }
 }
+
+.nc-controlPane-control-list:focus-within {
+  & > .nc-controlPane-label {
+    background-color: var(--textFieldBorderColor);
+    color: var(--controlLabelColor);
+  }
+}

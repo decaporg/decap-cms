@@ -82,7 +82,6 @@
     background-color: #e8f5fe;
     border-radius: var(--borderRadius);
     padding: 4px 10px;
-    margin-top: 6px;
     text-align: center;
     display: inline-block;
     line-height: 1;
@@ -177,10 +176,4 @@ textarea {
 
 .nc-theme-depth {
   box-shadow: var(--dropShadow);
-}
-
-.nc-theme-clearfix:after {
-  content: '';
-  display: table;
-  clear: both;
 }

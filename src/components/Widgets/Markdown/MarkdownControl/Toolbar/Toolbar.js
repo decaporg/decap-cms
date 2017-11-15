@@ -4,6 +4,7 @@ import { List } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import c from 'classnames';
 import Switch from '../../../../UI/Toggle/Toggle';
+import Icon from '../../../../../icons/Icon';
 import ToolbarButton from './ToolbarButton';
 import ToolbarComponentsMenu from './ToolbarComponentsMenu';
 import ToolbarPluginForm from './ToolbarPluginForm';
@@ -78,7 +79,7 @@ export default class Toolbar extends React.Component {
     const toggleOnLabelWidth = '70px';
 
     return (
-      <div className="nc-toolbar-Toolbar nc-theme-clearfix">
+      <div className="nc-toolbar-Toolbar">
         <div>
           { buttonsConfig.map((btn, i) => (
             <ToolbarButton

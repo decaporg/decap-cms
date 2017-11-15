@@ -145,6 +145,11 @@
   @apply(--textBadgeDanger);
 }
 
+.nc-entryEditor-toolbar-backStatus,
+.nc-entryEditor-toolbar-backStatus-hasChanged {
+  margin-top: 6px;
+}
+
 .nc-entryEditor-toolbar-deleteButton {
   color: #ff003b;
   background-color: #fbe0d7;
