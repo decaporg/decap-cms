@@ -9,7 +9,7 @@ const SoftBreak = (options = {}) => ({
     if (options.shift && e.shiftKey == false) return;
 
     const { onlyIn, ignoreIn, defaultBlock = 'paragraph' } = options;
-    const { type, text } = change.state.startBlock;
+    const { type, text } = change.value.startBlock;
     if (onlyIn && !onlyIn.includes(type)) return;
     if (ignoreIn && ignoreIn.includes(type)) return;
 
@@ -39,9 +39,9 @@ export const ParagraphSoftBreakConfigured = SoftBreak({ onlyIn: ['paragraph'], s
 
 const BreakToDefaultBlock = ({ onlyIn = [], defaultBlock = 'paragraph' }) => ({
   onKeyDown(e, data, change) {
-    const { state } = change;
-    if (data.key != 'enter' || e.shiftKey == true || state.isExpanded) return;
-    if (onlyIn.includes(state.startBlock.type)) {
+    const { value } = change;
+    if (data.key != 'enter' || e.shiftKey == true || value.isExpanded) return;
+    if (onlyIn.includes(value.startBlock.type)) {
       return change.insertBlock(defaultBlock);
     }
   }
@@ -58,7 +58,7 @@ const BackspaceCloseBlock = (options = {}) => ({
     if (data.key != 'backspace') return;
 
     const { defaultBlock = 'paragraph', ignoreIn, onlyIn } = options;
-    const { startBlock } = change.state;
+    const { startBlock } = change.value;
     const { type } = startBlock;
 
     if (onlyIn && !onlyIn.includes(type)) return;
