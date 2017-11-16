@@ -418,6 +418,17 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "igk1972",
+      "name": "Igor Kuznetsov",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/54089?v=4",
+      "profile": "http://www.igk.ru",
+      "contributions": [
+        "bug",
+        "code",
+        "plugin"
+      ]
     }
   ]
 }
