@@ -3,11 +3,10 @@ import React from 'react';
 import { List } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import c from 'classnames';
-import Modal from '../../../../UI/Modal/Modal';
+import { Dropdown, DropdownItem } from '../../../../UI/Dropdown/Dropdown';
 import Switch from '../../../../UI/Toggle/Toggle';
 import Icon from '../../../../../icons/Icon';
 import ToolbarButton from './ToolbarButton';
-import ToolbarComponentsMenu from './ToolbarComponentsMenu';
 import ToolbarPluginForm from './ToolbarPluginForm';
 
 export default class Toolbar extends React.Component {
@@ -29,19 +28,6 @@ export default class Toolbar extends React.Component {
     };
   }
 
-  handlePluginFormDisplay = (plugin) => {
-    this.setState({ activePlugin: plugin });
-  }
-
-  handlePluginFormSubmit = (plugin, pluginData) => {
-    this.props.onSubmit(plugin, pluginData);
-    this.setState({ activePlugin: null });
-  };
-
-  handlePluginFormCancel = (e) => {
-    this.setState({ activePlugin: null });
-  };
-
   render() {
     const {
       onToggleMode,
@@ -50,6 +36,7 @@ export default class Toolbar extends React.Component {
       onAddAsset,
       getAsset,
       disabled,
+      onSubmit,
     } = this.props;
 
     const buttons = this.props.buttons || {};
@@ -91,24 +78,22 @@ export default class Toolbar extends React.Component {
               {...btn}
             />
           ))}
-          <ToolbarComponentsMenu
-            plugins={plugins}
-            onComponentMenuItemClick={this.handlePluginFormDisplay}
-            disabled={disabled}
-          />
-          <Modal isOpen={!!activePlugin} onClose={this.handlePluginFormCancel}>
-            {
-              activePlugin
-                ? <ToolbarPluginForm
-                    plugin={activePlugin}
-                    onSubmit={this.handlePluginFormSubmit}
-                    onCancel={this.handlePluginFormCancel}
-                    onAddAsset={onAddAsset}
-                    getAsset={getAsset}
-                  />
-                : null
-            }
-          </Modal>
+          <div className="nc-toolbar-dropdown">
+            <Dropdown
+              button={
+                <ToolbarButton
+                  label="Add Component"
+                  icon="add-with"
+                  action={this.handleComponentsMenuToggle}
+                  disabled={disabled}
+                />
+              }
+            >
+              {plugins && plugins.toList().map(plugin => (
+                <DropdownItem label={plugin.get('label')} onClick={() => onSubmit(plugin.get('id'))} />
+              ))}
+            </Dropdown>
+          </div>
         </div>
         <div className="nc-markdownWidget-toolbar-markdownToggle">
           <span
