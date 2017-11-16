@@ -11,12 +11,9 @@ import { getAsset } from '../../../../../reducers';
 class Shortcode extends React.Component {
   handleChange = (field, value) => {
     const { editor, node } = this.props;
-    editor.change(c => c.setNodeByKey(node.key, {
-      data: {
-        shortcode: field.get('name'),
-        shortcodeData: node.data.set(field.get('name'), value),
-      }
-    }));
+    const shortcodeData = Map(node.data.get('shortcodeData')).set(field.get('name'), value);
+    const data = node.data.set('shortcodeData', shortcodeData);
+    editor.change(c => c.setNodeByKey(node.key, { data }));
   };
 
   render() {
@@ -34,7 +31,7 @@ class Shortcode extends React.Component {
     const shortcodeData = node.data.get('shortcodeData');
     const data = Map.isMap(shortcodeData) ? shortcodeData : Map(shortcodeData);
     const plugin = registry.getEditorComponents().get(pluginId);
-    const isSelected = value.selection.hasFocusIn(node);
+    const isSelected = editor.value.selection.hasFocusIn(node);
     const className = c('nc-visualEditor-shortcode', { ['nc-visualEditor-shortcodeSelected']: isSelected });
     return (
       <div {...attributes} className={className} draggable >
