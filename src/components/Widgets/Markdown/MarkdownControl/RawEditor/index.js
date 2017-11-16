@@ -10,19 +10,19 @@ export default class RawEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      editorState: Plain.deserialize(this.props.value || ''),
+      value: Plain.deserialize(this.props.value || ''),
     };
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return !this.state.editorState.equals(nextState.editorState);
+    return !this.state.value.equals(nextState.value);
   }
 
   handleChange = change => {
-    if (!this.state.editorState.document.equals(change.state.document)) {
+    if (!this.state.value.document.equals(change.value.document)) {
       this.handleDocumentChange(change);
     }
-    this.setState({ editorState: change.state });
+    this.setState({ value: change.value });
   };
 
   /**
@@ -30,7 +30,7 @@ export default class RawEditor extends React.Component {
    * text (which is Markdown) and pass that up as the new value.
    */
   handleDocumentChange = debounce(change => {
-    const value = Plain.serialize(change.state);
+    const value = Plain.serialize(change.value);
     this.props.onChange(value);
   }, 150);
 
@@ -62,7 +62,7 @@ export default class RawEditor extends React.Component {
         </Sticky>
         <Slate
           className="nc-rawEditor-rawEditor"
-          state={this.state.editorState}
+          value={this.state.value}
           onChange={this.handleChange}
           onPaste={this.handlePaste}
         />

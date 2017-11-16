@@ -63,8 +63,8 @@ export const renderNode = props => {
       return result;
     };
     case 'shortcode': props => {
-      const { attributes, node, state: editorState } = props;
-      const isSelected = editorState.selection.hasFocusIn(node);
+      const { attributes, node, editor } = props;
+      const isSelected = editor.value.selection.hasFocusIn(node);
       const className = cn('nc-visualEditor-shortcode', { ['nc-visualEditor-shortcodeSelected']: isSelected });
       return <div {...attributes} className={className} draggable >{node.data.get('shortcode')}</div>;
     };

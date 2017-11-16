@@ -20,7 +20,7 @@ export function validateNode(node) {
           type: 'paragraph',
           nodes: [Text.create('')],
         });
-        const { key } = change.state.document;
+        const { key } = change.value.document;
         return change.insertNodeByKey(key, 0, block).focus();
       };
     }

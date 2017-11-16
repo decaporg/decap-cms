@@ -11,7 +11,7 @@ function changeHistory(change, type) {
   /**
    * Get the history for undo or redo (determined via `type` param).
    */
-  const { history } = change.state;
+  const { history } = change.value;
   if (!history) return;
   const historyOfType = history[`${type}s`];
 
@@ -49,7 +49,7 @@ function onKeyDown(e, data, change) {
      * If the selected block is the first block in the document, create the
      * new block above it. If not, create the new block below it.
      */
-    const { document: doc, range, anchorBlock, focusBlock } = change.state;
+    const { document: doc, range, anchorBlock, focusBlock } = change.value;
     const singleBlockSelected = anchorBlock === focusBlock;
     if (!singleBlockSelected || !focusBlock.isVoid) return;
 
