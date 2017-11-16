@@ -1,6 +1,7 @@
 import React from 'react';
 import { List } from 'immutable';
 import cn from 'classnames';
+import Shortcode from './Shortcode';
 
 /**
  * Slate uses React components to render each type of node that it receives.
@@ -59,12 +60,6 @@ const Image = props => {
     return renderMark({ mark, children: acc });
   }, image);
   return result;
-};
-const Shortcode = props => {
-  const { attributes, node, editor } = props;
-  const isSelected = editor.value.selection.hasFocusIn(node);
-  const className = cn('nc-visualEditor-shortcode', { ['nc-visualEditor-shortcodeSelected']: isSelected });
-  return <div {...attributes} className={className} draggable >{node.data.get('shortcode')}</div>;
 };
 
 export const renderMark = props => {

@@ -56,3 +56,8 @@
     background-color: var(--textFieldBorderColor);
   }
 }
+
+.nc-toolbar-dropdown {
+  display: inline-block;
+  position: relative;
+}
