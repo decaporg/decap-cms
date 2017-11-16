@@ -7,8 +7,8 @@ import { slateToMarkdown, markdownToSlate, htmlToSlate } from '../../serializers
 import registry from '../../../../../lib/registry';
 import Toolbar from '../Toolbar/Toolbar';
 import { Sticky } from '../../../../UI/Sticky/Sticky';
-import { MARK_COMPONENTS, NODE_COMPONENTS } from './components';
-import RULES from './rules';
+import { renderNode, renderMark } from './renderers';
+import { validateNode } from './validators';
 import plugins, { EditListConfigured } from './plugins';
 import onKeyDown from './keys';
 
@@ -24,11 +24,6 @@ export default class Editor extends Component {
     const editorState = State.create({ document });
     this.state = {
       editorState,
-      schema: {
-        nodes: NODE_COMPONENTS,
-        marks: MARK_COMPONENTS,
-        rules: RULES,
-      },
       shortcodePlugins: registry.getEditorComponents(),
     };
   }
@@ -208,7 +203,9 @@ export default class Editor extends Component {
         <Slate
           className="nc-visualEditor-editor"
           state={this.state.editorState}
-          schema={this.state.schema}
+          renderNode={renderNode}
+          renderMark={renderMark}
+          validateNode={validateNode}
           plugins={plugins}
           onChange={this.handleChange}
           onKeyDown={onKeyDown}

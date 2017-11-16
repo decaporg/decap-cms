@@ -2827,7 +2827,7 @@ es6-iterator@2, es6-iterator@^2.0.1, es6-iterator@~2.0.1:
     es5-ext "^0.10.14"
     es6-symbol "^3.1"
 
-es6-map@^0.1.3, es6-map@^0.1.4:
+es6-map@^0.1.3:
   version "0.1.5"
   resolved "https://registry.yarnpkg.com/es6-map/-/es6-map-0.1.5.tgz#9136e0503dcc06a301690f0bb14ff4e364e949f0"
   dependencies:
@@ -4471,6 +4471,10 @@ is-glob@^3.1.0:
 is-hexadecimal@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/is-hexadecimal/-/is-hexadecimal-1.0.1.tgz#6e084bbc92061fbb0971ec58b6ce6d404e24da69"
+
+is-hotkey@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/is-hotkey/-/is-hotkey-0.1.1.tgz#b279a2fd108391be9aa93c6cb317f50357da549a"
 
 is-in-browser@^1.1.3:
   version "1.1.3"
@@ -8521,13 +8525,13 @@ slash@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/slash/-/slash-1.0.0.tgz#c41f2f6c39fc16d1cd17ad4b5d896114ae470d55"
 
-slate-base64-serializer@^0.1.14:
+slate-base64-serializer@^0.1.22:
   version "0.1.22"
   resolved "https://registry.yarnpkg.com/slate-base64-serializer/-/slate-base64-serializer-0.1.22.tgz#548e589178c75653004168004aad152f1976dd35"
   dependencies:
     isomorphic-base64 "^1.0.2"
 
-slate-dev-logger@^0.1.15, slate-dev-logger@^0.1.20, slate-dev-logger@^0.1.23:
+slate-dev-logger@^0.1.23:
   version "0.1.33"
   resolved "https://registry.yarnpkg.com/slate-dev-logger/-/slate-dev-logger-0.1.33.tgz#b4a4272255c2d598e5f26db5d85c58435357755f"
 
@@ -8539,24 +8543,25 @@ slate-edit-table@^0.12.0:
   version "0.12.0"
   resolved "https://registry.yarnpkg.com/slate-edit-table/-/slate-edit-table-0.12.0.tgz#9163e67b8025c3c09d6037eb76cb5e652b65dd47"
 
-slate-plain-serializer@^0.2.0:
+slate-plain-serializer@^0.2.0, slate-plain-serializer@^0.2.8:
   version "0.2.8"
   resolved "https://registry.yarnpkg.com/slate-plain-serializer/-/slate-plain-serializer-0.2.8.tgz#9bff5fafa09ab2ad47d961820f09d7d2abcb20a9"
   dependencies:
     slate-dev-logger "^0.1.23"
 
-slate-prop-types@^0.2.0:
+slate-prop-types@^0.2.8:
   version "0.2.8"
   resolved "https://registry.yarnpkg.com/slate-prop-types/-/slate-prop-types-0.2.8.tgz#2d0e1df0a372c635068c6f74a52b567b996f51c2"
   dependencies:
     slate-dev-logger "^0.1.23"
 
-slate-react@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/slate-react/-/slate-react-0.4.0.tgz#e15c9034df5ea58fcb8a0c49c1cd159702296e0c"
+slate-react@^0.8.0:
+  version "0.8.2"
+  resolved "https://registry.yarnpkg.com/slate-react/-/slate-react-0.8.2.tgz#035452c7aa90d7ec37f097e2430b2ce4198cfb78"
   dependencies:
     debug "^2.3.2"
     get-window "^1.1.1"
+    is-hotkey "^0.1.1"
     is-in-browser "^1.1.3"
     is-window "^1.0.2"
     keycode "^2.1.2"
@@ -8564,27 +8569,26 @@ slate-react@^0.4.0:
     react-immutable-proptypes "^2.1.0"
     react-portal "^3.1.0"
     selection-is-backward "^1.0.0"
-    slate-base64-serializer "^0.1.14"
-    slate-dev-logger "^0.1.15"
-    slate-plain-serializer "^0.2.0"
-    slate-prop-types "^0.2.0"
+    slate-base64-serializer "^0.1.22"
+    slate-dev-logger "^0.1.23"
+    slate-plain-serializer "^0.2.8"
+    slate-prop-types "^0.2.8"
 
-slate-soft-break@^0.4.0:
-  version "0.4.3"
-  resolved "https://registry.yarnpkg.com/slate-soft-break/-/slate-soft-break-0.4.3.tgz#e3a9279a9b92ca173915467f5fbd359f739a7e96"
+slate-soft-break@^0.5.0:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/slate-soft-break/-/slate-soft-break-0.5.1.tgz#817348c6c38c5c4983f58de3bc497234b27378eb"
 
-slate@^0.27.0:
-  version "0.27.5"
-  resolved "https://registry.yarnpkg.com/slate/-/slate-0.27.5.tgz#ab9d9f35e03f1910c59016ad66ee685255b5a645"
+slate@^0.28.0:
+  version "0.28.2"
+  resolved "https://registry.yarnpkg.com/slate/-/slate-0.28.2.tgz#e740976ae494c9a2952e925b00f2694416b5e84d"
   dependencies:
     debug "^2.3.2"
     direction "^0.1.5"
-    es6-map "^0.1.4"
     esrever "^0.2.0"
     is-empty "^1.0.0"
     is-plain-object "^2.0.4"
     lodash "^4.17.4"
-    slate-dev-logger "^0.1.20"
+    slate-dev-logger "^0.1.23"
     type-of "^2.0.1"
 
 slice-ansi@0.0.4:
