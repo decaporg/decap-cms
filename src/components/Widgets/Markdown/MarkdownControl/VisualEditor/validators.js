@@ -9,6 +9,7 @@ export function validateNode(node) {
    * Validation of the document itself.
    */
   if (node.kind === 'document') {
+    const doc = node;
     /**
      * If the editor is ever in an empty state, insert an empty
      * paragraph block.
@@ -28,26 +29,45 @@ export function validateNode(node) {
     /**
      * Ensure that shortcodes are children of the root node.
      */
-    const nestedShortcode = node.findDescendant(descendant => {
+    const nestedShortcode = doc.findDescendant(descendant => {
       const { type, key } = descendant;
-      return type === 'shortcode' && node.getParent(key).key !== node.key;
+      return type === 'shortcode' && doc.getParent(key).key !== doc.key;
     });
     if (nestedShortcode) {
-      return change => change.unwrapNodeByKey(node.key);
+      const unwrapShortcode = change => {
+        const key = nestedShortcode.key;
+        const newDoc = change.value.document;
+        const newParent = newDoc.getParent(key);
+        const docIsParent = newParent.key === newDoc.key;
+        const newParentParent = newDoc.getParent(newParent.key);
+        const docIsParentParent = newParentParent && newParentParent.key === newDoc.key;
+        if (docIsParent) {
+          return change;
+        }
+        /**
+         * Normalization happens by default, and causes all validation to
+         * restart with the result of a change upon execution. This unwrap loop
+         * could temporarily place a shortcode node in conflict with an outside
+         * plugin's schema, resulting in an infinite loop. To ensure against
+         * this, we turn off normalization until the last change.
+         */
+        change.unwrapNodeByKey(nestedShortcode.key, { normalize: docIsParentParent });
+      };
+      return unwrapShortcode;
     }
 
     /**
      * Ensure that trailing shortcodes are followed by an empty paragraph.
      */
-    const trailingShortcode = node.findDescendant(descendant => {
+    const trailingShortcode = doc.findDescendant(descendant => {
       const { type, key } = descendant;
-      return type === 'shortcode' && node.getBlocks().last().key === key;
+      return type === 'shortcode' && doc.getBlocks().last().key === key;
     });
     if (trailingShortcode) {
       return change => {
         const text = Text.create('');
         const block = Block.create({ type: 'paragraph', nodes: [ text ] });
-        return change.insertNodeByKey(node.key, node.get('nodes').size, block);
+        return change.insertNodeByKey(doc.key, doc.get('nodes').size, block);
       };
     }
   }

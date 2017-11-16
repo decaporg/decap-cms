@@ -249,7 +249,7 @@ function convertTextNode(node) {
 /**
  * Process Slate node leaves in preparation for MDAST transformation.
  */
-function processLeaves(leaves) {
+function processLeaves(leaf) {
   /**
    * Get an array of the mark types, converted to their MDAST equivalent
    * types.
