@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { get, isEmpty, debounce } from 'lodash';
+import { Map } from 'immutable';
 import { Value, Document, Block, Text } from 'slate';
 import { Editor as Slate } from 'slate-react';
 import { slateToMarkdown, markdownToSlate, htmlToSlate } from '../../serializers';
@@ -121,14 +122,19 @@ export default class Editor extends Component {
     this.setState({ value: change.value });
   };
 
-  handlePluginSubmit = (plugin, shortcodeData) => {
+  handlePluginSubmit = pluginId => {
     const { value } = this.state;
-    const data = {
-      shortcode: plugin.id,
-      shortcodeData,
-    };
     const nodes = [Text.create('')];
-    const block = { kind: 'block', type: 'shortcode', data, isVoid: true, nodes };
+    const block = {
+      kind: 'block',
+      type: 'shortcode',
+      data: {
+        shortcode: pluginId,
+        shortcodeData: Map(),
+      },
+      isVoid: true,
+      nodes
+    };
     let change = value.change();
     const { focusBlock } = change.value;
 
