@@ -105,7 +105,6 @@ const plugins = [
   BackspaceCloseBlockConfigured,
   BreakToDefaultBlockConfigured,
   EditListConfigured,
-  EditTableConfigured,
 ];
 
 export default plugins;
