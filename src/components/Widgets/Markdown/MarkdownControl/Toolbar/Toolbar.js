@@ -3,6 +3,7 @@ import React from 'react';
 import { List } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import c from 'classnames';
+import Modal from '../../../../UI/Modal/Modal';
 import Switch from '../../../../UI/Toggle/Toggle';
 import Icon from '../../../../../icons/Icon';
 import ToolbarButton from './ToolbarButton';
@@ -95,17 +96,19 @@ export default class Toolbar extends React.Component {
             onComponentMenuItemClick={this.handlePluginFormDisplay}
             disabled={disabled}
           />
-          {
-            activePlugin
-              ? <ToolbarPluginForm
-                  plugin={activePlugin}
-                  onSubmit={this.handlePluginFormSubmit}
-                  onCancel={this.handlePluginFormCancel}
-                  onAddAsset={onAddAsset}
-                  getAsset={getAsset}
-                />
-              : null
-          }
+          <Modal isOpen={!!activePlugin} onClose={this.handlePluginFormCancel}>
+            {
+              activePlugin
+                ? <ToolbarPluginForm
+                    plugin={activePlugin}
+                    onSubmit={this.handlePluginFormSubmit}
+                    onCancel={this.handlePluginFormCancel}
+                    onAddAsset={onAddAsset}
+                    getAsset={getAsset}
+                  />
+                : null
+            }
+          </Modal>
         </div>
         <div className="nc-markdownWidget-toolbar-markdownToggle">
           <span
