@@ -180,7 +180,7 @@
     "slate-edit-list": "^0.10.1",
     "slate-edit-table": "^0.12.0",
     "slate-plain-serializer": "^0.4.0",
-    "slate-react": "^0.10.16",
+    "slate-react": "0.10.11",
     "slate-soft-break": "^0.6.0",
     "slug": "^0.9.1",
     "toml-j0.4": "^1.1.1",
