@@ -29,5 +29,5 @@
 
 .nc-visualEditor-shortcode-collapsedTitle {
   padding: 8px;
-  font-weight: 500;
+  color: var(--controlLabelColor);
 }
