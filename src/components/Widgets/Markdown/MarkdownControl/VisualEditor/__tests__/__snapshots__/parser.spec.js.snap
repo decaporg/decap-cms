@@ -10,7 +10,7 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "H1",
             },
@@ -34,7 +34,7 @@ Object {
                 Object {
                   "data": undefined,
                   "kind": "text",
-                  "ranges": Array [
+                  "leaves": Array [
                     Object {
                       "text": "yo",
                     },
@@ -55,7 +55,7 @@ Object {
                 Object {
                   "data": undefined,
                   "kind": "text",
-                  "ranges": Array [
+                  "leaves": Array [
                     Object {
                       "text": "bro",
                     },
@@ -76,7 +76,7 @@ Object {
                 Object {
                   "data": undefined,
                   "kind": "text",
-                  "ranges": Array [
+                  "leaves": Array [
                     Object {
                       "text": "fro",
                     },
@@ -106,7 +106,7 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "H1",
             },
@@ -130,7 +130,7 @@ Object {
                 Object {
                   "data": undefined,
                   "kind": "text",
-                  "ranges": Array [
+                  "leaves": Array [
                     Object {
                       "text": "yo",
                     },
@@ -151,7 +151,7 @@ Object {
                 Object {
                   "data": undefined,
                   "kind": "text",
-                  "ranges": Array [
+                  "leaves": Array [
                     Object {
                       "text": "bro",
                     },
@@ -172,7 +172,7 @@ Object {
                 Object {
                   "data": undefined,
                   "kind": "text",
-                  "ranges": Array [
+                  "leaves": Array [
                     Object {
                       "text": "fro",
                     },
@@ -205,7 +205,7 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "var a = 1;",
             },
@@ -229,7 +229,7 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "H1",
             },
@@ -249,7 +249,7 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "blue moon",
             },
@@ -273,7 +273,7 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "H1",
             },
@@ -293,7 +293,7 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "blue moon",
             },
@@ -317,7 +317,7 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "![super](duper.jpg)",
             },
@@ -341,7 +341,7 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "Word",
             },
@@ -356,7 +356,7 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "This is some sweet ",
             },
@@ -365,7 +365,7 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "marks": Array [
                 Object {
@@ -379,7 +379,7 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": " yo!",
             },
@@ -403,7 +403,7 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "An exhibit of Markdown",
             },
@@ -418,7 +418,7 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "This note demonstrates some of what Markdown is capable of doing.",
             },
@@ -433,7 +433,7 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "marks": Array [
                 Object {
@@ -454,7 +454,7 @@ automatically save itself.",
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "Basic formatting",
             },
@@ -469,7 +469,7 @@ automatically save itself.",
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "Paragraphs can be written like so. A paragraph is the basic block of Markdown.
 A paragraph is what text will turn into when there is no reason it should
@@ -486,7 +486,7 @@ become anything else.",
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "Paragraphs must be separated by a blank line. Basic formatting of ",
             },
@@ -495,7 +495,7 @@ become anything else.",
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "marks": Array [
                 Object {
@@ -509,7 +509,7 @@ become anything else.",
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": " and
 ",
@@ -519,7 +519,7 @@ become anything else.",
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "marks": Array [
                 Object {
@@ -533,7 +533,7 @@ become anything else.",
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": " is supported. This ",
             },
@@ -542,7 +542,7 @@ become anything else.",
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "marks": Array [
                 Object {
@@ -575,7 +575,7 @@ become anything else.",
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": " so.",
             },
@@ -590,7 +590,7 @@ become anything else.",
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "Lists",
             },
@@ -605,7 +605,7 @@ become anything else.",
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "Ordered list",
             },
@@ -629,7 +629,7 @@ become anything else.",
                 Object {
                   "data": undefined,
                   "kind": "text",
-                  "ranges": Array [
+                  "leaves": Array [
                     Object {
                       "text": "Item 1 2. A second item 3. Number 3 4. Ⅳ",
                     },
@@ -650,7 +650,7 @@ become anything else.",
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "marks": Array [
                 Object {
@@ -670,7 +670,7 @@ become anything else.",
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "Unordered list",
             },
@@ -694,7 +694,7 @@ become anything else.",
                 Object {
                   "data": undefined,
                   "kind": "text",
-                  "ranges": Array [
+                  "leaves": Array [
                     Object {
                       "text": "An item Another item Yet another item And there's more...",
                     },
@@ -715,7 +715,7 @@ become anything else.",
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "Paragraph modifiers",
             },
@@ -730,7 +730,7 @@ become anything else.",
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "Code block",
             },
@@ -748,7 +748,7 @@ become anything else.",
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "Code blocks are very useful for developers and other people who look at
 code or other things that are written in plain text. As you can see, it
@@ -765,7 +765,7 @@ uses a fixed-width font.",
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "You can also make ",
             },
@@ -774,7 +774,7 @@ uses a fixed-width font.",
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "marks": Array [
                 Object {
@@ -788,7 +788,7 @@ uses a fixed-width font.",
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": " to add code into other things.",
             },
@@ -803,7 +803,7 @@ uses a fixed-width font.",
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "Quote",
             },
@@ -821,7 +821,7 @@ uses a fixed-width font.",
             Object {
               "data": undefined,
               "kind": "text",
-              "ranges": Array [
+              "leaves": Array [
                 Object {
                   "text": "Here is a quote. What this is should be self explanatory. Quotes are
 automatically indented when they are used.",
@@ -840,7 +840,7 @@ automatically indented when they are used.",
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "Headings",
             },
@@ -855,7 +855,7 @@ automatically indented when they are used.",
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "There are six levels of headings. They correspond with the six levels of HTML
 headings. You've probably noticed them already in the page. Each level down
@@ -872,7 +872,7 @@ uses one more hash character.",
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "Headings ",
             },
@@ -881,7 +881,7 @@ uses one more hash character.",
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "marks": Array [
                 Object {
@@ -895,7 +895,7 @@ uses one more hash character.",
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": " also contain ",
             },
@@ -904,7 +904,7 @@ uses one more hash character.",
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "marks": Array [
                 Object {
@@ -924,7 +924,7 @@ uses one more hash character.",
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "They can even contain ",
             },
@@ -933,7 +933,7 @@ uses one more hash character.",
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "marks": Array [
                 Object {
@@ -953,7 +953,7 @@ uses one more hash character.",
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "Of course, demonstrating what headings look like messes up the structure of the
 page.",
@@ -969,7 +969,7 @@ page.",
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "I don't recommend using more than three or four levels of headings here,
 because, when you're smallest heading isn't too small, and you're largest
@@ -987,7 +987,7 @@ more important, there there are only so many sizes that you can use.",
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "URLs",
             },
@@ -1002,7 +1002,7 @@ more important, there there are only so many sizes that you can use.",
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "URLs can be made in a handful of ways:",
             },
@@ -1026,7 +1026,7 @@ more important, there there are only so many sizes that you can use.",
                 Object {
                   "data": undefined,
                   "kind": "text",
-                  "ranges": Array [
+                  "leaves": Array [
                     Object {
                       "text": "A named link to MarkItDown. The easiest way to do these is to select what you",
                     },
@@ -1047,7 +1047,7 @@ more important, there there are only so many sizes that you can use.",
                 Object {
                   "data": undefined,
                   "kind": "text",
-                  "ranges": Array [
+                  "leaves": Array [
                     Object {
                       "text": "want to make a link and hit ",
                     },
@@ -1056,7 +1056,7 @@ more important, there there are only so many sizes that you can use.",
                 Object {
                   "data": undefined,
                   "kind": "text",
-                  "ranges": Array [
+                  "leaves": Array [
                     Object {
                       "marks": Array [
                         Object {
@@ -1070,7 +1070,7 @@ more important, there there are only so many sizes that you can use.",
                 Object {
                   "data": undefined,
                   "kind": "text",
-                  "ranges": Array [
+                  "leaves": Array [
                     Object {
                       "text": ".  Another named link to",
                     },
@@ -1098,7 +1098,7 @@ more important, there there are only so many sizes that you can use.",
                     Object {
                       "data": undefined,
                       "kind": "text",
-                      "ranges": Array [
+                      "leaves": Array [
                         Object {
                           "text": "MarkItDown",
                         },
@@ -1110,7 +1110,7 @@ more important, there there are only so many sizes that you can use.",
                 Object {
                   "data": undefined,
                   "kind": "text",
-                  "ranges": Array [
+                  "leaves": Array [
                     Object {
                       "text": " Sometimes you just want a URL like",
                     },
@@ -1138,7 +1138,7 @@ more important, there there are only so many sizes that you can use.",
                     Object {
                       "data": undefined,
                       "kind": "text",
-                      "ranges": Array [
+                      "leaves": Array [
                         Object {
                           "text": "http://www.markitdown.net/",
                         },
@@ -1150,7 +1150,7 @@ more important, there there are only so many sizes that you can use.",
                 Object {
                   "data": undefined,
                   "kind": "text",
-                  "ranges": Array [
+                  "leaves": Array [
                     Object {
                       "text": ".",
                     },
@@ -1171,7 +1171,7 @@ more important, there there are only so many sizes that you can use.",
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "Horizontal rule",
             },
@@ -1186,7 +1186,7 @@ more important, there there are only so many sizes that you can use.",
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "A horizontal rule is a line that goes across the middle of the page.",
             },
@@ -1206,7 +1206,7 @@ more important, there there are only so many sizes that you can use.",
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "It's sometimes handy for breaking things up.",
             },
@@ -1221,7 +1221,7 @@ more important, there there are only so many sizes that you can use.",
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "Images",
             },
@@ -1236,7 +1236,7 @@ more important, there there are only so many sizes that you can use.",
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "Markdown can also contain images. I'll need to add something here sometime.",
             },
@@ -1251,7 +1251,7 @@ more important, there there are only so many sizes that you can use.",
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "Finally",
             },
@@ -1266,7 +1266,7 @@ more important, there there are only so many sizes that you can use.",
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "There's actually a lot more to Markdown than this. See the official
 introduction and syntax for more information. However, be aware that this is
@@ -1293,7 +1293,7 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "Word",
             },
@@ -1308,7 +1308,7 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "How far is it to ",
             },
@@ -1324,7 +1324,7 @@ Object {
             Object {
               "data": undefined,
               "kind": "text",
-              "ranges": Array [
+              "leaves": Array [
                 Object {
                   "text": "Google",
                 },
@@ -1336,7 +1336,7 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": " land?",
             },
@@ -1360,7 +1360,7 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "H1",
             },
@@ -1375,7 +1375,7 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "H2",
             },
@@ -1390,7 +1390,7 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "H3",
             },
@@ -1414,7 +1414,7 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "Word",
             },
@@ -1429,7 +1429,7 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "This is ",
             },
@@ -1438,7 +1438,7 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "marks": Array [
                 Object {
@@ -1477,7 +1477,7 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "perhaps ",
             },
@@ -1486,7 +1486,7 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "marks": Array [
                 Object {
@@ -1500,7 +1500,7 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": " even",
             },
@@ -1524,7 +1524,7 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "![test](test.png)",
             },
@@ -1539,7 +1539,7 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "{{< test >}}",
             },
@@ -1563,7 +1563,7 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "H1",
             },
@@ -1578,7 +1578,7 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "sweet body",
             },
@@ -1602,7 +1602,7 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "blue moon",
             },
@@ -1614,7 +1614,7 @@ Object {
             Object {
               "data": undefined,
               "kind": "text",
-              "ranges": Array [
+              "leaves": Array [
                 Object {
                   "text": "
 ",
@@ -1627,7 +1627,7 @@ Object {
         Object {
           "data": undefined,
           "kind": "text",
-          "ranges": Array [
+          "leaves": Array [
             Object {
               "text": "footballs",
             },
