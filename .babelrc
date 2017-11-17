@@ -7,7 +7,6 @@
     "react"
   ],
   "plugins": [
-    "react-hot-loader/babel",
     "lodash",
     ["babel-plugin-transform-builtin-extend", {
       "globals": ["Error"]
