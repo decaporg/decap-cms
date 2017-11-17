@@ -259,6 +259,11 @@ class MediaLibrary extends React.Component {
             autoFocus
           />
         </div>
+        {
+          shouldShowEmptyMessage
+            ? <div className="nc-mediaLibrary-emptyMessage"><h1>{emptyMessage}</h1></div>
+            : null
+        }
         <div className="nc-mediaLibrary-cardGrid-container" ref={ref => (this.scrollContainerRef = ref)}>
           <div className="nc-mediaLibrary-cardGrid">
             {
@@ -286,11 +291,6 @@ class MediaLibrary extends React.Component {
                 : null
             }
           </div>
-          {
-            shouldShowEmptyMessage
-              ? <div className="nc-mediaLibrary-emptyMessage"><h1>{emptyMessage}</h1></div>
-              : null
-          }
           { isPaginating ? <h1 className="nc-mediaLibrary-paginatingMessage">Loading...</h1> : null }
         </div>
         <MediaLibraryFooter
