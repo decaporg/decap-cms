@@ -52,8 +52,8 @@ class Shortcode extends React.Component {
           };
 
           return (
-            <div className="nc-controlPane-control" key={key} onClick={e => e.stopPropagation()}>
-              <label className="nc-controlPane-label" htmlFor={key}>{field.get('label')}</label>
+            <div key={key} onClick={e => e.stopPropagation()}>
+              <label htmlFor={key}>{field.get('label')}</label>
               <Control {...controlProps}/>
             </div>
           );

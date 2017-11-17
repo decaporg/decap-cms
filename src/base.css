@@ -28,7 +28,9 @@
   --highlightFGAltColor: #eee;
   --controlLabelColor: #7a8291;
   --controlBGColor: #fff;
-  --colorListItemHover: #e8f5fe;
+  --colorActionNeutral: #e8f5fe;
+  --colorListItemHover: var(--colorActionNeutral);
+  --colorInlineForm: var(--colorActionNeutral);
   --backgroundTertiaryColor: #fff;
   --backgroundTertiaryColorDark: color(var(--backgroundTertiaryColor) lightness(90%));
   --richTextEditorMinHeight: 300px;
@@ -81,6 +83,102 @@
 
     &:focus {
       border-color: var(--primaryColor);
+    }
+  }
+
+  --label: {
+    display: inline-block;
+    color: var(--controlLabelColor);
+    font-size: 12px;
+    text-transform: uppercase;
+    font-weight: 600;
+    background-color: var(--textFieldBorderColor);
+    border: 0;
+    border-radius: 3px;
+    padding: 3px 6px;
+    transition: all var(--transition);
+  }
+
+  --labelledInputWrapper: {
+    color: var(--textColor);
+
+    & input,
+    & textarea,
+    & select {
+      @apply(--input);
+      border-top-left-radius: 0;
+    }
+
+    & select {
+      text-indent: 14px;
+      height: 58px;
+    }
+
+    & label {
+      @apply(--label);
+      position: relative;
+      border-radius: 3px 3px 0 0;
+      padding-bottom: 2px;
+
+      /**
+       * Faux outside curve into top of input
+       */
+      &:before,
+      &:after {
+        content: '';
+        display: block;
+        position: absolute;
+        top: 0;
+        right: -4px;
+        height: 100%;
+        width: 4px;
+        background-color: inherit;
+      }
+
+      &:after {
+        border-bottom-left-radius: 3px;
+        background-color: #fff;
+      }
+    }
+
+    &:focus-within > .nc-controlPane-label {
+      background-color: var(--primaryColor);
+      color: #fff;
+    }
+  }
+
+  --labelNested: {
+    background: none;
+
+    &:before,
+    &:after {
+      content: none;
+    }
+  }
+
+  --inputNested: {
+    border: 0;
+    border-radius: 0;
+    border-left: 2px solid var(--textFieldBorderColor);
+
+    &:focus {
+      border-color: var(--primaryColor);
+    }
+  }
+
+  --labelledInputWrapperNested {
+    & label {
+      @apply(--labelNested);
+    }
+
+    & input,
+    & textarea {
+      @apply(--inputNested);
+    }
+
+    &:focus-within > .nc-controlPane-label {
+      background-color: transparent;
+      color: var(--primaryColor);
     }
   }
 

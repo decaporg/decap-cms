@@ -126,13 +126,16 @@
 }
 
 .nc-visualEditor-shortcode {
-  border: 2px solid black;
-  padding: 8px;
-  margin: 2px 0;
-  cursor: pointer;
-}
+  @apply(--labelledInputWrapperNested);
+  background-color: var(--colorInlineForm);
+  border-radius: var(--borderRadius);
+  margin: 12px 0;
+  padding: 14px;
 
-.nc-visualEditor-shortcodeSelected {
-  border-color: var(--primaryColor);
-  color: var(--primaryColor);
+  & input,
+  & textarea,
+  & select {
+    border-radius: 0 var(--borderRadius) var(--borderRadius) 0;
+    background-color: rgba(255, 255, 255, 0.8);
+  }
 }

@@ -3,60 +3,13 @@
 }
 
 .nc-controlPane-control {
-  color: var(--textColor);
+  @apply(--labelledInputWrapper);
   position: relative;
   margin-top: 14px;
-
-  & input,
-  & textarea,
-  & select {
-    @apply(--input);
-  }
-
-  & select {
-    text-indent: 14px;
-    height: 58px;
-  }
-
-  &:focus-within > .nc-controlPane-label {
-    background-color: var(--primaryColor);
-    color: #fff;
-  }
 }
 
 .nc-controlPane-label {
-  display: inline-block;
-  color: var(--controlLabelColor);
-  font-size: 12px;
-  text-transform: uppercase;
-  font-weight: 600;
-  background-color: #dfdfe3;
-  border: 0;
-  position: relative;
-  top: 6px;
-  border-radius: 3px 3px 0 0;
-  padding: 3px 6px 8px;
-  transition: all var(--transition);
-
-  /**
-   * Faux outside curve into top of input
-   */
-  &:before,
-  &:after {
-    content: '';
-    display: block;
-    position: absolute;
-    top: 0;
-    right: -4px;
-    height: calc(100% - 6px);
-    width: 4px;
-    background-color: inherit;
-  }
-
-  &:after {
-    border-bottom-left-radius: 3px;
-    background-color: #fff;
-  }
+  @apply(--label);
 }
 
 .nc-controlPane-labelWithError {
@@ -72,24 +25,6 @@
 
 .nc-objectControl-root {
   & .nc-controlPane-control {
-    & label {
-      background: none;
-    }
-
-    & input,
-    & textarea {
-      border: 0;
-      border-radius: 0;
-      border-left: 2px solid var(--textFieldBorderColor);
-
-      &:focus {
-        border-color: var(--primaryColor);
-      }
-    }
-
-    &:focus-within > .nc-controlPane-label {
-      background-color: transparent;
-      color: var(--primaryColor);
-    }
+    @apply(--labelledInputWrapperNested);
   }
 }
