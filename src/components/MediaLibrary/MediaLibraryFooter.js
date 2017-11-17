@@ -39,7 +39,7 @@ const MediaLibraryFooter = ({
         />
         { shouldShowLoader ? loader : null }
       </div>
-      <div>
+      <div className="nc-mediaLibrary-footer-section">
         <button
           onClick={onClose}
         >
