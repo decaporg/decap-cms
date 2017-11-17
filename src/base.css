@@ -41,6 +41,7 @@
   --buttonBackgroundColor: var(--secondaryColor);
   --topBarHeight: 56px;
   --transition: .2s ease;
+  --inputPadding: 16px 20px;
 
   --dropShadow: {
     box-shadow: 0 2px 4px 0 rgba(19, 39, 48, .12);
@@ -68,7 +69,7 @@
   --input: {
     display: block;
     width: 100%;
-    padding: 16px 20px;
+    padding: var(--inputPadding);
     margin: 0;
     border: var(--textFieldBorder);
     border-radius: var(--borderRadius);

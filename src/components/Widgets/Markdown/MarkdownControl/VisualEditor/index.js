@@ -122,7 +122,7 @@ export default class Editor extends Component {
     this.setState({ value: change.value });
   };
 
-  handlePluginSubmit = pluginId => {
+  handlePluginAdd = pluginId => {
     const { value } = this.state;
     const nodes = [Text.create('')];
     const block = {
@@ -130,6 +130,7 @@ export default class Editor extends Component {
       type: 'shortcode',
       data: {
         shortcode: pluginId,
+        shortcodeNew: true,
         shortcodeData: Map(),
       },
       isVoid: true,
@@ -200,7 +201,7 @@ export default class Editor extends Component {
             }}
             onToggleMode={this.handleToggle}
             plugins={this.state.shortcodePlugins}
-            onSubmit={this.handlePluginSubmit}
+            onSubmit={this.handlePluginAdd}
             onAddAsset={onAddAsset}
             getAsset={getAsset}
           />

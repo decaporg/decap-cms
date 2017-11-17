@@ -1,13 +1,22 @@
-.nc-imageControl-input {
-  display: none !important;
-}
-
 .nc-imageControl-content {
   display: flex;
 }
 
 .nc-imageControl-imageUpload {
   @apply(--input);
+}
+
+.nc-visualEditor-shortcode,
+.nc-objectControl-root {
+  & .nc-imageControl-imageUpload {
+    @apply(--inputNested);
+  }
+}
+
+.nc-visualEditor-shortcode {
+  & .nc-imageControl-imageUpload {
+    @apply(--shortcodeInput);
+  }
 }
 
 .nc-imageControl-imageWrapper {

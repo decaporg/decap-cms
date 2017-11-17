@@ -1,0 +1,29 @@
+.nc-listItemTopBar {
+  display: flex;
+  justify-content: space-between;
+  height: 26px;
+  border-radius: var(--borderRadius) var(--borderRadius) 0 0;
+  position: relative;
+}
+
+.nc-listItemTopBar-toggleButton,
+.nc-listItemTopBar-dragIcon,
+.nc-listItemTopBar-removeButton {
+  color: var(--controlLabelColor);
+  background: transparent;
+  font-size: 16px;
+  line-height: 1;
+  padding: 0;
+  width: 32px;
+  text-align: center;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.nc-listControl-dragIcon {
+  width: 100%;
+  cursor: move;
+}
+
