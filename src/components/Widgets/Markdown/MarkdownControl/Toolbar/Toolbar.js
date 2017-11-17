@@ -7,7 +7,6 @@ import { Dropdown, DropdownItem } from '../../../../UI/Dropdown/Dropdown';
 import Switch from '../../../../UI/Toggle/Toggle';
 import Icon from '../../../../../icons/Icon';
 import ToolbarButton from './ToolbarButton';
-import ToolbarPluginForm from './ToolbarPluginForm';
 
 export default class Toolbar extends React.Component {
   static propTypes = {

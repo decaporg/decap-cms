@@ -2,10 +2,12 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { List, Map, fromJS } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import { partial } from 'lodash';
 import c from 'classnames';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 import Icon from '../../../icons/Icon';
 import ObjectControl from '../Object/ObjectControl';
+import ListItemTopBar from '../../UI/ListItemTopBar/ListItemTopBar';
 
 function ListItem(props) {
   return <div {...props} className={`list-item ${ props.className || '' }`}>{props.children}</div>;
@@ -21,24 +23,6 @@ function valueToString(value) {
 }
 
 const SortableListItem = SortableElement(ListItem);
-
-const DragHandle = SortableHandle(() => (
-  <span className="nc-listControl-dragIcon">
-    <Icon type="drag-handle" size="small"/>
-  </span>
-));
-
-const ItemTopBar = ({ index, collapsed, onCollapseToggle, onRemove }) => (
-  <div className="nc-listControl-dragHandle">
-    <button className="nc-listControl-toggleButton" onClick={onCollapseToggle(index)}>
-      <Icon type="caret" size="small" direction={collapsed ? 'up' : 'down'}/>
-    </button>
-    <DragHandle/>
-    <button className="nc-listControl-removeButton" onClick={onRemove(index)}>
-      <Icon type="close" size="small"/>
-    </button>
-  </div>
-);
 
 const TopBar = ({ onAdd, listLabel, collapsed, onCollapseToggle, itemsCount }) => (
   <div className="nc-listControl-topBar">
@@ -151,27 +135,23 @@ export default class ListControl extends Component {
     };
   }
 
-  handleRemove = index => {
-    return (e) => {
-      e.preventDefault();
-      const { value, metadata, onChange, forID } = this.props;
-      const parsedMetadata = metadata && { [forID]: metadata.removeIn(value.get(index).valueSeq()) };
-      onChange(value.remove(index), parsedMetadata);
-    };
+  handleRemove = (index, event) => {
+    event.preventDefault();
+    const { value, metadata, onChange, forID } = this.props;
+    const parsedMetadata = metadata && { [forID]: metadata.removeIn(value.get(index).valueSeq()) };
+    onChange(value.remove(index), parsedMetadata);
   }
 
   handleCollapseToggle = () => {
     this.setState({ collapsed: !this.state.collapsed });
   }
 
-  handleItemCollapseToggle = index => {
-    return (e) => {
-      e.preventDefault();
-      const { itemsCollapsed } = this.state;
-      this.setState({
-        itemsCollapsed: itemsCollapsed.set(index, !itemsCollapsed.get(index, false)),
-      });
-    };
+  handleItemCollapseToggle = (index, event) => {
+    event.preventDefault();
+    const { itemsCollapsed } = this.state;
+    this.setState({
+      itemsCollapsed: itemsCollapsed.set(index, !itemsCollapsed.get(index, false)),
+    });
   }
 
   objectLabel(item) {
@@ -205,11 +185,12 @@ export default class ListControl extends Component {
     const classNames = ['nc-listControl-item', collapsed ? 'nc-listControl-collapsed' : ''];
 
     return (<SortableListItem className={classNames.join(' ')} index={index} key={`item-${ index }`}>
-      <ItemTopBar
-        index={index}
+      <ListItemTopBar
+        className="nc-listControl-itemTopBar"
         collapsed={collapsed}
-        onCollapseToggle={this.handleItemCollapseToggle}
-        onRemove={this.handleRemove}
+        onCollapseToggle={partial(this.handleItemCollapseToggle, index)}
+        onRemove={partial(this.handleRemove, index)}
+        dragHandleHOC={SortableHandle}
       />
       <div className="nc-listControl-objectLabel">{this.objectLabel(item)}</div>
       <ObjectControl

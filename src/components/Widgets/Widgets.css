@@ -8,6 +8,10 @@
 @import "./Object/Object.css";
 @import "./List/List.css";
 
+:root {
+  --widgetNestDistance: 14px;
+}
+
 .nc-widgetPreview {
   margin: 15px 2px;
 }
