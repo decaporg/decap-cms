@@ -34,6 +34,15 @@ class Shortcode extends React.Component {
     this.setState({ collapsed: !this.state.collapsed });
   }
 
+  handleRemove = () => {
+    const { editor, node } = this.props;
+    editor.change(change => {
+      change
+        .removeNodeByKey(node.key)
+        .focus();
+    });
+  }
+
   handleClick = event => {
     /**
      * Stop click from propagating to editor, otherwise focus will be passed
@@ -96,6 +105,7 @@ class Shortcode extends React.Component {
           className="nc-visualEditor-shortcode-topBar"
           collapsed={collapsed}
           onCollapseToggle={this.handleCollapseToggle}
+          onRemove={this.handleRemove}
         />
         {
           collapsed
