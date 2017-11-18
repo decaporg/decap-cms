@@ -3,18 +3,18 @@ import React, { Component } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { OrderedMap } from 'immutable';
 import { connect } from 'react-redux';
-import { 
+import {
   loadUnpublishedEntries,
   updateUnpublishedEntryStatus,
   publishUnpublishedEntry,
   deleteUnpublishedEntry 
-} from '../../actions/editorialWorkflow';
-import { selectUnpublishedEntriesByStatus } from '../../reducers';
-import { EDITORIAL_WORKFLOW, status } from '../../constants/publishModes';
-import UnpublishedListing from '../../components/UnpublishedListing/UnpublishedListing';
-import { Loader } from '../../components/UI';
+} from '../actions/editorialWorkflow';
+import { selectUnpublishedEntriesByStatus } from '../reducers';
+import { EDITORIAL_WORKFLOW, status } from '../constants/publishModes';
+import { Loader } from '../components/UI';
+import WorkflowList from './WorkflowList';
 
-class unpublishedEntriesPanel extends Component {
+class Workflow extends Component {
   static propTypes = {
     collections: ImmutablePropTypes.orderedMap,
     isEditorialWorkflow: PropTypes.bool.isRequired,
@@ -37,9 +37,9 @@ class unpublishedEntriesPanel extends Component {
     const { isEditorialWorkflow, isFetching, unpublishedEntries, updateUnpublishedEntryStatus, publishUnpublishedEntry, deleteUnpublishedEntry } = this.props;
     if (!isEditorialWorkflow) return null;
     if (isFetching) return <Loader active>Loading Editorial Workflow Entries</Loader>;
-   
+
     return (
-      <UnpublishedListing
+      <WorkflowList
         entries={unpublishedEntries}
         handleChangeStatus={updateUnpublishedEntryStatus}
         handlePublish={publishUnpublishedEntry}
@@ -74,4 +74,4 @@ export default connect(mapStateToProps, {
   updateUnpublishedEntryStatus,
   publishUnpublishedEntry,
   deleteUnpublishedEntry,
-})(unpublishedEntriesPanel);
+})(Workflow);

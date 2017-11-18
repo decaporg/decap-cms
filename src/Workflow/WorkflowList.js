@@ -1,20 +1,17 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { DragSource, DropTarget, HTML5DragDrop } from '../UI/dndHelpers';
+import { DragSource, DropTarget, HTML5DragDrop } from '../components/UI/dndHelpers';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { Link } from 'react-router-dom';
 import moment from 'moment';
 import { capitalize } from 'lodash'
 import classnames from 'classnames';
-import { Card, CardTitle, CardText, CardActions } from 'react-toolbox/lib/card';
-import Button from 'react-toolbox/lib/button';
-import UnpublishedListingCardMeta from './UnpublishedListingCardMeta.js';
-import { status, statusDescriptions } from '../../constants/publishModes';
+import WorkflowCard from './WorkflowCard';
+import { status, statusDescriptions } from '../constants/publishModes';
 
 // This is a namespace so that we can only drop these elements on a DropTarget with the same
-const DNDNamespace = 'cms-unpublished-entries';
+const DNDNamespace = 'cms-workflow';
 
-class UnpublishedListing extends React.Component {
+class WorkflowList extends React.Component {
   static propTypes = {
     entries: ImmutablePropTypes.orderedMap,
     handleChangeStatus: PropTypes.func.isRequired,
@@ -55,10 +52,10 @@ class UnpublishedListing extends React.Component {
         >
           {(connect, { isHovered }) => connect(
             <div className={classnames(
-              'nc-unpublishedListing-column',
-              { 'nc-unpublishedListing-column-hovered' : isHovered },
+              'nc-workflow-list',
+              { 'nc-workflow-list-hovered' : isHovered },
             )}>
-              <h2 className="nc-unpublishedListing-columnHeading">
+              <h2 className="nc-workflow-list-heading">
                 {statusDescriptions.get(currColumn)}
               </h2>
               {this.renderColumns(currEntries, currColumn)}
@@ -73,12 +70,13 @@ class UnpublishedListing extends React.Component {
           entries.map((entry) => {
             // Look for an "author" field. Fallback to username on backend implementation;
             const author = entry.getIn(['data', 'author'], entry.getIn(['metaData', 'user']));
-            const timeStamp = moment(entry.getIn(['metaData', 'timeStamp'])).format('llll');
-            const link = `collections/${ entry.getIn(['metaData', 'collection']) }/entries/${ entry.get('slug') }`;
+            const timestamp = moment(entry.getIn(['metaData', 'timeStamp'])).format('llll');
+            const editLink = `collections/${ entry.getIn(['metaData', 'collection']) }/entries/${ entry.get('slug') }`;
             const slug = entry.get('slug');
             const ownStatus = entry.getIn(['metaData', 'status']);
             const collection = entry.getIn(['metaData', 'collection']);
             const isModification = entry.get('isModification');
+            const canPublish = ownStatus === status.last() && !entry.get('isPersisting', false);
             return (
               <DragSource
                 namespace={DNDNamespace}
@@ -88,41 +86,18 @@ class UnpublishedListing extends React.Component {
                 ownStatus={ownStatus}
               >
               {connect => connect(
-                <div className="nc-unpublishedListing-draggable">
-                  <Card className="nc-unpublishedListing-card">
-                    <UnpublishedListingCardMeta
-                      meta={capitalize(collection)}
-                      label={isModification ? "" : "New"}
-                    />
-                    <CardTitle
-                      title={entry.getIn(['data', 'title'])}
-                      subtitle={`by ${ author }`}
-                      className="nc-unpublishedListing-cardTitle"
-                    />
-                    <CardText>
-                      Last updated: {timeStamp} by {entry.getIn(['metaData', 'user'])}
-                    </CardText>
-                    <CardActions>
-                      <Link to={link}>
-                        <Button>Edit</Button>
-                      </Link>
-                      <Button
-                      onClick={this.requestDelete.bind(this, collection, slug, ownStatus)}>
-                        Delete
-                      </Button>
-                      {
-                        (ownStatus === status.last() && !entry.get('isPersisting', false)) &&
-                        <Button
-                          accent
-                          /* eslint-disable */
-                          onClick={this.requestPublish.bind(this, collection, slug, ownStatus)}
-                          /* eslint-enable */
-                        >
-                          Publish now
-                        </Button>
-                      }
-                    </CardActions>
-                  </Card>
+                <div>
+                  <WorkflowCard
+                    title={entry.getIn(['data', 'title'])}
+                    author={author}
+                    authorLastChange={entry.getIn(['metaData', 'user'])}
+                    isModification={isModification}
+                    editLink={editLink}
+                    timestamp={timestamp}
+                    onDelete={this.requestDelete.bind(this, collection, slug, ownStatus)}
+                    canPublish={canPublish}
+                    onPublish={this.requestPublish.bind(this, collection, slug, ownStatus)}
+                  />
                 </div>
               )}
               </DragSource>
@@ -138,7 +113,7 @@ class UnpublishedListing extends React.Component {
     return (
       <div>
         <h5>Editorial Workflow</h5>
-        <div className="nc-unpublishedListing-container">
+        <div className="nc-workflow-list-container">
           {columns}
         </div>
       </div>
@@ -146,4 +121,4 @@ class UnpublishedListing extends React.Component {
   }
 }
 
-export default HTML5DragDrop(UnpublishedListing); // eslint-disable-line
+export default HTML5DragDrop(WorkflowList); // eslint-disable-line

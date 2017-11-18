@@ -3,8 +3,6 @@ import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 import { Route, Switch, Link, Redirect } from 'react-router-dom';
-import FontIcon from 'react-toolbox/lib/font_icon';
-import { Navigation } from 'react-toolbox/lib/navigation';
 import { Notifs } from 'redux-notifications';
 import TopBarProgress from 'react-topbar-progress-indicator';
 import { loadConfig as actionLoadConfig } from '../actions/config';
@@ -18,8 +16,9 @@ import { Loader, Toast } from '../components/UI/index';
 import { getCollectionUrl, getNewEntryUrl } from '../lib/urlHelper';
 import { SIMPLE, EDITORIAL_WORKFLOW } from '../constants/publishModes';
 import Collection from '../Collection/Collection';
+import Workflow from '../Workflow/Workflow';
 import EntryPage from '../containers/EntryPage';
-import NotFoundPage from '../containers/NotFoundPage';
+import NotFoundPage from './NotFoundPage';
 
 TopBarProgress.config({
   barColors: {
@@ -120,6 +119,7 @@ class App extends React.Component {
     }
 
     const defaultPath = `/collections/${collections.first().get('name')}`;
+    const hasWorkflow = publishMode === EDITORIAL_WORKFLOW;
 
     return (
       <div className="nc-app-container">
@@ -130,6 +130,7 @@ class App extends React.Component {
           onCreateEntryClick={createNewEntry}
           onLogoutClick={logoutUser}
           openMediaLibrary={openMediaLibrary}
+          hasWorkflow={hasWorkflow}
         />
         <div className="nc-app-main">
           { isFetching && <TopBarProgress /> }
@@ -137,6 +138,7 @@ class App extends React.Component {
             <Switch>
               <Redirect exact from="/" to={defaultPath} />
               <Redirect exact from="/search/" to={defaultPath} />
+              { hasWorkflow ? <Route path="/workflow" component={Workflow}/> : null }
               <Route exact path="/collections/:name" component={Collection} />
               <Route path="/collections/:name/new" render={props => <EntryPage {...props} newRecord />} />
               <Route path="/collections/:name/entries/:slug" component={EntryPage} />
@@ -151,7 +153,7 @@ class App extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
   const { auth, config, collections, globalUI } = state;
   const user = auth && auth.get('user');
   const isFetching = globalUI.get('isFetching');
