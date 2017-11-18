@@ -46,7 +46,11 @@ export default class ListControl extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { itemsCollapsed: List(), value: valueToString(props.value) };
+    this.state = { 
+      itemsCollapsed: List(),
+      value: valueToString(props.value),
+      isAllCollapsed: true,
+    };
     this.valueType = null;
   }
 
@@ -102,6 +106,12 @@ export default class ListControl extends Component {
     e.preventDefault();
     const { value, onChange } = this.props;
     const parsedValue = (this.valueType === valueTypes.SINGLE) ? null : Map();
+    const { itemsCollapsed } = this.state;
+    
+    this.setState({
+      itemsCollapsed: itemsCollapsed.set(value.size, false),
+    });
+    
     onChange((value || List()).push(parsedValue));
   };
 
@@ -129,11 +139,33 @@ export default class ListControl extends Component {
     return (e) => {
       e.preventDefault();
       const { itemsCollapsed } = this.state;
+      let collapsed = itemsCollapsed.get(index);
+      
+      if (collapsed === undefined) {
+        collapsed = this.state.isAllCollapsed;
+      }
+
       this.setState({
         itemsCollapsed: itemsCollapsed.set(index, !itemsCollapsed.get(index, false)),
       });
     };
   }
+
+  handleColapseAllToggle = (e) => {
+    e.preventDefault();
+    const { value } = this.props;
+    const { isAllCollapsed } = this.state;
+    let { itemsCollapsed } = this.state;
+
+    for (let i = 0; i < value.size; i++) {
+      itemsCollapsed = itemsCollapsed.set(i, !isAllCollapsed);
+    }
+    
+    this.setState({
+      itemsCollapsed,
+      isAllCollapsed: !isAllCollapsed,
+    });
+  };
 
   objectLabel(item) {
     const { field } = this.props;
@@ -162,7 +194,12 @@ export default class ListControl extends Component {
   renderItem = (item, index) => {
     const { field, getAsset, mediaPaths, onOpenMediaLibrary, onAddAsset, onRemoveAsset } = this.props;
     const { itemsCollapsed } = this.state;
-    const collapsed = itemsCollapsed.get(index);
+    let collapsed = itemsCollapsed.get(index);
+
+    if (collapsed === undefined) {
+      collapsed = this.state.isAllCollapsed;
+    }
+
     const classNames = ['nc-listControl-item', collapsed ? 'nc-listControl-collapsed' : ''];
 
     return (<SortableListItem className={classNames.join(' ')} index={index} key={`item-${ index }`}>
@@ -193,6 +230,10 @@ export default class ListControl extends Component {
     const listLabel = field.get('label');
 
     return (<div id={forID}>
+      <button className="nc-listControl-toggleCollapseAllButton" onClick={this.handleColapseAllToggle}>
+        <FontIcon value={this.state.isAllCollapsed ? 'arrow_drop_down' : 'arrow_drop_up'} />
+        <span className="nc-listControl-toggleCollapseAllButtonText">{this.state.isAllCollapsed ? 'Expand all' : 'Collapse all'}</span>
+      </button>
       <SortableList
         items={value || List()}
         renderItem={this.renderItem}
@@ -223,4 +264,4 @@ export default class ListControl extends Component {
       onBlur={this.handleCleanup}
     />);
   }
-};
+}
