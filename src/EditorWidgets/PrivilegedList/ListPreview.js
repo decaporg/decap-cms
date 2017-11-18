@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { resolveWidget } from '../../Widgets';
+import { resolveWidget } from '../../EditorWidgets';
 import ObjectPreview from '../Object/ObjectPreview';
 
 const ListPreview = ObjectPreview;

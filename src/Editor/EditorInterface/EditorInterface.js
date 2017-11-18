@@ -4,16 +4,17 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import SplitPane from 'react-split-pane';
 import Button from 'react-toolbox/lib/button';
 import classnames from 'classnames';
-import { ScrollSync, ScrollSyncPane } from '../ScrollSync';
-import ControlPane from '../ControlPanel/ControlPane';
-import PreviewPane from '../PreviewPane/PreviewPane';
-import Toolbar from './EntryEditorToolbar';
-import { StickyContext } from '../UI/Sticky/Sticky';
+import registry from '../../lib/registry';
+import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
+import EditorControlPane from './EditorControlPane/EditorControlPane';
+import EditorPreviewPane from './EditorPreviewPane/EditorPreviewPane';
+import EditorToolbar from './EditorToolbar';
+import { StickyContext } from '../../UI/Sticky/Sticky';
 
 const PREVIEW_VISIBLE = 'cms.preview-visible';
 const SCROLL_SYNC_ENABLED = 'cms.scroll-sync-enabled';
 
-class EntryEditor extends Component {
+class EditorInterface extends Component {
   state = {
     showEventBlocker: false,
     previewVisible: localStorage.getItem(PREVIEW_VISIBLE) !== "false",
@@ -44,6 +45,10 @@ class EntryEditor extends Component {
     this.setState({ scrollSyncEnabled: newScrollSyncEnabled });
     localStorage.setItem(SCROLL_SYNC_ENABLED, newScrollSyncEnabled);
   };
+
+  resolveWidget = name => {
+    return registry.getWidget(name || 'string') || registry.getWidget('unknown');
+  }
 
   render() {
     const {
@@ -86,7 +91,7 @@ class EntryEditor extends Component {
         className={classnames('nc-entryEditor-controlPane', { 'nc-entryEditor-blocker': showEventBlocker })}
         registerListener={fn => this.updateStickyContext = fn}
       >
-        <ControlPane
+        <EditorControlPane
           collection={collection}
           entry={entry}
           fields={fields}
@@ -99,6 +104,7 @@ class EntryEditor extends Component {
           onOpenMediaLibrary={onOpenMediaLibrary}
           onAddAsset={onAddAsset}
           onRemoveInsertedMedia={onRemoveInsertedMedia}
+          resolveWidget={this.resolveWidget}
           ref={c => this.controlPaneRef = c} // eslint-disable-line
         />
       </StickyContext>
@@ -115,12 +121,13 @@ class EntryEditor extends Component {
           >
             <ScrollSyncPane>{editor}</ScrollSyncPane>
             <div className={classnames('nc-entryEditor-previewPane', { 'nc-entryEditor-blocker': showEventBlocker })}>
-              <PreviewPane
+              <EditorPreviewPane
                 collection={collection}
                 entry={entry}
                 fields={fields}
                 fieldsMetaData={fieldsMetaData}
                 getAsset={getAsset}
+                resolveWidget={this.resolveWidget}
               />
             </div>
           </SplitPane>
@@ -136,7 +143,7 @@ class EntryEditor extends Component {
 
     return (
       <div className="nc-entryEditor-containerOuter">
-        <Toolbar
+        <EditorToolbar
           isPersisting={entry.get('isPersisting')}
           onPersist={this.handleOnPersist}
           onCancelEdit={onCancelEdit}
@@ -194,4 +201,4 @@ EntryEditor.propTypes = {
   hasChanged: PropTypes.bool,
 };
 
-export default EntryEditor;
+export default EditorInterface;

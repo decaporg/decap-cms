@@ -11,13 +11,13 @@ import { currentBackend } from '../backends/backend';
 import { showCollection, createNewEntry } from '../actions/collections';
 import { openMediaLibrary as actionOpenMediaLibrary } from '../actions/mediaLibrary';
 import Header from './Header';
-import MediaLibrary from '../components/MediaLibrary/MediaLibrary';
-import { Loader, Toast } from '../components/UI/index';
+import MediaLibrary from '../MediaLibrary/MediaLibrary';
+import { Loader, Toast } from '../UI/index';
 import { getCollectionUrl, getNewEntryUrl } from '../lib/urlHelper';
 import { SIMPLE, EDITORIAL_WORKFLOW } from '../constants/publishModes';
 import Collection from '../Collection/Collection';
 import Workflow from '../Workflow/Workflow';
-import EntryPage from '../containers/EntryPage';
+import Editor from '../Editor/Editor';
 import NotFoundPage from './NotFoundPage';
 
 TopBarProgress.config({
@@ -140,8 +140,8 @@ class App extends React.Component {
               <Redirect exact from="/search/" to={defaultPath} />
               { hasWorkflow ? <Route path="/workflow" component={Workflow}/> : null }
               <Route exact path="/collections/:name" component={Collection} />
-              <Route path="/collections/:name/new" render={props => <EntryPage {...props} newRecord />} />
-              <Route path="/collections/:name/entries/:slug" component={EntryPage} />
+              <Route path="/collections/:name/new" render={props => <Editor {...props} newRecord />} />
+              <Route path="/collections/:name/entries/:slug" component={Editor} />
               <Route path="/search/:searchTerm" render={props => <Collection {...props} isSearchResults />} />
               <Route component={NotFoundPage} />
             </Switch>
