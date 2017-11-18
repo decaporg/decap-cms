@@ -8,11 +8,10 @@
 
 @import "./App/App.css";
 @import "./Collection/Collection.css";
+@import "./Workflow/Workflow.css";
 @import "./components/ControlPanel/ControlPane.css";
 @import "./components/EntryEditor/EntryEditor.css";
 @import "./components/PreviewPane/PreviewPane.css";
 @import "./components/UI/UI.css";
 @import "./components/MediaLibrary/MediaLibrary.css";
-@import "./components/UnpublishedListing/UnpublishedListing.css";
-@import "./components/UnpublishedListing/UnpublishedListingCardMeta.css";
 @import "./components/Widgets/Widgets.css";

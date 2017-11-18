@@ -1,0 +1,23 @@
+.nc-workflow-card {
+  @apply(--card);
+  padding: 14px;
+  cursor: move;
+
+  &:not(:first-child) {
+    margin-top: 10px;
+  }
+}
+
+.nc-workflow-card-button-container {
+  display: flex;
+  margin-top: 24px;
+}
+
+.nc-workflow-card-button {
+  @apply(--button);
+  display: block;
+
+  &:not(:first-child) {
+    margin-left: 10px;
+  }
+}
