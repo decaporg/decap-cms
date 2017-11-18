@@ -28,6 +28,7 @@ function formatByName(name) {
     yml: yamlFormatter,
     yaml: yamlFormatter,
     toml: tomlFormatter,
+    json: jsonFormatter,
     frontmatter: FrontmatterFormatter,
   }[name] || FrontmatterFormatter;
 }
