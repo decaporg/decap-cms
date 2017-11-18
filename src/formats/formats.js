@@ -3,6 +3,14 @@ import tomlFormatter from './toml';
 import jsonFormatter from './json';
 import FrontmatterFormatter from './frontmatter';
 
+export const supportedFormats = [
+  'markdown',
+  'yaml',
+  'toml',
+  'json',
+  'html',
+];
+
 export const formatToExtension = format => ({
   markdown: 'md',
   yaml: 'yml',
@@ -29,8 +37,11 @@ function formatByName(name) {
     yaml: yamlFormatter,
     toml: tomlFormatter,
     json: jsonFormatter,
+    md: FrontmatterFormatter,
+    markdown: FrontmatterFormatter,
+    html: FrontmatterFormatter,
     frontmatter: FrontmatterFormatter,
-  }[name] || FrontmatterFormatter;
+  }[name];
 }
 
 export function resolveFormat(collectionOrEntity, entry) {
@@ -55,5 +66,5 @@ export function resolveFormat(collectionOrEntity, entry) {
   }
 
   // If no format is specified and it cannot be inferred, return the default.
-  return formatByName();
+  return formatByName('frontmatter');
 }
