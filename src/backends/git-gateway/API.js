@@ -58,6 +58,9 @@ export default class API extends GithubAPI {
       return response.text();
     })
     .catch(error => {
+      if (responseStatus === 401) {
+        this.reAuth();
+      }
       throw new APIError(error.message, responseStatus, 'Git Gateway');
     });
   }

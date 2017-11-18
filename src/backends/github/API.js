@@ -82,6 +82,9 @@ export default class API {
       return response.text();
     })
     .catch((error) => {
+      if (responseStatus === 401) {
+        this.reAuth();
+      }
       throw new APIError(error.message, responseStatus, 'GitHub');
     });
   }
