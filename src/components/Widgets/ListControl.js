@@ -146,7 +146,7 @@ export default class ListControl extends Component {
       }
 
       this.setState({
-        itemsCollapsed: itemsCollapsed.set(index, !itemsCollapsed.get(index, false)),
+        itemsCollapsed: itemsCollapsed.set(index, !collapsed),
       });
     };
   }
