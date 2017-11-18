@@ -3,8 +3,7 @@ import React, { Component } from 'react';
 import { Map, fromJS } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import c from 'classnames';
-import { resolveWidget } from '../Widgets';
-import ControlHOC from '../Widgets/ControlHOC';
+import ControlHOC from './ControlHOC';
 
 function isHidden(field) {
   return field.get('widget') === 'hidden';
@@ -35,6 +34,7 @@ export default class ControlPane extends Component {
       onOpenMediaLibrary,
       onAddAsset,
       onRemoveInsertedMedia,
+      resolveWidget,
     } = this.props;
     const widgetName = field.get('widget');
     const widget = resolveWidget(widgetName);
