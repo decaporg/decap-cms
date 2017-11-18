@@ -3,19 +3,18 @@ import React from 'react';
 import { List, Map } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import Frame from 'react-frame-component';
-import registry from '../../lib/registry';
-import ErrorBoundary from '../UI/ErrorBoundary/ErrorBoundary';
-import { resolveWidget } from '../Widgets';
-import { selectTemplateName, selectInferedField } from '../../reducers/collections';
-import { INFERABLE_FIELDS } from '../../constants/fieldInference';
-import PreviewContent from './PreviewContent.js';
-import PreviewHOC from '../Widgets/PreviewHOC';
-import Preview from './Preview';
+import registry from '../lib/registry';
+import ErrorBoundary from '../components/UI/ErrorBoundary/ErrorBoundary';
+import { selectTemplateName, selectInferedField } from '../reducers/collections';
+import { INFERABLE_FIELDS } from '../constants/fieldInference';
+import EditorPreviewContent from './EditorPreviewContent.js';
+import PreviewHOC from './Widgets/PreviewHOC';
+import EditorPreview from './EditorPreview';
 
 export default class PreviewPane extends React.Component {
 
   getWidget = (field, value, props) => {
-    const { fieldsMetaData, getAsset, entry } = props;
+    const { fieldsMetaData, getAsset, entry, resolveWidget } = props;
     const widget = resolveWidget(field.get('widget'));
 
     /**
@@ -128,7 +127,7 @@ export default class PreviewPane extends React.Component {
 
     const previewComponent =
       registry.getPreviewTemplate(selectTemplateName(collection, entry.get('slug'))) ||
-      Preview;
+      EditorPreview;
 
     this.inferFields();
 
@@ -156,7 +155,7 @@ export default class PreviewPane extends React.Component {
     return (
       <ErrorBoundary>
         <Frame className="nc-previewPane-frame" head={styleEls} initialContent={initialContent}>
-          <PreviewContent {...{ previewComponent, previewProps }}/>
+          <EditorPreviewContent {...{ previewComponent, previewProps }}/>
         </Frame>
       </ErrorBoundary>
     );

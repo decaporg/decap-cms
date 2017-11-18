@@ -19,11 +19,11 @@ import { addAsset } from '../actions/media';
 import { openMediaLibrary, removeInsertedMedia } from '../actions/mediaLibrary';
 import { selectEntry, getAsset } from '../reducers';
 import { selectFields } from '../reducers/collections';
-import EntryEditor from '../components/EntryEditor/EntryEditor';
-import entryPageHOC from './editorialWorkflow/EntryPageHOC';
-import { Loader } from '../components/UI';
+import EditorInterface from './EditorInterface/EditorInterface';
+import withWorkflow from './withWorkflow';
+import { Loader } from '../UI';
 
-class EntryPage extends React.Component {
+class Editor extends React.Component {
   static propTypes = {
     addAsset: PropTypes.func.isRequired,
     boundGetAsset: PropTypes.func.isRequired,
@@ -161,7 +161,7 @@ class EntryPage extends React.Component {
     }
 
     return (
-      <EntryEditor
+      <EditorInterface
         entry={entryDraft.get('entry')}
         getAsset={boundGetAsset}
         collection={collection}
@@ -228,4 +228,4 @@ export default connect(
     deleteEntry,
     closeEntry,
   }
-)(entryPageHOC(EntryPage));
+)(withWorkflow(Editor));

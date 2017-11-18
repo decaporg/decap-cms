@@ -1,0 +1,10 @@
+@import "./EditorInterface/EditorInterface.css";
+@import "./EditorControlPane/EditorControlPane.css";
+
+/**
+ * React Split Pane
+ */
+.Resizer.vertical {
+  width: 17px;
+  cursor: col-resize;
+}

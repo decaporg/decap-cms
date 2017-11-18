@@ -3,7 +3,6 @@ import React from 'react';
 import ImmutablePropTypes from "react-immutable-proptypes";
 import uuid from 'uuid/v4';
 import { truncateMiddle } from '../../../lib/textHelper';
-import AssetProxy, { createAssetProxy } from '../../../valueObjects/AssetProxy';
 
 const MAX_DISPLAY_LENGTH = 50;
 

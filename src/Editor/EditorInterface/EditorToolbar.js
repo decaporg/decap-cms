@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import Icon from '../../icons/Icon';
-import { Dropdown, DropdownItem } from '../../components/UI/Dropdown/Dropdown';
+import { Dropdown, DropdownItem } from '../../UI/Dropdown/Dropdown';
 
-const EntryEditorToolbar = (
+const EditorToolbar = (
   {
     isPersisting,
     onPersist,
@@ -57,7 +57,7 @@ const EntryEditorToolbar = (
   );
 };
 
-EntryEditorToolbar.propTypes = {
+EditorToolbar.propTypes = {
   isPersisting: PropTypes.bool,
   onPersist: PropTypes.func.isRequired,
   enableSave: PropTypes.bool.isRequired,
@@ -68,4 +68,4 @@ EntryEditorToolbar.propTypes = {
   hasChanged: PropTypes.bool,
 };
 
-export default EntryEditorToolbar;
+export default EditorToolbar;

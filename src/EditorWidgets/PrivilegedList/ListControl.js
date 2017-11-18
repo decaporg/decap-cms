@@ -7,7 +7,7 @@ import c from 'classnames';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 import Icon from '../../../icons/Icon';
 import ObjectControl from '../Object/ObjectControl';
-import ListItemTopBar from '../../UI/ListItemTopBar/ListItemTopBar';
+import ListItemTopBar from '../../../components/UI/ListItemTopBar/ListItemTopBar';
 
 function ListItem(props) {
   return <div {...props} className={`list-item ${ props.className || '' }`}>{props.children}</div>;
