@@ -1,0 +1,18 @@
+.nc-workflow-list-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.nc-workflow-list {
+  flex: 1 33%;
+  margin: -10px;
+  margin-top: 24px;
+  padding: 10px;
+  max-width: 33%;
+  transition: background-color .5s ease;
+}
+
+.nc-workflow-list-hovered {
+  border: 2px dashed var(--primaryColor);
+  border-radius: 4px;
+}

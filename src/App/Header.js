@@ -20,6 +20,7 @@ export default class Header extends React.Component {
       toggleDrawer,
       onLogoutClick,
       openMediaLibrary,
+      hasWorkflow,
     } = this.props;
 
     /**
@@ -52,10 +53,23 @@ export default class Header extends React.Component {
         <div className="nc-appHeader-main">
           <div className="nc-appHeader-content">
             <nav>
-              <NavLink to="/" className="nc-appHeader-button" activeClassName="nc-appHeader-button-active">
+              <NavLink
+                to="/"
+                className="nc-appHeader-button"
+                activeClassName="nc-appHeader-button-active"
+                isActive={(match, location) => location.pathname.startsWith('/collections/')}
+              >
                 <Icon type="page"/>
                 Content
               </NavLink>
+              {
+                hasWorkflow
+                  ? <NavLink to="/workflow" className="nc-appHeader-button" activeClassName="nc-appHeader-button-active">
+                      <Icon type="workflow"/>
+                      Workflow
+                    </NavLink>
+                  : null
+              }
               <button onClick={openMediaLibrary} className="nc-appHeader-button">
                 <Icon type="media-alt"/>
                 Media
@@ -72,7 +86,7 @@ export default class Header extends React.Component {
                 {
                   avatarUrl
                     ? <img className="nc-appHeader-avatar-image" src={user.get('avatar_url')}/>
-                    : <Icon className="nc-appHeader-avatar-placeholder" type="user"/>
+                    : <Icon className="nc-appHeader-avatar-placeholder" type="user" size="large"/>
                 }
               </button>
             </div>
