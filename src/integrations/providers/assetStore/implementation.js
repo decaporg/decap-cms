@@ -1,4 +1,4 @@
-import { pickBy } from 'lodash';
+import { pickBy, trimEnd } from 'lodash';
 import { addParams } from '../../../lib/urlHelper';
 
 export default class AssetStore {
@@ -10,7 +10,7 @@ export default class AssetStore {
     this.getToken = getToken;
 
     this.shouldConfirmUpload = config.get('shouldConfirmUpload', false);
-    this.getSignedFormURL = config.get('getSignedFormURL');
+    this.getSignedFormURL = trimEnd(config.get('getSignedFormURL'), '/');
   }
 
   parseJsonResponse(response) {
@@ -65,8 +65,8 @@ export default class AssetStore {
     return content;
   }
 
-  async retrieve(query, page) {
-    const params = pickBy({ search: query, page }, val => !!val);
+  async retrieve(query, page, privateUpload) {
+    const params = pickBy({ search: query, page, filter: privateUpload ? 'private' : 'public' }, val => !!val);
     const url = addParams(this.getSignedFormURL, params);
     const token = await this.getToken();
     const headers = {
