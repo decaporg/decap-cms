@@ -17,14 +17,26 @@ import {
 } from '../actions/mediaLibrary';
 
 const mediaLibrary = (state = Map({ isVisible: false, controlMedia: Map() }), action) => {
+  const privateUploadChanged = state.get('privateUpload') !== get(action, ['payload', 'privateUpload']);
   switch (action.type) {
     case MEDIA_LIBRARY_OPEN: {
-      const { controlID, forImage } = action.payload || {};
+      const { controlID, forImage, privateUpload } = action.payload || {};
+      if (privateUploadChanged) {
+        return Map({
+          isVisible: true,
+          forImage,
+          controlID,
+          canInsert: !!controlID,
+          privateUpload,
+          controlMedia: Map(),
+        });
+      }
       return state.withMutations(map => {
         map.set('isVisible', true);
         map.set('forImage', forImage);
         map.set('controlID', controlID);
         map.set('canInsert', !!controlID);
+        map.set('privateUpload', privateUpload);
       });
     }
     case MEDIA_LIBRARY_CLOSE:
@@ -40,7 +52,12 @@ const mediaLibrary = (state = Map({ isVisible: false, controlMedia: Map() }), ac
         map.set('isPaginating', action.payload.page > 1);
       });
     case MEDIA_LOAD_SUCCESS: {
-      const { files = [], page, canPaginate, dynamicSearch, dynamicSearchQuery } = action.payload;
+      const { files = [], page, canPaginate, dynamicSearch, dynamicSearchQuery, privateUpload } = action.payload;
+
+      if (privateUploadChanged) {
+        return state;
+      }
+
       const filesWithKeys = files.map(file => ({ ...file, key: uuid() }));
       return state.withMutations(map => {
         map.set('isLoading', false);
@@ -59,11 +76,17 @@ const mediaLibrary = (state = Map({ isVisible: false, controlMedia: Map() }), ac
       });
     }
     case MEDIA_LOAD_FAILURE:
+      if (privateUploadChanged) {
+        return state;
+      }
       return state.set('isLoading', false);
     case MEDIA_PERSIST_REQUEST:
       return state.set('isPersisting', true);
     case MEDIA_PERSIST_SUCCESS: {
       const { file } = action.payload;
+      if (privateUploadChanged) {
+        return state;
+      }
       return state.withMutations(map => {
         const fileWithKey = { ...file, key: uuid() };
         const updatedFiles = [fileWithKey, ...map.get('files')];
@@ -72,11 +95,17 @@ const mediaLibrary = (state = Map({ isVisible: false, controlMedia: Map() }), ac
       });
     }
     case MEDIA_PERSIST_FAILURE:
+      if (privateUploadChanged) {
+        return state;
+      }
       return state.set('isPersisting', false);
     case MEDIA_DELETE_REQUEST:
       return state.set('isDeleting', true);
     case MEDIA_DELETE_SUCCESS: {
       const { key } = action.payload.file;
+      if (privateUploadChanged) {
+        return state;
+      }
       return state.withMutations(map => {
         const updatedFiles = map.get('files').filter(file => file.key !== key);
         map.set('files', updatedFiles);
@@ -84,6 +113,9 @@ const mediaLibrary = (state = Map({ isVisible: false, controlMedia: Map() }), ac
       });
     }
     case MEDIA_DELETE_FAILURE:
+      if (privateUploadChanged) {
+        return state;
+      }
       return state.set('isDeleting', false);
     default:
       return state;

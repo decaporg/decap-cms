@@ -33,7 +33,7 @@ export function insertMedia(mediaPath) {
 }
 
 export function loadMedia(opts = {}) {
-  const { delay = 0, query = '', page = 1 } = opts;
+  const { delay = 0, query = '', page = 1, privateUpload } = opts;
   return async (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
@@ -42,17 +42,18 @@ export function loadMedia(opts = {}) {
       const provider = getIntegrationProvider(state.integrations, backend.getToken, integration);
       dispatch(mediaLoading(page));
       try {
-        const files = await provider.retrieve(query, page);
+        const files = await provider.retrieve(query, page, privateUpload);
         const mediaLoadedOpts = {
           page,
           canPaginate: true,
           dynamicSearch: true,
-          dynamicSearchQuery: query
+          dynamicSearchQuery: query,
+          privateUpload,
         };
         return dispatch(mediaLoaded(files, mediaLoadedOpts));
       }
       catch(error) {
-        return dispatch(mediaLoadFailed());
+        return dispatch(mediaLoadFailed({ privateUpload }));
       }
     }
     dispatch(mediaLoading(page));
@@ -66,7 +67,8 @@ export function loadMedia(opts = {}) {
   };
 }
 
-export function persistMedia(file, privateUpload) {
+export function persistMedia(file, opts = {}) {
+  const { privateUpload } = opts;
   return async (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
@@ -81,7 +83,7 @@ export function persistMedia(file, privateUpload) {
         const asset = await backend.persistMedia(assetProxy);
         return dispatch(mediaPersisted(asset));
       }
-      return dispatch(mediaPersisted(assetProxy.asset));
+      return dispatch(mediaPersisted(assetProxy.asset, { privateUpload }));
     }
     catch(error) {
       console.error(error);
@@ -90,12 +92,13 @@ export function persistMedia(file, privateUpload) {
         kind: 'danger',
         dismissAfter: 8000,
       }));
-      return dispatch(mediaPersistFailed());
+      return dispatch(mediaPersistFailed({ privateUpload }));
     }
   };
 }
 
-export function deleteMedia(file) {
+export function deleteMedia(file, opts = {}) {
+  const { privateUpload } = opts;
   return (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
@@ -105,7 +108,7 @@ export function deleteMedia(file) {
       dispatch(mediaDeleting());
       return provider.delete(file.id)
         .then(() => {
-          return dispatch(mediaDeleted(file));
+          return dispatch(mediaDeleted(file, { privateUpload }));
         })
         .catch(error => {
           console.error(error);
@@ -114,7 +117,7 @@ export function deleteMedia(file) {
             kind: 'danger',
             dismissAfter: 8000,
           }));
-          return dispatch(mediaDeleteFailed());
+          return dispatch(mediaDeleteFailed({ privateUpload }));
         });
     }
     dispatch(mediaDeleting());
@@ -148,36 +151,41 @@ export function mediaLoaded(files, opts = {}) {
   };
 }
 
-export function mediaLoadFailed(error) {
-  return { type: MEDIA_LOAD_FAILURE };
+export function mediaLoadFailed(error, opts = {}) {
+  const { privateUpload } = opts;
+  return { type: MEDIA_LOAD_FAILURE, payload: { privateUpload } };
 }
 
 export function mediaPersisting() {
   return { type: MEDIA_PERSIST_REQUEST };
 }
 
-export function mediaPersisted(asset) {
+export function mediaPersisted(asset, opts = {}) {
+  const { privateUpload } = opts;
   return {
     type: MEDIA_PERSIST_SUCCESS,
-    payload: { file: asset },
+    payload: { file: asset, privateUpload },
   };
 }
 
-export function mediaPersistFailed(error) {
-  return { type: MEDIA_PERSIST_FAILURE };
+export function mediaPersistFailed(error, opts = {}) {
+  const { privateUpload } = opts;
+  return { type: MEDIA_PERSIST_FAILURE, payload: { privateUpload } };
 }
 
 export function mediaDeleting() {
   return { type: MEDIA_DELETE_REQUEST };
 }
 
-export function mediaDeleted(file) {
+export function mediaDeleted(file, opts = {}) {
+  const { privateUpload } = opts;
   return {
     type: MEDIA_DELETE_SUCCESS,
-    payload: { file },
+    payload: { file, privateUpload },
   };
 }
 
-export function mediaDeleteFailed(error) {
-  return { type: MEDIA_DELETE_FAILURE };
+export function mediaDeleteFailed(error, opts = {}) {
+  const { privateUpload } = opts;
+  return { type: MEDIA_DELETE_FAILURE, payload: { privateUpload } };
 }

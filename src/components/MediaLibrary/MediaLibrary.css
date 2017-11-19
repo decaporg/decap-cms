@@ -96,3 +96,25 @@
   overflow-wrap: break-word;
   line-height: 1.3 !important;
 }
+
+.nc-mediaLibrary-dialogPrivate {
+  background-color: var(--backgroundAltColor);
+
+  & .nc-mediaLibrary-title,
+  & .nc-mediaLibrary-emptyMessage,
+  & .nc-mediaLibrary-paginatingMessage,
+  & h1 {
+    color: var(--textFieldBorderColor);
+  }
+
+  & .nc-mediaLibrary-card,
+  & .nc-mediaLibrary-searchInput {
+    background-color: var(--textFieldBorderColor);
+  }
+
+  & button:disabled,
+  & label[disabled] {
+    background-color: rgba(217, 217, 217, 0.15);
+  }
+}
+
