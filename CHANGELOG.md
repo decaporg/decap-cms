@@ -6,6 +6,10 @@
   </summary>
 </details>
 
+## 0.7.5 (November 19, 2017)
+
+* Add private media support for asset integrations ([@erquhart](https://github.com/erquhart) in [#834](https://github.com/netlify/netlify-cms/pull/834))
+
 ## 0.7.4 (November 15, 2017)
 
 * Remove trailing slash from directory listing path ([@biilmann](https://github.com/biilmann) in [#817](https://github.com/netlify/netlify-cms/pull/817))
