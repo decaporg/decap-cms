@@ -1,6 +1,6 @@
 import React from 'react';
 import c from 'classnames';
-import Icon from '../../../icons/Icon';
+import Icon from '../../icons/Icon';
 
 
 const ListItemTopBar = ({ collapsed, onCollapseToggle, onRemove, dragHandleHOC, className }) => {

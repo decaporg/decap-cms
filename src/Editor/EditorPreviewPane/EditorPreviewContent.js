@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import EditorScrollSyncPane from './EditorScrollSyncPane';
+import { ScrollSyncPane } from 'react-scroll-sync';
 
 /**
  * We need to create a lightweight component here so that we can access the
@@ -11,9 +11,9 @@ class PreviewContent extends React.Component {
   render() {
     const { previewComponent, previewProps } = this.props;
     return (
-      <EditorScrollSyncPane attachTo={this.context.document.scrollingElement}>
+      <ScrollSyncPane attachTo={this.context.document.scrollingElement}>
         {React.createElement(previewComponent, previewProps)}
-      </EditorScrollSyncPane>
+      </ScrollSyncPane>
     );
   }
 }

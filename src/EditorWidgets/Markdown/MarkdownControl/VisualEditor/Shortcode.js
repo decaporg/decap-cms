@@ -4,11 +4,10 @@ import { Map } from 'immutable';
 import { connect } from 'react-redux';
 import { partial, capitalize } from 'lodash';
 import registry from '../../../../../lib/registry';
-import { resolveWidget } from '../../../../Widgets';
 import { openMediaLibrary, removeInsertedMedia } from '../../../../../actions/mediaLibrary';
 import { addAsset } from '../../../../../actions/media';
 import { getAsset } from '../../../../../reducers';
-import ListItemTopBar from '../../../../../components/UI/ListItemTopBar/ListItemTopBar';
+import ListItemTopBar from '../../../../../UI/ListItemTopBar/ListItemTopBar';
 
 class Shortcode extends React.Component {
   constructor(props) {
@@ -66,7 +65,7 @@ class Shortcode extends React.Component {
       onOpenMediaLibrary,
       onRemoveInsertedMedia,
     } = this.props;
-    const widget = resolveWidget(field.get('widget') || 'string');
+    const widget = registry.resolveWidget(field.get('widget') || 'string');
     const value = shortcodeData.get(field.get('name'));
     const key = `field-${ field.get('name') }`;
     const Control = widget.control;

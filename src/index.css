@@ -9,9 +9,7 @@
 @import "./App/App.css";
 @import "./Collection/Collection.css";
 @import "./Workflow/Workflow.css";
-@import "./components/ControlPanel/ControlPane.css";
-@import "./components/EntryEditor/EntryEditor.css";
-@import "./components/PreviewPane/PreviewPane.css";
-@import "./components/UI/UI.css";
-@import "./components/MediaLibrary/MediaLibrary.css";
-@import "./components/Widgets/Widgets.css";
+@import "./Editor/Editor.css";
+@import "./UI/UI.css";
+@import "./MediaLibrary/MediaLibrary.css";
+@import "./EditorWidgets/EditorWidgets.css";

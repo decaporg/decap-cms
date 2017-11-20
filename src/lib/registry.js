@@ -1,7 +1,10 @@
 import { Map } from 'immutable';
-import { newEditorPlugin } from '../components/Widgets/Markdown/MarkdownControl/plugins';
+import { newEditorPlugin } from '../EditorWidgets/Markdown/MarkdownControl/plugins';
 
-const _registry = {
+/**
+ * Global Registry Object
+ */
+const registry = {
   templates: {},
   previewStyles: [],
   widgets: {},
@@ -9,39 +12,66 @@ const _registry = {
   widgetValueSerializers: {},
 };
 
+
 export default {
+  /**
+   * Preview Styles
+   */
   registerPreviewStyle(style) {
-    _registry.previewStyles.push(style);
-  },
-  registerPreviewTemplate(name, component) {
-    _registry.templates[name] = component;
-  },
-  getPreviewTemplate(name) {
-    return _registry.templates[name];
+    registry.previewStyles.push(style);
   },
   getPreviewStyles() {
-    return _registry.previewStyles;
+    return registry.previewStyles;
   },
+
+
+  /**
+   * Preview Templates
+   */
+  registerPreviewTemplate(name, component) {
+    registry.templates[name] = component;
+  },
+  getPreviewTemplate(name) {
+    return registry.templates[name];
+  },
+
+
+  /**
+   * Editor Widgets
+   */
   registerWidget(name, control, preview) {
     // A registered widget control can be reused by a new widget, allowing
     // multiple copies with different previews.
-    const newControl = typeof control === 'string' ? _registry.widgets[control].control : control;
-    _registry.widgets[name] = { control: newControl, preview };
+    const newControl = typeof control === 'string' ? registry.widgets[control].control : control;
+    registry.widgets[name] = { control: newControl, preview };
   },
   getWidget(name) {
-    return _registry.widgets[name];
+    return registry.widgets[name];
   },
+  resolveWidget(name) {
+    return this.getWidget(name || 'string') || this.getWidget('unknown');
+  },
+
+
+  /**
+   * Markdown Editor Custom Components
+   */
   registerEditorComponent(component) {
     const plugin = newEditorPlugin(component);
-    _registry.editorComponents = _registry.editorComponents.set(plugin.get('id'), plugin);
+    registry.editorComponents = registry.editorComponents.set(plugin.get('id'), plugin);
   },
   getEditorComponents() {
-    return _registry.editorComponents;
+    return registry.editorComponents;
   },
+
+
+  /**
+   * Widget Serializers
+   */
   registerWidgetValueSerializer(widgetName, serializer) {
-    _registry.widgetValueSerializers[widgetName] = serializer;
+    registry.widgetValueSerializers[widgetName] = serializer;
   },
   getWidgetValueSerializer(widgetName) {
-    return _registry.widgetValueSerializers[widgetName];
+    return registry.widgetValueSerializers[widgetName];
   },
-};
+}

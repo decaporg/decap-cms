@@ -26,12 +26,12 @@ import BooleanControl from './Boolean/BooleanControl';
  * widgets.  Privileged widgets are an anti-pattern, and necessary changes
  * should take place so that these widgets can be recreated by a third party.
  */
-import ListControl from './PrivilegedList/ListControl';
-import ListPreview from './PrivilegedList/ListPreview';
-import ObjectControl from './PrivilegedObject/ObjectControl';
-import ObjectPreview from './PrivilegedObject/ObjectPreview';
-import RelationControl from './PrivilegedRelation/RelationControl';
-import RelationPreview from './PrivilegedRelation/RelationPreview';
+import ListControl from './PrivilegedList/PrivilegedListControl';
+import ListPreview from './PrivilegedList/PrivilegedListPreview';
+import ObjectControl from './PrivilegedObject/PrivilegedObjectControl';
+import ObjectPreview from './PrivilegedObject/PrivilegedObjectPreview';
+import RelationControl from './PrivilegedRelation/PrivilegedRelationControl';
+import RelationPreview from './PrivilegedRelation/PrivilegedRelationPreview';
 
 
 registry.registerWidget('string', StringControl, StringPreview);
