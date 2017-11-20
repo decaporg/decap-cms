@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import EntryEditorToolbar from '../EntryEditorToolbar';
+import EditorToolbar from '../EditorInterface/EditorToolbar';
 
 describe('EntryEditorToolbar', () => {
   it('should have the Save button disabled initally, and the Cancel button enabled', () => {

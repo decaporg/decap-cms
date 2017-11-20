@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { Loader } from '../../components/UI';
+import { Loader } from '../../UI';
 import EntryListing from './EntryListing';
 
 const Entries = ({ collections, entries, publicFolder, page, onPaginate, isFetching }) => {

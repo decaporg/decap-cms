@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { DragSource, DropTarget, HTML5DragDrop } from '../components/UI/dndHelpers';
+import { DragSource, DropTarget, HTML5DragDrop } from '../UI/dndHelpers';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import moment from 'moment';
 import { capitalize } from 'lodash'

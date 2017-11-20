@@ -3,8 +3,8 @@ import React from "react";
 import Input from "react-toolbox/lib/input";
 import Button from "react-toolbox/lib/button";
 import { Notifs } from 'redux-notifications';
-import { Toast } from '../../components/UI/index';
-import { Card, Icon } from "../../components/UI";
+import { Toast } from '../../UI/index';
+import { Card, Icon } from "../../UI";
 import logo from "./netlify_logo.svg";
 
 let component = null;
