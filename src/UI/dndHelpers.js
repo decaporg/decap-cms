@@ -1,5 +1,9 @@
 import ReactDNDHTML5Backend from 'react-dnd-html5-backend';
-import { DragDropContext as ReactDNDDragDropContext, DragSource as ReactDNDDragSource, DropTarget as ReactDNDDropTarget } from 'react-dnd';
+import {
+  DragDropContext as ReactDNDDragDropContext,
+  DragSource as ReactDNDDragSource,
+  DropTarget as ReactDNDDropTarget
+} from 'react-dnd';
 import React from 'react';
 import PropTypes from 'prop-types';
 

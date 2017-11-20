@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Icon from '../../../icons/Icon';
+import Icon from '../../icons/Icon';
 import { Wrapper, Button, Menu, MenuItem } from 'react-aria-menubutton';
 
 const Dropdown = ({ label, button, children }) => (

@@ -11,7 +11,7 @@ import {
 } from '../actions/editorialWorkflow';
 import { selectUnpublishedEntriesByStatus } from '../reducers';
 import { EDITORIAL_WORKFLOW, status } from '../constants/publishModes';
-import { Loader } from '../components/UI';
+import { Loader } from '../UI';
 import WorkflowList from './WorkflowList';
 
 class Workflow extends Component {

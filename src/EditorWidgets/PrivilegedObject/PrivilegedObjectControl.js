@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 import { Map } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import c from 'classnames';
+import { resolveWidget } from '../../lib/registry';
 import ControlHOC from '../ControlHOC';
-import { resolveWidget } from '../../Widgets';
 
 export default class ObjectControl extends Component {
   static propTypes = {

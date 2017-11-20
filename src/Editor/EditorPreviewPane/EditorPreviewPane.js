@@ -3,19 +3,19 @@ import React from 'react';
 import { List, Map } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import Frame from 'react-frame-component';
-import registry from '../lib/registry';
-import ErrorBoundary from '../components/UI/ErrorBoundary/ErrorBoundary';
-import { selectTemplateName, selectInferedField } from '../reducers/collections';
-import { INFERABLE_FIELDS } from '../constants/fieldInference';
+import registry from '../../lib/registry';
+import ErrorBoundary from '../../UI/ErrorBoundary/ErrorBoundary';
+import { selectTemplateName, selectInferedField } from '../../reducers/collections';
+import { INFERABLE_FIELDS } from '../../constants/fieldInference';
 import EditorPreviewContent from './EditorPreviewContent.js';
-import PreviewHOC from './Widgets/PreviewHOC';
+import PreviewHOC from './PreviewHOC';
 import EditorPreview from './EditorPreview';
 
 export default class PreviewPane extends React.Component {
 
   getWidget = (field, value, props) => {
-    const { fieldsMetaData, getAsset, entry, resolveWidget } = props;
-    const widget = resolveWidget(field.get('widget'));
+    const { fieldsMetaData, getAsset, entry } = props;
+    const widget = registry.resolveWidget(field.get('widget'));
 
     /**
      * Use an HOC to provide conditional updates for all previews.

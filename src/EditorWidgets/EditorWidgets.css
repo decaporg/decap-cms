@@ -3,10 +3,10 @@
 @import "./Image/Image.css";
 @import "./File/FileControl.css";
 @import "./Markdown/Markdown.css";
-@import "./Relation/Relation.css";
+@import "./PrivilegedRelation/PrivilegedRelation.css";
+@import "./PrivilegedObject/PrivilegedObject.css";
+@import "./PrivilegedList/PrivilegedList.css";
 @import "./DateTime/DateTime.css";
-@import "./Object/Object.css";
-@import "./List/List.css";
 
 :root {
   --widgetNestDistance: 14px;

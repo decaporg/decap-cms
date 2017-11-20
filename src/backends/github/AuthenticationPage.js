@@ -3,7 +3,7 @@ import React from 'react';
 import Authenticator from '../../lib/netlify-auth';
 import Icon from '../../icons/Icon';
 import { Notifs } from 'redux-notifications';
-import { Toast } from '../../components/UI/index';
+import { Toast } from '../../UI/index';
 
 export default class AuthenticationPage extends React.Component {
   static propTypes = {

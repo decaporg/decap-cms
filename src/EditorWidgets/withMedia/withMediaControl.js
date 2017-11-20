@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from "react-immutable-proptypes";
 import uuid from 'uuid/v4';
-import { truncateMiddle } from '../../../lib/textHelper';
+import { truncateMiddle } from '../../lib/textHelper';
 
 const MAX_DISPLAY_LENGTH = 50;
 

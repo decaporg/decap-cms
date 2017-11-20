@@ -1,5 +1,6 @@
 @import "./EditorInterface/EditorInterface.css";
 @import "./EditorControlPane/EditorControlPane.css";
+@import "./EditorPreviewPane/EditorPreviewPane.css";
 
 /**
  * React Split Pane

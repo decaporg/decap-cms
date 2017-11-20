@@ -4,12 +4,12 @@
 
 @font-face {
   font-family: 'icons';
-  src: url('./components/UI/icon/icons.eot');
-  src: url('./components/UI/icon/icons.eot#iefix') format('embedded-opentype'),
-       url('./components/UI/icon/icons.woff2') format('woff2'),
-       url('./components/UI/icon/icons.woff') format('woff'),
-       url('./components/UI/icon/icons.ttf') format('truetype'),
-       url('./components/UI/icon/icons.svg#icons') format('svg');
+  src: url('./UI/icon/icons.eot');
+  src: url('./UI/icon/icons.eot#iefix') format('embedded-opentype'),
+       url('./UI/icon/icons.woff2') format('woff2'),
+       url('./UI/icon/icons.woff') format('woff'),
+       url('./UI/icon/icons.ttf') format('truetype'),
+       url('./UI/icon/icons.svg#icons') format('svg');
   font-weight: normal;
   font-style: normal;
 }
