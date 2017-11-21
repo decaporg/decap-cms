@@ -107,9 +107,10 @@ export default class ListControl extends Component {
     const { value, onChange } = this.props;
     const parsedValue = (this.valueType === valueTypes.SINGLE) ? null : Map();
     const { itemsCollapsed } = this.state;
+    const index = value ? value.size : 0;
     
     this.setState({
-      itemsCollapsed: itemsCollapsed.set(value.size, false),
+      itemsCollapsed: itemsCollapsed.set(index, false),
     });
     
     onChange((value || List()).push(parsedValue));
