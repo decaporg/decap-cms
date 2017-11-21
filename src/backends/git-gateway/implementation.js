@@ -43,13 +43,13 @@ export default class GitGateway extends GitHubBackend {
     AuthenticationPage.authClient = this.authClient;
   }
 
-  restoreUser() {
+  restoreUser(old, reAuth) {
     const user = this.authClient && this.authClient.currentUser();
     if (!user) return Promise.reject();
-    return this.authenticate(user);
+    return this.authenticate(user, reAuth);
   }
 
-  authenticate(user) {
+  authenticate(user, reAuth) {
     this.tokenPromise = user.jwt.bind(user);
     return this.tokenPromise()
     .then((token) => {
@@ -70,7 +70,7 @@ export default class GitGateway extends GitHubBackend {
           branch: this.branch,
           tokenPromise: this.tokenPromise,
           commitAuthor: pick(userData, ["name", "email"]),
-        });
+        }, reAuth);
         return userData;
       } else {
         throw new Error("You don't have sufficient permissions to access Netlify CMS");

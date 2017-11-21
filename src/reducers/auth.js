@@ -1,5 +1,5 @@
 import Immutable from 'immutable';
-import { AUTH_REQUEST, AUTH_SUCCESS, AUTH_FAILURE, AUTH_REQUEST_DONE, LOGOUT } from 'Actions/auth';
+import { AUTH_REQUEST, AUTH_SUCCESS, AUTH_FAILURE, AUTH_REQUEST_DONE, REAUTHENTICATE, LOGOUT } from '../actions/auth';
 
 const auth = (state = null, action) => {
   switch (action.type) {
@@ -11,6 +11,8 @@ const auth = (state = null, action) => {
       return Immutable.Map({ error: action.payload.toString() });
     case AUTH_REQUEST_DONE:
       return state.remove('isFetching');
+    case REAUTHENTICATE:
+      return state.set('modal', true);
     case LOGOUT:
       return state.remove('user').remove('isFetching');
     default:

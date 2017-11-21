@@ -9,7 +9,8 @@ import { APIError, EditorialWorkflowError } from "ValueObjects/errors";
 const CMS_BRANCH_PREFIX = 'cms/';
 
 export default class API {
-  constructor(config) {
+  constructor(config, reAuth) {
+    this.reAuth = reAuth;
     this.api_root = config.api_root || "https://api.github.com";
     this.token = config.token || false;
     this.branch = config.branch || "master";

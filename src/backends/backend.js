@@ -83,11 +83,11 @@ class Backend {
     }
   }
 
-  currentUser() {
+  currentUser(reAuth) {
     if (this.user) { return this.user; }
     const stored = this.authStore && this.authStore.retrieve();
     if (stored && stored.backendName === this.backendName) {
-      return Promise.resolve(this.implementation.restoreUser(stored)).then((user) => {
+      return Promise.resolve(this.implementation.restoreUser(stored, reAuth)).then((user) => {
         const newUser = {...user, backendName: this.backendName};
         // return confirmed/rehydrated user object instead of stored
         this.authStore.store(newUser);
@@ -101,8 +101,8 @@ class Backend {
     return this.implementation.authComponent();
   }
 
-  authenticate(credentials) {
-    return this.implementation.authenticate(credentials).then((user) => {
+  authenticate(credentials, reAuth) {
+    return this.implementation.authenticate(credentials, reAuth).then((user) => {
       const newUser = {...user, backendName: this.backendName};
       if (this.authStore) { this.authStore.store(newUser); }
       return newUser;

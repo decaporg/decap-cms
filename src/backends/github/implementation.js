@@ -24,13 +24,13 @@ export default class GitHub {
     return AuthenticationPage;
   }
 
-  restoreUser(user) {
-    return this.authenticate(user);
+  restoreUser(user, reAuth) {
+    return this.authenticate(user, reAuth);
   }
 
-  authenticate(state) {
+  authenticate(state, reAuth) {
     this.token = state.token;
-    this.api = new API({ token: this.token, branch: this.branch, repo: this.repo, api_root: this.api_root });
+    this.api = new API({ token: this.token, branch: this.branch, repo: this.repo, api_root: this.api_root }, reAuth);
     return this.api.user().then(user =>
       this.api.hasWriteAccess().then((isCollab) => {
         // Unauthorized user
