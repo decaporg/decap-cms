@@ -1,6 +1,6 @@
 import { isArray, isObject, isEmpty, isNil } from 'lodash';
 import { Map, List } from 'immutable';
-import registry from './registry';
+import { getWidgetValueSerializer } from './registry';
 
 /**
  * Methods for serializing/deserializing entry field values. Most widgets don't
@@ -31,7 +31,7 @@ const runSerializer = (values, fields, method) => {
   return fields.reduce((acc, field) => {
     const fieldName = field.get('name');
     const value = values.get(fieldName);
-    const serializer = registry.getWidgetValueSerializer(field.get('widget'));
+    const serializer = getWidgetValueSerializer(field.get('widget'));
     const nestedFields = field.get('fields');
 
     // Call recursively for fields within lists

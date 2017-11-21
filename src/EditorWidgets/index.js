@@ -1,4 +1,4 @@
-import registry from '../lib/registry';
+import { registerWidget } from '../lib/registry';
 import UnknownControl from './Unknown/UnknownControl';
 import UnknownPreview from './Unknown/UnknownPreview';
 import StringControl from './String/StringControl';
@@ -34,17 +34,17 @@ import RelationControl from './PrivilegedRelation/PrivilegedRelationControl';
 import RelationPreview from './PrivilegedRelation/PrivilegedRelationPreview';
 
 
-registry.registerWidget('string', StringControl, StringPreview);
-registry.registerWidget('text', TextControl, TextPreview);
-registry.registerWidget('number', NumberControl, NumberPreview);
-registry.registerWidget('list', ListControl, ListPreview);
-registry.registerWidget('markdown', MarkdownControl, MarkdownPreview);
-registry.registerWidget('image', ImageControl, ImagePreview);
-registry.registerWidget('file', FileControl, FilePreview);
-registry.registerWidget('date', DateControl, DatePreview);
-registry.registerWidget('datetime', DateTimeControl, DateTimePreview);
-registry.registerWidget('select', SelectControl, SelectPreview);
-registry.registerWidget('object', ObjectControl, ObjectPreview);
-registry.registerWidget('relation', RelationControl, RelationPreview);
-registry.registerWidget('boolean', BooleanControl);
-registry.registerWidget('unknown', UnknownControl, UnknownPreview);
+registerWidget('string', StringControl, StringPreview);
+registerWidget('text', TextControl, TextPreview);
+registerWidget('number', NumberControl, NumberPreview);
+registerWidget('list', ListControl, ListPreview);
+registerWidget('markdown', MarkdownControl, MarkdownPreview);
+registerWidget('image', ImageControl, ImagePreview);
+registerWidget('file', FileControl, FilePreview);
+registerWidget('date', DateControl, DatePreview);
+registerWidget('datetime', DateTimeControl, DateTimePreview);
+registerWidget('select', SelectControl, SelectPreview);
+registerWidget('object', ObjectControl, ObjectPreview);
+registerWidget('relation', RelationControl, RelationPreview);
+registerWidget('boolean', BooleanControl);
+registerWidget('unknown', UnknownControl, UnknownPreview);

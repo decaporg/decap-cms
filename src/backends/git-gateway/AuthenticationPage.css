@@ -6,6 +6,7 @@
 }
 
 .nc-gitGatewayAuthenticationPage-card {
+  @apply(--input);
   width: 350px;
   padding: 10px;
 }
@@ -18,14 +19,4 @@
 
 .nc-gitGatewayAuthenticationPage-errorMsg {
   color: #dd0000;
-}
-
-.nc-gitGatewayAuthenticationPage-message {
-  font-size: 1.1em;
-  margin: 20px 10px;
-}
-
-.nc-gitGatewayAuthenticationPage-button {
-  padding: .25em 1em;
-  height: auto;
 }

@@ -6,6 +6,7 @@ import 'normalize.css';
 import ErrorBoundary from './components/UI/ErrorBoundary/ErrorBoundary';
 import Root from './root';
 import registry from './lib/registry';
+import './EditorWidgets';
 import './index.css';
 
 // Log the version number

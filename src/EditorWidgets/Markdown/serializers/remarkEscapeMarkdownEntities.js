@@ -1,5 +1,5 @@
 import { has, flow, partial, flatMap, flatten, map } from 'lodash';
-import { joinPatternSegments, combinePatterns, replaceWhen } from '../../../../lib/regexHelper';
+import { joinPatternSegments, combinePatterns, replaceWhen } from '../../../lib/regexHelper';
 
 /**
  * Reusable regular expressions segments.

@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Map, fromJS } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import c from 'classnames';
-import registry from '../../lib/registry';
+import { resolveWidget } from '../../lib/registry';
 import ControlHOC from './ControlHOC';
 
 function isHidden(field) {
