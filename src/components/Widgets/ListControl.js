@@ -156,9 +156,10 @@ export default class ListControl extends Component {
     e.preventDefault();
     const { value } = this.props;
     const { isAllCollapsed } = this.state;
+    const itemsCount = value ? value.size : 0;
     let { itemsCollapsed } = this.state;
 
-    for (let i = 0; i < value.size; i++) {
+    for (let i = 0; i < itemsCount; i++) {
       itemsCollapsed = itemsCollapsed.set(i, !isAllCollapsed);
     }
     
