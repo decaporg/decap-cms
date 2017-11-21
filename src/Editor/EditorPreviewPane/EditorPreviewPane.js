@@ -3,7 +3,7 @@ import React from 'react';
 import { List, Map } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import Frame from 'react-frame-component';
-import registry from '../../lib/registry';
+import { resolveWidget, getPreviewTemplate, getPreviewStyles } from '../../lib/registry';
 import ErrorBoundary from '../../UI/ErrorBoundary/ErrorBoundary';
 import { selectTemplateName, selectInferedField } from '../../reducers/collections';
 import { INFERABLE_FIELDS } from '../../constants/fieldInference';
@@ -15,7 +15,7 @@ export default class PreviewPane extends React.Component {
 
   getWidget = (field, value, props) => {
     const { fieldsMetaData, getAsset, entry } = props;
-    const widget = registry.resolveWidget(field.get('widget'));
+    const widget = resolveWidget(field.get('widget'));
 
     /**
      * Use an HOC to provide conditional updates for all previews.
@@ -126,7 +126,7 @@ export default class PreviewPane extends React.Component {
     }
 
     const previewComponent =
-      registry.getPreviewTemplate(selectTemplateName(collection, entry.get('slug'))) ||
+      getPreviewTemplate(selectTemplateName(collection, entry.get('slug'))) ||
       EditorPreview;
 
     this.inferFields();
@@ -137,7 +137,7 @@ export default class PreviewPane extends React.Component {
       widgetsFor: this.widgetsFor,
     };
 
-    const styleEls = registry.getPreviewStyles()
+    const styleEls = getPreviewStyles()
        .map((style, i) => <link key={i} href={style} type="text/css" rel="stylesheet" />);
 
     if (!collection) {

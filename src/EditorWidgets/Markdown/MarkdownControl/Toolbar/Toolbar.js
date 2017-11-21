@@ -5,7 +5,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import c from 'classnames';
 import { Dropdown, DropdownItem } from '../../../../UI/Dropdown/Dropdown';
 import Switch from '../../../../UI/Toggle/Toggle';
-import Icon from '../../../../../icons/Icon';
+import Icon from '../../../../icons/Icon';
 import ToolbarButton from './ToolbarButton';
 
 export default class Toolbar extends React.Component {

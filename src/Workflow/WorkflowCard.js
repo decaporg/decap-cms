@@ -14,7 +14,7 @@ const WorkflowCard = ({
   canPublish,
   onPublish
 }) => (
-  <div class="nc-workflow-card">
+  <div className="nc-workflow-card">
     <h2>{title}</h2>
     <div>{`by ${ author }`}</div>
     <div>Last updated: {timestamp} by {authorLastChange}</div>

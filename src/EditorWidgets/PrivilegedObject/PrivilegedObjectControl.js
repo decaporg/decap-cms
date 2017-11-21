@@ -4,7 +4,7 @@ import { Map } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import c from 'classnames';
 import { resolveWidget } from '../../lib/registry';
-import ControlHOC from '../ControlHOC';
+import ControlHOC from '../../Editor/EditorControlPane/ControlHOC';
 
 export default class ObjectControl extends Component {
   static propTypes = {
