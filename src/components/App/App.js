@@ -160,8 +160,8 @@ class App extends React.Component {
 
 function mapStateToProps(state, ownProps) {
   const { auth, config, collections, globalUI } = state;
-  const authModalOpen = (auth && auth.get('modal')) || false;
-  const user = auth && auth.get('user');
+  const user = auth.get('user', null);
+  const authModalOpen = auth.get('modal', false);
   const isFetching = globalUI.get('isFetching');
   const publishMode = config && config.get('publish_mode');
   return { auth, config, collections, user, isFetching, publishMode, authModalOpen };
