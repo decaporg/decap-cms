@@ -5,7 +5,7 @@ import { Map } from 'immutable';
 import { Value, Document, Block, Text } from 'slate';
 import { Editor as Slate } from 'slate-react';
 import { slateToMarkdown, markdownToSlate, htmlToSlate } from '../../serializers';
-import registry from '../../../../../lib/registry';
+import { getEditorComponents } from '../../../../lib/registry';
 import Toolbar from '../Toolbar/Toolbar';
 import { Sticky } from '../../../../UI/Sticky/Sticky';
 import { renderNode, renderMark } from './renderers';
@@ -25,7 +25,7 @@ export default class Editor extends Component {
     const value = Value.create({ document });
     this.state = {
       value,
-      shortcodePlugins: registry.getEditorComponents(),
+      shortcodePlugins: getEditorComponents(),
     };
   }
 

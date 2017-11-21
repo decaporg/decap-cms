@@ -1,10 +1,8 @@
 import PropTypes from 'prop-types';
 import React from "react";
 import Input from "react-toolbox/lib/input";
-import Button from "react-toolbox/lib/button";
 import { Notifs } from 'redux-notifications';
 import { Toast } from '../../UI/index';
-import { Card, Icon } from "../../UI";
 import logo from "./netlify_logo.svg";
 
 let component = null;
@@ -104,7 +102,7 @@ export default class AuthenticationPage extends React.Component {
 
     return (
       <section className="nc-gitGatewayAuthenticationPage-root">
-        <Card className="nc-gitGatewayAuthenticationPage-card">
+        <div className="nc-gitGatewayAuthenticationPage-card">
           <form onSubmit={this.handleLogin}>
             <img src={logo} width={100} role="presentation" />
             {error && <p>
@@ -129,15 +127,11 @@ export default class AuthenticationPage extends React.Component {
               error={errors.password}
               onChange={this.handleChange.bind(this, "password")} // eslint-disable-line
             />
-            <Button
-              className="nc-gitGatewayAuthenticationPage-button"
-              raised
-              disabled={inProgress}
-            >
-              <Icon type="login" /> {inProgress ? "Logging in..." : "Login"}
-            </Button>
+            <button className="nc-gitGatewayAuthenticationPage-button" disabled={inProgress}>
+              {inProgress ? "Logging in..." : "Login"}
+            </button>
           </form>
-        </Card>
+        </div>
       </section>
     );
   }

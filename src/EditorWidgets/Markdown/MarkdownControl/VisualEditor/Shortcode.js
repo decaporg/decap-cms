@@ -3,11 +3,11 @@ import c from 'classnames';
 import { Map } from 'immutable';
 import { connect } from 'react-redux';
 import { partial, capitalize } from 'lodash';
-import registry from '../../../../../lib/registry';
-import { openMediaLibrary, removeInsertedMedia } from '../../../../../actions/mediaLibrary';
-import { addAsset } from '../../../../../actions/media';
-import { getAsset } from '../../../../../reducers';
-import ListItemTopBar from '../../../../../UI/ListItemTopBar/ListItemTopBar';
+import { resolveWidget, getEditorComponents } from '../../../../lib/registry';
+import { openMediaLibrary, removeInsertedMedia } from '../../../../actions/mediaLibrary';
+import { addAsset } from '../../../../actions/media';
+import { getAsset } from '../../../../reducers';
+import ListItemTopBar from '../../../../UI/ListItemTopBar/ListItemTopBar';
 
 class Shortcode extends React.Component {
   constructor(props) {
@@ -65,7 +65,7 @@ class Shortcode extends React.Component {
       onOpenMediaLibrary,
       onRemoveInsertedMedia,
     } = this.props;
-    const widget = registry.resolveWidget(field.get('widget') || 'string');
+    const widget = resolveWidget(field.get('widget') || 'string');
     const value = shortcodeData.get(field.get('name'));
     const key = `field-${ field.get('name') }`;
     const Control = widget.control;
@@ -93,7 +93,7 @@ class Shortcode extends React.Component {
     const { collapsed } = this.state;
     const pluginId = node.data.get('shortcode');
     const shortcodeData = Map(this.props.node.data.get('shortcodeData'));
-    const plugin = registry.getEditorComponents().get(pluginId);
+    const plugin = getEditorComponents().get(pluginId);
     const className = c(
       'nc-visualEditor-shortcode',
       { 'nc-visualEditor-shortcode-collapsed': collapsed },
