@@ -1,5 +1,6 @@
 .nc-fileUploadButton {
   @apply(--button);
+  margin-bottom: 0;
 
   & span {
     font-size: 14px;

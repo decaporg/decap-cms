@@ -1,8 +1,6 @@
 backend:
-  name: github
-  repo: erquhart/blank
+  name: test-repo
 
-publish_mode: editorial_workflow
 media_folder: "assets/uploads"
 
 collections: # A list of collections the CMS should be able to edit

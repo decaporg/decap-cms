@@ -2,13 +2,13 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import SplitPane from 'react-split-pane';
-import Button from 'react-toolbox/lib/button';
 import classnames from 'classnames';
 import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
 import EditorControlPane from '../EditorControlPane/EditorControlPane';
 import EditorPreviewPane from '../EditorPreviewPane/EditorPreviewPane';
 import EditorToolbar from './EditorToolbar';
 import { StickyContext } from '../../UI/Sticky/Sticky';
+import Icon from '../../icons/Icon';
 
 const PREVIEW_VISIBLE = 'cms.preview-visible';
 const SCROLL_SYNC_ENABLED = 'cms.scroll-sync-enabled';
@@ -70,16 +70,6 @@ class EditorInterface extends Component {
     const { previewVisible, scrollSyncEnabled, showEventBlocker } = this.state;
 
     const collectionPreviewEnabled = collection.getIn(['editor', 'preview'], true);
-
-    const ToggleButton = ({ icon, onClick }) => (
-      <Button
-        className={classnames('nc-entryEditor-toggleButton', { previewVisible: 'nc-entryEditor-toggleButtonShow' })}
-        icon={icon}
-        onClick={onClick}
-        floating
-        mini
-      />
-    );
 
     const editor = (
       <StickyContext
@@ -147,20 +137,22 @@ class EditorInterface extends Component {
           hasChanged={hasChanged}
         />
         <div className="nc-entryEditor-container">
-          { collectionPreviewEnabled ? (
-            <div className="nc-entryEditor-controlPaneButtons">
-              <ToggleButton
-                icon={previewVisible ? 'visibility' : 'visibility_off'}
-                onClick={this.handleTogglePreview}
-              />
-              { previewVisible && (
-                <ToggleButton
-                  icon={scrollSyncEnabled ? 'sync' : 'sync_disabled'}
-                  onClick={this.handleToggleScrollSync}
-                />
-              ) }
-            </div>
-          ) : null }
+          {
+            collectionPreviewEnabled
+              ? <div className="nc-entryEditor-viewControls">
+                  <button onClick={this.handleTogglePreview}>
+                    <Icon type={previewVisible ? 'eye' : 'close'} size="large"/>
+                  </button>
+                  {
+                    previewVisible
+                      ? <button onClick={this.handleToggleScrollSync}>
+                          <Icon type={scrollSyncEnabled ? 'close' : 'close'} size="large"/>
+                        </button>
+                      : null
+                  }
+                </div>
+              : null
+          }
           {
             collectionPreviewEnabled && this.state.previewVisible
               ? editorWithPreview
