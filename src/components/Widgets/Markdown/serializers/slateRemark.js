@@ -1,4 +1,4 @@
-import { get, isEmpty, concat, without, flatten, flatMap, initial, last, difference, reverse, sortBy } from 'lodash';
+import { get, isEmpty, concat, without, flatten, flatMap, initial, last, difference, reverse, sortBy, union } from 'lodash';
 import u from 'unist-builder';
 
 /**
@@ -98,6 +98,16 @@ function combineTextAndInline(nodes) {
     const data = node.data || {};
 
     /**
+     * Move marks shared by all children of an inline node to the inline node
+     * itself.
+     */
+    if (node.kind === 'inline' && node.nodes) {
+      const { updatedNode, updatedMarks } = condenseInlineMarks(node, data.marks);
+      node = updatedNode;
+      data.marks = updatedMarks;
+    }
+
+    /**
      * If the previous node has ranges and the current node has marks in data
      * (only happens when we place them on inline nodes here in the parser), or
      * the current node also has ranges (because the previous node was
@@ -138,6 +148,91 @@ function combineTextAndInline(nodes) {
     acc.push(node);
     return acc;
   }, []);
+}
+
+
+/**
+ * condenseInlineMarks
+ *
+ * Moves marks shared by all children of an inline node to the inline node
+ * itself.
+ *
+ * Inline nodes can have text children. If all of those children share one
+ * or more marks, those marks should wrap the entire inline node instead
+ * of wrapping within the node. We enforce that this:
+ *
+ * [_a_](b)
+ *
+ * becomes this:
+ *
+ * _[a](b)_
+ *
+ * We do this because it allows inline nodes to share marks with surrounding
+ * content, so this (which is what Slate would give us otherwise):
+ *
+ * _a_[_b_](c)_d_
+ *
+ * becomes this:
+ *
+ * _a[b](c)d_
+ *
+ * Here we look for marks that exist on all child text, remove those marks
+ * from the children and add them to the inline node.
+ */
+function condenseInlineMarks(node, inlineNodeMarks) {
+  /**
+   * Get arrays of marks for each node, nested in a single array.
+   */
+  const markArrays = flatMap(node.nodes, child => {
+    return child.ranges ? child.ranges.map(range => range.marks) : [];
+  });
+
+  /**
+   * We're only wrapping the outer inline node in marks that are on every child
+   * node, so we can use the first child node's marks as the group of potential
+   * marks.
+   */
+  const potentialMarks = markArrays[0];
+
+  if (potentialMarks && potentialMarks.length) {
+    /**
+     * Filter the potential marks down to marks that are present on every range.
+     */
+    const marks = potentialMarks.filter(potentialMark => {
+      return markArrays.every(markArray => markArray.some(mark => potentialMark.type === mark.type));
+    });
+
+    /**
+     * Set the marks for the inline node to an array of the unique values
+     * between the node's existing marks and the marks shared by all children.
+     */
+    const updatedMarks = union(inlineNodeMarks, marks);
+
+    /**
+     * Remove any inline node marks from the children, as all children will be
+     * nested under an MDAST node representing the mark, and return the node
+     * with the updated child nodes.
+     */
+    const processedNodes = node.nodes.map(child => {
+      if (child.ranges) {
+        const markTypes = updatedMarks.map(mark => mark.type);
+        const ranges = child.ranges.map(range => {
+          return { ...range, marks: range.marks.filter(mark => !markTypes.includes(mark.type)) };
+        });
+        return { ...child, ranges };
+      }
+      return child;
+    });
+
+    const updatedNode = { ...node, nodes: processedNodes };
+    return { updatedNode, updatedMarks };
+  }
+
+  /**
+   * If no child node marks need to be moved to the inline node, return the
+   * inline node as is.
+   */
+  return { updatedNode: node, updatedMarks: inlineNodeMarks };
 }
 
 
