@@ -62,6 +62,18 @@ collections: # A list of collections the CMS should be able to edit
     folder: "_sink"
     create: true
     fields:
+      - name: dynamic_block
+        label: Dynamic Block
+        widget: list
+        fields:
+          - label: "Dynamic"
+            name: "dynamic"
+            widget: "dynamic"
+            dynamicWidgets:
+              - string
+              - text
+              - markdown
+              - slider
       - label: "Related Post"
         name: "post"
         widget: "relationKitchenSinkPost"
@@ -162,3 +174,4 @@ collections: # A list of collections the CMS should be able to edit
                       - {label: "Image", name: "image", widget: "image"}
                       - {label: "File", name: "file", widget: "file"}
                       - {label: "Select", name: "select", widget: "select", options: ["a", "b", "c"]}
+
