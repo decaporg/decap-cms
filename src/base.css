@@ -97,6 +97,7 @@
     border: 0;
     border-radius: 3px;
     padding: 3px 6px;
+    margin: 0;
     transition: all var(--transition);
   }
 
@@ -221,24 +222,19 @@
   }
 }
 
-html {
-  box-sizing: border-box;
-  -ms-text-size-adjust: 100%;
-  -webkit-text-size-adjust: 100%;
-  margin: 0;
-  height: 100%;
-}
-
 *, *:before, *:after {
-  box-sizing: inherit;
+  box-sizing: border-box;
 }
 
 body {
   font-family: var(--fontFamilyPrimary);
-  height: 100%;
+  font-weight: normal;
   background-color: var(--backgroundColor);
   color: var(--textColor);
-  margin: 0;
+}
+
+ul, ol {
+  padding-left: 0;
 }
 
 h1, h2, h3, h4, h5, h6, p {
@@ -268,6 +264,7 @@ button {
 
 a {
   color: var(--textColor);
+  text-decoration: none;
 }
 
 button {

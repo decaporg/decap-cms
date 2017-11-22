@@ -35,22 +35,26 @@
   overflow-x: hidden;
 }
 
-.nc-entryEditor-controlPaneButtons {
+.nc-entryEditor-viewControls {
   position: absolute;
-  top: 0;
-  right: -50px;
+  top: -6px;
+  right: -6px;
   z-index: 299;
-  opacity: 0.8;
-}
 
-.nc-entryEditor-toggleButton {
-  margin-top: 10px;
-  margin-left: 5px;
-  display: block;
-}
-
-.nc-entryEditor-toggleButtonShow {
-  right: 60px;
+  & button {
+    background-color: #fff;
+    color: var(--primaryColor);
+    border-radius: 32px;
+    display: block;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 6px;
+    box-shadow: 0 2px 6px 0 rgba(68,74,87,0.15), 0 1px 3px 0 rgba(68,74,87,0.30);
+  }
 }
 
 .nc-entryEditor-blocker > * {

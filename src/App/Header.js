@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from "react";
 import ImmutablePropTypes from "react-immutable-proptypes";
 import { NavLink } from 'react-router-dom';
+import { Dropdown, DropdownItem } from '../UI/Dropdown/Dropdown';
 import Icon from '../icons/Icon';
 
 export default class Header extends React.Component {
@@ -82,13 +83,21 @@ export default class Header extends React.Component {
               <a className="nc-appHeader-siteLink" href="http://olddvdscreensaver.com" target="_blank">
                 olddvdscreensaver.com
               </a>
-              <button className="nc-appHeader-avatar">
-                {
-                  avatarUrl
-                    ? <img className="nc-appHeader-avatar-image" src={user.get('avatar_url')}/>
-                    : <Icon className="nc-appHeader-avatar-placeholder" type="user" size="large"/>
+              <Dropdown
+                dropdownWidth="100px"
+                dropdownPosition="right"
+                button={
+                  <button className="nc-appHeader-avatar">
+                    {
+                      avatarUrl
+                        ? <img className="nc-appHeader-avatar-image" src={user.get('avatar_url')}/>
+                        : <Icon className="nc-appHeader-avatar-placeholder" type="user" size="large"/>
+                    }
+                  </button>
                 }
-              </button>
+              >
+                <DropdownItem label="Log Out" onClick={onLogoutClick}/>
+              </Dropdown>
             </div>
           </div>
         </div>

@@ -18,14 +18,30 @@ const getRotation = (iconDirection, newDirection) => {
   return `${degrees}deg`;
 }
 
+const sizes = {
+  xsmall: '12px',
+  small: '18px',
+  medium: '24px',
+  large: '32px',
+};
+
 const Icon = props => {
-  const { type, direction, size = 'medium', className = '', ...remainingProps } = props;
+  const {
+    type,
+    direction,
+    size = 'medium',
+    className = '',
+    width,
+    height,
+    ...remainingProps,
+  } = props;
   const icon = icons[type];
   const rotation = getRotation(icon.direction, direction)
   const transform = `rotate(${rotation})`;
-  const style = { transform };
+  const sizeResolved = sizes[size] || size;
+  const style = { width: sizeResolved, height: sizeResolved, transform };
   return (
-    <span className={`nc-icon nc-icon-${size} ${className}`} {...remainingProps}>
+    <span className={`nc-icon ${className}`} {...remainingProps}>
       <span dangerouslySetInnerHTML={{ __html: icon.image }} style={style}></span>
     </span>
   );

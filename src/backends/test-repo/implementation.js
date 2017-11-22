@@ -14,15 +14,6 @@ function getFile(path) {
   return obj || {};
 }
 
-function nameFromEmail(email) {
-  return email
-    .split('@').shift().replace(/[.-_]/g, ' ')
-    .split(' ')
-    .filter(f => f)
-    .map(s => s.substr(0, 1).toUpperCase() + (s.substr(1) || ''))
-    .join(' ');
-}
-
 export default class TestRepo {
   constructor(config) {
     this.config = config;
@@ -37,8 +28,8 @@ export default class TestRepo {
     return this.authenticate(user);
   }
 
-  authenticate(state) {
-    return Promise.resolve({ email: state.email, name: nameFromEmail(state.email) });
+  authenticate() {
+    return Promise.resolve();
   }
 
   logout() {

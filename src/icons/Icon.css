@@ -6,10 +6,10 @@
     display: block;
   }
 
-  & path,
-  & circle,
-  & polygon,
-  & rect {
+  & path:not(.no-fill),
+  & circle:not(.no-fill),
+  & polygon:not(.no-fill),
+  & rect:not(.no-fill) {
     fill: currentColor;
   }
 
@@ -18,22 +18,7 @@
   }
 }
 
-.nc-icon-xsmall svg {
-  width: 12px;
-  height: 12x;
-}
-
-.nc-icon-small svg {
-  width: 18px;
-  height: 18px;
-}
-
-.nc-icon-medium svg {
-  width: 24px;
-  height: 24px;
-}
-
-.nc-icon-large svg {
-  width: 32px;
-  height: 32px;
+.nc-icon svg {
+  width: 100%;
+  height: 100%;
 }
