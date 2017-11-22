@@ -1,5 +1,5 @@
 import { Map } from 'immutable';
-import { newEditorPlugin } from '../EditorWidgets/Markdown/MarkdownControl/plugins';
+import { newEditorPlugin } from '../components/EditorWidgets/Markdown/MarkdownControl/plugins';
 
 /**
  * Global Registry Object

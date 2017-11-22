@@ -1,13 +1,23 @@
-@import "./base.css";
-@import "./icons/Icon.css";
+/**
+ * Base styles
+ */
+@import "reboot.css/dist/reboot.css";
+@import "./components/UI/base.css";
+@import "./components/UI/Icon/Icon.css";
 
+/**
+ * Components
+ */
+@import "./components/App/App.css";
+@import "./components/Collection/Collection.css";
+@import "./components/Workflow/Workflow.css";
+@import "./components/Editor/Editor.css";
+@import "./components/UI/UI.css";
+@import "./components/MediaLibrary/MediaLibrary.css";
+@import "./components/EditorWidgets/EditorWidgets.css";
+
+/**
+ * Backend auth pages
+ */
 @import "./backends/git-gateway/AuthenticationPage.css";
 @import "./backends/github/AuthenticationPage.css";
-
-@import "./App/App.css";
-@import "./Collection/Collection.css";
-@import "./Workflow/Workflow.css";
-@import "./Editor/Editor.css";
-@import "./UI/UI.css";
-@import "./MediaLibrary/MediaLibrary.css";
-@import "./EditorWidgets/EditorWidgets.css";
