@@ -41,14 +41,9 @@ module.exports = {
         }),
       },
       {
-        include: [/src\/icons/],
         test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+        exclude: [/node_modules/],
         loader: 'svg-inline-loader',
-      },
-      {
-        exclude: [/src\/icons/],
-        test: /\.(png|eot|woff|woff2|ttf|gif|svg)(\?v=\d+\.\d+\.\d+)?$/,
-        use: { loader: "url-loader", options: { limit: 10000 } },
       },
     ],
   },
