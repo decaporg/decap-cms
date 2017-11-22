@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import React from "react";
-import Input from "react-toolbox/lib/input";
+import { partial } from 'lodash';
 import { Notifs } from 'redux-notifications';
 import { Toast } from '../../UI/index';
-import logo from "./netlify_logo.svg";
+import Icon from '../../icons/Icon';
 
 let component = null;
 
@@ -57,8 +57,8 @@ export default class AuthenticationPage extends React.Component {
 
   state = { email: "", password: "", errors: {} };
 
-  handleChange = (name, value) => {
-    this.setState({ ...this.state, [name]: value });
+  handleChange = (name, e) => {
+    this.setState({ ...this.state, [name]: e.target.value });
   };
 
   handleLogin = (e) => {
@@ -104,29 +104,31 @@ export default class AuthenticationPage extends React.Component {
       <section className="nc-gitGatewayAuthenticationPage-root">
         <div className="nc-gitGatewayAuthenticationPage-card">
           <form onSubmit={this.handleLogin}>
-            <img src={logo} width={100} role="presentation" />
+            <div className="nc-gitGatewayAuthenticationPage-iconContainer">
+              <Icon type="netlify" size="140px"/>
+            </div>
             {error && <p>
               <span className="nc-gitGatewayAuthenticationPage-errorMsg">{error}</span>
             </p>}
             {errors.server && <p>
               <span className="nc-gitGatewayAuthenticationPage-errorMsg">{errors.server}</span>
             </p>}
-            <Input
+            <label>Email</label>
+            <input
               type="text"
-              label="Email"
               name="email"
               value={this.state.email}
-              error={errors.email}
-              onChange={this.handleChange.bind(this, "email")} // eslint-disable-line
+              onChange={partial(this.handleChange, 'email')}
             />
-            <Input
+            <div>{ errors.email || null }</div>
+            <label>Password</label>
+            <input
               type="password"
-              label="Password"
               name="password"
               value={this.state.password}
-              error={errors.password}
-              onChange={this.handleChange.bind(this, "password")} // eslint-disable-line
+              onChange={partial(this.handleChange, 'password')}
             />
+            <div>{ errors.password || null }</div>
             <button className="nc-gitGatewayAuthenticationPage-button" disabled={inProgress}>
               {inProgress ? "Logging in..." : "Login"}
             </button>

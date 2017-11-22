@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import logo from "../git-gateway/netlify_logo.svg";
+import Icon from '../../icons/Icon';
 
 export default class AuthenticationPage extends React.Component {
   static propTypes = {
@@ -18,7 +18,7 @@ export default class AuthenticationPage extends React.Component {
 
     return (<section className="nc-gitGatewayAuthenticationPage-root">
       <div className="nc-gitGatewayAuthenticationPage-card">
-        <img src={logo} width={100} role="presentation" />
+        <Icon type="netlify" size="large"/>
         <button
           className="nc-gitGatewayAuthenticationPage-button"
           disabled={inProgress}

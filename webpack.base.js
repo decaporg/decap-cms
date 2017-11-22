@@ -17,29 +17,10 @@ module.exports = {
            List all of theme in the array
         */
         test: /\.css$/,
-        include: [/redux-notifications/, /normalize.css/],
+        include: [/redux-notifications/, /reboot.css/],
         use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
           use: 'css-loader',
-        }),
-      },
-      {
-        /* React-toolbox relies on PostCSS and css-modules */
-        test: /\.css$/,
-        include: [/react-toolbox/],
-        use: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: [
-            {
-              loader: 'css-loader',
-              options: {
-                modules: true,
-                importLoaders: 1,
-                localIdentName: "[name]__[local]__[hash:base64:8]"
-              },
-            },
-            { loader: 'postcss-loader' },
-          ],
         }),
       },
       {

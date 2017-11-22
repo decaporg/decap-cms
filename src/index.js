@@ -2,7 +2,7 @@ import React from 'react';
 import createReactClass from 'create-react-class';
 import { render } from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
-import 'normalize.css';
+import 'reboot.css';
 import ErrorBoundary from './components/UI/ErrorBoundary/ErrorBoundary';
 import Root from './root';
 import registry from './lib/registry';
