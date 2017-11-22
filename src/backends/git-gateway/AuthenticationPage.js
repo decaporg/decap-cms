@@ -2,8 +2,8 @@ import PropTypes from 'prop-types';
 import React from "react";
 import { partial } from 'lodash';
 import { Notifs } from 'redux-notifications';
-import { Toast } from '../../UI/index';
-import Icon from '../../icons/Icon';
+import Toast from '../../components/UI/toast/Toast';
+import Icon from '../../components/UI/Icon/Icon';
 
 let component = null;
 
