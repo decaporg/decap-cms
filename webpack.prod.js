@@ -27,6 +27,9 @@ module.exports = merge.smart(require('./webpack.base.js'), {
       NETLIFY_CMS_VERSION: JSON.stringify(require("./package.json").version),
     }),
 
+    // Combine/hoist module scopes when possibile.
+    new webpack.optimize.ModuleConcatenationPlugin(),
+
     // Minify and optimize the JavaScript
     new UglifyJsPlugin({
       sourceMap: true,
