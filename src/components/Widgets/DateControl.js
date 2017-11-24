@@ -1,28 +1,41 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import DateTime from 'react-datetime';
+import moment from 'moment';
 
-export default class DateControl extends React.Component {
+function format(format, value) {
+  return moment(value).format(format || moment.defaultFormat);
+}
+
+export default class DateTimeControl extends React.Component {
   componentDidMount() {
     if (!this.props.value) {
-      this.props.onChange(new Date());
+      this.props.onChange(format(this.props.field.get('format'), new Date()));
     }
   }
 
   handleChange = (datetime) => {
-    this.props.onChange(datetime);
+    this.props.onChange(format(this.props.field.get('format'), datetime));
   };
 
   render() {
-    return (<DateTime
-      timeFormat={false}
-      value={this.props.value}
-      onChange={this.handleChange}
+    return (
+      <DateTime
+        timeFormat={this.props.includeTime || false}
+        value={moment(this.props.value, this.props.field.get('format'))}
+        onChange={this.handleChange}
     />);
   }
 }
 
-DateControl.propTypes = {
+DateTimeControl.propTypes = {
   onChange: PropTypes.func.isRequired,
-  value: PropTypes.object, // eslint-disable-line
+  value: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.string,
+  ]),
+  includeTime: PropTypes.bool,
+  field: PropTypes.object
 };
+
+
