@@ -4,13 +4,28 @@ import DateTime from 'react-datetime';
 import moment from 'moment';
 
 function format(format, value) {
-  return moment(value).format(format || moment.defaultFormat);
+  if (format) {
+    return moment(value).format(format || moment.defaultFormat);
+  }
+  return value;
+}
+
+function toDate(format, value) {
+  if (format) {
+    return moment(value, format);
+  }
+  return value;
 }
 
 export default class DateTimeControl extends React.Component {
   componentDidMount() {
-    if (!this.props.value) {
-      this.props.onChange(format(this.props.field.get('format'), new Date()));
+    const {value, field, onChange} = this.props;
+    if (!value) {
+      if (field.get('format')) {
+        onChange(format(field.get('format'), new Date()));
+      } else {
+        onChange(new Date());
+      }
     }
   }
 
@@ -22,7 +37,7 @@ export default class DateTimeControl extends React.Component {
     return (
       <DateTime
         timeFormat={this.props.includeTime || false}
-        value={moment(this.props.value, this.props.field.get('format'))}
+        value={toDate(this.props.field.get('format'), this.props.value)}
         onChange={this.handleChange}
     />);
   }
