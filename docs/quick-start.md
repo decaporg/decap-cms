@@ -1,5 +1,5 @@
 # Quick Start
-Netlify CMS is adaptable to a wide variety of projects. The only inflexible requirement is that your site content must be written in markdown, JSON, YAML, or TOML files, stored in a repo on [GitHub](https://github.com/). (If you're partial to another Git hosting service, check out the PRs in progress for [GitLab](https://github.com/netlify/netlify-cms/pull/517) and [Bitbucket](https://github.com/netlify/netlify-cms/pull/525) support.)
+Netlify CMS is adaptable to a wide variety of projects. The only inflexible requirement is that your site content must be written in markdown, JSON, YAML, or TOML files, stored in a repo on [GitHub](https://github.com/netlify/netlify-cms). (If you're partial to another Git hosting service, check out the PRs in progress for [GitLab](https://github.com/netlify/netlify-cms/pull/517) and [Bitbucket](https://github.com/netlify/netlify-cms/pull/525) support.)
 
 In this guide, we're going to assume you're using a [static site generator](https://www.staticgen.com/), like Jekyll, Hugo, Hexo, or Gatsby.
 
