@@ -5,26 +5,6 @@
 A CMS for static site generators. Give non-technical users a simple way to edit
 and add content to any site built with a static site generator.
 
-## Documentation
-
-You can find the Netlify CMS documentation [on the website](https://netlifycms.org/docs).  
-It is divided into several sections:
-
-* [Introduction](https://netlifycms.org/docs/intro)
-* [Test Drive](https://netlifycms.org/docs/test-drive)
-* [Quick Start](https://netlifycms.org/docs/quick-start)
-* [Widgets](https://netlifycms.org/docs/widgets)
-* [Editorial Workflow](https://netlifycms.org/docs/editorial-workflow)
-* [Custom Previews](https://netlifycms.org/docs/customization)
-* [Extending Widgets](https://netlifycms.org/docs/extending)
-* [Validation](https://netlifycms.org/docs/validation)
-* [Auth & Backends](https://netlifycms.org/docs/auth-backends)
-* [Architecture](https://netlifycms.org/docs/architecture)
-* [Contributing](https://netlifycms.org/docs/contributor-guide)
-* [Examples](https://netlifycms.org/docs/examples)
-
-You can improve it by sending pull requests to [this repository](https://github.com/netlify/netlify-cms-www).
-
 ## How it works
 
 Netlify CMS is a single-page app that you pull into the `/admin` part of your site.
@@ -37,14 +17,14 @@ tweak the main layout of the CMS a bit to fit your own site.
 When a user navigates to `/admin` they'll be prompted to login, and once authenticated
 they'll be able to create new content or edit existing content.
 
-Read more about Netlify CMS [Core Concepts](https://netlifycms.org/docs/intro.md).
+Read more about Netlify CMS [Core Concepts](docs/intro.md).
 
 # Installation and Configuration
 
 The Netlify CMS can be used in two different ways.
 
 * A Quick and easy install, that just requires you to create a single HTML file and a configuration file. All the CMS Javascript and CSS are loaded from a CDN.
-To learn more about this installation method, refer to the [Quick Start Guide](https://netlifycms.org/docs/quick-start.md)
+To learn more about this installation method, refer to the [Quick Start Guide](docs/quick-start.md)
 * A complete, more complex install, that gives you more flexibility but requires that you use a static site builder with a build system that supports npm packages.
 
 # Community
