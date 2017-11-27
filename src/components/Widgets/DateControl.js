@@ -1,28 +1,30 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import DateTimeControl from './DateTimeControl';
 import DateTime from 'react-datetime';
+import { Map } from 'immutable';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 
 export default class DateControl extends React.Component {
-  componentDidMount() {
-    if (!this.props.value) {
-      this.props.onChange(new Date());
-    }
-  }
-
-  handleChange = (datetime) => {
-    this.props.onChange(datetime);
-  };
-
   render() {
-    return (<DateTime
-      timeFormat={false}
-      value={this.props.value}
-      onChange={this.handleChange}
+    return (<DateTimeControl
+      {...this.props}
+      field={this.props.field.updateIn([ 'options' ], (val = Map({})) => val.set('timeFormat', false))}
+      onChange={(datetime) => this.props.onChange(datetime)}
     />);
   }
 }
 
 DateControl.propTypes = {
   onChange: PropTypes.func.isRequired,
-  value: PropTypes.object, // eslint-disable-line
+  value: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.string,
+  ]),
+  options: ImmutablePropTypes.mapContains({
+    dateFormat: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.bool,
+    ]),
+  })
 };
