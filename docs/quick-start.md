@@ -183,7 +183,7 @@ collections:
 
 ## Authentication
 
-Now that you have your Netlify CMS files in place and configured, all that's left is to enable authentication. There are [many ways to do this](/docs/custom-authentication) (with or without deploying to Netlify), but this example uses Netlify because it's one of the quickest ways to get started.
+Now that you have your Netlify CMS files in place and configured, all that's left is to enable authentication. There are [many ways to do this](https://github.com/netlify/netlify-cms/blob/master/docs/custom-authentication.md) (with or without deploying to Netlify), but this example uses Netlify because it's one of the quickest ways to get started.
 
 ### Setup on Netlify
 Netlify offers a built-in authentication service called Identity. In order to use it, you'll need to connect your site repo with Netlify. Netlify has published a general [Step-by-Step Guide](https://www.netlify.com/blog/2016/10/27/a-step-by-step-guide-deploying-a-static-site-or-single-page-app/) for this, along with detailed guides for many popular static site generators, including [Jekyll](https://www.netlify.com/blog/2015/10/28/a-step-by-step-guide-jekyll-3.0-on-netlify/), [Hugo](https://www.netlify.com/blog/2016/09/21/a-step-by-step-guide-victor-hugo-on-netlify/), [Hexo](https://www.netlify.com/blog/2015/10/26/a-step-by-step-guide-hexo-on-netlify/), [Middleman](https://www.netlify.com/blog/2015/10/01/a-step-by-step-guide-middleman-on-netlify/), [Gatsby](https://www.netlify.com/blog/2016/02/24/a-step-by-step-guide-gatsby-on-netlify/) and more.
