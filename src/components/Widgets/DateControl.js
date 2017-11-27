@@ -28,7 +28,7 @@ export default class DateControl extends React.Component {
     const { field, includeTime, value } = this.props;
     const format = field.get('format', moment.defaultFormat);
     return (<DateTime
-      timeFormat={includeTime}
+      timeFormat={!!includeTime}
       value={moment(value, format)}
       onChange={this.handleChange}
     />);
