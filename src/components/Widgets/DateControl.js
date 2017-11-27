@@ -4,7 +4,9 @@ import DateTime from 'react-datetime';
 
 export default class DateControl extends React.Component {
   componentDidMount() {
-    if (!this.props.value) {
+    const { field, value } = this.props;
+    
+    if (!value && !field.get('empty')) {
       this.props.onChange(new Date());
     }
   }
@@ -23,6 +25,7 @@ export default class DateControl extends React.Component {
 }
 
 DateControl.propTypes = {
+  field: PropTypes.object,
   onChange: PropTypes.func.isRequired,
   value: PropTypes.object, // eslint-disable-line
 };
