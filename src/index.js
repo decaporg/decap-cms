@@ -3,6 +3,7 @@ import createReactClass from 'create-react-class';
 import { render } from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
 import 'normalize.css';
+import ErrorBoundary from './components/UI/ErrorBoundary/ErrorBoundary';
 import Root from './root';
 import registry from './lib/registry';
 import './index.css';
@@ -21,7 +22,9 @@ document.body.appendChild(el);
 
 render((
   <AppContainer>
-    <Root />
+    <ErrorBoundary>
+      <Root />
+    </ErrorBoundary>
   </AppContainer>
 ), el);
 
