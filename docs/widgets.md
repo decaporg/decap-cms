@@ -99,3 +99,14 @@ collections:
         searchFields: [name, twitterHandle]
         valueField: name
 ```
+
+### Date Widget / DateTime Widget
+
+The date and datetime widgets provide date or datetime pickers when the widget is active. The resulting date string can be formatted (uses Moment.js), and accepts a default value. The initial value will be the current date unless `false` or an empty string are provided as the default value.
+
+The following field configuration properties are specific to fields using the date or datetime widget:
+
+Property | Accepted Values | Description
+--- | --- | ---
+`format` | string | format string uses Moment.js [tokens](https://momentjs.com/docs/#/parsing/string-format/)
+`default` | boolean, string | can be a date string, or else an empty string - defaults to current date

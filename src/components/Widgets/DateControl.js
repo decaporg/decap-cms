@@ -7,7 +7,12 @@ export default class DateControl extends React.Component {
   componentDidMount() {
     const { value, field, onChange } = this.props;
     this.format = field.get('format');
-    if (!value) {
+
+    /**
+     * Set the current date as default value if no default value is provided. An
+     * empty string means the value is intentionally blank.
+     */
+    if (!value && value !== '') {
       this.handleChange(new Date());
     }
   }
@@ -16,7 +21,7 @@ export default class DateControl extends React.Component {
     const newValue = this.format
       ? moment(datetime).format(this.format)
       : datetime;
-    onChange(newValue);
+    this.props.onChange(newValue);
   };
 
   render() {
