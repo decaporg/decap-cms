@@ -18,10 +18,13 @@ export default class DateControl extends React.Component {
   }
 
   handleChange = datetime => {
-    const newValue = this.format
-      ? moment(datetime).format(this.format)
-      : datetime;
-    this.props.onChange(newValue);
+    const { onChange } = this.props;
+    if (!this.format || datetime === '') {
+      onChange(datetime);
+    } else {
+      const formattedValue = moment(datetime).format(this.format);
+      onChange(formattedValue);
+    }
   };
 
   render() {
