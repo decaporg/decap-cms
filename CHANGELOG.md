@@ -6,6 +6,21 @@
   </summary>
 </details>
 
+## 0.7.6 (November 27, 2017)
+
+* Migrate to Slate 0.30.x ([@erquhart](https://github.com/erquhart) in [#826](https://github.com/netlify/netlify-cms/pull/826))
+* Fix empty image fields saving null or undefined ([@tech4him1](https://github.com/tech4him1) in [#829](https://github.com/netlify/netlify-cms/pull/829))
+* Add JSON as manually supported format ([@tech4him1](https://github.com/tech4him1) in [#830](https://github.com/netlify/netlify-cms/pull/830))
+* Enable webpack scope hoisting ([@tech4him1](https://github.com/tech4him1) in [#840](https://github.com/netlify/netlify-cms/pull/840))
+* Update bundled version of gotrue-js to latest ([@biilmann](https://github.com/biilmann) in [#837](https://github.com/netlify/netlify-cms/pull/837))
+* Add global error boundary ([@tech4him1](https://github.com/tech4him1) in [#847](https://github.com/netlify/netlify-cms/pull/847))
+* Fix datetime formatting, allow empty value ([@biilmann](https://github.com/biilmann) in [#842](https://github.com/netlify/netlify-cms/pull/842))
+
+### Docs
+
+* Update authentication doc to cover all backends ([@verythorough](https://github.com/verythorough) in [#751](https://github.com/netlify/netlify-cms/pull/751))
+* Add oauth-provider-go to custom-authentication.md ([@igk1972](https://github.com/igk1972) in [#845](https://github.com/netlify/netlify-cms/pull/845))
+
 ## 0.7.5 (November 19, 2017)
 
 * Add private media support for asset integrations ([@erquhart](https://github.com/erquhart) in [#834](https://github.com/netlify/netlify-cms/pull/834))
