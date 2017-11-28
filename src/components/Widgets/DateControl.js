@@ -6,27 +6,22 @@ import moment from 'moment';
 export default class DateControl extends React.Component {
   componentDidMount() {
     const { value, field, onChange } = this.props;
+    this.format = field.get('format');
     if (!value) {
-      const format = field.get('format');
-      const newValue = format
-        ? moment(new Date()).format(format)
-        : new Date();
-      onChange(newValue);
+      this.handleChange(new Date());
     }
   }
 
-  handleChange = (datetime) => {
-    const { onChange, field } = this.props;
-    const format = field.get('format');
-    const newValue = format
-      ? moment(datetime).format(format)
+  handleChange = datetime => {
+    const newValue = this.format
+      ? moment(datetime).format(this.format)
       : datetime;
     onChange(newValue);
   };
 
   render() {
-    const { field, includeTime, value } = this.props;
-    const format = field.get('format', moment.defaultFormat);
+    const { includeTime, value } = this.props;
+    const format = this.format || moment.defaultFormat;
     return (<DateTime
       timeFormat={!!includeTime}
       value={moment(value, format)}
