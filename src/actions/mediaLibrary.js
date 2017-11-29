@@ -90,8 +90,7 @@ export function persistMedia(file, opts = {}) {
             return dispatch(mediaPersistFailed({ privateUpload }));
           }
 
-          const deletedFile = await deleteMedia(existingFile, { privateUpload });
-          dispatch(deletedFile);
+          dispatch(deleteMedia(existingFile, { privateUpload }));
         }
 
         const asset = await backend.persistMedia(assetProxy);
