@@ -73,7 +73,7 @@ export function loadMedia(opts = {}) {
 }
 
 export function persistMedia(file, opts = {}) {
-  const { privateUpload } = opts;
+  const { privateUpload, existingFile } = opts;
   return async (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
@@ -85,6 +85,15 @@ export function persistMedia(file, opts = {}) {
       const assetProxy = await createAssetProxy(file.name.toLowerCase(), file, false, privateUpload);
       dispatch(addAsset(assetProxy));
       if (!integration) {
+        if (existingFile) {
+          if (!window.confirm('This media already exist, do you want to replace it?')) {
+            return dispatch(mediaPersistFailed({ privateUpload }));
+          }
+
+          const deletedFile = await deleteMedia(existingFile, { privateUpload });
+          dispatch(deletedFile);
+        }
+
         const asset = await backend.persistMedia(assetProxy);
         return dispatch(mediaPersisted(asset));
       }
