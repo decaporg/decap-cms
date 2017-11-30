@@ -1,3 +1,5 @@
+import React from 'react';
+
 const image = {
   label: 'Image',
   id: 'image',

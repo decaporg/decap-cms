@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const FileUploadButton = ({ label, imagesOnly, onChange, disabled, className }) => (
+export const FileUploadButton = ({ label, imagesOnly, onChange, disabled, className }) => (
   <label className={`nc-fileUploadButton ${className || ''}`}>
     <span>{label}</span>
     <input
@@ -19,5 +19,3 @@ FileUploadButton.propTypes = {
   onChange: PropTypes.func.isRequired,
   disabled: PropTypes.bool,
 };
-
-export default FileUploadButton;

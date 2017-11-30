@@ -1,7 +1,7 @@
 import { remove, attempt, isError } from 'lodash';
 import uuid from 'uuid/v4';
+import { fileExtension } from 'Lib/pathHelper'
 import AuthenticationPage from './AuthenticationPage';
-import { fileExtension } from '../../lib/pathHelper'
 
 window.repoFiles = window.repoFiles || {};
 

@@ -4,14 +4,14 @@ import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import { Route } from 'react-router-dom';
 import { ConnectedRouter } from 'react-router-redux';
-import history from './routing/history';
-import configureStore from './redux/configureStore';
-import { setStore } from './valueObjects/AssetProxy';
-import ErrorBoundary from './components/UI/ErrorBoundary/ErrorBoundary';
-import registry from './lib/registry';
-import App from './components/App/App';
-import './EditorWidgets';
-import './MarkdownPlugins';
+import history from 'Routing/history';
+import configureStore from 'Redux/configureStore';
+import { setStore } from 'ValueObjects/AssetProxy';
+import { ErrorBoundary } from 'UI'
+import registry from 'Lib/registry';
+import App from 'App/App';
+import 'EditorWidgets';
+import 'MarkdownPlugins';
 import './index.css';
 
 /**

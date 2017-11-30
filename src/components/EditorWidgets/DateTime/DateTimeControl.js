@@ -1,5 +1,5 @@
 import React from 'react';
-import DateControl from './DateControl';
+import DateControl from 'EditorWidgets/Date/DateControl';
 
 export default class DateTimeControl extends React.Component {
   render() {

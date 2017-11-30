@@ -1,7 +1,7 @@
 import yaml from "js-yaml";
 import { set, defaultsDeep, get } from "lodash";
-import { authenticateUser } from "../actions/auth";
-import * as publishModes from "../constants/publishModes";
+import { authenticateUser } from "Actions/auth";
+import * as publishModes from "Constants/publishModes";
 
 export const CONFIG_REQUEST = "CONFIG_REQUEST";
 export const CONFIG_SUCCESS = "CONFIG_SUCCESS";

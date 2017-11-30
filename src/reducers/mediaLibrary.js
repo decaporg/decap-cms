@@ -15,7 +15,7 @@ import {
   MEDIA_DELETE_REQUEST,
   MEDIA_DELETE_SUCCESS,
   MEDIA_DELETE_FAILURE,
-} from '../actions/mediaLibrary';
+} from 'Actions/mediaLibrary';
 
 const mediaLibrary = (state = Map({ isVisible: false, controlMedia: Map() }), action) => {
   const privateUploadChanged = state.get('privateUpload') !== get(action, ['payload', 'privateUpload']);

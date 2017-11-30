@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactModal from 'react-modal';
 
-export default class Modal extends React.Component {
+export class Modal extends React.Component {
   static propTypes = {
     children: PropTypes.node.isRequired,
     isOpen: PropTypes.bool.isRequired,

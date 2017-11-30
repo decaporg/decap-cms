@@ -2,7 +2,7 @@ import React from 'react';
 import CSSTransition from 'react-transition-group/CSSTransition';
 import c from 'classnames';
 
-export default class Loader extends React.Component {
+export class Loader extends React.Component {
 
   state = {
     currentItem: 0,

@@ -1,4 +1,4 @@
-import { get, isEmpty, concat, without, flatten, flatMap, initial, last, difference, reverse, sortBy } from 'lodash';
+import { get, isEmpty, without, flatMap, last, sortBy } from 'lodash';
 import u from 'unist-builder';
 
 /**

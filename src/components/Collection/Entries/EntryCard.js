@@ -2,8 +2,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import c from 'classnames';
-import history from '../../../routing/history';
-import { resolvePath } from '../../../lib/pathHelper';
+import history from 'Routing/history';
+import { resolvePath } from 'Lib/pathHelper';
 
 const EntryCard = ({ collection, entry, inferedFields, publicFolder }) => {
   const path = `/collections/${ collection.get('name') }/entries/${ entry.get('slug') }`;

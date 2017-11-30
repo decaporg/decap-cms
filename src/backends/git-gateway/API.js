@@ -1,5 +1,5 @@
-import GithubAPI from "../github/API";
-import { APIError } from "../../valueObjects/errors";
+import GithubAPI from "Backends/github/API";
+import { APIError } from "ValueObjects/errors";
 
 export default class API extends GithubAPI {
   constructor(config) {

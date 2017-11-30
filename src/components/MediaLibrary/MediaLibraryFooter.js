@@ -1,6 +1,5 @@
 import React from 'react';
-import FileUploadButton from '../UI/FileUploadButton/FileUploadButton';
-import Loader from '../UI/loader/Loader';
+import { FileUploadButton, Loader } from 'UI';
 
 const MediaLibraryFooter = ({
   onDelete,

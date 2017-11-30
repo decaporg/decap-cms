@@ -1,5 +1,5 @@
 import { Map } from 'immutable';
-import { SWITCH_VISUAL_MODE } from '../actions/editor';
+import { SWITCH_VISUAL_MODE } from 'Actions/editor';
 
 const editor = (state = Map({ useVisualMode: true }), action) => {
   switch (action.type) {

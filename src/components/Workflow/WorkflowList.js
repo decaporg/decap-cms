@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { DragSource, DropTarget, HTML5DragDrop } from '../UI/dndHelpers';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import moment from 'moment';
 import { capitalize } from 'lodash'
 import classnames from 'classnames';
+import { status, statusDescriptions } from 'Constants/publishModes';
+import { DragSource, DropTarget, HTML5DragDrop } from 'UI'
 import WorkflowCard from './WorkflowCard';
-import { status, statusDescriptions } from '../../constants/publishModes';
 
 // This is a namespace so that we can only drop these elements on a DropTarget with the same
 const DNDNamespace = 'cms-workflow';
