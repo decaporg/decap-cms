@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Wrapper, Button, Menu, MenuItem } from 'react-aria-menubutton';
-import Icon from '../Icon/Icon';
+import { Icon } from 'UI';
 
 const Dropdown = ({
   label,

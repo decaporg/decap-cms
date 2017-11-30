@@ -2,8 +2,7 @@ import PropTypes from 'prop-types';
 import React from "react";
 import ImmutablePropTypes from "react-immutable-proptypes";
 import { NavLink } from 'react-router-dom';
-import { Dropdown, DropdownItem } from '../UI/Dropdown/Dropdown';
-import Icon from '../UI/Icon/Icon';
+import { Icon, Dropdown, DropdownItem } from 'UI';
 
 export default class Header extends React.Component {
 

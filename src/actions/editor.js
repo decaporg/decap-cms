@@ -1,4 +1,4 @@
-import history from '../routing/history';
+import history from 'Routing/history';
 
 export const SWITCH_VISUAL_MODE = 'SWITCH_VISUAL_MODE';
 export const CLOSED_ENTRY = 'CLOSED_ENTRY';

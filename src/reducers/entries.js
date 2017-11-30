@@ -7,9 +7,9 @@ import {
   ENTRIES_SUCCESS,
   ENTRIES_FAILURE,
   ENTRY_DELETE_SUCCESS,
-} from '../actions/entries';
+} from 'Actions/entries';
 
-import { SEARCH_ENTRIES_SUCCESS } from '../actions/search';
+import { SEARCH_ENTRIES_SUCCESS } from 'Actions/search';
 
 let collection;
 let loadedEntries;

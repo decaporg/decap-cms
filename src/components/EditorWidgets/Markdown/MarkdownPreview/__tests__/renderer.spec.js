@@ -4,7 +4,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { padStart } from 'lodash';
 import MarkdownPreview from '../index';
-import { markdownToHtml } from '../../serializers';
+import { markdownToHtml } from 'EditorWidgets/Markdown/serializers';
 
 const parser = markdownToHtml;
 

@@ -2,9 +2,9 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { NavLink } from 'react-router-dom';
-import { searchCollections } from '../../actions/collections';
-import { getCollectionUrl } from '../../lib/urlHelper';
-import Icon from '../UI/Icon/Icon';
+import { searchCollections } from 'Actions/collections';
+import { getCollectionUrl } from 'Lib/urlHelper';
+import { Icon } from 'UI';
 
 export default class Collection extends React.Component {
 

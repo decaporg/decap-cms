@@ -3,9 +3,7 @@ import React from 'react';
 import { List } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import c from 'classnames';
-import { Dropdown, DropdownItem } from '../../../../UI/Dropdown/Dropdown';
-import Switch from '../../../../UI/Toggle/Toggle';
-import Icon from '../../../../UI/Icon/Icon';
+import { Dropdown, DropdownItem, Toggle, Icon } from 'UI';
 import ToolbarButton from './ToolbarButton';
 
 export default class Toolbar extends React.Component {
@@ -104,7 +102,7 @@ export default class Toolbar extends React.Component {
           >
             {toggleOffLabel}
           </span>
-          <Switch
+          <Toggle
             active={rawMode}
             onChange={onToggleMode}
             className="nc-markdownWidget-toolbar-markdownToggle-switch"

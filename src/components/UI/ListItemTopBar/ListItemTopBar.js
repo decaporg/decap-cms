@@ -1,9 +1,9 @@
 import React from 'react';
 import c from 'classnames';
-import Icon from '../Icon/Icon';
+import { Icon } from 'UI';
 
 
-const ListItemTopBar = ({ collapsed, onCollapseToggle, onRemove, dragHandleHOC, className }) => {
+export const ListItemTopBar = ({ collapsed, onCollapseToggle, onRemove, dragHandleHOC, className }) => {
   const DragHandle = dragHandleHOC && dragHandleHOC(() =>
     <span className="nc-listItemTopBar-dragIcon">
       <Icon type="drag-handle" size="small"/>
@@ -30,5 +30,3 @@ const ListItemTopBar = ({ collapsed, onCollapseToggle, onRemove, dragHandleHOC, 
     </div>
   );
 };
-
-export default ListItemTopBar;

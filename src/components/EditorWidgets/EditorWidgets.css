@@ -1,11 +1,11 @@
 @import "./withMedia/withMedia.css";
-@import "./Boolean/Boolean.css";
 @import "./Image/Image.css";
 @import "./File/FileControl.css";
 @import "./Markdown/Markdown.css";
-@import "./PrivilegedRelation/PrivilegedRelation.css";
-@import "./PrivilegedObject/PrivilegedObject.css";
-@import "./PrivilegedList/PrivilegedList.css";
+@import "./Boolean/Boolean.css";
+@import "./Relation/Relation.css";
+@import "./Object/Object.css";
+@import "./List/List.css";
 @import "./DateTime/DateTime.css";
 
 :root {

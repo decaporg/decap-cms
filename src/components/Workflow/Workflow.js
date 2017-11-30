@@ -8,10 +8,10 @@ import {
   updateUnpublishedEntryStatus,
   publishUnpublishedEntry,
   deleteUnpublishedEntry 
-} from '../../actions/editorialWorkflow';
-import { selectUnpublishedEntriesByStatus } from '../../reducers';
-import { EDITORIAL_WORKFLOW, status } from '../../constants/publishModes';
-import Loader from '../UI/loader/Loader';
+} from 'Actions/editorialWorkflow';
+import { selectUnpublishedEntriesByStatus } from 'Reducers';
+import { EDITORIAL_WORKFLOW, status } from 'Constants/publishModes';
+import { Loader } from 'UI';
 import WorkflowList from './WorkflowList';
 
 class Workflow extends Component {

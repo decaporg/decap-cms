@@ -1,14 +1,14 @@
 import uuid from 'uuid/v4';
 import { actions as notifActions } from 'redux-notifications';
-import { serializeValues } from '../lib/serializeEntryValues';
-import { closeEntry } from './editor';
 import { BEGIN, COMMIT, REVERT } from 'redux-optimist';
-import { currentBackend } from '../backends/backend';
-import { getAsset } from '../reducers';
-import { selectFields } from '../reducers/collections';
+import { serializeValues } from 'Lib/serializeEntryValues';
+import { currentBackend } from 'Backends/backend';
+import { getAsset } from 'Reducers';
+import { selectFields } from 'Reducers/collections';
+import { status, EDITORIAL_WORKFLOW } from 'Constants/publishModes';
+import { EditorialWorkflowError } from "ValueObjects/errors";
 import { loadEntry } from './entries';
-import { status, EDITORIAL_WORKFLOW } from '../constants/publishModes';
-import { EditorialWorkflowError } from "../valueObjects/errors";
+import { closeEntry } from './editor';
 
 const { notifSend } = notifActions;
 

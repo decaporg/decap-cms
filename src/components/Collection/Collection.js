@@ -1,7 +1,7 @@
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
-import { getNewEntryUrl } from '../../lib/urlHelper';
+import { getNewEntryUrl } from 'Lib/urlHelper';
 import Sidebar from './Sidebar';
 import Top from './Top';
 import EntriesCollection from './Entries/EntriesCollection';

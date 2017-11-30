@@ -4,16 +4,16 @@ import { orderBy, get, isEmpty, map } from 'lodash';
 import c from 'classnames';
 import fuzzy from 'fuzzy';
 import Waypoint from 'react-waypoint';
-import Modal from '../UI/Modal/Modal';
-import { resolvePath, fileExtension } from '../../lib/pathHelper';
-import { changeDraftField } from '../../actions/entries';
+import { Modal } from 'UI';
+import { resolvePath, fileExtension } from 'Lib/pathHelper';
+import { changeDraftField } from 'Actions/entries';
 import {
   loadMedia as loadMediaAction,
   persistMedia as persistMediaAction,
   deleteMedia as deleteMediaAction,
   insertMedia as insertMediaAction,
   closeMediaLibrary as closeMediaLibraryAction,
-} from '../../actions/mediaLibrary';
+} from 'Actions/mediaLibrary';
 import MediaLibraryFooter from './MediaLibraryFooter';
 
 /**

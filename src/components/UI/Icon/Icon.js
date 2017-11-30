@@ -25,7 +25,7 @@ const sizes = {
   large: '32px',
 };
 
-const Icon = props => {
+export const Icon = props => {
   const {
     type,
     direction,
@@ -46,5 +46,3 @@ const Icon = props => {
     </span>
   );
 }
-
-export default Icon;

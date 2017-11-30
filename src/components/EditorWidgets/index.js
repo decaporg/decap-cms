@@ -1,4 +1,4 @@
-import { registerWidget } from '../lib/registry';
+import { registerWidget } from 'Lib/registry';
 import UnknownControl from './Unknown/UnknownControl';
 import UnknownPreview from './Unknown/UnknownPreview';
 import StringControl from './String/StringControl';
@@ -7,8 +7,6 @@ import NumberControl from './Number/NumberControl';
 import NumberPreview from './Number/NumberPreview';
 import TextControl from './Text/TextControl';
 import TextPreview from './Text/TextPreview';
-import MarkdownControl from './Markdown/MarkdownControl';
-import MarkdownPreview from './Markdown/MarkdownPreview';
 import ImageControl from './Image/ImageControl';
 import ImagePreview from './Image/ImagePreview';
 import FileControl from './File/FileControl';
@@ -19,19 +17,15 @@ import DateTimeControl from './DateTime/DateTimeControl';
 import DateTimePreview from './DateTime/DateTimePreview';
 import SelectControl from './Select/SelectControl';
 import SelectPreview from './Select/SelectPreview';
+import MarkdownControl from './Markdown/MarkdownControl';
+import MarkdownPreview from './Markdown/MarkdownPreview';
+import ListControl from './List/ListControl';
+import ListPreview from './List/ListPreview';
+import ObjectControl from './Object/ObjectControl';
+import ObjectPreview from './Object/ObjectPreview';
+import RelationControl from './Relation/RelationControl';
+import RelationPreview from './Relation/RelationPreview';
 import BooleanControl from './Boolean/BooleanControl';
-
-/**
- * The following widgets utilize API's that are not available to third party
- * widgets.  Privileged widgets are an anti-pattern, and necessary changes
- * should take place so that these widgets can be recreated by a third party.
- */
-import ListControl from './PrivilegedList/PrivilegedListControl';
-import ListPreview from './PrivilegedList/PrivilegedListPreview';
-import ObjectControl from './PrivilegedObject/PrivilegedObjectControl';
-import ObjectPreview from './PrivilegedObject/PrivilegedObjectPreview';
-import RelationControl from './PrivilegedRelation/PrivilegedRelationControl';
-import RelationPreview from './PrivilegedRelation/PrivilegedRelationPreview';
 
 
 registerWidget('string', StringControl, StringPreview);

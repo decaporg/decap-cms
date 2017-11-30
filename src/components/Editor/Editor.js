@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
-import history from '../../routing/history';
+import history from 'Routing/history';
 import {
   loadEntry,
   createDraftFromEntry,
@@ -12,16 +12,16 @@ import {
   changeDraftFieldValidation,
   persistEntry,
   deleteEntry,
-} from '../../actions/entries';
-import { closeEntry } from '../../actions/editor';
-import { deserializeValues } from '../../lib/serializeEntryValues';
-import { addAsset } from '../../actions/media';
-import { openMediaLibrary, removeInsertedMedia } from '../../actions/mediaLibrary';
-import { selectEntry, getAsset } from '../../reducers';
-import { selectFields } from '../../reducers/collections';
-import EditorInterface from './EditorInterface/EditorInterface';
+} from 'Actions/entries';
+import { closeEntry } from 'Actions/editor';
+import { deserializeValues } from 'Lib/serializeEntryValues';
+import { addAsset } from 'Actions/media';
+import { openMediaLibrary, removeInsertedMedia } from 'Actions/mediaLibrary';
+import { selectEntry, getAsset } from 'Reducers';
+import { selectFields } from 'Reducers/collections';
+import { Loader } from 'UI';
+import EditorInterface from './EditorInterface';
 import withWorkflow from './withWorkflow';
-import Loader from '../UI/loader/Loader';
 
 class Editor extends React.Component {
   static propTypes = {

@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import Icon from '../../UI/Icon/Icon';
-import { Dropdown, DropdownItem } from '../../UI/Dropdown/Dropdown';
+import { Icon, Dropdown, DropdownItem } from 'UI';
 
 const EditorToolbar = (
   {

@@ -1,5 +1,5 @@
 import { OrderedMap, fromJS } from 'immutable';
-import { configLoaded } from '../../actions/config';
+import { configLoaded } from 'Actions/config';
 import collections from '../collections';
 
 describe('collections', () => {

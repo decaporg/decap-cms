@@ -1,9 +1,9 @@
 import { actions as notifActions } from 'redux-notifications';
-import { currentBackend } from '../backends/backend';
-import { createAssetProxy } from '../valueObjects/AssetProxy';
-import { getAsset, selectIntegration } from '../reducers';
+import { currentBackend } from 'Backends/backend';
+import { createAssetProxy } from 'ValueObjects/AssetProxy';
+import { getAsset, selectIntegration } from 'Reducers';
+import { getIntegrationProvider } from 'Integrations';
 import { addAsset } from './media';
-import { getIntegrationProvider } from '../integrations';
 
 const { notifSend } = notifActions;
 

@@ -5,8 +5,8 @@ import uuid from 'uuid/v4';
 import { Map } from 'immutable';
 import { connect } from 'react-redux';
 import { debounce } from 'lodash';
-import { Loader } from '../../index';
-import { query, clearSearch } from '../../../actions/search';
+import { query, clearSearch } from 'Actions/search';
+import { Loader } from 'UI';
 
 function escapeRegexCharacters(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');

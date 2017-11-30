@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { markdownToHtml } from '../serializers';
+import { markdownToHtml } from 'EditorWidgets/Markdown/serializers';
 
 const MarkdownPreview = ({ value, getAsset }) => {
   if (value === null) {

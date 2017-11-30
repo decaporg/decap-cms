@@ -50,7 +50,6 @@ module.exports = merge.smart(require('./webpack.base.js'), {
   ],
   devtool: 'source-map',
   devServer: {
-    hot: true,
     contentBase: 'example/',
     historyApiFallback: true,
     disableHostCheck: true,
