@@ -10,7 +10,7 @@
     @apply --button;
     background-color: transparent;
     border-radius: 0;
-    color: var(--textColor);
+    color: var(--colorText);
     font-weight: normal;
     border-bottom: 1px solid #eaebf1;
     padding: 10px 14px;

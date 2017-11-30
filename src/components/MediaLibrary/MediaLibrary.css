@@ -90,7 +90,7 @@
 }
 
 .nc-mediaLibrary-cardText {
-  color: var(--textColor);
+  color: var(--colorText);
   padding: 8px;
   margin-top: 20px;
   overflow-wrap: break-word;
