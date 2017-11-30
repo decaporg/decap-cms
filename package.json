@@ -129,6 +129,7 @@
     "gray-matter": "^3.0.6",
     "history": "^4.7.2",
     "immutable": "^3.7.6",
+    "is-hotkey": "^0.1.1",
     "js-base64": "^2.1.9",
     "js-yaml": "^3.10.0",
     "jwt-decode": "^2.1.0",

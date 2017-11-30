@@ -1,4 +1,5 @@
 import { Block, Text } from 'slate';
+import { isHotkey } from 'is-hotkey';
 
 export default onKeyDown;
 
@@ -20,10 +21,9 @@ function changeHistory(change, type) {
    */
   const next = historyOfType.first();
   const historyOfTypeIsValid = historyOfType.size > 1
-    || next.length > 1
-    || next[0].type !== 'set_selection';
+    || ( next && next.length > 1 && next[0].type !== 'set_selection' );
 
-  if (next && historyOfTypeIsValid) {
+  if (historyOfTypeIsValid) {
     change[type]();
   }
 
@@ -33,14 +33,15 @@ function changeHistory(change, type) {
   return change.focus();
 }
 
-function onKeyDown(e, data, change) {
+function onKeyDown(event, change) {
   const createDefaultBlock = () => {
     return Block.create({
       type: 'paragraph',
       nodes: [Text.create('')],
     });
   };
-  if (data.key === 'enter') {
+
+  if (event.key === 'Enter') {
     /**
      * If "Enter" is pressed while a single void block is selected, a new
      * paragraph should be added above or below it, and the current selection
@@ -53,7 +54,7 @@ function onKeyDown(e, data, change) {
     const singleBlockSelected = anchorBlock === focusBlock;
     if (!singleBlockSelected || !focusBlock.isVoid) return;
 
-    e.preventDefault();
+    event.preventDefault();
 
     const focusBlockParent = doc.getParent(focusBlock.key);
     const focusBlockIndex = focusBlockParent.nodes.indexOf(focusBlock);
@@ -67,35 +68,35 @@ function onKeyDown(e, data, change) {
       .collapseToStartOf(newBlock);
   }
 
-  if (data.isMod) {
+  if (isHotkey(`mod+${event.key}`, event)) {
 
     /**
      * Undo and redo work automatically with Slate, but focus is lost in certain
      * actions. We override Slate's built in undo/redo here and force focus
      * back to the editor each time.
      */
-    if (data.key === 'y') {
-      e.preventDefault();
+    if (event.key === 'y') {
+      event.preventDefault();
       return changeHistory(change, 'redo');
     }
 
-    if (data.key === 'z') {
-      e.preventDefault();
-      return changeHistory(change, data.isShift ? 'redo' : 'undo');
+    if (event.key === 'z') {
+      event.preventDefault();
+      return changeHistory(change, event.isShift ? 'redo' : 'undo');
     }
 
     const marks = {
       b: 'bold',
       i: 'italic',
-      u: 'underlined',
+      u: 'underline',
       s: 'strikethrough',
       '`': 'code',
     };
 
-    const mark = marks[data.key];
+    const mark = marks[event.key];
 
     if (mark) {
-      e.preventDefault();
+      event.preventDefault();
       return change.toggleMark(mark);
     }
   }
