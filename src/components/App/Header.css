@@ -8,7 +8,7 @@
   position: fixed;
   width: 100%;
   top: 0;
-  background-color: var(--backgroundColorSecondary);
+  background-color: var(--colorForeground);
   z-index: 300;
   height: var(--topBarHeight);
 }
@@ -39,10 +39,10 @@
   &:active,
   &:focus,
   &.nc-appHeader-button-active {
-    color: var(--activeColor);
+    color: var(--colorActive);
 
     & .nc-icon {
-      color: var(--activeColor);
+      color: var(--colorActive);
     }
   }
 }

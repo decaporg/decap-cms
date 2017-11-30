@@ -1,47 +1,74 @@
 :root {
-  --fontFamilyPrimary: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  --fontFamilyMono: 'SFMono-Regular', Consolas, "Liberation Mono", Menlo, Courier, monospace;
-  --defaultColor: #333;
-  --defaultColorLight: #fff;
-  --backgroundColor: #eff0f4;
-  --backgroundColorShaded: #eee;
-  --backgroundColorSecondary: #fff;
-  --shadowColor: rgba(19, 39, 48, .24);
-  --infoColor: #69c;
-  --activeColor: #3a69c8;
-  --secondaryColor: #798291;
-  --primaryColor: #3a69c7;
-  --successColor: #1c7;
-  --warningColor: #fa0;
-  --errorColor: #f52;
-  --textColor: var(--secondaryColor);
-  --textLeadColor: #313d3e;
-  --textMutedColor: #8c8c8c;
-  --borderRadius: 6px;
-  --borderRadiusLarge: 8px;
-  --topmostZindex: 99999;
-  --foregroundAltColor: #fff;
-  --backgroundAltColor: #fff;
+  /**
+   * Font Stacks
+   */
+  --fontFamilyPrimary:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif,
+    "Apple Color Emoji",
+    "Segoe UI Emoji",
+    "Segoe UI Symbol";
+
+  --fontFamilyMono:
+    'SFMono-Regular',
+    Consolas,
+    "Liberation Mono",
+    Menlo,
+    Courier,
+    monospace;
+
+  /**
+   * Theme Colors
+   */
+  --colorWhite: #fff;
+  --colorGrayLight: #eff0f4;
+  --colorGray: #798291;
+  --colorGrayDark: #313d3e;
+  --colorBlue: #3a69c7;
+  --colorBlueLight: #e8f5fe;
+  --colorGreen: #005614;
+  --colorGreenLight: #caef6f;
+  --colorBrown: #754e00;
+  --colorYellow: #ffee9c;
+  --colorRed: #ff003b;
+  --colorRedLight: #fcefea;
+
+  --colorText: var(--colorGray);
+  --colorTextLight: var(--colorWhite);
+  --colorTextLead: var(--colorGrayDark);
+  --colorBackground: var(--colorGrayLight);
+  --colorForeground: var(--colorWhite);
+  --colorActive: var(--colorBlue);
+  --colorActiveBackground: var(--colorBlueLight);
+  --colorButton: var(--colorGray);
+  --colorButtonText: var(--colorWhite);
+  --colorInputBackground: var(--colorWhite);
+
+  --colorInfoText: var(--colorBlue);
+  --colorInfoBackground: var(--colorBlueLight);
+  --colorSuccessText: var(--colorGreen);
+  --colorSuccessBackground: var(--colorGreenLight);
+  --colorWarnText: var(--colorBrown);
+  --colorWarnBackground: var(--colorYellow);
+  --colorErrorText: var(--colorRed);
+  --colorErrorBackground: var(--colorRedLight);
+
   --textFieldBorderColor: #dfdfe3;
-  --highlightFGColor: #fff;
-  --highlightBGColor: #3ab7a5;
-  --highlightFGAltColor: #eee;
   --controlLabelColor: #7a8291;
-  --controlBGColor: #fff;
-  --colorActionNeutral: #e8f5fe;
-  --colorListItemHover: var(--colorActionNeutral);
-  --colorInlineForm: var(--colorActionNeutral);
-  --backgroundTertiaryColor: #fff;
-  --backgroundTertiaryColorDark: color(var(--backgroundTertiaryColor) lightness(90%));
-  --richTextEditorMinHeight: 300px;
-  --borderWidth: 2px;
-  --border: solid var(--borderWidth) var(--secondaryColor);
-  --textFieldBorder: solid var(--borderWidth) var(--textFieldBorderColor);
-  --buttonTextColor: #fff;
-  --buttonBackgroundColor: var(--secondaryColor);
+
   --topBarHeight: 56px;
   --transition: .2s ease;
   --inputPadding: 16px 20px;
+  --borderRadius: 6px;
+  --borderRadiusLarge: 8px;
+  --richTextEditorMinHeight: 300px;
+  --borderWidth: 2px;
+  --textFieldBorder: solid var(--borderWidth) var(--textFieldBorderColor);
 
   --dropShadow: {
     box-shadow: 0 2px 4px 0 rgba(19, 39, 48, .12);
@@ -79,7 +106,7 @@
     border-radius: var(--borderRadius);
     outline: 0;
     box-shadow: none;
-    background-color: var(--controlBGColor);
+    background-color: var(--colorInputBackground);
     color: #444a57;
     transition: border-color var(--transition);
     position: relative;
@@ -87,7 +114,7 @@
     line-height: 1.5;
 
     &:focus {
-      border-color: var(--primaryColor);
+      border-color: var(--colorActive);
     }
   }
 
@@ -148,7 +175,7 @@
     }
 
     &:focus-within > .nc-controlPane-label {
-      background-color: var(--primaryColor);
+      background-color: var(--colorActive);
       color: #fff;
     }
   }
@@ -168,7 +195,7 @@
     border-left: 2px solid var(--textFieldBorderColor);
 
     &:focus {
-      border-color: var(--primaryColor);
+      border-color: var(--colorActive);
     }
   }
 
@@ -184,13 +211,13 @@
 
     &:focus-within > .nc-controlPane-label {
       background-color: transparent;
-      color: var(--primaryColor);
+      color: var(--colorActive);
     }
   }
 
   --button: {
-    color: var(--buttonTextColor);
-    background-color: var(--buttonBackgroundColor);
+    color: var(--colorButtonText);
+    background-color: var(--colorButton);
     padding: 10px 30px;
     border: 0;
     border-radius: var(--borderRadius);
@@ -233,7 +260,7 @@
 body {
   font-family: var(--fontFamilyPrimary);
   font-weight: normal;
-  background-color: var(--backgroundColor);
+  background-color: var(--colorBackground);
   color: var(--textColor);
 }
 
@@ -243,7 +270,7 @@ ul, ol {
 
 h1, h2, h3, h4, h5, h6, p {
   font-family: var(--fontFamilyPrimary);
-  color: var(--textLeadColor);
+  color: var(--colorTextLead);
   font-size: 15px;
   line-height: 1.5;
 }
@@ -257,7 +284,7 @@ h1 {
   padding-bottom: 15px;
   font-size: 24px;
   font-weight: 800;
-  color: var(--textLeadColor);
+  color: var(--colorTextLead);
 }
 
 a,
@@ -281,21 +308,4 @@ img {
 
 textarea {
   resize: none;
-}
-
-.nc-theme-base {
-  box-sizing: border-box;
-}
-
-.nc-theme-container {
-  background-color: var(--backgroundColor);
-  color: var(--defaultColor);
-}
-
-.nc-theme-rounded {
-  border-radius: var(--borderRadius);
-}
-
-.nc-theme-depth {
-  @apply(--dropShadow);
 }

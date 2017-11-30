@@ -1,8 +1,5 @@
 .nc-booleanControl-switch {
   @apply(--input);
-  border-color: transparent;
-  background-color: transparent;
-  border-radius: 0;
 
   & .nc-toggle-background {
     background-color: var(--textFieldBorderColor);
@@ -20,12 +17,12 @@
   }
 
   &:focus-within {
-    border-left-color: var(--primaryColor);
+    border-left-color: var(--colorActive);
   }
 
   &:focus-within {
     & .nc-booleanControl-switch {
-      border-left-color: var(--primaryColor);
+      border-left-color: var(--colorActive);
     }
   }
 }

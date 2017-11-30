@@ -13,6 +13,6 @@
 }
 
 .nc-workflow-list-hovered {
-  border: 2px dashed var(--primaryColor);
+  border: 2px dashed var(--colorActive);
   border-radius: 4px;
 }
