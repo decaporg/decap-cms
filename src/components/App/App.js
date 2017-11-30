@@ -22,6 +22,9 @@ import Header from './Header';
 
 TopBarProgress.config({
   barColors: {
+    /**
+     * Uses value from CSS --colorActive.
+     */
     "0": '#3a69c8',
     '1.0': '#3a69c8',
   },

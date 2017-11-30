@@ -9,7 +9,7 @@
   margin-top: 1px;
   z-index: 99999 !important;
   background: #fff;
-  border: 2px solid var(--secondaryColor);
+  border: 2px solid var(--colorGray);
   border-radius: 2px;
   box-shadow: 0 2px 8px 0 rgba(0, 0, 0, .16);
 }

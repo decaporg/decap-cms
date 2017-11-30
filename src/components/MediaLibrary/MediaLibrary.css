@@ -79,7 +79,7 @@
 }
 
 .nc-mediaLibrary-card-selected {
-  border-color: var(--primaryColor);
+  border-color: var(--colorActive);
 }
 
 .nc-mediaLibrary-cardImage {
@@ -98,7 +98,7 @@
 }
 
 .nc-mediaLibrary-dialogPrivate {
-  background-color: var(--backgroundAltColor);
+  background-color: var(--colorGrayDark);
 
   & .nc-mediaLibrary-title,
   & .nc-mediaLibrary-emptyMessage,

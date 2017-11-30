@@ -10,7 +10,7 @@
   font-weight: 600;
   padding: 0;
   margin: 8px 12px 12px;
-  color: var(--textLeadColor);
+  color: var(--colorTextLead);
 }
 
 .nc-collectionPage-sidebarSearch {
@@ -54,8 +54,8 @@
   &:hover,
   &:active,
   &.nc-collectionPage-sidebarLink-active {
-    color: #3a69c8;
-    background-color: var(--colorListItemHover);
+    color: var(--colorActive);
+    background-color: var(--colorActiveBackground);
     border-left-color: #4863c6;
   }
 
