@@ -93,9 +93,9 @@ export default class AuthenticationPage extends React.Component {
     if (window.netlifyIdentity) {
       return <section className="nc-gitGatewayAuthenticationPage-root">
         <Notifs CustomComponent={Toast} />
-        <Button className="nc-gitGatewayAuthenticationPage-button" raised onClick={this.handleIdentity}>
+        <button className="nc-gitGatewayAuthenticationPage-button" onClick={this.handleIdentity}>
           Login with Netlify Identity
-        </Button>
+        </button>
       </section>
     }
 
