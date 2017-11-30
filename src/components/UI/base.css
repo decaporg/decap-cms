@@ -133,7 +133,7 @@
   }
 
   --labelledInputWrapper: {
-    color: var(--textColor);
+    color: var(--colorText);
 
     & input,
     & textarea,
@@ -261,7 +261,7 @@ body {
   font-family: var(--fontFamilyPrimary);
   font-weight: normal;
   background-color: var(--colorBackground);
-  color: var(--textColor);
+  color: var(--colorText);
 }
 
 ul, ol {
@@ -294,7 +294,7 @@ button {
 }
 
 a {
-  color: var(--textColor);
+  color: var(--colorText);
   text-decoration: none;
 }
 
