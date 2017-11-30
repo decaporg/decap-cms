@@ -54,8 +54,8 @@ const BreakToDefaultBlockOpts = {
 export const BreakToDefaultBlockConfigured = BreakToDefaultBlock(BreakToDefaultBlockOpts);
 
 const BackspaceCloseBlock = (options = {}) => ({
-  onKeyDown(e, data, change) {
-    if (data.key != 'backspace') return;
+  onKeyDown(data, change) {
+    if (data.key !== 'Backspace') return;
 
     const { defaultBlock = 'paragraph', ignoreIn, onlyIn } = options;
     const { startBlock } = change.value;
