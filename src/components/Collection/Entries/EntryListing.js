@@ -3,7 +3,7 @@ import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import Waypoint from 'react-waypoint';
 import { Map } from 'immutable';
-import { selectFields, selectInferedField } from '../../../reducers/collections';
+import { selectFields, selectInferedField } from 'Reducers/collections';
 import EntryCard from './EntryCard';
 
 export default class EntryListing extends React.Component {

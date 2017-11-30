@@ -14,7 +14,7 @@ const ErrorComponent = () => {
   );
 };
 
-export default class ErrorBoundary extends React.Component {
+export class ErrorBoundary extends React.Component {
   static propTypes = {
     render: PropTypes.element,
   };

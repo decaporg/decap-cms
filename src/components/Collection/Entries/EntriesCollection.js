@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
-import { loadEntries } from '../../../actions/entries';
-import { selectEntries } from '../../../reducers';
+import { loadEntries } from 'Actions/entries';
+import { selectEntries } from 'Reducers';
 import Entries from './Entries';
 
 class EntriesCollection extends React.Component {

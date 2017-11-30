@@ -1,5 +1,5 @@
 import { fromJS } from 'immutable';
-import { CONFIG_SUCCESS } from '../actions/config';
+import { CONFIG_SUCCESS } from 'Actions/config';
 
 const integrations = (state = null, action) => {
   switch (action.type) {

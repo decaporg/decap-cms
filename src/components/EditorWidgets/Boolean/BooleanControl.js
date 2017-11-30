@@ -2,14 +2,14 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from "react-immutable-proptypes";
 import { isBoolean } from 'lodash';
-import Switch from '../../UI/Toggle/Toggle';
+import { Toggle } from 'UI';
 
 export default class BooleanControl extends React.Component {
   render() {
     const { value, field, forID, onChange } = this.props;
     return (
       <div className="nc-booleanControl-switch">
-        <Switch
+        <Toggle
           id={forID}
           active={isBoolean(value) ? value : field.get('defaultValue', false)}
           onChange={onChange}

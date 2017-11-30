@@ -1,10 +1,10 @@
 import { OrderedMap, fromJS } from 'immutable';
 import { has } from 'lodash';
-import consoleError from '../lib/consoleError';
-import { CONFIG_SUCCESS } from '../actions/config';
-import { FILES, FOLDER } from '../constants/collectionTypes';
-import { INFERABLE_FIELDS } from '../constants/fieldInference';
-import { formatToExtension } from '../formats/formats';
+import consoleError from 'Lib/consoleError';
+import { CONFIG_SUCCESS } from 'Actions/config';
+import { FILES, FOLDER } from 'Constants/collectionTypes';
+import { INFERABLE_FIELDS } from 'Constants/fieldInference';
+import { formatToExtension } from 'Formats/formats';
 
 const collections = (state = null, action) => {
   const configCollections = action.payload && action.payload.collections;

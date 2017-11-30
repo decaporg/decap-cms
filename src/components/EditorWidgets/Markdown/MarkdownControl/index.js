@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { markdownToRemark, remarkToMarkdown } from '../serializers'
+import { StickyContainer } from 'UI/Sticky/Sticky';
+import { markdownToRemark, remarkToMarkdown } from 'EditorWidgets/Markdown/serializers'
 import RawEditor from './RawEditor';
 import VisualEditor from './VisualEditor';
-import { StickyContainer } from '../../../UI/Sticky/Sticky';
 
 const MODE_STORAGE_KEY = 'cms.md-mode';
 

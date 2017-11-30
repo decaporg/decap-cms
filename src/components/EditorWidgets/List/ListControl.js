@@ -5,9 +5,8 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { partial } from 'lodash';
 import c from 'classnames';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
-import Icon from '../../Icon/Icon';
-import ObjectControl from '../PrivilegedObject/PrivilegedObjectControl';
-import ListItemTopBar from '../../ListItemTopBar/ListItemTopBar';
+import { Icon, ListItemTopBar } from 'UI';
+import ObjectControl from 'EditorWidgets/Object/ObjectControl';
 
 function ListItem(props) {
   return <div {...props} className={`list-item ${ props.className || '' }`}>{props.children}</div>;

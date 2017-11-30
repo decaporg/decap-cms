@@ -1,13 +1,13 @@
 import { List } from 'immutable';
 import { actions as notifActions } from 'redux-notifications';
-import { serializeValues } from '../lib/serializeEntryValues';
+import { serializeValues } from 'Lib/serializeEntryValues';
 import { closeEntry } from './editor';
-import { currentBackend } from '../backends/backend';
-import { getIntegrationProvider } from '../integrations';
-import { getAsset, selectIntegration } from '../reducers';
-import { selectFields } from '../reducers/collections';
-import { createEntry } from '../valueObjects/Entry';
-import ValidationErrorTypes from '../constants/validationErrorTypes';
+import { currentBackend } from 'Backends/backend';
+import { getIntegrationProvider } from 'Integrations';
+import { getAsset, selectIntegration } from 'Reducers';
+import { selectFields } from 'Reducers/collections';
+import { createEntry } from 'ValueObjects/Entry';
+import ValidationErrorTypes from 'Constants/validationErrorTypes';
 
 const { notifSend } = notifActions;
 

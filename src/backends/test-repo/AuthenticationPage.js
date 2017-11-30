@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import Icon from '../../components/UI/Icon/Icon';
+import { Icon } from 'UI';
 
 export default class AuthenticationPage extends React.Component {
   static propTypes = {

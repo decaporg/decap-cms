@@ -3,11 +3,11 @@ import c from 'classnames';
 import { Map } from 'immutable';
 import { connect } from 'react-redux';
 import { partial, capitalize } from 'lodash';
-import { resolveWidget, getEditorComponents } from '../../../../../lib/registry';
-import { openMediaLibrary, removeInsertedMedia } from '../../../../../actions/mediaLibrary';
-import { addAsset } from '../../../../../actions/media';
-import { getAsset } from '../../../../../reducers';
-import ListItemTopBar from '../../../../UI/ListItemTopBar/ListItemTopBar';
+import { resolveWidget, getEditorComponents } from 'Lib/registry';
+import { openMediaLibrary, removeInsertedMedia } from 'Actions/mediaLibrary';
+import { addAsset } from 'Actions/media';
+import { getAsset } from 'Reducers';
+import { ListItemTopBar } from 'UI';
 
 class Shortcode extends React.Component {
   constructor(props) {

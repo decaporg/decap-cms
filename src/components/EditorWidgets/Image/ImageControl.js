@@ -1,4 +1,4 @@
-import withMediaControl from '../withMedia/withMediaControl';
+import withMediaControl from 'EditorWidgets/withMedia/withMediaControl';
 
 const ImageControl = withMediaControl(true);
 

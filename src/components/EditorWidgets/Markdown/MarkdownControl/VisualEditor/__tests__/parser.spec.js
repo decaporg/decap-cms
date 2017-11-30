@@ -1,5 +1,5 @@
 import { fromJS } from 'immutable';
-import { markdownToSlate } from '../../../serializers';
+import { markdownToSlate } from 'EditorWidgets/Markdown/serializers';
 
 const parser = markdownToSlate;
 

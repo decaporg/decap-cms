@@ -5,21 +5,20 @@ import { connect } from 'react-redux';
 import { Route, Switch, Link, Redirect } from 'react-router-dom';
 import { Notifs } from 'redux-notifications';
 import TopBarProgress from 'react-topbar-progress-indicator';
-import { loadConfig as actionLoadConfig } from '../../actions/config';
-import { loginUser as actionLoginUser, logoutUser as actionLogoutUser } from '../../actions/auth';
-import { currentBackend } from '../../backends/backend';
-import { showCollection, createNewEntry } from '../../actions/collections';
-import { openMediaLibrary as actionOpenMediaLibrary } from '../../actions/mediaLibrary';
-import Header from './Header';
-import MediaLibrary from '../MediaLibrary/MediaLibrary';
-import Loader from '../UI/loader/Loader';
-import Toast from '../UI/toast/Toast';
-import { getCollectionUrl, getNewEntryUrl } from '../../lib/urlHelper';
-import { SIMPLE, EDITORIAL_WORKFLOW } from '../../constants/publishModes';
-import Collection from '../Collection/Collection';
-import Workflow from '../Workflow/Workflow';
-import Editor from '../Editor/Editor';
+import { loadConfig as actionLoadConfig } from 'Actions/config';
+import { loginUser as actionLoginUser, logoutUser as actionLogoutUser } from 'Actions/auth';
+import { currentBackend } from 'Backends/backend';
+import { showCollection, createNewEntry } from 'Actions/collections';
+import { openMediaLibrary as actionOpenMediaLibrary } from 'Actions/mediaLibrary';
+import MediaLibrary from 'MediaLibrary/MediaLibrary';
+import { Loader, Toast } from 'UI';
+import { getCollectionUrl, getNewEntryUrl } from 'Lib/urlHelper';
+import { SIMPLE, EDITORIAL_WORKFLOW } from 'Constants/publishModes';
+import Collection from 'Collection/Collection';
+import Workflow from 'Workflow/Workflow';
+import Editor from 'Editor/Editor';
 import NotFoundPage from './NotFoundPage';
+import Header from './Header';
 
 TopBarProgress.config({
   barColors: {

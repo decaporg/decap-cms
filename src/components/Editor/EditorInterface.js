@@ -4,11 +4,10 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import SplitPane from 'react-split-pane';
 import classnames from 'classnames';
 import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
-import EditorControlPane from '../EditorControlPane/EditorControlPane';
-import EditorPreviewPane from '../EditorPreviewPane/EditorPreviewPane';
+import { StickyContext, Icon } from 'UI'
+import EditorControlPane from './EditorControlPane/EditorControlPane';
+import EditorPreviewPane from './EditorPreviewPane/EditorPreviewPane';
 import EditorToolbar from './EditorToolbar';
-import { StickyContext } from '../../UI/Sticky/Sticky';
-import Icon from '../../UI/Icon/Icon';
 
 const PREVIEW_VISIBLE = 'cms.preview-visible';
 const SCROLL_SYNC_ENABLED = 'cms.scroll-sync-enabled';
