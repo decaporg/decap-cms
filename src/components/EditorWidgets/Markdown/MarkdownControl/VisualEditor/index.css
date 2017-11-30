@@ -103,7 +103,7 @@
 }
 
 .nc-visualEditor-editor code {
-  background-color: var(--backgroundColorShaded);
+  background-color: var(--colorBackground);
   border-radius: var(--borderRadius);
   padding: 0 2px;
   font-size: 85%;
@@ -111,7 +111,7 @@
 
 .nc-visualEditor-editor blockquote {
   padding-left: 16px;
-  border-left: 3px solid var(--backgroundColorShaded);
+  border-left: 3px solid var(--colorBackground);
   margin-left: 0;
   margin-right: 0;
 }

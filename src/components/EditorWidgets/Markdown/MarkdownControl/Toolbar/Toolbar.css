@@ -44,7 +44,7 @@
 
 .nc-controlPane-control-markdown:focus-within {
   & .nc-toolbar-Toolbar {
-    background-color: var(--primaryColor);
+    background-color: var(--colorActive);
     color: #fff;
   }
 

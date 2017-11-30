@@ -1,0 +1,34 @@
+/* redux-notifications override */
+.notif__container {
+  z-index: 10000;
+}
+
+.nc-toast {
+  @apply(--dropShadow);
+  background-color: var(--colorBackground);
+  color: var(--colorTextLight);
+  border-radius: var(--borderRadius);
+  margin: 10px;
+  padding: 20px;
+  overflow: hidden;
+}
+
+.nc-toast-info {
+  background-color: var(--colorInfoBackground);
+  color: var(--colorInfoText);
+}
+
+.nc-toast-success {
+  background-color: var(--colorSuccessBackground);
+  color: var(--colorSuccessText);
+}
+
+.nc-toast-warning {
+  background-color: var(--colorWarnBackground);
+  color: var(--colorWarnText);
+}
+
+.nc-toast-danger {
+  background-color: var(--colorErrorBackground);
+  color: var(--colorErrorText);
+}
