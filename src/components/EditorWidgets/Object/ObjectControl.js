@@ -59,6 +59,7 @@ export default class ObjectControl extends Component {
   }
 
   onChange = (fieldName, newValue, newMetadata) => {
+    console.log(newValue);
     const newObjectValue = this.getObjectValue().set(fieldName, newValue);
     return this.props.onChange(newObjectValue, newMetadata);
   };
@@ -81,7 +82,6 @@ export default class ObjectControl extends Component {
     const widget = resolveWidget(widgetName);
     const fieldName = field.get('name');
     const fieldValue = value && Map.isMap(value) ? value.get(fieldName) : value;
-    console.log(value);
 
     return (
       <EditorControl
@@ -89,7 +89,7 @@ export default class ObjectControl extends Component {
         value={fieldValue}
         mediaPaths={mediaPaths}
         getAsset={getAsset}
-        onChange={partial(this.onChange, fieldName)}
+        onChange={this.onChange}
         onOpenMediaLibrary={onOpenMediaLibrary}
         onAddAsset={onAddAsset}
         onRemoveInsertedMedia={onRemoveInsertedMedia}
