@@ -3,9 +3,26 @@
 }
 
 .nc-controlPane-control {
-  @apply(--labelledInputWrapper);
+  color: var(--colorText);
   position: relative;
   margin-top: 14px;
+
+  & input,
+  & textarea,
+  & select {
+    @apply(--input);
+    border-top-left-radius: 0;
+  }
+
+  & select {
+    text-indent: 14px;
+    height: 58px;
+  }
+
+  &:focus-within > .nc-controlPane-label {
+    background-color: var(--colorActive);
+    color: #fff;
+  }
 }
 
 .nc-controlPane-label {
@@ -25,6 +42,29 @@
 
 .nc-objectControl-root {
   & .nc-controlPane-control {
-    @apply(--labelledInputWrapperNested);
+    & label {
+      background: none;
+
+      &:before,
+      &:after {
+        content: none;
+      }
+    }
+
+    & input,
+    & textarea {
+      border: 0;
+      border-radius: 0;
+      border-left: 2px solid var(--textFieldBorderColor);
+
+      &:focus {
+        border-color: var(--colorActive);
+      }
+    }
+
+    &:focus-within > .nc-controlPane-label {
+      background-color: transparent;
+      color: var(--colorActive);
+    }
   }
 }
