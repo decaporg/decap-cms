@@ -70,6 +70,8 @@ export default class GitGateway extends GitHubBackend {
           branch: this.branch,
           tokenPromise: this.tokenPromise,
           commitAuthor: pick(userData, ["name", "email"]),
+          // this.config is set by the GitHubBackend constructor
+          branchNameMaxLength: this.config.getIn(["backend", "branch_name_max_length"]),
         });
         return userData;
       } else {

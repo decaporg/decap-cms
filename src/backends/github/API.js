@@ -15,6 +15,7 @@ export default class API {
     this.branch = config.branch || "master";
     this.repo = config.repo || "";
     this.repoURL = `/repos/${ this.repo }`;
+    this.branchNameMaxLength = config.branchNameMaxLength || 40;
   }
 
   user() {
@@ -85,8 +86,14 @@ export default class API {
     });
   }
 
+  truncateSlugForBranchName(slug) {
+    const slugMaxLength = this.branchNameMaxLength - CMS_BRANCH_PREFIX.length;
+    return slug.substring(0, slugMaxLength);
+  }
+
   generateBranchName(basename) {
-    return `${CMS_BRANCH_PREFIX}${basename}`;
+    const truncatedBasename = this.truncateSlugForBranchName(basename);
+    return `${ CMS_BRANCH_PREFIX }${ truncatedBasename }`;
   }
 
   checkMetadataRef() {
@@ -111,7 +118,10 @@ export default class API {
     });
   }
 
-  storeMetadata(key, data) {
+  storeMetadata(contentKey, data) {
+    // metadata filenames need to match branch names - see
+    // unpublishedEntries in src/backends/github/implementation.js
+    const key = this.truncateSlugForBranchName(contentKey);
     return this.checkMetadataRef()
     .then((branchData) => {
       const fileTree = {
@@ -135,7 +145,10 @@ export default class API {
     });
   }
 
-  retrieveMetadata(key) {
+  retrieveMetadata(contentKey) {
+    // metadata filenames need to match branch names - see
+    // unpublishedEntries in src/backends/github/implementation.js
+    const key = this.truncateSlugForBranchName(contentKey);
     const cache = LocalForage.getItem(`gh.meta.${ key }`);
     return cache.then((cached) => {
       if (cached && cached.expires > Date.now()) { return cached.data; }
