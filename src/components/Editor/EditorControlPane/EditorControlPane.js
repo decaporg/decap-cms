@@ -91,7 +91,7 @@ export default class ControlPane extends Component {
             if (isHidden(field)) {
               return null;
             }
-            return <div key={i} className="nc-controlPane-widget">{this.controlFor(field)}</div>;
+            return <div key={i}>{this.controlFor(field)}</div>;
           })
         }
       </div>

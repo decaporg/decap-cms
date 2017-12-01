@@ -1,32 +1,92 @@
+:root {
+  --controlPaneLabel: {
+    display: inline-block;
+    color: var(--controlLabelColor);
+    font-size: 12px;
+    text-transform: uppercase;
+    font-weight: 600;
+    background-color: var(--textFieldBorderColor);
+    border: 0;
+    border-radius: 3px 3px 0 0;
+    padding: 3px 6px 2px;
+    margin: 0;
+    transition: all var(--transition);
+    position: relative;
+
+    /**
+     * Faux outside curve into top of input
+     */
+    &:before,
+    &:after {
+      content: '';
+      display: block;
+      position: absolute;
+      top: 0;
+      right: -4px;
+      height: 100%;
+      width: 4px;
+      background-color: inherit;
+    }
+
+    &:after {
+      border-bottom-left-radius: 3px;
+      background-color: #fff;
+    }
+  }
+
+  --controlPaneWidget: {
+    display: block;
+    width: 100%;
+    padding: var(--inputPadding);
+    margin: 0;
+    border: var(--textFieldBorder);
+    border-radius: var(--borderRadius);
+    border-top-left-radius: 0;
+    outline: 0;
+    box-shadow: none;
+    background-color: var(--colorInputBackground);
+    color: #444a57;
+    transition: border-color var(--transition);
+    position: relative;
+    font-size: 15px;
+    line-height: 1.5;
+
+    &:focus {
+      border-color: var(--colorActive);
+    }
+  }
+}
+
 .nc-controlPane-root p {
   font-size: 16px;
 }
 
-.nc-controlPane-control {
-  color: var(--colorText);
-  position: relative;
-  margin-top: 14px;
+.nc-controlPane-widget {
+  @apply(--controlPaneWidget);
 
-  & input,
-  & textarea,
-  & select {
-    @apply(--input);
-    border-top-left-radius: 0;
+  & .nc-controlPane-label {
+    background: none;
+
+    &:before,
+    &:after {
+      content: none;
+    }
   }
 
-  & select {
-    text-indent: 14px;
-    height: 58px;
-  }
-
-  &:focus-within > .nc-controlPane-label {
-    background-color: var(--colorActive);
-    color: #fff;
+  & .nc-controlPane-widget {
+    border: 0;
+    border-radius: 0;
+    border-left: 2px solid var(--textFieldBorderColor);
   }
 }
 
+select.nc-controlPane-widget {
+  text-indent: 14px;
+  height: 58px;
+}
+
 .nc-controlPane-label {
-  @apply(--label);
+  @apply(--controlPaneLabel);
 }
 
 .nc-controlPane-labelWithError {
@@ -38,33 +98,4 @@
   font-size: 10px;
   color: #FF706F;
   margin-bottom: 5px;
-}
-
-.nc-objectControl-root {
-  & .nc-controlPane-control {
-    & label {
-      background: none;
-
-      &:before,
-      &:after {
-        content: none;
-      }
-    }
-
-    & input,
-    & textarea {
-      border: 0;
-      border-radius: 0;
-      border-left: 2px solid var(--textFieldBorderColor);
-
-      &:focus {
-        border-color: var(--colorActive);
-      }
-    }
-
-    &:focus-within > .nc-controlPane-label {
-      background-color: transparent;
-      color: var(--colorActive);
-    }
-  }
 }

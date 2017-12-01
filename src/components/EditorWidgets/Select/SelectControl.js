@@ -9,7 +9,7 @@ export default class SelectControl extends React.Component {
   };
 
   render() {
-    const { field, value, forID } = this.props;
+    const { field, value, forID, className } = this.props;
     const fieldOptions = field.get('options');
 
     if (!fieldOptions) {
@@ -26,11 +26,15 @@ export default class SelectControl extends React.Component {
       }),
     ];
 
-    return (<select id={forID} value={value || ''} onChange={this.handleChange}>
-      {options.map((option, idx) => <option key={idx} value={option.value}>
-        {option.label}
-      </option>)}
-    </select>);
+    return (
+      <select id={forID} value={value || ''} onChange={this.handleChange} className={className}>
+        {
+          options.map(
+            (option, idx) => <option key={idx} value={option.value}>{option.label}</option>
+          )
+        }
+      </select>
+    );
   }
 }
 
@@ -38,6 +42,7 @@ SelectControl.propTypes = {
   onChange: PropTypes.func.isRequired,
   value: PropTypes.node,
   forID: PropTypes.string.isRequired,
+  className: PropTypes.string.isRequired,
   field: ImmutablePropTypes.contains({
     options: ImmutablePropTypes.listOf(PropTypes.oneOfType([
       PropTypes.string,

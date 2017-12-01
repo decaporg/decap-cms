@@ -1,6 +1,4 @@
 .nc-booleanControl-switch {
-  @apply(--input);
-
   & .nc-toggle-background {
     background-color: var(--textFieldBorderColor);
   }
@@ -23,21 +21,6 @@
   &:focus-within {
     & .nc-booleanControl-switch {
       border-left-color: var(--colorActive);
-    }
-  }
-}
-
-.nc-controlPane-control-boolean {
-  margin-top: 20px;
-
-  & label {
-    top: 0;
-    padding-bottom: 4px;
-    border-radius: 3px;
-
-    &:before,
-    &:after {
-      content: none;
     }
   }
 }

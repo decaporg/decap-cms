@@ -177,7 +177,7 @@ export default class Editor extends Component {
   };
 
   render() {
-    const { onAddAsset, getAsset } = this.props;
+    const { onAddAsset, getAsset, className } = this.props;
 
     return (
       <div className="nc-visualEditor-wrapper">
@@ -207,7 +207,7 @@ export default class Editor extends Component {
           />
         </Sticky>
         <Slate
-          className="nc-visualEditor-editor"
+          className={`${className} nc-visualEditor-editor`}
           value={this.state.value}
           renderNode={renderNode}
           renderMark={renderMark}
@@ -229,5 +229,6 @@ Editor.propTypes = {
   getAsset: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   onMode: PropTypes.func.isRequired,
+  className: PropTypes.string.isRequired,
   value: PropTypes.string,
 };

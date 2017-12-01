@@ -1,5 +1,4 @@
 .nc-listControl {
-  @apply(--input);
   padding: 0 14px 14px;
 
   &.nc-listControl-collapsed {
@@ -18,6 +17,7 @@
   margin: 0 -14px;
   background-color: var(--textFieldBorderColor);
   padding: 13px;
+  border-top-left-radius: var(--borderRadius);
 }
 
 .nc-listControl-addButton {
@@ -53,19 +53,6 @@
   &:first-of-type {
     margin-top: 26px;
   }
-
-  & .nc-controlPane-control {
-    & label {
-      background: none;
-    }
-
-    & input,
-    & textarea {
-      border: 0;
-      border-radius: 0;
-      border-left: 2px solid var(--textFieldBorderColor);
-    }
-  }
 }
 
 .nc-listControl-itemTopBar {
@@ -73,7 +60,6 @@
 }
 
 .nc-listControl-objectLabel {
-  @apply(--input);
   display: none;
 }
 

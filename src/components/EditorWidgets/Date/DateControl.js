@@ -28,13 +28,16 @@ export default class DateControl extends React.Component {
   };
 
   render() {
-    const { includeTime, value } = this.props;
+    const { includeTime, value, className } = this.props;
     const format = this.format || moment.defaultFormat;
-    return (<DateTime
-      timeFormat={!!includeTime}
-      value={moment(value, format)}
-      onChange={this.handleChange}
-    />);
+    return (
+      <DateTime
+        timeFormat={!!includeTime}
+        value={moment(value, format)}
+        onChange={this.handleChange}
+        inputProps={{ className }}
+      />
+    );
   }
 }
 
@@ -44,6 +47,7 @@ DateControl.propTypes = {
     PropTypes.object,
     PropTypes.string,
   ]),
+  className: PropTypes.string.isRequired,
   includeTime: PropTypes.bool,
   field: PropTypes.object,
 };

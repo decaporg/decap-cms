@@ -61,7 +61,7 @@ export default class RawEditor extends React.Component {
           <Toolbar onToggleMode={this.handleToggleMode} disabled rawMode />
         </Sticky>
         <Slate
-          className="nc-rawEditor-rawEditor"
+          className={`${this.props.className} nc-rawEditor-rawEditor`}
           value={this.state.value}
           onChange={this.handleChange}
           onPaste={this.handlePaste}
@@ -74,5 +74,6 @@ export default class RawEditor extends React.Component {
 RawEditor.propTypes = {
   onChange: PropTypes.func.isRequired,
   onMode: PropTypes.func.isRequired,
+  className: PropTypes.string.isRequired,
   value: PropTypes.string,
 };
