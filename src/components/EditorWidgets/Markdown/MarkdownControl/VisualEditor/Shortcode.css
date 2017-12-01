@@ -6,9 +6,9 @@
 }
 
 .nc-visualEditor-shortcode {
-  @apply(--labelledInputWrapperNested);
   background-color: var(--colorActiveBackground);
   border-radius: var(--borderRadius);
+  border: 0;
   margin: 12px 0;
   padding: 14px;
 

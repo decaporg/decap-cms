@@ -95,6 +95,7 @@ class Shortcode extends React.Component {
     const shortcodeData = Map(this.props.node.data.get('shortcodeData'));
     const plugin = getEditorComponents().get(pluginId);
     const className = c(
+      'nc-objectControl-root',
       'nc-visualEditor-shortcode',
       { 'nc-visualEditor-shortcode-collapsed': collapsed },
     );

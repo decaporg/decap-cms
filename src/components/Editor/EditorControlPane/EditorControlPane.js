@@ -42,7 +42,6 @@ export default class ControlPane extends Component {
     const value = entry.getIn(['data', fieldName]);
     const metadata = fieldsMetaData.get(fieldName);
     const errors = fieldsErrors.get(fieldName);
-    const labelClass = errors ? 'nc-controlPane-label nc-controlPane-labelWithError' : 'nc-controlPane-label';
     if (entry.size === 0 || entry.get('partial') === true) return null;
     return (
       <div className={c('nc-controlPane-control', { [`nc-controlPane-control-${widgetName}`]: widgetName })}>
@@ -55,8 +54,13 @@ export default class ControlPane extends Component {
             )
           }
         </ul>
-        <label className={labelClass} htmlFor={fieldName}>{field.get('label')}</label>
-        <ControlHOC 
+        <label
+          className={c('nc-controlPane-label', { 'nc-controlPane-labelWithError': errors })}
+          htmlFor={fieldName}
+        >
+          {field.get('label')}
+        </label>
+        <ControlHOC
           controlComponent={widget.control}
           field={field}
           value={value}
