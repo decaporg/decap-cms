@@ -88,13 +88,14 @@ class RelationControl extends Component {
   };
 
   render() {
-    const { value, isFetching, forID, queryHits } = this.props;
+    const { value, isFetching, forID, queryHits, className } = this.props;
 
     const inputProps = {
       placeholder: '',
       value: value || '',
       onChange: this.onChange,
       id: forID,
+      className,
     };
 
     const suggestions = (queryHits.get) ? queryHits.get(this.controlID, []) : [];
@@ -116,10 +117,11 @@ class RelationControl extends Component {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
+  const { className } = ownProps;
   const isFetching = state.search.get('isFetching');
   const queryHits = state.search.get('queryHits');
-  return { isFetching, queryHits };
+  return { isFetching, queryHits, className };
 }
 
 export default connect(

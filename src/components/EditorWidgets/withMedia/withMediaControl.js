@@ -16,6 +16,7 @@ export default function withMediaControl(forImage) {
       onChange: PropTypes.func.isRequired,
       onRemoveInsertedMedia: PropTypes.func.isRequired,
       onOpenMediaLibrary: PropTypes.func.isRequired,
+      className: PropTypes.string.isRequired,
       value: PropTypes.node,
     };
 
@@ -70,18 +71,18 @@ export default function withMediaControl(forImage) {
     };
 
     renderFileName = () => {
-      const { value } = this.props;
+      const { value, className } = this.props;
       return value ? truncateMiddle(value, MAX_DISPLAY_LENGTH) : null;
     };
 
     render() {
-      const { value, getAsset, onRemoveAsset } = this.props;
+      const { value, getAsset, onRemoveAsset, className } = this.props;
       const fileName = this.renderFileName();
       const subject = forImage ? 'image' : 'file';
       const article = forImage ? 'an' : 'a';
 
       return (
-        <div className="nc-imageControl-imageUpload">
+        <div className={`${className} nc-imageControl-imageUpload`}>
           <span className="nc-imageControl-message">
             {
               fileName

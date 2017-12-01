@@ -21,12 +21,13 @@ export default class TextControl extends React.Component {
   }
 
   render() {
-    const {forID, value = '', onChange } = this.props;
+    const {forID, value = '', className, onChange } = this.props;
 
     return (
       <Textarea
         id={forID}
         value={value}
+        className={className}
         style={{ minHeight: '140px' }}
         onChange={e => onChange(e.target.value)}
       />

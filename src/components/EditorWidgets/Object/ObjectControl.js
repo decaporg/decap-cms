@@ -6,6 +6,15 @@ import c from 'classnames';
 import { resolveWidget } from 'Lib/registry';
 import ControlHOC from 'Editor/EditorControlPane/ControlHOC';
 
+const TopBar = ({ collapsed, onCollapseToggle }) =>
+  <div className="nc-listControl-topBar">
+    <div className="nc-listControl-listCollapseToggle" onClick={onCollapseToggle}>
+      <Icon type="caret" direction={collapsed ? 'up' : 'down'} size="small"/>
+      {itemsCount} {listLabel}
+    </div>
+  </div>;
+
+
 export default class ObjectControl extends Component {
   static propTypes = {
     onChange: PropTypes.func.isRequired,
@@ -23,6 +32,13 @@ export default class ObjectControl extends Component {
     forID: PropTypes.string,
     className: PropTypes.string,
   };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      collapsed: false,
+    };
+  }
 
   /**
    * In case the `onChange` function is frozen by a child widget implementation,
@@ -47,7 +63,16 @@ export default class ObjectControl extends Component {
   };
 
   controlFor(field) {
-    const { onAddAsset, onOpenMediaLibrary, mediaPaths, onRemoveInsertedMedia, getAsset, value, onChange } = this.props;
+    const {
+      onAddAsset,
+      onOpenMediaLibrary,
+      mediaPaths,
+      onRemoveInsertedMedia,
+      getAsset,
+      value,
+      onChange
+    } = this.props;
+
     if (field.get('widget') === 'hidden') {
       return null;
     }
@@ -55,11 +80,8 @@ export default class ObjectControl extends Component {
     const widget = resolveWidget(widgetName);
     const fieldValue = value && Map.isMap(value) ? value.get(field.get('name')) : value;
 
-    return (<div className="nc-controlPane-widget" key={field.get('name')}>
-      <div
-        className={c('nc-controlPane-control', { [`nc-controlPane-control-${widgetName}`]: widgetName })}
-        key={field.get('name')}
-      >
+    return (
+      <div>
         <label className="nc-controlPane-label" htmlFor={field.get('name')}>{field.get('label')}</label>
         <ControlHOC
           controlComponent={widget.control}
@@ -74,7 +96,7 @@ export default class ObjectControl extends Component {
           forID={field.get('name')}
         />
       </div>
-    </div>);
+    );
   }
 
   render() {

@@ -15,13 +15,14 @@ export default class NumberControl extends React.Component {
   };
 
   render() {
-    const { field, value, forID } = this.props;
+    const { field, value, className, forID } = this.props;
     const min = field.get('min', '');
     const max = field.get('max', '');
     const step = field.get('step', field.get('valueType') === 'int' ? 1 : '');
     return <input
       type="number"
       id={forID}
+      className={className}
       value={value || ''}
       step={step}
       min={min}
