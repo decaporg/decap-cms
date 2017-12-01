@@ -1,10 +1,11 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Map } from 'immutable';
+import { partial } from 'lodash';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import c from 'classnames';
 import { resolveWidget } from 'Lib/registry';
-import ControlHOC from 'Editor/EditorControlPane/ControlHOC';
+import EditorControl from 'Editor/EditorControlPane/EditorControl';
 
 const TopBar = ({ collapsed, onCollapseToggle }) =>
   <div className="nc-listControl-topBar">
@@ -42,7 +43,7 @@ export default class ObjectControl extends Component {
 
   /**
    * In case the `onChange` function is frozen by a child widget implementation,
-   * e.g. when debounced, always get the latest object value instead of usin
+   * e.g. when debounced, always get the latest object value instead of using
    * `this.props.value` directly.
    */
   getObjectValue = () => this.props.value || Map();
@@ -78,24 +79,21 @@ export default class ObjectControl extends Component {
     }
     const widgetName = field.get('widget') || 'string';
     const widget = resolveWidget(widgetName);
-    const fieldValue = value && Map.isMap(value) ? value.get(field.get('name')) : value;
+    const fieldName = field.get('name');
+    const fieldValue = value && Map.isMap(value) ? value.get(fieldName) : value;
+    console.log(value);
 
     return (
-      <div>
-        <label className="nc-controlPane-label" htmlFor={field.get('name')}>{field.get('label')}</label>
-        <ControlHOC
-          controlComponent={widget.control}
-          field={field}
-          value={fieldValue}
-          onChange={this.onChange.bind(this, field.get('name'))}
-          mediaPaths={mediaPaths}
-          onOpenMediaLibrary={onOpenMediaLibrary}
-          onAddAsset={onAddAsset}
-          onRemoveInsertedMedia={onRemoveInsertedMedia}
-          getAsset={getAsset}
-          forID={field.get('name')}
-        />
-      </div>
+      <EditorControl
+        field={field}
+        value={fieldValue}
+        mediaPaths={mediaPaths}
+        getAsset={getAsset}
+        onChange={partial(this.onChange, fieldName)}
+        onOpenMediaLibrary={onOpenMediaLibrary}
+        onAddAsset={onAddAsset}
+        onRemoveInsertedMedia={onRemoveInsertedMedia}
+      />
     );
   }
 
