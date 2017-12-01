@@ -161,6 +161,7 @@ class ControlHOC extends Component {
       getAsset,
       forID: field.get('name'),
       ref: this.processInnerControlRef,
+      className: 'nc-controlPane-widget',
     });
   }
 }

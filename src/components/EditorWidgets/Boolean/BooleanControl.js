@@ -6,9 +6,9 @@ import { Toggle } from 'UI';
 
 export default class BooleanControl extends React.Component {
   render() {
-    const { value, field, forID, onChange } = this.props;
+    const { value, field, forID, onChange, className } = this.props;
     return (
-      <div className="nc-booleanControl-switch">
+      <div className={`${className} nc-booleanControl-switch`}>
         <Toggle
           id={forID}
           active={isBoolean(value) ? value : field.get('defaultValue', false)}

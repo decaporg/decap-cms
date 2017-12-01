@@ -2,23 +2,6 @@
   display: flex;
 }
 
-.nc-imageControl-imageUpload {
-  @apply(--input);
-}
-
-.nc-visualEditor-shortcode,
-.nc-objectControl-root {
-  & .nc-imageControl-imageUpload {
-    @apply(--inputNested);
-  }
-}
-
-.nc-visualEditor-shortcode {
-  & .nc-imageControl-imageUpload {
-    @apply(--shortcodeInput);
-  }
-}
-
 .nc-imageControl-imageWrapper {
   width: 155px;
   height: 100px;
