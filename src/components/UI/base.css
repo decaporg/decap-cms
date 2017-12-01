@@ -126,92 +126,30 @@
     font-weight: 600;
     background-color: var(--textFieldBorderColor);
     border: 0;
-    border-radius: 3px;
-    padding: 3px 6px;
+    border-radius: 3px 3px 0 0;
+    padding: 3px 6px 2px;
     margin: 0;
     transition: all var(--transition);
-  }
+    position: relative;
 
-  --labelledInputWrapper: {
-    color: var(--colorText);
-
-    & input,
-    & textarea,
-    & select {
-      @apply(--input);
-      border-top-left-radius: 0;
-    }
-
-    & select {
-      text-indent: 14px;
-      height: 58px;
-    }
-
-    & label {
-      @apply(--label);
-      position: relative;
-      border-radius: 3px 3px 0 0;
-      padding-bottom: 2px;
-
-      /**
-       * Faux outside curve into top of input
-       */
-      &:before,
-      &:after {
-        content: '';
-        display: block;
-        position: absolute;
-        top: 0;
-        right: -4px;
-        height: 100%;
-        width: 4px;
-        background-color: inherit;
-      }
-
-      &:after {
-        border-bottom-left-radius: 3px;
-        background-color: #fff;
-      }
-    }
-
-    &:focus-within > .nc-controlPane-label {
-      background-color: var(--colorActive);
-      color: #fff;
-    }
-  }
-
-  --labelNested: {
-    background: none;
-
+    /**
+     * Faux outside curve into top of input
+     */
     &:before,
     &:after {
-      content: none;
-    }
-  }
-
-  --inputNested: {
-    border: 0;
-    border-radius: 0;
-    border-left: 2px solid var(--textFieldBorderColor);
-
-    &:focus {
-      border-color: var(--colorActive);
-    }
-  }
-
-  --labelledInputWrapperNested {
-    & label {
-      @apply(--labelNested);
+      content: '';
+      display: block;
+      position: absolute;
+      top: 0;
+      right: -4px;
+      height: 100%;
+      width: 4px;
+      background-color: inherit;
     }
 
-    & input,
-    & textarea {
-      @apply(--inputNested);
-    }
-
-    &:focus-within > .nc-controlPane-label {
-      background-color: transparent;
-      color: var(--colorActive);
+    &:after {
+      border-bottom-left-radius: 3px;
+      background-color: #fff;
     }
   }
 
