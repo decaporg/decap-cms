@@ -39,7 +39,7 @@ function validateCollection(configCollection) {
 const selectors = {
   [FOLDER]: {
     entryExtension(collection) {
-      return collection.get('extension') || formatToExtension(collection.get('format') || 'markdown');
+      return collection.get('extension') || formatToExtension(collection.get('format') || 'frontmatter');
     },
     fields(collection) {
       return collection.get('fields');

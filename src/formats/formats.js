@@ -4,19 +4,19 @@ import jsonFormatter from './json';
 import FrontmatterFormatter from './frontmatter';
 
 export const supportedFormats = [
-  'markdown',
+  'yml',
   'yaml',
   'toml',
   'json',
-  'html',
+  'frontmatter',
 ];
 
 export const formatToExtension = format => ({
-  markdown: 'md',
+  yml: 'yml',
   yaml: 'yml',
   toml: 'toml',
   json: 'json',
-  html: 'html',
+  frontmatter: 'md',
 }[format]);
 
 export function formatByExtension(extension) {
@@ -37,9 +37,6 @@ function formatByName(name) {
     yaml: yamlFormatter,
     toml: tomlFormatter,
     json: jsonFormatter,
-    md: FrontmatterFormatter,
-    markdown: FrontmatterFormatter,
-    html: FrontmatterFormatter,
     frontmatter: FrontmatterFormatter,
   }[name];
 }
