@@ -1,6 +1,6 @@
 # Netlify CMS
 [![All Contributors](https://img.shields.io/badge/all_contributors-53-orange.svg?style=flat-square)](#contributors)
-[![Join the community on Spectrum](https://withspectrum.github.io/badge/badge.svg)](https://spectrum.chat/netlify-cms)
+[![Join the community on Gitter](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/netlify/netlifycms)
 
 A CMS for static site generators. Give non-technical users a simple way to edit
 and add content to any site built with a static site generator.
@@ -29,7 +29,7 @@ To learn more about this installation method, refer to the [Quick Start Guide](d
 
 # Community
 
-Netlify CMS has a [public Spectrum community](https://spectrum.chat/netlify-cms) where members of the community hang out and share things about the project, as well as give and receive support.
+Netlify CMS has a [Gittercommunity](https://gitter.im/netlify/netlifycms) where members of the community hang out and share things about the project, as well as give and receive support.
 
 # Change Log
 
