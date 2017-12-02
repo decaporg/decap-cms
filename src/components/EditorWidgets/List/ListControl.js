@@ -47,6 +47,7 @@ const valueTypes = {
 export default class ListControl extends Component {
   static propTypes = {
     onChange: PropTypes.func.isRequired,
+    onChangeObject: PropTypes.func.isRequired,
     value: PropTypes.node,
     field: PropTypes.node,
     forID: PropTypes.string,
@@ -123,10 +124,18 @@ export default class ListControl extends Component {
     onChange((value || List()).push(parsedValue));
   };
 
+  /**
+   * In case the `onChangeObject` function is frozen by a child widget implementation,
+   * e.g. when debounced, always get the latest object value instead of using
+   * `this.props.value` directly.
+   */
+  getObjectValue = idx => this.props.value.get(idx) || Map();
+
   handleChangeFor(index) {
-    return (newValue, newMetadata) => {
+    return (fieldName, newValue, newMetadata) => {
       const { value, metadata, onChange, forID } = this.props;
-      const parsedValue = (this.valueType === valueTypes.SINGLE) ? newValue.first() : newValue;
+      const newObjectValue = this.getObjectValue(index).set(fieldName, newValue);
+      const parsedValue = (this.valueType === valueTypes.SINGLE) ? newObjectValue.first() : newObjectValue;
       const parsedMetadata = {
         [forID]: Object.assign(metadata ? metadata.toJS() : {}, newMetadata ? newMetadata[forID] : {}),
       };
@@ -196,7 +205,7 @@ export default class ListControl extends Component {
         value={item}
         field={field}
         className="nc-listControl-objectControl"
-        onChange={this.handleChangeFor(index)}
+        onChangeObject={this.handleChangeFor(index)}
         getAsset={getAsset}
         onOpenMediaLibrary={onOpenMediaLibrary}
         mediaPaths={mediaPaths}
