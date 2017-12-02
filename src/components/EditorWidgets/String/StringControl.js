@@ -2,19 +2,15 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 export default class StringControl extends React.Component {
-  handleChange = (e) => {
-    this.props.onChange(e.target.value);
-  };
-
   render() {
-    const { forID, value, className, setActiveStyle, setInactiveStyle } = this.props;
+    const { forID, value, onChange, className, setActiveStyle, setInactiveStyle } = this.props;
     return (
       <input
         type="text"
         id={forID}
         className={className}
         value={value || ''}
-        onChange={this.handleChange}
+        onChange={e => onChange(e.target.value)}
         onFocus={setActiveStyle}
         onBlur={setInactiveStyle}
       />
