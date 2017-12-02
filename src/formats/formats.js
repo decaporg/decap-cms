@@ -28,7 +28,7 @@ export function formatByExtension(extension) {
     md: FrontmatterFormatter,
     markdown: FrontmatterFormatter,
     html: FrontmatterFormatter,
-  }[extension] || FrontmatterFormatter;
+  }[extension];
 }
 
 function formatByName(name) {
