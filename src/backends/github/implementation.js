@@ -15,7 +15,7 @@ export default class GitHub {
     }
 
     this.repo = config.getIn(["backend", "repo"], "");
-    this.branch = config.getIn(["backend", "branch"], "master");
+    this.branch = config.getIn(["backend", "branch"], "master").trim();
     this.api_root = config.getIn(["backend", "api_root"], "https://api.github.com");
     this.token = '';
   }
