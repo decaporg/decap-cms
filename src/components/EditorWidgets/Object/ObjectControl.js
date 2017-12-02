@@ -18,7 +18,7 @@ const TopBar = ({ collapsed, onCollapseToggle }) =>
 
 export default class ObjectControl extends Component {
   static propTypes = {
-    onChange: PropTypes.func.isRequired,
+    onChangeObject: PropTypes.func.isRequired,
     onOpenMediaLibrary: PropTypes.func.isRequired,
     mediaPaths: ImmutablePropTypes.map.isRequired,
     onAddAsset: PropTypes.func.isRequired,
@@ -41,13 +41,6 @@ export default class ObjectControl extends Component {
     };
   }
 
-  /**
-   * In case the `onChange` function is frozen by a child widget implementation,
-   * e.g. when debounced, always get the latest object value instead of using
-   * `this.props.value` directly.
-   */
-  getObjectValue = () => this.props.value || Map();
-
   /*
    * Always update so that each nested widget has the option to update. This is
    * required because ControlHOC provides a default `shouldComponentUpdate`
@@ -58,11 +51,6 @@ export default class ObjectControl extends Component {
     return true;
   }
 
-  onChange = (fieldName, newValue, newMetadata) => {
-    const newObjectValue = this.getObjectValue().set(fieldName, newValue);
-    return this.props.onChange(newObjectValue, newMetadata);
-  };
-
   controlFor(field) {
     const {
       onAddAsset,
@@ -71,7 +59,7 @@ export default class ObjectControl extends Component {
       onRemoveInsertedMedia,
       getAsset,
       value,
-      onChange
+      onChangeObject,
     } = this.props;
 
     if (field.get('widget') === 'hidden') {
@@ -88,7 +76,7 @@ export default class ObjectControl extends Component {
         value={fieldValue}
         mediaPaths={mediaPaths}
         getAsset={getAsset}
-        onChange={this.onChange}
+        onChange={onChangeObject}
         onOpenMediaLibrary={onOpenMediaLibrary}
         onAddAsset={onAddAsset}
         onRemoveInsertedMedia={onRemoveInsertedMedia}
