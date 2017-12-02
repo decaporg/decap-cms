@@ -7,20 +7,3 @@
     background-color: #3a69c7;
   }
 }
-
-.nc-objectControl-root .nc-controlPane-control-boolean {
-  & .nc-booleanControl-switch {
-    border: 0;
-    border-left: 2px solid var(--textFieldBorderColor);
-  }
-
-  &:focus-within {
-    border-left-color: var(--colorActive);
-  }
-
-  &:focus-within {
-    & .nc-booleanControl-switch {
-      border-left-color: var(--colorActive);
-    }
-  }
-}

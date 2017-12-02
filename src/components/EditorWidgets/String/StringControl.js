@@ -7,7 +7,7 @@ export default class StringControl extends React.Component {
   };
 
   render() {
-    const { forID, value, className } = this.props;
+    const { forID, value, className, setActiveStyle, setInactiveStyle } = this.props;
     return (
       <input
         type="text"
@@ -15,6 +15,8 @@ export default class StringControl extends React.Component {
         className={className}
         value={value || ''}
         onChange={this.handleChange}
+        onFocus={setActiveStyle}
+        onBlur={setInactiveStyle}
       />
     );
   }

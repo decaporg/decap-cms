@@ -5,11 +5,13 @@ import ValidationErrorTypes from 'Constants/validationErrorTypes';
 
 const truthy = () => ({ error: false });
 
-class ControlHOC extends Component {
-
+export default class Widget extends Component {
   static propTypes = {
     controlComponent: PropTypes.func.isRequired,
     field: ImmutablePropTypes.map.isRequired,
+    hasActiveStyle: PropTypes.bool,
+    setActiveStyle: PropTypes.func.isRequired,
+    setInactiveStyle: PropTypes.func.isRequired,
     value: PropTypes.oneOfType([
       PropTypes.node,
       PropTypes.object,
@@ -33,7 +35,8 @@ class ControlHOC extends Component {
     if (this.wrappedControlShouldComponentUpdate) {
       return this.wrappedControlShouldComponentUpdate(nextProps);
     }
-    return this.props.value !== nextProps.value;
+    return this.props.value !== nextProps.value
+      || this.props.className !== nextProps.className;
   }
 
   processInnerControlRef = ref => {
@@ -147,8 +150,13 @@ class ControlHOC extends Component {
       onOpenMediaLibrary,
       onAddAsset,
       onRemoveInsertedMedia,
-      getAsset
+      getAsset,
+      className,
+      setActiveStyle,
+      setInactiveStyle,
+      hasActiveStyle,
     } = this.props;
+    console.log(className);
     return React.createElement(controlComponent, {
       field,
       value,
@@ -161,9 +169,10 @@ class ControlHOC extends Component {
       getAsset,
       forID: field.get('name'),
       ref: this.processInnerControlRef,
-      className: 'nc-controlPane-widget',
+      className,
+      setActiveStyle,
+      setInactiveStyle,
+      hasActiveStyle,
     });
   }
 }
-
-export default ControlHOC;

@@ -59,7 +59,6 @@ export default class ObjectControl extends Component {
   }
 
   onChange = (fieldName, newValue, newMetadata) => {
-    console.log(newValue);
     const newObjectValue = this.getObjectValue().set(fieldName, newValue);
     return this.props.onChange(newObjectValue, newMetadata);
   };

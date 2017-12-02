@@ -14,6 +14,18 @@ import plugins, { EditListConfigured } from './plugins';
 import onKeyDown from './keys';
 
 export default class Editor extends Component {
+  static propTypes = {
+    onAddAsset: PropTypes.func.isRequired,
+    getAsset: PropTypes.func.isRequired,
+    onChange: PropTypes.func.isRequired,
+    onMode: PropTypes.func.isRequired,
+    className: PropTypes.string.isRequired,
+    onFocus: PropTypes.func.isRequired,
+    onBlur: PropTypes.func.isRequired,
+    hasActiveStyle: PropTypes.bool,
+    value: PropTypes.string,
+  };
+
   constructor(props) {
     super(props);
     const emptyText = Text.create('');
@@ -177,7 +189,7 @@ export default class Editor extends Component {
   };
 
   render() {
-    const { onAddAsset, getAsset, className } = this.props;
+    const { onAddAsset, getAsset, className, onFocus, onBlur, hasActiveStyle } = this.props;
 
     return (
       <div className="nc-visualEditor-wrapper">
@@ -204,10 +216,15 @@ export default class Editor extends Component {
             onSubmit={this.handlePluginAdd}
             onAddAsset={onAddAsset}
             getAsset={getAsset}
+            onFocus={onFocus}
+            onBlur={onBlur}
+            hasActiveStyle={hasActiveStyle}
           />
         </Sticky>
         <Slate
           className={`${className} nc-visualEditor-editor`}
+          onFocus={onFocus}
+          onBlur={onBlur}
           value={this.state.value}
           renderNode={renderNode}
           renderMark={renderMark}
@@ -223,12 +240,3 @@ export default class Editor extends Component {
     );
   }
 }
-
-Editor.propTypes = {
-  onAddAsset: PropTypes.func.isRequired,
-  getAsset: PropTypes.func.isRequired,
-  onChange: PropTypes.func.isRequired,
-  onMode: PropTypes.func.isRequired,
-  className: PropTypes.string.isRequired,
-  value: PropTypes.string,
-};
