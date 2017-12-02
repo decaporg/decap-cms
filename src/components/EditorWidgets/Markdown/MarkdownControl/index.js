@@ -13,6 +13,9 @@ export default class MarkdownControl extends React.Component {
     onAddAsset: PropTypes.func.isRequired,
     getAsset: PropTypes.func.isRequired,
     className: PropTypes.string.isRequired,
+    setActiveStyle: PropTypes.func.isRequired,
+    setInactiveStyle: PropTypes.func.isRequired,
+    hasActiveStyle: PropTypes.bool,
     value: PropTypes.string,
   };
 
@@ -27,7 +30,17 @@ export default class MarkdownControl extends React.Component {
   };
 
   render() {
-    const { onChange, onAddAsset, getAsset, value, className } = this.props;
+    const {
+      onChange,
+      onAddAsset,
+      getAsset,
+      value,
+      className,
+      setActiveStyle,
+      setInactiveStyle,
+      hasActiveStyle,
+    } = this.props;
+
     const { mode } = this.state;
     const visualEditor = (
       <div className="cms-editor-visual">
@@ -37,6 +50,9 @@ export default class MarkdownControl extends React.Component {
           onMode={this.handleMode}
           getAsset={getAsset}
           className={className}
+          onFocus={setActiveStyle}
+          onBlur={setInactiveStyle}
+          hasActiveStyle={hasActiveStyle}
           value={value}
         />
       </div>
@@ -49,6 +65,9 @@ export default class MarkdownControl extends React.Component {
           onMode={this.handleMode}
           getAsset={getAsset}
           className={className}
+          onFocus={setActiveStyle}
+          onBlur={setInactiveStyle}
+          hasActiveStyle={hasActiveStyle}
           value={value}
         />
       </div>

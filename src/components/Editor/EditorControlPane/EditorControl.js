@@ -2,9 +2,13 @@ import React from 'react';
 import { partial } from 'lodash';
 import c from 'classnames';
 import { resolveWidget } from 'Lib/registry';
-import ControlHOC from './ControlHOC';
+import Widget from './Widget';
 
 export default class EditorControl extends React.Component {
+  state = {
+    activeLabel: false,
+  };
+
   render() {
     const {
       value,
@@ -37,12 +41,20 @@ export default class EditorControl extends React.Component {
           }
         </ul>
         <label
-          className={c('nc-controlPane-label', { 'nc-controlPane-labelWithError': errors })}
+          className={c({
+            'nc-controlPane-label': true,
+            'nc-controlPane-labelActive': this.state.styleActive,
+            'nc-controlPane-labelWithError': !!errors,
+          })}
           htmlFor={fieldName}
         >
           {field.get('label')}
         </label>
-        <ControlHOC
+        <Widget
+          className={c({
+            'nc-controlPane-widget': true,
+            'nc-controlPane-widgetActive': this.state.styleActive,
+          })}
           controlComponent={widget.control}
           field={field}
           value={value}
@@ -54,6 +66,9 @@ export default class EditorControl extends React.Component {
           onRemoveInsertedMedia={onRemoveInsertedMedia}
           onAddAsset={onAddAsset}
           getAsset={getAsset}
+          hasActiveStyle={this.state.styleActive}
+          setActiveStyle={() => this.setState({ styleActive: true })}
+          setInactiveStyle={() => this.setState({ styleActive: false })}
           ref={processControlRef && partial(processControlRef, fieldName)}
         />
       </div>

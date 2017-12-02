@@ -1,9 +1,32 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import DateControl from 'EditorWidgets/Date/DateControl';
 
 export default class DateTimeControl extends React.Component {
+  static propTypes = {
+    field: PropTypes.object.isRequired,
+    onChange: PropTypes.func.isRequired,
+    className: PropTypes.string.isRequired,
+    setActiveStyle: PropTypes.func.isRequired,
+    setInactiveStyle: PropTypes.func.isRequired,
+    value: PropTypes.oneOfType([
+      PropTypes.object,
+      PropTypes.string,
+    ]),
+    format: PropTypes.string,
+  };
+
   render() {
-    const { field, format, onChange, value, className } = this.props;
+    const {
+      field,
+      format,
+      onChange,
+      value,
+      className,
+      setActiveStyle,
+      setInactiveStyle
+    } = this.props;
+
     return (
       <DateControl
         onChange={onChange}
@@ -11,6 +34,8 @@ export default class DateTimeControl extends React.Component {
         value={value}
         field={field}
         className={className}
+        setActiveStyle={setActiveStyle}
+        setInactiveStyle={setInactiveStyle}
         includeTime
       />
     );

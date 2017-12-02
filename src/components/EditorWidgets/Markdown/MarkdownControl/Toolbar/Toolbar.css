@@ -9,50 +9,38 @@
   transition: background-color var(--transition), color var(--transition);
 }
 
-.nc-objectControl-root {
-  & .nc-toolbar-Toolbar {
-    border-top-left-radius: var(--borderRadius);
-  }
-}
-
 .nc-visualEditor-editorControlBarSticky .nc-toolbar-Toolbar {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
 
-.nc-markdownWidget-toolbar-markdownToggle {
+.nc-markdownWidget-toolbar-toggle {
   flex-shrink: 0;
   display: flex;
   align-items: center;
   font-size: 14px;
 }
 
-.nc-markdownWidget-toolbar-markdownToggle-switch {
-  margin: 0 12px;
-}
-
-.nc-markdownWidget-toolbar-markdownToggle-label {
+.nc-markdownWidget-toolbar-toggle-label {
   display: inline-block;
   text-align: center;
   white-space: nowrap;
 }
 
-.nc-markdownWidget-toolbar-markdownToggle-label-active {
+.nc-markdownWidget-toolbar-toggle-label-active {
   font-weight: 600;
   color: #3a69c7;
 }
 
-.nc-controlPane-control-markdown:focus-within {
-  & .nc-toolbar-Toolbar {
-    background-color: var(--colorActive);
-    color: #fff;
+.nc-toolbar-ToolbarActive {
+  background-color: var(--colorActive);
+  color: var(--colorTextLight);
+
+  & .nc-markdownWidget-toolbar-toggle-label {
+    color: var(--colorTextLight);
   }
 
-  & .nc-markdownWidget-toolbar-markdownToggle-label {
-    color: #fff;
-  }
-
-  & .nc-toggle-background {
+  & .nc-markdownWidget-toolbar-toggle-background {
     background-color: var(--textFieldBorderColor);
   }
 }
