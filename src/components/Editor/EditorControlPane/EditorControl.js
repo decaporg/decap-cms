@@ -70,6 +70,7 @@ export default class EditorControl extends React.Component {
           setActiveStyle={() => this.setState({ styleActive: true })}
           setInactiveStyle={() => this.setState({ styleActive: false })}
           ref={processControlRef && partial(processControlRef, fieldName)}
+          editorControl={EditorControl}
         />
       </div>
     );

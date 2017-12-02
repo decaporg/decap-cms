@@ -155,8 +155,8 @@ export default class Widget extends Component {
       setActiveStyle,
       setInactiveStyle,
       hasActiveStyle,
+      editorControl,
     } = this.props;
-    console.log(className);
     return React.createElement(controlComponent, {
       field,
       value,
@@ -173,6 +173,7 @@ export default class Widget extends Component {
       setActiveStyle,
       setInactiveStyle,
       hasActiveStyle,
+      editorControl,
     });
   }
 }
