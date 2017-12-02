@@ -50,10 +50,6 @@
     position: relative;
     font-size: 15px;
     line-height: 1.5;
-
-    &:focus {
-      border-color: var(--colorActive);
-    }
   }
 }
 
@@ -61,8 +57,21 @@
   font-size: 16px;
 }
 
+.nc-controlPane-label {
+  @apply(--controlPaneLabel);
+}
+
+.nc-controlPane-labelActive {
+  background-color: var(--colorActive);
+  color: var(--colorTextLight);
+}
+
 .nc-controlPane-widget {
   @apply(--controlPaneWidget);
+
+  &.nc-controlPane-widgetActive {
+    border-color: var(--colorActive);
+  }
 
   & .nc-controlPane-label {
     background: none;
@@ -71,22 +80,26 @@
     &:after {
       content: none;
     }
+
+    &.nc-controlPane-labelActive {
+      color: var(--colorActive);
+    }
   }
 
   & .nc-controlPane-widget {
     border: 0;
     border-radius: 0;
     border-left: 2px solid var(--textFieldBorderColor);
+
+    &.nc-controlPane-widgetActive {
+      border-left-color: var(--colorActive);
+    }
   }
 }
 
 select.nc-controlPane-widget {
   text-indent: 14px;
   height: 58px;
-}
-
-.nc-controlPane-label {
-  @apply(--controlPaneLabel);
 }
 
 .nc-controlPane-labelWithError {

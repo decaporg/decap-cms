@@ -16,6 +16,9 @@ export default class Toolbar extends React.Component {
     onAddAsset: PropTypes.func,
     getAsset: PropTypes.func,
     disabled: PropTypes.bool,
+    onFocus: PropTypes.func.isRequired,
+    onBlur: PropTypes.func.isRequired,
+    hasActiveStyle: PropTypes.bool,
   };
 
   constructor(props) {
@@ -34,6 +37,9 @@ export default class Toolbar extends React.Component {
       getAsset,
       disabled,
       onSubmit,
+      onFocus,
+      onBlur,
+      hasActiveStyle,
     } = this.props;
 
     const buttons = this.props.buttons || {};
@@ -64,7 +70,7 @@ export default class Toolbar extends React.Component {
     const toggleOnLabelWidth = '70px';
 
     return (
-      <div className="nc-toolbar-Toolbar">
+      <div className={c('nc-toolbar-Toolbar', { 'nc-toolbar-ToolbarActive': hasActiveStyle })}>
         <div>
           { buttonsConfig.map((btn, i) => (
             <ToolbarButton
@@ -92,12 +98,12 @@ export default class Toolbar extends React.Component {
             </Dropdown>
           </div>
         </div>
-        <div className="nc-markdownWidget-toolbar-markdownToggle">
+        <div className="nc-markdownWidget-toolbar-toggle">
           <span
             style={{ width: toggleOffLabelWidth }}
             className={c(
-              'nc-markdownWidget-toolbar-markdownToggle-label',
-              { 'nc-markdownWidget-toolbar-markdownToggle-label-active': !rawMode },
+              'nc-markdownWidget-toolbar-toggle-label',
+              { 'nc-markdownWidget-toolbar-toggle-label-active': !rawMode },
             )}
           >
             {toggleOffLabel}
@@ -105,13 +111,14 @@ export default class Toolbar extends React.Component {
           <Toggle
             active={rawMode}
             onChange={onToggleMode}
-            className="nc-markdownWidget-toolbar-markdownToggle-switch"
+            className="nc-markdownWidget-toolbar-toggle"
+            classNameBackground="nc-markdownWidget-toolbar-toggle-background"
           />
           <span
             style={{ width: toggleOnLabelWidth }}
             className={c(
-              'nc-markdownWidget-toolbar-markdownToggle-label',
-              { 'nc-markdownWidget-toolbar-markdownToggle-label-active': rawMode },
+              'nc-markdownWidget-toolbar-toggle-label',
+              { 'nc-markdownWidget-toolbar-toggle-label-active': rawMode },
             )}
           >
             {toggleOnLabel}
