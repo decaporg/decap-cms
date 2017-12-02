@@ -4,7 +4,7 @@ import consoleError from '../lib/consoleError';
 import { CONFIG_SUCCESS } from '../actions/config';
 import { FILES, FOLDER } from '../constants/collectionTypes';
 import { INFERABLE_FIELDS } from '../constants/fieldInference';
-import { formatToExtension, supportedFormats } from '../formats/formats';
+import { formatByExtension, formatToExtension, supportedFormats } from '../formats/formats';
 
 const collections = (state = null, action) => {
   const configCollections = action.payload && action.payload.collections;
@@ -32,7 +32,11 @@ function validateCollection(configCollection) {
     throw new Error(`Unknown collection type for collection "${ collectionName }". Collections can be either Folder based or File based.`);
   }
   if (has(configCollection, 'format') && !supportedFormats.includes(get(configCollection, 'format'))) {
-      throw new Error(`Unknown collection format for collection "${ collectionName }". Supported formats are ${ supportedFormats.join(',') }`);
+    throw new Error(`Unknown collection format for collection "${ collectionName }". Supported formats are ${ supportedFormats.join(',') }`);
+  }
+  if (!has(configCollection, 'format') && has(configCollection, 'extension') && !formatByExtension(get(configCollection, 'extension'))) {
+    // Cannot infer format from extension.
+    throw new Error(`Please set a format for collection "${ collectionName }". Supported formats are ${ supportedFormats.join(',') }`);
   }
 }
 
