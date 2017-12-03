@@ -15,7 +15,8 @@ export default class RawEditor extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return !this.state.value.equals(nextState.value);
+    return !this.state.value.equals(nextState.value)
+      || this.props.hasActiveStyle !== nextProps.hasActiveStyle;
   }
 
   handleChange = change => {
@@ -51,6 +52,8 @@ export default class RawEditor extends React.Component {
   };
 
   render() {
+    const { className, hasActiveStyle } = this.props;
+
     return (
       <div className="nc-rawEditor-rawWrapper">
         <Sticky
@@ -58,10 +61,16 @@ export default class RawEditor extends React.Component {
           classNameActive="nc-visualEditor-editorControlBarSticky"
           fillContainerWidth
         >
-          <Toolbar onToggleMode={this.handleToggleMode} disabled rawMode />
+          <Toolbar
+            onToggleMode={this.handleToggleMode}
+            hasActiveStyle={hasActiveStyle}
+            className="nc-markdownWidget-toolbarRaw"
+            disabled
+            rawMode
+          />
         </Sticky>
         <Slate
-          className={`${this.props.className} nc-rawEditor-rawEditor`}
+          className={`${className} nc-rawEditor-rawEditor`}
           value={this.state.value}
           onChange={this.handleChange}
           onPaste={this.handlePaste}

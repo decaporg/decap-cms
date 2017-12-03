@@ -32,12 +32,3 @@
   display: block;
   margin-top: 12px;
 }
-
-.nc-controlPane-control-image,
-.nc-controlPane-control-file {
-  &:focus-within {
-    & .nc-imageControl-imageUpload {
-      border-color: var(--colorActive);
-    }
-  }
-}
