@@ -1,24 +1,30 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import classnames from 'classnames';
+import c from 'classnames';
 import { Icon } from 'UI';
 
-const ToolbarButton = ({ label, icon, action, active, disabled }) => (
-  <button
-    className={classnames('nc-toolbarButton-button', { ['nc-toolbarButton-active']: active })}
-    onClick={action}
-    title={label}
-    disabled={disabled}
-  >
-    { icon ? <Icon type={icon}/> : label }
-  </button>
-);
+const ToolbarButton = ({ type, label, icon, onClick, isActive, disabled }) => {
+  const active = isActive && type && isActive(type);
+
+  return (
+    <button
+      className={c('nc-toolbarButton-button', { ['nc-toolbarButton-active']: active })}
+      onClick={e => onClick(e, type)}
+      title={label}
+      disabled={disabled}
+    >
+      { icon ? <Icon type={icon}/> : label }
+    </button>
+  );
+};
 
 ToolbarButton.propTypes = {
+  type: PropTypes.string,
   label: PropTypes.string.isRequired,
   icon: PropTypes.string,
-  action: PropTypes.func.isRequired,
-  active: PropTypes.bool,
+  onClick: PropTypes.func.isRequired,
+  isActive: PropTypes.func,
+  disabled: PropTypes.bool,
 };
 
 export default ToolbarButton;
