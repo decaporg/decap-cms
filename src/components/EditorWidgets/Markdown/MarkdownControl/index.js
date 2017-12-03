@@ -24,18 +24,34 @@ export default class MarkdownControl extends React.Component {
     this.state = { mode: localStorage.getItem(MODE_STORAGE_KEY) || 'visual' };
   }
 
+  componentDidMount() {
+    this.ref.addEventListener('focus', this.handleFocus, true);
+    this.ref.addEventListener('blur', this.handleBlur, true);
+  }
+
+  componentWillUnmount() {
+    this.ref.removeEventListener('focus', this.handleFocus, true);
+    this.ref.removeEventListener('blur', this.handleBlur, true);
+  }
+
+  handleFocus = event => this.props.setActiveStyle();
+  handleBlur = event => this.props.setInactiveStyle();
+
   handleMode = (mode) => {
     this.setState({ mode });
     localStorage.setItem(MODE_STORAGE_KEY, mode);
   };
 
+  processRef = ref => this.ref = ref;
+
   render() {
+    console.log(this.props.hasActiveStyle);
     const {
       onChange,
       onAddAsset,
       getAsset,
       value,
-      className,
+      classNameWrapper,
       setActiveStyle,
       setInactiveStyle,
       hasActiveStyle,
@@ -43,30 +59,26 @@ export default class MarkdownControl extends React.Component {
 
     const { mode } = this.state;
     const visualEditor = (
-      <div className="cms-editor-visual">
+      <div className="cms-editor-visual" ref={this.processRef}>
         <VisualEditor
           onChange={onChange}
           onAddAsset={onAddAsset}
           onMode={this.handleMode}
           getAsset={getAsset}
-          className={className}
-          onFocus={setActiveStyle}
-          onBlur={setInactiveStyle}
+          className={classNameWrapper}
           hasActiveStyle={hasActiveStyle}
           value={value}
         />
       </div>
     );
     const rawEditor = (
-      <div className="cms-editor-raw">
+      <div className="cms-editor-raw" ref={this.processRef}>
         <RawEditor
           onChange={onChange}
           onAddAsset={onAddAsset}
           onMode={this.handleMode}
           getAsset={getAsset}
-          className={className}
-          onFocus={setActiveStyle}
-          onBlur={setInactiveStyle}
+          className={classNameWrapper}
           hasActiveStyle={hasActiveStyle}
           value={value}
         />

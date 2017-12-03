@@ -20,8 +20,6 @@ export default class Editor extends Component {
     onChange: PropTypes.func.isRequired,
     onMode: PropTypes.func.isRequired,
     className: PropTypes.string.isRequired,
-    onFocus: PropTypes.func.isRequired,
-    onBlur: PropTypes.func.isRequired,
     hasActiveStyle: PropTypes.bool,
     value: PropTypes.string,
   };
@@ -42,7 +40,8 @@ export default class Editor extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return !this.state.value.equals(nextState.value);
+    return !this.state.value.equals(nextState.value)
+      || this.props.hasActiveStyle !== nextProps.hasActiveStyle;
   }
 
   handlePaste = (e, data, change) => {
@@ -182,8 +181,12 @@ export default class Editor extends Component {
     this.setState({ value: change.value });
   };
 
+  processRef = ref => {
+    this.ref = ref;
+  }
+
   render() {
-    const { onAddAsset, getAsset, classNameWrapper, onFocus, onBlur, hasActiveStyle } = this.props;
+    const { onAddAsset, getAsset, className, hasActiveStyle } = this.props;
 
     return (
       <div className="nc-visualEditor-wrapper">
@@ -204,15 +207,11 @@ export default class Editor extends Component {
             onSubmit={this.handlePluginAdd}
             onAddAsset={onAddAsset}
             getAsset={getAsset}
-            onFocus={onFocus}
-            onBlur={onBlur}
             hasActiveStyle={hasActiveStyle}
           />
         </Sticky>
         <Slate
-          className={`${classNameWrapper} nc-visualEditor-editor`}
-          onFocus={onFocus}
-          onBlur={onBlur}
+          className={`${className} nc-visualEditor-editor`}
           value={this.state.value}
           renderNode={renderNode}
           renderMark={renderMark}
@@ -221,7 +220,7 @@ export default class Editor extends Component {
           onChange={this.handleChange}
           onKeyDown={onKeyDown}
           onPaste={this.handlePaste}
-          ref={ref => this.ref = ref}
+          ref={this.processRef}
           spellCheck
         />
       </div>

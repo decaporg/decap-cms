@@ -4,6 +4,6 @@
   }
 
   & .nc-toggle-active .nc-toggle-background {
-    background-color: #3a69c7;
+    background-color: var(--colorActive);
   }
 }

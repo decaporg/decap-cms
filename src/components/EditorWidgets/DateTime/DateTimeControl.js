@@ -6,7 +6,7 @@ export default class DateTimeControl extends React.Component {
   static propTypes = {
     field: PropTypes.object.isRequired,
     onChange: PropTypes.func.isRequired,
-    className: PropTypes.string.isRequired,
+    classNameWrapper: PropTypes.string.isRequired,
     setActiveStyle: PropTypes.func.isRequired,
     setInactiveStyle: PropTypes.func.isRequired,
     value: PropTypes.oneOfType([
@@ -22,7 +22,7 @@ export default class DateTimeControl extends React.Component {
       format,
       onChange,
       value,
-      className,
+      classNameWrapper,
       setActiveStyle,
       setInactiveStyle
     } = this.props;
@@ -33,7 +33,7 @@ export default class DateTimeControl extends React.Component {
         format={format}
         value={value}
         field={field}
-        className={className}
+        classNameWrapper={classNameWrapper}
         setActiveStyle={setActiveStyle}
         setInactiveStyle={setInactiveStyle}
         includeTime

@@ -37,7 +37,8 @@ export default class Widget extends Component {
       return this.wrappedControlShouldComponentUpdate(nextProps);
     }
     return this.props.value !== nextProps.value
-      || this.props.className !== nextProps.className;
+      || this.props.className !== nextProps.className
+      || this.props.hasActiveStyle !== nextProps.hasActiveStyle;
   }
 
   processInnerControlRef = ref => {

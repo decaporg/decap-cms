@@ -6,7 +6,12 @@
   justify-content: space-between;
   align-items: center;
   padding: 11px 14px;
+  min-height: 58px;
   transition: background-color var(--transition), color var(--transition);
+}
+
+.nc-markdownWidget-toolbarRaw {
+  justify-content: flex-end;
 }
 
 .nc-visualEditor-editorControlBarSticky .nc-toolbar-Toolbar {

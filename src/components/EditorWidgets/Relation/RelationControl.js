@@ -25,6 +25,9 @@ class RelationControl extends Component {
       PropTypes.array,
       PropTypes.object,
     ]),
+    classNameWrapper: PropTypes.string.isRequired,
+    setActiveStyle: PropTypes.func.isRequired,
+    setInactiveStyle: PropTypes.func.isRequired,
   };
 
   constructor(props, ctx) {
@@ -88,14 +91,24 @@ class RelationControl extends Component {
   };
 
   render() {
-    const { value, isFetching, forID, queryHits, className } = this.props;
+    const {
+      value,
+      isFetching,
+      forID,
+      queryHits,
+      classNameWrapper,
+      setActiveStyle,
+      setInactiveStyle
+    } = this.props;
 
     const inputProps = {
       placeholder: '',
       value: value || '',
       onChange: this.onChange,
       id: forID,
-      className,
+      className: classNameWrapper,
+      onFocus: setActiveStyle,
+      onBlur: setInactiveStyle,
     };
 
     const suggestions = (queryHits.get) ? queryHits.get(this.controlID, []) : [];
@@ -110,6 +123,7 @@ class RelationControl extends Component {
           getSuggestionValue={this.getSuggestionValue}
           renderSuggestion={this.renderSuggestion}
           inputProps={inputProps}
+          focusInputOnSuggestionClick={false}
         />
         <Loader active={isFetching === this.controlID} />
       </div>
