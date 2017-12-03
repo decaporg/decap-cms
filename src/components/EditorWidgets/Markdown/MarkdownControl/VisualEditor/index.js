@@ -54,8 +54,8 @@ export default class Editor extends Component {
     return change.insertFragment(doc);
   }
 
-  hasMark = type => this.state.value.activeMarks.some(mark => mark.type === type);
-  hasBlock = type => this.state.value.blocks.some(node => node.type === type);
+  selectionHasMark = type => this.state.value.activeMarks.some(mark => mark.type === type);
+  selectionHasBlock = type => this.state.value.blocks.some(node => node.type === type);
 
   handleMarkClick = (event, type) => {
     event.preventDefault();
@@ -73,7 +73,7 @@ export default class Editor extends Component {
 
     // Handle everything except list buttons.
     if (!['bulleted-list', 'numbered-list'].includes(type)) {
-      const isActive = this.hasBlock(type);
+      const isActive = this.selectionHasBlock(type);
       change = change.setBlock(isActive ? 'paragraph' : type);
     }
 
@@ -167,12 +167,6 @@ export default class Editor extends Component {
     this.props.onMode('raw');
   };
 
-  getButtonProps = (type, opts = {}) => {
-    const { isBlock } = opts;
-    const handler = opts.handler || (isBlock ? this.handleBlockClick: this.handleMarkClick);
-    const isActive = opts.isActive || (isBlock ? this.hasBlock : this.hasMark);
-    return { onAction: e => handler(e, type), active: isActive(type) };
-  };
 
   handleDocumentChange = debounce(change => {
     const raw = change.value.document.toJSON();
@@ -189,7 +183,7 @@ export default class Editor extends Component {
   };
 
   render() {
-    const { onAddAsset, getAsset, className, onFocus, onBlur, hasActiveStyle } = this.props;
+    const { onAddAsset, getAsset, classNameWrapper, onFocus, onBlur, hasActiveStyle } = this.props;
 
     return (
       <div className="nc-visualEditor-wrapper">
@@ -199,18 +193,12 @@ export default class Editor extends Component {
           fillContainerWidth
         >
           <Toolbar
-            buttons={{
-              bold: this.getButtonProps('bold'),
-              italic: this.getButtonProps('italic'),
-              code: this.getButtonProps('code'),
-              link: this.getButtonProps('link', { handler: this.handleLink, isActive: this.hasLinks }),
-              h1: this.getButtonProps('heading-one', { isBlock: true }),
-              h2: this.getButtonProps('heading-two', { isBlock: true }),
-              list: this.getButtonProps('bulleted-list', { isBlock: true }),
-              listNumbered: this.getButtonProps('numbered-list', { isBlock: true }),
-              codeBlock: this.getButtonProps('code', { isBlock: true }),
-              quote: this.getButtonProps('quote', { isBlock: true }),
-            }}
+            onMarkClick={this.handleMarkClick}
+            onBlockClick={this.handleBlockClick}
+            onLinkClick={this.handleLink}
+            selectionHasMark={this.selectionHasMark}
+            selectionHasBlock={this.selectionHasBlock}
+            selectionHasLink={this.hasLinks}
             onToggleMode={this.handleToggle}
             plugins={this.state.shortcodePlugins}
             onSubmit={this.handlePluginAdd}
@@ -222,7 +210,7 @@ export default class Editor extends Component {
           />
         </Sticky>
         <Slate
-          className={`${className} nc-visualEditor-editor`}
+          className={`${classNameWrapper} nc-visualEditor-editor`}
           onFocus={onFocus}
           onBlur={onBlur}
           value={this.state.value}
