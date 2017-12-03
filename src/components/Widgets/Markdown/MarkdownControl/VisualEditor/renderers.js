@@ -44,8 +44,7 @@ const Link = props => {
   const title = data.get('title');
   const link = <a href={url} title={title} {...props.attributes}>{props.children}</a>;
   const result = !marks ? link : marks.reduce((acc, mark) => {
-    const MarkComponent = MARK_COMPONENTS[mark.type];
-    return <MarkComponent>{acc}</MarkComponent>;
+    return renderMark({ mark, children: acc });
   }, link);
   return result;
 };
@@ -57,8 +56,7 @@ const Image = props => {
   const alt = data.get('alt');
   const image = <img src={url} title={title} alt={alt} {...props.attributes}/>;
   const result = !marks ? image : marks.reduce((acc, mark) => {
-    const MarkComponent = MARK_COMPONENTS[mark.type];
-    return <MarkComponent>{acc}</MarkComponent>;
+    return renderMark({ mark, children: acc });
   }, image);
   return result;
 };
