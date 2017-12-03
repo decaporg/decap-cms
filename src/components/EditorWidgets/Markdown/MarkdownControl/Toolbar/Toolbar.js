@@ -30,6 +30,12 @@ export default class Toolbar extends React.Component {
 
   render() {
     const {
+      onMarkClick,
+      onBlockClick,
+      onLinkClick,
+      selectionHasMark,
+      selectionHasBlock,
+      selectionHasLink,
       onToggleMode,
       rawMode,
       plugins,
@@ -42,22 +48,7 @@ export default class Toolbar extends React.Component {
       hasActiveStyle,
     } = this.props;
 
-    const buttons = this.props.buttons || {};
-
     const { activePlugin } = this.state;
-
-    const buttonsConfig = [
-      { label: 'Bold', icon: 'bold', state: buttons.bold },
-      { label: 'Italic', icon: 'italic', state: buttons.italic },
-      { label: 'Code', icon: 'code', state: buttons.code },
-      { label: 'Header 1', icon: 'h1', state: buttons.h1 },
-      { label: 'Header 2', icon: 'h2', state: buttons.h2 },
-      { label: 'Code Block', icon: 'code-block', state: buttons.codeBlock },
-      { label: 'Quote', icon: 'quote', state: buttons.quote },
-      { label: 'Bullet List', icon: 'list-bulleted', state: buttons.list },
-      { label: 'Numbered List', icon: 'list-numbered', state: buttons.listNumbered },
-      { label: 'Link', icon: 'link', state: buttons.link },
-    ];
 
     /**
      * Because the toggle labels change font weight for active/inactive state,
@@ -72,22 +63,93 @@ export default class Toolbar extends React.Component {
     return (
       <div className={c('nc-toolbar-Toolbar', { 'nc-toolbar-ToolbarActive': hasActiveStyle })}>
         <div>
-          { buttonsConfig.map((btn, i) => (
-            <ToolbarButton
-              key={i}
-              action={btn.state && btn.state.onAction || (() => {})}
-              active={btn.state && btn.state.active}
-              disabled={disabled}
-              {...btn}
-            />
-          ))}
+          <ToolbarButton
+            type="bold"
+            label="Bold"
+            icon="bold"
+            onClick={onMarkClick}
+            isActive={selectionHasMark}
+            disabled={disabled}
+          />
+          <ToolbarButton
+            type="italic"
+            label="Italic"
+            icon="italic"
+            onClick={onMarkClick}
+            isActive={selectionHasMark}
+            disabled={disabled}
+          />
+          <ToolbarButton
+            type="code"
+            label="Code"
+            icon="code"
+            onClick={onMarkClick}
+            isActive={selectionHasMark}
+            disabled={disabled}
+          />
+          <ToolbarButton
+            type="link"
+            label="Link"
+            icon="link"
+            onClick={onLinkClick}
+            isActive={selectionHasLink}
+            disabled={disabled}
+          />
+          <ToolbarButton
+            type="heading-one"
+            label="Header 1"
+            icon="h1"
+            onClick={onBlockClick}
+            isActive={selectionHasBlock}
+            disabled={disabled}
+          />
+          <ToolbarButton
+            type="heading-two"
+            label="Header 2"
+            icon="h2"
+            onClick={onBlockClick}
+            isActive={selectionHasBlock}
+            disabled={disabled}
+          />
+          <ToolbarButton
+            type="quote"
+            label="Quote"
+            icon="quote"
+            onClick={onBlockClick}
+            isActive={selectionHasBlock}
+            disabled={disabled}
+          />
+          <ToolbarButton
+            type="code"
+            label="Code Block"
+            icon="code-block"
+            onClick={onBlockClick}
+            isActive={selectionHasBlock}
+            disabled={disabled}
+          />
+          <ToolbarButton
+            type="bulleted-list"
+            label="Bulleted List"
+            icon="list-bulleted"
+            onClick={onBlockClick}
+            isActive={selectionHasBlock}
+            disabled={disabled}
+          />
+          <ToolbarButton
+            type="numbered-list"
+            label="Numbered List"
+            icon="list-numbered"
+            onClick={onBlockClick}
+            isActive={selectionHasBlock}
+            disabled={disabled}
+          />
           <div className="nc-toolbar-dropdown">
             <Dropdown
               button={
                 <ToolbarButton
                   label="Add Component"
                   icon="add-with"
-                  action={this.handleComponentsMenuToggle}
+                  onClick={this.handleComponentsMenuToggle}
                   disabled={disabled}
                 />
               }
