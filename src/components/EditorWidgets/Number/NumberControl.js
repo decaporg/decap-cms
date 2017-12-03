@@ -1,7 +1,20 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
 
 export default class NumberControl extends React.Component {
+  static propTypes = {
+    onChange: PropTypes.func.isRequired,
+    classNameWrapper: PropTypes.string.isRequired,
+    setActiveStyle: PropTypes.func.isRequired,
+    setInactiveStyle: PropTypes.func.isRequired,
+    value: PropTypes.node,
+    forID: PropTypes.string,
+    valueType: PropTypes.string,
+    step: PropTypes.number,
+    min: PropTypes.number,
+    max: PropTypes.number,
+  };
+
   handleChange = (e) => {
     const valueType = this.props.field.get('valueType');
     const { onChange } = this.props;
@@ -15,14 +28,16 @@ export default class NumberControl extends React.Component {
   };
 
   render() {
-    const { field, value, className, forID } = this.props;
+    const { field, value, classNameWrapper, forID, setActiveStyle, setInactiveStyle } = this.props;
     const min = field.get('min', '');
     const max = field.get('max', '');
     const step = field.get('step', field.get('valueType') === 'int' ? 1 : '');
     return <input
       type="number"
       id={forID}
-      className={className}
+      className={classNameWrapper}
+      onFocus={setActiveStyle}
+      onBlur={setInactiveStyle}
       value={value || ''}
       step={step}
       min={min}
@@ -31,13 +46,3 @@ export default class NumberControl extends React.Component {
     />;
   }
 }
-
-NumberControl.propTypes = {
-  onChange: PropTypes.func.isRequired,
-  value: PropTypes.node,
-  forID: PropTypes.string,
-  valueType: PropTypes.string,
-  step: PropTypes.number,
-  min: PropTypes.number,
-  max: PropTypes.number,
-};

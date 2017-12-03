@@ -11,12 +11,12 @@ export default class BooleanControl extends React.Component {
       field,
       forID,
       onChange,
-      className,
+      classNameWrapper,
       setActiveStyle,
       setInactiveStyle
     } = this.props;
     return (
-      <div className={`${className} nc-booleanControl-switch`}>
+      <div className={`${classNameWrapper} nc-booleanControl-switch`}>
         <Toggle
           id={forID}
           active={isBoolean(value) ? value : field.get('defaultValue', false)}
@@ -32,7 +32,7 @@ export default class BooleanControl extends React.Component {
 BooleanControl.propTypes = {
   field: ImmutablePropTypes.map.isRequired,
   onChange: PropTypes.func.isRequired,
-  className: PropTypes.string.isRequired,
+  classNameWrapper: PropTypes.string.isRequired,
   setActiveStyle: PropTypes.func.isRequired,
   setInactiveStyle: PropTypes.func.isRequired,
   forID: PropTypes.string,

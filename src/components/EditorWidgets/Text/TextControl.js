@@ -7,6 +7,9 @@ export default class TextControl extends React.Component {
     onChange: PropTypes.func.isRequired,
     forID: PropTypes.string,
     value: PropTypes.node,
+    classNameWrapper: PropTypes.string.isRequired,
+    setActiveStyle: PropTypes.func.isRequired,
+    setInactiveStyle: PropTypes.func.isRequired,
   };
 
   /**
@@ -21,13 +24,22 @@ export default class TextControl extends React.Component {
   }
 
   render() {
-    const {forID, value = '', className, onChange } = this.props;
+    const {
+      forID,
+      value = '',
+      onChange,
+      classNameWrapper,
+      setActiveStyle,
+      setInactiveStyle,
+    } = this.props;
 
     return (
       <Textarea
         id={forID}
         value={value}
-        className={className}
+        className={classNameWrapper}
+        onFocus={setActiveStyle}
+        onBlur={setInactiveStyle}
         style={{ minHeight: '140px' }}
         onChange={e => onChange(e.target.value)}
       />

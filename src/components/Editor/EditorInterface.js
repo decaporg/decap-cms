@@ -69,6 +69,7 @@ class EditorInterface extends Component {
     const { previewVisible, scrollSyncEnabled, showEventBlocker } = this.state;
 
     const collectionPreviewEnabled = collection.getIn(['editor', 'preview'], true);
+    console.log(scrollSyncEnabled);
 
     const editor = (
       <StickyContext

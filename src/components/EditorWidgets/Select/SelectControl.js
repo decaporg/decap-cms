@@ -4,12 +4,30 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { isMap } from 'immutable';
 
 export default class SelectControl extends React.Component {
+  static propTypes = {
+    onChange: PropTypes.func.isRequired,
+    value: PropTypes.node,
+    forID: PropTypes.string.isRequired,
+    classNameWrapper: PropTypes.string.isRequired,
+    setActiveStyle: PropTypes.func.isRequired,
+    setInactiveStyle: PropTypes.func.isRequired,
+    field: ImmutablePropTypes.contains({
+      options: ImmutablePropTypes.listOf(PropTypes.oneOfType([
+        PropTypes.string,
+        ImmutablePropTypes.contains({
+          label: PropTypes.string.isRequired,
+          value: PropTypes.string.isRequired,
+        }),
+      ])).isRequired,
+    }),
+  };
+
   handleChange = (e) => {
     this.props.onChange(e.target.value);
   };
 
   render() {
-    const { field, value, forID, className } = this.props;
+    const { field, value, forID, classNameWrapper, setActiveStyle, setInactiveStyle } = this.props;
     const fieldOptions = field.get('options');
 
     if (!fieldOptions) {
@@ -27,7 +45,14 @@ export default class SelectControl extends React.Component {
     ];
 
     return (
-      <select id={forID} value={value || ''} onChange={this.handleChange} className={className}>
+      <select
+        id={forID}
+        value={value || ''}
+        onChange={this.handleChange}
+        className={classNameWrapper}
+        onFocus={setActiveStyle}
+        onBlur={setInactiveStyle}
+      >
         {
           options.map(
             (option, idx) => <option key={idx} value={option.value}>{option.label}</option>
@@ -37,19 +62,3 @@ export default class SelectControl extends React.Component {
     );
   }
 }
-
-SelectControl.propTypes = {
-  onChange: PropTypes.func.isRequired,
-  value: PropTypes.node,
-  forID: PropTypes.string.isRequired,
-  className: PropTypes.string.isRequired,
-  field: ImmutablePropTypes.contains({
-    options: ImmutablePropTypes.listOf(PropTypes.oneOfType([
-      PropTypes.string,
-      ImmutablePropTypes.contains({
-        label: PropTypes.string.isRequired,
-        value: PropTypes.string.isRequired,
-      }),
-    ])).isRequired,
-  }),
-};
