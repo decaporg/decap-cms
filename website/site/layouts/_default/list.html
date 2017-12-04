@@ -1,0 +1,35 @@
+{{ partial "header" . }}
+
+<div class="docs page">
+	<div class="container">
+		<aside id="sidebar" class="sidebar">
+			<nav class="docs-nav" id="docs-nav">
+				{{ range sort .Data.Pages "Params.position" }}
+					<a href="{{ .Permalink }}" class="nav-link {{ if eq .Params.position 0 }}active{{ end }}">{{ .Title }}</a>
+				{{ end }}
+			</nav>
+			<div class="mobile docs-nav">
+				<select class="btn-primary" id="mobile-docs-nav">
+					<option value="" selected="selected">Select A Topic</option>
+					{{ range sort .Data.Pages "Params.position" }}
+						<option value="{{ .Permalink }}" class="nav-link {{ if eq .Params.position 0 }}active{{ end }}">{{ .Title }}</option>
+					{{ end }}
+				</select>
+			</div>
+		</aside>
+		<article class="docs-content" id="docs-content">
+			{{ range sort .Data.Pages "Params.position" }}
+				{{ if eq .Params.position 0 }}
+					<div>
+            <p>
+							{{ partial "edit-link" . }}
+            </p>
+            {{ .Content }}
+          </div>
+				{{ end }}
+			{{ end }}
+		</article>
+	</div>
+</div>
+
+{{ partial "footer" . }}

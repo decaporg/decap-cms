@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1440px" height="26px" viewBox="0 0 1440 26" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 42 (36781) - http://www.bohemiancoding.com/sketch -->
+    <title>bow</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="landing" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="cms-landing-v6" transform="translate(0.000000, -666.000000)" fill="#FFFFFF">
+            <g id="hero-(green)">
+                <g id="background">
+                    <path d="M0,692 L1440,692 L1440,666.431373 C1440,666.431373 1080,692 720,692 C360,692 0,666.431373 0,666.431373 L0,692 Z" id="bow"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

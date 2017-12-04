@@ -1,0 +1,30 @@
+{{ partial "header" . }}
+{{ $activePage := .Params.position }}
+
+<div class="docs detail page">
+	<div class="container">
+		<aside id="sidebar" class="sidebar">
+			<nav class="docs-nav" id="docs-nav">
+				{{ $subjects := where .Site.Pages "Section" "docs" }}
+				{{ range sort $subjects "Params.position" }}
+					<a href="{{ .Permalink }}" class="nav-link {{ if eq .Params.position $activePage }}active{{ end }}">{{ .Title }}</a>
+				{{ end }}
+			</nav>
+			<div class="mobile docs-nav">
+				<select class="btn-primary" id="mobile-docs-nav">
+					<option value="" selected="selected">Select A Topic</option>
+					{{ $subjects := where .Site.Pages "Section" "docs" }}
+					{{ range sort $subjects "Params.position" }}
+						<option value="{{ .Permalink }}" class="nav-link {{ if eq .Params.position $activePage }}active{{ end }}">{{ .Title }}</option>
+					{{ end }}
+				</select>
+			</div>
+		</aside>
+		<article class="docs-content" id="docs-content">
+			{{ partial "edit-link" . }}
+			{{ .Content }}
+		</article>
+	</div>
+</div>
+
+{{ partial "footer" . }}

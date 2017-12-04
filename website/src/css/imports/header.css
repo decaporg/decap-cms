@@ -1,0 +1,262 @@
+.notification {
+  background: #414344;
+  box-sizing: border-box;
+  color: white;
+  display: block;
+  padding: $tiny $small;
+  position: absolute;
+  text-align: center;
+  width: 100%;
+  z-index: 101;
+
+  @media screen and (min-width: $mobile) {
+    position: fixed;
+  }
+
+  em {
+    font-style: normal;
+    color: #8B8B8B;
+    padding: 0 8px;
+  }
+
+  sup,
+  sub {
+    font-size: initial;
+    vertical-align: initial;
+  }
+
+  .text-link {
+    text-decoration: underline;
+    color: $green;
+  }
+
+  &.notification-loud {
+    background-color: $green;
+    color: $darkerGrey;
+  }
+
+  + header {
+    margin-top: 100px;
+
+    @media screen and (min-width: 360px) {
+      margin-top: 74px;
+    }
+
+    @media screen and (min-width: 712px) {
+      margin-top: 50px;
+    }
+
+    + div:before,
+    + .hero:before {
+      content: '';
+      display: block;
+      height: 100px;
+      width: 100%;
+
+      @media screen and (min-width: 360px) {
+        height: 74px;
+      }
+
+      @media screen and (min-width: 712px) {
+        height: 50px;
+      }
+    }
+  }
+}
+
+header {
+  background: transparent;
+  box-shadow: none;
+  font-family: $roboto;
+  position: absolute;
+  padding: $medium 0;
+  text-align: center;
+  transition: background .2s ease, padding .2s ease, box-shadow .2s ease;
+  width: 100%;
+  z-index: 100;
+
+  @media screen and (min-width: $mobile) {
+    text-align: right;
+    position: fixed;
+  }
+
+  &.scrolled {
+    @media screen and (min-width: $mobile) {
+      background: $darkGrey;
+      padding: $small 0;
+    }
+  }
+
+  &.docs {
+    background: $darkGrey;
+    padding: $small 0;
+
+    @media screen and (max-width: $mobile) {
+      position: static;
+    }
+
+    .nav-link {
+      @media screen and (min-width: 487px) and (max-width: 767px) {
+        margin-top: $micro;
+      }
+    }
+
+    .github-btn {
+      @media screen and (max-width: 767px) {
+        display: none;
+      }
+    }
+
+    .utility-input {
+      @media screen and (max-width: 767px) {
+        display: block;
+        height: $small;
+        margin: $tiny 0 0 0;
+      }
+
+      @media screen and (min-width: 487px) and (max-width: 767px) {
+        margin-top: 32px;
+      }
+    }
+  }
+
+  a {
+    color: white;
+    display: inline-block;
+    vertical-align: middle;
+    -webkit-vertical-align: middle !important;
+    margin-left: $micro;
+
+    @media screen and (min-width: $mobile) {
+      margin-left: 4px;
+    }
+
+    @media screen and (min-width: $tablet) {
+      margin-left: $micro;
+    }
+
+    &.nav-link:not(:nth-child(2)):before {
+      content: '•';
+      padding-right: $tiny;
+      color: $green;
+
+      @media screen and (min-width: $mobile) {
+        padding-right: $micro;
+      }
+
+      @media screen and (min-width: $tablet) {
+        padding-right: $tiny;
+      }
+    }
+
+    &:hover {
+      color: $green;
+    }
+
+    &.github-btn {
+      margin-top: $tiny;
+      margin-left: $micro;
+
+      @media screen and (min-width: 688px) {
+        margin-top: 0;
+      }
+    }
+  }
+
+  img {
+    margin: 0;
+    padding: 0;
+  }
+
+  .algolia-search {
+    margin-top: 1px;
+    -webkit-margin-top: 0;
+    -webkit-display: inline-block;
+    vertical-align: baseline !important;
+  }
+  input.closed {
+    display: none;
+  }
+
+  input {
+    padding-left: 0;
+    border: none;
+    border-radius: 0;
+    appearance: none;
+    background: none;
+    color: $lightGrey;
+    padding: 2px $micro $micro 0;
+    display: inline-block;
+    font-size: $tiny;
+    font-weight: $regular;
+    max-width: 160px;
+    -webkit-appearance: none;
+    visibility: visible;
+
+    &:focus {
+      outline: none;
+      display: inline-block;
+
+      ~ .bar {
+        &::before,
+        &::after {
+          width: 50%;
+        }
+      }
+
+      ~ .button-submit {
+        margin-top: -35px;
+      }
+    }
+
+  }
+
+  .utility-input {
+    display: none;
+    padding: $micro;
+    width: auto;
+    border: 1px solid white;
+    border-radius: 4px;
+    background: none;
+    color: white;
+    margin: 0 $micro 0 10px;
+    padding-bottom: 9px;
+    text-align: left;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 24px;
+    transition: all .2s ease-in-out;
+
+    @media screen and (min-width: 968px) {
+      display: inline;
+    }
+
+    &:focus,
+    &:active {
+      outline-style: none;
+    }
+
+    &::-webkit-input-placeholder,
+    &:-moz-placeholder,
+    &::-moz-placeholder,
+    &:-ms-input-placeholder  {
+      font-size: $tiny;
+      font-weight: $semibold;
+      text-align: left;
+      text-decoration: none;
+      line-height: $small;
+    }
+  }
+
+  .logo {
+    margin: 0 auto $tiny auto;
+    width: 100%;
+
+    @media screen and (min-width: $mobile) {
+      float: left;
+      margin: -$micro 0 -6px 0;
+      width: initial;
+    }
+  }
+}
