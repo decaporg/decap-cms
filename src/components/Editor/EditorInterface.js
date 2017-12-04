@@ -8,6 +8,7 @@ import { StickyContext, Icon } from 'UI'
 import EditorControlPane from './EditorControlPane/EditorControlPane';
 import EditorPreviewPane from './EditorPreviewPane/EditorPreviewPane';
 import EditorToolbar from './EditorToolbar';
+import EditorToggle from './EditorToggle';
 
 const PREVIEW_VISIBLE = 'cms.preview-visible';
 const SCROLL_SYNC_ENABLED = 'cms.scroll-sync-enabled';
@@ -137,22 +138,18 @@ class EditorInterface extends Component {
           hasChanged={hasChanged}
         />
         <div className="nc-entryEditor-container">
-          {
-            collectionPreviewEnabled
-              ? <div className="nc-entryEditor-viewControls">
-                  <button onClick={this.handleTogglePreview}>
-                    <Icon type={previewVisible ? 'eye' : 'close'} size="large"/>
-                  </button>
-                  {
-                    previewVisible
-                      ? <button onClick={this.handleToggleScrollSync}>
-                          <Icon type={scrollSyncEnabled ? 'close' : 'close'} size="large"/>
-                        </button>
-                      : null
-                  }
-                </div>
-              : null
-          }
+          <div className="nc-entryEditor-viewControls">
+            <EditorToggle
+              enabled={collectionPreviewEnabled}
+              onClick={this.handleTogglePreview}
+              icon="eye"
+            />
+            <EditorToggle
+              enabled={collectionPreviewEnabled && previewVisible}
+              onClick={this.handleToggleScrollSync}
+              icon="arrow"
+            />
+          </div>
           {
             collectionPreviewEnabled && this.state.previewVisible
               ? editorWithPreview
