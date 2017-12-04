@@ -14,11 +14,6 @@
   justify-content: flex-end;
 }
 
-.nc-visualEditor-editorControlBarSticky .nc-toolbar-Toolbar {
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-}
-
 .nc-markdownWidget-toolbar-toggle {
   flex-shrink: 0;
   display: flex;
