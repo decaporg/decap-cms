@@ -1,3 +1,8 @@
+---
+title: Extending Widgets
+position: 60
+---
+
 # Extending With Widgets
 
 The NetlifyCMS exposes an `window.CMS` global object that you can use to register custom widgets, previews, and editor plugins. The available widget extension methods are:
@@ -110,4 +115,3 @@ CMS.registerEditorComponent({
 **Result:**
 
 ![youtube-widget](/img/youtube-widget.png)
-

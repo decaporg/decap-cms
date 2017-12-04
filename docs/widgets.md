@@ -1,6 +1,9 @@
-# Configuring your site
+---
+title: Widgets
+position: 30
+---
 
-## Widgets
+# Widgets
 
 Widgets define the data type and interface for entry fields. Netlify CMS comes with several built-in widgets, including:
 

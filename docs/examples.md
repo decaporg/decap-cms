@@ -1,3 +1,8 @@
+---
+title: Examples
+position: 110
+---
+
 # Examples
 
 Do you have a great example? Submit a pull request to this page.

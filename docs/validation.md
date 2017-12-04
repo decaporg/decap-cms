@@ -1,3 +1,8 @@
+---
+title: Validation
+position: 70
+---
+
 # Collection Field Validation
 
 ## Available validations to use on `config.yml`:

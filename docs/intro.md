@@ -1,3 +1,8 @@
+---
+title: Introduction
+position: 0
+---
+
 # Introduction
 
 Netlify CMS is a Content Management System for static sites, allowing collaborators to create, edit, review, and publish content without writing code or dealing with version control. It brings the ease of WordPress-style editing to the simplicity and speed of static sites.
@@ -100,4 +105,3 @@ Netlify CMS exposes a `window.CMS` global object that you can use to register cu
 * `registerWidget`: registers a custom widget.
 
 * `registerEditorComponent`: adds a block component to the Markdown editor.
-

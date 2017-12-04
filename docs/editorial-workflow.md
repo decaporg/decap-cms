@@ -1,3 +1,8 @@
+---
+title: Editorial Workflow
+position: 40
+---
+
 # Editorial Workflow
 
 ## Overview
