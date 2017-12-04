@@ -53,8 +53,13 @@
   }
 }
 
-.nc-controlPane-root p {
-  font-size: 16px;
+.nc-controlPane-root {
+  max-width: 800px;
+  margin: 0 auto;
+
+  & p {
+    font-size: 16px;
+  }
 }
 
 .nc-controlPane-label {
