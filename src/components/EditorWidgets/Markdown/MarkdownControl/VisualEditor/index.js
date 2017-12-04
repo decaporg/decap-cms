@@ -7,7 +7,6 @@ import { Editor as Slate } from 'slate-react';
 import { slateToMarkdown, markdownToSlate, htmlToSlate } from 'EditorWidgets/Markdown/serializers';
 import { getEditorComponents } from 'Lib/registry';
 import Toolbar from 'EditorWidgets/Markdown/MarkdownControl/Toolbar/Toolbar';
-import { Sticky } from 'UI';
 import { renderNode, renderMark } from './renderers';
 import { validateNode } from './validators';
 import plugins, { EditListConfigured } from './plugins';
@@ -190,11 +189,7 @@ export default class Editor extends Component {
 
     return (
       <div className="nc-visualEditor-wrapper">
-        <Sticky
-          className="nc-visualEditor-editorControlBar"
-          classNameActive="nc-visualEditor-editorControlBarSticky"
-          fillContainerWidth
-        >
+        <div className="nc-visualEditor-editorControlBar">
           <Toolbar
             onMarkClick={this.handleMarkClick}
             onBlockClick={this.handleBlockClick}
@@ -209,7 +204,7 @@ export default class Editor extends Component {
             getAsset={getAsset}
             hasActiveStyle={hasActiveStyle}
           />
-        </Sticky>
+        </div>
         <Slate
           className={`${className} nc-visualEditor-editor`}
           value={this.state.value}

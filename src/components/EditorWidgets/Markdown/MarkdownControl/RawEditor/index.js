@@ -4,7 +4,6 @@ import { Editor as Slate } from 'slate-react';
 import Plain from 'slate-plain-serializer';
 import { debounce } from 'lodash';
 import Toolbar from 'EditorWidgets/Markdown/MarkdownControl/Toolbar/Toolbar';
-import { Sticky } from 'UI';
 
 export default class RawEditor extends React.Component {
   constructor(props) {
@@ -56,11 +55,7 @@ export default class RawEditor extends React.Component {
 
     return (
       <div className="nc-rawEditor-rawWrapper">
-        <Sticky
-          className="nc-visualEditor-editorControlBar"
-          classNameActive="nc-visualEditor-editorControlBarSticky"
-          fillContainerWidth
-        >
+        <div className="nc-visualEditor-editorControlBar">
           <Toolbar
             onToggleMode={this.handleToggleMode}
             hasActiveStyle={hasActiveStyle}
@@ -68,7 +63,7 @@ export default class RawEditor extends React.Component {
             disabled
             rawMode
           />
-        </Sticky>
+        </div>
         <Slate
           className={`${className} nc-rawEditor-rawEditor`}
           value={this.state.value}
