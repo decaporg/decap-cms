@@ -1,4 +1,5 @@
 @import "./EditorInterface.css";
 @import "./EditorToggle.css";
 @import "./EditorControlPane/EditorControlPane.css";
+@import "./EditorControlPane/EditorControl.css";
 @import "./EditorPreviewPane/EditorPreviewPane.css";
