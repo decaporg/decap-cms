@@ -4,7 +4,7 @@
 }
 
 .nc-appHeader-main {
-  @apply(--dropShadow);
+  @apply(--dropShadowMain);
   position: fixed;
   width: 100%;
   top: 0;

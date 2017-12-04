@@ -15,5 +15,5 @@
 }
 
 .nc-collectionPage-topNewButton {
-  @apply(--button);
+  @apply(--buttonShadow);
 }
