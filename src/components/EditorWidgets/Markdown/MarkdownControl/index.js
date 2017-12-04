@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { StickyContainer } from 'UI/Sticky/Sticky';
 import { markdownToRemark, remarkToMarkdown } from 'EditorWidgets/Markdown/serializers'
 import RawEditor from './RawEditor';
 import VisualEditor from './VisualEditor';
@@ -84,6 +83,6 @@ export default class MarkdownControl extends React.Component {
         />
       </div>
     );
-    return <StickyContainer>{ mode === 'visual' ? visualEditor : rawEditor }</StickyContainer>;
+    return mode === 'visual' ? visualEditor : rawEditor;
   }
 }

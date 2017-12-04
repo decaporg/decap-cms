@@ -4,7 +4,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import SplitPane from 'react-split-pane';
 import classnames from 'classnames';
 import { ScrollSync, ScrollSyncPane } from './EditorScrollSync';
-import { StickyContext, Icon } from 'UI'
+import { Icon } from 'UI'
 import EditorControlPane from './EditorControlPane/EditorControlPane';
 import EditorPreviewPane from './EditorPreviewPane/EditorPreviewPane';
 import EditorToolbar from './EditorToolbar';
@@ -73,10 +73,7 @@ class EditorInterface extends Component {
     console.log(scrollSyncEnabled);
 
     const editor = (
-      <StickyContext
-        className={classnames('nc-entryEditor-controlPane', { 'nc-entryEditor-blocker': showEventBlocker })}
-        registerListener={fn => this.updateStickyContext = fn}
-      >
+      <div className={classnames('nc-entryEditor-controlPane', { 'nc-entryEditor-blocker': showEventBlocker })}>
         <EditorControlPane
           collection={collection}
           entry={entry}
@@ -92,7 +89,7 @@ class EditorInterface extends Component {
           onRemoveInsertedMedia={onRemoveInsertedMedia}
           ref={c => this.controlPaneRef = c} // eslint-disable-line
         />
-      </StickyContext>
+      </div>
     );
 
     const editorWithPreview = (
@@ -102,7 +99,6 @@ class EditorInterface extends Component {
             defaultSize="50%"
             onDragStarted={this.handleSplitPaneDragStart}
             onDragFinished={this.handleSplitPaneDragFinished}
-            onChange={this.updateStickyContext}
           >
             <ScrollSyncPane>{editor}</ScrollSyncPane>
             <div className={classnames('nc-entryEditor-previewPane', { 'nc-entryEditor-blocker': showEventBlocker })}>
