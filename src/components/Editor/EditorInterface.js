@@ -141,13 +141,15 @@ class EditorInterface extends Component {
           <div className="nc-entryEditor-viewControls">
             <EditorToggle
               enabled={collectionPreviewEnabled}
+              active={previewVisible}
               onClick={this.handleTogglePreview}
               icon="eye"
             />
             <EditorToggle
               enabled={collectionPreviewEnabled && previewVisible}
+              active={scrollSyncEnabled}
               onClick={this.handleToggleScrollSync}
-              icon="arrow"
+              icon="scroll"
             />
           </div>
           {
