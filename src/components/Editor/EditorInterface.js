@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import SplitPane from 'react-split-pane';
 import classnames from 'classnames';
-import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
+import { ScrollSync, ScrollSyncPane } from './EditorScrollSync';
 import { StickyContext, Icon } from 'UI'
 import EditorControlPane from './EditorControlPane/EditorControlPane';
 import EditorPreviewPane from './EditorPreviewPane/EditorPreviewPane';
