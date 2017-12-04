@@ -1,6 +1,5 @@
 .nc-toolbar-Toolbar {
   background-color: var(--textFieldBorderColor);
-  border-top-right-radius: var(--borderRadius);
   position: relative;
   display: flex;
   justify-content: space-between;
