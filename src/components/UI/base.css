@@ -45,6 +45,7 @@
   --colorForeground: var(--colorWhite);
   --colorActive: var(--colorBlue);
   --colorActiveBackground: var(--colorBlueLight);
+  --colorInactive: var(--colorGray);
   --colorButton: var(--colorGray);
   --colorButtonText: var(--colorWhite);
   --colorInputBackground: var(--colorWhite);

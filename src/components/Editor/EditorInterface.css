@@ -1,3 +1,11 @@
+/**
+ * React Split Pane
+ */
+.Resizer.vertical {
+  width: 17px;
+  cursor: col-resize;
+}
+
 .nc-entryEditor-containerOuter {
   width: 100%;
   height: 100%;
@@ -48,21 +56,6 @@
   top: -6px;
   right: -6px;
   z-index: 299;
-
-  & button {
-    @apply(--dropShadowMiddle);
-    background-color: #fff;
-    color: var(--colorActive);
-    border-radius: 32px;
-    display: block;
-    width: 40px;
-    height: 40px;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 6px;
-  }
 }
 
 .nc-entryEditor-blocker > * {
