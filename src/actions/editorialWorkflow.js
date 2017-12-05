@@ -8,7 +8,6 @@ import { selectFields } from 'Reducers/collections';
 import { status, EDITORIAL_WORKFLOW } from 'Constants/publishModes';
 import { EditorialWorkflowError } from "ValueObjects/errors";
 import { loadEntry } from './entries';
-import { closeEntry } from './editor';
 
 const { notifSend } = notifActions;
 

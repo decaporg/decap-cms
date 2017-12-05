@@ -33,7 +33,7 @@
 
 .nc-entryEditor-toolbar-backSection {
   border-right-width: 1px;
-  cursor: pointer;
+  font-weight: normal;
 }
 
 .nc-entryEditor-toolbar-metaSection {
