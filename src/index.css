@@ -3,16 +3,15 @@
  */
 @import "reboot.css/dist/reboot.css";
 @import "./components/UI/base.css";
-@import "./components/UI/Icon/Icon.css";
 
 /**
  * Components
  */
+@import "./components/UI/UI.css";
 @import "./components/App/App.css";
 @import "./components/Collection/Collection.css";
 @import "./components/Workflow/Workflow.css";
 @import "./components/Editor/Editor.css";
-@import "./components/UI/UI.css";
 @import "./components/MediaLibrary/MediaLibrary.css";
 @import "./components/EditorWidgets/EditorWidgets.css";
 

@@ -1,11 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import c from 'classnames';
 import { Wrapper, Button, Menu, MenuItem } from 'react-aria-menubutton';
 import { Icon } from 'UI';
 
 const Dropdown = ({
   label,
   button,
+  classNameButton = '',
   dropdownWidth = 'auto',
   dropdownPosition = 'left',
   children
@@ -20,7 +22,7 @@ const Dropdown = ({
       {
         button
           ? <Button>{button}</Button>
-          : <Button className="nc-dropdownButton">{label}</Button>
+          : <Button className={c('nc-dropdownButton', classNameButton)}>{label}</Button>
       }
       <Menu>
         <ul className="nc-dropdownList" style={style}>
