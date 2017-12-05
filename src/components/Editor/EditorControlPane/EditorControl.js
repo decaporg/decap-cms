@@ -51,16 +51,12 @@ export default class EditorControl extends React.Component {
           {field.get('label')}
         </label>
         <Widget
-          className={c({
-            'nc-controlPane-widget': true,
-            'nc-controlPane-widgetActive': this.state.styleActive,
-          })}
           classNameWrapper={c({
             'nc-controlPane-widget': true,
             'nc-controlPane-widgetActive': this.state.styleActive,
           })}
           classNameWidget="nc-controlPane-widget"
-          classNameWidgetActive="nc-controlPane-widgetActive"
+          classNameWidgetActive="nc-controlPane-widgetNestable"
           classNameLabel="nc-controlPane-label"
           classNameLabelActive="nc-controlPane-labelActive"
           controlComponent={widget.control}

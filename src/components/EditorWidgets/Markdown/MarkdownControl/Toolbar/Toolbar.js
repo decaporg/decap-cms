@@ -16,7 +16,6 @@ export default class Toolbar extends React.Component {
     onAddAsset: PropTypes.func,
     getAsset: PropTypes.func,
     disabled: PropTypes.bool,
-    hasActiveStyle: PropTypes.bool,
     className: PropTypes.string,
   };
 
@@ -42,7 +41,6 @@ export default class Toolbar extends React.Component {
       getAsset,
       disabled,
       onSubmit,
-      hasActiveStyle,
       className,
     } = this.props;
 
@@ -59,11 +57,7 @@ export default class Toolbar extends React.Component {
     const toggleOnLabelWidth = '70px';
 
     return (
-      <div className={c({
-        'nc-toolbar-Toolbar': true,
-        'nc-toolbar-ToolbarActive': hasActiveStyle,
-        [className]: true,
-      })}>
+      <div className={c(className, 'nc-toolbar-Toolbar')}>
         <div>
           <ToolbarButton
             type="bold"
