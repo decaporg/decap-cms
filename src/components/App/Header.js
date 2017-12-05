@@ -3,6 +3,7 @@ import React from "react";
 import ImmutablePropTypes from "react-immutable-proptypes";
 import { NavLink } from 'react-router-dom';
 import { Icon, Dropdown, DropdownItem } from 'UI';
+import { stripProtocol } from 'Lib/urlHelper';
 
 export default class Header extends React.Component {
 
@@ -11,6 +12,7 @@ export default class Header extends React.Component {
     collections: ImmutablePropTypes.orderedMap.isRequired,
     onCreateEntryClick: PropTypes.func.isRequired,
     onLogoutClick: PropTypes.func.isRequired,
+    displayUrl: PropTypes.string,
   };
 
   render() {
@@ -21,6 +23,7 @@ export default class Header extends React.Component {
       onLogoutClick,
       openMediaLibrary,
       hasWorkflow,
+      displayUrl,
     } = this.props;
 
     /**
@@ -79,9 +82,17 @@ export default class Header extends React.Component {
               <button className="nc-appHeader-button nc-appHeader-quickNew">
                 Quick new
               </button>
-              <a className="nc-appHeader-siteLink" href="http://olddvdscreensaver.com" target="_blank">
-                olddvdscreensaver.com
-              </a>
+              {
+                displayUrl
+                  ? <a
+                      className="nc-appHeader-siteLink"
+                      href={displayUrl}
+                      target="_blank"
+                    >
+                      {stripProtocol(displayUrl)}
+                    </a>
+                  : null
+              }
               <Dropdown
                 dropdownWidth="100px"
                 dropdownPosition="right"
