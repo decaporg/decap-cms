@@ -13,7 +13,6 @@ import {
   persistEntry,
   deleteEntry,
 } from 'Actions/entries';
-import { closeEntry } from 'Actions/editor';
 import { deserializeValues } from 'Lib/serializeEntryValues';
 import { addAsset } from 'Actions/media';
 import { openMediaLibrary, removeInsertedMedia } from 'Actions/mediaLibrary';
@@ -111,27 +110,22 @@ class Editor extends React.Component {
     if (entry) this.props.createDraftFromEntry(entry);
   };
 
-  handleCloseEntry = () => {
-    return this.props.closeEntry();
-  };
-
   handlePersistEntry = () => {
     const { persistEntry, collection } = this.props;
-    setTimeout(() => {
-      persistEntry(collection).then(() => this.handleCloseEntry());
-    }, 0);
+    persistEntry(collection);
   };
 
   handleDeleteEntry = () => {
     if (!window.confirm('Are you sure you want to delete this entry?')) { return; }
     if (this.props.newEntry) {
-      return this.handleCloseEntry();
+      return history.push(`/collections/${collectionName}`);
     }
 
     const { deleteEntry, entry, collection } = this.props;
     const slug = entry.get('slug');
-    setTimeout(() => {
-      deleteEntry(collection, slug).then(() => this.handleCloseEntry());
+    setTimeout(async () => {
+      await deleteEntry(collection, slug);
+      history.push(`/collections/${collectionName}`);
     }, 0);
   }
 
@@ -147,7 +141,6 @@ class Editor extends React.Component {
       changeDraftFieldValidation,
       openMediaLibrary,
       addAsset,
-      closeEntry,
       removeInsertedMedia,
       user,
       hasChanged,
@@ -180,7 +173,6 @@ class Editor extends React.Component {
         onDelete={this.handleDeleteEntry}
         showDelete={this.props.showDelete}
         enableSave={entryDraft.get('hasChanged')}
-        onCancelEdit={this.handleCloseEntry}
         user={user}
         hasChanged={hasChanged}
         displayUrl={displayUrl}
@@ -231,6 +223,5 @@ export default connect(
     discardDraft,
     persistEntry,
     deleteEntry,
-    closeEntry,
   }
 )(withWorkflow(Editor));
