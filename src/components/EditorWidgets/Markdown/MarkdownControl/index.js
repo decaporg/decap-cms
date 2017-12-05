@@ -23,19 +23,6 @@ export default class MarkdownControl extends React.Component {
     this.state = { mode: localStorage.getItem(MODE_STORAGE_KEY) || 'visual' };
   }
 
-  componentDidMount() {
-    this.ref.addEventListener('focus', this.handleFocus, true);
-    this.ref.addEventListener('blur', this.handleBlur, true);
-  }
-
-  componentWillUnmount() {
-    this.ref.removeEventListener('focus', this.handleFocus, true);
-    this.ref.removeEventListener('blur', this.handleBlur, true);
-  }
-
-  handleFocus = event => this.props.setActiveStyle();
-  handleBlur = event => this.props.setInactiveStyle();
-
   handleMode = (mode) => {
     this.setState({ mode });
     localStorage.setItem(MODE_STORAGE_KEY, mode);
