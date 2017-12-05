@@ -19,7 +19,6 @@ export default class Editor extends Component {
     onChange: PropTypes.func.isRequired,
     onMode: PropTypes.func.isRequired,
     className: PropTypes.string.isRequired,
-    hasActiveStyle: PropTypes.bool,
     value: PropTypes.string,
   };
 
@@ -39,8 +38,7 @@ export default class Editor extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return !this.state.value.equals(nextState.value)
-      || this.props.hasActiveStyle !== nextProps.hasActiveStyle;
+    return !this.state.value.equals(nextState.value);
   }
 
   handlePaste = (e, data, change) => {
@@ -185,7 +183,7 @@ export default class Editor extends Component {
   }
 
   render() {
-    const { onAddAsset, getAsset, className, hasActiveStyle } = this.props;
+    const { onAddAsset, getAsset, className } = this.props;
 
     return (
       <div className="nc-visualEditor-wrapper">
@@ -202,7 +200,6 @@ export default class Editor extends Component {
             onSubmit={this.handlePluginAdd}
             onAddAsset={onAddAsset}
             getAsset={getAsset}
-            hasActiveStyle={hasActiveStyle}
           />
         </div>
         <Slate

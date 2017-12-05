@@ -77,29 +77,6 @@
   &.nc-controlPane-widgetActive {
     border-color: var(--colorActive);
   }
-
-  & .nc-controlPane-label {
-    background: none;
-
-    &:before,
-    &:after {
-      content: none;
-    }
-
-    &.nc-controlPane-labelActive {
-      color: var(--colorActive);
-    }
-  }
-
-  & .nc-controlPane-widget {
-    border: 0;
-    border-radius: 0;
-    border-left: 2px solid var(--textFieldBorderColor);
-
-    &.nc-controlPane-widgetActive {
-      border-left-color: var(--colorActive);
-    }
-  }
 }
 
 select.nc-controlPane-widget {

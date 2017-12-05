@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import c from 'classnames';
 import { markdownToRemark, remarkToMarkdown } from 'EditorWidgets/Markdown/serializers'
 import RawEditor from './RawEditor';
 import VisualEditor from './VisualEditor';
@@ -11,10 +12,7 @@ export default class MarkdownControl extends React.Component {
     onChange: PropTypes.func.isRequired,
     onAddAsset: PropTypes.func.isRequired,
     getAsset: PropTypes.func.isRequired,
-    className: PropTypes.string.isRequired,
-    setActiveStyle: PropTypes.func.isRequired,
-    setInactiveStyle: PropTypes.func.isRequired,
-    hasActiveStyle: PropTypes.bool,
+    classNameWrapper: PropTypes.string.isRequired,
     value: PropTypes.string,
   };
 
@@ -31,16 +29,12 @@ export default class MarkdownControl extends React.Component {
   processRef = ref => this.ref = ref;
 
   render() {
-    console.log(this.props.hasActiveStyle);
     const {
       onChange,
       onAddAsset,
       getAsset,
       value,
       classNameWrapper,
-      setActiveStyle,
-      setInactiveStyle,
-      hasActiveStyle,
     } = this.props;
 
     const { mode } = this.state;
@@ -52,7 +46,6 @@ export default class MarkdownControl extends React.Component {
           onMode={this.handleMode}
           getAsset={getAsset}
           className={classNameWrapper}
-          hasActiveStyle={hasActiveStyle}
           value={value}
         />
       </div>
@@ -65,7 +58,6 @@ export default class MarkdownControl extends React.Component {
           onMode={this.handleMode}
           getAsset={getAsset}
           className={classNameWrapper}
-          hasActiveStyle={hasActiveStyle}
           value={value}
         />
       </div>
