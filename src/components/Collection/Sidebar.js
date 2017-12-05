@@ -38,7 +38,7 @@ export default class Collection extends React.Component {
         <div className="nc-collectionPage-sidebar">
           <h1 className="nc-collectionPage-sidebarHeading">Collections</h1>
           <div className="nc-collectionPage-sidebarSearch">
-            <Icon type="home"/>
+            <Icon type="search" size="small"/>
             <input
               onChange={e => this.setState({ query: e.target.value })}
               onKeyDown={e => e.key === 'Enter' && searchCollections(query)}
