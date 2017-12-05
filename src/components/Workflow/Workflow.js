@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { OrderedMap } from 'immutable';
 import { connect } from 'react-redux';
+import { createNewEntry } from 'Actions/collections';
 import {
   loadUnpublishedEntries,
   updateUnpublishedEntryStatus,
@@ -11,7 +12,7 @@ import {
 } from 'Actions/editorialWorkflow';
 import { selectUnpublishedEntriesByStatus } from 'Reducers';
 import { EDITORIAL_WORKFLOW, status } from 'Constants/publishModes';
-import { Loader } from 'UI';
+import { Loader, Dropdown, DropdownItem } from 'UI';
 import WorkflowList from './WorkflowList';
 
 class Workflow extends Component {
@@ -34,17 +35,49 @@ class Workflow extends Component {
   }
 
   render() {
-    const { isEditorialWorkflow, isFetching, unpublishedEntries, updateUnpublishedEntryStatus, publishUnpublishedEntry, deleteUnpublishedEntry } = this.props;
+    const {
+      isEditorialWorkflow,
+      isFetching,
+      unpublishedEntries,
+      updateUnpublishedEntryStatus,
+      publishUnpublishedEntry,
+      deleteUnpublishedEntry,
+      collections,
+    } = this.props;
+
     if (!isEditorialWorkflow) return null;
     if (isFetching) return <Loader active>Loading Editorial Workflow Entries</Loader>;
+    const reviewCount = unpublishedEntries.get('pending_review').size;
+    const readyCount = unpublishedEntries.get('pending_publish').size;
 
     return (
-      <WorkflowList
-        entries={unpublishedEntries}
-        handleChangeStatus={updateUnpublishedEntryStatus}
-        handlePublish={publishUnpublishedEntry}
-        handleDelete={deleteUnpublishedEntry}
-      />
+      <div className="nc-workflow">
+        <div className="nc-workflow-top">
+          <div className="nc-workflow-top-row">
+            <h1 className="nc-workflow-top-heading">Editorial Workflow</h1>
+            <Dropdown label="New Post" dropdownWidth="160px" dropdownPosition="left">
+              {
+                collections.filter(collection => collection.get('create')).toList().map(collection =>
+                  <DropdownItem
+                    key={collection.get("name")}
+                    label={collection.get("label")}
+                    onClick={() => createNewEntry(collection.get('name'))}
+                  />
+                )
+              }
+            </Dropdown>
+          </div>
+          <p className="nc-workflow-top-description">
+            {reviewCount} entries waiting for review, {readyCount} ready to go live.
+          </p>
+        </div>
+        <WorkflowList
+          entries={unpublishedEntries}
+          handleChangeStatus={updateUnpublishedEntryStatus}
+          handlePublish={publishUnpublishedEntry}
+          handleDelete={deleteUnpublishedEntry}
+        />
+      </div>
     );
   }
 }

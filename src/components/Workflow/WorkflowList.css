@@ -1,18 +1,76 @@
 .nc-workflow-list-container {
   display: flex;
-  justify-content: space-between;
+  width: 1085px;
+  min-height: 60%;
 }
 
 .nc-workflow-list {
   flex: 1 33%;
-  margin: -10px;
-  margin-top: 24px;
-  padding: 10px;
-  max-width: 33%;
+  margin: 0 20px;
   transition: background-color .5s ease;
+  border: 2px dashed transparent;
+  border-radius: 4px;
+  position: relative;
+
+  &:first-child {
+    margin-left: 0;
+
+  }
+
+  &:last-child {
+    margin-right: 0;
+  }
+
+  &:not(:first-child):not(:last-child) {
+    &:before,
+    &:after {
+      content: '';
+      display: block;
+      position: absolute;
+      width: 2px;
+      height: 100%;
+      top: 70px;
+      background-color: var(--textFieldBorderColor);
+    }
+
+    &:before {
+      left: -23px;
+    }
+
+    &:after {
+      right: -23px;
+    }
+  }
 }
 
 .nc-workflow-list-hovered {
-  border: 2px dashed var(--colorActive);
-  border-radius: 4px;
+  border-color: var(--colorActive);
+}
+
+.nc-workflow-header {
+  font-size: 20px;
+  font-weight: normal;
+  padding: 4px 14px;
+  border-radius: var(--borderRadius);
+}
+
+.nc-workflow-listDraft {
+  & .nc-workflow-header {
+    background-color: var(--colorStatusDraftBackground);
+    color: var(--colorStatusDraftText);
+  }
+}
+
+.nc-workflow-listReview {
+  & .nc-workflow-header {
+    background-color: var(--colorStatusReviewBackground);
+    color: var(--colorStatusReviewText);
+  }
+}
+
+.nc-workflow-listReady {
+  & .nc-workflow-header {
+    background-color: var(--colorStatusReadyBackground);
+    color: var(--colorStatusReadyText);
+  }
 }

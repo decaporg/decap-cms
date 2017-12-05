@@ -1,9 +1,9 @@
 @import "./Sidebar.css";
-@import "./Top.css";
+@import "./CollectionTop.css";
 @import "./Entries/Entries.css";
 
 .nc-collectionPage-container {
-  margin: 84px 18px;
+  margin: var(--pageMargin);
 }
 
 .nc-collectionPage-main {

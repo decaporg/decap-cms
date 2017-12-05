@@ -1,5 +1,6 @@
 .nc-workflow-card {
   @apply(--card);
+  display: block;
   padding: 14px;
   cursor: move;
 

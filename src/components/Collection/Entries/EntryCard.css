@@ -41,7 +41,7 @@
 
 .nc-entryListing-listCard {
   @apply(--card);
-  width: 682px;
+  width: var(--topCardWidth);
   max-width: 100%;
   padding: 16px 22px;
   margin-left: 12px;

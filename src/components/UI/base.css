@@ -37,6 +37,15 @@
   --colorYellow: #ffee9c;
   --colorRed: #ff003b;
   --colorRedLight: #fcefea;
+  --colorPurple: #70399f;
+  --colorPurpleLight: #f6d8ff;
+
+  --colorStatusDraftText: var(--colorPurple);
+  --colorStatusDraftBackground: var(--colorPurpleLight);
+  --colorStatusReviewText: var(--colorBrown);
+  --colorStatusReviewBackground: var(--colorYellow);
+  --colorStatusReadyText: var(--colorGreen);
+  --colorStatusReadyBackground: var(--colorGreenLight);
 
   --colorText: var(--colorGray);
   --colorTextLight: var(--colorWhite);
@@ -70,6 +79,8 @@
   --richTextEditorMinHeight: 300px;
   --borderWidth: 2px;
   --textFieldBorder: solid var(--borderWidth) var(--textFieldBorderColor);
+  --topCardWidth: 682px;
+  --pageMargin: 84px 18px;
 
   --dropShadow: {
     box-shadow: 0 2px 4px 0 rgba(19, 39, 48, .12);
@@ -134,6 +145,27 @@
     width: 2.28571429rem;
     height: 2.28571429rem;
   }
+
+  --cardTop: {
+    @apply(--card);
+    width: var(--topCardWidth);
+    max-width: 100%;
+    padding: 16px 20px;
+    margin-bottom: 28px;
+  }
+
+  --cardTopHeading: {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 12px 0 0;
+  }
+
+  --cardTopDescription: {
+    max-width: 480px;
+    color: var(--colorText);
+    font-size: 14px;
+    margin-top: 8px;
+  }
 }
 
 *, *:before, *:after {
@@ -145,6 +177,7 @@ body {
   font-weight: normal;
   background-color: var(--colorBackground);
   color: var(--colorText);
+  margin: 0;
 }
 
 ul, ol {
@@ -156,6 +189,7 @@ h1, h2, h3, h4, h5, h6, p {
   color: var(--colorTextLead);
   font-size: 15px;
   line-height: 1.5;
+  margin-top: 0;
 }
 
 h1, h2, h3, h4, h5, h6 {

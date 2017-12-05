@@ -159,7 +159,6 @@
     "react-topbar-progress-indicator": "^2.0.0",
     "react-transition-group": "^2.2.1",
     "react-waypoint": "^7.1.0",
-    "reboot.css": "^1.0.0",
     "redux": "^3.3.1",
     "redux-notifications": "^4.0.1",
     "redux-optimist": "^0.0.2",
