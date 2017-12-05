@@ -6,7 +6,6 @@
 }
 
 .nc-gitGatewayAuthenticationPage-card {
-  @apply(--input);
   width: 350px;
   padding: 10px;
 }

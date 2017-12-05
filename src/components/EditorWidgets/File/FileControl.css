@@ -3,6 +3,5 @@
 }
 
 .nc-fileControl-imageUpload {
-  @apply(--input);
   cursor: pointer;
 }
