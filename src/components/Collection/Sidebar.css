@@ -22,8 +22,6 @@
   position: relative;
 
   & .nc-icon {
-    width: 18px;
-    height: 18px;
     position: absolute;
     left: 6px;
   }
