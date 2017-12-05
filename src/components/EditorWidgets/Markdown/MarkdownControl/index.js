@@ -7,17 +7,23 @@ import VisualEditor from './VisualEditor';
 
 const MODE_STORAGE_KEY = 'cms.md-mode';
 
+let editorControl;
+
+export const getEditorControl = () => editorControl;
+
 export default class MarkdownControl extends React.Component {
   static propTypes = {
     onChange: PropTypes.func.isRequired,
     onAddAsset: PropTypes.func.isRequired,
     getAsset: PropTypes.func.isRequired,
     classNameWrapper: PropTypes.string.isRequired,
+    editorControl: PropTypes.node.isRequired,
     value: PropTypes.string,
   };
 
   constructor(props) {
     super(props);
+    editorControl = props.editorControl;
     this.state = { mode: localStorage.getItem(MODE_STORAGE_KEY) || 'visual' };
   }
 

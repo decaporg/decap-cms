@@ -1,29 +1,18 @@
-:root {
-  --shortcodeInput: {
-    border-radius: 0 var(--borderRadius) var(--borderRadius) 0;
-    background-color: rgba(255, 255, 255, 0.8);
-  }
-}
-
 .nc-visualEditor-shortcode {
-  background-color: var(--colorActiveBackground);
   border-radius: var(--borderRadius);
-  border: 0;
+  border: 2px solid var(--textFieldBorderColor);
   margin: 12px 0;
   padding: 14px;
-
-  & input,
-  & textarea,
-  & select {
-    @apply(--shortcodeInput);
-  }
 }
 
 .nc-visualEditor-shortcode-topBar {
+  background-color: var(--textFieldBorderColor);
   margin: -var(--widgetNestDistance) -var(--widgetNestDistance) 0;
+  border-radius: 0;
 }
 
 .nc-visualEditor-shortcode-collapsed {
+  background-color: var(--textFieldBorderColor);
   cursor: pointer;
 }
 
