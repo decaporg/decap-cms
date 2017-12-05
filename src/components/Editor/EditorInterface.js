@@ -65,6 +65,7 @@ class EditorInterface extends Component {
       onCancelEdit,
       user,
       hasChanged,
+      displayUrl,
     } = this.props;
 
     const { previewVisible, scrollSyncEnabled, showEventBlocker } = this.state;
@@ -133,6 +134,7 @@ class EditorInterface extends Component {
           enableSave={enableSave}
           user={user}
           hasChanged={hasChanged}
+          displayUrl={displayUrl}
         />
         <div className="nc-entryEditor-container">
           <div className="nc-entryEditor-viewControls">
@@ -180,6 +182,7 @@ EditorInterface.propTypes = {
   onCancelEdit: PropTypes.func.isRequired,
   user: ImmutablePropTypes.map,
   hasChanged: PropTypes.bool,
+  displayUrl: PropTypes.string,
 };
 
 export default EditorInterface;

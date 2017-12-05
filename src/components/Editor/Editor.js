@@ -46,6 +46,7 @@ class Editor extends React.Component {
     fields: ImmutablePropTypes.list.isRequired,
     slug: PropTypes.string,
     newEntry: PropTypes.bool.isRequired,
+    displayUrl: PropTypes.string,
   };
 
   componentDidMount() {
@@ -150,6 +151,7 @@ class Editor extends React.Component {
       removeInsertedMedia,
       user,
       hasChanged,
+      displayUrl,
     } = this.props;
 
     if (entry && entry.get('error')) {
@@ -181,13 +183,14 @@ class Editor extends React.Component {
         onCancelEdit={this.handleCloseEntry}
         user={user}
         hasChanged={hasChanged}
+        displayUrl={displayUrl}
       />
     );
   }
 }
 
 function mapStateToProps(state, ownProps) {
-  const { collections, entryDraft, mediaLibrary, auth } = state;
+  const { collections, entryDraft, mediaLibrary, auth, config } = state;
   const slug = ownProps.match.params.slug;
   const collection = collections.get(ownProps.match.params.name);
   const newEntry = ownProps.newRecord === true;
@@ -197,6 +200,7 @@ function mapStateToProps(state, ownProps) {
   const mediaPaths = mediaLibrary.get('controlMedia');
   const user = auth && auth.get('user');
   const hasChanged = entryDraft.get('hasChanged');
+  const displayUrl = config.get('display_url');
   return {
     collection,
     collections,
@@ -209,6 +213,7 @@ function mapStateToProps(state, ownProps) {
     entry,
     user,
     hasChanged,
+    displayUrl,
   };
 }
 

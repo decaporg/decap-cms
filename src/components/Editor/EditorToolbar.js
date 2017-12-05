@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Icon, Dropdown, DropdownItem } from 'UI';
+import { stripProtocol } from 'Lib/urlHelper';
 
 const EditorToolbar = (
   {
@@ -13,6 +14,7 @@ const EditorToolbar = (
     onCancelEdit,
     user,
     hasChanged,
+    displayUrl,
   }) => {
   const disabled = !enableSave || isPersisting;
   const avatarUrl = user.get('avatar_url');
@@ -41,9 +43,13 @@ const EditorToolbar = (
         </Dropdown>
       </div>
       <div className="nc-entryEditor-toolbar-metaSection">
-        <a className="nc-appHeader-siteLink" href="http://olddvdscreensaver.com" target="_blank">
-          olddvdscreensaver.com
-        </a>
+        {
+          displayUrl
+            ? <a className="nc-appHeader-siteLink" href={displayUrl} target="_blank">
+                {stripProtocol(displayUrl)}
+              </a>
+            : null
+        }
         <button className="nc-appHeader-avatar">
           {
             avatarUrl
@@ -65,6 +71,7 @@ EditorToolbar.propTypes = {
   onCancelEdit: PropTypes.func.isRequired,
   user: ImmutablePropTypes.map,
   hasChanged: PropTypes.bool,
+  displayUrl: PropTypes.string,
 };
 
 export default EditorToolbar;

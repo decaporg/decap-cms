@@ -3,6 +3,7 @@ backend:
   repo: netlify/netlify-cms
   branch: test-backend
 
+display_url: https://example.com
 media_folder: "assets/uploads"
 publish_mode: editorial_workflow
 
