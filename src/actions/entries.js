@@ -1,7 +1,6 @@
 import { List } from 'immutable';
 import { actions as notifActions } from 'redux-notifications';
 import { serializeValues } from 'Lib/serializeEntryValues';
-import { closeEntry } from './editor';
 import { currentBackend } from 'Backends/backend';
 import { getIntegrationProvider } from 'Integrations';
 import { getAsset, selectIntegration } from 'Reducers';
