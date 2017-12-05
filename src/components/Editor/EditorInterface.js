@@ -96,6 +96,7 @@ class EditorInterface extends Component {
       <ScrollSync enabled={this.state.scrollSyncEnabled}>
         <div>
           <SplitPane
+            maxSize={-100}
             defaultSize="50%"
             onDragStarted={this.handleSplitPaneDragStart}
             onDragFinished={this.handleSplitPaneDragFinished}
