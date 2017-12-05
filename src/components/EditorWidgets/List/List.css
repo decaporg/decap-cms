@@ -17,7 +17,6 @@
   margin: 0 -14px;
   background-color: var(--textFieldBorderColor);
   padding: 13px;
-  border-top-left-radius: var(--borderRadius);
 }
 
 .nc-listControl-addButton {
@@ -61,18 +60,14 @@
 
 .nc-listControl-objectLabel {
   display: none;
+  border-top: 0;
+  background-color: var(--textFieldBorderColor);
+  padding: 13px;
+  border-radius: 0 0 var(--borderRadius) var(--borderRadius);
 }
 
 .nc-listControl-objectControl {
-  padding-top: 6px;
-
-  & .nc-controlPane-control {
-    margin-top: 0;
-  }
-}
-
-.nc-listControl-objectLabel,
-.nc-listControl-objectControl {
+  padding: 6px 14px 14px;
   border-top: 0;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
@@ -84,12 +79,5 @@
   }
   & .nc-listControl-objectControl {
     display: none;
-  }
-}
-
-.nc-controlPane-control-list:focus-within {
-  & > .nc-controlPane-label {
-    background-color: var(--textFieldBorderColor);
-    color: var(--controlLabelColor);
   }
 }
