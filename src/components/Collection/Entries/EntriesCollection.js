@@ -14,6 +14,7 @@ class EntriesCollection extends React.Component {
     page: PropTypes.number,
     entries: ImmutablePropTypes.list,
     isFetching: PropTypes.bool.isRequired,
+    viewStyle: PropTypes.string,
   };
 
   componentDidMount() {
@@ -31,7 +32,7 @@ class EntriesCollection extends React.Component {
   }
 
   render () {
-    const { dispatch, collection, entries, publicFolder, page, isFetching } = this.props;
+    const { dispatch, collection, entries, publicFolder, page, isFetching, viewStyle } = this.props;
 
     return (
       <Entries
@@ -42,13 +43,14 @@ class EntriesCollection extends React.Component {
         onPaginate={() => dispatch(loadEntries(collection, page))}
         isFetching={isFetching}
         collectionName={collection.get('label')}
+        viewStyle={viewStyle}
       />
     );
   }
 }
 
 function mapStateToProps(state, ownProps) {
-  const { name, collection } = ownProps;
+  const { name, collection, viewStyle } = ownProps;
   const { config } = state;
   const publicFolder = config.get('public_folder');
   const page = state.entries.getIn(['pages', collection.get('name'), 'page']);
@@ -56,7 +58,7 @@ function mapStateToProps(state, ownProps) {
   const entries = selectEntries(state, collection.get('name'));
   const isFetching = state.entries.getIn(['pages', collection.get('name'), 'isFetching'], false);
 
-  return { publicFolder, collection, page, entries, isFetching };
+  return { publicFolder, collection, page, entries, isFetching, viewStyle };
 }
 
 export default connect(mapStateToProps)(EntriesCollection);

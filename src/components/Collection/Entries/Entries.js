@@ -4,7 +4,15 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Loader } from 'UI';
 import EntryListing from './EntryListing';
 
-const Entries = ({ collections, entries, publicFolder, page, onPaginate, isFetching }) => {
+const Entries = ({
+  collections,
+  entries,
+  publicFolder,
+  page,
+  onPaginate,
+  isFetching,
+  viewStyle
+}) => {
   const loadingMessages = [
     'Loading Entries',
     'Caching Entries',
@@ -12,7 +20,16 @@ const Entries = ({ collections, entries, publicFolder, page, onPaginate, isFetch
   ];
 
   if (entries) {
-    return <EntryListing {...{ collections, entries, publicFolder, page, onPaginate }}/>
+    return (
+      <EntryListing
+        collections={collections}
+        entries={entries}
+        publicFolder={publicFolder}
+        page={page}
+        onPaginate={onPaginate}
+        viewStyle={viewStyle}
+      />
+    );
   }
 
   if (isFetching) {
@@ -28,6 +45,7 @@ Entries.propTypes = {
   publicFolder: PropTypes.string.isRequired,
   page: PropTypes.number,
   isFetching: PropTypes.bool,
+  viewStyle: PropTypes.string,
 };
 
 export default Entries;

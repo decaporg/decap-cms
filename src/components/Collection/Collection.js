@@ -6,6 +6,7 @@ import Sidebar from './Sidebar';
 import Top from './Top';
 import EntriesCollection from './Entries/EntriesCollection';
 import EntriesSearch from './Entries/EntriesSearch';
+import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from 'Constants/collectionViews';
 
 class Collection extends React.Component {
   static propTypes = {
@@ -13,15 +14,25 @@ class Collection extends React.Component {
     collections: ImmutablePropTypes.orderedMap.isRequired,
   };
 
+  state = {
+    viewStyle: VIEW_STYLE_LIST,
+  };
+
   renderEntriesCollection = () => {
     const { name, collection } = this.props;
-    return <EntriesCollection collection={collection} name={name} />
+    return <EntriesCollection collection={collection} name={name} viewStyle={this.state.viewStyle}/>
   };
 
   renderEntriesSearch = () => {
     const { searchTerm, collections } = this.props;
     return <EntriesSearch collections={collections} searchTerm={searchTerm} />
   };
+
+  handleChangeViewStyle = (viewStyle) => {
+    if (this.state.viewStyle !== viewStyle) {
+      this.setState({ viewStyle });
+    }
+  }
 
   render() {
     const { collection, collections, collectionName, isSearchResults, searchTerm } = this.props;
@@ -37,6 +48,8 @@ class Collection extends React.Component {
                   collectionLabel={collection.get('label')}
                   collectionDescription={collection.get('description')}
                   newEntryUrl={newEntryUrl}
+                  viewStyle={this.state.viewStyle}
+                  onChangeViewStyle={this.handleChangeViewStyle}
                 />
           }
           { isSearchResults ? this.renderEntriesSearch() : this.renderEntriesCollection() }

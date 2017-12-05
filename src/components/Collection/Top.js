@@ -1,7 +1,16 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import c from 'classnames';
+import { Icon } from 'UI';
+import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from 'Constants/collectionViews';
 
-const Top = ({ collectionLabel, collectionDescription, newEntryUrl }) => {
+const Top = ({
+  collectionLabel,
+  collectionDescription,
+  viewStyle,
+  onChangeViewStyle,
+  newEntryUrl,
+}) => {
   const newEntryLink = (
     <a className="nc-collectionPage-topNewButton" href={newEntryUrl}>{`New ${collectionLabel}`}</a>
   );
@@ -17,6 +26,27 @@ const Top = ({ collectionLabel, collectionDescription, newEntryUrl }) => {
           ? <p className="nc-collectionPage-top-description">{collectionDescription}</p>
           : null
       }
+      <div className={c('nc-collectionPage-top-viewControls', {
+        'nc-collectionPage-top-viewControls-noDescription': !collectionDescription,
+      })}>
+        <span className="nc-collectionPage-top-viewControls-text">View as:</span>
+        <button
+          className={c('nc-collectionPage-top-viewControls-button', {
+            'nc-collectionPage-top-viewControls-buttonActive': viewStyle === VIEW_STYLE_LIST,
+          })}
+          onClick={() => onChangeViewStyle(VIEW_STYLE_LIST)}
+        >
+          <Icon type="list"/>
+        </button>
+        <button
+          className={c('nc-collectionPage-top-viewControls-button', {
+            'nc-collectionPage-top-viewControls-buttonActive': viewStyle === VIEW_STYLE_GRID,
+          })}
+          onClick={() => onChangeViewStyle(VIEW_STYLE_GRID)}
+        >
+          <Icon type="grid"/>
+        </button>
+      </div>
     </div>
   );
 };
