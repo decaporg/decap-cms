@@ -1,0 +1,42 @@
+.widgets {
+    margin: 2rem 0;
+}
+
+.widgets__cloud {
+    margin: $micro -$micro;
+}
+
+.widgets__item {
+    color: $darkGreen;
+    border: 2px solid $darkGreen;
+    border-radius: $borderRadius;
+    padding: calc($micro /2) $micro;
+    margin: $micro;
+    cursor: pointer;
+    transition: color .2s ease, background .2s ease;
+}
+
+.widgets__item:hover {
+    background: $darkGreen;
+    color: white;
+}
+
+.widgets__item_active {
+    background: $darkGreen;
+    color: white;
+}
+
+.widgets__container {
+    background: $lightGrey;
+    padding: .5em 1em;
+    margin: 1.5em 0;
+    transition: height .2s ease
+}
+
+.widget {
+    display: none;
+}
+
+.widget_open {
+    display: block;
+}
