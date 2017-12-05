@@ -33,7 +33,11 @@ class Collection extends React.Component {
           {
             isSearchResults
               ? null
-              : <Top collectionLabel={collection.get('label')} newEntryUrl={newEntryUrl}/>
+              : <Top
+                  collectionLabel={collection.get('label')}
+                  collectionDescription={collection.get('description')}
+                  newEntryUrl={newEntryUrl}
+                />
           }
           { isSearchResults ? this.renderEntriesSearch() : this.renderEntriesCollection() }
         </div>
