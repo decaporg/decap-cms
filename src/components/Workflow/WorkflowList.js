@@ -3,13 +3,29 @@ import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import moment from 'moment';
 import { capitalize } from 'lodash'
-import classnames from 'classnames';
+import c from 'classnames';
 import { status, statusDescriptions } from 'Constants/publishModes';
 import { DragSource, DropTarget, HTML5DragDrop } from 'UI'
 import WorkflowCard from './WorkflowCard';
 
 // This is a namespace so that we can only drop these elements on a DropTarget with the same
 const DNDNamespace = 'cms-workflow';
+
+const getColumnClassName = columnName => {
+  switch (columnName) {
+    case 'draft': return 'nc-workflow-listDraft';
+    case 'pending_review': return 'nc-workflow-listReview';
+    case 'pending_publish': return 'nc-workflow-listReady';
+  }
+}
+
+const getColumnHeaderText = columnName => {
+  switch (columnName) {
+    case 'draft': return 'Drafts';
+    case 'pending_review': return 'In Review';
+    case 'pending_publish': return 'Ready';
+  }
+}
 
 class WorkflowList extends React.Component {
   static propTypes = {
@@ -46,18 +62,16 @@ class WorkflowList extends React.Component {
         <DropTarget
           namespace={DNDNamespace}
           key={currColumn}
-          /* eslint-disable */
           onDrop={this.handleChangeStatus.bind(this, currColumn)}
-          /* eslint-enable */
         >
           {(connect, { isHovered }) => connect(
-            <div className={classnames(
-              'nc-workflow-list',
-              { 'nc-workflow-list-hovered' : isHovered },
-            )}>
-              <h2 className="nc-workflow-list-heading">
-                {statusDescriptions.get(currColumn)}
+            <div className={c('nc-workflow-list', getColumnClassName(currColumn), {
+              'nc-workflow-list-hovered': isHovered,
+            })}>
+              <h2 className="nc-workflow-header">
+                {getColumnHeaderText(currColumn)}
               </h2>
+              <p>{currEntries.size} {currEntries.size === 1 ? 'entry' : 'entries'} </p>
               {this.renderColumns(currEntries, currColumn)}
             </div>
           )}
@@ -111,11 +125,8 @@ class WorkflowList extends React.Component {
   render() {
     const columns = this.renderColumns(this.props.entries);
     return (
-      <div>
-        <h5>Editorial Workflow</h5>
-        <div className="nc-workflow-list-container">
-          {columns}
-        </div>
+      <div className="nc-workflow-list-container">
+        {columns}
       </div>
     );
   }

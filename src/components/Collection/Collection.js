@@ -3,7 +3,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 import { getNewEntryUrl } from 'Lib/urlHelper';
 import Sidebar from './Sidebar';
-import Top from './Top';
+import CollectionTop from './CollectionTop';
 import EntriesCollection from './Entries/EntriesCollection';
 import EntriesSearch from './Entries/EntriesSearch';
 import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from 'Constants/collectionViews';
@@ -44,7 +44,7 @@ class Collection extends React.Component {
           {
             isSearchResults
               ? null
-              : <Top
+              : <CollectionTop
                   collectionLabel={collection.get('label')}
                   collectionDescription={collection.get('description')}
                   newEntryUrl={newEntryUrl}

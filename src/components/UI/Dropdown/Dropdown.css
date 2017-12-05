@@ -39,7 +39,6 @@
 .nc-dropdownButton {
   @apply --button;
   display: block;
-  background-color: #17a2b8;
   padding-left: 20px;
   padding-right: 40px;
 

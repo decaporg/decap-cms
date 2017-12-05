@@ -4,7 +4,7 @@ import c from 'classnames';
 import { Icon } from 'UI';
 import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from 'Constants/collectionViews';
 
-const Top = ({
+const CollectionTop = ({
   collectionLabel,
   collectionDescription,
   viewStyle,
@@ -51,10 +51,10 @@ const Top = ({
   );
 };
 
-Top.propTypes = {
+CollectionTop.propTypes = {
   collectionLabel: PropTypes.string.isRequired,
   collectionDescription: PropTypes.string,
   newEntryUrl: PropTypes.string
 };
 
-export default Top;
+export default CollectionTop;
