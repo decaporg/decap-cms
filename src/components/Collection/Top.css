@@ -1,6 +1,7 @@
 .nc-collectionPage-top {
   @apply(--card);
-  max-width: 682px;
+  width: 682px;
+  max-width: 100%;
   padding: 16px 20px;
   margin-bottom: 28px;
 }
@@ -26,4 +27,41 @@
 
 .nc-collectionPage-topNewButton {
   @apply(--button);
+}
+
+.nc-collectionPage-top-viewControls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 14px;
+}
+
+.nc-collectionPage-top-viewControls {
+  margin-top: 24px;
+}
+
+.nc-collectionPage-top-viewControls-text {
+  font-size: 14px;
+  color: var(--colorText);
+  margin-right: 12px;
+}
+
+.nc-collectionPage-top-viewControls-button {
+  color: #b3b9c4;
+  background-color: transparent;
+  display: block;
+  padding: 0;
+  margin: 0 4px;
+
+  &:last-child {
+    margin-right: 0;
+  }
+
+  & .nc-icon {
+    display: block;
+  }
+}
+
+.nc-collectionPage-top-viewControls-buttonActive {
+  color: var(--colorActive);
 }

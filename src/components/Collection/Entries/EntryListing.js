@@ -16,6 +16,7 @@ export default class EntryListing extends React.Component {
     entries: ImmutablePropTypes.list,
     onPaginate: PropTypes.func.isRequired,
     page: PropTypes.number,
+    viewStyle: PropTypes.string,
   };
 
   handleLoadMore = () => {
@@ -33,9 +34,9 @@ export default class EntryListing extends React.Component {
   };
 
   renderCardsForSingleCollection = () => {
-    const { collections, entries, publicFolder } = this.props;
+    const { collections, entries, publicFolder, viewStyle } = this.props;
     const inferedFields = this.inferFields(collections);
-    const entryCardProps = { collection: collections, inferedFields, publicFolder };
+    const entryCardProps = { collection: collections, inferedFields, publicFolder, viewStyle };
     return entries.map((entry, idx) => <EntryCard {...{ ...entryCardProps, entry, key: idx }} />);
   };
 
