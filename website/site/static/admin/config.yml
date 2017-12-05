@@ -1,0 +1,35 @@
+backend:
+  name: github
+  repo: netlify/netlify-cms
+
+publish_mode: editorial_workflow
+
+media_folder: "website/site/static/img" # Folder where user uploaded files should go
+public_folder: "img"
+
+collections: # A list of collections the CMS should be able to edit
+  - name: "docs" # Used in routes, ie.: /admin/collections/:slug/edit
+    label: "Docs" # Used in the UI, ie.: "New Post"
+    folder: "website/site/content/docs" # The path to the folder where the documents are stored
+    create: true # Allow users to create new documents in this collection
+    fields: # The fields each document in this collection have
+      - {label: "Title", name: "title", widget: "string", tagname: "h1"}
+      - {label: "Position", name: "position", widget: "number"}
+      - {label: "Body", name: "body", widget: "markdown"}
+  - name: notifications
+    label: Notifications
+    files:
+      - name: notifications
+        label: Notifications
+        file: website/site/data/notifications.yml
+        description: Site-top notifications - publish one at a time
+        fields:
+          - name: notifications
+            label: Notifications
+            widget: list
+            fields:
+              - {label: Title, name: title, widget: string, tagname: h1}
+              - {label: Published, name: published, widget: boolean}
+              - {label: Loud, name: loud, widget: boolean}
+              - {label: Message, name: message, widget: text}
+              - {label: URL, name: url}

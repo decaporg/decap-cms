@@ -1,0 +1,13 @@
+---
+styleoverrides: '/docs.css'
+headline: Netlify builds, deploys, and hosts your front end.
+bottomcta:
+  hook: Want to get started quick?
+  btns:
+    - type: primary
+      btntext: View our Templates
+      linksto: https://app.netlify.com/signup/templates
+    - type: secondary
+      btntext: Read our Tutorials
+      linksto: /tags/tutorial/
+---

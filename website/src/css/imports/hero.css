@@ -1,0 +1,231 @@
+.hero {
+  @neat-row;
+  background: $darkerGrey;
+  background-image: linear-gradient(-17deg, $darkerGrey 17%, $darkGrey 94%);
+  color: white;
+  overflow: hidden;
+  padding: calc($xl * 2.25) 0 $large 0;
+  position: relative;
+
+  @media screen and (min-width: $mobile) {
+    padding-top: calc($xl * 1.5);
+  }
+
+  @media screen and (min-width: $tablet) {
+    padding-top: calc($large * 1.5);
+  }
+
+  &:before {
+    background: url('/img/bow.svg') no-repeat bottom center;
+    background-size: contain;
+    bottom: -1px;
+    content: '';
+    height: $xl;
+    left: -$xl;
+    position: absolute;
+    right: -$xl;
+    width: calc(100% + ($xl * 2));
+  }
+
+  @media screen and (min-width: $tablet) {
+    background-position: center;
+    padding: calc($xl * 1.5) 0 $xl 0;
+  }
+
+  .hero-copy {
+    @media screen and (min-width: $tablet) {
+      @neat-span-columns 6;
+    }
+  }
+
+  .headline {
+    margin-top: -12px;
+    max-width: 400px;
+
+    @media screen and (min-width: $mobile) {
+      text-align: left;
+    }
+
+    span {
+      display: none;
+
+      @media screen and (min-width: $tablet) {
+        display: initial;
+      }
+    }
+  }
+
+  .subhead {
+    display: inline-block;
+    margin: $micro auto;
+    text-align: left;
+
+    @media screen and (min-width: $mobile) {
+      display: block;
+      margin: $medium 0 $small 0;
+    }
+  }
+
+  .ctas {
+    margin-bottom: $small;
+
+    @media screen and (min-width: $mobile) {
+      text-align: left;
+    }
+
+    ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    a {
+      color: $green;
+      font-weight: $semibold;
+    }
+  }
+
+  .btn-secondary {
+    display: none;
+    padding-top: 14px;
+    max-height: 53px;
+    margin: 0 0 0 calc($micro / 2);
+
+    @media screen and (min-width: $tablet) {
+      display: inline-block;
+    }
+  }
+
+  strong {
+    display: block;
+  }
+
+  .mooseheads {
+    margin: $micro 0 0 0;
+
+    @media screen and (min-width: $mobile) {
+      text-align: left;
+    }
+
+    strong {
+      font-size: 12px;
+      opacity: .5;
+    }
+  }
+
+  .hero-graphic {
+    @neat-span-columns 6;
+    display: none;
+
+    @media screen and (min-width: $tablet) {
+      display: initial;
+    }
+
+    &:before {
+      border: 1px solid white;
+      border-bottom: none;
+      border-radius: $largeBorderRadius $largeBorderRadius 0 0;
+      box-sizing: border-box;
+      content: '•••';
+      display: block;
+      font-size: $small;
+      height: $small;
+      line-height: 22px;
+      padding-left: 6px;
+      text-align: left;
+      width: 100%;
+    }
+
+    img {
+      border: 1px solid white;
+      border-radius: 0 0 $largeBorderRadius $largeBorderRadius;
+      box-sizing: border-box;
+      overflow: hidden;
+      width: 100%;
+      height: auto;
+    }
+  }
+
+  .calendar-cta {
+    text-align: center;
+    background: $darkerGrey;
+    background-image: linear-gradient(-17deg, $darkerGrey 17%, $darkGrey 94%);
+    border-radius: $largeBorderRadius;
+    box-shadow: 0 $micro $small rgba(0,0,0,0.1);
+    padding: $medium;
+    box-sizing: border-box;
+
+    @media screen and (min-width: $tablet) {
+      max-width: 446px;
+    }
+
+    @media screen and (min-width: $tablet) {
+      @neat-span-columns 5;
+      @neat-shift 1;
+      display: inline-block;
+      position: fixed;
+      right: $medium;
+    }
+
+    @media screen and (min-width: 1280px) {
+      right: initial;
+      left: calc(50% - $large);
+    }
+
+    .calendar {
+      border-radius: $largeBorderRadius;
+      overflow: hidden;
+      box-shadow: 0 $micro $small rgba(0,0,0,0.5);
+      margin: $small auto;
+      max-width: 250px;
+
+      .month {
+        background: $green;
+        color: $grey;
+        font-weight: $black;
+        text-transform: uppercase;
+        letter-spacing: 4px;
+        font-size: $tiny;
+        padding: $tiny;
+      }
+
+      .day {
+        font-size: $xl;
+        font-weight: $black;
+        color: white;
+        border: 1px solid $grey;
+        border-top: none;
+        border-bottom-left-radius: $largeBorderRadius;
+        border-bottom-right-radius: $largeBorderRadius;
+      }
+    }
+
+    strong {
+      display: inline-block;
+    }
+
+    h2:not(:first-child) {
+      font-weight: $light;
+    }
+
+    .cal-cta {
+      margin-top: $micro;
+
+      a {
+        color: $green;
+      }
+    }
+  }
+
+  .thanks-devs {
+    line-height: 18px;
+    margin: $micro 0 0 0;
+    opacity: 0.5;
+    text-align: center;
+
+    @media screen and (min-width: $tablet) {
+      font-size: $tiny;
+      line-height: 21px;
+    }
+  }
+}

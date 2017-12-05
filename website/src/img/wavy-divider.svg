@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1440px" height="85px" viewBox="0 0 1440 85" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 42 (36781) - http://www.bohemiancoding.com/sketch -->
+    <title>wavy-divider</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="50%" y1="29.9029703%" x2="50%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#000000" stop-opacity="0.0211447011" offset="0%"></stop>
+            <stop stop-color="#000000" stop-opacity="0" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="landing" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="cms-landing-v6" transform="translate(0.000000, -1205.000000)" fill="url(#linearGradient-1)">
+            <g id="triptych" transform="translate(0.000000, 1205.000000)">
+                <path d="M-1.35525272e-20,85 L1440,85 L1440,61 C1440,61 1440,11 1080,11 C720,11 718,47 358,47 C-2,47 -2.27373675e-13,0.647058824 -2.27373675e-13,0.647058824 L-1.35525272e-20,85 Z" id="wavy-divider"></path>
+            </g>
+        </g>
+    </g>
+</svg>
