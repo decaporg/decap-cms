@@ -6,13 +6,19 @@ import { Icon, Dropdown, DropdownItem } from 'UI';
 import { stripProtocol } from 'Lib/urlHelper';
 
 export default class Header extends React.Component {
-
   static propTypes = {
     user: ImmutablePropTypes.map.isRequired,
     collections: ImmutablePropTypes.orderedMap.isRequired,
     onCreateEntryClick: PropTypes.func.isRequired,
     onLogoutClick: PropTypes.func.isRequired,
     displayUrl: PropTypes.string,
+  };
+
+  handleCreatePostClick = (collectionName) => {
+    const { onCreateEntryClick } = this.props;
+    if (onCreateEntryClick) {
+      onCreateEntryClick(collectionName);
+    }
   };
 
   render() {
@@ -26,29 +32,6 @@ export default class Header extends React.Component {
       displayUrl,
     } = this.props;
 
-    /**
-     * preserve the Quick New dropdown code
-    {
-      collections.filter(collection => collection.get('create')).toList().map(collection =>
-        <MenuItem
-          key={collection.get("name")}
-          value={collection.get("name")}
-          onClick={this.handleCreatePostClick.bind(this, collection.get('name'))} // eslint-disable-line
-          caption={collection.get("label")}
-        />
-      )
-    }
-          <MenuItem onClick={onLogoutClick} value="log out" caption="Log Out" />
-
-
-          handleCreatePostClick = (collectionName) => {
-            const { onCreateEntryClick } = this.props;
-            if (onCreateEntryClick) {
-              onCreateEntryClick(collectionName);
-            }
-          };
-
-    */
     const avatarUrl = user.get('avatar_url');
 
     return (
@@ -79,9 +62,22 @@ export default class Header extends React.Component {
               </button>
             </nav>
             <div className="nc-appHeader-actions">
-              <button className="nc-appHeader-button nc-appHeader-quickNew">
-                Quick new
-              </button>
+              <Dropdown
+                classNameButton="nc-appHeader-button nc-appHeader-quickNew"
+                label="Quick add"
+                dropdownWidth="160px"
+                dropdownPosition="right"
+              >
+                {
+                  collections.filter(collection => collection.get('create')).toList().map(collection =>
+                    <DropdownItem
+                      key={collection.get("name")}
+                      label={collection.get("label")}
+                      onClick={() => this.handleCreatePostClick(collection.get('name'))}
+                    />
+                  )
+                }
+              </Dropdown>
               {
                 displayUrl
                   ? <a

@@ -61,7 +61,7 @@
   font-size: 12px;
   font-weight: 600;
   background-color: #7d8190;
-  padding: 6px 12px;
+  padding: 4px 24px 4px 14px;
   margin-right: 8px;
   color: #fff;
 
@@ -69,6 +69,10 @@
   &:active,
   &:focus {
     color: #fff;
+  }
+
+  &:after {
+    top: 11px;
   }
 }
 
