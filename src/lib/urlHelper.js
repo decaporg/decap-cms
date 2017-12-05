@@ -20,6 +20,11 @@ export function addParams(urlString, params) {
   return url.format(parsedUrl);
 }
 
+export function stripProtocol(url) {
+  const protocolEndIndex = url.indexOf('//');
+  return protocolEndIndex > -1 ? url.slice(protocolEndIndex + 2) : url;
+}
+
 /* See https://www.w3.org/International/articles/idn-and-iri/#path.
  * According to the new IRI (Internationalized Resource Identifier) spec, RFC 3987,
  *   ASCII chars should be kept the same way as in standard URIs (letters digits _ - . ~).
@@ -63,4 +68,3 @@ export function sanitizeSlug(str, { replacement = '-' } = {}) {
 
   return normalizedSlug;
 }
-

@@ -40,7 +40,6 @@
 }
 
 .nc-mediaLibrary-searchInput {
-  @apply --input;
   font-family: var(--fontFamilyPrimary);
   width: 50%;
   max-width: 800px;

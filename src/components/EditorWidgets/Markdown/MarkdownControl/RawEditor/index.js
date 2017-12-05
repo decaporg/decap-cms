@@ -14,8 +14,7 @@ export default class RawEditor extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return !this.state.value.equals(nextState.value)
-      || this.props.hasActiveStyle !== nextProps.hasActiveStyle;
+    return !this.state.value.equals(nextState.value);
   }
 
   handleChange = change => {
@@ -51,14 +50,13 @@ export default class RawEditor extends React.Component {
   };
 
   render() {
-    const { className, hasActiveStyle } = this.props;
+    const { className } = this.props;
 
     return (
       <div className="nc-rawEditor-rawWrapper">
         <div className="nc-visualEditor-editorControlBar">
           <Toolbar
             onToggleMode={this.handleToggleMode}
-            hasActiveStyle={hasActiveStyle}
             className="nc-markdownWidget-toolbarRaw"
             disabled
             rawMode

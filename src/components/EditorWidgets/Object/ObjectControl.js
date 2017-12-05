@@ -1,8 +1,8 @@
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Map } from 'immutable';
 import { partial } from 'lodash';
-import ImmutablePropTypes from 'react-immutable-proptypes';
 import c from 'classnames';
 import { resolveWidget } from 'Lib/registry';
 import EditorControl from 'Editor/EditorControlPane/EditorControl';
@@ -31,7 +31,7 @@ export default class ObjectControl extends Component {
     ]),
     field: PropTypes.object,
     forID: PropTypes.string,
-    className: PropTypes.string,
+    classNameWrapper: PropTypes.string.isRequired,
   };
 
   constructor(props) {
@@ -85,13 +85,12 @@ export default class ObjectControl extends Component {
   }
 
   render() {
-    const { field, forID } = this.props;
+    const { field, forID, classNameWrapper } = this.props;
     const multiFields = field.get('fields');
     const singleField = field.get('field');
-    const className = this.props.className || '';
 
     if (multiFields) {
-      return (<div id={forID} className={`${ className } nc-objectControl-root`}>
+      return (<div id={forID} className={c(classNameWrapper, 'nc-objectControl-root')}>
         {multiFields.map(f => this.controlFor(f))}
       </div>);
     } else if (singleField) {

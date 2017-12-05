@@ -1,0 +1,73 @@
+.nc-entryEditor-toolbar {
+  @apply(--dropShadow);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 300;
+  background-color: #fff;
+  height: 66px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.nc-entryEditor-toolbar-mainSection,
+.nc-entryEditor-toolbar-backSection,
+.nc-entryEditor-toolbar-metaSection {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+}
+
+.nc-entryEditor-toolbar-mainSection {
+  flex: 10;
+  display: flex;
+  justify-content: space-between;
+}
+
+.nc-entryEditor-toolbar-backSection,
+.nc-entryEditor-toolbar-metaSection {
+  border: 0 solid var(--textFieldBorderColor);
+}
+
+.nc-entryEditor-toolbar-backSection {
+  border-right-width: 1px;
+  cursor: pointer;
+}
+
+.nc-entryEditor-toolbar-metaSection {
+  border-left-width: 1px;
+}
+
+.nc-entryEditor-toolbar-backArrow {
+  color: var(--colorTextLead);
+  font-size: 21px;
+  font-weight: 600;
+  margin-right: 16px;
+}
+
+.nc-entryEditor-toolbar-backCollection {
+  color: var(--colorTextLead);
+  font-size: 14px;
+}
+
+.nc-entryEditor-toolbar-backStatus {
+  @apply(--textBadgeSuccess);
+}
+
+.nc-entryEditor-toolbar-backStatus-hasChanged {
+  @apply(--textBadgeDanger);
+}
+
+.nc-entryEditor-toolbar-backStatus,
+.nc-entryEditor-toolbar-backStatus-hasChanged {
+  margin-top: 6px;
+}
+
+.nc-entryEditor-toolbar-deleteButton {
+  color: #ff003b;
+  background-color: #fbe0d7;
+  padding-left: 20px;
+  padding-right: 20px;
+}

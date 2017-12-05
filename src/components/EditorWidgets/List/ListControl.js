@@ -56,6 +56,9 @@ export default class ListControl extends Component {
     onOpenMediaLibrary: PropTypes.func.isRequired,
     onAddAsset: PropTypes.func.isRequired,
     onRemoveInsertedMedia: PropTypes.func.isRequired,
+    classNameWrapper: PropTypes.string.isRequired,
+    setActiveStyle: PropTypes.func.isRequired,
+    setInactiveStyle: PropTypes.func.isRequired,
   };
 
   constructor(props) {
@@ -105,15 +108,20 @@ export default class ListControl extends Component {
     if (newValue.match(/,$/) && oldValue.match(/, $/)) {
       listValue.pop();
     }
-    
+
     const parsedValue = valueToString(listValue);
     this.setState({ value: parsedValue });
     onChange(listValue.map(val => val.trim()));
   };
 
-  handleCleanup = (e) => {
+  handleFocus = () => {
+    this.props.setActiveStyle();
+  }
+
+  handleBlur = (e) => {
     const listValue = e.target.value.split(',').map(el => el.trim()).filter(el => el);
     this.setState({ value: valueToString(listValue) });
+    this.props.setInactiveStyle();
   };
 
   handleAdd = (e) => {
@@ -187,7 +195,15 @@ export default class ListControl extends Component {
   };
 
   renderItem = (item, index) => {
-    const { field, getAsset, mediaPaths, onOpenMediaLibrary, onAddAsset, onRemoveInsertedMedia } = this.props;
+    const {
+      field,
+      getAsset,
+      mediaPaths,
+      onOpenMediaLibrary,
+      onAddAsset,
+      onRemoveInsertedMedia,
+      classNameWrapper,
+    } = this.props;
     const { itemsCollapsed } = this.state;
     const collapsed = itemsCollapsed.get(index);
     const classNames = ['nc-listControl-item', collapsed ? 'nc-listControl-collapsed' : ''];
@@ -204,24 +220,27 @@ export default class ListControl extends Component {
       <ObjectControl
         value={item}
         field={field}
-        className="nc-listControl-objectControl"
         onChangeObject={this.handleChangeFor(index)}
         getAsset={getAsset}
         onOpenMediaLibrary={onOpenMediaLibrary}
         mediaPaths={mediaPaths}
         onAddAsset={onAddAsset}
         onRemoveInsertedMedia={onRemoveInsertedMedia}
+        classNameWrapper={`${classNameWrapper} nc-listControl-objectControl`}
       />
     </SortableListItem>);
   };
 
   renderListControl() {
-    const { value, forID, field } = this.props;
+    const { value, forID, field, classNameWrapper } = this.props;
     const { collapsed } = this.state;
     const items = value || List();
+    const className = c(classNameWrapper, 'nc-listControl', {
+      'nc-listControl-collapsed' : collapsed,
+    });
 
     return (
-      <div id={forID} className={c('nc-listControl', { 'nc-listControl-collapsed' : collapsed })}>
+      <div id={forID} className={className}>
         <TopBar
           onAdd={this.handleAdd}
           listLabel={field.get('label').toLowerCase()}
@@ -244,7 +263,7 @@ export default class ListControl extends Component {
   }
 
   render() {
-    const { field, forID } = this.props;
+    const { field, forID, classNameWrapper } = this.props;
     const { value } = this.state;
 
     if (field.get('field') || field.get('fields')) {
@@ -256,7 +275,9 @@ export default class ListControl extends Component {
       id={forID}
       value={value}
       onChange={this.handleChange}
-      onBlur={this.handleCleanup}
+      onFocus={this.handleFocus}
+      onBlur={this.handleBlur}
+      className={classNameWrapper}
     />);
   }
 };

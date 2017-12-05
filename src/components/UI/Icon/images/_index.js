@@ -30,6 +30,7 @@ import iconPages from './pages.svg';
 import iconPagesAlt from './pages-alt.svg';
 import iconQuote from './quote.svg';
 import iconScroll from './scroll.svg';
+import iconSearch from './search.svg';
 import iconSettings from './settings.svg';
 import iconUser from './user.svg';
 import iconWorkflow from './workflow.svg';
@@ -68,6 +69,7 @@ const images = {
   'pages-alt': iconPagesAlt,
   'quote': iconQuote,
   'scroll': iconScroll,
+  'search': iconSearch,
   'settings': iconSettings,
   'user': iconUser,
   'workflow': iconWorkflow,

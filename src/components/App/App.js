@@ -134,6 +134,7 @@ class App extends React.Component {
           onLogoutClick={logoutUser}
           openMediaLibrary={openMediaLibrary}
           hasWorkflow={hasWorkflow}
+          displayUrl={config.get('display_url')}
         />
         <div className="nc-app-main">
           { isFetching && <TopBarProgress /> }

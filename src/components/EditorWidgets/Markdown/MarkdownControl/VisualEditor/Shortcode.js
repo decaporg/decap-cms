@@ -8,6 +8,7 @@ import { openMediaLibrary, removeInsertedMedia } from 'Actions/mediaLibrary';
 import { addAsset } from 'Actions/media';
 import { getAsset } from 'Reducers';
 import { ListItemTopBar } from 'UI';
+import { getEditorControl } from '../index';
 
 class Shortcode extends React.Component {
   constructor(props) {
@@ -22,9 +23,9 @@ class Shortcode extends React.Component {
     };
   }
 
-  handleChange = (field, value) => {
+  handleChange = (fieldName, value) => {
     const { editor, node } = this.props;
-    const shortcodeData = Map(node.data.get('shortcodeData')).set(field.get('name'), value);
+    const shortcodeData = Map(node.data.get('shortcodeData')).set(fieldName, value);
     const data = node.data.set('shortcodeData', shortcodeData);
     editor.change(c => c.setNodeByKey(node.key, { data }));
   };
@@ -65,16 +66,15 @@ class Shortcode extends React.Component {
       onOpenMediaLibrary,
       onRemoveInsertedMedia,
     } = this.props;
-    const widget = resolveWidget(field.get('widget') || 'string');
     const value = shortcodeData.get(field.get('name'));
     const key = `field-${ field.get('name') }`;
-    const Control = widget.control;
+    const Control = getEditorControl();
     const controlProps = {
       field,
       value,
       onAddAsset,
       getAsset: boundGetAsset,
-      onChange: partial(this.handleChange, field),
+      onChange: this.handleChange,
       mediaPaths,
       onOpenMediaLibrary,
       onRemoveInsertedMedia,
@@ -82,7 +82,6 @@ class Shortcode extends React.Component {
 
     return (
       <div key={key}>
-        <label>{field.get('label')}</label>
         <Control {...controlProps}/>
       </div>
     );
