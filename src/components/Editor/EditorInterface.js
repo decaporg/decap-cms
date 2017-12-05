@@ -62,7 +62,6 @@ class EditorInterface extends Component {
       onOpenMediaLibrary,
       onAddAsset,
       onRemoveInsertedMedia,
-      onCancelEdit,
       user,
       hasChanged,
       displayUrl,
@@ -71,7 +70,6 @@ class EditorInterface extends Component {
     const { previewVisible, scrollSyncEnabled, showEventBlocker } = this.state;
 
     const collectionPreviewEnabled = collection.getIn(['editor', 'preview'], true);
-    console.log(scrollSyncEnabled);
 
     const editor = (
       <div className={classnames('nc-entryEditor-controlPane', { 'nc-entryEditor-blocker': showEventBlocker })}>
@@ -128,13 +126,13 @@ class EditorInterface extends Component {
         <EditorToolbar
           isPersisting={entry.get('isPersisting')}
           onPersist={this.handleOnPersist}
-          onCancelEdit={onCancelEdit}
           onDelete={onDelete}
           showDelete={showDelete}
           enableSave={enableSave}
           user={user}
           hasChanged={hasChanged}
           displayUrl={displayUrl}
+          collection={collection}
         />
         <div className="nc-entryEditor-container">
           <div className="nc-entryEditor-viewControls">
@@ -179,7 +177,6 @@ EditorInterface.propTypes = {
   showDelete: PropTypes.bool.isRequired,
   onDelete: PropTypes.func.isRequired,
   onRemoveInsertedMedia: PropTypes.func.isRequired,
-  onCancelEdit: PropTypes.func.isRequired,
   user: ImmutablePropTypes.map,
   hasChanged: PropTypes.bool,
   displayUrl: PropTypes.string,

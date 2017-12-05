@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import { Link } from 'react-router-dom';
 import { Icon, Dropdown, DropdownItem } from 'UI';
 import { stripProtocol } from 'Lib/urlHelper';
 
@@ -11,26 +12,28 @@ const EditorToolbar = (
     enableSave,
     showDelete,
     onDelete,
-    onCancelEdit,
     user,
     hasChanged,
     displayUrl,
+    collection,
   }) => {
   const disabled = !enableSave || isPersisting;
   const avatarUrl = user.get('avatar_url');
   return (
     <div className="nc-entryEditor-toolbar">
-      <div onClick={onCancelEdit} className="nc-entryEditor-toolbar-backSection">
+      <Link to={`/collections/${collection.get('name')}`} className="nc-entryEditor-toolbar-backSection">
         <div className="nc-entryEditor-toolbar-backArrow">←</div>
         <div>
-          <div className="nc-entryEditor-toolbar-backCollection">Writing in Posts collection</div>
+          <div className="nc-entryEditor-toolbar-backCollection">
+            Writing in {collection.get('label')} collection
+          </div>
           {
             hasChanged
              ? <div className="nc-entryEditor-toolbar-backStatus-hasChanged">Unsaved Changes</div>
              : <div className="nc-entryEditor-toolbar-backStatus">Changes saved &#10003;</div>
           }
         </div>
-      </div>
+      </Link>
       <div className="nc-entryEditor-toolbar-mainSection">
         {
           showDelete
@@ -68,10 +71,10 @@ EditorToolbar.propTypes = {
   enableSave: PropTypes.bool.isRequired,
   showDelete: PropTypes.bool.isRequired,
   onDelete: PropTypes.func.isRequired,
-  onCancelEdit: PropTypes.func.isRequired,
   user: ImmutablePropTypes.map,
   hasChanged: PropTypes.bool,
   displayUrl: PropTypes.string,
+  collection: ImmutablePropTypes.map.isRequired,
 };
 
 export default EditorToolbar;
