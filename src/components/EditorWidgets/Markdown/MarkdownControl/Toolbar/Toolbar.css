@@ -9,10 +9,6 @@
   transition: background-color var(--transition), color var(--transition);
 }
 
-.nc-markdownWidget-toolbarRaw {
-  justify-content: flex-end;
-}
-
 .nc-markdownWidget-toolbar-toggle {
   flex-shrink: 0;
   display: flex;

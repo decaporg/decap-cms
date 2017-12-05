@@ -64,96 +64,104 @@ export default class Toolbar extends React.Component {
         'nc-toolbar-ToolbarActive': hasActiveStyle,
         [className]: true,
       })}>
-        {disabled ? null :
-          <div>
-            <ToolbarButton
-              type="bold"
-              label="Bold"
-              icon="bold"
-              onClick={onMarkClick}
-              isActive={selectionHasMark}
-            />
-            <ToolbarButton
-              type="italic"
-              label="Italic"
-              icon="italic"
-              onClick={onMarkClick}
-              isActive={selectionHasMark}
-            />
-            <ToolbarButton
-              type="code"
-              label="Code"
-              icon="code"
-              onClick={onMarkClick}
-              isActive={selectionHasMark}
-            />
-            <ToolbarButton
-              type="link"
-              label="Link"
-              icon="link"
-              onClick={onLinkClick}
-              isActive={selectionHasLink}
-            />
-            <ToolbarButton
-              type="heading-one"
-              label="Header 1"
-              icon="h1"
-              onClick={onBlockClick}
-              isActive={selectionHasBlock}
-            />
-            <ToolbarButton
-              type="heading-two"
-              label="Header 2"
-              icon="h2"
-              onClick={onBlockClick}
-              isActive={selectionHasBlock}
-            />
-            <ToolbarButton
-              type="quote"
-              label="Quote"
-              icon="quote"
-              onClick={onBlockClick}
-              isActive={selectionHasBlock}
-            />
-            <ToolbarButton
-              type="code"
-              label="Code Block"
-              icon="code-block"
-              onClick={onBlockClick}
-              isActive={selectionHasBlock}
-            />
-            <ToolbarButton
-              type="bulleted-list"
-              label="Bulleted List"
-              icon="list-bulleted"
-              onClick={onBlockClick}
-              isActive={selectionHasBlock}
-            />
-            <ToolbarButton
-              type="numbered-list"
-              label="Numbered List"
-              icon="list-numbered"
-              onClick={onBlockClick}
-              isActive={selectionHasBlock}
-            />
-            <div className="nc-toolbar-dropdown">
-              <Dropdown
-                button={
-                  <ToolbarButton
-                    label="Add Component"
-                    icon="add-with"
-                    onClick={this.handleComponentsMenuToggle}
-                    disabled={disabled}
-                  />
-                }
-              >
-                {plugins && plugins.toList().map(plugin => (
-                  <DropdownItem label={plugin.get('label')} onClick={() => onSubmit(plugin.get('id'))} />
-                ))}
-              </Dropdown>
-            </div>
+        <div>
+          <ToolbarButton
+            type="bold"
+            label="Bold"
+            icon="bold"
+            onClick={onMarkClick}
+            isActive={selectionHasMark}
+            disabled={disabled}
+          />
+          <ToolbarButton
+            type="italic"
+            label="Italic"
+            icon="italic"
+            onClick={onMarkClick}
+            isActive={selectionHasMark}
+            disabled={disabled}
+          />
+          <ToolbarButton
+            type="code"
+            label="Code"
+            icon="code"
+            onClick={onMarkClick}
+            isActive={selectionHasMark}
+            disabled={disabled}
+          />
+          <ToolbarButton
+            type="link"
+            label="Link"
+            icon="link"
+            onClick={onLinkClick}
+            isActive={selectionHasLink}
+            disabled={disabled}
+          />
+          <ToolbarButton
+            type="heading-one"
+            label="Header 1"
+            icon="h1"
+            onClick={onBlockClick}
+            isActive={selectionHasBlock}
+            disabled={disabled}
+          />
+          <ToolbarButton
+            type="heading-two"
+            label="Header 2"
+            icon="h2"
+            onClick={onBlockClick}
+            isActive={selectionHasBlock}
+            disabled={disabled}
+          />
+          <ToolbarButton
+            type="quote"
+            label="Quote"
+            icon="quote"
+            onClick={onBlockClick}
+            isActive={selectionHasBlock}
+            disabled={disabled}
+          />
+          <ToolbarButton
+            type="code"
+            label="Code Block"
+            icon="code-block"
+            onClick={onBlockClick}
+            isActive={selectionHasBlock}
+            disabled={disabled}
+          />
+          <ToolbarButton
+            type="bulleted-list"
+            label="Bulleted List"
+            icon="list-bulleted"
+            onClick={onBlockClick}
+            isActive={selectionHasBlock}
+            disabled={disabled}
+          />
+          <ToolbarButton
+            type="numbered-list"
+            label="Numbered List"
+            icon="list-numbered"
+            onClick={onBlockClick}
+            isActive={selectionHasBlock}
+            disabled={disabled}
+          />
+          <div className="nc-toolbar-dropdown">
+            <Dropdown
+              button={
+                <ToolbarButton
+                  label="Add Component"
+                  icon="add-with"
+                  onClick={this.handleComponentsMenuToggle}
+                  disabled={disabled}
+                />
+              }
+            >
+              {plugins && plugins.toList().map(plugin => (
+                <DropdownItem label={plugin.get('label')} onClick={() => onSubmit(plugin.get('id'))} />
+              ))}
+            </Dropdown>
           </div>
-        }
+        </div>
         <div className="nc-markdownWidget-toolbar-toggle">
           <span
             style={{ width: toggleOffLabelWidth }}

@@ -1,9 +1,14 @@
 @import './Shortcode.css';
 
+:root {
+  --stickyDistanceBottom: 100px;
+}
+
 .nc-visualEditor-editorControlBar {
   z-index: 1;
   position: sticky;
   top: 0;
+  margin-bottom: var(--stickyDistanceBottom);
 }
 
 .nc-visualEditor-wrapper {
@@ -19,6 +24,7 @@
   border-top-left-radius: 0;
   border-top-right-radius: 0;
   border-top: 0;
+  margin-top: -var(--stickyDistanceBottom);
 }
 
 .nc-visualEditor-editor h1 {
