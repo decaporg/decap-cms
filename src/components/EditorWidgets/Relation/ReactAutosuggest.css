@@ -2,10 +2,6 @@
   position: relative;
 }
 
-.react-autosuggest__input {
-  @apply(--input);
-}
-
 .react-autosuggest__suggestions-container {
   display: none;
 }

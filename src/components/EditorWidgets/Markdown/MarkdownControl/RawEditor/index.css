@@ -3,7 +3,6 @@
 }
 
 .nc-rawEditor-rawEditor {
-  @apply(--input);
   position: relative;
   overflow: hidden;
   overflow-x: auto;
