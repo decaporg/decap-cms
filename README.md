@@ -17,14 +17,14 @@ tweak the main layout of the CMS a bit to fit your own site.
 When a user navigates to `/admin` they'll be prompted to login, and once authenticated
 they'll be able to create new content or edit existing content.
 
-Read more about Netlify CMS [Core Concepts](docs/intro.md).
+Read more about Netlify CMS [Core Concepts](https://www.netlifycms.org/docs/intro/).
 
 # Installation and Configuration
 
 The Netlify CMS can be used in two different ways.
 
 * A Quick and easy install, that just requires you to create a single HTML file and a configuration file. All the CMS Javascript and CSS are loaded from a CDN.
-To learn more about this installation method, refer to the [Quick Start Guide](docs/quick-start.md)
+To learn more about this installation method, refer to the [Quick Start Guide](https://www.netlifycms.org/docs/quick-start/)
 * A complete, more complex install, that gives you more flexibility but requires that you use a static site builder with a build system that supports npm packages.
 
 # Community
