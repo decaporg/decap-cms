@@ -39,6 +39,8 @@
   --colorRedLight: #fcefea;
   --colorPurple: #70399f;
   --colorPurpleLight: #f6d8ff;
+  --colorTeal: #17a2b8;
+  --colorTealLight: #ddf5f9;
 
   --colorStatusDraftText: var(--colorPurple);
   --colorStatusDraftBackground: var(--colorPurpleLight);
