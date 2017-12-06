@@ -19,8 +19,12 @@ import { openMediaLibrary, removeInsertedMedia } from 'Actions/mediaLibrary';
 import { selectEntry, getAsset } from 'Reducers';
 import { selectFields } from 'Reducers/collections';
 import { Loader } from 'UI';
+import { EDITORIAL_WORKFLOW } from 'Constants/publishModes';
 import EditorInterface from './EditorInterface';
 import withWorkflow from './withWorkflow';
+
+const navigateToCollection = collectionName => history.push(`/collections/${collectionName}`);
+const navigateToNewEntry = collectionName => history.push(`/collections/${collectionName}/new`);
 
 class Editor extends React.Component {
   static propTypes = {
@@ -46,6 +50,7 @@ class Editor extends React.Component {
     slug: PropTypes.string,
     newEntry: PropTypes.bool.isRequired,
     displayUrl: PropTypes.string,
+    hasWorkflow: PropTypes.bool,
   };
 
   componentDidMount() {
@@ -75,11 +80,15 @@ class Editor extends React.Component {
     };
     const unblock = history.block(navigationBlocker);
 
-    // This will run as soon as the location actually changes.
-    //   (The confirmation above will run first.)
-    this.unlisten = history.listen(() => {
-      unblock();
-      this.unlisten();
+    /**
+     * This will run as soon as the location actually changes, unless creating
+     * a new post. The confirmation above will run first.
+     */
+    this.unlisten = history.listen(location => {
+      if (location.pathname !== `/collections/${collection.get('name')}/new`) {
+        unblock();
+        this.unlisten();
+      }
     });
   }
 
@@ -110,24 +119,32 @@ class Editor extends React.Component {
     if (entry) this.props.createDraftFromEntry(entry);
   };
 
-  handlePersistEntry = () => {
+  handlePersistEntry = async (opts = {}) => {
+    const { createNew = false } = opts;
     const { persistEntry, collection } = this.props;
-    persistEntry(collection);
+
+    await persistEntry(collection)
+
+    if (createNew) {
+      navigateToNewEntry(collection.get('name'));
+    }
   };
 
   handleDeleteEntry = () => {
-    if (!window.confirm('Are you sure you want to delete this entry?')) { return; }
-    if (this.props.newEntry) {
-      return history.push(`/collections/${collectionName}`);
+    const { newEntry, collection, deleteEntry, entry } = this.props;
+    if (!window.confirm('Are you sure you want to delete this entry?')) {
+      return;
+    }
+    if (newEntry) {
+      return navigateToCollection(collection.get('name'));
     }
 
-    const { deleteEntry, entry, collection } = this.props;
     const slug = entry.get('slug');
     setTimeout(async () => {
       await deleteEntry(collection, slug);
-      history.push(`/collections/${collectionName}`);
+      return navigateToCollection(collection.get('name'));
     }, 0);
-  }
+  };
 
   render() {
     const {
@@ -145,6 +162,7 @@ class Editor extends React.Component {
       user,
       hasChanged,
       displayUrl,
+      hasWorkflow,
     } = this.props;
 
     if (entry && entry.get('error')) {
@@ -176,6 +194,7 @@ class Editor extends React.Component {
         user={user}
         hasChanged={hasChanged}
         displayUrl={displayUrl}
+        hasWorkflow={hasWorkflow}
       />
     );
   }
@@ -193,6 +212,7 @@ function mapStateToProps(state, ownProps) {
   const user = auth && auth.get('user');
   const hasChanged = entryDraft.get('hasChanged');
   const displayUrl = config.get('display_url');
+  const hasWorkflow = config.get('publish_mode') === EDITORIAL_WORKFLOW;
   return {
     collection,
     collections,
@@ -206,6 +226,7 @@ function mapStateToProps(state, ownProps) {
     user,
     hasChanged,
     displayUrl,
+    hasWorkflow,
   };
 }
 

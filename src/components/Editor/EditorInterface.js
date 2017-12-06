@@ -28,9 +28,10 @@ class EditorInterface extends Component {
     this.setState({ showEventBlocker: false });
   };
 
-  handleOnPersist = () => {
+  handleOnPersist = (opts = {}) => {
+    const { createNew = false } = opts;
     this.controlPaneRef.validate();
-    this.props.onPersist();
+    this.props.onPersist({ createNew });
   };
 
   handleTogglePreview = () => {
@@ -65,6 +66,7 @@ class EditorInterface extends Component {
       user,
       hasChanged,
       displayUrl,
+      hasWorkflow,
     } = this.props;
 
     const { previewVisible, scrollSyncEnabled, showEventBlocker } = this.state;
@@ -126,6 +128,7 @@ class EditorInterface extends Component {
         <EditorToolbar
           isPersisting={entry.get('isPersisting')}
           onPersist={this.handleOnPersist}
+          onPersistAndNew={() => this.handleOnPersist({ createNew: true })}
           onDelete={onDelete}
           showDelete={showDelete}
           enableSave={enableSave}
@@ -133,6 +136,7 @@ class EditorInterface extends Component {
           hasChanged={hasChanged}
           displayUrl={displayUrl}
           collection={collection}
+          hasWorkflow={hasWorkflow}
         />
         <div className="nc-entryEditor-container">
           <div className="nc-entryEditor-viewControls">
@@ -180,6 +184,7 @@ EditorInterface.propTypes = {
   user: ImmutablePropTypes.map,
   hasChanged: PropTypes.bool,
   displayUrl: PropTypes.string,
+  hasWorkflow: PropTypes.bool,
 };
 
 export default EditorInterface;

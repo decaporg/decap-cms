@@ -9,6 +9,7 @@ const EditorToolbar = (
   {
     isPersisting,
     onPersist,
+    onPersistAndNew,
     enableSave,
     showDelete,
     onDelete,
@@ -16,6 +17,7 @@ const EditorToolbar = (
     hasChanged,
     displayUrl,
     collection,
+    hasWorkflow,
   }) => {
   const disabled = !enableSave || isPersisting;
   const avatarUrl = user.get('avatar_url');
@@ -44,10 +46,12 @@ const EditorToolbar = (
         </div>
         <div className="nc-entryEditor-toolbar-mainSection-right">
           <Dropdown
-            dropdownTopOverlap="40px" 
-            label={isPersisting ? 'Saving...' : 'Save and Publish'}>
-            <DropdownItem label="Save and publish" icon="folder" onClick={onPersist}/>
-            <DropdownItem label="Save, publish, and create new" icon="add" onClick={onPersist}/>
+            dropdownTopOverlap="40px"
+            dropdownWidth="150px"
+            label={isPersisting ? 'Publishing...' : 'Publish'}
+          >
+            <DropdownItem label="Publish now" icon="arrow" iconDirection="right" onClick={onPersist}/>
+            <DropdownItem label="Publish and create new" icon="add" onClick={onPersistAndNew}/>
           </Dropdown>
         </div>
       </div>
@@ -74,6 +78,7 @@ const EditorToolbar = (
 EditorToolbar.propTypes = {
   isPersisting: PropTypes.bool,
   onPersist: PropTypes.func.isRequired,
+  onPersistAndNew: PropTypes.func.isRequired,
   enableSave: PropTypes.bool.isRequired,
   showDelete: PropTypes.bool.isRequired,
   onDelete: PropTypes.func.isRequired,
@@ -81,6 +86,7 @@ EditorToolbar.propTypes = {
   hasChanged: PropTypes.bool,
   displayUrl: PropTypes.string,
   collection: ImmutablePropTypes.map.isRequired,
+  hasWorkflow: PropTypes.bool,
 };
 
 export default EditorToolbar;
