@@ -10,10 +10,12 @@ const Dropdown = ({
   classNameButton = '',
   dropdownWidth = 'auto',
   dropdownPosition = 'left',
+  dropdownTopOverlap = '0',
   children
 }) => {
   const style = {
     width: dropdownWidth,
+    top: dropdownTopOverlap,
     left: dropdownPosition === 'left' ? 0 : 'auto',
     right: dropdownPosition === 'right' ? 0 : 'auto',
   };
