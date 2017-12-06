@@ -28,6 +28,13 @@
   display: flex;
   justify-content: space-between;
   padding: 0 20px;
+
+  .nc-entryEditor-toolbar-mainSection-left {
+
+  }
+  .nc-entryEditor-toolbar-mainSection-right {
+    
+  }
 }
 
 .nc-entryEditor-toolbar-backSection,

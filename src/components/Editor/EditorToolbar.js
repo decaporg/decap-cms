@@ -35,15 +35,19 @@ const EditorToolbar = (
         </div>
       </Link>
       <div className="nc-entryEditor-toolbar-mainSection">
-        {
-          showDelete
-            ? <button className="nc-entryEditor-toolbar-deleteButton" onClick={onDelete}>Delete</button>
-            : null
-        }
-        <Dropdown label={isPersisting ? 'Saving...' : 'Save and Publish'}>
-          <DropdownItem label="Save and publish" icon="folder" onClick={onPersist}/>
-          <DropdownItem label="Save, publish, and create new" icon="add" onClick={onPersist}/>
-        </Dropdown>
+        <div className="nc-entryEditor-toolbar-mainSection-left">
+          {
+            showDelete
+              ? <button className="nc-entryEditor-toolbar-deleteButton" onClick={onDelete}>Delete</button>
+              : null
+          }
+        </div>
+        <div className="nc-entryEditor-toolbar-mainSection-right">
+          <Dropdown label={isPersisting ? 'Saving...' : 'Save and Publish'}>
+            <DropdownItem label="Save and publish" icon="folder" onClick={onPersist}/>
+            <DropdownItem label="Save, publish, and create new" icon="add" onClick={onPersist}/>
+          </Dropdown>
+        </div>
       </div>
       <div className="nc-entryEditor-toolbar-metaSection">
         {
