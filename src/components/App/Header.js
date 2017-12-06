@@ -65,8 +65,9 @@ export default class Header extends React.Component {
               <Dropdown
                 classNameButton="nc-appHeader-button nc-appHeader-quickNew"
                 label="Quick add"
+                dropdownTopOverlap="30px"
                 dropdownWidth="160px"
-                dropdownPosition="right"
+                dropdownPosition="left"
               >
                 {
                   collections.filter(collection => collection.get('create')).toList().map(collection =>
@@ -90,6 +91,7 @@ export default class Header extends React.Component {
                   : null
               }
               <Dropdown
+                dropdownTopOverlap="50px"
                 dropdownWidth="100px"
                 dropdownPosition="right"
                 button={
