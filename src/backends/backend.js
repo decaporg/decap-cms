@@ -1,4 +1,5 @@
 import { attempt, isError } from 'lodash';
+import OfflineBackend from "./offline/implementation";
 import TestRepoBackend from "./test-repo/implementation";
 import GitHubBackend from "./github/implementation";
 import GitGatewayBackend from "./git-gateway/implementation";
@@ -325,14 +326,18 @@ class Backend {
 }
 
 export function resolveBackend(config) {
-  const name = config.getIn(["backend", "name"]);
+  let name = config.getIn(["backend", "name"]);
   if (name == null) {
     throw new Error("No backend defined in configuration");
   }
 
   const authStore = new LocalStorageAuthStore();
 
+  if (config.getIn(["backend", "status"]) === "offline") name = "offline";
+
   switch (name) {
+    case "offline":
+      return new Backend(new OfflineBackend(config), name, null);
     case "test-repo":
       return new Backend(new TestRepoBackend(config), name, authStore);
     case "github":
