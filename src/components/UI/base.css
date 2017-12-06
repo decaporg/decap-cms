@@ -82,7 +82,6 @@
   --topCardWidth: 682px;
   --pageMargin: 84px 18px;
 
-/* Lets clean up some of these dropshadows post 1.0 launch— I don't think some of these will be used */
   --dropShadow: {
     box-shadow: 0 2px 4px 0 rgba(19, 39, 48, .12);
   }

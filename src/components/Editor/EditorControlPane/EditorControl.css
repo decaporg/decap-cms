@@ -1,7 +1,6 @@
 .nc-controlPane-control {
   margin-top: 16px;
 
-  /* Praying this doesn't mess with scroll lock's accuracy */
   &:first-child {
     margin-top: 36px;
   }
