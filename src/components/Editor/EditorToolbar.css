@@ -6,6 +6,7 @@
   top: 0;
   left: 0;
   width: 100%;
+  min-width: 800px;
   z-index: 300;
   background-color: #fff;
   height: 66px;
