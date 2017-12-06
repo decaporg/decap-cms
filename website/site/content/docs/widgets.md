@@ -9,22 +9,6 @@ Widgets define the data type and interface for entry fields. Netlify CMS comes w
 
 To see working examples of all of the built-in widgets, try making a 'Kitchen Sink' collection item on the [CMS demo site](https://cms-demo.netlify.com). (No login required: click the login button and the CMS will open.) You can refer to the demo [configuration code](https://github.com/netlify/netlify-cms/blob/master/example/config.yml#L60) to see how each field was configured.
 
-| Name       | UI                                 | Data Type                                          |
-| --------   | ---------------------------------- | ---------------------------------------------------|
-| `string`   | text input                         | string                                             |
-| `boolean`  | toggle switch                      | boolean                                            |
-| `text`     | textarea input                     | string (multiline)                                 |
-| `number`   | number input                       | number                                             |
-| `markdown` | rich text editor                   | string (markdown)                                  |
-| `datetime` | date picker                        | string (ISO date)                                  |
-| `select`   | select input (dropdown)            | string                                             |
-| `image`    | file picker w/ drag-and-drop       | image file                                         |
-| `file`     | file picker w/ drag-and-drop       | file                                               |
-| `hidden`   | none                               | string                                             |
-| `object`   | group of other widgets             | Immutable Map containing field values              |
-| `list`     | repeatable group of other widgets  | Immutable List of objects containing field values  |
-| `relation` | text input w/ suggestions dropdown | value of `valueField` in related entry (see below) |
-
  
 ## Boolean
 
@@ -122,24 +106,40 @@ The image widget allows editors to upload an image or select an existing one fro
   ```
 
 
-## List [WIP]
+## List
 
-The list widget allows you to create a repeatable item in the UI which saves as a comma-delimited list of items. map a user-provided string with a comma delimiter into a list. Consider the following example that also demonstrates how to set default values:
+The list widget allows you to create a repeatable item in the UI which saves as a list of widget values. map a user-provided string with a comma delimiter into a list. You can choose any widget as a child of a list widget—even other lists.
 
-```yaml
-  - {label: Tags, name: tags, widget: list, default: ['term_1', 'term_2']}
-```
+- Name: `list`
+- UI: if `fields` is specified, field containing a repeatable child widget, with controls for adding, deleting, and re-ordering the repeated widgets; if unspecified, a text input for entering comma-separated values
+- Data type: list of widget values
+- Options:
+  - `default`: if `fields` is specified, declare defaults on the child widgets; if not, you may specify a list of strings to populate the text field
+  - `fields`: a nested list of one or more widget fields to be included in each repeatable iteration
+- Example (`fields` note specified):
 
-Lists of objects are supported as well and require a nested field list.
+  ```yaml
+  - label: "Tags"
+    name: "tags"
+    widget: "list"
+    default: ["news"]
+  ```
 
-```yaml
-- label: Authors
-  name: authors
-  widget: list
-  fields:
-    - {label: Name, name: name, widget: string}
-    - {label: Description, name: description, widget: markdown}
-```
+- Example (with `fields`):
+
+  ```yaml
+  - label: "Testimonials"
+    name: "testimonials"
+    widget: "list"
+    fields:
+      - {label: Quote, name: quote, widget: string, default: "Everything is awesome!"}
+      - label: Author
+        name: author
+        widget: object
+        fields:
+          - {label: Name, name: name, widget: string, default: "Emmet"}
+          - {label: Avatar, name: avatar, widget: image, default: "/img/emmet.jpg"}
+  ```
 
 
 ## Number
@@ -172,11 +172,11 @@ The number widget uses an HTML number input, saving the value as a string, integ
 The object widget allows you to group multiple widgets together, nested under a single field. You can choose any widget as a child of an object widget—even other objects.
 
 - Name: `object`
-- UI: a field containing other fields
-- Data type: immutable map containing the sub-field values
+- UI: a field containing one or more child widgets
+- Data type: list of child widget values
 - Options:
   - `default`: you can set defaults within each sub-field's configuration
-  - `fields`: (**required**) a nested list of fields to include in your widget
+  - `fields`: (**required**) a nested list of widget fields to include in your widget
 - Example:
 
   ```yaml
@@ -201,45 +201,29 @@ The object widget allows you to group multiple widgets together, nested under a 
   ```
 
 
-## Relation [WIP]
+## Relation
 
-The relation widget allows you to reference an existing entry from within the entry you're editing. It provides a search input with a list of entries from the collection you're referencing, and the list automatically updates with matched entries based on what you've typed.
+The relation widget allows you to reference items from another collection. It provides a search input with a list of entries from the collection you're referencing, and the list automatically updates with matched entries based on what you've typed.
 
-The following field configuration properties are specific to fields using the relation widget:
+- Name: `realtion`
+- UI: text input with search result dropdown
+- Data type: data type of the value pulled from the related collection item
+- Options:
+  - `default`: accepts any widget data type; defaults to an empty string
+  - `collection`: (**required**) name of the collection being referenced (string)
+  - `searchFields`: (**required**) list of one or more names of fields in the referenced collection to search for the typed value
+  - `valueField`: (**required**) name of the field from the referenced collection whose value will be stored for the relation
+- Example (assuming a separate "authors" collection with "name" and "twitterHandle" fields):
 
-Property | Accepted Values | Description
---- | --- | ---
-`collection` | string | name of the collection being referenced
-`searchFields` | list | one or more names of fields in the referenced colleciton to search for the typed value
-`valueField` | string | name a field from the referenced collection whose value will be stored for the relation
-`name` | text input | string
-
-Let's say we have a "posts" collection and an "authors" collection, and we want to select an author for each post - our config might look something like this:
-
-```yaml
-collections:
-  - name: authors
-    label: Authors
-    folder: "authors"
-    create: true
-    fields:
-      - {name: name, label: Name}
-      - {name: twitterHandle, label: "Twitter Handle"}
-      - {name: bio, label: Bio, widget: text}
-  - name: posts
-    label: Posts
-    folder: "posts"
-    create: true
-    fields:
-      - {name: title, label: Title}
-      - {name: body, label: Body, widget: markdown}
-      - name: author
-        label: Author
-        widget: relation
-        collection: authors
-        searchFields: [name, twitterHandle]
-        valueField: name
-```
+  ```yaml
+  - label: Post Author
+    name: author
+    widget: relation
+    collection: authors
+    searchFields: [name, twitterHandle]
+    valueField: name
+  ```
+  The generated UI input will search the authors collection by name and twitterHandle as the user types. On selection, the author name will be saved for the field.
 
 
 ## Select
@@ -251,10 +235,11 @@ The select widget allows you to pick a single string value from a dropdown menu.
 - Data type: string
 - Options:
   - `default`: accepts a string; defaults to an empty string
-  - `options`: (**required**) an array or list of options for the dropdown menu; can be listed in two ways:
+  - `options`: (**required**) a list of options for the dropdown menu; can be listed in two ways:
     - string values: the label displayed in the dropdown is the value saved in the file
     - object with `label` and `value` fields: the label displays in the dropdown; the value is saved in the file
 - Example (options as strings):
+
   ```yaml
   - label: "Align Content"
     name: "align"
@@ -262,6 +247,7 @@ The select widget allows you to pick a single string value from a dropdown menu.
     options: ["left", "center", "right"]
   ```
 - Example (options as objects):
+
   ```yaml
   - label: "City"
     name: "airport-code"
