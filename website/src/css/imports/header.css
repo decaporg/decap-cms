@@ -258,7 +258,7 @@ header {
 
     @media screen and (min-width: $mobile) {
       float: left;
-      margin: -$micro 0 -6px 0;
+      margin: -4px 0 -6px 0;
       width: initial;
     }
   }

@@ -47,7 +47,7 @@
 
     @media screen and (min-width: $mobile) {
       display: block;
-      margin: $micro 0 $small 0;
+      margin: calc($micro * 0.5) 0 $small 0;
     }
   }
 
