@@ -49,9 +49,12 @@ class WorkflowList extends React.Component {
   };
   requestPublish = (collection, slug, ownStatus) => {
     if (ownStatus !== status.last()) {
-      if (!window.confirm('This entry is not in the Ready column. Publish anyway?')) {
-        return;
-      }
+      window.alert(
+`Only items with a "Ready" status can be published.
+
+Please drag the card to the "Ready" column to enable publishing.`
+      );
+      return;
     } else if (!window.confirm('Are you sure you want to publish this entry?')) {
       return;
     }

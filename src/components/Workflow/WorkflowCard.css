@@ -80,10 +80,9 @@
   background-color: var(--colorTeal);
   color: var(--colorTextLight);
   margin-left: 6px;
+}
 
-  &[disabled] {
-    background-color: var(--colorGrayLight);
-    color: var(--colorGray);
-    cursor: not-allowed;
-  }
+.nc-workflow-card-buttonPublishDisabled {
+  background-color: var(--colorGrayLight);
+  color: var(--colorGray);
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import c from 'classnames';
 import { Link } from 'react-router-dom';
 
 const WorkflowCard = ({
@@ -27,7 +28,12 @@ const WorkflowCard = ({
       <button className="nc-workflow-card-buttonDelete" onClick={onDelete}>
         {isModification ? 'Delete changes' : 'Delete new entry'}
       </button>
-      <button className="nc-workflow-card-buttonPublish" onClick={onPublish}>
+      <button
+        className={c('nc-workflow-card-buttonPublish', {
+          'nc-workflow-card-buttonPublishDisabled': !canPublish,
+        })}
+        onClick={onPublish}
+      >
         {isModification ? 'Publish changes' : 'Publish new entry'}
       </button>
     </div>
