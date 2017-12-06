@@ -21,19 +21,15 @@ const WorkflowCard = ({
     <h2 className="nc-workflow-card-title">{title}</h2>
     <div className="nc-workflow-card-date">{timestamp} by {authorLastChange}</div>
     <p className="nc-workflow-card-body">{body}</p>
+    <div className="nc-workflow-card-button-container">
+      <button className="nc-workflow-card-buttonDelete" onClick={onDelete}>
+        {isModification ? 'Delete changes' : 'Delete new entry'}
+      </button>
+      <button className="nc-workflow-card-buttonPublish" onClick={onPublish} disabled={!canPublish}>
+        {isModification ? 'Publish changes' : 'Publish new entry'}
+      </button>
+    </div>
   </Link>
 );
 
 export default WorkflowCard;
-
-/*
-    <div className="nc-workflow-card-button-container">
-      <Link className="nc-workflow-card-button" to={editLink}>Edit</Link>
-      <button className="nc-workflow-card-button" onClick={onDelete}>Delete</button>
-      {
-        canPublish
-          ? <button className="nc-workflow-card-button" onClick={onPublish}>Publish now</button>
-          : null
-      }
-    </div>
-    */

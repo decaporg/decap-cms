@@ -286,7 +286,7 @@ export function deleteUnpublishedEntry(collection, slug) {
     const state = getState();
     const backend = currentBackend(state.config);
     const transactionID = uuid();
-    dispatch(unpublishedEntryPublishRequest(collection, slug, transactionID)); 
+    dispatch(unpublishedEntryPublishRequest(collection, slug, transactionID));
     backend.deleteUnpublishedEntry(collection, slug)
     .then(() => {
       dispatch(unpublishedEntryPublished(collection, slug, transactionID));
@@ -297,7 +297,7 @@ export function deleteUnpublishedEntry(collection, slug) {
         kind: 'danger',
         dismissAfter: 8000,
       }));
-      dispatch(unpublishedEntryPublishError(collection, slug, transactionID)); 
+      dispatch(unpublishedEntryPublishError(collection, slug, transactionID));
     });
   };
 }
