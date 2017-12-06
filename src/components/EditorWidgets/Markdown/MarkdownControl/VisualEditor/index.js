@@ -12,6 +12,19 @@ import { validateNode } from './validators';
 import plugins, { EditListConfigured } from './plugins';
 import onKeyDown from './keys';
 
+const createEmptyRawDoc = () => {
+  const emptyText = Text.create('');
+  const emptyBlock = Block.create({ kind: 'block', type: 'paragraph', nodes: [ emptyText ] });
+  return { nodes: [emptyBlock] };
+};
+
+const createSlateValue = (rawValue) => {
+  const rawDoc = rawValue && markdownToSlate(rawValue);
+  const rawDocHasNodes = !isEmpty(get(rawDoc, 'nodes'))
+  const document = Document.fromJSON(rawDocHasNodes ? rawDoc : createEmptyRawDoc());
+  return Value.create({ document });
+}
+
 export default class Editor extends Component {
   static propTypes = {
     onAddAsset: PropTypes.func.isRequired,
@@ -24,21 +37,24 @@ export default class Editor extends Component {
 
   constructor(props) {
     super(props);
-    const emptyText = Text.create('');
-    const emptyBlock = Block.create({ kind: 'block', type: 'paragraph', nodes: [ emptyText ] });
-    const emptyRawDoc = { nodes: [emptyBlock] };
-    const rawDoc = this.props.value && markdownToSlate(this.props.value);
-    const rawDocHasNodes = !isEmpty(get(rawDoc, 'nodes'))
-    const document = Document.fromJSON(rawDocHasNodes ? rawDoc : emptyRawDoc);
-    const value = Value.create({ document });
     this.state = {
-      value,
+      value: createSlateValue(props.value),
       shortcodePlugins: getEditorComponents(),
     };
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return !this.state.value.equals(nextState.value);
+    return (this.props.value !== null && nextProps.value === null)
+      || (this.props.value === null && nextProps.value !== null)
+      || !this.state.value.equals(nextState.value);
+  }
+
+  componentWillUpdate(nextProps) {
+    const shouldResetState = (this.props.value !== null && nextProps.value === null)
+      || (this.props.value === null && nextProps.value !== null)
+    if (shouldResetState) {
+      this.setState({ value: createSlateValue(nextProps.value) });
+    }
   }
 
   handlePaste = (e, data, change) => {
