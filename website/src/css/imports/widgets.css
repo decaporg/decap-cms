@@ -3,7 +3,7 @@
 }
 
 .widgets__cloud {
-    margin: $micro -$micro;
+    margin: $micro calc(-$micro / 2);
 }
 
 .widgets__item {
@@ -11,9 +11,10 @@
     border: 2px solid $darkGreen;
     border-radius: $borderRadius;
     padding: calc($micro /2) $micro;
-    margin: $micro;
+    margin: calc($micro / 2);
     cursor: pointer;
     transition: color .2s ease, background .2s ease;
+    display: inline-block;
 }
 
 .widgets__item:hover {
@@ -27,16 +28,57 @@
 }
 
 .widgets__container {
+    margin: 1em 0;
+    position: relative;
+}
+
+.widgets__background {
+    position: absolute;
+    left: 0;
+    top: 0;
     background: $lightGrey;
-    padding: .5em 1em;
-    margin: 1.5em 0;
-    transition: height .2s ease
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    transition: height .15s ease;
 }
 
 .widget {
+    padding: .5em 1em;
     display: none;
 }
 
 .widget_open {
     display: block;
+}
+
+.widget_closing {
+    display: block;
+    animation: widgetOpacity .15s ease forwards reverse;
+}
+
+.widget_opening {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    animation: widgetOpacity .15s .05s ease forwards;
+}
+
+@keyframes widgetOpacity {
+    from {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+.widget pre {
+    background: #eee !important; /* making sure the pre has proper background contrast */
+}
+
+.widget h3 {
+    margin-top: 0 !important;
 }
