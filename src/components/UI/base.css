@@ -86,12 +86,19 @@
     box-shadow: 0 2px 4px 0 rgba(19, 39, 48, .12);
   }
 
+  --dropShadowMain: {
+    box-shadow: 0 2px 6px 0 rgba(68, 74, 87, 0.05),
+                0 1px 3px 0 rgba(68, 74, 87, 0.10);
+  }
+
   --dropShadowMiddle: {
-    box-shadow: 0 2px 6px 0 rgba(68,74,87,0.15), 0 1px 3px 0 rgba(68,74,87,0.30);
+    box-shadow: 0 2px 6px 0 rgba(68,74,87,0.15),
+                0 1px 3px 0 rgba(68,74,87,0.30);
   }
 
   --dropShadowDeep: {
-    box-shadow: 0 4px 12px 0 rgba(68,74,87,0.15), 0 1px 3px 0 rgba(68,74,87,0.25);
+    box-shadow: 0 4px 12px 0 rgba(68,74,87,0.15),
+                0 1px 3px  0 rgba(68,74,87,0.25);
   }
 
   --caretDown: {
@@ -104,8 +111,8 @@
   }
 
   --card: {
-    @apply(--dropShadow);
-    border-radius: 8px;
+    @apply(--dropShadowMain);
+    border-radius: 5px;
     background-color: #fff;
   }
 
@@ -116,6 +123,16 @@
     border: 0;
     border-radius: var(--borderRadius);
     cursor: pointer;
+  }
+
+  --buttonShadow {
+    @apply(--button);
+    @apply(--dropShadowDeep);
+
+    &:hover {
+      color: white;
+      background-color: #555b65;
+    }
   }
 
   --textBadge: {
