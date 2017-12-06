@@ -1,0 +1,35 @@
+.communitysupport {
+  @neat-row;
+  background-color: white;
+  padding: $xl 0 $large 0;
+
+  .community-features {
+
+
+    .feature {
+      margin-top: $small;
+
+      @media screen and (min-width: $tablet) {
+        @neat-span-columns 6;
+      }
+
+      &.contributors {
+
+        @media screen and (min-width: $tablet) {
+          @neat-span-columns 8;
+        }
+
+        .contributor-list {
+          margin-top: $micro;
+          img {
+            width: 32px;
+            margin: 0 $micro $micro 0;
+            border-radius: 16px;
+          }
+        }
+
+      }
+
+    }
+  }
+}

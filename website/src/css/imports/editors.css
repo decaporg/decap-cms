@@ -1,0 +1,39 @@
+.editors {
+  @neat-row;
+  margin-top: $xl;
+  margin-bottom: $xxl;
+  text-align: center;
+
+  h2, p {
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .editors-features {
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: $large;
+
+    @media screen and (max-width: $desktop) {
+      align-items: center;
+      flex-direction: column;
+    }
+
+    .feature {
+      max-width: 320px;
+
+      img {
+        max-width: 280px;
+        margin-bottom: $tiny;
+        border-radius: $borderRadius;
+        box-shadow: 0 4px 12px 0 rgba(68,74,87,0.10), 0 1px 3px 0 rgba(68,74,87,0.20);
+      }
+
+      @media screen and (max-width: $desktop) {
+        margin-top: $medium;
+      }
+
+    }
+  }
+}

@@ -1,5 +1,5 @@
 .notification {
-  background: #414344;
+  background-color: $darkerGrey;
   box-sizing: border-box;
   color: white;
   display: block;
@@ -82,13 +82,13 @@ header {
 
   &.scrolled {
     @media screen and (min-width: $mobile) {
-      background: $darkGrey;
+      background: $darkerGrey;
       padding: $small 0;
     }
   }
 
   &.docs {
-    background: $darkGrey;
+    background: $darkerGrey;
     padding: $small 0;
 
     @media screen and (max-width: $mobile) {
@@ -132,10 +132,14 @@ header {
     }
 
     @media screen and (min-width: $tablet) {
-      margin-left: $micro;
+      margin-left: $tiny;
     }
 
-    &.nav-link:not(:nth-child(2)):before {
+    &.nav-link:nth-child(4) {
+      margin-right: $tiny;
+    }
+
+    /*&.nav-link:not(:nth-child(2)):before {
       content: '•';
       padding-right: $tiny;
       color: $green;
@@ -147,7 +151,7 @@ header {
       @media screen and (min-width: $tablet) {
         padding-right: $tiny;
       }
-    }
+    }*/
 
     &:hover {
       color: $green;
@@ -215,9 +219,8 @@ header {
     display: none;
     padding: $micro;
     width: auto;
-    border: 1px solid white;
     border-radius: 4px;
-    background: none;
+    background-color: rgba(255,255,255,0.1);
     color: white;
     margin: 0 $micro 0 10px;
     padding-bottom: 9px;

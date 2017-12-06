@@ -1,10 +1,10 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,700,900|Roboto+Mono:400,700);
 
 body {
+  background-color: $shadeBlue;
   color: $grey;
   font-family: $roboto;
   margin: 0;
-  text-align: center;
   -webkit-font-smoothing: antialiased;
   display: flex;
   flex-direction: column;
@@ -20,10 +20,10 @@ body {
 }
 
 h1 {
-  font-weight: $light;
-  font-size: $small;
-  line-height: $medium;
-  margin: 0 0 -10px 0;
+  font-weight: $bold;
+  font-size: $medium;
+  line-height: $large;
+  margin: 0 0 $small 0;
 
   @media screen and (min-width: $tablet) {
     font-size: 36px;
@@ -33,9 +33,9 @@ h1 {
 
 h2 {
   font-family: $roboto;
-  font-size: 18px;
-  font-weight: $bold;
-  margin: 0;
+  font-size: $small;
+  font-weight: $regular;
+  margin: 0 auto $tiny auto;
 
   &.subhead {
     font-weight: $regular;
@@ -44,20 +44,16 @@ h2 {
 
 h3 {
   font-family: $roboto;
-  font-size: $small;
-  font-weight: $regular;
+  font-size: $tiny;
+  font-weight: $bold;
   line-height: 32px;
   margin: 0;
 }
 
 p, ul {
-  font-size: 14px;
-  line-height: $small;
-
-  @media screen and (min-width: $tablet) {
-    font-size: 18px;
-    line-height: 32px;
-  }
+  font-size: $tiny;
+  line-height: 26px;
+  margin: 0;
 }
 
 a {

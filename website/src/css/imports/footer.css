@@ -1,12 +1,11 @@
 footer {
-  background: $lighterGrey;
-  padding: $small 0;
+  background: white;
+  padding: $medium 0;
 
   p {
     color: $grey;
     font-family: $roboto;
     font-size: 12px;
     opacity: .5;
-    text-align: center;
   }
 }

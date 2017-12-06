@@ -1,50 +1,49 @@
 ---
 hero:
-  headline: An open-source CMS for your Git workflow
-  subhead: |
-    - Content management in a single-page app
-    - Built in React.js with extensible components
-    - Integrate with any build tool
-    - Plug in to any static site generator
-  ctas: |
-    - [Take it for a test drive →](/docs/test-drive)
+  headline: "An open source CMS for any static site generator"
+  subhead: "The Subhead"
+  devhook: "Built developer-first."
+  devfeatures:
+    - feature: "Static + content management = ♥"
+      description: "Get the speed, security, and scalability of a static site, while still providing a convenient editing interface for content."
+    - feature: "An integrated part of your Git workflow"
+      description: "Content is stored in your Git repository alongside your code for easier versioning, multi-channel publishing, and the option to handle content updates directly in Git."
+    - feature: "An extensible CMS built on React"
+      description: "Netlify CMS is built as a single-page React app. Create custom-styled previews, UI widgets, and editor plugins or add backends to support different Git platform APIs."
 productvideo:
   thumbnail: "/img/hero-graphic.jpg"
   mp4: "/img/demo.mp4"
   ogg: "/img/demo.ogg"
   webm: "/img/demo.webm"
 
-thanksdevs: "**Thanks to all our contributors.**Keep shooting for the stars with Netlify CMS."
+cta:
+  primaryhook: "Getting started is simple and free."
+  primary: "Choose a template that’s pre-configured with a static site generator and deploys to a global CDN in one click."
+  button: "[Get started →](/docs/start-with-a-template/)"
+  secondary: "Or do you just want to add Netlify CMS to your existing site?"
+  secondarylink: "[Read the setup guide.](/docs/quick-start/)"
 
-collab:
-  hook: "Integrate the roles of developers, writers, and editors."
-  body: "Writers can focus on writing. Editors can approve content and publish with ease. Developers can use their favorite tools and libraries. **Netlify CMS keeps all of their contributions together, in Git.**"
-  graphicpath: "/img/collab.svg"
+editors:
+  hook: "A CMS that developers and content editors can agree on."
+  intro: "You get to implement modern front end tools to deliver a faster, safer, and more scalable site.<br />Editors get a friendly UI and intuitive workflow that meets their content management requirements."
+  features:
+    - feature: "Editor-friendly user interface"
+      description: "The web-based app includes rich-text editing, real-time preview, and drag-and-drop media uploads."
+      imgpath: "/img/hero-graphic.jpg"
+    - feature: "Intuitive workflow for content teams"
+      description: "Writers and editors can easily manage content from draft to review to publish across your custom content types."
+      imgpath: "/img/hero-graphic.jpg"
+    - feature: "Instant access, even without GitHub"
+      description: "With Git Gateway, you can add CMS access for any team member — even if they don’t have a GitHub account. "
+      imgpath: "/img/hero-graphic.jpg"
 
-featureshook: "Designed with developers in mind - it’s in our DNA."
+community:
+  hook: "Supported by a growing community."
+  features:
+    - feature: "Support when you need it"
+      description: "Get up and running with comprehensive documentation and templates or work through difficult problems with help from the community on Gitter."
+    - feature: "A community-driven project you can help evolve"
+      description: "Netlify CMS is built by a community of 60+ contributors — and you can help. Join our bi-weekly planning sessions or read the contributing guide to join in."
+  contributors: "Thank you to our awesome contributors."
 
-features:
-  - feature: "Fast, web-based UI"
-    description: "Built with React, featuring rich-text editing, real-time preview, and drag-and-drop media uploads."
-  - feature: "Platform agnostic"
-    description: "Works with most static site generators for sites stored in GitHub."
-  - feature: "Easy installation"
-    description: "Add two files to your site, include or link to the JS, and add your custom configuration."
-  - feature: "Modern authentication"
-    description: "Connect with Netflify's authentication service or roll your own, using GitHub and JSON web tokens."
-  - feature: "Flexible content types"
-    description: "Specify an unlimited number of content types with custom fields."
-  - feature: "Fully extensible"
-    description: "Create custom-styled previews, UI widgets, and editor plugins."
-
-featuresgraphic: "/img/helix.svg"
-
-inspiration: |
-  Netlify CMS is part of a long evolution in content management for the web. Even in the budding realm of the [JAMstack](https://www.jamstack.org) and [static site generators](https://www.staticgen.com), developers have a variety [“headless” CMS](http://www.headlesscms.org) options to choose from.
-
-  Proprietary services like Contentful and DatoCMS provide the ease and polish of a concierge provider, while simple open source projects like Prose and Google Drive CMS provide targeted functionality for limited use cases. We love that these other projects help advance the modern web, and we believe there will always be a place for them in the JAMstack ecosystem.
-
-  With Netlify CMS, we hope to carve a different niche. We aim to do for the JAMstack what WordPress did for dynamic sites back in the day. In other words, we want to build a CMS that is open-source but fully-featured and production-ready, that’s as easy to customize as it is to use, and that developers and content editors can build a community around.
-
-  [Help us make it happen!](/docs/contributor-guide)
 ---

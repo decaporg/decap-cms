@@ -6,12 +6,16 @@ module.exports = {
   lightestGrey: '#E6E6E6',
   lighterGrey: '#F7F8F8',
   lightGrey: '#F6F6F6',
+  lightishGrey: '#51555D',
   grey: '#313D3E',
   darkGrey: '#2F3132',
   darkerGrey: '#1C1E1E',
+  blueGrey: '#9AA1AE',
   lightGreen: '#97bf2f',
   green: '#C9FA4B',
   darkGreen: '#7CA511',
+  shadeBlue: '#EFF0F4',
+  blue: '#3A69C7',
 
   // typography
   thin: 100,
@@ -35,7 +39,7 @@ module.exports = {
 
   // border radius
   borderRadius: '4px',
-  largeBorderRadius: '10px',
+  largeBorderRadius: '8px',
 
   // responsive breakpoints
   mobile: '480px',
