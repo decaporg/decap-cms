@@ -9,6 +9,22 @@ Widgets define the data type and interface for entry fields. Netlify CMS comes w
 
 To see working examples of all of the built-in widgets, try making a 'Kitchen Sink' collection item on the [CMS demo site](https://cms-demo.netlify.com). (No login required: click the login button and the CMS will open.) You can refer to the demo [configuration code](https://github.com/netlify/netlify-cms/blob/master/example/config.yml#L60) to see how each field was configured.
 
+
+## Common widget options
+
+The following options are available on all fields:
+
+- `required`: specify as `false` to make a field optional; defaults to `true`
+- `pattern`: add field validation by specifying a list with a regex pattern and an error message; more extensive validation can be achieved with [custom widgets](https://www.netlifycms.org/docs/custom-widgets/#advanced-field-validation)
+  - Example:
+
+    ```yaml
+    - label: "Title"
+      name: "title"
+      widget: "string"
+      pattern: ['.{10,}', "Must have at least 20 characters"]
+    ```
+
  
 ## Boolean
 
