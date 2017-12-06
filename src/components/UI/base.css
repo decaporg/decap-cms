@@ -155,11 +155,6 @@
     line-height: 23px;
   }
 
-  --buttonShadow {
-    @apply(--button);
-    @apply(--dropShadowDeep);
-  }
-
   --textBadge: {
     color: #3a69c7;
     font-size: 13px;

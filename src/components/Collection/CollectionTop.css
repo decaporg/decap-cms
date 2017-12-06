@@ -18,7 +18,8 @@
 }
 
 .nc-collectionPage-topNewButton {
-  @apply(--buttonShadow);
+  @apply(--button);
+  @apply(--dropShadowDeep);
   @apply(--buttonDefault);
 }
 
