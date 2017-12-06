@@ -8,4 +8,7 @@ footer {
     font-size: 12px;
     opacity: .5;
   }
+  a {
+    color: $grey;
+  }
 }
