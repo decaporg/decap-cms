@@ -61,6 +61,25 @@
   }
 }
 
+.nc-listControl-toggleCollapseAllButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  margin-top: 20px;
+  padding: 8px 8px 8px 0;
+  border: 0;
+  font-size: 12px;
+  border-radius: var(--borderRadius);
+  background-color: var(--controlBGColor);
+}
+
+.nc-listControl-toggleCollapseAllButtonText {
+  margin-left: 4px;
+  text-transform: lowercase;
+  color: #8b8b8b;
+}
+
 .nc-listControl-item {
   position: relative;
   padding-left: 24px;
