@@ -7,6 +7,8 @@ position: 30
 
 Widgets define the data type and interface for entry fields. Netlify CMS comes with several built-in widgets. Click the widget names in the sidebar to jump to specific widget details. We’re always adding new widgets, and you can also [create your own](/docs/extending)!
 
+To see working examples of all of the built-in widgets, try making a 'Kitchen Sink' collection item on the [CMS demo site](https://cms-demo.netlify.com). (No login required: click the login button and the CMS will open.) You can refer to the demo [configuration code](https://github.com/netlify/netlify-cms/blob/master/example/config.yml#L60) to see how each field was configured.
+
 | Name       | UI                                 | Data Type                                          |
 | --------   | ---------------------------------- | ---------------------------------------------------|
 | `string`   | text input                         | string                                             |
@@ -23,6 +25,7 @@ Widgets define the data type and interface for entry fields. Netlify CMS comes w
 | `list`     | repeatable group of other widgets  | Immutable List of objects containing field values  |
 | `relation` | text input w/ suggestions dropdown | value of `valueField` in related entry (see below) |
 
+ 
 ## Boolean
 
 The boolean widget translates a toggle switch input to a true/false value.
@@ -41,7 +44,7 @@ The boolean widget translates a toggle switch input to a true/false value.
 
 ## Date
 
-The Date widget translates a date picker input to a date string. For saving date and time together, use the [DateTime](#datetime) widget.
+The date widget translates a date picker input to a date string. For saving date and time together, use the [DateTime](#datetime) widget.
 
 - Name: `date`
 - UI: date picker
@@ -62,7 +65,7 @@ The Date widget translates a date picker input to a date string. For saving date
 
 ## DateTime
 
-The DateTime widget translates a datetime picker to a datetime string. For saving the date only, use the [Date](#date) widget.
+The datetime widget translates a datetime picker to a datetime string. For saving the date only, use the [Date](#date) widget.
 
 - Name: `datetime`
 - UI: datetime picker
@@ -83,7 +86,7 @@ The DateTime widget translates a datetime picker to a datetime string. For savin
 
 ## File
 
-The File widget allows editors to upload a file or select an existing one from the media library. The path to the file will be saved to the field as a string.
+The file widget allows editors to upload a file or select an existing one from the media library. The path to the file will be saved to the field as a string.
 
 - Name: `file`
 - UI: file picker button opens media gallery
@@ -102,7 +105,7 @@ The File widget allows editors to upload a file or select an existing one from t
 
 ## Image
 
-The Image widget allows editors to upload an image or select an existing one from the media library. The path to the image file will be saved to the field as a string.
+The image widget allows editors to upload an image or select an existing one from the media library. The path to the image file will be saved to the field as a string.
 
 - Name: `image`
 - UI: file picker button opens media gallery allowing image files (jpg, jpeg, webp, gif, png, bmp, tiff, svg) only; displays selected image thumbnail
@@ -141,7 +144,7 @@ Lists of objects are supported as well and require a nested field list.
 
 ## Number
 
-The Number widget uses an HTML number input, saving the value as a string, integer, or floating point number.
+The number widget uses an HTML number input, saving the value as a string, integer, or floating point number.
 
 - Name: `number`
 - UI: HTML [number input](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/number)
@@ -164,7 +167,41 @@ The Number widget uses an HTML number input, saving the value as a string, integ
   ```
 
 
-### Relation Widget
+## Object
+
+The object widget allows you to group multiple widgets together, nested under a single field. You can choose any widget as a child of an object widget—even other objects.
+
+- Name: `object`
+- UI: a field containing other fields
+- Data type: immutable map containing the sub-field values
+- Options:
+  - `default`: you can set defaults within each sub-field's configuration
+  - `fields`: (**required**) a nested list of fields to include in your widget
+- Example:
+
+  ```yaml
+  - label: "Profile"
+    name: "profile"
+    widget: "object"
+    fields:
+      - {label: "Public", name: "public", widget: "boolean", default: true}
+      - {label: "Name", name: "name", widget: "string"}
+      - label: "Birthdate"
+        name: "birthdate"
+        widget: "date"
+        default: ""
+        format: "MM/DD/YYYY"
+      - label: "Address"
+        name: "address"
+        widget: "object"
+        fields: 
+          - {label: "Street Address", name: "street", widget: "string"}
+          - {label: "City", name: "city", widget: "string"}
+          - {label: "Postal Code", name: "post-code", widget: "string"}
+  ```
+
+
+## Relation [WIP]
 
 The relation widget allows you to reference an existing entry from within the entry you're editing. It provides a search input with a list of entries from the collection you're referencing, and the list automatically updates with matched entries based on what you've typed.
 
@@ -205,23 +242,64 @@ collections:
 ```
 
 
-### Select Widget
+## Select
 
-The select widget allows you to pick a string value from a drop down menu
+The select widget allows you to pick a single string value from a dropdown menu.
 
-```yaml
-collections:
-  - name: posts
-    label: Post
-    folder: "_posts"
-    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
-    create: true
-    fields:
-      - {label: Title, name: title, widget: string, tagname: h1}
-      - {label: Body, name: body, widget: markdown}
-      - {label: Align Content, name: align, widget: select, options: ['left', 'center', 'right']}
-```
+- Name: `select`
+- UI: HTML select input
+- Data type: string
+- Options:
+  - `default`: accepts a string; defaults to an empty string
+  - `options`: (**required**) an array or list of options for the dropdown menu; can be listed in two ways:
+    - string values: the label displayed in the dropdown is the value saved in the file
+    - object with `label` and `value` fields: the label displays in the dropdown; the value is saved in the file
+- Example (options as strings):
+  ```yaml
+  - label: "Align Content"
+    name: "align"
+    widget: "select"
+    options: ["left", "center", "right"]
+  ```
+- Example (options as objects):
+  ```yaml
+  - label: "City"
+    name: "airport-code"
+    widget: "select"
+    options:
+      - { label: "Chicago", value: "ORD" }
+      - { label: "Paris", value: "CDG" }
+      - { label: "Tokyo", value: "HND" }
+  ```
 
 
+## String
+
+The string widget translates a basic text input to a string value. For larger textarea inputs, use the [text](#text) widget.
+
+- Name: `string`
+- UI: text input
+- Data type: string
+- Options:
+  - `default`: accepts a string; defaults to an empty string
+- Example:
+
+  ```yaml
+  - {label: "Title", name: "title", widget: "string"}
+  ```
 
 
+## Text
+
+The text widget takes a multiline text field and saves it as a string. For shorter text inputs, use the [string](#string) widget.
+
+- Name: `text`
+- UI: HTML textarea
+- Data type: string
+- Options:
+  - `default`: accepts a string; defaults to an empty string
+- Example:
+
+  ```yaml
+  - {label: "Description", name: "description", widget: "text"}
+  ```
