@@ -11,7 +11,7 @@
     background-color: transparent;
     border-radius: 0;
     color: var(--colorText);
-    font-weight: normal;
+    font-weight: 500;
     border-bottom: 1px solid #eaebf1;
     padding: 10px 14px;
     display: flex;
@@ -25,6 +25,7 @@
     &:hover,
     &:active,
     &:focus {
+      color: var(--colorBlue);
       background-color: var(--colorActiveBackground);
     }
   }
@@ -38,16 +39,17 @@
 
 .nc-dropdownButton {
   @apply --button;
+  @apply --buttonDefault;
   display: block;
   padding-left: 20px;
   padding-right: 40px;
 
   &:after {
     @apply(--caretDown);
-    content: '';
+    /*content: '';*/
     display: block;
     position: absolute;
-    top: 16px;
+    top: 0;
     right: 16px;
   }
 }

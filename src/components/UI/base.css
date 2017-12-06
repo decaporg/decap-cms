@@ -103,12 +103,16 @@
   }
 
   --caretDown: {
-    width: 0;
+    /*width: 0;
     height: 0;
     border-left: 4px solid transparent;
     border-right: 4px solid transparent;
     border-top: 5px solid #fff;
-    border-radius: 2px;
+    border-radius: 2px;*/
+    width: 9px;
+    height: 6px;
+
+    content: url("data:image/svg+xml; utf8, <svg xmlns='http://www.w3.org/2000/svg' width='9' height='6'><path fill='#FFF' fill-rule='evenodd' d='M4.1 5.467L.6.8A.5.5 0 0 1 1 0h7a.5.5 0 0 1 .4.8L4.9 5.467a.5.5 0 0 1-.8 0z'/></svg>");
   }
 
   --card: {
@@ -120,20 +124,40 @@
   --button: {
     color: var(--colorButtonText);
     background-color: var(--colorButton);
-    padding: 10px 30px;
     border: 0;
     border-radius: var(--borderRadius);
     cursor: pointer;
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  --buttonDefault {
+    line-height: 36px;
+    font-weight: 500;
+
+    padding: 0 30px;
+    color: var(--colorButtonText);
+
+    &:focus,
+    &:hover {
+      color: white;
+      background-color: #555a65;
+    }
+  }
+
+  --buttonMedium {
+    line-height: 27px;
+  }
+
+  --buttonSmall {
+    line-height: 23px;
   }
 
   --buttonShadow {
     @apply(--button);
     @apply(--dropShadowDeep);
-
-    &:hover {
-      color: white;
-      background-color: #555b65;
-    }
   }
 
   --textBadge: {
@@ -168,14 +192,16 @@
     @apply(--card);
     width: var(--topCardWidth);
     max-width: 100%;
-    padding: 16px 20px;
+    padding: 18px 20px;
     margin-bottom: 28px;
   }
 
   --cardTopHeading: {
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 600;
-    margin: 12px 0 0;
+    line-height: 37px;
+    margin: 0;
+    padding: 0;
   }
 
   --cardTopDescription: {
@@ -188,6 +214,15 @@
 
 *, *:before, *:after {
   box-sizing: border-box;
+}
+
+:focus {
+  outline: -webkit-focus-ring-color auto 5px;
+
+}
+
+input {
+  border: 0;
 }
 
 body {
@@ -212,6 +247,11 @@ h1, h2, h3, h4, h5, h6, p {
 
 h1, h2, h3, h4, h5, h6 {
   font-weight: 500;
+  letter-spacing: 0.4px;
+
+  font-smooth: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 h1 {

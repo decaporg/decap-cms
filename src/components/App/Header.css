@@ -60,10 +60,12 @@
 }
 
 .nc-appHeader-quickNew {
+  @apply(--buttonMedium);
+
   font-size: 12px;
   font-weight: 600;
   background-color: #7d8190;
-  padding: 6px 24px 6px 14px;
+  padding: 0 24px 0 14px;
   margin-right: 8px;
   color: #fff;
   border-radius: 3px;
@@ -75,7 +77,7 @@
   }
 
   &:after {
-    top: 11px;
+    top: 0;
   }
 }
 

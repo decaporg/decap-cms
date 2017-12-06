@@ -141,6 +141,7 @@ export default class Toolbar extends React.Component {
           />
           <div className="nc-toolbar-dropdown">
             <Dropdown
+              dropdownTopOverlap="36px"
               button={
                 <ToolbarButton
                   label="Add Component"

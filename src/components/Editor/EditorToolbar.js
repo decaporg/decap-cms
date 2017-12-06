@@ -43,7 +43,9 @@ const EditorToolbar = (
           }
         </div>
         <div className="nc-entryEditor-toolbar-mainSection-right">
-          <Dropdown label={isPersisting ? 'Saving...' : 'Save and Publish'}>
+          <Dropdown
+            dropdownTopOverlap="40px" 
+            label={isPersisting ? 'Saving...' : 'Save and Publish'}>
             <DropdownItem label="Save and publish" icon="folder" onClick={onPersist}/>
             <DropdownItem label="Save, publish, and create new" icon="add" onClick={onPersist}/>
           </Dropdown>
