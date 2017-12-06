@@ -5,6 +5,7 @@
         {{- end -}}
     </div>
     <div class="widgets__container">
+        <span class="widgets__background"></span>
         {{- range $index, $widget := where .Site.RegularPages "Type" "eq" "widget" -}}
             <div class="widget {{if eq $index 0}}widget_open{{end}}" id="{{.Params.target}}">
                 {{.Content}}
