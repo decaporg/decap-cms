@@ -25,12 +25,12 @@ const EditorToolbar = (
         <div className="nc-entryEditor-toolbar-backArrow">←</div>
         <div>
           <div className="nc-entryEditor-toolbar-backCollection">
-            Writing in {collection.get('label')} collection
+            Writing in <strong>{collection.get('label')}</strong> collection
           </div>
           {
             hasChanged
              ? <div className="nc-entryEditor-toolbar-backStatus-hasChanged">Unsaved Changes</div>
-             : <div className="nc-entryEditor-toolbar-backStatus">Changes saved &#10003;</div>
+             : <div className="nc-entryEditor-toolbar-backStatus">Changes saved &#10004;</div>
           }
         </div>
       </Link>

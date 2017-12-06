@@ -17,7 +17,7 @@
 }
 
 .nc-collectionPage-topNewButton {
-  @apply(--button);
+  @apply(--buttonShadow);
 }
 
 .nc-collectionPage-top-viewControls {
