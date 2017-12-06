@@ -76,9 +76,6 @@
     color: #fff;
   }
 
-  &:after {
-    top: 0;
-  }
 }
 
 .nc-appHeader-avatar {

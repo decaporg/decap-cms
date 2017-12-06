@@ -61,7 +61,7 @@
     animation: loader 0.6s linear;
     animation-iteration-count: infinite;
     border-radius: 500rem;
-    border-color: #767676 transparent transparent;
+    border-color: #3A69C7 transparent transparent;
     border-style: solid;
     border-width: 0.2em;
     box-shadow: 0px 0px 0px 1px transparent;
@@ -73,7 +73,8 @@
   height: auto !important;
   text-align: center;
   color: #767676;
-  margin-top: 35px;
+  margin-top: 55px;
+  line-height: 35px;
 }
 
 .nc-loader-active {
