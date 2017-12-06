@@ -6,6 +6,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-bottom: 20px;
 }
 
 .nc-collectionPage-top-description {
@@ -17,7 +18,9 @@
 }
 
 .nc-collectionPage-topNewButton {
-  @apply(--buttonShadow);
+  @apply(--button);
+  @apply(--dropShadowDeep);
+  @apply(--buttonDefault);
 }
 
 .nc-collectionPage-top-viewControls {

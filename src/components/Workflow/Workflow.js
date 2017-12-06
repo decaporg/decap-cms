@@ -8,7 +8,7 @@ import {
   loadUnpublishedEntries,
   updateUnpublishedEntryStatus,
   publishUnpublishedEntry,
-  deleteUnpublishedEntry 
+  deleteUnpublishedEntry
 } from 'Actions/editorialWorkflow';
 import { selectUnpublishedEntriesByStatus } from 'Reducers';
 import { EDITORIAL_WORKFLOW, status } from 'Constants/publishModes';
@@ -55,7 +55,12 @@ class Workflow extends Component {
         <div className="nc-workflow-top">
           <div className="nc-workflow-top-row">
             <h1 className="nc-workflow-top-heading">Editorial Workflow</h1>
-            <Dropdown label="New Post" dropdownWidth="160px" dropdownPosition="left">
+            <Dropdown
+              label="New Post"
+              dropdownWidth="160px"
+              dropdownPosition="left"
+              dropdownTopOverlap="40px"
+            >
               {
                 collections.filter(collection => collection.get('create')).toList().map(collection =>
                   <DropdownItem
