@@ -73,11 +73,27 @@ export function loadMedia(opts = {}) {
 }
 
 export function persistMedia(file, opts = {}) {
-  const { privateUpload, existingFile } = opts;
+  const { privateUpload } = opts;
   return async (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
     const integration = selectIntegration(state, null, 'assetStore');
+    const files = state.mediaLibrary.get('files');
+    const existingFile = files.find(existingFile => existingFile.name === file.name);
+
+    /**
+     * Check for existing files of the same name before persisting. If no asset
+     * store integration is used, files are being stored in Git, so we can
+     * expect file names to be unique. If an asset store is in use, file names
+     * may not be unique, so we forego this check.
+     */
+    if (!integration && existingFile) {
+      if (!window.confirm(`${file.name} already exists. Do you want to replace it?`)) {
+        return;
+      } else {
+        await dispatch(deleteMedia(existingFile, { privateUpload }));
+      }
+    }
 
     dispatch(mediaPersisting());
 
@@ -85,14 +101,6 @@ export function persistMedia(file, opts = {}) {
       const assetProxy = await createAssetProxy(file.name.toLowerCase(), file, false, privateUpload);
       dispatch(addAsset(assetProxy));
       if (!integration) {
-        if (existingFile) {
-          if (!window.confirm('This media already exist, do you want to replace it?')) {
-            return dispatch(mediaPersistFailed({ privateUpload }));
-          }
-
-          dispatch(deleteMedia(existingFile, { privateUpload }));
-        }
-
         const asset = await backend.persistMedia(assetProxy);
         return dispatch(mediaPersisted(asset));
       }

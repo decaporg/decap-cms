@@ -120,17 +120,8 @@ class MediaLibrary extends React.Component {
     const { files: fileList } = event.dataTransfer || event.target;
     const files = [...fileList];
     const file = files[0];
-    const existingFile = this.props.files.find((existingFile) => existingFile.name === file.name);
 
-    /**
-     * Upload the selected file, then refresh the media library. This should be
-     * improved in the future, but isn't currently resulting in noticeable
-     * performance/load time issues.
-     */
-    await persistMedia(file, { privateUpload, existingFile });
-
-    // Reset input value
-    event.target.value = '';
+    await persistMedia(file, { privateUpload });
 
     this.scrollToTop();
   };
