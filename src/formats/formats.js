@@ -3,19 +3,21 @@ import tomlFormatter from './toml';
 import jsonFormatter from './json';
 import FrontmatterFormatter from './frontmatter';
 
+export const supportedFormats = [
+  'yml',
+  'yaml',
+  'toml',
+  'json',
+  'frontmatter',
+];
+
 export const formatToExtension = format => ({
-  markdown: 'md',
+  yml: 'yml',
   yaml: 'yml',
   toml: 'toml',
   json: 'json',
-  html: 'html',
+  frontmatter: 'md',
 }[format]);
-
-function formatByType(type) {
-  // Right now the only type is "editorialWorkflow" and
-  // we always returns the same format
-  return FrontmatterFormatter;
-}
 
 export function formatByExtension(extension) {
   return {
@@ -26,7 +28,7 @@ export function formatByExtension(extension) {
     md: FrontmatterFormatter,
     markdown: FrontmatterFormatter,
     html: FrontmatterFormatter,
-  }[extension] || FrontmatterFormatter;
+  }[extension];
 }
 
 function formatByName(name) {
@@ -34,17 +36,32 @@ function formatByName(name) {
     yml: yamlFormatter,
     yaml: yamlFormatter,
     toml: tomlFormatter,
+    json: jsonFormatter,
     frontmatter: FrontmatterFormatter,
-  }[name] || FrontmatterFormatter;
+  }[name];
 }
 
 export function resolveFormat(collectionOrEntity, entry) {
-  if (typeof collectionOrEntity === 'string') {
-    return formatByType(collectionOrEntity);
+  // If the format is specified in the collection, use that format.
+  const format = collectionOrEntity.get('format');
+  if (format) {
+    return formatByName(format);
   }
-  const path = entry && entry.path;
-  if (path) {
-    return formatByExtension(path.split('.').pop());
+
+  // If a file already exists, infer the format from its file extension.
+  const filePath = entry && entry.path;
+  if (filePath) {
+    const fileExtension = filePath.split('.').pop();
+    return formatByExtension(fileExtension);
   }
-  return formatByName(collectionOrEntity.get('format'));
+
+  // If creating a new file, and an `extension` is specified in the
+  //   collection config, infer the format from that extension.
+  const extension = collectionOrEntity.get('extension');
+  if (extension) {
+    return formatByExtension(extension);
+  }
+
+  // If no format is specified and it cannot be inferred, return the default.
+  return formatByName('frontmatter');
 }

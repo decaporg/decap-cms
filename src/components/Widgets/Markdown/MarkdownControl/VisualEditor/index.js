@@ -1,14 +1,14 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { get, isEmpty, debounce } from 'lodash';
-import { State, Document, Block, Text } from 'slate';
+import { Value, Document, Block, Text } from 'slate';
 import { Editor as Slate } from 'slate-react';
 import { slateToMarkdown, markdownToSlate, htmlToSlate } from '../../serializers';
 import registry from '../../../../../lib/registry';
 import Toolbar from '../Toolbar/Toolbar';
 import { Sticky } from '../../../../UI/Sticky/Sticky';
-import { MARK_COMPONENTS, NODE_COMPONENTS } from './components';
-import RULES from './rules';
+import { renderNode, renderMark } from './renderers';
+import { validateNode } from './validators';
 import plugins, { EditListConfigured } from './plugins';
 import onKeyDown from './keys';
 
@@ -21,20 +21,15 @@ export default class Editor extends Component {
     const rawDoc = this.props.value && markdownToSlate(this.props.value);
     const rawDocHasNodes = !isEmpty(get(rawDoc, 'nodes'))
     const document = Document.fromJSON(rawDocHasNodes ? rawDoc : emptyRawDoc);
-    const editorState = State.create({ document });
+    const value = Value.create({ document });
     this.state = {
-      editorState,
-      schema: {
-        nodes: NODE_COMPONENTS,
-        marks: MARK_COMPONENTS,
-        rules: RULES,
-      },
+      value,
       shortcodePlugins: registry.getEditorComponents(),
     };
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return !this.state.editorState.equals(nextState.editorState);
+    return !this.state.value.equals(nextState.value);
   }
 
   handlePaste = (e, data, change) => {
@@ -46,22 +41,22 @@ export default class Editor extends Component {
     return change.insertFragment(doc);
   }
 
-  hasMark = type => this.state.editorState.activeMarks.some(mark => mark.type === type);
-  hasBlock = type => this.state.editorState.blocks.some(node => node.type === type);
+  hasMark = type => this.state.value.activeMarks.some(mark => mark.type === type);
+  hasBlock = type => this.state.value.blocks.some(node => node.type === type);
 
   handleMarkClick = (event, type) => {
     event.preventDefault();
-    const resolvedChange = this.state.editorState.change().focus().toggleMark(type);
+    const resolvedChange = this.state.value.change().focus().toggleMark(type);
     this.ref.onChange(resolvedChange);
-    this.setState({ editorState: resolvedChange.state });
+    this.setState({ value: resolvedChange.value });
   };
 
   handleBlockClick = (event, type) => {
     event.preventDefault();
-    let { editorState } = this.state;
-    const { document: doc, selection } = editorState;
+    let { value } = this.state;
+    const { document: doc, selection } = value;
     const { unwrapList, wrapInList } = EditListConfigured.changes;
-    let change = editorState.change();
+    let change = value.change();
 
     // Handle everything except list buttons.
     if (!['bulleted-list', 'numbered-list'].includes(type)) {
@@ -71,10 +66,10 @@ export default class Editor extends Component {
 
     // Handle the extra wrapping required for list buttons.
     else {
-      const isSameListType = editorState.blocks.some(block => {
+      const isSameListType = value.blocks.some(block => {
         return !!doc.getClosest(block.key, parent => parent.type === type);
       });
-      const isInList = EditListConfigured.utils.isSelectionInList(editorState);
+      const isInList = EditListConfigured.utils.isSelectionInList(value);
 
       if (isInList && isSameListType) {
         change = change.call(unwrapList, type);
@@ -88,15 +83,15 @@ export default class Editor extends Component {
 
     const resolvedChange = change.focus();
     this.ref.onChange(resolvedChange);
-    this.setState({ editorState: resolvedChange.state });
+    this.setState({ value: resolvedChange.value });
   };
 
   hasLinks = () => {
-    return this.state.editorState.inlines.some(inline => inline.type === 'link');
+    return this.state.value.inlines.some(inline => inline.type === 'link');
   };
 
   handleLink = () => {
-    let change = this.state.editorState.change();
+    let change = this.state.value.change();
 
     // If the current selection contains links, clicking the "link" button
     // should simply unlink them.
@@ -111,7 +106,7 @@ export default class Editor extends Component {
       if (!url) return;
 
       // If no text is selected, use the entered URL as text.
-      if (change.state.isCollapsed) {
+      if (change.value.isCollapsed) {
         change = change
           .insertText(url)
           .extend(0 - url.length);
@@ -123,19 +118,19 @@ export default class Editor extends Component {
     }
 
     this.ref.onChange(change);
-    this.setState({ editorState: change.state });
+    this.setState({ value: change.value });
   };
 
   handlePluginSubmit = (plugin, shortcodeData) => {
-    const { editorState } = this.state;
+    const { value } = this.state;
     const data = {
       shortcode: plugin.id,
       shortcodeData,
     };
     const nodes = [Text.create('')];
     const block = { kind: 'block', type: 'shortcode', data, isVoid: true, nodes };
-    let change = editorState.change();
-    const { focusBlock } = change.state;
+    let change = value.change();
+    const { focusBlock } = change.value;
 
     if (focusBlock.text === '') {
       change = change.setNodeByKey(focusBlock.key, block);
@@ -146,7 +141,7 @@ export default class Editor extends Component {
     change = change.focus();
 
     this.ref.onChange(change);
-    this.setState({ editorState: change.state });
+    this.setState({ value: change.value });
   };
 
   handleToggle = () => {
@@ -161,17 +156,17 @@ export default class Editor extends Component {
   };
 
   handleDocumentChange = debounce(change => {
-    const raw = change.state.document.toJSON();
+    const raw = change.value.document.toJSON();
     const plugins = this.state.shortcodePlugins;
     const markdown = slateToMarkdown(raw, plugins);
     this.props.onChange(markdown);
   }, 150);
 
   handleChange = change => {
-    if (!this.state.editorState.document.equals(change.state.document)) {
+    if (!this.state.value.document.equals(change.value.document)) {
       this.handleDocumentChange(change);
     }
-    this.setState({ editorState: change.state });
+    this.setState({ value: change.value });
   };
 
   render() {
@@ -207,8 +202,10 @@ export default class Editor extends Component {
         </Sticky>
         <Slate
           className="nc-visualEditor-editor"
-          state={this.state.editorState}
-          schema={this.state.schema}
+          value={this.state.value}
+          renderNode={renderNode}
+          renderMark={renderMark}
+          validateNode={validateNode}
           plugins={plugins}
           onChange={this.handleChange}
           onKeyDown={onKeyDown}

@@ -94,8 +94,8 @@ function createInline(type, props = {}, nodes) {
  */
 function createText(value, data) {
   const node = { kind: 'text', data };
-  const ranges = isArray(value) ? value : [{ text: value }];
-  return { ...node, ranges };
+  const leaves = isArray(value) ? value : [{ text: value }];
+  return { ...node, leaves };
 }
 
 function processMarkNode(node, parentMarks = []) {
@@ -110,8 +110,8 @@ function processMarkNode(node, parentMarks = []) {
     switch (childNode.type) {
       /**
        * If a text node is a direct child of the current node, it should be
-       * set aside as a range, and all marks that have been collected in the
-       * `marks` array should apply to that specific range.
+       * set aside as a leaf, and all marks that have been collected in the
+       * `marks` array should apply to that specific leaf.
        */
       case 'html':
       case 'text':
@@ -129,8 +129,8 @@ function processMarkNode(node, parentMarks = []) {
 
       /**
        * Process nested style nodes. The recursive results should be pushed into
-       * the ranges array. This way, every MDAST nested text structure becomes a
-       * flat array of ranges that can serve as the value of a single Slate Raw
+       * the leaves array. This way, every MDAST nested text structure becomes a
+       * flat array of leaves that can serve as the value of a single Slate Raw
        * text node.
        */
       case 'strong':
@@ -155,8 +155,8 @@ function convertMarkNode(node) {
 
   const convertedSlateNodes = slateNodes.reduce((acc, node) => {
     const lastConvertedNode = last(acc);
-    if (node.text && lastConvertedNode && lastConvertedNode.ranges) {
-      lastConvertedNode.ranges.push(node);
+    if (node.text && lastConvertedNode && lastConvertedNode.leaves) {
+      lastConvertedNode.leaves.push(node);
     }
     else if (node.text) {
       acc.push(createText([node]));
@@ -232,16 +232,16 @@ function convertNode(node, nodes) {
      * Inline Code
      *
      * Inline code nodes from an MDAST are represented in our Slate schema as
-     * text nodes with a "code" mark. We manually create the "range" containing
+     * text nodes with a "code" mark. We manually create the "leaf" containing
      * the inline code value and a "code" mark, and place it in an array for use
      * as a Slate text node's children array.
      */
     case 'inlineCode': {
-      const range = {
+      const leaf = {
         text: node.value,
         marks: [{ type: 'code' }],
       };
-      return createText([ range ]);
+      return createText([ leaf ]);
     }
 
     /**

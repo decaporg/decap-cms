@@ -14,6 +14,7 @@
 }
 
 .nc-visualEditor-editor {
+  @apply(--input);
   position: relative;
   overflow: hidden;
   overflow-x: auto;

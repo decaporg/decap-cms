@@ -1,5 +1,6 @@
 # Netlify CMS
-[![All Contributors](https://img.shields.io/badge/all_contributors-50-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-53-orange.svg)](#contributors)
+[![](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/netlify/netlifycms)
 
 A CMS for static site generators. Give non-technical users a simple way to edit
 and add content to any site built with a static site generator.
@@ -16,19 +17,19 @@ tweak the main layout of the CMS a bit to fit your own site.
 When a user navigates to `/admin` they'll be prompted to login, and once authenticated
 they'll be able to create new content or edit existing content.
 
-Read more about Netlify CMS [Core Concepts](docs/intro.md).
+Read more about Netlify CMS [Core Concepts](https://www.netlifycms.org/docs/intro/).
 
 # Installation and Configuration
 
 The Netlify CMS can be used in two different ways.
 
 * A Quick and easy install, that just requires you to create a single HTML file and a configuration file. All the CMS Javascript and CSS are loaded from a CDN.
-To learn more about this installation method, refer to the [Quick Start Guide](docs/quick-start.md)
+To learn more about this installation method, refer to the [Quick Start Guide](https://www.netlifycms.org/docs/quick-start/)
 * A complete, more complex install, that gives you more flexibility but requires that you use a static site builder with a build system that supports npm packages.
 
 # Community
 
-Netlify CMS has a [public Gitter channel](https://gitter.im/netlify/NetlifyCMS) where members of the community hang out and share things about the project.
+Netlify CMS has a [Gittercommunity](https://gitter.im/netlify/netlifycms) where members of the community hang out and share things about the project, as well as give and receive support.
 
 # Change Log
 
@@ -55,7 +56,7 @@ Thanks goes to these wonderful people ([emoji key](https://github.com/kentcdodds
 | [<img src="https://avatars3.githubusercontent.com/u/4349324?v=4" width="100px;"/><br /><sub>Benjamin Kniffler</sub>](https://github.com/bkniffler)<br /> | [<img src="https://avatars1.githubusercontent.com/u/845983?v=4" width="100px;"/><br /><sub>Mike Wickett</sub>](http://www.wickett.ca)<br /> | [<img src="https://avatars1.githubusercontent.com/u/2751799?v=4" width="100px;"/><br /><sub>Rory Claasen</sub>](http://roryclaasen.me)<br /> | [<img src="https://avatars3.githubusercontent.com/u/724844?v=4" width="100px;"/><br /><sub>Frederic Brodbeck</sub>](http://www.freder.io/)<br /> | [<img src="https://avatars2.githubusercontent.com/u/1245746?v=4" width="100px;"/><br /><sub>Stuart Dum</sub>](https://github.com/simplystuart)<br /> | [<img src="https://avatars0.githubusercontent.com/u/8184251?v=4" width="100px;"/><br /><sub>Ryan Watters</sub>](https://github.com/rdwatters)<br /> | [<img src="https://avatars3.githubusercontent.com/u/4315?v=4" width="100px;"/><br /><sub>Helder S Ribeiro</sub>](https://twitter.com/hsribei)<br /> |
 | [<img src="https://avatars1.githubusercontent.com/u/979966?v=4" width="100px;"/><br /><sub>Artem Govorov</sub>](http://dm.gl)<br /> | [<img src="https://avatars3.githubusercontent.com/u/2683300?v=4" width="100px;"/><br /><sub>Cédric Delpoux</sub>](http://xuopled.netlify.com/)<br /> | [<img src="https://avatars3.githubusercontent.com/u/83225?v=4" width="100px;"/><br /><sub>imorente</sub>](https://github.com/imorente)<br /> | [<img src="https://avatars3.githubusercontent.com/u/5230460?v=4" width="100px;"/><br /><sub>David Francoeur</sub>](http://davidfrancoeur.com)<br /> | [<img src="https://avatars3.githubusercontent.com/u/1954977?v=4" width="100px;"/><br /><sub>Rusta</sub>](https://github.com/Rusta)<br /> | [<img src="https://avatars1.githubusercontent.com/u/1299786?v=4" width="100px;"/><br /><sub>Henrik Lau Eriksson</sub>](http://henrik.laueriksson.com)<br /> | [<img src="https://avatars0.githubusercontent.com/u/1294877?v=4" width="100px;"/><br /><sub>Kraig Walker</sub>](https://www.kraigwalker.com)<br /> |
 | [<img src="https://avatars1.githubusercontent.com/u/2994311?v=4" width="100px;"/><br /><sub>Rich Cook</sub>](http://www.TalesofMurder.com)<br /> | [<img src="https://avatars3.githubusercontent.com/u/1309950?v=4" width="100px;"/><br /><sub>Damien Van Der Windt</sub>](https://github.com/damienvdw)<br /> | [<img src="https://avatars2.githubusercontent.com/u/1571899?v=4" width="100px;"/><br /><sub>Matt Jared</sub>](http://mattjared.github.io/)<br /> | [<img src="https://avatars1.githubusercontent.com/u/1100280?v=4" width="100px;"/><br /><sub>bruce-one</sub>](https://github.com/bruce-one)<br /> | [<img src="https://avatars3.githubusercontent.com/u/103008?v=4" width="100px;"/><br /><sub>Frank Taillandier</sub>](https://frank.taillandier.me)<br />[📖](https://github.com/netlify/netlify-cms/commits?author=DirtyF "Documentation") | [<img src="https://avatars0.githubusercontent.com/u/2936813?v=4" width="100px;"/><br /><sub>Aquib Master</sub>](http://aquibm.com/)<br />[💻](https://github.com/netlify/netlify-cms/commits?author=aquibm "Code") | [<img src="https://avatars0.githubusercontent.com/u/3147296?v=4" width="100px;"/><br /><sub>Eric Jinks</sub>](http://ericjinks.com)<br />[💻](https://github.com/netlify/netlify-cms/commits?author=Jinksi "Code") |
-| [<img src="https://avatars3.githubusercontent.com/u/784848?v=4" width="100px;"/><br /><sub>Tony Alves</sub>](https://github.com/talves)<br />[💻](https://github.com/netlify/netlify-cms/commits?author=talves "Code") |
+| [<img src="https://avatars3.githubusercontent.com/u/784848?v=4" width="100px;"/><br /><sub>Tony Alves</sub>](https://github.com/talves)<br />[💻](https://github.com/netlify/netlify-cms/commits?author=talves "Code") | [<img src="https://avatars3.githubusercontent.com/u/782?v=4" width="100px;"/><br /><sub>Ernie Bello</sub>](http://ern.me)<br />[🐛](https://github.com/netlify/netlify-cms/issues?q=author%3Aebello "Bug reports") | [<img src="https://avatars3.githubusercontent.com/u/6202476?v=4" width="100px;"/><br /><sub>Alexander Kushi-Willis</sub>](https://ackushiw.com)<br />[📖](https://github.com/netlify/netlify-cms/commits?author=ackushiw "Documentation") | [<img src="https://avatars3.githubusercontent.com/u/54089?v=4" width="100px;"/><br /><sub>Igor Kuznetsov</sub>](http://www.igk.ru)<br />[🐛](https://github.com/netlify/netlify-cms/issues?q=author%3Aigk1972 "Bug reports") [💻](https://github.com/netlify/netlify-cms/commits?author=igk1972 "Code") [🔌](#plugin-igk1972 "Plugin/utility libraries") |
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/kentcdodds/all-contributors) specification. Contributions of any kind welcome!

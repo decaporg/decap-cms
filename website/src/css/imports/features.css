@@ -1,0 +1,81 @@
+.features {
+  @neat-row;
+  overflow: hidden;
+  padding-top: $large;
+  position: relative;
+  margin: 0 auto $medium auto;
+
+  @media screen and (min-width: $mobile) {
+    margin: 0 auto $large auto;
+    padding-top: calc($xl * 1.2);
+  }
+
+  @media screen and (min-width: $tablet) {
+    margin-bottom: $medium;
+  }
+
+  &:before {
+    background: url('/img/wavy-divider.svg') no-repeat top center;
+    background-size: contain;
+    top: 0;
+    content: '';
+    height: $xl;
+    left: -$xl;
+    position: absolute;
+    right: -$xl;
+    width: calc(100% + ($xl * 2));
+  }
+
+  h1 {
+    text-align: center;
+    margin-bottom: calc($large * .9);
+    padding: 0 $small;
+
+    @media screen and (min-width: $tablet) {
+      padding: 0;
+    }
+
+    + .features-column .feature {
+      @media screen and (min-width: $desktop) {
+        text-align: right;
+      }
+    }
+  }
+
+  .features-column {
+    @media screen and (min-width: $mobile) {
+      @neat-span-columns 6;
+    }
+
+    @media screen and (min-width: $desktop) {
+      @neat-span-columns 4;
+    }
+  }
+
+  .feature {
+    margin-bottom: $small;
+    padding: 0 $small;
+    text-align: left;
+
+    @media screen and (min-width: $desktop) {
+      margin-bottom: calc($large * 1.37);
+      padding: 0;
+    }
+
+    p {
+      font-size: 14px;
+      line-height: 26px;
+    }
+  }
+
+  .features-graphic {
+    display: none;
+    padding-top: $tiny;
+
+
+    @media screen and (min-width: $desktop) {
+      display: inline-block;
+      @neat-span-columns 4;
+    }
+  }
+}

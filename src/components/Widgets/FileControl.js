@@ -45,7 +45,7 @@ export default class FileControl extends React.Component {
 
   handleClick = (e) => {
     const { field, onOpenMediaLibrary } = this.props;
-    return onOpenMediaLibrary({ controlID: this.controlID, privateUpload: field.private });
+    return onOpenMediaLibrary({ controlID: this.controlID, privateUpload: field.get('private') });
   };
 
   renderFileName = () => {

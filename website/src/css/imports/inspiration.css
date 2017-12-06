@@ -1,0 +1,41 @@
+.inspiration {
+  margin: $small $small $large $small;
+  text-align: center;
+
+  @media screen and (min-width: $tablet) {
+    margin: $xl $small;
+  }
+
+  h1 {
+    margin-bottom: $small;
+
+    @media screen and (min-width: $tablet) {
+      margin-bottom: 44px;
+    }
+  }
+
+  p {
+    box-sizing: border-box;
+    display: inline-block;
+    padding: 0;
+    margin: 0 auto $small auto;
+    max-width: 700px;
+    text-align: left;
+    width: 100%;
+
+    &:nth-child(2) {
+      font-size: $tiny;
+      line-height: $small;
+      font-weight: $bold;
+
+      @media screen and (min-width: $tablet) {
+        font-size: $small;
+        line-height: $medium;
+      }
+    }
+  }
+
+  a {
+    color: $darkGreen;
+  }
+}

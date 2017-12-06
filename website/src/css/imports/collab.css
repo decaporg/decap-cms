@@ -1,0 +1,54 @@
+.collab,
+.how-it-works {
+  margin: $medium $tiny;
+
+  @media screen and (min-width: $mobile) {
+    margin: $large auto;
+  }
+}
+
+.collab {
+  h1 {
+    margin-bottom: $small;
+    text-align: center;
+
+    @media screen and (min-width: $mobile) {
+      margin-bottom: $large;
+    }
+  }
+
+  .collab-graphic {
+    @media screen and (min-width: $mobile) {
+      @neat-span-columns 4;
+      @neat-shift 1;
+    }
+  }
+
+  p {
+    margin-top: $medium;
+
+    @media screen and (min-width: $mobile) {
+      margin-top: 0;
+      text-align: left;
+      @neat-span-columns 5;
+      @neat-shift 1;
+    }
+
+    @media screen and (min-width: $tablet) {
+      margin-top: $medium;
+    }
+  }
+}
+
+.how-it-works {
+  padding-bottom: $xl;
+  text-align: left;
+
+  .section-label:not(:first-child) {
+    margin-top: $large;
+  }
+
+  a {
+    color: $darkGreen;
+  }
+}

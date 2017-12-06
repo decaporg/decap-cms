@@ -10,8 +10,7 @@
 
   & input,
   & textarea,
-  & select,
-  & div[contenteditable=true] {
+  & select {
     @apply --input;
   }
 }

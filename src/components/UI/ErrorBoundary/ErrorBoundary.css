@@ -1,0 +1,8 @@
+.nc-errorBoundary {
+  padding: 0 20px;
+}
+
+.nc-errorBoundary-heading,
+.nc-errorBoundary-link {
+  color: var(--errorColor);
+}

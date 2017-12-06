@@ -1,11 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { orderBy, get, last, isEmpty, map } from 'lodash';
+import { orderBy, get, isEmpty, map } from 'lodash';
 import c from 'classnames';
 import fuzzy from 'fuzzy';
 import Waypoint from 'react-waypoint';
 import Dialog from '../UI/Dialog';
-import { resolvePath } from '../../lib/pathHelper';
+import { resolvePath, fileExtension } from '../../lib/pathHelper';
 import { changeDraftField } from '../../actions/entries';
 import {
   loadMedia as loadMediaAction,
@@ -48,13 +48,20 @@ class MediaLibrary extends React.Component {
     if (isOpening) {
       this.setState({ selectedFile: {}, query: '' });
     }
+
+    if (isOpening && (this.props.privateUpload !== nextProps.privateUpload)) {
+      this.props.loadMedia({ privateUpload: nextProps.privateUpload });
+    }
   }
 
   /**
    * Filter an array of file data to include only images.
    */
-  filterImages = files => {
-    return files ? files.filter(file => IMAGE_EXTENSIONS.includes(last(file.name.split('.')))) : [];
+  filterImages = (files = []) => {
+    return files.filter(file => {
+      const ext = fileExtension(file.name).toLowerCase();
+      return IMAGE_EXTENSIONS.includes(ext);
+    });
   };
 
   /**
@@ -62,7 +69,7 @@ class MediaLibrary extends React.Component {
    */
   toTableData = files => {
     const tableData = files && files.map(({ key, name, size, queryOrder, url, urlIsPublicPath }) => {
-      const ext = last(name.split('.'));
+      const ext = fileExtension(name).toLowerCase();
       return {
         key,
         name,
@@ -108,7 +115,7 @@ class MediaLibrary extends React.Component {
      */
     event.stopPropagation();
     event.preventDefault();
-    const { loadMedia, persistMedia, privateUpload } = this.props;
+    const { persistMedia, privateUpload } = this.props;
     const { files: fileList } = event.dataTransfer || event.target;
     const files = [...fileList];
     const file = files[0];
@@ -118,7 +125,7 @@ class MediaLibrary extends React.Component {
      * improved in the future, but isn't currently resulting in noticeable
      * performance/load time issues.
      */
-    await persistMedia(file, privateUpload);
+    await persistMedia(file, { privateUpload });
     this.scrollToTop();
   };
 
@@ -140,20 +147,20 @@ class MediaLibrary extends React.Component {
    */
   handleDelete = () => {
     const { selectedFile } = this.state;
-    const { files, deleteMedia } = this.props;
+    const { files, deleteMedia, privateUpload } = this.props;
     if (!window.confirm('Are you sure you want to delete selected media?')) {
       return;
     }
     const file = files.find(file => selectedFile.key === file.key);
-    deleteMedia(file)
+    deleteMedia(file, { privateUpload })
       .then(() => {
         this.setState({ selectedFile: {} });
       });
   };
 
   handleLoadMore = () => {
-    const { loadMedia, dynamicSearchQuery, page } = this.props;
-    loadMedia({ query: dynamicSearchQuery, page: page + 1 });
+    const { loadMedia, dynamicSearchQuery, page, privateUpload } = this.props;
+    loadMedia({ query: dynamicSearchQuery, page: page + 1, privateUpload });
   };
 
   /**
@@ -164,8 +171,9 @@ class MediaLibrary extends React.Component {
    * so this handler has no impact.
    */
   handleSearchKeyDown = async (event) => {
-    if (event.key === 'Enter' && this.props.dynamicSearch) {
-      await this.props.loadMedia({ query: this.state.query })
+    const { dynamicSearch, loadMedia, privateUpload } = this.props;
+    if (event.key === 'Enter' && dynamicSearch) {
+      await loadMedia({ query: this.state.query, privateUpload })
       this.scrollToTop();
     }
   };
@@ -213,6 +221,7 @@ class MediaLibrary extends React.Component {
       hasNextPage,
       page,
       isPaginating,
+      privateUpload,
     } = this.props;
     const { query, selectedFile } = this.state;
     const filteredFiles = forImage ? this.filterImages(files) : files;
@@ -233,7 +242,7 @@ class MediaLibrary extends React.Component {
       <Dialog
         isVisible={isVisible}
         onClose={this.handleClose}
-        className="nc-mediaLibrary-dialog"
+        className={c('nc-mediaLibrary-dialog', { 'nc-mediaLibrary-dialogPrivate': privateUpload })}
         footer={
           <MediaLibraryFooter
             onDelete={this.handleDelete}
@@ -248,7 +257,10 @@ class MediaLibrary extends React.Component {
           />
         }
       >
-        <h1 className="nc-mediaLibrary-title">{forImage ? 'Images' : 'Assets'}</h1>
+        <h1 className="nc-mediaLibrary-title">
+          {privateUpload ? 'Private ' : null}
+          {forImage ? 'Images' : 'Assets'}
+        </h1>
         <input
           className="nc-mediaLibrary-searchInput"
           value={query}

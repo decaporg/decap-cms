@@ -85,7 +85,7 @@ function transform(node) {
 
 
 /**
- * Includes inline nodes as ranges in adjacent text nodes where appropriate, so
+ * Includes inline nodes as leaves in adjacent text nodes where appropriate, so
  * that mark node combining logic can apply to both text and inline nodes. This
  * is necessary because Slate doesn't allow inline nodes to have marks while
  * inline nodes in MDAST may be nested within mark nodes. Treating them as if
@@ -94,23 +94,23 @@ function transform(node) {
 function combineTextAndInline(nodes) {
   return nodes.reduce((acc, node, idx, nodes) => {
     const prevNode = last(acc);
-    const prevNodeRanges = get(prevNode, 'ranges');
+    const prevNodeLeaves = get(prevNode, 'leaves');
     const data = node.data || {};
 
     /**
-     * If the previous node has ranges and the current node has marks in data
+     * If the previous node has leaves and the current node has marks in data
      * (only happens when we place them on inline nodes here in the parser), or
-     * the current node also has ranges (because the previous node was
-     * originally an inline node that we've already squashed into a range)
+     * the current node also has leaves (because the previous node was
+     * originally an inline node that we've already squashed into a leaf)
      * combine the current node into the previous.
      */
-    if (!isEmpty(prevNodeRanges) && !isEmpty(data.marks)) {
-      prevNodeRanges.push({ node, marks: data.marks });
+    if (!isEmpty(prevNodeLeaves) && !isEmpty(data.marks)) {
+      prevNodeLeaves.push({ node, marks: data.marks });
       return acc;
     }
 
-    if (!isEmpty(prevNodeRanges) && !isEmpty(node.ranges)) {
-      prevNode.ranges = prevNodeRanges.concat(node.ranges);
+    if (!isEmpty(prevNodeLeaves) && !isEmpty(node.leaves)) {
+      prevNode.leaves = prevNodeLeaves.concat(node.leaves);
       return acc;
     }
 
@@ -125,10 +125,10 @@ function combineTextAndInline(nodes) {
     }
 
     /**
-     * Convert remaining inline nodes to standalone text nodes with ranges.
+     * Convert remaining inline nodes to standalone text nodes with leaves.
      */
     if (node.kind === 'inline') {
-      acc.push({ kind: 'text', ranges: [{ node, marks: data.marks }] });
+      acc.push({ kind: 'text', leaves: [{ node, marks: data.marks }] });
       return acc;
     }
 
@@ -177,23 +177,23 @@ function wrapTextWithMarks(textNode, markTypes) {
  * Slate text nodes without marks often simply have a "text" property with
  * the value. In this case the conversion to MDAST is simple. If a Slate
  * text node does not have a "text" property, it will instead have a
- * "ranges" property containing an array of objects, each with an array of
+ * "leaves" property containing an array of objects, each with an array of
  * marks, such as "bold" or "italic", along with a "text" property.
  *
  * MDAST instead expresses such marks in a nested structure, with individual
  * nodes for each mark type nested until the deepest mark node, which will
  * contain the text node.
  *
- * To convert a Slate text node's marks to MDAST, we treat each "range" as a
+ * To convert a Slate text node's marks to MDAST, we treat each "leaf" as a
  * separate text node, convert the text node itself to an MDAST text node,
  * and then recursively wrap the text node for each mark, collecting the results
- * of each range in a single array of child nodes.
+ * of each leaf in a single array of child nodes.
  *
  * For example, this Slate text node:
  *
  * {
  *   kind: 'text',
- *   ranges: [
+ *   leaves: [
  *     {
  *       text: 'test',
  *       marks: ['bold', 'italic']
@@ -228,13 +228,13 @@ function wrapTextWithMarks(textNode, markTypes) {
  */
 function convertTextNode(node) {
   /**
-   * If the Slate text node has a "ranges" property, translate the Slate AST to
+   * If the Slate text node has a "leaves" property, translate the Slate AST to
    * a nested MDAST structure. Otherwise, just return an equivalent MDAST text
    * node.
    */
-  if (node.ranges) {
-    const processedRanges = node.ranges.map(processRanges);
-    const condensedNodes = processedRanges.reduce(condenseNodesReducer, { nodes: [] });
+  if (node.leaves) {
+    const processedLeaves = node.leaves.map(processLeaves);
+    const condensedNodes = processedLeaves.reduce(condenseNodesReducer, { nodes: [] });
     return condensedNodes.nodes;
   }
 
@@ -247,17 +247,17 @@ function convertTextNode(node) {
 
 
 /**
- * Process Slate node ranges in preparation for MDAST transformation.
+ * Process Slate node leaves in preparation for MDAST transformation.
  */
-function processRanges(range) {
+function processLeaves(leaf) {
   /**
    * Get an array of the mark types, converted to their MDAST equivalent
    * types.
    */
-  const { marks = [], text } = range;
+  const { marks = [], text } = leaf;
   const markTypes = marks.map(mark => markMap[mark.type]);
 
-  if (typeof range.text === 'string') {
+  if (typeof leaf.text === 'string') {
     /**
      * Code marks must be removed from the marks array, and the presence of a
      * code mark changes the text node type that should be used.
@@ -266,14 +266,14 @@ function processRanges(range) {
     return { text, marks: filteredMarkTypes, textNodeType };
   }
 
-  return { node: range.node, marks: markTypes };
+  return { node: leaf.node, marks: markTypes };
 }
 
 
 /**
  * Slate's AST doesn't group adjacent text nodes with the same marks - a
  * change in marks from letter to letter, even if some are in common, results
- * in a separate range. For example, given "**a_b_**", transformation to and
+ * in a separate leaf. For example, given "**a_b_**", transformation to and
  * from Slate's AST will result in "**a****_b_**".
  *
  * MDAST treats styling entities as distinct nodes that contain children, so a
@@ -436,7 +436,7 @@ function convertNode(node, children, shortcodePlugins) {
      */
     case 'code': {
       const value = flatMap(node.nodes, child => {
-        return flatMap(child.ranges, 'text');
+        return flatMap(child.leaves, 'text');
       }).join('');
       const { lang, ...data } = get(node, 'data', {});
       return u(typeMap[node.type], { lang, data }, value);

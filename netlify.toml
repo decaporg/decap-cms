@@ -1,3 +1,0 @@
-[build]
-Command = "npm run build && cp example/* dist/"
-Publish = "dist"

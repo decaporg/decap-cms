@@ -1,0 +1,69 @@
+{{ partial "header" . }}
+
+<div class="landing page">
+  <section class="hero">
+    <div class="contained">
+
+      <div class="hero-copy">
+        <h1 class="headline">{{ .Site.Data.landing.hero.headline | markdownify }}</h1>
+        <h2 class="subhead">{{ .Site.Data.landing.hero.subhead | markdownify }}</h2>
+        <h3 class="ctas">{{ .Site.Data.landing.hero.ctas | markdownify }}</h3>
+        <p class="mooseheads">
+          <strong>As seen on...</strong>
+          <img src="/img/smashing-logo.svg"/>
+        </p>
+      </div>
+
+      <div class="hero-graphic">
+        <img src="/img/demo.gif" class="responsive"/>
+        <!--<p class="thanks-devs">{{ .Site.Data.landing.thanksdevs | markdownify }}</p>-->
+      </div>
+
+    </div>
+  </section>
+
+  <section class="collab">
+    <div class="container">
+      <h1>{{ .Site.Data.landing.collab.hook | markdownify }}</h1>
+      <div class="row">
+        <div class="collab-graphic">
+          <img src="{{ .Site.Data.landing.collab.graphicpath }}" class="responsive"/>
+        </div>
+        <div class="collab-copy">
+          <p>{{ .Site.Data.landing.collab.body | markdownify }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="features">
+    <div class="container">
+      <h1>{{ .Site.Data.landing.featureshook | markdownify }}</h1>
+      {{ $featuresgraphic := .Site.Data.landing.featuresgraphic }}
+      <div class="features-column">
+        {{ range $index, $id := .Site.Data.landing.features }}
+          <div class="feature">
+            <h3>{{ .feature | markdownify }}</h3>
+            <p>{{ .description | markdownify }}</p>
+          </div>
+          {{ if eq $index 2 }}
+            </div>
+            <div class="features-graphic">
+              <img src="{{ $featuresgraphic }}" class="responsive"/>
+            </div>
+            <div class="features-column">
+          {{ end }}
+        {{ end }}
+      </div>
+    </div>
+  </section>
+
+  <section class="inspiration">
+    <div class="container">
+      <h1>Our Inspiration</h1>
+      <p>{{ .Site.Data.landing.inspiration | markdownify }}</p>
+    </div>
+  </section>
+</div>
+
+{{ partial "footer" . }}

@@ -6,6 +6,7 @@ const { notifSend } = notifActions;
 export const AUTH_REQUEST = 'AUTH_REQUEST';
 export const AUTH_SUCCESS = 'AUTH_SUCCESS';
 export const AUTH_FAILURE = 'AUTH_FAILURE';
+export const AUTH_REQUEST_DONE = 'AUTH_REQUEST_DONE';
 export const LOGOUT = 'LOGOUT';
 
 export function authenticating() {
@@ -29,6 +30,12 @@ export function authError(error) {
   };
 }
 
+export function doneAuthenticating() {
+  return {
+    type: AUTH_REQUEST_DONE,
+  };
+}
+
 export function logout() {
   return {
     type: LOGOUT,
@@ -46,7 +53,7 @@ export function authenticateUser() {
         if (user) {
           dispatch(authenticate(user));
         } else {
-          dispatch(logoutUser());
+          dispatch(doneAuthenticating());
         }
       })
       .catch((error) => {

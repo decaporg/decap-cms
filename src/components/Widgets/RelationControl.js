@@ -128,5 +128,9 @@ export default connect(
   {
     query,
     clearSearch,
+  },
+  null,
+  {
+    withRef: true,
   }
 )(RelationControl);

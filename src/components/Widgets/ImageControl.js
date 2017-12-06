@@ -43,7 +43,7 @@ export default class ImageControl extends React.Component {
 
   handleClick = (e) => {
     const { field, onOpenMediaLibrary } = this.props;
-    return onOpenMediaLibrary({ controlID: this.controlID, forImage: true, privateUpload: field.private });
+    return onOpenMediaLibrary({ controlID: this.controlID, forImage: true, privateUpload: field.get('private') });
   };
 
   renderFileName = () => {

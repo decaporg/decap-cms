@@ -1,10 +1,10 @@
 import { OrderedMap, fromJS } from 'immutable';
-import { has } from 'lodash';
+import { has, get } from 'lodash';
 import consoleError from '../lib/consoleError';
 import { CONFIG_SUCCESS } from '../actions/config';
 import { FILES, FOLDER } from '../constants/collectionTypes';
 import { INFERABLE_FIELDS } from '../constants/fieldInference';
-import { formatToExtension } from '../formats/formats';
+import { formatByExtension, formatToExtension, supportedFormats } from '../formats/formats';
 
 const collections = (state = null, action) => {
   const configCollections = action.payload && action.payload.collections;
@@ -12,12 +12,11 @@ const collections = (state = null, action) => {
     case CONFIG_SUCCESS:
       return OrderedMap().withMutations((map) => {
         (configCollections || []).forEach((configCollection) => {
+          validateCollection(configCollection);
           if (has(configCollection, 'folder')) {
             configCollection.type = FOLDER; // eslint-disable-line no-param-reassign
           } else if (has(configCollection, 'files')) {
             configCollection.type = FILES; // eslint-disable-line no-param-reassign
-          } else {
-            throw new Error('Unknown collection type. Collections can be either Folder based or File based. Please verify your site configuration');
           }
           map.set(configCollection.name, fromJS(configCollection));
         });
@@ -27,10 +26,24 @@ const collections = (state = null, action) => {
   }
 };
 
+function validateCollection(configCollection) {
+  const collectionName = get(configCollection, 'name');
+  if (!has(configCollection, 'folder') && !has(configCollection, 'files')) {
+    throw new Error(`Unknown collection type for collection "${ collectionName }". Collections can be either Folder based or File based.`);
+  }
+  if (has(configCollection, 'format') && !supportedFormats.includes(get(configCollection, 'format'))) {
+    throw new Error(`Unknown collection format for collection "${ collectionName }". Supported formats are ${ supportedFormats.join(',') }`);
+  }
+  if (!has(configCollection, 'format') && has(configCollection, 'extension') && !formatByExtension(get(configCollection, 'extension'))) {
+    // Cannot infer format from extension.
+    throw new Error(`Please set a format for collection "${ collectionName }". Supported formats are ${ supportedFormats.join(',') }`);
+  }
+}
+
 const selectors = {
   [FOLDER]: {
     entryExtension(collection) {
-      return collection.get('extension') || formatToExtension(collection.get('format') || 'markdown');
+      return collection.get('extension') || formatToExtension(collection.get('format') || 'frontmatter');
     },
     fields(collection) {
       return collection.get('fields');
