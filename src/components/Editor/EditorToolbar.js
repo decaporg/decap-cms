@@ -177,7 +177,7 @@ export default class EditorToolbar extends React.Component {
             {
               hasChanged
                ? <div className="nc-entryEditor-toolbar-backStatus-hasChanged">Unsaved Changes</div>
-               : <div className="nc-entryEditor-toolbar-backStatus">Changes saved &#10004;</div>
+               : <div className="nc-entryEditor-toolbar-backStatus">Changes saved</div>
             }
           </div>
         </Link>
