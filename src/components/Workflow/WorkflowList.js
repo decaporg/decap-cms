@@ -71,7 +71,9 @@ class WorkflowList extends React.Component {
               <h2 className="nc-workflow-header">
                 {getColumnHeaderText(currColumn)}
               </h2>
-              <p>{currEntries.size} {currEntries.size === 1 ? 'entry' : 'entries'} </p>
+              <p className="nc-workflow-list-count">
+                {currEntries.size} {currEntries.size === 1 ? 'entry' : 'entries'}
+              </p>
               {this.renderColumns(currEntries, currColumn)}
             </div>
           )}
@@ -84,7 +86,7 @@ class WorkflowList extends React.Component {
           entries.map((entry) => {
             // Look for an "author" field. Fallback to username on backend implementation;
             const author = entry.getIn(['data', 'author'], entry.getIn(['metaData', 'user']));
-            const timestamp = moment(entry.getIn(['metaData', 'timeStamp'])).format('llll');
+            const timestamp = moment(entry.getIn(['metaData', 'timeStamp'])).format('MMMM D');
             const editLink = `collections/${ entry.getIn(['metaData', 'collection']) }/entries/${ entry.get('slug') }`;
             const slug = entry.get('slug');
             const ownStatus = entry.getIn(['metaData', 'status']);
@@ -102,9 +104,11 @@ class WorkflowList extends React.Component {
               {connect => connect(
                 <div>
                   <WorkflowCard
+                    collectionName={collection}
                     title={entry.getIn(['data', 'title'])}
                     author={author}
                     authorLastChange={entry.getIn(['metaData', 'user'])}
+                    body={entry.getIn(['data', 'body'])}
                     isModification={isModification}
                     editLink={editLink}
                     timestamp={timestamp}

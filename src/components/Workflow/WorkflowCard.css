@@ -1,24 +1,39 @@
 .nc-workflow-card {
   @apply(--card);
   display: block;
-  padding: 14px;
-  cursor: move;
-
-  &:not(:first-child) {
-    margin-top: 10px;
-  }
+  padding: 0 18px 18px;
+  overflow: hidden;
+  height: 200px;
+  margin-bottom: 24px;
 }
 
-.nc-workflow-card-button-container {
-  display: flex;
-  margin-top: 24px;
+.nc-workflow-card-collection {
+  font-size: 14px;
+  font-weight: 16px;
+  color: var(--colorTextLead);
+  text-transform: uppercase;
+  margin-top: 12px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
-.nc-workflow-card-button {
-  @apply(--button);
-  display: block;
+.nc-workflow-card-title {
+  margin: 28px 0 0;
+  color: var(--colorTextLead);
+}
 
-  &:not(:first-child) {
-    margin-left: 10px;
-  }
+.nc-workflow-card-date,
+.nc-workflow-card-body {
+  font-size: 13px;
+  font-weight: normal;
+  margin-top: 4px;
+}
+
+.nc-workflow-card-body {
+  color: var(--colorText);
+  margin: 24px 0 0;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
 }

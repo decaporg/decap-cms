@@ -4,9 +4,11 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Link } from 'react-router-dom';
 
 const WorkflowCard = ({
+  collectionName,
   title,
   author,
   authorLastChange,
+  body,
   isModification,
   editLink,
   timestamp,
@@ -15,10 +17,10 @@ const WorkflowCard = ({
   onPublish,
 }) => (
   <Link to={editLink} className="nc-workflow-card">
-    <span>Post</span>
-    <h2>{title}</h2>
-    <div>Updated {timestamp} by {authorLastChange}</div>
-    <div>Body text here</div>
+    <div className="nc-workflow-card-collection">{collectionName}</div>
+    <h2 className="nc-workflow-card-title">{title}</h2>
+    <div className="nc-workflow-card-date">{timestamp} by {authorLastChange}</div>
+    <p className="nc-workflow-card-body">{body}</p>
   </Link>
 );
 
