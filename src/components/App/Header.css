@@ -15,7 +15,8 @@
 .nc-appHeader-content {
   display: flex;
   justify-content: space-between;
-  max-width: 1600px;
+  min-width: 800px;
+  max-width: 1440px;
   padding: 0 12px;
   margin: 0 auto;
 }

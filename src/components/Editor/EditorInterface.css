@@ -37,6 +37,7 @@
 
 .nc-entryEditor-containerOuter {
   width: 100%;
+  min-width: 800px;
   height: 100%;
   position: absolute;
   top: 0;
