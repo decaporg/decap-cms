@@ -1,5 +1,7 @@
 import React from 'react';
 
 export default () => (
-  <h2>Not Found</h2>
+  <div class="nc-notFound-container">
+    <h2>Not Found</h2>
+  </div>
 );
