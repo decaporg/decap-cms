@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import c from 'classnames';
+import { Link } from 'react-router-dom';
 import { Icon } from 'UI';
 import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from 'Constants/collectionViews';
 
@@ -11,15 +12,17 @@ const CollectionTop = ({
   onChangeViewStyle,
   newEntryUrl,
 }) => {
-  const newEntryLink = (
-    <a className="nc-collectionPage-topNewButton" href={newEntryUrl}>{`New ${collectionLabel}`}</a>
-  );
-
   return (
     <div className="nc-collectionPage-top">
       <div className="nc-collectionPage-top-row">
         <h1 className="nc-collectionPage-topHeading">{collectionLabel}</h1>
-        { newEntryUrl ? newEntryLink : null }
+        {
+          newEntryUrl
+            ? <Link className="nc-collectionPage-topNewButton" to={newEntryUrl}>
+                {`New ${collectionLabel}`}
+              </Link>
+            : null
+        }
       </div>
       {
         collectionDescription
