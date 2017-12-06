@@ -1,9 +1,5 @@
 .nc-collectionPage-top {
-  @apply(--card);
-  width: 682px;
-  max-width: 100%;
-  padding: 16px 20px;
-  margin-bottom: 28px;
+  @apply(--cardTop);
 }
 
 .nc-collectionPage-top-row {
@@ -13,16 +9,11 @@
 }
 
 .nc-collectionPage-top-description {
-  max-width: 480px;
-  color: var(--colorText);
-  font-size: 14px;
-  margin-top: 8px;
+  @apply(--cardTopDescription)
 }
 
 .nc-collectionPage-topHeading {
-  font-size: 20px;
-  font-weight: 600;
-  margin: 12px 0 0;
+  @apply(--cardTopHeading)
 }
 
 .nc-collectionPage-topNewButton {
