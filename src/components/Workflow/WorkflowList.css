@@ -1,11 +1,11 @@
 .nc-workflow-list-container {
-  display: flex;
   width: 1085px;
   min-height: 60%;
+  display: grid;
+  grid-template-columns: 33.3% 33.3% 33.3%;
 }
 
 .nc-workflow-list {
-  flex: 1 33%;
   margin: 0 20px;
   transition: background-color .5s ease;
   border: 2px dashed transparent;
@@ -14,7 +14,6 @@
 
   &:first-child {
     margin-left: 0;
-
   }
 
   &:last-child {
@@ -28,8 +27,8 @@
       display: block;
       position: absolute;
       width: 2px;
-      height: 100%;
-      top: 70px;
+      height: 80%;
+      top: 76px;
       background-color: var(--textFieldBorderColor);
     }
 
@@ -52,6 +51,7 @@
   font-weight: normal;
   padding: 4px 14px;
   border-radius: var(--borderRadius);
+  margin-bottom: 28px;
 }
 
 .nc-workflow-listDraft {
@@ -73,4 +73,12 @@
     background-color: var(--colorStatusReadyBackground);
     color: var(--colorStatusReadyText);
   }
+}
+
+.nc-workflow-list-count {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--colorText);
+  text-transform: uppercase;
+  margin-bottom: 6px;
 }

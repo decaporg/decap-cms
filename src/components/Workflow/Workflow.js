@@ -68,7 +68,7 @@ class Workflow extends Component {
             </Dropdown>
           </div>
           <p className="nc-workflow-top-description">
-            {reviewCount} entries waiting for review, {readyCount} ready to go live.
+            {reviewCount} {reviewCount === 1 ? 'entry' : 'entries'} waiting for review, {readyCount} ready to go live.
           </p>
         </div>
         <WorkflowList
