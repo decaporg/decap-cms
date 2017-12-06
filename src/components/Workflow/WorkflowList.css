@@ -1,5 +1,4 @@
 .nc-workflow-list-container {
-  width: 1440px;
   min-height: 60%;
   display: grid;
   grid-template-columns: 33.3% 33.3% 33.3%;
