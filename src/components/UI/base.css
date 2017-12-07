@@ -185,6 +185,11 @@
     color: white;
   }
 
+  --buttonDisabled {
+    background-color: var(--colorGrayLight);
+    color: var(--colorGray);
+  }
+
   --textBadge: {
     color: #3a69c7;
     font-size: 13px;

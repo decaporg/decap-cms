@@ -247,64 +247,57 @@ class MediaLibrary extends React.Component {
         onClose={this.handleClose}
         className={c('nc-mediaLibrary-dialog', { 'nc-mediaLibrary-dialogPrivate': privateUpload })}
       >
-        <div className="nc-mediaLibrary-header">
-          <button className="nc-mediaLibrary-close" onClick={this.handleClose}>
-            <Icon type="close"/>
-          </button>
-          { !canInsert ? null :
-            <button onClick={this.handleInsert} disabled={!hasSelection} >
-              Insert
-            </button>
-          }
-          <h1 className="nc-mediaLibrary-title">
-            {privateUpload ? 'Private ' : null}
-            {forImage ? 'Images' : 'Media assets'}
-          </h1>
-        </div>
-
-        <div className="nc-mediaLibrary-actions">
-          <div className="nc-mediaLibrary-search">
-            <Icon type="search" size="small"/>
-            <input
-              className=""
-              value={query}
-              onChange={this.handleSearchChange}
-              onKeyDown={event => this.handleSearchKeyDown(event)}
-              placeholder="Search..."
-              disabled={!dynamicSearchActive && !hasFilteredFiles}
-            />
-          </div>
+        <div className="nc-mediaLibrary-top">
           <div>
-            <button
-              onClick={this.handleDelete}
-              disabled={shouldShowButtonLoader || !hasSelection}
-            >
-              Delete
-            </button>
+            <div className="nc-mediaLibrary-header">
+              <button className="nc-mediaLibrary-close" onClick={this.handleClose}>
+                <Icon type="close"/>
+              </button>
+              <h1 className="nc-mediaLibrary-title">
+                {privateUpload ? 'Private ' : null}
+                {forImage ? 'Images' : 'Media assets'}
+              </h1>
+            </div>
+            <div className="nc-mediaLibrary-search">
+              <Icon type="search" size="small"/>
+              <input
+                className=""
+                value={query}
+                onChange={this.handleSearchChange}
+                onKeyDown={event => this.handleSearchKeyDown(event)}
+                placeholder="Search..."
+                disabled={!dynamicSearchActive && !hasFilteredFiles}
+              />
+            </div>
+          </div>
+          <div className="nc-mediaLibrary-actionContainer">
             <FileUploadButton
               className={`nc-mediaLibrary-uploadButton ${shouldShowButtonLoader ? 'nc-mediaLibrary-uploadButton-disabled' : ''}`}
-              label="Upload"
+              label={isPersisting ? 'Uploading...' : 'Upload new'}
               imagesOnly={forImage}
               onChange={this.handlePersist}
               disabled={shouldShowButtonLoader}
             />
-            <div className="nc-mediaLibrary-actionsButtons">
-              { !canInsert ? null :
-                <button onClick={this.handleInsert} disabled={!hasSelection} >
-                  Insert
-                </button>
-              }
+            <div className="nc-mediaLibrary-lowerActionContainer">
               <button
+                className="nc-mediaLibrary-deleteButton"
                 onClick={this.handleDelete}
                 disabled={shouldShowButtonLoader || !hasSelection}
               >
-                Delete
+                {isDeleting ? 'Deleting...' : 'Delete selected'}
               </button>
-              { shouldShowButtonLoader ? loader : null }
+              { !canInsert ? null :
+                <button
+                  onClick={this.handleInsert}
+                  disabled={!hasSelection}
+                  className="nc-mediaLibrary-insertButton"
+                >
+                  Choose selected
+                </button>
+              }
             </div>
           </div>
         </div>
-
         {
           shouldShowEmptyMessage
             ? <div className="nc-mediaLibrary-emptyMessage"><h1>{emptyMessage}</h1></div>

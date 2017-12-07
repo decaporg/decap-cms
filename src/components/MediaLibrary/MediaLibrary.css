@@ -5,10 +5,8 @@
 }
 
 .nc-mediaLibrary-dialog {
-  display: flex;
-  justify-content: space-between;
-  flex-direction: column;
-  padding-bottom: 0;
+  display: grid;
+  grid-template-rows: 120px auto;
   width: calc(var(--mediaLibraryCardOutsideWidth) + 20px);
 
   @media (width >= 800px) {
@@ -39,18 +37,14 @@
   margin-bottom: 25px;
 }
 
-.nc-mediaLibrary-titleRow {
-  display: flex;
-  justify-content: space-between;
+.nc-mediaLibrary-actionContainer {
+  text-align: right;
 }
 
-
-.nc-fileUploadButton {
-  @apply(--button);
-  @apply(--buttonDefault);
+.nc-mediaLibrary-uploadButton {
+  @apply(--buttonGray);
   @apply(--dropShadowMain);
   margin-bottom: 0;
-  display: inline-block;
 
   & span {
     font-size: 14px;
@@ -73,12 +67,42 @@
   }
 }
 
+.nc-mediaLibrary-lowerActionContainer {
+  margin-top: 30px;
+}
 
-.nc-mediaLibrary-header {
-  & button.nc-mediaLibrary-close {
+.nc-mediaLibrary-uploadButton,
+.nc-mediaLibrary-deleteButton,
+.nc-mediaLibrary-insertButton {
+  @apply(--button);
+  @apply(--buttonDefault);
+  display: inline-block;
+  margin-left: 15px;
+
+  &[disabled],
+  &.nc-mediaLibrary-uploadButton-disabled {
+    @apply(--buttonDisabled);
+  }
+}
+
+.nc-mediaLibrary-deleteButton {
+  @apply(--buttonLightRed);
+}
+
+.nc-mediaLibrary-insertButton {
+  @apply(--buttonGreen);
+}
+
+
+.nc-mediaLibrary-top {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+
+  & .nc-mediaLibrary-close {
     @apply(--dropShadowMiddle);
     display: flex;
-    position: relative;
+    position: absolute;
     margin-right: -40px;
     left: -40px;
     top: -40px;
@@ -86,26 +110,14 @@
     height: 40px;
     border-radius: 50%;
     background-color: white;
-    content: "";
-    padding: 14px;
-    float: left;
-  }
-}
+    padding: 0;
+    justify-content: center;
+    align-items: center;
 
-.nc-mediaLibrary-actions {
-  display: flex;
-  justify-content: space-between;
-  flex-direction: row;
-
-
-  & .nc-mediaLibrary-actionsButtons {
-    display: flex;
-    justify-content: flex-end;
-    flex-grow: 8;
-
-    & button {
-      @apply(--button);
-      @apply(--buttonDefault);
+    & .nc-icon {
+      position: relative;
+      left: 1px;
+      top: 1px;
     }
   }
 }
@@ -114,10 +126,8 @@
   height: 37px;
   display: flex;
   align-items: center;
-  margin: 0 8px 0 0;
   position: relative;
-
-  flex-grow: 1.2;
+  width: 400px;
 
   & input {
     background-color: #eff0f4;
@@ -151,7 +161,6 @@
 }
 
 .nc-mediaLibrary-cardGrid-container {
-  flex-grow: 10;
   overflow-y: auto;
 }
 
