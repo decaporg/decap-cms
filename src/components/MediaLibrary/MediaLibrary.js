@@ -288,7 +288,6 @@ class MediaLibrary extends React.Component {
                 onChange={this.handlePersist}
                 disabled={shouldShowButtonLoader}
               />
-              { shouldShowButtonLoader ? loader : null }
           </div>
         </div>
 
