@@ -29,12 +29,24 @@
   justify-content: space-between;
   padding: 0 10px;
 
+  & button {
+    @apply(--buttonDefault);
+  }
+
   & .nc-entryEditor-toolbar-mainSection-left {
     display: flex;
+
+    & button {
+      margin-right: 10px;
+    }
   }
   & .nc-entryEditor-toolbar-mainSection-right {
     display: flex;
     justify-content: flex-end;
+
+    & button {
+      margin-left: 10px;
+    }
   }
 }
 
