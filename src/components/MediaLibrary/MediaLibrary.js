@@ -275,21 +275,21 @@ class MediaLibrary extends React.Component {
             />
           </div>
           <div>
-              <button
-                onClick={this.handleDelete}
-                disabled={shouldShowButtonLoader || !hasSelection}
-              >
-                Delete
-              </button>
-              <FileUploadButton
-                className={`nc-mediaLibrary-uploadButton ${shouldShowButtonLoader ? 'nc-mediaLibrary-uploadButton-disabled' : ''}`}
-                label="Upload"
-                imagesOnly={forImage}
-                onChange={this.handlePersist}
-                disabled={shouldShowButtonLoader}
-              />
-              <div className="nc-mediaLibrary-actionsButtons">
-                { !canInsert ? null :
+            <button
+              onClick={this.handleDelete}
+              disabled={shouldShowButtonLoader || !hasSelection}
+            >
+              Delete
+            </button>
+            <FileUploadButton
+              className={`nc-mediaLibrary-uploadButton ${shouldShowButtonLoader ? 'nc-mediaLibrary-uploadButton-disabled' : ''}`}
+              label="Upload"
+              imagesOnly={forImage}
+              onChange={this.handlePersist}
+              disabled={shouldShowButtonLoader}
+            />
+            <div className="nc-mediaLibrary-actionsButtons">
+              { !canInsert ? null :
                 <button onClick={this.handleInsert} disabled={!hasSelection} >
                   Insert
                 </button>
@@ -300,9 +300,9 @@ class MediaLibrary extends React.Component {
               >
                 Delete
               </button>
-
               { shouldShowButtonLoader ? loader : null }
             </div>
+          </div>
         </div>
 
         {

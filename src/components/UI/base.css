@@ -33,15 +33,12 @@
   --colorBlueLight: #e8f5fe;
   --colorGreen: #005614;
   --colorGreenLight: #caef6f;
-  --colorGreenBright: #28a745;
   --colorBrown: #754e00;
   --colorYellow: #ffee9c;
-  --colorGold: #fad410;
   --colorRed: #ff003b;
   --colorRedLight: #fcefea;
   --colorPurple: #70399f;
   --colorPurpleLight: #f6d8ff;
-  --colorPurpleBright: #9166be;
   --colorTeal: #17a2b8;
   --colorTealLight: #ddf5f9;
 
@@ -125,11 +122,6 @@
     border: 0;
     border-radius: var(--borderRadius);
     cursor: pointer;
-
-    &:focus,
-    &:hover {
-      outline: none;
-    }
   }
 
   --buttonDefault {
@@ -137,6 +129,8 @@
     line-height: 36px;
     font-weight: 500;
     padding: 0 15px;
+    background-color: var(--colorGray);
+    color: var(--colorWhite);
   }
 
   --buttonMedium {
@@ -251,6 +245,14 @@
   outline: -webkit-focus-ring-color auto 5px;
 
 }
+
+/**
+ * Don't show outlines if the user is utilizing mouse rather than keyboard.
+ */
+[data-whatintent="mouse"] *:focus {
+  outline: none;
+}
+
 
 input {
   border: 0;
