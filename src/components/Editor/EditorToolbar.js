@@ -82,7 +82,7 @@ export default class EditorToolbar extends React.Component {
         >
           Save
         </button>,
-        isNewEntry ? null
+        isNewEntry || !deleteLabel ? null
             : <button
                 className="nc-entryEditor-toolbar-deleteButton"
                 onClick={hasUnpublishedChanges ? onDeleteUnpublishedChanges : onDelete}
@@ -108,25 +108,25 @@ export default class EditorToolbar extends React.Component {
           className="nc-entryEditor-toolbar-dropdown"
           classNameButton="nc-entryEditor-toolbar-statusButton"
           dropdownTopOverlap="40px"
-          dropdownWidth="150px"
+          dropdownWidth="120px"
           label={isPersisting ? 'Updating...' : 'Set status'}
         >
           <DropdownItem
-            className={c({
+            className={c('nc-entryEditor-toolbar-statusMenu-statusDraft', {
               'nc-entryEditor-toolbar-statusMenu-statusActive': currentStatus === status.get('DRAFT'),
             })}
             label="Draft"
             onClick={() => onChangeStatus('DRAFT')}
           />
           <DropdownItem
-            className={c({
+            className={c('nc-entryEditor-toolbar-statusMenu-statusReview', {
               'nc-entryEditor-toolbar-statusMenu-statusActive': currentStatus === status.get('PENDING_REVIEW'),
             })}
             label="In review"
             onClick={() => onChangeStatus('PENDING_REVIEW')}
           />
           <DropdownItem
-            className={c({
+            className={c('nc-entryEditor-toolbar-statusMenu-statusReady', {
               'nc-entryEditor-toolbar-statusMenu-statusActive': currentStatus === status.get('PENDING_PUBLISH'),
             })}
             label="Ready"

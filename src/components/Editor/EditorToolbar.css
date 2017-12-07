@@ -144,6 +144,38 @@
   font-weight: 500;
 }
 
+.nc-entryEditor-toolbar-statusMenu-statusDraft,
+.nc-entryEditor-toolbar-statusMenu-statusReview,
+.nc-entryEditor-toolbar-statusMenu-statusReady {
+  position: relative;
+  justify-content: flex-start;
+
+  &:before {
+    content: '';
+    display: block;
+    width: 14px;
+    height: 14px;
+    border-radius: 14px;
+    border: 2px solid currentColor;
+    background-color: transparent;
+    margin-right: 10px;
+  }
+}
+
+.nc-entryEditor-toolbar-statusMenu-statusDraft:before {
+  color: var(--colorPurpleBright);
+}
+
+.nc-entryEditor-toolbar-statusMenu-statusReview:before {
+  color: var(--colorGold);
+}
+
+.nc-entryEditor-toolbar-statusMenu-statusReady:before {
+  color: var(--colorGreenBright);
+}
+
 .nc-entryEditor-toolbar-statusMenu-statusActive {
-  background-color: red;
+  &:before {
+    background-color: currentColor;
+  }
 }
