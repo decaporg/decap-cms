@@ -1,10 +1,13 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import { Map } from 'immutable';
+import { get } from 'lodash';
 import { connect } from 'react-redux';
 import history from 'Routing/history';
 import {
   loadEntry,
+  loadEntries,
   createDraftFromEntry,
   createEmptyDraft,
   discardDraft,
@@ -31,7 +34,7 @@ import withWorkflow from './withWorkflow';
 const navigateCollection = (collectionPath) => history.push(`/collections/${collectionPath}`);
 const navigateToCollection = collectionName => navigateCollection(collectionName);
 const navigateToNewEntry = collectionName => navigateCollection(`${collectionName}/new`);
-const navigateToCurrentEntry = (collectionName, slug) => navigateCollection(`${collectionName}/entries/${slug}`);
+const navigateToEntry = (collectionName, slug) => navigateCollection(`${collectionName}/entries/${slug}`);
 
 class Editor extends React.Component {
   static propTypes = {
@@ -59,10 +62,23 @@ class Editor extends React.Component {
     displayUrl: PropTypes.string,
     hasWorkflow: PropTypes.bool,
     unpublishedEntry: PropTypes.bool,
+    isModification: PropTypes.bool,
+    collectionEntriesLoaded: PropTypes.bool,
   };
 
   componentDidMount() {
-    const { entry, newEntry, collection, slug, loadEntry, createEmptyDraft } = this.props;
+    const {
+      entry,
+      newEntry,
+      entryDraft,
+      collection,
+      slug,
+      loadEntry,
+      createEmptyDraft,
+      loadEntries,
+      collectionEntriesLoaded,
+    } = this.props;
+
     if (newEntry) {
       createEmptyDraft(collection);
     } else {
@@ -81,8 +97,14 @@ class Editor extends React.Component {
     };
     window.addEventListener('beforeunload', this.exitBlocker);
 
-    const navigationBlocker = () => {
-      if (this.props.entryDraft.get('hasChanged')) {
+    const navigationBlocker = (location, action) => {
+      const bypassLocations = [
+        `/collections/${collection.get('name')}/new`,
+        `/collections/${collection.get('name')}/entries/${slug}`,
+      ]
+      const hasChanged = entryDraft.get('hasChanged');
+      const shouldBypass = action === 'PUSH' && bypassLocations.includes(location.pathname);
+      if (!shouldBypass && hasChanged) {
         return leaveMessage;
       }
     };
@@ -93,14 +115,27 @@ class Editor extends React.Component {
      * a new post. The confirmation above will run first.
      */
     this.unlisten = history.listen(location => {
-      if (location.pathname !== `/collections/${collection.get('name')}/new`) {
-        unblock();
-        this.unlisten();
-      }
+      unblock();
+      this.unlisten();
     });
+
+    if (!collectionEntriesLoaded) {
+      loadEntries(collection);
+    }
   }
 
   componentWillReceiveProps(nextProps) {
+    /**
+     * If the old slug is empty and the new slug is not, a new entry was just
+     * saved, and we need to update navigation to the correct url using the
+     * slug.
+     */
+    const newSlug = nextProps.entryDraft && nextProps.entryDraft.getIn(['entry', 'slug']);
+    if (!this.props.slug && newSlug && nextProps.newEntry) {
+      navigateToEntry(this.props.collection.get('name'), newSlug);
+      nextProps.loadEntry(nextProps.collection, newSlug);
+    }
+
     if (this.props.entry === nextProps.entry) return;
     const { entry, newEntry, fields, collection } = nextProps;
 
@@ -129,7 +164,7 @@ class Editor extends React.Component {
 
   handlePersistEntry = async (opts = {}) => {
     const { createNew = false } = opts;
-    const { persistEntry, collection } = this.props;
+    const { persistEntry, collection, entryDraft, newEntry } = this.props;
 
     await persistEntry(collection)
 
@@ -139,7 +174,7 @@ class Editor extends React.Component {
   };
 
   handleDeleteEntry = () => {
-    const { newEntry, collection, deleteEntry, entry } = this.props;
+    const { newEntry, collection, deleteEntry, slug } = this.props;
     if (!window.confirm('Are you sure you want to delete this entry?')) {
       return;
     }
@@ -147,7 +182,6 @@ class Editor extends React.Component {
       return navigateToCollection(collection.get('name'));
     }
 
-    const slug = entry.get('slug');
     setTimeout(async () => {
       await deleteEntry(collection, slug);
       return navigateToCollection(collection.get('name'));
@@ -155,17 +189,17 @@ class Editor extends React.Component {
   };
 
   handleDeleteUnpublishedChanges = async () => {
-    const { collection, slug, deleteUnpublishedEntry, entry } = this.props;
+    const { collection, slug, deleteUnpublishedEntry, loadEntry, isModification } = this.props;
     if (!window.confirm('All unpublished changes to this entry will be deleted. Are you sure?')) {
       return;
     }
-    await this.props.deleteUnpublishedEntry(collection, entry.get('slug'));
+    await deleteUnpublishedEntry(collection.get('name'), slug);
 
-    /**
-     * Nasty hack to force the editor to reload - we need to do this through
-     * redux instead.
-     */
-    window.location.reload();
+    if (isModification) {
+      loadEntry(collection, slug);
+    } else {
+      navigateToCollection(collection.get('name'));
+    }
   };
 
   render() {
@@ -187,6 +221,7 @@ class Editor extends React.Component {
       hasWorkflow,
       unpublishedEntry,
       newEntry,
+      isModification,
     } = this.props;
 
     if (entry && entry.get('error')) {
@@ -222,13 +257,14 @@ class Editor extends React.Component {
         hasWorkflow={hasWorkflow}
         hasUnpublishedChanges={unpublishedEntry}
         isNewEntry={newEntry}
+        isModification={isModification}
       />
     );
   }
 }
 
 function mapStateToProps(state, ownProps) {
-  const { collections, entryDraft, mediaLibrary, auth, config } = state;
+  const { collections, entryDraft, mediaLibrary, auth, config, entries } = state;
   const slug = ownProps.match.params.slug;
   const collection = collections.get(ownProps.match.params.name);
   const newEntry = ownProps.newRecord === true;
@@ -240,6 +276,8 @@ function mapStateToProps(state, ownProps) {
   const hasChanged = entryDraft.get('hasChanged');
   const displayUrl = config.get('display_url');
   const hasWorkflow = config.get('publish_mode') === EDITORIAL_WORKFLOW;
+  const isModification = entryDraft.getIn(['entry', 'isModification']);
+  const collectionEntriesLoaded = !!entries.getIn(['entities', collection.get('name')])
   return {
     collection,
     collections,
@@ -254,6 +292,8 @@ function mapStateToProps(state, ownProps) {
     hasChanged,
     displayUrl,
     hasWorkflow,
+    isModification,
+    collectionEntriesLoaded,
   };
 }
 
@@ -266,6 +306,7 @@ export default connect(
     removeInsertedMedia,
     addAsset,
     loadEntry,
+    loadEntries,
     createDraftFromEntry,
     createEmptyDraft,
     discardDraft,

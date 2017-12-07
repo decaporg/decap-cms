@@ -289,7 +289,6 @@ class Backend {
   }
 
   persistUnpublishedEntry(...args) {
-    console.log('ran');
     return this.persistEntry(...args, { unpublished: true });
   }
 

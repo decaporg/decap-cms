@@ -70,6 +70,7 @@ class EditorInterface extends Component {
       hasWorkflow,
       hasUnpublishedChanges,
       isNewEntry,
+      isModification,
     } = this.props;
 
     const { previewVisible, scrollSyncEnabled, showEventBlocker } = this.state;
@@ -143,6 +144,7 @@ class EditorInterface extends Component {
           hasWorkflow={hasWorkflow}
           hasUnpublishedChanges={hasUnpublishedChanges}
           isNewEntry={isNewEntry}
+          isModification={isModification}
         />
         <div className="nc-entryEditor-container">
           <div className="nc-entryEditor-viewControls">
@@ -194,6 +196,7 @@ EditorInterface.propTypes = {
   hasWorkflow: PropTypes.bool,
   hasUnpublishedChanges: PropTypes.bool,
   isNewEntry: PropTypes.bool,
+  isModification: PropTypes.bool,
 };
 
 export default EditorInterface;

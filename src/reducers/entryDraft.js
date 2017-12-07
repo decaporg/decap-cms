@@ -77,8 +77,16 @@ const entryDraftReducer = (state = Map(), action) => {
     }
 
     case ENTRY_PERSIST_SUCCESS:
-    case ENTRY_DELETE_SUCCESS:
     case UNPUBLISHED_ENTRY_PERSIST_SUCCESS:
+      return state.withMutations((state) => {
+        state.deleteIn(['entry', 'isPersisting']);
+        state.set('hasChanged', false);
+        if (!state.getIn(['entry', 'slug'])) {
+          state.setIn(['entry', 'slug'], action.payload.slug);
+        }
+      });
+
+    case ENTRY_DELETE_SUCCESS:
       return state.withMutations((state) => {
         state.deleteIn(['entry', 'isPersisting']);
         state.set('hasChanged', false);

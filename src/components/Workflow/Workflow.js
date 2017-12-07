@@ -100,9 +100,10 @@ function mapStateToProps(state) {
      * Each key containing a Sequence of available unpubhlished entries
      * Eg.: OrderedMap{'draft':Seq(), 'pending_review':Seq(), 'pending_publish':Seq()}
      */
-    returnObj.unpublishedEntries = status.reduce((acc, currStatus) => (
-      acc.set(currStatus, selectUnpublishedEntriesByStatus(state, currStatus))
-    ), OrderedMap());
+    returnObj.unpublishedEntries = status.reduce((acc, currStatus) => {
+      const entries = selectUnpublishedEntriesByStatus(state, currStatus);
+      return acc.set(currStatus, entries)
+    }, OrderedMap());
   }
   return returnObj;
 }

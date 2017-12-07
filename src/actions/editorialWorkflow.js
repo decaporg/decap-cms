@@ -104,12 +104,13 @@ function unpublishedEntryPersisting(collection, entry, transactionID) {
   };
 }
 
-function unpublishedEntryPersisted(collection, entry, transactionID) {
+function unpublishedEntryPersisted(collection, entry, transactionID, slug) {
   return {
     type: UNPUBLISHED_ENTRY_PERSIST_SUCCESS,
     payload: { 
       collection: collection.get('name'),
       entry,
+      slug,
     },
     optimist: { type: COMMIT, id: transactionID },
   };
@@ -261,16 +262,7 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
         kind: 'success',
         dismissAfter: 4000,
       }));
-      dispatch(unpublishedEntryPersisted(collection, serializedEntry, transactionID));
-
-      /**
-       * Ensure a complete state refresh until a more proper solution can be
-       * implemented.
-       */
-      if (!entry.get('slug')) {
-        window.location.assign(`/#/collections/${collection.get('name')}/entries/${newSlug}`);
-        window.location.reload();
-      }
+      dispatch(unpublishedEntryPersisted(collection, serializedEntry, transactionID, newSlug));
     }
     catch(error) {
       dispatch(notifSend({

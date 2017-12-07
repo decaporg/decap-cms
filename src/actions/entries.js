@@ -110,12 +110,17 @@ export function entryPersisting(collection, entry) {
   };
 }
 
-export function entryPersisted(collection, entry) {
+export function entryPersisted(collection, entry, slug) {
   return {
     type: ENTRY_PERSIST_SUCCESS,
     payload: {
       collectionName: collection.get('name'),
       entrySlug: entry.get('slug'),
+
+      /**
+       * Pass slug from backend for newly created entries.
+       */
+      slug,
     },
   };
 }
@@ -298,22 +303,13 @@ export function persistEntry(collection) {
     dispatch(entryPersisting(collection, serializedEntry));
     return backend
       .persistEntry(state.config, collection, serializedEntryDraft, assetProxies.toJS())
-      .then(newSlug => {
+      .then(slug => {
         dispatch(notifSend({
           message: 'Entry saved',
           kind: 'success',
           dismissAfter: 4000,
         }));
-        dispatch(entryPersisted(collection, serializedEntry))
-
-        /**
-         * Ensure a complete state refresh until a more proper solution can be
-         * implemented.
-         */
-        if (!entry.get('slug')) {
-          window.location.assign(`/#/collections/${collection.get('name')}/entries/${newSlug}`);
-          window.location.reload();
-        }
+        dispatch(entryPersisted(collection, serializedEntry, slug))
       })
       .catch((error) => {
         console.error(error);

@@ -59,7 +59,6 @@ const unpublishedEntries = (state = null, action) => {
 
     case UNPUBLISHED_ENTRY_PERSIST_SUCCESS:
       // Update Optimistically
-      console.log(action.payload.entry.toJS());
       return state.deleteIn(['entities', `${ action.payload.collection }.${ action.payload.entry.get('slug') }`, 'isPersisting']);
 
     case UNPUBLISHED_ENTRY_STATUS_CHANGE_REQUEST:
@@ -75,6 +74,7 @@ const unpublishedEntries = (state = null, action) => {
 
     case UNPUBLISHED_ENTRY_PUBLISH_REQUEST:
       // Update Optimistically
+      console.log(action.payload);
       return state.deleteIn(['entities', `${ action.payload.collection }.${ action.payload.slug }`]);
 
     default:

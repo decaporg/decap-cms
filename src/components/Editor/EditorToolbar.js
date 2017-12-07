@@ -21,6 +21,7 @@ export default class EditorToolbar extends React.Component {
     hasWorkflow: PropTypes.bool,
     hasUnpublishedChanges: PropTypes.bool,
     isNewEntry: PropTypes.bool,
+    isModification: PropTypes.bool,
   };
 
   renderSimplePublishControls = () => {
@@ -78,16 +79,23 @@ export default class EditorToolbar extends React.Component {
       hasChanged,
       hasUnpublishedChanges,
       isNewEntry,
+      isModification,
     } = this.props;
-    const deleteLabel = (hasUnpublishedChanges && isNewEntry && 'Delete unpublished entry')
-      || (hasUnpublishedChanges && 'Delete unpublished changes')
-      || 'Delete published entry';
+
+    const deleteLabel = (hasUnpublishedChanges && isModification && 'Delete unpublished changes')
+      || (hasUnpublishedChanges && 'Delete unpublished entry')
+      || (!hasUnpublishedChanges && !isModification && 'Delete published entry');
+
     return (
       <div>
         <button onClick={() => hasChanged && onPersist()}>Save</button>
-        <button onClick={hasUnpublishedChanges ? onDeleteUnpublishedChanges : onDelete}>
-          {deleteLabel}
-        </button>
+        {
+          isNewEntry
+            ? null
+            : <button onClick={hasUnpublishedChanges ? onDeleteUnpublishedChanges : onDelete}>
+                {deleteLabel}
+              </button>
+        }
       </div>
     );
   };
