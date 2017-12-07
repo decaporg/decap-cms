@@ -21,6 +21,8 @@
   @apply(--button);
   @apply(--dropShadowDeep);
   @apply(--buttonDefault);
+
+  padding: 0 30px;
 }
 
 .nc-collectionPage-top-viewControls {
