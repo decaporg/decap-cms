@@ -4,7 +4,7 @@ import { orderBy, get, isEmpty, map } from 'lodash';
 import c from 'classnames';
 import fuzzy from 'fuzzy';
 import Waypoint from 'react-waypoint';
-import { Modal } from 'UI';
+import { Modal, FileUploadButton } from 'UI';
 import { resolvePath, fileExtension } from 'Lib/pathHelper';
 import { changeDraftField } from 'Actions/entries';
 import {
@@ -239,6 +239,7 @@ class MediaLibrary extends React.Component {
       || (!hasFilteredFiles && 'No images found.')
       || (!hasSearchResults && 'No results.');
     const hasSelection = hasMedia && !isEmpty(selectedFile);
+    const shouldShowButtonLoader = isPersisting || isDeleting;
 
     return (
       <Modal
@@ -276,18 +277,18 @@ class MediaLibrary extends React.Component {
           <div>
               <button
                 onClick={this.handleDelete}
-                disabled={shouldShowLoader || !hasSelection}
+                disabled={shouldShowButtonLoader || !hasSelection}
               >
                 Delete
               </button>
               <FileUploadButton
-                className={`nc-mediaLibrary-uploadButton ${shouldShowLoader ? 'nc-mediaLibrary-uploadButton-disabled' : ''}`}
+                className={`nc-mediaLibrary-uploadButton ${shouldShowButtonLoader ? 'nc-mediaLibrary-uploadButton-disabled' : ''}`}
                 label="Upload"
                 imagesOnly={forImage}
                 onChange={this.handlePersist}
-                disabled={shouldShowLoader}
+                disabled={shouldShowButtonLoader}
               />
-              { shouldShowLoader ? loader : null }
+              { shouldShowButtonLoader ? loader : null }
           </div>
         </div>
 
