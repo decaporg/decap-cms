@@ -175,13 +175,27 @@ class Editor extends React.Component {
 
   handlePersistEntry = async (opts = {}) => {
     const { createNew = false } = opts;
-    const { persistEntry, collection, entryDraft, newEntry } = this.props;
+    const { persistEntry, collection, entryDraft, newEntry, currentStatus, hasWorkflow, loadEntry, slug } = this.props;
 
     await persistEntry(collection)
 
     if (createNew) {
       navigateToNewEntry(collection.get('name'));
     }
+    else if (slug && hasWorkflow && !currentStatus) {
+      loadEntry(collection, slug);
+    }
+  };
+
+  handlePublishEntry = () => {
+    const { publishUnpublishedEntry, collection, slug, currentStatus } = this.props;
+    if (currentStatus !== status.last()) {
+      window.alert('Please update status to "Ready" before publishing.');
+      return;
+    } else if (!window.confirm('Are you sure you want to publish this entry?')) {
+      return;
+    }
+    publishUnpublishedEntry(collection.get('name'), slug);
   };
 
   handleDeleteEntry = () => {
@@ -262,6 +276,7 @@ class Editor extends React.Component {
         onDelete={this.handleDeleteEntry}
         onDeleteUnpublishedChanges={this.handleDeleteUnpublishedChanges}
         onChangeStatus={this.handleChangeStatus}
+        onPublish={this.handlePublishEntry}
         showDelete={this.props.showDelete}
         enableSave={entryDraft.get('hasChanged')}
         user={user}

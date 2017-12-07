@@ -47,6 +47,7 @@ class WorkflowList extends React.Component {
       this.props.handleDelete(collection, slug, ownStatus);
     }
   };
+
   requestPublish = (collection, slug, ownStatus) => {
     if (ownStatus !== status.last()) {
       window.alert(
@@ -58,7 +59,7 @@ Please drag the card to the "Ready" column to enable publishing.`
     } else if (!window.confirm('Are you sure you want to publish this entry?')) {
       return;
     }
-    this.props.handlePublish(collection, slug, ownStatus);
+    this.props.handlePublish(collection, slug);
   };
 
   renderColumns = (entries, column) => {

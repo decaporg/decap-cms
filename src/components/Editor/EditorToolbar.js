@@ -17,6 +17,7 @@ export default class EditorToolbar extends React.Component {
     onDelete: PropTypes.func.isRequired,
     onDeleteUnpublishedChanges: PropTypes.func.isRequired,
     onChangeStatus: PropTypes.func.isRequired,
+    onPublish: PropTypes.func.isRequired,
     user: ImmutablePropTypes.map,
     hasChanged: PropTypes.bool,
     displayUrl: PropTypes.string,
@@ -94,47 +95,55 @@ export default class EditorToolbar extends React.Component {
       onPersistAndNew,
       isPersisting,
       onChangeStatus,
+      onPublish,
       currentStatus,
+      isNewEntry,
     } = this.props;
-    return [
-      <Dropdown
-        className="nc-entryEditor-toolbar-button"
-        dropdownTopOverlap="40px"
-        dropdownWidth="150px"
-        label={isPersisting ? 'Updating...' : 'Set status'}
-      >
-        <DropdownItem
-          className={c({
-            'nc-entryEditor-toolbar-statusMenu-statusActive': currentStatus === status.get('DRAFT'),
-          })}
-          label="Draft"
-          onClick={() => onChangeStatus('DRAFT')}
-        />
-        <DropdownItem
-          className={c({
-            'nc-entryEditor-toolbar-statusMenu-statusActive': currentStatus === status.get('PENDING_REVIEW'),
-          })}
-          label="In review"
-          onClick={() => onChangeStatus('PENDING_REVIEW')}
-        />
-        <DropdownItem
-          className={c({
-            'nc-entryEditor-toolbar-statusMenu-statusActive': currentStatus === status.get('PENDING_PUBLISH'),
-          })}
-          label="Ready"
-          onClick={() => onChangeStatus('PENDING_PUBLISH')}
-        />
-      </Dropdown>,
-      <Dropdown
-        className="nc-entryEditor-toolbar-button"
-        dropdownTopOverlap="40px"
-        dropdownWidth="150px"
-        label={isPersisting ? 'Publishing...' : 'Publish'}
-      >
-        <DropdownItem label="Publish now" icon="arrow" iconDirection="right" onClick={onPersist}/>
-        <DropdownItem label="Publish and create new" icon="add" onClick={onPersistAndNew}/>
-      </Dropdown>
-    ];
+    if (currentStatus) {
+      return [
+        <Dropdown
+          className="nc-entryEditor-toolbar-button"
+          dropdownTopOverlap="40px"
+          dropdownWidth="150px"
+          label={isPersisting ? 'Updating...' : 'Set status'}
+        >
+          <DropdownItem
+            className={c({
+              'nc-entryEditor-toolbar-statusMenu-statusActive': currentStatus === status.get('DRAFT'),
+            })}
+            label="Draft"
+            onClick={() => onChangeStatus('DRAFT')}
+          />
+          <DropdownItem
+            className={c({
+              'nc-entryEditor-toolbar-statusMenu-statusActive': currentStatus === status.get('PENDING_REVIEW'),
+            })}
+            label="In review"
+            onClick={() => onChangeStatus('PENDING_REVIEW')}
+          />
+          <DropdownItem
+            className={c({
+              'nc-entryEditor-toolbar-statusMenu-statusActive': currentStatus === status.get('PENDING_PUBLISH'),
+            })}
+            label="Ready"
+            onClick={() => onChangeStatus('PENDING_PUBLISH')}
+          />
+        </Dropdown>,
+        <Dropdown
+          className="nc-entryEditor-toolbar-button"
+          dropdownTopOverlap="40px"
+          dropdownWidth="150px"
+          label={isPersisting ? 'Publishing...' : 'Publish'}
+        >
+          <DropdownItem label="Publish now" icon="arrow" iconDirection="right" onClick={onPublish}/>
+          <DropdownItem label="Publish and create new" icon="add" onClick={onPersistAndNew}/>
+        </Dropdown>
+      ];
+    }
+
+    if (!isNewEntry) {
+      return 'Published';
+    }
   };
 
 

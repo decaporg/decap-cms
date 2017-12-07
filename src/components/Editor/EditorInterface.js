@@ -61,6 +61,7 @@ class EditorInterface extends Component {
       onDelete,
       onDeleteUnpublishedChanges,
       onChangeStatus,
+      onPublish,
       onValidate,
       onOpenMediaLibrary,
       onAddAsset,
@@ -139,6 +140,7 @@ class EditorInterface extends Component {
           onDeleteUnpublishedChanges={onDeleteUnpublishedChanges}
           onChangeStatus={onChangeStatus}
           showDelete={showDelete}
+          onPublish={onPublish}
           enableSave={enableSave}
           user={user}
           hasChanged={hasChanged}
@@ -193,6 +195,7 @@ EditorInterface.propTypes = {
   showDelete: PropTypes.bool.isRequired,
   onDelete: PropTypes.func.isRequired,
   onDeleteUnpublishedChanges: PropTypes.func.isRequired,
+  onPublish: PropTypes.func.isRequired,
   onChangeStatus: PropTypes.func.isRequired,
   onRemoveInsertedMedia: PropTypes.func.isRequired,
   user: ImmutablePropTypes.map,

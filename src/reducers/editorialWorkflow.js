@@ -74,7 +74,6 @@ const unpublishedEntries = (state = null, action) => {
 
     case UNPUBLISHED_ENTRY_PUBLISH_REQUEST:
       // Update Optimistically
-      console.log(action.payload);
       return state.deleteIn(['entities', `${ action.payload.collection }.${ action.payload.slug }`]);
 
     default:
