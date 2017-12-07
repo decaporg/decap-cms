@@ -24,9 +24,10 @@ import {
 import { deserializeValues } from 'Lib/serializeEntryValues';
 import { addAsset } from 'Actions/media';
 import { openMediaLibrary, removeInsertedMedia } from 'Actions/mediaLibrary';
-import { selectEntry, getAsset } from 'Reducers';
+import { selectEntry, selectUnpublishedEntry, getAsset } from 'Reducers';
 import { selectFields } from 'Reducers/collections';
 import { Loader } from 'UI';
+import { status } from 'Constants/publishModes';
 import { EDITORIAL_WORKFLOW } from 'Constants/publishModes';
 import EditorInterface from './EditorInterface';
 import withWorkflow from './withWorkflow';
@@ -64,6 +65,10 @@ class Editor extends React.Component {
     unpublishedEntry: PropTypes.bool,
     isModification: PropTypes.bool,
     collectionEntriesLoaded: PropTypes.bool,
+    updateUnpublishedEntryStatus: PropTypes.func.isRequired,
+    publishUnpublishedEntry: PropTypes.func.isRequired,
+    deleteUnpublishedEntry: PropTypes.func.isRequired,
+    currentStatus: PropTypes.string,
   };
 
   componentDidMount() {
@@ -162,6 +167,12 @@ class Editor extends React.Component {
     if (entry) this.props.createDraftFromEntry(entry);
   };
 
+  handleChangeStatus = (newStatusName) => {
+    const { updateUnpublishedEntryStatus, collection, slug, currentStatus } = this.props;
+    const newStatus = status.get(newStatusName);
+    this.props.updateUnpublishedEntryStatus(collection.get('name'), slug, currentStatus, newStatus);
+  }
+
   handlePersistEntry = async (opts = {}) => {
     const { createNew = false } = opts;
     const { persistEntry, collection, entryDraft, newEntry } = this.props;
@@ -222,6 +233,7 @@ class Editor extends React.Component {
       unpublishedEntry,
       newEntry,
       isModification,
+      currentStatus,
     } = this.props;
 
     if (entry && entry.get('error')) {
@@ -249,6 +261,7 @@ class Editor extends React.Component {
         onPersist={this.handlePersistEntry}
         onDelete={this.handleDeleteEntry}
         onDeleteUnpublishedChanges={this.handleDeleteUnpublishedChanges}
+        onChangeStatus={this.handleChangeStatus}
         showDelete={this.props.showDelete}
         enableSave={entryDraft.get('hasChanged')}
         user={user}
@@ -258,6 +271,7 @@ class Editor extends React.Component {
         hasUnpublishedChanges={unpublishedEntry}
         isNewEntry={newEntry}
         isModification={isModification}
+        currentStatus={currentStatus}
       />
     );
   }
@@ -267,9 +281,10 @@ function mapStateToProps(state, ownProps) {
   const { collections, entryDraft, mediaLibrary, auth, config, entries } = state;
   const slug = ownProps.match.params.slug;
   const collection = collections.get(ownProps.match.params.name);
+  const collectionName = collection.get('name');
   const newEntry = ownProps.newRecord === true;
   const fields = selectFields(collection, slug);
-  const entry = newEntry ? null : selectEntry(state, collection.get('name'), slug);
+  const entry = newEntry ? null : selectEntry(state, collectionName, slug);
   const boundGetAsset = getAsset.bind(null, state);
   const mediaPaths = mediaLibrary.get('controlMedia');
   const user = auth && auth.get('user');
@@ -277,7 +292,9 @@ function mapStateToProps(state, ownProps) {
   const displayUrl = config.get('display_url');
   const hasWorkflow = config.get('publish_mode') === EDITORIAL_WORKFLOW;
   const isModification = entryDraft.getIn(['entry', 'isModification']);
-  const collectionEntriesLoaded = !!entries.getIn(['entities', collection.get('name')])
+  const collectionEntriesLoaded = !!entries.getIn(['entities', collectionName])
+  const unpublishedEntry = selectUnpublishedEntry(state, collectionName, slug);
+  const currentStatus = unpublishedEntry && unpublishedEntry.getIn(['metaData', 'status']);
   return {
     collection,
     collections,
@@ -294,6 +311,7 @@ function mapStateToProps(state, ownProps) {
     hasWorkflow,
     isModification,
     collectionEntriesLoaded,
+    currentStatus,
   };
 }
 

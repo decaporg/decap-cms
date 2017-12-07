@@ -7,6 +7,7 @@ import { Icon } from 'UI';
 const Dropdown = ({
   label,
   button,
+  className,
   classNameButton = '',
   dropdownWidth = 'auto',
   dropdownPosition = 'left',
@@ -20,7 +21,7 @@ const Dropdown = ({
     right: dropdownPosition === 'right' ? 0 : 'auto',
   };
   return (
-    <Wrapper className="nc-dropdown" onSelection={handler => handler()}>
+    <Wrapper className={c('nc-dropdown', className)} onSelection={handler => handler()}>
       {
         button
           ? <Button>{button}</Button>
@@ -35,8 +36,8 @@ const Dropdown = ({
   );
 };
 
-const DropdownItem = ({ label, icon, iconDirection, onClick }) => (
-  <MenuItem className="nc-dropdownItem" value={onClick}>
+const DropdownItem = ({ label, icon, iconDirection, onClick, className }) => (
+  <MenuItem className={c('nc-dropdownItem', className)} value={onClick}>
     <span>{label}</span>
     {
       icon

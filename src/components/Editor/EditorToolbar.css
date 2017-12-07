@@ -27,19 +27,24 @@
   flex: 10;
   display: flex;
   justify-content: space-between;
-  padding: 0 20px;
+  padding: 0 10px;
 
-  .nc-entryEditor-toolbar-mainSection-left {
-
+  & .nc-entryEditor-toolbar-mainSection-left {
+    display: flex;
   }
-  .nc-entryEditor-toolbar-mainSection-right {
-
+  & .nc-entryEditor-toolbar-mainSection-right {
+    display: flex;
+    justify-content: flex-end;
   }
 }
 
 .nc-entryEditor-toolbar-backSection,
 .nc-entryEditor-toolbar-metaSection {
   border: 0 solid var(--textFieldBorderColor);
+}
+
+.nc-entryEditor-toolbar-button {
+  margin: 0 10px;
 }
 
 .nc-entryEditor-toolbar-backSection {
@@ -83,4 +88,8 @@
   background-color: #fbe0d7;
   padding-left: 20px;
   padding-right: 20px;
+}
+
+.nc-entryEditor-toolbar-statusMenu-statusActive {
+  background-color: red;
 }

@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import c from 'classnames';
 import { Link } from 'react-router-dom';
+import { status } from 'Constants/publishModes';
 import { Icon, Dropdown, DropdownItem } from 'UI';
 import { stripProtocol } from 'Lib/urlHelper';
 
@@ -14,6 +16,7 @@ export default class EditorToolbar extends React.Component {
     showDelete: PropTypes.bool.isRequired,
     onDelete: PropTypes.func.isRequired,
     onDeleteUnpublishedChanges: PropTypes.func.isRequired,
+    onChangeStatus: PropTypes.func.isRequired,
     user: ImmutablePropTypes.map,
     hasChanged: PropTypes.bool,
     displayUrl: PropTypes.string,
@@ -22,22 +25,7 @@ export default class EditorToolbar extends React.Component {
     hasUnpublishedChanges: PropTypes.bool,
     isNewEntry: PropTypes.bool,
     isModification: PropTypes.bool,
-  };
-
-  renderSimplePublishControls = () => {
-    const { onPersist, onPersistAndNew, isPersisting } = this.props;
-    return (
-      <div>
-        <Dropdown
-          dropdownTopOverlap="40px"
-          dropdownWidth="150px"
-          label={isPersisting ? 'Publishing...' : 'Publish'}
-        >
-          <DropdownItem label="Publish now" icon="arrow" iconDirection="right" onClick={onPersist}/>
-          <DropdownItem label="Publish and create new" icon="add" onClick={onPersistAndNew}/>
-        </Dropdown>
-      </div>
-    );
+    currentStatus: PropTypes.string,
   };
 
   renderSimpleSaveControls = () => {
@@ -55,7 +43,7 @@ export default class EditorToolbar extends React.Component {
     );
   };
 
-  renderWorkflowPublishControls = () => {
+  renderSimplePublishControls = () => {
     const { onPersist, onPersistAndNew, isPersisting } = this.props;
     return (
       <div>
@@ -99,6 +87,56 @@ export default class EditorToolbar extends React.Component {
       </div>
     );
   };
+
+  renderWorkflowPublishControls = () => {
+    const {
+      onPersist,
+      onPersistAndNew,
+      isPersisting,
+      onChangeStatus,
+      currentStatus,
+    } = this.props;
+    return [
+      <Dropdown
+        className="nc-entryEditor-toolbar-button"
+        dropdownTopOverlap="40px"
+        dropdownWidth="150px"
+        label={isPersisting ? 'Updating...' : 'Set status'}
+      >
+        <DropdownItem
+          className={c({
+            'nc-entryEditor-toolbar-statusMenu-statusActive': currentStatus === status.get('DRAFT'),
+          })}
+          label="Draft"
+          onClick={() => onChangeStatus('DRAFT')}
+        />
+        <DropdownItem
+          className={c({
+            'nc-entryEditor-toolbar-statusMenu-statusActive': currentStatus === status.get('PENDING_REVIEW'),
+          })}
+          label="In review"
+          onClick={() => onChangeStatus('PENDING_REVIEW')}
+        />
+        <DropdownItem
+          className={c({
+            'nc-entryEditor-toolbar-statusMenu-statusActive': currentStatus === status.get('PENDING_PUBLISH'),
+          })}
+          label="Ready"
+          onClick={() => onChangeStatus('PENDING_PUBLISH')}
+        />
+      </Dropdown>,
+      <Dropdown
+        className="nc-entryEditor-toolbar-button"
+        dropdownTopOverlap="40px"
+        dropdownWidth="150px"
+        label={isPersisting ? 'Publishing...' : 'Publish'}
+      >
+        <DropdownItem label="Publish now" icon="arrow" iconDirection="right" onClick={onPersist}/>
+        <DropdownItem label="Publish and create new" icon="add" onClick={onPersistAndNew}/>
+      </Dropdown>
+    ];
+  };
+
 
 
   render() {

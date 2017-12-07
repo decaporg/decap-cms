@@ -4,7 +4,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import moment from 'moment';
 import { capitalize } from 'lodash'
 import c from 'classnames';
-import { status, statusDescriptions } from 'Constants/publishModes';
+import { status } from 'Constants/publishModes';
 import { DragSource, DropTarget, HTML5DragDrop } from 'UI'
 import WorkflowCard from './WorkflowCard';
 
