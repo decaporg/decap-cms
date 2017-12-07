@@ -7,10 +7,14 @@ position: 10
 
 Netlify CMS can be [added to an existing site](https://www.netlifycms.org/docs/add-to-your-site), but the quickest way to get started is with a template. Our featured templates below deploy to Netlify, giving you a fully working CMS-enabled site with just a few clicks.
 
-<div style="display: flex; justify-content: space-around; text-align: center;">
+<div style="display: flex; justify-content: space-around; text-align: center; margin-bottom: 1.5em;">
     <div>
-        <h4 id="hugo-site-starter">Hugo Site Starter</h4>
+        <h4>Hugo Site Starter</h4>
         <p><a href="https://app.netlify.com/start/deploy?repository=https://github.com/netlify-templates/one-click-hugo-cms&amp;stack=cms"><img src="https://www.netlify.com/img/deploy/button.svg" alt="Deploy to Netlify" /></a></p>
+    </div>
+    <div>
+        <h4>Gatsby Site Starter</h4>
+        <p><a href="https://app.netlify.com/start/deploy?repository=https://github.com/benaiah/gatsby-starter-netlify-cms&amp;stack=cms"><img src="https://www.netlify.com/img/deploy/button.svg" alt="Deploy to Netlify" /></a></p>
     </div>
 </div>
 
