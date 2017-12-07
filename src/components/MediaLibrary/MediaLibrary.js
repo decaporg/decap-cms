@@ -260,6 +260,9 @@ class MediaLibrary extends React.Component {
             {privateUpload ? 'Private ' : null}
             {forImage ? 'Images' : 'Media assets'}
           </h1>
+        </div>
+
+        <div className="nc-mediaLibrary-actions">
           <div className="nc-mediaLibrary-search">
             <Icon type="search" size="small"/>
             <input
