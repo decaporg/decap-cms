@@ -18,7 +18,7 @@ The following options are available on all fields:
 
 - `required`: specify as `false` to make a field optional; defaults to `true`
 - `pattern`: add field validation by specifying a list with a regex pattern and an error message; more extensive validation can be achieved with [custom widgets](https://www.netlifycms.org/docs/custom-widgets/#advanced-field-validation)
-  - Example:
+  - **Example:**
 
     ```yaml
     - label: "Title"
@@ -32,12 +32,12 @@ The following options are available on all fields:
 
 The boolean widget translates a toggle switch input to a true/false value.
 
-- Name: `boolean`
-- UI: toggle switch
-- Data type: boolean
-- Options:
+- **Name:** `boolean`
+- **UI:** toggle switch
+- **Data type:** boolean
+- **Options:**
   - `default`: accepts `true` or `false`; defaults to `false`
-- Example:
+- **Example:**
 
   ```yaml
   - {label: "Draft", name: "draft", widget: "boolean", default: true}
@@ -48,13 +48,13 @@ The boolean widget translates a toggle switch input to a true/false value.
 
 The date widget translates a date picker input to a date string. For saving date and time together, use the [DateTime](#datetime) widget.
 
-- Name: `date`
-- UI: date picker
-- Data type: Moment.js-formatted date string
-- Options:
+- **Name:** `date`
+- **UI:** date picker
+- **Data type:** Moment.js-formatted date string
+- **Options:**
   - `default`: accepts a date string, or an empty string to accept blank input; otherwise defaults to current date
   - `format`: accepts Moment.js [tokens](https://momentjs.com/docs/#/parsing/string-format/); defaults to ISO8601 format `YYYY-MM-DD`
-- Example:
+- **Example:**
 
   ```yaml
   - label: "Birthdate"
@@ -69,13 +69,13 @@ The date widget translates a date picker input to a date string. For saving date
 
 The datetime widget translates a datetime picker to a datetime string. For saving the date only, use the [Date](#date) widget.
 
-- Name: `datetime`
-- UI: datetime picker
-- Data type: Moment.js-formatted datetime string
-- Options:
+- **Name:** `datetime`
+- **UI:** datetime picker
+- **Data type:** Moment.js-formatted datetime string
+- **Options:**
   - `default`: accepts a datetime string, or an empty string to accept blank input; otherwise defaults to current datetime
   - `format`: accepts Moment.js [tokens](https://momentjs.com/docs/#/parsing/string-format/); defaults to ISO8601 format `YYYY-MM-DDTHH:mm:ssZ`
-- Example:
+- **Example:**
 
   ```yaml
   - label: "Start time"
@@ -90,16 +90,16 @@ The datetime widget translates a datetime picker to a datetime string. For savin
 
 The file widget allows editors to upload a file or select an existing one from the media library. The path to the file will be saved to the field as a string.
 
-- Name: `file`
-- UI: file picker button opens media gallery
-- Data type: file path string, based on `media_folder`/`public_folder` configuration
-- Options:
+- **Name:** `file`
+- **UI:** file picker button opens media gallery
+- **Data type:** file path string, based on `media_folder`/`public_folder` configuration
+- **Options:**
   - `default`: accepts a file path string; defaults to null
-- Example:
+- **Example:**
 
   ```yaml
   - label: "Manual PDF"
-    name: "manual_pdf"
+    **Name:** "manual_pdf"
     widget: "file"
     default: "/uploads/general-manual.pdf"
   ```
@@ -125,12 +125,12 @@ Hidden widgets do not display in the UI. In folder collections that allow users 
 
 The image widget allows editors to upload an image or select an existing one from the media library. The path to the image file will be saved to the field as a string.
 
-- Name: `image`
-- UI: file picker button opens media gallery allowing image files (jpg, jpeg, webp, gif, png, bmp, tiff, svg) only; displays selected image thumbnail
-- Data type: file path string, based on `media_folder`/`public_folder` configuration
-- Options:
+- **Name:** `image`
+- **UI:** file picker button opens media gallery allowing image files (jpg, jpeg, webp, gif, png, bmp, tiff, svg) only; displays selected image thumbnail
+- **Data type:** file path string, based on `media_folder`/`public_folder` configuration
+- **Options:**
   - `default`: accepts a file path string; defaults to null
-- Example:
+- **Example:**
 
   ```yaml
   - label: "Featured Image"
@@ -144,14 +144,14 @@ The image widget allows editors to upload an image or select an existing one fro
 
 The list widget allows you to create a repeatable item in the UI which saves as a list of widget values. map a user-provided string with a comma delimiter into a list. You can choose any widget as a child of a list widget—even other lists.
 
-- Name: `list`
-- UI: if `fields` is specified, field containing a repeatable child widget, with controls for adding, deleting, and re-ordering the repeated widgets; if unspecified, a text input for entering comma-separated values
-- Data type: list of widget values
-- Options:
+- **Name:** `list`
+- **UI:** if `fields` is specified, field containing a repeatable child widget, with controls for adding, deleting, and re-ordering the repeated widgets; if unspecified, a text input for entering comma-separated values
+- **Data type:** list of widget values
+- **Options:**
   - `default`: if `fields` is specified, declare defaults on the child widgets; if not, you may specify a list of strings to populate the text field
   - `field`: a single widget field to be repeated
   - `fields`: a nested list of multiple widget fields to be included in each repeatable iteration
-- Example (`field`/`fields` not specified):
+- **Example** (`field`/`fields` not specified):
 
   ```yaml
   - label: "Tags"
@@ -160,7 +160,7 @@ The list widget allows you to create a repeatable item in the UI which saves as 
     default: ["news"]
   ```
 
-- Example (with `field`):
+- **Example** (with `field`):
 
   ```yaml
   - label: "Gallery"
@@ -170,7 +170,7 @@ The list widget allows you to create a repeatable item in the UI which saves as 
       - {label: Image, name: image, widget: image}
   ```
 
-- Example (with `fields`):
+- **Example** (with `fields`):
 
   ```yaml
   - label: "Testimonials"
@@ -191,15 +191,15 @@ The list widget allows you to create a repeatable item in the UI which saves as 
 
 The number widget uses an HTML number input, saving the value as a string, integer, or floating point number.
 
-- Name: `number`
-- UI: HTML [number input](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/number)
-- Data type: string by default; configured by `valueType` option
-- Options:
+- **Name:** `number`
+- **UI:** HTML [number input](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/number)
+- **Data type:** string by default; configured by `valueType` option
+- **Options:**
   - `default`: accepts string or number value; defaults to empty string
   - `valueType`: accepts `int` or `float`; any other value results in saving as a string
   - `min`: accepts a number for minimum value accepted; unset by default
   - `max`: accepts a number for maximum value accepted; unset by default
-- Example:
+- **Example:**
 
   ```yaml
   - label: "Puppy Count"
@@ -216,13 +216,13 @@ The number widget uses an HTML number input, saving the value as a string, integ
 
 The object widget allows you to group multiple widgets together, nested under a single field. You can choose any widget as a child of an object widget—even other objects.
 
-- Name: `object`
-- UI: a field containing one or more child widgets
-- Data type: list of child widget values
-- Options:
+- **Name:** `object`
+- **UI:** a field containing one or more child widgets
+- **Data type:** list of child widget values
+- **Options:**
   - `default`: you can set defaults within each sub-field's configuration
   - `fields`: (**required**) a nested list of widget fields to include in your widget
-- Example:
+- **Example:**
 
   ```yaml
   - label: "Profile"
@@ -250,15 +250,15 @@ The object widget allows you to group multiple widgets together, nested under a 
 
 The relation widget allows you to reference items from another collection. It provides a search input with a list of entries from the collection you're referencing, and the list automatically updates with matched entries based on what you've typed.
 
-- Name: `realtion`
-- UI: text input with search result dropdown
-- Data type: data type of the value pulled from the related collection item
-- Options:
+- **Name:** `realtion`
+- **UI:** text input with search result dropdown
+- **Data type:** data type of the value pulled from the related collection item
+- **Options:**
   - `default`: accepts any widget data type; defaults to an empty string
   - `collection`: (**required**) name of the collection being referenced (string)
   - `searchFields`: (**required**) list of one or more names of fields in the referenced collection to search for the typed value
   - `valueField`: (**required**) name of the field from the referenced collection whose value will be stored for the relation
-- Example (assuming a separate "authors" collection with "name" and "twitterHandle" fields):
+- **Example** (assuming a separate "authors" collection with "name" and "twitterHandle" fields):
 
   ```yaml
   - label: Post Author
@@ -275,15 +275,15 @@ The relation widget allows you to reference items from another collection. It pr
 
 The select widget allows you to pick a single string value from a dropdown menu.
 
-- Name: `select`
-- UI: HTML select input
-- Data type: string
-- Options:
+- **Name:** `select`
+- **UI:** HTML select input
+- **Data type:** string
+- **Options:**
   - `default`: accepts a string; defaults to an empty string
   - `options`: (**required**) a list of options for the dropdown menu; can be listed in two ways:
     - string values: the label displayed in the dropdown is the value saved in the file
     - object with `label` and `value` fields: the label displays in the dropdown; the value is saved in the file
-- Example (options as strings):
+- **Example** (options as strings):
 
   ```yaml
   - label: "Align Content"
@@ -291,7 +291,7 @@ The select widget allows you to pick a single string value from a dropdown menu.
     widget: "select"
     options: ["left", "center", "right"]
   ```
-- Example (options as objects):
+- **Example** (options as objects):
 
   ```yaml
   - label: "City"
@@ -308,12 +308,12 @@ The select widget allows you to pick a single string value from a dropdown menu.
 
 The string widget translates a basic text input to a string value. For larger textarea inputs, use the [text](#text) widget.
 
-- Name: `string`
-- UI: text input
-- Data type: string
-- Options:
+- **Name:** `string`
+- **UI:** text input
+- **Data type:** string
+- **Options:**
   - `default`: accepts a string; defaults to an empty string
-- Example:
+- **Example:**
 
   ```yaml
   - {label: "Title", name: "title", widget: "string"}
@@ -324,12 +324,12 @@ The string widget translates a basic text input to a string value. For larger te
 
 The text widget takes a multiline text field and saves it as a string. For shorter text inputs, use the [string](#string) widget.
 
-- Name: `text`
-- UI: HTML textarea
-- Data type: string
-- Options:
+- **Name:** `text`
+- **UI:** HTML textarea
+- **Data type:** string
+- **Options:**
   - `default`: accepts a string; defaults to an empty string
-- Example:
+- **Example:**
 
   ```yaml
   - {label: "Description", name: "description", widget: "text"}
