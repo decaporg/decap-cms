@@ -21,7 +21,6 @@
   @apply(--button);
   @apply(--dropShadowDeep);
   @apply(--buttonDefault);
-  @apply(--buttonGray);
 
   padding: 0 30px;
 }
