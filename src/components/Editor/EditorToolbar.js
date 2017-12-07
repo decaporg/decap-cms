@@ -75,18 +75,21 @@ export default class EditorToolbar extends React.Component {
       || (hasUnpublishedChanges && isNewEntry && 'Delete unpublished entry')
       || (!hasUnpublishedChanges && !isModification && 'Delete published entry');
 
-    return (
-      <div>
-        <button onClick={() => hasChanged && onPersist()}>Save</button>
-        {
-          isNewEntry
-            ? null
-            : <button onClick={hasUnpublishedChanges ? onDeleteUnpublishedChanges : onDelete}>
+    return [
+        <button
+          className="nc-entryEditor-toolbar-saveButton"
+          onClick={() => hasChanged && onPersist()}
+        >
+          Save
+        </button>,
+        isNewEntry ? null
+            : <button
+                className="nc-entryEditor-toolbar-deleteButton"
+                onClick={hasUnpublishedChanges ? onDeleteUnpublishedChanges : onDelete}
+              >
                 {deleteLabel}
-              </button>
-        }
-      </div>
-    );
+              </button>,
+    ];
   };
 
   renderWorkflowPublishControls = () => {
@@ -102,7 +105,8 @@ export default class EditorToolbar extends React.Component {
     if (currentStatus) {
       return [
         <Dropdown
-          className="nc-entryEditor-toolbar-button"
+          className="nc-entryEditor-toolbar-dropdown"
+          classNameButton="nc-entryEditor-toolbar-statusButton"
           dropdownTopOverlap="40px"
           dropdownWidth="150px"
           label={isPersisting ? 'Updating...' : 'Set status'}
@@ -130,7 +134,8 @@ export default class EditorToolbar extends React.Component {
           />
         </Dropdown>,
         <Dropdown
-          className="nc-entryEditor-toolbar-button"
+          className="nc-entryEditor-toolbar-dropdown"
+          classNameButton="nc-entryEditor-toolbar-publishButton"
           dropdownTopOverlap="40px"
           dropdownWidth="150px"
           label={isPersisting ? 'Publishing...' : 'Publish'}
@@ -142,7 +147,7 @@ export default class EditorToolbar extends React.Component {
     }
 
     if (!isNewEntry) {
-      return 'Published';
+      return <div className="nc-entryEditor-toolbar-statusPublished">Published</div>;
     }
   };
 

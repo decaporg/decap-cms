@@ -46,10 +46,12 @@
 
   &:after {
     @apply(--caretDown);
+    content: '';
     display: block;
     position: absolute;
-    top: -1px;
+    top: 16px;
     right: 16px;
+    color: currentColor;
   }
 }
 

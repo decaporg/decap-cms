@@ -1,3 +1,7 @@
+:root {
+  --editorToolbarButtonMargin: 0 10px;
+}
+
 .nc-entryEditor-toolbar {
   box-shadow: 0 2px 6px 0 rgba(68, 74, 87, 0.05),
               0 1px 3px 0 rgba(68, 74, 87, 0.10),
@@ -29,24 +33,12 @@
   justify-content: space-between;
   padding: 0 10px;
 
-  & button {
-    @apply(--buttonDefault);
-  }
-
   & .nc-entryEditor-toolbar-mainSection-left {
     display: flex;
-
-    & button {
-      margin-right: 10px;
-    }
   }
   & .nc-entryEditor-toolbar-mainSection-right {
     display: flex;
     justify-content: flex-end;
-
-    & button {
-      margin-left: 10px;
-    }
   }
 }
 
@@ -55,8 +47,17 @@
   border: 0 solid var(--textFieldBorderColor);
 }
 
-.nc-entryEditor-toolbar-button {
-  margin: 0 10px;
+.nc-entryEditor-toolbar-dropdown {
+  margin: var(--editorToolbarButtonMargin);
+}
+
+.nc-entryEditor-toolbar-publishButton {
+  background-color: var(--colorTeal);
+}
+
+.nc-entryEditor-toolbar-statusButton {
+  background-color: var(--colorTealLight);
+  color: var(--colorTeal);
 }
 
 .nc-entryEditor-toolbar-backSection {
@@ -113,11 +114,34 @@
   margin-top: 6px;
 }
 
+.nc-entryEditor-toolbar-deleteButton,
+.nc-entryEditor-toolbar-saveButton {
+  @apply(--buttonDefault);
+  display: block;
+  margin: var(--editorToolbarButtonMargin);
+}
+
 .nc-entryEditor-toolbar-deleteButton {
-  color: #ff003b;
-  background-color: #fbe0d7;
-  padding-left: 20px;
-  padding-right: 20px;
+  background-color: var(--colorErrorBackground);
+  color: var(--colorErrorText);
+}
+
+.nc-entryEditor-toolbar-saveButton {
+  background-color: var(--colorInfoBackground);
+  color: var(--colorInfoText);
+}
+
+.nc-entryEditor-toolbar-statusPublished {
+  margin: var(--editorToolbarButtonMargin);
+  border: 1px solid var(--textFieldBorderColor);
+  border-radius: var(--borderRadius);
+  background-color: var(--colorWhite);
+  color: var(--colorTeal);
+  padding: 0 24px;
+  line-height: 36px;
+  cursor: default;
+  font-size: 14px;
+  font-weight: 500;
 }
 
 .nc-entryEditor-toolbar-statusMenu-statusActive {
