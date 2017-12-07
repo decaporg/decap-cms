@@ -1,14 +1,17 @@
 ---
-title: Quick Start
+title: Add to Your Site
 position: 20
 ---
 
-# Quick Start
+# Add Netlify CMS to Your Site
+
 Netlify CMS is adaptable to a wide variety of projects. The only inflexible requirement is that your site content must be written in markdown, JSON, YAML, or TOML files, stored in a repo on [GitHub](https://github.com/). (If you're partial to another Git hosting service, check out the PRs in progress for [GitLab](https://github.com/netlify/netlify-cms/pull/517) and [Bitbucket](https://github.com/netlify/netlify-cms/pull/525) support.)
 
-In this guide, we're going to assume you're using a [static site generator](https://www.staticgen.com/), like Jekyll, Hugo, Hexo, or Gatsby.
+This tutorial will guide you through the steps for adding Netlify CMS to a site that's built with a common [static site generator](https://www.staticgen.com/), like Jekyll, Hugo, Hexo, or Gatsby. Alternatively, you can [start from a template](https://www.netlifycms.org/docs/start-with-a-template) or dive right into to [configuration options](https://www.netlifycms.org/docs/configuration-options).
+
 
 ## App File Structure
+
 All Netlify CMS files are contained in a static `admin` folder, stored at the root of your published site. Where you store this folder in the source files depends on your static site generator. Here's the the static file location for a few of the most popular static site generators:
 
 These generators ... | store static files in
@@ -51,8 +54,11 @@ The first file, `admin/index.html`, is the entry point for the Netlify CMS admin
 
 The second file, `admin/config.yml`, is the heart of your Netlify CMS installation, and a bit more complex. The next section covers the details.
 
+
 ## Configuration
+
 Configuration will be different for every site, so we'll break it down into parts.  All code snippets in this section will be added to your `admin/config.yml` file.
+
 
 ### Backend
 Because we're using GitHub and Netlify for our hosting and authentication, backend configuration is fairly strightforward. You can start your `config.yml` file with these lines:
@@ -183,6 +189,7 @@ collections:
       - {label: "Language", name: "language"}
 ```
 
+
 ## Authentication
 
 Now that you have your Netlify CMS files in place and configured, all that's left is to enable authentication. There are [many ways to do this](/docs/custom-authentication) (with or without deploying to Netlify), but this example uses Netlify because it's one of the quickest ways to get started.
@@ -223,6 +230,7 @@ When a user logs in with the Netlify Identity widget, they will be directed to t
 </script>
 ```
 Note: This example script requires modern JavaScript and will not work on IE11. For legacy browser support, use function expressions (`function () {}`) in place of the arrow functions (`() => {}`), or use a transpiler like [Babel](https://babeljs.io/).
+
 
 ## Accessing the CMS
 
