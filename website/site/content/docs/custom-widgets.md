@@ -1,9 +1,9 @@
 ---
-title: Extending Widgets
-position: 60
+title: Custom Widgets
+position: 35
 ---
 
-# Extending With Widgets
+# Custom Widgets
 
 The NetlifyCMS exposes an `window.CMS` global object that you can use to register custom widgets, previews, and editor plugins. The available widget extension methods are:
 
@@ -115,3 +115,50 @@ CMS.registerEditorComponent({
 **Result:**
 
 ![youtube-widget](/img/youtube-widget.png)
+
+
+## Advanced field validation
+
+All widget fields, including those for built-in widgets, [include basic validation](https://www.netlifycms.org/docs/widgets/#common-widget-options) capability using the `required` and `pattern` options.
+
+With custom widgets, the widget control can also optionally implement an `isValid` method to perform custom validations, in addition to presence and pattern. The `isValid` method will be automatically called, and it can return either a boolean value, an object with an error message or a promise. Examples:
+
+**Boolean**
+No errors:
+
+```javascript
+  isValid = () => {
+    // Do internal validation
+    return true;
+  };
+```
+
+Existing error:
+
+```javascript
+  isValid = () => {
+    // Do internal validation
+    return false;
+  };
+```
+
+**Object with `error` (useful for returning custom error messages)**
+Existing error:
+
+```javascript
+  isValid = () => {
+    // Do internal validation
+    return { error: 'Your error message.' };
+  };
+```
+
+**Promise**
+You can also return a promise from `isValid`. While the promise is pending, the widget will be marked as "in error". When the promise resolves, the error is automatically cleared.
+
+```javascript
+  isValid = () => {
+    return this.existingPromise;
+  };
+```
+
+Note: Do not create a promise inside `isValid` - `isValid` is called right before trying to persist. This means that even if a previous promise was already resolved, when the user hits 'save', `isValid` will be called again. If it returns a new promise, it will be immediately marked as "in error" until the new promise resolves.
