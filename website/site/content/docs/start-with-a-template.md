@@ -21,15 +21,15 @@ Netlify CMS can be [added to an existing site](https://www.netlifycms.org/docs/a
 After clicking one of those buttons, you’ll authenticate with GitHub and choose a repository name. Netlify will then automatically create a repository in your GitHub account with a copy of the files from the template. Next, it will build and deploy the new site on Netlify, bringing you to the site dashboard when the build is complete.
 
 
-## Accessing Netlify CMS on your new site
+## Access Netlify CMS on your new site
 
 1. The template deploy process will send you an invitation to your new site, sent from `no-reply@netlify.com`.
 
-    ![Sample email subject line: You've been invited to join radiologist-amanda-53841.netlify.com](/img/email-subject.png?raw=true)
+    ![Sample email subject line: You've been invited to join radiologist-amanda-53841.netlify.com](https://www.netlifycms.org/img/email-subject.png?raw=true)
 
 2. Click the link to accept the invite, and you’ll be directed to your site, with a prompt to create a password.
 
-    !["Complete your signup" modal on the Kaldi coffee site](/img/create-password.png?raw=true)
+    !["Complete your signup" modal on the Kaldi coffee site](https://www.netlifycms.org/img/create-password.png?raw=true)
 
 3. Enter a password, sign in, and you’ll be directed straight to the CMS. (For future visits, you can go straight to `<yoursiteaddress.com>/admin`.)
 

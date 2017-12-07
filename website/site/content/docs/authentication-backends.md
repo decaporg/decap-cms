@@ -9,7 +9,7 @@ Netlify CMS stores content in your GitHub repository. (GitLab and Bitbucket comi
 
 ## Git Gateway with Netlify Identity
 
-[Git Gateway](https://github.com/netlify/git-gateway) is a Netlify open source project that allows you to add editors to your site CMS without giving them direct push access to your GitHub repository. [Netlify Identity](https://www.netlify.com/docs/identity/) service handles the authentication and provides a simple interface for user management. The Netlify CMS [Test Drive](/test-drive/) is a working example of this backend.
+[Git Gateway](https://github.com/netlify/git-gateway) is a Netlify open source project that allows you to add editors to your site CMS without giving them direct push access to your GitHub repository. [Netlify Identity](https://www.netlify.com/docs/identity/) service handles the authentication and provides a simple interface for user management. The Netlify CMS [featured templates](https://www.netlifycms.org/docs/start-with-a-template) are working examples of this backend.
 
 To use it in your own project, follow these steps:
 
