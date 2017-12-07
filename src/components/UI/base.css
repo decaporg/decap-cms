@@ -220,10 +220,6 @@ body {
   background-color: var(--colorBackground);
   color: var(--colorText);
   margin: 0;
-
-  font-smooth: auto;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 ul, ol {
