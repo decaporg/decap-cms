@@ -101,38 +101,34 @@ export default class AuthenticationPage extends React.Component {
 
     return (
       <section className="nc-gitGatewayAuthenticationPage-root">
-        <div className="nc-gitGatewayAuthenticationPage-card">
-          <form onSubmit={this.handleLogin}>
-            <div className="nc-gitGatewayAuthenticationPage-iconContainer">
-              <Icon type="netlify" size="140px"/>
-            </div>
-            {error && <p>
-              <span className="nc-gitGatewayAuthenticationPage-errorMsg">{error}</span>
-            </p>}
-            {errors.server && <p>
-              <span className="nc-gitGatewayAuthenticationPage-errorMsg">{errors.server}</span>
-            </p>}
-            <label>Email</label>
-            <input
-              type="text"
-              name="email"
-              value={this.state.email}
-              onChange={partial(this.handleChange, 'email')}
-            />
-            <div>{ errors.email || null }</div>
-            <label>Password</label>
-            <input
-              type="password"
-              name="password"
-              value={this.state.password}
-              onChange={partial(this.handleChange, 'password')}
-            />
-            <div>{ errors.password || null }</div>
-            <button className="nc-gitGatewayAuthenticationPage-button" disabled={inProgress}>
-              {inProgress ? "Logging in..." : "Login"}
-            </button>
-          </form>
-        </div>
+        <Icon className="nc-githubAuthenticationPage-logo" size="500px" type="netlify-cms"/>
+        <form className="nc-gitGatewayAuthenticationPage-form" onSubmit={this.handleLogin}>
+          {!error && <p>
+            <span className="nc-gitGatewayAuthenticationPage-errorMsg">{error}</span>
+          </p>}
+          {!errors.server && <p>
+            <span className="nc-gitGatewayAuthenticationPage-errorMsg">{errors.server}</span>
+          </p>}
+          <div className="nc-gitGatewayAuthenticationPage-errorMsg">{ errors.email || null }</div>
+          <input
+            type="text"
+            name="email"
+            placeholder="Email"
+            value={this.state.email}
+            onChange={partial(this.handleChange, 'email')}
+          />
+          <div className="nc-gitGatewayAuthenticationPage-errorMsg">{ errors.password || null }</div>
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={this.state.password}
+            onChange={partial(this.handleChange, 'password')}
+          />
+          <button className="nc-gitGatewayAuthenticationPage-button" disabled={inProgress}>
+            {inProgress ? "Logging in..." : "Login"}
+          </button>
+        </form>
       </section>
     );
   }
