@@ -99,7 +99,6 @@
   .docs-content {
     font-size: 18px;
     line-height: 28px;
-    font-weight: $light;
 
     .edit-this-page {
       float: right;
@@ -147,8 +146,8 @@
       border-radius: 2px;
       padding: 2px 6px;
       white-space: nowrap;
-    }    
-    
+    }
+
     pre > code {
       background: initial;
       padding: initial;
@@ -178,6 +177,7 @@
 		text-transform: uppercase;
 		letter-spacing: 1.5px;
 		margin-top: $medium;
+    margin-bottom: $small;
 
 
 		&:after {

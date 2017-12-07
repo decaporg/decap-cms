@@ -59,32 +59,13 @@
         {{ end }}
         <div class="contributors feature">
           <h3>{{ .Site.Data.landing.community.contributors | markdownify }}</h3>
-          <div class="contributor-list">
-            <img src="https://place.cat/c/64/64" />
-            <img src="https://place.cat/c/64/64" />
-            <img src="https://place.cat/c/64/64" />
-            <img src="https://place.cat/c/64/64" />
-            <img src="https://place.cat/c/64/64" />
-            <img src="https://place.cat/c/64/64" />
-            <img src="https://place.cat/c/64/64" />
-            <img src="https://place.cat/c/64/64" />
-            <img src="https://place.cat/c/64/64" />
-            <img src="https://place.cat/c/64/64" />
-            <img src="https://place.cat/c/64/64" />
-            <img src="https://place.cat/c/64/64" />
-            <img src="https://place.cat/c/64/64" />
-            <img src="https://place.cat/c/64/64" />
-            <img src="https://place.cat/c/64/64" />
-            <img src="https://place.cat/c/64/64" />
-            <img src="https://place.cat/c/64/64" />
-            <img src="https://place.cat/c/64/64" />
-            <img src="https://place.cat/c/64/64" />
-            <img src="https://place.cat/c/64/64" />
-            <img src="https://place.cat/c/64/64" />
-            <img src="https://place.cat/c/64/64" />
-            <img src="https://place.cat/c/64/64" />
-            <img src="https://place.cat/c/64/64" />
-          </div>
+          {{ range .Site.Data.contributors }}
+            <div class="contributor-list">
+              {{ range . }}
+                <a href="{{.profile}}" title="{{.name}}"><img src="{{.avatar_url}}" alt="{{.login}}" /></a>
+              {{ end }}
+            </div>
+          {{ end }}
         </div>
       </div>
     </div>
