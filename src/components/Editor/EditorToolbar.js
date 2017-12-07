@@ -56,6 +56,8 @@ export default class EditorToolbar extends React.Component {
     return (
       <div>
         <Dropdown
+          className="nc-entryEditor-toolbar-dropdown"
+          classNameButton="nc-entryEditor-toolbar-publishButton"
           dropdownTopOverlap="40px"
           dropdownWidth="150px"
           label={isPersisting ? 'Publishing...' : 'Publish'}

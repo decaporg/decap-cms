@@ -227,9 +227,10 @@ class Editor extends React.Component {
 
   handleDeleteEntry = () => {
     const { entryDraft, newEntry, collection, deleteEntry, slug } = this.props;
-    console.log(entryDraft.toJS());
-    if (entryDraft.get('hasChanged') && !window.confirm('Are you sure you want to delete this published entry, as well as your unsaved changes from the current session?')) {
-      return;
+    if (entryDraft.get('hasChanged')) {
+      if (!window.confirm('Are you sure you want to delete this published entry, as well as your unsaved changes from the current session?')) {
+        return;
+      }
     } else if (!window.confirm('Are you sure you want to delete this published entry?')) {
       return;
     }
