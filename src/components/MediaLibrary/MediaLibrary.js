@@ -248,18 +248,24 @@ class MediaLibrary extends React.Component {
         className={c('nc-mediaLibrary-dialog', { 'nc-mediaLibrary-dialogPrivate': privateUpload })}
       >
         <div className="nc-mediaLibrary-header">
-          <button onClick={this.handleClose}>
-            Close
+          <button className="nc-mediaLibrary-close" onClick={this.handleClose}>
+            <Icon type="close"/>
           </button>
-          { !canInsert ? null :
-            <button onClick={this.handleInsert} disabled={!hasSelection} >
-              Insert
-            </button>
-          }
-          <h1 className="nc-mediaLibrary-title">
-            {privateUpload ? 'Private ' : null}
-            {forImage ? 'Images' : 'Media assets'}
-          </h1>
+
+          <div className="nc-mediaLibrary-titleRow">
+            <h1 className="nc-mediaLibrary-title">
+              {privateUpload ? 'Private ' : null}
+              {forImage ? 'Images' : 'Media assets'}
+            </h1>
+
+            <FileUploadButton
+              className={`nc-mediaLibrary-uploadButton ${shouldShowButtonLoader ? 'nc-mediaLibrary-uploadButton-disabled' : ''}`}
+              label="Upload"
+              imagesOnly={forImage}
+              onChange={this.handlePersist}
+              disabled={shouldShowButtonLoader}
+            />
+          </div>
         </div>
 
         <div className="nc-mediaLibrary-actions">
@@ -302,7 +308,21 @@ class MediaLibrary extends React.Component {
                 onChange={this.handlePersist}
                 disabled={shouldShowButtonLoader}
               />
-          </div>
+              <div className="nc-mediaLibrary-actionsButtons">
+                { !canInsert ? null :
+                <button onClick={this.handleInsert} disabled={!hasSelection} >
+                  Insert
+                </button>
+              }
+              <button
+                onClick={this.handleDelete}
+                disabled={shouldShowButtonLoader || !hasSelection}
+              >
+                Delete
+              </button>
+
+              { shouldShowButtonLoader ? loader : null }
+            </div>
         </div>
 
         {

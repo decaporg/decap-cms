@@ -87,22 +87,22 @@
   --pageMargin: 84px 18px;
 
   --dropShadow: {
-    box-shadow: 0 2px 4px 0 rgba(19, 39, 48, .12);
+    box-shadow: 0 2px 4px 0  rgba(19, 39, 48, .12);
   }
 
   --dropShadowMain: {
-    box-shadow: 0 2px 6px 0 rgba(68, 74, 87, 0.05),
-                0 1px 3px 0 rgba(68, 74, 87, 0.10);
+    box-shadow: 0 2px 6px 0  rgba(68, 74, 87, 0.05),
+                0 1px 3px 0  rgba(68, 74, 87, 0.10);
   }
 
   --dropShadowMiddle: {
-    box-shadow: 0 2px 6px 0 rgba(68,74,87,0.15),
-                0 1px 3px 0 rgba(68,74,87,0.30);
+    box-shadow: 0 2px 6px 0  rgba(68, 74, 87, 0.15),
+                0 1px 3px 0  rgba(68, 74, 87, 0.30);
   }
 
   --dropShadowDeep: {
-    box-shadow: 0 4px 12px 0 rgba(68,74,87,0.15),
-                0 1px 3px  0 rgba(68,74,87,0.25);
+    box-shadow: 0 4px 12px 0 rgba(68, 74, 87, 0.15),
+                0 1px 3px  0 rgba(68, 74, 87, 0.25);
   }
 
   --caretDown: {
@@ -130,6 +130,7 @@
   }
 
   --buttonDefault {
+    height: 36px;
     line-height: 36px;
     font-weight: 500;
     padding: 0 15px;
@@ -137,10 +138,12 @@
   }
 
   --buttonMedium {
+    height: 27px;
     line-height: 27px;
   }
 
   --buttonSmall {
+    height: 23px;
     line-height: 23px;
   }
 

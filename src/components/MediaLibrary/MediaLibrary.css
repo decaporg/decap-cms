@@ -33,24 +33,91 @@
 }
 
 .nc-mediaLibrary-title {
-  line-height: 24px;
+  line-height: 36px;
   font-size: 22px;
   text-align: left;
+  margin-bottom: 25px;
 }
 
+.nc-mediaLibrary-titleRow {
+  display: flex;
+  justify-content: space-between;
+}
+
+
+.nc-fileUploadButton {
+  @apply(--button);
+  @apply(--buttonDefault);
+  @apply(--dropShadowMain);
+  margin-bottom: 0;
+  display: inline-block;
+
+  & span {
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  & input {
+    height: .1px;
+    width: .1px;
+    margin: 0;
+    padding: 0;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: 0;
+    outline: none;
+  }
+}
+
+
 .nc-mediaLibrary-header {
+  & button.nc-mediaLibrary-close {
+    @apply(--dropShadowMiddle);
+    display: flex;
+    position: relative;
+    margin-right: -40px;
+    left: -40px;
+    top: -40px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: white;
+    content: "";
+    padding: 14px;
+    float: left;
+  }
 }
 
 .nc-mediaLibrary-actions {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+
+
+  & .nc-mediaLibrary-actionsButtons {
+    display: flex;
+    justify-content: flex-end;
+    flex-grow: 8;
+
+    & button {
+      @apply(--button);
+      @apply(--buttonDefault);
+    }
+  }
 }
 
 .nc-mediaLibrary-search {
-  width: 340px;
   height: 37px;
   display: flex;
   align-items: center;
   margin: 0 8px 0 0;
   position: relative;
+
+  flex-grow: 1.2;
 
   & input {
     background-color: #eff0f4;
@@ -104,6 +171,10 @@
   border-radius: var(--borderRadius);
   cursor: pointer;
   overflow: hidden;
+
+  &:focus {
+    outline: none;
+  }
 }
 
 .nc-mediaLibrary-card-selected {
