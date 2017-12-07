@@ -14,7 +14,7 @@ Netlify CMS can be [added to an existing site](https://www.netlifycms.org/docs/a
     </div>
     <div>
         <h4>Gatsby Site Starter</h4>
-        <p><a href="https://app.netlify.com/start/deploy?repository=https://github.com/benaiah/gatsby-starter-netlify-cms&amp;stack=cms"><img src="https://www.netlify.com/img/deploy/button.svg" alt="Deploy to Netlify" /></a></p>
+        <p><a href="https://app.netlify.com/start/deploy?repository=https://github.com/AustinGreen/gatsby-starter-netlify-cms&amp;stack=cms"><img src="https://www.netlify.com/img/deploy/button.svg" alt="Deploy to Netlify" /></a></p>
     </div>
 </div>
 
