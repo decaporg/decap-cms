@@ -21,20 +21,21 @@ body {
 
 h1 {
   font-weight: $bold;
-  font-size: $medium;
-  line-height: $large;
+  font-size: 36px;
+  line-height: 48px;
   margin: 0 0 $small 0;
 
   @media screen and (min-width: $tablet) {
-    font-size: 36px;
-    line-height: 48px;
+    font-size: 42px;
+    line-height: 60px;
   }
 }
 
 h2 {
   font-family: $roboto;
-  font-size: $small;
-  font-weight: $regular;
+  font-size: 32px;
+  font-weight: $bold;
+  color: $darkGrey;
   margin: 0 auto $tiny auto;
 
   &.subhead {
@@ -44,9 +45,9 @@ h2 {
 
 h3 {
   font-family: $roboto;
-  font-size: $tiny;
-  font-weight: $bold;
-  line-height: 32px;
+  font-size: 18px;
+  font-weight: $semibold;
+  line-height: 40px;
   margin: 0;
 }
 

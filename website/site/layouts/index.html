@@ -9,7 +9,6 @@
         <span class="subhead">{{ .Site.Data.landing.hero.subhead | markdownify }}</span>
       </div>
       <div class="hero-features">
-        <h2>{{ .Site.Data.landing.hero.devhook | markdownify }}</h2>
         {{ range $index, $id := .Site.Data.landing.hero.devfeatures }}
           <div class="feature">
             <h3>{{ .feature | markdownify }}</h3>
@@ -28,7 +27,6 @@
     <div class="cta-primary">
       <p><span class="hook">{{ .Site.Data.landing.cta.primaryhook | markdownify }}</span>&nbsp;{{ .Site.Data.landing.cta.primary | markdownify }}</p>{{ .Site.Data.landing.cta.button | markdownify }}
     </div>
-    <p class="cta-secondary">{{ .Site.Data.landing.cta.secondary | markdownify }}&nbsp;{{ .Site.Data.landing.cta.secondarylink | markdownify }}</p>
   </section>
 
   <section class="editors">
@@ -57,16 +55,16 @@
           <p>{{ .description | markdownify }}</p>
         </div>
         {{ end }}
-        <div class="contributors feature">
-          <h3>{{ .Site.Data.landing.community.contributors | markdownify }}</h3>
-          {{ range .Site.Data.contributors }}
-            <div class="contributor-list">
-              {{ range . }}
-                <a href="{{.profile}}" title="{{.name}}"><img src="{{.avatar_url}}" alt="{{.login}}" /></a>
-              {{ end }}
-            </div>
-          {{ end }}
-        </div>
+      </div>
+      <div class="contributors feature">
+        <h3>{{ .Site.Data.landing.community.contributors | markdownify }}</h3>
+        {{ range .Site.Data.contributors }}
+          <div class="contributor-list">
+            {{ range . }}
+              <a href="{{.profile}}" title="{{.name}}"><img src="{{.avatar_url}}" alt="{{.login}}" /></a>
+            {{ end }}
+          </div>
+        {{ end }}
       </div>
     </div>
   </section>

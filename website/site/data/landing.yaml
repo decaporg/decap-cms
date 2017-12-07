@@ -1,8 +1,7 @@
 ---
 hero:
-  headline: "Open source content management for your Git workflow"
-  subhead: "Use Netlify CMS with any static site generator for a faster and more flexible web project"
-  devhook: "Built developer-first."
+  headline: "Open source content management for your Git&nbsp;workflow"
+  subhead: "Use Netlify CMS with any static site generator for a faster and more flexible web&nbsp;project"
   devfeatures:
     - feature: "Static + content management = ♥"
       description: "Get the speed, security, and scalability of a static site, while still providing a convenient editing interface for content."
@@ -19,12 +18,10 @@ productvideo:
 cta:
   primaryhook: "Getting started is simple and free."
   primary: "Choose a template that’s pre-configured with a static site generator and deploys to a global CDN in one click."
-  button: "[Get started →](/docs/start-with-a-template/)"
-  secondary: "Or do you just want to add Netlify CMS to your existing site?"
-  secondarylink: "[Read the setup guide.](/docs/quick-start)"
+  button: "[Get started](/docs/start-with-a-template/)"
 
 editors:
-  hook: "A CMS that developers and content editors can agree on."
+  hook: "A CMS that developers and content editors can&nbsp;agree&nbsp;on"
   intro: "You get to implement modern front end tools to deliver a faster, safer, and more scalable site.<br />Editors get a friendly UI and intuitive workflow that meets their content management requirements."
   features:
     - feature: "Editor-friendly user interface"
@@ -38,12 +35,12 @@ editors:
       imgpath: "/img/hero-graphic.jpg"
 
 community:
-  hook: "Supported by a growing community."
+  hook: "Supported by a growing&nbsp;community"
   features:
     - feature: "Support when you need it"
       description: "Get up and running with comprehensive [documentation](/docs) and templates or work through difficult problems with help from the community on [Gitter](https://gitter.im/netlify/NetlifyCMS)."
     - feature: "A community-driven project you can help evolve"
       description: "Netlify CMS is built by a community of 60+ contributors — and you can help. Join our [bi-weekly planning sessions](/community) or read the [contributing guide](/docs/contributor-guide) to join in."
-  contributors: "Thank you to our awesome contributors."
+  contributors: "Thank you to our awesome contributors"
 
 ---

@@ -5,7 +5,7 @@
   text-align: center;
 
   h2, p {
-    max-width: 800px;
+    max-width: $desktop;
     margin-left: auto;
     margin-right: auto;
   }
@@ -21,7 +21,7 @@
     }
 
     .feature {
-      max-width: 320px;
+      max-width: 340px;
 
       img {
         max-width: 280px;

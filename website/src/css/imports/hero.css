@@ -43,11 +43,12 @@
 
   .subhead {
     display: inline-block;
-    margin: $tiny auto;
+    margin: $micro auto;
+    font-size: 18px;
+    line-height: 26px;
 
-    @media screen and (min-width: $mobile) {
-      display: block;
-      margin: calc($micro * 0.5) 0 $small 0;
+    @media screen and (min-width: $desktop) {
+      font-size: 20px;
     }
   }
 
@@ -66,6 +67,7 @@
 
   h3 {
     color: $green;
+    font-size: 20px;
   }
 
   .hero-features {
