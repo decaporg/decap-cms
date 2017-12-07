@@ -131,7 +131,7 @@
     line-height: 36px;
     font-weight: 500;
 
-    padding: 0 30px;
+    padding: 0 10px;
     color: var(--colorButtonText);
 
     &:focus,
