@@ -3,7 +3,6 @@ const path = require('path');
 const webpack = require('webpack');
 const merge = require('webpack-merge');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const WriteFilePlugin = require('write-file-webpack-plugin');
 
 const HOST = 'localhost';
 const PORT = '8080';
@@ -48,7 +47,6 @@ module.exports = merge.smart(require('./webpack.base.js'), {
       filename: '[name].css',
       disable: true,
     }),
-    new WriteFilePlugin(),
   ],
   devtool: 'source-map',
   devServer: {
