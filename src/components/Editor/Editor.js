@@ -5,6 +5,7 @@ import { Map } from 'immutable';
 import { get } from 'lodash';
 import { connect } from 'react-redux';
 import history from 'Routing/history';
+import { logoutUser } from 'Actions/auth';
 import {
   loadEntry,
   loadEntries,
@@ -69,6 +70,7 @@ class Editor extends React.Component {
     publishUnpublishedEntry: PropTypes.func.isRequired,
     deleteUnpublishedEntry: PropTypes.func.isRequired,
     currentStatus: PropTypes.string,
+    logoutUser: PropTypes.func.isRequired,
   };
 
   componentDidMount() {
@@ -281,6 +283,7 @@ class Editor extends React.Component {
       newEntry,
       isModification,
       currentStatus,
+      logoutUser,
     } = this.props;
 
     if (entry && entry.get('error')) {
@@ -320,6 +323,7 @@ class Editor extends React.Component {
         isNewEntry={newEntry}
         isModification={isModification}
         currentStatus={currentStatus}
+        onLogoutClick={logoutUser}
       />
     );
   }
@@ -381,5 +385,6 @@ export default connect(
     updateUnpublishedEntryStatus,
     publishUnpublishedEntry,
     deleteUnpublishedEntry,
+    logoutUser,
   }
 )(withWorkflow(Editor));

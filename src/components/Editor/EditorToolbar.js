@@ -31,6 +31,7 @@ export default class EditorToolbar extends React.Component {
     isNewEntry: PropTypes.bool,
     isModification: PropTypes.bool,
     currentStatus: PropTypes.string,
+    onLogoutClick: PropTypes.func.isRequired,
   };
 
   renderSimpleSaveControls = () => {
@@ -177,6 +178,7 @@ export default class EditorToolbar extends React.Component {
       collection,
       hasWorkflow,
       hasUnpublishedChanges,
+      onLogoutClick,
     } = this.props;
     const disabled = !enableSave || isPersisting;
     const avatarUrl = user.get('avatar_url');
@@ -212,13 +214,22 @@ export default class EditorToolbar extends React.Component {
                 </a>
               : null
           }
-          <button className="nc-appHeader-avatar">
-            {
-              avatarUrl
-                ? <img className="nc-appHeader-avatar-image" src={user.get('avatar_url')}/>
-                : <Icon className="nc-appHeader-avatar-placeholder" type="user" size="large"/>
+          <Dropdown
+            dropdownTopOverlap="50px"
+            dropdownWidth="100px"
+            dropdownPosition="right"
+            button={
+              <button className="nc-appHeader-avatar">
+                {
+                  avatarUrl
+                    ? <img className="nc-appHeader-avatar-image" src={user.get('avatar_url')}/>
+                    : <Icon className="nc-appHeader-avatar-placeholder" type="user" size="large"/>
+                }
+              </button>
             }
-          </button>
+          >
+            <DropdownItem label="Log Out" onClick={onLogoutClick}/>
+          </Dropdown>
         </div>
       </div>
     );

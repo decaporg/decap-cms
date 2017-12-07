@@ -80,6 +80,7 @@ class EditorInterface extends Component {
       isNewEntry,
       isModification,
       currentStatus,
+      onLogoutClick,
     } = this.props;
 
     const { previewVisible, scrollSyncEnabled, showEventBlocker } = this.state;
@@ -161,6 +162,7 @@ class EditorInterface extends Component {
           isNewEntry={isNewEntry}
           isModification={isModification}
           currentStatus={currentStatus}
+          onLogoutClick={onLogoutClick}
         />
         <div className="nc-entryEditor-container">
           <div className="nc-entryEditor-viewControls">
@@ -216,6 +218,7 @@ EditorInterface.propTypes = {
   isNewEntry: PropTypes.bool,
   isModification: PropTypes.bool,
   currentStatus: PropTypes.string,
+  onLogoutClick: PropTypes.func.isRequired,
 };
 
 export default EditorInterface;
