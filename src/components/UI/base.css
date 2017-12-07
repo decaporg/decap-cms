@@ -33,15 +33,12 @@
   --colorBlueLight: #e8f5fe;
   --colorGreen: #005614;
   --colorGreenLight: #caef6f;
-  --colorGreenBright: #28a745;
   --colorBrown: #754e00;
   --colorYellow: #ffee9c;
-  --colorGold: #fad410;
   --colorRed: #ff003b;
   --colorRedLight: #fcefea;
   --colorPurple: #70399f;
   --colorPurpleLight: #f6d8ff;
-  --colorPurpleBright: #9166be;
   --colorTeal: #17a2b8;
   --colorTealLight: #ddf5f9;
 
@@ -87,22 +84,22 @@
   --pageMargin: 84px 18px;
 
   --dropShadow: {
-    box-shadow: 0 2px 4px 0 rgba(19, 39, 48, .12);
+    box-shadow: 0 2px 4px 0  rgba(19, 39, 48, .12);
   }
 
   --dropShadowMain: {
-    box-shadow: 0 2px 6px 0 rgba(68, 74, 87, 0.05),
-                0 1px 3px 0 rgba(68, 74, 87, 0.10);
+    box-shadow: 0 2px 6px 0  rgba(68, 74, 87, 0.05),
+                0 1px 3px 0  rgba(68, 74, 87, 0.10);
   }
 
   --dropShadowMiddle: {
-    box-shadow: 0 2px 6px 0 rgba(68,74,87,0.15),
-                0 1px 3px 0 rgba(68,74,87,0.30);
+    box-shadow: 0 2px 6px 0  rgba(68, 74, 87, 0.15),
+                0 1px 3px 0  rgba(68, 74, 87, 0.30);
   }
 
   --dropShadowDeep: {
-    box-shadow: 0 4px 12px 0 rgba(68,74,87,0.15),
-                0 1px 3px  0 rgba(68,74,87,0.25);
+    box-shadow: 0 4px 12px 0 rgba(68, 74, 87, 0.15),
+                0 1px 3px  0 rgba(68, 74, 87, 0.25);
   }
 
   --caretDown: {
@@ -122,27 +119,70 @@
   }
 
   --button: {
-    color: var(--colorButtonText);
-    background-color: var(--colorButton);
     border: 0;
     border-radius: var(--borderRadius);
     cursor: pointer;
   }
 
   --buttonDefault {
+    height: 36px;
     line-height: 36px;
     font-weight: 500;
-
     padding: 0 15px;
-    color: var(--colorButtonText);
+    background-color: var(--colorGray);
+    color: var(--colorWhite);
   }
 
   --buttonMedium {
+    height: 27px;
     line-height: 27px;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    border-radius: 3px;
+    padding: 0 24px 0 14px;
   }
 
   --buttonSmall {
+    height: 23px;
     line-height: 23px;
+  }
+
+  --buttonGray {
+    background-color: var(--colorButton);
+    color: var(--colorButtonText);
+
+    &:focus,
+    &:hover {
+      color: white;
+      background-color: #555a65;
+    }
+  }
+
+  --buttonGreen {
+    background-color: #AAE31F;
+    color: #005614;
+  }
+
+  --buttonLightRed {
+    background-color: #FCEFEA;
+    color: #FF003B;
+  }
+
+  --buttonLightBlue {
+    background-color: #E8F5FE;
+    color: #3A69C7;
+  }
+
+  --buttonLightTeal {
+    background-color: #DDF5F9;
+    color: #1195AA;
+  }
+
+  --buttonTeal {
+    background-color: #17A2B8;
+    color: white;
   }
 
   --textBadge: {
@@ -206,6 +246,14 @@
 
 }
 
+/**
+ * Don't show outlines if the user is utilizing mouse rather than keyboard.
+ */
+[data-whatintent="mouse"] *:focus {
+  outline: none;
+}
+
+
 input {
   border: 0;
 }
@@ -253,6 +301,26 @@ a {
 
 button {
   @apply(--button);
+
+  &.LightBlue {
+    @apply(--buttonLightBlue);
+  }
+
+  &.Teal {
+    @apply(--buttonTeal);
+  }
+
+  &.LightTeal {
+    @apply(--buttonLightTeal);
+  }
+
+  &.LightRed {
+    @apply(--buttonLightRed);
+  }
+
+  &.Green {
+    @apply(--buttonGreen);
+  }
 }
 
 img {

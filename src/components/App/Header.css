@@ -39,6 +39,7 @@
   &:active,
   &:focus,
   &.nc-appHeader-button-active {
+    background-color: white;
     color: var(--colorActive);
 
     & .nc-icon {
@@ -62,19 +63,7 @@
 .nc-appHeader-quickNew {
   @apply(--buttonMedium);
 
-  font-size: 12px;
-  font-weight: 600;
-  background-color: #7d8190;
-  padding: 0 24px 0 14px;
   margin-right: 8px;
-  color: #fff;
-  border-radius: 3px;
-
-  &:hover,
-  &:active,
-  &:focus {
-    color: #fff;
-  }
 
 }
 

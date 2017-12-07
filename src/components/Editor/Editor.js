@@ -196,7 +196,7 @@ class Editor extends React.Component {
     } else if (!window.confirm('Are you sure you want to publish this entry?')) {
       return;
     } else if (entryDraft.get('hasChanged')) {
-      if (window.confirm('Your unsaved changes will be saved before publishing. Do you still want to publish?')) {
+      if (window.confirm('Your unsaved changes will be saved before publishing. Are you sure you want to publish?')) {
         await persistEntry(collection);
       } else {
         return;
@@ -216,9 +216,9 @@ class Editor extends React.Component {
   handleDeleteEntry = () => {
     const { entryDraft, newEntry, collection, deleteEntry, slug } = this.props;
     console.log(entryDraft.toJS());
-    if (entryDraft.get('hasChanged') && !window.confirm('This will delete your published entry, as well as your unsaved changes from the current session. Do you still want to delete?')) {
+    if (entryDraft.get('hasChanged') && !window.confirm('Are you sure you want to delete this published entry, as well as your unsaved changes from the current session?')) {
       return;
-    } else if (!window.confirm('This will completely delete this published entry. Do you still want to delete?')) {
+    } else if (!window.confirm('Are you sure you want to delete this published entry?')) {
       return;
     }
     if (newEntry) {

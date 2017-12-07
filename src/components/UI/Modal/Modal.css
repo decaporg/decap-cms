@@ -31,6 +31,10 @@
   text-align: center;
   max-width: 2200px;
   padding: 20px;
+
+  &:focus {
+    outline: none;
+  }
 }
 
 .nc-dialog-body {

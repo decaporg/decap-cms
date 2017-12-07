@@ -90,7 +90,12 @@ select.nc-controlPane-widget {
 
 .nc-controlPane-errors {
   list-style-type: none;
-  font-size: 10px;
+  font-size: 12px;
   color: #FF706F;
   margin-bottom: 5px;
+  text-align: right;
+  text-transform: uppercase;
+  position: relative;
+  font-weight: 600;
+  top: 20px;
 }

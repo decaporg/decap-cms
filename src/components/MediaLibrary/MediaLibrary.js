@@ -248,8 +248,8 @@ class MediaLibrary extends React.Component {
         className={c('nc-mediaLibrary-dialog', { 'nc-mediaLibrary-dialogPrivate': privateUpload })}
       >
         <div className="nc-mediaLibrary-header">
-          <button onClick={this.handleClose}>
-            Close
+          <button className="nc-mediaLibrary-close" onClick={this.handleClose}>
+            <Icon type="close"/>
           </button>
           { !canInsert ? null :
             <button onClick={this.handleInsert} disabled={!hasSelection} >
@@ -275,19 +275,33 @@ class MediaLibrary extends React.Component {
             />
           </div>
           <div>
+            <button
+              onClick={this.handleDelete}
+              disabled={shouldShowButtonLoader || !hasSelection}
+            >
+              Delete
+            </button>
+            <FileUploadButton
+              className={`nc-mediaLibrary-uploadButton ${shouldShowButtonLoader ? 'nc-mediaLibrary-uploadButton-disabled' : ''}`}
+              label="Upload"
+              imagesOnly={forImage}
+              onChange={this.handlePersist}
+              disabled={shouldShowButtonLoader}
+            />
+            <div className="nc-mediaLibrary-actionsButtons">
+              { !canInsert ? null :
+                <button onClick={this.handleInsert} disabled={!hasSelection} >
+                  Insert
+                </button>
+              }
               <button
                 onClick={this.handleDelete}
                 disabled={shouldShowButtonLoader || !hasSelection}
               >
                 Delete
               </button>
-              <FileUploadButton
-                className={`nc-mediaLibrary-uploadButton ${shouldShowButtonLoader ? 'nc-mediaLibrary-uploadButton-disabled' : ''}`}
-                label="Upload"
-                imagesOnly={forImage}
-                onChange={this.handlePersist}
-                disabled={shouldShowButtonLoader}
-              />
+              { shouldShowButtonLoader ? loader : null }
+            </div>
           </div>
         </div>
 

@@ -78,8 +78,14 @@ export default class EditorToolbar extends React.Component {
     } = this.props;
 
     const deleteLabel = (hasUnpublishedChanges && isModification && 'Delete unpublished changes')
-      || (hasUnpublishedChanges && isNewEntry && 'Delete unpublished entry')
+      || (hasUnpublishedChanges && (isNewEntry || !isModification) && 'Delete unpublished entry')
       || (!hasUnpublishedChanges && !isModification && 'Delete published entry');
+
+    console.log('---------');
+    console.log(hasUnpublishedChanges);
+    console.log(isModification);
+    console.log(isNewEntry);
+    console.log(deleteLabel);
 
     return [
         <button
@@ -120,25 +126,22 @@ export default class EditorToolbar extends React.Component {
           label={isUpdatingStatus ? 'Updating...' : 'Set status'}
         >
           <DropdownItem
-            className={c('nc-entryEditor-toolbar-statusMenu-statusDraft', {
-              'nc-entryEditor-toolbar-statusMenu-statusActive': currentStatus === status.get('DRAFT'),
-            })}
+            className="nc-entryEditor-toolbar-statusMenu-status"
             label="Draft"
             onClick={() => onChangeStatus('DRAFT')}
+            icon={currentStatus === status.get('DRAFT') && 'check'}
           />
           <DropdownItem
-            className={c('nc-entryEditor-toolbar-statusMenu-statusReview', {
-              'nc-entryEditor-toolbar-statusMenu-statusActive': currentStatus === status.get('PENDING_REVIEW'),
-            })}
+            className="nc-entryEditor-toolbar-statusMenu-status"
             label="In review"
             onClick={() => onChangeStatus('PENDING_REVIEW')}
+            icon={currentStatus === status.get('PENDING_REVIEW') && 'check'}
           />
           <DropdownItem
-            className={c('nc-entryEditor-toolbar-statusMenu-statusReady', {
-              'nc-entryEditor-toolbar-statusMenu-statusActive': currentStatus === status.get('PENDING_PUBLISH'),
-            })}
+            className="nc-entryEditor-toolbar-statusMenu-status"
             label="Ready"
             onClick={() => onChangeStatus('PENDING_PUBLISH')}
+            icon={currentStatus === status.get('PENDING_PUBLISH') && 'check'}
           />
         </Dropdown>,
         <Dropdown
