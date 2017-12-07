@@ -64,6 +64,10 @@
   @apply(--buttonMedium);
   @apply(--buttonGray);
   margin-right: 8px;
+
+  &:after {
+    top: 11px;
+  }
 }
 
 .nc-appHeader-avatar {
