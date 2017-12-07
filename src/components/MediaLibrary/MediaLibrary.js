@@ -260,6 +260,17 @@ class MediaLibrary extends React.Component {
             {privateUpload ? 'Private ' : null}
             {forImage ? 'Images' : 'Media assets'}
           </h1>
+          <div className="nc-mediaLibrary-search">
+            <Icon type="search" size="small"/>
+            <input
+              className=""
+              value={query}
+              onChange={this.handleSearchChange}
+              onKeyDown={event => this.handleSearchKeyDown(event)}
+              placeholder="Search..."
+              disabled={!dynamicSearchActive && !hasFilteredFiles}
+            />
+          </div>
         </div>
 
         <div className="nc-mediaLibrary-actions">

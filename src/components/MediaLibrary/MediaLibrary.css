@@ -38,18 +38,10 @@
   text-align: left;
 }
 
-.nc-mediaLibrary-header {
-}
-
-.nc-mediaLibrary-actions {
-}
-
 .nc-mediaLibrary-search {
-  width: 340px;
-  height: 37px;
   display: flex;
   align-items: center;
-  margin: 0 8px 0 0;
+  margin: 0 8px;
   position: relative;
 
   & input {
