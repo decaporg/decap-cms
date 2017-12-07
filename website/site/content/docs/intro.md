@@ -16,92 +16,11 @@ At its core, Netlify CMS is an open-source React app that acts as a wrapper for 
 * **Flexible content types:** specify an unlimited number of content types with custom fields.
 * **Fully extensible:** create custom-styled previews, UI widgets, and editor plugins.
 
-# Core Concepts
 
-## The Admin Interface
+## Find out more
 
-The admin interface is a single-page app with the entry point stored in a static `/admin` folder you add to the root of your site. You can include it with a simple `index.html` file that loads the necessary CSS and JS files from a CDN:
-
-``` html
-<!doctype html>
-<html>
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Content Manager</title>
-  
-  <link rel="stylesheet" href="https://unpkg.com/netlify-cms@^0.7.0/dist/cms.css" />
-  
-</head>
-<body>
-  <script src="https://unpkg.com/netlify-cms@^0.7.0/dist/cms.js"></script>
-</body>
-</html>
-```
-
-The JS is also available via npm and can be integrated into your regular build process.
-
-### Editorial Workflow
-
-Netlify CMS has an optional [editorial workflow](/docs/editorial-workflow) that translates common Git commands into familiar language in a simple UI:
-
-Actions in Netlify UI ...	| Perform these Git actions
---- | ---
-Save draft | Commits to a new branch, and opens a pull request
-Edit draft | Pushes another commit to the draft branch/pull request
-Approve and publish draft | Merges pull request and deletes branch
-
-## Configuration
-
-All configuration is handled in a single `config.yml` file, also stored in the `/admin` folder. A simple version might look like this:
-
-``` yaml
-backend:
-  name: github
-  repo: owner/repo # Path to your Github repository
-  branch: master # Branch to update (master by default)
-
-media_folder: "img/uploads" # Folder where user uploaded files should go
-
-collections: # A list of collections the CMS should be able to edit
-  - name: "post" # Used in routes, e.g., /admin/collections/:slug/edit
-    label: "Post" # Used in the UI, e.g., "New Post"
-    folder: "_posts" # The path to the folder where the documents are stored
-    create: true # Allow users to create new documents in this collection
-    fields: # The fields each document in this collection have
-      - {label: "Title", name: "title", widget: "string", tagname: "h1"}
-      - {label: "Body", name: "body", widget: "markdown"}
-      - {label: "Foo", name: "foo", widget: "foo"}
-      - {label: "Publish Date", name: "date", widget: "datetime"}
-```
-
-### Backend
-
-Because Netlify CMS is a wrapper for the GitHub API, the "backend" is a repo stored on GitHub. *(Using a different Git host? File a [feature request](https://github.com/netlify/netlify-cms/issues), or [help us add it](https://github.com/netlify/netlify-cms/blob/master/CONTRIBUTING.md)!)* For authentication, you can connect to GitHub using Netlify’s [Authentication Provider feature](https://www.netlify.com/docs/authentication-providers), or you can roll your own.  
-
-### Collections
-
-All content managed by Netlify CMS is organized in Collections (groups of files), such as:
-
-* blog posts
-* portfolio samples
-* product listings
-* podcast episodes
-
-You point to where the files are stored, and specify the fields that define them. The `body` field typically stores the main text of a file, while any other fields are included at the top of the document in the front matter. They can be required, optional, or hidden, and can have preset defaults. 
-
-### Widgets
-
-Widgets define the data type and interface for entry fields. Netlify CMS comes with several built-in [widgets](/docs/widgets).
-
-## Customization
-
-Netlify CMS exposes a `window.CMS` global object that you can use to register custom widgets, previews, and editor plugins. The available methods are:
-
-* `registerPreviewStyle`: register a custom stylesheet to match the editor preview pane to your site style.
-
-* `registerPreviewTemplate`: registers a template to determine how fields are displayed in the preview, customizable for each collection.
-
-* `registerWidget`: registers a custom widget.
-
-* `registerEditorComponent`: adds a block component to the Markdown editor.
+- Get a feel for the UI in the [demo site](https://cms-demo.netlify.com). (No login required—click the login button to go straight to the CMS editor UI.)
+- [Start with a template](https://www.netlifycms.org/docs/start-with-a-template/) to make a Netlify CMS-enabled site of your own.
+- Configure your existing site by following a [tutorial](https://www.netlifycms.org/docs/add-to-your-site/) or checking [configuration options](https://www.netlifycms.org/docs/configuration-options).
+- Ask questions and share ideas in the Netlify CMS community on [Gitter](https://gitter.im/netlify/netlifycms).
+- Get involved in new developments and become a [contributor](https://docs-starters--netlify-cms-www.netlify.com/docs/contributor-guide/).
