@@ -17,6 +17,7 @@ The select widget allows you to pick a single string value from a dropdown menu.
     - string values: the label displayed in the dropdown is the value saved in the file
     - object with `label` and `value` fields: the label displays in the dropdown; the value is saved in the file
 - Example (options as strings):
+
   ```yaml
   - label: "Align Content"
     name: "align"
@@ -24,6 +25,7 @@ The select widget allows you to pick a single string value from a dropdown menu.
     options: ["left", "center", "right"]
   ```
 - Example (options as objects):
+
   ```yaml
   - label: "City"
     name: "airport-code"

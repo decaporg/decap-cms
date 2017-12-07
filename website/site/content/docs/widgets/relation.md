@@ -19,11 +19,11 @@ The relation widget allows you to reference items from another collection. It pr
 - **Example** (assuming a separate "authors" collection with "name" and "twitterHandle" fields):
 
   ```yaml
-  - label: Post Author
-    name: author
-    widget: relation
-    collection: authors
-    searchFields: [name, twitterHandle]
-    valueField: name
+  - label: "Post Author"
+    name: "author"
+    widget: "relation"
+    collection: "authors"
+    searchFields: "[name, twitterHandle]"
+    valueField: "name"
   ```
   The generated UI input will search the authors collection by name and twitterHandle as the user types. On selection, the author name will be saved for the field.
