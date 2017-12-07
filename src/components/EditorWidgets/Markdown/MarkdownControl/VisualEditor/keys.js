@@ -21,7 +21,8 @@ function changeHistory(change, type) {
    */
   const next = historyOfType.first();
   const historyOfTypeIsValid = historyOfType.size > 1
-    || ( next && next.length > 1 && next[0].type !== 'set_selection' );
+    || (next && next.length > 1)
+    || (next && next[0] && next[0].type !== 'set_selection');
 
   if (historyOfTypeIsValid) {
     change[type]();
