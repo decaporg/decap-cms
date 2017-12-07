@@ -37,6 +37,7 @@
     left: 0;
     top: 0;
     background: $lightGrey;
+    border-radius: $borderRadius;
     z-index: -1;
     width: 100%;
     height: 100%;
@@ -64,6 +65,10 @@
     left: 0;
     opacity: 0;
     animation: widgetOpacity .15s .05s ease forwards;
+}
+
+.widget#list {
+    padding-bottom: 3em; /* For some weird reason the list widget was overflowing the background, so this dirty fix works */
 }
 
 @keyframes widgetOpacity {

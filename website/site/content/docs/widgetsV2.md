@@ -1,113 +1,31 @@
 ---
 title: Widgets V2
 position: 31
-description: "Widgets define the data type and interface for entry fields. Netlify CMS comes with several built-in widgets, including:"
+paragraphs:
+  - "Widgets define the data type and interface for entry fields. Netlify CMS comes with several built-in widgets. Click the widget names in the sidebar to jump to specific widget details. We’re always adding new widgets, and you can also [create your own](https://www.netlifycms.org/docs/custom-widgets)!"
+  - "Widgets are specified as collection fields in the `config.yml` file. Note that [YAML syntax](https://en.wikipedia.org/wiki/YAML#Basic_components) allows lists and objects to be written in block or inline style, and the code samples below include a mix of both."
+  - "To see working examples of all of the built-in widgets, try making a 'Kitchen Sink' collection item on the [CMS demo site](https://cms-demo.netlify.com). (No login required: click the login button and the CMS will open.) You can refer to the demo [configuration code](https://github.com/netlify/netlify-cms/blob/master/example/config.yml#L60) to see how each field was configured."
 ---
 
-We’re always adding new widgets, and you can also [create your own](/docs/extending)!
+Widgets define the data type and interface for entry fields. Netlify CMS comes with several built-in widgets. Click the widget names in the sidebar to jump to specific widget details. We’re always adding new widgets, and you can also [create your own](https://www.netlifycms.org/docs/custom-widgets)!
 
-### Select Widget
+Widgets are specified as collection fields in the `config.yml` file. Note that [YAML syntax](https://en.wikipedia.org/wiki/YAML#Basic_components) allows lists and objects to be written in block or inline style, and the code samples below include a mix of both.
 
-The select widget allows you to pick a string value from a drop down menu
+To see working examples of all of the built-in widgets, try making a 'Kitchen Sink' collection item on the [CMS demo site](https://cms-demo.netlify.com). (No login required: click the login button and the CMS will open.) You can refer to the demo [configuration code](https://github.com/netlify/netlify-cms/blob/master/example/config.yml#L60) to see how each field was configured.
 
-```yaml
-collections:
-  - name: posts
-    label: Post
-    folder: "_posts"
-    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
-    create: true
-    fields:
-      - {label: Title, name: title, widget: string, tagname: h1}
-      - {label: Body, name: body, widget: markdown}
-      - {label: Align Content, name: align, widget: select, options: ['left', 'center', 'right']}
-```
+## Common widget options
 
-### List Widget
+The following options are available on all fields:
 
-The list widget allows you to map a user-provided string with a comma delimiter into a list. Consider the following example that also demonstrates how to set default values:
+- `required`: specify as `false` to make a field optional; defaults to `true`
+- `pattern`: add field validation by specifying a list with a regex pattern and an error message; more extensive validation can be achieved with [custom widgets](https://www.netlifycms.org/docs/custom-widgets/#advanced-field-validation)
+  - **Example:**
 
-```yaml
-collections:
-  - name: posts
-    label: Post
-    folder: "_posts"
-    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
-    create: true
-    fields:
-      - {label: Title, name: title, widget: string, tagname: h1}
-      - {label: Body, name: body, widget: markdown}
-      - {label: Categories, name: categories, widget: list}
-      - {label: Tags, name: tags, widget: list, default: ['term_1', 'term_2']}
-```
+    ```yaml
+    - label: "Title"
+      name: "title"
+      widget: "string"
+      pattern: ['.{10,}', "Must have at least 20 characters"]
+    ```
 
-Lists of objects are supported as well and require a nested field list.
-
-```yaml
-collections:
-  - name: posts
-    label: Post
-    folder: "_posts"
-    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
-    create: true
-    fields:
-      - {label: Title, name: title, widget: string, tagname: h1}
-      - {label: Body, name: body, widget: markdown}
-      - name: authors
-        label: Authors
-        widget: list
-        fields:
-          - {label: Name, name: name, widget: string}
-          - {label: Description, name: description, widget: markdown}
-```
-
-### Relation Widget
-
-The relation widget allows you to reference an existing entry from within the entry you're editing. It provides a search input with a list of entries from the collection you're referencing, and the list automatically updates with matched entries based on what you've typed.
-
-The following field configuration properties are specific to fields using the relation widget:
-
-Property | Accepted Values | Description
---- | --- | ---
-`collection` | string | name of the collection being referenced
-`searchFields` | list | one or more names of fields in the referenced colleciton to search for the typed value
-`valueField` | string | name a field from the referenced collection whose value will be stored for the relation
-`name` | text input | string
-
-Let's say we have a "posts" collection and an "authors" collection, and we want to select an author for each post - our config might look something like this:
-
-```yaml
-collections:
-  - name: authors
-    label: Authors
-    folder: "authors"
-    create: true
-    fields:
-      - {name: name, label: Name}
-      - {name: twitterHandle, label: "Twitter Handle"}
-      - {name: bio, label: Bio, widget: text}
-  - name: posts
-    label: Posts
-    folder: "posts"
-    create: true
-    fields:
-      - {name: title, label: Title}
-      - {name: body, label: Body, widget: markdown}
-      - name: author
-        label: Author
-        widget: relation
-        collection: authors
-        searchFields: [name, twitterHandle]
-        valueField: name
-```
-
-### Date Widget / DateTime Widget
-
-The date and datetime widgets provide date or datetime pickers when the widget is active. The resulting date string can be formatted (uses Moment.js), and accepts a default value. The initial value will be the current date unless `false` or an empty string are provided as the default value.
-
-The following field configuration properties are specific to fields using the date or datetime widget:
-
-Property | Accepted Values | Description
---- | --- | ---
-`format` | string | format string uses Moment.js [tokens](https://momentjs.com/docs/#/parsing/string-format/)
-`default` | boolean, string | can be a date string, or else an empty string - defaults to current date
+## Check out all of the widgets

@@ -28,8 +28,8 @@
 			{{- if eq .Title "Widgets V2" -}} <!-- Check if is widgets page, if so, add the partial "widgets" for the widget cloud functionality -->
 				{{ partial "edit-link" . }}
 				<h1 id="widgets">Widgets</h1>
-				<p>{{.Params.description}}</p>
-				{{- partial "widgets" . -}} {{ .Content }}
+				{{ .Content }}
+				{{- partial "widgets" . -}} 
 			{{- else -}} <!-- If it isn't, add regular content -->
 			{{ partial "edit-link" . }}
 			{{ .Content }}
