@@ -1,8 +1,10 @@
 import gulp from "gulp";
 import cp from "child_process";
-import hugoBin from "hugo-bin"
+import hugoBin from "hugo-bin";
 import gutil from "gulp-util";
 import postcss from "gulp-postcss";
+import jsonToYaml from "gulp-json-to-yaml";
+import rename from "gulp-rename";
 import cssImport from "postcss-import";
 import neatgrid from "postcss-neat";
 import nestedcss from "postcss-nested";
@@ -15,56 +17,87 @@ import BrowserSync from "browser-sync";
 import webpack from "webpack";
 import webpackConfig from "./webpack.conf";
 
+gulp
+  .src("./src/*.json")
+  .pipe(jsonToYaml())
+  .pipe(gulp.dest("./dist/"));
+
 const browserSync = BrowserSync.create();
 const defaultArgs = ["-d", "../dist", "-s", "site", "-v"];
 
-gulp.task("hugo", (cb) => buildSite(cb));
-gulp.task("hugo-preview", (cb) => buildSite(cb, ["--buildDrafts", "--buildFuture"]));
+gulp.task("hugo", cb => buildSite(cb));
+gulp.task("hugo-preview", cb =>
+  buildSite(cb, ["--buildDrafts", "--buildFuture"])
+);
 
-gulp.task("build", ["css", "js", "fonts", "images", "hugo"]);
-gulp.task("build-preview", ["css", "js", "fonts", "images", "hugo-preview"]);
+gulp.task("build", ["copy", "css", "js", "fonts", "images", "hugo"]);
+gulp.task("build-preview", [
+  "copy",
+  "css",
+  "js",
+  "fonts",
+  "images",
+  "hugo-preview"
+]);
 
-gulp.task("css", () => (
-  gulp.src("./src/css/**/*.css")
-    .pipe(postcss([
-      cssImport({from: "./src/css/main.css"}),
-      neatgrid(),
-      nestedcss(),
-      colorfunctions(),
-      hdBackgrounds(),
-      cssextend(),
-      cssvars({variables: styleVariables})]))
+gulp.task("css", () =>
+  gulp
+    .src("./src/css/**/*.css")
+    .pipe(
+      postcss([
+        cssImport({ from: "./src/css/main.css" }),
+        neatgrid(),
+        nestedcss(),
+        colorfunctions(),
+        hdBackgrounds(),
+        cssextend(),
+        cssvars({ variables: styleVariables })
+      ])
+    )
     .pipe(gulp.dest("./dist/css"))
     .pipe(browserSync.stream())
-));
+);
 
-gulp.task("js", (cb) => {
+gulp.task("js", cb => {
   const myConfig = Object.assign({}, webpackConfig);
 
   webpack(myConfig, (err, stats) => {
     if (err) throw new gutil.PluginError("webpack", err);
-    gutil.log("[webpack]", stats.toString({
-      colors: true,
-      progress: true
-    }));
+    gutil.log(
+      "[webpack]",
+      stats.toString({
+        colors: true,
+        progress: true
+      })
+    );
     browserSync.reload();
     cb();
   });
 });
 
-gulp.task("fonts", () => (
-  gulp.src("./src/fonts/**/*")
+gulp.task("fonts", () =>
+  gulp
+    .src("./src/fonts/**/*")
     .pipe(gulp.dest("./dist/fonts"))
     .pipe(browserSync.stream())
-));
+);
 
-gulp.task("images", () => (
-  gulp.src("./src/img/**/*")
+gulp.task("images", () =>
+  gulp
+    .src("./src/img/**/*")
     .pipe(gulp.dest("./dist/img"))
     .pipe(browserSync.stream())
-));
+);
 
-gulp.task("server", ["hugo", "css", "js", "fonts", "images"], () => {
+gulp.task("copy", () =>
+  gulp
+    .src("../.all-contributorsrc")
+    .pipe(jsonToYaml())
+    .pipe(rename("contributors.yml"))
+    .pipe(gulp.dest("./site/data"))
+);
+
+gulp.task("server", ["copy", "hugo", "css", "js", "fonts", "images"], () => {
   browserSync.init({
     server: {
       baseDir: "./dist"
@@ -81,7 +114,7 @@ gulp.task("server", ["hugo", "css", "js", "fonts", "images"], () => {
 function buildSite(cb, options) {
   const args = options ? defaultArgs.concat(options) : defaultArgs;
 
-  return cp.spawn(hugoBin, args, {stdio: "inherit"}).on("close", (code) => {
+  return cp.spawn(hugoBin, args, { stdio: "inherit" }).on("close", code => {
     if (code === 0) {
       browserSync.reload();
       cb();
@@ -91,4 +124,3 @@ function buildSite(cb, options) {
     }
   });
 }
-
