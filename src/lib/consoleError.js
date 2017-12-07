@@ -1,4 +1,3 @@
-
 export default function consoleError(title, description) {
   console.error(
     `%c ⛔ ${ title }\n` + `%c${ description }\n\n`,

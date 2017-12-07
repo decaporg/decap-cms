@@ -1,0 +1,11 @@
+@import "./Sidebar.css";
+@import "./CollectionTop.css";
+@import "./Entries/Entries.css";
+
+.nc-collectionPage-container {
+  margin: var(--pageMargin);
+}
+
+.nc-collectionPage-main {
+  padding-left: 280px;
+}

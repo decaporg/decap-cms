@@ -1,9 +1,9 @@
 import fuzzy from 'fuzzy';
-import { currentBackend } from '../backends/backend';
-import { getIntegrationProvider } from '../integrations';
-import { selectIntegration, selectEntries } from '../reducers';
-import { selectInferedField } from '../reducers/collections';
-import { WAIT_UNTIL_ACTION } from '../redux/middleware/waitUntilAction';
+import { currentBackend } from 'Backends/backend';
+import { getIntegrationProvider } from 'Integrations';
+import { selectIntegration, selectEntries } from 'Reducers';
+import { selectInferedField } from 'Reducers/collections';
+import { WAIT_UNTIL_ACTION } from 'Redux/middleware/waitUntilAction';
 import { loadEntries, ENTRIES_SUCCESS } from './entries';
 
 /*

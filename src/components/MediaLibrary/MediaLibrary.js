@@ -4,17 +4,18 @@ import { orderBy, get, isEmpty, map } from 'lodash';
 import c from 'classnames';
 import fuzzy from 'fuzzy';
 import Waypoint from 'react-waypoint';
-import Dialog from '../UI/Dialog';
-import { resolvePath, fileExtension } from '../../lib/pathHelper';
-import { changeDraftField } from '../../actions/entries';
+import { Modal, FileUploadButton } from 'UI';
+import { resolvePath, fileExtension } from 'Lib/pathHelper';
+import { changeDraftField } from 'Actions/entries';
 import {
   loadMedia as loadMediaAction,
   persistMedia as persistMediaAction,
   deleteMedia as deleteMediaAction,
   insertMedia as insertMediaAction,
   closeMediaLibrary as closeMediaLibraryAction,
-} from '../../actions/mediaLibrary';
-import MediaLibraryFooter from './MediaLibraryFooter';
+} from 'Actions/mediaLibrary';
+import { Icon } from 'UI';
+
 
 /**
  * Extensions used to determine which files to show when the media library is
@@ -237,39 +238,71 @@ class MediaLibrary extends React.Component {
       || (!hasFiles && 'No assets found.')
       || (!hasFilteredFiles && 'No images found.')
       || (!hasSearchResults && 'No results.');
+    const hasSelection = hasMedia && !isEmpty(selectedFile);
+    const shouldShowButtonLoader = isPersisting || isDeleting;
 
     return (
-      <Dialog
-        isVisible={isVisible}
+      <Modal
+        isOpen={isVisible}
         onClose={this.handleClose}
         className={c('nc-mediaLibrary-dialog', { 'nc-mediaLibrary-dialogPrivate': privateUpload })}
-        footer={
-          <MediaLibraryFooter
-            onDelete={this.handleDelete}
-            onPersist={this.handlePersist}
-            onClose={this.handleClose}
-            onInsert={this.handleInsert}
-            hasSelection={hasMedia && !isEmpty(selectedFile)}
-            forImage={forImage}
-            canInsert={canInsert}
-            isPersisting={isPersisting}
-            isDeleting={isDeleting}
-          />
-        }
       >
-        <h1 className="nc-mediaLibrary-title">
-          {privateUpload ? 'Private ' : null}
-          {forImage ? 'Images' : 'Assets'}
-        </h1>
-        <input
-          className="nc-mediaLibrary-searchInput"
-          value={query}
-          onChange={this.handleSearchChange}
-          onKeyDown={event => this.handleSearchKeyDown(event)}
-          placeholder="Search..."
-          disabled={!dynamicSearchActive && !hasFilteredFiles}
-          autoFocus
-        />
+        <div className="nc-mediaLibrary-top">
+          <div>
+            <div className="nc-mediaLibrary-header">
+              <button className="nc-mediaLibrary-close" onClick={this.handleClose}>
+                <Icon type="close"/>
+              </button>
+              <h1 className="nc-mediaLibrary-title">
+                {privateUpload ? 'Private ' : null}
+                {forImage ? 'Images' : 'Media assets'}
+              </h1>
+            </div>
+            <div className="nc-mediaLibrary-search">
+              <Icon type="search" size="small"/>
+              <input
+                className=""
+                value={query}
+                onChange={this.handleSearchChange}
+                onKeyDown={event => this.handleSearchKeyDown(event)}
+                placeholder="Search..."
+                disabled={!dynamicSearchActive && !hasFilteredFiles}
+              />
+            </div>
+          </div>
+          <div className="nc-mediaLibrary-actionContainer">
+            <FileUploadButton
+              className={`nc-mediaLibrary-uploadButton ${shouldShowButtonLoader ? 'nc-mediaLibrary-uploadButton-disabled' : ''}`}
+              label={isPersisting ? 'Uploading...' : 'Upload new'}
+              imagesOnly={forImage}
+              onChange={this.handlePersist}
+              disabled={shouldShowButtonLoader}
+            />
+            <div className="nc-mediaLibrary-lowerActionContainer">
+              <button
+                className="nc-mediaLibrary-deleteButton"
+                onClick={this.handleDelete}
+                disabled={shouldShowButtonLoader || !hasSelection}
+              >
+                {isDeleting ? 'Deleting...' : 'Delete selected'}
+              </button>
+              { !canInsert ? null :
+                <button
+                  onClick={this.handleInsert}
+                  disabled={!hasSelection}
+                  className="nc-mediaLibrary-insertButton"
+                >
+                  Choose selected
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+        {
+          shouldShowEmptyMessage
+            ? <div className="nc-mediaLibrary-emptyMessage"><h1>{emptyMessage}</h1></div>
+            : null
+        }
         <div className="nc-mediaLibrary-cardGrid-container" ref={ref => (this.scrollContainerRef = ref)}>
           <div className="nc-mediaLibrary-cardGrid">
             {
@@ -297,14 +330,9 @@ class MediaLibrary extends React.Component {
                 : null
             }
           </div>
-          {
-            shouldShowEmptyMessage
-              ? <div className="nc-mediaLibrary-emptyMessage"><h1>{emptyMessage}</h1></div>
-              : null
-          }
           { isPaginating ? <h1 className="nc-mediaLibrary-paginatingMessage">Loading...</h1> : null }
         </div>
-      </Dialog>
+      </Modal>
     );
   }
 }

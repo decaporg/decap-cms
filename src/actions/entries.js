@@ -1,13 +1,12 @@
 import { List } from 'immutable';
 import { actions as notifActions } from 'redux-notifications';
-import { serializeValues } from '../lib/serializeEntryValues';
-import { closeEntry } from './editor';
-import { currentBackend } from '../backends/backend';
-import { getIntegrationProvider } from '../integrations';
-import { getAsset, selectIntegration } from '../reducers';
-import { selectFields } from '../reducers/collections';
-import { createEntry } from '../valueObjects/Entry';
-import ValidationErrorTypes from '../constants/validationErrorTypes';
+import { serializeValues } from 'Lib/serializeEntryValues';
+import { currentBackend } from 'Backends/backend';
+import { getIntegrationProvider } from 'Integrations';
+import { getAsset, selectIntegration } from 'Reducers';
+import { selectFields } from 'Reducers/collections';
+import { createEntry } from 'ValueObjects/Entry';
+import ValidationErrorTypes from 'Constants/validationErrorTypes';
 
 const { notifSend } = notifActions;
 
@@ -111,12 +110,17 @@ export function entryPersisting(collection, entry) {
   };
 }
 
-export function entryPersisted(collection, entry) {
+export function entryPersisted(collection, entry, slug) {
   return {
     type: ENTRY_PERSIST_SUCCESS,
     payload: {
       collectionName: collection.get('name'),
       entrySlug: entry.get('slug'),
+
+      /**
+       * Pass slug from backend for newly created entries.
+       */
+      slug,
     },
   };
 }
@@ -299,13 +303,13 @@ export function persistEntry(collection) {
     dispatch(entryPersisting(collection, serializedEntry));
     return backend
       .persistEntry(state.config, collection, serializedEntryDraft, assetProxies.toJS())
-      .then(() => {
+      .then(slug => {
         dispatch(notifSend({
           message: 'Entry saved',
           kind: 'success',
           dismissAfter: 4000,
         }));
-        return dispatch(entryPersisted(collection, serializedEntry));
+        dispatch(entryPersisted(collection, serializedEntry, slug))
       })
       .catch((error) => {
         console.error(error);

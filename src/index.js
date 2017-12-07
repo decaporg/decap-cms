@@ -1,67 +1,66 @@
 import React from 'react';
 import createReactClass from 'create-react-class';
 import { render } from 'react-dom';
-import { AppContainer } from 'react-hot-loader';
-import 'normalize.css';
-import ErrorBoundary from './components/UI/ErrorBoundary/ErrorBoundary';
-import Root from './root';
-import registry from './lib/registry';
+import { Provider } from 'react-redux';
+import { Route } from 'react-router-dom';
+import { ConnectedRouter } from 'react-router-redux';
+import history from 'Routing/history';
+import configureStore from 'Redux/configureStore';
+import { setStore } from 'ValueObjects/AssetProxy';
+import { ErrorBoundary } from 'UI'
+import registry from 'Lib/registry';
+import App from 'App/App';
+import 'EditorWidgets';
+import 'MarkdownPlugins';
 import './index.css';
 
-if (process.env.NODE_ENV !== 'production') {
-  require('./utils.css'); // eslint-disable-line
-}
-
-// Log the version number
+/**
+ * Log the version number.
+ */
 console.log(`Netlify CMS version ${NETLIFY_CMS_VERSION}`);
 
-// Create mount element dynamically
+/**
+ * Create mount element dynamically.
+ */
 const el = document.createElement('div');
-el.id = 'root';
+el.id = 'nc-root';
 document.body.appendChild(el);
 
-render((
-  <AppContainer>
-    <ErrorBoundary>
-      <Root />
-    </ErrorBoundary>
-  </AppContainer>
-), el);
+/**
+ * Configure Redux store.
+ */
+const store = configureStore();
+setStore(store);
 
-if (module.hot) {
-  module.hot.accept('./root', () => { render(Root); });
-}
+/**
+ * Create connected root component.
+ */
+const Root = () => (
+  <ErrorBoundary>
+    <Provider store={store}>
+      <ConnectedRouter history={history}>
+        <Route component={App}/>
+      </ConnectedRouter>
+    </Provider>
+  </ErrorBoundary>
+);
 
-const builtInPlugins = [{
-  label: 'Image',
-  id: 'image',
-  fromBlock: match => match && {
-    image: match[2],
-    alt: match[1],
-  },
-  toBlock: data => `![${ data.alt || "" }](${ data.image || "" })`,
-  toPreview: (data, getAsset) => <img src={getAsset(data.image) || ""} alt={data.alt || ""} />,
-  pattern: /^!\[([^\]]+)]\(([^)]+)\)$/,
-  fields: [{
-    label: 'Image',
-    name: 'image',
-    widget: 'image',
-  }, {
-    label: 'Alt Text',
-    name: 'alt',
-  }],
-}];
-builtInPlugins.forEach(plugin => registry.registerEditorComponent(plugin));
+/**
+ * Render application root.
+ */
+render(<Root />, el);
 
-const CMS = {};
-for (const method in registry) { // eslint-disable-line
-  CMS[method] = registry[method];
-}
-
+/**
+ * Add extension hooks to global scope.
+ */
+const CMS = { ...registry };
 if (typeof window !== 'undefined') {
   window.CMS = CMS;
   window.createClass = window.createClass || createReactClass;
   window.h = window.h || React.createElement;
 }
 
+/**
+ * Export the registry for projects that import the CMS.
+ */
 export default CMS;

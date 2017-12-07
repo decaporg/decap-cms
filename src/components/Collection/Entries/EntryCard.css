@@ -1,0 +1,70 @@
+.nc-entryListing-gridCard {
+  @apply(--card);
+  flex: 0 0 335px;
+  height: 240px;
+  background-color: var(--colorForeground);
+  color: var(--colorText);
+  overflow: hidden;
+  margin-bottom: 16px;
+  margin-left: 12px;
+
+  &:hover {
+    background-color: var(--colorForeground);
+    color: var(--colorText);
+  }
+}
+
+.nc-entryListing-cardImage {
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 150px;
+}
+
+.nc-entryListing-cardBody {
+  padding: 16px 22px;
+  height: 90px;
+  position: relative;
+
+  &:after {
+    content: '';
+    position: absolute;
+    display: block;
+    z-index: 1;
+    bottom: 0;
+    left: -20%;
+    height: 140%;
+    width: 140%;
+    box-shadow: inset 0 -15px 24px #fff;
+  }
+}
+
+.nc-entryListing-listCard {
+  @apply(--card);
+  width: var(--topCardWidth);
+  max-width: 100%;
+  padding: 16px 22px;
+  margin-left: 12px;
+  margin-bottom: 16px;
+
+  &:hover {
+    background-color: var(--colorForeground);
+  }
+}
+
+.nc-entryListing-listCard-title {
+  margin-bottom: 0;
+}
+
+.nc-entryListing-cardBody-full {
+  height: 100%;
+}
+
+.nc-entryListing-cardHeading {
+  margin: 0 0 2px;
+}
+
+.nc-entryListing-cardListLabel {
+  white-space: nowrap;
+  font-weight: bold;
+}

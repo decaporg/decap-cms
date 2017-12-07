@@ -1,10 +1,10 @@
 import LocalForage from "localforage";
 import { Base64 } from "js-base64";
 import { uniq, initial, last, get, find } from "lodash";
-import { filterPromises, resolvePromiseProperties } from "../../lib/promiseHelper";
-import AssetProxy from "../../valueObjects/AssetProxy";
-import { SIMPLE, EDITORIAL_WORKFLOW, status } from "../../constants/publishModes";
-import { APIError, EditorialWorkflowError } from "../../valueObjects/errors";
+import { filterPromises, resolvePromiseProperties } from "Lib/promiseHelper";
+import AssetProxy from "ValueObjects/AssetProxy";
+import { SIMPLE, EDITORIAL_WORKFLOW, status } from "Constants/publishModes";
+import { APIError, EditorialWorkflowError } from "ValueObjects/errors";
 
 const CMS_BRANCH_PREFIX = 'cms/';
 
@@ -270,6 +270,7 @@ export default class API {
         .then(branchData => this.updateTree(branchData.commit.sha, "/", fileTree))
         .then(changeTree => this.commit(options.commitMessage, changeTree))
         .then(response => this.patchBranch(this.branch, response.sha));
+
       } else if (options.mode && options.mode === EDITORIAL_WORKFLOW) {
         const mediaFilesList = mediaFiles.map(file => ({ path: file.path, sha: file.sha }));
         return this.editorialWorkflowGit(fileTree, entry, mediaFilesList, options);

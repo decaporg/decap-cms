@@ -10,7 +10,6 @@ const PORT = '8080';
 module.exports = merge.smart(require('./webpack.base.js'), {
   entry: {
     cms: [
-      'react-hot-loader/patch',
       `webpack-dev-server/client?http://${ HOST }:${ PORT }/`,
       './index',
     ],
@@ -31,9 +30,6 @@ module.exports = merge.smart(require('./webpack.base.js'), {
         loader: path.resolve(__dirname, './node_modules/babel-loader'),
         test: /\.js?$/,
         exclude: /node_modules/,
-        query: {
-          plugins: [path.resolve(__dirname, './node_modules/react-hot-loader/babel')],
-        },
       },
     ],
   },
@@ -46,7 +42,6 @@ module.exports = merge.smart(require('./webpack.base.js'), {
     new webpack.DefinePlugin({
       NETLIFY_CMS_VERSION: JSON.stringify(require("./package.json").version + "-dev"),
     }),
-    new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
     new ExtractTextPlugin({
       filename: '[name].css',
@@ -55,7 +50,6 @@ module.exports = merge.smart(require('./webpack.base.js'), {
   ],
   devtool: 'source-map',
   devServer: {
-    hot: true,
     contentBase: 'example/',
     historyApiFallback: true,
     disableHostCheck: true,

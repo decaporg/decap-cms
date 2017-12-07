@@ -1,0 +1,88 @@
+.nc-workflow-card {
+  @apply(--card);
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.nc-workflow-link {
+  display: block;
+  padding: 0 18px 18px;
+  padding: 0 18px 18px;
+  height: 200px;
+  overflow: hidden;
+}
+
+.nc-workflow-card-collection {
+  font-size: 14px;
+  font-weight: 16px;
+  color: var(--colorTextLead);
+  text-transform: uppercase;
+  margin-top: 12px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.nc-workflow-card-title {
+  margin: 28px 0 0;
+  color: var(--colorTextLead);
+}
+
+.nc-workflow-card-date,
+.nc-workflow-card-body {
+  font-size: 13px;
+  font-weight: normal;
+  margin-top: 4px;
+}
+
+.nc-workflow-card-body {
+  color: var(--colorText);
+  margin: 24px 0 0;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+.nc-workflow-card-button-container {
+  background-color: var(--colorForeground);
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 12px 18px;
+  display: flex;
+  opacity: 0;
+  transition: opacity var(--transition);
+  cursor: pointer;
+}
+
+.nc-workflow-card:hover {
+  & .nc-workflow-card-button-container {
+    opacity: 1;
+  }
+}
+
+.nc-workflow-card-buttonDelete,
+.nc-workflow-card-buttonPublish {
+  width: auto;
+  flex: 1 0 0;
+  font-size: 13px;
+  padding: 6px 0;
+}
+
+.nc-workflow-card-buttonDelete {
+  background-color: var(--colorRedLight);
+  color: var(--colorRed);
+  margin-right: 6px;
+}
+
+.nc-workflow-card-buttonPublish {
+  background-color: var(--colorTeal);
+  color: var(--colorTextLight);
+  margin-left: 6px;
+}
+
+.nc-workflow-card-buttonPublishDisabled {
+  background-color: var(--colorGrayLight);
+  color: var(--colorGray);
+}

@@ -1,0 +1,22 @@
+.nc-visualEditor-shortcode {
+  border-radius: var(--borderRadius);
+  border: 2px solid var(--textFieldBorderColor);
+  margin: 12px 0;
+  padding: 14px;
+}
+
+.nc-visualEditor-shortcode-topBar {
+  background-color: var(--textFieldBorderColor);
+  margin: -var(--widgetNestDistance) -var(--widgetNestDistance) 0;
+  border-radius: 0;
+}
+
+.nc-visualEditor-shortcode-collapsed {
+  background-color: var(--textFieldBorderColor);
+  cursor: pointer;
+}
+
+.nc-visualEditor-shortcode-collapsedTitle {
+  padding: 8px;
+  color: var(--controlLabelColor);
+}

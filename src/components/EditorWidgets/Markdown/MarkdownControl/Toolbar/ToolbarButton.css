@@ -1,0 +1,22 @@
+.nc-toolbarButton-button {
+  display: inline-block;
+  padding: 6px;
+  border: none;
+  background-color: transparent;
+  font-size: 16px;
+  color: inherit;
+  cursor: pointer;
+
+  &:disabled {
+    cursor: auto;
+    opacity: 0.5;
+  }
+
+  & .nc-icon {
+    display: block;
+  }
+}
+
+.nc-toolbarButton-active {
+  color: #1e2532;
+}

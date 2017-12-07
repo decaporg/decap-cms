@@ -9,16 +9,16 @@ import {
   ENTRY_PERSIST_SUCCESS,
   ENTRY_PERSIST_FAILURE,
   ENTRY_DELETE_SUCCESS,
-} from '../actions/entries';
+} from 'Actions/entries';
 import {
   UNPUBLISHED_ENTRY_PERSIST_REQUEST,
   UNPUBLISHED_ENTRY_PERSIST_SUCCESS,
   UNPUBLISHED_ENTRY_PERSIST_FAILURE,
-} from '../actions/editorialWorkflow';
+} from 'Actions/editorialWorkflow';
 import {
   ADD_ASSET,
   REMOVE_ASSET,
-} from '../actions/media';
+} from 'Actions/media';
 
 const initialState = Map({
   entry: Map(),
@@ -77,8 +77,16 @@ const entryDraftReducer = (state = Map(), action) => {
     }
 
     case ENTRY_PERSIST_SUCCESS:
-    case ENTRY_DELETE_SUCCESS:
     case UNPUBLISHED_ENTRY_PERSIST_SUCCESS:
+      return state.withMutations((state) => {
+        state.deleteIn(['entry', 'isPersisting']);
+        state.set('hasChanged', false);
+        if (!state.getIn(['entry', 'slug'])) {
+          state.setIn(['entry', 'slug'], action.payload.slug);
+        }
+      });
+
+    case ENTRY_DELETE_SUCCESS:
       return state.withMutations((state) => {
         state.deleteIn(['entry', 'isPersisting']);
         state.set('hasChanged', false);

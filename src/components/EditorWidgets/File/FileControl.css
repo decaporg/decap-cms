@@ -1,0 +1,7 @@
+.nc-fileControl-input {
+  display: none !important;
+}
+
+.nc-fileControl-imageUpload {
+  cursor: pointer;
+}

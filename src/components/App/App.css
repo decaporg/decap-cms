@@ -1,0 +1,8 @@
+@import "./NotFoundPage.css";
+@import "./Header.css";
+
+.nc-app-main {
+  min-width: 800px;
+  max-width: 1440px;
+  margin: 0 auto;
+}

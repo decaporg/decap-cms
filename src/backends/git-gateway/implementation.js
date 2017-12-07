@@ -2,7 +2,7 @@ import GoTrue from "gotrue-js";
 import jwtDecode from 'jwt-decode';
 import {List} from 'immutable';
 import { get, pick, intersection } from "lodash";
-import GitHubBackend from "../github/implementation";
+import GitHubBackend from "Backends/github/implementation";
 import API from "./API";
 import AuthenticationPage from "./AuthenticationPage";
 

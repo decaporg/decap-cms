@@ -1,0 +1,77 @@
+:root {
+  --dropdownList: {
+    @apply(--dropShadowDeep);
+    background-color: #fff;
+    border-radius: var(--borderRadius);
+    overflow: hidden;
+  }
+
+  --dropdownItem: {
+    @apply --button;
+    background-color: transparent;
+    border-radius: 0;
+    color: var(--colorText);
+    font-weight: 500;
+    border-bottom: 1px solid #eaebf1;
+    padding: 10px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    &:last-of-type {
+      border-bottom: 0;
+    }
+
+    &:hover,
+    &:active,
+    &:focus {
+      color: var(--colorBlue);
+      background-color: var(--colorActiveBackground);
+    }
+  }
+}
+
+.nc-dropdown {
+  position: relative;
+  font-size: 14px;
+  user-select: none;
+}
+
+.nc-dropdownButton {
+  @apply --button;
+  @apply --buttonDefault;
+  display: block;
+  padding-left: 20px;
+  padding-right: 40px;
+
+  &:after {
+    @apply(--caretDown);
+    content: '';
+    display: block;
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    color: currentColor;
+  }
+}
+
+.nc-dropdownList {
+  @apply(--dropdownList);
+  margin: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  min-width: 100%;
+  z-index: 1;
+}
+
+.nc-dropdownItem {
+  @apply(--dropdownItem);
+}
+
+.nc-dropdownItemIcon {
+  flex: 1 0 32px;
+  text-align: right;
+  position: relative;
+  top: 2px;
+}

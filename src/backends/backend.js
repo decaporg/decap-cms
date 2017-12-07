@@ -1,12 +1,19 @@
 import { attempt, isError } from 'lodash';
+import { resolveFormat } from "Formats/formats";
+import { selectIntegration } from 'Reducers/integrations';
+import {
+  selectListMethod,
+  selectEntrySlug,
+  selectEntryPath,
+  selectAllowNewEntries,
+  selectAllowDeletion,
+  selectFolderEntryExtension
+} from "Reducers/collections";
+import { createEntry } from "ValueObjects/Entry";
+import { sanitizeSlug } from "Lib/urlHelper";
 import TestRepoBackend from "./test-repo/implementation";
 import GitHubBackend from "./github/implementation";
 import GitGatewayBackend from "./git-gateway/implementation";
-import { resolveFormat } from "../formats/formats";
-import { selectIntegration } from '../reducers/integrations';
-import { selectListMethod, selectEntrySlug, selectEntryPath, selectAllowNewEntries, selectAllowDeletion, selectFolderEntryExtension } from "../reducers/collections";
-import { createEntry } from "../valueObjects/Entry";
-import { sanitizeSlug } from "../lib/urlHelper";
 
 class LocalStorageAuthStore {
   storageKey = "netlify-cms-user";
@@ -252,10 +259,10 @@ class Backend {
      */
     const hasAssetStore = integrations && !!selectIntegration(integrations, null, 'assetStore');
     const updatedOptions = { ...options, hasAssetStore };
+    const opts = { newEntry, parsedData, commitMessage, collectionName, mode, ...updatedOptions };
 
-    return this.implementation.persistEntry(entryObj, MediaFiles, {
-      newEntry, parsedData, commitMessage, collectionName, mode, ...updatedOptions,
-    });
+    return this.implementation.persistEntry(entryObj, MediaFiles, opts)
+      .then(() => entryObj.slug);
   }
 
   persistMedia(file) {

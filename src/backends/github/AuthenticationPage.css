@@ -6,7 +6,24 @@
   height: 100vh;
 }
 
+.nc-githubAuthenticationPage-logo {
+  color: #c4c6d2;
+  margin-top: -300px;
+}
+
 .nc-githubAuthenticationPage-button {
-  padding: .25em 1em;
-  height: auto;
+  @apply(--button);
+  @apply(--dropShadowDeep);
+  @apply(--buttonDefault);
+  @apply(--buttonGray);
+
+  padding: 0 30px;
+  margin-top: -80px;
+  display: flex;
+  align-items: center;
+  position: relative;
+
+  & .nc-icon {
+    margin-right: 18px;
+  }
 }

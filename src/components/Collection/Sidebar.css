@@ -1,0 +1,68 @@
+.nc-collectionPage-sidebar {
+  @apply(--card);
+  width: 250px;
+  padding: 8px 0 12px;
+  position: fixed;
+}
+
+.nc-collectionPage-sidebarHeading {
+  font-size: 23px;
+  font-weight: 600;
+  padding: 0;
+  margin: 18px 12px 12px;
+  color: var(--colorTextLead);
+}
+
+.nc-collectionPage-sidebarSearch {
+  display: flex;
+  align-items: center;
+  margin: 0 8px;
+  position: relative;
+
+  & input {
+    background-color: #eff0f4;
+    border-radius: var(--borderRadius);
+
+    font-size: 14px;
+    padding: 10px 6px 10px 32px;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+
+    &:focus {
+      outline: none;
+      box-shadow: inset 0 0 0 2px var(--colorBlue);
+    }
+  }
+
+  & .nc-icon {
+    position: absolute;
+    left: 6px;
+    z-index: 2;
+  }
+}
+
+.nc-collectionPage-sidebarLink {
+  display: flex;
+  font-size: 14px;
+  font-weight: 500;
+  align-items: center;
+  padding: 8px 12px;
+  border-left: 2px solid #fff;
+
+  & .nc-icon {
+    margin-right: 8px;
+  }
+
+  &:hover,
+  &:active,
+  &.nc-collectionPage-sidebarLink-active {
+    color: var(--colorActive);
+    background-color: var(--colorActiveBackground);
+    border-left-color: #4863c6;
+  }
+
+  &:first-of-type {
+    margin-top: 16px;
+  }
+}
