@@ -251,35 +251,15 @@ class MediaLibrary extends React.Component {
           <button className="nc-mediaLibrary-close" onClick={this.handleClose}>
             <Icon type="close"/>
           </button>
-
-          <div className="nc-mediaLibrary-titleRow">
-            <h1 className="nc-mediaLibrary-title">
-              {privateUpload ? 'Private ' : null}
-              {forImage ? 'Images' : 'Media assets'}
-            </h1>
-
-            <FileUploadButton
-              className={`nc-mediaLibrary-uploadButton ${shouldShowButtonLoader ? 'nc-mediaLibrary-uploadButton-disabled' : ''}`}
-              label="Upload"
-              imagesOnly={forImage}
-              onChange={this.handlePersist}
-              disabled={shouldShowButtonLoader}
-            />
-          </div>
-        </div>
-
-        <div className="nc-mediaLibrary-actions">
-          <div className="nc-mediaLibrary-search">
-            <Icon type="search" size="small"/>
-            <input
-              className=""
-              value={query}
-              onChange={this.handleSearchChange}
-              onKeyDown={event => this.handleSearchKeyDown(event)}
-              placeholder="Search..."
-              disabled={!dynamicSearchActive && !hasFilteredFiles}
-            />
-          </div>
+          { !canInsert ? null :
+            <button onClick={this.handleInsert} disabled={!hasSelection} >
+              Insert
+            </button>
+          }
+          <h1 className="nc-mediaLibrary-title">
+            {privateUpload ? 'Private ' : null}
+            {forImage ? 'Images' : 'Media assets'}
+          </h1>
         </div>
 
         <div className="nc-mediaLibrary-actions">
