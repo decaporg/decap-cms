@@ -62,9 +62,8 @@
 
 .nc-appHeader-quickNew {
   @apply(--buttonMedium);
-
+  @apply(--buttonGray);
   margin-right: 8px;
-
 }
 
 .nc-appHeader-avatar {
