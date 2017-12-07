@@ -51,7 +51,7 @@ export default class ObjectControl extends Component {
     return true;
   }
 
-  controlFor(field) {
+  controlFor(field, key) {
     const {
       onAddAsset,
       onOpenMediaLibrary,
@@ -72,6 +72,7 @@ export default class ObjectControl extends Component {
 
     return (
       <EditorControl
+        key={key}
         field={field}
         value={fieldValue}
         mediaPaths={mediaPaths}
@@ -91,7 +92,7 @@ export default class ObjectControl extends Component {
 
     if (multiFields) {
       return (<div id={forID} className={c(classNameWrapper, 'nc-objectControl-root')}>
-        {multiFields.map(f => this.controlFor(f))}
+        {multiFields.map((f, idx) => this.controlFor(f, idx))}
       </div>);
     } else if (singleField) {
       return this.controlFor(singleField);

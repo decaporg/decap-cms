@@ -10,6 +10,10 @@ export class Modal extends React.Component {
     onClose: PropTypes.func.isRequired,
   }
 
+  componentDidMount() {
+    ReactModal.setAppElement('#nc-root');
+  }
+
   render() {
     const { isOpen, children, className, onClose } = this.props;
     return (
@@ -20,6 +24,7 @@ export class Modal extends React.Component {
         className={{
           base: `nc-modal-body ${className || ''}`,
           afterOpen: 'nc-modal-body-opening',
+          beforeClose: '',
         }}
         overlayClassName={{
           base: 'nc-modal-overlay',

@@ -57,7 +57,6 @@ class Editor extends React.Component {
     showDelete: PropTypes.bool.isRequired,
     openMediaLibrary: PropTypes.func.isRequired,
     removeInsertedMedia: PropTypes.func.isRequired,
-    closeEntry: PropTypes.func.isRequired,
     fields: ImmutablePropTypes.list.isRequired,
     slug: PropTypes.string,
     newEntry: PropTypes.bool.isRequired,

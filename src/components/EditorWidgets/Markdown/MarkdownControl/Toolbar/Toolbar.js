@@ -151,8 +151,8 @@ export default class Toolbar extends React.Component {
                 />
               }
             >
-              {plugins && plugins.toList().map(plugin => (
-                <DropdownItem label={plugin.get('label')} onClick={() => onSubmit(plugin.get('id'))} />
+              {plugins && plugins.toList().map((plugin, idx) => (
+                <DropdownItem key={idx} label={plugin.get('label')} onClick={() => onSubmit(plugin.get('id'))} />
               ))}
             </Dropdown>
           </div>

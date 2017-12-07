@@ -1,7 +1,7 @@
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { List, Map, fromJS } from 'immutable';
+import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import { List, Map, fromJS } from 'immutable';
 import { partial } from 'lodash';
 import c from 'classnames';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
@@ -48,7 +48,10 @@ export default class ListControl extends Component {
   static propTypes = {
     onChange: PropTypes.func.isRequired,
     onChangeObject: PropTypes.func.isRequired,
-    value: PropTypes.node,
+    value: PropTypes.oneOfType([
+      ImmutablePropTypes.list,
+      PropTypes.string,
+    ]),
     field: PropTypes.node,
     forID: PropTypes.string,
     mediaPaths: ImmutablePropTypes.map.isRequired,

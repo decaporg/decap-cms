@@ -5,7 +5,7 @@ import { Icon } from 'UI';
 export default class AuthenticationPage extends React.Component {
   static propTypes = {
     onLogin: PropTypes.func.isRequired,
-    inProgress: PropTypes.bool.isRequired,
+    inProgress: PropTypes.bool,
   };
 
   handleLogin = (e) => {

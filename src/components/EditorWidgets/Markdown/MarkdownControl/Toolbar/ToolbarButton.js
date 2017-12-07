@@ -9,7 +9,7 @@ const ToolbarButton = ({ type, label, icon, onClick, isActive, disabled }) => {
   return (
     <button
       className={c('nc-toolbarButton-button', { ['nc-toolbarButton-active']: active })}
-      onClick={e => onClick(e, type)}
+      onClick={e => onClick && onClick(e, type)}
       title={label}
       disabled={disabled}
     >
@@ -22,7 +22,7 @@ ToolbarButton.propTypes = {
   type: PropTypes.string,
   label: PropTypes.string.isRequired,
   icon: PropTypes.string,
-  onClick: PropTypes.func.isRequired,
+  onClick: PropTypes.func,
   isActive: PropTypes.func,
   disabled: PropTypes.bool,
 };

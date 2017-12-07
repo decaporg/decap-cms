@@ -26,7 +26,7 @@ export default class TextControl extends React.Component {
   render() {
     const {
       forID,
-      value = '',
+      value,
       onChange,
       classNameWrapper,
       setActiveStyle,
@@ -36,7 +36,7 @@ export default class TextControl extends React.Component {
     return (
       <Textarea
         id={forID}
-        value={value}
+        value={value || ''}
         className={classNameWrapper}
         onFocus={setActiveStyle}
         onBlur={setInactiveStyle}

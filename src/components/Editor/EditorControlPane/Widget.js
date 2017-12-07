@@ -13,7 +13,6 @@ export default class Widget extends Component {
     hasActiveStyle: PropTypes.bool,
     setActiveStyle: PropTypes.func.isRequired,
     setInactiveStyle: PropTypes.func.isRequired,
-    className: PropTypes.string.isRequired,
     classNameWrapper: PropTypes.string.isRequired,
     classNameWidget: PropTypes.string.isRequired,
     classNameWidgetActive: PropTypes.string.isRequired,
