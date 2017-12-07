@@ -34,6 +34,10 @@ export const UNPUBLISHED_ENTRY_PUBLISH_REQUEST = 'UNPUBLISHED_ENTRY_PUBLISH_REQU
 export const UNPUBLISHED_ENTRY_PUBLISH_SUCCESS = 'UNPUBLISHED_ENTRY_PUBLISH_SUCCESS';
 export const UNPUBLISHED_ENTRY_PUBLISH_FAILURE = 'UNPUBLISHED_ENTRY_PUBLISH_FAILURE';
 
+export const UNPUBLISHED_ENTRY_DELETE_REQUEST = 'UNPUBLISHED_ENTRY_DELETE_REQUEST';
+export const UNPUBLISHED_ENTRY_DELETE_SUCCESS = 'UNPUBLISHED_ENTRY_DELETE_SUCCESS';
+export const UNPUBLISHED_ENTRY_DELETE_FAILURE = 'UNPUBLISHED_ENTRY_DELETE_FAILURE';
+
 /*
  * Simple Action Creators (Internal)
  */
@@ -183,6 +187,30 @@ function unpublishedEntryPublishError(collection, slug, transactionID) {
   };
 }
 
+function unpublishedEntryDeleteRequest(collection, slug, transactionID) {
+  return {
+    type: UNPUBLISHED_ENTRY_DELETE_REQUEST,
+    payload: { collection, slug },
+    optimist: { type: BEGIN, id: transactionID },
+  };
+}
+
+function unpublishedEntryDeleted(collection, slug, transactionID) {
+  return {
+    type: UNPUBLISHED_ENTRY_DELETE_SUCCESS,
+    payload: { collection, slug },
+    optimist: { type: COMMIT, id: transactionID },
+  };
+}
+
+function unpublishedEntryDeleteError(collection, slug, transactionID) {
+  return {
+    type: UNPUBLISHED_ENTRY_DELETE_FAILURE,
+    payload: { collection, slug },
+    optimist: { type: REVERT, id: transactionID },
+  };
+}
+
 /*
  * Exported Thunk Action Creators
  */
@@ -283,9 +311,19 @@ export function updateUnpublishedEntryStatus(collection, slug, oldStatus, newSta
     dispatch(unpublishedEntryStatusChangeRequest(collection, slug, oldStatus, newStatus, transactionID));
     backend.updateUnpublishedEntryStatus(collection, slug, newStatus)
     .then(() => {
+      dispatch(notifSend({
+        message: 'Entry status updated',
+        kind: 'success',
+        dismissAfter: 4000,
+      }));
       dispatch(unpublishedEntryStatusChangePersisted(collection, slug, oldStatus, newStatus, transactionID));
     })
     .catch(() => {
+      dispatch(notifSend({
+        message: `Failed to update status: ${ error }`,
+        kind: 'danger',
+        dismissAfter: 8000,
+      }));
       dispatch(unpublishedEntryStatusChangeError(collection, slug, transactionID));
     });
   };
@@ -296,18 +334,23 @@ export function deleteUnpublishedEntry(collection, slug) {
     const state = getState();
     const backend = currentBackend(state.config);
     const transactionID = uuid();
-    dispatch(unpublishedEntryPublishRequest(collection, slug, transactionID));
+    dispatch(unpublishedEntryDeleteRequest(collection, slug, transactionID));
     return backend.deleteUnpublishedEntry(collection, slug)
     .then(() => {
-      dispatch(unpublishedEntryPublished(collection, slug, transactionID));
+      dispatch(notifSend({
+        message: 'Unpublished changes deleted',
+        kind: 'success',
+        dismissAfter: 4000,
+      }));
+      dispatch(unpublishedEntryDeleted(collection, slug, transactionID));
     })
     .catch((error) => {
       dispatch(notifSend({
-        message: `Failed to close PR: ${ error }`,
+        message: `Failed to delete unpublished changes: ${ error }`,
         kind: 'danger',
         dismissAfter: 8000,
       }));
-      dispatch(unpublishedEntryPublishError(collection, slug, transactionID));
+      dispatch(unpublishedEntryDeleteError(collection, slug, transactionID));
     });
   };
 }
@@ -318,13 +361,18 @@ export function publishUnpublishedEntry(collection, slug) {
     const backend = currentBackend(state.config);
     const transactionID = uuid();
     dispatch(unpublishedEntryPublishRequest(collection, slug, transactionID));
-    backend.publishUnpublishedEntry(collection, slug)
+    return backend.publishUnpublishedEntry(collection, slug)
     .then(() => {
+      dispatch(notifSend({
+        message: 'Entry published',
+        kind: 'success',
+        dismissAfter: 4000,
+      }));
       dispatch(unpublishedEntryPublished(collection, slug, transactionID));
     })
     .catch((error) => {
       dispatch(notifSend({
-        message: `Failed to merge: ${ error }`,
+        message: `Failed to publish: ${ error }`,
         kind: 'danger',
         dismissAfter: 8000,
       }));

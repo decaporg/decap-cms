@@ -187,15 +187,16 @@ class Editor extends React.Component {
     }
   };
 
-  handlePublishEntry = () => {
-    const { publishUnpublishedEntry, collection, slug, currentStatus } = this.props;
+  handlePublishEntry = async () => {
+    const { publishUnpublishedEntry, collection, slug, currentStatus, loadEntry } = this.props;
     if (currentStatus !== status.last()) {
       window.alert('Please update status to "Ready" before publishing.');
       return;
     } else if (!window.confirm('Are you sure you want to publish this entry?')) {
       return;
     }
-    publishUnpublishedEntry(collection.get('name'), slug);
+    await publishUnpublishedEntry(collection.get('name'), slug);
+    loadEntry(collection, slug);
   };
 
   handleDeleteEntry = () => {

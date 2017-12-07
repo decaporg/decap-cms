@@ -72,7 +72,7 @@ export default class EditorToolbar extends React.Component {
     } = this.props;
 
     const deleteLabel = (hasUnpublishedChanges && isModification && 'Delete unpublished changes')
-      || (hasUnpublishedChanges && 'Delete unpublished entry')
+      || (hasUnpublishedChanges && isNewEntry && 'Delete unpublished entry')
       || (!hasUnpublishedChanges && !isModification && 'Delete published entry');
 
     return (
