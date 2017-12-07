@@ -32,6 +32,8 @@
     "gulp": "^3.9.1",
     "gulp-babel": "^6.1.2",
     "gulp-postcss": "^6.1.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-transform": "^3.0.5",
     "gulp-util": "^3.0.7",
     "hugo-bin": "^0.18.0",
     "imports-loader": "^0.6.5",

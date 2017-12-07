@@ -35,6 +35,6 @@
           <img src="/img/search.svg" />
           <input type="search" placeholder="Search the docs" class="algolia-search"/>
         </a>
-        <a href="https://github.com/netlify/netlify-cms" class="btn-secondary small github-btn "><img src="/img/github.svg"/> Fork me on GitHub</a>
+        <span class="cta-header">{{ .Site.Data.landing.cta.button | markdownify }}</span>
       </div>
     </header>

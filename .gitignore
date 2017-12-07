@@ -8,5 +8,5 @@ yarn-error.log
 .vscode/
 manifest.yml
 .imdone/
-
+website/site/data/contributors.yml
 /coverage/

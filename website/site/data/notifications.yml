@@ -11,6 +11,6 @@ notifications:
     message: >-
       We have a community on Gitter - join now to ask questions and discuss the
       project with other devs!
-    published: true
+    published: false
     title: Gitter shoutout
     url: 'https://gitter.im/netlify/netlifycms'
