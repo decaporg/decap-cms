@@ -147,4 +147,5 @@ pre {
 code {
   font-family: 'Roboto Mono', monospace !important;
   font-size: 14px;
+  text-transform: none;
 }
