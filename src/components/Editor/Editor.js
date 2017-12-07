@@ -103,15 +103,20 @@ class Editor extends React.Component {
     window.addEventListener('beforeunload', this.exitBlocker);
 
     const navigationBlocker = (location, action) => {
-      const bypassLocations = [
-        `/collections/${collection.get('name')}/new`,
-        `/collections/${collection.get('name')}/entries/${slug}`,
-      ]
-      const hasChanged = entryDraft.get('hasChanged');
-      const shouldBypass = action === 'PUSH' && bypassLocations.includes(location.pathname);
-      if (!shouldBypass && hasChanged) {
+      /**
+       * New entry being saved and redirected to it's new slug based url.
+       */
+      const isPersisting = this.props.entryDraft.getIn(['entry', 'isPersisting']);
+      const newRecord = this.props.entryDraft.getIn(['entry', 'newRecord']);
+      const newEntryPath = `/collections/${collection.get('name')}/new`;
+      if (isPersisting && newRecord && this.props.location.pathname === newEntryPath && action === 'PUSH') {
+        return;
+      }
+
+      if (this.props.hasChanged) {
         return leaveMessage;
       }
+
     };
     const unblock = history.block(navigationBlocker);
 
@@ -119,7 +124,13 @@ class Editor extends React.Component {
      * This will run as soon as the location actually changes, unless creating
      * a new post. The confirmation above will run first.
      */
-    this.unlisten = history.listen(location => {
+    this.unlisten = history.listen((location, action) => {
+      const newEntryPath = `/collections/${collection.get('name')}/new`;
+      const entriesPath = `/collections/${collection.get('name')}/entries/`;
+      const { pathname } = location;
+      if (pathname.startsWith(newEntryPath) || pathname.startsWith(entriesPath) && action === 'PUSH') {
+        return;
+      }
       unblock();
       this.unlisten();
     });
@@ -175,12 +186,13 @@ class Editor extends React.Component {
 
   handlePersistEntry = async (opts = {}) => {
     const { createNew = false } = opts;
-    const { persistEntry, collection, entryDraft, newEntry, currentStatus, hasWorkflow, loadEntry, slug } = this.props;
+    const { persistEntry, collection, entryDraft, newEntry, currentStatus, hasWorkflow, loadEntry, slug, createEmptyDraft } = this.props;
 
     await persistEntry(collection)
 
     if (createNew) {
       navigateToNewEntry(collection.get('name'));
+      createEmptyDraft(collection);
     }
     else if (slug && hasWorkflow && !currentStatus) {
       loadEntry(collection, slug);

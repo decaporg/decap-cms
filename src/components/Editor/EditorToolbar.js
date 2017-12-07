@@ -40,7 +40,7 @@ export default class EditorToolbar extends React.Component {
         {
           showDelete
             ? <button className="nc-entryEditor-toolbar-deleteButton" onClick={onDelete}>
-                Delete
+                Delete entry
               </button>
             : null
         }
@@ -49,7 +49,10 @@ export default class EditorToolbar extends React.Component {
   };
 
   renderSimplePublishControls = () => {
-    const { onPersist, onPersistAndNew, isPersisting } = this.props;
+    const { onPersist, onPersistAndNew, isPersisting, hasChanged, isNewEntry } = this.props;
+    if (!isNewEntry && !hasChanged) {
+      return <div className="nc-entryEditor-toolbar-statusPublished">Published</div>;
+    }
     return (
       <div>
         <Dropdown
@@ -80,12 +83,6 @@ export default class EditorToolbar extends React.Component {
     const deleteLabel = (hasUnpublishedChanges && isModification && 'Delete unpublished changes')
       || (hasUnpublishedChanges && (isNewEntry || !isModification) && 'Delete unpublished entry')
       || (!hasUnpublishedChanges && !isModification && 'Delete published entry');
-
-    console.log('---------');
-    console.log(hasUnpublishedChanges);
-    console.log(isModification);
-    console.log(isNewEntry);
-    console.log(deleteLabel);
 
     return [
         <button
