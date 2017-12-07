@@ -36,23 +36,22 @@
 
 .nc-mediaLibrary-title {
   line-height: 24px;
-  position: absolute;
-
   font-size: 22px;
+  text-align: left;
+}
+
+.nc-mediaLibrary-header {
+}
+
+.nc-mediaLibrary-actions {
 }
 
 .nc-mediaLibrary-search {
-  /*font-family: var(--fontFamilyPrimary);*/
-  /*width: 50%;*/
-  /*max-width: 800px;*/
-  /*margin: 12px auto;*/
-  /*display: inline-block;*/
-  /*position: relative;*/
-  /*z-index: 1;*/
-
+  width: 340px;
+  height: 37px;
   display: flex;
   align-items: center;
-  margin: 0 8px;
+  margin: 0 8px 0 0;
   position: relative;
 
   & input {

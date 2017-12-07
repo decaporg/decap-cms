@@ -14,7 +14,6 @@ import {
   insertMedia as insertMediaAction,
   closeMediaLibrary as closeMediaLibraryAction,
 } from 'Actions/mediaLibrary';
-import MediaLibraryFooter from './MediaLibraryFooter';
 import { Icon } from 'UI';
 
 
@@ -246,11 +245,22 @@ class MediaLibrary extends React.Component {
         onClose={this.handleClose}
         className={c('nc-mediaLibrary-dialog', { 'nc-mediaLibrary-dialogPrivate': privateUpload })}
       >
-        <div>
+        <div className="nc-mediaLibrary-header">
+          <button onClick={onClose}>
+            Close
+          </button>
+          { !canInsert ? null :
+            <button onClick={onInsert} disabled={!hasSelection} >
+              Insert
+            </button>
+          }
           <h1 className="nc-mediaLibrary-title">
             {privateUpload ? 'Private ' : null}
             {forImage ? 'Images' : 'Media assets'}
           </h1>
+        </div>
+
+        <div className="nc-mediaLibrary-actions">
           <div className="nc-mediaLibrary-search">
             <Icon type="search" size="small"/>
             <input
@@ -263,7 +273,37 @@ class MediaLibrary extends React.Component {
             />
           </div>
 
+          <div>
+              <button
+                onClick={onDelete}
+                disabled={shouldShowLoader || !hasSelection}
+              >
+                Delete
+              </button>
+              <FileUploadButton
+                className={`nc-mediaLibrary-uploadButton ${shouldShowLoader ? 'nc-mediaLibrary-uploadButton-disabled' : ''}`}
+                label="Upload"
+                imagesOnly={forImage}
+                onChange={onPersist}
+                disabled={shouldShowLoader}
+              />
+              { shouldShowLoader ? loader : null }
+
+          </div>
+
+          // <MediaLibraryFooter
+          //   onDelete={this.handleDelete}
+          //   onPersist={this.handlePersist}
+          //   onClose={this.handleClose}
+          //   onInsert={this.handleInsert}
+          //   hasSelection={hasMedia && !isEmpty(selectedFile)}
+          //   forImage={forImage}
+          //   canInsert={canInsert}
+          //   isPersisting={isPersisting}
+          //   isDeleting={isDeleting}
+          // />
         </div>
+
         {
           shouldShowEmptyMessage
             ? <div className="nc-mediaLibrary-emptyMessage"><h1>{emptyMessage}</h1></div>
@@ -298,17 +338,6 @@ class MediaLibrary extends React.Component {
           </div>
           { isPaginating ? <h1 className="nc-mediaLibrary-paginatingMessage">Loading...</h1> : null }
         </div>
-        <MediaLibraryFooter
-          onDelete={this.handleDelete}
-          onPersist={this.handlePersist}
-          onClose={this.handleClose}
-          onInsert={this.handleInsert}
-          hasSelection={hasMedia && !isEmpty(selectedFile)}
-          forImage={forImage}
-          canInsert={canInsert}
-          isPersisting={isPersisting}
-          isDeleting={isDeleting}
-        />
       </Modal>
     );
   }
