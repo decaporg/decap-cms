@@ -54,6 +54,7 @@ export default class EditorControl extends React.Component {
           classNameWrapper={c({
             'nc-controlPane-widget': true,
             'nc-controlPane-widgetActive': this.state.styleActive,
+            'nc-controlPane-widgetError': !!errors,
           })}
           classNameWidget="nc-controlPane-widget"
           classNameWidgetActive="nc-controlPane-widgetNestable"

@@ -43,7 +43,7 @@ export default class Widget extends Component {
       return this.wrappedControlShouldComponentUpdate(nextProps);
     }
     return this.props.value !== nextProps.value
-      || this.props.className !== nextProps.className
+      || this.props.classNameWrapper !== nextProps.classNameWrapper
       || this.props.hasActiveStyle !== nextProps.hasActiveStyle;
   }
 
@@ -174,7 +174,6 @@ export default class Widget extends Component {
       onAddAsset,
       onRemoveInsertedMedia,
       getAsset,
-      className,
       classNameWrapper,
       classNameWidget,
       classNameWidgetActive,
@@ -198,7 +197,6 @@ export default class Widget extends Component {
       getAsset,
       forID: field.get('name'),
       ref: this.processInnerControlRef,
-      className,
       classNameWrapper,
       classNameWidget,
       classNameWidgetActive,

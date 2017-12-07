@@ -85,13 +85,18 @@ select.nc-controlPane-widget {
 }
 
 .nc-controlPane-labelWithError {
-  color: #FF706F;
+  background-color: var(--colorErrorText);
+  color: #fff;
+}
+
+.nc-controlPane-widgetError {
+  border-color: var(--colorErrorText);
 }
 
 .nc-controlPane-errors {
   list-style-type: none;
   font-size: 12px;
-  color: #FF706F;
+  color: var(--colorErrorText);
   margin-bottom: 5px;
   text-align: right;
   text-transform: uppercase;
