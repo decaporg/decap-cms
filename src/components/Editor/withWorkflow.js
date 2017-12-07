@@ -14,7 +14,6 @@ function mapStateToProps(state, ownProps) {
     showDelete: !ownProps.newEntry && selectAllowDeletion(collection),
   };
   if (isEditorialWorkflow) {
-    returnObj.showDelete = false;
     const slug = ownProps.match.params.slug;
     const unpublishedEntry = selectUnpublishedEntry(state, collection.get('name'), slug);
     if (unpublishedEntry) {
@@ -38,10 +37,6 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     // Overwrite persistEntry to persistUnpublishedEntry
     returnObj.persistEntry = collection =>
       dispatch(persistUnpublishedEntry(collection, unpublishedEntry));
-
-    // Overwrite deleteEntry to a noop (deletion is currently
-    // disabled in the editorial workflow)
-    returnObj.deleteEntry = () => undefined;
   }
 
   return {

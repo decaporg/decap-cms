@@ -59,6 +59,7 @@ class EditorInterface extends Component {
       enableSave,
       showDelete,
       onDelete,
+      onDeleteUnpublishedChanges,
       onValidate,
       onOpenMediaLibrary,
       onAddAsset,
@@ -67,6 +68,8 @@ class EditorInterface extends Component {
       hasChanged,
       displayUrl,
       hasWorkflow,
+      hasUnpublishedChanges,
+      isNewEntry,
     } = this.props;
 
     const { previewVisible, scrollSyncEnabled, showEventBlocker } = this.state;
@@ -130,6 +133,7 @@ class EditorInterface extends Component {
           onPersist={this.handleOnPersist}
           onPersistAndNew={() => this.handleOnPersist({ createNew: true })}
           onDelete={onDelete}
+          onDeleteUnpublishedChanges={onDeleteUnpublishedChanges}
           showDelete={showDelete}
           enableSave={enableSave}
           user={user}
@@ -137,6 +141,8 @@ class EditorInterface extends Component {
           displayUrl={displayUrl}
           collection={collection}
           hasWorkflow={hasWorkflow}
+          hasUnpublishedChanges={hasUnpublishedChanges}
+          isNewEntry={isNewEntry}
         />
         <div className="nc-entryEditor-container">
           <div className="nc-entryEditor-viewControls">
@@ -180,11 +186,14 @@ EditorInterface.propTypes = {
   enableSave: PropTypes.bool.isRequired,
   showDelete: PropTypes.bool.isRequired,
   onDelete: PropTypes.func.isRequired,
+  onDeleteUnpublishedChanges: PropTypes.func.isRequired,
   onRemoveInsertedMedia: PropTypes.func.isRequired,
   user: ImmutablePropTypes.map,
   hasChanged: PropTypes.bool,
   displayUrl: PropTypes.string,
   hasWorkflow: PropTypes.bool,
+  hasUnpublishedChanges: PropTypes.bool,
+  isNewEntry: PropTypes.bool,
 };
 
 export default EditorInterface;

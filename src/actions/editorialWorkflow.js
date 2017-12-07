@@ -222,7 +222,7 @@ export function loadUnpublishedEntries(collections) {
 }
 
 export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     const state = getState();
     const entryDraft = state.entryDraft;
 
@@ -245,23 +245,41 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
 
     dispatch(unpublishedEntryPersisting(collection, serializedEntry, transactionID));
     const persistAction = existingUnpublishedEntry ? backend.persistUnpublishedEntry : backend.persistEntry;
-    return persistAction.call(backend, state.config, collection, serializedEntryDraft, assetProxies.toJS(), state.integrations)
-    .then(() => {
+    const persistCallArgs = [
+      backend,
+      state.config,
+      collection,
+      serializedEntryDraft,
+      assetProxies.toJS(),
+      state.integrations,
+    ];
+
+    try {
+      const newSlug = await persistAction.call(...persistCallArgs);
       dispatch(notifSend({
         message: 'Entry saved',
         kind: 'success',
         dismissAfter: 4000,
       }));
-      return dispatch(unpublishedEntryPersisted(collection, serializedEntry, transactionID));
-    })
-    .catch((error) => {
+      dispatch(unpublishedEntryPersisted(collection, serializedEntry, transactionID));
+
+      /**
+       * Ensure a complete state refresh until a more proper solution can be
+       * implemented.
+       */
+      if (!entry.get('slug')) {
+        window.location.assign(`/#/collections/${collection.get('name')}/entries/${newSlug}`);
+        window.location.reload();
+      }
+    }
+    catch(error) {
       dispatch(notifSend({
         message: `Failed to persist entry: ${ error }`,
         kind: 'danger',
         dismissAfter: 8000,
       }));
       return Promise.reject(dispatch(unpublishedEntryPersistedFail(error, transactionID)));
-    });
+    }
   };
 }
 
@@ -287,7 +305,7 @@ export function deleteUnpublishedEntry(collection, slug) {
     const backend = currentBackend(state.config);
     const transactionID = uuid();
     dispatch(unpublishedEntryPublishRequest(collection, slug, transactionID));
-    backend.deleteUnpublishedEntry(collection, slug)
+    return backend.deleteUnpublishedEntry(collection, slug)
     .then(() => {
       dispatch(unpublishedEntryPublished(collection, slug, transactionID));
     })

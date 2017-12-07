@@ -298,13 +298,22 @@ export function persistEntry(collection) {
     dispatch(entryPersisting(collection, serializedEntry));
     return backend
       .persistEntry(state.config, collection, serializedEntryDraft, assetProxies.toJS())
-      .then(() => {
+      .then(newSlug => {
         dispatch(notifSend({
           message: 'Entry saved',
           kind: 'success',
           dismissAfter: 4000,
         }));
-        return dispatch(entryPersisted(collection, serializedEntry));
+        dispatch(entryPersisted(collection, serializedEntry))
+
+        /**
+         * Ensure a complete state refresh until a more proper solution can be
+         * implemented.
+         */
+        if (!entry.get('slug')) {
+          window.location.assign(`/#/collections/${collection.get('name')}/entries/${newSlug}`);
+          window.location.reload();
+        }
       })
       .catch((error) => {
         console.error(error);

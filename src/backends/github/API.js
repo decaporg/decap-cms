@@ -270,6 +270,7 @@ export default class API {
         .then(branchData => this.updateTree(branchData.commit.sha, "/", fileTree))
         .then(changeTree => this.commit(options.commitMessage, changeTree))
         .then(response => this.patchBranch(this.branch, response.sha));
+
       } else if (options.mode && options.mode === EDITORIAL_WORKFLOW) {
         const mediaFilesList = mediaFiles.map(file => ({ path: file.path, sha: file.sha }));
         return this.editorialWorkflowGit(fileTree, entry, mediaFilesList, options);

@@ -259,10 +259,10 @@ class Backend {
      */
     const hasAssetStore = integrations && !!selectIntegration(integrations, null, 'assetStore');
     const updatedOptions = { ...options, hasAssetStore };
+    const opts = { newEntry, parsedData, commitMessage, collectionName, mode, ...updatedOptions };
 
-    return this.implementation.persistEntry(entryObj, MediaFiles, {
-      newEntry, parsedData, commitMessage, collectionName, mode, ...updatedOptions,
-    });
+    return this.implementation.persistEntry(entryObj, MediaFiles, opts)
+      .then(() => entryObj.slug);
   }
 
   persistMedia(file) {
@@ -289,6 +289,7 @@ class Backend {
   }
 
   persistUnpublishedEntry(...args) {
+    console.log('ran');
     return this.persistEntry(...args, { unpublished: true });
   }
 

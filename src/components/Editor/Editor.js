@@ -13,6 +13,11 @@ import {
   persistEntry,
   deleteEntry,
 } from 'Actions/entries';
+import {
+  updateUnpublishedEntryStatus,
+  publishUnpublishedEntry,
+  deleteUnpublishedEntry
+} from 'Actions/editorialWorkflow';
 import { deserializeValues } from 'Lib/serializeEntryValues';
 import { addAsset } from 'Actions/media';
 import { openMediaLibrary, removeInsertedMedia } from 'Actions/mediaLibrary';
@@ -23,8 +28,10 @@ import { EDITORIAL_WORKFLOW } from 'Constants/publishModes';
 import EditorInterface from './EditorInterface';
 import withWorkflow from './withWorkflow';
 
-const navigateToCollection = collectionName => history.push(`/collections/${collectionName}`);
-const navigateToNewEntry = collectionName => history.push(`/collections/${collectionName}/new`);
+const navigateCollection = (collectionPath) => history.push(`/collections/${collectionPath}`);
+const navigateToCollection = collectionName => navigateCollection(collectionName);
+const navigateToNewEntry = collectionName => navigateCollection(`${collectionName}/new`);
+const navigateToCurrentEntry = (collectionName, slug) => navigateCollection(`${collectionName}/entries/${slug}`);
 
 class Editor extends React.Component {
   static propTypes = {
@@ -51,6 +58,7 @@ class Editor extends React.Component {
     newEntry: PropTypes.bool.isRequired,
     displayUrl: PropTypes.string,
     hasWorkflow: PropTypes.bool,
+    unpublishedEntry: PropTypes.bool,
   };
 
   componentDidMount() {
@@ -146,6 +154,20 @@ class Editor extends React.Component {
     }, 0);
   };
 
+  handleDeleteUnpublishedChanges = async () => {
+    const { collection, slug, deleteUnpublishedEntry, entry } = this.props;
+    if (!window.confirm('All unpublished changes to this entry will be deleted. Are you sure?')) {
+      return;
+    }
+    await this.props.deleteUnpublishedEntry(collection, entry.get('slug'));
+
+    /**
+     * Nasty hack to force the editor to reload - we need to do this through
+     * redux instead.
+     */
+    window.location.reload();
+  };
+
   render() {
     const {
       entry,
@@ -163,6 +185,8 @@ class Editor extends React.Component {
       hasChanged,
       displayUrl,
       hasWorkflow,
+      unpublishedEntry,
+      newEntry,
     } = this.props;
 
     if (entry && entry.get('error')) {
@@ -189,12 +213,15 @@ class Editor extends React.Component {
         onRemoveInsertedMedia={removeInsertedMedia}
         onPersist={this.handlePersistEntry}
         onDelete={this.handleDeleteEntry}
+        onDeleteUnpublishedChanges={this.handleDeleteUnpublishedChanges}
         showDelete={this.props.showDelete}
         enableSave={entryDraft.get('hasChanged')}
         user={user}
         hasChanged={hasChanged}
         displayUrl={displayUrl}
         hasWorkflow={hasWorkflow}
+        hasUnpublishedChanges={unpublishedEntry}
+        isNewEntry={newEntry}
       />
     );
   }
@@ -244,5 +271,8 @@ export default connect(
     discardDraft,
     persistEntry,
     deleteEntry,
+    updateUnpublishedEntryStatus,
+    publishUnpublishedEntry,
+    deleteUnpublishedEntry,
   }
 )(withWorkflow(Editor));
