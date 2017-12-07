@@ -238,6 +238,7 @@ class MediaLibrary extends React.Component {
       || (!hasFiles && 'No assets found.')
       || (!hasFilteredFiles && 'No images found.')
       || (!hasSearchResults && 'No results.');
+    const hasSelection = hasMedia && !isEmpty(selectedFile);
 
     return (
       <Modal
@@ -246,11 +247,11 @@ class MediaLibrary extends React.Component {
         className={c('nc-mediaLibrary-dialog', { 'nc-mediaLibrary-dialogPrivate': privateUpload })}
       >
         <div className="nc-mediaLibrary-header">
-          <button onClick={onClose}>
+          <button onClick={this.handleClose}>
             Close
           </button>
           { !canInsert ? null :
-            <button onClick={onInsert} disabled={!hasSelection} >
+            <button onClick={this.handleInsert} disabled={!hasSelection} >
               Insert
             </button>
           }
@@ -272,10 +273,9 @@ class MediaLibrary extends React.Component {
               disabled={!dynamicSearchActive && !hasFilteredFiles}
             />
           </div>
-
           <div>
               <button
-                onClick={onDelete}
+                onClick={this.handleDelete}
                 disabled={shouldShowLoader || !hasSelection}
               >
                 Delete
@@ -284,24 +284,11 @@ class MediaLibrary extends React.Component {
                 className={`nc-mediaLibrary-uploadButton ${shouldShowLoader ? 'nc-mediaLibrary-uploadButton-disabled' : ''}`}
                 label="Upload"
                 imagesOnly={forImage}
-                onChange={onPersist}
+                onChange={this.handlePersist}
                 disabled={shouldShowLoader}
               />
               { shouldShowLoader ? loader : null }
-
           </div>
-
-          // <MediaLibraryFooter
-          //   onDelete={this.handleDelete}
-          //   onPersist={this.handlePersist}
-          //   onClose={this.handleClose}
-          //   onInsert={this.handleInsert}
-          //   hasSelection={hasMedia && !isEmpty(selectedFile)}
-          //   forImage={forImage}
-          //   canInsert={canInsert}
-          //   isPersisting={isPersisting}
-          //   isDeleting={isDeleting}
-          // />
         </div>
 
         {
