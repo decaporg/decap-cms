@@ -32,7 +32,7 @@
   <section class="editors">
     <div class="contained">
       <h2>{{ .Site.Data.landing.editors.hook | markdownify }}</h2>
-      <p>{{ .Site.Data.landing.editors.intro | markdownify }}</p>
+      <p id="editor-intro">{{ .Site.Data.landing.editors.intro | markdownify }}</p>
       <div class="editors-features">
         {{ range $index, $id := .Site.Data.landing.editors.features }}
         <div class="feature">

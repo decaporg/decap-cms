@@ -2,12 +2,22 @@
   @neat-row;
   margin-top: $xl;
   margin-bottom: $xxl;
-  text-align: center;
+
+  @media screen and (min-width: $desktop) {
+    text-align: center;
+  }
 
   h2, p {
     max-width: $desktop;
-    margin-left: auto;
-    margin-right: auto;
+
+    @media screen and (min-width: $desktop) {
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+
+  p#editor-intro {
+    max-width: 710px;
   }
 
   .editors-features {
@@ -16,8 +26,8 @@
     margin-top: $large;
 
     @media screen and (max-width: $desktop) {
-      align-items: center;
-      flex-direction: column;
+      justify-content: flex-start;
+      flex-wrap: wrap;
     }
 
     .feature {
@@ -31,7 +41,8 @@
       }
 
       @media screen and (max-width: $desktop) {
-        margin-top: $medium;
+        margin-top: $large;
+        margin-right: $medium;
       }
 
     }

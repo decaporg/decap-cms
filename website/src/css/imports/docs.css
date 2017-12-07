@@ -119,7 +119,7 @@
 
 
     h2:not(:first-child) {
-      margin-top: 86px;
+      margin-top: $large;
     }
 
     a {

@@ -75,13 +75,13 @@ header {
   width: 100%;
   z-index: 100;
 
-  @media screen and (min-width: $mobile) {
+  @media screen and (min-width: $tablet) {
     text-align: right;
     position: fixed;
   }
 
   &.scrolled {
-    @media screen and (min-width: $mobile) {
+    @media screen and (min-width: $tablet) {
       background: $darkerGrey;
       padding: $small 0;
     }
@@ -91,23 +91,18 @@ header {
     background: $darkerGrey;
     padding: $small 0;
 
-    @media screen and (max-width: $mobile) {
+    @media screen and (max-width: $tablet) {
       position: static;
     }
 
-    .nav-link {
+    /*.nav-link {
       @media screen and (min-width: 487px) and (max-width: 767px) {
         margin-top: $micro;
       }
-    }
+    }*/
 
-    .github-btn {
-      @media screen and (max-width: 767px) {
-        display: none;
-      }
-    }
 
-    .utility-input {
+    /*.utility-input {
       @media screen and (max-width: 767px) {
         display: block;
         height: $small;
@@ -117,7 +112,7 @@ header {
       @media screen and (min-width: 487px) and (max-width: 767px) {
         margin-top: 32px;
       }
-    }
+    }*/
   }
 
   a {
@@ -125,46 +120,12 @@ header {
     display: inline-block;
     vertical-align: middle;
     -webkit-vertical-align: middle !important;
-    margin-left: $micro;
-
-    @media screen and (min-width: $mobile) {
-      margin-left: 4px;
-    }
-
-    @media screen and (min-width: $tablet) {
-      margin-left: $tiny;
-    }
-
-    &.nav-link:nth-child(4) {
-      margin-right: $tiny;
-    }
-
-    /*&.nav-link:not(:nth-child(2)):before {
-      content: '•';
-      padding-right: $tiny;
-      color: $green;
-
-      @media screen and (min-width: $mobile) {
-        padding-right: $micro;
-      }
-
-      @media screen and (min-width: $tablet) {
-        padding-right: $tiny;
-      }
-    }*/
+    margin-left: $tiny;
 
     &:hover {
       color: $green;
     }
 
-    &.github-btn {
-      margin-top: $tiny;
-      margin-left: $micro;
-
-      @media screen and (min-width: 688px) {
-        margin-top: 0;
-      }
-    }
   }
 
   img {
@@ -222,7 +183,7 @@ header {
     border-radius: 4px;
     background-color: rgba(255,255,255,0.1);
     color: white;
-    margin: 0 $micro 0 10px;
+    margin: 0 $micro 0 $tiny;
     padding-bottom: 9px;
     text-align: left;
     text-decoration: none;
@@ -256,10 +217,36 @@ header {
     margin: 0 auto $tiny auto;
     width: 100%;
 
-    @media screen and (min-width: $mobile) {
+    @media screen and (min-width: $tablet) {
       float: left;
       margin: -4px 0 -6px 0;
       width: initial;
+    }
+  }
+  .cta-header a {
+    /*display: none;*/
+    color: white;
+    text-transform: uppercase;
+    font-size: $tiny;
+    letter-spacing: 0.5px;
+    background-color: $blue;
+    background-image: linear-gradient(-180deg, #4A7FDD 0%, #3A69C7 100%);
+    box-shadow: 0 4px 12px 0 rgba(0,0,0,0.3), 0 1px 3px 0 rgba(0,0,0,0.6);
+    border-radius: $borderRadius;
+    padding: 10px 14px 8px 14px;
+    transition: .2s;
+
+    @media screen and (max-width: $mobile) {
+      margin-top: $tiny;
+    }
+
+    &:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px 0 rgba(0,0,0,0.5), 0 1px 3px 0 rgba(0,0,0,1);
+    }
+    &:active {
+      transform: scale(0.95);
+      box-shadow: none;
     }
   }
 }

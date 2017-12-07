@@ -17,12 +17,12 @@ productvideo:
 
 cta:
   primaryhook: "Getting started is simple and free."
-  primary: "Choose a template that’s pre-configured with a static site generator and deploys to a global CDN in one click."
+  primary: "Choose a template that’s pre-configured with a static site generator and deploys to a global CDN in one&nbsp;click."
   button: "[Get started](/docs/start-with-a-template/)"
 
 editors:
   hook: "A CMS that developers and content editors can&nbsp;agree&nbsp;on"
-  intro: "You get to implement modern front end tools to deliver a faster, safer, and more scalable site.<br />Editors get a friendly UI and intuitive workflow that meets their content management requirements."
+  intro: "You get to implement modern front end tools to deliver a faster, safer, and more scalable site. Editors get a friendly UI and intuitive workflow that meets their content management requirements."
   features:
     - feature: "Editor-friendly user interface"
       description: "The web-based app includes rich-text editing, real-time preview, and drag-and-drop media uploads."
@@ -30,7 +30,7 @@ editors:
     - feature: "Intuitive workflow for content teams"
       description: "Writers and editors can easily manage content from draft to review to publish across any number of custom content types."
       imgpath: "/img/hero-graphic.jpg"
-    - feature: "Instant access, without a GitHub account"
+    - feature: "Instant access, without a GitHub&nbsp;account"
       description: "With [Git Gateway](/docs/authentication-backends/#git-gateway-with-netlify-identity), you can add CMS access for any team member — even if they don’t have a GitHub account. "
       imgpath: "/img/hero-graphic.jpg"
 

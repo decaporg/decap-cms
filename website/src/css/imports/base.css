@@ -47,8 +47,12 @@ h3 {
   font-family: $roboto;
   font-size: 18px;
   font-weight: $semibold;
-  line-height: 40px;
+  line-height: 30px;
+  padding-bottom: $micro;
   margin: 0;
+}
+
+h3 > p {
 }
 
 p, ul {

@@ -15,18 +15,6 @@
     padding-top: calc($xl * 1.5);
   }
 
-  /*&:before {
-    background: url('/img/bow.svg') no-repeat bottom center;
-    background-size: contain;
-    bottom: -1px;
-    content: '';
-    height: $xl;
-    left: -$xl;
-    position: absolute;
-    right: -$xl;
-    width: calc(100% + ($xl * 2));
-  }*/
-
   &.landing {
     @media screen and (min-width: $tablet) {
       padding-bottom: $xxl;
@@ -36,7 +24,7 @@
   .hero-copy {
     margin: $medium auto $xl auto;
 
-    @media screen and (min-width: $tablet) {
+    @media screen and (min-width: $desktop) {
       text-align: center;
     }
   }
@@ -91,28 +79,9 @@
       margin-bottom: 0;
     }
 
-    &:before {
-      border: 1px solid white;
-      border-bottom: none;
-      border-radius: $largeBorderRadius $largeBorderRadius 0 0;
-      box-sizing: border-box;
-      content: '•••';
-      display: block;
-      font-size: $small;
-      height: $small;
-      line-height: 22px;
-      padding-left: 6px;
-      text-align: left;
-      width: 100%;
-    }
-
     img {
-      border: 1px solid white;
-      border-radius: 0 0 $largeBorderRadius $largeBorderRadius;
-      box-sizing: border-box;
-      overflow: hidden;
-      width: 100%;
-      height: auto;
+      border-radius: $largeBorderRadius;
+      box-shadow: 0 10px 30px 0 rgba(0,0,0,0.15), 0 3px 9px 0 rgba(0,0,0,0.30);
     }
   }
 

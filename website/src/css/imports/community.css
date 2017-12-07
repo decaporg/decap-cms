@@ -4,8 +4,11 @@
   padding: $xl 0 $large 0;
 
   .community-features {
-    @neat-span-columns 8;
+    @neat-span-columns 12;
 
+    @media screen and (min-width: $tablet) {
+      @neat-span-columns 8;
+    }
     @media screen and (min-width: $desktop) {
       @neat-span-columns 6;
     }
@@ -17,9 +20,12 @@
   }
 
   .contributors {
-    @neat-span-columns 10;
+    @neat-span-columns 12;
     margin-top: $small;
 
+    @media screen and (min-width: $tablet) {
+      @neat-span-columns 10;
+    }
     @media screen and (min-width: $desktop) {
       @neat-span-columns 5;
       float: right;
