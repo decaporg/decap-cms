@@ -26,6 +26,7 @@ import iconMarkdown from './markdown.svg';
 import iconMedia from './media.svg';
 import iconMediaAlt from './media-alt.svg';
 import iconNetlify from './netlify.svg';
+import iconNetlifyCms from './netlify-cms-logo.svg';
 import iconPage from './page.svg';
 import iconPages from './pages.svg';
 import iconPagesAlt from './pages-alt.svg';
@@ -66,6 +67,7 @@ const images = {
   'media': iconMedia,
   'media-alt': iconMediaAlt,
   'netlify': iconNetlify,
+  'netlify-cms': iconNetlifyCms,
   'page': iconPage,
   'pages': iconPages,
   'pages-alt': iconPagesAlt,

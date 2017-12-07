@@ -35,6 +35,7 @@ export default class AuthenticationPage extends React.Component {
 
     return (
       <section className="nc-githubAuthenticationPage-root">
+        <Icon className="nc-githubAuthenticationPage-logo" size="500px" type="netlify-cms"/>
         <Notifs CustomComponent={Toast} />
         {loginError && <p>{loginError}</p>}
         <button

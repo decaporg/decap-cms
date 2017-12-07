@@ -16,17 +16,17 @@ export default class AuthenticationPage extends React.Component {
   render() {
     const { inProgress } = this.props;
 
-    return (<section className="nc-gitGatewayAuthenticationPage-root">
-      <div className="nc-gitGatewayAuthenticationPage-card">
-        <Icon type="netlify" size="large"/>
+    return (
+      <section className="nc-githubAuthenticationPage-root">
+        <Icon className="nc-githubAuthenticationPage-logo" size="500px" type="netlify-cms"/>
         <button
-          className="nc-gitGatewayAuthenticationPage-button"
+          className="nc-githubAuthenticationPage-button"
           disabled={inProgress}
           onClick={this.handleLogin}
         >
           {inProgress ? "Logging in..." : "Login"}
         </button>
-      </div>
-    </section>);
+      </section>
+    );
   }
 }
