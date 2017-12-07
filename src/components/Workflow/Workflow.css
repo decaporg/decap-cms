@@ -17,6 +17,7 @@
 
   & span[role="button"] {
     @apply(--dropShadowDeep);
+    @apply(--buttonGray);
   }
 }
 

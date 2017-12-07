@@ -122,18 +122,12 @@
   }
 
   --button: {
-    color: var(--colorButtonText);
-    background-color: var(--colorButton);
     border: 0;
     border-radius: var(--borderRadius);
     cursor: pointer;
-    font-weight: 500;
-    color: var(--colorButtonText);
 
     &:focus,
     &:hover {
-      color: white;
-      background-color: #555a65;
       outline: none;
     }
   }
@@ -141,17 +135,35 @@
   --buttonDefault {
     height: 36px;
     line-height: 36px;
+    font-weight: 500;
     padding: 0 15px;
   }
 
   --buttonMedium {
     height: 27px;
     line-height: 27px;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    border-radius: 3px;
+    padding: 0 24px 0 14px;
   }
 
   --buttonSmall {
     height: 23px;
     line-height: 23px;
+  }
+
+  --buttonGray {
+    background-color: var(--colorButton);
+    color: var(--colorButtonText);
+
+    &:focus,
+    &:hover {
+      color: white;
+      background-color: #555a65;
+    }
   }
 
   --buttonGreen {
