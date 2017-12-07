@@ -127,10 +127,6 @@
     border: 0;
     border-radius: var(--borderRadius);
     cursor: pointer;
-
-    &:focus {
-      outline: none;
-    }
   }
 
   --buttonDefault {
@@ -139,12 +135,6 @@
 
     padding: 0 15px;
     color: var(--colorButtonText);
-
-    &:focus,
-    &:hover {
-      color: white;
-      background-color: #555a65;
-    }
   }
 
   --buttonMedium {

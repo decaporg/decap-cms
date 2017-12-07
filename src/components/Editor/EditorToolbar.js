@@ -18,6 +18,7 @@ export default class EditorToolbar extends React.Component {
     onDeleteUnpublishedChanges: PropTypes.func.isRequired,
     onChangeStatus: PropTypes.func.isRequired,
     onPublish: PropTypes.func.isRequired,
+    onPublishAndNew: PropTypes.func.isRequired,
     user: ImmutablePropTypes.map,
     hasChanged: PropTypes.bool,
     displayUrl: PropTypes.string,
@@ -99,6 +100,7 @@ export default class EditorToolbar extends React.Component {
       isPersisting,
       onChangeStatus,
       onPublish,
+      onPublishAndNew,
       currentStatus,
       isNewEntry,
     } = this.props;
@@ -141,7 +143,7 @@ export default class EditorToolbar extends React.Component {
           label={isPersisting ? 'Publishing...' : 'Publish'}
         >
           <DropdownItem label="Publish now" icon="arrow" iconDirection="right" onClick={onPublish}/>
-          <DropdownItem label="Publish and create new" icon="add" onClick={onPersistAndNew}/>
+          <DropdownItem label="Publish and create new" icon="add" onClick={onPublishAndNew}/>
         </Dropdown>
       ];
     }

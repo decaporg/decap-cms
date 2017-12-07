@@ -34,6 +34,12 @@ class EditorInterface extends Component {
     this.props.onPersist({ createNew });
   };
 
+  handleOnPublish = (opts = {}) => {
+    const { createNew = false } = opts;
+    this.controlPaneRef.validate();
+    this.props.onPublish({ createNew });
+  };
+
   handleTogglePreview = () => {
     const newPreviewVisible = !this.state.previewVisible;
     this.setState({ previewVisible: newPreviewVisible });
@@ -141,6 +147,7 @@ class EditorInterface extends Component {
           onChangeStatus={onChangeStatus}
           showDelete={showDelete}
           onPublish={onPublish}
+          onPublishAndNew={() => this.handleOnPublish({ createNew: true })}
           enableSave={enableSave}
           user={user}
           hasChanged={hasChanged}

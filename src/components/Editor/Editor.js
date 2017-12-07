@@ -187,7 +187,8 @@ class Editor extends React.Component {
     }
   };
 
-  handlePublishEntry = async () => {
+  handlePublishEntry = async (opts = {}) => {
+    const { createNew = false } = opts;
     const { publishUnpublishedEntry, collection, slug, currentStatus, loadEntry } = this.props;
     if (currentStatus !== status.last()) {
       window.alert('Please update status to "Ready" before publishing.');
@@ -196,7 +197,13 @@ class Editor extends React.Component {
       return;
     }
     await publishUnpublishedEntry(collection.get('name'), slug);
-    loadEntry(collection, slug);
+
+    if (createNew) {
+      navigateToNewEntry(collection.get('name'));
+    }
+    else {
+      loadEntry(collection, slug);
+    }
   };
 
   handleDeleteEntry = () => {
