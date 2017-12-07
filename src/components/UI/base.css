@@ -220,6 +220,10 @@ body {
   background-color: var(--colorBackground);
   color: var(--colorText);
   margin: 0;
+
+  font-smooth: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 ul, ol {
@@ -236,18 +240,11 @@ h1, h2, h3, h4, h5, h6, p {
 
 h1, h2, h3, h4, h5, h6 {
   font-weight: 500;
-  letter-spacing: 0.4px;
-
-  font-smooth: auto;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 h1 {
-  margin: 30px auto 25px;
-  padding-bottom: 15px;
   font-size: 24px;
-  font-weight: 800;
+  letter-spacing: 0.4px;
   color: var(--colorTextLead);
 }
 
