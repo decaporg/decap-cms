@@ -58,7 +58,7 @@ h3 > p {
 p, ul {
   font-size: $tiny;
   line-height: 26px;
-  margin: 0;
+  margin-top: 0;
 }
 
 a {
