@@ -15,6 +15,8 @@ import {
   closeMediaLibrary as closeMediaLibraryAction,
 } from 'Actions/mediaLibrary';
 import MediaLibraryFooter from './MediaLibraryFooter';
+import { Icon } from 'UI';
+
 
 /**
  * Extensions used to determine which files to show when the media library is
@@ -247,17 +249,20 @@ class MediaLibrary extends React.Component {
         <div>
           <h1 className="nc-mediaLibrary-title">
             {privateUpload ? 'Private ' : null}
-            {forImage ? 'Images' : 'Assets'}
+            {forImage ? 'Images' : 'Media assets'}
           </h1>
-          <input
-            className="nc-mediaLibrary-searchInput"
-            value={query}
-            onChange={this.handleSearchChange}
-            onKeyDown={event => this.handleSearchKeyDown(event)}
-            placeholder="Search..."
-            disabled={!dynamicSearchActive && !hasFilteredFiles}
-            autoFocus
-          />
+          <div className="nc-mediaLibrary-search">
+            <Icon type="search" size="small"/>
+            <input
+              className=""
+              value={query}
+              onChange={this.handleSearchChange}
+              onKeyDown={event => this.handleSearchKeyDown(event)}
+              placeholder="Search..."
+              disabled={!dynamicSearchActive && !hasFilteredFiles}
+            />
+          </div>
+
         </div>
         {
           shouldShowEmptyMessage
