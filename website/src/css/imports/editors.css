@@ -1,6 +1,6 @@
 .editors {
   @neat-row;
-  margin-top: $xl;
+  margin-top: calc($large * 1.5);
   margin-bottom: $xxl;
 
   @media screen and (min-width: $desktop) {
@@ -28,6 +28,7 @@
     @media screen and (max-width: $desktop) {
       justify-content: flex-start;
       flex-wrap: wrap;
+      margin-top: $small;
     }
 
     .feature {

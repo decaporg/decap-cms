@@ -16,6 +16,7 @@
     }
 
     @media screen and (min-width: $desktop) {
+      padding: $small $medium $small $medium;
       display: flex;
       align-items: center;
       justify-content: space-between;
