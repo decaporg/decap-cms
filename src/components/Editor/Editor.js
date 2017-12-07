@@ -189,13 +189,20 @@ class Editor extends React.Component {
 
   handlePublishEntry = async (opts = {}) => {
     const { createNew = false } = opts;
-    const { publishUnpublishedEntry, collection, slug, currentStatus, loadEntry } = this.props;
+    const { publishUnpublishedEntry, entryDraft, collection, slug, currentStatus, loadEntry } = this.props;
     if (currentStatus !== status.last()) {
       window.alert('Please update status to "Ready" before publishing.');
       return;
     } else if (!window.confirm('Are you sure you want to publish this entry?')) {
       return;
+    } else if (entryDraft.get('hasChanged')) {
+      if (window.confirm('Your unsaved changes will be saved before publishing. Do you still want to publish?')) {
+        await persistEntry(collection);
+      } else {
+        return;
+      }
     }
+
     await publishUnpublishedEntry(collection.get('name'), slug);
 
     if (createNew) {
@@ -207,8 +214,11 @@ class Editor extends React.Component {
   };
 
   handleDeleteEntry = () => {
-    const { newEntry, collection, deleteEntry, slug } = this.props;
-    if (!window.confirm('Are you sure you want to delete this entry?')) {
+    const { entryDraft, newEntry, collection, deleteEntry, slug } = this.props;
+    console.log(entryDraft.toJS());
+    if (entryDraft.get('hasChanged') && !window.confirm('This will delete your published entry, as well as your unsaved changes from the current session. Do you still want to delete?')) {
+      return;
+    } else if (!window.confirm('This will completely delete this published entry. Do you still want to delete?')) {
       return;
     }
     if (newEntry) {
@@ -222,8 +232,10 @@ class Editor extends React.Component {
   };
 
   handleDeleteUnpublishedChanges = async () => {
-    const { collection, slug, deleteUnpublishedEntry, loadEntry, isModification } = this.props;
-    if (!window.confirm('All unpublished changes to this entry will be deleted. Are you sure?')) {
+    const { entryDraft, collection, slug, deleteUnpublishedEntry, loadEntry, isModification } = this.props;
+    if (entryDraft.get('hasChanged') && !window.confirm('This will delete all unpublished changes to this entry, as well as your unsaved changes from the current session. Do you still want to delete?')) {
+      return;
+    } else if (!window.confirm('All unpublished changes to this entry will be deleted. Do you still want to delete?')) {
       return;
     }
     await deleteUnpublishedEntry(collection.get('name'), slug);

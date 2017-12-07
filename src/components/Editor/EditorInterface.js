@@ -140,6 +140,9 @@ class EditorInterface extends Component {
       <div className="nc-entryEditor-containerOuter">
         <EditorToolbar
           isPersisting={entry.get('isPersisting')}
+          isPublishing={entry.get('isPublishing')}
+          isUpdatingStatus={entry.get('isUpdatingStatus')}
+          isDeleting={entry.get('isDeleting')}
           onPersist={this.handleOnPersist}
           onPersistAndNew={() => this.handleOnPersist({ createNew: true })}
           onDelete={onDelete}

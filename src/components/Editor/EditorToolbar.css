@@ -49,6 +49,10 @@
 
 .nc-entryEditor-toolbar-dropdown {
   margin: var(--editorToolbarButtonMargin);
+
+  & .nc-icon {
+    color: var(--colorTeal);
+  }
 }
 
 .nc-entryEditor-toolbar-publishButton {

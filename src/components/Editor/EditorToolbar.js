@@ -10,6 +10,9 @@ import { stripProtocol } from 'Lib/urlHelper';
 export default class EditorToolbar extends React.Component {
   static propTypes = {
     isPersisting: PropTypes.bool,
+    isPublishing: PropTypes.bool,
+    isUpdatingStatus: PropTypes.bool,
+    isDeleting: PropTypes.bool,
     onPersist: PropTypes.func.isRequired,
     onPersistAndNew: PropTypes.func.isRequired,
     enableSave: PropTypes.bool.isRequired,
@@ -68,6 +71,8 @@ export default class EditorToolbar extends React.Component {
       onDeleteUnpublishedChanges,
       hasChanged,
       hasUnpublishedChanges,
+      isPersisting,
+      isDeleting,
       isNewEntry,
       isModification,
     } = this.props;
@@ -81,14 +86,14 @@ export default class EditorToolbar extends React.Component {
           className="nc-entryEditor-toolbar-saveButton"
           onClick={() => hasChanged && onPersist()}
         >
-          Save
+          {isPersisting ? 'Saving...' : 'Save'}
         </button>,
         isNewEntry || !deleteLabel ? null
             : <button
                 className="nc-entryEditor-toolbar-deleteButton"
                 onClick={hasUnpublishedChanges ? onDeleteUnpublishedChanges : onDelete}
               >
-                {deleteLabel}
+                {isDeleting ? 'Deleting...' : deleteLabel}
               </button>,
     ];
   };
@@ -97,7 +102,8 @@ export default class EditorToolbar extends React.Component {
     const {
       onPersist,
       onPersistAndNew,
-      isPersisting,
+      isUpdatingStatus,
+      isPublishing,
       onChangeStatus,
       onPublish,
       onPublishAndNew,
@@ -111,7 +117,7 @@ export default class EditorToolbar extends React.Component {
           classNameButton="nc-entryEditor-toolbar-statusButton"
           dropdownTopOverlap="40px"
           dropdownWidth="120px"
-          label={isPersisting ? 'Updating...' : 'Set status'}
+          label={isUpdatingStatus ? 'Updating...' : 'Set status'}
         >
           <DropdownItem
             className={c('nc-entryEditor-toolbar-statusMenu-statusDraft', {
@@ -140,7 +146,7 @@ export default class EditorToolbar extends React.Component {
           classNameButton="nc-entryEditor-toolbar-publishButton"
           dropdownTopOverlap="40px"
           dropdownWidth="150px"
-          label={isPersisting ? 'Publishing...' : 'Publish'}
+          label={isPublishing ? 'Publishing...' : 'Publish'}
         >
           <DropdownItem label="Publish now" icon="arrow" iconDirection="right" onClick={onPublish}/>
           <DropdownItem label="Publish and create new" icon="add" onClick={onPublishAndNew}/>

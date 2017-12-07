@@ -7578,10 +7578,6 @@ readline2@^1.0.1:
     is-fullwidth-code-point "^1.0.0"
     mute-stream "0.0.5"
 
-reboot.css@^1.0.0:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/reboot.css/-/reboot.css-1.0.1.tgz#371c3782fbf93fb90c7e1d71eb443cbfdf609ccb"
-
 recast@^0.10.1:
   version "0.10.43"
   resolved "https://registry.yarnpkg.com/recast/-/recast-0.10.43.tgz#b95d50f6d60761a5f6252e15d80678168491ce7f"
