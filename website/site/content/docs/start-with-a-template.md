@@ -12,10 +12,6 @@ Netlify CMS can be [added to an existing site](https://www.netlifycms.org/docs/a
         <h4 id="hugo-site-starter">Hugo Site Starter</h4>
         <p><a href="https://app.netlify.com/start/deploy?repository=https://github.com/netlify-templates/one-click-hugo-cms&amp;stack=cms"><img src="https://www.netlify.com/img/deploy/button.svg" alt="Deploy to Netlify" /></a></p>
     </div>
-    <div>
-        <h4 id="gatsby-site-starter">Gatsby Site Starter</h4>
-        <p><a href="https://app.netlify.com/start/deploy?repository=https://github.com/AustinGreen/gatsby-starter-netlify-cms&amp;stack=cms"><img src="https://www.netlify.com/img/deploy/button.svg" alt="Deploy to Netlify" /></a></p>
-    </div>
 </div>
 
 After clicking one of those buttons, you’ll authenticate with GitHub and choose a repository name. Netlify will then automatically create a repository in your GitHub account with a copy of the files from the template. Next, it will build and deploy the new site on Netlify, bringing you to the site dashboard when the build is complete.
