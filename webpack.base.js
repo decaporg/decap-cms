@@ -1,46 +1,9 @@
 /* eslint global-require: 0 */
 
 const webpack = require('webpack');
-const path = require('path');
-const { partial } = require('lodash');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
-const resolveAlias = partial(path.resolve, __dirname);
-const componentsDir = 'src/components';
-
 module.exports = {
-  /**
-   * Use aliases to avoid relative path import hell.
-   */
-  resolve: {
-    alias: {
-      /**
-       * Components
-       */
-      App: resolveAlias(`${componentsDir}/App/`),
-      Collection: resolveAlias(`${componentsDir}/Collection/`),
-      Editor: resolveAlias(`${componentsDir}/Editor/`),
-      EditorWidgets: resolveAlias(`${componentsDir}/EditorWidgets/`),
-      MarkdownPlugins: resolveAlias(`${componentsDir}/MarkdownPlugins/`),
-      MediaLibrary: resolveAlias(`${componentsDir}/MediaLibrary/`),
-      UI: resolveAlias(`${componentsDir}/UI/`),
-      Workflow: resolveAlias(`${componentsDir}/Workflow/`),
-
-      /**
-       * Top level src directories
-       */
-      Actions: resolveAlias('src/actions/'),
-      Backends: resolveAlias('src/backends/'),
-      Constants: resolveAlias('src/constants/'),
-      Formats: resolveAlias('src/formats/'),
-      Integrations: resolveAlias('src/integrations/'),
-      Lib: resolveAlias('src/lib/'),
-      Reducers: resolveAlias('src/reducers/'),
-      Redux: resolveAlias('src/redux/'),
-      Routing: resolveAlias('src/routing/'),
-      ValueObjects: resolveAlias('src/valueObjects/'),
-    },
-  },
   module: {
     rules: [
       {
