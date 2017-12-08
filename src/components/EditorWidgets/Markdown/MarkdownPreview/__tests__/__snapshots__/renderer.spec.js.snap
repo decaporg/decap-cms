@@ -1,13 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Markdown Preview renderer HTML rendering should render HTML 1`] = `"<div style=\\"margin:15px 2px\\"><p>Paragraph with <em>inline</em> element</p></div>"`;
+exports[`Markdown Preview renderer HTML rendering should render HTML 1`] = `"<div class=\\"nc-widgetPreview\\"><p>Paragraph with <em>inline</em> element</p></div>"`;
 
-exports[`Markdown Preview renderer Markdown rendering Code should render code 1`] = `"<div style=\\"margin:15px 2px\\"><p>Use the <code>printf()</code> function.</p></div>"`;
+exports[`Markdown Preview renderer Markdown rendering Code should render code 1`] = `"<div class=\\"nc-widgetPreview\\"><p>Use the <code>printf()</code> function.</p></div>"`;
 
-exports[`Markdown Preview renderer Markdown rendering Code should render code 2 1`] = `"<div style=\\"margin:15px 2px\\"><p><code>There is a literal backtick (\`) here.</code></p></div>"`;
+exports[`Markdown Preview renderer Markdown rendering Code should render code 2 1`] = `"<div class=\\"nc-widgetPreview\\"><p><code>There is a literal backtick (\`) here.</code></p></div>"`;
 
 exports[`Markdown Preview renderer Markdown rendering General should render markdown 1`] = `
-"<div style=\\"margin:15px 2px\\"><h1>H1</h1>
+"<div class=\\"nc-widgetPreview\\"><h1>H1</h1>
 <p>Text with <strong>bold</strong> &#x26; <em>em</em> elements</p>
 <h2>H2</h2>
 <ul>
@@ -28,7 +28,7 @@ exports[`Markdown Preview renderer Markdown rendering General should render mark
 `;
 
 exports[`Markdown Preview renderer Markdown rendering HTML should render HTML as is when using Markdown 1`] = `
-"<div style=\\"margin:15px 2px\\"><h1>Title</h1>
+"<div class=\\"nc-widgetPreview\\"><h1>Title</h1>
 <form action=\\"test\\">
   <label for=\\"input\\">
     <input type=\\"checkbox\\" checked=\\"checked\\" id=\\"input\\"/> My label
@@ -41,22 +41,22 @@ exports[`Markdown Preview renderer Markdown rendering HTML should render HTML as
 <h1 style=\\"display: block; border: 10px solid #f00; width: 100%\\">Test</h1></div>"
 `;
 
-exports[`Markdown Preview renderer Markdown rendering Headings should render Heading 1 1`] = `"<div style=\\"margin:15px 2px\\"><h1>Title</h1></div>"`;
+exports[`Markdown Preview renderer Markdown rendering Headings should render Heading 1 1`] = `"<div class=\\"nc-widgetPreview\\"><h1>Title</h1></div>"`;
 
-exports[`Markdown Preview renderer Markdown rendering Headings should render Heading 2 1`] = `"<div style=\\"margin:15px 2px\\"><h2>Title</h2></div>"`;
+exports[`Markdown Preview renderer Markdown rendering Headings should render Heading 2 1`] = `"<div class=\\"nc-widgetPreview\\"><h2>Title</h2></div>"`;
 
-exports[`Markdown Preview renderer Markdown rendering Headings should render Heading 3 1`] = `"<div style=\\"margin:15px 2px\\"><h3>Title</h3></div>"`;
+exports[`Markdown Preview renderer Markdown rendering Headings should render Heading 3 1`] = `"<div class=\\"nc-widgetPreview\\"><h3>Title</h3></div>"`;
 
-exports[`Markdown Preview renderer Markdown rendering Headings should render Heading 4 1`] = `"<div style=\\"margin:15px 2px\\"><h4>Title</h4></div>"`;
+exports[`Markdown Preview renderer Markdown rendering Headings should render Heading 4 1`] = `"<div class=\\"nc-widgetPreview\\"><h4>Title</h4></div>"`;
 
-exports[`Markdown Preview renderer Markdown rendering Headings should render Heading 5 1`] = `"<div style=\\"margin:15px 2px\\"><h5>Title</h5></div>"`;
+exports[`Markdown Preview renderer Markdown rendering Headings should render Heading 5 1`] = `"<div class=\\"nc-widgetPreview\\"><h5>Title</h5></div>"`;
 
-exports[`Markdown Preview renderer Markdown rendering Headings should render Heading 6 1`] = `"<div style=\\"margin:15px 2px\\"><h6>Title</h6></div>"`;
+exports[`Markdown Preview renderer Markdown rendering Headings should render Heading 6 1`] = `"<div class=\\"nc-widgetPreview\\"><h6>Title</h6></div>"`;
 
-exports[`Markdown Preview renderer Markdown rendering Links should render links 1`] = `"<div style=\\"margin:15px 2px\\"><p>I get 10 times more traffic from <a href=\\"http://google.com/\\" title=\\"Google\\">Google</a> than from <a href=\\"http://search.yahoo.com/\\" title=\\"Yahoo Search\\">Yahoo</a> or <a href=\\"http://search.msn.com/\\" title=\\"MSN Search\\">MSN</a>.</p></div>"`;
+exports[`Markdown Preview renderer Markdown rendering Links should render links 1`] = `"<div class=\\"nc-widgetPreview\\"><p>I get 10 times more traffic from <a href=\\"http://google.com/\\" title=\\"Google\\">Google</a> than from <a href=\\"http://search.yahoo.com/\\" title=\\"Yahoo Search\\">Yahoo</a> or <a href=\\"http://search.msn.com/\\" title=\\"MSN Search\\">MSN</a>.</p></div>"`;
 
 exports[`Markdown Preview renderer Markdown rendering Lists should render lists 1`] = `
-"<div style=\\"margin:15px 2px\\"><ol>
+"<div class=\\"nc-widgetPreview\\"><ol>
 <li>ol item 1</li>
 <li>
 <p>ol item 2</p>
