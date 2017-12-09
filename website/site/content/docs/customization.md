@@ -2,7 +2,6 @@
 title: Custom Previews
 position: 50
 ---
-
 # Customizing the Preview Pane
 
 The NetlifyCMS exposes a `window.CMS` global object that you can use to register custom widgets, previews and editor plugins. The available customization methods are:
@@ -29,13 +28,15 @@ CMS.registerPreviewStyle(file);
 * **file:** css file path
 
 **Example:**
+
 ```html
 // index.html
-<script src="https://unpkg.com/netlify-cms@^0.7.0/dist/cms.js"></script>
+<script src="https://unpkg.com/netlify-cms@^1.0.0/dist/cms.js"></script>
 <script>
   CMS.registerPreviewStyle("/example.css");
 </script>
 ```
+
 ```css
 /* example.css */
 
@@ -49,10 +50,7 @@ body {
 body {
   padding: 20px;
 }
-
-
 ```
-
 
 ## `registerPreviewTemplate`
 
@@ -68,11 +66,9 @@ Registers a template for a collection.
   * widgetFor: Returns the appropriate widget preview component for a given field.
   * [widgetsFor](#lists-and-objects): Returns an array of objects with widgets and associated field data. For use with list and object type entries.
   * getAsset: Returns the correct filePath or in-memory preview for uploaded images.
-    
     **Example:**
-    
     ```html
-    <script src="https://unpkg.com/netlify-cms@^0.7.0/dist/cms.js"></script>
+    <script src="https://unpkg.com/netlify-cms@^1.0.0/dist/cms.js"></script>
     <script>
     var PostPreview = createClass({
       render: function() {
@@ -86,23 +82,19 @@ Registers a template for a collection.
         );
       }
     });
-    
+
     CMS.registerPreviewTemplate("posts", PostPreview);
     </script>
     ```
-    
     ### Lists and Objects
     The API for accessing the individual fields of list- and object-type entries is similar to the API
     for accessing fields in standard entries, but there are a few key differences. Access to these
     nested fields is facilitated through the `widgetsFor` function, which is passed to the preview
     template component during render.
-    
     **Note**: as is often the case with the NetlifyCMS API, arrays and objects are created with
     Immutable.js. If some of the methods that we use are unfamiliar, such as `getIn`, check out
     [their docs](https://facebook.github.io/immutable-js/docs/#/) to get a better understanding.
-    
     **List Example:**
-    
     ```html
     <script>
     var AuthorsPreview = createClass({
@@ -121,13 +113,13 @@ Registers a template for a collection.
       // }]
       //
       // Templating would look something like this:
-    
+
       render: function() {
         return h('div', {},
-    
+
           // This is a static header that would only be rendered once for the entire list
           h('h1', {}, 'Authors'),
-    
+
           // Here we provide a simple mapping function that will be applied to each
           // object in the array of authors
           this.props.widgetsFor('authors').map(function(author, index) {
@@ -140,13 +132,11 @@ Registers a template for a collection.
         );
       }
     });
-    
+
     CMS.registerPreviewTemplate("authors", AuthorsPreview);
     </script>
     ```
-    
     **Object Example:**
-    
     ```html
     <script>
     var GeneralPreview = createClass({
@@ -162,35 +152,32 @@ Registers a template for a collection.
         var entry = this.props.entry;
         var title = entry.getIn(['data', 'site_title']);
         var posts = entry.getIn(['data', 'posts']);
-    
+
         return h('div', {},
           h('h1', {}, title),
           h('dl', {},
             h('dt', {}, 'Posts on Frontpage'),
             h('dd', {}, this.props.widgetsFor('posts').getIn(['widgets', 'front_limit']) || 0),
-    
+
             h('dt', {}, 'Default Author'),
             h('dd', {}, this.props.widgetsFor('posts').getIn(['data', 'author']) || 'None'),
           )
         );
       }
     });
-    
+
     CMS.registerPreviewTemplate("general", GeneralPreview);
     </script>
     ```
-    
     ### Accessing Metadata
     Preview Components also receive an additional prop: `fieldsMetaData`. It contains aditional information (besides the plain plain textual value of each field) that can be useful for preview purposes. 
-    
     For example, the Relation widget passes the whole selected relation data in `fieldsMetaData`.
-    
     ```js
     export default class ArticlePreview extends React.Component {
       render() {
         const {entry, fieldsMetaData} = this.props;
         const author = fieldsMetaData.getIn(['authors', data.author]);
-    
+
         return <article><h2>{ entry.getIn(['data', 'title']) }</h2>
           {author &&<AuthorBio author={author.toJS()}/>}
         </article>
