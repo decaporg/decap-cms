@@ -79,7 +79,7 @@ export function persistMedia(file, opts = {}) {
     const backend = currentBackend(state.config);
     const integration = selectIntegration(state, null, 'assetStore');
     const files = state.mediaLibrary.get('files');
-    const existingFile = files.find(existingFile => existingFile.name === file.name);
+    const existingFile = files.find(existingFile => existingFile.name.toLowerCase() === file.name.toLowerCase());
 
     /**
      * Check for existing files of the same name before persisting. If no asset
@@ -88,7 +88,7 @@ export function persistMedia(file, opts = {}) {
      * may not be unique, so we forego this check.
      */
     if (!integration && existingFile) {
-      if (!window.confirm(`${file.name} already exists. Do you want to replace it?`)) {
+      if (!window.confirm(`${existingFile.name} already exists. Do you want to replace it?`)) {
         return;
       } else {
         await dispatch(deleteMedia(existingFile, { privateUpload }));
