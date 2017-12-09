@@ -2,24 +2,22 @@
 title: Add to Your Site
 position: 20
 ---
-
 # Add Netlify CMS to Your Site
 
 Netlify CMS is adaptable to a wide variety of projects. The only inflexible requirement is that your site content must be written in markdown, JSON, YAML, or TOML files, stored in a repo on [GitHub](https://github.com/). (If you're partial to another Git hosting service, check out the PRs in progress for [GitLab](https://github.com/netlify/netlify-cms/pull/517) and [Bitbucket](https://github.com/netlify/netlify-cms/pull/525) support.)
 
 This tutorial will guide you through the steps for adding Netlify CMS to a site that's built with a common [static site generator](https://www.staticgen.com/), like Jekyll, Hugo, Hexo, or Gatsby. Alternatively, you can [start from a template](https://www.netlifycms.org/docs/start-with-a-template) or dive right into to [configuration options](https://www.netlifycms.org/docs/configuration-options).
 
-
 ## App File Structure
 
 All Netlify CMS files are contained in a static `admin` folder, stored at the root of your published site. Where you store this folder in the source files depends on your static site generator. Here's the the static file location for a few of the most popular static site generators:
 
-These generators ... | store static files in
---- | ---
-Jekyll, GitBook | `/` (project root)
-Hugo, Gatsby | `/static`
-Hexo, Middleman | `/source`
-Spike | `/views`
+| These generators ... | store static files in |
+| -------------------- | --------------------- |
+| Jekyll, GitBook      | `/` (project root)    |
+| Hugo, Gatsby         | `/static`             |
+| Hexo, Middleman      | `/source`             |
+| Spike                | `/views`              |
 
 If your generator isn't listed here, you can check its documentation, or as a shortcut, look in your project for a `css` or `images` folder. The contents of folders like that are usually processed as static files, so it's likely you can store your `admin` folder next to those. (When you've found the location, feel free to add it to these docs by [filing a pull request](https://github.com/netlify/netlify-cms/blob/master/CONTRIBUTING.md)!)
 
@@ -33,7 +31,7 @@ admin
 
 The first file, `admin/index.html`, is the entry point for the Netlify CMS admin interface. This means that users can navigate to `yoursite.com/admin` to access it. On the code side, it's a basic HTML starter page that loads the necessary CSS and JavaScript files. In this example, we pull those files from a public CDN:
 
-``` html
+```html
 <!doctype html>
 <html>
 <head>
@@ -42,28 +40,27 @@ The first file, `admin/index.html`, is the entry point for the Netlify CMS admin
   <title>Content Manager</title>
 
   <!-- Include the styles for the Netlify CMS UI, after your own styles -->
-  <link rel="stylesheet" href="https://unpkg.com/netlify-cms@^0.7.0/dist/cms.css" />
+  <link rel="stylesheet" href="https://unpkg.com/netlify-cms@^1.0.0/dist/cms.css" />
 
 </head>
 <body>
   <!-- Include the script that builds the page and powers Netlify CMS -->
-  <script src="https://unpkg.com/netlify-cms@^0.7.0/dist/cms.js"></script>
+  <script src="https://unpkg.com/netlify-cms@^1.0.0/dist/cms.js"></script>
 </body>
 </html>
 ```
 
 The second file, `admin/config.yml`, is the heart of your Netlify CMS installation, and a bit more complex. The next section covers the details.
 
-
 ## Configuration
 
 Configuration will be different for every site, so we'll break it down into parts.  All code snippets in this section will be added to your `admin/config.yml` file.
 
-
 ### Backend
+
 Because we're using GitHub and Netlify for our hosting and authentication, backend configuration is fairly strightforward. You can start your `config.yml` file with these lines:
 
-``` yaml
+```yaml
 backend:
   name: git-gateway
   branch: master # Branch to update (optional; defaults to master)
@@ -72,16 +69,18 @@ backend:
 These lines specify your backend protocol and your publication branch. Git Gateway is an open source API that acts as a proxy between authenticated users of your site and your site repo. (We'll get to the details of that in the [Authentication section](#authentication) below.) If you leave out the `branch` declaration, it will default to `master`.
 
 ### Editorial Workflow
+
 By default, saving a post in the CMS interface will push a commit directly to the publication branch specified in `backend`. However, you also have the option to enable the [Editorial Workflow](https://www.netlifycms.org/docs/configuration-options/#publish-mode), which adds an interface for drafting, reviewing, and approving posts. To do this, add the following line to your `config.yml`:
 
-``` yaml
+```yaml
 publish_mode: editorial_workflow
 ```
 
 ### Media and Public Folders
+
 Netlify CMS allows users to upload images directly within the editor. For this to work, the CMS needs to know where to save them. If you already have an `images` folder in your project, you could use its path, possibly creating an `uploads` sub-folder, for example:
 
-``` yaml
+```yaml
 media_folder: "images/uploads" # Media files will be stored in the repo under images/uploads
 ```
 
@@ -89,21 +88,22 @@ If you're creating a new folder for uploaded media, you'll need to know where yo
 
 Note that the`media_folder` file path is relative to the project root, so the example above would work for Jekyll, GitBook, or any other generator that stores static files at the project root. However, it would not work for Hugo, Hexo, Middleman or others that store static files in a subfolder. Here's an example that could work for a Hugo site:
 
-``` yaml
+```yaml
 media_folder: "static/images/uploads" # Media files will be stored in the repo under static/images/uploads
 public_folder: "/images/uploads" # The src attribute for uploaded media will begin with /images/uploads
 ```
 
 The configuration above adds a new setting, `public_folder`. While `media_folder` specifies where uploaded files will be saved in the repo, `public_folder` indicates where they can be found in the published site. This path is used in image `src` attributes and is relative to the file where it's called. For this reason, we usually start the path at the site root, using the opening `/`.
 
-*If `public_folder` is not set, Netlify CMS will default to the same value as `media_folder`, adding an opening `/` if one is not included.*
+_If `public_folder` is not set, Netlify CMS will default to the same value as `media_folder`, adding an opening `/` if one is not included._
 
 ### Collections
+
 Collections define the structure for the different content types on your static site. Since every site is different, the `collections` settings will be very different from one site to the next.
 
 Let's say your site has a blog, with the posts stored in `_posts/blog`, and files saved in a date-title format, like `1999-12-31-lets-party.md`. Each post begins with settings in yaml-formatted front matter, like so:
 
-``` yaml
+```yaml
 ---
 layout: blog
 title: "Let's Party"
@@ -117,7 +117,7 @@ This is the post body, where I write about our last chance to party before the Y
 
 Given this example, our `collections` settings would look like this:
 
-``` yaml
+```yaml
 collections:
   - name: "blog" # Used in routes, e.g., /admin/collections/blog
     label: "Blog" # Used in the UI
@@ -134,6 +134,7 @@ collections:
 ```
 
 Let's break that down:
+
 <table>
   <tr>
     <td><code>name</code></td>
@@ -175,9 +176,10 @@ As described above, the `widget` property specifies a built-in or custom UI widg
 Based on this example, you can go through the post types in your site and add the appropriate settings to your `config.yml` file. Each post type should be listed as a separate node under the `collections` field.
 
 ### Filter
+
 The entries for any collection can be filtered based on the value of a single field. The example collection below would only show post entries with the value "en" in the language field.
 
-``` yaml
+```yaml
 collections:
   - name: "posts"
     label: "Post"
@@ -189,23 +191,25 @@ collections:
       - {label: "Language", name: "language"}
 ```
 
-
 ## Authentication
 
 Now that you have your Netlify CMS files in place and configured, all that's left is to enable authentication. There are [many ways to do this](https://www.netlifycms.org/docs/authentication-backends) (with or without deploying to Netlify), but this example uses Netlify because it's one of the quickest ways to get started.
 
 ### Setup on Netlify
+
 Netlify offers a built-in authentication service called Identity. In order to use it, you'll need to connect your site repo with Netlify. Netlify has published a general [Step-by-Step Guide](https://www.netlify.com/blog/2016/10/27/a-step-by-step-guide-deploying-a-static-site-or-single-page-app/) for this, along with detailed guides for many popular static site generators, including [Jekyll](https://www.netlify.com/blog/2015/10/28/a-step-by-step-guide-jekyll-3.0-on-netlify/), [Hugo](https://www.netlify.com/blog/2016/09/21/a-step-by-step-guide-victor-hugo-on-netlify/), [Hexo](https://www.netlify.com/blog/2015/10/26/a-step-by-step-guide-hexo-on-netlify/), [Middleman](https://www.netlify.com/blog/2015/10/01/a-step-by-step-guide-middleman-on-netlify/), [Gatsby](https://www.netlify.com/blog/2016/02/24/a-step-by-step-guide-gatsby-on-netlify/) and more.
 
 ### Enable Identity and Git Gateway
+
 Netlify's Identity and Git Gateway services allow you to manage CMS admin users for your site without requiring them to have GitHub accounts or commit access on your repo. From your site dashboard on Netlify:
 
- 1. Go to **Settings > Identity**, and select **Enable Identity service**.
- 2. Under **Registration preferences**, select **Open** or **Invite only**. In most cases, you'll want only invited users to access your CMS, but if you're just experimenting, you can leave it open for convenience.
- 3. If you'd like to allow one-click login with services like Google and GitHub, check the boxes next to the services you'd like to use, under **External providers**.
- 4. Scroll down to **Services > Git Gateway**, and click **Enable Git Gateway**. This will authenticate with GitHub and generate a GitHub API access token. In this case, we're leaving the **Roles** field blank, which means any logged in user may access the CMS. For information on changing this, check the [Netlify Identity documentation](https://www.netlify.com/docs/identity/).
+1. Go to **Settings > Identity**, and select **Enable Identity service**.
+2. Under **Registration preferences**, select **Open** or **Invite only**. In most cases, you'll want only invited users to access your CMS, but if you're just experimenting, you can leave it open for convenience.
+3. If you'd like to allow one-click login with services like Google and GitHub, check the boxes next to the services you'd like to use, under **External providers**.
+4. Scroll down to **Services > Git Gateway**, and click **Enable Git Gateway**. This will authenticate with GitHub and generate a GitHub API access token. In this case, we're leaving the **Roles** field blank, which means any logged in user may access the CMS. For information on changing this, check the [Netlify Identity documentation](https://www.netlify.com/docs/identity/).
 
 ### Add the Netlify Identity Widget
+
 With the backend set to handle authentication, now you need a frontend interface to connect to it. The open source Netlify Identity Widget is a drop-in widget made for just this purpose. To include the widget in your site, you'll need to add the following script tag in two places:
 
 ```html
@@ -229,8 +233,8 @@ When a user logs in with the Netlify Identity widget, they will be directed to t
   }
 </script>
 ```
-Note: This example script requires modern JavaScript and will not work on IE11. For legacy browser support, use function expressions (`function () {}`) in place of the arrow functions (`() => {}`), or use a transpiler like [Babel](https://babeljs.io/).
 
+Note: This example script requires modern JavaScript and will not work on IE11. For legacy browser support, use function expressions (`function () {}`) in place of the arrow functions (`() => {}`), or use a transpiler like [Babel](https://babeljs.io/).
 
 ## Accessing the CMS
 
