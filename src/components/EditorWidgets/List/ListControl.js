@@ -23,7 +23,7 @@ function valueToString(value) {
 
 const SortableListItem = SortableElement(ListItem);
 
-const TopBar = ({ onAdd, listLabel, collapsed, onCollapseToggle, onCollapseAllToggle, isAllCollapsed, itemsCount }) => (
+const TopBar = ({ onAdd, listLabel, collapsed, onCollapseToggle, onCollapseAllToggle, allItemsCollapsed, itemsCount }) => (
   <div className="nc-listControl-topBar">
     <div className="nc-listControl-listCollapseToggle" onClick={onCollapseToggle}>
       <Icon type="caret" direction={collapsed ? 'up' : 'down'} size="small" />
@@ -31,7 +31,7 @@ const TopBar = ({ onAdd, listLabel, collapsed, onCollapseToggle, onCollapseAllTo
     </div>
     {!collapsed ?
     <button className="nc-listControl-listCollapseToggleAll" onClick={onCollapseAllToggle}>
-      <span>{isAllCollapsed ? 'Expand all' : 'Collapse all'}</span>
+      <span>{allItemsCollapsed ? 'Expand all' : 'Collapse all'}</span>
     </button>
     : null }
     <button className="nc-listControl-addButton" onClick={onAdd}>
@@ -75,7 +75,7 @@ export default class ListControl extends Component {
       collapsed: false,
       itemsCollapsed: List(),
       value: valueToString(props.value),
-      isAllCollapsed: false,
+      allItemsCollapsed: false,
     };
     this.valueType = null;
   }
@@ -182,17 +182,17 @@ export default class ListControl extends Component {
   handleCollapseAllToggle = (e) => {
     e.preventDefault();
     const { value } = this.props;
-    const { isAllCollapsed } = this.state;
+    const { allItemsCollapsed } = this.state;
     const itemsCount = value ? value.size : 0;
     let { itemsCollapsed } = this.state;
 
     for (let i = 0; i < itemsCount; i++) {
-      itemsCollapsed = itemsCollapsed.set(i, !isAllCollapsed);
+      itemsCollapsed = itemsCollapsed.set(i, !allItemsCollapsed);
     }
     
     this.setState({
       itemsCollapsed,
-      isAllCollapsed: !isAllCollapsed,
+      allItemsCollapsed: !allItemsCollapsed,
     });
   }
 
@@ -272,7 +272,7 @@ export default class ListControl extends Component {
           listLabel={field.get('label').toLowerCase()}
           onCollapseToggle={this.handleCollapseToggle}
           onCollapseAllToggle={this.handleCollapseAllToggle}
-          isAllCollapsed={this.state.isAllCollapsed}
+          allItemsCollapsed={this.state.allItemsCollapsed}
           collapsed={collapsed}
           itemsCount={items.size}
         />
