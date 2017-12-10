@@ -23,12 +23,15 @@ function valueToString(value) {
 
 const SortableListItem = SortableElement(ListItem);
 
-const TopBar = ({ onAdd, listLabel, collapsed, onCollapseToggle, itemsCount }) => (
+const TopBar = ({ onAdd, listLabel, collapsed, onCollapseToggle, onCollapseAllToggle, isAllCollapsed, itemsCount }) => (
   <div className="nc-listControl-topBar">
     <div className="nc-listControl-listCollapseToggle" onClick={onCollapseToggle}>
-      <Icon type="caret" direction={collapsed ? 'up' : 'down'} size="small"/>
+      <Icon type="caret" direction={collapsed ? 'up' : 'down'} size="small" />
       {itemsCount} {listLabel}
     </div>
+    <button className="nc-listControl-listCollapseToggleAll" onClick={onCollapseAllToggle}>
+      <span>{isAllCollapsed ? 'Expand all' : 'Collapse all'}</span>
+    </button>
     <button className="nc-listControl-addButton" onClick={onAdd}>
       Add {listLabel} <Icon type="add" size="xsmall" />
     </button>
@@ -70,6 +73,7 @@ export default class ListControl extends Component {
       collapsed: false,
       itemsCollapsed: List(),
       value: valueToString(props.value),
+      isAllCollapsed: false,
     };
     this.valueType = null;
   }
@@ -173,6 +177,23 @@ export default class ListControl extends Component {
     });
   }
 
+  handleCollapseAllToggle = (e) => {
+    e.preventDefault();
+    const { value } = this.props;
+    const { isAllCollapsed } = this.state;
+    const itemsCount = value ? value.size : 0;
+    let { itemsCollapsed } = this.state;
+
+    for (let i = 0; i < itemsCount; i++) {
+      itemsCollapsed = itemsCollapsed.set(i, !isAllCollapsed);
+    }
+    
+    this.setState({
+      itemsCollapsed,
+      isAllCollapsed: !isAllCollapsed,
+    });
+  }
+
   objectLabel(item) {
     const { field } = this.props;
     const multiFields = field.get('fields');
@@ -248,6 +269,8 @@ export default class ListControl extends Component {
           onAdd={this.handleAdd}
           listLabel={field.get('label').toLowerCase()}
           onCollapseToggle={this.handleCollapseToggle}
+          onCollapseAllToggle={this.handleCollapseAllToggle}
+          isAllCollapsed={this.state.isAllCollapsed}
           collapsed={collapsed}
           itemsCount={items.size}
         />
