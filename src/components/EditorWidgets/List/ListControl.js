@@ -29,9 +29,11 @@ const TopBar = ({ onAdd, listLabel, collapsed, onCollapseToggle, onCollapseAllTo
       <Icon type="caret" direction={collapsed ? 'up' : 'down'} size="small" />
       {itemsCount} {listLabel}
     </div>
+    {!collapsed ?
     <button className="nc-listControl-listCollapseToggleAll" onClick={onCollapseAllToggle}>
       <span>{isAllCollapsed ? 'Expand all' : 'Collapse all'}</span>
     </button>
+    : null }
     <button className="nc-listControl-addButton" onClick={onAdd}>
       Add {listLabel} <Icon type="add" size="xsmall" />
     </button>
