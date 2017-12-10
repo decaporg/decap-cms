@@ -99,7 +99,7 @@ The file widget allows editors to upload a file or select an existing one from t
 
   ```yaml
   - label: "Manual PDF"
-    **Name:** "manual_pdf"
+    name: "manual_pdf"
     widget: "file"
     default: "/uploads/general-manual.pdf"
   ```
