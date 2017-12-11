@@ -63,10 +63,11 @@ If you would like to facilitate your own OAuth authentication rather than use Ne
 can use one of the community-maintained projects below. Feel free to [submit a pull request](https://github.com/netlify/netlify-cms/blob/master/CONTRIBUTING.md) if you'd like to add yours!
 
 
-| Author                                 | Supported Git hosts       | Languages | Link                                                                         |
-|----------------------------------------|---------------------------|-----------|------------------------------------------------------------------------------|
-| [@vencax](https://github.com/vencax)   | GitHub, GitHub Enterprise | Node.js   | [Repo](https://github.com/vencax/netlify-cms-github-oauth-provider)          |
-| [@igk1972](https://github.com/igk1972) | GitHub, GitHub Enterprise | Go        | [Repo](https://github.com/igk1972/netlify-cms-oauth-provider-go)             |
+| Author                                         | Supported Git hosts       | Languages | Link                                                                         |
+|------------------------------------------------|---------------------------|-----------|------------------------------------------------------------------------------|
+| [@vencax](https://github.com/vencax)           | GitHub, GitHub Enterprise | Node.js   | [Repo](https://github.com/vencax/netlify-cms-github-oauth-provider)          |
+| [@igk1972](https://github.com/igk1972)         | GitHub, GitHub Enterprise | Go        | [Repo](https://github.com/igk1972/netlify-cms-oauth-provider-go)             |
+| [@davidejones](https://github.com/davidejones) | GitHub, GitHub Enterprise | Python    | [Repo](https://github.com/davidejones/netlify-cms-oauth-provider-python)     |
 
 Check each project's documentation for instructions on how to configure it.
 

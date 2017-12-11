@@ -439,6 +439,15 @@
       "contributions": [
         "design"
       ]
+    },
+    {
+      "login": "davidejones",
+      "name": "David Jones",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/871552?v=4",
+      "profile": "http://davidejones.com",
+      "contributions": [
+        "doc"
+      ]
     }
   ]
 }
