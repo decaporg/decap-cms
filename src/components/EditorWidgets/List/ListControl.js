@@ -29,7 +29,7 @@ const TopBar = ({ onAdd, listLabel, collapsed, onCollapseToggle, onCollapseAllTo
       <Icon type="caret" direction={collapsed ? 'up' : 'down'} size="small" />
       {itemsCount} {listLabel}
     </div>
-    {!collapsed ?
+    {!collapsed && itemsCount > 0 ?
     <button className="nc-listControl-listCollapseToggleAll" onClick={onCollapseAllToggle}>
       <span>{allItemsCollapsed ? 'Expand all' : 'Collapse all'}</span>
     </button>
@@ -137,7 +137,10 @@ export default class ListControl extends Component {
     e.preventDefault();
     const { value, onChange } = this.props;
     const parsedValue = (this.valueType === valueTypes.SINGLE) ? null : Map();
-    this.setState({ collapsed: false });
+    this.setState({ 
+      collapsed: false,
+      allItemsCollapsed: false,
+    });
     onChange((value || List()).push(parsedValue));
   };
 
@@ -162,8 +165,13 @@ export default class ListControl extends Component {
 
   handleRemove = (index, event) => {
     event.preventDefault();
+    const { itemsCollapsed } = this.state;
     const { value, metadata, onChange, forID } = this.props;
     const parsedMetadata = metadata && { [forID]: metadata.removeIn(value.get(index).valueSeq()) };
+    
+    this.setState({
+      itemsCollapsed: itemsCollapsed.delete(index),
+    });
     onChange(value.remove(index), parsedMetadata);
   }
 
@@ -173,9 +181,15 @@ export default class ListControl extends Component {
 
   handleItemCollapseToggle = (index, event) => {
     event.preventDefault();
-    const { itemsCollapsed } = this.state;
+    const { value } = this.props;
+    let { itemsCollapsed } = this.state;
+
+    itemsCollapsed = itemsCollapsed.set(index, !itemsCollapsed.get(index, false));
+    const allCollapsed = itemsCollapsed.every((collabsed, i) => collabsed);
+
     this.setState({
-      itemsCollapsed: itemsCollapsed.set(index, !itemsCollapsed.get(index, false)),
+      itemsCollapsed,
+      allItemsCollapsed: itemsCollapsed.size === value.size && allCollapsed,
     });
   }
 
