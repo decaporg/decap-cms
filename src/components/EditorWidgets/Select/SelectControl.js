@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { isMap } from 'immutable';
+import { Map } from 'immutable';
 
 export default class SelectControl extends React.Component {
   static propTypes = {
@@ -40,7 +40,7 @@ export default class SelectControl extends React.Component {
         if (typeof option === 'string') {
           return { label: option, value: option };
         }
-        return isMap(option) ? option.toJS() : option;
+        return Map.isMap(option) ? option.toJS() : option;
       }),
     ];
 
