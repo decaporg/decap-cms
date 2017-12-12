@@ -88,7 +88,7 @@ These settings determine how collection files are parsed and saved. Both are opt
 
 `extension` determines the file extension searched for when finding existing entries in a folder collection determines the file extension saved for new collection items. It accepts the following values: `yml`, `yaml`, `toml`, `json`, `md`, `markdown`, `html`.
 
-You may also specify a custom `extention` not included in the list above, as long as the collection files can be parsed and saved in one of the supported formats below.
+You may also specify a custom `extension` not included in the list above, as long as the collection files can be parsed and saved in one of the supported formats below.
 
 `format` determines how collection files are parsed and saved. It will be inferred if the `extension` field or existing collection file extensions match one of the supported extensions above. It accepts the following values:
 
