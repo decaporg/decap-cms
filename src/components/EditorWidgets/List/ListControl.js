@@ -176,7 +176,7 @@ export default class ListControl extends Component {
   }
 
   handleCollapseToggle = () => {
-    this.setState({ listCollapsed: !this.state.collapsed });
+    this.setState({ listCollapsed: !this.state.listCollapsed });
   }
 
   handleItemCollapseToggle = (index, event) => {
