@@ -23,13 +23,13 @@ function valueToString(value) {
 
 const SortableListItem = SortableElement(ListItem);
 
-const TopBar = ({ onAdd, listLabel, collapsed, onCollapseToggle, onCollapseAllToggle, allItemsCollapsed, itemsCount }) => (
+const TopBar = ({ onAdd, listLabel, listCollapsed, onCollapseToggle, onCollapseAllToggle, allItemsCollapsed, itemsCount }) => (
   <div className="nc-listControl-topBar">
     <div className="nc-listControl-listCollapseToggle" onClick={onCollapseToggle}>
-      <Icon type="caret" direction={collapsed ? 'up' : 'down'} size="small" />
+      <Icon type="caret" direction={listCollapsed ? 'up' : 'down'} size="small" />
       {itemsCount} {listLabel}
     </div>
-    {!collapsed && itemsCount > 0 ?
+    {!listCollapsed && itemsCount > 0 ?
     <button className="nc-listControl-listCollapseToggleAll" onClick={onCollapseAllToggle}>
       <span>{allItemsCollapsed ? 'Expand all' : 'Collapse all'}</span>
     </button>
@@ -72,7 +72,7 @@ export default class ListControl extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      collapsed: false,
+      listCollapsed: false,
       itemsCollapsed: List(),
       value: valueToString(props.value),
       allItemsCollapsed: false,
@@ -138,7 +138,7 @@ export default class ListControl extends Component {
     const { value, onChange } = this.props;
     const parsedValue = (this.valueType === valueTypes.SINGLE) ? null : Map();
     this.setState({ 
-      collapsed: false,
+      listCollapsed: false,
       allItemsCollapsed: false,
     });
     onChange((value || List()).push(parsedValue));
@@ -176,7 +176,7 @@ export default class ListControl extends Component {
   }
 
   handleCollapseToggle = () => {
-    this.setState({ collapsed: !this.state.collapsed });
+    this.setState({ listCollapsed: !this.state.collapsed });
   }
 
   handleItemCollapseToggle = (index, event) => {
@@ -185,7 +185,7 @@ export default class ListControl extends Component {
     let { itemsCollapsed } = this.state;
 
     itemsCollapsed = itemsCollapsed.set(index, !itemsCollapsed.get(index, false));
-    const allCollapsed = itemsCollapsed.every((collabsed, i) => collabsed);
+    const allCollapsed = itemsCollapsed.every((collapsed, i) => collapsed);
 
     this.setState({
       itemsCollapsed,
@@ -195,15 +195,15 @@ export default class ListControl extends Component {
 
   handleCollapseAllToggle = (e) => {
     e.preventDefault();
-    const { value } = this.props;
     const { allItemsCollapsed } = this.state;
+    const { value } = this.props;
     const itemsCount = value ? value.size : 0;
     let { itemsCollapsed } = this.state;
 
     for (let i = 0; i < itemsCount; i++) {
       itemsCollapsed = itemsCollapsed.set(i, !allItemsCollapsed);
     }
-    
+
     this.setState({
       itemsCollapsed,
       allItemsCollapsed: !allItemsCollapsed,
@@ -273,10 +273,10 @@ export default class ListControl extends Component {
 
   renderListControl() {
     const { value, forID, field, classNameWrapper } = this.props;
-    const { collapsed } = this.state;
+    const { listCollapsed } = this.state;
     const items = value || List();
     const className = c(classNameWrapper, 'nc-listControl', {
-      'nc-listControl-collapsed' : collapsed,
+      'nc-listControl-collapsed' : listCollapsed,
     });
 
     return (
@@ -287,11 +287,11 @@ export default class ListControl extends Component {
           onCollapseToggle={this.handleCollapseToggle}
           onCollapseAllToggle={this.handleCollapseAllToggle}
           allItemsCollapsed={this.state.allItemsCollapsed}
-          collapsed={collapsed}
+          listCollapsed={listCollapsed}
           itemsCount={items.size}
         />
         {
-          collapsed ? null :
+          listCollapsed ? null :
             <SortableList
               items={items}
               renderItem={this.renderItem}
