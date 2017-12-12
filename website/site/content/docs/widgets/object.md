@@ -8,13 +8,13 @@ type: "widget"
 
 The object widget allows you to group multiple widgets together, nested under a single field. You can choose any widget as a child of an object widget—even other objects.
 
-- Name: `object`
-- UI: a field containing other fields
-- Data type: immutable map containing the sub-field values
-- Options:
+- **Name:** `object`
+- **UI:** a field containing one or more child widgets
+- **Data type:** list of child widget values
+- **Options:**
   - `default`: you can set defaults within each sub-field's configuration
-  - `fields`: (**required**) a nested list of fields to include in your widget
-- Example:
+  - `fields`: (**required**) a nested list of widget fields to include in your widget
+- **Example:**
 
   ```yaml
   - label: "Profile"

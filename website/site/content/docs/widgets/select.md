@@ -8,15 +8,15 @@ type: "widget"
 
 The select widget allows you to pick a single string value from a dropdown menu.
 
-- Name: `select`
-- UI: HTML select input
-- Data type: string
-- Options:
+- **Name:** `select`
+- **UI:** HTML select input
+- **Data type:** string
+- **Options:**
   - `default`: accepts a string; defaults to an empty string
-  - `options`: (**required**) an array or list of options for the dropdown menu; can be listed in two ways:
-    - string values: the label displayed in the dropdown is the value saved in the file
-    - object with `label` and `value` fields: the label displays in the dropdown; the value is saved in the file
-- Example (options as strings):
+  - `options`: (**required**) a list of options for the dropdown menu; can be listed in two ways:
+      - string values: the label displayed in the dropdown is the value saved in the file
+      - object with `label` and `value` fields: the label displays in the dropdown; the value is saved in the file
+- **Example** (options as strings):
 
   ```yaml
   - label: "Align Content"
@@ -24,7 +24,7 @@ The select widget allows you to pick a single string value from a dropdown menu.
     widget: "select"
     options: ["left", "center", "right"]
   ```
-- Example (options as objects):
+- **Example** (options as objects):
 
   ```yaml
   - label: "City"
@@ -35,3 +35,4 @@ The select widget allows you to pick a single string value from a dropdown menu.
       - { label: "Paris", value: "CDG" }
       - { label: "Tokyo", value: "HND" }
   ```
+

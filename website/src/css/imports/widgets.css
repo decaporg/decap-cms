@@ -67,10 +67,6 @@
     animation: widgetOpacity .15s .05s ease forwards;
 }
 
-.widget#list {
-    padding-bottom: 3em; /* For some weird reason the list widget was overflowing the background, so this dirty fix works */
-}
-
 @keyframes widgetOpacity {
     from {
         opacity: 0
@@ -86,4 +82,14 @@
 
 .widget h3 {
     margin-top: 0 !important;
+}
+
+#list {
+    padding-bottom: 3rem
+}
+
+@media screen and (max-width: $tablet) {
+    #list, #relation, #object, #text, #string {
+        padding-bottom: 3rem;
+    }
 }

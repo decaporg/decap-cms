@@ -8,7 +8,7 @@ type: "widget"
 
 The relation widget allows you to reference items from another collection. It provides a search input with a list of entries from the collection you're referencing, and the list automatically updates with matched entries based on what you've typed.
 
-- **Name:** `realtion`
+- **Name:** `relation`
 - **UI:** text input with search result dropdown
 - **Data type:** data type of the value pulled from the related collection item
 - **Options:**
@@ -19,11 +19,11 @@ The relation widget allows you to reference items from another collection. It pr
 - **Example** (assuming a separate "authors" collection with "name" and "twitterHandle" fields):
 
   ```yaml
-  - label: "Post Author"
-    name: "author"
-    widget: "relation"
-    collection: "authors"
-    searchFields: "[name, twitterHandle]"
-    valueField: "name"
+  - label: Post Author
+    name: author
+    widget: relation
+    collection: authors
+    searchFields: [name, twitterHandle]
+    valueField: name
   ```
   The generated UI input will search the authors collection by name and twitterHandle as the user types. On selection, the author name will be saved for the field.

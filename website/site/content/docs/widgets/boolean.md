@@ -8,10 +8,10 @@ type: "widget"
 
 The boolean widget translates a toggle switch input to a true/false value.
 
-- Name: `boolean`
-- UI: toggle switch
-- Data type: boolean
-- Options:
+- **Name:** `boolean`
+- **UI:** toggle switch
+- **Data type:** boolean
+- **Options:**
   - `default`: accepts `true` or `false`; defaults to `false`
 - Example:
 
