@@ -28,4 +28,3 @@ The number widget uses an HTML number input, saving the value as a string, integ
     min: 1
     max: 101
   ```
-  ```

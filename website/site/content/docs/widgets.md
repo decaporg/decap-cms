@@ -1,7 +1,6 @@
 ---
 title: Widgets
 position: 30
-description: "Widgets define the data type and interface for entry fields. Netlify CMS comes with several built-in widgets, including:"
 ---
 
 Widgets define the data type and interface for entry fields. Netlify CMS comes with several built-in widgets. Click the widget names in the sidebar to jump to specific widget details. We’re always adding new widgets, and you can also [create your own](https://www.netlifycms.org/docs/custom-widgets)!
