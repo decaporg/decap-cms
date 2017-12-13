@@ -20,6 +20,10 @@
 
     @media screen and (min-width: $desktop) {
       position: fixed;
+      top: 158px;
+      bottom: 0;
+      overflow-y: auto;
+      padding-right: 1em;
     }
 
     &.mobile {
