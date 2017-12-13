@@ -50,7 +50,7 @@ The docs at netlifycms.org have been rewritten and vastly improved!
 * Infer format from extension for new entries ([@tech4him1](https://github.com/tech4him1) in [#796](https://github.com/netlify/netlify-cms/pull/796))
 * Throw on unsupported format ([@tech4him1](https://github.com/tech4him1) in [#831](https://github.com/netlify/netlify-cms/pull/831))
 * Update widget docs ([@verythorough](https://github.com/verythorough) in [#876](https://github.com/netlify/netlify-cms/pull/876))
-* Implement new UI, restructure/refactor project ([@erquhart](https://github.com/erquhart) and @neutyp in [#785](https://github.com/netlify/netlify-cms/pull/785))
+* Implement new UI, restructure/refactor project ([@erquhart](https://github.com/erquhart) and [@neutyp](https://github.com/neutyp) in [#785](https://github.com/netlify/netlify-cms/pull/785))
 
 
 ## 0.7.6 (November 27, 2017)
