@@ -36,7 +36,9 @@ The CMS UI has been completely redesigned from the ground up!
 ## All New Docs 💥
 The docs at netlifycms.org have been rewritten and vastly improved!
 
-* TBA
+* Full references with code samples for every configuration option, collection type, and widget
+* Easier docs contributions with the website built directly in the repo
+* Updated intro docs with a new Gatsby starter template in addition to the Hugo one
 
 ## Changes
 
