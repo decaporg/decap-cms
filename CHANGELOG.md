@@ -6,6 +6,51 @@
   </summary>
 </details>
 
+
+## 1.0.2 (December 7, 2017)
+
+* Fix position of editor view controls ([@biilmann](https://github.com/biilmann) in [#886](https://github.com/netlify/netlify-cms/pull/886))
+* Update docs intro to direct to new content ([@verythorough](https://github.com/verythorough) in [#891](https://github.com/netlify/netlify-cms/pull/891))
+
+
+## 1.0.1 (December 7, 2017)
+
+* Add configuration options doc ([@verythorough](https://github.com/verythorough) in [#885](https://github.com/netlify/netlify-cms/pull/885))
+* Add new docs website landing page ([@ziburski](https://github.com/ziburski) in [#880](https://github.com/netlify/netlify-cms/pull/880))
+* Rework Test Drive and Quick Start docs ([@verythorough](https://github.com/verythorough) in [#888](https://github.com/netlify/netlify-cms/pull/888))
+
+
+## 1.0.0 (December 7, 2017)
+
+The first major release of Netlify CMS!! Here are the big features:
+
+### All New UI 💫
+The CMS UI has been completely redesigned from the ground up!
+
+* All new visuals and reprised UX throughout
+* List view/grid view option for collections
+* Deletion now works for editorial workflow
+* Control publishing and editorial workflow status from the entry editor
+* Descriptions can now be added for each collection
+
+## All New Docs 💥
+The docs at netlifycms.org have been rewritten and vastly improved!
+
+* TBA
+
+## Changes
+
+* Fix backspace not removing empty block in markdown editor ([@Dammmien](https://github.com/Dammmien) in [#854](https://github.com/netlify/netlify-cms/pull/854))
+* Add select widget documentation ([@ackushiw](https://github.com/ackushiw) in [#806](https://github.com/netlify/netlify-cms/pull/806))
+* Migrate netlifycms.org source into this repo ([@verythorough](https://github.com/verythorough) in [#860](https://github.com/netlify/netlify-cms/pull/860))
+* Fix Slate mark rendering ([@erquhart](https://github.com/erquhart) in [#858](https://github.com/netlify/netlify-cms/pull/858))
+* Do not infer file format if format specified in config ([@tech4him1](https://github.com/tech4him1) in [#795](https://github.com/netlify/netlify-cms/pull/795))
+* Infer format from extension for new entries ([@tech4him1](https://github.com/tech4him1) in [#796](https://github.com/netlify/netlify-cms/pull/796))
+* Throw on unsupported format ([@tech4him1](https://github.com/tech4him1) in [#831](https://github.com/netlify/netlify-cms/pull/831))
+* Update widget docs ([@verythorough](https://github.com/verythorough) in [#876](https://github.com/netlify/netlify-cms/pull/876))
+* Implement new UI, restructure/refactor project ([@erquhart](https://github.com/erquhart) and @neutyp in [#785](https://github.com/netlify/netlify-cms/pull/785))
+
+
 ## 0.7.6 (November 27, 2017)
 
 * Migrate to Slate 0.30.x ([@erquhart](https://github.com/erquhart) in [#826](https://github.com/netlify/netlify-cms/pull/826))
