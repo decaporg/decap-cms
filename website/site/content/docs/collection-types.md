@@ -7,7 +7,7 @@ position: 27
 
 All editable content types are defined in the `collections` field of your `config.yml` file, and display in the left sidebar of the Content page of the editor UI.
 
-Collections come in two main types: `folder` and `file`.
+Collections come in two main types: `folder` and `files`.
 
 
 ## Folder collections
@@ -64,36 +64,11 @@ collections:
 
 ## File collections
 
-File collections represent a single file or grouping of files, useful for unique files with a custom set of fields.
+A `files` collection contains one or more uniquely configured files. Unlike items in `folder` collections, which repeat the same configuration over all files in the folder, each item in a `files` collection has an explicitly set path, filename, and configuration. This can be useful for unique files with a custom set of fields, like a settings file or a custom landing page with a unique content structure.
 
-### Single `file`
+When configuring a `files` collection, each file in the collection is configured separately, and listed under the `files` field of the collection. Each file has its own list of `fields`, and a unique filepath specified in the `file` field (relative to the base of the repo).
 
-Use `file` to specify a single file "collection". The value is a path to the file to be edited, relative to the base of the repository.
-
-Example using `file`:
-
-```yaml
-- label: "Site Settings"
-  name: "general"
-  file: "site/_data/settings.json"
-  extension: "json"
-  description: "General Site Settings"
-  fields:
-      - {label: "Global title", name: "site_title", widget: "string"}
-      - label: "Post Settings"
-        name: "posts"
-        widget: "object"
-        fields:
-            - {label: "Number of posts on frontpage", name: front_limit, widget: number}
-            - {label: "Default Author", name: author, widget: string}
-            - {label: "Default Thumbnail", name: thumb, widget: image, class: "thumb"}
-```
-
-### Multiple `files`
-
-You can group multiple files together under a single item in the collection list by using the `files` option. The option takes a list of single `file`-type collections.
-
-Example using `files`:
+Example:
 
 ``` yaml
 - label: "Pages"
