@@ -112,16 +112,20 @@ class MediaLibrary extends React.Component {
   handlePersist = async event => {
     /**
      * Stop the browser from automatically handling the file input click, and
-     * get the file for upload.
+     * get the file for upload, and retain the synthetic event for access after
+     * the asynchronous persist operation.
      */
     event.stopPropagation();
     event.preventDefault();
+    event.persist();
     const { persistMedia, privateUpload } = this.props;
     const { files: fileList } = event.dataTransfer || event.target;
     const files = [...fileList];
     const file = files[0];
 
     await persistMedia(file, { privateUpload });
+
+    event.target.value = null;
 
     this.scrollToTop();
   };
