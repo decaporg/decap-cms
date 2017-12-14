@@ -29,18 +29,8 @@
 
 .widgets__container {
     margin: 1em 0;
-    position: relative;
-}
-
-.widgets__background {
-    position: absolute;
-    left: 0;
-    top: 0;
     background: $lightGrey;
     border-radius: $borderRadius;
-    z-index: -1;
-    width: 100%;
-    height: 100%;
     transition: height .15s ease;
 }
 
@@ -82,14 +72,4 @@
 
 .widget h3 {
     margin-top: 0 !important;
-}
-
-#list {
-    padding-bottom: 3rem
-}
-
-@media screen and (max-width: $tablet) {
-    #list, #relation, #object, #text, #string {
-        padding-bottom: 3rem;
-    }
 }

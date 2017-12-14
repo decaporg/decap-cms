@@ -2,8 +2,7 @@
 function widgetsCloud() {
     if ($('.widgets')) {
         const widgetItems = document.getElementsByClassName("widgets__item"), // Widget word cloud
-            widgets = document.getElementsByClassName("widget"), // Widgets' bodies
-            widgetBackground = document.getElementsByClassName("widgets__background")[0]; // Widget container flexible height background
+            widgets = document.getElementsByClassName("widget"); // Widgets' bodies
 
         let activeWidgetItem = document.getElementsByClassName("widgets__item_active")[0];
 
@@ -13,7 +12,6 @@ function widgetsCloud() {
                     openedWidget = document.getElementsByClassName("widget_open")[0]; // Defines the current open widget
 
                 targetWidget.classList.add("widget_opening"); // Starts the process of opening the next widget
-                widgetBackground.style.height = targetWidget.offsetHeight + "px"; // Changes the widgets container background's height in order for a smoother transition between sections
 
                 openedWidget.classList.remove("widget_open"); // Removes the active state of the current widget
                 openedWidget.classList.add("widget_closing"); // But guarantees the current active widget a closing class for transition purposes
