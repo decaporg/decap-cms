@@ -1,5 +1,5 @@
 import { Block, Text } from 'slate';
-import { isHotkey } from 'is-hotkey';
+import isHotkey from 'is-hotkey';
 
 export default onKeyDown;
 
@@ -38,19 +38,17 @@ function onKeyDown(event, change) {
       .collapseToStartOf(newBlock);
   }
 
-  if (isHotkey(`mod+${event.key}`, event)) {
-    const marks = {
-      b: 'bold',
-      i: 'italic',
-      s: 'strikethrough',
-      '`': 'code',
-    };
+  const marks = [
+    [ 'b', 'bold' ],
+    [ 'i', 'italic' ],
+    [ 's', 'strikethrough' ],
+    [ '`', 'code' ],
+  ];
 
-    const mark = marks[event.key];
+  const [ markKey, markName ] = marks.find(([ key ]) => isHotkey(`mod+${key}`, event)) || [];
 
-    if (mark) {
-      event.preventDefault();
-      return change.toggleMark(mark);
-    }
+  if (markName) {
+    event.preventDefault();
+    return change.toggleMark(markName);
   }
 };
