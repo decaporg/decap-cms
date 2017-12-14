@@ -11,7 +11,7 @@ function onKeyDown(event, change) {
     });
   };
 
-  if (event.key === 'Enter') {
+  if (isHotkey('Enter', event)) {
     /**
      * If "Enter" is pressed while a single void block is selected, a new
      * paragraph should be added above or below it, and the current selection
