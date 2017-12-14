@@ -4,6 +4,9 @@
     Changes that have landed in master but are not yet released.
     Click to see more.
   </summary>
+
+  * Fix select widgets with object type options ([@tech4him1](https://github.com/tech4him1) in [#920](https://github.com/netlify/netlify-cms/pull/920))
+  * Warn when uploading asset with same name as existing asset ([@Dammmien](https://github.com/Dammmien) in [#853](https://github.com/netlify/netlify-cms/pull/853))
 </details>
 
 
