@@ -20,7 +20,7 @@ export default function AssetProxy(value, fileObj, uploaded = false, asset) {
 }
 
 AssetProxy.prototype.toString = function () {
-  if (this.uploaded) return this.public_path;
+  if (this.uploaded && !this.fileObj) return this.public_path;
   try {
     return window.URL.createObjectURL(this.fileObj);
   } catch (error) {
