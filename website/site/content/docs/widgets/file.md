@@ -13,7 +13,7 @@ The file widget allows editors to upload a file or select an existing one from t
 - **Data type:** file path string, based on `media_folder`/`public_folder` configuration
 - **Options:**
   - `default`: accepts a file path string; defaults to null
-- Example:
+- **Example:**
 
   ```yaml
   - label: "Manual PDF"
