@@ -1,7 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`EntryEditorToolbar should disable and update label of Save button when persisting 1`] = `"<div><button disabled=\\"\\" class=\\"\\" type=\\"button\\" data-react-toolbox=\\"button\\">Saving...</button> <button class=\\"\\" type=\\"button\\" data-react-toolbox=\\"button\\">Cancel</button></div>"`;
-
-exports[`EntryEditorToolbar should enable the Save button 1`] = `"<div><button class=\\"\\" type=\\"button\\" data-react-toolbox=\\"button\\">Save</button> <button class=\\"\\" type=\\"button\\" data-react-toolbox=\\"button\\">Cancel</button></div>"`;
-
-exports[`EntryEditorToolbar should have the Save button disabled initally, and the Cancel button enabled 1`] = `"<div><button disabled=\\"\\" class=\\"\\" type=\\"button\\" data-react-toolbox=\\"button\\">Save</button> <button class=\\"\\" type=\\"button\\" data-react-toolbox=\\"button\\">Cancel</button></div>"`;
