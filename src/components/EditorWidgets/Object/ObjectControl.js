@@ -10,7 +10,7 @@ import EditorControl from 'Editor/EditorControlPane/EditorControl';
 const TopBar = ({ collapsed, onCollapseToggle }) =>
   <div className="nc-listControl-topBar">
     <div className="nc-listControl-listCollapseToggle" onClick={onCollapseToggle}>
-      <Icon type="caret" direction={collapsed ? 'up' : 'down'} size="small"/>
+      <Icon type="chevron" direction={collapsed ? 'up' : 'down'} size="small"/>
       {itemsCount} {listLabel}
     </div>
   </div>;

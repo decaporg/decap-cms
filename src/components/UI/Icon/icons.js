@@ -22,7 +22,10 @@ const config = {
   'arrow': {
     direction: 'left',
   },
-  'caret': {
+  'chevron': {
+    direction: 'down',
+  },
+  'chevron-double': {
     direction: 'down',
   }
 };

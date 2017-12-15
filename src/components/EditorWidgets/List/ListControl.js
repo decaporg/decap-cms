@@ -25,15 +25,15 @@ const SortableListItem = SortableElement(ListItem);
 
 const TopBar = ({ onAdd, listLabel, listCollapsed, onCollapseToggle, onCollapseAllToggle, allItemsCollapsed, itemsCount }) => (
   <div className="nc-listControl-topBar">
-    <div className="nc-listControl-listCollapseToggle" onClick={onCollapseToggle}>
-      <Icon type="caret" direction={listCollapsed ? 'up' : 'down'} size="small" />
+    <div className="nc-listControl-listCollapseToggle">
+      <button className="nc-listControl-listCollapseToggleButton" onClick={onCollapseToggle}>
+        <Icon type="chevron" direction={listCollapsed ? 'up' : 'down'} size="small" />
+      </button>
+      <button className="nc-listControl-listCollapseToggleButton" onClick={onCollapseAllToggle}>
+        <Icon type="chevron-double" direction={allItemsCollapsed ? 'up' : 'down'} size="small" />
+      </button>
       {itemsCount} {listLabel}
     </div>
-    {!listCollapsed && itemsCount > 0 ?
-    <button className="nc-listControl-listCollapseToggleAll" onClick={onCollapseAllToggle}>
-      <span>{allItemsCollapsed ? 'Expand all' : 'Collapse all'}</span>
-    </button>
-    : null }
     <button className="nc-listControl-addButton" onClick={onAdd}>
       Add {listLabel} <Icon type="add" size="xsmall" />
     </button>
