@@ -9,7 +9,7 @@ const image = {
   },
   toBlock: data => `![${ data.alt }](${ data.image || '' })`,
   toPreview: (data, getAsset) => <img src={getAsset(data.image || '')} alt={data.alt || ''} />,
-  pattern: /^!\[([\S]*)]\(([\S]*)\)/,
+  pattern: /^!\[([\S]*)\]\(([\S]*)\)$/,
   fields: [{
     label: 'Image',
     name: 'image',
