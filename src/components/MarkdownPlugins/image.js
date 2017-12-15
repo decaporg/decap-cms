@@ -7,9 +7,9 @@ const image = {
     image: match[2],
     alt: match[1],
   },
-  toBlock: data => `![${ data.alt || '' }](${ data.image || '' })`,
+  toBlock: data => `![${ data.alt }](${ data.image || '' })`,
   toPreview: (data, getAsset) => <img src={getAsset(data.image || '')} alt={data.alt || ''} />,
-  pattern: /^!\[([^\]]+)]\(([^)]+)\)$/,
+  pattern: /^!\[([\S]*)]\(([\S]*)\)/,
   fields: [{
     label: 'Image',
     name: 'image',
