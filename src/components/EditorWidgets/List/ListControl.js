@@ -57,7 +57,7 @@ export default class ListControl extends Component {
       ImmutablePropTypes.list,
       PropTypes.string,
     ]),
-    field: PropTypes.node,
+    field: PropTypes.object,
     forID: PropTypes.string,
     mediaPaths: ImmutablePropTypes.map.isRequired,
     getAsset: PropTypes.func.isRequired,
@@ -71,12 +71,24 @@ export default class ListControl extends Component {
 
   constructor(props) {
     super(props);
+    const { field, value } = props;
+    const itemsCount = value ? value.size : 0;
+    const allItemsExpanded = field.get('expandItems') || false;
+    let itemsCollapsed = List();
+
+    if (!allItemsExpanded) {
+      for (let i = 0; i < itemsCount; i++) {
+        itemsCollapsed = itemsCollapsed.set(i, true);
+      }
+    }
+
     this.state = {
-      listCollapsed: false,
-      itemsCollapsed: List(),
+      listCollapsed: field.get('collapsed') || false,
+      itemsCollapsed,
+      allItemsCollapsed: !allItemsExpanded,
       value: valueToString(props.value),
-      allItemsCollapsed: false,
     };
+
     this.valueType = null;
   }
 
@@ -92,6 +104,7 @@ export default class ListControl extends Component {
 
   componentDidMount() {
     const { field } = this.props;
+
     if (field.get('fields')) {
       this.valueType = valueTypes.MULTIPLE;
     } else if (field.get('field')) {
