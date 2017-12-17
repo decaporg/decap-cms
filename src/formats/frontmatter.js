@@ -59,20 +59,32 @@ export const getFormatOpts = format => ({
   json: { language: "json", delimiters: ["{", "}"] },
 }[format]);
 
-export default {
+class FrontmatterFormatter {
+  constructor(format) {
+    this.format = getFormatOpts(format);
+  }
+
   fromFile(content) {
-    const result = matter(content, { engines: parsers, ...inferFrontmatterFormat(content) });
+    const format = this.format || inferFrontmatterFormat(content);
+    const result = matter(content, { engines: parsers, ...format });
     return {
       ...result.data,
       body: result.content,
     };
-  },
+  }
 
   toFile(data, sortedKeys) {
     const { body = '', ...meta } = data;
 
-    // always stringify to YAML
+    // Stringify to YAML if the format was not set
+    const format = this.format || getFormatOpts('yaml');
+
     // `sortedKeys` is not recognized by gray-matter, so it gets passed through to the parser
-    return matter.stringify(body, meta, { engines: parsers, sortedKeys, ...getFormatOpts('yaml') });
+    return matter.stringify(body, meta, { engines: parsers, sortedKeys, ...format });
   }
 }
+
+export const FrontmatterInfer = new FrontmatterFormatter();
+export const FrontmatterYAML = new FrontmatterFormatter('yaml');
+export const FrontmatterTOML = new FrontmatterFormatter('toml');
+export const FrontmatterJSON = new FrontmatterFormatter('json');

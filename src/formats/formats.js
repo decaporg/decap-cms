@@ -1,7 +1,7 @@
 import yamlFormatter from './yaml';
 import tomlFormatter from './toml';
 import jsonFormatter from './json';
-import FrontmatterFormatter from './frontmatter';
+import { FrontmatterInfer, FrontmatterJSON, FrontmatterTOML, FrontmatterYAML } from './frontmatter';
 
 export const supportedFormats = [
   'yml',
@@ -9,6 +9,9 @@ export const supportedFormats = [
   'toml',
   'json',
   'frontmatter',
+  'json-frontmatter',
+  'toml-frontmatter',
+  'yaml-frontmatter',
 ];
 
 export const formatToExtension = format => ({
@@ -17,6 +20,9 @@ export const formatToExtension = format => ({
   toml: 'toml',
   json: 'json',
   frontmatter: 'md',
+  'json-frontmatter': 'md',
+  'toml-frontmatter': 'md',
+  'yaml-frontmatter': 'md',
 }[format]);
 
 export function formatByExtension(extension) {
@@ -25,9 +31,9 @@ export function formatByExtension(extension) {
     yaml: yamlFormatter,
     toml: tomlFormatter,
     json: jsonFormatter,
-    md: FrontmatterFormatter,
-    markdown: FrontmatterFormatter,
-    html: FrontmatterFormatter,
+    md: FrontmatterInfer,
+    markdown: FrontmatterInfer,
+    html: FrontmatterInfer,
   }[extension];
 }
 
@@ -37,7 +43,10 @@ function formatByName(name) {
     yaml: yamlFormatter,
     toml: tomlFormatter,
     json: jsonFormatter,
-    frontmatter: FrontmatterFormatter,
+    frontmatter: FrontmatterInfer,
+    'json-frontmatter': FrontmatterJSON,
+    'toml-frontmatter': FrontmatterTOML,
+    'yaml-frontmatter': FrontmatterYAML,
   }[name];
 }
 
