@@ -4,17 +4,30 @@ import yamlFormatter from './yaml';
 import jsonFormatter from './json';
 
 const parsers = {
-  toml: input => tomlFormatter.fromFile(input),
-  json: input => {
-    let JSONinput = input.trim();
-    // Fix JSON if leading and trailing brackets were trimmed.
-    if (JSONinput.substr(0, 1) !== '{') {
-      JSONinput = '{' + JSONinput;
-    }
-    if (JSONinput.substr(-1) !== '}') {
-      JSONinput = JSONinput + '}';
-    }
-    return jsonFormatter.fromFile(JSONinput);
+  toml: {
+    parse: input => tomlFormatter.fromFile(input),
+    stringify: (metadata, { sortedKeys }) => tomlFormatter.toFile(metadata, sortedKeys),
+  },
+  json: {
+    parse: input => {
+      let JSONinput = input.trim();
+      // Fix JSON if leading and trailing brackets were trimmed.
+      if (JSONinput.substr(0, 1) !== '{') {
+        JSONinput = '{' + JSONinput;
+      }
+      if (JSONinput.substr(-1) !== '}') {
+        JSONinput = JSONinput + '}';
+      }
+      return jsonFormatter.fromFile(JSONinput);
+    },
+    stringify: (metadata, { sortedKeys }) => {
+      let JSONoutput = jsonFormatter.toFile(metadata, sortedKeys).trim();
+      // Trim leading and trailing brackets.
+      if (JSONoutput.substr(0, 1) === '{' && JSONoutput.substr(-1) === '}') {
+        JSONoutput = JSONoutput.substring(1, JSONoutput.length - 1);
+      }
+      return JSONoutput;
+    },
   },
   yaml: {
     parse: input => yamlFormatter.fromFile(input),
