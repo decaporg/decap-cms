@@ -43,15 +43,21 @@ function inferFrontmatterFormat(str) {
   }
   switch (firstLine) {
     case "---":
-      return { language: "yaml", delimiters: "---" };
+      return getFormatOpts('yaml');
     case "+++":
-      return { language: "toml", delimiters: "+++" };
+      return getFormatOpts('toml');
     case "{":
-      return { language: "json", delimiters: ["{", "}"] };
+      return getFormatOpts('json');
     default:
       throw "Unrecognized front-matter format.";
   }
 }
+
+export const getFormatOpts = format => ({
+  yaml: { language: "yaml", delimiters: "---" },
+  toml: { language: "toml", delimiters: "+++" },
+  json: { language: "json", delimiters: ["{", "}"] },
+}[format]);
 
 export default {
   fromFile(content) {
@@ -67,6 +73,6 @@ export default {
 
     // always stringify to YAML
     // `sortedKeys` is not recognized by gray-matter, so it gets passed through to the parser
-    return matter.stringify(body, meta, { engines: parsers, language: "yaml", delimiters: "---", sortedKeys });
+    return matter.stringify(body, meta, { engines: parsers, sortedKeys, ...getFormatOpts('yaml') });
   }
 }
