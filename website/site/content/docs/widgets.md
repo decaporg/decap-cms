@@ -17,7 +17,7 @@ To see working examples of all of the built-in widgets, try making a 'Kitchen Si
 The following options are available on all fields:
 
 - `required`: specify as `false` to make a field optional; defaults to `true`
-- `pattern`: add field validation by specifying a list with a regex pattern and an error message; more extensive validation can be achieved with [custom widgets](https://www.netlifycms.org/docs/custom-widgets/#advanced-field-validation)
+- `pattern`: add field validation by specifying a list with a [regex pattern](https://regexr.com/) and an error message; more extensive validation can be achieved with [custom widgets](https://www.netlifycms.org/docs/custom-widgets/#advanced-field-validation)
   - **Example:**
 
     ```yaml

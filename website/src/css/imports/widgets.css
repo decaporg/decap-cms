@@ -7,7 +7,7 @@
 }
 
 .widgets__item {
-    color: $darkGreen;
+    color: $darkGrey;
     border: 2px solid $darkGreen;
     border-radius: $borderRadius;
     padding: calc($micro /2) $micro;
@@ -15,16 +15,12 @@
     cursor: pointer;
     transition: color .2s ease, background .2s ease;
     display: inline-block;
+    font-weight: normal;
 }
 
-.widgets__item:hover {
+.widgets__item:hover, .widgets__item_active {
     background: $darkGreen;
-    color: white;
-}
-
-.widgets__item_active {
-    background: $darkGreen;
-    color: white;
+    color: white !important;
 }
 
 .widgets__container {
