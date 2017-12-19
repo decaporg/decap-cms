@@ -67,6 +67,7 @@ Registers a template for a collection.
   * [widgetsFor](#lists-and-objects): Returns an array of objects with widgets and associated field data. For use with list and object type entries.
   * getAsset: Returns the correct filePath or in-memory preview for uploaded images.
     **Example:**
+
     ```html
     <script src="https://unpkg.com/netlify-cms@^1.0.0/dist/cms.js"></script>
     <script>
