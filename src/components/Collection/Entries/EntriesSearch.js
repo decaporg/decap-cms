@@ -42,7 +42,7 @@ class EntriesSearch extends React.Component {
   };
 
   render () {
-    const { dispatch, collections, entries, publicFolder, page, isFetching } = this.props;
+    const { collections, entries, publicFolder, page, isFetching } = this.props;
     return (
       <Entries
         collections={collections}

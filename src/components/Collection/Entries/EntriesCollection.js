@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
-import { loadEntries } from 'Actions/entries';
+import { loadEntries as actionLoadEntries } from 'Actions/entries';
 import { selectEntries } from 'Reducers';
 import Entries from './Entries';
 
@@ -10,7 +10,6 @@ class EntriesCollection extends React.Component {
   static propTypes = {
     collection: ImmutablePropTypes.map.isRequired,
     publicFolder: PropTypes.string.isRequired,
-    dispatch: PropTypes.func.isRequired,
     page: PropTypes.number,
     entries: ImmutablePropTypes.list,
     isFetching: PropTypes.bool.isRequired,
@@ -18,21 +17,26 @@ class EntriesCollection extends React.Component {
   };
 
   componentDidMount() {
-    const { collection, dispatch } = this.props;
+    const { collection, loadEntries } = this.props;
     if (collection) {
-      dispatch(loadEntries(collection));
+      loadEntries(collection);
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    const { collection, dispatch } = this.props;
+    const { collection, loadEntries } = this.props;
     if (nextProps.collection !== collection) {
-      dispatch(loadEntries(nextProps.collection));
+      loadEntries(nextProps.collection);
     }
   }
 
+  handleLoadMore = page => {
+    const { collection, loadEntries } = this.props;
+    loadEntries(collection, page);
+  }
+
   render () {
-    const { dispatch, collection, entries, publicFolder, page, isFetching, viewStyle } = this.props;
+    const { collection, entries, publicFolder, page, isFetching, viewStyle } = this.props;
 
     return (
       <Entries
@@ -40,7 +44,7 @@ class EntriesCollection extends React.Component {
         entries={entries}
         publicFolder={publicFolder}
         page={page}
-        onPaginate={() => dispatch(loadEntries(collection, page))}
+        onPaginate={this.handleLoadMore}
         isFetching={isFetching}
         collectionName={collection.get('label')}
         viewStyle={viewStyle}
@@ -61,4 +65,8 @@ function mapStateToProps(state, ownProps) {
   return { publicFolder, collection, page, entries, isFetching, viewStyle };
 }
 
-export default connect(mapStateToProps)(EntriesCollection);
+const mapDispatchToProps = {
+  loadEntries: actionLoadEntries,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(EntriesCollection);
