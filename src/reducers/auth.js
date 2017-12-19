@@ -1,18 +1,26 @@
 import Immutable from 'immutable';
-import { AUTH_REQUEST, AUTH_SUCCESS, AUTH_FAILURE, AUTH_REQUEST_DONE, LOGOUT } from 'Actions/auth';
+import { AUTH_REQUEST, AUTH_SUCCESS, AUTH_FAILURE, AUTH_REQUEST_DONE, REAUTHENTICATE, LOGOUT } from '../actions/auth';
 
-const auth = (state = null, action) => {
+const auth = (state = Immutable.Map(), action) => {
   switch (action.type) {
     case AUTH_REQUEST:
-      return Immutable.Map({ isFetching: true });
+      return state.set('isFetching', true);
     case AUTH_SUCCESS:
       return Immutable.fromJS({ user: action.payload });
     case AUTH_FAILURE:
-      return Immutable.Map({ error: action.payload.toString() });
+      return state.withMutations(map => {
+        map.set('error', action.payload.toString());
+        map.remove('isFetching');
+      });
     case AUTH_REQUEST_DONE:
       return state.remove('isFetching');
+    case REAUTHENTICATE:
+      return state.set('modal', true);
     case LOGOUT:
-      return state.remove('user').remove('isFetching');
+      return state.withMutations(map => {
+        map.remove('user');
+        map.remove('isFetching');
+      });
     default:
       return state;
   }

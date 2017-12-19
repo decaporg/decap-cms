@@ -2,8 +2,8 @@ import GithubAPI from "Backends/github/API";
 import { APIError } from "ValueObjects/errors";
 
 export default class API extends GithubAPI {
-  constructor(config) {
-    super(config);
+  constructor(config, reAuth) {
+    super(config, reAuth);
     this.api_root = config.api_root;
     this.tokenPromise = config.tokenPromise;
     this.commitAuthor = config.commitAuthor;
@@ -58,6 +58,9 @@ export default class API extends GithubAPI {
       return response.text();
     })
     .catch(error => {
+      if (responseStatus === 401) {
+        this.reAuth();
+      }
       throw new APIError(error.message, responseStatus, 'Git Gateway');
     });
   }
