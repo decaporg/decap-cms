@@ -4,13 +4,14 @@
     Changes that have landed in master but are not yet released.
     Click to see more.
   </summary>
-
-  * Fix select widgets with object type options ([@tech4him1](https://github.com/tech4him1) in [#920](https://github.com/netlify/netlify-cms/pull/920))
-  * Warn when uploading asset with same name as existing asset ([@Dammmien](https://github.com/Dammmien) in [#853](https://github.com/netlify/netlify-cms/pull/853))
-  * Fix Slate plugins broken during 0.30 migration ([@Dammmien](https://github.com/Dammmien) in [#856](https://github.com/netlify/netlify-cms/pull/856))
-  * Fix infinite scrolling for collections with integrations ([@erquhart](https://github.com/erquhart) in [#940](https://github.com/netlify/netlify-cms/pull/940))
 </details>
 
+## 1.0.3 (December 19, 2017)
+
+* Fix select widgets with object type options ([@tech4him1](https://github.com/tech4him1) in [#920](https://github.com/netlify/netlify-cms/pull/920))
+* Warn when uploading asset with same name as existing asset ([@Dammmien](https://github.com/Dammmien) in [#853](https://github.com/netlify/netlify-cms/pull/853))
+* Fix Slate plugins broken during 0.30 migration ([@Dammmien](https://github.com/Dammmien) in [#856](https://github.com/netlify/netlify-cms/pull/856))
+* Fix infinite scrolling for collections with integrations ([@erquhart](https://github.com/erquhart) in [#940](https://github.com/netlify/netlify-cms/pull/940))
 
 ## 1.0.2 (December 7, 2017)
 
@@ -23,7 +24,6 @@
 * Add configuration options doc ([@verythorough](https://github.com/verythorough) in [#885](https://github.com/netlify/netlify-cms/pull/885))
 * Add new docs website landing page ([@ziburski](https://github.com/ziburski) in [#880](https://github.com/netlify/netlify-cms/pull/880))
 * Rework Test Drive and Quick Start docs ([@verythorough](https://github.com/verythorough) in [#888](https://github.com/netlify/netlify-cms/pull/888))
-
 
 ## 1.0.0 (December 7, 2017)
 
