@@ -114,7 +114,7 @@ var eventInfoLoad = function() {
       $('.month').append(moment(eventDate).format('MMMM'));
       $('.day').append(moment(eventDate).format('DD'));
       $('.calendar-cta h2 strong:first-child()').append(moment(eventDate).format('dddd, MMMM Do'));
-      $('.calendar-cta h2 strong:last-child()').append(moment(eventDate).utcOffset(-7).format('h a'));
+      $('.calendar-cta h2 strong:last-child()').append(`${moment(eventDate).utcOffset(-8).format('h a')} PT`);
     }
 
     eventRequest.send();
