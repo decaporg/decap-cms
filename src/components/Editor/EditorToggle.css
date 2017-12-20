@@ -1,0 +1,18 @@
+.nc-editor-toggle {
+  @apply(--dropShadowMiddle);
+  background-color: #fff;
+  color: var(--colorInactive);
+  border-radius: 32px;
+  display: block;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.nc-editor-toggleActive {
+  color: var(--colorActive);
+}

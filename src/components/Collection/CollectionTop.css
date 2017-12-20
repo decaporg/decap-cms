@@ -1,0 +1,64 @@
+.nc-collectionPage-top {
+  @apply(--cardTop);
+}
+
+.nc-collectionPage-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.nc-collectionPage-top-description {
+  @apply(--cardTopDescription)
+}
+
+.nc-collectionPage-topHeading {
+  @apply(--cardTopHeading)
+}
+
+.nc-collectionPage-topNewButton {
+  @apply(--button);
+  @apply(--dropShadowDeep);
+  @apply(--buttonDefault);
+  @apply(--buttonGray);
+
+  padding: 0 30px;
+}
+
+.nc-collectionPage-top-viewControls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 14px;
+}
+
+.nc-collectionPage-top-viewControls {
+  margin-top: 24px;
+}
+
+.nc-collectionPage-top-viewControls-text {
+  font-size: 14px;
+  color: var(--colorText);
+  margin-right: 12px;
+}
+
+.nc-collectionPage-top-viewControls-button {
+  color: #b3b9c4;
+  background-color: transparent;
+  display: block;
+  padding: 0;
+  margin: 0 4px;
+
+  &:last-child {
+    margin-right: 0;
+  }
+
+  & .nc-icon {
+    display: block;
+  }
+}
+
+.nc-collectionPage-top-viewControls-buttonActive {
+  color: var(--colorActive);
+}

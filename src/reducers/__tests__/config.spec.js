@@ -1,5 +1,5 @@
 import Immutable from 'immutable';
-import { configLoaded, configLoading, configFailed } from '../../actions/config';
+import { configLoaded, configLoading, configFailed } from 'Actions/config';
 import config from '../config';
 
 describe('config', () => {

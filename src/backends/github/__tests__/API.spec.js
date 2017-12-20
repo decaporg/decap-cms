@@ -1,4 +1,4 @@
-import AssetProxy from "../../../valueObjects/AssetProxy";
+import AssetProxy from "ValueObjects/AssetProxy";
 import API from "../API";
 
 describe('github API', () => {

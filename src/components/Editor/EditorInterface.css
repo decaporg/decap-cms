@@ -1,0 +1,78 @@
+/**
+ * React Split Pane
+ */
+.Resizer.vertical {
+  width: 21px;
+  cursor: col-resize;
+  position: relative;
+  transition: background-color var(--transition);
+
+  &:before {
+    content: '';
+    width: 1px;
+    height: 100%;
+    position: relative;
+    left: 10px;
+    background-color: var(--textFieldBorderColor);
+    display: block;
+  }
+
+  &:hover,
+  &:active {
+    background-color: var(--colorGrayLight);
+  }
+}
+
+/* Quick fix for preview pane not fully displaying in Safari */
+.SplitPane .Pane {
+  height: 100%;
+}
+
+.SplitPane,
+.nc-entryEditor-noPreviewEditorContainer {
+  @apply(--card);
+  border-radius: 0;
+  height: 100%;
+}
+
+.nc-entryEditor-containerOuter {
+  width: 100%;
+  min-width: 800px;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  padding-top: 66px;
+  background-color: var(--colorBackground);
+}
+
+.nc-entryEditor-container {
+  max-width: 1600px;
+  height: 100%;
+  margin: 0 auto;
+  position: relative;
+}
+
+.nc-entryEditor-controlPane,
+.nc-entryEditor-previewPane {
+  height: 100%;
+  overflow-y: auto;
+}
+
+.nc-entryEditor-controlPane {
+  padding: 0 16px 16px;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.nc-entryEditor-viewControls {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 299;
+}
+
+.nc-entryEditor-blocker > * {
+  pointer-events: none;
+}

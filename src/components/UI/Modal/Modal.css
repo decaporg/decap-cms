@@ -1,0 +1,57 @@
+.nc-modal-overlay {
+  z-index: 99999;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  background-color: rgba(0, 0, 0, 0);
+  transition: background-color var(--transition), opacity var(--transition);
+}
+
+.nc-modal-overlay-afterOpen {
+  background-color: rgba(0, 0, 0, 0.6);
+  opacity: 1;
+}
+
+.nc-modal-overlay-beforeClose {
+  background-color: rgba(0, 0, 0, 0);
+  opacity: 0;
+}
+
+.nc-modal-body {
+  @apply(--dropShadowDeep);
+  background-color: #fff;
+  border-radius: var(--borderRadius);
+  height: 80%;
+  text-align: center;
+  max-width: 2200px;
+  padding: 20px;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.nc-dialog-body {
+  height: 100%;
+}
+
+.nc-dialog-contentWrapper {
+  height: 100%;
+}
+
+.nc-dialog-footer {
+  margin: 24px 0;
+  width: calc(100% - 48px);
+  position: absolute;
+  bottom: 0;
+}
+
+.ReactModal__Body--open {
+  overflow: hidden;
+}

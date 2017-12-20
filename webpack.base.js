@@ -2,9 +2,45 @@
 
 const webpack = require('webpack');
 const path = require('path');
+const { partial } = require('lodash');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
+const resolveAlias = partial(path.resolve, __dirname);
+const componentsDir = 'src/components';
+
 module.exports = {
+  /**
+   * Use aliases to avoid relative path import hell.
+   */
+  resolve: {
+    alias: {
+      /**
+       * Components
+       */
+      App: resolveAlias(`${componentsDir}/App/`),
+      Collection: resolveAlias(`${componentsDir}/Collection/`),
+      Editor: resolveAlias(`${componentsDir}/Editor/`),
+      EditorWidgets: resolveAlias(`${componentsDir}/EditorWidgets/`),
+      MarkdownPlugins: resolveAlias(`${componentsDir}/MarkdownPlugins/`),
+      MediaLibrary: resolveAlias(`${componentsDir}/MediaLibrary/`),
+      UI: resolveAlias(`${componentsDir}/UI/`),
+      Workflow: resolveAlias(`${componentsDir}/Workflow/`),
+
+      /**
+       * Top level src directories
+       */
+      Actions: resolveAlias('src/actions/'),
+      Backends: resolveAlias('src/backends/'),
+      Constants: resolveAlias('src/constants/'),
+      Formats: resolveAlias('src/formats/'),
+      Integrations: resolveAlias('src/integrations/'),
+      Lib: resolveAlias('src/lib/'),
+      Reducers: resolveAlias('src/reducers/'),
+      Redux: resolveAlias('src/redux/'),
+      Routing: resolveAlias('src/routing/'),
+      ValueObjects: resolveAlias('src/valueObjects/'),
+    },
+  },
   module: {
     rules: [
       {
@@ -17,29 +53,10 @@ module.exports = {
            List all of theme in the array
         */
         test: /\.css$/,
-        include: [/redux-notifications/, /normalize.css/],
+        include: [/redux-notifications/],
         use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
           use: 'css-loader',
-        }),
-      },
-      {
-        /* React-toolbox relies on PostCSS and css-modules */
-        test: /\.css$/,
-        include: [/react-toolbox/],
-        use: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: [
-            {
-              loader: 'css-loader',
-              options: {
-                modules: true,
-                importLoaders: 1,
-                localIdentName: "[name]__[local]__[hash:base64:8]"
-              },
-            },
-            { loader: 'postcss-loader' },
-          ],
         }),
       },
       {
@@ -60,8 +77,9 @@ module.exports = {
         }),
       },
       {
-        test: /\.(png|eot|woff|woff2|ttf|svg|gif)(\?v=\d+\.\d+\.\d+)?$/,
-        use: { loader: "url-loader", options: { limit: 10000 } },
+        test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+        exclude: [/node_modules/],
+        loader: 'svg-inline-loader',
       },
     ],
   },

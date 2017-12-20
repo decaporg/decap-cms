@@ -1,7 +1,7 @@
-import { resolvePath } from '../lib/pathHelper';
-import { currentBackend } from "../backends/backend";
-import { getIntegrationProvider } from '../integrations';
-import { selectIntegration } from '../reducers';
+import { resolvePath } from 'Lib/pathHelper';
+import { currentBackend } from "Backends/backend";
+import { getIntegrationProvider } from 'Integrations';
+import { selectIntegration } from 'Reducers';
 
 let store;
 export const setStore = (storeObj) => {

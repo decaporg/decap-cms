@@ -5,6 +5,7 @@ import {
   MEDIA_LIBRARY_OPEN,
   MEDIA_LIBRARY_CLOSE,
   MEDIA_INSERT,
+  MEDIA_REMOVE_INSERTED,
   MEDIA_LOAD_REQUEST,
   MEDIA_LOAD_SUCCESS,
   MEDIA_LOAD_FAILURE,
@@ -14,7 +15,7 @@ import {
   MEDIA_DELETE_REQUEST,
   MEDIA_DELETE_SUCCESS,
   MEDIA_DELETE_FAILURE,
-} from '../actions/mediaLibrary';
+} from 'Actions/mediaLibrary';
 
 const mediaLibrary = (state = Map({ isVisible: false, controlMedia: Map() }), action) => {
   const privateUploadChanged = state.get('privateUpload') !== get(action, ['payload', 'privateUpload']);
@@ -45,6 +46,10 @@ const mediaLibrary = (state = Map({ isVisible: false, controlMedia: Map() }), ac
       const controlID = state.get('controlID');
       const mediaPath = get(action, ['payload', 'mediaPath']);
       return state.setIn(['controlMedia', controlID], mediaPath);
+    }
+    case MEDIA_REMOVE_INSERTED: {
+      const controlID = get(action, ['payload', 'controlID']);
+      return state.setIn(['controlMedia', controlID], '');
     }
     case MEDIA_LOAD_REQUEST:
       return state.withMutations(map => {

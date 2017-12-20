@@ -1,0 +1,17 @@
+@import "./Object/Object.css";
+@import "./List/List.css";
+@import "./withMedia/withMedia.css";
+@import "./Image/Image.css";
+@import "./File/FileControl.css";
+@import "./Markdown/Markdown.css";
+@import "./Boolean/Boolean.css";
+@import "./Relation/Relation.css";
+@import "./DateTime/DateTime.css";
+
+:root {
+  --widgetNestDistance: 14px;
+}
+
+.nc-widgetPreview {
+  margin: 15px 2px;
+}

@@ -1,11 +1,8 @@
 import PropTypes from 'prop-types';
 import React from "react";
-import Input from "react-toolbox/lib/input";
-import Button from "react-toolbox/lib/button";
+import { partial } from 'lodash';
 import { Notifs } from 'redux-notifications';
-import { Toast } from '../../components/UI/index';
-import { Card, Icon } from "../../components/UI";
-import logo from "./netlify_logo.svg";
+import { Toast, Icon } from 'UI';
 
 let component = null;
 
@@ -59,8 +56,8 @@ export default class AuthenticationPage extends React.Component {
 
   state = { email: "", password: "", errors: {} };
 
-  handleChange = (name, value) => {
-    this.setState({ ...this.state, [name]: value });
+  handleChange = (name, e) => {
+    this.setState({ ...this.state, [name]: e.target.value });
   };
 
   handleLogin = (e) => {
@@ -96,48 +93,43 @@ export default class AuthenticationPage extends React.Component {
     if (window.netlifyIdentity) {
       return <section className="nc-gitGatewayAuthenticationPage-root">
         <Notifs CustomComponent={Toast} />
-        <Button className="nc-gitGatewayAuthenticationPage-button" raised onClick={this.handleIdentity}>
+        <Icon className="nc-githubAuthenticationPage-logo" size="500px" type="netlify-cms"/>
+        <button className="nc-githubAuthenticationPage-button" onClick={this.handleIdentity}>
           Login with Netlify Identity
-        </Button>
+        </button>
       </section>
     }
 
     return (
       <section className="nc-gitGatewayAuthenticationPage-root">
-        <Card className="nc-gitGatewayAuthenticationPage-card">
-          <form onSubmit={this.handleLogin}>
-            <img src={logo} width={100} role="presentation" />
-            {error && <p>
-              <span className="nc-gitGatewayAuthenticationPage-errorMsg">{error}</span>
-            </p>}
-            {errors.server && <p>
-              <span className="nc-gitGatewayAuthenticationPage-errorMsg">{errors.server}</span>
-            </p>}
-            <Input
-              type="text"
-              label="Email"
-              name="email"
-              value={this.state.email}
-              error={errors.email}
-              onChange={this.handleChange.bind(this, "email")} // eslint-disable-line
-            />
-            <Input
-              type="password"
-              label="Password"
-              name="password"
-              value={this.state.password}
-              error={errors.password}
-              onChange={this.handleChange.bind(this, "password")} // eslint-disable-line
-            />
-            <Button
-              className="nc-gitGatewayAuthenticationPage-button"
-              raised
-              disabled={inProgress}
-            >
-              <Icon type="login" /> {inProgress ? "Logging in..." : "Login"}
-            </Button>
-          </form>
-        </Card>
+        <Icon className="nc-githubAuthenticationPage-logo" size="500px" type="netlify-cms"/>
+        <form className="nc-gitGatewayAuthenticationPage-form" onSubmit={this.handleLogin}>
+          {!error && <p>
+            <span className="nc-gitGatewayAuthenticationPage-errorMsg">{error}</span>
+          </p>}
+          {!errors.server && <p>
+            <span className="nc-gitGatewayAuthenticationPage-errorMsg">{errors.server}</span>
+          </p>}
+          <div className="nc-gitGatewayAuthenticationPage-errorMsg">{ errors.email || null }</div>
+          <input
+            type="text"
+            name="email"
+            placeholder="Email"
+            value={this.state.email}
+            onChange={partial(this.handleChange, 'email')}
+          />
+          <div className="nc-gitGatewayAuthenticationPage-errorMsg">{ errors.password || null }</div>
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={this.state.password}
+            onChange={partial(this.handleChange, 'password')}
+          />
+          <button className="nc-gitGatewayAuthenticationPage-button" disabled={inProgress}>
+            {inProgress ? "Logging in..." : "Login"}
+          </button>
+        </form>
       </section>
     );
   }

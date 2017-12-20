@@ -1,0 +1,337 @@
+:root {
+  /**
+   * Font Stacks
+   */
+  --fontFamilyPrimary:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif,
+    "Apple Color Emoji",
+    "Segoe UI Emoji",
+    "Segoe UI Symbol";
+
+  --fontFamilyMono:
+    'SFMono-Regular',
+    Consolas,
+    "Liberation Mono",
+    Menlo,
+    Courier,
+    monospace;
+
+  /**
+   * Theme Colors
+   */
+  --colorWhite: #fff;
+  --colorGrayLight: #eff0f4;
+  --colorGray: #798291;
+  --colorGrayDark: #313d3e;
+  --colorBlue: #3a69c7;
+  --colorBlueLight: #e8f5fe;
+  --colorGreen: #005614;
+  --colorGreenLight: #caef6f;
+  --colorBrown: #754e00;
+  --colorYellow: #ffee9c;
+  --colorRed: #ff003b;
+  --colorRedLight: #fcefea;
+  --colorPurple: #70399f;
+  --colorPurpleLight: #f6d8ff;
+  --colorTeal: #17a2b8;
+  --colorTealLight: #ddf5f9;
+
+  --colorStatusDraftText: var(--colorPurple);
+  --colorStatusDraftBackground: var(--colorPurpleLight);
+  --colorStatusReviewText: var(--colorBrown);
+  --colorStatusReviewBackground: var(--colorYellow);
+  --colorStatusReadyText: var(--colorGreen);
+  --colorStatusReadyBackground: var(--colorGreenLight);
+
+  --colorText: var(--colorGray);
+  --colorTextLight: var(--colorWhite);
+  --colorTextLead: var(--colorGrayDark);
+  --colorBackground: var(--colorGrayLight);
+  --colorForeground: var(--colorWhite);
+  --colorActive: var(--colorBlue);
+  --colorActiveBackground: var(--colorBlueLight);
+  --colorInactive: var(--colorGray);
+  --colorButton: var(--colorGray);
+  --colorButtonText: var(--colorWhite);
+  --colorInputBackground: var(--colorWhite);
+
+  --colorInfoText: var(--colorBlue);
+  --colorInfoBackground: var(--colorBlueLight);
+  --colorSuccessText: var(--colorGreen);
+  --colorSuccessBackground: var(--colorGreenLight);
+  --colorWarnText: var(--colorBrown);
+  --colorWarnBackground: var(--colorYellow);
+  --colorErrorText: var(--colorRed);
+  --colorErrorBackground: var(--colorRedLight);
+
+  --textFieldBorderColor: #dfdfe3;
+  --controlLabelColor: #7a8291;
+
+  --topBarHeight: 56px;
+  --transition: .2s ease;
+  --inputPadding: 16px 20px;
+  --borderRadius: 5px;
+  --richTextEditorMinHeight: 300px;
+  --borderWidth: 2px;
+  --textFieldBorder: solid var(--borderWidth) var(--textFieldBorderColor);
+  --topCardWidth: 682px;
+  --pageMargin: 84px 18px;
+
+  --dropShadow: {
+    box-shadow: 0 2px 4px 0  rgba(19, 39, 48, .12);
+  }
+
+  --dropShadowMain: {
+    box-shadow: 0 2px 6px 0  rgba(68, 74, 87, 0.05),
+                0 1px 3px 0  rgba(68, 74, 87, 0.10);
+  }
+
+  --dropShadowMiddle: {
+    box-shadow: 0 2px 6px 0  rgba(68, 74, 87, 0.15),
+                0 1px 3px 0  rgba(68, 74, 87, 0.30);
+  }
+
+  --dropShadowDeep: {
+    box-shadow: 0 4px 12px 0 rgba(68, 74, 87, 0.15),
+                0 1px 3px  0 rgba(68, 74, 87, 0.25);
+  }
+
+  --caretDown: {
+    color: #fff;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid currentColor;
+    border-radius: 2px;
+  }
+
+  --card: {
+    @apply(--dropShadowMain);
+    border-radius: 5px;
+    background-color: #fff;
+  }
+
+  --button: {
+    border: 0;
+    border-radius: var(--borderRadius);
+    cursor: pointer;
+  }
+
+  --buttonDefault {
+    height: 36px;
+    line-height: 36px;
+    font-weight: 500;
+    padding: 0 15px;
+    background-color: var(--colorGray);
+    color: var(--colorWhite);
+  }
+
+  --buttonMedium {
+    height: 27px;
+    line-height: 27px;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    border-radius: 3px;
+    padding: 0 24px 0 14px;
+  }
+
+  --buttonSmall {
+    height: 23px;
+    line-height: 23px;
+  }
+
+  --buttonGray {
+    background-color: var(--colorButton);
+    color: var(--colorButtonText);
+
+    &:focus,
+    &:hover {
+      color: white;
+      background-color: #555a65;
+    }
+  }
+
+  --buttonGreen {
+    background-color: #AAE31F;
+    color: #005614;
+  }
+
+  --buttonLightRed {
+    background-color: #FCEFEA;
+    color: #FF003B;
+  }
+
+  --buttonLightBlue {
+    background-color: #E8F5FE;
+    color: #3A69C7;
+  }
+
+  --buttonLightTeal {
+    background-color: #DDF5F9;
+    color: #1195AA;
+  }
+
+  --buttonTeal {
+    background-color: #17A2B8;
+    color: white;
+  }
+
+  --buttonDisabled {
+    background-color: var(--colorGrayLight);
+    color: var(--colorGray);
+  }
+
+  --textBadge: {
+    color: #3a69c7;
+    font-size: 13px;
+    background-color: #e8f5fe;
+    border-radius: var(--borderRadius);
+    padding: 4px 10px;
+    text-align: center;
+    display: inline-block;
+    line-height: 1;
+  }
+
+  --textBadgeSuccess: {
+    @apply(--textBadge);
+    color: #005614;
+    background-color: #caef6f;
+  }
+
+  --textBadgeDanger: {
+    @apply(--textBadge);
+    color: #ff003b;
+    background-color: #fbe0d7;
+  }
+
+  --loaderSize: {
+    width: 2.28571429rem;
+    height: 2.28571429rem;
+  }
+
+  --cardTop: {
+    @apply(--card);
+    width: var(--topCardWidth);
+    max-width: 100%;
+    padding: 18px 20px;
+    margin-bottom: 28px;
+  }
+
+  --cardTopHeading: {
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 37px;
+    margin: 0;
+    padding: 0;
+  }
+
+  --cardTopDescription: {
+    max-width: 480px;
+    color: var(--colorText);
+    font-size: 14px;
+    margin-top: 8px;
+  }
+}
+
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+
+:focus {
+  outline: -webkit-focus-ring-color auto 5px;
+
+}
+
+/**
+ * Don't show outlines if the user is utilizing mouse rather than keyboard.
+ */
+[data-whatintent="mouse"] *:focus {
+  outline: none;
+}
+
+
+input {
+  border: 0;
+}
+
+body {
+  font-family: var(--fontFamilyPrimary);
+  font-weight: normal;
+  background-color: var(--colorBackground);
+  color: var(--colorText);
+  margin: 0;
+}
+
+ul, ol {
+  padding-left: 0;
+}
+
+h1, h2, h3, h4, h5, h6, p {
+  font-family: var(--fontFamilyPrimary);
+  color: var(--colorTextLead);
+  font-size: 15px;
+  line-height: 1.5;
+  margin-top: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 500;
+}
+
+h1 {
+  font-size: 24px;
+  letter-spacing: 0.4px;
+  color: var(--colorTextLead);
+}
+
+a,
+button {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+a {
+  color: var(--colorText);
+  text-decoration: none;
+}
+
+button {
+  @apply(--button);
+
+  &.LightBlue {
+    @apply(--buttonLightBlue);
+  }
+
+  &.Teal {
+    @apply(--buttonTeal);
+  }
+
+  &.LightTeal {
+    @apply(--buttonLightTeal);
+  }
+
+  &.LightRed {
+    @apply(--buttonLightRed);
+  }
+
+  &.Green {
+    @apply(--buttonGreen);
+  }
+}
+
+img {
+  max-width: 100%;
+}
+
+textarea {
+  resize: none;
+}

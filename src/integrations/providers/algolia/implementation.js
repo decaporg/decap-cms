@@ -1,6 +1,6 @@
 import _ from 'lodash';
-import { createEntry } from '../../../valueObjects/Entry';
-import { selectEntrySlug } from '../../../reducers/collections';
+import { createEntry } from 'ValueObjects/Entry';
+import { selectEntrySlug } from 'Reducers/collections';
 
 function getSlug(path) {
   return path.split('/').pop().replace(/\.[^\.]+$/, '');

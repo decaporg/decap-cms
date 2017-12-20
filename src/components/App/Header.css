@@ -1,0 +1,91 @@
+.nc-appHeader-container {
+  z-index: 300;
+}
+
+.nc-appHeader-main {
+  @apply(--dropShadowMain);
+  position: fixed;
+  width: 100%;
+  top: 0;
+  background-color: var(--colorForeground);
+  z-index: 300;
+  height: var(--topBarHeight);
+}
+
+.nc-appHeader-content {
+  display: flex;
+  justify-content: space-between;
+  min-width: 800px;
+  max-width: 1440px;
+  padding: 0 12px;
+  margin: 0 auto;
+}
+
+.nc-appHeader-button {
+  background-color: transparent;
+  color: #7b8290;
+  font-size: 16px;
+  font-weight: 500;
+  display: inline-flex;
+  padding: 16px 20px;
+  align-items: center;
+
+  & .nc-icon {
+    margin-right: 4px;
+    color: #b3b9c4;
+  }
+
+  &:hover,
+  &:active,
+  &:focus,
+  &.nc-appHeader-button-active {
+    background-color: white;
+    color: var(--colorActive);
+
+    & .nc-icon {
+      color: var(--colorActive);
+    }
+  }
+}
+
+.nc-appHeader-actions {
+  display: inline-flex;
+  align-items: center;
+}
+
+.nc-appHeader-siteLink {
+  font-size: 14px;
+  font-weight: 400;
+  color: #7b8290;
+  padding: 10px 16px;
+}
+
+.nc-appHeader-quickNew {
+  @apply(--buttonMedium);
+  @apply(--buttonGray);
+  margin-right: 8px;
+
+  &:after {
+    top: 11px;
+  }
+}
+
+.nc-appHeader-avatar {
+  border: 0;
+  padding: 8px;
+  cursor: pointer;
+  color: #1e2532;
+  background-color: transparent;
+}
+
+.nc-appHeader-avatar-image,
+.nc-appHeader-avatar-placeholder {
+  width: 32px;
+  border-radius: 32px;
+}
+
+.nc-appHeader-avatar-placeholder {
+  height: 32px;
+  color: #1e2532;
+  background-color: var(--textFieldBorderColor);
+}

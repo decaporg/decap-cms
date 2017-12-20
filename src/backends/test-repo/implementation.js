@@ -1,7 +1,7 @@
 import { remove, attempt, isError } from 'lodash';
 import uuid from 'uuid/v4';
+import { fileExtension } from 'Lib/pathHelper'
 import AuthenticationPage from './AuthenticationPage';
-import { fileExtension } from '../../lib/pathHelper'
 
 window.repoFiles = window.repoFiles || {};
 
@@ -12,15 +12,6 @@ function getFile(path) {
     obj = obj[segments.shift()];
   }
   return obj || {};
-}
-
-function nameFromEmail(email) {
-  return email
-    .split('@').shift().replace(/[.-_]/g, ' ')
-    .split(' ')
-    .filter(f => f)
-    .map(s => s.substr(0, 1).toUpperCase() + (s.substr(1) || ''))
-    .join(' ');
 }
 
 export default class TestRepo {
@@ -37,8 +28,8 @@ export default class TestRepo {
     return this.authenticate(user);
   }
 
-  authenticate(state) {
-    return Promise.resolve({ email: state.email, name: nameFromEmail(state.email) });
+  authenticate() {
+    return Promise.resolve();
   }
 
   logout() {

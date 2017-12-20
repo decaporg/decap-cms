@@ -1,31 +1,45 @@
 .nc-gitGatewayAuthenticationPage-root {
   display: flex;
+  flex-flow: column nowrap;
   align-items: center;
   justify-content: center;
   height: 100vh;
 }
 
-.nc-gitGatewayAuthenticationPage-card {
+.nc-gitGatewayAuthenticationPage-form {
   width: 350px;
-  padding: 10px;
-}
+  margin-top: -80px;
+  & input {
+    background-color: #fff;
+    border-radius: var(--borderRadius);
 
-.nc-gitGatewayAuthenticationPage-card img {
-  display: block;
-  margin: auto;
-  padding-bottom: 5px;
-}
+    font-size: 14px;
+    padding: 10px 10px;
+    margin-bottom: 15px;
+    margin-top: 6px;
+    width: 100%;
+    position: relative;
+    z-index: 1;
 
-.nc-gitGatewayAuthenticationPage-errorMsg {
-  color: #dd0000;
-}
-
-.nc-gitGatewayAuthenticationPage-message {
-  font-size: 1.1em;
-  margin: 20px 10px;
+    &:focus {
+      outline: none;
+      box-shadow: inset 0 0 0 2px var(--colorBlue);
+    }
+  }
 }
 
 .nc-gitGatewayAuthenticationPage-button {
-  padding: .25em 1em;
-  height: auto;
+  @apply(--button);
+  @apply(--dropShadowDeep);
+  @apply(--buttonDefault);
+  @apply(--buttonGray);
+
+  padding: 0 30px;
+  display: block;
+  margin-top: 20px;
+  margin-left: auto;
+}
+
+.nc-gitGatewayAuthenticationPage-errorMsg {
+  color: var(--colorErrorText);
 }

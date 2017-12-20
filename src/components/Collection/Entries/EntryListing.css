@@ -1,0 +1,9 @@
+.nc-entryListing-cardsGrid {
+  display: flex;
+  flex-flow: row wrap;
+  margin-left: -12px;
+}
+
+.nc-entryListing-cardsList {
+  margin-left: -12px;
+}

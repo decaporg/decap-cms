@@ -1,0 +1,9 @@
+.nc-booleanControl-switch {
+  & .nc-toggle-background {
+    background-color: var(--textFieldBorderColor);
+  }
+
+  & .nc-toggle-active .nc-toggle-background {
+    background-color: var(--colorActive);
+  }
+}

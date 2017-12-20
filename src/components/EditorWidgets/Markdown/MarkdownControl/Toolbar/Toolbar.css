@@ -1,0 +1,48 @@
+.nc-toolbar-Toolbar {
+  background-color: var(--textFieldBorderColor);
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 11px 14px;
+  min-height: 58px;
+  transition: background-color var(--transition), color var(--transition);
+}
+
+.nc-markdownWidget-toolbar-toggle {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  margin: 0 10px;
+}
+
+.nc-markdownWidget-toolbar-toggle-label {
+  display: inline-block;
+  text-align: center;
+  white-space: nowrap;
+  line-height: 20px;
+}
+
+.nc-markdownWidget-toolbar-toggle-label-active {
+  font-weight: 600;
+  color: #3a69c7;
+}
+
+.nc-toolbar-ToolbarActive {
+  background-color: var(--colorActive);
+  color: var(--colorTextLight);
+
+  & .nc-markdownWidget-toolbar-toggle-label {
+    color: var(--colorTextLight);
+  }
+
+  & .nc-markdownWidget-toolbar-toggle-background {
+    background-color: var(--textFieldBorderColor);
+  }
+}
+
+.nc-toolbar-dropdown {
+  display: inline-block;
+  position: relative;
+}

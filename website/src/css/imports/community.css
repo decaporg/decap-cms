@@ -1,0 +1,51 @@
+.communitysupport {
+  @neat-row;
+  background-color: white;
+  padding: $xl 0 $large 0;
+
+  @media screen and (min-width: $desktop) {
+    h2 {
+      text-align: center;
+      margin-bottom: $medium;
+    }
+  }
+
+  .community-features {
+    @neat-span-columns 12;
+
+    @media screen and (min-width: $tablet) {
+      @neat-span-columns 8;
+    }
+    @media screen and (min-width: $desktop) {
+      @neat-span-columns 6;
+    }
+
+    .feature {
+      margin-top: $small;
+
+    }
+  }
+
+  .contributors {
+    @neat-span-columns 12;
+    margin-top: $small;
+
+    @media screen and (min-width: $tablet) {
+      @neat-span-columns 10;
+    }
+    @media screen and (min-width: $desktop) {
+      @neat-span-columns 5;
+      float: right;
+    }
+
+    .contributor-list {
+      margin-top: 4px;
+      img {
+        width: 32px;
+        margin: 0 $micro $micro 0;
+        border-radius: 16px;
+      }
+    }
+
+  }
+}

@@ -1,0 +1,29 @@
+@import "./WorkflowList.css";
+@import "./WorkflowCard.css";
+
+.nc-workflow {
+  padding: var(--pageMargin);
+  padding-bottom: 0;
+  height: 100vh;
+}
+
+.nc-workflow-top {
+  @apply(--cardTop);
+}
+
+.nc-workflow-top-row {
+  display: flex;
+  justify-content: space-between;
+
+  & span[role="button"] {
+    @apply(--dropShadowDeep);
+  }
+}
+
+.nc-workflow-top-heading {
+  @apply(--cardTopHeading);
+}
+
+.nc-workflow-top-description {
+  @apply(--cardTopDescription);
+}

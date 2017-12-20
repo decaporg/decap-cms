@@ -1,14 +1,13 @@
 import uuid from 'uuid/v4';
 import { actions as notifActions } from 'redux-notifications';
-import { serializeValues } from '../lib/serializeEntryValues';
-import { closeEntry } from './editor';
 import { BEGIN, COMMIT, REVERT } from 'redux-optimist';
-import { currentBackend } from '../backends/backend';
-import { getAsset } from '../reducers';
-import { selectFields } from '../reducers/collections';
+import { serializeValues } from 'Lib/serializeEntryValues';
+import { currentBackend } from 'Backends/backend';
+import { getAsset } from 'Reducers';
+import { selectFields } from 'Reducers/collections';
+import { status, EDITORIAL_WORKFLOW } from 'Constants/publishModes';
+import { EditorialWorkflowError } from "ValueObjects/errors";
 import { loadEntry } from './entries';
-import { status, EDITORIAL_WORKFLOW } from '../constants/publishModes';
-import { EditorialWorkflowError } from "../valueObjects/errors";
 
 const { notifSend } = notifActions;
 
@@ -34,6 +33,10 @@ export const UNPUBLISHED_ENTRY_STATUS_CHANGE_FAILURE = 'UNPUBLISHED_ENTRY_STATUS
 export const UNPUBLISHED_ENTRY_PUBLISH_REQUEST = 'UNPUBLISHED_ENTRY_PUBLISH_REQUEST';
 export const UNPUBLISHED_ENTRY_PUBLISH_SUCCESS = 'UNPUBLISHED_ENTRY_PUBLISH_SUCCESS';
 export const UNPUBLISHED_ENTRY_PUBLISH_FAILURE = 'UNPUBLISHED_ENTRY_PUBLISH_FAILURE';
+
+export const UNPUBLISHED_ENTRY_DELETE_REQUEST = 'UNPUBLISHED_ENTRY_DELETE_REQUEST';
+export const UNPUBLISHED_ENTRY_DELETE_SUCCESS = 'UNPUBLISHED_ENTRY_DELETE_SUCCESS';
+export const UNPUBLISHED_ENTRY_DELETE_FAILURE = 'UNPUBLISHED_ENTRY_DELETE_FAILURE';
 
 /*
  * Simple Action Creators (Internal)
@@ -105,12 +108,13 @@ function unpublishedEntryPersisting(collection, entry, transactionID) {
   };
 }
 
-function unpublishedEntryPersisted(collection, entry, transactionID) {
+function unpublishedEntryPersisted(collection, entry, transactionID, slug) {
   return {
     type: UNPUBLISHED_ENTRY_PERSIST_SUCCESS,
     payload: { 
       collection: collection.get('name'),
       entry,
+      slug,
     },
     optimist: { type: COMMIT, id: transactionID },
   };
@@ -183,6 +187,30 @@ function unpublishedEntryPublishError(collection, slug, transactionID) {
   };
 }
 
+function unpublishedEntryDeleteRequest(collection, slug, transactionID) {
+  return {
+    type: UNPUBLISHED_ENTRY_DELETE_REQUEST,
+    payload: { collection, slug },
+    optimist: { type: BEGIN, id: transactionID },
+  };
+}
+
+function unpublishedEntryDeleted(collection, slug, transactionID) {
+  return {
+    type: UNPUBLISHED_ENTRY_DELETE_SUCCESS,
+    payload: { collection, slug },
+    optimist: { type: COMMIT, id: transactionID },
+  };
+}
+
+function unpublishedEntryDeleteError(collection, slug, transactionID) {
+  return {
+    type: UNPUBLISHED_ENTRY_DELETE_FAILURE,
+    payload: { collection, slug },
+    optimist: { type: REVERT, id: transactionID },
+  };
+}
+
 /*
  * Exported Thunk Action Creators
  */
@@ -223,7 +251,7 @@ export function loadUnpublishedEntries(collections) {
 }
 
 export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     const state = getState();
     const entryDraft = state.entryDraft;
 
@@ -246,23 +274,32 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
 
     dispatch(unpublishedEntryPersisting(collection, serializedEntry, transactionID));
     const persistAction = existingUnpublishedEntry ? backend.persistUnpublishedEntry : backend.persistEntry;
-    return persistAction.call(backend, state.config, collection, serializedEntryDraft, assetProxies.toJS(), state.integrations)
-    .then(() => {
+    const persistCallArgs = [
+      backend,
+      state.config,
+      collection,
+      serializedEntryDraft,
+      assetProxies.toJS(),
+      state.integrations,
+    ];
+
+    try {
+      const newSlug = await persistAction.call(...persistCallArgs);
       dispatch(notifSend({
         message: 'Entry saved',
         kind: 'success',
         dismissAfter: 4000,
       }));
-      return dispatch(unpublishedEntryPersisted(collection, serializedEntry, transactionID));
-    })
-    .catch((error) => {
+      dispatch(unpublishedEntryPersisted(collection, serializedEntry, transactionID, newSlug));
+    }
+    catch(error) {
       dispatch(notifSend({
         message: `Failed to persist entry: ${ error }`,
         kind: 'danger',
         dismissAfter: 8000,
       }));
       return Promise.reject(dispatch(unpublishedEntryPersistedFail(error, transactionID)));
-    });
+    }
   };
 }
 
@@ -274,9 +311,19 @@ export function updateUnpublishedEntryStatus(collection, slug, oldStatus, newSta
     dispatch(unpublishedEntryStatusChangeRequest(collection, slug, oldStatus, newStatus, transactionID));
     backend.updateUnpublishedEntryStatus(collection, slug, newStatus)
     .then(() => {
+      dispatch(notifSend({
+        message: 'Entry status updated',
+        kind: 'success',
+        dismissAfter: 4000,
+      }));
       dispatch(unpublishedEntryStatusChangePersisted(collection, slug, oldStatus, newStatus, transactionID));
     })
     .catch(() => {
+      dispatch(notifSend({
+        message: `Failed to update status: ${ error }`,
+        kind: 'danger',
+        dismissAfter: 8000,
+      }));
       dispatch(unpublishedEntryStatusChangeError(collection, slug, transactionID));
     });
   };
@@ -287,18 +334,23 @@ export function deleteUnpublishedEntry(collection, slug) {
     const state = getState();
     const backend = currentBackend(state.config);
     const transactionID = uuid();
-    dispatch(unpublishedEntryPublishRequest(collection, slug, transactionID)); 
-    backend.deleteUnpublishedEntry(collection, slug)
+    dispatch(unpublishedEntryDeleteRequest(collection, slug, transactionID));
+    return backend.deleteUnpublishedEntry(collection, slug)
     .then(() => {
-      dispatch(unpublishedEntryPublished(collection, slug, transactionID));
+      dispatch(notifSend({
+        message: 'Unpublished changes deleted',
+        kind: 'success',
+        dismissAfter: 4000,
+      }));
+      dispatch(unpublishedEntryDeleted(collection, slug, transactionID));
     })
     .catch((error) => {
       dispatch(notifSend({
-        message: `Failed to close PR: ${ error }`,
+        message: `Failed to delete unpublished changes: ${ error }`,
         kind: 'danger',
         dismissAfter: 8000,
       }));
-      dispatch(unpublishedEntryPublishError(collection, slug, transactionID)); 
+      dispatch(unpublishedEntryDeleteError(collection, slug, transactionID));
     });
   };
 }
@@ -309,13 +361,18 @@ export function publishUnpublishedEntry(collection, slug) {
     const backend = currentBackend(state.config);
     const transactionID = uuid();
     dispatch(unpublishedEntryPublishRequest(collection, slug, transactionID));
-    backend.publishUnpublishedEntry(collection, slug)
+    return backend.publishUnpublishedEntry(collection, slug)
     .then(() => {
+      dispatch(notifSend({
+        message: 'Entry published',
+        kind: 'success',
+        dismissAfter: 4000,
+      }));
       dispatch(unpublishedEntryPublished(collection, slug, transactionID));
     })
     .catch((error) => {
       dispatch(notifSend({
-        message: `Failed to merge: ${ error }`,
+        message: `Failed to publish: ${ error }`,
         kind: 'danger',
         dismissAfter: 8000,
       }));
