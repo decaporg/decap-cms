@@ -44,17 +44,7 @@ export default class Editor extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return (this.props.value !== null && nextProps.value === null)
-      || (this.props.value === null && nextProps.value !== null)
-      || !this.state.value.equals(nextState.value);
-  }
-
-  componentWillUpdate(nextProps) {
-    const shouldResetState = (this.props.value !== null && nextProps.value === null)
-      || (this.props.value === null && nextProps.value !== null)
-    if (shouldResetState) {
-      this.setState({ value: createSlateValue(nextProps.value) });
-    }
+    return !this.state.value.equals(nextState.value);
   }
 
   handlePaste = (e, data, change) => {
