@@ -31,7 +31,7 @@ After clicking one of those buttons, you’ll authenticate with GitHub and choos
 
     !["Complete your signup" modal on the Kaldi coffee site](https://www.netlifycms.org/img/create-password.png?raw=true)
 
-3. Enter a password, sign in, and you’ll be directed straight to the CMS. (For future visits, you can go straight to `<yoursiteaddress.com>/admin`.)
+3. Enter a password, sign in, and you’ll be directed straight to the CMS. (For future visits, you can go straight to `<yoursiteaddress.com>/admin/`.)
 
 Try adding and editing posts, or changing the content of the Products page. When you save, the changes will be pushed immediately to GitHub, triggering a build on Netlify, and updating the content on your site. Check out the configuration code by visiting your site repo.
 
