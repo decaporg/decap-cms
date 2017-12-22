@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { List, Map, fromJS } from 'immutable';
+import { List, Map } from 'immutable';
 import { partial } from 'lodash';
 import c from 'classnames';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
@@ -23,10 +23,12 @@ function valueToString(value) {
 
 const SortableListItem = SortableElement(ListItem);
 
-const TopBar = ({ onAdd, listLabel, collapsed, onCollapseToggle, itemsCount }) => (
+const TopBar = ({ onAdd, listLabel, onCollapseAllToggle, allItemsCollapsed, itemsCount }) => (
   <div className="nc-listControl-topBar">
-    <div className="nc-listControl-listCollapseToggle" onClick={onCollapseToggle}>
-      <Icon type="caret" direction={collapsed ? 'up' : 'down'} size="small"/>
+    <div className="nc-listControl-listCollapseToggle">
+      <button className="nc-listControl-listCollapseToggleButton" onClick={onCollapseAllToggle}>
+        <Icon type="chevron" direction={allItemsCollapsed ? 'up' : 'down'} size="small" />
+      </button>
       {itemsCount} {listLabel}
     </div>
     <button className="nc-listControl-addButton" onClick={onAdd}>
@@ -48,11 +50,8 @@ export default class ListControl extends Component {
   static propTypes = {
     onChange: PropTypes.func.isRequired,
     onChangeObject: PropTypes.func.isRequired,
-    value: PropTypes.oneOfType([
-      ImmutablePropTypes.list,
-      PropTypes.string,
-    ]),
-    field: PropTypes.node,
+    value: ImmutablePropTypes.list,
+    field: PropTypes.object,
     forID: PropTypes.string,
     mediaPaths: ImmutablePropTypes.map.isRequired,
     getAsset: PropTypes.func.isRequired,
@@ -64,13 +63,21 @@ export default class ListControl extends Component {
     setInactiveStyle: PropTypes.func.isRequired,
   };
 
+  static defaultProps = {
+    value: List(),
+  };
+
   constructor(props) {
     super(props);
+    const { field, value } = props;
+    const allItemsCollapsed = field.get('collapsed') || true;
+    const itemsCollapsed = Array(value.size).fill(allItemsCollapsed);
+
     this.state = {
-      collapsed: false,
-      itemsCollapsed: List(),
-      value: valueToString(props.value),
+      itemsCollapsed: List(itemsCollapsed),
+      value: valueToString(value),
     };
+
     this.valueType = null;
   }
 
@@ -86,6 +93,7 @@ export default class ListControl extends Component {
 
   componentDidMount() {
     const { field } = this.props;
+
     if (field.get('fields')) {
       this.valueType = valueTypes.MULTIPLE;
     } else if (field.get('field')) {
@@ -131,7 +139,7 @@ export default class ListControl extends Component {
     e.preventDefault();
     const { value, onChange } = this.props;
     const parsedValue = (this.valueType === valueTypes.SINGLE) ? null : Map();
-    this.setState({ collapsed: false });
+    this.setState({ itemsCollapsed: this.state.itemsCollapsed.push(false) });
     onChange((value || List()).push(parsedValue));
   };
 
@@ -156,21 +164,28 @@ export default class ListControl extends Component {
 
   handleRemove = (index, event) => {
     event.preventDefault();
+    const { itemsCollapsed } = this.state;
     const { value, metadata, onChange, forID } = this.props;
     const parsedMetadata = metadata && { [forID]: metadata.removeIn(value.get(index).valueSeq()) };
-    onChange(value.remove(index), parsedMetadata);
-  }
 
-  handleCollapseToggle = () => {
-    this.setState({ collapsed: !this.state.collapsed });
+    this.setState({ itemsCollapsed: itemsCollapsed.delete(index) });
+
+    onChange(value.remove(index), parsedMetadata);
   }
 
   handleItemCollapseToggle = (index, event) => {
     event.preventDefault();
     const { itemsCollapsed } = this.state;
-    this.setState({
-      itemsCollapsed: itemsCollapsed.set(index, !itemsCollapsed.get(index, false)),
-    });
+    const collapsed = itemsCollapsed.get(index);
+    this.setState({ itemsCollapsed: itemsCollapsed.set(index, !collapsed) });
+  }
+
+  handleCollapseAllToggle = (e) => {
+    e.preventDefault();
+    const { value } = this.props;
+    const { itemsCollapsed } = this.state;
+    const allItemsCollapsed = itemsCollapsed.every(val => val === true);
+    this.setState({ itemsCollapsed: List(Array(value.size).fill(!allItemsCollapsed)) });
   }
 
   objectLabel(item) {
@@ -184,6 +199,7 @@ export default class ListControl extends Component {
 
   onSortEnd = ({ oldIndex, newIndex }) => {
     const { value, onChange } = this.props;
+    const { itemsCollapsed } = this.state;
 
     // Update value
     const item = value.get(oldIndex);
@@ -191,10 +207,9 @@ export default class ListControl extends Component {
     this.props.onChange(newValue);
 
     // Update collapsing
-    const { itemsCollapsed } = this.state;
     const collapsed = itemsCollapsed.get(oldIndex);
-    const newItemsCollapsed = itemsCollapsed.delete(oldIndex).insert(newIndex, collapsed);
-    this.setState({ itemsCollapsed: newItemsCollapsed });
+    const updatedItemsCollapsed = itemsCollapsed.delete(oldIndex).insert(newIndex, collapsed);
+    this.setState({ itemsCollapsed: updatedItemsCollapsed });
   };
 
   renderItem = (item, index) => {
@@ -236,31 +251,25 @@ export default class ListControl extends Component {
 
   renderListControl() {
     const { value, forID, field, classNameWrapper } = this.props;
-    const { collapsed } = this.state;
+    const { itemsCollapsed } = this.state;
     const items = value || List();
-    const className = c(classNameWrapper, 'nc-listControl', {
-      'nc-listControl-collapsed' : collapsed,
-    });
 
     return (
-      <div id={forID} className={className}>
+      <div id={forID} className={c(classNameWrapper, 'nc-listControl')}>
         <TopBar
           onAdd={this.handleAdd}
           listLabel={field.get('label').toLowerCase()}
-          onCollapseToggle={this.handleCollapseToggle}
-          collapsed={collapsed}
+          onCollapseAllToggle={this.handleCollapseAllToggle}
+          allItemsCollapsed={itemsCollapsed.every(val => val === true)}
           itemsCount={items.size}
         />
-        {
-          collapsed ? null :
-            <SortableList
-              items={items}
-              renderItem={this.renderItem}
-              onSortEnd={this.onSortEnd}
-              useDragHandle
-              lockAxis="y"
-            />
-        }
+        <SortableList
+          items={items}
+          renderItem={this.renderItem}
+          onSortEnd={this.onSortEnd}
+          useDragHandle
+          lockAxis="y"
+        />
       </div>
     );
   }

@@ -15,7 +15,7 @@ export const ListItemTopBar = ({ collapsed, onCollapseToggle, onRemove, dragHand
       {
         onCollapseToggle
           ? <button className="nc-listItemTopBar-toggleButton" onClick={onCollapseToggle}>
-              <Icon type="caret" size="small" direction={collapsed ? 'up' : 'down'}/>
+              <Icon type="chevron" size="small" direction={collapsed ? 'up' : 'down'}/>
             </button>
           : null
       }

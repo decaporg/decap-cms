@@ -38,11 +38,16 @@
   align-items: center;
   font-size: 14px;
   font-weight: 500;
-  cursor: pointer;
   line-height: 1;
+}
 
-  & .nc-icon {
-    padding-right: 8px;
+.nc-listControl-listCollapseToggleButton{
+  padding: 4px;
+  background-color: transparent;
+  color: inherit;
+
+  &:last-of-type {
+    margin-right: 4px;
   }
 }
 

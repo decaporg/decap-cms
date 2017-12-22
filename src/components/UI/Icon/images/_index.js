@@ -2,8 +2,9 @@ import iconAdd from './add.svg';
 import iconAddWith from './add-with.svg';
 import iconArrow from './arrow.svg';
 import iconBold from './bold.svg';
-import iconCaret from './caret.svg';
 import iconCheck from './check.svg';
+import iconChevron from './chevron.svg';
+import iconChevronDouble from './chevron-double.svg';
 import iconCircle from './circle.svg';
 import iconClose from './close.svg';
 import iconCode from './code.svg';
@@ -43,8 +44,9 @@ const images = {
   'add-with': iconAddWith,
   'arrow': iconArrow,
   'bold': iconBold,
-  'caret': iconCaret,
   'check': iconCheck,
+  'chevron': iconChevron,
+  'chevron-double': iconChevronDouble,
   'circle': iconCircle,
   'close': iconClose,
   'code': iconCode,
