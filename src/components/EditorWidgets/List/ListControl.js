@@ -70,7 +70,7 @@ export default class ListControl extends Component {
   constructor(props) {
     super(props);
     const { field, value } = props;
-    const allItemsCollapsed = field.get('collapsed') || true;
+    const allItemsCollapsed = field.get('collapsed', true);
     const itemsCollapsed = Array(value.size).fill(allItemsCollapsed);
 
     this.state = {
