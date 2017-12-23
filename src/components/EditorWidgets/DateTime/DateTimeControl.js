@@ -37,6 +37,7 @@ export default class DateTimeControl extends React.Component {
         setActiveStyle={setActiveStyle}
         setInactiveStyle={setInactiveStyle}
         includeTime
+        defaultTime={'now'}
       />
     );
   }

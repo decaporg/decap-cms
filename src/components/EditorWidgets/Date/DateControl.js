@@ -15,6 +15,7 @@ export default class DateControl extends React.Component {
       PropTypes.string,
     ]),
     includeTime: PropTypes.bool,
+    defaultTime: PropTypes.string,
   };
 
   componentDidMount() {
@@ -23,13 +24,16 @@ export default class DateControl extends React.Component {
 
     /**
      * Set the current date as default value if no default value is provided. An
-     * empty string means the value is intentionally blank.
+     * empty string means the value is intentionally blank. 
+     * Default time can be now or 0:00 am.
      */
     if (!value && value !== '') {
-      this.handleChange(moment().startOf('day').toDate());
+      const { defaultTime } = this.props;
+      const now = defaultTime === 'now' ? moment().toDate() : moment().startOf('day').toDate();
+      this.handleChange(now);
     }
   }
-
+  
   handleChange = datetime => {
     const { onChange } = this.props;
     if (!this.format || datetime === '') {
