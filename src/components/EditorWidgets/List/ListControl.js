@@ -245,6 +245,7 @@ export default class ListControl extends Component {
         onAddAsset={onAddAsset}
         onRemoveInsertedMedia={onRemoveInsertedMedia}
         classNameWrapper={`${classNameWrapper} nc-listControl-objectControl`}
+        forList
       />
     </SortableListItem>);
   };
