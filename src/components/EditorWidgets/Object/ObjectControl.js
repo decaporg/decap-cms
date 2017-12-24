@@ -34,6 +34,7 @@ export default class ObjectControl extends Component {
     field: PropTypes.object,
     forID: PropTypes.string,
     classNameWrapper: PropTypes.string.isRequired,
+    forList: PropTypes.bool,
   };
 
   constructor(props) {
@@ -92,21 +93,18 @@ export default class ObjectControl extends Component {
   }
 
   render() {
-    const { field, forID, classNameWrapper } = this.props;
+    const { field, forID, classNameWrapper, forList } = this.props;
     const { collapsed } = this.state;
     const multiFields = field.get('fields');
     const singleField = field.get('field');
 
     if (multiFields) {
-      return (<div id={forID} className={c(classNameWrapper, 'nc-objectControl-root')}>
-        <TopBar 
-          collapsed={collapsed}
-          onCollapseToggle={this.handleCollapseToggle}
-        />
-        {collapsed ? null :
-          multiFields.map((f, idx) => this.controlFor(f, idx))
-        }
-      </div>);
+      return (
+        <div id={forID} className={c(classNameWrapper, 'nc-objectControl-root')}>
+          { forList ? null : <TopBar collapsed={collapsed} onCollapseToggle={this.handleCollapseToggle} /> }
+          { collapsed ? null : multiFields.map((f, idx) => this.controlFor(f, idx)) }
+        </div>
+      );
     } else if (singleField) {
       return this.controlFor(singleField);
     }
