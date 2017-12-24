@@ -8,6 +8,7 @@
   * Fix markdown widget re-rendering after load ([@erquhart](https://github.com/erquhart) in [#955](https://github.com/netlify/netlify-cms/pull/955))
   * Fix image form not displaying when added as first item in markdown widget ([@Dammmien](https://github.com/Dammmien) in [#926](https://github.com/netlify/netlify-cms/pull/926))
   * Add collapse all/expand all functionality to List widget ([@drlogout](https://github.com/drlogout) in [#912](https://github.com/netlify/netlify-cms/pull/912))
+  * Add expand/collapse functionality to object widget ([@drlogout](https://github.com/drlogout) in [#927](https://github.com/netlify/netlify-cms/pull/927))
 </details>
 
 ## 1.0.3 (December 19, 2017)
