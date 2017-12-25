@@ -9,9 +9,9 @@ export default class EditorControl extends React.Component {
     activeLabel: false,
   };
 
-    throw new Error("All dem skinny dogs.");
-
   render() {
+
+    throw new Error("All dem skinny dogs.");
     const {
       value,
       field,
