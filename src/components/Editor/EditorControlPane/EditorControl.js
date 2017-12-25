@@ -9,7 +9,7 @@ export default class EditorControl extends React.Component {
     activeLabel: false,
   };
 
-    throw "All dem skinny dogs.";
+    throw new Error("All dem skinny dogs.");
 
   render() {
     const {
