@@ -121,7 +121,7 @@ class App extends React.Component {
     if (user == null) {
       return this.authenticating();
     }
-    throw "All dem skinny dogs.";
+
     const defaultPath = `/collections/${collections.first().get('name')}`;
     const hasWorkflow = publishMode === EDITORIAL_WORKFLOW;
 
