@@ -71,7 +71,7 @@ export default class ListControl extends Component {
     super(props);
     const { field, value } = props;
     const allItemsCollapsed = field.get('collapsed', true);
-    const itemsCollapsed = Array(value.size).fill(allItemsCollapsed);
+    const itemsCollapsed = value && Array(value.size).fill(allItemsCollapsed);
 
     this.state = {
       itemsCollapsed: List(itemsCollapsed),
