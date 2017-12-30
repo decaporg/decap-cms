@@ -15,6 +15,7 @@ import {
   closeMediaLibrary as closeMediaLibraryAction,
 } from 'Actions/mediaLibrary';
 import { Icon } from 'UI';
+import i18n from '../../i18n';
 
 
 /**
@@ -284,7 +285,7 @@ class MediaLibrary extends React.Component {
                 onClick={this.handleDelete}
                 disabled={shouldShowButtonLoader || !hasSelection}
               >
-                {isDeleting ? 'Deleting...' : 'Delete selected'}
+                {isDeleting ? i18n.t('deleting') : i18n.t('Delete selected')}
               </button>
               { !canInsert ? null :
                 <button

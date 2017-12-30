@@ -4,6 +4,7 @@ import c from 'classnames';
 import { Link } from 'react-router-dom';
 import { Icon } from 'UI';
 import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from 'Constants/collectionViews';
+import i18n from '../../i18n';
 
 const CollectionTop = ({
   collectionLabel,
@@ -32,7 +33,7 @@ const CollectionTop = ({
       <div className={c('nc-collectionPage-top-viewControls', {
         'nc-collectionPage-top-viewControls-noDescription': !collectionDescription,
       })}>
-        <span className="nc-collectionPage-top-viewControls-text">View as:</span>
+        <span className="nc-collectionPage-top-viewControls-text">{i18n.t('View as')}:</span>
         <button
           className={c('nc-collectionPage-top-viewControls-button', {
             'nc-collectionPage-top-viewControls-buttonActive': viewStyle === VIEW_STYLE_LIST,

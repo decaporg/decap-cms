@@ -2,6 +2,7 @@ import yaml from "js-yaml";
 import { set, defaultsDeep, get } from "lodash";
 import { authenticateUser } from "Actions/auth";
 import * as publishModes from "Constants/publishModes";
+import i18n from '../i18n';
 
 export const CONFIG_REQUEST = "CONFIG_REQUEST";
 export const CONFIG_SUCCESS = "CONFIG_SUCCESS";
@@ -82,6 +83,19 @@ export function configDidLoad(config) {
   };
 }
 
+function loadTranslations(config) {
+  const lang = config.lang || 'en';
+  if (lang !== 'en') {
+    try {
+      const translations = require(`../i18n/${lang}.json`);
+      i18n.replace(translations);
+    } catch (err) {
+      console.warn(`Could not load ${lang} translation. Probably missing. Leaving with english.`)
+    }
+  }
+  return config;
+}
+
 export function loadConfig() {
   if (window.CMS_CONFIG) {
     return configDidLoad(window.CMS_CONFIG);
@@ -99,6 +113,7 @@ export function loadConfig() {
     .then(parseConfig)
     .then(validateConfig)
     .then(applyDefaults)
+    .then(loadTranslations)
     .then((config) => {
       dispatch(configDidLoad(config));
       dispatch(authenticateUser());

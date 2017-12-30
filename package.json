@@ -19,7 +19,8 @@
     "lint:staged": "lint-staged",
     "deps": "npm-check -s",
     "deps:update": "npm-check -u",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "extract": "node extract.js"
   },
   "lint-staged": {
     "*.js": [
@@ -97,11 +98,14 @@
     "exports-loader": "^0.6.4",
     "extract-text-webpack-plugin": "^3.0.0",
     "file-loader": "^1.1.4",
+    "i18n-extract": "^0.5.1",
     "identity-obj-proxy": "^3.0.0",
     "imports-loader": "^0.7.1",
     "jest": "^21.2.1",
     "jest-cli": "^21.2.1",
     "lint-staged": "^3.3.1",
+    "lodash": "^4.17.4",
+    "lodash-keyarrange": "^1.1.0",
     "npm-check": "^5.2.3",
     "postcss-cssnext": "^3.0.2",
     "postcss-import": "^11.0.0",
@@ -139,6 +143,7 @@
     "mdast-util-definitions": "^1.2.2",
     "mdast-util-to-string": "^1.0.4",
     "moment": "^2.11.2",
+    "node-polyglot": "^2.2.2",
     "prop-types": "^15.5.10",
     "react": "^16.0.0",
     "react-aria-menubutton": "^5.1.0",

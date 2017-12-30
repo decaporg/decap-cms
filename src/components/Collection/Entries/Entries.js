@@ -3,6 +3,7 @@ import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Loader } from 'UI';
 import EntryListing from './EntryListing';
+import i18n from '../../../i18n';
 
 const Entries = ({
   collections,
@@ -14,9 +15,9 @@ const Entries = ({
   viewStyle
 }) => {
   const loadingMessages = [
-    'Loading Entries',
-    'Caching Entries',
-    'This might take several minutes',
+    i18n.t('Loading Entries'),
+    i18n.t('Caching Entries'),
+    i18n.t('This might take several minutes')
   ];
 
   if (entries) {
@@ -36,7 +37,7 @@ const Entries = ({
     return <Loader active>{loadingMessages}</Loader>;
   }
 
-  return <div className="nc-collectionPage-noEntries">No Entries</div>;
+  return <div className="nc-collectionPage-noEntries">{i18n.t('No Entries')}</div>;
 }
 
 Entries.propTypes = {
