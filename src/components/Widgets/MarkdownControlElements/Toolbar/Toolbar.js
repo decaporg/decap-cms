@@ -7,7 +7,7 @@ import ToolbarComponentsMenu from './ToolbarComponentsMenu';
 import ToolbarPluginForm from './ToolbarPluginForm';
 import { Icon } from '../../../UI';
 import styles from './Toolbar.css';
-import polyglot from '../../../../i18n';
+import i18n from '../../../../i18n';
 
 export default class Toolbar extends React.Component {
   static propTypes = {
@@ -65,11 +65,11 @@ export default class Toolbar extends React.Component {
 
     return (
       <div className={styles.Toolbar}>
-        <ToolbarButton label={polyglot.t('header1')} icon="h1" action={onH1}/>
-        <ToolbarButton label={polyglot.t('header2')} icon="h2" action={onH2}/>
-        <ToolbarButton label={polyglot.t('bold')} icon="bold" action={onBold}/>
-        <ToolbarButton label={polyglot.t('italic')} icon="italic" action={onItalic}/>
-        <ToolbarButton label={polyglot.t('link')} icon="link" action={onLink}/>
+        <ToolbarButton label={i18n.t('header1')} icon="h1" action={onH1}/>
+        <ToolbarButton label={i18n.t('header2')} icon="h2" action={onH2}/>
+        <ToolbarButton label={i18n.t('bold')} icon="bold" action={onBold}/>
+        <ToolbarButton label={i18n.t('italic')} icon="italic" action={onItalic}/>
+        <ToolbarButton label={i18n.t('link')} icon="link" action={onLink}/>
         <ToolbarComponentsMenu
           plugins={plugins}
           onComponentMenuItemClick={this.handlePluginFormDisplay}

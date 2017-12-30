@@ -10,7 +10,7 @@ import Button from 'react-toolbox/lib/button';
 import UnpublishedListingCardMeta from './UnpublishedListingCardMeta.js';
 import { status, statusDescriptions } from '../../constants/publishModes';
 import styles from './UnpublishedListing.css';
-import polyglot from '../../i18n';
+import i18n from '../../i18n';
 
 class UnpublishedListing extends React.Component {
   static propTypes = {
@@ -28,13 +28,13 @@ class UnpublishedListing extends React.Component {
   };
 
   requestDelete = (collection, slug, ownStatus) => {
-    if (window.confirm(polyglot.t('really_delete'))) {
+    if (window.confirm(i18n.t('really_delete'))) {
       this.props.handleDelete(collection, slug, ownStatus);
     }
   };
   requestPublish = (collection, slug, ownStatus) => {
     if (ownStatus !== status.last()) return;
-    if (window.confirm(polyglot.t('really_publish'))) {
+    if (window.confirm(i18n.t('really_publish'))) {
       this.props.handlePublish(collection, slug, ownStatus);
     }
   };

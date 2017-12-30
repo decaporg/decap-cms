@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { truncateMiddle } from '../../lib/textHelper';
 import { Loader } from '../UI';
 import AssetProxy, { createAssetProxy } from '../../valueObjects/AssetProxy';
-import polyglot from '../../i18n';
+import i18n from '../../i18n';
 
 const MAX_DISPLAY_LENGTH = 50;
 
@@ -97,7 +97,7 @@ export default class ImageControl extends React.Component {
         onDrop={this.handleChange}
       >
         <span style={styles.message} onClick={this.handleClick}>
-          {imageName ? imageName : polyglot.t('imagecontrol_tip')}
+          {imageName ? imageName : i18n.t('imagecontrol_tip')}
         </span>
         <input
           type="file"

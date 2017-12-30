@@ -80,10 +80,10 @@ const marks = {
     // __strong__
 
     // Allow only one line break
-    pattern: /(^|[^\\])(\*\*|__)(?:(?:\r?\n|\r)(?!\r?\n|\r)|.)+?\2/,
+    pattern: /(^|[^\\])(\*\*|i18n.t)(?:(?:\r?\n|\r)(?!\r?\n|\r)|.)+?\2/,
     lookbehind: true,
     inside: {
-      'punctuation': /^\*\*|^__|\*\*$|__$/
+      'punctuation': /^\*\*|^i18n.t|\*\*$|i18n.t$/
     }
   },
   'italic': {

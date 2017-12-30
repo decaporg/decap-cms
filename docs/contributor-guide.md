@@ -11,11 +11,11 @@ While we work on building this page (and you can help!), here are some links wit
 
 ## I18N
 
-I18N strings are managed by [polyglot](http://airbnb.io/polyglot.js/).
+I18N strings are curently managed by [polyglot](http://airbnb.io/polyglot.js/).
 Strings are extracted from source code with static analysis by [i18n-extract](https://github.com/oliviertassinari/i18n-extract).
-Code is searched for regex /polyglot.t('[^']')/ so if you want particular string to be translated,
-you have to follow this rule.
-For more info see [polyglot](http://airbnb.io/polyglot.js/) or [example](../src/components/FindBar/FindBar.js)
+Code is searched for regex /i18n.t('[^']')/ so if you want particular string to be translated,
+you have to inport i18n and use the translated string as param to i18n.t call.
+For more info see [for example](../src/components/FindBar/FindBar.js)
 
 Extractions shall be extracted manually extra for each language.
 By one extraction run, one file (JSON) is produced (or updated if it already exists).

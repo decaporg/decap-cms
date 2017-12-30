@@ -6,7 +6,7 @@ import 'react-toolbox/lib/commons.scss';
 import Root from './root';
 import registry from './lib/registry';
 import './index.css';
-import polyglot from './i18n';
+import i18n from './i18n';
 
 if (process.env.NODE_ENV !== 'production') {
   require('./utils.css'); // eslint-disable-line
@@ -48,11 +48,11 @@ const buildtInPlugins = [{
   toPreview: data => <img src={data.image} alt={data.alt} />,
   pattern: /^!\[([^\]]+)]\(([^)]+)\)$/,
   fields: [{
-    label: polyglot.t('image'),
+    label: i18n.t('image'),
     name: 'image',
     widget: 'image',
   }, {
-    label: polyglot.t('alttext'),
+    label: i18n.t('alttext'),
     name: 'alt',
   }],
 }];

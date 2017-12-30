@@ -4,7 +4,7 @@ import Button from "react-toolbox/lib/button";
 import { Card, Icon } from "../../components/UI";
 import logo from "../netlify-auth/netlify_logo.svg";
 import styles from "../netlify-auth/AuthenticationPage.css";
-import polyglot from '../../i18n'
+import i18n from '../../i18n'
 
 export default class AuthenticationPage extends React.Component {
   static propTypes = {
@@ -26,10 +26,10 @@ export default class AuthenticationPage extends React.Component {
     return (<section className={styles.root}>
       <Card className={styles.card}>
         <img src={logo} width={100} role="presentation" />
-        <p className={styles.message}>{polyglot.t('demo_message')}</p>
+        <p className={styles.message}>{i18n.t('demo_message')}</p>
         <Input
           type="text"
-          label={polyglot.t('email')}
+          label={i18n.t('email')}
           name="email"
           value={this.state.email}
           onChange={this.handleEmailChange}
@@ -39,7 +39,7 @@ export default class AuthenticationPage extends React.Component {
           raised
           onClick={this.handleLogin}
         >
-          <Icon type="login" /> {polyglot.t('login')}
+          <Icon type="login" /> {i18n.t('login')}
         </Button>
       </Card>
     </section>);

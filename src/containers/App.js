@@ -24,7 +24,7 @@ import { getCollectionUrl, getNewEntryUrl } from '../lib/urlHelper';
 import { SIMPLE, EDITORIAL_WORKFLOW } from '../constants/publishModes';
 import styles from './App.css';
 import sidebarStyles from './Sidebar.css';
-import polyglot from '../i18n';
+import i18n from '../i18n';
 
 TopBarProgress.config({
   barColors: {
@@ -126,7 +126,7 @@ class App extends React.Component {
     }
 
     if (config.get('isFetching')) {
-      return <Loader active>{polyglot.t('loading_configuration')}</Loader>;
+      return <Loader active>{i18n.t('loading_configuration')}</Loader>;
     }
 
     if (user == null) {
@@ -146,7 +146,7 @@ class App extends React.Component {
             </section>
           }
           <section>
-            <h1 className={sidebarStyles.heading}>{polyglot.t('collections')}</h1>
+            <h1 className={sidebarStyles.heading}>{i18n.t('collections')}</h1>
             {
               collections.valueSeq().map((collection) => {
                 const collectionName = collection.get('name');

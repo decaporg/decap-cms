@@ -7,7 +7,7 @@ const i18nFolder = path.join(__dirname, 'src/i18n');
 const keys = i18n.extractFromFiles([
   'src/**/*.js',
 ], {
-  marker: 'polyglot.t',
+  marker: 'i18n.t',
 });
 
 function mergeMissing(translations, missing, makeVal) {

@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import styles from './FindBar.css';
-import polyglot from '../../i18n';
+import i18n from '../../i18n';
 
 export const SEARCH = 'SEARCH';
 
@@ -17,7 +17,7 @@ class FindBar extends Component {
     };
     this.state = {
       value: '',
-      placeholder: polyglot.t('search_entry_titles') + ' ...',
+      placeholder: i18n.t('search_entry_titles') + ' ...',
     };
   }
 

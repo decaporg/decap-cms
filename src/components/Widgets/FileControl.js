@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { truncateMiddle } from '../../lib/textHelper';
 import { Loader } from '../UI';
 import AssetProxy, { createAssetProxy } from '../../valueObjects/AssetProxy';
-import polyglot from '../../i18n';
+import i18n from '../../i18n';
 
 const MAX_DISPLAY_LENGTH = 50;
 
@@ -93,7 +93,7 @@ export default class FileControl extends React.Component {
         onDrop={this.handleChange}
       >
         <span style={styles.message} onClick={this.handleClick}>
-          {fileName ? fileName : polyglot.t('filecontrol_tip')}
+          {fileName ? fileName : i18n.t('filecontrol_tip')}
         </span>
         <input
           type="file"

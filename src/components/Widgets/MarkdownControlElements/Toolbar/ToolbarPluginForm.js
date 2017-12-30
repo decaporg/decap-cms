@@ -3,7 +3,7 @@ import { Map } from 'immutable';
 import { Button } from 'react-toolbox/lib/button';
 import ToolbarPluginFormControl from './ToolbarPluginFormControl';
 import styles from './ToolbarPluginForm.css';
-import polyglot from '../../../../i18n';
+import i18n from '../../../../i18n';
 
 export default class ToolbarPluginForm extends React.Component {
   static propTypes = {
@@ -59,9 +59,9 @@ export default class ToolbarPluginForm extends React.Component {
           ))}
         </div>
         <div className={styles.footer}>
-          <Button raised onClick={this.handleSubmit}>{polyglot.t('insert')}</Button>
+          <Button raised onClick={this.handleSubmit}>{i18n.t('insert')}</Button>
           {' '}
-          <Button onClick={onCancel}>{polyglot.t('cancel')}</Button>
+          <Button onClick={onCancel}>{i18n.t('cancel')}</Button>
         </div>
       </form>
     );

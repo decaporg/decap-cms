@@ -2,7 +2,7 @@ import yaml from "js-yaml";
 import { set, defaultsDeep, get } from "lodash";
 import { authenticateUser } from "../actions/auth";
 import * as publishModes from "../constants/publishModes";
-import polyglot from '../i18n';
+import i18n from '../i18n';
 
 export const CONFIG_REQUEST = "CONFIG_REQUEST";
 export const CONFIG_SUCCESS = "CONFIG_SUCCESS";
@@ -89,7 +89,7 @@ function loadTranslations(config) {
   if (lang !== 'en') {
     try {
       const translations = require(`../i18n/${lang}.json`);
-      polyglot.replace(translations);
+      i18n.replace(translations);
     } catch (err) {
       console.warn(`Could not load ${lang} translation. Probably missing. Leaving with english.`)
     }
