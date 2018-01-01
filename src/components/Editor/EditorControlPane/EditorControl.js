@@ -10,8 +10,6 @@ export default class EditorControl extends React.Component {
   };
 
   render() {
-
-    throw new Error("All dem skinny dogs.");
     const {
       value,
       field,
