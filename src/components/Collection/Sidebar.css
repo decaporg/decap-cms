@@ -22,7 +22,7 @@
   & input {
     background-color: #eff0f4;
     border-radius: var(--borderRadius);
-
+    height: 36px; /* issue #907 */
     font-size: 14px;
     padding: 10px 6px 10px 32px;
     width: 100%;
@@ -39,6 +39,7 @@
     position: absolute;
     left: 6px;
     z-index: 2;
+    top: 9px; /* issue #907 */
   }
 }
 
