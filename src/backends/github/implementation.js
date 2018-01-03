@@ -96,7 +96,7 @@ export default class GitHub {
       .then(files => files.map(({ sha, name, size, download_url, path }) => {
         const url = new URL(download_url);
         if (url.pathname.match(/.svg$/)) {
-          url.searchParams.append('sanitize', true);
+          url.search += (url.search.slice(1) === '' ? '?' : '&') + 'sanitize=true';
         }
         return { id: sha, name, size, url: url.href, path };
       }));
