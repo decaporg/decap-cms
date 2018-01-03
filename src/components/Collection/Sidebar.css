@@ -22,7 +22,6 @@
   & input {
     background-color: #eff0f4;
     border-radius: var(--borderRadius);
-
     font-size: 14px;
     padding: 10px 6px 10px 32px;
     width: 100%;
@@ -37,8 +36,13 @@
 
   & .nc-icon {
     position: absolute;
+    top: 0;
     left: 6px;
     z-index: 2;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    pointer-events: none;
   }
 }
 
