@@ -95,9 +95,12 @@ You may also specify a custom `extension` not included in the list above, as lon
 - `yml` or `yaml`: parses and saves files as YAML-formatted data files; saves with `yml` extension by default
 - `toml`: parses and saves files as TOML-formatted data files; saves with `toml` extension by default
 - `json`: parses and saves files as JSON-formatted data files; saves with `json` extension by default
-- `frontmatter`: parses files and saves files with data frontmatter followed by an unparsed body text (edited using a `body` field); saves with `md` extension by default; default for collections that can't be inferred
+- `frontmatter`: parses files and saves files with data frontmatter followed by an unparsed body text (edited using a `body` field); saves with `md` extension by default; default for collections that can't be inferred. Collections with `frontmatter` format (either inferred or explicitly set) can parse files with frontmatter in YAML, TOML, or JSON format. However, they will be saved with YAML frontmatter.
+- `yaml-frontmatter`: same as the `frontmatter` format above, except frontmatter will be both parsed and saved only as YAML, followed by unparsed body text
+- `toml-frontmatter`: same as the `frontmatter` format above, except frontmatter will be both parsed and saved only as TOML, followed by unparsed body text
+- `json-frontmatter`: same as the `frontmatter` format above, except frontmatter will be both parsed and saved as JSON, followed by unparsed body text
 
-Collections with `frontmatter` format (either inferred or explicitly set) can parse files with frontmatter in YAML, TOML, or JSON format. On saving, however, they will currently be saved with YAML frontmatter. (Follow [Issue #563](https://github.com/netlify/netlify-cms/issues/563)) to see when this changes.)
+The explicit `yaml-frontmatter`, `toml-frontmatter`, and `json-frontmatter` formats above do not currently support custom delimiters. We use `---` for YAML, `+++` for TOML, and `{` `}` for JSON. If a file has frontmatter inside other delimiters it will be included as part of the body text.
 
 
 ### `slug`
