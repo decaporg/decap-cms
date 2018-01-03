@@ -20,6 +20,7 @@ export default function AssetProxy(value, fileObj, uploaded = false, asset) {
 }
 
 AssetProxy.prototype.toString = function () {
+  // Use the deployed image path if we do not have a locally cached copy.
   if (this.uploaded && !this.fileObj) return this.public_path;
   try {
     return window.URL.createObjectURL(this.fileObj);
