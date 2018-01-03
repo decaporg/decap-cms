@@ -7,7 +7,9 @@
 			<nav class="docs-nav" id="docs-nav">
 				{{ $subjects := where .Site.Pages "Section" "docs" }}
 				{{ range sort $subjects "Params.position" }}
+					{{- if ne .Type "widget" -}}
 					<a href="{{ .Permalink }}" class="nav-link {{ if eq .Params.position $activePage }}active{{ end }}">{{ .Title }}</a>
+					{{- end -}}
 				{{ end }}
 			</nav>
 			<div class="mobile docs-nav">
@@ -15,7 +17,9 @@
 					<option value="" selected="selected">Select A Topic</option>
 					{{ $subjects := where .Site.Pages "Section" "docs" }}
 					{{ range sort $subjects "Params.position" }}
+						{{- if ne .Type "widget" -}}
 						<option value="{{ .Permalink }}" class="nav-link {{ if eq .Params.position $activePage }}active{{ end }}">{{ .Title }}</option>
+						{{- end -}}
 					{{ end }}
 				</select>
 			</div>
@@ -23,6 +27,9 @@
 		<article class="docs-content" id="docs-content">
 			{{ partial "edit-link" . }}
 			{{ .Content }}
+			{{- if eq .Title "Widgets" -}} <!-- Check if is widgets page, if so, add the partial "widgets" for the widget cloud functionality -->
+				{{- partial "widgets" . -}} 
+			{{- end -}}
 		</article>
 	</div>
 </div>

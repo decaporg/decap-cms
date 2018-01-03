@@ -1,0 +1,14 @@
+<section class="widgets">
+    <div class="widgets__cloud">
+        {{- range $index, $widget := where .Site.RegularPages "Type" "eq" "widget" -}}
+            <span class="widgets__item {{if eq $index 0}}widgets__item_active{{end}}" data-widget-target="{{.Params.target}}">{{.Params.label}}</span>
+        {{- end -}}
+    </div>
+    <div class="widgets__container">
+        {{- range $index, $widget := where .Site.RegularPages "Type" "eq" "widget" -}}
+            <div class="widget {{if eq $index 0}}widget_open{{end}}" id="{{.Params.target}}">
+                {{.Content}}
+            </div>
+        {{- end -}}
+    </div>
+</section>

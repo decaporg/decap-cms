@@ -21,5 +21,8 @@ inputSelector: '.algolia-search',
 debug: false // Set debug to true if you want to inspect the dropdown
 });
 </script>
+{{- if eq .Title "Widgets" -}} <!-- Check if is widgets page, if so, add the widget cloud js script -->
+  <script src="/widgets.js"></script>
+{{- end -}}
 </body>
 </html>
