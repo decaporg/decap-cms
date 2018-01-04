@@ -89,12 +89,10 @@ export default class API {
     return cache.then((cached) => {
       if (cached) { return cached; }
       
-      // Files must be downloaded from GitLab as base64 due to this bug:
-      //   https://gitlab.com/gitlab-org/gitlab-ce/issues/31470
-      return this.request(`${ this.repoURL }/repository/files/${ encodeURIComponent(path) }`, {
+      return this.request(`${ this.repoURL }/repository/files/${ encodeURIComponent(path) }/raw`, {
         params: { ref: branch },
         cache: "no-store",
-      }).then(response => this.fromBase64(response.content))
+      })
       .then((result) => {
         if (sha) {
           LocalForage.setItem(`gh.${ sha }`, result);
