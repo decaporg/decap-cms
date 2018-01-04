@@ -36,13 +36,18 @@ export default class GitLab {
     this.token = state.token;
     this.api = new API({ token: this.token, branch: this.branch, repo: this.repo, api_root: this.api_root });
     return this.api.user().then(user =>
-      this.api.isCollaborator(user).then((isCollab) => {
+      this.api.hasWriteAccess(user).then((isCollab) => {
         // Unauthorized user
         if (!isCollab) throw new Error("Your GitLab user account does not have access to this repo.");
         // Authorized user
         return Object.assign({}, user, { token: state.token });
       })
     );
+  }
+
+  logout() {
+    this.token = null;
+    return;
   }
 
   getToken() {

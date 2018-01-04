@@ -22,7 +22,7 @@ export default class API {
       .then(({ namespace }) => (namespace.kind === "group" ? `/groups/${ encodeURIComponent(namespace.full_path) }` : false));
   }
 
-  isCollaborator(user) {
+  hasWriteAccess(user) {
     const WRITE_ACCESS = 30;
     return this.isGroupProject().then((group) => {
       if (group === false) {
