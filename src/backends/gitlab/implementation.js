@@ -74,7 +74,7 @@ export default class GitLab {
     const promises = [];
     files.forEach((file) => {
       promises.push(new Promise((resolve, reject) => (
-        sem.take(() => this.api.readFile(file.path, file.sha).then((data) => {
+        sem.take(() => this.api.readFile(file.path, file.id).then((data) => {
           resolve({ file, data });
           sem.leave();
         }).catch((err) => {
