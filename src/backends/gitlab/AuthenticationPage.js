@@ -1,14 +1,12 @@
+import PropTypes from 'prop-types';
 import React from 'react';
-import Button from 'react-toolbox/lib/button';
-import Authenticator from '../../lib/netlify-auth';
-import { Icon } from '../../components/UI';
-import { Notifs } from 'redux-notifications';
-import { Toast } from '../../components/UI/index';
-import styles from './AuthenticationPage.css';
+import Authenticator from 'Lib/netlify-auth';
+import { Icon } from 'UI';
 
 export default class AuthenticationPage extends React.Component {
   static propTypes = {
-    onLogin: React.PropTypes.func.isRequired,
+    onLogin: PropTypes.func.isRequired,
+    inProgress: PropTypes.bool,
   };
 
   state = {};
@@ -32,18 +30,19 @@ export default class AuthenticationPage extends React.Component {
 
   render() {
     const { loginError } = this.state;
+    const { inProgress } = this.props;
 
     return (
-      <section className={styles.root}>
-        <Notifs CustomComponent={Toast} />
+      <section className="nc-githubAuthenticationPage-root">
+        <Icon className="nc-githubAuthenticationPage-logo" size="500px" type="netlify-cms"/>
         {loginError && <p>{loginError}</p>}
-        <Button
-          className={styles.button}
-          raised
+        <button
+          className="nc-githubAuthenticationPage-button"
+          disabled={inProgress}
           onClick={this.handleLogin}
         >
-          Login with GitLab
-        </Button>
+          <Icon type="gitlab" /> {inProgress ? "Logging in..." : "Login with GitLab"}
+        </button>
       </section>
     );
   }
