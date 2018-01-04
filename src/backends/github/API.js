@@ -1,4 +1,4 @@
-import LocalForage from "localforage";
+import LocalForage from "Lib/LocalForage";
 import { Base64 } from "js-base64";
 import { uniq, initial, last, get, find } from "lodash";
 import { filterPromises, resolvePromiseProperties } from "Lib/promiseHelper";
