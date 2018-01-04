@@ -1,15 +1,15 @@
 import semaphore from "semaphore";
 import AuthenticationPage from "./AuthenticationPage";
 import API from "./API";
-import { fileExtension } from '../../lib/pathHelper';
-import { EDITORIAL_WORKFLOW } from "../../constants/publishModes";
+import { fileExtension } from 'Lib/pathHelper';
+import { EDITORIAL_WORKFLOW } from "Constants/publishModes";
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
 
 export default class GitLab {
   constructor(config, proxied = false) {
     this.config = config;
-    
+
     if (config.getIn(["publish_mode"]) === EDITORIAL_WORKFLOW) {
       throw new Error("The GitLab backend does not support the Editorial Workflow.")
     }
