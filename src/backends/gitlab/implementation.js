@@ -1,3 +1,4 @@
+import trimStart from 'lodash/trimStart';
 import semaphore from "semaphore";
 import AuthenticationPage from "./AuthenticationPage";
 import API from "./API";
@@ -93,8 +94,33 @@ export default class GitLab {
     }));
   }
 
+  getMedia() {
+    return this.api.listFiles(this.config.get('media_folder'))
+      .then(files => files.map(({ id, name, path }) => {
+        const url = new URL(this.api.fileDownloadURL(path));
+        if (url.pathname.match(/.svg$/)) {
+          url.search += (url.search.slice(1) === '' ? '?' : '&') + 'sanitize=true';
+        }
+        return { id, name, url: url.href, path };
+      }));
+  }
+
+
   persistEntry(entry, mediaFiles = [], options = {}) {
     return this.api.persistFiles(entry, mediaFiles, options);
+  }
+
+  async persistMedia(mediaFile, options = {}) {
+    try {
+      const response = await this.api.persistFiles(null, [mediaFile], options);
+      const { value, size, path, fileObj } = mediaFile;
+      const url = this.api.fileDownloadURL(path);
+      return { name: value, size: fileObj.size, url, path: trimStart(path, '/') };
+    }
+    catch (error) {
+      console.error(error);
+      throw error;
+    }
   }
 
   deleteFile(path, commitMessage, options) {

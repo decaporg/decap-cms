@@ -67,7 +67,7 @@ export default class API {
     return fetch(url, { ...options, headers })
     .then((response) => {
       const contentType = response.headers.get("Content-Type");
-      if (options.method === "HEAD") {
+      if (options.method === "HEAD" || options.method === "DELETE") {
         return Promise.all([response]);
       }
       if (contentType && contentType.match(/json/)) {
@@ -101,6 +101,12 @@ export default class API {
       });
     });
   }
+
+  fileDownloadURL(path, branch = this.branch) {
+      return this.urlFor(`${ this.repoURL }/repository/files/${ encodeURIComponent(path) }/raw`, {
+        params: { ref: branch },
+      });
+  }
   
   fileExists(path, branch = this.branch) {
     return this.request(`${ this.repoURL }/repository/files/${ encodeURIComponent(path) }`, {
@@ -119,12 +125,6 @@ export default class API {
     return this.request(`${ this.repoURL }/repository/tree`, {
       params: { path, ref: this.branch },
     })
-    .then((files) => {
-      if (!Array.isArray(files)) {
-        throw new Error(`Cannot list files, path ${path} is not a directory but a ${files.type}`);
-      }
-      return files;
-    })
     .then(files => files.filter(file => file.type === "blob"));
   }
 
@@ -132,7 +132,7 @@ export default class API {
     const newMedia = mediaFiles.filter(file => !file.uploaded);
     const mediaUploads = newMedia.map(file => this.fileExists(file.path).then(exists => {
       return this.uploadAndCommit(file, {
-        commitMessage: `${ options.commitMessage }: create ${ file.value }.`,
+        commitMessage: options.commitMessage,
         newFile: !exists
       });
     }));
@@ -140,10 +140,15 @@ export default class API {
     // Wait until media files are uploaded before we commit the main entry.
     //   This should help avoid inconsistent repository/website state.
     return Promise.all(mediaUploads)
-    .then(() => this.uploadAndCommit(entry, {
-      commitMessage: options.commitMessage,
-      newFile: options.newEntry
-    }));
+    .then(mediaResponse => {
+      if (entry) {
+        return this.uploadAndCommit(entry, {
+          commitMessage: options.commitMessage,
+          newFile: options.newEntry
+        });
+      }
+      return mediaUploads;
+    });
   }
 
   deleteFile(path, commit_message, options={}) {
