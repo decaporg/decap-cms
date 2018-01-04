@@ -94,7 +94,11 @@ export default class GitHub {
     return this.api.listFiles(this.config.get('media_folder'))
       .then(files => files.filter(file => file.type === 'file'))
       .then(files => files.map(({ sha, name, size, download_url, path }) => {
-        return { id: sha, name, size, url: download_url, path };
+        const url = new URL(download_url);
+        if (url.pathname.match(/.svg$/)) {
+          url.search += (url.search.slice(1) === '' ? '?' : '&') + 'sanitize=true';
+        }
+        return { id: sha, name, size, url: url.href, path };
       }));
   }
 
