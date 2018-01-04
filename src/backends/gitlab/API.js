@@ -1,8 +1,8 @@
-import LocalForage from "localforage";
+import LocalForage from "Lib/LocalForage";
 import { Base64 } from "js-base64";
 import { isString } from "lodash";
-import AssetProxy from "../../valueObjects/AssetProxy";
-import { APIError } from "../../valueObjects/errors";
+import AssetProxy from "ValueObjects/AssetProxy";
+import { APIError } from "ValueObjects/errors";
 
 export default class API {
   constructor(config) {
