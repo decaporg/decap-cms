@@ -128,27 +128,16 @@ export default class API {
     .then(files => files.filter(file => file.type === "blob"));
   }
 
-  persistFiles(entry, mediaFiles, options) {
-    const newMedia = mediaFiles.filter(file => !file.uploaded);
-    const mediaUploads = newMedia.map(file => this.fileExists(file.path).then(exists => {
+  persistFiles(files, options) {
+    const uploads = files.map(async file => {
+      const exists = await this.fileExists(file.path);
       return this.uploadAndCommit(file, {
         commitMessage: options.commitMessage,
-        newFile: !exists
+        newFile: !exists,
       });
-    }));
-    
-    // Wait until media files are uploaded before we commit the main entry.
-    //   This should help avoid inconsistent repository/website state.
-    return Promise.all(mediaUploads)
-    .then(mediaResponse => {
-      if (entry) {
-        return this.uploadAndCommit(entry, {
-          commitMessage: options.commitMessage,
-          newFile: options.newEntry
-        });
-      }
-      return mediaUploads;
     });
+
+    return Promise.all(uploads)
   }
 
   deleteFile(path, commit_message, options={}) {
