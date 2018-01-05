@@ -181,7 +181,11 @@ class Editor extends React.Component {
   };
 
   handleChangeStatus = (newStatusName) => {
-    const { updateUnpublishedEntryStatus, collection, slug, currentStatus } = this.props;
+    const { entryDraft, updateUnpublishedEntryStatus, collection, slug, currentStatus } = this.props;
+    if (entryDraft.get('hasChanged')) {
+      window.alert('You have unsaved changes, please save before updating status.');
+      return;
+    }
     const newStatus = status.get(newStatusName);
     this.props.updateUnpublishedEntryStatus(collection.get('name'), slug, currentStatus, newStatus);
   }
@@ -207,14 +211,11 @@ class Editor extends React.Component {
     if (currentStatus !== status.last()) {
       window.alert('Please update status to "Ready" before publishing.');
       return;
+    } else if (entryDraft.get('hasChanged')) {
+      window.alert('You have unsaved changes, please save before publishing.');
+      return;
     } else if (!window.confirm('Are you sure you want to publish this entry?')) {
       return;
-    } else if (entryDraft.get('hasChanged')) {
-      if (window.confirm('Your unsaved changes will be saved before publishing. Are you sure you want to publish?')) {
-        await persistEntry(collection);
-      } else {
-        return;
-      }
     }
 
     await publishUnpublishedEntry(collection.get('name'), slug);
