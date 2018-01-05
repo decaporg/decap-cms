@@ -116,7 +116,7 @@ CMS.registerEditorComponent({
 
 **Result:**
 
-![youtube-widget](/img/screen shot 2018-01-05 at 4.19.26 pm.png)
+![youtube-widget](/img/screen shot 2018-01-05 at 4.25.07 pm.png)
 
 ## Advanced field validation
 
