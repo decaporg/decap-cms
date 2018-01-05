@@ -1,9 +1,18 @@
 import trimStart from 'lodash/trimStart';
 import semaphore from "semaphore";
+import { SIMPLE, EDITORIAL_WORKFLOW } from "Constants/publishModes";
 import AuthenticationPage from "./AuthenticationPage";
 import API from "./API";
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
+
+function isSimpleWorkflow (mode) {
+  return !mode || mode === SIMPLE;
+}
+
+function isEditorialWorkflow (mode) {
+  return mode === EDITORIAL_WORKFLOW;
+}
 
 export default class GitHub {
   constructor(config, proxied = false) {
@@ -103,22 +112,24 @@ export default class GitHub {
       }));
   }
 
-  persistEntry(entry, mediaFiles = [], options = {}) {
-    return this.api.persistFiles(entry, mediaFiles, options);
+  async persistEntry(entry, options = {}) {
+    const fileTree = await this.api.persistFiles([entry]);
+
+    if (isSimpleWorkflow(options.mode)) {
+      return this.api.simpleGit(fileTree, options);
+    }
+
+    if (isEditorialWorkflow(options.mode)) {
+      return this.api.editorialWorkflowGit(fileTree, entry, options);
+    }
   }
 
   async persistMedia(mediaFile, options = {}) {
-    try {
-      const response = await this.api.persistFiles(null, [mediaFile], options);
-      
-      const { sha, value, size, path, fileObj } = mediaFile;
-      const url = URL.createObjectURL(fileObj);
-      return { id: sha, name: value, size: fileObj.size, url, path: trimStart(path, '/') };
-    }
-    catch(error) {
-      console.error(error);
-      throw error;
-    }
+    const fileTree = await this.api.persistFiles([mediaFile]);
+    const ref = await this.api.simpleGit(fileTree, options);
+    const { value, path, fileObj } = mediaFile;
+    const url = URL.createObjectURL(fileObj);
+    return { id: ref.sha, name: value, size: fileObj.size, url, path: trimStart(path, '/') };
   }
 
   deleteFile(path, commitMessage, options) {

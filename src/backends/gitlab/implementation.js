@@ -106,21 +106,15 @@ export default class GitLab {
   }
 
 
-  persistEntry(entry, mediaFiles = [], options = {}) {
-    return this.api.persistFiles(entry, mediaFiles, options);
+  async persistEntry(entry, options = {}) {
+    return this.api.persistFiles([entry], options);
   }
 
   async persistMedia(mediaFile, options = {}) {
-    try {
-      const response = await this.api.persistFiles(null, [mediaFile], options);
-      const { value, size, path, fileObj } = mediaFile;
-      const url = this.api.fileDownloadURL(path);
-      return { name: value, size: fileObj.size, url, path: trimStart(path, '/') };
-    }
-    catch (error) {
-      console.error(error);
-      throw error;
-    }
+    await this.api.persistFiles([mediaFile], options);
+    const { value, size, path, fileObj } = mediaFile;
+    const url = this.api.fileDownloadURL(path);
+    return { name: value, size: fileObj.size, url, path: trimStart(path, '/') };
   }
 
   deleteFile(path, commitMessage, options) {

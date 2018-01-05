@@ -28,9 +28,9 @@ const integrations = (state = null, action) => {
   }
 };
 
-export const selectIntegration = (state, collection, hook) => (
-  collection? state.getIn(['hooks', collection, hook], false) : state.getIn(['hooks', hook], false)
-);
+export const selectIntegration = (state, collection, hook) => {
+  return collection? state.getIn(['hooks', collection, hook], false) : state.getIn(['hooks', hook], false);
+};
 
 
 export default integrations;

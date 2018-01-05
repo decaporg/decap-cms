@@ -289,7 +289,6 @@ export function persistEntry(collection) {
     }
 
     const backend = currentBackend(state.config);
-    const assetProxies = entryDraft.get('mediaFiles').map(path => getAsset(state, path));
     const entry = entryDraft.get('entry');
 
     /**
@@ -302,7 +301,7 @@ export function persistEntry(collection) {
     const serializedEntryDraft = entryDraft.set('entry', serializedEntry);
     dispatch(entryPersisting(collection, serializedEntry));
     return backend
-      .persistEntry(state.config, collection, serializedEntryDraft, assetProxies.toJS())
+      .persistEntry(state.config, collection, serializedEntryDraft)
       .then(slug => {
         dispatch(notifSend({
           message: 'Entry saved',
