@@ -92,7 +92,7 @@ CMS.registerEditorComponent({
   // Fields the user need to fill out when adding an instance of the component
   fields: [{name: 'id', label: 'Youtube Video ID', widget: 'string'}],
   // Pattern to identify a block as being an instance of this component
-  pattern: /youtube (\S+)\s/,
+  pattern: /^youtube (\S+)$/,
   // Function to extract data elements from the regexp match
   fromBlock: function(match) {
     return {
