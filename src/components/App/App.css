@@ -6,3 +6,11 @@
   max-width: 1440px;
   margin: 0 auto;
 }
+
+.nc-auth-page {
+  height: 100vh;
+}
+
+.nc-auth-wrapper {
+  height: 100%;
+}
