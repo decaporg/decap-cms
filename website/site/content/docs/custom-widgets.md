@@ -4,7 +4,7 @@ position: 35
 ---
 # Custom Widgets
 
-The NetlifyCMS exposes an `window.CMS` global object that you can use to register custom widgets, previews, and editor plugins. The available widget extension methods are:
+The NetlifyCMS exposes a `window.CMS` global object that you can use to register custom widgets, previews, and editor plugins. The available widget extension methods are:
 
 * **registerWidget:** lets you register a custom widget.
 * **registerEditorComponent:** lets you add a block component to the Markdown editor.
