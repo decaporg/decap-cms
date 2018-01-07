@@ -7,7 +7,7 @@ describe('auth', () => {
     expect(
       auth(undefined, {})
     ).toEqual(
-      Immutable.Map()
+      null
     );
   });
 

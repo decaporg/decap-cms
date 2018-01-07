@@ -5,8 +5,7 @@ import AssetProxy from "ValueObjects/AssetProxy";
 import { APIError } from "ValueObjects/errors";
 
 export default class API {
-  constructor(config, reAuth) {
-    this.reAuth = reAuth;
+  constructor(config) {
     this.api_root = config.api_root || "https://gitlab.com/api/v4";
     this.token = config.token || false;
     this.branch = config.branch || "master";
@@ -79,7 +78,6 @@ export default class API {
     .catch(err => Promise.reject([err, null]))
     .then(([response, value]) => (response.ok ? value : Promise.reject([value, response])))
     .catch(([errorValue, response]) => {
-      if (response.status === 401) { this.reAuth(); }
       const errorMessageProp = (errorValue && errorValue.message) ? errorValue.message : null;
       const message = errorMessageProp || (isString(errorValue) ? errorValue : "");
       throw new APIError(message, response && response.status, 'GitLab', { response, errorValue });
