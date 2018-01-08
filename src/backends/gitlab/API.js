@@ -17,31 +17,17 @@ export default class API {
     return this.request("/user");
   }
 
-  isGroupProject() {
-    return this.request(this.repoURL)
-      .then(({ namespace }) => (namespace.kind === "group" ? `/groups/${ encodeURIComponent(namespace.full_path) }` : false));
-  }
-
   hasWriteAccess(user) {
     const WRITE_ACCESS = 30;
-    return this.isGroupProject().then((group) => {
-      if (group === false) {
-        return this.request(`${ this.repoURL }/members/${ user.id }`);
-      } else {
-        return this.request(`${ group }/members/${ user.id }`);
+    return this.request(this.repoURL).then(({ permissions }) => {
+      const { project_access, group_access } = permissions;
+      if (project_access && (project_access.access_level >= WRITE_ACCESS)) {
+        return true;
       }
-    })
-    .then(member => (member.access_level >= WRITE_ACCESS))
-    .catch((err) => {
-        // Member does not have any access. We cannot just check for 404,
-        //   because a 404 is also returned if we have the wrong URI,
-        //   just with an "error" key instead of a "message" key.
-        if (err.status === 404 && err.meta.errorValue["message"] === "404 Not found") {
-          return false;
-        } else {
-          // Otherwise, it is actually an API error.
-          throw err;
-        }
+      if (group_access && (group_access.access_level >= WRITE_ACCESS)) {
+        return true;
+      }
+      return false;
     });
   }
 
