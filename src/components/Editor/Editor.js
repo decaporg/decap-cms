@@ -164,7 +164,8 @@ class Editor extends React.Component {
        */
       const values = deserializeValues(entry.get('data'), fields);
       const deserializedEntry = entry.set('data', values);
-      this.createDraft(deserializedEntry);
+      const fieldsMetaData = nextProps.entryDraft && nextProps.entryDraft.get('fieldsMetaData');
+      this.createDraft(deserializedEntry, fieldsMetaData);
     } else if (newEntry) {
       this.props.createEmptyDraft(collection);
     }
@@ -175,8 +176,8 @@ class Editor extends React.Component {
     window.removeEventListener('beforeunload', this.exitBlocker);
   }
 
-  createDraft = (entry) => {
-    if (entry) this.props.createDraftFromEntry(entry);
+  createDraft = (entry, metadata) => {
+    if (entry) this.props.createDraftFromEntry(entry, metadata);
   };
 
   handleChangeStatus = (newStatusName) => {

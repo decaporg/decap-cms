@@ -177,10 +177,10 @@ export function emptyDraftCreated(entry) {
 /*
  * Exported simple Action Creators
  */
-export function createDraftFromEntry(entry) {
+export function createDraftFromEntry(entry, metadata) {
   return {
     type: DRAFT_CREATE_FROM_ENTRY,
-    payload: entry,
+    payload: { entry, metadata },
   };
 }
 
@@ -276,7 +276,7 @@ export function persistEntry(collection) {
     if (!fieldsErrors.isEmpty()) {
       const hasPresenceErrors = fieldsErrors
         .some(errors => errors.some(error => error.type && error.type === ValidationErrorTypes.PRESENCE));
-      
+
       if (hasPresenceErrors) {
         dispatch(notifSend({
           message: 'Oops, you\'ve missed a required field. Please complete before saving.',
