@@ -1,6 +1,5 @@
 import trimStart from 'lodash/trimStart';
 import semaphore from "semaphore";
-import { fileExtension } from 'Lib/pathHelper'
 import AuthenticationPage from "./AuthenticationPage";
 import API from "./API";
 
@@ -53,7 +52,7 @@ export default class GitHub {
 
   entriesByFolder(collection, extension) {
     return this.api.listFiles(collection.get("folder"))
-    .then(files => files.filter(file => fileExtension(file.name) === extension))
+    .then(files => files.filter(file => file.name.endsWith('.' + extension)))
     .then(this.fetchFiles);
   }
 
