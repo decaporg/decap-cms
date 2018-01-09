@@ -33,10 +33,13 @@ const entryDraftReducer = (state = Map(), action) => {
     case DRAFT_CREATE_FROM_ENTRY:
       // Existing Entry
       return state.withMutations((state) => {
-        state.set('entry', action.payload);
+        state.set('entry', action.payload.entry);
         state.setIn(['entry', 'newRecord'], false);
         state.set('mediaFiles', List());
-        state.set('fieldsMetaData', Map());
+        // An existing entry may already have metadata. If we surfed away and back to its
+        // editor page, the metadata will have been fetched already, so we shouldn't
+        // clear it as to not break relation lists.
+        state.set('fieldsMetaData', action.payload.metadata || Map());
         state.set('fieldsErrors', Map());
         state.set('hasChanged', false);
       });
@@ -55,10 +58,10 @@ const entryDraftReducer = (state = Map(), action) => {
     case DRAFT_CHANGE_FIELD:
       return state.withMutations((state) => {
         state.setIn(['entry', 'data', action.payload.field], action.payload.value);
-        state.mergeIn(['fieldsMetaData'], fromJS(action.payload.metadata));
+        state.mergeDeepIn(['fieldsMetaData'], fromJS(action.payload.metadata));
         state.set('hasChanged', true);
       });
-    
+
     case DRAFT_VALIDATION_ERRORS:
       if (action.payload.errors.length === 0) {
         return state.deleteIn(['fieldsErrors', action.payload.field]);
