@@ -93,19 +93,6 @@ export default class API {
         params: { ref: branch },
       });
   }
-  
-  fileExists(path, branch = this.branch) {
-    return this.request(`${ this.repoURL }/repository/files/${ encodeURIComponent(path) }`, {
-      method: "HEAD",
-      params: { ref: branch },
-      cache: "no-store",
-    }).then(() => true).catch(err => 
-      // 404 can mean either the file does not exist, or if an API
-      //   endpoint doesn't exist. We can't check this becaue we are
-      //   not getting the content with a HEAD request.
-      (err.status === 404 ? false : Promise.reject(err))
-    );
-  }
 
   listFiles(path) {
     return this.request(`${ this.repoURL }/repository/tree`, {
@@ -115,15 +102,13 @@ export default class API {
   }
 
   persistFiles(files, options) {
-    const uploads = files.map(async file => {
-      const exists = await this.fileExists(file.path);
-      return this.uploadAndCommit(file, {
-        commitMessage: options.commitMessage,
-        newFile: !exists,
-      });
-    });
+    const uploadOpts = {
+      commitMessage: options.commitMessage,
+      updateFile: (options.newEntry === false) || false,
+    };
 
-    return Promise.all(uploads)
+    const uploads = files.map(file => this.uploadAndCommit(file, uploadOpts));
+    return Promise.all(uploads);
   }
 
   deleteFile(path, commit_message, options={}) {
@@ -142,7 +127,7 @@ export default class API {
     return Base64.decode(str);
   }
 
-  uploadAndCommit(item, {commitMessage, newFile = true, branch = this.branch}) {
+  uploadAndCommit(item, {commitMessage, updateFile = false, branch = this.branch}) {
     const content = item instanceof AssetProxy ? item.toBase64() : this.toBase64(item.raw);
     // Remove leading slash from path if exists.
     const file_path = item.path.replace(/^\//, '');
@@ -158,7 +143,7 @@ export default class API {
         branch,
         commit_message: commitMessage,
         actions: [{
-          action: (newFile ? "create" : "update"),
+          action: (updateFile ? "update" : "create"),
           file_path,
           content: contentBase64,
           encoding: "base64",
