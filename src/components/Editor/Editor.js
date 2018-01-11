@@ -70,6 +70,7 @@ class Editor extends React.Component {
     deleteUnpublishedEntry: PropTypes.func.isRequired,
     currentStatus: PropTypes.string,
     logoutUser: PropTypes.func.isRequired,
+    featureFlags: ImmutablePropTypes.map.isRequired,
   };
 
   componentDidMount() {
@@ -283,6 +284,7 @@ class Editor extends React.Component {
       isModification,
       currentStatus,
       logoutUser,
+      featureFlags,
     } = this.props;
 
     if (entry && entry.get('error')) {
@@ -323,6 +325,7 @@ class Editor extends React.Component {
         isModification={isModification}
         currentStatus={currentStatus}
         onLogoutClick={logoutUser}
+        featureFlags={featureFlags}
       />
     );
   }
@@ -342,6 +345,7 @@ function mapStateToProps(state, ownProps) {
   const hasChanged = entryDraft.get('hasChanged');
   const displayUrl = config.get('display_url');
   const hasWorkflow = config.get('publish_mode') === EDITORIAL_WORKFLOW;
+  const featureFlags = config.get('feature_flags');
   const isModification = entryDraft.getIn(['entry', 'isModification']);
   const collectionEntriesLoaded = !!entries.getIn(['entities', collectionName])
   const unpublishedEntry = selectUnpublishedEntry(state, collectionName, slug);
@@ -363,6 +367,7 @@ function mapStateToProps(state, ownProps) {
     isModification,
     collectionEntriesLoaded,
     currentStatus,
+    featureFlags,
   };
 }
 

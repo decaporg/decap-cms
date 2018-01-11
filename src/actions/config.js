@@ -9,6 +9,7 @@ export const CONFIG_FAILURE = "CONFIG_FAILURE";
 
 const defaults = {
   publish_mode: publishModes.SIMPLE,
+  feature_flags: {},
 };
 
 export function applyDefaults(config) {
