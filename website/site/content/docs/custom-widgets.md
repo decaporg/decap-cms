@@ -20,7 +20,12 @@ However, although possible, it may be cumbersome or even impractical to add a Re
 Register a custom widget.
 
 ```js
-// Using global window objectCMS.registerWidget(name, control, [preview])// Using npm module importimport CMS from 'netlify-cms'CMS.registerWidget(name, control, [preview])
+// Using global window object
+CMS.registerWidget(name, control, [preview])
+
+// Using npm module import
+import CMS from 'netlify-cms'
+CMS.registerWidget(name, control, [preview])
 ```
 
 **Params:**
