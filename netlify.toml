@@ -1,3 +1,3 @@
 # Temporary for the branch-deploy until the PR is merged and build command updated in app console
-[context.branch-deploy]
+[context.deploy-preview]
   command = "npm run build && cp -v dist/* example/ && node ./scripts/build-command.js"
