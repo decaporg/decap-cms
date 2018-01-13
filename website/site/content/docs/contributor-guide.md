@@ -21,9 +21,13 @@ Code is searched for regex /i18n.t('[^']')/ so if you want particular string to 
 you have to inport i18n and use the translated string as param to i18n.t call.
 For more info see [for example](../../../src/components/App/Header.js)
 
-Extractions shall be extracted manually extra for each language.
-By one extraction run, one file (JSON) is produced (or updated if it already exists).
-to extract/update i18n strings run:
+Run of extraction extract the i18n-ed strings and updates all existing i18n translations in src/i18n.
+
+```
+npm run extract
+```
+
+To make extraction add you language, use --lang param:
 
 ```
 npm run extract --lang <code of your language>

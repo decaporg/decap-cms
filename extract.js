@@ -55,6 +55,16 @@ fs.readdirSync(i18nFolder).forEach(file => {
   }
 });
 
+// write reqired lang as well ...
+const indxLangParam = process.argv.indexOf('--lang')
+if (indxLangParam >= 0 && process.argv.length > indxLangParam) {
+  const lang = process.argv[indxLangParam + 1]
+  const filePath = path.join(i18nFolder, `${lang}.json`);
+  const translations = {};
+  keys.map(i => translations[i.key] = i.key);
+  writeTranslations(filePath, translations);
+}
+
 if (errors.length > 0) {
   console.log(JSON.stringify(errors, {}, 2));
 }
