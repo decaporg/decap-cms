@@ -2,3 +2,6 @@
 [context.branch-deploy]
   publish = "example"
   command = "npm run build && cp -v dist/* example/ && node ./scripts/build-command.js"
+[context.deploy-preview]
+  publish = "example"
+  command = "npm run build && cp -v dist/* example/ && node ./scripts/build-command.js"
