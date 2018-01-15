@@ -14,6 +14,7 @@ import { sanitizeSlug } from "Lib/urlHelper";
 import TestRepoBackend from "./test-repo/implementation";
 import GitHubBackend from "./github/implementation";
 import GitGatewayBackend from "./git-gateway/implementation";
+import { getBackend } from 'Lib/registry';
 
 class LocalStorageAuthStore {
   storageKey = "netlify-cms-user";
@@ -338,6 +339,10 @@ export function resolveBackend(config) {
   }
 
   const authStore = new LocalStorageAuthStore();
+
+  if (getBackend && getBackend().name === name) {
+    return new Backend(getBackend().init(config), name, authStore);
+  }
 
   switch (name) {
     case "test-repo":

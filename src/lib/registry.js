@@ -5,6 +5,7 @@ import { newEditorPlugin } from 'EditorWidgets/Markdown/MarkdownControl/plugins'
  * Global Registry Object
  */
 const registry = {
+  backend: { },
   templates: {},
   previewStyles: [],
   widgets: {},
@@ -24,6 +25,8 @@ export default {
   getEditorComponents,
   registerWidgetValueSerializer,
   getWidgetValueSerializer,
+  registerBackend,
+  getBackend,
 };
 
 
@@ -87,3 +90,18 @@ export function registerWidgetValueSerializer(widgetName, serializer) {
 export function getWidgetValueSerializer(widgetName) {
   return registry.widgetValueSerializers[widgetName];
 };
+
+/**
+ * Backend API
+ */
+export function registerBackend(name, BackendClass) {
+  registry.backend = {
+    name,
+    init: config => new BackendClass(config),
+  };
+}
+
+export function getBackend() {
+  return registry.backend;
+}
+
