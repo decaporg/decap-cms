@@ -25,7 +25,7 @@ export default {
   getEditorComponents,
   registerWidgetValueSerializer,
   getWidgetValueSerializer,
-  registerBackends,
+  registerBackend,
   getBackend,
 };
 
@@ -94,9 +94,9 @@ export function getWidgetValueSerializer(widgetName) {
 /**
  * Backend API
  */
-export function registerBackends(name, BackendClass) {
+export function registerBackend(name, BackendClass) {
   if (!name || !BackendClass) {
-    console.error("Backend parameters invalid. example: CMS.registerBackends('myBackend', BackendClass)");
+    console.error("Backend parameters invalid. example: CMS.registerBackend('myBackend', BackendClass)");
   } else if (registry.backends[name]) {
       console.error(`Backend [${ name }] already registered. Please choose a different name.`);
   } else {

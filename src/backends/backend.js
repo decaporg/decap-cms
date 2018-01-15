@@ -14,14 +14,14 @@ import { sanitizeSlug } from "Lib/urlHelper";
 import TestRepoBackend from "./test-repo/implementation";
 import GitHubBackend from "./github/implementation";
 import GitGatewayBackend from "./git-gateway/implementation";
-import { registerBackends, getBackend } from 'Lib/registry';
+import { registerBackend, getBackend } from 'Lib/registry';
 
 /**
  * Register internal backends
  */
-registerBackends('git-gateway', GitGatewayBackend);
-registerBackends('github', GitHubBackend);
-registerBackends('test-repo', TestRepoBackend);
+registerBackend('git-gateway', GitGatewayBackend);
+registerBackend('github', GitHubBackend);
+registerBackend('test-repo', TestRepoBackend);
 
 
 class LocalStorageAuthStore {
