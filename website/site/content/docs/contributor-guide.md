@@ -38,3 +38,11 @@ E.g. czech language strings (international code cs) run:
 ```
 npm run extract --lang cs
 ```
+
+### Language settings
+
+Add to config.yaml:
+
+```
+lang: <code of your language>
+```
