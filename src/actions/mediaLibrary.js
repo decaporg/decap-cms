@@ -4,6 +4,7 @@ import { createAssetProxy } from 'ValueObjects/AssetProxy';
 import { getAsset, selectIntegration } from 'Reducers';
 import { getIntegrationProvider } from 'Integrations';
 import { addAsset } from './media';
+import {removeUnicodesInFilename} from 'Lib/slug';
 
 const { notifSend } = notifActions;
 
@@ -98,7 +99,8 @@ export function persistMedia(file, opts = {}) {
     dispatch(mediaPersisting());
 
     try {
-      const assetProxy = await createAssetProxy(file.name.toLowerCase(), file, false, privateUpload);
+      const filename = removeUnicodesInFilename(file.name)
+      const assetProxy = await createAssetProxy(filename, file, false, privateUpload);
       dispatch(addAsset(assetProxy));
       if (!integration) {
         const asset = await backend.persistMedia(assetProxy);
