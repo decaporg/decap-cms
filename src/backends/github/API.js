@@ -638,7 +638,7 @@ export default class API {
     })
     .catch((error) => {
       if (error instanceof APIError && error.status === 405) {
-        this.forceMergePR(pullrequest, objects);
+        return this.forceMergePR(pullrequest, objects);
       } else {
         throw error;
       }
