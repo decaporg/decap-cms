@@ -32,6 +32,7 @@ import { status } from 'Constants/publishModes';
 import { EDITORIAL_WORKFLOW } from 'Constants/publishModes';
 import EditorInterface from './EditorInterface';
 import withWorkflow from './withWorkflow';
+import i18n from '../../i18n';
 
 const navigateCollection = (collectionPath) => history.push(`/collections/${collectionPath}`);
 const navigateToCollection = collectionName => navigateCollection(collectionName);
@@ -91,7 +92,7 @@ class Editor extends React.Component {
       loadEntry(collection, slug);
     }
 
-    const leaveMessage = 'Are you sure you want to leave this page?';
+    const leaveMessage = i18n.t('leaveMessage');
 
     this.exitBlocker = (event) => {
       if (this.props.entryDraft.get('hasChanged')) {
@@ -204,12 +205,13 @@ class Editor extends React.Component {
     const { createNew = false } = opts;
     const { publishUnpublishedEntry, entryDraft, collection, slug, currentStatus, loadEntry } = this.props;
     if (currentStatus !== status.last()) {
-      window.alert('Please update status to "Ready" before publishing.');
+      window.alert(i18n.t('updateStatusToReady'));
       return;
-    } else if (!window.confirm('Are you sure you want to publish this entry?')) {
+    } else if (!window.confirm(i18n.t('wantToPublish'))) {
       return;
     } else if (entryDraft.get('hasChanged')) {
-      if (window.confirm('Your unsaved changes will be saved before publishing. Are you sure you want to publish?')) {
+      const m = i18n.t('unsavedChangedWillBeSaved')
+      if (window.confirm(m)) {
         await persistEntry(collection);
       } else {
         return;
@@ -229,10 +231,10 @@ class Editor extends React.Component {
   handleDeleteEntry = () => {
     const { entryDraft, newEntry, collection, deleteEntry, slug } = this.props;
     if (entryDraft.get('hasChanged')) {
-      if (!window.confirm('Are you sure you want to delete this published entry, as well as your unsaved changes from the current session?')) {
+      if (!window.confirm(i18n.t('sureToDeletePublishedUnsaved'))) {
         return;
       }
-    } else if (!window.confirm('Are you sure you want to delete this published entry?')) {
+    } else if (!window.confirm(i18n.t('sureToDeletePublished'))) {
       return;
     }
     if (newEntry) {
@@ -247,9 +249,9 @@ class Editor extends React.Component {
 
   handleDeleteUnpublishedChanges = async () => {
     const { entryDraft, collection, slug, deleteUnpublishedEntry, loadEntry, isModification } = this.props;
-    if (entryDraft.get('hasChanged') && !window.confirm('This will delete all unpublished changes to this entry, as well as your unsaved changes from the current session. Do you still want to delete?')) {
+    if (entryDraft.get('hasChanged') && !window.confirm(i18n.t('sureToDeleteChangedUnpublishedChanges'))) {
       return;
-    } else if (!window.confirm('All unpublished changes to this entry will be deleted. Do you still want to delete?')) {
+    } else if (!window.confirm(i18n.t('sureToDeleteUnpublishedChanges'))) {
       return;
     }
     await deleteUnpublishedEntry(collection.get('name'), slug);

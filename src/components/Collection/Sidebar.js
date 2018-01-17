@@ -5,6 +5,7 @@ import { NavLink } from 'react-router-dom';
 import { searchCollections } from 'Actions/collections';
 import { getCollectionUrl } from 'Lib/urlHelper';
 import { Icon } from 'UI';
+import i18n from '../../i18n';
 
 export default class Collection extends React.Component {
 
@@ -36,13 +37,13 @@ export default class Collection extends React.Component {
 
     return (
         <div className="nc-collectionPage-sidebar">
-          <h1 className="nc-collectionPage-sidebarHeading">Collections</h1>
+          <h1 className="nc-collectionPage-sidebarHeading">{i18n.t('collections')}</h1>
           <div className="nc-collectionPage-sidebarSearch">
             <Icon type="search" size="small"/>
             <input
               onChange={e => this.setState({ query: e.target.value })}
               onKeyDown={e => e.key === 'Enter' && searchCollections(query)}
-              placeholder="Search all"
+              placeholder={i18n.t("Search all")}
               value={query}
             />
           </div>

@@ -4,6 +4,7 @@ import ImmutablePropTypes from "react-immutable-proptypes";
 import { NavLink } from 'react-router-dom';
 import { Icon, Dropdown, DropdownItem } from 'UI';
 import { stripProtocol } from 'Lib/urlHelper';
+import i18n from '../../i18n';
 
 export default class Header extends React.Component {
   static propTypes = {
@@ -46,25 +47,25 @@ export default class Header extends React.Component {
                 isActive={(match, location) => location.pathname.startsWith('/collections/')}
               >
                 <Icon type="page"/>
-                Content
+                {i18n.t("content")}
               </NavLink>
               {
                 hasWorkflow
                   ? <NavLink to="/workflow" className="nc-appHeader-button" activeClassName="nc-appHeader-button-active">
                       <Icon type="workflow"/>
-                      Workflow
+                      {i18n.t("workflow")}
                     </NavLink>
                   : null
               }
               <button onClick={openMediaLibrary} className="nc-appHeader-button">
                 <Icon type="media-alt"/>
-                Media
+                {i18n.t("media")}
               </button>
             </nav>
             <div className="nc-appHeader-actions">
               <Dropdown
                 classNameButton="nc-appHeader-button nc-appHeader-quickNew"
-                label="Quick add"
+                label={i18n.t("quickadd")}
                 dropdownTopOverlap="30px"
                 dropdownWidth="160px"
                 dropdownPosition="left"
@@ -104,7 +105,7 @@ export default class Header extends React.Component {
                   </button>
                 }
               >
-                <DropdownItem label="Log Out" onClick={onLogoutClick}/>
+                <DropdownItem label={i18n.t("logout")} onClick={onLogoutClick}/>
               </Dropdown>
             </div>
           </div>

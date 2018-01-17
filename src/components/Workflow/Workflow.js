@@ -14,6 +14,7 @@ import { selectUnpublishedEntriesByStatus } from 'Reducers';
 import { EDITORIAL_WORKFLOW, status } from 'Constants/publishModes';
 import { Loader, Dropdown, DropdownItem } from 'UI';
 import WorkflowList from './WorkflowList';
+import i18n from '../../i18n';
 
 class Workflow extends Component {
   static propTypes = {
@@ -54,9 +55,9 @@ class Workflow extends Component {
       <div className="nc-workflow">
         <div className="nc-workflow-top">
           <div className="nc-workflow-top-row">
-            <h1 className="nc-workflow-top-heading">Editorial Workflow</h1>
+            <h1 className="nc-workflow-top-heading">{i18n.t("Editorial Workflow")}</h1>
             <Dropdown
-              label="New Post"
+              label={i18n.t("New Post")}
               dropdownWidth="160px"
               dropdownPosition="left"
               dropdownTopOverlap="40px"
@@ -73,7 +74,7 @@ class Workflow extends Component {
             </Dropdown>
           </div>
           <p className="nc-workflow-top-description">
-            {reviewCount} {reviewCount === 1 ? 'entry' : 'entries'} waiting for review, {readyCount} ready to go live.
+            {i18n.t("items_waitinf_for_review", reviewCount)}, {i18n.t("items_go_live", readyCount)}
           </p>
         </div>
         <WorkflowList
