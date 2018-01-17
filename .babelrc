@@ -3,7 +3,6 @@
     ["env", {
       "modules": false
     }],
-    "stage-1",
     "react"
   ],
   "plugins": [
@@ -40,7 +39,10 @@
         "Routing": "./src/routing/",
         "ValueObjects": "./src/valueObjects/",
       }
-    }]
+    }],
+    "transform-export-extensions",
+    "transform-class-properties",
+    "transform-object-rest-spread",
   ],
   "env": {
     "test": {
