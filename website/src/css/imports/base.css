@@ -62,7 +62,7 @@ p, ul {
 }
 
 a {
-  color: $darkGreen;
+  color: #18bdde;
   text-decoration: none;
   font-weight: $bold;
 }
@@ -103,7 +103,7 @@ ul {
     height: 200%;
     opacity: 0;
     transform: rotate(30deg);
-    background: rgba(255,255,255,0.2);
+    background: #18bdde;
     background: linear-gradient(
       to right,
       rgba(255, 255, 255, 0.2) 0%,
@@ -131,7 +131,7 @@ ul {
 }
 
 .btn-primary {
-  background-image: linear-gradient(0deg, $lightGreen 14%, $green 94%);
+  background-image: linear-gradient(0deg, #18bdde 14%, #18bdde 94%);
   color: $darkerGrey;
 }
 
