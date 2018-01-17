@@ -1,18 +1,18 @@
 ---
 hero:
-  headline: "Open source content management for your Git&nbsp;workflow"
-  subhead: "Use Netlify CMS with any static site generator for a faster and more flexible web&nbsp;project"
+  headline: "Build your DXP with BloomReach Web Services"
+  subhead: "BloomReach Web Services (BREWS) is a secure cloud services platform, offering powerful CMS capabilities, personalization APIs and other functionality to help businesses scale and grow."
   devfeatures:
-    - feature: "Static + content management = ♥"
-      description: "Get the speed, security, and scalability of a static site, while still providing a convenient editing interface for content."
-    - feature: "An integrated part of your Git workflow"
+    - feature: "APIs + content management = ♥"
+      description: "Get the speed, security, and scalability of an enterprise CMS, while still providing a convenient editing interface for content."
+    - feature: "An integrated part of your development workflow"
       description: "Content is stored in your Git repository alongside your code for easier versioning, multi-channel publishing, and the option to handle content updates directly in Git."
-    - feature: "An extensible CMS built on React"
-      description: "Netlify CMS is built as a single-page React app. Create custom-styled previews, UI widgets, and editor plugins or add backends to support different Git platform APIs."
+    - feature: "An extensible CMS built on Java"
+      description: "BloomReach is built as a single-page Angular app. Create custom-styled previews, UI widgets, and editor plugins or add backends to support different Git platform APIs."
 
 cta:
   primaryhook: "Getting started is simple and free."
-  primary: "Choose a template that’s pre-configured with a static site generator and deploys to a global CDN in one&nbsp;click."
+  primary: "Choose a template that’s pre-configured and deploys to a global CDN in one&nbsp;click."
   button: "[Get started](/docs/start-with-a-template/)"
 
 editors:
@@ -35,7 +35,7 @@ community:
     - feature: "Support when you need it"
       description: "Get up and running with comprehensive [documentation](/docs) and templates or work through difficult problems with help from the community on [Gitter](https://gitter.im/netlify/NetlifyCMS)."
     - feature: "A community-driven project you can help evolve"
-      description: "Netlify CMS is built by a community of 60+ contributors — and you can help. Join our [bi-weekly planning sessions](/community) or read the [contributing guide](/docs/contributor-guide) to join in."
+      description: "Hippo CMS is built by a community of 60+ contributors — and you can help. Join our [bi-weekly planning sessions](/community) or read the [contributing guide](/docs/contributor-guide) to join in."
   contributors: "Made possible by awesome contributors"
 
 ---

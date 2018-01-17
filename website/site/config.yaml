@@ -1,6 +1,6 @@
 baseurl: "/"
 languageCode: "en-us"
-title: "Netlify CMS | Open-Source Content Management System"
+title: "BREWS | BloomReach Web Services"
 disable404: true
 pluralizeListTitles: false
 metaDataFormat: "yaml"

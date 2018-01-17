@@ -74,12 +74,12 @@
       transition: color .2s ease;
 
       &.active {
-        color: $darkGreen;
+        color: #18bdde;
         font-weight: $bold;
       }
 
       &:hover {
-        color: $darkGreen;
+        color: #18bdde;
       }
     }
   }
@@ -109,7 +109,7 @@
     }
 
     #pencil {
-      fill: #7CA511;
+      fill: #18bdde;
     }
 
     @media screen and (min-width: $tablet) {
@@ -128,7 +128,7 @@
 
     a {
 			text-decoration: none;
-			color: $darkGreen;
+			color: #18bdde;
 		}
 
 		iframe {
@@ -188,7 +188,7 @@
 			content: ' ';
 			width: $small;
 			height: 2px;
-			background: $darkGreen;
+			background: #18bdde;
 		    display: block;
 		    margin-top: 5px;
 		}

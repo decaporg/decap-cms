@@ -54,7 +54,7 @@
   }
 
   h3 {
-    color: $green;
+    color: #18bdde;
     font-size: 20px;
   }
 
@@ -110,7 +110,7 @@
   }
 
   a {
-    color: $green;
+    color: #18bdde;
     font-weight: $semibold;
   }
 }
