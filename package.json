@@ -30,6 +30,8 @@
   },
   "files": [
     "dist/",
+    "src/",
+    "scripts/",
     "README.md"
   ],
   "pre-commit": "lint:staged",
