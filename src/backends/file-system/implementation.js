@@ -1,3 +1,6 @@
+import GoTrue from "gotrue-js";
+import jwtDecode from 'jwt-decode';
+import {List} from 'immutable';
 import trimStart from 'lodash/trimStart';
 import AuthenticationPage from './AuthenticationPage';
 import API from "./API";
@@ -23,11 +26,22 @@ function nameFromEmail(email) {
     .join(' ');
 }
 
+const localHosts = {
+  localhost: true,
+  "127.0.0.1": true,
+  "0.0.0.0": true
+};
+
 export default class fs {
   constructor(config) {
     this.config = config;
 
-    this.api_root = config.getIn(["backend", "api_root"], "http://localhost:8080/api");
+    this.api_root = config.getIn(["backend", "api_root"], "/api");
+
+    const APIUrl = config.getIn(["backend", "identity_url"], "/.netlify/identity");
+    this.authClient = window.netlifyIdentity ? window.netlifyIdentity.gotrue : new GoTrue({APIUrl});
+
+    AuthenticationPage.authClient = this.authClient;
   }
 
   authComponent() {
@@ -35,20 +49,59 @@ export default class fs {
   }
 
   restoreUser(user) {
+    if (!localHosts[document.location.host.split(":").shift()]) {
+      user = this.authClient && this.authClient.currentUser();
+      if (!user) return Promise.reject();
+    }
     return this.authenticate(user);
   }
 
-  authenticate(state) {
-    this.api = new API({ api_root: this.api_root });
-    return Promise.resolve({ email: state.email, name: nameFromEmail(state.email) });
+  authenticate(user) {
+    if (localHosts[document.location.host.split(":").shift()]) {
+      const userData = { name: '', email: '' };
+      if (user.email) {
+        userData.name = nameFromEmail(user.email);
+        userData.email = user.email;
+      }
+      this.api = new API({
+        api_root: this.api_root,
+        token: null,
+      });
+      return Promise.resolve(userData);
+    } else {
+      this.tokenPromise = user.jwt.bind(user);
+      return this.tokenPromise()
+      .then((token) => {
+        const userData = {
+          name: user.user_metadata.name || nameFromEmail(user.email),
+          email: user.email,
+          avatar_url: user.user_metadata.avatar_url,
+          metadata: user.user_metadata,
+        };
+        this.api = new API({
+          api_root: this.api_root,
+          token: token,
+        });
+        return userData;
+      });
+    }
   }
 
   logout() {
-    return null;
+    if (localHosts[document.location.host.split(":").shift()]) {
+      return null;
+    } else {
+      const user = this.authClient.currentUser();
+      return user && user.logout();
+    }
   }
 
   getToken() {
-    return Promise.resolve('');
+    if (localHosts[document.location.host.split(":").shift()]) {
+      return Promise.resolve('');
+    } else {
+      return this.tokenPromise();
+    }
   }
 
   entriesByFolder(collection, extension) {

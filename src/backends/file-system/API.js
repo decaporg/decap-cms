@@ -6,6 +6,7 @@ import { APIError } from "../../valueObjects/errors";
 export default class API {
   constructor(config) {
     this.api_root = config.api_root || "/api";
+    this.token = config.token;
   }
 
   user() {
@@ -17,6 +18,9 @@ export default class API {
       "Content-Type": "application/json",
       ...headers,
     };
+    if (this.token) {
+      baseHeader.Authorization = `Bearer ${ this.token }`;
+    }
 
     return baseHeader;
   }

@@ -1,31 +1,46 @@
-.fs-auth-page-root {
+.nc-filesystemAuthenticationPage-root {
   display: flex;
+  flex-flow: column nowrap;
   align-items: center;
   justify-content: center;
   height: 100vh;
 }
 
-.fs-auth-page-card {
+.nc-filesystemAuthenticationPage-form {
   width: 350px;
-  padding: 10px;
+  margin-top: -80px;
+  z-index: 1;
+  & input {
+    background-color: #fff;
+    border-radius: var(--borderRadius);
+
+    font-size: 14px;
+    padding: 10px 10px;
+    margin-bottom: 15px;
+    margin-top: 6px;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+
+    &:focus {
+      outline: none;
+      box-shadow: inset 0 0 0 2px var(--colorBlue);
+    }
+  }
 }
 
-.fs-auth-page-card img {
+.nc-filesystemAuthenticationPage-button {
+  @apply(--button);
+  @apply(--dropShadowDeep);
+  @apply(--buttonDefault);
+  @apply(--buttonGray);
+
+  padding: 0 30px;
   display: block;
+  margin-top: 20px;
   margin: auto;
-  padding: 20px;
 }
 
-.fs-auth-page-errorMsg {
-  color: #dd0000;
-}
-
-.fs-auth-page-message {
-  font-size: 1.1em;
-  margin: 20px 10px;
-}
-
-.fs-auth-page-button {
-  padding: .25em 1em;
-  height: auto;
+.nc-filesystemAuthenticationPage-errorMsg {
+  color: var(--colorErrorText);
 }
