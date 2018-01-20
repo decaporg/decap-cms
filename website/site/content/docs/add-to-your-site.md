@@ -230,6 +230,7 @@ When a user logs in with the Netlify Identity widget, they will be directed to t
         });
       }
     });
+    window.netlifyIdentity.init();
   }
 </script>
 ```
