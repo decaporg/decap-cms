@@ -28,6 +28,7 @@
       font-size: 18px;
       line-height: 25px;
       color: $lightishGrey;
+      margin: 0;
 
       .hook {
         font-weight: $bold;
