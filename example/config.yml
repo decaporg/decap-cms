@@ -21,6 +21,21 @@ collections: # A list of collections the CMS should be able to edit
     meta:
       - {label: "SEO Description", name: "description", widget: "text"}
 
+  - name: 'gallery'
+    label: 'Gallery'
+    create: true
+    folder: "_gallery"
+    slug: '{{slug}}'
+    fields:
+      - {name: kind, widget: hidden, default: 'gallery'}
+      - {label: 'Title', name: 'title', widget: 'string'}
+      - name: images
+        label: Gallery
+        widget: gallery
+        required: true
+        fields:
+          - {name: image, label: Image, widget: image, class: 'gallery'}
+
   - name: "faq" # Used in routes, ie.: /admin/collections/:slug/edit
     label: "FAQ" # Used in the UI, ie.: "New Post"
     folder: "_faqs"

@@ -16,6 +16,7 @@ import {
 } from 'Actions/mediaLibrary';
 import { Icon } from 'UI';
 
+import { ImageCanvas } from '../EditorWidgets/Gallery/GalleryPreview'
 
 /**
  * Extensions used to determine which files to show when the media library is
@@ -316,9 +317,12 @@ class MediaLibrary extends React.Component {
                   <div className="nc-mediaLibrary-cardImage-container">
                     {
                       file.isViewableImage
-                        ? <img src={file.url} className="nc-mediaLibrary-cardImage"/>
+                        ? (
+                          <ImageCanvas src={file.url} className="nc-mediaLibrary-cardImage" />
+                          )
                         : <div className="nc-mediaLibrary-cardImage"/>
                     }
+                    {/*<img src={file.url} className="nc-mediaLibrary-cardImage"/>*/}
                   </div>
                   <p className="nc-mediaLibrary-cardText">{file.name}</p>
                 </div>

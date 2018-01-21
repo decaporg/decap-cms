@@ -4,6 +4,8 @@ import ImmutablePropTypes from "react-immutable-proptypes";
 import uuid from 'uuid/v4';
 import { truncateMiddle } from 'Lib/textHelper';
 
+import { ImageCanvas } from '../Gallery/GalleryPreview'
+
 const MAX_DISPLAY_LENGTH = 50;
 
 export default function withMediaControl(forImage) {
@@ -89,9 +91,18 @@ export default function withMediaControl(forImage) {
                 ? <div className="nc-imageControl-content">
                     {
                       forImage
-                        ? <div className="nc-imageControl-imageWrapper">
-                            <img src={getAsset(value)}/>
-                          </div>
+                        ? (<div className="nc-imageControl-imageWrapper">
+                            {/*<img src={getAsset(value)}/>*/}
+                            <ImageCanvas
+                              src={getAsset(value)}
+                              style={{
+                                borderRadius: '5px',
+                                height: '100%',
+                                objectFit: 'cover',
+                                width: '100%'
+                              }}
+                            />
+                          </div>)
                         : null
                     }
                     <div>
