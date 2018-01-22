@@ -30,6 +30,8 @@ Example:
     - {label: "Body", name: "body", widget: "markdown"}
 ```
 
+**Note:** Folder Collections currently require a `title` field for creating new entries.
+
 ### Filtered folder collections
 
 The entries for any folder collection can be filtered based on the value of a single field. By filtering a folder into different collections, you can manage files with different fields, options, extensions, etc. in the same folder.
