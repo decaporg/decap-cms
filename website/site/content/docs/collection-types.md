@@ -16,6 +16,8 @@ Folder collections represent one or more files with the same format, fields, and
 
 Unlike file collections, folder collections have the option to allow editors to create new items in the collection. This is set by the boolean `create` field.
 
+**Note:** Folder collections must have at least one field with the name "title" for creating new entry slugs. That field should use the default "string" widget. The "label" for the field can be any string value.
+
 Example:
 
 ```yaml
