@@ -4,12 +4,22 @@
     Changes that have landed in master but are not yet released.
     Click to see more.
   </summary>
-
-  * Fix markdown widget re-rendering after load ([@erquhart](https://github.com/erquhart) in [#955](https://github.com/netlify/netlify-cms/pull/955))
-  * Fix image form not displaying when added as first item in markdown widget ([@Dammmien](https://github.com/Dammmien) in [#926](https://github.com/netlify/netlify-cms/pull/926))
-  * Add collapse all/expand all functionality to List widget ([@drlogout](https://github.com/drlogout) in [#912](https://github.com/netlify/netlify-cms/pull/912))
-  * Add expand/collapse functionality to object widget ([@drlogout](https://github.com/drlogout) in [#927](https://github.com/netlify/netlify-cms/pull/927))
 </details>
+
+## 1.0.4 (January 23, 2018)
+
+* Fix markdown widget re-rendering after load ([@erquhart](https://github.com/erquhart) in [#955](https://github.com/netlify/netlify-cms/pull/955))
+* Fix image form not displaying when added as first item in markdown widget ([@Dammmien](https://github.com/Dammmien) in [#926](https://github.com/netlify/netlify-cms/pull/926))
+* Add collapse all/expand all functionality to List widget ([@drlogout](https://github.com/drlogout) in [#912](https://github.com/netlify/netlify-cms/pull/912))
+* Add expand/collapse functionality to object widget ([@drlogout](https://github.com/drlogout) in [#927](https://github.com/netlify/netlify-cms/pull/927))
+* Fix vertically centered icon positioning in Firefox ([@jimmaaay](https://github.com/jimmaaay) in [#976](https://github.com/netlify/netlify-cms/pull/976))
+* Fix new uploads not showing in media library ([@tech4him1](https://github.com/tech4him1) in [#925](https://github.com/netlify/netlify-cms/pull/925))
+* Overhaul widgets section in docs ([@hcavalieri](https://github.com/hcavalieri) in [#866](https://github.com/netlify/netlify-cms/pull/866))
+* Use proper formatting when writing JSON files ([@tech4him1](https://github.com/tech4him1) in [#979](https://github.com/netlify/netlify-cms/pull/979))
+* Ensure temporary storage is available before attempting to write ([@vencax](https://github.com/vencax) in [#550](https://github.com/netlify/netlify-cms/pull/550))
+* Show SVG preview images in the media library ([@Jinksi](https://github.com/Jinksi) in [#954](https://github.com/netlify/netlify-cms/pull/954))
+* Fix failed PR force-merge showing success message ([@tech4him1](https://github.com/tech4him1) in [#1016](https://github.com/netlify/netlify-cms/pull/1016))
+* Fix false proptype warning for collection view ([@Quicksaver](https://github.com/Quicksaver) in [#998](https://github.com/netlify/netlify-cms/pull/998))
 
 ## 1.0.3 (December 19, 2017)
 
