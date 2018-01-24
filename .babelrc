@@ -3,6 +3,7 @@
     ["env", {
       "modules": false,
       "targets": {
+        "node": "6",
         "browsers": [
           "last 2 Chrome versions",
           "last 2 Opera versions",
