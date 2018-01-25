@@ -81,6 +81,7 @@ class EditorInterface extends Component {
       isModification,
       currentStatus,
       onLogoutClick,
+      featureFlags,
     } = this.props;
 
     const { previewVisible, scrollSyncEnabled, showEventBlocker } = this.state;
@@ -102,6 +103,7 @@ class EditorInterface extends Component {
           onOpenMediaLibrary={onOpenMediaLibrary}
           onAddAsset={onAddAsset}
           onRemoveInsertedMedia={onRemoveInsertedMedia}
+          featureFlags={featureFlags}
           ref={c => this.controlPaneRef = c} // eslint-disable-line
         />
       </div>
@@ -219,6 +221,7 @@ EditorInterface.propTypes = {
   isModification: PropTypes.bool,
   currentStatus: PropTypes.string,
   onLogoutClick: PropTypes.func.isRequired,
+  featureFlags: ImmutablePropTypes.map.isRequired,
 };
 
 export default EditorInterface;

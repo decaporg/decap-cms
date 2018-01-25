@@ -11,6 +11,7 @@ describe('config', () => {
         publish_mode: 'simple',
         media_folder: 'path/to/media',
         public_folder: '/path/to/media',
+        feature_flags: {},
       });
     });
 
@@ -24,6 +25,7 @@ describe('config', () => {
         publish_mode: 'complex',
         media_folder: 'path/to/media',
         public_folder: '/path/to/media',
+        feature_flags: {},
       });
     });
 
@@ -36,6 +38,7 @@ describe('config', () => {
         publish_mode: 'simple',
         media_folder: 'path/to/media',
         public_folder: '/path/to/media',
+        feature_flags: {},
       });
     });
 
@@ -43,12 +46,13 @@ describe('config', () => {
       expect(applyDefaults({
         foo: 'bar',
         media_folder: 'path/to/media',
-        public_folder: '/publib/path',
+        public_folder: '/public/path',
       })).toEqual({
         foo: 'bar',
         publish_mode: 'simple',
         media_folder: 'path/to/media',
-        public_folder: '/publib/path',
+        public_folder: '/public/path',
+        feature_flags: {},
       });
     });
   });

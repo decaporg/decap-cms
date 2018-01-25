@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import { Map } from 'immutable';
+import { WIDGET_ENTRY_DATA } from 'Constants/featureFlags';
 import EditorControl from './EditorControl';
 
 export default class ControlPane extends React.Component {
@@ -32,6 +34,7 @@ export default class ControlPane extends React.Component {
       onAddAsset,
       onRemoveInsertedMedia,
       onValidate,
+      featureFlags,
     } = this.props;
 
     if (!collection || !fields) {
@@ -42,6 +45,10 @@ export default class ControlPane extends React.Component {
       return null;
     }
 
+    const __experimental = Map(!featureFlags.get(WIDGET_ENTRY_DATA) ? {} : {
+      entryData: entry.get('data'),
+    });
+
     return (
       <div className="nc-controlPane-root">
         {fields.map((field, i) => field.get('widget') === 'hidden' ? null :
@@ -49,6 +56,7 @@ export default class ControlPane extends React.Component {
             key={i}
             field={field}
             value={entry.getIn(['data', field.get('name')])}
+            entryData={entry.getIn(['data'])}
             fieldsMetaData={fieldsMetaData}
             fieldsErrors={fieldsErrors}
             mediaPaths={mediaPaths}
@@ -59,6 +67,7 @@ export default class ControlPane extends React.Component {
             onRemoveInsertedMedia={onRemoveInsertedMedia}
             onValidate={onValidate}
             processControlRef={this.processControlRef}
+            __experimental={__experimental}
           />
         )}
       </div>
@@ -79,4 +88,5 @@ ControlPane.propTypes = {
   onChange: PropTypes.func.isRequired,
   onValidate: PropTypes.func.isRequired,
   onRemoveInsertedMedia: PropTypes.func.isRequired,
+  featureFlags: ImmutablePropTypes.map.isRequired,
 };
