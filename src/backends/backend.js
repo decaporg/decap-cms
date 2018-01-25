@@ -14,6 +14,15 @@ import { sanitizeSlug } from "Lib/urlHelper";
 import TestRepoBackend from "./test-repo/implementation";
 import GitHubBackend from "./github/implementation";
 import GitGatewayBackend from "./git-gateway/implementation";
+import { registerBackend, getBackend } from 'Lib/registry';
+
+/**
+ * Register internal backends
+ */
+registerBackend('git-gateway', GitGatewayBackend);
+registerBackend('github', GitHubBackend);
+registerBackend('test-repo', TestRepoBackend);
+
 
 class LocalStorageAuthStore {
   storageKey = "netlify-cms-user";
@@ -339,15 +348,10 @@ export function resolveBackend(config) {
 
   const authStore = new LocalStorageAuthStore();
 
-  switch (name) {
-    case "test-repo":
-      return new Backend(new TestRepoBackend(config), name, authStore);
-    case "github":
-      return new Backend(new GitHubBackend(config), name, authStore);
-    case "git-gateway":
-      return new Backend(new GitGatewayBackend(config), name, authStore);
-    default:
-      throw new Error(`Backend not found: ${ name }`);
+  if (!getBackend(name)) {
+    throw new Error(`Backend not found: ${ name }`);
+  } else {
+    return new Backend(getBackend(name).init(config), name, authStore);
   }
 }
 

@@ -5,6 +5,7 @@ import { newEditorPlugin } from 'EditorWidgets/Markdown/MarkdownControl/plugins'
  * Global Registry Object
  */
 const registry = {
+  backends: { },
   templates: {},
   previewStyles: [],
   widgets: {},
@@ -24,6 +25,8 @@ export default {
   getEditorComponents,
   registerWidgetValueSerializer,
   getWidgetValueSerializer,
+  registerBackend,
+  getBackend,
 };
 
 
@@ -87,3 +90,23 @@ export function registerWidgetValueSerializer(widgetName, serializer) {
 export function getWidgetValueSerializer(widgetName) {
   return registry.widgetValueSerializers[widgetName];
 };
+
+/**
+ * Backend API
+ */
+export function registerBackend(name, BackendClass) {
+  if (!name || !BackendClass) {
+    console.error("Backend parameters invalid. example: CMS.registerBackend('myBackend', BackendClass)");
+  } else if (registry.backends[name]) {
+      console.error(`Backend [${ name }] already registered. Please choose a different name.`);
+  } else {
+    registry.backends[name] = {
+      init: config => new BackendClass(config),
+    };
+  }
+}
+
+export function getBackend(name) {
+  return registry.backends[name];
+}
+
