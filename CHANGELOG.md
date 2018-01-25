@@ -6,6 +6,11 @@
   </summary>
 </details>
 
+## 1.1.0 (January 25, 2018)
+
+* Fix metadata handling for all children of a list field ([@Quicksaver](https://github.com/Quicksaver) in [#719](https://github.com/netlify/netlify-cms/pull/719))
+* Allow registry of external backends ([@talves](https://github.com/talves) in [#1011](https://github.com/netlify/netlify-cms/pull/1011))
+
 ## 1.0.4 (January 23, 2018)
 
 * Fix markdown widget re-rendering after load ([@erquhart](https://github.com/erquhart) in [#955](https://github.com/netlify/netlify-cms/pull/955))
