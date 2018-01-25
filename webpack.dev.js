@@ -3,6 +3,7 @@ const path = require('path');
 const webpack = require('webpack');
 const merge = require('webpack-merge');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const fileSystemAPIPlugin = require('./scripts/fs/fs-express-api');
 
 const HOST = 'localhost';
 const PORT = '8080';
@@ -54,5 +55,6 @@ module.exports = merge.smart(require('./webpack.base.js'), {
     historyApiFallback: true,
     disableHostCheck: true,
     headers: {"Access-Control-Allow-Origin": "*"},
+    before: fileSystemAPIPlugin,
   },
 });
