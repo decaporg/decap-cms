@@ -17,6 +17,7 @@ import styleVariables from "./config/variables";
 import BrowserSync from "browser-sync";
 import webpack from "webpack";
 import webpackConfig from "./webpack.conf";
+import url from "url";
 
 const browserSync = BrowserSync.create();
 const defaultArgs = ["-d", "../dist", "-s", "site", "-v"];
@@ -99,8 +100,17 @@ gulp.task("copy", () =>
         "utf8",
         content =>
           new Promise((resolve, reject) => {
-            const contributors = JSON.parse(content);
-            resolve(yaml.dump({ contributors: contributors.contributors }));
+            const contributors = JSON.parse(content).contributors.map(c => {
+              const avatar = url.parse(c['avatar_url'], true);
+              avatar.search = undefined; // Override so that we can use `avatar.query`.
+              if (avatar.hostname.endsWith('githubusercontent.com')) {
+                // Use 32px avatars, instead of full-size.
+                avatar.query['s'] = '32';
+              }
+              const avatar_url = url.format(avatar);
+              return Object.assign({}, c, { avatar_url });
+            });
+            resolve(yaml.dump({ contributors }));
           })
       )
     )
