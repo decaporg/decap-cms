@@ -27,7 +27,7 @@ const TopBar = ({ onAdd, listLabel, onCollapseAllToggle, allItemsCollapsed, item
   <div className="nc-listControl-topBar">
     <div className="nc-listControl-listCollapseToggle">
       <button className="nc-listControl-listCollapseToggleButton" onClick={onCollapseAllToggle}>
-        <Icon type="chevron" direction={allItemsCollapsed ? 'up' : 'down'} size="small" />
+        <Icon type="chevron" direction={allItemsCollapsed ? 'right' : 'down'} size="small" />
       </button>
       {itemsCount} {listLabel}
     </div>

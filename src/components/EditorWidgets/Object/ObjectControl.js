@@ -12,7 +12,7 @@ const TopBar = ({ collapsed, onCollapseToggle }) => (
   <div className="nc-objectControl-topBar">
     <div className="nc-objectControl-objectCollapseToggle">
       <button className="nc-listControl-listCollapseToggleButton" onClick={onCollapseToggle}>
-        <Icon type="chevron" direction={collapsed ? 'up' : 'down'} size="small" />
+        <Icon type="chevron" direction={collapsed ? 'right' : 'down'} size="small" />
       </button>
     </div>
   </div>
