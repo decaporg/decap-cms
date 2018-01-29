@@ -49,6 +49,10 @@ module.exports = merge.smart(require('./webpack.base.js'), {
 
       // file and reference
       filename: '[file].map',
+      
+      // don't include sources in the sourcemap
+      // we include sources in the NPM package
+      noSources: true,
     }),
   ],
 });
