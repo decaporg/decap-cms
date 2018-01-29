@@ -141,6 +141,7 @@
     "mdast-util-definitions": "^1.2.2",
     "mdast-util-to-string": "^1.0.4",
     "moment": "^2.11.2",
+    "pica": "^4.0.1",
     "prop-types": "^15.5.10",
     "react": "^16.0.0",
     "react-aria-menubutton": "^5.1.0",
