@@ -52,9 +52,9 @@ function formatByName(name) {
 
 export function resolveFormat(collectionOrEntity, entry) {
   // If the format is specified in the collection, use that format.
-  const format = collectionOrEntity.get('format');
-  if (format) {
-    return formatByName(format);
+  const formatSpecification = collectionOrEntity.get('format');
+  if (formatSpecification) {
+    return formatByName(formatSpecification);
   }
 
   // If a file already exists, infer the format from its file extension.
