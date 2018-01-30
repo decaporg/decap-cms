@@ -1,7 +1,7 @@
 import yamlFormatter from './yaml';
 import tomlFormatter from './toml';
 import jsonFormatter from './json';
-import { FrontmatterInfer, FrontmatterJSON, FrontmatterTOML, FrontmatterYAML } from './frontmatter';
+import { frontmatterInfer, frontmatterJSON, frontmatterTOML, frontmatterYAML } from './frontmatter';
 
 export const supportedFormats = [
   'yml',
@@ -25,43 +25,45 @@ export const formatToExtension = format => ({
   'yaml-frontmatter': 'md',
 }[format]);
 
-export function formatByExtension(extension) {
+export function formatByExtension(extension, customDelimiter) {
   return {
     yml: yamlFormatter,
     yaml: yamlFormatter,
     toml: tomlFormatter,
     json: jsonFormatter,
-    md: FrontmatterInfer,
-    markdown: FrontmatterInfer,
-    html: FrontmatterInfer,
+    md: frontmatterInfer(customDelimiter),
+    markdown: frontmatterInfer(customDelimiter),
+    html: frontmatterInfer(customDelimiter),
   }[extension];
 }
 
-function formatByName(name) {
+function formatByName(name, customDelimiter) {
   return {
     yml: yamlFormatter,
     yaml: yamlFormatter,
     toml: tomlFormatter,
     json: jsonFormatter,
-    frontmatter: FrontmatterInfer,
-    'json-frontmatter': FrontmatterJSON,
-    'toml-frontmatter': FrontmatterTOML,
-    'yaml-frontmatter': FrontmatterYAML,
+    frontmatter: frontmatterInfer(customDelimiter),
+    'json-frontmatter': frontmatterJSON(customDelimiter),
+    'toml-frontmatter': frontmatterTOML(customDelimiter),
+    'yaml-frontmatter': frontmatterYAML(customDelimiter),
   }[name];
 }
 
 export function resolveFormat(collectionOrEntity, entry) {
+  // Check for custom delimiter
+  const customDelimiter = collectionOrEntity.get('frontmatter_delimiter');
   // If the format is specified in the collection, use that format.
   const formatSpecification = collectionOrEntity.get('format');
   if (formatSpecification) {
-    return formatByName(formatSpecification);
+    return formatByName(formatSpecification, customDelimiter);
   }
 
   // If a file already exists, infer the format from its file extension.
   const filePath = entry && entry.path;
   if (filePath) {
     const fileExtension = filePath.split('.').pop();
-    return formatByExtension(fileExtension);
+    return formatByExtension(fileExtension, customDelimiter);
   }
 
   // If creating a new file, and an `extension` is specified in the
@@ -72,5 +74,5 @@ export function resolveFormat(collectionOrEntity, entry) {
   }
 
   // If no format is specified and it cannot be inferred, return the default.
-  return formatByName('frontmatter');
+  return formatByName('frontmatter', customDelimiter);
 }

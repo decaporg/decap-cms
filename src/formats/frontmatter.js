@@ -87,7 +87,7 @@ class FrontmatterFormatter {
   }
 }
 
-export const FrontmatterInfer = customDelimiter => new FrontmatterFormatter(null, customDelimiter);
-export const FrontmatterYAML = customDelimiter => new FrontmatterFormatter('yaml', customDelimiter);
-export const FrontmatterTOML = customDelimiter => new FrontmatterFormatter('toml', customDelimiter);
-export const FrontmatterJSON = customDelimiter => new FrontmatterFormatter('json', customDelimiter);
+export const frontmatterInfer = customDelimiter => new FrontmatterFormatter(null, customDelimiter);
+export const frontmatterYAML = customDelimiter => new FrontmatterFormatter('yaml', customDelimiter);
+export const frontmatterTOML = customDelimiter => new FrontmatterFormatter('toml', customDelimiter);
+export const frontmatterJSON = customDelimiter => new FrontmatterFormatter('json', customDelimiter);
