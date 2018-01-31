@@ -68,6 +68,7 @@ class FrontmatterFormatter {
   fromFile(content) {
     const format = this.format || inferFrontmatterFormat(content);
     if (this.customDelimiter) this.format.delimiters = this.customDelimiter;
+    console.log("yo", this.customDelimiter)
     const result = matter(content, { engines: parsers, ...format });
     return {
       ...result.data,
@@ -87,7 +88,7 @@ class FrontmatterFormatter {
   }
 }
 
-export const frontmatterInfer = customDelimiter => new FrontmatterFormatter(null, customDelimiter);
+export const FrontmatterInfer = new FrontmatterFormatter();
 export const frontmatterYAML = customDelimiter => new FrontmatterFormatter('yaml', customDelimiter);
 export const frontmatterTOML = customDelimiter => new FrontmatterFormatter('toml', customDelimiter);
 export const frontmatterJSON = customDelimiter => new FrontmatterFormatter('json', customDelimiter);

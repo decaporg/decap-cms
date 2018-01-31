@@ -1,7 +1,7 @@
 import yamlFormatter from './yaml';
 import tomlFormatter from './toml';
 import jsonFormatter from './json';
-import { frontmatterInfer, frontmatterJSON, frontmatterTOML, frontmatterYAML } from './frontmatter';
+import { FrontmatterInfer, frontmatterJSON, frontmatterTOML, frontmatterYAML } from './frontmatter';
 
 export const supportedFormats = [
   'yml',
@@ -31,9 +31,9 @@ export function formatByExtension(extension, customDelimiter) {
     yaml: yamlFormatter,
     toml: tomlFormatter,
     json: jsonFormatter,
-    md: frontmatterInfer(customDelimiter),
-    markdown: frontmatterInfer(customDelimiter),
-    html: frontmatterInfer(customDelimiter),
+    md: FrontmatterInfer,
+    markdown: FrontmatterInfer,
+    html: FrontmatterInfer,
   }[extension];
 }
 
@@ -43,7 +43,7 @@ function formatByName(name, customDelimiter) {
     yaml: yamlFormatter,
     toml: tomlFormatter,
     json: jsonFormatter,
-    frontmatter: frontmatterInfer(customDelimiter),
+    frontmatter: FrontmatterInfer,
     'json-frontmatter': frontmatterJSON(customDelimiter),
     'toml-frontmatter': frontmatterTOML(customDelimiter),
     'yaml-frontmatter': frontmatterYAML(customDelimiter),
@@ -70,7 +70,7 @@ export function resolveFormat(collectionOrEntity, entry) {
   //   collection config, infer the format from that extension.
   const extension = collectionOrEntity.get('extension');
   if (extension) {
-    return formatByExtension(extension);
+    return formatByExtension(extension, customDelimiter);
   }
 
   // If no format is specified and it cannot be inferred, return the default.
