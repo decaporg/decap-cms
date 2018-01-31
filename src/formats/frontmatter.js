@@ -68,7 +68,6 @@ class FrontmatterFormatter {
   fromFile(content) {
     const format = this.format || inferFrontmatterFormat(content);
     if (this.customDelimiter) this.format.delimiters = this.customDelimiter;
-    console.log("yo", this.customDelimiter)
     const result = matter(content, { engines: parsers, ...format });
     return {
       ...result.data,
