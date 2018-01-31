@@ -16,6 +16,7 @@ const EntryCard = ({
 }) => {
   const label = entry.get('label');
   const title = label || entry.getIn(['data', inferedFields.titleField]);
+  const collectionLabel = collection.get('label');
   const path = `/collections/${collection.get('name')}/entries/${entry.get('slug')}`;
   let image = entry.getIn(['data', inferedFields.imageField]);
   image = resolvePath(image, publicFolder);
@@ -26,7 +27,7 @@ const EntryCard = ({
   if (viewStyle === VIEW_STYLE_LIST) {
     return (
       <Link to={path} className="nc-entryListing-listCard">
-        <h2 className="nc-entryListing-listCard-title">{title}</h2>
+        <h2 className="nc-entryListing-listCard-title">{title} (Collection: {collectionLabel})</h2>
       </Link>
     );
   }
@@ -35,7 +36,7 @@ const EntryCard = ({
     return (
       <Link to={path} className="nc-entryListing-gridCard">
         <div className={c('nc-entryListing-cardBody', { 'nc-entryListing-cardBody-full': !image })}>
-          <h2 className="nc-entryListing-cardHeading">{title}</h2>
+          <h2 className="nc-entryListing-cardHeading">{title} (Collection: {collectionLabel})</h2>
         </div>
         {
           image
