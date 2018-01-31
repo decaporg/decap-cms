@@ -100,7 +100,9 @@ You may also specify a custom `extension` not included in the list above, as lon
 - `toml-frontmatter`: same as the `frontmatter` format above, except frontmatter will be both parsed and saved only as TOML, followed by unparsed body text
 - `json-frontmatter`: same as the `frontmatter` format above, except frontmatter will be both parsed and saved as JSON, followed by unparsed body text
 
-The explicit `yaml-frontmatter`, `toml-frontmatter`, and `json-frontmatter` formats above do not currently support custom delimiters. We use `---` for YAML, `+++` for TOML, and `{` `}` for JSON. If a file has frontmatter inside other delimiters it will be included as part of the body text.
+The explicit `yaml-frontmatter`, `toml-frontmatter`, and `json-frontmatter` formats support custom delimiters. We use `---` for YAML, `+++` for TOML, and `{` `}` for JSON by default, but you can configure a custom delimiter.
+You can configure a custom delimiter with `frontmatter_delimiter`, but it only applies if you have a frontmatter format specified.
+If a file has frontmatter inside other delimiters it will be included as part of the body text.
 
 
 ### `slug`
