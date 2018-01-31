@@ -1,4 +1,4 @@
-import { FrontmatterInfer, FrontmatterJSON, FrontmatterTOML, FrontmatterYAML } from '../frontmatter';
+import { FrontmatterInfer, frontmatterJSON, frontmatterTOML, frontmatterYAML } from '../frontmatter';
 
 jest.mock("../../valueObjects/AssetProxy.js");
 
@@ -17,7 +17,7 @@ describe('Frontmatter', () => {
 
   it('should parse YAML with --- delimiters when it is explicitly set as the format', () => {
     expect(
-      FrontmatterYAML.fromFile('---\ntitle: YAML\ndescription: Something longer\n---\nContent')
+      frontmatterYAML().fromFile('---\ntitle: YAML\ndescription: Something longer\n---\nContent')
     ).toEqual(
       {
         title: 'YAML',
@@ -64,7 +64,7 @@ describe('Frontmatter', () => {
 
   it('should parse TOML with +++ delimiters when it is explicitly set as the format', () => {
     expect(
-      FrontmatterTOML.fromFile('+++\ntitle = "TOML"\ndescription = "Front matter"\n+++\nContent')
+      frontmatterTOML().fromFile('+++\ntitle = "TOML"\ndescription = "Front matter"\n+++\nContent')
     ).toEqual(
       {
         title: 'TOML',
@@ -100,7 +100,7 @@ describe('Frontmatter', () => {
 
   it('should parse JSON with { } delimiters when it is explicitly set as the format', () => {
     expect(
-      FrontmatterJSON.fromFile('{\n"title": "The Title",\n"description": "Something longer"\n}\nContent')
+      frontmatterJSON().fromFile('{\n"title": "The Title",\n"description": "Something longer"\n}\nContent')
     ).toEqual(
       {
         title: 'The Title',
@@ -158,7 +158,7 @@ describe('Frontmatter', () => {
 
   it('should stringify YAML with --- delimiters when it is explicitly set as the format', () => {
     expect(
-      FrontmatterYAML.toFile({ body: 'Some content\nOn another line', tags: ['front matter', 'yaml'], title: 'YAML' })
+      frontmatterYAML().toFile({ body: 'Some content\nOn another line', tags: ['front matter', 'yaml'], title: 'YAML' })
     ).toEqual(
       [
         '---',
@@ -175,7 +175,7 @@ describe('Frontmatter', () => {
 
   it('should stringify TOML with +++ delimiters when it is explicitly set as the format', () => {
     expect(
-      FrontmatterTOML.toFile({ body: 'Some content\nOn another line', tags: ['front matter', 'toml'], title: 'TOML' })
+      frontmatterTOML().toFile({ body: 'Some content\nOn another line', tags: ['front matter', 'toml'], title: 'TOML' })
     ).toEqual(
       [
         '+++',
@@ -190,7 +190,7 @@ describe('Frontmatter', () => {
 
   it('should stringify JSON with { } delimiters when it is explicitly set as the format', () => {
     expect(
-      FrontmatterJSON.toFile({ body: 'Some content\nOn another line', tags: ['front matter', 'json'], title: 'JSON' })
+      frontmatterJSON().toFile({ body: 'Some content\nOn another line', tags: ['front matter', 'json'], title: 'JSON' })
     ).toEqual(
       [
         '{',
