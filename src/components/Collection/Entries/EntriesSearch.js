@@ -42,7 +42,7 @@ class EntriesSearch extends React.Component {
   };
 
   render () {
-    const { collections, entries, publicFolder, page, isFetching } = this.props;
+    const { collections, entries, publicFolder, page, isFetching, isSearchResults } = this.props;
     return (
       <Entries
         collections={collections}
@@ -51,6 +51,7 @@ class EntriesSearch extends React.Component {
         page={page}
         onPaginate={this.handleLoadMore}
         isFetching={isFetching}
+        isSearchResults={isSearchResults}
       />
     );
   }

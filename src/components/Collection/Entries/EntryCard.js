@@ -12,6 +12,7 @@ const EntryCard = ({
   entry,
   inferedFields,
   publicFolder,
+  isSearchResults,
   viewStyle = VIEW_STYLE_LIST,
 }) => {
   const label = entry.get('label');
@@ -27,7 +28,7 @@ const EntryCard = ({
   if (viewStyle === VIEW_STYLE_LIST) {
     return (
       <Link to={path} className="nc-entryListing-listCard">
-        <h2 className="nc-entryListing-listCard-title">{title} (Collection: {collectionLabel})</h2>
+        <h2 className="nc-entryListing-listCard-title">{title} {isSearchResults && `(Collection: ${collectionLabel})`}</h2>
       </Link>
     );
   }
@@ -36,7 +37,7 @@ const EntryCard = ({
     return (
       <Link to={path} className="nc-entryListing-gridCard">
         <div className={c('nc-entryListing-cardBody', { 'nc-entryListing-cardBody-full': !image })}>
-          <h2 className="nc-entryListing-cardHeading">{title} (Collection: {collectionLabel})</h2>
+          <h2 className="nc-entryListing-cardHeading">{title} {isSearchResults && `(Collection: ${collectionLabel})`}</h2>
         </div>
         {
           image

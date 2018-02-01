@@ -24,8 +24,8 @@ class Collection extends React.Component {
   };
 
   renderEntriesSearch = () => {
-    const { searchTerm, collections } = this.props;
-    return <EntriesSearch collections={collections} searchTerm={searchTerm} />
+    const { searchTerm, collections, isSearchResults } = this.props;
+    return <EntriesSearch collections={collections} searchTerm={searchTerm} isSearchResults={isSearchResults}/>
   };
 
   handleChangeViewStyle = (viewStyle) => {
