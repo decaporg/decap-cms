@@ -134,6 +134,8 @@
     display: inline-block;
     position: fixed;
     right: $medium;
+    max-height: calc(100vh - ($xl * 1.5) - $medium);
+    overflow-y: auto;
   }
 
   @media screen and (min-width: 1280px) {
