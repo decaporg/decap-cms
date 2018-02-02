@@ -1,8 +1,8 @@
 import semaphore from "semaphore";
 import AuthenticationPage from "./AuthenticationPage";
 import API from "./API";
-import { fileExtension } from '../../lib/pathHelper';
-import { EDITORIAL_WORKFLOW } from "../../constants/publishModes";
+import { fileExtension } from 'Lib/pathHelper';
+import { EDITORIAL_WORKFLOW } from "Constants/publishModes";
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
 

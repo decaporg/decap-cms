@@ -1,7 +1,7 @@
 import fetchMock from 'fetch-mock';
 import { curry, escapeRegExp, isMatch, merge } from 'lodash';
 import { Map } from 'immutable';
-import AssetProxy from "../../../valueObjects/AssetProxy";
+import AssetProxy from "ValueObjects/AssetProxy";
 import API from '../API';
 
 const compose = (...fns) => val => fns.reduceRight((newVal, fn) => fn(newVal), val);

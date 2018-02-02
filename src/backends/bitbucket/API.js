@@ -1,9 +1,9 @@
 import LocalForage from "localforage";
 import { Base64 } from "js-base64";
 import FormData from "form-data";
-import AssetProxy from "../../valueObjects/AssetProxy";
-import { SIMPLE } from "../../constants/publishModes";
-import { APIError } from "../../valueObjects/errors";
+import AssetProxy from "ValueObjects/AssetProxy";
+import { APIError } from "ValueObjects/errors";
+import { SIMPLE } from "Constants/publishModes";
 
 export default class API {
   constructor(config) {

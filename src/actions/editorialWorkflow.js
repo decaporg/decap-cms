@@ -55,7 +55,7 @@ function unpublishedEntryLoading(collection, slug) {
 function unpublishedEntryLoaded(collection, entry) {
   return {
     type: UNPUBLISHED_ENTRY_SUCCESS,
-    payload: {
+    payload: { 
       collection: collection.get('name'),
       entry,
     },
@@ -65,7 +65,7 @@ function unpublishedEntryLoaded(collection, entry) {
 function unpublishedEntryRedirected(collection, slug) {
   return {
     type: UNPUBLISHED_ENTRY_REDIRECT,
-    payload: {
+    payload: { 
       collection: collection.get('name'),
       slug,
     },
@@ -111,7 +111,7 @@ function unpublishedEntryPersisting(collection, entry, transactionID) {
 function unpublishedEntryPersisted(collection, entry, transactionID, slug) {
   return {
     type: UNPUBLISHED_ENTRY_PERSIST_SUCCESS,
-    payload: {
+    payload: { 
       collection: collection.get('name'),
       entry,
       slug,
@@ -132,7 +132,7 @@ function unpublishedEntryPersistedFail(error, transactionID) {
 function unpublishedEntryStatusChangeRequest(collection, slug, oldStatus, newStatus, transactionID) {
   return {
     type: UNPUBLISHED_ENTRY_STATUS_CHANGE_REQUEST,
-    payload: {
+    payload: { 
       collection,
       slug,
       oldStatus,
@@ -145,7 +145,7 @@ function unpublishedEntryStatusChangeRequest(collection, slug, oldStatus, newSta
 function unpublishedEntryStatusChangePersisted(collection, slug, oldStatus, newStatus, transactionID) {
   return {
     type: UNPUBLISHED_ENTRY_STATUS_CHANGE_SUCCESS,
-    payload: {
+    payload: { 
       collection,
       slug,
       oldStatus,
