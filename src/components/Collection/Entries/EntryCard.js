@@ -27,8 +27,8 @@ const EntryCard = ({
   if (viewStyle === VIEW_STYLE_LIST) {
     return (
       <Link to={path} className="nc-entryListing-listCard">
-        <h2 className="nc-entryListing-listCard-collection-label">{collectionLabel && collectionLabel}</h2>
-        <h2 className="nc-entryListing-listCard-title">{title}</h2>
+        <h2 className="nc-entryListing-listCard-collection-label">{ collectionLabel && collectionLabel }</h2>
+        <h2 className="nc-entryListing-listCard-title">{ title }</h2>
       </Link>
     );
   }
