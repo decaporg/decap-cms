@@ -4,7 +4,7 @@ layout: community
 url: /community
 
 headline: Be a part of building the CMS of the future.
-subhead: We're serious about being community driven, so everyone is welcome to join our open, bi-weekly planning sessions.
+subhead: We’re serious about being community driven, so everyone is welcome to join the [community chat](https://gitter.im/netlify/NetlifyCMS), and to be a part of our bi-weekly planning sessions (details below).
 primarycta: "[Register on Eventbrite →](https://www.eventbrite.com/e/netlify-cms-planning-session-bi-weekly-tickets-35794058994)"
 
 upcomingevent:
