@@ -12,7 +12,7 @@ const EntryCard = ({
   entry,
   inferedFields,
   publicFolder,
-  isSearchResults,
+  collectionName,
   viewStyle = VIEW_STYLE_LIST,
 }) => {
   const label = entry.get('label');
@@ -29,7 +29,7 @@ const EntryCard = ({
     return (
       <Link to={path} className="nc-entryListing-listCard">
         <h2 className="nc-entryListing-listCard-title">{title}</h2>
-        <h2 className="nc-entryListing-listCard-collection-label">{isSearchResults && `Collection: ${collectionLabel}`}</h2>
+        <h2 className="nc-entryListing-listCard-collection-label">{collectionName && `Collection: ${collectionLabel}`}</h2>
       </Link>
     );
   }

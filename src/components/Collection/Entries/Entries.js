@@ -11,8 +11,7 @@ const Entries = ({
   page,
   onPaginate,
   isFetching,
-  viewStyle,
-  isSearchResults
+  viewStyle
 }) => {
   const loadingMessages = [
     'Loading Entries',
@@ -29,7 +28,6 @@ const Entries = ({
         page={page}
         onPaginate={onPaginate}
         viewStyle={viewStyle}
-        isSearchResults={isSearchResults}
       />
     );
   }
