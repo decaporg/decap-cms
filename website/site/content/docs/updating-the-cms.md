@@ -5,6 +5,8 @@ position: 24
 
 # How updates to Netlify CMS are done
 
+The update procedure for your CMS depends upon the method you used to install Netlify CMS.
+
 ## If the CMS is installed using a Package Manager
 
 If you are using a package manager like Yarn or NPM, you will use their standard procedure to update. This is how both the Hugo and Gatsby starters are set up.
