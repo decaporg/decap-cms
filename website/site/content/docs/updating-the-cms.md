@@ -24,4 +24,3 @@ If you are using the CMS through a CDN like Unpkg, then that depends on the vers
    - It will upgrade `1.0.1`, `1.0.2`.
    - It will not upgrade to `1.1.0` or higher.
    - It will not upgrade beta versions.
-   
