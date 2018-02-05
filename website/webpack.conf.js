@@ -1,5 +1,6 @@
 import webpack from "webpack";
 import path from "path";
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 export default {
   module: {
@@ -21,7 +22,12 @@ export default {
   plugins: [
     new webpack.ProvidePlugin({
       "fetch": "imports?this=>global!exports?global.fetch!whatwg-fetch"
-    })
+    }),
+    new CopyWebpackPlugin([
+      {
+        from: "functions"
+      }
+    ])
   ],
 
   context: path.join(__dirname, "src"),
