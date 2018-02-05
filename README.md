@@ -1,6 +1,7 @@
 # Netlify CMS
 [![All Contributors](https://img.shields.io/badge/all_contributors-83-orange.svg)](#contributors)
 [![](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/netlify/netlifycms)
+[![Open Source Helpers](https://www.codetriage.com/netlify/netlify-cms/badges/users.svg)](https://www.codetriage.com/netlify/netlify-cms)
 
 A CMS for static site generators. Give non-technical users a simple way to edit
 and add content to any site built with a static site generator.
