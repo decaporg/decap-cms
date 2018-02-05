@@ -25,7 +25,8 @@ export default {
     }),
     new CopyWebpackPlugin([
       {
-        from: "functions"
+        from: "functions",
+        to: "../../functions"
       }
     ])
   ],
