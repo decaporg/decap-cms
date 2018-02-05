@@ -4,6 +4,7 @@ const webpack = require('webpack');
 const merge = require('webpack-merge');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = merge.smart(require('./webpack.base.js'), {
   entry: {
@@ -50,5 +51,10 @@ module.exports = merge.smart(require('./webpack.base.js'), {
       // file and reference
       filename: '[file].map',
     }),
+    new CopyWebpackPlugin([
+      {
+        from: "functions"
+      }
+    ])
   ],
 });
