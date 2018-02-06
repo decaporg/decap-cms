@@ -25,7 +25,7 @@ export const formatToExtension = format => ({
   'yaml-frontmatter': 'md',
 }[format]);
 
-export function formatByExtension(extension, customDelimiter) {
+export function formatByExtension(extension) {
   return {
     yml: yamlFormatter,
     yaml: yamlFormatter,
@@ -70,7 +70,7 @@ export function resolveFormat(collectionOrEntity, entry) {
   //   collection config, infer the format from that extension.
   const extension = collectionOrEntity.get('extension');
   if (extension) {
-    return formatByExtension(extension, customDelimiter);
+    return formatByExtension(extension);
   }
 
   // If no format is specified and it cannot be inferred, return the default.
