@@ -738,6 +738,17 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "peduarte",
+      "name": "Pedro Duarte",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/372831?v=4",
+      "profile": "http://pedroduarte.me",
+      "contributions": [
+        "bug",
+        "code",
+        "doc"
+      ]
     }
   ]
 }

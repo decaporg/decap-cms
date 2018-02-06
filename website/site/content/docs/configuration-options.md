@@ -71,6 +71,7 @@ The `collections` setting is the heart of your Netlify CMS configuration, as it 
 
 - `name` (required): unique identifier for the collection, used as the key when referenced in other contexts (like the [relation widget](https://www.netlifycms.org/docs/widgets/#relation))
 - `Label`: label for the collection in the editor UI; defaults to the value of `name`
+- `label_singular`: singular label for certain elements in the editor; defaults to the value of `label`
 - `file` or `folder` (requires one of these): specifies the collection type and location; details in [Collection Types](https://www.netlifycms.org/docs/collection-types)
 - `filter`: optional filter for `folder` collections; details in [Collection Types](https://www.netlifycms.org/docs/collection-types)
 - `create`: for `folder` collections only; `true` allows users to create new items in the collection; defaults to `false`

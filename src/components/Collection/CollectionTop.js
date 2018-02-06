@@ -7,6 +7,7 @@ import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from 'Constants/collectionViews';
 
 const CollectionTop = ({
   collectionLabel,
+  collectionLabelSingular,
   collectionDescription,
   viewStyle,
   onChangeViewStyle,
@@ -19,7 +20,7 @@ const CollectionTop = ({
         {
           newEntryUrl
             ? <Link className="nc-collectionPage-topNewButton" to={newEntryUrl}>
-                {`New ${collectionLabel}`}
+                {`New ${collectionLabelSingular || collectionLabel}`}
               </Link>
             : null
         }

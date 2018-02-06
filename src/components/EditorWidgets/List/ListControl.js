@@ -254,12 +254,13 @@ export default class ListControl extends Component {
     const { value, forID, field, classNameWrapper } = this.props;
     const { itemsCollapsed } = this.state;
     const items = value || List();
+    const label = field.get('label_singular') || field.get('label');
 
     return (
       <div id={forID} className={c(classNameWrapper, 'nc-listControl')}>
         <TopBar
           onAdd={this.handleAdd}
-          listLabel={field.get('label').toLowerCase()}
+          listLabel={label.toLowerCase()}
           onCollapseAllToggle={this.handleCollapseAllToggle}
           allItemsCollapsed={itemsCollapsed.every(val => val === true)}
           itemsCount={items.size}
