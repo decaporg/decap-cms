@@ -63,7 +63,7 @@ export function resolveFormat(collectionOrEntity, entry) {
   const filePath = entry && entry.path;
   if (filePath) {
     const fileExtension = filePath.split('.').pop();
-    return formatByExtension(fileExtension, customDelimiter);
+    return formatByExtension(fileExtension);
   }
 
   // If creating a new file, and an `extension` is specified in the
