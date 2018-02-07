@@ -43,6 +43,7 @@
   @apply(--card);
   width: var(--topCardWidth);
   max-width: 100%;
+  padding: 16px 22px;
   margin-left: 12px;
   margin-bottom: 16px;
 
@@ -52,16 +53,13 @@
 }
 
 .nc-entryListing-listCard-title {
-  padding: 16px 22px;
   margin-bottom: 0;
 }
 
 .nc-entryListing-listCard-collection-label {
-  position: absolute;
-  margin: 4px;
-  margin-bottom: 0;
-  font-size: 10px;
-  color:#798291;
+  font-size: 12px;
+  color: var(--colorTextLead);
+  text-transform: uppercase;
 }
 
 .nc-entryListing-cardBody-full {
