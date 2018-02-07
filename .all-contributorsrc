@@ -718,6 +718,33 @@
       "contributions": [
         "code"
       ]
+      "login": "pixelastic",
+      "name": "Tim Carry",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/283419?v=4",
+      "profile": "http://www.pixelastic.com/",
+      "contributions": [
+        "code",
+        "design",
+        "doc"
+      ]
+    },
+    {
+      "login": "solpark",
+      "name": "Sol Park",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/30510616?v=4",
+      "profile": "https://github.com/solpark",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "michaelromani",
+      "name": "Michael Romani",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/29218846?v=4",
+      "profile": "https://github.com/michaelromani",
+      "contributions": [
+        "code"
+      ]
     }
   ]
 }

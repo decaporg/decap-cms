@@ -45,8 +45,9 @@ export default class EntryListing extends React.Component {
     return entries.map((entry, idx) => {
       const collectionName = entry.get('collection');
       const collection = collections.find(coll => coll.get('name') === collectionName);
+      const collectionLabel = collection.get('label');
       const inferedFields = this.inferFields(collection);
-      const entryCardProps = { collection, entry, inferedFields, publicFolder, key: idx };
+      const entryCardProps = { collection, entry, inferedFields, publicFolder, key: idx, collectionLabel };
       return <EntryCard {...entryCardProps}/>;
     });
   };
