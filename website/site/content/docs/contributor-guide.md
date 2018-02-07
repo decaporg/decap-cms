@@ -9,8 +9,8 @@ We're hoping that Netlify CMS will do for the [JAMstack](https://www.jamstack.or
 
 While we work on building this page (and you can help!), here are some links with more information about getting involved:
 
-* [Join us on Gitter](https://gitter.im/netlify/NetlifyCMS)
-* [Project Milestones](https://github.com/netlify/netlify-cms/milestones)
-* [Code of Conduct](https://github.com/netlify/netlify-cms/blob/master/CODE_OF_CONDUCT.md)
 * [Setup instructions and Contribution Guidelines](https://github.com/netlify/netlify-cms/blob/master/CONTRIBUTING.md)
-* [Good First Issues](https://github.com/netlify/netlify-cms/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc+label%3A%22good+first+issue%22)
+* [Join us on Gitter](https://gitter.im/netlify/NetlifyCMS)
+* [Code of Conduct](https://github.com/netlify/netlify-cms/blob/master/CODE_OF_CONDUCT.md)
+* [Project Milestones](https://github.com/netlify/netlify-cms/milestones)
+* [Good First Issues](https://github.com/netlify/netlify-cms/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc+label%3A%22good+first+issue%22+-label%3Aclaimed)

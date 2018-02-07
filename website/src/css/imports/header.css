@@ -115,7 +115,7 @@ header {
     }*/
   }
 
-  a {
+  .nav-link {
     color: white;
     display: inline-block;
     vertical-align: middle;
