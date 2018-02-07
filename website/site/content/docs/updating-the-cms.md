@@ -3,7 +3,7 @@ title: Updating the CMS
 position: 24
 ---
 
-# How updates to Netlify CMS are done
+# Updating the CMS
 
 The update procedure for your CMS depends upon the method you used to install Netlify CMS.
 
