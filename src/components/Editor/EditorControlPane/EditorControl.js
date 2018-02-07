@@ -1,5 +1,5 @@
 import React from 'react';
-import { partial } from 'lodash';
+import { partial, uniqueId } from 'lodash';
 import c from 'classnames';
 import { resolveWidget } from 'Lib/registry';
 import Widget from './Widget';
@@ -27,6 +27,7 @@ export default class EditorControl extends React.Component {
     const widgetName = field.get('widget');
     const widget = resolveWidget(widgetName);
     const fieldName = field.get('name');
+    const uniqueFieldId = uniqueId();
     const metadata = fieldsMetaData && fieldsMetaData.get(fieldName);
     const errors = fieldsErrors && fieldsErrors.get(fieldName);
     return (
@@ -46,7 +47,7 @@ export default class EditorControl extends React.Component {
             'nc-controlPane-labelActive': this.state.styleActive,
             'nc-controlPane-labelWithError': !!errors,
           })}
-          htmlFor={fieldName}
+          htmlFor={fieldName + uniqueFieldId}
         >
           {field.get('label')}
         </label>
@@ -62,6 +63,7 @@ export default class EditorControl extends React.Component {
           classNameLabelActive="nc-controlPane-labelActive"
           controlComponent={widget.control}
           field={field}
+          uniqueFieldId={uniqueFieldId}
           value={value}
           mediaPaths={mediaPaths}
           metadata={metadata}
