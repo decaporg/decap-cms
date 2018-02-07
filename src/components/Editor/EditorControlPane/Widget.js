@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import ImmutablePropTypes from "react-immutable-proptypes";
 import { Map } from 'immutable';
+import { uniqueId } from 'lodash';
 import ValidationErrorTypes from 'Constants/validationErrorTypes';
 
 const truthy = () => ({ error: false });
@@ -194,7 +195,7 @@ export default class Widget extends Component {
       onAddAsset,
       onRemoveInsertedMedia,
       getAsset,
-      forID: field.get('name'),
+      forID: uniqueId(field.get('name')),
       ref: this.processInnerControlRef,
       classNameWrapper,
       classNameWidget,
