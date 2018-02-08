@@ -38,6 +38,11 @@ function validateCollection(configCollection) {
     // Cannot infer format from extension.
     throw new Error(`Please set a format for collection "${ collectionName }". Supported formats are ${ supportedFormats.join(',') }`);
   }
+  if (has(configCollection, 'frontmatter_delimiter') && !has(configCollection, 'format')) {
+    // Cannot set custom delimiter without explicit format declaration
+    throw new Error(`Please set a frontmatter format for collection "${ collectionName }". to use a custom delimiter.`);
+  }
+
 }
 
 const selectors = {
