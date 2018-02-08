@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
-// import pica from 'pica'
-
 // https://github.com/nodeca/pica
-const pica = require('pica')();
+// const picaJs = require('pica')();
+import picaImport from 'pica'
+const pica = picaImport()
 
 // https://stackoverflow.com/a/7557690
 
