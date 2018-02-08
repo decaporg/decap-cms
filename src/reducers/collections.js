@@ -38,9 +38,10 @@ function validateCollection(configCollection) {
     // Cannot infer format from extension.
     throw new Error(`Please set a format for collection "${ collectionName }". Supported formats are ${ supportedFormats.join(',') }`);
   }
-  if (has(configCollection, 'frontmatter_delimiter') && !has(configCollection, 'format')) {
-    // Cannot set custom delimiter without explicit format declaration
-    throw new Error(`Please set a frontmatter format for collection "${ collectionName }". to use a custom delimiter.`);
+  const frontmatterFormats = ['yaml-frontmatter','toml-frontmatter','json-frontmatter']
+  if (has(configCollection, 'frontmatter_delimiter') && !frontmatterFormats.includes(get(configCollection, 'format'))) {
+    // Cannot set custom delimiter without explicit and proper frontmatter format declaration
+    throw new Error(`Please set a proper frontmatter format for collection "${ collectionName }" to use a custom delimiter. Supported frontmatter formats are yaml-frontmatter, toml-frontmatter, and json-frontmatter.`);
   }
 
 }
