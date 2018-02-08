@@ -73,7 +73,7 @@ export default class GitHub {
         sem.take(() => this.api.readFile(file.path, file.sha).then((data) => {
           resolve({ file, data });
           sem.leave();
-        }).catch((err) => {
+        }).catch((err = true) => {
           sem.leave();
           resolve({ error: err });
         }))
