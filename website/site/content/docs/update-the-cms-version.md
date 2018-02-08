@@ -1,9 +1,9 @@
 ---
-title: Updating the CMS Version
+title: Update the CMS Version
 position: 60
 ---
 
-# Updating the CMS Version
+# Update the CMS Version
 
 The update procedure for your CMS depends upon the method you used to install Netlify CMS.
 
