@@ -75,7 +75,7 @@ export default class GitHub {
           sem.leave();
         }).catch((err) => {
           sem.leave();
-          reject(err);
+          resolve({ error: err });
         }))
       )));
     });
