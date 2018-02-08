@@ -133,6 +133,7 @@ class Backend {
     const extension = selectFolderEntryExtension(collection);
     const collectionFilter = collection.get('filter');
     return listMethod.call(this.implementation, collection, extension)
+      .then(loadedEntries => loadedEntries.filter(loadedEntry => (loadedEntry.success === "true")))
       .then(loadedEntries => (
         loadedEntries.map(loadedEntry => createEntry(
           collection.get("name"),
