@@ -79,7 +79,8 @@ export default class GitHub {
         }))
       )));
     });
-    return Promise.all(promises);
+    return Promise.all(promises)
+      .then(loadedEntries => loadedEntries.filter(loadedEntry => !loadedEntry.error));
   };
 
   // Fetches a single entry.
