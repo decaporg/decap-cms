@@ -1,3 +1,4 @@
+import { List } from 'immutable';
 import yamlFormatter from './yaml';
 import tomlFormatter from './toml';
 import jsonFormatter from './json';
@@ -54,7 +55,9 @@ function formatByName(name, customDelimiter) {
 
 export function resolveFormat(collectionOrEntity, entry) {
   // Check for custom delimiter
-  const customDelimiter = collectionOrEntity.get('frontmatter_delimiter');
+  const frontmatter_delimiter = collectionOrEntity.get('frontmatter_delimiter');
+  const customDelimiter = List.isList(frontmatter_delimiter) ? frontmatter_delimiter.toArray() : frontmatter_delimiter;
+
   // If the format is specified in the collection, use that format.
   const formatSpecification = collectionOrEntity.get('format');
   if (formatSpecification) {
