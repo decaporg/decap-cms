@@ -49,6 +49,12 @@ module.exports = merge.smart(require('./webpack.base.js'), {
 
       // file and reference
       filename: '[file].map',
+
+      // don't include source file content, since we link to the actual file
+      noSources: true,
+
+      // sourcemap is in 'dist', webpack context is in 'src'
+      moduleFilenameTemplate: info => path.posix.normalize(`../src/${info.resourcePath}`),
     }),
   ],
 });
