@@ -716,7 +716,9 @@
       "avatar_url": "https://avatars0.githubusercontent.com/u/31023010?v=4",
       "profile": "https://www.linkedin.com/in/arthur-swieckowski/",
       "contributions": [
-        "code"
+        "code",
+        "doc",
+        "test"
       ]
     },
     {
