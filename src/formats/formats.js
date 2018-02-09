@@ -3,6 +3,8 @@ import tomlFormatter from './toml';
 import jsonFormatter from './json';
 import { FrontmatterInfer, frontmatterJSON, frontmatterTOML, frontmatterYAML } from './frontmatter';
 
+export const frontmatterFormats = ['yaml-frontmatter','toml-frontmatter','json-frontmatter']
+
 export const supportedFormats = [
   'yml',
   'yaml',
