@@ -45,7 +45,6 @@ module.exports = merge.smart(require('./webpack.base.js'), {
     new webpack.SourceMapDevToolPlugin({
       // asset matching
       test: /\.js?$/,
-      exclude: /node_modules/,
 
       // file and reference
       filename: '[file].map',
