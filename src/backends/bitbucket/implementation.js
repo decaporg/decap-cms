@@ -33,6 +33,10 @@ export default class Bitbucket {
     this.api = new API({ token: this.token, branch: this.branch, repo: this.repo });
   }
 
+  restoreUser(user) {
+    return this.authenticate(user);
+  }
+
   authenticate(state) {
     this.token = state.token;
     this.api = new API({ token: this.token, branch: this.branch, repo: this.repo });
