@@ -7,6 +7,7 @@
 @import "./Boolean/Boolean.css";
 @import "./Relation/Relation.css";
 @import "./DateTime/DateTime.css";
+@import "./Relations/Relations.css";
 
 :root {
   --widgetNestDistance: 14px;

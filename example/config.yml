@@ -68,6 +68,14 @@ collections: # A list of collections the CMS should be able to edit
     folder: "_sink"
     create: true
     fields:
+      - label: "Tags"
+        name: "tags"
+        widget: "relations"
+        limit: "3"
+        collection: "posts"
+        searchFields: ["title"]
+        valueField: "title"
+
       - label: "Related Post"
         name: "post"
         widget: "relationKitchenSinkPost"

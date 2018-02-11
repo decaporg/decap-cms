@@ -1,0 +1,39 @@
+@import "../Relation/ReactAutosuggest.css";
+
+.react-tagsinput-tag {
+  background-color: var(--colorBackground);
+  border-radius: 2px;
+  border: 1px solid var(--colorActive);
+  color: var(--colorTextLead);
+  display: inline-block;
+  font-family: var(--fontFamilyMono);
+  font-size: 13px;
+  font-weight: 400;
+  margin-right: 5px;
+  padding: 5px;
+
+}
+
+.react-tagsinput-remove {
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.react-tagsinput-tag a::before {
+  content: " ×";
+}
+
+.react-tagsinput-input {
+  background: transparent;
+  border: 0;
+  color: var(--colorTextLead);
+  font-family: var(--fontFamilyPrimary);
+  font-size: 13px;
+  font-weight: 400;
+  margin-bottom: auto;
+  margin-top: auto;
+  outline: none;
+  padding: 5px;
+  width: 80px;
+
+}
