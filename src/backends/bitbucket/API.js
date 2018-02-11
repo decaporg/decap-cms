@@ -17,17 +17,11 @@ export default class API {
   user() {
     return this.request("/user");
   }
-
+  
   hasWriteAccess(user) {
-    return this.request(`/repositories/${ user.username }`, {
-      params: { role: "contributor", q: `full_name="${ this.repo }"` },
-    }).then((r) => {
-      const repos = r.values;
-      let contributor = false;
-      for (const repo of repos) {
-        if (this.repo === `${ repo.full_name }`) contributor = true;
-      }
-      return contributor;
+    return this.request(`/repositories/${ this.repo }`).then((r) => {
+      console.log(r);
+      return typeof r === 'object';
     });
   }
 
@@ -133,17 +127,30 @@ export default class API {
     });
   }
 
-  listFiles(path) {
+  listFiles(path, alreadyAssigned) {
+    let nextUrl;
+    if (!alreadyAssigned) {
+      alreadyAssigned = [];
+    }
     return this.request(`${ this.repoURL }/src/${ this.branch }/${ path }`, {})
     .then(files => {
       if (!Array.isArray(files.values)) {
         throw new Error(`Cannot list files, path ${path} is not a directory`);
       }
-      return files.values;
+      return files;
+    })
+
+    .then(files => {
+      if(typeof files.next !== 'undefined') {
+        nextUrl = files.next.replace(this.api_root, '');
+        nextUrl = nextUrl.replace(`${ this.repoURL }/src/${ this.branch }/`, '');
+        return this.listFiles(nextUrl, alreadyAssigned.concat(files.values));
+      }
+      return alreadyAssigned.concat(files.values);
     })
     .then(files => {
       return files.filter(file => file.type === "commit_file")
-    });
+    })
   }
 
   persistFiles(entry, mediaFiles, options) {
