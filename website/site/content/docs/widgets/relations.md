@@ -18,6 +18,7 @@ The relations widget allows you to reference items from another collection. It p
   - `valueField`: (**required**) name of the field from the referenced collection whose value will be stored for the relation
   - `limit`: limits the number of relations. defaults to unlimited relations. (number)
   - `unique`: only allow unique relations. defaults to false. (boolean)
+  - `placeholder`: the placeholder text in the input field. defaults to "Add a Relation". (string)
 
 - **Example** (assuming a separate "authors" collection with "name" and "twitterHandle" fields):
 
@@ -27,6 +28,7 @@ The relations widget allows you to reference items from another collection. It p
     widget: "relation"
     limit: "4"
     unique: true
+    placeholder: "Add Author Here"
     collection: "authors"
     searchFields: ["name", "twitterHandle"]
     valueField: "name"

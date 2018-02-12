@@ -55,15 +55,9 @@ class RelationsControl extends Component {
     }
   }
 
-  onChange = (tags) => {
-    this.setState({ value: tags });
-
-    this.props.onChange(tags.map(val => val.trim()));
-  };
-
-  onSuggestionSelected = (event, { suggestion }) => {
-    const value = this.getSuggestionValue(suggestion);
-    this.props.onChange({ [this.props.field.get('collection')]: { [value]: suggestion.data } });
+  onChange = (relations) => {
+    this.setState({ value: relations });
+    this.props.onChange(relations.map(val => val));
   };
 
   onSuggestionsFetchRequested = debounce(({ value }) => {
@@ -84,50 +78,49 @@ class RelationsControl extends Component {
     return suggestion.data[valueField];
   };
 
+  autocompleteRenderInput = ({ addTag, ...props }) => {
+    const handleOnChange = (e, { newValue, method }) => {
+      if (method === 'enter') {
+        e.preventDefault();
+      } else {
+        this.onChange(e);
+      }
+    };
+    
+    const inputprops = {
+      placeholder: props.placeholder,
+      onChange: handleOnChange,
+    };
+      
+    const suggestions = (this.props.queryHits.get) ? this.props.queryHits.get(this.controlID, []) : [];
+
+    return (
+      <div className="nc-relations-container">
+        <Autosuggest
+          suggestions={suggestions}
+          onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+          onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+          onSuggestionSelected={(e, { suggestion }) => {
+            const value = this.getSuggestionValue(suggestion);
+            addTag(value);
+          }}
+          getSuggestionValue={this.getSuggestionValue}
+          renderSuggestion={this.renderSuggestion}
+          inputProps={{ ...props, inputprops }}
+          focusInputOnSuggestionClick={false}
+        />
+        <Loader active={this.isFetching === this.controlID} />
+      </div>
+    );
+  };
+
   renderSuggestion = (suggestion) => {
     const { field } = this.props;
     const valueField = field.get('valueField');
     return <span>{suggestion.data[valueField]}</span>;
-  };  
+  };
 
   render() {
-    function autocompleteRenderInput({ addTag, ...props }) {
-      const handleOnChange = (e, { newValue, method }) => {
-        if (method === 'enter') {
-          e.preventDefault();
-        } else {
-          props.onChange(e);
-        }
-      };
-
-      const inputValue = (props.value && props.value.trim().toLowerCase()) || '';
-      // const inputLength = inputValue.length;
-      
-      const inputProps = {
-        placeholder: 'Add a Relation',
-        value: inputValue || '',
-        onChange: handleOnChange,
-      };
-        
-      const suggestions = (this.queryHits.get) ? this.queryHits.get(this.controlID, []) : [];
-  
-      return (
-        <div>
-          <Autosuggest
-            suggestions={suggestions}
-            onSuggestionsFetchRequested={props.onSuggestionsFetchRequested}
-            onSuggestionsClearRequested={props.onSuggestionsClearRequested}
-            onSuggestionSelected={props.onSuggestionSelected}
-            getSuggestionValue={props.getSuggestionValue}
-            renderSuggestion={props.renderSuggestion}
-            inputProps={inputProps}
-            focusInputOnSuggestionClick={false}
-          />
-          <Loader active={props.isFetching === props.controlID} />
-        </div>
-      );
-    }
-
     // Tags Input Variable Initialization.
     const {
       forID,
@@ -139,6 +132,10 @@ class RelationsControl extends Component {
 
     const limit = this.props.field.get("limit", "-1");
     const unique = this.props.field.get("unique", false);
+    const inputProps = {
+      placeholder: this.props.field.get("placeholder", 'Add a Relation'),
+    };
+  
 
     return (
       <TagsInput 
@@ -150,7 +147,8 @@ class RelationsControl extends Component {
         onBlur={setInactiveStyle}
         maxTags={limit}
         onlyUnique={unique}
-        renderInput={autocompleteRenderInput}
+        inputProps={inputProps}
+        renderInput={this.autocompleteRenderInput}
       />
     );
   }
