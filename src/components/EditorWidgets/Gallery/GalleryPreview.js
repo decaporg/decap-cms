@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 
 // https://github.com/nodeca/pica
 // const picaJs = require('pica')();
-import picaImport from 'pica'
+import picaImport from 'pica/dist/pica'
 const pica = picaImport()
 
 // https://stackoverflow.com/a/7557690
