@@ -23,7 +23,7 @@ function valueToString(value) {
 
 const SortableListItem = SortableElement(ListItem);
 
-const TopBar = ({ onAdd, listLabel, onCollapseAllToggle, allItemsCollapsed, itemsCount }) => (
+const TopBar = ({ disableAdd, onAdd, listLabel, onCollapseAllToggle, allItemsCollapsed, itemsCount }) => (
   <div className="nc-listControl-topBar">
     <div className="nc-listControl-listCollapseToggle">
       <button className="nc-listControl-listCollapseToggleButton" onClick={onCollapseAllToggle}>
@@ -31,15 +31,19 @@ const TopBar = ({ onAdd, listLabel, onCollapseAllToggle, allItemsCollapsed, item
       </button>
       {itemsCount} {listLabel}
     </div>
-    <button className="nc-listControl-addButton" onClick={onAdd}>
-      Add {listLabel} <Icon type="add" size="xsmall" />
-    </button>
+
+    {
+      !disableAdd ?
+        <button className="nc-listControl-addButton" onClick={onAdd}>
+          Add {listLabel} <Icon type="add" size="xsmall" />
+        </button>
+      :
+        <div />
+    }
   </div>
 );
 
-const SortableList = SortableContainer(({ items, renderItem }) => {
-  return <div>{items.map(renderItem)}</div>;
-});
+const SortableList = SortableContainer(({ items, renderItem }) => <div>{items.map(renderItem)}</div>);
 
 const valueTypes = {
   SINGLE: 'SINGLE',
@@ -127,7 +131,7 @@ export default class ListControl extends Component {
 
   handleFocus = () => {
     this.props.setActiveStyle();
-  }
+  };
 
   handleBlur = (e) => {
     const listValue = e.target.value.split(',').map(el => el.trim()).filter(el => el);
@@ -171,14 +175,14 @@ export default class ListControl extends Component {
     this.setState({ itemsCollapsed: itemsCollapsed.delete(index) });
 
     onChange(value.remove(index), parsedMetadata);
-  }
+  };
 
   handleItemCollapseToggle = (index, event) => {
     event.preventDefault();
     const { itemsCollapsed } = this.state;
     const collapsed = itemsCollapsed.get(index);
     this.setState({ itemsCollapsed: itemsCollapsed.set(index, !collapsed) });
-  }
+  };
 
   handleCollapseAllToggle = (e) => {
     e.preventDefault();
@@ -186,7 +190,7 @@ export default class ListControl extends Component {
     const { itemsCollapsed } = this.state;
     const allItemsCollapsed = itemsCollapsed.every(val => val === true);
     this.setState({ itemsCollapsed: List(Array(value.size).fill(!allItemsCollapsed)) });
-  }
+  };
 
   objectLabel(item) {
     const { field } = this.props;
@@ -244,7 +248,7 @@ export default class ListControl extends Component {
         mediaPaths={mediaPaths}
         onAddAsset={onAddAsset}
         onRemoveInsertedMedia={onRemoveInsertedMedia}
-        classNameWrapper={`${classNameWrapper} nc-listControl-objectControl`}
+        classNameWrapper={`${ classNameWrapper } nc-listControl-objectControl`}
         forList
       />
     </SortableListItem>);
@@ -259,6 +263,7 @@ export default class ListControl extends Component {
     return (
       <div id={forID} className={c(classNameWrapper, 'nc-listControl')}>
         <TopBar
+          disableAdd={field.get('disableAdd')}
           onAdd={this.handleAdd}
           listLabel={label.toLowerCase()}
           onCollapseAllToggle={this.handleCollapseAllToggle}
@@ -294,4 +299,4 @@ export default class ListControl extends Component {
       className={classNameWrapper}
     />);
   }
-};
+}
