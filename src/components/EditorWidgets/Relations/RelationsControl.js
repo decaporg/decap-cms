@@ -31,7 +31,6 @@ class RelationsControl extends Component {
     super(props, ctx);
     this.controlID = uuid();
     this.didInitialSearch = false;
-    this.state = { value: [] };
   }
 
   componentDidMount() {
@@ -56,7 +55,6 @@ class RelationsControl extends Component {
   }
 
   onChange = (relations) => {
-    this.setState({ value: relations });
     this.props.onChange(relations.map(val => val));
   };
 
@@ -86,12 +84,12 @@ class RelationsControl extends Component {
         this.onChange(e);
       }
     };
-    
+
     const inputprops = {
       placeholder: props.placeholder,
       onChange: handleOnChange,
     };
-      
+
     const suggestions = (this.props.queryHits.get) ? this.props.queryHits.get(this.controlID, []) : [];
 
     return (
@@ -128,20 +126,20 @@ class RelationsControl extends Component {
       classNameWrapper,
       setActiveStyle,
       setInactiveStyle,
-    } = this.props; 
+    } = this.props;
 
     const limit = this.props.field.get("limit", "-1");
     const unique = this.props.field.get("unique", false);
     const inputProps = {
       placeholder: this.props.field.get("placeholder", 'Add a Relation'),
     };
-  
+
 
     return (
-      <TagsInput 
+      <TagsInput
         id={forID}
         className={classNameWrapper}
-        value={value || this.state.value}
+        value={value || []}
         onChange={this.onChange}
         onFocus={setActiveStyle}
         onBlur={setInactiveStyle}
