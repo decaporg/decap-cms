@@ -179,7 +179,6 @@
     "slate-plain-serializer": "^0.4.0",
     "slate-react": "0.10.11",
     "slate-soft-break": "^0.6.0",
-    "slug": "^0.9.1",
     "toml-j0.4": "^1.1.1",
     "tomlify-j0.4": "^3.0.0-alpha.0",
     "unified": "^6.1.4",
