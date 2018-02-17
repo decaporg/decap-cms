@@ -749,6 +749,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "Strangehill",
+      "name": "Antonio Argote",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/6064830?v=4",
+      "profile": "http://antonioargote.com",
+      "contributions": [
+        "design"
+      ]
     }
   ]
 }
