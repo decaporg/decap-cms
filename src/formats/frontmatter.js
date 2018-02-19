@@ -60,12 +60,14 @@ export const getFormatOpts = format => ({
 }[format]);
 
 class FrontmatterFormatter {
-  constructor(format) {
+  constructor(format, customDelimiter) {
     this.format = getFormatOpts(format);
+    this.customDelimiter = customDelimiter;
   }
 
   fromFile(content) {
     const format = this.format || inferFrontmatterFormat(content);
+    if (this.customDelimiter) this.format.delimiters = this.customDelimiter;
     const result = matter(content, { engines: parsers, ...format });
     return {
       ...result.data,
@@ -78,6 +80,7 @@ class FrontmatterFormatter {
 
     // Stringify to YAML if the format was not set
     const format = this.format || getFormatOpts('yaml');
+    if (this.customDelimiter) this.format.delimiters = this.customDelimiter;
 
     // `sortedKeys` is not recognized by gray-matter, so it gets passed through to the parser
     return matter.stringify(body, meta, { engines: parsers, sortedKeys, ...format });
@@ -85,6 +88,6 @@ class FrontmatterFormatter {
 }
 
 export const FrontmatterInfer = new FrontmatterFormatter();
-export const FrontmatterYAML = new FrontmatterFormatter('yaml');
-export const FrontmatterTOML = new FrontmatterFormatter('toml');
-export const FrontmatterJSON = new FrontmatterFormatter('json');
+export const frontmatterYAML = customDelimiter => new FrontmatterFormatter('yaml', customDelimiter);
+export const frontmatterTOML = customDelimiter => new FrontmatterFormatter('toml', customDelimiter);
+export const frontmatterJSON = customDelimiter => new FrontmatterFormatter('json', customDelimiter);

@@ -711,6 +711,17 @@
       ]
     },
     {
+      "login": "Swieckowski",
+      "name": "Swieckowski",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/31023010?v=4",
+      "profile": "https://www.linkedin.com/in/arthur-swieckowski/",
+      "contributions": [
+        "code",
+        "doc",
+        "test"
+      ]
+    },
+    {
       "login": "pixelastic",
       "name": "Tim Carry",
       "avatar_url": "https://avatars2.githubusercontent.com/u/283419?v=4",
@@ -748,6 +759,15 @@
         "bug",
         "code",
         "doc"
+      ]
+    },
+    {
+      "login": "Strangehill",
+      "name": "Antonio Argote",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/6064830?v=4",
+      "profile": "http://antonioargote.com",
+      "contributions": [
+        "design"
       ]
     }
   ]

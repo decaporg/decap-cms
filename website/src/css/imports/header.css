@@ -214,6 +214,7 @@ header {
   }
 
   .logo {
+    display: block;
     margin: 0 auto $tiny auto;
     width: 100%;
 
@@ -224,7 +225,7 @@ header {
     }
   }
   .cta-header a {
-    /*display: none;*/
+    display: inline-block;
     color: white;
     text-transform: uppercase;
     font-size: $tiny;
