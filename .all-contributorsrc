@@ -751,6 +751,17 @@
       ]
     },
     {
+      "login": "peduarte",
+      "name": "Pedro Duarte",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/372831?v=4",
+      "profile": "http://pedroduarte.me",
+      "contributions": [
+        "bug",
+        "code",
+        "doc"
+      ]
+    },
+    {
       "login": "Strangehill",
       "name": "Antonio Argote",
       "avatar_url": "https://avatars1.githubusercontent.com/u/6064830?v=4",
