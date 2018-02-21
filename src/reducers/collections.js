@@ -1,5 +1,5 @@
 import { OrderedMap, fromJS } from 'immutable';
-import { has, get } from 'lodash';
+import { has, get, escapeRegExp } from 'lodash';
 import consoleError from 'Lib/consoleError';
 import { CONFIG_SUCCESS } from 'Actions/config';
 import { FILES, FOLDER } from 'Constants/collectionTypes';
@@ -57,7 +57,7 @@ const selectors = {
       return `${ collection.get('folder').replace(/\/$/, '') }/${ slug }.${ this.entryExtension(collection) }`;
     },
     entrySlug(collection, path) {
-      return path.split('/').pop().replace(/\.[^\.]+$/, '');
+      return path.split('/').pop().replace(new RegExp(`\.${ escapeRegExp(this.entryExtension(collection)) }$`), '');
     },
     listMethod() {
       return 'entriesByFolder';
