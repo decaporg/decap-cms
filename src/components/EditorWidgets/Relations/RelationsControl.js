@@ -134,7 +134,6 @@ class RelationsControl extends Component {
       placeholder: this.props.field.get("placeholder", 'Add a Relation'),
     };
 
-
     return (
       <TagsInput
         id={forID}
