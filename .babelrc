@@ -14,12 +14,7 @@
         ]
       }
     }],
-    "react",
-    /**
-     * Support WebPack version 1.
-     */
-    "es2016",
-    "es2017",
+    "react"
   ],
   "plugins": [
     "lodash",
