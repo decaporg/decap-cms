@@ -1,18 +1,7 @@
 {
   "presets": [
     ["env", {
-      "modules": false,
-      "targets": {
-        "browsers": [
-          "last 2 Chrome versions",
-          "last 2 Opera versions",
-          "last 2 Firefox versions",
-          "last 2 Edge versions",
-          "last 2 Safari versions",
-          "last 2 iOS versions",
-          "last 2 ChromeAndroid versions"
-        ]
-      }
+      "modules": false
     }],
     "react"
   ],
@@ -57,13 +46,7 @@
   ],
   "env": {
     "test": {
-      "presets": [
-        ["env", {
-          "targets": {
-            "node": "6"
-          }
-        }]
-      ]
+      "plugins": ["transform-es2015-modules-commonjs"]
     }
   }
 }
