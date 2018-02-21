@@ -1,0 +1,40 @@
+.whatsnew {
+  margin-top: -114px;
+  padding: $xl 0 $medium 0;
+  background-color: $lightishGrey;
+  color: white;
+
+  ol {
+    display: flex;
+    justify-content: space-between;
+    margin-left: auto;
+    margin-right: auto;
+    list-style: none;
+    padding-left: 0;
+    a {
+      color: white;
+      font-weight: $regular;
+    }
+    a:hover {
+      padding: 16px 24px 16px 24px;
+      margin: -16px -24px -16px -24px;
+      background-color: $darkGrey;
+      border-radius: $borderRadius;
+    }
+    li {
+      max-width: 350px;
+      .update-date {
+        font-size: 13px;
+        line-height: 24px;
+        color: rgba(255,255,255,0.6);
+        text-transform: uppercase;
+        display: block;
+      }
+      .update-description {
+        font-size: 15px;
+        line-height: 20px;
+      }
+    }
+  }
+
+}

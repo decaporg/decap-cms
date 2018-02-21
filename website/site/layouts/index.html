@@ -29,6 +29,18 @@
     </div>
   </section>
 
+  <section class="whatsnew">
+    <div class="contained">
+      <ol>
+        {{ range .Site.Data.updates }}
+          {{ range first 3 . }}
+            <a href="{{ .url }}"><li><span class="update-date">{{ dateFormat "January 2, 2006" .date }}</span><span class="update-description">{{ .description }}</span></li></a>
+          {{ end }}
+        {{ end }}
+      </ol>
+    </div>
+  </section>
+
   <section class="editors">
     <div class="contained">
       <h2>{{ .Site.Data.landing.editors.hook | markdownify }}</h2>
