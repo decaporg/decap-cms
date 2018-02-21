@@ -27,8 +27,10 @@
     {{ end }}
     <header id="header" {{ if or (eq .Section "docs") (eq .Title "Docs") }}class="docs"{{ end }}>
       <div class="contained">
-        <a href="/" class="logo"><img src="/img/netlify-cms-logo.svg"/></a>
-        <a class="nav-link docs-link" href="/docs">Docs</a>
+        <div class="logo-container">
+          <a href="/" class="logo"><img src="/img/netlify-cms-logo.svg"/></a>
+          <a class="github-button" href="https://github.com/netlify/netlify-cms" data-icon="octicon-star" data-show-count="true" aria-label="Star netlify/netlify-cms on GitHub">Star</a>
+        </div>
         <a class="nav-link contributing-link" href="/docs/contributor-guide">Contributing</a>
         <a class="nav-link" href="/community">Community</a>
         <a class="utility-input">

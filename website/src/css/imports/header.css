@@ -213,17 +213,23 @@ header {
     }
   }
 
-  .logo {
-    display: block;
-    margin: 0 auto $tiny auto;
-    width: 100%;
-
+  .logo-container {
     @media screen and (min-width: $tablet) {
+      margin-top: 10px;
       float: left;
-      margin: -4px 0 -6px 0;
-      width: initial;
+    }
+    .logo {
+      display: block;
+      margin: 0 auto $tiny auto;
+      width: 100%;
+      @media screen and (min-width: $tablet) {
+        margin: -14px 20px -6px 0;
+        width: initial;
+        float: left;
+      }
     }
   }
+
   .cta-header {
     margin-left: $micro;
   }
