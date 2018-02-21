@@ -25,6 +25,11 @@ export default function withMediaControl(forImage) {
       this.controlID = uuid();
     }
 
+    componentDidMount() {
+      const { value } = this.props;
+      !value && this.props.onChange('');
+    }
+
     shouldComponentUpdate(nextProps) {
       /**
        * Always update if the value changes.

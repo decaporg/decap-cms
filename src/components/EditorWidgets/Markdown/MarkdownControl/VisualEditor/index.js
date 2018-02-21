@@ -43,6 +43,11 @@ export default class Editor extends Component {
     };
   }
 
+  componentDidMount() {
+    const { value } = this.props;
+    !value && this.props.onChange('');
+  }
+
   shouldComponentUpdate(nextProps, nextState) {
     return !this.state.value.equals(nextState.value);
   }
