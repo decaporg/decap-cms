@@ -5,8 +5,8 @@
     <div class="contained">
 
       <div class="hero-copy">
-        <h1 class="headline">{{ .Site.Data.landing.hero.headline | markdownify }}</h1>
         <span class="subhead">{{ .Site.Data.landing.hero.subhead | markdownify }}</span>
+        <h1 class="headline">{{ .Site.Data.landing.hero.headline | markdownify }}</h1>
       </div>
       <div class="hero-features">
         {{ range $index, $id := .Site.Data.landing.hero.devfeatures }}
@@ -34,7 +34,7 @@
       <ol>
         {{ range .Site.Data.updates }}
           {{ range first 3 . }}
-            <a href="{{ .url }}"><li><span class="update-date">{{ dateFormat "January 2, 2006" .date }}</span><span class="update-description">{{ .description }}</span></li></a>
+            <a href="{{ .url }}"><li><div class="update-metadata"><span class="update-version">{{ .version }}</span><span class="update-date">{{ dateFormat "January 2, 2006" .date }}</span></div><span class="update-description">{{ .description }}</span></li></a>
           {{ end }}
         {{ end }}
       </ol>

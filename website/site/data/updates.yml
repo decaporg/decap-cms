@@ -1,16 +1,13 @@
 updates:
-  - date: 2018-02-22
-    description: Netlify CMS 1.1 lets you register external backends and fixes various interface bugs.
+  - date: 2018-01-25
+    version: '1.1'
+    description: You can now register external backends and we improved metadata handling.
     url: 'https://github.com/netlify/netlify-cms/releases/tag/1.1.0'
-  - date: 2018-02-21
-    description: Netlify CMS 1.1 lets you register external backends and fixes various interface bugs.
+  - date: 2018-01-23
+    version: '1.0.4'
+    description: Fixes various UI bugs and adds expand / collapse functionality to the object widget.
     url: 'https://github.com/netlify/netlify-cms/releases/tag/1.1.0'
-  - date: 2018-02-20
-    description: Netlify CMS 1.1 lets you register external backends and fixes various interface bugs.
-    url: 'https://github.com/netlify/netlify-cms/releases/tag/1.1.0'
-  - date: 2018-02-19
-    description: Netlify CMS 1.1 lets you register external backends and fixes various interface bugs.
-    url: 'https://github.com/netlify/netlify-cms/releases/tag/1.1.0'
-  - date: 2018-02-18
-    description: Netlify CMS 1.1 lets you register external backends and fixes various interface bugs.
+  - date: 2018-12-19
+    version: '1.0.3'
+    description: Small bug fix release.
     url: 'https://github.com/netlify/netlify-cms/releases/tag/1.1.0'

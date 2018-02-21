@@ -26,8 +26,8 @@ h1 {
   margin: 0 0 $small 0;
 
   @media screen and (min-width: $tablet) {
-    font-size: 42px;
-    line-height: 60px;
+    font-size: 46px;
+    line-height: 64px;
   }
 }
 

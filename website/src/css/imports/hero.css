@@ -1,7 +1,7 @@
 .hero {
   @neat-row;
   background: $darkerGrey;
-  background-image: linear-gradient(-180deg, #323B3B 0%, $darkerGrey 20%);
+  background-image: linear-gradient(-180deg, #2A2C24 0%, $darkerGrey 20%);
   color: $blueGrey;
   overflow: hidden;
   padding: calc($xl * 2.25) 0 0 0;
@@ -17,15 +17,15 @@
 
   &.landing {
     @media screen and (min-width: $tablet) {
-      padding-bottom: $xxl;
+      padding-bottom: 165px;
     }
   }
 
   .hero-copy {
-    margin: $medium auto $xl auto;
+    margin: $large auto $medium auto;
 
     @media screen and (min-width: $desktop) {
-      text-align: center;
+      /* text-align: center; */
     }
   }
 
@@ -45,7 +45,7 @@
   }
 
   h1 {
-    color: white;
+    color: $green;
     margin-bottom: 0;
   }
 
@@ -54,8 +54,9 @@
   }
 
   h3 {
-    color: $green;
-    font-size: 20px;
+    color: white;
+    font-size: $tiny;
+    padding-bottom: 0;
   }
 
   .hero-features {
@@ -71,7 +72,8 @@
   }
 
   .hero-graphic {
-    margin: $large auto $large auto;
+    /* margin: 0 auto $large auto; */
+    transform: scale(1.1) rotate(2deg);
 
     @media screen and (min-width: $tablet) {
       @neat-span-columns 6;

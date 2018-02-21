@@ -1,6 +1,6 @@
 .whatsnew {
-  margin-top: -114px;
-  padding: $xl 0 $medium 0;
+  margin-top: -98px;
+  padding: 75px 0 $medium 0;
   background-color: $lightishGrey;
   color: white;
 
@@ -22,13 +22,21 @@
       border-radius: $borderRadius;
     }
     li {
+      min-width: 250px;
       max-width: 350px;
-      .update-date {
+      .update-metadata {
         font-size: 13px;
-        line-height: 24px;
         color: rgba(255,255,255,0.6);
-        text-transform: uppercase;
         display: block;
+        margin-bottom: $micro;
+        .update-version {
+          font-weight: $bold;
+          background-color: $shadeBlue;
+          color: $darkGrey;
+          padding: 0 4px 0 4px;
+          margin-right: 8px;
+          border-radius: 2px;
+        }
       }
       .update-description {
         font-size: 15px;
