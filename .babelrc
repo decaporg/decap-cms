@@ -1,7 +1,23 @@
 {
   "presets": [
+    ["env", {
+      "modules": false,
+      "targets": {
+        "browsers": [
+          "last 2 Chrome versions",
+          "last 2 Opera versions",
+          "last 2 Firefox versions",
+          "last 2 Edge versions",
+          "last 2 Safari versions",
+          "last 2 iOS versions",
+          "last 2 ChromeAndroid versions"
+        ]
+      }
+    }],
     "react",
-    "es2015",
+    /**
+     * Support WebPack version 1.
+     */
     "es2016",
     "es2017",
   ],
@@ -15,10 +31,19 @@
       "useESModules": true
     }],
     ["module-resolver", {
+      /**
+       * Use aliases to avoid relative path import hell.
+       */
       "root": [
+        /**
+         * Components
+         */
         "./src/components"
       ],
       "alias": {
+        /**
+         * Top level src directories
+         */
         "Actions": "./src/actions/",
         "Backends": "./src/backends/",
         "Constants": "./src/constants/",
@@ -33,6 +58,17 @@
     }],
     "transform-export-extensions",
     "transform-class-properties",
-    "transform-object-rest-spread"
-  ]
+    "transform-object-rest-spread",
+  ],
+  "env": {
+    "test": {
+      "presets": [
+        ["env", {
+          "targets": {
+            "node": "6"
+          }
+        }]
+      ]
+    }
+  }
 }
