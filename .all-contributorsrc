@@ -785,6 +785,15 @@
       "name": "Kristaps Taube",
       "avatar_url": "https://avatars3.githubusercontent.com/u/1479451?v=4",
       "profile": "https://www.ktaube.com",
+       "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "daveyko",
+      "name": "David Ko",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/26639499?v=4",
+      "profile": "https://github.com/daveyko",
       "contributions": [
         "code"
       ]
