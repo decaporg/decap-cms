@@ -73,7 +73,7 @@ export default class Header extends React.Component {
                   collections.filter(collection => collection.get('create')).toList().map(collection =>
                     <DropdownItem
                       key={collection.get("name")}
-                      label={collection.get("label")}
+                      label={collection.get("label_singular") || collection.get("label")}
                       onClick={() => this.handleCreatePostClick(collection.get('name'))}
                     />
                   )

@@ -6,7 +6,8 @@ media_folder: "assets/uploads"
 
 collections: # A list of collections the CMS should be able to edit
   - name: "posts" # Used in routes, ie.: /admin/collections/:slug/edit
-    label: "Post" # Used in the UI, ie.: "New Post"
+    label: "Posts" # Used in the UI
+    label_singular: "Post" # Used in the UI, ie: "New Post"
     description: >
       The description is a great place for tone setting, high level information, and editing
       guidelines that are specific to a collection.
@@ -22,7 +23,7 @@ collections: # A list of collections the CMS should be able to edit
       - {label: "SEO Description", name: "description", widget: "text"}
 
   - name: "faq" # Used in routes, ie.: /admin/collections/:slug/edit
-    label: "FAQ" # Used in the UI, ie.: "New Post"
+    label: "FAQ" # Used in the UI
     folder: "_faqs"
     create: true # Allow users to create new documents in this collection
     fields: # The fields each document in this collection have
@@ -56,6 +57,7 @@ collections: # A list of collections the CMS should be able to edit
         fields:
           - name: authors
             label: Authors
+            label_singular: "Author"
             widget: list
             fields:
               - {label: "Name", name: "name", widget: "string"}

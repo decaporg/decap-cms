@@ -183,7 +183,7 @@ header {
     border-radius: 4px;
     background-color: rgba(255,255,255,0.1);
     color: white;
-    margin: 0 $micro 0 $tiny;
+    margin: 0 0 0 $tiny;
     padding-bottom: 9px;
     text-align: left;
     text-decoration: none;
@@ -214,6 +214,7 @@ header {
   }
 
   .logo {
+    display: block;
     margin: 0 auto $tiny auto;
     width: 100%;
 
@@ -223,8 +224,11 @@ header {
       width: initial;
     }
   }
+  .cta-header {
+    margin-left: $micro;
+  }
   .cta-header a {
-    /*display: none;*/
+    display: inline-block;
     color: white;
     text-transform: uppercase;
     font-size: $tiny;
