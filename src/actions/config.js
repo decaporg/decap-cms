@@ -34,6 +34,7 @@ function validateFieldTypes(collections) {
           throw new Error(`Error in configuration file: ${ fieldKey } must be an Array but was given type ${ typeof field }`);
         }
         if (fieldKey === "fields") {
+        //if field type is `field` recursively call this function
           return validateFieldTypes(field);
         }
       } else if (fieldKey === "editor") {
@@ -45,6 +46,7 @@ function validateFieldTypes(collections) {
           throw new Error(`Error in configuration file: ${ fieldKey } must be a Boolean when label is a Boolean but was given type ${ typeof field }`);
         }
       } else if (typeof field !== "string") {
+        //if field type is none of the above, type must be a string
         throw new Error(`Error in configuration file: ${ fieldKey } must be a string but was given type ${ typeof field }`);
       }
     });

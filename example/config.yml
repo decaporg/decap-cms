@@ -21,7 +21,7 @@ collections: # A list of collections the CMS should be able to edit
     meta:
       - {label: "SEO Description", name: "description", widget: "text"}
 
-  - name: ["faq"] # Used in routes, ie.: /admin/collections/:slug/edit
+  - name: "faq" # Used in routes, ie.: /admin/collections/:slug/edit
     label: "FAQ" # Used in the UI, ie.: "New Post"
     folder: "_faqs"
     create: true # Allow users to create new documents in this collection
