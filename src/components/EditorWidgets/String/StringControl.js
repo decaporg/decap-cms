@@ -11,10 +11,9 @@ export default class StringControl extends React.Component {
     setInactiveStyle: PropTypes.func.isRequired,
   };
 
-  componentDidMount() {
-    const { value } = this.props;
-    !value && this.props.onChange('');
-  }
+  static defaultProps = {
+    value: '',
+  };
 
   render() {
     const {

@@ -20,14 +20,13 @@ export default function withMediaControl(forImage) {
       value: PropTypes.node,
     };
 
+    static defaultProps = {
+      value: '',
+    };
+
     constructor(props) {
       super(props);
       this.controlID = uuid();
-    }
-
-    componentDidMount() {
-      const { value } = this.props;
-      !value && this.props.onChange('');
     }
 
     shouldComponentUpdate(nextProps) {
