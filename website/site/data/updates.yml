@@ -6,8 +6,20 @@ updates:
   - date: 2018-01-23
     version: '1.0.4'
     description: Fixes various UI bugs and adds expand / collapse functionality to the object widget.
-    url: 'https://github.com/netlify/netlify-cms/releases/tag/1.1.0'
+    url: 'https://github.com/netlify/netlify-cms/releases/tag/1.0.4'
   - date: 2018-12-19
     version: '1.0.3'
     description: Small bug fix release.
-    url: 'https://github.com/netlify/netlify-cms/releases/tag/1.1.0'
+    url: 'https://github.com/netlify/netlify-cms/releases/tag/1.0.3'
+  - date: 2018-12-07
+    version: '1.0.2'
+    description: Small bug fix release.
+    url: 'https://github.com/netlify/netlify-cms/releases/tag/1.0.2'
+  - date: 2018-12-07
+    version: '1.0.1'
+    description: Small bug fix release.
+    url: 'https://github.com/netlify/netlify-cms/releases/tag/1.0.1'
+  - date: 2018-12-07
+    version: '1.0.0'
+    description: The first major release of Netlify CMS with an all-new UI, revamped documentation and much more.
+    url: 'https://github.com/netlify/netlify-cms/releases/tag/1.0.0'

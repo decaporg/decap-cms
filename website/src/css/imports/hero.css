@@ -72,13 +72,30 @@
   }
 
   .hero-graphic {
-    /* margin: 0 auto $large auto; */
     transform: scale(1.1) rotate(2deg);
 
     @media screen and (min-width: $tablet) {
       @neat-span-columns 6;
       float: right;
       margin-bottom: 0;
+    }
+
+    a.hero-videolink {
+      display: block;
+      text-align: center;
+      margin-top: $micro;
+      padding: $micro 0 $micro 0;
+      font-size: 14px;
+      font-weight: $semibold;
+      color: white;
+      background-color: rgba(255,255,255,0.1);
+      border-radius: $borderRadius;
+    }
+    a.hero-videolink:hover {
+      background-color: rgba(255,255,255,0.2);
+    }
+    a.hero-videolink:active {
+      background-color: rgba(255,255,255,0.4);
     }
 
     img {

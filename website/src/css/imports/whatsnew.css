@@ -21,6 +21,9 @@
       background-color: $darkGrey;
       border-radius: $borderRadius;
     }
+    a:active {
+      background-color: $darkerGrey;
+    }
     li {
       min-width: 250px;
       max-width: 350px;
