@@ -77,8 +77,8 @@ const slugFormatter = (template = "{{slug}}", entryData, slugType) => {
   // Convert slug to lower-case
   .toLocaleLowerCase()
 
-  // Replace periods and spaces with dashes.
-  .replace(/[.\s]/g, '-');
+  // Replace periods with dashes.
+  .replace(/[.]/g, '-');
 
   if (slugType === "latin") {
     const latinSlug = diacritics.remove(slug);
