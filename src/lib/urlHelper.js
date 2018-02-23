@@ -1,4 +1,5 @@
 import url from 'url';
+import diacritics from 'diacritics';
 import sanitizeFilename from 'sanitize-filename';
 import { isString, escapeRegExp, flow, partialRight } from 'lodash';
 
@@ -61,12 +62,23 @@ export function sanitizeURI(str, { replacement = "", type = "iri" } = {}) {
 export function sanitizeSlug(str, { replacement = '-', slugType } = {}) {
   if (!isString(str)) throw "The input slug must be a string.";
   if (!isString(replacement)) throw "`options.replacement` must be a string.";
-  
+
   // Sanitize as URI and as filename.
-  const sanitize = flow([
+  let sanitize = flow([
     partialRight(sanitizeURI, { replacement, type: slugType }),
     partialRight(sanitizeFilename, { replacement }),
   ]);
+
+  // For `latin` slug type, strip diacritics and use ASCII URL.
+  if (slugType === "latin") {
+    sanitize = flow([
+      diacritics.remove,
+      partialRight(sanitizeURI, { replacement, type: 'ascii' }),
+      partialRight(sanitizeFilename, { replacement }),
+    ]);
+  }
+  
+  // Run sanitizers.
   const sanitizedSlug = sanitize(str);
   
   // Remove any doubled or trailing replacement characters (that were added in the sanitizers).

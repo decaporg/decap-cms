@@ -11,7 +11,6 @@ import {
 } from "Reducers/collections";
 import { createEntry } from "ValueObjects/Entry";
 import { sanitizeSlug } from "Lib/urlHelper";
-import diacritics from 'diacritics';
 import TestRepoBackend from "./test-repo/implementation";
 import GitHubBackend from "./github/implementation";
 import GitGatewayBackend from "./git-gateway/implementation";
@@ -79,11 +78,6 @@ const slugFormatter = (template = "{{slug}}", entryData, slugType) => {
 
   // Replace periods with dashes.
   .replace(/[.]/g, '-');
-
-  if (slugType === "latin") {
-    const latinSlug = diacritics.remove(slug);
-    return sanitizeSlug(latinSlug, { slugType: "ascii" });
-  }
 
   return sanitizeSlug(slug, { slugType });
 };
