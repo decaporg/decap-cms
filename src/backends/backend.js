@@ -11,6 +11,7 @@ import {
 } from "Reducers/collections";
 import { createEntry } from "ValueObjects/Entry";
 import { sanitizeSlug } from "Lib/urlHelper";
+import diacritics from 'diacritics';
 import TestRepoBackend from "./test-repo/implementation";
 import GitHubBackend from "./github/implementation";
 import GitGatewayBackend from "./git-gateway/implementation";
@@ -41,7 +42,7 @@ class LocalStorageAuthStore {
   }
 }
 
-const slugFormatter = (template = "{{slug}}", entryData) => {
+const slugFormatter = (template = "{{slug}}", entryData, slugType) => {
   const date = new Date();
 
   const getIdentifier = (entryData) => {
@@ -79,7 +80,12 @@ const slugFormatter = (template = "{{slug}}", entryData) => {
   // Replace periods and spaces with dashes.
   .replace(/[.\s]/g, '-');
 
-  return sanitizeSlug(slug);
+  if (slugType === "latin") {
+    const latinSlug = diacritics.remove(slug);
+    return sanitizeSlug(latinSlug, { slugType: "ascii" });
+  }
+
+  return sanitizeSlug(slug, { slugType });
 };
 
 class Backend {
@@ -242,7 +248,7 @@ class Backend {
       if (!selectAllowNewEntries(collection)) {
         throw (new Error("Not allowed to create new entries in this collection"));
       }
-      const slug = slugFormatter(collection.get("slug"), entryDraft.getIn(["entry", "data"]));
+      const slug = slugFormatter(collection.get("slug"), entryDraft.getIn(["entry", "data"]), config.get("slug_type"));
       const path = selectEntryPath(collection, slug);
       entryObj = {
         path,
