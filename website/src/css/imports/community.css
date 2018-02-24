@@ -6,7 +6,7 @@
   @media screen and (min-width: $desktop) {
     h2 {
       text-align: center;
-      margin-bottom: $medium;
+      margin-bottom: $large;
     }
   }
 
@@ -23,32 +23,13 @@
 
   .community-features {
     .feature {
-      margin-top: $small;
-    }
-  }
-
-  .community-buttons {
-    margin-top: $small;
-    padding-top: $medium;
-    border-top: 1px solid $lightestGrey;
-    a {
-      padding: $micro $tiny $micro $tiny;
-      margin-right: $micro;
-      background-color: $lightishGrey;
-      color: white;
-      border-radius: $borderRadius;
-    }
-    a:hover {
-      background-color: $darkGreen;
-    }
-    a:active {
-      background-color: $darkerGreen;
+      margin-top: $medium;
     }
   }
 
   .contributors {
     @neat-span-columns 12;
-    margin-top: $small;
+    margin-top: $medium;
 
     @media screen and (min-width: $tablet) {
       @neat-span-columns 10;
@@ -62,7 +43,7 @@
       margin-top: 4px;
       img {
         width: 32px;
-        margin: 0 $micro $micro 0;
+        margin: 0 4px 4px 0;
         border-radius: 16px;
         transition: 0.1s;
       }

@@ -192,7 +192,7 @@ header {
     line-height: 24px;
     transition: all .2s ease-in-out;
 
-    @media screen and (min-width: 968px) {
+    @media screen and (min-width: 1024px) {
       display: inline;
     }
 
@@ -228,10 +228,16 @@ header {
         float: left;
       }
     }
+    iframe {
+      @media screen and (max-width: 820px) {
+        display: none;
+        opacity: 0;
+      }
+    }
   }
 
   .cta-header {
-    margin-left: $micro;
+    margin-left: $tiny;
   }
   .cta-header a {
     display: inline-block;

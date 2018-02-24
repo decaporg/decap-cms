@@ -17,7 +17,7 @@
         {{ end }}
       </div>
       <div class="hero-graphic">
-        <img src="/img/screenshot-editor.png" class="responsive"/>
+        <img src="/img/screenshot-editor.jpg" class="responsive"/>
         <a class="hero-videolink" href="https://www.youtube.com/watch?v=p6h-rYSVX90">&#x25b6; Watch how to get started in just over 2 minutes</a>
         <p>
       </div>
@@ -69,11 +69,6 @@
             <h3>{{ .feature | markdownify }}</h3>
             <p>{{ .description | markdownify }}</p>
           </div>
-          {{ end }}
-        </div>
-        <div class="community-buttons">
-          {{ range $index, $id := .Site.Data.landing.community.buttons }}
-            <a href="{{ .url }}">{{ .name }}</a>
           {{ end }}
         </div>
       </div>

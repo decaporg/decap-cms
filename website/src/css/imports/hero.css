@@ -16,17 +16,14 @@
   }
 
   &.landing {
-    @media screen and (min-width: $tablet) {
-      padding-bottom: 165px;
+    padding-bottom: 100px;
+    @media screen and (min-width: $desktop) {
+      padding-bottom: 200px;
     }
   }
 
   .hero-copy {
-    margin: $large auto $medium auto;
-
-    @media screen and (min-width: $desktop) {
-      /* text-align: center; */
-    }
+    margin: $medium auto $xl auto;
   }
 
   .subhead {
@@ -47,6 +44,7 @@
   h1 {
     color: $green;
     margin-bottom: 0;
+    max-width: 800px;
   }
 
   h2 {
@@ -55,8 +53,6 @@
 
   h3 {
     color: white;
-    font-size: $tiny;
-    padding-bottom: 0;
   }
 
   .hero-features {
@@ -66,18 +62,23 @@
     }
 
     .feature {
-      margin-top: $medium;
+      margin: 0 0 $medium 0;
     }
 
   }
 
   .hero-graphic {
-    transform: scale(1.1) rotate(2deg);
 
     @media screen and (min-width: $tablet) {
       @neat-span-columns 6;
       float: right;
-      margin-bottom: 0;
+      margin: 0;
+      transform: scale(1.1) rotate(2deg);
+    }
+
+    img {
+      border-radius: $largeBorderRadius;
+      box-shadow: 0 10px 30px 0 rgba(0,0,0,0.15), 0 3px 9px 0 rgba(0,0,0,0.30);
     }
 
     a.hero-videolink {
@@ -96,11 +97,6 @@
     }
     a.hero-videolink:active {
       background-color: rgba(255,255,255,0.4);
-    }
-
-    img {
-      border-radius: $largeBorderRadius;
-      box-shadow: 0 10px 30px 0 rgba(0,0,0,0.15), 0 3px 9px 0 rgba(0,0,0,0.30);
     }
   }
 

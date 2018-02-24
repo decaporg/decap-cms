@@ -1,6 +1,15 @@
 <footer>
-  <p class="contained"><a href="https://github.com/netlify/netlify-cms/blob/master/LICENSE" class="text-link">Distributed under MIT License</a> ·
-  <a href="https://github.com/netlify/netlify-cms/blob/master/CODE_OF_CONDUCT.md" class="text-link">Code of Conduct</a></p>
+  <div class="contained">
+    <div class="social-buttons">
+      {{ range $index, $id := .Site.Data.global.footer.buttons }}
+        <a href="{{ .url }}">{{ .name }}</a>
+      {{ end }}
+    </div>
+    <div class="footer-info">
+      <p><a href="https://github.com/netlify/netlify-cms/blob/master/LICENSE" class="text-link">Distributed under MIT License</a> ·
+      <a href="https://github.com/netlify/netlify-cms/blob/master/CODE_OF_CONDUCT.md" class="text-link">Code of Conduct</a></p>
+    </div>
+  </div>
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
