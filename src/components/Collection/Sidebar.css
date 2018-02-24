@@ -2,7 +2,9 @@
   @apply(--card);
   width: 250px;
   padding: 8px 0 12px;
-  float: left;
+  position: fixed;
+  max-height: calc(100vh -168px);
+  overflow: auto;
 }
 
 .nc-collectionPage-sidebarHeading {
