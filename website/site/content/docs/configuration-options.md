@@ -62,9 +62,9 @@ Based on the settings above, if a user used an image widget field called `avatar
 
 ## Slug Type
 
-By default, filenames (slugs) for entries created in the CMS are sanitized according to RFC3987 and the WHATWG URL spec. This spec allows non-ASCII (or non-Latin) characters to exist in URLs. However, for maximum compatibility, you can also set a different slugification option:
+By default, filenames (slugs) for entries created in the CMS are sanitized according to [RFC3987](https://tools.ietf.org/html/rfc3987) and the [WHATWG URL spec](https://url.spec.whatwg.org/). This spec allows non-ASCII (or non-Latin) characters to exist in URLs. However, for maximum compatibility, you can also set a different slugification option:
 
-- `iri` (default): Keeps Unicode characters in slugs, according the the IRI draft spec (RFC3987) and the WHATWG URL spec.
+- `iri` (default): Keeps Unicode characters in slugs, according the the IRI draft spec ([RFC3987](https://tools.ietf.org/html/rfc3987)) and the [WHATWG URL spec](https://url.spec.whatwg.org/).
 - `latin`: Removes accents/diacritics from slug, then strips out all non-valid URL characters and periods (see `ascii` below).
 - `ascii`: Strips out all characters except valid URI chars (RFC3986) or periods (0-9, a-z, A-Z, `_`, `-`, `~`).
 
