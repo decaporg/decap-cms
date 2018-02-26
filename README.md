@@ -30,7 +30,7 @@ To learn more about this installation method, refer to the [Quick Start Guide](h
 
 # Community
 
-Netlify CMS has a [Gittercommunity](https://gitter.im/netlify/netlifycms) where members of the community hang out and share things about the project, as well as give and receive support.
+Netlify CMS has a [Gitter community](https://gitter.im/netlify/netlifycms) where members of the community hang out and share things about the project, as well as give and receive support.
 
 # Change Log
 
