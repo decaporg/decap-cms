@@ -68,12 +68,10 @@
   }
 
   .hero-graphic {
-
     @media screen and (min-width: $tablet) {
       @neat-span-columns 6;
       float: right;
       margin: 0;
-      transform: scale(1.1) rotate(2deg);
     }
 
     img {

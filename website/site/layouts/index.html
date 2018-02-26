@@ -5,8 +5,8 @@
     <div class="contained">
 
       <div class="hero-copy">
-        <span class="subhead">{{ .Site.Data.landing.hero.subhead | markdownify }}</span>
         <h1 class="headline">{{ .Site.Data.landing.hero.headline | markdownify }}</h1>
+        <span class="subhead">{{ .Site.Data.landing.hero.subhead | markdownify }}</span>
       </div>
       <div class="hero-features">
         {{ range $index, $id := .Site.Data.landing.hero.devfeatures }}
