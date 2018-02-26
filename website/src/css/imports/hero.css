@@ -74,7 +74,8 @@
       margin: 0;
     }
 
-    img {
+    img, iframe {
+      width: 100%;
       border-radius: $largeBorderRadius;
       box-shadow: 0 10px 30px 0 rgba(0,0,0,0.15), 0 3px 9px 0 rgba(0,0,0,0.30);
     }
