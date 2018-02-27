@@ -38,3 +38,7 @@ BooleanControl.propTypes = {
   forID: PropTypes.string,
   value: PropTypes.bool,
 };
+
+BooleanControl.defaultProps = {
+  value: false,
+};
