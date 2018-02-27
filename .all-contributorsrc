@@ -751,6 +751,16 @@
       ]
     },
     {
+      "login": "xifengjin88",
+      "name": "Xifeng Jin",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/15175868?v=4",
+      "profile": "http://linkedin/in/xifengjin88",
+      "contributions": [
+        "bug",
+        "code"
+      ]
+    },
+    {
       "login": "peduarte",
       "name": "Pedro Duarte",
       "avatar_url": "https://avatars1.githubusercontent.com/u/372831?v=4",
@@ -768,6 +778,24 @@
       "profile": "http://antonioargote.com",
       "contributions": [
         "design"
+      ]
+    },
+    {
+      "login": "ktaube",
+      "name": "Kristaps Taube",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/1479451?v=4",
+      "profile": "https://www.ktaube.com",
+       "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "daveyko",
+      "name": "David Ko",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/26639499?v=4",
+      "profile": "https://github.com/daveyko",
+      "contributions": [
+        "code"
       ]
     }
   ]

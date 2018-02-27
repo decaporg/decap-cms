@@ -1,20 +1,9 @@
 {
   "presets": [
+    "react",
     ["env", {
-      "modules": false,
-      "targets": {
-        "browsers": [
-          "last 2 Chrome versions",
-          "last 2 Opera versions",
-          "last 2 Firefox versions",
-          "last 2 Edge versions",
-          "last 2 Safari versions",
-          "last 2 iOS versions",
-          "last 2 ChromeAndroid versions"
-        ]
-      }
-    }],
-    "react"
+      "modules": false
+    }]
   ],
   "plugins": [
     "lodash",
@@ -26,19 +15,10 @@
       "useESModules": true
     }],
     ["module-resolver", {
-      /**
-       * Use aliases to avoid relative path import hell.
-       */
       "root": [
-        /**
-         * Components
-         */
         "./src/components"
       ],
       "alias": {
-        /**
-         * Top level src directories
-         */
         "Actions": "./src/actions/",
         "Backends": "./src/backends/",
         "Constants": "./src/constants/",
@@ -53,17 +33,11 @@
     }],
     "transform-export-extensions",
     "transform-class-properties",
-    "transform-object-rest-spread",
+    "transform-object-rest-spread"
   ],
   "env": {
     "test": {
-      "presets": [
-        ["env", {
-          "targets": {
-            "node": "6"
-          }
-        }]
-      ]
+      "plugins": ["transform-es2015-modules-commonjs"]
     }
   }
 }

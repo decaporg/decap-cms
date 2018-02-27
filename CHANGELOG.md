@@ -4,7 +4,31 @@
     Changes that have landed in master but are not yet released.
     Click to see more.
   </summary>
+
+  * Ensure unique id for each editor field ([@xifengjin88](https://github.com/xifengjin88) in [#1087](https://github.com/netlify/netlify-cms/pull/1087))
+  * Fix lists crashing when first value is not a string ([@tech4him1](https://github.com/tech4him1) in [#1115](https://github.com/netlify/netlify-cms/pull/1115))
 </details>
+
+## 1.2.2 (February 21, 2018)
+Fixes ES5 transpiling.
+
+* Remove babel-preset-env, fix ES5 transpiling ([@erquhart](https://github.com/erquhart) in [#1127](https://github.com/netlify/netlify-cms/pull/1127))
+
+## 1.2.1 (February 21, 2018)
+Allows `label_singular` config for collections and lists and distinct frontmatter delimiters.
+
+* Accept `label_singular` in collection config ([@peduarte](https://github.com/peduarte) in [#1086](https://github.com/netlify/netlify-cms/pull/1086))
+* Transpile down to ES5 to support older tooling eg. Webpack 1 ([@tech4him1](https://github.com/tech4him1) in [#1107](https://github.com/netlify/netlify-cms/pull/1107))
+* Allow different opening and closing frontmatter delimiters ([@tech4him1](https://github.com/tech4him1) in [#1094](https://github.com/netlify/netlify-cms/pull/1094))
+
+## 1.2.0 (February 13, 2018)
+Adds support for multiple frontmatter formats and custom delimiters, UI improvements.
+
+* Use babel-preset-env to transpile for supported environments only ([@tech4him1](https://github.com/tech4him1) in [#765](https://github.com/netlify/netlify-cms/pull/765))
+* Change direction of collapsed editor widget arrow indicators ([@Doocey](https://github.com/Doocey) in [#1059](https://github.com/netlify/netlify-cms/pull/1059))
+* Support for writing frontmatter in JSON, TOML, or YAML ([@tech4him1](https://github.com/tech4him1) in [#933](https://github.com/netlify/netlify-cms/pull/933))
+* Add collection label next to search results ([@solpark](https://github.com/solpark) in [#1068](https://github.com/netlify/netlify-cms/pull/1068))
+* Support custom delimiters for frontmatter ([@Swieckowski](https://github.com/Swieckowski) in [#1064](https://github.com/netlify/netlify-cms/pull/1064))
 
 ## 1.1.0 (January 25, 2018)
 

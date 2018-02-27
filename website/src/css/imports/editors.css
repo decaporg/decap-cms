@@ -1,7 +1,6 @@
 .editors {
   @neat-row;
-  margin-top: calc($large * 1.5);
-  margin-bottom: $xxl;
+  margin: $xxl 0 $xxl 0;
 
   @media screen and (min-width: $desktop) {
     text-align: center;
@@ -22,8 +21,8 @@
 
   .editors-features {
     display: flex;
-    justify-content: space-evenly;
-    margin-top: $large;
+    justify-content: space-between;
+    margin-top: calc($large * 2);
 
     @media screen and (max-width: $desktop) {
       justify-content: flex-start;
@@ -32,18 +31,19 @@
     }
 
     .feature {
-      max-width: 340px;
+      min-width: 260px;
+      width: 320px;
+      text-align: left;
+      margin-right: $medium;
 
       img {
-        max-width: 280px;
+        max-width: 300px;
         margin-bottom: $tiny;
-        border-radius: $borderRadius;
-        box-shadow: 0 4px 12px 0 rgba(68,74,87,0.10), 0 1px 3px 0 rgba(68,74,87,0.20);
+        margin-left: -9px;
       }
 
       @media screen and (max-width: $desktop) {
         margin-top: $large;
-        margin-right: $medium;
       }
 
     }

@@ -182,6 +182,7 @@ export default class Widget extends Component {
       setInactiveStyle,
       hasActiveStyle,
       editorControl,
+      uniqueFieldId
     } = this.props;
     return React.createElement(controlComponent, {
       field,
@@ -194,7 +195,7 @@ export default class Widget extends Component {
       onAddAsset,
       onRemoveInsertedMedia,
       getAsset,
-      forID: field.get('name'),
+      forID: field.get('name') + uniqueFieldId,
       ref: this.processInnerControlRef,
       classNameWrapper,
       classNameWidget,

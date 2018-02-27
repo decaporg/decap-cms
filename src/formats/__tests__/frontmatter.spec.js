@@ -39,6 +39,18 @@ describe('Frontmatter', () => {
       );
   });
 
+  it('should parse YAML with custom delimiters when it is explicitly set as the format with different custom delimiters', () => {
+    expect(
+      frontmatterYAML(["~~~", "^^^"]).fromFile('~~~\ntitle: YAML\ndescription: Something longer\n^^^\nContent')
+    ).toEqual(
+      {
+        title: 'YAML',
+        description: 'Something longer',
+        body: 'Content',
+      }
+      );
+  });
+
   it('should parse YAML with ---yaml delimiters', () => {
     expect(
       FrontmatterInfer.fromFile('---yaml\ntitle: YAML\ndescription: Something longer\n---\nContent')
@@ -210,6 +222,24 @@ describe('Frontmatter', () => {
         '  - yaml',
         'title: YAML',
         '~~~',
+        'Some content',
+        'On another line\n',
+      ].join('\n')
+      );
+  });
+
+  it('should stringify YAML with --- delimiters when it is explicitly set as the format with different custom delimiters', 
+  () => {
+    expect(
+      frontmatterYAML(["~~~", "^^^"]).toFile({ body: 'Some content\nOn another line', tags: ['front matter', 'yaml'], title: 'YAML' })
+    ).toEqual(
+      [
+        '~~~',
+        'tags:',
+        '  - front matter',
+        '  - yaml',
+        'title: YAML',
+        '^^^',
         'Some content',
         'On another line\n',
       ].join('\n')
