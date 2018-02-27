@@ -3,8 +3,8 @@ import diacritics from 'diacritics';
 import sanitizeFilename from 'sanitize-filename';
 import { isString, escapeRegExp, flow, partialRight } from 'lodash';
 
-function getUrl(url, direct) {
-  return `${ direct ? '/#' : '' }${ url }`;
+function getUrl(urlString, direct) {
+  return `${ direct ? '/#' : '' }${ urlString }`;
 }
 
 export function getCollectionUrl(collectionName, direct) {
@@ -21,9 +21,9 @@ export function addParams(urlString, params) {
   return url.format(parsedUrl);
 }
 
-export function stripProtocol(url) {
-  const protocolEndIndex = url.indexOf('//');
-  return protocolEndIndex > -1 ? url.slice(protocolEndIndex + 2) : url;
+export function stripProtocol(urlString) {
+  const protocolEndIndex = urlString.indexOf('//');
+  return protocolEndIndex > -1 ? urlString.slice(protocolEndIndex + 2) : url;
 }
 
 /* See https://www.w3.org/International/articles/idn-and-iri/#path.
@@ -35,12 +35,16 @@ export function stripProtocol(url) {
  */
 const uriChars = /[\w\-.~]/i;
 const ucsChars = /[\xA0-\u{D7FF}\u{F900}-\u{FDCF}\u{FDF0}-\u{FFEF}\u{10000}-\u{1FFFD}\u{20000}-\u{2FFFD}\u{30000}-\u{3FFFD}\u{40000}-\u{4FFFD}\u{50000}-\u{5FFFD}\u{60000}-\u{6FFFD}\u{70000}-\u{7FFFD}\u{80000}-\u{8FFFD}\u{90000}-\u{9FFFD}\u{A0000}-\u{AFFFD}\u{B0000}-\u{BFFFD}\u{C0000}-\u{CFFFD}\u{D0000}-\u{DFFFD}\u{E1000}-\u{EFFFD}]/u;
-const validURIChar = (char) => (uriChars.test(char));
-const validIRIChar = (char) => (uriChars.test(char) || ucsChars.test(char));
+const validURIChar = char => uriChars.test(char);
+const validIRIChar = char => uriChars.test(char) || ucsChars.test(char);
 // `sanitizeURI` does not actually URI-encode the chars (that is the browser's and server's job), just removes the ones that are not allowed.
 export function sanitizeURI(str, { replacement = "", type = "iri" } = {}) {
-  if (!isString(str)) throw "The input slug must be a string.";
-  if (!isString(replacement)) throw "`options.replacement` must be a string.";
+  if (!isString(str)) {
+    throw new Error("The input slug must be a string.");
+  }
+  if (!isString(replacement)) {
+    throw new Error("`options.replacement` must be a string.");
+  }
   
   let validChar;
   if (type === "iri") {
@@ -48,11 +52,13 @@ export function sanitizeURI(str, { replacement = "", type = "iri" } = {}) {
   } else if (type === "ascii") {
     validChar = validURIChar;
   } else {
-    throw '`options.type` must be "iri" or "ascii".';
+    throw new Error('`options.type` must be "iri" or "ascii".');
   }
 
   // Check and make sure the replacement character is actually a safe char itself.
-  if (!Array.from(replacement).every(validChar)) throw "The replacement character(s) (options.replacement) is itself unsafe.";
+  if (!Array.from(replacement).every(validChar)) {
+    throw new Error("The replacement character(s) (options.replacement) is itself unsafe.");
+  }
 
   // `Array.from` must be used instead of `String.split` because
   //   `split` converts things like emojis into UTF-16 surrogate pairs.
@@ -60,30 +66,27 @@ export function sanitizeURI(str, { replacement = "", type = "iri" } = {}) {
 }
 
 export function sanitizeSlug(str, { replacement = '-', slugType } = {}) {
-  if (!isString(str)) throw "The input slug must be a string.";
-  if (!isString(replacement)) throw "`options.replacement` must be a string.";
-
-  // Sanitize as URI and as filename.
-  let sanitize = flow([
-    partialRight(sanitizeURI, { replacement, type: slugType }),
-    partialRight(sanitizeFilename, { replacement }),
-  ]);
-
-  // For `latin` slug type, strip diacritics and use ASCII URL.
-  if (slugType === "latin") {
-    sanitize = flow([
-      diacritics.remove,
-      partialRight(sanitizeURI, { replacement, type: 'ascii' }),
-      partialRight(sanitizeFilename, { replacement }),
-    ]);
+  if (!isString(str)) {
+    throw new Error("The input slug must be a string.");
+  }
+  if (!isString(replacement)) {
+    throw new Error("`options.replacement` must be a string.");
   }
   
-  // Run sanitizers.
-  const sanitizedSlug = sanitize(str);
+  // For `latin` slug type, strip diacritics and use ASCII URL.
+  const [stripDiacritics, type] = (slugType === "latin")
+    ? [true, 'ascii']
+    : [false, slugType];
   
+  const sanitizedSlug = flow([
+    ...(stripDiacritics ? [diacritics.remove] : []),
+    partialRight(sanitizeURI, { replacement, type }),
+    partialRight(sanitizeFilename, { replacement }),
+  ])(str);
+
   // Remove any doubled or trailing replacement characters (that were added in the sanitizers).
-  const doubleReplacement = new RegExp('(?:' + escapeRegExp(replacement) + ')+', 'g');
-  const trailingReplacment = new RegExp(escapeRegExp(replacement) + '$');
+  const doubleReplacement = new RegExp(`(?:${ escapeRegExp(replacement) })+`, 'g');
+  const trailingReplacment = new RegExp(`${ escapeRegExp(replacement) }$`);
   const normalizedSlug = sanitizedSlug
     .replace(doubleReplacement, replacement)
     .replace(trailingReplacment, '');
