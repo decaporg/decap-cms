@@ -1,6 +1,5 @@
 import { remove, attempt, isError } from 'lodash';
 import uuid from 'uuid/v4';
-import { fileExtension } from 'Lib/pathHelper'
 import AuthenticationPage from './AuthenticationPage';
 
 window.repoFiles = window.repoFiles || {};
@@ -45,7 +44,7 @@ export default class TestRepo {
     const folder = collection.get('folder');
     if (folder) {
       for (const path in window.repoFiles[folder]) {
-        if (fileExtension(path) !== extension) {
+        if (!path.endsWith('.' + extension)) {
           continue;
         }
 
