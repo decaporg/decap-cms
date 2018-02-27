@@ -4,6 +4,9 @@
     Changes that have landed in master but are not yet released.
     Click to see more.
   </summary>
+
+  * Ensure unique id for each editor field (@xifengjin88 in #1087)
+  * Fix lists crashing when first value is not a string (@tech4him1 in #1115)
 </details>
 
 ## 1.2.2 (February 21, 2018)
