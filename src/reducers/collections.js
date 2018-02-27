@@ -48,7 +48,7 @@ function validateCollection(configCollection) {
 const selectors = {
   [FOLDER]: {
     entryExtension(collection) {
-      return collection.get('extension') || formatToExtension(collection.get('format') || 'frontmatter');
+      return (collection.get('extension') || formatToExtension(collection.get('format') || 'frontmatter')).replace(/^\./, '');
     },
     fields(collection) {
       return collection.get('fields');
