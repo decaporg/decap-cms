@@ -23,7 +23,7 @@ export function addParams(urlString, params) {
 
 export function stripProtocol(urlString) {
   const protocolEndIndex = urlString.indexOf('//');
-  return protocolEndIndex > -1 ? urlString.slice(protocolEndIndex + 2) : url;
+  return protocolEndIndex > -1 ? urlString.slice(protocolEndIndex + 2) : urlString;
 }
 
 /* See https://www.w3.org/International/articles/idn-and-iri/#path.
