@@ -113,8 +113,8 @@ var eventInfoLoad = function() {
     function updateDate(eventDate) {
       $('.month').append(moment(eventDate).format('MMMM'));
       $('.day').append(moment(eventDate).format('DD'));
-      $('.calendar-cta h2 strong:first-child()').append(moment(eventDate).format('dddd, MMMM Do'));
-      $('.calendar-cta h2 strong:last-child()').append(`${moment(eventDate).utcOffset(-8).format('h a')} PT`);
+      $('.calendar-cta h3 strong:first-child()').append(moment(eventDate).format('dddd, MMMM Do'));
+      $('.calendar-cta h3 strong:last-child()').append(`${moment(eventDate).utcOffset(-8).format('h a')} PT`);
     }
 
     eventRequest.send();
@@ -122,3 +122,12 @@ var eventInfoLoad = function() {
 }
 
 eventInfoLoad();
+
+
+// Load inline YouTube video
+var embedcode = '<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/p6h-rYSVX90?rel=0&amp;showinfo=0&amp;autoplay=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>';
+
+$('.hero-graphic').click(function() {
+  $('.hero-graphic img').replaceWith(embedcode);
+  $('.hero-videolink').remove();
+});

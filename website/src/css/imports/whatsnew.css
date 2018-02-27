@@ -1,0 +1,64 @@
+.whatsnew {
+  padding: $medium 0 $medium 0;
+  background-color: $lightishGrey;
+  color: white;
+  @media screen and (min-width: $desktop) {
+    margin-top: -98px;
+    padding-top: 75px;
+  }
+
+  ol {
+    display: flex;
+    justify-content: space-between;
+    list-style: none;
+    padding-left: 0;
+    @media screen and (max-width: $desktop) {
+      flex-wrap: wrap;
+    }
+    a {
+      color: white;
+      font-weight: $regular;
+      min-width: 250px;
+      max-width: 320px;
+      margin-right: $medium;
+      @media screen and (max-width: $desktop) {
+        max-width: 100%;
+        min-width: 100%;
+        padding: 16px 0 16px 0;
+      }
+    }
+    a:hover {
+      padding: 16px 24px 16px 24px;
+      margin: -16px calc($medium - 24px) -16px -24px;
+      background-color: $darkGrey;
+      border-radius: $borderRadius;
+      @media screen and (max-width: $desktop) {
+        margin: 0 -24px 0 -24px;
+      }
+    }
+    a:active {
+      background-color: $darkerGrey;
+    }
+    li {
+      .update-metadata {
+        font-size: 13px;
+        color: rgba(255,255,255,0.6);
+        display: block;
+        margin-bottom: $micro;
+        .update-version {
+          font-weight: $bold;
+          background-color: $shadeBlue;
+          color: $darkGrey;
+          padding: 0 4px 0 4px;
+          margin-right: 8px;
+          border-radius: 2px;
+        }
+      }
+      .update-description {
+        font-size: 15px;
+        line-height: 20px;
+      }
+    }
+  }
+
+}

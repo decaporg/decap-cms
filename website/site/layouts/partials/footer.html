@@ -1,6 +1,15 @@
 <footer>
-  <p class="contained"><a href="https://github.com/netlify/netlify-cms/blob/master/LICENSE" class="text-link">Distributed under MIT License</a> ·
-  <a href="https://github.com/netlify/netlify-cms/blob/master/CODE_OF_CONDUCT.md" class="text-link">Code of Conduct</a></p>
+  <div class="contained">
+    <div class="social-buttons">
+      {{ range $index, $id := .Site.Data.global.footer.buttons }}
+        <a href="{{ .url }}">{{ .name }}</a>
+      {{ end }}
+    </div>
+    <div class="footer-info">
+      <p><a href="https://github.com/netlify/netlify-cms/blob/master/LICENSE" class="text-link">Distributed under MIT License</a> ·
+      <a href="https://github.com/netlify/netlify-cms/blob/master/CODE_OF_CONDUCT.md" class="text-link">Code of Conduct</a></p>
+    </div>
+  </div>
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
@@ -24,5 +33,6 @@ debug: false // Set debug to true if you want to inspect the dropdown
 {{- if eq .Title "Widgets" -}} <!-- Check if is widgets page, if so, add the widget cloud js script -->
   <script src="/widgets.js"></script>
 {{- end -}}
+<script async defer src="https://buttons.github.io/buttons.js"></script>
 </body>
 </html>

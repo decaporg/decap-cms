@@ -1,14 +1,43 @@
 footer {
   background: white;
-  padding: $medium 0;
+  padding: $medium 0 $large 0;
+  text-align: center;
 
-  p {
-    color: $grey;
-    font-family: $roboto;
-    font-size: 12px;
-    opacity: .5;
+  .footer-info {
+    @media screen and (min-width: $tablet) {
+      float: left;
+      margin-right: $small;
+    }
+    p {
+      color: $grey;
+      font-family: $roboto;
+      font-size: 12px;
+      opacity: .5;
+    }
+    a {
+      color: $grey;
+    }
   }
-  a {
-    color: $grey;
+
+  .social-buttons {
+    margin-bottom: $small;
+    @media screen and (min-width: $tablet) {
+      float: left;
+      margin-right: $small;
+    }
+    a {
+      padding: $micro $tiny $micro $tiny;
+      margin-right: $micro;
+      background-color: $lightishGrey;
+      color: white;
+      border-radius: $borderRadius;
+    }
+    a:hover {
+      background-color: $darkGreen;
+    }
+    a:active {
+      background-color: $darkerGreen;
+    }
   }
+
 }
