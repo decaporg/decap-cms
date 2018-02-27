@@ -115,17 +115,28 @@ header {
     }*/
   }
 
-  .nav-link {
-    color: white;
-    display: inline-block;
-    vertical-align: middle;
-    -webkit-vertical-align: middle !important;
-    margin-left: $tiny;
+  .nav-container {
+    padding-top: $micro;
 
-    &:hover {
-      color: $green;
+    .nav-link {
+      color: white;
+      display: inline-block;
+      vertical-align: middle;
+      -webkit-vertical-align: middle !important;
+      margin-left: $tiny;
+
+      &:hover {
+        color: $green;
+      }
     }
 
+    .nav-link + iframe  {
+      margin-left: $small;
+      vertical-align: middle;
+      @media screen and (max-width: $mobile) {
+        margin-top: $tiny;
+      }
+    }
   }
 
   img {
@@ -144,13 +155,12 @@ header {
   }
 
   input {
-    padding-left: 0;
+    padding: -5px 0 0 0;
     border: none;
     border-radius: 0;
     appearance: none;
     background: none;
     color: $lightGrey;
-    padding: 2px $micro $micro 0;
     display: inline-block;
     font-size: $tiny;
     font-weight: $regular;
@@ -179,11 +189,14 @@ header {
   .utility-input {
     display: none;
     padding: $micro;
+    position: relative;
+    top: -4px;
     width: auto;
     border-radius: 4px;
     background-color: rgba(255,255,255,0.1);
     color: white;
     margin: 0 0 0 $tiny;
+    padding-top: -5px;
     padding-bottom: 9px;
     text-align: left;
     text-decoration: none;
@@ -227,42 +240,6 @@ header {
         width: initial;
         float: left;
       }
-    }
-    iframe {
-      @media screen and (max-width: 820px) {
-        display: none;
-        opacity: 0;
-      }
-    }
-  }
-
-  .cta-header {
-    margin-left: $tiny;
-  }
-  .cta-header a {
-    display: inline-block;
-    color: white;
-    text-transform: uppercase;
-    font-size: $tiny;
-    letter-spacing: 0.5px;
-    background-color: $blue;
-    background-image: linear-gradient(-180deg, #4A7FDD 0%, #3A69C7 100%);
-    box-shadow: 0 4px 12px 0 rgba(0,0,0,0.3), 0 1px 3px 0 rgba(0,0,0,0.6);
-    border-radius: $borderRadius;
-    padding: 10px 14px 8px 14px;
-    transition: .2s;
-
-    @media screen and (max-width: $mobile) {
-      margin-top: $tiny;
-    }
-
-    &:hover {
-      transform: scale(1.05);
-      box-shadow: 0 4px 12px 0 rgba(0,0,0,0.5), 0 1px 3px 0 rgba(0,0,0,1);
-    }
-    &:active {
-      transform: scale(0.95);
-      box-shadow: none;
     }
   }
 }

@@ -1,6 +1,6 @@
 ---
 hero:
-  headline: "Open source content management for&nbsp;your Git&nbsp;workflow"
+  headline: "Open source content management for your Git&nbsp;workflow"
   subhead: "Use Netlify CMS with any static site generator for a faster and more flexible web&nbsp;project"
   devfeatures:
     - feature: "Static + content management = ♥"

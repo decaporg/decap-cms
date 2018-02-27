@@ -7,6 +7,7 @@
       <div class="hero-copy">
         <h1 class="headline">{{ .Site.Data.landing.hero.headline | markdownify }}</h1>
         <span class="subhead">{{ .Site.Data.landing.hero.subhead | markdownify }}</span>
+        <span class="cta-header">{{ .Site.Data.landing.cta.button | markdownify }}</span>
       </div>
       <div class="hero-features">
         {{ range $index, $id := .Site.Data.landing.hero.devfeatures }}
@@ -16,9 +17,9 @@
           </div>
         {{ end }}
       </div>
-      <a href="#" class="hero-graphic">
+      <a class="hero-graphic">
         <img src="/img/screenshot-editor.jpg" class="responsive"/>
-        <span class="hero-videolink">&#x25b6; Watch how to get started in just over 2 minutes</span>
+        <div class="hero-videolink">&#x25b6;</div>
       </a>
 
     </div>

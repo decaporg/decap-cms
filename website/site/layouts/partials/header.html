@@ -29,15 +29,18 @@
       <div class="contained">
         <div class="logo-container">
           <a href="/" class="logo"><img src="/img/netlify-cms-logo.svg"/></a>
-          <a class="github-button" href="https://github.com/netlify/netlify-cms" data-icon="octicon-star" data-show-count="true" aria-label="Star netlify/netlify-cms on GitHub">Star</a>
+          {{ if or (eq .Section "docs") (eq .Title "Docs") }}
+          <a class="utility-input">
+            <img src="/img/search.svg" />
+            <input type="search" placeholder="Search the docs" class="algolia-search"/>
+          </a>
+          {{ end }}
         </div>
-        <a class="nav-link docs-link" href="/docs">Docs</a>
-        <a class="nav-link contributing-link" href="/docs/contributor-guide">Contributing</a>
-        <a class="nav-link" href="/community">Community</a>
-        <a class="utility-input">
-          <img src="/img/search.svg" />
-          <input type="search" placeholder="Search the docs" class="algolia-search"/>
-        </a>
-        <span class="cta-header">{{ .Site.Data.landing.cta.button | markdownify }}</span>
+        <div class="nav-container">
+          <a class="nav-link docs-link" href="/docs">Docs</a>
+          <a class="nav-link contributing-link" href="/docs/contributor-guide">Contributing</a>
+          <a class="nav-link" href="/community">Community</a>
+          <a id="ghstars" class="github-button" href="https://github.com/netlify/netlify-cms" data-icon="octicon-star" data-show-count="true" aria-label="Star netlify/netlify-cms on GitHub">Star</a>
+        </div>
       </div>
     </header>
