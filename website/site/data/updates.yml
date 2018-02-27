@@ -1,4 +1,16 @@
 updates:
+  - date: 2018-02-21
+    version: '1.2.2'
+    description: Fixes ES5 transpiling.
+    url: 'https://github.com/netlify/netlify-cms/releases/tag/1.2.2'
+  - date: 2018-02-21
+    version: '1.2.1'
+    description: Allows label_singular config for collections and lists and distinct frontmatter delimiters.
+    url: 'https://github.com/netlify/netlify-cms/releases/tag/1.2.1'
+  - date: 2018-02-13
+    version: '1.2'
+    description: Adds support for multiple frontmatter formats and custom delimiters, UI improvements.
+    url: 'https://github.com/netlify/netlify-cms/releases/tag/1.2.0'
   - date: 2018-01-25
     version: '1.1'
     description: You can now register external backends and we improved metadata handling.
