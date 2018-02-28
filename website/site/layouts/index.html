@@ -36,7 +36,7 @@
       <ol>
         {{ range .Site.Data.updates }}
           {{ range first 3 . }}
-            <a href="{{ .url }}"><li><div class="update-metadata"><span class="update-version">{{ .version }}</span><span class="update-date">{{ dateFormat "January 2, 2006" .date }}</span></div><span class="update-description">{{ .description  | markdownify }}</span></li></a>
+            <a href="https://github.com/netlify/netlify-cms/releases/tag/{{ .version }}"><li><div class="update-metadata"><span class="update-version">{{ .version }}</span><span class="update-date">{{ dateFormat "January 2, 2006" .date }}</span></div><span class="update-description">{{ .description  | markdownify }}</span></li></a>
           {{ end }}
         {{ end }}
       </ol>

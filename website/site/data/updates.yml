@@ -6,36 +6,27 @@ updates:
   - date: 2018-02-21
     version: '1.2.2'
     description: Fixes ES5 transpiling.
-    url: 'https://github.com/netlify/netlify-cms/releases/tag/1.2.2'
   - date: 2018-02-21
     version: '1.2.1'
     description: Allows label_singular config for collections and lists and distinct frontmatter delimiters.
-    url: 'https://github.com/netlify/netlify-cms/releases/tag/1.2.1'
   - date: 2018-02-13
     version: '1.2'
     description: Adds support for multiple frontmatter formats and custom delimiters, UI improvements.
-    url: 'https://github.com/netlify/netlify-cms/releases/tag/1.2.0'
   - date: 2018-01-25
     version: '1.1'
     description: You can now register external backends and we improved metadata handling.
-    url: 'https://github.com/netlify/netlify-cms/releases/tag/1.1.0'
   - date: 2018-01-23
     version: '1.0.4'
     description: Fixes various UI bugs and adds expand / collapse functionality to the object widget.
-    url: 'https://github.com/netlify/netlify-cms/releases/tag/1.0.4'
   - date: 2018-12-19
     version: '1.0.3'
     description: Small bug fix release.
-    url: 'https://github.com/netlify/netlify-cms/releases/tag/1.0.3'
   - date: 2018-12-07
     version: '1.0.2'
     description: Small bug fix release.
-    url: 'https://github.com/netlify/netlify-cms/releases/tag/1.0.2'
   - date: 2018-12-07
     version: '1.0.1'
     description: Small bug fix release.
-    url: 'https://github.com/netlify/netlify-cms/releases/tag/1.0.1'
   - date: 2018-12-07
     version: '1.0.0'
     description: The first major release of Netlify CMS with an all-new UI, revamped documentation and much more.
-    url: 'https://github.com/netlify/netlify-cms/releases/tag/1.0.0'
