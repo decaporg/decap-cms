@@ -38,7 +38,7 @@ export default class ObjectControl extends Component {
   };
 
   static defaultProps = {
-    value: {},
+    value: Map(),
   };
 
   constructor(props) {
@@ -76,7 +76,6 @@ export default class ObjectControl extends Component {
     const widget = resolveWidget(widgetName);
     const fieldName = field.get('name');
     const fieldValue = value && Map.isMap(value) ? value.get(fieldName) : value;
-
     return (
       <EditorControl
         key={key}

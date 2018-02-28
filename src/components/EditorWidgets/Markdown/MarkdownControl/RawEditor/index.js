@@ -51,7 +51,6 @@ export default class RawEditor extends React.Component {
 
   render() {
     const { className } = this.props;
-
     return (
       <div className="nc-rawEditor-rawWrapper">
         <div className="nc-visualEditor-editorControlBar">
