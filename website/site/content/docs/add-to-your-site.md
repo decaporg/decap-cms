@@ -77,6 +77,8 @@ By default, saving a post in the CMS interface will push a commit directly to th
 publish_mode: editorial_workflow
 ```
 
+**NOTE:** Editorial workflow does not work for the Bitbucket backend at this time.
+
 ### Media and Public Folders
 
 Netlify CMS allows users to upload images directly within the editor. For this to work, the CMS needs to know where to save them. If you already have an `images` folder in your project, you could use its path, possibly creating an `uploads` sub-folder, for example:

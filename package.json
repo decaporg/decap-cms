@@ -123,11 +123,13 @@
     "webpack": "^3.6.0",
     "webpack-dev-server": "^2.9.1",
     "webpack-merge": "^4.1.0",
-    "webpack-postcss-tools": "^1.1.1"
+    "webpack-postcss-tools": "^1.1.1",
+    "fetch-mock": "^5.12.1"
   },
   "dependencies": {
     "classnames": "^2.2.5",
     "create-react-class": "^15.6.0",
+    "form-data": "^2.2.0",
     "fuzzy": "^0.1.1",
     "gotrue-js": "^0.9.15",
     "gray-matter": "^3.0.6",
