@@ -15,8 +15,4 @@ MarkdownPreview.propTypes = {
   value: PropTypes.string,
 };
 
-MarkdownPreview.defaultProps = {
-  value: '',
-};
-
 export default MarkdownPreview;
