@@ -59,7 +59,7 @@ collections: # A list of collections the CMS should be able to edit
             label: Authors
             label_singular: "Author"
             widget: list
-            disableAdd: false
+            allow_add: true
             fields:
               - {label: "Name", name: "name", widget: "string"}
               - {label: "Description", name: "description", widget: "markdown"}

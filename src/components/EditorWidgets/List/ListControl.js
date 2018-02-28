@@ -23,7 +23,7 @@ function valueToString(value) {
 
 const SortableListItem = SortableElement(ListItem);
 
-const TopBar = ({ disableAdd, onAdd, listLabel, onCollapseAllToggle, allItemsCollapsed, itemsCount }) => (
+const TopBar = ({ allowAdd, onAdd, listLabel, onCollapseAllToggle, allItemsCollapsed, itemsCount }) => (
   <div className="nc-listControl-topBar">
     <div className="nc-listControl-listCollapseToggle">
       <button className="nc-listControl-listCollapseToggleButton" onClick={onCollapseAllToggle}>
@@ -33,17 +33,19 @@ const TopBar = ({ disableAdd, onAdd, listLabel, onCollapseAllToggle, allItemsCol
     </div>
 
     {
-      !disableAdd ?
+      allowAdd ?
         <button className="nc-listControl-addButton" onClick={onAdd}>
           Add {listLabel} <Icon type="add" size="xsmall" />
         </button>
       :
-        <div />
+        null
     }
   </div>
 );
 
-const SortableList = SortableContainer(({ items, renderItem }) => <div>{items.map(renderItem)}</div>);
+const SortableList = SortableContainer(({ items, renderItem }) => {
+  return <div>{items.map(renderItem)}</div>;
+});
 
 const valueTypes = {
   SINGLE: 'SINGLE',
@@ -263,7 +265,7 @@ export default class ListControl extends Component {
     return (
       <div id={forID} className={c(classNameWrapper, 'nc-listControl')}>
         <TopBar
-          disableAdd={field.get('disableAdd')}
+          allowAdd={field.get('allow_add')}
           onAdd={this.handleAdd}
           listLabel={label.toLowerCase()}
           onCollapseAllToggle={this.handleCollapseAllToggle}
