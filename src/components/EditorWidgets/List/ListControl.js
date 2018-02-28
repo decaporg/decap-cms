@@ -43,7 +43,9 @@ const TopBar = ({ allowAdd, onAdd, listLabel, onCollapseAllToggle, allItemsColla
   </div>
 );
 
-const SortableList = SortableContainer(({ items, renderItem }) => <div>{items.map(renderItem)}</div>);
+const SortableList = SortableContainer(({ items, renderItem }) => {
+  return <div>{items.map(renderItem)}</div>;
+});
 
 const valueTypes = {
   SINGLE: 'SINGLE',
