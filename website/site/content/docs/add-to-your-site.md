@@ -18,6 +18,7 @@ All Netlify CMS files are contained in a static `admin` folder, stored at the ro
 | Hugo, Gatsby         | `/static`             |
 | Hexo, Middleman      | `/source`             |
 | Spike                | `/views`              |
+| Wyam                 | `/input`              |
 
 If your generator isn't listed here, you can check its documentation, or as a shortcut, look in your project for a `css` or `images` folder. The contents of folders like that are usually processed as static files, so it's likely you can store your `admin` folder next to those. (When you've found the location, feel free to add it to these docs by [filing a pull request](https://github.com/netlify/netlify-cms/blob/master/CONTRIBUTING.md)!)
 
