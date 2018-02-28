@@ -38,7 +38,6 @@ collections: # A list of collections the CMS should be able to edit
           - name: notifications
             label: Notifications
             widget: list
-            allow_add: true
             fields:
               - {label: Title, name: title, widget: string, tagname: h1}
               - {label: Published, name: published, widget: boolean}

@@ -265,7 +265,7 @@ export default class ListControl extends Component {
     return (
       <div id={forID} className={c(classNameWrapper, 'nc-listControl')}>
         <TopBar
-          allowAdd={field.get('allow_add')}
+          allowAdd={field.get('allow_add', true)}
           onAdd={this.handleAdd}
           listLabel={label.toLowerCase()}
           onCollapseAllToggle={this.handleCollapseAllToggle}
