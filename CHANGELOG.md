@@ -7,7 +7,8 @@
 
   * Ensure unique id for each editor field ([@xifengjin88](https://github.com/xifengjin88) in [#1087](https://github.com/netlify/netlify-cms/pull/1087))
   * Fix lists crashing when first value is not a string ([@tech4him1](https://github.com/tech4him1) in [#1115](https://github.com/netlify/netlify-cms/pull/1115))
-  * Support extensions with multiple parts (i.e. `en.md`)
+  * Support extensions with multiple parts (i.e. `en.md`) ([@tech4him1](https://github.com/tech4him1) in [#1123](https://github.com/netlify/netlify-cms/pull/1123))
+  * Fix lost unsaved changes when updating status or publishing from editor ([@erquhart](https://github.com/erquhart) in [#987](https://github.com/netlify/netlify-cms/pull/987))
 </details>
 
 ## 1.2.2 (February 21, 2018)
