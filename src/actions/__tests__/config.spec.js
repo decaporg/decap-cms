@@ -129,7 +129,7 @@ describe('config', () => {
       testLink.setAttribute('rel', 'cms-config-url');
       testLink.setAttribute('type', 'text/yaml');
       document.head.appendChild(testLink);
-    })
+    });
     it('should should return a default url if there is no <link> in <head>.', () => {
       const testChild = document.getElementById('test');
       document.head.removeChild(testChild);
@@ -137,13 +137,13 @@ describe('config', () => {
     });
     it('should return the <link> href if one is provided.', () => {
       expect(getConfig()).toEqual('the/test/works');
-    })
+    });
     it('should throw an error if an incorrect type is provided.', () => {
-      const testChild = document.getElementById('test')
-      testChild.setAttribute('type', 'failing/type')      
+      const testChild = document.getElementById('test');
+      testChild.setAttribute('type', 'failing/type');      
       expect(() => {
-        getConfig()
+        getConfig();
       }).toThrowError(`The configuration type must be "text/yaml" or "application/x-yaml"`);
-    })
-  })
+    });
+  });
 });

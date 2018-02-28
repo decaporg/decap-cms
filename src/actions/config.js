@@ -16,20 +16,20 @@ const configUrl = isValidType(configLink) ? get(configLink, 'href') : 'config.ym
 
 export function getConfigUrl() {
   let url = 'config.yml';
-  //set default as 'config.yml'
-  //look in DOM head for a cms config link.
-  document.head.childNodes.forEach(child => {
+  // set default as 'config.yml'
+  // look in DOM head for a cms config link.
+  document.head.childNodes.forEach((child) => {
     if (child.rel === "cms-config-url") {
       if (child.type !== "text/yaml" &&
           child.type !== "application/x-yaml") {
-            //check that the type is allowed;
-            throw new Error(`The configuration type must be "text/yaml" or "application/x-yaml"`);
-          }
-      url = child.href
-    };
-    //overwrite default if link is found 
-    //keep default otherwise.
-  })
+            // check that the type is allowed;
+        throw new Error(`The configuration type must be "text/yaml" or "application/x-yaml"`);
+      }
+      url = child.href;
+    }
+    // overwrite default if link is found 
+    // keep default otherwise.
+  });
   return url;
 }
 
