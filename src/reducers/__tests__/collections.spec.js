@@ -13,7 +13,7 @@ describe('collections', () => {
 
   it('should load the collections from the config', () => {
     expect(
-      collections(undefined, configLoaded({
+      collections(undefined, configLoaded(fromJS({
         collections: [
           {
             name: 'posts',
@@ -21,7 +21,7 @@ describe('collections', () => {
             fields: [{ name: 'title', widget: 'string' }],
           },
         ],
-      }))
+      })))
     ).toEqual(
       OrderedMap({
         posts: fromJS({

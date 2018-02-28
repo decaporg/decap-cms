@@ -8,6 +8,7 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 module.exports = merge.smart(require('./webpack.base.js'), {
   entry: {
     cms: './index',
+    init: './init',
   },
   output: {
     path: path.join(__dirname, 'dist'),
