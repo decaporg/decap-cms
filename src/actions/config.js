@@ -1,48 +1,61 @@
 import yaml from "js-yaml";
-import { set, defaultsDeep, get } from "lodash";
+import { Map, List, fromJS } from "immutable";
+import { trimStart, flow } from "lodash";
 import { authenticateUser } from "Actions/auth";
 import * as publishModes from "Constants/publishModes";
 
 export const CONFIG_REQUEST = "CONFIG_REQUEST";
 export const CONFIG_SUCCESS = "CONFIG_SUCCESS";
 export const CONFIG_FAILURE = "CONFIG_FAILURE";
+export const CONFIG_MERGE = "CONFIG_MERGE";
 
 const defaults = {
   publish_mode: publishModes.SIMPLE,
 };
 
 export function applyDefaults(config) {
-  // Make sure there is a public folder
-  set(defaults,
-    "public_folder",
-    config.media_folder.charAt(0) === "/" ? config.media_folder : `/${ config.media_folder }`);
-
-  return defaultsDeep(config, defaults);
+  return Map(defaults)
+    .mergeDeep(config)
+    .withMutations(map => {
+      /**
+       * Use media_folder as default public_folder.
+       */
+      const defaultPublicFolder = `/${trimStart(map.get('media_folder'), '/')}`;
+      if (!map.get('public_folder')) {
+        map.set('public_folder', defaultPublicFolder);
+      }
+    });
 }
 
 export function validateConfig(config) {
-  if (!get(config, 'backend')) {
+  if (!config.get('backend')) {
     throw new Error("Error in configuration file: A `backend` wasn't found. Check your config.yml file.");
   }
-  if (!get(config, ['backend', 'name'])) {
+  if (!config.getIn(['backend', 'name'])) {
     throw new Error("Error in configuration file: A `backend.name` wasn't found. Check your config.yml file.");
   }
-  if (typeof config.backend.name !== 'string') {
+  if (typeof config.getIn(['backend', 'name']) !== 'string') {
     throw new Error("Error in configuration file: Your `backend.name` must be a string. Check your config.yml file.");
   }
-  if (!get(config, 'media_folder')) {
+  if (!config.get('media_folder')) {
     throw new Error("Error in configuration file: A `media_folder` wasn\'t found. Check your config.yml file.");
   }
-  if (typeof config.media_folder !== 'string') {
+  if (typeof config.get('media_folder') !== 'string') {
     throw new Error("Error in configuration file: Your `media_folder` must be a string. Check your config.yml file.");
   }
-  if (!get(config, 'collections')) {
+  if (!config.get('collections')) {
     throw new Error("Error in configuration file: A `collections` wasn\'t found. Check your config.yml file.");
   }
-  if (!Array.isArray(config.collections) || config.collections.length === 0 || !config.collections[0]) {
+  const collections = config.get('collections');
+  if (!List.isList(collections) || collections.isEmpty() || !collections.first()) {
     throw new Error("Error in configuration file: Your `collections` must be an array with at least one element. Check your config.yml file.");
   }
   return config;
+}
+
+function mergePreloadedConfig(preloadedConfig, loadedConfig) {
+  const map = fromJS(loadedConfig) || Map();
+  return preloadedConfig ? preloadedConfig.mergeDeep(map) : map;
 }
 
 function parseConfig(data) {
@@ -82,29 +95,40 @@ export function configDidLoad(config) {
   };
 }
 
+export function mergeConfig(config) {
+  return { type: CONFIG_MERGE, payload: config };
+}
+
 export function loadConfig() {
   if (window.CMS_CONFIG) {
-    return configDidLoad(window.CMS_CONFIG);
+    return configDidLoad(fromJS(window.CMS_CONFIG));
   }
-  return (dispatch) => {
+  return async (dispatch, getState) => {
     dispatch(configLoading());
 
-    fetch("config.yml", { credentials: 'same-origin' })
-    .then((response) => {
-      if (response.status !== 200) {
+    try {
+      const preloadedConfig = getState().config;
+      const response = await fetch('config.yml', { credentials: 'same-origin' })
+      const requestSuccess = response.status === 200;
+
+      if (!preloadedConfig && !requestSuccess) {
         throw new Error(`Failed to load config.yml (${ response.status })`);
       }
-      return response.text();
-    })
-    .then(parseConfig)
-    .then(validateConfig)
-    .then(applyDefaults)
-    .then((config) => {
+
+      const loadedConfig = parseConfig(requestSuccess ? await response.text() : '');
+
+      /**
+       * Merge any existing configuration so the result can be validated.
+       */
+      const mergedConfig = mergePreloadedConfig(preloadedConfig, loadedConfig)
+      const config = flow(validateConfig, applyDefaults)(mergedConfig);
+
       dispatch(configDidLoad(config));
       dispatch(authenticateUser());
-    })
-    .catch((err) => {
+    }
+    catch(err) {
       dispatch(configFailed(err));
-    });
+      throw(err)
+    }
   };
 }

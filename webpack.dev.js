@@ -13,6 +13,7 @@ module.exports = merge.smart(require('./webpack.base.js'), {
       `webpack-dev-server/client?http://${ HOST }:${ PORT }/`,
       './index',
     ],
+    init: './init',
   },
   output: {
     path: path.join(__dirname, 'dist'),

@@ -53,6 +53,7 @@ class App extends React.Component {
       <div>
         <p>The <code>config.yml</code> file could not be loaded or failed to parse properly.</p>
         <p><strong>Error message:</strong> {config.get('error')}</p>
+        <p>Check your console for details.</p>
       </div>
     </div>);
   }
@@ -104,7 +105,6 @@ class App extends React.Component {
       publishMode,
       openMediaLibrary,
     } = this.props;
-
 
     if (config === null) {
       return null;
