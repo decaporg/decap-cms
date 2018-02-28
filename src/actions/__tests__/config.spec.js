@@ -1,5 +1,5 @@
 import { fromJS } from 'immutable';
-import { applyDefaults, validateConfig } from '../config';
+import { applyDefaults, validateConfig, getConfigUrl } from '../config';
 
 describe('config', () => {
   describe('applyDefaults', () => {
@@ -119,9 +119,7 @@ describe('config', () => {
     });
   });
 
-  describe('getConfig', () => {
-    const validTypes = ['text/yaml', 'application/x-yaml'];
-    const isValidType = link => link && validTypes.includes(link.type);
+  describe('getConfigUrl', () => {
     beforeEach(() => {
       const testChild = document.getElementById('test');
       if (testChild) document.head.removeChild(testChild);
@@ -131,32 +129,21 @@ describe('config', () => {
       testLink.setAttribute('rel', 'cms-config-url');
       testLink.setAttribute('type', 'text/yaml');
       document.head.appendChild(testLink);
-    });
+    })
     it('should should return a default url if there is no <link> in <head>.', () => {
       const testChild = document.getElementById('test');
       document.head.removeChild(testChild);
-      const configLink = document.querySelector('link[rel="cms-config-url"]');
-      const configUrl = isValidType(configLink) ? get(configLink, 'href') : 'config.yml';
-      expect(configUrl).toEqual('config.yml');
+      expect(getConfig()).toEqual('config.yml');
     });
     it('should return the <link> href if one is provided.', () => {
-      const configLink = document.querySelector('link[rel="cms-config-url"]');
-      const configUrl = isValidType(configLink) ? get(configLink, 'href') : 'config.yml';
-      expect(configUrl).toEqual('the/test/works');
-    });
-    it('should return the <link> href if it is provided with an alternate type.', () => {
-      const testChild = document.getElementById('test');
-      testChild.setAttribute('type', 'application/x-yaml');
-      const configLink = document.querySelector('link[rel="cms-config-url"]');
-      const configUrl = isValidType(configLink) ? get(configLink, 'href') : 'config.yml';
-      expect(configUrl).toEqual('the/test/works');
-    });
-    it('should return default if the <link> has an unsupported type.', () => {
-      const testChild = document.getElementById('test');
-      testChild.setAttribute('type', 'wrong/type');
-      const configLink = document.querySelector('link[rel="cms-config-url"]');
-      const configUrl = isValidType(configLink) ? get(configLink, 'href') : 'config.yml';
-      expect(configUrl).toEqual('config.yml');
-    });
-  });
+      expect(getConfig()).toEqual('the/test/works');
+    })
+    it('should throw an error if an incorrect type is provided.', () => {
+      const testChild = document.getElementById('test')
+      testChild.setAttribute('type', 'failing/type')      
+      expect(() => {
+        getConfig()
+      }).toThrowError(`The configuration type must be "text/yaml" or "application/x-yaml"`);
+    })
+  })
 });
