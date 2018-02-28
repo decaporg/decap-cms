@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import DateControl from 'EditorWidgets/Date/DateControl';
+import moment from 'moment';
 
 export default class DateTimeControl extends React.Component {
   static propTypes = {
@@ -37,6 +38,7 @@ export default class DateTimeControl extends React.Component {
         setActiveStyle={setActiveStyle}
         setInactiveStyle={setInactiveStyle}
         includeTime
+        defaultTime={moment().toDate()}
       />
     );
   }
