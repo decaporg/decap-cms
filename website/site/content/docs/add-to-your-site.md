@@ -53,6 +53,23 @@ The first file, `admin/index.html`, is the entry point for the Netlify CMS admin
 
 The second file, `admin/config.yml`, is the heart of your Netlify CMS installation, and a bit more complex. The next section covers the details.
 
+## Installing with npm
+
+You can also use Netlify CMS as an npm module. Wherever you import Netlify CMS, it will automatically run, taking over the current page. Make sure the script that imports it is only run on your CMS page. First install the package and save it to your project:
+
+```
+npm install netlify-cms --save
+```
+
+Then import it (assuming your project has tooling for imports):
+
+```
+import CMS from 'netlify-cms'
+
+// Now the registry is available via the CMS object.
+CMS.registerPreviewTemplate('my-template', MyTemplate)
+```
+
 ## Configuration
 
 Configuration will be different for every site, so we'll break it down into parts.  All code snippets in this section will be added to your `admin/config.yml` file.
