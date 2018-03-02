@@ -139,12 +139,12 @@ describe('config', () => {
     it('should return the <link> href if one is provided.', () => {
       expect(get(document.querySelectorAll('head link[rel="cms-config-url"][type="text/yaml"], [type="application/x-yaml"]')[0], 'href') || 'config.yml').toEqual('the/test/works');
     });
-    it('should return the <link> href if is provided with an alternate type.', () => {
+    it('should return the <link> href if it is provided with an alternate type.', () => {
       const testChild = document.getElementById('test');
       testChild.setAttribute('type', 'application/x-yaml');
       expect(get(document.querySelectorAll('head link[rel="cms-config-url"][type="text/yaml"], [type="application/x-yaml"]')[0], 'href') || 'config.yml').toEqual('the/test/works');
     });
-    it('should return default if the <link> href has an unsupported type.', () => {
+    it('should return default if the <link> has an unsupported type.', () => {
       const testChild = document.getElementById('test');
       testChild.setAttribute('type', 'wrong/type');
       expect(get(document.querySelectorAll('head link[rel="cms-config-url"][type="text/yaml"], [type="application/x-yaml"]')[0], 'href') || 'config.yml').toEqual('config.yml');
