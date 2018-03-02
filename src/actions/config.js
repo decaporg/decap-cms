@@ -9,29 +9,10 @@ export const CONFIG_SUCCESS = "CONFIG_SUCCESS";
 export const CONFIG_FAILURE = "CONFIG_FAILURE";
 export const CONFIG_MERGE = "CONFIG_MERGE";
 
-const validTypes = [ "text/yaml", "application/x-yaml" ];
-const configLink = document.querySelector('link[rel="cms-config-url"]');
-const isValidType = link => link && validTypes.includes(link.type); 
-const configUrl = isValidType(configLink) ? get(configLink, 'href') : 'config.yml';
-
-export function getConfigUrl() {
-  let url = 'config.yml';
-  // set default as 'config.yml'
-  // look in DOM head for a cms config link.
-  document.head.childNodes.forEach((child) => {
-    if (child.rel === "cms-config-url") {
-      if (child.type !== "text/yaml" &&
-          child.type !== "application/x-yaml") {
-            // check that the type is allowed;
-        throw new Error(`The configuration type must be "text/yaml" or "application/x-yaml"`);
-      }
-      url = child.href;
-    }
-    // overwrite default if link is found 
-    // keep default otherwise.
-  });
-  return url;
-}
+const configUrl = get(
+  document.querySelector('head link[rel="cms-config-url"]'),
+  'href'
+) || 'config.yml';
 
 const defaults = {
   publish_mode: publishModes.SIMPLE,
@@ -154,7 +135,6 @@ export function loadConfig() {
 
     try {
       const preloadedConfig = getState().config;
-      const configUrl = getConfigUrl();
       const loadedConfig = await getConfig(configUrl, preloadedConfig && preloadedConfig.size > 1);
 
       /**

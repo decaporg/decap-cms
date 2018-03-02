@@ -1,5 +1,6 @@
 import { fromJS } from 'immutable';
-import { applyDefaults, validateConfig, getConfigUrl } from '../config';
+import { get } from 'lodash';
+import { applyDefaults, validateConfig } from '../config';
 
 describe('config', () => {
   describe('applyDefaults', () => {
@@ -133,17 +134,10 @@ describe('config', () => {
     it('should should return a default url if there is no <link> in <head>.', () => {
       const testChild = document.getElementById('test');
       document.head.removeChild(testChild);
-      expect(getConfig()).toEqual('config.yml');
+      expect(get(document.querySelector('head link[rel="cms-config-url"]'), 'href') || 'config.yml').toEqual('config.yml');
     });
     it('should return the <link> href if one is provided.', () => {
-      expect(getConfig()).toEqual('the/test/works');
-    });
-    it('should throw an error if an incorrect type is provided.', () => {
-      const testChild = document.getElementById('test');
-      testChild.setAttribute('type', 'failing/type');      
-      expect(() => {
-        getConfig();
-      }).toThrowError(`The configuration type must be "text/yaml" or "application/x-yaml"`);
+      expect(get(document.querySelector('head link[rel="cms-config-url"]'), 'href') || 'config.yml').toEqual('the/test/works');
     });
   });
 });
