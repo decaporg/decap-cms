@@ -9,10 +9,11 @@ export const CONFIG_SUCCESS = "CONFIG_SUCCESS";
 export const CONFIG_FAILURE = "CONFIG_FAILURE";
 export const CONFIG_MERGE = "CONFIG_MERGE";
 
-const configUrl = get(
-  document.querySelector('head link[rel="cms-config-url"]'),
-  'href'
-) || 'config.yml';
+const configUrl =
+  get(
+    get(document.querySelectorAll('head link[rel="cms-config-url"][type="text/yaml"], [type="application/x-yaml"]')[0],
+    'href'
+  ) || 'config.yml';
 
 const defaults = {
   publish_mode: publishModes.SIMPLE,
