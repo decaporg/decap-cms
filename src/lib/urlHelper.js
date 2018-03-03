@@ -2,6 +2,7 @@ import url from 'url';
 import diacritics from 'diacritics';
 import sanitizeFilename from 'sanitize-filename';
 import { isString, escapeRegExp, flow, partialRight } from 'lodash';
+import { stringOptions } from './functionHelper';
 
 function getUrl(urlString, direct) {
   return `${ direct ? '/#' : '' }${ urlString }`;
@@ -38,7 +39,7 @@ const ucsChars = /[\xA0-\u{D7FF}\u{F900}-\u{FDCF}\u{FDF0}-\u{FFEF}\u{10000}-\u{1
 const validURIChar = char => uriChars.test(char);
 const validIRIChar = char => uriChars.test(char) || ucsChars.test(char);
 // `sanitizeURI` does not actually URI-encode the chars (that is the browser's and server's job), just removes the ones that are not allowed.
-export function sanitizeURI(str, { replacement = "", type = "iri" } = {}) {
+export function sanitizeURI(str, { replacement = "", filter = "unicode" } = {}) {
   if (!isString(str)) {
     throw new Error("The input slug must be a string.");
   }
@@ -47,12 +48,12 @@ export function sanitizeURI(str, { replacement = "", type = "iri" } = {}) {
   }
   
   let validChar;
-  if (type === "iri") {
+  if (filter === "unicode") {
     validChar = validIRIChar;
-  } else if (type === "ascii") {
+  } else if (filter === "ascii") {
     validChar = validURIChar;
   } else {
-    throw new Error('`options.type` must be "iri" or "ascii".');
+    throw new Error('`options.filter` must be "unicode" or "ascii".');
   }
 
   // Check and make sure the replacement character is actually a safe char itself.
@@ -65,22 +66,18 @@ export function sanitizeURI(str, { replacement = "", type = "iri" } = {}) {
   return Array.from(str).map(char => (validChar(char) ? char : replacement)).join('');
 }
 
-export function sanitizeSlug(str, { replacement = '-', slugType } = {}) {
-  if (!isString(str)) {
-    throw new Error("The input slug must be a string.");
-  }
-  if (!isString(replacement)) {
-    throw new Error("`options.replacement` must be a string.");
-  }
-  
-  // For `latin` slug type, strip diacritics and use ASCII URL.
-  const [stripDiacritics, type] = (slugType === "latin")
-    ? [true, 'ascii']
-    : [false, slugType];
+export function sanitizeSlug(str, options) {
+  const {
+    filter = 'unicode',
+    strip_accents: stripAccents = false,
+    filter_replacement: replacement = '-',
+  } = stringOptions('filter', options);
+
+  if (!isString(str)) { throw new Error("The input slug must be a string."); }
   
   const sanitizedSlug = flow([
-    ...(stripDiacritics ? [diacritics.remove] : []),
-    partialRight(sanitizeURI, { replacement, type }),
+    ...(stripAccents ? [diacritics.remove] : []),
+    partialRight(sanitizeURI, { replacement, filter }),
     partialRight(sanitizeFilename, { replacement }),
   ])(str);
 

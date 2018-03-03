@@ -71,14 +71,14 @@ describe('sanitizeSlug', ()=> {
   });
 
   it('throws an error for non-string replacements', () => {
-    expect(() => sanitizeSlug('test', { replacement: {} })).toThrowError("`options.replacement` must be a string.");
-    expect(() => sanitizeSlug('test', { replacement: [] })).toThrowError("`options.replacement` must be a string.");
-    expect(() => sanitizeSlug('test', { replacement: false })).toThrowError("`options.replacement` must be a string.");
-    expect(() => sanitizeSlug('test', { replacement: null } )).toThrowError("`options.replacement` must be a string.");
-    expect(() => sanitizeSlug('test', { replacement: 11232 })).toThrowError("`options.replacement` must be a string.");
+    expect(() => sanitizeSlug('test', { filter_replacement: {} })).toThrowError("`options.replacement` must be a string.");
+    expect(() => sanitizeSlug('test', { filter_replacement: [] })).toThrowError("`options.replacement` must be a string.");
+    expect(() => sanitizeSlug('test', { filter_replacement: false })).toThrowError("`options.replacement` must be a string.");
+    expect(() => sanitizeSlug('test', { filter_replacement: null } )).toThrowError("`options.replacement` must be a string.");
+    expect(() => sanitizeSlug('test', { filter_replacement: 11232 })).toThrowError("`options.replacement` must be a string.");
     // do not test undefined for this variant since a default is set in the cosntructor. 
-    //expect(() => sanitizeSlug('test', { replacement: undefined })).toThrowError("`options.replacement` must be a string.");
-    expect(() => sanitizeSlug('test', { replacement: ()=>{} })).toThrowError("`options.replacement` must be a string.");
+    //expect(() => sanitizeSlug('test', { filter_replacement: undefined })).toThrowError("`options.replacement` must be a string.");
+    expect(() => sanitizeSlug('test', { filter_replacement: ()=>{} })).toThrowError("`options.replacement` must be a string.");
   });
 
   it('should keep valid URI chars (letters digits _ - . ~)', () => {
@@ -87,15 +87,15 @@ describe('sanitizeSlug', ()=> {
     ).toEqual('This-that-one_or.the~other-123');
   });
 
-  it('should remove accents in "latin" mode', () => {
+  it('should remove accents if set', () => {
     expect(
-      sanitizeSlug("ěščřžý", { slugType: 'latin' })
+      sanitizeSlug("ěščřžý", { strip_accents: true })
     ).toEqual('escrzy');
   });
 
-  it('should remove non-latin chars in "latin" mode', () => {
+  it('should remove non-latin chars in "ascii" mode', () => {
     expect(
-      sanitizeSlug("ěščřžý日本語のタイトル", { slugType: 'latin' })
+      sanitizeSlug("ěščřžý日本語のタイトル", { filter: 'ascii' })
     ).toEqual('escrzy');
   });
 
@@ -109,7 +109,7 @@ describe('sanitizeSlug', ()=> {
   });
 
   it('uses alternate replacements', () => {
-    expect(sanitizeSlug('test   test   ', { replacement: '_' })).toEqual('test_test');
+    expect(sanitizeSlug('test   test   ', { filter_replacement: '_' })).toEqual('test_test');
   });
 
 });

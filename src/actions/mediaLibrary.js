@@ -80,7 +80,7 @@ export function persistMedia(file, opts = {}) {
     const backend = currentBackend(state.config);
     const integration = selectIntegration(state, null, 'assetStore');
     const files = state.mediaLibrary.get('files');
-    const fileName = sanitizeSlug(file.name.toLowerCase(), { slugType: state.config.get('slug_type') });
+    const fileName = sanitizeSlug(file.name.toLowerCase(), state.config.get('slug'));
     const existingFile = files.find(existingFile => existingFile.name.toLowerCase() === fileName);
 
     /**
