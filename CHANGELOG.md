@@ -7,7 +7,7 @@
 
 </details>
 
-## 1.3.1 (February 27, 2018)
+## 1.3.1 (March 3, 2018)
 Fixes editorial workflow failure for unknown collections.
 
 * Report editorial workflow load errors, ignore entries with unkown collections ([@erquhart](https://github.com/erquhart) in [#1153](https://github.com/netlify/netlify-cms/pull/1153))
