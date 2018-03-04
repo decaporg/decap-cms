@@ -201,10 +201,13 @@ class Backend {
     ))
     .then(entries => ({
       pagination: 0,
-      entries: entries.map(entry => {
+      entries: entries.reduce((acc, entry) => {
         const collection = collections.get(entry.collection);
-        return this.entryWithFormat(collection)(entry);
-      }),
+        if (collection) {
+          acc.push(this.entryWithFormat(collection)(entry));
+        }
+        return acc;
+      }, []),
     }));
   }
 
