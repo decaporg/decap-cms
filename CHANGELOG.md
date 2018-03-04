@@ -5,6 +5,7 @@
     Click to see more.
   </summary>
 
+  * Fix date widget default format ([@erquhart](https://github.com/erquhart) in [#1143](https://github.com/netlify/netlify-cms/pull/1143))
 </details>
 
 ## 1.3.1 (March 3, 2018)
