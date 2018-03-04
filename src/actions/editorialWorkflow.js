@@ -243,10 +243,17 @@ export function loadUnpublishedEntries(collections) {
     if (state.config.get('publish_mode') !== EDITORIAL_WORKFLOW) return;
     const backend = currentBackend(state.config);
     dispatch(unpublishedEntriesLoading());
-    backend.unpublishedEntries(collections).then(
-      response => dispatch(unpublishedEntriesLoaded(response.entries, response.pagination)),
-      error => dispatch(unpublishedEntriesFailed(error))
-    );
+    backend.unpublishedEntries(collections)
+      .then(response => dispatch(unpublishedEntriesLoaded(response.entries, response.pagination)))
+      .catch(error => {
+        dispatch(notifSend({
+          message: `Error loading entries: ${ error }`,
+          kind: 'danger',
+          dismissAfter: 8000,
+        }));
+        dispatch(unpublishedEntriesFailed(error));
+        Promise.reject(error)
+      });
   };
 }
 
