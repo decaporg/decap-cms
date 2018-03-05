@@ -72,13 +72,15 @@ export default class GitHub {
         sem.take(() => this.api.readFile(file.path, file.sha).then((data) => {
           resolve({ file, data });
           sem.leave();
-        }).catch((err) => {
+        }).catch((err = true) => {
           sem.leave();
-          reject(err);
+          console.error(`failed to load file from GitHub: ${file.path}`);
+          resolve({ error: err });
         }))
       )));
     });
-    return Promise.all(promises);
+    return Promise.all(promises)
+      .then(loadedEntries => loadedEntries.filter(loadedEntry => !loadedEntry.error));
   };
 
   // Fetches a single entry.
