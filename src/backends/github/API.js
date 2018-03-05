@@ -225,6 +225,7 @@ export default class API {
         params: {
           head: branchName,
           state: 'open',
+          base: this.branch,
         },
       })
         .then(prs => prs.some(pr => pr.head.ref === branchName));
