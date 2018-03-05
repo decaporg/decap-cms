@@ -1,5 +1,5 @@
 import { fromJS } from 'immutable';
-import { get } from 'lodash';
+import { get, includes } from 'lodash';
 import { applyDefaults, validateConfig } from '../config';
 
 describe('config', () => {
