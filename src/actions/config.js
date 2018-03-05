@@ -9,6 +9,11 @@ export const CONFIG_SUCCESS = "CONFIG_SUCCESS";
 export const CONFIG_FAILURE = "CONFIG_FAILURE";
 export const CONFIG_MERGE = "CONFIG_MERGE";
 
+const validTypes = [ "text/yaml", "application/x-yaml" ];
+const configLink = document.querySelector('link[rel="cms-config-url"]');
+const isValidType = link => link && validTypes.includes(link.type); 
+const configUrl = isValidType(configLink) ? get(configLink, 'href') : 'config.yml';
+
 const defaults = {
   publish_mode: publishModes.SIMPLE,
 };
