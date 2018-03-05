@@ -75,6 +75,7 @@ export default class GitHub {
           sem.leave();
         }).catch((err = true) => {
           sem.leave();
+          console.error(`failed to load file from GitHub: ${file.path}`);
           resolve({ error: err });
         }))
       )));
