@@ -7,6 +7,11 @@
 
 </details>
 
+## 1.3.3 (March 6, 2018)
+Fixes load failure
+
+* Fix bugs introduced by manual initialization ([@erquhart](https://github.com/erquhart) in [#1157](https://github.com/netlify/netlify-cms/pull/1157))
+
 ## 1.3.2 (March 6, 2018)
 Fixes date widget default format, collection load failure when entry fails
 
