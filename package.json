@@ -129,7 +129,9 @@
     "write-file-webpack-plugin": "^4.2.0"
   },
   "dependencies": {
+    "axios": "0.17.1",
     "classnames": "^2.2.5",
+    "copy-webpack-plugin": "4.3.1",
     "create-react-class": "^15.6.0",
     "fuzzy": "^0.1.1",
     "gotrue-js": "^0.9.15",
