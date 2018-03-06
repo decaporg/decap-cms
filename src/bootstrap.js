@@ -13,7 +13,10 @@ import 'EditorWidgets';
 import 'MarkdownPlugins';
 import './index.css';
 
-function bootstrap({ config }) {
+function bootstrap(opts = {}) {
+
+  const { config } = opts;
+
   /**
    * Log the version number.
    */
