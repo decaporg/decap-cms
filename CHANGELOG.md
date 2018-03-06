@@ -7,6 +7,16 @@
 
 </details>
 
+## 1.3.5 (March 6, 2018)
+Fixes styling issues
+
+* Revert lockfile update due to breaking changes in css processing deps ([@erquhart](https://github.com/erquhart))
+
+## 1.3.4 (March 6, 2018)
+Fixes editorial workflow entry failure
+
+* Fix editorial workflow entries not loading ([@erquhart](https://github.com/erquhart))
+
 ## 1.3.3 (March 6, 2018)
 Fixes load failure
 
