@@ -5,8 +5,16 @@
     Click to see more.
   </summary>
 
-  * Fix date widget default format ([@erquhart](https://github.com/erquhart) in [#1143](https://github.com/netlify/netlify-cms/pull/1143))
 </details>
+
+## 1.3.2 (March 6, 2018)
+Fixes date widget default format, collection load failure when entry fails
+
+* Fix date widget default format ([@erquhart](https://github.com/erquhart) in [#1143](https://github.com/netlify/netlify-cms/pull/1143))
+* Fix collection failure when individual entries fail to load ([@tech4him1](https://github.com/tech4him1) in [#1093](https://github.com/netlify/netlify-cms/pull/1093))
+
+### Beta Features
+* Allow manual initialization and config injection ([@erquhart](https://github.com/erquhart) in [#1149](https://github.com/netlify/netlify-cms/pull/1149))
 
 ## 1.3.1 (March 3, 2018)
 Fixes editorial workflow failure for unknown collections.
