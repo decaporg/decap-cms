@@ -1,11 +1,10 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
 import ObjectPreview from 'EditorWidgets/Object/ObjectPreview';
 
-const ListPreview = ObjectPreview;
+const ModularContentPreview = ObjectPreview;
 
-ListPreview.propTypes = {
+ModularContentPreview.propTypes = {
   field: PropTypes.node,
 };
 
-export default ListPreview;
+export default ModularContentPreview;

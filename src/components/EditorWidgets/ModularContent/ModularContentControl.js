@@ -30,13 +30,13 @@ function valueToString(value) {
 const SortableModularContentItem = SortableElement(ModularContentItem);
 
 const getSingularLabel = (label) => {
-  if (label.charAt(label.length-1).toLowerCase() === 's'){
-    label = label.substr(0, label.length-1);
+  if (label.charAt(label.length - 1).toLowerCase() === 's') {
+    label = label.substr(0, label.length - 1);
   }
   return label;
 };
 
-const TopBar = ({ onAdd, listLabel, onCollapseAllToggle, allItemsCollapsed, itemsCount, types }) => (
+const TopBar = ({ onAdd, listLabel, onCollapseAllToggle, allItemsCollapsed, itemsCount, fields }) => (
   <div className="nc-listControl-topBar">
     <div className="nc-listControl-listCollapseToggle">
       <button className="nc-listControl-listCollapseToggleButton" onClick={onCollapseAllToggle}>
@@ -49,12 +49,12 @@ const TopBar = ({ onAdd, listLabel, onCollapseAllToggle, allItemsCollapsed, item
         dropdownTopOverlap="24px"
         button={
           <button className="nc-listControl-addButton">
-            Add {listLabel} <Icon type="add" size="xsmall" />
+            Add {getSingularLabel(listLabel)} <Icon type="add" size="xsmall" />
           </button>
         }
       >
-        {types &&
-          types
+        {fields &&
+          fields
             .toList()
             .map((itemType, idx) => (
               <DropdownItem key={idx} label={itemType.get('label')} onClick={() => onAdd({ itemType })} />
@@ -228,7 +228,7 @@ export default class ModularContentControl extends Component {
       onRemoveInsertedMedia,
       classNameWrapper,
     } = this.props;
-    //console.log('mc renderitem', item, field, index);
+    // console.log('mc renderitem', item, field, index);
     const { itemsCollapsed } = this.state;
     const collapsed = itemsCollapsed.get(index);
     const classNames = ['nc-listControl-item', collapsed ? 'nc-listControl-collapsed' : ''];
@@ -264,12 +264,12 @@ export default class ModularContentControl extends Component {
     const { itemsCollapsed } = this.state;
     const items = value || List();
     const label = field.get('label');
-    const types = field.get('types');
+    const fields = field.get('fields');
 
     return (
       <div id={forID} className={c(classNameWrapper, 'nc-listControl')}>
         <TopBar
-          types={types}
+          fields={fields}
           onAdd={this.handleAdd}
           listLabel={label.toLowerCase()}
           onCollapseAllToggle={this.handleCollapseAllToggle}
@@ -291,7 +291,7 @@ export default class ModularContentControl extends Component {
     const { field, forID, classNameWrapper } = this.props;
     const { value } = this.state;
 
-    if (field.get('field') || field.get('types')) {
+    if (field.get('fields')) {
       return this.renderListControl();
     }
 

@@ -68,6 +68,21 @@ collections: # A list of collections the CMS should be able to edit
     folder: "_sink"
     create: true
     fields:
+      - label: "Chunks"
+        label_singular: "Chunk"
+        name: "chunk"
+        widget: "modular"
+        fields:
+          - {label: "Text", name: "text", widget: "text"}
+          - {label: "String", name: "string", widget: "string"}
+          - {label: "Boolean", name: "boolean", widget: "boolean"}
+          - {label: "Number", name: "number", widget: "number"}
+          - {label: "Markdown", name: "markdown", widget: "markdown"}
+          - {label: "Datetime", name: "datetime", widget: "datetime"}
+          - {label: "Date", name: "date", widget: "date"}
+          - {label: "Image", name: "image", widget: "image"}
+          - {label: "File", name: "file", widget: "file"}
+          - {label: "Select", name: "select", widget: "select", options: ["a", "b", "c"]}
       - label: "List"
         name: "list"
         widget: "list"
@@ -77,21 +92,6 @@ collections: # A list of collections the CMS should be able to edit
           - {label: "Text", name: "text", widget: "text"}
           - {label: "Number", name: "number", widget: "number"}
           - {label: "Markdown", name: "markdown", widget: "markdown"}
-          - {label: "Image", name: "image", widget: "image"}
-          - {label: "File", name: "file", widget: "file"}
-          - {label: "Select", name: "select", widget: "select", options: ["a", "b", "c"]}
-      - label: "Chunks"
-        label_singular: "Chunk"
-        name: "chunk"
-        widget: "modular"
-        types:
-          - {label: "Text", name: "text", widget: "text"}
-          - {label: "String", name: "string", widget: "string"}
-          - {label: "Boolean", name: "boolean", widget: "boolean"}
-          - {label: "Number", name: "number", widget: "number"}
-          - {label: "Markdown", name: "markdown", widget: "markdown"}
-          - {label: "Datetime", name: "datetime", widget: "datetime"}
-          - {label: "Date", name: "date", widget: "date"}
           - {label: "Image", name: "image", widget: "image"}
           - {label: "File", name: "file", widget: "file"}
           - {label: "Select", name: "select", widget: "select", options: ["a", "b", "c"]}
