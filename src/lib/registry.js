@@ -32,9 +32,12 @@ export default {
 
 /**
  * Preview Styles
+ *
+ * Valid options:
+ *  - raw {boolean} if `true`, `style` value is expected to be a CSS string
  */
-export function registerPreviewStyle(style) {
-  registry.previewStyles.push(style);
+export function registerPreviewStyle(style, opts) {
+  registry.previewStyles.push({ ...opts, value: style });
 };
 export function getPreviewStyles() {
   return registry.previewStyles;
