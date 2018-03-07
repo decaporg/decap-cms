@@ -228,7 +228,6 @@ export default class ModularContentControl extends Component {
       onRemoveInsertedMedia,
       classNameWrapper,
     } = this.props;
-    // console.log('mc renderitem', item, field, index);
     const { itemsCollapsed } = this.state;
     const collapsed = itemsCollapsed.get(index);
     const classNames = ['nc-listControl-item', collapsed ? 'nc-listControl-collapsed' : ''];
