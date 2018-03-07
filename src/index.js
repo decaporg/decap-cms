@@ -7,20 +7,26 @@ import bootstrap from './bootstrap';
 import registry from 'Lib/registry';
 import createReactClass from 'create-react-class';
 
-/**
- * Load the app.
- */
-bootstrap();
+const CMS = (function startApp() {
+  /**
+   * Load the app, bail if bootstrapping fails. This will most likely occur
+   * if both automatic and manual initialization are attempted.
+   */
+  if (!bootstrap()) {
+    return;
+  }
 
-/**
- * Add extension hooks to global scope.
- */
-const CMS = { ...registry };
-if (typeof window !== 'undefined') {
-  window.CMS = CMS;
-  window.createClass = window.createClass || createReactClass;
-  window.h = window.h || React.createElement;
-}
+  /**
+   * Add extension hooks to global scope.
+   */
+  const api = { ...registry };
+  if (typeof window !== 'undefined') {
+    window.CMS = api;
+    window.createClass = window.createClass || createReactClass;
+    window.h = window.h || React.createElement;
+  }
+  return api;
+})()
 
 /**
  * Export the registry for projects that import the CMS.

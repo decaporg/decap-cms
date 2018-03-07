@@ -13,7 +13,16 @@ import 'EditorWidgets';
 import 'MarkdownPlugins';
 import './index.css';
 
+const ROOT_ID = 'nc-root';
+
 function bootstrap(opts = {}) {
+  /**
+   * Error and return if this function was already called.
+   */
+  if (document.getElementById(ROOT_ID)) {
+    console.error('Bootstrap attempted, but Netlify CMS is already initialized!');
+    return;
+  }
 
   const { config } = opts;
 
@@ -65,6 +74,11 @@ function bootstrap(opts = {}) {
    * Render application root.
    */
   render(<Root />, el);
+
+  /**
+   * Return true to indicate bootstrap success to caller.
+   */
+  return true;
 }
 
 export default bootstrap;
