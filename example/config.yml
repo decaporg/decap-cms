@@ -68,6 +68,33 @@ collections: # A list of collections the CMS should be able to edit
     folder: "_sink"
     create: true
     fields:
+      - label: "List"
+        name: "list"
+        widget: "list"
+        fields:
+          - {label: "String", name: "string", widget: "string"}
+          - {label: "Boolean", name: "boolean", widget: "boolean"}
+          - {label: "Text", name: "text", widget: "text"}
+          - {label: "Number", name: "number", widget: "number"}
+          - {label: "Markdown", name: "markdown", widget: "markdown"}
+          - {label: "Image", name: "image", widget: "image"}
+          - {label: "File", name: "file", widget: "file"}
+          - {label: "Select", name: "select", widget: "select", options: ["a", "b", "c"]}
+      - label: "Chunks"
+        label_singular: "Chunk"
+        name: "chunk"
+        widget: "modular"
+        types:
+          - {label: "Text", name: "text", widget: "text"}
+          - {label: "String", name: "string", widget: "string"}
+          - {label: "Boolean", name: "boolean", widget: "boolean"}
+          - {label: "Number", name: "number", widget: "number"}
+          - {label: "Markdown", name: "markdown", widget: "markdown"}
+          - {label: "Datetime", name: "datetime", widget: "datetime"}
+          - {label: "Date", name: "date", widget: "date"}
+          - {label: "Image", name: "image", widget: "image"}
+          - {label: "File", name: "file", widget: "file"}
+          - {label: "Select", name: "select", widget: "select", options: ["a", "b", "c"]}
       - label: "Related Post"
         name: "post"
         widget: "relationKitchenSinkPost"
@@ -105,66 +132,4 @@ collections: # A list of collections the CMS should be able to edit
           - {label: "Image", name: "image", widget: "image"}
           - {label: "File", name: "file", widget: "file"}
           - {label: "Select", name: "select", widget: "select", options: ["a", "b", "c"]}
-      - label: "List"
-        name: "list"
-        widget: "list"
-        fields:
-          - {label: "String", name: "string", widget: "string"}
-          - {label: "Boolean", name: "boolean", widget: "boolean"}
-          - {label: "Text", name: "text", widget: "text"}
-          - {label: "Number", name: "number", widget: "number"}
-          - {label: "Markdown", name: "markdown", widget: "markdown"}
-          - {label: "Datetime", name: "datetime", widget: "datetime"}
-          - {label: "Date", name: "date", widget: "date"}
-          - {label: "Image", name: "image", widget: "image"}
-          - {label: "File", name: "file", widget: "file"}
-          - {label: "Select", name: "select", widget: "select", options: ["a", "b", "c"]}
-          - label: "Object"
-            name: "object"
-            widget: "object"
-            fields:
-              - {label: "String", name: "string", widget: "string"}
-              - {label: "Boolean", name: "boolean", widget: "boolean"}
-              - {label: "Text", name: "text", widget: "text"}
-              - {label: "Number", name: "number", widget: "number"}
-              - {label: "Markdown", name: "markdown", widget: "markdown"}
-              - {label: "Datetime", name: "datetime", widget: "datetime"}
-              - {label: "Date", name: "date", widget: "date"}
-              - {label: "Image", name: "image", widget: "image"}
-              - {label: "File", name: "file", widget: "file"}
-              - {label: "Select", name: "select", widget: "select", options: ["a", "b", "c"]}
-              - label: "List"
-                name: "list"
-                widget: "list"
-                fields:
-                  - label: "Related Post"
-                    name: "post"
-                    widget: "relationKitchenSinkPost"
-                    collection: "posts"
-                    searchFields: ["title", "body"]
-                    valueField: "title"
-                  - {label: "String", name: "string", widget: "string"}
-                  - {label: "Boolean", name: "boolean", widget: "boolean"}
-                  - {label: "Text", name: "text", widget: "text"}
-                  - {label: "Number", name: "number", widget: "number"}
-                  - {label: "Markdown", name: "markdown", widget: "markdown"}
-                  - {label: "Datetime", name: "datetime", widget: "datetime"}
-                  - {label: "Date", name: "date", widget: "date"}
-                  - {label: "Image", name: "image", widget: "image"}
-                  - {label: "File", name: "file", widget: "file"}
-                  - {label: "Select", name: "select", widget: "select", options: ["a", "b", "c"]}
-                  - {label: "Hidden", name: "hidden", widget: "hidden", default: "hidden"}
-                  - label: "Object"
-                    name: "object"
-                    widget: "object"
-                    fields:
-                      - {label: "String", name: "string", widget: "string"}
-                      - {label: "Boolean", name: "boolean", widget: "boolean"}
-                      - {label: "Text", name: "text", widget: "text"}
-                      - {label: "Number", name: "number", widget: "number"}
-                      - {label: "Markdown", name: "markdown", widget: "markdown"}
-                      - {label: "Datetime", name: "datetime", widget: "datetime"}
-                      - {label: "Date", name: "date", widget: "date"}
-                      - {label: "Image", name: "image", widget: "image"}
-                      - {label: "File", name: "file", widget: "file"}
-                      - {label: "Select", name: "select", widget: "select", options: ["a", "b", "c"]}
+      

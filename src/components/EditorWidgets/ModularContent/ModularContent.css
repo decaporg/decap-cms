@@ -1,0 +1,88 @@
+.nc-listControl {
+  padding: 0 14px 14px;
+
+  &.nc-listControl-collapsed {
+    padding-bottom: 0;
+  }
+}
+
+.list-item-dragging {
+  opacity: 0.5;
+}
+
+.nc-listControl-topBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 -14px;
+  background-color: var(--textFieldBorderColor);
+  padding: 13px;
+}
+
+.nc-listControl-addButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2px 12px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 3px;
+
+  & .nc-icon {
+    padding-left: 6px;
+  }
+}
+
+.nc-listControl-listCollapseToggle {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.nc-listControl-listCollapseToggleButton{
+  padding: 4px;
+  background-color: transparent;
+  color: inherit;
+
+  &:last-of-type {
+    margin-right: 4px;
+  }
+}
+
+.nc-listControl-item {
+  margin-top: 18px;
+
+  &:first-of-type {
+    margin-top: 26px;
+  }
+}
+
+.nc-listControl-itemTopBar {
+  background-color: var(--textFieldBorderColor);
+}
+
+.nc-listControl-objectLabel {
+  display: none;
+  border-top: 0;
+  background-color: var(--textFieldBorderColor);
+  padding: 13px;
+  border-radius: 0 0 var(--borderRadius) var(--borderRadius);
+}
+
+.nc-listControl-objectControl {
+  padding: 6px 14px 14px;
+  border-top: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.nc-listControl-collapsed {
+  & .nc-listControl-objectLabel {
+    display: block;
+  }
+  & .nc-listControl-objectControl {
+    display: none;
+  }
+}

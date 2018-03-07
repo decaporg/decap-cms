@@ -26,11 +26,7 @@ export default class ObjectControl extends Component {
     onAddAsset: PropTypes.func.isRequired,
     onRemoveInsertedMedia: PropTypes.func.isRequired,
     getAsset: PropTypes.func.isRequired,
-    value: PropTypes.oneOfType([
-      PropTypes.node,
-      PropTypes.object,
-      PropTypes.bool,
-    ]),
+    value: PropTypes.oneOfType([PropTypes.node, PropTypes.object, PropTypes.bool]),
     field: PropTypes.object,
     forID: PropTypes.string,
     classNameWrapper: PropTypes.string.isRequired,
@@ -94,23 +90,31 @@ export default class ObjectControl extends Component {
 
   handleCollapseToggle = () => {
     this.setState({ collapsed: !this.state.collapsed });
-  }
+  };
 
   render() {
-    const { field, forID, classNameWrapper, forList } = this.props;
+    const { field, forID, classNameWrapper, forList, value } = this.props;
     const { collapsed } = this.state;
     const multiFields = field.get('fields');
     const singleField = field.get('field');
+    const typesField = field.get('types');
 
     if (multiFields) {
       return (
         <div id={forID} className={c(classNameWrapper, 'nc-objectControl-root')}>
-          { forList ? null : <TopBar collapsed={collapsed} onCollapseToggle={this.handleCollapseToggle} /> }
-          { collapsed ? null : multiFields.map((f, idx) => this.controlFor(f, idx)) }
+          {forList ? null : <TopBar collapsed={collapsed} onCollapseToggle={this.handleCollapseToggle} />}
+          {collapsed ? null : multiFields.map((f, idx) => this.controlFor(f, idx))}
         </div>
       );
     } else if (singleField) {
       return this.controlFor(singleField);
+    } else if (typesField) {
+      return (
+        <div id={forID} className={c(classNameWrapper, 'nc-objectControl-root')}>
+          {forList ? null : <TopBar collapsed={collapsed} onCollapseToggle={this.handleCollapseToggle} />}
+          {collapsed ? null : this.controlFor(value)}
+        </div>
+      );
     }
 
     return <h3>No field(s) defined for this widget</h3>;
