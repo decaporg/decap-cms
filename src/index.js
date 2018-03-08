@@ -1,54 +1,16 @@
+/**
+ * This module provides a self-initializing CMS instance with API hooks added to
+ * the `window` object.
+ */
 import React from 'react';
-import createReactClass from 'create-react-class';
-import { render } from 'react-dom';
-import { Provider } from 'react-redux';
-import { Route } from 'react-router-dom';
-import { ConnectedRouter } from 'react-router-redux';
-import history from 'Routing/history';
-import configureStore from 'Redux/configureStore';
-import { setStore } from 'ValueObjects/AssetProxy';
-import { ErrorBoundary } from 'UI'
+import bootstrap from './bootstrap';
 import registry from 'Lib/registry';
-import App from 'App/App';
-import 'EditorWidgets';
-import 'MarkdownPlugins';
-import './index.css';
+import createReactClass from 'create-react-class';
 
 /**
- * Log the version number.
+ * Load the app.
  */
-console.log(`Netlify CMS version ${NETLIFY_CMS_VERSION}`);
-
-/**
- * Create mount element dynamically.
- */
-const el = document.createElement('div');
-el.id = 'nc-root';
-document.body.appendChild(el);
-
-/**
- * Configure Redux store.
- */
-const store = configureStore();
-setStore(store);
-
-/**
- * Create connected root component.
- */
-const Root = () => (
-  <ErrorBoundary>
-    <Provider store={store}>
-      <ConnectedRouter history={history}>
-        <Route component={App}/>
-      </ConnectedRouter>
-    </Provider>
-  </ErrorBoundary>
-);
-
-/**
- * Render application root.
- */
-render(<Root />, el);
+bootstrap();
 
 /**
  * Add extension hooks to global scope.
