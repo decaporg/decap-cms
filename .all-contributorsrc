@@ -785,7 +785,7 @@
       "name": "Kristaps Taube",
       "avatar_url": "https://avatars3.githubusercontent.com/u/1479451?v=4",
       "profile": "https://www.ktaube.com",
-       "contributions": [
+      "contributions": [
         "code"
       ]
     },
@@ -805,6 +805,15 @@
       "profile": "http://www.txorua.com",
       "contributions": [
         "design"
+      ]
+    },
+    {
+      "login": "brianlmacdonald",
+      "name": "Brian Macdonald",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/23248886?v=4",
+      "profile": "https://github.com/brianlmacdonald",
+      "contributions": [
+        "code"
       ]
     }
   ]
