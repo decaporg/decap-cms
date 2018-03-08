@@ -106,7 +106,7 @@ export default class ObjectControl extends Component {
         </div>
       );
     } else if (singleField) {
-      return this.controlFor(singleField);
+      return this.controlFor(singleField.first());
     }
 
     return <h3>No field(s) defined for this widget</h3>;
