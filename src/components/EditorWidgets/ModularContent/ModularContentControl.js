@@ -36,7 +36,7 @@ const getSingularLabel = (label) => {
   return label;
 };
 
-const TopBar = ({ onAdd, listLabel, onCollapseAllToggle, allItemsCollapsed, itemsCount, fields }) => (
+const TopBar = ({ onAdd, listLabel, onCollapseAllToggle, allItemsCollapsed, itemsCount, types }) => (
   <div className="nc-listControl-topBar">
     <div className="nc-listControl-listCollapseToggle">
       <button className="nc-listControl-listCollapseToggleButton" onClick={onCollapseAllToggle}>
@@ -53,8 +53,8 @@ const TopBar = ({ onAdd, listLabel, onCollapseAllToggle, allItemsCollapsed, item
           </button>
         }
       >
-        {fields &&
-          fields
+        {types &&
+          types
             .toList()
             .map((itemType, idx) => (
               <DropdownItem key={idx} label={itemType.get('label')} onClick={() => onAdd({ itemType })} />
@@ -68,7 +68,6 @@ const SortableModularContent = SortableContainer(({ items, renderItem }) => <div
 
 const valueTypes = {
   SINGLE: 'SINGLE',
-  MULTIPLE: 'MULTIPLE',
 };
 
 export default class ModularContentControl extends Component {
@@ -102,12 +101,17 @@ export default class ModularContentControl extends Component {
       value: valueToString(value),
     };
 
-    this.valueType = null;
+    this.valueType = valueTypes.SINGLE;
   }
 
   componentDidMount() {
     this.valueType = valueTypes.SINGLE;
+    /*setTimeout(()=>{
+      this.populateValues();
+    }, 0);*/
   }
+
+  
 
   /**
    * Always update so that each nested widget has the option to update. This is
@@ -124,6 +128,7 @@ export default class ModularContentControl extends Component {
     const oldValue = this.state.value;
     const newValue = e.target.value;
     const listValue = e.target.value.split(',');
+
     if (newValue.match(/,$/) && oldValue.match(/, $/)) {
       listValue.pop();
     }
@@ -199,8 +204,10 @@ export default class ModularContentControl extends Component {
   };
 
   objectLabel(item) {
+    const { field } = this.props;
     const value = item.get('name');
-    return value.toString();
+    const keys = item.keys();
+    return value ? value.toString() : '';
   }
 
   onSortEnd = ({ oldIndex, newIndex }) => {
@@ -241,7 +248,7 @@ export default class ModularContentControl extends Component {
           onRemove={partial(this.handleRemove, index)}
           dragHandleHOC={SortableHandle}
         />
-        <div className="nc-listControl-objectLabel">{this.objectLabel(item)}</div>
+        <div className="nc-listControl-objectLabel">{this.objectLabel(item, field)}</div>
         <ObjectControl
           value={item}
           field={field}
@@ -258,17 +265,18 @@ export default class ModularContentControl extends Component {
     );
   };
 
-  renderListControl() {
+  renderModularContentControl() {
     const { value, forID, field, classNameWrapper } = this.props;
     const { itemsCollapsed } = this.state;
     const items = value || List();
     const label = field.get('label');
-    const fields = field.get('fields');
+    const types = field.get('types');
+   
 
     return (
       <div id={forID} className={c(classNameWrapper, 'nc-listControl')}>
         <TopBar
-          fields={fields}
+          types={types}
           onAdd={this.handleAdd}
           listLabel={label.toLowerCase()}
           onCollapseAllToggle={this.handleCollapseAllToggle}
@@ -290,8 +298,8 @@ export default class ModularContentControl extends Component {
     const { field, forID, classNameWrapper } = this.props;
     const { value } = this.state;
 
-    if (field.get('fields')) {
-      return this.renderListControl();
+    if (field.get('types')) {
+      return this.renderModularContentControl();
     }
 
     return (

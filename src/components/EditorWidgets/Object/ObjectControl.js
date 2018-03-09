@@ -97,7 +97,7 @@ export default class ObjectControl extends Component {
     const { collapsed } = this.state;
     const multiFields = field.get('fields');
     const singleField = field.get('field');
-    const isModular = field.get('widget') === 'modular';
+    const isModular = field.get('types');
 
     if (isModular) {
       return (
@@ -110,7 +110,11 @@ export default class ObjectControl extends Component {
       return (
         <div id={forID} className={c(classNameWrapper, 'nc-objectControl-root')}>
           {forList ? null : <TopBar collapsed={collapsed} onCollapseToggle={this.handleCollapseToggle} />}
-          {collapsed ? null : multiFields.map((f, idx) => this.controlFor(f, idx))}
+          {collapsed
+            ? null
+            : multiFields.map((f, idx) => {
+              return this.controlFor(f, idx);
+            })}
         </div>
       );
     } else if (singleField) {

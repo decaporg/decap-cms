@@ -72,7 +72,7 @@ collections: # A list of collections the CMS should be able to edit
         label_singular: "Chunk"
         name: "chunk"
         widget: "modular"
-        fields:
+        types:
           - {label: "Text", name: "text", widget: "text"}
           - {label: "String", name: "string", widget: "string"}
           - {label: "Boolean", name: "boolean", widget: "boolean"}

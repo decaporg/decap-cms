@@ -24,11 +24,7 @@
     "prepublishOnly": "npm run build"
   },
   "lint-staged": {
-    "*.js": [
-      "eslint --fix",
-      "jest --findRelatedTests",
-      "git add"
-    ]
+    "*.js": ["eslint --fix", "jest --findRelatedTests", "git add"]
   },
   "files": [
     "src/",
@@ -53,13 +49,7 @@
       "/__tests__/"
     ]
   },
-  "keywords": [
-    "netlify",
-    "cms",
-    "content editing",
-    "static site generators",
-    "jamstack"
-  ],
+  "keywords": ["netlify", "cms", "content editing", "static site generators", "jamstack"],
   "author": "Netlify",
   "license": "MIT",
   "browserslist": [
