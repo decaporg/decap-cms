@@ -18,19 +18,37 @@ The modular widget allows you to a list of different content types item in the U
 * **Example**
 
   ```yaml
-  - label: "Chunks"
-    label_singular: "Chunk"
-    name: "chunk"
-    widget: "modular"
-    types:
-      - {label: "Text", name: "text", widget: "text"}
-      - {label: "String", name: "string", widget: "string"}
-      - {label: "Boolean", name: "boolean", widget: "boolean"}
-      - {label: "Number", name: "number", widget: "number"}
-      - {label: "Markdown", name: "markdown", widget: "markdown"}
-      - {label: "Datetime", name: "datetime", widget: "datetime"}
-      - {label: "Date", name: "date", widget: "date"}
-      - {label: "Image", name: "image", widget: "image"}
-      - {label: "File", name: "file", widget: "file"}
-      - {label: "Select", name: "select", widget: "select", options: ["a", "b", "c"]}
+  - label: "Modular Content Chunks"
+        label_singular: "Modular Content Chunk"
+        name: "chunk"
+        widget: "modular"
+        types:
+          - {label: "Text", name: "text", widget: "text"}
+          - {label: "String", name: "string", widget: "string"}
+          - {label: "Boolean", name: "boolean", widget: "boolean"}
+          - {label: "Number", name: "number", widget: "number"}
+          - {label: "Markdown", name: "markdown", widget: "markdown"}
+          - {label: "Datetime", name: "datetime", widget: "datetime"}
+          - {label: "Date", name: "date", widget: "date"}
+          - {label: "Image", name: "image", widget: "image"}
+          - {label: "File", name: "file", widget: "file"}
+          - {label: "Select", name: "select", widget: "select", options: ["a", "b", "c"]}
+          - {label: "Select (Object)", name: "select_object", widget: "select", options: [{ label: "Chicago", value: "ORD" },{ label: "Paris", value: "CDG" },{ label: "Tokyo", value: "HND" }]}
+          - {label: "Related Post", name: "relation", widget: "relationKitchenSinkPost", collection: "posts", searchFields: ["title", "body"], valueField: "title"}
+          - label: "Profile"
+            name: "profile"
+            widget: "object"
+            fields:
+              - {label: "Public", name: "public", widget: "boolean", default: true}
+              - {label: "Name", name: "name", widget: "string"}
+              - label: "Birthdate"
+                name: "birthdate"
+                widget: "date"
+          - label: "List"
+            name: "list"
+            widget: "list"
+            fields:
+              - {label: "String", name: "string", widget: "string"}
+              - {label: "Boolean", name: "boolean", widget: "boolean"}
+              - {label: "Text", name: "text", widget: "text"}
   ```
