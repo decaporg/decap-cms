@@ -68,8 +68,8 @@ collections: # A list of collections the CMS should be able to edit
     folder: "_sink"
     create: true
     fields:
-      - label: "Chunks"
-        label_singular: "Chunk"
+      - label: "Modular Content Chunks"
+        label_singular: "Modular Content Chunk"
         name: "chunk"
         widget: "modular"
         types:
@@ -83,6 +83,24 @@ collections: # A list of collections the CMS should be able to edit
           - {label: "Image", name: "image", widget: "image"}
           - {label: "File", name: "file", widget: "file"}
           - {label: "Select", name: "select", widget: "select", options: ["a", "b", "c"]}
+          - {label: "Select (Object)", name: "select_object", widget: "select", options: [{ label: "Chicago", value: "ORD" },{ label: "Paris", value: "CDG" },{ label: "Tokyo", value: "HND" }]}
+          - {label: "Related Post", name: "relation", widget: "relationKitchenSinkPost", collection: "posts", searchFields: ["title", "body"], valueField: "title"}
+          - label: "Profile"
+            name: "profile"
+            widget: "object"
+            fields:
+              - {label: "Public", name: "public", widget: "boolean", default: true}
+              - {label: "Name", name: "name", widget: "string"}
+              - label: "Birthdate"
+                name: "birthdate"
+                widget: "date"
+          - label: "List"
+            name: "list"
+            widget: "list"
+            fields:
+              - {label: "String", name: "string", widget: "string"}
+              - {label: "Boolean", name: "boolean", widget: "boolean"}
+              - {label: "Text", name: "text", widget: "text"}
       - label: "List"
         name: "list"
         widget: "list"

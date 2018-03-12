@@ -44,7 +44,7 @@ const TopBar = ({ onAdd, listLabel, onCollapseAllToggle, allItemsCollapsed, item
       </button>
       {itemsCount} {itemsCount === 1 ? getSingularLabel(listLabel) : listLabel}
     </div>
-    <div className="nc-toolbar-dropdown">
+    <div className="nc-toolbar-dropdown" style={{zIndex:100}}>
       <Dropdown
         dropdownTopOverlap="24px"
         button={
