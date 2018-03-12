@@ -103,14 +103,6 @@ export default class ModularContentControl extends Component {
 
     this.valueType = valueTypes.SINGLE;
   }
-
-  componentDidMount() {
-    this.valueType = valueTypes.SINGLE;
-    /*setTimeout(()=>{
-      this.populateValues();
-    }, 0);*/
-  }
-
   
 
   /**

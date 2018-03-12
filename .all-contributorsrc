@@ -785,7 +785,7 @@
       "name": "Kristaps Taube",
       "avatar_url": "https://avatars3.githubusercontent.com/u/1479451?v=4",
       "profile": "https://www.ktaube.com",
-       "contributions": [
+      "contributions": [
         "code"
       ]
     },
@@ -822,6 +822,16 @@
       "avatar_url": "https://avatars1.githubusercontent.com/u/174777?v=4",
       "profile": "https://dzello.com",
       "contributions": [
+        "doc"
+      ],
+    },
+    {
+      "login": "anthonysapp",
+      "name": "Anthony Sapp",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/5347604?v=4",
+      "profile": "https://twitter.com/thesapper",
+      "contributions": [
+        "code",
         "doc"
       ]
     }
