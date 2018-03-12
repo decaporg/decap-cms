@@ -9,11 +9,11 @@ type: "widget"
 The modular widget allows you to a list of different content types item in the UI which saves as a list of widget values. Map a user-provided string with a comma delimiter into a list. You can choose any widget as a child of a modular widget.
 
 * **Name:** `modular`
-* **UI:** `fields` is a list of widgets (modular content types) available to the user from the modular content dropdown. User selects a (or multipe) widgets to add to a list. Child widget is added to the list, with controls for adding, deleting, and re-ordering the child widgets;
+* **UI:** `types` is a list of widgets (modular content types) available to the user from the modular content dropdown. User selects a (or multipe) widgets to add to a list. Child widget is added to the list, with controls for adding, deleting, and re-ordering the child widgets;
 * **Data type:** list of widget values
 * **Options:**
 
-  * `fields`: a one-dimensional list of multiple widget fields to be included in each repeatable iteration
+  * `types`: a one-dimensional list of multiple widget types to be included in the dropdown
 
 * **Example**
 
@@ -22,7 +22,7 @@ The modular widget allows you to a list of different content types item in the U
     label_singular: "Chunk"
     name: "chunk"
     widget: "modular"
-    fields:
+    types:
       - {label: "Text", name: "text", widget: "text"}
       - {label: "String", name: "string", widget: "string"}
       - {label: "Boolean", name: "boolean", widget: "boolean"}
