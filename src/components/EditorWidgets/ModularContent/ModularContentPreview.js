@@ -66,7 +66,7 @@ class ModularContentPreview extends Component {
     return (
       value && (
         <div className="nc-widgetPreview" style={{ marginBottom: 20, marginTop: nested ? 5 : 0 }}>
-          <h3 style={{ marginTop: 0, marginBottom: 10 }}>Modular Content -- {field.get('label')}</h3>
+          {!nested && <h3 style={{ marginTop: 0, marginBottom: 10 }}>Modular Content -- {field.get('label')}</h3>}
           {!nested && <hr />}
           {value &&
             value.size &&
