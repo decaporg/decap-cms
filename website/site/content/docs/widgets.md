@@ -24,7 +24,7 @@ The following options are available on all fields:
     - label: "Title"
       name: "title"
       widget: "string"
-      pattern: ['.{10,}', "Must have at least 20 characters"]
+      pattern: ['.{12,}', "Must have at least 12 characters"]
     ```
 
 ## Default widgets
