@@ -85,11 +85,6 @@ collections: # A list of collections the CMS should be able to edit
       - {label: "File", name: "file", widget: "file"}
       - {label: "Select", name: "select", widget: "select", options: ["a", "b", "c"]}
       - {label: "Hidden", name: "hidden", widget: "hidden", default: "hidden"}
-      - label: "Tags"
-        name: "tags"
-        widget: "list"
-        field:
-        - {label: "Text", name: "text", widget: "text"}
       - label: "Object"
         name: "object"
         widget: "object"
