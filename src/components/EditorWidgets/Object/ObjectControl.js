@@ -109,9 +109,7 @@ export default class ObjectControl extends Component {
           { forList ? null : <TopBar collapsed={collapsed} onCollapseToggle={this.handleCollapseToggle} /> }
           { collapsed ? null : fieldsForControl.map((f, idx) => this.controlFor(f, idx)) }
         </div>
-      );
-    } else if (singleField) {
-      return this.controlFor(singleField.first());
+      )
     }
 
     return <h3>No field(s) defined for this widget</h3>;
