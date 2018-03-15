@@ -36,8 +36,10 @@ init()
  */
 
 init({
-  backend: {
-    name: 'git-gateway',
+  config: {
+    backend: {
+      name: 'git-gateway',
+    },
   },
 })
 
