@@ -40,7 +40,7 @@ const TopBar = ({ allowAdd, onAdd, listLabel, onCollapseAllToggle, allItemsColla
       <button className="nc-listControl-listCollapseToggleButton" onClick={onCollapseAllToggle}>
         <Icon type="chevron" direction={allItemsCollapsed ? 'right' : 'down'} size="small" />
       </button>
-      {itemsCount} {listLabel}
+      {itemsCount} {itemsCount === 1 ? getSingularLabel(listLabel) : listLabel}
     </div>
     {
       allowAdd && !types ?
@@ -324,7 +324,7 @@ export default class ListControl extends Component {
         <TopBar
           allowAdd={field.get('allow_add', true)}
           onAdd={types ? this.handleAddType : this.handleAdd}
-          listLabel={this.isModular ? field.get('label') : label.toLowerCase()}
+          listLabel={this.isModular ? field.get('label').toLowerCase() : label.toLowerCase()}
           onCollapseAllToggle={this.handleCollapseAllToggle}
           allItemsCollapsed={itemsCollapsed.every(val => val === true)}
           itemsCount={items.size}
