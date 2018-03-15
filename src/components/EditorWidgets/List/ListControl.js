@@ -154,11 +154,10 @@ export default class ListControl extends Component {
     return (fieldName, newValue, newMetadata) => {
       const { value, metadata, onChange, forID } = this.props;
       const newObjectValue = this.getObjectValue(index).set(fieldName, newValue);
-      const parsedValue = (this.valueType === valueTypes.SINGLE) ? newObjectValue.first() : newObjectValue;
       const parsedMetadata = {
         [forID]: Object.assign(metadata ? metadata.toJS() : {}, newMetadata ? newMetadata[forID] : {}),
       };
-      onChange(value.set(index, parsedValue), parsedMetadata);
+      onChange(value.set(index, newObjectValue), parsedMetadata);
     };
   }
 
