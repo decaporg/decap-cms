@@ -27,15 +27,10 @@ import RelationControl from './Relation/RelationControl';
 import RelationPreview from './Relation/RelationPreview';
 import BooleanControl from './Boolean/BooleanControl';
 
-import ModularContentControl from './ModularContent/ModularContentControl';
-import ModularContentPreview from './ModularContent/ModularContentPreview';
-
-
 registerWidget('string', StringControl, StringPreview);
 registerWidget('text', TextControl, TextPreview);
 registerWidget('number', NumberControl, NumberPreview);
 registerWidget('list', ListControl, ListPreview);
-registerWidget('modular', ModularContentControl, ModularContentPreview);
 registerWidget('markdown', MarkdownControl, MarkdownPreview);
 registerWidget('image', ImageControl, ImagePreview);
 registerWidget('file', FileControl, FilePreview);

@@ -71,7 +71,7 @@ collections: # A list of collections the CMS should be able to edit
       - label: "Modular Content Chunks"
         label_singular: "Modular Content Chunk"
         name: "chunk"
-        widget: "modular"
+        widget: "list"
         types:
           - {label: "Text", name: "text", widget: "text"}
           - {label: "String", name: "string", widget: "string"}
