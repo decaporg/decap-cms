@@ -133,13 +133,13 @@ export default class ListControl extends Component {
 
   handleFocus = () => {
     this.props.setActiveStyle();
-  };
+  }
 
   handleBlur = (e) => {
     const listValue = e.target.value.split(',').map(el => el.trim()).filter(el => el);
     this.setState({ value: valueToString(listValue) });
     this.props.setInactiveStyle();
-  };
+  }
 
   handleAdd = (e) => {
     e.preventDefault();
@@ -147,7 +147,7 @@ export default class ListControl extends Component {
     const parsedValue = (this.valueType === valueTypes.SINGLE) ? null : Map();
     this.setState({ itemsCollapsed: this.state.itemsCollapsed.push(false) });
     onChange((value || List()).push(parsedValue));
-  };
+  }
 
   /**
    * In case the `onChangeObject` function is frozen by a child widget implementation,
@@ -301,4 +301,4 @@ export default class ListControl extends Component {
       className={classNameWrapper}
     />);
   }
-}
+};
