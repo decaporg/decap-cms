@@ -1,0 +1,42 @@
+@import '../Relation/ReactAutosuggest.css';
+
+.react-tagsinput-tag {
+  border: 1px solid var(--colorActive);
+  border-radius: var(--borderWidth);
+  display: inline-block;
+  background-color: var(--colorBackground);
+  margin: 2.5px;
+  padding: 5px;
+  color: var(--colorTextLead);
+  font-size: 13px;
+  font-family: var(--fontFamilyMono);
+  font-weight: 400;
+}
+
+.react-tagsinput-remove {
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.react-tagsinput-tag a::before {
+  content: ' ×';
+}
+
+.react-tagsinput-input {
+  border: 0;
+  margin-top: auto;
+  margin-bottom: auto;
+  background: var(--colorInputBackground);
+  padding: 5px;
+  outline: none;
+  width: auto;
+  color: var(--colorTextLead);
+  font-size: 13px;
+  font-weight: 400;
+  font-family: var(--fontFamilyPrimary);
+}
+
+.nc-relations-container {
+  display: inline-block;
+  width: auto;
+}
