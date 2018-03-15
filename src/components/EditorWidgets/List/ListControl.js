@@ -324,7 +324,7 @@ export default class ListControl extends Component {
         <TopBar
           allowAdd={field.get('allow_add', true)}
           onAdd={types ? this.handleAddType : this.handleAdd}
-          listLabel={label.toLowerCase()}
+          listLabel={this.isModular ? field.get('label') : label.toLowerCase()}
           onCollapseAllToggle={this.handleCollapseAllToggle}
           allItemsCollapsed={itemsCollapsed.every(val => val === true)}
           itemsCount={items.size}
