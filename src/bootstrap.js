@@ -25,7 +25,7 @@ function bootstrap(opts = {}) {
   /**
    * Create mount element dynamically.
    */
-  const el = document.getElementById('nc-root');
+  let el = document.getElementById('nc-root');
   if (!el) {
     el = document.createElement('div');
     el.id = 'nc-root';
