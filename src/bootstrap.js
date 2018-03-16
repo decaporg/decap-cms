@@ -27,7 +27,7 @@ function bootstrap(opts = {}) {
    */
   const el = document.getElementById('nc-root');
   if (!el) {
-    document.createElement('div');
+    el = document.createElement('div');
     el.id = 'nc-root';
     document.body.appendChild(el);
   }
