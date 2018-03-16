@@ -13,17 +13,9 @@ import 'EditorWidgets';
 import 'MarkdownPlugins';
 import './index.css';
 
-const ROOT_ID = 'nc-root';
+export const ROOT_ID = 'nc-root';
 
 function bootstrap(opts = {}) {
-  /**
-   * Error and return if this function was already called.
-   */
-  if (document.getElementById(ROOT_ID)) {
-    console.error('Bootstrap attempted, but Netlify CMS is already initialized!');
-    return;
-  }
-
   const { config } = opts;
 
   /**
@@ -34,9 +26,12 @@ function bootstrap(opts = {}) {
   /**
    * Create mount element dynamically.
    */
-  const el = document.createElement('div');
-  el.id = 'nc-root';
-  document.body.appendChild(el);
+  let el = document.getElementById(ROOT_ID);
+  if (!el) {
+    el = document.createElement('div');
+    el.id = ROOT_ID;
+    document.body.appendChild(el);
+  }
 
   /**
    * Configure Redux store.
