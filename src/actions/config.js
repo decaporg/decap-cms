@@ -138,6 +138,7 @@ export function loadConfig() {
     try {
       const preloadedConfig = getState().config;
       const configUrl = getConfigUrl();
+      console.log(`Netlify CMS using config file: "${configUrl}"`);
       const loadedConfig = await getConfig(configUrl, preloadedConfig && preloadedConfig.size > 1);
 
       /**
