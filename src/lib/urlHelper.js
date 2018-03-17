@@ -67,16 +67,14 @@ export function sanitizeURI(str, { replacement = "", filter = "unicode" } = {}) 
 }
 
 export function sanitizeSlug(str, options) {
-  const {
-    filter = 'unicode',
-    strip_accents: stripAccents = false,
-    filter_replacement: replacement = '-',
-  } = stringOptions('filter', options);
+  const filter = options.get('filter', 'unicode');
+  const stripDiacritics = options.get('clean_accents', false);
+  const replacement = options.get('filter_replacement', '-');
 
   if (!isString(str)) { throw new Error("The input slug must be a string."); }
   
   const sanitizedSlug = flow([
-    ...(stripAccents ? [diacritics.remove] : []),
+    ...(stripDiacritics ? [diacritics.remove] : []),
     partialRight(sanitizeURI, { replacement, filter }),
     partialRight(sanitizeFilename, { replacement }),
   ])(str);

@@ -89,7 +89,7 @@ describe('sanitizeSlug', ()=> {
 
   it('should remove accents if set', () => {
     expect(
-      sanitizeSlug("ěščřžý", { strip_accents: true })
+      sanitizeSlug("ěščřžý", { clean_accents: true })
     ).toEqual('escrzy');
   });
 

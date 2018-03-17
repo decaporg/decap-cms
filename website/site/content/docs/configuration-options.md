@@ -62,16 +62,21 @@ Based on the settings above, if a user used an image widget field called `avatar
 
 ## Slug Type
 
-By default, filenames (slugs) for entries created in the CMS are sanitized according to [RFC3987](https://tools.ietf.org/html/rfc3987) and the [WHATWG URL spec](https://url.spec.whatwg.org/). This spec allows non-ASCII (or non-Latin) characters to exist in URLs. However, for maximum compatibility, you can also set a different slugification option:
+The `slug` option allows you to change how filenames for entries are created and sanitized. For modifying the actual data in a slug, see the per-collection option below.
 
-- `iri` (default): Keeps Unicode characters in slugs, according the the IRI draft spec ([RFC3987](https://tools.ietf.org/html/rfc3987)) and the [WHATWG URL spec](https://url.spec.whatwg.org/).
-- `latin`: Removes accents/diacritics from slug, then strips out all non-valid URL characters and periods (see `ascii` below).
-- `ascii`: Strips out all characters except valid URI chars (RFC3986) or periods (0-9, a-z, A-Z, `_`, `-`, `~`).
+`slug` accepts multiple options:
+
+- `encoding`
+  - `unicode` (default): Sanitize filenames (slugs) according to [RFC3987](https://tools.ietf.org/html/rfc3987) and the [WHATWG URL spec](https://url.spec.whatwg.org/). This spec allows non-ASCII (or non-Latin) characters to exist in URLs.
+  - `ascii`: Sanitize filenames (slugs) according to [RFC3986](https://tools.ietf.org/html/rfc3986). The only allowed characters are (0-9, a-z, A-Z, `_`, `-`, `~`).
+- `clean_accents`: Set to `true` to remove diacritics from slug characters before sanitizing. This is often helpful when using `ascii` encoding.
 
 **Example**
 
 ``` yaml
-slug_type: "latin"
+slug:
+  encoding: "ascii"
+  clean_accents: true
 ```
 
 ## Collections
