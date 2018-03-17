@@ -785,7 +785,7 @@
       "name": "Kristaps Taube",
       "avatar_url": "https://avatars3.githubusercontent.com/u/1479451?v=4",
       "profile": "https://www.ktaube.com",
-       "contributions": [
+      "contributions": [
         "code"
       ]
     },
@@ -814,6 +814,15 @@
       "profile": "https://github.com/gazebosx3",
       "contributions": [
         "code"
+      ]
+    },
+    {
+      "login": "jmziya",
+      "name": "Jacob Mziya",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/4973188?v=4",
+      "profile": "http://www.jacobmziya.com",
+      "contributions": [
+        "example"
       ]
     }
   ]
