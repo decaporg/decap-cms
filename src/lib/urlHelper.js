@@ -2,7 +2,7 @@ import url from 'url';
 import diacritics from 'diacritics';
 import sanitizeFilename from 'sanitize-filename';
 import { isString, escapeRegExp, flow, partialRight } from 'lodash';
-import { stringOptions } from './functionHelper';
+import { Map } from 'immutable';
 
 function getUrl(urlString, direct) {
   return `${ direct ? '/#' : '' }${ urlString }`;
@@ -66,7 +66,7 @@ export function sanitizeURI(str, { replacement = "", encoding = "unicode" } = {}
   return Array.from(str).map(char => (validChar(char) ? char : replacement)).join('');
 }
 
-export function sanitizeSlug(str, options) {
+export function sanitizeSlug(str, options = Map()) {
   const encoding = options.get('encoding', 'unicode');
   const stripDiacritics = options.get('clean_accents', false);
   const replacement = options.get('sanitize_replacement', '-');

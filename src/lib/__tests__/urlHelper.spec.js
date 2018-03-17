@@ -1,3 +1,4 @@
+import { Map } from 'immutable';
 import { sanitizeURI, sanitizeSlug } from '../urlHelper';
 
 describe('sanitizeURI', () => {
@@ -22,7 +23,7 @@ describe('sanitizeURI', () => {
 
   it('should not keep valid non-latin chars (ucschars in RFC 3987) if set to ASCII mode', () => {
     expect(
-      sanitizeURI("ěščřžý日本語のタイトル", { type: 'ascii' })
+      sanitizeURI("ěščřžý日本語のタイトル", { encoding: 'ascii' })
     ).toEqual('');
   });
 
@@ -71,14 +72,14 @@ describe('sanitizeSlug', ()=> {
   });
 
   it('throws an error for non-string replacements', () => {
-    expect(() => sanitizeSlug('test', { sanitize_replacement: {} })).toThrowError("`options.replacement` must be a string.");
-    expect(() => sanitizeSlug('test', { sanitize_replacement: [] })).toThrowError("`options.replacement` must be a string.");
-    expect(() => sanitizeSlug('test', { sanitize_replacement: false })).toThrowError("`options.replacement` must be a string.");
-    expect(() => sanitizeSlug('test', { sanitize_replacement: null } )).toThrowError("`options.replacement` must be a string.");
-    expect(() => sanitizeSlug('test', { sanitize_replacement: 11232 })).toThrowError("`options.replacement` must be a string.");
+    expect(() => sanitizeSlug('test', Map({ sanitize_replacement: {} }))).toThrowError("`options.replacement` must be a string.");
+    expect(() => sanitizeSlug('test', Map({ sanitize_replacement: [] }))).toThrowError("`options.replacement` must be a string.");
+    expect(() => sanitizeSlug('test', Map({ sanitize_replacement: false }))).toThrowError("`options.replacement` must be a string.");
+    expect(() => sanitizeSlug('test', Map({ sanitize_replacement: null } ))).toThrowError("`options.replacement` must be a string.");
+    expect(() => sanitizeSlug('test', Map({ sanitize_replacement: 11232 }))).toThrowError("`options.replacement` must be a string.");
     // do not test undefined for this variant since a default is set in the cosntructor. 
     //expect(() => sanitizeSlug('test', { sanitize_replacement: undefined })).toThrowError("`options.replacement` must be a string.");
-    expect(() => sanitizeSlug('test', { sanitize_replacement: ()=>{} })).toThrowError("`options.replacement` must be a string.");
+    expect(() => sanitizeSlug('test', Map({ sanitize_replacement: ()=>{} }))).toThrowError("`options.replacement` must be a string.");
   });
 
   it('should keep valid URI chars (letters digits _ - . ~)', () => {
@@ -89,13 +90,19 @@ describe('sanitizeSlug', ()=> {
 
   it('should remove accents if set', () => {
     expect(
-      sanitizeSlug("ěščřžý", { clean_accents: true })
+      sanitizeSlug("ěščřžý", Map({ clean_accents: true }))
     ).toEqual('escrzy');
   });
 
   it('should remove non-latin chars in "ascii" mode', () => {
     expect(
-      sanitizeSlug("ěščřžý日本語のタイトル", { encoding: 'ascii' })
+      sanitizeSlug("ěščřžý日本語のタイトル", Map({ encoding: 'ascii' }))
+    ).toEqual('');
+  });
+
+  it('should clean accents and strip non-latin chars in "ascii" mode with `clean_accents` set', () => {
+    expect(
+      sanitizeSlug("ěščřžý日本語のタイトル", Map({ encoding: 'ascii', clean_accents: true }))
     ).toEqual('escrzy');
   });
 
@@ -109,7 +116,7 @@ describe('sanitizeSlug', ()=> {
   });
 
   it('uses alternate replacements', () => {
-    expect(sanitizeSlug('test   test   ', { sanitize_replacement: '_' })).toEqual('test_test');
+    expect(sanitizeSlug('test   test   ', Map({ sanitize_replacement: '_' }))).toEqual('test_test');
   });
 
 });
