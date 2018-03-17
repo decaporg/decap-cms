@@ -39,7 +39,7 @@ const ucsChars = /[\xA0-\u{D7FF}\u{F900}-\u{FDCF}\u{FDF0}-\u{FFEF}\u{10000}-\u{1
 const validURIChar = char => uriChars.test(char);
 const validIRIChar = char => uriChars.test(char) || ucsChars.test(char);
 // `sanitizeURI` does not actually URI-encode the chars (that is the browser's and server's job), just removes the ones that are not allowed.
-export function sanitizeURI(str, { replacement = "", filter = "unicode" } = {}) {
+export function sanitizeURI(str, { replacement = "", encoding = "unicode" } = {}) {
   if (!isString(str)) {
     throw new Error("The input slug must be a string.");
   }
@@ -48,12 +48,12 @@ export function sanitizeURI(str, { replacement = "", filter = "unicode" } = {}) 
   }
   
   let validChar;
-  if (filter === "unicode") {
+  if (encoding === "unicode") {
     validChar = validIRIChar;
-  } else if (filter === "ascii") {
+  } else if (encoding === "ascii") {
     validChar = validURIChar;
   } else {
-    throw new Error('`options.filter` must be "unicode" or "ascii".');
+    throw new Error('`options.encoding` must be "unicode" or "ascii".');
   }
 
   // Check and make sure the replacement character is actually a safe char itself.
@@ -67,15 +67,15 @@ export function sanitizeURI(str, { replacement = "", filter = "unicode" } = {}) 
 }
 
 export function sanitizeSlug(str, options) {
-  const filter = options.get('filter', 'unicode');
+  const encoding = options.get('encoding', 'unicode');
   const stripDiacritics = options.get('clean_accents', false);
-  const replacement = options.get('filter_replacement', '-');
+  const replacement = options.get('sanitize_replacement', '-');
 
   if (!isString(str)) { throw new Error("The input slug must be a string."); }
   
   const sanitizedSlug = flow([
     ...(stripDiacritics ? [diacritics.remove] : []),
-    partialRight(sanitizeURI, { replacement, filter }),
+    partialRight(sanitizeURI, { replacement, encoding }),
     partialRight(sanitizeFilename, { replacement }),
   ])(str);
 

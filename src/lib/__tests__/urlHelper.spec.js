@@ -71,14 +71,14 @@ describe('sanitizeSlug', ()=> {
   });
 
   it('throws an error for non-string replacements', () => {
-    expect(() => sanitizeSlug('test', { filter_replacement: {} })).toThrowError("`options.replacement` must be a string.");
-    expect(() => sanitizeSlug('test', { filter_replacement: [] })).toThrowError("`options.replacement` must be a string.");
-    expect(() => sanitizeSlug('test', { filter_replacement: false })).toThrowError("`options.replacement` must be a string.");
-    expect(() => sanitizeSlug('test', { filter_replacement: null } )).toThrowError("`options.replacement` must be a string.");
-    expect(() => sanitizeSlug('test', { filter_replacement: 11232 })).toThrowError("`options.replacement` must be a string.");
+    expect(() => sanitizeSlug('test', { sanitize_replacement: {} })).toThrowError("`options.replacement` must be a string.");
+    expect(() => sanitizeSlug('test', { sanitize_replacement: [] })).toThrowError("`options.replacement` must be a string.");
+    expect(() => sanitizeSlug('test', { sanitize_replacement: false })).toThrowError("`options.replacement` must be a string.");
+    expect(() => sanitizeSlug('test', { sanitize_replacement: null } )).toThrowError("`options.replacement` must be a string.");
+    expect(() => sanitizeSlug('test', { sanitize_replacement: 11232 })).toThrowError("`options.replacement` must be a string.");
     // do not test undefined for this variant since a default is set in the cosntructor. 
-    //expect(() => sanitizeSlug('test', { filter_replacement: undefined })).toThrowError("`options.replacement` must be a string.");
-    expect(() => sanitizeSlug('test', { filter_replacement: ()=>{} })).toThrowError("`options.replacement` must be a string.");
+    //expect(() => sanitizeSlug('test', { sanitize_replacement: undefined })).toThrowError("`options.replacement` must be a string.");
+    expect(() => sanitizeSlug('test', { sanitize_replacement: ()=>{} })).toThrowError("`options.replacement` must be a string.");
   });
 
   it('should keep valid URI chars (letters digits _ - . ~)', () => {
@@ -95,7 +95,7 @@ describe('sanitizeSlug', ()=> {
 
   it('should remove non-latin chars in "ascii" mode', () => {
     expect(
-      sanitizeSlug("ěščřžý日本語のタイトル", { filter: 'ascii' })
+      sanitizeSlug("ěščřžý日本語のタイトル", { encoding: 'ascii' })
     ).toEqual('escrzy');
   });
 
@@ -109,7 +109,7 @@ describe('sanitizeSlug', ()=> {
   });
 
   it('uses alternate replacements', () => {
-    expect(sanitizeSlug('test   test   ', { filter_replacement: '_' })).toEqual('test_test');
+    expect(sanitizeSlug('test   test   ', { sanitize_replacement: '_' })).toEqual('test_test');
   });
 
 });
