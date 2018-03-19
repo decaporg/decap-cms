@@ -16,6 +16,8 @@ howtojoin: |
   **On the web:**
 
   1. https://bluejeans.com/278173690
+  
+  2. We also have a [Gitter](https://gitter.im) channel where you can get help and give a hand to others: https://gitter.im/netlify/NetlifyCMS
 
   **By phone:**
 
