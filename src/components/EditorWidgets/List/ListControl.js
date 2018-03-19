@@ -168,10 +168,7 @@ export default class ListControl extends Component {
   };
 
   handleBlur = (e) => {
-    const listValue = e.target.value
-      .split(',')
-      .map(el => el.trim())
-      .filter(el => el);
+    const listValue = e.target.value.split(',').map(el => el.trim()).filter(el => el);
     this.setState({ value: valueToString(listValue) });
     this.props.setInactiveStyle();
   }
@@ -179,7 +176,7 @@ export default class ListControl extends Component {
   handleAdd = (e) => {
     e.preventDefault();
     const { value, onChange } = this.props;
-    const parsedValue = this.valueType === valueTypes.SINGLE ? null : Map();
+    const parsedValue = (this.valueType === valueTypes.SINGLE) ? null : Map();
     this.setState({ itemsCollapsed: this.state.itemsCollapsed.push(false) });
     onChange((value || List()).push(parsedValue));
   };
@@ -202,14 +199,12 @@ export default class ListControl extends Component {
     return (fieldName, newValue, newMetadata) => {
       const { value, metadata, onChange, forID } = this.props;
       const newObjectValue = this.getObjectValue(index).set(fieldName, newValue);
-
       let parsedValue;
       if (this.isModular) {
         parsedValue = newObjectValue;
       } else {
         parsedValue = this.valueType === valueTypes.SINGLE ? newObjectValue.first() : newObjectValue;
       }
-
       const parsedMetadata = {
         [forID]: Object.assign(metadata ? metadata.toJS() : {}, newMetadata ? newMetadata[forID] : {}),
       };
@@ -249,13 +244,11 @@ export default class ListControl extends Component {
     const singleField = field.get('field');
     const labelField = this.isModular ? item : (multiFields && multiFields.first()) || singleField;
     let value;
-
     if (this.isModular) {
       value = item.get('name');
     } else {
       value = multiFields ? item.get(multiFields.first().get('name')) : singleField.get('label');
     }
-
     return (value || `No ${ labelField.get('name') }`).toString();
   }
 

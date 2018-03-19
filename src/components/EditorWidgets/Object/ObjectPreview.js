@@ -1,12 +1,36 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { Component } from 'react';
 import { List } from 'immutable';
-import MarkdownPreview from '../Markdown/MarkdownPreview';
-import ImagePreview from '../Image/ImagePreview';
-import FilePreview from '../File/FilePreview';
-import RelationPreview from '../Relation/RelationPreview';
+import { resolveWidget } from 'Lib/registry';
 
-const renderObject = (field, value, result, getAsset) => {
+class PreviewErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  componentDidCatch(error, info) {
+    this.setState({ hasError: true });
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ display: `inline-block`, verticalAlign: `text-top` }}>
+          {this.props.value ? this.props.value.toString() : ''}
+        </div>
+      );
+    }
+    return <div style={{ display: `inline-block`, verticalAlign: `text-top` }}>{this.props.children}</div>;
+  }
+}
+
+PreviewErrorBoundary.propTypes = {
+  value: PropTypes.any,
+  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]).isRequired,
+};
+
+const renderObject = (field, value, result, getAsset, index = 0) => {
   const fields = value.get('fields').toArray();
   const resultToJS = result.toJS();
   if (resultToJS) {
@@ -20,7 +44,9 @@ const renderObject = (field, value, result, getAsset) => {
         return renderedField || null;
       })
     );
-    return <ObjectPreview field={field} value={values} getAsset={getAsset} nested />;
+    return (
+      <ObjectPreview key={`${ field.get('name') }-${ index }`} field={field} value={values} getAsset={getAsset} nested />
+    );
   }
   return null;
 };
@@ -28,46 +54,42 @@ const renderObject = (field, value, result, getAsset) => {
 const renderValue = (field, value, getAsset) => {
   const widget = value.get('widget');
   let result = value.get('___name') || value.get(value.get('name'));
-  let valuePreview = null;
-
+  const PreviewComponent = resolveWidget(widget).preview;
+  let valuePreview;
   switch (widget) {
     case 'boolean':
       result = result || 'false';
-      valuePreview = result.toString() || null;
       break;
     case 'date':
-      valuePreview = result.toString() || null;
+      result = Object(result);
       break;
     case 'datetime':
       result = new Date(result);
-      valuePreview = result.toString() || null;
-      break;
-    case 'relation':
-      valuePreview = <RelationPreview value={result} />;
-      break;
-    case 'image':
-      valuePreview = <ImagePreview value={result} getAsset={getAsset} />;
-      break;
-    case 'file':
-      valuePreview = <FilePreview value={result} getAsset={getAsset} />;
-      break;
-    case 'markdown':
-      valuePreview = <MarkdownPreview value={result || ''} getAsset={getAsset} />;
       break;
     case 'list':
       if (result && result.size) {
-        valuePreview = <div className="list">{result.map(r => renderObject(field, value, r, getAsset))}</div>;
+        valuePreview = (
+          <div className="list">{result.map((r, idx) => renderObject(field, value, r, getAsset, idx))}</div>
+        );
       }
       break;
     case 'object':
       valuePreview = renderObject(field, value, result, getAsset);
       break;
     default:
-      valuePreview = result ? result.toString() : null;
+      valuePreview = PreviewComponent ? (
+        <PreviewErrorBoundary value={result}>
+          <PreviewComponent value={result} getAsset={getAsset} />
+        </PreviewErrorBoundary>
+      ) : (
+        result
+      );
       break;
   }
-
-  return valuePreview;
+  if (valuePreview) {
+    return valuePreview;
+  }
+  return result ? result.toString() : null;
 };
 
 const ObjectPreview = ({ field, value, getAsset, nested }) => (
@@ -92,11 +114,11 @@ const ObjectPreview = ({ field, value, getAsset, nested }) => (
                   style={{
                     display: `inline-block`,
                     margin: 0,
+                    marginRight: 5,
                   }}
                 >
                   {val.get('label')}:
                 </h4>
-                {` `}
                 {renderValue(field, val, getAsset)}
               </div>
             ))}
