@@ -94,7 +94,7 @@ export default class ObjectControl extends Component {
 
   handleCollapseToggle = () => {
     this.setState({ collapsed: !this.state.collapsed });
-  };
+  }
 
   render() {
     const { field, forID, classNameWrapper, forList, value } = this.props;
@@ -106,15 +106,15 @@ export default class ObjectControl extends Component {
     if (isModular) {
       return (
         <div id={forID} className={c(classNameWrapper, 'nc-objectControl-root')}>
-          {forList ? null : <TopBar collapsed={collapsed} onCollapseToggle={this.handleCollapseToggle} />}
-          {collapsed ? null : this.controlFor(value)}
+          { forList ? null : <TopBar collapsed={collapsed} onCollapseToggle={this.handleCollapseToggle } />}
+          { collapsed ? null : this.controlFor(value) }
         </div>
       );
     } else if (multiFields) {
       return (
         <div id={forID} className={c(classNameWrapper, 'nc-objectControl-root')}>
-          {forList ? null : <TopBar collapsed={collapsed} onCollapseToggle={this.handleCollapseToggle} />}
-          {collapsed ? null : multiFields.map((f, idx) => this.controlFor(f, idx))}
+          { forList ? null : <TopBar collapsed={collapsed} onCollapseToggle={this.handleCollapseToggle } />}
+          { collapsed ? null : multiFields.map((f, idx) => this.controlFor(f, idx)) }
         </div>
       );
     } else if (singleField) {

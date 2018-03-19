@@ -9,11 +9,7 @@ import { Icon, ListItemTopBar, Dropdown, DropdownItem } from 'UI';
 import ObjectControl from 'EditorWidgets/Object/ObjectControl';
 
 function ListItem(props) {
-  return (
-    <div {...props} className={`list-item ${ props.className || '' }`}>
-      {props.children}
-    </div>
-  );
+  return <div {...props} className={`list-item ${ props.className || '' }`}>{props.children}</div>
 }
 ListItem.propTypes = {
   className: PropTypes.string,
@@ -72,7 +68,9 @@ const TopBar = ({ allowAdd, onAdd, listLabel, onCollapseAllToggle, allItemsColla
   </div>
 );
 
-const SortableList = SortableContainer(({ items, renderItem }) => <div>{items.map(renderItem)}</div>);
+const SortableList = SortableContainer(({ items, renderItem }) => {
+  return <div>{items.map(renderItem)}</div>;
+});
 
 const valueTypes = {
   SINGLE: 'SINGLE',
@@ -221,14 +219,14 @@ export default class ListControl extends Component {
     this.setState({ itemsCollapsed: itemsCollapsed.delete(index) });
 
     onChange(value.remove(index), parsedMetadata);
-  };
+  }
 
   handleItemCollapseToggle = (index, event) => {
     event.preventDefault();
     const { itemsCollapsed } = this.state;
     const collapsed = itemsCollapsed.get(index);
     this.setState({ itemsCollapsed: itemsCollapsed.set(index, !collapsed) });
-  };
+  }
 
   handleCollapseAllToggle = (e) => {
     e.preventDefault();
@@ -236,7 +234,7 @@ export default class ListControl extends Component {
     const { itemsCollapsed } = this.state;
     const allItemsCollapsed = itemsCollapsed.every(val => val === true);
     this.setState({ itemsCollapsed: List(Array(value.size).fill(!allItemsCollapsed)) });
-  };
+  }
 
   objectLabel(item) {
     const { field } = this.props;
@@ -351,7 +349,6 @@ export default class ListControl extends Component {
         onFocus={this.handleFocus}
         onBlur={this.handleBlur}
         className={classNameWrapper}
-      />
-    );
+      />);
   }
 }
