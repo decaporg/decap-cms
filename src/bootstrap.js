@@ -13,7 +13,7 @@ import 'EditorWidgets';
 import 'MarkdownPlugins';
 import './index.css';
 
-export const ROOT_ID = 'nc-root';
+const ROOT_ID = 'nc-root';
 
 function bootstrap(opts = {}) {
   const { config } = opts;
@@ -24,13 +24,24 @@ function bootstrap(opts = {}) {
   console.log(`Netlify CMS version ${NETLIFY_CMS_VERSION}`);
 
   /**
-   * Create mount element dynamically.
+   * Get DOM element where app will mount.
    */
-  let el = document.getElementById(ROOT_ID);
-  if (!el) {
-    el = document.createElement('div');
-    el.id = ROOT_ID;
-    document.body.appendChild(el);
+  function getRoot() {
+    /**
+     * Return existing root if found.
+     */
+    const existingRoot = document.getElementById(ROOT_ID);
+    if (existingRoot) {
+      return existingRoot;
+    }
+
+    /**
+     * If no existing root, create and return a new root.
+     */
+    const newRoot = document.createElement('div');
+    newRoot.id = ROOT_ID;
+    document.body.appendChild(newRoot);
+    return newRoot;
   }
 
   /**
@@ -68,12 +79,7 @@ function bootstrap(opts = {}) {
   /**
    * Render application root.
    */
-  render(<Root />, el);
-
-  /**
-   * Return true to indicate bootstrap success to caller.
-   */
-  return true;
+  render(<Root />, getRoot());
 }
 
 export default bootstrap;
