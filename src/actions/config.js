@@ -122,7 +122,13 @@ export function loadConfig() {
         throw new Error(`Failed to load config.yml (${ response.status })`);
       }
 
-      const loadedConfig = parseConfig(requestSuccess ? await response.text() : '');
+      let loadedConfig = '';
+      const contentType = response.headers.get('Content-Type');
+      if (contentType.indexOf('text/html') !== -1) {
+        console.log('No config.yml found. (Content-Type: text/html)');
+      } else {
+        loadedConfig = parseConfig(requestSuccess ? await response.text() : '');
+      }
 
       /**
        * Merge any existing configuration so the result can be validated.
