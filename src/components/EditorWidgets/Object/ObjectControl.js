@@ -26,7 +26,11 @@ export default class ObjectControl extends Component {
     onAddAsset: PropTypes.func.isRequired,
     onRemoveInsertedMedia: PropTypes.func.isRequired,
     getAsset: PropTypes.func.isRequired,
-    value: PropTypes.oneOfType([PropTypes.node, PropTypes.object, PropTypes.bool]),
+    value: PropTypes.oneOfType([
+      PropTypes.node,
+      PropTypes.object,
+      PropTypes.bool,
+    ]),
     field: PropTypes.object,
     forID: PropTypes.string,
     classNameWrapper: PropTypes.string.isRequired,
@@ -68,6 +72,8 @@ export default class ObjectControl extends Component {
     if (field.get('widget') === 'hidden') {
       return null;
     }
+    const widgetName = field.get('widget') || 'string';
+    const widget = resolveWidget(widgetName);
     const fieldName = field.get('name');
     const fieldValue = value && Map.isMap(value) ? value.get(fieldName) : value;
 
@@ -94,7 +100,7 @@ export default class ObjectControl extends Component {
     const { field, forID, classNameWrapper, forList, value } = this.props;
     const { collapsed } = this.state;
     const multiFields = field.get('fields');
-    const singleField = field.get('field') || value;
+    const singleField = field.get('field');
     const isModular = field.get('types');
 
     if (isModular) {
