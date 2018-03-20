@@ -1,8 +1,13 @@
 backend:
-  name: test-repo
+  name: github
+  repo: owenhoskins/gatsby-sharp-netlify-cms
+  branch: development # Branch to update (optional; defaults to master)
 
-display_url: https://example.com
-media_folder: "assets/uploads"
+#display_url: https://example.com
+#media_folder: "assets/uploads"
+
+media_folder: 'static/img' # this is where netlify cms places images.
+
 
 collections: # A list of collections the CMS should be able to edit
   - name: "posts" # Used in routes, ie.: /admin/collections/:slug/edit
@@ -20,6 +25,46 @@ collections: # A list of collections the CMS should be able to edit
       - {label: "Body", name: "body", widget: "markdown"}
     meta:
       - {label: "SEO Description", name: "description", widget: "text"}
+
+
+  - name: artists
+    label: Artists
+    folder: 'src/pages/artists'
+    slug: '/artists/{{slug}}'
+    create: true
+    meta:
+      - {label: "SEO Description", name: "description", widget: "text"}
+    fields:
+      - {name: kind, widget: hidden, default: 'artist'}
+      - {label: "Name", name: "title", widget: "string", tagname: "h1"}
+      - {label: "Type", name: "type", widget: "select", options: ["hair", "makeup", "stylist", "grooming", "manicurist", "color"]}
+      - {label: "Cover Image", name: "cover", widget: "image", required: true, tagname: ""}
+      - {label: "Instagram handle", name: "instagram_handle", widget: "string", tagname: "p", required: false}
+      - {label: "Enquire", name: "enquire", widget: "string", tagname: "p", required: false}
+      - name: portfolios
+        label: Portfolios
+        widget: list
+        optional: true
+        fields:
+          - {label: 'Title', name: 'title', widget: 'string'}
+          - name: gallery
+            label: Gallery
+            widget: gallery
+            required: true
+            fields:
+              - {name: image, label: Image, widget: image, class: 'gallery'}
+              - {name: 'fullscreen', label: 'Fullscreen', widget: 'boolean', default: false }
+              - {name: 'focalX', label: 'Focal X', widget: 'number', default: 0, valueType: 'int', min: 0, max: 100}
+              - {name: 'focalY', label: 'Focal Y', widget: 'number', default: 0, valueType: 'int', min: 0, max: 100}
+      - name: videos
+        label: Videos
+        widget: list
+        optional: true
+        fields:
+          - {label: 'Title', name: 'title', widget: 'string'}
+          - {label: 'URL', name: 'url', widget: 'string'}
+      - {label: "Biography Text", name: "body", widget: "markdown"}
+
 
 
   - name: 'gallery'

@@ -3529,6 +3529,10 @@ globjoin@^0.1.2, globjoin@^0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/globjoin/-/globjoin-0.1.4.tgz#2f4494ac8919e3767c5cbb691e9f463324285d43"
 
+glur@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/glur/-/glur-1.1.2.tgz#f20ea36db103bfc292343921f1f91e83c3467689"
+
 got@^6.7.1:
   version "6.7.1"
   resolved "https://registry.yarnpkg.com/got/-/got-6.7.1.tgz#240cd05785a9a18e561dc1b44b41c763ef1e8db0"
@@ -5526,6 +5530,13 @@ multimatch@^2.0.0, multimatch@^2.1.0:
     arrify "^1.0.0"
     minimatch "^3.0.0"
 
+multimath@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/multimath/-/multimath-1.0.3.tgz#eadee6fb9d727d329d64d60bba247af42334451d"
+  dependencies:
+    glur "^1.1.2"
+    object-assign "^4.1.1"
+
 mute-stream@0.0.5:
   version "0.0.5"
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.5.tgz#8fbfabb0a98a253d3184331f9e8deb7372fac6c0"
@@ -6140,6 +6151,15 @@ performance-now@^0.2.0:
 performance-now@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/performance-now/-/performance-now-2.1.0.tgz#6309f4e0e5fa913ec1c69307ae364b4b377c9e7b"
+
+pica@^4.0.1:
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/pica/-/pica-4.0.2.tgz#26e4053e7585ebf94361dfc72636ddb9d1f90e93"
+  dependencies:
+    inherits "^2.0.3"
+    multimath "^1.0.3"
+    object-assign "^4.1.1"
+    webworkify "^1.3.0"
 
 pify@^2.0.0, pify@^2.3.0:
   version "2.3.0"
@@ -7057,6 +7077,14 @@ prop-types@^15.0.0, prop-types@^15.5.10, prop-types@^15.5.4, prop-types@^15.5.6,
     loose-envify "^1.3.1"
     object-assign "^4.1.1"
 
+prop-types@~15.6.0:
+  version "15.6.1"
+  resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.6.1.tgz#36644453564255ddda391191fb3a125cbdf654ca"
+  dependencies:
+    fbjs "^0.8.16"
+    loose-envify "^1.3.1"
+    object-assign "^4.1.1"
+
 property-information@^3.0.0, property-information@^3.1.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/property-information/-/property-information-3.2.0.tgz#fd1483c8fbac61808f5fe359e7693a1f48a58331"
@@ -7270,6 +7298,10 @@ react-immutable-proptypes@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/react-immutable-proptypes/-/react-immutable-proptypes-2.1.0.tgz#023d6f39bb15c97c071e9e60d00d136eac5fa0b4"
 
+react-intersection-observer@^3.0.3:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/react-intersection-observer/-/react-intersection-observer-3.0.3.tgz#3df67f413c36c28b02426e7fdbf9670790fb50ab"
+
 react-modal@^3.1.5:
   version "3.1.6"
   resolved "https://registry.yarnpkg.com/react-modal/-/react-modal-3.1.6.tgz#82e63f1ec86b80e242518250d066ee37fa035f8a"
@@ -7281,6 +7313,12 @@ react-modal@^3.1.5:
 react-onclickoutside@^6.5.0:
   version "6.7.0"
   resolved "https://registry.yarnpkg.com/react-onclickoutside/-/react-onclickoutside-6.7.0.tgz#997a4d533114c9a0a104913638aa26afc084f75c"
+
+react-photo-gallery@^6.0.22:
+  version "6.0.22"
+  resolved "https://registry.yarnpkg.com/react-photo-gallery/-/react-photo-gallery-6.0.22.tgz#733126f9a4c420af8977f868222b074faa0c764a"
+  dependencies:
+    prop-types "~15.6.0"
 
 react-portal@^3.1.0:
   version "3.2.0"
@@ -9502,6 +9540,10 @@ websocket-driver@>=0.5.1:
 websocket-extensions@>=0.1.1:
   version "0.1.3"
   resolved "https://registry.yarnpkg.com/websocket-extensions/-/websocket-extensions-0.1.3.tgz#5d2ff22977003ec687a4b87073dfbbac146ccf29"
+
+webworkify@^1.3.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/webworkify/-/webworkify-1.5.0.tgz#734ad87a774de6ebdd546e1d3e027da5b8f4a42c"
 
 what-input@^5.0.3:
   version "5.0.3"
