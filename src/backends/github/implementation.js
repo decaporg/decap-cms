@@ -93,7 +93,6 @@ export default class GitHub {
 
   getMedia() {
     return this.api.listFiles(this.config.get('media_folder'))
-      .then(files => files.filter(file => file.type === 'file'))
       .then(files => files.map(({ sha, name, size, download_url, path }) => {
         const url = new URL(download_url);
         if (url.pathname.match(/.svg$/)) {
