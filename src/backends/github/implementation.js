@@ -138,7 +138,7 @@ export default class GitHub {
       const repo = this.repo || this.getRepoFromResponseUrl(response.url);
       const { value, size, path, fileObj } = mediaFile;
       const url = `https://raw.githubusercontent.com/${repo}/${this.branch}${path}`;
-      return { id: response.sha, name: value, size: fileObj.size, url, path: trimStart(path, '/') };
+      return { id: mediaFile.sha, name: value, size: fileObj.size, url, path: trimStart(path, '/') };
     }
     catch(error) {
       console.error(error);
