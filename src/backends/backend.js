@@ -41,7 +41,7 @@ class LocalStorageAuthStore {
   }
 }
 
-const slugFormatter = (template = "{{slug}}", entryData) => {
+const slugFormatter = (template = "{{slug}}", entryData, slugConfig) => {
   const date = new Date();
 
   const getIdentifier = (entryData) => {
@@ -76,10 +76,10 @@ const slugFormatter = (template = "{{slug}}", entryData) => {
   // Convert slug to lower-case
   .toLocaleLowerCase()
 
-  // Replace periods and spaces with dashes.
-  .replace(/[.\s]/g, '-');
+  // Replace periods with dashes.
+  .replace(/[.]/g, '-');
 
-  return sanitizeSlug(slug);
+  return sanitizeSlug(slug, slugConfig);
 };
 
 class Backend {
@@ -242,7 +242,7 @@ class Backend {
       if (!selectAllowNewEntries(collection)) {
         throw (new Error("Not allowed to create new entries in this collection"));
       }
-      const slug = slugFormatter(collection.get("slug"), entryDraft.getIn(["entry", "data"]));
+      const slug = slugFormatter(collection.get("slug"), entryDraft.getIn(["entry", "data"]), config.get("slug"));
       const path = selectEntryPath(collection, slug);
       entryObj = {
         path,

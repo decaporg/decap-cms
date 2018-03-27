@@ -1,6 +1,6 @@
 import yaml from "js-yaml";
 import { Map, List, fromJS } from "immutable";
-import { trimStart, flow } from "lodash";
+import { trimStart, flow, isBoolean } from "lodash";
 import { authenticateUser } from "Actions/auth";
 import * as publishModes from "Constants/publishModes";
 
@@ -42,6 +42,13 @@ export function validateConfig(config) {
   }
   if (typeof config.get('media_folder') !== 'string') {
     throw new Error("Error in configuration file: Your `media_folder` must be a string. Check your config.yml file.");
+  }
+  const slug_encoding = config.getIn(['slug', 'encoding'], "unicode");
+  if (slug_encoding !== "unicode" && slug_encoding !== "ascii") {
+    throw new Error("Error in configuration file: Your `slug.encoding` must be either `unicode` or `ascii`. Check your config.yml file.")
+  }
+  if (!isBoolean(config.getIn(['slug', 'clean_accents'], false))) {
+    throw new Error("Error in configuration file: Your `slug.clean_accents` must be a boolean. Check your config.yml file.");
   }
   if (!config.get('collections')) {
     throw new Error("Error in configuration file: A `collections` wasn\'t found. Check your config.yml file.");
