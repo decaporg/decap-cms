@@ -53,7 +53,7 @@ const slugFormatter = (template = "{{slug}}", entryData, slugConfig) => {
     const identifier = identifiers.find(ident => ident !== undefined);
 
     if (identifier === undefined) {
-      throw new Error("Collection must have a field name that is a valid entry identifier");
+      throw new Error(`Collection must have a field name that is a valid entry identifier. Please add one of these fields: ${ validIdentifierFields }`);
     }
 
     return identifier;
