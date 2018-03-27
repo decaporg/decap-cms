@@ -815,6 +815,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "dzello",
+      "name": "Josh Dzielak",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/174777?v=4",
+      "profile": "https://dzello.com",
+      "contributions": [
+        "doc"
+      ]
     }
   ]
 }
