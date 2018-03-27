@@ -88,7 +88,7 @@ describe('sanitizeSlug', ()=> {
     ).toEqual('This-that-one_or.the~other-123');
   });
 
-  it('should remove accents if set', () => {
+  it('should remove accents with `clean_accents` set', () => {
     expect(
       sanitizeSlug("ěščřžý", Map({ clean_accents: true }))
     ).toEqual('escrzy');
