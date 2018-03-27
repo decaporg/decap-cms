@@ -2,6 +2,7 @@ import { attempt, isError } from 'lodash';
 import { resolveFormat } from "Formats/formats";
 import { selectIntegration } from 'Reducers/integrations';
 import {
+  selectIdentifier,
   selectListMethod,
   selectEntrySlug,
   selectEntryPath,
@@ -45,15 +46,10 @@ const slugFormatter = (template = "{{slug}}", entryData, slugConfig) => {
   const date = new Date();
 
   const getIdentifier = (entryData) => {
-    const validIdentifierFields = ["title", "path"];
-    const identifiers = validIdentifierFields.map((field) =>
-      entryData.find((_, key) => key.toLowerCase().trim() === field)
-    );
-
-    const identifier = identifiers.find(ident => ident !== undefined);
+    const identifier = selectIdentifier(entryData.keys());
 
     if (identifier === undefined) {
-      throw new Error(`Collection must have a field name that is a valid entry identifier. Please add one of these fields: ${ validIdentifierFields }`);
+      throw new Error("Collection must have a field name that is a valid entry identifier");
     }
 
     return identifier;
