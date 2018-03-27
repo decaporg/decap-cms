@@ -158,11 +158,12 @@ export default class ListControl extends Component {
 
   handleChangeFor(index) {
     return (fieldName, newValue, newMetadata) => {
-      const { value, metadata, onChange, forID } = this.props;
+      const { value, metadata, onChange, field } = this.props;
+      const collectionName = field.get('name');
       const newObjectValue = this.getObjectValue(index).set(fieldName, newValue);
       const parsedValue = (this.valueType === valueTypes.SINGLE) ? newObjectValue.first() : newObjectValue;
       const parsedMetadata = {
-        [forID]: Object.assign(metadata ? metadata.toJS() : {}, newMetadata ? newMetadata[forID] : {}),
+        [collectionName]: Object.assign(metadata ? metadata.toJS() : {}, newMetadata ? newMetadata[collectionName] : {}),
       };
       onChange(value.set(index, parsedValue), parsedMetadata);
     };
@@ -171,8 +172,9 @@ export default class ListControl extends Component {
   handleRemove = (index, event) => {
     event.preventDefault();
     const { itemsCollapsed } = this.state;
-    const { value, metadata, onChange, forID } = this.props;
-    const parsedMetadata = metadata && { [forID]: metadata.removeIn(value.get(index).valueSeq()) };
+    const { value, metadata, onChange, field } = this.props;
+    const collectionName = field.get('name');
+    const parsedMetadata = metadata && { [collectionName]: metadata.removeIn(value.get(index).valueSeq()) };
 
     this.setState({ itemsCollapsed: itemsCollapsed.delete(index) });
 
