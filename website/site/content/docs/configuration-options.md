@@ -60,6 +60,24 @@ public_folder: "/images/uploads"
 
 Based on the settings above, if a user used an image widget field called `avatar` to upload and select an image called `philosoraptor.png`, the image would be saved to the repository at `/static/images/uploads/philosoraptor.png`, and the `avatar` field for the file would be set to `/images/uploads/philosoraptor.png`.
 
+## Slug Type
+
+The `slug` option allows you to change how filenames for entries are created and sanitized. For modifying the actual data in a slug, see the per-collection option below.
+
+`slug` accepts multiple options:
+
+- `encoding`
+  - `unicode` (default): Sanitize filenames (slugs) according to [RFC3987](https://tools.ietf.org/html/rfc3987) and the [WHATWG URL spec](https://url.spec.whatwg.org/). This spec allows non-ASCII (or non-Latin) characters to exist in URLs.
+  - `ascii`: Sanitize filenames (slugs) according to [RFC3986](https://tools.ietf.org/html/rfc3986). The only allowed characters are (0-9, a-z, A-Z, `_`, `-`, `~`).
+- `clean_accents`: Set to `true` to remove diacritics from slug characters before sanitizing. This is often helpful when using `ascii` encoding.
+
+**Example**
+
+``` yaml
+slug:
+  encoding: "ascii"
+  clean_accents: true
+```
 
 ## Collections
 
