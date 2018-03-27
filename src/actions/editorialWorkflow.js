@@ -8,6 +8,7 @@ import { selectFields } from 'Reducers/collections';
 import { status, EDITORIAL_WORKFLOW } from 'Constants/publishModes';
 import { EditorialWorkflowError } from "ValueObjects/errors";
 import { loadEntry } from './entries';
+import ValidationErrorTypes from 'Constants/validationErrorTypes';
 
 const { notifSend } = notifActions;
 
@@ -261,9 +262,22 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
   return async (dispatch, getState) => {
     const state = getState();
     const entryDraft = state.entryDraft;
+    const fieldsErrors = entryDraft.get('fieldsErrors');
 
     // Early return if draft contains validation errors
-    if (!entryDraft.get('fieldsErrors').isEmpty()) return Promise.reject();
+    if (!fieldsErrors.isEmpty()) {
+      const hasPresenceErrors = fieldsErrors
+        .some(errors => errors.some(error => error.type && error.type === ValidationErrorTypes.PRESENCE));
+
+      if (hasPresenceErrors) {
+        dispatch(notifSend({
+          message: 'Oops, you\'ve missed a required field. Please complete before saving.',
+          kind: 'danger',
+          dismissAfter: 8000,
+        }));
+      }
+      return Promise.reject()
+    }
 
     const backend = currentBackend(state.config);
     const transactionID = uuid();
