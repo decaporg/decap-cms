@@ -60,8 +60,8 @@ export function validateConfig(config) {
   return config;
 }
 
-function mergePreloadedConfig(preloadedConfig, loadedConfig) {
-  const map = fromJS(loadedConfig) || Map();
+function mergePreloadedConfig(preloadedConfig, fetchedConfig) {
+  const map = fromJS(fetchedConfig) || Map();
   return preloadedConfig ? preloadedConfig.mergeDeep(map) : map;
 }
 
@@ -73,6 +73,14 @@ function parseConfig(data) {
     });
   }
   return config;
+}
+
+async function getConfigFromResponse(response) {
+  const { status, headers } = response;
+  if (status === 200 && !headers.get('Content-Type').includes('text/html')) {
+    const config = await response.text();
+    return parseConfig(config);
+  }
 }
 
 export function configLoaded(config) {
@@ -116,24 +124,16 @@ export function loadConfig() {
     try {
       const preloadedConfig = getState().config;
       const response = await fetch('config.yml', { credentials: 'same-origin' })
-      const requestSuccess = response.status === 200;
+      const fetchedConfig = await getConfigFromResponse(response);
 
-      if (!preloadedConfig && !requestSuccess) {
-        throw new Error(`Failed to load config.yml (${ response.status })`);
-      }
-
-      let loadedConfig = '';
-      const contentType = response.headers.get('Content-Type');
-      if (contentType.indexOf('text/html') !== -1) {
-        console.log('No config.yml found. (Content-Type: text/html)');
-      } else {
-        loadedConfig = parseConfig(requestSuccess ? await response.text() : '');
+      if (!preloadedConfig && !fetchedConfig) {
+        throw new Error(`Failed to load configuration.`);
       }
 
       /**
        * Merge any existing configuration so the result can be validated.
        */
-      const mergedConfig = mergePreloadedConfig(preloadedConfig, loadedConfig)
+      const mergedConfig = mergePreloadedConfig(preloadedConfig, fetchedConfig)
       const config = flow(validateConfig, applyDefaults)(mergedConfig);
 
       dispatch(configDidLoad(config));
