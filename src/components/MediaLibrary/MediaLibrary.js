@@ -18,6 +18,14 @@ import { Icon } from 'UI';
 
 import { ImageCanvas } from '../EditorWidgets/Gallery/GalleryPreview'
 
+import CardImage from './CardImage'
+
+import {
+  Grid,
+  AutoSizer
+} from 'react-virtualized'
+//import 'react-virtualized/styles.css'; // only needs to be imported once
+
 /**
  * Extensions used to determine which files to show when the media library is
  * accessed from an image insertion field.
@@ -92,7 +100,17 @@ class MediaLibrary extends React.Component {
     const { sortFields } = this.state;
     const fieldNames = map(sortFields, 'fieldName').concat('queryOrder');
     const directions = map(sortFields, 'direction').concat('asc');
-    return orderBy(tableData, fieldNames, directions);
+
+    const ordered = orderBy(tableData, fieldNames, directions);
+    //return orderBy(tableData, fieldNames, directions);
+
+    const rows = ordered.reduce((acc, cell, idx) => {
+      const row = Math.floor(idx / 3);
+      acc[row] = acc[row] ? [...acc[row], cell] : [cell]; // eslint-disable-line no-param-reassign
+      return acc;
+    }, []);
+
+    return rows
   };
 
   handleClose = () => {
@@ -209,6 +227,50 @@ class MediaLibrary extends React.Component {
     return matchFiles;
   };
 
+  getDatum = (rowIndex, columnIndex) => {
+    const {
+      files,
+      dynamicSearch,
+      forImage
+    } = this.props;
+    const { query, selectedFile } = this.state;
+    const filteredFiles = forImage ? this.filterImages(files) : files;
+    const queriedFiles = (!dynamicSearch && query) ? this.queryFilter(query, filteredFiles) : filteredFiles;
+    const tableData = this.toTableData(queriedFiles);
+
+    return tableData[rowIndex][columnIndex]
+
+  }
+
+  cellRenderer = ({columnIndex, key, rowIndex, style}) => {
+
+    const { selectedFile } = this.state;
+
+    const file = this.getDatum(rowIndex, columnIndex)
+    console.log('cellRenderer: ', rowIndex, columnIndex, file.key)
+    return (
+      <div
+        key={file.key}
+        className={c('nc-mediaLibrary-card', { 'nc-mediaLibrary-card-selected': selectedFile.key === file.key })}
+        onClick={() => this.handleAssetClick(file)}
+        tabIndex="-1"
+      >
+        <div className="nc-mediaLibrary-cardImage-container">
+          {
+            file.isViewableImage
+              ? (
+                <CardImage src={file.url} className="nc-mediaLibrary-cardImage" />
+                )
+              : <div className="nc-mediaLibrary-cardImage"/>
+          }
+          {/*<img src={file.url} className="nc-mediaLibrary-cardImage"/>*/}
+        </div>
+        <p className="nc-mediaLibrary-cardText">{file.name}</p>
+      </div>
+    )
+
+  }
+
   render() {
     const {
       isVisible,
@@ -304,37 +366,27 @@ class MediaLibrary extends React.Component {
             ? <div className="nc-mediaLibrary-emptyMessage"><h1>{emptyMessage}</h1></div>
             : null
         }
-        <div className="nc-mediaLibrary-cardGrid-container" ref={ref => (this.scrollContainerRef = ref)}>
-          <div className="nc-mediaLibrary-cardGrid">
-            {
-              tableData.map((file, idx) =>
-                <div
-                  key={file.key}
-                  className={c('nc-mediaLibrary-card', { 'nc-mediaLibrary-card-selected': selectedFile.key === file.key })}
-                  onClick={() => this.handleAssetClick(file)}
-                  tabIndex="-1"
-                >
-                  <div className="nc-mediaLibrary-cardImage-container">
-                    {
-                      file.isViewableImage
-                        ? (
-                          <ImageCanvas src={file.url} className="nc-mediaLibrary-cardImage" />
-                          )
-                        : <div className="nc-mediaLibrary-cardImage"/>
-                    }
-                    {/*<img src={file.url} className="nc-mediaLibrary-cardImage"/>*/}
-                  </div>
-                  <p className="nc-mediaLibrary-cardText">{file.name}</p>
-                </div>
-              )
-            }
-            {
-              hasNextPage
-                ? <Waypoint onEnter={() => this.handleLoadMore()}/>
-                : null
-            }
-          </div>
-          { isPaginating ? <h1 className="nc-mediaLibrary-paginatingMessage">Loading...</h1> : null }
+        <div>
+          <AutoSizer>
+            {({width, height}) => (
+              <Grid
+                className="nc-mediaLibrary-cardGrid-container"
+                ref={ref => (this.scrollContainerRef = ref)}
+                cellRenderer={this.cellRenderer}
+                height={height}
+                width={width}
+                overscanColumnCount={0}
+                overscanRowCount={3}
+                columnWidth={300}
+                rowHeight={240}
+                rowCount={hasFiles ? this.props.files.length / 3 : 0}
+                //columnCount={hasFiles ? this.props.files.length : 0}
+                columnCount={3}
+                scrollToColumn={0}
+                scrollToRow={0}
+              />
+            )}
+          </AutoSizer>
         </div>
       </Modal>
     );

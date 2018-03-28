@@ -4,6 +4,7 @@
   --mediaLibraryCardOutsideWidth: calc(var(--mediaLibraryCardWidth) + var(--mediaLibraryCardMargin) * 2);
 }
 
+
 .nc-mediaLibrary-dialog {
   display: grid;
   grid-template-rows: 120px auto;
@@ -172,6 +173,14 @@
   margin-right: -10px;
 }
 
+.ReactVirtualized__Grid__innerScrollContainer {
+  /*display: flex;*/
+  /*flex-wrap: wrap;*/
+  /*margin-left:  -10px;*/
+  /*margin-right: -10px;*/
+}
+
+
 .nc-mediaLibrary-card {
   width: var(--mediaLibraryCardWidth);
   height: 240px;
@@ -180,6 +189,8 @@
   border-radius: var(--borderRadius);
   cursor: pointer;
   overflow: hidden;
+
+  display: inline-block;
 
   &:focus {
     outline: none;

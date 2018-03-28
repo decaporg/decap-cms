@@ -165,6 +165,7 @@
     "react-toggled": "^1.1.2",
     "react-topbar-progress-indicator": "^2.0.0",
     "react-transition-group": "^2.2.1",
+    "react-virtualized": "^9.18.5",
     "react-waypoint": "^7.1.0",
     "redux": "^3.3.1",
     "redux-notifications": "^4.0.1",
