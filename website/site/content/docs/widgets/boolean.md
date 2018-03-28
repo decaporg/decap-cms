@@ -1,7 +1,6 @@
 ---
 label: "Boolean"
 target: "boolean"
-type: "widget"
 ---
 
 ### Boolean

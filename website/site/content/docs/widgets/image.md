@@ -1,7 +1,6 @@
 ---
 label: "Image"
 target: "image"
-type: "widget"
 ---
 
 ### Image

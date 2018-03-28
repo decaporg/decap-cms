@@ -1,7 +1,6 @@
 ---
 label: "List"
 target: "list"
-type: "widget"
 ---
 
 ### List

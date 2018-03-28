@@ -1,7 +1,6 @@
 ---
 label: "Select"
 target: "select"
-type: "widget"
 ---
 
 ### Select
