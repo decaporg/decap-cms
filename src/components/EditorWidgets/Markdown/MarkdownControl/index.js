@@ -21,6 +21,10 @@ export default class MarkdownControl extends React.Component {
     value: PropTypes.string,
   };
 
+  static defaultProps = {
+    value: '',
+  };
+
   constructor(props) {
     super(props);
     editorControl = props.editorControl;

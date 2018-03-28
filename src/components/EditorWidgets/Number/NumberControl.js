@@ -15,6 +15,10 @@ export default class NumberControl extends React.Component {
     max: PropTypes.number,
   };
 
+  static defaultProps = {
+    value: '',
+  };
+
   handleChange = (e) => {
     const valueType = this.props.field.get('valueType');
     const { onChange } = this.props;
