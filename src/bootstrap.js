@@ -13,8 +13,9 @@ import 'EditorWidgets';
 import 'MarkdownPlugins';
 import './index.css';
 
-function bootstrap(opts = {}) {
+const ROOT_ID = 'nc-root';
 
+function bootstrap(opts = {}) {
   const { config } = opts;
 
   /**
@@ -23,11 +24,25 @@ function bootstrap(opts = {}) {
   console.log(`Netlify CMS version ${NETLIFY_CMS_VERSION}`);
 
   /**
-   * Create mount element dynamically.
+   * Get DOM element where app will mount.
    */
-  const el = document.createElement('div');
-  el.id = 'nc-root';
-  document.body.appendChild(el);
+  function getRoot() {
+    /**
+     * Return existing root if found.
+     */
+    const existingRoot = document.getElementById(ROOT_ID);
+    if (existingRoot) {
+      return existingRoot;
+    }
+
+    /**
+     * If no existing root, create and return a new root.
+     */
+    const newRoot = document.createElement('div');
+    newRoot.id = ROOT_ID;
+    document.body.appendChild(newRoot);
+    return newRoot;
+  }
 
   /**
    * Configure Redux store.
@@ -64,7 +79,7 @@ function bootstrap(opts = {}) {
   /**
    * Render application root.
    */
-  render(<Root />, el);
+  render(<Root />, getRoot());
 }
 
 export default bootstrap;
