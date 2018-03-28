@@ -20,9 +20,10 @@ export default class DateControl extends React.Component {
     includeTime: PropTypes.bool,
   };
 
+  format = this.props.field.get('format') || (this.props.includeTime ? DEFAULT_DATETIME_FORMAT : DEFAULT_DATE_FORMAT);
+
   componentDidMount() {
-    const { includeTime, value, field, onChange } = this.props;
-    this.format = field.get('format') || (includeTime ? DEFAULT_DATETIME_FORMAT : DEFAULT_DATE_FORMAT);
+    const { value } = this.props;
 
     /**
      * Set the current date as default value if no default value is provided. An
