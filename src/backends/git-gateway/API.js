@@ -10,6 +10,10 @@ export default class API extends GithubAPI {
     this.repoURL = "";
   }
 
+  hasWriteAccess() {
+    return this.getBranch()
+      .then(() => true, () => false);
+  }
 
   getRequestHeaders(headers = {}) {
     return this.tokenPromise()
