@@ -31,8 +31,8 @@
     ]
   },
   "files": [
-    "dist/",
-    "README.md"
+    "src/",
+    "dist/"
   ],
   "pre-commit": "lint:staged",
   "jest": {
