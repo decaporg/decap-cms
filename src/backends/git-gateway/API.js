@@ -12,7 +12,19 @@ export default class API extends GithubAPI {
 
   hasWriteAccess() {
     return this.getBranch()
-      .then(() => true, () => false);
+      .then(() => true)
+      .catch(error => {
+        if (error.status === 401) {
+          if (error.message === "Bad credentials") {
+            throw new Error("Git Gateway Error: Please ask your site administrator to reissue the Git Gateway token.");
+          } else {
+            return false;
+          }
+        } else {
+          console.error("Problem fetching repo data from GitHub");
+          throw error;
+        }
+      });
   }
 
   getRequestHeaders(headers = {}) {
