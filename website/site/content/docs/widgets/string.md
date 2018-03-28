@@ -1,7 +1,6 @@
 ---
 label: "String"
 target: "string"
-type: "widget"
 ---
 
 ### String

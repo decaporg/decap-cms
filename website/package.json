@@ -35,7 +35,7 @@
     "gulp-rename": "^1.2.2",
     "gulp-transform": "^3.0.5",
     "gulp-util": "^3.0.7",
-    "hugo-bin": "^0.18.0",
+    "hugo-bin": "^0.23.0",
     "imports-loader": "^0.6.5",
     "postcss-at2x": "^2.0.0",
     "postcss-colour-functions": "^1.5.1",

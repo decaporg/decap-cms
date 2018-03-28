@@ -1,7 +1,6 @@
 ---
 label: "Text"
 target: "text"
-type: "widget"
 ---
 
 ### Text
