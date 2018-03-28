@@ -259,7 +259,7 @@ export function createEmptyDraft(collection) {
   return (dispatch) => {
     const dataFields = {};
     collection.get('fields', List()).forEach((field) => {
-      dataFields[field.get('name')] = field.get('default', null);
+      dataFields[field.get('name')] = field.get('default');
     });
     const newEntry = createEntry(collection.get('name'), '', '', { data: dataFields });
     dispatch(emptyDraftCreated(newEntry));

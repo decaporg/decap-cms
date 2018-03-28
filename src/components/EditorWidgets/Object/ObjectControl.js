@@ -37,6 +37,10 @@ export default class ObjectControl extends Component {
     forList: PropTypes.bool,
   };
 
+  static defaultProps = {
+    value: Map(),
+  };
+
   constructor(props) {
     super(props);
     this.state = {
