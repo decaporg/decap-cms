@@ -150,4 +150,3 @@ collections: # A list of collections the CMS should be able to edit
           - {label: "Image", name: "image", widget: "image"}
           - {label: "File", name: "file", widget: "file"}
           - {label: "Select", name: "select", widget: "select", options: ["a", "b", "c"]}
-      

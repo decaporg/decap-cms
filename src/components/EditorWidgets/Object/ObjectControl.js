@@ -106,7 +106,7 @@ export default class ObjectControl extends Component {
     if (isModular) {
       return (
         <div id={forID} className={c(classNameWrapper, 'nc-objectControl-root')}>
-          { forList ? null : <TopBar collapsed={collapsed} onCollapseToggle={this.handleCollapseToggle } />}
+          { forList ? null : <TopBar collapsed={collapsed} onCollapseToggle={this.handleCollapseToggle} /> }
           { collapsed ? null : this.controlFor(value) }
         </div>
       );

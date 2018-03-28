@@ -9,7 +9,7 @@ import { Icon, ListItemTopBar, Dropdown, DropdownItem } from 'UI';
 import ObjectControl from 'EditorWidgets/Object/ObjectControl';
 
 function ListItem(props) {
-  return <div {...props} className={`list-item ${ props.className || '' }`}>{props.children}</div>
+  return <div {...props} className={`list-item ${ props.className || '' }`}>{props.children}</div>;
 }
 ListItem.propTypes = {
   className: PropTypes.string,
@@ -38,6 +38,7 @@ const TopBar = ({ allowAdd, onAdd, listLabel, onCollapseAllToggle, allItemsColla
       </button>
       {itemsCount} {itemsCount === 1 ? getSingularLabel(listLabel) : listLabel}
     </div>
+
     {
       allowAdd && !types ?
         <button className="nc-listControl-addButton" onClick={onAdd}>
@@ -163,7 +164,7 @@ export default class ListControl extends Component {
 
   handleFocus = () => {
     this.props.setActiveStyle();
-  };
+  }
 
   handleBlur = (e) => {
     const listValue = e.target.value.split(',').map(el => el.trim()).filter(el => el);
@@ -177,7 +178,7 @@ export default class ListControl extends Component {
     const parsedValue = (this.valueType === valueTypes.SINGLE) ? null : Map();
     this.setState({ itemsCollapsed: this.state.itemsCollapsed.push(false) });
     onChange((value || List()).push(parsedValue));
-  };
+  }
 
   handleAddType = ({ itemType }) => {
     const { value, onChange } = this.props;
@@ -219,14 +220,14 @@ export default class ListControl extends Component {
     this.setState({ itemsCollapsed: itemsCollapsed.delete(index) });
 
     onChange(value.remove(index), parsedMetadata);
-  }
+  };
 
   handleItemCollapseToggle = (index, event) => {
     event.preventDefault();
     const { itemsCollapsed } = this.state;
     const collapsed = itemsCollapsed.get(index);
     this.setState({ itemsCollapsed: itemsCollapsed.set(index, !collapsed) });
-  }
+  };
 
   handleCollapseAllToggle = (e) => {
     e.preventDefault();
@@ -234,7 +235,7 @@ export default class ListControl extends Component {
     const { itemsCollapsed } = this.state;
     const allItemsCollapsed = itemsCollapsed.every(val => val === true);
     this.setState({ itemsCollapsed: List(Array(value.size).fill(!allItemsCollapsed)) });
-  }
+  };
 
   objectLabel(item) {
     const { field } = this.props;
@@ -340,15 +341,14 @@ export default class ListControl extends Component {
       return this.renderListControl();
     }
 
-    return (
-      <input
-        type="text"
-        id={forID}
-        value={value}
-        onChange={this.handleChange}
-        onFocus={this.handleFocus}
-        onBlur={this.handleBlur}
-        className={classNameWrapper}
-      />);
+    return (<input
+      type="text"
+      id={forID}
+      value={value}
+      onChange={this.handleChange}
+      onFocus={this.handleFocus}
+      onBlur={this.handleBlur}
+      className={classNameWrapper}
+    />);
   }
-}
+};

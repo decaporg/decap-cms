@@ -27,6 +27,7 @@ import RelationControl from './Relation/RelationControl';
 import RelationPreview from './Relation/RelationPreview';
 import BooleanControl from './Boolean/BooleanControl';
 
+
 registerWidget('string', StringControl, StringPreview);
 registerWidget('text', TextControl, TextPreview);
 registerWidget('number', NumberControl, NumberPreview);
