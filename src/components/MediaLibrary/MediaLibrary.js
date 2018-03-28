@@ -238,34 +238,39 @@ class MediaLibrary extends React.Component {
     const queriedFiles = (!dynamicSearch && query) ? this.queryFilter(query, filteredFiles) : filteredFiles;
     const tableData = this.toTableData(queriedFiles);
 
-    return tableData[rowIndex][columnIndex]
+    return tableData ? tableData[rowIndex][columnIndex] : null
 
   }
 
-  cellRenderer = ({columnIndex, key, rowIndex, style}) => {
+  cellRenderer = ({columnIndex, key, rowIndex, style, isVisible}) => {
 
     const { selectedFile } = this.state;
 
     const file = this.getDatum(rowIndex, columnIndex)
-    console.log('cellRenderer: ', rowIndex, columnIndex, file.key)
+    //console.log('cellRenderer: ', rowIndex, columnIndex, file.key)
     return (
       <div
         key={file.key}
-        className={c('nc-mediaLibrary-card', { 'nc-mediaLibrary-card-selected': selectedFile.key === file.key })}
         onClick={() => this.handleAssetClick(file)}
         tabIndex="-1"
+        style={style}
+        className={'nc-mediaLibrary-card-wrapper'}
       >
-        <div className="nc-mediaLibrary-cardImage-container">
-          {
-            file.isViewableImage
-              ? (
-                <CardImage src={file.url} className="nc-mediaLibrary-cardImage" />
-                )
-              : <div className="nc-mediaLibrary-cardImage"/>
-          }
-          {/*<img src={file.url} className="nc-mediaLibrary-cardImage"/>*/}
+        <div
+          className={c('nc-mediaLibrary-card', { 'nc-mediaLibrary-card-selected': selectedFile.key === file.key })}
+        >
+          <div className="nc-mediaLibrary-cardImage-container">
+            {
+              file.isViewableImage
+                ? (
+                  <CardImage isVisible={isVisible} src={file.url} className="nc-mediaLibrary-cardImage" />
+                  )
+                : <div className="nc-mediaLibrary-cardImage"/>
+            }
+            {/*<img src={file.url} className="nc-mediaLibrary-cardImage"/>*/}
+          </div>
+          <p className="nc-mediaLibrary-cardText">{file.name}</p>
         </div>
-        <p className="nc-mediaLibrary-cardText">{file.name}</p>
       </div>
     )
 
@@ -375,9 +380,8 @@ class MediaLibrary extends React.Component {
                 cellRenderer={this.cellRenderer}
                 height={height}
                 width={width}
-                overscanColumnCount={0}
                 overscanRowCount={3}
-                columnWidth={300}
+                columnWidth={290}
                 rowHeight={240}
                 rowCount={hasFiles ? this.props.files.length / 3 : 0}
                 //columnCount={hasFiles ? this.props.files.length : 0}

@@ -25,6 +25,13 @@ class CardImage extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.src !== this.props.src) {
+      //this.prepareCanvas(nextProps.src)
+    }
+
+    if(
+      nextProps.visible !== this.props.visible &&
+      !this.state.resized
+    ) {
       this.prepareCanvas(nextProps.src)
     }
   }
@@ -38,16 +45,41 @@ class CardImage extends Component {
     image.setAttribute('crossOrigin', '')
     image.onload = function(event){
 
-      const aspectRatio = image.width / image.height
-      canvas.width = aspectRatio * 210
-      canvas.height = 210
+
+      let aspectRatio = image.width / image.height
+      if (image.width > image.height) {
+        //canvas.width = 552
+        //canvas.height = aspectRatio * 552
+      } else {
+        //aspectRatio = image.height / image.width
+      }
+      canvas.width = aspectRatio * 320
+      canvas.height = 320
+      // 276 * 2 = 552
+      // 160 * 2 = 320
+
 
       pica.resize(image, canvas, {
-        unsharpAmount: 80,
-        unsharpRadius: 0.6,
-        unsharpThreshold: 2
-      }).then(result => pica.toBlob(result, 'image/jpeg', 0.90))
-      .then(blob => console.log('resized to canvas & created blob!', blob));
+        //unsharpAmount: 80,
+        //unsharpRadius: 0.5,
+        //unsharpThreshold: 0,
+        //quality: 5,
+      }).then(result => pica.toBlob(result, 'image/jpeg', 1))
+      .then(blob => {
+        console.log('resized to canvas & created blob!', blob)
+        self.setState({resized: true})
+      });
+
+/*
+options - quality (number) or object:
+quality - 0..3. Default = 3 (lanczos, win=3).
+alpha - use alpha channel. Default = false.
+unsharpAmount - >=0, in percents. Default = 0 (off). Usually between 50 to 100 is good.
+unsharpRadius - 0.5..2.0. By default it's not set. Radius of Gaussian blur. If it is less than 0.5, Unsharp Mask is off. Big values are clamped to 2.0.
+unsharpThreshold - 0..255. Default = 0. Threshold for applying unsharp mask.
+cancelToken - Promise instance. If defined, current operation will be terminated on rejection.
+*/
+
       //.then(result => console.log('resize done!', result));
 
       //console.log('aspectRatio, width: ', aspectRatio, ctx.width, ctx.height)

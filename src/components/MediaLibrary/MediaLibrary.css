@@ -29,6 +29,9 @@
   @media (width >= 2080px) {
     width: calc(var(--mediaLibraryCardOutsideWidth) * 6 + 20px);
   }
+
+  width: calc(var(--mediaLibraryCardOutsideWidth) * 3 + 30px);
+
 }
 
 .nc-mediaLibrary-title {
@@ -180,11 +183,17 @@
   /*margin-right: -10px;*/
 }
 
+.nc-mediaLibrary-card-wrapper {
+  padding: 10px;
+}
+
 
 .nc-mediaLibrary-card {
-  width: var(--mediaLibraryCardWidth);
-  height: 240px;
-  margin: var(--mediaLibraryCardMargin);
+  /*width: var(--mediaLibraryCardWidth);
+  height: 240px;*/
+  width: 100%;
+  height: 100%;
+  /*margin: var(--mediaLibraryCardMargin);*/
   border: var(--textFieldBorder);
   border-radius: var(--borderRadius);
   cursor: pointer;
@@ -204,14 +213,14 @@
 .nc-mediaLibrary-cardImage {
   width: 100%;
   height: 160px;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: 2px 2px 0 0;
 }
 
 .nc-mediaLibrary-cardText {
   color: var(--colorText);
   padding: 8px;
-  margin-top: 20px;
+  margin-top: 10px;
   overflow-wrap: break-word;
   line-height: 1.3 !important;
 }
