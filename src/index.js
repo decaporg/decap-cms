@@ -1,28 +1,25 @@
-/**
- * This module provides a self-initializing CMS instance with API hooks added to
- * the `window` object.
- */
 import React from 'react';
 import bootstrap from './bootstrap';
 import registry from 'Lib/registry';
 import createReactClass from 'create-react-class';
 
 /**
- * Load the app.
+ * Load Netlify CMS automatically if `window.CMS_MANUAL_INIT` is set.
  */
-bootstrap();
+if (!window.CMS_MANUAL_INIT) {
+  bootstrap();
+} else {
+  console.log('`window.CMS_MANUAL_INIT` flag set, skipping automatic initialization.');
+}
 
 /**
  * Add extension hooks to global scope.
  */
-const CMS = { ...registry };
 if (typeof window !== 'undefined') {
-  window.CMS = CMS;
+  window.CMS = registry;
+  window.initCMS = bootstrap;
   window.createClass = window.createClass || createReactClass;
   window.h = window.h || React.createElement;
 }
 
-/**
- * Export the registry for projects that import the CMS.
- */
-export default CMS;
+export { registry as default, bootstrap as init };
