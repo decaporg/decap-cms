@@ -46,13 +46,13 @@ const slugFormatter = (template = "{{slug}}", entryData, slugConfig) => {
   const date = new Date();
 
   const getIdentifier = (entryData) => {
-    const identifier = selectIdentifier(entryData.keys());
+    const identifier = selectIdentifier(entryData.keySeq());
 
     if (identifier === undefined) {
       throw new Error("Collection must have a field name that is a valid entry identifier");
     }
 
-    return identifier;
+    return entryData.get(identifier);
   };
 
   const slug = template.replace(/\{\{([^\}]+)\}\}/g, (_, field) => {
