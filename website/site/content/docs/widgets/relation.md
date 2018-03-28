@@ -1,7 +1,6 @@
 ---
 label: "Relation"
 target: "relation"
-type: "widget"
 ---
 
 ### Relation

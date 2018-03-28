@@ -1,7 +1,6 @@
 ---
 label: "File"
 target: "file"
-type: "widget"
 ---
 
 ### File

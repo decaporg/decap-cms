@@ -1,7 +1,6 @@
 ---
 label: "Number"
 target: "number"
-type: "widget"
 ---
 
 ### Number

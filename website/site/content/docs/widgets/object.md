@@ -1,7 +1,6 @@
 ---
 label: "Object"
 target: "object"
-type: "widget"
 ---
 
 ### Object
