@@ -5,7 +5,7 @@ position: 23
 
 # Configuration Options
 
-All configuration options for Netlify CMS are specified in the `config.yml` file, in the folder where you access the editor UI (usually in the `/admin` folder).
+All configuration options for Netlify CMS are specified in the `config.yml` file, in the folder where you access the editor UI (usually in the `/admin` folder). Alternatively, you can place the `config.yml` file in a different folder and then specify its URL in the head using a `<link>` element, with its relationship set as `"cms-config-url"`. Its type should be one of the supported types: 'text/yaml', 'application/x-yaml'. (See `./example/index.html` for an example of this config in the comments.)
 
 To see working configuration examples, you can [start from a template](https://www.netlifycms.org/docs/start-with-a-template) or check out the [CMS demo site](https://cms-demo.netlify.com). (No login required: click the login button and the CMS will open.) You can refer to the demo [configuration code](https://github.com/netlify/netlify-cms/blob/master/example/config.yml) to see how each option was configured.
 

@@ -1,3 +1,4 @@
+import { get } from 'lodash';
 import { fromJS } from 'immutable';
 import { get, includes } from 'lodash';
 import { applyDefaults, validateConfig } from '../config';
@@ -117,37 +118,6 @@ describe('config', () => {
       expect(() => {
         validateConfig(fromJS({ foo: 'bar', backend: { name: 'bar' }, media_folder: 'baz', collections: [null] }));
       }).toThrowError('Error in configuration file: Your `collections` must be an array with at least one element. Check your config.yml file.');
-    });
-  });
-
-  describe('getConfigUrl', () => {
-    beforeEach(() => {
-      const testChild = document.getElementById('test');
-      if (testChild) document.head.removeChild(testChild);
-      const testLink = document.createElement('link');
-      testLink.setAttribute('id', 'test');
-      testLink.setAttribute('href', 'the/test/works');
-      testLink.setAttribute('rel', 'cms-config-url');
-      testLink.setAttribute('type', 'text/yaml');
-      document.head.appendChild(testLink);
-    });
-    it('should should return a default url if there is no <link> in <head>.', () => {
-      const testChild = document.getElementById('test');
-      document.head.removeChild(testChild);
-      expect(get(document.querySelectorAll('head link[rel="cms-config-url"][type="text/yaml"], [type="application/x-yaml"]')[0], 'href') || 'config.yml').toEqual('config.yml');
-    });
-    it('should return the <link> href if one is provided.', () => {
-      expect(get(document.querySelectorAll('head link[rel="cms-config-url"][type="text/yaml"], [type="application/x-yaml"]')[0], 'href') || 'config.yml').toEqual('the/test/works');
-    });
-    it('should return the <link> href if it is provided with an alternate type.', () => {
-      const testChild = document.getElementById('test');
-      testChild.setAttribute('type', 'application/x-yaml');
-      expect(get(document.querySelectorAll('head link[rel="cms-config-url"][type="text/yaml"], [type="application/x-yaml"]')[0], 'href') || 'config.yml').toEqual('the/test/works');
-    });
-    it('should return default if the <link> has an unsupported type.', () => {
-      const testChild = document.getElementById('test');
-      testChild.setAttribute('type', 'wrong/type');
-      expect(get(document.querySelectorAll('head link[rel="cms-config-url"][type="text/yaml"], [type="application/x-yaml"]')[0], 'href') || 'config.yml').toEqual('config.yml');
     });
   });
 });

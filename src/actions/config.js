@@ -1,6 +1,6 @@
 import yaml from "js-yaml";
 import { Map, List, fromJS } from "immutable";
-import { trimStart, flow, isBoolean, get, includes } from "lodash";
+import { trimStart, flow, isBoolean, get } from "lodash";
 import { authenticateUser } from "Actions/auth";
 import * as publishModes from "Constants/publishModes";
 
