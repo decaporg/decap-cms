@@ -8,6 +8,7 @@ const HOST = 'localhost';
 const PORT = '8080';
 
 module.exports = merge.smart(require('./webpack.base.js'), {
+  mode: 'development',
   entry: {
     cms: [
       `webpack-dev-server/client?http://${ HOST }:${ PORT }/`,
@@ -34,11 +35,6 @@ module.exports = merge.smart(require('./webpack.base.js'), {
     ],
   },
   plugins: [
-    new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: JSON.stringify('development'),
-      },
-    }),
     new webpack.DefinePlugin({
       NETLIFY_CMS_VERSION: JSON.stringify(require("./package.json").version + "-dev"),
     }),

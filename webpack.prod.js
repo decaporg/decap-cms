@@ -3,9 +3,9 @@ const path = require('path');
 const webpack = require('webpack');
 const merge = require('webpack-merge');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = merge.smart(require('./webpack.base.js'), {
+  mode: 'production',
   entry: {
     cms: './index',
   },
@@ -19,19 +19,11 @@ module.exports = merge.smart(require('./webpack.base.js'), {
   context: path.join(__dirname, 'src'),
   plugins: [
     new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: JSON.stringify('production'),
-      },
-    }),
-    new webpack.DefinePlugin({
       NETLIFY_CMS_VERSION: JSON.stringify(require("./package.json").version),
     }),
 
-    // Combine/hoist module scopes when possible.
-    new webpack.optimize.ModuleConcatenationPlugin(),
-
     // Minify and optimize the JavaScript
-    new UglifyJsPlugin({
+    new webpack.optimize.UglifyJsPlugin({
       sourceMap: true,
     }),
 
