@@ -7,6 +7,33 @@
 
 </details>
 
+## 1.4.0 (March 29, 2018)
+Filename creation can now be customized to exclude Unicode! Also, check out the new Beta Features! 💥
+
+### Features
+* Add option to strip Unicode from entry filenames ([@tech4him1](https://github.com/tech4him1) in [#1135](https://github.com/netlify/netlify-cms/pull/1135))
+
+### Improvements
+* Hide "create new" button for single files ([@tech4him1](https://github.com/tech4him1) in [#1200](https://github.com/netlify/netlify-cms/pull/1200))
+* Filter editorial workflow entries by PR base branch ([@erquhart](https://github.com/erquhart) in [#1155](https://github.com/netlify/netlify-cms/pull/1155))
+
+### Bug Fixes
+* Allow list widget "add" button to be disabled ([@gazebosx3](https://github.com/gazebosx3) in [#1102](https://github.com/netlify/netlify-cms/pull/1102))
+* Fix broken thumbnail when uploading an image to a private repository ([@Quicksaver](https://github.com/Quicksaver) in [#994](https://github.com/netlify/netlify-cms/pull/994))
+* Get default value from each widget rather than setting all to null ([@MichaelRomani](https://github.com/MichaelRomani) in [#1126](https://github.com/netlify/netlify-cms/pull/1126))
+* Fix editor validation notifications for editorial workflow ([@erquhart](https://github.com/erquhart) in [#1204](https://github.com/netlify/netlify-cms/pull/1204))
+* Prevent Git Gateway users with invalid tokens from logging in ([@tech4him1](https://github.com/tech4him1) in [#1209](https://github.com/netlify/netlify-cms/pull/1209))
+* Fix relation list preview ([@Quicksaver](https://github.com/Quicksaver) in [#1199](https://github.com/netlify/netlify-cms/pull/1199))
+* Fix missing config file handling ([@talves](https://github.com/talves) in [#1182](https://github.com/netlify/netlify-cms/pull/1182))
+* Fix initially blank date fields ([@tech4him1](https://github.com/tech4him1) in [#1210](https://github.com/netlify/netlify-cms/pull/1210))
+
+### Beta Features
+* Accept CSS strings in `registerPreviewStyle` ([@erquhart](https://github.com/erquhart) in [#1162](https://github.com/netlify/netlify-cms/pull/1162))
+* Change manual init API to use the same bundle as auto init ([@talves](https://github.com/talves) and @erquhart in [#1173](https://github.com/netlify/netlify-cms/pull/1173))
+
+### 4 tha devz
+* Ship source code to npm ([@tech4him1](https://github.com/tech4him1) in [#1095](https://github.com/netlify/netlify-cms/pull/1095))
+
 ## 1.3.5 (March 6, 2018)
 Fixes styling issues
 
