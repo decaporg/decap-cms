@@ -38,7 +38,7 @@ function widgetsCloud() {
         setTimeout(() => {
             document.getElementsByClassName("widgets")[0].scrollIntoView({
                 behavior: "smooth",
-                block: "nearest"
+                block: "start"
             }); // Scrolls to the widgets section
         }, 200)
     }
