@@ -5,8 +5,8 @@
   "main": "dist/cms.js",
   "scripts": {
     "start": "npm run dev",
-    "dev": "webpack-dev-server -d --config webpack.dev.js",
-    "dev:write": "webpack-dev-server -d --config webpack.dev-write.js",
+    "dev": "webpack-serve webpack.dev.js",
+    "dev:write": "webpack-serve webpack.dev-write.js",
     "test": "jest --coverage",
     "test:watch": "jest --watch",
     "build": "webpack --config webpack.prod.js --display-error-details",
@@ -121,8 +121,8 @@
     "svg-inline-loader": "^0.8.0",
     "webpack": "^4.4.1",
     "webpack-cli": "^2.0.13",
-    "webpack-dev-server": "^3.1.1",
     "webpack-merge": "^4.1.2",
+    "webpack-serve": "^0.3.0",
     "write-file-webpack-plugin": "^4.2.0"
   },
   "dependencies": {

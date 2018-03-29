@@ -4,21 +4,14 @@ const webpack = require('webpack');
 const merge = require('webpack-merge');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
-const HOST = 'localhost';
-const PORT = '8080';
-
 module.exports = merge.smart(require('./webpack.base.js'), {
   mode: 'development',
   entry: {
-    cms: [
-      `webpack-dev-server/client?http://${ HOST }:${ PORT }/`,
-      './index',
-    ],
+    cms: './index',
   },
   output: {
     path: path.join(__dirname, 'dist'),
     filename: '[name].js',
-    publicPath: `http://${ HOST }:${ PORT }/`,
     library: 'netlify-cms',
     libraryTarget: 'umd',
     umdNamedDefine: true,
@@ -45,10 +38,12 @@ module.exports = merge.smart(require('./webpack.base.js'), {
     }),
   ],
   devtool: 'source-map',
-  devServer: {
-    contentBase: 'example/',
-    historyApiFallback: true,
-    disableHostCheck: true,
-    headers: {"Access-Control-Allow-Origin": "*"},
+  serve: {
+    content: 'example/',
+    // historyApiFallback: true,
+    // disableHostCheck: true,
+    dev: {
+      headers: {"Access-Control-Allow-Origin": "*"},
+    },
   },
 });
