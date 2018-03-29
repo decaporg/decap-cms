@@ -22,11 +22,6 @@ module.exports = merge.smart(require('./webpack.base.js'), {
       NETLIFY_CMS_VERSION: JSON.stringify(require("./package.json").version),
     }),
 
-    // Minify and optimize the JavaScript
-    new webpack.optimize.UglifyJsPlugin({
-      sourceMap: true,
-    }),
-
     // Extract CSS
     new ExtractTextPlugin({
       filename: '[name].css',
