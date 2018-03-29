@@ -8,10 +8,7 @@ function widgetsCloud() {
     if (document.getElementsByClassName("widgets")) {
 
         loadWidgetFromHash();
-
-        if (history.pushState) {
-            window.addEventListener('popstate', loadWidgetFromHash);
-        }
+        window.addEventListener('hashchange', loadWidgetFromHash);
 
         for (let i = 0; i < widgetItems.length; i++) {
             widgetItems[i].addEventListener("click", e => { // Add click event for each widget button in the cloud
