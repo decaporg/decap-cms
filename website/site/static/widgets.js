@@ -8,7 +8,7 @@ function widgetsCloud() {
     if (document.getElementsByClassName("widgets")) {
 
         loadWidgetFromHash();
-        
+
         if (history.pushState) {
             window.addEventListener('popstate', loadWidgetFromHash);
         }
@@ -34,6 +34,8 @@ function widgetsCloud() {
                 targetWidgetItem = widgetItems[i]
             }
         };
+        if (!targetWidgetItem) return; // Make sure the hash pointed to a widget, not something else.
+
         changeWidgets(openedWidget, targetWidget, targetWidgetItem, true);  // Runs the function to change which widget is displayed
 
         setTimeout(() => {
