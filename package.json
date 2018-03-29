@@ -123,7 +123,6 @@
     "webpack-cli": "^2.0.13",
     "webpack-dev-server": "^3.1.1",
     "webpack-merge": "^4.1.2",
-    "webpack-postcss-tools": "^1.1.1",
     "write-file-webpack-plugin": "^4.2.0"
   },
   "dependencies": {
