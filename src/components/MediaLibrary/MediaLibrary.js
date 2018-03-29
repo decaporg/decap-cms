@@ -42,6 +42,7 @@ class MediaLibrary extends React.Component {
   state = {
     selectedFile: {},
     query: '',
+    blobs: []
   };
 
   componentDidMount() {
@@ -242,11 +243,24 @@ class MediaLibrary extends React.Component {
 
   }
 
+  saveBlob = (fileId, blob) => {
+    // console.log('saveBlob: ', fileId, blob)
+    const object = {
+      key: fileId,
+      blob: blob
+    }
+    this.setState({ blobs: [...this.state.blobs, object]})
+  }
+
   cellRenderer = ({columnIndex, key, rowIndex, style, isVisible}) => {
 
     const { selectedFile } = this.state;
 
     const file = this.getDatum(rowIndex, columnIndex)
+    const savedBlob = this.state.blobs.find(blob => {
+      return blob.key === file.key
+    })
+    // console.log('cellRenderer savedBlob: ', savedBlob)
     //console.log('cellRenderer: ', rowIndex, columnIndex, file.key)
     return (
       <div
@@ -263,7 +277,14 @@ class MediaLibrary extends React.Component {
             {
               file.isViewableImage
                 ? (
-                  <CardImage isVisible={isVisible} src={file.url} className="nc-mediaLibrary-cardImage" />
+                  <CardImage
+                    className="nc-mediaLibrary-cardImage"
+                    src={file.url}
+                    saveBlob={this.saveBlob}
+                    blob={savedBlob && savedBlob.blob}
+                    fileId={file.key}
+                    isVisible={isVisible}
+                  />
                   )
                 : <div className="nc-mediaLibrary-cardImage"/>
             }

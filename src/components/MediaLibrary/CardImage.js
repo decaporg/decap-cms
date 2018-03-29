@@ -9,6 +9,27 @@ const pica = picaImport()
 
 // https://stackoverflow.com/a/7557690
 
+
+function blobToImg(img, blob, handler) {
+
+  if (img && blob) {
+    const imageUrl = URL.createObjectURL(blob)
+    console.log('img: ', img, ' blob: ', blob, ' imageUrl: ', imageUrl)
+    //img.addEventListener('load', () => {
+    //  console.log('img load!', imageUrl)
+    //  return URL.revokeObjectURL(imageUrl)
+    //})
+
+    img.addEventListener('load', handler = function () {
+      console.log('img load!', imageUrl, handler)
+      return URL.revokeObjectURL(imageUrl)
+    }, false)
+
+    img.src = imageUrl
+  }
+
+}
+
 class CardImage extends Component {
 
   constructor(props) {
@@ -21,12 +42,31 @@ class CardImage extends Component {
 
   componentDidMount() {
     this.prepareCanvas(this.props.src)
+
+    this.handler = null
+  }
+
+  componentWillUnmount() {
+
+    if (this.img) {
+      console.log('unMount removeListener')
+      this.img.removeEventListener('load',  this.handler, false)
+    }
+
+    if (this.imgMem) {
+      this.imgMem.onload = function(){};
+      console.log('unMount unset onload: ', this.imgMem)
+      delete this.imgMem;
+    }
+
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.src !== this.props.src) {
       //this.prepareCanvas(nextProps.src)
     }
+
+    //if(nextProps.blob !== props.blob) {}
 
     if(
       nextProps.visible !== this.props.visible &&
@@ -37,38 +77,42 @@ class CardImage extends Component {
   }
 
   prepareCanvas = (src) => {
-    const self = this
-    const canvas = this.canvas
-    const ctx = canvas.getContext('2d')
-    const image = new Image()
-    image.src = src
-    image.setAttribute('crossOrigin', '')
-    image.onload = function(event){
+
+    if (this.props.blob) {
+      blobToImg(this.img, this.props.blob, this.handler)
+    } else {
+      const self = this
+      const canvas = this.canvas
+      const ctx = canvas.getContext('2d')
+      self.imgMem = new Image()
+      self.imgMem.src = src
+      self.imgMem.setAttribute('crossOrigin', '')
+      self.imgMem.onload = function(event){
+        console.log('imgMem onLoad', src)
+        let aspectRatio = self.imgMem.width / self.imgMem.height
+        canvas.width = aspectRatio * 320
+        canvas.height = 320
+        // 276 * 2 = 552
+        // 160 * 2 = 320
+        pica.resize(self.imgMem, canvas, {
+          //unsharpAmount: 80,
+          //unsharpRadius: 0.5,
+          //unsharpThreshold: 0,
+          //quality: 5,
+        }).then(result => {
+          return pica.toBlob(result, 'image/jpeg', 1)
+        })
+        .then(blob => {
+          self.props.saveBlob(self.props.fileId, blob)
+          //console.log('resized to canvas & created blob!', blob)
+          blobToImg(self.img, blob, this.handler)
+        });
+    }
 
 
-      let aspectRatio = image.width / image.height
-      if (image.width > image.height) {
-        //canvas.width = 552
-        //canvas.height = aspectRatio * 552
-      } else {
-        //aspectRatio = image.height / image.width
-      }
-      canvas.width = aspectRatio * 320
-      canvas.height = 320
-      // 276 * 2 = 552
-      // 160 * 2 = 320
+      // how to use
+      // cancelToken - Promise instance. If defined, current operation will be terminated on rejection.
 
-
-      pica.resize(image, canvas, {
-        //unsharpAmount: 80,
-        //unsharpRadius: 0.5,
-        //unsharpThreshold: 0,
-        //quality: 5,
-      }).then(result => pica.toBlob(result, 'image/jpeg', 1))
-      .then(blob => {
-        console.log('resized to canvas & created blob!', blob)
-        self.setState({resized: true})
-      });
 
 /*
 options - quality (number) or object:
@@ -90,13 +134,23 @@ cancelToken - Promise instance. If defined, current operation will be terminated
 
   render() {
     return (
-      <canvas
-        ref={ (ref) => this.canvas = ref }
-        style={{
-          ...this.props.style
-        }}
-        className={ this.props.className }
-      />
+      <div>
+        <canvas
+          ref={ (ref) => this.canvas = ref }
+          style={{
+            ...this.props.style,
+            display: `none`
+          }}
+          className={ this.props.className }
+        />
+        <img
+          ref={ (ref) => this.img = ref }
+          style={{
+            ...this.props.style,
+          }}
+          className={ this.props.className }
+        />
+      </div>
     )
   }
 }
