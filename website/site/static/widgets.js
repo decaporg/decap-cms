@@ -6,8 +6,15 @@ function widgetsCloud() {
     let activeWidgetItem = document.getElementsByClassName("widgets__item_active")[0]; // Active button in the widgets cloud
 
     if (document.getElementsByClassName("widgets")) {
-
-        loadWidgetFromHash();
+        
+        if (loadWidgetFromHash()) { // Scroll to widget cloud if URL hash set to a widget.
+          setTimeout(() => {
+              document.getElementsByClassName("widgets")[0].scrollIntoView({
+                  behavior: "smooth",
+                  block: "nearest"
+              }); // Scrolls to the widgets section
+          }, 200);
+        }
         window.addEventListener('hashchange', loadWidgetFromHash);
 
         for (let i = 0; i < widgetItems.length; i++) {
@@ -34,13 +41,7 @@ function widgetsCloud() {
         if (!targetWidgetItem) return; // Make sure the hash pointed to a widget, not something else.
 
         changeWidgets(openedWidget, targetWidget, targetWidgetItem, true);  // Runs the function to change which widget is displayed
-
-        setTimeout(() => {
-            document.getElementsByClassName("widgets")[0].scrollIntoView({
-                behavior: "smooth",
-                block: "start"
-            }); // Scrolls to the widgets section
-        }, 200)
+        return true;
     }
     function changeWidgets(active, target, cloudItem, preventHistoryUpdate) {
     
