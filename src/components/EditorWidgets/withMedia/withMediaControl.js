@@ -134,7 +134,7 @@ export default function withMediaControl(forImage) {
                             />*/}
                             <Observer tag={`span`} onChange={this.handleInViewChange}>
                               <CardImage
-                                src={'https://raw.githubusercontent.com/owenhoskins/gatsby-sharp-netlify-cms/development/static' + getAsset(value)}
+                                src={'https://raw.githubusercontent.com/swartists/starworksartists.com/development/static' + getAsset(value)}
                                 saveBlob={this.saveBlob}
                                 blob={this.state.blob}
                                 fileId={this.controlID}

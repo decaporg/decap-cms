@@ -72,6 +72,7 @@ export default class API {
     const headers = this.requestHeaders(options.headers || {});
     const url = this.urlFor(path, options);
     let responseStatus;
+    console.log('API request: ', path, headers, url)
     return fetch(url, { ...options, headers }).then((response) => {
       responseStatus = response.status;
       const contentType = response.headers.get("Content-Type");
@@ -263,6 +264,8 @@ export default class API {
     });
 
     const fileTree = this.composeFileTree(files);
+
+    console.log('persistFiles: fileTree', fileTree)
 
     return Promise.all(uploadPromises).then(() => {
       if (!options.mode || (options.mode && options.mode === SIMPLE)) {

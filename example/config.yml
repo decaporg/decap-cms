@@ -1,13 +1,13 @@
 backend:
   name: github
-  repo: owenhoskins/gatsby-sharp-netlify-cms
+  repo: swartists/starworksartists.com
   branch: development # Branch to update (optional; defaults to master)
 
 #display_url: https://example.com
 #media_folder: "assets/uploads"
 
 media_folder: 'static/img' # this is where netlify cms places images.
-
+public_folder: '/img' # this is where gatsby places images
 
 collections: # A list of collections the CMS should be able to edit
   - name: "posts" # Used in routes, ie.: /admin/collections/:slug/edit
@@ -38,7 +38,7 @@ collections: # A list of collections the CMS should be able to edit
       - {name: kind, widget: hidden, default: 'artist'}
       - {label: "Name", name: "title", widget: "string", tagname: "h1"}
       - {label: "Type", name: "type", widget: "select", options: ["hair", "makeup", "stylist", "grooming", "manicurist", "color"]}
-      - {label: "Cover Image", name: "cover", widget: "image", required: true, tagname: ""}
+      - {label: "Cover Image", name: "cover", widget: "image", optional: true, tagname: ""}
       - {label: "Instagram handle", name: "instagram_handle", widget: "string", tagname: "p", required: false}
       - {label: "Enquire", name: "enquire", widget: "string", tagname: "p", required: false}
       - name: portfolios
@@ -50,7 +50,7 @@ collections: # A list of collections the CMS should be able to edit
           - name: gallery
             label: Gallery
             widget: gallery
-            required: true
+            optional: true
             fields:
               - {name: image, label: Image, widget: image, class: 'gallery'}
       - name: videos
@@ -60,7 +60,7 @@ collections: # A list of collections the CMS should be able to edit
         fields:
           - {label: 'Title', name: 'title', widget: 'string'}
           - {label: 'URL', name: 'url', widget: 'string'}
-      - {label: "Biography Text", name: "body", widget: "markdown"}
+      - {label: "Biography Text", name: "body", widget: "markdown", optional: true}
 
 
 
@@ -75,7 +75,7 @@ collections: # A list of collections the CMS should be able to edit
       - name: images
         label: Gallery
         widget: gallery
-        required: true
+        optional: true
         fields:
           - {name: image, label: Image, widget: image, class: 'gallery'}
 
