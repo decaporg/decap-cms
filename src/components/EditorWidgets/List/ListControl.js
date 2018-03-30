@@ -5,7 +5,7 @@ import { List, Map } from 'immutable';
 import { partial } from 'lodash';
 import c from 'classnames';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
-import { Icon, ListItemTopBar } from 'UI';
+import { Icon, ListItemTopBar, Dropdown, DropdownItem } from 'UI';
 import ObjectControl from 'EditorWidgets/Object/ObjectControl';
 
 function ListItem(props) {
@@ -23,23 +23,49 @@ function valueToString(value) {
 
 const SortableListItem = SortableElement(ListItem);
 
-const TopBar = ({ allowAdd, onAdd, listLabel, onCollapseAllToggle, allItemsCollapsed, itemsCount }) => (
+const getSingularLabel = (label) => {
+  if (label.charAt(label.length - 1).toLowerCase() === 's') {
+    label = label.substr(0, label.length - 1);
+  }
+  return label;
+};
+
+const TopBar = ({ allowAdd, onAdd, listLabel, onCollapseAllToggle, allItemsCollapsed, itemsCount, types }) => (
   <div className="nc-listControl-topBar">
     <div className="nc-listControl-listCollapseToggle">
       <button className="nc-listControl-listCollapseToggleButton" onClick={onCollapseAllToggle}>
         <Icon type="chevron" direction={allItemsCollapsed ? 'right' : 'down'} size="small" />
       </button>
-      {itemsCount} {listLabel}
+      {itemsCount} {itemsCount === 1 ? getSingularLabel(listLabel) : listLabel}
     </div>
 
     {
-      allowAdd ?
+      allowAdd && !types ?
         <button className="nc-listControl-addButton" onClick={onAdd}>
           Add {listLabel} <Icon type="add" size="xsmall" />
         </button>
       :
         null
     }
+    {types && (
+      <div className="nc-toolbar-dropdown" style={{ zIndex: 100 }}>
+        <Dropdown
+          dropdownTopOverlap="24px"
+          button={
+            <button className="nc-listControl-addButton">
+              Add {getSingularLabel(listLabel)} <Icon type="add" size="xsmall" />
+            </button>
+          }
+        >
+          {types &&
+            types
+              .toList()
+              .map((itemType, idx) => (
+                <DropdownItem key={idx} label={itemType.get('label')} onClick={() => onAdd({ itemType })} />
+              ))}
+        </Dropdown>
+      </div>
+    )}
   </div>
 );
 
@@ -85,6 +111,11 @@ export default class ListControl extends Component {
     };
 
     this.valueType = null;
+    
+    this.isModular = false;
+    if (props.field.get('types')) {
+      this.isModular = true;
+    }
   }
 
   /**
@@ -102,7 +133,7 @@ export default class ListControl extends Component {
 
     if (field.get('fields')) {
       this.valueType = valueTypes.MULTIPLE;
-    } else if (field.get('field')) {
+    } else if (field.get('field') || field.get('types')) {
       this.valueType = valueTypes.SINGLE;
     }
   }
@@ -149,6 +180,13 @@ export default class ListControl extends Component {
     onChange((value || List()).push(parsedValue));
   }
 
+  handleAddType = ({ itemType }) => {
+    const { value, onChange } = this.props;
+    const parsedValue = itemType;
+    this.setState({ itemsCollapsed: this.state.itemsCollapsed.push(false) });
+    onChange((value || List()).push(parsedValue));
+  }
+
   /**
    * In case the `onChangeObject` function is frozen by a child widget implementation,
    * e.g. when debounced, always get the latest object value instead of using
@@ -161,7 +199,12 @@ export default class ListControl extends Component {
       const { value, metadata, onChange, field } = this.props;
       const collectionName = field.get('name');
       const newObjectValue = this.getObjectValue(index).set(fieldName, newValue);
-      const parsedValue = (this.valueType === valueTypes.SINGLE) ? newObjectValue.first() : newObjectValue;
+      let parsedValue;
+      if (this.isModular) {
+        parsedValue = newObjectValue;
+      } else {
+        parsedValue = this.valueType === valueTypes.SINGLE ? newObjectValue.first() : newObjectValue;
+      }
       const parsedMetadata = {
         [collectionName]: Object.assign(metadata ? metadata.toJS() : {}, newMetadata ? newMetadata[collectionName] : {}),
       };
@@ -200,8 +243,13 @@ export default class ListControl extends Component {
     const { field } = this.props;
     const multiFields = field.get('fields');
     const singleField = field.get('field');
-    const labelField = (multiFields && multiFields.first()) || singleField;
-    const value = multiFields ? item.get(multiFields.first().get('name')) : singleField.get('label');
+    const labelField = this.isModular ? item : (multiFields && multiFields.first()) || singleField;
+    let value;
+    if (this.isModular) {
+      value = item.get('name');
+    } else {
+      value = multiFields ? item.get(multiFields.first().get('name')) : singleField.get('label');
+    }
     return (value || `No ${ labelField.get('name') }`).toString();
   }
 
@@ -263,16 +311,18 @@ export default class ListControl extends Component {
     const { itemsCollapsed } = this.state;
     const items = value || List();
     const label = field.get('label_singular') || field.get('label');
+    const types = field.get('types');
 
     return (
       <div id={forID} className={c(classNameWrapper, 'nc-listControl')}>
         <TopBar
           allowAdd={field.get('allow_add', true)}
-          onAdd={this.handleAdd}
-          listLabel={label.toLowerCase()}
+          onAdd={types ? this.handleAddType : this.handleAdd}
+          listLabel={this.isModular ? field.get('label').toLowerCase() : label.toLowerCase()}
           onCollapseAllToggle={this.handleCollapseAllToggle}
           allItemsCollapsed={itemsCollapsed.every(val => val === true)}
           itemsCount={items.size}
+          types={types}
         />
         <SortableList
           items={items}
@@ -289,7 +339,7 @@ export default class ListControl extends Component {
     const { field, forID, classNameWrapper } = this.props;
     const { value } = this.state;
 
-    if (field.get('field') || field.get('fields')) {
+    if (field.get('field') || field.get('fields') || field.get('types')) {
       return this.renderListControl();
     }
 
