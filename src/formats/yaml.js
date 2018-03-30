@@ -31,14 +31,13 @@ const ImageType = new yaml.Type('image', {
 
 
 const OutputSchema = new yaml.Schema({
-  include: yaml.DEFAULT_SAFE_SCHEMA.include,
-  implicit: [MomentType, ImageType].concat(yaml.DEFAULT_SAFE_SCHEMA.implicit),
-  explicit: yaml.DEFAULT_SAFE_SCHEMA.explicit,
+  include: yaml.CORE_SCHEMA,
+  implicit: [MomentType, ImageType],
 });
 
 export default {
   fromFile(content) {
-    return yaml.safeLoad(content);
+    return yaml.safeLoad(content, { schema: yaml.CORE_SCHEMA });
   },
 
   toFile(data, sortedKeys = []) {
