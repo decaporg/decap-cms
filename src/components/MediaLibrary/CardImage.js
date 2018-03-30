@@ -36,12 +36,13 @@ class CardImage extends Component {
     super(props);
 
     this.state = {
-      inView: false
     }
   }
 
   componentDidMount() {
-    this.prepareCanvas(this.props.src)
+    if (this.props.isVisible) {
+      this.prepareCanvas(this.props.src)
+    }
 
     this.handler = null
   }
@@ -69,8 +70,8 @@ class CardImage extends Component {
     //if(nextProps.blob !== props.blob) {}
 
     if(
-      nextProps.visible !== this.props.visible &&
-      !this.state.resized
+      nextProps.isVisible !== this.props.isVisible &&
+      nextProps.isVisible
     ) {
       this.prepareCanvas(nextProps.src)
     }

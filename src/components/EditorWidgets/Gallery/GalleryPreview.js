@@ -90,9 +90,8 @@ const GalleryPreview = ({ value, getAsset }) => {
     const asset = getAsset(src)
     if (asset) {
       //console.log('getAsset: ', asset, asset && asset.path)
-      //images.push('https://raw.githubusercontent.com/owenhoskins/gatsby-sharp-netlify-cms/development/static/' + asset.path)
-      // this seems to be an issue locally only
-      images.push(asset.path)
+      images.push('https://raw.githubusercontent.com/owenhoskins/gatsby-sharp-netlify-cms/development/static/' + asset.path)
+      // images.push(asset.path)
     }
   })
 
@@ -123,50 +122,6 @@ const GalleryPreview = ({ value, getAsset }) => {
   // return ( <div className="nc-widgetPreview">{(field && field.get('fields')) || null}</div>
 }
 
-
-/*const GalleryPreview = ({ value, getAsset }) => {
-  //console.log('GalleryPreview: field: ', field, field.get('fields'))
-  //console.log('GalleryPreview: entry.getIn: ', entry, entry.getIn(['data', 'images']))
-
-  const images = []
-  value.forEach(function(val, index) {
-    const src = val.getIn(['image'])
-    // console.log('valueMap: ', val);
-    // console.log('imageMap src: ', src)
-    const asset = getAsset(src)
-    if (asset) {
-      console.log('getAsset: ', asset, asset && asset.path)
-      images.push(asset.path)
-    }
-  })
-
-  console.log('images: ', images)
-
-  return (
-    <div
-      style={{
-        textAlign: 'center'
-      }}
-    >
-      {
-        images.length > 0 && images.map(image =>
-        <img
-          src={image}
-          style={{
-            display: 'inline-block',
-            margin: '15px',
-            cursor: 'pointer',
-            width: 'auto',
-            height: '210px'
-          }}
-        />
-      )
-    }
-    </div>
-  )
-  // getIn data, images returns the List
-  // return ( <div className="nc-widgetPreview">{(field && field.get('fields')) || null}</div>
-}*/
 
 GalleryPreview.propTypes = {
   value: PropTypes.node,

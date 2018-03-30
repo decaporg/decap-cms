@@ -4,7 +4,9 @@ import ImmutablePropTypes from "react-immutable-proptypes";
 import uuid from 'uuid/v4';
 import { truncateMiddle } from 'Lib/textHelper';
 
-import { ImageCanvas } from '../Gallery/GalleryPreview'
+//import { ImageCanvas } from '../Gallery/GalleryPreview'
+import Observer from 'react-intersection-observer'
+import CardImage from '../../MediaLibrary/CardImage'
 
 const MAX_DISPLAY_LENGTH = 50;
 
@@ -25,13 +27,32 @@ export default function withMediaControl(forImage) {
     constructor(props) {
       super(props);
       this.controlID = uuid();
+
+      this.state = {
+        inView: false,
+        blob: false
+      }
     }
 
-    shouldComponentUpdate(nextProps) {
+    shouldComponentUpdate(nextProps, nextState) {
       /**
        * Always update if the value changes.
        */
-      if (this.props.value !== nextProps.value) {
+      if (
+        this.props.value !== nextProps.value
+      ) {
+        return true;
+      }
+
+      if (
+        this.state.inView !== (nextState && nextState.inView)
+      ) {
+        return true;
+      }
+
+      if (
+        this.state.blob !== (nextState && nextState.blob)
+      ) {
         return true;
       }
 
@@ -77,6 +98,15 @@ export default function withMediaControl(forImage) {
       return value ? truncateMiddle(value, MAX_DISPLAY_LENGTH) : null;
     };
 
+    saveBlob = (fileId, blob) => {
+      console.log('saveBlob: ', fileId, blob)
+      this.setState({ blob: blob })
+    }
+
+    handleInViewChange = (inView) => {
+      this.setState({inView})
+    }
+
     render() {
       const { value, getAsset, onRemoveAsset, classNameWrapper } = this.props;
       const fileName = this.renderFileName();
@@ -93,7 +123,7 @@ export default function withMediaControl(forImage) {
                       forImage
                         ? (<div className="nc-imageControl-imageWrapper">
                             {/*<img src={getAsset(value)}/>*/}
-                            <ImageCanvas
+                            {/*<ImageCanvas
                               src={getAsset(value)}
                               style={{
                                 borderRadius: '5px',
@@ -101,7 +131,17 @@ export default function withMediaControl(forImage) {
                                 objectFit: 'cover',
                                 width: '100%'
                               }}
-                            />
+                            />*/}
+                            <Observer tag={`span`} onChange={this.handleInViewChange}>
+                              <CardImage
+                                src={'https://raw.githubusercontent.com/owenhoskins/gatsby-sharp-netlify-cms/development/static' + getAsset(value)}
+                                saveBlob={this.saveBlob}
+                                blob={this.state.blob}
+                                fileId={this.controlID}
+                                isVisible={this.state.inView}
+                                className
+                              />
+                            </Observer>
                           </div>)
                         : null
                     }

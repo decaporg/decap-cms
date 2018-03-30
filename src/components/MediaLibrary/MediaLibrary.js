@@ -16,8 +16,6 @@ import {
 } from 'Actions/mediaLibrary';
 import { Icon } from 'UI';
 
-import { ImageCanvas } from '../EditorWidgets/Gallery/GalleryPreview'
-
 import CardImage from './CardImage'
 
 import {
@@ -283,7 +281,7 @@ class MediaLibrary extends React.Component {
                     saveBlob={this.saveBlob}
                     blob={savedBlob && savedBlob.blob}
                     fileId={file.key}
-                    isVisible={isVisible}
+                    isVisible={true}
                   />
                   )
                 : <div className="nc-mediaLibrary-cardImage"/>
