@@ -237,7 +237,17 @@ class MediaLibrary extends React.Component {
     const queriedFiles = (!dynamicSearch && query) ? this.queryFilter(query, filteredFiles) : filteredFiles;
     const tableData = this.toTableData(queriedFiles);
 
-    return tableData ? tableData[rowIndex][columnIndex] : null
+    if (tableData && tableData.length > 0) {
+      if (tableData[rowIndex] && tableData[rowIndex].length > 0) {
+        if (tableData[rowIndex][columnIndex]) {
+          return tableData[rowIndex][columnIndex]
+        }
+      }
+    }
+
+    return null
+
+    //return tableData ? tableData[rowIndex][columnIndex] : null
 
   }
 
