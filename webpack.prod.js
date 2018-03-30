@@ -43,5 +43,3 @@ module.exports = merge.smart(require('./webpack.base.js'), {
     }),
   ],
 });
-
-console.log(module.exports.module.rules)
