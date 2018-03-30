@@ -5,7 +5,10 @@ const merge = require('webpack-merge');
 
 module.exports = merge.smart(require('./webpack.base.js'), {
   plugins: [
-    new webpack.BannerPlugin('#!/usr/bin/env node', { raw: true }),
+    new webpack.BannerPlugin({
+      banner: '#!/usr/bin/env node',
+      raw: true,
+    }),
   ],
   entry: {
     "autoconfigure.collection": './scripts/autoconfigure.collection',
