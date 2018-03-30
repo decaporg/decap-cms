@@ -31,7 +31,7 @@ const ImageType = new yaml.Type('image', {
 
 
 const OutputSchema = new yaml.Schema({
-  include: yaml.CORE_SCHEMA,
+  include: [yaml.CORE_SCHEMA],
   implicit: [MomentType, ImageType],
 });
 
