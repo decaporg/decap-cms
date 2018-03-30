@@ -2,7 +2,6 @@
 const path = require('path');
 const webpack = require('webpack');
 const merge = require('webpack-merge');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = merge.smart(require('./webpack.base.js'), {
   mode: 'development',
@@ -32,10 +31,6 @@ module.exports = merge.smart(require('./webpack.base.js'), {
       NETLIFY_CMS_VERSION: JSON.stringify(require("./package.json").version + "-dev"),
     }),
     new webpack.NoEmitOnErrorsPlugin(),
-    new ExtractTextPlugin({
-      filename: '[name].css',
-      disable: true,
-    }),
   ],
   devtool: 'source-map',
   serve: {

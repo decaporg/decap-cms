@@ -1,7 +1,7 @@
 /* eslint global-require: 0 */
 
 const webpack = require('webpack');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
   module: {
@@ -17,27 +17,25 @@ module.exports = {
         */
         test: /\.css$/,
         include: [/redux-notifications/],
-        use: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: 'css-loader',
-        }),
+        use: [
+          ...(process.env.NODE_ENV === 'production' ? [MiniCssExtractPlugin.loader] : ['style-loader']),
+          "css-loader"
+        ],
       },
       {
         /* We use PostCSS for CMS styles */
         test: /\.css$/,
         exclude: [/node_modules/],
-        use: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: [
-            {
-              loader: 'css-loader',
-              options: {
-                importLoaders: 1,
-              },
+        use: [
+          ...(process.env.NODE_ENV === 'production' ? [MiniCssExtractPlugin.loader] : ['style-loader']),
+          {
+            loader: 'css-loader',
+            options: {
+              importLoaders: 1,
             },
-            { loader: 'postcss-loader' },
-          ],
-        }),
+          },
+          { loader: 'postcss-loader' },
+        ],
       },
       {
         test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,

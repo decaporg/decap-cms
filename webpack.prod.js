@@ -2,7 +2,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const merge = require('webpack-merge');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = merge.smart(require('./webpack.base.js'), {
   mode: 'production',
@@ -23,9 +23,8 @@ module.exports = merge.smart(require('./webpack.base.js'), {
     }),
 
     // Extract CSS
-    new ExtractTextPlugin({
-      filename: '[name].css',
-      allChunks: true
+    new MiniCssExtractPlugin({
+      filename: "[name].css",
     }),
 
     // During beta phase, generate source maps for better errors
@@ -44,3 +43,5 @@ module.exports = merge.smart(require('./webpack.base.js'), {
     }),
   ],
 });
+
+console.log(module.exports.module.rules)
