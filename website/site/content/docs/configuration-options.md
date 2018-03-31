@@ -168,6 +168,7 @@ fields:
   - {label: "Featured Image", name: "thumbnail", widget: "image", required: false}
   - {label: "Body", name: "body", widget: "markdown"}
 ```
+
 ### `editor`
 
 The `editor` option accepts a `preview` setting for disabling the preview pane
