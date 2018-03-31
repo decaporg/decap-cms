@@ -99,6 +99,7 @@ The `collections` setting is the heart of your Netlify CMS configuration, as it 
 - `frontmatter_delimiter`: see detailed description under `format`
 - `slug`: see detailed description below
 - `fields` (required): see detailed description below
+- `editor`: see detailed description below
 
 The last few options require more detailed information.
 
@@ -167,4 +168,16 @@ fields:
   - {label: "Featured Image", name: "thumbnail", widget: "image", required: false}
   - {label: "Body", name: "body", widget: "markdown"}
 ```
+### `editor`
 
+The `editor` option accepts a `preview` setting for disabling the preview pane
+by default for a collection.
+
+**Example:**
+
+```yaml
+- name: "posts"
+  label: "Posts"
+  editor:
+     preview: false
+```
