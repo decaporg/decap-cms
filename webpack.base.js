@@ -18,7 +18,7 @@ module.exports = {
         test: /\.css$/,
         include: [/redux-notifications/],
         use: [
-          ...(process.env.NODE_ENV === 'production' ? [MiniCssExtractPlugin.loader] : ['style-loader']),
+          (process.env.NODE_ENV === 'production' ? MiniCssExtractPlugin.loader : 'style-loader'),
           "css-loader"
         ],
       },
@@ -27,7 +27,7 @@ module.exports = {
         test: /\.css$/,
         exclude: [/node_modules/],
         use: [
-          ...(process.env.NODE_ENV === 'production' ? [MiniCssExtractPlugin.loader] : ['style-loader']),
+          (process.env.NODE_ENV === 'production' ? MiniCssExtractPlugin.loader : 'style-loader'),
           {
             loader: 'css-loader',
             options: {
