@@ -33,7 +33,8 @@
     }],
     "transform-export-extensions",
     "transform-class-properties",
-    "transform-object-rest-spread"
+    "transform-object-rest-spread",
+    "react-hot-loader/babel",
   ],
   "env": {
     "test": {
