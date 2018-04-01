@@ -164,7 +164,8 @@ class Editor extends React.Component {
        */
       const values = deserializeValues(entry.get('data'), fields);
       const deserializedEntry = entry.set('data', values);
-      this.createDraft(deserializedEntry);
+      const fieldsMetaData = nextProps.entryDraft && nextProps.entryDraft.get('fieldsMetaData');
+      this.createDraft(deserializedEntry, fieldsMetaData);
     } else if (newEntry) {
       this.props.createEmptyDraft(collection);
     }
@@ -175,12 +176,16 @@ class Editor extends React.Component {
     window.removeEventListener('beforeunload', this.exitBlocker);
   }
 
-  createDraft = (entry) => {
-    if (entry) this.props.createDraftFromEntry(entry);
+  createDraft = (entry, metadata) => {
+    if (entry) this.props.createDraftFromEntry(entry, metadata);
   };
 
   handleChangeStatus = (newStatusName) => {
-    const { updateUnpublishedEntryStatus, collection, slug, currentStatus } = this.props;
+    const { entryDraft, updateUnpublishedEntryStatus, collection, slug, currentStatus } = this.props;
+    if (entryDraft.get('hasChanged')) {
+      window.alert('You have unsaved changes, please save before updating status.');
+      return;
+    }
     const newStatus = status.get(newStatusName);
     this.props.updateUnpublishedEntryStatus(collection.get('name'), slug, currentStatus, newStatus);
   }
@@ -206,14 +211,11 @@ class Editor extends React.Component {
     if (currentStatus !== status.last()) {
       window.alert('Please update status to "Ready" before publishing.');
       return;
+    } else if (entryDraft.get('hasChanged')) {
+      window.alert('You have unsaved changes, please save before publishing.');
+      return;
     } else if (!window.confirm('Are you sure you want to publish this entry?')) {
       return;
-    } else if (entryDraft.get('hasChanged')) {
-      if (window.confirm('Your unsaved changes will be saved before publishing. Are you sure you want to publish?')) {
-        await persistEntry(collection);
-      } else {
-        return;
-      }
     }
 
     await publishUnpublishedEntry(collection.get('name'), slug);

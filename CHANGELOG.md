@@ -5,11 +5,112 @@
     Click to see more.
   </summary>
 
-  * Fix markdown widget re-rendering after load ([@erquhart](https://github.com/erquhart) in [#955](https://github.com/netlify/netlify-cms/pull/955))
-  * Fix image form not displaying when added as first item in markdown widget ([@Dammmien](https://github.com/Dammmien) in [#926](https://github.com/netlify/netlify-cms/pull/926))
-  * Add collapse all/expand all functionality to List widget ([@drlogout](https://github.com/drlogout) in [#912](https://github.com/netlify/netlify-cms/pull/912))
-  * Add expand/collapse functionality to object widget ([@drlogout](https://github.com/drlogout) in [#927](https://github.com/netlify/netlify-cms/pull/927))
 </details>
+
+## 1.4.0 (March 29, 2018)
+Filename creation can now be customized to exclude Unicode! Also, check out the new Beta Features! 💥
+
+### Features
+* Add option to strip Unicode from entry filenames ([@tech4him1](https://github.com/tech4him1) in [#1135](https://github.com/netlify/netlify-cms/pull/1135))
+
+### Improvements
+* Hide "create new" button for single files ([@tech4him1](https://github.com/tech4him1) in [#1200](https://github.com/netlify/netlify-cms/pull/1200))
+* Filter editorial workflow entries by PR base branch ([@erquhart](https://github.com/erquhart) in [#1155](https://github.com/netlify/netlify-cms/pull/1155))
+
+### Bug Fixes
+* Allow list widget "add" button to be disabled ([@gazebosx3](https://github.com/gazebosx3) in [#1102](https://github.com/netlify/netlify-cms/pull/1102))
+* Fix broken thumbnail when uploading an image to a private repository ([@Quicksaver](https://github.com/Quicksaver) in [#994](https://github.com/netlify/netlify-cms/pull/994))
+* Get default value from each widget rather than setting all to null ([@MichaelRomani](https://github.com/MichaelRomani) in [#1126](https://github.com/netlify/netlify-cms/pull/1126))
+* Fix editor validation notifications for editorial workflow ([@erquhart](https://github.com/erquhart) in [#1204](https://github.com/netlify/netlify-cms/pull/1204))
+* Prevent Git Gateway users with invalid tokens from logging in ([@tech4him1](https://github.com/tech4him1) in [#1209](https://github.com/netlify/netlify-cms/pull/1209))
+* Fix relation list preview ([@Quicksaver](https://github.com/Quicksaver) in [#1199](https://github.com/netlify/netlify-cms/pull/1199))
+* Fix missing config file handling ([@talves](https://github.com/talves) in [#1182](https://github.com/netlify/netlify-cms/pull/1182))
+* Fix initially blank date fields ([@tech4him1](https://github.com/tech4him1) in [#1210](https://github.com/netlify/netlify-cms/pull/1210))
+
+### Beta Features
+* Accept CSS strings in `registerPreviewStyle` ([@erquhart](https://github.com/erquhart) in [#1162](https://github.com/netlify/netlify-cms/pull/1162))
+* Change manual init API to use the same bundle as auto init ([@talves](https://github.com/talves) and @erquhart in [#1173](https://github.com/netlify/netlify-cms/pull/1173))
+
+### 4 tha devz
+* Ship source code to npm ([@tech4him1](https://github.com/tech4him1) in [#1095](https://github.com/netlify/netlify-cms/pull/1095))
+
+## 1.3.5 (March 6, 2018)
+Fixes styling issues
+
+* Revert lockfile update due to breaking changes in css processing deps ([@erquhart](https://github.com/erquhart))
+
+## 1.3.4 (March 6, 2018)
+Fixes editorial workflow entry failure
+
+* Fix editorial workflow entries not loading ([@erquhart](https://github.com/erquhart))
+
+## 1.3.3 (March 6, 2018)
+Fixes load failure
+
+* Fix bugs introduced by manual initialization ([@erquhart](https://github.com/erquhart) in [#1157](https://github.com/netlify/netlify-cms/pull/1157))
+
+## 1.3.2 (March 6, 2018)
+Fixes date widget default format, collection load failure when entry fails
+
+* Fix date widget default format ([@erquhart](https://github.com/erquhart) in [#1143](https://github.com/netlify/netlify-cms/pull/1143))
+* Fix collection failure when individual entries fail to load ([@tech4him1](https://github.com/tech4him1) in [#1093](https://github.com/netlify/netlify-cms/pull/1093))
+
+### Beta Features
+* Allow manual initialization and config injection ([@erquhart](https://github.com/erquhart) in [#1149](https://github.com/netlify/netlify-cms/pull/1149))
+
+## 1.3.1 (March 3, 2018)
+Fixes editorial workflow failure for unknown collections.
+
+* Report editorial workflow load errors, ignore entries with unkown collections ([@erquhart](https://github.com/erquhart) in [#1153](https://github.com/netlify/netlify-cms/pull/1153))
+
+## 1.3.0 (February 27, 2018)
+Multi-part extensions, e.g. "en.md", a11y improvements in the editor, and bugfixes.
+
+* Ensure unique id for each editor field ([@xifengjin88](https://github.com/xifengjin88) in [#1087](https://github.com/netlify/netlify-cms/pull/1087))
+* Fix lists crashing when first value is not a string ([@tech4him1](https://github.com/tech4him1) in [#1115](https://github.com/netlify/netlify-cms/pull/1115))
+* Support extensions with multiple parts (i.e. `en.md`) ([@tech4him1](https://github.com/tech4him1) in [#1123](https://github.com/netlify/netlify-cms/pull/1123))
+* Fix lost unsaved changes when updating status or publishing from editor ([@erquhart](https://github.com/erquhart) in [#987](https://github.com/netlify/netlify-cms/pull/987))
+
+## 1.2.2 (February 21, 2018)
+Fixes ES5 transpiling.
+
+* Remove babel-preset-env, fix ES5 transpiling ([@erquhart](https://github.com/erquhart) in [#1127](https://github.com/netlify/netlify-cms/pull/1127))
+
+## 1.2.1 (February 21, 2018)
+Allows `label_singular` config for collections and lists and distinct frontmatter delimiters.
+
+* Accept `label_singular` in collection config ([@peduarte](https://github.com/peduarte) in [#1086](https://github.com/netlify/netlify-cms/pull/1086))
+* Transpile down to ES5 to support older tooling eg. Webpack 1 ([@tech4him1](https://github.com/tech4him1) in [#1107](https://github.com/netlify/netlify-cms/pull/1107))
+* Allow different opening and closing frontmatter delimiters ([@tech4him1](https://github.com/tech4him1) in [#1094](https://github.com/netlify/netlify-cms/pull/1094))
+
+## 1.2.0 (February 13, 2018)
+Adds support for multiple frontmatter formats and custom delimiters, UI improvements.
+
+* Use babel-preset-env to transpile for supported environments only ([@tech4him1](https://github.com/tech4him1) in [#765](https://github.com/netlify/netlify-cms/pull/765))
+* Change direction of collapsed editor widget arrow indicators ([@Doocey](https://github.com/Doocey) in [#1059](https://github.com/netlify/netlify-cms/pull/1059))
+* Support for writing frontmatter in JSON, TOML, or YAML ([@tech4him1](https://github.com/tech4him1) in [#933](https://github.com/netlify/netlify-cms/pull/933))
+* Add collection label next to search results ([@solpark](https://github.com/solpark) in [#1068](https://github.com/netlify/netlify-cms/pull/1068))
+* Support custom delimiters for frontmatter ([@Swieckowski](https://github.com/Swieckowski) in [#1064](https://github.com/netlify/netlify-cms/pull/1064))
+
+## 1.1.0 (January 25, 2018)
+
+* Fix metadata handling for all children of a list field ([@Quicksaver](https://github.com/Quicksaver) in [#719](https://github.com/netlify/netlify-cms/pull/719))
+* Allow registry of external backends ([@talves](https://github.com/talves) in [#1011](https://github.com/netlify/netlify-cms/pull/1011))
+
+## 1.0.4 (January 23, 2018)
+
+* Fix markdown widget re-rendering after load ([@erquhart](https://github.com/erquhart) in [#955](https://github.com/netlify/netlify-cms/pull/955))
+* Fix image form not displaying when added as first item in markdown widget ([@Dammmien](https://github.com/Dammmien) in [#926](https://github.com/netlify/netlify-cms/pull/926))
+* Add collapse all/expand all functionality to List widget ([@drlogout](https://github.com/drlogout) in [#912](https://github.com/netlify/netlify-cms/pull/912))
+* Add expand/collapse functionality to object widget ([@drlogout](https://github.com/drlogout) in [#927](https://github.com/netlify/netlify-cms/pull/927))
+* Fix vertically centered icon positioning in Firefox ([@jimmaaay](https://github.com/jimmaaay) in [#976](https://github.com/netlify/netlify-cms/pull/976))
+* Fix new uploads not showing in media library ([@tech4him1](https://github.com/tech4him1) in [#925](https://github.com/netlify/netlify-cms/pull/925))
+* Overhaul widgets section in docs ([@hcavalieri](https://github.com/hcavalieri) in [#866](https://github.com/netlify/netlify-cms/pull/866))
+* Use proper formatting when writing JSON files ([@tech4him1](https://github.com/tech4him1) in [#979](https://github.com/netlify/netlify-cms/pull/979))
+* Ensure temporary storage is available before attempting to write ([@vencax](https://github.com/vencax) in [#550](https://github.com/netlify/netlify-cms/pull/550))
+* Show SVG preview images in the media library ([@Jinksi](https://github.com/Jinksi) in [#954](https://github.com/netlify/netlify-cms/pull/954))
+* Fix failed PR force-merge showing success message ([@tech4him1](https://github.com/tech4him1) in [#1016](https://github.com/netlify/netlify-cms/pull/1016))
+* Fix false proptype warning for collection view ([@Quicksaver](https://github.com/Quicksaver) in [#998](https://github.com/netlify/netlify-cms/pull/998))
 
 ## 1.0.3 (December 19, 2017)
 

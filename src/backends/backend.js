@@ -14,6 +14,15 @@ import { sanitizeSlug } from "Lib/urlHelper";
 import TestRepoBackend from "./test-repo/implementation";
 import GitHubBackend from "./github/implementation";
 import GitGatewayBackend from "./git-gateway/implementation";
+import { registerBackend, getBackend } from 'Lib/registry';
+
+/**
+ * Register internal backends
+ */
+registerBackend('git-gateway', GitGatewayBackend);
+registerBackend('github', GitHubBackend);
+registerBackend('test-repo', TestRepoBackend);
+
 
 class LocalStorageAuthStore {
   storageKey = "netlify-cms-user";
@@ -32,7 +41,7 @@ class LocalStorageAuthStore {
   }
 }
 
-const slugFormatter = (template = "{{slug}}", entryData) => {
+const slugFormatter = (template = "{{slug}}", entryData, slugConfig) => {
   const date = new Date();
 
   const getIdentifier = (entryData) => {
@@ -67,10 +76,10 @@ const slugFormatter = (template = "{{slug}}", entryData) => {
   // Convert slug to lower-case
   .toLocaleLowerCase()
 
-  // Replace periods and spaces with dashes.
-  .replace(/[.\s]/g, '-');
+  // Replace periods with dashes.
+  .replace(/[.]/g, '-');
 
-  return sanitizeSlug(slug);
+  return sanitizeSlug(slug, slugConfig);
 };
 
 class Backend {
@@ -164,7 +173,7 @@ class Backend {
     return (entry) => {
       const format = resolveFormat(collectionOrEntity, entry);
       if (entry && entry.raw !== undefined) {
-        const data = (format && attempt(format.fromFile.bind(null, entry.raw))) || {};
+        const data = (format && attempt(format.fromFile.bind(format, entry.raw))) || {};
         if (isError(data)) console.error(data);
         return Object.assign(entry, { data: isError(data) ? {} : data });
       }
@@ -192,10 +201,13 @@ class Backend {
     ))
     .then(entries => ({
       pagination: 0,
-      entries: entries.map(entry => {
+      entries: entries.reduce((acc, entry) => {
         const collection = collections.get(entry.collection);
-        return this.entryWithFormat(collection)(entry);
-      }),
+        if (collection) {
+          acc.push(this.entryWithFormat(collection)(entry));
+        }
+        return acc;
+      }, []),
     }));
   }
 
@@ -230,7 +242,7 @@ class Backend {
       if (!selectAllowNewEntries(collection)) {
         throw (new Error("Not allowed to create new entries in this collection"));
       }
-      const slug = slugFormatter(collection.get("slug"), entryDraft.getIn(["entry", "data"]));
+      const slug = slugFormatter(collection.get("slug"), entryDraft.getIn(["entry", "data"]), config.get("slug"));
       const path = selectEntryPath(collection, slug);
       entryObj = {
         path,
@@ -339,15 +351,10 @@ export function resolveBackend(config) {
 
   const authStore = new LocalStorageAuthStore();
 
-  switch (name) {
-    case "test-repo":
-      return new Backend(new TestRepoBackend(config), name, authStore);
-    case "github":
-      return new Backend(new GitHubBackend(config), name, authStore);
-    case "git-gateway":
-      return new Backend(new GitGatewayBackend(config), name, authStore);
-    default:
-      throw new Error(`Backend not found: ${ name }`);
+  if (!getBackend(name)) {
+    throw new Error(`Backend not found: ${ name }`);
+  } else {
+    return new Backend(getBackend(name).init(config), name, authStore);
   }
 }
 

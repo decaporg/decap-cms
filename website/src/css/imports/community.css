@@ -6,11 +6,11 @@
   @media screen and (min-width: $desktop) {
     h2 {
       text-align: center;
-      margin-bottom: $medium;
+      margin-bottom: $large;
     }
   }
 
-  .community-features {
+  .community {
     @neat-span-columns 12;
 
     @media screen and (min-width: $tablet) {
@@ -19,16 +19,17 @@
     @media screen and (min-width: $desktop) {
       @neat-span-columns 6;
     }
+  }
 
+  .community-features {
     .feature {
-      margin-top: $small;
-
+      margin-top: $medium;
     }
   }
 
   .contributors {
     @neat-span-columns 12;
-    margin-top: $small;
+    margin-top: $medium;
 
     @media screen and (min-width: $tablet) {
       @neat-span-columns 10;
@@ -42,8 +43,13 @@
       margin-top: 4px;
       img {
         width: 32px;
-        margin: 0 $micro $micro 0;
+        margin: 0 4px 4px 0;
         border-radius: 16px;
+        transition: 0.1s;
+      }
+      img:hover {
+        transform: scale(1.3);
+        box-shadow: 0 2px 6px 0 rgba(0,0,0,0.25), 0 4px 12px 0 rgba(0,0,0,0.25);
       }
     }
 

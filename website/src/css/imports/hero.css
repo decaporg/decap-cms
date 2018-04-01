@@ -1,7 +1,7 @@
 .hero {
   @neat-row;
   background: $darkerGrey;
-  background-image: linear-gradient(-180deg, #323B3B 0%, $darkerGrey 20%);
+  background-image: linear-gradient(-180deg, #2A2C24 0%, $darkerGrey 20%);
   color: $blueGrey;
   overflow: hidden;
   padding: calc($xl * 2.25) 0 0 0;
@@ -16,17 +16,14 @@
   }
 
   &.landing {
-    @media screen and (min-width: $tablet) {
-      padding-bottom: $xxl;
+    padding-bottom: 100px;
+    @media screen and (min-width: $desktop) {
+      padding-bottom: 200px;
     }
   }
 
   .hero-copy {
     margin: $medium auto $xl auto;
-
-    @media screen and (min-width: $desktop) {
-      text-align: center;
-    }
   }
 
   .subhead {
@@ -45,7 +42,7 @@
   }
 
   h1 {
-    color: white;
+    color: $green;
     margin-bottom: 0;
   }
 
@@ -54,8 +51,34 @@
   }
 
   h3 {
-    color: $green;
-    font-size: 20px;
+    color: white;
+  }
+
+  .cta-header {
+    display: block;
+    margin-top: $small;
+  }
+  .cta-header a {
+    display: inline-block;
+    color: white;
+    text-transform: uppercase;
+    font-size: $tiny;
+    letter-spacing: 0.5px;
+    background-color: $blue;
+    background-image: linear-gradient(-180deg, #4A7FDD 0%, #3A69C7 100%);
+    box-shadow: 0 4px 12px 0 rgba(0,0,0,0.3), 0 1px 3px 0 rgba(0,0,0,0.6);
+    border-radius: $borderRadius;
+    padding: 10px 14px 8px 14px;
+    transition: .2s;
+
+    &:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px 0 rgba(0,0,0,0.5), 0 1px 3px 0 rgba(0,0,0,1);
+    }
+    &:active {
+      transform: scale(0.95);
+      box-shadow: none;
+    }
   }
 
   .hero-features {
@@ -65,23 +88,61 @@
     }
 
     .feature {
-      margin-top: $medium;
+      margin: 0 0 $medium 0;
     }
 
   }
 
   .hero-graphic {
-    margin: $large auto $large auto;
+    @neat-span-columns 12;
+    position: relative;
+    cursor: pointer;
 
     @media screen and (min-width: $tablet) {
       @neat-span-columns 6;
       float: right;
-      margin-bottom: 0;
+      margin: 0;
     }
 
-    img {
+    img, iframe {
+      width: 100%;
       border-radius: $largeBorderRadius;
       box-shadow: 0 10px 30px 0 rgba(0,0,0,0.15), 0 3px 9px 0 rgba(0,0,0,0.30);
+    }
+
+    .hero-videolink {
+      position: absolute;
+      margin: auto;
+      padding: 10px 0 0 10px;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      width: 90px;
+      height: 90px;
+      font-size: 64px;
+      font-weight: $semibold;
+      text-align: center;
+      color: $blue;
+      background-color: rgba(255,255,255,0.85);
+      box-shadow: 0 3px 9px 0 rgba(0,0,0,0.05), 0 1px 3px 0 rgba(0,0,0,0.15);
+      border-radius: 100px;
+      transition: 0.1s;
+    }
+
+    &:hover {
+      .hero-videolink {
+        color: white;
+        background-color: $blue;
+        box-shadow: 0 6px 18px 0 rgba(0,0,0,0.15), 0 2px 6px 0 rgba(0,0,0,0.30);
+        transform: scale(1.1);
+      }
+    }
+
+    &:active {
+      .hero-videolink {
+        transform: scale(0.9);
+      }
     }
   }
 
@@ -134,6 +195,8 @@
     display: inline-block;
     position: fixed;
     right: $medium;
+    max-height: calc(100vh - ($xl * 1.5) - $medium);
+    overflow-y: auto;
   }
 
   @media screen and (min-width: 1280px) {

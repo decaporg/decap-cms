@@ -46,6 +46,7 @@ class Collection extends React.Component {
               ? null
               : <CollectionTop
                   collectionLabel={collection.get('label')}
+                  collectionLabelSingular={collection.get('label_singular')}
                   collectionDescription={collection.get('description')}
                   newEntryUrl={newEntryUrl}
                   viewStyle={this.state.viewStyle}

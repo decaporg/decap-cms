@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 import DateTime from 'react-datetime';
 import moment from 'moment';
 
+const DEFAULT_DATE_FORMAT = 'YYYY-MM-DD';
+const DEFAULT_DATETIME_FORMAT = moment.defaultFormat;
+
 export default class DateControl extends React.Component {
   static propTypes = {
     field: PropTypes.object.isRequired,
@@ -17,9 +20,10 @@ export default class DateControl extends React.Component {
     includeTime: PropTypes.bool,
   };
 
+  format = this.props.field.get('format') || (this.props.includeTime ? DEFAULT_DATETIME_FORMAT : DEFAULT_DATE_FORMAT);
+
   componentDidMount() {
-    const { value, field, onChange } = this.props;
-    this.format = field.get('format');
+    const { value } = this.props;
 
     /**
      * Set the current date as default value if no default value is provided. An
@@ -42,7 +46,7 @@ export default class DateControl extends React.Component {
 
   render() {
     const { includeTime, value, classNameWrapper, setActiveStyle, setInactiveStyle } = this.props;
-    const format = this.format || moment.defaultFormat;
+    const format = this.format;
     return (
       <DateTime
         timeFormat={!!includeTime}

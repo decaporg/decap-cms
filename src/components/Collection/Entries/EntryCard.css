@@ -56,6 +56,12 @@
   margin-bottom: 0;
 }
 
+.nc-entryListing-listCard-collection-label {
+  font-size: 12px;
+  color: var(--colorTextLead);
+  text-transform: uppercase;
+}
+
 .nc-entryListing-cardBody-full {
   height: 100%;
 }

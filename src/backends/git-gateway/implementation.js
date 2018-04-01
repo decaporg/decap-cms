@@ -75,7 +75,16 @@ export default class GitGateway extends GitHubBackend {
       } else {
         throw new Error("You don't have sufficient permissions to access Netlify CMS");
       }
-    });
+    })
+    .then(userData =>
+      this.api.hasWriteAccess().then(canWrite => {
+        if (canWrite) {
+          return userData;
+        } else {
+          throw new Error("You don't have sufficient permissions to access Netlify CMS");
+        }
+      })
+    );
   }
 
   logout() {

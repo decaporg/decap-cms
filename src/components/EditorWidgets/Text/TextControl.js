@@ -12,6 +12,10 @@ export default class TextControl extends React.Component {
     setInactiveStyle: PropTypes.func.isRequired,
   };
 
+  static defaultProps = {
+    value: '',
+  };
+
   /**
    * Always update to ensure `react-textarea-autosize` properly calculates
    * height. Certain situations, such as this widget being nested in a list

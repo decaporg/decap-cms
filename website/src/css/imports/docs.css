@@ -18,14 +18,6 @@
       display: block;
     }
 
-    @media screen and (min-width: $desktop) {
-      position: fixed;
-      top: 158px;
-      bottom: 0;
-      overflow-y: auto;
-      padding-right: 1em;
-    }
-
     &.mobile {
       display: block;
       position: relative;
@@ -116,11 +108,6 @@
       @neat-span-columns 17 24;
       @neat-shift 1 24;
     }
-
-    @media screen and (min-width: $desktop) {
-      @neat-shift 7 24;
-    }
-
 
     h2:not(:first-child) {
       margin-top: $large;

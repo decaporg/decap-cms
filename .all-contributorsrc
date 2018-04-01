@@ -672,6 +672,158 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "remmah",
+      "name": "remmah",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/1262221?v=4",
+      "profile": "https://github.com/remmah",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "sumeetjain",
+      "name": "Sumeet Jain",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/29388?v=4",
+      "profile": "http://sumeetjain.com",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "ragasirtahk",
+      "name": "Sagar Khatri",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/26816046?v=4",
+      "profile": "https://github.com/ragasirtahk",
+      "contributions": [
+        "doc",
+        "example"
+      ]
+    },
+    {
+      "login": "Doocey",
+      "name": "Kevin Doocey",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/8182932?v=4",
+      "profile": "https://www.dooceykev.in",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Swieckowski",
+      "name": "Swieckowski",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/31023010?v=4",
+      "profile": "https://www.linkedin.com/in/arthur-swieckowski/",
+      "contributions": [
+        "code",
+        "doc",
+        "test"
+      ]
+    },
+    {
+      "login": "pixelastic",
+      "name": "Tim Carry",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/283419?v=4",
+      "profile": "http://www.pixelastic.com/",
+      "contributions": [
+        "code",
+        "design",
+        "doc"
+      ]
+    },
+    {
+      "login": "solpark",
+      "name": "Sol Park",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/30510616?v=4",
+      "profile": "https://github.com/solpark",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "michaelromani",
+      "name": "Michael Romani",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/29218846?v=4",
+      "profile": "https://github.com/michaelromani",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "xifengjin88",
+      "name": "Xifeng Jin",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/15175868?v=4",
+      "profile": "http://linkedin/in/xifengjin88",
+      "contributions": [
+        "bug",
+        "code"
+      ]
+    },
+    {
+      "login": "peduarte",
+      "name": "Pedro Duarte",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/372831?v=4",
+      "profile": "http://pedroduarte.me",
+      "contributions": [
+        "bug",
+        "code",
+        "doc"
+      ]
+    },
+    {
+      "login": "Strangehill",
+      "name": "Antonio Argote",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/6064830?v=4",
+      "profile": "http://antonioargote.com",
+      "contributions": [
+        "design"
+      ]
+    },
+    {
+      "login": "ktaube",
+      "name": "Kristaps Taube",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/1479451?v=4",
+      "profile": "https://www.ktaube.com",
+       "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "daveyko",
+      "name": "David Ko",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/26639499?v=4",
+      "profile": "https://github.com/daveyko",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "igarbla",
+      "name": "Iñaki García",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/440562?v=4",
+      "profile": "http://www.txorua.com",
+      "contributions": [
+        "design"
+      ]
+    },
+    {
+      "login": "gazebosx3",
+      "name": "Sam",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/27162255?v=4",
+      "profile": "https://github.com/gazebosx3",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "dzello",
+      "name": "Josh Dzielak",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/174777?v=4",
+      "profile": "https://dzello.com",
+      "contributions": [
+        "doc"
+      ]
     }
   ]
 }

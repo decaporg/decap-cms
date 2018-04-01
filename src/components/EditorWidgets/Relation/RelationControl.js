@@ -30,6 +30,10 @@ class RelationControl extends Component {
     setInactiveStyle: PropTypes.func.isRequired,
   };
 
+  static defaultProps = {
+    value: '',
+  };
+
   constructor(props, ctx) {
     super(props, ctx);
     this.controlID = uuid();

@@ -4,17 +4,30 @@ import yamlFormatter from './yaml';
 import jsonFormatter from './json';
 
 const parsers = {
-  toml: input => tomlFormatter.fromFile(input),
-  json: input => {
-    let JSONinput = input.trim();
-    // Fix JSON if leading and trailing brackets were trimmed.
-    if (JSONinput.substr(0, 1) !== '{') {
-      JSONinput = '{' + JSONinput;
-    }
-    if (JSONinput.substr(-1) !== '}') {
-      JSONinput = JSONinput + '}';
-    }
-    return jsonFormatter.fromFile(JSONinput);
+  toml: {
+    parse: input => tomlFormatter.fromFile(input),
+    stringify: (metadata, { sortedKeys }) => tomlFormatter.toFile(metadata, sortedKeys),
+  },
+  json: {
+    parse: input => {
+      let JSONinput = input.trim();
+      // Fix JSON if leading and trailing brackets were trimmed.
+      if (JSONinput.substr(0, 1) !== '{') {
+        JSONinput = '{' + JSONinput;
+      }
+      if (JSONinput.substr(-1) !== '}') {
+        JSONinput = JSONinput + '}';
+      }
+      return jsonFormatter.fromFile(JSONinput);
+    },
+    stringify: (metadata, { sortedKeys }) => {
+      let JSONoutput = jsonFormatter.toFile(metadata, sortedKeys).trim();
+      // Trim leading and trailing brackets.
+      if (JSONoutput.substr(0, 1) === '{' && JSONoutput.substr(-1) === '}') {
+        JSONoutput = JSONoutput.substring(1, JSONoutput.length - 1);
+      }
+      return JSONoutput;
+    },
   },
   yaml: {
     parse: input => yamlFormatter.fromFile(input),
@@ -30,30 +43,51 @@ function inferFrontmatterFormat(str) {
   }
   switch (firstLine) {
     case "---":
-      return { language: "yaml", delimiters: "---" };
+      return getFormatOpts('yaml');
     case "+++":
-      return { language: "toml", delimiters: "+++" };
+      return getFormatOpts('toml');
     case "{":
-      return { language: "json", delimiters: ["{", "}"] };
+      return getFormatOpts('json');
     default:
       throw "Unrecognized front-matter format.";
   }
 }
 
-export default {
+export const getFormatOpts = format => ({
+  yaml: { language: "yaml", delimiters: "---" },
+  toml: { language: "toml", delimiters: "+++" },
+  json: { language: "json", delimiters: ["{", "}"] },
+}[format]);
+
+class FrontmatterFormatter {
+  constructor(format, customDelimiter) {
+    this.format = getFormatOpts(format);
+    this.customDelimiter = customDelimiter;
+  }
+
   fromFile(content) {
-    const result = matter(content, { engines: parsers, ...inferFrontmatterFormat(content) });
+    const format = this.format || inferFrontmatterFormat(content);
+    if (this.customDelimiter) this.format.delimiters = this.customDelimiter;
+    const result = matter(content, { engines: parsers, ...format });
     return {
       ...result.data,
       body: result.content,
     };
-  },
+  }
 
   toFile(data, sortedKeys) {
     const { body = '', ...meta } = data;
 
-    // always stringify to YAML
+    // Stringify to YAML if the format was not set
+    const format = this.format || getFormatOpts('yaml');
+    if (this.customDelimiter) this.format.delimiters = this.customDelimiter;
+
     // `sortedKeys` is not recognized by gray-matter, so it gets passed through to the parser
-    return matter.stringify(body, meta, { engines: parsers, language: "yaml", delimiters: "---", sortedKeys });
+    return matter.stringify(body, meta, { engines: parsers, sortedKeys, ...format });
   }
 }
+
+export const FrontmatterInfer = new FrontmatterFormatter();
+export const frontmatterYAML = customDelimiter => new FrontmatterFormatter('yaml', customDelimiter);
+export const frontmatterTOML = customDelimiter => new FrontmatterFormatter('toml', customDelimiter);
+export const frontmatterJSON = customDelimiter => new FrontmatterFormatter('json', customDelimiter);

@@ -1,7 +1,6 @@
 ---
 label: "DateTime"
 target: "datetime"
-type: "widget"
 ---
 
 ### DateTime

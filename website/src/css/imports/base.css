@@ -27,16 +27,16 @@ h1 {
 
   @media screen and (min-width: $tablet) {
     font-size: 42px;
-    line-height: 60px;
+    line-height: 56px;
   }
 }
 
 h2 {
   font-family: $roboto;
-  font-size: 32px;
+  font-size: 36px;
   font-weight: $bold;
   color: $darkGrey;
-  margin: 0 auto $tiny auto;
+  margin-bottom: $tiny;
 
   &.subhead {
     font-weight: $regular;
@@ -46,8 +46,8 @@ h2 {
 h3 {
   font-family: $roboto;
   font-size: 18px;
-  font-weight: $semibold;
-  line-height: 30px;
+  font-weight: $bold;
+  line-height: 26px;
   padding-bottom: $micro;
   margin: 0;
 }

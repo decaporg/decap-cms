@@ -10,7 +10,7 @@ This tutorial will guide you through the steps for adding Netlify CMS to a site 
 
 ## App File Structure
 
-All Netlify CMS files are contained in a static `admin` folder, stored at the root of your published site. Where you store this folder in the source files depends on your static site generator. Here's the the static file location for a few of the most popular static site generators:
+All Netlify CMS files are contained in a static `admin` folder, stored at the root of your published site. Where you store this folder in the source files depends on your static site generator. Here's the static file location for a few of the most popular static site generators:
 
 | These generators ... | store static files in |
 | -------------------- | --------------------- |
@@ -18,6 +18,7 @@ All Netlify CMS files are contained in a static `admin` folder, stored at the ro
 | Hugo, Gatsby         | `/static`             |
 | Hexo, Middleman      | `/source`             |
 | Spike                | `/views`              |
+| Wyam                 | `/input`              |
 
 If your generator isn't listed here, you can check its documentation, or as a shortcut, look in your project for a `css` or `images` folder. The contents of folders like that are usually processed as static files, so it's likely you can store your `admin` folder next to those. (When you've found the location, feel free to add it to these docs by [filing a pull request](https://github.com/netlify/netlify-cms/blob/master/CONTRIBUTING.md)!)
 
@@ -51,6 +52,23 @@ The first file, `admin/index.html`, is the entry point for the Netlify CMS admin
 ```
 
 The second file, `admin/config.yml`, is the heart of your Netlify CMS installation, and a bit more complex. The next section covers the details.
+
+## Installing with npm
+
+You can also use Netlify CMS as an npm module. Wherever you import Netlify CMS, it will automatically run, taking over the current page. Make sure the script that imports it is only run on your CMS page. First install the package and save it to your project:
+
+```
+npm install netlify-cms --save
+```
+
+Then import it (assuming your project has tooling for imports):
+
+```
+import CMS from 'netlify-cms'
+
+// Now the registry is available via the CMS object.
+CMS.registerPreviewTemplate('my-template', MyTemplate)
+```
 
 ## Configuration
 

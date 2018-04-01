@@ -30,6 +30,11 @@ export default class API {
       });
   }
 
+  isPrivateRepo() {
+    return this.request(this.repoURL)
+      .then(repo => repo.private);
+  }
+
   requestHeaders(headers = {}) {
     const baseHeader = {
       "Content-Type": "application/json",
@@ -221,6 +226,7 @@ export default class API {
         params: {
           head: branchName,
           state: 'open',
+          base: this.branch,
         },
       })
         .then(prs => prs.some(pr => pr.head.ref === branchName));

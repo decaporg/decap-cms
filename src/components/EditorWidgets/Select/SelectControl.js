@@ -22,6 +22,10 @@ export default class SelectControl extends React.Component {
     }),
   };
 
+  static defaultProps = {
+    value: '',
+  };
+
   handleChange = (e) => {
     this.props.onChange(e.target.value);
   };

@@ -11,7 +11,7 @@
 			<div class="mobile docs-nav">
 				<select class="btn-primary" id="mobile-docs-nav">
 					<option value="" selected="selected">Select A Topic</option>
-					{{ range sort .Data.Pages "Params.position" }}
+					{{ range (where .Data.Pages "Title" "!=" "") sort .Data.Pages "Params.position" }}
 						<option value="{{ .Permalink }}" class="nav-link {{ if eq .Params.position 0 }}active{{ end }}">{{ .Title }}</option>
 					{{ end }}
 				</select>

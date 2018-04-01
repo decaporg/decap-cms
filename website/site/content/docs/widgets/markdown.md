@@ -1,7 +1,6 @@
 ---
 label: "Markdown"
 target: "markdown"
-type: "widget"
 ---
 
 ### Markdown

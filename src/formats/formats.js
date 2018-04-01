@@ -1,7 +1,10 @@
+import { List } from 'immutable';
 import yamlFormatter from './yaml';
 import tomlFormatter from './toml';
 import jsonFormatter from './json';
-import FrontmatterFormatter from './frontmatter';
+import { FrontmatterInfer, frontmatterJSON, frontmatterTOML, frontmatterYAML } from './frontmatter';
+
+export const frontmatterFormats = ['yaml-frontmatter','toml-frontmatter','json-frontmatter']
 
 export const supportedFormats = [
   'yml',
@@ -9,6 +12,9 @@ export const supportedFormats = [
   'toml',
   'json',
   'frontmatter',
+  'json-frontmatter',
+  'toml-frontmatter',
+  'yaml-frontmatter',
 ];
 
 export const formatToExtension = format => ({
@@ -17,6 +23,9 @@ export const formatToExtension = format => ({
   toml: 'toml',
   json: 'json',
   frontmatter: 'md',
+  'json-frontmatter': 'md',
+  'toml-frontmatter': 'md',
+  'yaml-frontmatter': 'md',
 }[format]);
 
 export function formatByExtension(extension) {
@@ -25,27 +34,34 @@ export function formatByExtension(extension) {
     yaml: yamlFormatter,
     toml: tomlFormatter,
     json: jsonFormatter,
-    md: FrontmatterFormatter,
-    markdown: FrontmatterFormatter,
-    html: FrontmatterFormatter,
+    md: FrontmatterInfer,
+    markdown: FrontmatterInfer,
+    html: FrontmatterInfer,
   }[extension];
 }
 
-function formatByName(name) {
+function formatByName(name, customDelimiter) {
   return {
     yml: yamlFormatter,
     yaml: yamlFormatter,
     toml: tomlFormatter,
     json: jsonFormatter,
-    frontmatter: FrontmatterFormatter,
+    frontmatter: FrontmatterInfer,
+    'json-frontmatter': frontmatterJSON(customDelimiter),
+    'toml-frontmatter': frontmatterTOML(customDelimiter),
+    'yaml-frontmatter': frontmatterYAML(customDelimiter),
   }[name];
 }
 
 export function resolveFormat(collectionOrEntity, entry) {
+  // Check for custom delimiter
+  const frontmatter_delimiter = collectionOrEntity.get('frontmatter_delimiter');
+  const customDelimiter = List.isList(frontmatter_delimiter) ? frontmatter_delimiter.toArray() : frontmatter_delimiter;
+
   // If the format is specified in the collection, use that format.
-  const format = collectionOrEntity.get('format');
-  if (format) {
-    return formatByName(format);
+  const formatSpecification = collectionOrEntity.get('format');
+  if (formatSpecification) {
+    return formatByName(formatSpecification, customDelimiter);
   }
 
   // If a file already exists, infer the format from its file extension.
@@ -63,5 +79,5 @@ export function resolveFormat(collectionOrEntity, entry) {
   }
 
   // If no format is specified and it cannot be inferred, return the default.
-  return formatByName('frontmatter');
+  return formatByName('frontmatter', customDelimiter);
 }

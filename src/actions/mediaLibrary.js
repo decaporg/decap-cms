@@ -4,6 +4,7 @@ import { createAssetProxy } from 'ValueObjects/AssetProxy';
 import { getAsset, selectIntegration } from 'Reducers';
 import { getIntegrationProvider } from 'Integrations';
 import { addAsset } from './media';
+import { sanitizeSlug } from "Lib/urlHelper";
 
 const { notifSend } = notifActions;
 
@@ -79,7 +80,8 @@ export function persistMedia(file, opts = {}) {
     const backend = currentBackend(state.config);
     const integration = selectIntegration(state, null, 'assetStore');
     const files = state.mediaLibrary.get('files');
-    const existingFile = files.find(existingFile => existingFile.name.toLowerCase() === file.name.toLowerCase());
+    const fileName = sanitizeSlug(file.name.toLowerCase(), state.config.get('slug'));
+    const existingFile = files.find(existingFile => existingFile.name.toLowerCase() === fileName);
 
     /**
      * Check for existing files of the same name before persisting. If no asset
@@ -98,7 +100,7 @@ export function persistMedia(file, opts = {}) {
     dispatch(mediaPersisting());
 
     try {
-      const assetProxy = await createAssetProxy(file.name.toLowerCase(), file, false, privateUpload);
+      const assetProxy = await createAssetProxy(fileName, file, false, privateUpload);
       dispatch(addAsset(assetProxy));
       if (!integration) {
         const asset = await backend.persistMedia(assetProxy);

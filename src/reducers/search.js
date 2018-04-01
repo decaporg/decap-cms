@@ -56,7 +56,7 @@ const entries = (state = defaultState, action) => {
       return state.withMutations((map) => {
         map.set('isFetching', false);
         map.set('term', searchTerm);
-        map.set('queryHits', Map({ [action.payload.namespace]: response.hits }));
+        map.mergeIn(['queryHits'], Map({ [action.payload.namespace]: response.hits }));
       });
 
     default:

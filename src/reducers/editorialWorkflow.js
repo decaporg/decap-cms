@@ -20,10 +20,10 @@ import {
 } from 'Actions/editorialWorkflow';
 import { CONFIG_SUCCESS } from 'Actions/config';
 
-const unpublishedEntries = (state = null, action) => {
-  const publishMode = action.payload && action.payload.publish_mode;
+const unpublishedEntries = (state = Map(), action) => {
   switch (action.type) {
     case CONFIG_SUCCESS:
+      const publishMode = action.payload && action.payload.get('publish_mode');
       if (publishMode === EDITORIAL_WORKFLOW) {
         //  Editorial workflow state is explicetelly initiated after the config.
         return Map({ entities: Map(), pages: Map() });
@@ -31,7 +31,7 @@ const unpublishedEntries = (state = null, action) => {
       return state;
     case UNPUBLISHED_ENTRY_REQUEST:
       return state.setIn(['entities', `${ action.payload.collection }.${ action.payload.slug }`, 'isFetching'], true);
-    
+
     case UNPUBLISHED_ENTRY_REDIRECT:
       return state.deleteIn(['entities', `${ action.payload.collection }.${ action.payload.slug }`]);
 

@@ -16,9 +16,20 @@ collections: # A list of collections the CMS should be able to edit
       - {label: "Title", name: "title", widget: "string", tagname: "h1"}
       - {label: "Position", name: "position", widget: "number"}
       - {label: "Body", name: "body", widget: "markdown"}
-  - name: notifications
-    label: Notifications
+  - name: updates
+    label: Updates
     files:
+      - name: releases
+        label: Releases
+        file: website/site/data/updates.yml
+        fields:
+          - name: updates
+            label: Releases
+            widget: list
+            fields:
+              - {name: version, label: Version}
+              - {name: date, label: Date, widget: date}
+              - {name: description, label: Description}
       - name: notifications
         label: Notifications
         file: website/site/data/notifications.yml

@@ -2,7 +2,7 @@
 
   @media screen and (min-width: $desktop) {
     position: relative;
-    top: -50px;
+    top: -65px;
     width: 880px;
     margin: auto;
   }
@@ -28,6 +28,7 @@
       font-size: 18px;
       line-height: 25px;
       color: $lightishGrey;
+      margin: 0;
 
       .hook {
         font-weight: $bold;

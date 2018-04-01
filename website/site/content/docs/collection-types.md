@@ -2,19 +2,19 @@
 title: Collection Types
 position: 27
 ---
-
 # Collection Types
 
 All editable content types are defined in the `collections` field of your `config.yml` file, and display in the left sidebar of the Content page of the editor UI.
 
 Collections come in two main types: `folder` and `files`.
 
-
 ## Folder collections
 
 Folder collections represent one or more files with the same format, fields, and configuration options, all stored within the same folder in the repository. You might use a folder collection for blog posts, product pages, author data files, etc.
 
 Unlike file collections, folder collections have the option to allow editors to create new items in the collection. This is set by the boolean `create` field.
+
+**Note:** Folder collections must have at least one field with the name "title" for creating new entry slugs. That field should use the default "string" widget. The "label" for the field can be any string value.
 
 Example:
 
@@ -36,12 +36,12 @@ The entries for any folder collection can be filtered based on the value of a si
 
 The `filter` option requires two fields:
 
-- `field`: the name of the collection field to filter on
-- `value`: the desired field value
+* `field`: the name of the collection field to filter on
+* `value`: the desired field value
 
 The example below creates two collections in the same folder, filtered by the `language` field. The first collection includes posts with `language: en`, and the second, with `language: es`.
 
-``` yaml
+```yaml
 collections:
   - label: "Blog in English"
     name: "english_posts"
@@ -61,16 +61,17 @@ collections:
       - {label: "Contenido", name: "body", widget: "markdown"}      
 ```
 
-
 ## File collections
 
 A `files` collection contains one or more uniquely configured files. Unlike items in `folder` collections, which repeat the same configuration over all files in the folder, each item in a `files` collection has an explicitly set path, filename, and configuration. This can be useful for unique files with a custom set of fields, like a settings file or a custom landing page with a unique content structure.
 
 When configuring a `files` collection, each file in the collection is configured separately, and listed under the `files` field of the collection. Each file has its own list of `fields`, and a unique filepath specified in the `file` field (relative to the base of the repo).
 
+**Note:** Files listed in a file collection must already exist in the repo, and must have a valid value for the file type. For example, an empty file works as valid YAML, but a JSON file must have a non-empty value to be valid, such as an empty object.
+
 Example:
 
-``` yaml
+```yaml
 - label: "Pages"
   name: "pages"
   files:

@@ -1,7 +1,6 @@
 ---
 label: "Hidden"
 target: "hidden"
-type: "widget"
 ---
 
 ### Hidden

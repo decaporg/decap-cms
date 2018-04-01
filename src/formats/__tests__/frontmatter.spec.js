@@ -1,11 +1,11 @@
-import FrontmatterFormatter from '../frontmatter';
+import { FrontmatterInfer, frontmatterJSON, frontmatterTOML, frontmatterYAML } from '../frontmatter';
 
 jest.mock("../../valueObjects/AssetProxy.js");
 
 describe('Frontmatter', () => {
   it('should parse YAML with --- delimiters', () => {
     expect(
-      FrontmatterFormatter.fromFile('---\ntitle: YAML\ndescription: Something longer\n---\nContent')
+      FrontmatterInfer.fromFile('---\ntitle: YAML\ndescription: Something longer\n---\nContent')
     ).toEqual(
       {
         title: 'YAML',
@@ -15,9 +15,45 @@ describe('Frontmatter', () => {
     );
   });
 
+  it('should parse YAML with --- delimiters when it is explicitly set as the format without a custom delimiter', () => {
+    expect(
+      frontmatterYAML().fromFile('---\ntitle: YAML\ndescription: Something longer\n---\nContent')
+    ).toEqual(
+      {
+        title: 'YAML',
+        description: 'Something longer',
+        body: 'Content',
+      }
+      );
+  });
+
+  it('should parse YAML with custom delimiters when it is explicitly set as the format with a custom delimiter', () => {
+    expect(
+      frontmatterYAML("~~~").fromFile('~~~\ntitle: YAML\ndescription: Something longer\n~~~\nContent')
+    ).toEqual(
+      {
+        title: 'YAML',
+        description: 'Something longer',
+        body: 'Content',
+      }
+      );
+  });
+
+  it('should parse YAML with custom delimiters when it is explicitly set as the format with different custom delimiters', () => {
+    expect(
+      frontmatterYAML(["~~~", "^^^"]).fromFile('~~~\ntitle: YAML\ndescription: Something longer\n^^^\nContent')
+    ).toEqual(
+      {
+        title: 'YAML',
+        description: 'Something longer',
+        body: 'Content',
+      }
+      );
+  });
+
   it('should parse YAML with ---yaml delimiters', () => {
     expect(
-      FrontmatterFormatter.fromFile('---yaml\ntitle: YAML\ndescription: Something longer\n---\nContent')
+      FrontmatterInfer.fromFile('---yaml\ntitle: YAML\ndescription: Something longer\n---\nContent')
     ).toEqual(
       {
         title: 'YAML',
@@ -29,7 +65,7 @@ describe('Frontmatter', () => {
 
   it('should overwrite any body param in the front matter', () => {
     expect(
-      FrontmatterFormatter.fromFile('---\ntitle: The Title\nbody: Something longer\n---\nContent')
+      FrontmatterInfer.fromFile('---\ntitle: The Title\nbody: Something longer\n---\nContent')
     ).toEqual(
       {
         title: 'The Title',
@@ -40,7 +76,7 @@ describe('Frontmatter', () => {
 
   it('should parse TOML with +++ delimiters', () => {
     expect(
-      FrontmatterFormatter.fromFile('+++\ntitle = "TOML"\ndescription = "Front matter"\n+++\nContent')
+      FrontmatterInfer.fromFile('+++\ntitle = "TOML"\ndescription = "Front matter"\n+++\nContent')
     ).toEqual(
       {
         title: 'TOML',
@@ -50,9 +86,21 @@ describe('Frontmatter', () => {
     );
   });
 
+  it('should parse TOML with +++ delimiters when it is explicitly set as the format without a custom delimiter', () => {
+    expect(
+      frontmatterTOML("~~~").fromFile('~~~\ntitle = "TOML"\ndescription = "Front matter"\n~~~\nContent')
+    ).toEqual(
+      {
+        title: 'TOML',
+        description: 'Front matter',
+        body: 'Content',
+      }
+      );
+  });
+
   it('should parse TOML with ---toml delimiters', () => {
     expect(
-      FrontmatterFormatter.fromFile('---toml\ntitle = "TOML"\ndescription = "Something longer"\n---\nContent')
+      FrontmatterInfer.fromFile('---toml\ntitle = "TOML"\ndescription = "Something longer"\n---\nContent')
     ).toEqual(
       {
         title: 'TOML',
@@ -64,7 +112,7 @@ describe('Frontmatter', () => {
 
   it('should parse JSON with { } delimiters', () => {
     expect(
-      FrontmatterFormatter.fromFile('{\n"title": "The Title",\n"description": "Something longer"\n}\nContent')
+      FrontmatterInfer.fromFile('{\n"title": "The Title",\n"description": "Something longer"\n}\nContent')
     ).toEqual(
       {
         title: 'The Title',
@@ -74,9 +122,33 @@ describe('Frontmatter', () => {
     );
   });
 
+  it('should parse JSON with { } delimiters when it is explicitly set as the format without a custom delimiter', () => {
+    expect(
+      frontmatterJSON().fromFile('{\n"title": "The Title",\n"description": "Something longer"\n}\nContent')
+    ).toEqual(
+      {
+        title: 'The Title',
+        description: 'Something longer',
+        body: 'Content',
+      }
+      );
+  });
+
+  it('should parse JSON with { } delimiters when it is explicitly set as the format with a custom delimiter', () => {
+    expect(
+      frontmatterJSON("~~~").fromFile('~~~\n"title": "The Title",\n"description": "Something longer"\n~~~\nContent')
+    ).toEqual(
+      {
+        title: 'The Title',
+        description: 'Something longer',
+        body: 'Content',
+      }
+      );
+  });
+
   it('should parse JSON with ---json delimiters', () => {
     expect(
-      FrontmatterFormatter.fromFile('---json\n{\n"title": "The Title",\n"description": "Something longer"\n}\n---\nContent')
+      FrontmatterInfer.fromFile('---json\n{\n"title": "The Title",\n"description": "Something longer"\n}\n---\nContent')
     ).toEqual(
       {
         title: 'The Title',
@@ -88,7 +160,7 @@ describe('Frontmatter', () => {
 
   it('should stringify YAML with --- delimiters', () => {
     expect(
-      FrontmatterFormatter.toFile({ body: 'Some content\nOn another line', tags: ['front matter', 'yaml'], title: 'YAML' })
+      FrontmatterInfer.toFile({ body: 'Some content\nOn another line', tags: ['front matter', 'yaml'], title: 'YAML' })
     ).toEqual(
       [
         '---',
@@ -105,7 +177,7 @@ describe('Frontmatter', () => {
 
   it('should stringify YAML with missing body', () => {
     expect(
-      FrontmatterFormatter.toFile({ tags: ['front matter', 'yaml'], title: 'YAML' })
+      FrontmatterInfer.toFile({ tags: ['front matter', 'yaml'], title: 'YAML' })
     ).toEqual(
       [
         '---',
@@ -118,5 +190,129 @@ describe('Frontmatter', () => {
         '',
       ].join('\n')
     );
+  });
+
+  it('should stringify YAML with --- delimiters when it is explicitly set as the format without a custom delimiter', 
+  () => {
+    expect(
+      frontmatterYAML().toFile({ body: 'Some content\nOn another line', tags: ['front matter', 'yaml'], title: 'YAML' })
+    ).toEqual(
+      [
+        '---',
+        'tags:',
+        '  - front matter',
+        '  - yaml',
+        'title: YAML',
+        '---',
+        'Some content',
+        'On another line\n',
+      ].join('\n')
+      );
+  });
+
+  it('should stringify YAML with --- delimiters when it is explicitly set as the format with a custom delimiter', 
+  () => {
+    expect(
+      frontmatterYAML("~~~").toFile({ body: 'Some content\nOn another line', tags: ['front matter', 'yaml'], title: 'YAML' })
+    ).toEqual(
+      [
+        '~~~',
+        'tags:',
+        '  - front matter',
+        '  - yaml',
+        'title: YAML',
+        '~~~',
+        'Some content',
+        'On another line\n',
+      ].join('\n')
+      );
+  });
+
+  it('should stringify YAML with --- delimiters when it is explicitly set as the format with different custom delimiters', 
+  () => {
+    expect(
+      frontmatterYAML(["~~~", "^^^"]).toFile({ body: 'Some content\nOn another line', tags: ['front matter', 'yaml'], title: 'YAML' })
+    ).toEqual(
+      [
+        '~~~',
+        'tags:',
+        '  - front matter',
+        '  - yaml',
+        'title: YAML',
+        '^^^',
+        'Some content',
+        'On another line\n',
+      ].join('\n')
+      );
+  });
+
+  it('should stringify TOML with +++ delimiters when it is explicitly set as the format without a custom delimiter',
+  () => {
+    expect(
+      frontmatterTOML().toFile({ body: 'Some content\nOn another line', tags: ['front matter', 'toml'], title: 'TOML' })
+    ).toEqual(
+      [
+        '+++',
+        'tags = ["front matter", "toml"]',
+        'title = "TOML"',
+        '+++',
+        'Some content',
+        'On another line\n',
+      ].join('\n')
+      );
+  });
+
+  it('should stringify TOML with +++ delimiters when it is explicitly set as the format with a custom delimiter',
+  () => {
+    expect(
+      frontmatterTOML("~~~").toFile({ body: 'Some content\nOn another line', tags: ['front matter', 'toml'], title: 'TOML' })
+    ).toEqual(
+      [
+        '~~~',
+        'tags = ["front matter", "toml"]',
+        'title = "TOML"',
+        '~~~',
+        'Some content',
+        'On another line\n',
+      ].join('\n')
+      );
+  });
+
+  it('should stringify JSON with { } delimiters when it is explicitly set as the format without a custom delimiter', 
+  () => {
+    expect(
+      frontmatterJSON().toFile({ body: 'Some content\nOn another line', tags: ['front matter', 'json'], title: 'JSON' })
+    ).toEqual(
+      [
+        '{',
+        '"tags": [',
+        '    "front matter",',
+        '    "json"',
+        '  ],',
+        '  "title": "JSON"',
+        '}',
+        'Some content',
+        'On another line\n',
+      ].join('\n')
+      );
+  });
+
+  it('should stringify JSON with { } delimiters when it is explicitly set as the format with a custom delimiter', 
+  () => {
+    expect(
+      frontmatterJSON("~~~").toFile({ body: 'Some content\nOn another line', tags: ['front matter', 'json'], title: 'JSON' })
+    ).toEqual(
+      [
+        '~~~',
+        '"tags": [',
+        '    "front matter",',
+        '    "json"',
+        '  ],',
+        '  "title": "JSON"',
+        '~~~',
+        'Some content',
+        'On another line\n',
+      ].join('\n')
+      );
   });
 });
