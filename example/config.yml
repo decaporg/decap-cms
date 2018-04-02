@@ -1,6 +1,6 @@
 backend:
   name: github
-  repo: swartists/starworksartists.com
+  repo: owenhoskins/gatsby-sharp-netlify-cms
   branch: development # Branch to update (optional; defaults to master)
 
 #display_url: https://example.com

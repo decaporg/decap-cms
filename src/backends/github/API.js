@@ -87,6 +87,7 @@ export default class API {
       return response.text();
     })
     .catch((error) => {
+      console.log('error: ', error, responseStatus)
       throw new APIError(error.message, responseStatus, 'GitHub');
     });
   }
@@ -271,10 +272,12 @@ export default class API {
 
     const fileTree = this.composeFileTree(files);
 
-    console.log('persistFiles: fileTree', fileTree)
+    // debug console.log('persistFiles: fileTree', fileTree)
 
     return Promise.all(uploadPromises).then(() => {
       if (!options.mode || (options.mode && options.mode === SIMPLE)) {
+        // debug console.log('presitFiles: uploadPromises, getBranch()', uploadPromises  )
+        // it probably is in the updateTree call
         return this.getBranch()
         .then(branchData => this.updateTree(branchData.commit.sha, "/", fileTree))
         .then(changeTree => this.commit(options.commitMessage, changeTree))
@@ -484,6 +487,8 @@ export default class API {
     /**
      * Get the blob data by path.
      */
+
+    // debug console.log('rebaseSingleBlobCommit: ', parent, commit.tree.sha, pathToBlpor)
     return this.getBlobInTree(commit.tree.sha, pathToBlob)
 
       /**
@@ -716,6 +721,7 @@ export default class API {
   }
 
   updateTree(sha, path, fileTree) {
+    // debug console.log('updateTree: ', sha, path, fileTree)
     return this.getTree(sha)
       .then((tree) => {
         let obj;
@@ -744,13 +750,19 @@ export default class API {
               this.updateTree(null, filename, fileOrDir)
           );
         }
+
+        // debug console.log('updates: ', updates)
         return Promise.all(updates)
           .then(tree => this.createTree(sha, tree))
-          .then(response => ({ path, mode: "040000", type: "tree", sha: response.sha, parentSha: sha }));
+          .then(response => {
+            // debug console.log('updateTree Promise response: ', response)
+            return ({ path, mode: "040000", type: "tree", sha: response.sha, parentSha: sha })
+          });
       });
   }
 
   createTree(baseSha, tree) {
+    // debug console.log('createTree: ', baseSha, tree)
     return this.request(`${ this.repoURL }/git/trees`, {
       method: "POST",
       body: JSON.stringify({ base_tree: baseSha, tree }),
