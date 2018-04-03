@@ -168,7 +168,7 @@ export default class API {
           const dir = path.split('/').slice(0, -1).join('/');
           return this.listFiles(dir)
             .then(files => files.find(file => file.path === path))
-            .then(file => getBlob(file.sha));
+            .then(file => this.getBlob(file.sha));
         }
         throw error;
       });
