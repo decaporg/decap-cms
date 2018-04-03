@@ -30,11 +30,6 @@ export default class API {
       });
   }
 
-  checkPrivateRepo() {
-    return this.request(this.repoURL)
-      .then(repo => repo.private);
-  }
-
   requestHeaders(headers = {}) {
     const baseHeader = {
       "Content-Type": "application/json",

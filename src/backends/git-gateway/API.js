@@ -27,14 +27,6 @@ export default class API extends GithubAPI {
       });
   }
 
-  checkPrivateRepo(url) {
-    const cacheBuster = new Date().getTime();
-    return fetch(`${url}?ts=${cacheBuster}`)
-      // Assume a repo is private if we are rate-limited so that 
-      //  consumers of this function (media thumbnails) don't break.
-      .then(response => (response.status === 403 || !response.ok));
-  }
-
   getRequestHeaders(headers = {}) {
     return this.tokenPromise()
     .then((jwtToken) => {

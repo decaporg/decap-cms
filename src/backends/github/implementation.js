@@ -106,51 +106,13 @@ export default class GitHub {
     return this.api.persistFiles(entry, mediaFiles, options);
   }
 
-  /**
-   * Pulls repo info from a `repos` response url property.
-   *
-   * Turns this:
-   * '<api_root>/repo/<username>/<repo>/...'
-   *
-   * Into this:
-   * '<username>/<repo>'
-   */
-  getRepoFromResponseUrl(url) {
-    return url
-
-      // -> '/repo/<username>/<repo>/...'
-      .slice(this.api_root.length)
-
-      // -> [ '', 'repo', '<username>', '<repo>', ... ]
-      .split('/')
-
-      // -> [ '<username>', '<repo>' ]
-      .slice(2, 4)
-
-      // -> '<username>/<repo>'
-      .join('/');
-  }
-
   async persistMedia(mediaFile, options = {}) {
     try {
       const response = await this.api.persistFiles(null, [mediaFile], options);
-      const repo = this.repo || this.getRepoFromResponseUrl(response.url);
-      const { value, size, path, fileObj } = mediaFile;
-      let url = `https://raw.githubusercontent.com/${repo}/${this.branch}${path}`;
-
-      // Assets uploaded to private repos will need valid access tokens.
-      if (this.isPrivateRepo === undefined) {
-        this.isPrivateRepo = await this.api.checkPrivateRepo(`${this.api_root}/repos/${repo}`);
-      }
-      if (this.isPrivateRepo) {
-        const files = await this.api.listFiles(this.config.get('media_folder'));
-        const file = files.find(f => (f.sha === mediaFile.sha));
-        if (file) {
-          url = file.download_url;
-        }
-      }
-
-      return { id: mediaFile.sha, name: value, size: fileObj.size, url, path: trimStart(path, '/') };
+      
+      const { sha, value, size, path, fileObj } = mediaFile;
+      const url = URL.createObjectURL(fileObj);
+      return { id: sha, name: value, size: fileObj.size, url, path: trimStart(path, '/') };
     }
     catch(error) {
       console.error(error);
