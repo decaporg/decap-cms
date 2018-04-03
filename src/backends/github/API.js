@@ -156,21 +156,25 @@ export default class API {
   }
 
   readFile(path, sha, branch = this.branch) {
-    const cache = sha ? LocalForage.getItem(`gh.${ sha }`) : Promise.resolve(null);
-    return cache.then((cached) => {
-      if (cached) { return cached; }
+    if (sha) {
+      return LocalForage.getItem(`gh.${ sha }`).then(cached => {
+        if (cached) { return cached; }
 
+        return this.request(`${ this.repoURL }/git/blobs/${ sha }`, {
+          headers: { Accept: "application/vnd.github.VERSION.raw" },
+        }).then(result => {
+          LocalForage.setItem(`gh.${ sha }`, result);
+          return result;
+        });
+      });
+      // TODO: Should we fetch the file by path if the SHA is invalid?
+    } else {
       return this.request(`${ this.repoURL }/contents/${ path }`, {
         headers: { Accept: "application/vnd.github.VERSION.raw" },
         params: { ref: branch },
         cache: "no-store",
-      }).then((result) => {
-        if (sha) {
-          LocalForage.setItem(`gh.${ sha }`, result);
-        }
-        return result;
       });
-    });
+    }
   }
 
   listFiles(path) {
