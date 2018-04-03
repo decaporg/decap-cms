@@ -171,14 +171,13 @@ fields:
 
 ### `editor`
 
-The `editor` option accepts a `preview` setting for disabling the preview pane
-entirely for a collection.
+This setting changes options for the editor view of the collection. It has one option so far:
+
+- `preview`: set to `false` to disable the preview pane for this collection
 
 **Example:**
 
 ```yaml
-- name: "posts"
-  label: "Posts"
   editor:
      preview: false
 ```
