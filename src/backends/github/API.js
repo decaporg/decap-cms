@@ -158,7 +158,6 @@ export default class API {
   readFile(path, sha, branch = this.branch) {
     if (sha) {
       return this.getBlob(sha);
-      // TODO: Should we fetch the file by path if the SHA is invalid?
     } else {
       return this.request(`${ this.repoURL }/contents/${ path }`, {
         headers: { Accept: "application/vnd.github.VERSION.raw" },
@@ -169,7 +168,6 @@ export default class API {
           const dir = path.split('/').slice(0, -1).join('/');
           return this.listFiles(dir)
             .then(files => files.find(file => file.path === path))
-            // TODO: Should the case be handled where `file` is undefined? It should never happen because there is no pagination.
             .then(file => getBlob(file.sha));
         }
         throw error;
