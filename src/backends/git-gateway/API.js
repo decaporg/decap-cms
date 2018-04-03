@@ -26,6 +26,16 @@ export default class API extends GithubAPI {
         }
       });
   }
+  
+  isPrivateRepo() {
+    /**
+     * There is currently no way to check whether a Git Gateway
+     * repo is public or private, so we have to assume it is private
+     * so that all requests are authenticated.
+     * (see github/implementation.js#persistMedia())
+     */
+    return true;
+  }
 
   getRequestHeaders(headers = {}) {
     return this.tokenPromise()
