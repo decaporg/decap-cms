@@ -785,7 +785,7 @@
       "name": "Kristaps Taube",
       "avatar_url": "https://avatars3.githubusercontent.com/u/1479451?v=4",
       "profile": "https://www.ktaube.com",
-       "contributions": [
+      "contributions": [
         "code"
       ]
     },
@@ -821,6 +821,15 @@
       "name": "Josh Dzielak",
       "avatar_url": "https://avatars1.githubusercontent.com/u/174777?v=4",
       "profile": "https://dzello.com",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "jeremybise",
+      "name": "Jeremy Bise",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/2193?v=4",
+      "profile": "http://thosegeeks.com",
       "contributions": [
         "doc"
       ]
