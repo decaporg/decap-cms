@@ -139,8 +139,10 @@ export default class GitHub {
       let url = `https://raw.githubusercontent.com/${repo}/${this.branch}${path}`;
 
       // Assets uploaded to private repos will need valid access tokens.
-      const isPrivateRepo = await this.api.isPrivateRepo();
-      if (isPrivateRepo) {
+      if (!this.isPrivateRepo) {
+        this.isPrivateRepo = await this.api.checkPrivateRepo(`${this.api_root}/repos/${repo}`);
+      }
+      if (this.isPrivateRepo) {
         const files = await this.api.listFiles(this.config.get('media_folder'));
         const file = files.find(f => (f.sha === mediaFile.sha));
         if (file) {

@@ -30,7 +30,7 @@ export default class API {
       });
   }
 
-  isPrivateRepo() {
+  checkPrivateRepo() {
     return this.request(this.repoURL)
       .then(repo => repo.private);
   }

@@ -27,6 +27,12 @@ export default class API extends GithubAPI {
       });
   }
 
+  checkPrivateRepo(url) {
+    const cacheBuster = new Date().getTime();
+    return fetch(`${url}?ts=${cacheBuster}`)
+      .then(response => response.ok);
+  }
+
   getRequestHeaders(headers = {}) {
     return this.tokenPromise()
     .then((jwtToken) => {
