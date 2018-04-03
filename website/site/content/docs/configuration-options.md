@@ -173,7 +173,7 @@ fields:
 
 This setting changes options for the editor view of the collection. It has one option so far:
 
-- `preview`: set to `false` to disable the preview pane for this collection
+- `preview`: set to `false` to disable the preview pane for this collection; defaults to `true`
 
 **Example:**
 
