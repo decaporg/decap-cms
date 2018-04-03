@@ -172,7 +172,7 @@ fields:
 ### `editor`
 
 The `editor` option accepts a `preview` setting for disabling the preview pane
-by default for a collection.
+entirely for a collection.
 
 **Example:**
 
