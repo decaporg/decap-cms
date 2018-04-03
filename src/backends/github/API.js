@@ -1,6 +1,6 @@
 import LocalForage from "Lib/LocalForage";
 import { Base64 } from "js-base64";
-import { uniq, initial, last, get, find } from "lodash";
+import { uniq, initial, last, get, find, hasIn } from "lodash";
 import { filterPromises, resolvePromiseProperties } from "Lib/promiseHelper";
 import AssetProxy from "ValueObjects/AssetProxy";
 import { SIMPLE, EDITORIAL_WORKFLOW, status } from "Constants/publishModes";
@@ -157,24 +157,37 @@ export default class API {
 
   readFile(path, sha, branch = this.branch) {
     if (sha) {
-      return LocalForage.getItem(`gh.${ sha }`).then(cached => {
-        if (cached) { return cached; }
-
-        return this.request(`${ this.repoURL }/git/blobs/${ sha }`, {
-          headers: { Accept: "application/vnd.github.VERSION.raw" },
-        }).then(result => {
-          LocalForage.setItem(`gh.${ sha }`, result);
-          return result;
-        });
-      });
+      return this.getBlob(sha);
       // TODO: Should we fetch the file by path if the SHA is invalid?
     } else {
       return this.request(`${ this.repoURL }/contents/${ path }`, {
         headers: { Accept: "application/vnd.github.VERSION.raw" },
         params: { ref: branch },
         cache: "no-store",
+      }).catch(error => {
+        if (hasIn(error, 'message.errors') && find(error.message.errors, { code:  "too_large" })) {
+          const dir = path.split('/').slice(0, -1).join('/');
+          return this.listFiles(dir)
+            .then(files => files.find(file => file.path === path))
+            // TODO: Should the case be handled where `file` is undefined? It should never happen because there is no pagination.
+            .then(file => getBlob(file.sha));
+        }
+        throw error;
       });
     }
+  }
+
+  getBlob(sha) {
+    return LocalForage.getItem(`gh.${sha}`).then(cached => {
+      if (cached) { return cached; }
+
+      return this.request(`${this.repoURL}/git/blobs/${sha}`, {
+        headers: { Accept: "application/vnd.github.VERSION.raw" },
+      }).then(result => {
+        LocalForage.setItem(`gh.${sha}`, result);
+        return result;
+      });
+    });
   }
 
   listFiles(path) {
