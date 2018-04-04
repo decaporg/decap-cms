@@ -35,8 +35,6 @@ module.exports = merge.smart(require('./webpack.base.js'), {
   devtool: 'source-map',
   serve: {
     content: 'example/',
-    // historyApiFallback: true,
-    // disableHostCheck: true,
     dev: {
       headers: {"Access-Control-Allow-Origin": "*"},
     },
