@@ -122,7 +122,7 @@
     "webpack": "^4.4.1",
     "webpack-cli": "^2.0.13",
     "webpack-merge": "^4.1.2",
-    "webpack-serve": "^0.3.0",
+    "webpack-serve": "^0.3.1",
     "write-file-webpack-plugin": "^4.2.0"
   },
   "dependencies": {
