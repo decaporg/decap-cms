@@ -7,6 +7,7 @@
 
   * Fix broken new media uploads for Git Gateway ([@tech4him1](https://github.com/tech4him1) in [#1221](https://github.com/netlify/netlify-cms/pull/1221))
   * Enable editorial workflow for test backend ([@erquhart](https://github.com/erquhart) in [#1225](https://github.com/netlify/netlify-cms/pull/1225))
+  * Add hour, minute, and second slug fields ([@terrierscript](https://github.com/terrierscript) in [#1207](https://github.com/netlify/netlify-cms/pull/1207))
 
 </details>
 

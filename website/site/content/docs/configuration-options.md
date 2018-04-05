@@ -134,6 +134,9 @@ For folder collections where users can create new items, the `slug` option speci
 - `{{year}}`: 4-digit year of the file creation date
 - `{{month}}`: 2-digit month of the file creation date
 - `{{day}}`: 2-digit day of the month of the file creation date
+- `{{hour}}`: 2-digit hour of the file creation date
+- `{{minute}}`: 2-digit minute of the file creation date
+- `{{second}}`: 2-digit second of the file creation date
 
 **Example:**
 
