@@ -5,8 +5,11 @@ import { currentBackend } from 'Backends/backend';
 import { getIntegrationProvider } from 'Integrations';
 import { getAsset, selectIntegration } from 'Reducers';
 import { selectFields } from 'Reducers/collections';
+import { collectionEntriesCursorKey } from 'Reducers/cursors';
+import { validateCursor, invalidCursorError } from 'ValueObjects/Cursor';
 import { createEntry } from 'ValueObjects/Entry';
 import ValidationErrorTypes from 'Constants/validationErrorTypes';
+import isArray from 'lodash/isArray';
 
 const { notifSend } = notifActions;
 
@@ -80,14 +83,17 @@ export function entriesLoading(collection) {
   };
 }
 
-export function entriesLoaded(collection, entries, pagination) {
+export function entriesLoaded(collection, entries, pagination, cursor = null) {
   return {
     type: ENTRIES_SUCCESS,
     payload: {
       collection: collection.get('name'),
       entries,
       page: pagination,
-    },
+      // If the backend returns a cursor, we add it to the action. It
+      // will be processed by the `cursors` reducer.
+      ...(cursor ? { cursor } : {})
+    }
   };
 }
 
@@ -248,10 +254,21 @@ export function loadEntries(collection, page = 0) {
     const integration = selectIntegration(state, collection.get('name'), 'listEntries');
     const provider = integration ? getIntegrationProvider(state.integrations, backend.getToken, integration) : backend;
     dispatch(entriesLoading(collection));
-    provider.listEntries(collection, page).then(
-      response => dispatch(entriesLoaded(collection, response.entries.reverse(), response.pagination)),
-      error => dispatch(entriesFailed(collection, error))
-    );
+    provider.listEntries(collection, page)
+    // Validate the cursor if it exists to ensure it has the correct
+    // structure.
+    .then(response => ((!response.cursor) || validateCursor(response.cursor)
+      ? response
+      : Promise.reject(invalidCursorError(response.cursor))))
+    .then(response => dispatch(entriesLoaded(collection, response.entries.reverse(), response.pagination, response.cursor)))
+    .catch(err => {
+      dispatch(notifSend({
+        message: `Failed to load entries: ${ err }`,
+        kind: 'danger',
+        dismissAfter: 8000,
+      }));
+      return Promise.reject(dispatch(entriesFailed(collection, err)));
+    });
   };
 }
 

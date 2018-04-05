@@ -2,6 +2,7 @@ import auth from './auth';
 import config from './config';
 import integrations, * as fromIntegrations from './integrations';
 import entries, * as fromEntries from './entries';
+import cursors from './cursors';
 import editorialWorkflow, * as fromEditorialWorkflow from './editorialWorkflow';
 import entryDraft from './entryDraft';
 import collections from './collections';
@@ -17,6 +18,7 @@ const reducers = {
   search,
   integrations,
   entries,
+  cursors,
   editorialWorkflow,
   entryDraft,
   mediaLibrary,
