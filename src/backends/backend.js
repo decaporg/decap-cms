@@ -67,6 +67,12 @@ const slugFormatter = (template = "{{slug}}", entryData, slugConfig) => {
         return (`0${ date.getMonth() + 1 }`).slice(-2);
       case "day":
         return (`0${ date.getDate() }`).slice(-2);
+      case "hour":
+        return (`0${ date.getHours() }`).slice(-2);
+      case "minute":
+        return (`0${ date.getMinutes() }`).slice(-2);
+      case "second":
+        return (`0${ date.getSeconds() }`).slice(-2);
       case "slug":
         return getIdentifier(entryData).trim();
       default:
