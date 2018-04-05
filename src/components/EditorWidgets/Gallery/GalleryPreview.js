@@ -90,8 +90,7 @@ const GalleryPreview = ({ value, getAsset }) => {
     const asset = getAsset(src)
     if (asset) {
       //console.log('getAsset: ', asset, asset && asset.path)
-      images.push('https://raw.githubusercontent.com/swartists/starworksartists.com/development/static/' + asset.path)
-      // images.push(asset.path)
+      images.push(asset.path)
     }
   })
 

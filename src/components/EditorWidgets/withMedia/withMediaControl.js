@@ -138,7 +138,7 @@ export default function withMediaControl(forImage) {
                             />*/}
                             <Observer tag={`span`} onChange={this.handleInViewChange}>
                               <CardImage
-                                src={'https://raw.githubusercontent.com/swartists/starworksartists.com/development/static' + getAsset(value)}
+                                src={getAsset(value)}
                                 saveBlob={this.saveBlob}
                                 blob={this.state.blob}
                                 fileId={this.controlID}

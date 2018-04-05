@@ -1,13 +1,10 @@
 backend:
-  name: github
-  repo: owenhoskins/gatsby-sharp-netlify-cms
-  branch: development # Branch to update (optional; defaults to master)
+  name: test-repo
 
-#display_url: https://example.com
-#media_folder: "assets/uploads"
+display_url: https://example.com
+media_folder: "assets/uploads"
 
-media_folder: 'static/img' # this is where netlify cms places images.
-public_folder: '/img' # this is where gatsby places images
+publish_mode: editorial_workflow # optional, enables publishing workflow
 
 collections: # A list of collections the CMS should be able to edit
   - name: "posts" # Used in routes, ie.: /admin/collections/:slug/edit
@@ -26,59 +23,6 @@ collections: # A list of collections the CMS should be able to edit
       - {label: "Body", name: "body", widget: "markdown"}
     meta:
       - {label: "SEO Description", name: "description", widget: "text"}
-
-
-  - name: artists
-    label: Artists
-    folder: 'src/pages/artists'
-    slug: '/artists/{{slug}}'
-    create: true
-    meta:
-      - {label: "SEO Description", name: "description", widget: "text"}
-    fields:
-      - {name: kind, widget: hidden, default: 'artist'}
-      - {label: "Name", name: "title", widget: "string", tagname: "h1"}
-      - {label: "Type", name: "type", widget: "select", options: ["hair", "makeup", "stylist", "grooming", "manicurist", "color"]}
-      - {label: "Cover Image", name: "cover", widget: "image", optional: true, tagname: ""}
-      - {label: "Instagram handle", name: "instagram_handle", widget: "string", tagname: "p", required: false}
-      - {label: "Enquire", name: "enquire", widget: "string", tagname: "p", required: false}
-      - name: portfolios
-        label: Portfolios
-        widget: list
-        optional: true
-        fields:
-          - {label: 'Title', name: 'title', widget: 'string'}
-          - name: gallery
-            label: Gallery
-            widget: gallery
-            optional: true
-            fields:
-              - {name: image, label: Image, widget: image, class: 'gallery'}
-      - name: videos
-        label: Videos
-        widget: list
-        optional: true
-        fields:
-          - {label: 'Title', name: 'title', widget: 'string'}
-          - {label: 'URL', name: 'url', widget: 'string'}
-      - {label: "Biography Text", name: "body", widget: "markdown", optional: true}
-
-
-
-  - name: 'gallery'
-    label: 'Gallery'
-    create: true
-    folder: "_gallery"
-    slug: '{{slug}}'
-    fields:
-      - {name: kind, widget: hidden, default: 'gallery'}
-      - {label: 'Title', name: 'title', widget: 'string'}
-      - name: images
-        label: Gallery
-        widget: gallery
-        optional: true
-        fields:
-          - {name: image, label: Image, widget: image, class: 'gallery'}
 
   - name: "faq" # Used in routes, ie.: /admin/collections/:slug/edit
     label: "FAQ" # Used in the UI
