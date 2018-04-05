@@ -265,43 +265,49 @@ class MediaLibrary extends React.Component {
     const { selectedFile } = this.state;
 
     const file = this.getDatum(rowIndex, columnIndex)
-    const savedBlob = this.state.blobs.find(blob => {
-      return blob.key === file.key
-    })
-    // console.log('cellRenderer savedBlob: ', savedBlob)
-    //console.log('cellRenderer: ', rowIndex, columnIndex, file.key)
-    return (
-      <div
-        key={file.key}
-        onClick={() => this.handleAssetClick(file)}
-        tabIndex="-1"
-        style={style}
-        className={'nc-mediaLibrary-card-wrapper'}
-      >
+    if (file) {
+
+      const savedBlob = this.state.blobs.find(blob => {
+        return blob.key === file.key
+      })
+      // console.log('cellRenderer savedBlob: ', savedBlob)
+      //console.log('cellRenderer: ', rowIndex, columnIndex, file.key)
+      return (
         <div
-          className={c('nc-mediaLibrary-card', { 'nc-mediaLibrary-card-selected': selectedFile.key === file.key })}
+          key={file.key}
+          onClick={() => this.handleAssetClick(file)}
+          tabIndex="-1"
+          style={style}
+          className={'nc-mediaLibrary-card-wrapper'}
         >
-          <div className="nc-mediaLibrary-cardImage-container">
-            {
-              file.isViewableImage
-                ? (
-                  <CardImage
-                    className="nc-mediaLibrary-cardImage"
-                    src={file.url}
-                    saveBlob={this.saveBlob}
-                    blob={savedBlob && savedBlob.blob}
-                    fileId={file.key}
-                    isVisible={true}
-                  />
-                  )
-                : <div className="nc-mediaLibrary-cardImage"/>
-            }
-            {/*<img src={file.url} className="nc-mediaLibrary-cardImage"/>*/}
+          <div
+            className={c('nc-mediaLibrary-card', { 'nc-mediaLibrary-card-selected': selectedFile.key === file.key })}
+          >
+            <div className="nc-mediaLibrary-cardImage-container">
+              {
+                file.isViewableImage
+                  ? (
+                    <CardImage
+                      className="nc-mediaLibrary-cardImage"
+                      src={file.url}
+                      saveBlob={this.saveBlob}
+                      blob={savedBlob && savedBlob.blob}
+                      fileId={file.key}
+                      isVisible={true}
+                    />
+                    )
+                  : <div className="nc-mediaLibrary-cardImage"/>
+              }
+              {/*<img src={file.url} className="nc-mediaLibrary-cardImage"/>*/}
+            </div>
+            <p className="nc-mediaLibrary-cardText">{file.name}</p>
           </div>
-          <p className="nc-mediaLibrary-cardText">{file.name}</p>
         </div>
-      </div>
-    )
+      )
+
+    } else {
+      return <div/>
+    }
 
   }
 
@@ -412,7 +418,7 @@ class MediaLibrary extends React.Component {
                 overscanRowCount={3}
                 columnWidth={290}
                 rowHeight={240}
-                rowCount={hasFiles ? this.props.files.length / 3 : 0}
+                rowCount={hasFiles ? tableData.length : 0}
                 //columnCount={hasFiles ? this.props.files.length : 0}
                 columnCount={3}
                 scrollToColumn={0}
