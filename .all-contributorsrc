@@ -842,6 +842,17 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "slathrop",
+      "name": "Steve Lathrop",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/3028764?v=4",
+      "profile": "https://www.SteLa.io",
+      "contributions": [
+        "code",
+        "doc",
+        "example"
+      ]
     }
   ]
 }
