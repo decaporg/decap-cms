@@ -45,6 +45,7 @@ export default class MarkdownControl extends React.Component {
       getAsset,
       value,
       classNameWrapper,
+      field
     } = this.props;
 
     const { mode } = this.state;
@@ -57,6 +58,7 @@ export default class MarkdownControl extends React.Component {
           getAsset={getAsset}
           className={classNameWrapper}
           value={value}
+          field={field}
         />
       </div>
     );
@@ -69,6 +71,7 @@ export default class MarkdownControl extends React.Component {
           getAsset={getAsset}
           className={classNameWrapper}
           value={value}
+          field={field}
         />
       </div>
     );
