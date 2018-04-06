@@ -184,3 +184,13 @@ This setting changes options for the editor view of the collection. It has one o
   editor:
      preview: false
 ```
+
+### `display_url`
+
+When this setting is specified, the CMS UI will include a link in the fixed area at the top of the page, allowing content authors to easily return to your main site. The text of the link consists of the URL less the protocol portion (e.g., `your-site.com`).
+
+**Example:**
+
+```yaml
+display_url: https://your-site.com
+```
