@@ -104,7 +104,9 @@ export default class Widget extends Component {
 
   validatePattern(field, value) {
     const pattern = field.get('pattern', false);
-    if (pattern && !RegExp(pattern.first()).test(value)) {
+    const hasValue = typeof value === 'string' && value.length > 0;
+
+    if (pattern && hasValue && !RegExp(pattern.first()).test(value)) {
       const error = {
         type: ValidationErrorTypes.PATTERN,
         message: `${ field.get('label', field.get('name')) } didn't match the pattern: ${ pattern.last() }`,
@@ -126,7 +128,7 @@ export default class Widget extends Component {
     } else if (response instanceof Promise) {
       response.then(
         () => { this.validate({ error: false }); },
-        (err) => { 
+        (err) => {
           const error = {
             type: ValidationErrorTypes.CUSTOM,
             message: `${ field.get('label', field.get('name')) } - ${ err }.`,
