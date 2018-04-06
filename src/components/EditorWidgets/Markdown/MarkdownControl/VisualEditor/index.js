@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 import React, { Component } from 'react';
 import { get, isEmpty, debounce } from 'lodash';
 import { Map } from 'immutable';
@@ -33,6 +34,7 @@ export default class Editor extends Component {
     onMode: PropTypes.func.isRequired,
     className: PropTypes.string.isRequired,
     value: PropTypes.string,
+    field: ImmutablePropTypes.map
   };
 
   constructor(props) {
@@ -189,7 +191,7 @@ export default class Editor extends Component {
   }
 
   render() {
-    const { onAddAsset, getAsset, className } = this.props;
+    const { onAddAsset, getAsset, className, field } = this.props;
 
     return (
       <div className="nc-visualEditor-wrapper">
@@ -206,6 +208,7 @@ export default class Editor extends Component {
             onSubmit={this.handlePluginAdd}
             onAddAsset={onAddAsset}
             getAsset={getAsset}
+            buttons={field.get('buttons')}
           />
         </div>
         <Slate
