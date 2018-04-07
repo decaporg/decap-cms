@@ -60,6 +60,16 @@ public_folder: "/images/uploads"
 
 Based on the settings above, if a user used an image widget field called `avatar` to upload and select an image called `philosoraptor.png`, the image would be saved to the repository at `/static/images/uploads/philosoraptor.png`, and the `avatar` field for the file would be set to `/images/uploads/philosoraptor.png`.
 
+## Display URL
+
+When the `display_url` setting is specified, the CMS UI will include a link in the fixed area at the top of the page, allowing content authors to easily return to your main site. The text of the link consists of the URL less the protocol portion (e.g., `your-site.com`).
+
+**Example:**
+
+```yaml
+display_url: https://your-site.com
+```
+
 ## Slug Type
 
 The `slug` option allows you to change how filenames for entries are created and sanitized. For modifying the actual data in a slug, see the per-collection option below.
@@ -183,14 +193,4 @@ This setting changes options for the editor view of the collection. It has one o
 ```yaml
   editor:
      preview: false
-```
-
-### `display_url`
-
-When this setting is specified, the CMS UI will include a link in the fixed area at the top of the page, allowing content authors to easily return to your main site. The text of the link consists of the URL less the protocol portion (e.g., `your-site.com`).
-
-**Example:**
-
-```yaml
-display_url: https://your-site.com
 ```
