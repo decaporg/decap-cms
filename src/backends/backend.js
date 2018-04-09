@@ -240,9 +240,9 @@ class Backend {
       return e.metaData.collection === collection.get('name') && e.slug === slug;
     })
     if (existingEntry) throw overWriteError;
-    return this.getEntry(collection, slug)
+    return this.implementation.getEntry(collection, slug, path)
       .then(result => {
-        if (result.data.title) throw overWriteError;
+        if (result.data !== undefined) throw overWriteError;
         return {path, slug, raw: this.entryToRaw(collection, entryDraft.get("entry"))};
       })
       .catch(console.error);
