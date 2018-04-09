@@ -851,6 +851,42 @@
       "contributions": [
         "plugin"
       ]
+    },
+    {
+      "login": "brianlmacdonald",
+      "name": "Brian Macdonald",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/23248886?v=4",
+      "profile": "https://github.com/brianlmacdonald",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "jayvdb",
+      "name": "John Vandenberg",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/15092?v=4",
+      "profile": "https://jayvdb.github.io/",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "MarkZither",
+      "name": "MarkZither",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/24911956?v=4",
+      "profile": "https://github.com/MarkZither",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "robphoenix",
+      "name": "Rob Phoenix",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/9257284?v=4",
+      "profile": "https://www.robphoenix.com",
+      "contributions": [
+        "doc"
+      ]
     }
   ]
 }
