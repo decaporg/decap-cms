@@ -23,6 +23,7 @@ registerBackend('git-gateway', GitGatewayBackend);
 registerBackend('github', GitHubBackend);
 registerBackend('test-repo', TestRepoBackend);
 
+const overWriteError = new Error("Oops! Duplicate filename found. Please choose a unique name.")
 
 class LocalStorageAuthStore {
   storageKey = "netlify-cms-user";
@@ -234,7 +235,20 @@ class Backend {
     .then(this.entryWithFormat(collection, slug));
   }
 
-  persistEntry(config, collection, entryDraft, MediaFiles, integrations, options = {}) {
+  checkOverwrite(collection, slug, path, entryDraft) {
+    const existingEntry = window.repoFilesUnpublished.find(e => {
+      return e.metaData.collection === collection.get('name') && e.slug === slug;
+    })
+    if (existingEntry) throw overWriteError;
+    return this.getEntry(collection, slug)
+      .then(result => {
+        if (result.data.title) throw overWriteError;
+        return {path, slug, raw: this.entryToRaw(collection, entryDraft.get("entry"))};
+      })
+      .catch(console.error);
+  }
+
+  async persistEntry(config, collection, entryDraft, MediaFiles, integrations, options = {}) {
     const newEntry = entryDraft.getIn(["entry", "newRecord"]) || false;
 
     const parsedData = {
@@ -250,11 +264,7 @@ class Backend {
       }
       const slug = slugFormatter(collection.get("slug"), entryDraft.getIn(["entry", "data"]), config.get("slug"));
       const path = selectEntryPath(collection, slug);
-      entryObj = {
-        path,
-        slug,
-        raw: this.entryToRaw(collection, entryDraft.get("entry")),
-      };
+      entryObj = await this.checkOverwrite(collection, slug, path, entryDraft);
     } else {
       const path = entryDraft.getIn(["entry", "path"]);
       const slug = entryDraft.getIn(["entry", "slug"]);
