@@ -240,12 +240,17 @@ class Backend {
       (error instanceof EditorialWorkflowError && error.notUnderEditorialWorkflow) ?
       Promise.resolve(false) : 
       Promise.reject(error)));
+
     if (existingEntry) throw (new Error(errorMessage));
-    return await this.implentation.getEntry(collection, slug, path)
+
+    const publishedEntry = await this.implementation.getEntry(collection, slug, path)
       .then(result => {
-        if (result.data !== undefined) throw (new Error(errorMessage));
-        else return {path, slug, raw: this.entryToRaw(collection, entryDraft.get("entry"))};
+        return result.data;
       });
+      
+    if (publishedEntry) throw (new Error(errorMessage));
+
+    return {path, slug, raw: this.entryToRaw(collection, entryDraft.get("entry"))};
   }
 
   async persistEntry(config, collection, entryDraft, MediaFiles, integrations, options = {}) {
