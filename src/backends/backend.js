@@ -15,6 +15,7 @@ import TestRepoBackend from "./test-repo/implementation";
 import GitHubBackend from "./github/implementation";
 import GitGatewayBackend from "./git-gateway/implementation";
 import { registerBackend, getBackend } from 'Lib/registry';
+import { EditorialWorkflowError } from "ValueObjects/errors";
 
 /**
  * Register internal backends
@@ -234,12 +235,13 @@ class Backend {
   }
 
   async checkOverwrite(collection, slug, path, entryDraft) {
-    const errorMessage = "Oops, duplicate filename found. Please choose a unique name."
-    const existingEntry = window.repoFilesUnpublished.find(e => {
-      return e.metaData.collection === collection.get('name') && e.slug === slug;
-    })
+    const errorMessage = "Oops, duplicate filename found. Please choose a unique name.";
+    const existingEntry = await this.unpublishedEntry(collection, slug).catch(error => (
+      (error instanceof EditorialWorkflowError && error.notUnderEditorialWorkflow) ?
+      Promise.resolve(false) : 
+      Promise.reject(error)));
     if (existingEntry) throw (new Error(errorMessage));
-    return await this.implementation.getEntry(collection, slug, path)
+    return await this.implentation.getEntry(collection, slug, path)
       .then(result => {
         if (result.data !== undefined) throw (new Error(errorMessage));
         else return {path, slug, raw: this.entryToRaw(collection, entryDraft.get("entry"))};
