@@ -43,3 +43,10 @@ export const validateCursor = cursor =>
   (!cursor.meta || validKeys({ optional: ["index", "count", "pageSize", "pageCount"] }, cursor.meta));
 
 export const invalidCursorError = cursor => new Error("Invalid cursor returned!");
+
+// This is a temporary hack to allow cursors to be added to the
+// interface between backend.js and backends without modifying old
+// backends at all. This should be removed in favor of wrapping old
+// backends with a compatibility layer, as part of the backend API
+// refactor.
+export const CURSOR_COMPATIBILITY_SYMBOL = Symbol("cursor key for compatibility with old backends");
