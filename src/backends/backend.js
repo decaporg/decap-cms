@@ -23,8 +23,6 @@ registerBackend('git-gateway', GitGatewayBackend);
 registerBackend('github', GitHubBackend);
 registerBackend('test-repo', TestRepoBackend);
 
-const overWriteError = new Error("Oops! Duplicate filename found. Please choose a unique name.")
-
 class LocalStorageAuthStore {
   storageKey = "netlify-cms-user";
 
@@ -235,17 +233,17 @@ class Backend {
     .then(this.entryWithFormat(collection, slug));
   }
 
-  checkOverwrite(collection, slug, path, entryDraft) {
+  async checkOverwrite(collection, slug, path, entryDraft) {
+    const errorMessage = "Oops, duplicate filename found. Please choose a unique name."
     const existingEntry = window.repoFilesUnpublished.find(e => {
       return e.metaData.collection === collection.get('name') && e.slug === slug;
     })
-    if (existingEntry) throw overWriteError;
-    return this.implementation.getEntry(collection, slug, path)
+    if (existingEntry) throw (new Error(errorMessage));
+    return await this.implementation.getEntry(collection, slug, path)
       .then(result => {
-        if (result.data !== undefined) throw overWriteError;
-        return {path, slug, raw: this.entryToRaw(collection, entryDraft.get("entry"))};
-      })
-      .catch(console.error);
+        if (result.data !== undefined) throw (new Error(errorMessage));
+        else return {path, slug, raw: this.entryToRaw(collection, entryDraft.get("entry"))};
+      });
   }
 
   async persistEntry(config, collection, entryDraft, MediaFiles, integrations, options = {}) {
