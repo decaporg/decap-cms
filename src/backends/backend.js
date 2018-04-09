@@ -1,4 +1,5 @@
 import { attempt, isError } from 'lodash';
+import { fromJS } from 'immutable';
 import { resolveFormat } from "Formats/formats";
 import { selectIntegration } from 'Reducers/integrations';
 import {
@@ -15,6 +16,7 @@ import TestRepoBackend from "./test-repo/implementation";
 import GitHubBackend from "./github/implementation";
 import GitGatewayBackend from "./git-gateway/implementation";
 import { registerBackend, getBackend } from 'Lib/registry';
+import { CURSOR_COMPATIBILITY_SYMBOL } from '../valueObjects/Cursor';
 
 /**
  * Register internal backends
@@ -134,30 +136,79 @@ class Backend {
 
   getToken = () => this.implementation.getToken();
 
+  // TODO: rename this - this method contains the post-processing
+  // functionality from `listEntries`, separated so that we can re-use
+  // it in `traverseCursor`
+  processEntries(loadedEntries, collection) {
+    const collectionFilter = collection.get('filter');
+    const entries = loadedEntries.map(loadedEntry => createEntry(
+      collection.get("name"),
+      selectEntrySlug(collection, loadedEntry.file.path),
+      loadedEntry.file.path,
+      { raw: loadedEntry.data || '', label: loadedEntry.file.label }
+    ));
+    const formattedEntries = entries.map(this.entryWithFormat(collection));
+    // If this collection has a "filter" property, filter entries accordingly
+    const filteredEntries = collectionFilter
+      ? this.filterEntries({ entries: formattedEntries }, collectionFilter)
+      : formattedEntries;
+    return filteredEntries;
+  }
+
+  // Wrap cursors so we can tell which collection the cursor is
+  // from. This is done to prevent traverseCursor from requiring a
+  // `collection` argument.
+  // TODO: remove intermediate layer so backends can handle cursors
+  // directly. The backend has all the information required to do this
+  // already,
+  wrapCollectionCursor(cursor, collection) {
+    return {
+      ...cursor,
+      data: {
+        cursorType: "collection",
+        collection: collection.toJS(),
+        data: cursor.data,
+      },
+    };
+  }
+
+  unwrapCursor(cursor) {
+    return {
+      unwrappedCursor: {
+        ...cursor,
+        data: cursor.data.data,
+      },
+      data: cursor.data,
+    };
+  }
+
   listEntries(collection) {
     const listMethod = this.implementation[selectListMethod(collection)];
     const extension = selectFolderEntryExtension(collection);
-    const collectionFilter = collection.get('filter');
     return listMethod.call(this.implementation, collection, extension)
-      .then(loadedEntries => (
-        loadedEntries.map(loadedEntry => createEntry(
-          collection.get("name"),
-          selectEntrySlug(collection, loadedEntry.file.path),
-          loadedEntry.file.path,
-          { raw: loadedEntry.data || '', label: loadedEntry.file.label }
-        ))
-      ))
-      .then(entries => (
-        {
-          entries: entries.map(this.entryWithFormat(collection)),
-        }
-      ))
-      // If this collection has a "filter" property, filter entries accordingly
-      .then(loadedCollection => (
-        {
-          entries: collectionFilter ? this.filterEntries(loadedCollection, collectionFilter) : loadedCollection.entries
-        }
-      ));
+      .then(loadedEntries => {
+        const cursor = loadedEntries[CURSOR_COMPATIBILITY_SYMBOL]
+          ? this.wrapCollectionCursor(loadedEntries[CURSOR_COMPATIBILITY_SYMBOL], collection)
+          : null;
+        return {
+          entries: this.processEntries(loadedEntries, collection),
+          cursor,
+        };
+      });
+  }
+
+  // TODO: stop assuming all cursors are for collections
+  traverseCursor(cursor, action) {
+    const { data, unwrappedCursor } = this.unwrapCursor(cursor);
+    const collection = fromJS(data.collection);
+    return this.implementation.traverseCursor(unwrappedCursor, action)
+      .then(async ({ entries, cursor: newCursor }) => {
+        const wrappedNewCursor = this.wrapCollectionCursor(newCursor, collection);
+        return {
+          entries: this.processEntries(entries, collection),
+          cursor: wrappedNewCursor,
+        };
+      });
   }
 
   getEntry(collection, slug) {
