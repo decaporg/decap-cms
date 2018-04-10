@@ -9,11 +9,16 @@ export const CONFIG_SUCCESS = "CONFIG_SUCCESS";
 export const CONFIG_FAILURE = "CONFIG_FAILURE";
 export const CONFIG_MERGE = "CONFIG_MERGE";
 
+
 const getConfigUrl = () => {
   const validTypes = { 'text/yaml': 'yaml', 'application/x-yaml': 'yaml' };
-  const configLink = document.querySelector('link[rel="cms-config-url"]');
-  const isValidType = link => link && validTypes[link.type];
-  return isValidType(configLink) ? get(configLink, 'href') : 'config.yml';
+  const configLinkEl = document.querySelector('link[rel="cms-config-url"]');
+  const isValidLink = configLinkEl && validTypes[configLinkEl.type] && get(configLinkEl, 'href');
+  if (isValidLink) {
+    console.log(`Using config file path: "${configUrl}"`);
+    return get(configLinkEl, 'href');
+  }
+  return 'config.yml';
 }
 
 const defaults = {
