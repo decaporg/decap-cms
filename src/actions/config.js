@@ -1,6 +1,6 @@
 import yaml from "js-yaml";
 import { Map, List, fromJS } from "immutable";
-import { trimStart, flow, isBoolean } from "lodash";
+import { trimStart, flow, isBoolean, get } from "lodash";
 import { authenticateUser } from "Actions/auth";
 import * as publishModes from "Constants/publishModes";
 
@@ -8,6 +8,19 @@ export const CONFIG_REQUEST = "CONFIG_REQUEST";
 export const CONFIG_SUCCESS = "CONFIG_SUCCESS";
 export const CONFIG_FAILURE = "CONFIG_FAILURE";
 export const CONFIG_MERGE = "CONFIG_MERGE";
+
+
+const getConfigUrl = () => {
+  const validTypes = { 'text/yaml': 'yaml', 'application/x-yaml': 'yaml' };
+  const configLinkEl = document.querySelector('link[rel="cms-config-url"]');
+  const isValidLink = configLinkEl && validTypes[configLinkEl.type] && get(configLinkEl, 'href');
+  if (isValidLink) {
+    const link = get(configLinkEl, 'href');
+    console.log(`Using config file path: "${link}"`);
+    return link;
+  }
+  return 'config.yml';
+}
 
 const defaults = {
   publish_mode: publishModes.SIMPLE,
@@ -130,7 +143,8 @@ export function loadConfig() {
 
     try {
       const preloadedConfig = getState().config;
-      const loadedConfig = await getConfig('config.yml', preloadedConfig && preloadedConfig.size > 1);
+      const configUrl = getConfigUrl();
+      const loadedConfig = await getConfig(configUrl, preloadedConfig && preloadedConfig.size > 1);
 
       /**
        * Merge any existing configuration so the result can be validated.
