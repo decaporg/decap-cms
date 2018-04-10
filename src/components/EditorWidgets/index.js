@@ -26,6 +26,8 @@ import ObjectPreview from './Object/ObjectPreview';
 import RelationControl from './Relation/RelationControl';
 import RelationPreview from './Relation/RelationPreview';
 import BooleanControl from './Boolean/BooleanControl';
+import ColorControl from './Color/ColorControl';
+import ColorPreview from './Color/ColorPreview';
 
 
 registerWidget('string', StringControl, StringPreview);
@@ -41,4 +43,5 @@ registerWidget('select', SelectControl, SelectPreview);
 registerWidget('object', ObjectControl, ObjectPreview);
 registerWidget('relation', RelationControl, RelationPreview);
 registerWidget('boolean', BooleanControl);
+registerWidget('color', ColorControl, ColorPreview);
 registerWidget('unknown', UnknownControl, UnknownPreview);

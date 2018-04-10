@@ -49,6 +49,7 @@ collections: # A list of collections the CMS should be able to edit
             widget: "object"
             fields:
               - {label: "Number of posts on frontpage", name: front_limit, widget: number}
+              - {label: "Theme Color", name: "color", widget: "color"}
               - {label: "Default Author", name: author, widget: string}
               - {label: "Default Thumbnail", name: thumb, widget: image, class: "thumb"}
 
