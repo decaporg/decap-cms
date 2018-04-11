@@ -4,12 +4,20 @@
     Changes that have landed in master but are not yet released.
     Click to see more.
   </summary>
-
-  * Fix broken new media uploads for Git Gateway ([@tech4him1](https://github.com/tech4him1) in [#1221](https://github.com/netlify/netlify-cms/pull/1221))
-  * Enable editorial workflow for test backend ([@erquhart](https://github.com/erquhart) in [#1225](https://github.com/netlify/netlify-cms/pull/1225))
-  * Add hour, minute, and second slug fields ([@terrierscript](https://github.com/terrierscript) in [#1207](https://github.com/netlify/netlify-cms/pull/1207))
-
 </details>
+
+## 1.5.0 (April 11, 2018)
+New time based slug placeholders, set config.yml URL with <link>.
+
+### Features
+* Add hour, minute, and second slug fields ([@terrierscript](https://github.com/terrierscript) in [#1207](https://github.com/netlify/netlify-cms/pull/1207))
+* Allow setting config URL with <link> ([@brianlmacdonald](https://github.com/brianlmacdonald) in [#1146](https://github.com/netlify/netlify-cms/pull/1146))
+
+### Bug Fixes
+* Fix broken new media uploads for Git Gateway ([@tech4him1](https://github.com/tech4him1) in [#1221](https://github.com/netlify/netlify-cms/pull/1221))
+
+### Dev Experience
+* Enable editorial workflow for test backend ([@erquhart](https://github.com/erquhart) in [#1225](https://github.com/netlify/netlify-cms/pull/1225))
 
 ## 1.4.0 (March 29, 2018)
 Filename creation can now be customized to exclude Unicode! Also, check out the new Beta Features! 💥
