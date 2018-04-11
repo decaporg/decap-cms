@@ -16,27 +16,27 @@ $ yarn
 ## Building
 
 ```sh
-$ npm run build
+$ yarn build
 ```
 
 ## Testing
 
 ```sh
-$ npm run test
+$ yarn test
 ```
 
 ```sh
-$ npm run test:watch
+$ yarn test:watch
 ```
 
 ```sh
-$ npm run lint
+$ yarn lint
 ```
 
 ## Running the server
 
 ```sh
-$ npm run start
+$ yarn start
 ```
 
 ## Pull Requests
@@ -57,7 +57,7 @@ This project follows the [all contributors](https://github.com/kentcdodds/all-co
 please use the automated script as part of your PR:
 
 ```console
-yarn run add-contributor <YOUR_GITHUB_USERNAME>
+yarn add-contributor <YOUR_GITHUB_USERNAME>
 ```
 
 Follow the prompt. If you've already added yourself to the list and are making a
