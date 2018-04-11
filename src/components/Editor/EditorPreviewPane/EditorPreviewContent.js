@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { isElement } from 'react-is';
 import { ScrollSyncPane } from 'react-scroll-sync';
 
 /**
@@ -12,7 +13,9 @@ class PreviewContent extends React.Component {
     const { previewComponent, previewProps } = this.props;
     return (
       <ScrollSyncPane attachTo={this.context.document.scrollingElement}>
-        {React.createElement(previewComponent, previewProps)}
+        {isElement(previewComponent)
+          ? React.cloneElement(previewComponent, previewProps)
+          : React.createElement(previewComponent, previewProps)}
       </ScrollSyncPane>
     );
   }
