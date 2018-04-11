@@ -42,11 +42,22 @@ Every release is documented on the Github [Releases](https://github.com/netlify/
 Netlify CMS is released under the [MIT License](LICENSE).
 Please make sure you understand its [implications and guarantees](https://writing.kemitchell.com/2016/09/21/MIT-License-Line-by-Line.html).
 
+# Thanks
 
+## Services
+These services support Netlify CMS development by providing free infrastructure.
+
+<p align="center">
+  <a href="https://www.travis-ci.org">
+    <img src="https://raw.githubusercontent.com/netlify/netlify-cms/master/img/travis.png" width="150"/>
+  </a>
+  <a href="https://www.browserstack.com">
+    <img src="https://raw.githubusercontent.com/netlify/netlify-cms/master/img/browserstack.png" width="150"/>
+  </a>
+</p>
 
 ## Contributors
-
-Thanks goes to these wonderful people ([emoji key](https://github.com/kentcdodds/all-contributors#emoji-key)):
+These wonderful folks are responsible for developing and maintaining Netlify CMS. ([emoji key](https://github.com/kentcdodds/all-contributors#emoji-key))
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 | [<img src="https://avatars2.githubusercontent.com/u/33676?v=4" width="100px;"/><br /><sub><b>Cássio Souza</b></sub>](https://twitter.com/cassiozen)<br />[💻](https://github.com/netlify/netlify-cms/commits?author=cassiozen "Code") | [<img src="https://avatars3.githubusercontent.com/u/2112202?v=4" width="100px;"/><br /><sub><b>Shawn Erquhart</b></sub>](https://erquh.art)<br />[💻](https://github.com/netlify/netlify-cms/commits?author=erquhart "Code") | [<img src="https://avatars3.githubusercontent.com/u/11071?v=4" width="100px;"/><br /><sub><b>Andrey Okonetchnikov</b></sub>](http://okonet.ru)<br />[💻](https://github.com/netlify/netlify-cms/commits?author=okonet "Code") | [<img src="https://avatars0.githubusercontent.com/u/6515?v=4" width="100px;"/><br /><sub><b>Mathias Biilmann</b></sub>](https://www.netlify.com)<br />[💻](https://github.com/netlify/netlify-cms/commits?author=biilmann "Code") | [<img src="https://avatars1.githubusercontent.com/u/1425133?v=4" width="100px;"/><br /><sub><b>Benaiah Mischenko</b></sub>](http://benaiah.me)<br />[💻](https://github.com/netlify/netlify-cms/commits?author=Benaiah "Code") | [<img src="https://avatars0.githubusercontent.com/u/2281080?v=4" width="100px;"/><br /><sub><b>Rafael Conde</b></sub>](http://rafaelconde.net)<br />[🎨](#design-rafaelconde "Design") [💻](https://github.com/netlify/netlify-cms/commits?author=rafaelconde "Code") | [<img src="https://avatars0.githubusercontent.com/u/2513147?v=4" width="100px;"/><br /><sub><b>Joseph Earl</b></sub>](http://josephearl.co.uk)<br />[💻](https://github.com/netlify/netlify-cms/commits?author=josephearl "Code") |
