@@ -16,27 +16,27 @@ $ yarn
 ## Building
 
 ```sh
-$ yarn build
+$ yarn run build
 ```
 
 ## Testing
 
 ```sh
-$ yarn test
+$ yarn run test
 ```
 
 ```sh
-$ yarn test:watch
+$ yarn run test:watch
 ```
 
 ```sh
-$ yarn lint
+$ yarn run lint
 ```
 
 ## Running the server
 
 ```sh
-$ yarn start
+$ yarn run start
 ```
 
 ## Pull Requests
@@ -57,7 +57,7 @@ This project follows the [all contributors](https://github.com/kentcdodds/all-co
 please use the automated script as part of your PR:
 
 ```console
-yarn add-contributor <YOUR_GITHUB_USERNAME>
+yarn run add-contributor <YOUR_GITHUB_USERNAME>
 ```
 
 Follow the prompt. If you've already added yourself to the list and are making a
