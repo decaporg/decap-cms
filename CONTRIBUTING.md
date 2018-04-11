@@ -16,27 +16,27 @@ $ yarn
 ## Building
 
 ```sh
-$ npm run build
+$ yarn run build
 ```
 
 ## Testing
 
 ```sh
-$ npm run test
+$ yarn run test
 ```
 
 ```sh
-$ npm run test:watch
+$ yarn run test:watch
 ```
 
 ```sh
-$ npm run lint
+$ yarn run lint
 ```
 
 ## Running the server
 
 ```sh
-$ npm run start
+$ yarn run start
 ```
 
 ## Pull Requests
