@@ -36,9 +36,8 @@ export default class DateControl extends React.Component {
 
   handleChange = datetime => {
     const { onChange } = this.props;
-    if (!this.format || datetime === '') {
-      onChange(datetime);
-    } else {
+    // Set the date if the format is valid (moment or Date object otherwise datetime is a string).
+    if (moment.isMoment(datetime) || datetime instanceof Date) {
       const formattedValue = moment(datetime).format(this.format);
       onChange(formattedValue);
     }
