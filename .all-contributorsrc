@@ -742,10 +742,10 @@
       ]
     },
     {
-      "login": "michaelromani",
+      "login": "MichaelRomani",
       "name": "Michael Romani",
       "avatar_url": "https://avatars0.githubusercontent.com/u/29218846?v=4",
-      "profile": "https://github.com/michaelromani",
+      "profile": "https://github.com/MichaelRomani",
       "contributions": [
         "code"
       ]
@@ -841,6 +841,51 @@
       "profile": "https://terrierscript.com",
       "contributions": [
         "code"
+      ]
+    },
+    {
+      "login": "crgeary",
+      "name": "Christopher Geary",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/3949335?v=4",
+      "profile": "https://twitter.com/crgeary",
+      "contributions": [
+        "plugin"
+      ]
+    },
+    {
+      "login": "brianlmacdonald",
+      "name": "Brian Macdonald",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/23248886?v=4",
+      "profile": "https://github.com/brianlmacdonald",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "jayvdb",
+      "name": "John Vandenberg",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/15092?v=4",
+      "profile": "https://jayvdb.github.io/",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "MarkZither",
+      "name": "MarkZither",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/24911956?v=4",
+      "profile": "https://github.com/MarkZither",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "robphoenix",
+      "name": "Rob Phoenix",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/9257284?v=4",
+      "profile": "https://www.robphoenix.com",
+      "contributions": [
+        "doc"
       ]
     },
     {
