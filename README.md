@@ -46,13 +46,13 @@ Please make sure you understand its [implications and guarantees](https://writin
 
 ## Services
 These services support Netlify CMS development by providing free infrastructure.
-
-<p align="center">
+<p>
   <a href="https://www.travis-ci.org">
-    <img src="https://raw.githubusercontent.com/netlify/netlify-cms/master/img/travis.png" width="150"/>
+    <img src="https://raw.githubusercontent.com/netlify/netlify-cms/master/img/travis.png" height="38"/>
   </a>
+  <img src="https://spacergif.org/spacer.gif" width="20"/>
   <a href="https://www.browserstack.com">
-    <img src="https://raw.githubusercontent.com/netlify/netlify-cms/master/img/browserstack.png" width="150"/>
+    <img src="https://raw.githubusercontent.com/netlify/netlify-cms/master/img/browserstack.png" height="38"/>
   </a>
 </p>
 
