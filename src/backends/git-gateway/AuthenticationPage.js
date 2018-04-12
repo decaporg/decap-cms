@@ -41,7 +41,8 @@ export default class AuthenticationPage extends React.Component {
   }
 
   handleIdentity = () => {
-    if (window.netlifyIdentity.currentUser()) {
+    const user = window.netlifyIdentity.currentUser();
+    if (user) {
       this.props.onLogin(user);
     } else {
       window.netlifyIdentity.open();

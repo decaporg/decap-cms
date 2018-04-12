@@ -339,7 +339,7 @@ export function updateUnpublishedEntryStatus(collection, slug, oldStatus, newSta
       }));
       dispatch(unpublishedEntryStatusChangePersisted(collection, slug, oldStatus, newStatus, transactionID));
     })
-    .catch(() => {
+    .catch((error) => {
       dispatch(notifSend({
         message: `Failed to update status: ${ error }`,
         kind: 'danger',
