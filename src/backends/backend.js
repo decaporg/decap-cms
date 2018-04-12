@@ -59,7 +59,7 @@ const slugFormatter = (template = "{{slug}}", entryData, slugConfig) => {
     return identifier;
   };
 
-  const slug = template.replace(/\{\{([^\}]+)\}\}/g, (_, field) => {
+  const getFieldValue = (field) => {
     switch (field) {
       case "year":
         return date.getFullYear();
@@ -78,12 +78,17 @@ const slugFormatter = (template = "{{slug}}", entryData, slugConfig) => {
       default:
         return entryData.get(field, "").trim();
     }
-  })
-  // Convert slug to lower-case
-  .toLocaleLowerCase()
+  };
 
-  // Replace periods with dashes.
-  .replace(/[.]/g, '-');
+  const slug = template.replace(/\{\{([^\}]+)\}\}/g, (_, field) => {
+    return getFieldValue(field)
+
+    // Convert slug to lower-case
+    .toLocaleLowerCase()
+
+    // Replace periods with dashes.
+    .replace(/[.]/g, '-');
+  });
 
   return sanitizeSlug(slug, slugConfig);
 };
