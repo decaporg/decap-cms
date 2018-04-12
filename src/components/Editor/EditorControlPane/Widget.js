@@ -67,6 +67,13 @@ export default class Widget extends Component {
     this.wrappedControlShouldComponentUpdate = scu && scu.bind(wrappedControl);
   };
 
+  hasNoValue = (value) => (
+    value === null ||
+    value === undefined ||
+    (value.hasOwnProperty('length') && value.length === 0) ||
+    (value.constructor === Object && Object.keys(value).length === 0)
+  );
+
   validate = (skipWrapped = false) => {
     const { field, value } = this.props;
     const errors = [];
@@ -84,14 +91,9 @@ export default class Widget extends Component {
     this.props.onValidate(errors);
   };
 
-  validatePresence(field, value) {
+  validatePresence = (field, value) => {
     const isRequired = field.get('required', true);
-    if (isRequired && (
-      value === null ||
-      value === undefined ||
-      (value.hasOwnProperty('length') && value.length === 0) ||
-      (value.constructor === Object && Object.keys(value).length === 0)
-    )) {
+    if (isRequired && this.hasNoValue(value)) {
       const error = {
         type: ValidationErrorTypes.PRESENCE,
         message: `${ field.get('label', field.get('name')) } is required.`,
@@ -100,13 +102,14 @@ export default class Widget extends Component {
       return { error };
     }
     return { error: false };
-  }
+  };
 
-  validatePattern(field, value) {
+  validatePattern = (field, value) => {
     const pattern = field.get('pattern', false);
-    const hasValue = typeof value === 'string' && value.length > 0;
 
-    if (pattern && hasValue && !RegExp(pattern.first()).test(value)) {
+    if (this.hasNoValue(value)) return { error: false };
+
+    if (pattern && !RegExp(pattern.first()).test(value)) {
       const error = {
         type: ValidationErrorTypes.PATTERN,
         message: `${ field.get('label', field.get('name')) } didn't match the pattern: ${ pattern.last() }`,
@@ -116,7 +119,7 @@ export default class Widget extends Component {
     }
 
     return { error: false };
-  }
+  };
 
   validateWrappedControl = (field) => {
     const response = this.wrappedControlValid();
