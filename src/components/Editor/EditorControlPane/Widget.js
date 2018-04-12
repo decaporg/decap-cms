@@ -67,7 +67,7 @@ export default class Widget extends Component {
     this.wrappedControlShouldComponentUpdate = scu && scu.bind(wrappedControl);
   };
 
-  hasNoValue = (value) => (
+  isEmpty = (value) => (
     value === null ||
     value === undefined ||
     (value.hasOwnProperty('length') && value.length === 0) ||
@@ -93,7 +93,7 @@ export default class Widget extends Component {
 
   validatePresence = (field, value) => {
     const isRequired = field.get('required', true);
-    if (isRequired && this.hasNoValue(value)) {
+    if (isRequired && this.isEmpty(value)) {
       const error = {
         type: ValidationErrorTypes.PRESENCE,
         message: `${ field.get('label', field.get('name')) } is required.`,
@@ -107,7 +107,7 @@ export default class Widget extends Component {
   validatePattern = (field, value) => {
     const pattern = field.get('pattern', false);
 
-    if (this.hasNoValue(value)) return { error: false };
+    if (this.isEmpty(value)) return { error: false };
 
     if (pattern && !RegExp(pattern.first()).test(value)) {
       const error = {
