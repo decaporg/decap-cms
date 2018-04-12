@@ -33,7 +33,7 @@ export const Icon = props => {
     className = '',
     width,
     height,
-    ...remainingProps,
+    ...remainingProps
   } = props;
   const icon = icons[type];
   const rotation = getRotation(icon.direction, direction)
