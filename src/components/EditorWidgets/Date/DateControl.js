@@ -34,13 +34,29 @@ export default class DateControl extends React.Component {
     }
   }
 
+  // Date is valid if datetime is a moment or Date object otherwise it's a string.
+  // Handle the empty case, if the user wants to empty the field.
+  isValid = datetime => (moment.isMoment(datetime) || datetime instanceof Date || datetime === '');
+
   handleChange = datetime => {
     const { onChange } = this.props;
-    // Set the date if the format is valid (moment or Date object otherwise datetime is a string).
-    if (moment.isMoment(datetime) || datetime instanceof Date) {
+
+    // Set the date only if the format is valid
+    if (this.isValid(datetime)) {
       const formattedValue = moment(datetime).format(this.format);
       onChange(formattedValue);
     }
+  };
+
+  onBlur = datetime => {
+    const { setInactiveStyle } = this.props;
+
+    // Warn the user if the date is invalid
+    if (!this.isValid(datetime)) {
+      window.alert('The date you entered is invalid.');
+    }
+
+    setInactiveStyle();
   };
 
   render() {
@@ -52,7 +68,7 @@ export default class DateControl extends React.Component {
         value={moment(value, format)}
         onChange={this.handleChange}
         onFocus={setActiveStyle}
-        onBlur={setInactiveStyle}
+        onBlur={this.onBlur}
         inputProps={{ className: classNameWrapper }}
       />
     );
