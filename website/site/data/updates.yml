@@ -1,6 +1,6 @@
 updates:
   - date: '2018-04-11'
-    description: 'New time based slug placeholders, set config.yml URL with <link>.'
+    description: 'New time based slug placeholders, set config.yml URL with &lt;link&gt;.'
     version: 1.5.0
   - date: '2018-03-29'
     description: 'More control over filenames, lots of bugfixes, and new beta features!'
