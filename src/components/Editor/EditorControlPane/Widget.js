@@ -6,6 +6,13 @@ import ValidationErrorTypes from 'Constants/validationErrorTypes';
 
 const truthy = () => ({ error: false });
 
+const isEmpty = value => (
+  value === null ||
+  value === undefined ||
+  (value.hasOwnProperty('length') && value.length === 0) ||
+  (value.constructor === Object && Object.keys(value).length === 0)
+);
+
 export default class Widget extends Component {
   static propTypes = {
     controlComponent: PropTypes.func.isRequired,
@@ -67,13 +74,6 @@ export default class Widget extends Component {
     this.wrappedControlShouldComponentUpdate = scu && scu.bind(wrappedControl);
   };
 
-  isEmpty = (value) => (
-    value === null ||
-    value === undefined ||
-    (value.hasOwnProperty('length') && value.length === 0) ||
-    (value.constructor === Object && Object.keys(value).length === 0)
-  );
-
   validate = (skipWrapped = false) => {
     const { field, value } = this.props;
     const errors = [];
@@ -93,7 +93,7 @@ export default class Widget extends Component {
 
   validatePresence = (field, value) => {
     const isRequired = field.get('required', true);
-    if (isRequired && this.isEmpty(value)) {
+    if (isRequired && isEmpty(value)) {
       const error = {
         type: ValidationErrorTypes.PRESENCE,
         message: `${ field.get('label', field.get('name')) } is required.`,
@@ -107,7 +107,9 @@ export default class Widget extends Component {
   validatePattern = (field, value) => {
     const pattern = field.get('pattern', false);
 
-    if (this.isEmpty(value)) return { error: false };
+    if (isEmpty(value)) {
+      return { error: false };
+    }
 
     if (pattern && !RegExp(pattern.first()).test(value)) {
       const error = {
