@@ -27,7 +27,12 @@ export default class Toolbar extends React.Component {
     };
   }
 
-  getToolbarButtonsList() {
+  isHidden = button => {
+    const { buttons } = this.props;
+    return List.isList(buttons) ? !buttons.includes(button) : false;
+  }
+
+  render() {
     const {
       onMarkClick,
       onBlockClick,
@@ -35,63 +40,17 @@ export default class Toolbar extends React.Component {
       selectionHasMark,
       selectionHasBlock,
       selectionHasLink,
-      disabled,
-      buttons
-    } = this.props;
-
-    const toolbarButtons = [
-      { type: 'bold', label: 'Bold', icon: 'bold', onClick: onMarkClick, isActive: selectionHasMark, disabled },
-      { type: 'italic', label: 'Italic', icon: 'italic', onClick: onMarkClick, isActive: selectionHasMark, disabled },
-      { type: 'code', label: 'Code', icon: 'code', onClick: onMarkClick, isActive: selectionHasMark, disabled },
-      { type: 'link', label: 'Link', icon: 'link', onClick: onLinkClick, isActive: selectionHasLink, disabled },
-      { type: 'heading-one', label: 'Header 1', icon: 'h1', onClick: onBlockClick, isActive: selectionHasBlock, disabled },
-      { type: 'heading-two', label: 'Header 2', icon: 'h2', onClick: onBlockClick, isActive: selectionHasBlock, disabled },
-      { type: 'quote', label: 'Quote', icon: 'quote', onClick: onBlockClick, isActive: selectionHasBlock, disabled },
-      { type: 'code', label: 'Code Block', icon: 'code-block', onClick: onBlockClick, isActive: selectionHasBlock, disabled },
-      { type: 'bulleted-list', label: 'Bulleted List', icon: 'list-bulleted', onClick: onBlockClick, isActive: selectionHasBlock, disabled },
-      { type: 'numbered-list', label: 'Numbered List', icon: 'list-numbered', onClick: onBlockClick, isActive: selectionHasBlock, disabled }
-    ];
-
-    return buttons === undefined ? toolbarButtons : toolbarButtons.filter(button => buttons.includes(button.type));
-  }
-
-  renderToolbarButton(button) {
-    const { type, label, icon, onClick, isActive, disabled } = button;
-    return <ToolbarButton key={label} type={type} label={label} icon={icon} onClick={onClick} isActive={isActive} disabled={disabled}/>;
-  }
-
-  renderToolbarDropdown() {
-    const { plugins, disabled, onSubmit } = this.props;
-
-    return (
-      <div className="nc-toolbar-dropdown">
-        <Dropdown
-          dropdownTopOverlap="36px"
-          button={
-            <ToolbarButton
-              label="Add Component"
-              icon="add-with"
-              onClick={this.handleComponentsMenuToggle}
-              disabled={disabled}
-            />
-          }
-        >
-          {plugins && plugins.toList().map((plugin, idx) => (
-            <DropdownItem key={idx} label={plugin.get('label')} onClick={() => onSubmit(plugin.get('id'))} />
-          ))}
-        </Dropdown>
-      </div>
-    );
-  }
-
-  renderToolbarToggle() {
-    const {
       onToggleMode,
       rawMode,
       plugins,
+      onAddAsset,
+      getAsset,
       disabled,
-      className
+      onSubmit,
+      className,
     } = this.props;
+
+    const { activePlugin } = this.state;
 
     /**
      * Because the toggle labels change font weight for active/inactive state,
@@ -104,43 +63,142 @@ export default class Toolbar extends React.Component {
     const toggleOnLabelWidth = '70px';
 
     return (
-      <div className="nc-markdownWidget-toolbar-toggle">
-        <span
-          style={{ width: toggleOffLabelWidth }}
-          className={c(
-            'nc-markdownWidget-toolbar-toggle-label',
-            { 'nc-markdownWidget-toolbar-toggle-label-active': !rawMode },
-          )}
-        >
-          {toggleOffLabel}
-        </span>
-        <Toggle
-          active={rawMode}
-          onChange={onToggleMode}
-          className="nc-markdownWidget-toolbar-toggle"
-          classNameBackground="nc-markdownWidget-toolbar-toggle-background"
-        />
-        <span
-          style={{ width: toggleOnLabelWidth }}
-          className={c(
-            'nc-markdownWidget-toolbar-toggle-label',
-            { 'nc-markdownWidget-toolbar-toggle-label-active': rawMode },
-          )}
-        >
-          {toggleOnLabel}
-        </span>
-      </div>
-    );
-  }
-
-  render() {
-    return (
-      <div className={c(this.props.className, 'nc-toolbar-Toolbar')}>
+      <div className={c(className, 'nc-toolbar-Toolbar')}>
         <div>
-          {this.getToolbarButtonsList().map((toolbarButton) => this.renderToolbarButton(toolbarButton))}
-          {this.renderToolbarDropdown()}
+          <ToolbarButton
+            type="bold"
+            label="Bold"
+            icon="bold"
+            onClick={onMarkClick}
+            isActive={selectionHasMark}
+            isHidden={this.isHidden('bold')}
+            disabled={disabled}
+          />
+          <ToolbarButton
+            type="italic"
+            label="Italic"
+            icon="italic"
+            onClick={onMarkClick}
+            isActive={selectionHasMark}
+            isHidden={this.isHidden('italic')}
+            disabled={disabled}
+          />
+          <ToolbarButton
+            type="code"
+            label="Code"
+            icon="code"
+            onClick={onMarkClick}
+            isActive={selectionHasMark}
+            isHidden={this.isHidden('code')}
+            disabled={disabled}
+          />
+          <ToolbarButton
+            type="link"
+            label="Link"
+            icon="link"
+            onClick={onLinkClick}
+            isActive={selectionHasLink}
+            isHidden={this.isHidden('link')}
+            disabled={disabled}
+          />
+          <ToolbarButton
+            type="heading-one"
+            label="Header 1"
+            icon="h1"
+            onClick={onBlockClick}
+            isActive={selectionHasBlock}
+            isHidden={this.isHidden('heading-one')}
+            disabled={disabled}
+          />
+          <ToolbarButton
+            type="heading-two"
+            label="Header 2"
+            icon="h2"
+            onClick={onBlockClick}
+            isActive={selectionHasBlock}
+            isHidden={this.isHidden('heading-two')}
+            disabled={disabled}
+          />
+          <ToolbarButton
+            type="quote"
+            label="Quote"
+            icon="quote"
+            onClick={onBlockClick}
+            isActive={selectionHasBlock}
+            isHidden={this.isHidden('quote')}
+            disabled={disabled}
+          />
+          <ToolbarButton
+            type="code"
+            label="Code Block"
+            icon="code-block"
+            onClick={onBlockClick}
+            isActive={selectionHasBlock}
+            isHidden={this.isHidden('code-block')}
+            disabled={disabled}
+          />
+          <ToolbarButton
+            type="bulleted-list"
+            label="Bulleted List"
+            icon="list-bulleted"
+            onClick={onBlockClick}
+            isActive={selectionHasBlock}
+            isHidden={this.isHidden('bulleted-list')}
+            disabled={disabled}
+          />
+          <ToolbarButton
+            type="numbered-list"
+            label="Numbered List"
+            icon="list-numbered"
+            onClick={onBlockClick}
+            isActive={selectionHasBlock}
+            isHidden={this.isHidden('numbered-list')}
+            disabled={disabled}
+          />
+          <div className="nc-toolbar-dropdown">
+            <Dropdown
+              dropdownTopOverlap="36px"
+              button={
+                <ToolbarButton
+                  label="Add Component"
+                  icon="add-with"
+                  onClick={this.handleComponentsMenuToggle}
+                  disabled={disabled}
+                />
+              }
+            >
+              {plugins && plugins.toList().map((plugin, idx) => (
+                <DropdownItem key={idx} label={plugin.get('label')} onClick={() => onSubmit(plugin.get('id'))} />
+              ))}
+            </Dropdown>
+          </div>
         </div>
-        {this.renderToolbarToggle()}
+        <div className="nc-markdownWidget-toolbar-toggle">
+          <span
+            style={{ width: toggleOffLabelWidth }}
+            className={c(
+              'nc-markdownWidget-toolbar-toggle-label',
+              { 'nc-markdownWidget-toolbar-toggle-label-active': !rawMode },
+            )}
+          >
+            {toggleOffLabel}
+          </span>
+          <Toggle
+            active={rawMode}
+            onChange={onToggleMode}
+            className="nc-markdownWidget-toolbar-toggle"
+            classNameBackground="nc-markdownWidget-toolbar-toggle-background"
+          />
+          <span
+            style={{ width: toggleOnLabelWidth }}
+            className={c(
+              'nc-markdownWidget-toolbar-toggle-label',
+              { 'nc-markdownWidget-toolbar-toggle-label-active': rawMode },
+            )}
+          >
+            {toggleOnLabel}
+          </span>
+        </div>
       </div>
     );
   }

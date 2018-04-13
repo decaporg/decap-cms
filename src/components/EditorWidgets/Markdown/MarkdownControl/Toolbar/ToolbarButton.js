@@ -3,8 +3,12 @@ import React from 'react';
 import c from 'classnames';
 import { Icon } from 'UI';
 
-const ToolbarButton = ({ type, label, icon, onClick, isActive, disabled }) => {
+const ToolbarButton = ({ type, label, icon, onClick, isActive, isHidden, disabled }) => {
   const active = isActive && type && isActive(type);
+
+  if (isHidden) {
+    return null;
+  }
 
   return (
     <button
