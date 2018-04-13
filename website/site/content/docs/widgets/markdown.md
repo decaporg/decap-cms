@@ -14,7 +14,7 @@ The markdown widget provides a full fledged text editor - which is based on [sla
 - **Data type:** markdown
 - **Options:**
   - `default`: accepts markdown content
-  - `buttons`: a list of string representing the buttons to display ('bold', 'italic', 'code', 'link', 'heading-one', 'heading-two', 'quote', 'code', 'bulleted-list', 'numbered-list'). If this options is missing, all the buttons are display.
+  - `buttons`: a list of string representing the buttons to display ('bold', 'italic', 'code', 'link', 'heading-one', 'heading-two', 'quote', 'code-block', 'bulleted-list', 'numbered-list'). If this options is missing, all the buttons are display.
 - **Example:**
 
   ```yaml
