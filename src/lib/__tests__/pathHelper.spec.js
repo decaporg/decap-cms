@@ -57,7 +57,7 @@ describe('resolvePath', () => {
   });
   it('should remove duplicate and/or forward path separators', () => {
     expect(
-      resolvePath('filename.png', '\\assets\\uploads\\')
+      resolvePath('filename.png', '\\assets//uploads\\')
     ).toEqual(
       '/assets/uploads/filename.png'
     );
