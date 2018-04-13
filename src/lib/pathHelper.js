@@ -10,7 +10,11 @@ export function resolvePath(path, basePath) { // eslint-disable-line
 
   if (path.indexOf('/') === -1) {
     // It's a single file name, no directories. Prepend public folder
-    return normalizePath(`/${ basePath }/${ path }`);
+    if (absolutePath.test(basePath)) {
+      return `${ basePath }${ normalizePath(`/${ path }`) }`;
+    } else {
+      return normalizePath(`/${ basePath }/${ path }`);
+    }
   }
 
   // It's a relative path. Prepend a forward slash.
