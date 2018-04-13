@@ -1,3 +1,5 @@
+import { trimStart, trimEnd } from 'lodash';
+
 const absolutePath = new RegExp('^(?:[a-z]+:)?//', 'i');
 const normalizePath = path => path.replace(/[\\\/]+/g, '/');
 
@@ -11,7 +13,7 @@ export function resolvePath(path, basePath) { // eslint-disable-line
   if (path.indexOf('/') === -1) {
     // It's a single file name, no directories. Prepend public folder
     if (absolutePath.test(basePath)) {
-      return `${ basePath }${ normalizePath(`/${ path }`) }`;
+      return `${ trimEnd(basePath, '/') }/${ trimStart(normalizePath(path), '/') }`;
     } else {
       return normalizePath(`/${ basePath }/${ path }`);
     }

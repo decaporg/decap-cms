@@ -36,6 +36,13 @@ describe('resolvePath', () => {
   });
   it('should consider the basePath absolute if it begins with a protocol', () => {
     expect(
+      resolvePath('filename.png', 'https://my-asset-store.com/assets/uploads/')
+    ).toEqual(
+      'https://my-asset-store.com/assets/uploads/filename.png'
+    );
+  });
+  it('should assume trailing slashes on absoluet basePath', () => {
+    expect(
       resolvePath('filename.png', 'https://my-asset-store.com/assets/uploads')
     ).toEqual(
       'https://my-asset-store.com/assets/uploads/filename.png'
