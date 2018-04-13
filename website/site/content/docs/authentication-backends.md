@@ -17,14 +17,14 @@ To use it in your own project, follow these steps:
 1. Head over to the [Netlify Identity docs](https://www.netlify.com/docs/identity) and follow the
    steps to get started.
 2. Add the following lines to your `config.yml` file:
-   ```yaml
-   backend:
-     name: git-gateway
-     accept_roles: #optional - accepts all users if left out
-       - admin
-       - editor
-     
-   ```
+    ```yaml
+    backend:
+      name: git-gateway
+      accept_roles: #optional - accepts all users if left out
+        - admin
+        - editor
+      
+    ```
 3. Optionally, you can assign roles to users in your Netlify dashboard, and then limit which
    roles can access the CMS by defining the `accept_roles` field in the `config.yml` example above.
    Otherwise `accept_roles` can be left out, and all Netlify Identity users on your site will have access.
@@ -49,11 +49,11 @@ To enable it:
 1. Follow the authentication provider setup steps in the [Netlify
    docs](https://www.netlify.com/docs/authentication-providers/#using-an-authentication-provider).
 2. Add the following lines to your `config.yml` file:
-   ```yaml
-   backend:
-     name: github
-     repo: owner-name/repo-name # Path to your Github repository
-   ```
+    ```yaml
+    backend:
+      name: github
+      repo: owner-name/repo-name # Path to your Github repository
+    ```
 
 ### External OAuth Clients
 
