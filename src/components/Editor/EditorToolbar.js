@@ -93,6 +93,7 @@ export default class EditorToolbar extends React.Component {
 
     return [
         <button
+          key="save-button"
           className="nc-entryEditor-toolbar-saveButton"
           onClick={() => hasChanged && onPersist()}
         >
@@ -100,6 +101,7 @@ export default class EditorToolbar extends React.Component {
         </button>,
         isNewEntry || !deleteLabel ? null
             : <button
+                key="delete-button"
                 className="nc-entryEditor-toolbar-deleteButton"
                 onClick={hasUnpublishedChanges ? onDeleteUnpublishedChanges : onDelete}
               >
