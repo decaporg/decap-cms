@@ -49,11 +49,15 @@ export default class DateControl extends React.Component {
   };
 
   onBlur = datetime => {
-    const { setInactiveStyle } = this.props;
+    const { setInactiveStyle, onChange } = this.props;
 
-    // Warn the user if the date is invalid
     if (!this.isValid(datetime)) {
-      window.alert('The date you entered is invalid.');
+      const parsedDate = moment(datetime);
+
+      if (parsedDate.isValid()) {
+        const formattedValue = parsedDate.format(this.format);
+        onChange(formattedValue);
+      }
     }
 
     setInactiveStyle();
