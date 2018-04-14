@@ -57,6 +57,8 @@ export default class DateControl extends React.Component {
       if (parsedDate.isValid()) {
         const formattedValue = parsedDate.format(this.format);
         onChange(formattedValue);
+      } else {
+        window.alert('The date you entered is invalid.');
       }
     }
 
