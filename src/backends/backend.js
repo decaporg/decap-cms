@@ -1,21 +1,24 @@
-import { attempt, isError } from 'lodash';
-import { fromJS } from 'immutable';
+import { attempt, flatten, isError } from 'lodash';
+import { fromJS, Map } from 'immutable';
+import fuzzy from 'fuzzy';
 import { resolveFormat } from "Formats/formats";
 import { selectIntegration } from 'Reducers/integrations';
+import { getIntegrationProvider } from 'Integrations';
 import {
   selectListMethod,
   selectEntrySlug,
   selectEntryPath,
   selectAllowNewEntries,
   selectAllowDeletion,
-  selectFolderEntryExtension
+  selectFolderEntryExtension,
+  selectInferedField,
 } from "Reducers/collections";
 import { createEntry } from "ValueObjects/Entry";
 import { sanitizeSlug } from "Lib/urlHelper";
+import { registerBackend, getBackend } from 'Lib/registry';
 import TestRepoBackend from "./test-repo/implementation";
 import GitHubBackend from "./github/implementation";
 import GitGatewayBackend from "./git-gateway/implementation";
-import { registerBackend, getBackend } from 'Lib/registry';
 import { CURSOR_COMPATIBILITY_SYMBOL } from '../valueObjects/Cursor';
 
 /**
@@ -25,6 +28,16 @@ registerBackend('git-gateway', GitGatewayBackend);
 registerBackend('github', GitHubBackend);
 registerBackend('test-repo', TestRepoBackend);
 
+const extractSearchFields = searchFields => entry => searchFields.reduce((acc, field) => {
+  const f = entry.data[field];
+  return f ? `${acc} ${f}` : acc;
+}, "");
+
+const sortByScore = (a, b) => {
+  if (a.score > b.score) return -1;
+  if (a.score < b.score) return 1;
+  return 0;
+};
 
 class LocalStorageAuthStore {
   storageKey = "netlify-cms-user";
@@ -91,10 +104,11 @@ const slugFormatter = (template = "{{slug}}", entryData, slugConfig) => {
 };
 
 class Backend {
-  constructor(implementation, backendName, authStore = null) {
+  constructor(config, implementation, backendName, authStore = null) {
     this.implementation = implementation;
     this.backendName = backendName;
     this.authStore = authStore;
+    this.integrations = config.get('integrations', new Map());
     if (this.implementation === null) {
       throw new Error("Cannot instantiate a Backend with no implementation");
     }
@@ -182,7 +196,15 @@ class Backend {
     };
   }
 
-  listEntries(collection) {
+  listEntries(collection, page=0) {
+    const integration = selectIntegration(this.integrations, collection.get('name'), 'listEntries');
+    const integrationProvider = integration
+      && getIntegrationProvider(this.integrations, this.implementation.getToken, integration);
+
+    if (integrationProvider) {
+      return integrationProvider.listEntries(collection, page);
+    }
+
     const listMethod = this.implementation[selectListMethod(collection)];
     const extension = selectFolderEntryExtension(collection);
     return listMethod.call(this.implementation, collection, extension)
@@ -195,6 +217,102 @@ class Backend {
           cursor,
         };
       });
+  }
+
+  // The same as listEntries, except that if a cursor with the "next"
+  // action available is returned, it calls "next" on the cursor and
+  // repeats the process. Once there is no available "next" action, it
+  // returns all the collected entries. Used to retrieve all entries
+  // for local searches and queries.
+  async listAllEntries(collection) {
+    const response = await this.listEntries(collection);
+    const { entries } = response;
+    let { cursor } = response;
+    while (cursor && cursor.actions.includes("next")) {
+      const { entries: newEntries, cursor: newCursor } = await this.traverseCursor(cursor, "next");
+      entries.push(...newEntries);
+      cursor = newCursor;
+    }
+    return entries;
+  }
+
+  // Perform a simple string search across all collections, search
+  // providers, and entries.
+  //
+  // onCollectionResults is a callback allowing search results to be
+  // displayed as they return from each collection, instead of waiting
+  // for the entire search to complete.
+  //
+  // TODO: move search pagination to cursors
+  async search(collections, searchTerm, page = 0) {
+    const collectionsWithSearchIntegrations = collections.filter(
+      collection => selectIntegration(this.integrations, collection, 'search')
+    );
+
+    // The following block EITHER selects a collection-specific
+    // integration for the first collection in
+    // collectionsWithSearchIntegrations OR it selects a global search
+    // integration IFF none of the selected collections have a search
+    // integration defined. (selectIntegration looks for a global hook
+    // if the collection argument is falsy, and [0] of an empty array
+    // is undefined, which is falsy.) Only one integration is used to
+    // search every collection - if more than one collection has a
+    // search integration configured, only one will be used. The
+    // collection whose configured integration is used when there are
+    // multiple such collections is dependent on the ordering of the
+    // collectionsWithSearchIntegrations, which is based on the order
+    // of the collections in the config _unless_ the array used has
+    // been reordered by any of the functions called on it up to this
+    // point. This is very confusing and likely unintended precedence
+    // behavior which has implicit behaviors based on implementation
+    // details of the browsers and libraries it uses, but is left here
+    // for now to preserve the current integrations behavior until we
+    // can replace that API completely.
+    const integration = selectIntegration(this.integrations, collectionsWithSearchIntegrations[0], 'search');
+    if (integration) {
+      const provider = getIntegrationProvider(this.integrations, this.implementation.getToken, integration);
+      return provider.search(collectionsWithSearchIntegrations, searchTerm, page);
+    }
+
+    //
+    // Perform a local search by requesting all entries
+    //
+
+    // For each collection, load it, search, and call
+    // onCollectionResults with its results
+    const errors = [];
+    const collectionEntriesRequests = collections.map(async collection => {
+      // TODO: pass search fields in as an argument
+      const searchFields = [
+        selectInferedField(collection, 'title'),
+        selectInferedField(collection, 'shortTitle'),
+        selectInferedField(collection, 'author'),
+      ];
+      const collectionEntries = await this.listAllEntries(collection);
+      return fuzzy.filter(searchTerm, collectionEntries, {
+        extract: extractSearchFields(searchFields),
+      });
+    }).map(p => p.catch(err => errors.push(err)));
+    if (errors.length > 0) {
+      throw new Error({ message: "Errors ocurred while searching entries locally!", errors });
+    }
+    const entries = await Promise.all(collectionEntriesRequests).then(arrs => flatten(arrs));
+    const hits = entries.filter(({ score }) => score > 5).sort(sortByScore).map(f => f.original);
+    return { entries: hits };
+  }
+
+  async query(collection, searchFields, searchTerm) {
+    const integration = selectIntegration(this.integrations, collection, 'search');
+    if (integration) {
+      const provider = getIntegrationProvider(this.integrations, this.implementation.getToken, integration);
+      return provider.searchBy(searchFields.map(f => `data.${f}`), collection, searchTerm);
+    }
+    const entries = await this.listAllEntries(collection);
+    const hits = fuzzy.filter(searchTerm, entries, { extract: extractSearchFields(searchFields) })
+      .filter(entry => entry.score > 5)
+      .sort(sortByScore)
+      .map(f => f.original);
+    return { query: searchTerm, hits };
   }
 
   // TODO: stop assuming all cursors are for collections
@@ -411,7 +529,7 @@ export function resolveBackend(config) {
   if (!getBackend(name)) {
     throw new Error(`Backend not found: ${ name }`);
   } else {
-    return new Backend(getBackend(name).init(config), name, authStore);
+    return new Backend(config, getBackend(name).init(config), name, authStore);
   }
 }
 
