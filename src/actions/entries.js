@@ -2,8 +2,7 @@ import { List } from 'immutable';
 import { actions as notifActions } from 'redux-notifications';
 import { serializeValues } from 'Lib/serializeEntryValues';
 import { currentBackend } from 'Backends/backend';
-import { getIntegrationProvider } from 'Integrations';
-import { getAsset, selectIntegration } from 'Reducers';
+import { getAsset } from 'Reducers';
 import { selectFields } from 'Reducers/collections';
 import { collectionEntriesCursorKey } from 'Reducers/cursors';
 import { validateCursor, invalidCursorError } from 'ValueObjects/Cursor';
@@ -251,10 +250,9 @@ export function loadEntries(collection, page = 0) {
     }
     const state = getState();
     const backend = currentBackend(state.config);
-    const integration = selectIntegration(state, collection.get('name'), 'listEntries');
-    const provider = integration ? getIntegrationProvider(state.integrations, backend.getToken, integration) : backend;
     dispatch(entriesLoading(collection));
-    provider.listEntries(collection, page)
+
+    backend.listEntries(collection, page)
     // Validate the cursor if it exists to ensure it has the correct
     // structure.
     .then(response => ((!response.cursor) || validateCursor(response.cursor)
