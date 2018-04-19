@@ -11,13 +11,19 @@ const Entries = ({
   page,
   onPaginate,
   isFetching,
-  viewStyle
+  viewStyle,
+  cursorActions,
+  cursorMeta,
 }) => {
   const loadingMessages = [
     'Loading Entries',
     'Caching Entries',
     'This might take several minutes',
   ];
+
+  if (isFetching) {
+    return <Loader active>{loadingMessages}</Loader>;
+  }
 
   if (entries) {
     return (
@@ -28,12 +34,10 @@ const Entries = ({
         page={page}
         onPaginate={onPaginate}
         viewStyle={viewStyle}
+        cursorActions={cursorActions}
+        cursorMeta={cursorMeta}
       />
     );
-  }
-
-  if (isFetching) {
-    return <Loader active>{loadingMessages}</Loader>;
   }
 
   return <div className="nc-collectionPage-noEntries">No Entries</div>;
