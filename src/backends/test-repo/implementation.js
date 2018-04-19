@@ -1,7 +1,9 @@
-import { remove, attempt, isError } from 'lodash';
+import { remove, attempt, isError, take } from 'lodash';
 import uuid from 'uuid/v4';
+import { fromJS } from 'immutable';
 import { EDITORIAL_WORKFLOW, status } from 'Constants/publishModes';
 import { EditorialWorkflowError } from 'ValueObjects/errors';
+import { CURSOR_COMPATIBILITY_SYMBOL } from 'ValueObjects/Cursor'
 import AuthenticationPage from './AuthenticationPage';
 
 window.repoFiles = window.repoFiles || {};
@@ -15,6 +17,35 @@ function getFile(path) {
   }
   return obj || {};
 }
+
+const pageSize = 10;
+
+const getCursor = (collection, extension, entries, index) => {
+  const count = entries.length;
+  const isPaginated = count <= pageSize;
+  if (count <= pageSize) {
+    return;
+  }
+  const pageCount = Math.floor(count / pageSize);
+  const actions = [
+    ...(index < pageCount ? ["next", "last"] : []),
+    ...(index > 0 ? ["prev", "first"] : []),
+  ];
+  return {
+    actions,
+    meta: { index, count, pageSize, pageCount },
+    data: { collection: collection.toJS(), extension, index, pageCount },
+  };
+};
+
+const getFolderEntries = (folder, extension) => {
+  return Object.keys(window.repoFiles[folder])
+    .filter(path => path.endsWith(`.${ extension }`))
+    .map(path => ({
+      file: { path: `${ folder }/${ path }` },
+      data: window.repoFiles[folder][path].content,
+    }));
+};
 
 export default class TestRepo {
   constructor(config) {
@@ -42,25 +73,29 @@ export default class TestRepo {
     return Promise.resolve('');
   }
 
-  entriesByFolder(collection, extension) {
-    const entries = [];
-    const folder = collection.get('folder');
-    if (folder) {
-      for (const path in window.repoFiles[folder]) {
-        if (!path.endsWith('.' + extension)) {
-          continue;
-        }
+  traverseCursor(cursor, action) {
+    const { data: { collection, extension, index, pageCount } } = cursor;
+    const immutableCollection = fromJS(collection);
+    const newIndex = (() => {
+      if (action === "next") { return index + 1; }
+      if (action === "prev") { return index - 1; }
+      if (action === "first") { return 0; }
+      if (action === "last") { return pageCount; }
+    })();
+    // TODO: stop assuming cursors are for collections
+    const allEntries = getFolderEntries(immutableCollection.get('folder'), extension);
+    const entries = allEntries.slice(newIndex * pageSize, (newIndex * pageSize) + pageSize);
+    const newCursor = getCursor(immutableCollection, extension, allEntries, newIndex);
+    return Promise.resolve({ entries, cursor: newCursor });
+  }
 
-        const file = { path: `${ folder }/${ path }` };
-        entries.push(
-          {
-            file,
-            data: window.repoFiles[folder][path].content,
-          }
-        );
-      }
-    }
-    return Promise.resolve(entries);
+  entriesByFolder(collection, extension) {
+    const folder = collection.get('folder');
+    const entries = folder ? getFolderEntries(folder, extension) : [];
+    const cursor = getCursor(collection, extension, entries, 0);
+    const ret = take(entries, pageSize);
+    ret[CURSOR_COMPATIBILITY_SYMBOL] = cursor;
+    return Promise.resolve(ret);
   }
 
   entriesByFiles(collection) {
