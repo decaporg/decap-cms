@@ -3,6 +3,7 @@ import semaphore from "semaphore";
 import AuthenticationPage from "./AuthenticationPage";
 import API from "./API";
 import { fileExtension } from 'Lib/pathHelper';
+import { CURSOR_COMPATIBILITY_SYMBOL } from 'ValueObjects/Cursor';
 import { EDITORIAL_WORKFLOW } from "Constants/publishModes";
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
@@ -57,8 +58,14 @@ export default class GitLab {
 
   entriesByFolder(collection, extension) {
     return this.api.listFiles(collection.get("folder"))
-    .then(files => files.filter(file => fileExtension(file.name) === extension))
-    .then(this.fetchFiles);
+    .then(({ files, cursor }) =>
+      this.fetchFiles(files.filter(file => fileExtension(file.name) === extension))
+      .then(fetchedFiles => {
+        const returnedFiles = fetchedFiles;
+        returnedFiles[CURSOR_COMPATIBILITY_SYMBOL] = cursor;
+        return returnedFiles;
+      })
+    );
   }
 
   entriesByFiles(collection) {
@@ -66,7 +73,10 @@ export default class GitLab {
       path: collectionFile.get("file"),
       label: collectionFile.get("label"),
     }));
-    return this.fetchFiles(files);
+    return this.fetchFiles(files).then(fetchedFiles => {
+      const returnedFiles = fetchedFiles;
+      return returnedFiles;
+    });
   }
 
   fetchFiles = (files) => {
@@ -95,8 +105,11 @@ export default class GitLab {
   }
 
   getMedia() {
+    // TODO: list the entire folder to get all media files instead of
+    // just the first page, or implement cursor UI for the media
+    // library.
     return this.api.listFiles(this.config.get('media_folder'))
-      .then(files => files.map(({ id, name, path }) => {
+      .then(({ files }) => files.map(({ id, name, path }) => {
         const url = new URL(this.api.fileDownloadURL(path));
         if (url.pathname.match(/.svg$/)) {
           url.search += (url.search.slice(1) === '' ? '?' : '&') + 'sanitize=true';
@@ -106,18 +119,26 @@ export default class GitLab {
   }
 
 
-  async persistEntry(entry, options = {}) {
+  async persistEntry(entry, mediaFiles, options = {}) {
     return this.api.persistFiles([entry], options);
   }
 
   async persistMedia(mediaFile, options = {}) {
     await this.api.persistFiles([mediaFile], options);
-    const { value, size, path, fileObj } = mediaFile;
+    const { value, path, fileObj } = mediaFile;
     const url = this.api.fileDownloadURL(path);
     return { name: value, size: fileObj.size, url, path: trimStart(path, '/') };
   }
 
   deleteFile(path, commitMessage, options) {
     return this.api.deleteFile(path, commitMessage, options);
+  }
+
+  traverseCursor(cursor, action) {
+    return this.api.traverseCursor(cursor, action)
+      .then(async ({ entries, cursor: newCursor }) => ({
+        entries: await Promise.all(entries.map(file => this.api.readFile(file.path, file.id).then(data => ({ file, data })))),
+        cursor: newCursor,
+      }));
   }
 }

@@ -3,6 +3,7 @@ import { Base64 } from "js-base64";
 import { isString } from "lodash";
 import AssetProxy from "ValueObjects/AssetProxy";
 import { APIError } from "ValueObjects/errors";
+import Cursor from "ValueObjects/Cursor"
 
 export default class API {
   constructor(config) {
@@ -14,12 +15,12 @@ export default class API {
   }
 
   user() {
-    return this.request("/user");
+    return this.request("/user").then(({ data }) => data);
   }
 
   hasWriteAccess(user) {
     const WRITE_ACCESS = 30;
-    return this.request(this.repoURL).then(({ permissions }) => {
+    return this.request(this.repoURL).then(({ data: { permissions } }) => {
       const { project_access, group_access } = permissions;
       if (project_access && (project_access.access_level >= WRITE_ACCESS)) {
         return true;
@@ -47,11 +48,14 @@ export default class API {
     return `${ this.api_root }${ path }?${ [cacheBuster, ...encodedParams].join("&") }`;
   }
 
-  request(path, options = {}) {
+  requestRaw(path, options = {}) {
     const headers = this.requestHeaders(options.headers || {});
     const url = this.urlFor(path, options);
-    return fetch(url, { ...options, headers })
-    .then((response) => {
+    return fetch(url, { ...options, headers });
+  }
+
+  getResponseData(res, options = {}) {
+    return Promise.resolve(res).then((response) => {
       const contentType = response.headers.get("Content-Type");
       if (options.method === "HEAD" || options.method === "DELETE") {
         return Promise.all([response]);
@@ -61,25 +65,29 @@ export default class API {
       }
       return Promise.all([response, response.text()]);
     })
-    .catch(err => Promise.reject([err, null]))
-    .then(([response, value]) => (response.ok ? value : Promise.reject([value, response])))
-    .catch(([errorValue, response]) => {
-      const errorMessageProp = (errorValue && errorValue.message) ? errorValue.message : null;
-      const message = errorMessageProp || (isString(errorValue) ? errorValue : "");
-      throw new APIError(message, response && response.status, 'GitLab', { response, errorValue });
-    });
+      .catch(err => Promise.reject([err, null]))
+      .then(([response, data]) => (response.ok ? { data, response } : Promise.reject([data, response])))
+      .catch(([errorValue, response]) => {
+        const errorMessageProp = (errorValue && errorValue.message) ? errorValue.message : null;
+        const message = errorMessageProp || (isString(errorValue) ? errorValue : "");
+        throw new APIError(message, response && response.status, 'GitLab', { response, errorValue });
+      });
   }
-  
+
+  request(path, options = {}) {
+    return this.requestRaw(path, options).then(res => this.getResponseData(res, options));
+  }
+
   readFile(path, sha, branch = this.branch) {
     const cache = sha ? LocalForage.getItem(`gh.${ sha }`) : Promise.resolve(null);
     return cache.then((cached) => {
       if (cached) { return cached; }
-      
+
       return this.request(`${ this.repoURL }/repository/files/${ encodeURIComponent(path) }/raw`, {
         params: { ref: branch },
         cache: "no-store",
       })
-      .then((result) => {
+      .then(({ data: result }) => {
         if (sha) {
           LocalForage.setItem(`gh.${ sha }`, result);
         }
@@ -89,8 +97,51 @@ export default class API {
   }
 
   fileDownloadURL(path, branch = this.branch) {
-      return this.urlFor(`${ this.repoURL }/repository/files/${ encodeURIComponent(path) }/raw`, {
-        params: { ref: branch },
+    return this.urlFor(`${this.repoURL}/repository/files/${encodeURIComponent(path)}/raw`, {
+      params: { ref: branch },
+    });
+  }
+
+  // TODO: parse links into objects so we can update the token if it
+  // expires
+  getCursor(response) {
+    // indices and page counts are assumed to be zero-based, but the
+    // indices and page counts returned from GitLab are one-based
+    const index = parseInt(response.headers.get("X-Page"), 10) - 1;
+    const pageCount = parseInt(response.headers.get("X-Total-Pages"), 10) - 1;
+    const pageSize = parseInt(response.headers.get("X-Per-Page"), 10);
+    const count = parseInt(response.headers.get("X-Total"), 10);
+    const linksRaw = response.headers.get("Link");
+    const links = linksRaw.split(",")
+      .map(str => str.trim().split(";"))
+      .map(([linkStr, keyStr]) => [linkStr.trim().match(/<(.*?)>/)[1], keyStr.match(/rel="(.*?)"/)[1]])
+      .reduce((acc, [link, key]) => Object.assign(acc, { [key]: link }), {});
+    return Cursor.create({
+      actions: [
+        ...((links.prev && index > 0) ? ["prev"] : []),
+        ...((links.next && index < pageCount) ? ["next"] : []),
+        ...((links.first && index > 0) ? ["first"] : []),
+        ...((links.last && index < pageCount) ? ["last"] : []),
+      ],
+      meta: {
+        index,
+        count,
+        pageSize,
+        pageCount,
+      },
+      data: {
+        links,
+      },
+    });
+  }
+
+  traverseCursor(cursor, action) {
+    const link = cursor.data.getIn(["links", action]);
+    return fetch(link, { headers: this.requestHeaders() })
+      .then(res => {
+        const newCursor = this.getCursor(res);
+        return this.getResponseData(res)
+          .then(responseData => ({ entries: responseData.data, cursor: newCursor }));
       });
   }
 
@@ -98,7 +149,11 @@ export default class API {
     return this.request(`${ this.repoURL }/repository/tree`, {
       params: { path, ref: this.branch },
     })
-    .then(files => files.filter(file => file.type === "blob"));
+      .then(({ response, data }) => {
+        const files = data.filter(file => file.type === "blob");
+        const cursor = this.getCursor(response);
+        return { files, cursor };
+      });
   }
 
   persistFiles(files, options) {
@@ -111,12 +166,12 @@ export default class API {
     return Promise.all(uploads);
   }
 
-  deleteFile(path, commit_message, options={}) {
+  deleteFile(path, commit_message, options = {}) {
     const branch = options.branch || this.branch;
-    return this.request(`${ this.repoURL }/repository/files/${ encodeURIComponent(path) }`, {
+    return this.request(`${this.repoURL}/repository/files/${encodeURIComponent(path)}`, {
       method: "DELETE",
       params: { commit_message, branch },
-    });
+    }).then(({ data }) => data);
   }
 
   toBase64(str) {
@@ -127,14 +182,14 @@ export default class API {
     return Base64.decode(str);
   }
 
-  uploadAndCommit(item, {commitMessage, updateFile = false, branch = this.branch}) {
+  uploadAndCommit(item, { commitMessage, updateFile = false, branch = this.branch }) {
     const content = item instanceof AssetProxy ? item.toBase64() : this.toBase64(item.raw);
     // Remove leading slash from path if exists.
     const file_path = item.path.replace(/^\//, '');
-    
+
     // We cannot use the `/repository/files/:file_path` format here because the file content has to go
     //   in the URI as a parameter. This overloads the OPTIONS pre-request (at least in Chrome 61 beta).
-    return content.then(contentBase64 => this.request(`${ this.repoURL }/repository/commits`, {
+    return content.then(contentBase64 => this.request(`${this.repoURL}/repository/commits`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -147,8 +202,8 @@ export default class API {
           file_path,
           content: contentBase64,
           encoding: "base64",
-        }]
+        }],
       }),
-    })).then(response => Object.assign({}, item, { uploaded: true }));
+    })).then(() => Object.assign({}, item, { uploaded: true }));
   }
 }
