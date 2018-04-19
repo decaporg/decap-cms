@@ -3,6 +3,7 @@ import semaphore from "semaphore";
 import AuthenticationPage from "./AuthenticationPage";
 import API from "./API";
 import { fileExtension } from 'Lib/pathHelper';
+import { CURSOR_COMPATIBILITY_SYMBOL } from 'ValueObjects/Cursor';
 import { EDITORIAL_WORKFLOW } from "Constants/publishModes";
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
@@ -57,8 +58,14 @@ export default class GitLab {
 
   entriesByFolder(collection, extension) {
     return this.api.listFiles(collection.get("folder"))
-    .then(files => files.filter(file => fileExtension(file.name) === extension))
-    .then(this.fetchFiles);
+    .then(({ files, cursor }) =>
+      this.fetchFiles(files.filter(file => fileExtension(file.name) === extension))
+      .then(fetchedFiles => {
+        const returnedFiles = fetchedFiles;
+        returnedFiles[CURSOR_COMPATIBILITY_SYMBOL] = cursor;
+        return returnedFiles;
+      })
+    );
   }
 
   entriesByFiles(collection) {
@@ -66,7 +73,11 @@ export default class GitLab {
       path: collectionFile.get("file"),
       label: collectionFile.get("label"),
     }));
-    return this.fetchFiles(files);
+    return this.fetchFiles(files).then(fetchedFiles => {
+      const returnedFiles = fetchedFiles;
+      returnedFiles[CURSOR_COMPATIBILITY_SYMBOL] = cursor;
+      return returnedFiles;
+    });
   }
 
   fetchFiles = (files) => {
@@ -106,7 +117,7 @@ export default class GitLab {
   }
 
 
-  async persistEntry(entry, options = {}) {
+  async persistEntry(entry, mediaFiles, options = {}) {
     return this.api.persistFiles([entry], options);
   }
 
@@ -119,5 +130,13 @@ export default class GitLab {
 
   deleteFile(path, commitMessage, options) {
     return this.api.deleteFile(path, commitMessage, options);
+  }
+
+  traverseCursor(cursor, action) {
+    return this.api.traverseCursor(cursor, action)
+      .then(async ({ entries, cursor: newCursor }) => console.log({ entries, newCursor }) || ({
+        entries: await Promise.all(entries.map(file => this.api.readFile(file.path, file.id).then(data => ({ file, data })))),
+        cursor: newCursor,
+      }));
   }
 }
