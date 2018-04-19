@@ -6,7 +6,7 @@
   </summary>
 </details>
 
-## 1.6.0 (April 19, 2018)
+## 1.6.0 (April 19, 2018) ([demo](https://5ad8e1ebb31274466632d026--cms-demo.netlify.com/#/))
 Markdown toolbar customization, manual date widget entry, bug fixes.
 
 ### Improvements
