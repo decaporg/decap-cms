@@ -19,7 +19,7 @@ export default class AuthenticationPage extends React.Component {
     };
     const auth = new Authenticator(cfg);
 
-    auth.authenticate({ provider: 'gitlab', scope: 'repo' }, (err, data) => {
+    auth.authenticate({ provider: 'gitlab', scope: 'api' }, (err, data) => {
       if (err) {
         this.setState({ loginError: err.toString() });
         return;
