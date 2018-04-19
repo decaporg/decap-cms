@@ -53,7 +53,14 @@ export default class EntryListing extends React.Component {
   };
 
   render() {
-    const { collections, entries, publicFolder } = this.props;
+    const { collections, entries, publicFolder, cursorActions, cursorMeta } = this.props;
+    const { first, next, last, prev } = (cursorActions || {});
+    const { index: rawIndex, pageCount: rawPageCount } = (cursorMeta || {});
+    const index = rawIndex + 1;
+    const pageCount = rawPageCount + 1;
+    const pageString = index
+      ? `Page ${ index }${ pageCount ? ` of ${ pageCount }` : "" }`
+      : "";
 
     return (
       <div>
@@ -63,8 +70,26 @@ export default class EntryListing extends React.Component {
               ? this.renderCardsForSingleCollection()
               : this.renderCardsForMultipleCollections()
           }
-          <Waypoint onEnter={this.handleLoadMore} />
-        </div>
+          {cursorActions && Object.keys(cursorActions).length > 0
+            ? <div className="nc-entryListing-pagination">
+              <div className="nc-entryListing-paginationElement">
+                {first ? <button className="nc-entryListing-paginationButton" onClick={first}>{"<<<"}</button> : ""}
+              </div>
+              <div className="nc-entryListing-paginationElement">
+                {prev ? <button className="nc-entryListing-paginationButton" onClick={prev}>{"<"}</button> : ""}
+              </div>
+              <div className="nc-entryListing-paginationElement nc-entryListing-paginationMeta">
+                {pageString}
+              </div>
+              <div className="nc-entryListing-paginationElement nc-entryListing-paginationElementRight">
+                {next ? <button className="nc-entryListing-paginationButton" onClick={next}>{">"}</button> : ""}
+              </div>
+              <div className="nc-entryListing-paginationElement nc-entryListing-paginationElementRight">
+                {last ? <button className="nc-entryListing-paginationButton" onClick={last}>{">>>"}</button> : ""}
+              </div>
+            </div>
+           : ""}
+          </div>
       </div>
     );
   }

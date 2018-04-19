@@ -7,3 +7,36 @@
 .nc-entryListing-cardsList {
   margin-left: -12px;
 }
+
+.nc-entryListing-pagination {
+  display: flex;
+  justify-content: space-between;
+  flex-basis: var(--topCardWidth);
+  align-items: center;
+  margin-left: 12px;
+}
+
+.nc-entryListing-paginationElement {
+  flex-grow: 1;
+  flex-basis: 0;
+}
+
+.nc-entryListing-paginationElement {
+  text-align: left;
+  flex-grow: 1;
+  flex-basis: 0;
+}
+
+.nc-entryListing-paginationMeta {
+  text-align: center;
+}
+
+.nc-entryListing-paginationButton {
+  @apply(--button);
+  @apply(--buttonDefault);
+  @apply(--buttonGray);
+}
+
+.nc-entryListing-paginationElementRight {
+  text-align: right;
+}

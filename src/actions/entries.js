@@ -270,6 +270,46 @@ export function loadEntries(collection, page = 0) {
   };
 }
 
+function traverseCursor(backend, cursor, action) {
+  if (!cursor) {
+    throw new Error("No cursor exists");
+  }
+  if (!validateCursor(cursor)) {
+    throw new invalidCursorError(cursor);
+  }
+  if (!cursor.actions.includes(action)) {
+    throw new Error(`The current cursor does not support the pagination action "${ action }".`);
+  }
+  return backend.traverseCursor(cursor, action);
+}
+
+export function traverseCollectionCursor(collection, action) {
+  return async (dispatch, getState) => {
+    if (collection.get("isFetching")) {
+      return;
+    }
+    const state = getState();
+    const backend = currentBackend(state.config);
+    try {
+      const cursor = state.cursors.get(collectionEntriesCursorKey(collection.get('name')));
+      dispatch(entriesLoading(collection));
+      const { entries, cursor: newCursor } = await traverseCursor(backend, cursor, action);
+
+      // Pass null for the old pagination argument - this will
+      // eventually be removed.
+      return dispatch(entriesLoaded(collection, entries, null, newCursor));
+    } catch (err) {
+      console.error(err);
+      dispatch(notifSend({
+        message: `Failed to persist entry: ${ err }`,
+        kind: 'danger',
+        dismissAfter: 8000,
+      }));
+      return Promise.reject(dispatch(entriesFailed(collection, err)));
+    }
+  }
+}
+
 export function createEmptyDraft(collection) {
   return (dispatch) => {
     const dataFields = {};
