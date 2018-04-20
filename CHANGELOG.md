@@ -5,6 +5,12 @@
     Click to see more.
   </summary>
 
+  ## v1
+
+  ---
+
+  ## v2
+  * (possibly breaking): return date object from date/datetime widgets if no format set ([@erquhart](https://github.com/erquhart) in [#1296](https://github.com/netlify/netlify-cms/pull/1296))
 </details>
 
 ## 1.8.2 (May 24, 2018)

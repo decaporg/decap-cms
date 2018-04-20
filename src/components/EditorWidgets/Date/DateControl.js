@@ -20,7 +20,8 @@ export default class DateControl extends React.Component {
     includeTime: PropTypes.bool,
   };
 
-  format = this.props.field.get('format') || (this.props.includeTime ? DEFAULT_DATETIME_FORMAT : DEFAULT_DATE_FORMAT);
+  formatOutput = this.props.field.get('format');
+  formatDisplay = this.formatOutput || (this.props.includeTime ? DEFAULT_DATETIME_FORMAT : DEFAULT_DATE_FORMAT);
 
   componentDidMount() {
     const { value } = this.props;
@@ -41,22 +42,33 @@ export default class DateControl extends React.Component {
   handleChange = datetime => {
     const { onChange } = this.props;
 
-    // Set the date only if the format is valid
-    if (this.isValidDate(datetime)) {
-      const formattedValue = moment(datetime).format(this.format);
+    /**
+     * Set the date only if it is valid.
+     */
+    if (!this.isValidDate(datetime)) {
+      return;
+    }
+
+    /**
+     * Produce a formatted string only if a format is set in the config.
+     * Otherwise produce a date object.
+     */
+    if (this.formatOutput) {
+      const formattedValue = moment(datetime).format(this.formatOutput);
       onChange(formattedValue);
+    } else {
+      onChange(datetime);
     }
   };
 
   onBlur = datetime => {
-    const { setInactiveStyle, onChange } = this.props;
+    const { setInactiveStyle } = this.props;
 
     if (!this.isValidDate(datetime)) {
       const parsedDate = moment(datetime);
 
       if (parsedDate.isValid()) {
-        const formattedValue = parsedDate.format(this.format);
-        onChange(formattedValue);
+        this.handleChange(datetime);
       } else {
         window.alert('The date you entered is invalid.');
       }
@@ -67,7 +79,7 @@ export default class DateControl extends React.Component {
 
   render() {
     const { includeTime, value, classNameWrapper, setActiveStyle, setInactiveStyle } = this.props;
-    const format = this.format;
+    const format = this.formatDisplay;
     return (
       <DateTime
         timeFormat={!!includeTime}
