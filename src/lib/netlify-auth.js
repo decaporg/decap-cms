@@ -1,4 +1,7 @@
+import { trim, trimEnd } from 'lodash';
+
 const NETLIFY_API = 'https://api.netlify.com';
+const AUTH_ENDPOINT = 'auth';
 
 class NetlifyError {
   constructor(err) {
@@ -31,7 +34,8 @@ const PROVIDERS = {
 class Authenticator {
   constructor(config = {}) {
     this.site_id = config.site_id || null;
-    this.base_url = config.base_url || NETLIFY_API;
+    this.base_url = trimEnd(config.base_url, '/') || NETLIFY_API;
+    this.auth_endpoint = trim(config.auth_endpoint, '/') || AUTH_ENDPOINT;
   }
 
   handshakeCallback(options, cb) {
@@ -93,7 +97,7 @@ class Authenticator {
     left = (screen.width / 2) - (conf.width / 2);
     top = (screen.height / 2) - (conf.height / 2);
     window.addEventListener('message', this.handshakeCallback(options, cb), false);
-    url = this.base_url + '/auth?provider=' + options.provider + '&site_id=' + siteID;
+    url = `${this.base_url}/${this.auth_endpoint}?provider=${options.provider}&site_id=${siteID}`;
     if (options.scope) {
       url += '&scope=' + options.scope;
     }

@@ -7,6 +7,9 @@ export default class AuthenticationPage extends React.Component {
   static propTypes = {
     onLogin: PropTypes.func.isRequired,
     inProgress: PropTypes.bool,
+    base_url: PropTypes.string,
+    siteId: PropTypes.string,
+    authEndpoint: PropTypes.string,
   };
 
   state = {};
@@ -15,7 +18,8 @@ export default class AuthenticationPage extends React.Component {
     e.preventDefault();
     const cfg = {
       base_url: this.props.base_url,
-      site_id: (document.location.host.split(':')[0] === 'localhost') ? 'cms.netlify.com' : this.props.siteId
+      site_id: (document.location.host.split(':')[0] === 'localhost') ? 'cms.netlify.com' : this.props.siteId,
+      auth_endpoint: this.props.authEndpoint,
     };
     const auth = new Authenticator(cfg);
 

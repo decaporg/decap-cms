@@ -4,6 +4,8 @@
     Changes that have landed in master but are not yet released.
     Click to see more.
   </summary>
+
+  * allow custom auth endpoint ([@erquhart](https://github.com/erquhart) in [#1294](https://github.com/netlify/netlify-cms/pull/1294))
 </details>
 
 ## 1.6.0 (April 19, 2018) ([demo](https://5ad8e1ebb31274466632d026--cms-demo.netlify.com/#/))
