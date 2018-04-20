@@ -16,12 +16,14 @@ export default class API extends GithubAPI {
       .catch(error => {
         if (error.status === 401) {
           if (error.message === "Bad credentials") {
-            throw new Error("Git Gateway Error: Please ask your site administrator to reissue the Git Gateway token.");
+            throw new APIError("Git Gateway Error: Please ask your site administrator to reissue the Git Gateway token.", error.status, 'Git Gateway');
           } else {
             return false;
           }
+        } else if (error.status === 404 && (error.message === undefined || error.message === "Unable to locate site configuration")) {
+          throw new APIError(`Git Gateway Error: Please make sure Git Gateway is enabled on your site.`, error.status, 'Git Gateway');
         } else {
-          console.error("Problem fetching repo data from GitHub");
+          console.error("Problem fetching repo data from Git Gateway");
           throw error;
         }
       });
@@ -70,11 +72,14 @@ export default class API extends GithubAPI {
       if (contentType && contentType.match(/json/)) {
         return this.parseJsonResponse(response);
       }
-
-      return response.text();
+      const text = response.text();
+      if (!response.ok) {
+        return Promise.reject(text);
+      }
+      return text;
     })
     .catch(error => {
-      throw new APIError(error.message, responseStatus, 'Git Gateway');
+      throw new APIError((error.message || error.msg), responseStatus, 'Git Gateway');
     });
   }
 
