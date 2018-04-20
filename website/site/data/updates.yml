@@ -1,4 +1,7 @@
 updates:
+  - date: '2018-04-19'
+    description: ' Markdown toolbar customization, manual date widget entry, bug fixes.'
+    version: 1.6.0
   - date: '2018-04-11'
     description: 'New time based slug placeholders, set config.yml URL with &lt;link&gt;.'
     version: 1.5.0
