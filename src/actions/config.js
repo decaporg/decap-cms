@@ -3,6 +3,8 @@ import { Map, List, fromJS } from "immutable";
 import { trimStart, flow, isBoolean, get } from "lodash";
 import { authenticateUser } from "Actions/auth";
 import * as publishModes from "Constants/publishModes";
+import configSchema from '../config.schema.json';
+import AJV from 'ajv';
 
 export const CONFIG_REQUEST = "CONFIG_REQUEST";
 export const CONFIG_SUCCESS = "CONFIG_SUCCESS";
@@ -41,35 +43,15 @@ export function applyDefaults(config) {
 }
 
 export function validateConfig(config) {
-  if (!config.get('backend')) {
-    throw new Error("Error in configuration file: A `backend` wasn't found. Check your config.yml file.");
+  const ajv = new AJV();
+  const jsConfig = config.toJS();
+
+  const valid = ajv.validate(configSchema, jsConfig);
+  if (!valid) {
+    const error = ajv.errorsText(undefined, { dataVar: '' });
+    throw new TypeError(`Config Error: ${ error }`);
   }
-  if (!config.getIn(['backend', 'name'])) {
-    throw new Error("Error in configuration file: A `backend.name` wasn't found. Check your config.yml file.");
-  }
-  if (typeof config.getIn(['backend', 'name']) !== 'string') {
-    throw new Error("Error in configuration file: Your `backend.name` must be a string. Check your config.yml file.");
-  }
-  if (!config.get('media_folder')) {
-    throw new Error("Error in configuration file: A `media_folder` wasn\'t found. Check your config.yml file.");
-  }
-  if (typeof config.get('media_folder') !== 'string') {
-    throw new Error("Error in configuration file: Your `media_folder` must be a string. Check your config.yml file.");
-  }
-  const slug_encoding = config.getIn(['slug', 'encoding'], "unicode");
-  if (slug_encoding !== "unicode" && slug_encoding !== "ascii") {
-    throw new Error("Error in configuration file: Your `slug.encoding` must be either `unicode` or `ascii`. Check your config.yml file.")
-  }
-  if (!isBoolean(config.getIn(['slug', 'clean_accents'], false))) {
-    throw new Error("Error in configuration file: Your `slug.clean_accents` must be a boolean. Check your config.yml file.");
-  }
-  if (!config.get('collections')) {
-    throw new Error("Error in configuration file: A `collections` wasn\'t found. Check your config.yml file.");
-  }
-  const collections = config.get('collections');
-  if (!List.isList(collections) || collections.isEmpty() || !collections.first()) {
-    throw new Error("Error in configuration file: Your `collections` must be an array with at least one element. Check your config.yml file.");
-  }
+
   return config;
 }
 
