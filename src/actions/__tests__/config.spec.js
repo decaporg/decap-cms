@@ -58,7 +58,7 @@ describe('config', () => {
 
   describe('validateConfig', () => {
     it('should return the config if no errors', () => {
-      const config = fromJS({ foo: 'bar', backend: { name: 'bar' }, media_folder: 'baz', collections: [{}] });
+      const config = fromJS({ foo: 'bar', backend: { name: 'bar' }, media_folder: 'baz', collections: [{ folder: "folder" }] });
       expect(
         validateConfig(config)
       ).toEqual(config);
