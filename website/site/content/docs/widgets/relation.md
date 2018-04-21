@@ -13,6 +13,7 @@ The relation widget allows you to reference items from another collection. It pr
 - **Options:**
   - `default`: accepts any widget data type; defaults to an empty string
   - `collection`: (**required**) name of the collection being referenced (string)
+  - `displayFields`: list of one or more names of fields in the referenced collection that will render in the autocomplete menu of the control. The value field is used by default.
   - `searchFields`: (**required**) list of one or more names of fields in the referenced collection to search for the typed value
   - `valueField`: (**required**) name of the field from the referenced collection whose value will be stored for the relation
 - **Example** (assuming a separate "authors" collection with "name" and "twitterHandle" fields):
@@ -22,7 +23,8 @@ The relation widget allows you to reference items from another collection. It pr
     name: "author"
     widget: "relation"
     collection: "authors"
+    displayFields: ["twitterHandle", "followerCount"]
     searchFields: ["name", "twitterHandle"]
     valueField: "name"
   ```
-  The generated UI input will search the authors collection by name and twitterHandle as the user types. On selection, the author name will be saved for the field.
+  The generated UI input will search the authors collection by name and twitterHandle as the user types. Each collection will be represented by the author's handle and follower count. On selection, the author name will be saved for the field.
