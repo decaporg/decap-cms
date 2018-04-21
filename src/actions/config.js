@@ -1,10 +1,10 @@
+import AJV from 'ajv';
 import yaml from "js-yaml";
 import { Map, List, fromJS } from "immutable";
 import { trimStart, flow, isBoolean, get } from "lodash";
 import { authenticateUser } from "Actions/auth";
 import * as publishModes from "Constants/publishModes";
-import configSchema from '../config.schema.json';
-import AJV from 'ajv';
+import configSchema from '../configSchema';
 
 export const CONFIG_REQUEST = "CONFIG_REQUEST";
 export const CONFIG_SUCCESS = "CONFIG_SUCCESS";
@@ -48,8 +48,11 @@ export function validateConfig(config) {
 
   const valid = ajv.validate(configSchema, jsConfig);
   if (!valid) {
-    const error = ajv.errorsText(undefined, { dataVar: '' });
-    throw new TypeError(`Config Error: ${ error }`);
+    const errors = ajv.errors.map(({ message, dataPath }) => {
+      const key = dataPath ? `"${ trimStart(dataPath, '.') }" ` : ``;
+      return `Error in configuration file: ${ key }${ message }. Check your config.yml file.`;
+    });
+    throw new TypeError(errors.join('\n'));
   }
 
   return config;
