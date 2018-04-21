@@ -30,26 +30,13 @@ const collections = (state = null, action) => {
 function validateCollection(configCollection) {
   const {
     name,
-    folder,
-    files,
     format,
     extension,
-    frontmatter_delimiter: delimiter
   } = configCollection.toJS();
 
-  if (!folder && !files) {
-    throw new Error(`Unknown collection type for collection "${name}". Collections can be either Folder based or File based.`);
-  }
-  if (format && !supportedFormats.includes(format)) {
-    throw new Error(`Unknown collection format for collection "${name}". Supported formats are ${supportedFormats.join(',')}`);
-  }
   if (!format && extension && !formatByExtension(extension)) {
     // Cannot infer format from extension.
     throw new Error(`Please set a format for collection "${name}". Supported formats are ${supportedFormats.join(',')}`);
-  }
-  if (delimiter && !frontmatterFormats.includes(format)) {
-    // Cannot set custom delimiter without explicit and proper frontmatter format declaration
-    throw new Error(`Please set a proper frontmatter format for collection "${name}" to use a custom delimiter. Supported frontmatter formats are yaml-frontmatter, toml-frontmatter, and json-frontmatter.`);
   }
 }
 
