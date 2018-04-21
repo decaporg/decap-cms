@@ -52,7 +52,10 @@ class App extends React.Component {
 
       <div>
         <p>The <code>config.yml</code> file could not be loaded or failed to parse properly.</p>
-        <p><strong>Error message:</strong> {config.get('error')}</p>
+        <div>
+          <strong>Error message:</strong>
+          <pre style={{ marginLeft: "1em" }}>{config.get('error')}</pre>
+        </div>
         <p>Check your console for details.</p>
       </div>
     </div>);

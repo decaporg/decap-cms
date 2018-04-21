@@ -1,4 +1,5 @@
 import AJV from 'ajv';
+import ajvErrors from 'ajv-errors';
 import yaml from "js-yaml";
 import { Map, List, fromJS } from "immutable";
 import { trimStart, flow, isBoolean, get } from "lodash";
@@ -43,16 +44,20 @@ export function applyDefaults(config) {
 }
 
 export function validateConfig(config) {
-  const ajv = new AJV();
+  const ajv = new AJV({ allErrors: true, jsonPointers: true });
+  ajvErrors(ajv);
   const jsConfig = config.toJS();
 
   const valid = ajv.validate(configSchema, jsConfig);
   if (!valid) {
+    console.error('Config Errors', ajv.errors);
     const errors = ajv.errors.map(({ message, dataPath }) => {
-      const key = dataPath ? `"${ trimStart(dataPath, '.') }" ` : ``;
-      return `Error in configuration file: ${ key }${ message }. Check your config.yml file.`;
+      const key = dataPath ? `'${ trimStart(dataPath, '/') }' ` : ``;
+      return (key + message);
     });
-    throw new TypeError(errors.join('\n'));
+    const error = new Error(errors.join('\n'));
+    error.name = ""; // Don't preface error message with `Error: `.
+    throw error;
   }
 
   return config;

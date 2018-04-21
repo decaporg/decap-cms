@@ -29,11 +29,11 @@ export default {
         type: "object",
         properties: {
           format: { type: "string", enum: supportedFormats },
-          delimiter: { type: "string" },
+          "frontmatter_delimiter": { type: "string" },
         },
         oneOf: [{ required: ["files"] }, { required: ["folder"] }],
         dependencies: {
-          delimiter: {
+          "frontmatter_delimiter": {
             properties: {
               format: { enum: frontmatterFormats },
             },
