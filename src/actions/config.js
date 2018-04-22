@@ -53,10 +53,10 @@ export function validateConfig(config) {
     console.error('Config Errors', ajv.errors);
     const errors = ajv.errors.map(({ message, dataPath }) => {
       const key = dataPath ? `'${ trimStart(dataPath, '/') }' ` : ``;
-      return (key + message);
+      return `    ${ key }${ message }`;
     });
-    const error = new Error(errors.join('\n'));
-    error.name = ""; // Don't preface error message with `Error: `.
+    const error = new Error(`\n${ errors.join('\n') }`);
+    error.name = 'Config Errors';
     throw error;
   }
 
