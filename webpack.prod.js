@@ -3,6 +3,7 @@ const path = require('path');
 const webpack = require('webpack');
 const merge = require('webpack-merge');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const pkg = require("./package.json");
 
 module.exports = merge.smart(require('./webpack.base.js'), {
   mode: 'production',
@@ -19,7 +20,7 @@ module.exports = merge.smart(require('./webpack.base.js'), {
   context: path.join(__dirname, 'src'),
   plugins: [
     new webpack.DefinePlugin({
-      NETLIFY_CMS_VERSION: JSON.stringify(require("./package.json").version),
+      NETLIFY_CMS_VERSION: JSON.stringify(pkg.version),
     }),
 
     // Extract CSS

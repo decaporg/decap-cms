@@ -2,6 +2,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const merge = require('webpack-merge');
+const pkg = require("./package.json");
 
 module.exports = merge.smart(require('./webpack.base.js'), {
   mode: 'development',
@@ -28,7 +29,7 @@ module.exports = merge.smart(require('./webpack.base.js'), {
   },
   plugins: [
     new webpack.DefinePlugin({
-      NETLIFY_CMS_VERSION: JSON.stringify(require("./package.json").version + "-dev"),
+      NETLIFY_CMS_VERSION: JSON.stringify(pkg.version + "-dev"),
     }),
     new webpack.NoEmitOnErrorsPlugin(),
   ],
