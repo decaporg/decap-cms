@@ -1,6 +1,9 @@
 ---
 title: Configuration Options
-position: 23
+weight: 23
+menu:
+  docs:
+    parent: reference
 ---
 
 # Configuration Options

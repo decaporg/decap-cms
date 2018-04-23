@@ -1,6 +1,9 @@
 ---
 title: Update the CMS Version
-position: 60
+weight: 60
+menu:
+  docs:
+    parent: start
 ---
 
 # Update the CMS Version

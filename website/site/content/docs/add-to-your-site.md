@@ -1,7 +1,11 @@
 ---
 title: Add to Your Site
-position: 20
+weight: 20
+menu:
+  docs:
+    parent: start
 ---
+
 # Add Netlify CMS to Your Site
 
 Netlify CMS is adaptable to a wide variety of projects. The only inflexible requirement is that your site content must be written in markdown, JSON, YAML, or TOML files, stored in a repo on [GitHub](https://github.com/). (If you're partial to another Git hosting service, check out the PRs in progress for [GitLab](https://github.com/netlify/netlify-cms/pull/517) and [Bitbucket](https://github.com/netlify/netlify-cms/pull/525) support.)
