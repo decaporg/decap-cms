@@ -17,14 +17,14 @@ To use it in your own project, follow these steps:
 1. Head over to the [Netlify Identity docs](https://www.netlify.com/docs/identity) and follow the
    steps to get started.
 2. Add the following lines to your `config.yml` file:
-    ```yaml
-    backend:
-      name: git-gateway
-      accept_roles: #optional - accepts all users if left out
-        - admin
-        - editor
-      
-    ```
+   ```yaml
+   backend:
+     name: git-gateway
+     accept_roles: #optional - accepts all users if left out
+       - admin
+       - editor
+     
+   ```
 3. Optionally, you can assign roles to users in your Netlify dashboard, and then limit which
    roles can access the CMS by defining the `accept_roles` field in the `config.yml` example above.
    Otherwise `accept_roles` can be left out, and all Netlify Identity users on your site will have access.
@@ -49,22 +49,23 @@ To enable it:
 1. Follow the authentication provider setup steps in the [Netlify
    docs](https://www.netlify.com/docs/authentication-providers/#using-an-authentication-provider).
 2. Add the following lines to your `config.yml` file:
-    ```yaml
-    backend:
-      name: github
-      repo: owner-name/repo-name # Path to your Github repository
-    ```
+   ```yaml
+   backend:
+     name: github
+     repo: owner-name/repo-name # Path to your Github repository
+   ```
 
 ### External OAuth Clients
 
 If you would like to facilitate your own OAuth authentication rather than use Netlify's service, you
 can use one of the community-maintained projects below. Feel free to [submit a pull request](https://github.com/netlify/netlify-cms/blob/master/CONTRIBUTING.md) if you'd like to add yours!
 
-| Author                                         | Supported Git hosts       | Languages | Link                                                                     |
-| ---------------------------------------------- | ------------------------- | --------- | ------------------------------------------------------------------------ |
-| [@vencax](https://github.com/vencax)           | GitHub, GitHub Enterprise | Node.js   | [Repo](https://github.com/vencax/netlify-cms-github-oauth-provider)      |
-| [@igk1972](https://github.com/igk1972)         | GitHub, GitHub Enterprise | Go        | [Repo](https://github.com/igk1972/netlify-cms-oauth-provider-go)         |
-| [@davidejones](https://github.com/davidejones) | GitHub, GitHub Enterprise | Python    | [Repo](https://github.com/davidejones/netlify-cms-oauth-provider-python) |
+| Author                                         | Supported Git hosts       | Language(s)/Platform(s) | Link                                                                                                                                         |
+| ---------------------------------------------- | ------------------------- | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| [@vencax](https://github.com/vencax)           | GitHub, GitHub Enterprise | Node.js                 | [Repo](https://github.com/vencax/netlify-cms-github-oauth-provider)                                                                          |
+| [@igk1972](https://github.com/igk1972)         | GitHub, GitHub Enterprise | Go                      | [Repo](https://github.com/igk1972/netlify-cms-oauth-provider-go)                                                                             |
+| [@davidejones](https://github.com/davidejones) | GitHub, GitHub Enterprise | Python                  | [Repo](https://github.com/davidejones/netlify-cms-oauth-provider-python)                                                                     |
+| [@marksteele](https://github.com/marksteele)   | GitHub, GitHub Enterprise | Serverless              | [Repo](https://github.com/marksteele/netlify-serverless-oauth2-backend), [Blog](https://www.control-alt-del.org/blog/serverless-blog-howto/) |
 
 Check each project's documentation for instructions on how to configure it.
 
