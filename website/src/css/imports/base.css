@@ -56,7 +56,7 @@ h3 > p {
 }
 
 p, ul {
-  font-size: $tiny;
+  font-size: 18px;
   line-height: 26px;
   margin-top: 0;
 }
@@ -142,6 +142,7 @@ ul {
 
 pre {
   border-radius: $borderRadius;
+  line-height: 1 !important;
 }
 
 .code,
@@ -149,4 +150,5 @@ code {
   font-family: 'Roboto Mono', monospace !important;
   font-size: 14px;
   text-transform: none;
+  line-height: 1 !important;
 }

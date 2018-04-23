@@ -46,5 +46,6 @@ module.exports = {
   mobile: '480px',
   tablet: '768px',
   desktop: '960px',
-  display: '1200px'
+  display: '1200px',
+  xlarge: '1280px'
 }
