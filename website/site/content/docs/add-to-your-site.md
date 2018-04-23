@@ -24,7 +24,7 @@ If your generator isn't listed here, you can check its documentation, or as a sh
 
 Inside the `admin` folder, you'll create two files:
 
-```
+```x
 admin
  ├ index.html
  └ config.yml
@@ -57,13 +57,13 @@ The second file, `admin/config.yml`, is the heart of your Netlify CMS installati
 
 You can also use Netlify CMS as an npm module. Wherever you import Netlify CMS, it will automatically run, taking over the current page. Make sure the script that imports it is only run on your CMS page. First install the package and save it to your project:
 
-```
+```bash
 npm install netlify-cms --save
 ```
 
 Then import it (assuming your project has tooling for imports):
 
-```
+```js
 import CMS from 'netlify-cms'
 
 // Now the registry is available via the CMS object.

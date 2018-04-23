@@ -113,6 +113,10 @@
       margin-top: $large;
     }
 
+    p {
+      line-height: 1.7;
+    }
+
     a {
 			text-decoration: none;
 			color: $darkGreen;
@@ -144,6 +148,16 @@
       padding: initial;
       white-space: inherit;
     }
+
+    pre {
+      margin: 30px -16px !important;
+    }
+
+    @media (min-width: $xlarge) {
+      pre {
+        margin-right: -120px !important;
+      }
+    }
 	}
 
 	h1,
@@ -163,22 +177,9 @@
 
 	h3 {
 		color: $grey;
-		font-size: 12px;
-		font-weight: $semibold;
-		text-transform: uppercase;
-		letter-spacing: 1.5px;
-		margin-top: $medium;
+		font-size: 20px;
+		margin-top: $large;
     margin-bottom: $small;
-
-
-		&:after {
-			content: ' ';
-			width: $small;
-			height: 2px;
-			background: $darkGreen;
-		    display: block;
-		    margin-top: 5px;
-		}
 
 		&.inverse {
 			color: white;
