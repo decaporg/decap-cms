@@ -1,3 +1,14 @@
+.docs-content {
+  pre {
+    margin: 30px -16px !important;
+  }
+
+  @media (min-width: $xlarge) {
+    pre {
+      margin-right: -120px !important;
+    }
+  }
+}
 .docs.page {
   padding: 69px $tiny $xl;
   text-align: left;
@@ -147,16 +158,6 @@
       background: initial;
       padding: initial;
       white-space: inherit;
-    }
-
-    pre {
-      margin: 30px -16px !important;
-    }
-
-    @media (min-width: $xlarge) {
-      pre {
-        margin-right: -120px !important;
-      }
     }
 	}
 
