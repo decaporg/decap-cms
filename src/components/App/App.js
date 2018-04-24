@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import { Map } from 'immutable';
 import { connect } from 'react-redux';
 import { Route, Switch, Link, Redirect } from 'react-router-dom';
 import { Notifs } from 'redux-notifications';
