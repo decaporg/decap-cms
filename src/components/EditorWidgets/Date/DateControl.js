@@ -20,8 +20,7 @@ export default class DateControl extends React.Component {
     includeTime: PropTypes.bool,
   };
 
-  formatOutput = this.props.field.get('format');
-  formatDisplay = this.formatOutput || (this.props.includeTime ? DEFAULT_DATETIME_FORMAT : DEFAULT_DATE_FORMAT);
+  format = this.props.field.get('format');
 
   componentDidMount() {
     const { value } = this.props;
@@ -53,11 +52,12 @@ export default class DateControl extends React.Component {
      * Produce a formatted string only if a format is set in the config.
      * Otherwise produce a date object.
      */
-    if (this.formatOutput) {
-      const formattedValue = moment(datetime).format(this.formatOutput);
+    if (this.format) {
+      const formattedValue = moment(datetime).format(this.format);
       onChange(formattedValue);
     } else {
-      onChange(datetime);
+      const value = moment.isMoment(datetime) ? datetime.toDate() : datetime;
+      onChange(value);
     }
   };
 
@@ -79,11 +79,10 @@ export default class DateControl extends React.Component {
 
   render() {
     const { includeTime, value, classNameWrapper, setActiveStyle, setInactiveStyle } = this.props;
-    const format = this.formatDisplay;
     return (
       <DateTime
         timeFormat={!!includeTime}
-        value={moment(value, format)}
+        value={moment(value, this.format)}
         onChange={this.handleChange}
         onFocus={setActiveStyle}
         onBlur={this.onBlur}
