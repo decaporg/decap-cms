@@ -18,15 +18,14 @@ To use it in your own project, follow these steps:
    steps to get started.
 2. Add the following lines to your `config.yml` file:
 
-```yaml
-   backend:
-     name: git-gateway
-     accept_roles: #optional - accepts all users if left out
-       - admin
-       - editor
+    ```yaml
+    backend:
+      name: git-gateway
+      accept_roles: #optional - accepts all users if left out
+        - admin
+        - editor
      
-   ```
-
+    ```
 3. Optionally, you can assign roles to users in your Netlify dashboard, and then limit which
    roles can access the CMS by defining the `accept_roles` field in the `config.yml` example above.
    Otherwise `accept_roles` can be left out, and all Netlify Identity users on your site will have access.
