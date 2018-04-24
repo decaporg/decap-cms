@@ -2,30 +2,17 @@
  * Random number generator
  */
 
-let rng;
-
-if (window.crypto && crypto.getRandomValues) {
-  // WHATWG crypto-based RNG - http://wiki.whatwg.org/wiki/Crypto
-  // Moderately fast, high quality
-  const _rnds32 = new Uint32Array(1);
-  rng = function whatwgRNG() {
-    crypto.getRandomValues(_rnds32);
-    return _rnds32[0];
-  };
+const padNumber = (num, base) => {
+  const padLen = (32 / Math.sqrt(base));
+  const str = num.toString(base);
+  return (('0' * padLen) + str).slice(-padLen);
 }
 
-if (!rng) {
-  // Math.random()-based (RNG)
-  // If no Crypto available, use Math.random().
-  rng = function() {
-    const r = Math.random() * 0x100000000;
-    const _rnds = r >>> 0;
-    return _rnds;
-  };
-}
+export function randomStr(len = 256) {
+  const _rnds = new Uint32Array(Math.ceil(len / 32));
+  window.crypto.getRandomValues(_rnds);
 
-export function randomStr() {
-  return rng().toString(36);
-}
+  const str = _rnds.reduce((agg, val) => (agg + padNumber(val, 16)), '');
 
-export default rng;
+  return str.slice(-len);
+}
