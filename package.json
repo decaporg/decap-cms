@@ -96,7 +96,7 @@
     "enzyme-adapter-react-16": "^1.0.2",
     "eslint": "^3.7.1",
     "eslint-config-netlify": "github:netlify/eslint-config-netlify",
-    "eslint-import-resolver-webpack": "^0.8.4",
+    "eslint-import-resolver-babel-module": "^4.0.0",
     "exports-loader": "^0.7.0",
     "file-loader": "^1.1.11",
     "identity-obj-proxy": "^3.0.0",
