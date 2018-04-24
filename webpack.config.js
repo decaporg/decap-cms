@@ -9,9 +9,7 @@ function getPlugins(env, argv) {
     new webpack.IgnorePlugin(/^esprima$/, /js-yaml/), // Ignore Esprima import for js-yaml
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/), // Ignore all optional deps of moment.js
     new webpack.DefinePlugin({
-      NETLIFY_CMS_VERSION: JSON.stringify(
-        `${pkg.version}${env.production ? '' : '-dev'}`,
-      ),
+      NETLIFY_CMS_VERSION: JSON.stringify(`${pkg.version}${env.production ? '' : '-dev'}`),
     }),
     new webpack.NoEmitOnErrorsPlugin(), // Default for production mode, but adding to development mode
   ];
