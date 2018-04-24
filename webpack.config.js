@@ -108,9 +108,6 @@ module.exports = function(env, argv) {
     target: 'web', // Make web variables accessible to webpack, e.g. window
     devServer: {
       contentBase: 'example/',
-      historyApiFallback: true,
-      disableHostCheck: true,
-      headers: { 'Access-Control-Allow-Origin': '*' },
     },
   };
 };
