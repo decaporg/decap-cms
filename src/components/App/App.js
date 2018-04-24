@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import { Map } from 'immutable';
 import { connect } from 'react-redux';
 import { Route, Switch, Link, Redirect } from 'react-router-dom';
 import { Notifs } from 'redux-notifications';
@@ -84,8 +85,6 @@ class App extends React.Component {
             isFetching: auth && auth.get('isFetching'),
             siteId: this.props.config.getIn(["backend", "site_domain"]),
             base_url: this.props.config.getIn(["backend", "base_url"], null),
-            oauth_url: this.props.config.getIn(["backend", "oauth_url"]),
-            oauth_appid: this.props.config.getIn(["backend", "oauth_appid"]),
             config: this.props.config,
           })
         }

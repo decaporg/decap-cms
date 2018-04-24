@@ -1,85 +1,48 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Map } from 'immutable';
-import { randomStr } from 'Lib/randomGenerator';
-import Authenticator from 'Lib/netlify-auth';
-import history from 'Routing/history';
+import NetlifyAuthenticator from 'Lib/netlify-auth';
+import ImplicitAuthenticator from 'Lib/implicit-oauth';
 import { Icon } from 'UI';
-
-function createNonce() {
-  const nonce = randomStr();
-  window.sessionStorage.setItem("netlify-cms-auth", JSON.stringify({ nonce }));
-  return nonce;
-}
-
-function validateNonce(check) {
-  const auth = window.sessionStorage.getItem("netlify-cms-auth");
-  const valid = auth && JSON.parse(auth).nonce;
-  window.localStorage.removeItem("netlify-cms-auth");
-  return (check === valid);
-}
 
 export default class AuthenticationPage extends React.Component {
   static propTypes = {
     onLogin: PropTypes.func.isRequired,
     inProgress: PropTypes.bool,
-    oauth_url: PropTypes.string,
   };
 
   state = {};
   
-
-  beginLogin = (e) => {
+  handleLogin = (e) => {
     e.preventDefault();
-
-    if (
-          document.location.protocol !== "https:"
-          // TODO: Is insecure localhost a bad idea as well? I don't think it is, since you are not actually
-          //       sending the token over the internet in this case, assuming the auth URL is secure.
-          && (document.location.hostname !== "localhost" && document.location.hostname !== "127.0.0.1")
-       ) {
-      this.setState({ loginError: "Cannot authenticate over insecure protocol!" });
-      return;
-    }
-
-    const authURL = new URL(this.props.oauth_url || "https://gitlab.com/oauth/authorize");
-    authURL.searchParams.set('client_id', this.props.oauth_appid);
-    authURL.searchParams.set('redirect_uri', document.location.origin + document.location.pathname);
-    authURL.searchParams.set('response_type', 'token');
-    authURL.searchParams.set('scope', 'api read_user');
-    authURL.searchParams.set('state', createNonce());
-
-    window.location.assign(authURL.href);
-  };
-
-  finishLogin = params => {
-    const validNonce = validateNonce(params.state);
-    if (!validNonce) {
-      this.setState({ loginError: "Invalid nonce" });
-      return;      
-    }
-
-    if (params.error) {
-      this.setState({ loginError: `${ params.error }: ${ params['error_description'] }` });
-      return;
-    }
-
-    if (params['access_token']) {
-      const { access_token: token, ...data } = params;
-      this.props.onLogin({ token, ...data });
-    }
+    this.auth.authenticate({ provider: 'gitlab', scope: 'api read_user' }, (err, data) => {
+      if (err) {
+        this.setState({ loginError: err.toString() });
+        return;
+      }
+      this.props.onLogin(data);
+    });
   };
 
   componentDidMount() {
-    const hashParams = new URLSearchParams(document.location.hash.replace(/^#?\/?/, ''));
-    if (hashParams.has("access_token") || hashParams.has("error")) {
-
-      // Remove tokens from hash so that token does not remain in browser history.
-      history.replace('/')
-
-      const response = Map(hashParams.entries()).toJS();
-      this.finishLogin(response);
-
+    const authType = this.props.config.getIn(['backend', 'auth_type']);
+    if (authType === "implicit") {
+      this.auth = new ImplicitAuthenticator({
+        auth_url: this.props.config.getIn(['backend', 'auth_url'], 'https://gitlab.com/oauth/authorize'),
+        appid: this.props.config.getIn(['backend', 'appid']),
+      });
+      // Complete implicit authentication if we were redirected back to from the provider.
+      this.auth.completeAuth((err, data) => {
+        if (err) {
+          this.setState({ loginError: err.toString() });
+          return;
+        }
+        this.props.onLogin(data);
+      });
+    } else {
+      this.auth = new NetlifyAuthenticator({
+        base_url: this.props.base_url,
+        site_id: (document.location.host.split(':')[0] === 'localhost') ? 'cms.netlify.com' : this.props.siteId
+      });
     }
   }
 
@@ -94,7 +57,7 @@ export default class AuthenticationPage extends React.Component {
         <button
           className="nc-githubAuthenticationPage-button"
           disabled={inProgress}
-          onClick={this.beginLogin}
+          onClick={this.handleLogin}
         >
           <Icon type="gitlab" /> {inProgress ? "Logging in..." : "Login with GitLab"}
         </button>
