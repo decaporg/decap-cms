@@ -9,7 +9,9 @@ function getPlugins(env, argv) {
     new webpack.IgnorePlugin(/^esprima$/, /js-yaml/), // Ignore Esprima import for js-yaml
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/), // Ignore all optional deps of moment.js
     new webpack.DefinePlugin({
-      NETLIFY_CMS_VERSION: JSON.stringify(`${pkg.version}${env.production ? '' : '-dev'}`),
+      NETLIFY_CMS_VERSION: JSON.stringify(
+        `${pkg.version}${env.production ? '' : '-dev'}`
+      ),
     }),
     new webpack.NoEmitOnErrorsPlugin(), // Default for production mode, but adding to development mode
   ];
@@ -18,7 +20,7 @@ function getPlugins(env, argv) {
     plugins.push(
       new MiniCssExtractPlugin({
         filename: '[name].css',
-      }),
+      })
     );
     // During beta phase, generate source maps for better errors
     plugins.push(
@@ -35,7 +37,7 @@ function getPlugins(env, argv) {
         // sourcemap is in 'dist', webpack context is in 'src'
         moduleFilenameTemplate: info =>
           path.posix.normalize(`../src/${info.resourcePath}`),
-      }),
+      })
     );
   }
   if (env.development && env.write) {
