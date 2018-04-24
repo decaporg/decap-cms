@@ -40,8 +40,12 @@ function getPlugins(env, argv) {
       })
     );
   }
-  if (env.development && env.write) {
-    plugins.push(new WriteFilePlugin());
+  if (env.development) {
+    plugins.push(new webpack.HotModuleReplacementPlugin());
+    
+    if (env.write) {
+      plugins.push(new WriteFilePlugin());
+    }
   }
   return plugins;
 }
@@ -108,6 +112,7 @@ module.exports = function(env, argv) {
     target: 'web', // Make web variables accessible to webpack, e.g. window
     devServer: {
       contentBase: 'example/',
+      hot: true,
     },
   };
 };
