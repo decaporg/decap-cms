@@ -84,6 +84,8 @@ class App extends React.Component {
             isFetching: auth && auth.get('isFetching'),
             siteId: this.props.config.getIn(["backend", "site_domain"]),
             base_url: this.props.config.getIn(["backend", "base_url"], null),
+            oauth_url: this.props.config.getIn(["backend", "oauth_url"]),
+            oauth_appid: this.props.config.getIn(["backend", "oauth_appid"]),
             config: this.props.config,
           })
         }
