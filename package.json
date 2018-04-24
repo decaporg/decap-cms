@@ -5,12 +5,11 @@
   "main": "dist/cms.js",
   "scripts": {
     "start": "npm run dev",
-    "dev": "webpack-serve webpack.dev.js",
-    "dev:write": "webpack-serve webpack.dev-write.js",
+    "dev": "webpack-dev-server --env.development",
+    "dev:write": "webpack-dev-server --env.development --env.write",
     "test": "jest --coverage",
     "test:watch": "jest --watch",
-    "build": "cross-env NODE_ENV=production webpack-cli --config webpack.prod.js --display-error-details",
-    "build:scripts": "cross-env NODE_ENV=production webpack-cli --config webpack.cli.js",
+    "build": "cross-env NODE_ENV=production webpack-cli --display-error-details --env.production",
     "add-contributor": "all-contributors add",
     "generate-contributors": "all-contributors generate",
     "lint": "npm run lint:js & npm run lint:css",
@@ -122,8 +121,7 @@
     "svg-inline-loader": "^0.8.0",
     "webpack": "^4.4.1",
     "webpack-cli": "^2.0.13",
-    "webpack-merge": "^4.1.2",
-    "webpack-serve": "^0.3.1",
+    "webpack-dev-server": "^3.1.3",
     "write-file-webpack-plugin": "^4.2.0"
   },
   "dependencies": {
