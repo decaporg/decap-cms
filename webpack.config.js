@@ -1,37 +1,44 @@
 const path = require('path');
 const webpack = require('webpack');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const WriteFilePlugin = require('write-file-webpack-plugin');
-const pkg = require("./package.json");
+const pkg = require('./package.json');
 
 function getPlugins(env, argv) {
   const plugins = [
     new webpack.IgnorePlugin(/^esprima$/, /js-yaml/), // Ignore Esprima import for js-yaml
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/), // Ignore all optional deps of moment.js
     new webpack.DefinePlugin({
-      NETLIFY_CMS_VERSION: JSON.stringify(`${ pkg.version }${ env.production ? '' : '-dev' }`),
+      NETLIFY_CMS_VERSION: JSON.stringify(
+        `${pkg.version}${env.production ? '' : '-dev'}`,
+      ),
     }),
     new webpack.NoEmitOnErrorsPlugin(), // Default for production mode, but adding to development mode
   ];
   if (env.production) {
     // Extract CSS
-    plugins.push(new MiniCssExtractPlugin({
-      filename: "[name].css",
-    }));
+    plugins.push(
+      new MiniCssExtractPlugin({
+        filename: '[name].css',
+      }),
+    );
     // During beta phase, generate source maps for better errors
-    plugins.push(new webpack.SourceMapDevToolPlugin({
-      // asset matching
-      test: /\.js?$/,
+    plugins.push(
+      new webpack.SourceMapDevToolPlugin({
+        // asset matching
+        test: /\.js?$/,
 
-      // file and reference
-      filename: '[file].map',
+        // file and reference
+        filename: '[file].map',
 
-      // don't include source file content, since we link to the actual file
-      noSources: true,
+        // don't include source file content, since we link to the actual file
+        noSources: true,
 
-      // sourcemap is in 'dist', webpack context is in 'src'
-      moduleFilenameTemplate: info => path.posix.normalize(`../src/${ info.resourcePath }`),
-    }));
+        // sourcemap is in 'dist', webpack context is in 'src'
+        moduleFilenameTemplate: info =>
+          path.posix.normalize(`../src/${info.resourcePath}`),
+      }),
+    );
   }
   if (env.development && env.write) {
     plugins.push(new WriteFilePlugin());
@@ -71,7 +78,7 @@ module.exports = function(env, argv) {
           test: /\.css$/,
           include: [/redux-notifications/],
           use: [
-            (env.production ? MiniCssExtractPlugin.loader : 'style-loader'),
+            env.production ? MiniCssExtractPlugin.loader : 'style-loader',
             'css-loader',
           ],
         },
@@ -80,7 +87,7 @@ module.exports = function(env, argv) {
           test: /\.css$/,
           exclude: [/node_modules/],
           use: [
-            (env.production ? MiniCssExtractPlugin.loader : 'style-loader'),
+            env.production ? MiniCssExtractPlugin.loader : 'style-loader',
             {
               loader: 'css-loader',
               options: {
@@ -103,8 +110,7 @@ module.exports = function(env, argv) {
       contentBase: 'example/',
       historyApiFallback: true,
       disableHostCheck: true,
-      headers: { "Access-Control-Allow-Origin": "*" },
+      headers: { 'Access-Control-Allow-Origin': '*' },
     },
-
   };
 };
