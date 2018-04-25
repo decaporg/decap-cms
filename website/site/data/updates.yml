@@ -1,4 +1,7 @@
 updates:
+  - date: '2018-04-24'
+    description: 'Allow custom auth endpoint, bug fixes.'
+    version: 1.7.0
   - date: '2018-04-19'
     description: ' Markdown toolbar customization, manual date widget entry, bug fixes.'
     version: 1.6.0
