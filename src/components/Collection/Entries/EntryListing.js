@@ -5,6 +5,7 @@ import Waypoint from 'react-waypoint';
 import { Map } from 'immutable';
 import { selectFields, selectInferedField } from 'Reducers/collections';
 import EntryCard from './EntryCard';
+import Cursor from 'ValueObjects/Cursor';
 
 export default class EntryListing extends React.Component {
   static propTypes = {
@@ -19,7 +20,7 @@ export default class EntryListing extends React.Component {
 
   handleLoadMore = () => {
     const { cursor, handleCursorActions } = this.props;
-    if (cursor.actions.has("append_next")) {
+    if (Cursor.create(cursor).actions.has("append_next")) {
       handleCursorActions("append_next");
     }
   };
