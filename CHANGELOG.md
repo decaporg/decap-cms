@@ -6,7 +6,7 @@
   </summary>
 </details>
 
-## 1.7.0 (April 24, 2018)
+## 1.7.0 (April 24, 2018) ([demo](https://5adfdee4b13fb15101a5c5ce--cms-demo.netlify.com/))
 Allow custom auth endpoint, bug fixes.
 
 ### Features
@@ -19,7 +19,7 @@ Allow custom auth endpoint, bug fixes.
 * fix GitHub auth button icon alignment (@erquhart in #1299)
 * fix Git Gateway login hang (@ekoeryanto in #1240)
 
-## 1.6.0 (April 19, 2018) ([demo](https://5ad8e1ebb31274466632d026--cms-demo.netlify.com/#/))
+## 1.6.0 (April 19, 2018) ([demo](https://5ad8e1ebb31274466632d026--cms-demo.netlify.com/))
 Markdown toolbar customization, manual date widget entry, bug fixes.
 
 ### Features
