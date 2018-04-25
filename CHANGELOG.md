@@ -4,14 +4,25 @@
     Changes that have landed in master but are not yet released.
     Click to see more.
   </summary>
-
-  * allow custom auth endpoint ([@erquhart](https://github.com/erquhart) in [#1294](https://github.com/netlify/netlify-cms/pull/1294))
 </details>
+
+## 1.7.0 (April 24, 2018)
+Allow custom auth endpoint, bug fixes.
+
+### Features
+* allow custom auth endpoint ([@erquhart](https://github.com/erquhart) in [#1294](https://github.com/netlify/netlify-cms/pull/1294))
+
+### Improvements
+* skip validation of optional fields when empty (@Dammmien in #1237)
+
+### Bug Fixes
+* fix GitHub auth button icon alignment (@erquhart in #1299)
+* fix Git Gateway login hang (@ekoeryanto in #1240)
 
 ## 1.6.0 (April 19, 2018) ([demo](https://5ad8e1ebb31274466632d026--cms-demo.netlify.com/#/))
 Markdown toolbar customization, manual date widget entry, bug fixes.
 
-### Improvements
+### Features
 * Allow markdown editor toolbar customization ([@Dammmien](https://github.com/Dammmien) in [#1236](https://github.com/netlify/netlify-cms/pull/1236))
 * Allow login screen to be skipped for test repo backend ([@erquhart](https://github.com/erquhart) in [#1291](https://github.com/netlify/netlify-cms/pull/1291))
 
