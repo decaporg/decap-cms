@@ -8,7 +8,7 @@ const auth = (state = null, action) => {
     case AUTH_SUCCESS:
       return Immutable.fromJS({ user: action.payload });
     case AUTH_FAILURE:
-      return Immutable.Map({ error: action.payload.toString() });
+      return Immutable.Map({ error: action.payload && action.payload.toString() });
     case AUTH_REQUEST_DONE:
       return state.remove('isFetching');
     case LOGOUT:
