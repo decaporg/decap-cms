@@ -94,11 +94,11 @@ class RelationControl extends Component {
     if (List.isList(valueField)) {
       return (
         <span>
-          {valueField.toJS().map(key => <span key={key}>{suggestion.data[key]}{' '}</span>)}
+          {valueField.toJS().map(key => <span key={key}>{new String(suggestion.data[key])}{' '}</span>)}
         </span>
       );
     }
-    return <span>{suggestion.data[valueField]}</span>;
+    return <span>{new String(suggestion.data[valueField])}</span>;
   };
 
   render() {
