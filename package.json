@@ -149,6 +149,7 @@
     "react": "^16.0.0",
     "react-aria-menubutton": "^5.1.0",
     "react-autosuggest": "^9.3.2",
+    "react-color": "^2.14.1",
     "react-datetime": "^2.11.0",
     "react-dnd": "^2.5.4",
     "react-dnd-html5-backend": "^2.5.4",
