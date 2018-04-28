@@ -70,3 +70,8 @@ collections:
     label: Post
     templateCompiler: ejs
 ```
+
+## Optimization
+
+Preview template compilers are run every time a change occurs in the editor, so you'll want to
+ensure that they run as fast as possible to avoid delays in the preview. 
