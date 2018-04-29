@@ -50,6 +50,9 @@ export function validateConfig(config) {
   if (typeof config.getIn(['backend', 'name']) !== 'string') {
     throw new Error("Error in configuration file: Your `backend.name` must be a string. Check your config.yml file.");
   }
+  if (!isBoolean(config.getIn(['backend', 'squash_merges'], false))) {
+    throw new Error("Error in configuration file: Your `backend.squash_merges` must be a boolean. Check your config.yml file.");
+  }
   if (!config.get('media_folder')) {
     throw new Error("Error in configuration file: A `media_folder` wasn\'t found. Check your config.yml file.");
   }
