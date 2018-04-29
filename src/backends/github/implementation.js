@@ -17,6 +17,7 @@ export default class GitHub {
     this.branch = config.getIn(["backend", "branch"], "master").trim();
     this.api_root = config.getIn(["backend", "api_root"], "https://api.github.com");
     this.token = '';
+    this.merge_method = config.getIn(["backend", "merge_method"], "merge");
   }
 
   authComponent() {
