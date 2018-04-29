@@ -15,6 +15,7 @@ export default class API {
     this.branch = config.branch || "master";
     this.repo = config.repo || "";
     this.repoURL = `/repos/${ this.repo }`;
+    this.mergeMethod = config.mergeMethod || "merge";
   }
 
   user() {
