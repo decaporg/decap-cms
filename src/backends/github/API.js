@@ -636,6 +636,7 @@ export default class API {
       body: JSON.stringify({
         commit_message: "Automatically generated. Merged on Netlify CMS.",
         sha: headSha,
+        merge_method: this.merge_method,
       }),
     })
     .catch((error) => {
