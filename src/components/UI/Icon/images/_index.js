@@ -14,6 +14,8 @@ import iconEye from './eye.svg';
 import iconFolder from './folder.svg';
 import iconGithub from './github.svg';
 import iconGrid from './grid.svg';
+import iconH1 from './h1.svg';
+import iconH2 from './h2.svg';
 import iconHome from './home.svg';
 import iconImage from './image.svg';
 import iconItalic from './italic.svg';
@@ -56,6 +58,8 @@ const images = {
   'folder': iconFolder,
   'github': iconGithub,
   'grid': iconGrid,
+  'h1': iconH1,
+  'h2': iconH2,
   'home': iconHome,
   'image': iconImage,
   'italic': iconItalic,
