@@ -27,9 +27,75 @@ export default class Toolbar extends React.Component {
     };
   }
 
-  isHidden = button => {
+  isHidden = (button, isDefaultButton = true) => {
     const { buttons } = this.props;
-    return List.isList(buttons) ? !buttons.includes(button) : false;
+    return List.isList(buttons) ? !buttons.includes(button) : !isDefaultButton;
+  }
+
+  shouldDisplayHeadingsList() {
+    const { buttons } = this.props;
+    return List.isList(buttons) && buttons.includes('headings-list');
+  }
+
+  getHeadingsList() {
+    const {
+      onBlockClick,
+      selectionHasBlock,
+      disabled
+    } = this.props;
+
+    return (
+      <div className="nc-toolbar-dropdown">
+        <Dropdown
+          dropdownTopOverlap="36px"
+          button={
+            <ToolbarButton
+              label="Headings"
+              icon="text"
+              onClick={this.handleComponentsMenuToggle}
+              disabled={disabled}
+            />
+          }
+        >
+          <ToolbarButton
+            type="heading-one"
+            label="Header 1"
+            onClick={onBlockClick}
+            isActive={selectionHasBlock}
+          />
+          <ToolbarButton
+            type="heading-two"
+            label="Header 2"
+            onClick={onBlockClick}
+            isActive={selectionHasBlock}
+          />
+          <ToolbarButton
+            type="heading-three"
+            label="Header 3"
+            onClick={onBlockClick}
+            isActive={selectionHasBlock}
+          />
+          <ToolbarButton
+            type="heading-four"
+            label="Header 4"
+            onClick={onBlockClick}
+            isActive={selectionHasBlock}
+          />
+          <ToolbarButton
+            type="heading-five"
+            label="Header 5"
+            onClick={onBlockClick}
+            isActive={selectionHasBlock}
+          />
+          <ToolbarButton
+            type="heading-six"
+            label="Header 6"
+            onClick={onBlockClick}
+            isActive={selectionHasBlock}
+          />
+        </Dropdown>
+      </div>
+    );
   }
 
   render() {
@@ -89,7 +155,7 @@ export default class Toolbar extends React.Component {
             icon="strikethrough"
             onClick={onMarkClick}
             isActive={selectionHasMark}
-            isHidden={this.isHidden('strikethrough')}
+            isHidden={this.isHidden('strikethrough', false)}
             disabled={disabled}
           />
           <ToolbarButton
@@ -110,68 +176,25 @@ export default class Toolbar extends React.Component {
             isHidden={this.isHidden('link')}
             disabled={disabled}
           />
-          <div className="nc-toolbar-dropdown">
-            <Dropdown
-              dropdownTopOverlap="36px"
-              button={
-                <ToolbarButton
-                  label="Add Component"
-                  icon="text"
-                  onClick={this.handleComponentsMenuToggle}
-                  disabled={disabled}
-                />
-              }
-            >
-              <ToolbarButton
-                type="heading-one"
-                label="Header 1"
-                onClick={onBlockClick}
-                isActive={selectionHasBlock}
-                isHidden={this.isHidden('heading-one')}
-                disabled={disabled}
-              />
-              <ToolbarButton
-                type="heading-two"
-                label="Header 2"
-                onClick={onBlockClick}
-                isActive={selectionHasBlock}
-                isHidden={this.isHidden('heading-two')}
-                disabled={disabled}
-              />
-              <ToolbarButton
-                type="heading-three"
-                label="Header 3"
-                onClick={onBlockClick}
-                isActive={selectionHasBlock}
-                isHidden={this.isHidden('heading-three')}
-                disabled={disabled}
-              />
-              <ToolbarButton
-                type="heading-four"
-                label="Header 4"
-                onClick={onBlockClick}
-                isActive={selectionHasBlock}
-                isHidden={this.isHidden('heading-four')}
-                disabled={disabled}
-              />
-              <ToolbarButton
-                type="heading-five"
-                label="Header 5"
-                onClick={onBlockClick}
-                isActive={selectionHasBlock}
-                isHidden={this.isHidden('heading-five')}
-                disabled={disabled}
-              />
-              <ToolbarButton
-                type="heading-six"
-                label="Header 6"
-                onClick={onBlockClick}
-                isActive={selectionHasBlock}
-                isHidden={this.isHidden('heading-six')}
-                disabled={disabled}
-              />
-            </Dropdown>
-          </div>
+          <ToolbarButton
+            type="heading-one"
+            label="Header 1"
+            icon="h1"
+            onClick={onBlockClick}
+            isActive={selectionHasBlock}
+            isHidden={this.shouldDisplayHeadingsList() || this.isHidden('heading-one')}
+            disabled={disabled}
+          />
+          <ToolbarButton
+            type="heading-two"
+            label="Header 2"
+            icon="h2"
+            onClick={onBlockClick}
+            isActive={selectionHasBlock}
+            isHidden={this.shouldDisplayHeadingsList() || this.isHidden('heading-two')}
+            disabled={disabled}
+          />
+          {this.shouldDisplayHeadingsList() ? this.getHeadingsList() : null}
           <ToolbarButton
             type="quote"
             label="Quote"
