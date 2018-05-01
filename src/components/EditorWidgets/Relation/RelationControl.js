@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import Autosuggest from 'react-autosuggest';
 import uuid from 'uuid/v4';
-import { Map } from 'immutable';
+import { List, Map } from 'immutable';
 import { connect } from 'react-redux';
 import { debounce } from 'lodash';
 import { query, clearSearch } from 'Actions/search';
@@ -90,8 +90,15 @@ class RelationControl extends Component {
 
   renderSuggestion = (suggestion) => {
     const { field } = this.props;
-    const valueField = field.get('valueField');
-    return <span>{suggestion.data[valueField]}</span>;
+    const valueField = field.get('displayFields') || field.get('valueField');
+    if (List.isList(valueField)) {
+      return (
+        <span>
+          {valueField.toJS().map(key => <span key={key}>{new String(suggestion.data[key])}{' '}</span>)}
+        </span>
+      );
+    }
+    return <span>{new String(suggestion.data[valueField])}</span>;
   };
 
   render() {
