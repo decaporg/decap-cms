@@ -1,22 +1,22 @@
 ---
-title: Creating a Preview Template Compiler
+title: Creating a Template Compiler
 position: 40
 menu:
   docs:
     parent: guides
 ---
 
-# Creating a Preview Template Compiler
+# Creating a Template Compiler
 
-A preview template compiler is a function that receives a template and the current entry data from the
+A template compiler is a function that receives a template and the current entry data from the
 editor, and returns an HTML string for use in the editor preview pane. Different compilers support
 different templating languages. Netlify CMS comes bundled with a Handlebars template compiler, but
 what if you'd rather use [EJS](http://ejs.co/) templates? We'll walk through creation of an EJS
-preview template compiler for this guide.
+template compiler for this guide.
 
-## Finding and using a parsing library
+## Using a library
 
-Preview template compilers usually don't do much on their own, instead serving as adapters for
+Template compilers usually don't do much on their own, instead serving as adapters for
 template parsing libraries. When creating a compiler to support a templating language, your first stop
 should be npm, where you'll search for the best JavaScript compiler available for your templating
 language.
@@ -31,7 +31,7 @@ Let's add the ejs package to our project:
 npm install ejs
 ```
 
-Your preview template compiler will receive four arguments when called:
+Your template compiler will receive four arguments when called:
 
 - `name` {string} - identifier for the template compiler
 - `template` {any} - the template itself, which is often a string, but could be anything
@@ -40,7 +40,7 @@ Your preview template compiler will receive four arguments when called:
 
 Most template parsing libraries provide a `compile` or `render` function that accepts a string
 template and a data object, and returns an HTML string, which is very close to what Netlify CMS
-preview template compilers do. The `ejs` package works this way, providing both a `compile` and a
+template compilers do. The `ejs` package works this way, providing both a `compile` and a
 `render` method. The `render` method is the most straightforward, so we'll create our own `compile`
 function using that:
 
@@ -71,7 +71,90 @@ collections:
     templateCompiler: ejs
 ```
 
-## Optimization
+## Improving performance
 
-Preview template compilers are run every time a change occurs in the editor, so you'll want to
-ensure that they run as fast as possible to avoid delays in the preview. 
+The template compiler will run on every change in the editor, so we want to do as little as possible
+when that happens to avoid hurting performance. Most template libraries provide a function to
+prepare the template for processing beforehand, so that rendering HTML only requires adding data to
+the prepared template.
+
+The `ejs` package has a `compile` method for this purpose - let's run it when our template compiler
+loads and cache the result for reuse:
+
+```js
+// Our "cache" is just an object. The keys will be collection names, and the
+// values will be compiled templates.
+const templateCache = {}
+
+function renderEJS(collectionName, template, data) {
+
+  // add the compiled template cache if it isn't already there
+  templateCache[collectionName] = templateCache[collectionName] || ejs.compile(template)
+
+  // grab the cached compiled template
+  const compiledTemplate = templateCache[collectionName]
+
+  // return the rendered HTML
+  return compiledTemplate(data)
+
+}
+```
+
+## Transforming templates and data
+
+Sometimes the editor data or the template will need to be tweaked to achieve the desired preview
+output. Template compilers should support this by accepting `transformData` and `transformTemplate`
+functions in the `config` object.
+
+Let's update our compiler to support template and data transformation functions:
+
+```js
+const templateCache = {}
+
+function renderEJS(collectionName, template, data, config) {
+
+  const { transformTemplate, transformData } = config
+
+  // if no cached template, run the raw template through the transform function
+  // and the ejs compile function
+  if (!templateCache[collectionName]) {
+    const transformedTemplate = transformTemplate ? transformTemplate(template) : template
+    templateCache[collectionName] = ejs.compile(transformedTemplate)
+  }
+
+  const compiledTemplate = templateCache[collectionName]
+
+  // run the data through `transformData`, this happens every time the compiler is called
+  const transformedData = transformData(data)
+
+  return compiledTemplate(transformedData)
+}
+```
+
+## Example usage
+
+With the EJS compiler we've just created, here's what usage might look like:
+
+```js
+import CMS from 'netlify-cms'
+import blogTemplate from './src/templates/blog.ejs'
+
+// This import represents the compiler we just created
+import ejsCompiler from 'netlify-cms-template-compiler-ejs'
+
+const blogTemplateConfig = {
+
+  // Using the `transformTemplate` function to remove scripts from templates
+  transformTemplate: template => template.replace(/<script ?.*>(.|\s)*<\/script>/g, ''),
+
+  // Using the `transformData` function to add placeholder values that a
+  // static site generator might provide in a production build
+  transformData: data => { ...data, site: {
+    tags: ['jamstack', 'static', 'ci'],
+  }},
+
+}
+
+CMS.registerTemplateCompiler('ejs', ejsCompiler)
+CMS.registerPreviewTemplate('blog', blogTemplate, blogTemplateConfig, 'ejs')
+```
