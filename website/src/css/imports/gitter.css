@@ -19,4 +19,8 @@
     box-shadow: 0 0 6px 3px rgba(62,160,127,.6);
     transition: none;
   }
+
+  &:active {
+    color: $lightGrey;
+  }
 }
