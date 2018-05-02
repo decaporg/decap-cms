@@ -34,5 +34,13 @@ debug: false // Set debug to true if you want to inspect the dropdown
   <script src="/widgets.js"></script>
 {{- end -}}
 <script async defer src="https://buttons.github.io/buttons.js"></script>
+{{ if or (eq .Section "docs") (eq .Title "Docs") (eq .Title "Community") }}
+<script>
+  ((window.gitter = {}).chat = {}).options = {
+    room: 'netlify/NetlifyCMS'
+  };
+</script>
+<script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async defer></script>
+{{ end }}
 </body>
 </html>

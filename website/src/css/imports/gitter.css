@@ -1,0 +1,26 @@
+.gitter-open-chat-button {
+  &,
+  &:visited {
+    padding: $tiny $small;
+    font-family: $roboto;
+    font-size: $tiny;
+    letter-spacing: 0.5px;
+    color: $grey;
+    background-color: $green;
+    box-shadow: 0 2px 16px 0 rgba(68,74,87,0.15), 0 1px 4px 0 rgba(68,74,87,0.30);
+  }
+
+  &:hover {
+    background-color: $lightGreen;
+    box-shadow: 0 2px 16px 0 rgba(68,74,87,0.25), 0 1px 4px 0 rgba(68,74,87,0.50);
+  }
+
+  &:focus {
+    box-shadow: 0 0 6px 3px rgba(62,160,127,.6);
+    transition: none;
+  }
+
+  &:active {
+    color: $lightGrey;
+  }
+}
