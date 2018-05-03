@@ -68,6 +68,11 @@ export default class GitLab {
     );
   }
 
+  allEntriesByFolder(collection, extension) {
+    return this.api.listAllEntries(collection.get("folder"), extension)
+    .then(files => this.fetchFiles(files.filter(file => fileExtension(file.name) === extension)));
+  }
+
   entriesByFiles(collection) {
     const files = collection.get("files").map(collectionFile => ({
       path: collectionFile.get("file"),

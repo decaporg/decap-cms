@@ -141,6 +141,23 @@ export default class API {
     return { entries: entries.reverse(), cursor: this.reverseCursor(newCursor) };
   };
 
+  listAllEntries = async path => {
+    const entries = [];
+    let { cursor, entries: initialEntries } = await this.fetchCursorAndEntries({
+      url: `${ this.repoURL }/repository/tree`,
+      // Get the maximum number of entries per page
+      params: { path, ref: this.branch, per_page: 100 },
+    });
+    entries.push(...initialEntries);
+    while (cursor && cursor.actions.has("next")) {
+      const link = cursor.data.getIn(["links", "next"]);
+      const { cursor: newCursor, entries: newEntries } = await this.fetchCursorAndEntries(link);
+      entries.push(...newEntries);
+      cursor = newCursor;
+    }
+    return entries;
+  };
+
   toBase64 = str => Promise.resolve(Base64.encode(str));
   fromBase64 = str => Base64.decode(str);
   uploadAndCommit = async (item, { commitMessage, updateFile = false, branch = this.branch }) => {

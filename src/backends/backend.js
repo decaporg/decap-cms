@@ -1,5 +1,6 @@
-import { attempt, isError } from 'lodash';
-import { Map } from 'immutable';
+import { attempt, flatten, isError } from 'lodash';
+import { fromJS, Map } from 'immutable';
+import fuzzy from 'fuzzy';
 import { resolveFormat } from "Formats/formats";
 import { selectIntegration } from 'Reducers/integrations';
 import {
@@ -10,6 +11,7 @@ import {
   selectAllowDeletion,
   selectFolderEntryExtension,
   selectIdentifier,
+  selectInferedField,
 } from "Reducers/collections";
 import { createEntry } from "ValueObjects/Entry";
 import { sanitizeSlug } from "Lib/urlHelper";
@@ -110,6 +112,17 @@ const commitMessageFormatter = (type, config, { slug, path, collection }) => {
   });
 }
 
+const extractSearchFields = searchFields => entry => searchFields.reduce((acc, field) => {
+  const f = entry.data[field];
+  return f ? `${acc} ${f}` : acc;
+}, "");
+
+const sortByScore = (a, b) => {
+  if (a.score > b.score) return -1;
+  if (a.score < b.score) return 1;
+  return 0;
+};
+
 class Backend {
   constructor(implementation, backendName, authStore = null) {
     this.implementation = implementation;
@@ -189,6 +202,65 @@ class Backend {
           collection,
         }),
       }));
+  }
+
+  // The same as listEntries, except that if a cursor with the "next"
+  // action available is returned, it calls "next" on the cursor and
+  // repeats the process. Once there is no available "next" action, it
+  // returns all the collected entries. Used to retrieve all entries
+  // for local searches and queries.
+  async listAllEntries(collection) {
+    if (collection.get("folder") && this.implementation.allEntriesByFolder) {
+      const extension = selectFolderEntryExtension(collection);
+      return this.implementation.allEntriesByFolder(collection, extension)
+      .then(entries => this.processEntries(entries, collection));
+    }
+
+    const response = await this.listEntries(collection);
+    const { entries } = response;
+    let { cursor } = response;
+    while (cursor && cursor.actions.includes("next")) {
+      const { entries: newEntries, cursor: newCursor } = await this.traverseCursor(cursor, "next");
+      entries.push(...newEntries);
+      cursor = newCursor;
+    }
+    return entries;
+  }
+
+  async search(collections, searchTerm) {
+    // Perform a local search by requesting all entries. For each
+    // collection, load it, search, and call onCollectionResults with
+    // its results.
+    const errors = [];
+    const collectionEntriesRequests = collections.map(async collection => {
+      // TODO: pass search fields in as an argument
+      const searchFields = [
+        selectInferedField(collection, 'title'),
+        selectInferedField(collection, 'shortTitle'),
+        selectInferedField(collection, 'author'),
+      ];
+      const collectionEntries = await this.listAllEntries(collection);
+      return fuzzy.filter(searchTerm, collectionEntries, {
+        extract: extractSearchFields(searchFields),
+      });
+    }).map(p => p.catch(err => errors.push(err) && []));
+
+    const entries = await Promise.all(collectionEntriesRequests).then(arrs => flatten(arrs));
+
+    if (errors.length > 0) {
+      throw new Error({ message: "Errors ocurred while searching entries locally!", errors });
+    }
+    const hits = entries.filter(({ score }) => score > 5).sort(sortByScore).map(f => f.original);
+    return { entries: hits };
+  }
+
+  async query(collection, searchFields, searchTerm) {
+    const entries = await this.listAllEntries(collection);
+    const hits = fuzzy.filter(searchTerm, entries, { extract: extractSearchFields(searchFields) })
+      .filter(entry => entry.score > 5)
+      .sort(sortByScore)
+      .map(f => f.original);
+    return { query: searchTerm, hits };
   }
 
   traverseCursor(cursor, action) {
