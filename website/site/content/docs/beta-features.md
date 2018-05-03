@@ -77,3 +77,10 @@ import styles from '!css-loader!sass-loader!../main.scss'
 CMS.registerPreviewStyle(styles.toString(), { raw: true })
 ```
 
+## Squash merge GitHub pull requests
+When using the [Editorial Workflow publish mode](/docs/configuration-options/#publish-mode) with the `github` or `git-gateway` backends, Netlify CMS creates pull requests to hold drafts while they are being edited and then merges them into your main branch when you press publish. By default, these are merged preserving the history of all the individual commits (i.e. changes where you pressed save). If instead you would like [“squash”](https://help.github.com/articles/about-pull-request-merges/#squash-and-merge-your-pull-request-commits) these commits, reducing clutter in your repository’s history, you can set the following option in your `config.yml`:
+
+```yaml
+backend:
+  squash_merges: true
+```
