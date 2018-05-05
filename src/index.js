@@ -24,7 +24,7 @@ if (typeof window !== 'undefined') {
   window.initCMS = bootstrap;
   window.createClass = window.createClass || createReactClass;
   window.h = window.h || React.createElement;
-  Object.assign(window.CMS, { React, PropTypes, Immutable, ImmutablePropTypes, classNames });
+  window.CMS.lib = { React, PropTypes, Immutable, ImmutablePropTypes, classNames };
 }
 
 export { registry as default, bootstrap as init };
