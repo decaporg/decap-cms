@@ -29,7 +29,13 @@ export default class GitHub {
 
   authenticate(state) {
     this.token = state.token;
-    this.api = new API({ token: this.token, branch: this.branch, repo: this.repo, api_root: this.api_root });
+    this.api = new API({
+      token: this.token,
+      branch: this.branch,
+      repo: this.repo,
+      api_root: this.api_root,
+      branchNameMaxLength: this.config.getIn(["backend", "branch_name_max_length"]),
+    });
     return this.api.user().then(user =>
       this.api.hasWriteAccess().then((isCollab) => {
         // Unauthorized user
