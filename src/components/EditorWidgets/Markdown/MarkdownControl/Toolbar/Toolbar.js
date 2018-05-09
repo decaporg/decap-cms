@@ -59,37 +59,37 @@ export default class Toolbar extends React.Component {
         >
           <ToolbarButton
             type="heading-one"
-            label="Header 1"
+            label="Heading 1"
             onClick={onBlockClick}
             isActive={selectionHasBlock}
           />
           <ToolbarButton
             type="heading-two"
-            label="Header 2"
+            label="Heading 2"
             onClick={onBlockClick}
             isActive={selectionHasBlock}
           />
           <ToolbarButton
             type="heading-three"
-            label="Header 3"
+            label="Heading 3"
             onClick={onBlockClick}
             isActive={selectionHasBlock}
           />
           <ToolbarButton
             type="heading-four"
-            label="Header 4"
+            label="Heading 4"
             onClick={onBlockClick}
             isActive={selectionHasBlock}
           />
           <ToolbarButton
             type="heading-five"
-            label="Header 5"
+            label="Heading 5"
             onClick={onBlockClick}
             isActive={selectionHasBlock}
           />
           <ToolbarButton
             type="heading-six"
-            label="Header 6"
+            label="Heading 6"
             onClick={onBlockClick}
             isActive={selectionHasBlock}
           />
@@ -178,7 +178,7 @@ export default class Toolbar extends React.Component {
           />
           <ToolbarButton
             type="heading-one"
-            label="Header 1"
+            label="Heading 1"
             icon="h1"
             onClick={onBlockClick}
             isActive={selectionHasBlock}
@@ -187,7 +187,7 @@ export default class Toolbar extends React.Component {
           />
           <ToolbarButton
             type="heading-two"
-            label="Header 2"
+            label="Heading 2"
             icon="h2"
             onClick={onBlockClick}
             isActive={selectionHasBlock}
