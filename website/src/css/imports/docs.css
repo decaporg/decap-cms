@@ -93,21 +93,7 @@
     }
   }
 
-  .docs-nav-section {
-    margin-bottom: 30px;
-  }
-
-  .docs-nav-section-list {
-    margin: 0;
-  }
-
-  .docs-nav-section-title {
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 10px;
-  }
-
-  .nav-subsections {
+  .nav-subsections ul {
     margin: $tiny 0;
     padding: 0 0 0 $tiny;
     border-left: 2px solid $lightestGrey;
@@ -118,7 +104,12 @@
       padding: 0;
     }
 
-    .subnav-link {
+    /* HACK: should remove the element in markup instead */
+    ul {
+      display: none;
+    }
+
+    a {
       font-size: 14px;
     }
   }

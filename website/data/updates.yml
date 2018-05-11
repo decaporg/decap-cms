@@ -1,0 +1,69 @@
+- date: 2018-04-24T00:00:00.000Z
+  description: 'Allow custom auth endpoint, bug fixes.'
+  version: 1.7.0
+- date: 2018-04-19T00:00:00.000Z
+  description: ' Markdown toolbar customization, manual date widget entry, bug fixes.'
+  version: 1.6.0
+- date: 2018-04-11T00:00:00.000Z
+  description: 'New time based slug placeholders, set config.yml URL with &lt;link&gt;.'
+  version: 1.5.0
+- date: 2018-03-29T00:00:00.000Z
+  description: 'More control over filenames, lots of bugfixes, and new beta features!'
+  version: 1.4.0
+- date: 2018-03-06T00:00:00.000Z
+  description: Fixes styling issues
+  version: 1.3.5
+- date: 2018-03-06T00:00:00.000Z
+  description: Fixes editorial workflow entry failure.
+  version: 1.3.4
+- date: 2018-03-06T00:00:00.000Z
+  description: Fixes load failure
+  version: 1.3.3
+- date: 2018-03-06T00:00:00.000Z
+  description: >-
+    Fixes date widget default format, collection load failure when entry
+    fails.
+  version: 1.3.2
+- date: 2018-03-03T00:00:00.000Z
+  description: Fixes editorial workflow failure for unknown collections.
+  version: 1.3.1
+- date: 2018-02-27T00:00:00.000Z
+  description: >-
+    Multi-part extensions, e.g. "en.md", a11y improvements in the editor, and
+    bugfixes.
+  version: 1.3.0
+- date: 2018-02-21T00:00:00.000Z
+  description: Fixes ES5 transpiling.
+  version: 1.2.2
+- date: 2018-02-21T00:00:00.000Z
+  description: >-
+    Allows label_singular config for collections and lists and distinct
+    frontmatter delimiters.
+  version: 1.2.1
+- date: 2018-02-13T00:00:00.000Z
+  description: >-
+    Adds support for multiple frontmatter formats and custom delimiters, UI
+    improvements.
+  version: '1.2'
+- date: 2018-01-25T00:00:00.000Z
+  description: You can now register external backends and we improved metadata handling.
+  version: '1.1'
+- date: 2018-01-23T00:00:00.000Z
+  description: >-
+    Fixes various UI bugs and adds expand / collapse functionality to the
+    object widget.
+  version: 1.0.4
+- date: 2018-12-19T00:00:00.000Z
+  description: Small bug fix release.
+  version: 1.0.3
+- date: 2018-12-07T00:00:00.000Z
+  description: Small bug fix release.
+  version: 1.0.2
+- date: 2018-12-07T00:00:00.000Z
+  description: Small bug fix release.
+  version: 1.0.1
+- date: 2018-12-07T00:00:00.000Z
+  description: >-
+    The first major release of Netlify CMS with an all-new UI, revamped
+    documentation and much more.
+  version: 1.0.0
