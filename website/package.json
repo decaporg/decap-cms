@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Netlify CMS documentation website built with Gatsby",
   "scripts": {
-    "dev": "gatsby develop",
+    "start": "gatsby develop",
     "build": "gatsby build",
     "reset": "rm -rf .cache",
     "lint": "eslint src"
