@@ -114,6 +114,65 @@
     }
   }
 
+  .docs-content {
+    font-size: 18px;
+    line-height: 28px;
+
+    .edit-this-page {
+      float: right;
+    }
+
+    #pencil {
+      fill: #7CA511;
+    }
+
+    @media screen and (min-width: $tablet) {
+      @neat-span-columns 17 24;
+      @neat-shift 1 24;
+    }
+
+    h2:not(:first-child) {
+      margin-top: $large;
+    }
+
+    p {
+      line-height: 1.7;
+    }
+
+    a {
+			text-decoration: none;
+			color: $darkGreen;
+		}
+
+		iframe {
+			width: 100%;
+		}
+
+    img {
+ 			max-width: 100%;
+ 			height: auto;
+ 		}
+
+    table {
+      background: #f7f7f7;
+      border-radius: $borderRadius;
+    }
+
+    code {
+      color: inherit;
+      background: $lightestGrey;
+      border-radius: 2px;
+      padding: 2px 6px;
+      white-space: nowrap;
+    }
+
+    pre > code {
+      background: initial;
+      padding: initial;
+      white-space: inherit;
+    }
+	}
+
 	h1,
 	h2 {
 		font-size: 36px;
