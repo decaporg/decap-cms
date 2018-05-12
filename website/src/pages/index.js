@@ -45,7 +45,7 @@ const Features = ({ items }) => (
   <Fragment>
     {items.map(item => (
       <div className="feature" key={item.feature}>
-        {item.imgpath && <img src={item.imgpath} />}
+        {item.imgpath && <img src={require(`../img/${item.imgpath}`)} />}
         <h3>
           <Markdownify source={item.feature} />
         </h3>
@@ -194,6 +194,7 @@ export const pageQuery = graphql`
         intro
         features {
           feature
+          imgpath
           description
         }
       }
