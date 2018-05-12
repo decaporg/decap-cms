@@ -9,12 +9,15 @@ import '../css/lib/prism.css';
 
 // todo: push history on select change
 class MobileNav extends Component {
+  handleCHange = event => {
+    this.props.history.push(event.target.value);
+  };
   render() {
     const { items } = this.props;
 
     return (
       <div className="mobile docs-nav">
-        <select className="btn-primary" id="mobile-docs-nav">
+        <select className="btn-primary" onChange={this.handleCHange}>
           <option>Select A Topic</option>
           {items.map(({ node }) => (
             <option
@@ -31,7 +34,7 @@ class MobileNav extends Component {
   }
 }
 
-const DocPage = ({ data, location }) => {
+const DocPage = ({ data, location, history }) => {
   const { nav, page, widgets } = data;
 
   return (
@@ -58,7 +61,7 @@ const DocPage = ({ data, location }) => {
               </Fragment>
             ))}
           </nav>
-          <MobileNav items={nav.edges} />
+          <MobileNav items={nav.edges} history={history} />
         </aside>
         <article className="docs-content" id="docs-content">
           <EditLink path={page.fields.path} />
