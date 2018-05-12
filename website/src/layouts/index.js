@@ -21,7 +21,8 @@ const Layout = ({ data, location, children }) => {
             key={node.title}
             className={classnames('notification', {
               'notification-loud': node.loud
-            })}>
+            })}
+          >
             {node.message}
           </a>
         ))}

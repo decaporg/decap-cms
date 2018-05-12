@@ -20,7 +20,8 @@ class MobileNav extends Component {
             <option
               value={node.fields.slug}
               key={node.fields.slug}
-              className="nav-link">
+              className="nav-link"
+            >
               {node.frontmatter.title}
             </option>
           ))}
