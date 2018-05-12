@@ -69,7 +69,7 @@ module.exports = class HTML extends React.Component {
           {css}
           <link
             rel="stylesheet"
-            href="https://cdn.jsdelivr.net/docsearch.js/2/docsearch.min.css"
+            href="https://unpkg.com/docsearch.js@2.5.2/dist/cdn/docsearch.min.css"
           />
         </head>
         <body {...this.props.bodyAttributes}>
