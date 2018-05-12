@@ -2,44 +2,7 @@ import React, { Component, Fragment } from 'react';
 import moment from 'moment';
 
 import Markdownify from '../components/markdownify';
-
-import screenshorEditor from '../img/screenshot-editor.jpg';
-
-class VideoEmbed extends Component {
-  state = {
-    toggled: false
-  };
-  toggleVideo = event => {
-    this.setState({
-      toggled: true
-    });
-  };
-  render() {
-    const { toggled } = this.state;
-
-    const embedcode = (
-      <iframe
-        width={560}
-        height={315}
-        src="https://www.youtube-nocookie.com/embed/p6h-rYSVX90?rel=0&showinfo=0&autoplay=1"
-        frameBorder={0}
-        allow="autoplay; encrypted-media"
-        allowFullScreen
-      />
-    );
-
-    const imgPlaceholder = (
-      <img src={screenshorEditor} className="responsive" />
-    );
-
-    return (
-      <a className="hero-graphic" onClick={this.toggleVideo}>
-        {toggled ? embedcode : imgPlaceholder}
-        {!toggled && <div className="hero-videolink">&#x25b6;</div>}
-      </a>
-    );
-  }
-}
+import VideoEmbed from '../components/video-embed';
 
 const Features = ({ items }) => (
   <Fragment>
