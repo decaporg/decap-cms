@@ -58,8 +58,7 @@ const Features = ({ items }) => (
 );
 
 const HomePage = ({ data }) => {
-  const { landing, updates } = data;
-  const contributors = [];
+  const { landing, updates, contribs } = data;
 
   return (
     <div className="landing page">
@@ -103,7 +102,8 @@ const HomePage = ({ data }) => {
                 href={`https://github.com/netlify/netlify-cms/releases/tag/${
                   node.version
                 }`}
-                key={node.version}>
+                key={node.version}
+              >
                 <li>
                   <div className="update-metadata">
                     <span className="update-version">{node.version}</span>
@@ -148,9 +148,12 @@ const HomePage = ({ data }) => {
           <div className="contributors feature">
             <h3>{landing.community.contributors}</h3>
             <div className="contributor-list">
-              {contributors.map(user => (
-                <a href={user.profile} title={user.name}>
-                  <img src={user.avatar_url} alt={user.login} />
+              {contribs.contributors.map(user => (
+                <a href={user.profile} title={user.name} key={user.login}>
+                  <img
+                    src={user.avatar_url.replace('v=4', 's=32')}
+                    alt={user.login}
+                  />
                 </a>
               ))}
             </div>
@@ -201,6 +204,14 @@ export const pageQuery = graphql`
           description
         }
         contributors
+      }
+    }
+    contribs: dataJson(id: { regex: "/contributors/" }) {
+      contributors {
+        name
+        profile
+        avatar_url
+        login
       }
     }
   }

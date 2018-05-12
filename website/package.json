@@ -5,6 +5,8 @@
   "scripts": {
     "start": "gatsby develop",
     "build": "gatsby build",
+    "copy:contribs": "cp ../.all-contributorsrc data/contributors.json",
+    "prepare": "npm run copy:contribs",
     "reset": "rm -rf .cache",
     "lint": "eslint src"
   },
@@ -23,6 +25,7 @@
     "gatsby-remark-autolink-headers": "^1.4.18",
     "gatsby-remark-prismjs": "^2.0.2",
     "gatsby-source-filesystem": "^1.5.35",
+    "gatsby-transformer-json": "^1.0.17",
     "gatsby-transformer-remark": "^1.7.40",
     "gatsby-transformer-yaml": "^1.5.16",
     "postcss-at2x": "^2.0.0",
