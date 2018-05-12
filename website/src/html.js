@@ -34,7 +34,6 @@ module.exports = class HTML extends React.Component {
         <head>
           <meta charSet="utf-8" />
           <meta httpEquiv="x-ua-compatible" content="ie=edge" />
-
           <meta
             name="viewport"
             content="width=device-width, initial-scale=1.0"
@@ -56,7 +55,6 @@ module.exports = class HTML extends React.Component {
             href="/img/favicon/favicon-16x16.png"
             sizes="16x16"
           />
-          <link rel="manifest" href="/img/favicon/manifest.json" />
           <link
             rel="mask-icon"
             href="/img/favicon/safari-pinned-tab.svg"
@@ -64,7 +62,6 @@ module.exports = class HTML extends React.Component {
           />
           <meta name="apple-mobile-web-app-title" content="NetlifyCMS" />
           <meta name="application-name" content="NetlifyCMS" />
-          <meta name="theme-color" content="#ffffff" />
           {this.props.headComponents}
           {css}
           <link

@@ -78,6 +78,18 @@ module.exports = {
     // `gatsby-plugin-offline`,
     'gatsby-plugin-react-helmet',
     'gatsby-plugin-react-next',
-    'gatsby-plugin-catch-links'
+    'gatsby-plugin-catch-links',
+    {
+      resolve: `gatsby-plugin-manifest`,
+      options: {
+        name: 'NetlifyCMS',
+        short_name: 'NetlifyCMS',
+        start_url: '/',
+        background_color: '#ffffff',
+        theme_color: '#ffffff',
+        display: 'standalone',
+        icon: 'static/favicon/icon-512x512.png'
+      }
+    }
   ]
 };
