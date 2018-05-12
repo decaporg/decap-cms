@@ -80,7 +80,7 @@ header {
     position: fixed;
   }
 
-  &.scrolled {
+  .headroom--scrolled & {
     @media screen and (min-width: $tablet) {
       background: $darkerGrey;
       padding: $small 0;

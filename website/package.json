@@ -38,6 +38,7 @@
     "postcss-simple-extend": "^1.0.0",
     "postcss-simple-vars-async": "^1.2.1",
     "prismjs": "^1.14.0",
+    "react-headroom": "^2.2.2",
     "react-helmet": "^5.2.0",
     "react-markdown": "^3.3.2",
     "react-sidecar": "^0.1.1"
