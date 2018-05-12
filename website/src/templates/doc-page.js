@@ -15,9 +15,7 @@ class MobileNav extends Component {
     return (
       <div className="mobile docs-nav">
         <select className="btn-primary" id="mobile-docs-nav">
-          <option defaultValue="" selected>
-            Select A Topic
-          </option>
+          <option>Select A Topic</option>
           {items.map(({ node }) => (
             <option
               value={node.fields.slug}
