@@ -1,4 +1,5 @@
 import React from 'react';
+import Gitter from 'react-sidecar';
 
 let stylesStr;
 if (process.env.NODE_ENV === `production`) {
@@ -71,6 +72,7 @@ module.exports = class HTML extends React.Component {
           />
           {this.props.postBodyComponents}
           <script async defer src="https://buttons.github.io/buttons.js" />
+          <Gitter room="netlify/NetlifyCMS" />
         </body>
       </html>
     );

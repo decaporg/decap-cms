@@ -38,7 +38,8 @@
     "postcss-simple-vars-async": "^1.2.1",
     "prismjs": "^1.14.0",
     "react-helmet": "^5.2.0",
-    "react-markdown": "^3.3.2"
+    "react-markdown": "^3.3.2",
+    "react-sidecar": "^0.1.1"
   },
   "devDependencies": {}
 }
