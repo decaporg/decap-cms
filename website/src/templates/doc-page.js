@@ -4,35 +4,9 @@ import Link from 'gatsby-link';
 
 import EditLink from '../components/edit-link';
 import Widgets from '../components/widgets';
+import MobileNav from '../components/mobile-nav';
 
 import '../css/lib/prism.css';
-
-// todo: push history on select change
-class MobileNav extends Component {
-  handleCHange = event => {
-    this.props.history.push(event.target.value);
-  };
-  render() {
-    const { items } = this.props;
-
-    return (
-      <div className="mobile docs-nav">
-        <select className="btn-primary" onChange={this.handleCHange}>
-          <option>Select A Topic</option>
-          {items.map(({ node }) => (
-            <option
-              value={node.fields.slug}
-              key={node.fields.slug}
-              className="nav-link"
-            >
-              {node.frontmatter.title}
-            </option>
-          ))}
-        </select>
-      </div>
-    );
-  }
-}
 
 const DocPage = ({ data, location, history }) => {
   const { nav, page, widgets } = data;
