@@ -9,6 +9,12 @@ if (process.env.NODE_ENV === `production`) {
     console.log(e);
   }
 }
+
+const JS_NPM_URLS = [
+  'https://buttons.github.io/buttons.js',
+  '//unpkg.com/docsearch.js@2.4.1/dist/cdn/docsearch.min.js'
+];
+
 module.exports = class HTML extends React.Component {
   render() {
     let css;
@@ -20,6 +26,9 @@ module.exports = class HTML extends React.Component {
         />
       );
     }
+
+    const js = JS_NPM_URLS.map(src => <script key={src} src={src} />);
+
     return (
       <html {...this.props.htmlAttributes}>
         <head>
@@ -71,44 +80,10 @@ module.exports = class HTML extends React.Component {
             dangerouslySetInnerHTML={{ __html: this.props.body }}
           />
           {this.props.postBodyComponents}
-          <script async defer src="https://buttons.github.io/buttons.js" />
           <Gitter room="netlify/NetlifyCMS" />
+          {js}
         </body>
       </html>
     );
   }
 };
-
-/*
-
-{{ if or (eq .Section "docs") (eq .Title "Docs") }}
-  <script src="/jquery.scrollTo.min.js"></script>
-  <script src="/jquery.localScroll.min.js"></script>
-  <script src="/prism.js"></script>
-{{ end }}
-{{ if eq .Title "Community" }}
-  <script src="/moment.min.js"></script>
-{{ end }}
-<script src="/app.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/2/docsearch.min.js"></script>
-<script type="text/javascript"> docsearch({
-apiKey: '08d03dc80862e84c70c5a1e769b13019',
-indexName: 'netlifycms',
-inputSelector: '.algolia-search',
-debug: false // Set debug to true if you want to inspect the dropdown
-});
-</script>
-{{- if eq .Title "Widgets" -}} <!-- Check if is widgets page, if so, add the widget cloud js script -->
-  <script src="/widgets.js"></script>
-{{- end -}}
-<script async defer src="https://buttons.github.io/buttons.js"></script>
-{{ if or (eq .Section "docs") (eq .Title "Docs") (eq .Title "Community") }}
-<script>
-  ((window.gitter = {}).chat = {}).options = {
-    room: 'netlify/NetlifyCMS'
-  };
-</script>
-<script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async defer></script>
-{{ end }}
-
-*/
