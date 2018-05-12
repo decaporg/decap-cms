@@ -42,12 +42,12 @@ const DocPage = ({ data, location }) => {
         <aside id="sidebar" className="sidebar">
           <nav className="docs-nav" id="docs-nav">
             {nav.edges.map(({ node }) => (
-              <Fragment>
+              <Fragment key={node.fields.slug}>
                 <Link
                   to={node.fields.slug}
-                  key={node.fields.slug}
                   className="nav-link"
-                  activeClassName="active">
+                  activeClassName="active"
+                >
                   {node.frontmatter.title}
                 </Link>
                 {location.pathname === node.fields.slug && (
