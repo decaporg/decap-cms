@@ -3,6 +3,7 @@
 @import "./withMedia/withMedia.css";
 @import "./Image/Image.css";
 @import "./File/FileControl.css";
+@import "./MultiSelect/MultiSelect.css";
 @import "./Markdown/Markdown.css";
 @import "./Boolean/Boolean.css";
 @import "./Relation/Relation.css";

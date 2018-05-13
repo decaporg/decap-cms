@@ -1,0 +1,27 @@
+.Select.nc-controlPane-widget {
+  padding: 0;
+
+  & .Select-control {
+    padding: 10px 6px 10px 20px;
+    border: 0;
+  }
+
+  & .Select-placeholder {
+    padding: 10px 6px 10px 20px;
+  }
+
+
+
+  & .Select-arrow-zone {
+    padding-right: 0 !important;
+  }
+
+  & .Select-menu-outer {
+    @apply(--card);
+    border: 0;
+  }
+
+  &.Select--multi .Select-input {
+    margin-left: 0;
+  }
+}

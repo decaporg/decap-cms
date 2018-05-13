@@ -70,6 +70,7 @@ collections: # A list of collections the CMS should be able to edit
     folder: "_sink"
     create: true
     fields:
+      - {label: "Multiselect", name: "multiselect", widget: "multiselect", options: ["a", {label: 'b yo', value: 'b'}, "c"]}
       - label: "Related Post"
         name: "post"
         widget: "relationKitchenSinkPost"
