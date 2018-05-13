@@ -19,12 +19,11 @@
 
   padding: 0 30px;
   margin-top: -80px;
-  display: block;
+  display: flex;
+  align-items: center;
   position: relative;
 
   & .nc-icon {
-    display: flex;
-    align-items: center;
     margin-right: 18px;
   }
 }

@@ -176,7 +176,9 @@
       "name": "Damien Duhamel",
       "avatar_url": "https://avatars3.githubusercontent.com/u/3051737?v=4",
       "profile": "http://www.damienduhamel.fr",
-      "contributions": []
+      "contributions": [
+        "code"
+      ]
     },
     {
       "login": "juliankrispel",
@@ -916,6 +918,15 @@
       "contributions": [
         "code",
         "doc"
+      ]
+    },
+    {
+      "login": "ekoeryanto",
+      "name": "Eko Eryanto",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/36023898?v=4",
+      "profile": "https://github.com/ekoeryanto",
+      "contributions": [
+        "plugin"
       ]
     }
   ]

@@ -17,6 +17,7 @@ export default class Toolbar extends React.Component {
     getAsset: PropTypes.func,
     disabled: PropTypes.bool,
     className: PropTypes.string,
+    buttons: ImmutablePropTypes.list
   };
 
   constructor(props) {
@@ -24,6 +25,11 @@ export default class Toolbar extends React.Component {
     this.state = {
       activePlugin: null,
     };
+  }
+
+  isHidden = button => {
+    const { buttons } = this.props;
+    return List.isList(buttons) ? !buttons.includes(button) : false;
   }
 
   render() {
@@ -65,6 +71,7 @@ export default class Toolbar extends React.Component {
             icon="bold"
             onClick={onMarkClick}
             isActive={selectionHasMark}
+            isHidden={this.isHidden('bold')}
             disabled={disabled}
           />
           <ToolbarButton
@@ -73,6 +80,7 @@ export default class Toolbar extends React.Component {
             icon="italic"
             onClick={onMarkClick}
             isActive={selectionHasMark}
+            isHidden={this.isHidden('italic')}
             disabled={disabled}
           />
           <ToolbarButton
@@ -81,6 +89,7 @@ export default class Toolbar extends React.Component {
             icon="code"
             onClick={onMarkClick}
             isActive={selectionHasMark}
+            isHidden={this.isHidden('code')}
             disabled={disabled}
           />
           <ToolbarButton
@@ -89,6 +98,7 @@ export default class Toolbar extends React.Component {
             icon="link"
             onClick={onLinkClick}
             isActive={selectionHasLink}
+            isHidden={this.isHidden('link')}
             disabled={disabled}
           />
           <ToolbarButton
@@ -97,6 +107,7 @@ export default class Toolbar extends React.Component {
             icon="h1"
             onClick={onBlockClick}
             isActive={selectionHasBlock}
+            isHidden={this.isHidden('heading-one')}
             disabled={disabled}
           />
           <ToolbarButton
@@ -105,6 +116,7 @@ export default class Toolbar extends React.Component {
             icon="h2"
             onClick={onBlockClick}
             isActive={selectionHasBlock}
+            isHidden={this.isHidden('heading-two')}
             disabled={disabled}
           />
           <ToolbarButton
@@ -113,6 +125,7 @@ export default class Toolbar extends React.Component {
             icon="quote"
             onClick={onBlockClick}
             isActive={selectionHasBlock}
+            isHidden={this.isHidden('quote')}
             disabled={disabled}
           />
           <ToolbarButton
@@ -121,6 +134,7 @@ export default class Toolbar extends React.Component {
             icon="code-block"
             onClick={onBlockClick}
             isActive={selectionHasBlock}
+            isHidden={this.isHidden('code-block')}
             disabled={disabled}
           />
           <ToolbarButton
@@ -129,6 +143,7 @@ export default class Toolbar extends React.Component {
             icon="list-bulleted"
             onClick={onBlockClick}
             isActive={selectionHasBlock}
+            isHidden={this.isHidden('bulleted-list')}
             disabled={disabled}
           />
           <ToolbarButton
@@ -137,6 +152,7 @@ export default class Toolbar extends React.Component {
             icon="list-numbered"
             onClick={onBlockClick}
             isActive={selectionHasBlock}
+            isHidden={this.isHidden('numbered-list')}
             disabled={disabled}
           />
           <div className="nc-toolbar-dropdown">

@@ -83,7 +83,9 @@ class App extends React.Component {
             error: auth && auth.get('error'),
             isFetching: auth && auth.get('isFetching'),
             siteId: this.props.config.getIn(["backend", "site_domain"]),
-            base_url: this.props.config.getIn(["backend", "base_url"], null)
+            base_url: this.props.config.getIn(["backend", "base_url"], null),
+            authEndpoint: this.props.config.getIn(["backend", "auth_endpoint"]),
+            config: this.props.config,
           })
         }
       </div>

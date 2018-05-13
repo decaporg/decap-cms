@@ -32,7 +32,13 @@ The following information is not required, but please provide as much as
 possible to help us resolve your issue.
 -->
 
-**- Please mention your CMS, node.js, and operating system version.**
+**- Please mention your versions where applicable.**
 <!-- You can find the CMS version by checking your web browser's developer tools console while in the CMS. -->
+Netlify CMS version:
+Browser version:
+<!-- If using NPM: -->
+Node.JS version:
+Operating System:
+
 
 **- Please link or paste your `config.yml` below if applicable.**

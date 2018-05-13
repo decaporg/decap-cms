@@ -63,7 +63,8 @@
 }
 
 .widget pre {
-    background: #eee !important; /* making sure the pre has proper background contrast */
+  margin-right: 0 !important;
+  margin-left: 0 !important;
 }
 
 .widget h3 {

@@ -6,6 +6,30 @@
   </summary>
 </details>
 
+## 1.7.0 (April 24, 2018) ([demo](https://5adfdee4b13fb15101a5c5ce--cms-demo.netlify.com/))
+Allow custom auth endpoint, bug fixes.
+
+### Features
+* allow custom auth endpoint ([@erquhart](https://github.com/erquhart) in [#1294](https://github.com/netlify/netlify-cms/pull/1294))
+
+### Improvements
+* skip validation of optional fields when empty (@Dammmien in #1237)
+
+### Bug Fixes
+* fix GitHub auth button icon alignment (@erquhart in #1299)
+* fix Git Gateway login hang (@ekoeryanto in #1240)
+
+## 1.6.0 (April 19, 2018) ([demo](https://5ad8e1ebb31274466632d026--cms-demo.netlify.com/))
+Markdown toolbar customization, manual date widget entry, bug fixes.
+
+### Features
+* Allow markdown editor toolbar customization ([@Dammmien](https://github.com/Dammmien) in [#1236](https://github.com/netlify/netlify-cms/pull/1236))
+* Allow login screen to be skipped for test repo backend ([@erquhart](https://github.com/erquhart) in [#1291](https://github.com/netlify/netlify-cms/pull/1291))
+
+### Bug Fixes
+* Fix button/icon alignment on Safari 10 ([@maciejmatu](https://github.com/maciejmatu) in [#1227](https://github.com/netlify/netlify-cms/pull/1227))
+* Allow typing in date widget ([@Dammmien](https://github.com/Dammmien) in [#1247](https://github.com/netlify/netlify-cms/pull/1247))
+
 ## 1.5.0 (April 11, 2018) ([demo](https://5ace16a5dd28ef456e22acad--cms-demo.netlify.com/))
 New time based slug placeholders, set config.yml URL with <link>.
 

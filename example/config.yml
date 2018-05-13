@@ -74,6 +74,7 @@ collections: # A list of collections the CMS should be able to edit
         name: "post"
         widget: "relationKitchenSinkPost"
         collection: "posts"
+        displayFields: ["title", "date"]
         searchFields: ["title", "body"]
         valueField: "title"
       - {label: "Title", name: "title", widget: "string"}

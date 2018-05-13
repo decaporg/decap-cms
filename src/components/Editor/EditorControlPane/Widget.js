@@ -6,6 +6,13 @@ import ValidationErrorTypes from 'Constants/validationErrorTypes';
 
 const truthy = () => ({ error: false });
 
+const isEmpty = value => (
+  value === null ||
+  value === undefined ||
+  (value.hasOwnProperty('length') && value.length === 0) ||
+  (value.constructor === Object && Object.keys(value).length === 0)
+);
+
 export default class Widget extends Component {
   static propTypes = {
     controlComponent: PropTypes.func.isRequired,
@@ -84,14 +91,9 @@ export default class Widget extends Component {
     this.props.onValidate(errors);
   };
 
-  validatePresence(field, value) {
+  validatePresence = (field, value) => {
     const isRequired = field.get('required', true);
-    if (isRequired && (
-      value === null ||
-      value === undefined ||
-      (value.hasOwnProperty('length') && value.length === 0) ||
-      (value.constructor === Object && Object.keys(value).length === 0)
-    )) {
+    if (isRequired && isEmpty(value)) {
       const error = {
         type: ValidationErrorTypes.PRESENCE,
         message: `${ field.get('label', field.get('name')) } is required.`,
@@ -100,10 +102,15 @@ export default class Widget extends Component {
       return { error };
     }
     return { error: false };
-  }
+  };
 
-  validatePattern(field, value) {
+  validatePattern = (field, value) => {
     const pattern = field.get('pattern', false);
+
+    if (isEmpty(value)) {
+      return { error: false };
+    }
+
     if (pattern && !RegExp(pattern.first()).test(value)) {
       const error = {
         type: ValidationErrorTypes.PATTERN,
@@ -114,7 +121,7 @@ export default class Widget extends Component {
     }
 
     return { error: false };
-  }
+  };
 
   validateWrappedControl = (field) => {
     const response = this.wrappedControlValid();
@@ -126,7 +133,7 @@ export default class Widget extends Component {
     } else if (response instanceof Promise) {
       response.then(
         () => { this.validate({ error: false }); },
-        (err) => { 
+        (err) => {
           const error = {
             type: ValidationErrorTypes.CUSTOM,
             message: `${ field.get('label', field.get('name')) } - ${ err }.`,

@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 import React from 'react';
 import { Editor as Slate } from 'slate-react';
 import Plain from 'slate-plain-serializer';
@@ -50,12 +51,13 @@ export default class RawEditor extends React.Component {
   };
 
   render() {
-    const { className } = this.props;
+    const { className, field } = this.props;
     return (
       <div className="nc-rawEditor-rawWrapper">
         <div className="nc-visualEditor-editorControlBar">
           <Toolbar
             onToggleMode={this.handleToggleMode}
+            buttons={field.get('buttons')}
             className="nc-markdownWidget-toolbarRaw"
             disabled
             rawMode
@@ -77,4 +79,5 @@ RawEditor.propTypes = {
   onMode: PropTypes.func.isRequired,
   className: PropTypes.string.isRequired,
   value: PropTypes.string,
+  field: ImmutablePropTypes.map
 };

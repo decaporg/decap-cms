@@ -37,7 +37,7 @@ community:
     - feature: "Support when you need it"
       description: "Get up and running with comprehensive [documentation](/docs) and templates or work through difficult problems with help from the community on [Gitter](https://gitter.im/netlify/NetlifyCMS)."
     - feature: "A community-driven project you can help evolve"
-      description: "Netlify CMS is built by a community of 60+ contributors — and you can help. Join our [bi-weekly planning sessions](/community) or read the [contributing guide](/docs/contributor-guide) to join in."
+      description: "Netlify CMS is built by a community of more than 100 contributors — and you can help. Join our [bi-weekly planning sessions](/community) or read the [contributing guide](/docs/contributor-guide) to join in."
   contributors: "Made possible by awesome contributors"
 
 ---

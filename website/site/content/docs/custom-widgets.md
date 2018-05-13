@@ -76,7 +76,7 @@ CMS.registerWidget('categories', CategoriesControl, CategoriesPreview);
 
 Register a block level component for the Markdown editor:
 
-```
+```js
 CMS.registerEditorComponent(definition)
 ```
 
