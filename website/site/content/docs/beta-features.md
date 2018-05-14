@@ -78,9 +78,11 @@ CMS.registerPreviewStyle(styles.toString(), { raw: true })
 ```
 
 ## Squash merge GitHub pull requests
-When using the [Editorial Workflow publish mode](/docs/configuration-options/#publish-mode) with the `github` or `git-gateway` backends, Netlify CMS creates pull requests to hold drafts while they are being edited and then merges them into your main branch when you press publish. By default, these are merged preserving the history of all the individual commits. In other words, you will have a commit in your history for every time you pressed the save button.
+When using the [Editorial Workflow](/docs/configuration-options/#publish-mode) with the `github` or `git-gateway` backends, Netlify CMS creates a pull request for each unpublished entry. Every time the unpublished entry is changed and saved, a new commit is added to the pull request. When the entry is published, the pull request is merged, and all of those commits are added to your project commit history in a merge commit.
 
-If instead you would like to [“squash”](https://help.github.com/articles/about-pull-request-merges/#squash-and-merge-your-pull-request-commits) these commits into a single commit, reducing clutter in your repository’s history, you can set the following option in your `config.yml`:
+The squash merge option causes all commits to be "squashed" into a single commit when the pull request is merged, and the resulting commit is rebased onto the target branch, avoiding the merge commit altogether.
+
+To enable this feature, you can set the following option in your `config.yml`:
 
 ```yaml
 backend:
