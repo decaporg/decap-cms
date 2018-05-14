@@ -5,12 +5,11 @@ please read the [code of conduct](CODE_OF_CONDUCT.md).
 
 ## Setup
 
-> Install yarn on your system: [https://yarnpkg.com/en/docs/install](https://yarnpkg.com/en/docs/install)
 
 ```sh
 $ git clone https://github.com/netlify/netlify-cms
 $ cd netlify-cms
-$ yarn
+$ npm install
 ```
 
 ## Building
@@ -57,7 +56,7 @@ This project follows the [all contributors](https://github.com/kentcdodds/all-co
 please use the automated script as part of your PR:
 
 ```console
-yarn run add-contributor <YOUR_GITHUB_USERNAME>
+npm run add-contributor <YOUR_GITHUB_USERNAME>
 ```
 
 Follow the prompt. If you've already added yourself to the list and are making a
