@@ -97,7 +97,7 @@ const commitMessageTemplates = Map({
   deleteMedia: 'Delete “{{path}}”'
 });
 
-const commitMessageFormatter = (type, { slug, path, collection }, config = Map()) => {
+const commitMessageFormatter = (type, config, { slug, path, collection }) => {
   const templates = commitMessageTemplates.merge(config.getIn(['backend', 'commit_messages'], Map()));
   const messageTemplate = templates.get(type);
   return messageTemplate.replace(/\{\{([^\}]+)\}\}/g, (_, variable) => {
@@ -292,7 +292,7 @@ class Backend {
       };
     }
 
-    const commitMessage = commitMessageFormatter(newEntry ? 'create' : 'update', { collection, slug: entryObj.slug, path: entryObj.path }, config);
+    const commitMessage = commitMessageFormatter(newEntry ? 'create' : 'update', config, { collection, slug: entryObj.slug, path: entryObj.path });
 
     const mode = config.get("publish_mode");
 
@@ -311,7 +311,7 @@ class Backend {
 
   persistMedia(config, file) {
     const options = {
-      commitMessage: commitMessageFormatter('uploadMedia', { path: file.path }, config),
+      commitMessage: commitMessageFormatter('uploadMedia', config, { path: file.path }),
     };
     return this.implementation.persistMedia(file, options);
   }
@@ -323,12 +323,12 @@ class Backend {
       throw (new Error("Not allowed to delete entries in this collection"));
     }
 
-    const commitMessage = commitMessageFormatter('delete', { collection, slug, path }, config);
+    const commitMessage = commitMessageFormatter('delete', config, { collection, slug, path });
     return this.implementation.deleteFile(path, commitMessage);
   }
 
   deleteMedia(config, path) {
-    const commitMessage = commitMessageFormatter('deleteMedia', { path }, config);
+    const commitMessage = commitMessageFormatter('deleteMedia', config, { path });
     return this.implementation.deleteFile(path, commitMessage);
   }
 
