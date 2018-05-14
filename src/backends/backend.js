@@ -1,4 +1,5 @@
 import { attempt, isError } from 'lodash';
+import { Map } from 'immutable';
 import { resolveFormat } from "Formats/formats";
 import { selectIntegration } from 'Reducers/integrations';
 import {
@@ -87,6 +88,32 @@ const slugFormatter = (template = "{{slug}}", entryData, slugConfig) => {
 
   return sanitizeSlug(slug, slugConfig);
 };
+
+const commitMessageTemplates = Map({
+  create: 'Create {{collection}} “{{slug}}”',
+  update: 'Update {{collection}} “{{slug}}”',
+  delete: 'Delete {{collection}} “{{slug}}”',
+  uploadMedia: 'Upload “{{path}}”',
+  deleteMedia: 'Delete “{{path}}”'
+});
+
+const commitMessageFormatter = (type, { slug, path, collection }, config = Map()) => {
+  const templates = commitMessageTemplates.merge(config.get('commit_messages', Map()));
+  const messageTemplate = templates.get(type);
+  return messageTemplate.replace(/\{\{([^\}]+)\}\}/g, (_, variable) => {
+    switch (variable) {
+      case 'slug':
+        return slug;
+      case 'path':
+        return path;
+      case 'collection':
+        return collection.get('label');
+      default:
+        console.warn(`Ignoring unknown variable “${ variable }” in commit message template.`);
+        return '';
+    }
+  });
+}
 
 class Backend {
   constructor(implementation, backendName, authStore = null) {
