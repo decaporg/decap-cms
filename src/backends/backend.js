@@ -98,7 +98,7 @@ const commitMessageTemplates = Map({
 });
 
 const commitMessageFormatter = (type, { slug, path, collection }, config = Map()) => {
-  const templates = commitMessageTemplates.merge(config.get('commit_messages', Map()));
+  const templates = commitMessageTemplates.merge(config.getIn(['backend', 'commit_messages'], Map()));
   const messageTemplate = templates.get(type);
   return messageTemplate.replace(/\{\{([^\}]+)\}\}/g, (_, variable) => {
     switch (variable) {
