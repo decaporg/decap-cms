@@ -292,8 +292,7 @@ class Backend {
       };
     }
 
-    const commitMessage = `${ (newEntry ? "Create " : "Update ") +
-          collection.get("label") } “${ entryObj.slug }”`;
+    const commitMessage = commitMessageFormatter(newEntry ? 'create' : 'update', { collection, slug: entryObj.slug }, config);
 
     const mode = config.get("publish_mode");
 
@@ -312,7 +311,7 @@ class Backend {
 
   persistMedia(file) {
     const options = {
-      commitMessage: `Upload ${file.path}`,
+      commitMessage: commitMessageFormatter('upload', { path: file.path }),
     };
     return this.implementation.persistMedia(file, options);
   }
@@ -324,12 +323,12 @@ class Backend {
       throw (new Error("Not allowed to delete entries in this collection"));
     }
 
-    const commitMessage = `Delete ${ collection.get('label') } “${ slug }”`;
+    const commitMessage = commitMessageFormatter('delete', { collection, slug }, config);
     return this.implementation.deleteFile(path, commitMessage);
   }
 
   deleteMedia(path) {
-    const commitMessage = `Delete ${path}`;
+    const commitMessage = commitMessageFormatter('delete', { path });
     return this.implementation.deleteFile(path, commitMessage);
   }
 
