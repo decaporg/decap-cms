@@ -155,6 +155,7 @@
     "react-dom": "^16.0.0",
     "react-frame-component": "^2.0.0",
     "react-immutable-proptypes": "^2.1.0",
+    "react-is": "16.3.1",
     "react-modal": "^3.1.5",
     "react-redux": "^4.4.0",
     "react-router-dom": "^4.2.2",

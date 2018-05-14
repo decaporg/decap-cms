@@ -928,6 +928,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "danielmahon",
+      "name": "Daniel Mahon",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/1088089?v=4",
+      "profile": "https://www.mahonstudios.com",
+      "contributions": [
+        "code"
+      ]
     }
   ]
 }
