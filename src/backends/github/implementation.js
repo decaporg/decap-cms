@@ -17,6 +17,7 @@ export default class GitHub {
     this.branch = config.getIn(["backend", "branch"], "master").trim();
     this.api_root = config.getIn(["backend", "api_root"], "https://api.github.com");
     this.token = '';
+    this.squash_merges = config.getIn(["backend", "squash_merges"]);
   }
 
   authComponent() {
@@ -29,7 +30,7 @@ export default class GitHub {
 
   authenticate(state) {
     this.token = state.token;
-    this.api = new API({ token: this.token, branch: this.branch, repo: this.repo, api_root: this.api_root });
+    this.api = new API({ token: this.token, branch: this.branch, repo: this.repo, api_root: this.api_root, squash_merges: this.squash_merges });
     return this.api.user().then(user =>
       this.api.hasWriteAccess().then((isCollab) => {
         // Unauthorized user
