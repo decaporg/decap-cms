@@ -918,6 +918,15 @@
       "contributions": [
         "plugin"
       ]
+    },
+    {
+      "login": "tedmiston",
+      "name": "Taylor D. Edmiston",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/366688?v=4",
+      "profile": "http://blog.tedmiston.com/",
+      "contributions": [
+        "doc"
+      ]
     }
   ]
 }
