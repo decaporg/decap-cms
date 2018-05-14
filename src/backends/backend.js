@@ -292,7 +292,7 @@ class Backend {
       };
     }
 
-    const commitMessage = commitMessageFormatter(newEntry ? 'create' : 'update', { collection, slug: entryObj.slug }, config);
+    const commitMessage = commitMessageFormatter(newEntry ? 'create' : 'update', { collection, slug: entryObj.slug, path: entryObj.path }, config);
 
     const mode = config.get("publish_mode");
 
@@ -323,7 +323,7 @@ class Backend {
       throw (new Error("Not allowed to delete entries in this collection"));
     }
 
-    const commitMessage = commitMessageFormatter('delete', { collection, slug }, config);
+    const commitMessage = commitMessageFormatter('delete', { collection, slug, path }, config);
     return this.implementation.deleteFile(path, commitMessage);
   }
 
