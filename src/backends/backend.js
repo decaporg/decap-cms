@@ -309,9 +309,9 @@ class Backend {
       .then(() => entryObj.slug);
   }
 
-  persistMedia(file) {
+  persistMedia(config, file) {
     const options = {
-      commitMessage: commitMessageFormatter('upload', { path: file.path }),
+      commitMessage: commitMessageFormatter('upload', { path: file.path }, config),
     };
     return this.implementation.persistMedia(file, options);
   }
@@ -327,8 +327,8 @@ class Backend {
     return this.implementation.deleteFile(path, commitMessage);
   }
 
-  deleteMedia(path) {
-    const commitMessage = commitMessageFormatter('delete', { path });
+  deleteMedia(config, path) {
+    const commitMessage = commitMessageFormatter('delete', { path }, config);
     return this.implementation.deleteFile(path, commitMessage);
   }
 
