@@ -8,6 +8,18 @@ import MobileNav from '../components/mobile-nav';
 
 import '../css/lib/prism.css';
 
+const TableOfContents = ({ node }) => {
+  // unescape less-than character done in gatsby-transformer-remark
+  const toc = node.tableOfContents.replace(/&#x3C;/g, '<');
+
+  return (
+    <div
+      className="nav-subsections"
+      dangerouslySetInnerHTML={{ __html: toc }}
+    />
+  );
+};
+
 const DocPage = ({ data, location, history }) => {
   const { nav, page, widgets } = data;
 
@@ -17,23 +29,22 @@ const DocPage = ({ data, location, history }) => {
       <div className="container">
         <aside id="sidebar" className="sidebar">
           <nav className="docs-nav" id="docs-nav">
-            {nav.edges.map(({ node }) => (
-              <Fragment key={node.fields.slug}>
-                <Link
-                  to={node.fields.slug}
-                  className="nav-link"
-                  activeClassName="active"
-                >
-                  {node.frontmatter.title}
-                </Link>
-                {location.pathname === node.fields.slug && (
-                  <div
-                    className="nav-subsections"
-                    dangerouslySetInnerHTML={{ __html: node.tableOfContents }}
-                  />
-                )}
-              </Fragment>
-            ))}
+            {nav.edges.map(({ node }) => {
+              return (
+                <Fragment key={node.fields.slug}>
+                  <Link
+                    to={node.fields.slug}
+                    className="nav-link"
+                    activeClassName="active"
+                  >
+                    {node.frontmatter.title}
+                  </Link>
+                  {location.pathname === node.fields.slug && (
+                    <TableOfContents node={node} />
+                  )}
+                </Fragment>
+              );
+            })}
           </nav>
           <MobileNav items={nav.edges} history={history} />
         </aside>
