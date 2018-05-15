@@ -672,7 +672,8 @@
       "avatar_url": "https://avatars2.githubusercontent.com/u/357379?v=4",
       "profile": "http://chrisswithinbank.net/",
       "contributions": [
-        "doc"
+        "doc",
+        "code"
       ]
     },
     {
@@ -917,6 +918,24 @@
       "profile": "https://github.com/ekoeryanto",
       "contributions": [
         "plugin"
+      ]
+    },
+    {
+      "login": "tedmiston",
+      "name": "Taylor D. Edmiston",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/366688?v=4",
+      "profile": "http://blog.tedmiston.com/",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "danielmahon",
+      "name": "Daniel Mahon",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/1088089?v=4",
+      "profile": "https://www.mahonstudios.com",
+      "contributions": [
+        "code"
       ]
     }
   ]

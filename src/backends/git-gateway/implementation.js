@@ -70,6 +70,7 @@ export default class GitGateway extends GitHubBackend {
           branch: this.branch,
           tokenPromise: this.tokenPromise,
           commitAuthor: pick(userData, ["name", "email"]),
+          squash_merges: this.squash_merges,
         });
         return userData;
       } else {
