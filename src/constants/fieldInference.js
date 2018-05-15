@@ -1,6 +1,8 @@
 import React from 'react';
 
 /* eslint-disable */
+export const IDENTIFIER_FIELDS = ['title', 'path'];
+
 export const INFERABLE_FIELDS = {
   title: {
     type: 'string',

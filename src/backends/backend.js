@@ -2,13 +2,13 @@ import { attempt, isError } from 'lodash';
 import { resolveFormat } from "Formats/formats";
 import { selectIntegration } from 'Reducers/integrations';
 import {
-  selectIdentifier,
   selectListMethod,
   selectEntrySlug,
   selectEntryPath,
   selectAllowNewEntries,
   selectAllowDeletion,
-  selectFolderEntryExtension
+  selectFolderEntryExtension,
+  selectIdentifier,
 } from "Reducers/collections";
 import { createEntry } from "ValueObjects/Entry";
 import { sanitizeSlug } from "Lib/urlHelper";
@@ -42,18 +42,14 @@ class LocalStorageAuthStore {
   }
 }
 
-const slugFormatter = (template = "{{slug}}", entryData, slugConfig) => {
+const slugFormatter = (collection, entryData, slugConfig) => {
+  const template = collection.get('slug') || "{{slug}}";
   const date = new Date();
 
-  const getIdentifier = (entryData) => {
-    const identifier = selectIdentifier(entryData.keySeq());
-
-    if (identifier === undefined) {
-      throw new Error("Collection must have a field name that is a valid entry identifier");
-    }
-
-    return entryData.get(identifier);
-  };
+  const identifier = entryData.get(selectIdentifier(collection));
+  if (identifier === undefined) {
+    throw new Error("Collection must have a field name that is a valid entry identifier");
+  }
 
   const slug = template.replace(/\{\{([^\}]+)\}\}/g, (_, field) => {
     switch (field) {
@@ -70,7 +66,7 @@ const slugFormatter = (template = "{{slug}}", entryData, slugConfig) => {
       case "second":
         return (`0${ date.getSeconds() }`).slice(-2);
       case "slug":
-        return getIdentifier(entryData).trim();
+        return identifier.trim();
       default:
         return entryData.get(field, "").trim();
     }
@@ -244,7 +240,7 @@ class Backend {
       if (!selectAllowNewEntries(collection)) {
         throw (new Error("Not allowed to create new entries in this collection"));
       }
-      const slug = slugFormatter(collection.get("slug"), entryDraft.getIn(["entry", "data"]), config.get("slug"));
+      const slug = slugFormatter(collection, entryDraft.getIn(["entry", "data"]), config.get("slug"));
       const path = selectEntryPath(collection, slug);
       entryObj = {
         path,
