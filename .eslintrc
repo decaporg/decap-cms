@@ -4,9 +4,7 @@
   ],
   "settings": {
     "import/resolver": {
-      "webpack": {
-        "config": "webpack.dev.js"
-      }
+      "babel-module": {}
     }
   },
   "globals": {

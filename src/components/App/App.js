@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { hot } from 'react-hot-loader';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 import { Route, Switch, Link, Redirect } from 'react-router-dom';
@@ -180,4 +181,6 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default hot(module)(
+  connect(mapStateToProps, mapDispatchToProps)(App)
+);
