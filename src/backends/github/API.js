@@ -79,7 +79,11 @@ export default class API {
       if (contentType && contentType.match(/json/)) {
         return this.parseJsonResponse(response);
       }
-      return response.text();
+      const text = response.text();
+      if (!response.ok) {
+        return Promise.reject(text);
+      }
+      return text;
     })
     .catch((error) => {
       throw new APIError(error.message, responseStatus, 'GitHub');
