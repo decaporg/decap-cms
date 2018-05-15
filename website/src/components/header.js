@@ -7,11 +7,22 @@ import DocSearch from './docsearch';
 
 import logo from '../img/netlify-cms-logo.svg';
 
-const Header = ({ location }) => {
+const Header = ({ location, notifications }) => {
   const isDocs = location.pathname.includes('docs');
 
   return (
     <Headroom>
+      {notifications.map((node, i) => (
+        <a
+          key={i}
+          href={node.url}
+          className={classnames('notification', {
+            'notification-loud': node.loud
+          })}
+        >
+          {node.message}
+        </a>
+      ))}
       <header
         id="header"
         className={classnames({

@@ -60,7 +60,7 @@ const HomePage = ({ data }) => {
       <section className="whatsnew">
         <div className="contained">
           <ol>
-            {updates.edges.map(({ node }) => (
+            {updates.updates.slice(0, 3).map(node => (
               <a
                 href={`https://github.com/netlify/netlify-cms/releases/tag/${
                   node.version
@@ -129,13 +129,11 @@ const HomePage = ({ data }) => {
 
 export const pageQuery = graphql`
   query homeQuery {
-    updates: allUpdatesYaml(limit: 3) {
-      edges {
-        node {
-          date
-          description
-          version
-        }
+    updates: dataYaml(id: { regex: "/updates/" }) {
+      updates {
+        date
+        description
+        version
       }
     }
     landing: dataYaml(id: { regex: "/landing/" }) {

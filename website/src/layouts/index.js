@@ -9,24 +9,14 @@ import '../css/main.css';
 
 const Layout = ({ data, location, children }) => {
   const { title, description } = data.site.siteMetadata;
+  const notifs = data.notifs.notifications.filter(notif => notif.published);
+
   return (
     <div>
       <Helmet defaultTitle={title} titleTemplate={`%s | ${title}`}>
         <meta name="description" content={description} />
       </Helmet>
-      {data.notifs &&
-        data.notifs.edges.map(({ node }) => (
-          <a
-            href={node.url}
-            key={node.title}
-            className={classnames('notification', {
-              'notification-loud': node.loud
-            })}
-          >
-            {node.message}
-          </a>
-        ))}
-      <Header location={location} />
+      <Header location={location} notifications={notifs} />
       {children()}
       <Footer buttons={data.dataYaml.footer.buttons} />
     </div>
@@ -49,13 +39,12 @@ export const pageQuery = graphql`
         }
       }
     }
-    notifs: allNotificationsYaml(filter: { published: { eq: true } }) {
-      edges {
-        node {
-          loud
-          message
-          url
-        }
+    notifs: dataYaml(id: { regex: "/notifications/" }) {
+      notifications {
+        published
+        loud
+        message
+        url
       }
     }
   }

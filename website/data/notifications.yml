@@ -1,3 +1,4 @@
+notifications:
 - loud: true
   message: >-
     Register to join us online for our next community dev meeting, every other

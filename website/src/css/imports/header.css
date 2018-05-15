@@ -4,14 +4,8 @@
   color: white;
   display: block;
   padding: $tiny $small;
-  position: absolute;
   text-align: center;
   width: 100%;
-  z-index: 101;
-
-  @media screen and (min-width: $mobile) {
-    position: fixed;
-  }
 
   em {
     font-style: normal;
@@ -33,34 +27,6 @@
   &.notification-loud {
     background-color: $green;
     color: $darkerGrey;
-  }
-
-  + header {
-    margin-top: 100px;
-
-    @media screen and (min-width: 360px) {
-      margin-top: 74px;
-    }
-
-    @media screen and (min-width: 712px) {
-      margin-top: 50px;
-    }
-
-    + div:before,
-    + .hero:before {
-      content: '';
-      display: block;
-      height: 100px;
-      width: 100%;
-
-      @media screen and (min-width: 360px) {
-        height: 74px;
-      }
-
-      @media screen and (min-width: 712px) {
-        height: 50px;
-      }
-    }
   }
 }
 
