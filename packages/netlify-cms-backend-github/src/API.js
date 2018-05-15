@@ -321,7 +321,7 @@ export default class API {
 
   persistFiles(entry, mediaFiles, options) {
     const uploadPromises = [];
-    const files = entry ? mediaFiles.concat(entry) : mediaFiles;
+    const files = entry && entry.path ? mediaFiles.concat(entry) : mediaFiles;
 
     files.forEach(file => {
       if (file.uploaded) {
@@ -372,10 +372,13 @@ export default class API {
     });
   }
 
-  editorialWorkflowGit(fileTree, entry, filesList, options) {
-    const contentKey = entry.slug;
+  async editorialWorkflowGit(fileTree, entry, filesList, options) {
+    const contentKey = (entry && entry.slug) || options.slug;
     const branchName = this.generateBranchName(contentKey);
-    const unpublished = options.unpublished || false;
+
+    const metadata = await this.retrieveMetadata(contentKey);
+    // Check if the meta is from a media only PR
+    const unpublished = options.unpublished || (metadata && !!metadata.isMediaOnlyPR) || false;
     if (!unpublished) {
       // Open new editorial review workflow for this entry - Create new metadata and commit to new branch`
       let prResponse;
@@ -384,7 +387,7 @@ export default class API {
         .then(branchData => this.updateTree(branchData.commit.sha, '/', fileTree))
         .then(changeTree => this.commit(options.commitMessage, changeTree))
         .then(commitResponse => this.createBranch(branchName, commitResponse.sha))
-        .then(() => this.createPR(options.commitMessage, branchName))
+        .then(() => this.createPR(options.PRName || options.commitMessage, branchName))
         .then(pr => {
           prResponse = pr;
           return this.user();
@@ -404,12 +407,13 @@ export default class API {
             description: options.parsedData && options.parsedData.description,
             objects: {
               entry: {
-                path: entry.path,
-                sha: entry.sha,
+                path: (entry && entry.path) || '',
+                sha: (entry && entry.sha) || '',
               },
               files: filesList,
             },
             timeStamp: new Date().toISOString(),
+            isMediaOnlyPR: options.isMediaOnlyPR || false,
           });
         });
     } else {
@@ -428,10 +432,14 @@ export default class API {
           const files = [...metadataFiles, ...filesList];
           const pr = { ...metadata.pr, head: newHead.sha };
           const objects = {
-            entry: { path: entry.path, sha: entry.sha },
+            entry: {
+              path: (entry && entry.path) || '',
+              sha: (entry && entry.sha) || ''
+            },
             files: uniq(files),
           };
-          const updatedMetadata = { ...metadata, pr, title, description, objects };
+          const isMediaOnlyPR = options.isMediaOnlyPR || false;
+          const updatedMetadata = { ...metadata, pr, title, description, objects, isMediaOnlyPR };
 
           /**
            * If an asset store is in use, assets are always accessible, so we
@@ -448,7 +456,7 @@ export default class API {
            * repo, which means pull requests opened for editorial workflow
            * entries must be rebased if assets have been added or removed.
            */
-          return this.rebasePullRequest(pr.number, branchName, contentKey, metadata, newHead);
+          return this.rebasePullRequest(pr.number, branchName, contentKey, updatedMetadata, newHead);
         });
     }
   }

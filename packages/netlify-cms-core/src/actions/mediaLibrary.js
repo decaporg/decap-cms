@@ -6,7 +6,8 @@ import { createAssetProxy } from 'ValueObjects/AssetProxy';
 import { selectIntegration } from 'Reducers';
 import { getIntegrationProvider } from 'Integrations';
 import { addAsset } from './media';
-import { sanitizeSlug } from 'Lib/urlHelper';
+import { sanitizeSlug, slugFormatter } from 'Lib/urlHelper';
+import { EDITORIAL_WORKFLOW } from "Constants/publishModes";
 
 const { notifSend } = notifActions;
 
@@ -141,6 +142,33 @@ export function persistMedia(file, opts = {}) {
     const fileName = sanitizeSlug(file.name.toLowerCase(), state.config.get('slug'));
     const existingFile = files.find(existingFile => existingFile.name.toLowerCase() === fileName);
 
+    const entryDraft = state.entryDraft;
+    const config = state.config;
+    const publishMode = state.config.get('publish_mode');
+    const options = {
+      mode: publishMode,
+      slug: `upload_${fileName}`,
+    };
+
+    // If in Editorial workflow and there is something in a draft entry (means uploaded from draft page)
+    if (publishMode === EDITORIAL_WORKFLOW && entryDraft.getIn(["entry", "data", "title"])) {
+      const collectionName = state.entryDraft.getIn(['entry', 'collection']);
+      const collection = state.collections.get(collectionName);
+      const collectionLabel = collection.get('label');
+      const slug = slugFormatter(collection.get("slug"), entryDraft.getIn(["entry", "data"]), config.get("slug"));
+
+      const parsedData = {
+        title: entryDraft.getIn(["entry", "data", "title"], "No Title"),
+        description: entryDraft.getIn(["entry", "data", "description"], "No Description!"),
+      };
+
+      options.PRName = `Create ${collectionLabel} "${slug}"`;
+      options.slug = slug;
+      options.collectionName = collectionName;
+      options.parsedData = parsedData;
+      options.isMediaOnlyPR = true;
+    }
+
     /**
      * Check for existing files of the same name before persisting. If no asset
      * store integration is used, files are being stored in Git, so we can
@@ -162,7 +190,7 @@ export function persistMedia(file, opts = {}) {
       const assetProxy = await createAssetProxy(fileName, file, false, privateUpload);
       dispatch(addAsset(assetProxy));
       if (!integration) {
-        const asset = await backend.persistMedia(state.config, assetProxy);
+        const asset = await backend.persistMedia(state.config, assetProxy, options);
         const displayURL = asset.displayURL || URL.createObjectURL(file);
         return dispatch(mediaPersisted({ id, displayURL, ...asset }));
       }

@@ -686,11 +686,12 @@ class Backend {
     return this.implementation.persistEntry(entryObj, MediaFiles, opts).then(() => entryObj.slug);
   }
 
-  persistMedia(config, file) {
-    const options = {
+  persistMedia(config, file, options) {
+    const modifiedOptions = {
       commitMessage: commitMessageFormatter('uploadMedia', config, { path: file.path }),
+      ...options,
     };
-    return this.implementation.persistMedia(file, options);
+    return this.implementation.persistMedia(file, modifiedOptions);
   }
 
   deleteEntry(config, collection, slug) {
