@@ -1,4 +1,9 @@
 updates:
+  - date: '2018-05-16'
+    description: >-
+      Customizable relation widget display fields, squash merges for editorial
+      workflow, perf improvements.
+    version: 1.8.0
   - date: '2018-04-24'
     description: 'Allow custom auth endpoint, bug fixes.'
     version: 1.7.0
