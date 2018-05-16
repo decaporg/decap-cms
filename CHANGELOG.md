@@ -6,6 +6,24 @@
   </summary>
 </details>
 
+## 1.8.0 (May 16, 2018)
+Customizable relation widget display fields, squash merges for editorial workflow, perf
+improvements.
+
+### Features
+* support `displayFields` config property for the relation widget ([@zurawiki](https://github.com/zurawiki) in [#1303](https://github.com/netlify/netlify-cms/pull/1303))
+
+### Improvements
+* prevent login for `git-gateway` backend when Git Gateway is not enabled for Netlify site ([@tech4him1](https://github.com/tech4him1) in [#1295](https://github.com/netlify/netlify-cms/pull/1295))
+
+### Performance
+* use `cloneElement` when possible for editor preview pane widgets ([@danielmahon](https://github.com/danielmahon) in [#1248](https://github.com/netlify/netlify-cms/pull/1248))
+* upgrade to Webpack 4 ([@tech4him1](https://github.com/tech4him1) in [#1214](https://github.com/netlify/netlify-cms/pull/1214))
+
+### Beta Features
+* support `squash_merges` config option for GitHub backend ([@delucis](https://github.com/delucis) in [#1330](https://github.com/netlify/netlify-cms/pull/1330))
+
+
 ## 1.7.0 (April 24, 2018) ([demo](https://5adfdee4b13fb15101a5c5ce--cms-demo.netlify.com/))
 Allow custom auth endpoint, bug fixes.
 
@@ -19,6 +37,7 @@ Allow custom auth endpoint, bug fixes.
 * fix GitHub auth button icon alignment (@erquhart in #1299)
 * fix Git Gateway login hang (@ekoeryanto in #1240)
 
+
 ## 1.6.0 (April 19, 2018) ([demo](https://5ad8e1ebb31274466632d026--cms-demo.netlify.com/))
 Markdown toolbar customization, manual date widget entry, bug fixes.
 
@@ -29,6 +48,7 @@ Markdown toolbar customization, manual date widget entry, bug fixes.
 ### Bug Fixes
 * Fix button/icon alignment on Safari 10 ([@maciejmatu](https://github.com/maciejmatu) in [#1227](https://github.com/netlify/netlify-cms/pull/1227))
 * Allow typing in date widget ([@Dammmien](https://github.com/Dammmien) in [#1247](https://github.com/netlify/netlify-cms/pull/1247))
+
 
 ## 1.5.0 (April 11, 2018) ([demo](https://5ace16a5dd28ef456e22acad--cms-demo.netlify.com/))
 New time based slug placeholders, set config.yml URL with <link>.
@@ -42,6 +62,7 @@ New time based slug placeholders, set config.yml URL with <link>.
 
 ### Dev Experience
 * Enable editorial workflow for test backend ([@erquhart](https://github.com/erquhart) in [#1225](https://github.com/netlify/netlify-cms/pull/1225))
+
 
 ## 1.4.0 (March 29, 2018) ([demo](https://5abd5b96fd0efa031ca40d13--cms-demo.netlify.com/))
 Filename creation can now be customized to exclude Unicode! Also, check out the new Beta Features! 💥
@@ -70,20 +91,24 @@ Filename creation can now be customized to exclude Unicode! Also, check out the 
 ### 4 tha devz
 * Ship source code to npm ([@tech4him1](https://github.com/tech4him1) in [#1095](https://github.com/netlify/netlify-cms/pull/1095))
 
+
 ## 1.3.5 (March 6, 2018) ([demo](https://5a9f1f08295b55354924d254--cms-demo.netlify.com/))
 Fixes styling issues
 
 * Revert lockfile update due to breaking changes in css processing deps ([@erquhart](https://github.com/erquhart))
+
 
 ## 1.3.4 (March 6, 2018) ([demo](https://5a9f1ca2be40f16d46b1758f--cms-demo.netlify.com/))
 Fixes editorial workflow entry failure
 
 * Fix editorial workflow entries not loading ([@erquhart](https://github.com/erquhart))
 
+
 ## 1.3.3 (March 6, 2018)
 Fixes load failure
 
 * Fix bugs introduced by manual initialization ([@erquhart](https://github.com/erquhart) in [#1157](https://github.com/netlify/netlify-cms/pull/1157))
+
 
 ## 1.3.2 (March 6, 2018)
 Fixes date widget default format, collection load failure when entry fails
@@ -94,10 +119,12 @@ Fixes date widget default format, collection load failure when entry fails
 ### Beta Features
 * Allow manual initialization and config injection ([@erquhart](https://github.com/erquhart) in [#1149](https://github.com/netlify/netlify-cms/pull/1149))
 
+
 ## 1.3.1 (March 3, 2018) ([demo](https://5a9b6aa7be40f1320d060a2f--cms-demo.netlify.com/))
 Fixes editorial workflow failure for unknown collections.
 
 * Report editorial workflow load errors, ignore entries with unkown collections ([@erquhart](https://github.com/erquhart) in [#1153](https://github.com/netlify/netlify-cms/pull/1153))
+
 
 ## 1.3.0 (February 27, 2018) ([demo](https://5a961201a6188f4d12bedcae--cms-demo.netlify.com/))
 Multi-part extensions, e.g. "en.md", a11y improvements in the editor, and bugfixes.
@@ -107,10 +134,12 @@ Multi-part extensions, e.g. "en.md", a11y improvements in the editor, and bugfix
 * Support extensions with multiple parts (i.e. `en.md`) ([@tech4him1](https://github.com/tech4him1) in [#1123](https://github.com/netlify/netlify-cms/pull/1123))
 * Fix lost unsaved changes when updating status or publishing from editor ([@erquhart](https://github.com/erquhart) in [#987](https://github.com/netlify/netlify-cms/pull/987))
 
+
 ## 1.2.2 (February 21, 2018) ([demo](https://5a8df5010b79b71f30640227--cms-demo.netlify.com/))
 Fixes ES5 transpiling.
 
 * Remove babel-preset-env, fix ES5 transpiling ([@erquhart](https://github.com/erquhart) in [#1127](https://github.com/netlify/netlify-cms/pull/1127))
+
 
 ## 1.2.1 (February 21, 2018) ([demo](https://5a8ded6f295b5550b1186831--cms-demo.netlify.com/))
 Allows `label_singular` config for collections and lists and distinct frontmatter delimiters.
@@ -118,6 +147,7 @@ Allows `label_singular` config for collections and lists and distinct frontmatte
 * Accept `label_singular` in collection config ([@peduarte](https://github.com/peduarte) in [#1086](https://github.com/netlify/netlify-cms/pull/1086))
 * Transpile down to ES5 to support older tooling eg. Webpack 1 ([@tech4him1](https://github.com/tech4him1) in [#1107](https://github.com/netlify/netlify-cms/pull/1107))
 * Allow different opening and closing frontmatter delimiters ([@tech4him1](https://github.com/tech4him1) in [#1094](https://github.com/netlify/netlify-cms/pull/1094))
+
 
 ## 1.2.0 (February 13, 2018) ([demo](https://5a8350350b79b76274519aec--cms-demo.netlify.com/))
 Adds support for multiple frontmatter formats and custom delimiters, UI improvements.
@@ -128,10 +158,12 @@ Adds support for multiple frontmatter formats and custom delimiters, UI improvem
 * Add collection label next to search results ([@solpark](https://github.com/solpark) in [#1068](https://github.com/netlify/netlify-cms/pull/1068))
 * Support custom delimiters for frontmatter ([@Swieckowski](https://github.com/Swieckowski) in [#1064](https://github.com/netlify/netlify-cms/pull/1064))
 
+
 ## 1.1.0 (January 25, 2018) ([demo](https://5a6a1f76df995361a13f2f7f--cms-demo.netlify.com/))
 
 * Fix metadata handling for all children of a list field ([@Quicksaver](https://github.com/Quicksaver) in [#719](https://github.com/netlify/netlify-cms/pull/719))
 * Allow registry of external backends ([@talves](https://github.com/talves) in [#1011](https://github.com/netlify/netlify-cms/pull/1011))
+
 
 ## 1.0.4 (January 23, 2018) ([demo](https://5a67569e0b79b70f1596de35--cms-demo.netlify.com/))
 
@@ -148,12 +180,14 @@ Adds support for multiple frontmatter formats and custom delimiters, UI improvem
 * Fix failed PR force-merge showing success message ([@tech4him1](https://github.com/tech4him1) in [#1016](https://github.com/netlify/netlify-cms/pull/1016))
 * Fix false proptype warning for collection view ([@Quicksaver](https://github.com/Quicksaver) in [#998](https://github.com/netlify/netlify-cms/pull/998))
 
+
 ## 1.0.3 (December 19, 2017) ([demo](https://5a394c2f8198767434bdceb1--cms-demo.netlify.com/))
 
 * Fix select widgets with object type options ([@tech4him1](https://github.com/tech4him1) in [#920](https://github.com/netlify/netlify-cms/pull/920))
 * Warn when uploading asset with same name as existing asset ([@Dammmien](https://github.com/Dammmien) in [#853](https://github.com/netlify/netlify-cms/pull/853))
 * Fix Slate plugins broken during 0.30 migration ([@Dammmien](https://github.com/Dammmien) in [#856](https://github.com/netlify/netlify-cms/pull/856))
 * Fix infinite scrolling for collections with integrations ([@erquhart](https://github.com/erquhart) in [#940](https://github.com/netlify/netlify-cms/pull/940))
+
 
 ## 1.0.2 (December 7, 2017) ([demo](https://5a29a9310b79b75fc5945f4d--cms-demo.netlify.com/))
 
@@ -166,6 +200,7 @@ Adds support for multiple frontmatter formats and custom delimiters, UI improvem
 * Add configuration options doc ([@verythorough](https://github.com/verythorough) in [#885](https://github.com/netlify/netlify-cms/pull/885))
 * Add new docs website landing page ([@ziburski](https://github.com/ziburski) in [#880](https://github.com/netlify/netlify-cms/pull/880))
 * Rework Test Drive and Quick Start docs ([@verythorough](https://github.com/verythorough) in [#888](https://github.com/netlify/netlify-cms/pull/888))
+
 
 ## 1.0.0 (December 7, 2017) ([demo](https://5a3011fea6188f2f1d095bce--cms-demo.netlify.com/))
 
@@ -215,15 +250,18 @@ The docs at netlifycms.org have been rewritten and vastly improved!
 * Update authentication doc to cover all backends ([@verythorough](https://github.com/verythorough) in [#751](https://github.com/netlify/netlify-cms/pull/751))
 * Add oauth-provider-go to custom-authentication.md ([@igk1972](https://github.com/igk1972) in [#845](https://github.com/netlify/netlify-cms/pull/845))
 
+
 ## 0.7.5 (November 19, 2017) ([demo](https://5a113002a6188f46c42229f9--cms-demo.netlify.com/))
 
 * Add private media support for asset integrations ([@erquhart](https://github.com/erquhart) in [#834](https://github.com/netlify/netlify-cms/pull/834))
+
 
 ## 0.7.4 (November 15, 2017) ([demo](https://5a0c81014c4b936eac7a3414--cms-demo.netlify.com/))
 
 * Remove trailing slash from directory listing path ([@biilmann](https://github.com/biilmann) in [#817](https://github.com/netlify/netlify-cms/pull/817))
 * Fix images with non-lowercase extensions not being treated as images ([@erquhart](https://github.com/erquhart) in [#816](https://github.com/netlify/netlify-cms/pull/816))
 * Prompt before closing window with unsaved changes in the editor ([@benaiah](https://github.com/benaiah) in [#815](https://github.com/netlify/netlify-cms/pull/815))
+
 
 ## 0.7.3 (November 11, 2017) ([demo](https://5a07b86e4c4b937891d8a9c1--cms-demo.netlify.com/))
 
@@ -232,10 +270,12 @@ The docs at netlifycms.org have been rewritten and vastly improved!
 * Fix entries not saving due to null integrations state ([@erquhart](https://github.com/erquhart) in [#814](https://github.com/netlify/netlify-cms/pull/814))
 * Fix requestAnimationFrame warnings in tests ([@tech4him1](https://github.com/tech4him1) in [#811](https://github.com/netlify/netlify-cms/pull/811))
 
+
 ## 0.7.2 (November 11, 2017) ([demo](https://5a07567a0b79b7768dd6f3e6--cms-demo.netlify.com/))
 
 * Only rebase editorial workflow pull requests if assets are stored in content repo ([@erquhart](https://github.com/erquhart) in [#804](https://github.com/netlify/netlify-cms/pull/804))
 * Fix Netlify Identity widget logout method being called after signup redirect ([@tech4him1](https://github.com/tech4him1) in [#805](https://github.com/netlify/netlify-cms/pull/805))
+
 
 ## 0.7.1 (November 11, 2017) ([demo](https://5a0740e9df99536afa0bc068--cms-demo.netlify.com/))
 
@@ -246,6 +286,7 @@ The docs at netlifycms.org have been rewritten and vastly improved!
 * Fix error for non-markdown files in editorial workflow ([@tech4him1](https://github.com/tech4him1) in [#794](https://github.com/netlify/netlify-cms/pull/794))
 * Fix login when accept_roles is set ([@tech4him1](https://github.com/tech4him1) in [#801](https://github.com/netlify/netlify-cms/pull/801))
 * Add error boundary to editor preview iframe ([@erquhart](https://github.com/erquhart) in [#779](https://github.com/netlify/netlify-cms/pull/779))
+
 
 ## 0.7.0 (November 9, 2017) ([demo](https://5a0476bb8198761b0bffb69d--cms-demo.netlify.com/))
 
