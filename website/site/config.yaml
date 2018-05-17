@@ -4,3 +4,17 @@ title: "Netlify CMS | Open-Source Content Management System"
 disable404: true
 pluralizeListTitles: false
 metaDataFormat: "yaml"
+menu:
+  docs:
+    - name: start
+      title: Quick Start
+      weight: 100
+    - name: guides
+      title: Guides
+      weight: 200
+    - name: reference
+      title: Reference
+      weight: 300
+    - name: contributing
+      title: Contributing
+      weight: 400

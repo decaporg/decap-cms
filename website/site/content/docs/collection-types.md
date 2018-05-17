@@ -1,6 +1,9 @@
 ---
 title: Collection Types
-position: 27
+weight: 27
+menu:
+  docs:
+    parent: start
 ---
 # Collection Types
 

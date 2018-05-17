@@ -1,6 +1,9 @@
 ---
-title: Custom Widgets
-position: 35
+title: Creating Custom Widgets
+weight: 35
+menu:
+  docs:
+    parent: guides
 ---
 # Custom Widgets
 
