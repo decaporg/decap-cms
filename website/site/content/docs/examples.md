@@ -1,6 +1,9 @@
 ---
 title: Examples
-position: 110
+weight: 110
+menu:
+  docs:
+    parent: start
 ---
 
 # Examples

@@ -1,6 +1,9 @@
 ---
 title: Introduction
-position: 0
+weight: 1
+menu:
+  docs:
+    parent: start
 ---
 
 # Introduction

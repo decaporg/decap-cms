@@ -1,6 +1,9 @@
 ---
 title: Beta Features!
-position: 200
+weight: 200
+menu:
+  docs:
+    parent: reference
 ---
 # Beta Features!
 We run new functionality in an open beta format from time to time. That means that this functionality is totally available for use, and we _think_ it might be ready for primetime, but it could break or change without notice.

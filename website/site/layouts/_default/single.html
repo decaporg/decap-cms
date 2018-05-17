@@ -1,37 +1,46 @@
 {{ partial "header" . }}
 {{ $activePage := .Params.position }}
 
-<div class="docs detail page">
-	<div class="container">
-		<aside id="sidebar" class="sidebar">
-			<nav class="docs-nav" id="docs-nav">
-				{{ $subjects := where .Site.Pages "Section" "docs" }}
-				{{ range sort $subjects "Params.position" }}
-					{{- if ne .Type "widget" -}}
-					<a href="{{ .Permalink }}" class="nav-link {{ if eq .Params.position $activePage }}active{{ end }}">{{ .Title }}</a>
-					{{- end -}}
-				{{ end }}
-			</nav>
-			<div class="mobile docs-nav">
-				<select class="btn-primary" id="mobile-docs-nav">
-					<option value="" selected="selected">Select A Topic</option>
-					{{ $subjects := where .Site.Pages "Section" "docs" }}
-					{{ range sort $subjects "Params.position" }}
-						{{- if ne .Type "widget" -}}
-						<option value="{{ .Permalink }}" class="nav-link {{ if eq .Params.position $activePage }}active{{ end }}">{{ .Title }}</option>
-						{{- end -}}
-					{{ end }}
-				</select>
-			</div>
-		</aside>
-		<article class="docs-content" id="docs-content">
-			{{ partial "edit-link" . }}
-			{{ .Content }}
-			{{- if eq .Title "Widgets" -}} <!-- Check if is widgets page, if so, add the partial "widgets" for the widget cloud functionality -->
-				{{- partial "widgets" . -}} 
-			{{- end -}}
-		</article>
-	</div>
+<div class="docs page">
+  <div class="container">
+    <aside id="sidebar" class="sidebar">
+      <nav id="docs-nav" class="docs-nav" id="docs-nav">
+        {{ $currentPage := . }}
+        {{ range $index, $element := .Site.Menus.docs }}
+          {{ if .HasChildren }}
+            <div class="docs-nav-section">
+              <div class="docs-nav-section-title">{{ .Title }}</div>
+              <ul class="docs-nav-section-list">
+                {{ range .Children }}
+                  <a href="{{ .URL }}" class="nav-link {{ if $currentPage.IsMenuCurrent "docs" . }}active{{ end }}">{{ .Title }}</a>
+                {{ end }}
+              </ul>
+            </div>
+          {{ end }}
+        {{ end }}
+      </nav>
+      <div class="mobile docs-nav">
+        <select class="btn-primary" id="mobile-docs-nav">
+          <option value="" selected="selected">Select A Topic</option>
+          {{ range $index, $element := .Site.Menus.docs }}
+            {{ if .HasChildren }}
+              <optgroup label="{{ .Title }}"/>
+              {{ range .Children }}
+                <option value="{{ .URL }}" class="nav-link {{ if $currentPage.IsMenuCurrent "docs" . }}active{{ end }}">{{ .Title }}</option>
+              {{ end }}
+            {{ end }}
+          {{ end }}
+        </select>
+      </div>
+    </aside>
+    <article class="docs-content" id="docs-content">
+      {{ partial "edit-link" . }}
+      {{ .Content }}
+      {{- if eq .Title "Widgets" -}} <!-- Check if is widgets page, if so, add the partial "widgets" for the widget cloud functionality -->
+        {{- partial "widgets" . -}} 
+      {{- end -}}
+    </article>
+  </div>
 </div>
 
 {{ partial "footer" . }}

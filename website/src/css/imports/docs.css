@@ -27,6 +27,8 @@
 
     @media screen and (min-width: $tablet) {
       display: block;
+      height: 100%;
+      overflow-y: auto;
     }
 
     &.mobile {
@@ -70,8 +72,10 @@
     .subnav-link {
       display: block;
       font-weight: $regular;
+      font-size: $tiny;
       color: $grey;
-      line-height: 32px;
+      line-height: 1.3;
+      margin: 10px 0;
       text-decoration: none;
       text-transform: capitalize;
       transition: color .2s ease;
@@ -85,6 +89,20 @@
         color: $darkGreen;
       }
     }
+  }
+
+  .docs-nav-section {
+    margin-bottom: 30px;
+  }
+
+  .docs-nav-section-list {
+    margin: 0;
+  }
+
+  .docs-nav-section-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
   }
 
   .nav-subsections {
