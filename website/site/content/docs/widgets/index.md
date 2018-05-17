@@ -1,6 +1,9 @@
 ---
 title: Widgets
-position: 30
+weight: 30
+menu:
+  docs:
+    parent: reference
 ---
 
 # Widgets

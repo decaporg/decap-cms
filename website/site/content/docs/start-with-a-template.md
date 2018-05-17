@@ -1,6 +1,9 @@
 ---
 title: Start with a Template
-position: 10
+weight: 10
+menu:
+  docs:
+    parent: start
 ---
 
 # Start with a Template

@@ -1,6 +1,9 @@
 ---
 title: Authentication & Backends
-position: 25
+weight: 25
+menu:
+  docs:
+    parent: start
 ---
 # Authentication & Backends
 
