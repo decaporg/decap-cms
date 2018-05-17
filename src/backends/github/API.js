@@ -1,6 +1,6 @@
 import LocalForage from "Lib/LocalForage";
 import { Base64 } from "js-base64";
-import { uniq, initial, last, get, find } from "lodash";
+import { uniq, initial, last, get, find, hasIn } from "lodash";
 import { filterPromises, resolvePromiseProperties } from "Lib/promiseHelper";
 import AssetProxy from "ValueObjects/AssetProxy";
 import { SIMPLE, EDITORIAL_WORKFLOW, status } from "Constants/publishModes";
@@ -156,18 +156,33 @@ export default class API {
   }
 
   readFile(path, sha, branch = this.branch) {
-    const cache = sha ? LocalForage.getItem(`gh.${ sha }`) : Promise.resolve(null);
-    return cache.then((cached) => {
-      if (cached) { return cached; }
-
+    if (sha) {
+      return this.getBlob(sha);
+    } else {
       return this.request(`${ this.repoURL }/contents/${ path }`, {
         headers: { Accept: "application/vnd.github.VERSION.raw" },
         params: { ref: branch },
         cache: "no-store",
-      }).then((result) => {
-        if (sha) {
-          LocalForage.setItem(`gh.${ sha }`, result);
+      }).catch(error => {
+        if (hasIn(error, 'message.errors') && find(error.message.errors, { code:  "too_large" })) {
+          const dir = path.split('/').slice(0, -1).join('/');
+          return this.listFiles(dir)
+            .then(files => files.find(file => file.path === path))
+            .then(file => this.getBlob(file.sha));
         }
+        throw error;
+      });
+    }
+  }
+
+  getBlob(sha) {
+    return LocalForage.getItem(`gh.${sha}`).then(cached => {
+      if (cached) { return cached; }
+
+      return this.request(`${this.repoURL}/git/blobs/${sha}`, {
+        headers: { Accept: "application/vnd.github.VERSION.raw" },
+      }).then(result => {
+        LocalForage.setItem(`gh.${sha}`, result);
         return result;
       });
     });
