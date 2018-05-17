@@ -4,6 +4,8 @@
     Changes that have landed in master but are not yet released.
     Click to see more.
   </summary>
+
+  * fix large files failing to load ([@tech4him1](https://github.com/tech4him1) in [#1224](https://github.com/netlify/netlify-cms/pull/1224))
 </details>
 
 ## 1.8.0 (May 16, 2018)
