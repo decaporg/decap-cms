@@ -14,13 +14,14 @@ export default class EntryListing extends React.Component {
       ImmutablePropTypes.iterable,
     ]).isRequired,
     entries: ImmutablePropTypes.list,
-    onPaginate: PropTypes.func.isRequired,
-    page: PropTypes.number,
     viewStyle: PropTypes.string,
   };
 
   handleLoadMore = () => {
-    this.props.onPaginate(this.props.page + 1);
+    const { cursor, handleCursorActions } = this.props;
+    if (cursor.actions.has("append_next")) {
+      handleCursorActions("append_next");
+    }
   };
 
   inferFields = collection => {
@@ -48,12 +49,12 @@ export default class EntryListing extends React.Component {
       const collectionLabel = collection.get('label');
       const inferedFields = this.inferFields(collection);
       const entryCardProps = { collection, entry, inferedFields, publicFolder, key: idx, collectionLabel };
-      return <EntryCard {...entryCardProps}/>;
+      return <EntryCard {...entryCardProps} />;
     });
   };
 
   render() {
-    const { collections, entries, publicFolder } = this.props;
+    const { collections } = this.props;
 
     return (
       <div>
