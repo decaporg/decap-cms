@@ -3,6 +3,7 @@ backend:
 
 display_url: https://example.com
 media_folder: "assets/uploads"
+public_folder: "/uploads"
 
 publish_mode: editorial_workflow # optional, enables publishing workflow
 
