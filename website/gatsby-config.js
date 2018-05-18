@@ -24,7 +24,27 @@ module.exports = {
   siteMetadata: {
     title: 'Netlify CMS | Open-Source Content Management System',
     description: 'Open source content management for your Git workflow',
-    siteUrl: pkg.homepage
+    siteUrl: pkg.homepage,
+    menu: {
+      docs: [
+        {
+          name: 'start',
+          title: 'Quick Start'
+        },
+        {
+          name: 'guides',
+          title: 'Guides'
+        },
+        {
+          name: 'reference',
+          title: 'Reference'
+        },
+        {
+          name: 'contributing',
+          title: 'Contributing'
+        }
+      ]
+    }
   },
   plugins: [
     {

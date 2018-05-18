@@ -97,8 +97,14 @@
     margin-bottom: 30px;
   }
 
+  .docs-nav-section {
+    margin-bottom: 30px;
+  }
+
   .docs-nav-section-list {
     margin: 0;
+    padding: 0;
+    list-style: none;
   }
 
   .docs-nav-section-title {
@@ -107,7 +113,7 @@
     margin-bottom: 10px;
   }
 
-  .nav-subsections {
+  .nav-subsections ul {
     margin: $tiny 0;
     padding: 0 0 0 $tiny;
     border-left: 2px solid $lightestGrey;

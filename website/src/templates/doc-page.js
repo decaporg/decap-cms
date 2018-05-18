@@ -4,49 +4,29 @@ import Link from 'gatsby-link';
 
 import EditLink from '../components/edit-link';
 import Widgets from '../components/widgets';
+import DocsNav from '../components/docs-nav';
 import MobileNav from '../components/mobile-nav';
 
 import '../css/lib/prism.css';
 
-const TableOfContents = ({ node }) => {
-  // unescape less-than character done in gatsby-transformer-remark
-  const toc = node.tableOfContents.replace(/&#x3C;/g, '<');
-
-  return (
-    <div
-      className="nav-subsections"
-      dangerouslySetInnerHTML={{ __html: toc }}
-    />
-  );
-};
+const toMenu = (menu, nav) =>
+  menu.map(group => ({
+    title: group.title,
+    group: nav.group.find(g => g.fieldValue === group.name)
+  }));
 
 const DocPage = ({ data, location, history }) => {
-  const { nav, page, widgets } = data;
+  const { nav, page, widgets, menu } = data;
+
+  const docsNav = toMenu(menu.siteMetadata.menu.docs, nav)
 
   return (
     <div className="docs detail page">
       <Helmet title={page.frontmatter.title} />
       <div className="container">
         <aside id="sidebar" className="sidebar">
-          <nav className="docs-nav" id="docs-nav">
-            {nav.edges.map(({ node }) => {
-              return (
-                <Fragment key={node.fields.slug}>
-                  <Link
-                    to={node.fields.slug}
-                    className="nav-link"
-                    activeClassName="active"
-                  >
-                    {node.frontmatter.title}
-                  </Link>
-                  {location.pathname === node.fields.slug && (
-                    <TableOfContents node={node} />
-                  )}
-                </Fragment>
-              );
-            })}
-          </nav>
-          <MobileNav items={nav.edges} history={history} />
+          <DocsNav items={docsNav} location={location} />
+          <MobileNav items={docsNav} history={history} />
         </aside>
         <article className="docs-content" id="docs-content">
           <EditLink path={page.fields.path} />
@@ -74,21 +54,35 @@ export const pageQuery = graphql`
       html
     }
     nav: allMarkdownRemark(
-      sort: { fields: [frontmatter___position], order: ASC }
+      sort: { fields: [frontmatter___weight], order: ASC }
       filter: {
+        frontmatter: { title: { ne: null }, group: { ne: null } }
         fields: { slug: { regex: "/docs/" } }
-        frontmatter: { title: { ne: "" } }
       }
     ) {
-      edges {
-        node {
-          fields {
-            slug
+      group(field: frontmatter___group) {
+        fieldValue
+        edges {
+          node {
+            fields {
+              slug
+            }
+            frontmatter {
+              title
+              group
+            }
+            tableOfContents
           }
-          frontmatter {
+        }
+      }
+    }
+    menu: site {
+      siteMetadata {
+        menu {
+          docs {
+            name
             title
           }
-          tableOfContents
         }
       }
     }

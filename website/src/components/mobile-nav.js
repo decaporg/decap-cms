@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 class MobileNav extends Component {
-  handleCHange = event => {
+  handleChange = event => {
     this.props.history.push(event.target.value);
   };
   render() {
@@ -9,16 +9,19 @@ class MobileNav extends Component {
 
     return (
       <div className="mobile docs-nav">
-        <select className="btn-primary" onChange={this.handleCHange}>
+        <select className="btn-primary" onChange={this.handleChange}>
           <option>Select A Topic</option>
-          {items.map(({ node }) => (
-            <option
-              value={node.fields.slug}
-              key={node.fields.slug}
-              className="nav-link"
-            >
-              {node.frontmatter.title}
-            </option>
+          {items.map(item => (
+            <optgroup label={item.title} key={item.title}>
+              {item.group.edges.map(({ node }) => (
+                <option
+                  value={node.fields.slug}
+                  key={node.fields.slug}
+                  className="nav-link">
+                  {node.frontmatter.title}
+                </option>
+              ))}
+            </optgroup>
           ))}
         </select>
       </div>
