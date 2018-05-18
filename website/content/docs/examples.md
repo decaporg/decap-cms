@@ -1,9 +1,7 @@
 ---
 title: Examples
 weight: 110
-menu:
-  docs:
-    parent: start
+group: start
 ---
 
 Do you have a great, open source example? Submit a pull request to this page!

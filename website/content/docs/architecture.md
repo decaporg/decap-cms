@@ -1,9 +1,7 @@
 ---
 title: Architecture
-weight: 90
-menu:
-  docs:
-    parent: reference
+position: 90
+group: contributing
 ---
 
 Netlify CMS is a React application, using Redux for state management with immutable data structures (immutable.js).

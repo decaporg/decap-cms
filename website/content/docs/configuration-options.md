@@ -1,9 +1,7 @@
 ---
 title: Configuration Options
 weight: 23
-menu:
-  docs:
-    parent: reference
+group: reference
 ---
 
 All configuration options for Netlify CMS are specified in a `config.yml` file, in the folder where you access the editor UI (usually in the `/admin` folder).

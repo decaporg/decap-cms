@@ -1,9 +1,7 @@
 ---
 title: Update the CMS Version
 weight: 60
-menu:
-  docs:
-    parent: start
+group: start
 ---
 
 The update procedure for your CMS depends upon the method you used to install Netlify CMS.

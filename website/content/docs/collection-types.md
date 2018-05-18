@@ -1,9 +1,7 @@
 ---
 title: Collection Types
 weight: 27
-menu:
-  docs:
-    parent: start
+group: start
 ---
 
 All editable content types are defined in the `collections` field of your `config.yml` file, and display in the left sidebar of the Content page of the editor UI.

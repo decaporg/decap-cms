@@ -1,9 +1,7 @@
 ---
 title: Authentication & Backends
 weight: 25
-menu:
-  docs:
-    parent: start
+group: start
 ---
 
 Netlify CMS stores content in your GitHub, GitLab, or Bitbucket repository. In order for this to work, you need to authenticate with your Git host, and in most cases that requires a server. We have a few options for handling this.
