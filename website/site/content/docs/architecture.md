@@ -1,6 +1,9 @@
 ---
 title: Architecture
-position: 90
+weight: 90
+menu:
+  docs:
+    parent: reference
 ---
 
 # Technical Architecture
