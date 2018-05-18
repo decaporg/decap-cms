@@ -55,9 +55,9 @@ The first file, `admin/index.html`, is the entry point for the Netlify CMS admin
 </html>
 ```
 
-The second file, `admin/config.yml`, is the heart of your Netlify CMS installation, and a bit more complex. The next section covers the details.
+The second file, `admin/config.yml`, is the heart of your Netlify CMS installation, and a bit more complex. The [Configuration](#configuration) section covers the details.
 
-## Installing with npm
+### Installing with npm
 
 You can also use Netlify CMS as an npm module. Wherever you import Netlify CMS, it will automatically run, taking over the current page. Make sure the script that imports it is only run on your CMS page. First install the package and save it to your project:
 
@@ -95,6 +95,7 @@ These lines specify your backend protocol and your publication branch. Git Gatew
 By default, saving a post in the CMS interface will push a commit directly to the publication branch specified in `backend`. However, you also have the option to enable the [Editorial Workflow](https://www.netlifycms.org/docs/configuration-options/#publish-mode), which adds an interface for drafting, reviewing, and approving posts. To do this, add the following line to your `config.yml`:
 
 ```yaml
+# This line should *not* be indented
 publish_mode: editorial_workflow
 ```
 
@@ -103,6 +104,7 @@ publish_mode: editorial_workflow
 Netlify CMS allows users to upload images directly within the editor. For this to work, the CMS needs to know where to save them. If you already have an `images` folder in your project, you could use its path, possibly creating an `uploads` sub-folder, for example:
 
 ```yaml
+# This line should *not* be indented
 media_folder: "images/uploads" # Media files will be stored in the repo under images/uploads
 ```
 
@@ -111,6 +113,7 @@ If you're creating a new folder for uploaded media, you'll need to know where yo
 Note that the`media_folder` file path is relative to the project root, so the example above would work for Jekyll, GitBook, or any other generator that stores static files at the project root. However, it would not work for Hugo, Hexo, Middleman or others that store static files in a subfolder. Here's an example that could work for a Hugo site:
 
 ```yaml
+# These lines should *not* be indented
 media_folder: "static/images/uploads" # Media files will be stored in the repo under static/images/uploads
 public_folder: "/images/uploads" # The src attribute for uploaded media will begin with /images/uploads
 ```
