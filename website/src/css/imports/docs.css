@@ -94,6 +94,20 @@
   }
 
   .nav-subsections ul {
+    margin-bottom: 30px;
+  }
+
+  .docs-nav-section-list {
+    margin: 0;
+  }
+
+  .docs-nav-section-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+  .nav-subsections {
     margin: $tiny 0;
     padding: 0 0 0 $tiny;
     border-left: 2px solid $lightestGrey;
