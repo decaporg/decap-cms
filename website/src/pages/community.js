@@ -20,7 +20,7 @@ class EventWidget extends Component {
       .then(data => {
         console.log(data);
 
-        const eventDate = data.events[0].utc;
+        const eventDate = data.events[0].start.utc;
 
         this.setState({
           eventDate
