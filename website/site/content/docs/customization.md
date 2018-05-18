@@ -1,6 +1,9 @@
 ---
-title: Custom Previews
-position: 50
+title: Creating Custom Previews
+weight: 50
+menu:
+  docs:
+    parent: guides
 ---
 # Customizing the Preview Pane
 
