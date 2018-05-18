@@ -7,6 +7,7 @@ import Markdownify from '../components/markdownify';
 
 class EventWidget extends Component {
   state = {
+    loading: false,
     eventDate: ''
   };
   componentDidMount() {
@@ -14,6 +15,10 @@ class EventWidget extends Component {
     const eventbriteOrganiser = '14281996019';
 
     const url = `https://www.eventbriteapi.com/v3/events/search/?token=${eventbriteToken}&organizer.id=${eventbriteOrganiser}&expand=venue%27`;
+
+    this.setState({
+      loading: true
+    });
 
     fetch(url)
       .then(res => res.json())
@@ -23,18 +28,27 @@ class EventWidget extends Component {
         const eventDate = data.events[0].start.utc;
 
         this.setState({
+          loading: false,
           eventDate
         });
       })
       .catch(err => {
         console.log(err);
         // TODO: set state to show error message
+        this.setState({
+          loading: false
+        });
       });
   }
   render() {
-    const { eventDate } = this.state;
+    const { loading, eventDate } = this.state;
+
+    if (loading) {
+      return <span>Loading...</span>;
+    }
 
     const eventDateMoment = moment(eventDate);
+
     const offset = eventDateMoment.isDST() ? -7 : -8;
 
     const month = eventDateMoment.format('MMMM');
