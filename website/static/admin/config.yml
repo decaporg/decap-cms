@@ -16,7 +16,8 @@ collections: # A list of collections the CMS should be able to edit
     create: true # Allow users to create new documents in this collection
     fields: # The fields each document in this collection have
       - {label: "Title", name: "title", widget: "string", tagname: "h1"}
-      - {label: "Position", name: "position", widget: "number"}
+      - {label: "Group", name: "group", widget: "string"}
+      - {label: "Weight", name: "weight", widget: "number"}
       - {label: "Body", name: "body", widget: "markdown"}
   - name: "blog"
     label: "Blog"
