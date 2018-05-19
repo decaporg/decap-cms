@@ -18,7 +18,8 @@ if (!window.CMS_MANUAL_INIT) {
 if (typeof window !== 'undefined') {
   window.CMS = registry;
   window.initCMS = bootstrap;
-  window.createClass = window.createClass || createReactClass;
+  window.createReactClass = window.createReactClass || createReactClass
+  window.createClass = window.createClass || window.createReactClass;
   window.h = window.h || React.createElement;
 }
 
