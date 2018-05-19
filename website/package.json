@@ -40,7 +40,8 @@
     "react-headroom": "^2.2.2",
     "react-helmet": "^5.2.0",
     "react-markdown": "^3.3.2",
-    "react-sidecar": "^0.1.1"
+    "react-sidecar": "^0.1.1",
+    "smooth-scroll": "^14.2.0"
   },
   "devDependencies": {}
 }
