@@ -6,13 +6,13 @@ backend:
 
 publish_mode: editorial_workflow
 
-media_folder: "website/site/static/img" # Folder where user uploaded files should go
+media_folder: "website/static/img" # Folder where user uploaded files should go
 public_folder: "img"
 
 collections: # A list of collections the CMS should be able to edit
   - name: "docs" # Used in routes, ie.: /admin/collections/:slug/edit
     label: "Docs" # Used in the UI, ie.: "New Post"
-    folder: "website/site/content/docs" # The path to the folder where the documents are stored
+    folder: "website/content/docs" # The path to the folder where the documents are stored
     create: true # Allow users to create new documents in this collection
     fields: # The fields each document in this collection have
       - {label: "Title", name: "title", widget: "string", tagname: "h1"}
@@ -35,7 +35,7 @@ collections: # A list of collections the CMS should be able to edit
     files:
       - name: releases
         label: Releases
-        file: website/site/data/updates.yml
+        file: website/data/updates.yml
         fields:
           - name: updates
             label: Releases
@@ -46,7 +46,7 @@ collections: # A list of collections the CMS should be able to edit
               - {name: description, label: Description}
       - name: notifications
         label: Notifications
-        file: website/site/data/notifications.yml
+        file: website/data/notifications.yml
         description: Site-top notifications - publish one at a time
         fields:
           - name: notifications
