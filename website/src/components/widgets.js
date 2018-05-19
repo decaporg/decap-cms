@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
 
+import '../css/imports/widgets.css';
+
 class Widgets extends Component {
   state = {
     currentWidget: 'Boolean'
@@ -26,7 +28,8 @@ class Widgets extends Component {
                     this.setState({
                       currentWidget: label
                     })
-                  }>
+                  }
+                >
                   {label}
                 </span>
               );
@@ -38,7 +41,8 @@ class Widgets extends Component {
                 key={node.frontmatter.label}
                 className={classnames('widget', {
                   widget_open: currentWidget === node.frontmatter.label
-                })}>
+                })}
+              >
                 <h3>{node.frontmatter.label}</h3>
                 <div dangerouslySetInnerHTML={{ __html: node.html }} />
               </div>

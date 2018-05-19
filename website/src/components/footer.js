@@ -1,5 +1,7 @@
 import React from 'react';
 
+import '../css/imports/footer.css';
+
 const Footer = ({ buttons }) => (
   <footer>
     <div className="contained">
@@ -14,13 +16,15 @@ const Footer = ({ buttons }) => (
         <p>
           <a
             href="https://github.com/netlify/netlify-cms/blob/master/LICENSE"
-            className="text-link">
+            className="text-link"
+          >
             Distributed under MIT License
           </a>{' '}
           ·{' '}
           <a
             href="https://github.com/netlify/netlify-cms/blob/master/CODE_OF_CONDUCT.md"
-            className="text-link">
+            className="text-link"
+          >
             Code of Conduct
           </a>
         </p>

@@ -5,7 +5,9 @@ import classnames from 'classnames';
 import Header from '../components/header';
 import Footer from '../components/footer';
 
-import '../css/main.css';
+import '../css/imports/base.css';
+import '../css/imports/utilities.css';
+import '../css/imports/gitter.css';
 
 const Layout = ({ data, location, children }) => {
   const { title, description } = data.site.siteMetadata;

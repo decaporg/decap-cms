@@ -5,6 +5,8 @@ import Markdown from 'react-markdown';
 
 import Markdownify from '../components/markdownify';
 
+import '../css/imports/collab.css';
+
 class EventWidget extends Component {
   state = {
     loading: false,

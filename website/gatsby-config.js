@@ -1,6 +1,5 @@
 const pkg = require('./package.json');
 
-const cssImport = require('postcss-import');
 const neatgrid = require('postcss-neat');
 const nestedcss = require('postcss-nested');
 const colorfunctions = require('postcss-colour-functions');
@@ -11,7 +10,6 @@ const cssvars = require('postcss-simple-vars-async');
 const styleVariables = require('./src/theme');
 
 const postCssPlugins = [
-  cssImport({ from: './src/css/main.css' }),
   neatgrid(),
   nestedcss(),
   colorfunctions(),

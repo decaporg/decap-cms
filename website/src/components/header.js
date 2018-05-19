@@ -7,6 +7,8 @@ import DocSearch from './docsearch';
 
 import logo from '../img/netlify-cms-logo.svg';
 
+import '../css/imports/header.css';
+
 const Header = ({ location, notifications }) => {
   const isDocs = location.pathname.includes('docs');
 

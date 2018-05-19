@@ -4,6 +4,12 @@ import moment from 'moment';
 import Markdownify from '../components/markdownify';
 import VideoEmbed from '../components/video-embed';
 
+import '../css/imports/hero.css';
+import '../css/imports/cta.css';
+import '../css/imports/whatsnew.css';
+import '../css/imports/editors.css';
+import '../css/imports/community.css';
+
 const Features = ({ items }) => (
   <Fragment>
     {items.map(item => (

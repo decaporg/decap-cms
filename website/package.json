@@ -32,7 +32,6 @@
     "postcss-at2x": "^2.0.0",
     "postcss-colour-functions": "^1.5.1",
     "postcss-cssnext": "^2.7.0",
-    "postcss-import": "^8.1.2",
     "postcss-neat": "^2.5.2",
     "postcss-nested": "^1.0.0",
     "postcss-simple-extend": "^1.0.0",
