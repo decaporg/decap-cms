@@ -10,7 +10,7 @@ import logo from '../img/netlify-cms-logo.svg';
 import '../css/imports/header.css';
 
 const Header = ({ location, notifications }) => {
-  const isDocs = location.pathname.includes('docs');
+  const isDocs = location.pathname.indexOf('docs') !== -1;
 
   return (
     <Headroom>
