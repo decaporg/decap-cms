@@ -2,8 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
-import { loadEntries as actionLoadEntries } from 'Actions/entries';
+import pick from 'lodash/pick';
+import {
+  loadEntries as actionLoadEntries,
+  traverseCollectionCursor as actionTraverseCollectionCursor,
+} from 'Actions/entries';
 import { selectEntries } from 'Reducers';
+import { collectionEntriesCursorKey } from 'Reducers/cursors';
 import Entries from './Entries';
 
 class EntriesCollection extends React.Component {
@@ -35,8 +40,17 @@ class EntriesCollection extends React.Component {
     loadEntries(collection, page);
   }
 
+  cursorHandler = action => () => {
+    const { collection, traverseCollectionCursor } = this.props;
+    traverseCollectionCursor(collection, action);
+  };
+
+  getCursorActionFunctions = (cursor, handler) => cursor && cursor.actions
+    ? cursor.actions.reduce((acc, action) => ({ ...acc, [action]: handler(action) }), {})
+    : {};
+
   render () {
-    const { collection, entries, publicFolder, page, isFetching, viewStyle } = this.props;
+    const { collection, entries, publicFolder, page, isFetching, viewStyle, cursor } = this.props;
 
     return (
       <Entries
@@ -48,6 +62,8 @@ class EntriesCollection extends React.Component {
         isFetching={isFetching}
         collectionName={collection.get('label')}
         viewStyle={viewStyle}
+        cursorActions={this.getCursorActionFunctions(cursor, this.cursorHandler)}
+        cursorMeta={cursor && cursor.meta}
       />
     );
   }
@@ -62,11 +78,15 @@ function mapStateToProps(state, ownProps) {
   const entries = selectEntries(state, collection.get('name'));
   const isFetching = state.entries.getIn(['pages', collection.get('name'), 'isFetching'], false);
 
-  return { publicFolder, collection, page, entries, isFetching, viewStyle };
+  const rawCursor = state.cursors.get(collectionEntriesCursorKey(collection.get('name')));
+  const cursor = rawCursor && pick(rawCursor, ["meta", "actions"]);
+
+  return { publicFolder, collection, page, entries, isFetching, viewStyle, cursor };
 }
 
 const mapDispatchToProps = {
   loadEntries: actionLoadEntries,
+  traverseCollectionCursor: actionTraverseCollectionCursor,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(EntriesCollection);

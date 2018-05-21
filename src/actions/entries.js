@@ -2,11 +2,13 @@ import { List } from 'immutable';
 import { actions as notifActions } from 'redux-notifications';
 import { serializeValues } from 'Lib/serializeEntryValues';
 import { currentBackend } from 'Backends/backend';
-import { getIntegrationProvider } from 'Integrations';
-import { getAsset, selectIntegration } from 'Reducers';
+import { getAsset } from 'Reducers';
 import { selectFields } from 'Reducers/collections';
+import { collectionEntriesCursorKey } from 'Reducers/cursors';
+import { validateCursor, invalidCursorError } from 'ValueObjects/Cursor';
 import { createEntry } from 'ValueObjects/Entry';
 import ValidationErrorTypes from 'Constants/validationErrorTypes';
+import isArray from 'lodash/isArray';
 
 const { notifSend } = notifActions;
 
@@ -80,14 +82,17 @@ export function entriesLoading(collection) {
   };
 }
 
-export function entriesLoaded(collection, entries, pagination) {
+export function entriesLoaded(collection, entries, pagination, cursor = null) {
   return {
     type: ENTRIES_SUCCESS,
     payload: {
       collection: collection.get('name'),
       entries,
       page: pagination,
-    },
+      // If the backend returns a cursor, we add it to the action. It
+      // will be processed by the `cursors` reducer.
+      ...(cursor ? { cursor } : {})
+    }
   };
 }
 
@@ -245,14 +250,64 @@ export function loadEntries(collection, page = 0) {
     }
     const state = getState();
     const backend = currentBackend(state.config);
-    const integration = selectIntegration(state, collection.get('name'), 'listEntries');
-    const provider = integration ? getIntegrationProvider(state.integrations, backend.getToken, integration) : backend;
     dispatch(entriesLoading(collection));
-    provider.listEntries(collection, page).then(
-      response => dispatch(entriesLoaded(collection, response.entries.reverse(), response.pagination)),
-      error => dispatch(entriesFailed(collection, error))
-    );
+
+    backend.listEntries(collection, page)
+    // Validate the cursor if it exists to ensure it has the correct
+    // structure.
+    .then(response => ((!response.cursor) || validateCursor(response.cursor)
+      ? response
+      : Promise.reject(invalidCursorError(response.cursor))))
+    .then(response => dispatch(entriesLoaded(collection, response.entries.reverse(), response.pagination, response.cursor)))
+    .catch(err => {
+      dispatch(notifSend({
+        message: `Failed to load entries: ${ err }`,
+        kind: 'danger',
+        dismissAfter: 8000,
+      }));
+      return Promise.reject(dispatch(entriesFailed(collection, err)));
+    });
   };
+}
+
+function traverseCursor(backend, cursor, action) {
+  if (!cursor) {
+    throw new Error("No cursor exists");
+  }
+  if (!validateCursor(cursor)) {
+    throw new invalidCursorError(cursor);
+  }
+  if (!cursor.actions.includes(action)) {
+    throw new Error(`The current cursor does not support the pagination action "${ action }".`);
+  }
+  return backend.traverseCursor(cursor, action);
+}
+
+export function traverseCollectionCursor(collection, action) {
+  return async (dispatch, getState) => {
+    if (collection.get("isFetching")) {
+      return;
+    }
+    const state = getState();
+    const backend = currentBackend(state.config);
+    try {
+      const cursor = state.cursors.get(collectionEntriesCursorKey(collection.get('name')));
+      dispatch(entriesLoading(collection));
+      const { entries, cursor: newCursor } = await traverseCursor(backend, cursor, action);
+
+      // Pass null for the old pagination argument - this will
+      // eventually be removed.
+      return dispatch(entriesLoaded(collection, entries, null, newCursor));
+    } catch (err) {
+      console.error(err);
+      dispatch(notifSend({
+        message: `Failed to persist entry: ${ err }`,
+        kind: 'danger',
+        dismissAfter: 8000,
+      }));
+      return Promise.reject(dispatch(entriesFailed(collection, err)));
+    }
+  }
 }
 
 export function createEmptyDraft(collection) {
