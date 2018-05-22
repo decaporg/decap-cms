@@ -102,15 +102,14 @@ export default class ObjectControl extends Component {
     const multiFields = field.get('fields');
     const singleField = field.get('field');
 
-    if (multiFields) {
+    if (multiFields || singleField) { 
+     const fieldsForControl = multiFields ? multiFields : singleField
       return (
         <div id={forID} className={c(classNameWrapper, 'nc-objectControl-root')}>
           { forList ? null : <TopBar collapsed={collapsed} onCollapseToggle={this.handleCollapseToggle} /> }
-          { collapsed ? null : multiFields.map((f, idx) => this.controlFor(f, idx)) }
+          { collapsed ? null : fieldsForControl.map((f, idx) => this.controlFor(f, idx)) }
         </div>
-      );
-    } else if (singleField) {
-      return this.controlFor(singleField);
+      )
     }
 
     return <h3>No field(s) defined for this widget</h3>;
