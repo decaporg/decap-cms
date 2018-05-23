@@ -1,6 +1,7 @@
 backend:
   name: github
   repo: netlify/netlify-cms
+  squash_merges: true
 
 publish_mode: editorial_workflow
 
