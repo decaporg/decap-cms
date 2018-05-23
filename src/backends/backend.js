@@ -1,4 +1,5 @@
 import { attempt, isError } from 'lodash';
+import { Map } from 'immutable';
 import { resolveFormat } from "Formats/formats";
 import { selectIntegration } from 'Reducers/integrations';
 import {
@@ -92,6 +93,32 @@ const slugFormatter = (template = "{{slug}}", entryData, slugConfig) => {
 
   return sanitizeSlug(slug, slugConfig);
 };
+
+const commitMessageTemplates = Map({
+  create: 'Create {{collection}} “{{slug}}”',
+  update: 'Update {{collection}} “{{slug}}”',
+  delete: 'Delete {{collection}} “{{slug}}”',
+  uploadMedia: 'Upload “{{path}}”',
+  deleteMedia: 'Delete “{{path}}”'
+});
+
+const commitMessageFormatter = (type, config, { slug, path, collection }) => {
+  const templates = commitMessageTemplates.merge(config.getIn(['backend', 'commit_messages'], Map()));
+  const messageTemplate = templates.get(type);
+  return messageTemplate.replace(/\{\{([^\}]+)\}\}/g, (_, variable) => {
+    switch (variable) {
+      case 'slug':
+        return slug;
+      case 'path':
+        return path;
+      case 'collection':
+        return collection.get('label');
+      default:
+        console.warn(`Ignoring unknown variable “${ variable }” in commit message template.`);
+        return '';
+    }
+  });
+}
 
 class Backend {
   constructor(implementation, backendName, authStore = null) {
@@ -304,8 +331,7 @@ in the ${collection.get('name')} collection.\
       };
     }
 
-    const commitMessage = `${ (newEntry ? "Create " : "Update ") +
-          collection.get("label") } “${ entryObj.slug }”`;
+    const commitMessage = commitMessageFormatter(newEntry ? 'create' : 'update', config, { collection, slug: entryObj.slug, path: entryObj.path });
 
     const mode = config.get("publish_mode");
 
@@ -322,9 +348,9 @@ in the ${collection.get('name')} collection.\
       .then(() => entryObj.slug);
   }
 
-  persistMedia(file) {
+  persistMedia(config, file) {
     const options = {
-      commitMessage: `Upload ${file.path}`,
+      commitMessage: commitMessageFormatter('uploadMedia', config, { path: file.path }),
     };
     return this.implementation.persistMedia(file, options);
   }
@@ -336,12 +362,12 @@ in the ${collection.get('name')} collection.\
       throw (new Error("Not allowed to delete entries in this collection"));
     }
 
-    const commitMessage = `Delete ${ collection.get('label') } “${ slug }”`;
+    const commitMessage = commitMessageFormatter('delete', config, { collection, slug, path });
     return this.implementation.deleteFile(path, commitMessage);
   }
 
-  deleteMedia(path) {
-    const commitMessage = `Delete ${path}`;
+  deleteMedia(config, path) {
+    const commitMessage = commitMessageFormatter('deleteMedia', config, { path });
     return this.implementation.deleteFile(path, commitMessage);
   }
 
