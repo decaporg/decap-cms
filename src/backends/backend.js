@@ -15,6 +15,7 @@ import TestRepoBackend from "./test-repo/implementation";
 import GitHubBackend from "./github/implementation";
 import GitGatewayBackend from "./git-gateway/implementation";
 import { registerBackend, getBackend } from 'Lib/registry';
+import { EditorialWorkflowError } from "ValueObjects/errors";
 
 /**
  * Register internal backends
@@ -22,7 +23,6 @@ import { registerBackend, getBackend } from 'Lib/registry';
 registerBackend('git-gateway', GitGatewayBackend);
 registerBackend('github', GitHubBackend);
 registerBackend('test-repo', TestRepoBackend);
-
 
 class LocalStorageAuthStore {
   storageKey = "netlify-cms-user";
@@ -41,23 +41,28 @@ class LocalStorageAuthStore {
   }
 }
 
+const validIdentifierFields = ["title", "path"];
+
+const getIdentifierKey = entryData => {
+  const keys = validIdentifierFields.map(field => {
+    return entryData.findKey((_, key) => {
+      return key.toLowerCase().trim() === field;
+    });
+  });
+  return keys.find(key => key !== undefined);
+};
+
+const getIdentifier = entryData => {
+  const key = getIdentifierKey(entryData);
+  const identifier = entryData.get(key);
+  if (identifier === undefined) {
+    throw new Error("Collection must have a field name that is a valid entry identifier");
+  }
+  return identifier;
+};
+
 const slugFormatter = (template = "{{slug}}", entryData, slugConfig) => {
   const date = new Date();
-
-  const getIdentifier = (entryData) => {
-    const validIdentifierFields = ["title", "path"];
-    const identifiers = validIdentifierFields.map((field) =>
-      entryData.find((_, key) => key.toLowerCase().trim() === field)
-    );
-
-    const identifier = identifiers.find(ident => ident !== undefined);
-
-    if (identifier === undefined) {
-      throw new Error("Collection must have a field name that is a valid entry identifier");
-    }
-
-    return identifier;
-  };
 
   const slug = template.replace(/\{\{([^\}]+)\}\}/g, (_, field) => {
     switch (field) {
@@ -234,7 +239,37 @@ class Backend {
     .then(this.entryWithFormat(collection, slug));
   }
 
-  persistEntry(config, collection, entryDraft, MediaFiles, integrations, options = {}) {
+  async checkOverwrite(collection, slug, path, entryData) {
+    const identifierKey = getIdentifierKey(entryData);
+    const identifierField = collection.get('fields').find(field => {
+      return field.get('name') === identifierKey;
+    });
+    const identifierLabel = identifierField.get('label');
+    const errorMessage = `\
+Duplicate filename found. Please ensure the ${identifierLabel} field is unique from other entries \
+in the ${collection.get('name')} collection.\
+`;
+
+    const existingEntry = await this.unpublishedEntry(collection, slug).catch(error => {
+      if (error instanceof EditorialWorkflowError && error.notUnderEditorialWorkflow) {
+        return Promise.resolve(false);
+      }
+      return Promise.reject(error);
+    });
+
+    if (existingEntry) {
+      throw new Error(errorMessage);
+    }
+
+    const publishedEntry = await this.implementation.getEntry(collection, slug, path)
+      .then(({ data }) => data);
+
+    if (publishedEntry) {
+      throw new Error(errorMessage);
+    }
+  }
+
+  async persistEntry(config, collection, entryDraft, MediaFiles, integrations, options = {}) {
     const newEntry = entryDraft.getIn(["entry", "newRecord"]) || false;
 
     const parsedData = {
@@ -248,12 +283,16 @@ class Backend {
       if (!selectAllowNewEntries(collection)) {
         throw (new Error("Not allowed to create new entries in this collection"));
       }
-      const slug = slugFormatter(collection.get("slug"), entryDraft.getIn(["entry", "data"]), config.get("slug"));
+      const entryData = entryDraft.getIn(['entry', 'data']);
+      const slug = slugFormatter(collection.get('slug'), entryData, config.get('slug'));
       const path = selectEntryPath(collection, slug);
+
+      await this.checkOverwrite(collection, slug, path, entryData);
+
       entryObj = {
         path,
         slug,
-        raw: this.entryToRaw(collection, entryDraft.get("entry")),
+        raw: this.entryToRaw(collection, entryDraft.get('entry')),
       };
     } else {
       const path = entryDraft.getIn(["entry", "path"]);
