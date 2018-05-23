@@ -103,7 +103,7 @@ export function persistMedia(file, opts = {}) {
       const assetProxy = await createAssetProxy(fileName, file, false, privateUpload);
       dispatch(addAsset(assetProxy));
       if (!integration) {
-        const asset = await backend.persistMedia(assetProxy);
+        const asset = await backend.persistMedia(state.config, assetProxy);
         return dispatch(mediaPersisted(asset));
       }
       return dispatch(mediaPersisted(assetProxy.asset, { privateUpload }));
@@ -144,7 +144,7 @@ export function deleteMedia(file, opts = {}) {
         });
     }
     dispatch(mediaDeleting());
-    return backend.deleteMedia(file.path)
+    return backend.deleteMedia(state.config, file.path)
       .then(() => {
         return dispatch(mediaDeleted(file));
       })
