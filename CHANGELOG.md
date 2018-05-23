@@ -4,13 +4,19 @@
     Changes that have landed in master but are not yet released.
     Click to see more.
   </summary>
-
-  * fix large files failing to load ([@tech4him1](https://github.com/tech4him1) in [#1224](https://github.com/netlify/netlify-cms/pull/1224))
-  * prevent overwriting when generated slug matches an existing file ([@brianlmacdonald](https://github.com/brianlmacdonald) in [#1239](https://github.com/netlify/netlify-cms/pull/1239))
-  * enable custom commit message templates ([@delucis](https://github.com/delucis) in [#1359](https://github.com/netlify/netlify-cms/pull/1359))
 </details>
 
-## 1.8.0 (May 16, 2018)
+## 1.8.1 (May 23, 2018)
+Allow upload of files larger than 1MB to GitHub, prevent unintentional file overwrites.
+
+### Bug Fixes
+* prevent overwriting when generated slug matches an existing file ([@brianlmacdonald](https://github.com/brianlmacdonald) in [#1239](https://github.com/netlify/netlify-cms/pull/1239))
+* fix large files failing to load ([@tech4him1](https://github.com/tech4him1) in [#1224](https://github.com/netlify/netlify-cms/pull/1224))
+
+### Beta Features
+* enable custom commit message templates ([@delucis](https://github.com/delucis) in [#1359](https://github.com/netlify/netlify-cms/pull/1359))
+
+## 1.8.0 (May 16, 2018) ([demo](https://5afc303311b73b674b0ffae3--cms-demo.netlify.com/))
 Customizable relation widget display fields, squash merges for editorial workflow, perf
 improvements.
 
