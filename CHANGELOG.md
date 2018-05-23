@@ -7,6 +7,7 @@
 
   * fix large files failing to load ([@tech4him1](https://github.com/tech4him1) in [#1224](https://github.com/netlify/netlify-cms/pull/1224))
   * prevent overwriting when generated slug matches an existing file ([@brianlmacdonald](https://github.com/brianlmacdonald) in [#1239](https://github.com/netlify/netlify-cms/pull/1239))
+  * enable custom commit message templates ([@delucis](https://github.com/delucis) in [#1359](https://github.com/netlify/netlify-cms/pull/1359))
 </details>
 
 ## 1.8.0 (May 16, 2018)
