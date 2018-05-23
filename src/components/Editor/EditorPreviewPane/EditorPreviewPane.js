@@ -13,16 +13,18 @@ import EditorPreview from './EditorPreview';
 
 export default class PreviewPane extends React.Component {
 
-  getWidget = (field, value, props) => {
+  getWidget = (field, value, props, idx = null) => {
     const { fieldsMetaData, getAsset, entry } = props;
     const widget = resolveWidget(field.get('widget'));
+    const key = idx ? field.get('name') + '_' + idx : field.get('name');
+    
     /**
      * Use an HOC to provide conditional updates for all previews.
      */
     return !widget.preview ? null : (
       <PreviewHOC
         previewComponent={widget.preview}
-        key={field.get('name')}
+        key={key}
         field={field}
         getAsset={getAsset}
         value={value && Map.isMap(value) ? value.get(field.get('name')) : value}
@@ -92,7 +94,7 @@ export default class PreviewPane extends React.Component {
 
   getSingleNested = (field, values) => {
     if (List.isList(values)) {
-      return values.map((value, idx) => this.getWidget(field.set('name', field.get('name') + "_" + idx), value, this.props))
+      return values.map((value, idx) => this.getWidget(field, value, this.props, idx))
     }
     return this.getWidget(field, values, this.props);
   };
