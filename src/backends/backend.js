@@ -49,7 +49,7 @@ const getIdentifierKey = entryData => {
       return key.toLowerCase().trim() === field;
     });
   });
-  return keys.find(key => entryData.get(key) !== undefined);
+  return keys.find(key => key !== undefined);
 };
 
 const getIdentifier = entryData => {
