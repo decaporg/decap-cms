@@ -1,6 +1,7 @@
 backend:
   name: github
   repo: netlify/netlify-cms
+  branch: v1
 
 publish_mode: editorial_workflow
 
