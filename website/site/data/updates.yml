@@ -1,4 +1,9 @@
 updates:
+  - date: '2018-05-23'
+    description: >-
+      Allow upload of files larger than 1MB to GitHub, prevent unintentional
+      file overwrites.
+    version: 1.8.1
   - date: '2018-05-16'
     description: >-
       Customizable relation widget display fields, squash merges for editorial
