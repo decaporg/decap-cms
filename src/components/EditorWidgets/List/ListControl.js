@@ -43,9 +43,7 @@ const TopBar = ({ allowAdd, onAdd, listLabel, onCollapseAllToggle, allItemsColla
   </div>
 );
 
-const SortableList = SortableContainer(({ items, renderItem }) => {
-  return <div>{items.map(renderItem)}</div>;
-});
+const SortableList = SortableContainer(({ items, renderItem }) => (<div>{items.map(renderItem)}</div>));
 
 const valueTypes = {
   SINGLE: 'SINGLE',
@@ -78,7 +76,7 @@ export default class ListControl extends Component {
     const { field, value } = props;
     const allItemsCollapsed = field.get('collapsed', true);
     const itemsCollapsed = value && Array(value.size).fill(allItemsCollapsed);
-
+    
     this.state = {
       itemsCollapsed: List(itemsCollapsed),
       value: valueToString(value),
@@ -99,7 +97,6 @@ export default class ListControl extends Component {
 
   componentDidMount() {
     const { field } = this.props;
-
     if (field.get('fields')) {
       this.valueType = valueTypes.MULTIPLE;
     } else if (field.get('field')) {
@@ -125,7 +122,6 @@ export default class ListControl extends Component {
     if (newValue.match(/,$/) && oldValue.match(/, $/)) {
       listValue.pop();
     }
-
     const parsedValue = valueToString(listValue);
     this.setState({ value: parsedValue });
     onChange(listValue.map(val => val.trim()));
@@ -159,8 +155,9 @@ export default class ListControl extends Component {
   handleChangeFor(index) {
     return (fieldName, newValue, newMetadata) => {
       const { value, metadata, onChange, field } = this.props;
+      const keyPath = (this.valueType === valueTypes.SINGLE) ? index : fieldName
       const collectionName = field.get('name');
-      const newObjectValue = this.getObjectValue(index).set(fieldName, newValue);
+      const newObjectValue = (this.valueType === valueTypes.SINGLE) ? newValue: this.getObjectValue(index).set(fieldName, newValue);
       const parsedMetadata = {
         [collectionName]: Object.assign(metadata ? metadata.toJS() : {}, newMetadata ? newMetadata[collectionName] : {}),
       };

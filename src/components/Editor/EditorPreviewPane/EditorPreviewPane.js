@@ -16,7 +16,6 @@ export default class PreviewPane extends React.Component {
   getWidget = (field, value, props) => {
     const { fieldsMetaData, getAsset, entry } = props;
     const widget = resolveWidget(field.get('widget'));
-
     /**
      * Use an HOC to provide conditional updates for all previews.
      */
@@ -59,9 +58,14 @@ export default class PreviewPane extends React.Component {
     let field = fields && fields.find(f => f.get('name') === name);
     let value = values && values.get(field.get('name'));
     let nestedFields = field.get('fields');
+    let singleField = field.get('field');
 
     if (nestedFields) {
       field = field.set('fields', this.getNestedWidgets(nestedFields, value));
+    }
+
+    if (singleField) {
+      field = field.set('field', this.getSingleNested(singleField, value));
     }
 
     const labelledWidgets = ['string', 'text', 'number'];
@@ -84,6 +88,13 @@ export default class PreviewPane extends React.Component {
     }
     // Fields nested within an object field will be paired with a single Map of values.
     return this.widgetsForNestedFields(fields, values);
+  };
+
+  getSingleNested = (field, values) => {
+    if (List.isList(values)) {
+      return values.map((value, idx) => this.getWidget(field.set('name', field.get('name') + "_" + idx), value, this.props))
+    }
+    return this.getWidget(field, values, this.props);
   };
 
   /**
