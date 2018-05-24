@@ -5,10 +5,15 @@
     Click to see more.
   </summary>
 
-  * fix save/publish failure, revert overwrite prevention feature (@erquhart)
 </details>
 
-## 1.8.1 (May 23, 2018)
+## 1.8.2 (May 24, 2018)
+Fix failure to save/publish.
+
+### Bug Fixes
+  * fix save/publish failure, revert overwrite prevention feature (@erquhart)
+
+## 1.8.1 (May 23, 2018) ([demo](https://5b05df43dd6a547f52f4c4fb--cms-demo.netlify.com/))
 Allow upload of files larger than 1MB to GitHub, prevent unintentional file overwrites.
 
 ### Bug Fixes
