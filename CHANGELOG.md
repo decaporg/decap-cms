@@ -4,6 +4,8 @@
     Changes that have landed in master but are not yet released.
     Click to see more.
   </summary>
+
+  * fix save/publish failure, revert overwrite prevention feature (@erquhart)
 </details>
 
 ## 1.8.1 (May 23, 2018)
