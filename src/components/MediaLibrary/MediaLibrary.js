@@ -223,6 +223,7 @@ class MediaLibrary extends React.Component {
       page,
       isPaginating,
       privateUpload,
+      publicFolder,
     } = this.props;
     const { query, selectedFile } = this.state;
     const filteredFiles = forImage ? this.filterImages(files) : files;
@@ -320,7 +321,7 @@ class MediaLibrary extends React.Component {
                         : <div className="nc-mediaLibrary-cardImage"/>
                     }
                   </div>
-                  <p className="nc-mediaLibrary-cardText">{file.name}</p>
+                  <p className="nc-mediaLibrary-cardText">{publicFolder && `${publicFolder}/`}{file.name}</p>
                 </div>
               )
             }
