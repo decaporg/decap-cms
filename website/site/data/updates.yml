@@ -1,4 +1,7 @@
 updates:
+  - date: '2018-05-25'
+    description: Dependency updates.
+    version: 1.8.3
   - date: '2018-05-24'
     description: Fix failure to save/publish.
     version: 1.8.2
