@@ -68,7 +68,7 @@ function validateCollection(collection) {
     // Cannot set custom delimiter without explicit and proper frontmatter format declaration
     throw new Error(`Please set a proper frontmatter format for collection "${name}" to use a custom delimiter. Supported frontmatter formats are yaml-frontmatter, toml-frontmatter, and json-frontmatter.`);
   }
-  if (!!folder && !selectIdentifier(collection)) {
+  if (folder && !selectIdentifier(collection)) {
     // Verify that folder-type collections have an identifier field for slug creation.
     throw new Error(`Collection "${name}" must have a field that is a valid entry identifier. Supported fields are ${IDENTIFIER_FIELDS.join(', ')}.`);
   }
