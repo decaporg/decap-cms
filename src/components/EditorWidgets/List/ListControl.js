@@ -160,7 +160,12 @@ export default class ListControl extends Component {
     return (fieldName, newValue, newMetadata) => {
       const { value, metadata, onChange, field } = this.props;
       const collectionName = field.get('name');
-      const parsedValue = (this.valueType === valueTypes.SINGLE) ? newValue: this.getObjectValue(index).set(fieldName, newValue);
+      const newObjectValue = this.getObjectValue(index).set(fieldName, newValue);
+      const parseSingle = (singleObjValue, singleNewValue) => {
+        if (List.isList(singleObjValue)) return singleObjValue.first();
+        else return singleNewValue;
+      };
+      const parsedValue = (this.valueType === valueTypes.SINGLE) ? parseSingle(newObjectValue, newValue) : newObjectValue;
       const parsedMetadata = {
         [collectionName]: Object.assign(metadata ? metadata.toJS() : {}, newMetadata ? newMetadata[collectionName] : {}),
       };
