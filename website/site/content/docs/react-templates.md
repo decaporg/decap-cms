@@ -16,8 +16,8 @@ components.
 **Unfamiliar with React?** You may want to [brush
 up](https://reactjs.org/docs/hello-world.html) on it before proceeding.
 
-**No build system?** If you want to write [JSX](#) as we do in the examples below, but are not using a
-build system, check out the [JSX in the browser](#) guide for tips.
+**No build system?** If you want to write [JSX](https://reactjs.org/docs/introducing-jsx.html) as we do in the examples below, but are not using a
+build system, check out the [JSX in the browser](/docs/jsx-in-the-browser) guide for tips.
 
 ## Props
 
