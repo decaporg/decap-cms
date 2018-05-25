@@ -1,6 +1,6 @@
 ---
 title: Creating a Template Compiler
-weight: 40
+weight: 60
 menu:
   docs:
     parent: guides

@@ -1,6 +1,6 @@
 ---
 title: React Preview Templates
-weight: 60
+weight: 40
 menu:
   docs:
     parent: guides
@@ -19,7 +19,6 @@ up](https://reactjs.org/docs/hello-world.html) on it before proceeding.
 **No build system?** If you want to write [JSX](#) as we do in the examples below, but are not using a
 build system, check out the [JSX in the browser](#) guide for tips.
 
-
 ## Props
 
 The following props are available to React preview template components:
@@ -33,7 +32,7 @@ fields. Each field object will contain up to three properties:
 
 **`value`:** the raw field value\
 **`preview`:** _(optional)_ the HTML field preview\
-**`data`:** _(optional)_ secondary field data\
+**`data`:** _(optional)_ secondary field data provided by the field widget\
 
 ```js
 const PostPreview = (props) => {

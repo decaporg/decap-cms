@@ -1,6 +1,6 @@
 ---
-title: Custom Preview
-weight: 50
+title: Creating Custom Previews
+weight: 36
 menu:
   docs:
     parent: guides
