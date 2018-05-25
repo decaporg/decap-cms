@@ -1,5 +1,8 @@
 updates:
   - date: '2018-05-25'
+    description: Fix markdown widget styling.
+    version: 1.8.4
+  - date: '2018-05-25'
     description: Dependency updates.
     version: 1.8.3
   - date: '2018-05-24'
