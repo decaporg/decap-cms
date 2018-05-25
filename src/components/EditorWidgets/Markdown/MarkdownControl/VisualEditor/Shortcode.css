@@ -7,7 +7,7 @@
 
 .nc-visualEditor-shortcode-topBar {
   background-color: var(--textFieldBorderColor);
-  margin: -var(--widgetNestDistance) -var(--widgetNestDistance) 0;
+  margin: calc(-1 * var(--widgetNestDistance)) calc(-1 * var(--widgetNestDistance)) 0;
   border-radius: 0;
 }
 
