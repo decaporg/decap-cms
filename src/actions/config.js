@@ -40,6 +40,39 @@ export function applyDefaults(config) {
     });
 }
 
+function validateFieldTypes(collections) {
+  collections.forEach((collection) => {
+    const fieldKeys = Object.keys(collection);
+    fieldKeys.forEach((fieldKey) => {
+      const field = get(collection, fieldKey);
+      if (fieldKey === "create" || fieldKey === "delete" || fieldKey === "required") {
+        if (typeof field !== "boolean") {
+          throw new Error(`Error in configuration file: ${ fieldKey } must be a Boolean but was given type ${ typeof field }`);
+        }
+      } else if (fieldKey === "options" || fieldKey === "searchFields" || fieldKey === "fields" || fieldKey === "files" || fieldKey === "meta") {
+        if (!Array.isArray(field)) {
+          throw new Error(`Error in configuration file: ${ fieldKey } must be an Array but was given type ${ typeof field }`);
+        }
+        if (fieldKey === "fields") {
+        //if field type is `field` recursively call this function
+          return validateFieldTypes(field);
+        }
+      } else if (fieldKey === "editor") {
+        if (typeof field !== "object") {
+          throw new Error(`Error in configuration file: ${ fieldKey } must be an Object but was given type ${ typeof field }`);
+        }
+      } else if (fieldKey === "default" && collection.label === "Boolean") {
+        if (typeof field !== "boolean") {
+          throw new Error(`Error in configuration file: ${ fieldKey } must be a Boolean when label is a Boolean but was given type ${ typeof field }`);
+        }
+      } else if (typeof field !== "string") {
+        //if field type is none of the above, type must be a string
+        throw new Error(`Error in configuration file: ${ fieldKey } must be a string but was given type ${ typeof field }`);
+      }
+    });
+  });
+}
+
 export function validateConfig(config) {
   if (!config.get('backend')) {
     throw new Error("Error in configuration file: A `backend` wasn't found. Check your config.yml file.");
@@ -70,6 +103,7 @@ export function validateConfig(config) {
   if (!List.isList(collections) || collections.isEmpty() || !collections.first()) {
     throw new Error("Error in configuration file: Your `collections` must be an array with at least one element. Check your config.yml file.");
   }
+  validateFieldTypes(config.collections);
   return config;
 }
 
