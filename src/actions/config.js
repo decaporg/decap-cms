@@ -2,6 +2,9 @@ import yaml from "js-yaml";
 import { Map, List, fromJS } from "immutable";
 import { trimStart, flow, isBoolean, get } from "lodash";
 import { authenticateUser } from "Actions/auth";
+import { formatByExtension, supportedFormats, frontmatterFormats } from "Formats/formats";
+import { selectIdentifier } from "Reducers/collections";
+import { IDENTIFIER_FIELDS } from "Constants/fieldInference";
 import * as publishModes from "Constants/publishModes";
 
 export const CONFIG_REQUEST = "CONFIG_REQUEST";
@@ -40,6 +43,38 @@ export function applyDefaults(config) {
     });
 }
 
+function validateCollection(collection) {
+  const {
+    name,
+    folder,
+    files,
+    format,
+    extension,
+    frontmatter_delimiter: delimiter,
+    fields,
+  } = collection.toJS();
+
+  if (!folder && !files) {
+    throw new Error(`Unknown collection type for collection "${name}". Collections can be either Folder based or File based.`);
+  }
+  if (format && !supportedFormats.includes(format)) {
+    throw new Error(`Unknown collection format for collection "${name}". Supported formats are ${supportedFormats.join(',')}`);
+  }
+  if (!format && extension && !formatByExtension(extension)) {
+    // Cannot infer format from extension.
+    throw new Error(`Please set a format for collection "${name}". Supported formats are ${supportedFormats.join(',')}`);
+  }
+  if (delimiter && !frontmatterFormats.includes(format)) {
+    // Cannot set custom delimiter without explicit and proper frontmatter format declaration
+    throw new Error(`Please set a proper frontmatter format for collection "${name}" to use a custom delimiter. Supported frontmatter formats are yaml-frontmatter, toml-frontmatter, and json-frontmatter.`);
+  }
+  if (folder && !selectIdentifier(collection)) {
+    // Verify that folder-type collections have an identifier field for slug creation.
+    throw new Error(`Collection "${name}" must have a field that is a valid entry identifier. Supported fields are ${IDENTIFIER_FIELDS.join(', ')}.`);
+  }
+}
+
+
 export function validateConfig(config) {
   if (!config.get('backend')) {
     throw new Error("Error in configuration file: A `backend` wasn't found. Check your config.yml file.");
@@ -70,6 +105,12 @@ export function validateConfig(config) {
   if (!List.isList(collections) || collections.isEmpty() || !collections.first()) {
     throw new Error("Error in configuration file: Your `collections` must be an array with at least one element. Check your config.yml file.");
   }
+
+  /**
+   * Validate Collections
+   */
+  config.get('collections').forEach(validateCollection);
+
   return config;
 }
 
