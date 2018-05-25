@@ -5,13 +5,21 @@
     Click to see more.
   </summary>
 
+  ## v2
+  * (possibly breaking): return date object from date/datetime widgets if no format set ([@erquhart](https://github.com/erquhart) in [#1296](https://github.com/netlify/netlify-cms/pull/1296))
+  * check for title/slug field on config load ([@tech4him1](https://github.com/tech4him1) in [#1203](https://github.com/netlify/netlify-cms/pull/1203))
 </details>
 
-## 1.8.2 (May 24, 2018)
+## 1.8.3 (May 25, 2018)
+Update dependencies.
+
+
+## 1.8.2 (May 24, 2018) ([demo](https://5b06beb23672df18bb0d4947--cms-demo.netlify.com/))
 Fix failure to save/publish.
 
 ### Bug Fixes
   * fix save/publish failure, revert overwrite prevention feature (@erquhart)
+
 
 ## 1.8.1 (May 23, 2018) ([demo](https://5b05df43dd6a547f52f4c4fb--cms-demo.netlify.com/))
 Allow upload of files larger than 1MB to GitHub, prevent unintentional file overwrites.
@@ -22,6 +30,7 @@ Allow upload of files larger than 1MB to GitHub, prevent unintentional file over
 
 ### Beta Features
 * enable custom commit message templates ([@delucis](https://github.com/delucis) in [#1359](https://github.com/netlify/netlify-cms/pull/1359))
+
 
 ## 1.8.0 (May 16, 2018) ([demo](https://5afc303311b73b674b0ffae3--cms-demo.netlify.com/))
 Customizable relation widget display fields, squash merges for editorial workflow, perf
