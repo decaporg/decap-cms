@@ -10,7 +10,14 @@
   * check for title/slug field on config load ([@tech4him1](https://github.com/tech4him1) in [#1203](https://github.com/netlify/netlify-cms/pull/1203))
 </details>
 
-## 1.8.3 (May 25, 2018)
+## 1.8.4 (May 25, 2018)
+Fix markdown widget styling.
+
+### Bug Fixes
+  * fix markdown widget styling ([@erquhart](https://github.com/erquhart) in [#1384](https://github.com/netlify/netlify-cms/pull/1384))
+
+
+## 1.8.3 (May 25, 2018) ([demo](https://5b084974c965920b4c7644e3--cms-demo.netlify.com/))
 Update dependencies.
 
 
