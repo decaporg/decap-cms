@@ -3,14 +3,13 @@ import { has, get, escapeRegExp } from 'lodash';
 import consoleError from 'Lib/consoleError';
 import { CONFIG_SUCCESS } from 'Actions/config';
 import { FILES, FOLDER } from 'Constants/collectionTypes';
-import { INFERABLE_FIELDS } from 'Constants/fieldInference';
-import { formatByExtension, formatToExtension, supportedFormats, frontmatterFormats } from 'Formats/formats';
+import { INFERABLE_FIELDS, IDENTIFIER_FIELDS } from 'Constants/fieldInference';
+import { formatToExtension } from 'Formats/formats';
 
 const collections = (state = null, action) => {
   switch (action.type) {
     case CONFIG_SUCCESS:
       const configCollections = action.payload ? action.payload.get('collections') : List();
-      configCollections.forEach(validateCollection)
       return configCollections
         .toOrderedMap()
         .map(collection => {
@@ -26,32 +25,6 @@ const collections = (state = null, action) => {
       return state;
   }
 };
-
-function validateCollection(configCollection) {
-  const {
-    name,
-    folder,
-    files,
-    format,
-    extension,
-    frontmatter_delimiter: delimiter
-  } = configCollection.toJS();
-
-  if (!folder && !files) {
-    throw new Error(`Unknown collection type for collection "${name}". Collections can be either Folder based or File based.`);
-  }
-  if (format && !supportedFormats.includes(format)) {
-    throw new Error(`Unknown collection format for collection "${name}". Supported formats are ${supportedFormats.join(',')}`);
-  }
-  if (!format && extension && !formatByExtension(extension)) {
-    // Cannot infer format from extension.
-    throw new Error(`Please set a format for collection "${name}". Supported formats are ${supportedFormats.join(',')}`);
-  }
-  if (delimiter && !frontmatterFormats.includes(format)) {
-    // Cannot set custom delimiter without explicit and proper frontmatter format declaration
-    throw new Error(`Please set a proper frontmatter format for collection "${name}" to use a custom delimiter. Supported frontmatter formats are yaml-frontmatter, toml-frontmatter, and json-frontmatter.`);
-  }
-}
 
 const selectors = {
   [FOLDER]: {
@@ -120,6 +93,10 @@ export const selectListMethod = collection => selectors[collection.get('type')].
 export const selectAllowNewEntries = collection => selectors[collection.get('type')].allowNewEntries(collection);
 export const selectAllowDeletion = collection => selectors[collection.get('type')].allowDeletion(collection);
 export const selectTemplateName = (collection, slug) => selectors[collection.get('type')].templateName(collection, slug);
+export const selectIdentifier = collection => {
+  const fieldNames = collection.get('fields').map(field => field.get('name'));
+  return IDENTIFIER_FIELDS.find(id => fieldNames.find(name => name.toLowerCase().trim() === id));
+};
 export const selectInferedField = (collection, fieldName) => {
   const inferableField = INFERABLE_FIELDS[fieldName];
   const fields = collection.get('fields');
