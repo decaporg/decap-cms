@@ -1,17 +1,6 @@
 import React from 'react';
 import Link from 'gatsby-link';
 
-if (typeof window !== 'undefined') {
-  // Make scroll behavior of internal links smooth
-  const SmoothScroll = require('smooth-scroll');
-
-  new SmoothScroll('a[href*="#"]', {
-    offset() {
-      return document.querySelector('#header').offsetHeight;
-    }
-  });
-}
-
 const TableOfContents = ({ node }) => {
   // unescape less-than character done in gatsby-transformer-remark
   const toc = node.tableOfContents.replace(/&#x3C;/g, '<');
