@@ -143,6 +143,8 @@ ul {
 pre {
   border-radius: $borderRadius;
   line-height: 1 !important;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .code,
