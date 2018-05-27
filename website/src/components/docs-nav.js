@@ -1,17 +1,48 @@
-import React from 'react';
+import React, { Component } from 'react';
 import Link from 'gatsby-link';
 
-const TableOfContents = ({ node }) => {
-  // unescape less-than character done in gatsby-transformer-remark
-  const toc = node.tableOfContents.replace(/&#x3C;/g, '<');
+/**
+ * Maually get table of contents since tableOfContents from markdown
+ * nodes have code added.
+ *
+ * https://github.com/gatsbyjs/gatsby/issues/5436
+ */
+class TableOfContents extends Component {
+  state = {
+    headings: []
+  };
 
-  return (
-    <div
-      className="nav-subsections"
-      dangerouslySetInnerHTML={{ __html: toc }}
-    />
-  );
-};
+  componentDidMount() {
+    const contentHeadings = document.querySelectorAll('.docs-content h2');
+
+    const headings = [];
+    contentHeadings.forEach(h => {
+      headings.push({
+        id: h.id,
+        text: h.innerText
+      });
+    });
+
+    this.setState({
+      headings
+    });
+  }
+
+  render() {
+    const { headings } = this.state;
+    return (
+      <ul className="nav-subsections">
+        {headings.map(h => (
+          <li key={h.id}>
+            <a href={`#${h.id}`} className="subnav-link">
+              {h.text}
+            </a>
+          </li>
+        ))}
+      </ul>
+    );
+  }
+}
 
 const DocsNav = ({ items, location }) => (
   <nav className="docs-nav" id="docs-nav">
@@ -27,14 +58,7 @@ const DocsNav = ({ items, location }) => (
                 activeClassName="active">
                 {node.frontmatter.title}
               </Link>
-              {location.pathname === node.fields.slug && (
-                <div
-                  className="nav-subsections"
-                  dangerouslySetInnerHTML={{
-                    __html: node.tableOfContents
-                  }}
-                />
-              )}
+              {location.pathname === node.fields.slug && <TableOfContents />}
             </li>
           ))}
         </ul>
