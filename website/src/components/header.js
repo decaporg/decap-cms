@@ -13,7 +13,7 @@ const Header = ({ location, notifications }) => {
   const isDocs = location.pathname.indexOf('docs') !== -1;
 
   return (
-    <Headroom>
+    <Headroom disableInlineStyles>
       {notifications.map((node, i) => (
         <a
           key={i}
