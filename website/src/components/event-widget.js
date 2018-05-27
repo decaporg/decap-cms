@@ -3,13 +3,11 @@ import moment from 'moment';
 
 class EventWidget extends Component {
   state = {
-    errorMessage: '',
     loading: false,
     eventDate: ''
   };
 
   componentDidMount() {
-    const eventRequest = new XMLHttpRequest();
     const eventbriteToken = 'C5PX65CJBVIXWWLNFKLO';
     const eventbriteOrganiser = '14281996019';
 
@@ -19,41 +17,29 @@ class EventWidget extends Component {
       loading: true
     });
 
-    eventRequest.open('GET', url, true);
-
-    eventRequest.onload = () => {
-      if (eventRequest.status >= 200 && eventRequest.status < 400) {
-        // Success!
-        const data = JSON.parse(eventRequest.responseText);
-
+    fetch(url)
+      .then(res => res.json())
+      .then(data => {
         const eventDate = data.events[0].start.utc;
 
         this.setState({
           loading: false,
           eventDate
         });
-      }
-    };
-
-    eventRequest.onerror = () => {
-      this.setState({
-        errorMessage:
-          'The event info could not be loaded at this time, please try again later.',
-        loading: false
+      })
+      .catch(err => {
+        console.log(err);
+        // TODO: set state to show error message
+        this.setState({
+          loading: false
+        });
       });
-    };
-
-    eventRequest.send();
   }
   render() {
-    const { errorMessage, loading, eventDate } = this.state;
+    const { loading, eventDate } = this.state;
 
     if (loading) {
       return <span>Loading...</span>;
-    }
-
-    if (errorMessage) {
-      return <span>{errorMessage}</span>;
     }
 
     const eventDateMoment = moment(eventDate);
