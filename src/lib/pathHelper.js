@@ -1,3 +1,5 @@
+import { trimStart, trimEnd } from 'lodash';
+
 const absolutePath = new RegExp('^(?:[a-z]+:)?//', 'i');
 const normalizePath = path => path.replace(/[\\\/]+/g, '/');
 
@@ -10,7 +12,11 @@ export function resolvePath(path, basePath) { // eslint-disable-line
 
   if (path.indexOf('/') === -1) {
     // It's a single file name, no directories. Prepend public folder
-    return normalizePath(`/${ basePath }/${ path }`);
+    if (absolutePath.test(basePath)) {
+      return `${ trimEnd(basePath, '/') }/${ trimStart(normalizePath(path), '/') }`;
+    } else {
+      return normalizePath(`/${ basePath }/${ path }`);
+    }
   }
 
   // It's a relative path. Prepend a forward slash.

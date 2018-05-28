@@ -1,4 +1,68 @@
-import { fileExtensionWithSeparator, fileExtension } from '../pathHelper';
+import { resolvePath, fileExtensionWithSeparator, fileExtension } from '../pathHelper';
+
+describe('resolvePath', () => {
+  it('should return null if no file name specified', () => {
+    expect(
+      resolvePath('', 'assets/uploads')
+    ).toBeNull();
+  });
+  it('should return the file name without change if it is absolute', () => {
+    expect(
+      resolvePath('https://my-asset-store.com/filename.png', 'assets/uploads')
+    ).toEqual(
+      'https://my-asset-store.com/filename.png'
+    );
+  });
+  it('should consider the file name a path relative to the site root if it contains slashes', () => {
+    expect(
+      resolvePath('folder/filename.png', 'assets/uploads')
+    ).toEqual(
+      '/folder/filename.png'
+    );
+  });
+  it('should prepend the basePath to the file name', () => {
+    expect(
+      resolvePath('filename.png', 'assets/uploads')
+    ).toEqual(
+      '/assets/uploads/filename.png'
+    );
+  });
+  it('should consider the basePath relative to the site root', () => {
+    expect(
+      resolvePath('filename.png', 'assets/uploads')
+    ).toEqual(
+      '/assets/uploads/filename.png'
+    );
+  });
+  it('should consider the basePath absolute if it begins with a protocol', () => {
+    expect(
+      resolvePath('filename.png', 'https://my-asset-store.com/assets/uploads/')
+    ).toEqual(
+      'https://my-asset-store.com/assets/uploads/filename.png'
+    );
+  });
+  it('should assume trailing slashes on absoluet basePath', () => {
+    expect(
+      resolvePath('filename.png', 'https://my-asset-store.com/assets/uploads')
+    ).toEqual(
+      'https://my-asset-store.com/assets/uploads/filename.png'
+    );
+  });
+  it('should consider the basePath absolute if it begins with double-slashes', () => {
+    expect(
+      resolvePath('filename.png', '//my-asset-store.com/assets/uploads')
+    ).toEqual(
+      '//my-asset-store.com/assets/uploads/filename.png'
+    );
+  });
+  it('should remove duplicate and/or forward path separators', () => {
+    expect(
+      resolvePath('filename.png', '\\assets//uploads\\')
+    ).toEqual(
+      '/assets/uploads/filename.png'
+    );
+  });
+});
 
 describe('fileExtensionWithSeparator', () => {
   it('should return the extension of a file', () => {
