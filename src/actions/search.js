@@ -4,7 +4,7 @@ import { getIntegrationProvider } from 'Integrations';
 import { selectIntegration, selectEntries } from 'Reducers';
 import { selectInferedField } from 'Reducers/collections';
 import { WAIT_UNTIL_ACTION } from 'Redux/middleware/waitUntilAction';
-import { loadEntries, ENTRIES_SUCCESS } from './entries';
+import { loadEntries, loadAllEntries, ENTRIES_SUCCESS } from './entries';
 
 /*
  * Contant Declarations
@@ -30,13 +30,13 @@ export function searchingEntries(searchTerm) {
   };
 }
 
-export function searchSuccess(searchTerm, entries, page) {
+export function searchSuccess(searchTerm, entries, append) {
   return {
     type: SEARCH_ENTRIES_SUCCESS,
     payload: {
       searchTerm,
       entries,
-      page,
+      append,
     },
   };
 }
@@ -103,9 +103,14 @@ export function clearSearch() {
  */
 
 // SearchEntries will search for complete entries in all collections.
-export function searchEntries(searchTerm, page = 0) {
+export function searchEntries(searchTerm, loadNext) {
   return (dispatch, getState) => {
     const state = getState();
+    const cursor = loadNext && state.search.get('cursor');
+    if (loadNext && !cursor) {
+      return;
+    }
+    const boundSetCursor = newCursor => dispatch(setCursor(newCursor, { search: true }));
     const allCollections = state.collections.keySeq().toArray();
     const collections = allCollections.filter(collection => selectIntegration(state, collection, 'search'));
     const integration = selectIntegration(state, collections[0], 'search');
@@ -114,8 +119,8 @@ export function searchEntries(searchTerm, page = 0) {
     } else {
       const provider = getIntegrationProvider(state.integrations, currentBackend(state.config).getToken, integration);
       dispatch(searchingEntries(searchTerm));
-      provider.search(collections, searchTerm, page).then(
-        response => dispatch(searchSuccess(searchTerm, response.entries, response.pagination)),
+      provider.search(collections, searchTerm, cursor, boundSetCursor).then(
+        entries => dispatch(searchSuccess(searchTerm, entries, loadNext)),
         error => dispatch(searchFailure(searchTerm, error))
       );
     }
@@ -145,7 +150,8 @@ export function query(namespace, collection, searchFields, searchTerm) {
 
 function localSearch(searchTerm, getState, dispatch) {
   return (function acc(localResults = { entries: [] }) {
-    function processCollection(collection, collectionKey) {
+    async function processCollection(collection, collectionKey) {
+      await dispatch(loadAllEntries(collection));
       const state = getState();
       if (state.entries.hasIn(['pages', collectionKey, 'ids'])) {
         const searchFields = [
@@ -162,7 +168,6 @@ function localSearch(searchTerm, getState, dispatch) {
         }).filter(entry => entry.score > 5);
         localResults[collectionKey] = true;
         localResults.entries = localResults.entries.concat(filteredEntries);
-        
         const returnedKeys = Object.keys(localResults);
         const allCollections = state.collections.keySeq().toArray();
         if (allCollections.every(v => returnedKeys.indexOf(v) !== -1)) {
@@ -171,24 +176,11 @@ function localSearch(searchTerm, getState, dispatch) {
             if (a.score < b.score) return 1;
             return 0;
           }).map(f => f.original);
-          if (allCollections.size > 3 || localResults.entries.length > 30) {
-            console.warn('The Netlify CMS is currently using a Built-in search.' +
-            '\nWhile this works great for small sites, bigger projects might benefit from a separate search integration.' + 
-            '\nPlease refer to the documentation for more information');
-          }
-          dispatch(searchSuccess(searchTerm, sortedResults, 0));
+          dispatch(searchSuccess(searchTerm, sortedResults));
         }
-      } else {
-        // Collection entries aren't loaded yet.
-        // Dispatch loadEntries and wait before redispatching this action again.
-        dispatch({
-          type: WAIT_UNTIL_ACTION,
-          predicate: action => (action.type === ENTRIES_SUCCESS && action.payload.collection === collectionKey),
-          run: () => processCollection(collection, collectionKey),
-        });
-        dispatch(loadEntries(collection));
       }
     }
+    dispatch(searchingEntries(searchTerm));
     getState().collections.forEach(processCollection);
   }());
 }

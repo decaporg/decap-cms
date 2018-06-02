@@ -3,6 +3,7 @@ import { has, get, escapeRegExp } from 'lodash';
 import consoleError from 'Lib/consoleError';
 import { CONFIG_SUCCESS } from 'Actions/config';
 import { FILES, FOLDER } from 'Constants/collectionTypes';
+import { CURSOR_SET } from 'Actions/cursor';
 import { INFERABLE_FIELDS, IDENTIFIER_FIELDS } from 'Constants/fieldInference';
 import { formatToExtension } from 'Formats/formats';
 
@@ -21,6 +22,13 @@ const collections = (state = null, action) => {
           }
         })
         .mapKeys((key, collection) => collection.get('name'));
+    case CURSOR_SET: {
+      const { collectionName, cursor } = action.payload;
+      if (collectionName) {
+        return state.setIn([collectionName, 'cursor'], cursor);
+      }
+      return state;
+    }
     default:
       return state;
   }

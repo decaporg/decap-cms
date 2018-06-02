@@ -47,7 +47,7 @@ export default class API {
     return `${ this.api_root }${ path }?${ [cacheBuster, ...encodedParams].join("&") }`;
   }
 
-  request(path, options = {}) {
+  request(path, options = {}, setCursor) {
     const headers = this.requestHeaders(options.headers || {});
     const url = this.urlFor(path, options);
     return fetch(url, { ...options, headers })
@@ -62,7 +62,16 @@ export default class API {
       return Promise.all([response, response.text()]);
     })
     .catch(err => Promise.reject([err, null]))
-    .then(([response, value]) => (response.ok ? value : Promise.reject([value, response])))
+    .then(([response, value]) => {
+      if (response.ok && setCursor) {
+        const cursor = response.headers.get('X-Next-Page');
+        setCursor(response.headers.get("X-Next-Page"));
+      }
+      if (response.ok) {
+        return value;
+      }
+      return Promise.reject([value, response]);
+    })
     .catch(([errorValue, response]) => {
       const errorMessageProp = (errorValue && errorValue.message) ? errorValue.message : null;
       const message = errorMessageProp || (isString(errorValue) ? errorValue : "");
@@ -94,10 +103,10 @@ export default class API {
       });
   }
 
-  listFiles(path) {
+  listFiles(path, cursor, setCursor) {
     return this.request(`${ this.repoURL }/repository/tree`, {
-      params: { path, ref: this.branch },
-    })
+      params: { path, ref: this.branch, page: cursor || 1 },
+    }, setCursor)
     .then(files => files.filter(file => file.type === "blob"));
   }
 

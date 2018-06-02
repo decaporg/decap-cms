@@ -17,7 +17,6 @@ class EntriesSearch extends React.Component {
     searchTerm: PropTypes.string.isRequired,
     collections: ImmutablePropTypes.seq,
     entries: ImmutablePropTypes.list,
-    page: PropTypes.number,
     publicFolder: PropTypes.string,
   };
 
@@ -36,19 +35,18 @@ class EntriesSearch extends React.Component {
     this.props.clearSearch();
   }
 
-  handleLoadMore = (page) => {
+  handleLoadMore = () => {
     const { searchTerm, searchEntries } = this.props;
-    if (!isNaN(page)) searchEntries(searchTerm, page);
+    searchEntries(searchTerm, true);
   };
 
   render () {
-    const { collections, entries, publicFolder, page, isFetching } = this.props;
+    const { collections, entries, publicFolder, isFetching } = this.props;
     return (
       <Entries
         collections={collections}
         entries={entries}
         publicFolder={publicFolder}
-        page={page}
         onPaginate={this.handleLoadMore}
         isFetching={isFetching}
       />
@@ -60,11 +58,10 @@ function mapStateToProps(state, ownProps) {
   const { searchTerm } = ownProps;
   const collections = ownProps.collections.toIndexedSeq();
   const isFetching = state.entries.getIn(['search', 'isFetching']);
-  const page = state.entries.getIn(['search', 'page']);
   const entries = selectSearchedEntries(state);
   const publicFolder = state.config.get('public_folder');
 
-  return { isFetching, page, collections, entries, publicFolder, searchTerm };
+  return { isFetching, collections, entries, publicFolder, searchTerm };
 }
 
 const mapDispatchToProps = {

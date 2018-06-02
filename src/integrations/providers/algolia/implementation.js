@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { flatten } from 'lodash';
 import { createEntry } from 'ValueObjects/Entry';
 import { selectEntrySlug } from 'Reducers/collections';
 
@@ -21,12 +21,6 @@ export default class Algolia {
     this.indexPrefix = prefix ? `${ prefix }-` : '';
 
     this.searchURL = `https://${ this.applicationID }-dsn.algolia.net/1`;
-
-    this.entriesCache = {
-      collection: null,
-      page: null,
-      entries: [],
-    };
   }
 
   requestHeaders(headers = {}) {
@@ -74,21 +68,24 @@ export default class Algolia {
     });
   }
 
-  search(collections, searchTerm, page) {
+  search(collections, searchTerm, cursor, setCursor) {
     const searchCollections = collections.map(collection => (
-      { indexName: `${ this.indexPrefix }${ collection }`, params: `query=${ searchTerm }&page=${ page }` }
+      { indexName: `${ this.indexPrefix }${ collection }`, params: `query=${ searchTerm }&page=${ cursor || 0 }` }
     ));
 
     return this.request(`${ this.searchURL }/indexes/*/queries`, {
       method: 'POST',
       body: JSON.stringify({ requests: searchCollections }),
     }).then((response) => {
+      if (nbPages && cursor < nbPages) {
+        setCursor(cursor + 1);
+      }
       const entries = response.results.map((result, index) => result.hits.map((hit) => {
         const slug = getSlug(hit.path);
         return createEntry(collections[index], slug, hit.path, { data: hit.data, partial: true });
       }));
 
-      return { entries: _.flatten(entries), pagination: page };
+      return flatten(entries);
     });
   }
 
@@ -101,21 +98,18 @@ export default class Algolia {
     });
   }
 
-  listEntries(collection, page) {
-    if (this.entriesCache.collection === collection && this.entriesCache.page === page) {
-      return Promise.resolve({ page: this.entriesCache.page, entries: this.entriesCache.entries });
-    } else {
-      return this.request(`${ this.searchURL }/indexes/${ this.indexPrefix }${ collection.get('name') }`, {
-        params: { page },
-      }).then((response) => {
-        const entries = response.hits.map((hit) => {
-          const slug = selectEntrySlug(collection, hit.path);
-          return createEntry(collection.get('name'), slug, hit.path, { data: hit.data, partial: true });
-        });
-        this.entriesCache = { collection, pagination: response.page, entries };
-        return { entries, pagination: response.page };
+  listEntries(collection, cursor, setCursor) {
+    const url = `${ this.searchURL }/indexes/${ this.indexPrefix }${ collection.get('name') }`;
+    const params = { page: cursor || 0 };
+    return this.request(url, { params }, setCursor).then(({ hits, nbPages }) => {
+      if (nbPages && cursor < nbPages) {
+        setCursor(cursor + 1);
+      }
+      return hits.map((hit) => {
+        const slug = selectEntrySlug(collection, hit.path);
+        return createEntry(collection.get('name'), slug, hit.path, { data: hit.data, partial: true });
       });
-    }
+    });
   }
 
   getEntry(collection, slug) {

@@ -154,11 +154,11 @@ class Backend {
 
   getToken = () => this.implementation.getToken();
 
-  listEntries(collection) {
+  listEntries(collection, cursor, setCursor) {
     const listMethod = this.implementation[selectListMethod(collection)];
     const extension = selectFolderEntryExtension(collection);
     const collectionFilter = collection.get('filter');
-    return listMethod.call(this.implementation, collection, extension)
+    return listMethod.call(this.implementation, collection, extension, cursor, setCursor)
       .then(loadedEntries => (
         loadedEntries.map(loadedEntry => createEntry(
           collection.get("name"),
@@ -167,17 +167,11 @@ class Backend {
           { raw: loadedEntry.data || '', label: loadedEntry.file.label }
         ))
       ))
-      .then(entries => (
-        {
-          entries: entries.map(this.entryWithFormat(collection)),
-        }
-      ))
-      // If this collection has a "filter" property, filter entries accordingly
-      .then(loadedCollection => (
-        {
-          entries: collectionFilter ? this.filterEntries(loadedCollection, collectionFilter) : loadedCollection.entries
-        }
-      ));
+      .then(entries => entries.map(this.entryWithFormat(collection)))
+      .then(loadedCollection => collectionFilter
+        ? this.filterEntries(loadedCollection, collectionFilter)
+        : loadedCollection
+      );
   }
 
   getEntry(collection, slug) {
@@ -191,8 +185,8 @@ class Backend {
     );
   }
 
-  getMedia() {
-    return this.implementation.getMedia();
+  getMedia(cursor, setCursor) {
+    return this.implementation.getMedia(cursor, setCursor);
   }
 
   entryWithFormat(collectionOrEntity) {

@@ -1,4 +1,5 @@
-import { pickBy, trimEnd } from 'lodash';
+import { pickBy, trimEnd, get } from 'lodash';
+import parseLinkHeader from 'parse-link-header';
 import { addParams } from 'Lib/urlHelper';
 
 export default class AssetStore {
@@ -55,28 +56,44 @@ export default class AssetStore {
     }));
   }
 
-  async request(path, options = {}) {
+  async request(path, options = {}, setCursor) {
     const headers = this.requestHeaders(options.headers || {});
     const url = this.urlFor(path, options);
     const response = await fetch(url, { ...options, headers });
     const contentType = response.headers.get('Content-Type');
     const isJson = contentType && contentType.match(/json/);
     const content = isJson ? await this.parseJsonResponse(response) : response.text();
+    if (response.ok && setCursor) {
+      const nextPage = get(parseLinkHeader(response.headers.get('Link')), ['next', 'page']);
+      setCursor(nextPage);
+    }
     return content;
   }
 
-  async retrieve(query, page, privateUpload) {
-    const params = pickBy({ search: query, page, filter: privateUpload ? 'private' : 'public' }, val => !!val);
+  async retrieve(query, cursor = 1, setCursor, privateUpload) {
+    const params = pickBy({
+      search: query,
+      filter: privateUpload ? 'private' : 'public',
+      page: cursor,
+    }, val => !!val);
     const url = addParams(this.getSignedFormURL, params);
     const token = await this.getToken();
     const headers = {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${ token }`,
     };
-    const response = await this.request(url, { headers });
+    const response = await this.request(url, { headers }, setCursor);
     const files = response.map(({ id, name, size, url }) => {
       return { id, name, size, url, urlIsPublicPath: true };
     });
+
+    /**
+     * The Link header pagination info doesn't reflect queried results, so we
+     * manually stop paging when a page comes back empty.
+     */
+    if (!files.length) {
+      setCursor(null);
+    }
     return files;
   }
 

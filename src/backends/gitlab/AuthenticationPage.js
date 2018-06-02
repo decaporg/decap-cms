@@ -6,7 +6,7 @@ import { Icon } from 'UI';
 export default class AuthenticationPage extends React.Component {
   static propTypes = {
     onLogin: PropTypes.func.isRequired,
-    inProgress: PropTypes.bool,
+    inFetching: PropTypes.bool,
   };
 
   state = {};
@@ -19,7 +19,7 @@ export default class AuthenticationPage extends React.Component {
     };
     const auth = new Authenticator(cfg);
 
-    auth.authenticate({ provider: 'gitlab', scope: 'repo' }, (err, data) => {
+    auth.authenticate({ provider: 'gitlab', scope: 'api' }, (err, data) => {
       if (err) {
         this.setState({ loginError: err.toString() });
         return;
@@ -30,7 +30,7 @@ export default class AuthenticationPage extends React.Component {
 
   render() {
     const { loginError } = this.state;
-    const { inProgress } = this.props;
+    const { isFetching } = this.props;
 
     return (
       <section className="nc-githubAuthenticationPage-root">
@@ -38,10 +38,10 @@ export default class AuthenticationPage extends React.Component {
         {loginError && <p>{loginError}</p>}
         <button
           className="nc-githubAuthenticationPage-button"
-          disabled={inProgress}
+          disabled={isFetching}
           onClick={this.handleLogin}
         >
-          <Icon type="gitlab" /> {inProgress ? "Logging in..." : "Login with GitLab"}
+          <Icon type="gitlab" /> {isFetching ? "Logging in..." : "Login with GitLab"}
         </button>
       </section>
     );

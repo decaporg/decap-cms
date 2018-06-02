@@ -1,6 +1,7 @@
 import { actions as notifActions } from 'redux-notifications';
 import { currentBackend } from 'Backends/backend';
 import { createAssetProxy } from 'ValueObjects/AssetProxy';
+import { setCursor } from 'Actions/cursor';
 import { getAsset, selectIntegration } from 'Reducers';
 import { getIntegrationProvider } from 'Integrations';
 import { addAsset } from './media';
@@ -39,19 +40,26 @@ export function removeInsertedMedia(controlID) {
 }
 
 export function loadMedia(opts = {}) {
-  const { delay = 0, query = '', page = 1, privateUpload } = opts;
+  const { delay = 0, query = '', loadNext, privateUpload } = opts;
   return async (dispatch, getState) => {
     const state = getState();
+    if (state.isLoading) {
+      return;
+    }
     const backend = currentBackend(state.config);
     const integration = selectIntegration(state, null, 'assetStore');
+    const cursor = state.mediaLibrary.get('cursor');
+    if (loadNext && !cursor) {
+      return;
+    }
+    const boundSetCursor = newCursor => dispatch(setCursor(newCursor, { media: true }));
     if (integration) {
       const provider = getIntegrationProvider(state.integrations, backend.getToken, integration);
-      dispatch(mediaLoading(page));
+      dispatch(mediaLoading(loadNext));
       try {
-        const files = await provider.retrieve(query, page, privateUpload);
+        const files = await provider.retrieve(query, loadNext ? cursor : null, boundSetCursor, privateUpload);
         const mediaLoadedOpts = {
-          page,
-          canPaginate: true,
+          append: loadNext,
           dynamicSearch: true,
           dynamicSearchQuery: query,
           privateUpload,
@@ -59,15 +67,29 @@ export function loadMedia(opts = {}) {
         return dispatch(mediaLoaded(files, mediaLoadedOpts));
       }
       catch(error) {
+        console.error(error);
+        dispatch(notifSend({
+          message: `Failed to load media: ${ error.message }`,
+          kind: 'danger',
+          dismissAfter: 8000,
+        }));
         return dispatch(mediaLoadFailed({ privateUpload }));
       }
     }
-    dispatch(mediaLoading(page));
+    dispatch(mediaLoading(loadNext));
     return new Promise(resolve => {
       setTimeout(() => resolve(
-        backend.getMedia()
-          .then(files => dispatch(mediaLoaded(files)))
-          .catch((error) => dispatch(error.status === 404 ? mediaLoaded() : mediaLoadFailed()))
+        backend.getMedia(loadNext ? cursor : null, boundSetCursor)
+          .then(files => dispatch(mediaLoaded(files, { append: loadNext })))
+          .catch((error) => {
+            console.error(error);
+            dispatch(notifSend({
+              message: `Failed to load media: ${ error.message }`,
+              kind: 'danger',
+              dismissAfter: 8000,
+            }));
+            return dispatch(error.status === 404 ? mediaLoaded() : mediaLoadFailed());
+          })
       ));
     }, delay);
   };
@@ -160,10 +182,10 @@ export function deleteMedia(file, opts = {}) {
   };
 }
 
-export function mediaLoading(page) {
+export function mediaLoading(loadNext) {
   return {
     type: MEDIA_LOAD_REQUEST,
-    payload: { page },
+    payload: { append: loadNext },
   }
 }
 

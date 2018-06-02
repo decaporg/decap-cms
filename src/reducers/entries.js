@@ -11,10 +11,6 @@ import {
 
 import { SEARCH_ENTRIES_SUCCESS } from 'Actions/search';
 
-let collection;
-let loadedEntries;
-let page;
-
 const entries = (state = Map({ entities: Map(), pages: Map() }), action) => {
   switch (action.type) {
     case ENTRY_REQUEST:
@@ -29,10 +25,8 @@ const entries = (state = Map({ entities: Map(), pages: Map() }), action) => {
     case ENTRIES_REQUEST:
       return state.setIn(['pages', action.payload.collection, 'isFetching'], true);
 
-    case ENTRIES_SUCCESS:
-      collection = action.payload.collection;
-      loadedEntries = action.payload.entries;
-      page = action.payload.page;
+    case ENTRIES_SUCCESS: {
+      const { collection, entries: loadedEntries, append } = action.payload;
       return state.withMutations((map) => {
         loadedEntries.forEach(entry => (
           map.setIn(['entities', `${ collection }.${ entry.slug }`], fromJS(entry).set('isFetching', false))
@@ -40,10 +34,10 @@ const entries = (state = Map({ entities: Map(), pages: Map() }), action) => {
 
         const ids = List(loadedEntries.map(entry => entry.slug));
         map.setIn(['pages', collection], Map({
-          page,
-          ids: (!page || page === 0) ? ids : map.getIn(['pages', collection, 'ids'], List()).concat(ids),
+          ids: append ? map.getIn(['pages', collection, 'ids'], List()).concat(ids) : ids,
         }));
       });
+    }
 
     case ENTRIES_FAILURE:
       return state.setIn(['pages', action.meta.collection, 'isFetching'], false);
@@ -54,13 +48,14 @@ const entries = (state = Map({ entities: Map(), pages: Map() }), action) => {
         map.setIn(['entities', `${ action.payload.collection }.${ action.payload.slug }`, 'error'], action.payload.error.message);
       });
 
-    case SEARCH_ENTRIES_SUCCESS:
-      loadedEntries = action.payload.entries;
+    case SEARCH_ENTRIES_SUCCESS: {
+      const loadedEntries = action.payload.entries;
       return state.withMutations((map) => {
         loadedEntries.forEach(entry => (
           map.setIn(['entities', `${ entry.collection }.${ entry.slug }`], fromJS(entry).set('isFetching', false))
         ));
       });
+    }
 
     case ENTRY_DELETE_SUCCESS:
       return state.withMutations((map) => {

@@ -28,6 +28,7 @@ const Entries = ({
         page={page}
         onPaginate={onPaginate}
         viewStyle={viewStyle}
+        isFetching={isFetching}
       />
     );
   }

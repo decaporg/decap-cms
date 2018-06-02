@@ -16,10 +16,18 @@ import {
   MEDIA_DELETE_SUCCESS,
   MEDIA_DELETE_FAILURE,
 } from 'Actions/mediaLibrary';
+import { CURSOR_SET } from 'Actions/cursor';
 
-const mediaLibrary = (state = Map({ isVisible: false, controlMedia: Map() }), action) => {
+const mediaLibrary = (state = Map({ isVisible: false, controlMedia: Map(), files: [] }), action) => {
   const privateUploadChanged = state.get('privateUpload') !== get(action, ['payload', 'privateUpload']);
   switch (action.type) {
+    case CURSOR_SET: {
+      const { media, cursor } = action.payload;
+      if (media) {
+        return state.set('cursor', cursor);
+      }
+      return state;
+    }
     case MEDIA_LIBRARY_OPEN: {
       const { controlID, forImage, privateUpload } = action.payload || {};
       if (privateUploadChanged) {
@@ -51,13 +59,15 @@ const mediaLibrary = (state = Map({ isVisible: false, controlMedia: Map() }), ac
       const controlID = get(action, ['payload', 'controlID']);
       return state.setIn(['controlMedia', controlID], '');
     }
-    case MEDIA_LOAD_REQUEST:
+    case MEDIA_LOAD_REQUEST: {
+      const { append } = action.payload;
       return state.withMutations(map => {
         map.set('isLoading', true);
-        map.set('isPaginating', action.payload.page > 1);
+        map.set('pagesLoading', append ? map.get('pagesLoading') + 1 : 1);
       });
+    }
     case MEDIA_LOAD_SUCCESS: {
-      const { files = [], page, canPaginate, dynamicSearch, dynamicSearchQuery, privateUpload } = action.payload;
+      const { files = [], append, dynamicSearch, dynamicSearchQuery, privateUpload } = action.payload;
 
       if (privateUploadChanged) {
         return state;
@@ -66,25 +76,21 @@ const mediaLibrary = (state = Map({ isVisible: false, controlMedia: Map() }), ac
       const filesWithKeys = files.map(file => ({ ...file, key: uuid() }));
       return state.withMutations(map => {
         map.set('isLoading', false);
-        map.set('isPaginating', false);
-        map.set('page', page);
-        map.set('hasNextPage', canPaginate && files.length > 0);
+        map.set('pagesLoading', map.get('pagesLoading') - 1);
         map.set('dynamicSearch', dynamicSearch);
         map.set('dynamicSearchQuery', dynamicSearchQuery);
         map.set('dynamicSearchActive', !!dynamicSearchQuery);
-        if (page && page > 1) {
-          const updatedFiles = map.get('files').concat(filesWithKeys);
-          map.set('files', updatedFiles);
-        } else {
-          map.set('files', filesWithKeys);
-        }
+        map.set('files', append ? map.get('files').concat(filesWithKeys) : filesWithKeys);
       });
     }
     case MEDIA_LOAD_FAILURE:
       if (privateUploadChanged) {
         return state;
       }
-      return state.set('isLoading', false);
+      return state.withMutations(map => {
+        map.set('isLoading', false);
+        map.set('pagesLoading', map.get('pagesLoading') - 1);
+      });
     case MEDIA_PERSIST_REQUEST:
       return state.set('isPersisting', true);
     case MEDIA_PERSIST_SUCCESS: {

@@ -55,8 +55,8 @@ export default class GitLab {
     return Promise.resolve(this.token);
   }
 
-  entriesByFolder(collection, extension) {
-    return this.api.listFiles(collection.get("folder"))
+  entriesByFolder(collection, extension, cursor, setCursor) {
+    return this.api.listFiles(collection.get("folder"), cursor, setCursor)
     .then(files => files.filter(file => fileExtension(file.name) === extension))
     .then(this.fetchFiles);
   }
@@ -94,8 +94,8 @@ export default class GitLab {
     }));
   }
 
-  getMedia() {
-    return this.api.listFiles(this.config.get('media_folder'))
+  getMedia(cursor, setCursor) {
+    return this.api.listFiles(this.config.get('media_folder'), cursor, setCursor)
       .then(files => files.map(({ id, name, path }) => {
         const url = new URL(this.api.fileDownloadURL(path));
         if (url.pathname.match(/.svg$/)) {
