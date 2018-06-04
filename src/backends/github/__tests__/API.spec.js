@@ -32,7 +32,7 @@ describe('github API', () => {
     mockAPI(api, responses);
 
     return expect(
-      api.editorialWorkflowGit(null, { slug: 'entry', sha: 'abc' }, null, {})
+      api.editorialWorkflowGit(null, { slug: 'entry', sha: 'abc' }, {})
         .then(() => prBaseBranch)
     ).resolves.toEqual('gh-pages')
   });

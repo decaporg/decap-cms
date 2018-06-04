@@ -1,5 +1,4 @@
 import { Map, List } from 'immutable';
-
 import {
   SEARCH_ENTRIES_REQUEST,
   SEARCH_ENTRIES_SUCCESS,
@@ -7,16 +6,20 @@ import {
   QUERY_SUCCESS,
   SEARCH_CLEAR,
 } from 'Actions/search';
+import { CURSOR_SET } from 'Actions/cursor';
 
-let loadedEntries;
-let response;
-let page;
-let searchTerm;
-
-const defaultState = Map({ isFetching: false, term: null, page: 0, entryIds: List([]), queryHits: Map({}) });
+const defaultState = Map({ isFetching: false, term: null, entryIds: List([]), queryHits: Map({}) });
 
 const entries = (state = defaultState, action) => {
   switch (action.type) {
+    case CURSOR_SET: {
+      const { search, cursor } = action.payload;
+      if (search) {
+        return state.set('cursor', cursor);
+      }
+      return state;
+    }
+
     case SEARCH_CLEAR:
       return defaultState;
 
@@ -29,17 +32,15 @@ const entries = (state = defaultState, action) => {
       }
       return state;
 
-    case SEARCH_ENTRIES_SUCCESS:
-      loadedEntries = action.payload.entries;
-      page = action.payload.page;
-      searchTerm = action.payload.searchTerm;
+    case SEARCH_ENTRIES_SUCCESS: {
+      const { entries: loadedEntries, searchTerm, append } = action.payload;
       return state.withMutations((map) => {
         const entryIds = List(loadedEntries.map(entry => ({ collection: entry.collection, slug: entry.slug })));
         map.set('isFetching', false);
-        map.set('page', page);
         map.set('term', searchTerm);
-        map.set('entryIds', page === 0 ? entryIds : map.get('entryIds', List()).concat(entryIds));
+        map.set('entryIds', append ? map.get('entryIds', List()).concat(entryIds) : entryIds);
       });
+    }
 
     case QUERY_REQUEST:
       if (action.payload.searchTerm !== state.get('term')) {
@@ -50,14 +51,15 @@ const entries = (state = defaultState, action) => {
       }
       return state;
 
-    case QUERY_SUCCESS:
-      searchTerm = action.payload.searchTerm;
-      response = action.payload.response;
+    case QUERY_SUCCESS: {
+      const searchTerm = action.payload.searchTerm;
+      const response = action.payload.response;
       return state.withMutations((map) => {
         map.set('isFetching', false);
         map.set('term', searchTerm);
         map.mergeIn(['queryHits'], Map({ [action.payload.namespace]: response.hits }));
       });
+    }
 
     default:
       return state;

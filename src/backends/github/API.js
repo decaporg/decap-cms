@@ -3,7 +3,7 @@ import { Base64 } from "js-base64";
 import { uniq, initial, last, get, find, hasIn } from "lodash";
 import { filterPromises, resolvePromiseProperties } from "Lib/promiseHelper";
 import AssetProxy from "ValueObjects/AssetProxy";
-import { SIMPLE, EDITORIAL_WORKFLOW, status } from "Constants/publishModes";
+import { status } from "Constants/publishModes";
 import { APIError, EditorialWorkflowError } from "ValueObjects/errors";
 
 const CMS_BRANCH_PREFIX = 'cms/';
@@ -274,29 +274,11 @@ export default class API {
     return fileTree;
   }
 
-  persistFiles(entry, mediaFiles, options) {
-    const uploadPromises = [];
-    const files = entry ? mediaFiles.concat(entry) : mediaFiles;
-
-    files.forEach((file) => {
-      if (file.uploaded) { return; }
-      uploadPromises.push(this.uploadBlob(file));
-    });
-
+  async persistFiles(files) {
     const fileTree = this.composeFileTree(files);
-
-    return Promise.all(uploadPromises).then(() => {
-      if (!options.mode || (options.mode && options.mode === SIMPLE)) {
-        return this.getBranch()
-        .then(branchData => this.updateTree(branchData.commit.sha, "/", fileTree))
-        .then(changeTree => this.commit(options.commitMessage, changeTree))
-        .then(response => this.patchBranch(this.branch, response.sha));
-
-      } else if (options.mode && options.mode === EDITORIAL_WORKFLOW) {
-        const mediaFilesList = mediaFiles.map(file => ({ path: file.path, sha: file.sha }));
-        return this.editorialWorkflowGit(fileTree, entry, mediaFilesList, options);
-      }
-    });
+    const uploadedFilePromises = files.map(file => this.uploadBlob(file));
+    await Promise.all(uploadedFilePromises);
+    return fileTree;
   }
 
   deleteFile(path, message, options={}) {
@@ -321,7 +303,14 @@ export default class API {
       });
   }
 
-  editorialWorkflowGit(fileTree, entry, filesList, options) {
+  async simpleGit(fileTree, options) {
+    const branch = await this.getBranch();
+    const changeTree = await this.updateTree(branch.commit.sha, "/", fileTree);
+    const commit = await this.commit(options.commitMessage, changeTree);
+    return this.patchBranch(this.branch, commit.sha);
+  }
+
+  editorialWorkflowGit(fileTree, entry, options) {
     const contentKey = entry.slug;
     const branchName = this.generateBranchName(contentKey);
     const unpublished = options.unpublished || false;
@@ -356,7 +345,6 @@ export default class API {
               path: entry.path,
               sha: entry.sha,
             },
-            files: filesList,
           },
           timeStamp: new Date().toISOString(),
         });
@@ -373,12 +361,9 @@ export default class API {
         })
         .then(metadata => {
           const { title, description } = options.parsedData || {};
-          const metadataFiles = get(metadata.objects, 'files', []);
-          const files = [ ...metadataFiles, ...filesList ];
           const pr = { ...metadata.pr, head: newHead.sha };
           const objects = {
             entry: { path: entry.path, sha: entry.sha },
-            files: uniq(files),
           };
           const updatedMetadata = { ...metadata, pr, title, description, objects };
 

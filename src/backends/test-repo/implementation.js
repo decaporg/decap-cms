@@ -104,7 +104,7 @@ export default class TestRepo {
     return Promise.resolve()
   }
 
-  persistEntry({ path, raw, slug }, mediaFiles = [], options = {}) {
+  persistEntry({ path, raw, slug }, options = {}) {
     if (options.mode === EDITORIAL_WORKFLOW) {
       const unpubStore = window.repoFilesUnpublished;
       const existingEntryIndex = unpubStore.findIndex(e => e.file.path === path);

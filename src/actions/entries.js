@@ -3,6 +3,7 @@ import { actions as notifActions } from 'redux-notifications';
 import { serializeValues } from 'Lib/serializeEntryValues';
 import { currentBackend } from 'Backends/backend';
 import { getIntegrationProvider } from 'Integrations';
+import { setCursor } from 'Actions/cursor';
 import { getAsset, selectIntegration } from 'Reducers';
 import { selectFields } from 'Reducers/collections';
 import { createEntry } from 'ValueObjects/Entry';
@@ -80,13 +81,13 @@ export function entriesLoading(collection) {
   };
 }
 
-export function entriesLoaded(collection, entries, pagination) {
+export function entriesLoaded(collection, entries, append) {
   return {
     type: ENTRIES_SUCCESS,
     payload: {
       collection: collection.get('name'),
       entries,
-      page: pagination,
+      append,
     },
   };
 }
@@ -238,18 +239,36 @@ export function loadEntry(collection, slug) {
   };
 }
 
-export function loadEntries(collection, page = 0) {
+export function loadAllEntries(collection) {
+  return async (dispatch, getState) => {
+    await dispatch(loadEntries(collection));
+    let cursor = getState().collections.getIn([collection.get('name'), 'cursor']);
+    while (cursor) {
+      await dispatch(loadEntries(collection, true));
+      cursor = getState().collections.getIn([collection.get('name'), 'cursor']);
+    }
+  };
+}
+
+export function loadEntries(collection, loadNext) {
   return (dispatch, getState) => {
     if (collection.get('isFetching')) {
       return;
     }
     const state = getState();
+    const cursor = state.collections.getIn([collection.get('name'), 'cursor']);
+    if (loadNext && !cursor) {
+      return;
+    }
+    const boundSetCursor = newCursor => {
+      return dispatch(setCursor(newCursor, { collectionName: collection.get('name') }));
+    };
     const backend = currentBackend(state.config);
     const integration = selectIntegration(state, collection.get('name'), 'listEntries');
     const provider = integration ? getIntegrationProvider(state.integrations, backend.getToken, integration) : backend;
     dispatch(entriesLoading(collection));
-    provider.listEntries(collection, page).then(
-      response => dispatch(entriesLoaded(collection, response.entries.reverse(), response.pagination)),
+    return provider.listEntries(collection, loadNext ? cursor : null, boundSetCursor).then(
+      entries => dispatch(entriesLoaded(collection, entries, loadNext)),
       error => dispatch(entriesFailed(collection, error))
     );
   };
@@ -289,7 +308,6 @@ export function persistEntry(collection) {
     }
 
     const backend = currentBackend(state.config);
-    const assetProxies = entryDraft.get('mediaFiles').map(path => getAsset(state, path));
     const entry = entryDraft.get('entry');
 
     /**
@@ -302,7 +320,7 @@ export function persistEntry(collection) {
     const serializedEntryDraft = entryDraft.set('entry', serializedEntry);
     dispatch(entryPersisting(collection, serializedEntry));
     return backend
-      .persistEntry(state.config, collection, serializedEntryDraft, assetProxies.toJS())
+      .persistEntry(state.config, collection, serializedEntryDraft)
       .then(slug => {
         dispatch(notifSend({
           message: 'Entry saved',

@@ -17,10 +17,14 @@ export default class EntryListing extends React.Component {
     onPaginate: PropTypes.func.isRequired,
     page: PropTypes.number,
     viewStyle: PropTypes.string,
+    isFetching: PropTypes.bool,
   };
 
   handleLoadMore = () => {
-    this.props.onPaginate(this.props.page + 1);
+    const { onPaginate, isFetching } = this.props;
+    if (!isFetching) {
+      onPaginate();
+    }
   };
 
   inferFields = collection => {

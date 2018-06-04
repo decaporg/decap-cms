@@ -25,14 +25,14 @@ class EntriesCollection extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const { collection, loadEntries } = this.props;
-    if (nextProps.collection !== collection) {
+    if (nextProps.collection.get('name') !== collection.get('name')) {
       loadEntries(nextProps.collection);
     }
   }
 
-  handleLoadMore = page => {
+  handleLoadMore = () => {
     const { collection, loadEntries } = this.props;
-    loadEntries(collection, page);
+    loadEntries(collection, true);
   }
 
   render () {

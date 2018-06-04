@@ -160,8 +160,8 @@ class MediaLibrary extends React.Component {
   };
 
   handleLoadMore = () => {
-    const { loadMedia, dynamicSearchQuery, page, privateUpload } = this.props;
-    loadMedia({ query: dynamicSearchQuery, page: page + 1, privateUpload });
+    const { loadMedia, dynamicSearchQuery, privateUpload } = this.props;
+    loadMedia({ query: dynamicSearchQuery, loadNext: true, privateUpload });
   };
 
   /**
@@ -219,9 +219,7 @@ class MediaLibrary extends React.Component {
       isLoading,
       isPersisting,
       isDeleting,
-      hasNextPage,
-      page,
-      isPaginating,
+      pagesLoading,
       privateUpload,
     } = this.props;
     const { query, selectedFile } = this.state;
@@ -233,7 +231,8 @@ class MediaLibrary extends React.Component {
     const hasSearchResults = queriedFiles && !!queriedFiles.length;
     const hasMedia = hasSearchResults;
     const shouldShowEmptyMessage = !hasMedia;
-    const emptyMessage = (isLoading && !hasMedia && 'Loading...')
+    const shouldShowLoadingMessage = isLoading && !hasMedia;
+    const emptyMessage = (shouldShowLoadingMessage && 'Loading...')
       || (dynamicSearchActive && 'No results.')
       || (!hasFiles && 'No assets found.')
       || (!hasFilteredFiles && 'No images found.')
@@ -324,13 +323,13 @@ class MediaLibrary extends React.Component {
                 </div>
               )
             }
-            {
-              hasNextPage
-                ? <Waypoint onEnter={() => this.handleLoadMore()}/>
-                : null
-            }
+            { pagesLoading ? null : <Waypoint onEnter={() => this.handleLoadMore()}/> }
           </div>
-          { isPaginating ? <h1 className="nc-mediaLibrary-paginatingMessage">Loading...</h1> : null }
+          {
+            !shouldShowLoadingMessage && pagesLoading
+              ? <h1 className="nc-mediaLibrary-paginatingMessage">Loading...</h1>
+              : null
+          }
         </div>
       </Modal>
     );
@@ -354,9 +353,7 @@ const mapStateToProps = state => {
     isPersisting: mediaLibrary.get('isPersisting'),
     isDeleting: mediaLibrary.get('isDeleting'),
     privateUpload: mediaLibrary.get('privateUpload'),
-    page: mediaLibrary.get('page'),
-    hasNextPage: mediaLibrary.get('hasNextPage'),
-    isPaginating: mediaLibrary.get('isPaginating'),
+    pagesLoading: mediaLibrary.get('pagesLoading'),
   };
   return { ...configProps, ...mediaLibraryProps };
 };

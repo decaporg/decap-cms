@@ -281,7 +281,6 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
 
     const backend = currentBackend(state.config);
     const transactionID = uuid();
-    const assetProxies = entryDraft.get('mediaFiles').map(path => getAsset(state, path));
     const entry = entryDraft.get('entry');
 
     /**
@@ -300,7 +299,6 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
       state.config,
       collection,
       serializedEntryDraft,
-      assetProxies.toJS(),
       state.integrations,
     ];
 

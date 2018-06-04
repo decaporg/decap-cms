@@ -4,7 +4,6 @@ import reducer from '../entryDraft';
 
 let initialState = Map({
   entry: Map(),
-  mediaFiles: List(),
   fieldsMetaData: Map(),
   fieldsErrors: Map(),
   hasChanged: false,
@@ -34,7 +33,6 @@ describe('entryDraft reducer', () => {
             ...entry,
             newRecord: false,
           },
-          mediaFiles: [],
           fieldsMetaData: Map(),
           fieldsErrors: Map(),
           hasChanged: false,
@@ -56,7 +54,6 @@ describe('entryDraft reducer', () => {
             ...entry,
             newRecord: true,
           },
-          mediaFiles: [],
           fieldsMetaData: Map(),
           fieldsErrors: Map(),
           hasChanged: false,
@@ -84,7 +81,6 @@ describe('entryDraft reducer', () => {
             ...entry,
             raw: 'updated',
           },
-          mediaFiles: [],
           hasChanged: true,
         }));
     });
