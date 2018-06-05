@@ -1,12 +1,12 @@
 import LocalForage from "Lib/LocalForage";
 import { Base64 } from "js-base64";
-import { List, Map } from "immutable";
-import { flow } from "lodash";
+import { fromJS, List, Map } from "immutable";
+import { cond, flow, isString, partial, partialRight, omit, set, update } from "lodash";
 import unsentRequest from "Lib/unsentRequest";
 import { then } from "Lib/promiseHelper";
 import AssetProxy from "ValueObjects/AssetProxy";
 import { APIError } from "ValueObjects/errors";
-import Cursor from "ValueObjects/Cursor";
+import Cursor from "ValueObjects/Cursor"
 
 export default class API {
   constructor(config) {
