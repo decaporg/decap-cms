@@ -160,7 +160,7 @@ export default class API {
     });
     const lastPageLink = firstPageCursor.data.getIn(["links", "last"]);
     const { entries, cursor } = await this.fetchCursorAndEntries(lastPageLink);
-    return { files: entries.reverse(), cursor: this.reverseCursor(cursor) };
+    return { files: entries.filter(({ type }) => type === "blob").reverse(), cursor: this.reverseCursor(cursor) };
   };
 
   traverseCursor = async (cursor, action) => {
@@ -183,7 +183,7 @@ export default class API {
       entries.push(...newEntries);
       cursor = newCursor;
     }
-    return entries;
+    return entries.filter(({ type }) => type === "blob");
   };
 
   toBase64 = str => Promise.resolve(Base64.encode(str));
