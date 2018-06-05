@@ -26,10 +26,30 @@ export default class API {
     unsentRequest.withTimestamp,
   ])(req);
 
-  request = async req => flow([this.buildRequest, unsentRequest.performRequest])(req);
   requestURL = url => flow([unsentRequest.fromURL, this.request])(url);
-  responseToJSON = res => res.json()
-  responseToText = res => res.text()
+  request = async req => flow([
+    this.buildRequest,
+    unsentRequest.performRequest,
+    p => p.catch(err => Promise.reject(new APIError(err.message, null, "GitLab"))),
+  ])(req);
+
+  parseResponse = async (res, { expectingOk=true, expectingFormat=false }) => {
+    const contentType = res.headers.get("Content-Type");
+    const isJSON = contentType === "application/json";
+    let body;
+    try {
+      body = await ((expectingFormat === "json" || isJSON) ? res.json() : res.text());
+    } catch (err) {
+      throw new APIError(err.message, res.status, "GitLab");
+    }
+    if (expectingOk && !res.ok) {
+      throw new APIError((isJSON && body.message) ? body.message : body, res.status, "GitLab");
+    }
+    return body;
+  };
+
+  responseToJSON = res => this.parseResponse(res, { expectingFormat: "json" });
+  responseToText = res => this.parseResponse(res, { expectingFormat: "text" });
   requestJSON = req => this.request(req).then(this.responseToJSON);
   requestText = req => this.request(req).then(this.responseToText);
   requestJSONFromURL = url => this.requestURL(url).then(this.responseToJSON);
