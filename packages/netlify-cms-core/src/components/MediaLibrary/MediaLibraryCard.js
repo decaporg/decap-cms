@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'react-emotion';
 import { colors, borders, lengths } from 'netlify-cms-ui-default';
+import CardImage from './CardImage';
 
 const Card = styled.div`
   width: ${props => props.width};
@@ -19,15 +20,6 @@ const Card = styled.div`
   }
 `;
 
-const CardImage = styled.img`
-  width: 100%;
-  height: 160px;
-  object-fit: cover;
-  border-radius: 2px 2px 0 0;
-`;
-
-const CardImagePlaceholder = CardImage.withComponent(`div`);
-
 const CardText = styled.p`
   color: ${colors.text};
   padding: 8px;
@@ -36,7 +28,7 @@ const CardText = styled.p`
   line-height: 1.3 !important;
 `;
 
-const MediaLibraryCard = ({ isSelected, imageUrl, text, onClick, width, margin, isPrivate }) => (
+const MediaLibraryCard = ({ isSelected, image, text, onClick, width, margin, isPrivate }) => (
   <Card
     isSelected={isSelected}
     onClick={onClick}
@@ -45,14 +37,14 @@ const MediaLibraryCard = ({ isSelected, imageUrl, text, onClick, width, margin, 
     tabIndex="-1"
     isPrivate={isPrivate}
   >
-    <div>{imageUrl ? <CardImage src={imageUrl} /> : <CardImagePlaceholder />}</div>
+    <div>{image ? <CardImage image={image} /> : <CardImagePlaceholder />}</div>
     <CardText>{text}</CardText>
   </Card>
 );
 
 MediaLibraryCard.propTypes = {
   isSelected: PropTypes.bool,
-  imageUrl: PropTypes.string,
+  image: PropTypes.object,
   text: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
   width: PropTypes.string.isRequired,

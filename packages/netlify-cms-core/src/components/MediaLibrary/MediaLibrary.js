@@ -19,6 +19,40 @@ import MediaLibraryModal from './MediaLibraryModal';
 const IMAGE_EXTENSIONS_VIEWABLE = ['jpg', 'jpeg', 'webp', 'gif', 'png', 'bmp', 'tiff', 'svg'];
 const IMAGE_EXTENSIONS = [...IMAGE_EXTENSIONS_VIEWABLE];
 
+class CardImage extends React.Component {
+  state = {
+    blobURL: '',
+  };
+
+  componentDidMount() {
+    const { image } = this.props;
+
+    if (!image.url && image.blobPromise) {
+      image.blobPromise.then(blob => {
+        const blobURL = window.URL.createObjectURL(blob);
+        this.setState({ blobURL });
+      });
+    }
+  }
+
+  componentWillUnmount() {
+    window.URL.revokeObjectURL(this.state.blobURL);
+  }
+
+  render() {
+    const { blobURL } = this.state;
+    const { image } = this.props;
+
+    if (image.url) {
+      return <img src={image.url} className="nc-mediaLibrary-cardImage" />;
+    } else if (blobURL) {
+      return <img src={blobURL} className="nc-mediaLibrary-cardImage" />;
+    } else {
+      return <div className="nc-mediaLibrary-cardImage" />;
+    }
+  }
+}
+
 class MediaLibrary extends React.Component {
   /**
    * The currently selected file and query are tracked in component state as
@@ -69,7 +103,7 @@ class MediaLibrary extends React.Component {
   toTableData = files => {
     const tableData =
       files &&
-      files.map(({ key, name, size, queryOrder, url, urlIsPublicPath }) => {
+      files.map(({ key, name, size, queryOrder, url, urlIsPublicPath, blobPromise }) => {
         const ext = fileExtension(name).toLowerCase();
         return {
           key,
@@ -79,6 +113,7 @@ class MediaLibrary extends React.Component {
           queryOrder,
           url,
           urlIsPublicPath,
+          blobPromise,
           isImage: IMAGE_EXTENSIONS.includes(ext),
           isViewableImage: IMAGE_EXTENSIONS_VIEWABLE.includes(ext),
         };

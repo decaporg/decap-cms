@@ -40,7 +40,7 @@ const MediaLibraryCardGrid = ({
         <MediaLibraryCard
           key={file.key}
           isSelected={isSelectedFile(file)}
-          imageUrl={file.isViewableImage && file.url}
+          image={file.isViewableImage && file}
           text={file.name}
           onClick={() => onAssetClick(file)}
           width={cardWidth}
