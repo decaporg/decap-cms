@@ -69,7 +69,7 @@ export default class GitLab {
   }
 
   allEntriesByFolder(collection, extension) {
-    return this.api.listAllEntries(collection.get("folder"), extension)
+    return this.api.listAllFiles(collection.get("folder"))
     .then(files => this.fetchFiles(files.filter(file => fileExtension(file.name) === extension)));
   }
 
@@ -110,11 +110,8 @@ export default class GitLab {
   }
 
   getMedia() {
-    // TODO: list the entire folder to get all media files instead of
-    // just the first page, or implement cursor UI for the media
-    // library.
-    return this.api.listFiles(this.config.get('media_folder'))
-      .then(({ files }) => files.map(({ id, name, path }) => {
+    return this.api.listAllFiles(this.config.get('media_folder'))
+      .then(files => files.map(({ id, name, path }) => {
         const url = new URL(this.api.fileDownloadURL(path));
         if (url.pathname.match(/.svg$/)) {
           url.search += (url.search.slice(1) === '' ? '?' : '&') + 'sanitize=true';
