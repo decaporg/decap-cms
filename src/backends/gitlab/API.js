@@ -114,10 +114,21 @@ export default class API {
     prev: "next",
   });
 
-  reverseCursor = cursor => cursor
-    .updateStore("meta", meta => meta.set("index", meta.get("pageCount", 0) - meta.get("index", 0)))
-    .updateInStore(["data", "links"], links => links.mapEntries(([k, v]) => [this.reversableActions.get(k, k), v]))
-    .updateStore("actions", actions => actions.map(action => this.reversableActions.get(action, action)));
+  reverseCursor = cursor => {
+    const pageCount = cursor.meta.get("pageCount", 0);
+    const currentIndex = cursor.meta.get("index", 0);
+    const newIndex = pageCount - currentIndex;
+
+    const links = cursor.data.get("links", Map());
+    const reversedLinks = links.mapEntries(([k, v]) => [this.reversableActions.get(k) || k, v]);
+
+    const reversedActions = cursor.actions.map(action => this.reversableActions.get(action) || action);
+
+    return cursor.updateStore(store => store
+      .setIn(["meta", "index"], newIndex)
+      .setIn(["data", "links"], reversedLinks)
+      .set("actions", reversedActions));
+  };
 
   // The exported listFiles and traverseCursor reverse the direction
   // of the cursors, since GitLab's pagination sorts the opposite way
