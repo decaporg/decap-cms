@@ -26,7 +26,6 @@ export default class API {
     unsentRequest.withTimestamp,
   ])(req);
 
-  requestURL = url => flow([unsentRequest.fromURL, this.request])(url);
   request = async req => flow([
     this.buildRequest,
     unsentRequest.performRequest,
@@ -52,13 +51,11 @@ export default class API {
   responseToText = res => this.parseResponse(res, { expectingFormat: "text" });
   requestJSON = req => this.request(req).then(this.responseToJSON);
   requestText = req => this.request(req).then(this.responseToText);
-  requestJSONFromURL = url => this.requestURL(url).then(this.responseToJSON);
-  requestTextFromURL = url => this.requestURL(url).then(this.responseToText);
 
-  user = () => this.requestJSONFromURL("/user");
+  user = () => this.requestJSON("/user");
 
   WRITE_ACCESS = 30;
-  hasWriteAccess = user => this.requestJSONFromURL(this.repoURL).then(({ permissions }) => {
+  hasWriteAccess = user => this.requestJSON(this.repoURL).then(({ permissions }) => {
     const { project_access, group_access } = permissions;
     if (project_access && (project_access.access_level >= this.WRITE_ACCESS)) {
       return true;
@@ -218,7 +215,6 @@ export default class API {
   deleteFile = (path, commit_message, options = {}) => {
     const branch = options.branch || this.branch;
     return flow([
-      unsentRequest.fromURL,
       unsentRequest.withMethod("DELETE"),
       unsentRequest.withParams({ commit_message, branch }),
       this.request,

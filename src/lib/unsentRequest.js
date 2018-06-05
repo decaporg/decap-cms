@@ -1,5 +1,5 @@
 import { fromJS, List, Map } from 'immutable';
-import { curry, flow } from "lodash";
+import { curry, flow, isString } from "lodash";
 
 const decodeParams = paramsString => List(paramsString.split("&"))
   .map(s => List(s.split("=")).map(decodeURIComponent))
@@ -18,7 +18,11 @@ const toURL = req => `${ req.get("url") }${ req.get("params") ? `?${ encodeParam
 
 const toFetchArguments = req => [toURL(req), req.delete("url").delete("params").toJS()];
 
-const maybeRequestArg = req => (req ? fromJS(req) : Map())
+const maybeRequestArg = req => {
+  if (isString(req)) { return fromURL(req); }
+  if (req) { return fromJS(req); }
+  return Map();
+};
 const ensureRequestArg = func => req => func(maybeRequestArg(req));
 const ensureRequestArg2 = func => (arg, req) => func(arg, maybeRequestArg(req));
 
