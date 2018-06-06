@@ -1,7 +1,7 @@
 import LocalForage from "Lib/LocalForage";
 import { Base64 } from "js-base64";
 import { fromJS, List, Map } from "immutable";
-import { cond, flow, isString, partial, partialRight, omit, set, update } from "lodash";
+import { cond, flow, isString, partial, partialRight, pick, omit, set, update } from "lodash";
 import unsentRequest from "Lib/unsentRequest";
 import { then } from "Lib/promiseHelper";
 import AssetProxy from "ValueObjects/AssetProxy";
@@ -115,13 +115,13 @@ export default class API {
 
   // Gets a cursor without retrieving the entries by using a HEAD
   // request
-  fetchCursor = flow([unsentRequest.withMethod("HEAD"), this.request, then(this.getCursor)]);
-  fetchCursorAndEntries = flow([
+  fetchCursor = req => flow([unsentRequest.withMethod("HEAD"), this.request, then(this.getCursor)])(req);
+  fetchCursorAndEntries = req => flow([
     unsentRequest.withMethod("GET"),
     this.request,
     p => Promise.all([p.then(this.getCursor), p.then(this.responseToJSON)]),
     then(([cursor, entries]) => ({ cursor, entries })),
-  ]);
+  ])(req);
   fetchRelativeCursor = async (cursor, action) => this.fetchCursor(cursor.data.links[action]);
 
   reversableActions = Map({
@@ -188,11 +188,12 @@ export default class API {
 
   toBase64 = str => Promise.resolve(Base64.encode(str));
   fromBase64 = str => Base64.decode(str);
-  uploadAndCommit = async (item, { commitMessage, updateFile = false, branch = this.branch }) => {
+  uploadAndCommit = async (item, { commitMessage, updateFile = false, branch = this.branch, author = this.commitAuthor }) => {
     const content = await (item instanceof AssetProxy ? item.toBase64() : this.toBase64(item.raw));
     const file_path = item.path.replace(/^\//, "");
     const action = (updateFile ? "update" : "create");
     const encoding = "base64";
+    const { name: author_name, email: author_email } = pick(author || {}, ["name", "email"]);
     const body = JSON.stringify({
       branch,
       commit_message: commitMessage,
