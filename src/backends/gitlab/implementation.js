@@ -99,13 +99,15 @@ export default class GitLab {
         sem.take(() => this.api.readFile(file.path, file.id).then((data) => {
           resolve({ file, data });
           sem.leave();
-        }).catch((err) => {
+        }).catch((error = true) => {
           sem.leave();
-          reject(err);
+          console.error(`failed to load file from GitLab: ${ file.path }`);
+          resolve({ error });
         }))
       )));
     });
-    return Promise.all(promises);
+    return Promise.all(promises)
+      .then(loadedEntries => loadedEntries.filter(loadedEntry => !loadedEntry.error));
   };
 
   // Fetches a single entry.
