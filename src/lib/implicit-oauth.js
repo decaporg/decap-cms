@@ -18,7 +18,7 @@ function validateNonce(check) {
 export default class ImplicitAuthenticator {
   constructor(config = {}) {
     this.auth_url = config.auth_url;
-    this.appid = config.appid;
+    this.appID = config.app_id;
   }
 
   authenticate(options, cb) {
@@ -32,7 +32,7 @@ export default class ImplicitAuthenticator {
     }
 
     const authURL = new URL(this.auth_url);
-    authURL.searchParams.set('client_id', this.appid);
+    authURL.searchParams.set('client_id', this.appID);
     authURL.searchParams.set('redirect_uri', document.location.origin + document.location.pathname);
     authURL.searchParams.set('response_type', 'token');
     authURL.searchParams.set('scope', options.scope);

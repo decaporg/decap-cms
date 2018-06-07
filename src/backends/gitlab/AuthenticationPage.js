@@ -17,7 +17,7 @@ export default class AuthenticationPage extends React.Component {
     if (authType === "implicit") {
       this.auth = new ImplicitAuthenticator({
         auth_url: this.props.config.getIn(['backend', 'auth_url'], 'https://gitlab.com/oauth/authorize'),
-        appid: this.props.config.getIn(['backend', 'appid']),
+        appID: this.props.config.getIn(['backend', 'app_id']),
       });
       // Complete implicit authentication if we were redirected back to from the provider.
       this.auth.completeAuth((err, data) => {
