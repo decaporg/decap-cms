@@ -1,4 +1,4 @@
-baseurl: "/"
+baseurl: "https://www.netlifycms.org/"
 languageCode: "en-us"
 title: "Netlify CMS | Open-Source Content Management System"
 disable404: true
