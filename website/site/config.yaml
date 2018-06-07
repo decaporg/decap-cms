@@ -4,6 +4,8 @@ title: "Netlify CMS | Open-Source Content Management System"
 disable404: true
 pluralizeListTitles: false
 metaDataFormat: "yaml"
+permalinks:
+  blog: /:year/:month/:title/
 menu:
   docs:
     - name: start
