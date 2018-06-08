@@ -1,7 +1,7 @@
 ---
 title: Second Sample Post
 author: Sally Ride
-description: "This shows how posts list on the index page."
+description: This shows how posts list on the index page. Now I'm testing saves.
 date: 2018-05-22T00:00:00.000Z
 ---
 
