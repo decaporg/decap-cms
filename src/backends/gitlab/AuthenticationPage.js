@@ -30,7 +30,8 @@ export default class AuthenticationPage extends React.Component {
     } else {
       this.auth = new NetlifyAuthenticator({
         base_url: this.props.base_url,
-        site_id: (document.location.host.split(':')[0] === 'localhost') ? 'cms.netlify.com' : this.props.siteId
+        site_id: (document.location.host.split(':')[0] === 'localhost') ? 'cms.netlify.com' : this.props.siteId,
+        auth_endpoint: this.props.authEndpoint,
       });
     }
   }
