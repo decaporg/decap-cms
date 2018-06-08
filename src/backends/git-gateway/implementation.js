@@ -11,12 +11,12 @@ import AuthenticationPage from "./AuthenticationPage";
 const localHosts = {
   localhost: true,
   '127.0.0.1': true,
-  '0.0.0.0': true
-}
+  '0.0.0.0': true,
+};
 const defaults = {
   identity: '/.netlify/identity',
-  gateway: '/.netlify/git/github'
-}
+  gateway: '/.netlify/git',
+};
 
 function getEndpoint(endpoint, netlifySiteURL) {
   if (localHosts[document.location.host.split(":").shift()] && netlifySiteURL && endpoint.match(/^\/\.netlify\//)) {
