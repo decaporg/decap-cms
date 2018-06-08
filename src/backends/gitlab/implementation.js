@@ -9,7 +9,7 @@ import { EDITORIAL_WORKFLOW } from "Constants/publishModes";
 const MAX_CONCURRENT_DOWNLOADS = 10;
 
 export default class GitLab {
-  constructor(config, options) {
+  constructor(config, options={}) {
     this.config = config;
     this.options = {
       proxied: false,
@@ -21,7 +21,7 @@ export default class GitLab {
       throw new Error("The GitLab backend does not support the Editorial Workflow.")
     }
 
-    if (!options.proxied && config.getIn(["backend", "repo"]) == null) {
+    if (!this.options.proxied && config.getIn(["backend", "repo"]) == null) {
       throw new Error("The GitLab backend needs a \"repo\" in the backend configuration.");
     }
 

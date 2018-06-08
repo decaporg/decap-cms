@@ -6,7 +6,7 @@ import API from "./API";
 const MAX_CONCURRENT_DOWNLOADS = 10;
 
 export default class GitHub {
-  constructor(config, options) {
+  constructor(config, options={}) {
     this.config = config;
     this.options = {
       proxied: false,
