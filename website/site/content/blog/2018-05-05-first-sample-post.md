@@ -2,6 +2,7 @@
 title: First Sample Post
 author: Jack Skellington
 description: "This is the description that will show in the blog index page."
+meta_description: "This is a different meta description."
 date: 2018-05-05T00:00:00.000Z
 ---
 

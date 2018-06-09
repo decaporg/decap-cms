@@ -12,6 +12,19 @@
     <meta name="application-name" content="NetlifyCMS">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="/css/main.css"/>
+    
+    <meta name="description" content=
+    {{ if .Params.meta_description }}
+      {{ .Params.meta_description }}
+    {{ else if .Params.description }}
+      {{ .Params.description }}
+    {{ else if or (eq .Section "blog") (eq .Title "Blog") }}
+      "Recent news and updates about Netlify CMS."
+    {{ else }}
+      "Netlify CMS provides open source content management for your Git workflow."
+    {{ end }}
+    >
+    
     {{ if or (eq .Section "docs") (eq .Title "Docs") }}
       <link rel="stylesheet" href="/css/lib/prism.css"/>
     {{ end }}
