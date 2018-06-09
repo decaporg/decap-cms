@@ -143,6 +143,10 @@ ul {
 pre {
   border-radius: $borderRadius;
   line-height: 1 !important;
+}
+
+/* fixes overflowing code example in widgets */
+.widget pre {
   box-sizing: border-box;
   width: 100%;
 }
