@@ -41,7 +41,7 @@ To configure in Netlify CMS, use the same `backend` settings in your `config.yml
 
 ## GitHub Backend
 
-For repositories stored on GitHub, the `github` backend allows CMS users to log in directly with their GitHub account. Note that the user's GitHub account must have push access to your content repository for this to work.
+For repositories stored on GitHub, the `github` backend allows CMS users to log in directly with their GitHub account. Note that all users must have push access to your content repository for this to work.
 
 Because Github [requires a
 server](https://github.com/netlify/netlify-cms/issues/663#issuecomment-335023723) for
@@ -58,20 +58,6 @@ To enable it:
       name: github
       repo: owner-name/repo-name # Path to your Github repository
     ```
-
-### External OAuth Clients
-
-If you would like to facilitate your own OAuth authentication rather than use Netlify's service, you
-can use one of the community-maintained projects below. Feel free to [submit a pull request](https://github.com/netlify/netlify-cms/blob/master/CONTRIBUTING.md) if you'd like to add yours!
-
-| Author                                         | Supported Git hosts       | Language(s)/Platform(s) | Link                                                                                                                                         |
-| ---------------------------------------------- | ------------------------- | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| [@vencax](https://github.com/vencax)           | GitHub, GitHub Enterprise | Node.js                 | [Repo](https://github.com/vencax/netlify-cms-github-oauth-provider)                                                                          |
-| [@igk1972](https://github.com/igk1972)         | GitHub, GitHub Enterprise | Go                      | [Repo](https://github.com/igk1972/netlify-cms-oauth-provider-go)                                                                             |
-| [@davidejones](https://github.com/davidejones) | GitHub, GitHub Enterprise | Python                  | [Repo](https://github.com/davidejones/netlify-cms-oauth-provider-python)                                                                     |
-| [@marksteele](https://github.com/marksteele)   | GitHub, GitHub Enterprise | Serverless              | [Repo](https://github.com/marksteele/netlify-serverless-oauth2-backend), [Blog](https://www.control-alt-del.org/blog/serverless-blog-howto/) |
-
-Check each project's documentation for instructions on how to configure it.
 
 ## GitLab Backend
 
@@ -123,6 +109,8 @@ With GitLab's Implicit Grant, users can authenticate with GitLab directly from t
     auth_url: https://my-hosted-gitlab-instance.com/oauth/authorize
     ```
 
+Note that in both cases, GitLab will also provide you with a client secret. You should _never_ store this in your repo or reveal it in the client.
+
 ## Bitbucket Support
 
 Netlify CMS is meant to be platform agnostic, so we’re always looking to expand the ecosystem and
@@ -131,6 +119,20 @@ find new ways to use it. Check out our active PR in progress for
 
 Git Gateway could also be modified to support other Git hosts. If you're interested, you can file an
 issue (or a pull request!) in the [git-gateway repo](https://github.com/netlify/git-gateway).
+
+## External OAuth Clients
+
+If you would like to facilitate your own OAuth authentication rather than use Netlify's service or implicit grant, you
+can use one of the community-maintained projects below. Feel free to [submit a pull request](https://github.com/netlify/netlify-cms/blob/master/CONTRIBUTING.md) if you'd like to add yours!
+
+| Author                                         | Supported Git hosts       | Language(s)/Platform(s) | Link                                                                                                                                         |
+| ---------------------------------------------- | ------------------------- | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| [@vencax](https://github.com/vencax)           | GitHub, GitHub Enterprise | Node.js                 | [Repo](https://github.com/vencax/netlify-cms-github-oauth-provider)                                                                          |
+| [@igk1972](https://github.com/igk1972)         | GitHub, GitHub Enterprise | Go                      | [Repo](https://github.com/igk1972/netlify-cms-oauth-provider-go)                                                                             |
+| [@davidejones](https://github.com/davidejones) | GitHub, GitHub Enterprise | Python                  | [Repo](https://github.com/davidejones/netlify-cms-oauth-provider-python)                                                                     |
+| [@marksteele](https://github.com/marksteele)   | GitHub, GitHub Enterprise | Serverless              | [Repo](https://github.com/marksteele/netlify-serverless-oauth2-backend), [Blog](https://www.control-alt-del.org/blog/serverless-blog-howto/) |
+
+Check each project's documentation for instructions on how to configure it.
 
 ## Options
 

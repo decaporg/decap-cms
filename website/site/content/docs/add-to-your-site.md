@@ -8,7 +8,7 @@ menu:
 
 # Add Netlify CMS to Your Site
 
-Netlify CMS is adaptable to a wide variety of projects. The only inflexible requirement is that your site content must be written in markdown, JSON, YAML, or TOML files, stored in a repo on [GitHub](https://github.com/) or [GitLab](https://about.gitlab.com/). (Bitbucket support [coming soon](https://github.com/netlify/netlify-cms/pull/525).)
+Netlify CMS is adaptable to a wide variety of projects. The only inflexible requirement is that your site content must be written in markdown, JSON, YAML, or TOML files, stored in a repo on [GitHub](https://github.com/) or [GitLab](https://about.gitlab.com/). (You can also create your own custom backend, or if you're interested in Bitbucket support, that's [coming soon](https://github.com/netlify/netlify-cms/pull/525))
 
 This tutorial will guide you through the steps for adding Netlify CMS to a site that's built with a common [static site generator](https://www.staticgen.com/), like Jekyll, Hugo, Hexo, or Gatsby. Alternatively, you can [start from a template](https://www.netlifycms.org/docs/start-with-a-template) or dive right into to [configuration options](https://www.netlifycms.org/docs/configuration-options).
 
@@ -226,12 +226,12 @@ Netlify offers a built-in authentication service called Identity. In order to us
 
 ### Enable Identity and Git Gateway
 
-Netlify's Identity and Git Gateway services allow you to manage CMS admin users for your site without requiring them to have an account with your Git provider or commit access on your repo. From your site dashboard on Netlify:
+Netlify's Identity and Git Gateway services allow you to manage CMS admin users for your site without requiring them to have an account with your Git host or commit access on your repo. From your site dashboard on Netlify:
 
 1. Go to **Settings > Identity**, and select **Enable Identity service**.
 2. Under **Registration preferences**, select **Open** or **Invite only**. In most cases, you'll want only invited users to access your CMS, but if you're just experimenting, you can leave it open for convenience.
 3. If you'd like to allow one-click login with services like Google and GitHub, check the boxes next to the services you'd like to use, under **External providers**.
-4. Scroll down to **Services > Git Gateway**, and click **Enable Git Gateway**. This will authenticate with your Git provider and generate an API access token. In this case, we're leaving the **Roles** field blank, which means any logged in user may access the CMS. For information on changing this, check the [Netlify Identity documentation](https://www.netlify.com/docs/identity/).
+4. Scroll down to **Services > Git Gateway**, and click **Enable Git Gateway**. This will authenticate with your Git host and generate an API access token. In this case, we're leaving the **Roles** field blank, which means any logged in user may access the CMS. For information on changing this, check the [Netlify Identity documentation](https://www.netlify.com/docs/identity/).
 
 ### Add the Netlify Identity Widget
 
