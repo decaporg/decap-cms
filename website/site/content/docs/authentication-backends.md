@@ -61,7 +61,7 @@ To enable it:
 
 ## GitLab Backend
 
-For repositories stored on GitLab, the `gitlab` backend allows CMS users to log in directly with their GitLab account. Note that the user's GitLab account must have push access to your content repository for this to work.
+For repositories stored on GitLab, the `gitlab` backend allows CMS users to log in directly with their GitLab account. Note that all users must have push access to your content repository for this to work.
 
 Unlike GitHub, the GitLab API allows for two types of OAuth2 flows: [Web Application Flow](https://docs.gitlab.com/ce/api/oauth2.html#web-application-flow), which works much like the GitHub OAuth flow described above, and [Implicit Grant](https://docs.gitlab.com/ce/api/oauth2.html#implicit-grant), which operates _without_ the need for an authentication server.
 
