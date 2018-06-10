@@ -11,6 +11,7 @@ import '../css/imports/header.css';
 
 const Header = ({ location, notifications }) => {
   const isDocs = location.pathname.indexOf('docs') !== -1;
+  const isBlog = location.pathname.indexOf('blog') !== -1;
 
   return (
     <Headroom disableInlineStyles>
@@ -28,7 +29,7 @@ const Header = ({ location, notifications }) => {
       <header
         id="header"
         className={classnames({
-          docs: isDocs
+          docs: isDocs || isBlog
         })}
       >
         <div className="contained">
@@ -50,6 +51,9 @@ const Header = ({ location, notifications }) => {
             </Link>
             <Link className="nav-link" to="/community">
               Community
+            </Link>
+            <Link className="nav-link" to="/blog">
+              Blog
             </Link>
             <a
               id="ghstars"

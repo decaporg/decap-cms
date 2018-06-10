@@ -14,7 +14,7 @@
 .blog.page {
   padding: 69px $tiny $xl;
   text-align: left;
-  @media screen and (min-width: $tablet) {
+  @media screen and (min-width: $mobile) {
     padding: 157px $medium $xl;
   }
 
@@ -77,7 +77,7 @@
       font-size: $tiny;
       color: $grey;
       line-height: 1.3;
-      margin-bottom: 5px;
+      margin: 10px 0;
       text-decoration: none;
       text-transform: capitalize;
       transition: color .2s ease;
@@ -90,10 +90,6 @@
       &:hover {
         color: $darkGreen;
       }
-    }
-
-    .subnav-link {
-      margin-bottom: 10px;
     }
   }
 
@@ -126,65 +122,6 @@
       font-size: 14px;
     }
   }
-
-  .docs-content {
-    font-size: 18px;
-    line-height: 28px;
-
-    .edit-this-page {
-      float: right;
-    }
-
-    #pencil {
-      fill: #7CA511;
-    }
-
-    @media screen and (min-width: $tablet) {
-      @neat-span-columns 17 24;
-      @neat-shift 1 24;
-    }
-
-    h2:not(:first-child) {
-      margin-top: $large;
-    }
-
-    p {
-      line-height: 1.7;
-    }
-
-    a {
-			text-decoration: none;
-			color: $darkGreen;
-		}
-
-		iframe {
-			width: 100%;
-		}
-
-    img {
- 			max-width: 100%;
- 			height: auto;
- 		}
-
-    table {
-      background: #f7f7f7;
-      border-radius: $borderRadius;
-    }
-
-    code {
-      color: inherit;
-      background: $lightestGrey;
-      border-radius: 2px;
-      padding: 2px 6px;
-      white-space: nowrap;
-    }
-
-    pre > code {
-      background: initial;
-      padding: initial;
-      white-space: inherit;
-    }
-	}
 
 	h1,
 	h2 {
@@ -265,7 +202,6 @@
   h2:not(:first-child) {
     margin-top: $medium;
   }
-  
   p {
     line-height: 1.7;
   }
