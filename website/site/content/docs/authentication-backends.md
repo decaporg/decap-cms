@@ -19,7 +19,7 @@ To use it in your own project, follow these steps:
 
 1. Head over to the [Netlify Identity docs](https://www.netlify.com/docs/identity) and follow the
    steps to get started.
-2. Add the following lines to your `config.yml` file:
+2. Add the following lines to your Netlify CMS `config.yml` file:
 
     ```yaml
     backend:
@@ -30,14 +30,14 @@ To use it in your own project, follow these steps:
     ```
 
 3. Optionally, you can assign roles to users in your Netlify dashboard, and then limit which
-   roles can access the CMS by defining the `accept_roles` field in the `config.yml` example above.
+   roles can access the CMS by defining the `accept_roles` field as shown in the example above.
    Otherwise `accept_roles` can be left out, and all Netlify Identity users on your site will have access.
 
 ## Git Gateway without Netlify
 
 You can use [Git Gateway](https://github.com/netlify/git-gateway) without Netlify by setting up your own Git Gateway server and connecting it with your own instance of [GoTrue](https://www.gotrueapi.org) (the open source microservice that powers Netlify Identity), or with any other identity service that can issue JSON Web Tokens (JWT).
 
-To configure in Netlify CMS, use the same `backend` settings in your `config.yml` file as described in Step 2 of the [Git Gateway with Netlify Identity](#git-gateway-with-netlify-identity) instructions above.
+To configure in Netlify CMS, use the same `backend` settings in your Netlify CMS `config.yml` file as described in Step 2 of the [Git Gateway with Netlify Identity](#git-gateway-with-netlify-identity) instructions above.
 
 ## GitHub Backend
 
@@ -51,7 +51,7 @@ To enable it:
 
 1. Follow the authentication provider setup steps in the [Netlify
    docs](https://www.netlify.com/docs/authentication-providers/#using-an-authentication-provider).
-2. Add the following lines to your `config.yml` file:
+2. Add the following lines to your Netlify CMS `config.yml` file:
 
     ```yaml
     backend:
@@ -74,7 +74,7 @@ To enable it:
 1. Follow the [GitLab docs](https://docs.gitlab.com/ee/integration/oauth_provider.html#adding-an-application-through-the-profile) to add your Netlify CMS instance as an OAuth application. For the **Redirect URI**, enter `https://api.netlify.com/auth/done`, and check the box for `api` scope.
 2. Follow the [Netlify
    docs](https://www.netlify.com/docs/authentication-providers/#using-an-authentication-provider) to add your new GitLab Application ID and Secret to your Netlify site dashboard. 
-2. In your repository, add the following lines to your `config.yml` file:
+2. In your repository, add the following lines to your Netlify CMS `config.yml` file:
 
     ```yaml
     backend:
@@ -87,7 +87,7 @@ To enable it:
 With GitLab's Implicit Grant, users can authenticate with GitLab directly from the client. To do this:
 
 1. Follow the [GitLab docs](https://docs.gitlab.com/ee/integration/oauth_provider.html#adding-an-application-through-the-profile) to add your Netlify CMS instance as an OAuth application. For the **Redirect URI**, enter the address where you access Netlify CMS, for example, `https://www.mysite.com/admin`. For scope, select `api`.
-2. GitLab will give you an **Application ID**. Copy this and enter it in your `config.yml` file, along with the following settings:
+2. GitLab will give you an **Application ID**. Copy this and enter it in your Netlify CMS `config.yml` file, along with the following settings:
 
     ```yaml
     backend:
