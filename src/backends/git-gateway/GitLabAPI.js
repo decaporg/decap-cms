@@ -11,7 +11,7 @@ export default class API extends GitlabAPI {
     this.repoURL = "";
   }
 
-  authenticateRequest = async req => console.log("authenticateRequest", req.toJS()) || unsentRequest.withHeaders({
+  authenticateRequest = async req => unsentRequest.withHeaders({
     Authorization: `Bearer ${ await this.tokenPromise() }`,
   }, req);
 
