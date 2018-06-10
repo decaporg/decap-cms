@@ -20,7 +20,7 @@ as `nc-root`. If Netlify CMS finds an element with this ID during initialization
 within that element instead of creating it's own.
 
 ## Manual Initialization
-Netlify CMS can now be manually initialized, rather than automatically loading up the moment you import it. The whole point of this at the moment is to inject configuration into Netlify CMS before it loads, bypassing need for an actual config.yml. This is important, for example, when creating tight integrations with static site generators.
+Netlify CMS can now be manually initialized, rather than automatically loading up the moment you import it. The whole point of this at the moment is to inject configuration into Netlify CMS before it loads, bypassing need for an actual Netlify CMS `config.yml`. This is important, for example, when creating tight integrations with static site generators.
 
 Injecting config is technically already possible by setting `window.CMS_CONFIG` before importing/requiring/running Netlify CMS, but most projects are modular and don't want to use globals, plus `window.CMS_CONFIG` is an internal, not technically supported, and provides no validation.
 
@@ -85,7 +85,7 @@ When using the [Editorial Workflow](/docs/configuration-options/#publish-mode) w
 
 The squash merge option causes all commits to be "squashed" into a single commit when the pull request is merged, and the resulting commit is rebased onto the target branch, avoiding the merge commit altogether.
 
-To enable this feature, you can set the following option in your `config.yml`:
+To enable this feature, you can set the following option in your Netlify CMS `config.yml`:
 
 ```yaml
 backend:
@@ -93,11 +93,11 @@ backend:
 ```
 
 ## Commit Message Templates
-You can customize the templates used by Netlify CMS to generate commit messages by setting the `commit_messages` option under `backend` in your `config.yml`.
+You can customize the templates used by Netlify CMS to generate commit messages by setting the `commit_messages` option under `backend` in your Netlify CMS `config.yml`.
 
 Template tags wrapped in curly braces will be expanded to include information about the file changed by the commit. For example, `{{path}}` will include the full path to the file changed.
 
-Setting up your `config.yml` to recreate the default values would look like this:
+Setting up your Netlify CMS `config.yml` to recreate the default values would look like this:
 
 ```yaml
 backend:

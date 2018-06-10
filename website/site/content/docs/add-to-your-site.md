@@ -80,7 +80,7 @@ Configuration will be different for every site, so we'll break it down into part
 
 ### Backend
 
-Because we're using [Netlify](https://www.netlify.com) for our hosting and authentication, backend configuration is fairly strightforward. You can start your `config.yml` file with these lines:
+Because we're using [Netlify](https://www.netlify.com) for our hosting and authentication, backend configuration is fairly strightforward. You can start your Netlify CMS `config.yml` file with these lines:
 
 ```yaml
 backend:
@@ -92,7 +92,7 @@ These lines specify your backend protocol and your publication branch. Git Gatew
 
 ### Editorial Workflow
 
-By default, saving a post in the CMS interface will push a commit directly to the publication branch specified in `backend`. However, you also have the option to enable the [Editorial Workflow](https://www.netlifycms.org/docs/configuration-options/#publish-mode), which adds an interface for drafting, reviewing, and approving posts. To do this, add the following line to your `config.yml`:
+By default, saving a post in the CMS interface will push a commit directly to the publication branch specified in `backend`. However, you also have the option to enable the [Editorial Workflow](https://www.netlifycms.org/docs/configuration-options/#publish-mode), which adds an interface for drafting, reviewing, and approving posts. To do this, add the following line to your Netlify CMS `config.yml`:
 
 ```yaml
 # This line should *not* be indented
@@ -198,7 +198,7 @@ Let's break that down:
 
 As described above, the `widget` property specifies a built-in or custom UI widget for a given field. When a content editor enters a value into a widget, that value will be saved in the document front matter as the value for the `name` specified for that field. A full listing of available widgets can be found in the [Widgets doc](https://www.netlifycms.org/docs/widgets).
 
-Based on this example, you can go through the post types in your site and add the appropriate settings to your `config.yml` file. Each post type should be listed as a separate node under the `collections` field.
+Based on this example, you can go through the post types in your site and add the appropriate settings to your Netlify CMS `config.yml` file. Each post type should be listed as a separate node under the `collections` field.
 
 ### Filter
 
