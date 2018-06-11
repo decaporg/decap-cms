@@ -7,7 +7,7 @@ description: >-
   GitHub. 
 date: '2018-06-11'
 ---
-Netlify CMS is releasing support for GitLab as a backend, creating the world's first completely open-source stack for Git-based content editing. 
+Netlify CMS is releasing support for GitLab as a backend, creating the world's first completely open source stack for Git-based content editing. 
 
 <iframe width="100%" height="400" src="https://www.youtube.com/embed/ZrM3U0z8Sks?autoplay=1&loop=1&playlist=ZrM3U0z8Sks&mute=1&controls=0&modestbranding=1&showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 
