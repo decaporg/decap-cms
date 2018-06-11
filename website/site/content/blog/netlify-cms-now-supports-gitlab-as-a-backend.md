@@ -7,7 +7,7 @@ description: >-
   GitHub. 
 date: '2018-06-11'
 ---
-<iframe width="100%" height="400" src="https://www.youtube.com/embed/ZrM3U0z8Sks?autoplay=1&loop=1&playlist=ZrM3U0z8Sks&mute=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+<iframe width="100%" height="400" src="https://www.youtube.com/embed/ZrM3U0z8Sks?autoplay=1&loop=1&playlist=ZrM3U0z8Sks&mute=1&controls=0&modestbranding=1&showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 
 We heard [you](https://github.com/netlify/netlify-cms/pull/517#issuecomment-383283557) (and [you](https://github.com/netlify/netlify-cms/pull/517#issuecomment-355386542), and [you](https://github.com/netlify/netlify-cms/pull/517#issuecomment-343569725), and [you](https://github.com/netlify/netlify-cms/pull/517#issuecomment-333629637))! While you want to use Netlify CMS as the headless content management system for your JAMstack projects, all of your code lives in GitLab. Our long-term vision is to be tool-agnostic so you can use whatever tool helps you work best. But while you can already use Netlify CMS with most static site generators, backend support was limited to GitHub. 
 
