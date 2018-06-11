@@ -5,7 +5,7 @@ description: >-
   Netlify CMS, the open source, headless CMS that provides a user-friendly UI
   around your Git repository, can now be used with GitLab in addition to
   GitHub. 
-date: '2018-06-12'
+date: '2018-06-11'
 ---
 We heard [you](https://github.com/netlify/netlify-cms/pull/517#issuecomment-383283557) (and [you](https://github.com/netlify/netlify-cms/pull/517#issuecomment-355386542), and [you](https://github.com/netlify/netlify-cms/pull/517#issuecomment-343569725), and [you](https://github.com/netlify/netlify-cms/pull/517#issuecomment-333629637))! While you want to use Netlify CMS as the headless content management system for your JAMstack projects, all of your code lives in GitLab. Our long-term vision is to be tool-agnostic so you can use whatever tool helps you work best. But while you can already use Netlify CMS with most static site generators, backend support was limited to GitHub. 
 
