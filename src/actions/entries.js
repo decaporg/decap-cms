@@ -275,7 +275,7 @@ export function loadEntries(collection, page = 0) {
       // pagination API. Other backends will simply store an empty
       // cursor, which behaves identically to no cursor at all.
       cursor: integration
-        ? Cursor.create({ meta: { usingOldPaginationAPI: true }, data: { nextPage: page + 1 } })
+        ? Cursor.create({ actions: ["next"], meta: { usingOldPaginationAPI: true }, data: { nextPage: page + 1 } })
         : Cursor.create(response.cursor),
     }))
     .then(response => dispatch(entriesLoaded(
@@ -321,8 +321,7 @@ export function traverseCollectionCursor(collection, action) {
     // Handle cursors representing pages in the old, integer-based
     // pagination API
     if (cursor.meta.get("usingOldPaginationAPI", false)) {
-      const [data] = cursor.unwrapData();
-      return loadEntries(collection, data.get("nextPage"));
+      return dispatch(loadEntries(collection, cursor.data.get("nextPage")));
     }
 
     try {
