@@ -1,4 +1,5 @@
 import { Map } from 'immutable';
+import { trim, trimEnd } from 'lodash';
 import { randomStr } from 'Lib/randomGenerator';
 import history from 'Routing/history';
 
@@ -17,7 +18,9 @@ function validateNonce(check) {
 
 export default class ImplicitAuthenticator {
   constructor(config = {}) {
-    this.auth_url = config.auth_url;
+    const baseURL = trimEnd(config.base_url, '/');
+    const authEndpoint = trim(config.auth_endpoint, '/');
+    this.auth_url = `${ baseURL }/${ authEndpoint }`;
     this.appID = config.app_id;
   }
 
