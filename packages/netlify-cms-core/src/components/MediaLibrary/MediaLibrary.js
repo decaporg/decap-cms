@@ -21,14 +21,15 @@ const IMAGE_EXTENSIONS = [...IMAGE_EXTENSIONS_VIEWABLE];
 
 class CardImage extends React.Component {
   state = {
-    blobURL: '',
+    blobURL: false,
   };
 
   componentDidMount() {
     const { image } = this.props;
+    const { blobURL: existingBlobURL } = this.state;
 
-    if (!image.url && image.blobPromise) {
-      image.blobPromise.then(blob => {
+    if (!image.url && !existingBlobURL && image.getBlobPromise) {
+      image.getBlobPromise().then(blob => {
         const blobURL = window.URL.createObjectURL(blob);
         this.setState({ blobURL });
       });
@@ -103,7 +104,7 @@ class MediaLibrary extends React.Component {
   toTableData = files => {
     const tableData =
       files &&
-      files.map(({ key, name, size, queryOrder, url, urlIsPublicPath, blobPromise }) => {
+      files.map(({ key, name, size, queryOrder, url, urlIsPublicPath, getBlobPromise }) => {
         const ext = fileExtension(name).toLowerCase();
         return {
           key,
@@ -113,7 +114,7 @@ class MediaLibrary extends React.Component {
           queryOrder,
           url,
           urlIsPublicPath,
-          blobPromise,
+          getBlobPromise,
           isImage: IMAGE_EXTENSIONS.includes(ext),
           isViewableImage: IMAGE_EXTENSIONS_VIEWABLE.includes(ext),
         };
