@@ -97,7 +97,7 @@ With GitLab's Implicit Grant, users can authenticate with GitLab directly from t
       app_id: your-app-id # Application ID from your GitLab settings
     ```
 
-    You can also use Implicit Grant with a self-hosted GitLab instance. This requires adding `api_root` and `auth_url` fields:
+    You can also use Implicit Grant with a self-hosted GitLab instance. This requires adding `api_root`, `base_url`, and `auth_endpoint` fields:
 
     ```yaml
     backend:
@@ -106,7 +106,8 @@ With GitLab's Implicit Grant, users can authenticate with GitLab directly from t
     auth_type: implicit # Required for implicit grant
     app_id: your-app-id # Application ID from your GitLab settings
     api_root: https://my-hosted-gitlab-instance.com/api/v4
-    auth_url: https://my-hosted-gitlab-instance.com/oauth/authorize
+    base_url: https://my-hosted-gitlab-instance.com
+    auth_endpoint: oauth/authorize
     ```
 
 Note that in both cases, GitLab will also provide you with a client secret. You should _never_ store this in your repo or reveal it in the client.
@@ -145,8 +146,7 @@ be nested under that field.
 | `repo`          | none                                                           | **Required** for `github` and `gitlab` backends; ignored by `git-gateway`. Follows the pattern `[org-or-username]/[repo-name]`.                                    |
 | `accept_roles`  | none                                                           | `git-gateway` only. Limits CMS access to your defined array of user roles. Omitting this field gives access to all registered users.                 |
 | `branch`        | `master`                                                       | The branch where published content is stored. All CMS commits and PRs are made to this branch.                                                       |
-| `api_root`      | `https://api.github.com` (GitHub) or `https://gitlab.com/api/v4` (GitLab); ignored for `git-gateway`   | The API endpoint. Only necessary in certain cases, like with GitHub Enterprise or self-hosted GitLab.                                                                      |
+| `api_root`      | `https://api.github.com` (GitHub) or `https://gitlab.com/api/v4` (GitLab)  | The API endpoint. Only necessary in certain cases, like with GitHub Enterprise or self-hosted GitLab.                                                                      |
 | `site_domain`   | `location.hostname` (or `cms.netlify.com` when on `localhost`) | Sets the `site_id` query param sent to the API endpoint. Non-Netlify auth setups will often need to set this for local development to work properly. |
-| `base_url`      | `https://api.netlify.com`                                      | OAuth client URL for the `github` backend. **Required** when using an external OAuth server with the `github` backend.                               |
-| `auth_endpoint` | `auth`                                                         | Path to append to `base_url` for authentication requests. Optional.                                                                                  |
-| `auth_url` | `https://gitlab.com/oauth/authorize` on `gitlab` backend; ignored by `github` and `git-gateway`                                                         | Authentication endpoint URL. **Required** for implicit grant on self-hosted GitLab                                                                                  |
+| `base_url`      | `https://api.netlify.com` (GitHub) or `https://gitlab.com` (GitLab)                                     | OAuth client URL. **Required** when using an external OAuth server or self-hosted GitLab.                               |
+| `auth_endpoint` | `auth` (GitHub) or `oauth/authorize` (GitLab)                  | Path to append to `base_url` for authentication requests. Optional.                                                                                  |
