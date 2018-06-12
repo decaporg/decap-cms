@@ -128,12 +128,12 @@ export function searchEntries(searchTerm, page = 0) {
 // in specific collections and return raw data (no entries).
 export function query(namespace, collectionName, searchFields, searchTerm) {
   return (dispatch, getState) => {
-    dispatch(querying(namespace, collection, searchFields, searchTerm));
+    dispatch(querying(namespace, collectionName, searchFields, searchTerm));
 
     const state = getState();
     const backend = currentBackend(state.config);
+    const integration = selectIntegration(state, collectionName, 'search');
     const collection = state.collections.find(collection => collection.get('name') === collectionName);
-    const integration = selectIntegration(state, collection, 'search');
 
     const queryPromise = integration
       ? getIntegrationProvider(state.integrations, backend.getToken, integration)
