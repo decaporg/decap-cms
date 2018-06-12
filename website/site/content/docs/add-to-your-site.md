@@ -92,7 +92,7 @@ These lines specify your backend protocol and your publication branch. Git Gatew
 
 ### Editorial Workflow
 
-**Note:** Editorial workflow only works for the GitHub backend (and Git Gateway when used with GitHub). Support for other backends is [coming soon](https://github.com/netlify/netlify-cms/issues/568).
+**Note:** Editorial workflow works with GitHub repositories only. Support for other Git hosts is [coming soon](https://github.com/netlify/netlify-cms/issues/568).
 
 By default, saving a post in the CMS interface will push a commit directly to the publication branch specified in `backend`. However, you also have the option to enable the [Editorial Workflow](https://www.netlifycms.org/docs/configuration-options/#publish-mode), which adds an interface for drafting, reviewing, and approving posts. To do this, add the following line to your Netlify CMS `config.yml`:
 
