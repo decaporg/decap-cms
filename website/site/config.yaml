@@ -1,9 +1,11 @@
-baseurl: "/"
+baseurl: "https://www.netlifycms.org/"
 languageCode: "en-us"
 title: "Netlify CMS | Open-Source Content Management System"
 disable404: true
 pluralizeListTitles: false
 metaDataFormat: "yaml"
+permalinks:
+  blog: /blog/:year/:month/:title/
 menu:
   docs:
     - name: start
