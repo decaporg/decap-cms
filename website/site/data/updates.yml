@@ -1,4 +1,7 @@
 updates:
+  - date: '2018-06-12'
+    description: GitLab support is here!!! 🎉🎉🎉
+    version: 1.9.0
   - date: '2018-05-25'
     description: Fix markdown widget styling.
     version: 1.8.4
