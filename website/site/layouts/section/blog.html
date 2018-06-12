@@ -1,0 +1,17 @@
+{{ partial "header" . }}
+
+<div class="blog page">
+  <div class="container">
+    <h1>Netlify CMS Blog</h1>
+    {{ range (.Paginate .Data.Pages.ByDate.Reverse ).Pages }}
+    <article class="blog-list-item">  
+      <h2><a href="{{ .Permalink }}" class="article">{{ .Title }}</a></h2>
+      <p class="meta-info">by {{ .Params.author }} on {{ .Date.Format "January 2, 2006" }}</p>
+      <p>{{ .Description }}</p>
+    </article>
+    {{ end }}
+    {{ template "_internal/pagination.html" . }}
+  </div>
+</div>
+
+{{ partial "footer" . }}
