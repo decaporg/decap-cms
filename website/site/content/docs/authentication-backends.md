@@ -7,7 +7,7 @@ menu:
 ---
 # Authentication & Backends
 
-Netlify CMS stores content in your GitHub or GitLab repository. (Bitbucket [coming soon](https://github.com/netlify/netlify-cms/pull/525)!) In order for this to work, you need to authenticate with your Git provider, and in most cases that requires a server. We have a few options for handling this.
+Netlify CMS stores content in your GitHub or GitLab repository. (Bitbucket [coming soon](https://github.com/netlify/netlify-cms/pull/525)!) In order for this to work, you need to authenticate with your Git host, and in most cases that requires a server. We have a few options for handling this.
 
 **Note:** some static site generators have plugins for optimized integration with Netlify CMS, and starter templates may utilize these plugins. If you're using a starter template, read the template documentation before proceeding, as their instructions may differ.
 
