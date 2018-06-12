@@ -6,6 +6,7 @@
   </summary>
 
   * fix workflow top panel styling ([@erquhart](https://github.com/erquhart) in [#1398](https://github.com/netlify/netlify-cms/pull/1398))
+  * add GitLab backend with Cursor API ([@Benaiah](https://github.com/Benaiah) in [#1343](https://github.com/netlify/netlify-cms/pull/1343))
 
   ## v2
   * (possibly breaking): return date object from date/datetime widgets if no format set ([@erquhart](https://github.com/erquhart) in [#1296](https://github.com/netlify/netlify-cms/pull/1296))
