@@ -8,7 +8,7 @@ menu:
 
 # Configuration Options
 
-All configuration options for Netlify CMS are specified in the `config.yml` file, in the folder where you access the editor UI (usually in the `/admin` folder).
+All configuration options for Netlify CMS are specified in a `config.yml` file, in the folder where you access the editor UI (usually in the `/admin` folder).
 
 Alternatively, you can specify a custom config file using a link tag:
 
@@ -36,7 +36,7 @@ By default, all entries created or edited in the Netlify CMS are committed direc
 
 The `publish_mode` option allows you to enable "Editorial Workflow" mode for more control over the content publishing phases. All unpublished entries will be arranged in a board according to their status, and they can be further reviewed and edited before going live.
 
-You can enable the Editorial Workflow with the following line in `config.yml`:
+You can enable the Editorial Workflow with the following line in your Netlify CMS `config.yml` file:
 
 ```yaml
 publish_mode: editorial_workflow
@@ -104,7 +104,7 @@ slug:
 
 *This setting is required.*
 
-The `collections` setting is the heart of your Netlify CMS configuration, as it determines how content types and editor fields in the UI generate files and content in your repository. Each collection you configure displays in the left sidebar of the Content page of the editor UI, in the order they are entered into `config.yml`.
+The `collections` setting is the heart of your Netlify CMS configuration, as it determines how content types and editor fields in the UI generate files and content in your repository. Each collection you configure displays in the left sidebar of the Content page of the editor UI, in the order they are entered into your Netlify CMS `config.yml` file.
 
 `collections` accepts a list of collection objects, each with the following options:
 
@@ -167,7 +167,7 @@ slug: "{{year}}-{{month}}-{{day}}_{{slug}}"
 
 ### `fields`
 
-The `fields` option maps editor UI widgets to field-value pairs in the saved file. The order of the fields in `config.yml` determines their order in the editor UI and in the saved file.
+The `fields` option maps editor UI widgets to field-value pairs in the saved file. The order of the fields in your Netlify CMS `config.yml` file determines their order in the editor UI and in the saved file.
 
 `fields` accepts a list of collection objects, each with the following options:
 
