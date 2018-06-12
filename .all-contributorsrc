@@ -937,6 +937,35 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "hennessyevan",
+      "name": "Evan Hennessy",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/16711653?v=4",
+      "profile": "https://www.hennessyevan.com",
+      "contributions": [
+        "plugin"
+      ]
+    },
+    {
+      "login": "hasanavi",
+      "name": "Hasan Azizul Haque",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/3259517?v=4",
+      "profile": "https://hasanavi.me",
+      "contributions": [
+        "code",
+        "doc",
+        "ideas"
+      ]
+    },
+    {
+      "login": "robertkarlsson",
+      "name": "Robert Karlsson",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/5166612?v=4",
+      "profile": "https://github.com/robertkarlsson",
+      "contributions": [
+        "bug"
+      ]
     }
   ]
 }
