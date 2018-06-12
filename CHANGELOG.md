@@ -7,6 +7,8 @@
 
   * fix workflow top panel styling ([@erquhart](https://github.com/erquhart) in [#1398](https://github.com/netlify/netlify-cms/pull/1398))
   * add GitLab backend with Cursor API ([@Benaiah](https://github.com/Benaiah) in [#1343](https://github.com/netlify/netlify-cms/pull/1343))
+  * only use `label_singular` when one item is rendered in List widget ([@robertkarlsson](https://github.com/robertkarlsson) in [#1422](https://github.com/netlify/netlify-cms/pull/1422))
+  * fix hidden widgets being rendered in editor components ([@robertkarlsson](https://github.com/robertkarlsson) in [#1414](https://github.com/netlify/netlify-cms/pull/1414))
 
   ## v2
   * (possibly breaking): return date object from date/datetime widgets if no format set ([@erquhart](https://github.com/erquhart) in [#1296](https://github.com/netlify/netlify-cms/pull/1296))
