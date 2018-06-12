@@ -957,6 +957,15 @@
         "doc",
         "ideas"
       ]
+    },
+    {
+      "login": "robertkarlsson",
+      "name": "Robert Karlsson",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/5166612?v=4",
+      "profile": "https://github.com/robertkarlsson",
+      "contributions": [
+        "bug"
+      ]
     }
   ]
 }
