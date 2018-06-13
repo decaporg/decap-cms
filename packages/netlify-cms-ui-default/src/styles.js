@@ -133,6 +133,7 @@ const buttons = {
     border: 0;
     border-radius: ${lengths.borderRadius};
     cursor: pointer;
+    background-color: ${colorsRaw.blueLight};
   `,
   default: css`
     height: 36px;
@@ -204,17 +205,14 @@ const components = {
   textBadge: css`
     ${textBadge};
     color: ${colors.infoText};
-    background-color: ${colors.infoBackground};
   `,
   textBadgeSuccess: css`
     ${textBadge};
     color: ${colors.successText};
-    background-color: ${colors.successBackground};
   `,
   textBadgeDanger: css`
     ${textBadge};
     color: ${colorsRaw.red};
-    background-color: #fbe0d7;
   `,
   loaderSize: css`
     width: 2.28571429rem;

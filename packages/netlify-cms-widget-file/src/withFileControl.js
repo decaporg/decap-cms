@@ -45,6 +45,7 @@ const FileWidgetButton = styled.button`
 const FileWidgetButtonRemove = styled.button`
   ${buttons.button};
   ${components.textBadgeDanger};
+  ${buttons.lightRed};
   display: block;
 `;
 
