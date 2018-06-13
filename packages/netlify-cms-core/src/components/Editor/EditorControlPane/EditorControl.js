@@ -130,6 +130,8 @@ class EditorControl extends React.Component {
     const widgetName = field.get('widget');
     const widget = resolveWidget(widgetName);
     const fieldName = field.get('name');
+    const fieldHint = field.get('hint');
+    const showHintAbove = field.get('hint_above');
     const uniqueFieldId = uniqueId();
     const metadata = fieldsMetaData && fieldsMetaData.get(fieldName);
     const errors = fieldsErrors && fieldsErrors.get(fieldName);
@@ -155,6 +157,15 @@ class EditorControl extends React.Component {
         >
           {field.get('label')}
         </label>
+        {
+          fieldHint && showHintAbove && <p
+            className={cx(
+              styles.hint,
+              { [styles.hintActive]: this.state.styleActive },
+              { [styles.hintWithError]: !!errors },
+            )}
+          >{fieldHint}</p>
+        }
         <Widget
           classNameWrapper={cx(
             styles.widget,
@@ -189,6 +200,15 @@ class EditorControl extends React.Component {
           clearSearch={clearSearch}
           isFetching={isFetching}
         />
+        {
+          fieldHint && !showHintAbove && <p
+            className={cx(
+              styles.hint,
+              { [styles.hintActive]: this.state.styleActive },
+              { [styles.hintError]: !!errors },
+            )}
+          >{fieldHint}</p>
+        }
       </ControlContainer>
     );
   }
