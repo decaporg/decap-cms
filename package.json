@@ -158,7 +158,6 @@
     "react-immutable-proptypes": "^2.1.0",
     "react-intersection-observer": "^3.0.3",
     "react-modal": "^3.1.5",
-    "react-photo-gallery": "^6.0.22",
     "react-redux": "^4.4.0",
     "react-router-dom": "^4.2.2",
     "react-router-redux": "^5.0.0-alpha.8",

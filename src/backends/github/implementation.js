@@ -134,8 +134,6 @@ export default class GitHub {
   async persistMedia(mediaFile, options = {}) {
     try {
       const response = await this.api.persistFiles(null, [mediaFile], options);
-      // here it is failing, response is returning with an error
-      console.log('persistMedia: ', response, mediaFile, options)
       const repo = this.repo || this.getRepoFromResponseUrl(response.url);
       const { value, size, path, fileObj } = mediaFile;
       let url = `https://raw.githubusercontent.com/${repo}/${this.branch}${path}`;
@@ -153,7 +151,6 @@ export default class GitHub {
       return { id: mediaFile.sha, name: value, size: fileObj.size, url, path: trimStart(path, '/') };
     }
     catch(error) {
-      console.error('presistMedia: ', error);
       throw error;
     }
   }

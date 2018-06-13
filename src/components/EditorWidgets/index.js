@@ -21,8 +21,6 @@ import MarkdownControl from './Markdown/MarkdownControl';
 import MarkdownPreview from './Markdown/MarkdownPreview';
 import ListControl from './List/ListControl';
 import ListPreview from './List/ListPreview';
-//import GalleryControl from './Gallery/GalleryControl'
-import GalleryPreview from './Gallery/GalleryPreview'
 import ObjectControl from './Object/ObjectControl';
 import ObjectPreview from './Object/ObjectPreview';
 import RelationControl from './Relation/RelationControl';
@@ -44,5 +42,3 @@ registerWidget('object', ObjectControl, ObjectPreview);
 registerWidget('relation', RelationControl, RelationPreview);
 registerWidget('boolean', BooleanControl);
 registerWidget('unknown', UnknownControl, UnknownPreview);
-
-registerWidget('gallery', ListControl, GalleryPreview);
