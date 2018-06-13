@@ -966,6 +966,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "gil--",
+      "name": "Gil Greenberg",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/3484527?v=4",
+      "profile": "http://gilgreenberg.com",
+      "contributions": [
+        "code"
     }
-  ]
+  ],
+  "repoType": "github"
 }
