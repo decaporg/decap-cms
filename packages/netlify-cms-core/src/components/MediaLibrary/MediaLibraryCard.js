@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'react-emotion';
 import { colors, borders, lengths } from 'netlify-cms-ui-default';
-import CardImage from './CardImage';
+import MediaLibraryCardImage from './MediaLibraryCardImage';
 
 const Card = styled.div`
   width: ${props => props.width};
@@ -37,7 +37,16 @@ const MediaLibraryCard = ({ isSelected, image, text, onClick, width, margin, isP
     tabIndex="-1"
     isPrivate={isPrivate}
   >
-    <div>{image ? <CardImage image={image} /> : <CardImagePlaceholder />}</div>
+    <div>
+      <MediaLibraryCardImage
+        image={image}
+        getCachedImageURLByID={id => this.imageURLsByIDs.get(id)}
+        cacheImageURLByID={(id, url) => {
+          this.imageURLsByIDs = this.imageURLsByIDs.set(id, url);
+        }}
+        isVisible
+      />
+    </div>
     <CardText>{text}</CardText>
   </Card>
 );

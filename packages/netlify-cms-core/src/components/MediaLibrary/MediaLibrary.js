@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { orderBy, map } from 'lodash';
+import { Map } from 'immutable';
 import fuzzy from 'fuzzy';
 import { resolvePath, fileExtension } from 'netlify-cms-lib-util';
 import {
@@ -19,41 +20,6 @@ import MediaLibraryModal from './MediaLibraryModal';
 const IMAGE_EXTENSIONS_VIEWABLE = ['jpg', 'jpeg', 'webp', 'gif', 'png', 'bmp', 'tiff', 'svg'];
 const IMAGE_EXTENSIONS = [...IMAGE_EXTENSIONS_VIEWABLE];
 
-class CardImage extends React.Component {
-  state = {
-    blobURL: false,
-  };
-
-  componentDidMount() {
-    const { image } = this.props;
-    const { blobURL: existingBlobURL } = this.state;
-
-    if (!image.url && !existingBlobURL && image.getBlobPromise) {
-      image.getBlobPromise().then(blob => {
-        const blobURL = window.URL.createObjectURL(blob);
-        this.setState({ blobURL });
-      });
-    }
-  }
-
-  componentWillUnmount() {
-    window.URL.revokeObjectURL(this.state.blobURL);
-  }
-
-  render() {
-    const { blobURL } = this.state;
-    const { image } = this.props;
-
-    if (image.url) {
-      return <img src={image.url} className="nc-mediaLibrary-cardImage" />;
-    } else if (blobURL) {
-      return <img src={blobURL} className="nc-mediaLibrary-cardImage" />;
-    } else {
-      return <div className="nc-mediaLibrary-cardImage" />;
-    }
-  }
-}
-
 class MediaLibrary extends React.Component {
   /**
    * The currently selected file and query are tracked in component state as
@@ -63,6 +29,8 @@ class MediaLibrary extends React.Component {
     selectedFile: {},
     query: '',
   };
+
+  imageURLsByIDs = Map();
 
   componentDidMount() {
     this.props.loadMedia();
