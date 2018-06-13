@@ -21,7 +21,7 @@ Netlify CMS can be [added to an existing site](https://www.netlifycms.org/docs/a
     </div>
 </div>
 
-After clicking one of those buttons, you’ll authenticate with GitHub and choose a repository name. Netlify will then automatically create a repository in your GitHub account with a copy of the files from the template. Next, it will build and deploy the new site on Netlify, bringing you to the site dashboard when the build is complete.
+After clicking one of those buttons, you’ll authenticate with GitHub or GitLab and choose a repository name. Netlify will then automatically create a clone of the repository in your GitHub or GitLab account. Next, it will build and deploy the new site on Netlify, bringing you to the site dashboard when the build is complete.
 
 
 ## Access Netlify CMS on your new site
@@ -36,7 +36,7 @@ After clicking one of those buttons, you’ll authenticate with GitHub and choos
 
 3. Enter a password, sign in, and you’ll be directed straight to the CMS. (For future visits, you can go straight to `<yoursiteaddress.com>/admin/`.)
 
-Try adding and editing posts, or changing the content of the Products page. When you save, the changes will be pushed immediately to GitHub, triggering a build on Netlify, and updating the content on your site. Check out the configuration code by visiting your site repo.
+Try adding and editing posts, or changing the content of the Products page. When you save, the changes will be pushed immediately to your Git repository, triggering a build on Netlify, and updating the content on your site. Check out the configuration code by visiting your site repo.
 
 ## More paths to explore
 

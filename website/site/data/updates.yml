@@ -1,4 +1,21 @@
 updates:
+  - date: '2018-06-12'
+    description: GitLab support is here!!! 🎉🎉🎉
+    version: 1.9.0
+  - date: '2018-05-25'
+    description: Fix markdown widget styling.
+    version: 1.8.4
+  - date: '2018-05-25'
+    description: Dependency updates.
+    version: 1.8.3
+  - date: '2018-05-24'
+    description: Fix failure to save/publish.
+    version: 1.8.2
+  - date: '2018-05-23'
+    description: >-
+      Allow upload of files larger than 1MB to GitHub, prevent unintentional
+      file overwrites.
+    version: 1.8.1
   - date: '2018-05-16'
     description: >-
       Customizable relation widget display fields, squash merges for editorial

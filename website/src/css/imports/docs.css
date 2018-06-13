@@ -1,4 +1,5 @@
-.docs-content {
+.docs-content,
+.blog-content {
   pre {
     margin: 30px -16px !important;
   }
@@ -9,7 +10,8 @@
     }
   }
 }
-.docs.page {
+.docs.page,
+.blog.page {
   padding: 69px $tiny $xl;
   text-align: left;
   @media screen and (min-width: $mobile) {
@@ -121,64 +123,6 @@
     }
   }
 
-  .docs-content {
-    font-size: 18px;
-    line-height: 28px;
-
-    .edit-this-page {
-      float: right;
-    }
-
-    #pencil {
-      fill: #7CA511;
-    }
-
-    @media screen and (min-width: $tablet) {
-      @neat-span-columns 17 24;
-      @neat-shift 1 24;
-    }
-
-    h2:not(:first-child) {
-      margin-top: $large;
-    }
-
-    p {
-      line-height: 1.7;
-    }
-
-    a {
-			text-decoration: none;
-			color: $darkGreen;
-		}
-
-		iframe {
-			width: 100%;
-		}
-
-    img {
- 			max-width: 100%;
- 			height: auto;
- 		}
-
-    table {
-      background: #f7f7f7;
-      border-radius: $borderRadius;
-    }
-
-    code {
-      background: $lightestGrey;
-      border-radius: 2px;
-      padding: 2px 6px;
-      white-space: nowrap;
-    }
-
-    pre > code {
-      background: initial;
-      padding: initial;
-      white-space: inherit;
-    }
-	}
-
 	h1,
 	h2 {
 		font-size: 36px;
@@ -197,14 +141,18 @@
 	h3 {
 		color: $grey;
 		font-size: 20px;
-		margin-top: $large;
+		margin-top: $medium;
     margin-bottom: $small;
 
 		&.inverse {
 			color: white;
 		}
-	}
+  }
 
+  .meta-info {
+    font-size: $tiny;
+  }
+  
 	table {
 		width: 100%;
 		text-align: left;
@@ -229,5 +177,74 @@
 		td {
 			font-size: 14px;
 		}
-	}
+  }
+}
+
+
+.docs-content,
+.blog-content {
+  font-size: 18px;
+  line-height: 28px;
+
+  .edit-this-page {
+    float: right;
+  }
+
+  #pencil {
+    fill: #7CA511;
+  }
+
+  @media screen and (min-width: $tablet) {
+    @neat-span-columns 17 24;
+    @neat-shift 1 24;
+  }
+
+  h2:not(:first-child) {
+    margin-top: $medium;
+  }
+  
+  p {
+    line-height: 1.7;
+  }
+
+  a {
+    text-decoration: none;
+    color: $darkGreen;
+  }
+
+  iframe {
+    width: 100%;
+  }
+
+  img {
+     max-width: 100%;
+     height: auto;
+   }
+
+  table {
+    background: #f7f7f7;
+    border-radius: $borderRadius;
+  }
+
+  code {
+    background: $lightestGrey;
+    border-radius: 2px;
+    padding: 2px 6px;
+    white-space: nowrap;
+  }
+
+  pre > code {
+    background: initial;
+    padding: initial;
+    white-space: inherit;
+  }
+}
+
+.blog-content h1 {
+  margin-bottom: 0;
+}
+
+.blog-list-item h2 {
+  margin: 48px 0 0;
+  line-height: 36px;
 }

@@ -14,3 +14,9 @@ notifications:
     published: false
     title: Gitter shoutout
     url: 'https://gitter.im/netlify/netlifycms'
+  - loud: true
+    message: >-
+      Netlify CMS now supports GitLab!
+    published: true
+    title: GitLab announcement
+    url: '/blog/2018/06/netlify-cms-now-supports-gitlab-as-a-backend/'

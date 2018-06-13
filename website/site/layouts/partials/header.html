@@ -12,10 +12,26 @@
     <meta name="application-name" content="NetlifyCMS">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="/css/main.css"/>
+    
+    <meta name="description" content=
+    {{ if .Params.meta_description }}
+      {{ .Params.meta_description }}
+    {{ else if .Params.description }}
+      {{ .Params.description }}
+    {{ else if or (eq .Section "blog") (eq .Title "Blog") }}
+      "Recent news and updates about Netlify CMS."
+    {{ else }}
+      "Netlify CMS provides open source content management for your Git workflow."
+    {{ end }}
+    >
+    
     {{ if or (eq .Section "docs") (eq .Title "Docs") }}
       <link rel="stylesheet" href="/css/lib/prism.css"/>
     {{ end }}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/2/docsearch.min.css" />
+    {{ range .AlternativeOutputFormats -}}
+      {{ printf `<link rel="%s" type="%s+%s" href="%s" title="%s" />` .Rel .MediaType.Type .MediaType.Suffix .Permalink $.Site.Title | safeHTML }}
+    {{ end -}}
   </head>
   <body>
     {{ range .Site.Data.notifications }}
@@ -25,7 +41,7 @@
         {{ end }}
       {{ end }}
     {{ end }}
-    <header id="header" {{ if or (eq .Section "docs") (eq .Title "Docs") }}class="docs"{{ end }}>
+    <header id="header" class="{{ .Section }}">
       <div class="contained">
         <div class="logo-container">
           <a href="/" class="logo"><img src="/img/netlify-cms-logo.svg"/></a>
@@ -40,6 +56,7 @@
           <a class="nav-link docs-link" href="/docs/intro/">Docs</a>
           <a class="nav-link contributing-link" href="/docs/contributor-guide">Contributing</a>
           <a class="nav-link" href="/community">Community</a>
+          <a class="nav-link" href="/blog/">Blog</a>
           <a id="ghstars" class="github-button" href="https://github.com/netlify/netlify-cms" data-icon="octicon-star" data-show-count="true" aria-label="Star netlify/netlify-cms on GitHub">Star</a>
         </div>
       </div>
