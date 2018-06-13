@@ -103,6 +103,29 @@ const ControlErrorsList = styled.ul`
   top: 20px;
 `;
 
+export const ControlHint = styled.p`
+    margin-bottom: 0;
+    padding: 3px 6px;
+    font-size: 12px;
+    color: ${({ active, error }) => (active || error) ? 'white' : colors.controlLabel};
+    background-color: ${({ active, error }) => error ? colors.errorText : active ? colors.active : colors.textFieldBorder};
+    border-color: ${({ active, error }) => error ? colors.errorText : active ? colors.active : undefined};
+    border-top-right-radius: ${({ after }) => after ? '0' : lengths.borderRadius};
+    transition: border-color ${transitions.main};
+
+    & + .nc-controlPane-widget {
+      border-top-right-radius: 0;
+      border-top-left-radius: 0;
+    }
+
+    ${({ after }) => after ? css`
+      margin-top: -4px; /* negative offset to hide input border-radius */
+      border-top: ${lengths.borderWidth} solid ${colors.textFieldBorder};
+      border-bottom-left-radius: ${lengths.borderRadius};
+      border-bottom-right-radius: ${lengths.borderRadius};
+    ` : undefined}
+`;
+
 class EditorControl extends React.Component {
   state = {
     activeLabel: false,
@@ -157,15 +180,11 @@ class EditorControl extends React.Component {
         >
           {field.get('label')}
         </label>
-        {
-          fieldHint && showHintAbove && <p
-            className={cx(
-              styles.hint,
-              { [styles.hintActive]: this.state.styleActive },
-              { [styles.hintWithError]: !!errors },
-            )}
-          >{fieldHint}</p>
-        }
+        {fieldHint && showHintAbove && (
+          <ControlHint active={this.state.styleActive} error={!!errors}>
+            {fieldHint}
+          </ControlHint>
+        )}
         <Widget
           classNameWrapper={cx(
             styles.widget,
@@ -200,15 +219,11 @@ class EditorControl extends React.Component {
           clearSearch={clearSearch}
           isFetching={isFetching}
         />
-        {
-          fieldHint && !showHintAbove && <p
-            className={cx(
-              styles.hint,
-              { [styles.hintActive]: this.state.styleActive },
-              { [styles.hintError]: !!errors },
-            )}
-          >{fieldHint}</p>
-        }
+        {fieldHint && !showHintAbove && (
+          <ControlHint active={this.state.styleActive} error={!!errors} after={true}>
+            {fieldHint}
+          </ControlHint>
+        )}
       </ControlContainer>
     );
   }

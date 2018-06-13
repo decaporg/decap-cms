@@ -2,14 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from 'react-emotion';
-import EditorControl from './EditorControl';
+import EditorControl, { ControlHint } from './EditorControl';
 
 const ControlPaneContainer = styled.div`
   max-width: 800px;
   margin: 0 auto;
   padding-bottom: 16px;
 
-  p {
+  p:not(${ControlHint}) {
     font-size: 16px;
   }
 `;
