@@ -104,26 +104,12 @@ const ControlErrorsList = styled.ul`
 `;
 
 export const ControlHint = styled.p`
-    margin-bottom: 0;
-    padding: 3px 6px;
-    font-size: 12px;
-    color: ${({ active, error }) => (active || error) ? 'white' : colors.controlLabel};
-    background-color: ${({ active, error }) => error ? colors.errorText : active ? colors.active : colors.textFieldBorder};
-    border-color: ${({ active, error }) => error ? colors.errorText : active ? colors.active : undefined};
-    border-top-right-radius: ${({ after }) => after ? '0' : lengths.borderRadius};
-    transition: border-color ${transitions.main};
-
-    & + .nc-controlPane-widget {
-      border-top-right-radius: 0;
-      border-top-left-radius: 0;
-    }
-
-    ${({ after }) => after ? css`
-      margin-top: -4px; /* negative offset to hide input border-radius */
-      border-top: ${lengths.borderWidth} solid ${colors.textFieldBorder};
-      border-bottom-left-radius: ${lengths.borderRadius};
-      border-bottom-right-radius: ${lengths.borderRadius};
-    ` : undefined}
+  margin-bottom: 0;
+  padding: 3px 0;
+  font-size: 12px;
+  color: ${({ active, error }) =>
+    error ? colors.errorText : active ? colors.active : colors.controlLabel};
+  transition: color ${transitions.main};
 `;
 
 class EditorControl extends React.Component {
@@ -154,7 +140,6 @@ class EditorControl extends React.Component {
     const widget = resolveWidget(widgetName);
     const fieldName = field.get('name');
     const fieldHint = field.get('hint');
-    const showHintAbove = field.get('hint_above');
     const uniqueFieldId = uniqueId();
     const metadata = fieldsMetaData && fieldsMetaData.get(fieldName);
     const errors = fieldsErrors && fieldsErrors.get(fieldName);
@@ -180,11 +165,6 @@ class EditorControl extends React.Component {
         >
           {field.get('label')}
         </label>
-        {fieldHint && showHintAbove && (
-          <ControlHint active={this.state.styleActive} error={!!errors}>
-            {fieldHint}
-          </ControlHint>
-        )}
         <Widget
           classNameWrapper={cx(
             styles.widget,
@@ -219,8 +199,8 @@ class EditorControl extends React.Component {
           clearSearch={clearSearch}
           isFetching={isFetching}
         />
-        {fieldHint && !showHintAbove && (
-          <ControlHint active={this.state.styleActive} error={!!errors} after={true}>
+        {fieldHint && (
+          <ControlHint active={this.state.styleActive} error={!!errors}>
             {fieldHint}
           </ControlHint>
         )}

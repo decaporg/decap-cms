@@ -17,7 +17,6 @@ The following options are available on all fields:
 - `required`: specify as `false` to make a field optional; defaults to `true`
 - `pattern`: add field validation by specifying a list with a [regex pattern](https://regexr.com/) and an error message; more extensive validation can be achieved with [custom widgets](https://www.netlifycms.org/docs/custom-widgets/#advanced-field-validation)
 - `hint`: optionally add helper text directly below a widget. Useful for including instructions.
-- `hint_above`: set to `true` to make the hint appear directly below the widget's label instead of under the widget. Useful for when the widget is tall such as markdown editor or an object list.
 
   - **Example:**
 
