@@ -50,7 +50,7 @@ export const pageQuery = graphql`
             title
             description
             author
-            date(formatString: "MMMM d, YYYY")
+            date(formatString: "MMMM D, YYYY")
           }
           fields {
             slug

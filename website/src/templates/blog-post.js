@@ -36,8 +36,8 @@ export const pageQuery = graphql`
       frontmatter {
         title
         description
-        meta_description
-        date(formatString: "MMMM d, YYYY")
+        # meta_description
+        date(formatString: "MMMM D, YYYY")
         author
       }
       html
