@@ -209,10 +209,12 @@ const components = {
   textBadgeSuccess: css`
     ${textBadge};
     color: ${colors.successText};
+    font-weight: bold;
   `,
   textBadgeDanger: css`
     ${textBadge};
     color: ${colorsRaw.red};
+    font-weight: bold;
   `,
   loaderSize: css`
     width: 2.28571429rem;
