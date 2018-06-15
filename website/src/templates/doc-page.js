@@ -1,6 +1,5 @@
-import React, { Component, Fragment } from 'react';
+import React from 'react';
 import Helmet from 'react-helmet';
-import Link from 'gatsby-link';
 
 import EditLink from '../components/edit-link';
 import Widgets from '../components/widgets';
