@@ -43,7 +43,6 @@ header {
 
   @media screen and (min-width: $tablet) {
     text-align: right;
-    position: fixed;
   }
 
   .headroom--scrolled & {

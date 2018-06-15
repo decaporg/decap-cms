@@ -49,9 +49,8 @@ exports.createPages = async ({ graphql, boundActionCreators }) => {
   });
 };
 
-const BLOG_POST_FILENAME_REGEX = /([0-9]+)\-([0-9]+)\-([0-9]+)\-(.+)\.md$/;
+const pad = n => (n >= 10 ? n : `0${n}`);
 
-// nodes are created via source filesystem plugin
 exports.onCreateNode = ({ node, boundActionCreators, getNode }) => {
   const { createNodeField } = boundActionCreators;
 
@@ -62,16 +61,12 @@ exports.onCreateNode = ({ node, boundActionCreators, getNode }) => {
     let slug = value;
 
     if (relativePath.includes('blog/')) {
-      const match = BLOG_POST_FILENAME_REGEX.exec(relativePath);
-      const year = match[1];
-      const month = match[2];
-      const day = match[3];
-      const filename = match[4];
+      const date = new Date(node.frontmatter.date);
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1;
+      const filename = path.basename(relativePath, '.md');
+      slug = `/blog/${year}/${pad(month)}/${filename}`;
 
-      slug = `/blog/${year}/${month}/${day}/${filename}`;
-      const date = new Date(year, month - 1, day);
-
-      // Blog posts are sorted by date and display the date in their header.
       createNodeField({
         node,
         name: 'date',
