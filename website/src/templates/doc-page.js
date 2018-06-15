@@ -7,8 +7,8 @@ import Widgets from '../components/widgets';
 import DocsNav from '../components/docs-nav';
 import MobileNav from '../components/mobile-nav';
 
-import '../css/imports/docs.css';
 import '../css/lib/prism.css';
+import '../css/imports/docs.css';
 
 const toMenu = (menu, nav) =>
   menu.map(group => ({
