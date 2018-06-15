@@ -34,7 +34,7 @@ const getCursor = (collection, extension, entries, index) => {
 };
 
 const getFolderEntries = (folder, extension) => {
-  return Object.keys(window.repoFiles[folder])
+  return Object.keys(window.repoFiles[folder] || {})
     .filter(path => path.endsWith(`.${ extension }`))
     .map(path => ({
       file: { path: `${ folder }/${ path }` },
