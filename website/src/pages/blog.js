@@ -14,8 +14,6 @@ const Blog = ({ data }) => (
     <div className="blog page">
       <div className="container">
         <h1>Netlify CMS Blog</h1>
-        {/* {{ range (.Paginate .Data.Pages.ByDate.Reverse ).Pages }} */}
-
         {data.allMarkdownRemark.edges.map(({ node }) => (
           <article className="blog-list-item" key={node.id}>
             <h2>
@@ -29,7 +27,7 @@ const Blog = ({ data }) => (
             <p>{node.frontmatter.description}</p>
           </article>
         ))}
-        {'_internal/pagination.html'}
+        {/* TODO: pagination */}
       </div>
     </div>
   </div>
