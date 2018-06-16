@@ -6,7 +6,6 @@ import { partial } from 'lodash';
 import c from 'classnames';
 import { resolveWidget } from 'Lib/registry';
 import { Icon } from 'UI';
-import EditorControl from 'Editor/EditorControlPane/EditorControl';
 
 const TopBar = ({ collapsed, onCollapseToggle }) => (
   <div className="nc-objectControl-topBar">
@@ -35,6 +34,7 @@ export default class ObjectControl extends Component {
     forID: PropTypes.string,
     classNameWrapper: PropTypes.string.isRequired,
     forList: PropTypes.bool,
+    editorControl: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -67,6 +67,7 @@ export default class ObjectControl extends Component {
       getAsset,
       value,
       onChangeObject,
+      editorControl: EditorControl,
     } = this.props;
 
     if (field.get('widget') === 'hidden') {
