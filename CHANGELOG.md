@@ -10,6 +10,13 @@
   * check for title/slug field on config load ([@tech4him1](https://github.com/tech4him1) in [#1203](https://github.com/netlify/netlify-cms/pull/1203))
 </details>
 
+## 1.9.2 (June 15, 2018) ([demo](https://1-9-2--cms-demo.netlify.com))
+Fix test repo crash
+
+## Bug Fixes
+* fix test-repo crash on non-existent folder ([@tech4him1](https://github.com/tech4him1) in [#1444](https://github.com/netlify/netlify-cms/pull/1444))
+
+
 ## 1.9.1 (June 14, 2018) ([demo](https://1-9-1--cms-demo.netlify.com))
 Fix GitLab Implicit OAuth
 
