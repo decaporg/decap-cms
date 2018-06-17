@@ -101,13 +101,13 @@ With GitLab's Implicit Grant, users can authenticate with GitLab directly from t
 
     ```yaml
     backend:
-    name: gitlab
-    repo: owner-name/repo-name # Path to your GitLab repository
-    auth_type: implicit # Required for implicit grant
-    app_id: your-app-id # Application ID from your GitLab settings
-    api_root: https://my-hosted-gitlab-instance.com/api/v4
-    base_url: https://my-hosted-gitlab-instance.com
-    auth_endpoint: oauth/authorize
+      name: gitlab
+      repo: owner-name/repo-name # Path to your GitLab repository
+      auth_type: implicit # Required for implicit grant
+      app_id: your-app-id # Application ID from your GitLab settings
+      api_root: https://my-hosted-gitlab-instance.com/api/v4
+      base_url: https://my-hosted-gitlab-instance.com
+      auth_endpoint: oauth/authorize
     ```
 
 Note that in both cases, GitLab will also provide you with a client secret. You should _never_ store this in your repo or reveal it in the client.
