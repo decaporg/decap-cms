@@ -4,12 +4,18 @@ import moment from 'moment';
 import AssetProxy from 'ValueObjects/AssetProxy';
 import { sortKeys } from './helpers';
 
+// IE polyfill for Number.isInteger
+Number.isInteger = Number.isInteger || (value => typeof value === "number" && isFinite(value) && Math.floor(value) === value);
+
 const outputReplacer = (key, value) => {
   if (moment.isMoment(value)) {
     return value.format(value._f);
   }
   if (value instanceof AssetProxy) {
     return `${ value.path }`;
+  }
+  if (Number.isInteger(value)) {
+    return `${ value }`;
   }
   // Return `false` to use default (`undefined` would delete key).
   return false;
