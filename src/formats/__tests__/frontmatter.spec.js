@@ -192,7 +192,7 @@ describe('Frontmatter', () => {
     );
   });
 
-  it('should stringify YAML with --- delimiters when it is explicitly set as the format without a custom delimiter',
+  it('should stringify YAML with --- delimiters when it is explicitly set as the format without a custom delimiter', 
   () => {
     expect(
       frontmatterYAML().toFile({ body: 'Some content\nOn another line', tags: ['front matter', 'yaml'], title: 'YAML' })
@@ -210,7 +210,7 @@ describe('Frontmatter', () => {
       );
   });
 
-  it('should stringify YAML with --- delimiters when it is explicitly set as the format with a custom delimiter',
+  it('should stringify YAML with --- delimiters when it is explicitly set as the format with a custom delimiter', 
   () => {
     expect(
       frontmatterYAML("~~~").toFile({ body: 'Some content\nOn another line', tags: ['front matter', 'yaml'], title: 'YAML' })
@@ -228,7 +228,7 @@ describe('Frontmatter', () => {
       );
   });
 
-  it('should stringify YAML with --- delimiters when it is explicitly set as the format with different custom delimiters',
+  it('should stringify YAML with --- delimiters when it is explicitly set as the format with different custom delimiters', 
   () => {
     expect(
       frontmatterYAML(["~~~", "^^^"]).toFile({ body: 'Some content\nOn another line', tags: ['front matter', 'yaml'], title: 'YAML' })
@@ -278,7 +278,7 @@ describe('Frontmatter', () => {
       );
   });
 
-  it('should stringify JSON with { } delimiters when it is explicitly set as the format without a custom delimiter',
+  it('should stringify JSON with { } delimiters when it is explicitly set as the format without a custom delimiter', 
   () => {
     expect(
       frontmatterJSON().toFile({ body: 'Some content\nOn another line', tags: ['front matter', 'json'], title: 'JSON' })
@@ -297,7 +297,7 @@ describe('Frontmatter', () => {
       );
   });
 
-  it('should stringify JSON with { } delimiters when it is explicitly set as the format with a custom delimiter',
+  it('should stringify JSON with { } delimiters when it is explicitly set as the format with a custom delimiter', 
   () => {
     expect(
       frontmatterJSON("~~~").toFile({ body: 'Some content\nOn another line', tags: ['front matter', 'json'], title: 'JSON' })
