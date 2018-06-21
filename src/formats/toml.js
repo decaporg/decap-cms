@@ -15,7 +15,7 @@ const outputReplacer = (key, value) => {
     return `${ value.path }`;
   }
   if (Number.isInteger(value)) {
-    return `${ value }`;
+    return value.toString();
   }
   // Return `false` to use default (`undefined` would delete key).
   return false;
