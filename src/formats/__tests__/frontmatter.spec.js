@@ -1,5 +1,4 @@
 import { FrontmatterInfer, frontmatterJSON, frontmatterTOML, frontmatterYAML } from '../frontmatter';
-import tomlFormatter from '../toml';
 
 jest.mock("../../valueObjects/AssetProxy.js");
 
@@ -313,20 +312,6 @@ describe('Frontmatter', () => {
         '~~~',
         'Some content',
         'On another line\n',
-      ].join('\n')
-      );
-  });
-});
-
-describe('tomlFormatter', () => {
-  it('should output TOML integer values without decimals', () => {
-    expect(
-      tomlFormatter.toFile({ testFloat: 123.456, testInteger: 789, title: 'TOML' })
-    ).toEqual(
-      [
-        'testFloat = 123.456',
-        'testInteger = 789',
-        'title = "TOML"'
       ].join('\n')
       );
   });
