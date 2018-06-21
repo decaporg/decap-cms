@@ -4,9 +4,6 @@ import moment from 'moment';
 import AssetProxy from 'ValueObjects/AssetProxy';
 import { sortKeys } from './helpers';
 
-// IE polyfill for Number.isInteger
-Number.isInteger = Number.isInteger || (value => typeof value === "number" && isFinite(value) && Math.floor(value) === value);
-
 const outputReplacer = (key, value) => {
   if (moment.isMoment(value)) {
     return value.format(value._f);
