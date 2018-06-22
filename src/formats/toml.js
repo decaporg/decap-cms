@@ -12,6 +12,7 @@ const outputReplacer = (key, value) => {
     return `${ value.path }`;
   }
   if (Number.isInteger(value)) {
+    // Return the string representation of integers so tomlify won't render with tenths (".0")
     return value.toString();
   }
   // Return `false` to use default (`undefined` would delete key).
