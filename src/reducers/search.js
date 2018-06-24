@@ -38,7 +38,7 @@ const entries = (state = defaultState, action) => {
         map.set('isFetching', false);
         map.set('page', page);
         map.set('term', searchTerm);
-        map.set('entryIds', page === 0 ? entryIds : map.get('entryIds', List()).concat(entryIds));
+        map.set('entryIds', (!page || isNaN(page) || page === 0) ? entryIds : map.get('entryIds', List()).concat(entryIds));
       });
 
     case QUERY_REQUEST:

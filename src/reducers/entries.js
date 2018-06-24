@@ -13,6 +13,7 @@ import { SEARCH_ENTRIES_SUCCESS } from 'Actions/search';
 
 let collection;
 let loadedEntries;
+let append;
 let page;
 
 const entries = (state = Map({ entities: Map(), pages: Map() }), action) => {
@@ -32,6 +33,7 @@ const entries = (state = Map({ entities: Map(), pages: Map() }), action) => {
     case ENTRIES_SUCCESS:
       collection = action.payload.collection;
       loadedEntries = action.payload.entries;
+      append = action.payload.append;
       page = action.payload.page;
       return state.withMutations((map) => {
         loadedEntries.forEach(entry => (
@@ -41,7 +43,9 @@ const entries = (state = Map({ entities: Map(), pages: Map() }), action) => {
         const ids = List(loadedEntries.map(entry => entry.slug));
         map.setIn(['pages', collection], Map({
           page,
-          ids: (!page || page === 0) ? ids : map.getIn(['pages', collection, 'ids'], List()).concat(ids),
+          ids: append
+            ? map.getIn(['pages', collection, 'ids'], List()).concat(ids)
+            : ids,
         }));
       });
 

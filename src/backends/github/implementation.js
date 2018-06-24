@@ -6,12 +6,19 @@ import API from "./API";
 const MAX_CONCURRENT_DOWNLOADS = 10;
 
 export default class GitHub {
-  constructor(config, proxied = false) {
+  constructor(config, options={}) {
     this.config = config;
+    this.options = {
+      proxied: false,
+      API: null,
+      ...options,
+    };
 
-    if (!proxied && config.getIn(["backend", "repo"]) == null) {
+    if (!this.options.proxied && config.getIn(["backend", "repo"]) == null) {
       throw new Error("The GitHub backend needs a \"repo\" in the backend configuration.");
     }
+
+    this.api = this.options.API || null;
 
     this.repo = config.getIn(["backend", "repo"], "");
     this.branch = config.getIn(["backend", "branch"], "master").trim();

@@ -19,6 +19,9 @@ import webpack from "webpack";
 import webpackConfig from "./webpack.conf";
 import url from "url";
 
+// Always exit non-zero on unhandled promise rejection
+process.on('unhandledRejection', err => { throw err });
+
 const browserSync = BrowserSync.create();
 const defaultArgs = ["-d", "../dist", "-s", "site", "-v"];
 
@@ -40,8 +43,8 @@ gulp.task("hugo-preview", ["copy"], cb =>
   buildSite(cb, ["--buildDrafts", "--buildFuture"])
 );
 
-gulp.task("build", ["css", "js", "fonts", "images", "hugo"]);
-gulp.task("build-preview", ["css", "js", "fonts", "images", "hugo-preview"]);
+gulp.task("build", ["css", "js", "images", "hugo"]);
+gulp.task("build-preview", ["css", "js", "images", "hugo-preview"]);
 
 gulp.task("css", () =>
   gulp
@@ -78,13 +81,6 @@ gulp.task("js", cb => {
   });
 });
 
-gulp.task("fonts", () =>
-  gulp
-    .src("./src/fonts/**/*")
-    .pipe(gulp.dest("./dist/fonts"))
-    .pipe(browserSync.stream())
-);
-
 gulp.task("images", () =>
   gulp
     .src("./src/img/**/*")
@@ -118,7 +114,7 @@ gulp.task("copy", () =>
     .pipe(gulp.dest("./site/data"))
 );
 
-gulp.task("server", ["css", "js", "fonts", "images", "hugo"], () => {
+gulp.task("server", ["css", "js", "images", "hugo"], () => {
   browserSync.init({
     server: {
       baseDir: "./dist"
@@ -128,6 +124,5 @@ gulp.task("server", ["css", "js", "fonts", "images", "hugo"], () => {
   gulp.watch("./src/js/**/*.js", ["js"]);
   gulp.watch("./src/css/**/*.css", ["css"]);
   gulp.watch("./src/img/**/*", ["images"]);
-  gulp.watch("./src/fonts/**/*", ["fonts"]);
   gulp.watch("./site/**/*", ["hugo"]);
 });

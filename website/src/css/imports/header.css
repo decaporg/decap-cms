@@ -87,7 +87,8 @@ header {
     }
   }
 
-  &.docs {
+  &.docs,
+  &.blog {
     background: $darkerGrey;
     padding: $small 0;
 

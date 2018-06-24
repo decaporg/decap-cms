@@ -1,0 +1,16 @@
+{{ partial "header" . }}
+
+<div class="docs page">
+  <div class="container">
+    <article class="blog-content" id="blog-content">
+      <div class="blog-post-header">
+        <h1>{{ .Title }}</h1>
+        <p class="meta-info">by {{ .Params.author }} on {{ .Date.Format "January 2, 2006" }}</p>
+      </div>
+      {{ .Content }}
+    </article>
+  </div>
+</div>
+
+{{ partial "footer" . }}
+
