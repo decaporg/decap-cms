@@ -90,9 +90,11 @@ export default class AuthenticationPage extends React.Component {
     const { errors } = this.state;
     const { error, inProgress } = this.props;
 
+    let logo = this.props.config.get('logo');
+
     if (window.netlifyIdentity) {
       return <section className="nc-gitGatewayAuthenticationPage-root">
-        <Icon className="nc-githubAuthenticationPage-logo" size="500px" type="netlify-cms"/>
+        <Icon className="nc-githubAuthenticationPage-logo" size="500px" type="netlify-cms" customLogo={logo}/>
         <button className="nc-githubAuthenticationPage-button" onClick={this.handleIdentity}>
           Login with Netlify Identity
         </button>
@@ -101,7 +103,7 @@ export default class AuthenticationPage extends React.Component {
 
     return (
       <section className="nc-gitGatewayAuthenticationPage-root">
-        <Icon className="nc-githubAuthenticationPage-logo" size="500px" type="netlify-cms"/>
+        <Icon className="nc-githubAuthenticationPage-logo" size="500px" type="netlify-cms" customLogo={logo}/>
         <form className="nc-gitGatewayAuthenticationPage-form" onSubmit={this.handleLogin}>
           {!error && <p>
             <span className="nc-gitGatewayAuthenticationPage-errorMsg">{error}</span>

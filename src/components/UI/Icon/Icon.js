@@ -28,6 +28,7 @@ const sizes = {
 export const Icon = props => {
   const {
     type,
+    customLogo,
     direction,
     size = 'medium',
     className = '',
@@ -40,6 +41,15 @@ export const Icon = props => {
   const transform = `rotate(${rotation})`;
   const sizeResolved = sizes[size] || size;
   const style = { width: sizeResolved, height: sizeResolved, transform };
+  
+  if (customLogo) {
+    return (
+      <span className={`nc-icon ${className}`} {...remainingProps}>
+        <img src={customLogo} style={style}/>
+      </span>
+    )
+  }
+
   return (
     <span className={`nc-icon ${className}`} {...remainingProps}>
       <span dangerouslySetInnerHTML={{ __html: icon.image }} style={style}></span>

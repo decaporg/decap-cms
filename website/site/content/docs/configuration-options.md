@@ -102,6 +102,14 @@ slug:
   clean_accents: true
 ```
 
+## Custom Logo
+
+When the `logo` setting is specified, the CMS UI will change the logo displayed at the top of the login page, allowing you to brand the CMS with your own logo. `logo` is assumed to be a URL to an image file.
+
+```yaml
+logo: https://your-site.com/images/logo.svg
+```
+
 ## Collections
 
 *This setting is required.*

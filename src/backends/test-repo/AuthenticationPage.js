@@ -28,9 +28,11 @@ export default class AuthenticationPage extends React.Component {
   render() {
     const { inProgress } = this.props;
 
+    let logo = this.props.config.get("logo");
+
     return (
       <section className="nc-githubAuthenticationPage-root">
-        <Icon className="nc-githubAuthenticationPage-logo" size="500px" type="netlify-cms"/>
+        <Icon className="nc-githubAuthenticationPage-logo" size="500px" type="netlify-cms" customLogo={logo}/>
         <button
           className="nc-githubAuthenticationPage-button"
           disabled={inProgress}

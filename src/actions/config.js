@@ -105,6 +105,11 @@ export function validateConfig(config) {
   if (!List.isList(collections) || collections.isEmpty() || !collections.first()) {
     throw new Error("Error in configuration file: Your `collections` must be an array with at least one element. Check your config.yml file.");
   }
+  if (config.get('logo')) {
+    if(typeof config.get('logo') !== 'string') {
+      throw new Error("Error in configuration file: Your `logo` must be a string. Check your config.yml file.");
+    }
+  }
 
   /**
    * Validate Collections
