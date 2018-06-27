@@ -1,5 +1,7 @@
 backend:
-  name: test-repo
+  name: github
+  repo: nazihahmed/netlify-cms # Path to your Github repository
+  branch: fix-test # Branch to update
 
 display_url: https://example.com
 media_folder: "assets/uploads"
