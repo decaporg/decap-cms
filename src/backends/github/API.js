@@ -322,6 +322,7 @@ export default class API {
   }
 
   editorialWorkflowGit(fileTree, entry, filesList, options) {
+    entry.slug = options.collectionName ? `${ options.collectionName }-${ entry.slug }` : entry.slug;
     const contentKey = entry.slug;
     const branchName = this.generateBranchName(contentKey);
     const unpublished = options.unpublished || false;
