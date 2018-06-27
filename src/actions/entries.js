@@ -223,6 +223,7 @@ export function changeDraftFieldValidation(field, errors) {
  */
 
 export function loadEntry(collection, slug) {
+  console.log("load entry",collection,slug)
   return (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);

@@ -137,6 +137,7 @@ export default class TestRepo {
   persistEntry({ path, raw, slug }, mediaFiles = [], options = {}) {
     if (options.mode === EDITORIAL_WORKFLOW) {
       const unpubStore = window.repoFilesUnpublished;
+      console.log("path is",path)
       const existingEntryIndex = unpubStore.findIndex(e => e.file.path === path);
       if (existingEntryIndex >= 0) {
         const unpubEntry = { ...unpubStore[existingEntryIndex], data: raw };
@@ -185,13 +186,16 @@ export default class TestRepo {
   }
 
   publishUnpublishedEntry(collection, slug) {
+    console.log("publish non published entry",collection, slug);
     const unpubStore = window.repoFilesUnpublished;
     const unpubEntryIndex = unpubStore.findIndex(e => (
       e.metaData.collection === collection && e.slug === slug
     ));
     const unpubEntry = unpubStore[unpubEntryIndex];
+    console.log("before persist",unpubEntry.slug.split("-").slice(1).join("-"));
     const entry = { raw: unpubEntry.data, slug: unpubEntry.slug, path: unpubEntry.file.path };
     unpubStore.splice(unpubEntryIndex, 1);
+    debugger;
     return this.persistEntry(entry);
   }
   getMedia() {

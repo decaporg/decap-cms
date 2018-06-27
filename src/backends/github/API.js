@@ -117,6 +117,7 @@ export default class API {
   }
 
   storeMetadata(key, data) {
+    console.log("store meta",key,data)
     return this.checkMetadataRef()
     .then((branchData) => {
       const fileTree = {
@@ -140,12 +141,14 @@ export default class API {
     });
   }
 
-  retrieveMetadata(key) {
+  retrieveMetadata(key,collection) {
+    console.log("get metadata of",key,collection)
     const cache = LocalForage.getItem(`gh.meta.${ key }`);
     return cache.then((cached) => {
+      console.log("retrieve meta",`${ this.repoURL }/contents/${ key }.json`)
       if (cached && cached.expires > Date.now()) { return cached.data; }
       console.log("%c Checking for MetaData files", "line-height: 30px;text-align: center;font-weight: bold"); // eslint-disable-line
-      return this.request(`${ this.repoURL }/contents/${ key }.json`, {
+      return this.request(`${ this.repoURL }/contents/${ key.split("-").slice(1).join("-") }.json`, {
         params: { ref: "refs/meta/_netlify_cms" },
         headers: { Accept: "application/vnd.github.VERSION.raw" },
         cache: "no-store",
@@ -201,8 +204,9 @@ export default class API {
     .then(files => files.filter(file => file.type === "file"));
   }
 
-  readUnpublishedBranchFile(contentKey) {
-    const metaDataPromise = this.retrieveMetadata(contentKey)
+  readUnpublishedBranchFile(contentKey, collectionName) {
+    console.log("read readUnpublishedBranchFile",contentKey,collectionName)
+    const metaDataPromise = this.retrieveMetadata(contentKey,collectionName)
       .then(data => (data.objects.entry.path ? data : Promise.reject(null)));
     return resolvePromiseProperties({
       metaData: metaDataPromise,
@@ -279,6 +283,7 @@ export default class API {
     const files = entry ? mediaFiles.concat(entry) : mediaFiles;
 
     files.forEach((file) => {
+      console.log("persist",file);
       if (file.uploaded) { return; }
       uploadPromises.push(this.uploadBlob(file));
     });
@@ -322,6 +327,7 @@ export default class API {
   }
 
   editorialWorkflowGit(fileTree, entry, filesList, options) {
+    entry.slug = options.collectionName ? `${ options.collectionName }-${ entry.slug }` : entry.slug;
     const contentKey = entry.slug;
     const branchName = this.generateBranchName(contentKey);
     const unpublished = options.unpublished || false;
@@ -573,6 +579,8 @@ export default class API {
 
   publishUnpublishedEntry(collection, slug) {
     const contentKey = slug;
+    console.log("publish",collection,slug);
+    debugger;
     const branchName = this.generateBranchName(contentKey);
     let prNumber;
     return this.retrieveMetadata(contentKey)

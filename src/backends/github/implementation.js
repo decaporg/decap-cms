@@ -93,6 +93,7 @@ export default class GitHub {
 
   // Fetches a single entry.
   getEntry(collection, slug, path) {
+    console.trace("get entry",collection, slug, path)
     return this.api.readFile(path).then(data => ({
       file: { path },
       data,
@@ -111,13 +112,14 @@ export default class GitHub {
   }
 
   persistEntry(entry, mediaFiles = [], options = {}) {
+    console.log("persist entry",entry, mediaFiles, options)
     return this.api.persistFiles(entry, mediaFiles, options);
   }
 
   async persistMedia(mediaFile, options = {}) {
     try {
       const response = await this.api.persistFiles(null, [mediaFile], options);
-      
+
       const { sha, value, size, path, fileObj } = mediaFile;
       const url = URL.createObjectURL(fileObj);
       return { id: sha, name: value, size: fileObj.size, url, path: trimStart(path, '/') };
@@ -171,11 +173,12 @@ export default class GitHub {
   }
 
   unpublishedEntry(collection, slug) {
-    return this.api.readUnpublishedBranchFile(slug)
+    console.log("get unpublishedEntry",collection.get('name'), slug)
+    return this.api.readUnpublishedBranchFile(slug,collection.get('name'))
     .then((data) => {
       if (!data) return null;
       return {
-        slug,
+        slug: slug,
         file: { path: data.metaData.objects.entry.path },
         data: data.fileData,
         metaData: data.metaData,
