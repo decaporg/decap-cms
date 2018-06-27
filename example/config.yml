@@ -1,5 +1,5 @@
 backend:
-  repo: test-repo
+  name: test-repo
 
 display_url: https://example.com
 media_folder: "assets/uploads"
