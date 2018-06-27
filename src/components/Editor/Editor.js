@@ -218,18 +218,12 @@ class Editor extends React.Component {
       return;
     }
 
-    console.log('publish',collection.get('name'));
-
     await publishUnpublishedEntry(collection.get('name'), slug);
 
-    console.log('createNew',createNew);
-
     if (createNew) {
-      navigateToNewEntry(collectionName);
+      navigateToNewEntry(collection.get('name'));
     }
     else {
-    //   collectionName = /^[\w\d]+-(.+)/g.exec(collection.get('name'))[0];
-    //   console.log("navigate to ",collectionName);
       loadEntry(collection, slug);
     }
   };
