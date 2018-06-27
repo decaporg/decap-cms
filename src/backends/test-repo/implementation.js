@@ -192,7 +192,6 @@ export default class TestRepo {
     const unpubEntry = unpubStore[unpubEntryIndex];
     const entry = { raw: unpubEntry.data, slug: unpubEntry.slug, path: unpubEntry.file.path };
     unpubStore.splice(unpubEntryIndex, 1);
-    debugger;
     return this.persistEntry(entry);
   }
   getMedia() {

@@ -35,7 +35,6 @@ const selectors = {
       return collection.get('fields');
     },
     entryPath(collection, slug) {
-      console.log("entryPath",collection.get('name'),`${ collection.get('folder').replace(/\/$/, '') }/${ slug }.${ this.entryExtension(collection) }`,collection, slug);
       return `${ collection.get('folder').replace(/\/$/, '') }/${ slug.indexOf(collection.get('name')) !== -1 ? slug.split("-").slice(1).join("-") : slug }.${ this.entryExtension(collection) }`;
     },
     entrySlug(collection, path) {

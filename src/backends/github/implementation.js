@@ -171,7 +171,7 @@ export default class GitHub {
   }
 
   unpublishedEntry(collection, slug) {
-    return this.api.readUnpublishedBranchFile(slug,collection.get('name'))
+    return this.api.readUnpublishedBranchFile(slug)
     .then((data) => {
       if (!data) return null;
       return {

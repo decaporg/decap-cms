@@ -173,7 +173,6 @@ function unpublishedEntryPublishRequest(collection, slug, transactionID) {
 }
 
 function unpublishedEntryPublished(collection, slug, transactionID) {
-  console.log("unpublished entry pubed",collection, slug, transactionID);
   return {
     type: UNPUBLISHED_ENTRY_PUBLISH_SUCCESS,
     payload: { collection, slug },

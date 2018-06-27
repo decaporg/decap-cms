@@ -140,7 +140,7 @@ export default class API {
     });
   }
 
-  retrieveMetadata(key,collection) {
+  retrieveMetadata(key) {
     const cache = LocalForage.getItem(`gh.meta.${ key }`);
     return cache.then((cached) => {
       if (cached && cached.expires > Date.now()) { return cached.data; }
@@ -201,8 +201,8 @@ export default class API {
     .then(files => files.filter(file => file.type === "file"));
   }
 
-  readUnpublishedBranchFile(contentKey, collectionName) {
-    const metaDataPromise = this.retrieveMetadata(contentKey,collectionName)
+  readUnpublishedBranchFile(contentKey) {
+    const metaDataPromise = this.retrieveMetadata(contentKey)
       .then(data => (data.objects.entry.path ? data : Promise.reject(null)));
     return resolvePromiseProperties({
       metaData: metaDataPromise,
