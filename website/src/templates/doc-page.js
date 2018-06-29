@@ -1,5 +1,6 @@
 import React from 'react';
 import Helmet from 'react-helmet';
+import { matchPath } from 'react-router-dom';
 
 import EditLink from '../components/edit-link';
 import Widgets from '../components/widgets';
@@ -18,7 +19,8 @@ const toMenu = (menu, nav) =>
 const DocPage = ({ data, location, history }) => {
   const { nav, page, widgets, menu } = data;
 
-  const docsNav = toMenu(menu.siteMetadata.menu.docs, nav)
+  const docsNav = toMenu(menu.siteMetadata.menu.docs, nav);
+  const showWidgets = matchPath(location.pathname, { path: '/docs/widgets' });
 
   return (
     <div className="docs detail page">
@@ -32,10 +34,7 @@ const DocPage = ({ data, location, history }) => {
           <EditLink path={page.fields.path} />
           <h1>{page.frontmatter.title}</h1>
           <div dangerouslySetInnerHTML={{ __html: page.html }} />
-
-          {location.pathname === '/docs/widgets/' && (
-            <Widgets widgets={widgets} />
-          )}
+          {showWidgets && <Widgets widgets={widgets} />}
         </article>
       </div>
     </div>
@@ -97,6 +96,7 @@ export const pageQuery = graphql`
         node {
           frontmatter {
             label
+            target
           }
           html
         }

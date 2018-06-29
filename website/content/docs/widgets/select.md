@@ -1,5 +1,6 @@
 ---
 label: "Select"
+target: select
 ---
 
 The select widget allows you to pick a single string value from a dropdown menu.
