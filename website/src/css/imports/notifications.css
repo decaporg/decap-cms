@@ -1,0 +1,51 @@
+.notification {
+  background-color: $darkerGrey;
+  box-sizing: border-box;
+  color: white;
+  display: block;
+  padding: $tiny $small;
+  text-align: center;
+  width: 100%;
+  z-index: 101;
+
+  em {
+    font-style: normal;
+    color: #8B8B8B;
+    padding: 0 8px;
+  }
+
+  sup,
+  sub {
+    font-size: initial;
+    vertical-align: initial;
+  }
+
+  .text-link {
+    text-decoration: underline;
+    color: $green;
+  }
+
+  &.notification-loud {
+    background-color: $green;
+    color: $darkerGrey;
+  }
+}
+
+.has-notification {
+  .hero:before,
+  .page.docs:before,
+  .page.blog:before {
+    content: '';
+    display: block;
+    height: 100px;
+    width: 100%;
+
+    @media screen and (min-width: $mobile) {
+      height: 74px;
+    }
+
+    @media screen and (min-width: $tablet) {
+      height: 50px;
+    }
+  }
+}
