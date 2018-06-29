@@ -1,32 +1,12 @@
-.notification {
-  background-color: $darkerGrey;
-  box-sizing: border-box;
-  color: white;
-  display: block;
-  padding: $tiny $small;
-  text-align: center;
+.header-container {
+  position: absolute;
+  z-index: 100;
   width: 100%;
+  top: 0;
+  left: 0;
 
-  em {
-    font-style: normal;
-    color: #8b8b8b;
-    padding: 0 8px;
-  }
-
-  sup,
-  sub {
-    font-size: initial;
-    vertical-align: initial;
-  }
-
-  .text-link {
-    text-decoration: underline;
-    color: $green;
-  }
-
-  &.notification-loud {
-    background-color: $green;
-    color: $darkerGrey;
+  @media screen and (min-width: $tablet) {
+    position: fixed;
   }
 }
 
@@ -34,18 +14,17 @@ header {
   background: transparent;
   box-shadow: none;
   font-family: $roboto;
-  position: absolute;
   padding: $medium 0;
   text-align: center;
   transition: background 0.2s ease, padding 0.2s ease, box-shadow 0.2s ease;
   width: 100%;
-  z-index: 100;
+  overflow: hidden; /* clearfix for floated logo */
 
   @media screen and (min-width: $tablet) {
     text-align: right;
   }
 
-  .headroom--scrolled & {
+  .header-container.scrolled & {
     @media screen and (min-width: $tablet) {
       background: $darkerGrey;
       padding: $small 0;

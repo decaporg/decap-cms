@@ -1,5 +1,6 @@
 import React from 'react';
 import Helmet from 'react-helmet';
+import classnames from 'classnames';
 
 import Header from '../components/header';
 import Footer from '../components/footer';
@@ -13,7 +14,7 @@ const Layout = ({ data, location, children }) => {
   const notifs = data.notifs.notifications.filter(notif => notif.published);
 
   return (
-    <div>
+    <div className={classnames({ 'has-notification': notifs.length })}>
       <Helmet defaultTitle={title} titleTemplate={`%s | ${title}`}>
         <meta name="description" content={description} />
       </Helmet>
