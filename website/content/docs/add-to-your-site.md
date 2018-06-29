@@ -139,7 +139,7 @@ rating: 5
 This is the post body, where I write about our last chance to party before the Y2K bug destroys us all.
 ```
 
-Given this example, our `collections` settings would look like this:
+Given this example, our `collections` settings would look like this in `config.yml`:
 
 ```yaml
 collections:
@@ -197,11 +197,11 @@ Let's break that down:
 
 As described above, the `widget` property specifies a built-in or custom UI widget for a given field. When a content editor enters a value into a widget, that value will be saved in the document front matter as the value for the `name` specified for that field. A full listing of available widgets can be found in the [Widgets doc](https://www.netlifycms.org/docs/widgets).
 
-Based on this example, you can go through the post types in your site and add the appropriate settings to your Netlify CMS `config.yml` file. Each post type should be listed as a separate node under the `collections` field.
+Based on this example, you can go through the post types in your site and add the appropriate settings to your Netlify CMS `config.yml` file. Each post type should be listed as a separate node under the `collections` field. See [collection types](https://www.netlifycms.org/docs/collection-types) for more configuration options.
 
 ### Filter
 
-The entries for any collection can be filtered based on the value of a single field. The example collection below would only show post entries with the value "en" in the language field.
+The entries for any collection can be filtered based on the value of a single field. The example collection below would only show post entries with the value "en" in the `language` field.
 
 ```yaml
 collections:
@@ -217,7 +217,7 @@ collections:
 
 ## Authentication
 
-Now that you have your Netlify CMS files in place and configured, all that's left is to enable authentication. There are [many ways to do this](https://www.netlifycms.org/docs/authentication-backends) (with or without deploying to Netlify), but this example uses Netlify because it's one of the quickest ways to get started.
+Now that you have your Netlify CMS files in place and configured, all that's left is to enable authentication. Netlify is not required when setting up a backend, but this example uses Netlify because it's one of the quickest ways to get started. To learn how to connect with other backends such as GitHub or GitLab, see [authentication &amp; backends](https://www.netlifycms.org/docs/authentication-backends).
 
 ### Setup on Netlify
 
