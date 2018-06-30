@@ -2,7 +2,6 @@ import trimStart from 'lodash/trimStart';
 import semaphore from "semaphore";
 import AuthenticationPage from "./AuthenticationPage";
 import API from "./API";
-import { fileExtension } from 'Lib/pathHelper';
 import { CURSOR_COMPATIBILITY_SYMBOL } from 'ValueObjects/Cursor';
 import { EDITORIAL_WORKFLOW } from "Constants/publishModes";
 
@@ -66,7 +65,9 @@ export default class GitLab {
   entriesByFolder(collection, extension) {
     return this.api.listFiles(collection.get("folder"))
     .then(({ files, cursor }) =>
-      this.fetchFiles(files.filter(file => fileExtension(file.name) === extension))
+      this.fetchFiles(
+        files.filter(file => file.name.endsWith('.' + extension))
+      )
       .then(fetchedFiles => {
         const returnedFiles = fetchedFiles;
         returnedFiles[CURSOR_COMPATIBILITY_SYMBOL] = cursor;
@@ -77,7 +78,11 @@ export default class GitLab {
 
   allEntriesByFolder(collection, extension) {
     return this.api.listAllFiles(collection.get("folder"))
-    .then(files => this.fetchFiles(files.filter(file => fileExtension(file.name) === extension)));
+    .then(files =>
+      this.fetchFiles(
+        files.filter(file => file.name.endsWith('.' + extension))
+      )
+    );
   }
 
   entriesByFiles(collection) {
