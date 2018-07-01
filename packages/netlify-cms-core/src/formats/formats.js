@@ -6,18 +6,7 @@ import { FrontmatterInfer, frontmatterJSON, frontmatterTOML, frontmatterYAML } f
 
 export const frontmatterFormats = ['yaml-frontmatter','toml-frontmatter','json-frontmatter']
 
-export const supportedFormats = [
-  'yml',
-  'yaml',
-  'toml',
-  'json',
-  'frontmatter',
-  'json-frontmatter',
-  'toml-frontmatter',
-  'yaml-frontmatter',
-];
-
-const formatExtensions = {
+export const formatExtensions = {
   yml: 'yml',
   yaml: 'yml',
   toml: 'toml',
@@ -29,7 +18,7 @@ const formatExtensions = {
 };
 export const formatToExtension = format => formatExtensions[format];
 
-const extensionFormatters = {
+export const extensionFormatters = {
   yml: yamlFormatter,
   yaml: yamlFormatter,
   toml: tomlFormatter,
@@ -38,7 +27,6 @@ const extensionFormatters = {
   markdown: FrontmatterInfer,
   html: FrontmatterInfer,
 };
-
 export const formatByExtension = (extension) => extensionFormatters[extension];
 
 const formatByName = (name, customDelimiter) => ({

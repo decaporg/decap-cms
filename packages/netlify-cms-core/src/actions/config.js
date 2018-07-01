@@ -4,7 +4,6 @@ import yaml from "js-yaml";
 import { Map, List, fromJS } from "immutable";
 import { trimStart, flow, isBoolean, get } from "lodash";
 import { authenticateUser } from "Actions/auth";
-import { formatByExtension, supportedFormats, frontmatterFormats } from "Formats/formats";
 import * as publishModes from "Constants/publishModes";
 import configSchema from '../configSchema';
 
@@ -44,21 +43,6 @@ export function applyDefaults(config) {
     });
 }
 
-function validateCollection(collection) {
-  const {
-    name,
-    folder,
-    format,
-    extension,
-  } = collection.toJS();
-
-  if (!format && extension && !formatByExtension(extension)) {
-    // Cannot infer format from extension.
-    throw new Error(`Please set a format for collection "${name}". Supported formats are ${supportedFormats.join(',')}`);
-  }
-}
-
-
 export function validateConfig(config) {
   const ajv = new AJV({ allErrors: true, jsonPointers: true });
   // ajvErrors(ajv);
@@ -77,11 +61,6 @@ export function validateConfig(config) {
     console.error('Config Errors', ajv.errors);
     throw error;
   }
-
-  /**
-   * Validate Collections
-   */
-  config.get('collections').forEach(validateCollection);
 
   return config;
 }

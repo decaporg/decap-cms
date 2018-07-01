@@ -1,4 +1,4 @@
-import { supportedFormats, frontmatterFormats } from "Formats/formats";
+import { formatExtensions, frontmatterFormats, extensionFormatters } from "Formats/formats";
 import { IDENTIFIER_FIELDS } from "Constants/fieldInference";
 
 export default {
@@ -29,7 +29,8 @@ export default {
       items: {
         type: "object",
         properties: {
-          format: { type: "string", enum: supportedFormats },
+          format: { type: "string", enum: Object.keys(formatExtensions) },
+          extension: { type: "string" },
           frontmatter_delimiter: { type: "string" },
           properties: {
             fields: {
@@ -44,6 +45,12 @@ export default {
             },
           },
         },
+        if: { required: ["extension"] },
+        then: {
+          // Cannot infer format from extension.
+          if: { properties: { extension: { enum: Object.keys(extensionFormatters) } } },
+          else: { required: ["format"] },
+        },
         oneOf: [{ required: ["files"] }, { required: ["folder"] }],
         dependencies: {
           frontmatter_delimiter: {
@@ -55,11 +62,9 @@ export default {
           folder: {
             properties: {
               fields: {
-                type: "array",
                 contains: {
-                  type: "object",
                   properties: {
-                    name: { type: "string", enum: IDENTIFIER_FIELDS },
+                    name: { enum: IDENTIFIER_FIELDS },
                   },
                 },
               },
