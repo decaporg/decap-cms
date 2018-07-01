@@ -38,6 +38,12 @@ const AppMainContainer = styled.div`
   margin: 0 auto;
 `
 
+const ErrorCodeBlock = styled.pre`
+  margin-left: 1em;
+  font-size: 15px;
+  line-height: 1.5;
+`
+
 class App extends React.Component {
 
   static propTypes = {
@@ -53,15 +59,20 @@ class App extends React.Component {
   };
 
   static configError(config) {
-    return (<div>
-      <h1>Error loading the CMS configuration</h1>
-
+    return (
       <div>
-        <p>The <code>config.yml</code> file could not be loaded or failed to parse properly.</p>
-        <p><strong>Error message:</strong> {config.get('error')}</p>
-        <p>Check your console for details.</p>
+        <h1>Error loading the CMS configuration</h1>
+
+        <div>
+          <p>The <code>config.yml</code> file could not be loaded or failed to parse properly.</p>
+          <div>
+            <strong>Error message:</strong>
+            <ErrorCodeBlock>{config.get('error')}</ErrorCodeBlock>
+          </div>
+          <p>Check your console for details.</p>
+        </div>
       </div>
-    </div>);
+    );
   }
 
   componentDidMount() {
