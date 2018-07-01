@@ -1,7 +1,13 @@
 import { formatExtensions, frontmatterFormats, extensionFormatters } from "Formats/formats";
 import { IDENTIFIER_FIELDS } from "Constants/fieldInference";
 
-export default {
+
+/**
+ * The schema had to be wrapped in a function to
+ * fix a circular dependency problem for WebPack.
+ * The imports had to be resolved asyncronously.
+ */
+export const getConfigSchema = () => ({
   type: "object",
   properties: {
     backend: {
@@ -75,4 +81,4 @@ export default {
     },
   },
   required: ["backend", "media_folder", "collections"],
-};
+});

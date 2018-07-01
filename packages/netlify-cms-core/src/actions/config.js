@@ -5,7 +5,7 @@ import { Map, List, fromJS } from "immutable";
 import { trimStart, flow, isBoolean, get } from "lodash";
 import { authenticateUser } from "Actions/auth";
 import * as publishModes from "Constants/publishModes";
-import configSchema from '../configSchema';
+import { getConfigSchema } from '../configSchema';
 
 export const CONFIG_REQUEST = "CONFIG_REQUEST";
 export const CONFIG_SUCCESS = "CONFIG_SUCCESS";
@@ -47,12 +47,13 @@ export function validateConfig(config) {
   const ajv = new AJV({ allErrors: true, jsonPointers: true });
   // ajvErrors(ajv);
   const jsConfig = config.toJS();
+  const configSchema = getConfigSchema();
 
   const valid = ajv.validate(configSchema, jsConfig);
   if (!valid) {
     const errors = ajv.errors.map(({ message, dataPath }) => {
-      const dotPath = dataPath.slice(1).split('/').map(seg => seg.match(/^\d*$/) ? `[${seg}]` : `.${seg}`).join('').slice(1);
-      return `    ${ (dotPath ? `'${ dotPath }' ` : ``) }${ message }`;
+      const dotPath = dataPath.slice(1).split('/').map(seg => seg.match(/^\d+$/) ? `[${seg}]` : `.${seg}`).join('').slice(1);
+      return `    ${ (dotPath ? `'${ dotPath }'` : 'config') } ${ message }`;
     });
     errors.reverse();
     const error = new Error(`\n${ errors.join('\n') }`);
