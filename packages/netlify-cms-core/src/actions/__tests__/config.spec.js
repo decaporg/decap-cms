@@ -77,55 +77,55 @@ describe('config', () => {
     it('should throw if backend is not defined in config', () => {
       expect(() => {
         validateConfig(fromJS({ foo: 'bar' }));
-      }).toThrowError("should have required property 'backend'.");
+      }).toThrowError("config should have required property 'backend'");
     });
 
     it('should throw if backend name is not defined in config', () => {
       expect(() => {
         validateConfig(fromJS({ foo: 'bar', backend: {} }));
-      }).toThrowError("'backend' should have required property 'name'.");
+      }).toThrowError("'backend' should have required property 'name'");
     });
 
     it('should throw if backend name is not a string in config', () => {
       expect(() => {
         validateConfig(fromJS({ foo: 'bar', backend: { name: { } } }));
-      }).toThrowError("'backend.name' should be string.");
+      }).toThrowError("'backend.name' should be string");
     });
 
     it('should throw if media_folder is not defined in config', () => {
       expect(() => {
         validateConfig(fromJS({ foo: 'bar', backend: { name: 'bar' } }));
-      }).toThrowError("should have required property 'media_folder'.");
+      }).toThrowError("config should have required property 'media_folder'");
     });
 
     it('should throw if media_folder is not a string in config', () => {
       expect(() => {
         validateConfig(fromJS({ foo: 'bar', backend: { name: 'bar' }, media_folder: {} }));
-      }).toThrowError("'media_folder' should be string.");
+      }).toThrowError("'media_folder' should be string");
     });
 
     it('should throw if collections is not defined in config', () => {
       expect(() => {
         validateConfig(fromJS({ foo: 'bar', backend: { name: 'bar' }, media_folder: 'baz' }));
-      }).toThrowError("should have required property 'collections'.");
+      }).toThrowError("config should have required property 'collections'");
     });
 
     it('should throw if collections not an array in config', () => {
       expect(() => {
         validateConfig(fromJS({ foo: 'bar', backend: { name: 'bar' }, media_folder: 'baz', collections: {} }));
-      }).toThrowError("'collections' should be array.");
+      }).toThrowError("'collections' should be array");
     });
 
     it('should throw if collections is an empty array in config', () => {
       expect(() => {
         validateConfig(fromJS({ foo: 'bar', backend: { name: 'bar' }, media_folder: 'baz', collections: [] }));
-      }).toThrowError("'collections' should NOT have less than 1 items.");
+      }).toThrowError("'collections' should NOT have less than 1 items");
     });
 
     it('should throw if collections is an array with a single null element in config', () => {
       expect(() => {
         validateConfig(fromJS({ foo: 'bar', backend: { name: 'bar' }, media_folder: 'baz', collections: [null] }));
-      }).toThrowError("Your `collections` must be an array with at least one element.");
+      }).toThrowError("'collections[0]' should be object");
     });
   });
 });

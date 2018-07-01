@@ -1,6 +1,9 @@
-import { formatExtensions, frontmatterFormats, extensionFormatters } from "Formats/formats";
+import {
+  formatExtensions,
+  frontmatterFormats,
+  extensionFormatters,
+} from "Formats/formats";
 import { IDENTIFIER_FIELDS } from "Constants/fieldInference";
-
 
 /**
  * The schema had to be wrapped in a function to
@@ -54,7 +57,11 @@ export const getConfigSchema = () => ({
         if: { required: ["extension"] },
         then: {
           // Cannot infer format from extension.
-          if: { properties: { extension: { enum: Object.keys(extensionFormatters) } } },
+          if: {
+            properties: {
+              extension: { enum: Object.keys(extensionFormatters) },
+            },
+          },
           else: { required: ["format"] },
         },
         oneOf: [{ required: ["files"] }, { required: ["folder"] }],

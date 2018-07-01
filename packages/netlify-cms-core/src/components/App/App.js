@@ -64,7 +64,7 @@ class App extends React.Component {
         <h1>Error loading the CMS configuration</h1>
 
         <div>
-          <strong>Errors:</strong>
+          <strong>Config Errors:</strong>
           <ErrorCodeBlock>{config.get('error')}</ErrorCodeBlock>
           <span>Check your config.yml file.</span>
         </div>
