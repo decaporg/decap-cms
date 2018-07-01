@@ -1,12 +1,10 @@
 import AJV from 'ajv';
-import ajvErrors from 'ajv-errors';
+// import ajvErrors from 'ajv-errors';
 import yaml from "js-yaml";
 import { Map, List, fromJS } from "immutable";
 import { trimStart, flow, isBoolean, get } from "lodash";
 import { authenticateUser } from "Actions/auth";
 import { formatByExtension, supportedFormats, frontmatterFormats } from "Formats/formats";
-import { selectIdentifier } from "Reducers/collections";
-import { IDENTIFIER_FIELDS } from "Constants/fieldInference";
 import * as publishModes from "Constants/publishModes";
 import configSchema from '../configSchema';
 
@@ -58,16 +56,12 @@ function validateCollection(collection) {
     // Cannot infer format from extension.
     throw new Error(`Please set a format for collection "${name}". Supported formats are ${supportedFormats.join(',')}`);
   }
-  if (folder && !selectIdentifier(collection)) {
-    // Verify that folder-type collections have an identifier field for slug creation.
-    throw new Error(`Collection "${name}" must have a field that is a valid entry identifier. Supported fields are ${IDENTIFIER_FIELDS.join(', ')}.`);
-  }
 }
 
 
 export function validateConfig(config) {
   const ajv = new AJV({ allErrors: true, jsonPointers: true });
-  ajvErrors(ajv);
+  // ajvErrors(ajv);
   const jsConfig = config.toJS();
 
   const valid = ajv.validate(configSchema, jsConfig);

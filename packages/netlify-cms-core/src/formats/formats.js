@@ -27,7 +27,7 @@ const formatExtensions = {
   'toml-frontmatter': 'md',
   'yaml-frontmatter': 'md',
 };
-const formatToExtension = format => formatExtensions[format];
+export const formatToExtension = format => formatExtensions[format];
 
 const extensionFormatters = {
   yml: yamlFormatter,
@@ -39,7 +39,7 @@ const extensionFormatters = {
   html: FrontmatterInfer,
 };
 
-const formatByExtension = (extension) => extensionFormatters[extension];
+export const formatByExtension = (extension) => extensionFormatters[extension];
 
 const formatByName = (name, customDelimiter) => ({
   yml: yamlFormatter,

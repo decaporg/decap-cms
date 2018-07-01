@@ -1,4 +1,5 @@
 import { supportedFormats, frontmatterFormats } from "Formats/formats";
+import { IDENTIFIER_FIELDS } from "Constants/fieldInference";
 
 export default {
   type: "object",
@@ -29,11 +30,27 @@ export default {
         type: "object",
         properties: {
           format: { type: "string", enum: supportedFormats },
-          "frontmatter_delimiter": { type: "string" },
+          frontmatter_delimiter: { type: "string" },
         },
-        oneOf: [{ required: ["files"] }, { required: ["folder"] }],
+        oneOf: [
+          { required: ["files"] },
+          {
+            required: ["folder"],
+            properties: {
+              fields: {
+                type: "array",
+                contains: {
+                  type: "object",
+                  properties: {
+                    name: { type: "string", enum: IDENTIFIER_FIELDS },
+                  },
+                },
+              },
+            },
+          },
+        ],
         dependencies: {
-          "frontmatter_delimiter": {
+          frontmatter_delimiter: {
             properties: {
               format: { enum: frontmatterFormats },
             },
