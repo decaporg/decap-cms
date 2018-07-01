@@ -31,11 +31,28 @@ export default {
         properties: {
           format: { type: "string", enum: supportedFormats },
           frontmatter_delimiter: { type: "string" },
+          properties: {
+            fields: {
+              type: "array",
+              contains: {
+                type: "object",
+                properties: {
+                  name: { type: "string" },
+                },
+                required: ["name", "label", "widget"],
+              },
+            },
+          },
         },
-        oneOf: [
-          { required: ["files"] },
-          {
-            required: ["folder"],
+        oneOf: [{ required: ["files"] }, { required: ["folder"] }],
+        dependencies: {
+          frontmatter_delimiter: {
+            properties: {
+              format: { enum: frontmatterFormats },
+            },
+            required: ["format"],
+          },
+          folder: {
             properties: {
               fields: {
                 type: "array",
@@ -47,14 +64,6 @@ export default {
                 },
               },
             },
-          },
-        ],
-        dependencies: {
-          frontmatter_delimiter: {
-            properties: {
-              format: { enum: frontmatterFormats },
-            },
-            required: ["format"],
           },
         },
       },

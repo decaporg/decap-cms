@@ -67,9 +67,10 @@ export function validateConfig(config) {
   const valid = ajv.validate(configSchema, jsConfig);
   if (!valid) {
     const errors = ajv.errors.map(({ message, dataPath }) => {
-      const dotPath = trimStart(dataPath, '/').replace('/', '.');
+      const dotPath = dataPath.slice(1).split('/').map(seg => seg.match(/^\d*$/) ? `[${seg}]` : `.${seg}`).join('').slice(1);
       return `    ${ (dotPath ? `'${ dotPath }' ` : ``) }${ message }`;
     });
+    errors.reverse();
     const error = new Error(`\n${ errors.join('\n') }`);
     error.name = 'Config Errors';
 
