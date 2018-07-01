@@ -55,7 +55,6 @@ export function validateConfig(config) {
       const dotPath = dataPath.slice(1).split('/').map(seg => seg.match(/^\d+$/) ? `[${seg}]` : `.${seg}`).join('').slice(1);
       return `    ${ (dotPath ? `'${ dotPath }'` : 'config') } ${ message }`;
     });
-    errors.reverse();
     const error = new Error(`\n${ errors.join('\n') }`);
     error.name = 'Config Errors';
 
