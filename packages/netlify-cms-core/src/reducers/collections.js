@@ -97,6 +97,7 @@ export const selectTemplateName = (collection, slug) => selectors[collection.get
 export const selectIdentifier = collection => {
   const fieldNames = collection.get('fields').map(field => field.get('name'));
   return IDENTIFIER_FIELDS.find(id => fieldNames.find(name => name.toLowerCase().trim() === id));
+  // There must be a field whose `name` matches one of the IDENTIFIER_FIELDS.
 };
 export const selectInferedField = (collection, fieldName) => {
   const inferableField = INFERABLE_FIELDS[fieldName];

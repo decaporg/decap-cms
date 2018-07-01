@@ -64,12 +64,9 @@ class App extends React.Component {
         <h1>Error loading the CMS configuration</h1>
 
         <div>
-          <p>The <code>config.yml</code> file could not be loaded or failed to parse properly.</p>
-          <div>
-            <strong>Error message:</strong>
-            <ErrorCodeBlock>{config.get('error')}</ErrorCodeBlock>
-          </div>
-          <p>Check your console for details.</p>
+          <strong>Errors:</strong>
+          <ErrorCodeBlock>{config.get('error')}</ErrorCodeBlock>
+          <span>Check your config.yml file.</span>
         </div>
       </div>
     );

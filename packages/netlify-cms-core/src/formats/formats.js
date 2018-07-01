@@ -17,7 +17,7 @@ export const supportedFormats = [
   'yaml-frontmatter',
 ];
 
-export const formatToExtension = format => ({
+const formatExtensions = {
   yml: 'yml',
   yaml: 'yml',
   toml: 'toml',
@@ -26,32 +26,31 @@ export const formatToExtension = format => ({
   'json-frontmatter': 'md',
   'toml-frontmatter': 'md',
   'yaml-frontmatter': 'md',
-}[format]);
+};
+const formatToExtension = format => formatExtensions[format];
 
-export function formatByExtension(extension) {
-  return {
-    yml: yamlFormatter,
-    yaml: yamlFormatter,
-    toml: tomlFormatter,
-    json: jsonFormatter,
-    md: FrontmatterInfer,
-    markdown: FrontmatterInfer,
-    html: FrontmatterInfer,
-  }[extension];
-}
+const extensionFormatters = {
+  yml: yamlFormatter,
+  yaml: yamlFormatter,
+  toml: tomlFormatter,
+  json: jsonFormatter,
+  md: FrontmatterInfer,
+  markdown: FrontmatterInfer,
+  html: FrontmatterInfer,
+};
 
-function formatByName(name, customDelimiter) {
-  return {
-    yml: yamlFormatter,
-    yaml: yamlFormatter,
-    toml: tomlFormatter,
-    json: jsonFormatter,
-    frontmatter: FrontmatterInfer,
-    'json-frontmatter': frontmatterJSON(customDelimiter),
-    'toml-frontmatter': frontmatterTOML(customDelimiter),
-    'yaml-frontmatter': frontmatterYAML(customDelimiter),
-  }[name];
-}
+const formatByExtension = (extension) => extensionFormatters[extension];
+
+const formatByName = (name, customDelimiter) => ({
+  yml: yamlFormatter,
+  yaml: yamlFormatter,
+  toml: tomlFormatter,
+  json: jsonFormatter,
+  frontmatter: FrontmatterInfer,
+  'json-frontmatter': frontmatterJSON(customDelimiter),
+  'toml-frontmatter': frontmatterTOML(customDelimiter),
+  'yaml-frontmatter': frontmatterYAML(customDelimiter),
+}[name]);
 
 export function resolveFormat(collectionOrEntity, entry) {
   // Check for custom delimiter

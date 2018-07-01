@@ -89,7 +89,7 @@ describe('config', () => {
     it('should throw if backend name is not a string in config', () => {
       expect(() => {
         validateConfig(fromJS({ foo: 'bar', backend: { name: { } } }));
-      }).toThrowError("'backend/name' should be string.");
+      }).toThrowError("'backend.name' should be string.");
     });
 
     it('should throw if media_folder is not defined in config', () => {
