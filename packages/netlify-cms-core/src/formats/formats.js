@@ -1,4 +1,5 @@
 import { List } from 'immutable';
+import { get } from 'lodash';
 import yamlFormatter from './yaml';
 import tomlFormatter from './toml';
 import jsonFormatter from './json';
@@ -16,7 +17,6 @@ export const formatExtensions = {
   'toml-frontmatter': 'md',
   'yaml-frontmatter': 'md',
 };
-export const formatToExtension = format => formatExtensions[format];
 
 export const extensionFormatters = {
   yml: yamlFormatter,
@@ -27,7 +27,6 @@ export const extensionFormatters = {
   markdown: FrontmatterInfer,
   html: FrontmatterInfer,
 };
-export const formatByExtension = (extension) => extensionFormatters[extension];
 
 const formatByName = (name, customDelimiter) => ({
   yml: yamlFormatter,
@@ -55,14 +54,14 @@ export function resolveFormat(collectionOrEntity, entry) {
   const filePath = entry && entry.path;
   if (filePath) {
     const fileExtension = filePath.split('.').pop();
-    return formatByExtension(fileExtension);
+    return get(extensionFormatters, fileExtension);
   }
 
   // If creating a new file, and an `extension` is specified in the
   //   collection config, infer the format from that extension.
   const extension = collectionOrEntity.get('extension');
   if (extension) {
-    return formatByExtension(extension);
+    return get(extensionFormatters, extension);
   }
 
   // If no format is specified and it cannot be inferred, return the default.

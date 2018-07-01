@@ -4,7 +4,7 @@ import consoleError from 'Lib/consoleError';
 import { CONFIG_SUCCESS } from 'Actions/config';
 import { FILES, FOLDER } from 'Constants/collectionTypes';
 import { INFERABLE_FIELDS, IDENTIFIER_FIELDS } from 'Constants/fieldInference';
-import { formatToExtension } from 'Formats/formats';
+import { formatExtensions } from 'Formats/formats';
 
 const collections = (state = null, action) => {
   switch (action.type) {
@@ -30,7 +30,7 @@ const collections = (state = null, action) => {
 const selectors = {
   [FOLDER]: {
     entryExtension(collection) {
-      return (collection.get('extension') || formatToExtension(collection.get('format') || 'frontmatter')).replace(/^\./, '');
+      return (collection.get('extension') || get(formatExtensions, (collection.get('format') || 'frontmatter'))).replace(/^\./, '');
     },
     fields(collection) {
       return collection.get('fields');
