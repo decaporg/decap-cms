@@ -9,7 +9,6 @@ publish_mode: editorial_workflow
 collections: # A list of collections the CMS should be able to edit
   - name: "posts" # Used in routes, ie.: /admin/collections/:slug/edit
     label: "Posts" # Used in the UI
-    extension: puppy
     label_singular: "Post" # Used in the UI, ie: "New Post"
     description: >
       The description is a great place for tone setting, high level information, and editing
