@@ -20,6 +20,7 @@ export const getConfigSchema = () => ({
     },
     display_url: { type: "string", examples: ["https://example.com"] },
     media_folder: { type: "string", examples: ["assets/uploads"] },
+    public_folder: { type: "string", examples: ["/uploads"] },
     publish_mode: {
       type: "string",
       enum: ["editorial_workflow"],
@@ -36,24 +37,71 @@ export const getConfigSchema = () => ({
       type: "array",
       minItems: 1,
       items: {
+        // ------- Each collection: -------
         type: "object",
         properties: {
+          name: { type: "string" },
+          label: { type: "string" },
+          label_singular: { type: "string" },
+          description: { type: "string" },
+          folder: { type: "string" },
+          files: {
+            type: "array",
+            items: {
+              // ------- Each file: -------
+              type: "object",
+              properties: {
+                name: { type: "string" },
+                label: { type: "string" },
+                label_singular: { type: "string" },
+                description: { type: "string" },
+                file: { type: "string" },
+                fields: {
+                  type: "array",
+                  contains: {
+                    // ------- Each field: -------
+                    type: "object",
+                    properties: {
+                      name: { type: "string" },
+                      label: { type: "string" },
+                      widget: { type: "string" },
+                      required: { type: "boolean" },
+                    },
+                    required: ["name", "label", "widget"],
+                  },
+                },
+              },
+              required: ["name", "label", "file", "fields"],
+            },
+          },
+          slug: { type: "string" },
+          create: { type: "boolean" },
+          editor: {
+            type: "object",
+            properties: {
+              preview: { type: "boolean" },
+            },
+          },
           format: { type: "string", enum: Object.keys(formatExtensions) },
           extension: { type: "string" },
           frontmatter_delimiter: { type: "string" },
-          properties: {
-            fields: {
-              type: "array",
-              contains: {
-                type: "object",
-                properties: {
-                  name: { type: "string" },
-                },
-                required: ["name", "label", "widget"],
+          fields: {
+            type: "array",
+            contains: {
+              // ------- Each field: -------
+              type: "object",
+              properties: {
+                name: { type: "string" },
+                label: { type: "string" },
+                widget: { type: "string" },
+                required: { type: "boolean" },
               },
+              required: ["name", "label", "widget"],
             },
           },
         },
+        required: ["name", "label"],
+        oneOf: [{ required: ["files"] }, { required: ["folder", "fields"] }],
         if: { required: ["extension"] },
         then: {
           // Cannot infer format from extension.
@@ -64,7 +112,6 @@ export const getConfigSchema = () => ({
           },
           else: { required: ["format"] },
         },
-        oneOf: [{ required: ["files"] }, { required: ["folder"] }],
         dependencies: {
           frontmatter_delimiter: {
             properties: {
@@ -79,6 +126,11 @@ export const getConfigSchema = () => ({
                   properties: {
                     name: { enum: IDENTIFIER_FIELDS },
                   },
+                  errorMessage: {
+                    properties: {
+                      name: 'must have a field that is a valid entry identifier',
+                    }
+                  }
                 },
               },
             },
