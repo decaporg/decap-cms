@@ -1,4 +1,7 @@
 updates:
+  - date: '2018-07-03'
+    description: Fix numbers in TOML output.
+    version: 1.9.3
   - date: '2018-06-15'
     description: Fix test-repo crash.
     version: 1.9.2

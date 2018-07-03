@@ -10,6 +10,13 @@
   * check for title/slug field on config load ([@tech4him1](https://github.com/tech4him1) in [#1203](https://github.com/netlify/netlify-cms/pull/1203))
 </details>
 
+## 1.9.3 (July 3, 2018) ([demo](https://1-9-3--cms-demo.netlify.com))
+Fix numbers in TOML output
+
+## Bug Fixes
+* fix int value output in TOML format file (@slathrop in #1458)
+
+
 ## 1.9.2 (June 15, 2018) ([demo](https://1-9-2--cms-demo.netlify.com))
 Fix test repo crash
 
