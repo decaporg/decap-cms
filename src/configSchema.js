@@ -120,17 +120,15 @@ export const getConfigSchema = () => ({
             required: ["format"],
           },
           folder: {
+            errorMessage: {
+              _: 'must have a field that is a valid entry identifier',
+            },
             properties: {
               fields: {
                 contains: {
                   properties: {
                     name: { enum: IDENTIFIER_FIELDS },
                   },
-                  errorMessage: {
-                    properties: {
-                      name: 'must have a field that is a valid entry identifier',
-                    }
-                  }
                 },
               },
             },

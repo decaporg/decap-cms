@@ -1,5 +1,5 @@
 import AJV from 'ajv';
-// import ajvErrors from 'ajv-errors';
+import ajvErrors from 'ajv-errors';
 import yaml from "js-yaml";
 import { Map, List, fromJS } from "immutable";
 import { trimStart, flow, isBoolean, get } from "lodash";
@@ -45,7 +45,7 @@ export function applyDefaults(config) {
 
 export function validateConfig(config) {
   const ajv = new AJV({ allErrors: true, jsonPointers: true });
-  // ajvErrors(ajv);
+  ajvErrors(ajv);
   const jsConfig = config.toJS();
   const configSchema = getConfigSchema();
 
