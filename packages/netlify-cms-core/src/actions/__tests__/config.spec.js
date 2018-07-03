@@ -60,8 +60,9 @@ describe('config', () => {
     it('should return the config if no errors', () => {
       const collections = [{
         name: 'posts',
+        label: 'Posts',
         folder: '_posts',
-        fields: [{ name: 'title', label: 'title' }],
+        fields: [{ name: 'title', label: 'title', widget: 'string' }],
       }];
       const config = fromJS({
         foo: 'bar',
