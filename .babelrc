@@ -1,19 +1,9 @@
 {
   "presets": [
     "react",
-    ["env", {
-      "modules": false
-    }]
+    "env",
   ],
   "plugins": [
-    "lodash",
-    ["babel-plugin-transform-builtin-extend", {
-      "globals": ["Error"]
-    }],
-    ["transform-runtime", {
-      "useBuiltIns": true,
-      "useESModules": true
-    }],
     ["module-resolver", {
       "root": [
         "./src/components"
@@ -31,14 +21,9 @@
         "ValueObjects": "./src/valueObjects/",
       }
     }],
-    "transform-export-extensions",
-    "transform-class-properties",
-    "transform-object-rest-spread",
-    "react-hot-loader/babel",
+    "inline-svg",
+    ["inline-import", {
+      "extensions": ["yml"],
+    }],
   ],
-  "env": {
-    "test": {
-      "plugins": ["transform-es2015-modules-commonjs"]
-    }
-  }
 }
