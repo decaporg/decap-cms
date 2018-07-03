@@ -10,3 +10,4 @@ manifest.yml
 .imdone/
 website/data/contributors.json
 /coverage/
+.cache

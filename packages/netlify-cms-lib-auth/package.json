@@ -1,0 +1,27 @@
+{
+  "name": "netlify-cms-lib-auth",
+  "description": "Shared authentication functionality for Netlify CMS.",
+  "version": "2.0.0-alpha.0",
+  "license": "MIT",
+  "main": "src/index.js",
+  "files": [
+    "src/",
+    "dist/"
+  ],
+  "keywords": [
+    "netlify-cms"
+  ],
+  "scripts": {
+    "build": "parcel build src --out-dir ."
+  },
+  "dependencies": {
+    "immutable": "^3.7.6",
+    "lodash": "^4.13.1",
+    "uuid": "^3.1.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "parcel-bundler": "^1.9.4"
+  }
+}

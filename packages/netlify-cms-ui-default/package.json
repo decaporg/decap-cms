@@ -1,0 +1,28 @@
+{
+  "name": "netlify-cms-ui-default",
+  "description": "Default UI components for Netlify CMS.",
+  "version": "2.0.0-alpha.0",
+  "license": "MIT",
+  "main": "index.js",
+  "keywords": [
+    "netlify-cms"
+  ],
+  "scripts": {
+    "build": "parcel build src --out-dir ."
+  },
+  "dependencies": {
+    "classnames": "^2.2.5",
+    "lodash": "^4.13.1",
+    "prop-types": "^15.5.10",
+    "react": "^16.0.0",
+    "react-aria-menubutton": "^5.1.0",
+    "react-toggled": "^1.1.2",
+    "react-transition-group": "^2.2.1"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-plugin-inline-svg": "^1.0.0",
+    "parcel-bundler": "^1.9.4"
+  }
+}
