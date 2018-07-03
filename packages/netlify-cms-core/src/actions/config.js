@@ -1,11 +1,9 @@
-import AJV from 'ajv';
-import ajvErrors from 'ajv-errors';
 import yaml from "js-yaml";
-import { Map, List, fromJS } from "immutable";
-import { trimStart, flow, isBoolean, get } from "lodash";
+import { Map, fromJS } from "immutable";
+import { trimStart, flow, get } from "lodash";
 import { authenticateUser } from "Actions/auth";
 import * as publishModes from "Constants/publishModes";
-import { getConfigSchema } from '../configSchema';
+import { validateConfig } from 'Constants/configSchema';
 
 export const CONFIG_REQUEST = "CONFIG_REQUEST";
 export const CONFIG_SUCCESS = "CONFIG_SUCCESS";
@@ -41,28 +39,6 @@ export function applyDefaults(config) {
         map.set('public_folder', defaultPublicFolder);
       }
     });
-}
-
-export function validateConfig(config) {
-  const ajv = new AJV({ allErrors: true, jsonPointers: true });
-  ajvErrors(ajv);
-  const jsConfig = config.toJS();
-  const configSchema = getConfigSchema();
-
-  const valid = ajv.validate(configSchema, jsConfig);
-  if (!valid) {
-    const errors = ajv.errors.map(({ message, dataPath }) => {
-      const dotPath = dataPath.slice(1).split('/').map(seg => seg.match(/^\d+$/) ? `[${seg}]` : `.${seg}`).join('').slice(1);
-      return `${ (dotPath ? `'${ dotPath }'` : 'config') } ${ message }`;
-    });
-    const error = new Error(errors.join('\n'));
-    error.name = '';
-
-    console.error('Config Errors', ajv.errors);
-    throw error;
-  }
-
-  return config;
 }
 
 function mergePreloadedConfig(preloadedConfig, loadedConfig) {
@@ -142,7 +118,9 @@ export function loadConfig() {
        * Merge any existing configuration so the result can be validated.
        */
       const mergedConfig = mergePreloadedConfig(preloadedConfig, loadedConfig);
-      const config = flow(validateConfig, applyDefaults)(mergedConfig);
+      validateConfig(mergedConfig.toJS());
+
+      const config = applyDefaults(mergedConfig);
 
       dispatch(configDidLoad(config));
       dispatch(authenticateUser());

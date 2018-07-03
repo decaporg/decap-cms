@@ -1,3 +1,5 @@
+import AJV from 'ajv';
+import ajvErrors from 'ajv-errors';
 import {
   formatExtensions,
   frontmatterFormats,
@@ -8,9 +10,9 @@ import { IDENTIFIER_FIELDS } from "Constants/fieldInference";
 /**
  * The schema had to be wrapped in a function to
  * fix a circular dependency problem for WebPack.
- * The imports had to be resolved asyncronously.
+ * The imports get resolved asyncronously.
  */
-export const getConfigSchema = () => ({
+const getConfigSchema = () => ({
   type: "object",
   properties: {
     backend: {
@@ -140,3 +142,22 @@ export const getConfigSchema = () => ({
   },
   required: ["backend", "media_folder", "collections"],
 });
+
+export function validateConfig(config) {
+  const ajv = new AJV({ allErrors: true, jsonPointers: true });
+  ajvErrors(ajv);
+
+  const valid = ajv.validate(getConfigSchema(), config);
+  
+  if (!valid) {
+    const errors = ajv.errors.map(({ message, dataPath }) => {
+      const dotPath = dataPath.slice(1).split('/').map(seg => seg.match(/^\d+$/) ? `[${seg}]` : `.${seg}`).join('').slice(1);
+      return `${(dotPath ? `'${dotPath}'` : 'config')} ${message}`;
+    });
+    const error = new Error(errors.join('\n'));
+    error.name = '';
+
+    console.error('Config Errors', ajv.errors);
+    throw error;
+  }
+}
