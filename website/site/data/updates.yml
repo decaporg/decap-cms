@@ -1,6 +1,15 @@
 updates:
+  - date: '2018-07-03'
+    description: Fix numbers in TOML output.
+    version: 1.9.3
+  - date: '2018-06-15'
+    description: Fix test-repo crash.
+    version: 1.9.2
+  - date: '2018-06-14'
+    description: Fix GitLab Implicit OAuth
+    version: 1.9.1
   - date: '2018-06-12'
-    description: GitLab support is here!!! 🎉🎉🎉
+    description: "GitLab support is here!!! \U0001F389\U0001F389\U0001F389"
     version: 1.9.0
   - date: '2018-05-25'
     description: Fix markdown widget styling.
