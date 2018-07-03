@@ -9,8 +9,8 @@ import { IDENTIFIER_FIELDS } from "Constants/fieldInference";
 
 /**
  * The schema had to be wrapped in a function to
- * fix a circular dependency problem for WebPack.
- * The imports get resolved asyncronously.
+ * fix a circular dependency problem for WebPack,
+ * where the imports get resolved asyncronously.
  */
 const getConfigSchema = () => ({
   type: "object",
@@ -143,21 +143,41 @@ const getConfigSchema = () => ({
   required: ["backend", "media_folder", "collections"],
 });
 
+class ConfigError extends Error {
+  constructor(errors, ...args) {
+    const message = errors
+      .map(({ message, dataPath }) => {
+        const dotPath = dataPath
+          .slice(1)
+          .split("/")
+          .map(seg => (seg.match(/^\d+$/) ? `[${seg}]` : `.${seg}`))
+          .join("")
+          .slice(1);
+        return `${dotPath ? `'${dotPath}'` : "config"} ${message}`;
+      })
+      .join("\n");
+    super(message, ...args);
+
+    this.errors = errors;
+    this.message = message;
+  }
+
+  toString() {
+    return this.message;
+  }
+}
+
+/**
+ * `validateConfig` is a pure function. It does not mutate
+ * the config that is passed in. 
+ */
 export function validateConfig(config) {
   const ajv = new AJV({ allErrors: true, jsonPointers: true });
   ajvErrors(ajv);
 
   const valid = ajv.validate(getConfigSchema(), config);
-  
   if (!valid) {
-    const errors = ajv.errors.map(({ message, dataPath }) => {
-      const dotPath = dataPath.slice(1).split('/').map(seg => seg.match(/^\d+$/) ? `[${seg}]` : `.${seg}`).join('').slice(1);
-      return `${(dotPath ? `'${dotPath}'` : 'config')} ${message}`;
-    });
-    const error = new Error(errors.join('\n'));
-    error.name = '';
-
     console.error('Config Errors', ajv.errors);
-    throw error;
+    throw new ConfigError(ajv.errors);
   }
 }
