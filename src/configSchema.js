@@ -58,7 +58,7 @@ export const getConfigSchema = () => ({
                 file: { type: "string" },
                 fields: {
                   type: "array",
-                  contains: {
+                  items: {
                     // ------- Each field: -------
                     type: "object",
                     properties: {
@@ -87,7 +87,8 @@ export const getConfigSchema = () => ({
           frontmatter_delimiter: { type: "string" },
           fields: {
             type: "array",
-            contains: {
+            minItems: 1,
+            items: {
               // ------- Each field: -------
               type: "object",
               properties: {
