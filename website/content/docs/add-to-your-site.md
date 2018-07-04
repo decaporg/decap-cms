@@ -217,7 +217,7 @@ collections:
 
 ## Authentication
 
-Now that you have your Netlify CMS files in place and configured, all that's left is to enable authentication. Netlify is not required when setting up a backend, but this example uses Netlify because it's one of the quickest ways to get started. To learn how to connect with other backends such as GitHub or GitLab, see [authentication &amp; backends](https://www.netlifycms.org/docs/authentication-backends).
+Now that you have your Netlify CMS files in place and configured, all that's left is to enable authentication. Netlify is not required when setting up a backend, but this example uses Netlify because it's one of the quickest ways to get started. To use other authentication options or connect with other backends, see [authentication &amp; backends](https://www.netlifycms.org/docs/authentication-backends).
 
 ### Setup on Netlify
 
@@ -267,5 +267,7 @@ Your site CMS is now fully configured and ready for login!
 If you set your registration preference to "Invite only," you'll need to invite yourself (and anyone else you choose) as a site user. To do this, select the **Identity** tab from your site dashboard, and then select the **Invite users** button. Invited users will receive an email invitation with a confirmation link. Clicking the link will take you to your site with a login prompt.
 
 If you left your site registration open, or for return visits after comfirming an email invitation, you can access your site's CMS at `yoursite.com/admin/`.
+
+**Note**: when editing content, NetlifyCMS fetches files on your configured git repository branch. If you are running NetlifyCMS locally with changed files, or on a hosted site with outdated files, content within the admin UI may not reflect hosted files.
 
 Happy posting!
