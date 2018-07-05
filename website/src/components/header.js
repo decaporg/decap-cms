@@ -89,16 +89,18 @@ class Header extends Component {
               <Link className="nav-link" to="/blog">
                 Blog
               </Link>
-              <a
-                id="ghstars"
-                className="github-button"
-                href="https://github.com/netlify/netlify-cms"
-                data-icon="octicon-star"
-                data-show-count="true"
-                aria-label="Star netlify/netlify-cms on GitHub"
-              >
-                Star
-              </a>
+              <span className="gh-button">
+                <a
+                  id="ghstars"
+                  className="github-button"
+                  href="https://github.com/netlify/netlify-cms"
+                  data-icon="octicon-star"
+                  data-show-count="true"
+                  aria-label="Star netlify/netlify-cms on GitHub"
+                >
+                  Star
+                </a>
+              </span>
             </div>
           </div>
         </header>

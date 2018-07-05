@@ -74,7 +74,8 @@ header {
       }
     }
 
-    .nav-link + iframe {
+    .gh-button {
+      display: inline-block;
       margin-left: $small;
       vertical-align: middle;
       @media screen and (max-width: $mobile) {
