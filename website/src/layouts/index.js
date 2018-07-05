@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import Helmet from 'react-helmet';
 import classnames from 'classnames';
 
@@ -14,14 +14,25 @@ const Layout = ({ data, location, children }) => {
   const notifs = data.notifs.notifications.filter(notif => notif.published);
 
   return (
-    <div className={classnames({ 'has-notification': notifs.length })}>
+    <Fragment>
       <Helmet defaultTitle={title} titleTemplate={`%s | ${title}`}>
         <meta name="description" content={description} />
       </Helmet>
+      {notifs.map((node, i) => (
+        <a
+          key={i}
+          href={node.url}
+          className={classnames('notification', {
+            'notification-loud': node.loud
+          })}
+        >
+          {node.message}
+        </a>
+      ))}
       <Header location={location} notifications={notifs} />
       {children()}
       <Footer buttons={data.dataYaml.footer.buttons} />
-    </div>
+    </Fragment>
   );
 };
 

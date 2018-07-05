@@ -1,12 +1,66 @@
-.header-container {
+.notification {
+  background-color: $darkerGrey;
+  box-sizing: border-box;
+  color: white;
+  display: block;
+  padding: $tiny $small;
   position: absolute;
-  z-index: 100;
+  text-align: center;
   width: 100%;
-  top: 0;
-  left: 0;
+  z-index: 101;
 
-  @media screen and (min-width: $tablet) {
+  @media screen and (min-width: $mobile) {
     position: fixed;
+  }
+
+  em {
+    font-style: normal;
+    color: #8b8b8b;
+    padding: 0 8px;
+  }
+
+  sup,
+  sub {
+    font-size: initial;
+    vertical-align: initial;
+  }
+
+  .text-link {
+    text-decoration: underline;
+    color: $green;
+  }
+
+  &.notification-loud {
+    background-color: $green;
+    color: $darkerGrey;
+  }
+
+  + header {
+    margin-top: 100px;
+
+    @media screen and (min-width: 360px) {
+      margin-top: 74px;
+    }
+
+    @media screen and (min-width: 712px) {
+      margin-top: 50px;
+    }
+
+    + div:before,
+    + .hero:before {
+      content: '';
+      display: block;
+      height: 100px;
+      width: 100%;
+
+      @media screen and (min-width: 360px) {
+        height: 74px;
+      }
+
+      @media screen and (min-width: 712px) {
+        height: 50px;
+      }
+    }
   }
 }
 
@@ -14,17 +68,19 @@ header {
   background: transparent;
   box-shadow: none;
   font-family: $roboto;
+  position: absolute;
   padding: $medium 0;
   text-align: center;
   transition: background 0.2s ease, padding 0.2s ease, box-shadow 0.2s ease;
   width: 100%;
-  overflow: hidden; /* clearfix for floated logo */
+  z-index: 100;
 
   @media screen and (min-width: $tablet) {
     text-align: right;
+    position: fixed;
   }
 
-  .header-container.scrolled & {
+  &.scrolled {
     @media screen and (min-width: $tablet) {
       background: $darkerGrey;
       padding: $small 0;
@@ -52,7 +108,6 @@ header {
         height: $small;
         margin: $tiny 0 0 0;
       }
-
       @media screen and (min-width: 487px) and (max-width: 767px) {
         margin-top: 32px;
       }
