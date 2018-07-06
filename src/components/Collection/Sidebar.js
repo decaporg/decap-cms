@@ -36,7 +36,7 @@ export default class Collection extends React.Component {
 
     return (
         <aside className="nc-collectionPage-sidebar">
-          <h1 className="nc-collectionPage-sidebarHeading">Collections</h1>
+          <h2 className="nc-collectionPage-sidebarHeading">Collections</h2>
           <div className="nc-collectionPage-sidebarSearch">
             <Icon type="search" size="small"/>
             <input
