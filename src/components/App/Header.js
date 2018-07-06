@@ -36,7 +36,7 @@ export default class Header extends React.Component {
 
     return (
       <div className="nc-appHeader-container">
-        <div className="nc-appHeader-main">
+        <header className="nc-appHeader-main">
           <div className="nc-appHeader-content">
             <nav>
               <NavLink
@@ -108,7 +108,7 @@ export default class Header extends React.Component {
               </Dropdown>
             </div>
           </div>
-        </div>
+        </header>
       </div>
     );
   }
