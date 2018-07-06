@@ -35,7 +35,7 @@ export default class Collection extends React.Component {
     const { query } = this.state;
 
     return (
-        <div className="nc-collectionPage-sidebar">
+        <aside className="nc-collectionPage-sidebar">
           <h1 className="nc-collectionPage-sidebarHeading">Collections</h1>
           <div className="nc-collectionPage-sidebarSearch">
             <Icon type="search" size="small"/>
@@ -47,7 +47,7 @@ export default class Collection extends React.Component {
             />
           </div>
           {collections.toList().map(this.renderLink)}
-        </div>
+        </aside>
     );
   }
 }
