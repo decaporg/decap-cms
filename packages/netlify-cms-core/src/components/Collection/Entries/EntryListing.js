@@ -1,11 +1,18 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import styled from 'react-emotion';
 import Waypoint from 'react-waypoint';
 import { Map } from 'immutable';
 import { selectFields, selectInferedField } from 'Reducers/collections';
 import EntryCard from './EntryCard';
 import Cursor from 'ValueObjects/Cursor';
+
+const CardsGrid = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+  margin-left: -12px;
+`
 
 export default class EntryListing extends React.Component {
   static propTypes = {
@@ -59,14 +66,14 @@ export default class EntryListing extends React.Component {
 
     return (
       <div>
-        <div className="nc-entryListing-cardsGrid">
+        <CardsGrid>
           {
             Map.isMap(collections)
               ? this.renderCardsForSingleCollection()
               : this.renderCardsForMultipleCollections()
           }
           <Waypoint onEnter={this.handleLoadMore} />
-        </div>
+        </CardsGrid>
       </div>
     );
   }

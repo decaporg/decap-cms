@@ -3,19 +3,12 @@
 <head>
   <meta charset="utf-8" />
 
-  <title>This is an example</title>
+  <title>Netlify CMS Development Test</title>
 
-  <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="../src/index.css"/>
-  <!--
-    Netlify CMS will automatically look for a "config.yml" file in the same
-    directory as the CMS HTML file (like this one), but you can override this by
-    providing a link tag like the one below.
-  -->
-
-  <link href="./config.yml" type="text/yaml" rel="cms-config-url">
 
   <script>
+  window.CMS_MANUAL_INIT = true;
   window.repoFiles = {
     _posts: {
       "2015-02-14-this-is-a-post.md": {
@@ -89,7 +82,7 @@
 </head>
 <body>
 
-  <script src='../src/index.js'></script>
+  <script src='cms-test.js'></script>
   <script>
     var PostPreview = createClass({
       render: function() {
@@ -167,10 +160,34 @@
       }
     });
 
+    const previewStyles = `
+      html,
+      body {
+        color: #444;
+        font-size: 14px;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      }
+
+      body {
+        padding: 20px;
+      }
+
+      h1 {
+        margin-top: 20px;
+        color: #666;
+        font-weight: bold;
+        font-size: 32px;
+      }
+
+      img {
+        max-width: 100%;
+      }
+    `;
+
     CMS.registerPreviewTemplate("posts", PostPreview);
     CMS.registerPreviewTemplate("general", GeneralPreview);
     CMS.registerPreviewTemplate("authors", AuthorsPreview);
-    CMS.registerPreviewStyle("/example.css");
+    CMS.registerPreviewStyle(previewStyles, { raw: true });
     // Pass the name of a registered control to reuse with a new widget preview.
     CMS.registerWidget("relationKitchenSinkPost", "relation", RelationKitchenSinkPostPreview);
     CMS.registerEditorComponent({

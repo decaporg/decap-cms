@@ -1,10 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { orderBy, get, isEmpty, map } from 'lodash';
-import c from 'classnames';
+import { orderBy, map } from 'lodash';
 import fuzzy from 'fuzzy';
-import Waypoint from 'react-waypoint';
-import { Modal, FileUploadButton } from 'UI';
 import { resolvePath, fileExtension } from 'netlify-cms-lib-util/path';
 import { changeDraftField } from 'Actions/entries';
 import {
@@ -14,8 +11,7 @@ import {
   insertMedia as insertMediaAction,
   closeMediaLibrary as closeMediaLibraryAction,
 } from 'Actions/mediaLibrary';
-import { Icon } from 'netlify-cms-ui-default';
-
+import MediaLibraryModal from './MediaLibraryModal';
 
 /**
  * Extensions used to determine which files to show when the media library is
@@ -212,7 +208,7 @@ class MediaLibrary extends React.Component {
     const {
       isVisible,
       canInsert,
-      files,
+      files = [],
       dynamicSearch,
       dynamicSearchActive,
       forImage,
@@ -224,115 +220,37 @@ class MediaLibrary extends React.Component {
       isPaginating,
       privateUpload,
     } = this.props;
-    const { query, selectedFile } = this.state;
-    const filteredFiles = forImage ? this.filterImages(files) : files;
-    const queriedFiles = (!dynamicSearch && query) ? this.queryFilter(query, filteredFiles) : filteredFiles;
-    const tableData = this.toTableData(queriedFiles);
-    const hasFiles = files && !!files.length;
-    const hasFilteredFiles = filteredFiles && !!filteredFiles.length;
-    const hasSearchResults = queriedFiles && !!queriedFiles.length;
-    const hasMedia = hasSearchResults;
-    const shouldShowEmptyMessage = !hasMedia;
-    const emptyMessage = (isLoading && !hasMedia && 'Loading...')
-      || (dynamicSearchActive && 'No results.')
-      || (!hasFiles && 'No assets found.')
-      || (!hasFilteredFiles && 'No images found.')
-      || (!hasSearchResults && 'No results.');
-    const hasSelection = hasMedia && !isEmpty(selectedFile);
-    const shouldShowButtonLoader = isPersisting || isDeleting;
 
     return (
-      <Modal
-        isOpen={isVisible}
-        onClose={this.handleClose}
-        className={c('nc-mediaLibrary-dialog', { 'nc-mediaLibrary-dialogPrivate': privateUpload })}
-      >
-        <div className="nc-mediaLibrary-top">
-          <div>
-            <div className="nc-mediaLibrary-header">
-              <button className="nc-mediaLibrary-close" onClick={this.handleClose}>
-                <Icon type="close"/>
-              </button>
-              <h1 className="nc-mediaLibrary-title">
-                {privateUpload ? 'Private ' : null}
-                {forImage ? 'Images' : 'Media assets'}
-              </h1>
-            </div>
-            <div className="nc-mediaLibrary-search">
-              <Icon type="search" size="small"/>
-              <input
-                className=""
-                value={query}
-                onChange={this.handleSearchChange}
-                onKeyDown={event => this.handleSearchKeyDown(event)}
-                placeholder="Search..."
-                disabled={!dynamicSearchActive && !hasFilteredFiles}
-              />
-            </div>
-          </div>
-          <div className="nc-mediaLibrary-actionContainer">
-            <FileUploadButton
-              className={`nc-mediaLibrary-uploadButton ${shouldShowButtonLoader ? 'nc-mediaLibrary-uploadButton-disabled' : ''}`}
-              label={isPersisting ? 'Uploading...' : 'Upload new'}
-              imagesOnly={forImage}
-              onChange={this.handlePersist}
-              disabled={shouldShowButtonLoader}
-            />
-            <div className="nc-mediaLibrary-lowerActionContainer">
-              <button
-                className="nc-mediaLibrary-deleteButton"
-                onClick={this.handleDelete}
-                disabled={shouldShowButtonLoader || !hasSelection}
-              >
-                {isDeleting ? 'Deleting...' : 'Delete selected'}
-              </button>
-              { !canInsert ? null :
-                <button
-                  onClick={this.handleInsert}
-                  disabled={!hasSelection}
-                  className="nc-mediaLibrary-insertButton"
-                >
-                  Choose selected
-                </button>
-              }
-            </div>
-          </div>
-        </div>
-        {
-          shouldShowEmptyMessage
-            ? <div className="nc-mediaLibrary-emptyMessage"><h1>{emptyMessage}</h1></div>
-            : null
-        }
-        <div className="nc-mediaLibrary-cardGrid-container" ref={ref => (this.scrollContainerRef = ref)}>
-          <div className="nc-mediaLibrary-cardGrid">
-            {
-              tableData.map((file, idx) =>
-                <div
-                  key={file.key}
-                  className={c('nc-mediaLibrary-card', { 'nc-mediaLibrary-card-selected': selectedFile.key === file.key })}
-                  onClick={() => this.handleAssetClick(file)}
-                  tabIndex="-1"
-                >
-                  <div className="nc-mediaLibrary-cardImage-container">
-                    {
-                      file.isViewableImage
-                        ? <img src={file.url} className="nc-mediaLibrary-cardImage"/>
-                        : <div className="nc-mediaLibrary-cardImage"/>
-                    }
-                  </div>
-                  <p className="nc-mediaLibrary-cardText">{file.name}</p>
-                </div>
-              )
-            }
-            {
-              hasNextPage
-                ? <Waypoint onEnter={() => this.handleLoadMore()}/>
-                : null
-            }
-          </div>
-          { isPaginating ? <h1 className="nc-mediaLibrary-paginatingMessage">Loading...</h1> : null }
-        </div>
-      </Modal>
+      <MediaLibraryModal
+        isVisible={isVisible}
+        canInsert={canInsert}
+        files={files}
+        dynamicSearch={dynamicSearch}
+        dynamicSearchActive={dynamicSearchActive}
+        forImage={forImage}
+        isLoading={isLoading}
+        isPersisting={isPersisting}
+        isDeleting={isDeleting}
+        hasNextPage={hasNextPage}
+        page={page}
+        isPaginating={isPaginating}
+        privateUpload={privateUpload}
+        query={this.state.query}
+        selectedFile={this.state.selectedFile}
+        handleFilter={this.filterImages}
+        handleQuery={this.queryFilter}
+        toTableData={this.toTableData}
+        handleClose={this.handleClose}
+        handleSearchChange={this.handleSearchChange}
+        handleSearchKeyDown={this.handleSearchKeyDown}
+        handlePersist={this.handlePersist}
+        handleDelete={this.handleDelete}
+        handleInsert={this.handleInsert}
+        setScrollContainerRef={ref => this.scrollContainerRef = ref}
+        handleAssetClick={this.handleAssetClick}
+        handleLoadMore={this.handleLoadMore}
+      />
     );
   }
 }

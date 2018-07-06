@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { hot } from 'react-hot-loader';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import styled from 'react-emotion';
 import { connect } from 'react-redux';
 import { Route, Switch, Link, Redirect } from 'react-router-dom';
 import { Notifs } from 'redux-notifications';
@@ -13,7 +14,8 @@ import { showCollection, createNewEntry } from 'Actions/collections';
 import { openMediaLibrary as actionOpenMediaLibrary } from 'Actions/mediaLibrary';
 import MediaLibrary from 'MediaLibrary/MediaLibrary';
 import { Toast } from 'UI';
-import { Loader } from 'netlify-cms-ui-default';
+import Loader from 'netlify-cms-ui-default/Loader';
+import { colors } from 'netlify-cms-ui-default/styles';
 import history from 'Routing/history';
 import { getCollectionUrl, getNewEntryUrl } from 'Lib/urlHelper';
 import { SIMPLE, EDITORIAL_WORKFLOW } from 'Constants/publishModes';
@@ -25,15 +27,18 @@ import Header from './Header';
 
 TopBarProgress.config({
   barColors: {
-    /**
-     * Uses value from CSS --colorActive.
-     */
-    "0": '#3a69c8',
-    '1.0': '#3a69c8',
+    '0': colors.active,
+    '1.0': colors.active,
   },
   shadowBlur: 0,
   barThickness: 2,
 });
+
+const AppMainContainer = styled.div`
+  min-width: 800px;
+  max-width: 1440px;
+  margin: 0 auto;
+`
 
 class App extends React.Component {
 
@@ -132,7 +137,7 @@ class App extends React.Component {
     const hasWorkflow = publishMode === EDITORIAL_WORKFLOW;
 
     return (
-      <div className="nc-app-container">
+      <div>
         <Notifs CustomComponent={Toast} />
         <Header
           user={user}
@@ -143,7 +148,7 @@ class App extends React.Component {
           hasWorkflow={hasWorkflow}
           displayUrl={config.get('display_url')}
         />
-        <div className="nc-app-main">
+        <AppMainContainer>
           { isFetching && <TopBarProgress /> }
           <div>
             <Switch>
@@ -158,7 +163,7 @@ class App extends React.Component {
             </Switch>
             <MediaLibrary/>
           </div>
-        </div>
+        </AppMainContainer>
       </div>
     );
   }

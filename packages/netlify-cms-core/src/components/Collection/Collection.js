@@ -1,12 +1,22 @@
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import styled from 'react-emotion';
 import { connect } from 'react-redux';
+import { lengths } from 'netlify-cms-ui-default/styles';
 import { getNewEntryUrl } from 'Lib/urlHelper';
 import Sidebar from './Sidebar';
 import CollectionTop from './CollectionTop';
 import EntriesCollection from './Entries/EntriesCollection';
 import EntriesSearch from './Entries/EntriesSearch';
 import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from 'Constants/collectionViews';
+
+const CollectionContainer = styled.div`
+  margin: ${lengths.pageMargin};
+`
+
+const CollectionMain = styled.div`
+  padding-left: 280px;
+`
 
 class Collection extends React.Component {
   static propTypes = {
@@ -38,9 +48,9 @@ class Collection extends React.Component {
     const { collection, collections, collectionName, isSearchResults, searchTerm } = this.props;
     const newEntryUrl = collection.get('create') ? getNewEntryUrl(collectionName) : '';
     return (
-      <div className="nc-collectionPage-container">
+      <CollectionContainer>
         <Sidebar collections={collections} searchTerm={searchTerm}/>
-        <div className="nc-collectionPage-main">
+        <CollectionMain>
           {
             isSearchResults
               ? null
@@ -54,8 +64,8 @@ class Collection extends React.Component {
                 />
           }
           { isSearchResults ? this.renderEntriesSearch() : this.renderEntriesCollection() }
-        </div>
-      </div>
+        </CollectionMain>
+      </CollectionContainer>
     );
   }
 }

@@ -1,8 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import styled from 'react-emotion';
 import { List, Map } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import Frame from 'react-frame-component';
+import { lengths } from 'netlify-cms-ui-default/styles';
 import { resolveWidget, getPreviewTemplate, getPreviewStyles } from 'Lib/registry';
 import { ErrorBoundary } from 'UI';
 import { selectTemplateName, selectInferedField } from 'Reducers/collections';
@@ -10,6 +12,14 @@ import { INFERABLE_FIELDS } from 'Constants/fieldInference';
 import EditorPreviewContent from './EditorPreviewContent.js';
 import PreviewHOC from './PreviewHOC';
 import EditorPreview from './EditorPreview';
+
+const PreviewPaneFrame = styled(Frame)`
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: #fff;
+  border-radius: ${lengths.borderRadius};
+`
 
 export default class PreviewPane extends React.Component {
 
@@ -146,7 +156,7 @@ export default class PreviewPane extends React.Component {
       });
 
     if (!collection) {
-      return <Frame className="nc-previewPane-frame" head={styleEls} />;
+      <PreviewPaneFrame head={styleEls}/>
     }
 
     const initialContent = `
@@ -159,9 +169,9 @@ export default class PreviewPane extends React.Component {
 
     return (
       <ErrorBoundary>
-        <Frame className="nc-previewPane-frame" head={styleEls} initialContent={initialContent}>
+        <PreviewPaneFrame head={styleEls} initialContent={initialContent}>
           <EditorPreviewContent {...{ previewComponent, previewProps }}/>
-        </Frame>
+        </PreviewPaneFrame>
       </ErrorBoundary>
     );
   }

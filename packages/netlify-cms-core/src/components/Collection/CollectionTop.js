@@ -1,9 +1,68 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import c from 'classnames';
+import styled from 'react-emotion';
 import { Link } from 'react-router-dom';
-import { Icon } from 'netlify-cms-ui-default';
+import Icon from 'netlify-cms-ui-default/Icon';
+import { components, buttons, shadows, colors } from 'netlify-cms-ui-default/styles';
 import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from 'Constants/collectionViews';
+
+const CollectionTopContainer = styled.div`
+  ${components.cardTop};
+`
+
+const CollectionTopRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+`
+
+const CollectionTopHeading = styled.h1`
+  ${components.cardTopHeading};
+`
+
+const CollectionTopNewButton = styled(Link)`
+  ${buttons.button};
+  ${shadows.dropDeep};
+  ${buttons.default};
+  ${buttons.gray};
+
+  padding: 0 30px;
+`
+
+const CollectionTopDescription = styled.p`
+  ${components.cardTopDescription};
+`
+
+const ViewControls = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 24px;
+`
+
+const ViewControlsText = styled.span`
+  font-size: 14px;
+  color: ${colors.text};
+  margin-right: 12px;
+`
+
+const ViewControlsButton = styled.button`
+  ${buttons.button};
+  color: ${props => props.isActive ? colors.active : '#b3b9c4'};
+  background-color: transparent;
+  display: block;
+  padding: 0;
+  margin: 0 4px;
+
+  &:last-child {
+    margin-right: 0;
+  }
+
+  ${Icon} {
+    display: block;
+  }
+`
 
 const CollectionTop = ({
   collectionLabel,
@@ -14,44 +73,38 @@ const CollectionTop = ({
   newEntryUrl,
 }) => {
   return (
-    <div className="nc-collectionPage-top">
-      <div className="nc-collectionPage-top-row">
-        <h1 className="nc-collectionPage-topHeading">{collectionLabel}</h1>
+    <CollectionTopContainer>
+      <CollectionTopRow>
+        <CollectionTopHeading>{collectionLabel}</CollectionTopHeading>
         {
           newEntryUrl
-            ? <Link className="nc-collectionPage-topNewButton" to={newEntryUrl}>
+            ? <CollectionTopNewButton to={newEntryUrl}>
                 {`New ${collectionLabelSingular || collectionLabel}`}
-              </Link>
+              </CollectionTopNewButton>
             : null
         }
-      </div>
+      </CollectionTopRow>
       {
         collectionDescription
-          ? <p className="nc-collectionPage-top-description">{collectionDescription}</p>
+          ? <CollectionTopDescription>{collectionDescription}</CollectionTopDescription>
           : null
       }
-      <div className={c('nc-collectionPage-top-viewControls', {
-        'nc-collectionPage-top-viewControls-noDescription': !collectionDescription,
-      })}>
-        <span className="nc-collectionPage-top-viewControls-text">View as:</span>
-        <button
-          className={c('nc-collectionPage-top-viewControls-button', {
-            'nc-collectionPage-top-viewControls-buttonActive': viewStyle === VIEW_STYLE_LIST,
-          })}
+      <ViewControls>
+        <ViewControlsText>View as:</ViewControlsText>
+        <ViewControlsButton
+          isActive={viewStyle === VIEW_STYLE_LIST}
           onClick={() => onChangeViewStyle(VIEW_STYLE_LIST)}
         >
           <Icon type="list"/>
-        </button>
-        <button
-          className={c('nc-collectionPage-top-viewControls-button', {
-            'nc-collectionPage-top-viewControls-buttonActive': viewStyle === VIEW_STYLE_GRID,
-          })}
+        </ViewControlsButton>
+        <ViewControlsButton
+          isActive={viewStyle === VIEW_STYLE_GRID}
           onClick={() => onChangeViewStyle(VIEW_STYLE_GRID)}
         >
           <Icon type="grid"/>
-        </button>
-      </div>
-    </div>
+        </ViewControlsButton>
+      </ViewControls>
+    </CollectionTopContainer>
   );
 };
 

@@ -5,7 +5,8 @@ import { List, Map } from 'immutable';
 import { partial } from 'lodash';
 import c from 'classnames';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
-import { Icon, ListItemTopBar } from 'netlify-cms-ui-default';
+import Icon from 'netlify-cms-ui-default/Icon';
+import ListItemTopBar from 'netlify-cms-ui-default/ListItemTopBar';
 import ObjectControl from 'EditorWidgets/Object/ObjectControl';
 
 function ListItem(props) {

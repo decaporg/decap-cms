@@ -1,0 +1,43 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+import styled from 'react-emotion';
+import Icon from 'netlify-cms-ui-default/Icon';
+import { shadows, colors } from 'netlify-cms-ui-default/styles';
+
+const CloseButton = styled.button`
+  ${shadows.dropMiddle};
+  position: absolute;
+  margin-right: -40px;
+  left: -40px;
+  top: -40px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: white;
+  padding: 0;
+`
+
+const LibraryTitle = styled.h1`
+  line-height: 36px;
+  font-size: 22px;
+  text-align: left;
+  margin-bottom: 25px;
+  color: ${props => props.isPrivate && colors.textFieldBorder};
+`
+
+const MediaLibraryHeader = ({ onClose, title, isPrivate }) => (
+  <div>
+    <CloseButton onClick={onClose}>
+      <Icon type="close"/>
+    </CloseButton>
+    <LibraryTitle isPrivate={isPrivate}>{title}</LibraryTitle>
+  </div>
+);
+
+MediaLibraryHeader.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  title: PropTypes.string.isRequired,
+  isPrivate: PropTypes.bool,
+};
+
+export default MediaLibraryHeader;

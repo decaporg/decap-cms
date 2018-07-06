@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import NetlifyAuthenticator from 'netlify-cms-lib-auth/netlify-auth';
 import ImplicitAuthenticator from 'netlify-cms-lib-auth/implicit-oauth';
-import { Icon } from 'netlify-cms-ui-default';
+import Icon from 'netlify-cms-ui-default/Icon';
 
 export default class AuthenticationPage extends React.Component {
   static propTypes = {

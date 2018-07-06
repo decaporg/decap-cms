@@ -1,9 +1,17 @@
 {
   "presets": [
     "react",
-    "env",
+    ["env", {
+      "modules": false,
+    }],
   ],
   "plugins": [
+    "transform-object-rest-spread",
+    "transform-class-properties",
+    ["transform-runtime", {
+      "useBuiltIns": true,
+      "useESModules": true,
+    }],
     ["module-resolver", {
       "root": [
         "./src/components"
@@ -22,8 +30,17 @@
       }
     }],
     "inline-svg",
-    ["inline-import", {
-      "extensions": ["yml"],
-    }],
   ],
+  "env": {
+    "production": {
+      "plugins": [
+        ["emotion", {"hoist": true}],
+      ],
+    },
+    "development": {
+      "plugins": [
+        ["emotion", {"sourceMap": true, "autoLabel": true }],
+      ],
+    },
+  },
 }

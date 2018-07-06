@@ -8,7 +8,8 @@
     "netlify-cms"
   ],
   "scripts": {
-    "build": "parcel build src --out-dir ."
+    "watch": "parcel watch src/*.js --out-dir . --no-cache",
+    "build": "parcel build src/*.js --out-dir . --no-cache"
   },
   "dependencies": {
     "immutable": "^3.7.6",
