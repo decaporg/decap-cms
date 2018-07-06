@@ -1,14 +1,81 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import styled from 'react-emotion';
 import { Link } from 'react-router-dom';
 import c from 'classnames';
 import history from 'Routing/history';
 import { resolvePath } from 'netlify-cms-lib-util/path';
 import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from 'Constants/collectionViews';
+import { colors, colorsRaw, components, lengths } from 'netlify-cms-ui-default/styles';
 
-const CollectionLabel = ({ label }) =>
-  <h2 className="nc-entryListing-listCard-collection-label">{label}</h2>;
+const ListCardLink = styled(Link)`
+  ${components.card};
+  width: ${lengths.topCardWidth};
+  max-width: 100%;
+  padding: 16px 22px;
+  margin-left: 12px;
+  margin-bottom: 16px;
+
+  &:hover {
+    background-color: ${colors.foreground};
+  }
+`
+
+const GridCardLink = styled(Link)`
+  ${components.card};
+  flex: 0 0 335px;
+  height: 240px;
+  overflow: hidden;
+  margin-left: 12px;
+  margin-bottom: 16px;
+
+  &, &:hover {
+    background-color: ${colors.foreground};
+    color: ${colors.text};
+  }
+`
+
+const CollectionLabel = styled.h2`
+  font-size: 12px;
+  color: ${colors.textLead};
+  text-transform: uppercase;
+`
+
+const ListCardTitle = styled.h2`
+  margin-bottom: 0;
+`
+
+const CardHeading = styled.h2`
+  margin: 0 0 2px;
+`
+
+const CardBody = styled.div`
+  padding: 16px 22px;
+  height: 90px;
+  position: relative;
+  margin-bottom: ${props => props.hasImage && 0};
+
+  &:after {
+    content: '';
+    position: absolute;
+    display: block;
+    z-index: 1;
+    bottom: 0;
+    left: -20%;
+    height: 140%;
+    width: 140%;
+    box-shadow: inset 0 -15px 24px ${colorsRaw.white};
+  }
+`
+
+const CardImage = styled.div`
+  background-image: url(${props => props.url});
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 150px;
+`
 
 const EntryCard = ({
   collection,
@@ -29,29 +96,22 @@ const EntryCard = ({
 
   if (viewStyle === VIEW_STYLE_LIST) {
     return (
-      <Link to={path} className="nc-entryListing-listCard">
-        { collectionLabel ? <CollectionLabel label={collectionLabel}/> : null }
-        <h2 className="nc-entryListing-listCard-title">{ title }</h2>
-      </Link>
+      <ListCardLink to={path}>
+        { collectionLabel ? <CollectionLabel>{collectionLabel}</CollectionLabel> : null }
+        <ListCardTitle>{ title }</ListCardTitle>
+      </ListCardLink>
     );
   }
 
   if (viewStyle === VIEW_STYLE_GRID) {
     return (
-      <Link to={path} className="nc-entryListing-gridCard">
-        <div className={c('nc-entryListing-cardBody', { 'nc-entryListing-cardBody-full': !image })}>
-          { collectionLabel ? <CollectionLabel label={collectionLabel}/> : null }
-          <h2 className="nc-entryListing-cardHeading">{title}</h2>
-        </div>
-        {
-          image
-            ? <div
-                className="nc-entryListing-cardImage"
-                style={{ backgroundImage: `url(${ image })` }}
-              />
-            : null
-        }
-      </Link>
+      <GridCardLink to={path}>
+        <CardBody hasImage={image}>
+          { collectionLabel ? <CollectionLabel>{collectionLabel}</CollectionLabel> : null }
+          <CardHeading>{title}</CardHeading>
+        </CardBody>
+        { image ? <CardImage url={image}/> : null }
+      </GridCardLink>
     );
   }
 }

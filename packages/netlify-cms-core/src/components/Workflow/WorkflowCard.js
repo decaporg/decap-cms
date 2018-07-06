@@ -1,8 +1,100 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import ImmutablePropTypes from 'react-immutable-proptypes';
-import c from 'classnames';
+import styled, { css } from 'react-emotion';
 import { Link } from 'react-router-dom';
+import { components, colors, colorsRaw, transitions, buttons } from 'netlify-cms-ui-default/styles';
+
+const styles = {
+  text: css`
+    font-size: 13px;
+    font-weight: normal;
+    margin-top: 4px;
+  `,
+  button: css`
+    ${buttons.button};
+    width: auto;
+    flex: 1 0 0;
+    font-size: 13px;
+    padding: 6px 0;
+  `,
+};
+
+const WorkflowLink = styled(Link)`
+  display: block;
+  padding: 0 18px 18px;
+  padding: 0 18px 18px;
+  height: 200px;
+  overflow: hidden;
+`
+
+const CardCollection = styled.div`
+  font-size: 14px;
+  color: ${colors.textLead};
+  text-transform: uppercase;
+  margin-top: 12px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+`
+
+const CardTitle = styled.h2`
+  margin: 28px 0 0;
+  color: ${colors.textLead};
+`
+
+const CardDate = styled.div`
+  ${styles.text};
+`
+
+const CardBody = styled.p`
+  ${styles.text};
+  color: ${colors.text};
+  margin: 24px 0 0;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+`
+
+const CardButtonContainer = styled.div`
+  background-color: ${colors.foreground};
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 12px 18px;
+  display: flex;
+  opacity: 0;
+  transition: opacity ${transitions.main};
+  cursor: pointer;
+`
+
+const DeleteButton = styled.button`
+  ${styles.button};
+  background-color: ${colorsRaw.redLight};
+  color: ${colorsRaw.red};
+  margin-right: 6px;
+`
+
+const PublishButton = styled.button`
+  ${styles.button};
+  background-color: ${colorsRaw.teal};
+  color: ${colors.textLight};
+  margin-left: 6px;
+
+  &[disabled] {
+    background-color: ${colorsRaw.grayLight};
+    color: ${colorsRaw.gray};
+  }
+`
+
+const WorkflowCardContainer = styled.div`
+  ${components.card};
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+
+  &:hover ${CardButtonContainer} {
+    opacity: 1;
+  }
+`
 
 const WorkflowCard = ({
   collectionName,
@@ -17,27 +109,22 @@ const WorkflowCard = ({
   canPublish,
   onPublish,
 }) => (
-  <div className="nc-workflow-card">
-    <Link to={editLink} className="nc-workflow-link">
-      <div className="nc-workflow-card-collection">{collectionName}</div>
-      <h2 className="nc-workflow-card-title">{title}</h2>
-      <div className="nc-workflow-card-date">{timestamp} by {authorLastChange}</div>
-      <p className="nc-workflow-card-body">{body}</p>
-    </Link>
-    <div className="nc-workflow-card-button-container">
-      <button className="nc-workflow-card-buttonDelete" onClick={onDelete}>
+  <WorkflowCardContainer>
+    <WorkflowLink to={editLink}>
+      <CardCollection>{collectionName}</CardCollection>
+      <CardTitle>{title}</CardTitle>
+      <CardDate>{timestamp} by {authorLastChange}</CardDate>
+      <CardBody>{body}</CardBody>
+    </WorkflowLink>
+    <CardButtonContainer>
+      <DeleteButton onClick={onDelete}>
         {isModification ? 'Delete changes' : 'Delete new entry'}
-      </button>
-      <button
-        className={c('nc-workflow-card-buttonPublish', {
-          'nc-workflow-card-buttonPublishDisabled': !canPublish,
-        })}
-        onClick={onPublish}
-      >
+      </DeleteButton>
+      <PublishButton disabled={!canPublish} onClick={onPublish}>
         {isModification ? 'Publish changes' : 'Publish new entry'}
-      </button>
-    </div>
-  </div>
+      </PublishButton>
+    </CardButtonContainer>
+  </WorkflowCardContainer>
 );
 
 export default WorkflowCard;

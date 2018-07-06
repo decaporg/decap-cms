@@ -1,9 +1,90 @@
 import PropTypes from 'prop-types';
 import React from "react";
 import ImmutablePropTypes from "react-immutable-proptypes";
+import styled, { css } from 'react-emotion';
 import { NavLink } from 'react-router-dom';
-import { Icon, Dropdown, DropdownItem } from 'netlify-cms-ui-default';
-import { stripProtocol } from 'Lib/urlHelper';
+import uuid from 'uuid/v4';
+import Icon from 'netlify-cms-ui-default/Icon';
+import Dropdown, { DropdownItem, StyledDropdownButton } from 'netlify-cms-ui-default/Dropdown'
+import { colors, colorsRaw, lengths, shadows, buttons } from 'netlify-cms-ui-default/styles'
+import SettingsDropdown from 'UI/SettingsDropdown';
+
+const styles = {
+  buttonActive: css`
+    color: ${colors.active};
+  `,
+};
+
+const AppHeaderContainer = styled.div`
+  z-index: 300;
+`;
+
+const AppHeader = styled.div`
+  ${shadows.dropMain};
+  position: fixed;
+  width: 100%;
+  top: 0;
+  background-color: ${colors.foreground};
+  z-index: 300;
+  height: ${lengths.topBarHeight};
+`
+
+const AppHeaderContent = styled.div`
+  display: flex;
+  justify-content: space-between;
+  min-width: 800px;
+  max-width: 1440px;
+  padding: 0 12px;
+  margin: 0 auto;
+`;
+
+const AppHeaderButton = styled.button`
+  border: 0;
+  cursor: pointer;
+  background-color: transparent;
+  color: #7b8290;
+  font-size: 16px;
+  font-weight: 500;
+  display: inline-flex;
+  padding: 16px 20px;
+  align-items: center;
+
+  ${Icon} {
+    margin-right: 4px;
+    color: #b3b9c4;
+  }
+
+  ${props => css`
+    &:hover,
+    &:active,
+    &:focus,
+    &.${props.activeClassName} {
+      ${styles.buttonActive};
+
+      ${Icon} {
+        ${styles.buttonActive};
+      }
+    }
+  `}
+`
+
+const AppHeaderNavLink = AppHeaderButton.withComponent(NavLink);
+
+const AppHeaderActions = styled.div`
+  display: inline-flex;
+  align-items: center;
+`
+
+const AppHeaderQuickNewButton = styled(StyledDropdownButton)`
+  ${buttons.button};
+  ${buttons.medium};
+  ${buttons.gray};
+  margin-right: 8px;
+
+  &:after {
+    top: 11px;
+  }
+`
 
 export default class Header extends React.Component {
   static propTypes = {
@@ -13,6 +94,8 @@ export default class Header extends React.Component {
     onLogoutClick: PropTypes.func.isRequired,
     displayUrl: PropTypes.string,
   };
+
+  static activeClassName = `${uuid()}-active`;
 
   handleCreatePostClick = (collectionName) => {
     const { onCreateEntryClick } = this.props;
@@ -35,36 +118,34 @@ export default class Header extends React.Component {
     const avatarUrl = user.get('avatar_url');
 
     return (
-      <div className="nc-appHeader-container">
-        <div className="nc-appHeader-main">
-          <div className="nc-appHeader-content">
+      <AppHeaderContainer>
+        <AppHeader>
+          <AppHeaderContent>
             <nav>
-              <NavLink
+              <AppHeaderNavLink
                 to="/"
-                className="nc-appHeader-button"
-                activeClassName="nc-appHeader-button-active"
+                activeClassName={Header.activeClassName}
                 isActive={(match, location) => location.pathname.startsWith('/collections/')}
               >
                 <Icon type="page"/>
                 Content
-              </NavLink>
+              </AppHeaderNavLink>
               {
                 hasWorkflow
-                  ? <NavLink to="/workflow" className="nc-appHeader-button" activeClassName="nc-appHeader-button-active">
+                  ? <AppHeaderNavLink to="/workflow" activeClassName={this.activeClassName}>
                       <Icon type="workflow"/>
                       Workflow
-                    </NavLink>
+                    </AppHeaderNavLink>
                   : null
               }
-              <button onClick={openMediaLibrary} className="nc-appHeader-button">
+              <AppHeaderButton onClick={openMediaLibrary}>
                 <Icon type="media-alt"/>
                 Media
-              </button>
+              </AppHeaderButton>
             </nav>
-            <div className="nc-appHeader-actions">
+            <AppHeaderActions>
               <Dropdown
-                classNameButton="nc-appHeader-button nc-appHeader-quickNew"
-                label="Quick add"
+                renderButton={() => <AppHeaderQuickNewButton>Quick add</AppHeaderQuickNewButton>}
                 dropdownTopOverlap="30px"
                 dropdownWidth="160px"
                 dropdownPosition="left"
@@ -79,37 +160,15 @@ export default class Header extends React.Component {
                   )
                 }
               </Dropdown>
-              {
-                displayUrl
-                  ? <a
-                      className="nc-appHeader-siteLink"
-                      href={displayUrl}
-                      target="_blank"
-                    >
-                      {stripProtocol(displayUrl)}
-                    </a>
-                  : null
-              }
-              <Dropdown
-                dropdownTopOverlap="50px"
-                dropdownWidth="100px"
-                dropdownPosition="right"
-                button={
-                  <button className="nc-appHeader-avatar">
-                    {
-                      avatarUrl
-                        ? <img className="nc-appHeader-avatar-image" src={user.get('avatar_url')}/>
-                        : <Icon className="nc-appHeader-avatar-placeholder" type="user" size="large"/>
-                    }
-                  </button>
-                }
-              >
-                <DropdownItem label="Log Out" onClick={onLogoutClick}/>
-              </Dropdown>
-            </div>
-          </div>
-        </div>
-      </div>
+              <SettingsDropdown
+                displayUrl={displayUrl}
+                imageUrl={user.get('avatar_url')}
+                onLogoutClick={onLogoutClick}
+              />
+            </AppHeaderActions>
+          </AppHeaderContent>
+        </AppHeader>
+      </AppHeaderContainer>
     );
   }
 }

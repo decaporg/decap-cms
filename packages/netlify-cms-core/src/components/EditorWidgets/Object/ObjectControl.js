@@ -5,7 +5,7 @@ import { Map } from 'immutable';
 import { partial } from 'lodash';
 import c from 'classnames';
 import { resolveWidget } from 'Lib/registry';
-import { Icon } from 'netlify-cms-ui-default';
+import Icon from 'netlify-cms-ui-default/Icon';
 
 const TopBar = ({ collapsed, onCollapseToggle }) => (
   <div className="nc-objectControl-topBar">

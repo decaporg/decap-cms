@@ -3,7 +3,9 @@ import React from 'react';
 import { List } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import c from 'classnames';
-import { Dropdown, DropdownItem, Toggle, Icon } from 'netlify-cms-ui-default';
+import Dropdown, { DropdownItem, DropdownButton } from 'netlify-cms-ui-default/Dropdown';
+import Toggle from 'netlify-cms-ui-default/Toggle';
+import Icon from 'netlify-cms-ui-default/Icon';
 import ToolbarButton from './ToolbarButton';
 
 export default class Toolbar extends React.Component {
@@ -158,14 +160,16 @@ export default class Toolbar extends React.Component {
           <div className="nc-toolbar-dropdown">
             <Dropdown
               dropdownTopOverlap="36px"
-              button={
-                <ToolbarButton
-                  label="Add Component"
-                  icon="add-with"
-                  onClick={this.handleComponentsMenuToggle}
-                  disabled={disabled}
-                />
-              }
+              renderButton={() => (
+                <DropdownButton>
+                  <ToolbarButton
+                    label="Add Component"
+                    icon="add-with"
+                    onClick={this.handleComponentsMenuToggle}
+                    disabled={disabled}
+                  />
+                </DropdownButton>
+              )}
             >
               {plugins && plugins.toList().map((plugin, idx) => (
                 <DropdownItem key={idx} label={plugin.get('label')} onClick={() => onSubmit(plugin.get('id'))} />

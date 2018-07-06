@@ -1,8 +1,12 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import styled from 'react-emotion';
 import { OrderedMap } from 'immutable';
 import { connect } from 'react-redux';
+import Dropdown, { DropdownItem, StyledDropdownButton } from 'netlify-cms-ui-default/Dropdown';
+import Loader from 'netlify-cms-ui-default/Loader';
+import { lengths, components, shadows } from 'netlify-cms-ui-default/styles';
 import { createNewEntry } from 'Actions/collections';
 import {
   loadUnpublishedEntries,
@@ -12,8 +16,33 @@ import {
 } from 'Actions/editorialWorkflow';
 import { selectUnpublishedEntriesByStatus } from 'Reducers';
 import { EDITORIAL_WORKFLOW, status } from 'Constants/publishModes';
-import { Loader, Dropdown, DropdownItem } from 'netlify-cms-ui-default';
 import WorkflowList from './WorkflowList';
+
+const WorkflowContainer = styled.div`
+  padding: ${lengths.pageMargin} 0;
+  height: 100vh;
+`
+
+const WorkflowTop = styled.div`
+  ${components.cardTop};
+`
+
+const WorkflowTopRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+
+  span[role="button"] {
+    ${shadows.dropDeep};
+  }
+`
+
+const WorkflowTopHeading = styled.h1`
+  ${components.cardTopHeading};
+`
+
+const WorkflowTopDescription = styled.p`
+  ${components.cardTopDescription};
+`
 
 class Workflow extends Component {
   static propTypes = {
@@ -51,15 +80,15 @@ class Workflow extends Component {
     const readyCount = unpublishedEntries.get('pending_publish').size;
 
     return (
-      <div className="nc-workflow">
-        <div className="nc-workflow-top">
-          <div className="nc-workflow-top-row">
-            <h1 className="nc-workflow-top-heading">Editorial Workflow</h1>
+      <WorkflowContainer>
+        <WorkflowTop>
+          <WorkflowTopRow>
+            <WorkflowTopHeading>Editorial Workflow</WorkflowTopHeading>
             <Dropdown
-              label="New Post"
               dropdownWidth="160px"
               dropdownPosition="left"
               dropdownTopOverlap="40px"
+              renderButton={() => <StyledDropdownButton>New Post</StyledDropdownButton>}
             >
               {
                 collections.filter(collection => collection.get('create')).toList().map(collection =>
@@ -71,18 +100,18 @@ class Workflow extends Component {
                 )
               }
             </Dropdown>
-          </div>
-          <p className="nc-workflow-top-description">
+          </WorkflowTopRow>
+          <WorkflowTopDescription>
             {reviewCount} {reviewCount === 1 ? 'entry' : 'entries'} waiting for review, {readyCount} ready to go live.
-          </p>
-        </div>
+          </WorkflowTopDescription>
+        </WorkflowTop>
         <WorkflowList
           entries={unpublishedEntries}
           handleChangeStatus={updateUnpublishedEntryStatus}
           handlePublish={publishUnpublishedEntry}
           handleDelete={deleteUnpublishedEntry}
         />
-      </div>
+      </WorkflowContainer>
     );
   }
 }

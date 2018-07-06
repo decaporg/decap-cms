@@ -1,23 +1,95 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import styled, { css, cx } from 'react-emotion';
 import moment from 'moment';
 import { capitalize } from 'lodash'
-import c from 'classnames';
+import { colors, colorsRaw, lengths } from 'netlify-cms-ui-default/styles';
 import { status } from 'Constants/publishModes';
 import { DragSource, DropTarget, HTML5DragDrop } from 'UI'
 import WorkflowCard from './WorkflowCard';
 
+const WorkflowListContainer = styled.div`
+  min-height: 60%;
+  display: grid;
+  grid-template-columns: 33.3% 33.3% 33.3%;
+`
+
+const styles = {
+  column: css`
+    margin: 0 20px;
+    transition: background-color .5s ease;
+    border: 2px dashed transparent;
+    border-radius: 4px;
+    position: relative;
+
+    &:first-child {
+      margin-left: 0;
+    }
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    &:not(:first-child):not(:last-child) {
+      &:before,
+      &:after {
+        content: '';
+        display: block;
+        position: absolute;
+        width: 2px;
+        height: 80%;
+        top: 76px;
+        background-color: ${colors.textFieldBorder}
+      }
+
+      &:before {
+        left: -23px;
+      }
+
+      &:after {
+        right: -23px;
+      }
+    }
+  `,
+  columnHovered: css`
+    border-color: ${colors.active};
+  `,
+};
+
+const ColumnHeader = styled.h2`
+  font-size: 20px;
+  font-weight: normal;
+  padding: 4px 14px;
+  border-radius: ${lengths.borderRadius};
+  margin-bottom: 28px;
+
+  ${props => props.name === 'draft' && css`
+    background-color: ${colors.statusDraftBackground};
+    color: ${colors.statusDraftText};
+  `}
+
+  ${props => props.name === 'pending_review' && css`
+    background-color: ${colors.statusReviewBackground};
+    color: ${colors.statusReviewText};
+  `}
+
+  ${props => props.name === 'pending_publish' && css`
+    background-color: ${colors.statusReadyBackground};
+    color: ${colors.statusReadyText};
+  `}
+`
+
+const ColumnCount = styled.p`
+  font-size: 13px;
+  font-weight: 500;
+  color: ${colors.text};
+  text-transform: uppercase;
+  margin-bottom: 6px;
+`
+
 // This is a namespace so that we can only drop these elements on a DropTarget with the same
 const DNDNamespace = 'cms-workflow';
-
-const getColumnClassName = columnName => {
-  switch (columnName) {
-    case 'draft': return 'nc-workflow-listDraft';
-    case 'pending_review': return 'nc-workflow-listReview';
-    case 'pending_publish': return 'nc-workflow-listReady';
-  }
-}
 
 const getColumnHeaderText = columnName => {
   switch (columnName) {
@@ -73,15 +145,11 @@ Please drag the card to the "Ready" column to enable publishing.`
           onDrop={this.handleChangeStatus.bind(this, currColumn)}
         >
           {(connect, { isHovered }) => connect(
-            <div className={c('nc-workflow-list', getColumnClassName(currColumn), {
-              'nc-workflow-list-hovered': isHovered,
-            })}>
-              <h2 className="nc-workflow-header">
-                {getColumnHeaderText(currColumn)}
-              </h2>
-              <p className="nc-workflow-list-count">
+            <div className={cx(styles.column, { [styles.columnHovered]: isHovered })}>
+              <ColumnHeader name={currColumn}>{getColumnHeaderText(currColumn)}</ColumnHeader>
+              <ColumnCount>
                 {currEntries.size} {currEntries.size === 1 ? 'entry' : 'entries'}
-              </p>
+              </ColumnCount>
               {this.renderColumns(currEntries, currColumn)}
             </div>
           )}
@@ -137,9 +205,7 @@ Please drag the card to the "Ready" column to enable publishing.`
   render() {
     const columns = this.renderColumns(this.props.entries);
     return (
-      <div className="nc-workflow-list-container">
-        {columns}
-      </div>
+      <WorkflowListContainer>{columns}</WorkflowListContainer>
     );
   }
 }

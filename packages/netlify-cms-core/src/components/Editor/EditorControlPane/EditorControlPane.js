@@ -1,7 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import styled from 'react-emotion';
 import EditorControl from './EditorControl';
+
+const ControlPaneContainer = styled.div`
+  max-width: 800px;
+  margin: 0 auto;
+  padding-bottom: 16px;
+
+  p {
+    font-size: 16px;
+  }
+`
 
 export default class ControlPane extends React.Component {
   componentValidate = {};
@@ -43,7 +54,7 @@ export default class ControlPane extends React.Component {
     }
 
     return (
-      <div className="nc-controlPane-root">
+      <ControlPaneContainer>
         {fields.map((field, i) => field.get('widget') === 'hidden' ? null :
           <EditorControl
             key={i}
@@ -61,7 +72,7 @@ export default class ControlPane extends React.Component {
             processControlRef={this.processControlRef}
           />
         )}
-      </div>
+      </ControlPaneContainer>
     );
   }
 }

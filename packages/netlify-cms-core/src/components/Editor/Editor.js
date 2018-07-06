@@ -4,6 +4,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Map } from 'immutable';
 import { get } from 'lodash';
 import { connect } from 'react-redux';
+import Loader from 'netlify-cms-ui-default/Loader';
 import history from 'Routing/history';
 import { logoutUser } from 'Actions/auth';
 import {
@@ -27,7 +28,6 @@ import { addAsset } from 'Actions/media';
 import { openMediaLibrary, removeInsertedMedia } from 'Actions/mediaLibrary';
 import { selectEntry, selectUnpublishedEntry, getAsset } from 'Reducers';
 import { selectFields } from 'Reducers/collections';
-import { Loader } from 'netlify-cms-ui-default';
 import { status } from 'Constants/publishModes';
 import { EDITORIAL_WORKFLOW } from 'Constants/publishModes';
 import EditorInterface from './EditorInterface';

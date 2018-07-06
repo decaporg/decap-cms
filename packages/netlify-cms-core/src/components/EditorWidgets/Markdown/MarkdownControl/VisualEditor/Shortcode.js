@@ -7,7 +7,7 @@ import { resolveWidget, getEditorComponents } from 'Lib/registry';
 import { openMediaLibrary, removeInsertedMedia } from 'Actions/mediaLibrary';
 import { addAsset } from 'Actions/media';
 import { getAsset } from 'Reducers';
-import { ListItemTopBar } from 'netlify-cms-ui-default';
+import ListItemTopBar from 'netlify-cms-ui-default/ListItemTopBar';
 import { getEditorControl } from '../index';
 
 class Shortcode extends React.Component {

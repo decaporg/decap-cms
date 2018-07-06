@@ -12,6 +12,7 @@ import App from 'App/App';
 import 'EditorWidgets';
 import 'MarkdownPlugins';
 import './index.css';
+import 'what-input';
 
 const ROOT_ID = 'nc-root';
 
