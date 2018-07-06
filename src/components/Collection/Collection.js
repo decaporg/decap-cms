@@ -40,7 +40,7 @@ class Collection extends React.Component {
     return (
       <div className="nc-collectionPage-container">
         <Sidebar collections={collections} searchTerm={searchTerm}/>
-        <div className="nc-collectionPage-main">
+        <main className="nc-collectionPage-main">
           {
             isSearchResults
               ? null
@@ -54,7 +54,7 @@ class Collection extends React.Component {
                 />
           }
           { isSearchResults ? this.renderEntriesSearch() : this.renderEntriesCollection() }
-        </div>
+        </main>
       </div>
     );
   }
