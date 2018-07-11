@@ -111,14 +111,16 @@
     }
 
     .hero-videolink {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
       position: absolute;
       margin: auto;
-      padding: 10px 0 0 10px;
       top: 0;
       bottom: 0;
       left: 0;
       right: 0;
-      line-height: 90px;
       width: 90px;
       height: 90px;
       font-size: 64px;
