@@ -131,6 +131,12 @@
       box-shadow: 0 3px 9px 0 rgba(0,0,0,0.05), 0 1px 3px 0 rgba(0,0,0,0.15);
       border-radius: 100px;
       transition: 0.1s;
+
+      & > span {
+        height: 100%;
+        margin-left: 4px;
+        line-height: 96px;
+      }
     }
 
     &:hover {
