@@ -1,6 +1,8 @@
 import { attempt, flatten, isError } from 'lodash';
 import { fromJS, Map } from 'immutable';
 import fuzzy from 'fuzzy';
+import GitHubBackend from "netlify-cms-backend-github";
+import TestRepoBackend from "netlify-cms-backend-test";
 import { resolveFormat } from "Formats/formats";
 import { selectIntegration } from 'Reducers/integrations';
 import {
@@ -15,13 +17,12 @@ import {
 } from "Reducers/collections";
 import { createEntry } from "ValueObjects/Entry";
 import { sanitizeSlug } from "Lib/urlHelper";
-import TestRepoBackend from "./test-repo/implementation";
-import GitHubBackend from "./github/implementation";
 import GitLabBackend from "./gitlab/implementation";
 import BitBucketBackend from "./bitbucket/implementation";
 import GitGatewayBackend from "./git-gateway/implementation";
 import { registerBackend, getBackend } from 'Lib/registry';
-import Cursor, { CURSOR_COMPATIBILITY_SYMBOL } from '../valueObjects/Cursor';
+import Cursor, { CURSOR_COMPATIBILITY_SYMBOL } from 'netlify-cms-lib-util/Cursor'
+import { EDITORIAL_WORKFLOW, status } from 'Constants/publishModes';
 
 /**
  * Register internal backends
@@ -395,7 +396,7 @@ class Backend {
 
     const commitMessage = commitMessageFormatter(newEntry ? 'create' : 'update', config, { collection, slug: entryObj.slug, path: entryObj.path });
 
-    const mode = config.get("publish_mode");
+    const useWorkflow = config.get("publish_mode") === EDITORIAL_WORKFLOW;
 
     const collectionName = collection.get("name");
 
@@ -404,7 +405,15 @@ class Backend {
      */
     const hasAssetStore = integrations && !!selectIntegration(integrations, null, 'assetStore');
     const updatedOptions = { ...options, hasAssetStore };
-    const opts = { newEntry, parsedData, commitMessage, collectionName, mode, ...updatedOptions };
+    const opts = {
+      newEntry,
+      parsedData,
+      commitMessage,
+      collectionName,
+      useWorkflow,
+      initialStatus: status.first(),
+      ...updatedOptions
+    };
 
     return this.implementation.persistEntry(entryObj, MediaFiles, opts)
       .then(() => entryObj.slug);

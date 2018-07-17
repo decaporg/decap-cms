@@ -1,4 +1,4 @@
-import GithubAPI from "Backends/github/API";
+import GithubAPI from "netlify-cms-backend-github/API";
 import APIError from "netlify-cms-lib-util/APIError";
 
 export default class API extends GithubAPI {

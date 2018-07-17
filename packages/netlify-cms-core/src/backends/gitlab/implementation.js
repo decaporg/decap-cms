@@ -1,8 +1,9 @@
 import trimStart from 'lodash/trimStart';
 import semaphore from "semaphore";
+import { fileExtension } from 'netlify-cms-lib-util/path';
+import Cursor, { CURSOR_COMPATIBILITY_SYMBOL } from 'netlify-cms-lib-util/Cursor'
 import AuthenticationPage from "./AuthenticationPage";
 import API from "./API";
-import { CURSOR_COMPATIBILITY_SYMBOL } from 'ValueObjects/Cursor';
 import { EDITORIAL_WORKFLOW } from "Constants/publishModes";
 
 const MAX_CONCURRENT_DOWNLOADS = 10;

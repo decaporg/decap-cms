@@ -7,4 +7,3 @@
  * Backend auth pages
  */
 @import "./backends/git-gateway/AuthenticationPage.css";
-@import "./backends/github/AuthenticationPage.css";

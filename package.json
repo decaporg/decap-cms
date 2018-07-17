@@ -16,9 +16,10 @@
   ],
   "pre-commit": "lint:staged",
   "scripts": {
-    "start": "lerna run --parallel watch",
-    "clean": "cd packages && rimraf */.cache */*.js */*.css */*.svg */*.map",
-    "reset": "yarn clean && lerna clean --yes && lerna bootstrap && cd packages/netlify-cms-core && yarn link netlify-cms-lib-auth netlify-cms-lib-util netlify-cms-ui-default netlify-cms-editor-component-image"
+    "bootstrap": "lerna bootstrap && lerna link --force-local",
+    "start": "yarn bootstrap && yarn watch",
+    "watch": "lerna run watch --parallel",
+    "clean": "cd packages && rimraf */.cache */*.js */*.css */*.svg */*.map"
   },
   "jest": {
     "moduleNameMapper": {

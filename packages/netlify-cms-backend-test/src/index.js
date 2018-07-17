@@ -1,9 +1,8 @@
+import { fromJS } from 'immutable';
 import { remove, attempt, isError, take } from 'lodash';
 import uuid from 'uuid/v4';
-import { fromJS } from 'immutable';
-import { EDITORIAL_WORKFLOW, status } from 'Constants/publishModes';
 import EditorialWorkflowError from 'netlify-cms-lib-util/EditorialWorkflowError';
-import Cursor, { CURSOR_COMPATIBILITY_SYMBOL } from 'ValueObjects/Cursor'
+import Cursor, { CURSOR_COMPATIBILITY_SYMBOL } from 'netlify-cms-lib-util/Cursor'
 import AuthenticationPage from './AuthenticationPage';
 
 window.repoFiles = window.repoFiles || {};
@@ -47,6 +46,7 @@ export default class TestRepo {
   constructor(config) {
     this.config = config;
     this.assets = [];
+    this.initialStatus = config.initialStatus;
   }
 
   authComponent() {
@@ -135,7 +135,7 @@ export default class TestRepo {
   }
 
   persistEntry({ path, raw, slug }, mediaFiles = [], options = {}) {
-    if (options.mode === EDITORIAL_WORKFLOW) {
+    if (options.useWorkflow) {
       const unpubStore = window.repoFilesUnpublished;
       const existingEntryIndex = unpubStore.findIndex(e => e.file.path === path);
       if (existingEntryIndex >= 0) {
@@ -151,7 +151,7 @@ export default class TestRepo {
           },
           metaData: {
             collection: options.collectionName,
-            status: status.first(),
+            status: this.initialStatus,
             title: options.parsedData && options.parsedData.title,
             description: options.parsedData && options.parsedData.description,
           },

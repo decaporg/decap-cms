@@ -5,8 +5,8 @@ import { cond, flow, isString, partial, partialRight, pick, omit, set, update, g
 import unsentRequest from "netlify-cms-lib-util/unsentRequest";
 import { then } from "netlify-cms-lib-util/promise";
 import APIError from "netlify-cms-lib-util/APIError";
+import Cursor from 'netlify-cms-lib-util/Cursor'
 import AssetProxy from "ValueObjects/AssetProxy";
-import Cursor from "ValueObjects/Cursor"
 
 export default class API {
   constructor(config) {
