@@ -5029,6 +5029,11 @@ needle@^2.2.0:
     iconv-lite "^0.4.4"
     sax "^1.2.4"
 
+"netlify-cms-editor-component-image@file:packages/netlify-cms-editor-component-image":
+  version "2.0.0-alpha.0"
+  dependencies:
+    react "^16.4.1"
+
 "netlify-cms-lib-auth@file:packages/netlify-cms-lib-auth":
   version "2.0.0-alpha.0"
   dependencies:
@@ -6634,7 +6639,7 @@ react-waypoint@^7.1.0:
     consolidated-events "^1.1.0"
     prop-types "^15.0.0"
 
-"react@15.x || 16.x":
+"react@15.x || 16.x", react@^16.4.1:
   version "16.4.1"
   resolved "https://registry.yarnpkg.com/react/-/react-16.4.1.tgz#de51ba5764b5dbcd1f9079037b862bd26b82fe32"
   dependencies:

@@ -1,0 +1,22 @@
+{
+  "name": "netlify-cms-editor-component-image",
+  "description": "Image component for Netlify CMS editor widget",
+  "version": "2.0.0-alpha.0",
+  "license": "MIT",
+  "keywords": [
+    "netlify",
+    "netlify-cms",
+    "editor",
+    "component"
+  ],
+  "scripts": {
+    "watch": "parcel watch src/*.js --out-dir . --no-cache",
+    "build": "parcel build src/*.js --out-dir . --no-cache"
+  },
+  "dependencies": {
+    "react": "^16.4.1"
+  },
+  "devDependencies": {
+    "parcel-bundler": "^1.9.4"
+  }
+}

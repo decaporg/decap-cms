@@ -1,5 +1,5 @@
 import { registerEditorComponent } from 'Lib/registry';
-import image from './image';
+import image from 'netlify-cms-editor-component-image';
 
 const plugins = [
   image,
