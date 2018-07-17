@@ -3,11 +3,19 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled, { css } from 'react-emotion';
 import { Link } from 'react-router-dom';
+import {
+  Icon,
+  Dropdown,
+  DropdownItem,
+  StyledDropdownButton,
+  colorsRaw,
+  colors,
+  components,
+  buttons,
+  lengths,
+} from 'netlify-cms-ui-default';
 import { status } from 'Constants/publishModes';
 import SettingsDropdown from 'UI/SettingsDropdown';
-import Dropdown, { DropdownItem, StyledDropdownButton } from 'netlify-cms-ui-default/Dropdown';
-import Icon from 'netlify-cms-ui-default/Icon';
-import { colorsRaw, colors, components, buttons, lengths } from 'netlify-cms-ui-default/styles';
 import { stripProtocol } from 'Lib/urlHelper';
 
 const styles = {

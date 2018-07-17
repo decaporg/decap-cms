@@ -3,7 +3,7 @@ import jwtDecode from 'jwt-decode';
 import {List} from 'immutable';
 import { get, pick, intersection } from "lodash";
 import { unsentRequest } from "netlify-cms-lib-util";
-import GitHubBackend from "netlify-cms-backend-github";
+import { GitHubBackend } from "netlify-cms-backend-github";
 import GitLabBackend from "Backends/gitlab/implementation";
 import BitBucketBackend from "Backends/bitbucket/implementation";
 import GitHubAPI from "./GitHubAPI";

@@ -4,7 +4,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled, { css, cx } from 'react-emotion';
 import moment from 'moment';
 import { capitalize } from 'lodash'
-import { colors, colorsRaw, lengths } from 'netlify-cms-ui-default/styles';
+import { colors, colorsRaw, lengths } from 'netlify-cms-ui-default';
 import { status } from 'Constants/publishModes';
 import { DragSource, DropTarget, HTML5DragDrop } from 'UI'
 import WorkflowCard from './WorkflowCard';

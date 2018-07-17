@@ -5,10 +5,7 @@
 
   <title>Netlify CMS Development Test</title>
 
-  <link rel="stylesheet" href="../src/index.css"/>
-
   <script>
-  window.CMS_MANUAL_INIT = true;
   window.repoFiles = {
     _posts: {
       "2015-02-14-this-is-a-post.md": {
@@ -82,7 +79,7 @@
 </head>
 <body>
 
-  <script src='cms-test.js'></script>
+  <script src="dist/netlify-cms-core.js"></script>
   <script>
     var PostPreview = createClass({
       render: function() {

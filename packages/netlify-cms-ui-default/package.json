@@ -3,29 +3,33 @@
   "description": "Default UI components for Netlify CMS.",
   "version": "2.0.0-alpha.0",
   "license": "MIT",
-  "main": "index.js",
+  "main": "dist/netlify-cms-ui-default.js",
   "keywords": [
     "netlify-cms"
   ],
+  "sideEffects": false,
   "scripts": {
-    "watch": "parcel watch src/*.js --out-dir . --no-cache",
-    "build": "parcel build src/*.js --out-dir . --no-cache"
+    "watch": "webpack -w",
+    "build": "cross-env NODE_ENV=production webpack"
   },
   "dependencies": {
-    "classnames": "^2.2.5",
-    "emotion": "^9.1.3",
-    "lodash": "^4.13.1",
-    "prop-types": "^15.5.10",
-    "react": "^16.4.1",
     "react-aria-menubutton": "^5.1.0",
-    "react-emotion": "^9.2.6",
     "react-toggled": "^1.1.2",
     "react-transition-group": "^2.2.1"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.3",
-    "babel-plugin-inline-svg": "^1.0.0",
-    "parcel-bundler": "^1.9.4"
+    "@babel/cli": "^7.0.0-beta.54",
+    "@babel/core": "^7.0.0-beta.54",
+    "cross-env": "^5.2.0",
+    "rollup": "^0.63.2",
+    "rollup-plugin-babel": "^4.0.0-beta.7",
+    "webpack": "^4.16.1",
+    "webpack-cli": "^3.1.0"
+  },
+  "peerDependencies": {
+    "lodash": "^4.13.1",
+    "prop-types": "^15.5.10",
+    "react": "^16.4.1",
+    "react-emotion": "^9.2.6"
   }
 }

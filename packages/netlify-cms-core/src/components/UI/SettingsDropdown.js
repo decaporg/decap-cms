@@ -1,8 +1,6 @@
 import React from 'react';
 import styled, { css } from 'react-emotion';
-import Dropdown, { DropdownItem, DropdownButton } from 'netlify-cms-ui-default/Dropdown';
-import Icon from 'netlify-cms-ui-default/Icon';
-import { colors } from 'netlify-cms-ui-default/styles';
+import { Icon, Dropdown, DropdownItem, DropdownButton, colors } from 'netlify-cms-ui-default';
 import { stripProtocol } from 'Lib/urlHelper';
 
 const styles = {

@@ -1,5 +1,5 @@
 import { fromJS, Map } from 'immutable';
-import Cursor from 'netlify-cms-lib-util/Cursor'
+import { Cursor } from 'netlify-cms-lib-util';
 import {
   ENTRIES_SUCCESS,
 } from 'Actions/entries';

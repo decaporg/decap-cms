@@ -6,7 +6,7 @@ import { List, Map } from 'immutable';
 import { connect } from 'react-redux';
 import { debounce } from 'lodash';
 import { query, clearSearch } from 'Actions/search';
-import Loader from 'netlify-cms-ui-default/Loader';
+import { Loader } from 'netlify-cms-ui-default';
 
 function escapeRegexCharacters(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');

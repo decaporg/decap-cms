@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { orderBy, map } from 'lodash';
 import fuzzy from 'fuzzy';
-import { resolvePath, fileExtension } from 'netlify-cms-lib-util/path';
+import { resolvePath, fileExtension } from 'netlify-cms-lib-util';
 import { changeDraftField } from 'Actions/entries';
 import {
   loadMedia as loadMediaAction,

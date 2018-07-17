@@ -2,8 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'react-emotion';
 import { Link } from 'react-router-dom';
-import Icon from 'netlify-cms-ui-default/Icon';
-import { components, buttons, shadows, colors } from 'netlify-cms-ui-default/styles';
+import { Icon, components, buttons, shadows, colors } from 'netlify-cms-ui-default';
 import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from 'Constants/collectionViews';
 
 const CollectionTopContainer = styled.div`

@@ -9,7 +9,7 @@ import MediaLibraryHeader from './MediaLibraryHeader';
 import MediaLibraryActions from './MediaLibraryActions';
 import MediaLibraryCardGrid from './MediaLibraryCardGrid';
 import EmptyMessage from './EmptyMessage';
-import { buttons, shadows, colors, borders, lengths } from 'netlify-cms-ui-default/styles';
+import { buttons, shadows, colors, borders, lengths } from 'netlify-cms-ui-default';
 
 /**
  * Responsive styling needs to be overhauled. Current setup requires specifying

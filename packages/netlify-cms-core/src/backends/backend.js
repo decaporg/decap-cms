@@ -1,8 +1,8 @@
 import { attempt, flatten, isError } from 'lodash';
 import { fromJS, Map } from 'immutable';
 import fuzzy from 'fuzzy';
-import GitHubBackend from "netlify-cms-backend-github";
-import TestRepoBackend from "netlify-cms-backend-test";
+import { GitHubBackend } from "netlify-cms-backend-github";
+import { TestBackend } from "netlify-cms-backend-test";
 import { resolveFormat } from "Formats/formats";
 import { selectIntegration } from 'Reducers/integrations';
 import {
@@ -21,7 +21,7 @@ import GitLabBackend from "./gitlab/implementation";
 import BitBucketBackend from "./bitbucket/implementation";
 import GitGatewayBackend from "./git-gateway/implementation";
 import { registerBackend, getBackend } from 'Lib/registry';
-import Cursor, { CURSOR_COMPATIBILITY_SYMBOL } from 'netlify-cms-lib-util/Cursor'
+import { Cursor, CURSOR_COMPATIBILITY_SYMBOL } from 'netlify-cms-lib-util';
 import { EDITORIAL_WORKFLOW, status } from 'Constants/publishModes';
 
 /**
@@ -31,7 +31,7 @@ registerBackend('git-gateway', GitGatewayBackend);
 registerBackend('github', GitHubBackend);
 registerBackend('gitlab', GitLabBackend);
 registerBackend('bitbucket', BitBucketBackend);
-registerBackend('test-repo', TestRepoBackend);
+registerBackend('test-repo', TestBackend);
 
 
 class LocalStorageAuthStore {

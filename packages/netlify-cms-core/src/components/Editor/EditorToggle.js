@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'react-emotion';
-import Icon from 'netlify-cms-ui-default/Icon';
-import { colors, colorsRaw, shadows, buttons } from 'netlify-cms-ui-default/styles';
+import { Icon, colors, colorsRaw, shadows, buttons } from 'netlify-cms-ui-default';
 
 const EditorToggleButton = styled.button`
   ${buttons.button};

@@ -11,3 +11,4 @@ manifest.yml
 website/data/contributors.json
 /coverage/
 .cache
+*.log

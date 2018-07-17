@@ -3,9 +3,7 @@ import React from 'react';
 import { List } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import c from 'classnames';
-import Dropdown, { DropdownItem, DropdownButton } from 'netlify-cms-ui-default/Dropdown';
-import Toggle from 'netlify-cms-ui-default/Toggle';
-import Icon from 'netlify-cms-ui-default/Icon';
+import { Icon, Toggle, Dropdown, DropdownItem, DropdownButton } from 'netlify-cms-ui-default';
 import ToolbarButton from './ToolbarButton';
 
 export default class Toolbar extends React.Component {

@@ -1,5 +1,5 @@
 import { Map } from 'immutable';
-import { resolvePath } from 'netlify-cms-lib-util/path';
+import { resolvePath } from 'netlify-cms-lib-util';
 import { ADD_ASSET, REMOVE_ASSET } from 'Actions/media';
 import AssetProxy from 'ValueObjects/AssetProxy';
 

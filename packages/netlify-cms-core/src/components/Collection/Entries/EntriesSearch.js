@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
-import Cursor from 'netlify-cms-lib-util/Cursor'
+import { Cursor } from 'netlify-cms-lib-util';
 import { selectSearchedEntries } from 'Reducers';
 import {
   searchEntries as actionSearchEntries,
