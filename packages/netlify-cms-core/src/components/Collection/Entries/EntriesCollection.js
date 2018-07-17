@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 import { partial } from 'lodash';
+import Cursor from 'netlify-cms-lib-util/Cursor'
 import {
   loadEntries as actionLoadEntries,
   traverseCollectionCursor as actionTraverseCollectionCursor,
 } from 'Actions/entries';
 import { selectEntries } from 'Reducers';
 import { selectCollectionEntriesCursor } from 'Reducers/cursors';
-import Cursor from 'ValueObjects/Cursor';
 import Entries from './Entries';
 
 class EntriesCollection extends React.Component {

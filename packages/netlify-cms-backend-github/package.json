@@ -1,0 +1,30 @@
+{
+  "name": "netlify-cms-backend-github",
+  "description": "GitHub backend for Netlify CMS",
+  "version": "2.0.0-alpha.0",
+  "license": "MIT",
+  "keywords": [
+    "netlify",
+    "netlify-cms",
+    "backend",
+    "github"
+  ],
+  "scripts": {
+    "watch": "parcel watch src/*.js --out-dir . --no-cache",
+    "build": "parcel build src/*.js --out-dir . --no-cache"
+  },
+  "dependencies": {
+    "js-base64": "^2.4.8",
+    "lodash": "^4.17.10",
+    "netlify-cms-lib-auth": "file:../netlify-cms-lib-auth",
+    "netlify-cms-lib-util": "file:../netlify-cms-lib-util",
+    "netlify-cms-ui-default": "file:../netlify-cms-ui-default",
+    "prop-types": "^15.6.2",
+    "react": "^16.4.1",
+    "react-emotion": "^9.2.6",
+    "semaphore": "^1.1.0"
+  },
+  "devDependencies": {
+    "parcel-bundler": "^1.9.4"
+  }
+}

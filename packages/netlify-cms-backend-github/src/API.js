@@ -2,8 +2,6 @@ import localForage from "netlify-cms-lib-util/localForage";
 import { Base64 } from "js-base64";
 import { uniq, initial, last, get, find, hasIn, partial } from "lodash";
 import { filterPromises, resolvePromiseProperties } from "netlify-cms-lib-util/promise";
-import AssetProxy from "ValueObjects/AssetProxy";
-import { SIMPLE, EDITORIAL_WORKFLOW, status } from "Constants/publishModes";
 import APIError from "netlify-cms-lib-util/APIError";
 import EditorialWorkflowError from "netlify-cms-lib-util/EditorialWorkflowError";
 
@@ -17,6 +15,8 @@ export default class API {
     this.repo = config.repo || "";
     this.repoURL = `/repos/${ this.repo }`;
     this.merge_method = config.squash_merges ? "squash" : "merge";
+    this.initialStatus = config.initialStatus;
+
   }
 
   user() {
@@ -287,13 +287,13 @@ export default class API {
     const fileTree = this.composeFileTree(files);
 
     return Promise.all(uploadPromises).then(() => {
-      if (!options.mode || (options.mode && options.mode === SIMPLE)) {
+      if (!options.useWorkflow) {
         return this.getBranch()
         .then(branchData => this.updateTree(branchData.commit.sha, "/", fileTree))
         .then(changeTree => this.commit(options.commitMessage, changeTree))
         .then(response => this.patchBranch(this.branch, response.sha));
 
-      } else if (options.mode && options.mode === EDITORIAL_WORKFLOW) {
+      } else {
         const mediaFilesList = mediaFiles.map(file => ({ path: file.path, sha: file.sha }));
         return this.editorialWorkflowGit(fileTree, entry, mediaFilesList, options);
       }
@@ -347,7 +347,7 @@ export default class API {
             head: prResponse.head && prResponse.head.sha,
           },
           user: user.name || user.login,
-          status: status.first(),
+          status: this.initialStatus,
           branch: branchName,
           collection: options.collectionName,
           title: options.parsedData && options.parsedData.title,

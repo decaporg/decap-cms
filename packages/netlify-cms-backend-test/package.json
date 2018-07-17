@@ -1,0 +1,30 @@
+{
+  "name": "netlify-cms-backend-test",
+  "description": "Development testing backend for Netlify CMS",
+  "version": "2.0.0-alpha.0",
+  "license": "MIT",
+  "keywords": [
+    "netlify",
+    "netlify-cms",
+    "backend"
+  ],
+  "scripts": {
+    "watch": "parcel watch src/*.js --out-dir . --no-cache",
+    "build": "parcel build src/*.js --out-dir . --no-cache"
+  },
+  "dependencies": {
+    "immutable": "^3.8.2",
+    "lodash": "^4.17.10",
+    "netlify": "^1.2.0",
+    "netlify-cms-lib-util": "file:../netlify-cms-lib-util",
+    "netlify-cms-ui-default": "file:../netlify-cms-ui-default",
+    "prop-types": "^15.6.2",
+    "react": "^16.4.1",
+    "react-emotion": "^9.2.6",
+    "react-immutable-proptypes": "^2.1.0",
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "parcel-bundler": "^1.9.4"
+  }
+}

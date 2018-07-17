@@ -1,5 +1,5 @@
 import { fromJS, Map } from 'immutable';
-import Cursor from "ValueObjects/Cursor";
+import Cursor from 'netlify-cms-lib-util/Cursor'
 import {
   ENTRIES_SUCCESS,
 } from 'Actions/entries';

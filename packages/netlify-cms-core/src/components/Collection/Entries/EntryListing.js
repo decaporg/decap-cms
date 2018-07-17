@@ -4,9 +4,9 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from 'react-emotion';
 import Waypoint from 'react-waypoint';
 import { Map } from 'immutable';
+import Cursor from 'netlify-cms-lib-util/Cursor';
 import { selectFields, selectInferedField } from 'Reducers/collections';
 import EntryCard from './EntryCard';
-import Cursor from 'ValueObjects/Cursor';
 
 const CardsGrid = styled.div`
   display: flex;
