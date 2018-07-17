@@ -2,7 +2,7 @@ import { remove, attempt, isError, take } from 'lodash';
 import uuid from 'uuid/v4';
 import { fromJS } from 'immutable';
 import { EDITORIAL_WORKFLOW, status } from 'Constants/publishModes';
-import { EditorialWorkflowError } from 'ValueObjects/errors';
+import EditorialWorkflowError from 'netlify-cms-lib-util/EditorialWorkflowError';
 import Cursor, { CURSOR_COMPATIBILITY_SYMBOL } from 'ValueObjects/Cursor'
 import AuthenticationPage from './AuthenticationPage';
 

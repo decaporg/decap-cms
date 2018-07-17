@@ -1,5 +1,5 @@
 import GithubAPI from "Backends/github/API";
-import { APIError } from "ValueObjects/errors";
+import APIError from "netlify-cms-lib-util/APIError";
 
 export default class API extends GithubAPI {
   constructor(config) {

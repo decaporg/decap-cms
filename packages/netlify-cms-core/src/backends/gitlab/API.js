@@ -1,11 +1,11 @@
 import localForage from "netlify-cms-lib-util/localForage";
 import { Base64 } from "js-base64";
 import { fromJS, List, Map } from "immutable";
-import { cond, flow, isString, partial, partialRight, pick, omit, set, update } from "lodash";
+import { cond, flow, isString, partial, partialRight, pick, omit, set, update, get } from "lodash";
 import unsentRequest from "netlify-cms-lib-util/unsentRequest";
 import { then } from "netlify-cms-lib-util/promise";
+import APIError from "netlify-cms-lib-util/APIError";
 import AssetProxy from "ValueObjects/AssetProxy";
-import { APIError } from "ValueObjects/errors";
 import Cursor from "ValueObjects/Cursor"
 
 export default class API {
@@ -17,8 +17,9 @@ export default class API {
     this.repoURL = `/projects/${ encodeURIComponent(this.repo) }`;
   }
 
-  withAuthorizationHeaders = req =>
-    unsentRequest.withHeaders(this.token ? { Authorization: `Bearer ${ this.token }` } : {}, req);
+  withAuthorizationHeaders = req => (
+    unsentRequest.withHeaders(this.token ? { Authorization: `Bearer ${ this.token }` } : {}, req)
+  );
 
   buildRequest = req => flow([
     unsentRequest.withRoot(this.api_root),
@@ -189,7 +190,7 @@ export default class API {
   toBase64 = str => Promise.resolve(Base64.encode(str));
   fromBase64 = str => Base64.decode(str);
   uploadAndCommit = async (item, { commitMessage, updateFile = false, branch = this.branch, author = this.commitAuthor }) => {
-    const content = await (item instanceof AssetProxy ? item.toBase64() : this.toBase64(item.raw));
+    const content = get(item, 'toBase64', partial(this.toBase64, item.raw))();
     const file_path = item.path.replace(/^\//, "");
     const action = (updateFile ? "update" : "create");
     const encoding = "base64";
