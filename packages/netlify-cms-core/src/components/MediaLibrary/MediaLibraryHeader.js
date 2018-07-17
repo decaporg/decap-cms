@@ -15,6 +15,9 @@ const CloseButton = styled.button`
   border-radius: 50%;
   background-color: white;
   padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `
 
 const LibraryTitle = styled.h1`

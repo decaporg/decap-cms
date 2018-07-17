@@ -2,30 +2,25 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'react-emotion';
 import Icon from 'netlify-cms-ui-default/Icon';
-import { colors, colorsRaw, shadows } from 'netlify-cms-ui-default/styles';
+import { colors, colorsRaw, shadows, buttons } from 'netlify-cms-ui-default/styles';
 
 const EditorToggleButton = styled.button`
+  ${buttons.button};
   ${shadows.dropMiddle};
   background-color: ${colorsRaw.white};
-  color: ${props => colors[props.active ? `active` : `inactive`]};
+  color: ${props => colors[props.isActive ? `active` : `inactive`]};
   border-radius: 32px;
-  display: block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 40px;
   height: 40px;
   padding: 0;
   margin-bottom: 12px;
-
-  ${Icon} {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
 `
 
 const EditorToggle = ({ enabled, active, onClick, icon }) => !enabled ? null :
-  <EditorToggleButton onClick={onClick}>
+  <EditorToggleButton onClick={onClick} isActive={active}>
     <Icon type={icon} size="large"/>
   </EditorToggleButton>;
 

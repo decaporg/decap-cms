@@ -18,7 +18,7 @@
   "scripts": {
     "start": "lerna run --parallel watch",
     "clean": "cd packages && rimraf */.cache */*.js */*.css */*.svg */*.map",
-    "reset": "yarn clean && lerna clean --yes && lerna bootstrap && cd packages/netlify-cms-core && yarn link netlify-cms-lib-auth netlify-cms-lib-util netlify-cms-ui-default netlify-cms-editor-component-image react-split-pane"
+    "reset": "yarn clean && lerna clean --yes && lerna bootstrap && cd packages/netlify-cms-core && yarn link netlify-cms-lib-auth netlify-cms-lib-util netlify-cms-ui-default netlify-cms-editor-component-image"
   },
   "jest": {
     "moduleNameMapper": {
@@ -61,8 +61,11 @@
     "babel-plugin-emotion": "^9.2.4",
     "babel-plugin-inline-import": "^3.0.0",
     "babel-plugin-inline-svg": "^1.0.0",
+    "babel-plugin-lodash": "^3.3.4",
     "babel-plugin-module-resolver": "^3.0.0",
+    "babel-plugin-transform-builtin-extend": "^1.1.2",
     "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-export-extensions": "^6.22.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.3",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-plugin-transform-runtime": "^6.23.0",

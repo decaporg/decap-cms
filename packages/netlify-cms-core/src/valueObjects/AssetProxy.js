@@ -1,5 +1,5 @@
-import { resolvePath } from 'netlify-cms-lib-util';
-import { currentBackend } from "Backends/backend";
+import { resolvePath } from 'netlify-cms-lib-util/path';
+import { currentBackend } from 'Backends/backend';
 import { getIntegrationProvider } from 'Integrations';
 import { selectIntegration } from 'Reducers';
 

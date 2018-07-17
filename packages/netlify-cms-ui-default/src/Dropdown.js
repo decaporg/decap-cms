@@ -85,10 +85,11 @@ const Dropdown = ({
   dropdownWidth = 'auto',
   dropdownPosition = 'left',
   dropdownTopOverlap = '0',
+  className,
   children,
 }) => {
   return (
-    <StyledWrapper onSelection={handler => handler()}>
+    <StyledWrapper onSelection={handler => handler()} className={className}>
       {renderButton()}
       <Menu>
         <DropdownList width={dropdownWidth} top={dropdownTopOverlap} position={dropdownPosition}>
@@ -99,8 +100,8 @@ const Dropdown = ({
   );
 };
 
-const DropdownItem = ({ label, icon, iconDirection, onClick }) => (
-  <StyledMenuItem value={onClick}>
+const DropdownItem = ({ label, icon, iconDirection, onClick, className }) => (
+  <StyledMenuItem value={onClick} className={className}>
     <span>{label}</span>
     {
       icon

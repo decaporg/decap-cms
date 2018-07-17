@@ -7,7 +7,7 @@ const IconWrapper = styled.span`
   line-height: 0;
   width: ${props => props.size};
   height: ${props => props.size};
-  transform: ${props => `rotation(${props.rotation})`};
+  transform: ${props => `rotate(${props.rotation})`};
 
   & path:not(.no-fill),
   & circle:not(.no-fill),

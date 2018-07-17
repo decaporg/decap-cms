@@ -6,8 +6,10 @@
     }],
   ],
   "plugins": [
-    "transform-object-rest-spread",
-    "transform-class-properties",
+    "lodash",
+    ["babel-plugin-transform-builtin-extend", {
+      "globals": ["Error"]
+    }],
     ["transform-runtime", {
       "useBuiltIns": true,
       "useESModules": true,
@@ -29,7 +31,16 @@
         "ValueObjects": "./src/valueObjects/",
       }
     }],
-    "inline-svg",
+    "transform-export-extensions",
+    "transform-class-properties",
+    "transform-object-rest-spread",
+    ["inline-svg", {
+      "svgo": {
+        "plugins": [
+          {"removeViewBox": false},
+        ],
+      },
+    }],
   ],
   "env": {
     "production": {
