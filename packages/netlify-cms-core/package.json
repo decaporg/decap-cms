@@ -49,6 +49,7 @@
     "netlify-cms-lib-auth": "file:../netlify-cms-lib-auth",
     "netlify-cms-lib-util": "file:../netlify-cms-lib-util",
     "netlify-cms-ui-default": "file:../netlify-cms-ui-default",
+    "netlify-cms-editor-component-image": "file:../netlify-cms-editor-component-image",
     "prop-types": "^15.5.10",
     "react": "15.x || 16.x",
     "react-aria-menubutton": "^5.1.0",

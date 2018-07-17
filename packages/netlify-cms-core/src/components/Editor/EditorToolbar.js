@@ -285,7 +285,7 @@ export default class EditorToolbar extends React.Component {
           dropdownTopOverlap="40px"
           dropdownWidth="150px"
           renderButton={() => (
-            <PublishButton>{isPersisting ? 'Publishing...' : 'Publish'}</PublishButton>
+            <PublishButton>{isPublishing ? 'Publishing...' : 'Publish'}</PublishButton>
           )}
         >
           <DropdownItem label="Publish now" icon="arrow" iconDirection="right" onClick={onPublish}/>
