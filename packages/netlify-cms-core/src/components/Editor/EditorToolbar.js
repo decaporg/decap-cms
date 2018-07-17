@@ -18,6 +18,7 @@ const styles = {
     height: 100%;
     display: flex;
     align-items: center;
+    border: 0 solid ${colors.textFieldBorder};
   `,
 }
 
@@ -38,6 +39,7 @@ const ToolbarContainer = styled.div`
 `
 
 const ToolbarSectionMain = styled.div`
+  ${styles.toolbarSection};
   flex: 10;
   display: flex;
   justify-content: space-between;
@@ -54,7 +56,6 @@ const ToolbarSubSectionLast = styled(ToolbarSubSectionFirst)`
 
 const ToolbarSectionBackLink = styled(Link)`
   ${styles.toolbarSection};
-  border: 0 solid ${colors.textFieldBorder};
   border-right-width: 1px;
   font-weight: normal;
   padding: 0 20px;
@@ -116,6 +117,7 @@ const BackStatusChanged = styled(BackStatus)`
 `
 
 const ToolbarButton = styled.button`
+  ${buttons.button};
   ${buttons.default};
   ${styles.buttonMargin};
   display: block;
@@ -149,6 +151,12 @@ const PublishButton = styled(StyledDropdownButton)`
 const StatusButton = styled(StyledDropdownButton)`
   background-color: ${colorsRaw.tealLight};
   color: ${colorsRaw.teal};
+`
+
+const StatusDropdownItem = styled(DropdownItem)`
+  ${Icon} {
+    color: ${colors.infoText};
+  }
 `
 
 export default class EditorToolbar extends React.Component {
@@ -265,17 +273,17 @@ export default class EditorToolbar extends React.Component {
             <StatusButton>{isUpdatingStatus ? 'Updating...' : 'Set status'}</StatusButton>
           )}
         >
-          <DropdownItem
+          <StatusDropdownItem
             label="Draft"
             onClick={() => onChangeStatus('DRAFT')}
             icon={currentStatus === status.get('DRAFT') && 'check'}
           />
-          <DropdownItem
+          <StatusDropdownItem
             label="In review"
             onClick={() => onChangeStatus('PENDING_REVIEW')}
             icon={currentStatus === status.get('PENDING_REVIEW') && 'check'}
           />
-          <DropdownItem
+          <StatusDropdownItem
             label="Ready"
             onClick={() => onChangeStatus('PENDING_PUBLISH')}
             icon={currentStatus === status.get('PENDING_PUBLISH') && 'check'}

@@ -4,7 +4,8 @@ import { uniq, initial, last, get, find, hasIn, partial } from "lodash";
 import { filterPromises, resolvePromiseProperties } from "netlify-cms-lib-util/promise";
 import AssetProxy from "ValueObjects/AssetProxy";
 import { SIMPLE, EDITORIAL_WORKFLOW, status } from "Constants/publishModes";
-import { APIError, EditorialWorkflowError } from "netlify-cms-lib-util";
+import APIError from "netlify-cms-lib-util/APIError";
+import EditorialWorkflowError from "netlify-cms-lib-util/EditorialWorkflowError";
 
 const CMS_BRANCH_PREFIX = 'cms/';
 

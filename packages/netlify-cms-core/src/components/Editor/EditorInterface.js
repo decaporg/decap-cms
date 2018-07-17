@@ -16,7 +16,7 @@ const PREVIEW_VISIBLE = 'cms.preview-visible';
 const SCROLL_SYNC_ENABLED = 'cms.scroll-sync-enabled';
 
 const styles = {
-  noPreviewContainer: css`
+  splitPane: css`
     ${components.card};
     border-radius: 0;
     height: 100%;
@@ -53,18 +53,21 @@ injectGlobal`
     }
   }
 
+`
+
+const StyledSplitPane = styled(SplitPane)`
+  ${styles.splitPane};
+
   /**
    * Quick fix for preview pane not fully displaying in Safari
    */
-  .SplitPane {
-    .Pane {
-      height: 100%;
-    }
+  .Pane {
+    height: 100%;
   }
 `
 
 const NoPreviewContainer = styled.div`
-  ${styles.noPreviewContainer};
+  ${styles.splitPane};
 `
 
 const EditorContainer = styled.div`
@@ -202,7 +205,7 @@ class EditorInterface extends Component {
     const editorWithPreview = (
       <ScrollSync enabled={this.state.scrollSyncEnabled}>
         <div>
-          <SplitPane
+          <StyledSplitPane
             maxSize={-100}
             defaultSize="50%"
             onDragStarted={this.handleSplitPaneDragStart}
@@ -218,7 +221,7 @@ class EditorInterface extends Component {
                 getAsset={getAsset}
               />
             </PreviewPaneContainer>
-          </SplitPane>
+          </StyledSplitPane>
         </div>
       </ScrollSync>
     );
