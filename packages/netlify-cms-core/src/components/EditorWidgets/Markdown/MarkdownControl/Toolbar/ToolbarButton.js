@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import c from 'classnames';
-import Icon from 'netlify-cms-ui-default/Icon';
+import { Icon } from 'netlify-cms-ui-default';
 
 const ToolbarButton = ({ type, label, icon, onClick, isActive, isHidden, disabled }) => {
   const active = isActive && type && isActive(type);

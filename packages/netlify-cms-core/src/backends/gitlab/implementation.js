@@ -1,7 +1,6 @@
 import trimStart from 'lodash/trimStart';
 import semaphore from "semaphore";
-import { fileExtension } from 'netlify-cms-lib-util/path';
-import Cursor, { CURSOR_COMPATIBILITY_SYMBOL } from 'netlify-cms-lib-util/Cursor'
+import { fileExtension, Cursor, CURSOR_COMPATIBILITY_SYMBOL } from 'netlify-cms-lib-util';
 import AuthenticationPage from "./AuthenticationPage";
 import API from "./API";
 import { EDITORIAL_WORKFLOW } from "Constants/publishModes";

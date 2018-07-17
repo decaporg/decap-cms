@@ -2,23 +2,30 @@
   "name": "netlify-cms-lib-util",
   "description": "Shared utilities for Netlify CMS.",
   "version": "2.0.0-alpha.0",
+  "main": "dist/netlify-cms-lib-util.js",
   "license": "MIT",
-  "main": "index.js",
   "keywords": [
     "netlify-cms"
   ],
+  "sideEffects": false,
   "scripts": {
-    "watch": "parcel watch src/*.js --out-dir . --no-cache",
-    "build": "parcel build src/*.js --out-dir . --no-cache"
+    "watch": "webpack -w",
+    "build": "cross-env NODE_ENV=production webpack"
   },
   "dependencies": {
-    "immutable": "^3.7.6",
-    "localforage": "^1.4.2",
-    "lodash": "^4.13.1"
+    "localforage": "^1.4.2"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.3",
-    "parcel-bundler": "^1.9.4"
+    "@babel/cli": "^7.0.0-beta.54",
+    "@babel/core": "^7.0.0-beta.54",
+    "cross-env": "^5.2.0",
+    "rollup": "^0.63.2",
+    "rollup-plugin-babel": "^4.0.0-beta.7",
+    "webpack": "^4.16.1",
+    "webpack-cli": "^3.1.0"
+  },
+  "peerDependencies": {
+    "immutable": "^3.7.6",
+    "lodash": "^4.13.1"
   }
 }

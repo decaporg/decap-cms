@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'react-emotion'
 import MediaLibraryCard from './MediaLibraryCard';
-import { colors } from 'netlify-cms-ui-default/styles';
+import { colors } from 'netlify-cms-ui-default';
 
 const CardGridContainer = styled.div`
   overflow-y: auto;

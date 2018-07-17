@@ -6,7 +6,7 @@ import { getIntegrationProvider } from 'Integrations';
 import { getAsset, selectIntegration } from 'Reducers';
 import { selectFields } from 'Reducers/collections';
 import { selectCollectionEntriesCursor } from 'Reducers/cursors';
-import Cursor from 'netlify-cms-lib-util/Cursor'
+import { Cursor } from 'netlify-cms-lib-util';
 import { createEntry } from 'ValueObjects/Entry';
 import ValidationErrorTypes from 'Constants/validationErrorTypes';
 import isArray from 'lodash/isArray';

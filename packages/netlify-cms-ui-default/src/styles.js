@@ -1,9 +1,21 @@
 import { css, injectGlobal } from 'react-emotion';
 
+export {
+  fonts,
+  colorsRaw,
+  colors,
+  lengths,
+  components,
+  buttons,
+  shadows,
+  borders,
+  transitions,
+};
+
 /**
  * Font Stacks
  */
-export const fonts = {
+const fonts = {
   primary: `
     -apple-system,
     BlinkMacSystemFont,
@@ -29,7 +41,7 @@ export const fonts = {
 /**
  * Theme Colors
  */
-export const colorsRaw = {
+const colorsRaw = {
   white: '#fff',
   grayLight: '#eff0f4',
   gray: '#798291',
@@ -48,7 +60,7 @@ export const colorsRaw = {
   tealLight: '#ddf5f9',
 };
 
-export const colors = {
+const colors = {
   statusDraftText: colorsRaw.purple,
   statusDraftBackground: colorsRaw.purpleLight,
   statusReviewText: colorsRaw.Brown,
@@ -78,7 +90,7 @@ export const colors = {
   controlLabel: '#7a8291',
 };
 
-export const lengths = {
+const lengths = {
   topBarHeight: '56px',
   inputPadding: '16px 20px',
   borderRadius: '5px',
@@ -88,15 +100,15 @@ export const lengths = {
   pageMargin: '84px 18px',
 };
 
-export const borders = {
+const borders = {
   textField: `solid  ${lengths.borderWidth} ${colors.textFieldBorder}`,
 };
 
-export const transitions = {
+const transitions = {
   main: '.2s ease',
 };
 
-export const shadows = {
+const shadows = {
   drop: css`
     box-shadow: 0 2px 4px 0  rgba(19, 39, 48, .12);
   `,
@@ -129,7 +141,7 @@ const card = css`
   background-color: #fff;
 `;
 
-export const buttons = {
+const buttons = {
   button: css`
     border: 0;
     border-radius: ${lengths.borderRadius};
@@ -191,7 +203,7 @@ export const buttons = {
   `,
 };
 
-export const components = {
+const components = {
   card,
   caretDown: css`
     color: ${colorsRaw.white};

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'react-emotion';
-import { colors, borders, lengths } from 'netlify-cms-ui-default/styles';
+import { colors, borders, lengths } from 'netlify-cms-ui-default';
 
 const Card = styled.div`
   width: ${props => props.width};

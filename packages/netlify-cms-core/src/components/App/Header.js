@@ -4,9 +4,17 @@ import ImmutablePropTypes from "react-immutable-proptypes";
 import styled, { css } from 'react-emotion';
 import { NavLink } from 'react-router-dom';
 import uuid from 'uuid/v4';
-import Icon from 'netlify-cms-ui-default/Icon';
-import Dropdown, { DropdownItem, StyledDropdownButton } from 'netlify-cms-ui-default/Dropdown'
-import { colors, colorsRaw, lengths, shadows, buttons } from 'netlify-cms-ui-default/styles'
+import {
+  Icon,
+  Dropdown,
+  DropdownItem,
+  StyledDropdownButton,
+  colors,
+  colorsRaw,
+  lengths,
+  shadows,
+  buttons,
+} from 'netlify-cms-ui-default';
 import SettingsDropdown from 'UI/SettingsDropdown';
 
 const styles = {
@@ -132,7 +140,7 @@ export default class Header extends React.Component {
               </AppHeaderNavLink>
               {
                 hasWorkflow
-                  ? <AppHeaderNavLink to="/workflow" activeClassName={this.activeClassName}>
+                  ? <AppHeaderNavLink to="/workflow" activeClassName={Header.activeClassName}>
                       <Icon type="workflow"/>
                       Workflow
                     </AppHeaderNavLink>

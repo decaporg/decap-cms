@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { css } from 'react-emotion';
-import { colors } from 'netlify-cms-ui-default/styles';
+import { colors } from 'netlify-cms-ui-default';
 
 const DefaultErrorComponent = () => {
 };

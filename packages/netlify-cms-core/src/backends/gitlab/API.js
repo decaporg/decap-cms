@@ -1,11 +1,7 @@
-import localForage from "netlify-cms-lib-util/localForage";
+import { localForage, unsentRequest, then, APIError, Cursor } from "netlify-cms-lib-util";
 import { Base64 } from "js-base64";
 import { fromJS, List, Map } from "immutable";
 import { cond, flow, isString, partial, partialRight, pick, omit, set, update, get } from "lodash";
-import unsentRequest from "netlify-cms-lib-util/unsentRequest";
-import { then } from "netlify-cms-lib-util/promise";
-import APIError from "netlify-cms-lib-util/APIError";
-import Cursor from 'netlify-cms-lib-util/Cursor'
 import AssetProxy from "ValueObjects/AssetProxy";
 
 export default class API {

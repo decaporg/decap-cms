@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from "react-immutable-proptypes";
 import { isBoolean } from 'lodash';
-import Toggle from 'netlify-cms-ui-default/Toggle';
+import { Toggle } from 'netlify-cms-ui-default';
 
 export default class BooleanControl extends React.Component {
   render() {

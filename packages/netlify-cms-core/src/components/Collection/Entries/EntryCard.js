@@ -3,11 +3,10 @@ import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from 'react-emotion';
 import { Link } from 'react-router-dom';
-import c from 'classnames';
+import { resolvePath } from 'netlify-cms-lib-util';
+import { colors, colorsRaw, components, lengths } from 'netlify-cms-ui-default';
 import history from 'Routing/history';
-import { resolvePath } from 'netlify-cms-lib-util/path';
 import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from 'Constants/collectionViews';
-import { colors, colorsRaw, components, lengths } from 'netlify-cms-ui-default/styles';
 
 const ListCardLink = styled(Link)`
   ${components.card};

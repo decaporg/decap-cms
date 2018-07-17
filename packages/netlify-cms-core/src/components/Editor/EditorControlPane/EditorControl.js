@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { css, cx } from 'react-emotion';
 import { partial, uniqueId } from 'lodash';
-import { colors, colorsRaw, transitions, lengths, borders } from 'netlify-cms-ui-default/styles';
+import { colors, colorsRaw, transitions, lengths, borders } from 'netlify-cms-ui-default';
 import { resolveWidget } from 'Lib/registry';
 import Widget from './Widget';
 

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import Loader from 'netlify-cms-ui-default/Loader';
+import { Loader } from 'netlify-cms-ui-default';
 import EntryListing from './EntryListing';
 
 const Entries = ({

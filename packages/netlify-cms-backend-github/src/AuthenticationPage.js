@@ -1,9 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'react-emotion';
-import Authenticator from 'netlify-cms-lib-auth/netlify-auth';
-import Icon from 'netlify-cms-ui-default/Icon';
-import { buttons, shadows } from 'netlify-cms-ui-default/styles';
+import { NetlifyAuthenticator } from 'netlify-cms-lib-auth';
+import { Icon, buttons, shadows } from 'netlify-cms-ui-default';
 
 const StyledAuthenticationPage = styled.section`
   display: flex;
@@ -53,7 +52,7 @@ export default class AuthenticationPage extends React.Component {
       site_id: (document.location.host.split(':')[0] === 'localhost') ? 'cms.netlify.com' : this.props.siteId,
       auth_endpoint: this.props.authEndpoint,
     };
-    const auth = new Authenticator(cfg);
+    const auth = new NetlifyAuthenticator(cfg);
 
     auth.authenticate({ provider: 'github', scope: 'repo' }, (err, data) => {
       if (err) {

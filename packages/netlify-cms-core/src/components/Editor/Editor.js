@@ -4,7 +4,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Map } from 'immutable';
 import { get } from 'lodash';
 import { connect } from 'react-redux';
-import Loader from 'netlify-cms-ui-default/Loader';
+import { Loader } from 'netlify-cms-ui-default';
 import history from 'Routing/history';
 import { logoutUser } from 'Actions/auth';
 import {

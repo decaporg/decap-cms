@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import Icon from 'netlify-cms-ui-default/Icon';
+import { Icon } from 'netlify-cms-ui-default';
 
 export default class AuthenticationPage extends React.Component {
   static propTypes = {

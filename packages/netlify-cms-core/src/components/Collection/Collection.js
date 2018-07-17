@@ -2,7 +2,7 @@ import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from 'react-emotion';
 import { connect } from 'react-redux';
-import { lengths } from 'netlify-cms-ui-default/styles';
+import { lengths } from 'netlify-cms-ui-default';
 import { getNewEntryUrl } from 'Lib/urlHelper';
 import Sidebar from './Sidebar';
 import CollectionTop from './CollectionTop';

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from "react";
 import { partial } from 'lodash';
-import Icon from 'netlify-cms-ui-default/Icon';
+import { Icon } from 'netlify-cms-ui-default';
 
 let component = null;
 

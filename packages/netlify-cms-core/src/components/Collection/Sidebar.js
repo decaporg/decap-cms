@@ -4,8 +4,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled, { css } from 'react-emotion';
 import { NavLink } from 'react-router-dom';
 import uuid from 'uuid/v4';
-import Icon from 'netlify-cms-ui-default/Icon';
-import { components, colors, colorsRaw, lengths } from 'netlify-cms-ui-default/styles';
+import { Icon, components, colors, colorsRaw, lengths } from 'netlify-cms-ui-default';
 import { searchCollections } from 'Actions/collections';
 import { getCollectionUrl } from 'Lib/urlHelper';
 

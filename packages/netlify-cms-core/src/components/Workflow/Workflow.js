@@ -4,9 +4,15 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from 'react-emotion';
 import { OrderedMap } from 'immutable';
 import { connect } from 'react-redux';
-import Dropdown, { DropdownItem, StyledDropdownButton } from 'netlify-cms-ui-default/Dropdown';
-import Loader from 'netlify-cms-ui-default/Loader';
-import { lengths, components, shadows } from 'netlify-cms-ui-default/styles';
+import {
+  Dropdown,
+  DropdownItem,
+  StyledDropdownButton,
+  Loader,
+  lengths,
+  components,
+  shadows,
+} from 'netlify-cms-ui-default';
 import { createNewEntry } from 'Actions/collections';
 import {
   loadUnpublishedEntries,
