@@ -1,10 +1,10 @@
 import localForage from "netlify-cms-lib-util/localForage";
 import { Base64 } from "js-base64";
-import { uniq, initial, last, get, find, hasIn } from "lodash";
+import { uniq, initial, last, get, find, hasIn, partial } from "lodash";
 import { filterPromises, resolvePromiseProperties } from "netlify-cms-lib-util/promise";
 import AssetProxy from "ValueObjects/AssetProxy";
 import { SIMPLE, EDITORIAL_WORKFLOW, status } from "Constants/publishModes";
-import { APIError, EditorialWorkflowError } from "ValueObjects/errors";
+import { APIError, EditorialWorkflowError } from "netlify-cms-lib-util";
 
 const CMS_BRANCH_PREFIX = 'cms/';
 
@@ -713,7 +713,7 @@ export default class API {
   }
 
   uploadBlob(item) {
-    const content = item instanceof AssetProxy ? item.toBase64() : this.toBase64(item.raw);
+    const content = get(item, 'toBase64', partial(this.toBase64, item.raw))();
 
     return content.then(contentBase64 => this.request(`${ this.repoURL }/git/blobs`, {
       method: "POST",
