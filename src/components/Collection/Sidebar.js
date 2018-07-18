@@ -17,15 +17,17 @@ export default class Collection extends React.Component {
   renderLink = collection => {
     const collectionName = collection.get('name');
     return (
-      <NavLink
-        key={collectionName}
-        to={`/collections/${collectionName}`}
-        className="nc-collectionPage-sidebarLink"
-        activeClassName="nc-collectionPage-sidebarLink-active"
-      >
-        <Icon type="write"/>
-        {collection.get('label')}
-      </NavLink>
+      <li>
+        <NavLink
+          key={collectionName}
+          to={`/collections/${collectionName}`}
+          className="nc-collectionPage-sidebarLink"
+          activeClassName="nc-collectionPage-sidebarLink-active"
+        >
+          <Icon type="write"/>
+          {collection.get('label')}
+        </NavLink>
+      </li>
     );
   };
 
@@ -46,7 +48,9 @@ export default class Collection extends React.Component {
               value={query}
             />
           </div>
-          {collections.toList().map(this.renderLink)}
+          <ul className="nc-collectionPage-sidebarList">
+            {collections.toList().map(this.renderLink)}
+          </ul>
         </aside>
     );
   }
