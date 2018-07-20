@@ -14,7 +14,8 @@ export default class API {
     this.branch = config.branch || "master";
     this.repo = config.repo || "";
     this.requestFunction = config.requestFunction || unsentRequest.performRequest;
-    this.repoURL = `/repositories/${ this.repo }`;
+    // Allow overriding this.hasWriteAccess
+    this.hasWriteAccess = config.hasWriteAccess || this.hasWriteAccess;
     this.repoURL = this.repo ? `/repositories/${ this.repo }` : "";
   }
 

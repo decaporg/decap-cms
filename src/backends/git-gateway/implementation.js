@@ -2,10 +2,13 @@ import GoTrue from "gotrue-js";
 import jwtDecode from 'jwt-decode';
 import {List} from 'immutable';
 import { get, pick, intersection } from "lodash";
+import unsentRequest from "Lib/unsentRequest";
 import GitHubBackend from "Backends/github/implementation";
 import GitLabBackend from "Backends/gitlab/implementation";
+import BitBucketBackend from "Backends/bitbucket/implementation";
 import GitHubAPI from "./GitHubAPI";
 import GitLabAPI from "./GitLabAPI";
+import BitBucketAPI from "Backends/bitbucket/API";
 import AuthenticationPage from "./AuthenticationPage";
 
 const localHosts = {
@@ -41,7 +44,7 @@ export default class GitGateway {
     const APIUrl = getEndpoint(config.getIn(["backend", "identity_url"], defaults.identity), netlifySiteURL);
     this.gatewayUrl = getEndpoint(config.getIn(["backend", "gateway_url"], defaults.gateway), netlifySiteURL);
 
-    const backendTypeRegex = /\/(github|gitlab)\/?$/;
+    const backendTypeRegex = /\/(github|gitlab|bitbucket)\/?$/;
     const backendTypeMatches = this.gatewayUrl.match(backendTypeRegex);
     if (backendTypeMatches) {
       this.backendType = backendTypeMatches[1];
@@ -55,11 +58,16 @@ export default class GitGateway {
 
     this.backend = null;
   }
+
+  requestFunction = req => this.tokenPromise()
+    .then(token => unsentRequest.withHeaders({ Authorization: `Bearer ${ token }` }, req))
+    .then(unsentRequest.performRequest);
+
   authenticate(user) {
     this.tokenPromise = user.jwt.bind(user);
     return this.tokenPromise().then(async token => {
       if (!this.backendType) {
-        const { github_enabled, gitlab_enabled, roles } = await fetch(`${ this.gatewayUrl }/settings`, {
+        const { github_enabled, gitlab_enabled, bitbucket_enabled, roles } = await fetch(`${ this.gatewayUrl }/settings`, {
           headers: { Authorization: `Bearer ${ token }` },
         }).then(res => res.json());
         this.acceptRoles = roles;
@@ -67,6 +75,8 @@ export default class GitGateway {
           this.backendType = "github";
         } else if (gitlab_enabled) {
           this.backendType = "gitlab";
+        } else if (bitbucket_enabled) {
+          this.backendType = "bitbucket";
         }
       }
 
@@ -98,6 +108,14 @@ export default class GitGateway {
       } else if (this.backendType === "gitlab") {
         this.api = new GitLabAPI(apiConfig);
         this.backend = new GitLabBackend(this.config, { proxied: true, API: this.api });
+      } else if (this.backendType === "bitbucket") {
+        this.api = new BitBucketAPI({
+          ...apiConfig,
+          requestFunction: this.requestFunction,
+          hasWriteAccess: async () => true,
+        });
+        console.log(this.api);
+        this.backend = new BitBucketBackend(this.config, { proxied: true, API: this.api });
       }
 
       if (!(await this.api.hasWriteAccess())) {
