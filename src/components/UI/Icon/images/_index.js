@@ -1,6 +1,7 @@
 import iconAdd from './add.svg';
 import iconAddWith from './add-with.svg';
 import iconArrow from './arrow.svg';
+import iconBitbucket from './bitbucket.svg';
 import iconBold from './bold.svg';
 import iconCheck from './check.svg';
 import iconChevron from './chevron.svg';
@@ -44,6 +45,7 @@ const images = {
   'add': iconAdd,
   'add-with': iconAddWith,
   'arrow': iconArrow,
+  'bitbucket': iconBitbucket,
   'bold': iconBold,
   'check': iconCheck,
   'chevron': iconChevron,

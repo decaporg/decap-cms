@@ -18,6 +18,7 @@ import { sanitizeSlug } from "Lib/urlHelper";
 import TestRepoBackend from "./test-repo/implementation";
 import GitHubBackend from "./github/implementation";
 import GitLabBackend from "./gitlab/implementation";
+import BitBucketBackend from "./bitbucket/implementation";
 import GitGatewayBackend from "./git-gateway/implementation";
 import { registerBackend, getBackend } from 'Lib/registry';
 import Cursor, { CURSOR_COMPATIBILITY_SYMBOL } from '../valueObjects/Cursor';
@@ -28,6 +29,7 @@ import Cursor, { CURSOR_COMPATIBILITY_SYMBOL } from '../valueObjects/Cursor';
 registerBackend('git-gateway', GitGatewayBackend);
 registerBackend('github', GitHubBackend);
 registerBackend('gitlab', GitLabBackend);
+registerBackend('bitbucket', BitBucketBackend);
 registerBackend('test-repo', TestRepoBackend);
 
 
@@ -124,8 +126,8 @@ const sortByScore = (a, b) => {
 };
 
 class Backend {
-  constructor(implementation, backendName, authStore = null) {
-    this.implementation = implementation;
+  constructor(implementation, { authStore = null, backendName, config } = {}) {
+    this.implementation = implementation.init(config, { updateUserCredentials: this.updateUserCredentials });
     this.backendName = backendName;
     this.authStore = authStore;
     if (this.implementation === null) {
@@ -146,6 +148,15 @@ class Backend {
     }
     return Promise.resolve(null);
   }
+
+  updateUserCredentials = updatedCredentials => {
+    const storedUser = this.authStore && this.authStore.retrieve();
+    if (storedUser && storedUser.backendName === this.backendName) {
+      const newUser = { ...storedUser, ...updatedCredentials };
+      this.authStore.store(newUser);
+      return newUser;
+    }
+  };
 
   authComponent() {
     return this.implementation.authComponent();
@@ -476,7 +487,7 @@ export function resolveBackend(config) {
   if (!getBackend(name)) {
     throw new Error(`Backend not found: ${ name }`);
   } else {
-    return new Backend(getBackend(name).init(config), name, authStore);
+    return new Backend(getBackend(name), { backendName: name, authStore, config });
   }
 }
 
