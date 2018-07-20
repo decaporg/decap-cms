@@ -44,7 +44,7 @@ const getPropMergeFunctions = path => [
 ];
 
 const [withMethod, withDefaultMethod] = getPropSetFunctions(["method"]);
-const [withBody, withDefaultBody] = getPropSetFunctions(["method"]);
+const [withBody, withDefaultBody] = getPropSetFunctions(["body"]);
 const [withParams, withDefaultParams] = getPropMergeFunctions(["params"]);
 const [withHeaders, withDefaultHeaders] = getPropMergeFunctions(["headers"]);
 

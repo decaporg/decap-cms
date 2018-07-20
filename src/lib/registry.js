@@ -104,7 +104,7 @@ export function registerBackend(name, BackendClass) {
       console.error(`Backend [${ name }] already registered. Please choose a different name.`);
   } else {
     registry.backends[name] = {
-      init: config => new BackendClass(config),
+      init: (...args) => new BackendClass(...args),
     };
   }
 }
