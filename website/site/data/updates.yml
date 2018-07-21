@@ -1,4 +1,7 @@
 updates:
+  - date: '2018-07-21'
+    description: Fix multipart extension support for GitLab
+    version: 1.9.4
   - date: '2018-07-03'
     description: Fix numbers in TOML output.
     version: 1.9.3
