@@ -10,6 +10,13 @@
   * check for title/slug field on config load ([@tech4him1](https://github.com/tech4him1) in [#1203](https://github.com/netlify/netlify-cms/pull/1203))
 </details>
 
+## 1.9.4 (July 21, 2018) ([demo](https://1-9-4--cms-demo.netlify.com))
+Fix multipart extension support for GitLab
+
+## Bug Fixes
+* Support extensions with multiple parts for GitLab ([@Nic128](https://github.com/Nic128) in [#1478](https://github.com/netlify/netlify-cms/pull/1478))
+
+
 ## 1.9.3 (July 3, 2018) ([demo](https://1-9-3--cms-demo.netlify.com))
 Fix numbers in TOML output
 
