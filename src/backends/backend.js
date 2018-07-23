@@ -57,7 +57,7 @@ const slugFormatter = (collection, entryData, slugConfig) => {
     throw new Error("Collection must have a field name that is a valid entry identifier");
   }
 
-  const slug = template.replace(/\{\{([^\}]+)\}\}/g, (_, field) => {
+  const getFieldValue = (field) => {
     switch (field) {
       case "year":
         return date.getFullYear();
@@ -76,12 +76,17 @@ const slugFormatter = (collection, entryData, slugConfig) => {
       default:
         return entryData.get(field, "").trim();
     }
-  })
-  // Convert slug to lower-case
-  .toLocaleLowerCase()
+  };
 
-  // Replace periods with dashes.
-  .replace(/[.]/g, '-');
+  const slug = template.replace(/\{\{([^\}]+)\}\}/g, (_, field) => {
+    return getFieldValue(field)
+
+    // Convert slug to lower-case
+    .toLocaleLowerCase()
+
+    // Replace periods with dashes.
+    .replace(/[.]/g, '-');
+  });
 
   return sanitizeSlug(slug, slugConfig);
 };
