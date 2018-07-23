@@ -31,23 +31,19 @@ module.exports = {
     '@babel/plugin-proposal-class-properties',
     '@babel/plugin-proposal-object-rest-spread',
     '@babel/plugin-proposal-export-default-from',
-    ['inline-svg', {
-      svgo: {
-        plugins: [
-          {removeViewBox: false},
-        ],
-      },
-    }],
   ],
   env: {
     production: {
       plugins: [
-        ['emotion', {hoist: true}],
+        ['emotion', { hoist: true }],
       ],
     },
     development: {
       plugins: [
-        ['emotion', {sourceMap: true, autoLabel: true}],
+        ['emotion', {
+          sourceMap: true,
+          autoLabel: true,
+        }],
       ],
     },
   },

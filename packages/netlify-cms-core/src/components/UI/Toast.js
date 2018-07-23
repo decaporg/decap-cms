@@ -1,10 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { css, injectGlobal, cx } from 'react-emotion';
-//import 'redux-notifications/lib/styles.css'; // Import default redux-notifications styles into global scope.
+import reduxNotificationsStyles from 'redux-notifications/lib/styles.css';
 import { shadows, colors, lengths } from 'netlify-cms-ui-default';
 
 injectGlobal`
+  ${reduxNotificationsStyles};
+
   .notif__container {
     z-index: 10000;
   }
