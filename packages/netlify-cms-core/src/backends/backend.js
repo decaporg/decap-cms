@@ -2,6 +2,7 @@ import { attempt, flatten, isError } from 'lodash';
 import { fromJS, Map } from 'immutable';
 import fuzzy from 'fuzzy';
 import { GitHubBackend } from "netlify-cms-backend-github";
+import { GitLabBackend } from "netlify-cms-backend-gitlab";
 import { TestBackend } from "netlify-cms-backend-test";
 import { resolveFormat } from "Formats/formats";
 import { selectIntegration } from 'Reducers/integrations';
@@ -17,7 +18,6 @@ import {
 } from "Reducers/collections";
 import { createEntry } from "ValueObjects/Entry";
 import { sanitizeSlug } from "Lib/urlHelper";
-import GitLabBackend from "./gitlab/implementation";
 import BitBucketBackend from "./bitbucket/implementation";
 import GitGatewayBackend from "./git-gateway/implementation";
 import { registerBackend, getBackend } from 'Lib/registry';
@@ -127,8 +127,11 @@ const sortByScore = (a, b) => {
 };
 
 class Backend {
-  constructor(implementation, { authStore = null, backendName, config } = {}) {
-    this.implementation = implementation.init(config, { updateUserCredentials: this.updateUserCredentials });
+  constructor(implementation, { backendName, authStore = null, config } = {}) {
+    this.implementation = implementation.init(config, {
+      useWorkflow: config.getIn(["publish_mode"]) === EDITORIAL_WORKFLOW,
+      updateUserCredentials: this.updateUserCredentials,
+    });
     this.backendName = backendName;
     this.authStore = authStore;
     if (this.implementation === null) {
@@ -396,8 +399,6 @@ class Backend {
 
     const commitMessage = commitMessageFormatter(newEntry ? 'create' : 'update', config, { collection, slug: entryObj.slug, path: entryObj.path });
 
-    const useWorkflow = config.get("publish_mode") === EDITORIAL_WORKFLOW;
-
     const collectionName = collection.get("name");
 
     /**
@@ -410,7 +411,6 @@ class Backend {
       parsedData,
       commitMessage,
       collectionName,
-      useWorkflow,
       initialStatus: status.first(),
       ...updatedOptions
     };

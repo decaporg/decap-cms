@@ -43,10 +43,11 @@ const getFolderEntries = (folder, extension) => {
 };
 
 export default class TestRepo {
-  constructor(config) {
+  constructor(config, options = {}) {
     this.config = config;
     this.assets = [];
     this.initialStatus = config.initialStatus;
+    this.options = options;
   }
 
   authComponent() {
@@ -135,7 +136,7 @@ export default class TestRepo {
   }
 
   persistEntry({ path, raw, slug }, mediaFiles = [], options = {}) {
-    if (options.useWorkflow) {
+    if (this.options.useWorkflow) {
       const unpubStore = window.repoFilesUnpublished;
       const existingEntryIndex = unpubStore.findIndex(e => e.file.path === path);
       if (existingEntryIndex >= 0) {

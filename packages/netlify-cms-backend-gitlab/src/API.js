@@ -2,7 +2,6 @@ import { localForage, unsentRequest, then, APIError, Cursor } from "netlify-cms-
 import { Base64 } from "js-base64";
 import { fromJS, List, Map } from "immutable";
 import { cond, flow, isString, partial, partialRight, pick, omit, set, update, get } from "lodash";
-import AssetProxy from "ValueObjects/AssetProxy";
 
 export default class API {
   constructor(config) {

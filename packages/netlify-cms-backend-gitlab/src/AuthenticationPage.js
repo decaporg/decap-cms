@@ -1,9 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import styled from 'react-emotion';
 import { NetlifyAuthenticator, ImplicitAuthenticator } from 'netlify-cms-lib-auth';
-import { Icon } from 'netlify-cms-ui-default';
+import { AuthenticationPage, Icon, buttons, shadows } from 'netlify-cms-ui-default';
 
-export default class AuthenticationPage extends React.Component {
+const LoginButtonIcon = styled(Icon)`
+  margin-right: 18px;
+`
+
+export default class GitLabAuthenticationPage extends React.Component {
   static propTypes = {
     onLogin: PropTypes.func.isRequired,
     inProgress: PropTypes.bool,
@@ -49,21 +54,18 @@ export default class AuthenticationPage extends React.Component {
   };
 
   render() {
-    const { loginError } = this.state;
     const { inProgress } = this.props;
-
     return (
-      <section className="nc-githubAuthenticationPage-root">
-        <Icon className="nc-githubAuthenticationPage-logo" size="500px" type="netlify-cms"/>
-        {loginError && <p>{loginError}</p>}
-        <button
-          className="nc-githubAuthenticationPage-button"
-          disabled={inProgress}
-          onClick={this.handleLogin}
-        >
-          <Icon type="gitlab" /> {inProgress ? "Logging in..." : "Login with GitLab"}
-        </button>
-      </section>
+      <AuthenticationPage
+        onLogin={this.handleLogin}
+        loginDisabled={inProgress}
+        loginErrorMessage={this.state.loginError}
+        renderButtonContent={() => (
+          <React.Fragment>
+            <LoginButtonIcon type="gitlab"/> {inProgress ? "Logging in..." : "Login with GitLab"}
+          </React.Fragment>
+        )}
+      />
     );
   }
 }

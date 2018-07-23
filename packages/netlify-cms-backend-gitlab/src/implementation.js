@@ -3,12 +3,11 @@ import semaphore from "semaphore";
 import { fileExtension, Cursor, CURSOR_COMPATIBILITY_SYMBOL } from 'netlify-cms-lib-util';
 import AuthenticationPage from "./AuthenticationPage";
 import API from "./API";
-import { EDITORIAL_WORKFLOW } from "Constants/publishModes";
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
 
 export default class GitLab {
-  constructor(config, options={}) {
+  constructor(config, options = {}) {
     this.config = config;
     this.options = {
       proxied: false,
@@ -16,7 +15,7 @@ export default class GitLab {
       ...options,
     };
 
-    if (config.getIn(["publish_mode"]) === EDITORIAL_WORKFLOW) {
+    if (this.options.useWorkflow) {
       throw new Error("The GitLab backend does not support the Editorial Workflow.")
     }
 

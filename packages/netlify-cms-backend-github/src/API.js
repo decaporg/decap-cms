@@ -15,7 +15,7 @@ export default class API {
     this.repoURL = `/repos/${ this.repo }`;
     this.merge_method = config.squash_merges ? "squash" : "merge";
     this.initialStatus = config.initialStatus;
-
+    this.useWorkflow = config.useWorkflow;
   }
 
   user() {
