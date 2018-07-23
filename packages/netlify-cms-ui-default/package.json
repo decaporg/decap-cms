@@ -10,7 +10,7 @@
   "sideEffects": false,
   "scripts": {
     "watch": "webpack -w",
-    "build": "cross-env NODE_ENV=production webpack"
+    "build": "webpack"
   },
   "dependencies": {
     "react-aria-menubutton": "^5.1.0",
@@ -18,11 +18,6 @@
     "react-transition-group": "^2.2.1"
   },
   "devDependencies": {
-    "@babel/cli": "^7.0.0-beta.54",
-    "@babel/core": "^7.0.0-beta.54",
-    "cross-env": "^5.2.0",
-    "rollup": "^0.63.2",
-    "rollup-plugin-babel": "^4.0.0-beta.7",
     "webpack": "^4.16.1",
     "webpack-cli": "^3.1.0"
   },

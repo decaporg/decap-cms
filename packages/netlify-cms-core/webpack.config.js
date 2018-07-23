@@ -7,8 +7,14 @@ module.exports = {
   context: path.join(__dirname, 'src'),
   entry: './index.js',
   module: {
-    noParse: /\.css$/,
-    ...baseConfig.module,
+    rules: [
+      ...baseConfig.module.rules,
+      {
+        test: /\.css$/,
+        include: [/redux-notifications/],
+        use: ['to-string-loader', 'css-loader'],
+      },
+    ],
   },
   devServer: {
     contentBase: './example',
@@ -18,6 +24,7 @@ module.exports = {
     port: 8080,
   },
   plugins: [
+    ...baseConfig.plugins.filter(plugin => !plugin instanceof FriendlyErrorsWebpackPlugin),
     new FriendlyErrorsWebpackPlugin({
       compilationSuccessInfo: {
         messages: ['Netlify CMS is now running at http://localhost:8080'],

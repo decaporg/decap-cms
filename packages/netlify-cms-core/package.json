@@ -15,8 +15,8 @@
     "dist/"
   ],
   "scripts": {
-    "watch": "cross-env NETLIFY_CMS_VERSION=$npm_package_version webpack-dev-server --hot --open",
-    "build": "cross-env NETLIFY_CMS_VERSION=$npm_package_version webpack"
+    "watch": "webpack-dev-server --hot --open",
+    "build": "webpack"
   },
   "keywords": [
     "netlify",
@@ -42,7 +42,7 @@
     "jwt-decode": "^2.1.0",
     "lib": "^3.0.2",
     "localforage": "^1.4.2",
-    "lodash": "^4.13.1",
+    "lodash": "^4.17.10",
     "mdast-util-definitions": "^1.2.2",
     "mdast-util-to-string": "^1.0.4",
     "moment": "^2.11.2",
@@ -104,11 +104,11 @@
     "what-input": "^5.0.3"
   },
   "devDependencies": {
-    "@babel/core": "^7.0.0-beta.54",
-    "babel-loader": "^8.0.0-beta",
-    "cross-env": "^5.2.0",
+    "css-loader": "^1.0.0",
+    "friendly-errors-webpack-plugin": "^1.7.0",
+    "to-string-loader": "^1.1.5",
     "webpack": "^4.16.1",
     "webpack-cli": "^3.1.0",
-    "webpack-dev-server": "^3.1.4"
+    "webpack-dev-server": "^3.1.5"
   }
 }
