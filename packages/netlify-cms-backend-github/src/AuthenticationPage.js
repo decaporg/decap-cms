@@ -12,7 +12,7 @@ const StyledAuthenticationPage = styled.section`
   height: 100vh;
 `
 
-const AuthenticationPageLogo = styled(Icon)`
+const PageLogoIcon = styled(Icon)`
   color: #c4c6d2;
   margin-top: -300px;
 `
@@ -23,8 +23,8 @@ const LoginButton = styled.button`
   ${buttons.default};
   ${buttons.gray};
 
-  padding: 0 30px;
-  margin-top: -80px;
+  padding: 0 12px;
+  margin-top: -40px;
   display: flex;
   align-items: center;
   position: relative;
@@ -69,7 +69,7 @@ export default class AuthenticationPage extends React.Component {
 
     return (
       <StyledAuthenticationPage>
-        <AuthenticationPageLogo size="500px" type="netlify-cms"/>
+        <PageLogoIcon size="300px" type="netlify-cms"/>
         {loginError ? <p>{loginError}</p> : null}
         <LoginButton disabled={inProgress} onClick={this.handleLogin}>
           <Icon type="github" /> {inProgress ? "Logging in..." : "Login with GitHub"}
