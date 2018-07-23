@@ -16,6 +16,8 @@ notifications:
     email: false
 before_script:
   - yarn add codecov --dev
+script:
+  - travis_wait yarn test
 after_script:
   - codecov
 git:
