@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled, { cx } from 'react-emotion';
 import { get, isEmpty, debounce } from 'lodash';
-import { Map } from 'immutable';
+import { Map, List } from 'immutable';
 import { Value, Document, Block, Text } from 'slate';
 import { Editor as Slate } from 'slate-react';
 import { slateToMarkdown, markdownToSlate, htmlToSlate } from '../serializers';
@@ -141,15 +141,23 @@ export default class Editor extends React.Component {
   };
 
   handlePluginAdd = pluginId => {
+    const { getEditorComponents } = this.props;
     const { value } = this.state;
     const nodes = [Text.create('')];
+    const pluginDefinition = getEditorComponents().get(pluginId);
+
+    const defaultValues = {};
+    pluginDefinition.get('fields', List()).forEach(field => {
+      let defaultValue = field.get('default');
+      defaultValues[field.get('name')] = defaultValue;
+    });
     const block = {
       kind: 'block',
       type: 'shortcode',
       data: {
         shortcode: pluginId,
         shortcodeNew: true,
-        shortcodeData: Map(),
+        shortcodeData: new Map(defaultValues),
       },
       isVoid: true,
       nodes,
