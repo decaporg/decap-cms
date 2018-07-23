@@ -1,10 +1,59 @@
 import PropTypes from 'prop-types';
-import React from "react";
+import React from 'react';
+import styled from 'react-emotion';
 import { partial } from 'lodash';
-import { Icon } from 'netlify-cms-ui-default';
+import {
+  Icon,
+  AuthenticationPage,
+  buttons,
+  shadows,
+  colors,
+  colorsRaw,
+  lengths
+} from 'netlify-cms-ui-default';
+
+const LoginButton = styled.button`
+  ${buttons.button};
+  ${shadows.dropDeep};
+  ${buttons.default};
+  ${buttons.gray};
+
+  padding: 0 30px;
+  display: block;
+  margin-top: 20px;
+  margin-left: auto;
+`
+
+const AuthForm = styled.form`
+  width: 350px;
+  margin-top: -80px;
+`
+
+const AuthInput = styled.input`
+  background-color: ${colorsRaw.white};
+  border-radius: ${lengths.borderRadius};
+
+  font-size: 14px;
+  padding: 10px 10px;
+  margin-bottom: 15px;
+  margin-top: 6px;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+
+  &:focus {
+    outline: none;
+    box-shadow: inset 0 0 0 2px ${colors.active};
+  }
+`
+
+const ErrorMessage = styled.p`
+  color: ${colors.errorText};
+`
 
 let component = null;
 
+console.log(window.netlifyIdentity);
 if (window.netlifyIdentity) {
   window.netlifyIdentity.on('login', (user) => {
     component && component.handleIdentityLogin(user);
@@ -14,7 +63,7 @@ if (window.netlifyIdentity) {
   });
 }
 
-export default class AuthenticationPage extends React.Component {
+export default class GitGatewayAuthenticationPage extends React.Component {
   constructor(props) {
     super(props);
     component = this;
@@ -91,45 +140,40 @@ export default class AuthenticationPage extends React.Component {
     const { error, inProgress } = this.props;
 
     if (window.netlifyIdentity) {
-      return <section className="nc-gitGatewayAuthenticationPage-root">
-        <Icon className="nc-githubAuthenticationPage-logo" size="500px" type="netlify-cms"/>
-        <button className="nc-githubAuthenticationPage-button" onClick={this.handleIdentity}>
-          Login with Netlify Identity
-        </button>
-      </section>
+      return (
+        <AuthenticationPage
+          onLogin={this.handleIdentity}
+          renderButtonContent={() => 'Login with Netlify Identity'}
+        />
+      );
     }
 
+    console.log('returning');
+
     return (
-      <section className="nc-gitGatewayAuthenticationPage-root">
-        <Icon className="nc-githubAuthenticationPage-logo" size="500px" type="netlify-cms"/>
-        <form className="nc-gitGatewayAuthenticationPage-form" onSubmit={this.handleLogin}>
-          {!error && <p>
-            <span className="nc-gitGatewayAuthenticationPage-errorMsg">{error}</span>
-          </p>}
-          {!errors.server && <p>
-            <span className="nc-gitGatewayAuthenticationPage-errorMsg">{errors.server}</span>
-          </p>}
-          <div className="nc-gitGatewayAuthenticationPage-errorMsg">{ errors.email || null }</div>
-          <input
+      <AuthenticationPage renderPageContent={() => (
+        <AuthForm onSubmit={this.handleLogin}>
+          {!error ? null : <ErrorMessage>{error}</ErrorMessage>}
+          {!errors.server ? null : <ErrorMessage>{errors.server}</ErrorMessage>}
+          <ErrorMessage>{errors.email || null}</ErrorMessage>
+          <AuthInput
             type="text"
             name="email"
             placeholder="Email"
             value={this.state.email}
             onChange={partial(this.handleChange, 'email')}
           />
-          <div className="nc-gitGatewayAuthenticationPage-errorMsg">{ errors.password || null }</div>
-          <input
+          <ErrorMessage>{errors.password || null}</ErrorMessage>
+          <AuthInput
             type="password"
             name="password"
             placeholder="Password"
             value={this.state.password}
             onChange={partial(this.handleChange, 'password')}
           />
-          <button className="nc-gitGatewayAuthenticationPage-button" disabled={inProgress}>
-            {inProgress ? "Logging in..." : "Login"}
-          </button>
-        </form>
-      </section>
+          <LoginButton disabled={inProgress}>{inProgress ? 'Logging in...' : 'Login'}</LoginButton>
+        </AuthForm>
+      )}/>
     );
   }
 }

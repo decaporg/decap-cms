@@ -3512,7 +3512,7 @@ got@^6.7.1:
     unzip-response "^2.0.1"
     url-parse-lax "^1.0.0"
 
-gotrue-js@^0.9.15:
+gotrue-js@^0.9.15, gotrue-js@^0.9.22:
   version "0.9.22"
   resolved "https://registry.yarnpkg.com/gotrue-js/-/gotrue-js-0.9.22.tgz#2f013c59caba5a17b47ad856cd140842190f93c5"
   dependencies:
@@ -4823,7 +4823,7 @@ jsprim@^1.2.2:
     json-schema "0.2.3"
     verror "1.10.0"
 
-jwt-decode@^2.1.0:
+jwt-decode@^2.1.0, jwt-decode@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/jwt-decode/-/jwt-decode-2.2.0.tgz#7d86bd56679f58ce6a84704a657dd392bba81a79"
 

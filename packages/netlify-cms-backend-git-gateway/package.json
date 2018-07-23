@@ -1,0 +1,39 @@
+{
+  "name": "netlify-cms-backend-git-gateway",
+  "description": "Git Gateway backend for Netlify CMS",
+  "version": "2.0.0-alpha.0",
+  "license": "MIT",
+  "main": "dist/netlify-cms-backend-git-gateway.js",
+  "keywords": [
+    "netlify",
+    "netlify-cms",
+    "backend",
+    "git-gateway",
+    "gateway"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "watch": "webpack -w",
+    "build": "webpack"
+  },
+  "dependencies": {
+    "gotrue-js": "^0.9.22",
+    "jwt-decode": "^2.2.0"
+  },
+  "devDependencies": {
+    "webpack": "^4.16.1",
+    "webpack-cli": "^3.1.0"
+  },
+  "peerDependencies": {
+    "immutable": "^3.7.6",
+    "lodash": "^4.17.10",
+    "netlify-cms-backend-github": "2.0.0-alpha.0",
+    "netlify-cms-backend-gitlab": "2.0.0-alpha.0",
+    "netlify-cms-lib-auth": "2.0.0-alpha.0",
+    "netlify-cms-lib-util": "2.0.0-alpha.0",
+    "netlify-cms-ui-default": "2.0.0-alpha.0",
+    "prop-types": "^15.6.2",
+    "react": "^16.4.1",
+    "react-emotion": "^9.2.6"
+  }
+}
