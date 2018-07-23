@@ -37,7 +37,14 @@ export default class GitHub {
 
   authenticate(state) {
     this.token = state.token;
-    this.api = new API({ token: this.token, branch: this.branch, repo: this.repo, api_root: this.api_root, squash_merges: this.squash_merges });
+    this.api = new API({
+      token: this.token,
+      branch: this.branch,
+      repo: this.repo,
+      api_root: this.api_root,
+      squash_merges: this.squash_merges,
+      useWorkflow: this.options.useWorkflow,
+    });
     return this.api.user().then(user =>
       this.api.hasWriteAccess().then((isCollab) => {
         // Unauthorized user

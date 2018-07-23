@@ -2,39 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'react-emotion';
 import { NetlifyAuthenticator } from 'netlify-cms-lib-auth';
-import { Icon, buttons, shadows } from 'netlify-cms-ui-default';
+import { AuthenticationPage, Icon, buttons, shadows } from 'netlify-cms-ui-default';
 
-const StyledAuthenticationPage = styled.section`
-  display: flex;
-  flex-flow: column nowrap;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
+const LoginButtonIcon = styled(Icon)`
+  margin-right: 18px;
 `
 
-const PageLogoIcon = styled(Icon)`
-  color: #c4c6d2;
-  margin-top: -300px;
-`
-
-const LoginButton = styled.button`
-  ${buttons.button};
-  ${shadows.dropDeep};
-  ${buttons.default};
-  ${buttons.gray};
-
-  padding: 0 12px;
-  margin-top: -40px;
-  display: flex;
-  align-items: center;
-  position: relative;
-
-  ${Icon} {
-    margin-right: 18px;
-  }
-`
-
-export default class AuthenticationPage extends React.Component {
+export default class GitHubAuthenticationPage extends React.Component {
   static propTypes = {
     onLogin: PropTypes.func.isRequired,
     inProgress: PropTypes.bool,
@@ -64,17 +38,18 @@ export default class AuthenticationPage extends React.Component {
   };
 
   render() {
-    const { loginError } = this.state;
     const { inProgress } = this.props;
-
     return (
-      <StyledAuthenticationPage>
-        <PageLogoIcon size="300px" type="netlify-cms"/>
-        {loginError ? <p>{loginError}</p> : null}
-        <LoginButton disabled={inProgress} onClick={this.handleLogin}>
-          <Icon type="github" /> {inProgress ? "Logging in..." : "Login with GitHub"}
-        </LoginButton>
-      </StyledAuthenticationPage>
+      <AuthenticationPage
+        onLogin={this.handleLogin}
+        loginDisabled={inProgress}
+        loginErrorMessage={this.state.loginError}
+        renderButtonContent={() => (
+          <React.Fragment>
+            <LoginButtonIcon type="github"/> {inProgress ? "Logging in..." : "Login with GitHub"}
+          </React.Fragment>
+        )}
+      />
     );
   }
 }

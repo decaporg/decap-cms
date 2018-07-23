@@ -1,6 +1,6 @@
 import { flow } from "lodash";
+import { API as GitlabAPI } from "netlify-cms-backend-gitlab";
 import { unsentRequest, then } from "netlify-cms-lib-util";
-import GitlabAPI from "Backends/gitlab/API";
 
 export default class API extends GitlabAPI {
   constructor(config) {

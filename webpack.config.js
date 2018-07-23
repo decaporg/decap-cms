@@ -29,7 +29,7 @@ module.exports = {
   target: 'web',
   externals: (context, request, cb) => {
     const peerDeps = Object.keys(pkg.peerDependencies || {});
-    const isPeerDep = dep => new RegExp(`^${dep}/?`).test(request);
+    const isPeerDep = dep => new RegExp(`^${dep}($|/)`).test(request);
     return peerDeps.some(isPeerDep) ? cb(null, request) : cb();
   },
   stats: {
