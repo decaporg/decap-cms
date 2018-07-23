@@ -1,7 +1,38 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { Icon } from 'netlify-cms-ui-default';
+import styled from 'react-emotion';
+import { Icon, buttons, shadows } from 'netlify-cms-ui-default';
+
+const StyledAuthenticationPage = styled.section`
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+`
+
+const PageLogoIcon = styled(Icon)`
+  color: #c4c6d2;
+  margin-top: -300px;
+`
+
+const LoginButton = styled.button`
+  ${buttons.button};
+  ${shadows.dropDeep};
+  ${buttons.default};
+  ${buttons.gray};
+
+  padding: 0 30px;
+  margin-top: -40px;
+  display: flex;
+  align-items: center;
+  position: relative;
+
+  ${Icon} {
+    margin-right: 18px;
+  }
+`
 
 export default class AuthenticationPage extends React.Component {
   static propTypes = {
@@ -29,16 +60,12 @@ export default class AuthenticationPage extends React.Component {
     const { inProgress } = this.props;
 
     return (
-      <section className="nc-githubAuthenticationPage-root">
-        <Icon className="nc-githubAuthenticationPage-logo" size="500px" type="netlify-cms"/>
-        <button
-          className="nc-githubAuthenticationPage-button"
-          disabled={inProgress}
-          onClick={this.handleLogin}
-        >
+      <StyledAuthenticationPage>
+        <PageLogoIcon size="300px" type="netlify-cms"/>
+        <LoginButton disabled={inProgress} onClick={this.handleLogin}>
           {inProgress ? "Logging in..." : "Login"}
-        </button>
-      </section>
+        </LoginButton>
+      </StyledAuthenticationPage>
     );
   }
 }

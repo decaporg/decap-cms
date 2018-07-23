@@ -1,6 +1,5 @@
 backend:
-  name: github
-  repo: erquhart/blank
+  name: test-repo
 
 display_url: https://example.com
 media_folder: "assets/uploads"
