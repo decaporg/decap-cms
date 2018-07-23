@@ -30,14 +30,26 @@ const LoginButton = styled.button`
   position: relative;
 `
 
-const AuthenticationPage = ({ onLogin, loginDisabled, loginErrorMessage, renderButtonContent }) => (
-  <StyledAuthenticationPage>
-    <PageLogoIcon size="300px" type="netlify-cms"/>
-    {loginErrorMessage ? <p>{loginErrorMessage}</p> : null}
-    <LoginButton disabled={loginDisabled} onClick={onLogin}>
-      {renderButtonContent()}
-    </LoginButton>
-  </StyledAuthenticationPage>
-);
+const AuthenticationPage = ({
+  onLogin,
+  loginDisabled,
+  loginErrorMessage,
+  renderButtonContent,
+  renderPageContent,
+}) => {
+  console.log(renderPageContent);
+  return (
+    <StyledAuthenticationPage>
+      <PageLogoIcon size="300px" type="netlify-cms"/>
+      {loginErrorMessage ? <p>{loginErrorMessage}</p> : null}
+      {!renderPageContent ? null : renderPageContent()}
+      {!renderButtonContent ? null :
+        <LoginButton disabled={loginDisabled} onClick={onLogin}>
+          {renderButtonContent()}
+        </LoginButton>
+      }
+    </StyledAuthenticationPage>
+  );
+};
 
 export default AuthenticationPage;

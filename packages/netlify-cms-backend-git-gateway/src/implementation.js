@@ -1,6 +1,6 @@
 import GoTrue from "gotrue-js";
 import jwtDecode from 'jwt-decode';
-import {List} from 'immutable';
+import { List } from 'immutable';
 import { get, pick, intersection } from "lodash";
 import { unsentRequest } from "netlify-cms-lib-util";
 import { GitHubBackend } from "netlify-cms-backend-github";
