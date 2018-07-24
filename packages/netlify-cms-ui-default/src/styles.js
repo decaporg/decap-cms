@@ -214,10 +214,15 @@ const components = {
     border-top: 6px solid currentColor;
     border-radius: 2px;
   `,
+  textBadge: css`
+    ${textBadge};
+    color: ${colors.infoText};
+    background-color: ${colors.infoBackground};
+  `,
   textBadgeSuccess: css`
     ${textBadge};
-    color: ${colorsRaw.green};
-    background-color: ${colorsRaw.greenLight};
+    color: ${colors.successText};
+    background-color: ${colors.successBackground};
   `,
   textBadgeDanger: css`
     ${textBadge};
