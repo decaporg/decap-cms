@@ -1,29 +1,20 @@
 {
   "name": "netlify-cms-core",
-  "description": "Netlify CMS lets content editors work on structured content stored in git",
+  "description": "Netlify CMS core application, see netlify-cms package for the main distribution.",
   "version": "2.0.0-alpha.0",
   "main": "dist/netlify-cms-core.js",
-  "lint-staged": {
-    "*.js": [
-      "eslint --fix",
-      "jest --findRelatedTests",
-      "git add"
-    ]
-  },
   "files": [
     "src/",
     "dist/"
   ],
   "scripts": {
-    "watch": "webpack-dev-server --hot --open",
+    "watch": "webpack -w",
     "build": "webpack"
   },
   "keywords": [
     "netlify",
     "cms",
-    "content editing",
-    "static site generators",
-    "jamstack"
+    "core"
   ],
   "license": "MIT",
   "dependencies": {
@@ -105,10 +96,8 @@
   },
   "devDependencies": {
     "css-loader": "^1.0.0",
-    "friendly-errors-webpack-plugin": "^1.7.0",
     "to-string-loader": "^1.1.5",
     "webpack": "^4.16.1",
-    "webpack-cli": "^3.1.0",
-    "webpack-dev-server": "^3.1.5"
+    "webpack-cli": "^3.1.0"
   }
 }
