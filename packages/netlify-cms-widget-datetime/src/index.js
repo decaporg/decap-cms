@@ -1,2 +1,2 @@
 export DateTimeControl from './DateTimeControl';
-export DateTimePreview from 'netlify-cms-widget-date';
+export { DatePreview as DateTimePreview } from 'netlify-cms-widget-date';
