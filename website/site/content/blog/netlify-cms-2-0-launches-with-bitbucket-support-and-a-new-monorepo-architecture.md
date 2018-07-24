@@ -29,10 +29,6 @@ The other big change with 2.0 is the migration from a single codebase to a colle
 * Your custom extensions can now do anything the “official” extensions can do (because official extensions are no longer taking advantage of privileged internal code).
 * The monorepo approach provides a foundation that will encourage a more modular CMS, with shared parts that make extension authoring easier.
 
-Shawn Erquhart, project lead for Netlify CMS, spoke about this move to a monorepo architecture, saying,
-
-> “We see this as a big step for making the project even more productive for developers and contributors. This makes the process of contributing and extending the features of Netlify CMS more straightforward and will help the already active community to unleash more and more of their potential.”
-
 ## What’s next
 
 Upcoming feature releases will bring new image handling features and a number of improved APIs, adding even more possibilities to future CMS extensions.
