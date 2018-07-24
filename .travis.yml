@@ -5,9 +5,12 @@ cache:
     - $HOME/.yarn-cache
     - node_modules
 node_js:
-  - "6"
   - "8"
   - "10"
+matrix:
+  include:
+  - node_js: "6"
+    env: WAIT=30
 before_install:
   - npm i -g yarn --cache-min 999999999
 install:
@@ -16,6 +19,8 @@ notifications:
     email: false
 before_script:
   - yarn add codecov --dev
+script:
+  - if [ ! "$WAIT" ]; then yarn test; else travis_wait "$WAIT" yarn test; fi
 after_script:
   - codecov
 git:
