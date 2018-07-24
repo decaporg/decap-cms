@@ -1,5 +1,5 @@
 import { actions as notifActions } from 'redux-notifications';
-import { currentBackend } from 'Backends/backend';
+import { currentBackend } from 'src/backend';
 import { createAssetProxy } from 'ValueObjects/AssetProxy';
 import { getAsset, selectIntegration } from 'Reducers';
 import { getIntegrationProvider } from 'Integrations';

@@ -1,5 +1,5 @@
 import { actions as notifActions } from 'redux-notifications';
-import { currentBackend } from 'Backends/backend';
+import { currentBackend } from 'src/backend';
 
 const { notifSend } = notifActions;
 

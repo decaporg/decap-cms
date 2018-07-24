@@ -2,7 +2,7 @@ import uuid from 'uuid/v4';
 import { actions as notifActions } from 'redux-notifications';
 import { BEGIN, COMMIT, REVERT } from 'redux-optimist';
 import { serializeValues } from 'Lib/serializeEntryValues';
-import { currentBackend } from 'Backends/backend';
+import { currentBackend } from 'src/backend';
 import { getAsset } from 'Reducers';
 import { selectFields } from 'Reducers/collections';
 import { status, EDITORIAL_WORKFLOW } from 'Constants/publishModes';
