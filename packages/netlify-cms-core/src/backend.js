@@ -1,10 +1,6 @@
 import { attempt, flatten, isError } from 'lodash';
 import { fromJS, Map } from 'immutable';
 import fuzzy from 'fuzzy';
-import { GitHubBackend } from "netlify-cms-backend-github";
-import { GitLabBackend } from "netlify-cms-backend-gitlab";
-import { GitGatewayBackend } from "netlify-cms-backend-git-gateway";
-import { TestBackend } from "netlify-cms-backend-test";
 import { resolveFormat } from "Formats/formats";
 import { selectIntegration } from 'Reducers/integrations';
 import {
@@ -23,16 +19,6 @@ import BitBucketBackend from "./bitbucket/implementation";
 import { registerBackend, getBackend } from 'Lib/registry';
 import { Cursor, CURSOR_COMPATIBILITY_SYMBOL } from 'netlify-cms-lib-util';
 import { EDITORIAL_WORKFLOW, status } from 'Constants/publishModes';
-
-/**
- * Register internal backends
- */
-registerBackend('git-gateway', GitGatewayBackend);
-registerBackend('github', GitHubBackend);
-registerBackend('gitlab', GitLabBackend);
-registerBackend('bitbucket', BitBucketBackend);
-registerBackend('test-repo', TestBackend);
-
 
 class LocalStorageAuthStore {
   storageKey = "netlify-cms-user";

@@ -1,8 +1,6 @@
 import { registerWidget } from 'Lib/registry';
 import UnknownControl from './Unknown/UnknownControl';
 import UnknownPreview from './Unknown/UnknownPreview';
-import StringControl from './String/StringControl';
-import StringPreview from './String/StringPreview';
 import NumberControl from './Number/NumberControl';
 import NumberPreview from './Number/NumberPreview';
 import TextControl from './Text/TextControl';
@@ -27,8 +25,6 @@ import RelationControl from './Relation/RelationControl';
 import RelationPreview from './Relation/RelationPreview';
 import BooleanControl from './Boolean/BooleanControl';
 
-
-registerWidget('string', StringControl, StringPreview);
 registerWidget('text', TextControl, TextPreview);
 registerWidget('number', NumberControl, NumberPreview);
 registerWidget('list', ListControl, ListPreview);

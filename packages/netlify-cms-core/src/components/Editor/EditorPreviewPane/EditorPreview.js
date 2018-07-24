@@ -1,14 +1,15 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import styled from 'react-emotion';
 
 function isVisible(field) {
   return field.get('widget') !== 'hidden';
 }
 
-const style = {
-  fontFamily: 'Roboto, "Helvetica Neue", HelveticaNeue, Helvetica, Arial, sans-serif',
-};
+const PreviewContainer = styled.div`
+  fontFamily: Roboto, "Helvetica Neue", HelveticaNeue, Helvetica, Arial, sans-serif;
+`
 
 /**
  * Use a stateful component so that child components can effectively utilize
@@ -21,9 +22,11 @@ export default class Preview extends React.Component {
       return null;
     }
     return (
-      <div style={style}>
-        {fields.filter(isVisible).map(field => widgetFor(field.get('name')))}
-      </div>
+      <PreviewContainer>
+        {fields.filter(isVisible).map(field => (
+          <div>{widgetFor(field.get('name'))}</div>
+        ))}
+      </PreviewContainer>
     );
   }
 }

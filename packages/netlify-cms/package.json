@@ -4,7 +4,6 @@
   "version": "2.0.0-alpha.0",
   "main": "dist/netlify-cms.js",
   "scripts": {
-    "watch": "webpack-dev-server --open",
     "build": "webpack"
   },
   "keywords": [
@@ -16,8 +15,6 @@
   ],
   "license": "MIT",
   "dependencies": {
-  },
-  "peerDependencies": {
     "netlify-cms-core": "2.0.0-alpha.0",
     "netlify-cms-backend-github": "2.0.0-alpha.0",
     "netlify-cms-backend-gitlab": "2.0.0-alpha.0",
@@ -26,9 +23,7 @@
     "netlify-cms-editor-component-image": "2.0.0-alpha.0"
   },
   "devDependencies": {
-    "friendly-errors-webpack-plugin": "^1.7.0",
     "webpack": "^4.16.1",
-    "webpack-cli": "^3.1.0",
-    "webpack-dev-server": "^3.1.5"
+    "webpack-cli": "^3.1.0"
   }
 }

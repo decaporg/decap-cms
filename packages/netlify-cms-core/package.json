@@ -8,7 +8,7 @@
     "dist/"
   ],
   "scripts": {
-    "watch": "webpack -w",
+    "watch": "webpack-dev-server --hot --open",
     "build": "webpack"
   },
   "keywords": [
@@ -96,8 +96,10 @@
   },
   "devDependencies": {
     "css-loader": "^1.0.0",
+    "friendly-errors-webpack-plugin": "^1.7.0",
     "to-string-loader": "^1.1.5",
     "webpack": "^4.16.1",
-    "webpack-cli": "^3.1.0"
+    "webpack-cli": "^3.1.0",
+    "webpack-dev-server": "^3.1.5"
   }
 }

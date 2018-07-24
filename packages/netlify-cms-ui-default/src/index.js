@@ -4,6 +4,7 @@ export ListItemTopBar from './ListItemTopBar';
 export Loader from './Loader';
 export Toggle from './Toggle';
 export AuthenticationPage from './AuthenticationPage';
+export WidgetPreviewContainer from './WidgetPreviewContainer';
 export {
   fonts,
   colorsRaw,
