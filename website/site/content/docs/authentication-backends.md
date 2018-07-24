@@ -13,12 +13,12 @@ Netlify CMS stores content in your GitHub, GitLab, or Bitbucket repository. In o
 
 ## Git Gateway with Netlify Identity
 
-[Git Gateway](https://github.com/netlify/git-gateway) is a Netlify open source project that allows you to add editors to your site CMS without giving them direct write access to your Git repository. [Netlify Identity](https://www.netlify.com/docs/identity/) service can handle the authentication and provides a simple interface for user management. The Netlify CMS [featured templates](https://www.netlifycms.org/docs/start-with-a-template) are working examples of this backend.
+[Git Gateway](https://github.com/netlify/git-gateway) is a Netlify open source project that allows you to add editors to your site CMS without giving them direct write access to your GitHub or GitLab repository. (For Bitbucket repositories, use the [Bitbucket backend](#bitbucket-backend) instead.) [Netlify Identity](https://www.netlify.com/docs/identity/) service can handle the authentication and provides a simple interface for user management. The Netlify CMS [featured templates](https://www.netlifycms.org/docs/start-with-a-template) are working examples of this backend.
 
-To use it in your own project, follow these steps:
+To use it in your own project stored on GitHub or GitLab, follow these steps:
 
 1. Head over to the [Netlify Identity docs](https://www.netlify.com/docs/identity) and follow the
-   steps to get started. If your respository is on Bitbucket, you will also need to [add Bitbucket as an authentication provider](https://www.netlify.com/docs/authentication-providers/#using-an-authentication-provider).
+   steps to get started.
 2. Add the following lines to your Netlify CMS `config.yml` file:
 
     ```yaml

@@ -80,7 +80,9 @@ Configuration will be different for every site, so we'll break it down into part
 
 ### Backend
 
-We're using [Netlify](https://www.netlify.com) for our hosting and authentication in this tutorial, so backend configuration is fairly straightforward. You can start your Netlify CMS `config.yml` file with these lines:
+We're using [Netlify](https://www.netlify.com) for our hosting and authentication in this tutorial, so backend configuration is fairly straightforward. 
+
+For GitHub and GitLab repositories, you can start your Netlify CMS `config.yml` file with these lines:
 
 ```yaml
 backend:
@@ -88,7 +90,9 @@ backend:
   branch: master # Branch to update (optional; defaults to master)
 ```
 
-These lines specify your backend protocol and your publication branch. Git Gateway is an open source API that acts as a proxy between authenticated users of your site and your site repo. (We'll get to the details of that in the [Authentication section](#authentication) below.) If you leave out the `branch` declaration, it will default to `master`.
+_(For Bitbucket repositories, use the [Bitbucket backend](https://www.netlifycms.org/docs/authentication-backends/#bitbucket-backend) instructions instead.)_
+
+The configuration above specifies your backend protocol and your publication branch. Git Gateway is an open source API that acts as a proxy between authenticated users of your site and your site repo. (We'll get to the details of that in the [Authentication section](#authentication) below.) If you leave out the `branch` declaration, it will default to `master`.
 
 ### Editorial Workflow
 
