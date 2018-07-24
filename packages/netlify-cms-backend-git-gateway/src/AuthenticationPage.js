@@ -53,7 +53,6 @@ const ErrorMessage = styled.p`
 
 let component = null;
 
-console.log(window.netlifyIdentity);
 if (window.netlifyIdentity) {
   window.netlifyIdentity.on('login', (user) => {
     component && component.handleIdentityLogin(user);

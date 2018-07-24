@@ -59,7 +59,7 @@ const getConfig = () => ({
   module: {
     rules: Object.values(rules()).map(rule => rule()),
   },
-  plugins: Object.values(plugins()).map(plugin => plugin),
+  plugins: Object.values(plugins()).map(plugin => plugin()),
   devtool: 'source-map',
   target: 'web',
 
