@@ -1,9 +1,0 @@
-/**
- * Components
- */
-@import "./components/EditorWidgets/EditorWidgets.css";
-
-/**
- * Backend auth pages
- */
-@import "./backends/git-gateway/AuthenticationPage.css";

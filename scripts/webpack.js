@@ -24,24 +24,9 @@ const rules = () => ({
 });
 
 const plugins = () => {
-  const defaultPlugins = {
+  return {
     friendlyErrors: () => new FriendlyErrorsWebpackPlugin()
   };
-
-  if (isProduction) {
-    return {
-      ...defaultPlugins,
-      sourcemap: (config = {}) => new webpack.SourceMapDevToolPlugin({
-        filename: '[file].map',
-        moduleFilenameTemplate: info => path.posix.normalize(`../src/${info.resourcePath}`),
-        noSources: true,
-      }),
-    };
-  }
-
-  return {
-    ...defaultPlugins,
-  }
 };
 
 const stats = () => {
@@ -75,7 +60,7 @@ const getConfig = () => ({
     rules: Object.values(rules()).map(rule => rule()),
   },
   plugins: Object.values(plugins()).map(plugin => plugin),
-  devtool: !isProduction && 'source-map',
+  devtool: 'source-map',
   target: 'web',
 
   /**

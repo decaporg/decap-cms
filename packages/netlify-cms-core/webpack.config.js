@@ -1,6 +1,5 @@
 const path = require('path');
-const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
-const { getConfig, rules, plugins } = require('../../scripts/webpack.js');
+const { getConfig, rules } = require('../../scripts/webpack.js');
 
 module.exports = {
   ...getConfig(),
@@ -27,22 +26,5 @@ module.exports = {
         use: ['to-string-loader', 'css-loader'],
       },
     ],
-  },
-  plugins: [
-    ...Object.entries(plugins)
-      .filter(([ key ]) => key !== 'friendlyErrors')
-      .map(([ _, plugin ]) => plugin()),
-    new FriendlyErrorsWebpackPlugin({
-      compilationSuccessInfo: {
-        messages: ['Netlify CMS is now running at http://localhost:8080'],
-      },
-    }),
-  ],
-  devServer: {
-    contentBase: './example',
-    watchContentBase: true,
-    quiet: true,
-    host: 'localhost',
-    port: 8080,
-  },
+  }
 };

@@ -10,7 +10,6 @@ import { setStore } from 'ValueObjects/AssetProxy';
 import { ErrorBoundary } from 'UI'
 import App from 'App/App';
 import 'EditorWidgets';
-import 'MarkdownPlugins';
 import 'what-input';
 
 const ROOT_ID = 'nc-root';
