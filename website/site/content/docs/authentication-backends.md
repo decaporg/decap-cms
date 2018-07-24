@@ -130,8 +130,6 @@ To enable it:
       repo: owner-name/repo-name # Path to your Bitbucket repository
     ```
 
-The instructions above use Netlify to provide server-side authentication because Bitbucket's implicit grant is not supported. If you want to create your own authentication server, the [community-created external OAuth clients](#external-oauth-clients) for the `github` backend can serve as models.
-
 ## External OAuth Clients
 
 If you would like to facilitate your own OAuth authentication rather than use Netlify's service or implicit grant, you
@@ -155,7 +153,7 @@ Netlify CMS backends allow some additional fields for certain use cases. A full 
 | `repo`          | none                                                           | **Required** for `github`, `gitlab`, and `bitbucket` backends; ignored by `git-gateway`. Follows the pattern `[org-or-username]/[repo-name]`.                                    |
 | `accept_roles`  | none                                                           | `git-gateway` only. Limits CMS access to your defined array of user roles. Omitting this field gives access to all registered users.                 |
 | `branch`        | `master`                                                       | The branch where published content is stored. All CMS commits and PRs are made to this branch.                                                       |
-| `api_root`      | `https://api.github.com` (GitHub), `https://gitlab.com/api/v4` (GitLab), or `https://api.bitbucket.org/2.0` (Bitbucket)  | The API endpoint. Only necessary in certain cases, like with GitHub Enterprise or self-hosted GitLab or Bitbucket.                                                                      |
+| `api_root`      | `https://api.github.com` (GitHub), `https://gitlab.com/api/v4` (GitLab), or `https://api.bitbucket.org/2.0` (Bitbucket)  | The API endpoint. Only necessary in certain cases, like with GitHub Enterprise or self-hosted GitLab.                                                                      |
 | `site_domain`   | `location.hostname` (or `cms.netlify.com` when on `localhost`) | Sets the `site_id` query param sent to the API endpoint. Non-Netlify auth setups will often need to set this for local development to work properly. |
-| `base_url`      | `https://api.netlify.com` (GitHub, Bitbucket) or `https://gitlab.com` (GitLab)                                     | OAuth client URL. **Required** when using an external OAuth server or self-hosted Git provider.                               |
+| `base_url`      | `https://api.netlify.com` (GitHub, Bitbucket) or `https://gitlab.com` (GitLab)                                     | OAuth client URL. **Required** when using an external OAuth server or self-hosted GitLab.                               |
 | `auth_endpoint` | `auth` (GitHub, Bitbucket) or `oauth/authorize` (GitLab)                  | Path to append to `base_url` for authentication requests. Optional.                                                                                  |
