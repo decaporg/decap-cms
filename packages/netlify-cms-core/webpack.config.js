@@ -1,14 +1,26 @@
 const path = require('path');
 const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
-const baseConfig = require('../../webpack.config.js');
+const { getConfig, rules, plugins } = require('../../scripts/webpack.js');
 
 module.exports = {
-  ...baseConfig,
+  ...getConfig(),
   context: path.join(__dirname, 'src'),
   entry: './index.js',
   module: {
     rules: [
-      ...baseConfig.module.rules,
+      ...Object.entries(rules)
+        .filter(([ key ]) => key !== 'js')
+        .map(([ _, rule ]) => rule()),
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            configFile: path.join(__dirname, 'babel.config.js'),
+          },
+        },
+      },
       {
         test: /\.css$/,
         include: [/redux-notifications/],
@@ -16,6 +28,16 @@ module.exports = {
       },
     ],
   },
+  plugins: [
+    ...Object.entries(plugins)
+      .filter(([ key ]) => key !== 'friendlyErrors')
+      .map(([ _, plugin ]) => plugin()),
+    new FriendlyErrorsWebpackPlugin({
+      compilationSuccessInfo: {
+        messages: ['Netlify CMS is now running at http://localhost:8080'],
+      },
+    }),
+  ],
   devServer: {
     contentBase: './example',
     watchContentBase: true,
@@ -23,12 +45,4 @@ module.exports = {
     host: 'localhost',
     port: 8080,
   },
-  plugins: [
-    ...baseConfig.plugins.filter(plugin => !plugin instanceof FriendlyErrorsWebpackPlugin),
-    new FriendlyErrorsWebpackPlugin({
-      compilationSuccessInfo: {
-        messages: ['Netlify CMS is now running at http://localhost:8080'],
-      },
-    }),
-  ],
 };

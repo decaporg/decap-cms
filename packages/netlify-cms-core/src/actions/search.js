@@ -1,5 +1,5 @@
 import fuzzy from 'fuzzy';
-import { currentBackend } from 'Backends/backend';
+import { currentBackend } from 'src/backend';
 import { getIntegrationProvider } from 'Integrations';
 import { selectIntegration, selectEntries } from 'Reducers';
 import { selectInferedField } from 'Reducers/collections';
