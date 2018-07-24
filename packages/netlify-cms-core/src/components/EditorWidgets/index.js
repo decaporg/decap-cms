@@ -9,18 +9,12 @@ import SelectControl from './Select/SelectControl';
 import SelectPreview from './Select/SelectPreview';
 import MarkdownControl from './Markdown/MarkdownControl';
 import MarkdownPreview from './Markdown/MarkdownPreview';
-import ListControl from './List/ListControl';
-import ListPreview from './List/ListPreview';
-import ObjectControl from './Object/ObjectControl';
-import ObjectPreview from './Object/ObjectPreview';
 import RelationControl from './Relation/RelationControl';
 import RelationPreview from './Relation/RelationPreview';
 
 registerWidget('text', TextControl, TextPreview);
 registerWidget('number', NumberControl, NumberPreview);
-registerWidget('list', ListControl, ListPreview);
 registerWidget('markdown', MarkdownControl, MarkdownPreview);
 registerWidget('select', SelectControl, SelectPreview);
-registerWidget('object', ObjectControl, ObjectPreview);
 registerWidget('relation', RelationControl, RelationPreview);
 registerWidget('unknown', UnknownControl, UnknownPreview);

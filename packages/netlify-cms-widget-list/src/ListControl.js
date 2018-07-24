@@ -1,47 +1,55 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import styled, { cx, css } from 'react-emotion';
 import { List, Map } from 'immutable';
 import { partial } from 'lodash';
-import c from 'classnames';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
-import { Icon, ListItemTopBar } from 'netlify-cms-ui-default';
-import ObjectControl from 'EditorWidgets/Object/ObjectControl';
-
-function ListItem(props) {
-  return <div {...props} className={`list-item ${ props.className || '' }`}>{props.children}</div>;
-}
-ListItem.propTypes = {
-  className: PropTypes.string,
-  children: PropTypes.node,
-};
-ListItem.displayName = 'list-item';
+import { ObjectControl } from 'netlify-cms-widget-object';
+import {
+  Icon,
+  ListItemTopBar,
+  ObjectWidgetTopBar,
+  colors,
+  lengths,
+  components,
+} from 'netlify-cms-ui-default';
 
 function valueToString(value) {
   return value ? value.join(',').replace(/,([^\s]|$)/g, ', $1') : '';
 }
 
+const ListItem = styled.div();
+
 const SortableListItem = SortableElement(ListItem);
 
-const TopBar = ({ allowAdd, onAdd, listLabel, onCollapseAllToggle, allItemsCollapsed, itemsCount }) => (
-  <div className="nc-listControl-topBar">
-    <div className="nc-listControl-listCollapseToggle">
-      <button className="nc-listControl-listCollapseToggleButton" onClick={onCollapseAllToggle}>
-        <Icon type="chevron" direction={allItemsCollapsed ? 'right' : 'down'} size="small" />
-      </button>
-      {itemsCount} {listLabel}
-    </div>
+const StyledListItemTopBar = styled(ListItemTopBar)`
+  background-color: ${colors.textFieldBorder};
+`
 
-    {
-      allowAdd ?
-        <button className="nc-listControl-addButton" onClick={onAdd}>
-          Add {listLabel} <Icon type="add" size="xsmall" />
-        </button>
-      :
-        null
+const NestedObjectLabel = styled.div`
+  display: ${props => props.collapsed ? 'block' : 'none'};
+  border-top: 0;
+  background-color: ${colors.textFieldBorder};
+  padding: 13px;
+  border-radius: 0 0 ${lengths.borderRadius} ${lengths.borderRadius};
+`
+
+const styles = {
+  collapsedObjectControl: css`
+    display: none;
+  `,
+  listControlItem: css`
+    margin-top: 18px;
+
+    &:first-of-type {
+      margin-top: 26px;
     }
-  </div>
-);
+  `,
+  listControlItemCollapsed: css`
+    padding-bottom: 0;
+  `,
+};
 
 const SortableList = SortableContainer(({ items, renderItem }) => {
   return <div>{items.map(renderItem)}</div>;
@@ -52,7 +60,7 @@ const valueTypes = {
   MULTIPLE: 'MULTIPLE',
 };
 
-export default class ListControl extends Component {
+export default class ListControl extends React.Component {
   static propTypes = {
     onChange: PropTypes.func.isRequired,
     onChangeObject: PropTypes.func.isRequired,
@@ -229,33 +237,44 @@ export default class ListControl extends Component {
       onAddAsset,
       onRemoveInsertedMedia,
       classNameWrapper,
+      editorControl,
+      resolveWidget,
     } = this.props;
     const { itemsCollapsed } = this.state;
     const collapsed = itemsCollapsed.get(index);
-    const classNames = ['nc-listControl-item', collapsed ? 'nc-listControl-collapsed' : ''];
 
-    return (<SortableListItem className={classNames.join(' ')} index={index} key={`item-${ index }`}>
-      <ListItemTopBar
-        className="nc-listControl-itemTopBar"
-        collapsed={collapsed}
-        onCollapseToggle={partial(this.handleItemCollapseToggle, index)}
-        onRemove={partial(this.handleRemove, index)}
-        dragHandleHOC={SortableHandle}
-      />
-      <div className="nc-listControl-objectLabel">{this.objectLabel(item)}</div>
-      <ObjectControl
-        value={item}
-        field={field}
-        onChangeObject={this.handleChangeFor(index)}
-        getAsset={getAsset}
-        onOpenMediaLibrary={onOpenMediaLibrary}
-        mediaPaths={mediaPaths}
-        onAddAsset={onAddAsset}
-        onRemoveInsertedMedia={onRemoveInsertedMedia}
-        classNameWrapper={`${ classNameWrapper } nc-listControl-objectControl`}
-        forList
-      />
-    </SortableListItem>);
+    return (
+      <SortableListItem
+        className={cx(styles.listControlItem, { [styles.listControlItemCollapsed]: collapsed })}
+        index={index}
+        key={`item-${ index }`}
+      >
+        <StyledListItemTopBar
+          collapsed={collapsed}
+          onCollapseToggle={partial(this.handleItemCollapseToggle, index)}
+          onRemove={partial(this.handleRemove, index)}
+          dragHandleHOC={SortableHandle}
+        />
+        <NestedObjectLabel collapsed={collapsed}>{this.objectLabel(item)}</NestedObjectLabel>
+        <ObjectControl
+          value={item}
+          field={field}
+          onChangeObject={this.handleChangeFor(index)}
+          getAsset={getAsset}
+          onOpenMediaLibrary={onOpenMediaLibrary}
+          mediaPaths={mediaPaths}
+          onAddAsset={onAddAsset}
+          onRemoveInsertedMedia={onRemoveInsertedMedia}
+          classNameWrapper={cx(
+            classNameWrapper,
+            { [styles.collapsedObjectControl]: collapsed },
+          )}
+          editorControl={editorControl}
+          resolveWidget={resolveWidget}
+          forList
+        />
+      </SortableListItem>
+    );
   };
 
   renderListControl() {
@@ -264,16 +283,17 @@ export default class ListControl extends Component {
     const items = value || List();
     const label = field.get('label');
     const labelSingular = field.get('label_singular') || field.get('label');
+    const listLabel = items.size === 1 ? labelSingular.toLowerCase() : label.toLowerCase();
 
     return (
-      <div id={forID} className={c(classNameWrapper, 'nc-listControl')}>
-        <TopBar
+      <div id={forID} className={cx(classNameWrapper, components.objectWidgetTopBarContainer)}>
+        <ObjectWidgetTopBar
           allowAdd={field.get('allow_add', true)}
           onAdd={this.handleAdd}
-          listLabel={items.size === 1 ? labelSingular.toLowerCase() : label.toLowerCase()}
-          onCollapseAllToggle={this.handleCollapseAllToggle}
-          allItemsCollapsed={itemsCollapsed.every(val => val === true)}
-          itemsCount={items.size}
+          heading={`${items.size} ${listLabel}`}
+          label={listLabel}
+          onCollapseToggle={this.handleCollapseAllToggle}
+          collapsed={itemsCollapsed.every(val => val === true)}
         />
         <SortableList
           items={items}

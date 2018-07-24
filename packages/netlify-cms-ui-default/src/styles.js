@@ -253,6 +253,9 @@ const components = {
     font-size: 14px;
     margin-top: 8px;
   `,
+  objectWidgetTopBarContainer: css`
+    padding: 0 14px 14px;
+  `,
 }
 
 injectGlobal`
