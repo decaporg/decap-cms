@@ -111,9 +111,12 @@
     }
 
     .hero-videolink {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
       position: absolute;
       margin: auto;
-      padding: 10px 0 0 10px;
       top: 0;
       bottom: 0;
       left: 0;
@@ -128,6 +131,12 @@
       box-shadow: 0 3px 9px 0 rgba(0,0,0,0.05), 0 1px 3px 0 rgba(0,0,0,0.15);
       border-radius: 100px;
       transition: 0.1s;
+
+      & > span {
+        height: 100%;
+        margin-left: 4px;
+        line-height: 96px;
+      }
     }
 
     &:hover {
