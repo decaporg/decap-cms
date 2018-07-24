@@ -53,7 +53,7 @@ const styles = {
     width: 100%;
     padding: ${lengths.inputPadding};
     margin: 0;
-    border: ${borders.textFieldBorder};
+    border: ${borders.textField};
     border-radius: ${lengths.borderRadius};
     border-top-left-radius: 0;
     outline: 0;

@@ -1,0 +1,35 @@
+{
+  "name": "netlify-cms-widget-date",
+  "description": "Widget for editing dates in Netlify CMS.",
+  "version": "2.0.0-alpha.0",
+  "main": "dist/netlify-cms-widget-date.js",
+  "license": "MIT",
+  "keywords": [
+    "netlify",
+    "netlify-cms",
+    "widget",
+    "date",
+    "dates"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "watch": "webpack -w",
+    "build": "webpack"
+  },
+  "dependencies": {
+    "react-datetime": "^2.11.0"
+  },
+  "devDependencies": {
+    "css-loader": "^1.0.0",
+    "to-string-loader": "^1.1.5",
+    "webpack": "^4.16.1",
+    "webpack-cli": "^3.1.0"
+  },
+  "peerDependencies": {
+    "moment": "^2.11.2",
+    "netlify-cms-ui-default": "^2.0.0-alpha.0",
+    "prop-types": "^15.5.10",
+    "react": "^16.4.1",
+    "react-emotion": "^9.2.6"
+  }
+}

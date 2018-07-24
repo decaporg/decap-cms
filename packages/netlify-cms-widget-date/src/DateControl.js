@@ -1,7 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { injectGlobal } from 'react-emotion';
 import DateTime from 'react-datetime';
+import dateTimeStyles from 'react-datetime/css/react-datetime.css';
 import moment from 'moment';
+
+injectGlobal`
+  ${dateTimeStyles}
+`
 
 const DEFAULT_DATE_FORMAT = 'YYYY-MM-DD';
 const DEFAULT_DATETIME_FORMAT = moment.defaultFormat;
