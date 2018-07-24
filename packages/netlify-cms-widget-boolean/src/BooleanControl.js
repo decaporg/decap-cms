@@ -21,7 +21,7 @@ export default class BooleanControl extends React.Component {
       setInactiveStyle
     } = this.props;
     return (
-      <div>
+      <div className={classNameWrapper}>
         <Toggle
           id={forID}
           active={isBoolean(value) ? value : field.get('defaultValue', false)}
