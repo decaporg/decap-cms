@@ -67,9 +67,11 @@ const getConfig = () => ({
    * Exclude peer dependencies from package bundles.
    */
   externals: (context, request, cb) => {
+    const localExternals = pkg.localExternals || [];
     const peerDeps = Object.keys(pkg.peerDependencies || {});
+    const externals = isProduction ? peerDeps : [...localExternals, ...peerDeps];
     const isPeerDep = dep => new RegExp(`^${dep}($|/)`).test(request);
-    return peerDeps.some(isPeerDep) ? cb(null, request) : cb();
+    return externals.some(isPeerDep) ? cb(null, request) : cb();
   },
   stats: stats(),
 });

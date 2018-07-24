@@ -1,0 +1,33 @@
+{
+  "name": "netlify-cms-widget-datetime",
+  "description": "Widget for editing dates and times in Netlify CMS.",
+  "version": "2.0.0-alpha.0",
+  "main": "dist/netlify-cms-widget-datetime.js",
+  "license": "MIT",
+  "keywords": [
+    "netlify",
+    "netlify-cms",
+    "widget",
+    "date",
+    "time",
+    "datetime"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "watch": "webpack -w",
+    "build": "webpack"
+  },
+  "dependencies": {
+    "netlify-cms-widget-date": "^2.0.0-alpha.0"
+  },
+  "devDependencies": {
+    "webpack": "^4.16.1",
+    "webpack-cli": "^3.1.0"
+  },
+  "peerDependencies": {
+    "react": "^16.4.1"
+  },
+  "localExternals": [
+    "netlify-cms-widget-date"
+  ]
+}
