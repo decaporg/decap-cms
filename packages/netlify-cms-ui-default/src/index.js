@@ -5,6 +5,7 @@ export Loader from './Loader';
 export Toggle, { ToggleContainer, ToggleBackground, ToggleHandle } from './Toggle';
 export AuthenticationPage from './AuthenticationPage';
 export WidgetPreviewContainer from './WidgetPreviewContainer';
+export ObjectWidgetTopBar from './ObjectWidgetTopBar';
 export {
   fonts,
   colorsRaw,

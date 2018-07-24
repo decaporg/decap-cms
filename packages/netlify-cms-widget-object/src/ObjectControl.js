@@ -1,21 +1,19 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import styled, { css, cx } from 'react-emotion';
 import { Map } from 'immutable';
 import { partial } from 'lodash';
-import c from 'classnames';
-import { Icon } from 'netlify-cms-ui-default';
-import { resolveWidget } from 'Lib/registry';
+import { ObjectWidgetTopBar, Icon, colors, components } from 'netlify-cms-ui-default';
 
-const TopBar = ({ collapsed, onCollapseToggle }) => (
-  <div className="nc-objectControl-topBar">
-    <div className="nc-objectControl-objectCollapseToggle">
-      <button className="nc-listControl-listCollapseToggleButton" onClick={onCollapseToggle}>
-        <Icon type="chevron" direction={collapsed ? 'right' : 'down'} size="small" />
-      </button>
-    </div>
-  </div>
-);
+const styles = {
+  nestedObjectControl: css`
+    padding: 6px 14px 14px;
+    border-top: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  `,
+};
 
 export default class ObjectControl extends Component {
   static propTypes = {
@@ -35,6 +33,7 @@ export default class ObjectControl extends Component {
     classNameWrapper: PropTypes.string.isRequired,
     forList: PropTypes.bool,
     editorControl: PropTypes.func.isRequired,
+    resolveWidget: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -68,6 +67,7 @@ export default class ObjectControl extends Component {
       value,
       onChangeObject,
       editorControl: EditorControl,
+      resolveWidget,
     } = this.props;
 
     if (field.get('widget') === 'hidden') {
@@ -105,9 +105,15 @@ export default class ObjectControl extends Component {
 
     if (multiFields) {
       return (
-        <div id={forID} className={c(classNameWrapper, 'nc-objectControl-root')}>
-          { forList ? null : <TopBar collapsed={collapsed} onCollapseToggle={this.handleCollapseToggle} /> }
-          { collapsed ? null : multiFields.map((f, idx) => this.controlFor(f, idx)) }
+        <div id={forID} className={cx(
+          classNameWrapper,
+          components.objectWidgetTopBarContainer,
+          { [styles.nestedObjectControl]: forList },
+        )}>
+          {forList ? null :
+            <ObjectWidgetTopBar collapsed={collapsed} onCollapseToggle={this.handleCollapseToggle} />
+          }
+          {collapsed ? null : multiFields.map((f, idx) => this.controlFor(f, idx))}
         </div>
       );
     } else if (singleField) {

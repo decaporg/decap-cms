@@ -1,9 +1,18 @@
 import React from 'react';
 import styled from 'react-emotion';
 import Icon from './Icon';
-import { colors, lengths } from './styles';
+import { colors, lengths, buttons } from './styles';
+
+const TopBar = styled.div`
+  display: flex;
+  justify-content: space-between;
+  height: 26px;
+  border-radius: ${lengths.borderRadius} ${lengths.borderRadius} 0 0;
+  position: relative;
+`
 
 const TopBarButton = styled.button`
+  ${buttons.button};
   color: ${colors.controlLabel};
   background: transparent;
   font-size: 16px;
@@ -24,8 +33,8 @@ const DragIcon = styled(TopBarButtonSpan)`
   cursor: move;
 `
 
-const ListItemTopBar = ({ collapsed, onCollapseToggle, onRemove, dragHandleHOC }) => (
-  <div>
+const ListItemTopBar = ({ className, collapsed, onCollapseToggle, onRemove, dragHandleHOC }) => (
+  <TopBar className={className}>
     {
       onCollapseToggle
         ? <TopBarButton onClick={onCollapseToggle}>
@@ -47,7 +56,7 @@ const ListItemTopBar = ({ collapsed, onCollapseToggle, onRemove, dragHandleHOC }
           </TopBarButton>
         : null
     }
-  </div>
+  </TopBar>
 );
 
 const StyledListItemTopBar = styled(ListItemTopBar)`
