@@ -1,8 +1,13 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import ImmutablePropTypes from "react-immutable-proptypes";
+import ImmutablePropTypes from 'react-immutable-proptypes';
+import styled from 'react-emotion';
 import { isBoolean } from 'lodash';
-import { Toggle } from 'netlify-cms-ui-default';
+import { Toggle, ToggleBackground, colors } from 'netlify-cms-ui-default';
+
+const BooleanBackground = styled(ToggleBackground)`
+  background-color: ${props => props.isActive ? colors.active : colors.textFieldBorder};
+`
 
 export default class BooleanControl extends React.Component {
   render() {
@@ -16,13 +21,14 @@ export default class BooleanControl extends React.Component {
       setInactiveStyle
     } = this.props;
     return (
-      <div className={`${classNameWrapper} nc-booleanControl-switch`}>
+      <div>
         <Toggle
           id={forID}
           active={isBoolean(value) ? value : field.get('defaultValue', false)}
           onChange={onChange}
           onFocus={setActiveStyle}
           onBlur={setInactiveStyle}
+          Background={BooleanBackground}
         />
       </div>
     );
