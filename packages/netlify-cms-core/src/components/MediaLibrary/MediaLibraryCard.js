@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'react-emotion';
 import { colors, borders, lengths } from 'netlify-cms-ui-default';
-import MediaLibraryCardImage from './MediaLibraryCardImage';
 
 const Card = styled.div`
   width: ${props => props.width};
@@ -20,6 +19,15 @@ const Card = styled.div`
   }
 `;
 
+const CardImage = styled.img`
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 2px 2px 0 0;
+`;
+
+const CardImagePlaceholder = CardImage.withComponent(`div`);
+
 const CardText = styled.p`
   color: ${colors.text};
   padding: 8px;
@@ -28,7 +36,7 @@ const CardText = styled.p`
   line-height: 1.3 !important;
 `;
 
-const MediaLibraryCard = ({ isSelected, image, text, onClick, width, margin, isPrivate }) => (
+const MediaLibraryCard = ({ isSelected, displayURL, text, onClick, width, margin, isPrivate }) => (
   <Card
     isSelected={isSelected}
     onClick={onClick}
@@ -37,23 +45,14 @@ const MediaLibraryCard = ({ isSelected, image, text, onClick, width, margin, isP
     tabIndex="-1"
     isPrivate={isPrivate}
   >
-    <div>
-      <MediaLibraryCardImage
-        image={image}
-        getCachedImageURLByID={id => this.imageURLsByIDs.get(id)}
-        cacheImageURLByID={(id, url) => {
-          this.imageURLsByIDs = this.imageURLsByIDs.set(id, url);
-        }}
-        isVisible
-      />
-    </div>
+    <div>{displayURL ? <CardImage src={displayURL} /> : <CardImagePlaceholder />}</div>
     <CardText>{text}</CardText>
   </Card>
 );
 
 MediaLibraryCard.propTypes = {
   isSelected: PropTypes.bool,
-  image: PropTypes.object,
+  displayURL: PropTypes.string,
   text: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
   width: PropTypes.string.isRequired,
