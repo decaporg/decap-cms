@@ -1,3 +1,8 @@
-const { getConfig } = require('../../scripts/webpack.js');
+const path = require('path');
+const coreWebpackConfig = require('../netlify-cms-core/webpack.config.js');
 
-module.exports = getConfig();
+module.exports = {
+  ...coreWebpackConfig,
+  context: path.join(__dirname, 'src'),
+  entry: './index.js',
+};

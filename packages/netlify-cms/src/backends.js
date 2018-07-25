@@ -1,9 +1,10 @@
-import cms from 'netlify-cms-core';
-import { GitHubBackend } from 'netlify-cms-backend-github';
-import { GitLabBackend } from 'netlify-cms-backend-gitlab';
-import { GitGatewayBackend } from 'netlify-cms-backend-git-gateway';
-import { TestBackend } from 'netlify-cms-backend-test';
+import cms from 'netlify-cms-core/src';
+import { GitHubBackend } from 'netlify-cms-backend-github/src';
+import { GitLabBackend } from 'netlify-cms-backend-gitlab/src';
+import { GitGatewayBackend } from 'netlify-cms-backend-git-gateway/src';
+import { TestBackend } from 'netlify-cms-backend-test/src';
 
+console.log(cms);
 const { registerBackend } = cms;
 
 registerBackend('git-gateway', GitGatewayBackend);
