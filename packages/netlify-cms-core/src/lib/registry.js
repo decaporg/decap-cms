@@ -1,5 +1,5 @@
 import { Map } from 'immutable';
-import { newEditorPlugin } from 'EditorWidgets/Markdown/MarkdownControl/plugins';
+import EditorComponent from 'ValueObjects/EditorComponent'
 
 /**
  * Global Registry Object
@@ -76,7 +76,7 @@ export function resolveWidget(name) {
  * Markdown Editor Custom Components
  */
 export function registerEditorComponent(component) {
-  const plugin = newEditorPlugin(component);
+  const plugin = EditorComponent(component);
   registry.editorComponents = registry.editorComponents.set(plugin.get('id'), plugin);
 };
 export function getEditorComponents() {

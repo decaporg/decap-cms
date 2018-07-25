@@ -36,7 +36,7 @@ class Plugin extends Component { // eslint-disable-line
   }
 }
 
-export function newEditorPlugin(config) {
+export default function createEditorComponent(config) {
   const configObj = new EditorComponent({
     id: config.id || config.label.replace(/[^A-Z0-9]+/ig, '_'),
     label: config.label,

@@ -1,8 +1,12 @@
 import React from 'react';
 import styled, { css, cx } from 'react-emotion';
 import { partial, uniqueId } from 'lodash';
+import { connect } from 'react-redux';
 import { colors, colorsRaw, transitions, lengths, borders } from 'netlify-cms-ui-default';
-import { resolveWidget } from 'Lib/registry';
+import { resolveWidget, getEditorComponents } from 'Lib/registry';
+import { addAsset } from 'Actions/media';
+import { openMediaLibrary, removeInsertedMedia } from 'Actions/mediaLibrary';
+import { getAsset } from 'Reducers';
 import Widget from './Widget';
 
 const styles = {
@@ -100,7 +104,7 @@ const ControlErrorsList = styled.ul`
 
 
 
-export default class EditorControl extends React.Component {
+class EditorControl extends React.Component {
   state = {
     activeLabel: false,
   };
@@ -112,11 +116,11 @@ export default class EditorControl extends React.Component {
       fieldsMetaData,
       fieldsErrors,
       mediaPaths,
-      getAsset,
+      boundGetAsset,
       onChange,
-      onOpenMediaLibrary,
-      onAddAsset,
-      onRemoveInsertedMedia,
+      openMediaLibrary,
+      addAsset,
+      removeInsertedMedia,
       onValidate,
       processControlRef,
     } = this.props;
@@ -165,18 +169,34 @@ export default class EditorControl extends React.Component {
           metadata={metadata}
           onChange={(newValue, newMetadata) => onChange(fieldName, newValue, newMetadata)}
           onValidate={onValidate && partial(onValidate, fieldName)}
-          onOpenMediaLibrary={onOpenMediaLibrary}
-          onRemoveInsertedMedia={onRemoveInsertedMedia}
-          onAddAsset={onAddAsset}
-          getAsset={getAsset}
+          onOpenMediaLibrary={openMediaLibrary}
+          onRemoveInsertedMedia={removeInsertedMedia}
+          onAddAsset={addAsset}
+          getAsset={boundGetAsset}
           hasActiveStyle={this.state.styleActive}
           setActiveStyle={() => this.setState({ styleActive: true })}
           setInactiveStyle={() => this.setState({ styleActive: false })}
           resolveWidget={resolveWidget}
+          getEditorComponents={getEditorComponents}
           ref={processControlRef && partial(processControlRef, fieldName)}
-          editorControl={EditorControl}
+          editorControl={ConnectedEditorControl}
         />
       </ControlContainer>
     );
   }
 }
+
+const mapStateToProps = (state, ownProps) => ({
+  mediaPaths: state.mediaLibrary.get('controlMedia'),
+  boundGetAsset: getAsset.bind(null, state),
+});
+
+const mapDispatchToProps = {
+  openMediaLibrary,
+  removeInsertedMedia,
+  addAsset,
+};
+
+const ConnectedEditorControl = connect(mapStateToProps, mapDispatchToProps)(EditorControl);
+
+export default ConnectedEditorControl;

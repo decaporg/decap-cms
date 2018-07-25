@@ -1,13 +1,14 @@
-import PropTypes from 'prop-types';
 import React from 'react';
-import { markdownToHtml } from 'EditorWidgets/Markdown/serializers';
+import PropTypes from 'prop-types';
+import { WidgetPreviewContainer } from 'netlify-cms-ui-default';
+import { markdownToHtml } from './serializers';
 
 const MarkdownPreview = ({ value, getAsset }) => {
   if (value === null) {
     return null;
   }
   const html = markdownToHtml(value, getAsset);
-  return <div className="nc-widgetPreview" dangerouslySetInnerHTML={{__html: html}}></div>;
+  return <WidgetPreviewContainer dangerouslySetInnerHTML={{__html: html}}/>
 };
 
 MarkdownPreview.propTypes = {

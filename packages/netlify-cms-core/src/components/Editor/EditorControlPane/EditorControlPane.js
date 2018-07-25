@@ -36,12 +36,7 @@ export default class ControlPane extends React.Component {
       entry,
       fieldsMetaData,
       fieldsErrors,
-      mediaPaths,
-      getAsset,
       onChange,
-      onOpenMediaLibrary,
-      onAddAsset,
-      onRemoveInsertedMedia,
       onValidate,
     } = this.props;
 
@@ -62,12 +57,7 @@ export default class ControlPane extends React.Component {
             value={entry.getIn(['data', field.get('name')])}
             fieldsMetaData={fieldsMetaData}
             fieldsErrors={fieldsErrors}
-            mediaPaths={mediaPaths}
-            getAsset={getAsset}
             onChange={onChange}
-            onOpenMediaLibrary={onOpenMediaLibrary}
-            onAddAsset={onAddAsset}
-            onRemoveInsertedMedia={onRemoveInsertedMedia}
             onValidate={onValidate}
             processControlRef={this.processControlRef}
           />
@@ -83,11 +73,6 @@ ControlPane.propTypes = {
   fields: ImmutablePropTypes.list.isRequired,
   fieldsMetaData: ImmutablePropTypes.map.isRequired,
   fieldsErrors: ImmutablePropTypes.map.isRequired,
-  mediaPaths: ImmutablePropTypes.map.isRequired,
-  getAsset: PropTypes.func.isRequired,
-  onOpenMediaLibrary: PropTypes.func.isRequired,
-  onAddAsset: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   onValidate: PropTypes.func.isRequired,
-  onRemoveInsertedMedia: PropTypes.func.isRequired,
 };

@@ -1,6 +1,5 @@
 import React from 'react';
 import { List } from 'immutable';
-import cn from 'classnames';
 import Shortcode from './Shortcode';
 
 /**

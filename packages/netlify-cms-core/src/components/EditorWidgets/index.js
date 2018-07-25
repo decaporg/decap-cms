@@ -7,14 +7,11 @@ import TextControl from './Text/TextControl';
 import TextPreview from './Text/TextPreview';
 import SelectControl from './Select/SelectControl';
 import SelectPreview from './Select/SelectPreview';
-import MarkdownControl from './Markdown/MarkdownControl';
-import MarkdownPreview from './Markdown/MarkdownPreview';
 import RelationControl from './Relation/RelationControl';
 import RelationPreview from './Relation/RelationPreview';
 
 registerWidget('text', TextControl, TextPreview);
 registerWidget('number', NumberControl, NumberPreview);
-registerWidget('markdown', MarkdownControl, MarkdownPreview);
 registerWidget('select', SelectControl, SelectPreview);
 registerWidget('relation', RelationControl, RelationPreview);
 registerWidget('unknown', UnknownControl, UnknownPreview);
