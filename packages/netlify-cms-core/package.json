@@ -41,7 +41,6 @@
     "prop-types": "^15.5.10",
     "react": "^16.4.1",
     "react-aria-menubutton": "^5.1.0",
-    "react-autosuggest": "^9.3.2",
     "react-dnd": "^2.5.4",
     "react-dnd-html5-backend": "^2.5.4",
     "react-dom": "^16.0.0",
@@ -70,7 +69,6 @@
     "toml-j0.4": "^1.1.1",
     "tomlify-j0.4": "^3.0.0-alpha.0",
     "url": "^0.11.0",
-    "uuid": "^3.1.0",
     "what-input": "^5.0.3"
   },
   "devDependencies": {

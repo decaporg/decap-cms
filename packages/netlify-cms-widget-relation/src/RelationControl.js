@@ -1,18 +1,61 @@
+import React from 'react';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import { css } from 'react-emotion';
 import Autosuggest from 'react-autosuggest';
 import uuid from 'uuid/v4';
 import { List, Map } from 'immutable';
-import { connect } from 'react-redux';
 import { debounce } from 'lodash';
-import { query, clearSearch } from 'Actions/search';
-import { Loader } from 'netlify-cms-ui-default';
+import { Loader, components } from 'netlify-cms-ui-default';
+
+/**
+ * Create a classname for use as a descendant selector. This is generally
+ * discouraged in Emotion because composition will break the resulting
+ * classnames, but we won't be using composition here.
+ */
+const styles = {
+  suggestionsContainer: css`
+    display: none;
+  `,
+};
+
+/**
+ * react-autosuggest theme spec:
+ * https://github.com/moroshko/react-autosuggest#theme-optional
+ */
+const theme = {
+  container: css`
+    position: relative;
+  `,
+  containerOpen: css`
+    ${styles.suggestionsContainer} {
+      ${components.dropdownList}
+      position: absolute;
+      display: block;
+      top: 51px;
+      width: 100%;
+      z-index: 2;
+    }
+  `,
+  suggestion: css`
+    ${components.drodpownItem};
+    cursor: pointer;
+    padding: 10px 20px;
+  `,
+  suggestionsList: css`
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+  `,
+  suggestionHighlighted: css`
+    background-color: #ddd;
+  `,
+};
 
 function escapeRegexCharacters(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-class RelationControl extends Component {
+export default class RelationControl extends React.Component {
   static propTypes = {
     onChange: PropTypes.func.isRequired,
     forID: PropTypes.string.isRequired,
@@ -50,12 +93,15 @@ class RelationControl extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    console.log(`receiving`);
+    console.log(nextProps.queryHits && nextProps.queryHits.get(this.controlID));
     if (this.didInitialSearch) return;
     if (nextProps.queryHits !== this.props.queryHits && nextProps.queryHits.get && nextProps.queryHits.get(this.controlID)) {
       this.didInitialSearch = true;
       const suggestion = nextProps.queryHits.get(this.controlID);
       if (suggestion && suggestion.length === 1) {
         const val = this.getSuggestionValue(suggestion[0]);
+        console.log(`accepting ${val}`);
         this.props.onChange(val, { [nextProps.field.get('collection')]: { [val]: suggestion[0].data } });
       }
     }
@@ -75,6 +121,7 @@ class RelationControl extends Component {
     const { field } = this.props;
     const collection = field.get('collection');
     const searchFields = field.get('searchFields').toJS();
+    console.log(`querying ${value}`);
     this.props.query(this.controlID, collection, searchFields, value);
   }, 500);
 
@@ -135,28 +182,10 @@ class RelationControl extends Component {
           renderSuggestion={this.renderSuggestion}
           inputProps={inputProps}
           focusInputOnSuggestionClick={false}
+          theme={theme}
         />
         <Loader active={isFetching === this.controlID} />
       </div>
     );
   }
-}
-
-function mapStateToProps(state, ownProps) {
-  const { className } = ownProps;
-  const isFetching = state.search.get('isFetching');
-  const queryHits = state.search.get('queryHits');
-  return { isFetching, queryHits, className };
-}
-
-export default connect(
-  mapStateToProps,
-  {
-    query,
-    clearSearch,
-  },
-  null,
-  {
-    withRef: true,
-  }
-)(RelationControl);
+};
