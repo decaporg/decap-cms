@@ -1,54 +1,13 @@
 {
-  "name": "netlify-cms",
-  "description": "Netlify CMS lets content editors work on structured content stored in git",
-  "main": "dist/cms.js",
-  "lint-staged": {
-    "*.js": [
-      "eslint --fix",
-      "jest --findRelatedTests",
-      "git add"
-    ]
-  },
-  "files": [
-    "src/",
-    "dist/"
-  ],
-  "pre-commit": "lint:staged",
   "scripts": {
     "bootstrap": "lerna bootstrap && lerna link --force-local",
     "start": "npm run bootstrap && npm run watch",
     "watch": "lerna run watch --parallel",
-    "build": "npm run clean && cross-env NODE_ENV=production lerna run build",
+    "build": "npm run clean && cross-env lerna run build",
     "clean": "rimraf packages/*/dist",
-    "reset": "npm run clean && lerna clean --yes"
+    "reset": "npm run clean && lerna clean --yes",
+    "test": "cross-env NODE_ENV=test jest --no-cache"
   },
-  "jest": {
-    "moduleNameMapper": {
-      "^.+\\.(png|eot|woff|woff2|ttf|svg|gif)$": "<rootDir>/__mocks__/fileLoaderMock.js",
-      "^.+\\.s?css$": "<rootDir>/__mocks__/styleLoaderMock.js"
-    },
-    "setupFiles": [
-      "./setupTests.js"
-    ],
-    "coverageReporters": [
-      "lcov"
-    ],
-    "collectCoverageFrom": [
-      "src/**/*.js"
-    ],
-    "coveragePathIgnorePatterns": [
-      "/__tests__/"
-    ]
-  },
-  "keywords": [
-    "netlify",
-    "cms",
-    "content editing",
-    "static site generators",
-    "jamstack"
-  ],
-  "author": "Netlify",
-  "license": "MIT",
   "browserslist": [
     "last 2 Chrome versions",
     "last 2 Opera versions",
@@ -67,8 +26,11 @@
     "@babel/preset-env": "^7.0.0-beta.54",
     "@babel/preset-react": "^7.0.0-beta.54",
     "all-contributors-cli": "^4.4.0",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-jest": "^23.4.0",
     "babel-loader": "^8.0.0-beta",
     "babel-plugin-emotion": "^9.2.4",
+    "babel-plugin-inline-svg": "^1.0.0",
     "babel-plugin-lodash": "^3.3.4",
     "babel-plugin-module-resolver": "^3.0.0",
     "babel-plugin-transform-builtin-extend": "^1.1.2",
@@ -79,8 +41,8 @@
     "enzyme": "^3.1.0",
     "enzyme-adapter-react-16": "^1.0.2",
     "friendly-errors-webpack-plugin": "^1.7.0",
-    "jest": "^22.0.0",
-    "jest-cli": "^22.0.0",
+    "jest": "^23.4.0",
+    "jest-cli": "^23.4.0",
     "lerna": "^2.11.0",
     "raf": "^3.4.0",
     "react-test-renderer": "^16.0.0",
@@ -91,5 +53,8 @@
   "workspaces": [
     "packages/*"
   ],
-  "private": true
+  "private": true,
+  "dependencies": {
+    "jest-emotion": "^9.2.6"
+  }
 }
