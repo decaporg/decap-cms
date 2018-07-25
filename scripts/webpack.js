@@ -33,12 +33,15 @@ const stats = () => {
   if (isProduction) {
     return {
       builtAt: false,
+      chunks: false,
       colors: true,
       entrypoints: false,
+      errorDetails: false,
       hash: false,
       modules: false,
       timings: false,
       version: false,
+      warnings: false,
     };
   }
   return {
