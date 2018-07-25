@@ -21,10 +21,11 @@ const parsers = {
       return jsonFormatter.fromFile(JSONinput);
     },
     stringify: (metadata, { sortedKeys }) => {
-      let JSONoutput = jsonFormatter.toFile(metadata, sortedKeys).trim();
+      // Trim whitespace but leave the new line at the end
+      let JSONoutput = jsonFormatter.toFile(metadata, sortedKeys).replace(/^\s+/g,'').replace(/[ \t]+$/g, '');
       // Trim leading and trailing brackets.
-      if (JSONoutput.substr(0, 1) === '{' && JSONoutput.substr(-1) === '}') {
-        JSONoutput = JSONoutput.substring(1, JSONoutput.length - 1);
+      if (JSONoutput.substr(0, 1) === '{' && JSONoutput.substr(-2) === '}\n') {
+        JSONoutput = JSONoutput.substring(1, JSONoutput.length - 2);
       }
       return JSONoutput;
     },

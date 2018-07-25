@@ -975,6 +975,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "zurawiki",
+      "name": "Roger Zurawicki",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/1464035?v=4",
+      "profile": "https://zura.wiki",
+      "contributions": [
+        "code",
+        "doc"
     }
   ]
 }
