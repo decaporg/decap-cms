@@ -59,14 +59,14 @@ export default class EntryListing extends React.Component {
 
     return (
       <div>
-        <div className="nc-entryListing-cardsGrid">
+        <ul className="nc-entryListing-cardsGrid">
           {
             Map.isMap(collections)
               ? this.renderCardsForSingleCollection()
               : this.renderCardsForMultipleCollections()
           }
           <Waypoint onEnter={this.handleLoadMore} />
-        </div>
+        </ul>
       </div>
     );
   }

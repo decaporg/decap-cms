@@ -48,6 +48,10 @@
   }
 }
 
+.nc-collectionPage-sidebarList {
+  margin: 16px 0 0;
+}
+
 .nc-collectionPage-sidebarLink {
   display: flex;
   font-size: 14px;
@@ -68,7 +72,4 @@
     border-left-color: #4863c6;
   }
 
-  &:first-of-type {
-    margin-top: 16px;
-  }
 }
