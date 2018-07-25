@@ -97,8 +97,6 @@ export default class Sidebar extends React.Component {
     collections: ImmutablePropTypes.orderedMap.isRequired,
   };
 
-  static sidebarLinkActiveClassName = `${uuid()}-sidebar-active`;
-
   state = { query: this.props.searchTerm || '' };
 
   renderLink = collection => {
@@ -107,7 +105,7 @@ export default class Sidebar extends React.Component {
       <SidebarNavLink
         key={collectionName}
         to={`/collections/${collectionName}`}
-        activeClassName={Sidebar.sidebarLinkActiveClassName}
+        activeClassName="sidebar-active"
       >
         <Icon type="write"/>
         {collection.get('label')}
