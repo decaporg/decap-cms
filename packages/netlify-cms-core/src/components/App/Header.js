@@ -47,9 +47,7 @@ const AppHeaderContent = styled.div`
 `;
 
 const AppHeaderButton = styled.button`
-  border: 0;
-  cursor: pointer;
-  background-color: transparent;
+  ${buttons.button};
   color: #7b8290;
   font-size: 16px;
   font-weight: 500;
@@ -103,8 +101,6 @@ export default class Header extends React.Component {
     displayUrl: PropTypes.string,
   };
 
-  static activeClassName = `${uuid()}-active`;
-
   handleCreatePostClick = (collectionName) => {
     const { onCreateEntryClick } = this.props;
     if (onCreateEntryClick) {
@@ -132,7 +128,7 @@ export default class Header extends React.Component {
             <nav>
               <AppHeaderNavLink
                 to="/"
-                activeClassName={Header.activeClassName}
+                activeClassName="header-link-active"
                 isActive={(match, location) => location.pathname.startsWith('/collections/')}
               >
                 <Icon type="page"/>
@@ -140,7 +136,7 @@ export default class Header extends React.Component {
               </AppHeaderNavLink>
               {
                 hasWorkflow
-                  ? <AppHeaderNavLink to="/workflow" activeClassName={Header.activeClassName}>
+                  ? <AppHeaderNavLink to="/workflow" activeClassName="header-link-active">
                       <Icon type="workflow"/>
                       Workflow
                     </AppHeaderNavLink>

@@ -1,55 +1,49 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { css } from 'react-emotion';
+import { injectGlobal, css } from 'react-emotion';
 import Autosuggest from 'react-autosuggest';
 import uuid from 'uuid/v4';
 import { List, Map } from 'immutable';
 import { debounce } from 'lodash';
 import { Loader, components } from 'netlify-cms-ui-default';
 
-/**
- * Create a classname for use as a descendant selector. This is generally
- * discouraged in Emotion because composition will break the resulting
- * classnames, but we won't be using composition here.
- */
-const styles = {
-  suggestionsContainer: css`
-    display: none;
-  `,
-};
-
-/**
- * react-autosuggest theme spec:
- * https://github.com/moroshko/react-autosuggest#theme-optional
- */
-const theme = {
-  container: css`
+injectGlobal`
+  .react-autosuggest__container {
     position: relative;
-  `,
-  containerOpen: css`
-    ${styles.suggestionsContainer} {
-      ${components.dropdownList}
-      position: absolute;
-      display: block;
-      top: 51px;
-      width: 100%;
-      z-index: 2;
-    }
-  `,
-  suggestion: css`
-    ${components.drodpownItem};
-    cursor: pointer;
-    padding: 10px 20px;
-  `,
-  suggestionsList: css`
+  }
+
+  .react-autosuggest__suggestions-container {
+    display: none;
+  }
+
+  .react-autosuggest__container--open .react-autosuggest__suggestions-container {
+    ${components.dropdownList}
+    position: absolute;
+    display: block;
+    top: 51px;
+    width: 100%;
+    z-index: 2;
+  }
+
+  .react-autosuggest__suggestion {
+    ${components.dropdownItem}
+  }
+
+  .react-autosuggest__suggestions-list {
     margin: 0;
     padding: 0;
     list-style-type: none;
-  `,
-  suggestionHighlighted: css`
+  }
+
+  .react-autosuggest__suggestion {
+    cursor: pointer;
+    padding: 10px 20px;
+  }
+
+  .react-autosuggest__suggestion--focused {
     background-color: #ddd;
-  `,
-};
+  }
+`
 
 function escapeRegexCharacters(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -93,15 +87,12 @@ export default class RelationControl extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log(`receiving`);
-    console.log(nextProps.queryHits && nextProps.queryHits.get(this.controlID));
     if (this.didInitialSearch) return;
     if (nextProps.queryHits !== this.props.queryHits && nextProps.queryHits.get && nextProps.queryHits.get(this.controlID)) {
       this.didInitialSearch = true;
       const suggestion = nextProps.queryHits.get(this.controlID);
       if (suggestion && suggestion.length === 1) {
         const val = this.getSuggestionValue(suggestion[0]);
-        console.log(`accepting ${val}`);
         this.props.onChange(val, { [nextProps.field.get('collection')]: { [val]: suggestion[0].data } });
       }
     }
@@ -121,7 +112,6 @@ export default class RelationControl extends React.Component {
     const { field } = this.props;
     const collection = field.get('collection');
     const searchFields = field.get('searchFields').toJS();
-    console.log(`querying ${value}`);
     this.props.query(this.controlID, collection, searchFields, value);
   }, 500);
 
@@ -182,7 +172,6 @@ export default class RelationControl extends React.Component {
           renderSuggestion={this.renderSuggestion}
           inputProps={inputProps}
           focusInputOnSuggestionClick={false}
-          theme={theme}
         />
         <Loader active={isFetching === this.controlID} />
       </div>
