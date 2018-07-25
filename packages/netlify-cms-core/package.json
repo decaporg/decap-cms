@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "watch": "webpack-dev-server --hot --open",
-    "build": "webpack"
+    "build": "cross-env NODE_ENV=production webpack"
   },
   "keywords": [
     "netlify",
@@ -66,6 +66,7 @@
     "what-input": "^5.0.3"
   },
   "devDependencies": {
+    "cross-env": "^5.2.0",
     "css-loader": "^1.0.0",
     "friendly-errors-webpack-plugin": "^1.7.0",
     "to-string-loader": "^1.1.5",
