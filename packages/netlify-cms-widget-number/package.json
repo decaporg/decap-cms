@@ -1,0 +1,27 @@
+{
+  "name": "netlify-cms-widget-number",
+  "description": "Widget for editing numberic values in Netlify CMS.",
+  "version": "2.0.0-alpha.0",
+  "main": "dist/netlify-cms-widget-number.js",
+  "license": "MIT",
+  "keywords": [
+    "netlify",
+    "netlify-cms",
+    "widget",
+    "number"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "watch": "webpack -w",
+    "build": "webpack"
+  },
+  "devDependencies": {
+    "webpack": "^4.16.1",
+    "webpack-cli": "^3.1.0"
+  },
+  "peerDependencies": {
+    "netlify-cms-ui-default": "^2.0.0-alpha.0",
+    "prop-types": "^15.5.10",
+    "react": "^16.4.1"
+  }
+}

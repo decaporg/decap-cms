@@ -1,0 +1,31 @@
+{
+  "name": "netlify-cms-widget-select",
+  "description": "Selectable values widget for Netlify CMS.",
+  "version": "2.0.0-alpha.0",
+  "main": "dist/netlify-cms-widget-select.js",
+  "license": "MIT",
+  "keywords": [
+    "netlify",
+    "netlify-cms",
+    "widget",
+    "select",
+    "values",
+    "list"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "watch": "webpack -w",
+    "build": "webpack"
+  },
+  "devDependencies": {
+    "webpack": "^4.16.1",
+    "webpack-cli": "^3.1.0"
+  },
+  "peerDependencies": {
+    "immutable": "^3.7.6",
+    "netlify-cms-ui-default": "^2.0.0-alpha.0",
+    "prop-types": "^15.5.10",
+    "react": "^16.4.1",
+    "react-immutable-proptypes": "^2.1.0"
+  }
+}
