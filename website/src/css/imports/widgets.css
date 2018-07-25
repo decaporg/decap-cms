@@ -1,65 +1,71 @@
 .widgets {
-    margin: 2rem 0;
+  margin: 2rem 0;
 }
 
 .widgets__cloud {
-    margin: $micro calc(-$micro / 2);
+  margin: $micro calc(-$micro / 2);
 }
 
 .widgets__item {
-    color: $darkGrey;
-    border: 2px solid $darkGreen;
-    border-radius: $borderRadius;
-    padding: calc($micro /2) $micro;
-    margin: calc($micro / 2);
-    cursor: pointer;
-    transition: color .2s ease, background .2s ease;
-    display: inline-block;
-    font-weight: normal;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  background: transparent;
+  border: 0;
+  color: $darkGrey;
+  border: 2px solid $darkGreen;
+  border-radius: $borderRadius;
+  padding: calc($micro / 2) $micro;
+  margin: calc($micro / 2);
+  cursor: pointer;
+  transition: color 0.2s ease, background 0.2s ease;
+  display: inline-block;
+  font-weight: normal;
 }
 
-.widgets__item:hover, .widgets__item_active {
-    background: $darkGreen;
-    color: white !important;
+.widgets__item:hover,
+.widgets__item_active {
+  background: $darkGreen;
+  color: white !important;
 }
 
 .widgets__container {
-    margin: 1em 0;
-    background: $lightGrey;
-    border-radius: $borderRadius;
-    transition: height .15s ease;
+  margin: 1em 0;
+  background: $lightGrey;
+  border-radius: $borderRadius;
+  transition: height 0.15s ease;
 }
 
 .widget {
-    padding: .5em 1em;
-    display: none;
+  padding: 0.5em 1em;
+  display: none;
 }
 
 .widget_open {
-    display: block;
+  display: block;
 }
 
 .widget_closing {
-    display: block;
-    animation: widgetOpacity .15s ease forwards reverse;
+  display: block;
+  animation: widgetOpacity 0.15s ease forwards reverse;
 }
 
 .widget_opening {
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    opacity: 0;
-    animation: widgetOpacity .15s .05s ease forwards;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  animation: widgetOpacity 0.15s 0.05s ease forwards;
 }
 
 @keyframes widgetOpacity {
-    from {
-        opacity: 0
-    }
-    to {
-        opacity: 1
-    }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .widget pre {
@@ -68,5 +74,5 @@
 }
 
 .widget h3 {
-    margin-top: 0 !important;
+  margin-top: 0 !important;
 }

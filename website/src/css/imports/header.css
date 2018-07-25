@@ -15,7 +15,7 @@
 
   em {
     font-style: normal;
-    color: #8B8B8B;
+    color: #8b8b8b;
     padding: 0 8px;
   }
 
@@ -71,7 +71,7 @@ header {
   position: absolute;
   padding: $medium 0;
   text-align: center;
-  transition: background .2s ease, padding .2s ease, box-shadow .2s ease;
+  transition: background 0.2s ease, padding 0.2s ease, box-shadow 0.2s ease;
   width: 100%;
   z-index: 100;
 
@@ -102,14 +102,12 @@ header {
       }
     }*/
 
-
     /*.utility-input {
       @media screen and (max-width: 767px) {
         display: block;
         height: $small;
         margin: $tiny 0 0 0;
       }
-
       @media screen and (min-width: 487px) and (max-width: 767px) {
         margin-top: 32px;
       }
@@ -131,7 +129,8 @@ header {
       }
     }
 
-    .nav-link + iframe  {
+    .gh-button {
+      display: inline-block;
       margin-left: $small;
       vertical-align: middle;
       @media screen and (max-width: $mobile) {
@@ -184,7 +183,6 @@ header {
         margin-top: -35px;
       }
     }
-
   }
 
   .utility-input {
@@ -194,7 +192,7 @@ header {
     top: -4px;
     width: auto;
     border-radius: 4px;
-    background-color: rgba(255,255,255,0.1);
+    background-color: rgba(255, 255, 255, 0.1);
     color: white;
     margin: 0 0 0 $tiny;
     padding-top: -5px;
@@ -204,7 +202,7 @@ header {
     font-weight: 600;
     font-size: 16px;
     line-height: 24px;
-    transition: all .2s ease-in-out;
+    transition: all 0.2s ease-in-out;
 
     @media screen and (min-width: 1024px) {
       display: inline;
@@ -218,12 +216,16 @@ header {
     &::-webkit-input-placeholder,
     &:-moz-placeholder,
     &::-moz-placeholder,
-    &:-ms-input-placeholder  {
+    &:-ms-input-placeholder {
       font-size: $tiny;
       font-weight: $semibold;
       text-align: left;
       text-decoration: none;
       line-height: $small;
+    }
+
+    img {
+      margin-right: 4px;
     }
   }
 

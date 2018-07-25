@@ -4,7 +4,7 @@ This directory builds netlifycms.org. If you'd like to propose changes to the si
 
 ## Local development
 
-The site is built with [Hugo](https://gohugo.io/), managed as an npm dependency via [hugo-bin](https://www.npmjs.com/package/hugo-bin). 
+The site is built with [GatsbyJS](https://gatsbyjs.org/). 
 
 To run the site locally, you'll need to have [Node](https://nodejs.org) and [Yarn](https://yarnpkg.com/en/) installed on your computer.
 
@@ -15,5 +15,5 @@ yarn
 yarn start
 ```
 
-Then visit http://localhost:3000/ - BrowserSync will automatically reload CSS or
+Then visit http://localhost:8000/ - Gatsby will automatically reload CSS or
 refresh the page when stylesheets or content changes.

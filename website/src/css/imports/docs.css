@@ -202,7 +202,6 @@
   h2:not(:first-child) {
     margin-top: $medium;
   }
-  
   p {
     line-height: 1.7;
   }
@@ -226,17 +225,12 @@
     border-radius: $borderRadius;
   }
 
-  code {
+  :not(pre) > code {
+    color: inherit;
     background: $lightestGrey;
     border-radius: 2px;
     padding: 2px 6px;
     white-space: nowrap;
-  }
-
-  pre > code {
-    background: initial;
-    padding: initial;
-    white-space: inherit;
   }
 }
 

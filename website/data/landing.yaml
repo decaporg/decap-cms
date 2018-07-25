@@ -1,0 +1,41 @@
+hero:
+  headline: "Open source content management for your Git&nbsp;workflow"
+  subhead: "Use Netlify CMS with any static site generator for a faster and more flexible web&nbsp;project"
+  devfeatures:
+    - feature: "Static + content management = ♥"
+      description: "Get the speed, security, and scalability of a static site, while still providing a convenient editing interface for content."
+    - feature: "An integrated part of your Git workflow"
+      description: "Content is stored in your Git repository alongside your code for easier versioning, multi-channel publishing, and the option to handle content updates directly in Git."
+    - feature: "An extensible CMS built on React"
+      description: "Netlify CMS is built as a single-page React app. Create custom-styled previews, UI widgets, and editor plugins or add backends to support different Git platform APIs."
+
+cta:
+  primaryhook: "Getting started is simple and free."
+  primary: "Choose a template that’s pre-configured with a static site generator and deploys to a global CDN in one&nbsp;click."
+  button: "[Get started](/docs/start-with-a-template/)"
+
+editors:
+  hook: "A CMS that developers and content editors can&nbsp;agree&nbsp;on"
+  intro: "You get to implement modern front end tools to deliver a faster, safer, and more scalable site. Editors get a friendly UI and intuitive workflow that meets their content management requirements."
+  features:
+    - feature: "Editor-friendly user interface"
+      description: "The web-based app includes rich-text editing, real-time preview, and drag-and-drop media uploads."
+      imgpath: "feature-editor.svg"
+    - feature: "Intuitive workflow for content teams"
+      description: "Writers and editors can easily manage content from draft to review to publish across any number of custom content types."
+      imgpath: "feature-workflow.svg"
+    - feature: "Instant access without GitHub&nbsp;account"
+      description: "With [Git Gateway](/docs/authentication-backends/#git-gateway-with-netlify-identity), you can add CMS access for any team member — even if they don’t have a GitHub account. "
+      imgpath: "feature-access.svg"
+
+community:
+  hook: "Supported by a growing&nbsp;community"
+  features:
+    - feature: "Built on the JAMstack"
+      description: "Netlify CMS is based on client-side JavaScript, reusable APIs and prebuilt Markup. Compared to server-side CMS like WordPress, this means better performance, higher security, lower cost of scaling, and a better developer experience. You can learn more about the JAMstack on [jamstack.org](https://jamstack.org)."
+    - feature: "Support when you need it"
+      description: "Get up and running with comprehensive [documentation](/docs) and templates or work through difficult problems with help from the community on [Gitter](https://gitter.im/netlify/NetlifyCMS)."
+    - feature: "A community-driven project you can help evolve"
+      description: "Netlify CMS is built by a community of more than 100 contributors — and you can help. Join our [bi-weekly planning sessions](/community) or read the [contributing guide](/docs/contributor-guide) to join in."
+  contributors: "Made possible by awesome contributors"
+
