@@ -8,7 +8,7 @@ menu:
 
 # Add Netlify CMS to Your Site
 
-Netlify CMS is adaptable to a wide variety of projects. The only inflexible requirement is that your site content must be written in markdown, JSON, YAML, or TOML files, stored in a repo on [GitHub](https://github.com/) or [GitLab](https://about.gitlab.com/). You can also create your own custom backend, or if you're interested in Bitbucket support, that's [coming soon](https://github.com/netlify/netlify-cms/pull/525).
+Netlify CMS is adaptable to a wide variety of projects. It works with any content written in markdown, JSON, YAML, or TOML files, stored in a repo on [GitHub](https://github.com/), [GitLab](https://about.gitlab.com/), or [Bitbucket](https://bitbucket.org). You can also create your own custom backend.
 
 This tutorial will guide you through the steps for adding Netlify CMS to a site that's built with a common [static site generator](https://www.staticgen.com/), like Jekyll, Hugo, Hexo, or Gatsby. Alternatively, you can [start from a template](https://www.netlifycms.org/docs/start-with-a-template) or dive right into to [configuration options](https://www.netlifycms.org/docs/configuration-options).
 
@@ -80,7 +80,9 @@ Configuration will be different for every site, so we'll break it down into part
 
 ### Backend
 
-We're using [Netlify](https://www.netlify.com) for our hosting and authentication in this tutorial, so backend configuration is fairly straightforward. You can start your Netlify CMS `config.yml` file with these lines:
+We're using [Netlify](https://www.netlify.com) for our hosting and authentication in this tutorial, so backend configuration is fairly straightforward. 
+
+For GitHub and GitLab repositories, you can start your Netlify CMS `config.yml` file with these lines:
 
 ```yaml
 backend:
@@ -88,7 +90,9 @@ backend:
   branch: master # Branch to update (optional; defaults to master)
 ```
 
-These lines specify your backend protocol and your publication branch. Git Gateway is an open source API that acts as a proxy between authenticated users of your site and your site repo. (We'll get to the details of that in the [Authentication section](#authentication) below.) If you leave out the `branch` declaration, it will default to `master`.
+_(For Bitbucket repositories, use the [Bitbucket backend](https://www.netlifycms.org/docs/authentication-backends/#bitbucket-backend) instructions instead.)_
+
+The configuration above specifies your backend protocol and your publication branch. Git Gateway is an open source API that acts as a proxy between authenticated users of your site and your site repo. (We'll get to the details of that in the [Authentication section](#authentication) below.) If you leave out the `branch` declaration, it will default to `master`.
 
 ### Editorial Workflow
 

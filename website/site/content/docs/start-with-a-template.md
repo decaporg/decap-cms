@@ -23,6 +23,7 @@ Netlify CMS can be [added to an existing site](https://www.netlifycms.org/docs/a
 
 After clicking one of those buttons, you’ll authenticate with GitHub or GitLab and choose a repository name. Netlify will then automatically create a clone of the repository in your GitHub or GitLab account. Next, it will build and deploy the new site on Netlify, bringing you to the site dashboard when the build is complete.
 
+**Note for Bitbucket users:** Netlify CMS supports Bitbucket repositories, but Bitbucket's permissions won't work with the Deploy to Netlify buttons above. You can still set up a repository manually, or follow the [tutorial](https://www.netlifycms.org/docs/add-to-your-site) for adding Netlify CMS to an existing site.
 
 ## Access Netlify CMS on your new site
 
