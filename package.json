@@ -1,12 +1,14 @@
 {
   "scripts": {
-    "bootstrap": "lerna bootstrap && lerna link --force-local",
+    "bootstrap": "yarn && lerna bootstrap",
     "start": "npm run bootstrap && npm run watch",
     "watch": "lerna run watch --parallel",
-    "build": "npm run clean && cross-env lerna run build",
+    "build": "npm run clean && lerna run build",
     "clean": "rimraf packages/*/dist",
     "reset": "npm run clean && lerna clean --yes",
-    "test": "cross-env NODE_ENV=test jest --no-cache"
+    "test": "cross-env NODE_ENV=test jest --no-cache",
+    "dryrun": "lerna publish --skip-npm --skip-git",
+    "publish": "npm run bootstrap && npm run build && lerna publish"
   },
   "browserslist": [
     "last 2 Chrome versions",

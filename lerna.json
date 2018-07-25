@@ -5,5 +5,12 @@
   ],
   "version": "independent",
   "npmClient": "yarn",
-  "useWorkspaces": true
+  "useWorkspaces": true,
+  "loglevel": "success",
+  "command": {
+    "publish": {
+      "allowBranch": "master",
+      "conventionalCommits": true
+    }
+  }
 }
