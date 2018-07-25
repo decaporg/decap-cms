@@ -25,8 +25,10 @@
     "webpack-cli": "^3.1.0"
   },
   "peerDependencies": {
+    "emotion": "^9.2.6",
     "immutable": "^3.7.6",
     "lodash": "^4.17.10",
+    "netlify-cms-backend-bitbucket": "2.0.0-alpha.0",
     "netlify-cms-backend-github": "2.0.0-alpha.0",
     "netlify-cms-backend-gitlab": "2.0.0-alpha.0",
     "netlify-cms-lib-auth": "2.0.0-alpha.0",

@@ -15,7 +15,6 @@ import {
 } from "Reducers/collections";
 import { createEntry } from "ValueObjects/Entry";
 import { sanitizeSlug } from "Lib/urlHelper";
-import BitBucketBackend from "./bitbucket/implementation";
 import { registerBackend, getBackend } from 'Lib/registry';
 import { Cursor, CURSOR_COMPATIBILITY_SYMBOL } from 'netlify-cms-lib-util';
 import { EDITORIAL_WORKFLOW, status } from 'Constants/publishModes';

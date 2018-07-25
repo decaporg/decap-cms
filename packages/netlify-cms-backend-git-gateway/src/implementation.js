@@ -5,10 +5,9 @@ import { get, pick, intersection } from "lodash";
 import { unsentRequest } from "netlify-cms-lib-util";
 import { GitHubBackend } from "netlify-cms-backend-github";
 import { GitLabBackend } from "netlify-cms-backend-gitlab";
-import BitBucketBackend from "Backends/bitbucket/implementation";
+import { BitBucketBackend, API as BitBucketAPI } from "netlify-cms-backend-bitbucket";
 import GitHubAPI from "./GitHubAPI";
 import GitLabAPI from "./GitLabAPI";
-import BitBucketAPI from "Backends/bitbucket/API";
 import AuthenticationPage from "./AuthenticationPage";
 
 const localHosts = {

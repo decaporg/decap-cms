@@ -2,6 +2,7 @@ import { registerBackend, registerWidget, registerEditorComponent } from 'Lib/re
 import { GitHubBackend } from 'netlify-cms-backend-github';
 import { GitLabBackend } from 'netlify-cms-backend-gitlab';
 import { GitGatewayBackend } from 'netlify-cms-backend-git-gateway';
+import { BitbucketBackend } from 'netlify-cms-backend-bitbucket';
 import { TestBackend } from 'netlify-cms-backend-test';
 import { BooleanControl } from 'netlify-cms-widget-boolean';
 import { DateControl, DatePreview } from 'netlify-cms-widget-date';
@@ -22,6 +23,7 @@ registerBackend('git-gateway', GitGatewayBackend);
 registerBackend('github', GitHubBackend);
 registerBackend('gitlab', GitLabBackend);
 registerBackend('test-repo', TestBackend);
+registerBackend('bitbucket', BitbucketBackend);
 registerWidget('boolean', BooleanControl);
 registerWidget('date', DateControl, DatePreview);
 registerWidget('datetime', DateTimeControl, DateTimePreview);
