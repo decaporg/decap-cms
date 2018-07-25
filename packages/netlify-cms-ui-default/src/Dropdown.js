@@ -30,10 +30,7 @@ const StyledDropdownButton = styled(DropdownButton)`
 `
 
 const DropdownList = styled.ul`
-  ${shadows.dropDeep};
-  background-color: ${colorsRaw.white};
-  border-radius: ${lengths.borderRadius};
-  overflow: hidden;
+  ${components.dropdownList};
   margin: 0;
   position: absolute;
   top: 0;
@@ -50,27 +47,7 @@ const DropdownList = styled.ul`
 `
 
 const StyledMenuItem = styled(MenuItem)`
-  ${buttons.button};
-  background-color: transparent;
-  border-radius: 0;
-  color: ${colorsRaw.gray};
-  font-weight: 500;
-  border-bottom: 1px solid #eaebf1;
-  padding: 10px 14px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  &:last-of-type {
-    border-bottom: 0;
-  }
-
-  &:hover,
-  &:active,
-  &:focus {
-    color: ${colors.active};
-    background-color: ${colors.activeBackground};
-  }
+  ${components.dropdownItem};
 `
 
 const MenuItemIconContainer = styled.div`

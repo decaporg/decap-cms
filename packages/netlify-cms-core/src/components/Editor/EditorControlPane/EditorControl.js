@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { colors, colorsRaw, transitions, lengths, borders } from 'netlify-cms-ui-default';
 import { resolveWidget, getEditorComponents } from 'Lib/registry';
 import { addAsset } from 'Actions/media';
+import { query, clearSearch } from 'Actions/search';
 import { openMediaLibrary, removeInsertedMedia } from 'Actions/mediaLibrary';
 import { getAsset } from 'Reducers';
 import Widget from './Widget';
@@ -123,6 +124,10 @@ class EditorControl extends React.Component {
       removeInsertedMedia,
       onValidate,
       processControlRef,
+      query,
+      queryHits,
+      isFetching,
+      clearSearch,
     } = this.props;
     const widgetName = field.get('widget');
     const widget = resolveWidget(widgetName);
@@ -180,6 +185,10 @@ class EditorControl extends React.Component {
           getEditorComponents={getEditorComponents}
           ref={processControlRef && partial(processControlRef, fieldName)}
           editorControl={ConnectedEditorControl}
+          query={query}
+          queryHits={queryHits}
+          clearSearch={clearSearch}
+          isFetching={isFetching}
         />
       </ControlContainer>
     );
@@ -189,14 +198,23 @@ class EditorControl extends React.Component {
 const mapStateToProps = (state, ownProps) => ({
   mediaPaths: state.mediaLibrary.get('controlMedia'),
   boundGetAsset: getAsset.bind(null, state),
+  isFetching: state.search.get('isFetching'),
+  queryHits: state.search.get('queryHits'),
 });
 
 const mapDispatchToProps = {
   openMediaLibrary,
   removeInsertedMedia,
   addAsset,
+  query,
+  clearSearch,
 };
 
-const ConnectedEditorControl = connect(mapStateToProps, mapDispatchToProps)(EditorControl);
+const ConnectedEditorControl = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  null,
+  { withRef: true },
+)(EditorControl);
 
 export default ConnectedEditorControl;

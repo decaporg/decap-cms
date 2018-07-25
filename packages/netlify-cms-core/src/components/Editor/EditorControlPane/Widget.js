@@ -41,6 +41,13 @@ export default class Widget extends Component {
     getAsset: PropTypes.func.isRequired,
     resolveWidget: PropTypes.func.isRequired,
     getEditorComponents: PropTypes.func.isRequired,
+    isFetching: PropTypes.node,
+    query: PropTypes.func.isRequired,
+    clearSearch: PropTypes.func.isRequired,
+    queryHits: PropTypes.oneOfType([
+      PropTypes.array,
+      PropTypes.object,
+    ]),
   };
 
   shouldComponentUpdate(nextProps) {
@@ -194,6 +201,10 @@ export default class Widget extends Component {
       uniqueFieldId,
       resolveWidget,
       getEditorComponents,
+      query,
+      queryHits,
+      clearSearch,
+      isFetching,
     } = this.props;
     return React.createElement(controlComponent, {
       field,
@@ -219,6 +230,10 @@ export default class Widget extends Component {
       editorControl,
       resolveWidget,
       getEditorComponents,
+      query,
+      queryHits,
+      clearSearch,
+      isFetching,
     });
   }
 }

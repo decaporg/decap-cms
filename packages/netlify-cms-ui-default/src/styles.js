@@ -256,6 +256,35 @@ const components = {
   objectWidgetTopBarContainer: css`
     padding: 0 14px 14px;
   `,
+  dropdownList: css`
+    ${shadows.dropDeep};
+    background-color: ${colorsRaw.white};
+    border-radius: ${lengths.borderRadius};
+    overflow: hidden;
+  `,
+  dropdownItem: css`
+    ${buttons.button};
+    background-color: transparent;
+    border-radius: 0;
+    color: ${colorsRaw.gray};
+    font-weight: 500;
+    border-bottom: 1px solid #eaebf1;
+    padding: 10px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    &:last-of-type {
+      border-bottom: 0;
+    }
+
+    &:hover,
+    &:active,
+    &:focus {
+      color: ${colors.active};
+      background-color: ${colors.activeBackground};
+    }
+  `,
 }
 
 injectGlobal`
