@@ -14,7 +14,7 @@
   "sideEffects": false,
   "scripts": {
     "watch": "webpack -w",
-    "build": "webpack"
+    "build": "cross-env NODE_ENV=production webpack"
   },
   "dependencies": {
     "is-hotkey": "^0.1.1",
@@ -37,6 +37,7 @@
     "unist-util-visit-parents": "^1.1.1"
   },
   "devDependencies": {
+    "cross-env": "^5.2.0",
     "webpack": "^4.16.1",
     "webpack-cli": "^3.1.0"
   },
