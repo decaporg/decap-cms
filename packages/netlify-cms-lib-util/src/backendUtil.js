@@ -1,8 +1,8 @@
 import { get } from "lodash";
 import { fromJS } from "immutable";
-import { fileExtension } from "Lib/pathHelper";
-import unsentRequest from "Lib/unsentRequest";
-import { CURSOR_COMPATIBILITY_SYMBOL } from "../valueObjects/Cursor";
+import { fileExtension } from "./path";
+import unsentRequest from "./unsentRequest";
+import { CURSOR_COMPATIBILITY_SYMBOL } from "./Cursor";
 
 export const filterByPropExtension = (extension, propName) => arr =>
   arr.filter(el => fileExtension(get(el, propName)) === extension);
