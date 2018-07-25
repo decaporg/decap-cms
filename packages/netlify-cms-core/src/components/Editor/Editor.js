@@ -24,8 +24,6 @@ import {
   deleteUnpublishedEntry
 } from 'Actions/editorialWorkflow';
 import { deserializeValues } from 'Lib/serializeEntryValues';
-import { addAsset } from 'Actions/media';
-import { openMediaLibrary, removeInsertedMedia } from 'Actions/mediaLibrary';
 import { selectEntry, selectUnpublishedEntry, getAsset } from 'Reducers';
 import { selectFields } from 'Reducers/collections';
 import { status } from 'Constants/publishModes';
@@ -40,7 +38,6 @@ const navigateToEntry = (collectionName, slug) => navigateCollection(`${collecti
 
 class Editor extends React.Component {
   static propTypes = {
-    addAsset: PropTypes.func.isRequired,
     boundGetAsset: PropTypes.func.isRequired,
     changeDraftField: PropTypes.func.isRequired,
     changeDraftFieldValidation: PropTypes.func.isRequired,
@@ -49,14 +46,11 @@ class Editor extends React.Component {
     createEmptyDraft: PropTypes.func.isRequired,
     discardDraft: PropTypes.func.isRequired,
     entry: ImmutablePropTypes.map,
-    mediaPaths: ImmutablePropTypes.map.isRequired,
     entryDraft: ImmutablePropTypes.map.isRequired,
     loadEntry: PropTypes.func.isRequired,
     persistEntry: PropTypes.func.isRequired,
     deleteEntry: PropTypes.func.isRequired,
     showDelete: PropTypes.bool.isRequired,
-    openMediaLibrary: PropTypes.func.isRequired,
-    removeInsertedMedia: PropTypes.func.isRequired,
     fields: ImmutablePropTypes.list.isRequired,
     slug: PropTypes.string,
     newEntry: PropTypes.bool.isRequired,
@@ -268,14 +262,10 @@ class Editor extends React.Component {
       entry,
       entryDraft,
       fields,
-      mediaPaths,
       boundGetAsset,
       collection,
       changeDraftField,
       changeDraftFieldValidation,
-      openMediaLibrary,
-      addAsset,
-      removeInsertedMedia,
       user,
       hasChanged,
       displayUrl,
@@ -303,12 +293,8 @@ class Editor extends React.Component {
         fields={fields}
         fieldsMetaData={entryDraft.get('fieldsMetaData')}
         fieldsErrors={entryDraft.get('fieldsErrors')}
-        mediaPaths={mediaPaths}
         onChange={changeDraftField}
         onValidate={changeDraftFieldValidation}
-        onOpenMediaLibrary={openMediaLibrary}
-        onAddAsset={addAsset}
-        onRemoveInsertedMedia={removeInsertedMedia}
         onPersist={this.handlePersistEntry}
         onDelete={this.handleDeleteEntry}
         onDeleteUnpublishedChanges={this.handleDeleteUnpublishedChanges}
@@ -339,7 +325,6 @@ function mapStateToProps(state, ownProps) {
   const fields = selectFields(collection, slug);
   const entry = newEntry ? null : selectEntry(state, collectionName, slug);
   const boundGetAsset = getAsset.bind(null, state);
-  const mediaPaths = mediaLibrary.get('controlMedia');
   const user = auth && auth.get('user');
   const hasChanged = entryDraft.get('hasChanged');
   const displayUrl = config.get('display_url');
@@ -353,7 +338,6 @@ function mapStateToProps(state, ownProps) {
     collections,
     newEntry,
     entryDraft,
-    mediaPaths,
     boundGetAsset,
     fields,
     slug,
@@ -373,9 +357,6 @@ export default connect(
   {
     changeDraftField,
     changeDraftFieldValidation,
-    openMediaLibrary,
-    removeInsertedMedia,
-    addAsset,
     loadEntry,
     loadEntries,
     createDraftFromEntry,

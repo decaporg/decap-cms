@@ -40,6 +40,7 @@ export default class Widget extends Component {
     onRemoveInsertedMedia: PropTypes.func.isRequired,
     getAsset: PropTypes.func.isRequired,
     resolveWidget: PropTypes.func.isRequired,
+    getEditorComponents: PropTypes.func.isRequired,
   };
 
   shouldComponentUpdate(nextProps) {
@@ -192,6 +193,7 @@ export default class Widget extends Component {
       editorControl,
       uniqueFieldId,
       resolveWidget,
+      getEditorComponents,
     } = this.props;
     return React.createElement(controlComponent, {
       field,
@@ -216,6 +218,7 @@ export default class Widget extends Component {
       hasActiveStyle,
       editorControl,
       resolveWidget,
+      getEditorComponents,
     });
   }
 }

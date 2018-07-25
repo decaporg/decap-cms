@@ -257,18 +257,13 @@ export default class ListControl extends React.Component {
         />
         <NestedObjectLabel collapsed={collapsed}>{this.objectLabel(item)}</NestedObjectLabel>
         <ObjectControl
-          value={item}
-          field={field}
-          onChangeObject={this.handleChangeFor(index)}
-          getAsset={getAsset}
-          onOpenMediaLibrary={onOpenMediaLibrary}
-          mediaPaths={mediaPaths}
-          onAddAsset={onAddAsset}
-          onRemoveInsertedMedia={onRemoveInsertedMedia}
           classNameWrapper={cx(
             classNameWrapper,
             { [styles.collapsedObjectControl]: collapsed },
           )}
+          value={item}
+          field={field}
+          onChangeObject={this.handleChangeFor(index)}
           editorControl={editorControl}
           resolveWidget={resolveWidget}
           forList

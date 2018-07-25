@@ -18,11 +18,6 @@ const styles = {
 export default class ObjectControl extends Component {
   static propTypes = {
     onChangeObject: PropTypes.func.isRequired,
-    onOpenMediaLibrary: PropTypes.func.isRequired,
-    mediaPaths: ImmutablePropTypes.map.isRequired,
-    onAddAsset: PropTypes.func.isRequired,
-    onRemoveInsertedMedia: PropTypes.func.isRequired,
-    getAsset: PropTypes.func.isRequired,
     value: PropTypes.oneOfType([
       PropTypes.node,
       PropTypes.object,
@@ -58,17 +53,7 @@ export default class ObjectControl extends Component {
   }
 
   controlFor(field, key) {
-    const {
-      onAddAsset,
-      onOpenMediaLibrary,
-      mediaPaths,
-      onRemoveInsertedMedia,
-      getAsset,
-      value,
-      onChangeObject,
-      editorControl: EditorControl,
-      resolveWidget,
-    } = this.props;
+    const { value, onChangeObject, editorControl: EditorControl, resolveWidget } = this.props;
 
     if (field.get('widget') === 'hidden') {
       return null;
@@ -79,17 +64,7 @@ export default class ObjectControl extends Component {
     const fieldValue = value && Map.isMap(value) ? value.get(fieldName) : value;
 
     return (
-      <EditorControl
-        key={key}
-        field={field}
-        value={fieldValue}
-        mediaPaths={mediaPaths}
-        getAsset={getAsset}
-        onChange={onChangeObject}
-        onOpenMediaLibrary={onOpenMediaLibrary}
-        onAddAsset={onAddAsset}
-        onRemoveInsertedMedia={onRemoveInsertedMedia}
-      />
+      <EditorControl key={key} field={field} value={fieldValue} onChange={onChangeObject}/>
     );
   }
 

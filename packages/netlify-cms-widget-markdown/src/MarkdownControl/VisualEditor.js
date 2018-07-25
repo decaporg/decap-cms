@@ -1,17 +1,24 @@
+import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import React, { Component } from 'react';
+import styled, { css, cx } from 'react-emotion';
 import { get, isEmpty, debounce } from 'lodash';
 import { Map } from 'immutable';
 import { Value, Document, Block, Text } from 'slate';
 import { Editor as Slate } from 'slate-react';
-import { slateToMarkdown, markdownToSlate, htmlToSlate } from 'EditorWidgets/Markdown/serializers';
-import { getEditorComponents } from 'Lib/registry';
-import Toolbar from 'EditorWidgets/Markdown/MarkdownControl/Toolbar/Toolbar';
+import { lengths, fonts } from 'netlify-cms-ui-default';
+import { slateToMarkdown, markdownToSlate, htmlToSlate } from '../serializers';
+import Toolbar from '../MarkdownControl/Toolbar';
 import { renderNode, renderMark } from './renderers';
 import { validateNode } from './validators';
 import plugins, { EditListConfigured } from './plugins';
 import onKeyDown from './keys';
+import visualEditorStyles from './visualEditorStyles';
+import { editorStyleVars, EditorControlBar } from '../styles';
+
+const VisualEditorContainer = styled.div`
+  position: relative;
+`
 
 const createEmptyRawDoc = () => {
   const emptyText = Text.create('');
@@ -26,7 +33,7 @@ const createSlateValue = (rawValue) => {
   return Value.create({ document });
 }
 
-export default class Editor extends Component {
+export default class Editor extends React.Component {
   static propTypes = {
     onAddAsset: PropTypes.func.isRequired,
     getAsset: PropTypes.func.isRequired,
@@ -41,7 +48,6 @@ export default class Editor extends Component {
     super(props);
     this.state = {
       value: createSlateValue(props.value),
-      shortcodePlugins: getEditorComponents(),
     };
   }
 
@@ -173,10 +179,11 @@ export default class Editor extends Component {
 
 
   handleDocumentChange = debounce(change => {
+    const { onChange, getEditorComponents } = this.props;
     const raw = change.value.document.toJSON();
-    const plugins = this.state.shortcodePlugins;
-    const markdown = slateToMarkdown(raw, plugins);
-    this.props.onChange(markdown);
+    const plugins = getEditorComponents();
+    const markdown = slateToMarkdown(raw);
+    onChange(markdown);
   }, 150);
 
   handleChange = change => {
@@ -191,11 +198,11 @@ export default class Editor extends Component {
   }
 
   render() {
-    const { onAddAsset, getAsset, className, field } = this.props;
+    const { onAddAsset, getAsset, className, field, getEditorComponents } = this.props;
 
     return (
-      <div className="nc-visualEditor-wrapper">
-        <div className="nc-visualEditor-editorControlBar">
+      <VisualEditorContainer>
+        <EditorControlBar>
           <Toolbar
             onMarkClick={this.handleMarkClick}
             onBlockClick={this.handleBlockClick}
@@ -204,15 +211,15 @@ export default class Editor extends Component {
             selectionHasBlock={this.selectionHasBlock}
             selectionHasLink={this.hasLinks}
             onToggleMode={this.handleToggle}
-            plugins={this.state.shortcodePlugins}
+            plugins={getEditorComponents()}
             onSubmit={this.handlePluginAdd}
             onAddAsset={onAddAsset}
             getAsset={getAsset}
             buttons={field.get('buttons')}
           />
-        </div>
+        </EditorControlBar>
         <Slate
-          className={`${className} nc-visualEditor-editor`}
+          className={cx(className, visualEditorStyles)}
           value={this.state.value}
           renderNode={renderNode}
           renderMark={renderMark}
@@ -224,7 +231,7 @@ export default class Editor extends Component {
           ref={this.processRef}
           spellCheck
         />
-      </div>
+      </VisualEditorContainer>
     );
   }
 }

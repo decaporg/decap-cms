@@ -1,10 +1,57 @@
-import PropTypes from 'prop-types';
 import React from 'react';
-import { List } from 'immutable';
+import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import c from 'classnames';
-import { Icon, Toggle, Dropdown, DropdownItem, DropdownButton } from 'netlify-cms-ui-default';
+import styled, { css } from 'react-emotion';
+import { List } from 'immutable';
+import {
+  Icon,
+  Toggle,
+  Dropdown,
+  DropdownItem,
+  DropdownButton,
+  colors,
+  transitions,
+} from 'netlify-cms-ui-default';
 import ToolbarButton from './ToolbarButton';
+
+const ToolbarContainer = styled.div`
+  background-color: ${colors.textFieldBorder};
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 11px 14px;
+  min-height: 58px;
+  transition: background-color ${transitions.main}, color ${transitions.main};
+`;
+
+const ToolbarDropdownWrapper = styled.div`
+  display: inline-block;
+  position: relative;
+`
+
+const ToolbarToggle = styled.div`
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  margin: 0 10px;
+`
+
+const StyledToggle = ToolbarToggle.withComponent(Toggle);
+
+const ToolbarToggleLabel = styled.span`
+  display: inline-block;
+  text-align: center;
+  white-space: nowrap;
+  line-height: 20px;
+  width: ${props => props.offPosition ? '62px' : '70px'};
+
+  ${props => props.isActive && css`
+    font-weight: 600;
+    color: ${colors.active};
+  `}
+`
 
 export default class Toolbar extends React.Component {
   static propTypes = {
@@ -16,7 +63,6 @@ export default class Toolbar extends React.Component {
     onAddAsset: PropTypes.func,
     getAsset: PropTypes.func,
     disabled: PropTypes.bool,
-    className: PropTypes.string,
     buttons: ImmutablePropTypes.list
   };
 
@@ -47,23 +93,12 @@ export default class Toolbar extends React.Component {
       getAsset,
       disabled,
       onSubmit,
-      className,
     } = this.props;
 
     const { activePlugin } = this.state;
 
-    /**
-     * Because the toggle labels change font weight for active/inactive state,
-     * we need to set estimated widths for them to maintain position without
-     * moving other inline items on font weight change.
-     */
-    const toggleOffLabel = 'Rich text';
-    const toggleOffLabelWidth = '62px';
-    const toggleOnLabel = 'Markdown';
-    const toggleOnLabelWidth = '70px';
-
     return (
-      <div className={c(className, 'nc-toolbar-Toolbar')}>
+      <ToolbarContainer>
         <div>
           <ToolbarButton
             type="bold"
@@ -155,7 +190,7 @@ export default class Toolbar extends React.Component {
             isHidden={this.isHidden('numbered-list')}
             disabled={disabled}
           />
-          <div className="nc-toolbar-dropdown">
+          <ToolbarDropdownWrapper>
             <Dropdown
               dropdownTopOverlap="36px"
               renderButton={() => (
@@ -173,35 +208,14 @@ export default class Toolbar extends React.Component {
                 <DropdownItem key={idx} label={plugin.get('label')} onClick={() => onSubmit(plugin.get('id'))} />
               ))}
             </Dropdown>
-          </div>
+          </ToolbarDropdownWrapper>
         </div>
-        <div className="nc-markdownWidget-toolbar-toggle">
-          <span
-            style={{ width: toggleOffLabelWidth }}
-            className={c(
-              'nc-markdownWidget-toolbar-toggle-label',
-              { 'nc-markdownWidget-toolbar-toggle-label-active': !rawMode },
-            )}
-          >
-            {toggleOffLabel}
-          </span>
-          <Toggle
-            active={rawMode}
-            onChange={onToggleMode}
-            className="nc-markdownWidget-toolbar-toggle"
-            classNameBackground="nc-markdownWidget-toolbar-toggle-background"
-          />
-          <span
-            style={{ width: toggleOnLabelWidth }}
-            className={c(
-              'nc-markdownWidget-toolbar-toggle-label',
-              { 'nc-markdownWidget-toolbar-toggle-label-active': rawMode },
-            )}
-          >
-            {toggleOnLabel}
-          </span>
-        </div>
-      </div>
+        <ToolbarToggle>
+          <ToolbarToggleLabel isActive={!rawMode} offPosition>Rich Text</ToolbarToggleLabel>
+          <StyledToggle active={rawMode} onChange={onToggleMode}/>
+          <ToolbarToggleLabel isActive={rawMode}>Markdown</ToolbarToggleLabel>
+        </ToolbarToggle>
+      </ToolbarContainer>
     );
   }
 }

@@ -1,10 +1,31 @@
+import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import React from 'react';
+import styled, { css, cx } from 'react-emotion';
 import { Editor as Slate } from 'slate-react';
 import Plain from 'slate-plain-serializer';
 import { debounce } from 'lodash';
-import Toolbar from 'EditorWidgets/Markdown/MarkdownControl/Toolbar/Toolbar';
+import { lengths, fonts } from 'netlify-cms-ui-default';
+import { editorStyleVars, EditorControlBar } from '../styles';
+import Toolbar from './Toolbar';
+
+const styles = {
+  slateRaw: css`
+    position: relative;
+    overflow: hidden;
+    overflow-x: auto;
+    min-height: ${lengths.richTextEditorMinHeight};
+    font-family: ${fonts.mono};
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-top: 0;
+    margin-top: -${editorStyleVars.stickyDistanceBottom};
+  `,
+};
+
+const RawEditorContainer = styled.div`
+  position: relative;
+`;
 
 export default class RawEditor extends React.Component {
   constructor(props) {
@@ -53,23 +74,22 @@ export default class RawEditor extends React.Component {
   render() {
     const { className, field } = this.props;
     return (
-      <div className="nc-rawEditor-rawWrapper">
-        <div className="nc-visualEditor-editorControlBar">
+      <RawEditorContainer>
+        <EditorControlBar>
           <Toolbar
             onToggleMode={this.handleToggleMode}
             buttons={field.get('buttons')}
-            className="nc-markdownWidget-toolbarRaw"
             disabled
             rawMode
           />
-        </div>
+        </EditorControlBar>
         <Slate
-          className={`${className} nc-rawEditor-rawEditor`}
+          className={cx(className, styles.slateRaw)}
           value={this.state.value}
           onChange={this.handleChange}
           onPaste={this.handlePaste}
         />
-      </div>
+      </RawEditorContainer>
     );
   }
 }

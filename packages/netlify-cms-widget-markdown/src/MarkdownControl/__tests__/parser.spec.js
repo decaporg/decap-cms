@@ -1,6 +1,6 @@
 import React from 'react';
 import { fromJS } from 'immutable';
-import { markdownToSlate } from 'EditorWidgets/Markdown/serializers';
+import { markdownToSlate } from '../../serializers';
 
 const parser = markdownToSlate;
 

@@ -1,16 +1,35 @@
 import React from 'react';
-import c from 'classnames';
 import { Map } from 'immutable';
-import { connect } from 'react-redux';
+import styled, { css } from 'react-emotion';
 import { partial, capitalize } from 'lodash';
-import { resolveWidget, getEditorComponents } from 'Lib/registry';
-import { openMediaLibrary, removeInsertedMedia } from 'Actions/mediaLibrary';
-import { addAsset } from 'Actions/media';
-import { getAsset } from 'Reducers';
-import { ListItemTopBar } from 'netlify-cms-ui-default';
-import { getEditorControl } from '../index';
+import { ListItemTopBar, components, colors, lengths } from 'netlify-cms-ui-default';
+import { getEditorControl, getEditorComponents } from './index';
 
-class Shortcode extends React.Component {
+const ShortcodeContainer = styled.div`
+  ${components.objectWidgetTopBarContainer};
+  border-radius: ${lengths.borderRadius};
+  border: 2px solid ${colors.textFieldBorder};
+  margin: 12px 0;
+  padding: 14px;
+
+  ${props => props.collapsed && css`
+    background-color: ${colors.textFieldBorder};
+    cursor: pointer;
+  `}
+`
+
+const ShortcodeTopBar = styled(ListItemTopBar)`
+  background-color: ${colors.textFieldBorder};
+  margin: -14px -14px 0;
+  border-radius: 0;
+`
+
+const ShortcodeTitle = styled.div`
+  padding: 8px;
+  color: ${colors.controlLabel};
+`
+
+export default class Shortcode extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -59,27 +78,11 @@ class Shortcode extends React.Component {
   }
 
   renderControl = (shortcodeData, field, index) => {
-    const {
-      onAddAsset,
-      boundGetAsset,
-      mediaPaths,
-      onOpenMediaLibrary,
-      onRemoveInsertedMedia,
-    } = this.props;
     if (field.get('widget') === 'hidden') return null;
     const value = shortcodeData.get(field.get('name'));
     const key = `field-${ field.get('name') }`;
     const Control = getEditorControl();
-    const controlProps = {
-      field,
-      value,
-      onAddAsset,
-      getAsset: boundGetAsset,
-      onChange: this.handleChange,
-      mediaPaths,
-      onOpenMediaLibrary,
-      onRemoveInsertedMedia,
-    };
+    const controlProps = { field, value, onChange: this.handleChange };
 
     return (
       <div key={key}>
@@ -94,44 +97,19 @@ class Shortcode extends React.Component {
     const pluginId = node.data.get('shortcode');
     const shortcodeData = Map(this.props.node.data.get('shortcodeData'));
     const plugin = getEditorComponents().get(pluginId);
-    const className = c(
-      'nc-objectControl-root',
-      'nc-visualEditor-shortcode',
-      { 'nc-visualEditor-shortcode-collapsed': collapsed },
-    );
     return (
-      <div {...attributes} className={className} onClick={this.handleClick}>
-        <ListItemTopBar
-          className="nc-visualEditor-shortcode-topBar"
+      <ShortcodeContainer collapsed={collapsed} {...attributes} onClick={this.handleClick}>
+        <ShortcodeTopBar
           collapsed={collapsed}
           onCollapseToggle={this.handleCollapseToggle}
           onRemove={this.handleRemove}
         />
         {
           collapsed
-            ? <div className="nc-visualEditor-shortcode-collapsedTitle">{capitalize(pluginId)}</div>
+            ? <ShortcodeTitle>{capitalize(pluginId)}</ShortcodeTitle>
             : plugin.get('fields').map(partial(this.renderControl, shortcodeData))
         }
-      </div>
+      </ShortcodeContainer>
     );
   }
-}
-
-const mapStateToProps = (state, ownProps) => {
-  const { attributes, node, editor } = ownProps;
-  return {
-    mediaPaths: state.mediaLibrary.get('controlMedia'),
-    boundGetAsset: getAsset.bind(null, state),
-    attributes,
-    node,
-    editor,
-  };
 };
-
-const mapDispatchToProps = {
-  onAddAsset: addAsset,
-  onOpenMediaLibrary: openMediaLibrary,
-  onRemoveInsertedMedia: removeInsertedMedia,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Shortcode);

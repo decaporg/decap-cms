@@ -152,7 +152,6 @@ class EditorInterface extends Component {
       fields,
       fieldsMetaData,
       fieldsErrors,
-      mediaPaths,
       getAsset,
       onChange,
       enableSave,
@@ -162,9 +161,6 @@ class EditorInterface extends Component {
       onChangeStatus,
       onPublish,
       onValidate,
-      onOpenMediaLibrary,
-      onAddAsset,
-      onRemoveInsertedMedia,
       user,
       hasChanged,
       displayUrl,
@@ -188,13 +184,8 @@ class EditorInterface extends Component {
           fields={fields}
           fieldsMetaData={fieldsMetaData}
           fieldsErrors={fieldsErrors}
-          mediaPaths={mediaPaths}
-          getAsset={getAsset}
           onChange={onChange}
           onValidate={onValidate}
-          onOpenMediaLibrary={onOpenMediaLibrary}
-          onAddAsset={onAddAsset}
-          onRemoveInsertedMedia={onRemoveInsertedMedia}
           ref={c => this.controlPaneRef = c} // eslint-disable-line
         />
       </ControlPaneContainer>
@@ -283,10 +274,7 @@ EditorInterface.propTypes = {
   fields: ImmutablePropTypes.list.isRequired,
   fieldsMetaData: ImmutablePropTypes.map.isRequired,
   fieldsErrors: ImmutablePropTypes.map.isRequired,
-  mediaPaths: ImmutablePropTypes.map.isRequired,
   getAsset: PropTypes.func.isRequired,
-  onOpenMediaLibrary: PropTypes.func.isRequired,
-  onAddAsset: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   onValidate: PropTypes.func.isRequired,
   onPersist: PropTypes.func.isRequired,
@@ -296,7 +284,6 @@ EditorInterface.propTypes = {
   onDeleteUnpublishedChanges: PropTypes.func.isRequired,
   onPublish: PropTypes.func.isRequired,
   onChangeStatus: PropTypes.func.isRequired,
-  onRemoveInsertedMedia: PropTypes.func.isRequired,
   user: ImmutablePropTypes.map,
   hasChanged: PropTypes.bool,
   displayUrl: PropTypes.string,

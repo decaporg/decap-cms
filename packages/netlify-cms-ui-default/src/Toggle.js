@@ -42,6 +42,7 @@ const Toggle = ({
   renderBackground,
   onFocus,
   onBlur,
+  className,
   Container = ToggleContainer,
   Background = ToggleBackground,
   Handle = ToggleHandle,
@@ -53,6 +54,7 @@ const Toggle = ({
         aria-checked={on.toString()}
         onFocus={onFocus}
         onBlur={onBlur}
+        className={className}
         {...getElementTogglerProps()}
       >
         <Background isActive={on}/>
