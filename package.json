@@ -1,6 +1,5 @@
 {
   "name": "netlify-cms",
-  "version": "2.0.0-dev",
   "description": "Netlify CMS lets content editors work on structured content stored in git",
   "main": "dist/cms.js",
   "lint-staged": {
