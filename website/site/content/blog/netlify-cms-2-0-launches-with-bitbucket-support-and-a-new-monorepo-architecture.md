@@ -15,12 +15,6 @@ With this release, [Netlify CMS](https://www.netlifycms.org/) now supports all m
 
 While you could already use Netlify CMS with most static site generators, our long-term vision is to be tool-agnostic so you can use whatever tool helps you work best. The latest release brings us one step closer by giving the option of an open source, Git-centric CMS to tens of thousands of businesses that depend on Bitbucket, including 60 of the Fortune 100. 
 
-## How it works
-
-Netlify CMS is an open source content management system which harnesses your Git workflow. It enables you to provide editors with a friendly UI and intuitive workflow, while not requiring them to understand Git. You can use it with any static site generator to create faster, more flexible web projects. Content can be stored in your Bitbucket repository alongside your code for easier versioning, multi-channel publishing, and the option to handle content updates directly in Git.
-
-<img src="https://d33wubrfki0l68.cloudfront.net/61c8fbd66484ebe1428e1de0800e2f1a4a54adc2/457ed/img/screenshot-editor.jpg" />
-
 ## Becoming a Monorepo
 
 The other big change with 2.0 is the migration from a single codebase to a collection of interdependent packages called a “monorepo”. Netlify CMS still lives in a [single repository on GitHub](https://github.com/netlify/netlify-cms), but the many extensions that were kept within Netlify CMS itself are now completely separate from the application core. This brings a few benefits:
