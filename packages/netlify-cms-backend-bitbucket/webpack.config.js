@@ -1,1 +1,3 @@
-module.exports = require('../../webpack.config.js');
+const { getConfig } = require('../../scripts/webpack.js');
+
+module.exports = getConfig();
