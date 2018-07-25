@@ -17,6 +17,12 @@ notifications:
 - loud: true
   message: >-
     Netlify CMS now supports GitLab!
-  published: true
+  published: false
   title: GitLab announcement
   url: '/blog/2018/06/netlify-cms-now-supports-gitlab-as-a-backend/'
+- loud: true
+  message: >-
+    Announcing 2.0 - Bitbucket support and monorepo architecture!
+  published: true
+  title: 2.0 announcement
+  url: '/blog/2018/07/netlify-cms-2-0-launches-with-bitbucket-support-and-a-new-monorepo-architecture'
