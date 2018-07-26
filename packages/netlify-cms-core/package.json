@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-core",
   "description": "Netlify CMS core application, see netlify-cms package for the main distribution.",
-  "version": "2.0.0-alpha.0",
+  "version": "2.0.0",
   "main": "dist/netlify-cms-core.js",
   "files": [
     "src/",
@@ -31,10 +31,10 @@
     "jwt-decode": "^2.1.0",
     "lodash": "^4.17.10",
     "moment": "^2.11.2",
-    "netlify-cms-editor-component-image": "2.0.0-alpha.0",
-    "netlify-cms-lib-auth": "2.0.0-alpha.0",
-    "netlify-cms-lib-util": "2.0.0-alpha.0",
-    "netlify-cms-ui-default": "2.0.0-alpha.0",
+    "netlify-cms-editor-component-image": "^2.0.0",
+    "netlify-cms-lib-auth": "^2.0.0",
+    "netlify-cms-lib-util": "^2.0.0",
+    "netlify-cms-ui-default": "^2.0.0",
     "prop-types": "^15.5.10",
     "react": "^16.4.1",
     "react-dnd": "^2.5.4",
@@ -73,6 +73,5 @@
     "webpack": "^4.16.1",
     "webpack-cli": "^3.1.0",
     "webpack-dev-server": "^3.1.5"
-  },
-  "peerDependencies": {}
+  }
 }

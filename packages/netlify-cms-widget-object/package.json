@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-widget-object",
   "description": "Widget for displaying an object of fields for Netlify CMS.",
-  "version": "2.0.0-alpha.0",
+  "version": "2.0.0",
   "main": "dist/netlify-cms-widget-object.js",
   "license": "MIT",
   "keywords": [

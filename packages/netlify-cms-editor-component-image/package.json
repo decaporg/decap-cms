@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-editor-component-image",
   "description": "Image component for Netlify CMS editor widget",
-  "version": "2.0.0-alpha.0",
+  "version": "2.0.0",
   "main": "dist/netlify-cms-editor-component-image.js",
   "license": "MIT",
   "keywords": [

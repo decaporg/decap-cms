@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-widget-select",
   "description": "Selectable values widget for Netlify CMS.",
-  "version": "2.0.0-alpha.0",
+  "version": "2.0.0",
   "main": "dist/netlify-cms-widget-select.js",
   "license": "MIT",
   "keywords": [

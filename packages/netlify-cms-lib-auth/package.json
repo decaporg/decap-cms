@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-lib-auth",
   "description": "Shared authentication functionality for Netlify CMS.",
-  "version": "2.0.0-alpha.0",
+  "version": "2.0.0",
   "main": "dist/netlify-cms-lib-auth.js",
   "license": "MIT",
   "files": [

@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-widget-boolean",
   "description": "Widget for editing boolean values in Netlify CMS.",
-  "version": "2.0.0-alpha.0",
+  "version": "2.0.0",
   "main": "dist/netlify-cms-widget-boolean.js",
   "license": "MIT",
   "keywords": [
