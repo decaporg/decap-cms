@@ -7,36 +7,30 @@ please read the [code of conduct](CODE_OF_CONDUCT.md).
 
 > Install yarn on your system: [https://yarnpkg.com/en/docs/install](https://yarnpkg.com/en/docs/install)
 
+> Install lerna globally: `yarn global add lerna`
+
 ```sh
 $ git clone https://github.com/netlify/netlify-cms
 $ cd netlify-cms
-$ yarn
+$ lerna bootstrap
 ```
 
 ## Building
 
 ```sh
-$ npm run build
+$ yarn build
 ```
 
 ## Testing
 
 ```sh
-$ npm run test
-```
-
-```sh
-$ npm run test:watch
-```
-
-```sh
-$ npm run lint
+$ yarn test
 ```
 
 ## Running the server
 
 ```sh
-$ npm run start
+$ yarn start
 ```
 
 ## Pull Requests
