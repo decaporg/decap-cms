@@ -147,8 +147,6 @@ export default class GitGatewayAuthenticationPage extends React.Component {
       );
     }
 
-    console.log('returning');
-
     return (
       <AuthenticationPage renderPageContent={() => (
         <AuthForm onSubmit={this.handleLogin}>
