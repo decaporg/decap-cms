@@ -7,7 +7,7 @@ description: >-
   Announcing the release of Netlify CMS v2.0, with new Bitbucket support and an
   improved project architecture designed to ease contribution and the extension
   of features.
-date: '2018-07-25'
+date: '2018-07-26'
 ---
 Today we’re releasing Netlify CMS 2.0, which adds support for using Bitbucket as a backend. 
 
