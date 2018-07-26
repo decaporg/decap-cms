@@ -3,6 +3,8 @@
   "description": "GitHub backend for Netlify CMS",
   "version": "2.0.0",
   "license": "MIT",
+  "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github",
+  "bugs": "https://github.com/netlify/netlify-cms/issues",
   "main": "dist/netlify-cms-backend-github.js",
   "keywords": [
     "netlify",
@@ -27,9 +29,9 @@
   "peerDependencies": {
     "emotion": "^9.2.6",
     "lodash": "^4.17.10",
-    "netlify-cms-lib-auth": "2.0.0-alpha.0",
-    "netlify-cms-lib-util": "2.0.0-alpha.0",
-    "netlify-cms-ui-default": "2.0.0-alpha.0",
+    "netlify-cms-lib-auth": "^2.0.0",
+    "netlify-cms-lib-util": "^2.0.0",
+    "netlify-cms-ui-default": "^2.0.0",
     "prop-types": "^15.6.2",
     "react": "^16.4.1",
     "react-emotion": "^9.2.6"

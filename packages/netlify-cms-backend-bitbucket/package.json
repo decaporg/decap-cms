@@ -2,8 +2,10 @@
   "name": "netlify-cms-backend-bitbucket",
   "description": "Bitbucket backend for Netlify CMS",
   "version": "2.0.0",
-  "license": "MIT",
+  "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket",
+  "bugs": "https://github.com/netlify/netlify-cms/issues",
   "main": "dist/netlify-cms-backend-bitbucket.js",
+  "license": "MIT",
   "keywords": [
     "netlify",
     "netlify-cms",

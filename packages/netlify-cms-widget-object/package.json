@@ -2,6 +2,9 @@
   "name": "netlify-cms-widget-object",
   "description": "Widget for displaying an object of fields for Netlify CMS.",
   "version": "2.0.0",
+  "homepage": "https://www.netlifycms.org/docs/widgets/#object",
+  "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-object",
+  "bugs": "https://github.com/netlify/netlify-cms/issues",
   "main": "dist/netlify-cms-widget-object.js",
   "license": "MIT",
   "keywords": [
@@ -26,7 +29,7 @@
     "emotion": "^9.2.6",
     "immutable": "^3.7.6",
     "lodash": "^4.17.10",
-    "netlify-cms-ui-default": "^2.0.0-alpha.0",
+    "netlify-cms-ui-default": "^2.0.0",
     "prop-types": "^15.5.10",
     "react": "^16.4.1",
     "react-emotion": "^9.2.6",
