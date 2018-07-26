@@ -8,7 +8,7 @@ function isVisible(field) {
 }
 
 const PreviewContainer = styled.div`
-  fontFamily: Roboto, "Helvetica Neue", HelveticaNeue, Helvetica, Arial, sans-serif;
+  font-family: Roboto, "Helvetica Neue", HelveticaNeue, Helvetica, Arial, sans-serif;
 `
 
 /**

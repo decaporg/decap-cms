@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'react-emotion'
+import Waypoint from 'react-waypoint';
 import MediaLibraryCard from './MediaLibraryCard';
 import { colors } from 'netlify-cms-ui-default';
 

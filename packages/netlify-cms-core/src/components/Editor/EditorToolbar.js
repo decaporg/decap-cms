@@ -273,7 +273,7 @@ export default class EditorToolbar extends React.Component {
       isNewEntry,
     } = this.props;
     if (currentStatus) {
-      return [
+      return (<>
         <ToolbarDropdown
           dropdownTopOverlap="40px"
           dropdownWidth="120px"
@@ -296,7 +296,7 @@ export default class EditorToolbar extends React.Component {
             onClick={() => onChangeStatus('PENDING_PUBLISH')}
             icon={currentStatus === status.get('PENDING_PUBLISH') && 'check'}
           />
-        </ToolbarDropdown>,
+        </ToolbarDropdown>
         <ToolbarDropdown
           dropdownTopOverlap="40px"
           dropdownWidth="150px"
@@ -311,7 +311,7 @@ export default class EditorToolbar extends React.Component {
               : null
           }
         </ToolbarDropdown>
-      ];
+      </>);
     }
 
     if (!isNewEntry) {
