@@ -103,7 +103,7 @@ export class Loader extends React.Component {
 
   render() {
     const { active, className } = this.props;
-    return <div>{this.renderChild()}</div>;
+    return <div className={className}>{this.renderChild()}</div>;
   }
 }
 
@@ -119,33 +119,28 @@ const StyledLoader = styled(Loader)`
 
   &:before,
   &:after {
+    content: '';
+    position: absolute;
+    top: 0%;
+    left: 50%;
     width: 2.28571429rem;
     height: 2.28571429rem;
     margin: 0em 0em 0em -1.14285714rem;
+    border-radius: 500rem;
+    border-style: solid;
+    border-width: 0.2em;
   }
 
   /* Static Shape */
   &:before {
-    position: absolute;
-    content: '';
-    top: 0%;
-    left: 50%;
-    border-radius: 500rem;
-    border: 0.2em solid rgba(0, 0, 0, 0.1);
+    border-color: rgba(0, 0, 0, 0.1);
   }
 
   /* Active Shape */
   &:after {
-    position: absolute;
-    content: '';
-    top: 0%;
-    left: 50%;
     animation: ${animations.loader} 0.6s linear;
     animation-iteration-count: infinite;
-    border-radius: 500rem;
     border-color: ${colors.active} transparent transparent;
-    border-style: solid;
-    border-width: 0.2em;
     box-shadow: 0px 0px 0px 1px transparent;
   }
 `
