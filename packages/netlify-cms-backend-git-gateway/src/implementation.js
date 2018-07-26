@@ -113,7 +113,6 @@ export default class GitGateway {
           requestFunction: this.requestFunction,
           hasWriteAccess: async () => true,
         });
-        console.log(this.api);
         this.backend = new BitBucketBackend(this.config, { proxied: true, API: this.api });
       }
 

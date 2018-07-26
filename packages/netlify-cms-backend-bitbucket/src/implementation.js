@@ -81,7 +81,7 @@ export default class Bitbucket {
         base_url: this.base_url,
         site_id: this.site_id,
       };
-      this.authenticator = new Authenticator(cfg);
+      this.authenticator = new NetlifyAuthenticator(cfg);
     }
 
     this.refreshedTokenPromise = this.authenticator.refresh({ provider: "bitbucket", refresh_token: this.refreshToken })

@@ -37,7 +37,6 @@ const AuthenticationPage = ({
   renderButtonContent,
   renderPageContent,
 }) => {
-  console.log(renderPageContent);
   return (
     <StyledAuthenticationPage>
       <PageLogoIcon size="300px" type="netlify-cms"/>

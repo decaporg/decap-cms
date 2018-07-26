@@ -35,10 +35,12 @@ export default class BitbucketAuthenticationPage extends React.Component {
   };
 
   render() {
+    const { inProgress } = this.props;
+
     return (
       <AuthenticationPage
         onLogin={this.handleLogin}
-        loginDisabled={this.props.inProgress}
+        loginDisabled={inProgress}
         loginErrorMessage={this.state.loginError}
         renderButtonContent={() => (
           <React.Fragment>

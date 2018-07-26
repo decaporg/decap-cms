@@ -1,6 +1,6 @@
-import { flow } from "lodash";
+import { flow, has } from "lodash";
 import {
-  LocalForage,
+  localForage,
   unsentRequest,
   responseParser,
   then,
@@ -67,13 +67,13 @@ export default class API {
 
   readFile = async (path, sha, { ref = this.branch, parseText = true } = {}) => {
     const cacheKey = parseText ? `bb.${ sha }` : `bb.${ sha }.blob`;
-    const cachedFile = sha ? await LocalForage.getItem(cacheKey) : null;
+    const cachedFile = sha ? await localForage.getItem(cacheKey) : null;
     if (cachedFile) { return cachedFile; }
     const result = await this.request({
       url: `${ this.repoURL }/src/${ ref }/${ path }`,
       cache: "no-store",
     }).then(parseText ? responseParser({ format: "text" }) : responseParser({ format: "blob" }));
-    if (sha) { LocalForage.setItem(cacheKey, result); }
+    if (sha) { localForage.setItem(cacheKey, result); }
     return result;
   }
 

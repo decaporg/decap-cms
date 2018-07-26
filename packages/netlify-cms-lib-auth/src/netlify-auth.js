@@ -61,7 +61,6 @@ class Authenticator {
         cb(null, data);
       }
       if (e.data.indexOf('authorization:' + options.provider + ':error:') === 0) {
-        console.log('Got authorization error');
         const err = JSON.parse(e.data.match(new RegExp('^authorization:' + options.provider + ':error:(.+)$'))[1]);
         window.removeEventListener('message', fn, false);
         this.authWindow.close();
