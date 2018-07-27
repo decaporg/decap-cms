@@ -20,7 +20,7 @@ function bootstrap(opts = {}) {
   /**
    * Log the version number.
    */
-  console.log(`Netlify CMS version ${process.env.NETLIFY_CMS_VERSION}`);
+  console.log(`Netlify CMS version ${NETLIFY_CMS_VERSION}`);
 
   /**
    * Get DOM element where app will mount.
