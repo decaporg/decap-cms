@@ -7,30 +7,76 @@ please read the [code of conduct](CODE_OF_CONDUCT.md).
 
 > Install yarn on your system: [https://yarnpkg.com/en/docs/install](https://yarnpkg.com/en/docs/install)
 
-> Install lerna globally: `yarn global add lerna`
-
 ```sh
 $ git clone https://github.com/netlify/netlify-cms
 $ cd netlify-cms
-$ lerna bootstrap
-```
-
-## Building
-
-```sh
-$ yarn build
-```
-
-## Testing
-
-```sh
-$ yarn test
-```
-
-## Running the server
-
-```sh
 $ yarn start
+```
+
+## Available scripts
+
+### `bootstrap`
+
+Installs `yarn` dependencies and bootstraps the `lerna` packages.
+
+#### Usage
+
+```sh
+$ yarn bootstrap
+```
+
+### `watch`
+
+Watches all `lerna` packages and transpiles them on change.
+
+#### Usage
+
+```sh
+$ yarn watch
+```
+
+### `start`
+
+Starts the development server. This task runs both the `bootstrap` and `watch` scripts.
+
+### `clean`
+
+Removes all of the `lerna` packages `dist` directories.
+
+#### Usage
+
+```sh
+yarn clean
+```
+
+### `reset`
+
+Runs the `clean` script and removes all the `node_modules` from the `lerna` packages.
+
+#### Usage
+
+```sh
+yarn reset
+```
+
+### `build`
+
+Runs the `clean` script and builds the `lerna` packages.
+
+#### Usage
+
+```sh
+yarn build
+```
+
+### `test`
+
+Runs all the `jest` tests.
+
+#### Usage
+
+```sh
+yarn test
 ```
 
 ## Pull Requests
