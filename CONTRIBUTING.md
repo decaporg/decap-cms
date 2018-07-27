@@ -10,33 +10,79 @@ please read the [code of conduct](CODE_OF_CONDUCT.md).
 ```sh
 $ git clone https://github.com/netlify/netlify-cms
 $ cd netlify-cms
-$ yarn
+$ yarn start
 ```
 
-## Building
+## Available scripts
+
+### `bootstrap`
+
+Installs and bootstraps any CMS package dependencies.
+
+#### Usage
 
 ```sh
-$ npm run build
+$ yarn bootstrap
 ```
 
-## Testing
+### `watch`
+
+Watches all CMS packages and transpiles them on change.
+
+#### Usage
 
 ```sh
-$ npm run test
+$ yarn watch
 ```
 
+### `start`
+
+Starts the development server. This task runs both the `bootstrap` and `watch` scripts.
+
+#### Usage
+
 ```sh
-$ npm run test:watch
+$ yarn start
 ```
 
+### `clean`
+
+Removes all of the CMS package `dist` directories.
+
+#### Usage
+
 ```sh
-$ npm run lint
+yarn clean
 ```
 
-## Running the server
+### `reset`
+
+Runs the `clean` script and removes all the `node_modules` from the CMS packages.
+
+#### Usage
 
 ```sh
-$ npm run start
+yarn reset
+```
+
+### `build`
+
+Runs the `clean` script and builds the CMS packages.
+
+#### Usage
+
+```sh
+yarn build
+```
+
+### `test`
+
+Runs all the CMS package tests.
+
+#### Usage
+
+```sh
+yarn test
 ```
 
 ## Pull Requests
