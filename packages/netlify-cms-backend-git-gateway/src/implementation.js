@@ -34,7 +34,12 @@ function getEndpoint(endpoint, netlifySiteURL) {
 }
 
 export default class GitGateway {
-  constructor(config) {
+  constructor(config, options = {}) {
+    this.options = {
+      proxied: false,
+      API: null,
+      ...options,
+    };
     this.config = config;
     this.branch = config.getIn(["backend", "branch"], "master").trim();
     this.squash_merges = config.getIn(["backend", "squash_merges"]);
@@ -103,17 +108,17 @@ export default class GitGateway {
 
       if (this.backendType === "github") {
         this.api = new GitHubAPI(apiConfig);
-        this.backend = new GitHubBackend(this.config, { proxied: true, API: this.api });
+        this.backend = new GitHubBackend(this.config, { ...this.options, API: this.api });
       } else if (this.backendType === "gitlab") {
         this.api = new GitLabAPI(apiConfig);
-        this.backend = new GitLabBackend(this.config, { proxied: true, API: this.api });
+        this.backend = new GitLabBackend(this.config, { ...this.options, API: this.api });
       } else if (this.backendType === "bitbucket") {
         this.api = new BitBucketAPI({
           ...apiConfig,
           requestFunction: this.requestFunction,
           hasWriteAccess: async () => true,
         });
-        this.backend = new BitBucketBackend(this.config, { proxied: true, API: this.api });
+        this.backend = new BitBucketBackend(this.config, { ...this.options, API: this.api });
       }
 
       if (!(await this.api.hasWriteAccess())) {
