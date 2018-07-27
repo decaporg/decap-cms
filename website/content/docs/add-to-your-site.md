@@ -30,7 +30,7 @@ admin
  └ config.yml
 ```
 
-The first file, `admin/index.html`, is the entry point for the Netlify CMS admin interface. This means that users can navigate to `yoursite.com/admin/` to access it. On the code side, it's a basic HTML starter page that loads the necessary CSS and JavaScript files. In this example, we pull those files from a public CDN:
+The first file, `admin/index.html`, is the entry point for the Netlify CMS admin interface. This means that users can navigate to `yoursite.com/admin/` to access it. On the code side, it's a basic HTML starter page that loads the Netlify CMS JavaScript file. In this example, we pull the file from a public CDN:
 
 ```html
 <!doctype html>
@@ -39,14 +39,10 @@ The first file, `admin/index.html`, is the entry point for the Netlify CMS admin
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Content Manager</title>
-
-  <!-- Include the styles for the Netlify CMS UI, after your own styles -->
-  <link rel="stylesheet" href="https://unpkg.com/netlify-cms@^1.0.0/dist/cms.css" />
-
 </head>
 <body>
   <!-- Include the script that builds the page and powers Netlify CMS -->
-  <script src="https://unpkg.com/netlify-cms@^1.0.0/dist/cms.js"></script>
+  <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
 </body>
 </html>
 ```

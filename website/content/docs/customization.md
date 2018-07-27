@@ -31,7 +31,7 @@ CMS.registerPreviewStyle(file);
 
 ```html
 // index.html
-<script src="https://unpkg.com/netlify-cms@^1.0.0/dist/cms.js"></script>
+<script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
 <script>
   CMS.registerPreviewStyle("/example.css");
 </script>
@@ -69,7 +69,7 @@ Registers a template for a collection.
     **Example:**
 
     ```html
-    <script src="https://unpkg.com/netlify-cms@^1.0.0/dist/cms.js"></script>
+    <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
     <script>
     var PostPreview = createClass({
       render: function() {
