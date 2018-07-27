@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="2.0.5"></a>
+## [2.0.5](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.0.4...netlify-cms@2.0.5) (2018-07-27)
+
+
+### Bug Fixes
+
+* fix netlify-cms webpack plugins ([5af0586](https://github.com/netlify/netlify-cms/commit/5af0586))
+* log accurate version by distribution ([#1531](https://github.com/netlify/netlify-cms/issues/1531)) ([95a76ad](https://github.com/netlify/netlify-cms/commit/95a76ad))
+
+
+
+
 <a name="2.0.4"></a>
 ## [2.0.4](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.0.3...netlify-cms@2.0.4) (2018-07-27)
 

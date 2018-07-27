@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="2.0.3"></a>
+## [2.0.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.0.2...netlify-cms-core@2.0.3) (2018-07-27)
+
+
+### Bug Fixes
+
+* log accurate version by distribution ([#1531](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1531)) ([95a76ad](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/95a76ad))
+
+
+
+
 <a name="2.0.2"></a>
 ## 2.0.2 (2018-07-27)
 
