@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="2.0.4"></a>
+## [2.0.4](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.0.3...netlify-cms@2.0.4) (2018-07-27)
+
+
+### Bug Fixes
+
+* fix netlify-cms exports ([d0dabc4](https://github.com/netlify/netlify-cms/commit/d0dabc4))
+
+
+
+
 <a name="2.0.3"></a>
 ## [2.0.3](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.0.2...netlify-cms@2.0.3) (2018-07-27)
 
