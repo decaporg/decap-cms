@@ -10,7 +10,7 @@ const baseConfig = {
   context: path.join(__dirname, 'src'),
   entry: './index.js',
   plugins: [
-    ...coreWebpackConfig.plugins.filter(plugin => !plugin instanceof webpack.DefinePlugin),
+    ...coreWebpackConfig.plugins.filter(plugin => !(plugin instanceof webpack.DefinePlugin)),
     new webpack.DefinePlugin({
       NETLIFY_CMS_VERSION: JSON.stringify(`${pkg.version}${isProduction ? '' : '-dev'}`),
       NETLIFY_CMS_CORE_VERSION: null,
