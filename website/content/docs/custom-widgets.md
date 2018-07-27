@@ -45,7 +45,7 @@ CMS.registerWidget(name, control, [preview]);
 **Example:**
 
 ```html
-<script src="https://unpkg.com/netlify-cms@^1.0.0/dist/cms.js"></script>
+<script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
 <script>
 var CategoriesControl = createClass({
   handleChange: function(e) {
@@ -87,7 +87,7 @@ CMS.registerEditorComponent(definition)
 **Example:**
 
 ```html
-<script src="https://unpkg.com/netlify-cms@^1.0.0/dist/cms.js"></script>
+<script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
 <script>
 CMS.registerEditorComponent({
   // Internal id of the component
