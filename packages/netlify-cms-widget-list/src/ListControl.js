@@ -228,7 +228,7 @@ export default class ListControl extends React.Component {
     this.setState({ itemsCollapsed: updatedItemsCollapsed });
   };
 
-  renderItem = (item, index) => {
+  renderItem = (item, index, list) => {
     const {
       field,
       getAsset,
@@ -242,6 +242,8 @@ export default class ListControl extends React.Component {
     } = this.props;
     const { itemsCollapsed } = this.state;
     const collapsed = itemsCollapsed.get(index);
+    const minimum = field.get('minimum');
+    const allowRemove = typeof minimum === 'number' ? list.size > minimum : true;
 
     return (
       <SortableListItem
@@ -252,7 +254,7 @@ export default class ListControl extends React.Component {
         <StyledListItemTopBar
           collapsed={collapsed}
           onCollapseToggle={partial(this.handleItemCollapseToggle, index)}
-          onRemove={partial(this.handleRemove, index)}
+          onRemove={allowRemove ? partial(this.handleRemove, index) : null}
           dragHandleHOC={SortableHandle}
         />
         <NestedObjectLabel collapsed={collapsed}>{this.objectLabel(item)}</NestedObjectLabel>
