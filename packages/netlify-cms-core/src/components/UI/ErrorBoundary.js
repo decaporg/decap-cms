@@ -37,8 +37,8 @@ export class ErrorBoundary extends React.Component {
       <div className={styles.errorBoundary}>
         <h1 className={styles.errorBoundaryText}>Sorry!</h1>
         <p>
-          <span>There's been an error - please </span>
-          <a href={ISSUE_URL} target="_blank" className={styles.errorBoundaryText}>report it</a>!
+          <span>{"There's been an error - please "}</span>
+          <a href={ISSUE_URL} target="_blank" rel="noopener noreferrer" className={styles.errorBoundaryText}>report it</a>!
         </p>
         <p>{errorMessage}</p>
       </div>

@@ -45,7 +45,7 @@ export default function remarkShortcodes({ plugins }) {
      * included. Otherwise, return the original node.
      */
     return matchIsValid ? createShortcodeNode(text, plugin, match) : node;
-  };
+  }
 
   /**
    * Ensure that the node and it's children are acceptable types to contain

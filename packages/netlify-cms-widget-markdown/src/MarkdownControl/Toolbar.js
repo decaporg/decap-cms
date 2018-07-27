@@ -55,7 +55,7 @@ const ToolbarToggleLabel = styled.span`
 
 export default class Toolbar extends React.Component {
   static propTypes = {
-    buttons: PropTypes.object,
+    buttons: ImmutablePropTypes.list,
     onToggleMode: PropTypes.func.isRequired,
     rawMode: PropTypes.bool,
     plugins: ImmutablePropTypes.map,
@@ -63,7 +63,6 @@ export default class Toolbar extends React.Component {
     onAddAsset: PropTypes.func,
     getAsset: PropTypes.func,
     disabled: PropTypes.bool,
-    buttons: ImmutablePropTypes.list
   };
 
   constructor(props) {

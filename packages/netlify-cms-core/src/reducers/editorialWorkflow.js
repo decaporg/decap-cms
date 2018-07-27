@@ -22,13 +22,14 @@ import { CONFIG_SUCCESS } from 'Actions/config';
 
 const unpublishedEntries = (state = Map(), action) => {
   switch (action.type) {
-    case CONFIG_SUCCESS:
+    case CONFIG_SUCCESS: {
       const publishMode = action.payload && action.payload.get('publish_mode');
       if (publishMode === EDITORIAL_WORKFLOW) {
         //  Editorial workflow state is explicetelly initiated after the config.
         return Map({ entities: Map(), pages: Map() });
       }
       return state;
+    }
     case UNPUBLISHED_ENTRY_REQUEST:
       return state.setIn(['entities', `${ action.payload.collection }.${ action.payload.slug }`, 'isFetching'], true);
 

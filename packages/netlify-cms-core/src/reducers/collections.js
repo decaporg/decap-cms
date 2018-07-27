@@ -8,7 +8,7 @@ import { formatToExtension } from 'Formats/formats';
 
 const collections = (state = null, action) => {
   switch (action.type) {
-    case CONFIG_SUCCESS:
+    case CONFIG_SUCCESS: {
       const configCollections = action.payload ? action.payload.get('collections') : List();
       return configCollections
         .toOrderedMap()
@@ -21,6 +21,7 @@ const collections = (state = null, action) => {
           }
         })
         .mapKeys((key, collection) => collection.get('name'));
+    }
     default:
       return state;
   }

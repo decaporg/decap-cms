@@ -21,7 +21,6 @@ const styles = {
 const WorkflowLink = styled(Link)`
   display: block;
   padding: 0 18px 18px;
-  padding: 0 18px 18px;
   height: 200px;
   overflow: hidden;
 `
