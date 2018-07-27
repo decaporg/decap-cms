@@ -17,7 +17,7 @@ $ yarn start
 
 ### `bootstrap`
 
-Installs `yarn` dependencies and bootstraps the `lerna` packages.
+Installs and bootstraps any CMS package dependencies.
 
 #### Usage
 
@@ -27,7 +27,7 @@ $ yarn bootstrap
 
 ### `watch`
 
-Watches all `lerna` packages and transpiles them on change.
+Watches all CMS packages and transpiles them on change.
 
 #### Usage
 
@@ -39,9 +39,15 @@ $ yarn watch
 
 Starts the development server. This task runs both the `bootstrap` and `watch` scripts.
 
+#### Usage
+
+```sh
+$ yarn start
+```
+
 ### `clean`
 
-Removes all of the `lerna` packages `dist` directories.
+Removes all of the CMS package `dist` directories.
 
 #### Usage
 
@@ -51,7 +57,7 @@ yarn clean
 
 ### `reset`
 
-Runs the `clean` script and removes all the `node_modules` from the `lerna` packages.
+Runs the `clean` script and removes all the `node_modules` from the CMS packages.
 
 #### Usage
 
@@ -61,7 +67,7 @@ yarn reset
 
 ### `build`
 
-Runs the `clean` script and builds the `lerna` packages.
+Runs the `clean` script and builds the CMS packages.
 
 #### Usage
 
@@ -71,7 +77,7 @@ yarn build
 
 ### `test`
 
-Runs all the `jest` tests.
+Runs all the CMS package tests.
 
 #### Usage
 
