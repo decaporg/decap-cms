@@ -9,7 +9,7 @@
     "reset": "npm run clean && lerna clean --yes",
     "test": "cross-env NODE_ENV=test jest --no-cache",
     "dryrun": "lerna publish --skip-npm --skip-git",
-    "publish": "npm run bootstrap && npm run build && lerna publish",
+    "publish": "npm run bootstrap && npm run dryrun && npm run build && git checkout . && lerna publish",
     "add-contributor": "all-contributors add"
   },
   "browserslist": [
