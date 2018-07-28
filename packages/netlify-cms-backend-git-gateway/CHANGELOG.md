@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="2.0.3"></a>
+## [2.0.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/compare/netlify-cms-backend-git-gateway@2.0.2...netlify-cms-backend-git-gateway@2.0.3) (2018-07-28)
+
+
+### Bug Fixes
+
+* **git-gateway:** correct `proxied` value for proxied backends ([#1540](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/issues/1540)) ([f7dba87](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/commit/f7dba87))
+
+
+
+
 <a name="2.0.2"></a>
 ## 2.0.2 (2018-07-27)
 
