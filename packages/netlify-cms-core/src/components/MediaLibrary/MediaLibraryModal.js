@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled, { css } from 'react-emotion';
+import styled from 'react-emotion';
 import { isEmpty } from 'lodash';
 import Waypoint from 'react-waypoint';
 import { Modal } from 'UI';
@@ -9,7 +9,7 @@ import MediaLibraryHeader from './MediaLibraryHeader';
 import MediaLibraryActions from './MediaLibraryActions';
 import MediaLibraryCardGrid from './MediaLibraryCardGrid';
 import EmptyMessage from './EmptyMessage';
-import { buttons, shadows, colors, borders, lengths } from 'netlify-cms-ui-default';
+import { colors } from 'netlify-cms-ui-default';
 
 /**
  * Responsive styling needs to be overhauled. Current setup requires specifying

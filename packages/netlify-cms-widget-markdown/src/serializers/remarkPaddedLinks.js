@@ -1,13 +1,10 @@
 import {
-  get,
-  set,
   find,
   findLast,
   startsWith,
   endsWith,
   trimStart,
   trimEnd,
-  concat,
   flatMap
 } from 'lodash';
 import u from 'unist-builder';

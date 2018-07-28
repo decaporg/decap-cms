@@ -4,7 +4,6 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled, { css } from 'react-emotion';
 import { List } from 'immutable';
 import {
-  Icon,
   Toggle,
   Dropdown,
   DropdownItem,

@@ -1,13 +1,10 @@
 /* eslint max-len:0 */
 
 import React from 'react';
-import { shallow } from 'enzyme';
 import renderer from 'react-test-renderer';
 import { padStart } from 'lodash';
 import MarkdownPreview from '../MarkdownPreview';
 import { markdownToHtml } from '../serializers';
-
-const parser = markdownToHtml;
 
 describe('Markdown Preview renderer', () => {
   describe('Markdown rendering', () => {

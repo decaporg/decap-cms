@@ -1,5 +1,4 @@
-import { fromJS } from 'immutable';
-import { remove, attempt, isError, take } from 'lodash';
+import { attempt, isError, take } from 'lodash';
 import uuid from 'uuid/v4';
 import { EditorialWorkflowError } from 'netlify-cms-lib-util';
 import { Cursor, CURSOR_COMPATIBILITY_SYMBOL } from 'netlify-cms-lib-util';

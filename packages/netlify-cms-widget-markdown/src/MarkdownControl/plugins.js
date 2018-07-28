@@ -1,6 +1,5 @@
 import { Text, Inline } from 'slate';
 import isHotkey from 'is-hotkey';
-import SlateSoftBreak from 'slate-soft-break';
 import EditList from 'slate-edit-list';
 import EditTable from 'slate-edit-table';
 

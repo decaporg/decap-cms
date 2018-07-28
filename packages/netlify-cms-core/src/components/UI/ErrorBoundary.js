@@ -1,10 +1,6 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import { css } from 'react-emotion';
 import { colors } from 'netlify-cms-ui-default';
-
-const DefaultErrorComponent = () => {
-};
 
 const ISSUE_URL = "https://github.com/netlify/netlify-cms/issues/new";
 

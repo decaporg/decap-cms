@@ -1,5 +1,5 @@
 import { attempt, flatten, isError } from 'lodash';
-import { fromJS, Map } from 'immutable';
+import { Map } from 'immutable';
 import fuzzy from 'fuzzy';
 import { resolveFormat } from "Formats/formats";
 import { selectIntegration } from 'Reducers/integrations';
@@ -15,7 +15,7 @@ import {
 } from "Reducers/collections";
 import { createEntry } from "ValueObjects/Entry";
 import { sanitizeSlug } from "Lib/urlHelper";
-import { registerBackend, getBackend } from 'Lib/registry';
+import { getBackend } from 'Lib/registry';
 import { Cursor, CURSOR_COMPATIBILITY_SYMBOL } from 'netlify-cms-lib-util';
 import { EDITORIAL_WORKFLOW, status } from 'Constants/publishModes';
 

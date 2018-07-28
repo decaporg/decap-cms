@@ -1,8 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import styled, { css } from 'react-emotion';
 import { Wrapper, Button as DropdownButton, Menu, MenuItem } from 'react-aria-menubutton';
-import { shadows, colors, colorsRaw, lengths, buttons, components } from './styles';
+import { buttons, components } from './styles';
 import Icon from './Icon';
 
 const StyledWrapper = styled(Wrapper)`

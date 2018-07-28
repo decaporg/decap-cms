@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { injectGlobal, css } from 'react-emotion';
+import { injectGlobal } from 'react-emotion';
 import Autosuggest from 'react-autosuggest';
 import uuid from 'uuid/v4';
-import { List, Map } from 'immutable';
+import { List } from 'immutable';
 import { debounce } from 'lodash';
 import { Loader, components } from 'netlify-cms-ui-default';
 
@@ -44,10 +44,6 @@ injectGlobal`
     background-color: #ddd;
   }
 `
-
-function escapeRegexCharacters(str) {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
 
 export default class RelationControl extends React.Component {
   static propTypes = {

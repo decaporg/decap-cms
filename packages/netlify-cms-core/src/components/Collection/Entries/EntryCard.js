@@ -1,11 +1,8 @@
-import PropTypes from 'prop-types';
 import React from 'react';
-import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from 'react-emotion';
 import { Link } from 'react-router-dom';
 import { resolvePath } from 'netlify-cms-lib-util';
 import { colors, colorsRaw, components, lengths } from 'netlify-cms-ui-default';
-import history from 'Routing/history';
 import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from 'Constants/collectionViews';
 
 const ListCardLink = styled(Link)`

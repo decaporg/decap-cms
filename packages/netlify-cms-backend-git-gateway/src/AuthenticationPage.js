@@ -3,7 +3,6 @@ import React from 'react';
 import styled from 'react-emotion';
 import { partial } from 'lodash';
 import {
-  Icon,
   AuthenticationPage,
   buttons,
   shadows,

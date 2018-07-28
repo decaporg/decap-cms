@@ -1,5 +1,4 @@
 import React from 'react';
-import { List } from 'immutable';
 import Shortcode from './Shortcode';
 
 /**
