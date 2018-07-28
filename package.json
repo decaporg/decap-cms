@@ -4,6 +4,7 @@
     "start": "npm run bootstrap && npm run watch",
     "watch": "lerna run watch --parallel",
     "build": "npm run clean && lerna run build",
+    "build-preview": "npm run build && lerna run build-preview",
     "clean": "rimraf packages/*/dist",
     "reset": "npm run clean && lerna clean --yes",
     "test": "cross-env NODE_ENV=test jest --no-cache",
