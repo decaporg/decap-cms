@@ -6,23 +6,12 @@ const { getConfig, rules, plugins } = require('../../scripts/webpack.js');
 
 const isProduction = process.env.NODE_ENV === 'production';
 
-const entry = () => {
-  const defaultEntry = ['./index.js'];
-
-  if (isProduction) {
-    return defaultEntry;
-  }
-
-  return [
-    ...defaultEntry,
-    '../scripts/load-extensions.js',
-  ];
-};
+const baseConfig = getConfig();
 
 module.exports = {
-  ...getConfig(),
+  ...baseConfig,
   context: path.join(__dirname, 'src'),
-  entry: entry(),
+  entry: ['./index.js'],
   module: {
     rules: [
       ...Object.entries(rules)
@@ -46,24 +35,10 @@ module.exports = {
     ],
   },
   plugins: [
-    ...Object.entries(plugins)
-      .filter(([ key ]) => key !== 'friendlyErrors')
-      .map(([ _, plugin ]) => plugin()),
+    ...baseConfig.plugins,
     new webpack.DefinePlugin({
       NETLIFY_CMS_VERSION: null,
       NETLIFY_CMS_CORE_VERSION: JSON.stringify(`${pkg.version}${isProduction ? '' : '-dev'}`),
     }),
-    new FriendlyErrorsWebpackPlugin({
-      compilationSuccessInfo: {
-        messages: ['Netlify CMS is now running at http://localhost:8080'],
-      },
-    }),
   ],
-  devServer: {
-    contentBase: './example',
-    watchContentBase: true,
-    quiet: true,
-    host: 'localhost',
-    port: 8080,
-  },
 };

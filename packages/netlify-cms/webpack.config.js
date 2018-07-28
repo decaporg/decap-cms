@@ -1,6 +1,8 @@
 const path = require('path');
 const webpack = require('webpack');
+const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 const pkg = require('./package.json');
+const { plugins } = require('../../scripts/webpack');
 const coreWebpackConfig = require('../netlify-cms-core/webpack.config.js');
 
 const isProduction = process.env.NODE_ENV === 'production';
@@ -10,30 +12,48 @@ const baseConfig = {
   context: path.join(__dirname, 'src'),
   entry: './index.js',
   plugins: [
-    ...coreWebpackConfig.plugins.filter(plugin => !(plugin instanceof webpack.DefinePlugin)),
+    ...Object.entries(plugins)
+      .filter(([ key ]) => key !== 'friendlyErrors')
+      .map(([ _, plugin ]) => plugin()),
     new webpack.DefinePlugin({
       NETLIFY_CMS_VERSION: JSON.stringify(`${pkg.version}${isProduction ? '' : '-dev'}`),
       NETLIFY_CMS_CORE_VERSION: null,
     }),
+    new FriendlyErrorsWebpackPlugin({
+      compilationSuccessInfo: {
+        messages: ['Netlify CMS is now running at http://localhost:8080'],
+      },
+    }),
   ],
+  devServer: {
+    contentBase: '../../dev-test',
+    watchContentBase: true,
+    quiet: true,
+    host: 'localhost',
+    port: 8080,
+  },
 };
 
-module.exports = [
-  baseConfig,
+if (isProduction) {
+  module.exports = [
+    baseConfig,
 
-  /**
-   * Output the same script a second time, but named `cms.js`, and with a
-   * deprecation notice.
-   */
-  {
-    ...baseConfig,
-    entry: [
-      path.join(__dirname, 'scripts/deprecate-old-dist.js'),
-      baseConfig.entry,
-    ],
-    output: {
-      ...baseConfig.output,
-      filename: 'dist/cms.js',
+    /**
+     * Output the same script a second time, but named `cms.js`, and with a
+     * deprecation notice.
+     */
+    {
+      ...baseConfig,
+      entry: [
+        path.join(__dirname, 'scripts/deprecate-old-dist.js'),
+        baseConfig.entry,
+      ],
+      output: {
+        ...baseConfig.output,
+        filename: 'dist/cms.js',
+      },
     },
-  },
-];
+  ];
+} else {
+  module.exports = baseConfig;
+}
