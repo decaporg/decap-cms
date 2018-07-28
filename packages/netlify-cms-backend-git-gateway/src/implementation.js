@@ -35,7 +35,7 @@ function getEndpoint(endpoint, netlifySiteURL) {
 export default class GitGateway {
   constructor(config, options = {}) {
     this.options = {
-      proxied: false,
+      proxied: true,
       API: null,
       ...options,
     };
