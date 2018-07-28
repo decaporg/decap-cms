@@ -8,7 +8,8 @@
   "main": "dist/netlify-cms.js",
   "scripts": {
     "watch": "webpack-dev-server --hot --open",
-    "build": "cross-env NODE_ENV=production webpack"
+    "build": "cross-env NODE_ENV=production webpack",
+    "build-preview": "cross-env NODE_ENV=production webpack-dev-server --open"
   },
   "keywords": [
     "netlify",

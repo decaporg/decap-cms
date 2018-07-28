@@ -75,6 +75,16 @@ Runs the `clean` script and builds the CMS packages.
 yarn build
 ```
 
+### `build-preview`
+
+Runs the `build` and `build-preview` scripts in each package and serves the resulting build locally.
+
+#### Usage
+
+```sh
+yarn build-preview
+```
+
 ### `test`
 
 Runs all the CMS package tests.
