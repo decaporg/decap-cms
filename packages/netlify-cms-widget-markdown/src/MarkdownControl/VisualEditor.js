@@ -1,12 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import styled, { css, cx } from 'react-emotion';
+import styled, { cx } from 'react-emotion';
 import { get, isEmpty, debounce } from 'lodash';
 import { Map } from 'immutable';
 import { Value, Document, Block, Text } from 'slate';
 import { Editor as Slate } from 'slate-react';
-import { lengths, fonts } from 'netlify-cms-ui-default';
 import { slateToMarkdown, markdownToSlate, htmlToSlate } from '../serializers';
 import Toolbar from '../MarkdownControl/Toolbar';
 import { renderNode, renderMark } from './renderers';
@@ -14,7 +13,7 @@ import { validateNode } from './validators';
 import plugins, { EditListConfigured } from './plugins';
 import onKeyDown from './keys';
 import visualEditorStyles from './visualEditorStyles';
-import { editorStyleVars, EditorControlBar } from '../styles';
+import { EditorControlBar } from '../styles';
 
 const VisualEditorContainer = styled.div`
   position: relative;

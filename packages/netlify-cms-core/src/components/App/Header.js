@@ -3,14 +3,12 @@ import React from "react";
 import ImmutablePropTypes from "react-immutable-proptypes";
 import styled, { css } from 'react-emotion';
 import { NavLink } from 'react-router-dom';
-import uuid from 'uuid/v4';
 import {
   Icon,
   Dropdown,
   DropdownItem,
   StyledDropdownButton,
   colors,
-  colorsRaw,
   lengths,
   shadows,
   buttons,

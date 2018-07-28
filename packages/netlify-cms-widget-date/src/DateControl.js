@@ -9,9 +9,6 @@ injectGlobal`
   ${dateTimeStyles}
 `
 
-const DEFAULT_DATE_FORMAT = 'YYYY-MM-DD';
-const DEFAULT_DATETIME_FORMAT = moment.defaultFormat;
-
 export default class DateControl extends React.Component {
   static propTypes = {
     field: PropTypes.object.isRequired,

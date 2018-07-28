@@ -8,7 +8,7 @@ import Sidebar from './Sidebar';
 import CollectionTop from './CollectionTop';
 import EntriesCollection from './Entries/EntriesCollection';
 import EntriesSearch from './Entries/EntriesSearch';
-import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from 'Constants/collectionViews';
+import { VIEW_STYLE_LIST } from 'Constants/collectionViews';
 
 const CollectionContainer = styled.div`
   margin: ${lengths.pageMargin};

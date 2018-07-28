@@ -1,4 +1,4 @@
-import { has, flow, partial, flatMap, flatten, map } from 'lodash';
+import { has, flow, partial, map } from 'lodash';
 import { joinPatternSegments, combinePatterns, replaceWhen } from '../regexHelper';
 
 /**

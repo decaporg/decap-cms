@@ -7,7 +7,6 @@ import { partial } from 'lodash';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 import { ObjectControl } from 'netlify-cms-widget-object';
 import {
-  Icon,
   ListItemTopBar,
   ObjectWidgetTopBar,
   colors,

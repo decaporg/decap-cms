@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import ImmutablePropTypes from 'react-immutable-proptypes';
-import styled, { css, cx } from 'react-emotion';
+import { css, cx } from 'react-emotion';
 import { Map } from 'immutable';
-import { partial } from 'lodash';
-import { ObjectWidgetTopBar, Icon, colors, components } from 'netlify-cms-ui-default';
+import { ObjectWidgetTopBar, components } from 'netlify-cms-ui-default';
 
 const styles = {
   nestedObjectControl: css`

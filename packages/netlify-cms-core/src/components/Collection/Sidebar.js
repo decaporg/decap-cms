@@ -1,12 +1,9 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled, { css } from 'react-emotion';
 import { NavLink } from 'react-router-dom';
-import uuid from 'uuid/v4';
 import { Icon, components, colors, colorsRaw, lengths } from 'netlify-cms-ui-default';
 import { searchCollections } from 'Actions/collections';
-import { getCollectionUrl } from 'Lib/urlHelper';
 
 const styles = {
   sidebarNavLinkActive: css`

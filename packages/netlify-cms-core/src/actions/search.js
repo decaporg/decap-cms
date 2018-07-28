@@ -1,10 +1,6 @@
-import fuzzy from 'fuzzy';
 import { currentBackend } from 'src/backend';
 import { getIntegrationProvider } from 'Integrations';
-import { selectIntegration, selectEntries } from 'Reducers';
-import { selectInferedField } from 'Reducers/collections';
-import { WAIT_UNTIL_ACTION } from 'Redux/middleware/waitUntilAction';
-import { loadEntries, ENTRIES_SUCCESS } from './entries';
+import { selectIntegration } from 'Reducers';
 
 /*
  * Contant Declarations

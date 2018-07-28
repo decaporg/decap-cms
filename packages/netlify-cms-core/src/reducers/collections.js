@@ -1,5 +1,5 @@
 import { List } from 'immutable';
-import { has, get, escapeRegExp } from 'lodash';
+import { escapeRegExp } from 'lodash';
 import consoleError from 'Lib/consoleError';
 import { CONFIG_SUCCESS } from 'Actions/config';
 import { FILES, FOLDER } from 'Constants/collectionTypes';

@@ -1,4 +1,4 @@
-import { fromJS, List, Set } from 'immutable';
+import { fromJS, List } from 'immutable';
 import { actions as notifActions } from 'redux-notifications';
 import { serializeValues } from 'Lib/serializeEntryValues';
 import { currentBackend } from 'src/backend';
@@ -9,7 +9,6 @@ import { selectCollectionEntriesCursor } from 'Reducers/cursors';
 import { Cursor } from 'netlify-cms-lib-util';
 import { createEntry } from 'ValueObjects/Entry';
 import ValidationErrorTypes from 'Constants/validationErrorTypes';
-import isArray from 'lodash/isArray';
 
 const { notifSend } = notifActions;
 
