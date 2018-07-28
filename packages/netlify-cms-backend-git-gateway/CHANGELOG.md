@@ -9,39 +9,12 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Bug Fixes
 
-* **git-gateway:** pass options through git-gateway backend ([#1532](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/issues/1532)) ([4c5436a](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/commit/4c5436a))
+* **git-gateway:** pass options through git-gateway backend ([#1532](https://github.com/netlify/netlify-cms/issues/1532)) ([4c5436a](https://github.com/netlify/netlify-cms/commit/4c5436a))
 
 
 
 <a name="2.0.1"></a>
 ## 2.0.1 (2018-07-26)
-
-
-
-<a name="2.0.0"></a>
-# 2.0.0 (2018-07-26)
-
-
-### Bug Fixes
-
-* **bitbucket:** fix rebasing mistakes in bitbucket backend and deps ([#1522](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/issues/1522)) ([bdfd944](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/commit/bdfd944))
-
-
-
-
-<a name="2.0.1"></a>
-## 2.0.1 (2018-07-26)
-
-
-
-<a name="2.0.0"></a>
-# 2.0.0 (2018-07-26)
-
-
-### Bug Fixes
-
-* **bitbucket:** fix rebasing mistakes in bitbucket backend and deps ([#1522](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/issues/1522)) ([bdfd944](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/commit/bdfd944))
-
 
 
 

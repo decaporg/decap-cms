@@ -10,7 +10,10 @@
   "command": {
     "publish": {
       "allowBranch": "master",
-      "conventionalCommits": true
+      "conventionalCommits": true,
+      "ignoreChanges": [
+        "CHANGELOG.md"
+      ]
     }
   }
 }
