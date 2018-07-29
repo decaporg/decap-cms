@@ -125,7 +125,7 @@ CMS.registerEditorComponent({
 
 ## Advanced field validation
 
-All widget fields, including those for built-in widgets, [include basic validation](https://www.netlifycms.org/docs/widgets/#common-widget-options) capability using the `required` and `pattern` options.
+All widget fields, including those for built-in widgets, [include basic validation](/docs/widgets/#common-widget-options) capability using the `required` and `pattern` options.
 
 With custom widgets, the widget control can also optionally implement an `isValid` method to perform custom validations, in addition to presence and pattern. The `isValid` method will be automatically called, and it can return either a boolean value, an object with an error message or a promise. Examples:
 
