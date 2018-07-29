@@ -91,8 +91,8 @@ export default function withFileControl({ forImage } = {}) {
       return false;
     }
 
-    componentWillReceiveProps(nextProps) {
-      const { mediaPaths, value, onRemoveInsertedMedia, onChange } = nextProps;
+    componentDidUpdate() {
+      const { mediaPaths, value, onRemoveInsertedMedia, onChange } = this.props;
       const mediaPath = mediaPaths.get(this.controlID);
       if (mediaPath && mediaPath !== value) {
         onChange(mediaPath);

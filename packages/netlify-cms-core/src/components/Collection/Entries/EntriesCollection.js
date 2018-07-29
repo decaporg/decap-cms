@@ -31,10 +31,10 @@ class EntriesCollection extends React.Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentDidUpdate(prevProps) {
     const { collection, loadEntries } = this.props;
-    if (nextProps.collection !== collection) {
-      loadEntries(nextProps.collection);
+    if (collection !== prevProps.collection) {
+      loadEntries(collection);
     }
   }
 

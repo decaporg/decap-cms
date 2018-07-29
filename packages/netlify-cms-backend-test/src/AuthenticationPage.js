@@ -41,7 +41,7 @@ export default class AuthenticationPage extends React.Component {
     config: ImmutablePropTypes.map.isRequired,
   };
 
-  componentWillMount() {
+  componentDidMount() {
     /**
      * Allow login screen to be skipped for demo purposes.
      */

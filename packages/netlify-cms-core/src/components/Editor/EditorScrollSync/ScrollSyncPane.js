@@ -29,14 +29,14 @@ export default class ScrollSyncPane extends Component {
   };
 
   componentDidMount() {
-    this.node = this.props.attachTo || ReactDOM.findDOMNode(this)
+    this.node = this.props.attachTo || ReactDOM.findDOMNode(this) // eslint-disable-line react/no-find-dom-node
     this.context.registerPane(this.node, this.props.group)
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (this.props.group !== nextProps.group) {
-      this.context.unregisterPane(this.node, this.props.group)
-      this.context.registerPane(this.node, nextProps.group)
+  componentDidUpdate(prevProps) {
+    if (prevProps.group !== this.props.group) {
+      this.context.unregisterPane(this.node, prevProps.group)
+      this.context.registerPane(this.node, this.props.group)
     }
   }
 

@@ -27,10 +27,10 @@ class EntriesSearch extends React.Component {
     searchEntries(searchTerm);
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (this.props.searchTerm === nextProps.searchTerm) return;
-    const { searchEntries } = this.props;
-    searchEntries(nextProps.searchTerm);
+  componentDidUpdate(prevProps) {
+    if (prevProps.searchTerm === this.props.searchTerm) return;
+    const { searchEntries } = prevProps;
+    searchEntries(this.props.searchTerm);
   }
 
   componentWillUnmount() {
