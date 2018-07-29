@@ -6,7 +6,7 @@ group: start
 
 Netlify CMS is adaptable to a wide variety of projects. It works with any content written in markdown, JSON, YAML, or TOML files, stored in a repo on [GitHub](https://github.com/), [GitLab](https://about.gitlab.com/), or [Bitbucket](https://bitbucket.org). You can also create your own custom backend.
 
-This tutorial will guide you through the steps for adding Netlify CMS to a site that's built with a common [static site generator](https://www.staticgen.com/), like Jekyll, Hugo, Hexo, or Gatsby. Alternatively, you can [start from a template](https://www.netlifycms.org/docs/start-with-a-template) or dive right into to [configuration options](https://www.netlifycms.org/docs/configuration-options).
+This tutorial will guide you through the steps for adding Netlify CMS to a site that's built with a common [static site generator](https://www.staticgen.com/), like Jekyll, Hugo, Hexo, or Gatsby. Alternatively, you can [start from a template](/docs/start-with-a-template) or dive right into to [configuration options](/docs/configuration-options).
 
 ## App File Structure
 
@@ -82,7 +82,7 @@ backend:
   branch: master # Branch to update (optional; defaults to master)
 ```
 
-_(For Bitbucket repositories, use the [Bitbucket backend](https://www.netlifycms.org/docs/authentication-backends/#bitbucket-backend) instructions instead.)_
+_(For Bitbucket repositories, use the [Bitbucket backend](/docs/authentication-backends/#bitbucket-backend) instructions instead.)_
 
 The configuration above specifies your backend protocol and your publication branch. Git Gateway is an open source API that acts as a proxy between authenticated users of your site and your site repo. (We'll get to the details of that in the [Authentication section](#authentication) below.) If you leave out the `branch` declaration, it will default to `master`.
 
@@ -90,7 +90,7 @@ The configuration above specifies your backend protocol and your publication bra
 
 **Note:** Editorial workflow works with GitHub repositories only. Support for other Git hosts is [coming soon](https://github.com/netlify/netlify-cms/issues/568).
 
-By default, saving a post in the CMS interface will push a commit directly to the publication branch specified in `backend`. However, you also have the option to enable the [Editorial Workflow](https://www.netlifycms.org/docs/configuration-options/#publish-mode), which adds an interface for drafting, reviewing, and approving posts. To do this, add the following line to your Netlify CMS `config.yml`:
+By default, saving a post in the CMS interface will push a commit directly to the publication branch specified in `backend`. However, you also have the option to enable the [Editorial Workflow](/docs/configuration-options/#publish-mode), which adds an interface for drafting, reviewing, and approving posts. To do this, add the following line to your Netlify CMS `config.yml`:
 
 ```yaml
 # This line should *not* be indented
@@ -195,7 +195,7 @@ Let's break that down:
   </tr>
 </table>
 
-As described above, the `widget` property specifies a built-in or custom UI widget for a given field. When a content editor enters a value into a widget, that value will be saved in the document front matter as the value for the `name` specified for that field. A full listing of available widgets can be found in the [Widgets doc](https://www.netlifycms.org/docs/widgets).
+As described above, the `widget` property specifies a built-in or custom UI widget for a given field. When a content editor enters a value into a widget, that value will be saved in the document front matter as the value for the `name` specified for that field. A full listing of available widgets can be found in the [Widgets doc](/docs/widgets).
 
 Based on this example, you can go through the post types in your site and add the appropriate settings to your Netlify CMS `config.yml` file. Each post type should be listed as a separate node under the `collections` field.
 
@@ -217,7 +217,7 @@ collections:
 
 ## Authentication
 
-Now that you have your Netlify CMS files in place and configured, all that's left is to enable authentication. There are [many ways to do this](https://www.netlifycms.org/docs/authentication-backends) (with or without deploying to Netlify), but this example uses Netlify because it's one of the quickest ways to get started.
+Now that you have your Netlify CMS files in place and configured, all that's left is to enable authentication. There are [many ways to do this](/docs/authentication-backends) (with or without deploying to Netlify), but this example uses Netlify because it's one of the quickest ways to get started.
 
 ### Setup on Netlify
 
