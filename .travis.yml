@@ -10,6 +10,9 @@ node_js:
   - "10"
 install:
   - yarn bootstrap
+script:
+  - yarn test
+  - yarn lint
 notifications:
   email: false
 git:
