@@ -263,7 +263,7 @@ export default class API {
       parts = file.path.split("/").filter(part => part);
       filename = parts.pop();
       subtree = fileTree;
-      while (part = parts.shift()) {
+      while (part = parts.shift()) { // eslint-disable-line no-cond-assign
         subtree[part] = subtree[part] || {};
         subtree = subtree[part];
       }
@@ -739,7 +739,7 @@ export default class API {
 
         for (let i = 0, len = tree.tree.length; i < len; i++) {
           obj = tree.tree[i];
-          if (fileOrDir = fileTree[obj.path]) {
+          if (fileOrDir = fileTree[obj.path]) { // eslint-disable-line no-cond-assign
             added[obj.path] = true;
             if (fileOrDir.file) {
               updates.push({ path: obj.path, mode: obj.mode, type: obj.type, sha: fileOrDir.sha });
