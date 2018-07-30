@@ -57,12 +57,12 @@ export default class ScrollSync extends Component {
 
   addEvents = (node, group) => {
     /* For some reason element.addEventListener doesnt work with document.body */
-    node.onscroll = this.handlePaneScroll.bind(this, node, group) // eslint-disable-line
+    node.onscroll = this.handlePaneScroll.bind(this, node, group)
   }
 
   removeEvents = (node) => {
     /* For some reason element.removeEventListener doesnt work with document.body */
-    node.onscroll = null // eslint-disable-line
+    node.onscroll = null
   }
 
   findPane = (node, group) => {
@@ -108,10 +108,10 @@ export default class ScrollSync extends Component {
         const paneWidth = pane.scrollWidth - clientWidth
         /* Adjust the scrollTop position of it accordingly */
         if (vertical && scrollTopOffset > 0) {
-          pane.scrollTop = proportional ? (paneHeight * scrollTop) / scrollTopOffset : scrollTop // eslint-disable-line
+          pane.scrollTop = proportional ? (paneHeight * scrollTop) / scrollTopOffset : scrollTop
         }
         if (horizontal && scrollLeftOffset > 0) {
-          pane.scrollLeft = proportional ? (paneWidth * scrollLeft) / scrollLeftOffset : scrollLeft // eslint-disable-line
+          pane.scrollLeft = proportional ? (paneWidth * scrollLeft) / scrollLeftOffset : scrollLeft
         }
         /* Re-attach event listeners after we're done scrolling */
         window.requestAnimationFrame(() => {

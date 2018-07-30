@@ -1,5 +1,3 @@
-/* eslint max-len:0 */
-
 import React from 'react';
 import renderer from 'react-test-renderer';
 import { padStart } from 'lodash';

@@ -209,4 +209,4 @@ Please drag the card to the "Ready" column to enable publishing.`
   }
 }
 
-export default HTML5DragDrop(WorkflowList); // eslint-disable-line
+export default HTML5DragDrop(WorkflowList);

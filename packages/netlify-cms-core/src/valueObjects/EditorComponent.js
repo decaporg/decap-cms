@@ -18,7 +18,7 @@ const EditorComponent = Record({
 });
 
 
-class Plugin extends Component { // eslint-disable-line
+class Plugin extends Component {
   static propTypes = {
     children: PropTypes.element.isRequired,
   };
