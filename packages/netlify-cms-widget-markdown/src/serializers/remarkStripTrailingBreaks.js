@@ -53,4 +53,4 @@ export default function remarkStripTrailingBreaks() {
     return node;
   };
   return transform;
-};
+}

@@ -7,8 +7,10 @@ const NotFoundContainer = styled.div`
   margin: ${lengths.pageMargin};
 `;
 
-export default () => (
+const NotFoundPage = () => (
   <NotFoundContainer>
     <h2>Not Found</h2>
   </NotFoundContainer>
 );
+
+export default NotFoundPage;

@@ -14,7 +14,7 @@ const testPlugins = fromJS([
       alt: match[1],
     },
     toBlock: data => `![${ data.alt }](${ data.image })`,
-    toPreview: data => <img src={data.image} alt={data.alt} />,
+    toPreview: data => <img src={data.image} alt={data.alt} />, // eslint-disable-line react/display-name
     pattern: /^!\[([^\]]+)]\(([^)]+)\)$/,
     fields: [{
       label: 'Image',

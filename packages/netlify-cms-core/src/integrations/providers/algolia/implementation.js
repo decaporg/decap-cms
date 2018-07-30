@@ -3,7 +3,7 @@ import { createEntry } from 'ValueObjects/Entry';
 import { selectEntrySlug } from 'Reducers/collections';
 
 function getSlug(path) {
-  return path.split('/').pop().replace(/\.[^\.]+$/, '');
+  return path.split('/').pop().replace(/\.[^.]+$/, '');
 }
 
 export default class Algolia {

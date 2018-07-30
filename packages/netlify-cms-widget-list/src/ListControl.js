@@ -318,4 +318,4 @@ export default class ListControl extends React.Component {
       className={classNameWrapper}
     />);
   }
-};
+}

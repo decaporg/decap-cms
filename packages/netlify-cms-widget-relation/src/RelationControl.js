@@ -173,4 +173,4 @@ export default class RelationControl extends React.Component {
       </div>
     );
   }
-};
+}

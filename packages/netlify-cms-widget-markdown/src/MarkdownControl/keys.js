@@ -51,4 +51,4 @@ function onKeyDown(event, change) {
     event.preventDefault();
     return change.toggleMark(markName);
   }
-};
+}
