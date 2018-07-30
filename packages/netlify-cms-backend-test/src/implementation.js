@@ -45,7 +45,6 @@ export default class TestRepo {
   constructor(config, options = {}) {
     this.config = config;
     this.assets = [];
-    this.initialStatus = config.initialStatus;
     this.options = options;
   }
 
@@ -151,7 +150,7 @@ export default class TestRepo {
           },
           metaData: {
             collection: options.collectionName,
-            status: this.initialStatus,
+            status: this.options.initialWorkflowStatus,
             title: options.parsedData && options.parsedData.title,
             description: options.parsedData && options.parsedData.description,
           },

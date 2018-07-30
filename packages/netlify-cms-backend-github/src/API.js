@@ -14,8 +14,7 @@ export default class API {
     this.repo = config.repo || "";
     this.repoURL = `/repos/${ this.repo }`;
     this.merge_method = config.squash_merges ? "squash" : "merge";
-    this.initialStatus = config.initialStatus;
-    this.useWorkflow = config.useWorkflow;
+    this.initialWorkflowStatus = config.initialWorkflowStatus;
   }
 
   user() {
@@ -346,7 +345,7 @@ export default class API {
             head: prResponse.head && prResponse.head.sha,
           },
           user: user.name || user.login,
-          status: this.initialStatus,
+          status: this.initialWorkflowStatus,
           branch: branchName,
           collection: options.collectionName,
           title: options.parsedData && options.parsedData.title,

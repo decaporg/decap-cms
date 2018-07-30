@@ -116,6 +116,7 @@ class Backend {
     this.implementation = implementation.init(config, {
       useWorkflow: config.getIn(["publish_mode"]) === EDITORIAL_WORKFLOW,
       updateUserCredentials: this.updateUserCredentials,
+      initialWorkflowStatus: status.first(),
     });
     this.backendName = backendName;
     this.authStore = authStore;
@@ -396,7 +397,6 @@ class Backend {
       parsedData,
       commitMessage,
       collectionName,
-      initialStatus: status.first(),
       ...updatedOptions
     };
 
