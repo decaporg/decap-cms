@@ -39,7 +39,7 @@ const selectors = {
       return `${ collection.get('folder').replace(/\/$/, '') }/${ slug }.${ this.entryExtension(collection) }`;
     },
     entrySlug(collection, path) {
-      return path.split('/').pop().replace(new RegExp(`\.${ escapeRegExp(this.entryExtension(collection)) }$`), '');
+      return path.split('/').pop().replace(new RegExp(`\\.${ escapeRegExp(this.entryExtension(collection)) }$`), '');
     },
     listMethod() {
       return 'entriesByFolder';
