@@ -52,9 +52,6 @@ h3 {
   margin: 0;
 }
 
-h3 > p {
-}
-
 p, ul {
   font-size: 18px;
   line-height: 26px;

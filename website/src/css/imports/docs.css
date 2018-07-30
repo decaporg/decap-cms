@@ -1,15 +1,3 @@
-.docs-content,
-.blog-content {
-  pre {
-    margin: 30px -16px !important;
-  }
-
-  @media (min-width: $xlarge) {
-    pre {
-      margin-right: -120px !important;
-    }
-  }
-}
 .docs.page,
 .blog.page {
   padding: 69px $tiny $xl;
@@ -223,6 +211,13 @@
   table {
     background: #f7f7f7;
     border-radius: $borderRadius;
+  }
+
+  pre {
+    margin: 30px -16px !important;
+    @media (min-width: $xlarge) {
+      margin-right: -120px !important;
+    }
   }
 
   :not(pre) > code {
