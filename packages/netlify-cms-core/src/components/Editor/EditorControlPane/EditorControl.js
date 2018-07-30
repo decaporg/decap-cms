@@ -196,7 +196,7 @@ class EditorControl extends React.Component {
           )}
           htmlFor={fieldName + uniqueFieldId}
         >
-          {field.get('label')}
+          {field.get('label', field.get('name'))}
         </label>
         <Widget
           classNameWrapper={cx(
