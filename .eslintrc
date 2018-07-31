@@ -16,6 +16,7 @@
     "CMS_ENV": false
   },
   "rules": {
-    "no-console": [0]
+    "no-console": [0],
+    "react/prop-types": [1]
   }
 }
