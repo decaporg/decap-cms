@@ -15,6 +15,7 @@
   "sideEffects": false,
   "scripts": {
     "watch": "webpack -w",
+    "develop": "npm run watch",
     "build": "cross-env NODE_ENV=production webpack"
   },
   "dependencies": {
