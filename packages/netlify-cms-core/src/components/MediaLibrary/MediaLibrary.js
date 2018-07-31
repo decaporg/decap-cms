@@ -34,7 +34,7 @@ class MediaLibrary extends React.Component {
     this.props.loadMedia();
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     /**
      * We clear old state from the media library when it's being re-opened
      * because, when doing so on close, the state is cleared while the media
@@ -44,9 +44,13 @@ class MediaLibrary extends React.Component {
     if (isOpening) {
       this.setState({ selectedFile: {}, query: '' });
     }
+  }
 
-    if (isOpening && (this.props.privateUpload !== nextProps.privateUpload)) {
-      this.props.loadMedia({ privateUpload: nextProps.privateUpload });
+  componentDidUpdate(prevProps) {
+    const isOpening = !prevProps.isVisible && this.props.isVisible;
+
+    if (isOpening && (prevProps.privateUpload !== this.props.privateUpload)) {
+      this.props.loadMedia({ privateUpload: this.props.privateUpload });
     }
   }
 

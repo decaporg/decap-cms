@@ -133,20 +133,20 @@ class Editor extends React.Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentDidUpdate(prevProps) {
     /**
      * If the old slug is empty and the new slug is not, a new entry was just
      * saved, and we need to update navigation to the correct url using the
      * slug.
      */
-    const newSlug = nextProps.entryDraft && nextProps.entryDraft.getIn(['entry', 'slug']);
-    if (!this.props.slug && newSlug && nextProps.newEntry) {
-      navigateToEntry(this.props.collection.get('name'), newSlug);
-      nextProps.loadEntry(nextProps.collection, newSlug);
+    const newSlug = this.props.entryDraft && this.props.entryDraft.getIn(['entry', 'slug']);
+    if (!prevProps.slug && newSlug && this.props.newEntry) {
+      navigateToEntry(prevProps.collection.get('name'), newSlug);
+      this.props.loadEntry(this.props.collection, newSlug);
     }
 
-    if (this.props.entry === nextProps.entry) return;
-    const { entry, newEntry, fields, collection } = nextProps;
+    if (prevProps.entry === this.props.entry) return;
+    const { entry, newEntry, fields, collection } = this.props;
 
     if (entry && !entry.get('isFetching') && !entry.get('error')) {
 
@@ -156,10 +156,10 @@ class Editor extends React.Component {
        */
       const values = deserializeValues(entry.get('data'), fields);
       const deserializedEntry = entry.set('data', values);
-      const fieldsMetaData = nextProps.entryDraft && nextProps.entryDraft.get('fieldsMetaData');
+      const fieldsMetaData = this.props.entryDraft && this.props.entryDraft.get('fieldsMetaData');
       this.createDraft(deserializedEntry, fieldsMetaData);
     } else if (newEntry) {
-      this.props.createEmptyDraft(collection);
+      prevProps.createEmptyDraft(collection);
     }
   }
 

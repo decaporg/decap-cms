@@ -90,8 +90,17 @@ export default class ListControl extends React.Component {
       itemsCollapsed: List(itemsCollapsed),
       value: valueToString(value),
     };
+  }
 
-    this.valueType = null;
+  getValueType = () => {
+    const { field } = this.props;
+    if (field.get('fields')) {
+      return valueTypes.MULTIPLE;
+    } else if (field.get('field')) {
+      return valueTypes.SINGLE;
+    } else {
+      return null;
+    }
   }
 
   /**
@@ -102,26 +111,6 @@ export default class ListControl extends React.Component {
    */
   shouldComponentUpdate() {
     return true;
-  }
-
-  componentDidMount() {
-    const { field } = this.props;
-
-    if (field.get('fields')) {
-      this.valueType = valueTypes.MULTIPLE;
-    } else if (field.get('field')) {
-      this.valueType = valueTypes.SINGLE;
-    }
-  }
-
-  componentWillUpdate(nextProps) {
-    if (this.props.field === nextProps.field) return;
-
-    if (nextProps.field.get('fields')) {
-      this.valueType = valueTypes.MULTIPLE;
-    } else if (nextProps.field.get('field')) {
-      this.valueType = valueTypes.SINGLE;
-    }
   }
 
   handleChange = (e) => {
@@ -151,7 +140,7 @@ export default class ListControl extends React.Component {
   handleAdd = (e) => {
     e.preventDefault();
     const { value, onChange } = this.props;
-    const parsedValue = (this.valueType === valueTypes.SINGLE) ? null : Map();
+    const parsedValue = (this.getValueType() === valueTypes.SINGLE) ? null : Map();
     this.setState({ itemsCollapsed: this.state.itemsCollapsed.push(false) });
     onChange((value || List()).push(parsedValue));
   }
@@ -168,7 +157,7 @@ export default class ListControl extends React.Component {
       const { value, metadata, onChange, field } = this.props;
       const collectionName = field.get('name');
       const newObjectValue = this.getObjectValue(index).set(fieldName, newValue);
-      const parsedValue = (this.valueType === valueTypes.SINGLE) ? newObjectValue.first() : newObjectValue;
+      const parsedValue = (this.getValueType() === valueTypes.SINGLE) ? newObjectValue.first() : newObjectValue;
       const parsedMetadata = {
         [collectionName]: Object.assign(metadata ? metadata.toJS() : {}, newMetadata ? newMetadata[collectionName] : {}),
       };

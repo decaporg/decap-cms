@@ -82,14 +82,17 @@ export default class RelationControl extends React.Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentDidUpdate(prevProps) {
+    /**
+     * Load extra post data into the store after first query.
+     */
     if (this.didInitialSearch) return;
-    if (nextProps.queryHits !== this.props.queryHits && nextProps.queryHits.get && nextProps.queryHits.get(this.controlID)) {
+    if (this.props.queryHits !== prevProps.queryHits && this.props.queryHits.get && this.props.queryHits.get(this.controlID)) {
       this.didInitialSearch = true;
-      const suggestion = nextProps.queryHits.get(this.controlID);
+      const suggestion = this.props.queryHits.get(this.controlID);
       if (suggestion && suggestion.length === 1) {
         const val = this.getSuggestionValue(suggestion[0]);
-        this.props.onChange(val, { [nextProps.field.get('collection')]: { [val]: suggestion[0].data } });
+        this.props.onChange(val, { [this.props.field.get('collection')]: { [val]: suggestion[0].data } });
       }
     }
   }
