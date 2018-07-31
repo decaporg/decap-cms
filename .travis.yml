@@ -1,5 +1,6 @@
 language: node_js
 cache:
+  yarn: true
   directories:
     - $HOME/.npm
     - $HOME/.yarn-cache
@@ -7,11 +8,9 @@ cache:
 node_js:
   - "8"
   - "10"
-before_install:
-  - npm i -g yarn --cache-min 999999999
 install:
-  - yarn
+  - yarn bootstrap
 notifications:
-    email: false
+  email: false
 git:
   depth: 5
