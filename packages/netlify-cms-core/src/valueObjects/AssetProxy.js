@@ -30,7 +30,7 @@ AssetProxy.prototype.toString = function () {
 };
 
 AssetProxy.prototype.toBase64 = function () {
-  return new Promise((resolve, reject) => {
+  return new Promise(resolve => {
     const fr = new FileReader();
     fr.onload = (readerEvt) => {
       const binaryString = readerEvt.target.result;
@@ -50,7 +50,7 @@ export function createAssetProxy(value, fileObj, uploaded = false, privateUpload
       response => (
         new AssetProxy(response.asset.url.replace(/^(https?):/, ''), null, true, response.asset)
       ),
-      error => new AssetProxy(value, fileObj, false)
+      () => new AssetProxy(value, fileObj, false)
     );  
   } else if (privateUpload) {
     throw new Error('The Private Upload option is only avaible for Asset Store Integration');

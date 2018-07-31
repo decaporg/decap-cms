@@ -11,12 +11,12 @@ export const DragSource = ({ namespace, ...props }) => {
   const DragComponent = ReactDNDDragSource(
     namespace,
     {
-      beginDrag({ children, isDragging, connectDragComponent, ...ownProps }) {
+      beginDrag({ children, isDragging, connectDragComponent, ...ownProps }) { // eslint-disable-line no-unused-vars
         // We return the rest of the props as the ID of the element being dragged.
         return ownProps;
       },
     },
-    (connect, monitor) => ({
+    connect => ({
       connectDragComponent: connect.dragSource(),
     }),
   )(

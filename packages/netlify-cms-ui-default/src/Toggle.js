@@ -39,7 +39,6 @@ const ToggleBackground = styled.span`
 const Toggle = ({
   active,
   onChange,
-  renderBackground,
   onFocus,
   onBlur,
   className,

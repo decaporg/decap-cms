@@ -102,7 +102,7 @@ export class Loader extends React.Component {
   };
 
   render() {
-    const { active, className } = this.props;
+    const { className } = this.props;
     return <div className={className}>{this.renderChild()}</div>;
   }
 }

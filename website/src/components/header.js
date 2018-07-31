@@ -22,7 +22,7 @@ class Header extends Component {
     window.removeEventListener('scroll', this.handleScroll);
   }
 
-  handleScroll = event => {
+  handleScroll = () => {
     const currentWindowPos =
       document.documentElement.scrollTop || document.body.scrollTop;
 

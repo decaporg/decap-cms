@@ -360,7 +360,6 @@ class Backend {
       description: entryDraft.getIn(["entry", "data", "description"], "No Description!"),
     };
 
-    const entryData = entryDraft.getIn(["entry", "data"]).toJS();
     let entryObj;
     if (newEntry) {
       if (!selectAllowNewEntries(collection)) {

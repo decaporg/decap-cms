@@ -66,9 +66,7 @@ class Editor extends React.Component {
 
   componentDidMount() {
     const {
-      entry,
       newEntry,
-      entryDraft,
       collection,
       slug,
       loadEntry,
@@ -179,12 +177,12 @@ class Editor extends React.Component {
       return;
     }
     const newStatus = status.get(newStatusName);
-    this.props.updateUnpublishedEntryStatus(collection.get('name'), slug, currentStatus, newStatus);
+    updateUnpublishedEntryStatus(collection.get('name'), slug, currentStatus, newStatus);
   }
 
   handlePersistEntry = async (opts = {}) => {
     const { createNew = false } = opts;
-    const { persistEntry, collection, entryDraft, newEntry, currentStatus, hasWorkflow, loadEntry, slug, createEmptyDraft } = this.props;
+    const { persistEntry, collection, currentStatus, hasWorkflow, loadEntry, slug, createEmptyDraft } = this.props;
 
     await persistEntry(collection)
 
@@ -299,7 +297,6 @@ class Editor extends React.Component {
         onChangeStatus={this.handleChangeStatus}
         onPublish={this.handlePublishEntry}
         showDelete={this.props.showDelete}
-        enableSave={entryDraft.get('hasChanged')}
         user={user}
         hasChanged={hasChanged}
         displayUrl={displayUrl}
@@ -315,7 +312,7 @@ class Editor extends React.Component {
 }
 
 function mapStateToProps(state, ownProps) {
-  const { collections, entryDraft, mediaLibrary, auth, config, entries } = state;
+  const { collections, entryDraft, auth, config, entries } = state;
   const slug = ownProps.match.params.slug;
   const collection = collections.get(ownProps.match.params.name);
   const collectionName = collection.get('name');

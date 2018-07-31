@@ -81,7 +81,7 @@ export default class DateControl extends React.Component {
   };
 
   render() {
-    const { includeTime, value, classNameWrapper, setActiveStyle, setInactiveStyle } = this.props;
+    const { includeTime, value, classNameWrapper, setActiveStyle } = this.props;
     return (
       <DateTime
         timeFormat={!!includeTime}

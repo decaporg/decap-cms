@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'react-emotion';
 import { isEmpty } from 'lodash';
-import Waypoint from 'react-waypoint';
 import { Modal } from 'UI';
 import MediaLibrarySearch from './MediaLibrarySearch';
 import MediaLibraryHeader from './MediaLibraryHeader';
@@ -77,7 +76,6 @@ const MediaLibraryModal = ({
   isPersisting,
   isDeleting,
   hasNextPage,
-  page,
   isPaginating,
   privateUpload,
   query,
@@ -180,7 +178,6 @@ MediaLibraryModal.propTypes = {
   isPersisting: PropTypes.bool,
   isDeleting: PropTypes.bool,
   hasNextPage: PropTypes.bool,
-  page: PropTypes.number,
   isPaginating: PropTypes.bool,
   privateUpload: PropTypes.bool,
   query: PropTypes.string,

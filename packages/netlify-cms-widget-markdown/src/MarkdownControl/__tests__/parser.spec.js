@@ -1,50 +1,6 @@
-import React from 'react';
-import { fromJS } from 'immutable';
 import { markdownToSlate } from '../../serializers';
 
 const parser = markdownToSlate;
-
-// Temporary plugins test
-const testPlugins = fromJS([
-  {
-    label: 'Image',
-    id: 'image',
-    fromBlock: match => match && {
-      image: match[2],
-      alt: match[1],
-    },
-    toBlock: data => `![${ data.alt }](${ data.image })`,
-    toPreview: data => <img src={data.image} alt={data.alt} />, // eslint-disable-line react/display-name
-    pattern: /^!\[([^\]]+)]\(([^)]+)\)$/,
-    fields: [{
-      label: 'Image',
-      name: 'image',
-      widget: 'image',
-    }, {
-      label: 'Alt Text',
-      name: 'alt',
-    }],
-  },
-  {
-    id: "youtube",
-    label: "Youtube",
-    fields: [{name: 'id', label: 'Youtube Video ID'}],
-    pattern: /^{{<\s?youtube (\S+)\s?>}}/,
-    fromBlock: function(match) {
-      return {
-        id: match[1]
-      };
-    },
-    toBlock: function(obj) {
-      return '{{< youtube ' + obj.id + ' >}}';
-    },
-    toPreview: function(obj) {
-      return (
-        '<img src="http://img.youtube.com/vi/' + obj.id + '/maxresdefault.jpg" alt="Youtube Video"/>'
-      );
-    }
-  },
-]);
 
 describe("Compile markdown to Slate Raw AST", () => {
   it("should compile simple markdown", () => {

@@ -51,13 +51,11 @@ export default class ObjectControl extends Component {
   }
 
   controlFor(field, key) {
-    const { value, onChangeObject, editorControl: EditorControl, resolveWidget } = this.props;
+    const { value, onChangeObject, editorControl: EditorControl } = this.props;
 
     if (field.get('widget') === 'hidden') {
       return null;
     }
-    const widgetName = field.get('widget') || 'string';
-    const widget = resolveWidget(widgetName);
     const fieldName = field.get('name');
     const fieldValue = value && Map.isMap(value) ? value.get(fieldName) : value;
 

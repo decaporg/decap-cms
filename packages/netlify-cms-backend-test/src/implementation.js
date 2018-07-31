@@ -207,7 +207,7 @@ export default class TestRepo {
     return Promise.resolve(normalizedAsset);
   }
 
-  deleteFile(path, commitMessage) {
+  deleteFile(path) {
     const assetIndex = this.assets.findIndex(asset => asset.path === path);
     if (assetIndex > -1) {
       this.assets.splice(assetIndex, 1);

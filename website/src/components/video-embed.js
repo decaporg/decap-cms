@@ -6,7 +6,7 @@ class VideoEmbed extends Component {
   state = {
     toggled: false
   };
-  toggleVideo = event => {
+  toggleVideo = () => {
     this.setState({
       toggled: true
     });
