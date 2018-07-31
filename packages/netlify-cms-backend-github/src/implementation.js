@@ -44,6 +44,7 @@ export default class GitHub {
       api_root: this.api_root,
       squash_merges: this.squash_merges,
       useWorkflow: this.options.useWorkflow,
+      initialWorkflowStatus: this.options.initialWorkflowStatus,
     });
     return this.api.user().then(user =>
       this.api.hasWriteAccess().then((isCollab) => {
