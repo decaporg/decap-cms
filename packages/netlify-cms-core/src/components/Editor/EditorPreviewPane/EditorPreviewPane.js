@@ -120,7 +120,7 @@ export default class PreviewPane extends React.Component {
         const widgets = nestedFields && Map(nestedFields.map((f, i) => [f.get('name'), <div key={i}>{this.getWidget(f, val, this.props)}</div>]));
         return Map({ data: val, widgets });
       });
-    };
+    }
 
     return Map({
       data: value,

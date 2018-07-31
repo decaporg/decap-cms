@@ -373,4 +373,4 @@ export default class EditorToolbar extends React.Component {
       </ToolbarContainer>
     );
   }
-};
+}

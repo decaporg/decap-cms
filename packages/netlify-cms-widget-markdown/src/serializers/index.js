@@ -106,7 +106,7 @@ export const remarkToMarkdown = obj => {
     const Compiler = this.Compiler;
     const visitors = Compiler.prototype.visitors;
     visitors.text = node => node.value;
-  };
+  }
 
   /**
    * Provide an empty MDAST if no value is provided.

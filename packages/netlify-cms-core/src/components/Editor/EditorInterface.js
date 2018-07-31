@@ -186,7 +186,7 @@ class EditorInterface extends Component {
           fieldsErrors={fieldsErrors}
           onChange={onChange}
           onValidate={onValidate}
-          ref={c => this.controlPaneRef = c} // eslint-disable-line
+          ref={c => this.controlPaneRef = c}
         />
       </ControlPaneContainer>
     );

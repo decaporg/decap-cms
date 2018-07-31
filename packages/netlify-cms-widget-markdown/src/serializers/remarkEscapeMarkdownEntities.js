@@ -93,7 +93,7 @@ const escapePatterns = [
    *
    * Match strings surrounded by one or more asterisks on both sides.
    */
-  /(\*+)[^\*]*(\1)/g,
+  /(\*+)[^*]*(\1)/g,
 
   /**
    * Emphasis - Underscore

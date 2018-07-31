@@ -143,14 +143,14 @@ export default class API {
     const cache = localForage.getItem(`gh.meta.${ key }`);
     return cache.then((cached) => {
       if (cached && cached.expires > Date.now()) { return cached.data; }
-      console.log("%c Checking for MetaData files", "line-height: 30px;text-align: center;font-weight: bold"); // eslint-disable-line
+      console.log("%c Checking for MetaData files", "line-height: 30px;text-align: center;font-weight: bold");
       return this.request(`${ this.repoURL }/contents/${ key }.json`, {
         params: { ref: "refs/meta/_netlify_cms" },
         headers: { Accept: "application/vnd.github.VERSION.raw" },
         cache: "no-store",
       })
       .then(response => JSON.parse(response))
-      .catch(error => console.log("%c %s does not have metadata", "line-height: 30px;text-align: center;font-weight: bold", key)); // eslint-disable-line
+      .catch(error => console.log("%c %s does not have metadata", "line-height: 30px;text-align: center;font-weight: bold", key));
     });
   }
 
@@ -227,7 +227,7 @@ export default class API {
   }
 
   listUnpublishedBranches() {
-    console.log("%c Checking for Unpublished entries", "line-height: 30px;text-align: center;font-weight: bold"); // eslint-disable-line
+    console.log("%c Checking for Unpublished entries", "line-height: 30px;text-align: center;font-weight: bold");
     return this.request(`${ this.repoURL }/git/refs/heads/cms`)
     .then(branches => filterPromises(branches, (branch) => {
       const branchName = branch.ref.substring("/refs/heads/".length - 1);
@@ -245,7 +245,7 @@ export default class API {
         .then(prs => prs.some(pr => pr.head.ref === branchName));
     }))
     .catch((error) => {
-      console.log("%c No Unpublished entries", "line-height: 30px;text-align: center;font-weight: bold"); // eslint-disable-line
+      console.log("%c No Unpublished entries", "line-height: 30px;text-align: center;font-weight: bold");
       throw error;
     });
   }
@@ -262,7 +262,7 @@ export default class API {
       parts = file.path.split("/").filter(part => part);
       filename = parts.pop();
       subtree = fileTree;
-      while (part = parts.shift()) {
+      while (part = parts.shift()) { // eslint-disable-line no-cond-assign
         subtree[part] = subtree[part] || {};
         subtree = subtree[part];
       }
@@ -636,7 +636,7 @@ export default class API {
   closePR(pullrequest, objects) {
     const headSha = pullrequest.head;
     const prNumber = pullrequest.number;
-    console.log("%c Deleting PR", "line-height: 30px;text-align: center;font-weight: bold"); // eslint-disable-line
+    console.log("%c Deleting PR", "line-height: 30px;text-align: center;font-weight: bold");
     return this.request(`${ this.repoURL }/pulls/${ prNumber }`, {
       method: "PATCH",
       body: JSON.stringify({
@@ -648,7 +648,7 @@ export default class API {
   mergePR(pullrequest, objects) {
     const headSha = pullrequest.head;
     const prNumber = pullrequest.number;
-    console.log("%c Merging PR", "line-height: 30px;text-align: center;font-weight: bold"); // eslint-disable-line
+    console.log("%c Merging PR", "line-height: 30px;text-align: center;font-weight: bold");
     return this.request(`${ this.repoURL }/pulls/${ prNumber }/merge`, {
       method: "PUT",
       body: JSON.stringify({
@@ -673,7 +673,7 @@ export default class API {
     files.forEach((file) => {
       commitMessage += `\n* "${ file.path }"`;
     });
-    console.log("%c Automatic merge not possible - Forcing merge.", "line-height: 30px;text-align: center;font-weight: bold"); // eslint-disable-line
+    console.log("%c Automatic merge not possible - Forcing merge.", "line-height: 30px;text-align: center;font-weight: bold");
     return this.getBranch()
     .then(branchData => this.updateTree(branchData.commit.sha, "/", fileTree))
     .then(changeTree => this.commit(commitMessage, changeTree))
@@ -738,7 +738,7 @@ export default class API {
 
         for (let i = 0, len = tree.tree.length; i < len; i++) {
           obj = tree.tree[i];
-          if (fileOrDir = fileTree[obj.path]) {
+          if (fileOrDir = fileTree[obj.path]) { // eslint-disable-line no-cond-assign
             added[obj.path] = true;
             if (fileOrDir.file) {
               updates.push({ path: obj.path, mode: obj.mode, type: obj.type, sha: fileOrDir.sha });

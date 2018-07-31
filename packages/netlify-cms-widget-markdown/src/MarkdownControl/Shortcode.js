@@ -112,4 +112,4 @@ export default class Shortcode extends React.Component {
       </ShortcodeContainer>
     );
   }
-};
+}

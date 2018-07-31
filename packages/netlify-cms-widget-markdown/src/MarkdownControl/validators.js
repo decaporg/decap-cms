@@ -86,4 +86,4 @@ export function validateNode(node) {
       );
     }
   }
-};
+}

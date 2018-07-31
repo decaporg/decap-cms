@@ -48,7 +48,7 @@ export default function remarkPaddedLinks() {
     const children = processedChildren.map(transform);
 
     return { ...node, children };
-  };
+  }
 
   function transformChildren(node) {
     if (node.type !== 'link') return node;
@@ -102,7 +102,7 @@ export default function remarkPaddedLinks() {
      */
     let findFn;
     if (end) { findFn = findLast } 
-    else { findFn = find }; 
+    else { findFn = find }
 
     let edgeChildWithValue;
     setEdgeChildWithValue(node);

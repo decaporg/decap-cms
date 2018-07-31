@@ -8,7 +8,7 @@ const image = {
     alt: match[1],
   },
   toBlock: data => `![${ data.alt || '' }](${ data.image || '' })`,
-  toPreview: (data, getAsset) => <img src={getAsset(data.image) || ''} alt={data.alt || ''} />,
+  toPreview: (data, getAsset) => <img src={getAsset(data.image) || ''} alt={data.alt || ''} />, // eslint-disable-line react/display-name
   pattern: /^!\[(.*)\]\((.*)\)$/,
   fields: [{
     label: 'Image',

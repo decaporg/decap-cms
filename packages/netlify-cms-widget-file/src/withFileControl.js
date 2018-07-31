@@ -49,7 +49,7 @@ const FileWidgetButtonRemove = styled.button`
 `
 
 export default function withFileControl({ forImage } = {}) {
-  return class extends React.Component {
+  return class FileControl extends React.Component {
     static propTypes = {
       field: PropTypes.object.isRequired,
       getAsset: PropTypes.func.isRequired,
@@ -164,4 +164,4 @@ export default function withFileControl({ forImage } = {}) {
       );
     }
   }
-};
+}

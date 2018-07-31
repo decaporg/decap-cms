@@ -29,7 +29,7 @@ export default class Bitbucket {
     }
 
     if (!this.options.proxied && !config.getIn(["backend", "repo"], false)) {
-      throw new Error("The BitBucket backend needs a \"repo\ in the backend configuration.");
+      throw new Error("The BitBucket backend needs a \"repo\" in the backend configuration.");
     }
 
     this.api = this.options.API || null;

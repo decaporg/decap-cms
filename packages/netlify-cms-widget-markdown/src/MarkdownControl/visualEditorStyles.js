@@ -70,6 +70,13 @@ export default css`
     white-space: pre-wrap;
   }
 
+  code {
+    background-color: ${colors.background};
+    border-radius: ${lengths.borderRadius};
+    padding: 0 2px;
+    font-size: 85%;
+  }
+
   pre > code {
     display: block;
     width: 100%;
@@ -78,13 +85,6 @@ export default css`
     color: #ccc;
     border-radius: ${lengths.borderRadius};
     padding: 10px;
-  }
-
-  code {
-    background-color: ${colors.background};
-    border-radius: ${lengths.borderRadius};
-    padding: 0 2px;
-    font-size: 85%;
   }
 
   blockquote {

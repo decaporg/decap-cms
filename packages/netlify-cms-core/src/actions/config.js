@@ -86,7 +86,7 @@ export function validateConfig(config) {
     throw new Error("Error in configuration file: Your `backend.name` must be a string. Check your config.yml file.");
   }
   if (!config.get('media_folder')) {
-    throw new Error("Error in configuration file: A `media_folder` wasn\'t found. Check your config.yml file.");
+    throw new Error("Error in configuration file: A `media_folder` wasn't found. Check your config.yml file.");
   }
   if (typeof config.get('media_folder') !== 'string') {
     throw new Error("Error in configuration file: Your `media_folder` must be a string. Check your config.yml file.");
@@ -99,7 +99,7 @@ export function validateConfig(config) {
     throw new Error("Error in configuration file: Your `slug.clean_accents` must be a boolean. Check your config.yml file.");
   }
   if (!config.get('collections')) {
-    throw new Error("Error in configuration file: A `collections` wasn\'t found. Check your config.yml file.");
+    throw new Error("Error in configuration file: A `collections` wasn't found. Check your config.yml file.");
   }
   const collections = config.get('collections');
   if (!List.isList(collections) || collections.isEmpty() || !collections.first()) {

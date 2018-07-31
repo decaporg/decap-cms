@@ -45,7 +45,7 @@ const slugFormatter = (collection, entryData, slugConfig) => {
     throw new Error("Collection must have a field name that is a valid entry identifier");
   }
 
-  const slug = template.replace(/\{\{([^\}]+)\}\}/g, (_, field) => {
+  const slug = template.replace(/\{\{([^}]+)\}\}/g, (_, field) => {
     switch (field) {
       case "year":
         return date.getFullYear();
@@ -85,7 +85,7 @@ const commitMessageTemplates = Map({
 const commitMessageFormatter = (type, config, { slug, path, collection }) => {
   const templates = commitMessageTemplates.merge(config.getIn(['backend', 'commit_messages'], Map()));
   const messageTemplate = templates.get(type);
-  return messageTemplate.replace(/\{\{([^\}]+)\}\}/g, (_, variable) => {
+  return messageTemplate.replace(/\{\{([^}]+)\}\}/g, (_, variable) => {
     switch (variable) {
       case 'slug':
         return slug;
