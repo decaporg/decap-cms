@@ -92,7 +92,7 @@ function transform(node) {
  * they were text is a bit of a necessary hack.
  */
 function combineTextAndInline(nodes) {
-  return nodes.reduce((acc, node, idx, nodes) => {
+  return nodes.reduce((acc, node) => {
     const prevNode = last(acc);
     const prevNodeLeaves = get(prevNode, 'leaves');
     const data = node.data || {};

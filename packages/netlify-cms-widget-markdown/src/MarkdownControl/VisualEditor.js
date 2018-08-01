@@ -76,7 +76,7 @@ export default class Editor extends React.Component {
   handleBlockClick = (event, type) => {
     event.preventDefault();
     let { value } = this.state;
-    const { document: doc, selection } = value;
+    const { document: doc } = value;
     const { unwrapList, wrapInList } = EditListConfigured.changes;
     let change = value.change();
 
@@ -178,9 +178,8 @@ export default class Editor extends React.Component {
 
 
   handleDocumentChange = debounce(change => {
-    const { onChange, getEditorComponents } = this.props;
+    const { onChange } = this.props;
     const raw = change.value.document.toJSON();
-    const plugins = getEditorComponents();
     const markdown = slateToMarkdown(raw);
     onChange(markdown);
   }, 150);

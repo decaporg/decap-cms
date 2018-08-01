@@ -20,7 +20,7 @@ function onKeyDown(event, change) {
      * If the selected block is the first block in the document, create the
      * new block above it. If not, create the new block below it.
      */
-    const { document: doc, range, anchorBlock, focusBlock } = change.value;
+    const { document: doc, anchorBlock, focusBlock } = change.value;
     const singleBlockSelected = anchorBlock === focusBlock;
     if (!singleBlockSelected || !focusBlock.isVoid) return;
 
@@ -45,7 +45,7 @@ function onKeyDown(event, change) {
     [ '`', 'code' ],
   ];
 
-  const [ markKey, markName ] = marks.find(([ key ]) => isHotkey(`mod+${key}`, event)) || [];
+  const [ , markName ] = marks.find(([ key ]) => isHotkey(`mod+${key}`, event)) || [];
 
   if (markName) {
     event.preventDefault();
