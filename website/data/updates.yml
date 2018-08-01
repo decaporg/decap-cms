@@ -1,7 +1,10 @@
 updates:
   - date: '2018-08-01'
+    description: Fix workflow publishing
+    version: 2.0.8
+  - date: '2018-08-01'
     description: Fix uploads in backends, fix workflow, other bugfixes
-    version: 2.0.6
+    version: 2.0.7
   - date: '2018-07-28'
     description: Fix backends
     version: 2.0.6
