@@ -8,8 +8,6 @@ const Entries = ({
   collections,
   entries,
   publicFolder,
-  page,
-  onPaginate,
   isFetching,
   viewStyle,
   cursor,

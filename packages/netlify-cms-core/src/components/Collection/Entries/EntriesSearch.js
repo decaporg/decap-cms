@@ -53,7 +53,7 @@ class EntriesSearch extends React.Component {
   };
 
   render () {
-    const { collections, entries, publicFolder, page, isFetching } = this.props;
+    const { collections, entries, publicFolder, isFetching } = this.props;
     return (
       <Entries
         cursor={this.getCursor()}
@@ -61,8 +61,6 @@ class EntriesSearch extends React.Component {
         collections={collections}
         entries={entries}
         publicFolder={publicFolder}
-        page={page}
-        onPaginate={this.handleLoadMore}
         isFetching={isFetching}
       />
     );
