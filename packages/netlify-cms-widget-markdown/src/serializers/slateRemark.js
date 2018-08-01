@@ -158,19 +158,6 @@ function processCodeMark(markTypes) {
   return { filteredMarkTypes, textNodeType };
 }
 
-
-/**
- * Wraps a text node in one or more mark nodes by placing the text node in an
- * array and using that as the `children` value of a mark node. The resulting
- * mark node is then placed in an array and used as the child of a mark node for
- * the next mark type in `markTypes`. This continues for each member of
- * `markTypes`. If `markTypes` is empty, the original text node is returned.
- */
-function wrapTextWithMarks(textNode, markTypes) {
-  const wrapTextWithMark = (childNode, markType) => u(markType, [childNode]);
-  return markTypes.reduce(wrapTextWithMark, textNode);
-}
-
 /**
  * Converts a Slate Raw text node to an MDAST text node.
  *
