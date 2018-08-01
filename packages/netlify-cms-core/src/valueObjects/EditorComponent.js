@@ -1,40 +1,19 @@
-import PropTypes from 'prop-types';
-import { Component, Children } from 'react';
-import { List, Record, fromJS } from 'immutable';
+import { Record, fromJS } from 'immutable';
 import { isFunction } from 'lodash';
 
-const plugins = { editor: List() };
-
 const catchesNothing = /.^/;
+/* eslint-disable no-unused-vars */
 const EditorComponent = Record({
   id: null,
   label: 'unnamed component',
   icon: 'exclamation-triangle',
   fields: [],
   pattern: catchesNothing,
-  fromBlock(match) { return {}; },
+  fromBlock(match) { return {}; }, 
   toBlock(attributes) { return 'Plugin'; },
   toPreview(attributes) { return 'Plugin'; },
 });
-
-
-class Plugin extends Component {
-  static propTypes = {
-    children: PropTypes.element.isRequired,
-  };
-
-  static childContextTypes = {
-    plugins: PropTypes.object,
-  };
-
-  getChildContext() {
-    return { plugins };
-  }
-
-  render() {
-    return Children.only(this.props.children);
-  }
-}
+/* eslint-enable */
 
 export default function createEditorComponent(config) {
   const configObj = new EditorComponent({
