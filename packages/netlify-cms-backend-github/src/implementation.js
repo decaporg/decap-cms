@@ -43,7 +43,6 @@ export default class GitHub {
       repo: this.repo,
       api_root: this.api_root,
       squash_merges: this.squash_merges,
-      useWorkflow: this.options.useWorkflow,
       initialWorkflowStatus: this.options.initialWorkflowStatus,
     });
     return this.api.user().then(user =>
