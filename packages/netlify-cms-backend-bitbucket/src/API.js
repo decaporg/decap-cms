@@ -118,10 +118,15 @@ export default class API {
     return this.processFiles(entries);
   };
 
-  uploadBlob = async item => {
+  uploadBlob = async (item, { commitMessage, branch = this.branch, author = this.commitAuthor } = {}) => {
     const contentBase64 = await (has(item, 'toBase64') ? item.toBase64() : Promise.resolve(item.raw));
     const formData = new FormData();
-    formData.append(item.path, contentBase64);
+    // Third param is filename header, in case path is `message`, `branch`, etc.
+    formData.append(item.path, contentBase64, basename(item.path));
+    body.append('branch', branch);
+    if (commitMessage) {
+      formData.append("message", commitMessage);
+    }
 
     return flow([
       unsentRequest.withMethod("POST"),
@@ -131,15 +136,15 @@ export default class API {
     ])(`${ this.repoURL }/src`);
   };
 
-  persistFiles = (files, { commitMessage, newEntry }) => Promise.all(
-    files.filter(({ uploaded }) => !uploaded).map(this.uploadBlob)
+  persistFiles = (files, { commitMessage }) => Promise.all(
+    files.filter(({ uploaded }) => !uploaded).map(file => this.uploadBlob(file, { commitMessage }))
   );
 
-  deleteFile = (path, message, options={}) => {
-    const branch = options.branch || this.branch;
+  deleteFile = (path, message, { branch = this.branch } = {}) => {
     const body = new FormData();
     body.append('files', path);
-    if (message && message !== "") {
+    body.append('branch', branch);
+    if (message) {
       body.append("message", message);
     }
     return flow([
