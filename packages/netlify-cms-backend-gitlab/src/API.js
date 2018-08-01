@@ -1,7 +1,7 @@
 import { localForage, unsentRequest, then, APIError, Cursor } from "netlify-cms-lib-util";
 import { Base64 } from "js-base64";
 import { List, Map } from "immutable";
-import { flow, partial, pick, get } from "lodash";
+import { flow, partial, pick, get, result } from "lodash";
 
 export default class API {
   constructor(config) {
@@ -185,7 +185,7 @@ export default class API {
   toBase64 = str => Promise.resolve(Base64.encode(str));
   fromBase64 = str => Base64.decode(str);
   uploadAndCommit = async (item, { commitMessage, updateFile = false, branch = this.branch, author = this.commitAuthor }) => {
-    const content = get(item, 'toBase64', partial(this.toBase64, item.raw))();
+    const content = await result(item, 'toBase64', partial(this.toBase64, item.raw));
     const file_path = item.path.replace(/^\//, "");
     const action = (updateFile ? "update" : "create");
     const encoding = "base64";
