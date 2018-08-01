@@ -185,11 +185,7 @@ export default class API {
   toBase64 = str => Promise.resolve(Base64.encode(str));
   fromBase64 = str => Base64.decode(str);
   uploadAndCommit = async (item, { commitMessage, updateFile = false, branch = this.branch, author = this.commitAuthor }) => {
-    let content = result(item, 'toBase64', partial(this.toBase64, item.raw));
-    if (content instanceof Promise) {
-      content = await content;
-    }
-
+    const content = await result(item, 'toBase64', partial(this.toBase64, item.raw));
     const file_path = item.path.replace(/^\//, "");
     const action = (updateFile ? "update" : "create");
     const encoding = "base64";
