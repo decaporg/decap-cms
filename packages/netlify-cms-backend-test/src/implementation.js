@@ -134,7 +134,7 @@ export default class TestRepo {
   }
 
   persistEntry({ path, raw, slug }, mediaFiles = [], options = {}) {
-    if (this.options.useWorkflow) {
+    if (options.useWorkflow) {
       const unpubStore = window.repoFilesUnpublished;
       const existingEntryIndex = unpubStore.findIndex(e => e.file.path === path);
       if (existingEntryIndex >= 0) {

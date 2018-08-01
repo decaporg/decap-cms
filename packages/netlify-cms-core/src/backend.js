@@ -385,6 +385,8 @@ class Backend {
 
     const commitMessage = commitMessageFormatter(newEntry ? 'create' : 'update', config, { collection, slug: entryObj.slug, path: entryObj.path });
 
+    const useWorkflow = config.getIn(["publish_mode"]) === EDITORIAL_WORKFLOW;
+
     const collectionName = collection.get("name");
 
     /**
@@ -397,6 +399,7 @@ class Backend {
       parsedData,
       commitMessage,
       collectionName,
+      useWorkflow,
       ...updatedOptions
     };
 
