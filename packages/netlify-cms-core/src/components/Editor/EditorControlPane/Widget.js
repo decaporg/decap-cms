@@ -41,7 +41,7 @@ export default class Widget extends Component {
     getAsset: PropTypes.func.isRequired,
     resolveWidget: PropTypes.func.isRequired,
     getEditorComponents: PropTypes.func.isRequired,
-    isFetching: PropTypes.node,
+    isFetching: PropTypes.bool,
     query: PropTypes.func.isRequired,
     clearSearch: PropTypes.func.isRequired,
     queryHits: PropTypes.oneOfType([
