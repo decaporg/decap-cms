@@ -52,6 +52,7 @@ export default class RelationControl extends React.Component {
     value: PropTypes.node,
     field: PropTypes.node,
     isFetching: PropTypes.bool,
+    fetchID: PropTypes.string,
     query: PropTypes.func.isRequired,
     clearSearch: PropTypes.func.isRequired,
     queryHits: PropTypes.oneOfType([
@@ -141,6 +142,7 @@ export default class RelationControl extends React.Component {
     const {
       value,
       isFetching,
+      fetchID,
       forID,
       queryHits,
       classNameWrapper,
@@ -172,7 +174,7 @@ export default class RelationControl extends React.Component {
           inputProps={inputProps}
           focusInputOnSuggestionClick={false}
         />
-        <Loader active={isFetching} />
+        <Loader active={isFetching && this.controlID === fetchID} />
       </div>
     );
   }
