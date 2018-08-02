@@ -44,7 +44,7 @@ const entries = (state = defaultState, action) => {
     case QUERY_REQUEST:
       if (action.payload.searchTerm !== state.get('term')) {
         return state.withMutations((map) => {
-          map.set('isFetching', action.payload.namespace);
+          map.set('isFetching', action.payload.namespace ? true : false);
           map.set('term', action.payload.searchTerm);
         });
       }
