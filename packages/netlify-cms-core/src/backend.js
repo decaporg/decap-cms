@@ -467,9 +467,14 @@ class Backend {
   }
 
   filterEntries(collection, filterRule) {
-    return collection.entries.filter(entry => (
-      entry.data[filterRule.get('field')] === filterRule.get('value')
-    ));
+    return collection.entries.filter(entry => {
+      const fieldValue = entry.data[filterRule.get('field')];
+      console.log(JSON.stringify(fieldValue));
+      if(Array.isArray(fieldValue)) {
+        return fieldValue.includes(filterRule.get('value'));
+      }
+      return fieldValue === filterRule.get('value')
+    });
   }
 }
 
