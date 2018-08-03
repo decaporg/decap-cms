@@ -69,7 +69,7 @@ const getConfigSchema = () => ({
                       widget: { type: "string" },
                       required: { type: "boolean" },
                     },
-                    required: ["name", "label", "widget"],
+                    required: ["name", "label"],
                   },
                 },
               },
