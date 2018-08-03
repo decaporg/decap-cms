@@ -38,8 +38,12 @@ const AppMainContainer = styled.div`
   margin: 0 auto;
 `
 
+const ErrorContainer = styled.div`
+  margin: 20px;
+`
+
 const ErrorCodeBlock = styled.pre`
-  margin-left: 1em;
+  margin-left: 20px;
   font-size: 15px;
   line-height: 1.5;
 `
@@ -60,7 +64,7 @@ class App extends React.Component {
 
   static configError(config) {
     return (
-      <div>
+      <ErrorContainer>
         <h1>Error loading the CMS configuration</h1>
 
         <div>
@@ -68,7 +72,7 @@ class App extends React.Component {
           <ErrorCodeBlock>{config.get('error')}</ErrorCodeBlock>
           <span>Check your config.yml file.</span>
         </div>
-      </div>
+      </ErrorContainer>
     );
   }
 
