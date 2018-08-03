@@ -10,7 +10,7 @@
     "watch": "webpack -w",
     "build": "cross-env NODE_ENV=production webpack",
     "build-preview": "cross-env NODE_ENV=production webpack-dev-server --open",
-    "develop": "webpack-dev-server --hot --open"
+    "develop": "webpack-dev-server --hot"
   },
   "keywords": [
     "netlify",
