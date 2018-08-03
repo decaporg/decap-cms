@@ -62,31 +62,32 @@ export default class ObjectControl extends Component {
     this.setState({ collapsed: !this.state.collapsed });
   };
 
+  renderFields = (multiFields, singleField) => {
+    if (multiFields) {
+      return multiFields.map((f, idx) => this.controlFor(f, idx))
+    }
+    return this.controlFor(singleField)
+  }
+
   render() {
     const { field, forID, classNameWrapper, forList } = this.props;
     const { collapsed } = this.state;
     const multiFields = field.get('fields');
     const singleField = field.get('field');
 
-    if (multiFields) {
+    if (multiFields || singleField) {
       return (
-        <div
-          id={forID}
-          className={cx(classNameWrapper, components.objectWidgetTopBarContainer, {
-            [styles.nestedObjectControl]: forList,
-          })}
-        >
-          {forList ? null : (
-            <ObjectWidgetTopBar
-              collapsed={collapsed}
-              onCollapseToggle={this.handleCollapseToggle}
-            />
-          )}
-          {collapsed ? null : multiFields.map((f, idx) => this.controlFor(f, idx))}
+        <div id={forID} className={cx(
+          classNameWrapper,
+          components.objectWidgetTopBarContainer,
+          { [styles.nestedObjectControl]: forList },
+        )}>
+          {forList ? null :
+            <ObjectWidgetTopBar collapsed={collapsed} onCollapseToggle={this.handleCollapseToggle} />
+          }
+          {collapsed ? null : this.renderFields(multiFields, singleField)}
         </div>
       );
-    } else if (singleField) {
-      return this.controlFor(singleField);
     }
 
     return <h3>No field(s) defined for this widget</h3>;
