@@ -1,6 +1,14 @@
 import { validateConfig } from '../configSchema';
 
 describe('config', () => {
+  /**
+   * Suppress error logging to reduce noise during testing. Jest will still
+   * log test failures and associated errors as expected.
+   */
+  beforeEach(() => {
+    spyOn(console, 'error')
+  })
+
   describe('validateConfig', () => {
     it('should not throw if no errors', () => {
       const config = {
