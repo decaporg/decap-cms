@@ -8,6 +8,25 @@ import {
 import { IDENTIFIER_FIELDS } from "Constants/fieldInference";
 
 /**
+ * Config for fields in both file and folder collections.
+ */
+const fieldsConfig = {
+  type: "array",
+  minItems: 1,
+  items: {
+    // ------- Each field: -------
+    type: "object",
+    properties: {
+      name: { type: "string" },
+      label: { type: "string" },
+      widget: { type: "string" },
+      required: { type: "boolean" },
+    },
+    required: ["name"],
+  },
+};
+
+/**
  * The schema had to be wrapped in a function to
  * fix a circular dependency problem for WebPack,
  * where the imports get resolved asyncronously.
@@ -58,20 +77,7 @@ const getConfigSchema = () => ({
                 label_singular: { type: "string" },
                 description: { type: "string" },
                 file: { type: "string" },
-                fields: {
-                  type: "array",
-                  items: {
-                    // ------- Each field: -------
-                    type: "object",
-                    properties: {
-                      name: { type: "string" },
-                      label: { type: "string" },
-                      widget: { type: "string" },
-                      required: { type: "boolean" },
-                    },
-                    required: ["name"],
-                  },
-                },
+                fields: fieldsConfig,
               },
               required: ["name", "label", "file", "fields"],
             },
@@ -87,21 +93,7 @@ const getConfigSchema = () => ({
           format: { type: "string", enum: Object.keys(formatExtensions) },
           extension: { type: "string" },
           frontmatter_delimiter: { type: "string" },
-          fields: {
-            type: "array",
-            minItems: 1,
-            items: {
-              // ------- Each field: -------
-              type: "object",
-              properties: {
-                name: { type: "string" },
-                label: { type: "string" },
-                widget: { type: "string" },
-                required: { type: "boolean" },
-              },
-              required: ["name", "label"],
-            },
-          },
+          fields: fieldsConfig,
         },
         required: ["name", "label"],
         oneOf: [{ required: ["files"] }, { required: ["folder", "fields"] }],
