@@ -103,6 +103,7 @@ export default class GitGateway {
         tokenPromise: this.tokenPromise,
         commitAuthor: pick(userData, ["name", "email"]),
         squash_merges: this.squash_merges,
+        initialWorkflowStatus: this.options.initialWorkflowStatus,
       };
 
       if (this.backendType === "github") {
