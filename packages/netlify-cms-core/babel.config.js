@@ -5,6 +5,7 @@ module.exports = {
   ...babelConfig,
   plugins: [
     ...babelConfig.plugins,
+    'react-hot-loader/babel',
     ['module-resolver', {
       root: path.join(__dirname, 'src/components'),
       alias: {
