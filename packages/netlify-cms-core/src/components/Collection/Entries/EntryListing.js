@@ -8,9 +8,10 @@ import { Cursor } from 'netlify-cms-lib-util';
 import { selectFields, selectInferedField } from 'Reducers/collections';
 import EntryCard from './EntryCard';
 
-const CardsGrid = styled.div`
+const CardsGrid = styled.ul`
   display: flex;
   flex-flow: row wrap;
+  list-style-type: none;
   margin-left: -12px;
 `
 
