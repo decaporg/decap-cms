@@ -14,7 +14,7 @@ const CollectionContainer = styled.div`
   margin: ${lengths.pageMargin};
 `
 
-const CollectionMain = styled.div`
+const CollectionMain = styled.main`
   padding-left: 280px;
 `
 
