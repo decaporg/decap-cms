@@ -189,7 +189,6 @@ export default class API {
     const file_path = item.path.replace(/^\//, "");
     const action = (updateFile ? "update" : "create");
     const encoding = "base64";
-    const { name: author_name, email: author_email } = pick(author || {}, ["name", "email"]);
     
     const commitParams = {
       branch,
@@ -197,8 +196,9 @@ export default class API {
       actions: [{ action, file_path, content, encoding }],
     };
     if (author) {
-      commitParams.author_name = author_name;
-      commitParams.author_email = author_email;
+      const { name, email } = author;
+      commitParams.author_name = name;
+      commitParams.author_email = email;
     }
 
     await this.request({
@@ -216,11 +216,11 @@ export default class API {
 
   deleteFile = (path, commit_message, options = {}) => {
     const branch = options.branch || this.branch;
-    const { name: author_name, email: author_email } = pick(this.commitAuthor || {}, ["name", "email"]);
     const commitParams = { commit_message, branch };
-    if (author) {
-      commitParams.author_name = author_name;
-      commitParams.author_email = author_email;
+    if (this.commitAuthor) {
+      const { name, email } = this.commitAuthor;
+      commitParams.author_name = name;
+      commitParams.author_email = email;
     }
     return flow([
       unsentRequest.withMethod("DELETE"),
