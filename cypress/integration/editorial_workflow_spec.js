@@ -160,7 +160,7 @@ describe('Editorial Workflow', () => {
 
     function assertOnCollectionsPage() {
       cy.url().should('contain', '/#/collections/posts')
-      cy.contains('h1', 'Collections')
+      cy.contains('h2', 'Collections')
     }
 
     it('successfully loads', () => {
