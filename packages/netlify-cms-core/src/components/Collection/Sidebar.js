@@ -22,7 +22,7 @@ const SidebarContainer = styled.aside`
   overflow: auto;
 `
 
-const SidebarHeading = styled.h1`
+const SidebarHeading = styled.h2`
   font-size: 23px;
   font-weight: 600;
   padding: 0;
