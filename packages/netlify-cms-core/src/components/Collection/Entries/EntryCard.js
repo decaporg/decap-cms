@@ -21,14 +21,17 @@ const ListCardLink = styled(Link)`
   }
 `
 
-const GridCardLink = styled(Link)`
+const GridCard = styled.li`
   ${components.card};
   flex: 0 0 335px;
   height: 240px;
   overflow: hidden;
   margin-left: 12px;
   margin-bottom: 16px;
+`
 
+const GridCardLink = styled(Link)`
+  display: block;
   &, &:hover {
     background-color: ${colors.foreground};
     color: ${colors.text};
@@ -106,13 +109,15 @@ const EntryCard = ({
 
   if (viewStyle === VIEW_STYLE_GRID) {
     return (
-      <GridCardLink to={path}>
-        <CardBody hasImage={image}>
-          { collectionLabel ? <CollectionLabel>{collectionLabel}</CollectionLabel> : null }
-          <CardHeading>{title}</CardHeading>
-        </CardBody>
-        { image ? <CardImage url={image}/> : null }
-      </GridCardLink>
+      <GridCard>
+        <GridCardLink to={path}>
+          <CardBody hasImage={image}>
+            { collectionLabel ? <CollectionLabel>{collectionLabel}</CollectionLabel> : null }
+            <CardHeading>{title}</CardHeading>
+          </CardBody>
+          { image ? <CardImage url={image}/> : null }
+        </GridCardLink>
+      </GridCard>
     );
   }
 }
