@@ -5,10 +5,6 @@ import { resolvePath } from 'netlify-cms-lib-util';
 import { colors, colorsRaw, components, lengths } from 'netlify-cms-ui-default';
 import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from 'Constants/collectionViews';
 
-const List = styled.ul`
-  list-style-type: none;
-`
-
 const ListCard = styled.li`
   ${components.card};
   width: ${lengths.topCardWidth};
