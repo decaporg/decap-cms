@@ -123,7 +123,7 @@ export default class API {
     const formData = new FormData();
     // Third param is filename header, in case path is `message`, `branch`, etc.
     formData.append(item.path, contentBase64, basename(item.path));
-    body.append('branch', branch);
+    formData.append('branch', branch);
     if (commitMessage) {
       formData.append("message", commitMessage);
     }
@@ -153,7 +153,7 @@ export default class API {
     }
     if (this.commitAuthor) {
       const { name, email } = this.commitAuthor;
-      formData.append("author", `${name} <${email}>`);
+      body.append("author", `${name} <${email}>`);
     }
     return flow([
       unsentRequest.withMethod("POST"),
