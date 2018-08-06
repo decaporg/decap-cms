@@ -13,7 +13,7 @@ const styles = {
   `,
 };
 
-const SidebarContainer = styled.div`
+const SidebarContainer = styled.aside`
   ${components.card};
   width: 250px;
   padding: 8px 0 12px;
