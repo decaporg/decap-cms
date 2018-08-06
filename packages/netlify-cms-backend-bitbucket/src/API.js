@@ -118,7 +118,7 @@ export default class API {
     return this.processFiles(entries);
   };
 
-  uploadBlob = async (item, { commitMessage, branch = this.branch, author = this.commitAuthor } = {}) => {
+  uploadBlob = async (item, { commitMessage, branch = this.branch } = {}) => {
     const contentBase64 = await (has(item, 'toBase64') ? item.toBase64() : Promise.resolve(item.raw));
     const formData = new FormData();
     // Third param is filename header, in case path is `message`, `branch`, etc.
@@ -126,6 +126,10 @@ export default class API {
     body.append('branch', branch);
     if (commitMessage) {
       formData.append("message", commitMessage);
+    }
+    if (this.commitAuthor) {
+      const { name, email } = this.commitAuthor;
+      formData.append("author", `${name} <${email}>`);
     }
 
     return flow([
@@ -146,6 +150,10 @@ export default class API {
     body.append('branch', branch);
     if (message) {
       body.append("message", message);
+    }
+    if (this.commitAuthor) {
+      const { name, email } = this.commitAuthor;
+      formData.append("author", `${name} <${email}>`);
     }
     return flow([
       unsentRequest.withMethod("POST"),
