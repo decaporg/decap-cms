@@ -21,7 +21,7 @@ const styles = {
   `,
 };
 
-const AppHeaderContainer = styled.div`
+const AppHeaderContainer = styled.header`
   z-index: 300;
 `;
 
