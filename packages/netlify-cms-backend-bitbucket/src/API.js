@@ -1,4 +1,4 @@
-import { flow, has } from "lodash";
+import { flow, get } from "lodash";
 import {
   localForage,
   unsentRequest,
@@ -119,10 +119,10 @@ export default class API {
   };
 
   uploadBlob = async (item, { commitMessage, branch = this.branch } = {}) => {
-    const contentBase64 = await (has(item, 'toBase64') ? item.toBase64() : Promise.resolve(item.raw));
+    const contentBlob = get(item, 'fileObj', new Blob([item.raw]));
     const formData = new FormData();
     // Third param is filename header, in case path is `message`, `branch`, etc.
-    formData.append(item.path, contentBase64, basename(item.path));
+    formData.append(item.path, contentBlob, basename(item.path));
     formData.append('branch', branch);
     if (commitMessage) {
       formData.append("message", commitMessage);
