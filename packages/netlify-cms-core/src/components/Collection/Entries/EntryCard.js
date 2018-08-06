@@ -5,27 +5,33 @@ import { resolvePath } from 'netlify-cms-lib-util';
 import { colors, colorsRaw, components, lengths } from 'netlify-cms-ui-default';
 import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from 'Constants/collectionViews';
 
-const ListCardLink = styled(Link)`
+const ListCard = styled.li`
   ${components.card};
   width: ${lengths.topCardWidth};
-  max-width: 100%;
-  padding: 16px 22px;
   margin-left: 12px;
   margin-bottom: 16px;
+`
 
+const ListCardLink = styled(Link)`
+  display: block;
+  max-width: 100%;
+  padding: 16px 22px;
   &:hover {
     background-color: ${colors.foreground};
   }
 `
 
-const GridCardLink = styled(Link)`
+const GridCard = styled.li`
   ${components.card};
   flex: 0 0 335px;
   height: 240px;
   overflow: hidden;
   margin-left: 12px;
   margin-bottom: 16px;
+`
 
+const GridCardLink = styled(Link)`
+  display: block;
   &, &:hover {
     background-color: ${colors.foreground};
     color: ${colors.text};
@@ -92,22 +98,26 @@ const EntryCard = ({
 
   if (viewStyle === VIEW_STYLE_LIST) {
     return (
-      <ListCardLink to={path}>
-        { collectionLabel ? <CollectionLabel>{collectionLabel}</CollectionLabel> : null }
-        <ListCardTitle>{ title }</ListCardTitle>
-      </ListCardLink>
+      <ListCard>
+        <ListCardLink to={path}>
+          { collectionLabel ? <CollectionLabel>{collectionLabel}</CollectionLabel> : null }
+          <ListCardTitle>{ title }</ListCardTitle>
+        </ListCardLink>
+      </ListCard>
     );
   }
 
   if (viewStyle === VIEW_STYLE_GRID) {
     return (
-      <GridCardLink to={path}>
-        <CardBody hasImage={image}>
-          { collectionLabel ? <CollectionLabel>{collectionLabel}</CollectionLabel> : null }
-          <CardHeading>{title}</CardHeading>
-        </CardBody>
-        { image ? <CardImage url={image}/> : null }
-      </GridCardLink>
+      <GridCard>
+        <GridCardLink to={path}>
+          <CardBody hasImage={image}>
+            { collectionLabel ? <CollectionLabel>{collectionLabel}</CollectionLabel> : null }
+            <CardHeading>{title}</CardHeading>
+          </CardBody>
+          { image ? <CardImage url={image}/> : null }
+        </GridCardLink>
+      </GridCard>
     );
   }
 }

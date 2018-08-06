@@ -13,7 +13,7 @@ const styles = {
   `,
 };
 
-const SidebarContainer = styled.div`
+const SidebarContainer = styled.aside`
   ${components.card};
   width: 250px;
   padding: 8px 0 12px;
@@ -22,7 +22,7 @@ const SidebarContainer = styled.div`
   overflow: auto;
 `
 
-const SidebarHeading = styled.h1`
+const SidebarHeading = styled.h2`
   font-size: 23px;
   font-weight: 600;
   padding: 0;
