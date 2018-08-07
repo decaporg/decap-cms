@@ -1,4 +1,7 @@
 updates:
+  - date: '2018-08-07'
+    description: Backend, workflow, and relation widget fixes/improvements
+    version: 2.0.9
   - date: '2018-08-01'
     description: Fix workflow publishing
     version: 2.0.8
