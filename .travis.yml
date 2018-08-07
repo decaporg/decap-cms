@@ -11,8 +11,7 @@ node_js:
 install:
   - yarn bootstrap
 script:
-  - yarn test
-  - yarn lint --quiet
+  - yarn test-ci
 notifications:
   email: false
 git:
