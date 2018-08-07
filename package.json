@@ -26,7 +26,7 @@
     "publish": "run-s bootstrap dryrun build && git checkout . && lerna publish",
     "format": "run-s \"lint:css -- --fix\" \"lint:js -- --fix\" \"format:prettier -- --write\"",
     "format:prettier": "prettier --ignore-path .gitignore \"{{packages,scripts,website}/**/,}*.{js,css,md,json}\"",
-    "lint": "run-p -c --aggregate-output lint:*",
+    "lint": "run-p -c --aggregate-output \"lint:* -- {@}\" --",
     "lint:css": "stylelint --ignore-path .gitignore \"{packages,website}/**/*.{css,js}\"",
     "lint:js": "eslint --ignore-path .gitignore \"{{packages,scripts,website}/**/,}*.js\"",
     "lint:format": "npm run format:prettier -- --list-different",

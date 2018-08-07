@@ -12,7 +12,7 @@ install:
   - yarn bootstrap
 script:
   - yarn test
-  - yarn lint
+  - yarn lint --quiet
 notifications:
   email: false
 git:
