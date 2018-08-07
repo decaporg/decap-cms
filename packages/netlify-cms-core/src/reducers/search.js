@@ -36,6 +36,7 @@ const entries = (state = defaultState, action) => {
       return state.withMutations((map) => {
         const entryIds = List(loadedEntries.map(entry => ({ collection: entry.collection, slug: entry.slug })));
         map.set('isFetching', false);
+        map.set('fetchID', null);
         map.set('page', page);
         map.set('term', searchTerm);
         map.set('entryIds', (!page || isNaN(page) || page === 0) ? entryIds : map.get('entryIds', List()).concat(entryIds));
@@ -45,6 +46,7 @@ const entries = (state = defaultState, action) => {
       if (action.payload.searchTerm !== state.get('term')) {
         return state.withMutations((map) => {
           map.set('isFetching', action.payload.namespace ? true : false);
+          map.set('fetchID', action.payload.namespace)
           map.set('term', action.payload.searchTerm);
         });
       }
@@ -55,6 +57,7 @@ const entries = (state = defaultState, action) => {
       response = action.payload.response;
       return state.withMutations((map) => {
         map.set('isFetching', false);
+        map.set('fetchID', null);
         map.set('term', searchTerm);
         map.mergeIn(['queryHits'], Map({ [action.payload.namespace]: response.hits }));
       });
