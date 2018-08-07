@@ -136,7 +136,7 @@ rating: 5
 This is the post body, where I write about our last chance to party before the Y2K bug destroys us all.
 ```
 
-Given this example, our `collections` settings would look like this:
+Given this example, our `collections` settings would look like this in your NetlifyCMS `config.yml` file:
 
 ```yaml
 collections:
@@ -194,11 +194,11 @@ Let's break that down:
 
 As described above, the `widget` property specifies a built-in or custom UI widget for a given field. When a content editor enters a value into a widget, that value will be saved in the document front matter as the value for the `name` specified for that field. A full listing of available widgets can be found in the [Widgets doc](https://www.netlifycms.org/docs/widgets).
 
-Based on this example, you can go through the post types in your site and add the appropriate settings to your Netlify CMS `config.yml` file. Each post type should be listed as a separate node under the `collections` field.
+Based on this example, you can go through the post types in your site and add the appropriate settings to your Netlify CMS `config.yml` file. Each post type should be listed as a separate node under the `collections` field. See the [Collections reference doc](https://www.netlifycms.org/docs/configuration-options/#collections) for more configuration options.
 
 ### Filter
 
-The entries for any collection can be filtered based on the value of a single field. The example collection below would only show post entries with the value "en" in the language field.
+The entries for any collection can be filtered based on the value of a single field. The example collection below would only show post entries with the value `en` in the `language` field.
 
 ```yaml
 collections:
@@ -214,7 +214,7 @@ collections:
 
 ## Authentication
 
-Now that you have your Netlify CMS files in place and configured, all that's left is to enable authentication. There are [many ways to do this](https://www.netlifycms.org/docs/authentication-backends) (with or without deploying to Netlify), but this example uses Netlify because it's one of the quickest ways to get started.
+Now that you have your Netlify CMS files in place and configured, all that's left is to enable authentication. We're using the [Netlify](https://www.netlify.com/) platform here because it's one of the quickest ways to get started, but you can learn about other authentication options in the [Authentication &amp; Backends](https://www.netlifycms.org/docs/authentication-backends) doc.
 
 ### Setup on Netlify
 
@@ -264,5 +264,7 @@ Your site CMS is now fully configured and ready for login!
 If you set your registration preference to "Invite only," you'll need to invite yourself (and anyone else you choose) as a site user. To do this, select the **Identity** tab from your site dashboard, and then select the **Invite users** button. Invited users will receive an email invitation with a confirmation link. Clicking the link will take you to your site with a login prompt.
 
 If you left your site registration open, or for return visits after comfirming an email invitation, you can access your site's CMS at `yoursite.com/admin/`.
+
+**Note**: no matter where you access Netlify CMS — whether running locally, in a staging environment, or in your published site — it will always fetch and commit files in your hosted repository (for example, on GitHub), on the branch you configured in your Netlify CMS config.yml file. This means that content fetched in the admin UI will match the content in the repository, which may be different from your locally running site. It also means that content saved using the admin UI will save directly to the hosted repository, even if you're running the UI locally or in staging.
 
 Happy posting!
