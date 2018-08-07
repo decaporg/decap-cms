@@ -30,18 +30,14 @@ export default class ImplicitAuthenticator {
       document.location.protocol !== 'https:' &&
       // TODO: Is insecure localhost a bad idea as well? I don't think it is, since you are not actually
       //       sending the token over the internet in this case, assuming the auth URL is secure.
-      (document.location.hostname !== 'localhost' &&
-        document.location.hostname !== '127.0.0.1')
+      (document.location.hostname !== 'localhost' && document.location.hostname !== '127.0.0.1')
     ) {
       return cb(new Error('Cannot authenticate over insecure protocol!'));
     }
 
     const authURL = new URL(this.auth_url);
     authURL.searchParams.set('client_id', this.appID);
-    authURL.searchParams.set(
-      'redirect_uri',
-      document.location.origin + document.location.pathname,
-    );
+    authURL.searchParams.set('redirect_uri', document.location.origin + document.location.pathname);
     authURL.searchParams.set('response_type', 'token');
     authURL.searchParams.set('scope', options.scope);
     authURL.searchParams.set('state', createNonce());
@@ -53,9 +49,7 @@ export default class ImplicitAuthenticator {
    * Complete authentication if we were redirected back to from the provider.
    */
   completeAuth(cb) {
-    const hashParams = new URLSearchParams(
-      document.location.hash.replace(/^#?\/?/, ''),
-    );
+    const hashParams = new URLSearchParams(document.location.hash.replace(/^#?\/?/, ''));
     if (!hashParams.has('access_token') && !hashParams.has('error')) {
       return;
     }
@@ -70,9 +64,7 @@ export default class ImplicitAuthenticator {
     }
 
     if (params.has('error')) {
-      return cb(
-        new Error(`${params.get('error')}: ${params.get('error_description')}`),
-      );
+      return cb(new Error(`${params.get('error')}: ${params.get('error_description')}`));
     }
 
     if (params.has('access_token')) {

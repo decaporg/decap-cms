@@ -165,9 +165,7 @@ export default function withFileControl({ forImage } = {}) {
       return (
         <div className={classNameWrapper}>
           <span>
-            {value
-              ? this.renderSelection(subject)
-              : this.renderNoSelection(subject, article)}
+            {value ? this.renderSelection(subject) : this.renderNoSelection(subject, article)}
           </span>
         </div>
       );

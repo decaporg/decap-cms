@@ -58,8 +58,7 @@ export function getPreviewTemplate(name) {
 export function registerWidget(name, control, preview) {
   // A registered widget control can be reused by a new widget, allowing
   // multiple copies with different previews.
-  const newControl =
-    typeof control === 'string' ? registry.widgets[control].control : control;
+  const newControl = typeof control === 'string' ? registry.widgets[control].control : control;
   registry.widgets[name] = { control: newControl, preview };
 }
 export function getWidget(name) {
@@ -74,10 +73,7 @@ export function resolveWidget(name) {
  */
 export function registerEditorComponent(component) {
   const plugin = EditorComponent(component);
-  registry.editorComponents = registry.editorComponents.set(
-    plugin.get('id'),
-    plugin,
-  );
+  registry.editorComponents = registry.editorComponents.set(plugin.get('id'), plugin);
 }
 export function getEditorComponents() {
   return registry.editorComponents;
@@ -102,9 +98,7 @@ export function registerBackend(name, BackendClass) {
       "Backend parameters invalid. example: CMS.registerBackend('myBackend', BackendClass)",
     );
   } else if (registry.backends[name]) {
-    console.error(
-      `Backend [${name}] already registered. Please choose a different name.`,
-    );
+    console.error(`Backend [${name}] already registered. Please choose a different name.`);
   } else {
     registry.backends[name] = {
       init: (...args) => new BackendClass(...args),

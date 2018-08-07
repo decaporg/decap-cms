@@ -10,10 +10,7 @@ const decodeParams = paramsString =>
 
 const fromURL = wholeURL => {
   const [url, allParamsString] = wholeURL.split('?');
-  return Map({
-    url,
-    ...(allParamsString ? { params: decodeParams(allParamsString) } : {}),
-  });
+  return Map({ url, ...(allParamsString ? { params: decodeParams(allParamsString) } : {}) });
 };
 
 const encodeParams = params =>
@@ -23,9 +20,7 @@ const encodeParams = params =>
     .join('&');
 
 const toURL = req =>
-  `${req.get('url')}${
-    req.get('params') ? `?${encodeParams(req.get('params'))}` : ''
-  }`;
+  `${req.get('url')}${req.get('params') ? `?${encodeParams(req.get('params'))}` : ''}`;
 
 const toFetchArguments = req => [
   toURL(req),
@@ -57,17 +52,11 @@ const performRequest = ensureRequestArg(req => fetch(...toFetchArguments(req)));
 const getCurriedRequestProcessor = flow([ensureRequestArg2, curry]);
 const getPropSetFunctions = path => [
   getCurriedRequestProcessor((val, req) => req.setIn(path, val)),
-  getCurriedRequestProcessor(
-    (val, req) => (req.getIn(path) ? req : req.setIn(path, val)),
-  ),
+  getCurriedRequestProcessor((val, req) => (req.getIn(path) ? req : req.setIn(path, val))),
 ];
 const getPropMergeFunctions = path => [
-  getCurriedRequestProcessor((obj, req) =>
-    req.updateIn(path, (p = Map()) => p.merge(obj)),
-  ),
-  getCurriedRequestProcessor((obj, req) =>
-    req.updateIn(path, (p = Map()) => Map(obj).merge(p)),
-  ),
+  getCurriedRequestProcessor((obj, req) => req.updateIn(path, (p = Map()) => p.merge(obj))),
+  getCurriedRequestProcessor((obj, req) => req.updateIn(path, (p = Map()) => Map(obj).merge(p))),
 ];
 
 const [withMethod, withDefaultMethod] = getPropSetFunctions(['method']);
@@ -91,9 +80,7 @@ const withRoot = getCurriedRequestProcessor((root, req) =>
 // withTimestamp needs no argument and has to run as late as possible,
 // so it calls `withParams` only when it's actually called with a
 // request.
-const withTimestamp = ensureRequestArg(req =>
-  withParams({ ts: new Date().getTime() }, req),
-);
+const withTimestamp = ensureRequestArg(req => withParams({ ts: new Date().getTime() }, req));
 
 export default {
   toURL,

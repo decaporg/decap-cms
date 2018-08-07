@@ -26,8 +26,7 @@ module.exports = {
   black: 900,
 
   // fonts
-  roboto:
-    "'Roboto', -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+  roboto: "'Roboto', -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
 
   // padding
   micro: '8px',

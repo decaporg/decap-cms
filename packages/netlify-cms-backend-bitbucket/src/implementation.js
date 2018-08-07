@@ -25,15 +25,11 @@ export default class Bitbucket {
     };
 
     if (this.options.useWorkflow) {
-      throw new Error(
-        'The BitBucket backend does not support the Editorial Workflow.',
-      );
+      throw new Error('The BitBucket backend does not support the Editorial Workflow.');
     }
 
     if (!this.options.proxied && !config.getIn(['backend', 'repo'], false)) {
-      throw new Error(
-        'The BitBucket backend needs a "repo" in the backend configuration.',
-      );
+      throw new Error('The BitBucket backend needs a "repo" in the backend configuration.');
     }
 
     this.api = this.options.API || null;
@@ -42,10 +38,7 @@ export default class Bitbucket {
 
     this.repo = config.getIn(['backend', 'repo'], '');
     this.branch = config.getIn(['backend', 'branch'], 'master');
-    this.api_root = config.getIn(
-      ['backend', 'api_root'],
-      'https://api.bitbucket.org/2.0',
-    );
+    this.api_root = config.getIn(['backend', 'api_root'], 'https://api.bitbucket.org/2.0');
     this.base_url = config.get('base_url');
     this.site_id = config.get('site_id');
     this.token = '';
@@ -81,13 +74,8 @@ export default class Bitbucket {
     return this.api.user().then(user =>
       this.api.hasWriteAccess(user).then(isCollab => {
         if (!isCollab)
-          throw new Error(
-            'Your BitBucker user account does not have access to this repo.',
-          );
-        return Object.assign({}, user, {
-          token: state.token,
-          refresh_token: state.refresh_token,
-        });
+          throw new Error('Your BitBucker user account does not have access to this repo.');
+        return Object.assign({}, user, { token: state.token, refresh_token: state.refresh_token });
       }),
     );
   }
@@ -133,20 +121,14 @@ export default class Bitbucket {
   }
 
   apiRequestFunction = async req => {
-    const token = this.refreshedTokenPromise
-      ? await this.refreshedTokenPromise
-      : this.token;
+    const token = this.refreshedTokenPromise ? await this.refreshedTokenPromise : this.token;
     return flow([
       unsentRequest.withHeaders({ Authorization: `Bearer ${token}` }),
       unsentRequest.performRequest,
       then(async res => {
         if (res.status === 401) {
           const json = await res.json().catch(() => null);
-          if (
-            json &&
-            json.type === 'error' &&
-            /^access token expired/i.test(json.error.message)
-          ) {
+          if (json && json.type === 'error' && /^access token expired/i.test(json.error.message)) {
             const newToken = await this.getRefreshedAccessToken();
             const reqWithNewToken = unsentRequest.withHeaders(
               { Authorization: `Bearer ${newToken}` },
@@ -204,9 +186,7 @@ export default class Bitbucket {
               })
               .catch((error = true) => {
                 sem.leave();
-                console.error(
-                  `failed to load file from BitBucket: ${file.path}`,
-                );
+                console.error(`failed to load file from BitBucket: ${file.path}`);
                 resolve({ error });
               }),
           ),
@@ -253,12 +233,7 @@ export default class Bitbucket {
     await this.api.persistFiles([mediaFile], options);
     const { value, path, fileObj } = mediaFile;
     const getBlobPromise = () => Promise.resolve(fileObj);
-    return {
-      name: value,
-      size: fileObj.size,
-      getBlobPromise,
-      path: trimStart(path, '/k'),
-    };
+    return { name: value, size: fileObj.size, getBlobPromise, path: trimStart(path, '/k') };
   }
 
   deleteFile(path, commitMessage, options) {
@@ -266,17 +241,11 @@ export default class Bitbucket {
   }
 
   traverseCursor(cursor, action) {
-    return this.api
-      .traverseCursor(cursor, action)
-      .then(async ({ entries, cursor: newCursor }) => ({
-        entries: await Promise.all(
-          entries.map(file =>
-            this.api
-              .readFile(file.path, file.id)
-              .then(data => ({ file, data })),
-          ),
-        ),
-        cursor: newCursor,
-      }));
+    return this.api.traverseCursor(cursor, action).then(async ({ entries, cursor: newCursor }) => ({
+      entries: await Promise.all(
+        entries.map(file => this.api.readFile(file.path, file.id).then(data => ({ file, data }))),
+      ),
+      cursor: newCursor,
+    }));
   }
 }

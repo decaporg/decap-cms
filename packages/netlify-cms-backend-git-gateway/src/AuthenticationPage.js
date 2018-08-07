@@ -68,11 +68,7 @@ export default class GitGatewayAuthenticationPage extends React.Component {
   }
 
   componentDidMount() {
-    if (
-      !this.loggedIn &&
-      window.netlifyIdentity &&
-      window.netlifyIdentity.currentUser()
-    ) {
+    if (!this.loggedIn && window.netlifyIdentity && window.netlifyIdentity.currentUser()) {
       this.props.onLogin(window.netlifyIdentity.currentUser());
       window.netlifyIdentity.close();
     }
@@ -159,9 +155,7 @@ export default class GitGatewayAuthenticationPage extends React.Component {
         renderPageContent={() => (
           <AuthForm onSubmit={this.handleLogin}>
             {!error ? null : <ErrorMessage>{error}</ErrorMessage>}
-            {!errors.server ? null : (
-              <ErrorMessage>{errors.server}</ErrorMessage>
-            )}
+            {!errors.server ? null : <ErrorMessage>{errors.server}</ErrorMessage>}
             <ErrorMessage>{errors.email || null}</ErrorMessage>
             <AuthInput
               type="text"

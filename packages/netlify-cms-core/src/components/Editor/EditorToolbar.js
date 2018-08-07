@@ -30,8 +30,8 @@ const styles = {
 };
 
 const ToolbarContainer = styled.div`
-  box-shadow: 0 2px 6px 0 rgba(68, 74, 87, 0.05),
-    0 1px 3px 0 rgba(68, 74, 87, 0.1), 0 2px 54px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 6px 0 rgba(68, 74, 87, 0.05), 0 1px 3px 0 rgba(68, 74, 87, 0.1),
+    0 2px 54px rgba(0, 0, 0, 0.1);
   position: fixed;
   top: 0;
   left: 0;
@@ -195,11 +195,7 @@ export default class EditorToolbar extends React.Component {
   renderSimpleSaveControls = () => {
     const { showDelete, onDelete } = this.props;
     return (
-      <div>
-        {showDelete ? (
-          <DeleteButton onClick={onDelete}>Delete entry</DeleteButton>
-        ) : null}
-      </div>
+      <div>{showDelete ? <DeleteButton onClick={onDelete}>Delete entry</DeleteButton> : null}</div>
     );
   };
 
@@ -221,9 +217,7 @@ export default class EditorToolbar extends React.Component {
           dropdownTopOverlap="40px"
           dropdownWidth="150px"
           renderButton={() => (
-            <PublishButton>
-              {isPersisting ? 'Publishing...' : 'Publish'}
-            </PublishButton>
+            <PublishButton>{isPersisting ? 'Publishing...' : 'Publish'}</PublishButton>
           )}
         >
           <DropdownItem
@@ -233,11 +227,7 @@ export default class EditorToolbar extends React.Component {
             onClick={onPersist}
           />
           {collection.get('create') ? (
-            <DropdownItem
-              label="Publish and create new"
-              icon="add"
-              onClick={onPersistAndNew}
-            />
+            <DropdownItem label="Publish and create new" icon="add" onClick={onPersistAndNew} />
           ) : null}
         </ToolbarDropdown>
       </div>
@@ -258,12 +248,8 @@ export default class EditorToolbar extends React.Component {
     } = this.props;
 
     const deleteLabel =
-      (hasUnpublishedChanges &&
-        isModification &&
-        'Delete unpublished changes') ||
-      (hasUnpublishedChanges &&
-        (isNewEntry || !isModification) &&
-        'Delete unpublished entry') ||
+      (hasUnpublishedChanges && isModification && 'Delete unpublished changes') ||
+      (hasUnpublishedChanges && (isNewEntry || !isModification) && 'Delete unpublished entry') ||
       (!hasUnpublishedChanges && !isModification && 'Delete published entry');
 
     return [
@@ -273,9 +259,7 @@ export default class EditorToolbar extends React.Component {
       isNewEntry || !deleteLabel ? null : (
         <DeleteButton
           key="delete-button"
-          onClick={
-            hasUnpublishedChanges ? onDeleteUnpublishedChanges : onDelete
-          }
+          onClick={hasUnpublishedChanges ? onDeleteUnpublishedChanges : onDelete}
         >
           {isDeleting ? 'Deleting...' : deleteLabel}
         </DeleteButton>
@@ -301,9 +285,7 @@ export default class EditorToolbar extends React.Component {
             dropdownTopOverlap="40px"
             dropdownWidth="120px"
             renderButton={() => (
-              <StatusButton>
-                {isUpdatingStatus ? 'Updating...' : 'Set status'}
-              </StatusButton>
+              <StatusButton>{isUpdatingStatus ? 'Updating...' : 'Set status'}</StatusButton>
             )}
           >
             <StatusDropdownItem
@@ -326,9 +308,7 @@ export default class EditorToolbar extends React.Component {
             dropdownTopOverlap="40px"
             dropdownWidth="150px"
             renderButton={() => (
-              <PublishButton>
-                {isPublishing ? 'Publishing...' : 'Publish'}
-              </PublishButton>
+              <PublishButton>{isPublishing ? 'Publishing...' : 'Publish'}</PublishButton>
             )}
           >
             <DropdownItem
@@ -338,11 +318,7 @@ export default class EditorToolbar extends React.Component {
               onClick={onPublish}
             />
             {collection.get('create') ? (
-              <DropdownItem
-                label="Publish and create new"
-                icon="add"
-                onClick={onPublishAndNew}
-              />
+              <DropdownItem label="Publish and create new" icon="add" onClick={onPublishAndNew} />
             ) : null}
           </ToolbarDropdown>
         </>
@@ -355,14 +331,7 @@ export default class EditorToolbar extends React.Component {
   };
 
   render() {
-    const {
-      user,
-      hasChanged,
-      displayUrl,
-      collection,
-      hasWorkflow,
-      onLogoutClick,
-    } = this.props;
+    const { user, hasChanged, displayUrl, collection, hasWorkflow, onLogoutClick } = this.props;
 
     return (
       <ToolbarContainer>
@@ -381,9 +350,7 @@ export default class EditorToolbar extends React.Component {
         </ToolbarSectionBackLink>
         <ToolbarSectionMain>
           <ToolbarSubSectionFirst>
-            {hasWorkflow
-              ? this.renderWorkflowSaveControls()
-              : this.renderSimpleSaveControls()}
+            {hasWorkflow ? this.renderWorkflowSaveControls() : this.renderSimpleSaveControls()}
           </ToolbarSubSectionFirst>
           <ToolbarSubSectionLast>
             {hasWorkflow

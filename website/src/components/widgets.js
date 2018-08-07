@@ -11,13 +11,9 @@ class Widgets extends Component {
   componentDidMount() {
     const { widgets } = this.props;
 
-    const hash = window.location.hash
-      ? window.location.hash.replace('#', '')
-      : '';
+    const hash = window.location.hash ? window.location.hash.replace('#', '') : '';
 
-    const widgetsContainHash = widgets.edges.some(
-      w => w.node.frontmatter.target === hash,
-    );
+    const widgetsContainHash = widgets.edges.some(w => w.node.frontmatter.target === hash);
 
     if (widgetsContainHash) {
       return this.setState({

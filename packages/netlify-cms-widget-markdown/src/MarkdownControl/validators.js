@@ -40,8 +40,7 @@ export function validateNode(node) {
         const newParent = newDoc.getParent(key);
         const docIsParent = newParent.key === newDoc.key;
         const newParentParent = newDoc.getParent(newParent.key);
-        const docIsParentParent =
-          newParentParent && newParentParent.key === newDoc.key;
+        const docIsParentParent = newParentParent && newParentParent.key === newDoc.key;
         if (docIsParent) {
           return change;
         }
@@ -52,9 +51,7 @@ export function validateNode(node) {
          * plugin's schema, resulting in an infinite loop. To ensure against
          * this, we turn off normalization until the last change.
          */
-        change.unwrapNodeByKey(nestedShortcode.key, {
-          normalize: docIsParentParent,
-        });
+        change.unwrapNodeByKey(nestedShortcode.key, { normalize: docIsParentParent });
       };
       return unwrapShortcode;
     }
@@ -79,20 +76,13 @@ export function validateNode(node) {
    * Ensure that code blocks contain no marks.
    */
   if (node.type === 'code') {
-    const invalidChild = node
-      .getTexts()
-      .find(text => !text.getMarks().isEmpty());
+    const invalidChild = node.getTexts().find(text => !text.getMarks().isEmpty());
     if (invalidChild) {
       return change =>
         invalidChild
           .getMarks()
           .forEach(mark =>
-            change.removeMarkByKey(
-              invalidChild.key,
-              0,
-              invalidChild.get('characters').size,
-              mark,
-            ),
+            change.removeMarkByKey(invalidChild.key, 0, invalidChild.get('characters').size, mark),
           );
     }
   }

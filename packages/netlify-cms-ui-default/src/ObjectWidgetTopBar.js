@@ -61,11 +61,7 @@ const ObjectWidgetTopBar = ({
   <TopBarContainer>
     <ExpandButtonContainer hasHeading={!!heading}>
       <ExpandButton onClick={onCollapseToggle}>
-        <Icon
-          type="chevron"
-          direction={collapsed ? 'right' : 'down'}
-          size="small"
-        />
+        <Icon type="chevron" direction={collapsed ? 'right' : 'down'} size="small" />
       </ExpandButton>
       {heading}
     </ExpandButtonContainer>

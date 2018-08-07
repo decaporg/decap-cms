@@ -8,10 +8,7 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 import { Notifs } from 'redux-notifications';
 import TopBarProgress from 'react-topbar-progress-indicator';
 import { loadConfig as actionLoadConfig } from 'Actions/config';
-import {
-  loginUser as actionLoginUser,
-  logoutUser as actionLogoutUser,
-} from 'Actions/auth';
+import { loginUser as actionLoginUser, logoutUser as actionLogoutUser } from 'Actions/auth';
 import { currentBackend } from 'src/backend';
 import { createNewEntry } from 'Actions/collections';
 import { openMediaLibrary as actionOpenMediaLibrary } from 'Actions/mediaLibrary';
@@ -168,18 +165,13 @@ class App extends React.Component {
             <Switch>
               <Redirect exact from="/" to={defaultPath} />
               <Redirect exact from="/search/" to={defaultPath} />
-              {hasWorkflow ? (
-                <Route path="/workflow" component={Workflow} />
-              ) : null}
+              {hasWorkflow ? <Route path="/workflow" component={Workflow} /> : null}
               <Route exact path="/collections/:name" component={Collection} />
               <Route
                 path="/collections/:name/new"
                 render={props => <Editor {...props} newRecord />}
               />
-              <Route
-                path="/collections/:name/entries/:slug"
-                component={Editor}
-              />
+              <Route path="/collections/:name/entries/:slug" component={Editor} />
               <Route
                 path="/search/:searchTerm"
                 render={props => <Collection {...props} isSearchResults />}

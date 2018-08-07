@@ -23,9 +23,7 @@ const entry = {
 describe('entryDraft reducer', () => {
   describe('DRAFT_CREATE_FROM_ENTRY', () => {
     it('should create draft from the entry', () => {
-      expect(
-        reducer(initialState, actions.createDraftFromEntry(fromJS(entry))),
-      ).toEqual(
+      expect(reducer(initialState, actions.createDraftFromEntry(fromJS(entry)))).toEqual(
         fromJS({
           entry: {
             ...entry,
@@ -42,9 +40,7 @@ describe('entryDraft reducer', () => {
 
   describe('DRAFT_CREATE_EMPTY', () => {
     it('should create a new draft ', () => {
-      expect(
-        reducer(initialState, actions.emptyDraftCreated(fromJS(entry))),
-      ).toEqual(
+      expect(reducer(initialState, actions.emptyDraftCreated(fromJS(entry)))).toEqual(
         fromJS({
           entry: {
             ...entry,
@@ -61,9 +57,7 @@ describe('entryDraft reducer', () => {
 
   describe('DRAFT_DISCARD', () => {
     it('should discard the draft and return initial state', () => {
-      expect(reducer(initialState, actions.discardDraft())).toEqual(
-        initialState,
-      );
+      expect(reducer(initialState, actions.discardDraft())).toEqual(initialState);
     });
   });
 
@@ -131,11 +125,7 @@ describe('entryDraft reducer', () => {
       );
       newState = reducer(
         newState,
-        actions.entryPersistFail(
-          Map({ name: 'posts' }),
-          Map({ slug: 'slug' }),
-          'Error message',
-        ),
+        actions.entryPersistFail(Map({ name: 'posts' }), Map({ slug: 'slug' }), 'Error message'),
       );
       expect(newState.getIn(['entry', 'isPersisting'])).toBeUndefined();
     });

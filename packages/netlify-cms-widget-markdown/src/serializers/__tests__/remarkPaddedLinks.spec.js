@@ -34,14 +34,10 @@ describe('remarkPaddedLinks', () => {
   });
 
   it('should work for parents with multiple links that are not siblings', () => {
-    expect(input('# a[ b ](c)d **[ e ](f)**')).toEqual(
-      output('# a [b](c) d ** [e](f) **'),
-    );
+    expect(input('# a[ b ](c)d **[ e ](f)**')).toEqual(output('# a [b](c) d ** [e](f) **'));
   });
 
   it('should work for links with arbitrarily nested children', () => {
-    expect(input('[ a __*b*__ _c_ ](d)')).toEqual(
-      output(' [a __*b*__ _c_](d) '),
-    );
+    expect(input('[ a __*b*__ _c_ ](d)')).toEqual(output(' [a __*b*__ _c_](d) '));
   });
 });

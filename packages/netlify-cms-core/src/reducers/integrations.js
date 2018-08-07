@@ -4,8 +4,7 @@ import { CONFIG_SUCCESS } from 'Actions/config';
 const integrations = (state = null, action) => {
   switch (action.type) {
     case CONFIG_SUCCESS: {
-      const integrations =
-        action.payload.get('integrations', List()).toJS() || [];
+      const integrations = action.payload.get('integrations', List()).toJS() || [];
       const newState = integrations.reduce(
         (acc, integration) => {
           const { hooks, collections, provider, ...providerData } = integration;

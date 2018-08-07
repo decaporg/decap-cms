@@ -8,9 +8,7 @@ describe('auth', () => {
   });
 
   it('should handle an authentication request', () => {
-    expect(auth(undefined, authenticating())).toEqual(
-      Immutable.Map({ isFetching: true }),
-    );
+    expect(auth(undefined, authenticating())).toEqual(Immutable.Map({ isFetching: true }));
   });
 
   it('should handle authentication', () => {
@@ -28,9 +26,7 @@ describe('auth', () => {
   });
 
   it('should handle logout', () => {
-    const initialState = Immutable.fromJS({
-      user: { email: 'joe@example.com' },
-    });
+    const initialState = Immutable.fromJS({ user: { email: 'joe@example.com' } });
     const newState = auth(initialState, logout());
     expect(newState.get('user')).toBeUndefined();
   });

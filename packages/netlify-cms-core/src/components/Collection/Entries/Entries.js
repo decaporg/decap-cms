@@ -13,11 +13,7 @@ const Entries = ({
   cursor,
   handleCursorActions,
 }) => {
-  const loadingMessages = [
-    'Loading Entries',
-    'Caching Entries',
-    'This might take several minutes',
-  ];
+  const loadingMessages = ['Loading Entries', 'Caching Entries', 'This might take several minutes'];
 
   if (entries) {
     return (

@@ -8,23 +8,18 @@ describe('config', () => {
   });
 
   it('should handle an update', () => {
-    expect(
-      config(
-        Map({ a: 'b', c: 'd' }),
-        configLoaded(Map({ a: 'changed', e: 'new' })),
-      ),
-    ).toEqual(Map({ a: 'changed', e: 'new' }));
-  });
-
-  it('should mark the config as loading', () => {
-    expect(config(undefined, configLoading())).toEqual(
-      Map({ isFetching: true }),
+    expect(config(Map({ a: 'b', c: 'd' }), configLoaded(Map({ a: 'changed', e: 'new' })))).toEqual(
+      Map({ a: 'changed', e: 'new' }),
     );
   });
 
+  it('should mark the config as loading', () => {
+    expect(config(undefined, configLoading())).toEqual(Map({ isFetching: true }));
+  });
+
   it('should handle an error', () => {
-    expect(
-      config(Map(), configFailed(new Error('Config could not be loaded'))),
-    ).toEqual(Map({ error: 'Error: Config could not be loaded' }));
+    expect(config(Map(), configFailed(new Error('Config could not be loaded')))).toEqual(
+      Map({ error: 'Error: Config could not be loaded' }),
+    );
   });
 });

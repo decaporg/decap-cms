@@ -42,9 +42,7 @@ const slugFormatter = (collection, entryData, slugConfig) => {
 
   const identifier = entryData.get(selectIdentifier(collection));
   if (!identifier) {
-    throw new Error(
-      'Collection must have a field name that is a valid entry identifier',
-    );
+    throw new Error('Collection must have a field name that is a valid entry identifier');
   }
 
   const slug = template
@@ -99,9 +97,7 @@ const commitMessageFormatter = (type, config, { slug, path, collection }) => {
       case 'collection':
         return collection.get('label');
       default:
-        console.warn(
-          `Ignoring unknown variable “${variable}” in commit message template.`,
-        );
+        console.warn(`Ignoring unknown variable “${variable}” in commit message template.`);
         return '';
     }
   });
@@ -139,14 +135,12 @@ class Backend {
     }
     const stored = this.authStore && this.authStore.retrieve();
     if (stored && stored.backendName === this.backendName) {
-      return Promise.resolve(this.implementation.restoreUser(stored)).then(
-        user => {
-          const newUser = { ...user, backendName: this.backendName };
-          // return confirmed/rehydrated user object instead of stored
-          this.authStore.store(newUser);
-          return newUser;
-        },
-      );
+      return Promise.resolve(this.implementation.restoreUser(stored)).then(user => {
+        const newUser = { ...user, backendName: this.backendName };
+        // return confirmed/rehydrated user object instead of stored
+        this.authStore.store(newUser);
+        return newUser;
+      });
     }
     return Promise.resolve(null);
   }
@@ -205,22 +199,18 @@ class Backend {
   listEntries(collection) {
     const listMethod = this.implementation[selectListMethod(collection)];
     const extension = selectFolderEntryExtension(collection);
-    return listMethod
-      .call(this.implementation, collection, extension)
-      .then(loadedEntries => ({
-        entries: this.processEntries(loadedEntries, collection),
-        /*
+    return listMethod.call(this.implementation, collection, extension).then(loadedEntries => ({
+      entries: this.processEntries(loadedEntries, collection),
+      /*
           Wrap cursors so we can tell which collection the cursor is
           from. This is done to prevent traverseCursor from requiring a
           `collection` argument.
         */
-        cursor: Cursor.create(
-          loadedEntries[CURSOR_COMPATIBILITY_SYMBOL],
-        ).wrapData({
-          cursorType: 'collectionEntries',
-          collection,
-        }),
-      }));
+      cursor: Cursor.create(loadedEntries[CURSOR_COMPATIBILITY_SYMBOL]).wrapData({
+        cursorType: 'collectionEntries',
+        collection,
+      }),
+    }));
   }
 
   // The same as listEntries, except that if a cursor with the "next"
@@ -240,10 +230,7 @@ class Backend {
     const { entries } = response;
     let { cursor } = response;
     while (cursor && cursor.actions.includes('next')) {
-      const {
-        entries: newEntries,
-        cursor: newCursor,
-      } = await this.traverseCursor(cursor, 'next');
+      const { entries: newEntries, cursor: newCursor } = await this.traverseCursor(cursor, 'next');
       entries.push(...newEntries);
       cursor = newCursor;
     }
@@ -270,15 +257,10 @@ class Backend {
       })
       .map(p => p.catch(err => errors.push(err) && []));
 
-    const entries = await Promise.all(collectionEntriesRequests).then(arrs =>
-      flatten(arrs),
-    );
+    const entries = await Promise.all(collectionEntriesRequests).then(arrs => flatten(arrs));
 
     if (errors.length > 0) {
-      throw new Error({
-        message: 'Errors ocurred while searching entries locally!',
-        errors,
-      });
+      throw new Error({ message: 'Errors ocurred while searching entries locally!', errors });
     }
     const hits = entries
       .filter(({ score }) => score > 5)
@@ -290,9 +272,7 @@ class Backend {
   async query(collection, searchFields, searchTerm) {
     const entries = await this.listAllEntries(collection);
     const hits = fuzzy
-      .filter(searchTerm, entries, {
-        extract: extractSearchFields(searchFields),
-      })
+      .filter(searchTerm, entries, { extract: extractSearchFields(searchFields) })
       .filter(entry => entry.score > 5)
       .sort(sortByScore)
       .map(f => f.original);
@@ -335,8 +315,7 @@ class Backend {
     return entry => {
       const format = resolveFormat(collectionOrEntity, entry);
       if (entry && entry.raw !== undefined) {
-        const data =
-          (format && attempt(format.fromFile.bind(format, entry.raw))) || {};
+        const data = (format && attempt(format.fromFile.bind(format, entry.raw))) || {};
         if (isError(data)) console.error(data);
         return Object.assign(entry, { data: isError(data) ? {} : data });
       }
@@ -379,37 +358,22 @@ class Backend {
     return this.implementation
       .unpublishedEntry(collection, slug)
       .then(loadedEntry => {
-        const entry = createEntry(
-          'draft',
-          loadedEntry.slug,
-          loadedEntry.file.path,
-          {
-            raw: loadedEntry.data,
-            isModification: loadedEntry.isModification,
-          },
-        );
+        const entry = createEntry('draft', loadedEntry.slug, loadedEntry.file.path, {
+          raw: loadedEntry.data,
+          isModification: loadedEntry.isModification,
+        });
         entry.metaData = loadedEntry.metaData;
         return entry;
       })
       .then(this.entryWithFormat(collection, slug));
   }
 
-  persistEntry(
-    config,
-    collection,
-    entryDraft,
-    MediaFiles,
-    integrations,
-    options = {},
-  ) {
+  persistEntry(config, collection, entryDraft, MediaFiles, integrations, options = {}) {
     const newEntry = entryDraft.getIn(['entry', 'newRecord']) || false;
 
     const parsedData = {
       title: entryDraft.getIn(['entry', 'data', 'title'], 'No Title'),
-      description: entryDraft.getIn(
-        ['entry', 'data', 'description'],
-        'No Description!',
-      ),
+      description: entryDraft.getIn(['entry', 'data', 'description'], 'No Description!'),
     };
 
     let entryObj;
@@ -438,11 +402,11 @@ class Backend {
       };
     }
 
-    const commitMessage = commitMessageFormatter(
-      newEntry ? 'create' : 'update',
-      config,
-      { collection, slug: entryObj.slug, path: entryObj.path },
-    );
+    const commitMessage = commitMessageFormatter(newEntry ? 'create' : 'update', config, {
+      collection,
+      slug: entryObj.slug,
+      path: entryObj.path,
+    });
 
     const useWorkflow = config.getIn(['publish_mode']) === EDITORIAL_WORKFLOW;
 
@@ -451,8 +415,7 @@ class Backend {
     /**
      * Determine whether an asset store integration is in use.
      */
-    const hasAssetStore =
-      integrations && !!selectIntegration(integrations, null, 'assetStore');
+    const hasAssetStore = integrations && !!selectIntegration(integrations, null, 'assetStore');
     const updatedOptions = { ...options, hasAssetStore };
     const opts = {
       newEntry,
@@ -463,16 +426,12 @@ class Backend {
       ...updatedOptions,
     };
 
-    return this.implementation
-      .persistEntry(entryObj, MediaFiles, opts)
-      .then(() => entryObj.slug);
+    return this.implementation.persistEntry(entryObj, MediaFiles, opts).then(() => entryObj.slug);
   }
 
   persistMedia(config, file) {
     const options = {
-      commitMessage: commitMessageFormatter('uploadMedia', config, {
-        path: file.path,
-      }),
+      commitMessage: commitMessageFormatter('uploadMedia', config, { path: file.path }),
     };
     return this.implementation.persistMedia(file, options);
   }
@@ -484,18 +443,12 @@ class Backend {
       throw new Error('Not allowed to delete entries in this collection');
     }
 
-    const commitMessage = commitMessageFormatter('delete', config, {
-      collection,
-      slug,
-      path,
-    });
+    const commitMessage = commitMessageFormatter('delete', config, { collection, slug, path });
     return this.implementation.deleteFile(path, commitMessage);
   }
 
   deleteMedia(config, path) {
-    const commitMessage = commitMessageFormatter('deleteMedia', config, {
-      path,
-    });
+    const commitMessage = commitMessageFormatter('deleteMedia', config, { path });
     return this.implementation.deleteFile(path, commitMessage);
   }
 
@@ -504,11 +457,7 @@ class Backend {
   }
 
   updateUnpublishedEntryStatus(collection, slug, newStatus) {
-    return this.implementation.updateUnpublishedEntryStatus(
-      collection,
-      slug,
-      newStatus,
-    );
+    return this.implementation.updateUnpublishedEntryStatus(collection, slug, newStatus);
   }
 
   publishUnpublishedEntry(collection, slug) {
@@ -535,13 +484,9 @@ class Backend {
     }
 
     const files = collection.get('files');
-    const file = (files || [])
-      .filter(f => f.get('name') === entry.get('slug'))
-      .get(0);
+    const file = (files || []).filter(f => f.get('name') === entry.get('slug')).get(0);
     if (file == null) {
-      throw new Error(
-        `No file found for ${entry.get('slug')} in ${collection.get('name')}`,
-      );
+      throw new Error(`No file found for ${entry.get('slug')} in ${collection.get('name')}`);
     }
     return file
       .get('fields')
@@ -567,11 +512,7 @@ export function resolveBackend(config) {
   if (!getBackend(name)) {
     throw new Error(`Backend not found: ${name}`);
   } else {
-    return new Backend(getBackend(name), {
-      backendName: name,
-      authStore,
-      config,
-    });
+    return new Backend(getBackend(name), { backendName: name, authStore, config });
   }
 }
 

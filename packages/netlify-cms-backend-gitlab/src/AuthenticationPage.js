@@ -1,10 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'react-emotion';
-import {
-  NetlifyAuthenticator,
-  ImplicitAuthenticator,
-} from 'netlify-cms-lib-auth';
+import { NetlifyAuthenticator, ImplicitAuthenticator } from 'netlify-cms-lib-auth';
 import { AuthenticationPage, Icon } from 'netlify-cms-ui-default';
 
 const LoginButtonIcon = styled(Icon)`
@@ -23,14 +20,8 @@ export default class GitLabAuthenticationPage extends React.Component {
     const authType = this.props.config.getIn(['backend', 'auth_type']);
     if (authType === 'implicit') {
       this.auth = new ImplicitAuthenticator({
-        base_url: this.props.config.getIn(
-          ['backend', 'base_url'],
-          'https://gitlab.com',
-        ),
-        auth_endpoint: this.props.config.getIn(
-          ['backend', 'auth_endpoint'],
-          'oauth/authorize',
-        ),
+        base_url: this.props.config.getIn(['backend', 'base_url'], 'https://gitlab.com'),
+        auth_endpoint: this.props.config.getIn(['backend', 'auth_endpoint'], 'oauth/authorize'),
         app_id: this.props.config.getIn(['backend', 'app_id']),
         clearHash: this.props.clearHash,
       });
@@ -56,16 +47,13 @@ export default class GitLabAuthenticationPage extends React.Component {
 
   handleLogin = e => {
     e.preventDefault();
-    this.auth.authenticate(
-      { provider: 'gitlab', scope: 'api' },
-      (err, data) => {
-        if (err) {
-          this.setState({ loginError: err.toString() });
-          return;
-        }
-        this.props.onLogin(data);
-      },
-    );
+    this.auth.authenticate({ provider: 'gitlab', scope: 'api' }, (err, data) => {
+      if (err) {
+        this.setState({ loginError: err.toString() });
+        return;
+      }
+      this.props.onLogin(data);
+    });
   };
 
   render() {
@@ -77,8 +65,7 @@ export default class GitLabAuthenticationPage extends React.Component {
         loginErrorMessage={this.state.loginError}
         renderButtonContent={() => (
           <React.Fragment>
-            <LoginButtonIcon type="gitlab" />{' '}
-            {inProgress ? 'Logging in...' : 'Login with GitLab'}
+            <LoginButtonIcon type="gitlab" /> {inProgress ? 'Logging in...' : 'Login with GitLab'}
           </React.Fragment>
         )}
       />

@@ -25,9 +25,7 @@ class VideoEmbed extends Component {
       />
     );
 
-    const imgPlaceholder = (
-      <img src={screenshotEditor} className="responsive" />
-    );
+    const imgPlaceholder = <img src={screenshotEditor} className="responsive" />;
 
     return (
       <a className="hero-graphic" onClick={this.toggleVideo}>

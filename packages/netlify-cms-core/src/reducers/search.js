@@ -41,10 +41,7 @@ const entries = (state = defaultState, action) => {
       searchTerm = action.payload.searchTerm;
       return state.withMutations(map => {
         const entryIds = List(
-          loadedEntries.map(entry => ({
-            collection: entry.collection,
-            slug: entry.slug,
-          })),
+          loadedEntries.map(entry => ({ collection: entry.collection, slug: entry.slug })),
         );
         map.set('isFetching', false);
         map.set('fetchID', null);
@@ -75,10 +72,7 @@ const entries = (state = defaultState, action) => {
         map.set('isFetching', false);
         map.set('fetchID', null);
         map.set('term', searchTerm);
-        map.mergeIn(
-          ['queryHits'],
-          Map({ [action.payload.namespace]: response.hits }),
-        );
+        map.mergeIn(['queryHits'], Map({ [action.payload.namespace]: response.hits }));
       });
 
     default:

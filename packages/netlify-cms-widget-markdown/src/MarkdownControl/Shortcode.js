@@ -2,12 +2,7 @@ import React from 'react';
 import { Map } from 'immutable';
 import styled, { css } from 'react-emotion';
 import { partial, capitalize } from 'lodash';
-import {
-  ListItemTopBar,
-  components,
-  colors,
-  lengths,
-} from 'netlify-cms-ui-default';
+import { ListItemTopBar, components, colors, lengths } from 'netlify-cms-ui-default';
 import { getEditorControl, getEditorComponents } from './index';
 
 const ShortcodeContainer = styled.div`
@@ -51,10 +46,7 @@ export default class Shortcode extends React.Component {
 
   handleChange = (fieldName, value) => {
     const { editor, node } = this.props;
-    const shortcodeData = Map(node.data.get('shortcodeData')).set(
-      fieldName,
-      value,
-    );
+    const shortcodeData = Map(node.data.get('shortcodeData')).set(fieldName, value);
     const data = node.data.set('shortcodeData', shortcodeData);
     editor.change(c => c.setNodeByKey(node.key, { data }));
   };
@@ -106,11 +98,7 @@ export default class Shortcode extends React.Component {
     const shortcodeData = Map(this.props.node.data.get('shortcodeData'));
     const plugin = getEditorComponents().get(pluginId);
     return (
-      <ShortcodeContainer
-        collapsed={collapsed}
-        {...attributes}
-        onClick={this.handleClick}
-      >
+      <ShortcodeContainer collapsed={collapsed} {...attributes} onClick={this.handleClick}>
         <ShortcodeTopBar
           collapsed={collapsed}
           onCollapseToggle={this.handleCollapseToggle}

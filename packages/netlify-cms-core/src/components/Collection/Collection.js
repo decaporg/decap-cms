@@ -31,11 +31,7 @@ class Collection extends React.Component {
   renderEntriesCollection = () => {
     const { name, collection } = this.props;
     return (
-      <EntriesCollection
-        collection={collection}
-        name={name}
-        viewStyle={this.state.viewStyle}
-      />
+      <EntriesCollection collection={collection} name={name} viewStyle={this.state.viewStyle} />
     );
   };
 
@@ -51,16 +47,8 @@ class Collection extends React.Component {
   };
 
   render() {
-    const {
-      collection,
-      collections,
-      collectionName,
-      isSearchResults,
-      searchTerm,
-    } = this.props;
-    const newEntryUrl = collection.get('create')
-      ? getNewEntryUrl(collectionName)
-      : '';
+    const { collection, collections, collectionName, isSearchResults, searchTerm } = this.props;
+    const newEntryUrl = collection.get('create') ? getNewEntryUrl(collectionName) : '';
     return (
       <CollectionContainer>
         <Sidebar collections={collections} searchTerm={searchTerm} />
@@ -75,9 +63,7 @@ class Collection extends React.Component {
               onChangeViewStyle={this.handleChangeViewStyle}
             />
           )}
-          {isSearchResults
-            ? this.renderEntriesSearch()
-            : this.renderEntriesCollection()}
+          {isSearchResults ? this.renderEntriesSearch() : this.renderEntriesCollection()}
         </CollectionMain>
       </CollectionContainer>
     );
@@ -89,13 +75,7 @@ function mapStateToProps(state, ownProps) {
   const { isSearchResults, match } = ownProps;
   const { name, searchTerm } = match.params;
   const collection = name ? collections.get(name) : collections.first();
-  return {
-    collection,
-    collections,
-    collectionName: name,
-    isSearchResults,
-    searchTerm,
-  };
+  return { collection, collections, collectionName: name, isSearchResults, searchTerm };
 }
 
 export default connect(mapStateToProps)(Collection);

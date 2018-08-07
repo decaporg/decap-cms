@@ -6,8 +6,7 @@ import jsonFormatter from './json';
 const parsers = {
   toml: {
     parse: input => tomlFormatter.fromFile(input),
-    stringify: (metadata, { sortedKeys }) =>
-      tomlFormatter.toFile(metadata, sortedKeys),
+    stringify: (metadata, { sortedKeys }) => tomlFormatter.toFile(metadata, sortedKeys),
   },
   json: {
     parse: input => {
@@ -32,8 +31,7 @@ const parsers = {
   },
   yaml: {
     parse: input => yamlFormatter.fromFile(input),
-    stringify: (metadata, { sortedKeys }) =>
-      yamlFormatter.toFile(metadata, sortedKeys),
+    stringify: (metadata, { sortedKeys }) => yamlFormatter.toFile(metadata, sortedKeys),
   },
 };
 
@@ -86,18 +84,11 @@ class FrontmatterFormatter {
     if (this.customDelimiter) this.format.delimiters = this.customDelimiter;
 
     // `sortedKeys` is not recognized by gray-matter, so it gets passed through to the parser
-    return matter.stringify(body, meta, {
-      engines: parsers,
-      sortedKeys,
-      ...format,
-    });
+    return matter.stringify(body, meta, { engines: parsers, sortedKeys, ...format });
   }
 }
 
 export const FrontmatterInfer = new FrontmatterFormatter();
-export const frontmatterYAML = customDelimiter =>
-  new FrontmatterFormatter('yaml', customDelimiter);
-export const frontmatterTOML = customDelimiter =>
-  new FrontmatterFormatter('toml', customDelimiter);
-export const frontmatterJSON = customDelimiter =>
-  new FrontmatterFormatter('json', customDelimiter);
+export const frontmatterYAML = customDelimiter => new FrontmatterFormatter('yaml', customDelimiter);
+export const frontmatterTOML = customDelimiter => new FrontmatterFormatter('toml', customDelimiter);
+export const frontmatterJSON = customDelimiter => new FrontmatterFormatter('json', customDelimiter);

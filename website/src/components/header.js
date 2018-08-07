@@ -23,8 +23,7 @@ class Header extends Component {
   }
 
   handleScroll = () => {
-    const currentWindowPos =
-      document.documentElement.scrollTop || document.body.scrollTop;
+    const currentWindowPos = document.documentElement.scrollTop || document.body.scrollTop;
 
     const scrolled = currentWindowPos > 0;
 
@@ -60,10 +59,7 @@ class Header extends Component {
             <Link className="nav-link docs-link" to="/docs/intro">
               Docs
             </Link>
-            <Link
-              className="nav-link contributing-link"
-              to="/docs/contributor-guide"
-            >
+            <Link className="nav-link contributing-link" to="/docs/contributor-guide">
               Contributing
             </Link>
             <Link className="nav-link" to="/community">

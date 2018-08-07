@@ -30,26 +30,16 @@ const unpublishedEntries = (state = Map(), action) => {
     }
     case UNPUBLISHED_ENTRY_REQUEST:
       return state.setIn(
-        [
-          'entities',
-          `${action.payload.collection}.${action.payload.slug}`,
-          'isFetching',
-        ],
+        ['entities', `${action.payload.collection}.${action.payload.slug}`, 'isFetching'],
         true,
       );
 
     case UNPUBLISHED_ENTRY_REDIRECT:
-      return state.deleteIn([
-        'entities',
-        `${action.payload.collection}.${action.payload.slug}`,
-      ]);
+      return state.deleteIn(['entities', `${action.payload.collection}.${action.payload.slug}`]);
 
     case UNPUBLISHED_ENTRY_SUCCESS:
       return state.setIn(
-        [
-          'entities',
-          `${action.payload.collection}.${action.payload.entry.slug}`,
-        ],
+        ['entities', `${action.payload.collection}.${action.payload.entry.slug}`],
         fromJS(action.payload.entry),
       );
 
@@ -77,10 +67,7 @@ const unpublishedEntries = (state = Map(), action) => {
       // Update Optimistically
       return state.withMutations(map => {
         map.setIn(
-          [
-            'entities',
-            `${action.payload.collection}.${action.payload.entry.get('slug')}`,
-          ],
+          ['entities', `${action.payload.collection}.${action.payload.entry.get('slug')}`],
           fromJS(action.payload.entry),
         );
         map.setIn(
@@ -91,9 +78,7 @@ const unpublishedEntries = (state = Map(), action) => {
           ],
           true,
         );
-        map.updateIn(['pages', 'ids'], List(), list =>
-          list.push(action.payload.entry.get('slug')),
-        );
+        map.updateIn(['pages', 'ids'], List(), list => list.push(action.payload.entry.get('slug')));
       });
 
     case UNPUBLISHED_ENTRY_PERSIST_SUCCESS:
@@ -108,20 +93,11 @@ const unpublishedEntries = (state = Map(), action) => {
       // Update Optimistically
       return state.withMutations(map => {
         map.setIn(
-          [
-            'entities',
-            `${action.payload.collection}.${action.payload.slug}`,
-            'metaData',
-            'status',
-          ],
+          ['entities', `${action.payload.collection}.${action.payload.slug}`, 'metaData', 'status'],
           action.payload.newStatus,
         );
         map.setIn(
-          [
-            'entities',
-            `${action.payload.collection}.${action.payload.slug}`,
-            'isUpdatingStatus',
-          ],
+          ['entities', `${action.payload.collection}.${action.payload.slug}`, 'isUpdatingStatus'],
           true,
         );
       });
@@ -129,38 +105,24 @@ const unpublishedEntries = (state = Map(), action) => {
     case UNPUBLISHED_ENTRY_STATUS_CHANGE_SUCCESS:
     case UNPUBLISHED_ENTRY_STATUS_CHANGE_FAILURE:
       return state.setIn(
-        [
-          'entities',
-          `${action.payload.collection}.${action.payload.slug}`,
-          'isUpdatingStatus',
-        ],
+        ['entities', `${action.payload.collection}.${action.payload.slug}`, 'isUpdatingStatus'],
         false,
       );
 
     case UNPUBLISHED_ENTRY_PUBLISH_REQUEST:
       return state.setIn(
-        [
-          'entities',
-          `${action.payload.collection}.${action.payload.slug}`,
-          'isPublishing',
-        ],
+        ['entities', `${action.payload.collection}.${action.payload.slug}`, 'isPublishing'],
         true,
       );
 
     case UNPUBLISHED_ENTRY_PUBLISH_SUCCESS:
     case UNPUBLISHED_ENTRY_PUBLISH_FAILURE:
       return state.withMutations(map => {
-        map.deleteIn([
-          'entities',
-          `${action.payload.collection}.${action.payload.slug}`,
-        ]);
+        map.deleteIn(['entities', `${action.payload.collection}.${action.payload.slug}`]);
       });
 
     case UNPUBLISHED_ENTRY_DELETE_SUCCESS:
-      return state.deleteIn([
-        'entities',
-        `${action.payload.collection}.${action.payload.slug}`,
-      ]);
+      return state.deleteIn(['entities', `${action.payload.collection}.${action.payload.slug}`]);
 
     default:
       return state;

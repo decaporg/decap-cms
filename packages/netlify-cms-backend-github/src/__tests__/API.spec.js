@@ -3,8 +3,7 @@ import API from '../API';
 describe('github API', () => {
   const mockAPI = (api, responses) => {
     api.request = (path, options = {}) => {
-      const normalizedPath =
-        path.indexOf('?') !== -1 ? path.substr(0, path.indexOf('?')) : path;
+      const normalizedPath = path.indexOf('?') !== -1 ? path.substr(0, path.indexOf('?')) : path;
       const response = responses[normalizedPath];
       return typeof response === 'function'
         ? Promise.resolve(response(options))

@@ -61,9 +61,7 @@ export default class AssetStore {
     const response = await fetch(url, { ...options, headers });
     const contentType = response.headers.get('Content-Type');
     const isJson = contentType && contentType.match(/json/);
-    const content = isJson
-      ? await this.parseJsonResponse(response)
-      : response.text();
+    const content = isJson ? await this.parseJsonResponse(response) : response.text();
     return content;
   }
 
@@ -126,9 +124,7 @@ export default class AssetStore {
       const { id, name, size, url } = response.asset;
 
       const formData = new FormData();
-      Object.keys(formFields).forEach(key =>
-        formData.append(key, formFields[key]),
-      );
+      Object.keys(formFields).forEach(key => formData.append(key, formFields[key]));
       formData.append('file', file, file.name);
 
       await this.request(formURL, { method: 'POST', body: formData });

@@ -7,10 +7,7 @@ export function resolveIntegrations(interationsConfig, getToken) {
   interationsConfig.get('providers').forEach((providerData, providerName) => {
     switch (providerName) {
       case 'algolia':
-        integrationInstances = integrationInstances.set(
-          'algolia',
-          new Algolia(providerData),
-        );
+        integrationInstances = integrationInstances.set('algolia', new Algolia(providerData));
         break;
       case 'assetStore':
         integrationInstances = integrationInstances.set(

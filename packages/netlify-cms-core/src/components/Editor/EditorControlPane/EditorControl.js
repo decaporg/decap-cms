@@ -2,13 +2,7 @@ import React from 'react';
 import styled, { css, cx } from 'react-emotion';
 import { partial, uniqueId } from 'lodash';
 import { connect } from 'react-redux';
-import {
-  colors,
-  colorsRaw,
-  transitions,
-  lengths,
-  borders,
-} from 'netlify-cms-ui-default';
+import { colors, colorsRaw, transitions, lengths, borders } from 'netlify-cms-ui-default';
 import { resolveWidget, getEditorComponents } from 'Lib/registry';
 import { addAsset } from 'Actions/media';
 import { query, clearSearch } from 'Actions/search';
@@ -147,9 +141,7 @@ class EditorControl extends React.Component {
               error =>
                 error.message &&
                 typeof error.message === 'string' && (
-                  <li key={error.message.trim().replace(/[^a-z0-9]+/gi, '-')}>
-                    {error.message}
-                  </li>
+                  <li key={error.message.trim().replace(/[^a-z0-9]+/gi, '-')}>{error.message}</li>
                 ),
             )}
         </ControlErrorsList>
@@ -179,9 +171,7 @@ class EditorControl extends React.Component {
           value={value}
           mediaPaths={mediaPaths}
           metadata={metadata}
-          onChange={(newValue, newMetadata) =>
-            onChange(fieldName, newValue, newMetadata)
-          }
+          onChange={(newValue, newMetadata) => onChange(fieldName, newValue, newMetadata)}
           onValidate={onValidate && partial(onValidate, fieldName)}
           onOpenMediaLibrary={openMediaLibrary}
           onRemoveInsertedMedia={removeInsertedMedia}

@@ -13,8 +13,7 @@ export const CONFIG_MERGE = 'CONFIG_MERGE';
 const getConfigUrl = () => {
   const validTypes = { 'text/yaml': 'yaml', 'application/x-yaml': 'yaml' };
   const configLinkEl = document.querySelector('link[rel="cms-config-url"]');
-  const isValidLink =
-    configLinkEl && validTypes[configLinkEl.type] && get(configLinkEl, 'href');
+  const isValidLink = configLinkEl && validTypes[configLinkEl.type] && get(configLinkEl, 'href');
   if (isValidLink) {
     const link = get(configLinkEl, 'href');
     console.log(`Using config file path: "${link}"`);
@@ -65,9 +64,7 @@ async function getConfig(file, isPreloaded) {
   const contentType = response.headers.get('Content-Type') || 'Not-Found';
   const isYaml = contentType.indexOf('yaml') !== -1;
   if (!isYaml) {
-    console.log(
-      `Response for ${file} was not yaml. (Content-Type: ${contentType})`,
-    );
+    console.log(`Response for ${file} was not yaml. (Content-Type: ${contentType})`);
     if (isPreloaded) return parseConfig('');
   }
   return parseConfig(await response.text());
@@ -114,10 +111,7 @@ export function loadConfig() {
     try {
       const preloadedConfig = getState().config;
       const configUrl = getConfigUrl();
-      const loadedConfig = await getConfig(
-        configUrl,
-        preloadedConfig && preloadedConfig.size > 1,
-      );
+      const loadedConfig = await getConfig(configUrl, preloadedConfig && preloadedConfig.size > 1);
 
       /**
        * Merge any existing configuration so the result can be validated.

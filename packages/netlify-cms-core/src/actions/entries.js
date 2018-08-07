@@ -82,13 +82,7 @@ export function entriesLoading(collection) {
   };
 }
 
-export function entriesLoaded(
-  collection,
-  entries,
-  pagination,
-  cursor,
-  append = true,
-) {
+export function entriesLoaded(collection, entries, pagination, cursor, append = true) {
   return {
     type: ENTRIES_SUCCESS,
     payload: {
@@ -255,9 +249,7 @@ const appendActions = fromJS({
 
 const addAppendActionsToCursor = cursor =>
   Cursor.create(cursor).updateStore('actions', actions =>
-    actions.union(
-      appendActions.filter(v => actions.has(v.get('action'))).keySeq(),
-    ),
+    actions.union(appendActions.filter(v => actions.has(v.get('action'))).keySeq()),
   );
 
 export function loadEntries(collection, page = 0) {
@@ -267,17 +259,9 @@ export function loadEntries(collection, page = 0) {
     }
     const state = getState();
     const backend = currentBackend(state.config);
-    const integration = selectIntegration(
-      state,
-      collection.get('name'),
-      'listEntries',
-    );
+    const integration = selectIntegration(state, collection.get('name'), 'listEntries');
     const provider = integration
-      ? getIntegrationProvider(
-          state.integrations,
-          backend.getToken,
-          integration,
-        )
+      ? getIntegrationProvider(state.integrations, backend.getToken, integration)
       : backend;
     const append = !!(page && !isNaN(page) && page > 0);
     dispatch(entriesLoading(collection));
@@ -328,9 +312,7 @@ export function loadEntries(collection, page = 0) {
 
 function traverseCursor(backend, cursor, action) {
   if (!cursor.actions.has(action)) {
-    throw new Error(
-      `The current cursor does not support the pagination action "${action}".`,
-    );
+    throw new Error(`The current cursor does not support the pagination action "${action}".`);
   }
   return backend.traverseCursor(cursor, action);
 }
@@ -338,9 +320,7 @@ function traverseCursor(backend, cursor, action) {
 export function traverseCollectionCursor(collection, action) {
   return async (dispatch, getState) => {
     const state = getState();
-    if (
-      state.entries.getIn(['pages', `${collection.get('name')}`, 'isFetching'])
-    ) {
+    if (state.entries.getIn(['pages', `${collection.get('name')}`, 'isFetching'])) {
       return;
     }
     const backend = currentBackend(state.config);
@@ -348,10 +328,7 @@ export function traverseCollectionCursor(collection, action) {
     const { action: realAction, append } = appendActions.has(action)
       ? appendActions.get(action).toJS()
       : { action, append: false };
-    const cursor = selectCollectionEntriesCursor(
-      state.cursors,
-      collection.get('name'),
-    );
+    const cursor = selectCollectionEntriesCursor(state.cursors, collection.get('name'));
 
     // Handle cursors representing pages in the old, integer-based
     // pagination API
@@ -361,21 +338,11 @@ export function traverseCollectionCursor(collection, action) {
 
     try {
       dispatch(entriesLoading(collection));
-      const { entries, cursor: newCursor } = await traverseCursor(
-        backend,
-        cursor,
-        realAction,
-      );
+      const { entries, cursor: newCursor } = await traverseCursor(backend, cursor, realAction);
       // Pass null for the old pagination argument - this will
       // eventually be removed.
       return dispatch(
-        entriesLoaded(
-          collection,
-          entries,
-          null,
-          addAppendActionsToCursor(newCursor),
-          append,
-        ),
+        entriesLoaded(collection, entries, null, addAppendActionsToCursor(newCursor), append),
       );
     } catch (err) {
       console.error(err);
@@ -397,9 +364,7 @@ export function createEmptyDraft(collection) {
     collection.get('fields', List()).forEach(field => {
       dataFields[field.get('name')] = field.get('default');
     });
-    const newEntry = createEntry(collection.get('name'), '', '', {
-      data: dataFields,
-    });
+    const newEntry = createEntry(collection.get('name'), '', '', { data: dataFields });
     dispatch(emptyDraftCreated(newEntry));
   };
 }
@@ -413,16 +378,13 @@ export function persistEntry(collection) {
     // Early return if draft contains validation errors
     if (!fieldsErrors.isEmpty()) {
       const hasPresenceErrors = fieldsErrors.some(errors =>
-        errors.some(
-          error => error.type && error.type === ValidationErrorTypes.PRESENCE,
-        ),
+        errors.some(error => error.type && error.type === ValidationErrorTypes.PRESENCE),
       );
 
       if (hasPresenceErrors) {
         dispatch(
           notifSend({
-            message:
-              "Oops, you've missed a required field. Please complete before saving.",
+            message: "Oops, you've missed a required field. Please complete before saving.",
             kind: 'danger',
             dismissAfter: 8000,
           }),
@@ -433,9 +395,7 @@ export function persistEntry(collection) {
     }
 
     const backend = currentBackend(state.config);
-    const assetProxies = entryDraft
-      .get('mediaFiles')
-      .map(path => getAsset(state, path));
+    const assetProxies = entryDraft.get('mediaFiles').map(path => getAsset(state, path));
     const entry = entryDraft.get('entry');
 
     /**
@@ -443,20 +403,12 @@ export function persistEntry(collection) {
      * update the entry and entryDraft with the serialized values.
      */
     const fields = selectFields(collection, entry.get('slug'));
-    const serializedData = serializeValues(
-      entryDraft.getIn(['entry', 'data']),
-      fields,
-    );
+    const serializedData = serializeValues(entryDraft.getIn(['entry', 'data']), fields);
     const serializedEntry = entry.set('data', serializedData);
     const serializedEntryDraft = entryDraft.set('entry', serializedEntry);
     dispatch(entryPersisting(collection, serializedEntry));
     return backend
-      .persistEntry(
-        state.config,
-        collection,
-        serializedEntryDraft,
-        assetProxies.toJS(),
-      )
+      .persistEntry(state.config, collection, serializedEntryDraft, assetProxies.toJS())
       .then(slug => {
         dispatch(
           notifSend({
@@ -476,9 +428,7 @@ export function persistEntry(collection) {
             dismissAfter: 8000,
           }),
         );
-        return Promise.reject(
-          dispatch(entryPersistFail(collection, serializedEntry, error)),
-        );
+        return Promise.reject(dispatch(entryPersistFail(collection, serializedEntry, error)));
       });
   };
 }
@@ -503,9 +453,7 @@ export function deleteEntry(collection, slug) {
           }),
         );
         console.error(error);
-        return Promise.reject(
-          dispatch(entryDeleteFail(collection, slug, error)),
-        );
+        return Promise.reject(dispatch(entryDeleteFail(collection, slug, error)));
       });
   };
 }

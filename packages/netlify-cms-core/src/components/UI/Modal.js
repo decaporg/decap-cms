@@ -36,8 +36,7 @@ const styles = {
     align-items: center;
     opacity: 0;
     background-color: rgba(0, 0, 0, 0);
-    transition: background-color ${transitions.main},
-      opacity ${transitions.main};
+    transition: background-color ${transitions.main}, opacity ${transitions.main};
   `,
   overlayAfterOpen: css`
     background-color: rgba(0, 0, 0, 0.6);

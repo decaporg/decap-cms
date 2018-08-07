@@ -1,12 +1,6 @@
 import React from 'react';
 import styled, { css } from 'react-emotion';
-import {
-  Icon,
-  Dropdown,
-  DropdownItem,
-  DropdownButton,
-  colors,
-} from 'netlify-cms-ui-default';
+import { Icon, Dropdown, DropdownItem, DropdownButton, colors } from 'netlify-cms-ui-default';
 import { stripProtocol } from 'Lib/urlHelper';
 
 const styles = {
@@ -44,11 +38,7 @@ const AppHeaderSiteLink = styled.a`
 
 const Avatar = ({ imageUrl }) => (
   <AppHeaderAvatar>
-    {imageUrl ? (
-      <AvatarImage src={imageUrl} />
-    ) : (
-      <AvatarPlaceholderIcon type="user" size="large" />
-    )}
+    {imageUrl ? <AvatarImage src={imageUrl} /> : <AvatarPlaceholderIcon type="user" size="large" />}
   </AppHeaderAvatar>
 );
 

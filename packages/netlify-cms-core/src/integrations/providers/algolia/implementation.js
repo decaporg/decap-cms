@@ -89,10 +89,7 @@ export default class Algolia {
       const entries = response.results.map((result, index) =>
         result.hits.map(hit => {
           const slug = getSlug(hit.path);
-          return createEntry(collections[index], slug, hit.path, {
-            data: hit.data,
-            partial: true,
-          });
+          return createEntry(collections[index], slug, hit.path, { data: hit.data, partial: true });
         }),
       );
 
@@ -101,31 +98,20 @@ export default class Algolia {
   }
 
   searchBy(field, collection, query) {
-    return this.request(
-      `${this.searchURL}/indexes/${this.indexPrefix}${collection}`,
-      {
-        params: {
-          restrictSearchableAttributes: field,
-          query,
-        },
+    return this.request(`${this.searchURL}/indexes/${this.indexPrefix}${collection}`, {
+      params: {
+        restrictSearchableAttributes: field,
+        query,
       },
-    );
+    });
   }
 
   listEntries(collection, page) {
-    if (
-      this.entriesCache.collection === collection &&
-      this.entriesCache.page === page
-    ) {
-      return Promise.resolve({
-        page: this.entriesCache.page,
-        entries: this.entriesCache.entries,
-      });
+    if (this.entriesCache.collection === collection && this.entriesCache.page === page) {
+      return Promise.resolve({ page: this.entriesCache.page, entries: this.entriesCache.entries });
     } else {
       return this.request(
-        `${this.searchURL}/indexes/${this.indexPrefix}${collection.get(
-          'name',
-        )}`,
+        `${this.searchURL}/indexes/${this.indexPrefix}${collection.get('name')}`,
         {
           params: { page },
         },
@@ -144,14 +130,12 @@ export default class Algolia {
   }
 
   getEntry(collection, slug) {
-    return this.searchBy('slug', collection.get('name'), slug).then(
-      response => {
-        const entry = response.hits.filter(hit => hit.slug === slug)[0];
-        return createEntry(collection.get('name'), slug, entry.path, {
-          data: entry.data,
-          partial: true,
-        });
-      },
-    );
+    return this.searchBy('slug', collection.get('name'), slug).then(response => {
+      const entry = response.hits.filter(hit => hit.slug === slug)[0];
+      return createEntry(collection.get('name'), slug, entry.path, {
+        data: entry.data,
+        partial: true,
+      });
+    });
   }
 }

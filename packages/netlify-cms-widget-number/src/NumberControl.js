@@ -32,14 +32,7 @@ export default class NumberControl extends React.Component {
   };
 
   render() {
-    const {
-      field,
-      value,
-      classNameWrapper,
-      forID,
-      setActiveStyle,
-      setInactiveStyle,
-    } = this.props;
+    const { field, value, classNameWrapper, forID, setActiveStyle, setInactiveStyle } = this.props;
     const min = field.get('min', '');
     const max = field.get('max', '');
     const step = field.get('step', field.get('valueType') === 'int' ? 1 : '');

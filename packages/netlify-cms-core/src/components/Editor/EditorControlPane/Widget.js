@@ -69,9 +69,7 @@ export default class Widget extends Component {
      * `getWrappedInstance` method. Note that connected widgets must pass
      * `withRef: true` to `connect` in the options object.
      */
-    const wrappedControl = ref.getWrappedInstance
-      ? ref.getWrappedInstance()
-      : ref;
+    const wrappedControl = ref.getWrappedInstance ? ref.getWrappedInstance() : ref;
 
     this.wrappedControlValid = wrappedControl.isValid || truthy;
 

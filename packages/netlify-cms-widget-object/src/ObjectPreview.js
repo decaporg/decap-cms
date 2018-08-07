@@ -3,9 +3,7 @@ import PropTypes from 'prop-types';
 import { WidgetPreviewContainer } from 'netlify-cms-ui-default';
 
 const ObjectPreview = ({ field }) => (
-  <WidgetPreviewContainer>
-    {(field && field.get('fields')) || null}
-  </WidgetPreviewContainer>
+  <WidgetPreviewContainer>{(field && field.get('fields')) || null}</WidgetPreviewContainer>
 );
 
 ObjectPreview.propTypes = {

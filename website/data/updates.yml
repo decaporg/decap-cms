@@ -55,16 +55,13 @@ updates:
     description: 'Allow custom auth endpoint, bug fixes.'
     version: 1.7.0
   - date: '2018-04-19'
-    description:
-      ' Markdown toolbar customization, manual date widget entry, bug fixes.'
+    description: ' Markdown toolbar customization, manual date widget entry, bug fixes.'
     version: 1.6.0
   - date: '2018-04-11'
-    description:
-      'New time based slug placeholders, set config.yml URL with &lt;link&gt;.'
+    description: 'New time based slug placeholders, set config.yml URL with &lt;link&gt;.'
     version: 1.5.0
   - date: '2018-03-29'
-    description:
-      'More control over filenames, lots of bugfixes, and new beta features!'
+    description: 'More control over filenames, lots of bugfixes, and new beta features!'
     version: 1.4.0
   - date: '2018-03-06'
     description: Fixes styling issues
@@ -102,8 +99,7 @@ updates:
       improvements.
     version: '1.2'
   - date: '2018-01-25'
-    description:
-      You can now register external backends and we improved metadata handling.
+    description: You can now register external backends and we improved metadata handling.
     version: '1.1'
   - date: '2018-01-23'
     description: >-

@@ -44,14 +44,7 @@ class EntriesCollection extends React.Component {
   };
 
   render() {
-    const {
-      collection,
-      entries,
-      publicFolder,
-      isFetching,
-      viewStyle,
-      cursor,
-    } = this.props;
+    const { collection, entries, publicFolder, isFetching, viewStyle, cursor } = this.props;
 
     return (
       <Entries
@@ -75,26 +68,12 @@ function mapStateToProps(state, ownProps) {
   const page = state.entries.getIn(['pages', collection.get('name'), 'page']);
 
   const entries = selectEntries(state, collection.get('name'));
-  const isFetching = state.entries.getIn(
-    ['pages', collection.get('name'), 'isFetching'],
-    false,
-  );
+  const isFetching = state.entries.getIn(['pages', collection.get('name'), 'isFetching'], false);
 
-  const rawCursor = selectCollectionEntriesCursor(
-    state.cursors,
-    collection.get('name'),
-  );
+  const rawCursor = selectCollectionEntriesCursor(state.cursors, collection.get('name'));
   const cursor = Cursor.create(rawCursor).clearData();
 
-  return {
-    publicFolder,
-    collection,
-    page,
-    entries,
-    isFetching,
-    viewStyle,
-    cursor,
-  };
+  return { publicFolder, collection, page, entries, isFetching, viewStyle, cursor };
 }
 
 const mapDispatchToProps = {

@@ -136,9 +136,7 @@ class WorkflowList extends React.Component {
 Please drag the card to the "Ready" column to enable publishing.`,
       );
       return;
-    } else if (
-      !window.confirm('Are you sure you want to publish this entry?')
-    ) {
+    } else if (!window.confirm('Are you sure you want to publish this entry?')) {
       return;
     }
     this.props.handlePublish(collection, slug);
@@ -156,17 +154,10 @@ Please drag the card to the "Ready" column to enable publishing.`,
         >
           {(connect, { isHovered }) =>
             connect(
-              <div
-                className={cx(styles.column, {
-                  [styles.columnHovered]: isHovered,
-                })}
-              >
-                <ColumnHeader name={currColumn}>
-                  {getColumnHeaderText(currColumn)}
-                </ColumnHeader>
+              <div className={cx(styles.column, { [styles.columnHovered]: isHovered })}>
+                <ColumnHeader name={currColumn}>{getColumnHeaderText(currColumn)}</ColumnHeader>
                 <ColumnCount>
-                  {currEntries.size}{' '}
-                  {currEntries.size === 1 ? 'entry' : 'entries'}
+                  {currEntries.size} {currEntries.size === 1 ? 'entry' : 'entries'}
                 </ColumnCount>
                 {this.renderColumns(currEntries, currColumn)}
               </div>,
@@ -178,9 +169,7 @@ Please drag the card to the "Ready" column to enable publishing.`,
     return (
       <div>
         {entries.map(entry => {
-          const timestamp = moment(
-            entry.getIn(['metaData', 'timeStamp']),
-          ).format('MMMM D');
+          const timestamp = moment(entry.getIn(['metaData', 'timeStamp'])).format('MMMM D');
           const editLink = `collections/${entry.getIn([
             'metaData',
             'collection',
@@ -189,8 +178,7 @@ Please drag the card to the "Ready" column to enable publishing.`,
           const ownStatus = entry.getIn(['metaData', 'status']);
           const collection = entry.getIn(['metaData', 'collection']);
           const isModification = entry.get('isModification');
-          const canPublish =
-            ownStatus === status.last() && !entry.get('isPersisting', false);
+          const canPublish = ownStatus === status.last() && !entry.get('isPersisting', false);
           return (
             <DragSource
               namespace={DNDNamespace}
@@ -210,19 +198,9 @@ Please drag the card to the "Ready" column to enable publishing.`,
                       isModification={isModification}
                       editLink={editLink}
                       timestamp={timestamp}
-                      onDelete={this.requestDelete.bind(
-                        this,
-                        collection,
-                        slug,
-                        ownStatus,
-                      )}
+                      onDelete={this.requestDelete.bind(this, collection, slug, ownStatus)}
                       canPublish={canPublish}
-                      onPublish={this.requestPublish.bind(
-                        this,
-                        collection,
-                        slug,
-                        ownStatus,
-                      )}
+                      onPublish={this.requestPublish.bind(this, collection, slug, ownStatus)}
                     />
                   </div>,
                 )

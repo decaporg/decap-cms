@@ -4,10 +4,7 @@ import { get, pick, intersection } from 'lodash';
 import { unsentRequest } from 'netlify-cms-lib-util';
 import { GitHubBackend } from 'netlify-cms-backend-github';
 import { GitLabBackend } from 'netlify-cms-backend-gitlab';
-import {
-  BitBucketBackend,
-  API as BitBucketAPI,
-} from 'netlify-cms-backend-bitbucket';
+import { BitBucketBackend, API as BitBucketAPI } from 'netlify-cms-backend-bitbucket';
 import GitHubAPI from './GitHubAPI';
 import GitLabAPI from './GitLabAPI';
 import AuthenticationPage from './AuthenticationPage';
@@ -81,23 +78,19 @@ export default class GitGateway {
 
   requestFunction = req =>
     this.tokenPromise()
-      .then(token =>
-        unsentRequest.withHeaders({ Authorization: `Bearer ${token}` }, req),
-      )
+      .then(token => unsentRequest.withHeaders({ Authorization: `Bearer ${token}` }, req))
       .then(unsentRequest.performRequest);
 
   authenticate(user) {
     this.tokenPromise = user.jwt.bind(user);
     return this.tokenPromise().then(async token => {
       if (!this.backendType) {
-        const {
-          github_enabled,
-          gitlab_enabled,
-          bitbucket_enabled,
-          roles,
-        } = await fetch(`${this.gatewayUrl}/settings`, {
-          headers: { Authorization: `Bearer ${token}` },
-        }).then(res => res.json());
+        const { github_enabled, gitlab_enabled, bitbucket_enabled, roles } = await fetch(
+          `${this.gatewayUrl}/settings`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        ).then(res => res.json());
         this.acceptRoles = roles;
         if (github_enabled) {
           this.backendType = 'github';
@@ -112,9 +105,7 @@ export default class GitGateway {
         const userRoles = get(jwtDecode(token), 'app_metadata.roles', []);
         const validRole = intersection(userRoles, this.acceptRoles).length > 0;
         if (!validRole) {
-          throw new Error(
-            "You don't have sufficient permissions to access Netlify CMS",
-          );
+          throw new Error("You don't have sufficient permissions to access Netlify CMS");
         }
       }
 
@@ -135,32 +126,21 @@ export default class GitGateway {
 
       if (this.backendType === 'github') {
         this.api = new GitHubAPI(apiConfig);
-        this.backend = new GitHubBackend(this.config, {
-          ...this.options,
-          API: this.api,
-        });
+        this.backend = new GitHubBackend(this.config, { ...this.options, API: this.api });
       } else if (this.backendType === 'gitlab') {
         this.api = new GitLabAPI(apiConfig);
-        this.backend = new GitLabBackend(this.config, {
-          ...this.options,
-          API: this.api,
-        });
+        this.backend = new GitLabBackend(this.config, { ...this.options, API: this.api });
       } else if (this.backendType === 'bitbucket') {
         this.api = new BitBucketAPI({
           ...apiConfig,
           requestFunction: this.requestFunction,
           hasWriteAccess: async () => true,
         });
-        this.backend = new BitBucketBackend(this.config, {
-          ...this.options,
-          API: this.api,
-        });
+        this.backend = new BitBucketBackend(this.config, { ...this.options, API: this.api });
       }
 
       if (!(await this.api.hasWriteAccess())) {
-        throw new Error(
-          "You don't have sufficient permissions to access Netlify CMS",
-        );
+        throw new Error("You don't have sufficient permissions to access Netlify CMS");
       }
     });
   }
@@ -214,11 +194,7 @@ export default class GitGateway {
     return this.backend.unpublishedEntry(collection, slug);
   }
   updateUnpublishedEntryStatus(collection, slug, newStatus) {
-    return this.backend.updateUnpublishedEntryStatus(
-      collection,
-      slug,
-      newStatus,
-    );
+    return this.backend.updateUnpublishedEntryStatus(collection, slug, newStatus);
   }
   deleteUnpublishedEntry(collection, slug) {
     return this.backend.deleteUnpublishedEntry(collection, slug);

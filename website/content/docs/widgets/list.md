@@ -49,21 +49,11 @@ The list widget allows you to create a repeatable item in the UI which saves as 
     name: 'testimonials'
     widget: 'list'
     fields:
-      - {
-          label: Quote,
-          name: quote,
-          widget: string,
-          default: 'Everything is awesome!',
-        }
+      - { label: Quote, name: quote, widget: string, default: 'Everything is awesome!' }
       - label: Author
         name: author
         widget: object
         fields:
           - { label: Name, name: name, widget: string, default: 'Emmet' }
-          - {
-              label: Avatar,
-              name: avatar,
-              widget: image,
-              default: '/img/emmet.jpg',
-            }
+          - { label: Avatar, name: avatar, widget: image, default: '/img/emmet.jpg' }
   ```

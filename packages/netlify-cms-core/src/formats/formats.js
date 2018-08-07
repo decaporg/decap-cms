@@ -3,18 +3,9 @@ import { get } from 'lodash';
 import yamlFormatter from './yaml';
 import tomlFormatter from './toml';
 import jsonFormatter from './json';
-import {
-  FrontmatterInfer,
-  frontmatterJSON,
-  frontmatterTOML,
-  frontmatterYAML,
-} from './frontmatter';
+import { FrontmatterInfer, frontmatterJSON, frontmatterTOML, frontmatterYAML } from './frontmatter';
 
-export const frontmatterFormats = [
-  'yaml-frontmatter',
-  'toml-frontmatter',
-  'json-frontmatter',
-];
+export const frontmatterFormats = ['yaml-frontmatter', 'toml-frontmatter', 'json-frontmatter'];
 
 export const formatExtensions = {
   yml: 'yml',

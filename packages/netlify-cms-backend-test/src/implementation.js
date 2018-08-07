@@ -86,10 +86,7 @@ export default class TestRepo {
     })();
     // TODO: stop assuming cursors are for collections
     const allEntries = getFolderEntries(collection.get('folder'), extension);
-    const entries = allEntries.slice(
-      newIndex * pageSize,
-      newIndex * pageSize + pageSize,
-    );
+    const entries = allEntries.slice(newIndex * pageSize, newIndex * pageSize + pageSize);
     const newCursor = getCursor(collection, extension, allEntries, newIndex);
     return Promise.resolve({ entries, cursor: newCursor });
   }
@@ -133,10 +130,7 @@ export default class TestRepo {
     );
     if (!entry) {
       return Promise.reject(
-        new EditorialWorkflowError(
-          'content is not under editorial workflow',
-          true,
-        ),
+        new EditorialWorkflowError('content is not under editorial workflow', true),
       );
     }
     return Promise.resolve(entry);
@@ -154,14 +148,11 @@ export default class TestRepo {
   persistEntry({ path, raw, slug }, mediaFiles, options = {}) {
     if (options.useWorkflow) {
       const unpubStore = window.repoFilesUnpublished;
-      const existingEntryIndex = unpubStore.findIndex(
-        e => e.file.path === path,
-      );
+      const existingEntryIndex = unpubStore.findIndex(e => e.file.path === path);
       if (existingEntryIndex >= 0) {
         const unpubEntry = { ...unpubStore[existingEntryIndex], data: raw };
         unpubEntry.title = options.parsedData && options.parsedData.title;
-        unpubEntry.description =
-          options.parsedData && options.parsedData.description;
+        unpubEntry.description = options.parsedData && options.parsedData.description;
         unpubStore.splice(existingEntryIndex, 1, unpubEntry);
       } else {
         const unpubEntry = {
@@ -186,8 +177,7 @@ export default class TestRepo {
     const folder = path.substring(0, path.lastIndexOf('/'));
     const fileName = path.substring(path.lastIndexOf('/') + 1);
     window.repoFiles[folder] = window.repoFiles[folder] || {};
-    window.repoFiles[folder][fileName] =
-      window.repoFiles[folder][fileName] || {};
+    window.repoFiles[folder][fileName] = window.repoFiles[folder][fileName] || {};
     if (newEntry) {
       window.repoFiles[folder][fileName] = { content: raw };
     } else {
@@ -211,11 +201,7 @@ export default class TestRepo {
       e => e.metaData.collection === collection && e.slug === slug,
     );
     const unpubEntry = unpubStore[unpubEntryIndex];
-    const entry = {
-      raw: unpubEntry.data,
-      slug: unpubEntry.slug,
-      path: unpubEntry.file.path,
-    };
+    const entry = { raw: unpubEntry.data, slug: unpubEntry.slug, path: unpubEntry.file.path };
     unpubStore.splice(unpubEntryIndex, 1);
     return this.persistEntry(entry);
   }

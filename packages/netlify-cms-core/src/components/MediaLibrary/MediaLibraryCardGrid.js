@@ -51,9 +51,7 @@ const MediaLibraryCardGrid = ({
       {!canLoadMore ? null : <Waypoint onEnter={onLoadMore} />}
     </CardGrid>
     {!isPaginating ? null : (
-      <PaginatingMessage isPrivate={isPrivate}>
-        {paginatingMessage}
-      </PaginatingMessage>
+      <PaginatingMessage isPrivate={isPrivate}>{paginatingMessage}</PaginatingMessage>
     )}
   </CardGridContainer>
 );

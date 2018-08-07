@@ -90,9 +90,7 @@ const EntryCard = ({
 }) => {
   const label = entry.get('label');
   const title = label || entry.getIn(['data', inferedFields.titleField]);
-  const path = `/collections/${collection.get('name')}/entries/${entry.get(
-    'slug',
-  )}`;
+  const path = `/collections/${collection.get('name')}/entries/${entry.get('slug')}`;
   let image = entry.getIn(['data', inferedFields.imageField]);
   image = resolvePath(image, publicFolder);
   if (image) {
@@ -103,9 +101,7 @@ const EntryCard = ({
     return (
       <ListCard>
         <ListCardLink to={path}>
-          {collectionLabel ? (
-            <CollectionLabel>{collectionLabel}</CollectionLabel>
-          ) : null}
+          {collectionLabel ? <CollectionLabel>{collectionLabel}</CollectionLabel> : null}
           <ListCardTitle>{title}</ListCardTitle>
         </ListCardLink>
       </ListCard>
@@ -117,9 +113,7 @@ const EntryCard = ({
       <GridCard>
         <GridCardLink to={path}>
           <CardBody hasImage={image}>
-            {collectionLabel ? (
-              <CollectionLabel>{collectionLabel}</CollectionLabel>
-            ) : null}
+            {collectionLabel ? <CollectionLabel>{collectionLabel}</CollectionLabel> : null}
             <CardHeading>{title}</CardHeading>
           </CardBody>
           {image ? <CardImage url={image} /> : null}

@@ -26,11 +26,7 @@ class DocSearch extends Component {
     return (
       <a className="utility-input">
         <img src={searchIcon} />
-        <input
-          type="search"
-          placeholder="Search the docs"
-          className="algolia-search"
-        />
+        <input type="search" placeholder="Search the docs" className="algolia-search" />
       </a>
     );
   }

@@ -98,9 +98,7 @@ function processMarkNode(node, parentMarks = []) {
    * mark nodes, if any.
    */
   const markType = markMap[node.type];
-  const marks = markType
-    ? [...parentMarks, { type: markMap[node.type] }]
-    : parentMarks;
+  const marks = markType ? [...parentMarks, { type: markMap[node.type] }] : parentMarks;
 
   const children = flatMap(node.children, childNode => {
     switch (childNode.type) {
@@ -258,14 +256,7 @@ function convertNode(node, nodes) {
      * on the MDAST node depth.
      */
     case 'heading': {
-      const depthMap = {
-        1: 'one',
-        2: 'two',
-        3: 'three',
-        4: 'four',
-        5: 'five',
-        6: 'six',
-      };
+      const depthMap = { 1: 'one', 2: 'two', 3: 'three', 4: 'four', 5: 'five', 6: 'six' };
       const slateType = `heading-${depthMap[node.depth]}`;
       return createBlock(slateType, nodes);
     }

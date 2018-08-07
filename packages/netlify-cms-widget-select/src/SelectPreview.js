@@ -3,9 +3,7 @@ import React from 'react';
 import { WidgetPreviewContainer } from 'netlify-cms-ui-default';
 
 const SelectPreview = ({ value }) => (
-  <WidgetPreviewContainer>
-    {value ? value.toString() : null}
-  </WidgetPreviewContainer>
+  <WidgetPreviewContainer>{value ? value.toString() : null}</WidgetPreviewContainer>
 );
 
 SelectPreview.propTypes = {

@@ -2,13 +2,7 @@ import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled, { css } from 'react-emotion';
 import { NavLink } from 'react-router-dom';
-import {
-  Icon,
-  components,
-  colors,
-  colorsRaw,
-  lengths,
-} from 'netlify-cms-ui-default';
+import { Icon, components, colors, colorsRaw, lengths } from 'netlify-cms-ui-default';
 import { searchCollections } from 'Actions/collections';
 
 const styles = {

@@ -10,9 +10,7 @@ jest.mock('../../valueObjects/AssetProxy.js');
 describe('Frontmatter', () => {
   it('should parse YAML with --- delimiters', () => {
     expect(
-      FrontmatterInfer.fromFile(
-        '---\ntitle: YAML\ndescription: Something longer\n---\nContent',
-      ),
+      FrontmatterInfer.fromFile('---\ntitle: YAML\ndescription: Something longer\n---\nContent'),
     ).toEqual({
       title: 'YAML',
       description: 'Something longer',
@@ -22,9 +20,7 @@ describe('Frontmatter', () => {
 
   it('should parse YAML with --- delimiters when it is explicitly set as the format without a custom delimiter', () => {
     expect(
-      frontmatterYAML().fromFile(
-        '---\ntitle: YAML\ndescription: Something longer\n---\nContent',
-      ),
+      frontmatterYAML().fromFile('---\ntitle: YAML\ndescription: Something longer\n---\nContent'),
     ).toEqual({
       title: 'YAML',
       description: 'Something longer',
@@ -70,9 +66,7 @@ describe('Frontmatter', () => {
 
   it('should overwrite any body param in the front matter', () => {
     expect(
-      FrontmatterInfer.fromFile(
-        '---\ntitle: The Title\nbody: Something longer\n---\nContent',
-      ),
+      FrontmatterInfer.fromFile('---\ntitle: The Title\nbody: Something longer\n---\nContent'),
     ).toEqual({
       title: 'The Title',
       body: 'Content',
@@ -81,9 +75,7 @@ describe('Frontmatter', () => {
 
   it('should parse TOML with +++ delimiters', () => {
     expect(
-      FrontmatterInfer.fromFile(
-        '+++\ntitle = "TOML"\ndescription = "Front matter"\n+++\nContent',
-      ),
+      FrontmatterInfer.fromFile('+++\ntitle = "TOML"\ndescription = "Front matter"\n+++\nContent'),
     ).toEqual({
       title: 'TOML',
       description: 'Front matter',
@@ -185,22 +177,8 @@ describe('Frontmatter', () => {
   });
 
   it('should stringify YAML with missing body', () => {
-    expect(
-      FrontmatterInfer.toFile({
-        tags: ['front matter', 'yaml'],
-        title: 'YAML',
-      }),
-    ).toEqual(
-      [
-        '---',
-        'tags:',
-        '  - front matter',
-        '  - yaml',
-        'title: YAML',
-        '---',
-        '',
-        '',
-      ].join('\n'),
+    expect(FrontmatterInfer.toFile({ tags: ['front matter', 'yaml'], title: 'YAML' })).toEqual(
+      ['---', 'tags:', '  - front matter', '  - yaml', 'title: YAML', '---', '', ''].join('\n'),
     );
   });
 

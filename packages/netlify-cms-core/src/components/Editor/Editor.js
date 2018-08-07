@@ -29,12 +29,9 @@ import { EDITORIAL_WORKFLOW } from 'Constants/publishModes';
 import EditorInterface from './EditorInterface';
 import withWorkflow from './withWorkflow';
 
-const navigateCollection = collectionPath =>
-  history.push(`/collections/${collectionPath}`);
-const navigateToCollection = collectionName =>
-  navigateCollection(collectionName);
-const navigateToNewEntry = collectionName =>
-  navigateCollection(`${collectionName}/new`);
+const navigateCollection = collectionPath => history.push(`/collections/${collectionPath}`);
+const navigateToCollection = collectionName => navigateCollection(collectionName);
+const navigateToNewEntry = collectionName => navigateCollection(`${collectionName}/new`);
 const navigateToEntry = (collectionName, slug) =>
   navigateCollection(`${collectionName}/entries/${slug}`);
 
@@ -101,10 +98,7 @@ class Editor extends React.Component {
       /**
        * New entry being saved and redirected to it's new slug based url.
        */
-      const isPersisting = this.props.entryDraft.getIn([
-        'entry',
-        'isPersisting',
-      ]);
+      const isPersisting = this.props.entryDraft.getIn(['entry', 'isPersisting']);
       const newRecord = this.props.entryDraft.getIn(['entry', 'newRecord']);
       const newEntryPath = `/collections/${collection.get('name')}/new`;
       if (
@@ -151,8 +145,7 @@ class Editor extends React.Component {
      * saved, and we need to update navigation to the correct url using the
      * slug.
      */
-    const newSlug =
-      this.props.entryDraft && this.props.entryDraft.getIn(['entry', 'slug']);
+    const newSlug = this.props.entryDraft && this.props.entryDraft.getIn(['entry', 'slug']);
     if (!prevProps.slug && newSlug && this.props.newEntry) {
       navigateToEntry(prevProps.collection.get('name'), newSlug);
       this.props.loadEntry(this.props.collection, newSlug);
@@ -168,8 +161,7 @@ class Editor extends React.Component {
        */
       const values = deserializeValues(entry.get('data'), fields);
       const deserializedEntry = entry.set('data', values);
-      const fieldsMetaData =
-        this.props.entryDraft && this.props.entryDraft.get('fieldsMetaData');
+      const fieldsMetaData = this.props.entryDraft && this.props.entryDraft.get('fieldsMetaData');
       this.createDraft(deserializedEntry, fieldsMetaData);
     } else if (newEntry) {
       prevProps.createEmptyDraft(collection);
@@ -194,18 +186,11 @@ class Editor extends React.Component {
       currentStatus,
     } = this.props;
     if (entryDraft.get('hasChanged')) {
-      window.alert(
-        'You have unsaved changes, please save before updating status.',
-      );
+      window.alert('You have unsaved changes, please save before updating status.');
       return;
     }
     const newStatus = status.get(newStatusName);
-    updateUnpublishedEntryStatus(
-      collection.get('name'),
-      slug,
-      currentStatus,
-      newStatus,
-    );
+    updateUnpublishedEntryStatus(collection.get('name'), slug, currentStatus, newStatus);
   };
 
   handlePersistEntry = async (opts = {}) => {
@@ -246,9 +231,7 @@ class Editor extends React.Component {
     } else if (entryDraft.get('hasChanged')) {
       window.alert('You have unsaved changes, please save before publishing.');
       return;
-    } else if (
-      !window.confirm('Are you sure you want to publish this entry?')
-    ) {
+    } else if (!window.confirm('Are you sure you want to publish this entry?')) {
       return;
     }
 
@@ -271,9 +254,7 @@ class Editor extends React.Component {
       ) {
         return;
       }
-    } else if (
-      !window.confirm('Are you sure you want to delete this published entry?')
-    ) {
+    } else if (!window.confirm('Are you sure you want to delete this published entry?')) {
       return;
     }
     if (newEntry) {
@@ -398,8 +379,7 @@ function mapStateToProps(state, ownProps) {
   const isModification = entryDraft.getIn(['entry', 'isModification']);
   const collectionEntriesLoaded = !!entries.getIn(['entities', collectionName]);
   const unpublishedEntry = selectUnpublishedEntry(state, collectionName, slug);
-  const currentStatus =
-    unpublishedEntry && unpublishedEntry.getIn(['metaData', 'status']);
+  const currentStatus = unpublishedEntry && unpublishedEntry.getIn(['metaData', 'status']);
   return {
     collection,
     collections,

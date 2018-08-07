@@ -124,18 +124,13 @@ export default class Header extends React.Component {
               <AppHeaderNavLink
                 to="/"
                 activeClassName="header-link-active"
-                isActive={(match, location) =>
-                  location.pathname.startsWith('/collections/')
-                }
+                isActive={(match, location) => location.pathname.startsWith('/collections/')}
               >
                 <Icon type="page" />
                 Content
               </AppHeaderNavLink>
               {hasWorkflow ? (
-                <AppHeaderNavLink
-                  to="/workflow"
-                  activeClassName="header-link-active"
-                >
+                <AppHeaderNavLink to="/workflow" activeClassName="header-link-active">
                   <Icon type="workflow" />
                   Workflow
                 </AppHeaderNavLink>
@@ -147,9 +142,7 @@ export default class Header extends React.Component {
             </nav>
             <AppHeaderActions>
               <Dropdown
-                renderButton={() => (
-                  <AppHeaderQuickNewButton>Quick add</AppHeaderQuickNewButton>
-                )}
+                renderButton={() => <AppHeaderQuickNewButton>Quick add</AppHeaderQuickNewButton>}
                 dropdownTopOverlap="30px"
                 dropdownWidth="160px"
                 dropdownPosition="left"
@@ -160,13 +153,8 @@ export default class Header extends React.Component {
                   .map(collection => (
                     <DropdownItem
                       key={collection.get('name')}
-                      label={
-                        collection.get('label_singular') ||
-                        collection.get('label')
-                      }
-                      onClick={() =>
-                        this.handleCreatePostClick(collection.get('name'))
-                      }
+                      label={collection.get('label_singular') || collection.get('label')}
+                      onClick={() => this.handleCreatePostClick(collection.get('name'))}
                     />
                   ))}
               </Dropdown>

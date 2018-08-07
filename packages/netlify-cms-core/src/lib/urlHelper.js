@@ -24,9 +24,7 @@ export function addParams(urlString, params) {
 
 export function stripProtocol(urlString) {
   const protocolEndIndex = urlString.indexOf('//');
-  return protocolEndIndex > -1
-    ? urlString.slice(protocolEndIndex + 2)
-    : urlString;
+  return protocolEndIndex > -1 ? urlString.slice(protocolEndIndex + 2) : urlString;
 }
 
 /* See https://www.w3.org/International/articles/idn-and-iri/#path.
@@ -41,10 +39,7 @@ const ucsChars = /[\xA0-\u{D7FF}\u{F900}-\u{FDCF}\u{FDF0}-\u{FFEF}\u{10000}-\u{1
 const validURIChar = char => uriChars.test(char);
 const validIRIChar = char => uriChars.test(char) || ucsChars.test(char);
 // `sanitizeURI` does not actually URI-encode the chars (that is the browser's and server's job), just removes the ones that are not allowed.
-export function sanitizeURI(
-  str,
-  { replacement = '', encoding = 'unicode' } = {},
-) {
+export function sanitizeURI(str, { replacement = '', encoding = 'unicode' } = {}) {
   if (!isString(str)) {
     throw new Error('The input slug must be a string.');
   }
@@ -63,9 +58,7 @@ export function sanitizeURI(
 
   // Check and make sure the replacement character is actually a safe char itself.
   if (!Array.from(replacement).every(validChar)) {
-    throw new Error(
-      'The replacement character(s) (options.replacement) is itself unsafe.',
-    );
+    throw new Error('The replacement character(s) (options.replacement) is itself unsafe.');
   }
 
   // `Array.from` must be used instead of `String.split` because
@@ -91,10 +84,7 @@ export function sanitizeSlug(str, options = Map()) {
   ])(str);
 
   // Remove any doubled or trailing replacement characters (that were added in the sanitizers).
-  const doubleReplacement = new RegExp(
-    `(?:${escapeRegExp(replacement)})+`,
-    'g',
-  );
+  const doubleReplacement = new RegExp(`(?:${escapeRegExp(replacement)})+`, 'g');
   const trailingReplacment = new RegExp(`${escapeRegExp(replacement)}$`);
   const normalizedSlug = sanitizedSlug
     .replace(doubleReplacement, replacement)

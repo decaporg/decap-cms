@@ -10,15 +10,11 @@ describe('fileExtensionWithSeparator', () => {
   });
 
   it('should return the extension of a file path with trailing slash', () => {
-    expect(fileExtensionWithSeparator('/src/main/index.html/')).toEqual(
-      '.html',
-    );
+    expect(fileExtensionWithSeparator('/src/main/index.html/')).toEqual('.html');
   });
 
   it('should return the extension for an extension with two ..', () => {
-    expect(fileExtensionWithSeparator('/src/main/index..html')).toEqual(
-      '.html',
-    );
+    expect(fileExtensionWithSeparator('/src/main/index..html')).toEqual('.html');
   });
 
   it('should return an empty string for the parent path ..', () => {

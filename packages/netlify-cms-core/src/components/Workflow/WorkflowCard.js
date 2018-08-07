@@ -1,13 +1,7 @@
 import React from 'react';
 import styled, { css } from 'react-emotion';
 import { Link } from 'react-router-dom';
-import {
-  components,
-  colors,
-  colorsRaw,
-  transitions,
-  buttons,
-} from 'netlify-cms-ui-default';
+import { components, colors, colorsRaw, transitions, buttons } from 'netlify-cms-ui-default';
 
 const styles = {
   text: css`

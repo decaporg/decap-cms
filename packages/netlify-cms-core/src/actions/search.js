@@ -59,13 +59,7 @@ export function querying(namespace, collection, searchFields, searchTerm) {
   };
 }
 
-export function querySuccess(
-  namespace,
-  collection,
-  searchFields,
-  searchTerm,
-  response,
-) {
+export function querySuccess(namespace, collection, searchFields, searchTerm, response) {
   return {
     type: QUERY_SUCCESS,
     payload: {
@@ -78,13 +72,7 @@ export function querySuccess(
   };
 }
 
-export function queryFailure(
-  namespace,
-  collection,
-  searchFields,
-  searchTerm,
-  error,
-) {
+export function queryFailure(namespace, collection, searchFields, searchTerm, error) {
   return {
     type: QUERY_SUCCESS,
     payload: {
@@ -123,18 +111,15 @@ export function searchEntries(searchTerm, page = 0) {
     const integration = selectIntegration(state, collections[0], 'search');
 
     const searchPromise = integration
-      ? getIntegrationProvider(
-          state.integrations,
-          backend.getToken,
-          integration,
-        ).search(collections, searchTerm, page)
+      ? getIntegrationProvider(state.integrations, backend.getToken, integration).search(
+          collections,
+          searchTerm,
+          page,
+        )
       : backend.search(state.collections.valueSeq().toArray(), searchTerm);
 
     return searchPromise.then(
-      response =>
-        dispatch(
-          searchSuccess(searchTerm, response.entries, response.pagination),
-        ),
+      response => dispatch(searchSuccess(searchTerm, response.entries, response.pagination)),
       error => dispatch(searchFailure(searchTerm, error)),
     );
   };
@@ -154,11 +139,7 @@ export function query(namespace, collectionName, searchFields, searchTerm) {
     );
 
     const queryPromise = integration
-      ? getIntegrationProvider(
-          state.integrations,
-          backend.getToken,
-          integration,
-        ).searchBy(
+      ? getIntegrationProvider(state.integrations, backend.getToken, integration).searchBy(
           searchFields.map(f => `data.${f}`),
           collectionName,
           searchTerm,
@@ -167,25 +148,8 @@ export function query(namespace, collectionName, searchFields, searchTerm) {
 
     return queryPromise.then(
       response =>
-        dispatch(
-          querySuccess(
-            namespace,
-            collectionName,
-            searchFields,
-            searchTerm,
-            response,
-          ),
-        ),
-      error =>
-        dispatch(
-          queryFailure(
-            namespace,
-            collectionName,
-            searchFields,
-            searchTerm,
-            error,
-          ),
-        ),
+        dispatch(querySuccess(namespace, collectionName, searchFields, searchTerm, response)),
+      error => dispatch(queryFailure(namespace, collectionName, searchFields, searchTerm, error)),
     );
   };
 }

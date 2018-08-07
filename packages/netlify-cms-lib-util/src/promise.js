@@ -1,15 +1,11 @@
 import zipObject from 'lodash/zipObject';
 
 export const filterPromises = (arr, filter) =>
-  Promise.all(arr.map(entry => filter(entry))).then(bits =>
-    arr.filter(() => bits.shift()),
-  );
+  Promise.all(arr.map(entry => filter(entry))).then(bits => arr.filter(() => bits.shift()));
 
 export const resolvePromiseProperties = obj => {
   // Get the keys which represent promises
-  const promiseKeys = Object.keys(obj).filter(
-    key => typeof obj[key].then === 'function',
-  );
+  const promiseKeys = Object.keys(obj).filter(key => typeof obj[key].then === 'function');
 
   const promises = promiseKeys.map(key => obj[key]);
 

@@ -1,12 +1,4 @@
-import {
-  find,
-  findLast,
-  startsWith,
-  endsWith,
-  trimStart,
-  trimEnd,
-  flatMap,
-} from 'lodash';
+import { find, findLast, startsWith, endsWith, trimStart, trimEnd, flatMap } from 'lodash';
 import u from 'unist-builder';
 import toString from 'mdast-util-to-string';
 
@@ -58,10 +50,8 @@ export default function remarkPaddedLinks() {
      * whitespace, and get nodes from each edge where whitespace is found.
      */
     const text = toString(node);
-    const leadingWhitespaceNode =
-      startsWith(text, ' ') && getEdgeTextChild(node);
-    const trailingWhitespaceNode =
-      endsWith(text, ' ') && getEdgeTextChild(node, true);
+    const leadingWhitespaceNode = startsWith(text, ' ') && getEdgeTextChild(node);
+    const trailingWhitespaceNode = endsWith(text, ' ') && getEdgeTextChild(node, true);
 
     if (!leadingWhitespaceNode && !trailingWhitespaceNode) return node;
 

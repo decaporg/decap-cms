@@ -10,9 +10,7 @@ const catchFormatErrors = (format, formatter) => res => {
     return formatter(res);
   } catch (err) {
     throw new Error(
-      `Response cannot be parsed into the expected format (${format}): ${
-        err.message
-      }`,
+      `Response cannot be parsed into the expected format (${format}): ${err.message}`,
     );
   }
 };
@@ -20,29 +18,18 @@ const catchFormatErrors = (format, formatter) => res => {
 const responseFormatters = fromJS({
   json: async res => {
     const contentType = res.headers.get('Content-Type');
-    if (
-      !contentType.startsWith('application/json') &&
-      !contentType.startsWith('text/json')
-    ) {
+    if (!contentType.startsWith('application/json') && !contentType.startsWith('text/json')) {
       throw new Error(`${contentType} is not a valid JSON Content-Type`);
     }
     return res.json();
   },
   text: async res => res.text(),
   blob: async res => res.blob(),
-}).mapEntries(([format, formatter]) => [
-  format,
-  catchFormatErrors(format, formatter),
-]);
+}).mapEntries(([format, formatter]) => [format, catchFormatErrors(format, formatter)]);
 
-export const parseResponse = async (
-  res,
-  { expectingOk = true, format = 'text' } = {},
-) => {
+export const parseResponse = async (res, { expectingOk = true, format = 'text' } = {}) => {
   if (expectingOk && !res.ok) {
-    throw new Error(
-      `Expected an ok response, but received an error status: ${res.status}.`,
-    );
+    throw new Error(`Expected an ok response, but received an error status: ${res.status}.`);
   }
   const formatter = responseFormatters.get(format, false);
   if (!formatter) {

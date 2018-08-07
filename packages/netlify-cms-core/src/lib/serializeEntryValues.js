@@ -35,10 +35,7 @@ const runSerializer = (values, fields, method) => {
 
     // Call recursively for fields within lists
     if (nestedFields && List.isList(value)) {
-      return acc.set(
-        fieldName,
-        value.map(val => runSerializer(val, nestedFields, method)),
-      );
+      return acc.set(fieldName, value.map(val => runSerializer(val, nestedFields, method)));
     }
 
     // Call recursively for fields within objects

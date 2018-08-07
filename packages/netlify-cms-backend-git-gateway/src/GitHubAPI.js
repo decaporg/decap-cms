@@ -26,8 +26,7 @@ export default class API extends GithubAPI {
           }
         } else if (
           error.status === 404 &&
-          (error.message === undefined ||
-            error.message === 'Unable to locate site configuration')
+          (error.message === undefined || error.message === 'Unable to locate site configuration')
         ) {
           throw new APIError(
             `Git Gateway Error: Please make sure Git Gateway is enabled on your site.`,
@@ -89,11 +88,7 @@ export default class API extends GithubAPI {
         return text;
       })
       .catch(error => {
-        throw new APIError(
-          error.message || error.msg,
-          responseStatus,
-          'Git Gateway',
-        );
+        throw new APIError(error.message || error.msg, responseStatus, 'Git Gateway');
       });
   }
 

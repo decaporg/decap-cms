@@ -4,11 +4,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled, { cx, css } from 'react-emotion';
 import { List, Map } from 'immutable';
 import { partial } from 'lodash';
-import {
-  SortableContainer,
-  SortableElement,
-  SortableHandle,
-} from 'react-sortable-hoc';
+import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 import { ObjectControl } from 'netlify-cms-widget-object';
 import {
   ListItemTopBar,
@@ -147,8 +143,7 @@ export default class ListControl extends React.Component {
   handleAdd = e => {
     e.preventDefault();
     const { value, onChange } = this.props;
-    const parsedValue =
-      this.getValueType() === valueTypes.SINGLE ? null : Map();
+    const parsedValue = this.getValueType() === valueTypes.SINGLE ? null : Map();
     this.setState({ itemsCollapsed: this.state.itemsCollapsed.push(false) });
     onChange((value || List()).push(parsedValue));
   };
@@ -164,14 +159,9 @@ export default class ListControl extends React.Component {
     return (fieldName, newValue, newMetadata) => {
       const { value, metadata, onChange, field } = this.props;
       const collectionName = field.get('name');
-      const newObjectValue = this.getObjectValue(index).set(
-        fieldName,
-        newValue,
-      );
+      const newObjectValue = this.getObjectValue(index).set(fieldName, newValue);
       const parsedValue =
-        this.getValueType() === valueTypes.SINGLE
-          ? newObjectValue.first()
-          : newObjectValue;
+        this.getValueType() === valueTypes.SINGLE ? newObjectValue.first() : newObjectValue;
       const parsedMetadata = {
         [collectionName]: Object.assign(
           metadata ? metadata.toJS() : {},
@@ -208,9 +198,7 @@ export default class ListControl extends React.Component {
     const { value } = this.props;
     const { itemsCollapsed } = this.state;
     const allItemsCollapsed = itemsCollapsed.every(val => val === true);
-    this.setState({
-      itemsCollapsed: List(Array(value.size).fill(!allItemsCollapsed)),
-    });
+    this.setState({ itemsCollapsed: List(Array(value.size).fill(!allItemsCollapsed)) });
   };
 
   objectLabel(item) {
@@ -235,27 +223,18 @@ export default class ListControl extends React.Component {
 
     // Update collapsing
     const collapsed = itemsCollapsed.get(oldIndex);
-    const updatedItemsCollapsed = itemsCollapsed
-      .delete(oldIndex)
-      .insert(newIndex, collapsed);
+    const updatedItemsCollapsed = itemsCollapsed.delete(oldIndex).insert(newIndex, collapsed);
     this.setState({ itemsCollapsed: updatedItemsCollapsed });
   };
 
   renderItem = (item, index) => {
-    const {
-      field,
-      classNameWrapper,
-      editorControl,
-      resolveWidget,
-    } = this.props;
+    const { field, classNameWrapper, editorControl, resolveWidget } = this.props;
     const { itemsCollapsed } = this.state;
     const collapsed = itemsCollapsed.get(index);
 
     return (
       <SortableListItem
-        className={cx(styles.listControlItem, {
-          [styles.listControlItemCollapsed]: collapsed,
-        })}
+        className={cx(styles.listControlItem, { [styles.listControlItemCollapsed]: collapsed })}
         index={index}
         key={`item-${index}`}
       >
@@ -265,13 +244,9 @@ export default class ListControl extends React.Component {
           onRemove={partial(this.handleRemove, index)}
           dragHandleHOC={SortableHandle}
         />
-        <NestedObjectLabel collapsed={collapsed}>
-          {this.objectLabel(item)}
-        </NestedObjectLabel>
+        <NestedObjectLabel collapsed={collapsed}>{this.objectLabel(item)}</NestedObjectLabel>
         <ObjectControl
-          classNameWrapper={cx(classNameWrapper, {
-            [styles.collapsedObjectControl]: collapsed,
-          })}
+          classNameWrapper={cx(classNameWrapper, { [styles.collapsedObjectControl]: collapsed })}
           value={item}
           field={field}
           onChangeObject={this.handleChangeFor(index)}
@@ -289,14 +264,10 @@ export default class ListControl extends React.Component {
     const items = value || List();
     const label = field.get('label');
     const labelSingular = field.get('label_singular') || field.get('label');
-    const listLabel =
-      items.size === 1 ? labelSingular.toLowerCase() : label.toLowerCase();
+    const listLabel = items.size === 1 ? labelSingular.toLowerCase() : label.toLowerCase();
 
     return (
-      <div
-        id={forID}
-        className={cx(classNameWrapper, components.objectWidgetTopBarContainer)}
-      >
+      <div id={forID} className={cx(classNameWrapper, components.objectWidgetTopBarContainer)}>
         <ObjectWidgetTopBar
           allowAdd={field.get('allow_add', true)}
           onAdd={this.handleAdd}

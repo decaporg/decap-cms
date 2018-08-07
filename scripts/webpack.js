@@ -26,8 +26,7 @@ const rules = () => ({
 const plugins = () => {
   return {
     ignoreEsprima: () => new webpack.IgnorePlugin(/^esprima$/, /js-yaml/),
-    ignoreMomentOptionalDeps: () =>
-      new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+    ignoreMomentOptionalDeps: () => new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     friendlyErrors: () => new FriendlyErrorsWebpackPlugin(),
   };
 };
@@ -75,9 +74,7 @@ const getConfig = () => ({
   externals: (context, request, cb) => {
     const localExternals = pkg.localExternals || [];
     const peerDeps = Object.keys(pkg.peerDependencies || {});
-    const externals = isProduction
-      ? peerDeps
-      : [...localExternals, ...peerDeps];
+    const externals = isProduction ? peerDeps : [...localExternals, ...peerDeps];
     const isPeerDep = dep => new RegExp(`^${dep}($|/)`).test(request);
     return externals.some(isPeerDep) ? cb(null, request) : cb();
   },

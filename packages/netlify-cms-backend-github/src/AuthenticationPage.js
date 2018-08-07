@@ -49,8 +49,7 @@ export default class GitHubAuthenticationPage extends React.Component {
         loginErrorMessage={this.state.loginError}
         renderButtonContent={() => (
           <React.Fragment>
-            <LoginButtonIcon type="github" />{' '}
-            {inProgress ? 'Logging in...' : 'Login with GitHub'}
+            <LoginButtonIcon type="github" /> {inProgress ? 'Logging in...' : 'Login with GitHub'}
           </React.Fragment>
         )}
       />

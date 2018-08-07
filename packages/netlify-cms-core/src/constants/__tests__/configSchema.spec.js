@@ -55,21 +55,13 @@ describe('config', () => {
 
     it('should throw if media_folder is not a string in config', () => {
       expect(() => {
-        validateConfig({
-          foo: 'bar',
-          backend: { name: 'bar' },
-          media_folder: {},
-        });
+        validateConfig({ foo: 'bar', backend: { name: 'bar' }, media_folder: {} });
       }).toThrowError("'media_folder' should be string");
     });
 
     it('should throw if collections is not defined in config', () => {
       expect(() => {
-        validateConfig({
-          foo: 'bar',
-          backend: { name: 'bar' },
-          media_folder: 'baz',
-        });
+        validateConfig({ foo: 'bar', backend: { name: 'bar' }, media_folder: 'baz' });
       }).toThrowError("config should have required property 'collections'");
     });
 

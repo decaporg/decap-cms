@@ -1,11 +1,6 @@
 import React from 'react';
 import styled, { css } from 'react-emotion';
-import {
-  Wrapper,
-  Button as DropdownButton,
-  Menu,
-  MenuItem,
-} from 'react-aria-menubutton';
+import { Wrapper, Button as DropdownButton, Menu, MenuItem } from 'react-aria-menubutton';
 import { buttons, components } from './styles';
 import Icon from './Icon';
 
@@ -73,11 +68,7 @@ const Dropdown = ({
     <StyledWrapper onSelection={handler => handler()} className={className}>
       {renderButton()}
       <Menu>
-        <DropdownList
-          width={dropdownWidth}
-          top={dropdownTopOverlap}
-          position={dropdownPosition}
-        >
+        <DropdownList width={dropdownWidth} top={dropdownTopOverlap} position={dropdownPosition}>
           {children}
         </DropdownList>
       </Menu>
@@ -96,9 +87,4 @@ const DropdownItem = ({ label, icon, iconDirection, onClick, className }) => (
   </StyledMenuItem>
 );
 
-export {
-  Dropdown as default,
-  DropdownItem,
-  DropdownButton,
-  StyledDropdownButton,
-};
+export { Dropdown as default, DropdownItem, DropdownButton, StyledDropdownButton };

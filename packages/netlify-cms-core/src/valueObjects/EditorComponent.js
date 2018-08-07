@@ -28,9 +28,7 @@ export default function createEditorComponent(config) {
     icon: config.icon,
     fields: fromJS(config.fields),
     pattern: config.pattern,
-    fromBlock: isFunction(config.fromBlock)
-      ? config.fromBlock.bind(null)
-      : null,
+    fromBlock: isFunction(config.fromBlock) ? config.fromBlock.bind(null) : null,
     toBlock: isFunction(config.toBlock) ? config.toBlock.bind(null) : null,
     toPreview: isFunction(config.toPreview)
       ? config.toPreview.bind(null)

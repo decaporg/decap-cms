@@ -36,15 +36,7 @@ const CardText = styled.p`
   line-height: 1.3 !important;
 `;
 
-const MediaLibraryCard = ({
-  isSelected,
-  imageUrl,
-  text,
-  onClick,
-  width,
-  margin,
-  isPrivate,
-}) => (
+const MediaLibraryCard = ({ isSelected, imageUrl, text, onClick, width, margin, isPrivate }) => (
   <Card
     isSelected={isSelected}
     onClick={onClick}
@@ -53,9 +45,7 @@ const MediaLibraryCard = ({
     tabIndex="-1"
     isPrivate={isPrivate}
   >
-    <div>
-      {imageUrl ? <CardImage src={imageUrl} /> : <CardImagePlaceholder />}
-    </div>
+    <div>{imageUrl ? <CardImage src={imageUrl} /> : <CardImagePlaceholder />}</div>
     <CardText>{text}</CardText>
   </Card>
 );

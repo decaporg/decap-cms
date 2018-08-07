@@ -1,10 +1,4 @@
-import {
-  localForage,
-  unsentRequest,
-  then,
-  APIError,
-  Cursor,
-} from 'netlify-cms-lib-util';
+import { localForage, unsentRequest, then, APIError, Cursor } from 'netlify-cms-lib-util';
 import { Base64 } from 'js-base64';
 import { List, Map } from 'immutable';
 import { flow, partial, result } from 'lodash';
@@ -19,10 +13,7 @@ export default class API {
   }
 
   withAuthorizationHeaders = req =>
-    unsentRequest.withHeaders(
-      this.token ? { Authorization: `Bearer ${this.token}` } : {},
-      req,
-    );
+    unsentRequest.withHeaders(this.token ? { Authorization: `Bearer ${this.token}` } : {}, req);
 
   buildRequest = req =>
     flow([
@@ -35,32 +26,20 @@ export default class API {
     flow([
       this.buildRequest,
       unsentRequest.performRequest,
-      p =>
-        p.catch(err =>
-          Promise.reject(new APIError(err.message, null, 'GitLab')),
-        ),
+      p => p.catch(err => Promise.reject(new APIError(err.message, null, 'GitLab'))),
     ])(req);
 
-  parseResponse = async (
-    res,
-    { expectingOk = true, expectingFormat = false },
-  ) => {
+  parseResponse = async (res, { expectingOk = true, expectingFormat = false }) => {
     const contentType = res.headers.get('Content-Type');
     const isJSON = contentType === 'application/json';
     let body;
     try {
-      body = await (expectingFormat === 'json' || isJSON
-        ? res.json()
-        : res.text());
+      body = await (expectingFormat === 'json' || isJSON ? res.json() : res.text());
     } catch (err) {
       throw new APIError(err.message, res.status, 'GitLab');
     }
     if (expectingOk && !res.ok) {
-      throw new APIError(
-        isJSON && body.message ? body.message : body,
-        res.status,
-        'GitLab',
-      );
+      throw new APIError(isJSON && body.message ? body.message : body, res.status, 'GitLab');
     }
     return body;
   };
@@ -147,11 +126,7 @@ export default class API {
   // Gets a cursor without retrieving the entries by using a HEAD
   // request
   fetchCursor = req =>
-    flow([
-      unsentRequest.withMethod('HEAD'),
-      this.request,
-      then(this.getCursor),
-    ])(req);
+    flow([unsentRequest.withMethod('HEAD'), this.request, then(this.getCursor)])(req);
   fetchCursorAndEntries = req =>
     flow([
       unsentRequest.withMethod('GET'),
@@ -159,8 +134,7 @@ export default class API {
       p => Promise.all([p.then(this.getCursor), p.then(this.responseToJSON)]),
       then(([cursor, entries]) => ({ cursor, entries })),
     ])(req);
-  fetchRelativeCursor = async (cursor, action) =>
-    this.fetchCursor(cursor.data.links[action]);
+  fetchRelativeCursor = async (cursor, action) => this.fetchCursor(cursor.data.links[action]);
 
   reversableActions = Map({
     first: 'last',
@@ -175,10 +149,7 @@ export default class API {
     const newIndex = pageCount - currentIndex;
 
     const links = cursor.data.get('links', Map());
-    const reversedLinks = links.mapEntries(([k, v]) => [
-      this.reversableActions.get(k) || k,
-      v,
-    ]);
+    const reversedLinks = links.mapEntries(([k, v]) => [this.reversableActions.get(k) || k, v]);
 
     const reversedActions = cursor.actions.map(
       action => this.reversableActions.get(action) || action,
@@ -213,13 +184,8 @@ export default class API {
 
   traverseCursor = async (cursor, action) => {
     const link = cursor.data.getIn(['links', action]);
-    const { entries, cursor: newCursor } = await this.fetchCursorAndEntries(
-      link,
-    );
-    return {
-      entries: entries.reverse(),
-      cursor: this.reverseCursor(newCursor),
-    };
+    const { entries, cursor: newCursor } = await this.fetchCursorAndEntries(link);
+    return { entries: entries.reverse(), cursor: this.reverseCursor(newCursor) };
   };
 
   listAllFiles = async path => {
@@ -232,10 +198,7 @@ export default class API {
     entries.push(...initialEntries);
     while (cursor && cursor.actions.has('next')) {
       const link = cursor.data.getIn(['links', 'next']);
-      const {
-        cursor: newCursor,
-        entries: newEntries,
-      } = await this.fetchCursorAndEntries(link);
+      const { cursor: newCursor, entries: newEntries } = await this.fetchCursorAndEntries(link);
       entries.push(...newEntries);
       cursor = newCursor;
     }
@@ -246,18 +209,9 @@ export default class API {
   fromBase64 = str => Base64.decode(str);
   uploadAndCommit = async (
     item,
-    {
-      commitMessage,
-      updateFile = false,
-      branch = this.branch,
-      author = this.commitAuthor,
-    },
+    { commitMessage, updateFile = false, branch = this.branch, author = this.commitAuthor },
   ) => {
-    const content = await result(
-      item,
-      'toBase64',
-      partial(this.toBase64, item.raw),
-    );
+    const content = await result(item, 'toBase64', partial(this.toBase64, item.raw));
     const file_path = item.path.replace(/^\//, '');
     const action = updateFile ? 'update' : 'create';
     const encoding = 'base64';
@@ -286,10 +240,7 @@ export default class API {
   persistFiles = (files, { commitMessage, newEntry }) =>
     Promise.all(
       files.map(file =>
-        this.uploadAndCommit(file, {
-          commitMessage,
-          updateFile: newEntry === false,
-        }),
+        this.uploadAndCommit(file, { commitMessage, updateFile: newEntry === false }),
       ),
     );
 

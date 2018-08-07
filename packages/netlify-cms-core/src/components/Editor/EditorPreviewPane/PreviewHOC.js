@@ -7,9 +7,7 @@ class PreviewHOC extends React.Component {
    * will only be updated on value change.
    */
   shouldComponentUpdate(nextProps) {
-    const isWidgetContainer = ['object', 'list'].includes(
-      nextProps.field.get('widget'),
-    );
+    const isWidgetContainer = ['object', 'list'].includes(nextProps.field.get('widget'));
     return isWidgetContainer || this.props.value !== nextProps.value;
   }
 

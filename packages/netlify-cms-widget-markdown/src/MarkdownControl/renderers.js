@@ -20,9 +20,7 @@ const Code = props => <code>{props.children}</code>;
  */
 const Paragraph = props => <p {...props.attributes}>{props.children}</p>;
 const ListItem = props => <li {...props.attributes}>{props.children}</li>;
-const Quote = props => (
-  <blockquote {...props.attributes}>{props.children}</blockquote>
-);
+const Quote = props => <blockquote {...props.attributes}>{props.children}</blockquote>;
 const CodeBlock = props => (
   <pre>
     <code {...props.attributes}>{props.children}</code>

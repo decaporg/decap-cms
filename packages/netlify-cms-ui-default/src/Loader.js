@@ -70,9 +70,7 @@ export class Loader extends React.Component {
 
     this.interval = setInterval(() => {
       const nextItem =
-        this.state.currentItem === children.length - 1
-          ? 0
-          : this.state.currentItem + 1;
+        this.state.currentItem === children.length - 1 ? 0 : this.state.currentItem + 1;
       this.setState({ currentItem: nextItem });
     }, 5000);
   };

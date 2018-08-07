@@ -16,16 +16,7 @@ import MediaLibraryModal from './MediaLibraryModal';
  * Extensions used to determine which files to show when the media library is
  * accessed from an image insertion field.
  */
-const IMAGE_EXTENSIONS_VIEWABLE = [
-  'jpg',
-  'jpeg',
-  'webp',
-  'gif',
-  'png',
-  'bmp',
-  'tiff',
-  'svg',
-];
+const IMAGE_EXTENSIONS_VIEWABLE = ['jpg', 'jpeg', 'webp', 'gif', 'png', 'bmp', 'tiff', 'svg'];
 const IMAGE_EXTENSIONS = [...IMAGE_EXTENSIONS_VIEWABLE];
 
 class MediaLibrary extends React.Component {
@@ -208,9 +199,7 @@ class MediaLibrary extends React.Component {
      * query.
      */
     const strippedQuery = query.replace(/ /g, '');
-    const matches = fuzzy.filter(strippedQuery, files, {
-      extract: file => file.name,
-    });
+    const matches = fuzzy.filter(strippedQuery, files, { extract: file => file.name });
     const matchFiles = matches.map((match, queryIndex) => {
       const file = files[match.index];
       return { ...file, queryIndex };

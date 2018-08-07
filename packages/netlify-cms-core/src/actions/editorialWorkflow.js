@@ -23,33 +23,21 @@ export const UNPUBLISHED_ENTRIES_REQUEST = 'UNPUBLISHED_ENTRIES_REQUEST';
 export const UNPUBLISHED_ENTRIES_SUCCESS = 'UNPUBLISHED_ENTRIES_SUCCESS';
 export const UNPUBLISHED_ENTRIES_FAILURE = 'UNPUBLISHED_ENTRIES_FAILURE';
 
-export const UNPUBLISHED_ENTRY_PERSIST_REQUEST =
-  'UNPUBLISHED_ENTRY_PERSIST_REQUEST';
-export const UNPUBLISHED_ENTRY_PERSIST_SUCCESS =
-  'UNPUBLISHED_ENTRY_PERSIST_SUCCESS';
-export const UNPUBLISHED_ENTRY_PERSIST_FAILURE =
-  'UNPUBLISHED_ENTRY_PERSIST_FAILURE';
+export const UNPUBLISHED_ENTRY_PERSIST_REQUEST = 'UNPUBLISHED_ENTRY_PERSIST_REQUEST';
+export const UNPUBLISHED_ENTRY_PERSIST_SUCCESS = 'UNPUBLISHED_ENTRY_PERSIST_SUCCESS';
+export const UNPUBLISHED_ENTRY_PERSIST_FAILURE = 'UNPUBLISHED_ENTRY_PERSIST_FAILURE';
 
-export const UNPUBLISHED_ENTRY_STATUS_CHANGE_REQUEST =
-  'UNPUBLISHED_ENTRY_STATUS_CHANGE_REQUEST';
-export const UNPUBLISHED_ENTRY_STATUS_CHANGE_SUCCESS =
-  'UNPUBLISHED_ENTRY_STATUS_CHANGE_SUCCESS';
-export const UNPUBLISHED_ENTRY_STATUS_CHANGE_FAILURE =
-  'UNPUBLISHED_ENTRY_STATUS_CHANGE_FAILURE';
+export const UNPUBLISHED_ENTRY_STATUS_CHANGE_REQUEST = 'UNPUBLISHED_ENTRY_STATUS_CHANGE_REQUEST';
+export const UNPUBLISHED_ENTRY_STATUS_CHANGE_SUCCESS = 'UNPUBLISHED_ENTRY_STATUS_CHANGE_SUCCESS';
+export const UNPUBLISHED_ENTRY_STATUS_CHANGE_FAILURE = 'UNPUBLISHED_ENTRY_STATUS_CHANGE_FAILURE';
 
-export const UNPUBLISHED_ENTRY_PUBLISH_REQUEST =
-  'UNPUBLISHED_ENTRY_PUBLISH_REQUEST';
-export const UNPUBLISHED_ENTRY_PUBLISH_SUCCESS =
-  'UNPUBLISHED_ENTRY_PUBLISH_SUCCESS';
-export const UNPUBLISHED_ENTRY_PUBLISH_FAILURE =
-  'UNPUBLISHED_ENTRY_PUBLISH_FAILURE';
+export const UNPUBLISHED_ENTRY_PUBLISH_REQUEST = 'UNPUBLISHED_ENTRY_PUBLISH_REQUEST';
+export const UNPUBLISHED_ENTRY_PUBLISH_SUCCESS = 'UNPUBLISHED_ENTRY_PUBLISH_SUCCESS';
+export const UNPUBLISHED_ENTRY_PUBLISH_FAILURE = 'UNPUBLISHED_ENTRY_PUBLISH_FAILURE';
 
-export const UNPUBLISHED_ENTRY_DELETE_REQUEST =
-  'UNPUBLISHED_ENTRY_DELETE_REQUEST';
-export const UNPUBLISHED_ENTRY_DELETE_SUCCESS =
-  'UNPUBLISHED_ENTRY_DELETE_SUCCESS';
-export const UNPUBLISHED_ENTRY_DELETE_FAILURE =
-  'UNPUBLISHED_ENTRY_DELETE_FAILURE';
+export const UNPUBLISHED_ENTRY_DELETE_REQUEST = 'UNPUBLISHED_ENTRY_DELETE_REQUEST';
+export const UNPUBLISHED_ENTRY_DELETE_SUCCESS = 'UNPUBLISHED_ENTRY_DELETE_SUCCESS';
+export const UNPUBLISHED_ENTRY_DELETE_FAILURE = 'UNPUBLISHED_ENTRY_DELETE_FAILURE';
 
 /*
  * Simple Action Creators (Internal)
@@ -250,10 +238,7 @@ export function loadUnpublishedEntry(collection, slug) {
       .unpublishedEntry(collection, slug)
       .then(entry => dispatch(unpublishedEntryLoaded(collection, entry)))
       .catch(error => {
-        if (
-          error instanceof EditorialWorkflowError &&
-          error.notUnderEditorialWorkflow
-        ) {
+        if (error instanceof EditorialWorkflowError && error.notUnderEditorialWorkflow) {
           dispatch(unpublishedEntryRedirected(collection, slug));
           dispatch(loadEntry(collection, slug));
         } else {
@@ -277,11 +262,7 @@ export function loadUnpublishedEntries(collections) {
     dispatch(unpublishedEntriesLoading());
     backend
       .unpublishedEntries(collections)
-      .then(response =>
-        dispatch(
-          unpublishedEntriesLoaded(response.entries, response.pagination),
-        ),
-      )
+      .then(response => dispatch(unpublishedEntriesLoaded(response.entries, response.pagination)))
       .catch(error => {
         dispatch(
           notifSend({
@@ -305,16 +286,13 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
     // Early return if draft contains validation errors
     if (!fieldsErrors.isEmpty()) {
       const hasPresenceErrors = fieldsErrors.some(errors =>
-        errors.some(
-          error => error.type && error.type === ValidationErrorTypes.PRESENCE,
-        ),
+        errors.some(error => error.type && error.type === ValidationErrorTypes.PRESENCE),
       );
 
       if (hasPresenceErrors) {
         dispatch(
           notifSend({
-            message:
-              "Oops, you've missed a required field. Please complete before saving.",
+            message: "Oops, you've missed a required field. Please complete before saving.",
             kind: 'danger',
             dismissAfter: 8000,
           }),
@@ -325,9 +303,7 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
 
     const backend = currentBackend(state.config);
     const transactionID = uuid();
-    const assetProxies = entryDraft
-      .get('mediaFiles')
-      .map(path => getAsset(state, path));
+    const assetProxies = entryDraft.get('mediaFiles').map(path => getAsset(state, path));
     const entry = entryDraft.get('entry');
 
     /**
@@ -335,16 +311,11 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
      * update the entry and entryDraft with the serialized values.
      */
     const fields = selectFields(collection, entry.get('slug'));
-    const serializedData = serializeValues(
-      entryDraft.getIn(['entry', 'data']),
-      fields,
-    );
+    const serializedData = serializeValues(entryDraft.getIn(['entry', 'data']), fields);
     const serializedEntry = entry.set('data', serializedData);
     const serializedEntryDraft = entryDraft.set('entry', serializedEntry);
 
-    dispatch(
-      unpublishedEntryPersisting(collection, serializedEntry, transactionID),
-    );
+    dispatch(unpublishedEntryPersisting(collection, serializedEntry, transactionID));
     const persistAction = existingUnpublishedEntry
       ? backend.persistUnpublishedEntry
       : backend.persistEntry;
@@ -366,14 +337,7 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
           dismissAfter: 4000,
         }),
       );
-      dispatch(
-        unpublishedEntryPersisted(
-          collection,
-          serializedEntry,
-          transactionID,
-          newSlug,
-        ),
-      );
+      dispatch(unpublishedEntryPersisted(collection, serializedEntry, transactionID, newSlug));
     } catch (error) {
       dispatch(
         notifSend({
@@ -382,31 +346,18 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
           dismissAfter: 8000,
         }),
       );
-      return Promise.reject(
-        dispatch(unpublishedEntryPersistedFail(error, transactionID)),
-      );
+      return Promise.reject(dispatch(unpublishedEntryPersistedFail(error, transactionID)));
     }
   };
 }
 
-export function updateUnpublishedEntryStatus(
-  collection,
-  slug,
-  oldStatus,
-  newStatus,
-) {
+export function updateUnpublishedEntryStatus(collection, slug, oldStatus, newStatus) {
   return (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
     const transactionID = uuid();
     dispatch(
-      unpublishedEntryStatusChangeRequest(
-        collection,
-        slug,
-        oldStatus,
-        newStatus,
-        transactionID,
-      ),
+      unpublishedEntryStatusChangeRequest(collection, slug, oldStatus, newStatus, transactionID),
     );
     backend
       .updateUnpublishedEntryStatus(collection, slug, newStatus)
@@ -436,9 +387,7 @@ export function updateUnpublishedEntryStatus(
             dismissAfter: 8000,
           }),
         );
-        dispatch(
-          unpublishedEntryStatusChangeError(collection, slug, transactionID),
-        );
+        dispatch(unpublishedEntryStatusChangeError(collection, slug, transactionID));
       });
   };
 }

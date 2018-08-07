@@ -54,10 +54,7 @@ const entryDraftReducer = (state = Map(), action) => {
       return initialState;
     case DRAFT_CHANGE_FIELD:
       return state.withMutations(state => {
-        state.setIn(
-          ['entry', 'data', action.payload.field],
-          action.payload.value,
-        );
+        state.setIn(['entry', 'data', action.payload.field], action.payload.value);
         state.mergeDeepIn(['fieldsMetaData'], fromJS(action.payload.metadata));
         state.set('hasChanged', true);
       });
@@ -66,10 +63,7 @@ const entryDraftReducer = (state = Map(), action) => {
       if (action.payload.errors.length === 0) {
         return state.deleteIn(['fieldsErrors', action.payload.field]);
       } else {
-        return state.setIn(
-          ['fieldsErrors', action.payload.field],
-          action.payload.errors,
-        );
+        return state.setIn(['fieldsErrors', action.payload.field], action.payload.errors);
       }
 
     case ENTRY_PERSIST_REQUEST:
@@ -100,16 +94,12 @@ const entryDraftReducer = (state = Map(), action) => {
 
     case ADD_ASSET:
       if (state.has('mediaFiles')) {
-        return state.update('mediaFiles', list =>
-          list.push(action.payload.public_path),
-        );
+        return state.update('mediaFiles', list => list.push(action.payload.public_path));
       }
       return state;
 
     case REMOVE_ASSET:
-      return state.update('mediaFiles', list =>
-        list.filterNot(path => path === action.payload),
-      );
+      return state.update('mediaFiles', list => list.filterNot(path => path === action.payload));
 
     default:
       return state;

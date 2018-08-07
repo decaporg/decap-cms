@@ -16,9 +16,7 @@ const baseConfig = {
       .filter(([key]) => key !== 'friendlyErrors')
       .map(([, plugin]) => plugin()),
     new webpack.DefinePlugin({
-      NETLIFY_CMS_VERSION: JSON.stringify(
-        `${pkg.version}${isProduction ? '' : '-dev'}`,
-      ),
+      NETLIFY_CMS_VERSION: JSON.stringify(`${pkg.version}${isProduction ? '' : '-dev'}`),
       NETLIFY_CMS_CORE_VERSION: null,
     }),
     new FriendlyErrorsWebpackPlugin({
@@ -46,10 +44,7 @@ if (isProduction) {
      */
     {
       ...baseConfig,
-      entry: [
-        path.join(__dirname, 'scripts/deprecate-old-dist.js'),
-        baseConfig.entry,
-      ],
+      entry: [path.join(__dirname, 'scripts/deprecate-old-dist.js'), baseConfig.entry],
       output: {
         ...baseConfig.output,
         filename: 'dist/cms.js',

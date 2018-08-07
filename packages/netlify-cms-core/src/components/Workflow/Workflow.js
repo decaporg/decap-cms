@@ -63,11 +63,7 @@ class Workflow extends Component {
   };
 
   componentDidMount() {
-    const {
-      loadUnpublishedEntries,
-      isEditorialWorkflow,
-      collections,
-    } = this.props;
+    const { loadUnpublishedEntries, isEditorialWorkflow, collections } = this.props;
     if (isEditorialWorkflow) {
       loadUnpublishedEntries(collections);
     }
@@ -85,8 +81,7 @@ class Workflow extends Component {
     } = this.props;
 
     if (!isEditorialWorkflow) return null;
-    if (isFetching)
-      return <Loader active>Loading Editorial Workflow Entries</Loader>;
+    if (isFetching) return <Loader active>Loading Editorial Workflow Entries</Loader>;
     const reviewCount = unpublishedEntries.get('pending_review').size;
     const readyCount = unpublishedEntries.get('pending_publish').size;
 
@@ -99,9 +94,7 @@ class Workflow extends Component {
               dropdownWidth="160px"
               dropdownPosition="left"
               dropdownTopOverlap="40px"
-              renderButton={() => (
-                <StyledDropdownButton>New Post</StyledDropdownButton>
-              )}
+              renderButton={() => <StyledDropdownButton>New Post</StyledDropdownButton>}
             >
               {collections
                 .filter(collection => collection.get('create'))
@@ -116,8 +109,8 @@ class Workflow extends Component {
             </Dropdown>
           </WorkflowTopRow>
           <WorkflowTopDescription>
-            {reviewCount} {reviewCount === 1 ? 'entry' : 'entries'} waiting for
-            review, {readyCount} ready to go live.
+            {reviewCount} {reviewCount === 1 ? 'entry' : 'entries'} waiting for review, {readyCount}{' '}
+            ready to go live.
           </WorkflowTopDescription>
         </WorkflowTop>
         <WorkflowList
@@ -133,15 +126,11 @@ class Workflow extends Component {
 
 function mapStateToProps(state) {
   const { collections } = state;
-  const isEditorialWorkflow =
-    state.config.get('publish_mode') === EDITORIAL_WORKFLOW;
+  const isEditorialWorkflow = state.config.get('publish_mode') === EDITORIAL_WORKFLOW;
   const returnObj = { collections, isEditorialWorkflow };
 
   if (isEditorialWorkflow) {
-    returnObj.isFetching = state.editorialWorkflow.getIn(
-      ['pages', 'isFetching'],
-      false,
-    );
+    returnObj.isFetching = state.editorialWorkflow.getIn(['pages', 'isFetching'], false);
 
     /*
      * Generates an ordered Map of the available status as keys.

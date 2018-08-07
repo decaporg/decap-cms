@@ -1,9 +1,5 @@
 import { has, flow, partial, map } from 'lodash';
-import {
-  joinPatternSegments,
-  combinePatterns,
-  replaceWhen,
-} from '../regexHelper';
+import { joinPatternSegments, combinePatterns, replaceWhen } from '../regexHelper';
 
 /**
  * Reusable regular expressions segments.
@@ -150,9 +146,7 @@ const nonEscapePattern = combinePatterns(joinedNonEscapePatterns);
 /**
  * Create chain of successive escape functions for various markdown entities.
  */
-const escapeFunctions = escapePatterns.map(pattern =>
-  partial(escapeDelimiters, pattern),
-);
+const escapeFunctions = escapePatterns.map(pattern => partial(escapeDelimiters, pattern));
 const escapeAll = flow(escapeFunctions);
 
 /**
@@ -260,10 +254,7 @@ export default function remarkEscapeMarkdownEntities() {
        * Escape all characters if this is the first child node, otherwise only
        * common characters.
        */
-      const value =
-        index === 0
-          ? escapeAllChars(node.value)
-          : escapeCommonChars(node.value);
+      const value = index === 0 ? escapeAllChars(node.value) : escapeCommonChars(node.value);
       return { ...node, value, children };
     }
 

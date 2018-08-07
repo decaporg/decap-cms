@@ -10,9 +10,7 @@ const image = {
     },
   toBlock: data => `![${data.alt || ''}](${data.image || ''})`,
   // eslint-disable-next-line react/display-name
-  toPreview: (data, getAsset) => (
-    <img src={getAsset(data.image) || ''} alt={data.alt || ''} />
-  ),
+  toPreview: (data, getAsset) => <img src={getAsset(data.image) || ''} alt={data.alt || ''} />,
   pattern: /^!\[(.*)\]\((.*)\)$/,
   fields: [
     {

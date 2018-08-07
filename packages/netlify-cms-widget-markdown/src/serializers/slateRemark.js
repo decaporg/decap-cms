@@ -71,8 +71,7 @@ function transform(node) {
    * Call `transform` recursively on child nodes, and flatten the resulting
    * array.
    */
-  const children =
-    !isEmpty(combinedChildren) && flatMap(combinedChildren, transform);
+  const children = !isEmpty(combinedChildren) && flatMap(combinedChildren, transform);
 
   /**
    * Run individual nodes through conversion factories.
@@ -150,9 +149,7 @@ function combineTextAndInline(nodes) {
  */
 function processCodeMark(markTypes) {
   const isInlineCode = markTypes.includes('inlineCode');
-  const filteredMarkTypes = isInlineCode
-    ? without(markTypes, 'inlineCode')
-    : markTypes;
+  const filteredMarkTypes = isInlineCode ? without(markTypes, 'inlineCode') : markTypes;
   const textNodeType = isInlineCode ? 'inlineCode' : 'html';
   return { filteredMarkTypes, textNodeType };
 }
@@ -220,9 +217,7 @@ function convertTextNode(node) {
    */
   if (node.leaves) {
     const processedLeaves = node.leaves.map(processLeaves);
-    const condensedNodes = processedLeaves.reduce(condenseNodesReducer, {
-      nodes: [],
-    });
+    const condensedNodes = processedLeaves.reduce(condenseNodesReducer, { nodes: [] });
     return condensedNodes.nodes;
   }
 
@@ -290,9 +285,7 @@ function condenseNodesReducer(acc, node, idx, nodes) {
      * tied between multiple marks, there is no priority as to which goes
      * first.
      */
-    const markLengths = node.marks.map(mark =>
-      getMarkLength(mark, nodes.slice(idx)),
-    );
+    const markLengths = node.marks.map(mark => getMarkLength(mark, nodes.slice(idx)));
     const parentMarkLength = last(sortBy(markLengths, 'length'));
     const { markType: parentType, length: parentLength } = parentMarkLength;
 
@@ -316,17 +309,11 @@ function condenseNodesReducer(acc, node, idx, nodes) {
       ...child,
       marks: without(child.marks, parentType),
     }));
-    const mdastChildren = denestedChildren.reduce(condenseNodesReducer, {
-      nodes: [],
-      parentType,
-    }).nodes;
+    const mdastChildren = denestedChildren.reduce(condenseNodesReducer, { nodes: [], parentType })
+      .nodes;
     const mdastNode = u(parentType, mdastChildren);
 
-    return {
-      ...acc,
-      nodes: [...acc.nodes, mdastNode],
-      nextIndex: newNextIndex,
-    };
+    return { ...acc, nodes: [...acc.nodes, mdastNode], nextIndex: newNextIndex };
   }
 
   /**

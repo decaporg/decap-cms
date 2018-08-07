@@ -6,14 +6,9 @@ import { ENTRIES_SUCCESS } from 'Actions/entries';
 // and searches are the most common examples), we namespace cursors by
 // their type before storing them in the state.
 export const selectCollectionEntriesCursor = (state, collectionName) =>
-  new Cursor(
-    state.getIn(['cursorsByType', 'collectionEntries', collectionName]),
-  );
+  new Cursor(state.getIn(['cursorsByType', 'collectionEntries', collectionName]));
 
-const cursors = (
-  state = fromJS({ cursorsByType: { collectionEntries: {} } }),
-  action,
-) => {
+const cursors = (state = fromJS({ cursorsByType: { collectionEntries: {} } }), action) => {
   switch (action.type) {
     case ENTRIES_SUCCESS: {
       return state.setIn(

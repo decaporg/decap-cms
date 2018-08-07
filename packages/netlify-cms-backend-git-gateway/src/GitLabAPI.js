@@ -19,11 +19,7 @@ export default class API extends GitlabAPI {
     );
 
   request = async req =>
-    flow([
-      this.buildRequest,
-      this.authenticateRequest,
-      then(unsentRequest.performRequest),
-    ])(req);
+    flow([this.buildRequest, this.authenticateRequest, then(unsentRequest.performRequest)])(req);
 
   hasWriteAccess = () => Promise.resolve(true);
 }

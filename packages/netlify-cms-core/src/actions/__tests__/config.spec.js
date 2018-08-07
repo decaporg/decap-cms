@@ -9,9 +9,7 @@ describe('config', () => {
         media_folder: 'path/to/media',
         public_folder: '/path/to/media',
       });
-      expect(applyDefaults(config)).toEqual(
-        config.set('publish_mode', 'simple'),
-      );
+      expect(applyDefaults(config)).toEqual(config.set('publish_mode', 'simple'));
     });
 
     it('should set publish_mode from config', () => {

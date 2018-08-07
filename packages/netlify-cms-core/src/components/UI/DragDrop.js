@@ -40,9 +40,7 @@ export const DropTarget = ({ onDrop, namespace, ...props }) => {
       connectDropTarget: connect.dropTarget(),
       isHovered: monitor.isOver(),
     }),
-  )(({ children, connectDropTarget, isHovered }) =>
-    children(connectDropTarget, { isHovered }),
-  );
+  )(({ children, connectDropTarget, isHovered }) => children(connectDropTarget, { isHovered }));
 
   return React.createElement(DropComponent, props, props.children);
 };
@@ -51,5 +49,4 @@ DropTarget.propTypes = {
   children: PropTypes.func.isRequired,
 };
 
-export const HTML5DragDrop = component =>
-  ReactDNDDragDropContext(ReactDNDHTML5Backend)(component);
+export const HTML5DragDrop = component => ReactDNDDragDropContext(ReactDNDHTML5Backend)(component);

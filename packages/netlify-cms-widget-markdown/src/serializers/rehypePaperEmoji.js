@@ -8,9 +8,7 @@ export default function rehypePaperEmoji() {
     if (node.tagName === 'img' && node.properties.dataEmojiCh) {
       return { type: 'text', value: node.properties.dataEmojiCh };
     }
-    node.children = node.children
-      ? node.children.map(transform)
-      : node.children;
+    node.children = node.children ? node.children.map(transform) : node.children;
     return node;
   };
   return transform;

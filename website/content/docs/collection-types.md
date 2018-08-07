@@ -48,12 +48,7 @@ collections:
     folder: '_posts'
     filter: { field: 'language', value: 'en' }
     fields:
-      - {
-          label: 'Language',
-          name: 'language',
-          widget: 'select',
-          options: ['en', 'es'],
-        }
+      - { label: 'Language', name: 'language', widget: 'select', options: ['en', 'es'] }
       - { label: 'Title', name: 'title', widget: 'string' }
       - { label: 'Content', name: 'body', widget: 'markdown' }
   - label: 'Blog en Español'
@@ -61,12 +56,7 @@ collections:
     folder: '_posts'
     filter: { field: 'language', value: 'es' }
     fields:
-      - {
-          label: 'Lenguaje',
-          name: 'language',
-          widget: 'select',
-          options: ['en', 'es'],
-        }
+      - { label: 'Lenguaje', name: 'language', widget: 'select', options: ['en', 'es'] }
       - { label: 'Titulo', name: 'title', widget: 'string' }
       - { label: 'Contenido', name: 'body', widget: 'markdown' }
 ```

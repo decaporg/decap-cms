@@ -35,9 +35,7 @@ Text with **bold** & _em_ elements
 ###### H6
 `;
         expect(
-          renderer
-            .create(<MarkdownPreview value={markdownToHtml(value)} />)
-            .toJSON(),
+          renderer.create(<MarkdownPreview value={markdownToHtml(value)} />).toJSON(),
         ).toMatchSnapshot();
       });
     });
@@ -47,9 +45,7 @@ Text with **bold** & _em_ elements
         it(`should render Heading ${heading + 1}`, () => {
           const value = padStart(' Title', heading + 7, '#');
           expect(
-            renderer
-              .create(<MarkdownPreview value={markdownToHtml(value)} />)
-              .toJSON(),
+            renderer.create(<MarkdownPreview value={markdownToHtml(value)} />).toJSON(),
           ).toMatchSnapshot();
         });
       }
@@ -69,9 +65,7 @@ Text with **bold** & _em_ elements
 1. ol item 3
 `;
         expect(
-          renderer
-            .create(<MarkdownPreview value={markdownToHtml(value)} />)
-            .toJSON(),
+          renderer.create(<MarkdownPreview value={markdownToHtml(value)} />).toJSON(),
         ).toMatchSnapshot();
       });
     });
@@ -86,9 +80,7 @@ I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3]
   [3]: http://search.msn.com/    "MSN Search"
 `;
         expect(
-          renderer
-            .create(<MarkdownPreview value={markdownToHtml(value)} />)
-            .toJSON(),
+          renderer.create(<MarkdownPreview value={markdownToHtml(value)} />).toJSON(),
         ).toMatchSnapshot();
       });
     });
@@ -97,18 +89,14 @@ I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3]
       it('should render code', () => {
         const value = 'Use the `printf()` function.';
         expect(
-          renderer
-            .create(<MarkdownPreview value={markdownToHtml(value)} />)
-            .toJSON(),
+          renderer.create(<MarkdownPreview value={markdownToHtml(value)} />).toJSON(),
         ).toMatchSnapshot();
       });
 
       it('should render code 2', () => {
         const value = '``There is a literal backtick (`) here.``';
         expect(
-          renderer
-            .create(<MarkdownPreview value={markdownToHtml(value)} />)
-            .toJSON(),
+          renderer.create(<MarkdownPreview value={markdownToHtml(value)} />).toJSON(),
         ).toMatchSnapshot();
       });
     });
@@ -131,9 +119,7 @@ I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3]
 <h1 style="display: block; border: 10px solid #f00; width: 100%">Test</h1>
 `;
         expect(
-          renderer
-            .create(<MarkdownPreview value={markdownToHtml(value)} />)
-            .toJSON(),
+          renderer.create(<MarkdownPreview value={markdownToHtml(value)} />).toJSON(),
         ).toMatchSnapshot();
       });
     });
@@ -143,9 +129,7 @@ I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3]
     it('should render HTML', () => {
       const value = '<p>Paragraph with <em>inline</em> element</p>';
       expect(
-        renderer
-          .create(<MarkdownPreview value={markdownToHtml(value)} />)
-          .toJSON(),
+        renderer.create(<MarkdownPreview value={markdownToHtml(value)} />).toJSON(),
       ).toMatchSnapshot();
     });
   });

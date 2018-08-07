@@ -11,15 +11,8 @@ const jsToMap = obj => {
   return immutableObj;
 };
 
-const knownMetaKeys = Set([
-  'index',
-  'count',
-  'pageSize',
-  'pageCount',
-  'usingOldPaginationAPI',
-]);
-const filterUnknownMetaKeys = meta =>
-  meta.filter((v, k) => knownMetaKeys.has(k));
+const knownMetaKeys = Set(['index', 'count', 'pageSize', 'pageCount', 'usingOldPaginationAPI']);
+const filterUnknownMetaKeys = meta => meta.filter((v, k) => knownMetaKeys.has(k));
 
 /*
   createCursorMap takes one of three signatures:
@@ -101,9 +94,7 @@ export default class Cursor {
     return new Cursor(this.store.mergeIn(['data'], jsToMap(data)));
   }
   wrapData(data) {
-    return this.updateStore('data', oldData =>
-      jsToMap(data).set('wrapped_cursor_data', oldData),
-    );
+    return this.updateStore('data', oldData => jsToMap(data).set('wrapped_cursor_data', oldData));
   }
   unwrapData() {
     return [
@@ -119,9 +110,7 @@ export default class Cursor {
     return this.updateStore(store => store.set('meta', jsToMap(meta)));
   }
   mergeMeta(meta) {
-    return this.updateStore(store =>
-      store.update('meta', oldMeta => oldMeta.merge(jsToMap(meta))),
-    );
+    return this.updateStore(store => store.update('meta', oldMeta => oldMeta.merge(jsToMap(meta))));
   }
 }
 
@@ -130,6 +119,4 @@ export default class Cursor {
 // backends at all. This should be removed in favor of wrapping old
 // backends with a compatibility layer, as part of the backend API
 // refactor.
-export const CURSOR_COMPATIBILITY_SYMBOL = Symbol(
-  'cursor key for compatibility with old backends',
-);
+export const CURSOR_COMPATIBILITY_SYMBOL = Symbol('cursor key for compatibility with old backends');

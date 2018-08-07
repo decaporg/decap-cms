@@ -33,22 +33,11 @@ export default class SelectControl extends React.Component {
   };
 
   render() {
-    const {
-      field,
-      value,
-      forID,
-      classNameWrapper,
-      setActiveStyle,
-      setInactiveStyle,
-    } = this.props;
+    const { field, value, forID, classNameWrapper, setActiveStyle, setInactiveStyle } = this.props;
     const fieldOptions = field.get('options');
 
     if (!fieldOptions) {
-      return (
-        <div>
-          Error rendering select control for {field.get('name')}: No options
-        </div>
-      );
+      return <div>Error rendering select control for {field.get('name')}: No options</div>;
     }
 
     const options = [

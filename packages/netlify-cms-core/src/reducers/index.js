@@ -48,17 +48,10 @@ export const selectSearchedEntries = state => {
 };
 
 export const selectUnpublishedEntry = (state, collection, slug) =>
-  fromEditorialWorkflow.selectUnpublishedEntry(
-    state.editorialWorkflow,
-    collection,
-    slug,
-  );
+  fromEditorialWorkflow.selectUnpublishedEntry(state.editorialWorkflow, collection, slug);
 
 export const selectUnpublishedEntriesByStatus = (state, status) =>
-  fromEditorialWorkflow.selectUnpublishedEntriesByStatus(
-    state.editorialWorkflow,
-    status,
-  );
+  fromEditorialWorkflow.selectUnpublishedEntriesByStatus(state.editorialWorkflow, status);
 
 export const selectIntegration = (state, collection, hook) =>
   fromIntegrations.selectIntegration(state.integrations, collection, hook);

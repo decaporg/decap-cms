@@ -87,10 +87,7 @@ export const pageQuery = graphql`
     }
     widgets: allMarkdownRemark(
       sort: { fields: [frontmatter___label], order: ASC }
-      filter: {
-        frontmatter: { label: { ne: null } }
-        fields: { slug: { regex: "/widgets/" } }
-      }
+      filter: { frontmatter: { label: { ne: null } }, fields: { slug: { regex: "/widgets/" } } }
     ) {
       edges {
         node {

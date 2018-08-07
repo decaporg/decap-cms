@@ -37,9 +37,7 @@ module.exports = {
     ...baseConfig.plugins,
     new webpack.DefinePlugin({
       NETLIFY_CMS_VERSION: null,
-      NETLIFY_CMS_CORE_VERSION: JSON.stringify(
-        `${pkg.version}${isProduction ? '' : '-dev'}`,
-      ),
+      NETLIFY_CMS_CORE_VERSION: JSON.stringify(`${pkg.version}${isProduction ? '' : '-dev'}`),
     }),
   ],
 };

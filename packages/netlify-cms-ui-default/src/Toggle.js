@@ -67,9 +67,4 @@ const Toggle = ({
 
 const StyledToggle = styled(Toggle)``;
 
-export {
-  StyledToggle as default,
-  ToggleContainer,
-  ToggleBackground,
-  ToggleHandle,
-};
+export { StyledToggle as default, ToggleContainer, ToggleBackground, ToggleHandle };

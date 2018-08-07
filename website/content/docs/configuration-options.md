@@ -183,12 +183,7 @@ fields:
     widget: 'string'
     pattern: ['.{20,}', 'Must have at least 20 characters']
   - { label: 'Layout', name: 'layout', widget: 'hidden', default: 'blog' }
-  - {
-      label: 'Featured Image',
-      name: 'thumbnail',
-      widget: 'image',
-      required: false,
-    }
+  - { label: 'Featured Image', name: 'thumbnail', widget: 'image', required: false }
   - { label: 'Body', name: 'body', widget: 'markdown' }
 ```
 

@@ -37,9 +37,7 @@ export default function remarkSquashReferences() {
      * nodes.
      */
     const boundTransform = transform.bind(null, getDefinition);
-    const children = node.children
-      ? node.children.map(boundTransform)
-      : node.children;
+    const children = node.children ? node.children.map(boundTransform) : node.children;
 
     /**
      * Combine reference and definition nodes into standard image and link

@@ -33,10 +33,7 @@ const SoftBreakOpts = {
 
 export const SoftBreakConfigured = SoftBreak(SoftBreakOpts);
 
-export const ParagraphSoftBreakConfigured = SoftBreak({
-  onlyIn: ['paragraph'],
-  shift: true,
-});
+export const ParagraphSoftBreakConfigured = SoftBreak({ onlyIn: ['paragraph'], shift: true });
 
 const BreakToDefaultBlock = ({ onlyIn = [], defaultBlock = 'paragraph' }) => ({
   onKeyDown(event, change) {
@@ -59,9 +56,7 @@ const BreakToDefaultBlockOpts = {
   ],
 };
 
-export const BreakToDefaultBlockConfigured = BreakToDefaultBlock(
-  BreakToDefaultBlockOpts,
-);
+export const BreakToDefaultBlockConfigured = BreakToDefaultBlock(BreakToDefaultBlockOpts);
 
 const BackspaceCloseBlock = (options = {}) => ({
   onKeyDown(event, change) {
@@ -92,9 +87,7 @@ const BackspaceCloseBlockOpts = {
   ],
 };
 
-export const BackspaceCloseBlockConfigured = BackspaceCloseBlock(
-  BackspaceCloseBlockOpts,
-);
+export const BackspaceCloseBlockConfigured = BackspaceCloseBlock(BackspaceCloseBlockOpts);
 
 const EditListOpts = {
   types: ['bulleted-list', 'numbered-list'],

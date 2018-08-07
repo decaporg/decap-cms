@@ -38,15 +38,7 @@ export default function remarkUnwrapInvalidNest() {
     /**
      * Node types that are considered "blocks".
      */
-    const blocks = [
-      'paragraph',
-      'heading',
-      'code',
-      'blockquote',
-      'list',
-      'table',
-      'thematicBreak',
-    ];
+    const blocks = ['paragraph', 'heading', 'code', 'blockquote', 'list', 'table', 'thematicBreak'];
 
     /**
      * Node types that can contain "block" nodes as direct children. We check
@@ -57,8 +49,7 @@ export default function remarkUnwrapInvalidNest() {
 
     visitParents(tree, (node, parents) => {
       const parentType = !isEmpty(parents) && last(parents).type;
-      const isInvalidNest =
-        blocks.includes(node.type) && !canContainBlocks.includes(parentType);
+      const isInvalidNest = blocks.includes(node.type) && !canContainBlocks.includes(parentType);
 
       if (isInvalidNest) {
         invalidNest = concat(parents, node);
@@ -80,18 +71,10 @@ export default function remarkUnwrapInvalidNest() {
 
     const childrenBefore = parent.children.slice(0, splitChildIndex);
     const childrenAfter = parent.children.slice(splitChildIndex + 1);
-    const nodeBefore = !isEmpty(childrenBefore) && {
-      ...parent,
-      children: childrenBefore,
-    };
-    const nodeAfter = !isEmpty(childrenAfter) && {
-      ...parent,
-      children: childrenAfter,
-    };
+    const nodeBefore = !isEmpty(childrenBefore) && { ...parent, children: childrenBefore };
+    const nodeAfter = !isEmpty(childrenAfter) && { ...parent, children: childrenAfter };
 
-    const childrenToInsert = [nodeBefore, node, nodeAfter].filter(
-      val => !isEmpty(val),
-    );
+    const childrenToInsert = [nodeBefore, node, nodeAfter].filter(val => !isEmpty(val));
     const beforeChildren = splitChildren.slice(0, splitIndex);
     const afterChildren = splitChildren.slice(splitIndex + 1);
     const newChildren = concat(beforeChildren, childrenToInsert, afterChildren);

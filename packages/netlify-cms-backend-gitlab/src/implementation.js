@@ -16,25 +16,18 @@ export default class GitLab {
     };
 
     if (this.options.useWorkflow) {
-      throw new Error(
-        'The GitLab backend does not support the Editorial Workflow.',
-      );
+      throw new Error('The GitLab backend does not support the Editorial Workflow.');
     }
 
     if (!this.options.proxied && config.getIn(['backend', 'repo']) == null) {
-      throw new Error(
-        'The GitLab backend needs a "repo" in the backend configuration.',
-      );
+      throw new Error('The GitLab backend needs a "repo" in the backend configuration.');
     }
 
     this.api = this.options.API || null;
 
     this.repo = config.getIn(['backend', 'repo'], '');
     this.branch = config.getIn(['backend', 'branch'], 'master');
-    this.api_root = config.getIn(
-      ['backend', 'api_root'],
-      'https://gitlab.com/api/v4',
-    );
+    this.api_root = config.getIn(['backend', 'api_root'], 'https://gitlab.com/api/v4');
     this.token = '';
   }
 
@@ -58,9 +51,7 @@ export default class GitLab {
       this.api.hasWriteAccess(user).then(isCollab => {
         // Unauthorized user
         if (!isCollab)
-          throw new Error(
-            'Your GitLab user account does not have access to this repo.',
-          );
+          throw new Error('Your GitLab user account does not have access to this repo.');
         // Authorized user
         return Object.assign({}, user, { token: state.token });
       }),
@@ -77,27 +68,21 @@ export default class GitLab {
   }
 
   entriesByFolder(collection, extension) {
-    return this.api
-      .listFiles(collection.get('folder'))
-      .then(({ files, cursor }) =>
-        this.fetchFiles(
-          files.filter(file => file.name.endsWith('.' + extension)),
-        ).then(fetchedFiles => {
+    return this.api.listFiles(collection.get('folder')).then(({ files, cursor }) =>
+      this.fetchFiles(files.filter(file => file.name.endsWith('.' + extension))).then(
+        fetchedFiles => {
           const returnedFiles = fetchedFiles;
           returnedFiles[CURSOR_COMPATIBILITY_SYMBOL] = cursor;
           return returnedFiles;
-        }),
-      );
+        },
+      ),
+    );
   }
 
   allEntriesByFolder(collection, extension) {
     return this.api
       .listAllFiles(collection.get('folder'))
-      .then(files =>
-        this.fetchFiles(
-          files.filter(file => file.name.endsWith('.' + extension)),
-        ),
-      );
+      .then(files => this.fetchFiles(files.filter(file => file.name.endsWith('.' + extension))));
   }
 
   entriesByFiles(collection) {
@@ -151,8 +136,7 @@ export default class GitLab {
       files.map(({ id, name, path }) => {
         const url = new URL(this.api.fileDownloadURL(path));
         if (url.pathname.match(/.svg$/)) {
-          url.search +=
-            (url.search.slice(1) === '' ? '?' : '&') + 'sanitize=true';
+          url.search += (url.search.slice(1) === '' ? '?' : '&') + 'sanitize=true';
         }
         return { id, name, url: url.href, path };
       }),
@@ -175,17 +159,11 @@ export default class GitLab {
   }
 
   traverseCursor(cursor, action) {
-    return this.api
-      .traverseCursor(cursor, action)
-      .then(async ({ entries, cursor: newCursor }) => ({
-        entries: await Promise.all(
-          entries.map(file =>
-            this.api
-              .readFile(file.path, file.id)
-              .then(data => ({ file, data })),
-          ),
-        ),
-        cursor: newCursor,
-      }));
+    return this.api.traverseCursor(cursor, action).then(async ({ entries, cursor: newCursor }) => ({
+      entries: await Promise.all(
+        entries.map(file => this.api.readFile(file.path, file.id).then(data => ({ file, data }))),
+      ),
+      cursor: newCursor,
+    }));
   }
 }

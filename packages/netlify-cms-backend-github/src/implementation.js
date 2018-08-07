@@ -15,19 +15,14 @@ export default class GitHub {
     };
 
     if (!this.options.proxied && config.getIn(['backend', 'repo']) == null) {
-      throw new Error(
-        'The GitHub backend needs a "repo" in the backend configuration.',
-      );
+      throw new Error('The GitHub backend needs a "repo" in the backend configuration.');
     }
 
     this.api = this.options.API || null;
 
     this.repo = config.getIn(['backend', 'repo'], '');
     this.branch = config.getIn(['backend', 'branch'], 'master').trim();
-    this.api_root = config.getIn(
-      ['backend', 'api_root'],
-      'https://api.github.com',
-    );
+    this.api_root = config.getIn(['backend', 'api_root'], 'https://api.github.com');
     this.token = '';
     this.squash_merges = config.getIn(['backend', 'squash_merges']);
   }
@@ -54,9 +49,7 @@ export default class GitHub {
       this.api.hasWriteAccess().then(isCollab => {
         // Unauthorized user
         if (!isCollab)
-          throw new Error(
-            'Your GitHub user account does not have access to this repo.',
-          );
+          throw new Error('Your GitHub user account does not have access to this repo.');
         // Authorized user
         user.token = state.token;
         return user;
@@ -128,8 +121,7 @@ export default class GitHub {
       files.map(({ sha, name, size, download_url, path }) => {
         const url = new URL(download_url);
         if (url.pathname.match(/.svg$/)) {
-          url.search +=
-            (url.search.slice(1) === '' ? '?' : '&') + 'sanitize=true';
+          url.search += (url.search.slice(1) === '' ? '?' : '&') + 'sanitize=true';
         }
         return { id: sha, name, size, url: url.href, path };
       }),
@@ -146,13 +138,7 @@ export default class GitHub {
 
       const { sha, value, path, fileObj } = mediaFile;
       const url = URL.createObjectURL(fileObj);
-      return {
-        id: sha,
-        name: value,
-        size: fileObj.size,
-        url,
-        path: trimStart(path, '/'),
-      };
+      return { id: sha, name: value, size: fileObj.size, url, path: trimStart(path, '/') };
     } catch (error) {
       console.error(error);
       throw error;

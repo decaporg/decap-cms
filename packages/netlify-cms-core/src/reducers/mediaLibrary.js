@@ -17,10 +17,7 @@ import {
   MEDIA_DELETE_FAILURE,
 } from 'Actions/mediaLibrary';
 
-const mediaLibrary = (
-  state = Map({ isVisible: false, controlMedia: Map() }),
-  action,
-) => {
+const mediaLibrary = (state = Map({ isVisible: false, controlMedia: Map() }), action) => {
   const privateUploadChanged =
     state.get('privateUpload') !== get(action, ['payload', 'privateUpload']);
   switch (action.type) {
@@ -61,13 +58,7 @@ const mediaLibrary = (
         map.set('isPaginating', action.payload.page > 1);
       });
     case MEDIA_LOAD_SUCCESS: {
-      const {
-        files = [],
-        page,
-        canPaginate,
-        dynamicSearch,
-        dynamicSearchQuery,
-      } = action.payload;
+      const { files = [], page, canPaginate, dynamicSearch, dynamicSearchQuery } = action.payload;
 
       if (privateUploadChanged) {
         return state;

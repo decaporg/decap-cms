@@ -9,9 +9,7 @@ import { formatExtensions } from 'Formats/formats';
 const collections = (state = null, action) => {
   switch (action.type) {
     case CONFIG_SUCCESS: {
-      const configCollections = action.payload
-        ? action.payload.get('collections')
-        : List();
+      const configCollections = action.payload ? action.payload.get('collections') : List();
       return configCollections
         .toOrderedMap()
         .map(collection => {
@@ -41,18 +39,15 @@ const selectors = {
       return collection.get('fields');
     },
     entryPath(collection, slug) {
-      return `${collection
-        .get('folder')
-        .replace(/\/$/, '')}/${slug}.${this.entryExtension(collection)}`;
+      return `${collection.get('folder').replace(/\/$/, '')}/${slug}.${this.entryExtension(
+        collection,
+      )}`;
     },
     entrySlug(collection, path) {
       return path
         .split('/')
         .pop()
-        .replace(
-          new RegExp(`\\.${escapeRegExp(this.entryExtension(collection))}$`),
-          '',
-        );
+        .replace(new RegExp(`\\.${escapeRegExp(this.entryExtension(collection))}$`), '');
     },
     listMethod() {
       return 'entriesByFolder';
@@ -110,8 +105,7 @@ export const selectEntryPath = (collection, slug) =>
   selectors[collection.get('type')].entryPath(collection, slug);
 export const selectEntrySlug = (collection, path) =>
   selectors[collection.get('type')].entrySlug(collection, path);
-export const selectListMethod = collection =>
-  selectors[collection.get('type')].listMethod();
+export const selectListMethod = collection => selectors[collection.get('type')].listMethod();
 export const selectAllowNewEntries = collection =>
   selectors[collection.get('type')].allowNewEntries(collection);
 export const selectAllowDeletion = collection =>
@@ -120,9 +114,7 @@ export const selectTemplateName = (collection, slug) =>
   selectors[collection.get('type')].templateName(collection, slug);
 export const selectIdentifier = collection => {
   const fieldNames = collection.get('fields').map(field => field.get('name'));
-  return IDENTIFIER_FIELDS.find(id =>
-    fieldNames.find(name => name.toLowerCase().trim() === id),
-  );
+  return IDENTIFIER_FIELDS.find(id => fieldNames.find(name => name.toLowerCase().trim() === id));
   // There must be a field whose `name` matches one of the IDENTIFIER_FIELDS.
 };
 export const selectInferedField = (collection, fieldName) => {
@@ -141,26 +133,18 @@ export const selectInferedField = (collection, fieldName) => {
 
   // Try to return a field for each of the specified secondary types
   const secondaryTypeFields = fields
-    .filter(
-      f =>
-        inferableField.secondaryTypes.indexOf(f.get('widget', 'string')) !== -1,
-    )
+    .filter(f => inferableField.secondaryTypes.indexOf(f.get('widget', 'string')) !== -1)
     .map(f => f.get('name'));
-  field = secondaryTypeFields.filter(
-    f => inferableField.synonyms.indexOf(f) !== -1,
-  );
+  field = secondaryTypeFields.filter(f => inferableField.synonyms.indexOf(f) !== -1);
   if (field && field.size > 0) return field.first();
 
   // Try to return the first field of the specified type
-  if (inferableField.fallbackToFirstField && mainTypeFields.size > 0)
-    return mainTypeFields.first();
+  if (inferableField.fallbackToFirstField && mainTypeFields.size > 0) return mainTypeFields.first();
 
   // Coundn't infer the field. Show error and return null.
   if (inferableField.showError) {
     consoleError(
-      `The Field ${fieldName} is missing for the collection “${collection.get(
-        'name',
-      )}”`,
+      `The Field ${fieldName} is missing for the collection “${collection.get('name')}”`,
       `Netlify CMS tries to infer the entry ${fieldName} automatically, but one couldn't be found for entries of the collection “${collection.get(
         'name',
       )}”. Please check your site configuration.`,

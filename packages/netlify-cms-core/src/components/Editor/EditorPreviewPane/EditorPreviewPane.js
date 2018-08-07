@@ -5,11 +5,7 @@ import { List, Map } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import Frame from 'react-frame-component';
 import { lengths } from 'netlify-cms-ui-default';
-import {
-  resolveWidget,
-  getPreviewTemplate,
-  getPreviewStyles,
-} from 'Lib/registry';
+import { resolveWidget, getPreviewTemplate, getPreviewStyles } from 'Lib/registry';
 import { ErrorBoundary } from 'UI';
 import { selectTemplateName, selectInferedField } from 'Reducers/collections';
 import { INFERABLE_FIELDS } from 'Constants/fieldInference';
@@ -51,16 +47,12 @@ export default class PreviewPane extends React.Component {
 
   inferFields() {
     const titleField = selectInferedField(this.props.collection, 'title');
-    const shortTitleField = selectInferedField(
-      this.props.collection,
-      'shortTitle',
-    );
+    const shortTitleField = selectInferedField(this.props.collection, 'shortTitle');
     const authorField = selectInferedField(this.props.collection, 'author');
 
     this.inferedFields = {};
     if (titleField) this.inferedFields[titleField] = INFERABLE_FIELDS.title;
-    if (shortTitleField)
-      this.inferedFields[shortTitleField] = INFERABLE_FIELDS.shortTitle;
+    if (shortTitleField) this.inferedFields[shortTitleField] = INFERABLE_FIELDS.shortTitle;
     if (authorField) this.inferedFields[authorField] = INFERABLE_FIELDS.author;
   }
 
@@ -70,11 +62,7 @@ export default class PreviewPane extends React.Component {
    * object and list type fields. Used internally to retrieve widgets, and also
    * exposed for use in custom preview templates.
    */
-  widgetFor = (
-    name,
-    fields = this.props.fields,
-    values = this.props.entry.get('data'),
-  ) => {
+  widgetFor = (name, fields = this.props.fields, values = this.props.entry.get('data')) => {
     // We retrieve the field by name so that this function can also be used in
     // custom preview templates, where the field object can't be passed in.
     let field = fields && fields.find(f => f.get('name') === name);
@@ -119,9 +107,7 @@ export default class PreviewPane extends React.Component {
    * Use widgetFor as a mapping function for recursive widget retrieval
    */
   widgetsForNestedFields = (fields, values) => {
-    return fields.map(field =>
-      this.widgetFor(field.get('name'), fields, values),
-    );
+    return fields.map(field => this.widgetFor(field.get('name'), fields, values));
   };
 
   /**
@@ -154,12 +140,7 @@ export default class PreviewPane extends React.Component {
       data: value,
       widgets:
         nestedFields &&
-        Map(
-          nestedFields.map(f => [
-            f.get('name'),
-            this.getWidget(f, value, this.props),
-          ]),
-        ),
+        Map(nestedFields.map(f => [f.get('name'), this.getWidget(f, value, this.props)])),
     });
   };
 
@@ -171,8 +152,7 @@ export default class PreviewPane extends React.Component {
     }
 
     const previewComponent =
-      getPreviewTemplate(selectTemplateName(collection, entry.get('slug'))) ||
-      EditorPreview;
+      getPreviewTemplate(selectTemplateName(collection, entry.get('slug'))) || EditorPreview;
 
     this.inferFields();
 
@@ -186,9 +166,7 @@ export default class PreviewPane extends React.Component {
       if (style.raw) {
         return <style key={i}>{style.value}</style>;
       }
-      return (
-        <link key={i} href={style.value} type="text/css" rel="stylesheet" />
-      );
+      return <link key={i} href={style.value} type="text/css" rel="stylesheet" />;
     });
 
     if (!collection) {

@@ -23,15 +23,7 @@ const StyledToolbarButton = styled.button`
   }
 `;
 
-const ToolbarButton = ({
-  type,
-  label,
-  icon,
-  onClick,
-  isActive,
-  isHidden,
-  disabled,
-}) => {
+const ToolbarButton = ({ type, label, icon, onClick, isActive, isHidden, disabled }) => {
   if (isHidden) {
     return null;
   }

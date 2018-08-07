@@ -21,20 +21,14 @@ const VisualEditorContainer = styled.div`
 
 const createEmptyRawDoc = () => {
   const emptyText = Text.create('');
-  const emptyBlock = Block.create({
-    kind: 'block',
-    type: 'paragraph',
-    nodes: [emptyText],
-  });
+  const emptyBlock = Block.create({ kind: 'block', type: 'paragraph', nodes: [emptyText] });
   return { nodes: [emptyBlock] };
 };
 
 const createSlateValue = rawValue => {
   const rawDoc = rawValue && markdownToSlate(rawValue);
   const rawDocHasNodes = !isEmpty(get(rawDoc, 'nodes'));
-  const document = Document.fromJSON(
-    rawDocHasNodes ? rawDoc : createEmptyRawDoc(),
-  );
+  const document = Document.fromJSON(rawDocHasNodes ? rawDoc : createEmptyRawDoc());
   return Value.create({ document });
 };
 
@@ -69,10 +63,8 @@ export default class Editor extends React.Component {
     return change.insertFragment(doc);
   };
 
-  selectionHasMark = type =>
-    this.state.value.activeMarks.some(mark => mark.type === type);
-  selectionHasBlock = type =>
-    this.state.value.blocks.some(node => node.type === type);
+  selectionHasMark = type => this.state.value.activeMarks.some(mark => mark.type === type);
+  selectionHasBlock = type => this.state.value.blocks.some(node => node.type === type);
 
   handleMarkClick = (event, type) => {
     event.preventDefault();
@@ -107,11 +99,8 @@ export default class Editor extends React.Component {
       if (isInList && isSameListType) {
         change = change.call(unwrapList, type);
       } else if (isInList) {
-        const currentListType =
-          type === 'bulleted-list' ? 'numbered-list' : 'bulleted-list';
-        change = change
-          .call(unwrapList, currentListType)
-          .call(wrapInList, type);
+        const currentListType = type === 'bulleted-list' ? 'numbered-list' : 'bulleted-list';
+        change = change.call(unwrapList, currentListType).call(wrapInList, type);
       } else {
         change = change.call(wrapInList, type);
       }
@@ -144,9 +133,7 @@ export default class Editor extends React.Component {
         change = change.insertText(url).extend(0 - url.length);
       }
 
-      change = change
-        .wrapInline({ type: 'link', data: { url } })
-        .collapseToEnd();
+      change = change.wrapInline({ type: 'link', data: { url } }).collapseToEnd();
     }
 
     this.ref.onChange(change);
@@ -205,13 +192,7 @@ export default class Editor extends React.Component {
   };
 
   render() {
-    const {
-      onAddAsset,
-      getAsset,
-      className,
-      field,
-      getEditorComponents,
-    } = this.props;
+    const { onAddAsset, getAsset, className, field, getEditorComponents } = this.props;
 
     return (
       <VisualEditorContainer>
