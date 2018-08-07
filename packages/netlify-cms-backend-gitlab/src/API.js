@@ -1,7 +1,7 @@
 import { localForage, unsentRequest, then, APIError, Cursor } from "netlify-cms-lib-util";
 import { Base64 } from "js-base64";
 import { List, Map } from "immutable";
-import { flow, partial, pick, get, result } from "lodash";
+import { flow, partial, result } from "lodash";
 
 export default class API {
   constructor(config) {

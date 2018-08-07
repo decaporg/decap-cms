@@ -45,7 +45,7 @@ export default class API {
   ])(req);
 
   user = () => this.request("/user");
-  hasWriteAccess = user => this.request(this.repoURL).then(res => res.ok);
+  hasWriteAccess = () => this.request(this.repoURL).then(res => res.ok);
 
   isFile = ({ type }) => type === "commit_file";
   processFile = file => ({

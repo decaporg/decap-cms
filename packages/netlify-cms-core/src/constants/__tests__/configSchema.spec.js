@@ -6,7 +6,7 @@ describe('config', () => {
    * log test failures and associated errors as expected.
    */
   beforeEach(() => {
-    spyOn(console, 'error')
+    jest.spyOn(console, 'error')
   })
 
   describe('validateConfig', () => {
