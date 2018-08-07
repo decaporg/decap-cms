@@ -14,8 +14,8 @@ module.exports = {
   module: {
     rules: [
       ...Object.entries(rules)
-        .filter(([ key ]) => key !== 'js')
-        .map(([ , rule ]) => rule()),
+        .filter(([key]) => key !== 'js')
+        .map(([, rule]) => rule()),
       {
         test: /\.js$/,
         exclude: /node_modules/,
@@ -37,7 +37,9 @@ module.exports = {
     ...baseConfig.plugins,
     new webpack.DefinePlugin({
       NETLIFY_CMS_VERSION: null,
-      NETLIFY_CMS_CORE_VERSION: JSON.stringify(`${pkg.version}${isProduction ? '' : '-dev'}`),
+      NETLIFY_CMS_CORE_VERSION: JSON.stringify(
+        `${pkg.version}${isProduction ? '' : '-dev'}`,
+      ),
     }),
   ],
 };

@@ -71,8 +71,8 @@ module.exports = class HTML extends React.Component {
           />
           {this.props.postBodyComponents}
           <Gitter room="netlify/NetlifyCMS" />
-          <script async defer src="https://buttons.github.io/buttons.js"></script>
-          <script src="//unpkg.com/docsearch.js@2.4.1/dist/cdn/docsearch.min.js"></script>
+          <script async defer src="https://buttons.github.io/buttons.js" />
+          <script src="//unpkg.com/docsearch.js@2.4.1/dist/cdn/docsearch.min.js" />
         </body>
       </html>
     );

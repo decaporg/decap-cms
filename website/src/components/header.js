@@ -10,7 +10,7 @@ import '../css/imports/header.css';
 
 class Header extends Component {
   state = {
-    scrolled: false
+    scrolled: false,
   };
 
   componentDidMount() {
@@ -29,7 +29,7 @@ class Header extends Component {
     const scrolled = currentWindowPos > 0;
 
     this.setState({
-      scrolled
+      scrolled,
     });
   };
 
@@ -46,7 +46,7 @@ class Header extends Component {
         className={classnames({
           docs: isDocs,
           blog: isBlog,
-          scrolled
+          scrolled,
         })}
       >
         <div className="contained">

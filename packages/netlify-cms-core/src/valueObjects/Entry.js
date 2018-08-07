@@ -1,4 +1,4 @@
-import { isBoolean } from "lodash";
+import { isBoolean } from 'lodash';
 
 export function createEntry(collection, slug = '', path = '', options = {}) {
   const returnObj = {};

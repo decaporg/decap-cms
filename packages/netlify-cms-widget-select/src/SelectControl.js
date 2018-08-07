@@ -12,13 +12,15 @@ export default class SelectControl extends React.Component {
     setActiveStyle: PropTypes.func.isRequired,
     setInactiveStyle: PropTypes.func.isRequired,
     field: ImmutablePropTypes.contains({
-      options: ImmutablePropTypes.listOf(PropTypes.oneOfType([
-        PropTypes.string,
-        ImmutablePropTypes.contains({
-          label: PropTypes.string.isRequired,
-          value: PropTypes.string.isRequired,
-        }),
-      ])).isRequired,
+      options: ImmutablePropTypes.listOf(
+        PropTypes.oneOfType([
+          PropTypes.string,
+          ImmutablePropTypes.contains({
+            label: PropTypes.string.isRequired,
+            value: PropTypes.string.isRequired,
+          }),
+        ]),
+      ).isRequired,
     }),
   };
 
@@ -26,21 +28,32 @@ export default class SelectControl extends React.Component {
     value: '',
   };
 
-  handleChange = (e) => {
+  handleChange = e => {
     this.props.onChange(e.target.value);
   };
 
   render() {
-    const { field, value, forID, classNameWrapper, setActiveStyle, setInactiveStyle } = this.props;
+    const {
+      field,
+      value,
+      forID,
+      classNameWrapper,
+      setActiveStyle,
+      setInactiveStyle,
+    } = this.props;
     const fieldOptions = field.get('options');
 
     if (!fieldOptions) {
-      return <div>Error rendering select control for {field.get('name')}: No options</div>;
+      return (
+        <div>
+          Error rendering select control for {field.get('name')}: No options
+        </div>
+      );
     }
 
     const options = [
       ...(field.get('default', false) ? [] : [{ label: '', value: '' }]),
-      ...fieldOptions.map((option) => {
+      ...fieldOptions.map(option => {
         if (typeof option === 'string') {
           return { label: option, value: option };
         }
@@ -57,11 +70,11 @@ export default class SelectControl extends React.Component {
         onFocus={setActiveStyle}
         onBlur={setInactiveStyle}
       >
-        {
-          options.map(
-            (option, idx) => <option key={idx} value={option.value}>{option.label}</option>
-          )
-        }
+        {options.map((option, idx) => (
+          <option key={idx} value={option.value}>
+            {option.label}
+          </option>
+        ))}
       </select>
     );
   }

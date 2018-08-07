@@ -56,7 +56,6 @@ import { getEditorComponents } from '../MarkdownControl';
  *   for serialization to/from Slate's Raw AST and MDAST.
  */
 
-
 /**
  * Deserialize a Markdown string to an MDAST.
  */
@@ -82,16 +81,15 @@ export const markdownToRemark = markdown => {
   return result;
 };
 
-
 /**
  * Remove named tokenizers from the parser, effectively deactivating them.
  */
 function markdownToRemarkRemoveTokenizers({ inlineTokenizers }) {
-  inlineTokenizers && inlineTokenizers.forEach(tokenizer => {
-    delete this.Parser.prototype.inlineTokenizers[tokenizer];
-  });
+  inlineTokenizers &&
+    inlineTokenizers.forEach(tokenizer => {
+      delete this.Parser.prototype.inlineTokenizers[tokenizer];
+    });
 }
-
 
 /**
  * Serialize an MDAST to a Markdown string.
@@ -146,7 +144,6 @@ export const remarkToMarkdown = obj => {
   return trimEnd(markdown);
 };
 
-
 /**
  * Convert Markdown to HTML.
  */
@@ -159,12 +156,14 @@ export const markdownToHtml = (markdown, getAsset) => {
     .runSync(mdast);
 
   const html = unified()
-    .use(rehypeToHtml, { allowDangerousHTML: true, allowDangerousCharacters: true })
+    .use(rehypeToHtml, {
+      allowDangerousHTML: true,
+      allowDangerousCharacters: true,
+    })
     .stringify(hast);
 
   return html;
-}
-
+};
 
 /**
  * Deserialize an HTML string to Slate's Raw AST. Currently used for HTML
@@ -192,7 +191,6 @@ export const htmlToSlate = html => {
   return slateRaw;
 };
 
-
 /**
  * Convert Markdown to Slate's Raw AST.
  */
@@ -206,7 +204,6 @@ export const markdownToSlate = markdown => {
 
   return slateRaw;
 };
-
 
 /**
  * Convert a Slate Raw AST to Markdown.

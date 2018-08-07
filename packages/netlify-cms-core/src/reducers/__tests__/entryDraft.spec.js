@@ -24,10 +24,7 @@ describe('entryDraft reducer', () => {
   describe('DRAFT_CREATE_FROM_ENTRY', () => {
     it('should create draft from the entry', () => {
       expect(
-        reducer(
-          initialState,
-          actions.createDraftFromEntry(fromJS(entry))
-        )
+        reducer(initialState, actions.createDraftFromEntry(fromJS(entry))),
       ).toEqual(
         fromJS({
           entry: {
@@ -38,7 +35,7 @@ describe('entryDraft reducer', () => {
           fieldsMetaData: Map(),
           fieldsErrors: Map(),
           hasChanged: false,
-        })
+        }),
       );
     });
   });
@@ -46,10 +43,7 @@ describe('entryDraft reducer', () => {
   describe('DRAFT_CREATE_EMPTY', () => {
     it('should create a new draft ', () => {
       expect(
-        reducer(
-          initialState,
-          actions.emptyDraftCreated(fromJS(entry))
-        )
+        reducer(initialState, actions.emptyDraftCreated(fromJS(entry))),
       ).toEqual(
         fromJS({
           entry: {
@@ -60,15 +54,16 @@ describe('entryDraft reducer', () => {
           fieldsMetaData: Map(),
           fieldsErrors: Map(),
           hasChanged: false,
-        })
+        }),
       );
     });
   });
 
   describe('DRAFT_DISCARD', () => {
     it('should discard the draft and return initial state', () => {
-      expect(reducer(initialState, actions.discardDraft()))
-        .toEqual(initialState);
+      expect(reducer(initialState, actions.discardDraft())).toEqual(
+        initialState,
+      );
     });
   });
 
@@ -78,15 +73,16 @@ describe('entryDraft reducer', () => {
         ...entry,
         raw: 'updated',
       };
-      expect(reducer(initialState, actions.changeDraft(newEntry)))
-        .toEqual(fromJS({
+      expect(reducer(initialState, actions.changeDraft(newEntry))).toEqual(
+        fromJS({
           entry: {
             ...entry,
             raw: 'updated',
           },
           mediaFiles: [],
           hasChanged: true,
-        }));
+        }),
+      );
     });
   });
 
@@ -111,27 +107,35 @@ describe('entryDraft reducer', () => {
     it('should handle persisting request', () => {
       const newState = reducer(
         initialState,
-        actions.entryPersisting(Map({ name: 'posts' }), Map({ slug: 'slug' }))
+        actions.entryPersisting(Map({ name: 'posts' }), Map({ slug: 'slug' })),
       );
       expect(newState.getIn(['entry', 'isPersisting'])).toBe(true);
     });
 
     it('should handle persisting success', () => {
-      let newState = reducer(initialState,
-        actions.entryPersisting(Map({ name: 'posts' }), Map({ slug: 'slug' }))
+      let newState = reducer(
+        initialState,
+        actions.entryPersisting(Map({ name: 'posts' }), Map({ slug: 'slug' })),
       );
-      newState = reducer(newState,
-        actions.entryPersisted(Map({ name: 'posts' }), Map({ slug: 'slug' }))
+      newState = reducer(
+        newState,
+        actions.entryPersisted(Map({ name: 'posts' }), Map({ slug: 'slug' })),
       );
       expect(newState.getIn(['entry', 'isPersisting'])).toBeUndefined();
     });
 
     it('should handle persisting error', () => {
-      let newState = reducer(initialState,
-        actions.entryPersisting(Map({ name: 'posts' }), Map({ slug: 'slug' }))
+      let newState = reducer(
+        initialState,
+        actions.entryPersisting(Map({ name: 'posts' }), Map({ slug: 'slug' })),
       );
-      newState = reducer(newState,
-        actions.entryPersistFail(Map({ name: 'posts' }), Map({ slug: 'slug' }), 'Error message')
+      newState = reducer(
+        newState,
+        actions.entryPersistFail(
+          Map({ name: 'posts' }),
+          Map({ slug: 'slug' }),
+          'Error message',
+        ),
       );
       expect(newState.getIn(['entry', 'isPersisting'])).toBeUndefined();
     });

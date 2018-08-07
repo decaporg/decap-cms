@@ -13,7 +13,7 @@ const CardsGrid = styled.ul`
   flex-flow: row wrap;
   list-style-type: none;
   margin-left: -12px;
-`
+`;
 
 export default class EntryListing extends React.Component {
   static propTypes = {
@@ -28,8 +28,8 @@ export default class EntryListing extends React.Component {
 
   handleLoadMore = () => {
     const { cursor, handleCursorActions } = this.props;
-    if (Cursor.create(cursor).actions.has("append_next")) {
-      handleCursorActions("append_next");
+    if (Cursor.create(cursor).actions.has('append_next')) {
+      handleCursorActions('append_next');
     }
   };
 
@@ -39,25 +39,41 @@ export default class EntryListing extends React.Component {
     const imageField = selectInferedField(collection, 'image');
     const fields = selectFields(collection);
     const inferedFields = [titleField, descriptionField, imageField];
-    const remainingFields = fields && fields.filter(f => inferedFields.indexOf(f.get('name')) === -1);
+    const remainingFields =
+      fields && fields.filter(f => inferedFields.indexOf(f.get('name')) === -1);
     return { titleField, descriptionField, imageField, remainingFields };
   };
 
   renderCardsForSingleCollection = () => {
     const { collections, entries, publicFolder, viewStyle } = this.props;
     const inferedFields = this.inferFields(collections);
-    const entryCardProps = { collection: collections, inferedFields, publicFolder, viewStyle };
-    return entries.map((entry, idx) => <EntryCard {...entryCardProps} entry={entry} key={idx} />);
+    const entryCardProps = {
+      collection: collections,
+      inferedFields,
+      publicFolder,
+      viewStyle,
+    };
+    return entries.map((entry, idx) => (
+      <EntryCard {...entryCardProps} entry={entry} key={idx} />
+    ));
   };
 
   renderCardsForMultipleCollections = () => {
     const { collections, entries, publicFolder } = this.props;
     return entries.map((entry, idx) => {
       const collectionName = entry.get('collection');
-      const collection = collections.find(coll => coll.get('name') === collectionName);
+      const collection = collections.find(
+        coll => coll.get('name') === collectionName,
+      );
       const collectionLabel = collection.get('label');
       const inferedFields = this.inferFields(collection);
-      const entryCardProps = { collection, entry, inferedFields, publicFolder, collectionLabel };
+      const entryCardProps = {
+        collection,
+        entry,
+        inferedFields,
+        publicFolder,
+        collectionLabel,
+      };
       return <EntryCard {...entryCardProps} key={idx} />;
     });
   };
@@ -68,11 +84,9 @@ export default class EntryListing extends React.Component {
     return (
       <div>
         <CardsGrid>
-          {
-            Map.isMap(collections)
-              ? this.renderCardsForSingleCollection()
-              : this.renderCardsForMultipleCollections()
-          }
+          {Map.isMap(collections)
+            ? this.renderCardsForSingleCollection()
+            : this.renderCardsForMultipleCollections()}
           <Waypoint onEnter={this.handleLoadMore} />
         </CardsGrid>
       </div>

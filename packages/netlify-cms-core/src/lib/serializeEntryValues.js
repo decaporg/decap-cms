@@ -21,7 +21,6 @@ import { getWidgetValueSerializer } from './registry';
  * handlers run on persist.
  */
 const runSerializer = (values, fields, method) => {
-
   /**
    * Reduce the list of fields to a map where keys are field names and values
    * are field values, serializing the values of fields whose widgets have
@@ -36,7 +35,10 @@ const runSerializer = (values, fields, method) => {
 
     // Call recursively for fields within lists
     if (nestedFields && List.isList(value)) {
-      return acc.set(fieldName, value.map(val => runSerializer(val, nestedFields, method)));
+      return acc.set(
+        fieldName,
+        value.map(val => runSerializer(val, nestedFields, method)),
+      );
     }
 
     // Call recursively for fields within objects

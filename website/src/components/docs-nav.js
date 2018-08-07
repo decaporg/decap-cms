@@ -9,7 +9,7 @@ import Link from 'gatsby-link';
  */
 class TableOfContents extends Component {
   state = {
-    headings: []
+    headings: [],
   };
 
   componentDidMount() {
@@ -19,12 +19,12 @@ class TableOfContents extends Component {
     contentHeadings.forEach(h => {
       headings.push({
         id: h.id,
-        text: h.innerText
+        text: h.innerText,
       });
     });
 
     this.setState({
-      headings
+      headings,
     });
   }
 
@@ -55,7 +55,8 @@ const DocsNav = ({ items, location }) => (
               <Link
                 to={node.fields.slug}
                 className="nav-link"
-                activeClassName="active">
+                activeClassName="active"
+              >
                 {node.frontmatter.title}
               </Link>
               {location.pathname === node.fields.slug && <TableOfContents />}

@@ -1,5 +1,5 @@
 ---
-label: "Image"
+label: 'Image'
 target: image
 ---
 
@@ -13,8 +13,8 @@ The image widget allows editors to upload an image or select an existing one fro
 - **Example:**
 
   ```yaml
-  - label: "Featured Image"
-    name: "thumbnail"
-    widget: "image"
-    default: "/uploads/chocolate-dogecoin.jpg"
+  - label: 'Featured Image'
+    name: 'thumbnail'
+    widget: 'image'
+    default: '/uploads/chocolate-dogecoin.jpg'
   ```

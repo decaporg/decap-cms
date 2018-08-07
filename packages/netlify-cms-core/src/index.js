@@ -9,7 +9,9 @@ import createReactClass from 'create-react-class';
 if (!window.CMS_MANUAL_INIT) {
   bootstrap();
 } else {
-  console.log('`window.CMS_MANUAL_INIT` flag set, skipping automatic initialization.');
+  console.log(
+    '`window.CMS_MANUAL_INIT` flag set, skipping automatic initialization.',
+  );
 }
 
 /**

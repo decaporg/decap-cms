@@ -19,7 +19,7 @@ import {
 import {
   updateUnpublishedEntryStatus,
   publishUnpublishedEntry,
-  deleteUnpublishedEntry
+  deleteUnpublishedEntry,
 } from 'Actions/editorialWorkflow';
 import { deserializeValues } from 'Lib/serializeEntryValues';
 import { selectEntry, selectUnpublishedEntry, getAsset } from 'Reducers';
@@ -29,10 +29,14 @@ import { EDITORIAL_WORKFLOW } from 'Constants/publishModes';
 import EditorInterface from './EditorInterface';
 import withWorkflow from './withWorkflow';
 
-const navigateCollection = (collectionPath) => history.push(`/collections/${collectionPath}`);
-const navigateToCollection = collectionName => navigateCollection(collectionName);
-const navigateToNewEntry = collectionName => navigateCollection(`${collectionName}/new`);
-const navigateToEntry = (collectionName, slug) => navigateCollection(`${collectionName}/entries/${slug}`);
+const navigateCollection = collectionPath =>
+  history.push(`/collections/${collectionPath}`);
+const navigateToCollection = collectionName =>
+  navigateCollection(collectionName);
+const navigateToNewEntry = collectionName =>
+  navigateCollection(`${collectionName}/new`);
+const navigateToEntry = (collectionName, slug) =>
+  navigateCollection(`${collectionName}/entries/${slug}`);
 
 class Editor extends React.Component {
   static propTypes = {
@@ -83,7 +87,7 @@ class Editor extends React.Component {
 
     const leaveMessage = 'Are you sure you want to leave this page?';
 
-    this.exitBlocker = (event) => {
+    this.exitBlocker = event => {
       if (this.props.entryDraft.get('hasChanged')) {
         // This message is ignored in most browsers, but its presence
         // triggers the confirmation dialog
@@ -97,17 +101,24 @@ class Editor extends React.Component {
       /**
        * New entry being saved and redirected to it's new slug based url.
        */
-      const isPersisting = this.props.entryDraft.getIn(['entry', 'isPersisting']);
+      const isPersisting = this.props.entryDraft.getIn([
+        'entry',
+        'isPersisting',
+      ]);
       const newRecord = this.props.entryDraft.getIn(['entry', 'newRecord']);
       const newEntryPath = `/collections/${collection.get('name')}/new`;
-      if (isPersisting && newRecord && this.props.location.pathname === newEntryPath && action === 'PUSH') {
+      if (
+        isPersisting &&
+        newRecord &&
+        this.props.location.pathname === newEntryPath &&
+        action === 'PUSH'
+      ) {
         return;
       }
 
       if (this.props.hasChanged) {
         return leaveMessage;
       }
-
     };
     const unblock = history.block(navigationBlocker);
 
@@ -119,7 +130,10 @@ class Editor extends React.Component {
       const newEntryPath = `/collections/${collection.get('name')}/new`;
       const entriesPath = `/collections/${collection.get('name')}/entries/`;
       const { pathname } = location;
-      if (pathname.startsWith(newEntryPath) || pathname.startsWith(entriesPath) && action === 'PUSH') {
+      if (
+        pathname.startsWith(newEntryPath) ||
+        (pathname.startsWith(entriesPath) && action === 'PUSH')
+      ) {
         return;
       }
       unblock();
@@ -137,7 +151,8 @@ class Editor extends React.Component {
      * saved, and we need to update navigation to the correct url using the
      * slug.
      */
-    const newSlug = this.props.entryDraft && this.props.entryDraft.getIn(['entry', 'slug']);
+    const newSlug =
+      this.props.entryDraft && this.props.entryDraft.getIn(['entry', 'slug']);
     if (!prevProps.slug && newSlug && this.props.newEntry) {
       navigateToEntry(prevProps.collection.get('name'), newSlug);
       this.props.loadEntry(this.props.collection, newSlug);
@@ -147,14 +162,14 @@ class Editor extends React.Component {
     const { entry, newEntry, fields, collection } = this.props;
 
     if (entry && !entry.get('isFetching') && !entry.get('error')) {
-
       /**
        * Deserialize entry values for widgets with registered serializers before
        * creating the entry draft.
        */
       const values = deserializeValues(entry.get('data'), fields);
       const deserializedEntry = entry.set('data', values);
-      const fieldsMetaData = this.props.entryDraft && this.props.entryDraft.get('fieldsMetaData');
+      const fieldsMetaData =
+        this.props.entryDraft && this.props.entryDraft.get('fieldsMetaData');
       this.createDraft(deserializedEntry, fieldsMetaData);
     } else if (newEntry) {
       prevProps.createEmptyDraft(collection);
@@ -170,41 +185,70 @@ class Editor extends React.Component {
     if (entry) this.props.createDraftFromEntry(entry, metadata);
   };
 
-  handleChangeStatus = (newStatusName) => {
-    const { entryDraft, updateUnpublishedEntryStatus, collection, slug, currentStatus } = this.props;
+  handleChangeStatus = newStatusName => {
+    const {
+      entryDraft,
+      updateUnpublishedEntryStatus,
+      collection,
+      slug,
+      currentStatus,
+    } = this.props;
     if (entryDraft.get('hasChanged')) {
-      window.alert('You have unsaved changes, please save before updating status.');
+      window.alert(
+        'You have unsaved changes, please save before updating status.',
+      );
       return;
     }
     const newStatus = status.get(newStatusName);
-    updateUnpublishedEntryStatus(collection.get('name'), slug, currentStatus, newStatus);
-  }
+    updateUnpublishedEntryStatus(
+      collection.get('name'),
+      slug,
+      currentStatus,
+      newStatus,
+    );
+  };
 
   handlePersistEntry = async (opts = {}) => {
     const { createNew = false } = opts;
-    const { persistEntry, collection, currentStatus, hasWorkflow, loadEntry, slug, createEmptyDraft } = this.props;
+    const {
+      persistEntry,
+      collection,
+      currentStatus,
+      hasWorkflow,
+      loadEntry,
+      slug,
+      createEmptyDraft,
+    } = this.props;
 
-    await persistEntry(collection)
+    await persistEntry(collection);
 
     if (createNew) {
       navigateToNewEntry(collection.get('name'));
       createEmptyDraft(collection);
-    }
-    else if (slug && hasWorkflow && !currentStatus) {
+    } else if (slug && hasWorkflow && !currentStatus) {
       loadEntry(collection, slug);
     }
   };
 
   handlePublishEntry = async (opts = {}) => {
     const { createNew = false } = opts;
-    const { publishUnpublishedEntry, entryDraft, collection, slug, currentStatus, loadEntry } = this.props;
+    const {
+      publishUnpublishedEntry,
+      entryDraft,
+      collection,
+      slug,
+      currentStatus,
+      loadEntry,
+    } = this.props;
     if (currentStatus !== status.last()) {
       window.alert('Please update status to "Ready" before publishing.');
       return;
     } else if (entryDraft.get('hasChanged')) {
       window.alert('You have unsaved changes, please save before publishing.');
       return;
-    } else if (!window.confirm('Are you sure you want to publish this entry?')) {
+    } else if (
+      !window.confirm('Are you sure you want to publish this entry?')
+    ) {
       return;
     }
 
@@ -212,8 +256,7 @@ class Editor extends React.Component {
 
     if (createNew) {
       navigateToNewEntry(collection.get('name'));
-    }
-    else {
+    } else {
       loadEntry(collection, slug);
     }
   };
@@ -221,10 +264,16 @@ class Editor extends React.Component {
   handleDeleteEntry = () => {
     const { entryDraft, newEntry, collection, deleteEntry, slug } = this.props;
     if (entryDraft.get('hasChanged')) {
-      if (!window.confirm('Are you sure you want to delete this published entry, as well as your unsaved changes from the current session?')) {
+      if (
+        !window.confirm(
+          'Are you sure you want to delete this published entry, as well as your unsaved changes from the current session?',
+        )
+      ) {
         return;
       }
-    } else if (!window.confirm('Are you sure you want to delete this published entry?')) {
+    } else if (
+      !window.confirm('Are you sure you want to delete this published entry?')
+    ) {
       return;
     }
     if (newEntry) {
@@ -238,10 +287,26 @@ class Editor extends React.Component {
   };
 
   handleDeleteUnpublishedChanges = async () => {
-    const { entryDraft, collection, slug, deleteUnpublishedEntry, loadEntry, isModification } = this.props;
-    if (entryDraft.get('hasChanged') && !window.confirm('This will delete all unpublished changes to this entry, as well as your unsaved changes from the current session. Do you still want to delete?')) {
+    const {
+      entryDraft,
+      collection,
+      slug,
+      deleteUnpublishedEntry,
+      loadEntry,
+      isModification,
+    } = this.props;
+    if (
+      entryDraft.get('hasChanged') &&
+      !window.confirm(
+        'This will delete all unpublished changes to this entry, as well as your unsaved changes from the current session. Do you still want to delete?',
+      )
+    ) {
       return;
-    } else if (!window.confirm('All unpublished changes to this entry will be deleted. Do you still want to delete?')) {
+    } else if (
+      !window.confirm(
+        'All unpublished changes to this entry will be deleted. Do you still want to delete?',
+      )
+    ) {
       return;
     }
     await deleteUnpublishedEntry(collection.get('name'), slug);
@@ -274,10 +339,16 @@ class Editor extends React.Component {
     } = this.props;
 
     if (entry && entry.get('error')) {
-      return <div><h3>{ entry.get('error') }</h3></div>;
-    } else if (entryDraft == null
-      || entryDraft.get('entry') === undefined
-      || (entry && entry.get('isFetching'))) {
+      return (
+        <div>
+          <h3>{entry.get('error')}</h3>
+        </div>
+      );
+    } else if (
+      entryDraft == null ||
+      entryDraft.get('entry') === undefined ||
+      (entry && entry.get('isFetching'))
+    ) {
       return <Loader active>Loading entry...</Loader>;
     }
 
@@ -325,9 +396,10 @@ function mapStateToProps(state, ownProps) {
   const displayUrl = config.get('display_url');
   const hasWorkflow = config.get('publish_mode') === EDITORIAL_WORKFLOW;
   const isModification = entryDraft.getIn(['entry', 'isModification']);
-  const collectionEntriesLoaded = !!entries.getIn(['entities', collectionName])
+  const collectionEntriesLoaded = !!entries.getIn(['entities', collectionName]);
   const unpublishedEntry = selectUnpublishedEntry(state, collectionName, slug);
-  const currentStatus = unpublishedEntry && unpublishedEntry.getIn(['metaData', 'status']);
+  const currentStatus =
+    unpublishedEntry && unpublishedEntry.getIn(['metaData', 'status']);
   return {
     collection,
     collections,
@@ -363,5 +435,5 @@ export default connect(
     publishUnpublishedEntry,
     deleteUnpublishedEntry,
     logoutUser,
-  }
+  },
 )(withWorkflow(Editor));

@@ -13,7 +13,7 @@ import '../css/imports/docs.css';
 const toMenu = (menu, nav) =>
   menu.map(group => ({
     title: group.title,
-    group: nav.group.find(g => g.fieldValue === group.name)
+    group: nav.group.find(g => g.fieldValue === group.name),
   }));
 
 const DocPage = ({ data, location, history }) => {

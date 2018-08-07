@@ -14,7 +14,7 @@ export default class AssetStore {
   }
 
   parseJsonResponse(response) {
-    return response.json().then((json) => {
+    return response.json().then(json => {
       if (!response.ok) {
         return Promise.reject(json);
       }
@@ -27,15 +27,14 @@ export default class AssetStore {
     const params = [];
     if (options.params) {
       for (const key in options.params) {
-        params.push(`${ key }=${ encodeURIComponent(options.params[key]) }`);
+        params.push(`${key}=${encodeURIComponent(options.params[key])}`);
       }
     }
     if (params.length) {
-      path += `?${ params.join('&') }`;
+      path += `?${params.join('&')}`;
     }
     return path;
   }
-
 
   requestHeaders(headers = {}) {
     return {
@@ -44,15 +43,16 @@ export default class AssetStore {
   }
 
   confirmRequest(assetID) {
-    this.getToken()
-    .then(token => this.request(`${ this.getSignedFormURL }/${ assetID }`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${ token }`,
-      },
-      body: JSON.stringify({ state: 'uploaded' }),
-    }));
+    this.getToken().then(token =>
+      this.request(`${this.getSignedFormURL}/${assetID}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ state: 'uploaded' }),
+      }),
+    );
   }
 
   async request(path, options = {}) {
@@ -61,17 +61,22 @@ export default class AssetStore {
     const response = await fetch(url, { ...options, headers });
     const contentType = response.headers.get('Content-Type');
     const isJson = contentType && contentType.match(/json/);
-    const content = isJson ? await this.parseJsonResponse(response) : response.text();
+    const content = isJson
+      ? await this.parseJsonResponse(response)
+      : response.text();
     return content;
   }
 
   async retrieve(query, page, privateUpload) {
-    const params = pickBy({ search: query, page, filter: privateUpload ? 'private' : 'public' }, val => !!val);
+    const params = pickBy(
+      { search: query, page, filter: privateUpload ? 'private' : 'public' },
+      val => !!val,
+    );
     const url = addParams(this.getSignedFormURL, params);
     const token = await this.getToken();
     const headers = {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${ token }`,
+      Authorization: `Bearer ${token}`,
     };
     const response = await this.request(url, { headers });
     const files = response.map(({ id, name, size, url }) => {
@@ -81,21 +86,22 @@ export default class AssetStore {
   }
 
   delete(assetID) {
-    const url = `${ this.getSignedFormURL }/${ assetID }`
-    return this.getToken()
-      .then(token => this.request(url, {
+    const url = `${this.getSignedFormURL}/${assetID}`;
+    return this.getToken().then(token =>
+      this.request(url, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${ token }`,
+          Authorization: `Bearer ${token}`,
         },
-      }));
+      }),
+    );
   }
 
   async upload(file, privateUpload = false) {
     const fileData = {
       name: file.name,
-      size: file.size
+      size: file.size,
     };
     if (file.type) {
       fileData.content_type = file.type;
@@ -111,7 +117,7 @@ export default class AssetStore {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${ token }`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(fileData),
       });
@@ -120,7 +126,9 @@ export default class AssetStore {
       const { id, name, size, url } = response.asset;
 
       const formData = new FormData();
-      Object.keys(formFields).forEach(key => formData.append(key, formFields[key]));
+      Object.keys(formFields).forEach(key =>
+        formData.append(key, formFields[key]),
+      );
       formData.append('file', file, file.name);
 
       await this.request(formURL, { method: 'POST', body: formData });
@@ -131,8 +139,7 @@ export default class AssetStore {
 
       const asset = { id, name, size, url, urlIsPublicPath: true };
       return { success: true, url, asset };
-    }
-    catch(error) {
+    } catch (error) {
       console.error(error);
     }
   }

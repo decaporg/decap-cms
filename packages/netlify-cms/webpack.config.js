@@ -13,10 +13,12 @@ const baseConfig = {
   entry: './index.js',
   plugins: [
     ...Object.entries(plugins)
-      .filter(([ key ]) => key !== 'friendlyErrors')
-      .map(([ , plugin ]) => plugin()),
+      .filter(([key]) => key !== 'friendlyErrors')
+      .map(([, plugin]) => plugin()),
     new webpack.DefinePlugin({
-      NETLIFY_CMS_VERSION: JSON.stringify(`${pkg.version}${isProduction ? '' : '-dev'}`),
+      NETLIFY_CMS_VERSION: JSON.stringify(
+        `${pkg.version}${isProduction ? '' : '-dev'}`,
+      ),
       NETLIFY_CMS_CORE_VERSION: null,
     }),
     new FriendlyErrorsWebpackPlugin({

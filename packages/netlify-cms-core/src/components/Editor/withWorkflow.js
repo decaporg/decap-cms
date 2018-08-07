@@ -3,11 +3,15 @@ import { connect } from 'react-redux';
 import { EDITORIAL_WORKFLOW } from 'Constants/publishModes';
 import { selectUnpublishedEntry } from 'Reducers';
 import { selectAllowDeletion } from 'Reducers/collections';
-import { loadUnpublishedEntry, persistUnpublishedEntry } from 'Actions/editorialWorkflow';
+import {
+  loadUnpublishedEntry,
+  persistUnpublishedEntry,
+} from 'Actions/editorialWorkflow';
 
 function mapStateToProps(state, ownProps) {
   const { collections } = state;
-  const isEditorialWorkflow = (state.config.get('publish_mode') === EDITORIAL_WORKFLOW);
+  const isEditorialWorkflow =
+    state.config.get('publish_mode') === EDITORIAL_WORKFLOW;
   const collection = collections.get(ownProps.match.params.name);
   const returnObj = {
     isEditorialWorkflow,
@@ -15,7 +19,11 @@ function mapStateToProps(state, ownProps) {
   };
   if (isEditorialWorkflow) {
     const slug = ownProps.match.params.slug;
-    const unpublishedEntry = selectUnpublishedEntry(state, collection.get('name'), slug);
+    const unpublishedEntry = selectUnpublishedEntry(
+      state,
+      collection.get('name'),
+      slug,
+    );
     if (unpublishedEntry) {
       returnObj.unpublishedEntry = true;
       returnObj.entry = unpublishedEntry;
@@ -47,12 +55,15 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
 }
 
 export default function withWorkflow(Editor) {
-  return connect(mapStateToProps, null, mergeProps)(
+  return connect(
+    mapStateToProps,
+    null,
+    mergeProps,
+  )(
     class WorkflowEditor extends React.Component {
       render() {
         return <Editor {...this.props} />;
       }
-    }
+    },
   );
 }
-

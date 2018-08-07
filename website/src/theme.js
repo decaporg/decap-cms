@@ -1,7 +1,6 @@
 // if you change these you must restart the server
 
 module.exports = {
-
   // colors
   lightestGrey: '#E6E6E6',
   lighterGrey: '#F7F8F8',
@@ -27,7 +26,8 @@ module.exports = {
   black: 900,
 
   // fonts
-  roboto: "'Roboto', -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+  roboto:
+    "'Roboto', -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
 
   // padding
   micro: '8px',
@@ -47,5 +47,5 @@ module.exports = {
   tablet: '768px',
   desktop: '960px',
   display: '1200px',
-  xlarge: '1280px'
-}
+  xlarge: '1280px',
+};

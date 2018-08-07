@@ -60,13 +60,18 @@ export default class ObjectControl extends Component {
     const fieldValue = value && Map.isMap(value) ? value.get(fieldName) : value;
 
     return (
-      <EditorControl key={key} field={field} value={fieldValue} onChange={onChangeObject}/>
+      <EditorControl
+        key={key}
+        field={field}
+        value={fieldValue}
+        onChange={onChangeObject}
+      />
     );
   }
 
   handleCollapseToggle = () => {
     this.setState({ collapsed: !this.state.collapsed });
-  }
+  };
 
   render() {
     const { field, forID, classNameWrapper, forList } = this.props;
@@ -76,15 +81,23 @@ export default class ObjectControl extends Component {
 
     if (multiFields) {
       return (
-        <div id={forID} className={cx(
-          classNameWrapper,
-          components.objectWidgetTopBarContainer,
-          { [styles.nestedObjectControl]: forList },
-        )}>
-          {forList ? null :
-            <ObjectWidgetTopBar collapsed={collapsed} onCollapseToggle={this.handleCollapseToggle} />
-          }
-          {collapsed ? null : multiFields.map((f, idx) => this.controlFor(f, idx))}
+        <div
+          id={forID}
+          className={cx(
+            classNameWrapper,
+            components.objectWidgetTopBarContainer,
+            { [styles.nestedObjectControl]: forList },
+          )}
+        >
+          {forList ? null : (
+            <ObjectWidgetTopBar
+              collapsed={collapsed}
+              onCollapseToggle={this.handleCollapseToggle}
+            />
+          )}
+          {collapsed
+            ? null
+            : multiFields.map((f, idx) => this.controlFor(f, idx))}
         </div>
       );
     } else if (singleField) {

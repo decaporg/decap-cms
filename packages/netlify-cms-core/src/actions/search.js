@@ -59,7 +59,13 @@ export function querying(namespace, collection, searchFields, searchTerm) {
   };
 }
 
-export function querySuccess(namespace, collection, searchFields, searchTerm, response) {
+export function querySuccess(
+  namespace,
+  collection,
+  searchFields,
+  searchTerm,
+  response,
+) {
   return {
     type: QUERY_SUCCESS,
     payload: {
@@ -72,7 +78,13 @@ export function querySuccess(namespace, collection, searchFields, searchTerm, re
   };
 }
 
-export function queryFailure(namespace, collection, searchFields, searchTerm, error) {
+export function queryFailure(
+  namespace,
+  collection,
+  searchFields,
+  searchTerm,
+  error,
+) {
   return {
     type: QUERY_SUCCESS,
     payload: {
@@ -93,7 +105,6 @@ export function clearSearch() {
   return { type: SEARCH_CLEAR };
 }
 
-
 /*
  * Exported Thunk Action Creators
  */
@@ -106,16 +117,25 @@ export function searchEntries(searchTerm, page = 0) {
     const state = getState();
     const backend = currentBackend(state.config);
     const allCollections = state.collections.keySeq().toArray();
-    const collections = allCollections.filter(collection => selectIntegration(state, collection, 'search'));
+    const collections = allCollections.filter(collection =>
+      selectIntegration(state, collection, 'search'),
+    );
     const integration = selectIntegration(state, collections[0], 'search');
 
     const searchPromise = integration
-      ? getIntegrationProvider(state.integrations, backend.getToken, integration).search(collections, searchTerm, page)
+      ? getIntegrationProvider(
+          state.integrations,
+          backend.getToken,
+          integration,
+        ).search(collections, searchTerm, page)
       : backend.search(state.collections.valueSeq().toArray(), searchTerm);
 
     return searchPromise.then(
-      response => dispatch(searchSuccess(searchTerm, response.entries, response.pagination)),
-      error => dispatch(searchFailure(searchTerm, error))
+      response =>
+        dispatch(
+          searchSuccess(searchTerm, response.entries, response.pagination),
+        ),
+      error => dispatch(searchFailure(searchTerm, error)),
     );
   };
 }
@@ -129,16 +149,43 @@ export function query(namespace, collectionName, searchFields, searchTerm) {
     const state = getState();
     const backend = currentBackend(state.config);
     const integration = selectIntegration(state, collectionName, 'search');
-    const collection = state.collections.find(collection => collection.get('name') === collectionName);
+    const collection = state.collections.find(
+      collection => collection.get('name') === collectionName,
+    );
 
     const queryPromise = integration
-      ? getIntegrationProvider(state.integrations, backend.getToken, integration)
-          .searchBy(searchFields.map(f => `data.${ f }`), collectionName, searchTerm)
+      ? getIntegrationProvider(
+          state.integrations,
+          backend.getToken,
+          integration,
+        ).searchBy(
+          searchFields.map(f => `data.${f}`),
+          collectionName,
+          searchTerm,
+        )
       : backend.query(collection, searchFields, searchTerm);
 
     return queryPromise.then(
-      response => dispatch(querySuccess(namespace, collectionName, searchFields, searchTerm, response)),
-      error => dispatch(queryFailure(namespace, collectionName, searchFields, searchTerm, error))
+      response =>
+        dispatch(
+          querySuccess(
+            namespace,
+            collectionName,
+            searchFields,
+            searchTerm,
+            response,
+          ),
+        ),
+      error =>
+        dispatch(
+          queryFailure(
+            namespace,
+            collectionName,
+            searchFields,
+            searchTerm,
+            error,
+          ),
+        ),
     );
   };
 }

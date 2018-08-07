@@ -2,7 +2,13 @@ import React from 'react';
 import styled, { css, cx } from 'react-emotion';
 import { partial, uniqueId } from 'lodash';
 import { connect } from 'react-redux';
-import { colors, colorsRaw, transitions, lengths, borders } from 'netlify-cms-ui-default';
+import {
+  colors,
+  colorsRaw,
+  transitions,
+  lengths,
+  borders,
+} from 'netlify-cms-ui-default';
 import { resolveWidget, getEditorComponents } from 'Lib/registry';
 import { addAsset } from 'Actions/media';
 import { query, clearSearch } from 'Actions/search';
@@ -89,7 +95,7 @@ const ControlContainer = styled.div`
   &:first-child {
     margin-top: 36px;
   }
-`
+`;
 
 const ControlErrorsList = styled.ul`
   list-style-type: none;
@@ -101,9 +107,7 @@ const ControlErrorsList = styled.ul`
   position: relative;
   font-weight: 600;
   top: 20px;
-`
-
-
+`;
 
 class EditorControl extends React.Component {
   state = {
@@ -138,13 +142,16 @@ class EditorControl extends React.Component {
     return (
       <ControlContainer>
         <ControlErrorsList>
-          {
-            errors && errors.map(error =>
-              error.message &&
-              typeof error.message === 'string' &&
-              <li key={error.message.trim().replace(/[^a-z0-9]+/gi, '-')}>{error.message}</li>
-            )
-          }
+          {errors &&
+            errors.map(
+              error =>
+                error.message &&
+                typeof error.message === 'string' && (
+                  <li key={error.message.trim().replace(/[^a-z0-9]+/gi, '-')}>
+                    {error.message}
+                  </li>
+                ),
+            )}
         </ControlErrorsList>
         <label
           className={cx(
@@ -172,7 +179,9 @@ class EditorControl extends React.Component {
           value={value}
           mediaPaths={mediaPaths}
           metadata={metadata}
-          onChange={(newValue, newMetadata) => onChange(fieldName, newValue, newMetadata)}
+          onChange={(newValue, newMetadata) =>
+            onChange(fieldName, newValue, newMetadata)
+          }
           onValidate={onValidate && partial(onValidate, fieldName)}
           onOpenMediaLibrary={openMediaLibrary}
           onRemoveInsertedMedia={removeInsertedMedia}

@@ -9,12 +9,12 @@ const StyledAuthenticationPage = styled.section`
   align-items: center;
   justify-content: center;
   height: 100vh;
-`
+`;
 
 const PageLogoIcon = styled(Icon)`
   color: #c4c6d2;
   margin-top: -300px;
-`
+`;
 
 const LoginButton = styled.button`
   ${buttons.button};
@@ -27,7 +27,7 @@ const LoginButton = styled.button`
   display: flex;
   align-items: center;
   position: relative;
-`
+`;
 
 const AuthenticationPage = ({
   onLogin,
@@ -38,14 +38,14 @@ const AuthenticationPage = ({
 }) => {
   return (
     <StyledAuthenticationPage>
-      <PageLogoIcon size="300px" type="netlify-cms"/>
+      <PageLogoIcon size="300px" type="netlify-cms" />
       {loginErrorMessage ? <p>{loginErrorMessage}</p> : null}
       {!renderPageContent ? null : renderPageContent()}
-      {!renderButtonContent ? null :
+      {!renderButtonContent ? null : (
         <LoginButton disabled={loginDisabled} onClick={onLogin}>
           {renderButtonContent()}
         </LoginButton>
-      }
+      )}
     </StyledAuthenticationPage>
   );
 };

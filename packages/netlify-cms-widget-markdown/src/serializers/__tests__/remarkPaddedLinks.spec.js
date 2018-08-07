@@ -8,15 +8,13 @@ const input = markdown =>
     .use(markdownToRemark)
     .use(remarkPaddedLinks)
     .use(remarkToMarkdown)
-    .processSync(markdown)
-    .contents;
+    .processSync(markdown).contents;
 
 const output = markdown =>
   unified()
     .use(markdownToRemark)
     .use(remarkToMarkdown)
-    .processSync(markdown)
-    .contents;
+    .processSync(markdown).contents;
 
 describe('remarkPaddedLinks', () => {
   it('should move leading and trailing spaces outside of a link', () => {
@@ -36,10 +34,14 @@ describe('remarkPaddedLinks', () => {
   });
 
   it('should work for parents with multiple links that are not siblings', () => {
-    expect(input('# a[ b ](c)d **[ e ](f)**')).toEqual(output('# a [b](c) d ** [e](f) **'));
+    expect(input('# a[ b ](c)d **[ e ](f)**')).toEqual(
+      output('# a [b](c) d ** [e](f) **'),
+    );
   });
 
   it('should work for links with arbitrarily nested children', () => {
-    expect(input('[ a __*b*__ _c_ ](d)')).toEqual(output(' [a __*b*__ _c_](d) '));
+    expect(input('[ a __*b*__ _c_ ](d)')).toEqual(
+      output(' [a __*b*__ _c_](d) '),
+    );
   });
 });

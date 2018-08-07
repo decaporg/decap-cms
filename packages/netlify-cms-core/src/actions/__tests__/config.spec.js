@@ -9,10 +9,8 @@ describe('config', () => {
         media_folder: 'path/to/media',
         public_folder: '/path/to/media',
       });
-      expect(
-        applyDefaults(config)
-      ).toEqual(
-        config.set('publish_mode', 'simple')
+      expect(applyDefaults(config)).toEqual(
+        config.set('publish_mode', 'simple'),
       );
     });
 
@@ -23,36 +21,44 @@ describe('config', () => {
         media_folder: 'path/to/media',
         public_folder: '/path/to/media',
       });
-      expect(
-        applyDefaults(config)
-      ).toEqual(
-        config
-      );
+      expect(applyDefaults(config)).toEqual(config);
     });
 
     it('should set public_folder based on media_folder if not set', () => {
-      expect(applyDefaults(fromJS({
-        foo: 'bar',
-        media_folder: 'path/to/media',
-      }))).toEqual(fromJS({
-        foo: 'bar',
-        publish_mode: 'simple',
-        media_folder: 'path/to/media',
-        public_folder: '/path/to/media',
-      }));
+      expect(
+        applyDefaults(
+          fromJS({
+            foo: 'bar',
+            media_folder: 'path/to/media',
+          }),
+        ),
+      ).toEqual(
+        fromJS({
+          foo: 'bar',
+          publish_mode: 'simple',
+          media_folder: 'path/to/media',
+          public_folder: '/path/to/media',
+        }),
+      );
     });
 
     it('should not overwrite public_folder if set', () => {
-      expect(applyDefaults(fromJS({
-        foo: 'bar',
-        media_folder: 'path/to/media',
-        public_folder: '/publib/path',
-      }))).toEqual(fromJS({
-        foo: 'bar',
-        publish_mode: 'simple',
-        media_folder: 'path/to/media',
-        public_folder: '/publib/path',
-      }));
+      expect(
+        applyDefaults(
+          fromJS({
+            foo: 'bar',
+            media_folder: 'path/to/media',
+            public_folder: '/publib/path',
+          }),
+        ),
+      ).toEqual(
+        fromJS({
+          foo: 'bar',
+          publish_mode: 'simple',
+          media_folder: 'path/to/media',
+          public_folder: '/publib/path',
+        }),
+      );
     });
   });
 });

@@ -3,7 +3,12 @@ import React, { Component } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled, { css, injectGlobal } from 'react-emotion';
 import SplitPane from 'react-split-pane';
-import { colors, colorsRaw, components, transitions } from 'netlify-cms-ui-default';
+import {
+  colors,
+  colorsRaw,
+  components,
+  transitions,
+} from 'netlify-cms-ui-default';
 import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
 import EditorControlPane from './EditorControlPane/EditorControlPane';
 import EditorPreviewPane from './EditorPreviewPane/EditorPreviewPane';
@@ -23,7 +28,7 @@ const styles = {
     height: 100%;
     overflow-y: auto;
   `,
-}
+};
 
 injectGlobal`
   /**
@@ -51,7 +56,7 @@ injectGlobal`
     }
   }
 
-`
+`;
 
 const StyledSplitPane = styled(SplitPane)`
   ${styles.splitPane};
@@ -62,11 +67,11 @@ const StyledSplitPane = styled(SplitPane)`
   .Pane {
     height: 100%;
   }
-`
+`;
 
 const NoPreviewContainer = styled.div`
   ${styles.splitPane};
-`
+`;
 
 const EditorContainer = styled.div`
   width: 100%;
@@ -78,39 +83,39 @@ const EditorContainer = styled.div`
   overflow: hidden;
   padding-top: 66px;
   background-color: ${colors.background};
-`
+`;
 
 const Editor = styled.div`
   max-width: 1600px;
   height: 100%;
   margin: 0 auto;
   position: relative;
-`
+`;
 
 const PreviewPaneContainer = styled.div`
   height: 100%;
   overflow-y: auto;
-  pointer-events: ${props => props.blockEntry ? 'none' : 'auto'};
-`
+  pointer-events: ${props => (props.blockEntry ? 'none' : 'auto')};
+`;
 
 const ControlPaneContainer = styled(PreviewPaneContainer)`
   padding: 0 16px;
   position: relative;
   overflow-x: hidden;
-`
+`;
 
 const ViewControls = styled.div`
   position: absolute;
   top: 10px;
   right: 10px;
   z-index: 299;
-`
+`;
 
 class EditorInterface extends Component {
   state = {
     showEventBlocker: false,
-    previewVisible: localStorage.getItem(PREVIEW_VISIBLE) !== "false",
-    scrollSyncEnabled: localStorage.getItem(SCROLL_SYNC_ENABLED) !== "false",
+    previewVisible: localStorage.getItem(PREVIEW_VISIBLE) !== 'false',
+    scrollSyncEnabled: localStorage.getItem(SCROLL_SYNC_ENABLED) !== 'false',
   };
 
   handleSplitPaneDragStart = () => {
@@ -173,7 +178,10 @@ class EditorInterface extends Component {
 
     const { previewVisible, scrollSyncEnabled, showEventBlocker } = this.state;
 
-    const collectionPreviewEnabled = collection.getIn(['editor', 'preview'], true);
+    const collectionPreviewEnabled = collection.getIn(
+      ['editor', 'preview'],
+      true,
+    );
 
     const editor = (
       <ControlPaneContainer blockEntry={showEventBlocker}>
@@ -185,7 +193,7 @@ class EditorInterface extends Component {
           fieldsErrors={fieldsErrors}
           onChange={onChange}
           onValidate={onValidate}
-          ref={c => this.controlPaneRef = c}
+          ref={c => (this.controlPaneRef = c)}
         />
       </ControlPaneContainer>
     );
@@ -255,11 +263,11 @@ class EditorInterface extends Component {
               icon="scroll"
             />
           </ViewControls>
-          {
-            collectionPreviewEnabled && this.state.previewVisible
-              ? editorWithPreview
-              : <NoPreviewContainer>{editor}</NoPreviewContainer>
-          }
+          {collectionPreviewEnabled && this.state.previewVisible ? (
+            editorWithPreview
+          ) : (
+            <NoPreviewContainer>{editor}</NoPreviewContainer>
+          )}
         </Editor>
       </EditorContainer>
     );

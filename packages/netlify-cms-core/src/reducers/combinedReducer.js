@@ -4,8 +4,10 @@ import { reducer as notifReducer } from 'redux-notifications';
 import optimist from 'redux-optimist';
 import reducers from '.';
 
-export default optimist(combineReducers({
-  ...reducers,
-  notifs: notifReducer,
-  routing: routerReducer,
-}));
+export default optimist(
+  combineReducers({
+    ...reducers,
+    notifs: notifReducer,
+    routing: routerReducer,
+  }),
+);

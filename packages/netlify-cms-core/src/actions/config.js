@@ -1,27 +1,27 @@
-import yaml from "js-yaml";
-import { Map, fromJS } from "immutable";
-import { trimStart, get } from "lodash";
-import { authenticateUser } from "Actions/auth";
-import * as publishModes from "Constants/publishModes";
+import yaml from 'js-yaml';
+import { Map, fromJS } from 'immutable';
+import { trimStart, get } from 'lodash';
+import { authenticateUser } from 'Actions/auth';
+import * as publishModes from 'Constants/publishModes';
 import { validateConfig } from 'Constants/configSchema';
 
-export const CONFIG_REQUEST = "CONFIG_REQUEST";
-export const CONFIG_SUCCESS = "CONFIG_SUCCESS";
-export const CONFIG_FAILURE = "CONFIG_FAILURE";
-export const CONFIG_MERGE = "CONFIG_MERGE";
-
+export const CONFIG_REQUEST = 'CONFIG_REQUEST';
+export const CONFIG_SUCCESS = 'CONFIG_SUCCESS';
+export const CONFIG_FAILURE = 'CONFIG_FAILURE';
+export const CONFIG_MERGE = 'CONFIG_MERGE';
 
 const getConfigUrl = () => {
   const validTypes = { 'text/yaml': 'yaml', 'application/x-yaml': 'yaml' };
   const configLinkEl = document.querySelector('link[rel="cms-config-url"]');
-  const isValidLink = configLinkEl && validTypes[configLinkEl.type] && get(configLinkEl, 'href');
+  const isValidLink =
+    configLinkEl && validTypes[configLinkEl.type] && get(configLinkEl, 'href');
   if (isValidLink) {
     const link = get(configLinkEl, 'href');
     console.log(`Using config file path: "${link}"`);
     return link;
   }
   return 'config.yml';
-}
+};
 
 const defaults = {
   publish_mode: publishModes.SIMPLE,
@@ -48,8 +48,8 @@ function mergePreloadedConfig(preloadedConfig, loadedConfig) {
 
 function parseConfig(data) {
   const config = yaml.safeLoad(data);
-  if (typeof CMS_ENV === "string" && config[CMS_ENV]) {
-    Object.keys(config[CMS_ENV]).forEach((key) => {
+  if (typeof CMS_ENV === 'string' && config[CMS_ENV]) {
+    Object.keys(config[CMS_ENV]).forEach(key => {
       config[key] = config[CMS_ENV][key];
     });
   }
@@ -60,12 +60,14 @@ async function getConfig(file, isPreloaded) {
   const response = await fetch(file, { credentials: 'same-origin' });
   if (response.status !== 200) {
     if (isPreloaded) return parseConfig('');
-    throw new Error(`Failed to load config.yml (${ response.status })`);
+    throw new Error(`Failed to load config.yml (${response.status})`);
   }
   const contentType = response.headers.get('Content-Type') || 'Not-Found';
   const isYaml = contentType.indexOf('yaml') !== -1;
   if (!isYaml) {
-    console.log(`Response for ${ file } was not yaml. (Content-Type: ${ contentType })`);
+    console.log(
+      `Response for ${file} was not yaml. (Content-Type: ${contentType})`,
+    );
     if (isPreloaded) return parseConfig('');
   }
   return parseConfig(await response.text());
@@ -87,13 +89,13 @@ export function configLoading() {
 export function configFailed(err) {
   return {
     type: CONFIG_FAILURE,
-    error: "Error loading config",
+    error: 'Error loading config',
     payload: err,
   };
 }
 
 export function configDidLoad(config) {
-  return (dispatch) => {
+  return dispatch => {
     dispatch(configLoaded(config));
   };
 }
@@ -112,7 +114,10 @@ export function loadConfig() {
     try {
       const preloadedConfig = getState().config;
       const configUrl = getConfigUrl();
-      const loadedConfig = await getConfig(configUrl, preloadedConfig && preloadedConfig.size > 1);
+      const loadedConfig = await getConfig(
+        configUrl,
+        preloadedConfig && preloadedConfig.size > 1,
+      );
 
       /**
        * Merge any existing configuration so the result can be validated.
@@ -124,10 +129,9 @@ export function loadConfig() {
 
       dispatch(configDidLoad(config));
       dispatch(authenticateUser());
-    }
-    catch(err) {
+    } catch (err) {
       dispatch(configFailed(err));
-      throw(err)
+      throw err;
     }
   };
 }

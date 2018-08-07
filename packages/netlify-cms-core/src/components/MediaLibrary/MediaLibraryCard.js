@@ -17,14 +17,14 @@ const Card = styled.div`
   &:focus {
     outline: none;
   }
-`
+`;
 
 const CardImage = styled.img`
   width: 100%;
   height: 160px;
   object-fit: cover;
   border-radius: 2px 2px 0 0;
-`
+`;
 
 const CardImagePlaceholder = CardImage.withComponent(`div`);
 
@@ -34,9 +34,17 @@ const CardText = styled.p`
   margin-top: 20px;
   overflow-wrap: break-word;
   line-height: 1.3 !important;
-`
+`;
 
-const MediaLibraryCard = ({ isSelected, imageUrl, text, onClick, width, margin, isPrivate }) => (
+const MediaLibraryCard = ({
+  isSelected,
+  imageUrl,
+  text,
+  onClick,
+  width,
+  margin,
+  isPrivate,
+}) => (
   <Card
     isSelected={isSelected}
     onClick={onClick}
@@ -46,7 +54,7 @@ const MediaLibraryCard = ({ isSelected, imageUrl, text, onClick, width, margin, 
     isPrivate={isPrivate}
   >
     <div>
-      { imageUrl ? <CardImage src={imageUrl}/> : <CardImagePlaceholder/> }
+      {imageUrl ? <CardImage src={imageUrl} /> : <CardImagePlaceholder />}
     </div>
     <CardText>{text}</CardText>
   </Card>

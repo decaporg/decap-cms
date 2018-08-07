@@ -39,13 +39,14 @@ function onKeyDown(event, change) {
   }
 
   const marks = [
-    [ 'b', 'bold' ],
-    [ 'i', 'italic' ],
-    [ 's', 'strikethrough' ],
-    [ '`', 'code' ],
+    ['b', 'bold'],
+    ['i', 'italic'],
+    ['s', 'strikethrough'],
+    ['`', 'code'],
   ];
 
-  const [ , markName ] = marks.find(([ key ]) => isHotkey(`mod+${key}`, event)) || [];
+  const [, markName] =
+    marks.find(([key]) => isHotkey(`mod+${key}`, event)) || [];
 
   if (markName) {
     event.preventDefault();

@@ -27,7 +27,7 @@ const LibraryTop = styled.div`
   position: relative;
   display: flex;
   justify-content: space-between;
-`
+`;
 
 const StyledModal = styled(Modal)`
   display: grid;
@@ -61,9 +61,10 @@ const StyledModal = styled(Modal)`
 
   button:disabled,
   label[disabled] {
-    background-color: ${props => props.isPrivate && `rgba(217, 217, 217, 0.15)`};
+    background-color: ${props =>
+      props.isPrivate && `rgba(217, 217, 217, 0.15)`};
   }
-`
+`;
 
 const MediaLibraryModal = ({
   isVisible,
@@ -94,28 +95,36 @@ const MediaLibraryModal = ({
   handleLoadMore,
 }) => {
   const filteredFiles = forImage ? handleFilter(files) : files;
-  const queriedFiles = (!dynamicSearch && query) ? handleQuery(query, filteredFiles) : filteredFiles;
+  const queriedFiles =
+    !dynamicSearch && query ? handleQuery(query, filteredFiles) : filteredFiles;
   const tableData = toTableData(queriedFiles);
   const hasFiles = files && !!files.length;
   const hasFilteredFiles = filteredFiles && !!filteredFiles.length;
   const hasSearchResults = queriedFiles && !!queriedFiles.length;
   const hasMedia = hasSearchResults;
   const shouldShowEmptyMessage = !hasMedia;
-  const emptyMessage = (isLoading && !hasMedia && 'Loading...')
-    || (dynamicSearchActive && 'No results.')
-    || (!hasFiles && 'No assets found.')
-    || (!hasFilteredFiles && 'No images found.')
-    || (!hasSearchResults && 'No results.');
+  const emptyMessage =
+    (isLoading && !hasMedia && 'Loading...') ||
+    (dynamicSearchActive && 'No results.') ||
+    (!hasFiles && 'No assets found.') ||
+    (!hasFilteredFiles && 'No images found.') ||
+    (!hasSearchResults && 'No results.');
   const hasSelection = hasMedia && !isEmpty(selectedFile);
   const shouldShowButtonLoader = isPersisting || isDeleting;
 
   return (
-    <StyledModal isOpen={isVisible} onClose={handleClose} isPrivate={privateUpload}>
+    <StyledModal
+      isOpen={isVisible}
+      onClose={handleClose}
+      isPrivate={privateUpload}
+    >
       <LibraryTop>
         <div>
           <MediaLibraryHeader
             onClose={handleClose}
-            title={`${privateUpload ? 'Private ' : ''}${forImage ? 'Images' : 'Media assets'}`}
+            title={`${privateUpload ? 'Private ' : ''}${
+              forImage ? 'Images' : 'Media assets'
+            }`}
             isPrivate={privateUpload}
           />
           <MediaLibrarySearch
@@ -140,7 +149,9 @@ const MediaLibraryModal = ({
           onInsert={handleInsert}
         />
       </LibraryTop>
-      { !shouldShowEmptyMessage ? null : <EmptyMessage content={emptyMessage} isPrivate={privateUpload}/> }
+      {!shouldShowEmptyMessage ? null : (
+        <EmptyMessage content={emptyMessage} isPrivate={privateUpload} />
+      )}
       <MediaLibraryCardGrid
         setScrollContainerRef={setScrollContainerRef}
         mediaItems={tableData}
@@ -156,7 +167,7 @@ const MediaLibraryModal = ({
       />
     </StyledModal>
   );
-}
+};
 
 const fileShape = {
   key: PropTypes.string.isRequired,
@@ -181,7 +192,10 @@ MediaLibraryModal.propTypes = {
   isPaginating: PropTypes.bool,
   privateUpload: PropTypes.bool,
   query: PropTypes.string,
-  selectedFile: PropTypes.oneOfType([PropTypes.shape(fileShape), PropTypes.shape({})]),
+  selectedFile: PropTypes.oneOfType([
+    PropTypes.shape(fileShape),
+    PropTypes.shape({}),
+  ]),
   handleFilter: PropTypes.func.isRequired,
   handleQuery: PropTypes.func.isRequired,
   toTableData: PropTypes.func.isRequired,

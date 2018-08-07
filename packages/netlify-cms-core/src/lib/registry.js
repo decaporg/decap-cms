@@ -1,11 +1,11 @@
 import { Map } from 'immutable';
-import EditorComponent from 'ValueObjects/EditorComponent'
+import EditorComponent from 'ValueObjects/EditorComponent';
 
 /**
  * Global Registry Object
  */
 const registry = {
-  backends: { },
+  backends: {},
   templates: {},
   previewStyles: [],
   widgets: {},
@@ -29,7 +29,6 @@ export default {
   getBackend,
 };
 
-
 /**
  * Preview Styles
  *
@@ -43,7 +42,6 @@ export function getPreviewStyles() {
   return registry.previewStyles;
 }
 
-
 /**
  * Preview Templates
  */
@@ -54,14 +52,14 @@ export function getPreviewTemplate(name) {
   return registry.templates[name];
 }
 
-
 /**
  * Editor Widgets
  */
 export function registerWidget(name, control, preview) {
   // A registered widget control can be reused by a new widget, allowing
   // multiple copies with different previews.
-  const newControl = typeof control === 'string' ? registry.widgets[control].control : control;
+  const newControl =
+    typeof control === 'string' ? registry.widgets[control].control : control;
   registry.widgets[name] = { control: newControl, preview };
 }
 export function getWidget(name) {
@@ -71,18 +69,19 @@ export function resolveWidget(name) {
   return getWidget(name || 'string') || getWidget('unknown');
 }
 
-
 /**
  * Markdown Editor Custom Components
  */
 export function registerEditorComponent(component) {
   const plugin = EditorComponent(component);
-  registry.editorComponents = registry.editorComponents.set(plugin.get('id'), plugin);
+  registry.editorComponents = registry.editorComponents.set(
+    plugin.get('id'),
+    plugin,
+  );
 }
 export function getEditorComponents() {
   return registry.editorComponents;
 }
-
 
 /**
  * Widget Serializers
@@ -99,9 +98,13 @@ export function getWidgetValueSerializer(widgetName) {
  */
 export function registerBackend(name, BackendClass) {
   if (!name || !BackendClass) {
-    console.error("Backend parameters invalid. example: CMS.registerBackend('myBackend', BackendClass)");
+    console.error(
+      "Backend parameters invalid. example: CMS.registerBackend('myBackend', BackendClass)",
+    );
   } else if (registry.backends[name]) {
-      console.error(`Backend [${ name }] already registered. Please choose a different name.`);
+    console.error(
+      `Backend [${name}] already registered. Please choose a different name.`,
+    );
   } else {
     registry.backends[name] = {
       init: (...args) => new BackendClass(...args),
@@ -112,4 +115,3 @@ export function registerBackend(name, BackendClass) {
 export function getBackend(name) {
   return registry.backends[name];
 }
-

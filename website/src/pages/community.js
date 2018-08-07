@@ -15,7 +15,7 @@ const CommunityPage = ({ data }) => {
     primarycta,
     upcomingevent,
     howitworks,
-    howtojoin
+    howtojoin,
   } = data.markdownRemark.frontmatter;
 
   return (

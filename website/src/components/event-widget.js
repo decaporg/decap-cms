@@ -4,7 +4,7 @@ import moment from 'moment';
 class EventWidget extends Component {
   state = {
     loading: false,
-    eventDate: ''
+    eventDate: '',
   };
 
   componentDidMount() {
@@ -14,7 +14,7 @@ class EventWidget extends Component {
     const url = `https://www.eventbriteapi.com/v3/events/search/?token=${eventbriteToken}&organizer.id=${eventbriteOrganiser}&expand=venue%27`;
 
     this.setState({
-      loading: true
+      loading: true,
     });
 
     fetch(url)
@@ -24,14 +24,14 @@ class EventWidget extends Component {
 
         this.setState({
           loading: false,
-          eventDate
+          eventDate,
         });
       })
       .catch(err => {
         console.log(err);
         // TODO: set state to show error message
         this.setState({
-          loading: false
+          loading: false,
         });
       });
   }

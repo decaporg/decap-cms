@@ -4,11 +4,11 @@ import screenshotEditor from '../img/screenshot-editor.jpg';
 
 class VideoEmbed extends Component {
   state = {
-    toggled: false
+    toggled: false,
   };
   toggleVideo = () => {
     this.setState({
-      toggled: true
+      toggled: true,
     });
   };
   render() {

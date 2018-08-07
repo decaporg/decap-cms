@@ -1,6 +1,11 @@
 import React from 'react';
 import styled, { css } from 'react-emotion';
-import { Wrapper, Button as DropdownButton, Menu, MenuItem } from 'react-aria-menubutton';
+import {
+  Wrapper,
+  Button as DropdownButton,
+  Menu,
+  MenuItem,
+} from 'react-aria-menubutton';
 import { buttons, components } from './styles';
 import Icon from './Icon';
 
@@ -8,7 +13,7 @@ const StyledWrapper = styled(Wrapper)`
   position: relative;
   font-size: 14px;
   user-select: none;
-`
+`;
 
 const StyledDropdownButton = styled(DropdownButton)`
   ${buttons.button};
@@ -26,7 +31,7 @@ const StyledDropdownButton = styled(DropdownButton)`
     right: 16px;
     color: currentColor;
   }
-`
+`;
 
 const DropdownList = styled.ul`
   ${components.dropdownList};
@@ -42,19 +47,19 @@ const DropdownList = styled.ul`
     top: ${props.top};
     left: ${props.position === 'left' ? 0 : 'auto'};
     right: ${props.position === 'right' ? 0 : 'auto'};
-  `}
-`
+  `};
+`;
 
 const StyledMenuItem = styled(MenuItem)`
   ${components.dropdownItem};
-`
+`;
 
 const MenuItemIconContainer = styled.div`
   flex: 1 0 32px;
   text-align: right;
   position: relative;
   top: 2px;
-`
+`;
 
 const Dropdown = ({
   renderButton,
@@ -68,7 +73,11 @@ const Dropdown = ({
     <StyledWrapper onSelection={handler => handler()} className={className}>
       {renderButton()}
       <Menu>
-        <DropdownList width={dropdownWidth} top={dropdownTopOverlap} position={dropdownPosition}>
+        <DropdownList
+          width={dropdownWidth}
+          top={dropdownTopOverlap}
+          position={dropdownPosition}
+        >
           {children}
         </DropdownList>
       </Menu>
@@ -79,14 +88,17 @@ const Dropdown = ({
 const DropdownItem = ({ label, icon, iconDirection, onClick, className }) => (
   <StyledMenuItem value={onClick} className={className}>
     <span>{label}</span>
-    {
-      icon
-        ? <MenuItemIconContainer>
-            <Icon type={icon} direction={iconDirection} size="small"/>
-          </MenuItemIconContainer>
-        : null
-    }
+    {icon ? (
+      <MenuItemIconContainer>
+        <Icon type={icon} direction={iconDirection} size="small" />
+      </MenuItemIconContainer>
+    ) : null}
   </StyledMenuItem>
 );
 
-export { Dropdown as default, DropdownItem, DropdownButton, StyledDropdownButton };
+export {
+  Dropdown as default,
+  DropdownItem,
+  DropdownButton,
+  StyledDropdownButton,
+};
