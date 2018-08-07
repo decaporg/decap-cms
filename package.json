@@ -24,7 +24,7 @@
     "e2e-dev": "start-test develop 8080 e2e-exec-dev",
     "dryrun": "lerna publish --skip-npm --skip-git",
     "publish": "run-s bootstrap dryrun build && git checkout . && lerna publish",
-    "format": "run-s \"lint:css -- --fix\" \"lint:js -- --fix\" \"format:prettier -- --write\"",
+    "format": "run-s \"lint:css -- --fix --quiet\" \"lint:js -- --fix --quiet\" \"format:prettier -- --write\"",
     "format:prettier": "prettier --ignore-path .gitignore \"{{packages,scripts,website}/**/,}*.{js,css,md,json}\"",
     "lint": "run-p -c --aggregate-output lint:*",
     "lint-quiet": "run-p -c --aggregate-output \"lint:* -- --quiet\"",
