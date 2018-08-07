@@ -1,4 +1,5 @@
 import { List } from 'immutable';
+import { get } from 'lodash';
 import yamlFormatter from './yaml';
 import tomlFormatter from './toml';
 import jsonFormatter from './json';
@@ -6,18 +7,7 @@ import { FrontmatterInfer, frontmatterJSON, frontmatterTOML, frontmatterYAML } f
 
 export const frontmatterFormats = ['yaml-frontmatter','toml-frontmatter','json-frontmatter']
 
-export const supportedFormats = [
-  'yml',
-  'yaml',
-  'toml',
-  'json',
-  'frontmatter',
-  'json-frontmatter',
-  'toml-frontmatter',
-  'yaml-frontmatter',
-];
-
-export const formatToExtension = format => ({
+export const formatExtensions = {
   yml: 'yml',
   yaml: 'yml',
   toml: 'toml',
@@ -26,32 +16,28 @@ export const formatToExtension = format => ({
   'json-frontmatter': 'md',
   'toml-frontmatter': 'md',
   'yaml-frontmatter': 'md',
-}[format]);
+};
 
-export function formatByExtension(extension) {
-  return {
-    yml: yamlFormatter,
-    yaml: yamlFormatter,
-    toml: tomlFormatter,
-    json: jsonFormatter,
-    md: FrontmatterInfer,
-    markdown: FrontmatterInfer,
-    html: FrontmatterInfer,
-  }[extension];
-}
+export const extensionFormatters = {
+  yml: yamlFormatter,
+  yaml: yamlFormatter,
+  toml: tomlFormatter,
+  json: jsonFormatter,
+  md: FrontmatterInfer,
+  markdown: FrontmatterInfer,
+  html: FrontmatterInfer,
+};
 
-function formatByName(name, customDelimiter) {
-  return {
-    yml: yamlFormatter,
-    yaml: yamlFormatter,
-    toml: tomlFormatter,
-    json: jsonFormatter,
-    frontmatter: FrontmatterInfer,
-    'json-frontmatter': frontmatterJSON(customDelimiter),
-    'toml-frontmatter': frontmatterTOML(customDelimiter),
-    'yaml-frontmatter': frontmatterYAML(customDelimiter),
-  }[name];
-}
+const formatByName = (name, customDelimiter) => ({
+  yml: yamlFormatter,
+  yaml: yamlFormatter,
+  toml: tomlFormatter,
+  json: jsonFormatter,
+  frontmatter: FrontmatterInfer,
+  'json-frontmatter': frontmatterJSON(customDelimiter),
+  'toml-frontmatter': frontmatterTOML(customDelimiter),
+  'yaml-frontmatter': frontmatterYAML(customDelimiter),
+}[name]);
 
 export function resolveFormat(collectionOrEntity, entry) {
   // Check for custom delimiter
@@ -68,14 +54,14 @@ export function resolveFormat(collectionOrEntity, entry) {
   const filePath = entry && entry.path;
   if (filePath) {
     const fileExtension = filePath.split('.').pop();
-    return formatByExtension(fileExtension);
+    return get(extensionFormatters, fileExtension);
   }
 
   // If creating a new file, and an `extension` is specified in the
   //   collection config, infer the format from that extension.
   const extension = collectionOrEntity.get('extension');
   if (extension) {
-    return formatByExtension(extension);
+    return get(extensionFormatters, extension);
   }
 
   // If no format is specified and it cannot be inferred, return the default.
