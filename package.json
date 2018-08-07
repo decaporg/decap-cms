@@ -28,7 +28,7 @@
     "format:prettier": "prettier --ignore-path .gitignore \"{{packages,scripts,website}/**/,}*.{js,css,md,json}\"",
     "lint": "run-p -c --aggregate-output lint:*",
     "lint-quiet": "run-p -c --aggregate-output \"lint:* -- --quiet\"",
-    "lint:css": "stylelint --ignore-path .gitignore \"{packages,website}/**/*.{css,js}\"",
+    "lint:css": "stylelint --ignore-path .gitignore \"{packages/**/*.{css,js},website/**/*.css}\"",
     "lint:js": "eslint --ignore-path .gitignore \"{{packages,scripts,website}/**/,}*.js\"",
     "lint:format": "npm run format:prettier -- --list-different",
     "add-contributor": "all-contributors add"
