@@ -16,7 +16,6 @@ import {
 } from 'netlify-cms-ui-default';
 import { status } from 'Constants/publishModes';
 import SettingsDropdown from 'UI/SettingsDropdown';
-import { stripProtocol } from 'Lib/urlHelper';
 
 const styles = {
   buttonMargin: css`
@@ -262,8 +261,6 @@ export default class EditorToolbar extends React.Component {
   renderWorkflowPublishControls = () => {
     const {
       collection,
-      onPersist,
-      onPersistAndNew,
       isUpdatingStatus,
       isPublishing,
       onChangeStatus,
@@ -323,22 +320,13 @@ export default class EditorToolbar extends React.Component {
 
   render() {
     const {
-      isPersisting,
-      onPersist,
-      onPersistAndNew,
-      enableSave,
-      showDelete,
-      onDelete,
       user,
       hasChanged,
       displayUrl,
       collection,
       hasWorkflow,
-      hasUnpublishedChanges,
       onLogoutClick,
     } = this.props;
-    const disabled = !enableSave || isPersisting;
-    const avatarUrl = user.get('avatar_url');
 
     return (
       <ToolbarContainer>

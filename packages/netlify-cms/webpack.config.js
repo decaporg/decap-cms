@@ -14,7 +14,7 @@ const baseConfig = {
   plugins: [
     ...Object.entries(plugins)
       .filter(([ key ]) => key !== 'friendlyErrors')
-      .map(([ _, plugin ]) => plugin()),
+      .map(([ , plugin ]) => plugin()),
     new webpack.DefinePlugin({
       NETLIFY_CMS_VERSION: JSON.stringify(`${pkg.version}${isProduction ? '' : '-dev'}`),
       NETLIFY_CMS_CORE_VERSION: null,

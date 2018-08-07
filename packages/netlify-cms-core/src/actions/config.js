@@ -51,7 +51,6 @@ function validateCollection(collection) {
     format,
     extension,
     frontmatter_delimiter: delimiter,
-    fields,
   } = collection.toJS();
 
   if (!folder && !files) {

@@ -83,7 +83,7 @@ export default class GitHub {
     const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
     const promises = [];
     files.forEach((file) => {
-      promises.push(new Promise((resolve, reject) => (
+      promises.push(new Promise(resolve => (
         sem.take(() => this.api.readFile(file.path, file.sha).then((data) => {
           resolve({ file, data });
           sem.leave();
@@ -123,9 +123,9 @@ export default class GitHub {
 
   async persistMedia(mediaFile, options = {}) {
     try {
-      const response = await this.api.persistFiles(null, [mediaFile], options);
+      await this.api.persistFiles(null, [mediaFile], options);
       
-      const { sha, value, size, path, fileObj } = mediaFile;
+      const { sha, value, path, fileObj } = mediaFile;
       const url = URL.createObjectURL(fileObj);
       return { id: sha, name: value, size: fileObj.size, url, path: trimStart(path, '/') };
     }
@@ -144,7 +144,7 @@ export default class GitHub {
       const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
       const promises = [];
       branches.map((branch) => {
-        promises.push(new Promise((resolve, reject) => {
+        promises.push(new Promise(resolve => {
           const slug = branch.ref.split("refs/heads/cms/").pop();
           return sem.take(() => this.api.readUnpublishedBranchFile(slug).then((data) => {
             if (data === null || data === undefined) {
@@ -161,7 +161,7 @@ export default class GitHub {
               });
               sem.leave();
             }
-          }).catch((err) => {
+          }).catch(() => {
             sem.leave();
             resolve(null);
           }));

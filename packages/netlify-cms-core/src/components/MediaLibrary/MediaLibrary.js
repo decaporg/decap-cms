@@ -219,7 +219,6 @@ class MediaLibrary extends React.Component {
       isPersisting,
       isDeleting,
       hasNextPage,
-      page,
       isPaginating,
       privateUpload,
     } = this.props;
@@ -236,7 +235,6 @@ class MediaLibrary extends React.Component {
         isPersisting={isPersisting}
         isDeleting={isDeleting}
         hasNextPage={hasNextPage}
-        page={page}
         isPaginating={isPaginating}
         privateUpload={privateUpload}
         query={this.state.query}

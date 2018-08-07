@@ -98,7 +98,6 @@ const WorkflowCardContainer = styled.div`
 const WorkflowCard = ({
   collectionName,
   title,
-  author,
   authorLastChange,
   body,
   isModification,

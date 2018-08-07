@@ -195,7 +195,7 @@ class EditorControl extends React.Component {
   }
 }
 
-const mapStateToProps = (state, ownProps) => ({
+const mapStateToProps = state => ({
   mediaPaths: state.mediaLibrary.get('controlMedia'),
   boundGetAsset: getAsset.bind(null, state),
   isFetching: state.search.get('isFetching'),

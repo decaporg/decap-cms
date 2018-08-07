@@ -77,7 +77,7 @@ export default class Shortcode extends React.Component {
     }
   }
 
-  renderControl = (shortcodeData, field, index) => {
+  renderControl = (shortcodeData, field) => {
     if (field.get('widget') === 'hidden') return null;
     const value = shortcodeData.get(field.get('name'));
     const key = `field-${ field.get('name') }`;
@@ -92,7 +92,7 @@ export default class Shortcode extends React.Component {
   };
 
   render() {
-    const { attributes, node, editor } = this.props;
+    const { attributes, node } = this.props;
     const { collapsed } = this.state;
     const pluginId = node.data.get('shortcode');
     const shortcodeData = Map(this.props.node.data.get('shortcodeData'));

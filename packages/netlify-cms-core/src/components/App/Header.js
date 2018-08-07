@@ -110,14 +110,11 @@ export default class Header extends React.Component {
     const {
       user,
       collections,
-      toggleDrawer,
       onLogoutClick,
       openMediaLibrary,
       hasWorkflow,
       displayUrl,
     } = this.props;
-
-    const avatarUrl = user.get('avatar_url');
 
     return (
       <AppHeaderContainer>

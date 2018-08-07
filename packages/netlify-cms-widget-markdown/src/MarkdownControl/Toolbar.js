@@ -64,13 +64,6 @@ export default class Toolbar extends React.Component {
     disabled: PropTypes.bool,
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      activePlugin: null,
-    };
-  }
-
   isHidden = button => {
     const { buttons } = this.props;
     return List.isList(buttons) ? !buttons.includes(button) : false;
@@ -87,13 +80,9 @@ export default class Toolbar extends React.Component {
       onToggleMode,
       rawMode,
       plugins,
-      onAddAsset,
-      getAsset,
       disabled,
       onSubmit,
     } = this.props;
-
-    const { activePlugin } = this.state;
 
     return (
       <ToolbarContainer>

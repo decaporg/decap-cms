@@ -99,7 +99,7 @@ export default class GitLab {
     const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
     const promises = [];
     files.forEach((file) => {
-      promises.push(new Promise((resolve, reject) => (
+      promises.push(new Promise(resolve => (
         sem.take(() => this.api.readFile(file.path, file.id).then((data) => {
           resolve({ file, data });
           sem.leave();

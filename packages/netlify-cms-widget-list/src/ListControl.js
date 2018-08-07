@@ -202,7 +202,7 @@ export default class ListControl extends React.Component {
   }
 
   onSortEnd = ({ oldIndex, newIndex }) => {
-    const { value, onChange } = this.props;
+    const { value } = this.props;
     const { itemsCollapsed } = this.state;
 
     // Update value
@@ -219,11 +219,6 @@ export default class ListControl extends React.Component {
   renderItem = (item, index) => {
     const {
       field,
-      getAsset,
-      mediaPaths,
-      onOpenMediaLibrary,
-      onAddAsset,
-      onRemoveInsertedMedia,
       classNameWrapper,
       editorControl,
       resolveWidget,

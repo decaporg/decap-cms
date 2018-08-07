@@ -117,7 +117,7 @@ export default function withFileControl({ forImage } = {}) {
     };
 
     renderFileName = () => {
-      const { value, classNameWrapper } = this.props;
+      const { value } = this.props;
       const size = MAX_DISPLAY_LENGTH;
       if (!value || value.length <= size) {
         return value;

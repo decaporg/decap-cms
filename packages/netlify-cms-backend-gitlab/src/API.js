@@ -51,7 +51,7 @@ export default class API {
   user = () => this.requestJSON("/user");
 
   WRITE_ACCESS = 30;
-  hasWriteAccess = user => this.requestJSON(this.repoURL).then(({ permissions }) => {
+  hasWriteAccess = () => this.requestJSON(this.repoURL).then(({ permissions }) => {
     const { project_access, group_access } = permissions;
     if (project_access && (project_access.access_level >= this.WRITE_ACCESS)) {
       return true;

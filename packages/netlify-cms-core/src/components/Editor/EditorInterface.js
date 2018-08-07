@@ -154,7 +154,6 @@ class EditorInterface extends Component {
       fieldsErrors,
       getAsset,
       onChange,
-      enableSave,
       showDelete,
       onDelete,
       onDeleteUnpublishedChanges,
@@ -230,7 +229,6 @@ class EditorInterface extends Component {
           showDelete={showDelete}
           onPublish={onPublish}
           onPublishAndNew={() => this.handleOnPublish({ createNew: true })}
-          enableSave={enableSave}
           user={user}
           hasChanged={hasChanged}
           displayUrl={displayUrl}
@@ -278,7 +276,6 @@ EditorInterface.propTypes = {
   onChange: PropTypes.func.isRequired,
   onValidate: PropTypes.func.isRequired,
   onPersist: PropTypes.func.isRequired,
-  enableSave: PropTypes.bool.isRequired,
   showDelete: PropTypes.bool.isRequired,
   onDelete: PropTypes.func.isRequired,
   onDeleteUnpublishedChanges: PropTypes.func.isRequired,

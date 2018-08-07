@@ -14,7 +14,7 @@ export function joinPatternSegments(patterns) {
  * each in a non-capturing group and interposing alternation characters (|) so
  * that each expression is executed separately.
  */
-export function combinePatterns(patterns, flags = '') {
+export function combinePatterns(patterns) {
   return patterns.map(p => `(?:${p.source})`).join('|');
 }
 

@@ -116,7 +116,7 @@ export default class PreviewPane extends React.Component {
     const value = entry.getIn(['data', field.get('name')]);
 
     if (List.isList(value)) {
-      return value.map((val, index) => {
+      return value.map(val => {
         const widgets = nestedFields && Map(nestedFields.map((f, i) => [f.get('name'), <div key={i}>{this.getWidget(f, val, this.props)}</div>]));
         return Map({ data: val, widgets });
       });

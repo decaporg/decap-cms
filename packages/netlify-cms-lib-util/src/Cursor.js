@@ -96,7 +96,7 @@ export default class Cursor {
     return [this.store.get("data").delete("wrapped_cursor_data"), this.updateStore("data", data => data.get("wrapped_cursor_data"))];
   }
   clearData() {
-    return this.updateStore("data", data => Map());
+    return this.updateStore("data", () => Map());
   }
 
   setMeta(meta) {

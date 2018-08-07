@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Fragment } from 'react';
 import moment from 'moment';
 
 import Markdownify from '../components/markdownify';

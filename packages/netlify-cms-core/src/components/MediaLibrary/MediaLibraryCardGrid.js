@@ -37,7 +37,7 @@ const MediaLibraryCardGrid = ({
   <CardGridContainer innerRef={setScrollContainerRef}>
     <CardGrid>
       {
-        mediaItems.map((file, idx) =>
+        mediaItems.map(file =>
           <MediaLibraryCard
             key={file.key}
             isSelected={isSelectedFile(file)}

@@ -92,7 +92,7 @@ function transform(node) {
  * they were text is a bit of a necessary hack.
  */
 function combineTextAndInline(nodes) {
-  return nodes.reduce((acc, node, idx, nodes) => {
+  return nodes.reduce((acc, node) => {
     const prevNode = last(acc);
     const prevNodeLeaves = get(prevNode, 'leaves');
     const data = node.data || {};
@@ -156,19 +156,6 @@ function processCodeMark(markTypes) {
   const filteredMarkTypes = isInlineCode ? without(markTypes, 'inlineCode') : markTypes;
   const textNodeType = isInlineCode ? 'inlineCode' : 'html';
   return { filteredMarkTypes, textNodeType };
-}
-
-
-/**
- * Wraps a text node in one or more mark nodes by placing the text node in an
- * array and using that as the `children` value of a mark node. The resulting
- * mark node is then placed in an array and used as the child of a mark node for
- * the next mark type in `markTypes`. This continues for each member of
- * `markTypes`. If `markTypes` is empty, the original text node is returned.
- */
-function wrapTextWithMarks(textNode, markTypes) {
-  const wrapTextWithMark = (childNode, markType) => u(markType, [childNode]);
-  return markTypes.reduce(wrapTextWithMark, textNode);
 }
 
 /**

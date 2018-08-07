@@ -98,7 +98,7 @@ export default class API {
       cache: "no-store",
     })
     .then(response => response.object)
-    .catch((error) => {
+    .catch(() => {
       // Meta ref doesn't exist
       const readme = {
         raw: "# Netlify CMS\n\nThis tree is used by the Netlify CMS to store metadata information for specific files and branches.",
@@ -127,7 +127,7 @@ export default class API {
       };
 
       return this.uploadBlob(fileTree[`${ key }.json`])
-      .then(item => this.updateTree(branchData.sha, "/", fileTree))
+      .then(() => this.updateTree(branchData.sha, "/", fileTree))
       .then(changeTree => this.commit(`Updating “${ key }” metadata`, changeTree))
       .then(response => this.patchRef("meta", "_netlify_cms", response.sha))
       .then(() => {
@@ -150,7 +150,7 @@ export default class API {
         cache: "no-store",
       })
       .then(response => JSON.parse(response))
-      .catch(error => console.log("%c %s does not have metadata", "line-height: 30px;text-align: center;font-weight: bold", key));
+      .catch(() => console.log("%c %s does not have metadata", "line-height: 30px;text-align: center;font-weight: bold", key));
     });
   }
 
@@ -217,7 +217,7 @@ export default class API {
 
   isUnpublishedEntryModification(path, branch) {
     return this.readFile(path, null, branch)
-    .then(data => true)
+    .then(() => true)
     .catch((err) => {
       if (err.message && err.message === "Not Found") {
         return false;
@@ -338,7 +338,7 @@ export default class API {
       .then(branchData => this.updateTree(branchData.commit.sha, "/", fileTree))
       .then(changeTree => this.commit(options.commitMessage, changeTree))
       .then(commitResponse => this.createBranch(branchName, commitResponse.sha))
-      .then(branchResponse => this.createPR(options.commitMessage, branchName))
+      .then(() => this.createPR(options.commitMessage, branchName))
       .then(pr => {
         prResponse = pr;
         return this.user();
@@ -466,7 +466,7 @@ export default class API {
      * changing only the parent SHA and tree for each, but retaining all other
      * info, such as the author/committer data.
      */
-    const newHeadPromise = commits.reduce((lastCommitPromise, commit, idx) => {
+    const newHeadPromise = commits.reduce((lastCommitPromise, commit) => {
       return lastCommitPromise.then(newParent => {
         /**
          * Normalize commit data to ensure it's not nested in `commit.commit`.
@@ -563,7 +563,7 @@ export default class API {
     const contentKey = slug;
     const branchName = this.generateBranchName(contentKey);
     return this.retrieveMetadata(contentKey)
-    .then(metadata => this.closePR(metadata.pr, metadata.objects))
+    .then(metadata => this.closePR(metadata.pr))
     .then(() => this.deleteBranch(branchName))
     // If the PR doesn't exist, then this has already been deleted -
     // deletion should be idempotent, so we can consider this a
@@ -579,7 +579,6 @@ export default class API {
   publishUnpublishedEntry(collection, slug) {
     const contentKey = slug;
     const branchName = this.generateBranchName(contentKey);
-    let prNumber;
     return this.retrieveMetadata(contentKey)
     .then(metadata => this.mergePR(metadata.pr, metadata.objects))
     .then(() => this.deleteBranch(branchName));
@@ -601,7 +600,7 @@ export default class API {
     });
   }
 
-  deleteRef(type, name, sha) {
+  deleteRef(type, name) {
     return this.request(`${ this.repoURL }/git/refs/${ type }/${ encodeURIComponent(name) }`, {
       method: 'DELETE',
     });
@@ -639,8 +638,7 @@ export default class API {
     });
   }
 
-  closePR(pullrequest, objects) {
-    const headSha = pullrequest.head;
+  closePR(pullrequest) {
     const prNumber = pullrequest.number;
     console.log("%c Deleting PR", "line-height: 30px;text-align: center;font-weight: bold");
     return this.request(`${ this.repoURL }/pulls/${ prNumber }`, {

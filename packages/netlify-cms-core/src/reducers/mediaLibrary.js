@@ -57,7 +57,7 @@ const mediaLibrary = (state = Map({ isVisible: false, controlMedia: Map() }), ac
         map.set('isPaginating', action.payload.page > 1);
       });
     case MEDIA_LOAD_SUCCESS: {
-      const { files = [], page, canPaginate, dynamicSearch, dynamicSearchQuery, privateUpload } = action.payload;
+      const { files = [], page, canPaginate, dynamicSearch, dynamicSearchQuery } = action.payload;
 
       if (privateUploadChanged) {
         return state;

@@ -50,7 +50,7 @@ const sizes = {
   large: '32px',
 };
 
-const Icon = ({ type, direction, size = 'medium', width, height, className }) => (
+const Icon = ({ type, direction, size = 'medium', className }) => (
   <IconWrapper
     className={className}
     dangerouslySetInnerHTML={{ __html: icons[type].image }}

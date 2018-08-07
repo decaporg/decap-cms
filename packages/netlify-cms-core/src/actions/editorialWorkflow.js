@@ -189,6 +189,7 @@ function unpublishedEntryPublishError(collection, slug, transactionID) {
 }
 
 function unpublishedEntryDeleteRequest(collection, slug, transactionID) {
+  // The reducer doesn't handle this action -- it is for `optimist`.
   return {
     type: UNPUBLISHED_ENTRY_DELETE_REQUEST,
     payload: { collection, slug },
@@ -205,6 +206,7 @@ function unpublishedEntryDeleted(collection, slug, transactionID) {
 }
 
 function unpublishedEntryDeleteError(collection, slug, transactionID) {
+  // The reducer doesn't handle this action -- it is for `optimist`.
   return {
     type: UNPUBLISHED_ENTRY_DELETE_FAILURE,
     payload: { collection, slug },
