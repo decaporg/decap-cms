@@ -1,5 +1,4 @@
 .cta {
-
   @media screen and (min-width: $desktop) {
     position: relative;
     top: -65px;
@@ -20,7 +19,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      box-shadow: 0 10px 30px 0 rgba(28,30,30,0.10), 0 3px 9px 0 rgba(28,30,30,0.15);
+      box-shadow: 0 10px 30px 0 rgba(28, 30, 30, 0.1), 0 3px 9px 0 rgba(28, 30, 30, 0.15);
       border-radius: $largeBorderRadius;
     }
 
@@ -42,14 +41,13 @@
       font-size: $tiny;
       letter-spacing: 0.5px;
       background-color: $blue;
-      background-image: linear-gradient(-180deg, #4A7FDD 0%, #3A69C7 100%);
-      box-shadow: 0 4px 12px 0 rgba(68,74,87,0.10), 0 1px 3px 0 rgba(68,74,87,0.20);
+      background-image: linear-gradient(-180deg, #4a7fdd 0%, #3a69c7 100%);
+      box-shadow: 0 4px 12px 0 rgba(68, 74, 87, 0.1), 0 1px 3px 0 rgba(68, 74, 87, 0.2);
       border-radius: $borderRadius;
       padding: 12px 18px 12px 18px;
-      transition: .2s;
+      transition: 0.2s;
       display: inline-block;
       margin-top: $tiny;
-
 
       @media screen and (min-width: $desktop) {
         flex-shrink: 0;
@@ -58,14 +56,12 @@
 
       &:hover {
         transform: scale(1.05);
-        box-shadow: 0 4px 12px 0 rgba(68,74,87,0.20), 0 1px 3px 0 rgba(68,74,87,0.40);
+        box-shadow: 0 4px 12px 0 rgba(68, 74, 87, 0.2), 0 1px 3px 0 rgba(68, 74, 87, 0.4);
       }
       &:active {
         transform: scale(0.95);
         box-shadow: none;
       }
     }
-
   }
-
 }

@@ -3,7 +3,8 @@ import React from 'react';
 const EditLink = ({ path }) => (
   <a
     className="edit-this-page"
-    href={`https://github.com/netlify/netlify-cms/blob/master/website/content/${path}`}>
+    href={`https://github.com/netlify/netlify-cms/blob/master/website/content/${path}`}
+  >
     <svg
       version="1.1"
       id="pencil"
@@ -15,7 +16,8 @@ const EditLink = ({ path }) => (
       height="14px"
       viewBox="0 0 512 512"
       enableBackground="new 0 0 512 512"
-      xmlSpace="preserve">
+      xmlSpace="preserve"
+    >
       <path
         d="M398.875,248.875L172.578,475.187l-22.625-22.625L376.25,226.265L398.875,248.875z M308.375,158.39L82.063,384.687
     l45.266,45.25L353.625,203.64L308.375,158.39z M263.094,113.125L36.828,339.437l22.625,22.625L285.75,135.765L263.094,113.125z

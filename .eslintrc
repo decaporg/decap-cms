@@ -1,0 +1,22 @@
+{
+  "parser": "babel-eslint",
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended"
+  ],
+  "env": {
+    "es6": true,
+    "browser": true,
+    "node": true,
+    "jest": true
+  },
+  "globals": {
+    "NETLIFY_CMS_VERSION": false,
+    "NETLIFY_CMS_CORE_VERSION": false,
+    "CMS_ENV": false
+  },
+  "rules": {
+    "no-console": [0],
+    "react/prop-types": [1]
+  }
+}

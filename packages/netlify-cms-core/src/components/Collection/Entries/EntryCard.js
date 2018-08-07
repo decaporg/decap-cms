@@ -5,46 +5,53 @@ import { resolvePath } from 'netlify-cms-lib-util';
 import { colors, colorsRaw, components, lengths } from 'netlify-cms-ui-default';
 import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from 'Constants/collectionViews';
 
-const ListCardLink = styled(Link)`
+const ListCard = styled.li`
   ${components.card};
   width: ${lengths.topCardWidth};
-  max-width: 100%;
-  padding: 16px 22px;
   margin-left: 12px;
   margin-bottom: 16px;
+`;
 
+const ListCardLink = styled(Link)`
+  display: block;
+  max-width: 100%;
+  padding: 16px 22px;
   &:hover {
     background-color: ${colors.foreground};
   }
-`
+`;
 
-const GridCardLink = styled(Link)`
+const GridCard = styled.li`
   ${components.card};
   flex: 0 0 335px;
   height: 240px;
   overflow: hidden;
   margin-left: 12px;
   margin-bottom: 16px;
+`;
 
-  &, &:hover {
+const GridCardLink = styled(Link)`
+  display: block;
+  &,
+  &:hover {
     background-color: ${colors.foreground};
     color: ${colors.text};
   }
-`
+`;
 
 const CollectionLabel = styled.h2`
   font-size: 12px;
   color: ${colors.textLead};
   text-transform: uppercase;
-`
+`;
 
 const ListCardTitle = styled.h2`
   margin-bottom: 0;
-`
+`;
 
 const CardHeading = styled.h2`
   margin: 0 0 2px;
-`
+`;
 
 const CardBody = styled.div`
   padding: 16px 22px;
@@ -63,7 +70,7 @@ const CardBody = styled.div`
     width: 140%;
     box-shadow: inset 0 -15px 24px ${colorsRaw.white};
   }
-`
+`;
 
 const CardImage = styled.div`
   background-image: url(${props => props.url});
@@ -71,7 +78,7 @@ const CardImage = styled.div`
   background-size: cover;
   background-repeat: no-repeat;
   height: 150px;
-`
+`;
 
 const EntryCard = ({
   collection,
@@ -86,30 +93,34 @@ const EntryCard = ({
   const path = `/collections/${collection.get('name')}/entries/${entry.get('slug')}`;
   let image = entry.getIn(['data', inferedFields.imageField]);
   image = resolvePath(image, publicFolder);
-  if(image) {
+  if (image) {
     image = encodeURI(image);
   }
 
   if (viewStyle === VIEW_STYLE_LIST) {
     return (
-      <ListCardLink to={path}>
-        { collectionLabel ? <CollectionLabel>{collectionLabel}</CollectionLabel> : null }
-        <ListCardTitle>{ title }</ListCardTitle>
-      </ListCardLink>
+      <ListCard>
+        <ListCardLink to={path}>
+          {collectionLabel ? <CollectionLabel>{collectionLabel}</CollectionLabel> : null}
+          <ListCardTitle>{title}</ListCardTitle>
+        </ListCardLink>
+      </ListCard>
     );
   }
 
   if (viewStyle === VIEW_STYLE_GRID) {
     return (
-      <GridCardLink to={path}>
-        <CardBody hasImage={image}>
-          { collectionLabel ? <CollectionLabel>{collectionLabel}</CollectionLabel> : null }
-          <CardHeading>{title}</CardHeading>
-        </CardBody>
-        { image ? <CardImage url={image}/> : null }
-      </GridCardLink>
+      <GridCard>
+        <GridCardLink to={path}>
+          <CardBody hasImage={image}>
+            {collectionLabel ? <CollectionLabel>{collectionLabel}</CollectionLabel> : null}
+            <CardHeading>{title}</CardHeading>
+          </CardBody>
+          {image ? <CardImage url={image} /> : null}
+        </GridCardLink>
+      </GridCard>
     );
   }
-}
+};
 
 export default EntryCard;

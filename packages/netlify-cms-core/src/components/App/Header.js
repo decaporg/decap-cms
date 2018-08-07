@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
-import React from "react";
-import ImmutablePropTypes from "react-immutable-proptypes";
+import React from 'react';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled, { css } from 'react-emotion';
 import { NavLink } from 'react-router-dom';
 import {
@@ -21,7 +21,7 @@ const styles = {
   `,
 };
 
-const AppHeaderContainer = styled.div`
+const AppHeaderContainer = styled.header`
   z-index: 300;
 `;
 
@@ -33,7 +33,7 @@ const AppHeader = styled.div`
   background-color: ${colors.foreground};
   z-index: 300;
   height: ${lengths.topBarHeight};
-`
+`;
 
 const AppHeaderContent = styled.div`
   display: flex;
@@ -69,15 +69,15 @@ const AppHeaderButton = styled.button`
         ${styles.buttonActive};
       }
     }
-  `}
-`
+  `};
+`;
 
 const AppHeaderNavLink = AppHeaderButton.withComponent(NavLink);
 
 const AppHeaderActions = styled.div`
   display: inline-flex;
   align-items: center;
-`
+`;
 
 const AppHeaderQuickNewButton = styled(StyledDropdownButton)`
   ${buttons.button};
@@ -88,7 +88,7 @@ const AppHeaderQuickNewButton = styled(StyledDropdownButton)`
   &:after {
     top: 11px;
   }
-`
+`;
 
 export default class Header extends React.Component {
   static propTypes = {
@@ -99,7 +99,7 @@ export default class Header extends React.Component {
     displayUrl: PropTypes.string,
   };
 
-  handleCreatePostClick = (collectionName) => {
+  handleCreatePostClick = collectionName => {
     const { onCreateEntryClick } = this.props;
     if (onCreateEntryClick) {
       onCreateEntryClick(collectionName);
@@ -110,14 +110,11 @@ export default class Header extends React.Component {
     const {
       user,
       collections,
-      toggleDrawer,
       onLogoutClick,
       openMediaLibrary,
       hasWorkflow,
       displayUrl,
     } = this.props;
-
-    const avatarUrl = user.get('avatar_url');
 
     return (
       <AppHeaderContainer>
@@ -129,19 +126,17 @@ export default class Header extends React.Component {
                 activeClassName="header-link-active"
                 isActive={(match, location) => location.pathname.startsWith('/collections/')}
               >
-                <Icon type="page"/>
+                <Icon type="page" />
                 Content
               </AppHeaderNavLink>
-              {
-                hasWorkflow
-                  ? <AppHeaderNavLink to="/workflow" activeClassName="header-link-active">
-                      <Icon type="workflow"/>
-                      Workflow
-                    </AppHeaderNavLink>
-                  : null
-              }
+              {hasWorkflow ? (
+                <AppHeaderNavLink to="/workflow" activeClassName="header-link-active">
+                  <Icon type="workflow" />
+                  Workflow
+                </AppHeaderNavLink>
+              ) : null}
               <AppHeaderButton onClick={openMediaLibrary}>
-                <Icon type="media-alt"/>
+                <Icon type="media-alt" />
                 Media
               </AppHeaderButton>
             </nav>
@@ -152,15 +147,16 @@ export default class Header extends React.Component {
                 dropdownWidth="160px"
                 dropdownPosition="left"
               >
-                {
-                  collections.filter(collection => collection.get('create')).toList().map(collection =>
+                {collections
+                  .filter(collection => collection.get('create'))
+                  .toList()
+                  .map(collection => (
                     <DropdownItem
-                      key={collection.get("name")}
-                      label={collection.get("label_singular") || collection.get("label")}
+                      key={collection.get('name')}
+                      label={collection.get('label_singular') || collection.get('label')}
                       onClick={() => this.handleCreatePostClick(collection.get('name'))}
                     />
-                  )
-                }
+                  ))}
               </Dropdown>
               <SettingsDropdown
                 displayUrl={displayUrl}

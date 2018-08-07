@@ -10,7 +10,7 @@ const StyledToolbarButton = styled.button`
   border: none;
   background-color: transparent;
   font-size: 16px;
-  color: ${props => props.isActive ? '#1e2532' : 'inherit'};
+  color: ${props => (props.isActive ? '#1e2532' : 'inherit')};
   cursor: pointer;
 
   &:disabled {
@@ -21,7 +21,7 @@ const StyledToolbarButton = styled.button`
   ${Icon} {
     display: block;
   }
-`
+`;
 
 const ToolbarButton = ({ type, label, icon, onClick, isActive, isHidden, disabled }) => {
   if (isHidden) {
@@ -35,7 +35,7 @@ const ToolbarButton = ({ type, label, icon, onClick, isActive, isHidden, disable
       title={label}
       disabled={disabled}
     >
-      { icon ? <Icon type={icon}/> : label }
+      {icon ? <Icon type={icon} /> : label}
     </StyledToolbarButton>
   );
 };

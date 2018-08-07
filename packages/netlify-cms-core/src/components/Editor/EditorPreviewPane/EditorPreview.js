@@ -8,8 +8,8 @@ function isVisible(field) {
 }
 
 const PreviewContainer = styled.div`
-  font-family: Roboto, "Helvetica Neue", HelveticaNeue, Helvetica, Arial, sans-serif;
-`
+  font-family: Roboto, 'Helvetica Neue', HelveticaNeue, Helvetica, Arial, sans-serif;
+`;
 
 /**
  * Use a stateful component so that child components can effectively utilize

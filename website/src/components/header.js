@@ -10,7 +10,7 @@ import '../css/imports/header.css';
 
 class Header extends Component {
   state = {
-    scrolled: false
+    scrolled: false,
   };
 
   componentDidMount() {
@@ -22,14 +22,13 @@ class Header extends Component {
     window.removeEventListener('scroll', this.handleScroll);
   }
 
-  handleScroll = event => {
-    const currentWindowPos =
-      document.documentElement.scrollTop || document.body.scrollTop;
+  handleScroll = () => {
+    const currentWindowPos = document.documentElement.scrollTop || document.body.scrollTop;
 
     const scrolled = currentWindowPos > 0;
 
     this.setState({
-      scrolled
+      scrolled,
     });
   };
 
@@ -46,7 +45,7 @@ class Header extends Component {
         className={classnames({
           docs: isDocs,
           blog: isBlog,
-          scrolled
+          scrolled,
         })}
       >
         <div className="contained">
@@ -60,10 +59,7 @@ class Header extends Component {
             <Link className="nav-link docs-link" to="/docs/intro">
               Docs
             </Link>
-            <Link
-              className="nav-link contributing-link"
-              to="/docs/contributor-guide"
-            >
+            <Link className="nav-link contributing-link" to="/docs/contributor-guide">
               Contributing
             </Link>
             <Link className="nav-link" to="/community">

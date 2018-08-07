@@ -1,5 +1,5 @@
 ---
-label: "DateTime"
+label: 'DateTime'
 target: datetime
 ---
 
@@ -14,9 +14,9 @@ The datetime widget translates a datetime picker to a datetime string. For savin
 - **Example:**
 
   ```yaml
-  - label: "Start time"
-    name: "start"
-    widget: "datetime"
-    default: ""
-    format: "LLL"
+  - label: 'Start time'
+    name: 'start'
+    widget: 'datetime'
+    default: ''
+    format: 'LLL'
   ```

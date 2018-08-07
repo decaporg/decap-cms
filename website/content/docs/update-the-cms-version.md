@@ -15,11 +15,12 @@ If you are using a package manager like Yarn or NPM, you will use their standard
 If you are using the CMS through a CDN like Unpkg, then that depends on the version tag you are using. You can find the version tag you are using in the `/admin/index.html` file of your site.
 
 - (Recommended) If you use `^2.0.0`, the CMS will do all updates except major versions automatically.
-   - It will upgrade to `2.0.1`, `2.1.0`, `2.1.2`.
-   - It will not upgrade to `3.0.0` or higher.
-   - It will not upgrade to beta versions.
+
+  - It will upgrade to `2.0.1`, `2.1.0`, `2.1.2`.
+  - It will not upgrade to `3.0.0` or higher.
+  - It will not upgrade to beta versions.
 
 - If you use `~2.0.0`, the CMS will do only patch updates automatically.
-   - It will upgrade `2.0.1`, `2.0.2`.
-   - It will not upgrade to `2.1.0` or higher.
-   - It will not upgrade beta versions.
+  - It will upgrade `2.0.1`, `2.0.2`.
+  - It will not upgrade to `2.1.0` or higher.
+  - It will not upgrade beta versions.

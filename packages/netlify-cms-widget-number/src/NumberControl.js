@@ -19,12 +19,12 @@ export default class NumberControl extends React.Component {
     value: '',
   };
 
-  handleChange = (e) => {
+  handleChange = e => {
     const valueType = this.props.field.get('valueType');
     const { onChange } = this.props;
-    if(valueType === 'int') {
+    if (valueType === 'int') {
       onChange(parseInt(e.target.value, 10));
-    } else if(valueType === 'float') {
+    } else if (valueType === 'float') {
       onChange(parseFloat(e.target.value));
     } else {
       onChange(e.target.value);
@@ -36,17 +36,19 @@ export default class NumberControl extends React.Component {
     const min = field.get('min', '');
     const max = field.get('max', '');
     const step = field.get('step', field.get('valueType') === 'int' ? 1 : '');
-    return <input
-      type="number"
-      id={forID}
-      className={classNameWrapper}
-      onFocus={setActiveStyle}
-      onBlur={setInactiveStyle}
-      value={value || ''}
-      step={step}
-      min={min}
-      max={max}
-      onChange={this.handleChange}
-    />;
+    return (
+      <input
+        type="number"
+        id={forID}
+        className={classNameWrapper}
+        onFocus={setActiveStyle}
+        onBlur={setInactiveStyle}
+        value={value || ''}
+        step={step}
+        min={min}
+        max={max}
+        onChange={this.handleChange}
+      />
+    );
   }
 }

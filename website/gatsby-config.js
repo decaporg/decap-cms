@@ -15,7 +15,7 @@ const postCssPlugins = [
   colorfunctions(),
   hdBackgrounds(),
   cssextend(),
-  cssvars({ variables: styleVariables })
+  cssvars({ variables: styleVariables }),
 ];
 
 module.exports = {
@@ -27,30 +27,30 @@ module.exports = {
       docs: [
         {
           name: 'start',
-          title: 'Quick Start'
+          title: 'Quick Start',
         },
         {
           name: 'guides',
-          title: 'Guides'
+          title: 'Guides',
         },
         {
           name: 'reference',
-          title: 'Reference'
+          title: 'Reference',
         },
         {
           name: 'contributing',
-          title: 'Contributing'
-        }
-      ]
-    }
+          title: 'Contributing',
+        },
+      ],
+    },
   },
   plugins: [
     {
       resolve: 'gatsby-source-filesystem',
       options: {
         path: `${__dirname}/content`,
-        name: 'content'
-      }
+        name: 'content',
+      },
     },
     'gatsby-transformer-yaml',
     'gatsby-transformer-json',
@@ -58,8 +58,8 @@ module.exports = {
       resolve: 'gatsby-source-filesystem',
       options: {
         path: `${__dirname}/data`,
-        name: 'data'
-      }
+        name: 'data',
+      },
     },
     {
       resolve: 'gatsby-transformer-remark',
@@ -69,13 +69,13 @@ module.exports = {
           'gatsby-remark-autolink-headers',
           'gatsby-remark-prismjs'
         ]
-      }
+      },
     },
     {
       resolve: 'gatsby-plugin-postcss-sass',
       options: {
-        postCssPlugins
-      }
+        postCssPlugins,
+      },
     },
     'gatsby-plugin-react-helmet',
     'gatsby-plugin-react-next',
@@ -89,8 +89,8 @@ module.exports = {
         background_color: '#ffffff',
         theme_color: '#ffffff',
         display: 'standalone',
-        icon: 'static/img/favicon/icon-512x512.png'
-      }
-    }
-  ]
+        icon: 'static/img/favicon/icon-512x512.png',
+      },
+    },
+  ],
 };

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Helmet from 'react-helmet';
 import Markdown from 'react-markdown';
 
@@ -15,7 +15,7 @@ const CommunityPage = ({ data }) => {
     primarycta,
     upcomingevent,
     howitworks,
-    howtojoin
+    howtojoin,
   } = data.markdownRemark.frontmatter;
 
   return (

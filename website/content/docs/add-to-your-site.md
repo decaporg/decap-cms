@@ -12,13 +12,13 @@ This tutorial will guide you through the steps for adding Netlify CMS to a site 
 
 All Netlify CMS files are contained in a static `admin` folder, stored at the root of your published site. Where you store this folder in the source files depends on your static site generator. Here's the static file location for a few of the most popular static site generators:
 
-| These generators ... | store static files in |
-| -------------------- | --------------------- |
-| Jekyll, GitBook      | `/` (project root)    |
-| Hugo, Gatsby, Nuxt   | `/static`             |
-| Hexo, Middleman      | `/source`             |
-| Spike                | `/views`              |
-| Wyam                 | `/input`              |
+| These generators ...    | store static files in |
+| ----------------------- | --------------------- |
+| Jekyll, GitBook         | `/` (project root)    |
+| Hugo, Gatsby, Nuxt      | `/static`             |
+| Hexo, Middleman, Jigsaw | `/source`             |
+| Spike                   | `/views`              |
+| Wyam                    | `/input`              |
 
 If your generator isn't listed here, you can check its documentation, or as a shortcut, look in your project for a `css` or `images` folder. The contents of folders like that are usually processed as static files, so it's likely you can store your `admin` folder next to those. (When you've found the location, feel free to add it to these docs by [filing a pull request](https://github.com/netlify/netlify-cms/blob/master/CONTRIBUTING.md)!)
 
@@ -60,19 +60,19 @@ npm install netlify-cms --save
 Then import it (assuming your project has tooling for imports):
 
 ```js
-import CMS from 'netlify-cms'
+import CMS from 'netlify-cms';
 
 // Now the registry is available via the CMS object.
-CMS.registerPreviewTemplate('my-template', MyTemplate)
+CMS.registerPreviewTemplate('my-template', MyTemplate);
 ```
 
 ## Configuration
 
-Configuration will be different for every site, so we'll break it down into parts.  All code snippets in this section will be added to your `admin/config.yml` file.
+Configuration will be different for every site, so we'll break it down into parts. All code snippets in this section will be added to your `admin/config.yml` file.
 
 ### Backend
 
-We're using [Netlify](https://www.netlify.com) for our hosting and authentication in this tutorial, so backend configuration is fairly straightforward. 
+We're using [Netlify](https://www.netlify.com) for our hosting and authentication in this tutorial, so backend configuration is fairly straightforward.
 
 For GitHub and GitLab repositories, you can start your Netlify CMS `config.yml` file with these lines:
 
@@ -103,7 +103,7 @@ Netlify CMS allows users to upload images directly within the editor. For this t
 
 ```yaml
 # This line should *not* be indented
-media_folder: "images/uploads" # Media files will be stored in the repo under images/uploads
+media_folder: 'images/uploads' # Media files will be stored in the repo under images/uploads
 ```
 
 If you're creating a new folder for uploaded media, you'll need to know where your static site generator expects static files. You can refer to the paths outlined above in [App File Structure](#app-file-structure), and put your media folder in the same location where you put the `admin` folder.
@@ -112,14 +112,13 @@ Note that the`media_folder` file path is relative to the project root, so the ex
 
 ```yaml
 # These lines should *not* be indented
-media_folder: "static/images/uploads" # Media files will be stored in the repo under static/images/uploads
-public_folder: "/images/uploads" # The src attribute for uploaded media will begin with /images/uploads
+media_folder: 'static/images/uploads' # Media files will be stored in the repo under static/images/uploads
+public_folder: '/images/uploads' # The src attribute for uploaded media will begin with /images/uploads
 ```
 
 The configuration above adds a new setting, `public_folder`. While `media_folder` specifies where uploaded files will be saved in the repo, `public_folder` indicates where they can be found in the published site. This path is used in image `src` attributes and is relative to the file where it's called. For this reason, we usually start the path at the site root, using the opening `/`.
 
-*If `public_folder` is not set, Netlify CMS will default to the same value as `media_folder`, adding an opening `/` if one is not included.*
-
+_If `public_folder` is not set, Netlify CMS will default to the same value as `media_folder`, adding an opening `/` if one is not included._
 
 ### Collections
 
@@ -128,14 +127,12 @@ Collections define the structure for the different content types on your static 
 Let's say your site has a blog, with the posts stored in `_posts/blog`, and files saved in a date-title format, like `1999-12-31-lets-party.md`. Each post begins with settings in yaml-formatted front matter, like so:
 
 ```yaml
----
 layout: blog
 title: "Let's Party"
 date: 1999-12-31 11:59:59 -0800
-thumbnail: "/images/prince.jpg"
+thumbnail: '/images/prince.jpg'
 rating: 5
----
-
+...
 This is the post body, where I write about our last chance to party before the Y2K bug destroys us all.
 ```
 
@@ -143,18 +140,18 @@ Given this example, our `collections` settings would look like this in your Netl
 
 ```yaml
 collections:
-  - name: "blog" # Used in routes, e.g., /admin/collections/blog
-    label: "Blog" # Used in the UI
-    folder: "_posts/blog" # The path to the folder where the documents are stored
+  - name: 'blog' # Used in routes, e.g., /admin/collections/blog
+    label: 'Blog' # Used in the UI
+    folder: '_posts/blog' # The path to the folder where the documents are stored
     create: true # Allow users to create new documents in this collection
-    slug: "{{year}}-{{month}}-{{day}}-{{slug}}" # Filename template, e.g., YYYY-MM-DD-title.md
+    slug: '{{year}}-{{month}}-{{day}}-{{slug}}' # Filename template, e.g., YYYY-MM-DD-title.md
     fields: # The fields for each document, usually in front matter
-      - {label: "Layout", name: "layout", widget: "hidden", default: "blog"}
-      - {label: "Title", name: "title", widget: "string"}
-      - {label: "Publish Date", name: "date", widget: "datetime"}
-      - {label: "Featured Image", name: "thumbnail", widget: "image"}
-      - {label: "Rating (scale of 1-5)", name: "rating", widget: "number"}
-      - {label: "Body", name: "body", widget: "markdown"}
+      - { label: 'Layout', name: 'layout', widget: 'hidden', default: 'blog' }
+      - { label: 'Title', name: 'title', widget: 'string' }
+      - { label: 'Publish Date', name: 'date', widget: 'datetime' }
+      - { label: 'Featured Image', name: 'thumbnail', widget: 'image' }
+      - { label: 'Rating (scale of 1-5)', name: 'rating', widget: 'number' }
+      - { label: 'Body', name: 'body', widget: 'markdown' }
 ```
 
 Let's break that down:
@@ -205,14 +202,14 @@ The entries for any collection can be filtered based on the value of a single fi
 
 ```yaml
 collections:
-  - name: "posts"
-    label: "Post"
-    folder: "_posts"
+  - name: 'posts'
+    label: 'Post'
+    folder: '_posts'
     filter:
       field: language
       value: en
     fields:
-      - {label: "Language", name: "language"}
+      - { label: 'Language', name: 'language' }
 ```
 
 ## Authentication

@@ -17,20 +17,20 @@ import { EditorControlBar } from '../styles';
 
 const VisualEditorContainer = styled.div`
   position: relative;
-`
+`;
 
 const createEmptyRawDoc = () => {
   const emptyText = Text.create('');
-  const emptyBlock = Block.create({ kind: 'block', type: 'paragraph', nodes: [ emptyText ] });
+  const emptyBlock = Block.create({ kind: 'block', type: 'paragraph', nodes: [emptyText] });
   return { nodes: [emptyBlock] };
 };
 
-const createSlateValue = (rawValue) => {
+const createSlateValue = rawValue => {
   const rawDoc = rawValue && markdownToSlate(rawValue);
-  const rawDocHasNodes = !isEmpty(get(rawDoc, 'nodes'))
+  const rawDocHasNodes = !isEmpty(get(rawDoc, 'nodes'));
   const document = Document.fromJSON(rawDocHasNodes ? rawDoc : createEmptyRawDoc());
   return Value.create({ document });
-}
+};
 
 export default class Editor extends React.Component {
   static propTypes = {
@@ -40,7 +40,7 @@ export default class Editor extends React.Component {
     onMode: PropTypes.func.isRequired,
     className: PropTypes.string.isRequired,
     value: PropTypes.string,
-    field: ImmutablePropTypes.map
+    field: ImmutablePropTypes.map,
   };
 
   constructor(props) {
@@ -61,14 +61,17 @@ export default class Editor extends React.Component {
     const ast = htmlToSlate(data.html);
     const doc = Document.fromJSON(ast);
     return change.insertFragment(doc);
-  }
+  };
 
   selectionHasMark = type => this.state.value.activeMarks.some(mark => mark.type === type);
   selectionHasBlock = type => this.state.value.blocks.some(node => node.type === type);
 
   handleMarkClick = (event, type) => {
     event.preventDefault();
-    const resolvedChange = this.state.value.change().focus().toggleMark(type);
+    const resolvedChange = this.state.value
+      .change()
+      .focus()
+      .toggleMark(type);
     this.ref.onChange(resolvedChange);
     this.setState({ value: resolvedChange.value });
   };
@@ -76,7 +79,7 @@ export default class Editor extends React.Component {
   handleBlockClick = (event, type) => {
     event.preventDefault();
     let { value } = this.state;
-    const { document: doc, selection } = value;
+    const { document: doc } = value;
     const { unwrapList, wrapInList } = EditListConfigured.changes;
     let change = value.change();
 
@@ -119,9 +122,7 @@ export default class Editor extends React.Component {
     // should simply unlink them.
     if (this.hasLinks()) {
       change = change.unwrapInline('link');
-    }
-
-    else {
+    } else {
       const url = window.prompt('Enter the URL of the link');
 
       // If nothing is entered in the URL prompt, do nothing.
@@ -129,14 +130,10 @@ export default class Editor extends React.Component {
 
       // If no text is selected, use the entered URL as text.
       if (change.value.isCollapsed) {
-        change = change
-          .insertText(url)
-          .extend(0 - url.length);
+        change = change.insertText(url).extend(0 - url.length);
       }
 
-      change = change
-        .wrapInline({ type: 'link', data: { url } })
-        .collapseToEnd();
+      change = change.wrapInline({ type: 'link', data: { url } }).collapseToEnd();
     }
 
     this.ref.onChange(change);
@@ -155,7 +152,7 @@ export default class Editor extends React.Component {
         shortcodeData: Map(),
       },
       isVoid: true,
-      nodes
+      nodes,
     };
     let change = value.change();
     const { focusBlock } = change.value;
@@ -176,11 +173,9 @@ export default class Editor extends React.Component {
     this.props.onMode('raw');
   };
 
-
   handleDocumentChange = debounce(change => {
-    const { onChange, getEditorComponents } = this.props;
+    const { onChange } = this.props;
     const raw = change.value.document.toJSON();
-    const plugins = getEditorComponents();
     const markdown = slateToMarkdown(raw);
     onChange(markdown);
   }, 150);
@@ -194,7 +189,7 @@ export default class Editor extends React.Component {
 
   processRef = ref => {
     this.ref = ref;
-  }
+  };
 
   render() {
     const { onAddAsset, getAsset, className, field, getEditorComponents } = this.props;

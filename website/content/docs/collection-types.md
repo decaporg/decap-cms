@@ -37,29 +37,29 @@ The entries for any folder collection can be filtered based on the value of a si
 
 The `filter` option requires two fields:
 
-* `field`: the name of the collection field to filter on
-* `value`: the desired field value
+- `field`: the name of the collection field to filter on
+- `value`: the desired field value
 
 The example below creates two collections in the same folder, filtered by the `language` field. The first collection includes posts with `language: en`, and the second, with `language: es`.
 
 ```yaml
 collections:
-  - label: "Blog in English"
-    name: "english_posts"
-    folder: "_posts"
-    filter: {field: "language", value: "en"}
+  - label: 'Blog in English'
+    name: 'english_posts'
+    folder: '_posts'
+    filter: { field: 'language', value: 'en' }
     fields:
-      - {label: "Language", name: "language", widget: "select", options: ["en", "es"]}
-      - {label: "Title", name: "title", widget: "string"}
-      - {label: "Content", name: "body", widget: "markdown"}      
-  - label: "Blog en Español"
-    name: "spanish_posts"
-    folder: "_posts"
-    filter: {field: "language", value: "es"}
+      - { label: 'Language', name: 'language', widget: 'select', options: ['en', 'es'] }
+      - { label: 'Title', name: 'title', widget: 'string' }
+      - { label: 'Content', name: 'body', widget: 'markdown' }
+  - label: 'Blog en Español'
+    name: 'spanish_posts'
+    folder: '_posts'
+    filter: { field: 'language', value: 'es' }
     fields:
-      - {label: "Lenguaje", name: "language", widget: "select", options: ["en", "es"]}
-      - {label: "Titulo", name: "title", widget: "string"}
-      - {label: "Contenido", name: "body", widget: "markdown"}      
+      - { label: 'Lenguaje', name: 'language', widget: 'select', options: ['en', 'es'] }
+      - { label: 'Titulo', name: 'title', widget: 'string' }
+      - { label: 'Contenido', name: 'body', widget: 'markdown' }
 ```
 
 ## File collections

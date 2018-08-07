@@ -1,8 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const pkg = require('./package.json');
-const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
-const { getConfig, rules, plugins } = require('../../scripts/webpack.js');
+const { getConfig, rules } = require('../../scripts/webpack.js');
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -15,8 +14,8 @@ module.exports = {
   module: {
     rules: [
       ...Object.entries(rules)
-        .filter(([ key ]) => key !== 'js')
-        .map(([ _, rule ]) => rule()),
+        .filter(([key]) => key !== 'js')
+        .map(([, rule]) => rule()),
       {
         test: /\.js$/,
         exclude: /node_modules/,

@@ -1,17 +1,16 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import ImmutablePropTypes from "react-immutable-proptypes";
+import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Map } from 'immutable';
 import ValidationErrorTypes from 'Constants/validationErrorTypes';
 
 const truthy = () => ({ error: false });
 
-const isEmpty = value => (
+const isEmpty = value =>
   value === null ||
   value === undefined ||
   (value.hasOwnProperty('length') && value.length === 0) ||
-  (value.constructor === Object && Object.keys(value).length === 0)
-);
+  (value.constructor === Object && Object.keys(value).length === 0);
 
 export default class Widget extends Component {
   static propTypes = {
@@ -41,13 +40,10 @@ export default class Widget extends Component {
     getAsset: PropTypes.func.isRequired,
     resolveWidget: PropTypes.func.isRequired,
     getEditorComponents: PropTypes.func.isRequired,
-    isFetching: PropTypes.node,
+    isFetching: PropTypes.bool,
     query: PropTypes.func.isRequired,
     clearSearch: PropTypes.func.isRequired,
-    queryHits: PropTypes.oneOfType([
-      PropTypes.array,
-      PropTypes.object,
-    ]),
+    queryHits: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   };
 
   shouldComponentUpdate(nextProps) {
@@ -57,9 +53,11 @@ export default class Widget extends Component {
     if (this.wrappedControlShouldComponentUpdate) {
       return this.wrappedControlShouldComponentUpdate(nextProps);
     }
-    return this.props.value !== nextProps.value
-      || this.props.classNameWrapper !== nextProps.classNameWrapper
-      || this.props.hasActiveStyle !== nextProps.hasActiveStyle;
+    return (
+      this.props.value !== nextProps.value ||
+      this.props.classNameWrapper !== nextProps.classNameWrapper ||
+      this.props.hasActiveStyle !== nextProps.hasActiveStyle
+    );
   }
 
   processInnerControlRef = ref => {
@@ -87,7 +85,7 @@ export default class Widget extends Component {
     const { field, value } = this.props;
     const errors = [];
     const validations = [this.validatePresence, this.validatePattern];
-    validations.forEach((func) => {
+    validations.forEach(func => {
       const response = func(field, value);
       if (response.error) errors.push(response.error);
     });
@@ -105,7 +103,7 @@ export default class Widget extends Component {
     if (isRequired && isEmpty(value)) {
       const error = {
         type: ValidationErrorTypes.PRESENCE,
-        message: `${ field.get('label', field.get('name')) } is required.`,
+        message: `${field.get('label', field.get('name'))} is required.`,
       };
 
       return { error };
@@ -123,7 +121,10 @@ export default class Widget extends Component {
     if (pattern && !RegExp(pattern.first()).test(value)) {
       const error = {
         type: ValidationErrorTypes.PATTERN,
-        message: `${ field.get('label', field.get('name')) } didn't match the pattern: ${ pattern.last() }`,
+        message: `${field.get(
+          'label',
+          field.get('name'),
+        )} didn't match the pattern: ${pattern.last()}`,
       };
 
       return { error };
@@ -132,29 +133,31 @@ export default class Widget extends Component {
     return { error: false };
   };
 
-  validateWrappedControl = (field) => {
+  validateWrappedControl = field => {
     const response = this.wrappedControlValid();
-    if (typeof response === "boolean") {
+    if (typeof response === 'boolean') {
       const isValid = response;
-      return { error: (!isValid) };
+      return { error: !isValid };
     } else if (response.hasOwnProperty('error')) {
       return response;
     } else if (response instanceof Promise) {
       response.then(
-        () => { this.validate({ error: false }); },
-        (err) => {
+        () => {
+          this.validate({ error: false });
+        },
+        err => {
           const error = {
             type: ValidationErrorTypes.CUSTOM,
-            message: `${ field.get('label', field.get('name')) } - ${ err }.`,
+            message: `${field.get('label', field.get('name'))} - ${err}.`,
           };
 
           this.validate({ error });
-        }
+        },
       );
 
       const error = {
         type: ValidationErrorTypes.CUSTOM,
-        message: `${ field.get('label', field.get('name')) } is processing.`,
+        message: `${field.get('label', field.get('name'))} is processing.`,
       };
 
       return { error };

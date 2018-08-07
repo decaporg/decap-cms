@@ -12,7 +12,7 @@ footer {
       color: $grey;
       font-family: $roboto;
       font-size: 12px;
-      opacity: .5;
+      opacity: 0.5;
     }
     a {
       color: $grey;
@@ -39,5 +39,4 @@ footer {
       background-color: $darkerGreen;
     }
   }
-
 }

@@ -9,7 +9,7 @@ const SearchContainer = styled.div`
   align-items: center;
   position: relative;
   width: 400px;
-`
+`;
 
 const SearchInput = styled.input`
   background-color: #eff0f4;
@@ -25,7 +25,7 @@ const SearchInput = styled.input`
     outline: none;
     box-shadow: inset 0 0 0 2px ${colors.active};
   }
-`
+`;
 
 const SearchIcon = styled(Icon)`
   position: absolute;
@@ -33,11 +33,11 @@ const SearchIcon = styled(Icon)`
   left: 6px;
   z-index: 2;
   transform: translate(0, -50%);
-`
+`;
 
 const MediaLibrarySearch = ({ value, onChange, onKeyDown, placeholder, disabled }) => (
   <SearchContainer>
-    <SearchIcon type="search" size="small"/>
+    <SearchIcon type="search" size="small" />
     <SearchInput
       value={value}
       onChange={onChange}

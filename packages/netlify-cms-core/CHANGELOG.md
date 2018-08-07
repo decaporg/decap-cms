@@ -3,6 +3,40 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="2.0.7"></a>
+## [2.0.7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.0.6...netlify-cms-core@2.0.7) (2018-08-07)
+
+
+### Bug Fixes
+
+* **relation:** fix relation widget selection bug ([#1572](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1572)) ([77fbc04](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/77fbc04))
+
+
+
+
+<a name="2.0.6"></a>
+## [2.0.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.0.5...netlify-cms-core@2.0.6) (2018-08-01)
+
+
+### Bug Fixes
+
+* **workflow:** enable workflow per method ([#1569](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1569)) ([90b8156](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/90b8156))
+
+
+
+
+<a name="2.0.5"></a>
+## [2.0.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.0.4...netlify-cms-core@2.0.5) (2018-08-01)
+
+
+### Bug Fixes
+
+* **workflow:** fix status not set on new workflow entries ([#1558](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1558)) ([0aa085f](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/0aa085f))
+* only trim periods from file extensions ([#1554](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1554)) ([95c744e](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/95c744e))
+
+
+
+
 <a name="2.0.4"></a>
 ## [2.0.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.0.3...netlify-cms-core@2.0.4) (2018-07-28)
 

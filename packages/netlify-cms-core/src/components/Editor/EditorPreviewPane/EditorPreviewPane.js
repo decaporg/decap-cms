@@ -19,10 +19,9 @@ const PreviewPaneFrame = styled(Frame)`
   border: none;
   background: #fff;
   border-radius: ${lengths.borderRadius};
-`
+`;
 
 export default class PreviewPane extends React.Component {
-
   getWidget = (field, value, props) => {
     const { fieldsMetaData, getAsset, entry } = props;
     const widget = resolveWidget(field.get('widget'));
@@ -77,8 +76,16 @@ export default class PreviewPane extends React.Component {
     const labelledWidgets = ['string', 'text', 'number'];
     if (Object.keys(this.inferedFields).indexOf(name) !== -1) {
       value = this.inferedFields[name].defaultPreview(value);
-    } else if (value && labelledWidgets.indexOf(field.get('widget')) !== -1 && value.toString().length < 50) {
-      value = <div><strong>{field.get('label')}:</strong> {value}</div>;
+    } else if (
+      value &&
+      labelledWidgets.indexOf(field.get('widget')) !== -1 &&
+      value.toString().length < 50
+    ) {
+      value = (
+        <div>
+          <strong>{field.get('label')}:</strong> {value}
+        </div>
+      );
     }
 
     return value ? this.getWidget(field, value, this.props) : null;
@@ -109,22 +116,31 @@ export default class PreviewPane extends React.Component {
    *
    * TODO: see if widgetFor can now provide this functionality for preview templates
    */
-  widgetsFor = (name) => {
+  widgetsFor = name => {
     const { fields, entry } = this.props;
     const field = fields.find(f => f.get('name') === name);
     const nestedFields = field && field.get('fields');
     const value = entry.getIn(['data', field.get('name')]);
 
     if (List.isList(value)) {
-      return value.map((val, index) => {
-        const widgets = nestedFields && Map(nestedFields.map((f, i) => [f.get('name'), <div key={i}>{this.getWidget(f, val, this.props)}</div>]));
+      return value.map(val => {
+        const widgets =
+          nestedFields &&
+          Map(
+            nestedFields.map((f, i) => [
+              f.get('name'),
+              <div key={i}>{this.getWidget(f, val, this.props)}</div>,
+            ]),
+          );
         return Map({ data: val, widgets });
       });
     }
 
     return Map({
       data: value,
-      widgets: nestedFields && Map(nestedFields.map(f => [f.get('name'), this.getWidget(f, value, this.props)])),
+      widgets:
+        nestedFields &&
+        Map(nestedFields.map(f => [f.get('name'), this.getWidget(f, value, this.props)])),
     });
   };
 
@@ -136,8 +152,7 @@ export default class PreviewPane extends React.Component {
     }
 
     const previewComponent =
-      getPreviewTemplate(selectTemplateName(collection, entry.get('slug'))) ||
-      EditorPreview;
+      getPreviewTemplate(selectTemplateName(collection, entry.get('slug'))) || EditorPreview;
 
     this.inferFields();
 
@@ -147,16 +162,15 @@ export default class PreviewPane extends React.Component {
       widgetsFor: this.widgetsFor,
     };
 
-    const styleEls = getPreviewStyles()
-      .map((style, i) => {
-        if (style.raw) {
-          return <style key={i}>{style.value}</style>
-        }
-        return <link key={i} href={style.value} type="text/css" rel="stylesheet" />;
-      });
+    const styleEls = getPreviewStyles().map((style, i) => {
+      if (style.raw) {
+        return <style key={i}>{style.value}</style>;
+      }
+      return <link key={i} href={style.value} type="text/css" rel="stylesheet" />;
+    });
 
     if (!collection) {
-      <PreviewPaneFrame head={styleEls}/>
+      <PreviewPaneFrame head={styleEls} />;
     }
 
     const initialContent = `
@@ -170,7 +184,7 @@ export default class PreviewPane extends React.Component {
     return (
       <ErrorBoundary>
         <PreviewPaneFrame head={styleEls} initialContent={initialContent}>
-          <EditorPreviewContent {...{ previewComponent, previewProps }}/>
+          <EditorPreviewContent {...{ previewComponent, previewProps }} />
         </PreviewPaneFrame>
       </ErrorBoundary>
     );

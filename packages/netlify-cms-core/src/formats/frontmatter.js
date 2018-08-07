@@ -33,31 +33,32 @@ const parsers = {
     parse: input => yamlFormatter.fromFile(input),
     stringify: (metadata, { sortedKeys }) => yamlFormatter.toFile(metadata, sortedKeys),
   },
-}
+};
 
 function inferFrontmatterFormat(str) {
   const firstLine = str.substr(0, str.indexOf('\n')).trim();
-  if ((firstLine.length > 3) && (firstLine.substr(0, 3) === "---")) {
+  if (firstLine.length > 3 && firstLine.substr(0, 3) === '---') {
     // No need to infer, `gray-matter` will handle things like `---toml` for us.
     return;
   }
   switch (firstLine) {
-    case "---":
+    case '---':
       return getFormatOpts('yaml');
-    case "+++":
+    case '+++':
       return getFormatOpts('toml');
-    case "{":
+    case '{':
       return getFormatOpts('json');
     default:
-      throw "Unrecognized front-matter format.";
+      throw 'Unrecognized front-matter format.';
   }
 }
 
-export const getFormatOpts = format => ({
-  yaml: { language: "yaml", delimiters: "---" },
-  toml: { language: "toml", delimiters: "+++" },
-  json: { language: "json", delimiters: ["{", "}"] },
-}[format]);
+export const getFormatOpts = format =>
+  ({
+    yaml: { language: 'yaml', delimiters: '---' },
+    toml: { language: 'toml', delimiters: '+++' },
+    json: { language: 'json', delimiters: ['{', '}'] },
+  }[format]);
 
 class FrontmatterFormatter {
   constructor(format, customDelimiter) {

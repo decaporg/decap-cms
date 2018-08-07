@@ -42,5 +42,5 @@
     "react-sidecar": "^0.1.1",
     "smooth-scroll": "^14.2.0"
   },
-  "devDependencies": {}
+  "private": true
 }

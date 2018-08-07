@@ -66,12 +66,11 @@ export function validateNode(node) {
     if (trailingShortcode) {
       return change => {
         const text = Text.create('');
-        const block = Block.create({ type: 'paragraph', nodes: [ text ] });
+        const block = Block.create({ type: 'paragraph', nodes: [text] });
         return change.insertNodeByKey(doc.key, doc.get('nodes').size, block);
       };
     }
   }
-
 
   /**
    * Ensure that code blocks contain no marks.
@@ -79,11 +78,12 @@ export function validateNode(node) {
   if (node.type === 'code') {
     const invalidChild = node.getTexts().find(text => !text.getMarks().isEmpty());
     if (invalidChild) {
-      return change => (
-        invalidChild.getMarks().forEach(mark => (
-          change.removeMarkByKey(invalidChild.key, 0, invalidChild.get('characters').size, mark)
-        ))
-      );
+      return change =>
+        invalidChild
+          .getMarks()
+          .forEach(mark =>
+            change.removeMarkByKey(invalidChild.key, 0, invalidChild.get('characters').size, mark),
+          );
     }
   }
 }

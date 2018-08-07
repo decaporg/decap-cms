@@ -1,4 +1,15 @@
-@import url(https://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,700,900|Roboto+Mono:400,700);
+@import url(
+  https://fonts.googleapis.com/css?family=Roboto:400,
+  100,
+  100italic,
+  300,
+  300italic,
+  400italic,
+  500,
+  700,
+  900|Roboto+Mono:400,
+  700
+);
 
 body {
   background-color: $shadeBlue;
@@ -52,7 +63,8 @@ h3 {
   margin: 0;
 }
 
-p, ul {
+p,
+ul {
   font-size: 18px;
   line-height: 26px;
   margin-top: 0;
@@ -79,7 +91,7 @@ ul {
   }
 }
 
-*[class^="btn-"] {
+*[class^='btn-'] {
   border-radius: $borderRadius;
   box-sizing: border-box;
   display: inline-block;
@@ -92,7 +104,7 @@ ul {
   overflow: hidden;
 
   &:after {
-    content: "";
+    content: '';
     position: absolute;
     top: -40%;
     left: -210%;
@@ -100,13 +112,13 @@ ul {
     height: 200%;
     opacity: 0;
     transform: rotate(30deg);
-    background: rgba(255,255,255,0.2);
+    background: rgba(255, 255, 255, 0.2);
     background: linear-gradient(
       to right,
       rgba(255, 255, 255, 0.2) 0%,
       rgba(255, 255, 255, 0.2) 77%,
       rgba(255, 255, 255, 0.6) 92%,
-      rgba(255, 255, 255, 0.0) 100%
+      rgba(255, 255, 255, 0) 100%
     );
   }
 

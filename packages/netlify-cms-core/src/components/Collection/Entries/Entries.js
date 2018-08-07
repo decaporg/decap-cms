@@ -8,18 +8,12 @@ const Entries = ({
   collections,
   entries,
   publicFolder,
-  page,
-  onPaginate,
   isFetching,
   viewStyle,
   cursor,
   handleCursorActions,
 }) => {
-  const loadingMessages = [
-    'Loading Entries',
-    'Caching Entries',
-    'This might take several minutes',
-  ];
+  const loadingMessages = ['Loading Entries', 'Caching Entries', 'This might take several minutes'];
 
   if (entries) {
     return (
@@ -39,7 +33,7 @@ const Entries = ({
   }
 
   return <div className="nc-collectionPage-noEntries">No Entries</div>;
-}
+};
 
 Entries.propTypes = {
   collections: ImmutablePropTypes.map.isRequired,

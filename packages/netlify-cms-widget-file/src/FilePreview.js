@@ -4,7 +4,7 @@ import { WidgetPreviewContainer } from 'netlify-cms-ui-default';
 
 const FilePreview = ({ value, getAsset }) => (
   <WidgetPreviewContainer>
-    { value ? <a href={getAsset(value)}>{ value }</a> : null}
+    {value ? <a href={getAsset(value)}>{value}</a> : null}
   </WidgetPreviewContainer>
 );
 

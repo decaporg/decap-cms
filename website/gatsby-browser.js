@@ -5,6 +5,6 @@ exports.onClientEntry = () => {
   new SmoothScroll('a[href*="#"]', {
     offset() {
       return document.querySelector('#header').offsetHeight;
-    }
+    },
   });
 };

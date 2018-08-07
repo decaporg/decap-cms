@@ -23,7 +23,7 @@ const WorkflowLink = styled(Link)`
   padding: 0 18px 18px;
   height: 200px;
   overflow: hidden;
-`
+`;
 
 const CardCollection = styled.div`
   font-size: 14px;
@@ -33,16 +33,16 @@ const CardCollection = styled.div`
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
-`
+`;
 
 const CardTitle = styled.h2`
   margin: 28px 0 0;
   color: ${colors.textLead};
-`
+`;
 
 const CardDate = styled.div`
   ${styles.text};
-`
+`;
 
 const CardBody = styled.p`
   ${styles.text};
@@ -51,7 +51,7 @@ const CardBody = styled.p`
   overflow-wrap: break-word;
   word-break: break-word;
   hyphens: auto;
-`
+`;
 
 const CardButtonContainer = styled.div`
   background-color: ${colors.foreground};
@@ -63,14 +63,14 @@ const CardButtonContainer = styled.div`
   opacity: 0;
   transition: opacity ${transitions.main};
   cursor: pointer;
-`
+`;
 
 const DeleteButton = styled.button`
   ${styles.button};
   background-color: ${colorsRaw.redLight};
   color: ${colorsRaw.red};
   margin-right: 6px;
-`
+`;
 
 const PublishButton = styled.button`
   ${styles.button};
@@ -82,7 +82,7 @@ const PublishButton = styled.button`
     background-color: ${colorsRaw.grayLight};
     color: ${colorsRaw.gray};
   }
-`
+`;
 
 const WorkflowCardContainer = styled.div`
   ${components.card};
@@ -93,12 +93,11 @@ const WorkflowCardContainer = styled.div`
   &:hover ${CardButtonContainer} {
     opacity: 1;
   }
-`
+`;
 
 const WorkflowCard = ({
   collectionName,
   title,
-  author,
   authorLastChange,
   body,
   isModification,
@@ -112,7 +111,9 @@ const WorkflowCard = ({
     <WorkflowLink to={editLink}>
       <CardCollection>{collectionName}</CardCollection>
       <CardTitle>{title}</CardTitle>
-      <CardDate>{timestamp} by {authorLastChange}</CardDate>
+      <CardDate>
+        {timestamp} by {authorLastChange}
+      </CardDate>
       <CardBody>{body}</CardBody>
     </WorkflowLink>
     <CardButtonContainer>

@@ -8,27 +8,26 @@ import { Cursor } from 'netlify-cms-lib-util';
 import { selectFields, selectInferedField } from 'Reducers/collections';
 import EntryCard from './EntryCard';
 
-const CardsGrid = styled.div`
+const CardsGrid = styled.ul`
   display: flex;
   flex-flow: row wrap;
+  list-style-type: none;
   margin-left: -12px;
-`
+`;
 
 export default class EntryListing extends React.Component {
   static propTypes = {
     publicFolder: PropTypes.string.isRequired,
-    collections: PropTypes.oneOfType([
-      ImmutablePropTypes.map,
-      ImmutablePropTypes.iterable,
-    ]).isRequired,
+    collections: PropTypes.oneOfType([ImmutablePropTypes.map, ImmutablePropTypes.iterable])
+      .isRequired,
     entries: ImmutablePropTypes.list,
     viewStyle: PropTypes.string,
   };
 
   handleLoadMore = () => {
     const { cursor, handleCursorActions } = this.props;
-    if (Cursor.create(cursor).actions.has("append_next")) {
-      handleCursorActions("append_next");
+    if (Cursor.create(cursor).actions.has('append_next')) {
+      handleCursorActions('append_next');
     }
   };
 
@@ -38,7 +37,8 @@ export default class EntryListing extends React.Component {
     const imageField = selectInferedField(collection, 'image');
     const fields = selectFields(collection);
     const inferedFields = [titleField, descriptionField, imageField];
-    const remainingFields = fields && fields.filter(f => inferedFields.indexOf(f.get('name')) === -1);
+    const remainingFields =
+      fields && fields.filter(f => inferedFields.indexOf(f.get('name')) === -1);
     return { titleField, descriptionField, imageField, remainingFields };
   };
 
@@ -67,11 +67,9 @@ export default class EntryListing extends React.Component {
     return (
       <div>
         <CardsGrid>
-          {
-            Map.isMap(collections)
-              ? this.renderCardsForSingleCollection()
-              : this.renderCardsForMultipleCollections()
-          }
+          {Map.isMap(collections)
+            ? this.renderCardsForSingleCollection()
+            : this.renderCardsForMultipleCollections()}
           <Waypoint onEnter={this.handleLoadMore} />
         </CardsGrid>
       </div>

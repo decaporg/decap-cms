@@ -18,7 +18,8 @@ import {
 } from 'Actions/mediaLibrary';
 
 const mediaLibrary = (state = Map({ isVisible: false, controlMedia: Map() }), action) => {
-  const privateUploadChanged = state.get('privateUpload') !== get(action, ['payload', 'privateUpload']);
+  const privateUploadChanged =
+    state.get('privateUpload') !== get(action, ['payload', 'privateUpload']);
   switch (action.type) {
     case MEDIA_LIBRARY_OPEN: {
       const { controlID, forImage, privateUpload } = action.payload || {};
@@ -57,7 +58,7 @@ const mediaLibrary = (state = Map({ isVisible: false, controlMedia: Map() }), ac
         map.set('isPaginating', action.payload.page > 1);
       });
     case MEDIA_LOAD_SUCCESS: {
-      const { files = [], page, canPaginate, dynamicSearch, dynamicSearchQuery, privateUpload } = action.payload;
+      const { files = [], page, canPaginate, dynamicSearch, dynamicSearchQuery } = action.payload;
 
       if (privateUploadChanged) {
         return state;

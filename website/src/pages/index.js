@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Fragment } from 'react';
 import moment from 'moment';
 
 import Markdownify from '../components/markdownify';
@@ -68,17 +68,13 @@ const HomePage = ({ data }) => {
           <ol>
             {updates.updates.slice(0, 3).map(node => (
               <a
-                href={`https://github.com/netlify/netlify-cms/releases/tag/${
-                  node.version
-                }`}
+                href={`https://github.com/netlify/netlify-cms/releases/tag/${node.version}`}
                 key={node.version}
               >
                 <li>
                   <div className="update-metadata">
                     <span className="update-version">{node.version}</span>
-                    <span className="update-date">
-                      {moment(node.date).format('MMMM D, YYYY')}
-                    </span>
+                    <span className="update-date">{moment(node.date).format('MMMM D, YYYY')}</span>
                   </div>
                   <span className="update-description">
                     <Markdownify source={node.description} />
@@ -119,10 +115,7 @@ const HomePage = ({ data }) => {
             <div className="contributor-list">
               {contribs.contributors.map(user => (
                 <a href={user.profile} title={user.name} key={user.login}>
-                  <img
-                    src={user.avatar_url.replace('v=4', 's=32')}
-                    alt={user.login}
-                  />
+                  <img src={user.avatar_url.replace('v=4', 's=32')} alt={user.login} />
                 </a>
               ))}
             </div>

@@ -8,7 +8,7 @@ import {
   shadows,
   colors,
   colorsRaw,
-  lengths
+  lengths,
 } from 'netlify-cms-ui-default';
 
 const LoginButton = styled.button`
@@ -21,12 +21,12 @@ const LoginButton = styled.button`
   display: block;
   margin-top: 20px;
   margin-left: auto;
-`
+`;
 
 const AuthForm = styled.form`
   width: 350px;
   margin-top: -80px;
-`
+`;
 
 const AuthInput = styled.input`
   background-color: ${colorsRaw.white};
@@ -44,16 +44,16 @@ const AuthInput = styled.input`
     outline: none;
     box-shadow: inset 0 0 0 2px ${colors.active};
   }
-`
+`;
 
 const ErrorMessage = styled.p`
   color: ${colors.errorText};
-`
+`;
 
 let component = null;
 
 if (window.netlifyIdentity) {
-  window.netlifyIdentity.on('login', (user) => {
+  window.netlifyIdentity.on('login', user => {
     component && component.handleIdentityLogin(user);
   });
   window.netlifyIdentity.on('logout', () => {
@@ -78,14 +78,14 @@ export default class GitGatewayAuthenticationPage extends React.Component {
     component = null;
   }
 
-  handleIdentityLogin = (user) => {
+  handleIdentityLogin = user => {
     this.props.onLogin(user);
     window.netlifyIdentity.close();
-  }
+  };
 
   handleIdentityLogout = () => {
     window.netlifyIdentity.open();
-  }
+  };
 
   handleIdentity = () => {
     const user = window.netlifyIdentity.currentUser();
@@ -94,20 +94,20 @@ export default class GitGatewayAuthenticationPage extends React.Component {
     } else {
       window.netlifyIdentity.open();
     }
-  }
+  };
 
   static propTypes = {
     onLogin: PropTypes.func.isRequired,
     inProgress: PropTypes.bool.isRequired,
   };
 
-  state = { email: "", password: "", errors: {} };
+  state = { email: '', password: '', errors: {} };
 
   handleChange = (name, e) => {
     this.setState({ ...this.state, [name]: e.target.value });
   };
 
-  handleLogin = (e) => {
+  handleLogin = e => {
     e.preventDefault();
 
     const { email, password } = this.state;
@@ -124,13 +124,17 @@ export default class GitGatewayAuthenticationPage extends React.Component {
       return;
     }
 
-    AuthenticationPage.authClient.login(this.state.email, this.state.password, true)
-    .then((user) => {
-      this.props.onLogin(user);
-    })
-    .catch((error) => {
-      this.setState({ errors: { server: error.description || error.msg || error }, loggingIn: false });
-    });
+    AuthenticationPage.authClient
+      .login(this.state.email, this.state.password, true)
+      .then(user => {
+        this.props.onLogin(user);
+      })
+      .catch(error => {
+        this.setState({
+          errors: { server: error.description || error.msg || error },
+          loggingIn: false,
+        });
+      });
   };
 
   render() {
@@ -147,29 +151,33 @@ export default class GitGatewayAuthenticationPage extends React.Component {
     }
 
     return (
-      <AuthenticationPage renderPageContent={() => (
-        <AuthForm onSubmit={this.handleLogin}>
-          {!error ? null : <ErrorMessage>{error}</ErrorMessage>}
-          {!errors.server ? null : <ErrorMessage>{errors.server}</ErrorMessage>}
-          <ErrorMessage>{errors.email || null}</ErrorMessage>
-          <AuthInput
-            type="text"
-            name="email"
-            placeholder="Email"
-            value={this.state.email}
-            onChange={partial(this.handleChange, 'email')}
-          />
-          <ErrorMessage>{errors.password || null}</ErrorMessage>
-          <AuthInput
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={this.state.password}
-            onChange={partial(this.handleChange, 'password')}
-          />
-          <LoginButton disabled={inProgress}>{inProgress ? 'Logging in...' : 'Login'}</LoginButton>
-        </AuthForm>
-      )}/>
+      <AuthenticationPage
+        renderPageContent={() => (
+          <AuthForm onSubmit={this.handleLogin}>
+            {!error ? null : <ErrorMessage>{error}</ErrorMessage>}
+            {!errors.server ? null : <ErrorMessage>{errors.server}</ErrorMessage>}
+            <ErrorMessage>{errors.email || null}</ErrorMessage>
+            <AuthInput
+              type="text"
+              name="email"
+              placeholder="Email"
+              value={this.state.email}
+              onChange={partial(this.handleChange, 'email')}
+            />
+            <ErrorMessage>{errors.password || null}</ErrorMessage>
+            <AuthInput
+              type="password"
+              name="password"
+              placeholder="Password"
+              value={this.state.password}
+              onChange={partial(this.handleChange, 'password')}
+            />
+            <LoginButton disabled={inProgress}>
+              {inProgress ? 'Logging in...' : 'Login'}
+            </LoginButton>
+          </AuthForm>
+        )}
+      />
     );
   }
 }

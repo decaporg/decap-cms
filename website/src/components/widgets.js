@@ -5,28 +5,24 @@ import '../css/imports/widgets.css';
 
 class Widgets extends Component {
   state = {
-    currentWidget: null
+    currentWidget: null,
   };
 
   componentDidMount() {
     const { widgets } = this.props;
 
-    const hash = window.location.hash
-      ? window.location.hash.replace('#', '')
-      : '';
+    const hash = window.location.hash ? window.location.hash.replace('#', '') : '';
 
-    const widgetsContainHash = widgets.edges.some(
-      w => w.node.frontmatter.target === hash
-    );
+    const widgetsContainHash = widgets.edges.some(w => w.node.frontmatter.target === hash);
 
     if (widgetsContainHash) {
       return this.setState({
-        currentWidget: hash
+        currentWidget: hash,
       });
     }
 
     this.setState({
-      currentWidget: widgets.edges[0].node.frontmatter.target
+      currentWidget: widgets.edges[0].node.frontmatter.target,
     });
   }
 
@@ -34,11 +30,11 @@ class Widgets extends Component {
     event.preventDefault();
     this.setState(
       {
-        currentWidget: target
+        currentWidget: target,
       },
       () => {
         history.pushState(null, null, `#${target}`);
-      }
+      },
     );
   };
 
@@ -56,7 +52,7 @@ class Widgets extends Component {
                 <button
                   key={target}
                   className={classnames('widgets__item', {
-                    widgets__item_active: currentWidget === target
+                    widgets__item_active: currentWidget === target,
                   })}
                   onClick={event => this.handleWidgetChange(event, target)}
                 >
@@ -72,7 +68,7 @@ class Widgets extends Component {
                 <div
                   key={label}
                   className={classnames('widget', {
-                    widget_open: currentWidget === target
+                    widget_open: currentWidget === target,
                   })}
                 >
                   <h3>{label}</h3>
