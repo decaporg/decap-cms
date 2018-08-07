@@ -10,11 +10,6 @@ if (process.env.NODE_ENV === `production`) {
   }
 }
 
-const JS_NPM_URLS = [
-  'https://buttons.github.io/buttons.js',
-  '//unpkg.com/docsearch.js@2.4.1/dist/cdn/docsearch.min.js'
-];
-
 module.exports = class HTML extends React.Component {
   render() {
     let css;
@@ -26,8 +21,6 @@ module.exports = class HTML extends React.Component {
         />
       );
     }
-
-    const js = JS_NPM_URLS.map(src => <script key={src} src={src} />);
 
     return (
       <html {...this.props.htmlAttributes}>
@@ -78,7 +71,8 @@ module.exports = class HTML extends React.Component {
           />
           {this.props.postBodyComponents}
           <Gitter room="netlify/NetlifyCMS" />
-          {js}
+          <script async defer src="https://buttons.github.io/buttons.js"></script>
+          <script src="//unpkg.com/docsearch.js@2.4.1/dist/cdn/docsearch.min.js"></script>
         </body>
       </html>
     );
