@@ -14,10 +14,7 @@ class MobileNav extends Component {
           {items.map(item => (
             <optgroup label={item.title} key={item.title}>
               {item.group.edges.map(({ node }) => (
-                <option
-                  value={node.fields.slug}
-                  key={node.fields.slug}
-                  className="nav-link">
+                <option value={node.fields.slug} key={node.fields.slug} className="nav-link">
                   {node.frontmatter.title}
                 </option>
               ))}

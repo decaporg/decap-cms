@@ -16,12 +16,14 @@ const EditorToggleButton = styled.button`
   height: 40px;
   padding: 0;
   margin-bottom: 12px;
-`
+`;
 
-const EditorToggle = ({ enabled, active, onClick, icon }) => !enabled ? null :
-  <EditorToggleButton onClick={onClick} isActive={active}>
-    <Icon type={icon} size="large"/>
-  </EditorToggleButton>;
+const EditorToggle = ({ enabled, active, onClick, icon }) =>
+  !enabled ? null : (
+    <EditorToggleButton onClick={onClick} isActive={active}>
+      <Icon type={icon} size="large" />
+    </EditorToggleButton>
+  );
 
 EditorToggle.propTypes = {
   enabled: PropTypes.bool,

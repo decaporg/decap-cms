@@ -4,7 +4,7 @@ import searchIcon from '../img/search.svg';
 
 class DocSearch extends Component {
   state = {
-    enabled: true
+    enabled: true,
   };
   componentDidMount() {
     if (window.docsearch) {
@@ -12,7 +12,7 @@ class DocSearch extends Component {
         apiKey: '08d03dc80862e84c70c5a1e769b13019',
         indexName: 'netlifycms',
         inputSelector: '.algolia-search',
-        debug: false // Set debug to true if you want to inspect the dropdown
+        debug: false, // Set debug to true if you want to inspect the dropdown
       });
     } else {
       this.setState({ enabled: false });
@@ -26,11 +26,7 @@ class DocSearch extends Component {
     return (
       <a className="utility-input">
         <img src={searchIcon} />
-        <input
-          type="search"
-          placeholder="Search the docs"
-          className="algolia-search"
-        />
+        <input type="search" placeholder="Search the docs" className="algolia-search" />
       </a>
     );
   }

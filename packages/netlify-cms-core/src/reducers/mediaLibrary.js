@@ -18,7 +18,8 @@ import {
 } from 'Actions/mediaLibrary';
 
 const mediaLibrary = (state = Map({ isVisible: false, controlMedia: Map() }), action) => {
-  const privateUploadChanged = state.get('privateUpload') !== get(action, ['payload', 'privateUpload']);
+  const privateUploadChanged =
+    state.get('privateUpload') !== get(action, ['payload', 'privateUpload']);
   switch (action.type) {
     case MEDIA_LIBRARY_OPEN: {
       const { controlID, forImage, privateUpload } = action.payload || {};

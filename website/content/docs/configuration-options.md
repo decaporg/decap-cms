@@ -18,13 +18,11 @@ To see working configuration examples, you can [start from a template](https://w
 
 You can find details about all configuration options below. Note that [YAML syntax](https://en.wikipedia.org/wiki/YAML#Basic_components) allows lists and objects to be written in block or inline style, and the code samples below include a mix of both.
 
-
 ## Backend
 
-*This setting is required.*
+_This setting is required._
 
 The `backend` option specifies how to access the content for your site, including authentication. Full details and code samples can be found in [Authentication & Backends](https://www.netlifycms.org/docs/authentication-backends).
-
 
 ## Publish Mode
 
@@ -42,16 +40,15 @@ publish_mode: editorial_workflow
 
 From a technical perspective, the workflow translates editor UI actions into common Git commands:
 
-Actions in Netlify UI ...	| Perform these Git actions
---- | ---
-Save draft | Commits to a new branch (named according to the pattern `cms/collectionName-entrySlug`), and opens a pull request
-Edit draft | Pushes another commit to the draft branch/pull request
-Approve and publish draft | Merges pull request and deletes branch
-
+| Actions in Netlify UI ... | Perform these Git actions                                                                                         |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| Save draft                | Commits to a new branch (named according to the pattern `cms/collectionName-entrySlug`), and opens a pull request |
+| Edit draft                | Pushes another commit to the draft branch/pull request                                                            |
+| Approve and publish draft | Merges pull request and deletes branch                                                                            |
 
 ## Media and Public Folders
 
-*This setting is required.*
+_This setting is required._
 
 Netlify CMS users can upload files to your repository using the Media Gallery. The following settings specify where these files are saved, and where they can be accessed on your built site.
 
@@ -62,9 +59,9 @@ Netlify CMS users can upload files to your repository using the Media Gallery. T
 
 **Example**
 
-``` yaml
-media_folder: "static/images/uploads"
-public_folder: "/images/uploads"
+```yaml
+media_folder: 'static/images/uploads'
+public_folder: '/images/uploads'
 ```
 
 Based on the settings above, if a user used an image widget field called `avatar` to upload and select an image called `philosoraptor.png`, the image would be saved to the repository at `/static/images/uploads/philosoraptor.png`, and the `avatar` field for the file would be set to `/images/uploads/philosoraptor.png`.
@@ -92,15 +89,15 @@ The `slug` option allows you to change how filenames for entries are created and
 
 **Example**
 
-``` yaml
+```yaml
 slug:
-  encoding: "ascii"
+  encoding: 'ascii'
   clean_accents: true
 ```
 
 ## Collections
 
-*This setting is required.*
+_This setting is required._
 
 The `collections` setting is the heart of your Netlify CMS configuration, as it determines how content types and editor fields in the UI generate files and content in your repository. Each collection you configure displays in the left sidebar of the Content page of the editor UI, in the order they are entered into your Netlify CMS `config.yml` file.
 
@@ -136,12 +133,11 @@ You may also specify a custom `extension` not included in the list above, as lon
 - `toml`: parses and saves files as TOML-formatted data files; saves with `toml` extension by default
 - `json`: parses and saves files as JSON-formatted data files; saves with `json` extension by default
 - `frontmatter`: parses files and saves files with data frontmatter followed by an unparsed body text (edited using a `body` field); saves with `md` extension by default; default for collections that can't be inferred. Collections with `frontmatter` format (either inferred or explicitly set) can parse files with frontmatter in YAML, TOML, or JSON format. However, they will be saved with YAML frontmatter.
-- `yaml-frontmatter`: same as the `frontmatter` format above, except frontmatter will be both parsed and saved only as YAML, followed by unparsed body text. The default delimiter for this option is  `---`.
-- `toml-frontmatter`: same as the `frontmatter` format above, except frontmatter will be both parsed and saved only as TOML, followed by unparsed body text. The default delimiter for this option is  `+++`.
-- `json-frontmatter`: same as the `frontmatter` format above, except frontmatter will be both parsed and saved as JSON, followed by unparsed body text. The default delimiter for this option is  `{` `}`.
+- `yaml-frontmatter`: same as the `frontmatter` format above, except frontmatter will be both parsed and saved only as YAML, followed by unparsed body text. The default delimiter for this option is `---`.
+- `toml-frontmatter`: same as the `frontmatter` format above, except frontmatter will be both parsed and saved only as TOML, followed by unparsed body text. The default delimiter for this option is `+++`.
+- `json-frontmatter`: same as the `frontmatter` format above, except frontmatter will be both parsed and saved as JSON, followed by unparsed body text. The default delimiter for this option is `{` `}`.
 
 `frontmatter_delimiter`: if you have an explicit frontmatter format declared, this option allows you to specify a custom delimiter like `~~~`. If you need different beginning and ending delimiters, you can use an array like `["(", ")"]`.
-
 
 ### `slug`
 
@@ -160,7 +156,7 @@ For folder collections where users can create new items, the `slug` option speci
 **Example:**
 
 ```yaml
-slug: "{{year}}-{{month}}-{{day}}_{{slug}}"
+slug: '{{year}}-{{month}}-{{day}}_{{slug}}'
 ```
 
 ### `fields`
@@ -182,13 +178,13 @@ In files with frontmatter, one field should be named `body`. This special field 
 
 ```yaml
 fields:
-  - label: "Title"
-    name: "title"
-    widget: "string"
-    pattern: ['.{20,}', "Must have at least 20 characters"]
-  - {label: "Layout", name: "layout", widget: "hidden", default: "blog"}
-  - {label: "Featured Image", name: "thumbnail", widget: "image", required: false}
-  - {label: "Body", name: "body", widget: "markdown"}
+  - label: 'Title'
+    name: 'title'
+    widget: 'string'
+    pattern: ['.{20,}', 'Must have at least 20 characters']
+  - { label: 'Layout', name: 'layout', widget: 'hidden', default: 'blog' }
+  - { label: 'Featured Image', name: 'thumbnail', widget: 'image', required: false }
+  - { label: 'Body', name: 'body', widget: 'markdown' }
 ```
 
 ### `editor`
@@ -200,6 +196,6 @@ This setting changes options for the editor view of the collection. It has one o
 **Example:**
 
 ```yaml
-  editor:
-     preview: false
+editor:
+  preview: false
 ```

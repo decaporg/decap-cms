@@ -13,7 +13,6 @@ const patternSegments = {
   htmlOpeningTagEnd: /(?: *\w+=(?:(?:"[^"]*")|(?:'[^']*')))* *>/,
 };
 
-
 /**
  * Patterns matching substrings that should not be escaped. Array values must be
  * joined before use.
@@ -36,7 +35,6 @@ const nonEscapePatterns = {
      */
     patternSegments.htmlOpeningTagEnd,
   ],
-
 
   /**
    * Preformatted HTML Blocks
@@ -71,7 +69,6 @@ const nonEscapePatterns = {
     /<\/\1>/,
   ],
 };
-
 
 /**
  * Escape patterns
@@ -137,7 +134,6 @@ const escapePatterns = [
   /(\[)[^\]]*]/g,
 ];
 
-
 /**
  * Generate new non-escape expression. The non-escape expression matches
  * substrings whose contents should not be processed for escaping.
@@ -147,13 +143,11 @@ const joinedNonEscapePatterns = map(nonEscapePatterns, pattern => {
 });
 const nonEscapePattern = combinePatterns(joinedNonEscapePatterns);
 
-
 /**
  * Create chain of successive escape functions for various markdown entities.
  */
 const escapeFunctions = escapePatterns.map(pattern => partial(escapeDelimiters, pattern));
 const escapeAll = flow(escapeFunctions);
-
 
 /**
  * Executes both the `escapeCommonChars` and `escapeLeadingChars` functions.
@@ -162,7 +156,6 @@ function escapeAllChars(text) {
   const partiallyEscapedMarkdown = escapeCommonChars(text);
   return escapeLeadingChars(partiallyEscapedMarkdown);
 }
-
 
 /**
  * escapeLeadingChars
@@ -177,7 +170,6 @@ function escapeAllChars(text) {
 function escapeLeadingChars(text) {
   return text.replace(/^\s*([-#*>=|]| {4,}|`{3,})/, '$`\\$1');
 }
-
 
 /**
  * escapeCommonChars
@@ -199,7 +191,6 @@ function escapeCommonChars(text) {
   return replaceWhen(nonEscapeExpression, escapeAll, text, true);
 }
 
-
 /**
  * escapeDelimiters
  *
@@ -216,7 +207,6 @@ function escapeDelimiters(pattern, text) {
   });
 }
 
-
 /**
  * escape
  *
@@ -230,7 +220,6 @@ function escape(delim) {
   }
   return result;
 }
-
 
 /**
  * A Remark plugin for escaping markdown entities.
@@ -261,7 +250,6 @@ export default function remarkEscapeMarkdownEntities() {
      * text in html nodes to keep Remark from escaping html entities.
      */
     if (['text', 'html'].includes(node.type)) {
-
       /**
        * Escape all characters if this is the first child node, otherwise only
        * common characters.
@@ -273,7 +261,7 @@ export default function remarkEscapeMarkdownEntities() {
     /**
      * Always return nodes with recursively mapped children.
      */
-    return {...node, children };
+    return { ...node, children };
   };
 
   return transform;

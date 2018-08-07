@@ -6,7 +6,7 @@ import { Cursor } from 'netlify-cms-lib-util';
 import { selectSearchedEntries } from 'Reducers';
 import {
   searchEntries as actionSearchEntries,
-  clearSearch as actionClearSearch
+  clearSearch as actionClearSearch,
 } from 'Actions/search';
 import Entries from './Entries';
 
@@ -40,19 +40,19 @@ class EntriesSearch extends React.Component {
   getCursor = () => {
     const { page } = this.props;
     return Cursor.create({
-      actions: isNaN(page) ? [] : ["append_next"],
+      actions: isNaN(page) ? [] : ['append_next'],
     });
   };
 
-  handleCursorActions = (action) => {
+  handleCursorActions = action => {
     const { page, searchTerm, searchEntries } = this.props;
-    if (action === "append_next") {
+    if (action === 'append_next') {
       const nextPage = page + 1;
       searchEntries(searchTerm, nextPage);
     }
   };
 
-  render () {
+  render() {
     const { collections, entries, publicFolder, isFetching } = this.props;
     return (
       <Entries
@@ -83,4 +83,7 @@ const mapDispatchToProps = {
   clearSearch: actionClearSearch,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(EntriesSearch);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(EntriesSearch);

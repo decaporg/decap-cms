@@ -12,7 +12,7 @@ const ControlPaneContainer = styled.div`
   p {
     font-size: 16px;
   }
-`
+`;
 
 export default class ControlPane extends React.Component {
   componentValidate = {};
@@ -23,9 +23,9 @@ export default class ControlPane extends React.Component {
   };
 
   validate = () => {
-    this.props.fields.forEach((field) => {
+    this.props.fields.forEach(field => {
       if (field.get('widget') === 'hidden') return;
-      this.componentValidate[field.get("name")]();
+      this.componentValidate[field.get('name')]();
     });
   };
 
@@ -50,17 +50,20 @@ export default class ControlPane extends React.Component {
 
     return (
       <ControlPaneContainer>
-        {fields.map((field, i) => field.get('widget') === 'hidden' ? null :
-          <EditorControl
-            key={i}
-            field={field}
-            value={entry.getIn(['data', field.get('name')])}
-            fieldsMetaData={fieldsMetaData}
-            fieldsErrors={fieldsErrors}
-            onChange={onChange}
-            onValidate={onValidate}
-            processControlRef={this.processControlRef}
-          />
+        {fields.map(
+          (field, i) =>
+            field.get('widget') === 'hidden' ? null : (
+              <EditorControl
+                key={i}
+                field={field}
+                value={entry.getIn(['data', field.get('name')])}
+                fieldsMetaData={fieldsMetaData}
+                fieldsErrors={fieldsErrors}
+                onChange={onChange}
+                onValidate={onValidate}
+                processControlRef={this.processControlRef}
+              />
+            ),
         )}
       </ControlPaneContainer>
     );

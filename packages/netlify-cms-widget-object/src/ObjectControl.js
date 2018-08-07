@@ -16,11 +16,7 @@ const styles = {
 export default class ObjectControl extends Component {
   static propTypes = {
     onChangeObject: PropTypes.func.isRequired,
-    value: PropTypes.oneOfType([
-      PropTypes.node,
-      PropTypes.object,
-      PropTypes.bool,
-    ]),
+    value: PropTypes.oneOfType([PropTypes.node, PropTypes.object, PropTypes.bool]),
     field: PropTypes.object,
     forID: PropTypes.string,
     classNameWrapper: PropTypes.string.isRequired,
@@ -59,14 +55,12 @@ export default class ObjectControl extends Component {
     const fieldName = field.get('name');
     const fieldValue = value && Map.isMap(value) ? value.get(fieldName) : value;
 
-    return (
-      <EditorControl key={key} field={field} value={fieldValue} onChange={onChangeObject}/>
-    );
+    return <EditorControl key={key} field={field} value={fieldValue} onChange={onChangeObject} />;
   }
 
   handleCollapseToggle = () => {
     this.setState({ collapsed: !this.state.collapsed });
-  }
+  };
 
   render() {
     const { field, forID, classNameWrapper, forList } = this.props;
@@ -76,14 +70,18 @@ export default class ObjectControl extends Component {
 
     if (multiFields) {
       return (
-        <div id={forID} className={cx(
-          classNameWrapper,
-          components.objectWidgetTopBarContainer,
-          { [styles.nestedObjectControl]: forList },
-        )}>
-          {forList ? null :
-            <ObjectWidgetTopBar collapsed={collapsed} onCollapseToggle={this.handleCollapseToggle} />
-          }
+        <div
+          id={forID}
+          className={cx(classNameWrapper, components.objectWidgetTopBarContainer, {
+            [styles.nestedObjectControl]: forList,
+          })}
+        >
+          {forList ? null : (
+            <ObjectWidgetTopBar
+              collapsed={collapsed}
+              onCollapseToggle={this.handleCollapseToggle}
+            />
+          )}
           {collapsed ? null : multiFields.map((f, idx) => this.controlFor(f, idx))}
         </div>
       );

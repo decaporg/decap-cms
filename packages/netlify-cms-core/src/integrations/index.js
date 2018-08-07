@@ -10,13 +10,15 @@ export function resolveIntegrations(interationsConfig, getToken) {
         integrationInstances = integrationInstances.set('algolia', new Algolia(providerData));
         break;
       case 'assetStore':
-        integrationInstances = integrationInstances.set('assetStore', new AssetStore(providerData, getToken));
+        integrationInstances = integrationInstances.set(
+          'assetStore',
+          new AssetStore(providerData, getToken),
+        );
         break;
     }
   });
   return integrationInstances;
 }
-
 
 export const getIntegrationProvider = (function() {
   let integrations = null;
@@ -29,4 +31,4 @@ export const getIntegrationProvider = (function() {
       return integrations.get(provider);
     }
   };
-}());
+})();

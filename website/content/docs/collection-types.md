@@ -19,15 +19,15 @@ Unlike file collections, folder collections have the option to allow editors to 
 Example:
 
 ```yaml
-- label: "Blog"
-  name: "blog"
-  folder: "_posts/blog"
+- label: 'Blog'
+  name: 'blog'
+  folder: '_posts/blog'
   create: true
   fields:
-    - {label: "Title", name: "title", widget: "string"}
-    - {label: "Publish Date", name: "date", widget: "datetime"}
-    - {label: "Featured Image", name: "thumbnail", widget: "image"}
-    - {label: "Body", name: "body", widget: "markdown"}
+    - { label: 'Title', name: 'title', widget: 'string' }
+    - { label: 'Publish Date', name: 'date', widget: 'datetime' }
+    - { label: 'Featured Image', name: 'thumbnail', widget: 'image' }
+    - { label: 'Body', name: 'body', widget: 'markdown' }
 ```
 
 ### Filtered folder collections
@@ -36,29 +36,29 @@ The entries for any folder collection can be filtered based on the value of a si
 
 The `filter` option requires two fields:
 
-* `field`: the name of the collection field to filter on
-* `value`: the desired field value
+- `field`: the name of the collection field to filter on
+- `value`: the desired field value
 
 The example below creates two collections in the same folder, filtered by the `language` field. The first collection includes posts with `language: en`, and the second, with `language: es`.
 
 ```yaml
 collections:
-  - label: "Blog in English"
-    name: "english_posts"
-    folder: "_posts"
-    filter: {field: "language", value: "en"}
+  - label: 'Blog in English'
+    name: 'english_posts'
+    folder: '_posts'
+    filter: { field: 'language', value: 'en' }
     fields:
-      - {label: "Language", name: "language", widget: "select", options: ["en", "es"]}
-      - {label: "Title", name: "title", widget: "string"}
-      - {label: "Content", name: "body", widget: "markdown"}      
-  - label: "Blog en Español"
-    name: "spanish_posts"
-    folder: "_posts"
-    filter: {field: "language", value: "es"}
+      - { label: 'Language', name: 'language', widget: 'select', options: ['en', 'es'] }
+      - { label: 'Title', name: 'title', widget: 'string' }
+      - { label: 'Content', name: 'body', widget: 'markdown' }
+  - label: 'Blog en Español'
+    name: 'spanish_posts'
+    folder: '_posts'
+    filter: { field: 'language', value: 'es' }
     fields:
-      - {label: "Lenguaje", name: "language", widget: "select", options: ["en", "es"]}
-      - {label: "Titulo", name: "title", widget: "string"}
-      - {label: "Contenido", name: "body", widget: "markdown"}      
+      - { label: 'Lenguaje', name: 'language', widget: 'select', options: ['en', 'es'] }
+      - { label: 'Titulo', name: 'title', widget: 'string' }
+      - { label: 'Contenido', name: 'body', widget: 'markdown' }
 ```
 
 ## File collections
@@ -72,32 +72,32 @@ When configuring a `files` collection, each file in the collection is configured
 Example:
 
 ```yaml
-- label: "Pages"
-  name: "pages"
+- label: 'Pages'
+  name: 'pages'
   files:
-    - label: "About Page"
-      name: "about"
-      file: "site/content/about.yml"
+    - label: 'About Page'
+      name: 'about'
+      file: 'site/content/about.yml'
       fields:
-        - {label: Title, name: title, widget: string}
-        - {label: Intro, name: intro, widget: markdown}
+        - { label: Title, name: title, widget: string }
+        - { label: Intro, name: intro, widget: markdown }
         - label: Team
           name: team
           widget: list
           fields:
-            - {label: Name, name: name, widget: string}
-            - {label: Position, name: position, widget: string}
-            - {label: Photo, name: photo, widget: image}
-    - label: "Locations Page"
-      name: "locations"
-      file: "site/content/locations.yml"
+            - { label: Name, name: name, widget: string }
+            - { label: Position, name: position, widget: string }
+            - { label: Photo, name: photo, widget: image }
+    - label: 'Locations Page'
+      name: 'locations'
+      file: 'site/content/locations.yml'
       fields:
-        - {label: Title, name: title, widget: string}
-        - {label: Intro, name: intro, widget: markdown}
+        - { label: Title, name: title, widget: string }
+        - { label: Intro, name: intro, widget: markdown }
         - label: Locations
           name: locations
           widget: list
           fields:
-            - {label: Name, name: name, widget: string}
-            - {label: Address, name: address, widget: string}
+            - { label: Name, name: name, widget: string }
+            - { label: Address, name: address, widget: string }
 ```

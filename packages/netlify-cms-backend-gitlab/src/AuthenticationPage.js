@@ -6,7 +6,7 @@ import { AuthenticationPage, Icon } from 'netlify-cms-ui-default';
 
 const LoginButtonIcon = styled(Icon)`
   margin-right: 18px;
-`
+`;
 
 export default class GitLabAuthenticationPage extends React.Component {
   static propTypes = {
@@ -18,9 +18,9 @@ export default class GitLabAuthenticationPage extends React.Component {
 
   componentDidMount() {
     const authType = this.props.config.getIn(['backend', 'auth_type']);
-    if (authType === "implicit") {
+    if (authType === 'implicit') {
       this.auth = new ImplicitAuthenticator({
-        base_url: this.props.config.getIn(['backend', 'base_url'], "https://gitlab.com"),
+        base_url: this.props.config.getIn(['backend', 'base_url'], 'https://gitlab.com'),
         auth_endpoint: this.props.config.getIn(['backend', 'auth_endpoint'], 'oauth/authorize'),
         app_id: this.props.config.getIn(['backend', 'app_id']),
         clearHash: this.props.clearHash,
@@ -36,13 +36,16 @@ export default class GitLabAuthenticationPage extends React.Component {
     } else {
       this.auth = new NetlifyAuthenticator({
         base_url: this.props.base_url,
-        site_id: (document.location.host.split(':')[0] === 'localhost') ? 'cms.netlify.com' : this.props.siteId,
+        site_id:
+          document.location.host.split(':')[0] === 'localhost'
+            ? 'cms.netlify.com'
+            : this.props.siteId,
         auth_endpoint: this.props.authEndpoint,
       });
     }
   }
 
-  handleLogin = (e) => {
+  handleLogin = e => {
     e.preventDefault();
     this.auth.authenticate({ provider: 'gitlab', scope: 'api' }, (err, data) => {
       if (err) {
@@ -62,7 +65,7 @@ export default class GitLabAuthenticationPage extends React.Component {
         loginErrorMessage={this.state.loginError}
         renderButtonContent={() => (
           <React.Fragment>
-            <LoginButtonIcon type="gitlab"/> {inProgress ? "Logging in..." : "Login with GitLab"}
+            <LoginButtonIcon type="gitlab" /> {inProgress ? 'Logging in...' : 'Login with GitLab'}
           </React.Fragment>
         )}
       />

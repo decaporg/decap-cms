@@ -8,15 +8,13 @@ const input = markdown =>
     .use(markdownToRemark)
     .use(remarkPaddedLinks)
     .use(remarkToMarkdown)
-    .processSync(markdown)
-    .contents;
+    .processSync(markdown).contents;
 
 const output = markdown =>
   unified()
     .use(markdownToRemark)
     .use(remarkToMarkdown)
-    .processSync(markdown)
-    .contents;
+    .processSync(markdown).contents;
 
 describe('remarkPaddedLinks', () => {
   it('should move leading and trailing spaces outside of a link', () => {

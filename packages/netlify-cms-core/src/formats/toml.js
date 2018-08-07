@@ -9,7 +9,7 @@ const outputReplacer = (key, value) => {
     return value.format(value._f);
   }
   if (value instanceof AssetProxy) {
-    return `${ value.path }`;
+    return `${value.path}`;
   }
   if (Number.isInteger(value)) {
     // Return the string representation of integers so tomlify won't render with tenths (".0")
@@ -26,5 +26,5 @@ export default {
 
   toFile(data, sortedKeys = []) {
     return tomlify.toToml(data, { replace: outputReplacer, sort: sortKeys(sortedKeys) });
-  }
-}
+  },
+};

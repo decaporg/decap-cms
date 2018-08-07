@@ -5,28 +5,27 @@ import u from 'unist-builder';
  * Map of Slate node types to MDAST/Remark node types.
  */
 const typeMap = {
-  'root': 'root',
-  'paragraph': 'paragraph',
+  root: 'root',
+  paragraph: 'paragraph',
   'heading-one': 'heading',
   'heading-two': 'heading',
   'heading-three': 'heading',
   'heading-four': 'heading',
   'heading-five': 'heading',
   'heading-six': 'heading',
-  'quote': 'blockquote',
-  'code': 'code',
+  quote: 'blockquote',
+  code: 'code',
   'numbered-list': 'list',
   'bulleted-list': 'list',
   'list-item': 'listItem',
-  'table': 'table',
+  table: 'table',
   'table-row': 'tableRow',
   'table-cell': 'tableCell',
-  'break': 'break',
+  break: 'break',
   'thematic-break': 'thematicBreak',
-  'link': 'link',
-  'image': 'image',
+  link: 'link',
+  image: 'image',
 };
-
 
 /**
  * Map of Slate mark types to MDAST/Remark node types.
@@ -55,7 +54,6 @@ export default function slateToRemark(raw, opts) {
   return transform(raw);
 }
 
-
 /**
  * The transform function mimics the approach of a Remark plugin for
  * conformity with the other serialization functions. This function converts
@@ -82,7 +80,6 @@ function transform(node) {
     ? convertTextNode(node)
     : convertNode(node, children, shortcodePlugins);
 }
-
 
 /**
  * Includes inline nodes as leaves in adjacent text nodes where appropriate, so
@@ -139,7 +136,6 @@ function combineTextAndInline(nodes) {
     return acc;
   }, []);
 }
-
 
 /**
  * Slate treats inline code decoration as a standard mark, but MDAST does
@@ -232,7 +228,6 @@ function convertTextNode(node) {
   return u('html', node.text);
 }
 
-
 /**
  * Process Slate node leaves in preparation for MDAST transformation.
  */
@@ -255,7 +250,6 @@ function processLeaves(leaf) {
 
   return { node: leaf.node, marks: markTypes };
 }
-
 
 /**
  * Slate's AST doesn't group adjacent text nodes with the same marks - a
@@ -311,28 +305,32 @@ function condenseNodesReducer(acc, node, idx, nodes) {
      * children.
      */
     const children = nodes.slice(idx, newNextIndex);
-    const denestedChildren = children.map(child => ({ ...child, marks: without(child.marks, parentType) }));
-    const mdastChildren = denestedChildren.reduce(condenseNodesReducer, { nodes: [], parentType }).nodes;
+    const denestedChildren = children.map(child => ({
+      ...child,
+      marks: without(child.marks, parentType),
+    }));
+    const mdastChildren = denestedChildren.reduce(condenseNodesReducer, { nodes: [], parentType })
+      .nodes;
     const mdastNode = u(parentType, mdastChildren);
 
-    return { ...acc, nodes: [ ...acc.nodes, mdastNode ], nextIndex: newNextIndex };
+    return { ...acc, nodes: [...acc.nodes, mdastNode], nextIndex: newNextIndex };
   }
 
   /**
    * Create the base text node, and pass in the array of mark types as data
    * (helpful when optimizing/condensing the final structure).
    */
-  const baseNode = typeof node.text === 'string'
-    ? u(node.textNodeType, { marks: node.marks }, node.text)
-    : transform(node.node);
+  const baseNode =
+    typeof node.text === 'string'
+      ? u(node.textNodeType, { marks: node.marks }, node.text)
+      : transform(node.node);
 
   /**
    * Recursively wrap the base text node in the individual mark nodes, if
    * any exist.
    */
-  return { ...acc, nodes: [ ...acc.nodes, baseNode ] };
+  return { ...acc, nodes: [...acc.nodes, baseNode] };
 }
-
 
 /**
  * Get the number of consecutive Slate nodes containing a given mark beginning
@@ -340,10 +338,11 @@ function condenseNodesReducer(acc, node, idx, nodes) {
  */
 function getMarkLength(markType, nodes) {
   let length = 0;
-  while(nodes[length] && nodes[length].marks.includes(markType)) { ++length; }
+  while (nodes[length] && nodes[length].marks.includes(markType)) {
+    ++length;
+  }
   return { markType, length };
 }
-
 
 /**
  * Convert a single Slate Raw node to an MDAST node. Uses the unist-builder `u`
@@ -351,7 +350,6 @@ function getMarkLength(markType, nodes) {
  */
 function convertNode(node, children, shortcodePlugins) {
   switch (node.type) {
-
     /**
      * General
      *
@@ -390,7 +388,7 @@ function convertNode(node, children, shortcodePlugins) {
       const plugin = shortcodePlugins.get(data.shortcode);
       const text = plugin.toBlock(data.shortcodeData);
       const textNode = u('html', text);
-      return u('paragraph', { data }, [ textNode ]);
+      return u('paragraph', { data }, [textNode]);
     }
 
     /**
@@ -479,7 +477,6 @@ function convertNode(node, children, shortcodePlugins) {
       const { url, title, alt, ...data } = get(node, 'data', {});
       return u(typeMap[node.type], { url, title, alt, data });
     }
-
 
     /**
      * No default case is supplied because an unhandled case should never

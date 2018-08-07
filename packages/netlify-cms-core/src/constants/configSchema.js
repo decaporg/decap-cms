@@ -1,28 +1,24 @@
 import AJV from 'ajv';
 import ajvErrors from 'ajv-errors';
-import {
-  formatExtensions,
-  frontmatterFormats,
-  extensionFormatters,
-} from "Formats/formats";
-import { IDENTIFIER_FIELDS } from "Constants/fieldInference";
+import { formatExtensions, frontmatterFormats, extensionFormatters } from 'Formats/formats';
+import { IDENTIFIER_FIELDS } from 'Constants/fieldInference';
 
 /**
  * Config for fields in both file and folder collections.
  */
 const fieldsConfig = {
-  type: "array",
+  type: 'array',
   minItems: 1,
   items: {
     // ------- Each field: -------
-    type: "object",
+    type: 'object',
     properties: {
-      name: { type: "string" },
-      label: { type: "string" },
-      widget: { type: "string" },
-      required: { type: "boolean" },
+      name: { type: 'string' },
+      label: { type: 'string' },
+      widget: { type: 'string' },
+      required: { type: 'boolean' },
     },
-    required: ["name"],
+    required: ['name'],
   },
 };
 
@@ -32,72 +28,72 @@ const fieldsConfig = {
  * where the imports get resolved asyncronously.
  */
 const getConfigSchema = () => ({
-  type: "object",
+  type: 'object',
   properties: {
     backend: {
-      type: "object",
-      properties: { name: { type: "string", examples: ["test-repo"] } },
-      required: ["name"],
+      type: 'object',
+      properties: { name: { type: 'string', examples: ['test-repo'] } },
+      required: ['name'],
     },
-    display_url: { type: "string", examples: ["https://example.com"] },
-    media_folder: { type: "string", examples: ["assets/uploads"] },
-    public_folder: { type: "string", examples: ["/uploads"] },
+    display_url: { type: 'string', examples: ['https://example.com'] },
+    media_folder: { type: 'string', examples: ['assets/uploads'] },
+    public_folder: { type: 'string', examples: ['/uploads'] },
     publish_mode: {
-      type: "string",
-      enum: ["editorial_workflow"],
-      examples: ["editorial_workflow"],
+      type: 'string',
+      enum: ['editorial_workflow'],
+      examples: ['editorial_workflow'],
     },
     slug: {
-      type: "object",
+      type: 'object',
       properties: {
-        encoding: { type: "string", enum: ["unicode", "ascii"] },
-        clean_accents: { type: "boolean" },
+        encoding: { type: 'string', enum: ['unicode', 'ascii'] },
+        clean_accents: { type: 'boolean' },
       },
     },
     collections: {
-      type: "array",
+      type: 'array',
       minItems: 1,
       items: {
         // ------- Each collection: -------
-        type: "object",
+        type: 'object',
         properties: {
-          name: { type: "string" },
-          label: { type: "string" },
-          label_singular: { type: "string" },
-          description: { type: "string" },
-          folder: { type: "string" },
+          name: { type: 'string' },
+          label: { type: 'string' },
+          label_singular: { type: 'string' },
+          description: { type: 'string' },
+          folder: { type: 'string' },
           files: {
-            type: "array",
+            type: 'array',
             items: {
               // ------- Each file: -------
-              type: "object",
+              type: 'object',
               properties: {
-                name: { type: "string" },
-                label: { type: "string" },
-                label_singular: { type: "string" },
-                description: { type: "string" },
-                file: { type: "string" },
+                name: { type: 'string' },
+                label: { type: 'string' },
+                label_singular: { type: 'string' },
+                description: { type: 'string' },
+                file: { type: 'string' },
                 fields: fieldsConfig,
               },
-              required: ["name", "label", "file", "fields"],
+              required: ['name', 'label', 'file', 'fields'],
             },
           },
-          slug: { type: "string" },
-          create: { type: "boolean" },
+          slug: { type: 'string' },
+          create: { type: 'boolean' },
           editor: {
-            type: "object",
+            type: 'object',
             properties: {
-              preview: { type: "boolean" },
+              preview: { type: 'boolean' },
             },
           },
-          format: { type: "string", enum: Object.keys(formatExtensions) },
-          extension: { type: "string" },
-          frontmatter_delimiter: { type: "string" },
+          format: { type: 'string', enum: Object.keys(formatExtensions) },
+          extension: { type: 'string' },
+          frontmatter_delimiter: { type: 'string' },
           fields: fieldsConfig,
         },
-        required: ["name", "label"],
-        oneOf: [{ required: ["files"] }, { required: ["folder", "fields"] }],
-        if: { required: ["extension"] },
+        required: ['name', 'label'],
+        oneOf: [{ required: ['files'] }, { required: ['folder', 'fields'] }],
+        if: { required: ['extension'] },
         then: {
           // Cannot infer format from extension.
           if: {
@@ -105,14 +101,14 @@ const getConfigSchema = () => ({
               extension: { enum: Object.keys(extensionFormatters) },
             },
           },
-          else: { required: ["format"] },
+          else: { required: ['format'] },
         },
         dependencies: {
           frontmatter_delimiter: {
             properties: {
               format: { enum: frontmatterFormats },
             },
-            required: ["format"],
+            required: ['format'],
           },
           folder: {
             errorMessage: {
@@ -132,7 +128,7 @@ const getConfigSchema = () => ({
       },
     },
   },
-  required: ["backend", "media_folder", "collections"],
+  required: ['backend', 'media_folder', 'collections'],
 });
 
 class ConfigError extends Error {
@@ -141,13 +137,13 @@ class ConfigError extends Error {
       .map(({ message, dataPath }) => {
         const dotPath = dataPath
           .slice(1)
-          .split("/")
+          .split('/')
           .map(seg => (seg.match(/^\d+$/) ? `[${seg}]` : `.${seg}`))
-          .join("")
+          .join('')
           .slice(1);
-        return `${dotPath ? `'${dotPath}'` : "config"} ${message}`;
+        return `${dotPath ? `'${dotPath}'` : 'config'} ${message}`;
       })
-      .join("\n");
+      .join('\n');
     super(message, ...args);
 
     this.errors = errors;
@@ -161,7 +157,7 @@ class ConfigError extends Error {
 
 /**
  * `validateConfig` is a pure function. It does not mutate
- * the config that is passed in. 
+ * the config that is passed in.
  */
 export function validateConfig(config) {
   const ajv = new AJV({ allErrors: true, jsonPointers: true });

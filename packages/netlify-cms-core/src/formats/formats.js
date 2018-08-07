@@ -5,7 +5,7 @@ import tomlFormatter from './toml';
 import jsonFormatter from './json';
 import { FrontmatterInfer, frontmatterJSON, frontmatterTOML, frontmatterYAML } from './frontmatter';
 
-export const frontmatterFormats = ['yaml-frontmatter','toml-frontmatter','json-frontmatter']
+export const frontmatterFormats = ['yaml-frontmatter', 'toml-frontmatter', 'json-frontmatter'];
 
 export const formatExtensions = {
   yml: 'yml',
@@ -28,21 +28,24 @@ export const extensionFormatters = {
   html: FrontmatterInfer,
 };
 
-const formatByName = (name, customDelimiter) => ({
-  yml: yamlFormatter,
-  yaml: yamlFormatter,
-  toml: tomlFormatter,
-  json: jsonFormatter,
-  frontmatter: FrontmatterInfer,
-  'json-frontmatter': frontmatterJSON(customDelimiter),
-  'toml-frontmatter': frontmatterTOML(customDelimiter),
-  'yaml-frontmatter': frontmatterYAML(customDelimiter),
-}[name]);
+const formatByName = (name, customDelimiter) =>
+  ({
+    yml: yamlFormatter,
+    yaml: yamlFormatter,
+    toml: tomlFormatter,
+    json: jsonFormatter,
+    frontmatter: FrontmatterInfer,
+    'json-frontmatter': frontmatterJSON(customDelimiter),
+    'toml-frontmatter': frontmatterTOML(customDelimiter),
+    'yaml-frontmatter': frontmatterYAML(customDelimiter),
+  }[name]);
 
 export function resolveFormat(collectionOrEntity, entry) {
   // Check for custom delimiter
   const frontmatter_delimiter = collectionOrEntity.get('frontmatter_delimiter');
-  const customDelimiter = List.isList(frontmatter_delimiter) ? frontmatter_delimiter.toArray() : frontmatter_delimiter;
+  const customDelimiter = List.isList(frontmatter_delimiter)
+    ? frontmatter_delimiter.toArray()
+    : frontmatter_delimiter;
 
   // If the format is specified in the collection, use that format.
   const formatSpecification = collectionOrEntity.get('format');

@@ -14,8 +14,8 @@ module.exports = {
   module: {
     rules: [
       ...Object.entries(rules)
-        .filter(([ key ]) => key !== 'js')
-        .map(([ , rule ]) => rule()),
+        .filter(([key]) => key !== 'js')
+        .map(([, rule]) => rule()),
       {
         test: /\.js$/,
         exclude: /node_modules/,

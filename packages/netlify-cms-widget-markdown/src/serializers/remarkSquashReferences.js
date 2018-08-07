@@ -32,7 +32,6 @@ export default function remarkSquashReferences() {
   }
 
   function transform(getDefinition, node) {
-
     /**
      * Bind the `getDefinition` function to `transform` and recursively map all
      * nodes.
@@ -55,15 +54,15 @@ export default function remarkSquashReferences() {
 
       const pre = u('text', node.type === 'imageReference' ? '![' : '[');
       const post = u('text', ']');
-      const nodes = children || [ u('text', node.alt) ];
-      return [ pre, ...nodes, post];
+      const nodes = children || [u('text', node.alt)];
+      return [pre, ...nodes, post];
     }
 
     /**
      * Remove definition nodes and filter the resulting null values from the
      * filtered children array.
      */
-    if(node.type === 'definition') {
+    if (node.type === 'definition') {
       return null;
     }
 

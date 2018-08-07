@@ -9,7 +9,7 @@ import Link from 'gatsby-link';
  */
 class TableOfContents extends Component {
   state = {
-    headings: []
+    headings: [],
   };
 
   componentDidMount() {
@@ -19,12 +19,12 @@ class TableOfContents extends Component {
     contentHeadings.forEach(h => {
       headings.push({
         id: h.id,
-        text: h.innerText
+        text: h.innerText,
       });
     });
 
     this.setState({
-      headings
+      headings,
     });
   }
 
@@ -52,10 +52,7 @@ const DocsNav = ({ items, location }) => (
         <ul className="docs-nav-section-list">
           {item.group.edges.map(({ node }) => (
             <li className="docs-nav-item" key={node.fields.slug}>
-              <Link
-                to={node.fields.slug}
-                className="nav-link"
-                activeClassName="active">
+              <Link to={node.fields.slug} className="nav-link" activeClassName="active">
                 {node.frontmatter.title}
               </Link>
               {location.pathname === node.fields.slug && <TableOfContents />}
