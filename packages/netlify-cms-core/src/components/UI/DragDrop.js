@@ -11,7 +11,8 @@ export const DragSource = ({ namespace, ...props }) => {
   const DragComponent = ReactDNDDragSource(
     namespace,
     {
-      beginDrag({ children, isDragging, connectDragComponent, ...ownProps }) { // eslint-disable-line no-unused-vars
+      // eslint-disable-next-line no-unused-vars
+      beginDrag({ children, isDragging, connectDragComponent, ...ownProps }) {
         // We return the rest of the props as the ID of the element being dragged.
         return ownProps;
       },
