@@ -316,6 +316,12 @@ export default class API {
       .then(resp => {
         const { sha } = resp.tree.find(file => file.path === filename);
         const opts = { method: 'DELETE', params: { sha, message, branch } };
+        if (this.commitAuthor) {
+          opts.params.author = {
+            ...this.commitAuthor,
+            date: new Date().toISOString(),
+          };
+        }
         return this.request(fileURL, opts);
       });
   }

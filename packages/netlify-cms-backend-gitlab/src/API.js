@@ -189,18 +189,23 @@ export default class API {
     const file_path = item.path.replace(/^\//, "");
     const action = (updateFile ? "update" : "create");
     const encoding = "base64";
-    const { name: author_name, email: author_email } = pick(author || {}, ["name", "email"]);
-    const body = JSON.stringify({
+    
+    const commitParams = {
       branch,
       commit_message: commitMessage,
       actions: [{ action, file_path, content, encoding }],
-    });
+    };
+    if (author) {
+      const { name, email } = author;
+      commitParams.author_name = name;
+      commitParams.author_email = email;
+    }
 
     await this.request({
       url: `${ this.repoURL }/repository/commits`,
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body,
+      body: JSON.stringify(commitParams),
     });
 
     return { ...item, uploaded: true };
@@ -211,9 +216,16 @@ export default class API {
 
   deleteFile = (path, commit_message, options = {}) => {
     const branch = options.branch || this.branch;
+    const commitParams = { commit_message, branch };
+    if (this.commitAuthor) {
+      const { name, email } = this.commitAuthor;
+      commitParams.author_name = name;
+      commitParams.author_email = email;
+    }
     return flow([
       unsentRequest.withMethod("DELETE"),
-      unsentRequest.withParams({ commit_message, branch }),
+      // TODO: only send author params if they are defined.
+      unsentRequest.withParams(commitParams),
       this.request,
     ])(`${ this.repoURL }/repository/files/${ encodeURIComponent(path) }`);
   };
