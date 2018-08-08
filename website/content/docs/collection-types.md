@@ -14,21 +14,21 @@ Folder collections represent one or more files with the same format, fields, and
 
 Unlike file collections, folder collections have the option to allow editors to create new items in the collection. This is set by the boolean `create` field.
 
-**Note:** Folder collections must have at least one field with the name `title` for creating new entry slugs. That field should use the default `string` widget. The `label` for the field can be any string value. See the [Collections reference doc](https://www.netlifycms.org/docs/configuration-options/#collections) for details on how collections and fields are configured. 
+**Note:** Folder collections must have at least one field with the name `title` for creating new entry slugs. That field should use the default `string` widget. The `label` for the field can be any string value. See the [Collections reference doc](https://www.netlifycms.org/docs/configuration-options/#collections) for details on how collections and fields are configured.
 
 Example:
 
 ```yaml
 collections:
-  - label: "Blog"
-    name: "blog"
-    folder: "_posts/blog"
+  - label: 'Blog'
+    name: 'blog'
+    folder: '_posts/blog'
     create: true
     fields:
-      - {label: "Title", name: "title", widget: "string"}
-      - {label: "Publish Date", name: "date", widget: "datetime"}
-      - {label: "Featured Image", name: "thumbnail", widget: "image"}
-      - {label: "Body", name: "body", widget: "markdown"}
+      - { label: 'Title', name: 'title', widget: 'string' }
+      - { label: 'Publish Date', name: 'date', widget: 'datetime' }
+      - { label: 'Featured Image', name: 'thumbnail', widget: 'image' }
+      - { label: 'Body', name: 'body', widget: 'markdown' }
 ```
 
 ### Filtered folder collections
@@ -74,32 +74,32 @@ Example:
 
 ```yaml
 collections:
-  - label: "Pages"
-    name: "pages"
+  - label: 'Pages'
+    name: 'pages'
     files:
-      - label: "About Page"
-        name: "about"
-        file: "site/content/about.yml"
+      - label: 'About Page'
+        name: 'about'
+        file: 'site/content/about.yml'
         fields:
-          - {label: Title, name: title, widget: string}
-          - {label: Intro, name: intro, widget: markdown}
+          - { label: Title, name: title, widget: string }
+          - { label: Intro, name: intro, widget: markdown }
           - label: Team
             name: team
             widget: list
             fields:
-              - {label: Name, name: name, widget: string}
-              - {label: Position, name: position, widget: string}
-              - {label: Photo, name: photo, widget: image}
-      - label: "Locations Page"
-        name: "locations"
-        file: "site/content/locations.yml"
+              - { label: Name, name: name, widget: string }
+              - { label: Position, name: position, widget: string }
+              - { label: Photo, name: photo, widget: image }
+      - label: 'Locations Page'
+        name: 'locations'
+        file: 'site/content/locations.yml'
         fields:
-          - {label: Title, name: title, widget: string}
-          - {label: Intro, name: intro, widget: markdown}
+          - { label: Title, name: title, widget: string }
+          - { label: Intro, name: intro, widget: markdown }
           - label: Locations
             name: locations
             widget: list
             fields:
-              - {label: Name, name: name, widget: string}
-              - {label: Address, name: address, widget: string}
+              - { label: Name, name: name, widget: string }
+              - { label: Address, name: address, widget: string }
 ```
