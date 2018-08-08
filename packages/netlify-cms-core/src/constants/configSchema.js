@@ -38,6 +38,14 @@ const getConfigSchema = () => ({
     display_url: { type: 'string', examples: ['https://example.com'] },
     media_folder: { type: 'string', examples: ['assets/uploads'] },
     public_folder: { type: 'string', examples: ['/uploads'] },
+    media_library: {
+      type: 'object',
+      properties: {
+        name: { type: 'string', examples: ['uploadcare'] },
+        config: { type: 'object' },
+      },
+      required: ['name'],
+    },
     publish_mode: {
       type: 'string',
       enum: ['editorial_workflow'],
@@ -128,7 +136,8 @@ const getConfigSchema = () => ({
       },
     },
   },
-  required: ['backend', 'media_folder', 'collections'],
+  required: ['backend', 'collections'],
+  anyOf: [{ required: ['media_folder'] }, { required: ['media_library'] }],
 });
 
 class ConfigError extends Error {

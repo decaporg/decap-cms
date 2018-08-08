@@ -1,9 +1,9 @@
-import { get } from 'lodash';
 import { Map } from 'immutable';
 import uuid from 'uuid/v4';
 import {
   MEDIA_LIBRARY_OPEN,
   MEDIA_LIBRARY_CLOSE,
+  MEDIA_LIBRARY_CREATE,
   MEDIA_INSERT,
   MEDIA_REMOVE_INSERTED,
   MEDIA_LOAD_REQUEST,
@@ -20,16 +20,23 @@ import {
   MEDIA_DISPLAY_URL_FAILURE,
 } from 'Actions/mediaLibrary';
 
-const mediaLibrary = (
-  state = Map({ isVisible: false, controlMedia: Map(), displayURLs: Map() }),
-  action,
-) => {
-  const privateUploadChanged =
-    state.get('privateUpload') !== get(action, ['payload', 'privateUpload']);
-  let displayURLPath;
+const defaultState = {
+  isVisible: false,
+  showMediaButton: true,
+  controlMedia: Map(),
+  displayURLs: Map(),
+};
+
+const mediaLibrary = (state = Map(defaultState), action) => {
   switch (action.type) {
+    case MEDIA_LIBRARY_CREATE:
+      return state.withMutations(map => {
+        map.set('externalLibrary', action.payload);
+        map.set('showMediaButton', action.payload.enableStandalone());
+      });
     case MEDIA_LIBRARY_OPEN: {
-      const { controlID, forImage, privateUpload } = action.payload || {};
+      const { controlID, forImage, privateUpload } = action.payload;
+      const privateUploadChanged = state.get('privateUpload') !== privateUpload;
       if (privateUploadChanged) {
         return Map({
           isVisible: true,
@@ -51,12 +58,14 @@ const mediaLibrary = (
     case MEDIA_LIBRARY_CLOSE:
       return state.set('isVisible', false);
     case MEDIA_INSERT: {
+      const { mediaPath } = action.payload;
       const controlID = state.get('controlID');
-      const mediaPath = get(action, ['payload', 'mediaPath']);
-      return state.setIn(['controlMedia', controlID], mediaPath);
+      return state.withMutations(map => {
+        map.setIn(['controlMedia', controlID], mediaPath);
+      });
     }
     case MEDIA_REMOVE_INSERTED: {
-      const controlID = get(action, ['payload', 'controlID']);
+      const controlID = action.payload.controlID;
       return state.setIn(['controlMedia', controlID], '');
     }
     case MEDIA_LOAD_REQUEST:
@@ -65,7 +74,15 @@ const mediaLibrary = (
         map.set('isPaginating', action.payload.page > 1);
       });
     case MEDIA_LOAD_SUCCESS: {
-      const { files = [], page, canPaginate, dynamicSearch, dynamicSearchQuery } = action.payload;
+      const {
+        files = [],
+        page,
+        canPaginate,
+        dynamicSearch,
+        dynamicSearchQuery,
+        privateUpload,
+      } = action.payload;
+      const privateUploadChanged = state.get('privateUpload') !== privateUpload;
 
       if (privateUploadChanged) {
         return state;
@@ -88,15 +105,18 @@ const mediaLibrary = (
         }
       });
     }
-    case MEDIA_LOAD_FAILURE:
+    case MEDIA_LOAD_FAILURE: {
+      const privateUploadChanged = state.get('privateUpload') !== action.payload.privateUpload;
       if (privateUploadChanged) {
         return state;
       }
       return state.set('isLoading', false);
+    }
     case MEDIA_PERSIST_REQUEST:
       return state.set('isPersisting', true);
     case MEDIA_PERSIST_SUCCESS: {
-      const { file } = action.payload;
+      const { file, privateUpload } = action.payload;
+      const privateUploadChanged = state.get('privateUpload') !== privateUpload;
       if (privateUploadChanged) {
         return state;
       }
@@ -107,15 +127,18 @@ const mediaLibrary = (
         map.set('isPersisting', false);
       });
     }
-    case MEDIA_PERSIST_FAILURE:
+    case MEDIA_PERSIST_FAILURE: {
+      const privateUploadChanged = state.get('privateUpload') !== action.payload.privateUpload;
       if (privateUploadChanged) {
         return state;
       }
       return state.set('isPersisting', false);
+    }
     case MEDIA_DELETE_REQUEST:
       return state.set('isDeleting', true);
     case MEDIA_DELETE_SUCCESS: {
-      const { id, key } = action.payload.file;
+      const { id, key, privateUpload } = action.payload.file;
+      const privateUploadChanged = state.get('privateUpload') !== privateUpload;
       if (privateUploadChanged) {
         return state;
       }
@@ -126,28 +149,31 @@ const mediaLibrary = (
         map.set('isDeleting', false);
       });
     }
-    case MEDIA_DELETE_FAILURE:
+    case MEDIA_DELETE_FAILURE: {
+      const privateUploadChanged = state.get('privateUpload') !== action.payload.privateUpload;
       if (privateUploadChanged) {
         return state;
       }
       return state.set('isDeleting', false);
+    }
 
     case MEDIA_DISPLAY_URL_REQUEST:
       return state.setIn(['displayURLs', action.payload.key, 'isFetching'], true);
 
-    case MEDIA_DISPLAY_URL_SUCCESS:
-      displayURLPath = ['displayURLs', action.payload.key];
+    case MEDIA_DISPLAY_URL_SUCCESS: {
+      const displayURLPath = ['displayURLs', action.payload.key];
       return state
         .setIn([...displayURLPath, 'isFetching'], false)
         .setIn([...displayURLPath, 'url'], action.payload.url);
+    }
 
-    case MEDIA_DISPLAY_URL_FAILURE:
-      displayURLPath = ['displayURLs', action.payload.key];
+    case MEDIA_DISPLAY_URL_FAILURE: {
+      const displayURLPath = ['displayURLs', action.payload.key];
       return state
         .setIn([...displayURLPath, 'isFetching'], false)
         .setIn([...displayURLPath, 'err'], action.payload.err)
         .deleteIn([...displayURLPath, 'url']);
-
+    }
     default:
       return state;
   }

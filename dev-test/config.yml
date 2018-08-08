@@ -1,8 +1,15 @@
 backend:
-  name: test-repo
+  name: github
+  repo: owenhoskins/netlify-cms-gallery
+  branch: master # Branch to update (optional; defaults to master)
+
 
 display_url: https://example.com
-media_folder: "assets/uploads"
+
+media_library:
+  name: uploadcare
+  config:
+    publicKey: demopublickey
 
 publish_mode: editorial_workflow
 
@@ -13,14 +20,37 @@ collections: # A list of collections the CMS should be able to edit
     description: >
       The description is a great place for tone setting, high level information, and editing
       guidelines that are specific to a collection.
-    folder: "_posts"
-    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    folder: 'src/pages/gallery'
+    slug: '/gallery/{{slug}}'
     create: true # Allow users to create new documents in this collection
     fields: # The fields each document in this collection have
       - {label: "Title", name: "title", widget: "string", tagname: "h1"}
       - {label: "Publish Date", name: "date", widget: "datetime", format: "YYYY-MM-DD hh:mma"}
-      - {label: "Cover Image", name: "image", widget: "image", required: false, tagname: ""}
-      - {label: "Body", name: "body", widget: "markdown", hint: "Main content goes here."}
+      - label: "Cover Image"
+        name: "image"
+        widget: "image"
+        required: false
+        tagname: ""
+        options:
+          media_library:
+            config:
+              multiple: false
+      - name: portfolios
+        label: Portfolios
+        widget: list
+        required: false
+        fields:
+          - {label: 'Title', name: 'title', widget: 'string'}
+          - name: "images"
+            label: "Gallery"
+            widget: "image"
+            class: "gallery"
+            options:
+              media_library:
+                config:
+                  multiple: true
+                  tabs: file mediaLibrary
+      - {label: "Body", name: "body", widget: "markdown"}
     meta:
       - {label: "SEO Description", name: "description", widget: "text"}
 

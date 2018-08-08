@@ -7,11 +7,11 @@ import { connect } from 'react-redux';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import { Notifs } from 'redux-notifications';
 import TopBarProgress from 'react-topbar-progress-indicator';
-import { loadConfig as actionLoadConfig } from 'Actions/config';
-import { loginUser as actionLoginUser, logoutUser as actionLogoutUser } from 'Actions/auth';
+import { loadConfig } from 'Actions/config';
+import { loginUser, logoutUser } from 'Actions/auth';
 import { currentBackend } from 'src/backend';
 import { createNewEntry } from 'Actions/collections';
-import { openMediaLibrary as actionOpenMediaLibrary } from 'Actions/mediaLibrary';
+import { openMediaLibrary } from 'Actions/mediaLibrary';
 import MediaLibrary from 'MediaLibrary/MediaLibrary';
 import { Toast } from 'UI';
 import { Loader, colors } from 'netlify-cms-ui-default';
@@ -53,12 +53,16 @@ class App extends React.Component {
     auth: ImmutablePropTypes.map,
     config: ImmutablePropTypes.map,
     collections: ImmutablePropTypes.orderedMap,
+    loadConfig: PropTypes.func.isRequired,
+    loginUser: PropTypes.func.isRequired,
     logoutUser: PropTypes.func.isRequired,
-    dispatch: PropTypes.func.isRequired,
     user: ImmutablePropTypes.map,
     isFetching: PropTypes.bool.isRequired,
     publishMode: PropTypes.oneOf([SIMPLE, EDITORIAL_WORKFLOW]),
     siteId: PropTypes.string,
+    useMediaLibrary: PropTypes.bool,
+    openMediaLibrary: PropTypes.func.isRequired,
+    showMediaButton: PropTypes.bool,
   };
 
   static configError(config) {
@@ -76,11 +80,12 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    this.props.dispatch(actionLoadConfig());
+    const { loadConfig } = this.props;
+    loadConfig();
   }
 
   handleLogin(credentials) {
-    this.props.dispatch(actionLoginUser(credentials));
+    this.props.loginUser(credentials);
   }
 
   authenticating() {
@@ -125,7 +130,9 @@ class App extends React.Component {
       logoutUser,
       isFetching,
       publishMode,
+      useMediaLibrary,
       openMediaLibrary,
+      showMediaButton,
     } = this.props;
 
     if (config === null) {
@@ -158,6 +165,7 @@ class App extends React.Component {
           openMediaLibrary={openMediaLibrary}
           hasWorkflow={hasWorkflow}
           displayUrl={config.get('display_url')}
+          showMediaButton={showMediaButton}
         />
         <AppMainContainer>
           {isFetching && <TopBarProgress />}
@@ -178,7 +186,7 @@ class App extends React.Component {
               />
               <Route component={NotFoundPage} />
             </Switch>
-            <MediaLibrary />
+            {useMediaLibrary ? <MediaLibrary /> : null}
           </div>
         </AppMainContainer>
       </div>
@@ -187,24 +195,30 @@ class App extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { auth, config, collections, globalUI } = state;
+  const { auth, config, collections, globalUI, mediaLibrary } = state;
   const user = auth && auth.get('user');
   const isFetching = globalUI.get('isFetching');
   const publishMode = config && config.get('publish_mode');
-  return { auth, config, collections, user, isFetching, publishMode };
-}
-
-function mapDispatchToProps(dispatch) {
+  const useMediaLibrary = !mediaLibrary.get('externalLibrary');
+  const showMediaButton = mediaLibrary.get('showMediaButton');
   return {
-    dispatch,
-    openMediaLibrary: () => {
-      dispatch(actionOpenMediaLibrary());
-    },
-    logoutUser: () => {
-      dispatch(actionLogoutUser());
-    },
+    auth,
+    config,
+    collections,
+    user,
+    isFetching,
+    publishMode,
+    showMediaButton,
+    useMediaLibrary,
   };
 }
+
+const mapDispatchToProps = {
+  openMediaLibrary,
+  loadConfig,
+  loginUser,
+  logoutUser,
+};
 
 export default hot(module)(
   connect(
