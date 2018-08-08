@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 import { partial } from 'lodash';
-import { Cursor } from 'netlify-cms-lib-util'
+import { Cursor } from 'netlify-cms-lib-util';
 import {
   loadEntries as actionLoadEntries,
   traverseCollectionCursor as actionTraverseCollectionCursor,
@@ -43,7 +43,7 @@ class EntriesCollection extends React.Component {
     traverseCollectionCursor(collection, action);
   };
 
-  render () {
+  render() {
     const { collection, entries, publicFolder, isFetching, viewStyle, cursor } = this.props;
 
     return (
@@ -70,7 +70,7 @@ function mapStateToProps(state, ownProps) {
   const entries = selectEntries(state, collection.get('name'));
   const isFetching = state.entries.getIn(['pages', collection.get('name'), 'isFetching'], false);
 
-  const rawCursor = selectCollectionEntriesCursor(state.cursors, collection.get("name"));
+  const rawCursor = selectCollectionEntriesCursor(state.cursors, collection.get('name'));
   const cursor = Cursor.create(rawCursor).clearData();
 
   return { publicFolder, collection, page, entries, isFetching, viewStyle, cursor };
@@ -81,4 +81,7 @@ const mapDispatchToProps = {
   traverseCollectionCursor: actionTraverseCollectionCursor,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(EntriesCollection);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(EntriesCollection);

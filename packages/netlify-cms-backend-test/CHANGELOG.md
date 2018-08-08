@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="2.0.5"></a>
+## [2.0.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-test/compare/netlify-cms-backend-test@2.0.4...netlify-cms-backend-test@2.0.5) (2018-08-07)
+
+
+### Bug Fixes
+
+* **backends:** fix commit message handling ([#1568](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-test/issues/1568)) ([f7e7120](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-test/commit/f7e7120))
+
+
+
+
 <a name="2.0.4"></a>
 ## [2.0.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-test/compare/netlify-cms-backend-test@2.0.3...netlify-cms-backend-test@2.0.4) (2018-08-01)
 

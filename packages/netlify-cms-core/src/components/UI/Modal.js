@@ -46,8 +46,7 @@ const styles = {
     background-color: rgba(0, 0, 0, 0);
     opacity: 0;
   `,
-}
-
+};
 
 export class Modal extends React.Component {
   static propTypes = {
@@ -55,7 +54,7 @@ export class Modal extends React.Component {
     isOpen: PropTypes.bool.isRequired,
     className: PropTypes.string,
     onClose: PropTypes.func.isRequired,
-  }
+  };
 
   componentDidMount() {
     ReactModal.setAppElement('#nc-root');

@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'react-emotion';
 import { isEmpty } from 'lodash';
-import Waypoint from 'react-waypoint';
 import { Modal } from 'UI';
 import MediaLibrarySearch from './MediaLibrarySearch';
 import MediaLibraryHeader from './MediaLibraryHeader';
@@ -28,7 +27,7 @@ const LibraryTop = styled.div`
   position: relative;
   display: flex;
   justify-content: space-between;
-`
+`;
 
 const StyledModal = styled(Modal)`
   display: grid;
@@ -64,7 +63,7 @@ const StyledModal = styled(Modal)`
   label[disabled] {
     background-color: ${props => props.isPrivate && `rgba(217, 217, 217, 0.15)`};
   }
-`
+`;
 
 const MediaLibraryModal = ({
   isVisible,
@@ -77,7 +76,6 @@ const MediaLibraryModal = ({
   isPersisting,
   isDeleting,
   hasNextPage,
-  page,
   isPaginating,
   privateUpload,
   query,
@@ -96,18 +94,19 @@ const MediaLibraryModal = ({
   handleLoadMore,
 }) => {
   const filteredFiles = forImage ? handleFilter(files) : files;
-  const queriedFiles = (!dynamicSearch && query) ? handleQuery(query, filteredFiles) : filteredFiles;
+  const queriedFiles = !dynamicSearch && query ? handleQuery(query, filteredFiles) : filteredFiles;
   const tableData = toTableData(queriedFiles);
   const hasFiles = files && !!files.length;
   const hasFilteredFiles = filteredFiles && !!filteredFiles.length;
   const hasSearchResults = queriedFiles && !!queriedFiles.length;
   const hasMedia = hasSearchResults;
   const shouldShowEmptyMessage = !hasMedia;
-  const emptyMessage = (isLoading && !hasMedia && 'Loading...')
-    || (dynamicSearchActive && 'No results.')
-    || (!hasFiles && 'No assets found.')
-    || (!hasFilteredFiles && 'No images found.')
-    || (!hasSearchResults && 'No results.');
+  const emptyMessage =
+    (isLoading && !hasMedia && 'Loading...') ||
+    (dynamicSearchActive && 'No results.') ||
+    (!hasFiles && 'No assets found.') ||
+    (!hasFilteredFiles && 'No images found.') ||
+    (!hasSearchResults && 'No results.');
   const hasSelection = hasMedia && !isEmpty(selectedFile);
   const shouldShowButtonLoader = isPersisting || isDeleting;
 
@@ -142,7 +141,9 @@ const MediaLibraryModal = ({
           onInsert={handleInsert}
         />
       </LibraryTop>
-      { !shouldShowEmptyMessage ? null : <EmptyMessage content={emptyMessage} isPrivate={privateUpload}/> }
+      {!shouldShowEmptyMessage ? null : (
+        <EmptyMessage content={emptyMessage} isPrivate={privateUpload} />
+      )}
       <MediaLibraryCardGrid
         setScrollContainerRef={setScrollContainerRef}
         mediaItems={tableData}
@@ -158,7 +159,7 @@ const MediaLibraryModal = ({
       />
     </StyledModal>
   );
-}
+};
 
 const fileShape = {
   key: PropTypes.string.isRequired,
@@ -180,7 +181,6 @@ MediaLibraryModal.propTypes = {
   isPersisting: PropTypes.bool,
   isDeleting: PropTypes.bool,
   hasNextPage: PropTypes.bool,
-  page: PropTypes.number,
   isPaginating: PropTypes.bool,
   privateUpload: PropTypes.bool,
   query: PropTypes.string,

@@ -23,7 +23,7 @@ const Layout = ({ data, location, children }) => {
           key={i}
           href={node.url}
           className={classnames('notification', {
-            'notification-loud': node.loud
+            'notification-loud': node.loud,
           })}
         >
           {node.message}

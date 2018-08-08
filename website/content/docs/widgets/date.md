@@ -1,5 +1,5 @@
 ---
-label: "Date"
+label: 'Date'
 target: date
 ---
 
@@ -14,9 +14,9 @@ The date widget translates a date picker input to a date string. For saving date
 - **Example:**
 
   ```yaml
-  - label: "Birthdate"
-    name: "birthdate"
-    widget: "date"
-    default: ""
-    format: "MMM Do YY"
+  - label: 'Birthdate'
+    name: 'birthdate'
+    widget: 'date'
+    default: ''
+    format: 'MMM Do YY'
   ```

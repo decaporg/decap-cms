@@ -7,7 +7,7 @@ import history from 'Routing/history';
 import configureStore from 'Redux/configureStore';
 import { mergeConfig } from 'Actions/config';
 import { setStore } from 'ValueObjects/AssetProxy';
-import { ErrorBoundary } from 'UI'
+import { ErrorBoundary } from 'UI';
 import App from 'App/App';
 import 'EditorWidgets';
 import 'what-input';
@@ -73,7 +73,7 @@ function bootstrap(opts = {}) {
     <ErrorBoundary>
       <Provider store={store}>
         <ConnectedRouter history={history}>
-          <Route component={App}/>
+          <Route component={App} />
         </ConnectedRouter>
       </Provider>
     </ErrorBoundary>

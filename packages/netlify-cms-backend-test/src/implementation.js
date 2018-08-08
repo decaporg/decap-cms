@@ -23,8 +23,8 @@ const getCursor = (collection, extension, entries, index) => {
   const pageCount = Math.floor(count / pageSize);
   return Cursor.create({
     actions: [
-      ...(index < pageCount ? ["next", "last"] : []),
-      ...(index > 0 ? ["prev", "first"] : []),
+      ...(index < pageCount ? ['next', 'last'] : []),
+      ...(index > 0 ? ['prev', 'first'] : []),
     ],
     meta: { index, count, pageSize, pageCount },
     data: { collection, extension, index, pageCount },
@@ -33,9 +33,9 @@ const getCursor = (collection, extension, entries, index) => {
 
 const getFolderEntries = (folder, extension) => {
   return Object.keys(window.repoFiles[folder] || {})
-    .filter(path => path.endsWith(`.${ extension }`))
+    .filter(path => path.endsWith(`.${extension}`))
     .map(path => ({
-      file: { path: `${ folder }/${ path }` },
+      file: { path: `${folder}/${path}` },
       data: window.repoFiles[folder][path].content,
     }))
     .reverse();
@@ -71,14 +71,22 @@ export default class TestRepo {
   traverseCursor(cursor, action) {
     const { collection, extension, index, pageCount } = cursor.data.toObject();
     const newIndex = (() => {
-      if (action === "next") { return index + 1; }
-      if (action === "prev") { return index - 1; }
-      if (action === "first") { return 0; }
-      if (action === "last") { return pageCount; }
+      if (action === 'next') {
+        return index + 1;
+      }
+      if (action === 'prev') {
+        return index - 1;
+      }
+      if (action === 'first') {
+        return 0;
+      }
+      if (action === 'last') {
+        return pageCount;
+      }
     })();
     // TODO: stop assuming cursors are for collections
     const allEntries = getFolderEntries(collection.get('folder'), extension);
-    const entries = allEntries.slice(newIndex * pageSize, (newIndex * pageSize) + pageSize);
+    const entries = allEntries.slice(newIndex * pageSize, newIndex * pageSize + pageSize);
     const newCursor = getCursor(collection, extension, allEntries, newIndex);
     return Promise.resolve({ entries, cursor: newCursor });
   }
@@ -97,10 +105,12 @@ export default class TestRepo {
       path: collectionFile.get('file'),
       label: collectionFile.get('label'),
     }));
-    return Promise.all(files.map(file => ({
-      file,
-      data: getFile(file.path).content,
-    })));
+    return Promise.all(
+      files.map(file => ({
+        file,
+        data: getFile(file.path).content,
+      })),
+    );
   }
 
   getEntry(collection, slug, path) {
@@ -115,25 +125,27 @@ export default class TestRepo {
   }
 
   unpublishedEntry(collection, slug) {
-    const entry = window.repoFilesUnpublished.find(e => (
-      e.metaData.collection === collection.get('name') && e.slug === slug
-    ));
+    const entry = window.repoFilesUnpublished.find(
+      e => e.metaData.collection === collection.get('name') && e.slug === slug,
+    );
     if (!entry) {
-      return Promise.reject(new EditorialWorkflowError('content is not under editorial workflow', true));
+      return Promise.reject(
+        new EditorialWorkflowError('content is not under editorial workflow', true),
+      );
     }
     return Promise.resolve(entry);
   }
 
   deleteUnpublishedEntry(collection, slug) {
     const unpubStore = window.repoFilesUnpublished;
-    const existingEntryIndex = unpubStore.findIndex(e => (
-      e.metaData.collection === collection && e.slug === slug
-    ));
+    const existingEntryIndex = unpubStore.findIndex(
+      e => e.metaData.collection === collection && e.slug === slug,
+    );
     unpubStore.splice(existingEntryIndex, 1);
     return Promise.resolve();
   }
 
-  persistEntry({ path, raw, slug }, mediaFiles = [], options = {}) {
+  persistEntry({ path, raw, slug }, mediaFiles, options = {}) {
     if (options.useWorkflow) {
       const unpubStore = window.repoFilesUnpublished;
       const existingEntryIndex = unpubStore.findIndex(e => e.file.path === path);
@@ -176,18 +188,18 @@ export default class TestRepo {
 
   updateUnpublishedEntryStatus(collection, slug, newStatus) {
     const unpubStore = window.repoFilesUnpublished;
-    const entryIndex = unpubStore.findIndex(e => (
-      e.metaData.collection === collection && e.slug === slug
-    ));
+    const entryIndex = unpubStore.findIndex(
+      e => e.metaData.collection === collection && e.slug === slug,
+    );
     unpubStore[entryIndex].metaData.status = newStatus;
     return Promise.resolve();
   }
 
   publishUnpublishedEntry(collection, slug) {
     const unpubStore = window.repoFilesUnpublished;
-    const unpubEntryIndex = unpubStore.findIndex(e => (
-      e.metaData.collection === collection && e.slug === slug
-    ));
+    const unpubEntryIndex = unpubStore.findIndex(
+      e => e.metaData.collection === collection && e.slug === slug,
+    );
     const unpubEntry = unpubStore[unpubEntryIndex];
     const entry = { raw: unpubEntry.data, slug: unpubEntry.slug, path: unpubEntry.file.path };
     unpubStore.splice(unpubEntryIndex, 1);
@@ -207,13 +219,11 @@ export default class TestRepo {
     return Promise.resolve(normalizedAsset);
   }
 
-  deleteFile(path, commitMessage) {
+  deleteFile(path) {
     const assetIndex = this.assets.findIndex(asset => asset.path === path);
     if (assetIndex > -1) {
       this.assets.splice(assetIndex, 1);
-    }
-
-    else {
+    } else {
       const folder = path.substring(0, path.lastIndexOf('/'));
       const fileName = path.substring(path.lastIndexOf('/') + 1);
       delete window.repoFiles[folder][fileName];

@@ -16,7 +16,6 @@ export default function remarkAllowHtmlEntities() {
     var tokenizer;
     var name;
     var min;
-    var now;
 
     /* istanbul ignore if - never used (yet) */
     if (silent) {

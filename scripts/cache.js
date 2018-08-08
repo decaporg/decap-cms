@@ -1,6 +1,6 @@
-const os = require('os')
-const path = require('path')
-const cache = require('cache-me-outside')
+const os = require('os');
+const path = require('path');
+const cache = require('cache-me-outside');
 
 cache({
   cacheFolder: path.join('/', 'opt', 'build', 'cache', 'fast-cache'),
@@ -12,4 +12,4 @@ cache({
     },
   ],
   ignoreIfFolderExists: false,
-})
+});

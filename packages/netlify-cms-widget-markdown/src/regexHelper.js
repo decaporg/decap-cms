@@ -8,16 +8,14 @@ export function joinPatternSegments(patterns) {
   return patterns.map(p => p.source).join('');
 }
 
-
 /**
  * Combines an array of regular expressions into a single expression, wrapping
  * each in a non-capturing group and interposing alternation characters (|) so
  * that each expression is executed separately.
  */
-export function combinePatterns(patterns, flags = '') {
+export function combinePatterns(patterns) {
   return patterns.map(p => `(?:${p.source})`).join('|');
 }
-
 
 /**
  * Modify substrings within a string if they match a (global) pattern. Can be
@@ -63,34 +61,28 @@ export function replaceWhen(matchPattern, replaceFn, text, invertMatchPattern) {
      */
     if (match.index === 0) {
       addSubstring(acc, 0, match[0], true);
-    }
-
-    /**
-     * If there are no entries in the accumulator, convert the substring before
-     * the match to a data object (without the `match` flag set to true) and
-     * push to the accumulator, followed by a data object for the matching
-     * substring.
-     */
-    else if (!lastEntry) {
+    } else if (!lastEntry) {
+      /**
+       * If there are no entries in the accumulator, convert the substring before
+       * the match to a data object (without the `match` flag set to true) and
+       * push to the accumulator, followed by a data object for the matching
+       * substring.
+       */
       addSubstring(acc, 0, match.input.slice(0, match.index));
       addSubstring(acc, match.index, match[0], true);
-    }
-
-    /**
-     * If the last entry in the accumulator immediately preceded the current
-     * matched substring in the original string, just add the data object for
-     * the matching substring to the accumulator.
-     */
-    else if (match.index === lastEntry.index + lastEntry.text.length) {
+    } else if (match.index === lastEntry.index + lastEntry.text.length) {
+      /**
+       * If the last entry in the accumulator immediately preceded the current
+       * matched substring in the original string, just add the data object for
+       * the matching substring to the accumulator.
+       */
       addSubstring(acc, match.index, match[0], true);
-    }
-
-    /**
-     * Convert the substring before the match to a data object (without the
-     * `match` flag set to true), followed by a data object for the matching
-     * substring.
-     */
-    else {
+    } else {
+      /**
+       * Convert the substring before the match to a data object (without the
+       * `match` flag set to true), followed by a data object for the matching
+       * substring.
+       */
       const nextIndex = lastEntry.index + lastEntry.text.length;
       const nextText = match.input.slice(nextIndex, match.index);
       addSubstring(acc, nextIndex, nextText);

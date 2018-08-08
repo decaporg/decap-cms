@@ -40,10 +40,9 @@ const styles = {
   `,
 };
 
-export const Toast = ({ kind, message }) =>
-  <div className={cx(styles.toast, styles[kind])}>
-    {message}
-  </div>;
+export const Toast = ({ kind, message }) => (
+  <div className={cx(styles.toast, styles[kind])}>{message}</div>
+);
 
 Toast.propTypes = {
   kind: PropTypes.oneOf(['info', 'success', 'warning', 'danger']).isRequired,

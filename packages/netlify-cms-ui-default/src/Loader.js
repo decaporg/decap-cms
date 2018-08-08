@@ -45,13 +45,13 @@ const LoaderText = styled.div`
   color: #767676;
   margin-top: 55px;
   line-height: 35px;
-`
+`;
 
 const LoaderItem = styled.div`
   position: absolute;
   white-space: nowrap;
   transform: translateX(-50%);
-`
+`;
 
 export class Loader extends React.Component {
   state = {
@@ -69,7 +69,8 @@ export class Loader extends React.Component {
     const { children } = this.props;
 
     this.interval = setInterval(() => {
-      const nextItem = (this.state.currentItem === children.length - 1) ? 0 : this.state.currentItem + 1;
+      const nextItem =
+        this.state.currentItem === children.length - 1 ? 0 : this.state.currentItem + 1;
       this.setState({ currentItem: nextItem });
     }, 5000);
   };
@@ -102,13 +103,13 @@ export class Loader extends React.Component {
   };
 
   render() {
-    const { active, className } = this.props;
+    const { className } = this.props;
     return <div className={className}>{this.renderChild()}</div>;
   }
 }
 
 const StyledLoader = styled(Loader)`
-  display: ${props => props.active ? 'block' : 'none'};
+  display: ${props => (props.active ? 'block' : 'none')};
   position: absolute;
   top: 50%;
   left: 50%;
@@ -143,6 +144,6 @@ const StyledLoader = styled(Loader)`
     border-color: ${colors.active} transparent transparent;
     box-shadow: 0px 0px 0px 1px transparent;
   }
-`
+`;
 
 export default StyledLoader;

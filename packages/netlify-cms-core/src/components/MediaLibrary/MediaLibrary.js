@@ -16,11 +16,10 @@ import MediaLibraryModal from './MediaLibraryModal';
  * Extensions used to determine which files to show when the media library is
  * accessed from an image insertion field.
  */
-const IMAGE_EXTENSIONS_VIEWABLE = [ 'jpg', 'jpeg', 'webp', 'gif', 'png', 'bmp', 'tiff', 'svg' ];
-const IMAGE_EXTENSIONS = [ ...IMAGE_EXTENSIONS_VIEWABLE ];
+const IMAGE_EXTENSIONS_VIEWABLE = ['jpg', 'jpeg', 'webp', 'gif', 'png', 'bmp', 'tiff', 'svg'];
+const IMAGE_EXTENSIONS = [...IMAGE_EXTENSIONS_VIEWABLE];
 
 class MediaLibrary extends React.Component {
-
   /**
    * The currently selected file and query are tracked in component state as
    * they do not impact the rest of the application.
@@ -49,7 +48,7 @@ class MediaLibrary extends React.Component {
   componentDidUpdate(prevProps) {
     const isOpening = !prevProps.isVisible && this.props.isVisible;
 
-    if (isOpening && (prevProps.privateUpload !== this.props.privateUpload)) {
+    if (isOpening && prevProps.privateUpload !== this.props.privateUpload) {
       this.props.loadMedia({ privateUpload: this.props.privateUpload });
     }
   }
@@ -68,20 +67,22 @@ class MediaLibrary extends React.Component {
    * Transform file data for table display.
    */
   toTableData = files => {
-    const tableData = files && files.map(({ key, name, size, queryOrder, url, urlIsPublicPath }) => {
-      const ext = fileExtension(name).toLowerCase();
-      return {
-        key,
-        name,
-        type: ext.toUpperCase(),
-        size,
-        queryOrder,
-        url,
-        urlIsPublicPath,
-        isImage: IMAGE_EXTENSIONS.includes(ext),
-        isViewableImage: IMAGE_EXTENSIONS_VIEWABLE.includes(ext),
-      };
-    });
+    const tableData =
+      files &&
+      files.map(({ key, name, size, queryOrder, url, urlIsPublicPath }) => {
+        const ext = fileExtension(name).toLowerCase();
+        return {
+          key,
+          name,
+          type: ext.toUpperCase(),
+          size,
+          queryOrder,
+          url,
+          urlIsPublicPath,
+          isImage: IMAGE_EXTENSIONS.includes(ext),
+          isViewableImage: IMAGE_EXTENSIONS_VIEWABLE.includes(ext),
+        };
+      });
 
     /**
      * Get the sort order for use with `lodash.orderBy`, and always add the
@@ -152,10 +153,9 @@ class MediaLibrary extends React.Component {
       return;
     }
     const file = files.find(file => selectedFile.key === file.key);
-    deleteMedia(file, { privateUpload })
-      .then(() => {
-        this.setState({ selectedFile: {} });
-      });
+    deleteMedia(file, { privateUpload }).then(() => {
+      this.setState({ selectedFile: {} });
+    });
   };
 
   handleLoadMore = () => {
@@ -170,17 +170,17 @@ class MediaLibrary extends React.Component {
    * the GitHub backend, search is in-memory and occurs as the query is typed,
    * so this handler has no impact.
    */
-  handleSearchKeyDown = async (event) => {
+  handleSearchKeyDown = async event => {
     const { dynamicSearch, loadMedia, privateUpload } = this.props;
     if (event.key === 'Enter' && dynamicSearch) {
-      await loadMedia({ query: this.state.query, privateUpload })
+      await loadMedia({ query: this.state.query, privateUpload });
       this.scrollToTop();
     }
   };
 
   scrollToTop = () => {
     this.scrollContainerRef.scrollTop = 0;
-  }
+  };
 
   /**
    * Updates query state as the user types in the search field.
@@ -219,7 +219,6 @@ class MediaLibrary extends React.Component {
       isPersisting,
       isDeleting,
       hasNextPage,
-      page,
       isPaginating,
       privateUpload,
     } = this.props;
@@ -236,7 +235,6 @@ class MediaLibrary extends React.Component {
         isPersisting={isPersisting}
         isDeleting={isDeleting}
         hasNextPage={hasNextPage}
-        page={page}
         isPaginating={isPaginating}
         privateUpload={privateUpload}
         query={this.state.query}
@@ -250,7 +248,7 @@ class MediaLibrary extends React.Component {
         handlePersist={this.handlePersist}
         handleDelete={this.handleDelete}
         handleInsert={this.handleInsert}
-        setScrollContainerRef={ref => this.scrollContainerRef = ref}
+        setScrollContainerRef={ref => (this.scrollContainerRef = ref)}
         handleAssetClick={this.handleAssetClick}
         handleLoadMore={this.handleLoadMore}
       />
@@ -290,4 +288,7 @@ const mapDispatchToProps = {
   closeMediaLibrary: closeMediaLibraryAction,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(MediaLibrary);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(MediaLibrary);

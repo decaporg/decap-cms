@@ -6,7 +6,8 @@
     text-align: center;
   }
 
-  h2, p {
+  h2,
+  p {
     max-width: $desktop;
 
     @media screen and (min-width: $desktop) {
@@ -45,7 +46,6 @@
       @media screen and (max-width: $desktop) {
         margin-top: $large;
       }
-
     }
   }
 }

@@ -6,10 +6,7 @@ const Blog = ({ data }) => (
   <div className="blog page">
     <Helmet>
       <title>Blog</title>
-      <meta
-        name="description"
-        content="Recent news and updates about Netlify CMS."
-      />
+      <meta name="description" content="Recent news and updates about Netlify CMS." />
     </Helmet>
     <div className="container">
       <h1>Netlify CMS Blog</h1>

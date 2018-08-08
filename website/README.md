@@ -4,7 +4,7 @@ This directory builds netlifycms.org. If you'd like to propose changes to the si
 
 ## Local development
 
-The site is built with [GatsbyJS](https://gatsbyjs.org/). 
+The site is built with [GatsbyJS](https://gatsbyjs.org/).
 
 To run the site locally, you'll need to have [Node](https://nodejs.org) and [Yarn](https://yarnpkg.com/en/) installed on your computer.
 

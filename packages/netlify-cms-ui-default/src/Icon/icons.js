@@ -19,15 +19,15 @@ import images from './images/_index';
  * Configuration for individual icons.
  */
 const config = {
-  'arrow': {
+  arrow: {
     direction: 'left',
   },
-  'chevron': {
+  chevron: {
     direction: 'down',
   },
   'chevron-double': {
     direction: 'down',
-  }
+  },
 };
 
 /**

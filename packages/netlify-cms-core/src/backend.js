@@ -1,7 +1,7 @@
 import { attempt, flatten, isError } from 'lodash';
 import { Map } from 'immutable';
 import fuzzy from 'fuzzy';
-import { resolveFormat } from "Formats/formats";
+import { resolveFormat } from 'Formats/formats';
 import { selectIntegration } from 'Reducers/integrations';
 import {
   selectListMethod,
@@ -12,15 +12,15 @@ import {
   selectFolderEntryExtension,
   selectIdentifier,
   selectInferedField,
-} from "Reducers/collections";
-import { createEntry } from "ValueObjects/Entry";
-import { sanitizeSlug } from "Lib/urlHelper";
+} from 'Reducers/collections';
+import { createEntry } from 'ValueObjects/Entry';
+import { sanitizeSlug } from 'Lib/urlHelper';
 import { getBackend } from 'Lib/registry';
 import { Cursor, CURSOR_COMPATIBILITY_SYMBOL } from 'netlify-cms-lib-util';
 import { EDITORIAL_WORKFLOW, status } from 'Constants/publishModes';
 
 class LocalStorageAuthStore {
-  storageKey = "netlify-cms-user";
+  storageKey = 'netlify-cms-user';
 
   retrieve() {
     const data = window.localStorage.getItem(this.storageKey);
@@ -37,39 +37,40 @@ class LocalStorageAuthStore {
 }
 
 const slugFormatter = (collection, entryData, slugConfig) => {
-  const template = collection.get('slug') || "{{slug}}";
+  const template = collection.get('slug') || '{{slug}}';
   const date = new Date();
 
   const identifier = entryData.get(selectIdentifier(collection));
   if (!identifier) {
-    throw new Error("Collection must have a field name that is a valid entry identifier");
+    throw new Error('Collection must have a field name that is a valid entry identifier');
   }
 
-  const slug = template.replace(/\{\{([^}]+)\}\}/g, (_, field) => {
-    switch (field) {
-      case "year":
-        return date.getFullYear();
-      case "month":
-        return (`0${ date.getMonth() + 1 }`).slice(-2);
-      case "day":
-        return (`0${ date.getDate() }`).slice(-2);
-      case "hour":
-        return (`0${ date.getHours() }`).slice(-2);
-      case "minute":
-        return (`0${ date.getMinutes() }`).slice(-2);
-      case "second":
-        return (`0${ date.getSeconds() }`).slice(-2);
-      case "slug":
-        return identifier.trim();
-      default:
-        return entryData.get(field, "").trim();
-    }
-  })
-  // Convert slug to lower-case
-  .toLocaleLowerCase()
+  const slug = template
+    .replace(/\{\{([^}]+)\}\}/g, (_, field) => {
+      switch (field) {
+        case 'year':
+          return date.getFullYear();
+        case 'month':
+          return `0${date.getMonth() + 1}`.slice(-2);
+        case 'day':
+          return `0${date.getDate()}`.slice(-2);
+        case 'hour':
+          return `0${date.getHours()}`.slice(-2);
+        case 'minute':
+          return `0${date.getMinutes()}`.slice(-2);
+        case 'second':
+          return `0${date.getSeconds()}`.slice(-2);
+        case 'slug':
+          return identifier.trim();
+        default:
+          return entryData.get(field, '').trim();
+      }
+    })
+    // Convert slug to lower-case
+    .toLocaleLowerCase()
 
-  // Replace periods with dashes.
-  .replace(/[.]/g, '-');
+    // Replace periods with dashes.
+    .replace(/[.]/g, '-');
 
   return sanitizeSlug(slug, slugConfig);
 };
@@ -79,11 +80,13 @@ const commitMessageTemplates = Map({
   update: 'Update {{collection}} “{{slug}}”',
   delete: 'Delete {{collection}} “{{slug}}”',
   uploadMedia: 'Upload “{{path}}”',
-  deleteMedia: 'Delete “{{path}}”'
+  deleteMedia: 'Delete “{{path}}”',
 });
 
 const commitMessageFormatter = (type, config, { slug, path, collection }) => {
-  const templates = commitMessageTemplates.merge(config.getIn(['backend', 'commit_messages'], Map()));
+  const templates = commitMessageTemplates.merge(
+    config.getIn(['backend', 'commit_messages'], Map()),
+  );
   const messageTemplate = templates.get(type);
   return messageTemplate.replace(/\{\{([^}]+)\}\}/g, (_, variable) => {
     switch (variable) {
@@ -94,16 +97,17 @@ const commitMessageFormatter = (type, config, { slug, path, collection }) => {
       case 'collection':
         return collection.get('label');
       default:
-        console.warn(`Ignoring unknown variable “${ variable }” in commit message template.`);
+        console.warn(`Ignoring unknown variable “${variable}” in commit message template.`);
         return '';
     }
   });
-}
+};
 
-const extractSearchFields = searchFields => entry => searchFields.reduce((acc, field) => {
-  const f = entry.data[field];
-  return f ? `${acc} ${f}` : acc;
-}, "");
+const extractSearchFields = searchFields => entry =>
+  searchFields.reduce((acc, field) => {
+    const f = entry.data[field];
+    return f ? `${acc} ${f}` : acc;
+  }, '');
 
 const sortByScore = (a, b) => {
   if (a.score > b.score) return -1;
@@ -114,23 +118,25 @@ const sortByScore = (a, b) => {
 class Backend {
   constructor(implementation, { backendName, authStore = null, config } = {}) {
     this.implementation = implementation.init(config, {
-      useWorkflow: config.getIn(["publish_mode"]) === EDITORIAL_WORKFLOW,
+      useWorkflow: config.getIn(['publish_mode']) === EDITORIAL_WORKFLOW,
       updateUserCredentials: this.updateUserCredentials,
       initialWorkflowStatus: status.first(),
     });
     this.backendName = backendName;
     this.authStore = authStore;
     if (this.implementation === null) {
-      throw new Error("Cannot instantiate a Backend with no implementation");
+      throw new Error('Cannot instantiate a Backend with no implementation');
     }
   }
 
   currentUser() {
-    if (this.user) { return this.user; }
+    if (this.user) {
+      return this.user;
+    }
     const stored = this.authStore && this.authStore.retrieve();
     if (stored && stored.backendName === this.backendName) {
-      return Promise.resolve(this.implementation.restoreUser(stored)).then((user) => {
-        const newUser = {...user, backendName: this.backendName};
+      return Promise.resolve(this.implementation.restoreUser(stored)).then(user => {
+        const newUser = { ...user, backendName: this.backendName };
         // return confirmed/rehydrated user object instead of stored
         this.authStore.store(newUser);
         return newUser;
@@ -153,9 +159,11 @@ class Backend {
   }
 
   authenticate(credentials) {
-    return this.implementation.authenticate(credentials).then((user) => {
-      const newUser = {...user, backendName: this.backendName};
-      if (this.authStore) { this.authStore.store(newUser); }
+    return this.implementation.authenticate(credentials).then(user => {
+      const newUser = { ...user, backendName: this.backendName };
+      if (this.authStore) {
+        this.authStore.store(newUser);
+      }
       return newUser;
     });
   }
@@ -172,12 +180,14 @@ class Backend {
 
   processEntries(loadedEntries, collection) {
     const collectionFilter = collection.get('filter');
-    const entries = loadedEntries.map(loadedEntry => createEntry(
-      collection.get("name"),
-      selectEntrySlug(collection, loadedEntry.file.path),
-      loadedEntry.file.path,
-      { raw: loadedEntry.data || '', label: loadedEntry.file.label }
-    ));
+    const entries = loadedEntries.map(loadedEntry =>
+      createEntry(
+        collection.get('name'),
+        selectEntrySlug(collection, loadedEntry.file.path),
+        loadedEntry.file.path,
+        { raw: loadedEntry.data || '', label: loadedEntry.file.label },
+      ),
+    );
     const formattedEntries = entries.map(this.entryWithFormat(collection));
     // If this collection has a "filter" property, filter entries accordingly
     const filteredEntries = collectionFilter
@@ -186,23 +196,21 @@ class Backend {
     return filteredEntries;
   }
 
-
   listEntries(collection) {
     const listMethod = this.implementation[selectListMethod(collection)];
     const extension = selectFolderEntryExtension(collection);
-    return listMethod.call(this.implementation, collection, extension)
-      .then(loadedEntries => ({
-        entries: this.processEntries(loadedEntries, collection),
-        /*
+    return listMethod.call(this.implementation, collection, extension).then(loadedEntries => ({
+      entries: this.processEntries(loadedEntries, collection),
+      /*
           Wrap cursors so we can tell which collection the cursor is
           from. This is done to prevent traverseCursor from requiring a
           `collection` argument.
         */
-        cursor: Cursor.create(loadedEntries[CURSOR_COMPATIBILITY_SYMBOL]).wrapData({
-          cursorType: "collectionEntries",
-          collection,
-        }),
-      }));
+      cursor: Cursor.create(loadedEntries[CURSOR_COMPATIBILITY_SYMBOL]).wrapData({
+        cursorType: 'collectionEntries',
+        collection,
+      }),
+    }));
   }
 
   // The same as listEntries, except that if a cursor with the "next"
@@ -211,17 +219,18 @@ class Backend {
   // returns all the collected entries. Used to retrieve all entries
   // for local searches and queries.
   async listAllEntries(collection) {
-    if (collection.get("folder") && this.implementation.allEntriesByFolder) {
+    if (collection.get('folder') && this.implementation.allEntriesByFolder) {
       const extension = selectFolderEntryExtension(collection);
-      return this.implementation.allEntriesByFolder(collection, extension)
-      .then(entries => this.processEntries(entries, collection));
+      return this.implementation
+        .allEntriesByFolder(collection, extension)
+        .then(entries => this.processEntries(entries, collection));
     }
 
     const response = await this.listEntries(collection);
     const { entries } = response;
     let { cursor } = response;
-    while (cursor && cursor.actions.includes("next")) {
-      const { entries: newEntries, cursor: newCursor } = await this.traverseCursor(cursor, "next");
+    while (cursor && cursor.actions.includes('next')) {
+      const { entries: newEntries, cursor: newCursor } = await this.traverseCursor(cursor, 'next');
       entries.push(...newEntries);
       cursor = newCursor;
     }
@@ -233,31 +242,37 @@ class Backend {
     // collection, load it, search, and call onCollectionResults with
     // its results.
     const errors = [];
-    const collectionEntriesRequests = collections.map(async collection => {
-      // TODO: pass search fields in as an argument
-      const searchFields = [
-        selectInferedField(collection, 'title'),
-        selectInferedField(collection, 'shortTitle'),
-        selectInferedField(collection, 'author'),
-      ];
-      const collectionEntries = await this.listAllEntries(collection);
-      return fuzzy.filter(searchTerm, collectionEntries, {
-        extract: extractSearchFields(searchFields),
-      });
-    }).map(p => p.catch(err => errors.push(err) && []));
+    const collectionEntriesRequests = collections
+      .map(async collection => {
+        // TODO: pass search fields in as an argument
+        const searchFields = [
+          selectInferedField(collection, 'title'),
+          selectInferedField(collection, 'shortTitle'),
+          selectInferedField(collection, 'author'),
+        ];
+        const collectionEntries = await this.listAllEntries(collection);
+        return fuzzy.filter(searchTerm, collectionEntries, {
+          extract: extractSearchFields(searchFields),
+        });
+      })
+      .map(p => p.catch(err => errors.push(err) && []));
 
     const entries = await Promise.all(collectionEntriesRequests).then(arrs => flatten(arrs));
 
     if (errors.length > 0) {
-      throw new Error({ message: "Errors ocurred while searching entries locally!", errors });
+      throw new Error({ message: 'Errors ocurred while searching entries locally!', errors });
     }
-    const hits = entries.filter(({ score }) => score > 5).sort(sortByScore).map(f => f.original);
+    const hits = entries
+      .filter(({ score }) => score > 5)
+      .sort(sortByScore)
+      .map(f => f.original);
     return { entries: hits };
   }
 
   async query(collection, searchFields, searchTerm) {
     const entries = await this.listAllEntries(collection);
-    const hits = fuzzy.filter(searchTerm, entries, { extract: extractSearchFields(searchFields) })
+    const hits = fuzzy
+      .filter(searchTerm, entries, { extract: extractSearchFields(searchFields) })
       .filter(entry => entry.score > 5)
       .sort(sortByScore)
       .map(f => f.original);
@@ -267,26 +282,29 @@ class Backend {
   traverseCursor(cursor, action) {
     const [data, unwrappedCursor] = cursor.unwrapData();
     // TODO: stop assuming all cursors are for collections
-    const collection = data.get("collection");
-    return this.implementation.traverseCursor(unwrappedCursor, action)
+    const collection = data.get('collection');
+    return this.implementation
+      .traverseCursor(unwrappedCursor, action)
       .then(async ({ entries, cursor: newCursor }) => ({
         entries: this.processEntries(entries, collection),
         cursor: Cursor.create(newCursor).wrapData({
-          cursorType: "collectionEntries",
+          cursorType: 'collectionEntries',
           collection,
         }),
       }));
   }
 
   getEntry(collection, slug) {
-    return this.implementation.getEntry(collection, slug, selectEntryPath(collection, slug))
-      .then(loadedEntry => this.entryWithFormat(collection, slug)(createEntry(
-        collection.get("name"),
-        slug,
-        loadedEntry.file.path,
-        { raw: loadedEntry.data, label: loadedEntry.file.label }
-      ))
-    );
+    return this.implementation
+      .getEntry(collection, slug, selectEntryPath(collection, slug))
+      .then(loadedEntry =>
+        this.entryWithFormat(collection, slug)(
+          createEntry(collection.get('name'), slug, loadedEntry.file.path, {
+            raw: loadedEntry.data,
+            label: loadedEntry.file.label,
+          }),
+        ),
+      );
   }
 
   getMedia() {
@@ -294,7 +312,7 @@ class Backend {
   }
 
   entryWithFormat(collectionOrEntity) {
-    return (entry) => {
+    return entry => {
       const format = resolveFormat(collectionOrEntity, entry);
       if (entry && entry.raw !== undefined) {
         const data = (format && attempt(format.fromFile.bind(format, entry.raw))) || {};
@@ -306,88 +324,93 @@ class Backend {
   }
 
   unpublishedEntries(collections) {
-    return this.implementation.unpublishedEntries()
-    .then(loadedEntries => loadedEntries.filter(entry => entry !== null))
-    .then(entries => (
-      entries.map((loadedEntry) => {
-        const entry = createEntry(
-          loadedEntry.metaData.collection,
-          loadedEntry.slug,
-          loadedEntry.file.path,
-          {
-            raw: loadedEntry.data,
-            isModification: loadedEntry.isModification,
+    return this.implementation
+      .unpublishedEntries()
+      .then(loadedEntries => loadedEntries.filter(entry => entry !== null))
+      .then(entries =>
+        entries.map(loadedEntry => {
+          const entry = createEntry(
+            loadedEntry.metaData.collection,
+            loadedEntry.slug,
+            loadedEntry.file.path,
+            {
+              raw: loadedEntry.data,
+              isModification: loadedEntry.isModification,
+            },
+          );
+          entry.metaData = loadedEntry.metaData;
+          return entry;
+        }),
+      )
+      .then(entries => ({
+        pagination: 0,
+        entries: entries.reduce((acc, entry) => {
+          const collection = collections.get(entry.collection);
+          if (collection) {
+            acc.push(this.entryWithFormat(collection)(entry));
           }
-        );
-        entry.metaData = loadedEntry.metaData;
-        return entry;
-      })
-    ))
-    .then(entries => ({
-      pagination: 0,
-      entries: entries.reduce((acc, entry) => {
-        const collection = collections.get(entry.collection);
-        if (collection) {
-          acc.push(this.entryWithFormat(collection)(entry));
-        }
-        return acc;
-      }, []),
-    }));
+          return acc;
+        }, []),
+      }));
   }
 
   unpublishedEntry(collection, slug) {
-    return this.implementation.unpublishedEntry(collection, slug)
-    .then((loadedEntry) => {
-      const entry = createEntry(
-        "draft",
-        loadedEntry.slug,
-        loadedEntry.file.path,
-        {
+    return this.implementation
+      .unpublishedEntry(collection, slug)
+      .then(loadedEntry => {
+        const entry = createEntry('draft', loadedEntry.slug, loadedEntry.file.path, {
           raw: loadedEntry.data,
           isModification: loadedEntry.isModification,
         });
-      entry.metaData = loadedEntry.metaData;
-      return entry;
-    })
-    .then(this.entryWithFormat(collection, slug));
+        entry.metaData = loadedEntry.metaData;
+        return entry;
+      })
+      .then(this.entryWithFormat(collection, slug));
   }
 
   persistEntry(config, collection, entryDraft, MediaFiles, integrations, options = {}) {
-    const newEntry = entryDraft.getIn(["entry", "newRecord"]) || false;
+    const newEntry = entryDraft.getIn(['entry', 'newRecord']) || false;
 
     const parsedData = {
-      title: entryDraft.getIn(["entry", "data", "title"], "No Title"),
-      description: entryDraft.getIn(["entry", "data", "description"], "No Description!"),
+      title: entryDraft.getIn(['entry', 'data', 'title'], 'No Title'),
+      description: entryDraft.getIn(['entry', 'data', 'description'], 'No Description!'),
     };
 
-    const entryData = entryDraft.getIn(["entry", "data"]).toJS();
     let entryObj;
     if (newEntry) {
       if (!selectAllowNewEntries(collection)) {
-        throw (new Error("Not allowed to create new entries in this collection"));
+        throw new Error('Not allowed to create new entries in this collection');
       }
-      const slug = slugFormatter(collection, entryDraft.getIn(["entry", "data"]), config.get("slug"));
+      const slug = slugFormatter(
+        collection,
+        entryDraft.getIn(['entry', 'data']),
+        config.get('slug'),
+      );
       const path = selectEntryPath(collection, slug);
       entryObj = {
         path,
         slug,
-        raw: this.entryToRaw(collection, entryDraft.get("entry")),
+        raw: this.entryToRaw(collection, entryDraft.get('entry')),
       };
     } else {
-      const path = entryDraft.getIn(["entry", "path"]);
-      const slug = entryDraft.getIn(["entry", "slug"]);
+      const path = entryDraft.getIn(['entry', 'path']);
+      const slug = entryDraft.getIn(['entry', 'slug']);
       entryObj = {
         path,
         slug,
-        raw: this.entryToRaw(collection, entryDraft.get("entry")),
+        raw: this.entryToRaw(collection, entryDraft.get('entry')),
       };
     }
 
-    const commitMessage = commitMessageFormatter(newEntry ? 'create' : 'update', config, { collection, slug: entryObj.slug, path: entryObj.path });
+    const commitMessage = commitMessageFormatter(newEntry ? 'create' : 'update', config, {
+      collection,
+      slug: entryObj.slug,
+      path: entryObj.path,
+    });
 
-    const useWorkflow = config.getIn(["publish_mode"]) === EDITORIAL_WORKFLOW;
+    const useWorkflow = config.getIn(['publish_mode']) === EDITORIAL_WORKFLOW;
 
-    const collectionName = collection.get("name");
+    const collectionName = collection.get('name');
 
     /**
      * Determine whether an asset store integration is in use.
@@ -400,11 +423,10 @@ class Backend {
       commitMessage,
       collectionName,
       useWorkflow,
-      ...updatedOptions
+      ...updatedOptions,
     };
 
-    return this.implementation.persistEntry(entryObj, MediaFiles, opts)
-      .then(() => entryObj.slug);
+    return this.implementation.persistEntry(entryObj, MediaFiles, opts).then(() => entryObj.slug);
   }
 
   persistMedia(config, file) {
@@ -418,7 +440,7 @@ class Backend {
     const path = selectEntryPath(collection, slug);
 
     if (!selectAllowDeletion(collection)) {
-      throw (new Error("Not allowed to delete entries in this collection"));
+      throw new Error('Not allowed to delete entries in this collection');
     }
 
     const commitMessage = commitMessageFormatter('delete', config, { collection, slug, path });
@@ -449,52 +471,60 @@ class Backend {
   entryToRaw(collection, entry) {
     const format = resolveFormat(collection, entry.toJS());
     const fieldsOrder = this.fieldsOrder(collection, entry);
-    return format && format.toFile(entry.get("data").toJS(), fieldsOrder);
+    return format && format.toFile(entry.get('data').toJS(), fieldsOrder);
   }
 
   fieldsOrder(collection, entry) {
     const fields = collection.get('fields');
     if (fields) {
-      return collection.get('fields').map(f => f.get('name')).toArray();
+      return collection
+        .get('fields')
+        .map(f => f.get('name'))
+        .toArray();
     }
 
     const files = collection.get('files');
-    const file = (files || []).filter(f => f.get("name") === entry.get("slug")).get(0);
+    const file = (files || []).filter(f => f.get('name') === entry.get('slug')).get(0);
     if (file == null) {
-      throw new Error(`No file found for ${ entry.get("slug") } in ${ collection.get('name') }`);
+      throw new Error(`No file found for ${entry.get('slug')} in ${collection.get('name')}`);
     }
-    return file.get('fields').map(f => f.get('name')).toArray();
+    return file
+      .get('fields')
+      .map(f => f.get('name'))
+      .toArray();
   }
 
   filterEntries(collection, filterRule) {
-    return collection.entries.filter(entry => (
-      entry.data[filterRule.get('field')] === filterRule.get('value')
-    ));
+    return collection.entries.filter(
+      entry => entry.data[filterRule.get('field')] === filterRule.get('value'),
+    );
   }
 }
 
 export function resolveBackend(config) {
-  const name = config.getIn(["backend", "name"]);
+  const name = config.getIn(['backend', 'name']);
   if (name == null) {
-    throw new Error("No backend defined in configuration");
+    throw new Error('No backend defined in configuration');
   }
 
   const authStore = new LocalStorageAuthStore();
 
   if (!getBackend(name)) {
-    throw new Error(`Backend not found: ${ name }`);
+    throw new Error(`Backend not found: ${name}`);
   } else {
     return new Backend(getBackend(name), { backendName: name, authStore, config });
   }
 }
 
-export const currentBackend = (function () {
+export const currentBackend = (function() {
   let backend = null;
 
-  return (config) => {
-    if (backend) { return backend; }
-    if (config.get("backend")) {
-      return backend = resolveBackend(config);
+  return config => {
+    if (backend) {
+      return backend;
+    }
+    if (config.get('backend')) {
+      return (backend = resolveBackend(config));
     }
   };
-}());
+})();

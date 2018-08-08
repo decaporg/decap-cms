@@ -1,4 +1,4 @@
-import API from "../API";
+import API from '../API';
 
 describe('github API', () => {
   const mockAPI = (api, responses) => {
@@ -7,9 +7,9 @@ describe('github API', () => {
       const response = responses[normalizedPath];
       return typeof response === 'function'
         ? Promise.resolve(response(options))
-        : Promise.reject(new Error(`No response for path '${normalizedPath}'`))
+        : Promise.reject(new Error(`No response for path '${normalizedPath}'`));
     };
-  }
+  };
 
   it('should create PR with correct base branch name when publishing with editorial workflow', () => {
     let prBaseBranch = null;
@@ -20,19 +20,20 @@ describe('github API', () => {
       '/repos/my-repo/git/trees': () => ({}),
       '/repos/my-repo/git/commits': () => ({}),
       '/repos/my-repo/git/refs': () => ({}),
-      '/repos/my-repo/pulls': (pullRequest) => {
+      '/repos/my-repo/pulls': pullRequest => {
         prBaseBranch = JSON.parse(pullRequest.body).base;
         return { head: { sha: 'cbd' } };
       },
       '/user': () => ({}),
       '/repos/my-repo/git/blobs': () => ({}),
-      '/repos/my-repo/git/refs/meta/_netlify_cms': () => ({ 'object': {} })
+      '/repos/my-repo/git/refs/meta/_netlify_cms': () => ({ object: {} }),
     };
     mockAPI(api, responses);
 
     return expect(
-      api.editorialWorkflowGit(null, { slug: 'entry', sha: 'abc' }, null, {})
-        .then(() => prBaseBranch)
-    ).resolves.toEqual('gh-pages')
+      api
+        .editorialWorkflowGit(null, { slug: 'entry', sha: 'abc' }, null, {})
+        .then(() => prBaseBranch),
+    ).resolves.toEqual('gh-pages');
   });
 });

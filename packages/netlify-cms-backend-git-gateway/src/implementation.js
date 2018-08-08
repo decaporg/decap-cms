@@ -1,13 +1,13 @@
-import GoTrue from "gotrue-js";
+import GoTrue from 'gotrue-js';
 import jwtDecode from 'jwt-decode';
-import { get, pick, intersection } from "lodash";
-import { unsentRequest } from "netlify-cms-lib-util";
-import { GitHubBackend } from "netlify-cms-backend-github";
-import { GitLabBackend } from "netlify-cms-backend-gitlab";
-import { BitBucketBackend, API as BitBucketAPI } from "netlify-cms-backend-bitbucket";
-import GitHubAPI from "./GitHubAPI";
-import GitLabAPI from "./GitLabAPI";
-import AuthenticationPage from "./AuthenticationPage";
+import { get, pick, intersection } from 'lodash';
+import { unsentRequest } from 'netlify-cms-lib-util';
+import { GitHubBackend } from 'netlify-cms-backend-github';
+import { GitLabBackend } from 'netlify-cms-backend-gitlab';
+import { BitBucketBackend, API as BitBucketAPI } from 'netlify-cms-backend-bitbucket';
+import GitHubAPI from './GitHubAPI';
+import GitLabAPI from './GitLabAPI';
+import AuthenticationPage from './AuthenticationPage';
 
 const localHosts = {
   localhost: true,
@@ -20,14 +20,20 @@ const defaults = {
 };
 
 function getEndpoint(endpoint, netlifySiteURL) {
-  if (localHosts[document.location.host.split(":").shift()] && netlifySiteURL && endpoint.match(/^\/\.netlify\//)) {
+  if (
+    localHosts[document.location.host.split(':').shift()] &&
+    netlifySiteURL &&
+    endpoint.match(/^\/\.netlify\//)
+  ) {
     const parts = [];
     if (netlifySiteURL) {
       parts.push(netlifySiteURL);
-      if (!netlifySiteURL.match(/\/$/)) { parts.push("/"); }
+      if (!netlifySiteURL.match(/\/$/)) {
+        parts.push('/');
+      }
     }
     parts.push(endpoint.replace(/^\//, ''));
-    return parts.join("");
+    return parts.join('');
   }
   return endpoint;
 }
@@ -40,46 +46,58 @@ export default class GitGateway {
       ...options,
     };
     this.config = config;
-    this.branch = config.getIn(["backend", "branch"], "master").trim();
-    this.squash_merges = config.getIn(["backend", "squash_merges"]);
+    this.branch = config.getIn(['backend', 'branch'], 'master').trim();
+    this.squash_merges = config.getIn(['backend', 'squash_merges']);
 
-    const netlifySiteURL = localStorage.getItem("netlifySiteURL");
-    const APIUrl = getEndpoint(config.getIn(["backend", "identity_url"], defaults.identity), netlifySiteURL);
-    this.gatewayUrl = getEndpoint(config.getIn(["backend", "gateway_url"], defaults.gateway), netlifySiteURL);
+    const netlifySiteURL = localStorage.getItem('netlifySiteURL');
+    const APIUrl = getEndpoint(
+      config.getIn(['backend', 'identity_url'], defaults.identity),
+      netlifySiteURL,
+    );
+    this.gatewayUrl = getEndpoint(
+      config.getIn(['backend', 'gateway_url'], defaults.gateway),
+      netlifySiteURL,
+    );
 
     const backendTypeRegex = /\/(github|gitlab|bitbucket)\/?$/;
     const backendTypeMatches = this.gatewayUrl.match(backendTypeRegex);
     if (backendTypeMatches) {
       this.backendType = backendTypeMatches[1];
-      this.gatewayUrl = this.gatewayUrl.replace(backendTypeRegex, "/");
+      this.gatewayUrl = this.gatewayUrl.replace(backendTypeRegex, '/');
     } else {
       this.backendType = null;
     }
 
-    this.authClient = window.netlifyIdentity ? window.netlifyIdentity.gotrue : new GoTrue({ APIUrl });
+    this.authClient = window.netlifyIdentity
+      ? window.netlifyIdentity.gotrue
+      : new GoTrue({ APIUrl });
     AuthenticationPage.authClient = this.authClient;
 
     this.backend = null;
   }
 
-  requestFunction = req => this.tokenPromise()
-    .then(token => unsentRequest.withHeaders({ Authorization: `Bearer ${ token }` }, req))
-    .then(unsentRequest.performRequest);
+  requestFunction = req =>
+    this.tokenPromise()
+      .then(token => unsentRequest.withHeaders({ Authorization: `Bearer ${token}` }, req))
+      .then(unsentRequest.performRequest);
 
   authenticate(user) {
     this.tokenPromise = user.jwt.bind(user);
     return this.tokenPromise().then(async token => {
       if (!this.backendType) {
-        const { github_enabled, gitlab_enabled, bitbucket_enabled, roles } = await fetch(`${ this.gatewayUrl }/settings`, {
-          headers: { Authorization: `Bearer ${ token }` },
-        }).then(res => res.json());
+        const { github_enabled, gitlab_enabled, bitbucket_enabled, roles } = await fetch(
+          `${this.gatewayUrl}/settings`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        ).then(res => res.json());
         this.acceptRoles = roles;
         if (github_enabled) {
-          this.backendType = "github";
+          this.backendType = 'github';
         } else if (gitlab_enabled) {
-          this.backendType = "gitlab";
+          this.backendType = 'gitlab';
         } else if (bitbucket_enabled) {
-          this.backendType = "bitbucket";
+          this.backendType = 'bitbucket';
         }
       }
 
@@ -98,20 +116,21 @@ export default class GitGateway {
         metadata: user.user_metadata,
       };
       const apiConfig = {
-        api_root: `${ this.gatewayUrl }/${ this.backendType }`,
+        api_root: `${this.gatewayUrl}/${this.backendType}`,
         branch: this.branch,
         tokenPromise: this.tokenPromise,
-        commitAuthor: pick(userData, ["name", "email"]),
+        commitAuthor: pick(userData, ['name', 'email']),
         squash_merges: this.squash_merges,
+        initialWorkflowStatus: this.options.initialWorkflowStatus,
       };
 
-      if (this.backendType === "github") {
+      if (this.backendType === 'github') {
         this.api = new GitHubAPI(apiConfig);
         this.backend = new GitHubBackend(this.config, { ...this.options, API: this.api });
-      } else if (this.backendType === "gitlab") {
+      } else if (this.backendType === 'gitlab') {
         this.api = new GitLabAPI(apiConfig);
         this.backend = new GitLabBackend(this.config, { ...this.options, API: this.api });
-      } else if (this.backendType === "bitbucket") {
+      } else if (this.backendType === 'bitbucket') {
         this.api = new BitBucketAPI({
           ...apiConfig,
           requestFunction: this.requestFunction,
@@ -144,18 +163,46 @@ export default class GitGateway {
     return this.tokenPromise();
   }
 
-  entriesByFolder(collection, extension) { return this.backend.entriesByFolder(collection, extension); }
-  entriesByFiles(collection) { return this.backend.entriesByFiles(collection); }
-  fetchFiles(files) { return this.backend.fetchFiles(files); }
-  getEntry(collection, slug, path) { return this.backend.getEntry(collection, slug, path); }
-  getMedia() { return this.backend.getMedia(); }
-  persistEntry(entry, mediaFiles, options) { return this.backend.persistEntry(entry, mediaFiles, options); }
-  persistMedia(mediaFile, options) { return this.backend.persistMedia(mediaFile, options); }
-  deleteFile(path, commitMessage, options) { return this.backend.deleteFile(path, commitMessage, options); }
-  unpublishedEntries() { return this.backend.unpublishedEntries(); }
-  unpublishedEntry(collection, slug) { return this.backend.unpublishedEntry(collection, slug); }
-  updateUnpublishedEntryStatus(collection, slug, newStatus) { return this.backend.updateUnpublishedEntryStatus(collection, slug, newStatus); }
-  deleteUnpublishedEntry(collection, slug) { return this.backend.deleteUnpublishedEntry(collection, slug); }
-  publishUnpublishedEntry(collection, slug) { return this.backend.publishUnpublishedEntry(collection, slug); }
-  traverseCursor(cursor, action) { return this.backend.traverseCursor(cursor, action); }
+  entriesByFolder(collection, extension) {
+    return this.backend.entriesByFolder(collection, extension);
+  }
+  entriesByFiles(collection) {
+    return this.backend.entriesByFiles(collection);
+  }
+  fetchFiles(files) {
+    return this.backend.fetchFiles(files);
+  }
+  getEntry(collection, slug, path) {
+    return this.backend.getEntry(collection, slug, path);
+  }
+  getMedia() {
+    return this.backend.getMedia();
+  }
+  persistEntry(entry, mediaFiles, options) {
+    return this.backend.persistEntry(entry, mediaFiles, options);
+  }
+  persistMedia(mediaFile, options) {
+    return this.backend.persistMedia(mediaFile, options);
+  }
+  deleteFile(path, commitMessage, options) {
+    return this.backend.deleteFile(path, commitMessage, options);
+  }
+  unpublishedEntries() {
+    return this.backend.unpublishedEntries();
+  }
+  unpublishedEntry(collection, slug) {
+    return this.backend.unpublishedEntry(collection, slug);
+  }
+  updateUnpublishedEntryStatus(collection, slug, newStatus) {
+    return this.backend.updateUnpublishedEntryStatus(collection, slug, newStatus);
+  }
+  deleteUnpublishedEntry(collection, slug) {
+    return this.backend.deleteUnpublishedEntry(collection, slug);
+  }
+  publishUnpublishedEntry(collection, slug) {
+    return this.backend.publishUnpublishedEntry(collection, slug);
+  }
+  traverseCursor(cursor, action) {
+    return this.backend.traverseCursor(cursor, action);
+  }
 }
