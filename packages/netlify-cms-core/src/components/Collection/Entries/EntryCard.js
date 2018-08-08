@@ -28,12 +28,20 @@ const GridCard = styled.li`
   overflow: hidden;
   margin-left: 12px;
   margin-bottom: 16px;
+<<<<<<< HEAD
+`
+
+const GridCardLink = styled(Link)`
+  display: block;
+  &, &:hover {
+=======
 `;
 
 const GridCardLink = styled(Link)`
   display: block;
   &,
   &:hover {
+>>>>>>> 324c74061acf0e090b08aa9fae59a9f27d30717c
     background-color: ${colors.foreground};
     color: ${colors.text};
   }
@@ -101,8 +109,13 @@ const EntryCard = ({
     return (
       <ListCard>
         <ListCardLink to={path}>
+<<<<<<< HEAD
+          { collectionLabel ? <CollectionLabel>{collectionLabel}</CollectionLabel> : null }
+          <ListCardTitle>{ title }</ListCardTitle>
+=======
           {collectionLabel ? <CollectionLabel>{collectionLabel}</CollectionLabel> : null}
           <ListCardTitle>{title}</ListCardTitle>
+>>>>>>> 324c74061acf0e090b08aa9fae59a9f27d30717c
         </ListCardLink>
       </ListCard>
     );
@@ -113,10 +126,17 @@ const EntryCard = ({
       <GridCard>
         <GridCardLink to={path}>
           <CardBody hasImage={image}>
+<<<<<<< HEAD
+            { collectionLabel ? <CollectionLabel>{collectionLabel}</CollectionLabel> : null }
+            <CardHeading>{title}</CardHeading>
+          </CardBody>
+          { image ? <CardImage url={image}/> : null }
+=======
             {collectionLabel ? <CollectionLabel>{collectionLabel}</CollectionLabel> : null}
             <CardHeading>{title}</CardHeading>
           </CardBody>
           {image ? <CardImage url={image} /> : null}
+>>>>>>> 324c74061acf0e090b08aa9fae59a9f27d30717c
         </GridCardLink>
       </GridCard>
     );
