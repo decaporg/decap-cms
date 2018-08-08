@@ -31,6 +31,7 @@ If applicable, add screenshots to help explain your problem.
 **Applicable Versions:**
 <!-- You can find the CMS version by checking your web browser's developer tools console while in the CMS. -->
  - Netlify CMS version: [e.g. 2.0.4]
+ - Git provider: [e.g. GitHub, BitBucket]
  - OS: [e.g. Windows 7]
  - Browser version [e.g. chrome 22, safari 11]
 <!-- If using NPM: -->
