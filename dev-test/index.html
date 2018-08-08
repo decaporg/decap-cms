@@ -84,6 +84,7 @@
       render: function() {
         var entry = this.props.entry;
         var image = entry.getIn(['data', 'image']);
+        console.log(image);
         var bg = image && this.props.getAsset(image);
         return h('div', {},
           h('div', {className: "cover"},

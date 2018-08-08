@@ -11,6 +11,7 @@ const registry = {
   widgets: {},
   editorComponents: Map(),
   widgetValueSerializers: {},
+  mediaLibraries: [],
 };
 
 export default {
@@ -27,6 +28,8 @@ export default {
   getWidgetValueSerializer,
   registerBackend,
   getBackend,
+  registerMediaLibrary,
+  getMediaLibrary,
 };
 
 /**
@@ -108,4 +111,18 @@ export function registerBackend(name, BackendClass) {
 
 export function getBackend(name) {
   return registry.backends[name];
+}
+
+/**
+ * Media Libraries
+ */
+export function registerMediaLibrary(mediaLibrary, options) {
+  if (registry.mediaLibraries.find(ml => mediaLibrary.name === ml.name)) {
+    throw new Error(`A media library named ${mediaLibrary.name} has already been registered.`);
+  }
+  registry.mediaLibraries.push({ ...mediaLibrary, options });
+}
+
+export function getMediaLibrary(name) {
+  return registry.mediaLibraries.find(ml => ml.name === name);
 }
