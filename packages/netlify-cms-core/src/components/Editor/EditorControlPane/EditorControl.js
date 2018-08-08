@@ -8,7 +8,12 @@ import { colors, colorsRaw, transitions, lengths, borders } from 'netlify-cms-ui
 import { resolveWidget, getEditorComponents } from 'Lib/registry';
 import { addAsset } from 'Actions/media';
 import { query, clearSearch } from 'Actions/search';
-import { openMediaLibrary, removeInsertedMedia } from 'Actions/mediaLibrary';
+import {
+  openMediaLibrary,
+  removeInsertedMedia,
+  clearMediaControl,
+  removeMediaControl,
+} from 'Actions/mediaLibrary';
 import { getAsset } from 'Reducers';
 import Widget from './Widget';
 
@@ -153,6 +158,8 @@ class EditorControl extends React.Component {
       boundGetAsset,
       onChange,
       openMediaLibrary,
+      clearMediaControl,
+      removeMediaControl,
       addAsset,
       removeInsertedMedia,
       onValidate,
@@ -210,6 +217,8 @@ class EditorControl extends React.Component {
           onChange={(newValue, newMetadata) => onChange(fieldName, newValue, newMetadata)}
           onValidate={onValidate && partial(onValidate, fieldName)}
           onOpenMediaLibrary={openMediaLibrary}
+          onClearMediaControl={clearMediaControl}
+          onRemoveMediaControl={removeMediaControl}
           onRemoveInsertedMedia={removeInsertedMedia}
           onAddAsset={addAsset}
           getAsset={boundGetAsset}
@@ -244,6 +253,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   openMediaLibrary,
+  clearMediaControl,
+  removeMediaControl,
   removeInsertedMedia,
   addAsset,
   query,

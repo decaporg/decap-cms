@@ -9,7 +9,7 @@
     "clean": "rimraf packages/*/dist dev-test/*.js",
     "reset": "npm run clean && lerna clean --yes",
     "cache-ci": "node scripts/cache.js",
-    "test": "run-s jest e2e",
+    "test": "run-s jest e2e lint",
     "test-ci": "run-s cache-ci jest e2e-ci lint-quiet",
     "jest": "cross-env NODE_ENV=test jest --no-cache",
     "e2e-prep": "npm run build && cp -r packages/netlify-cms/dist dev-test/",

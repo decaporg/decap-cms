@@ -6,3 +6,4 @@ export { resolvePath, basename, fileExtensionWithSeparator, fileExtension } from
 export { filterPromises, resolvePromiseProperties, then } from './promise';
 export unsentRequest from './unsentRequest';
 export { filterByPropExtension, parseResponse, responseParser } from './backendUtil';
+export loadScript from './loadScript';
