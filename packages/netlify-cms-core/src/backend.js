@@ -497,10 +497,10 @@ class Backend {
   filterEntries(collection, filterRule) {
     return collection.entries.filter(entry => {
       const fieldValue = entry.data[filterRule.get('field')];
-      if(Array.isArray(fieldValue)) {
+      if (Array.isArray(fieldValue)) {
         return fieldValue.includes(filterRule.get('value'));
       }
-      return fieldValue === filterRule.get('value')
+      return fieldValue === filterRule.get('value');
     });
   }
 }

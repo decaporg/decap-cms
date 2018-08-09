@@ -3,8 +3,8 @@ import registry from 'Lib/registry';
 
 jest.mock('Lib/registry');
 
-const configWrapper = (inputObject) => ({
-  get: (prop) => inputObject[prop]
+const configWrapper = inputObject => ({
+  get: prop => inputObject[prop],
 });
 
 describe('Backend', () => {
@@ -21,61 +21,69 @@ describe('Backend', () => {
     });
 
     it('filters string values', () => {
-      const result = backend.filterEntries({
-        entries: [
-          {
-            data: {
-              testField: 'testValue'
+      const result = backend.filterEntries(
+        {
+          entries: [
+            {
+              data: {
+                testField: 'testValue',
+              },
             },
-          },
-        ],
-      }, configWrapper({ field: 'testField', value: 'testValue' }));
+          ],
+        },
+        configWrapper({ field: 'testField', value: 'testValue' }),
+      );
 
       expect(result.length).toBe(1);
     });
 
     it('filters number values', () => {
-      const result = backend.filterEntries({
-        entries: [
-          {
-            data: {
-              testField: 42
+      const result = backend.filterEntries(
+        {
+          entries: [
+            {
+              data: {
+                testField: 42,
+              },
             },
-          },
-        ],
-      }, configWrapper({ field: 'testField', value: 42 }));
+          ],
+        },
+        configWrapper({ field: 'testField', value: 42 }),
+      );
 
       expect(result.length).toBe(1);
     });
 
     it('filters boolean values', () => {
-      const result = backend.filterEntries({
-        entries: [
-          {
-            data: {
-              testField: false
+      const result = backend.filterEntries(
+        {
+          entries: [
+            {
+              data: {
+                testField: false,
+              },
             },
-          },
-        ],
-      }, configWrapper({ field: 'testField', value: false }));
+          ],
+        },
+        configWrapper({ field: 'testField', value: false }),
+      );
 
       expect(result.length).toBe(1);
     });
 
     it('filters list values', () => {
-      const result = backend.filterEntries({
-        entries: [
-          {
-            data: {
-              testField: [
-                'valueOne',
-                'valueTwo',
-                'testValue',
-              ]
+      const result = backend.filterEntries(
+        {
+          entries: [
+            {
+              data: {
+                testField: ['valueOne', 'valueTwo', 'testValue'],
+              },
             },
-          },
-        ],
-      }, configWrapper({ field: 'testField', value: 'testValue' }));
+          ],
+        },
+        configWrapper({ field: 'testField', value: 'testValue' }),
+      );
 
       expect(result.length).toBe(1);
     });
