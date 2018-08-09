@@ -15,18 +15,16 @@ const SoftBreak = (options = {}) => ({
 
     const shouldClose = text.endsWith('\n');
     if (shouldClose) {
-      return change
-        .deleteBackward(1)
-        .insertBlock(defaultBlock);
+      return change.deleteBackward(1).insertBlock(defaultBlock);
     }
 
     const textNode = Text.create('\n');
-    const breakNode = Inline.create({ type: 'break', nodes: [ textNode ] });
+    const breakNode = Inline.create({ type: 'break', nodes: [textNode] });
     return change
       .insertInline(breakNode)
       .insertText('')
       .collapseToStartOfNextText();
-  }
+  },
 });
 
 const SoftBreakOpts = {
@@ -44,11 +42,18 @@ const BreakToDefaultBlock = ({ onlyIn = [], defaultBlock = 'paragraph' }) => ({
     if (onlyIn.includes(value.startBlock.type)) {
       return change.insertBlock(defaultBlock);
     }
-  }
+  },
 });
 
 const BreakToDefaultBlockOpts = {
-  onlyIn: ['heading-one', 'heading-two', 'heading-three', 'heading-four', 'heading-five', 'heading-six'],
+  onlyIn: [
+    'heading-one',
+    'heading-two',
+    'heading-three',
+    'heading-four',
+    'heading-five',
+    'heading-six',
+  ],
 };
 
 export const BreakToDefaultBlockConfigured = BreakToDefaultBlock(BreakToDefaultBlockOpts);
@@ -67,7 +72,7 @@ const BackspaceCloseBlock = (options = {}) => ({
     if (startBlock.text === '') {
       return change.setBlock(defaultBlock).focus();
     }
-  }
+  },
 });
 
 const BackspaceCloseBlockOpts = {

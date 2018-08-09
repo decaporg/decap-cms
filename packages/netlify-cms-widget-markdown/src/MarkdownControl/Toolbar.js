@@ -27,7 +27,7 @@ const ToolbarContainer = styled.div`
 const ToolbarDropdownWrapper = styled.div`
   display: inline-block;
   position: relative;
-`
+`;
 
 const ToolbarToggle = styled.div`
   flex-shrink: 0;
@@ -35,7 +35,7 @@ const ToolbarToggle = styled.div`
   align-items: center;
   font-size: 14px;
   margin: 0 10px;
-`
+`;
 
 const StyledToggle = ToolbarToggle.withComponent(Toggle);
 
@@ -44,13 +44,15 @@ const ToolbarToggleLabel = styled.span`
   text-align: center;
   white-space: nowrap;
   line-height: 20px;
-  width: ${props => props.offPosition ? '62px' : '70px'};
+  width: ${props => (props.offPosition ? '62px' : '70px')};
 
-  ${props => props.isActive && css`
-    font-weight: 600;
-    color: ${colors.active};
-  `}
-`
+  ${props =>
+    props.isActive &&
+    css`
+      font-weight: 600;
+      color: ${colors.active};
+    `};
+`;
 
 export default class Toolbar extends React.Component {
   static propTypes = {
@@ -64,17 +66,10 @@ export default class Toolbar extends React.Component {
     disabled: PropTypes.bool,
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      activePlugin: null,
-    };
-  }
-
   isHidden = button => {
     const { buttons } = this.props;
     return List.isList(buttons) ? !buttons.includes(button) : false;
-  }
+  };
 
   render() {
     const {
@@ -87,13 +82,9 @@ export default class Toolbar extends React.Component {
       onToggleMode,
       rawMode,
       plugins,
-      onAddAsset,
-      getAsset,
       disabled,
       onSubmit,
     } = this.props;
-
-    const { activePlugin } = this.state;
 
     return (
       <ToolbarContainer>
@@ -202,15 +193,24 @@ export default class Toolbar extends React.Component {
                 </DropdownButton>
               )}
             >
-              {plugins && plugins.toList().map((plugin, idx) => (
-                <DropdownItem key={idx} label={plugin.get('label')} onClick={() => onSubmit(plugin.get('id'))} />
-              ))}
+              {plugins &&
+                plugins
+                  .toList()
+                  .map((plugin, idx) => (
+                    <DropdownItem
+                      key={idx}
+                      label={plugin.get('label')}
+                      onClick={() => onSubmit(plugin.get('id'))}
+                    />
+                  ))}
             </Dropdown>
           </ToolbarDropdownWrapper>
         </div>
         <ToolbarToggle>
-          <ToolbarToggleLabel isActive={!rawMode} offPosition>Rich Text</ToolbarToggleLabel>
-          <StyledToggle active={rawMode} onChange={onToggleMode}/>
+          <ToolbarToggleLabel isActive={!rawMode} offPosition>
+            Rich Text
+          </ToolbarToggleLabel>
+          <StyledToggle active={rawMode} onChange={onToggleMode} />
           <ToolbarToggleLabel isActive={rawMode}>Markdown</ToolbarToggleLabel>
         </ToolbarToggle>
       </ToolbarContainer>

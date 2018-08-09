@@ -8,7 +8,7 @@ const MarkdownPreview = ({ value, getAsset }) => {
     return null;
   }
   const html = markdownToHtml(value, getAsset);
-  return <WidgetPreviewContainer dangerouslySetInnerHTML={{__html: html}}/>
+  return <WidgetPreviewContainer dangerouslySetInnerHTML={{ __html: html }} />;
 };
 
 MarkdownPreview.propTypes = {

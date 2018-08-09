@@ -10,12 +10,12 @@ const StyledAuthenticationPage = styled.section`
   align-items: center;
   justify-content: center;
   height: 100vh;
-`
+`;
 
 const PageLogoIcon = styled(Icon)`
   color: #c4c6d2;
   margin-top: -300px;
-`
+`;
 
 const LoginButton = styled.button`
   ${buttons.button};
@@ -32,7 +32,7 @@ const LoginButton = styled.button`
   ${Icon} {
     margin-right: 18px;
   }
-`
+`;
 
 export default class AuthenticationPage extends React.Component {
   static propTypes = {
@@ -51,7 +51,7 @@ export default class AuthenticationPage extends React.Component {
     }
   }
 
-  handleLogin = (e) => {
+  handleLogin = e => {
     e.preventDefault();
     this.props.onLogin(this.state);
   };
@@ -61,9 +61,9 @@ export default class AuthenticationPage extends React.Component {
 
     return (
       <StyledAuthenticationPage>
-        <PageLogoIcon size="300px" type="netlify-cms"/>
+        <PageLogoIcon size="300px" type="netlify-cms" />
         <LoginButton disabled={inProgress} onClick={this.handleLogin}>
-          {inProgress ? "Logging in..." : "Login"}
+          {inProgress ? 'Logging in...' : 'Login'}
         </LoginButton>
       </StyledAuthenticationPage>
     );

@@ -37,9 +37,14 @@ export const selectEntry = (state, collection, slug) =>
 export const selectEntries = (state, collection) =>
   fromEntries.selectEntries(state.entries, collection);
 
-export const selectSearchedEntries = (state) => {
+export const selectSearchedEntries = state => {
   const searchItems = state.search.get('entryIds');
-  return searchItems && searchItems.map(({ collection, slug }) => fromEntries.selectEntry(state.entries, collection, slug));
+  return (
+    searchItems &&
+    searchItems.map(({ collection, slug }) =>
+      fromEntries.selectEntry(state.entries, collection, slug),
+    )
+  );
 };
 
 export const selectUnpublishedEntry = (state, collection, slug) =>

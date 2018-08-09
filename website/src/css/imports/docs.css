@@ -12,8 +12,8 @@
     }
   }
 
-	.docs-nav {
-		display: none;
+  .docs-nav {
+    display: none;
 
     @media screen and (min-width: $tablet) {
       display: block;
@@ -30,7 +30,7 @@
       }
 
       &:after {
-        content: " ";
+        content: ' ';
         position: absolute;
         top: 7px;
         right: 20px;
@@ -68,7 +68,7 @@
       margin: 10px 0;
       text-decoration: none;
       text-transform: capitalize;
-      transition: color .2s ease;
+      transition: color 0.2s ease;
 
       &.active {
         color: $darkGreen;
@@ -111,63 +111,62 @@
     }
   }
 
-	h1,
-	h2 {
-		font-size: 36px;
-		line-height: 48px;
+  h1,
+  h2 {
+    font-size: 36px;
+    line-height: 48px;
 
-		&.intro-headline {
-			padding: 0 $small;
-			margin-bottom: 86px;
-		}
-	}
+    &.intro-headline {
+      padding: 0 $small;
+      margin-bottom: 86px;
+    }
+  }
 
   h2 {
     font-size: $small;
   }
 
-	h3 {
-		color: $grey;
-		font-size: 20px;
-		margin-top: $medium;
+  h3 {
+    color: $grey;
+    font-size: 20px;
+    margin-top: $medium;
     margin-bottom: $small;
 
-		&.inverse {
-			color: white;
-		}
+    &.inverse {
+      color: white;
+    }
   }
 
   .meta-info {
     font-size: $tiny;
   }
-  
-	table {
-		width: 100%;
-		text-align: left;
-		margin: 34px 0 $medium 0;
 
-		th,
-		td {
-			padding: $micro;
-		}
+  table {
+    width: 100%;
+    text-align: left;
+    margin: 34px 0 $medium 0;
 
-		th {
-			font-size: 18px;
-			font-weight: $bold;
-		}
+    th,
+    td {
+      padding: $micro;
+    }
 
-		tbody tr {
-			&:nth-child(odd) {
-				background: #fdfdfd;
-			}
-		}
+    th {
+      font-size: 18px;
+      font-weight: $bold;
+    }
 
-		td {
-			font-size: 14px;
-		}
+    tbody tr {
+      &:nth-child(odd) {
+        background: #fdfdfd;
+      }
+    }
+
+    td {
+      font-size: 14px;
+    }
   }
 }
-
 
 .docs-content,
 .blog-content {
@@ -179,7 +178,7 @@
   }
 
   #pencil {
-    fill: #7CA511;
+    fill: #7ca511;
   }
 
   @media screen and (min-width: $tablet) {
@@ -204,9 +203,9 @@
   }
 
   img {
-     max-width: 100%;
-     height: auto;
-   }
+    max-width: 100%;
+    height: auto;
+  }
 
   table {
     background: #f7f7f7;

@@ -1,7 +1,6 @@
 import React from 'react';
 
 class PreviewHOC extends React.Component {
-
   /**
    * Only re-render on value change, but always re-render objects and lists.
    * Their child widgets will each also be wrapped with this component, and

@@ -56,7 +56,7 @@ function unpublishedEntryLoading(collection, slug) {
 function unpublishedEntryLoaded(collection, entry) {
   return {
     type: UNPUBLISHED_ENTRY_SUCCESS,
-    payload: { 
+    payload: {
       collection: collection.get('name'),
       entry,
     },
@@ -66,7 +66,7 @@ function unpublishedEntryLoaded(collection, entry) {
 function unpublishedEntryRedirected(collection, slug) {
   return {
     type: UNPUBLISHED_ENTRY_REDIRECT,
-    payload: { 
+    payload: {
       collection: collection.get('name'),
       slug,
     },
@@ -97,7 +97,6 @@ function unpublishedEntriesFailed(error) {
   };
 }
 
-
 function unpublishedEntryPersisting(collection, entry, transactionID) {
   return {
     type: UNPUBLISHED_ENTRY_PERSIST_REQUEST,
@@ -112,7 +111,7 @@ function unpublishedEntryPersisting(collection, entry, transactionID) {
 function unpublishedEntryPersisted(collection, entry, transactionID, slug) {
   return {
     type: UNPUBLISHED_ENTRY_PERSIST_SUCCESS,
-    payload: { 
+    payload: {
       collection: collection.get('name'),
       entry,
       slug,
@@ -130,10 +129,16 @@ function unpublishedEntryPersistedFail(error, transactionID) {
   };
 }
 
-function unpublishedEntryStatusChangeRequest(collection, slug, oldStatus, newStatus, transactionID) {
+function unpublishedEntryStatusChangeRequest(
+  collection,
+  slug,
+  oldStatus,
+  newStatus,
+  transactionID,
+) {
   return {
     type: UNPUBLISHED_ENTRY_STATUS_CHANGE_REQUEST,
-    payload: { 
+    payload: {
       collection,
       slug,
       oldStatus,
@@ -143,10 +148,16 @@ function unpublishedEntryStatusChangeRequest(collection, slug, oldStatus, newSta
   };
 }
 
-function unpublishedEntryStatusChangePersisted(collection, slug, oldStatus, newStatus, transactionID) {
+function unpublishedEntryStatusChangePersisted(
+  collection,
+  slug,
+  oldStatus,
+  newStatus,
+  transactionID,
+) {
   return {
     type: UNPUBLISHED_ENTRY_STATUS_CHANGE_SUCCESS,
-    payload: { 
+    payload: {
       collection,
       slug,
       oldStatus,
@@ -189,6 +200,7 @@ function unpublishedEntryPublishError(collection, slug, transactionID) {
 }
 
 function unpublishedEntryDeleteRequest(collection, slug, transactionID) {
+  // The reducer doesn't handle this action -- it is for `optimist`.
   return {
     type: UNPUBLISHED_ENTRY_DELETE_REQUEST,
     payload: { collection, slug },
@@ -205,6 +217,7 @@ function unpublishedEntryDeleted(collection, slug, transactionID) {
 }
 
 function unpublishedEntryDeleteError(collection, slug, transactionID) {
+  // The reducer doesn't handle this action -- it is for `optimist`.
   return {
     type: UNPUBLISHED_ENTRY_DELETE_FAILURE,
     payload: { collection, slug },
@@ -221,20 +234,23 @@ export function loadUnpublishedEntry(collection, slug) {
     const state = getState();
     const backend = currentBackend(state.config);
     dispatch(unpublishedEntryLoading(collection, slug));
-    backend.unpublishedEntry(collection, slug)
-    .then(entry => dispatch(unpublishedEntryLoaded(collection, entry)))
-    .catch((error) => {
-      if (error instanceof EditorialWorkflowError && error.notUnderEditorialWorkflow) {
-        dispatch(unpublishedEntryRedirected(collection, slug));
-        dispatch(loadEntry(collection, slug));
-      } else {
-        dispatch(notifSend({
-          message: `Error loading entry: ${ error }`,
-          kind: 'danger',
-          dismissAfter: 8000,
-        }));
-      }
-    });
+    backend
+      .unpublishedEntry(collection, slug)
+      .then(entry => dispatch(unpublishedEntryLoaded(collection, entry)))
+      .catch(error => {
+        if (error instanceof EditorialWorkflowError && error.notUnderEditorialWorkflow) {
+          dispatch(unpublishedEntryRedirected(collection, slug));
+          dispatch(loadEntry(collection, slug));
+        } else {
+          dispatch(
+            notifSend({
+              message: `Error loading entry: ${error}`,
+              kind: 'danger',
+              dismissAfter: 8000,
+            }),
+          );
+        }
+      });
   };
 }
 
@@ -244,16 +260,19 @@ export function loadUnpublishedEntries(collections) {
     if (state.config.get('publish_mode') !== EDITORIAL_WORKFLOW) return;
     const backend = currentBackend(state.config);
     dispatch(unpublishedEntriesLoading());
-    backend.unpublishedEntries(collections)
+    backend
+      .unpublishedEntries(collections)
       .then(response => dispatch(unpublishedEntriesLoaded(response.entries, response.pagination)))
       .catch(error => {
-        dispatch(notifSend({
-          message: `Error loading entries: ${ error }`,
-          kind: 'danger',
-          dismissAfter: 8000,
-        }));
+        dispatch(
+          notifSend({
+            message: `Error loading entries: ${error}`,
+            kind: 'danger',
+            dismissAfter: 8000,
+          }),
+        );
         dispatch(unpublishedEntriesFailed(error));
-        Promise.reject(error)
+        Promise.reject(error);
       });
   };
 }
@@ -266,17 +285,20 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
 
     // Early return if draft contains validation errors
     if (!fieldsErrors.isEmpty()) {
-      const hasPresenceErrors = fieldsErrors
-        .some(errors => errors.some(error => error.type && error.type === ValidationErrorTypes.PRESENCE));
+      const hasPresenceErrors = fieldsErrors.some(errors =>
+        errors.some(error => error.type && error.type === ValidationErrorTypes.PRESENCE),
+      );
 
       if (hasPresenceErrors) {
-        dispatch(notifSend({
-          message: 'Oops, you\'ve missed a required field. Please complete before saving.',
-          kind: 'danger',
-          dismissAfter: 8000,
-        }));
+        dispatch(
+          notifSend({
+            message: "Oops, you've missed a required field. Please complete before saving.",
+            kind: 'danger',
+            dismissAfter: 8000,
+          }),
+        );
       }
-      return Promise.reject()
+      return Promise.reject();
     }
 
     const backend = currentBackend(state.config);
@@ -294,7 +316,9 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
     const serializedEntryDraft = entryDraft.set('entry', serializedEntry);
 
     dispatch(unpublishedEntryPersisting(collection, serializedEntry, transactionID));
-    const persistAction = existingUnpublishedEntry ? backend.persistUnpublishedEntry : backend.persistEntry;
+    const persistAction = existingUnpublishedEntry
+      ? backend.persistUnpublishedEntry
+      : backend.persistEntry;
     const persistCallArgs = [
       backend,
       state.config,
@@ -306,19 +330,22 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
 
     try {
       const newSlug = await persistAction.call(...persistCallArgs);
-      dispatch(notifSend({
-        message: 'Entry saved',
-        kind: 'success',
-        dismissAfter: 4000,
-      }));
+      dispatch(
+        notifSend({
+          message: 'Entry saved',
+          kind: 'success',
+          dismissAfter: 4000,
+        }),
+      );
       dispatch(unpublishedEntryPersisted(collection, serializedEntry, transactionID, newSlug));
-    }
-    catch(error) {
-      dispatch(notifSend({
-        message: `Failed to persist entry: ${ error }`,
-        kind: 'danger',
-        dismissAfter: 8000,
-      }));
+    } catch (error) {
+      dispatch(
+        notifSend({
+          message: `Failed to persist entry: ${error}`,
+          kind: 'danger',
+          dismissAfter: 8000,
+        }),
+      );
       return Promise.reject(dispatch(unpublishedEntryPersistedFail(error, transactionID)));
     }
   };
@@ -329,24 +356,39 @@ export function updateUnpublishedEntryStatus(collection, slug, oldStatus, newSta
     const state = getState();
     const backend = currentBackend(state.config);
     const transactionID = uuid();
-    dispatch(unpublishedEntryStatusChangeRequest(collection, slug, oldStatus, newStatus, transactionID));
-    backend.updateUnpublishedEntryStatus(collection, slug, newStatus)
-    .then(() => {
-      dispatch(notifSend({
-        message: 'Entry status updated',
-        kind: 'success',
-        dismissAfter: 4000,
-      }));
-      dispatch(unpublishedEntryStatusChangePersisted(collection, slug, oldStatus, newStatus, transactionID));
-    })
-    .catch((error) => {
-      dispatch(notifSend({
-        message: `Failed to update status: ${ error }`,
-        kind: 'danger',
-        dismissAfter: 8000,
-      }));
-      dispatch(unpublishedEntryStatusChangeError(collection, slug, transactionID));
-    });
+    dispatch(
+      unpublishedEntryStatusChangeRequest(collection, slug, oldStatus, newStatus, transactionID),
+    );
+    backend
+      .updateUnpublishedEntryStatus(collection, slug, newStatus)
+      .then(() => {
+        dispatch(
+          notifSend({
+            message: 'Entry status updated',
+            kind: 'success',
+            dismissAfter: 4000,
+          }),
+        );
+        dispatch(
+          unpublishedEntryStatusChangePersisted(
+            collection,
+            slug,
+            oldStatus,
+            newStatus,
+            transactionID,
+          ),
+        );
+      })
+      .catch(error => {
+        dispatch(
+          notifSend({
+            message: `Failed to update status: ${error}`,
+            kind: 'danger',
+            dismissAfter: 8000,
+          }),
+        );
+        dispatch(unpublishedEntryStatusChangeError(collection, slug, transactionID));
+      });
   };
 }
 
@@ -356,23 +398,28 @@ export function deleteUnpublishedEntry(collection, slug) {
     const backend = currentBackend(state.config);
     const transactionID = uuid();
     dispatch(unpublishedEntryDeleteRequest(collection, slug, transactionID));
-    return backend.deleteUnpublishedEntry(collection, slug)
-    .then(() => {
-      dispatch(notifSend({
-        message: 'Unpublished changes deleted',
-        kind: 'success',
-        dismissAfter: 4000,
-      }));
-      dispatch(unpublishedEntryDeleted(collection, slug, transactionID));
-    })
-    .catch((error) => {
-      dispatch(notifSend({
-        message: `Failed to delete unpublished changes: ${ error }`,
-        kind: 'danger',
-        dismissAfter: 8000,
-      }));
-      dispatch(unpublishedEntryDeleteError(collection, slug, transactionID));
-    });
+    return backend
+      .deleteUnpublishedEntry(collection, slug)
+      .then(() => {
+        dispatch(
+          notifSend({
+            message: 'Unpublished changes deleted',
+            kind: 'success',
+            dismissAfter: 4000,
+          }),
+        );
+        dispatch(unpublishedEntryDeleted(collection, slug, transactionID));
+      })
+      .catch(error => {
+        dispatch(
+          notifSend({
+            message: `Failed to delete unpublished changes: ${error}`,
+            kind: 'danger',
+            dismissAfter: 8000,
+          }),
+        );
+        dispatch(unpublishedEntryDeleteError(collection, slug, transactionID));
+      });
   };
 }
 
@@ -382,22 +429,27 @@ export function publishUnpublishedEntry(collection, slug) {
     const backend = currentBackend(state.config);
     const transactionID = uuid();
     dispatch(unpublishedEntryPublishRequest(collection, slug, transactionID));
-    return backend.publishUnpublishedEntry(collection, slug)
-    .then(() => {
-      dispatch(notifSend({
-        message: 'Entry published',
-        kind: 'success',
-        dismissAfter: 4000,
-      }));
-      dispatch(unpublishedEntryPublished(collection, slug, transactionID));
-    })
-    .catch((error) => {
-      dispatch(notifSend({
-        message: `Failed to publish: ${ error }`,
-        kind: 'danger',
-        dismissAfter: 8000,
-      }));
-      dispatch(unpublishedEntryPublishError(collection, slug, transactionID));
-    });
+    return backend
+      .publishUnpublishedEntry(collection, slug)
+      .then(() => {
+        dispatch(
+          notifSend({
+            message: 'Entry published',
+            kind: 'success',
+            dismissAfter: 4000,
+          }),
+        );
+        dispatch(unpublishedEntryPublished(collection, slug, transactionID));
+      })
+      .catch(error => {
+        dispatch(
+          notifSend({
+            message: `Failed to publish: ${error}`,
+            kind: 'danger',
+            dismissAfter: 8000,
+          }),
+        );
+        dispatch(unpublishedEntryPublishError(collection, slug, transactionID));
+      });
   };
 }

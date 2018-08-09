@@ -1,11 +1,11 @@
 import { Map } from 'immutable';
-import EditorComponent from 'ValueObjects/EditorComponent'
+import EditorComponent from 'ValueObjects/EditorComponent';
 
 /**
  * Global Registry Object
  */
 const registry = {
-  backends: { },
+  backends: {},
   templates: {},
   previewStyles: [],
   widgets: {},
@@ -29,7 +29,6 @@ export default {
   getBackend,
 };
 
-
 /**
  * Preview Styles
  *
@@ -43,7 +42,6 @@ export function getPreviewStyles() {
   return registry.previewStyles;
 }
 
-
 /**
  * Preview Templates
  */
@@ -53,7 +51,6 @@ export function registerPreviewTemplate(name, component) {
 export function getPreviewTemplate(name) {
   return registry.templates[name];
 }
-
 
 /**
  * Editor Widgets
@@ -71,7 +68,6 @@ export function resolveWidget(name) {
   return getWidget(name || 'string') || getWidget('unknown');
 }
 
-
 /**
  * Markdown Editor Custom Components
  */
@@ -82,7 +78,6 @@ export function registerEditorComponent(component) {
 export function getEditorComponents() {
   return registry.editorComponents;
 }
-
 
 /**
  * Widget Serializers
@@ -99,9 +94,11 @@ export function getWidgetValueSerializer(widgetName) {
  */
 export function registerBackend(name, BackendClass) {
   if (!name || !BackendClass) {
-    console.error("Backend parameters invalid. example: CMS.registerBackend('myBackend', BackendClass)");
+    console.error(
+      "Backend parameters invalid. example: CMS.registerBackend('myBackend', BackendClass)",
+    );
   } else if (registry.backends[name]) {
-      console.error(`Backend [${ name }] already registered. Please choose a different name.`);
+    console.error(`Backend [${name}] already registered. Please choose a different name.`);
   } else {
     registry.backends[name] = {
       init: (...args) => new BackendClass(...args),
@@ -112,4 +109,3 @@ export function registerBackend(name, BackendClass) {
 export function getBackend(name) {
   return registry.backends[name];
 }
-

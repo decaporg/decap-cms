@@ -1,4 +1,5 @@
 # Netlify CMS
+
 [![All Contributors](https://img.shields.io/badge/all_contributors-113-orange.svg)](#contributors)
 [![Open Source Helpers](https://www.codetriage.com/netlify/netlify-cms/badges/users.svg)](https://www.codetriage.com/netlify/netlify-cms)
 [![](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/netlify/netlifycms)
@@ -24,9 +25,9 @@ Read more about Netlify CMS [Core Concepts](https://www.netlifycms.org/docs/intr
 
 The Netlify CMS can be used in two different ways.
 
-* A Quick and easy install, that just requires you to create a single HTML file and a configuration file. All the CMS Javascript and CSS are loaded from a CDN.
-To learn more about this installation method, refer to the [Quick Start Guide](https://www.netlifycms.org/docs/quick-start/)
-* A complete, more complex install, that gives you more flexibility but requires that you use a static site builder with a build system that supports npm packages.
+- A Quick and easy install, that just requires you to create a single HTML file and a configuration file. All the CMS Javascript and CSS are loaded from a CDN.
+  To learn more about this installation method, refer to the [Quick Start Guide](https://www.netlifycms.org/docs/quick-start/)
+- A complete, more complex install, that gives you more flexibility but requires that you use a static site builder with a build system that supports npm packages.
 
 # Community
 
@@ -45,7 +46,9 @@ Please make sure you understand its [implications and guarantees](https://writin
 # Thanks
 
 ## Services
+
 These services support Netlify CMS development by providing free infrastructure.
+
 <p>
   <a href="https://www.travis-ci.org">
     <img src="https://raw.githubusercontent.com/netlify/netlify-cms/master/img/travis.png" height="38"/>
@@ -57,6 +60,7 @@ These services support Netlify CMS development by providing free infrastructure.
 </p>
 
 ## Contributors
+
 These wonderful folks are responsible for developing and maintaining Netlify CMS. ([emoji key](https://github.com/kentcdodds/all-contributors#emoji-key))
 
 <!-- prettier-ignore -->

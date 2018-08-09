@@ -9,44 +9,44 @@ const MAX_DISPLAY_LENGTH = 50;
 
 const FileContent = styled.div`
   display: flex;
-`
+`;
 
 const ImageWrapper = styled.div`
   width: 155px;
   height: 100px;
   margin-right: 20px;
-`
+`;
 
 const Image = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
   border-radius: ${lengths.borderRadius};
-`
+`;
 
 const FileInfo = styled.div`
   button:not(:first-child) {
     margin-top: 12px;
   }
-`
+`;
 
 const FileName = styled.span`
   display: block;
   font-size: 16px;
   margin-bottom: 20px;
-`
+`;
 
 const FileWidgetButton = styled.button`
   ${buttons.button};
   ${components.textBadge};
   display: block;
-`
+`;
 
 const FileWidgetButtonRemove = styled.button`
   ${buttons.button};
   ${components.textBadgeDanger};
   display: block;
-`
+`;
 
 export default function withFileControl({ forImage } = {}) {
   return class FileControl extends React.Component {
@@ -84,7 +84,7 @@ export default function withFileControl({ forImage } = {}) {
        * path is different than the value in `nextProps`, update.
        */
       const mediaPath = nextProps.mediaPaths.get(this.controlID);
-      if (mediaPath && (nextProps.value !== mediaPath)) {
+      if (mediaPath && nextProps.value !== mediaPath) {
         return true;
       }
 
@@ -117,20 +117,27 @@ export default function withFileControl({ forImage } = {}) {
     };
 
     renderFileName = () => {
-      const { value, classNameWrapper } = this.props;
+      const { value } = this.props;
       const size = MAX_DISPLAY_LENGTH;
       if (!value || value.length <= size) {
         return value;
       }
-      return `${ value.substring(0, size / 2) }\u2026${ value.substring(value.length - size / 2 + 1, value.length) }`;
+      return `${value.substring(0, size / 2)}\u2026${value.substring(
+        value.length - size / 2 + 1,
+        value.length,
+      )}`;
     };
 
-    renderSelection = (subject) => {
+    renderSelection = subject => {
       const fileName = this.renderFileName();
       const { getAsset, value } = this.props;
       return (
         <FileContent>
-          { forImage ? <ImageWrapper><Image src={getAsset(value)}/></ImageWrapper> : null }
+          {forImage ? (
+            <ImageWrapper>
+              <Image src={getAsset(value)} />
+            </ImageWrapper>
+          ) : null}
           <FileInfo>
             <FileName>{fileName}</FileName>
             <FileWidgetButton onClick={this.handleChange}>
@@ -158,10 +165,10 @@ export default function withFileControl({ forImage } = {}) {
       return (
         <div className={classNameWrapper}>
           <span>
-            { value ? this.renderSelection(subject) : this.renderNoSelection(subject, article) }
+            {value ? this.renderSelection(subject) : this.renderNoSelection(subject, article)}
           </span>
         </div>
       );
     }
-  }
+  };
 }

@@ -6,8 +6,8 @@ group: guides
 
 The NetlifyCMS exposes a `window.CMS` global object that you can use to register custom widgets, previews and editor plugins. The available customization methods are:
 
-* **registerPreviewStyle:** Register a custom stylesheet to use on the preview pane.
-* **registerPreviewTemplate:** Registers a template for a collection.
+- **registerPreviewStyle:** Register a custom stylesheet to use on the preview pane.
+- **registerPreviewTemplate:** Registers a template for a collection.
 
 Explore the [NetlifyCMS GitHub example](https://github.com/netlify/netlify-cms/blob/9ced3f16c8bcc3d1a36773b126842d023c589eaf/example/index.html#L90-L91), a working example you can review on GitHub.
 
@@ -25,7 +25,7 @@ CMS.registerPreviewStyle(file);
 
 **Params:**
 
-* **file:** css file path
+- **file:** css file path
 
 **Example:**
 
@@ -60,12 +60,13 @@ Registers a template for a collection.
 
 **Params:**
 
-* collection: The name of the collection which this preview component will be used for.
-* react_component: A React component that renders the collection data. Four props will be passed to your component during render:
-  * entry: Immutable collection containing the entry data.
-  * widgetFor: Returns the appropriate widget preview component for a given field.
-  * [widgetsFor](#lists-and-objects): Returns an array of objects with widgets and associated field data. For use with list and object type entries.
-  * getAsset: Returns the correct filePath or in-memory preview for uploaded images.
+- collection: The name of the collection which this preview component will be used for.
+- react_component: A React component that renders the collection data. Four props will be passed to your component during render:
+
+  - entry: Immutable collection containing the entry data.
+  - widgetFor: Returns the appropriate widget preview component for a given field.
+  - [widgetsFor](#lists-and-objects): Returns an array of objects with widgets and associated field data. For use with list and object type entries.
+  - getAsset: Returns the correct filePath or in-memory preview for uploaded images.
     **Example:**
 
     ```html
@@ -87,7 +88,9 @@ Registers a template for a collection.
     CMS.registerPreviewTemplate("posts", PostPreview);
     </script>
     ```
+
     ### Lists and Objects
+
     The API for accessing the individual fields of list- and object-type entries is similar to the API
     for accessing fields in standard entries, but there are a few key differences. Access to these
     nested fields is facilitated through the `widgetsFor` function, which is passed to the preview
@@ -96,6 +99,7 @@ Registers a template for a collection.
     Immutable.js. If some of the methods that we use are unfamiliar, such as `getIn`, check out
     [their docs](https://facebook.github.io/immutable-js/docs/#/) to get a better understanding.
     **List Example:**
+
     ```html
     <script>
     var AuthorsPreview = createClass({
@@ -137,7 +141,9 @@ Registers a template for a collection.
     CMS.registerPreviewTemplate("authors", AuthorsPreview);
     </script>
     ```
+
     **Object Example:**
+
     ```html
     <script>
     var GeneralPreview = createClass({
@@ -170,18 +176,24 @@ Registers a template for a collection.
     CMS.registerPreviewTemplate("general", GeneralPreview);
     </script>
     ```
+
     ### Accessing Metadata
-    Preview Components also receive an additional prop: `fieldsMetaData`. It contains aditional information (besides the plain plain textual value of each field) that can be useful for preview purposes. 
+
+    Preview Components also receive an additional prop: `fieldsMetaData`. It contains aditional information (besides the plain plain textual value of each field) that can be useful for preview purposes.
     For example, the Relation widget passes the whole selected relation data in `fieldsMetaData`.
+
     ```js
     export default class ArticlePreview extends React.Component {
       render() {
-        const {entry, fieldsMetaData} = this.props;
+        const { entry, fieldsMetaData } = this.props;
         const author = fieldsMetaData.getIn(['authors', data.author]);
 
-        return <article><h2>{ entry.getIn(['data', 'title']) }</h2>
-          {author &&<AuthorBio author={author.toJS()}/>}
-        </article>
+        return (
+          <article>
+            <h2>{entry.getIn(['data', 'title'])}</h2>
+            {author && <AuthorBio author={author.toJS()} />}
+          </article>
+        );
       }
     }
     ```

@@ -89,7 +89,7 @@ const ControlContainer = styled.div`
   &:first-child {
     margin-top: 36px;
   }
-`
+`;
 
 const ControlErrorsList = styled.ul`
   list-style-type: none;
@@ -101,9 +101,7 @@ const ControlErrorsList = styled.ul`
   position: relative;
   font-weight: 600;
   top: 20px;
-`
-
-
+`;
 
 class EditorControl extends React.Component {
   state = {
@@ -138,13 +136,14 @@ class EditorControl extends React.Component {
     return (
       <ControlContainer>
         <ControlErrorsList>
-          {
-            errors && errors.map(error =>
-              error.message &&
-              typeof error.message === 'string' &&
-              <li key={error.message.trim().replace(/[^a-z0-9]+/gi, '-')}>{error.message}</li>
-            )
-          }
+          {errors &&
+            errors.map(
+              error =>
+                error.message &&
+                typeof error.message === 'string' && (
+                  <li key={error.message.trim().replace(/[^a-z0-9]+/gi, '-')}>{error.message}</li>
+                ),
+            )}
         </ControlErrorsList>
         <label
           className={cx(
@@ -195,7 +194,7 @@ class EditorControl extends React.Component {
   }
 }
 
-const mapStateToProps = (state, ownProps) => ({
+const mapStateToProps = state => ({
   mediaPaths: state.mediaLibrary.get('controlMedia'),
   boundGetAsset: getAsset.bind(null, state),
   isFetching: state.search.get('isFetching'),

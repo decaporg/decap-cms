@@ -12,22 +12,24 @@ const ShortcodeContainer = styled.div`
   margin: 12px 0;
   padding: 14px;
 
-  ${props => props.collapsed && css`
-    background-color: ${colors.textFieldBorder};
-    cursor: pointer;
-  `}
-`
+  ${props =>
+    props.collapsed &&
+    css`
+      background-color: ${colors.textFieldBorder};
+      cursor: pointer;
+    `};
+`;
 
 const ShortcodeTopBar = styled(ListItemTopBar)`
   background-color: ${colors.textFieldBorder};
   margin: -14px -14px 0;
   border-radius: 0;
-`
+`;
 
 const ShortcodeTitle = styled.div`
   padding: 8px;
   color: ${colors.controlLabel};
-`
+`;
 
 export default class Shortcode extends React.Component {
   constructor(props) {
@@ -51,16 +53,14 @@ export default class Shortcode extends React.Component {
 
   handleCollapseToggle = () => {
     this.setState({ collapsed: !this.state.collapsed });
-  }
+  };
 
   handleRemove = () => {
     const { editor, node } = this.props;
     editor.change(change => {
-      change
-        .removeNodeByKey(node.key)
-        .focus();
+      change.removeNodeByKey(node.key).focus();
     });
-  }
+  };
 
   handleClick = event => {
     /**
@@ -75,24 +75,24 @@ export default class Shortcode extends React.Component {
     if (this.state.collapsed) {
       this.handleCollapseToggle();
     }
-  }
+  };
 
-  renderControl = (shortcodeData, field, index) => {
+  renderControl = (shortcodeData, field) => {
     if (field.get('widget') === 'hidden') return null;
     const value = shortcodeData.get(field.get('name'));
-    const key = `field-${ field.get('name') }`;
+    const key = `field-${field.get('name')}`;
     const Control = getEditorControl();
     const controlProps = { field, value, onChange: this.handleChange };
 
     return (
       <div key={key}>
-        <Control {...controlProps}/>
+        <Control {...controlProps} />
       </div>
     );
   };
 
   render() {
-    const { attributes, node, editor } = this.props;
+    const { attributes, node } = this.props;
     const { collapsed } = this.state;
     const pluginId = node.data.get('shortcode');
     const shortcodeData = Map(this.props.node.data.get('shortcodeData'));
@@ -104,11 +104,11 @@ export default class Shortcode extends React.Component {
           onCollapseToggle={this.handleCollapseToggle}
           onRemove={this.handleRemove}
         />
-        {
-          collapsed
-            ? <ShortcodeTitle>{capitalize(pluginId)}</ShortcodeTitle>
-            : plugin.get('fields').map(partial(this.renderControl, shortcodeData))
-        }
+        {collapsed ? (
+          <ShortcodeTitle>{capitalize(pluginId)}</ShortcodeTitle>
+        ) : (
+          plugin.get('fields').map(partial(this.renderControl, shortcodeData))
+        )}
       </ShortcodeContainer>
     );
   }

@@ -1,16 +1,6 @@
 import { css, injectGlobal } from 'react-emotion';
 
-export {
-  fonts,
-  colorsRaw,
-  colors,
-  lengths,
-  components,
-  buttons,
-  shadows,
-  borders,
-  transitions,
-};
+export { fonts, colorsRaw, colors, lengths, components, buttons, shadows, borders, transitions };
 
 /**
  * Font Stacks
@@ -110,19 +100,16 @@ const transitions = {
 
 const shadows = {
   drop: css`
-    box-shadow: 0 2px 4px 0  rgba(19, 39, 48, .12);
+    box-shadow: 0 2px 4px 0 rgba(19, 39, 48, 0.12);
   `,
   dropMain: css`
-    box-shadow: 0 2px 6px 0  rgba(68, 74, 87, 0.05),
-                0 1px 3px 0  rgba(68, 74, 87, 0.10);
+    box-shadow: 0 2px 6px 0 rgba(68, 74, 87, 0.05), 0 1px 3px 0 rgba(68, 74, 87, 0.1);
   `,
   dropMiddle: css`
-    box-shadow: 0 2px 6px 0  rgba(68, 74, 87, 0.15),
-                0 1px 3px 0  rgba(68, 74, 87, 0.30);
+    box-shadow: 0 2px 6px 0 rgba(68, 74, 87, 0.15), 0 1px 3px 0 rgba(68, 74, 87, 0.3);
   `,
   dropDeep: css`
-    box-shadow: 0 4px 12px 0 rgba(68, 74, 87, 0.15),
-                0 1px 3px  0 rgba(68, 74, 87, 0.25);
+    box-shadow: 0 4px 12px 0 rgba(68, 74, 87, 0.15), 0 1px 3px 0 rgba(68, 74, 87, 0.25);
   `,
 };
 
@@ -285,7 +272,7 @@ const components = {
       background-color: ${colors.activeBackground};
     }
   `,
-}
+};
 
 injectGlobal`
   *, *:before, *:after {
