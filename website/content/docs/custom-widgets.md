@@ -13,7 +13,7 @@ The NetlifyCMS exposes a `window.CMS` global object that you can use to register
 
 The `registerWidget` requires you to provide a React component. If you have a build process in place for your project, it is possible to integrate with this build process.
 
-However, although possible, it may be cumbersome or even impractical to add a React build phase. For this reason, NetlifyCMS exposes two constructs globally to allow you to create components inline: ‘createClass’ and ‘h’ (alias for React.createElement).
+However, although possible, it may be cumbersome or even impractical to add a React build phase. For this reason, NetlifyCMS exposes two constructs globally to allow you to create components inline: ‘CMS.createClass’ and ‘CMS.h’ (alias for React.createElement).
 
 ## `registerWidget`
 
@@ -47,22 +47,22 @@ CMS.registerWidget(name, control, [preview]);
 ```html
 <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
 <script>
-var CategoriesControl = createClass({
+var CategoriesControl = CMS.createClass({
   handleChange: function(e) {
     this.props.onChange(e.target.value.split(',').map((e) => e.trim()));
   },
 
   render: function() {
     var value = this.props.value;
-    return h('input', { type: 'text', value: value ? value.join(', ') : '', onChange: this.handleChange });
+    return CMS.h('input', { type: 'text', value: value ? value.join(', ') : '', onChange: this.handleChange });
   }
 });
 
-var CategoriesPreview = createClass({
+var CategoriesPreview = CMS.createClass({
   render: function() {
-    return h('ul', {},
+    return CMS.h('ul', {},
       this.props.value.map(function(val, index) {
-        return h('li', {key: index}, val);
+        return CMS.h('li', {key: index}, val);
       })
     );
   }

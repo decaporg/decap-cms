@@ -1,5 +1,7 @@
 import { Map } from 'immutable';
 import EditorComponent from 'ValueObjects/EditorComponent';
+import createReactClass from 'create-react-class';
+import { createElement } from 'react';
 
 /**
  * Global Registry Object
@@ -27,6 +29,8 @@ export default {
   getWidgetValueSerializer,
   registerBackend,
   getBackend,
+  createClass,
+  h,
 };
 
 /**
@@ -108,4 +112,14 @@ export function registerBackend(name, BackendClass) {
 
 export function getBackend(name) {
   return registry.backends[name];
+}
+
+/**
+ * Widget Template Helpers
+ */
+export function createClass(...args) {
+  return createReactClass(...args);
+}
+export function h(...args) {
+  return createElement(...args);
 }
