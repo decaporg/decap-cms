@@ -5,7 +5,7 @@ target: markdown
 
 The markdown widget provides a full fledged text editor - which is based on [slate](https://github.com/ianstormtaylor/slate) - that allows users to format text with features such as headings and blockquotes. Users are also allowed to write in markdown by simply flipping a switch.
 
-_Please note:_ in case you want to use your markdown editor to fill a markdown's file content after the frontmatter, you'll have name the field as `body` so then the CMS can recognize it and save the file accordingly.
+_Please note:_ If you want to use your markdown editor to fill a markdown file contents after its frontmatter, you'll have to name the field `body` so the CMS recognizes it and saves the file accordingly.
 
 - **Name:** `markdown`
 - **UI:** full text editor
@@ -22,3 +22,9 @@ _Please note:_ in case you want to use your markdown editor to fill a markdown's
 This would render as:
 
 ![Markdown widget example](/img/widgets-markdown.png)
+
+_Please note:_ If you are building a site with [Hugo](https://gohugo.io), you will need to add the [`markdownify`](https://gohugo.io/functions/markdownify/) filter function when displaying your output in order for the markdown to be parsed. For example:
+
+```hugo
+{{ .text | markdownify }}
+```
