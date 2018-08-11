@@ -984,6 +984,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "growdigital",
+      "name": "Jake Rayson",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/1061992?v=4",
+      "profile": "https://www.growdigital.org/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "repoType": "github"
