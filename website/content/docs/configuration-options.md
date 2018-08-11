@@ -68,6 +68,21 @@ public_folder: '/images/uploads'
 
 Based on the settings above, if a user used an image widget field called `avatar` to upload and select an image called `philosoraptor.png`, the image would be saved to the repository at `/static/images/uploads/philosoraptor.png`, and the `avatar` field for the file would be set to `/images/uploads/philosoraptor.png`.
 
+## Media Library
+
+Media library integrations are configured via the `media_library` property, and it's value should be
+an object with at least a `name` property. A `config` property can also be used for options that
+should be passed to the library in use.
+
+**Example**
+
+```yaml
+media_library:
+  name: uploadcare
+  config:
+    publicKey: demopublickey
+```
+
 ## Display URL
 
 When the `display_url` setting is specified, the CMS UI will include a link in the fixed area at the top of the page, allowing content authors to easily return to your main site. The text of the link consists of the URL less the protocol portion (e.g., `your-site.com`).

@@ -34,6 +34,10 @@ module.exports = {
           title: 'Guides',
         },
         {
+          name: 'media',
+          title: 'Media',
+        },
+        {
           name: 'reference',
           title: 'Reference',
         },
