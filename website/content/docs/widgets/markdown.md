@@ -14,11 +14,8 @@ _Please note:_ in case you want to use your markdown editor to fill a markdown's
   - `default`: accepts markdown content
   - `buttons`: an array of strings representing the formatting buttons to display, all buttons shown by default. Buttons include: `bold`, `italic`, `code`, `link`, `heading-one`, `heading-two`, `quote`, `code-block`, `bulleted-list`, and `numbered-list`.
 - **Example:**
-
-  ```yaml
-  - { label: 'Blog post content', name: 'body', widget: 'markdown' }
-  ```
-
-This would render as:
-
-![Markdown widget example](/img/widgets-markdown.png)
+    ```yaml
+    - { label: 'Blog post content', name: 'body', widget: 'markdown' }
+    ```
+  This would render as:
+  ![Markdown widget example](/img/widgets-markdown.png)

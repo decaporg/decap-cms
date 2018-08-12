@@ -11,10 +11,9 @@ The image widget allows editors to upload an image or select an existing one fro
 - **Options:**
   - `default`: accepts a file path string; defaults to null
 - **Example:**
-
-  ```yaml
-  - label: 'Featured Image'
-    name: 'thumbnail'
-    widget: 'image'
-    default: '/uploads/chocolate-dogecoin.jpg'
-  ```
+    ```yaml
+    - label: 'Featured Image'
+      name: 'thumbnail'
+      widget: 'image'
+      default: '/uploads/chocolate-dogecoin.jpg'
+    ```
