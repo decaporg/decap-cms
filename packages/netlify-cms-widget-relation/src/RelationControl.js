@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { injectGlobal, css } from 'react-emotion';
+import { injectGlobal } from 'react-emotion';
 import Autosuggest from 'react-autosuggest';
 import uuid from 'uuid/v4';
-import { List, Map } from 'immutable';
+import { List } from 'immutable';
 import { debounce } from 'lodash';
 import { Loader, components } from 'netlify-cms-ui-default';
 
@@ -43,11 +43,7 @@ injectGlobal`
   .react-autosuggest__suggestion--focused {
     background-color: #ddd;
   }
-`
-
-function escapeRegexCharacters(str) {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
+`;
 
 export default class RelationControl extends React.Component {
   static propTypes = {
@@ -55,13 +51,11 @@ export default class RelationControl extends React.Component {
     forID: PropTypes.string.isRequired,
     value: PropTypes.node,
     field: PropTypes.node,
-    isFetching: PropTypes.node,
+    isFetching: PropTypes.bool,
+    fetchID: PropTypes.string,
     query: PropTypes.func.isRequired,
     clearSearch: PropTypes.func.isRequired,
-    queryHits: PropTypes.oneOfType([
-      PropTypes.array,
-      PropTypes.object,
-    ]),
+    queryHits: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
     classNameWrapper: PropTypes.string.isRequired,
     setActiveStyle: PropTypes.func.isRequired,
     setInactiveStyle: PropTypes.func.isRequired,
@@ -86,14 +80,23 @@ export default class RelationControl extends React.Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentDidUpdate(prevProps) {
+    /**
+     * Load extra post data into the store after first query.
+     */
     if (this.didInitialSearch) return;
-    if (nextProps.queryHits !== this.props.queryHits && nextProps.queryHits.get && nextProps.queryHits.get(this.controlID)) {
+    if (
+      this.props.queryHits !== prevProps.queryHits &&
+      this.props.queryHits.get &&
+      this.props.queryHits.get(this.controlID)
+    ) {
       this.didInitialSearch = true;
-      const suggestion = nextProps.queryHits.get(this.controlID);
+      const suggestion = this.props.queryHits.get(this.controlID);
       if (suggestion && suggestion.length === 1) {
         const val = this.getSuggestionValue(suggestion[0]);
-        this.props.onChange(val, { [nextProps.field.get('collection')]: { [val]: suggestion[0].data } });
+        this.props.onChange(val, {
+          [this.props.field.get('collection')]: { [val]: suggestion[0].data },
+        });
       }
     }
   }
@@ -104,7 +107,9 @@ export default class RelationControl extends React.Component {
 
   onSuggestionSelected = (event, { suggestion }) => {
     const value = this.getSuggestionValue(suggestion);
-    this.props.onChange(value, { [this.props.field.get('collection')]: { [value]: suggestion.data } });
+    this.props.onChange(value, {
+      [this.props.field.get('collection')]: { [value]: suggestion.data },
+    });
   };
 
   onSuggestionsFetchRequested = debounce(({ value }) => {
@@ -119,19 +124,21 @@ export default class RelationControl extends React.Component {
     this.props.clearSearch();
   };
 
-  getSuggestionValue = (suggestion) => {
+  getSuggestionValue = suggestion => {
     const { field } = this.props;
     const valueField = field.get('valueField');
     return suggestion.data[valueField];
   };
 
-  renderSuggestion = (suggestion) => {
+  renderSuggestion = suggestion => {
     const { field } = this.props;
     const valueField = field.get('displayFields') || field.get('valueField');
     if (List.isList(valueField)) {
       return (
         <span>
-          {valueField.toJS().map(key => <span key={key}>{new String(suggestion.data[key])}{' '}</span>)}
+          {valueField.toJS().map(key => (
+            <span key={key}>{new String(suggestion.data[key])} </span>
+          ))}
         </span>
       );
     }
@@ -142,11 +149,12 @@ export default class RelationControl extends React.Component {
     const {
       value,
       isFetching,
+      fetchID,
       forID,
       queryHits,
       classNameWrapper,
       setActiveStyle,
-      setInactiveStyle
+      setInactiveStyle,
     } = this.props;
 
     const inputProps = {
@@ -159,7 +167,7 @@ export default class RelationControl extends React.Component {
       onBlur: setInactiveStyle,
     };
 
-    const suggestions = (queryHits.get) ? queryHits.get(this.controlID, []) : [];
+    const suggestions = queryHits.get ? queryHits.get(this.controlID, []) : [];
 
     return (
       <div>
@@ -173,8 +181,8 @@ export default class RelationControl extends React.Component {
           inputProps={inputProps}
           focusInputOnSuggestionClick={false}
         />
-        <Loader active={isFetching === this.controlID} />
+        <Loader active={isFetching && this.controlID === fetchID} />
       </div>
     );
   }
-};
+}

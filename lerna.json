@@ -1,8 +1,6 @@
 {
   "lerna": "2.11.0",
-  "packages": [
-    "packages/*"
-  ],
+  "packages": ["packages/*"],
   "version": "independent",
   "npmClient": "yarn",
   "useWorkspaces": true,
@@ -10,7 +8,8 @@
   "command": {
     "publish": {
       "allowBranch": "master",
-      "conventionalCommits": true
+      "conventionalCommits": true,
+      "ignoreChanges": ["CHANGELOG.md"]
     }
   }
 }

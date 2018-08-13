@@ -1,12 +1,9 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled, { css } from 'react-emotion';
 import { NavLink } from 'react-router-dom';
-import uuid from 'uuid/v4';
 import { Icon, components, colors, colorsRaw, lengths } from 'netlify-cms-ui-default';
 import { searchCollections } from 'Actions/collections';
-import { getCollectionUrl } from 'Lib/urlHelper';
 
 const styles = {
   sidebarNavLinkActive: css`
@@ -16,22 +13,22 @@ const styles = {
   `,
 };
 
-const SidebarContainer = styled.div`
+const SidebarContainer = styled.aside`
   ${components.card};
   width: 250px;
   padding: 8px 0 12px;
   position: fixed;
   max-height: calc(100vh - 112px);
   overflow: auto;
-`
+`;
 
-const SidebarHeading = styled.h1`
+const SidebarHeading = styled.h2`
   font-size: 23px;
   font-weight: 600;
   padding: 0;
   margin: 18px 12px 12px;
   color: ${colors.textLead};
-`
+`;
 
 const SearchContainer = styled.div`
   display: flex;
@@ -49,7 +46,7 @@ const SearchContainer = styled.div`
     align-items: center;
     pointer-events: none;
   }
-`
+`;
 
 const SearchInput = styled.input`
   background-color: #eff0f4;
@@ -64,7 +61,7 @@ const SearchInput = styled.input`
     outline: none;
     box-shadow: inset 0 0 0 2px ${colorsRaw.blue};
   }
-`
+`;
 
 const SidebarNavLink = styled(NavLink)`
   display: flex;
@@ -80,19 +77,16 @@ const SidebarNavLink = styled(NavLink)`
     &.${props.activeClassName} {
       ${styles.sidebarNavLinkActive};
     }
-  `}
-
-  &:first-of-type {
+  `} &:first-of-type {
     margin-top: 16px;
   }
 
   ${Icon} {
     margin-right: 8px;
   }
-`
+`;
 
 export default class Sidebar extends React.Component {
-
   static propTypes = {
     collections: ImmutablePropTypes.orderedMap.isRequired,
   };
@@ -107,12 +101,11 @@ export default class Sidebar extends React.Component {
         to={`/collections/${collectionName}`}
         activeClassName="sidebar-active"
       >
-        <Icon type="write"/>
+        <Icon type="write" />
         {collection.get('label')}
       </SidebarNavLink>
     );
   };
-
 
   render() {
     const { collections } = this.props;
@@ -122,7 +115,7 @@ export default class Sidebar extends React.Component {
       <SidebarContainer>
         <SidebarHeading>Collections</SidebarHeading>
         <SearchContainer>
-          <Icon type="search" size="small"/>
+          <Icon type="search" size="small" />
           <SearchInput
             onChange={e => this.setState({ query: e.target.value })}
             onKeyDown={e => e.key === 'Enter' && searchCollections(query)}

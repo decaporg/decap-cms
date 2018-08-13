@@ -7,7 +7,6 @@ import { partial } from 'lodash';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 import { ObjectControl } from 'netlify-cms-widget-object';
 import {
-  Icon,
   ListItemTopBar,
   ObjectWidgetTopBar,
   colors,
@@ -25,15 +24,15 @@ const SortableListItem = SortableElement(ListItem);
 
 const StyledListItemTopBar = styled(ListItemTopBar)`
   background-color: ${colors.textFieldBorder};
-`
+`;
 
 const NestedObjectLabel = styled.div`
-  display: ${props => props.collapsed ? 'block' : 'none'};
+  display: ${props => (props.collapsed ? 'block' : 'none')};
   border-top: 0;
   background-color: ${colors.textFieldBorder};
   padding: 13px;
   border-radius: 0 0 ${lengths.borderRadius} ${lengths.borderRadius};
-`
+`;
 
 const styles = {
   collapsedObjectControl: css`
@@ -91,9 +90,18 @@ export default class ListControl extends React.Component {
       itemsCollapsed: List(itemsCollapsed),
       value: valueToString(value),
     };
-
-    this.valueType = null;
   }
+
+  getValueType = () => {
+    const { field } = this.props;
+    if (field.get('fields')) {
+      return valueTypes.MULTIPLE;
+    } else if (field.get('field')) {
+      return valueTypes.SINGLE;
+    } else {
+      return null;
+    }
+  };
 
   /**
    * Always update so that each nested widget has the option to update. This is
@@ -105,27 +113,7 @@ export default class ListControl extends React.Component {
     return true;
   }
 
-  componentDidMount() {
-    const { field } = this.props;
-
-    if (field.get('fields')) {
-      this.valueType = valueTypes.MULTIPLE;
-    } else if (field.get('field')) {
-      this.valueType = valueTypes.SINGLE;
-    }
-  }
-
-  componentWillUpdate(nextProps) {
-    if (this.props.field === nextProps.field) return;
-
-    if (nextProps.field.get('fields')) {
-      this.valueType = valueTypes.MULTIPLE;
-    } else if (nextProps.field.get('field')) {
-      this.valueType = valueTypes.SINGLE;
-    }
-  }
-
-  handleChange = (e) => {
+  handleChange = e => {
     const { onChange } = this.props;
     const oldValue = this.state.value;
     const newValue = e.target.value;
@@ -141,21 +129,24 @@ export default class ListControl extends React.Component {
 
   handleFocus = () => {
     this.props.setActiveStyle();
-  }
+  };
 
-  handleBlur = (e) => {
-    const listValue = e.target.value.split(',').map(el => el.trim()).filter(el => el);
+  handleBlur = e => {
+    const listValue = e.target.value
+      .split(',')
+      .map(el => el.trim())
+      .filter(el => el);
     this.setState({ value: valueToString(listValue) });
     this.props.setInactiveStyle();
-  }
+  };
 
-  handleAdd = (e) => {
+  handleAdd = e => {
     e.preventDefault();
     const { value, onChange } = this.props;
-    const parsedValue = (this.valueType === valueTypes.SINGLE) ? null : Map();
+    const parsedValue = this.getValueType() === valueTypes.SINGLE ? null : Map();
     this.setState({ itemsCollapsed: this.state.itemsCollapsed.push(false) });
     onChange((value || List()).push(parsedValue));
-  }
+  };
 
   /**
    * In case the `onChangeObject` function is frozen by a child widget implementation,
@@ -169,9 +160,13 @@ export default class ListControl extends React.Component {
       const { value, metadata, onChange, field } = this.props;
       const collectionName = field.get('name');
       const newObjectValue = this.getObjectValue(index).set(fieldName, newValue);
-      const parsedValue = (this.valueType === valueTypes.SINGLE) ? newObjectValue.first() : newObjectValue;
+      const parsedValue =
+        this.getValueType() === valueTypes.SINGLE ? newObjectValue.first() : newObjectValue;
       const parsedMetadata = {
-        [collectionName]: Object.assign(metadata ? metadata.toJS() : {}, newMetadata ? newMetadata[collectionName] : {}),
+        [collectionName]: Object.assign(
+          metadata ? metadata.toJS() : {},
+          newMetadata ? newMetadata[collectionName] : {},
+        ),
       };
       onChange(value.set(index, parsedValue), parsedMetadata);
     };
@@ -182,7 +177,9 @@ export default class ListControl extends React.Component {
     const { itemsCollapsed } = this.state;
     const { value, metadata, onChange, field } = this.props;
     const collectionName = field.get('name');
-    const parsedMetadata = metadata && { [collectionName]: metadata.removeIn(value.get(index).valueSeq()) };
+    const parsedMetadata = metadata && {
+      [collectionName]: metadata.removeIn(value.get(index).valueSeq()),
+    };
 
     this.setState({ itemsCollapsed: itemsCollapsed.delete(index) });
 
@@ -196,7 +193,7 @@ export default class ListControl extends React.Component {
     this.setState({ itemsCollapsed: itemsCollapsed.set(index, !collapsed) });
   };
 
-  handleCollapseAllToggle = (e) => {
+  handleCollapseAllToggle = e => {
     e.preventDefault();
     const { value } = this.props;
     const { itemsCollapsed } = this.state;
@@ -209,12 +206,14 @@ export default class ListControl extends React.Component {
     const multiFields = field.get('fields');
     const singleField = field.get('field');
     const labelField = (multiFields && multiFields.first()) || singleField;
-    const value = multiFields ? item.get(multiFields.first().get('name')) : singleField.get('label');
-    return (value || `No ${ labelField.get('name') }`).toString();
+    const value = multiFields
+      ? item.get(multiFields.first().get('name'))
+      : singleField.get('label');
+    return (value || `No ${labelField.get('name')}`).toString();
   }
 
   onSortEnd = ({ oldIndex, newIndex }) => {
-    const { value, onChange } = this.props;
+    const { value } = this.props;
     const { itemsCollapsed } = this.state;
 
     // Update value
@@ -229,17 +228,7 @@ export default class ListControl extends React.Component {
   };
 
   renderItem = (item, index, list) => {
-    const {
-      field,
-      getAsset,
-      mediaPaths,
-      onOpenMediaLibrary,
-      onAddAsset,
-      onRemoveInsertedMedia,
-      classNameWrapper,
-      editorControl,
-      resolveWidget,
-    } = this.props;
+    const { field, classNameWrapper, editorControl, resolveWidget } = this.props;
     const { itemsCollapsed } = this.state;
     const collapsed = itemsCollapsed.get(index);
     const minimum = field.get('minimum');
@@ -249,7 +238,7 @@ export default class ListControl extends React.Component {
       <SortableListItem
         className={cx(styles.listControlItem, { [styles.listControlItemCollapsed]: collapsed })}
         index={index}
-        key={`item-${ index }`}
+        key={`item-${index}`}
       >
         <StyledListItemTopBar
           collapsed={collapsed}
@@ -259,10 +248,7 @@ export default class ListControl extends React.Component {
         />
         <NestedObjectLabel collapsed={collapsed}>{this.objectLabel(item)}</NestedObjectLabel>
         <ObjectControl
-          classNameWrapper={cx(
-            classNameWrapper,
-            { [styles.collapsedObjectControl]: collapsed },
-          )}
+          classNameWrapper={cx(classNameWrapper, { [styles.collapsedObjectControl]: collapsed })}
           value={item}
           field={field}
           onChangeObject={this.handleChangeFor(index)}
@@ -313,14 +299,16 @@ export default class ListControl extends React.Component {
       return this.renderListControl();
     }
 
-    return (<input
-      type="text"
-      id={forID}
-      value={value}
-      onChange={this.handleChange}
-      onFocus={this.handleFocus}
-      onBlur={this.handleBlur}
-      className={classNameWrapper}
-    />);
+    return (
+      <input
+        type="text"
+        id={forID}
+        value={value}
+        onChange={this.handleChange}
+        onFocus={this.handleFocus}
+        onBlur={this.handleBlur}
+        className={classNameWrapper}
+      />
+    );
   }
-};
+}

@@ -44,7 +44,7 @@ export default function remarkToRehypeShortcodes({ plugins, getAsset }) {
      * Return a new 'html' type node containing the shortcode preview markup.
      */
     const textNode = u('html', valueHtml);
-    const children = [ textNode ];
+    const children = [textNode];
     return { ...node, children };
   }
 }

@@ -14,7 +14,6 @@ export default function remarkStripTrailingBreaks() {
     if (node.children) {
       node.children = node.children
         .map((child, idx, children) => {
-
           /**
            * Only touch break nodes. Convert all subsequent nodes to their text
            * value and exclude the break node if no non-whitespace characters
@@ -53,4 +52,4 @@ export default function remarkStripTrailingBreaks() {
     return node;
   };
   return transform;
-};
+}

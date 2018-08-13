@@ -39,12 +39,21 @@ export default css`
     margin-top: 8px;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-weight: 700;
     line-height: 1;
   }
 
-  p, pre, blockquote, ul, ol {
+  p,
+  pre,
+  blockquote,
+  ul,
+  ol {
     margin-top: 16px;
     margin-bottom: 16px;
   }
@@ -62,12 +71,20 @@ export default css`
     margin: 0;
   }
 
-  ul, ol {
+  ul,
+  ol {
     padding-left: 30px;
   }
 
   pre {
     white-space: pre-wrap;
+  }
+
+  code {
+    background-color: ${colors.background};
+    border-radius: ${lengths.borderRadius};
+    padding: 0 2px;
+    font-size: 85%;
   }
 
   pre > code {
@@ -78,13 +95,6 @@ export default css`
     color: #ccc;
     border-radius: ${lengths.borderRadius};
     padding: 10px;
-  }
-
-  code {
-    background-color: ${colors.background};
-    border-radius: ${lengths.borderRadius};
-    padding: 0 2px;
-    font-size: 85%;
   }
 
   blockquote {
@@ -98,7 +108,8 @@ export default css`
     border-collapse: collapse;
   }
 
-  td, th {
+  td,
+  th {
     border: 2px solid black;
     padding: 8px;
     text-align: left;

@@ -10,33 +10,99 @@ please read the [code of conduct](CODE_OF_CONDUCT.md).
 ```sh
 $ git clone https://github.com/netlify/netlify-cms
 $ cd netlify-cms
-$ yarn
+$ yarn start
 ```
 
-## Building
+## Available scripts
+
+### `bootstrap`
+
+Installs and bootstraps any CMS package dependencies.
+
+#### Usage
 
 ```sh
-$ npm run build
+$ yarn bootstrap
 ```
 
-## Testing
+### `watch`
+
+Watches all CMS packages and transpiles them on change.
+
+#### Usage
 
 ```sh
-$ npm run test
+$ yarn watch
 ```
 
+### `start`
+
+Starts the development server. This task runs both the `bootstrap` and `watch` scripts.
+
+#### Usage
+
 ```sh
-$ npm run test:watch
+$ yarn start
 ```
 
+### `clean`
+
+Removes all of the CMS package `dist` directories.
+
+#### Usage
+
 ```sh
-$ npm run lint
+yarn clean
 ```
 
-## Running the server
+### `reset`
+
+Runs the `clean` script and removes all the `node_modules` from the CMS packages.
+
+#### Usage
 
 ```sh
-$ npm run start
+yarn reset
+```
+
+### `build`
+
+Runs the `clean` script and builds the CMS packages.
+
+#### Usage
+
+```sh
+yarn build
+```
+
+### `build-preview`
+
+Runs the `build` and `build-preview` scripts in each package and serves the resulting build locally.
+
+#### Usage
+
+```sh
+yarn build-preview
+```
+
+### `test`
+
+Runs all the CMS package tests.
+
+#### Usage
+
+```sh
+yarn test
+```
+
+### `format`
+
+Formats code and docs according to our style guidelines.
+
+#### Usage
+
+```sh
+yarn format
 ```
 
 ## Pull Requests
@@ -46,8 +112,8 @@ We actively welcome your pull requests.
 1. Fork the repo and create your branch from `master`.
 2. If you've added code that should be tested, add tests.
 3. If you've changed APIs, update the documentation.
-4. Ensure the test suite passes.
-5. Make sure your code lints.
+4. Run `yarn test` and ensure the test suite passes.
+5. Use `yarn format` to format and lint your code.
 6. PR's must be rebased before merge (feel free to ask for help)
 7. PR should be reviewed by two maintainers (@erquhart, @Benaiah, @tech4him1) prior to merging.
 

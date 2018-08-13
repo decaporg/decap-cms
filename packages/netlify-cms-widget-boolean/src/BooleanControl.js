@@ -6,8 +6,8 @@ import { isBoolean } from 'lodash';
 import { Toggle, ToggleBackground, colors } from 'netlify-cms-ui-default';
 
 const BooleanBackground = styled(ToggleBackground)`
-  background-color: ${props => props.isActive ? colors.active : colors.textFieldBorder};
-`
+  background-color: ${props => (props.isActive ? colors.active : colors.textFieldBorder)};
+`;
 
 export default class BooleanControl extends React.Component {
   render() {
@@ -18,7 +18,7 @@ export default class BooleanControl extends React.Component {
       onChange,
       classNameWrapper,
       setActiveStyle,
-      setInactiveStyle
+      setInactiveStyle,
     } = this.props;
     return (
       <div className={classNameWrapper}>

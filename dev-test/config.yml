@@ -4,6 +4,8 @@ backend:
 display_url: https://example.com
 media_folder: "assets/uploads"
 
+publish_mode: editorial_workflow
+
 collections: # A list of collections the CMS should be able to edit
   - name: "posts" # Used in routes, ie.: /admin/collections/:slug/edit
     label: "Posts" # Used in the UI

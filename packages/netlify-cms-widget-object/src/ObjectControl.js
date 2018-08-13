@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import ImmutablePropTypes from 'react-immutable-proptypes';
-import styled, { css, cx } from 'react-emotion';
+import { css, cx } from 'react-emotion';
 import { Map } from 'immutable';
-import { partial } from 'lodash';
-import { ObjectWidgetTopBar, Icon, colors, components } from 'netlify-cms-ui-default';
+import { ObjectWidgetTopBar, components } from 'netlify-cms-ui-default';
 
 const styles = {
   nestedObjectControl: css`
@@ -18,11 +16,7 @@ const styles = {
 export default class ObjectControl extends Component {
   static propTypes = {
     onChangeObject: PropTypes.func.isRequired,
-    value: PropTypes.oneOfType([
-      PropTypes.node,
-      PropTypes.object,
-      PropTypes.bool,
-    ]),
+    value: PropTypes.oneOfType([PropTypes.node, PropTypes.object, PropTypes.bool]),
     field: PropTypes.object,
     forID: PropTypes.string,
     classNameWrapper: PropTypes.string.isRequired,
@@ -53,24 +47,20 @@ export default class ObjectControl extends Component {
   }
 
   controlFor(field, key) {
-    const { value, onChangeObject, editorControl: EditorControl, resolveWidget } = this.props;
+    const { value, onChangeObject, editorControl: EditorControl } = this.props;
 
     if (field.get('widget') === 'hidden') {
       return null;
     }
-    const widgetName = field.get('widget') || 'string';
-    const widget = resolveWidget(widgetName);
     const fieldName = field.get('name');
     const fieldValue = value && Map.isMap(value) ? value.get(fieldName) : value;
 
-    return (
-      <EditorControl key={key} field={field} value={fieldValue} onChange={onChangeObject}/>
-    );
+    return <EditorControl key={key} field={field} value={fieldValue} onChange={onChangeObject} />;
   }
 
   handleCollapseToggle = () => {
     this.setState({ collapsed: !this.state.collapsed });
-  }
+  };
 
   render() {
     const { field, forID, classNameWrapper, forList } = this.props;
@@ -80,14 +70,18 @@ export default class ObjectControl extends Component {
 
     if (multiFields) {
       return (
-        <div id={forID} className={cx(
-          classNameWrapper,
-          components.objectWidgetTopBarContainer,
-          { [styles.nestedObjectControl]: forList },
-        )}>
-          {forList ? null :
-            <ObjectWidgetTopBar collapsed={collapsed} onCollapseToggle={this.handleCollapseToggle} />
-          }
+        <div
+          id={forID}
+          className={cx(classNameWrapper, components.objectWidgetTopBarContainer, {
+            [styles.nestedObjectControl]: forList,
+          })}
+        >
+          {forList ? null : (
+            <ObjectWidgetTopBar
+              collapsed={collapsed}
+              onCollapseToggle={this.handleCollapseToggle}
+            />
+          )}
           {collapsed ? null : multiFields.map((f, idx) => this.controlFor(f, idx))}
         </div>
       );

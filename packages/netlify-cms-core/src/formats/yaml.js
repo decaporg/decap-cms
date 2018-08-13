@@ -20,7 +20,7 @@ const ImageType = new yaml.Type('image', {
   kind: 'scalar',
   instanceOf: AssetProxy,
   represent(value) {
-    return `${ value.path }`;
+    return `${value.path}`;
   },
   resolve(value) {
     if (value === null) return false;
@@ -28,7 +28,6 @@ const ImageType = new yaml.Type('image', {
     return false;
   },
 });
-
 
 const OutputSchema = new yaml.Schema({
   include: yaml.DEFAULT_SAFE_SCHEMA.include,
@@ -43,5 +42,5 @@ export default {
 
   toFile(data, sortedKeys = []) {
     return yaml.safeDump(data, { schema: OutputSchema, sortKeys: sortKeys(sortedKeys) });
-  }
-}
+  },
+};

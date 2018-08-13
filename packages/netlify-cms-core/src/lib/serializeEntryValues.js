@@ -1,4 +1,4 @@
-import { isArray, isObject, isEmpty, isNil } from 'lodash';
+import { isNil } from 'lodash';
 import { Map, List } from 'immutable';
 import { getWidgetValueSerializer } from './registry';
 
@@ -21,7 +21,6 @@ import { getWidgetValueSerializer } from './registry';
  * handlers run on persist.
  */
 const runSerializer = (values, fields, method) => {
-
   /**
    * Reduce the list of fields to a map where keys are field names and values
    * are field values, serializing the values of fields whose widgets have

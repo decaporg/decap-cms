@@ -48,15 +48,16 @@ export function authenticateUser() {
     const state = getState();
     const backend = currentBackend(state.config);
     dispatch(authenticating());
-    return backend.currentUser()
-      .then((user) => {
+    return backend
+      .currentUser()
+      .then(user => {
         if (user) {
           dispatch(authenticate(user));
         } else {
           dispatch(doneAuthenticating());
         }
       })
-      .catch((error) => {
+      .catch(error => {
         dispatch(authError(error));
         dispatch(logoutUser());
       });
@@ -69,16 +70,19 @@ export function loginUser(credentials) {
     const backend = currentBackend(state.config);
 
     dispatch(authenticating());
-    return backend.authenticate(credentials)
-      .then((user) => {
+    return backend
+      .authenticate(credentials)
+      .then(user => {
         dispatch(authenticate(user));
       })
-      .catch((error) => {
-        dispatch(notifSend({
-          message: `${ error.message }`,
-          kind: 'warning',
-          dismissAfter: 8000,
-        }));
+      .catch(error => {
+        dispatch(
+          notifSend({
+            message: `${error.message}`,
+            kind: 'warning',
+            dismissAfter: 8000,
+          }),
+        );
         dispatch(authError(error));
       });
   };

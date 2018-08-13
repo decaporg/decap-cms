@@ -7,7 +7,7 @@ import history from 'Routing/history';
 import configureStore from 'Redux/configureStore';
 import { mergeConfig } from 'Actions/config';
 import { setStore } from 'ValueObjects/AssetProxy';
-import { ErrorBoundary } from 'UI'
+import { ErrorBoundary } from 'UI';
 import App from 'App/App';
 import 'EditorWidgets';
 import 'what-input';
@@ -20,7 +20,11 @@ function bootstrap(opts = {}) {
   /**
    * Log the version number.
    */
-  console.log(`Netlify CMS version ${process.env.NETLIFY_CMS_VERSION}`);
+  if (NETLIFY_CMS_VERSION) {
+    console.log(`netlify-cms ${NETLIFY_CMS_VERSION}`);
+  } else if (NETLIFY_CMS_CORE_VERSION) {
+    console.log(`netlify-cms-core ${NETLIFY_CMS_CORE_VERSION}`);
+  }
 
   /**
    * Get DOM element where app will mount.
@@ -69,7 +73,7 @@ function bootstrap(opts = {}) {
     <ErrorBoundary>
       <Provider store={store}>
         <ConnectedRouter history={history}>
-          <Route component={App}/>
+          <Route component={App} />
         </ConnectedRouter>
       </Provider>
     </ErrorBoundary>

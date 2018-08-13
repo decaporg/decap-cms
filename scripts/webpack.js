@@ -25,9 +25,6 @@ const rules = () => ({
 
 const plugins = () => {
   return {
-    define: () => new webpack.DefinePlugin({
-      NETLIFY_CMS_VERSION: `${pkg.version}${isProduction ? '' : '-dev'}`,
-    }),
     ignoreEsprima: () => new webpack.IgnorePlugin(/^esprima$/, /js-yaml/),
     ignoreMomentOptionalDeps: () => new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     friendlyErrors: () => new FriendlyErrorsWebpackPlugin(),

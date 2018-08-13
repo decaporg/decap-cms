@@ -3,14 +3,14 @@ import PropTypes from 'prop-types';
 import styled from 'react-emotion';
 import { colors } from 'netlify-cms-ui-default';
 
-const EmptyMessageContainer= styled.div`
+const EmptyMessageContainer = styled.div`
   height: 100%;
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   color: ${props => props.isPrivate && colors.textFieldBorder};
-`
+`;
 
 const EmptyMessage = ({ content, isPrivate }) => (
   <EmptyMessageContainer isPrivate={isPrivate}>

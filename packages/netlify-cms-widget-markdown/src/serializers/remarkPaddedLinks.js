@@ -1,15 +1,4 @@
-import {
-  get,
-  set,
-  find,
-  findLast,
-  startsWith,
-  endsWith,
-  trimStart,
-  trimEnd,
-  concat,
-  flatMap
-} from 'lodash';
+import { find, findLast, startsWith, endsWith, trimStart, trimEnd, flatMap } from 'lodash';
 import u from 'unist-builder';
 import toString from 'mdast-util-to-string';
 
@@ -23,9 +12,7 @@ import toString from 'mdast-util-to-string';
  * children one at a time.
  */
 export default function remarkPaddedLinks() {
-
   function transform(node) {
-
     /**
      * Because we're operating on link nodes and their children at once, we can
      * exit if the current node has no children.
@@ -43,7 +30,9 @@ export default function remarkPaddedLinks() {
      * this seems unlikely to produce a noticeable perf gain.
      */
     const hasLinkChild = node.children.some(child => child.type === 'link');
-    const processedChildren = hasLinkChild ? flatMap(node.children, transformChildren) : node.children;
+    const processedChildren = hasLinkChild
+      ? flatMap(node.children, transformChildren)
+      : node.children;
 
     /**
      * Run all children through the transform recursively.
@@ -51,7 +40,7 @@ export default function remarkPaddedLinks() {
     const children = processedChildren.map(transform);
 
     return { ...node, children };
-  };
+  }
 
   function transformChildren(node) {
     if (node.type !== 'link') return node;
@@ -86,7 +75,7 @@ export default function remarkPaddedLinks() {
     const nodes = [
       leadingWhitespaceNode && u('text', ' '),
       node,
-      trailingWhitespaceNode && u('text', ' ')
+      trailingWhitespaceNode && u('text', ' '),
     ];
 
     return nodes.filter(val => val);
@@ -98,14 +87,17 @@ export default function remarkPaddedLinks() {
    */
   function getEdgeTextChild(node, end) {
     /**
-     * This was changed from a ternary to a long form if due to issues with istanbul's instrumentation and babel's code 
-     * generation. 
+     * This was changed from a ternary to a long form if due to issues with istanbul's instrumentation and babel's code
+     * generation.
      * TODO: watch https://github.com/istanbuljs/babel-plugin-istanbul/issues/95
      * when it is resolved then revert to ```const findFn = end ? findLast : find;```
      */
     let findFn;
-    if (end) { findFn = findLast } 
-    else { findFn = find }; 
+    if (end) {
+      findFn = findLast;
+    } else {
+      findFn = find;
+    }
 
     let edgeChildWithValue;
     setEdgeChildWithValue(node);

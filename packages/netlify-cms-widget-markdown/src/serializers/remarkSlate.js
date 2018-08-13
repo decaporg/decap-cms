@@ -1,5 +1,4 @@
 import { get, isEmpty, isArray, last, flatMap } from 'lodash';
-import u from 'unist-builder';
 
 /**
  * A Remark plugin for converting an MDAST to Slate Raw AST. Remark plugins
@@ -10,7 +9,6 @@ export default function remarkToSlate() {
 }
 
 function transform(node) {
-
   /**
    * Call `transform` recursively on child nodes.
    *
@@ -18,9 +16,10 @@ function transform(node) {
    * translate from MDAST to Slate, such as definitions for link/image
    * references or footnotes.
    */
-  const children = !['strong', 'emphasis', 'delete'].includes(node.type)
-    && !isEmpty(node.children)
-    && flatMap(node.children, transform).filter(val => val);
+  const children =
+    !['strong', 'emphasis', 'delete'].includes(node.type) &&
+    !isEmpty(node.children) &&
+    flatMap(node.children, transform).filter(val => val);
 
   /**
    * Run individual nodes through the conversion factory.
@@ -46,7 +45,6 @@ const typeMap = {
   shortcode: 'shortcode',
 };
 
-
 /**
  * Map of MDAST node types to Slate mark types.
  */
@@ -57,14 +55,12 @@ const markMap = {
   inlineCode: 'code',
 };
 
-
 /**
  * Add nodes to a parent node only if `nodes` is truthy.
  */
 function addNodes(parent, nodes) {
   return nodes ? { ...parent, nodes } : parent;
 }
-
 
 /**
  * Create a Slate Inline node.
@@ -79,7 +75,6 @@ function createBlock(type, nodes, props = {}) {
   return addNodes(node, nodes);
 }
 
-
 /**
  * Create a Slate Block node.
  */
@@ -87,7 +82,6 @@ function createInline(type, props = {}, nodes) {
   const node = { kind: 'inline', type, ...props };
   return addNodes(node, nodes);
 }
-
 
 /**
  * Create a Slate Raw text node.
@@ -123,7 +117,7 @@ function processMarkNode(node, parentMarks = []) {
        * first add the inline code mark to the marks array.
        */
       case 'inlineCode': {
-        const childMarks = [ ...marks, { type: markMap['inlineCode'] } ];
+        const childMarks = [...marks, { type: markMap['inlineCode'] }];
         return { text: childNode.value, marks: childMarks };
       }
 
@@ -157,11 +151,9 @@ function convertMarkNode(node) {
     const lastConvertedNode = last(acc);
     if (node.text && lastConvertedNode && lastConvertedNode.leaves) {
       lastConvertedNode.leaves.push(node);
-    }
-    else if (node.text) {
+    } else if (node.text) {
       acc.push(createText([node]));
-    }
-    else {
+    } else {
       acc.push(transform(node));
     }
 
@@ -177,7 +169,6 @@ function convertMarkNode(node) {
  * transformer.
  */
 function convertNode(node, nodes) {
-
   /**
    * Unified/Remark processors use mutable operations, so we don't want to
    * change a node's type directly for conversion purposes, as that tends to
@@ -186,7 +177,6 @@ function convertNode(node, nodes) {
   const type = get(node, ['data', 'shortcode']) ? 'shortcode' : node.type;
 
   switch (type) {
-
     /**
      * General
      *
@@ -202,7 +192,6 @@ function convertNode(node, nodes) {
       return createBlock(typeMap[type], nodes);
     }
 
-
     /**
      * Shortcodes
      *
@@ -212,7 +201,7 @@ function convertNode(node, nodes) {
      */
     case 'shortcode': {
       const { data } = node;
-      const nodes = [ createText('') ];
+      const nodes = [createText('')];
       return createBlock(typeMap[type], nodes, { data, isVoid: true });
     }
 
@@ -241,7 +230,7 @@ function convertNode(node, nodes) {
         text: node.value,
         marks: [{ type: 'code' }],
       };
-      return createText([ leaf ]);
+      return createText([leaf]);
     }
 
     /**
@@ -309,7 +298,7 @@ function convertNode(node, nodes) {
      */
     case 'break': {
       const textNode = createText('\n');
-      return createInline('break', {}, [ textNode ]);
+      return createInline('break', {}, [textNode]);
     }
 
     /**
@@ -345,7 +334,6 @@ function convertNode(node, nodes) {
       const newData = { ...data, title, alt, url };
       return createInline(typeMap[type], { isVoid: true, data: newData });
     }
-
 
     /**
      * Tables

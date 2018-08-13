@@ -1,12 +1,8 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import { css } from 'react-emotion';
 import { colors } from 'netlify-cms-ui-default';
 
-const DefaultErrorComponent = () => {
-};
-
-const ISSUE_URL = "https://github.com/netlify/netlify-cms/issues/new";
+const ISSUE_URL = 'https://github.com/netlify/netlify-cms/issues/new';
 
 const styles = {
   errorBoundary: css`
@@ -37,8 +33,16 @@ export class ErrorBoundary extends React.Component {
       <div className={styles.errorBoundary}>
         <h1 className={styles.errorBoundaryText}>Sorry!</h1>
         <p>
-          <span>There's been an error - please </span>
-          <a href={ISSUE_URL} target="_blank" className={styles.errorBoundaryText}>report it</a>!
+          <span>{"There's been an error - please "}</span>
+          <a
+            href={ISSUE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.errorBoundaryText}
+          >
+            report it
+          </a>
+          !
         </p>
         <p>{errorMessage}</p>
       </div>

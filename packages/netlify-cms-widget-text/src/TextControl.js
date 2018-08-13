@@ -23,7 +23,7 @@ export default class TextControl extends React.Component {
    * state. Always updating this particular widget should generally be low cost,
    * but this should be optimized in the future.
    */
-  shouldComponentUpdate(nextProps) {
+  shouldComponentUpdate() {
     return true;
   }
 

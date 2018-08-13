@@ -11,7 +11,6 @@
   font-size: inherit;
   line-height: inherit;
   background: transparent;
-  border: 0;
   color: $darkGrey;
   border: 2px solid $darkGreen;
   border-radius: $borderRadius;

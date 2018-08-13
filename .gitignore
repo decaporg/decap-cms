@@ -9,6 +9,7 @@ yarn-error.log
 manifest.yml
 .imdone/
 website/data/contributors.json
+cypress/videos
 /coverage/
 .cache
 *.log

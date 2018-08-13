@@ -6,11 +6,11 @@ import { WidgetPreviewContainer } from 'netlify-cms-ui-default';
 const Image = styled.img`
   max-width: 100%;
   height: auto;
-`
+`;
 
 const ImagePreview = ({ value, getAsset }) => (
   <WidgetPreviewContainer>
-    { value ? <Image src={getAsset(value)} role="presentation"/> : null}
+    {value ? <Image src={getAsset(value)} role="presentation" /> : null}
   </WidgetPreviewContainer>
 );
 

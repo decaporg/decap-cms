@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-backend-github",
   "description": "GitHub backend for Netlify CMS",
-  "version": "2.0.1",
+  "version": "2.0.5",
   "license": "MIT",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
@@ -15,6 +15,7 @@
   "sideEffects": false,
   "scripts": {
     "watch": "webpack -w",
+    "develop": "npm run watch",
     "build": "cross-env NODE_ENV=production webpack"
   },
   "dependencies": {
