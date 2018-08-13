@@ -266,7 +266,7 @@ export default class ListControl extends React.Component {
     const items = value || List();
     const label = field.get('label');
     const labelSingular = field.get('label_singular') || field.get('label');
-    const listLabel = items.size < 2 ? labelSingular.toLowerCase() : label.toLowerCase();
+    const listLabel = items.size === 1 ? labelSingular.toLowerCase() : label.toLowerCase();
     const maximum = field.get('maximum');
     const allowAdd = typeof maximum === 'number' ? items.size < maximum : field.get('allow_add', true);
 
