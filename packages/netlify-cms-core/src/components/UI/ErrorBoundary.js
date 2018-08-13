@@ -2,7 +2,7 @@ import React from 'react';
 import { css } from 'react-emotion';
 import { colors } from 'netlify-cms-ui-default';
 
-const ISSUE_URL = 'https://github.com/netlify/netlify-cms/issues/new';
+const ISSUE_URL = 'https://github.com/netlify/netlify-cms/issues/new?template=bug_report.md';
 
 const styles = {
   errorBoundary: css`
