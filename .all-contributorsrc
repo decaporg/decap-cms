@@ -995,6 +995,15 @@
         "blog",
         "example"
       ]
+    },
+    {
+      "login": "mittalyashu",
+      "name": "Yashu Mittal",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/29014463?v=4",
+      "profile": "https://mittalyashu.now.sh/",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "repoType": "github"
