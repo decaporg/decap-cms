@@ -25,7 +25,7 @@
     "dryrun": "lerna publish --skip-npm --skip-git",
     "publish": "run-s bootstrap dryrun build && git checkout . && lerna publish",
     "format": "run-s \"lint:css -- --fix --quiet\" \"lint:js -- --fix --quiet\" \"format:prettier -- --write\"",
-    "format:prettier": "prettier \"{{packages,scripts,website}/**/,}*.{js,css,json,yml,yaml}\"",
+    "format:prettier": "prettier \"{{packages,scripts,website}/**/,}*.{js,css}\"",
     "lint": "run-p -c --aggregate-output lint:*",
     "lint-quiet": "run-p -c --aggregate-output \"lint:* -- --quiet\"",
     "lint:css": "stylelint --ignore-path .gitignore \"{packages/**/*.{css,js},website/**/*.css}\"",

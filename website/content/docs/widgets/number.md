@@ -1,5 +1,5 @@
 ---
-label: 'Number'
+label: "Number"
 target: number
 ---
 
@@ -15,11 +15,11 @@ The number widget uses an HTML number input, saving the value as a string, integ
   - `max`: accepts a number for maximum value accepted; unset by default
 - **Example:**
     ```yaml
-    - label: 'Puppy Count'
-      name: 'puppies'
-      widget: 'number'
+    - label: "Puppy Count"
+      name: "puppies"
+      widget: "number"
       default: 2
-      valueType: 'int'
+      valueType: "int"
       min: 1
       max: 101
     ```

@@ -1,5 +1,5 @@
 ---
-label: 'File'
+label: "File"
 target: file
 ---
 
@@ -12,8 +12,8 @@ The file widget allows editors to upload a file or select an existing one from t
   - `default`: accepts a file path string; defaults to null
 - **Example:**
     ```yaml
-    - label: 'Manual PDF'
-      name: 'manual_pdf'
-      widget: 'file'
-      default: '/uploads/general-manual.pdf'
+    - label: "Manual PDF"
+      name: "manual_pdf"
+      widget: "file"
+      default: "/uploads/general-manual.pdf"
     ```

@@ -1,5 +1,5 @@
 ---
-label: 'DateTime'
+label: "DateTime"
 target: datetime
 ---
 
@@ -13,9 +13,9 @@ The datetime widget translates a datetime picker to a datetime string. For savin
   - `format`: optional; accepts Moment.js [tokens](https://momentjs.com/docs/#/parsing/string-format/); defaults to raw Date object (if supported by output format)
 - **Example:**
     ```yaml
-    - label: 'Start time'
-      name: 'start'
-      widget: 'datetime'
-      default: ''
-      format: 'LLL'
+    - label: "Start time"
+      name: "start"
+      widget: "datetime"
+      default: ""
+      format: "LLL"
     ```

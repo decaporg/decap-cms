@@ -1,5 +1,5 @@
 ---
-label: 'String'
+label: "String"
 target: string
 ---
 
@@ -12,5 +12,5 @@ The string widget translates a basic text input to a string value. For larger te
   - `default`: accepts a string; defaults to an empty string
 - **Example:**
     ```yaml
-    - { label: 'Title', name: 'title', widget: 'string' }
+    - {label: "Title", name: "title", widget: "string"}
     ```

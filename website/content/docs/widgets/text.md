@@ -1,5 +1,5 @@
 ---
-label: 'Text'
+label: "Text"
 target: text
 ---
 
@@ -12,5 +12,5 @@ The text widget takes a multiline text field and saves it as a string. For short
   - `default`: accepts a string; defaults to an empty string
 - **Example:**
     ```yaml
-    - { label: 'Description', name: 'description', widget: 'text' }
+    - {label: "Description", name: "description", widget: "text"}
     ```
