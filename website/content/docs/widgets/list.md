@@ -20,7 +20,6 @@ The list widget allows you to create a repeatable item in the UI which saves as 
       widget: "list"
       default: ["news"]
     ```
-
 - **Example** (`allow_add` marked `false`):
     ```yaml
     - label: "Tags"
@@ -29,7 +28,6 @@ The list widget allows you to create a repeatable item in the UI which saves as 
       allow_add: false
       default: ["news"]
     ```
-
 - **Example** (with `field`):
     ```yaml
     - label: "Gallery"
@@ -38,7 +36,6 @@ The list widget allows you to create a repeatable item in the UI which saves as 
       field:
         - {label: Image, name: image, widget: image}
     ```
-
 - **Example** (with `fields`):
     ```yaml
     - label: "Testimonials"
