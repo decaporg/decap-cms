@@ -1,5 +1,4 @@
 # Netlify CMS
-
 [![All Contributors](https://img.shields.io/badge/all_contributors-113-orange.svg)](#contributors)
 [![Open Source Helpers](https://www.codetriage.com/netlify/netlify-cms/badges/users.svg)](https://www.codetriage.com/netlify/netlify-cms)
 [![](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/netlify/netlifycms)
@@ -25,9 +24,9 @@ Read more about Netlify CMS [Core Concepts](https://www.netlifycms.org/docs/intr
 
 The Netlify CMS can be used in two different ways.
 
-- A Quick and easy install, that just requires you to create a single HTML file and a configuration file. All the CMS Javascript and CSS are loaded from a CDN.
+* A Quick and easy install, that just requires you to create a single HTML file and a configuration file. All the CMS Javascript and CSS are loaded from a CDN.
   To learn more about this installation method, refer to the [Quick Start Guide](https://www.netlifycms.org/docs/quick-start/)
-- A complete, more complex install, that gives you more flexibility but requires that you use a static site builder with a build system that supports npm packages.
+* A complete, more complex install, that gives you more flexibility but requires that you use a static site builder with a build system that supports npm packages.
 
 # Community
 
@@ -46,9 +45,7 @@ Please make sure you understand its [implications and guarantees](https://writin
 # Thanks
 
 ## Services
-
 These services support Netlify CMS development by providing free infrastructure.
-
 <p>
   <a href="https://www.travis-ci.org">
     <img src="https://raw.githubusercontent.com/netlify/netlify-cms/master/img/travis.png" height="38"/>
@@ -60,10 +57,8 @@ These services support Netlify CMS development by providing free infrastructure.
 </p>
 
 ## Contributors
-
 These wonderful folks are responsible for developing and maintaining Netlify CMS. ([emoji key](https://github.com/kentcdodds/all-contributors#emoji-key))
 
-<!-- prettier-ignore-start -->
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore -->
 | [<img src="https://avatars2.githubusercontent.com/u/33676?v=4" width="100px;"/><br /><sub><b>Cássio Souza</b></sub>](https://twitter.com/cassiozen)<br />[💻](https://github.com/netlify/netlify-cms/commits?author=cassiozen "Code") | [<img src="https://avatars3.githubusercontent.com/u/2112202?v=4" width="100px;"/><br /><sub><b>Shawn Erquhart</b></sub>](https://erquh.art)<br />[💻](https://github.com/netlify/netlify-cms/commits?author=erquhart "Code") | [<img src="https://avatars3.githubusercontent.com/u/11071?v=4" width="100px;"/><br /><sub><b>Andrey Okonetchnikov</b></sub>](http://okonet.ru)<br />[💻](https://github.com/netlify/netlify-cms/commits?author=okonet "Code") | [<img src="https://avatars0.githubusercontent.com/u/6515?v=4" width="100px;"/><br /><sub><b>Mathias Biilmann</b></sub>](https://www.netlify.com)<br />[💻](https://github.com/netlify/netlify-cms/commits?author=biilmann "Code") | [<img src="https://avatars1.githubusercontent.com/u/1425133?v=4" width="100px;"/><br /><sub><b>Benaiah Mischenko</b></sub>](http://benaiah.me)<br />[💻](https://github.com/netlify/netlify-cms/commits?author=Benaiah "Code") | [<img src="https://avatars0.githubusercontent.com/u/2281080?v=4" width="100px;"/><br /><sub><b>Rafael Conde</b></sub>](http://rafaelconde.net)<br />[🎨](#design-rafaelconde "Design") [💻](https://github.com/netlify/netlify-cms/commits?author=rafaelconde "Code") | [<img src="https://avatars0.githubusercontent.com/u/2513147?v=4" width="100px;"/><br /><sub><b>Joseph Earl</b></sub>](http://josephearl.co.uk)<br />[💻](https://github.com/netlify/netlify-cms/commits?author=josephearl "Code") |
@@ -85,6 +80,5 @@ These wonderful folks are responsible for developing and maintaining Netlify CMS
 | [<img src="https://avatars3.githubusercontent.com/u/366688?v=4" width="100px;"/><br /><sub><b>Taylor D. Edmiston</b></sub>](http://blog.tedmiston.com/)<br />[📖](https://github.com/netlify/netlify-cms/commits?author=tedmiston "Documentation") | [<img src="https://avatars2.githubusercontent.com/u/1088089?v=4" width="100px;"/><br /><sub><b>Daniel Mahon</b></sub>](https://www.mahonstudios.com)<br />[💻](https://github.com/netlify/netlify-cms/commits?author=danielmahon "Code") | [<img src="https://avatars1.githubusercontent.com/u/16711653?v=4" width="100px;"/><br /><sub><b>Evan Hennessy</b></sub>](https://www.hennessyevan.com)<br />[🔌](#plugin-hennessyevan "Plugin/utility libraries") | [<img src="https://avatars1.githubusercontent.com/u/3259517?v=4" width="100px;"/><br /><sub><b>Hasan Azizul Haque</b></sub>](https://hasanavi.me)<br />[💻](https://github.com/netlify/netlify-cms/commits?author=hasanavi "Code") [📖](https://github.com/netlify/netlify-cms/commits?author=hasanavi "Documentation") [🤔](#ideas-hasanavi "Ideas, Planning, & Feedback") | [<img src="https://avatars1.githubusercontent.com/u/5166612?v=4" width="100px;"/><br /><sub><b>Robert Karlsson</b></sub>](https://github.com/robertkarlsson)<br />[🐛](https://github.com/netlify/netlify-cms/issues?q=author%3Arobertkarlsson "Bug reports") | [<img src="https://avatars2.githubusercontent.com/u/3484527?v=4" width="100px;"/><br /><sub><b>Gil Greenberg</b></sub>](http://gilgreenberg.com)<br />[💻](https://github.com/netlify/netlify-cms/commits?author=gil-- "Code") | [<img src="https://avatars0.githubusercontent.com/u/649890?v=4" width="100px;"/><br /><sub><b>Tyler Ipson</b></sub>](http://loremipson.com)<br />[📖](https://github.com/netlify/netlify-cms/commits?author=loremipson "Documentation") |
 | [<img src="https://avatars0.githubusercontent.com/u/1061992?v=4" width="100px;"/><br /><sub><b>Jake Rayson</b></sub>](https://www.growdigital.org/)<br />[💻](https://github.com/netlify/netlify-cms/commits?author=growdigital "Code") [📝](#blog-growdigital "Blogposts") [💡](#example-growdigital "Examples") |
 <!-- ALL-CONTRIBUTORS-LIST:END -->
-<!-- prettier-ignore-end -->
 
 This project follows the [all-contributors](https://github.com/kentcdodds/all-contributors) specification. Contributions of any kind welcome!

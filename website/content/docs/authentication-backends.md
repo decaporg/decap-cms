@@ -18,13 +18,13 @@ To use it in your own project stored on GitHub or GitLab, follow these steps:
    steps to get started.
 2. Add the following lines to your Netlify CMS `config.yml` file:
 
-   ```yaml
-   backend:
-     name: git-gateway
-     accept_roles: #optional - accepts all users if left out
-       - admin
-       - editor
-   ```
+    ```yaml
+    backend:
+      name: git-gateway
+      accept_roles: #optional - accepts all users if left out
+        - admin
+        - editor
+    ```
 
 3. Optionally, you can assign roles to users in your Netlify dashboard, and then limit which
    roles can access the CMS by defining the `accept_roles` field as shown in the example above.
@@ -50,11 +50,11 @@ To enable it:
    docs](https://www.netlify.com/docs/authentication-providers/#using-an-authentication-provider).
 2. Add the following lines to your Netlify CMS `config.yml` file:
 
-   ```yaml
-   backend:
-     name: github
-     repo: owner-name/repo-name # Path to your GitHub repository
-   ```
+    ```yaml
+    backend:
+      name: github
+      repo: owner-name/repo-name # Path to your GitHub repository
+    ```
 
 If you prefer to run your own authentication server, check out the section on [external OAuth clients](#external-oauth-clients).
 
@@ -72,14 +72,14 @@ To enable it:
 
 1. Follow the [GitLab docs](https://docs.gitlab.com/ee/integration/oauth_provider.html#adding-an-application-through-the-profile) to add your Netlify CMS instance as an OAuth application. For the **Redirect URI**, enter `https://api.netlify.com/auth/done`, and check the box for `api` scope.
 2. Follow the [Netlify
-   docs](https://www.netlify.com/docs/authentication-providers/#using-an-authentication-provider) to add your new GitLab Application ID and Secret to your Netlify site dashboard.
-3. In your repository, add the following lines to your Netlify CMS `config.yml` file:
+   docs](https://www.netlify.com/docs/authentication-providers/#using-an-authentication-provider) to add your new GitLab Application ID and Secret to your Netlify site dashboard. 
+2. In your repository, add the following lines to your Netlify CMS `config.yml` file:
 
-   ```yaml
-   backend:
-     name: gitlab
-     repo: owner-name/repo-name # Path to your GitLab repository
-   ```
+    ```yaml
+    backend:
+      name: gitlab
+      repo: owner-name/repo-name # Path to your GitLab repository
+    ```
 
 ### Client-Side Implicit Grant
 
@@ -88,26 +88,26 @@ With GitLab's Implicit Grant, users can authenticate with GitLab directly from t
 1. Follow the [GitLab docs](https://docs.gitlab.com/ee/integration/oauth_provider.html#adding-an-application-through-the-profile) to add your Netlify CMS instance as an OAuth application. For the **Redirect URI**, enter the address where you access Netlify CMS, for example, `https://www.mysite.com/admin/`. For scope, select `api`.
 2. GitLab will give you an **Application ID**. Copy this and enter it in your Netlify CMS `config.yml` file, along with the following settings:
 
-   ```yaml
-   backend:
-     name: gitlab
-     repo: owner-name/repo-name # Path to your GitLab repository
-     auth_type: implicit # Required for implicit grant
-     app_id: your-app-id # Application ID from your GitLab settings
-   ```
+    ```yaml
+    backend:
+      name: gitlab
+      repo: owner-name/repo-name # Path to your GitLab repository
+      auth_type: implicit # Required for implicit grant
+      app_id: your-app-id # Application ID from your GitLab settings
+    ```
 
-   You can also use Implicit Grant with a self-hosted GitLab instance. This requires adding `api_root`, `base_url`, and `auth_endpoint` fields:
+    You can also use Implicit Grant with a self-hosted GitLab instance. This requires adding `api_root`, `base_url`, and `auth_endpoint` fields:
 
-   ```yaml
-   backend:
-     name: gitlab
-     repo: owner-name/repo-name # Path to your GitLab repository
-     auth_type: implicit # Required for implicit grant
-     app_id: your-app-id # Application ID from your GitLab settings
-     api_root: https://my-hosted-gitlab-instance.com/api/v4
-     base_url: https://my-hosted-gitlab-instance.com
-     auth_endpoint: oauth/authorize
-   ```
+    ```yaml
+    backend:
+      name: gitlab
+      repo: owner-name/repo-name # Path to your GitLab repository
+      auth_type: implicit # Required for implicit grant
+      app_id: your-app-id # Application ID from your GitLab settings
+      api_root: https://my-hosted-gitlab-instance.com/api/v4
+      base_url: https://my-hosted-gitlab-instance.com
+      auth_endpoint: oauth/authorize
+    ```
 
 Note that in both cases, GitLab will also provide you with a client secret. You should _never_ store this in your repo or reveal it in the client.
 
@@ -121,11 +121,11 @@ To enable it:
    docs](https://www.netlify.com/docs/authentication-providers/#using-an-authentication-provider).
 2. Add the following lines to your Netlify CMS `config.yml` file:
 
-   ```yaml
-   backend:
-     name: bitbucket
-     repo: owner-name/repo-name # Path to your Bitbucket repository
-   ```
+    ```yaml
+    backend:
+      name: bitbucket
+      repo: owner-name/repo-name # Path to your Bitbucket repository
+    ```
 
 ## External OAuth Clients
 
@@ -145,12 +145,12 @@ Check each project's documentation for instructions on how to configure it.
 
 Netlify CMS backends allow some additional fields for certain use cases. A full reference is below. Note that these are properties of the `backend` field, and should be nested under that field.
 
-| Field           | Default                                                                                                                 | Description                                                                                                                                          |
-| --------------- | ----------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `repo`          | none                                                                                                                    | **Required** for `github`, `gitlab`, and `bitbucket` backends; ignored by `git-gateway`. Follows the pattern `[org-or-username]/[repo-name]`.        |
-| `accept_roles`  | none                                                                                                                    | `git-gateway` only. Limits CMS access to your defined array of user roles. Omitting this field gives access to all registered users.                 |
-| `branch`        | `master`                                                                                                                | The branch where published content is stored. All CMS commits and PRs are made to this branch.                                                       |
-| `api_root`      | `https://api.github.com` (GitHub), `https://gitlab.com/api/v4` (GitLab), or `https://api.bitbucket.org/2.0` (Bitbucket) | The API endpoint. Only necessary in certain cases, like with GitHub Enterprise or self-hosted GitLab.                                                |
-| `site_domain`   | `location.hostname` (or `cms.netlify.com` when on `localhost`)                                                          | Sets the `site_id` query param sent to the API endpoint. Non-Netlify auth setups will often need to set this for local development to work properly. |
-| `base_url`      | `https://api.netlify.com` (GitHub, Bitbucket) or `https://gitlab.com` (GitLab)                                          | OAuth client URL. **Required** when using an external OAuth server or self-hosted GitLab.                                                            |
-| `auth_endpoint` | `auth` (GitHub, Bitbucket) or `oauth/authorize` (GitLab)                                                                | Path to append to `base_url` for authentication requests. Optional.                                                                                  |
+| Field           | Default                                                        | Description                                                                                                                                          |
+| --------------- | -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `repo`          | none                                                           | **Required** for `github`, `gitlab`, and `bitbucket` backends; ignored by `git-gateway`. Follows the pattern `[org-or-username]/[repo-name]`.                                    |
+| `accept_roles`  | none                                                           | `git-gateway` only. Limits CMS access to your defined array of user roles. Omitting this field gives access to all registered users.                 |
+| `branch`        | `master`                                                       | The branch where published content is stored. All CMS commits and PRs are made to this branch.                                                       |
+| `api_root`      | `https://api.github.com` (GitHub), `https://gitlab.com/api/v4` (GitLab), or `https://api.bitbucket.org/2.0` (Bitbucket)  | The API endpoint. Only necessary in certain cases, like with GitHub Enterprise or self-hosted GitLab.                                                                      |
+| `site_domain`   | `location.hostname` (or `cms.netlify.com` when on `localhost`) | Sets the `site_id` query param sent to the API endpoint. Non-Netlify auth setups will often need to set this for local development to work properly. |
+| `base_url`      | `https://api.netlify.com` (GitHub, Bitbucket) or `https://gitlab.com` (GitLab)                                     | OAuth client URL. **Required** when using an external OAuth server or self-hosted GitLab.                               |
+| `auth_endpoint` | `auth` (GitHub, Bitbucket) or `oauth/authorize` (GitLab)                  | Path to append to `base_url` for authentication requests. Optional.                                                                                  |

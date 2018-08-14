@@ -1,5 +1,5 @@
 ---
-label: 'Hidden'
+label: "Hidden"
 target: hidden
 ---
 
@@ -8,9 +8,9 @@ Hidden widgets do not display in the UI. In folder collections that allow users 
 - **Name:** `hidden`
 - **UI:** none
 - **Data type:** any valid data type
-- **Options:**
+- **Options:** 
   - `default`: accepts any valid data type; recommended for collections that allow adding new items
 - **Example:**
     ```yaml
-    - { label: 'Layout', name: 'layout', widget: 'hidden', default: 'blog' }
+    - {label: "Layout", name: "layout", widget: "hidden", default: "blog"}
     ```

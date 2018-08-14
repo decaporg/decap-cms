@@ -1,5 +1,5 @@
 ---
-label: 'List'
+label: "List"
 target: list
 ---
 
@@ -15,38 +15,38 @@ The list widget allows you to create a repeatable item in the UI which saves as 
   - `fields`: a nested list of multiple widget fields to be included in each repeatable iteration
 - **Example** (`field`/`fields` not specified):
     ```yaml
-    - label: 'Tags'
-      name: 'tags'
-      widget: 'list'
-      default: ['news']
+    - label: "Tags"
+      name: "tags"
+      widget: "list"
+      default: ["news"]
     ```
 - **Example** (`allow_add` marked `false`):
     ```yaml
-    - label: 'Tags'
-      name: 'tags'
-      widget: 'list'
+    - label: "Tags"
+      name: "tags"
+      widget: "list"
       allow_add: false
-      default: ['news']
+      default: ["news"]
     ```
 - **Example** (with `field`):
     ```yaml
-    - label: 'Gallery'
-      name: 'galleryImages'
-      widget: 'list'
+    - label: "Gallery"
+      name: "galleryImages"
+      widget: "list"
       field:
-        - { label: Image, name: image, widget: image }
+        - {label: Image, name: image, widget: image}
     ```
 - **Example** (with `fields`):
     ```yaml
-    - label: 'Testimonials'
-      name: 'testimonials'
-      widget: 'list'
+    - label: "Testimonials"
+      name: "testimonials"
+      widget: "list"
       fields:
-        - { label: Quote, name: quote, widget: string, default: 'Everything is awesome!' }
+        - {label: Quote, name: quote, widget: string, default: "Everything is awesome!"}
         - label: Author
           name: author
           widget: object
           fields:
-            - { label: Name, name: name, widget: string, default: 'Emmet' }
-            - { label: Avatar, name: avatar, widget: image, default: '/img/emmet.jpg' }
+            - {label: Name, name: name, widget: string, default: "Emmet"}
+            - {label: Avatar, name: avatar, widget: image, default: "/img/emmet.jpg"}
     ```
