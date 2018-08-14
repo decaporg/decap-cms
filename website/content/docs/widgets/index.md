@@ -18,12 +18,11 @@ The following options are available on all fields:
 - `pattern`: add field validation by specifying a list with a [regex pattern](https://regexr.com/) and an error message; more extensive validation can be achieved with [custom widgets](https://www.netlifycms.org/docs/custom-widgets/#advanced-field-validation)
 
   - **Example:**
-
-    ```yaml
-    - label: 'Title'
-      name: 'title'
-      widget: 'string'
-      pattern: ['.{12,}', 'Must have at least 12 characters']
-    ```
+        ```yaml
+        - label: 'Title'
+          name: 'title'
+          widget: 'string'
+          pattern: ['.{12,}', 'Must have at least 12 characters']
+        ```
 
 ## Default widgets
