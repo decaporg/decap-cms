@@ -342,9 +342,9 @@ export default class EditorToolbar extends React.Component {
               Writing in <strong>{collection.get('label')}</strong> collection
             </BackCollection>
             {hasChanged ? (
-              <BackStatusChanged>UNSAVED CHANGES</BackStatusChanged>
+              <BackStatusChanged>Unsaved Changes</BackStatusChanged>
             ) : (
-              <BackStatusUnchanged>CHANGES SAVED</BackStatusUnchanged>
+              <BackStatusUnchanged>Changes saved</BackStatusUnchanged>
             )}
           </div>
         </ToolbarSectionBackLink>

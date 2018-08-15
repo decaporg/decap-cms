@@ -113,13 +113,24 @@ const shadows = {
   `,
 };
 
-const textBadge = css`
-  font-size: 13px;
+const badge = css`
+    font-size: 13px;
+    line-height: 1;
+  `;
+
+const backgroundBadge = css`
+  ${badge};
+  display: block;
   border-radius: ${lengths.borderRadius};
   padding: 4px 10px;
   text-align: center;
+`;
+
+const textBadge = css`
+  ${badge};
   display: inline-block;
-  line-height: 1;
+  font-weight: 700;
+  text-transform: uppercase;
 `;
 
 const card = css`
@@ -133,7 +144,6 @@ const buttons = {
     border: 0;
     border-radius: ${lengths.borderRadius};
     cursor: pointer;
-    background-color: ${colorsRaw.blueLight};
   `,
   default: css`
     height: 36px;
@@ -202,6 +212,21 @@ const components = {
     border-top: 6px solid currentColor;
     border-radius: 2px;
   `,
+  badge: css`
+    ${backgroundBadge};
+    color: ${colors.infoText};
+    background-color: ${colors.infoBackground};
+  `,
+  badgeSuccess: css`
+    ${backgroundBadge};
+    color: ${colors.successText};
+    background-color: ${colors.successBackground};
+  `,
+  badgeDanger: css`
+    ${backgroundBadge};
+    color: ${colorsRaw.red};
+    background-color: #fbe0d7;
+  `,
   textBadge: css`
     ${textBadge};
     color: ${colors.infoText};
@@ -209,12 +234,10 @@ const components = {
   textBadgeSuccess: css`
     ${textBadge};
     color: ${colors.successText};
-    font-weight: bold;
   `,
   textBadgeDanger: css`
     ${textBadge};
     color: ${colorsRaw.red};
-    font-weight: bold;
   `,
   loaderSize: css`
     width: 2.28571429rem;
