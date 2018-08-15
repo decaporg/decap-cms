@@ -42,6 +42,9 @@ const HomePage = ({ data }) => {
             </span>
             <span className="cta-header">
               <Markdownify source={landing.cta.button} />
+              <span className='secondary-cta'>
+                <Markdownify source={landing.cta.secondaryButton} />
+              </span>
             </span>
           </div>
           <div className="hero-features">
@@ -148,6 +151,7 @@ export const pageQuery = graphql`
         primary
         primaryhook
         button
+        secondaryButton
       }
       editors {
         hook

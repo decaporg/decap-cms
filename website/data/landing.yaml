@@ -13,6 +13,7 @@ cta:
   primaryhook: "Getting started is simple and free."
   primary: "Choose a template that’s pre-configured with a static site generator and deploys to a global CDN in one&nbsp;click."
   button: "[Get started](/docs/start-with-a-template/)"
+  secondaryButton: "[Admin UI Demo](https://cms-demo.netlify.com/)"
 
 editors:
   hook: "A CMS that developers and content editors can&nbsp;agree&nbsp;on"
@@ -38,4 +39,3 @@ community:
     - feature: "A community-driven project you can help evolve"
       description: "Netlify CMS is built by a community of more than 100 contributors — and you can help. Join our [bi-weekly planning sessions](/community) or read the [contributing guide](/docs/contributor-guide) to join in."
   contributors: "Made possible by awesome contributors"
-

@@ -80,7 +80,12 @@
       box-shadow: none;
     }
   }
-
+  .cta-header .secondary-cta a {
+    background-color: white;
+    background-image: linear-gradient(-180deg, #d5d8dd 0%, #91949b 100%);
+    box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.3), 0 1px 3px 0 rgba(0, 0, 0, 0.6);
+    margin-left: 20px;
+  }
   .hero-features {
     @media screen and (min-width: $tablet) {
       @neat-span-columns 5;
