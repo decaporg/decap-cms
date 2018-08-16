@@ -1,5 +1,7 @@
 import React from 'react';
-import Gitter from 'react-sidecar';
+// gatsby throws some error when importing just react-sidecar.
+// Maybe because jsx file ext?
+import Gitter from 'react-sidecar/dist-modules/index.js';
 
 class HTML extends React.Component {
   render() {
