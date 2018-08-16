@@ -1,22 +1,8 @@
 import React from 'react';
 import Gitter from 'react-sidecar';
 
-let stylesStr;
-if (process.env.NODE_ENV === `production`) {
-  try {
-    stylesStr = require('!raw-loader!../public/styles.css');
-  } catch (e) {
-    console.log(e);
-  }
-}
-
-module.exports = class HTML extends React.Component {
+class HTML extends React.Component {
   render() {
-    let css;
-    if (process.env.NODE_ENV === 'production') {
-      css = <style id="gatsby-inlined-css" dangerouslySetInnerHTML={{ __html: stylesStr }} />;
-    }
-
     return (
       <html {...this.props.htmlAttributes}>
         <head>
@@ -30,7 +16,6 @@ module.exports = class HTML extends React.Component {
           <meta name="apple-mobile-web-app-title" content="NetlifyCMS" />
           <meta name="application-name" content="NetlifyCMS" />
           {this.props.headComponents}
-          {css}
           <link
             rel="stylesheet"
             href="https://unpkg.com/docsearch.js@2.5.2/dist/cdn/docsearch.min.css"
@@ -48,3 +33,5 @@ module.exports = class HTML extends React.Component {
     );
   }
 };
+
+export default HTML;
