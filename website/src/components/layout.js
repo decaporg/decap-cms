@@ -10,7 +10,7 @@ import '../css/imports/base.css';
 import '../css/imports/utilities.css';
 import '../css/imports/gitter.css';
 
-const Layout = ({ location, children }) => {
+const Layout = ({ children }) => {
   return (
     <StaticQuery query={
       graphql`
