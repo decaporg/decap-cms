@@ -81,8 +81,8 @@
     }
   }
   .cta-header .secondary-cta a {
-    background-color: white;
-    background-image: linear-gradient(-180deg, #d5d8dd 0%, #91949b 100%);
+    background-color: #a5a1a1;
+    background-image: linear-gradient(-180deg, #c5c7ca 0%, #87898f 100%);
     box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.3), 0 1px 3px 0 rgba(0, 0, 0, 0.6);
     margin-left: 20px;
   }
