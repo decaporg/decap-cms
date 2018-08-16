@@ -7234,12 +7234,6 @@ postcss-colormin@^4.0.0:
     postcss "^6.0.0"
     postcss-value-parser "^3.0.0"
 
-postcss-colour-functions@^1.5.2:
-  version "1.5.2"
-  resolved "https://registry.yarnpkg.com/postcss-colour-functions/-/postcss-colour-functions-1.5.2.tgz#97c127ae4d2a65cf2e57a66710ecabe53dbc7a5f"
-  dependencies:
-    postcss "^5.0.19"
-
 postcss-convert-values@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/postcss-convert-values/-/postcss-convert-values-4.0.0.tgz#77d77d9aed1dc4e6956e651cc349d53305876f62"
