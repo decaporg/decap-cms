@@ -55,6 +55,7 @@ class Editor extends React.Component {
     newEntry: PropTypes.bool.isRequired,
     displayUrl: PropTypes.string,
     hasWorkflow: PropTypes.bool,
+    hasPublishflow: PropTypes.bool,
     unpublishedEntry: PropTypes.bool,
     isModification: PropTypes.bool,
     collectionEntriesLoaded: PropTypes.bool,
@@ -312,6 +313,7 @@ class Editor extends React.Component {
       hasChanged,
       displayUrl,
       hasWorkflow,
+      hasPublishflow,
       unpublishedEntry,
       newEntry,
       isModification,
@@ -353,6 +355,7 @@ class Editor extends React.Component {
         hasChanged={hasChanged}
         displayUrl={displayUrl}
         hasWorkflow={hasWorkflow}
+        hasPublishflow={hasPublishflow}
         hasUnpublishedChanges={unpublishedEntry}
         isNewEntry={newEntry}
         isModification={isModification}
@@ -376,6 +379,9 @@ function mapStateToProps(state, ownProps) {
   const hasChanged = entryDraft.get('hasChanged');
   const displayUrl = config.get('display_url');
   const hasWorkflow = config.get('publish_mode') === EDITORIAL_WORKFLOW;
+  let hasPublishflow = config.get('allow_publish')
+  // catch undefined and default to true to allow users not have to set it to enable the feature
+  if (typeof hasPublishflow === 'undefined') { hasPublishflow = true; };
   const isModification = entryDraft.getIn(['entry', 'isModification']);
   const collectionEntriesLoaded = !!entries.getIn(['entities', collectionName]);
   const unpublishedEntry = selectUnpublishedEntry(state, collectionName, slug);
@@ -393,6 +399,7 @@ function mapStateToProps(state, ownProps) {
     hasChanged,
     displayUrl,
     hasWorkflow,
+    hasPublishflow,
     isModification,
     collectionEntriesLoaded,
     currentStatus,

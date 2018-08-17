@@ -185,6 +185,7 @@ export default class EditorToolbar extends React.Component {
     displayUrl: PropTypes.string,
     collection: ImmutablePropTypes.map.isRequired,
     hasWorkflow: PropTypes.bool,
+    hasPublishflow: PropTypes.bool,
     hasUnpublishedChanges: PropTypes.bool,
     isNewEntry: PropTypes.bool,
     isModification: PropTypes.bool,
@@ -217,6 +218,7 @@ export default class EditorToolbar extends React.Component {
           dropdownTopOverlap="40px"
           dropdownWidth="150px"
           renderButton={() => (
+            // console.log("PUBLISH BUTTON HERE ")
             <PublishButton>{isPersisting ? 'Publishing...' : 'Publish'}</PublishButton>
           )}
         >
@@ -331,7 +333,7 @@ export default class EditorToolbar extends React.Component {
   };
 
   render() {
-    const { user, hasChanged, displayUrl, collection, hasWorkflow, onLogoutClick } = this.props;
+    const { user, hasChanged, displayUrl, collection, hasWorkflow, hasPublishflow, onLogoutClick } = this.props;
 
     return (
       <ToolbarContainer>
@@ -352,11 +354,13 @@ export default class EditorToolbar extends React.Component {
           <ToolbarSubSectionFirst>
             {hasWorkflow ? this.renderWorkflowSaveControls() : this.renderSimpleSaveControls()}
           </ToolbarSubSectionFirst>
+          {hasPublishflow ? (
           <ToolbarSubSectionLast>
             {hasWorkflow
               ? this.renderWorkflowPublishControls()
               : this.renderSimplePublishControls()}
           </ToolbarSubSectionLast>
+          ) : ``}
         </ToolbarSectionMain>
         <ToolbarSectionMeta>
           <SettingsDropdown

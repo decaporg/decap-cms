@@ -164,6 +164,7 @@ class EditorInterface extends Component {
       hasChanged,
       displayUrl,
       hasWorkflow,
+      hasPublishflow,
       hasUnpublishedChanges,
       isNewEntry,
       isModification,
@@ -234,6 +235,7 @@ class EditorInterface extends Component {
           displayUrl={displayUrl}
           collection={collection}
           hasWorkflow={hasWorkflow}
+          hasPublishflow={hasPublishflow}
           hasUnpublishedChanges={hasUnpublishedChanges}
           isNewEntry={isNewEntry}
           isModification={isModification}
@@ -285,6 +287,7 @@ EditorInterface.propTypes = {
   hasChanged: PropTypes.bool,
   displayUrl: PropTypes.string,
   hasWorkflow: PropTypes.bool,
+  hasPublishflow: PropTypes.bool,
   hasUnpublishedChanges: PropTypes.bool,
   isNewEntry: PropTypes.bool,
   isModification: PropTypes.bool,

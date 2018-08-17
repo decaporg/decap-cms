@@ -5,6 +5,7 @@ display_url: https://example.com
 media_folder: "assets/uploads"
 
 publish_mode: editorial_workflow
+allow_publish: false # defaults to true if `allow_publish` not set
 
 collections: # A list of collections the CMS should be able to edit
   - name: "posts" # Used in routes, ie.: /admin/collections/:slug/edit
