@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import moment from 'moment';
 import { graphql } from 'gatsby';
 
-import Layout from '../components/Layout';
+import Layout from '../components/layout';
 import Markdownify from '../components/markdownify';
 import VideoEmbed from '../components/video-embed';
 

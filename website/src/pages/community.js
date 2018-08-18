@@ -3,7 +3,7 @@ import Helmet from 'react-helmet';
 import Markdown from 'react-markdown';
 import { graphql } from 'gatsby';
 
-import Layout from '../components/Layout';
+import Layout from '../components/layout';
 import EventWidget from '../components/event-widget';
 import Markdownify from '../components/markdownify';
 

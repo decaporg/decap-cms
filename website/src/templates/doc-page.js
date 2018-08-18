@@ -2,7 +2,7 @@ import React from 'react';
 import Helmet from 'react-helmet';
 import { graphql } from 'gatsby';
 
-import Layout from '../components/Layout';
+import Layout from '../components/layout';
 import EditLink from '../components/edit-link';
 import Widgets from '../components/widgets';
 import DocsNav from '../components/docs-nav';
