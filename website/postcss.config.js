@@ -16,4 +16,4 @@ module.exports = () => ({
     cssextend(),
     cssvars({ variables: styleVariables }),
   ],
-})
+});

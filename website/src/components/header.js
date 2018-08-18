@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Link from 'gatsby-link';
 import classnames from 'classnames';
-import { Location } from '@reach/router'
+import { Location } from '@reach/router';
 
 import DocSearch from './docsearch';
 
@@ -38,7 +38,7 @@ class Header extends Component {
 
     return (
       <Location>
-        {({location}) => {
+        {({ location }) => {
           const isDocs = location.pathname.indexOf('docs') !== -1;
           const isBlog = location.pathname.indexOf('blog') !== -1;
 

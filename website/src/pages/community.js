@@ -73,9 +73,7 @@ const CommunityPage = ({ data }) => {
 
 export const pageQuery = graphql`
   query communityPage {
-    markdownRemark(fileAbsolutePath: {
-      regex: "/community/"
-    }) {
+    markdownRemark(fileAbsolutePath: { regex: "/community/" }) {
       frontmatter {
         headline
         subhead

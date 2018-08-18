@@ -12,8 +12,8 @@ import '../css/imports/gitter.css';
 
 const Layout = ({ children }) => {
   return (
-    <StaticQuery query={
-      graphql`
+    <StaticQuery
+      query={graphql`
         query layoutQuery {
           site {
             siteMetadata {
@@ -42,8 +42,8 @@ const Layout = ({ children }) => {
             }
           }
         }
-      `
-    }>
+      `}
+    >
       {data => {
         const { title, description } = data.site.siteMetadata;
         const notifs = data.notifs.childDataYaml.notifications.filter(notif => notif.published);

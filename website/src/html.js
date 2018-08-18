@@ -34,6 +34,6 @@ class HTML extends React.Component {
       </html>
     );
   }
-};
+}
 
 export default HTML;

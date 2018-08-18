@@ -79,7 +79,9 @@ const HomePage = ({ data }) => {
                   <li>
                     <div className="update-metadata">
                       <span className="update-version">{node.version}</span>
-                      <span className="update-date">{moment(node.date).format('MMMM D, YYYY')}</span>
+                      <span className="update-date">
+                        {moment(node.date).format('MMMM D, YYYY')}
+                      </span>
                     </div>
                     <span className="update-description">
                       <Markdownify source={node.description} />
