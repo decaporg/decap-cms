@@ -115,13 +115,14 @@ const mediaLibrary = (
     case MEDIA_DELETE_REQUEST:
       return state.set('isDeleting', true);
     case MEDIA_DELETE_SUCCESS: {
-      const { key } = action.payload.file;
+      const { id, key } = action.payload.file;
       if (privateUploadChanged) {
         return state;
       }
       return state.withMutations(map => {
         const updatedFiles = map.get('files').filter(file => file.key !== key);
         map.set('files', updatedFiles);
+        map.deleteIn(['displayURLs', id]);
         map.set('isDeleting', false);
       });
     }
