@@ -74,5 +74,5 @@ export const getAsset = (state, path) => {
   if (state.mediaLibrary.get('externalLibrary')) {
     return path;
   }
-  return fromMedias.getAsset(state.config.get('public_folder'), state.medias, path);
+  return fromMedias.getAsset(state.config.get('public_folder'), state.medias, path, state);
 };

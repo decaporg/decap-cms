@@ -150,12 +150,20 @@ export function persistMedia(file, opts = {}) {
       slug: `upload_${fileName}`,
     };
 
+    const title = entryDraft.getIn(["entry", "data", "title"])
+    const draftIsOpen = entryDraft.getIn(["entry", "data", "generated_by_cms"])
+
+    // console.log('persistMedia', publishMode, entryDraft, entryDraft.getIn(["entry"]), entryDraft.getIn(["entry", "data", "title"]));
+
     // If in Editorial workflow and there is something in a draft entry (means uploaded from draft page)
-    if (publishMode === EDITORIAL_WORKFLOW && entryDraft.getIn(["entry", "data", "title"])) {
-      const collectionName = state.entryDraft.getIn(['entry', 'collection']);
-      const collection = state.collections.get(collectionName);
-      const collectionLabel = collection.get('label');
-      const slug = slugFormatter(collection.get("slug"), entryDraft.getIn(["entry", "data"]), config.get("slug"));
+    console.log('persistMedia - publishMode, title', publishMode, title);
+
+    if (publishMode === EDITORIAL_WORKFLOW && title) {
+      const tempCollectionName = state.entryDraft.getIn(['entry', 'collection']); // May be set to draft sometimes.
+      const collectionName = tempCollectionName === 'draft' ? state.entryDraft.getIn(['entry', 'metadata', 'collection']) : tempCollectionName;
+      const collection = state.collections.get(collectionName) || '';
+      const collectionLabel = collection && collection.get('label');
+      const slug = entryDraft.getIn(['entry', 'slug']) || slugFormatter(collection.get("slug"), entryDraft.getIn(["entry", "data"]), config.get("slug"));
 
       const parsedData = {
         title: entryDraft.getIn(["entry", "data", "title"], "No Title"),
@@ -167,6 +175,20 @@ export function persistMedia(file, opts = {}) {
       options.collectionName = collectionName;
       options.parsedData = parsedData;
       options.isMediaOnlyPR = true;
+      if (tempCollectionName === 'draft') { // This is a draft. Update the branch.
+        options.unpublished = true;
+      }
+    }
+
+    // Don't allow uploading from the draft screen without a title
+    if (publishMode === EDITORIAL_WORKFLOW && !title && draftIsOpen) {
+      dispatch(notifSend({
+        message: `You must enter a title before uploading an image.`,
+        kind: 'danger',
+        dismissAfter: 8000,
+      }));
+      window.alert('You must enter a title before uploading an image.');
+      return;
     }
 
     /**
