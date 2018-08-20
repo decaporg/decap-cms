@@ -4,7 +4,7 @@ weight: 10
 group: start
 ---
 
-Netlify CMS can be [added to an existing site](https://www.netlifycms.org/docs/add-to-your-site/), but the quickest way to get started is with a template. Our featured templates below deploy to Netlify, giving you a fully working CMS-enabled site with just a few clicks.
+Netlify CMS can be [added to an existing site](/docs/add-to-your-site/), but the quickest way to get started is with a template. Our featured templates below deploy to Netlify, giving you a fully working CMS-enabled site with just a few clicks.
 
 <div style="display: flex; justify-content: space-around; text-align: center; margin-bottom: 1.5em;">
     <div>
@@ -19,7 +19,7 @@ Netlify CMS can be [added to an existing site](https://www.netlifycms.org/docs/a
 
 After clicking one of those buttons, you’ll authenticate with GitHub or GitLab and choose a repository name. Netlify will then automatically create a clone of the repository in your GitHub or GitLab account. Next, it will build and deploy the new site on Netlify, bringing you to the site dashboard when the build is complete.
 
-**Note for Bitbucket users:** Netlify CMS supports Bitbucket repositories, but Bitbucket's permissions won't work with the Deploy to Netlify buttons above. You can still set up a repository manually, or follow the [tutorial](https://www.netlifycms.org/docs/add-to-your-site) for adding Netlify CMS to an existing site.
+**Note for Bitbucket users:** Netlify CMS supports Bitbucket repositories, but Bitbucket's permissions won't work with the Deploy to Netlify buttons above. You can still set up a repository manually, or follow the [tutorial](/docs/add-to-your-site) for adding Netlify CMS to an existing site.
 
 ## Access Netlify CMS on your new site
 
@@ -37,6 +37,6 @@ Try adding and editing posts, or changing the content of the Products page. When
 
 ## More paths to explore
 
-- To see how to integrate Netlify CMS into an existing project, go to [Add to your site](https://www.netlifycms.org/docs/add-to-your-site/).
-- Check out other sites using Netlify CMS (or share your own!) on the [Examples](https://www.netlifycms.org/docs/examples/) page.
+- To see how to integrate Netlify CMS into an existing project, go to [Add to your site](/docs/add-to-your-site/).
+- Check out other sites using Netlify CMS (or share your own!) on the [Examples](/docs/examples/) page.
 - If you’d like to add more CMS editors or change how they log in to your site, read up on [Netlify Identity service](https://www.netlify.com/docs/identity).
