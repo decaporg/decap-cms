@@ -1,0 +1,16 @@
+---
+title: Media Assets UI
+weight: 200
+group: reference
+---
+
+All media files are managed and maintained within the Content Mangager's Media Assets. Media files are stored in the folder specified during [configuration](https://www.netlifycms.org/docs/add-to-your-site/#media-and-public-folders). Uploaded files are added to content when creating Posts and Pages. 
+
+## Managing Media Assets
+Viewing, uploading, and deleting media all occur within the Media Assets section, accessed by clicking Media in the Content Manager. 
+
+To add to the Media Library, click Upload New to select your files to add. 
+
+To delete, select media from the library, then click Delete Selcted.
+
+You can search through your library and display specific files by using Search.
