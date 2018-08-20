@@ -995,6 +995,15 @@
         "blog",
         "example"
       ]
+    },
+    {
+      "login": "kurtgcollins",
+      "name": "Kurt collins",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/42543284?v=4",
+      "profile": "https://github.com/kurtgcollins",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "repoType": "github"
