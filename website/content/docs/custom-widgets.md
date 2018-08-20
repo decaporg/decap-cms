@@ -6,8 +6,8 @@ group: guides
 
 The NetlifyCMS exposes a `window.CMS` global object that you can use to register custom widgets, previews, and editor plugins. The same object is also the default export if you import Netify CMS as an npm module. The available widget extension methods are:
 
-* **registerWidget:** lets you register a custom widget.
-* **registerEditorComponent:** lets you add a block component to the Markdown editor.
+* **registerWidget:** registers a custom widget.
+* **registerEditorComponent:** adds a block component to the Markdown editor.
 
 ### Writing React Components inline
 
@@ -125,7 +125,7 @@ CMS.registerEditorComponent({
 
 ## Advanced field validation
 
-All widget fields, including those for built-in widgets, [include basic validation](https://www.netlifycms.org/docs/widgets/#common-widget-options) capability using the `required` and `pattern` options.
+All widget fields, including those for built-in widgets, [include basic validation](../widgets/#common-widget-options) capability using the `required` and `pattern` options.
 
 With custom widgets, the widget control can also optionally implement an `isValid` method to perform custom validations, in addition to presence and pattern. The `isValid` method will be automatically called, and it can return either a boolean value, an object with an error message or a promise. Examples:
 
@@ -167,4 +167,4 @@ You can also return a promise from `isValid`. While the promise is pending, the 
   };
 ```
 
-Note: Do not create a promise inside `isValid` - `isValid` is called right before trying to persist. This means that even if a previous promise was already resolved, when the user hits 'save', `isValid` will be called again. If it returns a new promise, it will be immediately marked as "in error" until the new promise resolves.
+**Note:** Do not create a promise inside `isValid` - `isValid` is called right before trying to persist. This means that even if a previous promise was already resolved, when the user hits 'save', `isValid` will be called again. If it returns a new promise, it will be immediately marked as "in error" until the new promise resolves.

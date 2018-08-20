@@ -9,20 +9,16 @@ We run new functionality in an open beta format from time to time. That means th
 **Use these features at your own risk.**
 
 ## Custom Mount Element
-Netlify CMS always creates it's own DOM element for mounting the application, which means it always
-takes over the entire page, and is generally inflexible if you're trying to do something creative,
-like injecting it into a shared context.
+Netlify CMS always creates its own DOM element for mounting the application, which means it always takes over the entire page, and is generally inflexible if you're trying to do something creative, like injecting it into a shared context.
 
-You can now provide your own element for Netlify CMS to mount in by setting the target element's ID
-as `nc-root`. If Netlify CMS finds an element with this ID during initialization, it will mount
-within that element instead of creating it's own.
+You can now provide your own element for Netlify CMS to mount in by setting the target element's ID as `nc-root`. If Netlify CMS finds an element with this ID during initialization, it will mount within that element instead of creating its own.
 
 ## Manual Initialization
 Netlify CMS can now be manually initialized, rather than automatically loading up the moment you import it. The whole point of this at the moment is to inject configuration into Netlify CMS before it loads, bypassing need for an actual Netlify CMS `config.yml`. This is important, for example, when creating tight integrations with static site generators.
 
 Injecting config is technically already possible by setting `window.CMS_CONFIG` before importing/requiring/running Netlify CMS, but most projects are modular and don't want to use globals, plus `window.CMS_CONFIG` is an internal, not technically supported, and provides no validation.
 
-Assuming you have the netlify-cms package installed to your project, manual initialization works like so:
+Assuming you have the netlify-cms package installed to your project, manual initialization works like this:
 
 ```js
 // This global flag enables manual initialization.
@@ -48,7 +44,7 @@ init()
  * not concatenated.
  *
  * For example, the code below contains an incomplete config, but using it,
- * your `config.yml` can be missing it's backend property, allowing you
+ * your `config.yml` can be missing its backend property, allowing you
  * to set this property at runtime.
  */
 
@@ -65,7 +61,7 @@ CMS.registerPreviewTemplate(...);
 ```
 
 ## Raw CSS in `registerPreviewStyle`
-`registerPreviewStyle` can now accept a CSS string, in addition to accepting a url. The feature is activated by passing in an object as the second argument, with `raw` set to a truthy value.This is critical for integrating with modern build tooling. Here's an example using webpack:
+`registerPreviewStyle` can now accept a CSS string, in addition to accepting a url. The feature is activated by passing in an object as the second argument, with `raw` set to a truthy value. This is critical for integrating with modern build tooling. Here's an example using webpack:
 
 ```js
 /**
@@ -79,7 +75,7 @@ CMS.registerPreviewStyle(styles.toString(), { raw: true })
 ```
 
 ## Squash merge GitHub pull requests
-When using the [Editorial Workflow](/docs/configuration-options/#publish-mode) with the `github` or GitHub-connected `git-gateway` backends, Netlify CMS creates a pull request for each unpublished entry. Every time the unpublished entry is changed and saved, a new commit is added to the pull request. When the entry is published, the pull request is merged, and all of those commits are added to your project commit history in a merge commit.
+When using the [Editorial Workflow](../configuration-options/#publish-mode) with the `github` or GitHub-connected `git-gateway` backends, Netlify CMS creates a pull request for each unpublished entry. Every time the unpublished entry is changed and saved, a new commit is added to the pull request. When the entry is published, the pull request is merged, and all of those commits are added to your project commit history in a merge commit.
 
 The squash merge option causes all commits to be "squashed" into a single commit when the pull request is merged, and the resulting commit is rebased onto the target branch, avoiding the merge commit altogether.
 
