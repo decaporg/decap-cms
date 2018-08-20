@@ -14,7 +14,7 @@ Alternatively, you can specify a custom config file using a link tag:
 <link href="path/to/config.yml" type="text/yaml" rel="cms-config-url">
 ```
 
-To see working configuration examples, you can [start from a template](https://www.netlifycms.org/docs/start-with-a-template) or check out the [CMS demo site](https://cms-demo.netlify.com). (No login required: click the login button and the CMS will open.) You can refer to the demo [configuration code](https://github.com/netlify/netlify-cms/blob/master/example/config.yml) to see how each option was configured.
+To see working configuration examples, you can [start from a template](../start-with-a-template) or check out the [CMS demo site](https://cms-demo.netlify.com). (No login required: click the login button and the CMS will open.) You can refer to the demo [configuration code](https://github.com/netlify/netlify-cms/blob/master/example/config.yml) to see how each option was configured.
 
 You can find details about all configuration options below. Note that [YAML syntax](https://en.wikipedia.org/wiki/YAML#Basic_components) allows lists and objects to be written in block or inline style, and the code samples below include a mix of both.
 
@@ -23,7 +23,7 @@ You can find details about all configuration options below. Note that [YAML synt
 
 *This setting is required.*
 
-The `backend` option specifies how to access the content for your site, including authentication. Full details and code samples can be found in [Authentication & Backends](https://www.netlifycms.org/docs/authentication-backends).
+The `backend` option specifies how to access the content for your site, including authentication. Full details and code samples can be found in [Authentication & Backends](../authentication-backends).
 
 **Note**: no matter where you access Netlify CMS — whether running locally, in a staging environment, or in your published site — it will always fetch and commit files in your hosted repository (for example, on GitHub), on the branch you configured in your Netlify CMS config.yml file. This means that content fetched in the admin UI will match the content in the repository, which may be different from your locally running site. It also means that content saved using the admin UI will save directly to the hosted repository, even if you're running the UI locally or in staging.
 
@@ -107,11 +107,11 @@ The `collections` setting is the heart of your Netlify CMS configuration, as it 
 
 `collections` accepts a list of collection objects, each with the following options:
 
-- `name` (required): unique identifier for the collection, used as the key when referenced in other contexts (like the [relation widget](https://www.netlifycms.org/docs/widgets/#relation))
+- `name` (required): unique identifier for the collection, used as the key when referenced in other contexts (like the [relation widget](../widgets/#relation))
 - `Label`: label for the collection in the editor UI; defaults to the value of `name`
 - `label_singular`: singular label for certain elements in the editor; defaults to the value of `label`
-- `file` or `folder` (requires one of these): specifies the collection type and location; details in [Collection Types](https://www.netlifycms.org/docs/collection-types)
-- `filter`: optional filter for `folder` collections; details in [Collection Types](https://www.netlifycms.org/docs/collection-types)
+- `file` or `folder` (requires one of these): specifies the collection type and location; details in [Collection Types](../collection-types)
+- `filter`: optional filter for `folder` collections; details in [Collection Types](../collection-types)
 - `create`: for `folder` collections only; `true` allows users to create new items in the collection; defaults to `false`
 - `delete`: `false` prevents users from deleting items in a collection; defaults to `true`
 - `extension`: see detailed description below
@@ -170,12 +170,12 @@ The `fields` option maps editor UI widgets to field-value pairs in the saved fil
 
 `fields` accepts a list of collection objects, each with the following options:
 
-- `name` (required): unique identifier for the field, used as the key when referenced in other contexts (like the [relation widget](https://www.netlifycms.org/docs/widgets/#relation))
+- `name` (required): unique identifier for the field, used as the key when referenced in other contexts (like the [relation widget](../widgets/#relation))
 - `label`: label for the field in the editor UI; defaults to the value of `name`
-- `widget`: defines editor UI and inputs and file field data types; details in [Widgets](https://www.netlifycms.org/docs/widgets)
-- `default`: specify a default value for a field; available for most widget types (see [Widgets](https://www.netlifycms.org/docs/widgets) for details on each widget type)
+- `widget`: defines editor UI and inputs and file field data types; details in [Widgets](../widgets)
+- `default`: specify a default value for a field; available for most widget types (see [Widgets](../widgets) for details on each widget type)
 - `required`: specify as `false` to make a field optional; defaults to `true`
-- `pattern`: add field validation by specifying a list with a regex pattern and an error message; more extensive validation can be achieved with [custom widgets](https://www.netlifycms.org/docs/custom-widgets/#advanced-field-validation)
+- `pattern`: add field validation by specifying a list with a regex pattern and an error message; more extensive validation can be achieved with [custom widgets](../custom-widgets/#advanced-field-validation)
 
 In files with frontmatter, one field should be named `body`. This special field represents the section of the document (usually markdown) that comes after the frontmatter.
 

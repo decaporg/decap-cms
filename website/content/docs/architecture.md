@@ -10,7 +10,7 @@ The core abstractions for content editing are `collections`, `entries` and `widg
 
 Each `collection` represents a collection of entries. This can either be a collection of similar entries with the same structure, or a set of entries where each has its own structure.
 
-The structure of an entry is defined as a series of fields, each with a `name`, a `label`, and a `widget` .
+The structure of an entry is defined as a series of fields, each with a `name`, a `label`, and a `widget`.
 
 The `widget` determines the UI widget that the content editor will use when editing this field of an entry, as well as how the content of the field is presented in the editing preview.
 
@@ -21,7 +21,7 @@ Entries are loaded and persisted through a `backend` that will typically represe
 
 **Config:** Holds the environment configuration (backend type, available collections and fields).
 
-**Collections** List of available collections, their fields and metadata information.
+**Collections:** List of available collections, their fields and metadata information.
 
 **Entries:** Entries for each field.
 
@@ -37,7 +37,7 @@ Selectors are functions defined within reducers used to compute derived data fro
 **getAsset:** Selects a single AssetProxy object for the given URI.
 
 ## Value Objects
-**AssetProxy:** AssetProxy is a Value Object that holds information regarding an asset file (such as an image, for example), whether it's persisted online or held locally in cache.
+**AssetProxy:** AssetProxy is a Value Object that holds information regarding an asset file (for example, an image), whether it's persisted online or held locally in cache.
 
 For a file persisted online, the AssetProxy only keeps information about its URI. For local files, the AssetProxy will keep a reference to the actual File object while generating the expected final URIs and on-demand blobs for local preview.
 
@@ -72,6 +72,6 @@ Furthermore, all editorial workflow state is managed in Redux - there's an `acti
 
 ### About metadata
 
-Netlify CMS embraces the idea of Git-as-backend for storing metadata. The first time it runs with the editorial_workflow setup, it creates a new ref called `meta/_netlify_cms`, pointing to an empty, orphan tree.
+Netlify CMS embraces the idea of Git-as-backend for storing metadata. The first time it runs with the `editorial_workflow` setup, it creates a new ref called `meta/_netlify_cms`, pointing to an empty, orphan tree.
 
 Actual data are stored in individual `json` files committed to this tree.

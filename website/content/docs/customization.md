@@ -88,13 +88,8 @@ Registers a template for a collection.
     </script>
     ```
     ### Lists and Objects
-    The API for accessing the individual fields of list- and object-type entries is similar to the API
-    for accessing fields in standard entries, but there are a few key differences. Access to these
-    nested fields is facilitated through the `widgetsFor` function, which is passed to the preview
-    template component during render.
-    **Note**: as is often the case with the NetlifyCMS API, arrays and objects are created with
-    Immutable.js. If some of the methods that we use are unfamiliar, such as `getIn`, check out
-    [their docs](https://facebook.github.io/immutable-js/docs/#/) to get a better understanding.
+    The API for accessing the individual fields of list- and object-type entries is similar to the API for accessing fields in standard entries, but there are a few key differences. Access to these nested fields is facilitated through the `widgetsFor` function, which is passed to the preview template component during render.
+	**Note**: as is often the case with the NetlifyCMS API, arrays and objects are created with Immutable.js. If some of the methods that we use are unfamiliar, such as `getIn`, check out [their docs](https://facebook.github.io/immutable-js/docs/#/) to get a better understanding.
     **List Example:**
     ```html
     <script>
@@ -171,8 +166,7 @@ Registers a template for a collection.
     </script>
     ```
     ### Accessing Metadata
-    Preview Components also receive an additional prop: `fieldsMetaData`. It contains aditional information (besides the plain plain textual value of each field) that can be useful for preview purposes. 
-    For example, the Relation widget passes the whole selected relation data in `fieldsMetaData`.
+    Preview Components also receive an additional prop: `fieldsMetaData`. It contains aditional information (besides the plain plain textual value of each field) that can be useful for preview purposes. For example, the Relation widget passes the whole selected relation data in `fieldsMetaData`.
     ```js
     export default class ArticlePreview extends React.Component {
       render() {
