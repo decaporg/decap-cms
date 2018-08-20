@@ -1004,6 +1004,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "cdschroeder",
+      "name": "Casey Schroeder",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/31967674?v=4",
+      "profile": "https://github.com/cdschroeder",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "repoType": "github"
