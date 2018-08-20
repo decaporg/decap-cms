@@ -37,8 +37,8 @@ The entries for any folder collection can be filtered based on the value of a si
 
 The `filter` option requires two fields:
 
-* `field`: the name of the collection field to filter on
-* `value`: the desired field value
+* `field`: The name of the collection field to filter on.
+* `value`: The desired field value.
 
 The example below creates two collections in the same folder, filtered by the `language` field. The first collection includes posts with `language: en`, and the second, with `language: es`.
 
@@ -51,7 +51,7 @@ collections:
     fields:
       - {label: "Language", name: "language", widget: "select", options: ["en", "es"]}
       - {label: "Title", name: "title", widget: "string"}
-      - {label: "Content", name: "body", widget: "markdown"}      
+      - {label: "Content", name: "body", widget: "markdown"}
   - label: "Blog en Español"
     name: "spanish_posts"
     folder: "_posts"
@@ -59,16 +59,16 @@ collections:
     fields:
       - {label: "Lenguaje", name: "language", widget: "select", options: ["en", "es"]}
       - {label: "Titulo", name: "title", widget: "string"}
-      - {label: "Contenido", name: "body", widget: "markdown"}      
+      - {label: "Contenido", name: "body", widget: "markdown"}
 ```
 
 ## File collections
 
 A `files` collection contains one or more uniquely configured files. Unlike items in `folder` collections, which repeat the same configuration over all files in the folder, each item in a `files` collection has an explicitly set path, filename, and configuration. This can be useful for unique files with a custom set of fields, like a settings file or a custom landing page with a unique content structure.
 
-When configuring a `files` collection, each file in the collection is configured separately, and listed under the `files` field of the collection. Each file has its own list of `fields`, and a unique filepath specified in the `file` field (relative to the base of the repo).
+When configuring a `files` collection, configure each file in the collection separately, and list them under the `files` field of the collection. Each file has its own list of `fields` and a unique filepath specified in the `file` field (relative to the base of the repo).
 
-**Note**: Files listed in a file collection must already exist in the hosted repository branch set in your Netlify CMS [backend configuration](https://www.netlifycms.org/docs/authentication-backends/). Files must also have a valid value for the file type. For example, an empty file works as valid YAML, but a JSON file must have a non-empty value to be valid, such as an empty object.
+**Note:** Files listed in a file collection must already exist in the hosted repository branch set in your Netlify CMS [backend configuration](https://www.netlifycms.org/docs/authentication-backends/). Files must also have a valid value for the file type. For example, an empty file works as valid YAML, but a JSON file must have a non-empty value to be valid, such as an empty object.
 
 Example:
 
