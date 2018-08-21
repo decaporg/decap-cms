@@ -30,7 +30,7 @@ class VideoEmbed extends Component {
     return (
       <a className="hero-graphic" onClick={this.toggleVideo}>
         {toggled ? embedcode : imgPlaceholder}
-        {!toggled && <div className="hero-videolink">&#x25b6;</div>}
+        {!toggled && <div className="hero-videolink"></div>}
       </a>
     );
   }
