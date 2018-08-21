@@ -103,6 +103,15 @@ const ControlErrorsList = styled.ul`
   top: 20px;
 `;
 
+export const ControlHint = styled.p`
+  margin-bottom: 0;
+  padding: 3px 0;
+  font-size: 12px;
+  color: ${({ active, error }) =>
+    error ? colors.errorText : active ? colors.active : colors.controlLabel};
+  transition: color ${transitions.main};
+`;
+
 class EditorControl extends React.Component {
   state = {
     activeLabel: false,
@@ -130,6 +139,7 @@ class EditorControl extends React.Component {
     const widgetName = field.get('widget');
     const widget = resolveWidget(widgetName);
     const fieldName = field.get('name');
+    const fieldHint = field.get('hint');
     const uniqueFieldId = uniqueId();
     const metadata = fieldsMetaData && fieldsMetaData.get(fieldName);
     const errors = fieldsErrors && fieldsErrors.get(fieldName);
@@ -189,6 +199,11 @@ class EditorControl extends React.Component {
           clearSearch={clearSearch}
           isFetching={isFetching}
         />
+        {fieldHint && (
+          <ControlHint active={this.state.styleActive} error={!!errors}>
+            {fieldHint}
+          </ControlHint>
+        )}
       </ControlContainer>
     );
   }

@@ -20,7 +20,7 @@ collections: # A list of collections the CMS should be able to edit
       - {label: "Title", name: "title", widget: "string", tagname: "h1"}
       - {label: "Publish Date", name: "date", widget: "datetime", format: "YYYY-MM-DD hh:mma"}
       - {label: "Cover Image", name: "image", widget: "image", required: false, tagname: ""}
-      - {label: "Body", name: "body", widget: "markdown"}
+      - {label: "Body", name: "body", widget: "markdown", hint: "Main content goes here."}
     meta:
       - {label: "SEO Description", name: "description", widget: "text"}
 
@@ -62,7 +62,7 @@ collections: # A list of collections the CMS should be able to edit
             label_singular: "Author"
             widget: list
             fields:
-              - {label: "Name", name: "name", widget: "string"}
+              - {label: "Name", name: "name", widget: "string", hint: "First and Last"}
               - {label: "Description", name: "description", widget: "markdown"}
 
   - name: "kitchenSink" # all the things in one entry, for documentation and quick testing
@@ -79,8 +79,8 @@ collections: # A list of collections the CMS should be able to edit
         valueField: "title"
       - {label: "Title", name: "title", widget: "string"}
       - {label: "Boolean", name: "boolean", widget: "boolean", default: true}
-      - {label: "Text", name: "text", widget: "text"}
-      - {label: "Number", name: "number", widget: "number"}
+      - {label: "Text", name: "text", widget: "text", hint: "Plain text, not markdown"}
+      - {label: "Number", name: "number", widget: "number", hint: "To infinity and beyond!"}
       - {label: "Markdown", name: "markdown", widget: "markdown"}
       - {label: "Datetime", name: "datetime", widget: "datetime"}
       - {label: "Date", name: "date", widget: "date"}
