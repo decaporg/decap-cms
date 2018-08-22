@@ -15,11 +15,18 @@ import {
   MEDIA_DELETE_REQUEST,
   MEDIA_DELETE_SUCCESS,
   MEDIA_DELETE_FAILURE,
+  MEDIA_DISPLAY_URL_REQUEST,
+  MEDIA_DISPLAY_URL_SUCCESS,
+  MEDIA_DISPLAY_URL_FAILURE,
 } from 'Actions/mediaLibrary';
 
-const mediaLibrary = (state = Map({ isVisible: false, controlMedia: Map() }), action) => {
+const mediaLibrary = (
+  state = Map({ isVisible: false, controlMedia: Map(), displayURLs: Map() }),
+  action,
+) => {
   const privateUploadChanged =
     state.get('privateUpload') !== get(action, ['payload', 'privateUpload']);
+  let displayURLPath;
   switch (action.type) {
     case MEDIA_LIBRARY_OPEN: {
       const { controlID, forImage, privateUpload } = action.payload || {};
@@ -108,13 +115,14 @@ const mediaLibrary = (state = Map({ isVisible: false, controlMedia: Map() }), ac
     case MEDIA_DELETE_REQUEST:
       return state.set('isDeleting', true);
     case MEDIA_DELETE_SUCCESS: {
-      const { key } = action.payload.file;
+      const { id, key } = action.payload.file;
       if (privateUploadChanged) {
         return state;
       }
       return state.withMutations(map => {
         const updatedFiles = map.get('files').filter(file => file.key !== key);
         map.set('files', updatedFiles);
+        map.deleteIn(['displayURLs', id]);
         map.set('isDeleting', false);
       });
     }
@@ -123,6 +131,23 @@ const mediaLibrary = (state = Map({ isVisible: false, controlMedia: Map() }), ac
         return state;
       }
       return state.set('isDeleting', false);
+
+    case MEDIA_DISPLAY_URL_REQUEST:
+      return state.setIn(['displayURLs', action.payload.key, 'isFetching'], true);
+
+    case MEDIA_DISPLAY_URL_SUCCESS:
+      displayURLPath = ['displayURLs', action.payload.key];
+      return state
+        .setIn([...displayURLPath, 'isFetching'], false)
+        .setIn([...displayURLPath, 'url'], action.payload.url);
+
+    case MEDIA_DISPLAY_URL_FAILURE:
+      displayURLPath = ['displayURLs', action.payload.key];
+      return state
+        .setIn([...displayURLPath, 'isFetching'], false)
+        .setIn([...displayURLPath, 'err'], action.payload.err)
+        .deleteIn([...displayURLPath, 'url']);
+
     default:
       return state;
   }

@@ -33,6 +33,7 @@ const MediaLibraryCardGrid = ({
   cardWidth,
   cardMargin,
   isPrivate,
+  getDisplayURL,
 }) => (
   <CardGridContainer innerRef={setScrollContainerRef}>
     <CardGrid>
@@ -40,12 +41,12 @@ const MediaLibraryCardGrid = ({
         <MediaLibraryCard
           key={file.key}
           isSelected={isSelectedFile(file)}
-          imageUrl={file.isViewableImage && file.url}
           text={file.name}
           onClick={() => onAssetClick(file)}
           width={cardWidth}
           margin={cardMargin}
           isPrivate={isPrivate}
+          displayURL={getDisplayURL(file)}
         />
       ))}
       {!canLoadMore ? null : <Waypoint onEnter={onLoadMore} />}
@@ -74,6 +75,7 @@ MediaLibraryCardGrid.propTypes = {
   paginatingMessage: PropTypes.string,
   cardWidth: PropTypes.string.isRequired,
   cardMargin: PropTypes.string.isRequired,
+  getDisplayURL: PropTypes.func.isRequired,
   isPrivate: PropTypes.bool,
 };
 
