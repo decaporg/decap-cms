@@ -1022,6 +1022,16 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "MitchellCash",
+      "name": "Mitchell Cash",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/8009243?v=4",
+      "profile": "https://mitchellcash.com",
+      "contributions": [
+        "bug",
+        "doc"
+      ]
     }
   ],
   "repoType": "github"
