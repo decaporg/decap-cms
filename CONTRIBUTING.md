@@ -9,9 +9,20 @@ For details on contributing to documentation, see [Website Directory Readme](htt
 
 > Install yarn on your system: [https://yarnpkg.com/en/docs/install](https://yarnpkg.com/en/docs/install)
 
+### Install dependencies
+
+> Only required on the first run, subsequent runs can use `yarn start` to both
+bootstrap and run the development server.
+
 ```sh
 $ git clone https://github.com/netlify/netlify-cms
 $ cd netlify-cms
+$ yarn bootstrap
+```
+
+### Run locally
+
+```sh
 $ yarn start
 ```
 
