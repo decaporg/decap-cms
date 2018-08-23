@@ -10,6 +10,12 @@ const BooleanBackground = styled(ToggleBackground)`
 `;
 
 export default class BooleanControl extends React.Component {
+  componentDidMount() {
+    if (!isBoolean(this.props.value)) {
+      this.props.onChange(false);
+    }
+  }
+
   render() {
     const {
       value,
@@ -43,8 +49,4 @@ BooleanControl.propTypes = {
   setInactiveStyle: PropTypes.func.isRequired,
   forID: PropTypes.string,
   value: PropTypes.bool,
-};
-
-BooleanControl.defaultProps = {
-  value: false,
 };

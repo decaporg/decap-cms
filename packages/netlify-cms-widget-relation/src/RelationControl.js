@@ -61,10 +61,6 @@ export default class RelationControl extends React.Component {
     setInactiveStyle: PropTypes.func.isRequired,
   };
 
-  static defaultProps = {
-    value: '',
-  };
-
   constructor(props, ctx) {
     super(props, ctx);
     this.controlID = uuid();
@@ -72,7 +68,11 @@ export default class RelationControl extends React.Component {
   }
 
   componentDidMount() {
-    const { value, field } = this.props;
+    const { value, field, onChange } = this.props;
+    if (typeof value !== 'string') {
+      onChange('');
+    }
+
     if (value) {
       const collection = field.get('collection');
       const searchFields = field.get('searchFields').toJS();
