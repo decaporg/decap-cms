@@ -1,8 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 
 export default class NumberControl extends React.Component {
   static propTypes = {
+    field: ImmutablePropTypes.map.isRequired,
     onChange: PropTypes.func.isRequired,
     classNameWrapper: PropTypes.string.isRequired,
     setActiveStyle: PropTypes.func.isRequired,
