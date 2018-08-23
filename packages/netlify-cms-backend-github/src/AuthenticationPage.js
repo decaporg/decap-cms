@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from 'react-emotion';
 import { NetlifyAuthenticator } from 'netlify-cms-lib-auth';
 import { AuthenticationPage, Icon } from 'netlify-cms-ui-default';
@@ -15,6 +16,8 @@ export default class GitHubAuthenticationPage extends React.Component {
     base_url: PropTypes.string,
     siteId: PropTypes.string,
     authEndpoint: PropTypes.string,
+    config: ImmutablePropTypes.map,
+    clearHash: PropTypes.function,
   };
 
   state = {};

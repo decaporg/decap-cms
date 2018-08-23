@@ -99,6 +99,7 @@ export default class GitGatewayAuthenticationPage extends React.Component {
   static propTypes = {
     onLogin: PropTypes.func.isRequired,
     inProgress: PropTypes.bool.isRequired,
+    error: PropTypes.node,
   };
 
   state = { email: '', password: '', errors: {} };

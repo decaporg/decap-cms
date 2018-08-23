@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from 'react-emotion';
 import { NetlifyAuthenticator } from 'netlify-cms-lib-auth';
 import { AuthenticationPage, Icon } from 'netlify-cms-ui-default';
@@ -12,6 +13,9 @@ export default class BitbucketAuthenticationPage extends React.Component {
   static propTypes = {
     onLogin: PropTypes.func.isRequired,
     inProgress: PropTypes.bool,
+    base_url: PropTypes.string,
+    siteId: PropTypes.string,
+    authEndpoint: PropTypes.string,
   };
 
   state = {};
