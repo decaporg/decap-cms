@@ -121,8 +121,8 @@ Netlify CMS uses the [Forking Workflow](https://www.atlassian.com/git/tutorials/
 3. If you've changed APIs, update the documentation.
 4. Run `yarn test` and ensure the test suite passes.
 5. Use `yarn format` to format and lint your code.
-6. PR's must be rebased before merge (feel free to ask for help)
-7. PR should be reviewed by two maintainers (@erquhart, @Benaiah, @tech4him1) prior to merging.
+6. PR's must be rebased before merge (feel free to ask for help).
+7. PR should be reviewed by two maintainers prior to merging.
 
 ## Add yourself as a contributor
 
