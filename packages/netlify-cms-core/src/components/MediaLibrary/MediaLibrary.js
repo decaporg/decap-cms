@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { orderBy, map } from 'lodash';
+import { Map } from 'immutable';
 import fuzzy from 'fuzzy';
 import { resolvePath, fileExtension } from 'netlify-cms-lib-util';
 import {
@@ -8,6 +9,7 @@ import {
   persistMedia as persistMediaAction,
   deleteMedia as deleteMediaAction,
   insertMedia as insertMediaAction,
+  loadMediaDisplayURL as loadMediaDisplayURLAction,
   closeMediaLibrary as closeMediaLibraryAction,
 } from 'Actions/mediaLibrary';
 import MediaLibraryModal from './MediaLibraryModal';
@@ -53,6 +55,30 @@ class MediaLibrary extends React.Component {
     }
   }
 
+  getDisplayURL = file => {
+    const { isVisible, loadMediaDisplayURL, displayURLs } = this.props;
+
+    if (!isVisible) {
+      return '';
+    }
+
+    if (file && file.url) {
+      return file.url;
+    }
+
+    const { url, isFetching } = displayURLs.get(file.id, Map()).toObject();
+
+    if (url && url !== '') {
+      return url;
+    }
+
+    if (!isFetching) {
+      loadMediaDisplayURL(file);
+    }
+
+    return '';
+  };
+
   /**
    * Filter an array of file data to include only images.
    */
@@ -69,16 +95,18 @@ class MediaLibrary extends React.Component {
   toTableData = files => {
     const tableData =
       files &&
-      files.map(({ key, name, size, queryOrder, url, urlIsPublicPath }) => {
+      files.map(({ key, name, id, size, queryOrder, url, urlIsPublicPath, getBlobPromise }) => {
         const ext = fileExtension(name).toLowerCase();
         return {
           key,
+          id,
           name,
           type: ext.toUpperCase(),
           size,
           queryOrder,
           url,
           urlIsPublicPath,
+          getBlobPromise,
           isImage: IMAGE_EXTENSIONS.includes(ext),
           isViewableImage: IMAGE_EXTENSIONS_VIEWABLE.includes(ext),
         };
@@ -251,6 +279,7 @@ class MediaLibrary extends React.Component {
         setScrollContainerRef={ref => (this.scrollContainerRef = ref)}
         handleAssetClick={this.handleAssetClick}
         handleLoadMore={this.handleLoadMore}
+        getDisplayURL={this.getDisplayURL}
       />
     );
   }
@@ -265,6 +294,7 @@ const mapStateToProps = state => {
     isVisible: mediaLibrary.get('isVisible'),
     canInsert: mediaLibrary.get('canInsert'),
     files: mediaLibrary.get('files'),
+    displayURLs: mediaLibrary.get('displayURLs'),
     dynamicSearch: mediaLibrary.get('dynamicSearch'),
     dynamicSearchActive: mediaLibrary.get('dynamicSearchActive'),
     dynamicSearchQuery: mediaLibrary.get('dynamicSearchQuery'),
@@ -285,6 +315,7 @@ const mapDispatchToProps = {
   persistMedia: persistMediaAction,
   deleteMedia: deleteMediaAction,
   insertMedia: insertMediaAction,
+  loadMediaDisplayURL: loadMediaDisplayURLAction,
   closeMediaLibrary: closeMediaLibraryAction,
 };
 

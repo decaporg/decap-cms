@@ -2,369 +2,366 @@
 
 exports[`Compile markdown to Slate Raw AST should compile a markdown ordered list 1`] = `
 Object {
-  "kind": "block",
   "nodes": Array [
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "H1",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "heading-one",
     },
     Object {
       "data": Object {
         "start": 1,
       },
-      "kind": "block",
       "nodes": Array [
         Object {
-          "kind": "block",
           "nodes": Array [
             Object {
-              "kind": "block",
               "nodes": Array [
                 Object {
                   "data": undefined,
-                  "kind": "text",
                   "leaves": Array [
                     Object {
                       "text": "yo",
                     },
                   ],
+                  "object": "text",
                 },
               ],
+              "object": "block",
               "type": "paragraph",
             },
           ],
+          "object": "block",
           "type": "list-item",
         },
         Object {
-          "kind": "block",
           "nodes": Array [
             Object {
-              "kind": "block",
               "nodes": Array [
                 Object {
                   "data": undefined,
-                  "kind": "text",
                   "leaves": Array [
                     Object {
                       "text": "bro",
                     },
                   ],
+                  "object": "text",
                 },
               ],
+              "object": "block",
               "type": "paragraph",
             },
           ],
+          "object": "block",
           "type": "list-item",
         },
         Object {
-          "kind": "block",
           "nodes": Array [
             Object {
-              "kind": "block",
               "nodes": Array [
                 Object {
                   "data": undefined,
-                  "kind": "text",
                   "leaves": Array [
                     Object {
                       "text": "fro",
                     },
                   ],
+                  "object": "text",
                 },
               ],
+              "object": "block",
               "type": "paragraph",
             },
           ],
+          "object": "block",
           "type": "list-item",
         },
       ],
+      "object": "block",
       "type": "numbered-list",
     },
   ],
+  "object": "block",
   "type": "root",
 }
 `;
 
 exports[`Compile markdown to Slate Raw AST should compile bulleted lists 1`] = `
 Object {
-  "kind": "block",
   "nodes": Array [
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "H1",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "heading-one",
     },
     Object {
       "data": Object {
         "start": null,
       },
-      "kind": "block",
       "nodes": Array [
         Object {
-          "kind": "block",
           "nodes": Array [
             Object {
-              "kind": "block",
               "nodes": Array [
                 Object {
                   "data": undefined,
-                  "kind": "text",
                   "leaves": Array [
                     Object {
                       "text": "yo",
                     },
                   ],
+                  "object": "text",
                 },
               ],
+              "object": "block",
               "type": "paragraph",
             },
           ],
+          "object": "block",
           "type": "list-item",
         },
         Object {
-          "kind": "block",
           "nodes": Array [
             Object {
-              "kind": "block",
               "nodes": Array [
                 Object {
                   "data": undefined,
-                  "kind": "text",
                   "leaves": Array [
                     Object {
                       "text": "bro",
                     },
                   ],
+                  "object": "text",
                 },
               ],
+              "object": "block",
               "type": "paragraph",
             },
           ],
+          "object": "block",
           "type": "list-item",
         },
         Object {
-          "kind": "block",
           "nodes": Array [
             Object {
-              "kind": "block",
               "nodes": Array [
                 Object {
                   "data": undefined,
-                  "kind": "text",
                   "leaves": Array [
                     Object {
                       "text": "fro",
                     },
                   ],
+                  "object": "text",
                 },
               ],
+              "object": "block",
               "type": "paragraph",
             },
           ],
+          "object": "block",
           "type": "list-item",
         },
       ],
+      "object": "block",
       "type": "bulleted-list",
     },
   ],
+  "object": "block",
   "type": "root",
 }
 `;
 
 exports[`Compile markdown to Slate Raw AST should compile code blocks 1`] = `
 Object {
-  "kind": "block",
   "nodes": Array [
     Object {
       "data": Object {
         "lang": "javascript",
       },
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "var a = 1;",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "code",
     },
   ],
+  "object": "block",
   "type": "root",
 }
 `;
 
 exports[`Compile markdown to Slate Raw AST should compile horizontal rules 1`] = `
 Object {
-  "kind": "block",
   "nodes": Array [
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "H1",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "heading-one",
     },
     Object {
       "isVoid": true,
-      "kind": "block",
+      "object": "block",
       "type": "thematic-break",
     },
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "blue moon",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "paragraph",
     },
   ],
+  "object": "block",
   "type": "root",
 }
 `;
 
 exports[`Compile markdown to Slate Raw AST should compile horizontal rules 2`] = `
 Object {
-  "kind": "block",
   "nodes": Array [
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "H1",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "heading-one",
     },
     Object {
       "isVoid": true,
-      "kind": "block",
+      "object": "block",
       "type": "thematic-break",
     },
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "blue moon",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "paragraph",
     },
   ],
+  "object": "block",
   "type": "root",
 }
 `;
 
 exports[`Compile markdown to Slate Raw AST should compile images 1`] = `
 Object {
-  "kind": "block",
   "nodes": Array [
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "![super](duper.jpg)",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "paragraph",
     },
   ],
+  "object": "block",
   "type": "root",
 }
 `;
 
 exports[`Compile markdown to Slate Raw AST should compile inline code 1`] = `
 Object {
-  "kind": "block",
   "nodes": Array [
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "Word",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "heading-one",
     },
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "This is some sweet ",
             },
           ],
+          "object": "text",
         },
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "marks": Array [
@@ -375,64 +372,64 @@ Object {
               "text": "inline code",
             },
           ],
+          "object": "text",
         },
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": " yo!",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "paragraph",
     },
   ],
+  "object": "block",
   "type": "root",
 }
 `;
 
 exports[`Compile markdown to Slate Raw AST should compile kitchen sink example 1`] = `
 Object {
-  "kind": "block",
   "nodes": Array [
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "An exhibit of Markdown",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "heading-one",
     },
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "This note demonstrates some of what Markdown is capable of doing.",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "paragraph",
     },
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "marks": Array [
@@ -444,31 +441,31 @@ Object {
 automatically save itself.",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "paragraph",
     },
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "Basic formatting",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "heading-two",
     },
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "Paragraphs can be written like so. A paragraph is the basic block of Markdown.
@@ -476,25 +473,25 @@ A paragraph is what text will turn into when there is no reason it should
 become anything else.",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "paragraph",
     },
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "Paragraphs must be separated by a blank line. Basic formatting of ",
             },
           ],
+          "object": "text",
         },
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "marks": Array [
@@ -505,20 +502,20 @@ become anything else.",
               "text": "italics",
             },
           ],
+          "object": "text",
         },
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": " and
 ",
             },
           ],
+          "object": "text",
         },
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "marks": Array [
@@ -529,19 +526,19 @@ become anything else.",
               "text": "bold",
             },
           ],
+          "object": "text",
         },
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": " is supported. This ",
             },
           ],
+          "object": "text",
         },
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "marks": Array [
@@ -571,85 +568,85 @@ become anything else.",
               "text": " like",
             },
           ],
+          "object": "text",
         },
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": " so.",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "paragraph",
     },
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "Lists",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "heading-two",
     },
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "Ordered list",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "heading-three",
     },
     Object {
       "data": Object {
         "start": 1,
       },
-      "kind": "block",
       "nodes": Array [
         Object {
-          "kind": "block",
           "nodes": Array [
             Object {
-              "kind": "block",
               "nodes": Array [
                 Object {
                   "data": undefined,
-                  "kind": "text",
                   "leaves": Array [
                     Object {
                       "text": "Item 1 2. A second item 3. Number 3 4. Ⅳ",
                     },
                   ],
+                  "object": "text",
                 },
               ],
+              "object": "block",
               "type": "paragraph",
             },
           ],
+          "object": "block",
           "type": "list-item",
         },
       ],
+      "object": "block",
       "type": "numbered-list",
     },
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "marks": Array [
@@ -660,94 +657,94 @@ become anything else.",
               "text": "Note: the fourth item uses the Unicode character for Roman numeral four.",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "paragraph",
     },
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "Unordered list",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "heading-three",
     },
     Object {
       "data": Object {
         "start": null,
       },
-      "kind": "block",
       "nodes": Array [
         Object {
-          "kind": "block",
           "nodes": Array [
             Object {
-              "kind": "block",
               "nodes": Array [
                 Object {
                   "data": undefined,
-                  "kind": "text",
                   "leaves": Array [
                     Object {
                       "text": "An item Another item Yet another item And there's more...",
                     },
                   ],
+                  "object": "text",
                 },
               ],
+              "object": "block",
               "type": "paragraph",
             },
           ],
+          "object": "block",
           "type": "list-item",
         },
       ],
+      "object": "block",
       "type": "bulleted-list",
     },
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "Paragraph modifiers",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "heading-two",
     },
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "Code block",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "heading-three",
     },
     Object {
       "data": Object {
         "lang": null,
       },
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "Code blocks are very useful for developers and other people who look at
@@ -755,25 +752,25 @@ code or other things that are written in plain text. As you can see, it
 uses a fixed-width font.",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "code",
     },
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "You can also make ",
             },
           ],
+          "object": "text",
         },
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "marks": Array [
@@ -784,77 +781,77 @@ uses a fixed-width font.",
               "text": "inline code",
             },
           ],
+          "object": "text",
         },
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": " to add code into other things.",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "paragraph",
     },
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "Quote",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "heading-three",
     },
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
-          "kind": "block",
           "nodes": Array [
             Object {
               "data": undefined,
-              "kind": "text",
               "leaves": Array [
                 Object {
                   "text": "Here is a quote. What this is should be self explanatory. Quotes are
 automatically indented when they are used.",
                 },
               ],
+              "object": "text",
             },
           ],
+          "object": "block",
           "type": "paragraph",
         },
       ],
+      "object": "block",
       "type": "quote",
     },
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "Headings",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "heading-two",
     },
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "There are six levels of headings. They correspond with the six levels of HTML
@@ -862,25 +859,25 @@ headings. You've probably noticed them already in the page. Each level down
 uses one more hash character.",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "paragraph",
     },
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "Headings ",
             },
           ],
+          "object": "text",
         },
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "marks": Array [
@@ -891,19 +888,19 @@ uses one more hash character.",
               "text": "can",
             },
           ],
+          "object": "text",
         },
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": " also contain ",
             },
           ],
+          "object": "text",
         },
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "marks": Array [
@@ -914,25 +911,25 @@ uses one more hash character.",
               "text": "formatting",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "heading-three",
     },
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "They can even contain ",
             },
           ],
+          "object": "text",
         },
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "marks": Array [
@@ -943,32 +940,32 @@ uses one more hash character.",
               "text": "inline code",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "heading-three",
     },
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "Of course, demonstrating what headings look like messes up the structure of the
 page.",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "paragraph",
     },
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "I don't recommend using more than three or four levels of headings here,
@@ -977,85 +974,83 @@ heading isn't too big, and you want each size up to look noticeably larger and
 more important, there there are only so many sizes that you can use.",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "paragraph",
     },
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "URLs",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "heading-two",
     },
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "URLs can be made in a handful of ways:",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "paragraph",
     },
     Object {
       "data": Object {
         "start": null,
       },
-      "kind": "block",
       "nodes": Array [
         Object {
-          "kind": "block",
           "nodes": Array [
             Object {
-              "kind": "block",
               "nodes": Array [
                 Object {
                   "data": undefined,
-                  "kind": "text",
                   "leaves": Array [
                     Object {
                       "text": "A named link to MarkItDown. The easiest way to do these is to select what you",
                     },
                   ],
+                  "object": "text",
                 },
               ],
+              "object": "block",
               "type": "paragraph",
             },
           ],
+          "object": "block",
           "type": "list-item",
         },
         Object {
-          "kind": "block",
           "nodes": Array [
             Object {
-              "kind": "block",
               "nodes": Array [
                 Object {
                   "data": undefined,
-                  "kind": "text",
                   "leaves": Array [
                     Object {
                       "text": "want to make a link and hit ",
                     },
                   ],
+                  "object": "text",
                 },
                 Object {
                   "data": undefined,
-                  "kind": "text",
                   "leaves": Array [
                     Object {
                       "marks": Array [
@@ -1066,206 +1061,208 @@ more important, there there are only so many sizes that you can use.",
                       "text": "Ctrl+L",
                     },
                   ],
+                  "object": "text",
                 },
                 Object {
                   "data": undefined,
-                  "kind": "text",
                   "leaves": Array [
                     Object {
                       "text": ".  Another named link to",
                     },
                   ],
+                  "object": "text",
                 },
               ],
+              "object": "block",
               "type": "paragraph",
             },
           ],
+          "object": "block",
           "type": "list-item",
         },
         Object {
-          "kind": "block",
           "nodes": Array [
             Object {
-              "kind": "block",
               "nodes": Array [
                 Object {
                   "data": Object {
                     "title": null,
                     "url": "http://www.markitdown.net/",
                   },
-                  "kind": "inline",
                   "nodes": Array [
                     Object {
                       "data": undefined,
-                      "kind": "text",
                       "leaves": Array [
                         Object {
                           "text": "MarkItDown",
                         },
                       ],
+                      "object": "text",
                     },
                   ],
+                  "object": "inline",
                   "type": "link",
                 },
                 Object {
                   "data": undefined,
-                  "kind": "text",
                   "leaves": Array [
                     Object {
                       "text": " Sometimes you just want a URL like",
                     },
                   ],
+                  "object": "text",
                 },
               ],
+              "object": "block",
               "type": "paragraph",
             },
           ],
+          "object": "block",
           "type": "list-item",
         },
         Object {
-          "kind": "block",
           "nodes": Array [
             Object {
-              "kind": "block",
               "nodes": Array [
                 Object {
                   "data": Object {
                     "title": null,
                     "url": "http://www.markitdown.net/",
                   },
-                  "kind": "inline",
                   "nodes": Array [
                     Object {
                       "data": undefined,
-                      "kind": "text",
                       "leaves": Array [
                         Object {
                           "text": "http://www.markitdown.net/",
                         },
                       ],
+                      "object": "text",
                     },
                   ],
+                  "object": "inline",
                   "type": "link",
                 },
                 Object {
                   "data": undefined,
-                  "kind": "text",
                   "leaves": Array [
                     Object {
                       "text": ".",
                     },
                   ],
+                  "object": "text",
                 },
               ],
+              "object": "block",
               "type": "paragraph",
             },
           ],
+          "object": "block",
           "type": "list-item",
         },
       ],
+      "object": "block",
       "type": "bulleted-list",
     },
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "Horizontal rule",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "heading-two",
     },
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "A horizontal rule is a line that goes across the middle of the page.",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "paragraph",
     },
     Object {
       "isVoid": true,
-      "kind": "block",
+      "object": "block",
       "type": "thematic-break",
     },
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "It's sometimes handy for breaking things up.",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "paragraph",
     },
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "Images",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "heading-two",
     },
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "Markdown can also contain images. I'll need to add something here sometime.",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "paragraph",
     },
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "Finally",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "heading-two",
     },
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "There's actually a lot more to Markdown than this. See the official
@@ -1274,170 +1271,170 @@ not using the official implementation, and this might work subtly differently
   in some of the little things.",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "paragraph",
     },
   ],
+  "object": "block",
   "type": "root",
 }
 `;
 
 exports[`Compile markdown to Slate Raw AST should compile links 1`] = `
 Object {
-  "kind": "block",
   "nodes": Array [
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "Word",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "heading-one",
     },
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "How far is it to ",
             },
           ],
+          "object": "text",
         },
         Object {
           "data": Object {
             "title": null,
             "url": "https://google.com",
           },
-          "kind": "inline",
           "nodes": Array [
             Object {
               "data": undefined,
-              "kind": "text",
               "leaves": Array [
                 Object {
                   "text": "Google",
                 },
               ],
+              "object": "text",
             },
           ],
+          "object": "inline",
           "type": "link",
         },
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": " land?",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "paragraph",
     },
   ],
+  "object": "block",
   "type": "root",
 }
 `;
 
 exports[`Compile markdown to Slate Raw AST should compile multiple header levels 1`] = `
 Object {
-  "kind": "block",
   "nodes": Array [
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "H1",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "heading-one",
     },
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "H2",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "heading-two",
     },
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "H3",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "heading-three",
     },
   ],
+  "object": "block",
   "type": "root",
 }
 `;
 
 exports[`Compile markdown to Slate Raw AST should compile nested inline markup 1`] = `
 Object {
-  "kind": "block",
   "nodes": Array [
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "Word",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "heading-one",
     },
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "This is ",
             },
           ],
+          "object": "text",
         },
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "marks": Array [
@@ -1467,25 +1464,25 @@ Object {
               "text": " content",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "paragraph",
     },
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "perhaps ",
             },
           ],
+          "object": "text",
         },
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "marks": Array [
@@ -1496,147 +1493,150 @@ Object {
               "text": "scalding",
             },
           ],
+          "object": "text",
         },
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": " even",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "paragraph",
     },
   ],
+  "object": "block",
   "type": "root",
 }
 `;
 
 exports[`Compile markdown to Slate Raw AST should compile plugins 1`] = `
 Object {
-  "kind": "block",
   "nodes": Array [
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "![test](test.png)",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "paragraph",
     },
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "{{< test >}}",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "paragraph",
     },
   ],
+  "object": "block",
   "type": "root",
 }
 `;
 
 exports[`Compile markdown to Slate Raw AST should compile simple markdown 1`] = `
 Object {
-  "kind": "block",
   "nodes": Array [
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "H1",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "heading-one",
     },
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "sweet body",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "paragraph",
     },
   ],
+  "object": "block",
   "type": "root",
 }
 `;
 
 exports[`Compile markdown to Slate Raw AST should compile soft breaks (double space) 1`] = `
 Object {
-  "kind": "block",
   "nodes": Array [
     Object {
-      "kind": "block",
       "nodes": Array [
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "blue moon",
             },
           ],
+          "object": "text",
         },
         Object {
-          "kind": "inline",
           "nodes": Array [
             Object {
               "data": undefined,
-              "kind": "text",
               "leaves": Array [
                 Object {
                   "text": "
 ",
                 },
               ],
+              "object": "text",
             },
           ],
+          "object": "inline",
           "type": "break",
         },
         Object {
           "data": undefined,
-          "kind": "text",
           "leaves": Array [
             Object {
               "text": "footballs",
             },
           ],
+          "object": "text",
         },
       ],
+      "object": "block",
       "type": "paragraph",
     },
   ],
+  "object": "block",
   "type": "root",
 }
 `;

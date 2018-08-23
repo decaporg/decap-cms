@@ -7,7 +7,6 @@ description: >-
   GitHub.
 date: '2018-06-13'
 ---
-
 Netlify CMS is releasing support for GitLab as a backend, creating the world's first completely open source stack for Git-based content editing.
 
 <iframe width="100%" height="400" src="https://www.youtube.com/embed/ZrM3U0z8Sks?autoplay=1&loop=1&playlist=ZrM3U0z8Sks&mute=1&controls=0&modestbranding=1&showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
@@ -22,7 +21,7 @@ Adding support for GitLab means that millions more developers can now use Netlif
 
 Netlify CMS is an open source content management system for your Git workflow that enables you to provide editors with a friendly UI and intuitive workflow. You can use it with any static site generator to create faster, more flexible web projects. Content is stored in your GitLab repository alongside your code for easier versioning, multi-channel publishing, and the option to handle content updates directly in Git.
 
-In case you want an even easier way to get started, or just want to poke around in the code, you can use the button below to automatically deploy a starter site that uses the Hugo static site generator along with Netlify CMS.
+In case you want an even easier way to get started, or just want to poke around in the code, you can use the button below to automatically deploy a starter site that uses the Hugo static site generator along with Netlify CMS. 
 
 <a href="https://app.netlify.com/start/deploy?repository=https://gitlab.com/netlify-templates/one-click-hugo-cms&stack=cms" rel="nofollow noreferrer noopener" target="_blank"><img src="https://www.netlify.com/img/deploy/button.svg" alt="Deploy to Netlify"></a>
 

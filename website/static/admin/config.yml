@@ -6,36 +6,31 @@ backend:
 
 publish_mode: editorial_workflow
 
-media_folder: 'website/static/img' # Folder where user uploaded files should go
-public_folder: 'img'
+media_folder: "website/static/img" # Folder where user uploaded files should go
+public_folder: "img"
 
 collections: # A list of collections the CMS should be able to edit
-  - name: 'docs' # Used in routes, ie.: /admin/collections/:slug/edit
-    label: 'Docs' # Used in the UI, ie.: "New Post"
-    folder: 'website/content/docs' # The path to the folder where the documents are stored
+  - name: "docs" # Used in routes, ie.: /admin/collections/:slug/edit
+    label: "Docs" # Used in the UI, ie.: "New Post"
+    folder: "website/content/docs" # The path to the folder where the documents are stored
     create: true # Allow users to create new documents in this collection
     fields: # The fields each document in this collection have
-      - { label: 'Title', name: 'title', widget: 'string', tagname: 'h1' }
-      - { label: 'Group', name: 'group', widget: 'string' }
-      - { label: 'Weight', name: 'weight', widget: 'number' }
-      - { label: 'Body', name: 'body', widget: 'markdown' }
-  - name: 'blog'
-    label: 'Blog'
-    label_singular: 'Post'
-    folder: 'website/site/content/blog'
+      - {label: "Title", name: "title", widget: "string", tagname: "h1"}
+      - {label: "Group", name: "group", widget: "string"}
+      - {label: "Weight", name: "weight", widget: "number"}
+      - {label: "Body", name: "body", widget: "markdown"}
+  - name: "blog"
+    label: "Blog"
+    label_singular: "Post"
+    folder: "website/site/content/blog"
     create: true
     fields:
-      - { label: 'Title', name: 'title', widget: 'string', tagname: 'h1' }
-      - { label: 'Author', name: 'author', widget: 'string' }
-      - { label: 'Description (for blog list)', name: 'description', widget: 'text' }
-      - {
-          label: 'Meta Description (defaults to Description)',
-          name: 'meta_description',
-          widget: 'text',
-          required: false,
-        }
-      - { label: 'Date', name: 'date', widget: 'date' }
-      - { label: 'Body', name: 'body', widget: 'markdown' }
+      - {label: "Title", name: "title", widget: "string", tagname: "h1"}
+      - {label: "Author", name: "author", widget: "string"}
+      - {label: "Description (for blog list)", name: "description", widget: "text"}
+      - {label: "Meta Description (defaults to Description)", name: "meta_description", widget: "text", required: false}
+      - {label: "Date", name: "date", widget: "date"}
+      - {label: "Body", name: "body", widget: "markdown"}
   - name: updates
     label: Updates
     files:
@@ -47,9 +42,9 @@ collections: # A list of collections the CMS should be able to edit
             label: Releases
             widget: list
             fields:
-              - { name: version, label: Version }
-              - { name: date, label: Date, widget: date }
-              - { name: description, label: Description }
+              - {name: version, label: Version}
+              - {name: date, label: Date, widget: date}
+              - {name: description, label: Description}
       - name: notifications
         label: Notifications
         file: website/data/notifications.yml
@@ -59,8 +54,8 @@ collections: # A list of collections the CMS should be able to edit
             label: Notifications
             widget: list
             fields:
-              - { label: Title, name: title, widget: string, tagname: h1 }
-              - { label: Published, name: published, widget: boolean }
-              - { label: Loud, name: loud, widget: boolean }
-              - { label: Message, name: message, widget: text }
-              - { label: URL, name: url }
+              - {label: Title, name: title, widget: string, tagname: h1}
+              - {label: Published, name: published, widget: boolean}
+              - {label: Loud, name: loud, widget: boolean}
+              - {label: Message, name: message, widget: text}
+              - {label: URL, name: url}
