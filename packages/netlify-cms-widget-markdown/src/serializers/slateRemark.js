@@ -175,7 +175,7 @@ function processCodeMark(markTypes) {
  * For example, this Slate text node:
  *
  * {
- *   kind: 'text',
+ *   object: 'text',
  *   leaves: [
  *     {
  *       text: 'test',
