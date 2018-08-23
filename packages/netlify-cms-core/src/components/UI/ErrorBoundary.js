@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { css } from 'react-emotion';
 import { colors } from 'netlify-cms-ui-default';
 
@@ -14,6 +15,10 @@ const styles = {
 };
 
 export class ErrorBoundary extends React.Component {
+  static propTypes = {
+    children: PropTypes.node,
+  };
+
   state = {
     hasError: false,
     errorMessage: '',

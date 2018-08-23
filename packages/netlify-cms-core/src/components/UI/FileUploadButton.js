@@ -14,6 +14,7 @@ export const FileUploadButton = ({ label, imagesOnly, onChange, disabled, classN
 );
 
 FileUploadButton.propTypes = {
+  className: PropTypes.string,
   label: PropTypes.string.isRequired,
   imagesOnly: PropTypes.bool,
   onChange: PropTypes.func.isRequired,

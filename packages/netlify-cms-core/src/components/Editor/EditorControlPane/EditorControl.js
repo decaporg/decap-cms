@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled, { css, cx } from 'react-emotion';
 import { partial, uniqueId } from 'lodash';
 import { connect } from 'react-redux';
@@ -113,6 +115,30 @@ export const ControlHint = styled.p`
 `;
 
 class EditorControl extends React.Component {
+  static propTypes = {
+    value: PropTypes.oneOfType([
+      PropTypes.node,
+      PropTypes.object,
+      PropTypes.string,
+      PropTypes.bool,
+    ]),
+    field: ImmutablePropTypes.map.isRequired,
+    fieldsMetaData: ImmutablePropTypes.map,
+    fieldsErrors: ImmutablePropTypes.map,
+    mediaPaths: ImmutablePropTypes.map.isRequired,
+    boundGetAsset: PropTypes.func.isRequired,
+    onChange: PropTypes.func.isRequired,
+    openMediaLibrary: PropTypes.func.isRequired,
+    addAsset: PropTypes.func.isRequired,
+    removeInsertedMedia: PropTypes.func.isRequired,
+    onValidate: PropTypes.func,
+    processControlRef: PropTypes.func,
+    query: PropTypes.func.isRequired,
+    queryHits: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+    isFetching: PropTypes.bool,
+    clearSearch: PropTypes.func.isRequired,
+  };
+
   state = {
     activeLabel: false,
   };

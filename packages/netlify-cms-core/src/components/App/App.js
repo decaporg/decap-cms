@@ -59,6 +59,7 @@ class App extends React.Component {
     isFetching: PropTypes.bool.isRequired,
     publishMode: PropTypes.oneOf([SIMPLE, EDITORIAL_WORKFLOW]),
     siteId: PropTypes.string,
+    openMediaLibrary: PropTypes.func.isRequired,
   };
 
   static configError(config) {

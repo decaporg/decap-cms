@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from 'react-emotion';
 import { connect } from 'react-redux';
@@ -20,6 +21,9 @@ const CollectionMain = styled.main`
 
 class Collection extends React.Component {
   static propTypes = {
+    searchTerm: PropTypes.string,
+    collectionName: PropTypes.string,
+    isSearchResults: PropTypes.bool,
     collection: ImmutablePropTypes.map.isRequired,
     collections: ImmutablePropTypes.orderedMap.isRequired,
   };
