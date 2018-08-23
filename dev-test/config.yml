@@ -9,7 +9,7 @@ display_url: https://example.com
 media_library:
   name: uploadcare
   config:
-    publicKey: demopublickey
+    publicKey: 7ad920aaf5c04d95c32a
 
 publish_mode: editorial_workflow
 

@@ -7,6 +7,48 @@ const defaultConfig = {
   previewStep: true,
 };
 
+
+window.onload = function() {
+
+  // Style block
+  const css = `
+    .uploadcare--menu__item_tab_mediaLibrary {
+
+    }
+    .uploadcare--menu__item_tab_mediaLibrary.uploadcare--menu__item_current {
+      color: #f0cb3c;
+    }
+    .uploadcare--tab_name_mediaLibrary {
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      overflow: auto;
+    }
+    .uploadcare--panel {
+      flex-direction: row;
+    }
+    .mediaLibrary-card {
+      width: 140px;
+      height: 140px;
+      margin: 10px;
+      padding: 5px;
+      color: rgba(0,0,0,.4);
+      box-shadow: 0 6px 20px -3px;
+      cursor: pointer;
+    }
+    .mediaLibrary-card:hover {
+      color: rgba(0,100,200,.5);
+    }
+  `
+  const head = document.head || document.getElementsByTagName('head')[0]
+  const style = document.createElement('style')
+  style.type = 'text/css'
+  style.appendChild(document.createTextNode(css))
+  head.appendChild(style)
+
+}
+
+
 /**
  * Determine whether an array of urls represents an unaltered set of Uploadcare
  * group urls. If they've been changed or any are missing, a new group will need
@@ -106,6 +148,34 @@ async function init({ options = { config: {} }, handleInsert }) {
    * be disabled via config.
    */
   window.uploadcare.registerTab('preview', window.uploadcareTabEffects);
+
+  /**
+   * Register custom tab.
+   */
+
+  function mediaLibrary(container, button, dialogApi, settings, name) {
+
+    // Set Tab button title attribute
+    button[0].setAttribute('title', 'Media Library')
+    button[0].querySelector('use').setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '#uploadcare--icon-menu');
+
+    // Files panel
+    settings.mediaLibrary.forEach((item, i) => {
+
+      // create and append element
+      const img = document.createElement('img')
+      img.setAttribute('src', settings.cdnBase + '/' + item.uuid + '/-/stretch/off/-/scale_crop/280x280/center/')
+      img.setAttribute('class', 'mediaLibrary-card')
+      container[0].appendChild(img)
+
+      img.addEventListener('click', (e) => {
+        dialogApi.addFiles([window.uploadcare.fileFrom('uploaded', item.uuid, settings)])
+      })
+    })
+
+  }
+
+  window.uploadcare.registerTab('mediaLibrary', mediaLibrary)
 
   return {
     /**
