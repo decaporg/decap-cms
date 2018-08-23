@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 import { orderBy, map } from 'lodash';
 import { Map } from 'immutable';
@@ -34,6 +35,8 @@ const fileShape = {
 class MediaLibrary extends React.Component {
   static propTypes = {
     isVisible: PropTypes.bool,
+    loadMediaDisplayURL: PropTypes.func,
+    displayURLs: ImmutablePropTypes.map,
     canInsert: PropTypes.bool,
     files: PropTypes.arrayOf(PropTypes.shape(fileShape)).isRequired,
     dynamicSearch: PropTypes.bool,
