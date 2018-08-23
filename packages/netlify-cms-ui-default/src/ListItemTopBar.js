@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled from 'react-emotion';
 import Icon from './Icon';
 import { colors, lengths, buttons } from './styles';
@@ -57,6 +58,13 @@ const ListItemTopBar = ({ className, collapsed, onCollapseToggle, onRemove, drag
     ) : null}
   </TopBar>
 );
+
+ListItemTopBar.propTypes = {
+  className: PropTypes.string,
+  collapsed: PropTypes.bool,
+  onCollapseToggle: PropTypes.func,
+  onRemove: PropTypes.func,
+};
 
 const StyledListItemTopBar = styled(ListItemTopBar)`
   display: flex;
