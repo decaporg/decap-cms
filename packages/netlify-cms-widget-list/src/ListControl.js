@@ -280,7 +280,7 @@ export default class ListControl extends React.Component {
           items={items}
           renderItem={this.renderItem}
           onSortEnd={this.onSortEnd}
-          useDragHandle
+          useDragHandle={true}
           lockAxis="y"
         />
       </div>
