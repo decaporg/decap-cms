@@ -6,7 +6,7 @@ display_url: https://example.com
 media_library:
   name: uploadcare
   config:
-    publicKey: demopublickey
+    publicKey: 7ad920aaf5c04d95c32a
 
 publish_mode: editorial_workflow
 
@@ -32,6 +32,11 @@ collections: # A list of collections the CMS should be able to edit
           media_library:
             config:
               multiple: true
+              tabs: file mediaLibrary
+              mediaLibrary:
+                - uuid: "d27c208b-94e1-4e60-9b25-501b414e7b3b"
+                - uuid: "ba6f5aa7-7076-4da4-b7f2-e5aa113a2eeb"
+                - uuid: "8f8e1208-4d1b-4702-a82f-764cc679d107"
 
       - {label: "Body", name: "body", widget: "markdown"}
     meta:
