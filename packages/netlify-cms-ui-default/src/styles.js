@@ -114,9 +114,9 @@ const shadows = {
 };
 
 const badge = css`
-    font-size: 13px;
-    line-height: 1;
-  `;
+  font-size: 13px;
+  line-height: 1;
+`;
 
 const backgroundBadge = css`
   ${badge};
