@@ -64,10 +64,10 @@ export default class ObjectControl extends Component {
 
   renderFields = (multiFields, singleField) => {
     if (multiFields) {
-      return multiFields.map((f, idx) => this.controlFor(f, idx))
+      return multiFields.map((f, idx) => this.controlFor(f, idx));
     }
-    return this.controlFor(singleField)
-  }
+    return this.controlFor(singleField);
+  };
 
   render() {
     const { field, forID, classNameWrapper, forList } = this.props;
@@ -77,14 +77,18 @@ export default class ObjectControl extends Component {
 
     if (multiFields || singleField) {
       return (
-        <div id={forID} className={cx(
-          classNameWrapper,
-          components.objectWidgetTopBarContainer,
-          { [styles.nestedObjectControl]: forList },
-        )}>
-          {forList ? null :
-            <ObjectWidgetTopBar collapsed={collapsed} onCollapseToggle={this.handleCollapseToggle} />
-          }
+        <div
+          id={forID}
+          className={cx(classNameWrapper, components.objectWidgetTopBarContainer, {
+            [styles.nestedObjectControl]: forList,
+          })}
+        >
+          {forList ? null : (
+            <ObjectWidgetTopBar
+              collapsed={collapsed}
+              onCollapseToggle={this.handleCollapseToggle}
+            />
+          )}
           {collapsed ? null : this.renderFields(multiFields, singleField)}
         </div>
       );

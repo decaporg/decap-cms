@@ -159,9 +159,10 @@ export default class ListControl extends React.Component {
     return (fieldName, newValue, newMetadata) => {
       const { value, metadata, onChange, field } = this.props;
       const collectionName = field.get('name');
-      const newObjectValue = (this.getValueType() === valueTypes.MULTIPLE)
-        ? this.getObjectValue(index).set(fieldName, newValue)
-        : newValue;
+      const newObjectValue =
+        this.getValueType() === valueTypes.MULTIPLE
+          ? this.getObjectValue(index).set(fieldName, newValue)
+          : newValue;
       const parsedMetadata = {
         [collectionName]: Object.assign(
           metadata ? metadata.toJS() : {},

@@ -26,7 +26,7 @@ export default class PreviewPane extends React.Component {
     const { fieldsMetaData, getAsset, entry } = props;
     const widget = resolveWidget(field.get('widget'));
     const key = idx ? field.get('name') + '_' + idx : field.get('name');
-    
+
     /**
      * Use an HOC to provide conditional updates for all previews.
      */
@@ -111,7 +111,7 @@ export default class PreviewPane extends React.Component {
 
   getSingleNested = (field, values) => {
     if (List.isList(values)) {
-      return values.map((value, idx) => this.getWidget(field, value, this.props, idx))
+      return values.map((value, idx) => this.getWidget(field, value, this.props, idx));
     }
     return this.getWidget(field, values, this.props);
   };
