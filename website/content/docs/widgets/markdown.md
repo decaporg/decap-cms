@@ -1,5 +1,5 @@
 ---
-label: 'Markdown'
+label: "Markdown"
 target: markdown
 ---
 
@@ -23,8 +23,4 @@ This would render as:
 
 ![Markdown widget example](/img/widgets-markdown.png)
 
-_Please note:_ If you are building a site with [Hugo](https://gohugo.io), you will need to add the [`markdownify`](https://gohugo.io/functions/markdownify/) filter function when displaying your output in order for the markdown to be parsed. For example:
-
-```hugo
-{{ .text | markdownify }}
-```
+_Please note:_ If you are building a site with certain static site generators, you may need to add a markdownify filter when you come to display the output. Consult with your static site generator's documentation for rendering markdown.

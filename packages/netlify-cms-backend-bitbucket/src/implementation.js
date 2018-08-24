@@ -209,7 +209,7 @@ export default class Bitbucket {
     const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
 
     return this.api.listAllFiles(this.config.get('media_folder')).then(files =>
-      files.map(({ id, name, download_url, path }) => {
+      files.map(({ id, name, path }) => {
         const getBlobPromise = () =>
           new Promise((resolve, reject) =>
             sem.take(() =>
@@ -220,7 +220,7 @@ export default class Bitbucket {
             ),
           );
 
-        return { id, name, getBlobPromise, url: download_url, path };
+        return { id, name, getBlobPromise, path };
       }),
     );
   }

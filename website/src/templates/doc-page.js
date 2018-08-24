@@ -1,7 +1,8 @@
 import React from 'react';
 import Helmet from 'react-helmet';
-import { matchPath } from 'react-router-dom';
+import { graphql } from 'gatsby';
 
+import Layout from '../components/layout';
 import EditLink from '../components/edit-link';
 import Widgets from '../components/widgets';
 import DocsNav from '../components/docs-nav';
@@ -20,24 +21,26 @@ const DocPage = ({ data, location, history }) => {
   const { nav, page, widgets, menu } = data;
 
   const docsNav = toMenu(menu.siteMetadata.menu.docs, nav);
-  const showWidgets = matchPath(location.pathname, { path: '/docs/widgets' });
+  const showWidgets = location.pathname.indexOf('/docs/widgets') !== -1;
 
   return (
-    <div className="docs detail page">
-      <Helmet title={page.frontmatter.title} />
-      <div className="container">
-        <aside id="sidebar" className="sidebar">
-          <DocsNav items={docsNav} location={location} />
-          <MobileNav items={docsNav} history={history} />
-        </aside>
-        <article className="docs-content" id="docs-content">
-          <EditLink path={page.fields.path} />
-          <h1>{page.frontmatter.title}</h1>
-          <div dangerouslySetInnerHTML={{ __html: page.html }} />
-          {showWidgets && <Widgets widgets={widgets} />}
-        </article>
+    <Layout>
+      <div className="docs detail page">
+        <Helmet title={page.frontmatter.title} />
+        <div className="container">
+          <aside id="sidebar" className="sidebar">
+            <DocsNav items={docsNav} location={location} />
+            <MobileNav items={docsNav} history={history} />
+          </aside>
+          <article className="docs-content" id="docs-content">
+            <EditLink path={page.fields.path} />
+            <h1>{page.frontmatter.title}</h1>
+            <div dangerouslySetInnerHTML={{ __html: page.html }} />
+            {showWidgets && <Widgets widgets={widgets} />}
+          </article>
+        </div>
       </div>
-    </div>
+    </Layout>
   );
 };
 
