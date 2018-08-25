@@ -7,6 +7,7 @@ let initialState = Map({
   mediaFiles: List(),
   fieldsMetaData: Map(),
   fieldsErrors: Map(),
+  fieldValidators: Map(),
   hasChanged: false,
 });
 
@@ -32,6 +33,7 @@ describe('entryDraft reducer', () => {
           mediaFiles: [],
           fieldsMetaData: Map(),
           fieldsErrors: Map(),
+          fieldValidators: Map(),
           hasChanged: false,
         }),
       );
@@ -49,6 +51,7 @@ describe('entryDraft reducer', () => {
           mediaFiles: [],
           fieldsMetaData: Map(),
           fieldsErrors: Map(),
+          fieldValidators: Map(),
           hasChanged: false,
         }),
       );
