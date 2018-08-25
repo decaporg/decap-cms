@@ -13,7 +13,7 @@ If you have an issue that can be shown visually, please provide a screenshot or 
 -->
 
 **Describe the bug**
-A clear and concise description of what the bug is.
+<!-- A clear and concise description of what the bug is. -->
 
 **To Reproduce**
 Steps to reproduce the behavior:
@@ -23,10 +23,10 @@ Steps to reproduce the behavior:
 4. See error
 
 **Expected behavior**
-A clear and concise description of what you expected to happen.
+<!-- A clear and concise description of what you expected to happen. -->
 
 **Screenshots**
-If applicable, add screenshots to help explain your problem.
+<!-- If applicable, add screenshots to help explain your problem. -->
 
 **Applicable Versions:**
 <!-- You can find the CMS version by checking your web browser's developer tools console while in the CMS. -->
@@ -38,8 +38,8 @@ If applicable, add screenshots to help explain your problem.
  - Node.JS version:
 
 **CMS configuration**
-Please link or paste your CMS `config.yml` here.
+<!-- Please link or paste your CMS `config.yml` here. -->
 
 
 **Additional context**
-Add any other context about the problem here.
+<!-- Add any other context about the problem here. -->
