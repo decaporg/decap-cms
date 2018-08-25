@@ -37,7 +37,7 @@ const DragHandle = ({ dragHandleHOC }) =>
   dragHandleHOC(
     <DragIconContainer>
       <Icon type="drag-handle" size="small" />
-    </DragIconContainer>
+    </DragIconContainer>,
   );
 
 const ListItemTopBar = ({ className, collapsed, onCollapseToggle, onRemove, dragHandleHOC }) => (
