@@ -42,23 +42,21 @@ const DragHandle = ({ dragHandleHOC }) => {
   return <Handle />;
 };
 
-const ListItemTopBar = ({ className, collapsed, onCollapseToggle, onRemove, dragHandleHOC }) => {
-  return (
-    <TopBar className={className}>
-      {onCollapseToggle ? (
-        <TopBarButton onClick={onCollapseToggle}>
-          <Icon type="chevron" size="small" direction={collapsed ? 'right' : 'down'} />
-        </TopBarButton>
-      ) : null}
-      {dragHandleHOC ? <DragHandle dragHandleHOC={dragHandleHOC} /> : null}
-      {onRemove ? (
-        <TopBarButton onClick={onRemove}>
-          <Icon type="close" size="small" />
-        </TopBarButton>
-      ) : null}
-    </TopBar>
-  );
-};
+const ListItemTopBar = ({ className, collapsed, onCollapseToggle, onRemove, dragHandleHOC }) => (
+  <TopBar className={className}>
+    {onCollapseToggle ? (
+      <TopBarButton onClick={onCollapseToggle}>
+        <Icon type="chevron" size="small" direction={collapsed ? 'right' : 'down'} />
+      </TopBarButton>
+    ) : null}
+    {dragHandleHOC ? <DragHandle dragHandleHOC={dragHandleHOC} /> : null}
+    {onRemove ? (
+      <TopBarButton onClick={onRemove}>
+        <Icon type="close" size="small" />
+      </TopBarButton>
+    ) : null}
+  </TopBar>
+);
 
 const StyledListItemTopBar = styled(ListItemTopBar)`
   display: flex;
