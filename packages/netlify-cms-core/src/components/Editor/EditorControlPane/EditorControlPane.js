@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from 'react-emotion';
+import { List } from 'immutable';
 import EditorControl, { ControlHint } from './EditorControl';
 
 const ControlPaneContainer = styled.div`
@@ -15,19 +16,9 @@ const ControlPaneContainer = styled.div`
 `;
 
 export default class ControlPane extends React.Component {
-  componentValidate = {};
-
-  processControlRef = (fieldName, wrappedControl) => {
-    if (!wrappedControl) return;
-    this.componentValidate[fieldName] = wrappedControl.validate;
-  };
-
-  validate = () => {
-    this.props.fields.forEach(field => {
-      if (field.get('widget') === 'hidden') return;
-      this.componentValidate[field.get('name')]();
-    });
-  };
+  validate() {
+    this.props.fieldValidators.forEach(validator => validator());
+  }
 
   render() {
     const {
@@ -35,9 +26,7 @@ export default class ControlPane extends React.Component {
       fields,
       entry,
       fieldsMetaData,
-      fieldsErrors,
       onChange,
-      onValidate,
     } = this.props;
 
     if (!collection || !fields) {
@@ -58,10 +47,7 @@ export default class ControlPane extends React.Component {
                 field={field}
                 value={entry.getIn(['data', field.get('name')])}
                 fieldsMetaData={fieldsMetaData}
-                fieldsErrors={fieldsErrors}
                 onChange={onChange}
-                onValidate={onValidate}
-                processControlRef={this.processControlRef}
               />
             ),
         )}
@@ -75,7 +61,5 @@ ControlPane.propTypes = {
   entry: ImmutablePropTypes.map.isRequired,
   fields: ImmutablePropTypes.list.isRequired,
   fieldsMetaData: ImmutablePropTypes.map.isRequired,
-  fieldsErrors: ImmutablePropTypes.map.isRequired,
   onChange: PropTypes.func.isRequired,
-  onValidate: PropTypes.func.isRequired,
 };

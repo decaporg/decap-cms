@@ -29,6 +29,8 @@ export const DRAFT_DISCARD = 'DRAFT_DISCARD';
 export const DRAFT_CHANGE = 'DRAFT_CHANGE';
 export const DRAFT_CHANGE_FIELD = 'DRAFT_CHANGE_FIELD';
 export const DRAFT_VALIDATION_ERRORS = 'DRAFT_VALIDATION_ERRORS';
+export const DRAFT_ADD_FIELD_VALIDATOR = 'DRAFT_ADD_FIELD_VALIDATOR';
+export const DRAFT_REMOVE_FIELD_VALIDATOR = 'DRAFT_REMOVE_FIELD_VALIDATOR';
 
 export const ENTRY_PERSIST_REQUEST = 'ENTRY_PERSIST_REQUEST';
 export const ENTRY_PERSIST_SUCCESS = 'ENTRY_PERSIST_SUCCESS';
@@ -208,10 +210,24 @@ export function changeDraftField(field, value, metadata) {
   };
 }
 
-export function changeDraftFieldValidation(field, errors) {
+export function changeDraftFieldValidation(controlId, errors) {
   return {
     type: DRAFT_VALIDATION_ERRORS,
-    payload: { field, errors },
+    payload: { controlId, errors },
+  };
+}
+
+export function addDraftFieldValidator(controlId, validator) {
+  return {
+    type: DRAFT_ADD_FIELD_VALIDATOR,
+    payload: { controlId, validator },
+  };
+}
+
+export function removeDraftFieldValidator(controlId) {
+  return {
+    type: DRAFT_REMOVE_FIELD_VALIDATOR,
+    payload: { controlId },
   };
 }
 

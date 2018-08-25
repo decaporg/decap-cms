@@ -12,7 +12,6 @@ import {
   createEmptyDraft,
   discardDraft,
   changeDraftField,
-  changeDraftFieldValidation,
   persistEntry,
   deleteEntry,
 } from 'Actions/entries';
@@ -39,7 +38,6 @@ class Editor extends React.Component {
   static propTypes = {
     boundGetAsset: PropTypes.func.isRequired,
     changeDraftField: PropTypes.func.isRequired,
-    changeDraftFieldValidation: PropTypes.func.isRequired,
     collection: ImmutablePropTypes.map.isRequired,
     createDraftFromEntry: PropTypes.func.isRequired,
     createEmptyDraft: PropTypes.func.isRequired,
@@ -307,7 +305,6 @@ class Editor extends React.Component {
       boundGetAsset,
       collection,
       changeDraftField,
-      changeDraftFieldValidation,
       user,
       hasChanged,
       displayUrl,
@@ -317,6 +314,7 @@ class Editor extends React.Component {
       isModification,
       currentStatus,
       logoutUser,
+      fieldValidators,
     } = this.props;
 
     if (entry && entry.get('error')) {
@@ -340,9 +338,8 @@ class Editor extends React.Component {
         collection={collection}
         fields={fields}
         fieldsMetaData={entryDraft.get('fieldsMetaData')}
-        fieldsErrors={entryDraft.get('fieldsErrors')}
+        fieldValidators={fieldValidators}
         onChange={changeDraftField}
-        onValidate={changeDraftFieldValidation}
         onPersist={this.handlePersistEntry}
         onDelete={this.handleDeleteEntry}
         onDeleteUnpublishedChanges={this.handleDeleteUnpublishedChanges}
@@ -380,6 +377,7 @@ function mapStateToProps(state, ownProps) {
   const collectionEntriesLoaded = !!entries.getIn(['entities', collectionName]);
   const unpublishedEntry = selectUnpublishedEntry(state, collectionName, slug);
   const currentStatus = unpublishedEntry && unpublishedEntry.getIn(['metaData', 'status']);
+  const fieldValidators = entryDraft.get('fieldValidators').valueSeq();
   return {
     collection,
     collections,
@@ -396,6 +394,7 @@ function mapStateToProps(state, ownProps) {
     isModification,
     collectionEntriesLoaded,
     currentStatus,
+    fieldValidators,
   };
 }
 
@@ -403,7 +402,6 @@ export default connect(
   mapStateToProps,
   {
     changeDraftField,
-    changeDraftFieldValidation,
     loadEntry,
     loadEntries,
     createDraftFromEntry,

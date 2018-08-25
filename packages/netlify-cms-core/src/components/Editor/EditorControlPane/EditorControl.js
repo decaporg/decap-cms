@@ -1,9 +1,15 @@
 import React from 'react';
 import styled, { css, cx } from 'react-emotion';
-import { partial, uniqueId } from 'lodash';
+import { partial } from 'lodash';
 import { connect } from 'react-redux';
+import shortid from 'shortid';
 import { colors, colorsRaw, transitions, lengths, borders } from 'netlify-cms-ui-default';
 import { resolveWidget, getEditorComponents } from 'Lib/registry';
+import {
+  changeDraftFieldValidation,
+  addDraftFieldValidator,
+  removeDraftFieldValidator,
+} from 'Actions/entries';
 import { addAsset } from 'Actions/media';
 import { query, clearSearch } from 'Actions/search';
 import { openMediaLibrary, removeInsertedMedia } from 'Actions/mediaLibrary';
@@ -113,9 +119,25 @@ export const ControlHint = styled.p`
 `;
 
 class EditorControl extends React.Component {
+  uniqueFieldId = shortid.generate();
+
   state = {
     activeLabel: false,
   };
+
+  componentDidMount() {
+    const fieldValidator = this.controlRef.validate;
+    if (fieldValidator) {
+      this.props.addDraftFieldValidator(this.uniqueFieldId, fieldValidator);
+    }
+  }
+
+  componentWillUnmount() {
+    const fieldValidator = this.controlRef.validate;
+    if (fieldValidator) {
+      this.props.removeDraftFieldValidator(this.uniqueFieldId);
+    }
+  }
 
   render() {
     const {
@@ -123,14 +145,13 @@ class EditorControl extends React.Component {
       field,
       fieldsMetaData,
       fieldsErrors,
+      changeDraftFieldValidation,
       mediaPaths,
       boundGetAsset,
       onChange,
       openMediaLibrary,
       addAsset,
       removeInsertedMedia,
-      onValidate,
-      processControlRef,
       query,
       queryHits,
       isFetching,
@@ -140,9 +161,8 @@ class EditorControl extends React.Component {
     const widget = resolveWidget(widgetName);
     const fieldName = field.get('name');
     const fieldHint = field.get('hint');
-    const uniqueFieldId = uniqueId();
     const metadata = fieldsMetaData && fieldsMetaData.get(fieldName);
-    const errors = fieldsErrors && fieldsErrors.get(fieldName);
+    const errors = fieldsErrors.get(this.uniqueFieldId);
     return (
       <ControlContainer>
         <ControlErrorsList>
@@ -161,7 +181,7 @@ class EditorControl extends React.Component {
             { [styles.labelActive]: this.state.styleActive },
             { [styles.labelError]: !!errors },
           )}
-          htmlFor={fieldName + uniqueFieldId}
+          htmlFor={fieldName + this.uniqueFieldId}
         >
           {field.get('label')}
         </label>
@@ -177,12 +197,12 @@ class EditorControl extends React.Component {
           classNameLabelActive={styles.labelActive}
           controlComponent={widget.control}
           field={field}
-          uniqueFieldId={uniqueFieldId}
+          uniqueFieldId={this.uniqueFieldId}
           value={value}
           mediaPaths={mediaPaths}
           metadata={metadata}
           onChange={(newValue, newMetadata) => onChange(fieldName, newValue, newMetadata)}
-          onValidate={onValidate && partial(onValidate, fieldName)}
+          onValidate={partial(changeDraftFieldValidation, this.uniqueFieldId)}
           onOpenMediaLibrary={openMediaLibrary}
           onRemoveInsertedMedia={removeInsertedMedia}
           onAddAsset={addAsset}
@@ -192,7 +212,7 @@ class EditorControl extends React.Component {
           setInactiveStyle={() => this.setState({ styleActive: false })}
           resolveWidget={resolveWidget}
           getEditorComponents={getEditorComponents}
-          ref={processControlRef && partial(processControlRef, fieldName)}
+          ref={ref => this.controlRef = ref}
           editorControl={ConnectedEditorControl}
           query={query}
           queryHits={queryHits}
@@ -210,6 +230,7 @@ class EditorControl extends React.Component {
 }
 
 const mapStateToProps = state => ({
+  fieldsErrors: state.entryDraft.get('fieldsErrors'),
   mediaPaths: state.mediaLibrary.get('controlMedia'),
   boundGetAsset: getAsset.bind(null, state),
   isFetching: state.search.get('isFetching'),
@@ -217,6 +238,9 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
+  changeDraftFieldValidation,
+  addDraftFieldValidator,
+  removeDraftFieldValidator,
   openMediaLibrary,
   removeInsertedMedia,
   addAsset,

@@ -5,6 +5,8 @@ import {
   DRAFT_DISCARD,
   DRAFT_CHANGE_FIELD,
   DRAFT_VALIDATION_ERRORS,
+  DRAFT_ADD_FIELD_VALIDATOR,
+  DRAFT_REMOVE_FIELD_VALIDATOR,
   ENTRY_PERSIST_REQUEST,
   ENTRY_PERSIST_SUCCESS,
   ENTRY_PERSIST_FAILURE,
@@ -22,10 +24,11 @@ const initialState = Map({
   mediaFiles: List(),
   fieldsMetaData: Map(),
   fieldsErrors: Map(),
+  fieldValidators: Map(),
   hasChanged: false,
 });
 
-const entryDraftReducer = (state = Map(), action) => {
+const entryDraftReducer = (state = initialState, action) => {
   switch (action.type) {
     case DRAFT_CREATE_FROM_ENTRY:
       // Existing Entry
@@ -61,10 +64,19 @@ const entryDraftReducer = (state = Map(), action) => {
 
     case DRAFT_VALIDATION_ERRORS:
       if (action.payload.errors.length === 0) {
-        return state.deleteIn(['fieldsErrors', action.payload.field]);
+        return state.deleteIn(['fieldsErrors', action.payload.controlId]);
       } else {
-        return state.setIn(['fieldsErrors', action.payload.field], action.payload.errors);
+        return state.setIn(['fieldsErrors', action.payload.controlId], action.payload.errors);
       }
+
+    case DRAFT_ADD_FIELD_VALIDATOR: {
+      const { controlId, validator } = action.payload;
+      return state.setIn(['fieldValidators', controlId], validator);
+    }
+
+    case DRAFT_REMOVE_FIELD_VALIDATOR: {
+      return state.deleteIn(['fieldValidators', action.payload.controlId]);
+    }
 
     case ENTRY_PERSIST_REQUEST:
     case UNPUBLISHED_ENTRY_PERSIST_REQUEST: {

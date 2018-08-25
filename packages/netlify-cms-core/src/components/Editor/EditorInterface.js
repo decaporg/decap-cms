@@ -151,7 +151,7 @@ class EditorInterface extends Component {
       entry,
       fields,
       fieldsMetaData,
-      fieldsErrors,
+      fieldValidators,
       getAsset,
       onChange,
       showDelete,
@@ -159,7 +159,6 @@ class EditorInterface extends Component {
       onDeleteUnpublishedChanges,
       onChangeStatus,
       onPublish,
-      onValidate,
       user,
       hasChanged,
       displayUrl,
@@ -182,9 +181,8 @@ class EditorInterface extends Component {
           entry={entry}
           fields={fields}
           fieldsMetaData={fieldsMetaData}
-          fieldsErrors={fieldsErrors}
+          fieldValidators={fieldValidators}
           onChange={onChange}
-          onValidate={onValidate}
           ref={c => (this.controlPaneRef = c)}
         />
       </ControlPaneContainer>
@@ -271,10 +269,9 @@ EditorInterface.propTypes = {
   entry: ImmutablePropTypes.map.isRequired,
   fields: ImmutablePropTypes.list.isRequired,
   fieldsMetaData: ImmutablePropTypes.map.isRequired,
-  fieldsErrors: ImmutablePropTypes.map.isRequired,
+  fieldValidators: ImmutablePropTypes.seq.isRequired,
   getAsset: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
-  onValidate: PropTypes.func.isRequired,
   onPersist: PropTypes.func.isRequired,
   showDelete: PropTypes.bool.isRequired,
   onDelete: PropTypes.func.isRequired,
