@@ -33,7 +33,7 @@ class Widgets extends Component {
         currentWidget: target,
       },
       () => {
-        history.pushState(null, null, `#${target}`);
+        window.history.pushState(null, null, `#${target}`);
       },
     );
   };

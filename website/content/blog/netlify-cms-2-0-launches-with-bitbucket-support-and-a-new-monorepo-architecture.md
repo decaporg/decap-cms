@@ -11,7 +11,7 @@ date: '2018-07-26'
 ---
 Today we’re releasing Netlify CMS 2.0, which adds support for using Bitbucket as a backend. 
 
-With this release, [Netlify CMS](https://www.netlifycms.org/) now supports all major Git collaboration providers, adding Bitbucket to the list of supported providers which already includes GitLab and GitHub. 
+With this release, Netlify CMS now supports all major Git collaboration providers, adding Bitbucket to the list of supported providers which already includes GitLab and GitHub. 
 
 While you could already use Netlify CMS with most static site generators, our long-term vision is to be tool-agnostic so you can use whatever tool helps you work best. The latest release brings us one step closer by giving the option of an open source, Git-centric CMS to tens of thousands of businesses that depend on Bitbucket, including 60 of the Fortune 100. 
 
@@ -27,4 +27,4 @@ The other big change with 2.0 is the migration from a single codebase to a colle
 
 Upcoming feature releases will bring new image handling features and a number of improved APIs, adding even more possibilities to future CMS extensions.
 
-We’re always looking for more ideas and helping hands, so if you want to help build a smarter, safer, and more scalable CMS, we’d love your [contributions](https://www.netlifycms.org/docs/contributor-guide/). Give us a shout on [Twitter](https://twitter.com/netlifycms) or [Gitter](https://github.com/netlify/netlify-cms/pull/525) if you have questions or ideas.
+We’re always looking for more ideas and helping hands, so if you want to help build a smarter, safer, and more scalable CMS, we’d love your [contributions](/docs/contributor-guide/). Give us a shout on [Twitter](https://twitter.com/netlifycms) or [Gitter](https://github.com/netlify/netlify-cms/pull/525) if you have questions or ideas.

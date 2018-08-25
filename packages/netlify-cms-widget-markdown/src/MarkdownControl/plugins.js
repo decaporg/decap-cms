@@ -70,7 +70,7 @@ const BackspaceCloseBlock = (options = {}) => ({
     if (ignoreIn && ignoreIn.includes(type)) return;
 
     if (startBlock.text === '') {
-      return change.setBlock(defaultBlock).focus();
+      return change.setBlocks(defaultBlock).focus();
     }
   },
 });
