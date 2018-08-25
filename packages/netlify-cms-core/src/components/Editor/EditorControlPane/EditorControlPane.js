@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from 'react-emotion';
-import { List } from 'immutable';
 import EditorControl, { ControlHint } from './EditorControl';
 
 const ControlPaneContainer = styled.div`
@@ -21,13 +20,7 @@ export default class ControlPane extends React.Component {
   }
 
   render() {
-    const {
-      collection,
-      fields,
-      entry,
-      fieldsMetaData,
-      onChange,
-    } = this.props;
+    const { collection, fields, entry, fieldsMetaData, onChange } = this.props;
 
     if (!collection || !fields) {
       return null;

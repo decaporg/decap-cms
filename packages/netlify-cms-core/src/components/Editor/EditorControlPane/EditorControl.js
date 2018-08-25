@@ -212,7 +212,7 @@ class EditorControl extends React.Component {
           setInactiveStyle={() => this.setState({ styleActive: false })}
           resolveWidget={resolveWidget}
           getEditorComponents={getEditorComponents}
-          ref={ref => this.controlRef = ref}
+          ref={ref => (this.controlRef = ref)}
           editorControl={ConnectedEditorControl}
           query={query}
           queryHits={queryHits}
