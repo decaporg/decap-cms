@@ -33,11 +33,12 @@ const DragIconContainer = styled(TopBarButtonSpan)`
   cursor: move;
 `;
 
-const DragHandle = ({ dragHandleHOC }) => dragHandleHOC(() => (
-  <DragIconContainer>
-    <Icon type="drag-handle" size="small" />
-  </DragIconContainer>
-));
+const DragHandle = ({ dragHandleHOC }) =>
+  dragHandleHOC(() => (
+    <DragIconContainer>
+      <Icon type="drag-handle" size="small" />
+    </DragIconContainer>
+  ));
 
 const ListItemTopBar = ({ className, collapsed, onCollapseToggle, onRemove, dragHandleHOC }) => (
   <TopBar className={className}>
