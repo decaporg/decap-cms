@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled, { css, keyframes } from 'react-emotion';
 import CSSTransition from 'react-transition-group/CSSTransition';
 import { colors } from './styles';
@@ -54,6 +55,11 @@ const LoaderItem = styled.div`
 `;
 
 export class Loader extends React.Component {
+  static propTypes = {
+    children: PropTypes.node,
+    className: PropTypes.string,
+  };
+
   state = {
     currentItem: 0,
   };

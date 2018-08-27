@@ -25,6 +25,7 @@ export const DragSource = ({ namespace, ...props }) => {
   return React.createElement(DragComponent, props, props.children);
 };
 DragSource.propTypes = {
+  namespace: PropTypes.any.isRequired,
   children: PropTypes.func.isRequired,
 };
 
@@ -46,6 +47,7 @@ export const DropTarget = ({ onDrop, namespace, ...props }) => {
 };
 DropTarget.propTypes = {
   onDrop: PropTypes.func.isRequired,
+  namespace: PropTypes.any.isRequired,
   children: PropTypes.func.isRequired,
 };
 

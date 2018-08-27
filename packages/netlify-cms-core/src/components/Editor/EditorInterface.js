@@ -281,7 +281,7 @@ EditorInterface.propTypes = {
   onDeleteUnpublishedChanges: PropTypes.func.isRequired,
   onPublish: PropTypes.func.isRequired,
   onChangeStatus: PropTypes.func.isRequired,
-  user: ImmutablePropTypes.map,
+  user: ImmutablePropTypes.map.isRequired,
   hasChanged: PropTypes.bool,
   displayUrl: PropTypes.string,
   hasWorkflow: PropTypes.bool,

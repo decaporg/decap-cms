@@ -61,6 +61,7 @@ const valueTypes = {
 
 export default class ListControl extends React.Component {
   static propTypes = {
+    metadata: ImmutablePropTypes.map,
     onChange: PropTypes.func.isRequired,
     onChangeObject: PropTypes.func.isRequired,
     value: ImmutablePropTypes.list,
@@ -74,6 +75,8 @@ export default class ListControl extends React.Component {
     classNameWrapper: PropTypes.string.isRequired,
     setActiveStyle: PropTypes.func.isRequired,
     setInactiveStyle: PropTypes.func.isRequired,
+    editorControl: PropTypes.func.isRequired,
+    resolveWidget: PropTypes.func.isRequired,
   };
 
   static defaultProps = {

@@ -44,6 +44,8 @@ export default class Widget extends Component {
     query: PropTypes.func.isRequired,
     clearSearch: PropTypes.func.isRequired,
     queryHits: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+    editorControl: PropTypes.func.isRequired,
+    uniqueFieldId: PropTypes.string.isRequired,
   };
 
   shouldComponentUpdate(nextProps) {

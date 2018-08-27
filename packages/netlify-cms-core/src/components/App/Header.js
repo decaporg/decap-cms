@@ -105,6 +105,8 @@ export default class Header extends React.Component {
     collections: ImmutablePropTypes.orderedMap.isRequired,
     onCreateEntryClick: PropTypes.func.isRequired,
     onLogoutClick: PropTypes.func.isRequired,
+    openMediaLibrary: PropTypes.func.isRequired,
+    hasWorkflow: PropTypes.bool.isRequired,
     displayUrl: PropTypes.string,
   };
 

@@ -12,6 +12,9 @@ export default class BitbucketAuthenticationPage extends React.Component {
   static propTypes = {
     onLogin: PropTypes.func.isRequired,
     inProgress: PropTypes.bool,
+    base_url: PropTypes.string,
+    siteId: PropTypes.string,
+    authEndpoint: PropTypes.string,
   };
 
   state = {};

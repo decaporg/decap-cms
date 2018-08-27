@@ -61,8 +61,14 @@ class Editor extends React.Component {
     updateUnpublishedEntryStatus: PropTypes.func.isRequired,
     publishUnpublishedEntry: PropTypes.func.isRequired,
     deleteUnpublishedEntry: PropTypes.func.isRequired,
-    currentStatus: PropTypes.string,
     logoutUser: PropTypes.func.isRequired,
+    loadEntries: PropTypes.func.isRequired,
+    currentStatus: PropTypes.string,
+    user: ImmutablePropTypes.map.isRequired,
+    location: PropTypes.shape({
+      pathname: PropTypes.string,
+    }),
+    hasChanged: PropTypes.bool,
   };
 
   componentDidMount() {
