@@ -33,10 +33,8 @@ class Collection extends React.Component {
   };
 
   renderEntriesCollection = () => {
-    const { name, collection } = this.props;
-    return (
-      <EntriesCollection collection={collection} name={name} viewStyle={this.state.viewStyle} />
-    );
+    const { collection } = this.props;
+    return <EntriesCollection collection={collection} viewStyle={this.state.viewStyle} />;
   };
 
   renderEntriesSearch = () => {
