@@ -7,7 +7,7 @@
   position: absolute;
   text-align: center;
   width: 100%;
-  z-index: 101;
+  z-index: 100;
 
   @media screen and (min-width: $mobile) {
     position: fixed;
