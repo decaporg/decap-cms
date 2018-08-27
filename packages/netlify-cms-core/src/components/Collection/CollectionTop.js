@@ -108,7 +108,7 @@ CollectionTop.propTypes = {
   collectionLabelSingular: PropTypes.string,
   collectionDescription: PropTypes.string,
   viewStyle: PropTypes.oneOf([VIEW_STYLE_LIST, VIEW_STYLE_GRID]).isRequired,
-  onChangeViewStyle: PropTypes.function.isRequired,
+  onChangeViewStyle: PropTypes.func.isRequired,
   newEntryUrl: PropTypes.string,
 };
 
