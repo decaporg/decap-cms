@@ -60,7 +60,7 @@ Registers a template for a folder collection or an individual file in a file col
 
 **Params:**
 
-* name: The name of the entry which this preview component will be used for.
+* name: The name of the collection (or file for file collections) which this preview component will be used for.
   * Folder collections: Use the name of the collection
   * File collections: Use the name of the file
 * react_component: A React component that renders the collection data. Four props will be passed to your component during render:
