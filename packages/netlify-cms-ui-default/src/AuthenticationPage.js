@@ -22,6 +22,9 @@ const LoginButton = styled.button`
   ${shadows.dropDeep};
   ${buttons.default};
   ${buttons.gray};
+  &[disabled] {
+    ${buttons.disabled};
+  }
 
   padding: 0 12px;
   margin-top: -40px;
