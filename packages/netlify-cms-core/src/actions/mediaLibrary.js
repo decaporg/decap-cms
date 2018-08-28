@@ -1,3 +1,4 @@
+import { Map } from 'immutable';
 import { actions as notifActions } from 'redux-notifications';
 import { currentBackend } from 'src/backend';
 import { createAssetProxy } from 'ValueObjects/AssetProxy';
@@ -62,7 +63,7 @@ export function openMediaLibrary(payload = {}) {
     const state = getState();
     const mediaLibrary = state.mediaLibrary.get('externalLibrary');
     if (mediaLibrary) {
-      const { controlID: id, value, config, forImage } = payload;
+      const { controlID: id, value, config = Map(), forImage } = payload;
       mediaLibrary.show({ id, value, config: config.toJS(), imagesOnly: forImage });
     }
     dispatch({ type: MEDIA_LIBRARY_OPEN, payload });
