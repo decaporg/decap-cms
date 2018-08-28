@@ -54,13 +54,15 @@ body {
 
 ## `registerPreviewTemplate`
 
-Registers a template for a collection.
+Registers a template for a folder collection or an individual file in a file collection.
 
-`CMS.registerPreviewTemplate(collection, react_component);`
+`CMS.registerPreviewTemplate(name, react_component);`
 
 **Params:**
 
-* collection: The name of the collection which this preview component will be used for.
+* name: The name of the collection (or file for file collections) which this preview component will be used for.
+  * Folder collections: Use the name of the collection
+  * File collections: Use the name of the file
 * react_component: A React component that renders the collection data. Four props will be passed to your component during render:
   * entry: Immutable collection containing the entry data.
   * widgetFor: Returns the appropriate widget preview component for a given field.
