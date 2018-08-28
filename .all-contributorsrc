@@ -1041,6 +1041,15 @@
         "bug",
         "doc"
       ]
+    },
+    {
+      "login": "g-hodges",
+      "name": "Glendon Hodges",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/22135379?v=4",
+      "profile": "https://github.com/g-hodges",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "repoType": "github"
