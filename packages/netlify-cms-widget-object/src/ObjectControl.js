@@ -25,15 +25,17 @@ export default class ObjectControl extends Component {
     resolveWidget: PropTypes.func.isRequired,
   };
 
-  static defaultProps = {
-    value: Map(),
-  };
-
   constructor(props) {
     super(props);
     this.state = {
       collapsed: false,
     };
+  }
+
+  componentDidMount() {
+    if (!Map.isMap(this.props.value)) {
+      this.props.onChange(Map());
+    }
   }
 
   /*
