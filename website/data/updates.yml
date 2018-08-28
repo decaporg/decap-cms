@@ -5,9 +5,6 @@ updates:
   - date: '2018-08-24'
     description: Editor hints, GitLab images and Markdown editor fixes, plus other bugs
     version: 2.0.10
-  - date: '2018-08-24'
-    description: Editor hints, GitLab images and Markdown editor fixes, plus other bugs
-    version: 2.0.10
   - date: '2018-08-07'
     description: Backend, workflow, and relation widget fixes/improvements
     version: 2.0.9
