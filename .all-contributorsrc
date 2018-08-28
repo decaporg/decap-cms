@@ -1050,6 +1050,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "bevanmw",
+      "name": "Bevan Wentzel",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/13152809?v=4",
+      "profile": "https://github.com/bevanmw",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "repoType": "github"
