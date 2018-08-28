@@ -135,19 +135,6 @@ Netlify CMS uses the [Forking Workflow](https://www.atlassian.com/git/tutorials/
 6. PR's must be rebased before merge (feel free to ask for help).
 7. PR should be reviewed by two maintainers prior to merging.
 
-## Add yourself as a contributor
-
-This project follows the [all contributors](https://github.com/kentcdodds/all-contributors) specification. To add yourself to the table of contributors on the README.md,
-please use the automated script as part of your PR:
-
-```console
-yarn run add-contributor <YOUR_GITHUB_USERNAME>
-```
-
-Follow the prompt. If you've already added yourself to the list and are making a
-new type of contribution, you can run it again and select the added contribution
-type.
-
 ## License
 
 By contributing to Netlify CMS, you agree that your contributions will be licensed
