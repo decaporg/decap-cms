@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 import { orderBy, map } from 'lodash';
 import { Map } from 'immutable';
@@ -21,7 +23,41 @@ import MediaLibraryModal from './MediaLibraryModal';
 const IMAGE_EXTENSIONS_VIEWABLE = ['jpg', 'jpeg', 'webp', 'gif', 'png', 'bmp', 'tiff', 'svg'];
 const IMAGE_EXTENSIONS = [...IMAGE_EXTENSIONS_VIEWABLE];
 
+const fileShape = {
+  key: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  size: PropTypes.number.isRequired,
+  queryOrder: PropTypes.number,
+  url: PropTypes.string.isRequired,
+  urlIsPublicPath: PropTypes.bool,
+};
+
 class MediaLibrary extends React.Component {
+  static propTypes = {
+    isVisible: PropTypes.bool,
+    loadMediaDisplayURL: PropTypes.func,
+    displayURLs: ImmutablePropTypes.map,
+    canInsert: PropTypes.bool,
+    files: PropTypes.arrayOf(PropTypes.shape(fileShape)).isRequired,
+    dynamicSearch: PropTypes.bool,
+    dynamicSearchActive: PropTypes.bool,
+    forImage: PropTypes.bool,
+    isLoading: PropTypes.bool,
+    isPersisting: PropTypes.bool,
+    isDeleting: PropTypes.bool,
+    hasNextPage: PropTypes.bool,
+    isPaginating: PropTypes.bool,
+    privateUpload: PropTypes.bool,
+    loadMedia: PropTypes.func.isRequired,
+    dynamicSearchQuery: PropTypes.string,
+    page: PropTypes.number,
+    persistMedia: PropTypes.func.isRequired,
+    deleteMedia: PropTypes.func.isRequired,
+    insertMedia: PropTypes.func.isRequired,
+    publicFolder: PropTypes.string,
+    closeMediaLibrary: PropTypes.func.isRequired,
+  };
+
   /**
    * The currently selected file and query are tracked in component state as
    * they do not impact the rest of the application.

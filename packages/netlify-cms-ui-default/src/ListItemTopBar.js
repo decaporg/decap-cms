@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled from 'react-emotion';
 import Icon from './Icon';
 import { colors, lengths, buttons } from './styles';
@@ -33,28 +34,36 @@ const DragIconContainer = styled(TopBarButtonSpan)`
   cursor: move;
 `;
 
-const ListItemTopBar = ({ className, collapsed, onCollapseToggle, onRemove, dragHandleHOC }) => {
-  const DragHandle = dragHandleHOC(() => (
+const DragHandle = ({ dragHandleHOC }) => {
+  const Handle = dragHandleHOC(() => (
     <DragIconContainer>
       <Icon type="drag-handle" size="small" />
     </DragIconContainer>
   ));
+  return <Handle />;
+};
 
-  return (
-    <TopBar className={className}>
-      {onCollapseToggle ? (
-        <TopBarButton onClick={onCollapseToggle}>
-          <Icon type="chevron" size="small" direction={collapsed ? 'right' : 'down'} />
-        </TopBarButton>
-      ) : null}
-      {dragHandleHOC ? <DragHandle dragHandleHOC={dragHandleHOC} /> : null}
-      {onRemove ? (
-        <TopBarButton onClick={onRemove}>
-          <Icon type="close" size="small" />
-        </TopBarButton>
-      ) : null}
-    </TopBar>
-  );
+const ListItemTopBar = ({ className, collapsed, onCollapseToggle, onRemove, dragHandleHOC }) => (
+  <TopBar className={className}>
+    {onCollapseToggle ? (
+      <TopBarButton onClick={onCollapseToggle}>
+        <Icon type="chevron" size="small" direction={collapsed ? 'right' : 'down'} />
+      </TopBarButton>
+    ) : null}
+    {dragHandleHOC ? <DragHandle dragHandleHOC={dragHandleHOC} /> : null}
+    {onRemove ? (
+      <TopBarButton onClick={onRemove}>
+        <Icon type="close" size="small" />
+      </TopBarButton>
+    ) : null}
+  </TopBar>
+);
+
+ListItemTopBar.propTypes = {
+  className: PropTypes.string,
+  collapsed: PropTypes.bool,
+  onCollapseToggle: PropTypes.func,
+  onRemove: PropTypes.func,
 };
 
 const StyledListItemTopBar = styled(ListItemTopBar)`

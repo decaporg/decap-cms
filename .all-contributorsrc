@@ -997,6 +997,15 @@
       ]
     },
     {
+      "login": "mittalyashu",
+      "name": "Yashu Mittal",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/29014463?v=4",
+      "profile": "https://mittalyashu.now.sh/",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
       "login": "kurtgcollins",
       "name": "Kurt collins",
       "avatar_url": "https://avatars1.githubusercontent.com/u/42543284?v=4",
@@ -1034,12 +1043,20 @@
       ]
     },
     {
-      "login": "tonyrzhang",
-      "name": "Tony Zhang",
-      "avatar_url": "https://avatars0.githubusercontent.com/u/8292111?v=4",
-      "profile": "http://www.tonyzhang.com",
+      "login": "g-hodges",
+      "name": "Glendon Hodges",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/22135379?v=4",
+      "profile": "https://github.com/g-hodges",
       "contributions": [
-        "bug",
+        "doc"
+      ]
+    },
+    {
+      "login": "bevanmw",
+      "name": "Bevan Wentzel",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/13152809?v=4",
+      "profile": "https://github.com/bevanmw",
+      "contributions": [
         "code"
       ]
     }

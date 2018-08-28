@@ -1,3 +1,5 @@
+/* eslint-disable react/prop-types */
+
 import React from 'react';
 import { Map } from 'immutable';
 import styled, { css } from 'react-emotion';

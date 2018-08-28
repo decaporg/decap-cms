@@ -180,7 +180,7 @@ export default class EditorToolbar extends React.Component {
     onChangeStatus: PropTypes.func.isRequired,
     onPublish: PropTypes.func.isRequired,
     onPublishAndNew: PropTypes.func.isRequired,
-    user: ImmutablePropTypes.map,
+    user: ImmutablePropTypes.map.isRequired,
     hasChanged: PropTypes.bool,
     displayUrl: PropTypes.string,
     collection: ImmutablePropTypes.map.isRequired,

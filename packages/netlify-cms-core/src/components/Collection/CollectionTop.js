@@ -105,7 +105,10 @@ const CollectionTop = ({
 
 CollectionTop.propTypes = {
   collectionLabel: PropTypes.string.isRequired,
+  collectionLabelSingular: PropTypes.string,
   collectionDescription: PropTypes.string,
+  viewStyle: PropTypes.oneOf([VIEW_STYLE_LIST, VIEW_STYLE_GRID]).isRequired,
+  onChangeViewStyle: PropTypes.func.isRequired,
   newEntryUrl: PropTypes.string,
 };
 

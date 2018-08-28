@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled, { css } from 'react-emotion';
 import ReactToggled from 'react-toggled';
 import { colors, colorsRaw, shadows, transitions } from './styles';
@@ -64,6 +65,17 @@ const Toggle = ({
     )}
   </ReactToggled>
 );
+
+Toggle.propTypes = {
+  active: PropTypes.bool,
+  onChange: PropTypes.func,
+  onFocus: PropTypes.func,
+  onBlur: PropTypes.func,
+  className: PropTypes.string,
+  Container: PropTypes.func,
+  Background: PropTypes.func,
+  Handle: PropTypes.func,
+};
 
 const StyledToggle = styled(Toggle)``;
 

@@ -59,6 +59,7 @@ class App extends React.Component {
     isFetching: PropTypes.bool.isRequired,
     publishMode: PropTypes.oneOf([SIMPLE, EDITORIAL_WORKFLOW]),
     siteId: PropTypes.string,
+    openMediaLibrary: PropTypes.func.isRequired,
   };
 
   static configError(config) {
@@ -102,6 +103,7 @@ class App extends React.Component {
           onLogin: this.handleLogin.bind(this),
           error: auth && auth.get('error'),
           isFetching: auth && auth.get('isFetching'),
+          inProgress: (auth && auth.get('isFetching')) || false,
           siteId: this.props.config.getIn(['backend', 'site_domain']),
           base_url: this.props.config.getIn(['backend', 'base_url'], null),
           authEndpoint: this.props.config.getIn(['backend', 'auth_endpoint']),
