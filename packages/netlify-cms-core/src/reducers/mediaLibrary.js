@@ -20,7 +20,12 @@ import {
   MEDIA_DISPLAY_URL_FAILURE,
 } from 'Actions/mediaLibrary';
 
-const defaultState = { isVisible: false, showMediaButton: true, controlMedia: Map(), displayURLs: Map() };
+const defaultState = {
+  isVisible: false,
+  showMediaButton: true,
+  controlMedia: Map(),
+  displayURLs: Map(),
+};
 
 const mediaLibrary = (state = Map(defaultState), action) => {
   switch (action.type) {
