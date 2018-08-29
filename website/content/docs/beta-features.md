@@ -120,3 +120,25 @@ Template tags produce the following output:
 - `{{collection}}`: the name of the collection containing the entry changed
 
 - `{{path}}`: the full path to the file changed
+
+## Custom CMS Preview Branches
+
+By default the CMS will use "cms/"" as the prefix for preview branches. For example when updating a content file
+you might see a branch called ```cms/2018-06-25-this-is-a-slug``` to contain changes applied and not published.
+This is essentially a draft inside of the workflow panel.
+
+If you need to have multiple deployments against different branches and their own CMS then using the same "cms/"
+prefix will cause unpublished files to show up as unpublished files on both CMS instances, but publishing one
+of them will pull it into the branch configued inside of that site's config.yml backend.branch branch.
+To allow this you can configure a custom branch_prefix for the workflow on each site by specifying
+```backend.branch_prefix```. If this value is not configured then it will automatically default to "cms/".
+
+Example:
+
+```yaml
+backend:
+  branch_prefix: cms-dev
+  branch: dev
+```
+
+The default for this value is "cms"

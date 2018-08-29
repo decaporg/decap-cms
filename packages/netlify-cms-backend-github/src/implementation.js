@@ -22,6 +22,7 @@ export default class GitHub {
 
     this.repo = config.getIn(['backend', 'repo'], '');
     this.branch = config.getIn(['backend', 'branch'], 'master').trim();
+    this.branch_prefix = config.getIn(['backend', 'branch_prefix'], 'cms').trim();
     this.api_root = config.getIn(['backend', 'api_root'], 'https://api.github.com');
     this.token = '';
     this.squash_merges = config.getIn(['backend', 'squash_merges']);
@@ -40,6 +41,7 @@ export default class GitHub {
     this.api = new API({
       token: this.token,
       branch: this.branch,
+      branch_prefix: this.branch_prefix,
       repo: this.repo,
       api_root: this.api_root,
       squash_merges: this.squash_merges,
@@ -158,7 +160,7 @@ export default class GitHub {
         branches.map(branch => {
           promises.push(
             new Promise(resolve => {
-              const slug = branch.ref.split('refs/heads/cms/').pop();
+              const slug = branch.ref.split(`refs/heads/${this.branch_prefix}/`).pop();
               return sem.take(() =>
                 this.api
                   .readUnpublishedBranchFile(slug)
