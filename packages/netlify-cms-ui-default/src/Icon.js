@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled from 'react-emotion';
 import icons from './Icon/icons';
 
@@ -58,5 +59,12 @@ const Icon = ({ type, direction, size = 'medium', className }) => (
     rotation={getRotation(icons[type].direction, direction)}
   />
 );
+
+Icon.propTypes = {
+  type: PropTypes.string.isRequired,
+  direction: PropTypes.oneOf(['right', 'down', 'left', 'up']),
+  size: PropTypes.string,
+  className: PropTypes.string,
+};
 
 export default styled(Icon)``;

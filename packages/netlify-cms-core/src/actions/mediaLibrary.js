@@ -21,6 +21,9 @@ export const MEDIA_PERSIST_FAILURE = 'MEDIA_PERSIST_FAILURE';
 export const MEDIA_DELETE_REQUEST = 'MEDIA_DELETE_REQUEST';
 export const MEDIA_DELETE_SUCCESS = 'MEDIA_DELETE_SUCCESS';
 export const MEDIA_DELETE_FAILURE = 'MEDIA_DELETE_FAILURE';
+export const MEDIA_DISPLAY_URL_REQUEST = 'MEDIA_DISPLAY_URL_REQUEST';
+export const MEDIA_DISPLAY_URL_SUCCESS = 'MEDIA_DISPLAY_URL_SUCCESS';
+export const MEDIA_DISPLAY_URL_FAILURE = 'MEDIA_DISPLAY_URL_FAILURE';
 
 export function openMediaLibrary(payload) {
   return { type: MEDIA_LIBRARY_OPEN, payload };
@@ -169,6 +172,24 @@ export function deleteMedia(file, opts = {}) {
   };
 }
 
+export function loadMediaDisplayURL(file) {
+  return async dispatch => {
+    const { getBlobPromise, id } = file;
+
+    if (id && getBlobPromise) {
+      try {
+        dispatch(mediaDisplayURLRequest(id));
+        const blob = await getBlobPromise();
+        const newURL = window.URL.createObjectURL(blob);
+        dispatch(mediaDisplayURLSuccess(id, newURL));
+        return newURL;
+      } catch (err) {
+        dispatch(mediaDisplayURLFailure(id, err));
+      }
+    }
+  };
+}
+
 export function mediaLoading(page) {
   return {
     type: MEDIA_LOAD_REQUEST,
@@ -220,4 +241,22 @@ export function mediaDeleted(file, opts = {}) {
 export function mediaDeleteFailed(error, opts = {}) {
   const { privateUpload } = opts;
   return { type: MEDIA_DELETE_FAILURE, payload: { privateUpload } };
+}
+
+export function mediaDisplayURLRequest(key) {
+  return { type: MEDIA_DISPLAY_URL_REQUEST, payload: { key } };
+}
+
+export function mediaDisplayURLSuccess(key, url) {
+  return {
+    type: MEDIA_DISPLAY_URL_SUCCESS,
+    payload: { key, url },
+  };
+}
+
+export function mediaDisplayURLFailure(key, err) {
+  return {
+    type: MEDIA_DISPLAY_URL_FAILURE,
+    payload: { key, err },
+  };
 }

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled, { css } from 'react-emotion';
 import { NavLink } from 'react-router-dom';
@@ -89,9 +90,14 @@ const SidebarNavLink = styled(NavLink)`
 export default class Sidebar extends React.Component {
   static propTypes = {
     collections: ImmutablePropTypes.orderedMap.isRequired,
+    searchTerm: PropTypes.string,
   };
 
-  state = { query: this.props.searchTerm || '' };
+  static defaultProps = {
+    searchTerm: '',
+  };
+
+  state = { query: this.props.searchTerm };
 
   renderLink = collection => {
     const collectionName = collection.get('name');

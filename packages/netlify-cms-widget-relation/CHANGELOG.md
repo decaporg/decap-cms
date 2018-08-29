@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="2.0.5"></a>
+## [2.0.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/compare/netlify-cms-widget-relation@2.0.4...netlify-cms-widget-relation@2.0.5) (2018-08-24)
+
+
+
+
+**Note:** Version bump only for package netlify-cms-widget-relation
+
 <a name="2.0.4"></a>
 ## [2.0.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/compare/netlify-cms-widget-relation@2.0.3...netlify-cms-widget-relation@2.0.4) (2018-08-07)
 

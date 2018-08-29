@@ -113,13 +113,24 @@ const shadows = {
   `,
 };
 
-const textBadge = css`
+const badge = css`
   font-size: 13px;
+  line-height: 1;
+`;
+
+const backgroundBadge = css`
+  ${badge};
+  display: block;
   border-radius: ${lengths.borderRadius};
   padding: 4px 10px;
   text-align: center;
+`;
+
+const textBadge = css`
+  ${badge};
   display: inline-block;
-  line-height: 1;
+  font-weight: 700;
+  text-transform: uppercase;
 `;
 
 const card = css`
@@ -201,20 +212,32 @@ const components = {
     border-top: 6px solid currentColor;
     border-radius: 2px;
   `,
+  badge: css`
+    ${backgroundBadge};
+    color: ${colors.infoText};
+    background-color: ${colors.infoBackground};
+  `,
+  badgeSuccess: css`
+    ${backgroundBadge};
+    color: ${colors.successText};
+    background-color: ${colors.successBackground};
+  `,
+  badgeDanger: css`
+    ${backgroundBadge};
+    color: ${colorsRaw.red};
+    background-color: #fbe0d7;
+  `,
   textBadge: css`
     ${textBadge};
     color: ${colors.infoText};
-    background-color: ${colors.infoBackground};
   `,
   textBadgeSuccess: css`
     ${textBadge};
     color: ${colors.successText};
-    background-color: ${colors.successBackground};
   `,
   textBadgeDanger: css`
     ${textBadge};
     color: ${colorsRaw.red};
-    background-color: #fbe0d7;
   `,
   loaderSize: css`
     width: 2.28571429rem;

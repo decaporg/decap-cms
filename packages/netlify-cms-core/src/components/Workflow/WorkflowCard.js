@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled, { css } from 'react-emotion';
 import { Link } from 'react-router-dom';
 import { components, colors, colorsRaw, transitions, buttons } from 'netlify-cms-ui-default';
@@ -126,5 +127,18 @@ const WorkflowCard = ({
     </CardButtonContainer>
   </WorkflowCardContainer>
 );
+
+WorkflowCard.propTypes = {
+  collectionName: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  authorLastChange: PropTypes.string.isRequired,
+  body: PropTypes.string.isRequired,
+  isModification: PropTypes.bool,
+  editLink: PropTypes.string.isRequired,
+  timestamp: PropTypes.string.isRequired,
+  onDelete: PropTypes.func.isRequired,
+  canPublish: PropTypes.bool.isRequired,
+  onPublish: PropTypes.func.isRequired,
+};
 
 export default WorkflowCard;

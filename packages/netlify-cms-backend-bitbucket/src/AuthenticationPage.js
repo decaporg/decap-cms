@@ -12,6 +12,9 @@ export default class BitbucketAuthenticationPage extends React.Component {
   static propTypes = {
     onLogin: PropTypes.func.isRequired,
     inProgress: PropTypes.bool,
+    base_url: PropTypes.string,
+    siteId: PropTypes.string,
+    authEndpoint: PropTypes.string,
   };
 
   state = {};
@@ -23,7 +26,7 @@ export default class BitbucketAuthenticationPage extends React.Component {
       site_id:
         document.location.host.split(':')[0] === 'localhost'
           ? 'cms.netlify.com'
-          : this.props.site_id,
+          : this.props.siteId,
       auth_endpoint: this.props.authEndpoint,
     };
     const auth = new NetlifyAuthenticator(cfg);

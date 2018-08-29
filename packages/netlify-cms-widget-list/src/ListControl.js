@@ -61,6 +61,7 @@ const valueTypes = {
 
 export default class ListControl extends React.Component {
   static propTypes = {
+    metadata: ImmutablePropTypes.map,
     onChange: PropTypes.func.isRequired,
     onChangeObject: PropTypes.func.isRequired,
     value: ImmutablePropTypes.list,
@@ -74,6 +75,8 @@ export default class ListControl extends React.Component {
     classNameWrapper: PropTypes.string.isRequired,
     setActiveStyle: PropTypes.func.isRequired,
     setInactiveStyle: PropTypes.func.isRequired,
+    editorControl: PropTypes.func.isRequired,
+    resolveWidget: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -159,16 +162,17 @@ export default class ListControl extends React.Component {
     return (fieldName, newValue, newMetadata) => {
       const { value, metadata, onChange, field } = this.props;
       const collectionName = field.get('name');
-      const newObjectValue = this.getObjectValue(index).set(fieldName, newValue);
-      const parsedValue =
-        this.getValueType() === valueTypes.SINGLE ? newObjectValue.first() : newObjectValue;
+      const newObjectValue =
+        this.getValueType() === valueTypes.MULTIPLE
+          ? this.getObjectValue(index).set(fieldName, newValue)
+          : newValue;
       const parsedMetadata = {
         [collectionName]: Object.assign(
           metadata ? metadata.toJS() : {},
           newMetadata ? newMetadata[collectionName] : {},
         ),
       };
-      onChange(value.set(index, parsedValue), parsedMetadata);
+      onChange(value.set(index, newObjectValue), parsedMetadata);
     };
   }
 
@@ -177,9 +181,10 @@ export default class ListControl extends React.Component {
     const { itemsCollapsed } = this.state;
     const { value, metadata, onChange, field } = this.props;
     const collectionName = field.get('name');
-    const parsedMetadata = metadata && {
-      [collectionName]: metadata.removeIn(value.get(index).valueSeq()),
-    };
+    const isSingleField = this.valueType === valueTypes.SINGLE;
+
+    const metadataRemovePath = isSingleField ? value.get(index) : value.get(index).valueSeq();
+    const parsedMetadata = metadata && { [collectionName]: metadata.removeIn(metadataRemovePath) };
 
     this.setState({ itemsCollapsed: itemsCollapsed.delete(index) });
 

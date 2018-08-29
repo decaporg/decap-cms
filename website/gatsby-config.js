@@ -1,23 +1,5 @@
 const pkg = require('./package.json');
 
-const neatgrid = require('postcss-neat');
-const nestedcss = require('postcss-nested');
-const colorfunctions = require('postcss-colour-functions');
-const hdBackgrounds = require('postcss-at2x');
-const cssextend = require('postcss-simple-extend');
-const cssvars = require('postcss-simple-vars-async');
-
-const styleVariables = require('./src/theme');
-
-const postCssPlugins = [
-  neatgrid(),
-  nestedcss(),
-  colorfunctions(),
-  hdBackgrounds(),
-  cssextend(),
-  cssvars({ variables: styleVariables }),
-];
-
 module.exports = {
   siteMetadata: {
     title: 'Netlify CMS | Open-Source Content Management System',
@@ -71,14 +53,8 @@ module.exports = {
         ]
       },
     },
-    {
-      resolve: 'gatsby-plugin-postcss-sass',
-      options: {
-        postCssPlugins,
-      },
-    },
+    'gatsby-plugin-postcss',
     'gatsby-plugin-react-helmet',
-    'gatsby-plugin-react-next',
     'gatsby-plugin-catch-links',
     {
       resolve: `gatsby-plugin-manifest`,

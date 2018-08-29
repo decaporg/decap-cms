@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled, { css } from 'react-emotion';
 import { Icon, Dropdown, DropdownItem, DropdownButton, colors } from 'netlify-cms-ui-default';
 import { stripProtocol } from 'Lib/urlHelper';
@@ -42,6 +43,10 @@ const Avatar = ({ imageUrl }) => (
   </AppHeaderAvatar>
 );
 
+Avatar.propTypes = {
+  imageUrl: PropTypes.string,
+};
+
 const SettingsDropdown = ({ displayUrl, imageUrl, onLogoutClick }) => (
   <React.Fragment>
     {displayUrl ? (
@@ -63,5 +68,11 @@ const SettingsDropdown = ({ displayUrl, imageUrl, onLogoutClick }) => (
     </Dropdown>
   </React.Fragment>
 );
+
+SettingsDropdown.propTypes = {
+  displayUrl: PropTypes.string,
+  imageUrl: PropTypes.string,
+  onLogoutClick: PropTypes.func.isRequired,
+};
 
 export default SettingsDropdown;

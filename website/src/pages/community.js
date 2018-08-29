@@ -1,7 +1,9 @@
 import React from 'react';
 import Helmet from 'react-helmet';
 import Markdown from 'react-markdown';
+import { graphql } from 'gatsby';
 
+import Layout from '../components/layout';
 import EventWidget from '../components/event-widget';
 import Markdownify from '../components/markdownify';
 
@@ -19,57 +21,59 @@ const CommunityPage = ({ data }) => {
   } = data.markdownRemark.frontmatter;
 
   return (
-    <div className="community page">
-      <Helmet title={title} />
-      <section className="community hero">
-        <div className="contained">
-          <div className="hero-copy">
-            <h1 className="headline">
-              <Markdownify source={headline} />
-            </h1>
-            <h2 className="subhead">
-              <Markdownify source={subhead} />
-            </h2>
-            <h3 className="ctas">
-              <ul>
-                <li>
-                  <Markdownify source={primarycta} />
-                </li>
-              </ul>
-            </h3>
-          </div>
+    <Layout>
+      <div className="community page">
+        <Helmet title={title} />
+        <section className="community hero">
+          <div className="contained">
+            <div className="hero-copy">
+              <h1 className="headline">
+                <Markdownify source={headline} />
+              </h1>
+              <h2 className="subhead">
+                <Markdownify source={subhead} />
+              </h2>
+              <h3 className="ctas">
+                <ul>
+                  <li>
+                    <Markdownify source={primarycta} />
+                  </li>
+                </ul>
+              </h3>
+            </div>
 
-          <div className="calendar-cta">
-            <h2>{upcomingevent.hook}</h2>
-            <EventWidget />
-            <div className="cal-cta">
-              <Markdownify source={primarycta} />
+            <div className="calendar-cta">
+              <h2>{upcomingevent.hook}</h2>
+              <EventWidget />
+              <div className="cal-cta">
+                <Markdownify source={primarycta} />
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section className="how-it-works clearfix">
-        <div className="contained">
-          <div className="half">
-            <h4 className="section-label">How it works</h4>
-            <p>
-              <Markdown source={howitworks} />
-            </p>
-            <h4 className="section-label">How to join</h4>
-            <p>
-              <Markdown source={howtojoin} />
-            </p>
+        <section className="how-it-works clearfix">
+          <div className="contained">
+            <div className="half">
+              <h4 className="section-label">How it works</h4>
+              <p>
+                <Markdown source={howitworks} />
+              </p>
+              <h4 className="section-label">How to join</h4>
+              <p>
+                <Markdown source={howtojoin} />
+              </p>
+            </div>
           </div>
-        </div>
-      </section>
-    </div>
+        </section>
+      </div>
+    </Layout>
   );
 };
 
 export const pageQuery = graphql`
   query communityPage {
-    markdownRemark(id: { regex: "/community/" }) {
+    markdownRemark(fileAbsolutePath: { regex: "/community/" }) {
       frontmatter {
         headline
         subhead

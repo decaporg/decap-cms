@@ -105,6 +105,8 @@ export default class Header extends React.Component {
     collections: ImmutablePropTypes.orderedMap.isRequired,
     onCreateEntryClick: PropTypes.func.isRequired,
     onLogoutClick: PropTypes.func.isRequired,
+    openMediaLibrary: PropTypes.func.isRequired,
+    hasWorkflow: PropTypes.bool.isRequired,
     displayUrl: PropTypes.string,
   };
 
@@ -124,6 +126,10 @@ export default class Header extends React.Component {
       hasWorkflow,
       displayUrl,
     } = this.props;
+
+    const createableCollections = collections
+      .filter(collection => collection.get('create'))
+      .toList();
 
     return (
       <AppHeaderContainer>
@@ -150,23 +156,22 @@ export default class Header extends React.Component {
               </AppHeaderButton>
             </nav>
             <AppHeaderActions>
-              <Dropdown
-                renderButton={() => <AppHeaderQuickNewButton>Quick add</AppHeaderQuickNewButton>}
-                dropdownTopOverlap="30px"
-                dropdownWidth="160px"
-                dropdownPosition="left"
-              >
-                {collections
-                  .filter(collection => collection.get('create'))
-                  .toList()
-                  .map(collection => (
+              {createableCollections.size > 0 && (
+                <Dropdown
+                  renderButton={() => <AppHeaderQuickNewButton>Quick add</AppHeaderQuickNewButton>}
+                  dropdownTopOverlap="30px"
+                  dropdownWidth="160px"
+                  dropdownPosition="left"
+                >
+                  {createableCollections.map(collection => (
                     <DropdownItem
                       key={collection.get('name')}
                       label={collection.get('label_singular') || collection.get('label')}
                       onClick={() => this.handleCreatePostClick(collection.get('name'))}
                     />
                   ))}
-              </Dropdown>
+                </Dropdown>
+              )}
               <SettingsDropdown
                 displayUrl={displayUrl}
                 imageUrl={user.get('avatar_url')}

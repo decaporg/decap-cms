@@ -14,7 +14,7 @@ Folder collections represent one or more files with the same format, fields, and
 
 Unlike file collections, folder collections have the option to allow editors to create new items in the collection. This is set by the boolean `create` field.
 
-**Note:** Folder collections must have at least one field with the name `title` for creating new entry slugs. That field should use the default `string` widget. The `label` for the field can be any string value. See the [Collections reference doc](https://www.netlifycms.org/docs/configuration-options/#collections) for details on how collections and fields are configured.
+**Note:** Folder collections must have at least one field with the name `title` for creating new entry slugs. That field should use the default `string` widget. The `label` for the field can be any string value. See the [Collections reference doc](../configuration-options/#collections) for details on how collections and fields are configured.
 
 Example:
 
@@ -68,7 +68,7 @@ A `files` collection contains one or more uniquely configured files. Unlike item
 
 When configuring a `files` collection, configure each file in the collection separately, and list them under the `files` field of the collection. Each file has its own list of `fields` and a unique filepath specified in the `file` field (relative to the base of the repo).
 
-**Note:** Files listed in a file collection must already exist in the hosted repository branch set in your Netlify CMS [backend configuration](https://www.netlifycms.org/docs/authentication-backends/). Files must also have a valid value for the file type. For example, an empty file works as valid YAML, but a JSON file must have a non-empty value to be valid, such as an empty object.
+**Note:** Files listed in a file collection must already exist in the hosted repository branch set in your Netlify CMS [backend configuration](../authentication-backends/). Files must also have a valid value for the file type. For example, an empty file works as valid YAML, but a JSON file must have a non-empty value to be valid, such as an empty object.
 
 Example:
 

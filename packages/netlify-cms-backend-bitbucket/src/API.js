@@ -52,7 +52,6 @@ export default class API {
   processFile = file => ({
     ...file,
     name: basename(file.path),
-    download_url: file.links.self.href,
 
     // BitBucket does not return file SHAs, but it does give us the
     // commit SHA. Since the commit SHA will change if any files do,

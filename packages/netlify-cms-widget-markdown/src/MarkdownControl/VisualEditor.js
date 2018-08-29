@@ -21,7 +21,7 @@ const VisualEditorContainer = styled.div`
 
 const createEmptyRawDoc = () => {
   const emptyText = Text.create('');
-  const emptyBlock = Block.create({ kind: 'block', type: 'paragraph', nodes: [emptyText] });
+  const emptyBlock = Block.create({ object: 'block', type: 'paragraph', nodes: [emptyText] });
   return { nodes: [emptyBlock] };
 };
 
@@ -40,7 +40,8 @@ export default class Editor extends React.Component {
     onMode: PropTypes.func.isRequired,
     className: PropTypes.string.isRequired,
     value: PropTypes.string,
-    field: ImmutablePropTypes.map,
+    field: ImmutablePropTypes.map.isRequired,
+    getEditorComponents: PropTypes.func.isRequired,
   };
 
   constructor(props) {
@@ -86,7 +87,7 @@ export default class Editor extends React.Component {
     // Handle everything except list buttons.
     if (!['bulleted-list', 'numbered-list'].includes(type)) {
       const isActive = this.selectionHasBlock(type);
-      change = change.setBlock(isActive ? 'paragraph' : type);
+      change = change.setBlocks(isActive ? 'paragraph' : type);
     }
 
     // Handle the extra wrapping required for list buttons.
@@ -144,7 +145,7 @@ export default class Editor extends React.Component {
     const { value } = this.state;
     const nodes = [Text.create('')];
     const block = {
-      kind: 'block',
+      object: 'block',
       type: 'shortcode',
       data: {
         shortcode: pluginId,
@@ -157,7 +158,7 @@ export default class Editor extends React.Component {
     let change = value.change();
     const { focusBlock } = change.value;
 
-    if (focusBlock.text === '') {
+    if (focusBlock.text === '' && focusBlock.type === 'paragraph') {
       change = change.setNodeByKey(focusBlock.key, block);
     } else {
       change = change.insertBlock(block);

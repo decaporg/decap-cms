@@ -38,14 +38,12 @@ const FileName = styled.span`
 
 const FileWidgetButton = styled.button`
   ${buttons.button};
-  ${components.textBadge};
-  display: block;
+  ${components.badge};
 `;
 
 const FileWidgetButtonRemove = styled.button`
   ${buttons.button};
-  ${components.textBadgeDanger};
-  display: block;
+  ${components.badgeDanger};
 `;
 
 export default function withFileControl({ forImage } = {}) {

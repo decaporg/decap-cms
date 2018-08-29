@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="2.0.6"></a>
+## [2.0.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.0.5...netlify-cms-ui-default@2.0.6) (2018-08-27)
+
+
+### Bug Fixes
+
+* **list-widget:** use the sortable handle ([#1655](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/issues/1655)) ([e215f68](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/commit/e215f68))
+
+
+
+
+<a name="2.0.5"></a>
+## [2.0.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.0.4...netlify-cms-ui-default@2.0.5) (2018-08-24)
+
+
+### Bug Fixes
+
+* **list-widget:** fix single field usage in list widget ([#1395](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/issues/1395)) ([06d3650](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/commit/06d3650))
+
+
+
+
 <a name="2.0.4"></a>
 ## [2.0.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.0.3...netlify-cms-ui-default@2.0.4) (2018-08-07)
 

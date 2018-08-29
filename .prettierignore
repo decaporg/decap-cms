@@ -1,2 +1,4 @@
 dist/
 bin/
+public/
+.cache/

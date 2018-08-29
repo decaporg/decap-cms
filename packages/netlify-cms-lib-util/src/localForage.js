@@ -9,8 +9,8 @@ function localForageTest() {
     })
     .catch(err => {
       if (err.code === 22) {
-        const message = `Unable to set localStorage key. Quota exceeded! Full disk?`;
-        return alert(`${message}\n\n${err}`);
+        const message = 'Unable to set localStorage key. Quota exceeded! Full disk?';
+        console.warn(message);
       }
       console.log(err);
     });
