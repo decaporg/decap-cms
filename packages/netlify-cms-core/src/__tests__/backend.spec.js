@@ -29,6 +29,11 @@ describe('Backend', () => {
                 testField: 'testValue',
               },
             },
+            {
+              data: {
+                testField: 'testValue2',
+              },
+            },
           ],
         },
         configWrapper({ field: 'testField', value: 'testValue' }),
@@ -44,6 +49,11 @@ describe('Backend', () => {
             {
               data: {
                 testField: 42,
+              },
+            },
+            {
+              data: {
+                testField: 5,
               },
             },
           ],
@@ -63,6 +73,11 @@ describe('Backend', () => {
                 testField: false,
               },
             },
+            {
+              data: {
+                testField: true,
+              },
+            },
           ],
         },
         configWrapper({ field: 'testField', value: false }),
@@ -78,6 +93,11 @@ describe('Backend', () => {
             {
               data: {
                 testField: ['valueOne', 'valueTwo', 'testValue'],
+              },
+            },
+            {
+              data: {
+                testField: ['valueThree'],
               },
             },
           ],
