@@ -3,12 +3,8 @@ backend:
 
 display_url: https://example.com
 
-media_library:
-  name: uploadcare
-  config:
-    publicKey: demopublickey
-
 publish_mode: editorial_workflow
+media_folder: assets/uploads
 
 collections: # A list of collections the CMS should be able to edit
   - name: "posts" # Used in routes, ie.: /admin/collections/:slug/edit
@@ -28,10 +24,6 @@ collections: # A list of collections the CMS should be able to edit
         widget: "image"
         required: false
         tagname: ""
-        options:
-          media_library:
-            config:
-              multiple: true
 
       - {label: "Body", name: "body", widget: "markdown", hint: "Main content goes here."}
     meta:
