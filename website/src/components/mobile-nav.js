@@ -21,7 +21,7 @@ class MobileNav extends Component {
           Navigation
         </button>
         {isOpen && (
-          <nav class="mobile-docs-nav-content">
+          <nav className="mobile-docs-nav-content">
             <ul className="mobile-docs-nav-list">
               {items.map(item => (
                 <li key={item.title} className="mobile-docs-nav-item">
