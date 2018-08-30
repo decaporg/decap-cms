@@ -90,20 +90,7 @@ export default class GitGateway {
           {
             headers: { Authorization: `Bearer ${token}` },
           },
-        ).then(async res => {
-          const contentType = res.headers.get('Content-Type');
-          if (contentType !== 'application/json' && contentType !== 'text/json') {
-            throw new APIError(`Your Git Gateway backend is not returning valid settings. Please make sure it is enabled.`, res.status, 'Git Gateway');
-          }
-          
-          const body = await res.json();
-
-          if (!res.ok) {
-            throw new APIError(`Git Gateway Error: ${(body.message ? body.message : body)}`, res.status, 'Git Gateway');
-          }
-          
-          return body;
-        });
+        ).then(res => res.json());
         this.acceptRoles = roles;
         if (github_enabled) {
           this.backendType = 'github';
