@@ -1032,6 +1032,15 @@
         "bug",
         "doc"
       ]
+    },
+    {
+      "login": "zebapy",
+      "name": "Zeb Pykosz",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/2199845?v=4",
+      "profile": "https://zeb.codes",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "repoType": "github"
