@@ -130,14 +130,13 @@ This is essentially a draft inside of the workflow panel.
 If you need to have multiple deployments against different branches and their own CMS then using the same "cms/"
 prefix will cause unpublished files to show up as unpublished files on both CMS instances, but publishing one
 of them will pull it into the branch configued inside of that site's config.yml backend.branch branch.
-To allow this you can configure a custom branch_prefix for the workflow on each site by specifying
-```backend.branch_prefix```. If this value is not configured then it will automatically default to "cms/".
+To allow this you can configure a custom workflow_branch_prefix for the workflow on each site by specifying ```backend.workflow_branch_prefix```. If this value is not configured then it will automatically default to "cms/".
 
 Example:
 
 ```yaml
 backend:
-  branch_prefix: cms-dev
+  workflow_branch_prefix: cms-dev
   branch: dev
 ```
 
