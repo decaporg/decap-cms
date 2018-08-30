@@ -80,6 +80,9 @@
 
   <script src="dist/netlify-cms.js"></script>
   <script>
+    var createClass = CMS.createClass;
+    var h = CMS.h;
+
     var PostPreview = createClass({
       render: function() {
         var entry = this.props.entry;

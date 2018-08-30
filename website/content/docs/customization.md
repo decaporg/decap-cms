@@ -13,7 +13,7 @@ Explore the [NetlifyCMS GitHub example](https://github.com/netlify/netlify-cms/b
 
 ### React Components inline interaction
 
-NetlifyCMS is a collection of React components and exposes two constructs globally to allow you to create components inline: ‘createClass’ and ‘h’ (alias for React.createElement).
+NetlifyCMS is a collection of React components and exposes two constructs globally to allow you to create components inline: ‘CMS.createClass’ and ‘CMS.h’ (alias for React.createElement).
 
 ## `registerPreviewStyle`
 
@@ -73,7 +73,9 @@ Registers a template for a folder collection or an individual file in a file col
     ```html
     <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
     <script>
-    var PostPreview = createClass({
+    var h = CMS.h;
+
+    var PostPreview = CMS.createClass({
       render: function() {
         var entry = this.props.entry;
         var image = entry.getIn(['data', 'image']);
@@ -95,7 +97,9 @@ Registers a template for a folder collection or an individual file in a file col
     **List Example:**
     ```html
     <script>
-    var AuthorsPreview = createClass({
+    var h = CMS.h;
+
+    var AuthorsPreview = CMS.createClass({
       // For list fields, the widgetFor function returns an array of objects
       // that you can map over in your template. If our field is a list of
       // authors containing two entries, with fields `name` and `description`,
@@ -137,7 +141,9 @@ Registers a template for a folder collection or an individual file in a file col
     **Object Example:**
     ```html
     <script>
-    var GeneralPreview = createClass({
+    var h = CMS.h;
+
+    var GeneralPreview = CMS.createClass({
       // Object fields are simpler than lists - instead of `widgetsFor` returning
       // an array of objects, it returns a single object. Accessing the shape of
       // that object is the same as the shape of objects returned for list fields:
