@@ -125,6 +125,7 @@ export default class Header extends React.Component {
       openMediaLibrary,
       hasWorkflow,
       displayUrl,
+      showMediaButton,
     } = this.props;
 
     const createableCollections = collections
@@ -150,10 +151,12 @@ export default class Header extends React.Component {
                   Workflow
                 </AppHeaderNavLink>
               ) : null}
-              <AppHeaderButton onClick={openMediaLibrary}>
-                <Icon type="media-alt" />
-                Media
-              </AppHeaderButton>
+              {showMediaButton ? (
+                <AppHeaderButton onClick={openMediaLibrary}>
+                  <Icon type="media-alt" />
+                  Media
+                </AppHeaderButton>
+              ) : null}
             </nav>
             <AppHeaderActions>
               {createableCollections.size > 0 && (
