@@ -5,7 +5,7 @@ class MobileNav extends Component {
   state = {
     isOpen: false,
   };
-  toggleNav = event => {
+  toggleNav = () => {
     this.setState({
       isOpen: !this.state.isOpen,
     });
