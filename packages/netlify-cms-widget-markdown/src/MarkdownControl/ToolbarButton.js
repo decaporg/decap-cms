@@ -46,6 +46,7 @@ ToolbarButton.propTypes = {
   icon: PropTypes.string,
   onClick: PropTypes.func,
   isActive: PropTypes.func,
+  isHidden: PropTypes.bool,
   disabled: PropTypes.bool,
 };
 

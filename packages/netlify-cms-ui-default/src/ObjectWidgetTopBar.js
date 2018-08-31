@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled, { css } from 'react-emotion';
 import Icon from './Icon';
 import { colors, buttons } from './styles';
@@ -72,5 +73,14 @@ const ObjectWidgetTopBar = ({
     )}
   </TopBarContainer>
 );
+
+ObjectWidgetTopBar.propTypes = {
+  allowAdd: PropTypes.bool,
+  onAdd: PropTypes.func,
+  onCollapseToggle: PropTypes.func,
+  collapsed: PropTypes.bool,
+  heading: PropTypes.node,
+  label: PropTypes.string,
+};
 
 export default ObjectWidgetTopBar;

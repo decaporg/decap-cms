@@ -25,4 +25,9 @@ PreviewContent.contextTypes = {
   document: PropTypes.any,
 };
 
+PreviewContent.propTypes = {
+  previewComponent: PropTypes.func.isRequired,
+  previewProps: PropTypes.object,
+};
+
 export default PreviewContent;

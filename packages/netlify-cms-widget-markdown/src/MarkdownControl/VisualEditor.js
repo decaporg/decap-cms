@@ -40,7 +40,8 @@ export default class Editor extends React.Component {
     onMode: PropTypes.func.isRequired,
     className: PropTypes.string.isRequired,
     value: PropTypes.string,
-    field: ImmutablePropTypes.map,
+    field: ImmutablePropTypes.map.isRequired,
+    getEditorComponents: PropTypes.func.isRequired,
   };
 
   constructor(props) {

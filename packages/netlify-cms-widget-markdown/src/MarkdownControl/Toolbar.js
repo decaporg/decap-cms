@@ -64,6 +64,12 @@ export default class Toolbar extends React.Component {
     onAddAsset: PropTypes.func,
     getAsset: PropTypes.func,
     disabled: PropTypes.bool,
+    onMarkClick: PropTypes.func,
+    onBlockClick: PropTypes.func,
+    onLinkClick: PropTypes.func,
+    selectionHasMark: PropTypes.func,
+    selectionHasBlock: PropTypes.func,
+    selectionHasLink: PropTypes.func,
   };
 
   isHidden = button => {

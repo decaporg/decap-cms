@@ -31,6 +31,7 @@
   },
   "peerDependencies": {
     "emotion": "^9.2.6",
+    "immutable": "^3.7.6",
     "netlify-cms-ui-default": "^2.0.0",
     "prop-types": "^15.5.10",
     "react": "^16.4.1",

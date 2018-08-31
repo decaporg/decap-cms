@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled, { css } from 'react-emotion';
 import { Wrapper, Button as DropdownButton, Menu, MenuItem } from 'react-aria-menubutton';
 import { buttons, components } from './styles';
@@ -76,6 +77,15 @@ const Dropdown = ({
   );
 };
 
+Dropdown.propTypes = {
+  renderButton: PropTypes.func.isRequired,
+  dropdownWidth: PropTypes.string,
+  dropdownPosition: PropTypes.string,
+  dropdownTopOverlap: PropTypes.string,
+  className: PropTypes.string,
+  children: PropTypes.node,
+};
+
 const DropdownItem = ({ label, icon, iconDirection, onClick, className }) => (
   <StyledMenuItem value={onClick} className={className}>
     <span>{label}</span>
@@ -86,5 +96,13 @@ const DropdownItem = ({ label, icon, iconDirection, onClick, className }) => (
     ) : null}
   </StyledMenuItem>
 );
+
+DropdownItem.propTypes = {
+  label: PropTypes.string,
+  icon: PropTypes.string,
+  iconDirection: PropTypes.string,
+  onClick: PropTypes.func,
+  className: PropTypes.string,
+};
 
 export { Dropdown as default, DropdownItem, DropdownButton, StyledDropdownButton };

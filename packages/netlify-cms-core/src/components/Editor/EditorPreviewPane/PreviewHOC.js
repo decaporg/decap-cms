@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 
 class PreviewHOC extends React.Component {
   /**
@@ -16,5 +18,11 @@ class PreviewHOC extends React.Component {
     return React.createElement(previewComponent, props);
   }
 }
+
+PreviewHOC.propTypes = {
+  previewComponent: PropTypes.func.isRequired,
+  field: ImmutablePropTypes.map.isRequired,
+  value: PropTypes.oneOfType([PropTypes.node, PropTypes.object, PropTypes.string, PropTypes.bool]),
+};
 
 export default PreviewHOC;

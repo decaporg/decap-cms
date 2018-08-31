@@ -1,3 +1,4 @@
+import { Map } from 'immutable';
 import { actions as notifActions } from 'redux-notifications';
 import { currentBackend } from 'src/backend';
 import { createAssetProxy } from 'ValueObjects/AssetProxy';
@@ -10,6 +11,7 @@ const { notifSend } = notifActions;
 
 export const MEDIA_LIBRARY_OPEN = 'MEDIA_LIBRARY_OPEN';
 export const MEDIA_LIBRARY_CLOSE = 'MEDIA_LIBRARY_CLOSE';
+export const MEDIA_LIBRARY_CREATE = 'MEDIA_LIBRARY_CREATE';
 export const MEDIA_INSERT = 'MEDIA_INSERT';
 export const MEDIA_REMOVE_INSERTED = 'MEDIA_REMOVE_INSERTED';
 export const MEDIA_LOAD_REQUEST = 'MEDIA_LOAD_REQUEST';
@@ -25,12 +27,58 @@ export const MEDIA_DISPLAY_URL_REQUEST = 'MEDIA_DISPLAY_URL_REQUEST';
 export const MEDIA_DISPLAY_URL_SUCCESS = 'MEDIA_DISPLAY_URL_SUCCESS';
 export const MEDIA_DISPLAY_URL_FAILURE = 'MEDIA_DISPLAY_URL_FAILURE';
 
-export function openMediaLibrary(payload) {
-  return { type: MEDIA_LIBRARY_OPEN, payload };
+export function createMediaLibrary(instance) {
+  const api = {
+    show: instance.show || (() => {}),
+    hide: instance.hide || (() => {}),
+    onClearControl: instance.onClearControl || (() => {}),
+    onRemoveControl: instance.onRemoveControl || (() => {}),
+    enableStandalone: instance.enableStandalone || (() => {}),
+  };
+  return { type: MEDIA_LIBRARY_CREATE, payload: api };
+}
+
+export function clearMediaControl(id) {
+  return (dispatch, getState) => {
+    const state = getState();
+    const mediaLibrary = state.mediaLibrary.get('externalLibrary');
+    if (mediaLibrary) {
+      mediaLibrary.onClearControl({ id });
+    }
+  };
+}
+
+export function removeMediaControl(id) {
+  return (dispatch, getState) => {
+    const state = getState();
+    const mediaLibrary = state.mediaLibrary.get('externalLibrary');
+    if (mediaLibrary) {
+      mediaLibrary.onRemoveControl({ id });
+    }
+  };
+}
+
+export function openMediaLibrary(payload = {}) {
+  return (dispatch, getState) => {
+    const state = getState();
+    const mediaLibrary = state.mediaLibrary.get('externalLibrary');
+    if (mediaLibrary) {
+      const { controlID: id, value, config = Map(), forImage } = payload;
+      mediaLibrary.show({ id, value, config: config.toJS(), imagesOnly: forImage });
+    }
+    dispatch({ type: MEDIA_LIBRARY_OPEN, payload });
+  };
 }
 
 export function closeMediaLibrary() {
-  return { type: MEDIA_LIBRARY_CLOSE };
+  return (dispatch, getState) => {
+    const state = getState();
+    const mediaLibrary = state.mediaLibrary.get('externalLibrary');
+    if (mediaLibrary) {
+      mediaLibrary.hide();
+    }
+    dispatch({ type: MEDIA_LIBRARY_CLOSE });
+  };
 }
 
 export function insertMedia(mediaPath) {

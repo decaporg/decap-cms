@@ -35,6 +35,8 @@ export default class Widget extends Component {
     onChange: PropTypes.func.isRequired,
     onValidate: PropTypes.func,
     onOpenMediaLibrary: PropTypes.func.isRequired,
+    onClearMediaControl: PropTypes.func.isRequired,
+    onRemoveMediaControl: PropTypes.func.isRequired,
     onAddAsset: PropTypes.func.isRequired,
     onRemoveInsertedMedia: PropTypes.func.isRequired,
     getAsset: PropTypes.func.isRequired,
@@ -44,6 +46,8 @@ export default class Widget extends Component {
     query: PropTypes.func.isRequired,
     clearSearch: PropTypes.func.isRequired,
     queryHits: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+    editorControl: PropTypes.func.isRequired,
+    uniqueFieldId: PropTypes.string.isRequired,
   };
 
   shouldComponentUpdate(nextProps) {
@@ -189,6 +193,8 @@ export default class Widget extends Component {
       metadata,
       onChange,
       onOpenMediaLibrary,
+      onRemoveMediaControl,
+      onClearMediaControl,
       onAddAsset,
       onRemoveInsertedMedia,
       getAsset,
@@ -217,6 +223,8 @@ export default class Widget extends Component {
       onChange,
       onChangeObject: this.onChangeObject,
       onOpenMediaLibrary,
+      onClearMediaControl,
+      onRemoveMediaControl,
       onAddAsset,
       onRemoveInsertedMedia,
       getAsset,

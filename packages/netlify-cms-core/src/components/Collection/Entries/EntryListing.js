@@ -18,10 +18,11 @@ const CardsGrid = styled.ul`
 export default class EntryListing extends React.Component {
   static propTypes = {
     publicFolder: PropTypes.string.isRequired,
-    collections: PropTypes.oneOfType([ImmutablePropTypes.map, ImmutablePropTypes.iterable])
-      .isRequired,
+    collections: ImmutablePropTypes.iterable.isRequired,
     entries: ImmutablePropTypes.list,
     viewStyle: PropTypes.string,
+    cursor: PropTypes.any.isRequired,
+    handleCursorActions: PropTypes.func.isRequired,
   };
 
   handleLoadMore = () => {
