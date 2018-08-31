@@ -1,7 +1,7 @@
 import GoTrue from 'gotrue-js';
 import jwtDecode from 'jwt-decode';
 import { get, pick, intersection } from 'lodash';
-import { unsentRequest } from 'netlify-cms-lib-util';
+import { APIError, unsentRequest } from 'netlify-cms-lib-util';
 import { GitHubBackend } from 'netlify-cms-backend-github';
 import { GitLabBackend } from 'netlify-cms-backend-gitlab';
 import { BitBucketBackend, API as BitBucketAPI } from 'netlify-cms-backend-bitbucket';
