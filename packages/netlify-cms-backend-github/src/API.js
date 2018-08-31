@@ -9,12 +9,7 @@ export default class API {
     this.api_root = config.api_root || 'https://api.github.com';
     this.token = config.token || false;
     this.branch = config.branch || 'master';
-    let workflow_branch_prefix = config.workflow_branch_prefix || 'cms';
-    if (!/\/$/.test(workflow_branch_prefix)) {
-      // Make sure we always have a trailing /
-      workflow_branch_prefix += '/';
-    }
-    this.workflow_branch_prefix = workflow_branch_prefix;
+    this.workflow_branch_prefix = config.workflow_branch_prefix;
     this.repo = config.repo || '';
     this.repoURL = `/repos/${this.repo}`;
     this.merge_method = config.squash_merges ? 'squash' : 'merge';
@@ -95,7 +90,7 @@ export default class API {
   }
 
   generateBranchName(basename) {
-    return `${this.workflow_branch_prefix}${basename}`;
+    return `${this.workflow_branch_prefix}/${basename}`;
   }
 
   checkMetadataRef() {
@@ -654,7 +649,7 @@ export default class API {
   }
 
   assertCmsBranch(branchName) {
-    return branchName.startsWith(this.workflow_branch_prefix);
+    return branchName.startsWith(`${this.workflow_branch_prefix}/`);
   }
 
   patchBranch(branchName, sha, opts = {}) {
