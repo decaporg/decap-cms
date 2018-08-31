@@ -80,13 +80,15 @@ export default function withFileControl({ forImage } = {}) {
       value: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
     };
 
-    static defaultProps = {
-      value: '',
-    };
-
     constructor(props) {
       super(props);
       this.controlID = uuid();
+    }
+
+    componentDidMount() {
+      if (typeof this.props.value !== 'string') {
+        this.props.onChange('');
+      }
     }
 
     shouldComponentUpdate(nextProps) {

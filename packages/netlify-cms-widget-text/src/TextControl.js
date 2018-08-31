@@ -12,9 +12,11 @@ export default class TextControl extends React.Component {
     setInactiveStyle: PropTypes.func.isRequired,
   };
 
-  static defaultProps = {
-    value: '',
-  };
+  componentDidMount() {
+    if (typeof this.props.value !== 'string') {
+      this.props.onChange('');
+    }
+  }
 
   /**
    * Always update to ensure `react-textarea-autosize` properly calculates

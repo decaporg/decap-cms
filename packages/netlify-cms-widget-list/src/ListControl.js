@@ -79,10 +79,6 @@ export default class ListControl extends React.Component {
     resolveWidget: PropTypes.func.isRequired,
   };
 
-  static defaultProps = {
-    value: List(),
-  };
-
   constructor(props) {
     super(props);
     const { field, value } = props;
@@ -93,6 +89,12 @@ export default class ListControl extends React.Component {
       itemsCollapsed: List(itemsCollapsed),
       value: valueToString(value),
     };
+  }
+
+  componentDidMount() {
+    if (!List.isList(this.props.value)) {
+      this.props.onChange(List());
+    }
   }
 
   getValueType = () => {

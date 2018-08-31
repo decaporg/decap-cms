@@ -24,15 +24,17 @@ export default class MarkdownControl extends React.Component {
     getEditorComponents: PropTypes.func,
   };
 
-  static defaultProps = {
-    value: '',
-  };
-
   constructor(props) {
     super(props);
     editorControl = props.editorControl;
     _getEditorComponents = props.getEditorComponents;
     this.state = { mode: localStorage.getItem(MODE_STORAGE_KEY) || 'visual' };
+  }
+
+  componentDidMount() {
+    if (typeof this.props.value !== 'string') {
+      this.props.onChange('');
+    }
   }
 
   handleMode = mode => {

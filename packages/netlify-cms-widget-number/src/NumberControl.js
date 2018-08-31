@@ -17,9 +17,11 @@ export default class NumberControl extends React.Component {
     max: PropTypes.number,
   };
 
-  static defaultProps = {
-    value: '',
-  };
+  componentDidMount() {
+    if (!['number', 'string'].includes(typeof this.props.value)) {
+      this.props.onChange('');
+    }
+  }
 
   handleChange = e => {
     const valueType = this.props.field.get('valueType');
