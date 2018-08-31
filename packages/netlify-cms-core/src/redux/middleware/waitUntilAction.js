@@ -1,8 +1,8 @@
-// Based on wait-service by Mozilla: 
+// Based on wait-service by Mozilla:
 // https://github.com/mozilla/gecko-dev/blob/master/devtools/client/shared/redux/middleware/wait-service.js
- 
+
 /**
- * A middleware that provides the ability for actions to install a 
+ * A middleware that provides the ability for actions to install a
  * function to be run once when a specific condition is met by an
  * action coming through the system. Think of it as a thunk that
  * blocks until the condition is met.
@@ -35,7 +35,7 @@ export default function waitUntilAction({ dispatch, getState }) {
     }
   }
 
-  return next => (action) => {
+  return next => action => {
     if (action.type === WAIT_UNTIL_ACTION) {
       pending.push(action);
       return null;

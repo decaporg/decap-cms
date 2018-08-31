@@ -11,7 +11,6 @@ Hidden widgets do not display in the UI. In folder collections that allow users 
 - **Options:** 
   - `default`: accepts any valid data type; recommended for collections that allow adding new items
 - **Example:**
-
-  ```yaml
-  - {label: "Layout", name: "layout", widget: "hidden", default: "blog"}
-  ```
+    ```yaml
+    - {label: "Layout", name: "layout", widget: "hidden", default: "blog"}
+    ```

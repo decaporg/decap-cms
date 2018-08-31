@@ -11,8 +11,6 @@ The text widget takes a multiline text field and saves it as a string. For short
 - **Options:**
   - `default`: accepts a string; defaults to an empty string
 - **Example:**
-
-  ```yaml
-  - {label: "Description", name: "description", widget: "text"}
-  ```
-  
+    ```yaml
+    - {label: "Description", name: "description", widget: "text"}
+    ```

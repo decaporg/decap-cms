@@ -1,83 +1,83 @@
 @keyframes fadeInUp {
-   0% {
-      opacity: 0;
-      transform: translateY(10px);
-   }
-   100% {
-      opacity: 1;
-      transform: translateY(0);
-   }
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .centered-text {
-	text-align: center;
+  text-align: center;
 }
 
 .container {
-	@neat-outer-container;
+  @neat-outer-container;
 }
 
 .half,
 .third,
 .quarter {
-	padding-bottom: $small;
-	@neat-span-columns 12;
+  padding-bottom: $small;
+  @neat-span-columns 12;
 
   @media screen and (min-width: $tablet) {
-		@neat-span-columns 6;
-		padding-bottom: 0;
-	}
+    @neat-span-columns 6;
+    padding-bottom: 0;
+  }
 
-	&:nth-child(even) {
-		@media screen and (min-width: $mobile) and (max-width: 767px) {
-			margin-right: 0;
-		}
-	}
+  &:nth-child(even) {
+    @media screen and (min-width: $mobile) and (max-width: 767px) {
+      margin-right: 0;
+    }
+  }
 }
 
 .third {
-	@media screen and (min-width: $tablet) {
-		@neat-span-columns 4;
-	}
+  @media screen and (min-width: $tablet) {
+    @neat-span-columns 4;
+  }
 }
 
 .quarter {
-	@media screen and (min-width: $tablet) {
-		@neat-span-columns 3;
-	}
+  @media screen and (min-width: $tablet) {
+    @neat-span-columns 3;
+  }
 }
 
 .clearfix {
-	&:after {
-		content: ' ';
-		width: 100%;
-		display: table;
-	}
+  &:after {
+    content: ' ';
+    width: 100%;
+    display: table;
+  }
 }
 
 .section-label {
-	color: $grey;
-	font-size: 12px;
-	font-weight: $semibold;
+  color: $grey;
+  font-size: 12px;
+  font-weight: $semibold;
   letter-spacing: 1.5px;
   text-transform: uppercase;
 
-	&:after {
+  &:after {
     background: $darkGreen;
     content: ' ';
     display: block;
     height: 2px;
     margin-top: 5px;
-		width: $small;
-	}
+    width: $small;
+  }
 
-	&.inverse {
-		color: white;
+  &.inverse {
+    color: white;
 
     &.mono:after {
       background: $grey;
     }
-	}
+  }
 
   &.extended {
     display: inline-block;
@@ -94,75 +94,75 @@
 }
 
 img.responsive {
-	width: 100%;
-	height: auto;
+  width: 100%;
+  height: auto;
 }
 
 .img-bg-hero {
-	color: white;
-	background-size: 100% auto;
-	background-size: cover !important;
+  color: white;
+  background-size: 100% auto;
+  background-size: cover !important;
 
-	h1,
-	h2 {
-		color: white;
-		font-weight: $light;
+  h1,
+  h2 {
+    color: white;
+    font-weight: $light;
 
-		@media screen and (min-width: $tablet) {
-			font-weight: $thin;
-		}
-	}
+    @media screen and (min-width: $tablet) {
+      font-weight: $thin;
+    }
+  }
 }
 
 .pagination {
-	text-align: center;
-	margin: 0;
-	padding: 0;
-	list-style-type: none;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
 
-	@media screen and (min-width: $tablet) {
-		@neat-span-columns 8;
-		@neat-shift 2;
-	}
+  @media screen and (min-width: $tablet) {
+    @neat-span-columns 8;
+    @neat-shift 2;
+  }
 
-	li {
-		margin: 0;
-		padding: 0;
-		display: inline;
+  li {
+    margin: 0;
+    padding: 0;
+    display: inline;
 
-		@media screen and (min-width: $tablet) {
-			display: inline-block;
-		}
+    @media screen and (min-width: $tablet) {
+      display: inline-block;
+    }
 
-		&.active a,
-		a[aria-label] {
-			display: inline-block;
-		}
-	}
+    &.active a,
+    a[aria-label] {
+      display: inline-block;
+    }
+  }
 
-	a {
-		text-decoration: none;
-		font-weight: $light;
-		color: $grey;
-		width: 18px;
-		font-size: $tiny;
-		padding: $micro;
-		border-radius: 99px;
-		display: none;
+  a {
+    text-decoration: none;
+    font-weight: $light;
+    color: $grey;
+    width: 18px;
+    font-size: $tiny;
+    padding: $micro;
+    border-radius: 99px;
+    display: none;
 
-		@media screen and (min-width: $tablet) {
-			display: inline-block;
-		}
-	}
+    @media screen and (min-width: $tablet) {
+      display: inline-block;
+    }
+  }
 
-	.active a {
-		color: white;
-		background: $green;
-	}
+  .active a {
+    color: white;
+    background: $green;
+  }
 
-	.disabled a {
-		color: $lighterGrey;
-	}
+  .disabled a {
+    color: $lighterGrey;
+  }
 }
 
 .unordered-list ul {
@@ -202,7 +202,6 @@ img.responsive {
     font-weight: $bold;
     color: $grey;
     position: relative;
-
 
     &:before,
     &:after {

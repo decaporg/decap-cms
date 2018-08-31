@@ -1,4 +1,4 @@
-import * as emotion from 'emotion'
-import { createSerializer } from 'jest-emotion'
+import * as emotion from 'emotion';
+import { createSerializer } from 'jest-emotion';
 
-expect.addSnapshotSerializer(createSerializer(emotion))
+expect.addSnapshotSerializer(createSerializer(emotion));

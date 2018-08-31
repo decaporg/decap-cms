@@ -42,7 +42,7 @@
     li {
       .update-metadata {
         font-size: 13px;
-        color: rgba(255,255,255,0.6);
+        color: rgba(255, 255, 255, 0.6);
         display: block;
         margin-bottom: $micro;
         .update-version {
@@ -60,5 +60,4 @@
       }
     }
   }
-
 }

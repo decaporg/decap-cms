@@ -6,11 +6,11 @@ group: contributing
 
 Netlify CMS is a React application, using Redux for state management with immutable data structures (immutable.js).
 
-The core abstractions for content editing are `collections`, `entries` and `widgets`.
+The core abstractions for content editing are `collections`, `entries`, and `widgets`.
 
 Each `collection` represents a collection of entries. This can either be a collection of similar entries with the same structure, or a set of entries where each has its own structure.
 
-The structure of an entry is defined as a series of fields, each with a `name`, a `label`, and a `widget` .
+The structure of an entry is defined as a series of fields, each with a `name`, a `label`, and a `widget`.
 
 The `widget` determines the UI widget that the content editor will use when editing this field of an entry, as well as how the content of the field is presented in the editing preview.
 
@@ -21,7 +21,7 @@ Entries are loaded and persisted through a `backend` that will typically represe
 
 **Config:** Holds the environment configuration (backend type, available collections and fields).
 
-**Collections** List of available collections, their fields and metadata information.
+**Collections:** List of available collections, their fields and metadata information.
 
 **Entries:** Entries for each field.
 
@@ -37,7 +37,7 @@ Selectors are functions defined within reducers used to compute derived data fro
 **getAsset:** Selects a single AssetProxy object for the given URI.
 
 ## Value Objects
-**AssetProxy:** AssetProxy is a Value Object that holds information regarding an asset file (such as an image, for example), whether it's persisted online or held locally in cache.
+**AssetProxy:** AssetProxy is a Value Object that holds information regarding an asset file (for example, an image), whether it's persisted online or held locally in cache.
 
 For a file persisted online, the AssetProxy only keeps information about its URI. For local files, the AssetProxy will keep a reference to the actual File object while generating the expected final URIs and on-demand blobs for local preview.
 
@@ -51,13 +51,13 @@ For either updating an existing entry or creating a new one, the `EntryEditor` i
 
 * When mounted, the `EntryPage` container component dispatches the `createDraft` action, setting the `entryDraft` state to a blank state (in case of a new entry) or to a copy of the selected entry (in case of an edit).
 * The `EntryPage` will also render widgets for each field type in the given entry.
-* Widgets are used for editing entry fields. There are different widgets for different field types, and they are always defined in a pair containing a `control` and a `preview` component. The control component is responsible for presenting the user with the appropriate interface for manipulating the current field value, while the preview component is responsible for displaying the value with the appropriate styling.
+* Widgets are used for editing entry fields. There are different widgets for different field types, and they are always defined in a pair containing a `control` component and a `preview` component. The control component is responsible for presenting the user with the appropriate interface for manipulating the current field value. The preview component is responsible for displaying the value with the appropriate styling.
 
 #### Widget components implementation
 The control component receives one (1) callback as a prop: `onChange`.
 
 * onChange (required): Should be called when the users changes the current value. It will ultimately end up updating the EntryDraft object in the Redux Store, thus updating the preview component.
-* onAddAsset & onRemoveAsset (optionals): If the field accepts file uploads for media (images, for example), these callbacks should be invoked with a `AssetProxy` value object. `onAddAsset` will get the current media stored in the Redux state tree while `onRemoveAsset` will remove it. AssetProxy objects are stored in the `Medias` object and referenced in the `EntryDraft` object on the state tree.
+* onAddAsset & onRemoveAsset (optionals): Should be invoked with an `AssetProxy` value object if the field accepts file uploads for media (images, for example). `onAddAsset` will get the current media stored in the Redux state tree while `onRemoveAsset` will remove it. AssetProxy objects are stored in the `Medias` object and referenced in the `EntryDraft` object on the state tree.
 
 Both control and preview widgets receive a `getAsset` selector via props. Displaying the media (or its URI) for the user should always be done via `getAsset`, as it returns an AssetProxy that can return the correct value for both medias already persisted on the server and cached media not yet uploaded.
 
@@ -72,6 +72,6 @@ Furthermore, all editorial workflow state is managed in Redux - there's an `acti
 
 ### About metadata
 
-Netlify CMS embraces the idea of Git-as-backend for storing metadata. The first time it runs with the editorial_workflow setup, it creates a new ref called `meta/_netlify_cms`, pointing to an empty, orphan tree.
+Netlify CMS embraces the idea of Git-as-backend for storing metadata. The first time it runs with the `editorial_workflow` setup, it creates a new ref called `meta/_netlify_cms`, pointing to an empty, orphan tree.
 
 Actual data are stored in individual `json` files committed to this tree.

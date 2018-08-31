@@ -4,18 +4,17 @@ weight: 25
 group: start
 ---
 
-Netlify CMS stores content in your GitHub, GitLab, or Bitbucket repository. In order for this to work, you need to authenticate with your Git host, and in most cases that requires a server. We have a few options for handling this.
+Netlify CMS stores content in your GitHub, GitLab, or Bitbucket repository. In order for this to work, authenticate with your Git host. In most cases that requires a server. We have a few options for handling this.
 
-**Note:** some static site generators have plugins for optimized integration with Netlify CMS, and starter templates may utilize these plugins. If you're using a starter template, read the template documentation before proceeding, as their instructions may differ.
+**Note:** Some static site generators have plugins for optimized integration with Netlify CMS, and starter templates may utilize these plugins. If you're using a starter template, read the template documentation before proceeding, as their instructions may differ.
 
 ## Git Gateway with Netlify Identity
 
-[Git Gateway](https://github.com/netlify/git-gateway) is a Netlify open source project that allows you to add editors to your site CMS without giving them direct write access to your GitHub or GitLab repository. (For Bitbucket repositories, use the [Bitbucket backend](#bitbucket-backend) instead.) [Netlify Identity](https://www.netlify.com/docs/identity/) service can handle the authentication and provides a simple interface for user management. The Netlify CMS [featured templates](https://www.netlifycms.org/docs/start-with-a-template) are working examples of this backend.
+[Git Gateway](https://github.com/netlify/git-gateway) is a Netlify open source project that allows you to add editors to your site CMS without giving them direct write access to your GitHub or GitLab repository. (For Bitbucket repositories, use the [Bitbucket backend](#bitbucket-backend) instead.) [Netlify Identity](https://www.netlify.com/docs/identity/) service can handle the authentication and provides a simple interface for user management. The Netlify CMS [featured templates](../start-with-a-template) are working examples of this backend.
 
 To use it in your own project stored on GitHub or GitLab, follow these steps:
 
-1. Head over to the [Netlify Identity docs](https://www.netlify.com/docs/identity) and follow the
-   steps to get started.
+1. Head over to the [Netlify Identity docs](https://www.netlify.com/docs/identity) and follow the steps to get started.
 2. Add the following lines to your Netlify CMS `config.yml` file:
 
     ```yaml
@@ -26,9 +25,7 @@ To use it in your own project stored on GitHub or GitLab, follow these steps:
         - editor
     ```
 
-3. Optionally, you can assign roles to users in your Netlify dashboard, and then limit which
-   roles can access the CMS by defining the `accept_roles` field as shown in the example above.
-   Otherwise `accept_roles` can be left out, and all Netlify Identity users on your site will have access.
+3. Optionally, you can assign roles to users in your Netlify dashboard, and then limit which roles can access the CMS by defining the `accept_roles` field as shown in the example above. Otherwise `accept_roles` can be left out, and all Netlify Identity users on your site have access.
 
 ## Git Gateway without Netlify
 
@@ -40,14 +37,11 @@ To configure in Netlify CMS, use the same `backend` settings in your Netlify CMS
 
 For repositories stored on GitHub, the `github` backend allows CMS users to log in directly with their GitHub account. Note that all users must have push access to your content repository for this to work.
 
-Because Github [requires a
-server](https://github.com/netlify/netlify-cms/issues/663#issuecomment-335023723) for
-authentication, Netlify facilitates basic GitHub authentication.
+Because Github [requires a server](https://github.com/netlify/netlify-cms/issues/663#issuecomment-335023723) for authentication, Netlify facilitates basic GitHub authentication.
 
-To enable it:
+To enable basic GitHub authentication:
 
-1. Follow the authentication provider setup steps in the [Netlify
-   docs](https://www.netlify.com/docs/authentication-providers/#using-an-authentication-provider).
+1. Follow the authentication provider setup steps in the [Netlify docs](https://www.netlify.com/docs/authentication-providers/#using-an-authentication-provider).
 2. Add the following lines to your Netlify CMS `config.yml` file:
 
     ```yaml
@@ -62,7 +56,10 @@ If you prefer to run your own authentication server, check out the section on [e
 
 For repositories stored on GitLab, the `gitlab` backend allows CMS users to log in directly with their GitLab account. Note that all users must have push access to your content repository for this to work.
 
-The GitLab API allows for two types of OAuth2 flows: [Web Application Flow](https://docs.gitlab.com/ce/api/oauth2.html#web-application-flow), which works much like the GitHub OAuth flow described above, and [Implicit Grant](https://docs.gitlab.com/ce/api/oauth2.html#implicit-grant), which operates _without_ the need for an authentication server.
+The GitLab API allows for two types of OAuth2 flows:
+
+* [Web Application Flow](https://docs.gitlab.com/ce/api/oauth2.html#web-application-flow), which works much like the GitHub OAuth flow described above.
+* [Implicit Grant](https://docs.gitlab.com/ce/api/oauth2.html#implicit-grant), which operates _without_ the need for an authentication server.
 
 ### Web Application Flow with Netlify
 
@@ -71,9 +68,8 @@ When using GitLab's Web Application Flow for authentication, you can use Netlify
 To enable it:
 
 1. Follow the [GitLab docs](https://docs.gitlab.com/ee/integration/oauth_provider.html#adding-an-application-through-the-profile) to add your Netlify CMS instance as an OAuth application. For the **Redirect URI**, enter `https://api.netlify.com/auth/done`, and check the box for `api` scope.
-2. Follow the [Netlify
-   docs](https://www.netlify.com/docs/authentication-providers/#using-an-authentication-provider) to add your new GitLab Application ID and Secret to your Netlify site dashboard. 
-2. In your repository, add the following lines to your Netlify CMS `config.yml` file:
+2. Follow the [Netlify docs](https://www.netlify.com/docs/authentication-providers/#using-an-authentication-provider) to add your new GitLab Application ID and Secret to your Netlify site dashboard.
+3. In your repository, add the following lines to your Netlify CMS `config.yml` file:
 
     ```yaml
     backend:
@@ -86,7 +82,7 @@ To enable it:
 With GitLab's Implicit Grant, users can authenticate with GitLab directly from the client. To do this:
 
 1. Follow the [GitLab docs](https://docs.gitlab.com/ee/integration/oauth_provider.html#adding-an-application-through-the-profile) to add your Netlify CMS instance as an OAuth application. For the **Redirect URI**, enter the address where you access Netlify CMS, for example, `https://www.mysite.com/admin/`. For scope, select `api`.
-2. GitLab will give you an **Application ID**. Copy this and enter it in your Netlify CMS `config.yml` file, along with the following settings:
+2. GitLab gives you an **Application ID**. Copy this ID and enter it in your Netlify CMS `config.yml` file, along with the following settings:
 
     ```yaml
     backend:
@@ -109,7 +105,7 @@ With GitLab's Implicit Grant, users can authenticate with GitLab directly from t
       auth_endpoint: oauth/authorize
     ```
 
-Note that in both cases, GitLab will also provide you with a client secret. You should _never_ store this in your repo or reveal it in the client.
+**Note:** In both cases, GitLab also provides you with a client secret. You should _never_ store this in your repo or reveal it in the client.
 
 ## Bitbucket Backend
 
@@ -117,8 +113,7 @@ For repositories stored on Bitbucket, the `bitbucket` backend allows CMS users t
 
 To enable it:
 
-1. Follow the authentication provider setup steps in the [Netlify
-   docs](https://www.netlify.com/docs/authentication-providers/#using-an-authentication-provider).
+1. Follow the authentication provider setup steps in the [Netlify docs](https://www.netlify.com/docs/authentication-providers/#using-an-authentication-provider).
 2. Add the following lines to your Netlify CMS `config.yml` file:
 
     ```yaml
@@ -129,8 +124,7 @@ To enable it:
 
 ## External OAuth Clients
 
-If you would like to facilitate your own OAuth authentication rather than use Netlify's service or implicit grant, you
-can use one of the community-maintained projects below. Feel free to [submit a pull request](https://github.com/netlify/netlify-cms/blob/master/CONTRIBUTING.md) if you'd like to add yours!
+If you would like to facilitate your own OAuth authentication rather than use Netlify's service or implicit grant, you can use one of the community-maintained projects below. Feel free to [submit a pull request](https://github.com/netlify/netlify-cms/blob/master/CONTRIBUTING.md) if you'd like to add yours!
 
 | Author                                         | Supported Git hosts       | Language(s)/Platform(s) | Link                                                                                                                                         |
 | ---------------------------------------------- | ------------------------- | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |

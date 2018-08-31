@@ -12,11 +12,10 @@ The datetime widget translates a datetime picker to a datetime string. For savin
   - `default`: accepts a datetime string, or an empty string to accept blank input; otherwise defaults to current datetime
   - `format`: optional; accepts Moment.js [tokens](https://momentjs.com/docs/#/parsing/string-format/); defaults to raw Date object (if supported by output format)
 - **Example:**
-
-  ```yaml
-  - label: "Start time"
-    name: "start"
-    widget: "datetime"
-    default: ""
-    format: "LLL"
-  ```
+    ```yaml
+    - label: "Start time"
+      name: "start"
+      widget: "datetime"
+      default: ""
+      format: "LLL"
+    ```

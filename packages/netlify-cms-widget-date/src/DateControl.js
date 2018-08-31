@@ -7,7 +7,7 @@ import moment from 'moment';
 
 injectGlobal`
   ${dateTimeStyles}
-`
+`;
 
 export default class DateControl extends React.Component {
   static propTypes = {
@@ -16,10 +16,7 @@ export default class DateControl extends React.Component {
     classNameWrapper: PropTypes.string.isRequired,
     setActiveStyle: PropTypes.func.isRequired,
     setInactiveStyle: PropTypes.func.isRequired,
-    value: PropTypes.oneOfType([
-      PropTypes.object,
-      PropTypes.string,
-    ]),
+    value: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
     includeTime: PropTypes.bool,
   };
 
@@ -39,7 +36,8 @@ export default class DateControl extends React.Component {
 
   // Date is valid if datetime is a moment or Date object otherwise it's a string.
   // Handle the empty case, if the user wants to empty the field.
-  isValidDate = datetime => (moment.isMoment(datetime) || datetime instanceof Date || datetime === '');
+  isValidDate = datetime =>
+    moment.isMoment(datetime) || datetime instanceof Date || datetime === '';
 
   handleChange = datetime => {
     const { onChange } = this.props;
@@ -81,7 +79,7 @@ export default class DateControl extends React.Component {
   };
 
   render() {
-    const { includeTime, value, classNameWrapper, setActiveStyle, setInactiveStyle } = this.props;
+    const { includeTime, value, classNameWrapper, setActiveStyle } = this.props;
     return (
       <DateTime
         timeFormat={!!includeTime}

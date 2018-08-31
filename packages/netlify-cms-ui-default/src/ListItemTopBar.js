@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled from 'react-emotion';
 import Icon from './Icon';
 import { colors, lengths, buttons } from './styles';
@@ -9,7 +10,7 @@ const TopBar = styled.div`
   height: 26px;
   border-radius: ${lengths.borderRadius} ${lengths.borderRadius} 0 0;
   position: relative;
-`
+`;
 
 const TopBarButton = styled.button`
   ${buttons.button};
@@ -24,40 +25,46 @@ const TopBarButton = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
-`
+`;
 
 const TopBarButtonSpan = TopBarButton.withComponent('span');
 
-const DragIcon = styled(TopBarButtonSpan)`
+const DragIconContainer = styled(TopBarButtonSpan)`
   width: 100%;
   cursor: move;
-`
+`;
+
+const DragHandle = ({ dragHandleHOC }) => {
+  const Handle = dragHandleHOC(() => (
+    <DragIconContainer>
+      <Icon type="drag-handle" size="small" />
+    </DragIconContainer>
+  ));
+  return <Handle />;
+};
 
 const ListItemTopBar = ({ className, collapsed, onCollapseToggle, onRemove, dragHandleHOC }) => (
   <TopBar className={className}>
-    {
-      onCollapseToggle
-        ? <TopBarButton onClick={onCollapseToggle}>
-            <Icon type="chevron" size="small" direction={collapsed ? 'right' : 'down'}/>
-          </TopBarButton>
-        : null
-    }
-    {
-      dragHandleHOC
-        ? <DragIcon>
-            <Icon type="drag-handle" size="small"/>
-          </DragIcon>
-        : null
-    }
-    {
-      onRemove
-        ? <TopBarButton onClick={onRemove}>
-            <Icon type="close" size="small"/>
-          </TopBarButton>
-        : null
-    }
+    {onCollapseToggle ? (
+      <TopBarButton onClick={onCollapseToggle}>
+        <Icon type="chevron" size="small" direction={collapsed ? 'right' : 'down'} />
+      </TopBarButton>
+    ) : null}
+    {dragHandleHOC ? <DragHandle dragHandleHOC={dragHandleHOC} /> : null}
+    {onRemove ? (
+      <TopBarButton onClick={onRemove}>
+        <Icon type="close" size="small" />
+      </TopBarButton>
+    ) : null}
   </TopBar>
 );
+
+ListItemTopBar.propTypes = {
+  className: PropTypes.string,
+  collapsed: PropTypes.bool,
+  onCollapseToggle: PropTypes.func,
+  onRemove: PropTypes.func,
+};
 
 const StyledListItemTopBar = styled(ListItemTopBar)`
   display: flex;
@@ -65,6 +72,6 @@ const StyledListItemTopBar = styled(ListItemTopBar)`
   height: 26px;
   border-radius: ${lengths.borderRadius} ${lengths.borderRadius} 0 0;
   position: relative;
-`
+`;
 
 export default StyledListItemTopBar;

@@ -17,7 +17,7 @@ const CloseButton = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
-`
+`;
 
 const LibraryTitle = styled.h1`
   line-height: 36px;
@@ -25,12 +25,12 @@ const LibraryTitle = styled.h1`
   text-align: left;
   margin-bottom: 25px;
   color: ${props => props.isPrivate && colors.textFieldBorder};
-`
+`;
 
 const MediaLibraryHeader = ({ onClose, title, isPrivate }) => (
   <div>
     <CloseButton onClick={onClose}>
-      <Icon type="close"/>
+      <Icon type="close" />
     </CloseButton>
     <LibraryTitle isPrivate={isPrivate}>{title}</LibraryTitle>
   </div>

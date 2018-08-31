@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled, { css, cx } from 'react-emotion';
 import { partial, uniqueId } from 'lodash';
 import { connect } from 'react-redux';
@@ -6,7 +8,12 @@ import { colors, colorsRaw, transitions, lengths, borders } from 'netlify-cms-ui
 import { resolveWidget, getEditorComponents } from 'Lib/registry';
 import { addAsset } from 'Actions/media';
 import { query, clearSearch } from 'Actions/search';
-import { openMediaLibrary, removeInsertedMedia } from 'Actions/mediaLibrary';
+import {
+  openMediaLibrary,
+  removeInsertedMedia,
+  clearMediaControl,
+  removeMediaControl,
+} from 'Actions/mediaLibrary';
 import { getAsset } from 'Reducers';
 import Widget from './Widget';
 
@@ -89,7 +96,7 @@ const ControlContainer = styled.div`
   &:first-child {
     margin-top: 36px;
   }
-`
+`;
 
 const ControlErrorsList = styled.ul`
   list-style-type: none;
@@ -101,11 +108,42 @@ const ControlErrorsList = styled.ul`
   position: relative;
   font-weight: 600;
   top: 20px;
-`
+`;
 
-
+export const ControlHint = styled.p`
+  margin-bottom: 0;
+  padding: 3px 0;
+  font-size: 12px;
+  color: ${({ active, error }) =>
+    error ? colors.errorText : active ? colors.active : colors.controlLabel};
+  transition: color ${transitions.main};
+`;
 
 class EditorControl extends React.Component {
+  static propTypes = {
+    value: PropTypes.oneOfType([
+      PropTypes.node,
+      PropTypes.object,
+      PropTypes.string,
+      PropTypes.bool,
+    ]),
+    field: ImmutablePropTypes.map.isRequired,
+    fieldsMetaData: ImmutablePropTypes.map,
+    fieldsErrors: ImmutablePropTypes.map,
+    mediaPaths: ImmutablePropTypes.map.isRequired,
+    boundGetAsset: PropTypes.func.isRequired,
+    onChange: PropTypes.func.isRequired,
+    openMediaLibrary: PropTypes.func.isRequired,
+    addAsset: PropTypes.func.isRequired,
+    removeInsertedMedia: PropTypes.func.isRequired,
+    onValidate: PropTypes.func,
+    processControlRef: PropTypes.func,
+    query: PropTypes.func.isRequired,
+    queryHits: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+    isFetching: PropTypes.bool,
+    clearSearch: PropTypes.func.isRequired,
+  };
+
   state = {
     activeLabel: false,
   };
@@ -120,6 +158,8 @@ class EditorControl extends React.Component {
       boundGetAsset,
       onChange,
       openMediaLibrary,
+      clearMediaControl,
+      removeMediaControl,
       addAsset,
       removeInsertedMedia,
       onValidate,
@@ -132,19 +172,21 @@ class EditorControl extends React.Component {
     const widgetName = field.get('widget');
     const widget = resolveWidget(widgetName);
     const fieldName = field.get('name');
+    const fieldHint = field.get('hint');
     const uniqueFieldId = uniqueId();
     const metadata = fieldsMetaData && fieldsMetaData.get(fieldName);
     const errors = fieldsErrors && fieldsErrors.get(fieldName);
     return (
       <ControlContainer>
         <ControlErrorsList>
-          {
-            errors && errors.map(error =>
-              error.message &&
-              typeof error.message === 'string' &&
-              <li key={error.message.trim().replace(/[^a-z0-9]+/gi, '-')}>{error.message}</li>
-            )
-          }
+          {errors &&
+            errors.map(
+              error =>
+                error.message &&
+                typeof error.message === 'string' && (
+                  <li key={error.message.trim().replace(/[^a-z0-9]+/gi, '-')}>{error.message}</li>
+                ),
+            )}
         </ControlErrorsList>
         <label
           className={cx(
@@ -175,6 +217,8 @@ class EditorControl extends React.Component {
           onChange={(newValue, newMetadata) => onChange(fieldName, newValue, newMetadata)}
           onValidate={onValidate && partial(onValidate, fieldName)}
           onOpenMediaLibrary={openMediaLibrary}
+          onClearMediaControl={clearMediaControl}
+          onRemoveMediaControl={removeMediaControl}
           onRemoveInsertedMedia={removeInsertedMedia}
           onAddAsset={addAsset}
           getAsset={boundGetAsset}
@@ -190,12 +234,17 @@ class EditorControl extends React.Component {
           clearSearch={clearSearch}
           isFetching={isFetching}
         />
+        {fieldHint && (
+          <ControlHint active={this.state.styleActive} error={!!errors}>
+            {fieldHint}
+          </ControlHint>
+        )}
       </ControlContainer>
     );
   }
 }
 
-const mapStateToProps = (state, ownProps) => ({
+const mapStateToProps = state => ({
   mediaPaths: state.mediaLibrary.get('controlMedia'),
   boundGetAsset: getAsset.bind(null, state),
   isFetching: state.search.get('isFetching'),
@@ -204,6 +253,8 @@ const mapStateToProps = (state, ownProps) => ({
 
 const mapDispatchToProps = {
   openMediaLibrary,
+  clearMediaControl,
+  removeMediaControl,
   removeInsertedMedia,
   addAsset,
   query,

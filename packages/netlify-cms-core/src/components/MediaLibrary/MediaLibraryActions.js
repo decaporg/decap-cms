@@ -17,11 +17,11 @@ const styles = {
       cursor: default;
     }
   `,
-}
+};
 
 const ActionsContainer = styled.div`
   text-align: right;
-`
+`;
 
 const StyledUploadButton = styled(FileUploadButton)`
   ${styles.button};
@@ -38,8 +38,8 @@ const StyledUploadButton = styled(FileUploadButton)`
   }
 
   input {
-    height: .1px;
-    width: .1px;
+    height: 0.1px;
+    width: 0.1px;
     margin: 0;
     padding: 0;
     opacity: 0;
@@ -48,21 +48,21 @@ const StyledUploadButton = styled(FileUploadButton)`
     z-index: 0;
     outline: none;
   }
-`
+`;
 
 const DeleteButton = styled.button`
   ${styles.button};
   ${buttons.lightRed};
-`
+`;
 
 const InsertButton = styled.button`
   ${styles.button};
   ${buttons.green};
-`
+`;
 
 const LowerActionsContainer = styled.div`
   margin-top: 30px;
-`
+`;
 
 const MediaLibraryActions = ({
   uploadButtonLabel,
@@ -88,11 +88,11 @@ const MediaLibraryActions = ({
       <DeleteButton onClick={onDelete} disabled={!deleteEnabled}>
         {deleteButtonLabel}
       </DeleteButton>
-      { !insertVisible ? null :
+      {!insertVisible ? null : (
         <InsertButton onClick={onInsert} disabled={!insertEnabled}>
           {insertButtonLabel}
         </InsertButton>
-      }
+      )}
     </LowerActionsContainer>
   </ActionsContainer>
 );

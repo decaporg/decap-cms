@@ -3,6 +3,41 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="2.0.7"></a>
+## [2.0.7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/compare/netlify-cms-backend-git-gateway@2.0.6...netlify-cms-backend-git-gateway@2.0.7) (2018-08-27)
+
+
+
+
+**Note:** Version bump only for package netlify-cms-backend-git-gateway
+
+<a name="2.0.6"></a>
+## [2.0.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/compare/netlify-cms-backend-git-gateway@2.0.5...netlify-cms-backend-git-gateway@2.0.6) (2018-08-24)
+
+
+
+
+**Note:** Version bump only for package netlify-cms-backend-git-gateway
+
+<a name="2.0.5"></a>
+## [2.0.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/compare/netlify-cms-backend-git-gateway@2.0.4...netlify-cms-backend-git-gateway@2.0.5) (2018-08-07)
+
+
+### Bug Fixes
+
+* **workflow:** fix workflow entries not appearing ([#1581](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/issues/1581)) ([95c8de0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/commit/95c8de0))
+
+
+
+
+<a name="2.0.4"></a>
+## [2.0.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/compare/netlify-cms-backend-git-gateway@2.0.3...netlify-cms-backend-git-gateway@2.0.4) (2018-08-01)
+
+
+
+
+**Note:** Version bump only for package netlify-cms-backend-git-gateway
+
 <a name="2.0.3"></a>
 ## [2.0.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/compare/netlify-cms-backend-git-gateway@2.0.2...netlify-cms-backend-git-gateway@2.0.3) (2018-07-28)
 

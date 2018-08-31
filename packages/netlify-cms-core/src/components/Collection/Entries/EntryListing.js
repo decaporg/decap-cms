@@ -8,27 +8,27 @@ import { Cursor } from 'netlify-cms-lib-util';
 import { selectFields, selectInferedField } from 'Reducers/collections';
 import EntryCard from './EntryCard';
 
-const CardsGrid = styled.div`
+const CardsGrid = styled.ul`
   display: flex;
   flex-flow: row wrap;
+  list-style-type: none;
   margin-left: -12px;
-`
+`;
 
 export default class EntryListing extends React.Component {
   static propTypes = {
     publicFolder: PropTypes.string.isRequired,
-    collections: PropTypes.oneOfType([
-      ImmutablePropTypes.map,
-      ImmutablePropTypes.iterable,
-    ]).isRequired,
+    collections: ImmutablePropTypes.iterable.isRequired,
     entries: ImmutablePropTypes.list,
     viewStyle: PropTypes.string,
+    cursor: PropTypes.any.isRequired,
+    handleCursorActions: PropTypes.func.isRequired,
   };
 
   handleLoadMore = () => {
     const { cursor, handleCursorActions } = this.props;
-    if (Cursor.create(cursor).actions.has("append_next")) {
-      handleCursorActions("append_next");
+    if (Cursor.create(cursor).actions.has('append_next')) {
+      handleCursorActions('append_next');
     }
   };
 
@@ -38,7 +38,8 @@ export default class EntryListing extends React.Component {
     const imageField = selectInferedField(collection, 'image');
     const fields = selectFields(collection);
     const inferedFields = [titleField, descriptionField, imageField];
-    const remainingFields = fields && fields.filter(f => inferedFields.indexOf(f.get('name')) === -1);
+    const remainingFields =
+      fields && fields.filter(f => inferedFields.indexOf(f.get('name')) === -1);
     return { titleField, descriptionField, imageField, remainingFields };
   };
 
@@ -46,7 +47,7 @@ export default class EntryListing extends React.Component {
     const { collections, entries, publicFolder, viewStyle } = this.props;
     const inferedFields = this.inferFields(collections);
     const entryCardProps = { collection: collections, inferedFields, publicFolder, viewStyle };
-    return entries.map((entry, idx) => <EntryCard {...{ ...entryCardProps, entry, key: idx }} />);
+    return entries.map((entry, idx) => <EntryCard {...entryCardProps} entry={entry} key={idx} />);
   };
 
   renderCardsForMultipleCollections = () => {
@@ -56,8 +57,8 @@ export default class EntryListing extends React.Component {
       const collection = collections.find(coll => coll.get('name') === collectionName);
       const collectionLabel = collection.get('label');
       const inferedFields = this.inferFields(collection);
-      const entryCardProps = { collection, entry, inferedFields, publicFolder, key: idx, collectionLabel };
-      return <EntryCard {...entryCardProps} />;
+      const entryCardProps = { collection, entry, inferedFields, publicFolder, collectionLabel };
+      return <EntryCard {...entryCardProps} key={idx} />;
     });
   };
 
@@ -67,11 +68,9 @@ export default class EntryListing extends React.Component {
     return (
       <div>
         <CardsGrid>
-          {
-            Map.isMap(collections)
-              ? this.renderCardsForSingleCollection()
-              : this.renderCardsForMultipleCollections()
-          }
+          {Map.isMap(collections)
+            ? this.renderCardsForSingleCollection()
+            : this.renderCardsForMultipleCollections()}
           <Waypoint onEnter={this.handleLoadMore} />
         </CardsGrid>
       </div>

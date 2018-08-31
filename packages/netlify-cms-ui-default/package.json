@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-ui-default",
   "description": "Default UI components for Netlify CMS.",
-  "version": "2.0.2",
+  "version": "2.0.6",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
   "license": "MIT",
@@ -12,6 +12,7 @@
   "sideEffects": false,
   "scripts": {
     "watch": "webpack -w",
+    "develop": "npm run watch",
     "build": "cross-env NODE_ENV=production webpack"
   },
   "dependencies": {

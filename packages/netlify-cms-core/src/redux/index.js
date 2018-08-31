@@ -3,11 +3,12 @@ import thunkMiddleware from 'redux-thunk';
 import waitUntilAction from './middleware/waitUntilAction';
 import reducer from 'Reducers/combinedReducer';
 
-export default function configureStore(initialState) {
-  const store = createStore(reducer, initialState, compose(
+const store = createStore(
+  reducer,
+  compose(
     applyMiddleware(thunkMiddleware, waitUntilAction),
-    window.devToolsExtension ? window.devToolsExtension() : f => f
-  ));
+    window.devToolsExtension ? window.devToolsExtension() : f => f,
+  ),
+);
 
-  return store;
-}
+export default store;

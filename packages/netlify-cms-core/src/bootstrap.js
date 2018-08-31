@@ -4,12 +4,12 @@ import { Provider } from 'react-redux';
 import { Route } from 'react-router-dom';
 import { ConnectedRouter } from 'react-router-redux';
 import history from 'Routing/history';
-import configureStore from 'Redux/configureStore';
+import store from 'Redux';
 import { mergeConfig } from 'Actions/config';
-import { setStore } from 'ValueObjects/AssetProxy';
-import { ErrorBoundary } from 'UI'
+import { ErrorBoundary } from 'UI';
 import App from 'App/App';
 import 'EditorWidgets';
+import 'src/mediaLibrary';
 import 'what-input';
 
 const ROOT_ID = 'nc-root';
@@ -48,11 +48,6 @@ function bootstrap(opts = {}) {
   }
 
   /**
-   * Configure Redux store.
-   */
-  const store = configureStore();
-
-  /**
    * Dispatch config to store if received. This config will be merged into
    * config.yml if it exists, and any portion that produces a conflict will be
    * overwritten.
@@ -62,18 +57,13 @@ function bootstrap(opts = {}) {
   }
 
   /**
-   * Pass initial state into AssetProxy factory.
-   */
-  setStore(store);
-
-  /**
    * Create connected root component.
    */
   const Root = () => (
     <ErrorBoundary>
       <Provider store={store}>
         <ConnectedRouter history={history}>
-          <Route component={App}/>
+          <Route component={App} />
         </ConnectedRouter>
       </Provider>
     </ErrorBoundary>

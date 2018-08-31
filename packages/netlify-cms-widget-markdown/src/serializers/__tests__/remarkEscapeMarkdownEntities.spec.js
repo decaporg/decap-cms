@@ -3,7 +3,7 @@ import u from 'unist-builder';
 import remarkEscapeMarkdownEntities from '../remarkEscapeMarkdownEntities';
 
 const process = text => {
-  const tree = u('root', [ u('text', text) ]);
+  const tree = u('root', [u('text', text)]);
   const escapedMdast = unified()
     .use(remarkEscapeMarkdownEntities)
     .runSync(tree);
@@ -22,8 +22,9 @@ describe('remarkEscapeMarkdownEntities', () => {
     expect(process('[]')).toEqual('\\[]');
     expect(process('[]()')).toEqual('\\[]()');
     expect(process('[a](b)')).toEqual('\\[a](b)');
-    expect(process('[Test sentence.](https://www.example.com)'))
-      .toEqual('\\[Test sentence.](https://www.example.com)');
+    expect(process('[Test sentence.](https://www.example.com)')).toEqual(
+      '\\[Test sentence.](https://www.example.com)',
+    );
     expect(process('![a](b)')).toEqual('!\\[a](b)');
   });
 

@@ -14,13 +14,12 @@ The number widget uses an HTML number input, saving the value as a string, integ
   - `min`: accepts a number for minimum value accepted; unset by default
   - `max`: accepts a number for maximum value accepted; unset by default
 - **Example:**
-
-  ```yaml
-  - label: "Puppy Count"
-    name: "puppies"
-    widget: "number"
-    default: 2
-    valueType: "int"
-    min: 1
-    max: 101
-  ```
+    ```yaml
+    - label: "Puppy Count"
+      name: "puppies"
+      widget: "number"
+      default: 2
+      valueType: "int"
+      min: 1
+      max: 101
+    ```

@@ -984,6 +984,81 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "growdigital",
+      "name": "Jake Rayson",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/1061992?v=4",
+      "profile": "https://www.growdigital.org/",
+      "contributions": [
+        "code",
+        "blog",
+        "example"
+      ]
+    },
+    {
+      "login": "mittalyashu",
+      "name": "Yashu Mittal",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/29014463?v=4",
+      "profile": "https://mittalyashu.now.sh/",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "kurtgcollins",
+      "name": "Kurt collins",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/42543284?v=4",
+      "profile": "https://github.com/kurtgcollins",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "cory-wc",
+      "name": "Cory Williamson-Cardneau",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/1516558?v=4",
+      "profile": "http://cory.williamson-cardneau.com",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "cdschroeder",
+      "name": "Casey Schroeder",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/31967674?v=4",
+      "profile": "https://github.com/cdschroeder",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "MitchellCash",
+      "name": "Mitchell Cash",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/8009243?v=4",
+      "profile": "https://mitchellcash.com",
+      "contributions": [
+        "bug",
+        "doc"
+      ]
+    },
+    {
+      "login": "g-hodges",
+      "name": "Glendon Hodges",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/22135379?v=4",
+      "profile": "https://github.com/g-hodges",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "bevanmw",
+      "name": "Bevan Wentzel",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/13152809?v=4",
+      "profile": "https://github.com/bevanmw",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "repoType": "github"

@@ -1,4 +1,5 @@
-import React from 'react'
+import React from 'react';
+import PropTypes from 'prop-types';
 import styled, { css } from 'react-emotion';
 import ReactToggled from 'react-toggled';
 import { colors, colorsRaw, shadows, transitions } from './styles';
@@ -11,7 +12,7 @@ const ToggleContainer = styled.span`
   width: 40px;
   height: 20px;
   cursor: pointer;
-`
+`;
 
 const ToggleHandle = styled.span`
   ${shadows.dropDeep};
@@ -24,22 +25,23 @@ const ToggleHandle = styled.span`
   background-color: ${colorsRaw.white};
   transition: transform ${transitions.main};
 
-  ${props => props.isActive && css`
-    transform: translateX(20px);
-  `}
-`
+  ${props =>
+    props.isActive &&
+    css`
+      transform: translateX(20px);
+    `};
+`;
 
 const ToggleBackground = styled.span`
   width: 34px;
   height: 14px;
   border-radius: 10px;
   background-color: ${colors.active};
-`
+`;
 
 const Toggle = ({
   active,
   onChange,
-  renderBackground,
   onFocus,
   onBlur,
   className,
@@ -48,7 +50,7 @@ const Toggle = ({
   Handle = ToggleHandle,
 }) => (
   <ReactToggled on={active} onToggle={onChange}>
-    {({on, getElementTogglerProps}) => (
+    {({ on, getElementTogglerProps }) => (
       <Container
         role="switch"
         aria-checked={on.toString()}
@@ -57,12 +59,23 @@ const Toggle = ({
         className={className}
         {...getElementTogglerProps()}
       >
-        <Background isActive={on}/>
-        <Handle isActive={on}/>
+        <Background isActive={on} />
+        <Handle isActive={on} />
       </Container>
     )}
   </ReactToggled>
 );
+
+Toggle.propTypes = {
+  active: PropTypes.bool,
+  onChange: PropTypes.func,
+  onFocus: PropTypes.func,
+  onBlur: PropTypes.func,
+  className: PropTypes.string,
+  Container: PropTypes.func,
+  Background: PropTypes.func,
+  Handle: PropTypes.func,
+};
 
 const StyledToggle = styled(Toggle)``;
 

@@ -22,7 +22,7 @@ export default class StringControl extends React.Component {
       onChange,
       classNameWrapper,
       setActiveStyle,
-      setInactiveStyle
+      setInactiveStyle,
     } = this.props;
 
     return (

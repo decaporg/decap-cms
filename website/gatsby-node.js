@@ -43,8 +43,8 @@ exports.createPages = async ({ graphql, boundActionCreators }) => {
       path: slug,
       component: template,
       context: {
-        slug
-      }
+        slug,
+      },
     });
   });
 };
@@ -70,7 +70,7 @@ exports.onCreateNode = ({ node, boundActionCreators, getNode }) => {
       createNodeField({
         node,
         name: 'date',
-        value: date.toJSON()
+        value: date.toJSON(),
       });
     }
 
@@ -78,14 +78,14 @@ exports.onCreateNode = ({ node, boundActionCreators, getNode }) => {
     createNodeField({
       node,
       name: 'slug',
-      value: slug
+      value: slug,
     });
 
     // used to create GitHub edit link
     createNodeField({
       node,
       name: 'path',
-      value: relativePath
+      value: relativePath,
     });
   }
 };

@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 import RawEditor from './RawEditor';
 import VisualEditor from './VisualEditor';
 
@@ -19,6 +20,8 @@ export default class MarkdownControl extends React.Component {
     classNameWrapper: PropTypes.string.isRequired,
     editorControl: PropTypes.func.isRequired,
     value: PropTypes.string,
+    field: ImmutablePropTypes.map.isRequired,
+    getEditorComponents: PropTypes.func,
   };
 
   static defaultProps = {
@@ -32,12 +35,12 @@ export default class MarkdownControl extends React.Component {
     this.state = { mode: localStorage.getItem(MODE_STORAGE_KEY) || 'visual' };
   }
 
-  handleMode = (mode) => {
+  handleMode = mode => {
     this.setState({ mode });
     localStorage.setItem(MODE_STORAGE_KEY, mode);
   };
 
-  processRef = ref => this.ref = ref;
+  processRef = ref => (this.ref = ref);
 
   render() {
     const {

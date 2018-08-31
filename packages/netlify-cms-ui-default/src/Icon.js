@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled from 'react-emotion';
 import icons from './Icon/icons';
 
@@ -24,7 +25,7 @@ const IconWrapper = styled.span`
     width: 100%;
     height: 100%;
   }
-`
+`;
 
 /**
  * Calculates rotation for icons that have a `direction` property configured
@@ -41,7 +42,7 @@ const getRotation = (iconDirection, newDirection) => {
   const rotations = { right: 90, down: 180, left: 270, up: 360 };
   const degrees = rotations[newDirection] - rotations[iconDirection];
   return `${degrees}deg`;
-}
+};
 
 const sizes = {
   xsmall: '12px',
@@ -50,7 +51,7 @@ const sizes = {
   large: '32px',
 };
 
-const Icon = ({ type, direction, size = 'medium', width, height, className }) => (
+const Icon = ({ type, direction, size = 'medium', className }) => (
   <IconWrapper
     className={className}
     dangerouslySetInnerHTML={{ __html: icons[type].image }}
@@ -59,4 +60,11 @@ const Icon = ({ type, direction, size = 'medium', width, height, className }) =>
   />
 );
 
-export default styled(Icon)``
+Icon.propTypes = {
+  type: PropTypes.string.isRequired,
+  direction: PropTypes.oneOf(['right', 'down', 'left', 'up']),
+  size: PropTypes.string,
+  className: PropTypes.string,
+};
+
+export default styled(Icon)``;

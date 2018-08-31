@@ -9,4 +9,4 @@ export const EditorControlBar = styled.div`
   position: sticky;
   top: 0;
   margin-bottom: ${editorStyleVars.stickyDistanceBottom};
-`
+`;

@@ -6,21 +6,27 @@ import { AuthenticationPage, Icon } from 'netlify-cms-ui-default';
 
 const LoginButtonIcon = styled(Icon)`
   margin-right: 18px;
-`
+`;
 
 export default class BitbucketAuthenticationPage extends React.Component {
   static propTypes = {
     onLogin: PropTypes.func.isRequired,
     inProgress: PropTypes.bool,
+    base_url: PropTypes.string,
+    siteId: PropTypes.string,
+    authEndpoint: PropTypes.string,
   };
 
   state = {};
 
-  handleLogin = (e) => {
+  handleLogin = e => {
     e.preventDefault();
     const cfg = {
       base_url: this.props.base_url,
-      site_id: (document.location.host.split(':')[0] === 'localhost') ? 'cms.netlify.com' : this.props.site_id,
+      site_id:
+        document.location.host.split(':')[0] === 'localhost'
+          ? 'cms.netlify.com'
+          : this.props.siteId,
       auth_endpoint: this.props.authEndpoint,
     };
     const auth = new NetlifyAuthenticator(cfg);
@@ -44,8 +50,8 @@ export default class BitbucketAuthenticationPage extends React.Component {
         loginErrorMessage={this.state.loginError}
         renderButtonContent={() => (
           <React.Fragment>
-            <LoginButtonIcon type="bitbucket"/>
-            {inProgress ? "Logging in..." : "Login with Bitbucket"}
+            <LoginButtonIcon type="bitbucket" />
+            {inProgress ? 'Logging in...' : 'Login with Bitbucket'}
           </React.Fragment>
         )}
       />

@@ -1,6 +1,9 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 import { orderBy, map } from 'lodash';
+import { Map } from 'immutable';
 import fuzzy from 'fuzzy';
 import { resolvePath, fileExtension } from 'netlify-cms-lib-util';
 import {
@@ -8,6 +11,7 @@ import {
   persistMedia as persistMediaAction,
   deleteMedia as deleteMediaAction,
   insertMedia as insertMediaAction,
+  loadMediaDisplayURL as loadMediaDisplayURLAction,
   closeMediaLibrary as closeMediaLibraryAction,
 } from 'Actions/mediaLibrary';
 import MediaLibraryModal from './MediaLibraryModal';
@@ -16,10 +20,43 @@ import MediaLibraryModal from './MediaLibraryModal';
  * Extensions used to determine which files to show when the media library is
  * accessed from an image insertion field.
  */
-const IMAGE_EXTENSIONS_VIEWABLE = [ 'jpg', 'jpeg', 'webp', 'gif', 'png', 'bmp', 'tiff', 'svg' ];
-const IMAGE_EXTENSIONS = [ ...IMAGE_EXTENSIONS_VIEWABLE ];
+const IMAGE_EXTENSIONS_VIEWABLE = ['jpg', 'jpeg', 'webp', 'gif', 'png', 'bmp', 'tiff', 'svg'];
+const IMAGE_EXTENSIONS = [...IMAGE_EXTENSIONS_VIEWABLE];
+
+const fileShape = {
+  key: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  size: PropTypes.number.isRequired,
+  queryOrder: PropTypes.number,
+  url: PropTypes.string.isRequired,
+  urlIsPublicPath: PropTypes.bool,
+};
 
 class MediaLibrary extends React.Component {
+  static propTypes = {
+    isVisible: PropTypes.bool,
+    loadMediaDisplayURL: PropTypes.func,
+    displayURLs: ImmutablePropTypes.map,
+    canInsert: PropTypes.bool,
+    files: PropTypes.arrayOf(PropTypes.shape(fileShape)).isRequired,
+    dynamicSearch: PropTypes.bool,
+    dynamicSearchActive: PropTypes.bool,
+    forImage: PropTypes.bool,
+    isLoading: PropTypes.bool,
+    isPersisting: PropTypes.bool,
+    isDeleting: PropTypes.bool,
+    hasNextPage: PropTypes.bool,
+    isPaginating: PropTypes.bool,
+    privateUpload: PropTypes.bool,
+    loadMedia: PropTypes.func.isRequired,
+    dynamicSearchQuery: PropTypes.string,
+    page: PropTypes.number,
+    persistMedia: PropTypes.func.isRequired,
+    deleteMedia: PropTypes.func.isRequired,
+    insertMedia: PropTypes.func.isRequired,
+    publicFolder: PropTypes.string,
+    closeMediaLibrary: PropTypes.func.isRequired,
+  };
 
   /**
    * The currently selected file and query are tracked in component state as
@@ -34,7 +71,7 @@ class MediaLibrary extends React.Component {
     this.props.loadMedia();
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     /**
      * We clear old state from the media library when it's being re-opened
      * because, when doing so on close, the state is cleared while the media
@@ -44,11 +81,39 @@ class MediaLibrary extends React.Component {
     if (isOpening) {
       this.setState({ selectedFile: {}, query: '' });
     }
+  }
 
-    if (isOpening && (this.props.privateUpload !== nextProps.privateUpload)) {
-      this.props.loadMedia({ privateUpload: nextProps.privateUpload });
+  componentDidUpdate(prevProps) {
+    const isOpening = !prevProps.isVisible && this.props.isVisible;
+
+    if (isOpening && prevProps.privateUpload !== this.props.privateUpload) {
+      this.props.loadMedia({ privateUpload: this.props.privateUpload });
     }
   }
+
+  getDisplayURL = file => {
+    const { isVisible, loadMediaDisplayURL, displayURLs } = this.props;
+
+    if (!isVisible) {
+      return '';
+    }
+
+    if (file && file.url) {
+      return file.url;
+    }
+
+    const { url, isFetching } = displayURLs.get(file.id, Map()).toObject();
+
+    if (url && url !== '') {
+      return url;
+    }
+
+    if (!isFetching) {
+      loadMediaDisplayURL(file);
+    }
+
+    return '';
+  };
 
   /**
    * Filter an array of file data to include only images.
@@ -64,20 +129,24 @@ class MediaLibrary extends React.Component {
    * Transform file data for table display.
    */
   toTableData = files => {
-    const tableData = files && files.map(({ key, name, size, queryOrder, url, urlIsPublicPath }) => {
-      const ext = fileExtension(name).toLowerCase();
-      return {
-        key,
-        name,
-        type: ext.toUpperCase(),
-        size,
-        queryOrder,
-        url,
-        urlIsPublicPath,
-        isImage: IMAGE_EXTENSIONS.includes(ext),
-        isViewableImage: IMAGE_EXTENSIONS_VIEWABLE.includes(ext),
-      };
-    });
+    const tableData =
+      files &&
+      files.map(({ key, name, id, size, queryOrder, url, urlIsPublicPath, getBlobPromise }) => {
+        const ext = fileExtension(name).toLowerCase();
+        return {
+          key,
+          id,
+          name,
+          type: ext.toUpperCase(),
+          size,
+          queryOrder,
+          url,
+          urlIsPublicPath,
+          getBlobPromise,
+          isImage: IMAGE_EXTENSIONS.includes(ext),
+          isViewableImage: IMAGE_EXTENSIONS_VIEWABLE.includes(ext),
+        };
+      });
 
     /**
      * Get the sort order for use with `lodash.orderBy`, and always add the
@@ -148,10 +217,9 @@ class MediaLibrary extends React.Component {
       return;
     }
     const file = files.find(file => selectedFile.key === file.key);
-    deleteMedia(file, { privateUpload })
-      .then(() => {
-        this.setState({ selectedFile: {} });
-      });
+    deleteMedia(file, { privateUpload }).then(() => {
+      this.setState({ selectedFile: {} });
+    });
   };
 
   handleLoadMore = () => {
@@ -166,17 +234,17 @@ class MediaLibrary extends React.Component {
    * the GitHub backend, search is in-memory and occurs as the query is typed,
    * so this handler has no impact.
    */
-  handleSearchKeyDown = async (event) => {
+  handleSearchKeyDown = async event => {
     const { dynamicSearch, loadMedia, privateUpload } = this.props;
     if (event.key === 'Enter' && dynamicSearch) {
-      await loadMedia({ query: this.state.query, privateUpload })
+      await loadMedia({ query: this.state.query, privateUpload });
       this.scrollToTop();
     }
   };
 
   scrollToTop = () => {
     this.scrollContainerRef.scrollTop = 0;
-  }
+  };
 
   /**
    * Updates query state as the user types in the search field.
@@ -215,7 +283,6 @@ class MediaLibrary extends React.Component {
       isPersisting,
       isDeleting,
       hasNextPage,
-      page,
       isPaginating,
       privateUpload,
     } = this.props;
@@ -232,7 +299,6 @@ class MediaLibrary extends React.Component {
         isPersisting={isPersisting}
         isDeleting={isDeleting}
         hasNextPage={hasNextPage}
-        page={page}
         isPaginating={isPaginating}
         privateUpload={privateUpload}
         query={this.state.query}
@@ -246,9 +312,10 @@ class MediaLibrary extends React.Component {
         handlePersist={this.handlePersist}
         handleDelete={this.handleDelete}
         handleInsert={this.handleInsert}
-        setScrollContainerRef={ref => this.scrollContainerRef = ref}
+        setScrollContainerRef={ref => (this.scrollContainerRef = ref)}
         handleAssetClick={this.handleAssetClick}
         handleLoadMore={this.handleLoadMore}
+        getDisplayURL={this.getDisplayURL}
       />
     );
   }
@@ -263,6 +330,7 @@ const mapStateToProps = state => {
     isVisible: mediaLibrary.get('isVisible'),
     canInsert: mediaLibrary.get('canInsert'),
     files: mediaLibrary.get('files'),
+    displayURLs: mediaLibrary.get('displayURLs'),
     dynamicSearch: mediaLibrary.get('dynamicSearch'),
     dynamicSearchActive: mediaLibrary.get('dynamicSearchActive'),
     dynamicSearchQuery: mediaLibrary.get('dynamicSearchQuery'),
@@ -283,7 +351,11 @@ const mapDispatchToProps = {
   persistMedia: persistMediaAction,
   deleteMedia: deleteMediaAction,
   insertMedia: insertMediaAction,
+  loadMediaDisplayURL: loadMediaDisplayURLAction,
   closeMediaLibrary: closeMediaLibraryAction,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(MediaLibrary);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(MediaLibrary);

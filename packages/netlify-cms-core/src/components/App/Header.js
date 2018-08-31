@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
-import React from "react";
-import ImmutablePropTypes from "react-immutable-proptypes";
+import React from 'react';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled, { css } from 'react-emotion';
 import { NavLink } from 'react-router-dom';
 import {
@@ -21,7 +21,7 @@ const styles = {
   `,
 };
 
-const AppHeaderContainer = styled.div`
+const AppHeaderContainer = styled.header`
   z-index: 300;
 `;
 
@@ -33,7 +33,7 @@ const AppHeader = styled.div`
   background-color: ${colors.foreground};
   z-index: 300;
   height: ${lengths.topBarHeight};
-`
+`;
 
 const AppHeaderContent = styled.div`
   display: flex;
@@ -46,7 +46,9 @@ const AppHeaderContent = styled.div`
 
 const AppHeaderButton = styled.button`
   ${buttons.button};
+  background: none;
   color: #7b8290;
+  font-family: inherit;
   font-size: 16px;
   font-weight: 500;
   display: inline-flex;
@@ -58,10 +60,17 @@ const AppHeaderButton = styled.button`
     color: #b3b9c4;
   }
 
+  &:hover,
+  &:active,
+  &:focus {
+    ${styles.buttonActive};
+
+    ${Icon} {
+      ${styles.buttonActive};
+    }
+  }
+
   ${props => css`
-    &:hover,
-    &:active,
-    &:focus,
     &.${props.activeClassName} {
       ${styles.buttonActive};
 
@@ -69,15 +78,15 @@ const AppHeaderButton = styled.button`
         ${styles.buttonActive};
       }
     }
-  `}
-`
+  `};
+`;
 
 const AppHeaderNavLink = AppHeaderButton.withComponent(NavLink);
 
 const AppHeaderActions = styled.div`
   display: inline-flex;
   align-items: center;
-`
+`;
 
 const AppHeaderQuickNewButton = styled(StyledDropdownButton)`
   ${buttons.button};
@@ -88,7 +97,7 @@ const AppHeaderQuickNewButton = styled(StyledDropdownButton)`
   &:after {
     top: 11px;
   }
-`
+`;
 
 export default class Header extends React.Component {
   static propTypes = {
@@ -96,10 +105,12 @@ export default class Header extends React.Component {
     collections: ImmutablePropTypes.orderedMap.isRequired,
     onCreateEntryClick: PropTypes.func.isRequired,
     onLogoutClick: PropTypes.func.isRequired,
+    openMediaLibrary: PropTypes.func.isRequired,
+    hasWorkflow: PropTypes.bool.isRequired,
     displayUrl: PropTypes.string,
   };
 
-  handleCreatePostClick = (collectionName) => {
+  handleCreatePostClick = collectionName => {
     const { onCreateEntryClick } = this.props;
     if (onCreateEntryClick) {
       onCreateEntryClick(collectionName);
@@ -110,14 +121,16 @@ export default class Header extends React.Component {
     const {
       user,
       collections,
-      toggleDrawer,
       onLogoutClick,
       openMediaLibrary,
       hasWorkflow,
       displayUrl,
+      showMediaButton,
     } = this.props;
 
-    const avatarUrl = user.get('avatar_url');
+    const createableCollections = collections
+      .filter(collection => collection.get('create'))
+      .toList();
 
     return (
       <AppHeaderContainer>
@@ -129,39 +142,39 @@ export default class Header extends React.Component {
                 activeClassName="header-link-active"
                 isActive={(match, location) => location.pathname.startsWith('/collections/')}
               >
-                <Icon type="page"/>
+                <Icon type="page" />
                 Content
               </AppHeaderNavLink>
-              {
-                hasWorkflow
-                  ? <AppHeaderNavLink to="/workflow" activeClassName="header-link-active">
-                      <Icon type="workflow"/>
-                      Workflow
-                    </AppHeaderNavLink>
-                  : null
-              }
-              <AppHeaderButton onClick={openMediaLibrary}>
-                <Icon type="media-alt"/>
-                Media
-              </AppHeaderButton>
+              {hasWorkflow ? (
+                <AppHeaderNavLink to="/workflow" activeClassName="header-link-active">
+                  <Icon type="workflow" />
+                  Workflow
+                </AppHeaderNavLink>
+              ) : null}
+              {showMediaButton ? (
+                <AppHeaderButton onClick={openMediaLibrary}>
+                  <Icon type="media-alt" />
+                  Media
+                </AppHeaderButton>
+              ) : null}
             </nav>
             <AppHeaderActions>
-              <Dropdown
-                renderButton={() => <AppHeaderQuickNewButton>Quick add</AppHeaderQuickNewButton>}
-                dropdownTopOverlap="30px"
-                dropdownWidth="160px"
-                dropdownPosition="left"
-              >
-                {
-                  collections.filter(collection => collection.get('create')).toList().map(collection =>
+              {createableCollections.size > 0 && (
+                <Dropdown
+                  renderButton={() => <AppHeaderQuickNewButton>Quick add</AppHeaderQuickNewButton>}
+                  dropdownTopOverlap="30px"
+                  dropdownWidth="160px"
+                  dropdownPosition="left"
+                >
+                  {createableCollections.map(collection => (
                     <DropdownItem
-                      key={collection.get("name")}
-                      label={collection.get("label_singular") || collection.get("label")}
+                      key={collection.get('name')}
+                      label={collection.get('label_singular') || collection.get('label')}
                       onClick={() => this.handleCreatePostClick(collection.get('name'))}
                     />
-                  )
-                }
-              </Dropdown>
+                  ))}
+                </Dropdown>
+              )}
               <SettingsDropdown
                 displayUrl={displayUrl}
                 imageUrl={user.get('avatar_url')}

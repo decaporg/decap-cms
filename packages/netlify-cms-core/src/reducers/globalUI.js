@@ -4,12 +4,9 @@ import { Map } from 'immutable';
 * */
 const globalUI = (state = Map({ isFetching: false }), action) => {
   // Generic, global loading indicator
-  if ((action.type.indexOf('REQUEST') > -1)) {
+  if (action.type.indexOf('REQUEST') > -1) {
     return state.set('isFetching', true);
-  } else if (
-    (action.type.indexOf('SUCCESS') > -1) ||
-    (action.type.indexOf('FAILURE') > -1)
-  ) {
+  } else if (action.type.indexOf('SUCCESS') > -1 || action.type.indexOf('FAILURE') > -1) {
     return state.set('isFetching', false);
   }
   return state;

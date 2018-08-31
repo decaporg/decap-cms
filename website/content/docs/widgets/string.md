@@ -11,7 +11,6 @@ The string widget translates a basic text input to a string value. For larger te
 - **Options:**
   - `default`: accepts a string; defaults to an empty string
 - **Example:**
-
-  ```yaml
-  - {label: "Title", name: "title", widget: "string"}
-  ```
+    ```yaml
+    - {label: "Title", name: "title", widget: "string"}
+    ```

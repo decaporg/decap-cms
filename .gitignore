@@ -1,5 +1,6 @@
 dist/
 bin/
+public/
 node_modules/
 npm-debug.log
 .DS_Store
@@ -9,6 +10,7 @@ yarn-error.log
 manifest.yml
 .imdone/
 website/data/contributors.json
+cypress/videos
 /coverage/
 .cache
 *.log

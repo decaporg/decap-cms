@@ -1,15 +1,17 @@
+import { Map } from 'immutable';
 import { actions as notifActions } from 'redux-notifications';
 import { currentBackend } from 'src/backend';
 import { createAssetProxy } from 'ValueObjects/AssetProxy';
 import { selectIntegration } from 'Reducers';
 import { getIntegrationProvider } from 'Integrations';
 import { addAsset } from './media';
-import { sanitizeSlug } from "Lib/urlHelper";
+import { sanitizeSlug } from 'Lib/urlHelper';
 
 const { notifSend } = notifActions;
 
 export const MEDIA_LIBRARY_OPEN = 'MEDIA_LIBRARY_OPEN';
 export const MEDIA_LIBRARY_CLOSE = 'MEDIA_LIBRARY_CLOSE';
+export const MEDIA_LIBRARY_CREATE = 'MEDIA_LIBRARY_CREATE';
 export const MEDIA_INSERT = 'MEDIA_INSERT';
 export const MEDIA_REMOVE_INSERTED = 'MEDIA_REMOVE_INSERTED';
 export const MEDIA_LOAD_REQUEST = 'MEDIA_LOAD_REQUEST';
@@ -21,13 +23,62 @@ export const MEDIA_PERSIST_FAILURE = 'MEDIA_PERSIST_FAILURE';
 export const MEDIA_DELETE_REQUEST = 'MEDIA_DELETE_REQUEST';
 export const MEDIA_DELETE_SUCCESS = 'MEDIA_DELETE_SUCCESS';
 export const MEDIA_DELETE_FAILURE = 'MEDIA_DELETE_FAILURE';
+export const MEDIA_DISPLAY_URL_REQUEST = 'MEDIA_DISPLAY_URL_REQUEST';
+export const MEDIA_DISPLAY_URL_SUCCESS = 'MEDIA_DISPLAY_URL_SUCCESS';
+export const MEDIA_DISPLAY_URL_FAILURE = 'MEDIA_DISPLAY_URL_FAILURE';
 
-export function openMediaLibrary(payload) {
-  return { type: MEDIA_LIBRARY_OPEN, payload };
+export function createMediaLibrary(instance) {
+  const api = {
+    show: instance.show || (() => {}),
+    hide: instance.hide || (() => {}),
+    onClearControl: instance.onClearControl || (() => {}),
+    onRemoveControl: instance.onRemoveControl || (() => {}),
+    enableStandalone: instance.enableStandalone || (() => {}),
+  };
+  return { type: MEDIA_LIBRARY_CREATE, payload: api };
+}
+
+export function clearMediaControl(id) {
+  return (dispatch, getState) => {
+    const state = getState();
+    const mediaLibrary = state.mediaLibrary.get('externalLibrary');
+    if (mediaLibrary) {
+      mediaLibrary.onClearControl({ id });
+    }
+  };
+}
+
+export function removeMediaControl(id) {
+  return (dispatch, getState) => {
+    const state = getState();
+    const mediaLibrary = state.mediaLibrary.get('externalLibrary');
+    if (mediaLibrary) {
+      mediaLibrary.onRemoveControl({ id });
+    }
+  };
+}
+
+export function openMediaLibrary(payload = {}) {
+  return (dispatch, getState) => {
+    const state = getState();
+    const mediaLibrary = state.mediaLibrary.get('externalLibrary');
+    if (mediaLibrary) {
+      const { controlID: id, value, config = Map(), forImage } = payload;
+      mediaLibrary.show({ id, value, config: config.toJS(), imagesOnly: forImage });
+    }
+    dispatch({ type: MEDIA_LIBRARY_OPEN, payload });
+  };
 }
 
 export function closeMediaLibrary() {
-  return { type: MEDIA_LIBRARY_CLOSE };
+  return (dispatch, getState) => {
+    const state = getState();
+    const mediaLibrary = state.mediaLibrary.get('externalLibrary');
+    if (mediaLibrary) {
+      mediaLibrary.hide();
+    }
+    dispatch({ type: MEDIA_LIBRARY_CLOSE });
+  };
 }
 
 export function insertMedia(mediaPath) {
@@ -57,18 +108,20 @@ export function loadMedia(opts = {}) {
           privateUpload,
         };
         return dispatch(mediaLoaded(files, mediaLoadedOpts));
-      }
-      catch(error) {
+      } catch (error) {
         return dispatch(mediaLoadFailed({ privateUpload }));
       }
     }
     dispatch(mediaLoading(page));
     return new Promise(resolve => {
-      setTimeout(() => resolve(
-        backend.getMedia()
-          .then(files => dispatch(mediaLoaded(files)))
-          .catch((error) => dispatch(error.status === 404 ? mediaLoaded() : mediaLoadFailed()))
-      ));
+      setTimeout(() =>
+        resolve(
+          backend
+            .getMedia()
+            .then(files => dispatch(mediaLoaded(files)))
+            .catch(error => dispatch(error.status === 404 ? mediaLoaded() : mediaLoadFailed())),
+        ),
+      );
     }, delay);
   };
 }
@@ -107,14 +160,15 @@ export function persistMedia(file, opts = {}) {
         return dispatch(mediaPersisted(asset));
       }
       return dispatch(mediaPersisted(assetProxy.asset, { privateUpload }));
-    }
-    catch(error) {
+    } catch (error) {
       console.error(error);
-      dispatch(notifSend({
-        message: `Failed to persist media: ${ error }`,
-        kind: 'danger',
-        dismissAfter: 8000,
-      }));
+      dispatch(
+        notifSend({
+          message: `Failed to persist media: ${error}`,
+          kind: 'danger',
+          dismissAfter: 8000,
+        }),
+      );
       return dispatch(mediaPersistFailed({ privateUpload }));
     }
   };
@@ -129,34 +183,58 @@ export function deleteMedia(file, opts = {}) {
     if (integration) {
       const provider = getIntegrationProvider(state.integrations, backend.getToken, integration);
       dispatch(mediaDeleting());
-      return provider.delete(file.id)
+      return provider
+        .delete(file.id)
         .then(() => {
           return dispatch(mediaDeleted(file, { privateUpload }));
         })
         .catch(error => {
           console.error(error);
-          dispatch(notifSend({
-            message: `Failed to delete media: ${ error.message }`,
-            kind: 'danger',
-            dismissAfter: 8000,
-          }));
+          dispatch(
+            notifSend({
+              message: `Failed to delete media: ${error.message}`,
+              kind: 'danger',
+              dismissAfter: 8000,
+            }),
+          );
           return dispatch(mediaDeleteFailed({ privateUpload }));
         });
     }
     dispatch(mediaDeleting());
-    return backend.deleteMedia(state.config, file.path)
+    return backend
+      .deleteMedia(state.config, file.path)
       .then(() => {
         return dispatch(mediaDeleted(file));
       })
       .catch(error => {
         console.error(error);
-        dispatch(notifSend({
-          message: `Failed to delete media: ${ error.message }`,
-          kind: 'danger',
-          dismissAfter: 8000,
-        }));
+        dispatch(
+          notifSend({
+            message: `Failed to delete media: ${error.message}`,
+            kind: 'danger',
+            dismissAfter: 8000,
+          }),
+        );
         return dispatch(mediaDeleteFailed());
       });
+  };
+}
+
+export function loadMediaDisplayURL(file) {
+  return async dispatch => {
+    const { getBlobPromise, id } = file;
+
+    if (id && getBlobPromise) {
+      try {
+        dispatch(mediaDisplayURLRequest(id));
+        const blob = await getBlobPromise();
+        const newURL = window.URL.createObjectURL(blob);
+        dispatch(mediaDisplayURLSuccess(id, newURL));
+        return newURL;
+      } catch (err) {
+        dispatch(mediaDisplayURLFailure(id, err));
+      }
+    }
   };
 }
 
@@ -164,13 +242,13 @@ export function mediaLoading(page) {
   return {
     type: MEDIA_LOAD_REQUEST,
     payload: { page },
-  }
+  };
 }
 
 export function mediaLoaded(files, opts = {}) {
   return {
     type: MEDIA_LOAD_SUCCESS,
-    payload: { files, ...opts }
+    payload: { files, ...opts },
   };
 }
 
@@ -211,4 +289,22 @@ export function mediaDeleted(file, opts = {}) {
 export function mediaDeleteFailed(error, opts = {}) {
   const { privateUpload } = opts;
   return { type: MEDIA_DELETE_FAILURE, payload: { privateUpload } };
+}
+
+export function mediaDisplayURLRequest(key) {
+  return { type: MEDIA_DISPLAY_URL_REQUEST, payload: { key } };
+}
+
+export function mediaDisplayURLSuccess(key, url) {
+  return {
+    type: MEDIA_DISPLAY_URL_SUCCESS,
+    payload: { key, url },
+  };
+}
+
+export function mediaDisplayURLFailure(key, err) {
+  return {
+    type: MEDIA_DISPLAY_URL_FAILURE,
+    payload: { key, err },
+  };
 }

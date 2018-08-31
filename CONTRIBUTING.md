@@ -3,13 +3,26 @@
 Contributions are always welcome, no matter how large or small. Before contributing,
 please read the [code of conduct](CODE_OF_CONDUCT.md).
 
+For details on contributing to documentation, see [Website Directory Readme](https://github.com/netlify/netlify-cms/blob/master/website/README.md).
+
 ## Setup
 
 > Install yarn on your system: [https://yarnpkg.com/en/docs/install](https://yarnpkg.com/en/docs/install)
 
+### Install dependencies
+
+> Only required on the first run, subsequent runs can use `yarn start` to both
+bootstrap and run the development server.
+
 ```sh
 $ git clone https://github.com/netlify/netlify-cms
 $ cd netlify-cms
+$ yarn bootstrap
+```
+
+### Run locally
+
+```sh
 $ yarn start
 ```
 
@@ -95,30 +108,32 @@ Runs all the CMS package tests.
 yarn test
 ```
 
-## Pull Requests
+### `format`
 
-We actively welcome your pull requests.
+Formats code and docs according to our style guidelines.
 
-1. Fork the repo and create your branch from `master`.
-2. If you've added code that should be tested, add tests.
-3. If you've changed APIs, update the documentation.
-4. Ensure the test suite passes.
-5. Make sure your code lints.
-6. PR's must be rebased before merge (feel free to ask for help)
-7. PR should be reviewed by two maintainers (@erquhart, @Benaiah, @tech4him1) prior to merging.
+#### Usage
 
-## Add yourself as a contributor
-
-This project follows the [all contributors](https://github.com/kentcdodds/all-contributors) specification. To add yourself to the table of contributors on the README.md,
-please use the automated script as part of your PR:
-
-```console
-yarn run add-contributor <YOUR_GITHUB_USERNAME>
+```sh
+yarn format
 ```
 
-Follow the prompt. If you've already added yourself to the list and are making a
-new type of contribution, you can run it again and select the added contribution
-type.
+## Pull Requests
+
+We actively welcome your pull requests!
+
+If you need help with Git or our workflow, please ask on [Gitter.im](https://gitter.im/netlify/NetlifyCMS). We want your contributions even if you're just learning Git. Our maintainers are happy to help!
+
+Netlify CMS uses the [Forking Workflow](https://www.atlassian.com/git/tutorials/comparing-workflows#forking-workflow) + [Feature Branches](https://www.atlassian.com/git/tutorials/comparing-workflows#feature-branch-workflow). Additionally, PR's should be [rebased](https://www.atlassian.com/git/tutorials/merging-vs-rebasing) on master when opened, and again before merging.
+
+1. Fork the repo.
+2. Create a branch from `master`. If you're addressing a specific issue, prefix your branch name with the issue number.
+2. If you've added code that should be tested, add tests.
+3. If you've changed APIs, update the documentation.
+4. Run `yarn test` and ensure the test suite passes.
+5. Use `yarn format` to format and lint your code.
+6. PR's must be rebased before merge (feel free to ask for help).
+7. PR should be reviewed by two maintainers prior to merging.
 
 ## License
 
