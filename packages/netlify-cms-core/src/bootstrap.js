@@ -98,6 +98,22 @@ function bootstrap(opts = {}) {
           processing: '%{fieldLabel} is processing.',
         },
       },
+      editor: {
+        onLeavePage: 'Are you sure you want to leave this page?',
+        onUpdatingWithUnsavedChanges:
+          'You have unsaved changes, please save before updating status.',
+        onPublishingNotReady: 'Please update status to "Ready" before publishing.',
+        onPublishingWithUnsavedChanges: 'You have unsaved changes, please save before publishing.',
+        onPublishing: 'Are you sure you want to publish this entry?',
+        onDeleteWithUnsavedChanges:
+          'Are you sure you want to delete this published entry, as well as your unsaved changes from the current session?',
+        onDeletePublishedEntry: 'Are you sure you want to delete this published entry?',
+        onDeleteUnpublishedChangesWithUnsavedChanges:
+          'This will delete all unpublished changes to this entry, as well as your unsaved changes from the current session. Do you still want to delete?',
+        onDeleteUnpublishedChanges:
+          'All unpublished changes to this entry will be deleted. Do you still want to delete?',
+        loadingEntry: 'Loading entry...',
+      },
     },
     ui: {
       settingsDropdown: {
