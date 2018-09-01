@@ -6,7 +6,6 @@ import { ConnectedRouter } from 'react-router-redux';
 import history from 'Routing/history';
 import store from 'Redux';
 import { mergeConfig } from 'Actions/config';
-import { setStore } from 'ValueObjects/AssetProxy';
 import { I18n } from 'react-polyglot';
 import { ErrorBoundary } from 'UI';
 import App from 'App/App';
@@ -57,11 +56,6 @@ function bootstrap(opts = {}) {
   if (config) {
     store.dispatch(mergeConfig(config));
   }
-
-  /**
-   * Pass initial state into AssetProxy factory.
-   */
-  setStore(store);
 
   /**
    * Locales
