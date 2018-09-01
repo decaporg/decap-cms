@@ -85,6 +85,12 @@ function bootstrap(opts = {}) {
         logOut: 'Log Out',
       },
     },
+    collection: {
+      sidebar: {
+        collections: 'Collections',
+        searchAll: 'Search all',
+      },
+    },
   };
 
   /**

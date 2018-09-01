@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled, { css } from 'react-emotion';
+import { translate } from 'react-polyglot';
 import { NavLink } from 'react-router-dom';
 import { Icon, components, colors, colorsRaw, lengths } from 'netlify-cms-ui-default';
 import { searchCollections } from 'Actions/collections';
@@ -87,7 +88,7 @@ const SidebarNavLink = styled(NavLink)`
   }
 `;
 
-export default class Sidebar extends React.Component {
+class Sidebar extends React.Component {
   static propTypes = {
     collections: ImmutablePropTypes.orderedMap.isRequired,
     searchTerm: PropTypes.string,
@@ -114,18 +115,18 @@ export default class Sidebar extends React.Component {
   };
 
   render() {
-    const { collections } = this.props;
+    const { collections, t } = this.props;
     const { query } = this.state;
 
     return (
       <SidebarContainer>
-        <SidebarHeading>Collections</SidebarHeading>
+        <SidebarHeading>{t('collection.sidebar.collections')}</SidebarHeading>
         <SearchContainer>
           <Icon type="search" size="small" />
           <SearchInput
             onChange={e => this.setState({ query: e.target.value })}
             onKeyDown={e => e.key === 'Enter' && searchCollections(query)}
-            placeholder="Search all"
+            placeholder={t('collection.sidebar.searchAll')}
             value={query}
           />
         </SearchContainer>
@@ -134,3 +135,5 @@ export default class Sidebar extends React.Component {
     );
   }
 }
+
+export default translate()(Sidebar);
