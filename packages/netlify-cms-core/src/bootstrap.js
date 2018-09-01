@@ -90,6 +90,9 @@ function bootstrap(opts = {}) {
         collections: 'Collections',
         searchAll: 'Search all',
       },
+      collectionTop: {
+        viewAs: 'View as',
+      },
     },
   };
 

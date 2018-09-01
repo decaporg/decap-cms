@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'react-emotion';
+import { translate } from 'react-polyglot';
 import { Link } from 'react-router-dom';
 import { Icon, components, buttons, shadows, colors } from 'netlify-cms-ui-default';
 import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from 'Constants/collectionViews';
@@ -70,6 +71,7 @@ const CollectionTop = ({
   viewStyle,
   onChangeViewStyle,
   newEntryUrl,
+  t,
 }) => {
   return (
     <CollectionTopContainer>
@@ -85,7 +87,7 @@ const CollectionTop = ({
         <CollectionTopDescription>{collectionDescription}</CollectionTopDescription>
       ) : null}
       <ViewControls>
-        <ViewControlsText>View as:</ViewControlsText>
+        <ViewControlsText>{t('collection.collectionTop.viewAs')}:</ViewControlsText>
         <ViewControlsButton
           isActive={viewStyle === VIEW_STYLE_LIST}
           onClick={() => onChangeViewStyle(VIEW_STYLE_LIST)}
@@ -112,4 +114,4 @@ CollectionTop.propTypes = {
   newEntryUrl: PropTypes.string,
 };
 
-export default CollectionTop;
+export default translate()(CollectionTop);
