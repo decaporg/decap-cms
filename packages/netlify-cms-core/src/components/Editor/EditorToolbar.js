@@ -191,6 +191,7 @@ class EditorToolbar extends React.Component {
     isModification: PropTypes.bool,
     currentStatus: PropTypes.string,
     onLogoutClick: PropTypes.func.isRequired,
+    t: PropTypes.func.isRequired,
   };
 
   renderSimpleSaveControls = () => {

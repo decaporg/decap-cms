@@ -64,6 +64,7 @@ class App extends React.Component {
     useMediaLibrary: PropTypes.bool,
     openMediaLibrary: PropTypes.func.isRequired,
     showMediaButton: PropTypes.bool,
+    t: PropTypes.func.isRequired,
   };
 
   static configError(t, config) {

@@ -70,6 +70,7 @@ class Editor extends React.Component {
       pathname: PropTypes.string,
     }),
     hasChanged: PropTypes.bool,
+    t: PropTypes.func.isRequired,
   };
 
   componentDidMount() {

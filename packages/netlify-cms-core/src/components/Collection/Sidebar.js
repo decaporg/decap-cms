@@ -92,6 +92,7 @@ class Sidebar extends React.Component {
   static propTypes = {
     collections: ImmutablePropTypes.orderedMap.isRequired,
     searchTerm: PropTypes.string,
+    t: PropTypes.func.isRequired,
   };
 
   static defaultProps = {

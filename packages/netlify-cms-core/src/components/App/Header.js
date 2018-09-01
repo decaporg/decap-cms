@@ -109,6 +109,7 @@ class Header extends React.Component {
     openMediaLibrary: PropTypes.func.isRequired,
     hasWorkflow: PropTypes.bool.isRequired,
     displayUrl: PropTypes.string,
+    t: PropTypes.func.isRequired,
   };
 
   handleCreatePostClick = collectionName => {

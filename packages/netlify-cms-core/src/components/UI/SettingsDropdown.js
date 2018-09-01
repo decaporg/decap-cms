@@ -74,6 +74,7 @@ SettingsDropdown.propTypes = {
   displayUrl: PropTypes.string,
   imageUrl: PropTypes.string,
   onLogoutClick: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
 export default translate()(SettingsDropdown);

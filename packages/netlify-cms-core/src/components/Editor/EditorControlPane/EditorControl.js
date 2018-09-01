@@ -143,6 +143,7 @@ class EditorControl extends React.Component {
     queryHits: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
     isFetching: PropTypes.bool,
     clearSearch: PropTypes.func.isRequired,
+    t: PropTypes.func.isRequired,
   };
 
   state = {

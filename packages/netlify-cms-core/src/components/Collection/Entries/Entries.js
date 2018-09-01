@@ -50,6 +50,7 @@ Entries.propTypes = {
   viewStyle: PropTypes.string,
   cursor: PropTypes.any.isRequired,
   handleCursorActions: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
 export default translate()(Entries);

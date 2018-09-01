@@ -112,6 +112,7 @@ CollectionTop.propTypes = {
   viewStyle: PropTypes.oneOf([VIEW_STYLE_LIST, VIEW_STYLE_GRID]).isRequired,
   onChangeViewStyle: PropTypes.func.isRequired,
   newEntryUrl: PropTypes.string,
+  t: PropTypes.func.isRequired,
 };
 
 export default translate()(CollectionTop);
