@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled, { css } from 'react-emotion';
+import { translate } from 'react-polyglot';
 import { NavLink } from 'react-router-dom';
 import {
   Icon,
@@ -99,7 +100,7 @@ const AppHeaderQuickNewButton = styled(StyledDropdownButton)`
   }
 `;
 
-export default class Header extends React.Component {
+class Header extends React.Component {
   static propTypes = {
     user: ImmutablePropTypes.map.isRequired,
     collections: ImmutablePropTypes.orderedMap.isRequired,
@@ -125,6 +126,7 @@ export default class Header extends React.Component {
       openMediaLibrary,
       hasWorkflow,
       displayUrl,
+      t,
     } = this.props;
 
     const createableCollections = collections
@@ -142,23 +144,25 @@ export default class Header extends React.Component {
                 isActive={(match, location) => location.pathname.startsWith('/collections/')}
               >
                 <Icon type="page" />
-                Content
+                {t('app.header.content')}
               </AppHeaderNavLink>
               {hasWorkflow ? (
                 <AppHeaderNavLink to="/workflow" activeClassName="header-link-active">
                   <Icon type="workflow" />
-                  Workflow
+                  {t('app.header.workflow')}
                 </AppHeaderNavLink>
               ) : null}
               <AppHeaderButton onClick={openMediaLibrary}>
                 <Icon type="media-alt" />
-                Media
+                {t('app.header.media')}
               </AppHeaderButton>
             </nav>
             <AppHeaderActions>
               {createableCollections.size > 0 && (
                 <Dropdown
-                  renderButton={() => <AppHeaderQuickNewButton>Quick add</AppHeaderQuickNewButton>}
+                  renderButton={() => (
+                    <AppHeaderQuickNewButton> {t('app.header.quickAdd')}</AppHeaderQuickNewButton>
+                  )}
                   dropdownTopOverlap="30px"
                   dropdownWidth="160px"
                   dropdownPosition="left"
@@ -184,3 +188,5 @@ export default class Header extends React.Component {
     );
   }
 }
+
+export default translate()(Header);

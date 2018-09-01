@@ -7,6 +7,7 @@ import history from 'Routing/history';
 import configureStore from 'Redux/configureStore';
 import { mergeConfig } from 'Actions/config';
 import { setStore } from 'ValueObjects/AssetProxy';
+import { I18n } from 'react-polyglot';
 import { ErrorBoundary } from 'UI';
 import App from 'App/App';
 import 'EditorWidgets';
@@ -67,16 +68,38 @@ function bootstrap(opts = {}) {
   setStore(store);
 
   /**
+   * Locales
+   */
+  const locale = 'en';
+  const messages = {
+    app: {
+      header: {
+        content: 'Contents',
+        workflow: 'Workflow',
+        media: 'Media',
+        quickAdd: 'Quick add',
+      },
+    },
+    ui: {
+      settingsDropdown: {
+        logOut: 'Log Out',
+      },
+    },
+  };
+
+  /**
    * Create connected root component.
    */
   const Root = () => (
-    <ErrorBoundary>
-      <Provider store={store}>
-        <ConnectedRouter history={history}>
-          <Route component={App} />
-        </ConnectedRouter>
-      </Provider>
-    </ErrorBoundary>
+    <I18n locale={locale} messages={messages}>
+      <ErrorBoundary>
+        <Provider store={store}>
+          <ConnectedRouter history={history}>
+            <Route component={App} />
+          </ConnectedRouter>
+        </Provider>
+      </ErrorBoundary>
+    </I18n>
   );
 
   /**
