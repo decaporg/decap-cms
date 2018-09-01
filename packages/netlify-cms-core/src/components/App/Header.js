@@ -127,6 +127,7 @@ class Header extends React.Component {
       hasWorkflow,
       displayUrl,
       t,
+      showMediaButton,
     } = this.props;
 
     const createableCollections = collections
@@ -156,6 +157,12 @@ class Header extends React.Component {
                 <Icon type="media-alt" />
                 {t('app.header.media')}
               </AppHeaderButton>
+              {showMediaButton ? (
+                <AppHeaderButton onClick={openMediaLibrary}>
+                  <Icon type="media-alt" />
+                  Media
+                </AppHeaderButton>
+              ) : null}
             </nav>
             <AppHeaderActions>
               {createableCollections.size > 0 && (
