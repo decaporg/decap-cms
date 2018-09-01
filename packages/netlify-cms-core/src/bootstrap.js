@@ -86,6 +86,9 @@ function bootstrap(opts = {}) {
         loadingConfig: 'Loading configuration...',
         waitingBackend: 'Waiting for backend...',
       },
+      notFoundPage: {
+        header: 'Not Found',
+      },
     },
     ui: {
       settingsDropdown: {
