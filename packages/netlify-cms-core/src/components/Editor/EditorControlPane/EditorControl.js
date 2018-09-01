@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import { translate } from 'react-polyglot';
 import styled, { css, cx } from 'react-emotion';
 import { partial, uniqueId } from 'lodash';
 import { connect } from 'react-redux';
@@ -161,6 +162,7 @@ class EditorControl extends React.Component {
       queryHits,
       isFetching,
       clearSearch,
+      t,
     } = this.props;
     const widgetName = field.get('widget');
     const widget = resolveWidget(widgetName);
@@ -224,6 +226,7 @@ class EditorControl extends React.Component {
           queryHits={queryHits}
           clearSearch={clearSearch}
           isFetching={isFetching}
+          t={t}
         />
         {fieldHint && (
           <ControlHint active={this.state.styleActive} error={!!errors}>
@@ -257,4 +260,4 @@ const ConnectedEditorControl = connect(
   { withRef: true },
 )(EditorControl);
 
-export default ConnectedEditorControl;
+export default translate()(ConnectedEditorControl);

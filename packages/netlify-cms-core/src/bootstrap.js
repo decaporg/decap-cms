@@ -90,6 +90,15 @@ function bootstrap(opts = {}) {
         header: 'Not Found',
       },
     },
+    editor: {
+      editorControlPane: {
+        widget: {
+          required: '%{fieldLabel} is required.',
+          regexPattern: "%{fieldLabel} didn't match the pattern: %{pattern}.",
+          processing: '%{fieldLabel} is processing.',
+        },
+      },
+    },
     ui: {
       settingsDropdown: {
         logOut: 'Log Out',
