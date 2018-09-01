@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { hot } from 'react-hot-loader';
+import { translate } from 'react-polyglot';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from 'react-emotion';
 import { connect } from 'react-redux';
@@ -62,15 +63,15 @@ class App extends React.Component {
     openMediaLibrary: PropTypes.func.isRequired,
   };
 
-  static configError(config) {
+  static configError(t, config) {
     return (
       <ErrorContainer>
-        <h1>Error loading the CMS configuration</h1>
+        <h1>{t('app.app.errorHeader')}</h1>
 
         <div>
-          <strong>Config Errors:</strong>
+          <strong>{t('app.app.configErrors')}:</strong>
           <ErrorCodeBlock>{config.get('error')}</ErrorCodeBlock>
-          <span>Check your config.yml file.</span>
+          <span>{t('app.app.checkConfigYml')}</span>
         </div>
       </ErrorContainer>
     );
@@ -84,14 +85,14 @@ class App extends React.Component {
     this.props.dispatch(actionLoginUser(credentials));
   }
 
-  authenticating() {
+  authenticating(t) {
     const { auth } = this.props;
     const backend = currentBackend(this.props.config);
 
     if (backend == null) {
       return (
         <div>
-          <h1>Waiting for backend...</h1>
+          <h1>{t('app.app.waitingBackend')}</h1>
         </div>
       );
     }
@@ -128,6 +129,7 @@ class App extends React.Component {
       isFetching,
       publishMode,
       openMediaLibrary,
+      t,
     } = this.props;
 
     if (config === null) {
@@ -135,15 +137,15 @@ class App extends React.Component {
     }
 
     if (config.get('error')) {
-      return App.configError(config);
+      return App.configError(t, config);
     }
 
     if (config.get('isFetching')) {
-      return <Loader active>Loading configuration...</Loader>;
+      return <Loader active>{t('app.app.loadingConfig')}</Loader>;
     }
 
     if (user == null) {
-      return this.authenticating();
+      return this.authenticating(t);
     }
 
     const defaultPath = `/collections/${collections.first().get('name')}`;
@@ -212,5 +214,5 @@ export default hot(module)(
   connect(
     mapStateToProps,
     mapDispatchToProps,
-  )(App),
+  )(translate()(App)),
 );

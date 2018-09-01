@@ -79,6 +79,13 @@ function bootstrap(opts = {}) {
         media: 'Media',
         quickAdd: 'Quick add',
       },
+      app: {
+        errorHeader: 'Error loading the CMS configuration',
+        configErrors: 'Config Errors',
+        checkConfigYml: 'Check your config.yml file.',
+        loadingConfig: 'Loading configuration...',
+        waitingBackend: 'Waiting for backend...',
+      },
     },
     ui: {
       settingsDropdown: {
