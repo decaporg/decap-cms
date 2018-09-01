@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import { translate } from 'react-polyglot';
 import { Loader } from 'netlify-cms-ui-default';
 import EntryListing from './EntryListing';
 
@@ -12,8 +13,13 @@ const Entries = ({
   viewStyle,
   cursor,
   handleCursorActions,
+  t,
 }) => {
-  const loadingMessages = ['Loading Entries', 'Caching Entries', 'This might take several minutes'];
+  const loadingMessages = [
+    t('collection.entries.loadingEntries'),
+    t('collection.entries.cachingEntries'),
+    t('collection.entries.longerLoading'),
+  ];
 
   if (entries) {
     return (
@@ -46,4 +52,4 @@ Entries.propTypes = {
   handleCursorActions: PropTypes.func.isRequired,
 };
 
-export default Entries;
+export default translate()(Entries);

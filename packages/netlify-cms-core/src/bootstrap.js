@@ -93,6 +93,11 @@ function bootstrap(opts = {}) {
       collectionTop: {
         viewAs: 'View as',
       },
+      entries: {
+        loadingEntries: 'Loading Entries',
+        cachingEntries: 'Caching Entries',
+        longerLoading: 'This might take several minutes',
+      },
     },
   };
 
