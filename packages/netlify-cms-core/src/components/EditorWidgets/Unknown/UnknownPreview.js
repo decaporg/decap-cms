@@ -1,6 +1,7 @@
 import React from 'react';
 import { translate } from 'react-polyglot';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import PropTypes from 'prop-types';
 
 const UnknownPreview = ({ field, t }) => {
   return (
@@ -12,7 +13,7 @@ const UnknownPreview = ({ field, t }) => {
 
 UnknownPreview.propTypes = {
   field: ImmutablePropTypes.map,
-  t: ImmutablePropTypes.func.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
 export default translate()(UnknownPreview);

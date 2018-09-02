@@ -1,6 +1,7 @@
 import React from 'react';
 import { translate } from 'react-polyglot';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import PropTypes from 'prop-types';
 
 const UnknownControl = ({ field, t }) => {
   return (
@@ -10,7 +11,7 @@ const UnknownControl = ({ field, t }) => {
 
 UnknownControl.propTypes = {
   field: ImmutablePropTypes.map,
-  t: ImmutablePropTypes.func.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
 export default translate()(UnknownControl);
