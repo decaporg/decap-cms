@@ -18,7 +18,7 @@
     "gatsby": "next",
     "gatsby-plugin-catch-links": "next",
     "gatsby-plugin-manifest": "next",
-    "gatsby-plugin-postcss": "^1.0.0",
+    "gatsby-plugin-postcss": "next",
     "gatsby-plugin-react-helmet": "next",
     "gatsby-remark-autolink-headers": "next",
     "gatsby-remark-prismjs": "next",
