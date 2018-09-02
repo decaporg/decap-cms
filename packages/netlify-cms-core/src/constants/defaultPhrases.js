@@ -64,6 +64,14 @@ export function getPhrases() {
         ready: 'Ready',
         publishNow: 'Publish now',
       },
+      editorWidgets: {
+        unknownControl: {
+          noControl: "No control for widget '%{widget}'.",
+        },
+        unknownPreview: {
+          noPreview: "No preview for widget '%{widget}'.",
+        },
+      },
     },
     ui: {
       settingsDropdown: {
