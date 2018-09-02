@@ -6,6 +6,7 @@ import { ConnectedRouter } from 'react-router-redux';
 import history from 'Routing/history';
 import store from 'Redux';
 import { mergeConfig } from 'Actions/config';
+import { getPhrases } from 'Constants/defaultPhrases';
 import { I18n } from 'react-polyglot';
 import { ErrorBoundary } from 'UI';
 import App from 'App/App';
@@ -61,98 +62,14 @@ function bootstrap(opts = {}) {
    * Locales
    */
   const locale = 'en';
-  const messages = {
-    app: {
-      header: {
-        content: 'Contents',
-        workflow: 'Workflow',
-        media: 'Media',
-        quickAdd: 'Quick add',
-      },
-      app: {
-        errorHeader: 'Error loading the CMS configuration',
-        configErrors: 'Config Errors',
-        checkConfigYml: 'Check your config.yml file.',
-        loadingConfig: 'Loading configuration...',
-        waitingBackend: 'Waiting for backend...',
-      },
-      notFoundPage: {
-        header: 'Not Found',
-      },
-    },
-    editor: {
-      editorControlPane: {
-        widget: {
-          required: '%{fieldLabel} is required.',
-          regexPattern: "%{fieldLabel} didn't match the pattern: %{pattern}.",
-          processing: '%{fieldLabel} is processing.',
-        },
-      },
-      editor: {
-        onLeavePage: 'Are you sure you want to leave this page?',
-        onUpdatingWithUnsavedChanges:
-          'You have unsaved changes, please save before updating status.',
-        onPublishingNotReady: 'Please update status to "Ready" before publishing.',
-        onPublishingWithUnsavedChanges: 'You have unsaved changes, please save before publishing.',
-        onPublishing: 'Are you sure you want to publish this entry?',
-        onDeleteWithUnsavedChanges:
-          'Are you sure you want to delete this published entry, as well as your unsaved changes from the current session?',
-        onDeletePublishedEntry: 'Are you sure you want to delete this published entry?',
-        onDeleteUnpublishedChangesWithUnsavedChanges:
-          'This will delete all unpublished changes to this entry, as well as your unsaved changes from the current session. Do you still want to delete?',
-        onDeleteUnpublishedChanges:
-          'All unpublished changes to this entry will be deleted. Do you still want to delete?',
-        loadingEntry: 'Loading entry...',
-      },
-      editorToolbar: {
-        publishing: 'Publishing...',
-        publish: 'Publish',
-        published: 'Published',
-        publishAndCreateNew: 'Publish and create new',
-        deleteUnpublishedChanges: 'Delete unpublished changes',
-        deleteUnpublishedEntry: 'Delete unpublished entry',
-        deletePublishedEntry: 'Delete published entry',
-        deleteEntry: 'Delete entry',
-        saving: 'Saving...',
-        save: 'Save',
-        deleting: 'Deleting...',
-        updating: 'Updating...',
-        setStatus: 'Set status',
-        backCollection: ' Writing in %{collectionLabel} collection',
-        unsavedChanges: 'Unsaved Changes',
-        changesSaved: 'Changes saved',
-        draft: 'Draft',
-        inReview: 'In review',
-        ready: 'Ready',
-        publishNow: 'Publish now',
-      },
-    },
-    ui: {
-      settingsDropdown: {
-        logOut: 'Log Out',
-      },
-    },
-    collection: {
-      sidebar: {
-        collections: 'Collections',
-        searchAll: 'Search all',
-      },
-      collectionTop: {
-        viewAs: 'View as',
-      },
-      entries: {
-        loadingEntries: 'Loading Entries',
-        cachingEntries: 'Caching Entries',
-        longerLoading: 'This might take several minutes',
-      },
-    },
-  };
+
+  const phrases = getPhrases();
 
   /**
    * Create connected root component.
    */
   const Root = () => (
-    <I18n locale={locale} messages={messages}>
+    <I18n locale={locale} messages={phrases}>
       <ErrorBoundary>
         <Provider store={store}>
           <ConnectedRouter history={history}>
