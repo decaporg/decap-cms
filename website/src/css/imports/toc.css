@@ -1,0 +1,17 @@
+.toc-list {
+  margin: $tiny 0;
+  padding-left: $tiny;
+  border-left: 2px solid $lightestGrey;
+  list-style-type: none;
+}
+
+.toc-item {
+  margin: 0;
+  padding: 0;
+}
+
+.toc-link {
+  font-size: 14px;
+  font-weight: normal;
+  color: $grey;
+}

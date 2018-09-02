@@ -1,0 +1,92 @@
+.docs-nav {
+  margin-bottom: $small;
+
+  @media screen and (min-width: $tablet) {
+    height: 100%;
+    overflow-y: auto;
+  }
+}
+
+.docs-nav-btn {
+  width: 100%;
+
+  @media screen and (min-width: $tablet) {
+    display: none;
+  }
+}
+
+.docs-nav-content {
+  background-color: $lighterGrey;
+  padding: $tiny;
+  display: none;
+
+  @media screen and (min-width: $tablet) {
+    background-color: transparent;
+    display: block;
+    padding: 0;
+  }
+
+  &.is-open {
+    display: block;
+  }
+}
+
+.docs-nav-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.docs-nav-item {
+  @media screen and (min-width: $tablet) {
+    margin-bottom: $small;
+  }
+
+  /* nested */
+  .docs-nav-item {
+    @media screen and (min-width: $tablet) {
+      margin-bottom: $tiny;
+    }
+  }
+}
+
+.docs-nav-title {
+  font-weight: $bold;
+  font-size: 14px;
+
+  @media screen and (min-width: $tablet) {
+    font-size: 20px;
+    margin-bottom: $tiny;
+  }
+}
+
+.docs-nav-link {
+  display: block;
+  font-weight: $regular;
+  color: $grey;
+  line-height: 1.3;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  font-size: $tiny;
+  padding: $micro;
+
+  @media screen and (min-width: $tablet) {
+    padding: 0;
+  }
+
+  &.active {
+    color: $darkGreen;
+    font-weight: $bold;
+  }
+
+  &:hover {
+    color: $darkGreen;
+  }
+}
+
+.docs-nav-toc {
+  display: none;
+  @media screen and (min-width: $tablet) {
+    display: block;
+  }
+}

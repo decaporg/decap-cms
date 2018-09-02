@@ -1,67 +1,68 @@
 import React, { Component } from 'react';
 import Link from 'gatsby-link';
+import classnames from 'classnames';
 
-/**
- * Maually get table of contents since tableOfContents from markdown
- * nodes have code added.
- *
- * https://github.com/gatsbyjs/gatsby/issues/5436
- */
-class TableOfContents extends Component {
+import TableOfContents from './toc';
+
+import '../css/imports/docs-nav.css';
+
+class DocsNav extends Component {
   state = {
-    headings: [],
+    isOpen: false,
   };
 
-  componentDidMount() {
-    const contentHeadings = document.querySelectorAll('.docs-content h2');
-
-    const headings = [];
-    contentHeadings.forEach(h => {
-      headings.push({
-        id: h.id,
-        text: h.innerText,
-      });
-    });
-
-    this.setState({
-      headings,
-    });
-  }
+  toggleNav = () => {
+    this.setState(state => ({
+      isOpen: !state.isOpen,
+    }));
+  };
 
   render() {
-    const { headings } = this.state;
+    const { items, location } = this.props;
+    const { isOpen } = this.state;
+
     return (
-      <ul className="nav-subsections">
-        {headings.map(h => (
-          <li key={h.id}>
-            <a href={`#${h.id}`} className="subnav-link">
-              {h.text}
-            </a>
-          </li>
-        ))}
-      </ul>
+      <div className="docs-nav">
+        <button className="btn-primary docs-nav-btn" onClick={this.toggleNav}>
+          {isOpen ? <span>&times;</span> : <span>&#9776;</span>} {isOpen ? 'Hide' : 'Show'}{' '}
+          Navigation
+        </button>
+        <nav
+          className={classnames('docs-nav-content', {
+            'is-open': isOpen,
+          })}
+          id="docs-nav"
+        >
+          <ul className="docs-nav-list">
+            {items.map(item => (
+              <li className="docs-nav-item" key={item.title}>
+                <div className="docs-nav-title">{item.title}</div>
+                <ul className="docs-nav-list">
+                  {item.group.edges.map(({ node }) => (
+                    <li className="docs-nav-item" key={node.fields.slug}>
+                      <Link
+                        to={node.fields.slug}
+                        className="docs-nav-link"
+                        activeClassName="active"
+                        onClick={this.toggleNav}
+                      >
+                        {node.frontmatter.title}
+                      </Link>
+                      <div className="docs-nav-toc">
+                        {location.pathname === node.fields.slug && (
+                          <TableOfContents selector=".docs-content h2" />
+                        )}
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
     );
   }
 }
-
-const DocsNav = ({ items, location }) => (
-  <nav className="docs-nav" id="docs-nav">
-    {items.map(item => (
-      <div className="docs-nav-section" key={item.title}>
-        <div className="docs-nav-section-title">{item.title}</div>
-        <ul className="docs-nav-section-list">
-          {item.group.edges.map(({ node }) => (
-            <li className="docs-nav-item" key={node.fields.slug}>
-              <Link to={node.fields.slug} className="nav-link" activeClassName="active">
-                {node.frontmatter.title}
-              </Link>
-              {location.pathname === node.fields.slug && <TableOfContents />}
-            </li>
-          ))}
-        </ul>
-      </div>
-    ))}
-  </nav>
-);
 
 export default DocsNav;

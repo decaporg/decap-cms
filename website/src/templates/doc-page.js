@@ -6,7 +6,6 @@ import Layout from '../components/layout';
 import EditLink from '../components/edit-link';
 import Widgets from '../components/widgets';
 import DocsNav from '../components/docs-nav';
-import MobileNav from '../components/mobile-nav';
 
 import '../css/lib/prism.css';
 import '../css/imports/docs.css';
@@ -30,7 +29,6 @@ const DocPage = ({ data, location, history }) => {
         <div className="container">
           <aside id="sidebar" className="sidebar">
             <DocsNav items={docsNav} location={location} />
-            <MobileNav items={docsNav} history={history} />
           </aside>
           <article className="docs-content" id="docs-content">
             <EditLink path={page.fields.path} />
