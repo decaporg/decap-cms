@@ -11,7 +11,8 @@
   width: 100%;
 
   @media screen and (min-width: $tablet) {
-    display: none;
+    /* !important for getting around *[class^=btn-] selector .. */
+    display: none !important;
   }
 }
 
