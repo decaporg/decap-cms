@@ -270,6 +270,6 @@ const ConnectedEditorControl = connect(
   mapDispatchToProps,
   null,
   { withRef: true },
-)(EditorControl);
+)(translate()(EditorControl));
 
-export default translate()(ConnectedEditorControl);
+export default ConnectedEditorControl;
