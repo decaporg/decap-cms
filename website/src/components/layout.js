@@ -5,6 +5,7 @@ import { graphql, StaticQuery } from 'gatsby';
 import Header from './header';
 import Footer from './footer';
 
+import '../css/lib/prism.css';
 import '../css/imports/base.css';
 import '../css/imports/utilities.css';
 import '../css/imports/gitter.css';

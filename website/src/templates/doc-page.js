@@ -7,7 +7,6 @@ import EditLink from '../components/edit-link';
 import Widgets from '../components/widgets';
 import DocsNav from '../components/docs-nav';
 
-import '../css/lib/prism.css';
 import '../css/imports/docs.css';
 
 const DocPage = ({ data, location }) => {
