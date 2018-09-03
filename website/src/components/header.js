@@ -1,9 +1,11 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import Link from 'gatsby-link';
 import classnames from 'classnames';
 import { Location } from '@reach/router';
 
 import DocSearch from './docsearch';
+import Notifications from './notifications';
+import SiteNav from './site-nav';
 
 import logo from '../img/netlify-cms-logo.svg';
 
@@ -45,44 +47,22 @@ class Header extends Component {
           return (
             <header
               id="header"
-              className={classnames({
+              className={classnames('site-header', {
                 docs: isDocs,
                 blog: isBlog,
                 scrolled,
               })}
             >
-              <div className="contained">
-                <div className="logo-container">
-                  <Link to="/" className="logo">
+              <Notifications />
+              <div className="header-inner contained">
+                <div className="site-logo">
+                  <Link to="/" className="site-logo-link">
                     <img src={logo} />
                   </Link>
-                  {isDocs && <DocSearch />}
                 </div>
-                <div className="nav-container">
-                  <Link className="nav-link docs-link" to="/docs/intro">
-                    Docs
-                  </Link>
-                  <Link className="nav-link contributing-link" to="/docs/contributor-guide">
-                    Contributing
-                  </Link>
-                  <Link className="nav-link" to="/community">
-                    Community
-                  </Link>
-                  <Link className="nav-link" to="/blog">
-                    Blog
-                  </Link>
-                  <span className="gh-button">
-                    <a
-                      id="ghstars"
-                      className="github-button"
-                      href="https://github.com/netlify/netlify-cms"
-                      data-icon="octicon-star"
-                      data-show-count="true"
-                      aria-label="Star netlify/netlify-cms on GitHub"
-                    >
-                      Star
-                    </a>
-                  </span>
+                <DocSearch />
+                <div className="site-nav">
+                  <SiteNav />
                 </div>
               </div>
             </header>

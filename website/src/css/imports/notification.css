@@ -1,0 +1,30 @@
+.notification {
+  background-color: $darkerGrey;
+  box-sizing: border-box;
+  color: white;
+  display: block;
+  padding: $tiny $small;
+  text-align: center;
+
+  em {
+    font-style: normal;
+    color: #8b8b8b;
+    padding: 0 8px;
+  }
+
+  sup,
+  sub {
+    font-size: initial;
+    vertical-align: initial;
+  }
+
+  .text-link {
+    text-decoration: underline;
+    color: $green;
+  }
+
+  &.notification-loud {
+    background-color: $green;
+    color: $darkerGrey;
+  }
+}
