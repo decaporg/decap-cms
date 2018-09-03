@@ -154,14 +154,10 @@ class Header extends React.Component {
                   {t('app.header.workflow')}
                 </AppHeaderNavLink>
               ) : null}
-              <AppHeaderButton onClick={openMediaLibrary}>
-                <Icon type="media-alt" />
-                {t('app.header.media')}
-              </AppHeaderButton>
               {showMediaButton ? (
                 <AppHeaderButton onClick={openMediaLibrary}>
                   <Icon type="media-alt" />
-                  Media
+                  {t('app.header.media')}
                 </AppHeaderButton>
               ) : null}
             </nav>
