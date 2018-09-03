@@ -112,6 +112,19 @@ export function getPhrases() {
       settingsDropdown: {
         logOut: 'Log Out',
       },
+      toast: {
+        onFailToLoadEntries: 'Failed to load entry: %{details}',
+        onFailToPersist: 'Failed to persist entry: %{details}',
+        onFailToDelete: 'Failed to delete entry: %{details}',
+        onFailToUpdateStatus: 'Failed to update status: %{details}',
+        missingRequiredField:
+          "Oops, you've missed a required field. Please complete before saving.",
+        entrySaved: 'Entry saved',
+        entryPublished: 'Entry published',
+        onFailToPublishEntry: 'Failed to publish: %{details}',
+        entryUpdated: 'Entry status updated',
+        onDeleteUnpublishedChanges: 'Unpublished changes deleted',
+      },
     },
   };
 }
