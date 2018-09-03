@@ -73,6 +73,26 @@ export function getPhrases() {
         },
       },
     },
+    mediaLibrary: {
+      mediaLibrary: {
+        onDelete: 'Are you sure you want to delete selected media?',
+      },
+      mediaLibraryModal: {
+        loading: 'Loading...',
+        noResults: 'No results.',
+        noAssetsFound: 'No assets found.',
+        noImagesFound: 'No images found.',
+        private: 'Private ',
+        images: 'Images',
+        mediaAssets: 'Media assets',
+        search: 'Search...',
+        uploading: 'Uploading...',
+        uploadNew: 'Upload new',
+        deleting: 'Deleting...',
+        deleteSelected: 'Delete selected',
+        chooseSelected: 'Choose selected',
+      },
+    },
     ui: {
       settingsDropdown: {
         logOut: 'Log Out',
