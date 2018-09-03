@@ -25,6 +25,7 @@ export function getPhrases() {
       },
       collectionTop: {
         viewAs: 'View as',
+        newButton: 'New %{collectionLabel}',
       },
       entries: {
         loadingEntries: 'Loading Entries',

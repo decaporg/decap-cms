@@ -79,7 +79,9 @@ const CollectionTop = ({
         <CollectionTopHeading>{collectionLabel}</CollectionTopHeading>
         {newEntryUrl ? (
           <CollectionTopNewButton to={newEntryUrl}>
-            {`New ${collectionLabelSingular || collectionLabel}`}
+            {t('collection.collectionTop.newButton', {
+              collectionLabel: collectionLabelSingular || collectionLabel,
+            })}
           </CollectionTopNewButton>
         ) : null}
       </CollectionTopRow>
