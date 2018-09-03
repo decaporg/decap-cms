@@ -22,7 +22,7 @@ const CommunityPage = ({ data }) => {
 
   return (
     <Layout>
-      <div className="community page">
+      <div className="community-page">
         <Helmet title={title} />
         <section className="community hero">
           <div className="contained">

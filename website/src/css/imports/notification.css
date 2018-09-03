@@ -17,14 +17,9 @@
     font-size: initial;
     vertical-align: initial;
   }
+}
 
-  .text-link {
-    text-decoration: underline;
-    color: $green;
-  }
-
-  &.notification-loud {
-    background-color: $green;
-    color: $darkerGrey;
-  }
+.notification-loud {
+  background-color: $green;
+  color: $darkerGrey;
 }

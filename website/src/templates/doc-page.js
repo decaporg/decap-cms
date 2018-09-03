@@ -24,16 +24,16 @@ const DocPage = ({ data, location, history }) => {
 
   return (
     <Layout>
-      <div className="docs detail page">
+      <div className="page page-docs">
         <Helmet title={page.frontmatter.title} />
         <div className="container">
-          <aside id="sidebar" className="sidebar">
+          <aside id="sidebar" className="page-sidebar">
             <DocsNav items={docsNav} location={location} />
           </aside>
-          <article className="docs-content" id="docs-content">
+          <article className="page-content docs-content" id="docs-content">
             <EditLink path={page.fields.path} />
             <h1>{page.frontmatter.title}</h1>
-            <div dangerouslySetInnerHTML={{ __html: page.html }} />
+            <div className="typography" dangerouslySetInnerHTML={{ __html: page.html }} />
             {showWidgets && <Widgets widgets={widgets} />}
           </article>
         </div>

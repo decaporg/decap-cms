@@ -2,7 +2,7 @@ import React from 'react';
 
 const EditLink = ({ path }) => (
   <a
-    className="edit-this-page"
+    className="edit-link"
     href={`https://github.com/netlify/netlify-cms/blob/master/website/content/${path}`}
   >
     <svg

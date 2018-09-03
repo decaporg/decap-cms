@@ -1,0 +1,35 @@
+.site-search {
+  display: none;
+  position: relative;
+
+  @media screen and (min-width: 1024px) {
+    display: block;
+    width: 200px;
+    margin-right: auto;
+    margin-left: $medium;
+  }
+}
+
+.site-search-icon {
+  position: absolute;
+  top: 50%;
+  left: $micro;
+  transform: translateY(-50%);
+}
+
+.site-search-input {
+  display: block;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  border: none;
+  color: $lightGrey;
+  font-size: 16px;
+  font-weight: $regular;
+  line-height: 24px;
+  padding: $micro;
+  padding-left: 30px; /* make space for icon */
+  transition: all 0.2s ease-in-out;
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+}

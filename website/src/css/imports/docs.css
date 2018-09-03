@@ -1,139 +1,18 @@
-.docs.page,
-.blog.page {
-  padding: 69px $tiny $xl;
-  text-align: left;
-  @media screen and (min-width: $mobile) {
-    padding: 157px $medium $xl;
-  }
-
-  .sidebar {
-    @media screen and (min-width: $tablet) {
-      @neat-span-columns 6 24;
-    }
-  }
-
-  h1,
-  h2 {
-    font-size: 36px;
-    line-height: 48px;
-
-    &.intro-headline {
-      padding: 0 $small;
-      margin-bottom: 86px;
-    }
-  }
-
-  h2 {
-    font-size: $small;
-  }
-
-  h3 {
-    color: $grey;
-    font-size: 20px;
-    margin-top: $medium;
-    margin-bottom: $small;
-
-    &.inverse {
-      color: white;
-    }
-  }
-
-  .meta-info {
-    font-size: $tiny;
-  }
-
-  table {
-    width: 100%;
-    text-align: left;
-    margin: 34px 0 $medium 0;
-
-    th,
-    td {
-      padding: $micro;
-    }
-
-    th {
-      font-size: 18px;
-      font-weight: $bold;
-    }
-
-    tbody tr {
-      &:nth-child(odd) {
-        background: #fdfdfd;
-      }
-    }
-
-    td {
-      font-size: 14px;
-    }
-  }
-}
-
 .docs-content,
 .blog-content {
-  font-size: 18px;
-  line-height: 28px;
-
-  .edit-this-page {
-    float: right;
-  }
-
-  #pencil {
-    fill: #7ca511;
-  }
-
-  @media screen and (min-width: $tablet) {
-    @neat-span-columns 17 24;
-    @neat-shift 1 24;
-  }
-
-  h2:not(:first-child) {
-    margin-top: $medium;
-  }
-  p {
-    line-height: 1.7;
-  }
-
-  a {
-    text-decoration: none;
-    color: $darkGreen;
-  }
-
-  iframe {
-    width: 100%;
-  }
-
-  img {
-    max-width: 100%;
-    height: auto;
-  }
-
-  table {
-    background: #f7f7f7;
-    border-radius: $borderRadius;
-  }
-
-  pre {
-    margin: 30px -16px !important;
-    @media (min-width: $xlarge) {
-      margin-right: -120px !important;
-    }
-  }
-
-  :not(pre) > code {
-    color: inherit;
-    background: $lightestGrey;
-    border-radius: 2px;
-    padding: 2px 6px;
-    white-space: nowrap;
-  }
+  /* font-size: 18px;
+  line-height: 28px; */
 }
 
-.blog-content h1 {
+#pencil {
+  fill: #7ca511;
+}
+
+/* .blog-content h1 {
   margin-bottom: 0;
 }
 
 .blog-list-item h2 {
   margin: 48px 0 0;
   line-height: 36px;
-}
+} */

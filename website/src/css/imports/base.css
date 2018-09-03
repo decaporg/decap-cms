@@ -26,10 +26,6 @@ body {
   }
 }
 
-.page {
-  flex-grow: 1;
-}
-
 h1 {
   font-weight: $bold;
   font-size: 36px;

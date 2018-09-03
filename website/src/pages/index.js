@@ -35,7 +35,7 @@ const HomePage = ({ data }) => {
 
   return (
     <Layout>
-      <div className="landing page">
+      <div className="page page-landing">
         <section className="landing hero">
           <div className="contained">
             <div className="hero-copy">

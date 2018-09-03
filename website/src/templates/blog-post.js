@@ -12,20 +12,20 @@ const BlogPost = ({ data }) => {
 
   return (
     <Layout>
-      <div className="docs page">
+      <div className="page page-blog">
         <Helmet>
           <title>{title}</title>
           {desc && <meta name="description" content={desc} />}
         </Helmet>
         <div className="container">
-          <article className="blog-content" id="blog-content">
+          <article className="blog-content " id="blog-content">
             <div className="blog-post-header">
               <h1>{title}</h1>
               <p className="meta-info">
                 by {author} on {date}
               </p>
             </div>
-            <div dangerouslySetInnerHTML={{ __html: html }} />
+            <div className="typography" dangerouslySetInnerHTML={{ __html: html }} />
           </article>
         </div>
       </div>

@@ -8,6 +8,8 @@ import Footer from './footer';
 import '../css/imports/base.css';
 import '../css/imports/utilities.css';
 import '../css/imports/gitter.css';
+import '../css/imports/typography.css';
+import '../css/imports/page.css';
 
 const Layout = ({ children }) => {
   return (

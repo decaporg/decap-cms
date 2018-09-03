@@ -1,0 +1,32 @@
+.page {
+  padding: $large $tiny $xl;
+
+  @media screen and (min-width: $mobile) {
+    padding: $large $medium $xl;
+  }
+}
+
+.page-landing {
+  padding: 0;
+}
+
+.page-sidebar {
+  @media screen and (min-width: $tablet) {
+    @neat-span-columns 6 24;
+  }
+}
+
+.page-content {
+  @media screen and (min-width: $tablet) {
+    @neat-span-columns 17 24;
+    @neat-shift 1 24;
+  }
+}
+
+.meta-info {
+  font-size: $tiny;
+}
+
+.edit-link {
+  float: right;
+}
