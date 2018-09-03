@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
+import { StaticQuery, graphql } from 'gatsby';
 
 import '../css/imports/widgets.css';
 
-class Widgets extends Component {
+class WidgetsBox extends Component {
   state = {
     currentWidget: null,
   };
@@ -83,4 +84,29 @@ class Widgets extends Component {
   }
 }
 
-export default Widgets;
+const WidgetsContainer = () => (
+  <StaticQuery
+    query={graphql`
+      query widgets {
+        widgets: allMarkdownRemark(
+          sort: { fields: [frontmatter___label], order: ASC }
+          filter: { frontmatter: { label: { ne: null } }, fields: { slug: { regex: "/widgets/" } } }
+        ) {
+          edges {
+            node {
+              frontmatter {
+                label
+                target
+              }
+              html
+            }
+          }
+        }
+      }
+    `}
+  >
+    {data => <WidgetsBox widgets={data.widgets} />}
+  </StaticQuery>
+);
+
+export default WidgetsContainer;
