@@ -18,6 +18,20 @@ export function getPhrases() {
         header: 'Not Found',
       },
     },
+    collection: {
+      sidebar: {
+        collections: 'Collections',
+        searchAll: 'Search all',
+      },
+      collectionTop: {
+        viewAs: 'View as',
+      },
+      entries: {
+        loadingEntries: 'Loading Entries',
+        cachingEntries: 'Caching Entries',
+        longerLoading: 'This might take several minutes',
+      },
+    },
     editor: {
       editorControlPane: {
         widget: {
@@ -96,20 +110,6 @@ export function getPhrases() {
     ui: {
       settingsDropdown: {
         logOut: 'Log Out',
-      },
-    },
-    collection: {
-      sidebar: {
-        collections: 'Collections',
-        searchAll: 'Search all',
-      },
-      collectionTop: {
-        viewAs: 'View as',
-      },
-      entries: {
-        loadingEntries: 'Loading Entries',
-        cachingEntries: 'Caching Entries',
-        longerLoading: 'This might take several minutes',
       },
     },
   };
