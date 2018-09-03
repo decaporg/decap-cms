@@ -93,11 +93,6 @@
   }
 }
 
-img.responsive {
-  width: 100%;
-  height: auto;
-}
-
 .img-bg-hero {
   color: white;
   background-size: 100% auto;

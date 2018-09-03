@@ -77,6 +77,13 @@ ul {
   padding: 0;
 }
 
+img {
+  max-width: 100%;
+  height: auto;
+  vertical-align: baseline;
+  border: 0;
+}
+
 .contained {
   margin-left: auto;
   margin-right: auto;
