@@ -30,7 +30,7 @@ class VideoEmbed extends Component {
     return (
       <a className="hero-graphic" onClick={this.toggleVideo}>
         {toggled ? embedcode : imgPlaceholder}
-        {!toggled && <div className="hero-videolink"></div>}
+        {!toggled && <div className="hero-videolink"><svg className="hero-videolink-arrow" viewBox="0 0 49 58"><path d="M49,29l-49,29l0,-58l49,29Z"/></svg></div>}
       </a>
     );
   }
