@@ -63,7 +63,7 @@ export default class GitGateway {
     const backendTypeMatches = this.gatewayUrl.match(backendTypeRegex);
     if (backendTypeMatches) {
       this.backendType = backendTypeMatches[1];
-      this.gatewayUrl = this.gatewayUrl.replace(backendTypeRegex, '/');
+      this.gatewayUrl = this.gatewayUrl.replace(backendTypeRegex, '');
     } else {
       this.backendType = null;
     }
