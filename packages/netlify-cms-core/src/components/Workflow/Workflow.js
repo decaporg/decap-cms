@@ -61,6 +61,7 @@ class Workflow extends Component {
     updateUnpublishedEntryStatus: PropTypes.func.isRequired,
     publishUnpublishedEntry: PropTypes.func.isRequired,
     deleteUnpublishedEntry: PropTypes.func.isRequired,
+    t: PropTypes.func.isRequired,
   };
 
   componentDidMount() {
