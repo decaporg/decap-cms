@@ -23,7 +23,7 @@ export default class GitHub {
     this.repo = config.getIn(['backend', 'repo'], '');
     this.branch = config.getIn(['backend', 'branch'], 'master').trim();
     this.workflow_branch_prefix =
-      trim(config.getIn(['backend', 'workflow_branch_prefix'], '/ ')) || 'cms';
+      trim(config.getIn(['backend', 'workflow_branch_prefix'], ''), '/ ') || 'cms';
     this.api_root = config.getIn(['backend', 'api_root'], 'https://api.github.com');
     this.token = '';
     this.squash_merges = config.getIn(['backend', 'squash_merges']);
