@@ -131,5 +131,14 @@ export function getPhrases() {
         onDeleteUnpublishedChanges: 'Unpublished changes deleted',
       },
     },
+    workflow: {
+      workflow: {
+        loading: 'Loading Editorial Workflow Entries',
+        workflowHeading: 'Editorial Workflow',
+        newPost: 'New Post',
+        description:
+          '%{smart_count} entry waiting for review, %{readyCount} ready to go live. |||| %{smart_count} entries waiting for review, %{readyCount} ready to go live. ',
+      },
+    },
   };
 }
