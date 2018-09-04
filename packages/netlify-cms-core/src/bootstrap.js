@@ -59,17 +59,10 @@ function bootstrap(opts = {}) {
   }
 
   /**
-   * Locales
-   */
-  const locale = 'en';
-
-  const phrases = getPhrases();
-
-  /**
    * Create connected root component.
    */
   const Root = () => (
-    <I18n locale={locale} messages={phrases}>
+    <I18n locale={'en'} messages={getPhrases()}>
       <ErrorBoundary>
         <Provider store={store}>
           <ConnectedRouter history={history}>
