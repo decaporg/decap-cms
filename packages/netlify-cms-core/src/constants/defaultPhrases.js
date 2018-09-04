@@ -109,6 +109,11 @@ export function getPhrases() {
       },
     },
     ui: {
+      errorBoundary: {
+        title: 'Sorry!',
+        details: "There's been an error - please ",
+        reportIt: 'report it!',
+      },
       settingsDropdown: {
         logOut: 'Log Out',
       },
