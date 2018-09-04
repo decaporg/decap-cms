@@ -145,6 +145,16 @@ export function getPhrases() {
         publishChanges: 'Publish changes',
         publishNewEntry: 'Publish new entry',
       },
+      workflowList: {
+        onDeleteEntry: 'Are you sure you want to delete this entry?',
+        onPublishingNotReadyEntry:
+          'Only items with a "Ready" status can be published. Please drag the card to the "Ready" column to enable publishing.',
+        onPublishEntry: 'Are you sure you want to publish this entry?',
+        draftHeader: 'Drafts',
+        inReviewHeader: 'In Review',
+        readyHeader: 'Ready',
+        currentEntries: '%{smart_count} entry |||| %{smart_count} entries',
+      },
     },
   };
 }
