@@ -139,6 +139,12 @@ export function getPhrases() {
         description:
           '%{smart_count} entry waiting for review, %{readyCount} ready to go live. |||| %{smart_count} entries waiting for review, %{readyCount} ready to go live. ',
       },
+      workflowCard: {
+        deleteChanges: 'Delete changes',
+        deleteNewEntry: 'Delete new entry',
+        publishChanges: 'Publish changes',
+        publishNewEntry: 'Publish new entry',
+      },
     },
   };
 }
