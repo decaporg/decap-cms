@@ -18,6 +18,7 @@ const styles = {
 class ErrorBoundary extends React.Component {
   static propTypes = {
     children: PropTypes.node,
+    t: PropTypes.func.isRequired,
   };
 
   state = {
