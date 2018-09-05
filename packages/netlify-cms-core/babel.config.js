@@ -1,11 +1,13 @@
 const path = require('path');
 const babelConfig = require('../../babel.config.js');
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 module.exports = {
   ...babelConfig,
   plugins: [
     ...babelConfig.plugins,
-    'react-hot-loader/babel',
+    isProduction ? null : 'react-hot-loader/babel',
     [
       'module-resolver',
       {
@@ -24,5 +26,5 @@ module.exports = {
         },
       },
     ],
-  ],
+  ].filter(item => item),
 };
