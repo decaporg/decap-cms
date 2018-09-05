@@ -125,13 +125,13 @@
       border-radius: 100px;
       transition: 0.1s;
     }
-    .hero-videolink-arrow{
+    .hero-videolink-arrow {
       position: absolute;
       left: 33px;
       top: 28px;
       width: 44px;
       height: 44px;
-      fill:#3A69C7;
+      fill: #3a69c7;
     }
 
     &:hover {
@@ -140,8 +140,8 @@
         box-shadow: 0 6px 18px 0 rgba(0, 0, 0, 0.15), 0 2px 6px 0 rgba(0, 0, 0, 0.3);
         transform: scale(1.1);
       }
-      .hero-videolink-arrow{
-        fill:#fff;
+      .hero-videolink-arrow {
+        fill: #fff;
       }
     }
 
