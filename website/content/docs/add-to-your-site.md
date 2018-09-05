@@ -45,6 +45,17 @@ The first file, `admin/index.html`, is the entry point for the Netlify CMS admin
   <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
 </body>
 </html>
+
+<!--
+The main script that builds the page and powers the Netlify CMS can be included from 
+two deffirent sources,
+
+- https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js
+- https://cdn.jsdelivr.net/npm/netlify-cms@^2.0.0/dist/netlify-cms.js
+
+For any reason if the script url used above fails, the other source can be used instead.
+-->
+
 ```
 
 The second file, `admin/config.yml`, is the heart of your Netlify CMS installation, and a bit more complex. The [Configuration](#configuration) section covers the details.
