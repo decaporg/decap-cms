@@ -91,8 +91,8 @@ class App extends React.Component {
     this.props.loginUser(credentials);
   }
 
-  authenticating(t) {
-    const { auth } = this.props;
+  authenticating() {
+    const { auth, t } = this.props;
     const backend = currentBackend(this.props.config);
 
     if (backend == null) {
