@@ -1,5 +1,5 @@
 # Netlify CMS
-[![All Contributors](https://img.shields.io/badge/all_contributors-120-orange.svg)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-121-orange.svg)](#contributors)
 [![Open Source Helpers](https://www.codetriage.com/netlify/netlify-cms/badges/users.svg)](https://www.codetriage.com/netlify/netlify-cms)
 [![](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/netlify/netlifycms)
 
@@ -15,7 +15,7 @@ It presents a clean UI for editing content stored in a Git repository.
 You setup a YAML config to describe the content model of your site, and typically
 tweak the main layout of the CMS a bit to fit your own site.
 
-When a user navigates to `/admin` they'll be prompted to login, and once authenticated
+When a user navigates to `/admin/` they'll be prompted to login, and once authenticated
 they'll be able to create new content or edit existing content.
 
 Read more about Netlify CMS [Core Concepts](https://www.netlifycms.org/docs/intro/).

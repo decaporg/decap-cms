@@ -119,22 +119,29 @@
       right: 0;
       width: 90px;
       height: 90px;
-      font-size: 64px;
-      font-weight: $semibold;
-      text-align: center;
       color: $blue;
       background-color: rgba(255, 255, 255, 0.85);
       box-shadow: 0 3px 9px 0 rgba(0, 0, 0, 0.05), 0 1px 3px 0 rgba(0, 0, 0, 0.15);
       border-radius: 100px;
       transition: 0.1s;
     }
+    .hero-videolink-arrow {
+      position: absolute;
+      left: 33px;
+      top: 28px;
+      width: 44px;
+      height: 44px;
+      fill: #3a69c7;
+    }
 
     &:hover {
       .hero-videolink {
-        color: white;
         background-color: $blue;
         box-shadow: 0 6px 18px 0 rgba(0, 0, 0, 0.15), 0 2px 6px 0 rgba(0, 0, 0, 0.3);
         transform: scale(1.1);
+      }
+      .hero-videolink-arrow {
+        fill: #fff;
       }
     }
 

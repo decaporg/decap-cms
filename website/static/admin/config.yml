@@ -22,7 +22,7 @@ collections: # A list of collections the CMS should be able to edit
   - name: "blog"
     label: "Blog"
     label_singular: "Post"
-    folder: "website/site/content/blog"
+    folder: "website/content/blog"
     create: true
     fields:
       - {label: "Title", name: "title", widget: "string", tagname: "h1"}

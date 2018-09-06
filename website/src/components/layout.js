@@ -1,10 +1,10 @@
 import React, { Fragment } from 'react';
 import Helmet from 'react-helmet';
-import classnames from 'classnames';
 import { graphql, StaticQuery } from 'gatsby';
 
 import Header from './header';
 import Footer from './footer';
+import Notification from './notification';
 
 import '../css/imports/base.css';
 import '../css/imports/utilities.css';
@@ -54,15 +54,9 @@ const Layout = ({ children }) => {
               <meta name="description" content={description} />
             </Helmet>
             {notifs.map((node, i) => (
-              <a
-                key={i}
-                href={node.url}
-                className={classnames('notification', {
-                  'notification-loud': node.loud,
-                })}
-              >
+              <Notification key={i} url={node.url} loud={node.loud}>
                 {node.message}
-              </a>
+              </Notification>
             ))}
             <Header notifications={notifs} />
             {children}

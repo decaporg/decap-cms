@@ -1,7 +1,7 @@
 import GoTrue from 'gotrue-js';
 import jwtDecode from 'jwt-decode';
 import { get, pick, intersection } from 'lodash';
-import { unsentRequest } from 'netlify-cms-lib-util';
+import { APIError, unsentRequest } from 'netlify-cms-lib-util';
 import { GitHubBackend } from 'netlify-cms-backend-github';
 import { GitLabBackend } from 'netlify-cms-backend-gitlab';
 import { BitBucketBackend, API as BitBucketAPI } from 'netlify-cms-backend-bitbucket';
@@ -90,7 +90,28 @@ export default class GitGateway {
           {
             headers: { Authorization: `Bearer ${token}` },
           },
-        ).then(res => res.json());
+        ).then(async res => {
+          const contentType = res.headers.get('Content-Type');
+          if (contentType !== 'application/json' && contentType !== 'text/json') {
+            throw new APIError(
+              `Your Git Gateway backend is not returning valid settings. Please make sure it is enabled.`,
+              res.status,
+              'Git Gateway',
+            );
+          }
+
+          const body = await res.json();
+
+          if (!res.ok) {
+            throw new APIError(
+              `Git Gateway Error: ${body.message ? body.message : body}`,
+              res.status,
+              'Git Gateway',
+            );
+          }
+
+          return body;
+        });
         this.acceptRoles = roles;
         if (github_enabled) {
           this.backendType = 'github';
