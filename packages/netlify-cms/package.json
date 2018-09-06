@@ -29,6 +29,7 @@
     "netlify-cms-backend-test": "^2.0.6",
     "netlify-cms-core": "^2.0.9",
     "netlify-cms-editor-component-image": "^2.0.4",
+    "netlify-cms-media-library-uploadcare": "^0.1.0",
     "netlify-cms-widget-boolean": "^2.0.4",
     "netlify-cms-widget-date": "^2.0.5",
     "netlify-cms-widget-datetime": "^2.0.5",
