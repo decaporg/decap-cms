@@ -1,17 +1,50 @@
 ---
-title: "WIP - Netlify CMS 2.1.0 adds external media support with Uploadcare!! \U0001F389\U0001F389"
+title: "Netlify CMS 2.1.0 adds external media support with Uploadcare \U0001F389\U0001F389"
 author: Shawn Erquhart
 description: >-
   Netlify CMS 2.1.0 adds external media support with Uploadcare, allowing files
   like images and videos to be stored outside of your Git repository.
 date: 2018-09-05T20:52:30.334Z
 ---
-We've known for a long time that storing large files like images and videos in Git is suboptimal, and developers have long been requesting support for hosting these assets through external services.
+Storing large files in Git works great if you only have a few, and uploading plain images is fine if that's all your site needs. For everything else, great services like Cloudinary, Filestack, and Uploadcare exist to help you optimize and store images and other media files separately from the rest of your site. Our users have long been asking for a way to work with these kinds of services from within Netlify CMS, and we're happy to say that our latest release makes it possible!
 
-**Now you can!!**
+Feast your eyes 😻
 
-In Netlify CMS 2.1.0, you can use a supported external service for all asset hosting, and it only requires a change to your configuration.
+![Netlify CMS with external media library overlay](/img/netlify-cms-external-media-library.png)
+
+## How it works: BYOUI (Bring Your Own UI)
+
+Some services, like the ones mentioned above, provide portable interfaces that you can load into any website, like Uploadcare's [Widget](https://uploadcare.com/features/widget/), Cloudinary's [Media Library](https://cloudinary.com/documentation/media_library_widget), and Filestack's [Web Picker](https://www.filestack.com/docs/concepts/pickers/#web-picker). These libraries are generally created by the same folks that make the services, and are meant to optimally expose the unique functionality of each platform. As a bonus, the software is kept up to date with the service API's without our involvement.
+
+Since we don't have to create the UI, the actual integration with Netlify CMS can be quite small, being mostly focused on showing/hiding the media interface and retrieving the URL's for any images selected.
 
 ## First Integration: Uploadcare
 
-[Uploadcare](https://uploadcare.com) has a special place in our hearts. They're a fantastic service for hosting images and more, with tons of features and great pricing. We ended up connecting with them when, in response to customer requests, they created their own Netlify CMS integration before we even had an API to do so.
+<div style="text-align: center">
+
+![Uploadcare logo](/img/uc-logo-horizontal.svg)
+
+</div>
+
+Uploadcare came up on our radar when they built a Netlify CMS integration for their service in response to customer requests - before we made it possible, and without our assistance. They did quite a lot of work, and the result helped to show that using an external interface with Netlify CMS could work really well. Their effort also helped us form the new not-yet-public API that Netlify CMS now uses to work with external media libraries.
+
+We're super excited to honor Uploadcare's love for Netlify CMS by launching external media handling with their service as the first integration!
+
+You can play with the integration using a test account [right now](https://5b85d3054ed62f29fd759737--cms-demo.netlify.com/#/collections/posts/new), or keep reading to get Uploadcare working on your Netlify CMS site!
+
+## Get started today!
+
+Here's how to start externalizing your media with Netlify CMS and Uploadcare:
+
+1. Make sure you've [upgraded Netlify CMS](https://www.netlifycms.org/docs/update-the-cms-version/) to at least 2.1.0.
+2. Head over to Uploadcare, sign up, and get your API key ([more info](https://uploadcare.com/docs/keys/))
+3. Remove the `media_folder` property from your CMS configuration file.
+4. Add the following to your CMS configuration file:
+    ```yaml
+    media_library:
+      name: uploadcare
+      config:
+        publickey: demopublickey # replace with your publickey, or use this just to test
+    ```
+
+That's it! Check out [our docs](https://www.netlifycms.org/docs/custom-widgets/) for full details.
