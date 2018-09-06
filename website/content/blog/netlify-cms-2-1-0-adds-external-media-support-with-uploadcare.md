@@ -51,4 +51,8 @@ That's it! Check out [our docs](/docs/uploadcare/) for full details.
 
 ## Next up
 
-As mentioned previously, we have more amazing providers coming soon! Stay tuned.
+As mentioned previously, we have more amazing providers coming soon! (Looking at you, Cloudinary 😻)
+
+We'll also be finalizing and documenting the media library integration API so developers can build their own integrations for services that aren't on our radar. S3 anybody?
+
+Questions or comments? Reach out [on Gitter](https://gitter.im/netlify/netlifycms).
