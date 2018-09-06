@@ -35,7 +35,7 @@
     "postcss-nested": "^1.0.0",
     "postcss-simple-extend": "^1.0.0",
     "postcss-simple-vars-async": "^1.2.1",
-    "prismjs": "^1.14.0",
+    "prismjs": "^1.15.0",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
     "react-helmet": "^5.2.0",

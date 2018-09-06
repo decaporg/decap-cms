@@ -18,7 +18,7 @@ export const BlogPostTemplate = ({ title, author, date, body, html }) => (
       </article>
     </div>
   </div>
-)
+);
 
 const BlogPost = ({ data }) => {
   const { html, frontmatter } = data.markdownRemark;
@@ -32,7 +32,7 @@ const BlogPost = ({ data }) => {
         <title>{title}</title>
         {desc && <meta name="description" content={desc} />}
       </Helmet>
-      <BlogPostTemplate title={title} author={author} date={date} html={html}/>
+      <BlogPostTemplate title={title} author={author} date={date} html={html} />
     </Layout>
   );
 };
