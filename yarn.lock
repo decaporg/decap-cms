@@ -814,8 +814,8 @@
   resolved "https://registry.yarnpkg.com/@emotion/hash/-/hash-0.6.5.tgz#097729b84a5164f71f9acd2570ecfd1354d7b360"
 
 "@emotion/is-prop-valid@^0.6.1":
-  version "0.6.5"
-  resolved "https://registry.yarnpkg.com/@emotion/is-prop-valid/-/is-prop-valid-0.6.5.tgz#25071b70957f250e7a8a543a9a187b09161f4d1c"
+  version "0.6.7"
+  resolved "https://registry.yarnpkg.com/@emotion/is-prop-valid/-/is-prop-valid-0.6.7.tgz#1767d39c29ba786b7afc3d8d727a2896995f01eb"
   dependencies:
     "@emotion/memoize" "^0.6.5"
 
@@ -835,6 +835,10 @@
 "@emotion/stylis@^0.6.10":
   version "0.6.12"
   resolved "https://registry.yarnpkg.com/@emotion/stylis/-/stylis-0.6.12.tgz#3fb58220e0fc9e380bcabbb3edde396ddc1dfe6e"
+
+"@emotion/stylis@^0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@emotion/stylis/-/stylis-0.7.0.tgz#4c30e6fccc9555e42fa6fef98b3bd0788b954684"
 
 "@emotion/unitless@^0.6.2", "@emotion/unitless@^0.6.5":
   version "0.6.5"
@@ -1487,6 +1491,24 @@ babel-plugin-emotion@^9.2.4, babel-plugin-emotion@^9.2.6:
     "@emotion/hash" "^0.6.2"
     "@emotion/memoize" "^0.6.1"
     "@emotion/stylis" "^0.6.10"
+    babel-core "^6.26.3"
+    babel-plugin-macros "^2.0.0"
+    babel-plugin-syntax-jsx "^6.18.0"
+    convert-source-map "^1.5.0"
+    find-root "^1.1.0"
+    mkdirp "^0.5.1"
+    source-map "^0.5.7"
+    touch "^1.0.0"
+
+babel-plugin-emotion@^9.2.8:
+  version "9.2.8"
+  resolved "https://registry.yarnpkg.com/babel-plugin-emotion/-/babel-plugin-emotion-9.2.8.tgz#4df55ef10625c391f25b031f7e3006abac359e09"
+  dependencies:
+    "@babel/helper-module-imports" "7.0.0-beta.51"
+    "@emotion/babel-utils" "^0.6.4"
+    "@emotion/hash" "^0.6.2"
+    "@emotion/memoize" "^0.6.1"
+    "@emotion/stylis" "^0.7.0"
     babel-core "^6.26.3"
     babel-plugin-macros "^2.0.0"
     babel-plugin-syntax-jsx "^6.18.0"
@@ -2590,9 +2612,9 @@ create-ecdh@^4.0.0:
     bn.js "^4.1.0"
     elliptic "^6.0.0"
 
-create-emotion-styled@^9.2.6:
-  version "9.2.6"
-  resolved "https://registry.yarnpkg.com/create-emotion-styled/-/create-emotion-styled-9.2.6.tgz#25be44a298e6e49d833ecf2247836284dc9c2042"
+create-emotion-styled@^9.2.8:
+  version "9.2.8"
+  resolved "https://registry.yarnpkg.com/create-emotion-styled/-/create-emotion-styled-9.2.8.tgz#c0050e768ba439609bec108600467adf2de67cc3"
   dependencies:
     "@emotion/is-prop-valid" "^0.6.1"
 
@@ -7633,11 +7655,11 @@ react-dom@^16.0.0:
     prop-types "^15.6.0"
 
 react-emotion@^9.2.5:
-  version "9.2.6"
-  resolved "https://registry.yarnpkg.com/react-emotion/-/react-emotion-9.2.6.tgz#3941f78779f9a8ad8300042ddfa9b2cb111442c2"
+  version "9.2.8"
+  resolved "https://registry.yarnpkg.com/react-emotion/-/react-emotion-9.2.8.tgz#e4e24540bdcb7daacf87c405760ed619bddbb61b"
   dependencies:
-    babel-plugin-emotion "^9.2.6"
-    create-emotion-styled "^9.2.6"
+    babel-plugin-emotion "^9.2.8"
+    create-emotion-styled "^9.2.8"
 
 react-frame-component@^2.0.0:
   version "2.0.2"
