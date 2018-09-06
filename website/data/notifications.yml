@@ -25,7 +25,8 @@ notifications:
     title: 2.0 announcement
     url: >-
       /blog/2018/07/netlify-cms-2-0-launches-with-bitbucket-support-and-a-new-monorepo-architecture
-  - message: 2.1.0 release is out with external media library support!
+  - loud: true
+    message: 2.1.0 release is out with external media library support!
     published: true
     title: 2.1.0 - external media libraries
     url: >-
