@@ -1,11 +1,9 @@
 ---
 title: Uploadcare
-weight: 10
 group: media
+weight: 10
 ---
-
-Uploadcare is a sleek service that allows you to upload files needed without worrying about
-maintaining a growing collection - more of an asset store than a library. Just upload when you need
+Uploadcare is a sleek service that allows you to upload files without worrying about maintaining a growing collection - more of an asset store than a library. Just upload when you need
 to, and the files are hosted on their CDN. They provide image processing controls from simple
 cropping and rotation to filters and face detection, and a lot more. You can check out Uploadcare's
 full feature set on their [website](https://uploadcare.com/).
