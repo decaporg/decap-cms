@@ -1,4 +1,7 @@
 updates:
+  - date: 2018-09-06T18:48:13.703Z
+    description: "External media library support \U0001F389\U0001F389"
+    version: 2.1.0
   - date: '2018-08-27'
     description: Fix sortable list bugs in the editor
     version: 2.0.11
@@ -126,6 +129,3 @@ updates:
       The first major release of Netlify CMS with an all-new UI, revamped
       documentation and much more.
     version: 1.0.0
-  - date: 2018-09-06T18:48:13.703Z
-    description: "External media library support \U0001F389\U0001F389"
-    version: 2.1.0
