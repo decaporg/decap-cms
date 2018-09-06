@@ -28,6 +28,5 @@
   },
   "peerDependencies": {
     "netlify-cms-lib-util": "^2.0.4"
-  },
-  "private": true
+  }
 }
