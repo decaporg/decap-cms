@@ -1,5 +1,5 @@
 ---
-title: "Netlify CMS 2.1.0 adds external media support with Uploadcare \U0001F389\U0001F389"
+title: Netlify CMS 2.1.0 adds external media support with Uploadcare
 author: Shawn Erquhart
 description: >-
   Netlify CMS 2.1.0 adds external media support with Uploadcare, allowing files
