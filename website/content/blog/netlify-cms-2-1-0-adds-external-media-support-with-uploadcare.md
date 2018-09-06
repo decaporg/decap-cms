@@ -40,11 +40,15 @@ Here's how to start externalizing your media with Netlify CMS and Uploadcare:
 2. Head over to Uploadcare, sign up, and get your API key ([more info](https://uploadcare.com/docs/keys/))
 3. Remove the `media_folder` property from your CMS configuration file.
 4. Add the following to your CMS configuration file:
-    ```yaml
-    media_library:
-      name: uploadcare
-      config:
-        publickey: demopublickey # replace with your publickey, or use this just to test
-    ```
+   ```yaml
+   media_library:
+     name: uploadcare
+     config:
+       publickey: demopublickey # replace with your publickey, or use this just to test
+   ```
 
 That's it! Check out [our docs](/docs/uploadcare/) for full details.
+
+## Next up
+
+As mentioned previously, we have more amazing providers coming soon! Stay tuned.
