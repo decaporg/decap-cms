@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="2.1.0"></a>
+# [2.1.0](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.0.11...netlify-cms@2.1.0) (2018-09-06)
+
+
+### Features
+
+* **media:** add external media library support, Uploadcare integration ([#1602](https://github.com/netlify/netlify-cms/issues/1602)) ([0596904](https://github.com/netlify/netlify-cms/commit/0596904))
+
+
+
+
 <a name="2.0.11"></a>
 ## [2.0.11](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.0.10...netlify-cms@2.0.11) (2018-08-27)
 
