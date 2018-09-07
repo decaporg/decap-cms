@@ -7,15 +7,30 @@ group: start
 You can add Netlify CMS [to an existing site](/docs/add-to-your-site/), but the quickest way to get started is with a template.  Found below, our featured templates deploy to Netlify, giving you a fully working CMS-enabled site with just a few clicks.
 
 <div style="display: flex; justify-content: space-around; text-align: center; margin-bottom: 1.5em;">
-    <div>
+    <div style="flex-basis: 33.3%">
+        <div style="padding: 0 30%; height: 100px; display: flex; justify-content: center;">
+          <a style="display: flex" href="https://gohugo.io"><img src="/img/hugo.svg"/></a>
+        </div>
         <h4>Hugo Site Starter</h4>
         <p><a href="https://app.netlify.com/start/deploy?repository=https://github.com/netlify-templates/one-click-hugo-cms&amp;stack=cms"><img src="https://www.netlify.com/img/deploy/button.svg" alt="Deploy to Netlify" /></a></p>
     </div>
-    <div>
+    <div style="flex-basis: 33.3%">
+        <div style="padding: 0 30%; height: 100px; display: flex; justify-content: center;">
+          <a style="display: flex" href="https://next.gatsbyjs.org"><img src="/img/gatsby.svg"/></a>
+        </div>
         <h4>Gatsby Site Starter</h4>
         <p><a href="https://app.netlify.com/start/deploy?repository=https://github.com/AustinGreen/gatsby-starter-netlify-cms&amp;stack=cms"><img src="https://www.netlify.com/img/deploy/button.svg" alt="Deploy to Netlify" /></a></p>
+        <p style="font-size: 16px; padding: 0 10%;">
+          <em>
+            <strong>Note:</strong>
+            This starter uses the <a href="https://www.gatsbyjs.org/blog/2018-06-16-announcing-gatsby-v2-beta-launch/">Gatsby v2 beta</a>
+          </em>
+        </p>
     </div>
-    <div>
+    <div style="flex-basis: 33.3%">
+        <div style="padding: 0 30%; height: 100px; display: flex; justify-content: center;">
+          <a style="display: flex" href="https://middlemanapp.com"><img src="/img/middleman.svg"/></a>
+        </div>
         <h4>Middleman Site Starter</h4>
         <p><a href="https://app.netlify.com/start/deploy?repository=https://github.com/tomrutgers/middleman-starter-netlify-cms&amp;stack=cms"><img src="https://www.netlify.com/img/deploy/button.svg" alt="Deploy to Netlify" /></a></p>
     </div>
