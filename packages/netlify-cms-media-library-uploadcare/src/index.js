@@ -113,8 +113,10 @@ async function init({ options = { config: {} }, handleInsert }) {
      * On show, create a new widget, cache it in the widgets object, and open.
      * No hide method is provided because the widget doesn't provide it.
      */
-    show: ({ value, config: instanceConfig = {}, imagesOnly }) => {
+    show: ({ value, config: instanceConfig = {}, allowMultiple, imagesOnly }) => {
       const config = { ...baseConfig, imagesOnly, ...instanceConfig };
+      const multiple = allowMultiple === false ? false : !!config.multiple;
+      const resolvedConfig = { ...config, multiple };
       const files = getFiles(value);
 
       /**
@@ -122,9 +124,9 @@ async function init({ options = { config: {} }, handleInsert }) {
        * from the Uploadcare library will have a `state` method.
        */
       if (files && !files.state) {
-        files.then(result => openDialog(result, config, handleInsert));
+        files.then(result => openDialog(result, resolvedConfig, handleInsert));
       } else {
-        openDialog(files, config, handleInsert);
+        openDialog(files, resolvedConfig, handleInsert);
       }
     },
 

@@ -56,5 +56,12 @@ export const selectUnpublishedEntriesByStatus = (state, status) =>
 export const selectIntegration = (state, collection, hook) =>
   fromIntegrations.selectIntegration(state.integrations, collection, hook);
 
-export const getAsset = (state, path) =>
-  fromMedias.getAsset(state.config.get('public_folder'), state.medias, path);
+export const getAsset = (state, path) => {
+  /**
+   * If an external media library is in use, just return the path.
+   */
+  if (state.mediaLibrary.get('externalLibrary')) {
+    return path;
+  }
+  return fromMedias.getAsset(state.config.get('public_folder'), state.medias, path);
+};
