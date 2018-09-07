@@ -44,7 +44,7 @@ Here's how to start externalizing your media with Netlify CMS and Uploadcare:
    media_library:
      name: uploadcare
      config:
-       publickey: demopublickey # replace with your publickey, or use this just to test
+       publicKey: demopublickey # replace with your publickey, or use this just to test
    ```
 
 That's it! Check out [our docs](/docs/uploadcare/) for full details.
