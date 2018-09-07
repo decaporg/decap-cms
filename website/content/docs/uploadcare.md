@@ -38,7 +38,7 @@ Your `config.yml` should now include something like this (except with a real API
 media_library:
   name: uploadcare
   config:
-    publickey: demopublickey
+    publicKey: demopublickey
 ```
 
 Once you've finished updating your Netlify CMS configuration, the Uploadcare widget will appear when
