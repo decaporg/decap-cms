@@ -26,7 +26,8 @@ const BlogPost = ({ data }) => {
   const { html, frontmatter } = data.markdownRemark;
   const { author, title, date, description, meta_description, twitter_image } = frontmatter;
   const { siteUrl } = data.site.siteMetadata;
-  const twitterImageUrl = twitter_image && `${trimEnd(siteUrl, '/')}/${trimStart(twitter_image, '/')}`;
+  const twitterImageUrl =
+    twitter_image && `${trimEnd(siteUrl, '/')}/${trimStart(twitter_image, '/')}`;
 
   const desc = meta_description || description;
 
