@@ -8,7 +8,7 @@ You can add Netlify CMS [to an existing site](/docs/add-to-your-site/), but the 
 
 <div style="display: flex; justify-content: space-around; text-align: center; margin-bottom: 1.5em;">
     <div style="flex-basis: 33.3%">
-        <div style="padding: 0 30%; height: 100px; display: flex; justify-content: center;">
+        <div style="padding: 0 15%; height: 100px; display: flex; justify-content: center;">
           <a style="display: flex" href="https://gohugo.io"><img src="/img/hugo.svg"/></a>
         </div>
         <h4>Hugo Site Starter</h4>
