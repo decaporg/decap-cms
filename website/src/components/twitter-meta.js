@@ -1,7 +1,7 @@
 import React from 'react';
 import Helmet from 'react-helmet';
 
-const TwitterMeta = ({ title, description, image, imageAlt }) => !console.log(image) &&
+const TwitterMeta = ({ title, description, image, imageAlt }) =>
   <Helmet>
     <meta name="twitter:card" content="summary_large_image"/>
     <meta name="twitter:site" content="@netlifycms"/>

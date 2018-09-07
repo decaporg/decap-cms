@@ -5,6 +5,7 @@ description: >-
   Netlify CMS 2.1.0 adds external media support with Uploadcare, allowing files
   like images and videos to be stored outside of your Git repository.
 date: 2018-09-05T20:52:30.334Z
+twitter_image: /img/netlify-cms-external-media-library.png
 ---
 Storing large files in Git works great if you only have a few, and uploading plain images is fine if that's all your site needs. For everything else, great services like Cloudinary, Filestack, and Uploadcare exist to help you optimize and store images and other media files separately from the rest of your site. Our users have long been asking for a way to work with these kinds of services from within Netlify CMS, and we're happy to say that our latest release makes it possible!
 
