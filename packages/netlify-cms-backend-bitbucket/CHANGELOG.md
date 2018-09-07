@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="2.0.7"></a>
+## [2.0.7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/compare/netlify-cms-backend-bitbucket@2.0.6...netlify-cms-backend-bitbucket@2.0.7) (2018-09-06)
+
+
+### Bug Fixes
+
+* **bitbucket:** setting site_id for BitBucket auth ([#1660](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/issues/1660)) ([d139ac4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/commit/d139ac4))
+
+
+
+
 <a name="2.0.6"></a>
 ## [2.0.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/compare/netlify-cms-backend-bitbucket@2.0.5...netlify-cms-backend-bitbucket@2.0.6) (2018-08-27)
 

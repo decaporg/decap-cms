@@ -120,3 +120,28 @@ Template tags produce the following output:
 - `{{collection}}`: the name of the collection containing the entry changed
 
 - `{{path}}`: the full path to the file changed
+
+## Custom Editorial Workflow branch name prefixes
+
+When using [editorial workflow](), a branch is created for each entry. By default the branch name
+follows this template:
+
+```
+cms/{{slug}}
+```
+
+You can customize the `cms` portion by setting `workflow_branch_prefix` under `backend` in your
+`config.yml`:
+
+```yaml
+backend:
+  name: some-backend
+  branch: dev
+  workflow_branch_prefix: cms-dev
+```
+
+The above configuration would change the branch name template to:
+
+```
+cms-dev/{{slug}}
+```

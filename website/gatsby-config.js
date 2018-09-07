@@ -16,6 +16,10 @@ module.exports = {
           title: 'Guides',
         },
         {
+          name: 'media',
+          title: 'Media',
+        },
+        {
           name: 'reference',
           title: 'Reference',
         },
@@ -56,6 +60,12 @@ module.exports = {
     'gatsby-plugin-postcss',
     'gatsby-plugin-react-helmet',
     'gatsby-plugin-catch-links',
+    {
+      resolve: 'gatsby-plugin-netlify-cms',
+      options: {
+        modulePath: `${__dirname}/src/cms/cms.js`,
+      },
+    },
     {
       resolve: `gatsby-plugin-manifest`,
       options: {

@@ -1,0 +1,32 @@
+{
+  "name": "netlify-cms-media-library-uploadcare",
+  "description": "Uploadcare integration for Netlify CMS",
+  "version": "0.2.0",
+  "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-media-library-uploadcare",
+  "bugs": "https://github.com/netlify/netlify-cms/issues",
+  "main": "dist/netlify-cms-media-library-uploadcare.js",
+  "license": "MIT",
+  "keywords": [
+    "netlify",
+    "netlify-cms",
+    "uploadcare",
+    "media",
+    "assets",
+    "files",
+    "uploads"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "watch": "webpack -w",
+    "develop": "npm run watch",
+    "build": "cross-env NODE_ENV=production webpack"
+  },
+  "devDependencies": {
+    "cross-env": "^5.2.0",
+    "webpack": "^4.16.1",
+    "webpack-cli": "^3.1.0"
+  },
+  "peerDependencies": {
+    "netlify-cms-lib-util": "^2.0.4"
+  }
+}
