@@ -28,6 +28,7 @@
     "gatsby-transformer-json": "next",
     "gatsby-transformer-remark": "next",
     "gatsby-transformer-yaml": "next",
+    "lodash": "^4.17.10",
     "netlify-cms": "^2.0.11",
     "postcss-at2x": "^2.0.0",
     "postcss-cssnext": "^2.7.0",

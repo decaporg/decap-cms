@@ -29,6 +29,7 @@ collections: # A list of collections the CMS should be able to edit
       - {label: "Author", name: "author", widget: "string"}
       - {label: "Description (for blog list)", name: "description", widget: "text"}
       - {label: "Meta Description (defaults to Description)", name: "meta_description", widget: "text", required: false}
+      - {label: "Twitter Image", name: "twitter_image", widget: "image"}
       - {label: "Date", name: "date", widget: "date"}
       - {label: "Body", name: "body", widget: "markdown"}
   - name: updates
