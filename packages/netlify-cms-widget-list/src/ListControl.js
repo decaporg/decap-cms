@@ -261,6 +261,7 @@ export default class ListControl extends React.Component {
   };
 
   renderListControl() {
+    console.log( this.props );
     const { value, forID, field, classNameWrapper } = this.props;
     const { itemsCollapsed } = this.state;
     const items = value || List();
