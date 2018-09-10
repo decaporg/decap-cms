@@ -8,13 +8,19 @@ import { colors } from 'netlify-cms-ui-default';
 
 import axios from 'axios'
 
-const url = 'https://api.uploadcare.com/files/?stored=true&limit=10&ordering=-datetime_uploaded';
+const url = 'https://api.uploadcare.com/files/?stored=true&limit=5&ordering=-datetime_uploaded';
 const public_key = `7ad920aaf5c04d95c32a`
 const private_key = `a9fcc9086bbbfa4d9afc`
 
 export default class MediaLibrary extends Component {
 
-  async getData(url) {
+  constructor(...args) {
+    super(...args)
+    this.state = {files: []}
+  }
+
+
+  async getDataPage(url) {
 
     // GET request for remote images
     const res = await axios({
@@ -24,47 +30,35 @@ export default class MediaLibrary extends Component {
           'Authorization': 'Uploadcare.Simple ' + public_key + ':' + private_key
         }
       })
-    return await res.data
+
+    return {
+      results: res.data.results.map(file => ({
+        uuid: file.uuid,
+        size: file.size,
+        url: `${this.props.settings.cdnBase}/${file.uuid}/-/stretch/off/-/scale_crop/280x280/center/`,
+        name: file.original_filename
+      })),
+      next: res.data.next
+    }
+
   }
 
-  constructor(...args) {
-    super(...args)
-    this.state = {files: []}
+  async getData(url) {
+    const page = await this.getDataPage(url)
+    if (page.next) {
+      return page.results.concat(await this.getData(page.next))
+    } else {
+      return page.results
+    }
   }
 
   componentDidMount() {
-    const files = []
     if (!this.state.files.length > 0) {
-      this.getData(url).then(data => {
-
-        console.log('data: ', data)
-
-        if (data.next) {
-          this.getData(data.next).then(data => {
-            console.log(files.concat(
-              data.results.map(file => ({
-                uuid: file.uuid,
-                size: file.size,
-                url: `${this.props.settings.cdnBase}/${file.uuid}/-/stretch/off/-/scale_crop/280x280/center/`,
-                name: file.original_filename
-              }))
-            ))
-          })
-        }
-
-        this.setState({
-          files: data.results.map(file => ({
-              uuid: file.uuid,
-              size: file.size,
-              url: `${this.props.settings.cdnBase}/${file.uuid}/-/stretch/off/-/scale_crop/280x280/center/`,
-              name: file.original_filename
-            })
-          )
-        })
-      })
-        .catch(err => { /*...handle the error...*/});
+      this.getData(url).then(files => {
+        console.log('files: ', files)
+        this.setState({files})
+      }).catch(err => { /*...handle the error...*/});
     }
-
   }
 
   onAssetClick = (uuid) => this.props.dialogApi.addFiles([window.uploadcare.fileFrom('uploaded', uuid, this.props.settings)])
