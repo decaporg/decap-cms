@@ -15,14 +15,30 @@ const defaultConfig = {
   multiple: false,
 };
 
+function getAssetUrl(asset, useSecureUrl) {
+  /**
+   * Get url from `derived` property if it exists. This property contains the
+   * transformed version of image if transformations have been applied.
+   */
+  const urlObject = asset.derived ? asset.derived[0] : asset;
+
+  /**
+   * Retrieve the `https` variant of the image url if the `useSecureUrl` option
+   * is set to `true` (this is the default setting).
+   */
+  const urlKey = useSecureUrl ? 'secure_url' : 'url';
+
+  return urlObject[urlKey];
+}
+
+
 async function init({ options = { config: {} }, handleInsert }) {
   const cloudinaryConfig = { ...defaultConfig, ...options.config, ...enforcedConfig };
-  console.log(cloudinaryConfig);
 
   await loadScript('https://media-library.cloudinary.com/global/all.js');
 
   const insertHandler = data => {
-    const assets = data.assets.map(a => options.useSecureUrl ? a.secure_url : a.url);
+    const assets = data.assets.map(asset => getAssetUrl(asset, options.useSecureUrl));
     handleInsert(cloudinaryConfig.multiple ? assets : assets[0]);
   }
 

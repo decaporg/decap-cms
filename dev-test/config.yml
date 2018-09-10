@@ -5,6 +5,11 @@ display_url: https://example.com
 
 publish_mode: editorial_workflow
 media_folder: assets/uploads
+media_library:
+  name: cloudinary
+  config:
+    cloud_name: erquhart
+    api_key: 293667689287914
 
 collections: # A list of collections the CMS should be able to edit
   - name: "posts" # Used in routes, ie.: /admin/collections/:slug/edit
