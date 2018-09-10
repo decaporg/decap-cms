@@ -29,5 +29,8 @@
   "peerDependencies": {
     "netlify-cms-lib-util": "^2.0.4"
   },
-  "private": true
+  "private": true,
+  "dependencies": {
+    "axios": "^0.18.0"
+  }
 }

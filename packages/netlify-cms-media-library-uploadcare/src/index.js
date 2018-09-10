@@ -1,5 +1,8 @@
 import { loadScript } from 'netlify-cms-lib-util';
+import React from 'react'
+import ReactDOM from 'react-dom'
 
+import MediaLibrary from './MediaLibrary'
 /**
  * Default Uploadcare widget configuration, can be overriden via config.yml.
  */
@@ -159,7 +162,16 @@ async function init({ options = { config: {} }, handleInsert }) {
     button[0].setAttribute('title', 'Media Library')
     button[0].querySelector('use').setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '#uploadcare--icon-menu');
 
+
+    console.log('mediaLibrary registered: ', ReactDOM)
+
+    ReactDOM.render(
+      <MediaLibrary dialogApi={dialogApi} settings={settings} />,
+      container[0]
+    );
+
     // Files panel
+    /*
     settings.mediaLibrary.forEach((item, i) => {
 
       // create and append element
@@ -172,6 +184,7 @@ async function init({ options = { config: {} }, handleInsert }) {
         dialogApi.addFiles([window.uploadcare.fileFrom('uploaded', item.uuid, settings)])
       })
     })
+    */
 
   }
 
