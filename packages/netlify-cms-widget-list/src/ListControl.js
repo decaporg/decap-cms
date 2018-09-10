@@ -231,8 +231,8 @@ export default class ListControl extends React.Component {
     const { field, classNameWrapper, editorControl, resolveWidget } = this.props;
     const { itemsCollapsed } = this.state;
     const collapsed = itemsCollapsed.get(index);
-    const minimum = field.get('minimum');
-    const allowRemove = typeof minimum === 'number' ? list.size > minimum : true;
+    const min = field.get('min');
+    const allowRemove = typeof min === 'number' ? list.size > min : true;
 
     return (
       <SortableListItem
@@ -267,8 +267,8 @@ export default class ListControl extends React.Component {
     const label = field.get('label');
     const labelSingular = field.get('label_singular') || field.get('label');
     const listLabel = items.size === 1 ? labelSingular.toLowerCase() : label.toLowerCase();
-    const maximum = field.get('maximum');
-    const allowAdd = typeof maximum === 'number' ? items.size < maximum : field.get('allow_add', true);
+    const max = field.get('max');
+    const allowAdd = typeof max === 'number' ? items.size < max : field.get('allow_add', true);
 
     return (
       <div id={forID} className={cx(classNameWrapper, components.objectWidgetTopBarContainer)}>

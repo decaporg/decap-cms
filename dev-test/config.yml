@@ -60,6 +60,8 @@ collections: # A list of collections the CMS should be able to edit
           - name: authors
             label: Authors
             label_singular: "Author"
+            min: 3
+            max: 5
             widget: list
             fields:
               - {label: "Name", name: "name", widget: "string", hint: "First and Last"}
