@@ -17,10 +17,21 @@ export default class DateControl extends React.Component {
     setActiveStyle: PropTypes.func.isRequired,
     setInactiveStyle: PropTypes.func.isRequired,
     value: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
-    includeTime: PropTypes.bool,
   };
 
-  format = this.props.field.get('format');
+  getFormats() {
+    const { field } = this.props;
+    const date = field.get('dateFormat') || field.get('format') || true;
+    const time = field.get('timeFormat') || field.get('widget') === 'datetime';
+    const datetime =
+      date && date !== true && time && time !== true
+        ? date + ' ' + time
+        : (typeof date === 'string' && date) || (typeof time === 'string' && time) || undefined;
+
+    return { date, time, datetime };
+  }
+
+  formats = this.getFormats();
 
   componentDidMount() {
     const { value } = this.props;
@@ -55,8 +66,8 @@ export default class DateControl extends React.Component {
      * Produce a formatted string only if a format is set in the config.
      * Otherwise produce a date object.
      */
-    if (this.format) {
-      const formattedValue = moment(datetime).format(this.format);
+    if (this.formats.datetime) {
+      const formattedValue = moment(datetime).format(this.formats.datetime);
       onChange(formattedValue);
     } else {
       const value = moment.isMoment(datetime) ? datetime.toDate() : datetime;
@@ -81,11 +92,12 @@ export default class DateControl extends React.Component {
   };
 
   render() {
-    const { includeTime, value, classNameWrapper, setActiveStyle } = this.props;
+    const { value, classNameWrapper, setActiveStyle } = this.props;
     return (
       <DateTime
-        timeFormat={!!includeTime}
-        value={moment(value, this.format)}
+        dateFormat={this.formats.date}
+        timeFormat={this.formats.time}
+        value={moment(value, this.formats.datetime)}
         onChange={this.handleChange}
         onFocus={setActiveStyle}
         onBlur={this.onBlur}
