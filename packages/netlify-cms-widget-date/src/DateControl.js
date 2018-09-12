@@ -17,12 +17,13 @@ export default class DateControl extends React.Component {
     setActiveStyle: PropTypes.func.isRequired,
     setInactiveStyle: PropTypes.func.isRequired,
     value: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
+    includeTime: PropTypes.bool,
   };
 
   getFormats() {
-    const { field } = this.props;
+    const { field, includeTime } = this.props;
     const date = field.get('dateFormat') || field.get('format') || true;
-    const time = field.get('timeFormat') || field.get('widget') === 'datetime';
+    const time = field.get('timeFormat') || !!includeTime;
     const datetime =
       date && date !== true && time && time !== true
         ? date + ' ' + time
