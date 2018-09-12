@@ -1,5 +1,10 @@
 import { loadScript } from 'netlify-cms-lib-util';
 
+const defaultOptions = {
+  use_secure_url: true,
+  use_transformations: true,
+  output_filename_only: false,
+}
 /**
  * This configuration hash cannot be overriden, as the values here are required
  * for the integration to work properly.
@@ -15,34 +20,44 @@ const defaultConfig = {
   multiple: false,
 };
 
-function getAssetUrl(asset, useSecureUrl) {
+function getAssetUrl(asset, { use_secure_url, use_transformations, output_filename_only }) {
+  /**
+   * Allow output of the file name only, in which case the rest of the url (including)
+   * transformations) can be handled by the static site generator.
+   */
+  if (output_filename_only) {
+    return `${asset.public_id}.${asset.format}`;
+  }
+
   /**
    * Get url from `derived` property if it exists. This property contains the
    * transformed version of image if transformations have been applied.
    */
-  const urlObject = asset.derived ? asset.derived[0] : asset;
+  const urlObject = asset.derived && use_transformations ? asset.derived[0] : asset;
 
   /**
    * Retrieve the `https` variant of the image url if the `useSecureUrl` option
    * is set to `true` (this is the default setting).
    */
-  const urlKey = useSecureUrl ? 'secure_url' : 'url';
+  const urlKey = use_secure_url ? 'secure_url' : 'url';
 
   return urlObject[urlKey];
 }
 
 
-async function init({ options = { config: {} }, handleInsert }) {
-  const cloudinaryConfig = { ...defaultConfig, ...options.config, ...enforcedConfig };
+async function init({ options, handleInsert }) {
+  const { config: providedConfig = {}, ...integrationOptions } = options;
+  const resolvedOptions = { ...defaultOptions, ...integrationOptions };
+  const resolvedCloudinaryConfig = { ...defaultConfig, ...providedConfig, ...enforcedConfig };
 
   await loadScript('https://media-library.cloudinary.com/global/all.js');
 
   const insertHandler = data => {
-    const assets = data.assets.map(asset => getAssetUrl(asset, options.useSecureUrl));
-    handleInsert(cloudinaryConfig.multiple ? assets : assets[0]);
+    const assets = data.assets.map(asset => getAssetUrl(asset, resolvedOptions));
+    handleInsert(resolvedCloudinaryConfig.multiple ? assets : assets[0]);
   }
 
-  const mediaLibrary = cloudinary.createMediaLibrary(cloudinaryConfig, { insertHandler });
+  const mediaLibrary = cloudinary.createMediaLibrary(resolvedCloudinaryConfig, { insertHandler });
 
   return {
     show: () => mediaLibrary.show(),
