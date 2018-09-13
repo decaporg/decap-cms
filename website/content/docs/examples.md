@@ -13,4 +13,3 @@ Example | Tools | Type | Source | More info |
 [The Ragasirtahk Blog](https://www.ragasirtahk.tk/) | Hugo | blog | [ragasirtahk/the-ragasirtahk-blog](https://github.com/ragasirtahk/the-ragasirtahk-blog) | [blog post](https://www.ragasirtahk.tk/2018/01/setting-up-netlify-cms-on-hugo/)
 [Bael](https://bael-theme.jake101.com/) | Vue, Nuxt | blog | [jake-101/bael-template](https://github.com/jake-101/bael-template) | [blog post](https://bael-theme.jake101.com/blog/2018-06-19-top-10-reasons-why)
 [Forest Garden Wales](https://www.forestgarden.wales/) | Hugo | blog | [forestgardenwales/forestgarden.wales](https://github.com/forestgardenwales/forestgarden.wales) | [blog post](https://www.forestgarden.wales/blog/now-using-netlify-cms/)
-[Cup of Data](https://www.cupofdata.com/blog) | Gatsby | blog | [cupofdata/cupofdata.com](https://github.com/cupofdata/cupofdata.com) | -
