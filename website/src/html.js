@@ -22,6 +22,7 @@ class HTML extends React.Component {
             rel="stylesheet"
             href="https://unpkg.com/docsearch.js@2.5.2/dist/cdn/docsearch.min.css"
           />
+          <link href="/admin/config.yml" type="text/yaml" rel="cms-config-url"/>
         </head>
         <body {...this.props.bodyAttributes}>
           {this.props.preBodyComponents}
