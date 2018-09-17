@@ -8,8 +8,7 @@ to, and the files are hosted on their CDN. They provide image processing control
 cropping and rotation to filters and face detection, and a lot more. You can check out Uploadcare's
 full feature set on their [website](https://uploadcare.com/).
 
-The Uploadcare media library integration for Netlify CMS allows you to use Uploadcare's media widget
-allows you to use Uploadcare as your media handler within the CMS itself. It's available by default
+The Uploadcare media library integration for Netlify CMS allows you to use Uploadcare as your media handler within the CMS itself. It's available by default
 as of our 2.1.0 release, and works in tandem with the existing file and image widgets, so using it
 only requires creating an Uploadcare account and updating your Netlify CMS configuration.
 
