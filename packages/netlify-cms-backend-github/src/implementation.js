@@ -1,4 +1,4 @@
-import { trim, trimStart } from 'lodash';
+import trimStart from 'lodash/trimStart';
 import semaphore from 'semaphore';
 import AuthenticationPage from './AuthenticationPage';
 import API from './API';
@@ -22,8 +22,6 @@ export default class GitHub {
 
     this.repo = config.getIn(['backend', 'repo'], '');
     this.branch = config.getIn(['backend', 'branch'], 'master').trim();
-    this.workflow_branch_prefix =
-      trim(config.getIn(['backend', 'workflow_branch_prefix'], ''), '/ ') || 'cms';
     this.api_root = config.getIn(['backend', 'api_root'], 'https://api.github.com');
     this.token = '';
     this.squash_merges = config.getIn(['backend', 'squash_merges']);
@@ -42,7 +40,6 @@ export default class GitHub {
     this.api = new API({
       token: this.token,
       branch: this.branch,
-      workflow_branch_prefix: this.workflow_branch_prefix,
       repo: this.repo,
       api_root: this.api_root,
       squash_merges: this.squash_merges,
@@ -161,7 +158,7 @@ export default class GitHub {
         branches.map(branch => {
           promises.push(
             new Promise(resolve => {
-              const slug = branch.ref.split(`refs/heads/${this.workflow_branch_prefix}/`).pop();
+              const slug = branch.ref.split('refs/heads/cms/').pop();
               return sem.take(() =>
                 this.api
                   .readUnpublishedBranchFile(slug)
