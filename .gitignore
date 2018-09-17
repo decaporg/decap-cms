@@ -7,6 +7,7 @@ npm-debug.log
 .tern-project
 yarn-error.log
 .vscode/
+.idea/
 manifest.yml
 .imdone/
 website/data/contributors.json

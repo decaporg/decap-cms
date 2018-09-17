@@ -112,9 +112,10 @@ export const selectAllowDeletion = collection =>
   selectors[collection.get('type')].allowDeletion(collection);
 export const selectTemplateName = (collection, slug) =>
   selectors[collection.get('type')].templateName(collection, slug);
-export const selectIdentifier = collection => {
+export const selectIdentifierCandidates = collection => {
   const fieldNames = collection.get('fields').map(field => field.get('name'));
-  return IDENTIFIER_FIELDS.find(id => fieldNames.find(name => name.toLowerCase().trim() === id));
+  const identifierFieldsSet = new Set(IDENTIFIER_FIELDS);
+  return fieldNames.filter(name => identifierFieldsSet.has(name.toLowerCase.trim()));
   // There must be a field whose `name` matches one of the IDENTIFIER_FIELDS.
 };
 export const selectInferedField = (collection, fieldName) => {

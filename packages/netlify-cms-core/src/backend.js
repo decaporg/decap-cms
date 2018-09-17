@@ -10,7 +10,7 @@ import {
   selectAllowNewEntries,
   selectAllowDeletion,
   selectFolderEntryExtension,
-  selectIdentifier,
+  selectIdentifierCandidates,
   selectInferedField,
 } from 'Reducers/collections';
 import { createEntry } from 'ValueObjects/Entry';
@@ -40,7 +40,11 @@ const slugFormatter = (collection, entryData, slugConfig) => {
   const template = collection.get('slug') || '{{slug}}';
   const date = new Date();
 
-  const identifier = entryData.get(selectIdentifier(collection));
+  const identifierFieldCandidates = selectIdentifierCandidates(collection);
+  const identifier = identifierFieldCandidates
+    .map(fieldName => entryData.get(fieldName))
+    .find(value => value);
+
   if (!identifier) {
     throw new Error('Collection must have a field name that is a valid entry identifier');
   }
