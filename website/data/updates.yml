@@ -1,4 +1,10 @@
 updates:
+  - date: 2018-09-17T16:49:32.506Z
+    description: Fix editorial workflow for Git Gateway
+    version: 2.1.2
+  - date: 2018-09-06T16:48:08.594Z
+    description: Provide empty cms.css file to ease 2.x migration
+    version: 2.1.1
   - date: 2018-09-06T18:48:13.703Z
     description: "External media library support \U0001F389\U0001F389"
     version: 2.1.0
