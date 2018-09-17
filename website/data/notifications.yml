@@ -27,7 +27,14 @@ notifications:
       /blog/2018/07/netlify-cms-2-0-launches-with-bitbucket-support-and-a-new-monorepo-architecture
   - loud: true
     message: 2.1.0 release is out with external media library support!
-    published: true
+    published: false
     title: 2.1.0 - external media libraries
     url: >-
       /blog/2018/09/netlify-cms-2-1-0-adds-external-media-support-with-uploadcare
+  - loud: true
+    message: >-
+      Learn more about the JAMstack at JAMstack Conf, San Francisco — 29-30
+      October, 2018
+    published: true
+    title: JAMStack_conf 2018
+    url: 'https://jamstackconf.com/'
