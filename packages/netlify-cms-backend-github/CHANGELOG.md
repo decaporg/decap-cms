@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="2.0.9"></a>
+## [2.0.9](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.0.8...netlify-cms-backend-github@2.0.9) (2018-09-17)
+
+
+
+
+**Note:** Version bump only for package netlify-cms-backend-github
+
 <a name="2.0.8"></a>
 ## [2.0.8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.0.7...netlify-cms-backend-github@2.0.8) (2018-09-06)
 
