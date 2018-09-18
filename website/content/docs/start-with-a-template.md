@@ -19,12 +19,6 @@ You can add Netlify CMS [to an existing site](/docs/add-to-your-site/), but the 
         </div>
         <h4>Gatsby Site Starter</h4>
         <p><a href="https://app.netlify.com/start/deploy?repository=https://github.com/AustinGreen/gatsby-starter-netlify-cms&amp;stack=cms"><img src="https://www.netlify.com/img/deploy/button.svg" alt="Deploy to Netlify" /></a></p>
-        <p style="font-size: 16px; padding: 0 10%;">
-          <em>
-            <strong>Note:</strong>
-            This starter uses the <a href="https://www.gatsbyjs.org/blog/2018-06-16-announcing-gatsby-v2-beta-launch/">Gatsby v2 beta</a>
-          </em>
-        </p>
     </div>
     <div style="flex-basis: 33.3%">
         <div style="padding: 0 30%; height: 100px; display: flex; justify-content: center;">
