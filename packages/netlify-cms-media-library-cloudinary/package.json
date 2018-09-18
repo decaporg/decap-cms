@@ -30,5 +30,8 @@
   },
   "peerDependencies": {
     "netlify-cms-lib-util": "^2.0.4"
+  },
+  "dependencies": {
+    "axios": "^0.18.0"
   }
 }
