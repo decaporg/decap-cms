@@ -115,7 +115,7 @@ export const selectTemplateName = (collection, slug) =>
 export const selectIdentifierCandidates = collection => {
   const fieldNames = collection.get('fields').map(field => field.get('name'));
   const identifierFieldsSet = new Set(IDENTIFIER_FIELDS);
-  return fieldNames.filter(name => identifierFieldsSet.has(name.toLowerCase.trim()));
+  return fieldNames.filter(name => identifierFieldsSet.has(name.toLowerCase().trim()));
   // There must be a field whose `name` matches one of the IDENTIFIER_FIELDS.
 };
 export const selectInferedField = (collection, fieldName) => {
