@@ -15,6 +15,17 @@ At its core, Netlify CMS is an open-source React app that acts as a wrapper for 
 * **Flexible content types:** Specify an unlimited number of content types with custom fields.
 * **Fully extensible:** Create custom-styled previews, UI widgets, and editor plugins.
 
+## Netlify CMS vs. Netlify
+
+[Netlify.com](https://www.netlify.com/) is an automation and deployment platform. It can host your static site and serve as a CDN with lots of other useful functionality totally unrelated to content management. Most Netlify customers don't use Netlify CMS and many have never even heard of it!
+
+Netlify solved a lot of problems in the static site generation space, but one thing that was missing was an open-source, extensible editing tool. So, we made a CMS and for better or for worse we decided to call it Netlify CMS. The CMS is made to work independently of Netlify (despite the name).
+
+* You can use Netlify CMS without Netlify and deploy your site where you always have, hooking up your own CI, site hosting, CDN, etc.
+* You can use Netlify without Netlify CMS and edit your static site in your code editor.
+* Or, you can use them together and have a fully-working CMS-enabled site with [one click](../start-with-a-template/)!
+
+If you hook up Netlify CMS to your website, you're basically adding a tool for content editors to make commits to your site repository without touching code or learning git.
 
 ## Find out more
 
