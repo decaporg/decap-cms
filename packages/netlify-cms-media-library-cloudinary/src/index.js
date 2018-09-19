@@ -48,7 +48,6 @@ function getAssetUrl(asset, { use_secure_url, use_transformations, output_filena
 async function auth(endpoint) {
   try {
     const response = await axios.get(endpoint);
-    console.log(response);
     const { timestamp, hash, CLOUDINARY_CLOUD_NAME, CLOUDINARY_USERNAME } = response.data;
     return { timestamp, signature: hash, username: CLOUDINARY_USERNAME };
   }
@@ -63,9 +62,6 @@ async function init({ options, handleInsert }) {
   const resolvedOptions = { ...defaultOptions, ...integrationOptions };
   const authHash = resolvedOptions.auth_endpoint && await auth(resolvedOptions.auth_endpoint);
   const cloudinaryConfig = { ...defaultConfig, ...providedConfig, ...enforcedConfig, ...authHash };
-  console.log(resolvedOptions);
-  console.log(authHash);
-  console.log(cloudinaryConfig);
 
   await loadScript('https://media-library.cloudinary.com/global/all.js');
 
