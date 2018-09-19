@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { loadScript } from 'netlify-cms-lib-util';
 
 const defaultOptions = {
@@ -45,30 +44,17 @@ function getAssetUrl(asset, { use_secure_url, use_transformations, output_filena
   return urlObject[urlKey];
 }
 
-async function auth(endpoint) {
-  try {
-    const response = await axios.get(endpoint);
-    const { timestamp, hash, CLOUDINARY_CLOUD_NAME, CLOUDINARY_USERNAME } = response.data;
-    return { timestamp, signature: hash, username: CLOUDINARY_USERNAME };
-  }
-  catch(err) {
-    console.error(err);
-    return {};
-  }
-}
-
 async function init({ options, handleInsert }) {
   const { config: providedConfig = {}, ...integrationOptions } = options;
   const resolvedOptions = { ...defaultOptions, ...integrationOptions };
-  const authHash = resolvedOptions.auth_endpoint && await auth(resolvedOptions.auth_endpoint);
-  const cloudinaryConfig = { ...defaultConfig, ...providedConfig, ...enforcedConfig, ...authHash };
+  const cloudinaryConfig = { ...defaultConfig, ...providedConfig, ...enforcedConfig };
 
   await loadScript('https://media-library.cloudinary.com/global/all.js');
 
 
   const insertHandler = data => {
     const assets = data.assets.map(asset => getAssetUrl(asset, resolvedOptions));
-    handleInsert(resolvedCloudinaryConfig.multiple ? assets : assets[0]);
+    handleInsert(cloudinaryConfig.multiple ? assets : assets[0]);
   }
 
   const mediaLibrary = cloudinary.createMediaLibrary(cloudinaryConfig, { insertHandler });
