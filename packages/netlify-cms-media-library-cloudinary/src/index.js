@@ -47,9 +47,8 @@ function getAssetUrl(asset, { use_secure_url, use_transformations, output_filena
 
 async function auth(endpoint) {
   try {
-    const { timestamp, hash: signature, userConfig = {} } = axios.get(endpoint);
-    const { username } = userConfig;
-    return { timestamp, signature, username };
+    const { timestamp, hash, CLOUDINARY_CLOUD_NAME, CLOUDINARY_USERNAME } = axios.get(endpoint);
+    return { timestamp, signature: hash, username: CLOUDINARY_USERNAME };
   }
   catch(err) {
     console.error(err);
