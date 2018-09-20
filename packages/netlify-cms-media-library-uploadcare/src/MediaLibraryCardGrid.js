@@ -1,40 +1,63 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'react-emotion';
-import Waypoint from 'react-waypoint';
+import {
+  Grid,
+  AutoSizer
+} from 'react-virtualized'
 import MediaLibraryCard from './MediaLibraryCard';
-import { colors } from 'netlify-cms-ui-default';
 
-const CardGrid = styled.div`
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: flex-start;
+
+const CardGrid = styled(Grid)`
   overflow: auto;
 `;
 
 const MediaLibraryCardGrid = ({
-  mediaItems,
   onAssetClick,
-}) => (
-  <CardGrid>
-    {mediaItems.map(file => (
+  rowCount,
+  columnCount,
+  getCell
+}) => {
+
+  function cellRenderer({columnIndex, key, rowIndex, style, isVisible}) {
+    console.log('getCell(rowIndex, columnIndex): ', getCell(rowIndex, columnIndex))
+    const file = getCell(rowIndex, columnIndex)
+    return file ?
       <MediaLibraryCard
+        style={style}
         key={file.uuid}
         imageUrl={file.url}
         text={file.name}
         onClick={() => onAssetClick(file.uuid)}
-      />
-    ))}
-  </CardGrid>
-);
+      /> : <div/>
+  }
+
+  return (
+    <AutoSizer>
+      {({width, height}) => (
+        <Grid
+          cellRenderer={cellRenderer}
+          height={height}
+          width={width}
+          overscanRowCount={3}
+          columnWidth={170}
+          rowHeight={180}
+          rowCount={rowCount}
+          columnCount={columnCount}
+          scrollToColumn={0}
+          scrollToRow={0}
+        />
+      )}
+    </AutoSizer>
+  )
+}
 
 MediaLibraryCardGrid.propTypes = {
   mediaItems: PropTypes.arrayOf(
     PropTypes.shape({
       url: PropTypes.string.isRequired,
       uuid: PropTypes.string.isRequired,
-      original_filename: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
       size: PropTypes.number.isRequired
     }),
   ).isRequired,

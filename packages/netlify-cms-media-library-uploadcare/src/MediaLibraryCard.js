@@ -34,10 +34,13 @@ const CardText = styled.p`
   margin: 0;
   overflow-wrap: break-word;
   line-height: 1.3 !important;
+  text-align: left;
+  font-size: 10px;
 `;
 
-const MediaLibraryCard = ({ imageUrl, text, onClick }) => (
+const MediaLibraryCard = ({ style, imageUrl, text, onClick }) => (
   <Card
+    style={style}
     isSelected={false}
     onClick={onClick}
     width={`140px`}

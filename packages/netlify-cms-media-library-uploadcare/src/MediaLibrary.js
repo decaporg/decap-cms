@@ -4,14 +4,18 @@ import styled from 'react-emotion';
 import { orderBy, map } from 'lodash';
 import fuzzy from 'fuzzy';
 import axios from 'axios'
-import { colors } from 'netlify-cms-ui-default';
 import MediaLibrarySearch from './MediaLibrarySearch';
 import MediaLibraryCardGrid from './MediaLibraryCardGrid';
-
 
 const url = 'https://api.uploadcare.com/files/?stored=true&limit=5&ordering=-datetime_uploaded';
 const public_key = `7ad920aaf5c04d95c32a`
 const private_key = `a9fcc9086bbbfa4d9afc`
+
+const COLUMNS = 4
+
+const Wrapper = styled.div`
+  width: 100%;
+`;
 
 export default class MediaLibrary extends Component {
 
@@ -22,7 +26,6 @@ export default class MediaLibrary extends Component {
       query: null
     }
   }
-
 
   async getDataPage(url) {
 
@@ -115,34 +118,60 @@ export default class MediaLibrary extends Component {
     const { sortFields } = this.state;
     const fieldNames = map(sortFields, 'fieldName').concat('queryOrder');
     const directions = map(sortFields, 'direction').concat('asc');
-    return orderBy(tableData, fieldNames, directions);
+    const ordered = orderBy(tableData, fieldNames, directions);
+    const rows = ordered.reduce((acc, cell, idx) => {
+      const row = Math.floor(idx / COLUMNS);
+      acc[row] = acc[row] ? [...acc[row], cell] : [cell]; // eslint-disable-line no-param-reassign
+      return acc;
+    }, []);
+
+    return rows
+
   };
+
+  getCell = (rowIndex, columnIndex) => {
+
+    const { files, query } = this.state
+    const queriedFiles = this.state.query ? this.handleQuery(query, files) : files;
+    const tableData = this.toTableData(queriedFiles);
+
+    if (tableData && tableData.length > 0) {
+      if (tableData[rowIndex] && tableData[rowIndex].length > 0) {
+        if (tableData[rowIndex][columnIndex]) {
+          return tableData[rowIndex][columnIndex]
+        }
+      }
+    }
+
+    return null
+
+  }
 
   render() {
 
     const { files, query } = this.state
-
     const queriedFiles = this.state.query ? this.handleQuery(query, files) : files;
     const tableData = this.toTableData(queriedFiles);
     const hasFiles = files && !!files.length;
 
     return (
-      <div>
-      <MediaLibrarySearch
-        value={this.state.query}
-        onChange={this.handleSearchChange}
-        placeholder="Search..."
-        disabled={false}
-      />
-      {
-        !hasFiles ? <em>Loading...</em> :
-        <MediaLibraryCardGrid
-          mediaItems={tableData}
-          onAssetClick={this.onAssetClick}
+      <Wrapper>
+        <MediaLibrarySearch
+          value={this.state.query}
+          onChange={this.handleSearchChange}
+          placeholder="Search..."
+          disabled={false}
         />
-      }
-    </div>
-
+        {
+          !hasFiles ? <em>Loading...</em> :
+          <MediaLibraryCardGrid
+            onAssetClick={this.onAssetClick}
+            getCell={this.getCell}
+            columnCount={COLUMNS}
+            rowCount={hasFiles ? tableData.length : 0}
+          />
+        }
+      </Wrapper>
     )
   }
 }
