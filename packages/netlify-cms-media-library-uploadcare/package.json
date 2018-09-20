@@ -31,6 +31,7 @@
   },
   "private": true,
   "dependencies": {
-    "axios": "^0.18.0"
+    "axios": "^0.18.0",
+    "react-virtualized": "^9.20.1"
   }
 }

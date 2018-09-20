@@ -9,6 +9,7 @@ const SearchContainer = styled.div`
   align-items: center;
   position: relative;
   width: 400px;
+  margin: 10px 0 0 10px;
 `;
 
 const SearchInput = styled.input`

@@ -41,7 +41,6 @@ const MediaLibrarySearch = ({ value, onChange, onKeyDown, placeholder, disabled 
     <SearchInput
       value={value}
       onChange={onChange}
-      onKeyDown={onKeyDown}
       placeholder={placeholder}
       disabled={disabled}
     />
