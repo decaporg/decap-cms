@@ -17,6 +17,11 @@ const image = {
       label: 'Image',
       name: 'image',
       widget: 'image',
+      options: {
+        media_library: {
+          allow_multiple: false,
+        },
+      },
     },
     {
       label: 'Alt Text',

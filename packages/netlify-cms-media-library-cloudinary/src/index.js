@@ -1,3 +1,4 @@
+import { pick } from 'lodash';
 import { loadScript } from 'netlify-cms-lib-util';
 
 const defaultOptions = {
@@ -48,6 +49,8 @@ async function init({ options, handleInsert }) {
   const { config: providedConfig = {}, ...integrationOptions } = options;
   const resolvedOptions = { ...defaultOptions, ...integrationOptions };
   const cloudinaryConfig = { ...defaultConfig, ...providedConfig, ...enforcedConfig };
+  const cloudinaryBehaviorConfigKeys = ['default_transformations', 'max_files', 'multiple'];
+  const cloudinaryBehaviorConfig = pick(cloudinaryConfig, cloudinaryBehaviorConfigKeys);
 
   await loadScript('https://media-library.cloudinary.com/global/all.js');
 
@@ -60,7 +63,16 @@ async function init({ options, handleInsert }) {
   const mediaLibrary = cloudinary.createMediaLibrary(cloudinaryConfig, { insertHandler });
 
   return {
-    show: () => mediaLibrary.show(),
+    show: ({ config: instanceConfig = {}, allowMultiple }) => {
+      /**
+       * Ensure multiple selection is not available if the field is configured
+       * to disallow it.
+       */
+      if (allowMultiple === false) {
+        instanceConfig.multiple = false;
+      }
+      return mediaLibrary.show({ config: instanceConfig });
+    },
     hide: () => mediaLibrary.hide(),
     enableStandalone: () => true,
   };

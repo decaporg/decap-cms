@@ -10,6 +10,10 @@ media_library:
   config:
     cloud_name: erquhart
     api_key: 293667689287914
+    multiple: true
+    default_transformations:
+      - quality: auto
+      - format: auto
 
 collections: # A list of collections the CMS should be able to edit
   - name: "posts" # Used in routes, ie.: /admin/collections/:slug/edit
@@ -29,6 +33,11 @@ collections: # A list of collections the CMS should be able to edit
         widget: "image"
         required: false
         tagname: ""
+        options:
+          media_library:
+            config:
+              default_transformations:
+                - quality: 50
 
       - {label: "Body", name: "body", widget: "markdown", hint: "Main content goes here."}
     meta:

@@ -63,8 +63,8 @@ export function openMediaLibrary(payload = {}) {
     const state = getState();
     const mediaLibrary = state.mediaLibrary.get('externalLibrary');
     if (mediaLibrary) {
-      const { controlID: id, value, config = Map(), forImage } = payload;
-      mediaLibrary.show({ id, value, config: config.toJS(), imagesOnly: forImage });
+      const { controlID: id, value, config = Map(), allowMultiple, forImage } = payload;
+      mediaLibrary.show({ id, value, config: config.toJS(), allowMultiple, imagesOnly: forImage });
     }
     dispatch({ type: MEDIA_LIBRARY_OPEN, payload });
   };

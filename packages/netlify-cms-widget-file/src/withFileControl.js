@@ -131,7 +131,9 @@ export default function withFileControl({ forImage } = {}) {
         forImage,
         privateUpload: field.get('private'),
         value,
+        allowMultiple: !!field.getIn(['options', 'media_library', 'allow_multiple'], true),
         config: field.getIn(['options', 'media_library', 'config']),
+
       });
     };
 
