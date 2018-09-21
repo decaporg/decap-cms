@@ -2,7 +2,10 @@ backend:
   name: github
   repo: owenhoskins/netlify-cms-gallery
   branch: master # Branch to update (optional; defaults to master)
+<<<<<<< HEAD
 
+=======
+>>>>>>> set-up list and image component with uploadcare
 
 display_url: https://example.com
 
@@ -35,6 +38,7 @@ collections: # A list of collections the CMS should be able to edit
           media_library:
             config:
               multiple: false
+              tabs: file mediaLibrary
       - name: portfolios
         label: Portfolios
         widget: list

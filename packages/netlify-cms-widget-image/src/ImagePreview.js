@@ -5,7 +5,7 @@ import { List } from 'immutable';
 import { WidgetPreviewContainer } from 'netlify-cms-ui-default';
 
 const StyledImage = styled(({ getAsset, value }) => (
-  <img src={getAsset(value)} role="presentation" />
+  <img src={`${getAsset(value)}/-/stretch/off/-/scale_crop/280x280/center/`} role="presentation" />
 ))`
   display: block;
   max-width: 100%;

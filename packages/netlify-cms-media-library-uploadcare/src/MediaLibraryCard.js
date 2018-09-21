@@ -5,11 +5,8 @@ import { colors, borders, lengths } from 'netlify-cms-ui-default';
 
 const Card = styled.div`
   width: ${props => props.width};
-  height: 180px;
-  margin: ${props => props.margin};
-  border: ${borders.textField};
-  border-color: ${props => props.isSelected && colors.active};
-  border-radius: ${lengths.borderRadius};
+  padding: ${props => props.padding};
+  height: 200px;
   cursor: pointer;
   overflow: hidden;
   background-color: ${props => props.isPrivate && colors.textFieldBorder};
@@ -17,6 +14,13 @@ const Card = styled.div`
   &:focus {
     outline: none;
   }
+`;
+
+
+const CardInner = styled.div`
+  border: ${borders.textField};
+  border-color: ${props => props.isSelected && colors.active};
+  border-radius: ${lengths.borderRadius};
 `;
 
 const CardImage = styled.img`
@@ -30,12 +34,13 @@ const CardImagePlaceholder = CardImage.withComponent(`div`);
 
 const CardText = styled.p`
   color: ${colors.text};
-  padding: 8px;
+  padding: 2px 8px;
   margin: 0;
   overflow-wrap: break-word;
   line-height: 1.3 !important;
   text-align: left;
   font-size: 10px;
+  min-height: 62px;
 `;
 
 const MediaLibraryCard = ({ style, imageUrl, text, onClick }) => (
@@ -43,13 +48,16 @@ const MediaLibraryCard = ({ style, imageUrl, text, onClick }) => (
     style={style}
     isSelected={false}
     onClick={onClick}
-    width={`140px`}
-    margin={`10px`}
+    width={`200px`}
+    //margin={`10px`}
     tabIndex="-1"
     isPrivate={false}
+    padding={`10px 5px`}
   >
-    <div>{imageUrl ? <CardImage src={imageUrl} /> : <CardImagePlaceholder />}</div>
-    <CardText>{text}</CardText>
+    <CardInner>
+      {imageUrl ? <CardImage src={imageUrl} /> : <CardImagePlaceholder />}
+      <CardText>{text}</CardText>
+    </CardInner>
   </Card>
 );
 

@@ -181,7 +181,7 @@ export default function withFileControl({ forImage } = {}) {
           <MultiImageWrapper>
             {value.map(val => (
               <ImageWrapper key={val}>
-                <Image src={getAsset(val)} />
+                <Image src={`${getAsset(val)}-/stretch/off/-/scale_crop/280x280/center/`} />
               </ImageWrapper>
             ))}
           </MultiImageWrapper>
@@ -189,7 +189,7 @@ export default function withFileControl({ forImage } = {}) {
       }
       return (
         <ImageWrapper>
-          <Image src={getAsset(value)} />
+          <Image src={`${getAsset(value)}-/stretch/off/-/scale_crop/280x280/center/`} />
         </ImageWrapper>
       );
     };
