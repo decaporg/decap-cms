@@ -4,7 +4,7 @@
     "start": "run-s bootstrap develop",
     "watch": "lerna run watch --parallel",
     "develop": "lerna run develop --parallel",
-    "build": "npm run clean && lerna run build",
+    "build": "npm run clean && lerna run build:es5 && lerna run build",
     "build-preview": "npm run build && lerna run build-preview",
     "clean": "rimraf packages/*/dist dev-test/*.js",
     "reset": "npm run clean && lerna clean --yes",

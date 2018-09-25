@@ -5,7 +5,8 @@
   "homepage": "https://www.netlifycms.org/docs/widgets/#relation",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
-  "main": "dist/netlify-cms-widget-relation.js",
+  "main": "dist/netlify-cms-widget-relation.es5.js",
+  "es": "dist/netlify-cms-widget-relation.js",
   "license": "MIT",
   "keywords": [
     "netlify",
@@ -18,7 +19,8 @@
   "scripts": {
     "watch": "webpack -w",
     "develop": "npm run watch",
-    "build": "cross-env NODE_ENV=production webpack"
+    "build": "cross-env NODE_ENV=production webpack",
+    "build:es5": "cross-env BABEL_ENV=es5 NODE_ENV=production webpack"
   },
   "dependencies": {
     "react-autosuggest": "^9.3.2"

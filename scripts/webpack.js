@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 const pkg = require(path.join(process.cwd(), 'package.json'));
 
+const isES5 = process.env.BABEL_ENV === 'es5';
 const isProduction = process.env.NODE_ENV === 'production';
 
 const rules = () => ({
@@ -56,7 +57,7 @@ const getConfig = () => ({
   entry: './src/index.js',
   output: {
     path: process.cwd(),
-    filename: pkg.main,
+    filename: isES5 ? pkg.main : pkg.es,
     library: pkg.name,
     libraryTarget: 'umd',
     umdNamedDefine: true,

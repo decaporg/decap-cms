@@ -5,10 +5,12 @@
   "homepage": "https://www.netlifycms.org",
   "repository": "https://github.com/netlify/netlify-cms",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
-  "main": "dist/netlify-cms.js",
+  "main": "dist/netlify-cms.es5.js",
+  "es": "dist/netlify-cms.js",
   "scripts": {
     "watch": "webpack -w",
     "build": "cross-env NODE_ENV=production webpack",
+    "build:es5": "cross-env BABEL_ENV=es5 NODE_ENV=production webpack",
     "build-preview": "cross-env NODE_ENV=production webpack-dev-server --open",
     "develop": "webpack-dev-server --hot"
   },

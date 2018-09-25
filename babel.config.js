@@ -1,3 +1,4 @@
+const isES5 = process.env.BABEL_ENV === 'es5';
 const isProduction = process.env.NODE_ENV === 'production';
 const isTest = process.env.NODE_ENV === 'test';
 
@@ -12,7 +13,7 @@ const presets = () => {
       {
         modules: false,
         // transpile to ES5
-        forceAllTransforms: true,
+        forceAllTransforms: !!isES5,
       },
     ],
   ];
@@ -31,15 +32,18 @@ const plugins = () => {
     '@babel/plugin-proposal-class-properties',
     '@babel/plugin-proposal-object-rest-spread',
     '@babel/plugin-proposal-export-default-from',
-    [
+  ];
+
+  if (isES5) {
+    defaultPlugins.push([
       '@babel/plugin-transform-runtime',
       {
         helpers: false,
         regenerator: true,
         useESModules: !isTest,
       },
-    ],
-  ];
+    ]);
+  }
 
   if (isProduction) {
     return [...defaultPlugins, ['emotion', { hoist: true }]];

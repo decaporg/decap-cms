@@ -4,7 +4,8 @@
   "version": "2.0.4",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-editor-component-image",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
-  "main": "dist/netlify-cms-editor-component-image.js",
+  "main": "dist/netlify-cms-editor-component-image.es5.js",
+  "es": "dist/netlify-cms-editor-component-image.js",
   "license": "MIT",
   "keywords": [
     "netlify",
@@ -16,7 +17,8 @@
   "scripts": {
     "watch": "webpack -w",
     "develop": "npm run watch",
-    "build": "cross-env NODE_ENV=production webpack"
+    "build": "cross-env NODE_ENV=production webpack",
+    "build:es5": "cross-env BABEL_ENV=es5 NODE_ENV=production webpack"
   },
   "devDependencies": {
     "cross-env": "^5.2.0",

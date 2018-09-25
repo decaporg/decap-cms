@@ -4,7 +4,8 @@
   "version": "2.0.4",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-auth",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
-  "main": "dist/netlify-cms-lib-auth.js",
+  "main": "dist/netlify-cms-lib-auth.es5.js",
+  "es": "dist/netlify-cms-lib-auth.js",
   "license": "MIT",
   "files": [
     "src/",
@@ -17,7 +18,8 @@
   "scripts": {
     "watch": "webpack -w",
     "develop": "npm run watch",
-    "build": "cross-env NODE_ENV=production webpack"
+    "build": "cross-env NODE_ENV=production webpack",
+    "build:es5": "cross-env BABEL_ENV=es5 NODE_ENV=production webpack"
   },
   "dependencies": {
     "uuid": "^3.1.0"

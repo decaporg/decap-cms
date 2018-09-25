@@ -5,7 +5,8 @@
   "homepage": "https://www.netlifycms.org/docs/widgets/#markdown",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
-  "main": "dist/netlify-cms-widget-markdown.js",
+  "main": "dist/netlify-cms-widget-markdown.es5.js",
+  "es": "dist/netlify-cms-widget-markdown.js",
   "license": "MIT",
   "keywords": [
     "netlify",
@@ -18,7 +19,8 @@
   "scripts": {
     "watch": "webpack -w",
     "develop": "npm run watch",
-    "build": "cross-env NODE_ENV=production webpack"
+    "build": "cross-env NODE_ENV=production webpack",
+    "build:es5": "cross-env BABEL_ENV=es5 NODE_ENV=production webpack"
   },
   "dependencies": {
     "is-hotkey": "^0.1.1",

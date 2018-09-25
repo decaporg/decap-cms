@@ -5,7 +5,8 @@
   "homepage": "https://www.netlifycms.org/docs/widgets/#select",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-select",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
-  "main": "dist/netlify-cms-widget-select.js",
+  "main": "dist/netlify-cms-widget-select.es5.js",
+  "es": "dist/netlify-cms-widget-select.js",
   "license": "MIT",
   "keywords": [
     "netlify",
@@ -19,7 +20,8 @@
   "scripts": {
     "watch": "webpack -w",
     "develop": "npm run watch",
-    "build": "cross-env NODE_ENV=production webpack"
+    "build": "cross-env NODE_ENV=production webpack",
+    "build:es5": "cross-env BABEL_ENV=es5 NODE_ENV=production webpack"
   },
   "devDependencies": {
     "cross-env": "^5.2.0",
