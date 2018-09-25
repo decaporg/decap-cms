@@ -19,6 +19,7 @@
   ],
   "license": "MIT",
   "dependencies": {
+    "@babel/runtime": "^7.0.0",
     "ajv": "^6.4.0",
     "ajv-errors": "^1.0.0",
     "create-react-class": "^15.6.0",

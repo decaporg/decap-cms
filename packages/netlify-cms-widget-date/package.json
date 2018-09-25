@@ -31,6 +31,7 @@
     "webpack-cli": "^3.1.0"
   },
   "peerDependencies": {
+    "@babel/runtime": "^7.0.0",
     "emotion": "^9.2.6",
     "moment": "^2.11.2",
     "netlify-cms-ui-default": "^2.0.0",

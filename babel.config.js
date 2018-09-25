@@ -11,6 +11,8 @@ const presets = () => {
       '@babel/preset-env',
       {
         modules: false,
+        // transpile to ES5
+        forceAllTransforms: true,
       },
     ],
   ];
@@ -29,6 +31,14 @@ const plugins = () => {
     '@babel/plugin-proposal-class-properties',
     '@babel/plugin-proposal-object-rest-spread',
     '@babel/plugin-proposal-export-default-from',
+    [
+      '@babel/plugin-transform-runtime',
+      {
+        helpers: false,
+        regenerator: true,
+        useESModules: !isTest,
+      },
+    ],
   ];
 
   if (isProduction) {
