@@ -10,6 +10,30 @@ media_folder: "website/static/img" # Folder where user uploaded files should go
 public_folder: "img"
 
 collections: # A list of collections the CMS should be able to edit
+  - name: pages
+    label: Pages
+    files:
+      - name: community
+        label: Community
+        file: website/content/pages/community.md
+        fields:
+          - { name: title, label: Title }
+          - { name: headline, label: Headline }
+          - { name: subhead, label: Subheading, widget: markdown }
+          - { name: primarycta, label: Call To Action, widget: markdown }
+          - { name: upcomingevent, label: Event Intro, widget: text }
+          - { name: howitworks, label: How It Works, widget: text }
+          - { name: howtojoin, label: How To Join, widget: markdown }
+      - name: roadmap
+        label: Roadmap
+        file: website/content/pages/roadmap.md
+        fields:
+          - { name: title, label: Title }
+          - { name: description, label: Description, widget: text }
+          - { name: heading, label: Heading }
+          - { name: intro, label: Intro, widget: text }
+          - { name: body, label: Roadmap, widget: markdown }
+
   - name: "docs" # Used in routes, ie.: /admin/collections/:slug/edit
     label: "Docs" # Used in the UI, ie.: "New Post"
     folder: "website/content/docs" # The path to the folder where the documents are stored

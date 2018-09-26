@@ -1,5 +1,6 @@
 .docs.page,
-.blog.page {
+.blog.page,
+.roadmap.page {
   padding: 69px $tiny $xl;
   text-align: left;
   @media screen and (min-width: $mobile) {

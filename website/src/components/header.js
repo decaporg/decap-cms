@@ -41,6 +41,7 @@ class Header extends Component {
         {({ location }) => {
           const isDocs = location.pathname.indexOf('docs') !== -1;
           const isBlog = location.pathname.indexOf('blog') !== -1;
+          const isRoadmap = location.pathname.indexOf('roadmap') !== -1;
 
           return (
             <header
@@ -48,6 +49,7 @@ class Header extends Component {
               className={classnames({
                 docs: isDocs,
                 blog: isBlog,
+                roadmap: isRoadmap,
                 scrolled,
               })}
             >
@@ -67,6 +69,9 @@ class Header extends Component {
                   </Link>
                   <Link className="nav-link" to="/community">
                     Community
+                  </Link>
+                  <Link className="nav-link" to="/roadmap">
+                    Roadmap
                   </Link>
                   <Link className="nav-link" to="/blog">
                     Blog
