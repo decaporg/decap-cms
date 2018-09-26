@@ -1,7 +1,7 @@
 backend:
   name: github
   repo: netlify/netlify-cms
-  branch: master
+  branch: roadmap
   squash_merges: true
 
 publish_mode: editorial_workflow
@@ -21,7 +21,9 @@ collections: # A list of collections the CMS should be able to edit
           - { name: headline, label: Headline }
           - { name: subhead, label: Subheading, widget: markdown }
           - { name: primarycta, label: Call To Action, widget: markdown }
-          - { name: upcomingevent, label: Event Intro, widget: text }
+          - { name: upcomingevent, label: Event, widget: object, fields: [
+              { name: hook, label: Intro, widget: text }
+            ]}
           - { name: howitworks, label: How It Works, widget: text }
           - { name: howtojoin, label: How To Join, widget: markdown }
       - name: roadmap

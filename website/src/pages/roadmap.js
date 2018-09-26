@@ -18,7 +18,7 @@ const Roadmap = ({ data }) => {
         <div className="container">
           <h1>{heading}</h1>
           <p>{intro}</p>
-          <div dangerouslySetInnerHTML={{ __html: html }}/>
+          <div dangerouslySetInnerHTML={{ __html: html }} />
         </div>
       </div>
     </Layout>
