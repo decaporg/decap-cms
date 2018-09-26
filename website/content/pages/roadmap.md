@@ -42,6 +42,7 @@ intro: Planned features for Netlify CMS
 - in editor, show the resulting url for the current entry (provides slug visibility too)
 - duplicate existing entry
 - faux pagination for non-paginated backends (github)
+- accept dot notation in field names to achieve nested values
 
 ## Validation
 - nested entry validation

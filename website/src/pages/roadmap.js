@@ -4,23 +4,34 @@ import { graphql } from 'gatsby';
 
 import Layout from '../components/layout';
 
+export const RoadmapTemplate = ({ title, description, heading, intro, body, html }) => (
+  <div className="roadmap page">
+    <div className="container">
+      <h1>{heading}</h1>
+      <p>{intro}</p>
+      {body ? body : <div dangerouslySetInnerHTML={{ __html: html }} />}
+    </div>
+  </div>
+);
+
+
 const Roadmap = ({ data }) => {
   const { html, frontmatter } = data.markdownRemark;
   const { title, description, heading, intro } = frontmatter;
 
   return (
     <Layout>
-      <div className="roadmap page">
-        <Helmet>
-          <title>{title}</title>
-          <meta name="description" content={description} />
-        </Helmet>
-        <div className="container">
-          <h1>{heading}</h1>
-          <p>{intro}</p>
-          <div dangerouslySetInnerHTML={{ __html: html }} />
-        </div>
-      </div>
+      <Helmet>
+        <title>{title}</title>
+        <meta name="description" content={description} />
+      </Helmet>
+      <RoadmapTemplate
+        title={title}
+        description={description}
+        heading={heading}
+        intro={intro}
+        html={html}
+      />
     </Layout>
   );
 };

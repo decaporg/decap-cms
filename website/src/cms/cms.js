@@ -3,11 +3,14 @@ import CMS from 'netlify-cms';
 import dayjs from 'dayjs';
 import { BlogPostTemplate } from '../templates/blog-post';
 import { DocsTemplate } from '../templates/doc-page';
+import { RoadmapTemplate } from '../pages/roadmap';
+import { CommunityTemplate } from '../pages/community';
 import Release from '../components/release';
 import WhatsNew from '../components/whats-new';
 import Notification from '../components/notification';
 import '../css/lib/prism.css';
 import '../css/imports/docs.css';
+import '../css/imports/hero.css';
 import '../css/imports/whatsnew.css';
 import '../css/imports/header.css';
 
@@ -50,7 +53,46 @@ const NotificationPreview = ({ entry }) =>
       </Notification>
     ));
 
+const RoadmapPreview = ({ entry, widgetFor }) => {
+  const { title, description, heading, intro } = entry.get('data').toJS();
+  return (
+    <RoadmapTemplate
+      title={title}
+      description={description}
+      heading={heading}
+      intro={intro}
+      body={widgetFor('body')}
+    />
+  );
+};
+
+const CommunityPreview = ({ entry }) => {
+  const {
+    title,
+    headline,
+    subhead,
+    primarycta,
+    upcomingevent,
+    howitworks,
+    howtojoin
+  } = entry.get('data').toJS()
+  return (
+    <CommunityTemplate
+      title={title}
+      headline={headline}
+      subhead={subhead}
+      cta={primarycta}
+      eventIntro={upcomingevent.hook}
+      howItWorks={howitworks}
+      howToJoin={howtojoin}
+    />
+  );
+};
+
+
 CMS.registerPreviewTemplate('blog', BlogPostPreview);
 CMS.registerPreviewTemplate('docs', DocsPreview);
 CMS.registerPreviewTemplate('releases', ReleasePreview);
 CMS.registerPreviewTemplate('notifications', NotificationPreview);
+CMS.registerPreviewTemplate('roadmap', RoadmapPreview);
+CMS.registerPreviewTemplate('community', CommunityPreview);
