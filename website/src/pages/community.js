@@ -9,7 +9,14 @@ import Markdownify from '../components/markdownify';
 
 import '../css/imports/collab.css';
 
-export const CommunityTemplate = ({ headline, subhead, cta, eventIntro, howItWorks, howToJoin}) => (
+export const CommunityTemplate = ({
+  headline,
+  subhead,
+  cta,
+  eventIntro,
+  howItWorks,
+  howToJoin,
+}) => (
   <div className="community page">
     <section className="community hero">
       <div className="contained">

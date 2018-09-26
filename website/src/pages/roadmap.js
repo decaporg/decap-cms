@@ -4,7 +4,7 @@ import { graphql } from 'gatsby';
 
 import Layout from '../components/layout';
 
-export const RoadmapTemplate = ({ title, description, heading, intro, body, html }) => (
+export const RoadmapTemplate = ({ heading, intro, body, html }) => (
   <div className="roadmap page">
     <div className="container">
       <h1>{heading}</h1>
@@ -13,7 +13,6 @@ export const RoadmapTemplate = ({ title, description, heading, intro, body, html
     </div>
   </div>
 );
-
 
 const Roadmap = ({ data }) => {
   const { html, frontmatter } = data.markdownRemark;
@@ -25,13 +24,7 @@ const Roadmap = ({ data }) => {
         <title>{title}</title>
         <meta name="description" content={description} />
       </Helmet>
-      <RoadmapTemplate
-        title={title}
-        description={description}
-        heading={heading}
-        intro={intro}
-        html={html}
-      />
+      <RoadmapTemplate heading={heading} intro={intro} html={html} />
     </Layout>
   );
 };

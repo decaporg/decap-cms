@@ -67,15 +67,9 @@ const RoadmapPreview = ({ entry, widgetFor }) => {
 };
 
 const CommunityPreview = ({ entry }) => {
-  const {
-    title,
-    headline,
-    subhead,
-    primarycta,
-    upcomingevent,
-    howitworks,
-    howtojoin
-  } = entry.get('data').toJS()
+  const { title, headline, subhead, primarycta, upcomingevent, howitworks, howtojoin } = entry
+    .get('data')
+    .toJS();
   return (
     <CommunityTemplate
       title={title}
@@ -88,7 +82,6 @@ const CommunityPreview = ({ entry }) => {
     />
   );
 };
-
 
 CMS.registerPreviewTemplate('blog', BlogPostPreview);
 CMS.registerPreviewTemplate('docs', DocsPreview);
