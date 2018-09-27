@@ -33,11 +33,10 @@ collections: # A list of collections the CMS should be able to edit
         widget: "image"
         required: false
         tagname: ""
-        options:
-          media_library:
-            config:
-              default_transformations:
-                - quality: 50
+        media_library:
+          config:
+            default_transformations:
+              - quality: 50
 
       - {label: "Body", name: "body", widget: "markdown", hint: "Main content goes here."}
     meta:

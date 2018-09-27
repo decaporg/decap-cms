@@ -74,9 +74,8 @@ Forexample:
     name: cover
     label: Cover Image
     widget: image
-    options:
-      media_library:
-        config:
-          multiple: true
-          previewStep: false
+    media_library:
+      config:
+        multiple: true
+        previewStep: false
 ```

@@ -17,10 +17,8 @@ const image = {
       label: 'Image',
       name: 'image',
       widget: 'image',
-      options: {
-        media_library: {
-          allow_multiple: false,
-        },
+      media_library: {
+        allow_multiple: false,
       },
     },
     {
