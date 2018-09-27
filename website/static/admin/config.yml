@@ -1,10 +1,10 @@
 backend:
   name: github
   repo: netlify/netlify-cms
-  branch: master
+  branch: cloudinary
   squash_merges: true
 
-publish_mode: editorial_workflow
+# publish_mode: editorial_workflow
 
 media_folder: "website/static/img" # Folder where user uploaded files should go
 public_folder: "img"
