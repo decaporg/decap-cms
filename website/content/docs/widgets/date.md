@@ -1,6 +1,6 @@
 ---
+name: date
 label: "Date"
-target: date
 ---
 
 The date widget translates a date picker input to a date string. For saving date and time together, use the datetime widget.

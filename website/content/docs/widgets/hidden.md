@@ -1,6 +1,6 @@
 ---
 label: "Hidden"
-target: hidden
+name: hidden
 ---
 
 Hidden widgets do not display in the UI. In folder collections that allow users to create new items, you will often want to set a default for hidden fields, so they will be set without requiring an input.

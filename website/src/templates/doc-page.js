@@ -124,8 +124,8 @@ export const pageQuery = graphql`
       edges {
         node {
           frontmatter {
+            title
             label
-            target
           }
           html
         }

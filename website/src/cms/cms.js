@@ -3,6 +3,7 @@ import CMS from 'netlify-cms';
 import dayjs from 'dayjs';
 import { BlogPostTemplate } from '../templates/blog-post';
 import { DocsTemplate } from '../templates/doc-page';
+import WidgetDoc from '../components/widget-doc';
 import Release from '../components/release';
 import WhatsNew from '../components/whats-new';
 import Notification from '../components/notification';
@@ -40,17 +41,21 @@ const ReleasePreview = ({ entry }) => (
   </WhatsNew>
 );
 
-const NotificationPreview = ({ entry }) =>
-  entry
-    .getIn(['data', 'notifications'])
-    .filter(notif => notif.get('published'))
-    .map((notif, idx) => (
-      <Notification key={idx} url={notif.get('url')} loud={notif.get('loud')}>
-        {notif.get('message')}
-      </Notification>
-    ));
+const NotificationPreview = ({ entry }) => entry
+  .getIn(['data', 'notifications'])
+  .filter(notif => notif.get('published'))
+  .map((notif, idx) => (
+    <Notification key={idx} url={notif.get('url')} loud={notif.get('loud')}>
+      {notif.get('message')}
+    </Notification>
+  ));
+
+const WidgetDocPreview = ({ entry, widgetFor }) => (
+  <WidgetDoc className="widget_open" label={entry.get('label')} body={widgetFor('body')}/>
+);
 
 CMS.registerPreviewTemplate('blog', BlogPostPreview);
 CMS.registerPreviewTemplate('docs', DocsPreview);
+CMS.registerPreviewTemplate('widget_docs', WidgetDocPreview);
 CMS.registerPreviewTemplate('releases', ReleasePreview);
 CMS.registerPreviewTemplate('notifications', NotificationPreview);
