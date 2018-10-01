@@ -1520,6 +1520,10 @@ babel-plugin-macros@^2.0.0, babel-plugin-macros@^2.4.0:
   dependencies:
     cosmiconfig "^5.0.5"
 
+babel-plugin-prismjs@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/babel-plugin-prismjs/-/babel-plugin-prismjs-1.0.2.tgz#837bf6b32168b3ba624c054fc755946deb1b63fa"
+
 babel-plugin-remove-graphql-queries@^2.0.2-rc.2:
   version "2.0.2-rc.2"
   resolved "https://registry.yarnpkg.com/babel-plugin-remove-graphql-queries/-/babel-plugin-remove-graphql-queries-2.0.2-rc.2.tgz#85ae3b8d46ebaa27e128d15321d67acd409d95e2"
