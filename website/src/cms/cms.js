@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOMServer from 'react-dom/server';
 import CMS from 'netlify-cms';
 import dayjs from 'dayjs';
 import Prism from 'prismjs';
@@ -13,32 +12,33 @@ import '../css/imports/docs.css';
 import '../css/imports/whatsnew.css';
 import '../css/imports/header.css';
 
-const withHighlight = WrappedComponent => class Highlight extends React.Component {
-  constructor(props) {
-    super(props);
-    this.ref = React.createRef();
-  }
+const withHighlight = WrappedComponent =>
+  class Highlight extends React.Component {
+    constructor(props) {
+      super(props);
+      this.ref = React.createRef();
+    }
 
-  highlight() {
-    Prism.highlightAllUnder(this.ref.current);
-  }
+    highlight() {
+      Prism.highlightAllUnder(this.ref.current);
+    }
 
-  componentDidMount() {
-    this.highlight();
-  }
+    componentDidMount() {
+      this.highlight();
+    }
 
-  componentDidUpdate() {
-    this.highlight();
-  }
+    componentDidUpdate() {
+      this.highlight();
+    }
 
-  render() {
-    return (
-      <div className="language-markup" ref={this.ref}>
-        <WrappedComponent {...this.props}/>
-      </div>
-    );
-  }
-};
+    render() {
+      return (
+        <div className="language-markup" ref={this.ref}>
+          <WrappedComponent {...this.props} />
+        </div>
+      );
+    }
+  };
 
 const BlogPostPreview = ({ entry, widgetFor }) => {
   const data = entry.get('data');
