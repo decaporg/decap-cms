@@ -1,5 +1,5 @@
 ---
-name: boolean
+title: boolean
 label: "Boolean"
 ---
 

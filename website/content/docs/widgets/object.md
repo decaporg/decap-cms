@@ -1,6 +1,6 @@
 ---
 label: "Object"
-name: object
+title: object
 ---
 
 The object widget allows you to group multiple widgets together, nested under a single field. You can choose any widget as a child of an object widget—even other objects.

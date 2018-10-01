@@ -1,5 +1,5 @@
 ---
-name: date
+title: date
 label: "Date"
 ---
 

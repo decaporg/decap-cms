@@ -1,5 +1,5 @@
 ---
-name: datetime
+title: datetime
 label: "DateTime"
 ---
 
