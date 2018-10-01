@@ -41,17 +41,18 @@ const ReleasePreview = ({ entry }) => (
   </WhatsNew>
 );
 
-const NotificationPreview = ({ entry }) => entry
-  .getIn(['data', 'notifications'])
-  .filter(notif => notif.get('published'))
-  .map((notif, idx) => (
-    <Notification key={idx} url={notif.get('url')} loud={notif.get('loud')}>
-      {notif.get('message')}
-    </Notification>
-  ));
+const NotificationPreview = ({ entry }) =>
+  entry
+    .getIn(['data', 'notifications'])
+    .filter(notif => notif.get('published'))
+    .map((notif, idx) => (
+      <Notification key={idx} url={notif.get('url')} loud={notif.get('loud')}>
+        {notif.get('message')}
+      </Notification>
+    ));
 
 const WidgetDocPreview = ({ entry, widgetFor }) => (
-  <WidgetDoc visible={true} label={entry.get('label')} body={widgetFor('body')}/>
+  <WidgetDoc visible={true} label={entry.get('label')} body={widgetFor('body')} />
 );
 
 CMS.registerPreviewTemplate('blog', BlogPostPreview);

@@ -8,5 +8,4 @@ const WidgetDoc = ({ isVisible, label, body, html }) => (
   </div>
 );
 
-
 export default WidgetDoc;
