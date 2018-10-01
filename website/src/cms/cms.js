@@ -51,7 +51,7 @@ const NotificationPreview = ({ entry }) => entry
   ));
 
 const WidgetDocPreview = ({ entry, widgetFor }) => (
-  <WidgetDoc className="widget_open" label={entry.get('label')} body={widgetFor('body')}/>
+  <WidgetDoc visible={true} label={entry.get('label')} body={widgetFor('body')}/>
 );
 
 CMS.registerPreviewTemplate('blog', BlogPostPreview);

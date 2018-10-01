@@ -66,8 +66,8 @@ class Widgets extends Component {
             {widgets.edges.map(({ node }) => {
               const { frontmatter, html } = node;
               const { title, label } = frontmatter;
-              const className = classnames('widget', { widget_open: currentWidget === title });
-              return <WidgetDoc key={label} className={className} label={label} html={html} />;
+              const isVisible = currentWidget === title;
+              return <WidgetDoc key={label} visible={isVisible} label={label} html={html} />;
             })}
           </div>
         </section>
