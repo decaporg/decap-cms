@@ -65,7 +65,7 @@ instance of the Uploadcare widget.
 
 Configuration can also be provided for individual fields that use the media library. The structure
 is very similar to the global configuration, except the settings are added to an individual `field`.
-Forexample:
+For example:
 
 ```yaml
   ...
