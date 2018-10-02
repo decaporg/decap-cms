@@ -29,7 +29,7 @@ To use it in your own project stored on GitHub or GitLab, follow these steps:
 
 ### Reconnect after Changing Repository Permissions
 
-If you change ownership on your repository, or convert a repository from public to private, you may need to reconnect Git Gateway with proper permissions. See [Reconnect after Changing Repository Permissions](https://www.netlify.com/docs/git-gateway/#reconnect-after-changing-repository-permissions) for instructions.
+If you change ownership on your repository, or convert a repository from public to private, you may need to reconnect Git Gateway with proper permissions. Find further instructions in the [Netlify Git Gateway docs](https://www.netlify.com/docs/git-gateway/#reconnect-after-changing-repository-permissions).
 
 ## Git Gateway without Netlify
 
