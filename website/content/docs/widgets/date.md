@@ -17,13 +17,13 @@ options:
       raw Date object (if supported by output format)
     name: format
 examples:
-  - content: |2-
-          ```yaml
-          - label: "Birthdate"
-            name: "birthdate"
-            widget: "date"
-            default: ""
-            format: "MMM Do YY"
-          ```
+  - content: |-
+      ```yaml
+      - label: "Birthdate"
+        name: "birthdate"
+        widget: "date"
+        default: ""
+        format: "MMM Do YY"
+      ```
 ---
 
