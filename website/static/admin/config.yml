@@ -3,7 +3,7 @@ backend:
   repo: netlify/netlify-cms
   squash_merges: true
 
-publish_mode: editorial_workflow
+  # publish_mode: editorial_workflow
 
 media_folder: "website/static/img" # Folder where user uploaded files should go
 public_folder: "img"
@@ -25,6 +25,16 @@ collections: # A list of collections the CMS should be able to edit
     fields: # The fields each document in this collection have
       - {label: "Name", name: "title"}
       - {label: "Label", name: "label"}
+      - {label: "Description", name: "description"}
+      - {label: "UI", name: "ui"}
+      - {label: "Data Type", name: "data_type"}
+      - label: Options
+        name: options
+        widget: list
+        fields:
+          - {name: name, label: Name }
+          - {name: description, label: Description, widget: markdown}
+      - {label: Example, name: example, widget: markdown}
       - {label: "Body", name: "body", widget: "markdown"}
   - name: "blog"
     label: "Blog"
