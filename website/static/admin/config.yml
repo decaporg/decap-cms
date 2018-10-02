@@ -39,7 +39,7 @@ collections: # A list of collections the CMS should be able to edit
         name: examples
         widget: list
         fields:
-          - {name: heading, label: Heading}
+          - {name: heading, label: Heading, widget: markdown}
           - {name: content, label: Content, widget: markdown}
       - {label: "Body", name: "body", widget: "markdown", required: false}
   - name: "blog"

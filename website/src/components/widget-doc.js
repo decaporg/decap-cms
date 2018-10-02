@@ -18,7 +18,7 @@ const WidgetDocOption = ({ name, description }) => (
 
 const WidgetDocExample = ({ heading, content }) => (
   <div>
-    {heading && <h4>{heading}</h4>}
+    {heading && <h4><Markdown source={heading}/></h4>}
     <Markdown source={content}/>
   </div>
 );
