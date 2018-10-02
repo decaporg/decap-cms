@@ -1,6 +1,6 @@
 ---
 label: "File"
-target: file
+title: file
 ---
 
 The file widget allows editors to upload a file or select an existing one from the media library. The path to the file will be saved to the field as a string.

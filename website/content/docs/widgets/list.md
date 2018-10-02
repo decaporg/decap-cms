@@ -1,6 +1,6 @@
 ---
 label: "List"
-target: list
+title: list
 ---
 
 The list widget allows you to create a repeatable item in the UI which saves as a list of widget values. map a user-provided string with a comma delimiter into a list. You can choose any widget as a child of a list widget—even other lists.

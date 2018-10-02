@@ -53,7 +53,12 @@ module.exports = {
         // prettier-ignore
         plugins: [
           'gatsby-remark-autolink-headers',
-          'gatsby-remark-prismjs'
+          {
+            resolve: 'gatsby-remark-prismjs',
+            options: {
+              noInlineHighlight: true,
+            },
+          },
         ]
       },
     },

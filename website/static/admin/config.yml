@@ -1,7 +1,6 @@
 backend:
   name: github
   repo: netlify/netlify-cms
-  branch: master
   squash_merges: true
 
 publish_mode: editorial_workflow
@@ -18,6 +17,14 @@ collections: # A list of collections the CMS should be able to edit
       - {label: "Title", name: "title", widget: "string", tagname: "h1"}
       - {label: "Group", name: "group", widget: "string"}
       - {label: "Weight", name: "weight", widget: "number"}
+      - {label: "Body", name: "body", widget: "markdown"}
+  - name: "widget_docs" # Used in routes, ie.: /admin/collections/:slug/edit
+    label: "Widget Docs" # Used in the UI, ie.: "New Post"
+    folder: "website/content/docs/widgets" # The path to the folder where the documents are stored
+    create: true # Allow users to create new documents in this collection
+    fields: # The fields each document in this collection have
+      - {label: "Name", name: "title"}
+      - {label: "Label", name: "label"}
       - {label: "Body", name: "body", widget: "markdown"}
   - name: "blog"
     label: "Blog"

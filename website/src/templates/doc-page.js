@@ -1,6 +1,7 @@
 import React from 'react';
 import Helmet from 'react-helmet';
 import { graphql } from 'gatsby';
+import 'prismjs/themes/prism-tomorrow.css';
 
 import Layout from '../components/layout';
 import EditLink from '../components/edit-link';
@@ -8,7 +9,6 @@ import Widgets from '../components/widgets';
 import DocsNav from '../components/docs-nav';
 import MobileNav from '../components/mobile-nav';
 
-import '../css/lib/prism.css';
 import '../css/imports/docs.css';
 
 const toMenu = (menu, nav) =>
@@ -124,8 +124,8 @@ export const pageQuery = graphql`
       edges {
         node {
           frontmatter {
+            title
             label
-            target
           }
           html
         }
