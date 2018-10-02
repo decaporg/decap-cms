@@ -26,9 +26,9 @@ collections: # A list of collections the CMS should be able to edit
     fields: # The fields each document in this collection have
       - {label: "Name", name: "title"}
       - {label: "Label", name: "label"}
-      - {label: "Description", name: "description"}
-      - {label: "UI", name: "ui"}
-      - {label: "Data Type", name: "data_type"}
+      - {label: "Description", name: "description", widget: text}
+      - {label: "UI", name: "ui", widget: text}
+      - {label: "Data Type", name: "data_type", widget: text}
       - label: Options
         name: options
         widget: list
@@ -41,7 +41,7 @@ collections: # A list of collections the CMS should be able to edit
         fields:
           - {name: heading, label: Heading}
           - {name: content, label: Content, widget: markdown}
-      - {label: "Body", name: "body", widget: "markdown"}
+      - {label: "Body", name: "body", widget: "markdown", required: false}
   - name: "blog"
     label: "Blog"
     label_singular: "Post"
@@ -83,3 +83,4 @@ collections: # A list of collections the CMS should be able to edit
               - {label: Loud, name: loud, widget: boolean}
               - {label: Message, name: message, widget: text}
               - {label: URL, name: url}
+
