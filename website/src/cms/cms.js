@@ -1,44 +1,17 @@
 import React from 'react';
 import CMS from 'netlify-cms';
+import { List } from 'immutable';
 import dayjs from 'dayjs';
-import Prism from 'prismjs';
 import { BlogPostTemplate } from '../templates/blog-post';
 import { DocsTemplate } from '../templates/doc-page';
 import WidgetDoc from '../components/widget-doc';
 import Release from '../components/release';
 import WhatsNew from '../components/whats-new';
 import Notification from '../components/notification';
+import withHighlight from '../components/with-highlight';
 import '../css/imports/docs.css';
 import '../css/imports/whatsnew.css';
 import '../css/imports/header.css';
-
-const withHighlight = WrappedComponent =>
-  class Highlight extends React.Component {
-    constructor(props) {
-      super(props);
-      this.ref = React.createRef();
-    }
-
-    highlight() {
-      Prism.highlightAllUnder(this.ref.current);
-    }
-
-    componentDidMount() {
-      this.highlight();
-    }
-
-    componentDidUpdate() {
-      this.highlight();
-    }
-
-    render() {
-      return (
-        <div className="language-markup" ref={this.ref}>
-          <WrappedComponent {...this.props} />
-        </div>
-      );
-    }
-  };
 
 const BlogPostPreview = ({ entry, widgetFor }) => {
   const data = entry.get('data');
@@ -56,9 +29,20 @@ const DocsPreview = ({ entry, widgetFor }) => (
   <DocsTemplate title={entry.getIn(['data', 'title'])} body={widgetFor('body')} />
 );
 
-const WidgetDocPreview = ({ entry, widgetFor }) => (
-  <WidgetDoc visible={true} label={entry.get('label')} body={widgetFor('body')} />
-);
+const WidgetDocPreview = ({ entry }) => {
+  const { label, description, ui, data_type, options, examples } = entry.get('data').toJS();
+  return (
+    <WidgetDoc
+      visible={true}
+      label={label}
+      description={description}
+      ui={ui}
+      dataType={data_type}
+      options={options}
+      examples={examples}
+    />
+  );
+};
 
 const ReleasePreview = ({ entry }) => (
   <WhatsNew>

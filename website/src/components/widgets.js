@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import WidgetDoc from './widget-doc';
+import withHighlight from './with-highlight';
 
 import '../css/imports/widgets.css';
+
+const WidgetDocHighlighted = withHighlight(WidgetDoc);
 
 class Widgets extends Component {
   state = {
@@ -64,10 +67,21 @@ class Widgets extends Component {
           </div>
           <div className="widgets__container">
             {widgets.edges.map(({ node }) => {
-              const { frontmatter, html } = node;
-              const { title, label } = frontmatter;
+              const { frontmatter } = node;
+              const { title, label, description, ui, data_type, options, examples } = frontmatter;
               const isVisible = currentWidget === title;
-              return <WidgetDoc key={label} visible={isVisible} label={label} html={html} />;
+              return (
+                <WidgetDocHighlighted
+                  key={title}
+                  visible={isVisible}
+                  label={label}
+                  description={description}
+                  ui={ui}
+                  dataType={data_type}
+                  options={options}
+                  examples={examples}
+                />
+              );
             })}
           </div>
         </section>

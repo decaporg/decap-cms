@@ -1,6 +1,7 @@
 backend:
   name: github
   repo: netlify/netlify-cms
+  branch: structured-widget-docs
   squash_merges: true
 
   # publish_mode: editorial_workflow
@@ -34,7 +35,12 @@ collections: # A list of collections the CMS should be able to edit
         fields:
           - {name: name, label: Name }
           - {name: description, label: Description, widget: markdown}
-      - {label: Example, name: example, widget: markdown}
+      - label: Examples
+        name: examples
+        widget: list
+        fields:
+          - {name: heading, label: Heading}
+          - {name: content, label: Content, widget: markdown}
       - {label: "Body", name: "body", widget: "markdown"}
   - name: "blog"
     label: "Blog"

@@ -38,6 +38,11 @@
 .widget {
   padding: 0.5em 1em;
   display: none;
+
+  /* yay specificity */
+  &.widget_open pre {
+    margin: 0 !important;
+  }
 }
 
 .widget_open {

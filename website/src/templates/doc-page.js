@@ -126,8 +126,18 @@ export const pageQuery = graphql`
           frontmatter {
             title
             label
+            description
+            ui
+            data_type
+            options {
+              name
+              description
+            }
+            examples {
+              heading
+              content
+            }
           }
-          html
         }
       }
     }
