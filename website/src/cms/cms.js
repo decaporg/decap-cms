@@ -1,6 +1,5 @@
 import React from 'react';
 import CMS from 'netlify-cms';
-import { List } from 'immutable';
 import dayjs from 'dayjs';
 import { BlogPostTemplate } from '../templates/blog-post';
 import { DocsTemplate } from '../templates/doc-page';
