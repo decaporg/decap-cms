@@ -5,12 +5,16 @@
 import { once } from 'lodash';
 import { getMediaLibrary } from 'Lib/registry';
 import store from 'Redux';
-import { createMediaLibrary, insertMedia } from 'Actions/mediaLibrary';
+import { createMediaLibrary, insertMedia, persistMedia } from 'Actions/mediaLibrary';
 
 const initializeMediaLibrary = once(async function initializeMediaLibrary(name, options) {
   const lib = getMediaLibrary(name);
   const handleInsert = url => store.dispatch(insertMedia(url));
-  const instance = await lib.init({ options, handleInsert });
+  const handlePersist = file => store.dispatch(persistMedia(file));
+  const getState = () => store.getState()
+
+  const instance = await lib.init({ options, handleInsert, handlePersist, getState });
+
   store.dispatch(createMediaLibrary(instance));
 });
 

@@ -1,10 +1,14 @@
 import { loadScript } from 'netlify-cms-lib-util';
+import { Iterable, OrderedMap } from 'immutable';
+import { makeIndexApplier, makeIndexGetter } from './file-index';
+import { makeLibraryTab } from './library-tab';
 
 /**
  * Default Uploadcare widget configuration, can be overriden via config.yml.
  */
 const defaultConfig = {
   previewStep: true,
+  tabs: 'library preview file'
 };
 
 /**
@@ -44,7 +48,7 @@ function getFileGroup(files) {
  * because the value we're returning may be a promise that we created.
  */
 function getFiles(value, cdnBase) {
-  if (typeof value === 'object') {
+  if (Array.isArray(value) || Iterable.isIterable(value)) {
     const arr = Array.isArray(value) ? value : value.toJS();
     return isFileGroup(arr) ? getFileGroup(arr) : arr.map(val => getFile(val, cdnBase));
   }
@@ -67,15 +71,17 @@ function getFile(url, cdnBase) {
  * Open the standalone dialog. A single instance is created and destroyed for
  * each use.
  */
-function openDialog(files, config, handleInsert) {
+function openDialog(files, config, handleInsert, applyIndex, fileIndex) {
   window.uploadcare.openDialog(files, config).done(({ promise }) =>
-    promise().then(({ cdnUrl, count }) => {
+    promise().then((fileInfo) => {
       if (config.multiple) {
-        const urls = Array.from({ length: count }, (val, idx) => `${cdnUrl}nth/${idx}/`);
+        const urls = Array.from({ length: fileInfo.count }, (val, idx) => `${fileInfo.cdnUrl}nth/${idx}/`);
         handleInsert(urls);
       } else {
-        handleInsert(cdnUrl);
+        handleInsert(fileInfo.cdnUrl);
       }
+
+      applyIndex(fileIndex.setIn([fileInfo.name], OrderedMap(fileInfo)))
     }),
   );
 }
@@ -84,13 +90,16 @@ function openDialog(files, config, handleInsert) {
  * Initialization function will only run once, returns an API object for Netlify
  * CMS to call methods on.
  */
-async function init({ options = { config: {} }, handleInsert }) {
+async function init({ options = { config: {} }, handleInsert, handlePersist, getState }) {
   const { publicKey, ...globalConfig } = options.config;
   const baseConfig = { ...defaultConfig, ...globalConfig };
 
   window.UPLOADCARE_LIVE = false;
   window.UPLOADCARE_MANUAL_START = true;
   window.UPLOADCARE_PUBLIC_KEY = publicKey;
+
+  const getIndex = makeIndexGetter(getState)
+  const applyIndex = makeIndexApplier(handlePersist)
 
   /**
    * Loading scripts via url because the uploadcare widget includes
@@ -106,24 +115,27 @@ async function init({ options = { config: {} }, handleInsert }) {
    * be disabled via config.
    */
   window.uploadcare.registerTab('preview', window.uploadcareTabEffects);
+  window.uploadcare.registerTab('library', makeLibraryTab(getIndex, applyIndex));
 
   return {
     /**
      * On show, create a new widget, cache it in the widgets object, and open.
      * No hide method is provided because the widget doesn't provide it.
      */
-    show: ({ value, config: instanceConfig = {}, imagesOnly }) => {
+    show: async ({ value, config: instanceConfig = {}, imagesOnly }) => {
       const config = { ...baseConfig, imagesOnly, ...instanceConfig };
       const files = getFiles(value);
+
+      const fileIndex = await getIndex()
 
       /**
        * Resolve the promise only if it's ours. Only the jQuery promise objects
        * from the Uploadcare library will have a `state` method.
        */
       if (files && !files.state) {
-        files.then(result => openDialog(result, config, handleInsert));
+        files.then(result => openDialog(result, config, handleInsert, applyIndex, fileIndex));
       } else {
-        openDialog(files, config, handleInsert);
+        openDialog(files, config, handleInsert, applyIndex, fileIndex);
       }
     },
 
@@ -133,7 +145,7 @@ async function init({ options = { config: {} }, handleInsert }) {
      * opens the Uploadcare widget when called from an editor control. This
      * results in the "Media" button in the global nav being hidden.
      */
-    enableStandalone: () => false,
+    enableStandalone: () => true,
   };
 }
 
