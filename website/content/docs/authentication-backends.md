@@ -27,6 +27,10 @@ To use it in your own project stored on GitHub or GitLab, follow these steps:
 
 3. Optionally, you can assign roles to users in your Netlify dashboard, and then limit which roles can access the CMS by defining the `accept_roles` field as shown in the example above. Otherwise `accept_roles` can be left out, and all Netlify Identity users on your site have access.
 
+### Reconnect after Changing Repository Permissions
+
+If you change ownership on your repository, or convert a repository from public to private, you may need to reconnect Git Gateway with proper permissions. Find further instructions in the [Netlify Git Gateway docs](https://www.netlify.com/docs/git-gateway/#reconnect-after-changing-repository-permissions).
+
 ## Git Gateway without Netlify
 
 You can use [Git Gateway](https://github.com/netlify/git-gateway) without Netlify by setting up your own Git Gateway server and connecting it with your own instance of [GoTrue](https://www.gotrueapi.org) (the open source microservice that powers Netlify Identity), or with any other identity service that can issue JSON Web Tokens (JWT).
