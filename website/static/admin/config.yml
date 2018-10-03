@@ -26,20 +26,20 @@ collections: # A list of collections the CMS should be able to edit
     fields: # The fields each document in this collection have
       - {label: "Name", name: "title"}
       - {label: "Label", name: "label"}
-      - {label: "Description", name: "description", widget: text}
-      - {label: "UI", name: "ui", widget: text}
-      - {label: "Data Type", name: "data_type", widget: text}
+      - {label: "Description", name: "description", widget: markdown}
+      - {label: "UI", name: "ui", widget: markdown}
+      - {label: "Data Type", name: "data_type", widget: markdown}
       - label: Options
         name: options
         widget: list
         fields:
           - {name: name, label: Name }
-          - {name: description, label: Description, widget: markdown}
+          - {name: description, label: Description, widget: markdown, buttons: ['bold', 'italic', 'code', 'link']}
       - label: Examples
         name: examples
         widget: list
         fields:
-          - {name: heading, label: Heading, widget: markdown}
+          - {name: heading, label: Heading, widget: markdown, buttons: ['bold', 'italic', 'code', 'link']}
           - {name: content, label: Content, widget: markdown}
       - {label: "Body", name: "body", widget: "markdown", required: false}
   - name: "blog"
