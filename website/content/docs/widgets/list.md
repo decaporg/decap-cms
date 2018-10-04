@@ -33,8 +33,7 @@ The list widget allows you to create a repeatable item in the UI which saves as 
     - label: "Gallery"
       name: "galleryImages"
       widget: "list"
-      field:
-        - {label: Image, name: image, widget: image}
+      field: {label: Image, name: image, widget: image}
     ```
 - **Example** (with `fields`):
     ```yaml
