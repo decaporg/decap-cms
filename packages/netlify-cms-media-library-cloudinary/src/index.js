@@ -5,7 +5,7 @@ const defaultOptions = {
   use_secure_url: true,
   use_transformations: true,
   output_filename_only: false,
-}
+};
 /**
  * This configuration hash cannot be overriden, as the values here are required
  * for the integration to work properly.
@@ -54,13 +54,12 @@ async function init({ options, handleInsert }) {
 
   await loadScript('https://media-library.cloudinary.com/global/all.js');
 
-
   const insertHandler = data => {
     const assets = data.assets.map(asset => getAssetUrl(asset, resolvedOptions));
     handleInsert(cloudinaryConfig.multiple ? assets : assets[0]);
-  }
+  };
 
-  const mediaLibrary = cloudinary.createMediaLibrary(cloudinaryConfig, { insertHandler });
+  const mediaLibrary = window.cloudinary.createMediaLibrary(cloudinaryConfig, { insertHandler });
 
   return {
     show: ({ config: instanceConfig = {}, allowMultiple }) => {
@@ -71,7 +70,7 @@ async function init({ options, handleInsert }) {
       if (allowMultiple === false) {
         instanceConfig.multiple = false;
       }
-      return mediaLibrary.show({ config: instanceConfig });
+      return mediaLibrary.show({ config: { ...cloudinaryBehaviorConfig, instanceConfig } });
     },
     hide: () => mediaLibrary.hide(),
     enableStandalone: () => true,

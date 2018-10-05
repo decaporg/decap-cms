@@ -66,12 +66,14 @@ function isMultiple(value) {
   return Array.isArray(value) || List.isList(value);
 }
 
-const warnDeprecatedOptions = once(field => console.warn(oneLine`
+const warnDeprecatedOptions = once(field =>
+  console.warn(oneLine`
   Netlify CMS config: ${field.get('name')} field: property "options" has been deprecated for the
   ${field.get('widget')} widget and will be removed in the next major release. Rather than
   \`field.options.media_library\`, apply media library options for this widget under
   \`field.media_library\`.
-`));
+`),
+);
 
 export default function withFileControl({ forImage } = {}) {
   return class FileControl extends React.Component {
@@ -144,7 +146,7 @@ export default function withFileControl({ forImage } = {}) {
        * purpose.
        */
       if (field.hasIn(['options', 'media_library'])) {
-        warnDeprecatedOptions(field)
+        warnDeprecatedOptions(field);
         mediaLibraryFieldOptions = field.getIn(['options', 'media_library'], Map());
       } else {
         mediaLibraryFieldOptions = field.get('media_library', Map());
@@ -157,7 +159,6 @@ export default function withFileControl({ forImage } = {}) {
         value,
         allowMultiple: !!mediaLibraryFieldOptions.get('allow_multiple', true),
         config: mediaLibraryFieldOptions.get('config'),
-
       });
     };
 
