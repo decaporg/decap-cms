@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="2.1.1"></a>
+## [2.1.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.1.0...netlify-cms-core@2.1.1) (2018-10-09)
+
+
+### Bug Fixes
+
+* **config:** stop throwing on config.yml 404, fix manual init ([#1801](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1801)) ([d06c663](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/d06c663))
+
+
+
+
 <a name="2.1.0"></a>
 # [2.1.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.0.9...netlify-cms-core@2.1.0) (2018-09-06)
 
