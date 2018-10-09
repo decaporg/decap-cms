@@ -12,16 +12,16 @@ module.exports = {
           title: 'Quick Start',
         },
         {
-          name: 'guides',
-          title: 'Guides',
+          name: 'reference',
+          title: 'Reference',
         },
         {
           name: 'media',
           title: 'Media',
         },
         {
-          name: 'reference',
-          title: 'Reference',
+          name: 'guides',
+          title: 'Guides',
         },
         {
           name: 'contributing',
