@@ -3,6 +3,8 @@ title: date
 label: "Date"
 ---
 
+**Deprecated** – use datetime widget with `timeFormat: false`
+
 The date widget translates a date picker input to a date string. For saving date and time together, use the datetime widget.
 
 - **Name:** `date`

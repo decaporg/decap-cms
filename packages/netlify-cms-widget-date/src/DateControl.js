@@ -22,13 +22,23 @@ export default class DateControl extends React.Component {
 
   getFormats() {
     const { field, includeTime } = this.props;
+    let timeFormat = field.get('timeFormat');
+    if (typeof timeFormat === 'undefined') {
+      timeFormat = !!includeTime;
+    }
+    if (timeFormat === true) {
+      timeFormat = 'LT';
+    }
+
     const date = field.get('dateFormat') || field.get('format') || true;
-    const time = field.get('timeFormat') || !!includeTime;
-    const datetime =
+    // let time = timeFormat || !!includeTime;
+    let time = timeFormat;
+    let datetime =
       date && date !== true && time && time !== true
         ? date + ' ' + time
         : (typeof date === 'string' && date) || (typeof time === 'string' && time) || undefined;
 
+    console.log(time, 'timeFormat', timeFormat, 'datetime', datetime);
     return { date, time, datetime };
   }
 
