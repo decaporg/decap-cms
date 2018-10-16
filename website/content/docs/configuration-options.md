@@ -72,7 +72,7 @@ Based on the settings above, if a user used an image widget field called `avatar
 
 ## Media Library
 
-Media library integrations are configured via the `media_library` property, and it's value should be
+Media library integrations are configured via the `media_library` property, and its value should be
 an object with at least a `name` property. A `config` property can also be used for options that
 should be passed to the library in use.
 
