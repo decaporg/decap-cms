@@ -97,7 +97,10 @@ const selectors = {
   },
 };
 
-export const selectFields = (collection, slug, entry = Map({})) => {
+export const selectFields = (collection, slug, entry = null) => {
+  if (entry === null) {
+    return selectors[collection.get('type')].fields(collection, slug);
+  }
   const fields = selectors[collection.get('type')].fields(collection, slug);
   let entryFields = fields;
   entry.get('data', []).forEach((value, key) => {
