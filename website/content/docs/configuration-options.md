@@ -95,6 +95,16 @@ When the `display_url` setting is specified, the CMS UI will include a link in t
 display_url: https://your-site.com
 ```
 
+## Custom Logo
+
+When the `logo_url` setting is specified, the CMS UI will change the logo displayed at the top of the login page, allowing you to brand the CMS with your own logo. `logo_url` is assumed to be a URL to an image file.
+
+**Example:**
+
+```yaml
+logo_url: https://your-site.com/images/logo.svg
+```
+
 ## Slug Type
 
 The `slug` option allows you to change how filenames for entries are created and sanitized. For modifying the actual data in a slug, see the per-collection option below.

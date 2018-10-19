@@ -38,10 +38,10 @@ const CustomLogoIcon = ({ url }) => {
 };
 
 const renderPageLogo = logoUrl => {
-  if ( logoUrl ) {
-    return <CustomLogoIcon url={logoUrl} />
+  if (logoUrl) {
+    return <CustomLogoIcon url={logoUrl} />;
   }
-  return <NetlifyLogoIcon size="300px" type="netlify-cms" />
+  return <NetlifyLogoIcon size="300px" type="netlify-cms" />;
 };
 
 const LoginButton = styled.button`
