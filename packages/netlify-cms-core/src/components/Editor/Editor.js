@@ -372,8 +372,8 @@ function mapStateToProps(state, ownProps) {
   const collection = collections.get(ownProps.match.params.name);
   const collectionName = collection.get('name');
   const newEntry = ownProps.newRecord === true;
-  const fields = selectFields(collection, slug);
   const entry = newEntry ? null : selectEntry(state, collectionName, slug);
+  const fields = selectFields(collection, slug, entry);
   const boundGetAsset = getAsset.bind(null, state);
   const user = auth && auth.get('user');
   const hasChanged = entryDraft.get('hasChanged');
