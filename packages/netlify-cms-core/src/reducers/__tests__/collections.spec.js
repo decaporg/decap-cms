@@ -10,10 +10,16 @@ const entry = {
   raw: '',
   data: {
     title: 'Test entry',
-    tag: 'Unkown field value'
   },
   metaData: null,
 };
+
+const collection = OrderedMap({
+  name: 'posts',
+  folder: '_posts',
+  fields: fromJS([{ name: 'title', widget: 'string' }]),
+  type: 'folder_based_collection',
+});
 
 describe('collections', () => {
   it('should handle an empty state', () => {
@@ -49,25 +55,17 @@ describe('collections', () => {
   });
 
   it('should inject unknown fields from an entry as hidden fields', () => {
-    const collection = collections(
-      undefined,
-      configLoaded(
-        fromJS({
-          collections: [
-            {
-              name: 'posts',
-              folder: '_posts',
-              fields: [{ name: 'title', widget: 'string' }],
-            },
-          ],
-        }),
-      ),
-    );
     expect(
       selectFields(
         collection,
         '',
-        fromJS(entry)
+        fromJS({
+          ...entry,
+          data: {
+            title: 'Test entry',
+            tag: 'Unkown field value'
+          },
+        })
       )
     ).toEqual(
       fromJS([{ name: 'title', widget: 'string' }, { name: 'tag', widget: 'hidden' }]),
