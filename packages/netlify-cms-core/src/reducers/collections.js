@@ -101,10 +101,12 @@ export const selectFields = (collection, slug, entry = Map({})) => {
   const fields = selectors[collection.get('type')].fields(collection, slug);
   let entryFields = fields;
   entry.get('data', []).forEach((value, key) => {
-    entryFields = !fields.find(field => field.get('name') === key) ? entryFields.push(Map({name: key, widget: 'hidden'})) : entryFields;
+    entryFields = !fields.find(field => field.get('name') === key)
+      ? entryFields.push(Map({ name: key, widget: 'hidden' }))
+      : entryFields;
   });
   return entryFields;
-}
+};
 export const selectFolderEntryExtension = collection =>
   selectors[FOLDER].entryExtension(collection);
 export const selectEntryPath = (collection, slug) =>
