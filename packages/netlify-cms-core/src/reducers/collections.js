@@ -1,4 +1,4 @@
-import { List } from 'immutable';
+import { List, Map } from 'immutable';
 import { get, escapeRegExp } from 'lodash';
 import consoleError from 'Lib/consoleError';
 import { CONFIG_SUCCESS } from 'Actions/config';
@@ -97,8 +97,14 @@ const selectors = {
   },
 };
 
-export const selectFields = (collection, slug) =>
-  selectors[collection.get('type')].fields(collection, slug);
+export const selectFields = (collection, slug, entry = Map({})) => {
+  const fields = selectors[collection.get('type')].fields(collection, slug);
+  let entryFields = fields;
+  entry.get('data', []).forEach((value, key) => {
+    entryFields = !fields.find(field => field.get('name') === key) ? entryFields.push(Map({name: key, widget: 'hidden'})) : entryFields;
+  });
+  return entryFields;
+}
 export const selectFolderEntryExtension = collection =>
   selectors[FOLDER].entryExtension(collection);
 export const selectEntryPath = (collection, slug) =>
