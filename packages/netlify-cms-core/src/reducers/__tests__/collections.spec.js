@@ -63,12 +63,10 @@ describe('collections', () => {
           ...entry,
           data: {
             title: 'Test entry',
-            tag: 'Unkown field value'
+            tag: 'Unkown field value',
           },
-        })
-      )
-    ).toEqual(
-      fromJS([{ name: 'title', widget: 'string' }, { name: 'tag', widget: 'hidden' }]),
-    );
+        }),
+      ),
+    ).toEqual(fromJS([{ name: 'title', widget: 'string' }, { name: 'tag', widget: 'hidden' }]));
   });
 });
