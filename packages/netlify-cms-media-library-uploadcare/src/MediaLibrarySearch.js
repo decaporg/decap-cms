@@ -9,6 +9,7 @@ const SearchContainer = styled.div`
   align-items: center;
   position: relative;
   width: 400px;
+  margin: 10px 0 10px 5px;
 `;
 
 const SearchInput = styled.input`
@@ -41,6 +42,7 @@ const MediaLibrarySearch = ({ value, onChange, onKeyDown, placeholder, disabled 
     <SearchInput
       value={value}
       onChange={onChange}
+      onKeyDown={onKeyDown}
       placeholder={placeholder}
       disabled={disabled}
     />

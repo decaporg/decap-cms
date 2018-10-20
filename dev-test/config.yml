@@ -1,5 +1,7 @@
 backend:
-  name: test-repo
+  name: github
+  repo: nd0ut/netlify-cms-gallery
+  branch: master # Branch to update (optional; defaults to master)
 
 display_url: https://example.com
 
@@ -13,8 +15,8 @@ media_library:
 collections: # A list of collections the CMS should be able to edit
   - name: "page"
     label: "Page"
-    folder: "site/content"
-    slug: "{{slug}}"
+    folder: "src/pages/gallery"
+    slug: "/gallery/{{slug}}"
     create: true
     fields:
       - { label: "Titel", name: "title", widget: "string", tagname: "h1" }
