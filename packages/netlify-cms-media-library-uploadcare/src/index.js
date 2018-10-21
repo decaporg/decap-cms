@@ -3,12 +3,15 @@ import ReactDOM from 'react-dom';
 import { loadScript } from 'netlify-cms-lib-util';
 import { Iterable } from 'immutable';
 import { attachReducer } from './attachReducer';
-import { addFile, persistFiles, loadFiles } from './actions';
+import { addFile, persistFiles } from './actions';
 
-import MediaLibrary from './MediaLibrary';
+import MediaLibrary from './components/MediaLibrary';
 import store from 'Redux';
+import { applyGlobalStyle } from './applyGlobalStyle';
+import { isFileGroup } from './util';
 
 attachReducer();
+applyGlobalStyle();
 
 /**
  * Default Uploadcare widget configuration, can be overriden via config.yml.
@@ -17,56 +20,6 @@ const defaultConfig = {
   previewStep: true,
   tabs: 'mediaLibrary file',
 };
-
-window.onload = function() {
-  // Style block
-  const css = `
-    .uploadcare--menu__item_tab_mediaLibrary {
-
-    }
-    .uploadcare--menu__item_tab_mediaLibrary.uploadcare--menu__item_current {
-      color: #f0cb3c;
-    }
-    .uploadcare--tab_name_mediaLibrary {
-      flex-direction: row;
-      flex-wrap: wrap;
-      justify-content: flex-start;
-      overflow: auto;
-    }
-    .uploadcare--panel {
-      flex-direction: row;
-    }
-    .mediaLibrary-card {
-      width: 140px;
-      height: 140px;
-      margin: 10px;
-      padding: 5px;
-      color: rgba(0,0,0,.4);
-      box-shadow: 0 6px 20px -3px;
-      cursor: pointer;
-    }
-    .mediaLibrary-card:hover {
-      color: rgba(0,100,200,.5);
-    }
-  `;
-  const head = document.head || document.getElementsByTagName('head')[0];
-  const style = document.createElement('style');
-  style.type = 'text/css';
-  style.appendChild(document.createTextNode(css));
-  head.appendChild(style);
-};
-
-/**
- * Determine whether an array of urls represents an unaltered set of Uploadcare
- * group urls. If they've been changed or any are missing, a new group will need
- * to be created to represent the current values.
- */
-function isFileGroup(files) {
-  const basePatternString = `~${files.length}/nth/`;
-  const mapExpression = (val, idx) => new RegExp(`${basePatternString}${idx}/$`);
-  const expressions = Array.from({ length: files.length }, mapExpression);
-  return expressions.every(exp => files.some(url => exp.test(url)));
-}
 
 /**
  * Returns a fileGroupInfo object wrapped in a promise-like object.

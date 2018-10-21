@@ -7,7 +7,7 @@ import axios from 'axios';
 import MediaLibrarySearch from './MediaLibrarySearch';
 import MediaLibraryCardGrid from './MediaLibraryCardGrid';
 import { connect } from 'react-redux';
-import { loadFiles } from './actions';
+import { loadFiles } from '../actions';
 
 const COLUMNS = 4;
 
@@ -30,38 +30,6 @@ class MediaLibrary extends Component {
     return {
       files: props.files.toJS(),
     };
-  }
-
-  async getDataPage(url) {
-    // GET request for remote images
-    const res = await axios({
-      method: 'get',
-      url: url,
-      headers: {
-        Authorization: 'Uploadcare.Simple ' + public_key + ':' + private_key,
-      },
-    });
-
-    return {
-      results: res.data.results.map(file => ({
-        uuid: file.uuid,
-        size: file.size,
-        url: `${this.props.settings.cdnBase}/${
-          file.uuid
-        }/-/stretch/off/-/scale_crop/280x280/center/`,
-        name: file.original_filename,
-      })),
-      next: res.data.next,
-    };
-  }
-
-  async getData(url) {
-    const page = await this.getDataPage(url);
-    if (page.next) {
-      return page.results.concat(await this.getData(page.next));
-    } else {
-      return page.results;
-    }
   }
 
   componentDidMount() {
@@ -162,7 +130,7 @@ class MediaLibrary extends Component {
           placeholder="Search..."
           disabled={false}
         />
-        {!hasFiles ? (
+        {this.props.isLoading ? (
           <em>Loading...</em>
         ) : (
           <MediaLibraryCardGrid
@@ -179,8 +147,9 @@ class MediaLibrary extends Component {
 
 function mapStateToProps(state, ownProps) {
   const files = state.uploadcare.get('files');
+  const isLoading = state.mediaLibrary.isLoading
 
-  return { files };
+  return { files, isLoading };
 }
 
 const mapDispatchToProps = {
