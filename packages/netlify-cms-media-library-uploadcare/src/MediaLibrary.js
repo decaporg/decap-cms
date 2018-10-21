@@ -1,82 +1,86 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'react-emotion';
 import { orderBy, map } from 'lodash';
 import fuzzy from 'fuzzy';
-import axios from 'axios'
+import axios from 'axios';
 import MediaLibrarySearch from './MediaLibrarySearch';
 import MediaLibraryCardGrid from './MediaLibraryCardGrid';
+import { connect } from 'react-redux';
+import { loadFiles } from './actions';
 
-const url = 'https://api.uploadcare.com/files/?stored=true&limit=5&ordering=-datetime_uploaded';
-const public_key = `7ad920aaf5c04d95c32a`
-const private_key = `a9fcc9086bbbfa4d9afc`
-
-const COLUMNS = 4
+const COLUMNS = 4;
 
 const Wrapper = styled.div`
   width: 100%;
   padding: 0 5px;
 `;
 
-export default class MediaLibrary extends Component {
-
+class MediaLibrary extends Component {
   constructor(...args) {
-    super(...args)
+    super(...args);
+
     this.state = {
       files: [],
-      query: null
-    }
+      query: null,
+    };
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    return {
+      files: props.files.toJS(),
+    };
   }
 
   async getDataPage(url) {
-
     // GET request for remote images
     const res = await axios({
-        method: 'get',
-        url: url,
-        headers: {
-          'Authorization': 'Uploadcare.Simple ' + public_key + ':' + private_key
-        }
-      })
+      method: 'get',
+      url: url,
+      headers: {
+        Authorization: 'Uploadcare.Simple ' + public_key + ':' + private_key,
+      },
+    });
 
     return {
       results: res.data.results.map(file => ({
         uuid: file.uuid,
         size: file.size,
-        url: `${this.props.settings.cdnBase}/${file.uuid}/-/stretch/off/-/scale_crop/280x280/center/`,
-        name: file.original_filename
+        url: `${this.props.settings.cdnBase}/${
+          file.uuid
+        }/-/stretch/off/-/scale_crop/280x280/center/`,
+        name: file.original_filename,
       })),
-      next: res.data.next
-    }
-
+      next: res.data.next,
+    };
   }
 
   async getData(url) {
-    const page = await this.getDataPage(url)
+    const page = await this.getDataPage(url);
     if (page.next) {
-      return page.results.concat(await this.getData(page.next))
+      return page.results.concat(await this.getData(page.next));
     } else {
-      return page.results
+      return page.results;
     }
   }
 
   componentDidMount() {
     if (!this.state.files.length > 0) {
-      this.getData(url).then(files => {
-        console.log('files: ', files)
-        this.setState({files})
-      }).catch(err => { /*...handle the error...*/});
+      this.props.loadFiles();
     }
   }
 
-  onAssetClick = (uuid) => this.props.dialogApi.addFiles([window.uploadcare.fileFrom('uploaded', uuid, this.props.settings)])
+  onAssetClick = uuid =>
+    this.props.dialogApi.addFiles([
+      window.uploadcare.fileFrom('uploaded', uuid, this.props.settings),
+    ]);
 
   /**
    * Updates query state as the user types in the search field.
    */
   handleSearchChange = event => {
     this.setState({ query: event.target.value });
-  }
+  };
 
   /**
    * Filters files that do not match the query. Not used for dynamic search.
@@ -94,7 +98,7 @@ export default class MediaLibrary extends Component {
       return { ...file, queryIndex };
     });
     return matchFiles;
-  }
+  };
 
   /**
    * Transform file data for table display.
@@ -102,13 +106,12 @@ export default class MediaLibrary extends Component {
   toTableData = files => {
     const tableData =
       files &&
-      files.map(({ uuid, name, size, queryOrder, url }) => {
+      files.map(({ uuid, name, size, cdnUrl }) => {
         return {
           uuid,
           name,
-          url,
+          cdnUrl,
           size,
-          queryOrder
         };
       });
 
@@ -126,31 +129,27 @@ export default class MediaLibrary extends Component {
       return acc;
     }, []);
 
-    return rows
-
+    return rows;
   };
 
   getCell = (rowIndex, columnIndex) => {
-
-    const { files, query } = this.state
+    const { files, query } = this.state;
     const queriedFiles = this.state.query ? this.handleQuery(query, files) : files;
     const tableData = this.toTableData(queriedFiles);
 
     if (tableData && tableData.length > 0) {
       if (tableData[rowIndex] && tableData[rowIndex].length > 0) {
         if (tableData[rowIndex][columnIndex]) {
-          return tableData[rowIndex][columnIndex]
+          return tableData[rowIndex][columnIndex];
         }
       }
     }
 
-    return null
-
-  }
+    return null;
+  };
 
   render() {
-
-    const { files, query } = this.state
+    const { files, query } = this.state;
     const queriedFiles = this.state.query ? this.handleQuery(query, files) : files;
     const tableData = this.toTableData(queriedFiles);
     const hasFiles = files && !!files.length;
@@ -163,17 +162,32 @@ export default class MediaLibrary extends Component {
           placeholder="Search..."
           disabled={false}
         />
-        {
-          !hasFiles ? <em>Loading...</em> :
+        {!hasFiles ? (
+          <em>Loading...</em>
+        ) : (
           <MediaLibraryCardGrid
             onAssetClick={this.onAssetClick}
             getCell={this.getCell}
             columnCount={COLUMNS}
             rowCount={hasFiles ? tableData.length : 0}
           />
-        }
+        )}
       </Wrapper>
-    )
+    );
   }
 }
 
+function mapStateToProps(state, ownProps) {
+  const files = state.uploadcare.get('files');
+
+  return { files };
+}
+
+const mapDispatchToProps = {
+  loadFiles,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(MediaLibrary);

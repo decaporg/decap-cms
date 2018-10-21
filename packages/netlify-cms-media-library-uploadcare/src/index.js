@@ -1,20 +1,24 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
 import { loadScript } from 'netlify-cms-lib-util';
-import { Iterable, OrderedMap } from 'immutable';
-import { makeIndexApplier, makeIndexGetter } from './file-index';
-import { makeLibraryTab } from './library-tab';
+import { Iterable } from 'immutable';
+import { attachReducer } from './attachReducer';
+import { addFile, persistFiles, loadFiles } from './actions';
 
-import MediaLibrary from './MediaLibrary'
+import MediaLibrary from './MediaLibrary';
+import store from 'Redux';
+
+attachReducer();
 
 /**
  * Default Uploadcare widget configuration, can be overriden via config.yml.
  */
 const defaultConfig = {
   previewStep: true,
+  tabs: 'mediaLibrary file',
 };
 
-
 window.onload = function() {
-
   // Style block
   const css = `
     .uploadcare--menu__item_tab_mediaLibrary {
@@ -44,15 +48,13 @@ window.onload = function() {
     .mediaLibrary-card:hover {
       color: rgba(0,100,200,.5);
     }
-  `
-  const head = document.head || document.getElementsByTagName('head')[0]
-  const style = document.createElement('style')
-  style.type = 'text/css'
-  style.appendChild(document.createTextNode(css))
-  head.appendChild(style)
-
-}
-
+  `;
+  const head = document.head || document.getElementsByTagName('head')[0];
+  const style = document.createElement('style');
+  style.type = 'text/css';
+  style.appendChild(document.createTextNode(css));
+  head.appendChild(style);
+};
 
 /**
  * Determine whether an array of urls represents an unaltered set of Uploadcare
@@ -114,18 +116,24 @@ function getFile(url, cdnBase) {
  * Open the standalone dialog. A single instance is created and destroyed for
  * each use.
  */
-function openDialog(files, config, handleInsert, applyIndex, fileIndex) {
+function openDialog(files, config, handleInsert) {
   window.uploadcare.openDialog(files, config).done(({ promise }) =>
-    promise().then((fileInfo) => {
-      if (config.multiple) {
-        const urls = Array.from({ length: fileInfo.count }, (val, idx) => `${fileInfo.cdnUrl}nth/${idx}/`);
-        handleInsert(urls);
-      } else {
-        handleInsert(fileInfo.cdnUrl);
-      }
+    promise()
+      .then(fileInfo => {
+        if (config.multiple) {
+          const urls = Array.from(
+            { length: fileInfo.count },
+            (val, idx) => `${fileInfo.cdnUrl}nth/${idx}/`,
+          );
+          handleInsert(urls);
+        } else {
+          handleInsert(fileInfo.cdnUrl);
+        }
 
-      applyIndex(fileIndex.setIn([fileInfo.name], OrderedMap(fileInfo)))
-    }),
+        return fileInfo;
+      })
+      .then(fileInfo => store.dispatch(addFile(fileInfo)))
+      .then(() => store.dispatch(persistFiles())),
   );
 }
 
@@ -133,16 +141,13 @@ function openDialog(files, config, handleInsert, applyIndex, fileIndex) {
  * Initialization function will only run once, returns an API object for Netlify
  * CMS to call methods on.
  */
-async function init({ options = { config: {} }, handleInsert, handlePersist, getState }) {
+async function init({ options = { config: {} }, handleInsert }) {
   const { publicKey, ...globalConfig } = options.config;
   const baseConfig = { ...defaultConfig, ...globalConfig };
 
   window.UPLOADCARE_LIVE = false;
   window.UPLOADCARE_MANUAL_START = true;
   window.UPLOADCARE_PUBLIC_KEY = publicKey;
-
-  const getIndex = makeIndexGetter(getState)
-  const applyIndex = makeIndexApplier(handlePersist)
 
   /**
    * Loading scripts via url because the uploadcare widget includes
@@ -163,18 +168,18 @@ async function init({ options = { config: {} }, handleInsert, handlePersist, get
    * Register custom tab.
    */
 
-  function mediaLibrary(container, button, dialogApi, settings, name) {
-
+  function mediaLibrary(container, button, dialogApi, settings) {
     // Set Tab button title attribute
-    button[0].setAttribute('title', 'Media Library')
-    button[0].querySelector('use').setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '#uploadcare--icon-menu');
+    button[0].setAttribute('title', 'Media Library');
+    button[0]
+      .querySelector('use')
+      .setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '#uploadcare--icon-menu');
 
-
-    console.log('mediaLibrary registered: ', ReactDOM)
+    console.log('mediaLibrary registered: ', ReactDOM);
 
     ReactDOM.render(
-      <MediaLibrary dialogApi={dialogApi} settings={settings} />,
-      container[0]
+      <MediaLibrary store={store} dialogApi={dialogApi} settings={settings} />,
+      container[0],
     );
 
     // Files panel
@@ -192,10 +197,9 @@ async function init({ options = { config: {} }, handleInsert, handlePersist, get
       })
     })
     */
-
   }
 
-  window.uploadcare.registerTab('mediaLibrary', mediaLibrary)
+  window.uploadcare.registerTab('mediaLibrary', mediaLibrary);
 
   return {
     /**
@@ -206,16 +210,14 @@ async function init({ options = { config: {} }, handleInsert, handlePersist, get
       const config = { ...baseConfig, imagesOnly, ...instanceConfig };
       const files = getFiles(value);
 
-      const fileIndex = await getIndex()
-
       /**
        * Resolve the promise only if it's ours. Only the jQuery promise objects
        * from the Uploadcare library will have a `state` method.
        */
       if (files && !files.state) {
-        files.then(result => openDialog(result, config, handleInsert, applyIndex, fileIndex));
+        files.then(result => openDialog(result, config, handleInsert));
       } else {
-        openDialog(files, config, handleInsert, applyIndex, fileIndex);
+        openDialog(files, config, handleInsert);
       }
     },
 

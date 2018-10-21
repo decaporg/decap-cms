@@ -26,7 +26,7 @@ const MediaLibraryCardGrid = ({
       <MediaLibraryCard
         style={style}
         key={file.uuid}
-        imageUrl={file.url}
+        imageUrl={file.cdnUrl}
         text={file.name}
         onClick={() => onAssetClick(file.uuid)}
       /> : <div/>
@@ -55,7 +55,7 @@ const MediaLibraryCardGrid = ({
 MediaLibraryCardGrid.propTypes = {
   mediaItems: PropTypes.arrayOf(
     PropTypes.shape({
-      url: PropTypes.string.isRequired,
+      cdnUrl: PropTypes.string.isRequired,
       uuid: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
       size: PropTypes.number.isRequired
