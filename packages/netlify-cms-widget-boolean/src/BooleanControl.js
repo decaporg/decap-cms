@@ -12,7 +12,6 @@ export default class BooleanControl extends React.Component {
   render() {
     const {
       value,
-      field,
       forID,
       onChange,
       classNameWrapper,
