@@ -267,8 +267,8 @@ export default class ListControl extends React.Component {
     const { value, forID, field, classNameWrapper } = this.props;
     const { itemsCollapsed } = this.state;
     const items = value || List();
-    const label = field.get('label');
-    const labelSingular = field.get('label_singular') || field.get('label');
+    const label = field.get('label', field.get('name'));
+    const labelSingular = field.get('label_singular') || field.get('label', field.get('name'));
     const listLabel = items.size === 1 ? labelSingular.toLowerCase() : label.toLowerCase();
 
     return (
