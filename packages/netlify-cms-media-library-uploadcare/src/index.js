@@ -10,9 +10,6 @@ import store from 'Redux';
 import { applyGlobalStyle } from './applyGlobalStyle';
 import { isFileGroup } from './util';
 
-attachReducer();
-applyGlobalStyle();
-
 /**
  * Default Uploadcare widget configuration, can be overriden via config.yml.
  */
@@ -95,6 +92,9 @@ function openDialog(files, config, handleInsert) {
  * CMS to call methods on.
  */
 async function init({ options = { config: {} }, handleInsert }) {
+  attachReducer();
+  applyGlobalStyle();
+
   const { publicKey, ...globalConfig } = options.config;
   const baseConfig = { ...defaultConfig, ...globalConfig };
 
