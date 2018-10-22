@@ -43,6 +43,8 @@ class MediaLibrary extends Component {
       window.uploadcare.fileFrom('uploaded', uuid, this.props.settings),
     ]);
 
+  onAssetRemove = uuid => this.props.removeFile(uuid);
+
   /**
    * Updates query state as the user types in the search field.
    */
@@ -134,7 +136,7 @@ class MediaLibrary extends Component {
           <em>Loading...</em>
         ) : (
           <MediaLibraryCardGrid
-            removeFile={this.props.removeFile}
+            onAssetRemove={this.onAssetRemove}
             onAssetClick={this.onAssetClick}
             getCell={this.getCell}
             columnCount={COLUMNS}
@@ -149,8 +151,9 @@ class MediaLibrary extends Component {
 function mapStateToProps(state, ownProps) {
   const files = state.uploadcare.get('files');
   const isLoading = state.mediaLibrary.get('isLoading');
+  const isFetching = state.mediaLibrary.get('isFetching');
 
-  return { files, isLoading };
+  return { files, isLoading, isFetching };
 }
 
 const mapDispatchToProps = {

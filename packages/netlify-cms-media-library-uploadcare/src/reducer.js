@@ -14,9 +14,12 @@ const defaultState = {
 const reducer = (state = Map(defaultState), action) => {
   switch (action.type) {
     case UPLOADCARE_ADD_FILE:
+      if (state.get('files').has(action.payload.uuid)) {
+        return state;
+      }
       return state.withMutations(map => {
-        map.update('files', files => files.set(action.payload.uuid, action.payload.fileInfo));
         map.set('dirty', true);
+        map.update('files', files => files.set(action.payload.uuid, action.payload.fileInfo));
       });
     case UPLOADCARE_FLUSH:
       return state.set('dirty', false);

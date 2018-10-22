@@ -37,8 +37,8 @@ export function flushChanges() {
   return async (dispatch, getState) => {
     const files = getState().uploadcare.get('files');
     const indexFile = await files2index(files);
-    const existingIndexFile = getState().mediaLibrary
-      .get('files')
+    const existingIndexFile = getState()
+      .mediaLibrary.get('files')
       .find(existingFile => existingFile.name === indexFile.name);
 
     if (existingIndexFile) {
@@ -77,7 +77,7 @@ export function loadFiles() {
 }
 
 export function addFile(fileInfo) {
-  return async dispatch => {
+  return async (dispatch, getState) => {
     await dispatch({
       type: UPLOADCARE_ADD_FILE,
       payload: {
@@ -86,7 +86,9 @@ export function addFile(fileInfo) {
       },
     });
 
-    return dispatch(flushChanges())
+    if (getState().uploadcare.get('dirty')) {
+      return dispatch(flushChanges());
+    }
   };
 }
 
@@ -99,6 +101,6 @@ export function removeFile(uuid) {
       },
     });
 
-    return dispatch(flushChanges())
+    return dispatch(flushChanges());
   };
 }
