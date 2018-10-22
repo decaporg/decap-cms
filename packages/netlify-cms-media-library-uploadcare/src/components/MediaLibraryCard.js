@@ -16,7 +16,6 @@ const Card = styled.div`
   }
 `;
 
-
 const CardInner = styled.div`
   border: ${borders.textField};
   border-color: ${props => props.isSelected && colors.active};
@@ -40,14 +39,12 @@ const CardText = styled.p`
   line-height: 1.3 !important;
   text-align: left;
   font-size: 10px;
-  min-height: 62px;
 `;
 
-const MediaLibraryCard = ({ style, imageUrl, text, onClick }) => (
+const MediaLibraryCard = ({ style, imageUrl, text, onClick, onRemove }) => (
   <Card
     style={style}
     isSelected={false}
-    onClick={onClick}
     width={`200px`}
     //margin={`10px`}
     tabIndex="-1"
@@ -55,8 +52,13 @@ const MediaLibraryCard = ({ style, imageUrl, text, onClick }) => (
     padding={`10px 5px`}
   >
     <CardInner>
-      {imageUrl ? <CardImage src={imageUrl} /> : <CardImagePlaceholder />}
+      {imageUrl ? (
+        <CardImage onClick={onClick} src={imageUrl} />
+      ) : (
+        <CardImagePlaceholder onClick={onClick} />
+      )}
       <CardText>{text}</CardText>
+      <span onClick={onRemove}>remove</span>
     </CardInner>
   </Card>
 );

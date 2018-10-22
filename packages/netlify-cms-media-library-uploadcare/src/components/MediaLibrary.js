@@ -7,7 +7,7 @@ import axios from 'axios';
 import MediaLibrarySearch from './MediaLibrarySearch';
 import MediaLibraryCardGrid from './MediaLibraryCardGrid';
 import { connect } from 'react-redux';
-import { loadFiles } from '../actions';
+import { loadFiles, removeFile } from '../actions';
 
 const COLUMNS = 4;
 
@@ -28,7 +28,7 @@ class MediaLibrary extends Component {
 
   static getDerivedStateFromProps(props, state) {
     return {
-      files: props.files.toJS(),
+      files: props.files.toArray(),
     };
   }
 
@@ -134,6 +134,7 @@ class MediaLibrary extends Component {
           <em>Loading...</em>
         ) : (
           <MediaLibraryCardGrid
+            removeFile={this.props.removeFile}
             onAssetClick={this.onAssetClick}
             getCell={this.getCell}
             columnCount={COLUMNS}
@@ -147,13 +148,14 @@ class MediaLibrary extends Component {
 
 function mapStateToProps(state, ownProps) {
   const files = state.uploadcare.get('files');
-  const isLoading = state.mediaLibrary.isLoading
+  const isLoading = state.mediaLibrary.get('isLoading');
 
   return { files, isLoading };
 }
 
 const mapDispatchToProps = {
   loadFiles,
+  removeFile,
 };
 
 export default connect(

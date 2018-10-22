@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { loadScript } from 'netlify-cms-lib-util';
 import { Iterable } from 'immutable';
 import { attachReducer } from './attachReducer';
-import { addFile, persistFiles } from './actions';
+import { addFile } from './actions';
 
 import MediaLibrary from './components/MediaLibrary';
 import store from 'Redux';
@@ -83,7 +83,6 @@ function openDialog(files, config, handleInsert) {
         return fileInfo;
       })
       .then(fileInfo => store.dispatch(addFile(fileInfo)))
-      .then(() => store.dispatch(persistFiles())),
   );
 }
 

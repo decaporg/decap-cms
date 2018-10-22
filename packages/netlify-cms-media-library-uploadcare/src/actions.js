@@ -1,11 +1,12 @@
 import { persistMedia, loadMedia, deleteMedia } from 'netlify-cms-core/src/actions/mediaLibrary';
 
 export const UPLOADCARE_ADD_FILE = 'UPLOADCARE_ADD_FILE';
-export const UPLOADCARE_PERSIST = 'UPLOADCARE_PERSIST';
+export const UPLOADCARE_REMOVE_FILE = 'UPLOADCARE_REMOVE_FILE';
+export const UPLOADCARE_FLUSH = 'UPLOADCARE_FLUSH';
 export const UPLOADCARE_LOAD = 'UPLOADCARE_LOAD';
 
 async function files2index(files) {
-  const jsonString = JSON.stringify(files.toJS());
+  const jsonString = JSON.stringify(files.toJSON());
   const file = new File([jsonString], 'uploadcare-index.json', {
     type: 'application/json',
     lastModified: new Date(),
@@ -32,12 +33,11 @@ function index2files(indexFile) {
   });
 }
 
-export function persistFiles() {
+export function flushChanges() {
   return async (dispatch, getState) => {
-    const state = getState();
-    const files = state.uploadcare.get('files');
+    const files = getState().uploadcare.get('files');
     const indexFile = await files2index(files);
-    const existingIndexFile = state.mediaLibrary
+    const existingIndexFile = getState().mediaLibrary
       .get('files')
       .find(existingFile => existingFile.name === indexFile.name);
 
@@ -48,7 +48,7 @@ export function persistFiles() {
     await dispatch(persistMedia(indexFile));
 
     return dispatch({
-      type: UPLOADCARE_PERSIST,
+      type: UPLOADCARE_FLUSH,
     });
   };
 }
@@ -69,18 +69,36 @@ export function loadFiles() {
 
     return dispatch({
       type: UPLOADCARE_LOAD,
-      payload: { files },
+      payload: {
+        files,
+      },
     });
   };
 }
 
 export function addFile(fileInfo) {
   return async dispatch => {
-    return dispatch({
+    await dispatch({
       type: UPLOADCARE_ADD_FILE,
       payload: {
         fileInfo,
+        uuid: fileInfo.uuid,
       },
     });
+
+    return dispatch(flushChanges())
+  };
+}
+
+export function removeFile(uuid) {
+  return async dispatch => {
+    await dispatch({
+      type: UPLOADCARE_REMOVE_FILE,
+      payload: {
+        uuid,
+      },
+    });
+
+    return dispatch(flushChanges())
   };
 }
