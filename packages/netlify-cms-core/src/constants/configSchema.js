@@ -48,7 +48,7 @@ const getConfigSchema = () => ({
     },
     publish_mode: {
       type: 'string',
-      enum: ['editorial_workflow'],
+      enum: ['simple', 'editorial_workflow'],
       examples: ['editorial_workflow'],
     },
     slug: {
