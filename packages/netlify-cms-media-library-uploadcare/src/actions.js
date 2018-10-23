@@ -1,7 +1,7 @@
 import { persistMedia, loadMedia, deleteMedia } from 'netlify-cms-core/src/actions/mediaLibrary';
 
 export const UPLOADCARE_ADD_FILE = 'UPLOADCARE_ADD_FILE';
-export const UPLOADCARE_REMOVE_FILE = 'UPLOADCARE_REMOVE_FILE';
+export const UPLOADCARE_REMOVE_FILES = 'UPLOADCARE_REMOVE_FILES';
 export const UPLOADCARE_FLUSH = 'UPLOADCARE_FLUSH';
 export const UPLOADCARE_LOAD = 'UPLOADCARE_LOAD';
 
@@ -92,12 +92,12 @@ export function addFile(fileInfo) {
   };
 }
 
-export function removeFile(uuid) {
+export function removeFiles(uuids) {
   return async dispatch => {
     await dispatch({
-      type: UPLOADCARE_REMOVE_FILE,
+      type: UPLOADCARE_REMOVE_FILES,
       payload: {
-        uuid,
+        uuids,
       },
     });
 

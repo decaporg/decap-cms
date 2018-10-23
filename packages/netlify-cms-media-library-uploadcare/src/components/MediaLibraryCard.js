@@ -41,24 +41,22 @@ const CardText = styled.p`
   font-size: 10px;
 `;
 
-const MediaLibraryCard = ({ style, imageUrl, text, onClick, onRemove }) => (
+const MediaLibraryCard = ({ style, imageUrl, text, onClick, isSelected }) => (
   <Card
     style={style}
-    isSelected={false}
     width={`200px`}
     //margin={`10px`}
     tabIndex="-1"
     isPrivate={false}
     padding={`10px 5px`}
   >
-    <CardInner>
+    <CardInner isSelected={isSelected}>
       {imageUrl ? (
         <CardImage onClick={onClick} src={imageUrl} />
       ) : (
         <CardImagePlaceholder onClick={onClick} />
       )}
       <CardText>{text}</CardText>
-      <span onClick={onRemove}>remove</span>
     </CardInner>
   </Card>
 );

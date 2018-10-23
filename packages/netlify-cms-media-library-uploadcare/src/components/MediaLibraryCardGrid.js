@@ -17,7 +17,7 @@ const MediaLibraryCardGrid = ({
   rowCount,
   columnCount,
   getCell,
-  onAssetRemove,
+  selectedUuids,
 }) => {
 
   function cellRenderer({columnIndex, key, rowIndex, style, isVisible}) {
@@ -25,7 +25,7 @@ const MediaLibraryCardGrid = ({
     const file = getCell(rowIndex, columnIndex)
     return file ?
       <MediaLibraryCard
-        onRemove={() => onAssetRemove(file.uuid)}
+        isSelected={selectedUuids.includes(file.uuid)}
         style={style}
         key={file.uuid}
         imageUrl={file.cdnUrl}

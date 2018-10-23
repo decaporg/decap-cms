@@ -3,7 +3,7 @@ import {
   UPLOADCARE_ADD_FILE,
   UPLOADCARE_FLUSH,
   UPLOADCARE_LOAD,
-  UPLOADCARE_REMOVE_FILE,
+  UPLOADCARE_REMOVE_FILES,
 } from './actions';
 
 const defaultState = {
@@ -25,8 +25,8 @@ const reducer = (state = Map(defaultState), action) => {
       return state.set('dirty', false);
     case UPLOADCARE_LOAD:
       return state.set('files', OrderedMap(action.payload.files));
-    case UPLOADCARE_REMOVE_FILE:
-      return state.set('files', state.get('files').remove(action.payload.uuid));
+    case UPLOADCARE_REMOVE_FILES:
+      return state.set('files', state.get('files').filter(fileInfo => !action.payload.uuids.includes(fileInfo.uuid)));
     default:
       return state;
   }

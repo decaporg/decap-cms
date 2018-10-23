@@ -7,7 +7,7 @@ import axios from 'axios';
 import MediaLibrarySearch from './MediaLibrarySearch';
 import MediaLibraryCardGrid from './MediaLibraryCardGrid';
 import { connect } from 'react-redux';
-import { loadFiles, removeFile } from '../actions';
+import { loadFiles, removeFiles } from '../actions';
 
 const COLUMNS = 4;
 
@@ -16,12 +16,22 @@ const Wrapper = styled.div`
   padding: 0 5px;
 `;
 
+const Header = styled.div`
+  display: flex;
+`;
+
+const ActionsPanel = styled.div``;
+
+const ActionButton = styled.button``;
+
 class MediaLibrary extends Component {
   constructor(...args) {
     super(...args);
 
     this.state = {
       files: [],
+      selectedUuids: [],
+      selectionMode: false,
       query: null,
     };
   }
@@ -38,12 +48,30 @@ class MediaLibrary extends Component {
     }
   }
 
-  onAssetClick = uuid =>
-    this.props.dialogApi.addFiles([
-      window.uploadcare.fileFrom('uploaded', uuid, this.props.settings),
-    ]);
+  onAssetClick = uuid => {
+    if (this.state.selectionMode) {
+      this.setState({
+        selectedUuids: this.state.selectedUuids.includes(uuid)
+          ? this.state.selectedUuids.filter(selectedUuid => selectedUuid !== uuid)
+          : this.state.selectedUuids.concat(uuid),
+      });
+    } else {
+      this.props.dialogApi.addFiles([
+        window.uploadcare.fileFrom('uploaded', uuid, this.props.settings),
+      ]);
+    }
+  };
 
-  onAssetRemove = uuid => this.props.removeFile(uuid);
+  onSelectClick = () => {
+    this.setState({
+      selectionMode: !this.state.selectionMode,
+      selectedUuids: [],
+    });
+  };
+
+  onRemoveClick = () => {
+    this.props.removeFiles(this.state.selectedUuids);
+  };
 
   /**
    * Updates query state as the user types in the search field.
@@ -123,19 +151,34 @@ class MediaLibrary extends Component {
     const queriedFiles = this.state.query ? this.handleQuery(query, files) : files;
     const tableData = this.toTableData(queriedFiles);
     const hasFiles = files && !!files.length;
+    const anySelected = this.state.selectionMode && this.state.selectedUuids.length > 0;
+    const actionInProgress = this.props.isDeleting || this.props.isLoading || this.props.isFetching;
 
     return (
       <Wrapper>
-        <MediaLibrarySearch
-          value={this.state.query}
-          onChange={this.handleSearchChange}
-          placeholder="Search..."
-          disabled={false}
-        />
+        <Header>
+          <MediaLibrarySearch
+            value={this.state.query}
+            onChange={this.handleSearchChange}
+            placeholder="Search..."
+            disabled={false}
+          />
+          <ActionsPanel>
+            <ActionButton onClick={this.onSelectClick} disabled={actionInProgress}>
+              Select
+            </ActionButton>
+            {anySelected && (
+              <ActionButton onClick={this.onRemoveClick} disabled={actionInProgress}>
+                Remove
+              </ActionButton>
+            )}
+          </ActionsPanel>
+        </Header>
         {this.props.isLoading ? (
           <em>Loading...</em>
         ) : (
           <MediaLibraryCardGrid
+            selectedUuids={this.state.selectedUuids}
             onAssetRemove={this.onAssetRemove}
             onAssetClick={this.onAssetClick}
             getCell={this.getCell}
@@ -151,14 +194,15 @@ class MediaLibrary extends Component {
 function mapStateToProps(state, ownProps) {
   const files = state.uploadcare.get('files');
   const isLoading = state.mediaLibrary.get('isLoading');
-  const isFetching = state.mediaLibrary.get('isFetching');
+  const isDeleting = state.mediaLibrary.get('isDeleting');
+  const isFetching = state.globalUI.get('isFetching');
 
-  return { files, isLoading, isFetching };
+  return { files, isLoading, isDeleting, isFetching };
 }
 
 const mapDispatchToProps = {
   loadFiles,
-  removeFile,
+  removeFiles,
 };
 
 export default connect(
