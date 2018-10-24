@@ -69,6 +69,9 @@ const slugFormatter = (collection, entryData, slugConfig) => {
     // Convert slug to lower-case
     .toLocaleLowerCase()
 
+    // Remove single quotes.
+    .replace(/[']/g, '')
+
     // Replace periods with dashes.
     .replace(/[.]/g, '-');
 
