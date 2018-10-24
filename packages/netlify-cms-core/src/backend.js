@@ -69,6 +69,9 @@ const slugFormatter = (collection, entryData, slugConfig) => {
     // Convert slug to lower-case
     .toLocaleLowerCase()
 
+    // Remove single quotes.
+    .replace(/[']/g, '')
+
     // Replace periods with dashes.
     .replace(/[.]/g, '-');
 
@@ -495,9 +498,13 @@ class Backend {
   }
 
   filterEntries(collection, filterRule) {
-    return collection.entries.filter(
-      entry => entry.data[filterRule.get('field')] === filterRule.get('value'),
-    );
+    return collection.entries.filter(entry => {
+      const fieldValue = entry.data[filterRule.get('field')];
+      if (Array.isArray(fieldValue)) {
+        return fieldValue.includes(filterRule.get('value'));
+      }
+      return fieldValue === filterRule.get('value');
+    });
   }
 }
 
