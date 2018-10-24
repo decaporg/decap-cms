@@ -136,6 +136,7 @@ If you would like to facilitate your own OAuth authentication rather than use Ne
 | [@igk1972](https://github.com/igk1972)         | GitHub, GitHub Enterprise | Go                      | [Repo](https://github.com/igk1972/netlify-cms-oauth-provider-go)                                                                             |
 | [@davidejones](https://github.com/davidejones) | GitHub, GitHub Enterprise | Python                  | [Repo](https://github.com/davidejones/netlify-cms-oauth-provider-python)                                                                     |
 | [@marksteele](https://github.com/marksteele)   | GitHub, GitHub Enterprise | Serverless              | [Repo](https://github.com/marksteele/netlify-serverless-oauth2-backend), [Blog](https://www.control-alt-del.org/blog/serverless-blog-howto/) |
+| [@Herohtar](https://github.com/Herohtar)       | GitHub, GitHub Enterprise | Firebase Cloud Function | [Repo](https://github.com/Herohtar/netlify-cms-oauth-firebase)                                                                               |
 
 Check each project's documentation for instructions on how to configure it.
 
