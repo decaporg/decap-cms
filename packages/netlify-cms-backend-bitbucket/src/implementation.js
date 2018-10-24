@@ -1,5 +1,6 @@
 import semaphore from 'semaphore';
 import { flow, trimStart } from 'lodash';
+import { stripIndent } from 'common-tags';
 import {
   CURSOR_COMPATIBILITY_SYMBOL,
   filterByPropExtension,
@@ -61,7 +62,7 @@ export default class Bitbucket {
     return this.authenticate(user);
   }
 
-  authenticate(state) {
+  async authenticate(state) {
     this.token = state.token;
     this.refreshToken = state.refresh_token;
     this.api = new API({
@@ -71,13 +72,25 @@ export default class Bitbucket {
       api_root: this.api_root,
     });
 
-    return this.api.user().then(user =>
-      this.api.hasWriteAccess(user).then(isCollab => {
-        if (!isCollab)
-          throw new Error('Your BitBucker user account does not have access to this repo.');
-        return Object.assign({}, user, { token: state.token, refresh_token: state.refresh_token });
-      }),
-    );
+    const user = await this.api.user();
+    const isCollab = await this.api.hasWriteAccess(user).catch(error => {
+      error.message = stripIndent`
+        Repo "${this.repo}" not found.
+
+        Please ensure the repo information is spelled correctly.
+
+        If the repo is private, make sure you're logged into a Bitbucket account with access.
+      `;
+      throw error;
+    });
+
+    // Unauthorized user
+    if (!isCollab) {
+      throw new Error('Your BitBucket user account does not have access to this repo.');
+    }
+
+    // Autorized user
+    return { ...user, token: state.token, refresh_token: state.refresh_token };
   }
 
   getRefreshedAccessToken() {
