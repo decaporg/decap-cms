@@ -32,6 +32,10 @@ The Netlify CMS can be used in two different ways.
 
 Netlify CMS has a [Gitter community](https://gitter.im/netlify/netlifycms) where members of the community hang out and share things about the project, as well as give and receive support.
 
+# Contributing
+
+New contributors are always welcome! Check out [CONTRIBUTING.md](https://github.com/netlify/netlify-cms/blob/master/CONTRIBUTING.md) to get involved.
+
 # Change Log
 
 This project adheres to [Semantic Versioning](http://semver.org/).
