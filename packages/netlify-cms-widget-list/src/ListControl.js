@@ -277,7 +277,7 @@ export default class ListControl extends React.Component {
           allowAdd={field.get('allow_add', true)}
           onAdd={this.handleAdd}
           heading={`${items.size} ${listLabel}`}
-          label={listLabel}
+          label={labelSingular.toLowerCase()}
           onCollapseToggle={this.handleCollapseAllToggle}
           collapsed={itemsCollapsed.every(val => val === true)}
         />
