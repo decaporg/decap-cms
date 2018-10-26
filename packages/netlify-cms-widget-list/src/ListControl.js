@@ -181,7 +181,7 @@ export default class ListControl extends React.Component {
     const { itemsCollapsed } = this.state;
     const { value, metadata, onChange, field } = this.props;
     const collectionName = field.get('name');
-    const isSingleField = this.valueType === valueTypes.SINGLE;
+    const isSingleField = this.getValueType() === valueTypes.SINGLE;
 
     const metadataRemovePath = isSingleField ? value.get(index) : value.get(index).valueSeq();
     const parsedMetadata = metadata && { [collectionName]: metadata.removeIn(metadataRemovePath) };
