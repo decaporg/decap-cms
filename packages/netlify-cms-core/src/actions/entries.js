@@ -369,18 +369,20 @@ export function createEmptyDraft(collection) {
 function createEmptyDraftData(fields) {
   return fields.reduce((acc, item) => {
     const subfields = item.get('field') || item.get('fields');
+    const list = item.get('widget') == 'list';
     const defaultValue = item.get('default');
 
     if (List.isList(subfields)) {
-      acc[item.get('name')] =
-        item.get('widget') == 'list'
-          ? [createEmptyDraftData(subfields)]
-          : createEmptyDraftData(subfields);
+      acc[item.get('name')] = list
+        ? [createEmptyDraftData(subfields)]
+        : createEmptyDraftData(subfields);
       return acc;
     }
 
     if (Map.isMap(subfields)) {
-      acc[item.get('name')] = createEmptyDraftData([subfields]);
+      acc[item.get('name')] = list
+        ? [createEmptyDraftData([subfields])]
+        : createEmptyDraftData([subfields]);
       return acc;
     }
 
