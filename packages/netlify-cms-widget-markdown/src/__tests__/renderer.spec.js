@@ -33,6 +33,8 @@ Text with **bold** & _em_ elements
 ![alt text](https://pbs.twimg.com/profile_images/678903331176214528/TQTdqGwD.jpg)
 
 ###### H6
+
+![](https://pbs.twimg.com/profile_images/678903331176214528/TQTdqGwD.jpg)
 `;
         expect(
           renderer.create(<MarkdownPreview value={markdownToHtml(value)} />).toJSON(),
