@@ -1,10 +1,10 @@
+import { Map } from 'immutable';
 import trimStart from 'lodash/trimStart';
 import semaphore from 'semaphore';
 import { stripIndent } from 'common-tags';
 import { CURSOR_COMPATIBILITY_SYMBOL } from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';
 import API from './API';
-import { CMS_BRANCH_PREFIX } from './API';
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
 
@@ -128,12 +128,13 @@ export default class GitLab {
               .readFile(file.path, file.id)
               .then(data => {
                 resolve({ file, data });
+                sem.leave();
               })
               .catch((error = true) => {
                 console.error(`failed to load file from GitLab: ${file.path}`);
                 resolve({ error });
-              })
-              .finally(() => sem.leave()),
+                sem.leave();
+              }),
           ),
         ),
       );
@@ -212,16 +213,20 @@ export default class GitLab {
       branches.forEach(branch => {
         promises.push(
           new Promise(resolve => {
-            // Strip the `CMS_BRANCH_PREFIX` from the `branch.name` to get the `slug`.
-            const slug = branch.name.split(CMS_BRANCH_PREFIX).pop();
+            const [collection, slug] = this.api.deconstructBranchName(branch.name);
             return sem.take(() =>
-              this.unpublishedEntry(null, slug)
-                .then(resolve)
-                .catch((error = true) => {
-                  console.error(`failed to load unpublished file from GitLab: ${slug}`);
-                  resolve({ error });
+              this.unpublishedEntry(collection, slug)
+                .then(data => {
+                  resolve(data);
+                  sem.leave();
                 })
-                .finally(() => sem.leave()),
+                .catch((error = true) => {
+                  console.error(
+                    `failed to load unpublished file from GitLab: ${collection}/${slug}`,
+                  );
+                  resolve({ error });
+                  sem.leave();
+                }),
             );
           }),
         );
@@ -233,7 +238,9 @@ export default class GitLab {
   }
 
   unpublishedEntry(collection, slug) {
-    return this.api.readUnpublishedBranchFile(slug).then(data => {
+    // NOTE - rudolf - It looks like `collection` could be `Map` or `String`.
+    const collectionName = Map.isMap(collection) ? collection.get('name') : collection;
+    return this.api.readUnpublishedBranchFile(collectionName, slug).then(data => {
       if (!data) {
         return null;
       } else {

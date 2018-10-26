@@ -5,7 +5,7 @@ import { flow, get, partial, result, uniq } from 'lodash';
 import { filterPromises, resolvePromiseProperties } from 'netlify-cms-lib-util';
 import { APIError, Cursor, EditorialWorkflowError } from 'netlify-cms-lib-util';
 
-export const CMS_BRANCH_PREFIX = 'cms/';
+const CMS_BRANCH_PREFIX = 'cms/';
 const CMS_METADATA_BRANCH = '_netlify_cms';
 
 export default class API {
@@ -323,6 +323,7 @@ export default class API {
       method: 'DELETE',
       url: `${this.repoURL}/repository/files/${encodeURIComponent(path)}`,
       params: commitParams,
+      // Note that changes to the file are allowed, so `last_commit_id` is not checked against `item.sha`.
       // last_commit_id: ???,
     });
   }
@@ -418,8 +419,7 @@ export default class API {
   // Editorial Workflow
 
   editorialWorkflowGit(entry, items, options) {
-    const contentKey = entry.slug;
-    const branchName = this.generateBranchName(contentKey);
+    const branchName = this.generateBranchName(options.collectionName, entry.slug);
     const unpublished = options.unpublished || false;
     if (!unpublished) {
       // Open new editorial review workflow for this entry - create new metadata and commit to new branch
@@ -451,14 +451,14 @@ export default class API {
                   },
                   timeStamp: new Date().toISOString(),
                 };
-                return this.storeMetadata(contentKey, metadata, { create: true });
+                return this.storeMetadata(branchName, metadata, { create: true });
               }),
           ),
         ),
       );
     } else {
       // Entry is already on editorial review workflow - update metadata and commit to existing branch
-      return this.retrieveMetadata(contentKey).then(metadata =>
+      return this.retrieveMetadata(branchName).then(metadata =>
         this.getBranch(branchName).then(branch =>
           this.uploadAndCommit(entry, items, { ...options, branch: branch.name }).then(
             updatedItems => {
@@ -487,14 +487,14 @@ export default class API {
                 },
                 timeStamp: new Date().toISOString(),
               };
-              return this.storeMetadata(contentKey, updatedMetadata);
+              return this.storeMetadata(branchName, updatedMetadata);
               // } else {
               //   /**
               //    * If no asset store is in use, assets are being stored in the content
               //    * repo, which means pull requests opened for editorial workflow
               //    * entries must be rebased if assets have been added or removed.
               //    */
-              //   return this.rebaseMR(mr.number, branch.name, contentKey, metadata, sha);
+              //   return this.rebaseMR(mr.number, branchName, metadata, sha);
               // }
             },
           ),
@@ -541,8 +541,9 @@ export default class API {
       });
   }
 
-  readUnpublishedBranchFile(contentKey) {
-    const metaDataPromise = this.retrieveMetadata(contentKey).then(
+  readUnpublishedBranchFile(collection, slug) {
+    const branchName = this.generateBranchName(collection, slug);
+    const metaDataPromise = this.retrieveMetadata(branchName).then(
       data => (data.objects.entry.path ? data : Promise.reject(null)),
     );
     return resolvePromiseProperties({
@@ -570,23 +571,22 @@ export default class API {
   }
 
   updateUnpublishedEntryStatus(collection, slug, status) {
-    const contentKey = slug;
-    return this.retrieveMetadata(contentKey)
+    const branchName = this.generateBranchName(collection, slug);
+    return this.retrieveMetadata(branchName)
       .then(metadata => ({
         ...metadata,
         status,
       }))
-      .then(updatedMetadata => this.storeMetadata(contentKey, updatedMetadata));
+      .then(updatedMetadata => this.storeMetadata(branchName, updatedMetadata));
   }
 
   deleteUnpublishedEntry(collection, slug) {
-    const contentKey = slug;
-    const branchName = this.generateBranchName(contentKey);
+    const branchName = this.generateBranchName(collection, slug);
     return (
-      this.retrieveMetadata(contentKey)
+      this.retrieveMetadata(branchName)
         .then(metadata => this.closeMR(metadata.mr))
         .then(() => this.deleteBranch(branchName))
-        .then(() => this.deleteMetadata(contentKey))
+        .then(() => this.deleteMetadata(branchName))
         // If the MR doesn't exist, then this has already been deleted.
         // Deletion should be idempotent, so we can consider this a success.
         .catch(error => {
@@ -599,18 +599,24 @@ export default class API {
   }
 
   publishUnpublishedEntry(collection, slug) {
-    const contentKey = slug;
-    const branchName = this.generateBranchName(contentKey);
-    return this.retrieveMetadata(contentKey)
+    const branchName = this.generateBranchName(collection, slug);
+    return this.retrieveMetadata(branchName)
       .then(metadata => this.mergeMR(metadata.mr, metadata.branch, metadata.objects))
       .then(() => this.deleteBranch(branchName))
-      .then(() => this.deleteMetadata(contentKey));
+      .then(() => this.deleteMetadata(branchName));
   }
 
   // Branches
 
-  generateBranchName(name) {
-    return `${CMS_BRANCH_PREFIX}${name}`;
+  generateBranchName(collection, slug) {
+    return `${CMS_BRANCH_PREFIX}${collection}/${slug}`;
+  }
+
+  deconstructBranchName(name) {
+    return name
+      .split(CMS_BRANCH_PREFIX)
+      .pop()
+      .split('/');
   }
 
   assertBranchName(name) {
@@ -674,7 +680,6 @@ export default class API {
 
   mergeMR(mr, branch, objects) {
     const mrNumber = mr.number;
-    const sha = mr.head;
     console.log('%c Merging MR', 'line-height: 30px;text-align: center;font-weight: bold');
     return this.requestJSON({
       method: 'PUT',
@@ -682,7 +687,8 @@ export default class API {
       body: {
         merge_commit_message:
           'Merged by Netlify CMS\n' + `Merge branch '${branch}' into '${this.branch}'`,
-        sha,
+        // Note that changes to the branch are allowed, so HEAD is not checked against `mr.head`.
+        // sha: mr.head,
       },
     }).catch(error => {
       if (error instanceof APIError && error.status === 405) {
@@ -699,7 +705,7 @@ export default class API {
   }
 
   // eslint-disable-next-line no-unused-vars
-  rebaseMR(mrNumber, branch, contentKey, metadata, sha) {
+  rebaseMR(mrNumber, branch, metadata, sha) {
     // TODO - rudolf - Why is this needed? How are assets affected by branches?
     throw new Error(`Not Implemented`);
   }
