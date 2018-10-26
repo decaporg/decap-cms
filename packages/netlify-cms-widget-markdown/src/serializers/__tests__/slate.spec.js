@@ -36,15 +36,16 @@ describe('slate', () => {
 
   it('should not produce invalid markdown when a styled block has trailing whitespace', () => {
     const slateAst = {
-      kind: 'block',
+      object: 'block',
       type: 'root',
       nodes: [
         {
-          kind: 'block',
+          object: 'block',
           type: 'paragraph',
           nodes: [
             {
-              kind: 'text',
+              object: 'text',
+              data: undefined,
               leaves: [
                 {
                   text: 'foo ', // <--
@@ -52,10 +53,7 @@ describe('slate', () => {
                 },
               ],
             },
-            {
-              kind: 'text',
-              leaves: [{ text: 'bar' }],
-            },
+            { object: 'text', data: undefined, leaves: [{ text: 'bar' }] },
           ],
         },
       ],
@@ -65,19 +63,17 @@ describe('slate', () => {
 
   it('should not produce invalid markdown when a styled block has leading whitespace', () => {
     const slateAst = {
-      kind: 'block',
+      object: 'block',
       type: 'root',
       nodes: [
         {
-          kind: 'block',
+          object: 'block',
           type: 'paragraph',
           nodes: [
+            { object: 'text', data: undefined, leaves: [{ text: 'foo' }] },
             {
-              kind: 'text',
-              leaves: [{ text: 'foo' }],
-            },
-            {
-              kind: 'text',
+              object: 'text',
+              data: undefined,
               leaves: [
                 {
                   text: ' bar', // <--
