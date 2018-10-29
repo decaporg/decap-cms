@@ -10,13 +10,6 @@ const collection = OrderedMap({
   type: 'folder_based_collection',
 });
 
-const collection = OrderedMap({
-  name: 'posts',
-  folder: '_posts',
-  fields: fromJS([{ name: 'title', widget: 'string' }]),
-  type: 'folder_based_collection',
-});
-
 describe('collections', () => {
   it('should handle an empty state', () => {
     expect(collections(undefined, {})).toEqual(null);
