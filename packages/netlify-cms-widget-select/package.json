@@ -32,5 +32,8 @@
     "prop-types": "^15.5.10",
     "react": "^16.4.1",
     "react-immutable-proptypes": "^2.1.0"
+  },
+  "dependencies": {
+    "react-select": "^2.1.1"
   }
 }

@@ -2,6 +2,20 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Map } from 'immutable';
+import { find } from 'lodash';
+import Select from 'react-select';
+
+const styles = {
+  control: base => ({
+    ...base,
+    border: 0,
+    boxShadow: 'none',
+    minHeight: '22px',
+    height: '22px',
+  }),
+  menu: base => ({ ...base, right: 0 }),
+  indicatorSeparator: () => ({ display: 'none' }),
+};
 
 export default class SelectControl extends React.Component {
   static propTypes = {
@@ -28,8 +42,8 @@ export default class SelectControl extends React.Component {
     value: '',
   };
 
-  handleChange = e => {
-    this.props.onChange(e.target.value);
+  handleChange = selectedOption => {
+    this.props.onChange(selectedOption['value']);
   };
 
   render() {
@@ -50,21 +64,19 @@ export default class SelectControl extends React.Component {
       }),
     ];
 
+    const selectedValue = find(options, ['value', value]);
+
     return (
-      <select
+      <Select
         id={forID}
-        value={value || ''}
+        value={selectedValue}
         onChange={this.handleChange}
         className={classNameWrapper}
         onFocus={setActiveStyle}
         onBlur={setInactiveStyle}
-      >
-        {options.map((option, idx) => (
-          <option key={idx} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
+        options={options}
+        styles={styles}
+      />
     );
   }
 }
