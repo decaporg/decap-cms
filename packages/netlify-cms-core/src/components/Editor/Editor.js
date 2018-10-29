@@ -24,7 +24,7 @@ import {
 } from 'Actions/editorialWorkflow';
 import { deserializeValues } from 'Lib/serializeEntryValues';
 import { selectEntry, selectUnpublishedEntry, getAsset } from 'Reducers';
-import { selectFields } from 'Reducers/collections';
+import { selectFields, selectAllFields } from 'Reducers/collections';
 import { status } from 'Constants/publishModes';
 import { EDITORIAL_WORKFLOW } from 'Constants/publishModes';
 import EditorInterface from './EditorInterface';
@@ -373,7 +373,7 @@ function mapStateToProps(state, ownProps) {
   const collectionName = collection.get('name');
   const newEntry = ownProps.newRecord === true;
   const entry = newEntry ? null : selectEntry(state, collectionName, slug);
-  const fields = selectFields(collection, slug, entry);
+  const fields = entry ? selectAllFields(collection, entry) : selectFields(collection, slug);
   const boundGetAsset = getAsset.bind(null, state);
   const user = auth && auth.get('user');
   const hasChanged = entryDraft.get('hasChanged');

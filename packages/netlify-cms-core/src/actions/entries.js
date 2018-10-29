@@ -4,7 +4,7 @@ import { serializeValues } from 'Lib/serializeEntryValues';
 import { currentBackend } from 'src/backend';
 import { getIntegrationProvider } from 'Integrations';
 import { getAsset, selectIntegration } from 'Reducers';
-import { selectFields } from 'Reducers/collections';
+import { selectAllFields } from 'Reducers/collections';
 import { selectCollectionEntriesCursor } from 'Reducers/cursors';
 import { Cursor } from 'netlify-cms-lib-util';
 import { createEntry } from 'ValueObjects/Entry';
@@ -13,7 +13,7 @@ import ValidationErrorTypes from 'Constants/validationErrorTypes';
 const { notifSend } = notifActions;
 
 /*
- * Contant Declarations
+ * Constant Declarations
  */
 export const ENTRY_REQUEST = 'ENTRY_REQUEST';
 export const ENTRY_SUCCESS = 'ENTRY_SUCCESS';
@@ -435,7 +435,7 @@ export function persistEntry(collection) {
      * Serialize the values of any fields with registered serializers, and
      * update the entry and entryDraft with the serialized values.
      */
-    const fields = selectFields(collection, entry.get('slug'));
+    const fields = selectAllFields(collection, entry);
     const serializedData = serializeValues(entryDraft.getIn(['entry', 'data']), fields);
     const serializedEntry = entry.set('data', serializedData);
     const serializedEntryDraft = entryDraft.set('entry', serializedEntry);
