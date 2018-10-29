@@ -4,7 +4,7 @@ import { BEGIN, COMMIT, REVERT } from 'redux-optimist';
 import { serializeValues } from 'Lib/serializeEntryValues';
 import { currentBackend } from 'coreSrc/backend';
 import { getAsset } from 'Reducers';
-import { selectFields } from 'Reducers/collections';
+import { selectAllFields } from 'Reducers/collections';
 import { EDITORIAL_WORKFLOW } from 'Constants/publishModes';
 import { EDITORIAL_WORKFLOW_ERROR } from 'netlify-cms-lib-util';
 import { loadEntry } from './entries';
@@ -318,7 +318,7 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
      * Serialize the values of any fields with registered serializers, and
      * update the entry and entryDraft with the serialized values.
      */
-    const fields = selectFields(collection, entry.get('slug'), entry);
+    const fields = selectAllFields(collection, entry);
     const serializedData = serializeValues(entryDraft.getIn(['entry', 'data']), fields);
     const serializedEntry = entry.set('data', serializedData);
     const serializedEntryDraft = entryDraft.set('entry', serializedEntry);

@@ -30,7 +30,7 @@ import {
 import { loadDeployPreview } from 'Actions/deploys';
 import { deserializeValues } from 'Lib/serializeEntryValues';
 import { selectEntry, selectUnpublishedEntry, selectDeployPreview, getAsset } from 'Reducers';
-import { selectFields } from 'Reducers/collections';
+import { selectFields, selectAllFields } from 'Reducers/collections';
 import { status, EDITORIAL_WORKFLOW } from 'Constants/publishModes';
 import EditorInterface from './EditorInterface';
 import withWorkflow from './withWorkflow';
@@ -416,7 +416,7 @@ function mapStateToProps(state, ownProps) {
   const collectionName = collection.get('name');
   const newEntry = ownProps.newRecord === true;
   const entry = newEntry ? null : selectEntry(state, collectionName, slug);
-  const fields = selectFields(collection, slug, entry);
+  const fields = entry ? selectAllFields(collection, entry) : selectFields(collection, slug);
   const boundGetAsset = getAsset.bind(null, state);
   const user = auth && auth.get('user');
   const hasChanged = entryDraft.get('hasChanged');

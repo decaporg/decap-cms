@@ -1,18 +1,7 @@
 import { OrderedMap, fromJS } from 'immutable';
 import { configLoaded } from 'Actions/config';
-import collections, { selectFields } from '../collections';
-
-const entry = {
-  collection: 'posts',
-  slug: 'slug',
-  path: '',
-  partial: false,
-  raw: '',
-  data: {
-    title: 'Test entry',
-  },
-  metaData: null,
-};
+import collections, { selectAllFields } from '../collections';
+import { createEntry } from 'ValueObjects/Entry';
 
 const collection = OrderedMap({
   name: 'posts',
@@ -55,15 +44,15 @@ describe('collections', () => {
   });
 
   it('should inject unknown fields from an entry as hidden fields', () => {
+    const entry = createEntry('posts', 'slug', '', { data: { title: 'Test entry' } });
     expect(
-      selectFields(
+      selectAllFields(
         collection,
-        '',
         fromJS({
           ...entry,
           data: {
             title: 'Test entry',
-            tag: 'Unkown field value',
+            tag: 'Unknown field value',
           },
         }),
       ),
