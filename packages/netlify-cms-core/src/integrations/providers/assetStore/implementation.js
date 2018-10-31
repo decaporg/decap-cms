@@ -1,5 +1,5 @@
 import { pickBy, trimEnd } from 'lodash';
-import { addParams } from 'Lib/urlHelper';
+import { addParams } from '../../../lib/urlHelper';
 
 export default class AssetStore {
   constructor(config, getToken) {

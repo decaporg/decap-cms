@@ -1,7 +1,7 @@
 import toml from 'toml-j0.4';
 import tomlify from 'tomlify-j0.4';
 import moment from 'moment';
-import AssetProxy from 'ValueObjects/AssetProxy';
+import AssetProxy from '../valueObjects/AssetProxy';
 import { sortKeys } from './helpers';
 
 const outputReplacer = (key, value) => {

@@ -1,6 +1,6 @@
 import yaml from 'js-yaml';
 import moment from 'moment';
-import AssetProxy from 'ValueObjects/AssetProxy';
+import AssetProxy from '../valueObjects/AssetProxy';
 import { sortKeys } from './helpers';
 
 const MomentType = new yaml.Type('date', {

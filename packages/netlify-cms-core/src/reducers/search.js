@@ -6,7 +6,7 @@ import {
   QUERY_REQUEST,
   QUERY_SUCCESS,
   SEARCH_CLEAR,
-} from 'Actions/search';
+} from '../actions/search';
 
 let loadedEntries;
 let response;

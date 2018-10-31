@@ -1,6 +1,6 @@
 import React from 'react';
 import bootstrap from './bootstrap';
-import registry from 'Lib/registry';
+import registry from './lib/registry';
 import createReactClass from 'create-react-class';
 
 /**

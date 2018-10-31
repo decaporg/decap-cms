@@ -9,13 +9,13 @@ import {
   ENTRY_PERSIST_SUCCESS,
   ENTRY_PERSIST_FAILURE,
   ENTRY_DELETE_SUCCESS,
-} from 'Actions/entries';
+} from '../actions/entries';
 import {
   UNPUBLISHED_ENTRY_PERSIST_REQUEST,
   UNPUBLISHED_ENTRY_PERSIST_SUCCESS,
   UNPUBLISHED_ENTRY_PERSIST_FAILURE,
-} from 'Actions/editorialWorkflow';
-import { ADD_ASSET, REMOVE_ASSET } from 'Actions/media';
+} from '../actions/editorialWorkflow';
+import { ADD_ASSET, REMOVE_ASSET } from '../actions/media';
 
 const initialState = Map({
   entry: Map(),

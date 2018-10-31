@@ -4,8 +4,8 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 import { Loader } from 'netlify-cms-ui-default';
 import { translate } from 'react-polyglot';
-import history from 'Routing/history';
-import { logoutUser } from 'Actions/auth';
+import history from '../../routing/history';
+import { logoutUser } from '../../actions/auth';
 import {
   loadEntry,
   loadEntries,
@@ -16,17 +16,17 @@ import {
   changeDraftFieldValidation,
   persistEntry,
   deleteEntry,
-} from 'Actions/entries';
+} from '../../actions/entries';
 import {
   updateUnpublishedEntryStatus,
   publishUnpublishedEntry,
   deleteUnpublishedEntry,
-} from 'Actions/editorialWorkflow';
-import { deserializeValues } from 'Lib/serializeEntryValues';
-import { selectEntry, selectUnpublishedEntry, getAsset } from 'Reducers';
-import { selectFields } from 'Reducers/collections';
-import { status } from 'Constants/publishModes';
-import { EDITORIAL_WORKFLOW } from 'Constants/publishModes';
+} from '../../actions/editorialWorkflow';
+import { deserializeValues } from '../../lib/serializeEntryValues';
+import { selectEntry, selectUnpublishedEntry, getAsset } from '../../reducers';
+import { selectFields } from '../../reducers/collections';
+import { status } from '../../constants/publishModes';
+import { EDITORIAL_WORKFLOW } from '../../constants/publishModes';
 import EditorInterface from './EditorInterface';
 import withWorkflow from './withWorkflow';
 

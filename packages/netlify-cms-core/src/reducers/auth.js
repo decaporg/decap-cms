@@ -1,5 +1,5 @@
 import Immutable from 'immutable';
-import { AUTH_REQUEST, AUTH_SUCCESS, AUTH_FAILURE, AUTH_REQUEST_DONE, LOGOUT } from 'Actions/auth';
+import { AUTH_REQUEST, AUTH_SUCCESS, AUTH_FAILURE, AUTH_REQUEST_DONE, LOGOUT } from '../actions/auth';
 
 const auth = (state = null, action) => {
   switch (action.type) {

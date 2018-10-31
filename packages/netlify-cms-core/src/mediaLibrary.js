@@ -3,9 +3,9 @@
  * registered via `registerMediaLibrary`.
  */
 import { once } from 'lodash';
-import { getMediaLibrary } from 'Lib/registry';
-import store from 'Redux';
-import { createMediaLibrary, insertMedia } from 'Actions/mediaLibrary';
+import { getMediaLibrary } from './lib/registry';
+import store from './redux';
+import { createMediaLibrary, insertMedia } from './actions/mediaLibrary';
 
 const initializeMediaLibrary = once(async function initializeMediaLibrary(name, options) {
   const lib = getMediaLibrary(name);

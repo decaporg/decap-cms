@@ -1,7 +1,7 @@
 import { Map } from 'immutable';
 import { resolvePath } from 'netlify-cms-lib-util';
-import { ADD_ASSET, REMOVE_ASSET } from 'Actions/media';
-import AssetProxy from 'ValueObjects/AssetProxy';
+import { ADD_ASSET, REMOVE_ASSET } from '../actions/media';
+import AssetProxy from '../valueObjects/AssetProxy';
 
 const medias = (state = Map(), action) => {
   switch (action.type) {
