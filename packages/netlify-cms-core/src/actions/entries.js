@@ -123,7 +123,7 @@ export function entryPersisted(collection, entry, slug) {
     payload: {
       collectionName: collection.get('name'),
       entrySlug: entry.get('slug'),
-
+      entry,
       /**
        * Pass slug from backend for newly created entries.
        */
