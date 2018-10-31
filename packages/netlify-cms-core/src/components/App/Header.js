@@ -13,7 +13,7 @@ import {
   shadows,
   buttons,
 } from 'netlify-cms-ui-default';
-import SettingsDropdown from 'UI/SettingsDropdown';
+import SettingsDropdown from '../UI/SettingsDropdown';
 
 const styles = {
   buttonActive: css`

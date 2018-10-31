@@ -1,5 +1,5 @@
 import { Map, List, fromJS } from 'immutable';
-import * as actions from 'Actions/entries';
+import * as actions from '../../actions/entries';
 import reducer from '../entryDraft';
 
 let initialState = Map({

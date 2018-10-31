@@ -1,6 +1,6 @@
 import { fromJS } from 'immutable';
 import { Cursor } from 'netlify-cms-lib-util';
-import { ENTRIES_SUCCESS } from 'Actions/entries';
+import { ENTRIES_SUCCESS } from '../actions/entries';
 
 // Since pagination can be used for a variety of views (collections
 // and searches are the most common examples), we namespace cursors by

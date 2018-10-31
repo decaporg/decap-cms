@@ -1,7 +1,7 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 import waitUntilAction from './middleware/waitUntilAction';
-import reducer from 'Reducers/combinedReducer';
+import reducer from '../reducers/combinedReducer';
 
 const store = createStore(
   reducer,
