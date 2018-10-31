@@ -5,7 +5,7 @@
   "homepage": "https://www.netlifycms.org/docs/widgets/#date",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-date",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
-  "main": "dist/netlify-cms-widget-date.js",
+  "module": "dist/netlify-cms-widget-date.esm.js",
   "license": "MIT",
   "keywords": [
     "netlify",
@@ -16,9 +16,9 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "watch": "webpack -w",
+    "watch": "rollup -c -w",
     "develop": "npm run watch",
-    "build": "cross-env NODE_ENV=production webpack"
+    "build": "rollup -c"
   },
   "dependencies": {
     "react-datetime": "^2.11.0"
@@ -26,9 +26,8 @@
   "devDependencies": {
     "cross-env": "^5.2.0",
     "css-loader": "^1.0.0",
-    "to-string-loader": "^1.1.5",
-    "webpack": "^4.16.1",
-    "webpack-cli": "^3.1.0"
+    "rollup": "^0.66.6",
+    "to-string-loader": "^1.1.5"
   },
   "peerDependencies": {
     "emotion": "^9.2.6",

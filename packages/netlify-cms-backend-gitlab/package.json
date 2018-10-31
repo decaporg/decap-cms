@@ -5,7 +5,7 @@
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
   "license": "MIT",
-  "main": "dist/netlify-cms-backend-gitlab.js",
+  "module": "dist/netlify-cms-backend-gitlab.esm.js",
   "keywords": [
     "netlify",
     "netlify-cms",
@@ -14,9 +14,9 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "watch": "webpack -w",
+    "watch": "rollup -c -w",
     "develop": "npm run watch",
-    "build": "cross-env NODE_ENV=production webpack"
+    "build": "rollup -c"
   },
   "dependencies": {
     "js-base64": "^2.4.8",
@@ -24,8 +24,7 @@
   },
   "devDependencies": {
     "cross-env": "^5.2.0",
-    "webpack": "^4.16.1",
-    "webpack-cli": "^3.1.0"
+    "rollup": "^0.66.6"
   },
   "peerDependencies": {
     "emotion": "^9.2.6",

@@ -4,7 +4,7 @@
   "version": "0.2.0",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-media-library-uploadcare",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
-  "main": "dist/netlify-cms-media-library-uploadcare.js",
+  "module": "dist/netlify-cms-media-library-uploadcare.esm.js",
   "license": "MIT",
   "keywords": [
     "netlify",
@@ -17,14 +17,13 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "watch": "webpack -w",
+    "watch": "rollup -c -w",
     "develop": "npm run watch",
-    "build": "cross-env NODE_ENV=production webpack"
+    "build": "rollup -c"
   },
   "devDependencies": {
     "cross-env": "^5.2.0",
-    "webpack": "^4.16.1",
-    "webpack-cli": "^3.1.0"
+    "rollup": "^0.66.6"
   },
   "peerDependencies": {
     "netlify-cms-lib-util": "^2.0.4"

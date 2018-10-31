@@ -4,7 +4,7 @@
   "version": "2.0.8",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
-  "main": "dist/netlify-cms-backend-git-gateway.js",
+  "module": "dist/netlify-cms-backend-git-gateway.esm.js",
   "license": "MIT",
   "keywords": [
     "netlify",
@@ -15,9 +15,9 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "watch": "webpack -w",
+    "watch": "rollup -c -w",
     "develop": "npm run watch",
-    "build": "cross-env NODE_ENV=production webpack"
+    "build": "rollup -c"
   },
   "dependencies": {
     "gotrue-js": "^0.9.22",
@@ -25,8 +25,7 @@
   },
   "devDependencies": {
     "cross-env": "^5.2.0",
-    "webpack": "^4.16.1",
-    "webpack-cli": "^3.1.0"
+    "rollup": "^0.66.6"
   },
   "peerDependencies": {
     "emotion": "^9.2.6",

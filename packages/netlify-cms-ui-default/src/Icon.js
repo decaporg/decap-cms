@@ -54,10 +54,11 @@ const sizes = {
 const Icon = ({ type, direction, size = 'medium', className }) => (
   <IconWrapper
     className={className}
-    dangerouslySetInnerHTML={{ __html: icons[type].image }}
     size={sizes[size] || size}
     rotation={getRotation(icons[type].direction, direction)}
-  />
+  >
+    {icons[type].image()}
+  </IconWrapper>
 );
 
 Icon.propTypes = {

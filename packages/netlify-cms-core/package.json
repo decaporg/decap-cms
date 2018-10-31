@@ -4,13 +4,15 @@
   "version": "2.1.1",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
-  "main": "dist/netlify-cms-core.js",
+  "module": "dist/netlify-cms-core.esm.js",
   "files": [
     "src/",
     "dist/"
   ],
   "scripts": {
-    "build": "cross-env NODE_ENV=production webpack"
+    "watch": "rollup -c -w",
+    "develop": "npm run watch",
+    "build": "rollup -c"
   },
   "keywords": [
     "netlify",
@@ -73,8 +75,7 @@
   "devDependencies": {
     "cross-env": "^5.2.0",
     "css-loader": "^1.0.0",
-    "to-string-loader": "^1.1.5",
-    "webpack": "^4.16.1",
-    "webpack-cli": "^3.1.0"
+    "rollup": "^0.66.6",
+    "to-string-loader": "^1.1.5"
   }
 }

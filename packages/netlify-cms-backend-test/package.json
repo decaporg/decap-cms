@@ -5,7 +5,7 @@
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-test",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
   "license": "MIT",
-  "main": "dist/netlify-cms-backend-test.js",
+  "module": "dist/netlify-cms-backend-test.esm.js",
   "keywords": [
     "netlify",
     "netlify-cms",
@@ -13,17 +13,16 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "watch": "webpack -w",
+    "watch": "rollup -c -w",
     "develop": "npm run watch",
-    "build": "cross-env NODE_ENV=production webpack"
+    "build": "rollup -c"
   },
   "dependencies": {
     "uuid": "^3.3.2"
   },
   "devDependencies": {
     "cross-env": "^5.2.0",
-    "webpack": "^4.16.1",
-    "webpack-cli": "^3.1.0"
+    "rollup": "^0.66.6"
   },
   "peerDependencies": {
     "emotion": "^9.2.6",

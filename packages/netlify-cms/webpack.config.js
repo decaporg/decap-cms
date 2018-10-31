@@ -3,19 +3,27 @@ const webpack = require('webpack');
 const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const pkg = require('./package.json');
-const { plugins } = require('../../scripts/webpack');
-const coreWebpackConfig = require('../netlify-cms-core/webpack.config.js');
+const { getConfig, rules } = require('../../scripts/webpack.js');
 
 const isProduction = process.env.NODE_ENV === 'production';
 
 const baseConfig = {
-  ...coreWebpackConfig,
-  context: path.join(__dirname, 'src'),
-  entry: './index.js',
+  ...getConfig(),
+  context: path.join(__dirname, 'dist'),
+  entry: './netlify-cms.esm.js',
+  module: {
+    rules: [
+      ...Object.entries(rules)
+        .filter(([key]) => key !== 'js')
+        .map(([, rule]) => rule()),
+      {
+        test: /\.css$/,
+        include: [/(redux-notifications|react-datetime)/],
+        use: ['to-string-loader', 'css-loader'],
+      },
+    ],
+  },
   plugins: [
-    ...Object.entries(plugins)
-      .filter(([key]) => key !== 'friendlyErrors')
-      .map(([, plugin]) => plugin()),
     new webpack.DefinePlugin({
       NETLIFY_CMS_VERSION: JSON.stringify(`${pkg.version}${isProduction ? '' : '-dev'}`),
       NETLIFY_CMS_CORE_VERSION: null,
