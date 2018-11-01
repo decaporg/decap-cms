@@ -126,7 +126,7 @@ const getConfigSchema = () => ({
               fields: {
                 contains: {
                   properties: {
-                    name: { enum: IDENTIFIER_FIELDS },
+                    name: { enum: [{ $data: '3/identifier_field' }, ...IDENTIFIER_FIELDS] },
                   },
                 },
               },
@@ -169,7 +169,7 @@ class ConfigError extends Error {
  * the config that is passed in.
  */
 export function validateConfig(config) {
-  const ajv = new AJV({ allErrors: true, jsonPointers: true });
+  const ajv = new AJV({ allErrors: true, jsonPointers: true, $data: true });
   ajvErrors(ajv);
 
   const valid = ajv.validate(getConfigSchema(), config);
