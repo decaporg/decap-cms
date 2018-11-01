@@ -22,13 +22,13 @@ class HTML extends React.Component {
             rel="stylesheet"
             href="https://unpkg.com/docsearch.js@2.5.2/dist/cdn/docsearch.min.css"
           />
+          <script src="https://buttons.github.io/buttons.js" />
         </head>
         <body {...this.props.bodyAttributes}>
           {this.props.preBodyComponents}
           <div key={'body'} id="___gatsby" dangerouslySetInnerHTML={{ __html: this.props.body }} />
           {this.props.postBodyComponents}
           <Gitter room="netlify/NetlifyCMS" />
-          <script src="https://buttons.github.io/buttons.js" />
           <script src="//unpkg.com/docsearch.js@2.4.1/dist/cdn/docsearch.min.js" />
         </body>
       </html>
