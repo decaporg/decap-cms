@@ -22,7 +22,6 @@ class HTML extends React.Component {
             rel="stylesheet"
             href="https://unpkg.com/docsearch.js@2.5.2/dist/cdn/docsearch.min.css"
           />
-          <script src="https://buttons.github.io/buttons.js" />
         </head>
         <body {...this.props.bodyAttributes}>
           {this.props.preBodyComponents}

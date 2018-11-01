@@ -28,6 +28,7 @@
     "gatsby-transformer-json": "next",
     "gatsby-transformer-remark": "next",
     "gatsby-transformer-yaml": "next",
+    "github-buttons": "git+https://github.com/ntkme/github-buttons.git",
     "lodash": "^4.17.10",
     "netlify-cms": "^2.0.11",
     "postcss-at2x": "^2.0.0",

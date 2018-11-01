@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Link from 'gatsby-link';
 import classnames from 'classnames';
 import { Location } from '@reach/router';
+import GitHubButton from 'github-buttons/dist/react';
 
 import DocSearch from './docsearch';
 
@@ -72,16 +73,14 @@ class Header extends Component {
                     Blog
                   </Link>
                   <span className="gh-button">
-                    <a
-                      id="ghstars"
-                      className="github-button"
+                    <GitHubButton
                       href="https://github.com/netlify/netlify-cms"
                       data-icon="octicon-star"
                       data-show-count="true"
                       aria-label="Star netlify/netlify-cms on GitHub"
                     >
                       Star
-                    </a>
+                    </GitHubButton>
                   </span>
                 </div>
               </div>
