@@ -126,7 +126,7 @@ const getConfigSchema = () => ({
               fields: {
                 contains: {
                   properties: {
-                    name: { enum: [{ '$data': '3/identifier_field' }, ...IDENTIFIER_FIELDS] },
+                    name: { enum: [{ $data: '3/identifier_field' }, ...IDENTIFIER_FIELDS] },
                   },
                 },
               },
