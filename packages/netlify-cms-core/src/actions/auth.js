@@ -76,6 +76,7 @@ export function loginUser(credentials) {
         dispatch(authenticate(user));
       })
       .catch(error => {
+        console.error(error);
         dispatch(
           notifSend({
             message: `${error.message}`,
