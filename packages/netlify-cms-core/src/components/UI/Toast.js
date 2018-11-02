@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { css, injectGlobal, cx } from 'react-emotion';
+import { translate } from 'react-polyglot';
 import reduxNotificationsStyles from 'redux-notifications/lib/styles.css';
 import { shadows, colors, lengths } from 'netlify-cms-ui-default';
 
@@ -41,11 +42,16 @@ const styles = {
   `,
 };
 
-export const Toast = ({ kind, message }) => (
-  <div className={cx(styles.toast, styles[kind])}>{message}</div>
+const Toast = ({ kind, message, t }) => (
+  <div className={cx(styles.toast, styles[kind])}>
+    {t(message.key, { details: message.details })}
+  </div>
 );
 
 Toast.propTypes = {
   kind: PropTypes.oneOf(['info', 'success', 'warning', 'danger']).isRequired,
-  message: PropTypes.string,
+  message: PropTypes.object,
+  t: PropTypes.func.isRequired,
 };
+
+export default translate()(Toast);

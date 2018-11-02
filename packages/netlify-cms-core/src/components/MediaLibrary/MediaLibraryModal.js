@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'react-emotion';
 import { isEmpty } from 'lodash';
+import { translate } from 'react-polyglot';
 import { Modal } from 'UI';
 import MediaLibrarySearch from './MediaLibrarySearch';
 import MediaLibraryHeader from './MediaLibraryHeader';
@@ -93,6 +94,7 @@ const MediaLibraryModal = ({
   handleAssetClick,
   handleLoadMore,
   getDisplayURL,
+  t,
 }) => {
   const filteredFiles = forImage ? handleFilter(files) : files;
   const queriedFiles = !dynamicSearch && query ? handleQuery(query, filteredFiles) : filteredFiles;
@@ -103,11 +105,11 @@ const MediaLibraryModal = ({
   const hasMedia = hasSearchResults;
   const shouldShowEmptyMessage = !hasMedia;
   const emptyMessage =
-    (isLoading && !hasMedia && 'Loading...') ||
-    (dynamicSearchActive && 'No results.') ||
-    (!hasFiles && 'No assets found.') ||
-    (!hasFilteredFiles && 'No images found.') ||
-    (!hasSearchResults && 'No results.');
+    (isLoading && !hasMedia && t('mediaLibrary.mediaLibraryModal.loading')) ||
+    (dynamicSearchActive && t('mediaLibrary.mediaLibraryModal.noResults')) ||
+    (!hasFiles && t('mediaLibrary.mediaLibraryModal.noAssetsFound')) ||
+    (!hasFilteredFiles && t('mediaLibrary.mediaLibraryModal.noImagesFound')) ||
+    (!hasSearchResults && t('mediaLibrary.mediaLibraryModal.noResults'));
   const hasSelection = hasMedia && !isEmpty(selectedFile);
   const shouldShowButtonLoader = isPersisting || isDeleting;
 
@@ -117,21 +119,33 @@ const MediaLibraryModal = ({
         <div>
           <MediaLibraryHeader
             onClose={handleClose}
-            title={`${privateUpload ? 'Private ' : ''}${forImage ? 'Images' : 'Media assets'}`}
+            title={`${privateUpload ? t('mediaLibrary.mediaLibraryModal.private') : ''}${
+              forImage
+                ? t('mediaLibrary.mediaLibraryModal.images')
+                : t('mediaLibrary.mediaLibraryModal.mediaAssets')
+            }`}
             isPrivate={privateUpload}
           />
           <MediaLibrarySearch
             value={query}
             onChange={handleSearchChange}
             onKeyDown={handleSearchKeyDown}
-            placeholder="Search..."
+            placeholder={t('mediaLibrary.mediaLibraryModal.search')}
             disabled={!dynamicSearchActive && !hasFilteredFiles}
           />
         </div>
         <MediaLibraryActions
-          uploadButtonLabel={isPersisting ? 'Uploading...' : 'Upload new'}
-          deleteButtonLabel={isDeleting ? 'Deleting...' : 'Delete selected'}
-          insertButtonLabel="Choose selected"
+          uploadButtonLabel={
+            isPersisting
+              ? t('mediaLibrary.mediaLibraryModal.uploading')
+              : t('mediaLibrary.mediaLibraryModal.uploadNew')
+          }
+          deleteButtonLabel={
+            isDeleting
+              ? t('mediaLibrary.mediaLibraryModal.deleting')
+              : t('mediaLibrary.mediaLibraryModal.deleteSelected')
+          }
+          insertButtonLabel={t('mediaLibrary.mediaLibraryModal.chooseSelected')}
           uploadEnabled={!shouldShowButtonLoader}
           deleteEnabled={!shouldShowButtonLoader && hasSelection}
           insertEnabled={hasSelection}
@@ -153,7 +167,7 @@ const MediaLibraryModal = ({
         canLoadMore={hasNextPage}
         onLoadMore={handleLoadMore}
         isPaginating={isPaginating}
-        paginatingMessage="Loading..."
+        paginatingMessage={t('mediaLibrary.mediaLibraryModal.loading')}
         cardWidth={cardWidth}
         cardMargin={cardMargin}
         isPrivate={privateUpload}
@@ -200,6 +214,7 @@ MediaLibraryModal.propTypes = {
   handleAssetClick: PropTypes.func.isRequired,
   handleLoadMore: PropTypes.func.isRequired,
   getDisplayURL: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
-export default MediaLibraryModal;
+export default translate()(MediaLibraryModal);

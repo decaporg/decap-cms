@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { translate } from 'react-polyglot';
 import { css } from 'react-emotion';
 import { colors } from 'netlify-cms-ui-default';
 
@@ -14,9 +15,10 @@ const styles = {
   `,
 };
 
-export class ErrorBoundary extends React.Component {
+class ErrorBoundary extends React.Component {
   static propTypes = {
     children: PropTypes.node,
+    t: PropTypes.func.isRequired,
   };
 
   state = {
@@ -34,23 +36,25 @@ export class ErrorBoundary extends React.Component {
     if (!hasError) {
       return this.props.children;
     }
+    const t = this.props.t;
     return (
       <div className={styles.errorBoundary}>
-        <h1 className={styles.errorBoundaryText}>Sorry!</h1>
+        <h1 className={styles.errorBoundaryText}>{t('ui.errorBoundary.title')}</h1>
         <p>
-          <span>{"There's been an error - please "}</span>
+          <span>{t('ui.errorBoundary.details')}</span>
           <a
             href={ISSUE_URL}
             target="_blank"
             rel="noopener noreferrer"
             className={styles.errorBoundaryText}
           >
-            report it
+            {t('ui.errorBoundary.reportIt')}
           </a>
-          !
         </p>
         <p>{errorMessage}</p>
       </div>
     );
   }
 }
+
+export default translate()(ErrorBoundary);

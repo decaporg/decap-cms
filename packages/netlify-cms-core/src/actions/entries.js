@@ -233,7 +233,10 @@ export function loadEntry(collection, slug) {
         console.error(error);
         dispatch(
           notifSend({
-            message: `Failed to load entry: ${error.message}`,
+            message: {
+              details: error.message,
+              key: 'ui.toast.onFailToLoadEntries',
+            },
             kind: 'danger',
             dismissAfter: 8000,
           }),
@@ -300,7 +303,10 @@ export function loadEntries(collection, page = 0) {
       .catch(err => {
         dispatch(
           notifSend({
-            message: `Failed to load entries: ${err}`,
+            message: {
+              details: err,
+              key: 'ui.toast.onFailToLoadEntries',
+            },
             kind: 'danger',
             dismissAfter: 8000,
           }),
@@ -348,7 +354,10 @@ export function traverseCollectionCursor(collection, action) {
       console.error(err);
       dispatch(
         notifSend({
-          message: `Failed to persist entry: ${err}`,
+          message: {
+            details: err,
+            key: 'ui.toast.onFailToPersist',
+          },
           kind: 'danger',
           dismissAfter: 8000,
         }),
@@ -409,7 +418,9 @@ export function persistEntry(collection) {
       if (hasPresenceErrors) {
         dispatch(
           notifSend({
-            message: "Oops, you've missed a required field. Please complete before saving.",
+            message: {
+              key: 'ui.toast.missingRequiredField',
+            },
             kind: 'danger',
             dismissAfter: 8000,
           }),
@@ -437,7 +448,9 @@ export function persistEntry(collection) {
       .then(slug => {
         dispatch(
           notifSend({
-            message: 'Entry saved',
+            message: {
+              key: 'ui.toast.missingRequiredField',
+            },
             kind: 'success',
             dismissAfter: 4000,
           }),
@@ -448,7 +461,10 @@ export function persistEntry(collection) {
         console.error(error);
         dispatch(
           notifSend({
-            message: `Failed to persist entry: ${error}`,
+            message: {
+              details: error,
+              key: 'ui.toast.onFailToPersist',
+            },
             kind: 'danger',
             dismissAfter: 8000,
           }),
@@ -472,7 +488,10 @@ export function deleteEntry(collection, slug) {
       .catch(error => {
         dispatch(
           notifSend({
-            message: `Failed to delete entry: ${error}`,
+            message: {
+              details: error,
+              key: 'ui.toast.onFailToDelete',
+            },
             kind: 'danger',
             dismissAfter: 8000,
           }),

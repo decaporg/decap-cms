@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled, { css } from 'react-emotion';
+import { translate } from 'react-polyglot';
 import { Link } from 'react-router-dom';
 import {
   Icon,
@@ -165,7 +166,7 @@ const StatusDropdownItem = styled(DropdownItem)`
   }
 `;
 
-export default class EditorToolbar extends React.Component {
+class EditorToolbar extends React.Component {
   static propTypes = {
     isPersisting: PropTypes.bool,
     isPublishing: PropTypes.bool,
@@ -190,12 +191,17 @@ export default class EditorToolbar extends React.Component {
     isModification: PropTypes.bool,
     currentStatus: PropTypes.string,
     onLogoutClick: PropTypes.func.isRequired,
+    t: PropTypes.func.isRequired,
   };
 
   renderSimpleSaveControls = () => {
-    const { showDelete, onDelete } = this.props;
+    const { showDelete, onDelete, t } = this.props;
     return (
-      <div>{showDelete ? <DeleteButton onClick={onDelete}>Delete entry</DeleteButton> : null}</div>
+      <div>
+        {showDelete ? (
+          <DeleteButton onClick={onDelete}>{t('editor.editorToolbar.deleteEntry')}</DeleteButton>
+        ) : null}
+      </div>
     );
   };
 
@@ -207,9 +213,10 @@ export default class EditorToolbar extends React.Component {
       isPersisting,
       hasChanged,
       isNewEntry,
+      t,
     } = this.props;
     if (!isNewEntry && !hasChanged) {
-      return <StatusPublished>Published</StatusPublished>;
+      return <StatusPublished>{t('editor.editorToolbar.published')}</StatusPublished>;
     }
     return (
       <div>
@@ -217,7 +224,11 @@ export default class EditorToolbar extends React.Component {
           dropdownTopOverlap="40px"
           dropdownWidth="150px"
           renderButton={() => (
-            <PublishButton>{isPersisting ? 'Publishing...' : 'Publish'}</PublishButton>
+            <PublishButton>
+              {isPersisting
+                ? t('editor.editorToolbar.publishing')
+                : t('editor.editorToolbar.publish')}
+            </PublishButton>
           )}
         >
           <DropdownItem
@@ -227,7 +238,11 @@ export default class EditorToolbar extends React.Component {
             onClick={onPersist}
           />
           {collection.get('create') ? (
-            <DropdownItem label="Publish and create new" icon="add" onClick={onPersistAndNew} />
+            <DropdownItem
+              label={t('editor.editorToolbar.publishAndCreateNew')}
+              icon="add"
+              onClick={onPersistAndNew}
+            />
           ) : null}
         </ToolbarDropdown>
       </div>
@@ -245,23 +260,28 @@ export default class EditorToolbar extends React.Component {
       isDeleting,
       isNewEntry,
       isModification,
+      t,
     } = this.props;
 
     const deleteLabel =
-      (hasUnpublishedChanges && isModification && 'Delete unpublished changes') ||
-      (hasUnpublishedChanges && (isNewEntry || !isModification) && 'Delete unpublished entry') ||
-      (!hasUnpublishedChanges && !isModification && 'Delete published entry');
+      (hasUnpublishedChanges &&
+        isModification &&
+        t('editor.editorToolbar.deleteUnpublishedChanges')) ||
+      (hasUnpublishedChanges &&
+        (isNewEntry || !isModification) &&
+        t('editor.editorToolbar.deleteUnpublishedEntry')) ||
+      (!hasUnpublishedChanges && !isModification && t('editor.editorToolbar.deletePublishedEntry'));
 
     return [
       <SaveButton key="save-button" onClick={() => hasChanged && onPersist()}>
-        {isPersisting ? 'Saving...' : 'Save'}
+        {isPersisting ? t('editor.editorToolbar.saving') : t('editor.editorToolbar.save')}
       </SaveButton>,
       isNewEntry || !deleteLabel ? null : (
         <DeleteButton
           key="delete-button"
           onClick={hasUnpublishedChanges ? onDeleteUnpublishedChanges : onDelete}
         >
-          {isDeleting ? 'Deleting...' : deleteLabel}
+          {isDeleting ? t('editor.editorToolbar.deleting') : deleteLabel}
         </DeleteButton>
       ),
     ];
@@ -277,6 +297,7 @@ export default class EditorToolbar extends React.Component {
       onPublishAndNew,
       currentStatus,
       isNewEntry,
+      t,
     } = this.props;
     if (currentStatus) {
       return (
@@ -285,21 +306,25 @@ export default class EditorToolbar extends React.Component {
             dropdownTopOverlap="40px"
             dropdownWidth="120px"
             renderButton={() => (
-              <StatusButton>{isUpdatingStatus ? 'Updating...' : 'Set status'}</StatusButton>
+              <StatusButton>
+                {isUpdatingStatus
+                  ? t('editor.editorToolbar.updating')
+                  : t('editor.editorToolbar.setStatus')}
+              </StatusButton>
             )}
           >
             <StatusDropdownItem
-              label="Draft"
+              label={t('editor.editorToolbar.draft')}
               onClick={() => onChangeStatus('DRAFT')}
               icon={currentStatus === status.get('DRAFT') && 'check'}
             />
             <StatusDropdownItem
-              label="In review"
+              label={t('editor.editorToolbar.inReview')}
               onClick={() => onChangeStatus('PENDING_REVIEW')}
               icon={currentStatus === status.get('PENDING_REVIEW') && 'check'}
             />
             <StatusDropdownItem
-              label="Ready"
+              label={t('editor.editorToolbar.ready')}
               onClick={() => onChangeStatus('PENDING_PUBLISH')}
               icon={currentStatus === status.get('PENDING_PUBLISH') && 'check'}
             />
@@ -308,17 +333,25 @@ export default class EditorToolbar extends React.Component {
             dropdownTopOverlap="40px"
             dropdownWidth="150px"
             renderButton={() => (
-              <PublishButton>{isPublishing ? 'Publishing...' : 'Publish'}</PublishButton>
+              <PublishButton>
+                {isPublishing
+                  ? t('editor.editorToolbar.publishing')
+                  : t('editor.editorToolbar.publish')}
+              </PublishButton>
             )}
           >
             <DropdownItem
-              label="Publish now"
+              label={t('editor.editorToolbar.publishNow')}
               icon="arrow"
               iconDirection="right"
               onClick={onPublish}
             />
             {collection.get('create') ? (
-              <DropdownItem label="Publish and create new" icon="add" onClick={onPublishAndNew} />
+              <DropdownItem
+                label={t('editor.editorToolbar.publishAndCreateNew')}
+                icon="add"
+                onClick={onPublishAndNew}
+              />
             ) : null}
           </ToolbarDropdown>
         </>
@@ -326,12 +359,12 @@ export default class EditorToolbar extends React.Component {
     }
 
     if (!isNewEntry) {
-      return <StatusPublished>Published</StatusPublished>;
+      return <StatusPublished>{t('editor.editorToolbar.published')}</StatusPublished>;
     }
   };
 
   render() {
-    const { user, hasChanged, displayUrl, collection, hasWorkflow, onLogoutClick } = this.props;
+    const { user, hasChanged, displayUrl, collection, hasWorkflow, onLogoutClick, t } = this.props;
 
     return (
       <ToolbarContainer>
@@ -339,12 +372,14 @@ export default class EditorToolbar extends React.Component {
           <BackArrow>←</BackArrow>
           <div>
             <BackCollection>
-              Writing in <strong>{collection.get('label')}</strong> collection
+              {t('editor.editorToolbar.backCollection', {
+                collectionLabel: collection.get('label'),
+              })}
             </BackCollection>
             {hasChanged ? (
-              <BackStatusChanged>Unsaved Changes</BackStatusChanged>
+              <BackStatusChanged>{t('editor.editorToolbar.unsavedChanges')}</BackStatusChanged>
             ) : (
-              <BackStatusUnchanged>Changes saved</BackStatusUnchanged>
+              <BackStatusUnchanged>{t('editor.editorToolbar.changesSaved')}</BackStatusUnchanged>
             )}
           </div>
         </ToolbarSectionBackLink>
@@ -369,3 +404,5 @@ export default class EditorToolbar extends React.Component {
     );
   }
 }
+
+export default translate()(EditorToolbar);
