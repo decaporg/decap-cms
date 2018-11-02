@@ -25,5 +25,6 @@ The following options are available on all fields:
           widget: "string"
           pattern: [".{12,}", "Must have at least 12 characters"]
         ```
+  - **Note:** Currently validation doesn't work on nested fields
 
 ## Default widgets
