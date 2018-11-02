@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import Link from 'gatsby-link';
 import classnames from 'classnames';
 import { Location } from '@reach/router';
-import GitHubButton from 'github-buttons/dist/react';
 
 import DocSearch from './docsearch';
 
@@ -15,9 +14,12 @@ class Header extends Component {
     scrolled: false,
   };
 
-  componentDidMount() {
+  async componentDidMount() {
     // TODO: use raf to throttle events
     window.addEventListener('scroll', this.handleScroll);
+    const gitHubButtonModule = await import('github-buttons/dist/react');
+    this.GitHubButton = gitHubButtonModule.default;
+    this.forceUpdate();
   }
 
   componentWillUnmount() {
@@ -36,6 +38,7 @@ class Header extends Component {
 
   render() {
     const { scrolled } = this.state;
+    const GitHubButton = this.GitHubButton;
 
     return (
       <Location>
@@ -73,14 +76,16 @@ class Header extends Component {
                     Blog
                   </Link>
                   <span className="gh-button">
-                    <GitHubButton
-                      href="https://github.com/netlify/netlify-cms"
-                      data-icon="octicon-star"
-                      data-show-count="true"
-                      aria-label="Star netlify/netlify-cms on GitHub"
-                    >
-                      Star
-                    </GitHubButton>
+                    {GitHubButton && (
+                      <GitHubButton
+                        href="https://github.com/netlify/netlify-cms"
+                        data-icon="octicon-star"
+                        data-show-count="true"
+                        aria-label="Star netlify/netlify-cms on GitHub"
+                      >
+                        Star
+                      </GitHubButton>
+                    )}
                   </span>
                 </div>
               </div>
