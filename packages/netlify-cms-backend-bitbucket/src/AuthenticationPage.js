@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from 'react-emotion';
 import { NetlifyAuthenticator } from 'netlify-cms-lib-auth';
 import { AuthenticationPage, Icon } from 'netlify-cms-ui-default';
@@ -15,6 +16,7 @@ export default class BitbucketAuthenticationPage extends React.Component {
     base_url: PropTypes.string,
     siteId: PropTypes.string,
     authEndpoint: PropTypes.string,
+    config: ImmutablePropTypes.map,
   };
 
   state = {};
@@ -41,13 +43,14 @@ export default class BitbucketAuthenticationPage extends React.Component {
   };
 
   render() {
-    const { inProgress } = this.props;
+    const { inProgress, config } = this.props;
 
     return (
       <AuthenticationPage
         onLogin={this.handleLogin}
         loginDisabled={inProgress}
         loginErrorMessage={this.state.loginError}
+        logoUrl={config.get('logo_url')}
         renderButtonContent={() => (
           <React.Fragment>
             <LoginButtonIcon type="bitbucket" />
