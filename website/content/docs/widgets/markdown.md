@@ -23,4 +23,4 @@ This would render as:
 
 ![Markdown widget example](/img/widgets-markdown.png)
 
-_Please note:_ If you are building a site with certain static site generators, you may need to add a markdownify filter when you come to display the output. Consult with your static site generator's documentation for rendering markdown.
+_Please note:_ The markdown widget outputs a raw markdown string. Your static site generator may or may not render the markdown to HTML automatically. Consult with your static site generator's documentation for more information about rendering markdown.
