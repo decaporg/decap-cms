@@ -189,7 +189,7 @@ The `fields` option maps editor UI widgets to field-value pairs in the saved fil
 - `name` (required): unique identifier for the field, used as the key when referenced in other contexts (like the [relation widget](../widgets/#relation))
 - `label`: label for the field in the editor UI; defaults to the value of `name`
 - `widget`: defines editor UI and inputs and file field data types; details in [Widgets](../widgets)
-- `default`: specify a default value for a field; available for most widget types (see [Widgets](../widgets) for details on each widget type)
+- `default`: specify a default value for a field; available for most widget types (see [Widgets](../widgets) for details on each widget type). Please note that field default value only works for folder collection type.
 - `required`: specify as `false` to make a field optional; defaults to `true`
 - `pattern`: add field validation by specifying a list with a regex pattern and an error message; more extensive validation can be achieved with [custom widgets](../custom-widgets/#advanced-field-validation)
 

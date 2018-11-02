@@ -1,4 +1,4 @@
-import { fromJS, List } from 'immutable';
+import { fromJS, List, Map } from 'immutable';
 import { actions as notifActions } from 'redux-notifications';
 import { serializeValues } from 'Lib/serializeEntryValues';
 import { currentBackend } from 'src/backend';
@@ -360,13 +360,38 @@ export function traverseCollectionCursor(collection, action) {
 
 export function createEmptyDraft(collection) {
   return dispatch => {
-    const dataFields = {};
-    collection.get('fields', List()).forEach(field => {
-      dataFields[field.get('name')] = field.get('default');
-    });
+    const dataFields = createEmptyDraftData(collection.get('fields', List()));
     const newEntry = createEntry(collection.get('name'), '', '', { data: dataFields });
     dispatch(emptyDraftCreated(newEntry));
   };
+}
+
+function createEmptyDraftData(fields) {
+  return fields.reduce((acc, item) => {
+    const subfields = item.get('field') || item.get('fields');
+    const list = item.get('widget') == 'list';
+    const defaultValue = item.get('default');
+
+    if (List.isList(subfields)) {
+      acc[item.get('name')] = list
+        ? [createEmptyDraftData(subfields)]
+        : createEmptyDraftData(subfields);
+      return acc;
+    }
+
+    if (Map.isMap(subfields)) {
+      acc[item.get('name')] = list
+        ? [createEmptyDraftData([subfields])]
+        : createEmptyDraftData([subfields]);
+      return acc;
+    }
+
+    if (defaultValue) {
+      acc[item.get('name')] = defaultValue;
+    }
+
+    return acc;
+  }, {});
 }
 
 export function persistEntry(collection) {
