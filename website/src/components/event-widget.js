@@ -28,7 +28,7 @@ class EventWidget extends Component {
         });
       })
       .catch(err => {
-        console.log(err);
+        console.log(err); // eslint-disable-line no-console
         // TODO: set state to show error message
         this.setState({
           loading: false,

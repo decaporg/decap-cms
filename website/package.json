@@ -7,8 +7,7 @@
     "build": "gatsby build && mv public dist",
     "copy:contribs": "cp ../.all-contributorsrc data/contributors.json",
     "prepare": "npm run copy:contribs",
-    "reset": "rm -rf .cache",
-    "lint": "eslint src"
+    "reset": "rm -rf .cache"
   },
   "author": "",
   "homepage": "https://www.netlifycms.org/",

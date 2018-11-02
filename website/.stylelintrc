@@ -6,8 +6,6 @@
     "at-rule-no-unknown": [true, {
       "ignoreAtRules": ["/^neat/"]
     }],
-    "no-descending-specificity": [true, {
-      "severity": "warning"
-    }]
+    "no-descending-specificity": null
   }
 }
