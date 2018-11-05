@@ -6,15 +6,20 @@ import { find } from 'lodash';
 import Select from 'react-select';
 
 const styles = {
-  control: base => ({
-    ...base,
+  control: provided => ({
+    ...provided,
     border: 0,
     boxShadow: 'none',
     minHeight: '22px',
     height: '22px',
   }),
-  menu: base => ({ ...base, right: 0 }),
+  menu: provided => ({ ...provided, right: 0 }),
+  option: (provided, state) => ({
+    ...provided,
+    backgroundColor: state.isSelected ? '#3a69c7' : state.isFocused ? '#e8f5fe' : 'transparent',
+  }),
   indicatorSeparator: () => ({ display: 'none' }),
+  dropdownIndicator: provided => ({ ...provided, color: '#7a8291' }),
 };
 
 export default class SelectControl extends React.Component {
