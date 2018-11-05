@@ -115,6 +115,7 @@ The `slug` option allows you to change how filenames for entries are created and
   - `unicode` (default): Sanitize filenames (slugs) according to [RFC3987](https://tools.ietf.org/html/rfc3987) and the [WHATWG URL spec](https://url.spec.whatwg.org/). This spec allows non-ASCII (or non-Latin) characters to exist in URLs.
   - `ascii`: Sanitize filenames (slugs) according to [RFC3986](https://tools.ietf.org/html/rfc3986). The only allowed characters are (0-9, a-z, A-Z, `_`, `-`, `~`).
 - `clean_accents`: Set to `true` to remove diacritics from slug characters before sanitizing. This is often helpful when using `ascii` encoding.
+- `sanitize_replacement`: The replacement string used to substitute unsafe characters, defaults to  `-`.
 
 **Example**
 
@@ -122,6 +123,7 @@ The `slug` option allows you to change how filenames for entries are created and
 slug:
   encoding: "ascii"
   clean_accents: true
+  sanitize_replacement: "_"
 ```
 
 ## Collections
