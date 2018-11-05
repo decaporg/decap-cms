@@ -35,6 +35,6 @@ notifications:
     message: >-
       Learn more about the JAMstack at JAMstack Conf, San Francisco — 29-30
       October, 2018
-    published: true
+    published: false
     title: JAMStack_conf 2018
     url: 'https://jamstackconf.com/'
