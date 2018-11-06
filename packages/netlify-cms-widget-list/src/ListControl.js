@@ -57,6 +57,7 @@ const SortableList = SortableContainer(({ items, renderItem }) => {
 const valueTypes = {
   SINGLE: 'SINGLE',
   MULTIPLE: 'MULTIPLE',
+  MIXED: 'MIXED'
 };
 
 export default class ListControl extends React.Component {
@@ -101,6 +102,8 @@ export default class ListControl extends React.Component {
       return valueTypes.MULTIPLE;
     } else if (field.get('field')) {
       return valueTypes.SINGLE;
+    } else if (field.get('widgets')) {
+      return valueTypes.MIXED;
     } else {
       return null;
     }
@@ -143,10 +146,13 @@ export default class ListControl extends React.Component {
     this.props.setInactiveStyle();
   };
 
-  handleAdd = e => {
+  handleAdd = (e, widget) => {
     e.preventDefault();
     const { value, onChange } = this.props;
-    const parsedValue = this.getValueType() === valueTypes.SINGLE ? null : Map();
+    let parsedValue = this.getValueType() === valueTypes.SINGLE ? null : Map();
+    if (this.getValueType() === valueTypes.MIXED && widget) {
+      parsedValue = parsedValue.set('widget', widget)
+    }
     this.setState({ itemsCollapsed: this.state.itemsCollapsed.push(false) });
     onChange((value || List()).push(parsedValue));
   };
@@ -163,7 +169,7 @@ export default class ListControl extends React.Component {
       const { value, metadata, onChange, field } = this.props;
       const collectionName = field.get('name');
       const newObjectValue =
-        this.getValueType() === valueTypes.MULTIPLE
+        this.getValueType() !== valueTypes.SINGLE
           ? this.getObjectValue(index).set(fieldName, newValue)
           : newValue;
       const parsedMetadata = {
@@ -208,6 +214,12 @@ export default class ListControl extends React.Component {
 
   objectLabel(item) {
     const { field } = this.props;
+    if (this.getValueType() === valueTypes.MIXED) {
+      const itemWidget = item.get('widget');
+      const widgets = field.get('widgets');
+      const widget = widgets.find(widget =>  widget.get('name') === itemWidget);
+      return widget.get('label', widget.get('name'));
+    }
     const multiFields = field.get('fields');
     const singleField = field.get('field');
     const labelField = (multiFields && multiFields.first()) || singleField;
@@ -233,9 +245,16 @@ export default class ListControl extends React.Component {
   };
 
   renderItem = (item, index) => {
-    const { field, classNameWrapper, editorControl, resolveWidget } = this.props;
+    const { classNameWrapper, editorControl, resolveWidget } = this.props;
     const { itemsCollapsed } = this.state;
     const collapsed = itemsCollapsed.get(index);
+    let field = this.props.field;
+
+    if (this.getValueType() === valueTypes.MIXED) {
+      const itemWidget = item.get('widget');
+      const widgets = field.get('widgets');
+      field = widgets.find(widget => widget.get('name') === itemWidget);
+    }
 
     return (
       <SortableListItem
@@ -275,6 +294,7 @@ export default class ListControl extends React.Component {
       <div id={forID} className={cx(classNameWrapper, components.objectWidgetTopBarContainer)}>
         <ObjectWidgetTopBar
           allowAdd={field.get('allow_add', true)}
+          widgets={field.get('widgets', null)}
           onAdd={this.handleAdd}
           heading={`${items.size} ${listLabel}`}
           label={labelSingular.toLowerCase()}
@@ -292,13 +312,9 @@ export default class ListControl extends React.Component {
     );
   }
 
-  render() {
-    const { field, forID, classNameWrapper } = this.props;
+  renderInput() {
+    const { forID, classNameWrapper } = this.props;
     const { value } = this.state;
-
-    if (field.get('field') || field.get('fields')) {
-      return this.renderListControl();
-    }
 
     return (
       <input
@@ -311,5 +327,13 @@ export default class ListControl extends React.Component {
         className={classNameWrapper}
       />
     );
+  }
+
+  render() {
+    if (this.getValueType() !== null) {
+      return this.renderListControl();
+    } else {
+      return this.renderInput();
+    }
   }
 }
