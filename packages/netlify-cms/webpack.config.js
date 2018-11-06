@@ -1,21 +1,25 @@
 const path = require('path');
-const webpack = require('webpack');
 const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const pkg = require('./package.json');
-const { getConfig, rules } = require('../../scripts/webpack.js');
+const pkg = require(path.join(process.cwd(), 'package.json'));
 
 const isProduction = process.env.NODE_ENV === 'production';
 
 const baseConfig = {
-  ...getConfig(),
+  mode: isProduction ? 'production' : 'development',
   context: path.join(__dirname, 'dist'),
   entry: './netlify-cms.esm.js',
+  output: {
+    path: process.cwd(),
+    filename: pkg.main,
+    library: pkg.name,
+    libraryTarget: 'umd',
+    umdNamedDefine: true,
+  },
+  devtool: 'source-map',
+  target: 'web',
   module: {
     rules: [
-      ...Object.entries(rules)
-        .filter(([key]) => key !== 'js')
-        .map(([, rule]) => rule()),
       {
         test: /\.css$/,
         include: [/(redux-notifications|react-datetime)/],
@@ -31,6 +35,32 @@ const baseConfig = {
     }),
     new CopyWebpackPlugin([{ from: '../shims/cms.css', to: 'dist/' }]),
   ],
+  /**
+   * Exclude peer dependencies from package bundles.
+   */
+  externals: (context, request, cb) => {
+    const localExternals = pkg.localExternals || [];
+    const peerDeps = Object.keys(pkg.peerDependencies || {});
+    const externals = isProduction ? peerDeps : [...localExternals, ...peerDeps];
+    const isPeerDep = dep => new RegExp(`^${dep}($|/)`).test(request);
+    return externals.some(isPeerDep) ? cb(null, request) : cb();
+  },
+  stats: isProduction
+    ? {
+        builtAt: false,
+        chunks: false,
+        colors: true,
+        entrypoints: false,
+        errorDetails: false,
+        hash: false,
+        modules: false,
+        timings: false,
+        version: false,
+        warnings: false,
+      }
+    : {
+        all: false,
+      },
   devServer: {
     contentBase: '../../dev-test',
     watchContentBase: true,
