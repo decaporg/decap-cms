@@ -4,7 +4,7 @@ import { get, pick, intersection } from 'lodash';
 import { APIError, unsentRequest } from 'netlify-cms-lib-util';
 import { GitHubBackend } from 'netlify-cms-backend-github';
 import { GitLabBackend } from 'netlify-cms-backend-gitlab';
-import { BitBucketBackend, API as BitBucketAPI } from 'netlify-cms-backend-bitbucket';
+import { BitbucketBackend, API as BitBucketAPI } from 'netlify-cms-backend-bitbucket';
 import GitHubAPI from './GitHubAPI';
 import GitLabAPI from './GitLabAPI';
 import AuthenticationPage from './AuthenticationPage';
@@ -157,7 +157,7 @@ export default class GitGateway {
           requestFunction: this.requestFunction,
           hasWriteAccess: async () => true,
         });
-        this.backend = new BitBucketBackend(this.config, { ...this.options, API: this.api });
+        this.backend = new BitbucketBackend(this.config, { ...this.options, API: this.api });
       }
 
       if (!(await this.api.hasWriteAccess())) {
