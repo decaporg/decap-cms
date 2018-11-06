@@ -5,7 +5,6 @@ import { Route } from 'react-router-dom';
 import { ConnectedRouter } from 'react-router-redux';
 import history from 'Routing/history';
 import store from 'Redux';
-import { mergeConfig } from 'Actions/config';
 import { getPhrases } from 'Constants/defaultPhrases';
 import { I18n } from 'react-polyglot';
 import { ErrorBoundary } from 'UI';
@@ -50,15 +49,6 @@ function bootstrap(opts = {}) {
   }
 
   /**
-   * Dispatch config to store if received. This config will be merged into
-   * config.yml if it exists, and any portion that produces a conflict will be
-   * overwritten.
-   */
-  if (config) {
-    store.dispatch(mergeConfig(config));
-  }
-
-  /**
    * Create connected root component.
    */
   const Root = () => (
@@ -66,7 +56,7 @@ function bootstrap(opts = {}) {
       <ErrorBoundary>
         <Provider store={store}>
           <ConnectedRouter history={history}>
-            <Route component={App} />
+            <Route component={App} bootstrapConfig={config} />
           </ConnectedRouter>
         </Provider>
       </ErrorBoundary>

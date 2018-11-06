@@ -54,6 +54,9 @@ init({
       name: 'git-gateway',
     },
   },
+
+  // You could also completely disable the load of the `config.yml`
+  ignoreLoadConfig: true
 })
 
 // The registry works as expected, and can be used before or after init.

@@ -40,9 +40,8 @@ export function applyDefaults(config) {
     });
 }
 
-function mergePreloadedConfig(preloadedConfig, loadedConfig) {
-  const map = fromJS(loadedConfig) || Map();
-  return preloadedConfig ? preloadedConfig.mergeDeep(map) : map;
+function mergePreloadedConfig(...loadedConfig) {
+  return Map().merge(...loadedConfig);
 }
 
 function parseConfig(data) {
@@ -97,11 +96,7 @@ export function configDidLoad(config) {
   };
 }
 
-export function mergeConfig(config) {
-  return { type: CONFIG_MERGE, payload: config };
-}
-
-export function loadConfig() {
+export function loadConfig(bootstrapConfig) {
   if (window.CMS_CONFIG) {
     return configDidLoad(fromJS(window.CMS_CONFIG));
   }
@@ -111,12 +106,15 @@ export function loadConfig() {
     try {
       const preloadedConfig = getState().config;
       const configUrl = getConfigUrl();
-      const loadedConfig = await getConfig(configUrl, preloadedConfig && preloadedConfig.size > 1);
+      const loadedConfig =
+        bootstrapConfig && bootstrapConfig.ignoreLoadConfig
+          ? {}
+          : await getConfig(configUrl, preloadedConfig && preloadedConfig.size > 1);
 
       /**
        * Merge any existing configuration so the result can be validated.
        */
-      const mergedConfig = mergePreloadedConfig(preloadedConfig, loadedConfig);
+      const mergedConfig = mergePreloadedConfig(preloadedConfig, bootstrapConfig, loadedConfig);
       validateConfig(mergedConfig.toJS());
 
       const config = applyDefaults(mergedConfig);

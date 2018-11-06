@@ -52,6 +52,7 @@ const ErrorCodeBlock = styled.pre`
 class App extends React.Component {
   static propTypes = {
     auth: ImmutablePropTypes.map,
+    bootstrapConfig: PropTypes.object,
     config: ImmutablePropTypes.map,
     collections: ImmutablePropTypes.orderedMap,
     loadConfig: PropTypes.func.isRequired,
@@ -84,7 +85,7 @@ class App extends React.Component {
 
   componentDidMount() {
     const { loadConfig } = this.props;
-    loadConfig();
+    loadConfig(this.props.bootstrapConfig);
   }
 
   handleLogin(credentials) {
