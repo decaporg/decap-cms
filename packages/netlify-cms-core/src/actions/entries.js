@@ -379,24 +379,21 @@ function createEmptyDraftData(fields) {
   return fields.reduce((acc, item) => {
     const subfields = item.get('field') || item.get('fields');
     const list = item.get('widget') == 'list';
-    const defaultValue = item.get('default');
+    const name = item.get('name');
+    const defaultValue = item.get('default', null);
 
     if (List.isList(subfields)) {
-      acc[item.get('name')] = list
-        ? [createEmptyDraftData(subfields)]
-        : createEmptyDraftData(subfields);
+      acc[name] = list ? [createEmptyDraftData(subfields)] : createEmptyDraftData(subfields);
       return acc;
     }
 
     if (Map.isMap(subfields)) {
-      acc[item.get('name')] = list
-        ? [createEmptyDraftData([subfields])]
-        : createEmptyDraftData([subfields]);
+      acc[name] = list ? [createEmptyDraftData([subfields])] : createEmptyDraftData([subfields]);
       return acc;
     }
 
-    if (defaultValue) {
-      acc[item.get('name')] = defaultValue;
+    if (defaultValue !== null) {
+      acc[name] = defaultValue;
     }
 
     return acc;
