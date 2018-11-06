@@ -195,7 +195,7 @@ function convertNode(node, nodes) {
     case 'shortcode': {
       const { data } = node;
       const nodes = [createText('')];
-      return createBlock(typeMap[node.type], nodes, { data, isVoid: true });
+      return createBlock(typeMap[node.type], nodes, { data });
     }
 
     /**
@@ -300,7 +300,7 @@ function convertNode(node, nodes) {
      * Thematic breaks are void nodes in the Slate schema.
      */
     case 'thematicBreak': {
-      return createBlock(typeMap[node.type], { isVoid: true });
+      return createBlock(typeMap[node.type]);
     }
 
     /**
@@ -325,7 +325,7 @@ function convertNode(node, nodes) {
     case 'image': {
       const { title, url, alt, data } = node;
       const newData = { ...data, title, alt, url };
-      return createInline(typeMap[node.type], { isVoid: true, data: newData });
+      return createInline(typeMap[node.type], { data: newData });
     }
 
     /**

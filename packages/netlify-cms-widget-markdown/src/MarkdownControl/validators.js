@@ -16,13 +16,13 @@ export function validateNode(node) {
      */
     const hasBlocks = !doc.getBlocks().isEmpty();
     if (!hasBlocks) {
-      return change => {
+      return editor => {
         const block = Block.create({
           type: 'paragraph',
           nodes: [Text.create('')],
         });
-        const { key } = change.value.document;
-        return change.insertNodeByKey(key, 0, block).focus();
+        const { key } = editor.value.document;
+        return editor.insertNodeByKey(key, 0, block).focus();
       };
     }
 
@@ -34,15 +34,15 @@ export function validateNode(node) {
       return type === 'shortcode' && doc.getParent(key).key !== doc.key;
     });
     if (nestedShortcode) {
-      const unwrapShortcode = change => {
+      const unwrapShortcode = editor => {
         const key = nestedShortcode.key;
-        const newDoc = change.value.document;
+        const newDoc = editor.value.document;
         const newParent = newDoc.getParent(key);
         const docIsParent = newParent.key === newDoc.key;
         const newParentParent = newDoc.getParent(newParent.key);
         const docIsParentParent = newParentParent && newParentParent.key === newDoc.key;
         if (docIsParent) {
-          return change;
+          return editor;
         }
         /**
          * Normalization happens by default, and causes all validation to
@@ -51,7 +51,12 @@ export function validateNode(node) {
          * plugin's schema, resulting in an infinite loop. To ensure against
          * this, we turn off normalization until the last change.
          */
-        change.unwrapNodeByKey(nestedShortcode.key, { normalize: docIsParentParent });
+        const unwrapNestedShortcode = editor => editor.unwrapNodeByKey(nestedShortcode.key);
+        if (docIsParentParent) {
+          unwrapNestedShortcode(editor)
+        } else {
+          editor.withoutNormalizing(() => unwrapNestedShortcode(editor));
+        }
       };
       return unwrapShortcode;
     }
@@ -64,10 +69,10 @@ export function validateNode(node) {
       return type === 'shortcode' && doc.getBlocks().last().key === key;
     });
     if (trailingShortcode) {
-      return change => {
+      return editor => {
         const text = Text.create('');
         const block = Block.create({ type: 'paragraph', nodes: [text] });
-        return change.insertNodeByKey(doc.key, doc.get('nodes').size, block);
+        return editor.insertNodeByKey(doc.key, doc.get('nodes').size, block);
       };
     }
   }
@@ -78,11 +83,11 @@ export function validateNode(node) {
   if (node.type === 'code') {
     const invalidChild = node.getTexts().find(text => !text.getMarks().isEmpty());
     if (invalidChild) {
-      return change =>
+      return editor =>
         invalidChild
           .getMarks()
           .forEach(mark =>
-            change.removeMarkByKey(invalidChild.key, 0, invalidChild.get('characters').size, mark),
+            editor.removeMarkByKey(invalidChild.key, 0, invalidChild.get('characters').size, mark),
           );
     }
   }

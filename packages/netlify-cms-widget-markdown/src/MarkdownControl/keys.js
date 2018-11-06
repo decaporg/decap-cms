@@ -3,7 +3,7 @@ import isHotkey from 'is-hotkey';
 
 export default onKeyDown;
 
-function onKeyDown(event, change) {
+function onKeyDown(event, editor) {
   const createDefaultBlock = () => {
     return Block.create({
       type: 'paragraph',
@@ -20,9 +20,11 @@ function onKeyDown(event, change) {
      * If the selected block is the first block in the document, create the
      * new block above it. If not, create the new block below it.
      */
-    const { document: doc, anchorBlock, focusBlock } = change.value;
+    const { document: doc, anchorBlock, focusBlock, schema } = editor.value;
     const singleBlockSelected = anchorBlock === focusBlock;
-    if (!singleBlockSelected || !focusBlock.isVoid) return;
+    if (!singleBlockSelected || !schema.isVoid(focusBlock)) {
+      return;
+    }
 
     event.preventDefault();
 
@@ -33,9 +35,9 @@ function onKeyDown(event, change) {
     const newBlock = createDefaultBlock();
     const newBlockIndex = focusBlockIsFirstChild ? 0 : focusBlockIndex + 1;
 
-    return change
+    return editor
       .insertNodeByKey(focusBlockParent.key, newBlockIndex, newBlock)
-      .collapseToStartOf(newBlock);
+      .moveToStartOfNode(newBlock);
   }
 
   const marks = [
@@ -49,6 +51,6 @@ function onKeyDown(event, change) {
 
   if (markName) {
     event.preventDefault();
-    return change.toggleMark(markName);
+    return editor.toggleMark(markName);
   }
 }

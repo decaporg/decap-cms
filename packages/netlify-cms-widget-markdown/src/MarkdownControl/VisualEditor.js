@@ -11,7 +11,7 @@ import { slateToMarkdown, markdownToSlate, htmlToSlate } from '../serializers';
 import Toolbar from '../MarkdownControl/Toolbar';
 import { renderNode, renderMark } from './renderers';
 import { validateNode } from './validators';
-import plugins, { EditListConfigured } from './plugins';
+import plugins from './plugins';
 import onKeyDown from './keys';
 import visualEditorStyles from './visualEditorStyles';
 import { EditorControlBar } from '../styles';
@@ -89,13 +89,13 @@ export default class Editor extends React.Component {
     );
   }
 
-  handlePaste = (e, data, change) => {
+  handlePaste = (e, data, editor) => {
     if (data.type !== 'html' || data.isShift) {
       return;
     }
     const ast = htmlToSlate(data.html);
     const doc = Document.fromJSON(ast);
-    return change.insertFragment(doc);
+    return editor.insertFragment(doc);
   };
 
   selectionHasMark = type => this.state.value.activeMarks.some(mark => mark.type === type);
@@ -103,30 +103,29 @@ export default class Editor extends React.Component {
 
   handleMarkClick = (event, type) => {
     event.preventDefault();
-    const resolvedChange = this.state.value
-      .change()
-      .focus()
-      .toggleMark(type);
-    this.ref.onChange(resolvedChange);
-    this.setState({ value: resolvedChange.value });
+    this.editor.focus().toggleMark(type);
+    this.setState({ value: editor.value });
   };
 
   handleBlockClick = (event, type) => {
     if (event) {
       event.preventDefault();
     }
-    let { value } = this.state;
+
+    const { editor } = this;
+    const { value } = editor;
     const { document: doc } = value;
-    const { unwrapList, wrapInList } = EditListConfigured.changes;
-    let change = value.change();
 
     // Handle everything except list buttons.
     if (!['bulleted-list', 'numbered-list'].includes(type)) {
       const isActive = this.selectionHasBlock(type);
-      change = change.setBlocks(isActive ? 'paragraph' : type);
+      editor.setBlocks(isActive ? 'paragraph' : type);
     }
 
     // Handle the extra wrapping required for list buttons.
+    // slate-edit-list removed from project, must rewrite list handling
+    /*
+    const { unwrapList, wrapInList } = EditListConfigured.changes;
     else {
       const isSameListType = value.blocks.some(block => {
         return !!doc.getClosest(block.key, parent => parent.type === type);
@@ -134,18 +133,18 @@ export default class Editor extends React.Component {
       const isInList = EditListConfigured.utils.isSelectionInList(value);
 
       if (isInList && isSameListType) {
-        change = change.call(unwrapList, type);
+        editor.command(unwrapList, type);
       } else if (isInList) {
         const currentListType = type === 'bulleted-list' ? 'numbered-list' : 'bulleted-list';
-        change = change.call(unwrapList, currentListType).call(wrapInList, type);
+        editor.call(unwrapList, currentListType).call(wrapInList, type);
       } else {
-        change = change.call(wrapInList, type);
+        editor.call(wrapInList, type);
       }
     }
+    */
 
-    const resolvedChange = change.focus();
-    this.ref.onChange(resolvedChange);
-    this.setState({ value: resolvedChange.value });
+    editor.focus();
+    this.setState({ value: editor.value });
   };
 
   hasLinks = () => {
@@ -153,12 +152,11 @@ export default class Editor extends React.Component {
   };
 
   handleLink = () => {
-    let change = this.state.value.change();
-
+    const { editor } = this;
     // If the current selection contains links, clicking the "link" button
     // should simply unlink them.
     if (this.hasLinks()) {
-      change = change.unwrapInline('link');
+      editor.unwrapInline('link');
     } else {
       const url = window.prompt('Enter the URL of the link');
 
@@ -166,20 +164,19 @@ export default class Editor extends React.Component {
       if (!url) return;
 
       // If no text is selected, use the entered URL as text.
-      if (change.value.isCollapsed) {
-        change = change.insertText(url).extend(0 - url.length);
+      if (editor.value.isCollapsed) {
+        editor.insertText(url).moveFocusBackward(0 - url.length);
       }
 
-      change = change.wrapInline({ type: 'link', data: { url } }).collapseToEnd();
+      editor.wrapInline({ type: 'link', data: { url } }).moveToEnd();
     }
 
-    this.ref.onChange(change);
-    this.setState({ value: change.value });
+    this.setState({ value: editor.value });
   };
 
   handlePluginAdd = pluginId => {
     const { getEditorComponents } = this.props;
-    const { value } = this.state;
+    const { editor } = this;
     const nodes = [Text.create('')];
 
     /**
@@ -203,45 +200,42 @@ export default class Editor extends React.Component {
         shortcodeNew: true,
         shortcodeData: defaultValues,
       },
-      isVoid: true,
       nodes,
     };
 
-    let change = value.change();
-    const { focusBlock } = change.value;
+    const { focusBlock } = editor.value;
 
     if (focusBlock.text === '' && focusBlock.type === 'paragraph') {
-      change = change.setNodeByKey(focusBlock.key, block);
+      editor.setNodeByKey(focusBlock.key, block);
     } else {
-      change = change.insertBlock(block);
+      editor.insertBlock(block);
     }
 
-    change = change.focus();
+    editor.focus();
 
-    this.ref.onChange(change);
-    this.setState({ value: change.value });
+    this.setState({ value: editor.value });
   };
 
   handleToggle = () => {
     this.props.onMode('raw');
   };
 
-  handleDocumentChange = debounce(change => {
+  handleDocumentChange = debounce(editor => {
     const { onChange } = this.props;
-    const raw = change.value.document.toJSON();
+    const raw = editor.value.document.toJSON();
     const markdown = slateToMarkdown(raw);
     this.setState({ lastRawValue: markdown }, () => onChange(markdown));
   }, 150);
 
-  handleChange = change => {
-    if (!this.state.value.document.equals(change.value.document)) {
-      this.handleDocumentChange(change);
+  handleChange = editor => {
+    if (!this.state.value.document.equals(editor.value.document)) {
+      this.handleDocumentChange(editor);
     }
-    this.setState({ value: change.value });
+    this.setState({ value: editor.value });
   };
 
   processRef = ref => {
-    this.ref = ref;
+    this.editor = ref;
   };
 
   render() {
