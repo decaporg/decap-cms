@@ -24,10 +24,6 @@ const baseConfig = {
     ],
   },
   plugins: [
-    new webpack.DefinePlugin({
-      NETLIFY_CMS_VERSION: JSON.stringify(`${pkg.version}${isProduction ? '' : '-dev'}`),
-      NETLIFY_CMS_CORE_VERSION: null,
-    }),
     new FriendlyErrorsWebpackPlugin({
       compilationSuccessInfo: {
         messages: ['Netlify CMS is now running at http://localhost:8080'],

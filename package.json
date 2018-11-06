@@ -90,6 +90,7 @@
     "rollup-plugin-commonjs": "^9.2.0",
     "rollup-plugin-postcss": "^1.6.2",
     "rollup-plugin-react-svg": "^2.1.0",
+    "rollup-plugin-replace": "^2.1.0",
     "start-server-and-test": "^1.7.0",
     "style-loader": "^0.21.0",
     "stylelint": "^9.4.0",
