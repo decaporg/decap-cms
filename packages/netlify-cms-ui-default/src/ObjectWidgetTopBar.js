@@ -61,7 +61,7 @@ const AddItem = styled.div`
 class ObjectWidgetTopBar extends React.Component {
   static propTypes = {
     allowAdd: PropTypes.bool,
-    widgets: ImmutablePropTypes.list,
+    types: ImmutablePropTypes.list,
     onAdd: PropTypes.func,
     onCollapseToggle: PropTypes.func,
     collapsed: PropTypes.bool,
@@ -72,37 +72,40 @@ class ObjectWidgetTopBar extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {widget: !this.props.widgets || this.props.widgets.size === 0 ? null : this.props.widgets.get(0).get('name')};
+    let type = null;
+    if (this.props.types && this.props.types.size > 0) {
+      type = this.props.types.get(0).get('name');
+    }
+
+    this.state = {
+      type: type
+    };
   }
 
   handleWidgetChange = (event) => {
-    this.setState({widget: event.target.value});
+    this.setState({type: event.target.value});
   };
 
   handleAdd = (e) => {
-    if (this.state.widget) {
-      this.props.onAdd(e, this.state.widget);
-    } else {
-      this.props.onAdd(e);
-    }
+    this.props.onAdd(e, this.state.type);
   };
 
   addItemUI() {
     if (!this.props.allowAdd) {
       return null;
     }
-    const widgets = this.props.widgets;
+    const types = this.props.types;
     const addButton = (
       <AddButton onClick={this.handleAdd}>
         Add {this.props.label} <Icon type="add" size="xsmall" />
       </AddButton>
     );
 
-    if (widgets && widgets.size > 0) {
+    if (types && types.size > 0) {
       return (
         <AddItem>
-          <select value={this.state.widget} style={{marginRight: 10}} onChange={this.handleWidgetChange}>
-            {widgets.map((widget, idx) => <option key={idx} value={widget.get('name')}>{widget.get('label', widget.get('name'))}</option>)}
+          <select value={this.state.type} style={{marginRight: 10}} onChange={this.handleWidgetChange}>
+            {types.map((type, idx) => <option key={idx} value={type.get('name')}>{type.get('label', type.get('name'))}</option>)}
           </select>
           {addButton}
         </AddItem>

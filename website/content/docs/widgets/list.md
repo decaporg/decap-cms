@@ -3,17 +3,18 @@ label: "List"
 title: list
 ---
 
-The list widget allows you to create a repeatable item in the UI which saves as a list of widget values. map a user-provided string with a comma delimiter into a list. You can choose any widget as a child of a list widget—even other lists. Or you can define a list with different widgets to create list of different item types.
+The list widget allows you to create a repeatable item in the UI which saves as a list of widget values. map a user-provided string with a comma delimiter into a list. You can choose any widget as a child of a list widget—even other lists. Or you can define a list with different widget types.
 
 - **Name:** `list`
-- **UI:** if `fields` is specified, field containing a repeatable child widget, with controls for adding, deleting, and re-ordering the repeated widgets; if unspecified, a text input for entering comma-separated values. If `widgets` is specified instead, the list will render items of different widget types. 
+- **UI:** if `fields` is specified, field containing a repeatable child widget, with controls for adding, deleting, and re-ordering the repeated widgets; if unspecified, a text input for entering comma-separated values. If `types` is specified instead, the list will render items of different widget types. 
 - **Data type:** list of widget values
 - **Options:**
   - `default`: if `fields` is specified, declare defaults on the child widgets; if not, you may specify a list of strings to populate the text field
-  - `allow_add`: if added and labeled `false`, button to add additional widgets disappears. When user together with `widgets`, additional control for selecting a widget type will be available.
+  - `allow_add`: if added and labeled `false`, button to add additional widgets disappears. When used together with `types`, additional control for selecting a widget type will be available.
   - `field`: a single widget field to be repeated
   - `fields`: a nested list of multiple widget fields to be included in each repeatable iteration
-  - `widgets`: a nested list of widgets. Each widget will define different item type that could be added to the list.
+  - `types`: a nested list of widgets. Each widget will define different item type that could be added to the list.
+  - `typeKey`: the name of the field that will be added to every item in list representing the name of the widget type that item belongs to. Ignored if `types` is not defined. Default is `type`.
 - **Example** (`field`/`fields` not specified):
     ```yaml
     - label: "Tags"
@@ -50,12 +51,12 @@ The list widget allows you to create a repeatable item in the UI which saves as 
             - {label: Name, name: name, widget: string, default: "Emmet"}
             - {label: Avatar, name: avatar, widget: image, default: "/img/emmet.jpg"}
     ```
-- **Example** (with `widgets`):
+- **Example** (with `types`):
     ```yaml
     - label: "Home Section"
       name: "sections"
       widget: "list"
-      widgets:
+      types:
         - label: "Carousel"
           name: "carousel"
           widget: object
@@ -78,18 +79,18 @@ The list widget allows you to create a repeatable item in the UI which saves as 
     ```yaml
     title: Home
     sections:
-      - widget: carousel
+      - type: carousel
         header: Image Gallery
         template: carousel.html
         images:
           - images/image01.png
           - images/image02.png
           - images/image03.png
-      - widget: spotlight
+      - type: spotlight
         header: Spotlight
         template: spotlight.html
         text: Hello World
-      - widget: carousel
+      - type: carousel
         header: Image Gallery
         template: carousel.html
         images:
@@ -97,4 +98,4 @@ The list widget allows you to create a repeatable item in the UI which saves as 
           - images/image05.png
           - images/image06.png
     ```
-    The `widget` field must be present on each section object and will be added automatically when new section is created through CMS.
+    The `type` field must be present on each section object and will be added automatically when new section is created through CMS. To use different name for this field, set the `typeKey`.

@@ -12,6 +12,7 @@ import { INFERABLE_FIELDS } from 'Constants/fieldInference';
 import EditorPreviewContent from './EditorPreviewContent.js';
 import PreviewHOC from './PreviewHOC';
 import EditorPreview from './EditorPreview';
+import { TYPES_KEY, resolveFunctionForMixedField } from 'netlify-cms-lib-util';
 
 const PreviewPaneFrame = styled(Frame)`
   width: 100%;
@@ -20,6 +21,11 @@ const PreviewPaneFrame = styled(Frame)`
   background: #fff;
   border-radius: ${lengths.borderRadius};
 `;
+
+const nestedListStyle = {
+  marginTop: 0,
+  paddingLeft: '2em'
+};
 
 export default class PreviewPane extends React.Component {
   getWidget = (field, value, props, idx = null) => {
@@ -68,8 +74,13 @@ export default class PreviewPane extends React.Component {
     // custom preview templates, where the field object can't be passed in.
     let field = fields && fields.find(f => f.get('name') === name);
     let value = values && values.get(field.get('name'));
+    let mixedWidgets = field.get(TYPES_KEY);
     let nestedFields = field.get('fields');
     let singleField = field.get('field');
+
+    if (mixedWidgets) {
+      field = field.set(TYPES_KEY, this.getMixedWidgets(field, value));
+    }
 
     if (nestedFields) {
       field = field.set('fields', this.getNestedWidgets(nestedFields, value));
@@ -82,19 +93,39 @@ export default class PreviewPane extends React.Component {
     const labelledWidgets = ['string', 'text', 'number'];
     if (Object.keys(this.inferedFields).indexOf(name) !== -1) {
       value = this.inferedFields[name].defaultPreview(value);
-    } else if (
-      value &&
-      labelledWidgets.indexOf(field.get('widget')) !== -1 &&
-      value.toString().length < 50
-    ) {
+    } else if (labelledWidgets.indexOf(field.get('widget')) !== -1) {
       value = (
         <div>
-          <strong>{field.get('label', field.get('name'))}:</strong> {value}
+          <strong>{field.get('label', field.get('name'))}:</strong> {value && value.toString().length < 50 ? value : <span style={{color: '#666666'}}>{'undefined'}</span>}
         </div>
       );
     }
 
     return value ? this.getWidget(field, value, this.props) : null;
+  };
+
+  getMixedWidgets = (field, values) => {
+    const mixedFieldResolver = resolveFunctionForMixedField(field);
+    if (!values) {
+      return null;
+    } else if (List.isList(values)) {
+      return (
+        <ul style={nestedListStyle}>
+          {values.map((value, idx) => {
+            const field = mixedFieldResolver(value);
+            const fields = field.get('fields');
+            return (
+              <li key={idx}>
+                <span>Item {idx + 1} [{field.get('label', field.get('name'))}]:</span> {this.getNestedWidgets(fields, value)}
+              </li>
+            );
+          })}
+        </ul>
+      )
+    } else {
+      const fields = mixedFieldResolver(values).get('fields');
+      return this.getNestedWidgets(fields, values);
+    }
   };
 
   /**
@@ -103,24 +134,46 @@ export default class PreviewPane extends React.Component {
   getNestedWidgets = (fields, values) => {
     // Fields nested within a list field will be paired with a List of value Maps.
     if (List.isList(values)) {
-      return values.map(value => this.widgetsForNestedFields(fields, value));
+      return (
+        <ul style={nestedListStyle}>
+          {values.map((value, idx) => (
+            <li key={idx}>
+              <span>Item {idx + 1}:</span> {this.widgetsForNestedFields(fields, value)}
+            </li>
+          ))}
+        </ul>
+      );
     }
     // Fields nested within an object field will be paired with a single Map of values.
     return this.widgetsForNestedFields(fields, values);
-  };
-
-  getSingleNested = (field, values) => {
-    if (List.isList(values)) {
-      return values.map((value, idx) => this.getWidget(field, value, this.props, idx));
-    }
-    return this.getWidget(field, values, this.props);
   };
 
   /**
    * Use widgetFor as a mapping function for recursive widget retrieval
    */
   widgetsForNestedFields = (fields, values) => {
-    return fields.map(field => this.widgetFor(field.get('name'), fields, values));
+    return (
+      <ul style={nestedListStyle}>
+        {fields.map((field, idx) => (
+          <li key={idx}>{this.widgetFor(field.get('name'), fields, values)}</li>
+        ))}
+      </ul>
+    );
+  };
+
+  getSingleNested = (field, values) => {
+    if (List.isList(values)) {
+      return (
+        <ul style={nestedListStyle}>
+          {values.map((value, idx) => (
+            <li key={idx}>
+              <span>Item {idx + 1}:</span> {this.getWidget(field, value, this.props, idx)}
+            </li>
+          ))}
+        </ul>
+      );
+    }
+    return this.getWidget(field, values, this.props);
   };
 
   /**
@@ -132,11 +185,16 @@ export default class PreviewPane extends React.Component {
   widgetsFor = name => {
     const { fields, entry } = this.props;
     const field = fields.find(f => f.get('name') === name);
-    const nestedFields = field && field.get('fields');
+    const mixedWidgets = field && field.get(TYPES_KEY);
+    const mixedFieldResolver = mixedWidgets && resolveFunctionForMixedField(field);
     const value = entry.getIn(['data', field.get('name')]);
+    let nestedFields = field && field.get('fields');
 
     if (List.isList(value)) {
       return value.map(val => {
+        if (mixedFieldResolver) {
+          nestedFields = mixedFieldResolver(val).get('fields');
+        }
         const widgets =
           nestedFields &&
           Map(
@@ -147,6 +205,10 @@ export default class PreviewPane extends React.Component {
           );
         return Map({ data: val, widgets });
       });
+    }
+
+    if (mixedFieldResolver) {
+      nestedFields = mixedFieldResolver(value).get('fields');
     }
 
     return Map({

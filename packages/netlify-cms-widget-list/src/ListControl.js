@@ -6,6 +6,7 @@ import { List, Map } from 'immutable';
 import { partial } from 'lodash';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 import { ObjectControl } from 'netlify-cms-widget-object';
+import { TYPES_KEY, getTypedFieldForValue, resolveFieldKeyType} from 'netlify-cms-lib-util';
 import {
   ListItemTopBar,
   ObjectWidgetTopBar,
@@ -102,7 +103,7 @@ export default class ListControl extends React.Component {
       return valueTypes.MULTIPLE;
     } else if (field.get('field')) {
       return valueTypes.SINGLE;
-    } else if (field.get('widgets')) {
+    } else if (field.get(TYPES_KEY)) {
       return valueTypes.MIXED;
     } else {
       return null;
@@ -146,12 +147,12 @@ export default class ListControl extends React.Component {
     this.props.setInactiveStyle();
   };
 
-  handleAdd = (e, widget) => {
+  handleAdd = (e, type, typeKey) => {
     e.preventDefault();
     const { value, onChange } = this.props;
     let parsedValue = this.getValueType() === valueTypes.SINGLE ? null : Map();
-    if (this.getValueType() === valueTypes.MIXED && widget) {
-      parsedValue = parsedValue.set('widget', widget)
+    if (this.getValueType() === valueTypes.MIXED && type) {
+      parsedValue = parsedValue.set(typeKey, type)
     }
     this.setState({ itemsCollapsed: this.state.itemsCollapsed.push(false) });
     onChange((value || List()).push(parsedValue));
@@ -215,10 +216,7 @@ export default class ListControl extends React.Component {
   objectLabel(item) {
     const { field } = this.props;
     if (this.getValueType() === valueTypes.MIXED) {
-      const itemWidget = item.get('widget');
-      const widgets = field.get('widgets');
-      const widget = widgets.find(widget =>  widget.get('name') === itemWidget);
-      return widget.get('label', widget.get('name'));
+      return getTypedFieldForValue(field, item).get('label', field.get('name'));
     }
     const multiFields = field.get('fields');
     const singleField = field.get('field');
@@ -251,9 +249,7 @@ export default class ListControl extends React.Component {
     let field = this.props.field;
 
     if (this.getValueType() === valueTypes.MIXED) {
-      const itemWidget = item.get('widget');
-      const widgets = field.get('widgets');
-      field = widgets.find(widget => widget.get('name') === itemWidget);
+      field = getTypedFieldForValue(field, item);
     }
 
     return (
@@ -294,8 +290,8 @@ export default class ListControl extends React.Component {
       <div id={forID} className={cx(classNameWrapper, components.objectWidgetTopBarContainer)}>
         <ObjectWidgetTopBar
           allowAdd={field.get('allow_add', true)}
-          widgets={field.get('widgets', null)}
-          onAdd={this.handleAdd}
+          types={field.get(TYPES_KEY, null)}
+          onAdd={(e, type) => this.handleAdd(e, type, resolveFieldKeyType(field))}
           heading={`${items.size} ${listLabel}`}
           label={labelSingular.toLowerCase()}
           onCollapseToggle={this.handleCollapseAllToggle}
