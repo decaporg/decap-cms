@@ -5,7 +5,7 @@ import styled, { css } from 'react-emotion';
 import { translate } from 'react-polyglot';
 import { NavLink } from 'react-router-dom';
 import { Icon, components, colors, colorsRaw, lengths } from 'netlify-cms-ui-default';
-import { searchCollections } from '../../actions/collections';
+import { searchCollections } from 'Actions/collections';
 
 const styles = {
   sidebarNavLinkActive: css`

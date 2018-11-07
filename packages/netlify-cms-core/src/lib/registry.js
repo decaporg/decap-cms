@@ -1,5 +1,5 @@
 import { Map } from 'immutable';
-import EditorComponent from '../valueObjects/EditorComponent';
+import EditorComponent from 'ValueObjects/EditorComponent';
 
 /**
  * Global Registry Object

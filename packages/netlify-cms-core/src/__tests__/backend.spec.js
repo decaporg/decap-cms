@@ -1,7 +1,7 @@
 import { resolveBackend } from '../backend';
-import registry from '../lib/registry';
+import registry from 'Lib/registry';
 
-jest.mock('../lib/registry');
+jest.mock('Lib/registry');
 
 const configWrapper = inputObject => ({
   get: prop => inputObject[prop],

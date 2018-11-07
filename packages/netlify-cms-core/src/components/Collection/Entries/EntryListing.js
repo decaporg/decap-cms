@@ -5,7 +5,7 @@ import styled from 'react-emotion';
 import Waypoint from 'react-waypoint';
 import { Map } from 'immutable';
 import { Cursor } from 'netlify-cms-lib-util';
-import { selectFields, selectInferedField } from '../../../reducers/collections';
+import { selectFields, selectInferedField } from 'Reducers/collections';
 import EntryCard from './EntryCard';
 
 const CardsGrid = styled.ul`

@@ -1,11 +1,11 @@
 import { Map } from 'immutable';
 import { actions as notifActions } from 'redux-notifications';
-import { currentBackend } from '../backend';
-import { createAssetProxy } from '../valueObjects/AssetProxy';
-import { selectIntegration } from '../reducers';
-import { getIntegrationProvider } from '../integrations';
+import { currentBackend } from 'src/backend';
+import { createAssetProxy } from 'ValueObjects/AssetProxy';
+import { selectIntegration } from 'Reducers';
+import { getIntegrationProvider } from 'Integrations';
 import { addAsset } from './media';
-import { sanitizeSlug } from '../lib/urlHelper';
+import { sanitizeSlug } from 'Lib/urlHelper';
 
 const { notifSend } = notifActions;
 

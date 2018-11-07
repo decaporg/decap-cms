@@ -4,12 +4,12 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from 'react-emotion';
 import { connect } from 'react-redux';
 import { lengths } from 'netlify-cms-ui-default';
-import { getNewEntryUrl } from '../../lib/urlHelper';
+import { getNewEntryUrl } from 'Lib/urlHelper';
 import Sidebar from './Sidebar';
 import CollectionTop from './CollectionTop';
 import EntriesCollection from './Entries/EntriesCollection';
 import EntriesSearch from './Entries/EntriesSearch';
-import { VIEW_STYLE_LIST } from '../../constants/collectionViews';
+import { VIEW_STYLE_LIST } from 'Constants/collectionViews';
 
 const CollectionContainer = styled.div`
   margin: ${lengths.pageMargin};

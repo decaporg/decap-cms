@@ -1,5 +1,5 @@
-import history from '../routing/history';
-import { getCollectionUrl, getNewEntryUrl } from '../lib/urlHelper';
+import history from 'Routing/history';
+import { getCollectionUrl, getNewEntryUrl } from 'Lib/urlHelper';
 
 export function searchCollections(query) {
   history.push(`/search/${query}`);

@@ -1,9 +1,9 @@
 import yaml from 'js-yaml';
 import { Map, fromJS } from 'immutable';
 import { trimStart, get } from 'lodash';
-import { authenticateUser } from './auth';
-import * as publishModes from '../constants/publishModes';
-import { validateConfig } from '../constants/configSchema';
+import { authenticateUser } from 'Actions/auth';
+import * as publishModes from 'Constants/publishModes';
+import { validateConfig } from 'Constants/configSchema';
 
 export const CONFIG_REQUEST = 'CONFIG_REQUEST';
 export const CONFIG_SUCCESS = 'CONFIG_SUCCESS';

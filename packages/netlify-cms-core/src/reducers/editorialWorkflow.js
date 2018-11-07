@@ -1,5 +1,5 @@
 import { Map, List, fromJS } from 'immutable';
-import { EDITORIAL_WORKFLOW } from '../constants/publishModes';
+import { EDITORIAL_WORKFLOW } from 'Constants/publishModes';
 import {
   UNPUBLISHED_ENTRY_REQUEST,
   UNPUBLISHED_ENTRY_REDIRECT,
@@ -15,8 +15,8 @@ import {
   UNPUBLISHED_ENTRY_PUBLISH_SUCCESS,
   UNPUBLISHED_ENTRY_PUBLISH_FAILURE,
   UNPUBLISHED_ENTRY_DELETE_SUCCESS,
-} from '../actions/editorialWorkflow';
-import { CONFIG_SUCCESS } from '../actions/config';
+} from 'Actions/editorialWorkflow';
+import { CONFIG_SUCCESS } from 'Actions/config';
 
 const unpublishedEntries = (state = Map(), action) => {
   switch (action.type) {

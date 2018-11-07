@@ -1,7 +1,7 @@
 import AJV from 'ajv';
 import ajvErrors from 'ajv-errors';
-import { formatExtensions, frontmatterFormats, extensionFormatters } from '../formats/formats';
-import { IDENTIFIER_FIELDS } from './fieldInference';
+import { formatExtensions, frontmatterFormats, extensionFormatters } from 'Formats/formats';
+import { IDENTIFIER_FIELDS } from 'Constants/fieldInference';
 
 /**
  * Config for fields in both file and folder collections.

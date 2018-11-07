@@ -1,5 +1,5 @@
 import Immutable from 'immutable';
-import { authenticating, authenticate, authError, logout } from '../../actions/auth';
+import { authenticating, authenticate, authError, logout } from 'Actions/auth';
 import auth from '../auth';
 
 describe('auth', () => {

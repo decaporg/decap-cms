@@ -7,9 +7,9 @@ import { Cursor } from 'netlify-cms-lib-util';
 import {
   loadEntries as actionLoadEntries,
   traverseCollectionCursor as actionTraverseCollectionCursor,
-} from '../../../actions/entries';
-import { selectEntries } from '../../../reducers';
-import { selectCollectionEntriesCursor } from '../../../reducers/cursors';
+} from 'Actions/entries';
+import { selectEntries } from 'Reducers';
+import { selectCollectionEntriesCursor } from 'Reducers/cursors';
 import Entries from './Entries';
 
 class EntriesCollection extends React.Component {

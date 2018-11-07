@@ -18,7 +18,7 @@ import {
   MEDIA_DISPLAY_URL_REQUEST,
   MEDIA_DISPLAY_URL_SUCCESS,
   MEDIA_DISPLAY_URL_FAILURE,
-} from '../actions/mediaLibrary';
+} from 'Actions/mediaLibrary';
 
 const defaultState = {
   isVisible: false,

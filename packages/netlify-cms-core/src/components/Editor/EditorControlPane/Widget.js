@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Map } from 'immutable';
-import ValidationErrorTypes from '../../../constants/validationErrorTypes';
+import ValidationErrorTypes from 'Constants/validationErrorTypes';
 
 const truthy = () => ({ error: false });
 

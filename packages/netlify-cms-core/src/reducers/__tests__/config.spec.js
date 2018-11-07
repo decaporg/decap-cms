@@ -1,6 +1,6 @@
 import { Map } from 'immutable';
-import { configLoaded, configLoading, configFailed } from '../../actions/config';
-import config from '../../reducers/config';
+import { configLoaded, configLoading, configFailed } from 'Actions/config';
+import config from 'Reducers/config';
 
 describe('config', () => {
   it('should handle an empty state', () => {

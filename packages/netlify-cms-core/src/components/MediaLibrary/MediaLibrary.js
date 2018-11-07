@@ -14,7 +14,7 @@ import {
   insertMedia as insertMediaAction,
   loadMediaDisplayURL as loadMediaDisplayURLAction,
   closeMediaLibrary as closeMediaLibraryAction,
-} from '../../actions/mediaLibrary';
+} from 'Actions/mediaLibrary';
 import MediaLibraryModal from './MediaLibraryModal';
 
 /**

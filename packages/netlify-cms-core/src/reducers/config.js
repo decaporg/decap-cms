@@ -1,5 +1,5 @@
 import { Map } from 'immutable';
-import { CONFIG_REQUEST, CONFIG_SUCCESS, CONFIG_FAILURE, CONFIG_MERGE } from '../actions/config';
+import { CONFIG_REQUEST, CONFIG_SUCCESS, CONFIG_FAILURE, CONFIG_MERGE } from 'Actions/config';
 
 const config = (state = Map({ isFetching: true }), action) => {
   switch (action.type) {

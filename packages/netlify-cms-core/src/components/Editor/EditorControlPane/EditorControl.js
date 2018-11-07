@@ -6,16 +6,16 @@ import styled, { css, cx } from 'react-emotion';
 import { partial, uniqueId } from 'lodash';
 import { connect } from 'react-redux';
 import { colors, colorsRaw, transitions, lengths, borders } from 'netlify-cms-ui-default';
-import { resolveWidget, getEditorComponents } from '../../../lib/registry';
-import { addAsset } from '../../../actions/media';
-import { query, clearSearch } from '../../../actions/search';
+import { resolveWidget, getEditorComponents } from 'Lib/registry';
+import { addAsset } from 'Actions/media';
+import { query, clearSearch } from 'Actions/search';
 import {
   openMediaLibrary,
   removeInsertedMedia,
   clearMediaControl,
   removeMediaControl,
-} from '../../../actions/mediaLibrary';
-import { getAsset } from '../../../reducers';
+} from 'Actions/mediaLibrary';
+import { getAsset } from 'Reducers';
 import Widget from './Widget';
 
 const styles = {

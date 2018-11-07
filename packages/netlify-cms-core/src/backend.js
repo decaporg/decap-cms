@@ -1,8 +1,8 @@
 import { attempt, flatten, isError } from 'lodash';
 import { Map } from 'immutable';
 import fuzzy from 'fuzzy';
-import { resolveFormat } from './formats/formats';
-import { selectIntegration } from './reducers/integrations';
+import { resolveFormat } from 'Formats/formats';
+import { selectIntegration } from 'Reducers/integrations';
 import {
   selectListMethod,
   selectEntrySlug,
@@ -12,12 +12,12 @@ import {
   selectFolderEntryExtension,
   selectIdentifier,
   selectInferedField,
-} from './reducers/collections';
-import { createEntry } from './valueObjects/Entry';
-import { sanitizeSlug } from './lib/urlHelper';
-import { getBackend } from './lib/registry';
+} from 'Reducers/collections';
+import { createEntry } from 'ValueObjects/Entry';
+import { sanitizeSlug } from 'Lib/urlHelper';
+import { getBackend } from 'Lib/registry';
 import { Cursor, CURSOR_COMPATIBILITY_SYMBOL } from 'netlify-cms-lib-util';
-import { EDITORIAL_WORKFLOW, status } from './constants/publishModes';
+import { EDITORIAL_WORKFLOW, status } from 'Constants/publishModes';
 
 class LocalStorageAuthStore {
   storageKey = 'netlify-cms-user';

@@ -1,14 +1,14 @@
 import { fromJS, List, Map } from 'immutable';
 import { actions as notifActions } from 'redux-notifications';
-import { serializeValues } from '../lib/serializeEntryValues';
-import { currentBackend } from '../backend';
-import { getIntegrationProvider } from '../integrations';
-import { getAsset, selectIntegration } from '../reducers';
-import { selectFields } from '../reducers/collections';
-import { selectCollectionEntriesCursor } from '../reducers/cursors';
+import { serializeValues } from 'Lib/serializeEntryValues';
+import { currentBackend } from 'src/backend';
+import { getIntegrationProvider } from 'Integrations';
+import { getAsset, selectIntegration } from 'Reducers';
+import { selectFields } from 'Reducers/collections';
+import { selectCollectionEntriesCursor } from 'Reducers/cursors';
 import { Cursor } from 'netlify-cms-lib-util';
-import { createEntry } from '../valueObjects/Entry';
-import ValidationErrorTypes from '../constants/validationErrorTypes';
+import { createEntry } from 'ValueObjects/Entry';
+import ValidationErrorTypes from 'Constants/validationErrorTypes';
 
 const { notifSend } = notifActions;
 

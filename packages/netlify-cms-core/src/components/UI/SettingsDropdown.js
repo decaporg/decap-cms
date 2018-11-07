@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import styled, { css } from 'react-emotion';
 import { translate } from 'react-polyglot';
 import { Icon, Dropdown, DropdownItem, DropdownButton, colors } from 'netlify-cms-ui-default';
-import { stripProtocol } from '../../lib/urlHelper';
+import { stripProtocol } from 'Lib/urlHelper';
 
 const styles = {
   avatarImage: css`

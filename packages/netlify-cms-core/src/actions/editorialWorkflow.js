@@ -1,14 +1,14 @@
 import uuid from 'uuid/v4';
 import { actions as notifActions } from 'redux-notifications';
 import { BEGIN, COMMIT, REVERT } from 'redux-optimist';
-import { serializeValues } from '../lib/serializeEntryValues';
-import { currentBackend } from '../backend';
-import { getAsset } from '../reducers';
-import { selectFields } from '../reducers/collections';
-import { EDITORIAL_WORKFLOW } from '../constants/publishModes';
+import { serializeValues } from 'Lib/serializeEntryValues';
+import { currentBackend } from 'src/backend';
+import { getAsset } from 'Reducers';
+import { selectFields } from 'Reducers/collections';
+import { EDITORIAL_WORKFLOW } from 'Constants/publishModes';
 import { EditorialWorkflowError } from 'netlify-cms-lib-util';
 import { loadEntry } from './entries';
-import ValidationErrorTypes from '../constants/validationErrorTypes';
+import ValidationErrorTypes from 'Constants/validationErrorTypes';
 
 const { notifSend } = notifActions;
 
