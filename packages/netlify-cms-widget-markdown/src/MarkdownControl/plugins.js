@@ -2,26 +2,29 @@ import { Text, Inline } from 'slate';
 import isHotkey from 'is-hotkey';
 
 const SoftBreak = (options = {}) => ({
-  onKeyDown(event, editor) {
-    if (options.shift && !isHotkey('shift+enter', event)) return;
-    if (!options.shift && !isHotkey('enter', event)) return;
+  onKeyDown(event, editor, next) {
+    if (options.shift && !isHotkey('shift+enter', event)) return next();
+    if (!options.shift && !isHotkey('enter', event)) return next();
 
     const { onlyIn, ignoreIn, defaultBlock = 'paragraph' } = options;
     const { type, text } = editor.value.startBlock;
-    if (onlyIn && !onlyIn.includes(type)) return;
-    if (ignoreIn && ignoreIn.includes(type)) return;
+    if (onlyIn && !onlyIn.includes(type)) return next();
+    if (ignoreIn && ignoreIn.includes(type)) return next();
 
     const shouldClose = text.endsWith('\n');
     if (shouldClose) {
-      return editor.deleteBackward(1).insertBlock(defaultBlock);
+      editor.deleteBackward(1).insertBlock(defaultBlock);
+      return true;
     }
 
     const textNode = Text.create('\n');
     const breakNode = Inline.create({ type: 'break', nodes: [textNode] });
-    return editor
+    editor
       .insertInline(breakNode)
       .insertText('')
       .moveToStartOfNextText();
+
+    return true;
   },
 });
 
@@ -34,12 +37,14 @@ export const SoftBreakConfigured = SoftBreak(SoftBreakOpts);
 export const ParagraphSoftBreakConfigured = SoftBreak({ onlyIn: ['paragraph'], shift: true });
 
 const BreakToDefaultBlock = ({ onlyIn = [], defaultBlock = 'paragraph' }) => ({
-  onKeyDown(event, editor) {
+  onKeyDown(event, editor, next) {
     const { value } = editor;
-    if (!isHotkey('enter', event) || value.isExpanded) return;
+    if (!isHotkey('enter', event) || value.isExpanded) return next();
     if (onlyIn.includes(value.startBlock.type)) {
-      return editor.insertBlock(defaultBlock);
+      editor.insertBlock(defaultBlock);
+      return true;
     }
+    return next();
   },
 });
 
@@ -57,19 +62,22 @@ const BreakToDefaultBlockOpts = {
 export const BreakToDefaultBlockConfigured = BreakToDefaultBlock(BreakToDefaultBlockOpts);
 
 const BackspaceCloseBlock = (options = {}) => ({
-  onKeyDown(event, editor) {
-    if (event.key !== 'Backspace') return;
+  onKeyDown(event, editor, next) {
+    if (event.key !== 'Backspace') return next();
 
     const { defaultBlock = 'paragraph', ignoreIn, onlyIn } = options;
     const { startBlock } = editor.value;
     const { type } = startBlock;
 
-    if (onlyIn && !onlyIn.includes(type)) return;
-    if (ignoreIn && ignoreIn.includes(type)) return;
+    if (onlyIn && !onlyIn.includes(type)) return next();
+    if (ignoreIn && ignoreIn.includes(type)) return next();
 
     if (startBlock.text === '') {
-      return editor.setBlocks(defaultBlock).focus();
+      editor.setBlocks(defaultBlock).focus();
+      return true;
     }
+
+    return next();
   },
 });
 
