@@ -4,6 +4,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Map } from 'immutable';
 import { find } from 'lodash';
 import Select from 'react-select';
+import { colors } from 'netlify-cms-ui-default';
 
 const styles = {
   control: provided => ({
@@ -16,10 +17,14 @@ const styles = {
   menu: provided => ({ ...provided, right: 0 }),
   option: (provided, state) => ({
     ...provided,
-    backgroundColor: state.isSelected ? '#3a69c7' : state.isFocused ? '#e8f5fe' : 'transparent',
+    backgroundColor: state.isSelected
+      ? `${colors.active}`
+      : state.isFocused
+        ? `${colors.activeBackground}`
+        : 'transparent',
   }),
   indicatorSeparator: () => ({ display: 'none' }),
-  dropdownIndicator: provided => ({ ...provided, color: '#7a8291' }),
+  dropdownIndicator: provided => ({ ...provided, color: `${colors.controlLabel}` }),
 };
 
 export default class SelectControl extends React.Component {
