@@ -1,4 +1,4 @@
-import CMS, { init } from 'netlify-cms-core/src';
+import CMS, { init } from 'netlify-cms-core';
 import './backends';
 import './widgets';
 import './editor-components';
