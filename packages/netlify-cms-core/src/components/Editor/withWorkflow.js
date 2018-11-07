@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { EDITORIAL_WORKFLOW } from 'Constants/publishModes';
-import { selectUnpublishedEntry } from 'Reducers';
+import { selectUnpublishedEntry } from 'Reducers/index';
 import { selectAllowDeletion } from 'Reducers/collections';
 import { loadUnpublishedEntry, persistUnpublishedEntry } from 'Actions/editorialWorkflow';
 

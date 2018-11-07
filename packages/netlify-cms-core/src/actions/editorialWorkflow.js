@@ -3,7 +3,7 @@ import { actions as notifActions } from 'redux-notifications';
 import { BEGIN, COMMIT, REVERT } from 'redux-optimist';
 import { serializeValues } from 'Lib/serializeEntryValues';
 import { currentBackend } from 'src/backend';
-import { getAsset } from 'Reducers';
+import { getAsset } from 'Reducers/index';
 import { selectFields } from 'Reducers/collections';
 import { EDITORIAL_WORKFLOW } from 'Constants/publishModes';
 import { EditorialWorkflowError } from 'netlify-cms-lib-util';

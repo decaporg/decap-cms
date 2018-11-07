@@ -21,7 +21,7 @@ import {
   publishUnpublishedEntry,
   deleteUnpublishedEntry,
 } from 'Actions/editorialWorkflow';
-import { selectUnpublishedEntriesByStatus } from 'Reducers';
+import { selectUnpublishedEntriesByStatus } from 'Reducers/index';
 import { EDITORIAL_WORKFLOW, status } from 'Constants/publishModes';
 import WorkflowList from './WorkflowList';
 

@@ -1,8 +1,8 @@
 import { resolvePath } from 'netlify-cms-lib-util';
 import { currentBackend } from 'src/backend';
-import store from 'Redux';
-import { getIntegrationProvider } from 'Integrations';
-import { selectIntegration } from 'Reducers';
+import store from 'Redux/index';
+import { getIntegrationProvider } from 'Integrations/index';
+import { selectIntegration } from 'Reducers/index';
 
 export default function AssetProxy(value, fileObj, uploaded = false, asset) {
   const config = store.getState().config;

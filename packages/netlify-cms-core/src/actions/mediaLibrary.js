@@ -2,8 +2,8 @@ import { Map } from 'immutable';
 import { actions as notifActions } from 'redux-notifications';
 import { currentBackend } from 'src/backend';
 import { createAssetProxy } from 'ValueObjects/AssetProxy';
-import { selectIntegration } from 'Reducers';
-import { getIntegrationProvider } from 'Integrations';
+import { selectIntegration } from 'Reducers/index';
+import { getIntegrationProvider } from 'Integrations/index';
 import { addAsset } from './media';
 import { sanitizeSlug } from 'Lib/urlHelper';
 

@@ -23,7 +23,7 @@ import {
   deleteUnpublishedEntry,
 } from 'Actions/editorialWorkflow';
 import { deserializeValues } from 'Lib/serializeEntryValues';
-import { selectEntry, selectUnpublishedEntry, getAsset } from 'Reducers';
+import { selectEntry, selectUnpublishedEntry, getAsset } from 'Reducers/index';
 import { selectFields } from 'Reducers/collections';
 import { status } from 'Constants/publishModes';
 import { EDITORIAL_WORKFLOW } from 'Constants/publishModes';

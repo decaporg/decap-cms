@@ -8,7 +8,7 @@ import {
   loadEntries as actionLoadEntries,
   traverseCollectionCursor as actionTraverseCollectionCursor,
 } from 'Actions/entries';
-import { selectEntries } from 'Reducers';
+import { selectEntries } from 'Reducers/index';
 import { selectCollectionEntriesCursor } from 'Reducers/cursors';
 import Entries from './Entries';
 

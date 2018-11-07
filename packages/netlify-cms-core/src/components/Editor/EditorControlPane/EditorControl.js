@@ -15,7 +15,7 @@ import {
   clearMediaControl,
   removeMediaControl,
 } from 'Actions/mediaLibrary';
-import { getAsset } from 'Reducers';
+import { getAsset } from 'Reducers/index';
 import Widget from './Widget';
 
 const styles = {

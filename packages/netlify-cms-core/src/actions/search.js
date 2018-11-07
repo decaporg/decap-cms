@@ -1,6 +1,6 @@
 import { currentBackend } from 'src/backend';
-import { getIntegrationProvider } from 'Integrations';
-import { selectIntegration } from 'Reducers';
+import { getIntegrationProvider } from 'Integrations/index';
+import { selectIntegration } from 'Reducers/index';
 
 /*
  * Contant Declarations
