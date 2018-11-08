@@ -14,3 +14,4 @@ Example | Tools | Type | Source | More info |
 [Bael](https://bael-theme.jake101.com/) | Vue, Nuxt | blog | [jake-101/bael-template](https://github.com/jake-101/bael-template) | [blog post](https://bael-theme.jake101.com/blog/2018-06-19-top-10-reasons-why)
 [Forest Garden Wales](https://www.forestgarden.wales/) | Hugo | blog | [forestgardenwales/forestgarden.wales](https://github.com/forestgardenwales/forestgarden.wales) | [blog post](https://www.forestgarden.wales/blog/now-using-netlify-cms/)
 [Jekyll Demo](https://jekyll-netlifycms.netlify.com/) | Jekyll, Gulp | demo | [NickStees/jekyll-cms](https://github.com/NickStees/jekyll-cms) | [read me](https://github.com/NickStees/jekyll-cms)
+[Eleventy Starter Project](https://eleventy-netlify-boilerplate.netlify.com/) | Eleventy | demo | [danurbanowicz/eleventy-netlify-boilerplate](https://github.com/danurbanowicz/eleventy-netlify-boilerplate) | [read me](https://github.com/danurbanowicz/eleventy-netlify-boilerplate)
