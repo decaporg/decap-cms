@@ -12,10 +12,10 @@ export function getTypedFieldForValue(field, value) {
 export function resolveFunctionForMixedField(field) {
   const typeKey = resolveFieldKeyType(field);
   const types = field.get(TYPES_KEY);
-  return (value) => {
+  return value => {
     const valueType = value.get(typeKey);
     return types.find(type => type.get('name') === valueType);
-  }
+  };
 }
 
 export function resolveFieldKeyType(field) {

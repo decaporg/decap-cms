@@ -6,7 +6,7 @@ import { List, Map } from 'immutable';
 import { partial } from 'lodash';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 import { ObjectControl } from 'netlify-cms-widget-object';
-import { TYPES_KEY, getTypedFieldForValue, resolveFieldKeyType} from 'netlify-cms-lib-util';
+import { TYPES_KEY, getTypedFieldForValue, resolveFieldKeyType } from 'netlify-cms-lib-util';
 import {
   ListItemTopBar,
   ObjectWidgetTopBar,
@@ -58,7 +58,7 @@ const SortableList = SortableContainer(({ items, renderItem }) => {
 const valueTypes = {
   SINGLE: 'SINGLE',
   MULTIPLE: 'MULTIPLE',
-  MIXED: 'MIXED'
+  MIXED: 'MIXED',
 };
 
 export default class ListControl extends React.Component {
@@ -152,7 +152,7 @@ export default class ListControl extends React.Component {
     const { value, onChange } = this.props;
     let parsedValue = this.getValueType() === valueTypes.SINGLE ? null : Map();
     if (this.getValueType() === valueTypes.MIXED && type) {
-      parsedValue = parsedValue.set(typeKey, type)
+      parsedValue = parsedValue.set(typeKey, type);
     }
     this.setState({ itemsCollapsed: this.state.itemsCollapsed.push(false) });
     onChange((value || List()).push(parsedValue));

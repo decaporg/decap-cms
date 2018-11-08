@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import styled, { css } from 'react-emotion';
 import Icon from './Icon';
 import { colors, buttons } from './styles';
-import ImmutablePropTypes from "react-immutable-proptypes";
+import ImmutablePropTypes from 'react-immutable-proptypes';
 
 const TopBarContainer = styled.div`
   align-items: center;
@@ -78,15 +78,15 @@ class ObjectWidgetTopBar extends React.Component {
     }
 
     this.state = {
-      type: type
+      type: type,
     };
   }
 
-  handleWidgetChange = (event) => {
-    this.setState({type: event.target.value});
+  handleWidgetChange = event => {
+    this.setState({ type: event.target.value });
   };
 
-  handleAdd = (e) => {
+  handleAdd = e => {
     this.props.onAdd(e, this.state.type);
   };
 
@@ -104,8 +104,16 @@ class ObjectWidgetTopBar extends React.Component {
     if (types && types.size > 0) {
       return (
         <AddItem>
-          <select value={this.state.type} style={{marginRight: 10}} onChange={this.handleWidgetChange}>
-            {types.map((type, idx) => <option key={idx} value={type.get('name')}>{type.get('label', type.get('name'))}</option>)}
+          <select
+            value={this.state.type}
+            style={{ marginRight: 10 }}
+            onChange={this.handleWidgetChange}
+          >
+            {types.map((type, idx) => (
+              <option key={idx} value={type.get('name')}>
+                {type.get('label', type.get('name'))}
+              </option>
+            ))}
           </select>
           {addButton}
         </AddItem>
@@ -116,11 +124,7 @@ class ObjectWidgetTopBar extends React.Component {
   }
 
   render() {
-    const {
-      onCollapseToggle,
-      collapsed,
-      heading = null,
-    } = this.props;
+    const { onCollapseToggle, collapsed, heading = null } = this.props;
 
     return (
       <TopBarContainer>

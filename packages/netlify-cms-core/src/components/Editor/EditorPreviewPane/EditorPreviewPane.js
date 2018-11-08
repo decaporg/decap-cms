@@ -24,7 +24,7 @@ const PreviewPaneFrame = styled(Frame)`
 
 const nestedListStyle = {
   marginTop: 0,
-  paddingLeft: '2em'
+  paddingLeft: '2em',
 };
 
 export default class PreviewPane extends React.Component {
@@ -96,7 +96,12 @@ export default class PreviewPane extends React.Component {
     } else if (labelledWidgets.indexOf(field.get('widget')) !== -1) {
       value = (
         <div>
-          <strong>{field.get('label', field.get('name'))}:</strong> {value && value.toString().length < 50 ? value : <span style={{color: '#666666'}}>{'undefined'}</span>}
+          <strong>{field.get('label', field.get('name'))}:</strong>{' '}
+          {value && value.toString().length < 50 ? (
+            value
+          ) : (
+            <span style={{ color: '#666666' }}>{'undefined'}</span>
+          )}
         </div>
       );
     }
@@ -116,12 +121,13 @@ export default class PreviewPane extends React.Component {
             const fields = field.get('fields');
             return (
               <li key={idx}>
-                <span>Item {idx + 1} [{field.get('label', field.get('name'))}]:</span> {this.getNestedWidgets(fields, value)}
+                <span>{`Item ${idx + 1} [${field.get('label', field.get('name'))}]:`}</span>{' '}
+                {this.getNestedWidgets(fields, value)}
               </li>
             );
           })}
         </ul>
-      )
+      );
     } else {
       const fields = mixedFieldResolver(values).get('fields');
       return this.getNestedWidgets(fields, values);
