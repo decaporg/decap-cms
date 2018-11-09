@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 const UnknownPreview = ({ field, t }) => {
   return (
     <div className="nc-widgetPreview">
-      {t('editor.editorWidgets.unknownPreview.noPreview', field.get('widget'))}
+      {t('editor.editorWidgets.unknownPreview.noPreview', { widget: field.get('widget') })}
     </div>
   );
 };
