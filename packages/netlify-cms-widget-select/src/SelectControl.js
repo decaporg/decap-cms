@@ -11,10 +11,7 @@ const styles = {
     ...provided,
     border: 0,
     boxShadow: 'none',
-    minHeight: '22px',
-    height: '22px',
   }),
-  menu: provided => ({ ...provided, right: 0 }),
   option: (provided, state) => ({
     ...provided,
     backgroundColor: state.isSelected
@@ -22,7 +19,10 @@ const styles = {
       : state.isFocused
         ? `${colors.activeBackground}`
         : 'transparent',
+    paddingLeft: '22px',
   }),
+  menu: provided => ({ ...provided, right: 0 }),
+  container: provided => ({ ...provided, padding: '8px 0 8px 12px !important' }),
   indicatorSeparator: () => ({ display: 'none' }),
   dropdownIndicator: provided => ({ ...provided, color: `${colors.controlLabel}` }),
 };
