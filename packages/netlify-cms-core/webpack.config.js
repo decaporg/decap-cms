@@ -18,7 +18,7 @@ module.exports = {
         .map(([, rule]) => rule()),
       {
         test: /\.js$/,
-        exclude: /node_modules/,
+        include: path.join(__dirname, 'src'),
         use: {
           loader: 'babel-loader',
           options: {

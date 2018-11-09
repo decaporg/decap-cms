@@ -1,14 +1,15 @@
 const path = require('path');
 const webpack = require('webpack');
 const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
-const pkg = require(path.join(process.cwd(), 'package.json'));
+const modulePath = process.cwd();
+const pkg = require(path.join(modulePath, 'package.json'));
 
 const isProduction = process.env.NODE_ENV === 'production';
 
 const rules = () => ({
   js: () => ({
     test: /\.js$/,
-    exclude: /node_modules/,
+    include: path.resolve(`${modulePath}/src`),
     use: {
       loader: 'babel-loader',
       options: {
