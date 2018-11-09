@@ -185,6 +185,7 @@ class Backend {
 
   processEntries(loadedEntries, collection) {
     const collectionFilter = collection.get('filter');
+    const reverseOrder = collection.get('reverse');
     const entries = loadedEntries.map(loadedEntry =>
       createEntry(
         collection.get('name'),
@@ -193,11 +194,14 @@ class Backend {
         { raw: loadedEntry.data || '', label: loadedEntry.file.label },
       ),
     );
-    const formattedEntries = entries.map(this.entryWithFormat(collection));
+    const formattedEntries = reverseOrder
+      ? Array.reverse(entries.map(this.entryWithFormat(collection)))
+      : entries.map(this.entryWithFormat(collection));
     // If this collection has a "filter" property, filter entries accordingly
     const filteredEntries = collectionFilter
       ? this.filterEntries({ entries: formattedEntries }, collectionFilter)
       : formattedEntries;
+
     return filteredEntries;
   }
 
