@@ -67,7 +67,7 @@ class App extends React.Component {
     t: PropTypes.func.isRequired,
   };
 
-  static configError(config) {
+  configError(config) {
     const t = this.props.t;
     return (
       <ErrorContainer>
@@ -145,7 +145,7 @@ class App extends React.Component {
     }
 
     if (config.get('error')) {
-      return App.configError(config);
+      return this.configError(config);
     }
 
     if (config.get('isFetching')) {
