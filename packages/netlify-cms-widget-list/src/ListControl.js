@@ -6,7 +6,12 @@ import { List, Map } from 'immutable';
 import { partial } from 'lodash';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 import { ObjectControl } from 'netlify-cms-widget-object';
-import { TYPES_KEY, getTypedFieldForValue, resolveFieldKeyType } from 'netlify-cms-lib-util';
+import {
+  TYPES_KEY,
+  getTypedFieldForValue,
+  resolveFieldKeyType,
+  getErrorMessageForTypedFieldAndValue,
+} from 'netlify-cms-lib-util';
 import {
   ListItemTopBar,
   ObjectWidgetTopBar,
@@ -30,6 +35,7 @@ const StyledListItemTopBar = styled(ListItemTopBar)`
 const NestedObjectLabel = styled.div`
   display: ${props => (props.collapsed ? 'block' : 'none')};
   border-top: 0;
+  color: ${props => (props.error ? colors.errorText : 'inherit')};
   background-color: ${colors.textFieldBorder};
   padding: 13px;
   border-radius: 0 0 ${lengths.borderRadius} ${lengths.borderRadius};
@@ -250,6 +256,9 @@ export default class ListControl extends React.Component {
 
     if (this.getValueType() === valueTypes.MIXED) {
       field = getTypedFieldForValue(field, item);
+      if (!field) {
+        return this.renderErroneousTypedItem(index, item);
+      }
     }
 
     return (
@@ -277,6 +286,27 @@ export default class ListControl extends React.Component {
       </SortableListItem>
     );
   };
+
+  renderErroneousTypedItem(index, item) {
+    const field = this.props.field;
+    const errorMessage = getErrorMessageForTypedFieldAndValue(field, item);
+    return (
+      <SortableListItem
+        className={cx(styles.listControlItem, styles.listControlItemCollapsed)}
+        index={index}
+        key={`item-${index}`}
+      >
+        <StyledListItemTopBar
+          onCollapseToggle={null}
+          onRemove={partial(this.handleRemove, index)}
+          dragHandleHOC={SortableHandle}
+        />
+        <NestedObjectLabel collapsed={true} error={true}>
+          {errorMessage}
+        </NestedObjectLabel>
+      </SortableListItem>
+    );
+  }
 
   renderListControl() {
     const { value, forID, field, classNameWrapper } = this.props;

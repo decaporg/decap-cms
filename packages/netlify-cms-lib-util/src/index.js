@@ -12,6 +12,7 @@ export {
   TYPE_KEY,
   DEFAULT_TYPE_KEY,
   getTypedFieldForValue,
-  resolveFunctionForMixedField,
+  resolveFunctionForTypedField,
   resolveFieldKeyType,
-} from './mixedWidget';
+  getErrorMessageForTypedFieldAndValue,
+} from './typedList';
