@@ -9,11 +9,11 @@ const image = {
       alt: match[1],
       title: match[4],
     },
-  toBlock: ({ alt = '', image = '', title }) =>
-    `![${alt}](${image}${title ? ` "${title.replace(/"/g, '\\"')}"` : ''})`,
+  toBlock: ({ alt, image, title }) =>
+    `![${alt || ''}](${image || ''}${title ? ` "${title.replace(/"/g, '\\"')}"` : ''})`,
   // eslint-disable-next-line react/display-name
-  toPreview: ({ alt = '', image, title = '' }, getAsset) => (
-    <img src={getAsset(image) || ''} alt={alt} title={title} />
+  toPreview: ({ alt, image, title }, getAsset) => (
+    <img src={getAsset(image) || ''} alt={alt || ''} title={title || ''} />
   ),
   pattern: /^!\[(.*)\]\((.*?)(\s"(.*)")?\)$/,
   fields: [
