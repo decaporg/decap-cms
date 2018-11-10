@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="2.1.0"></a>
+# [2.1.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/compare/netlify-cms-lib-util@2.0.5...netlify-cms-lib-util@2.1.0) (2018-09-06)
+
+
+### Bug Fixes
+
+* remove alert modal from localForage error case ([#1676](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/issues/1676)) ([4f3116d](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/commit/4f3116d))
+
+
+### Features
+
+* **media:** add external media library support, Uploadcare integration ([#1602](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/issues/1602)) ([0596904](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/commit/0596904))
+
+
+
+
 <a name="2.0.5"></a>
 ## [2.0.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/compare/netlify-cms-lib-util@2.0.4...netlify-cms-lib-util@2.0.5) (2018-08-24)
 

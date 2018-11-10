@@ -1,6 +1,7 @@
 import React from 'react';
 import Helmet from 'react-helmet';
 import { graphql } from 'gatsby';
+import 'prismjs/themes/prism-tomorrow.css';
 
 import Layout from '../components/layout';
 import EditLink from '../components/edit-link';
@@ -12,24 +13,58 @@ import '../css/imports/docs.css';
 const DocPage = ({ data, location }) => {
   const { page } = data;
 
+const DocsSidebar = ({ docsNav, location, history }) => (
+  <aside id="sidebar" className="sidebar">
+    <DocsNav items={docsNav} location={location} />
+    <MobileNav items={docsNav} history={history} />
+  </aside>
+);
+
+export const DocsTemplate = ({
+  title,
+  editLinkPath,
+  body,
+  html,
+  showWidgets,
+  widgets,
+  showSidebar,
+  docsNav,
+  location,
+  history,
+}) => (
+  <div className="docs detail page">
+    <div className="container">
+      {showSidebar && <DocsSidebar docsNav={docsNav} location={location} history={history} />}
+      <article className="docs-content" id="docs-content">
+        {editLinkPath && <EditLink path={editLinkPath} />}
+        <h1>{title}</h1>
+        {body ? body : <div dangerouslySetInnerHTML={{ __html: html }} />}
+        {showWidgets && <Widgets widgets={widgets} />}
+      </article>
+    </div>
+  </div>
+);
+
+const DocPage = ({ data, location, history }) => {
+  const { nav, page, widgets, menu } = data;
+
+  const docsNav = toMenu(menu.siteMetadata.menu.docs, nav);
   const showWidgets = location.pathname.indexOf('/docs/widgets') !== -1;
 
   return (
     <Layout>
-      <div className="page page-docs">
-        <Helmet title={page.frontmatter.title} />
-        <div className="container">
-          <aside id="sidebar" className="page-sidebar">
-            <DocsNav location={location} />
-          </aside>
-          <article className="page-content docs-content" id="docs-content">
-            <EditLink path={page.fields.path} />
-            <h1>{page.frontmatter.title}</h1>
-            <div className="typography" dangerouslySetInnerHTML={{ __html: page.html }} />
-            {showWidgets && <Widgets />}
-          </article>
-        </div>
-      </div>
+      <Helmet title={page.frontmatter.title} />
+      <DocsTemplate
+        title={page.frontmatter.title}
+        editLinkPath={page.fields.path}
+        html={page.html}
+        showWidgets={showWidgets}
+        widgets={widgets}
+        docsNav={docsNav}
+        location={location}
+        history={history}
+        showSidebar
+      />
     </Layout>
   );
 };
@@ -44,6 +79,53 @@ export const pageQuery = graphql`
         title
       }
       html
+    }
+    nav: allMarkdownRemark(
+      sort: { fields: [frontmatter___weight], order: ASC }
+      filter: {
+        frontmatter: { title: { ne: null }, group: { ne: null } }
+        fields: { slug: { regex: "/docs/" } }
+      }
+    ) {
+      group(field: frontmatter___group) {
+        fieldValue
+        edges {
+          node {
+            fields {
+              slug
+            }
+            frontmatter {
+              title
+              group
+            }
+            tableOfContents
+          }
+        }
+      }
+    }
+    menu: site {
+      siteMetadata {
+        menu {
+          docs {
+            name
+            title
+          }
+        }
+      }
+    }
+    widgets: allMarkdownRemark(
+      sort: { fields: [frontmatter___label], order: ASC }
+      filter: { frontmatter: { label: { ne: null } }, fields: { slug: { regex: "/widgets/" } } }
+    ) {
+      edges {
+        node {
+          frontmatter {
+            title
+            label
+          }
+          html
+        }
+      }
     }
   }
 `;

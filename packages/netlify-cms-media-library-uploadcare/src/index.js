@@ -1,4 +1,5 @@
 import { loadScript } from 'netlify-cms-lib-util';
+import { Iterable } from 'immutable';
 
 /**
  * Default Uploadcare widget configuration, can be overriden via config.yml.
@@ -44,7 +45,7 @@ function getFileGroup(files) {
  * because the value we're returning may be a promise that we created.
  */
 function getFiles(value, cdnBase) {
-  if (typeof value === 'object') {
+  if (Array.isArray(value) || Iterable.isIterable(value)) {
     const arr = Array.isArray(value) ? value : value.toJS();
     return isFileGroup(arr) ? getFileGroup(arr) : arr.map(val => getFile(val, cdnBase));
   }

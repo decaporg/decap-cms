@@ -1,9 +1,8 @@
 ---
 title: Collection Types
-weight: 27
 group: start
+weight: 27
 ---
-
 All editable content types are defined in the `collections` field of your `config.yml` file, and display in the left sidebar of the Content page of the editor UI.
 
 Collections come in two main types: `folder` and `files`.
@@ -14,7 +13,7 @@ Folder collections represent one or more files with the same format, fields, and
 
 Unlike file collections, folder collections have the option to allow editors to create new items in the collection. This is set by the boolean `create` field.
 
-**Note:** Folder collections must have at least one field with the name `title` for creating new entry slugs. That field should use the default `string` widget. The `label` for the field can be any string value. See the [Collections reference doc](../configuration-options/#collections) for details on how collections and fields are configured.
+**Note:** Folder collections must have at least one field with the name `title` for creating new entry slugs. That field should use the default `string` widget. The `label` for the field can be any string value. See the [Collections reference doc](../configuration-options/#collections) for details on how collections and fields are configured. If you forget to add this field, you will get an error that your collection "must have a field that is a valid entry identifier".
 
 Example:
 

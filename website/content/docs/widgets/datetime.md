@@ -1,6 +1,6 @@
 ---
+title: datetime
 label: "DateTime"
-target: datetime
 ---
 
 The datetime widget translates a datetime picker to a datetime string. For saving the date only, use the date widget.

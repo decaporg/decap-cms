@@ -181,7 +181,7 @@ export default class ListControl extends React.Component {
     const { itemsCollapsed } = this.state;
     const { value, metadata, onChange, field } = this.props;
     const collectionName = field.get('name');
-    const isSingleField = this.valueType === valueTypes.SINGLE;
+    const isSingleField = this.getValueType() === valueTypes.SINGLE;
 
     const metadataRemovePath = isSingleField ? value.get(index) : value.get(index).valueSeq();
     const parsedMetadata = metadata && { [collectionName]: metadata.removeIn(metadataRemovePath) };
@@ -277,7 +277,7 @@ export default class ListControl extends React.Component {
           allowAdd={field.get('allow_add', true)}
           onAdd={this.handleAdd}
           heading={`${items.size} ${listLabel}`}
-          label={listLabel}
+          label={labelSingular.toLowerCase()}
           onCollapseToggle={this.handleCollapseAllToggle}
           collapsed={itemsCollapsed.every(val => val === true)}
         />
