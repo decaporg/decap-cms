@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
+import WidgetDoc from './widget-doc';
 
 import '../css/imports/widgets.css';
 
@@ -13,7 +14,7 @@ class Widgets extends Component {
 
     const hash = window.location.hash ? window.location.hash.replace('#', '') : '';
 
-    const widgetsContainHash = widgets.edges.some(w => w.node.frontmatter.target === hash);
+    const widgetsContainHash = widgets.edges.some(w => w.node.frontmatter.title === hash);
 
     if (widgetsContainHash) {
       return this.setState({
@@ -22,18 +23,18 @@ class Widgets extends Component {
     }
 
     this.setState({
-      currentWidget: widgets.edges[0].node.frontmatter.target,
+      currentWidget: widgets.edges[0].node.frontmatter.title,
     });
   }
 
-  handleWidgetChange = (event, target) => {
+  handleWidgetChange = (event, title) => {
     event.preventDefault();
     this.setState(
       {
-        currentWidget: target,
+        currentWidget: title,
       },
       () => {
-        window.history.pushState(null, null, `#${target}`);
+        window.history.pushState(null, null, `#${title}`);
       },
     );
   };
@@ -47,14 +48,14 @@ class Widgets extends Component {
         <section className="widgets">
           <div className="widgets__cloud">
             {widgets.edges.map(({ node }) => {
-              const { label, target } = node.frontmatter;
+              const { label, title } = node.frontmatter;
               return (
                 <button
-                  key={target}
+                  key={title}
                   className={classnames('widgets__item', {
-                    widgets__item_active: currentWidget === target,
+                    widgets__item_active: currentWidget === title,
                   })}
-                  onClick={event => this.handleWidgetChange(event, target)}
+                  onClick={event => this.handleWidgetChange(event, title)}
                 >
                   {label}
                 </button>
@@ -63,18 +64,10 @@ class Widgets extends Component {
           </div>
           <div className="widgets__container">
             {widgets.edges.map(({ node }) => {
-              const { label, target } = node.frontmatter;
-              return (
-                <div
-                  key={label}
-                  className={classnames('widget', {
-                    widget_open: currentWidget === target,
-                  })}
-                >
-                  <h3>{label}</h3>
-                  <div dangerouslySetInnerHTML={{ __html: node.html }} />
-                </div>
-              );
+              const { frontmatter, html } = node;
+              const { title, label } = frontmatter;
+              const isVisible = currentWidget === title;
+              return <WidgetDoc key={label} visible={isVisible} label={label} html={html} />;
             })}
           </div>
         </section>

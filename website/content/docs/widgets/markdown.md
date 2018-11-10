@@ -1,6 +1,6 @@
 ---
 label: "Markdown"
-target: markdown
+title: markdown
 ---
 
 The markdown widget provides a full fledged text editor - which is based on [slate](https://github.com/ianstormtaylor/slate) - that allows users to format text with features such as headings and blockquotes. Users are also allowed to write in markdown by simply flipping a switch.

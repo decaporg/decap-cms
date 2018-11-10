@@ -1,6 +1,6 @@
 ---
 label: "Number"
-target: number
+title: number
 ---
 
 The number widget uses an HTML number input, saving the value as a string, integer, or floating point number.

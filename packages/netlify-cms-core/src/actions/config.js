@@ -56,10 +56,10 @@ function parseConfig(data) {
 }
 
 async function getConfig(file, isPreloaded) {
-  const response = await fetch(file, { credentials: 'same-origin' });
-  if (response.status !== 200) {
+  const response = await fetch(file, { credentials: 'same-origin' }).catch(err => err);
+  if (response instanceof Error || response.status !== 200) {
     if (isPreloaded) return parseConfig('');
-    throw new Error(`Failed to load config.yml (${response.status})`);
+    throw new Error(`Failed to load config.yml (${response.status || response})`);
   }
   const contentType = response.headers.get('Content-Type') || 'Not-Found';
   const isYaml = contentType.indexOf('yaml') !== -1;

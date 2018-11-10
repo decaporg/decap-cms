@@ -1,6 +1,6 @@
 ---
+title: boolean
 label: "Boolean"
-target: boolean
 ---
 
 The boolean widget translates a toggle switch input to a true/false value.
