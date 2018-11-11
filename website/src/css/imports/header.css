@@ -133,8 +133,11 @@ header {
       display: inline-block;
       margin-left: $small;
       vertical-align: middle;
+      position: relative;
+      top: 2px;
       @media screen and (max-width: $mobile) {
         margin-top: $tiny;
+        top: 0;
       }
     }
   }

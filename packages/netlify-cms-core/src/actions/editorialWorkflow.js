@@ -244,7 +244,10 @@ export function loadUnpublishedEntry(collection, slug) {
         } else {
           dispatch(
             notifSend({
-              message: `Error loading entry: ${error}`,
+              message: {
+                key: 'ui.toast.onFailToLoadEntries',
+                details: error,
+              },
               kind: 'danger',
               dismissAfter: 8000,
             }),
@@ -266,7 +269,10 @@ export function loadUnpublishedEntries(collections) {
       .catch(error => {
         dispatch(
           notifSend({
-            message: `Error loading entries: ${error}`,
+            message: {
+              key: 'ui.toast.onFailToLoadEntries',
+              details: error,
+            },
             kind: 'danger',
             dismissAfter: 8000,
           }),
@@ -292,7 +298,9 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
       if (hasPresenceErrors) {
         dispatch(
           notifSend({
-            message: "Oops, you've missed a required field. Please complete before saving.",
+            message: {
+              key: 'ui.toast.missingRequiredField',
+            },
             kind: 'danger',
             dismissAfter: 8000,
           }),
@@ -332,7 +340,9 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
       const newSlug = await persistAction.call(...persistCallArgs);
       dispatch(
         notifSend({
-          message: 'Entry saved',
+          message: {
+            key: 'ui.toast.entrySaved',
+          },
           kind: 'success',
           dismissAfter: 4000,
         }),
@@ -341,7 +351,10 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
     } catch (error) {
       dispatch(
         notifSend({
-          message: `Failed to persist entry: ${error}`,
+          message: {
+            key: 'ui.toast.onFailToPersist',
+            details: error,
+          },
           kind: 'danger',
           dismissAfter: 8000,
         }),
@@ -364,7 +377,9 @@ export function updateUnpublishedEntryStatus(collection, slug, oldStatus, newSta
       .then(() => {
         dispatch(
           notifSend({
-            message: 'Entry status updated',
+            message: {
+              key: 'ui.toast.entryUpdated',
+            },
             kind: 'success',
             dismissAfter: 4000,
           }),
@@ -382,7 +397,10 @@ export function updateUnpublishedEntryStatus(collection, slug, oldStatus, newSta
       .catch(error => {
         dispatch(
           notifSend({
-            message: `Failed to update status: ${error}`,
+            message: {
+              key: 'ui.toast.onFailToUpdateStatus',
+              details: error,
+            },
             kind: 'danger',
             dismissAfter: 8000,
           }),
@@ -403,7 +421,7 @@ export function deleteUnpublishedEntry(collection, slug) {
       .then(() => {
         dispatch(
           notifSend({
-            message: 'Unpublished changes deleted',
+            message: { key: 'ui.toast.onDeleteUnpublishedChanges' },
             kind: 'success',
             dismissAfter: 4000,
           }),
@@ -413,7 +431,7 @@ export function deleteUnpublishedEntry(collection, slug) {
       .catch(error => {
         dispatch(
           notifSend({
-            message: `Failed to delete unpublished changes: ${error}`,
+            message: { key: 'ui.toast.onDeleteUnpublishedChanges', details: error },
             kind: 'danger',
             dismissAfter: 8000,
           }),
@@ -434,7 +452,7 @@ export function publishUnpublishedEntry(collection, slug) {
       .then(() => {
         dispatch(
           notifSend({
-            message: 'Entry published',
+            message: { key: 'ui.toast.entryPublished' },
             kind: 'success',
             dismissAfter: 4000,
           }),
@@ -444,7 +462,7 @@ export function publishUnpublishedEntry(collection, slug) {
       .catch(error => {
         dispatch(
           notifSend({
-            message: `Failed to publish: ${error}`,
+            message: { key: 'ui.toast.onFailToPublishEntry', details: error },
             kind: 'danger',
             dismissAfter: 8000,
           }),

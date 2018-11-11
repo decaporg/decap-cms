@@ -46,7 +46,14 @@ export default class API {
     ])(req);
 
   user = () => this.request('/user');
-  hasWriteAccess = () => this.request(this.repoURL).then(res => res.ok);
+
+  hasWriteAccess = async () => {
+    const response = await this.request(this.repoURL);
+    if (response.status === 404) {
+      throw Error('Repo not found');
+    }
+    return response.ok;
+  };
 
   isFile = ({ type }) => type === 'commit_file';
   processFile = file => ({

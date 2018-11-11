@@ -36,6 +36,7 @@ const getConfigSchema = () => ({
       required: ['name'],
     },
     display_url: { type: 'string', examples: ['https://example.com'] },
+    logo_url: { type: 'string', examples: ['https://example.com/images/logo.svg'] },
     media_folder: { type: 'string', examples: ['assets/uploads'] },
     public_folder: { type: 'string', examples: ['/uploads'] },
     media_library: {
@@ -126,7 +127,7 @@ const getConfigSchema = () => ({
               fields: {
                 contains: {
                   properties: {
-                    name: { enum: IDENTIFIER_FIELDS },
+                    name: { enum: [{ $data: '3/identifier_field' }, ...IDENTIFIER_FIELDS] },
                   },
                 },
               },
@@ -169,7 +170,7 @@ class ConfigError extends Error {
  * the config that is passed in.
  */
 export function validateConfig(config) {
-  const ajv = new AJV({ allErrors: true, jsonPointers: true });
+  const ajv = new AJV({ allErrors: true, jsonPointers: true, $data: true });
   ajvErrors(ajv);
 
   const valid = ajv.validate(getConfigSchema(), config);

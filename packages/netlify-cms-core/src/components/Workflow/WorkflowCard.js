@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'react-emotion';
+import { translate } from 'react-polyglot';
 import { Link } from 'react-router-dom';
 import { components, colors, colorsRaw, transitions, buttons } from 'netlify-cms-ui-default';
 
@@ -107,6 +108,7 @@ const WorkflowCard = ({
   onDelete,
   canPublish,
   onPublish,
+  t,
 }) => (
   <WorkflowCardContainer>
     <WorkflowLink to={editLink}>
@@ -119,10 +121,14 @@ const WorkflowCard = ({
     </WorkflowLink>
     <CardButtonContainer>
       <DeleteButton onClick={onDelete}>
-        {isModification ? 'Delete changes' : 'Delete new entry'}
+        {isModification
+          ? t('workflow.workflowCard.deleteChanges')
+          : t('workflow.workflowCard.deleteNewEntry')}
       </DeleteButton>
       <PublishButton disabled={!canPublish} onClick={onPublish}>
-        {isModification ? 'Publish changes' : 'Publish new entry'}
+        {isModification
+          ? t('workflow.workflowCard.publishChanges')
+          : t('workflow.workflowCard.publishNewEntry')}
       </PublishButton>
     </CardButtonContainer>
   </WorkflowCardContainer>
@@ -139,6 +145,7 @@ WorkflowCard.propTypes = {
   onDelete: PropTypes.func.isRequired,
   canPublish: PropTypes.bool.isRequired,
   onPublish: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
-export default WorkflowCard;
+export default translate()(WorkflowCard);

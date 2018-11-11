@@ -19,6 +19,7 @@
     "build": "cross-env NODE_ENV=production webpack"
   },
   "dependencies": {
+    "common-tags": "^1.8.0",
     "js-base64": "^2.4.8",
     "semaphore": "^1.1.0"
   },

@@ -95,6 +95,16 @@ When the `display_url` setting is specified, the CMS UI will include a link in t
 display_url: https://your-site.com
 ```
 
+## Custom Logo
+
+When the `logo_url` setting is specified, the CMS UI will change the logo displayed at the top of the login page, allowing you to brand the CMS with your own logo. `logo_url` is assumed to be a URL to an image file.
+
+**Example:**
+
+```yaml
+logo_url: https://your-site.com/images/logo.svg
+```
+
 ## Slug Type
 
 The `slug` option allows you to change how filenames for entries are created and sanitized. For modifying the actual data in a slug, see the per-collection option below.
@@ -105,6 +115,7 @@ The `slug` option allows you to change how filenames for entries are created and
   - `unicode` (default): Sanitize filenames (slugs) according to [RFC3987](https://tools.ietf.org/html/rfc3987) and the [WHATWG URL spec](https://url.spec.whatwg.org/). This spec allows non-ASCII (or non-Latin) characters to exist in URLs.
   - `ascii`: Sanitize filenames (slugs) according to [RFC3986](https://tools.ietf.org/html/rfc3986). The only allowed characters are (0-9, a-z, A-Z, `_`, `-`, `~`).
 - `clean_accents`: Set to `true` to remove diacritics from slug characters before sanitizing. This is often helpful when using `ascii` encoding.
+- `sanitize_replacement`: The replacement string used to substitute unsafe characters, defaults to  `-`.
 
 **Example**
 
@@ -112,6 +123,7 @@ The `slug` option allows you to change how filenames for entries are created and
 slug:
   encoding: "ascii"
   clean_accents: true
+  sanitize_replacement: "_"
 ```
 
 ## Collections
@@ -189,7 +201,7 @@ The `fields` option maps editor UI widgets to field-value pairs in the saved fil
 - `name` (required): unique identifier for the field, used as the key when referenced in other contexts (like the [relation widget](../widgets/#relation))
 - `label`: label for the field in the editor UI; defaults to the value of `name`
 - `widget`: defines editor UI and inputs and file field data types; details in [Widgets](../widgets)
-- `default`: specify a default value for a field; available for most widget types (see [Widgets](../widgets) for details on each widget type)
+- `default`: specify a default value for a field; available for most widget types (see [Widgets](../widgets) for details on each widget type). Please note that field default value only works for folder collection type.
 - `required`: specify as `false` to make a field optional; defaults to `true`
 - `pattern`: add field validation by specifying a list with a regex pattern and an error message; more extensive validation can be achieved with [custom widgets](../custom-widgets/#advanced-field-validation)
 

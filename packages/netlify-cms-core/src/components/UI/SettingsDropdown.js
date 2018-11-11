@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'react-emotion';
+import { translate } from 'react-polyglot';
 import { Icon, Dropdown, DropdownItem, DropdownButton, colors } from 'netlify-cms-ui-default';
 import { stripProtocol } from 'Lib/urlHelper';
 
@@ -47,7 +48,7 @@ Avatar.propTypes = {
   imageUrl: PropTypes.string,
 };
 
-const SettingsDropdown = ({ displayUrl, imageUrl, onLogoutClick }) => (
+const SettingsDropdown = ({ displayUrl, imageUrl, onLogoutClick, t }) => (
   <React.Fragment>
     {displayUrl ? (
       <AppHeaderSiteLink href={displayUrl} target="_blank">
@@ -64,7 +65,7 @@ const SettingsDropdown = ({ displayUrl, imageUrl, onLogoutClick }) => (
         </DropdownButton>
       )}
     >
-      <DropdownItem label="Log Out" onClick={onLogoutClick} />
+      <DropdownItem label={t('ui.settingsDropdown.logOut')} onClick={onLogoutClick} />
     </Dropdown>
   </React.Fragment>
 );
@@ -73,6 +74,7 @@ SettingsDropdown.propTypes = {
   displayUrl: PropTypes.string,
   imageUrl: PropTypes.string,
   onLogoutClick: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
-export default SettingsDropdown;
+export default translate()(SettingsDropdown);

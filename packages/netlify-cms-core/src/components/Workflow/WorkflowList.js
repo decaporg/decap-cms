@@ -3,6 +3,7 @@ import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled, { css, cx } from 'react-emotion';
 import moment from 'moment';
+import { translate } from 'react-polyglot';
 import { colors, lengths } from 'netlify-cms-ui-default';
 import { status } from 'Constants/publishModes';
 import { DragSource, DropTarget, HTML5DragDrop } from 'UI';
@@ -96,14 +97,14 @@ const ColumnCount = styled.p`
 // This is a namespace so that we can only drop these elements on a DropTarget with the same
 const DNDNamespace = 'cms-workflow';
 
-const getColumnHeaderText = columnName => {
+const getColumnHeaderText = (columnName, t) => {
   switch (columnName) {
     case 'draft':
-      return 'Drafts';
+      return t('workflow.workflowList.draftHeader');
     case 'pending_review':
-      return 'In Review';
+      return t('workflow.workflowList.inReviewHeader');
     case 'pending_publish':
-      return 'Ready';
+      return t('workflow.workflowList.readyHeader');
   }
 };
 
@@ -113,6 +114,7 @@ class WorkflowList extends React.Component {
     handleChangeStatus: PropTypes.func.isRequired,
     handlePublish: PropTypes.func.isRequired,
     handleDelete: PropTypes.func.isRequired,
+    t: PropTypes.func.isRequired,
   };
 
   handleChangeStatus = (newStatus, dragProps) => {
@@ -123,20 +125,16 @@ class WorkflowList extends React.Component {
   };
 
   requestDelete = (collection, slug, ownStatus) => {
-    if (window.confirm('Are you sure you want to delete this entry?')) {
+    if (window.confirm(this.props.t('workflow.workflowList.onDeleteEntry'))) {
       this.props.handleDelete(collection, slug, ownStatus);
     }
   };
 
   requestPublish = (collection, slug, ownStatus) => {
     if (ownStatus !== status.last()) {
-      window.alert(
-        `Only items with a "Ready" status can be published.
-
-Please drag the card to the "Ready" column to enable publishing.`,
-      );
+      window.alert(this.props.t('workflow.workflowList.onPublishingNotReadyEntry'));
       return;
-    } else if (!window.confirm('Are you sure you want to publish this entry?')) {
+    } else if (!window.confirm(this.props.t('workflow.workflowList.onPublishEntry'))) {
       return;
     }
     this.props.handlePublish(collection, slug);
@@ -155,9 +153,13 @@ Please drag the card to the "Ready" column to enable publishing.`,
           {(connect, { isHovered }) =>
             connect(
               <div className={cx(styles.column, { [styles.columnHovered]: isHovered })}>
-                <ColumnHeader name={currColumn}>{getColumnHeaderText(currColumn)}</ColumnHeader>
+                <ColumnHeader name={currColumn}>
+                  {getColumnHeaderText(currColumn, this.props.t)}
+                </ColumnHeader>
                 <ColumnCount>
-                  {currEntries.size} {currEntries.size === 1 ? 'entry' : 'entries'}
+                  {this.props.t('workflow.workflowList.currentEntries', {
+                    smart_count: currEntries.size,
+                  })}
                 </ColumnCount>
                 {this.renderColumns(currEntries, currColumn)}
               </div>,
@@ -218,4 +220,4 @@ Please drag the card to the "Ready" column to enable publishing.`,
   }
 }
 
-export default HTML5DragDrop(WorkflowList);
+export default HTML5DragDrop(translate()(WorkflowList));

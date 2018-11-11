@@ -1,4 +1,4 @@
-import { fromJS, List } from 'immutable';
+import { fromJS, List, Map } from 'immutable';
 import { actions as notifActions } from 'redux-notifications';
 import { serializeValues } from 'Lib/serializeEntryValues';
 import { currentBackend } from 'src/backend';
@@ -233,7 +233,10 @@ export function loadEntry(collection, slug) {
         console.error(error);
         dispatch(
           notifSend({
-            message: `Failed to load entry: ${error.message}`,
+            message: {
+              details: error.message,
+              key: 'ui.toast.onFailToLoadEntries',
+            },
             kind: 'danger',
             dismissAfter: 8000,
           }),
@@ -300,7 +303,10 @@ export function loadEntries(collection, page = 0) {
       .catch(err => {
         dispatch(
           notifSend({
-            message: `Failed to load entries: ${err}`,
+            message: {
+              details: err,
+              key: 'ui.toast.onFailToLoadEntries',
+            },
             kind: 'danger',
             dismissAfter: 8000,
           }),
@@ -348,7 +354,10 @@ export function traverseCollectionCursor(collection, action) {
       console.error(err);
       dispatch(
         notifSend({
-          message: `Failed to persist entry: ${err}`,
+          message: {
+            details: err,
+            key: 'ui.toast.onFailToPersist',
+          },
           kind: 'danger',
           dismissAfter: 8000,
         }),
@@ -360,13 +369,35 @@ export function traverseCollectionCursor(collection, action) {
 
 export function createEmptyDraft(collection) {
   return dispatch => {
-    const dataFields = {};
-    collection.get('fields', List()).forEach(field => {
-      dataFields[field.get('name')] = field.get('default');
-    });
+    const dataFields = createEmptyDraftData(collection.get('fields', List()));
     const newEntry = createEntry(collection.get('name'), '', '', { data: dataFields });
     dispatch(emptyDraftCreated(newEntry));
   };
+}
+
+function createEmptyDraftData(fields) {
+  return fields.reduce((acc, item) => {
+    const subfields = item.get('field') || item.get('fields');
+    const list = item.get('widget') == 'list';
+    const name = item.get('name');
+    const defaultValue = item.get('default', null);
+
+    if (List.isList(subfields)) {
+      acc[name] = list ? [createEmptyDraftData(subfields)] : createEmptyDraftData(subfields);
+      return acc;
+    }
+
+    if (Map.isMap(subfields)) {
+      acc[name] = list ? [createEmptyDraftData([subfields])] : createEmptyDraftData([subfields]);
+      return acc;
+    }
+
+    if (defaultValue !== null) {
+      acc[name] = defaultValue;
+    }
+
+    return acc;
+  }, {});
 }
 
 export function persistEntry(collection) {
@@ -384,7 +415,9 @@ export function persistEntry(collection) {
       if (hasPresenceErrors) {
         dispatch(
           notifSend({
-            message: "Oops, you've missed a required field. Please complete before saving.",
+            message: {
+              key: 'ui.toast.missingRequiredField',
+            },
             kind: 'danger',
             dismissAfter: 8000,
           }),
@@ -412,7 +445,9 @@ export function persistEntry(collection) {
       .then(slug => {
         dispatch(
           notifSend({
-            message: 'Entry saved',
+            message: {
+              key: 'ui.toast.missingRequiredField',
+            },
             kind: 'success',
             dismissAfter: 4000,
           }),
@@ -423,7 +458,10 @@ export function persistEntry(collection) {
         console.error(error);
         dispatch(
           notifSend({
-            message: `Failed to persist entry: ${error}`,
+            message: {
+              details: error,
+              key: 'ui.toast.onFailToPersist',
+            },
             kind: 'danger',
             dismissAfter: 8000,
           }),
@@ -447,7 +485,10 @@ export function deleteEntry(collection, slug) {
       .catch(error => {
         dispatch(
           notifSend({
-            message: `Failed to delete entry: ${error}`,
+            message: {
+              details: error,
+              key: 'ui.toast.onFailToDelete',
+            },
             kind: 'danger',
             dismissAfter: 8000,
           }),

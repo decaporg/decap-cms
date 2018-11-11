@@ -6,6 +6,8 @@ import { ConnectedRouter } from 'react-router-redux';
 import history from 'Routing/history';
 import store from 'Redux';
 import { mergeConfig } from 'Actions/config';
+import { getPhrases } from 'Constants/defaultPhrases';
+import { I18n } from 'react-polyglot';
 import { ErrorBoundary } from 'UI';
 import App from 'App/App';
 import 'EditorWidgets';
@@ -60,13 +62,15 @@ function bootstrap(opts = {}) {
    * Create connected root component.
    */
   const Root = () => (
-    <ErrorBoundary>
-      <Provider store={store}>
-        <ConnectedRouter history={history}>
-          <Route component={App} />
-        </ConnectedRouter>
-      </Provider>
-    </ErrorBoundary>
+    <I18n locale={'en'} messages={getPhrases()}>
+      <ErrorBoundary>
+        <Provider store={store}>
+          <ConnectedRouter history={history}>
+            <Route component={App} />
+          </ConnectedRouter>
+        </Provider>
+      </ErrorBoundary>
+    </I18n>
   );
 
   /**

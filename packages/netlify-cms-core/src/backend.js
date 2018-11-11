@@ -42,7 +42,9 @@ const slugFormatter = (collection, entryData, slugConfig) => {
 
   const identifier = entryData.get(selectIdentifier(collection));
   if (!identifier) {
-    throw new Error('Collection must have a field name that is a valid entry identifier');
+    throw new Error(
+      'Collection must have a field name that is a valid entry identifier, or must have `identifier_field` set',
+    );
   }
 
   const slug = template

@@ -126,16 +126,7 @@ class Authenticator {
     this.authWindow = window.open(
       url,
       'Netlify Authorization',
-      'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, ' +
-        ('width=' +
-          conf.width +
-          ', height=' +
-          conf.height +
-          ', top=' +
-          top +
-          ', left=' +
-          left +
-          ');'),
+      `width=${conf.width}, height=${conf.height}, top=${top}, left=${left}`,
     );
     this.authWindow.focus();
   }

@@ -30,7 +30,9 @@ export default class DateControl extends React.Component {
      * empty string means the value is intentionally blank.
      */
     if (!value && value !== '') {
-      this.handleChange(new Date());
+      setTimeout(() => {
+        this.handleChange(new Date());
+      }, 0);
     }
   }
 
