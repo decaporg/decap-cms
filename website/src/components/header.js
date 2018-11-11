@@ -4,6 +4,7 @@ import classnames from 'classnames';
 import { Location } from '@reach/router';
 
 import DocSearch from './docsearch';
+import GitHubButton from './github-button';
 
 import logo from '../img/netlify-cms-logo.svg';
 
@@ -17,9 +18,6 @@ class Header extends Component {
   async componentDidMount() {
     // TODO: use raf to throttle events
     window.addEventListener('scroll', this.handleScroll);
-    const gitHubButtonModule = await import('github-buttons/dist/react');
-    this.GitHubButton = gitHubButtonModule.default;
-    this.forceUpdate();
   }
 
   componentWillUnmount() {
@@ -38,7 +36,6 @@ class Header extends Component {
 
   render() {
     const { scrolled } = this.state;
-    const GitHubButton = this.GitHubButton;
 
     return (
       <Location>
@@ -76,16 +73,7 @@ class Header extends Component {
                     Blog
                   </Link>
                   <span className="gh-button">
-                    {GitHubButton && (
-                      <GitHubButton
-                        href="https://github.com/netlify/netlify-cms"
-                        data-icon="octicon-star"
-                        data-show-count="true"
-                        aria-label="Star netlify/netlify-cms on GitHub"
-                      >
-                        Star
-                      </GitHubButton>
-                    )}
+                    <GitHubButton />
                   </span>
                 </div>
               </div>
