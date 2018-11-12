@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.2.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.1.1...netlify-cms-core@2.2.0) (2018-11-12)
+
+
+### Bug Fixes
+
+* **config:** allow setting publish_mode to 'simple' ([#1827](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1827)) ([288359d](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/288359d))
+* **i18n:** fix missing widget placeholder ([#1861](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1861)) ([b1a7e00](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/b1a7e00))
+* **widget-date:** fix default value for nested date widget ([#1859](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1859)) ([d8f8887](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/d8f8887))
+* **widgets:** fix list object field default values ([#1826](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1826)) ([c765793](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/c765793))
+* fix App configError method ([#1864](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1864)) ([79205f7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/79205f7))
+
+
+### Features
+
+* **config:** add support for setting custom identifier field ([#1543](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1543)) ([12418dd](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/12418dd))
+* allow custom logo on auth page ([#1818](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1818)) ([c6ae1e8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/c6ae1e8))
+
+
+
+
+
 <a name="2.1.1"></a>
 ## [2.1.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.1.0...netlify-cms-core@2.1.1) (2018-10-09)
 
