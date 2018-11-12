@@ -118,9 +118,29 @@ export default class Editor extends React.Component {
 
     // Handle everything except list buttons.
     if (!['bulleted-list', 'numbered-list'].includes(type)) {
-      const isActive = this.selectionHasBlock(type);
-      editor.setBlocks(isActive ? 'paragraph' : type);
+      const blocksOfType = value.blocks.filter(block => block.type === type);
+      if (blocksOfType.size > 0) {
+        value.blocks.forEach(block => {
+          if (block.type === type) {
+            editor.setNodeByKey(block.key, 'paragraph');
+          }
+        });
+      } else {
+        editor.setBlocks(type);
+      }
     }
+
+    // Handle list buttons.
+    else {
+      editor.wrapBlock(type).wrapBlock('list-item');
+    }
+    /*
+    } else {
+      const focusBlock = editor.value.focusBlock;
+      const isSameListType = value.blocks.some(block => {
+        return !!doc.getClosest(block.key, parent => parent.type === type);
+      });
+    */
 
     // Handle the extra wrapping required for list buttons.
     // slate-edit-list removed from project, must rewrite list handling
@@ -267,6 +287,7 @@ export default class Editor extends React.Component {
               renderNode={renderNode}
               renderMark={renderMark}
               validateNode={validateNode}
+              plugins={plugins}
               onKeyDown={onKeyDown}
               onChange={this.handleChange}
               onPaste={this.handlePaste}

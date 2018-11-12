@@ -65,14 +65,28 @@ const BackspaceCloseBlock = (options = {}) => ({
   onKeyDown(event, editor, next) {
     if (event.key !== 'Backspace') return next();
 
-    const { defaultBlock = 'paragraph', ignoreIn, onlyIn } = options;
-    const { startBlock } = editor.value;
-    const { type } = startBlock;
+    const { defaultBlock = 'paragraph', ignoreIn = [], onlyIn} = options;
+    const { value } = editor;
+    const { startBlock, document: doc } = value;
+    const { type, text, key } = startBlock;
 
-    if (onlyIn && !onlyIn.includes(type)) return next();
-    if (ignoreIn && ignoreIn.includes(type)) return next();
+    if (
+      value.selection.isExpanded
+      || (onlyIn && !onlyIn.includes(type))
+      || ignoreIn.includes(type)
+      || text !== ''
+    ) {
+      return next();
+    }
 
-    if (startBlock.text === '') {
+    const parent = doc.getParent(key);
+    const grandparent = doc.getParent(parent.key);
+
+    if (type === defaultBlock && parent.type === 'list-item') {
+      editor.unwrapBlock(parent.type).unwrapBlock(grandparent.type);
+      return true;
+    }
+    if (type !== defaultBlock) {
       editor.setBlocks(defaultBlock).focus();
       return true;
     }
@@ -83,10 +97,6 @@ const BackspaceCloseBlock = (options = {}) => ({
 
 const BackspaceCloseBlockOpts = {
   ignoreIn: [
-    'paragraph',
-    'list-item',
-    'bulleted-list',
-    'numbered-list',
     'table',
     'table-row',
     'table-cell',
