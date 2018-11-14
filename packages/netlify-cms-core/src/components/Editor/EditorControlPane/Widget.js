@@ -130,7 +130,7 @@ export default class Widget extends Component {
     if (pattern && !RegExp(pattern.first()).test(value)) {
       const error = {
         type: ValidationErrorTypes.PATTERN,
-        message: t('editor.editorControlPane.widget.pattern', {
+        message: t('editor.editorControlPane.widget.regexPattern', {
           fieldLabel: field.get('label', field.get('name')),
           pattern: pattern.last(),
         }),
