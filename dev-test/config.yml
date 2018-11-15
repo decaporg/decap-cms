@@ -18,7 +18,7 @@ collections: # A list of collections the CMS should be able to edit
     create: true # Allow users to create new documents in this collection
     fields: # The fields each document in this collection have
       - { label: 'Title', name: 'title', widget: 'string', tagname: 'h1' }
-      - { label: 'Publish Date', name: 'date', widget: 'datetime', format: 'YYYY-MM-DD hh:mma' }
+      - { label: 'Publish Date', name: 'date', widget: 'datetime', dateFormat: 'YYYY-MM-DD', timeFormat: 'HH:mm', format: 'YYYY-MM-DD HH:mm' }
       - label: 'Cover Image'
         name: 'image'
         widget: 'image'
