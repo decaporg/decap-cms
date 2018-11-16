@@ -410,6 +410,7 @@ export function persistEntry(collection) {
     const state = getState();
     const entryDraft = state.entryDraft;
     const fieldsErrors = entryDraft.get('fieldsErrors');
+    const publishedIds = state.entries.getIn(['pages', collection.get('name'), 'ids']);
 
     // Early return if draft contains validation errors
     if (!fieldsErrors.isEmpty()) {
@@ -446,7 +447,14 @@ export function persistEntry(collection) {
     const serializedEntryDraft = entryDraft.set('entry', serializedEntry);
     dispatch(entryPersisting(collection, serializedEntry));
     return backend
-      .persistEntry(state.config, collection, serializedEntryDraft, assetProxies.toJS())
+      .persistEntry(
+        state.config,
+        collection,
+        serializedEntryDraft,
+        assetProxies.toJS(),
+        state.integrations,
+        publishedIds,
+      )
       .then(slug => {
         dispatch(
           notifSend({

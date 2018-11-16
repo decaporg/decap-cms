@@ -1,6 +1,7 @@
 import uuid from 'uuid/v4';
 import { actions as notifActions } from 'redux-notifications';
 import { BEGIN, COMMIT, REVERT } from 'redux-optimist';
+import { last } from 'lodash';
 import { serializeValues } from 'Lib/serializeEntryValues';
 import { currentBackend } from 'src/backend';
 import { getAsset } from 'Reducers';
@@ -288,6 +289,14 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
     const state = getState();
     const entryDraft = state.entryDraft;
     const fieldsErrors = entryDraft.get('fieldsErrors');
+    const draftIds = state.editorialWorkflow
+      .get('entities')
+      .filter((v, k) => k.includes(collection.get('name')))
+      .keySeq()
+      .map(v => last(v.split('.')));
+    const publishedDraftIds = state.entries
+      .getIn(['pages', collection.get('name'), 'ids'])
+      .concat(draftIds);
 
     // Early return if draft contains validation errors
     if (!fieldsErrors.isEmpty()) {
@@ -334,6 +343,7 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
       serializedEntryDraft,
       assetProxies.toJS(),
       state.integrations,
+      publishedDraftIds,
     ];
 
     try {

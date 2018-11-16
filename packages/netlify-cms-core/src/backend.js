@@ -301,6 +301,15 @@ class Backend {
 
   getToken = () => this.implementation.getToken();
 
+  generateUniqueSlug(slugConfig, slug, publishedOrDraftIds) {
+    let i = 1;
+    let uniqueSlug = slug;
+    while (publishedOrDraftIds.includes(uniqueSlug)) {
+      uniqueSlug = sanitizeSlug(`${slug} ${i++}`, slugConfig);
+    }
+    return uniqueSlug;
+  }
+
   processEntries(loadedEntries, collection) {
     const collectionFilter = collection.get('filter');
     const entries = loadedEntries.map(loadedEntry =>
@@ -560,7 +569,15 @@ class Backend {
     };
   }
 
-  persistEntry(config, collection, entryDraft, MediaFiles, integrations, options = {}) {
+  persistEntry(
+    config,
+    collection,
+    entryDraft,
+    MediaFiles,
+    integrations,
+    publishedOrDraftIds,
+    options = {},
+  ) {
     const newEntry = entryDraft.getIn(['entry', 'newRecord']) || false;
 
     const parsedData = {
@@ -578,10 +595,11 @@ class Backend {
         entryDraft.getIn(['entry', 'data']),
         config.get('slug'),
       );
-      const path = selectEntryPath(collection, slug);
+      const uniqueSlug = this.generateUniqueSlug(config.get('slug'), slug, publishedOrDraftIds);
+      const path = selectEntryPath(collection, uniqueSlug);
       entryObj = {
         path,
-        slug,
+        slug: uniqueSlug,
         raw: this.entryToRaw(collection, entryDraft.get('entry')),
       };
     } else {
