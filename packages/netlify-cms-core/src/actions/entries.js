@@ -446,7 +446,7 @@ export function persistEntry(collection) {
         dispatch(
           notifSend({
             message: {
-              key: 'ui.toast.missingRequiredField',
+              key: 'ui.toast.entrySaved',
             },
             kind: 'success',
             dismissAfter: 4000,
