@@ -21,9 +21,9 @@ import { SIMPLE, EDITORIAL_WORKFLOW } from 'Constants/publishModes';
 import NotFoundPage from './NotFoundPage';
 import Header from './Header';
 
-const Collection = React.lazy(() => import('../Collection/Collection'));
-const Workflow = React.lazy(() => import('../Workflow/Workflow'));
-const Editor = React.lazy(() => import('../Editor/Editor'));
+const Collection = React.lazy(() => import(/* webpackPreload: true */ '../Collection/Collection'));
+const Workflow = React.lazy(() => import(/* webpackPreload: true */ '../Workflow/Workflow'));
+const Editor = React.lazy(() => import(/* webpackPreload: true */ '../Editor/Editor'));
 
 TopBarProgress.config({
   barColors: {
