@@ -1,10 +1,11 @@
 import { fromJS, List, Map } from 'immutable';
 import { actions as notifActions } from 'redux-notifications';
 import { serializeValues } from 'Lib/serializeEntryValues';
-import { currentBackend } from 'src/backend';
+import { currentBackend, slugFormatter } from 'src/backend';
 import { getIntegrationProvider } from 'Integrations';
 import { getAsset, selectIntegration } from 'Reducers';
 import { selectFields } from 'Reducers/collections';
+import { selectSlugEntries } from 'Reducers/entries';
 import { selectCollectionEntriesCursor } from 'Reducers/cursors';
 import { Cursor } from 'netlify-cms-lib-util';
 import { createEntry } from 'ValueObjects/Entry';
@@ -410,7 +411,7 @@ export function persistEntry(collection) {
     const state = getState();
     const entryDraft = state.entryDraft;
     const fieldsErrors = entryDraft.get('fieldsErrors');
-    const publishedIds = state.entries.getIn(['pages', collection.get('name'), 'ids']);
+    const unavailableSlugs = selectSlugEntries(state.entries, collection.get('name'));
 
     // Early return if draft contains validation errors
     if (!fieldsErrors.isEmpty()) {
@@ -453,7 +454,7 @@ export function persistEntry(collection) {
         serializedEntryDraft,
         assetProxies.toJS(),
         state.integrations,
-        publishedIds,
+        unavailableSlugs,
       )
       .then(slug => {
         dispatch(
@@ -510,4 +511,10 @@ export function deleteEntry(collection, slug) {
         return Promise.reject(dispatch(entryDeleteFail(collection, slug, error)));
       });
   };
+}
+
+export function formatedSlugValue(collection) {
+  return (entryData, config, unavailableSlugs) => {
+    return slugFormatter(collection, entryData, config, unavailableSlugs);
+  }
 }

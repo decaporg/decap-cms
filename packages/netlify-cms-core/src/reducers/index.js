@@ -39,6 +39,9 @@ export const selectEntry = (state, collection, slug) =>
 export const selectEntries = (state, collection) =>
   fromEntries.selectEntries(state.entries, collection);
 
+export const selectSlugEntries = (state, collection) =>
+  fromEntries.selectSlugEntries(state.entries, collection);
+
 export const selectSearchedEntries = state => {
   const searchItems = state.search.get('entryIds');
   return (
@@ -57,6 +60,9 @@ export const selectUnpublishedEntry = (state, collection, slug) =>
 
 export const selectUnpublishedEntriesByStatus = (state, status) =>
   fromEditorialWorkflow.selectUnpublishedEntriesByStatus(state.editorialWorkflow, status);
+
+export const selectUnpublishedSlugEntriesByCollection = (state, collection) =>
+  fromEditorialWorkflow.selectUnpublishedSlugEntriesByCollection(state.editorialWorkflow, collection);
 
 export const selectIntegration = (state, collection, hook) =>
   fromIntegrations.selectIntegration(state.integrations, collection, hook);

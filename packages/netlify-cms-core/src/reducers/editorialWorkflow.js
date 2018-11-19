@@ -140,4 +140,13 @@ export const selectUnpublishedEntriesByStatus = (state, status) => {
     .valueSeq();
 };
 
+export const selectUnpublishedSlugEntriesByCollection = (state, collection) => {
+  if (!state.get('entities')) return null;
+  return state
+    .get('entities')
+    .filter((v, k) => k.includes(collection))
+    .map(entry => entry.get('slug'))
+    .valueSeq();
+};
+
 export default unpublishedEntries;

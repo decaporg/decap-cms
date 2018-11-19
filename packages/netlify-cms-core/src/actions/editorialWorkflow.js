@@ -6,6 +6,8 @@ import { serializeValues } from 'Lib/serializeEntryValues';
 import { currentBackend } from 'src/backend';
 import { getAsset } from 'Reducers';
 import { selectFields } from 'Reducers/collections';
+import { selectSlugEntries } from 'Reducers/entries';
+import { selectUnpublishedSlugEntriesByCollection } from 'Reducers/editorialWorkflow';
 import { EDITORIAL_WORKFLOW } from 'Constants/publishModes';
 import { EDITORIAL_WORKFLOW_ERROR } from 'netlify-cms-lib-util';
 import { loadEntry } from './entries';
@@ -289,14 +291,8 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
     const state = getState();
     const entryDraft = state.entryDraft;
     const fieldsErrors = entryDraft.get('fieldsErrors');
-    const draftIds = state.editorialWorkflow
-      .get('entities')
-      .filter((v, k) => k.includes(collection.get('name')))
-      .keySeq()
-      .map(v => last(v.split('.')));
-    const publishedDraftIds = state.entries
-      .getIn(['pages', collection.get('name'), 'ids'])
-      .concat(draftIds);
+    const unpublishedSlugs = selectUnpublishedSlugEntriesByCollection(state.editorialWorkflow, collection.get('name'));
+    const unavailableSlugs = selectSlugEntries(state.entries, collection.get('name')).concat(unpublishedSlugs);
 
     // Early return if draft contains validation errors
     if (!fieldsErrors.isEmpty()) {
@@ -343,7 +339,7 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
       serializedEntryDraft,
       assetProxies.toJS(),
       state.integrations,
-      publishedDraftIds,
+      unavailableSlugs,
     ];
 
     try {

@@ -110,7 +110,7 @@ function compileSlug(template, date, identifier = '', data = Map(), processor) {
   }
 }
 
-function slugFormatter(collection, entryData, slugConfig) {
+export function slugFormatter(collection, entryData, slugConfig, unavailableSlugs) {
   const template = collection.get('slug') || '{{slug}}';
 
   const identifier = entryData.get(selectIdentifier(collection));
@@ -155,6 +155,16 @@ const commitMessageFormatter = (type, config, { slug, path, collection }) => {
     }
   });
 };
+
+export const generateUniqueSlug = (slug, slugConfig, publishedOrDraftSlugs) => {
+  let i = 1;
+  let sanitizedSlug = sanitizeSlug(slug, slugConfig);
+  let uniqueSlug = sanitizedSlug;
+  while (publishedOrDraftSlugs.includes(uniqueSlug)) {
+    uniqueSlug = sanitizeSlug(`${sanitizedSlug} ${i++}`, slugConfig);
+  }
+  return uniqueSlug;
+}
 
 const extractSearchFields = searchFields => entry =>
   searchFields.reduce((acc, field) => {
@@ -300,15 +310,6 @@ class Backend {
   }
 
   getToken = () => this.implementation.getToken();
-
-  generateUniqueSlug(slugConfig, slug, publishedOrDraftIds) {
-    let i = 1;
-    let uniqueSlug = slug;
-    while (publishedOrDraftIds.includes(uniqueSlug)) {
-      uniqueSlug = sanitizeSlug(`${slug} ${i++}`, slugConfig);
-    }
-    return uniqueSlug;
-  }
 
   processEntries(loadedEntries, collection) {
     const collectionFilter = collection.get('filter');
@@ -575,7 +576,7 @@ class Backend {
     entryDraft,
     MediaFiles,
     integrations,
-    publishedOrDraftIds,
+    unavailableSlugs,
     options = {},
   ) {
     const newEntry = entryDraft.getIn(['entry', 'newRecord']) || false;
@@ -594,12 +595,12 @@ class Backend {
         collection,
         entryDraft.getIn(['entry', 'data']),
         config.get('slug'),
+        unavailableSlugs,
       );
-      const uniqueSlug = this.generateUniqueSlug(config.get('slug'), slug, publishedOrDraftIds);
-      const path = selectEntryPath(collection, uniqueSlug);
+      const path = selectEntryPath(collection, slug);
       entryObj = {
         path,
-        slug: uniqueSlug,
+        slug,
         raw: this.entryToRaw(collection, entryDraft.get('entry')),
       };
     } else {

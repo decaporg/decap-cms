@@ -7,10 +7,10 @@ import { partial, uniqueId } from 'lodash';
 import { connect } from 'react-redux';
 import { colors, colorsRaw, transitions, lengths, borders } from 'netlify-cms-ui-default';
 import { resolveWidget, getEditorComponents } from 'Lib/registry';
-import { clearFieldErrors } from 'Actions/entries';
+import { generateUniqueSlug } from 'src/backend';
 import { addAsset } from 'Actions/media';
 import { query, clearSearch } from 'Actions/search';
-import { loadEntry } from 'Actions/entries';
+import { clearFieldErrors, loadEntry } from 'Actions/entries';
 import {
   openMediaLibrary,
   removeInsertedMedia,
@@ -157,6 +157,21 @@ class EditorControl extends React.Component {
 
   uniqueFieldId = uniqueId(`${this.props.field.get('name')}-field-`);
 
+  handleSetInactiveStyle = () => {
+    const { field, value, config, entryData, indentifierField, formatedSlug, onChange, slugField, unavailableSlugs } = this.props;
+    const fieldName = field.get('name');
+    const slugValue = entryData.get(slugField);
+
+    this.setState({ styleActive: false });
+    if ((fieldName == indentifierField) && value && !slugValue) {
+      onChange(slugField, formatedSlug(entryData, config, unavailableSlugs));
+    }
+
+    if ((fieldName == slugField) && value ) {
+      onChange(slugField, generateUniqueSlug(value, config, unavailableSlugs));
+    }
+  }
+
   render() {
     const {
       value,
@@ -180,6 +195,9 @@ class EditorControl extends React.Component {
       clearSearch,
       clearFieldErrors,
       loadEntry,
+      slugField,
+      entrySlug,
+      isNewEntry,
       t,
     } = this.props;
     const widgetName = field.get('widget');
@@ -190,6 +208,7 @@ class EditorControl extends React.Component {
     const onValidateObject = onValidate;
     const metadata = fieldsMetaData && fieldsMetaData.get(fieldName);
     const errors = fieldsErrors && fieldsErrors.get(this.uniqueFieldId);
+	const fieldValue = ((fieldName == slugField) && !value && !isNewEntry) ? entrySlug : value;
     return (
       <ControlContainer>
         <ControlErrorsList>
@@ -225,7 +244,7 @@ class EditorControl extends React.Component {
           controlComponent={widget.control}
           field={field}
           uniqueFieldId={this.uniqueFieldId}
-          value={value}
+          value={fieldValue}
           mediaPaths={mediaPaths}
           metadata={metadata}
           onChange={(newValue, newMetadata) => onChange(fieldName, newValue, newMetadata)}
@@ -238,7 +257,7 @@ class EditorControl extends React.Component {
           getAsset={boundGetAsset}
           hasActiveStyle={this.state.styleActive}
           setActiveStyle={() => this.setState({ styleActive: true })}
-          setInactiveStyle={() => this.setState({ styleActive: false })}
+          setInactiveStyle={this.handleSetInactiveStyle}
           resolveWidget={resolveWidget}
           getEditorComponents={getEditorComponents}
           ref={processControlRef && partial(processControlRef, field)}
@@ -269,6 +288,9 @@ const mapStateToProps = state => ({
   boundGetAsset: getAsset.bind(null, state),
   isFetching: state.search.get('isFetching'),
   queryHits: state.search.get('queryHits'),
+  entryData: state.entryDraft.getIn(['entry', 'data']),
+  entrySlug: state.entryDraft.getIn(['entry', 'slug']),
+  config: state.config,
 });
 
 const mapDispatchToProps = {

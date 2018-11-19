@@ -39,11 +39,16 @@ export default class ControlPane extends React.Component {
     const {
       collection,
       fields,
+      indentifierField,
       entry,
+      slugField,
+      formatedSlug,
       fieldsMetaData,
       fieldsErrors,
       onChange,
       onValidate,
+      unavailableSlugs,
+      isNewEntry,
     } = this.props;
 
     if (!collection || !fields) {
@@ -65,10 +70,15 @@ export default class ControlPane extends React.Component {
                 value={entry.getIn(['data', field.get('name')])}
                 fieldsMetaData={fieldsMetaData}
                 fieldsErrors={fieldsErrors}
+                indentifierField={indentifierField}
+                slugField={slugField}
+                formatedSlug={formatedSlug}
                 onChange={onChange}
                 onValidate={onValidate}
                 processControlRef={this.controlRef.bind(this)}
                 controlRef={this.controlRef}
+                unavailableSlugs={unavailableSlugs}
+                isNewEntry={isNewEntry}
               />
             ),
         )}
