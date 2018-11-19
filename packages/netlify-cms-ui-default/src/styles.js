@@ -87,7 +87,7 @@ const lengths = {
   richTextEditorMinHeight: '300px',
   borderWidth: '2px',
   topCardWidth: '682px',
-  pageMargin: '84px 18px',
+  pageMargin: '28px 18px',
 };
 
 const borders = {
