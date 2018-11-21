@@ -11,6 +11,7 @@ const styles = {
     ...provided,
     border: 0,
     boxShadow: 'none',
+    padding: '9px 0 9px 12px',
   }),
   option: (provided, state) => ({
     ...provided,
@@ -22,7 +23,7 @@ const styles = {
     paddingLeft: '22px',
   }),
   menu: provided => ({ ...provided, right: 0 }),
-  container: provided => ({ ...provided, padding: '8px 0 8px 12px !important' }),
+  container: provided => ({ ...provided, padding: '0 !important' }),
   indicatorSeparator: () => ({ display: 'none' }),
   dropdownIndicator: provided => ({ ...provided, color: `${colors.controlLabel}` }),
 };
