@@ -107,7 +107,7 @@ export function loadConfig(bootstrapConfig) {
       const preloadedConfig = getState().config;
       const configUrl = getConfigUrl();
       const loadedConfig =
-        bootstrapConfig && bootstrapConfig.ignoreLoadConfig
+        bootstrapConfig && bootstrapConfig.load_config_file === false
           ? {}
           : await getConfig(configUrl, preloadedConfig && preloadedConfig.size > 1);
 

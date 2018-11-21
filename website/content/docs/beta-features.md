@@ -56,7 +56,7 @@ init({
   },
 
   // You could also completely disable the load of the `config.yml`
-  ignoreLoadConfig: true
+  load_config_file: false
 })
 
 // The registry works as expected, and can be used before or after init.
