@@ -22,13 +22,9 @@ const styles = {
   `,
 };
 
-const AppHeaderContainer = styled.header`
-  z-index: 300;
-`;
-
-const AppHeader = styled.div`
+const AppHeader = styled.header`
   ${shadows.dropMain};
-  position: fixed;
+  position: sticky;
   width: 100%;
   top: 0;
   background-color: ${colors.foreground};
@@ -136,59 +132,57 @@ class Header extends React.Component {
       .toList();
 
     return (
-      <AppHeaderContainer>
-        <AppHeader>
-          <AppHeaderContent>
-            <nav>
-              <AppHeaderNavLink
-                to="/"
-                activeClassName="header-link-active"
-                isActive={(match, location) => location.pathname.startsWith('/collections/')}
-              >
-                <Icon type="page" />
-                {t('app.header.content')}
+      <AppHeader>
+        <AppHeaderContent>
+          <nav>
+            <AppHeaderNavLink
+              to="/"
+              activeClassName="header-link-active"
+              isActive={(match, location) => location.pathname.startsWith('/collections/')}
+            >
+              <Icon type="page" />
+              {t('app.header.content')}
+            </AppHeaderNavLink>
+            {hasWorkflow ? (
+              <AppHeaderNavLink to="/workflow" activeClassName="header-link-active">
+                <Icon type="workflow" />
+                {t('app.header.workflow')}
               </AppHeaderNavLink>
-              {hasWorkflow ? (
-                <AppHeaderNavLink to="/workflow" activeClassName="header-link-active">
-                  <Icon type="workflow" />
-                  {t('app.header.workflow')}
-                </AppHeaderNavLink>
-              ) : null}
-              {showMediaButton ? (
-                <AppHeaderButton onClick={openMediaLibrary}>
-                  <Icon type="media-alt" />
-                  {t('app.header.media')}
-                </AppHeaderButton>
-              ) : null}
-            </nav>
-            <AppHeaderActions>
-              {createableCollections.size > 0 && (
-                <Dropdown
-                  renderButton={() => (
-                    <AppHeaderQuickNewButton> {t('app.header.quickAdd')}</AppHeaderQuickNewButton>
-                  )}
-                  dropdownTopOverlap="30px"
-                  dropdownWidth="160px"
-                  dropdownPosition="left"
-                >
-                  {createableCollections.map(collection => (
-                    <DropdownItem
-                      key={collection.get('name')}
-                      label={collection.get('label_singular') || collection.get('label')}
-                      onClick={() => this.handleCreatePostClick(collection.get('name'))}
-                    />
-                  ))}
-                </Dropdown>
-              )}
-              <SettingsDropdown
-                displayUrl={displayUrl}
-                imageUrl={user.get('avatar_url')}
-                onLogoutClick={onLogoutClick}
-              />
-            </AppHeaderActions>
-          </AppHeaderContent>
-        </AppHeader>
-      </AppHeaderContainer>
+            ) : null}
+            {showMediaButton ? (
+              <AppHeaderButton onClick={openMediaLibrary}>
+                <Icon type="media-alt" />
+                {t('app.header.media')}
+              </AppHeaderButton>
+            ) : null}
+          </nav>
+          <AppHeaderActions>
+            {createableCollections.size > 0 && (
+              <Dropdown
+                renderButton={() => (
+                  <AppHeaderQuickNewButton> {t('app.header.quickAdd')}</AppHeaderQuickNewButton>
+                )}
+                dropdownTopOverlap="30px"
+                dropdownWidth="160px"
+                dropdownPosition="left"
+              >
+                {createableCollections.map(collection => (
+                  <DropdownItem
+                    key={collection.get('name')}
+                    label={collection.get('label_singular') || collection.get('label')}
+                    onClick={() => this.handleCreatePostClick(collection.get('name'))}
+                  />
+                ))}
+              </Dropdown>
+            )}
+            <SettingsDropdown
+              displayUrl={displayUrl}
+              imageUrl={user.get('avatar_url')}
+              onLogoutClick={onLogoutClick}
+            />
+          </AppHeaderActions>
+        </AppHeaderContent>
+      </AppHeader>
     );
   }
 }
