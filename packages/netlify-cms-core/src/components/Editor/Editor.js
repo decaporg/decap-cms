@@ -14,7 +14,7 @@ import {
   discardDraft,
   changeDraftField,
   changeDraftFieldValidation,
-  formatedSlugValue,
+  autoSlugValue,
   persistEntry,
   deleteEntry,
 } from 'Actions/entries';
@@ -32,7 +32,7 @@ import {
   getAsset,
   selectSlugEntries,
   selectUnpublishedSlugEntriesByCollection,
-}from 'Reducers';
+} from 'Reducers';
 import { selectFields, selectIdentifier, selectSlugField } from 'Reducers/collections';
 import { status } from 'Constants/publishModes';
 import { EDITORIAL_WORKFLOW } from 'Constants/publishModes';
@@ -162,13 +162,16 @@ class Editor extends React.Component {
   componentDidUpdate(prevProps) {
     /**
      * If the old slug is empty and the new slug is not, a new entry was just
-     * saved, and we need to update navigation to the correct url using the
-     * slug.
+     * saved, or if slug entry was changed, we need to update navigation to the
+     * correct url using the slug.
      */
     const newSlug = this.props.entryDraft && this.props.entryDraft.getIn(['entry', 'slug']);
-    if (!prevProps.slug && newSlug && this.props.newEntry) {
+    if (
+      (!prevProps.slug && newSlug && this.props.newEntry) ||
+      (prevProps.slug && newSlug && prevProps.slug != newSlug)
+    ) {
       navigateToEntry(prevProps.collection.get('name'), newSlug);
-      this.props.loadEntry(this.props.collection, newSlug);
+      return this.props.loadEntry(this.props.collection, newSlug);
     }
 
     if (prevProps.entry === this.props.entry) return;
@@ -310,7 +313,7 @@ class Editor extends React.Component {
       indentifierField,
       slugField,
       boundGetAsset,
-      formatedSlug,
+      autoSlug,
       collection,
       changeDraftField,
       changeDraftFieldValidation,
@@ -356,7 +359,7 @@ class Editor extends React.Component {
         fieldsErrors={entryDraft.get('fieldsErrors')}
         indentifierField={indentifierField}
         slugField={slugField}
-        formatedSlug={formatedSlug}
+        autoSlug={autoSlug}
         onChange={changeDraftField}
         onValidate={changeDraftFieldValidation}
         onPersist={this.handlePersistEntry}
@@ -405,15 +408,14 @@ function mapStateToProps(state, ownProps) {
   const unpublishedSlugs = selectUnpublishedSlugEntriesByCollection(state, collectionName);
   const publishedSlugs = selectSlugEntries(state, collectionName);
   const unavailableSlugs = hasWorkflow ? publishedSlugs.concat(unpublishedSlugs) : publishedSlugs;
-  const formatedSlug = formatedSlugValue(collection);
-
+  const autoSlug = autoSlugValue(collection); console.log(entryDraft.toJS());
   return {
     collection,
     collections,
     newEntry,
     entryDraft,
     boundGetAsset,
-    formatedSlug,
+    autoSlug,
     fields,
     indentifierField,
     slugField,

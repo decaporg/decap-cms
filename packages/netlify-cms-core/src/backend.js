@@ -13,6 +13,7 @@ import {
   selectAllowDeletion,
   selectFolderEntryExtension,
   selectIdentifier,
+  selectSlugField,
   selectInferedField,
 } from 'Reducers/collections';
 import { createEntry } from 'ValueObjects/Entry';
@@ -164,7 +165,7 @@ export const generateUniqueSlug = (slug, slugConfig, publishedOrDraftSlugs) => {
     uniqueSlug = sanitizeSlug(`${sanitizedSlug} ${i++}`, slugConfig);
   }
   return uniqueSlug;
-}
+};
 
 const extractSearchFields = searchFields => entry =>
   searchFields.reduce((acc, field) => {
@@ -580,6 +581,8 @@ class Backend {
     options = {},
   ) {
     const newEntry = entryDraft.getIn(['entry', 'newRecord']) || false;
+    const slugField = selectSlugField(collection);
+    const manualSlug = entryDraft.getIn(['entry', 'data', slugField], '');
 
     const parsedData = {
       title: entryDraft.getIn(['entry', 'data', 'title'], 'No Title'),
@@ -591,25 +594,32 @@ class Backend {
       if (!selectAllowNewEntries(collection)) {
         throw new Error('Not allowed to create new entries in this collection');
       }
-      const slug = slugFormatter(
+      const autoSlug = slugFormatter(
         collection,
         entryDraft.getIn(['entry', 'data']),
         config.get('slug'),
         unavailableSlugs,
       );
+      const slug = manualSlug || autoSlug;
+
       const path = selectEntryPath(collection, slug);
       entryObj = {
         path,
         slug,
-        raw: this.entryToRaw(collection, entryDraft.get('entry')),
+        raw: this.entryToRaw(collection, entryDraft.get('entry'), slugField),
       };
     } else {
-      const path = entryDraft.getIn(['entry', 'path']);
-      const slug = entryDraft.getIn(['entry', 'slug']);
+      let path = entryDraft.getIn(['entry', 'path']);
+      let slug = entryDraft.getIn(['entry', 'slug']);
+      if (manualSlug && manualSlug != slug) {
+        Object.assign(options, { oldSlug: slug, oldPath: path });
+        path = selectEntryPath(collection, manualSlug);
+        slug = manualSlug;
+      }
       entryObj = {
         path,
         slug,
-        raw: this.entryToRaw(collection, entryDraft.get('entry')),
+        raw: this.entryToRaw(collection, entryDraft.get('entry'), slugField),
       };
     }
 
@@ -633,6 +643,7 @@ class Backend {
       parsedData,
       commitMessage,
       collectionName,
+      manualSlug,
       useWorkflow,
       ...updatedOptions,
     };
@@ -679,10 +690,12 @@ class Backend {
     return this.implementation.deleteUnpublishedEntry(collection, slug);
   }
 
-  entryToRaw(collection, entry) {
+  entryToRaw(collection, entry, slugField) {
     const format = resolveFormat(collection, entry.toJS());
     const fieldsOrder = this.fieldsOrder(collection, entry);
-    return format && format.toFile(entry.get('data').toJS(), fieldsOrder);
+    // Remove slug field value
+    const data = entry.get('data').delete(slugField);
+    return format && format.toFile(data.toJS(), fieldsOrder);
   }
 
   fieldsOrder(collection, entry) {

@@ -154,7 +154,7 @@ class EditorInterface extends Component {
       fieldsErrors,
       indentifierField,
       slugField,
-      formatedSlug,
+      autoSlug,
       getAsset,
       onChange,
       showDelete,
@@ -190,8 +190,8 @@ class EditorInterface extends Component {
           fieldsMetaData={fieldsMetaData}
           fieldsErrors={fieldsErrors}
           indentifierField={indentifierField}
-          slugField ={slugField}
-          formatedSlug={formatedSlug}
+          slugField={slugField}
+          autoSlug={autoSlug}
           onChange={onChange}
           onValidate={onValidate}
           unavailableSlugs={unavailableSlugs}

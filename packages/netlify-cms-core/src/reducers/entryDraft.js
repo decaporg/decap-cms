@@ -86,9 +86,10 @@ const entryDraftReducer = (state = Map(), action) => {
       return state.withMutations(state => {
         state.deleteIn(['entry', 'isPersisting']);
         state.set('hasChanged', false);
-        if (!state.getIn(['entry', 'slug'])) {
+        if (state.getIn(['entry', 'slug']) != action.payload.slug) {
           state.setIn(['entry', 'slug'], action.payload.slug);
         }
+        state.deleteIn(['entry', 'data', action.payload.slugField]);
       });
 
     case ENTRY_DELETE_SUCCESS:

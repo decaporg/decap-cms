@@ -105,7 +105,7 @@ export const selectEntry = (state, collection, slug) =>
   state.getIn(['entities', `${collection}.${slug}`]);
 
 export const selectSlugEntries = (state, collection) =>
-  state.getIn(['pages', collection, 'ids'], List())
+  state.getIn(['pages', collection, 'ids'], List());
 
 export const selectEntries = (state, collection) => {
   const slugs = selectSlugEntries(state, collection);

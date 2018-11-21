@@ -4,7 +4,7 @@ import { serializeValues } from 'Lib/serializeEntryValues';
 import { currentBackend, slugFormatter } from 'src/backend';
 import { getIntegrationProvider } from 'Integrations';
 import { getAsset, selectIntegration } from 'Reducers';
-import { selectFields } from 'Reducers/collections';
+import { selectFields, selectSlugField } from 'Reducers/collections';
 import { selectSlugEntries } from 'Reducers/entries';
 import { selectCollectionEntriesCursor } from 'Reducers/cursors';
 import { Cursor } from 'netlify-cms-lib-util';
@@ -122,7 +122,7 @@ export function entryPersisted(collection, entry, slug) {
     payload: {
       collectionName: collection.get('name'),
       entrySlug: entry.get('slug'),
-
+      slugField: selectSlugField(collection),
       /**
        * Pass slug from backend for newly created entries.
        */
@@ -513,8 +513,8 @@ export function deleteEntry(collection, slug) {
   };
 }
 
-export function formatedSlugValue(collection) {
+export function autoSlugValue(collection) {
   return (entryData, config, unavailableSlugs) => {
     return slugFormatter(collection, entryData, config, unavailableSlugs);
-  }
+  };
 }

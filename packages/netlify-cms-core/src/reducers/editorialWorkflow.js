@@ -83,11 +83,21 @@ const unpublishedEntries = (state = Map(), action) => {
 
     case UNPUBLISHED_ENTRY_PERSIST_SUCCESS:
       // Update Optimistically
-      return state.deleteIn([
-        'entities',
-        `${action.payload.collection}.${action.payload.entry.get('slug')}`,
-        'isPersisting',
-      ]);
+      return state.withMutations(map => {
+        if (action.payload.entry.get('slug') != action.payload.slug) {
+          // Slug changed, delete old slug entities
+          map.deleteIn([
+            'entities',
+            `${action.payload.collection}.${action.payload.entry.get('slug')}`,
+          ]);
+        } else {
+          map.deleteIn([
+            'entities',
+            `${action.payload.collection}.${action.payload.entry.get('slug')}`,
+            'isPersisting',
+          ]);
+        }
+      });
 
     case UNPUBLISHED_ENTRY_STATUS_CHANGE_REQUEST:
       // Update Optimistically

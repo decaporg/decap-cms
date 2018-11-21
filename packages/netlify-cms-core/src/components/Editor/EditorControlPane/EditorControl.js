@@ -157,20 +157,43 @@ class EditorControl extends React.Component {
 
   uniqueFieldId = uniqueId(`${this.props.field.get('name')}-field-`);
 
+  componentDidUpdate() {
+    const { field, value, onChange, slugField, entrySlug, isNewEntry } = this.props;
+    const fieldName = field.get('name');
+    if (fieldName == slugField && !value && !isNewEntry) {
+      setTimeout(() => {
+        onChange(slugField, entrySlug);
+      }, 0);
+    }
+  }
+
   handleSetInactiveStyle = () => {
-    const { field, value, config, entryData, indentifierField, formatedSlug, onChange, slugField, unavailableSlugs } = this.props;
+    const {
+      field,
+      value,
+      config,
+      entryData,
+      entrySlug,
+      indentifierField,
+      autoSlug,
+      onChange,
+      slugField,
+      unavailableSlugs,
+    } = this.props;
     const fieldName = field.get('name');
     const slugValue = entryData.get(slugField);
 
     this.setState({ styleActive: false });
-    if ((fieldName == indentifierField) && value && !slugValue) {
-      onChange(slugField, formatedSlug(entryData, config, unavailableSlugs));
+    if (fieldName == indentifierField && value && !slugValue) {
+      onChange(slugField, autoSlug(entryData, config, unavailableSlugs));
     }
 
-    if ((fieldName == slugField) && value ) {
-      onChange(slugField, generateUniqueSlug(value, config, unavailableSlugs));
+    if (fieldName == slugField && value) {
+      // Remove current entry slug from the list
+      const slugs = unavailableSlugs.filter(item => item !== entrySlug);
+      onChange(slugField, generateUniqueSlug(value, config, slugs));
     }
-  }
+  };
 
   render() {
     const {
@@ -244,7 +267,7 @@ class EditorControl extends React.Component {
           controlComponent={widget.control}
           field={field}
           uniqueFieldId={this.uniqueFieldId}
-          value={fieldValue}
+          value={value}
           mediaPaths={mediaPaths}
           metadata={metadata}
           onChange={(newValue, newMetadata) => onChange(fieldName, newValue, newMetadata)}

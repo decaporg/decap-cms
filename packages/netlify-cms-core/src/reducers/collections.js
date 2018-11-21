@@ -121,7 +121,7 @@ export const selectIdentifier = collection => {
   );
 };
 export const selectSlugField = collection => {
-  return  collection.get('slug_field');
+  return collection.get('slug_field');
 };
 export const selectInferedField = (collection, fieldName) => {
   if (fieldName === 'title' && collection.get('identifier_field')) {

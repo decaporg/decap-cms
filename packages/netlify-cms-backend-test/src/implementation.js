@@ -148,11 +148,16 @@ export default class TestRepo {
   persistEntry({ path, raw, slug }, mediaFiles, options = {}) {
     if (options.useWorkflow) {
       const unpubStore = window.repoFilesUnpublished;
-      const existingEntryIndex = unpubStore.findIndex(e => e.file.path === path);
+      const oldPath = options.oldPath;
+      const existingPath = oldPath || path;
+      const existingEntryIndex = unpubStore.findIndex(e => e.file.path === existingPath);
       if (existingEntryIndex >= 0) {
         const unpubEntry = { ...unpubStore[existingEntryIndex], data: raw };
-        unpubEntry.title = options.parsedData && options.parsedData.title;
-        unpubEntry.description = options.parsedData && options.parsedData.description;
+        if (oldPath) {
+          Object.assign(unpubEntry, { file: { path }, slug });
+        }
+        unpubEntry.metaData.title = options.parsedData && options.parsedData.title;
+        unpubEntry.metaData.description = options.parsedData && options.parsedData.description;
         unpubStore.splice(existingEntryIndex, 1, unpubEntry);
       } else {
         const unpubEntry = {
@@ -181,6 +186,11 @@ export default class TestRepo {
     if (newEntry) {
       window.repoFiles[folder][fileName] = { content: raw };
     } else {
+      if (options.oldPath) {
+        const oldFileName = options.oldPath.substring(path.lastIndexOf('/') + 1);
+        window.repoFiles[folder][fileName] = window.repoFiles[folder][oldFileName];
+        delete window.repoFiles[folder][oldFileName];
+      }
       window.repoFiles[folder][fileName].content = raw;
     }
     return Promise.resolve();
