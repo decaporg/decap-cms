@@ -106,6 +106,7 @@ collections: # A list of collections the CMS should be able to edit
           options: ['a', 'b', 'c'],
           multiple: true,
         }
+      - { label: 'Conditional field', name: 'conditionalField', when: 'entry.data.select = "a"' }
       - { label: 'Hidden', name: 'hidden', widget: 'hidden', default: 'hidden' }
       - label: 'Object'
         name: 'object'

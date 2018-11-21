@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from 'react-emotion';
+import conscript from 'conscript';
 import EditorControl, { ControlHint } from './EditorControl';
 
 const ControlPaneContainer = styled.div`
@@ -24,9 +25,30 @@ export default class ControlPane extends React.Component {
 
   validate = () => {
     this.props.fields.forEach(field => {
-      if (field.get('widget') === 'hidden') return;
+      if (this.isVisible(field)) return;
       this.componentValidate[field.get('name')]();
     });
+  };
+
+  isVisible = field => {
+    if (field.get('widget') === 'hidden') {
+      return false;
+    }
+
+    const when = field.get('when');
+    if (when) {
+      const { entry } = this.props;
+      const vars = { field: field.toJS(), entry: entry.toJS() };
+      if (typeof when === 'function') {
+        return when(vars);
+      } else if (typeof when === 'string') {
+        return conscript(when)({ vars });
+      } else {
+        throw new Error('Invalid value for `when`. Should be a string or function.');
+      }
+    }
+
+    return true;
   };
 
   render() {
@@ -52,7 +74,7 @@ export default class ControlPane extends React.Component {
       <ControlPaneContainer>
         {fields.map(
           (field, i) =>
-            field.get('widget') === 'hidden' ? null : (
+            !this.isVisible(field) ? null : (
               <EditorControl
                 key={i}
                 field={field}

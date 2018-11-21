@@ -204,6 +204,7 @@ The `fields` option maps editor UI widgets to field-value pairs in the saved fil
 - `default`: specify a default value for a field; available for most widget types (see [Widgets](../widgets) for details on each widget type). Please note that field default value only works for folder collection type.
 - `required`: specify as `false` to make a field optional; defaults to `true`
 - `pattern`: add field validation by specifying a list with a regex pattern and an error message; more extensive validation can be achieved with [custom widgets](../custom-widgets/#advanced-field-validation)
+- `when`: specify a condition that allows or not the field to be displayed (**and be validated**) in the editor. This condition can be described by a string (see [`conscript.js`](https://github.com/lamansky/conscript.js)) or a function. Both takes `field` and `entry` as variables. By example, you could use `entry.data.someFieldValue = 'bar'` as condition.
 
 In files with frontmatter, one field should be named `body`. This special field represents the section of the document (usually markdown) that comes after the frontmatter.
 
@@ -218,6 +219,8 @@ fields:
   - {label: "Layout", name: "layout", widget: "hidden", default: "blog"}
   - {label: "Featured Image", name: "thumbnail", widget: "image", required: false}
   - {label: "Body", name: "body", widget: "markdown"}
+  - {label: "Type", name: "type", widget: "list", options: ["blog", "article"]}
+  - {label: "Article category", name: "articleCategory", when: "entry.data.type = 'article'"}
 ```
 
 ### `editor`
