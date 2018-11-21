@@ -41,7 +41,7 @@ export function applyDefaults(config) {
 }
 
 function mergePreloadedConfig(...loadedConfig) {
-  return Map().merge(...loadedConfig);
+  return Map().mergeDeep(...loadedConfig);
 }
 
 function parseConfig(data) {
