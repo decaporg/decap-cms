@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { Map, fromJS } from 'immutable';
+import { Map, List, fromJS } from 'immutable';
 import { find } from 'lodash';
 import Select from 'react-select';
 import { colors } from 'netlify-cms-ui-default';
@@ -84,10 +84,24 @@ export default class SelectControl extends React.Component {
     }
   };
 
+  getSelectedValue = ({ value, defaultValue, multiple, options }) => {
+    const rawSelectedValue = value || defaultValue;
+
+    if (multiple) {
+      let selectedOptions = List.isList(rawSelectedValue)
+        ? rawSelectedValue.toJS()
+        : rawSelectedValue;
+
+      return options.filter(i => selectedOptions.findIndex(o => (o.value || o) === i.value) !== -1);
+    } else {
+      return find(options, ['value', rawSelectedValue]);
+    }
+  };
+
   render() {
     const { field, value, forID, classNameWrapper, setActiveStyle, setInactiveStyle } = this.props;
     const fieldOptions = field.get('options');
-    const isMulti = field.get('multiple');
+    const multiple = field.get('multiple');
 
     if (!fieldOptions) {
       return <div>Error rendering select control for {field.get('name')}: No options</div>;
@@ -102,7 +116,12 @@ export default class SelectControl extends React.Component {
       }),
     ];
 
-    const selectedValue = find(options, ['value', value]);
+    const selectedValue = this.getSelectedValue({
+      options,
+      value,
+      multiple,
+      defaultValue: field.get('default'),
+    });
 
     return (
       <Select
@@ -114,7 +133,7 @@ export default class SelectControl extends React.Component {
         onBlur={setInactiveStyle}
         options={options}
         styles={styles}
-        isMulti={isMulti}
+        isMulti={multiple}
         placeholder=""
         isClearable
       />
