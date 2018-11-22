@@ -2,6 +2,31 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Map } from 'immutable';
+import { find } from 'lodash';
+import Select from 'react-select';
+import { colors } from 'netlify-cms-ui-default';
+
+const styles = {
+  control: provided => ({
+    ...provided,
+    border: 0,
+    boxShadow: 'none',
+    padding: '9px 0 9px 12px',
+  }),
+  option: (provided, state) => ({
+    ...provided,
+    backgroundColor: state.isSelected
+      ? `${colors.active}`
+      : state.isFocused
+        ? `${colors.activeBackground}`
+        : 'transparent',
+    paddingLeft: '22px',
+  }),
+  menu: provided => ({ ...provided, right: 0 }),
+  container: provided => ({ ...provided, padding: '0 !important' }),
+  indicatorSeparator: () => ({ display: 'none' }),
+  dropdownIndicator: provided => ({ ...provided, color: `${colors.controlLabel}` }),
+};
 
 export default class SelectControl extends React.Component {
   static propTypes = {
@@ -28,8 +53,8 @@ export default class SelectControl extends React.Component {
     value: '',
   };
 
-  handleChange = e => {
-    this.props.onChange(e.target.value);
+  handleChange = selectedOption => {
+    this.props.onChange(selectedOption['value']);
   };
 
   render() {
@@ -50,21 +75,19 @@ export default class SelectControl extends React.Component {
       }),
     ];
 
+    const selectedValue = find(options, ['value', value]);
+
     return (
-      <select
+      <Select
         id={forID}
-        value={value || ''}
+        value={selectedValue}
         onChange={this.handleChange}
         className={classNameWrapper}
         onFocus={setActiveStyle}
         onBlur={setInactiveStyle}
-      >
-        {options.map((option, idx) => (
-          <option key={idx} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
+        options={options}
+        styles={styles}
+      />
     );
   }
 }
