@@ -222,12 +222,8 @@ export default class ListControl extends React.Component {
     const metadataRemovePath = isSingleField ? value.get(index) : value.get(index).valueSeq();
     const parsedMetadata = metadata && { [collectionName]: metadata.removeIn(metadataRemovePath) };
 
-    /**
-     * Depending on the number of list items and item object removed, removed item object
-     * index is pushed one step down the list items array.
-     */
-    const removedItemIndex =
-      (index == 0 && value.count() == 1) || (index == 1 && value.count() == 2) ? index : index + 1;
+    // Removed item object index is the last item in the list
+    const removedItemIndex = value.count() - 1;
 
     this.setState({ itemsCollapsed: itemsCollapsed.delete(index) });
 
@@ -238,10 +234,8 @@ export default class ListControl extends React.Component {
       this.validations.splice(removedItemIndex, 1);
     }
 
-    /**
-     * Remove deleted item object unique field Ids from fieldsErrors Map() and from the
-     *  list unique field ids array.
-     */
+    // Remove deleted item object unique field Ids from fieldsErrors Map() and from the
+    // list unique field ids array.
     if (this.listUniqueFieldIds) {
       onDeleteErrors(this.listUniqueFieldIds[removedItemIndex]);
       this.listUniqueFieldIds.splice(removedItemIndex, 1);
