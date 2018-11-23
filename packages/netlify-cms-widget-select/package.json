@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "cross-env": "^5.2.0",
+    "react-testing-library": "^5.3.0",
     "webpack": "^4.16.1",
     "webpack-cli": "^3.1.0"
   },
