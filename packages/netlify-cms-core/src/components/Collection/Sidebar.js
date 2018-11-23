@@ -35,7 +35,7 @@ const SidebarHeading = styled.h2`
 const SearchContainer = styled.div`
   display: flex;
   align-items: center;
-  margin: 0 8px;
+  margin: 0 12px;
   position: relative;
 
   ${Icon} {
@@ -65,6 +65,11 @@ const SearchInput = styled.input`
   }
 `;
 
+const SidebarNavList = styled.ul`
+  margin: 16px 0 0;
+  list-style: none;
+`;
+
 const SidebarNavLink = styled(NavLink)`
   display: flex;
   font-size: 14px;
@@ -73,19 +78,17 @@ const SidebarNavLink = styled(NavLink)`
   padding: 8px 12px;
   border-left: 2px solid #fff;
 
+  ${Icon} {
+    margin-right: 8px;
+  }
+
   ${props => css`
     &:hover,
     &:active,
     &.${props.activeClassName} {
       ${styles.sidebarNavLinkActive};
     }
-  `} &:first-of-type {
-    margin-top: 16px;
-  }
-
-  ${Icon} {
-    margin-right: 8px;
-  }
+  `};
 `;
 
 class Sidebar extends React.Component {
@@ -104,14 +107,12 @@ class Sidebar extends React.Component {
   renderLink = collection => {
     const collectionName = collection.get('name');
     return (
-      <SidebarNavLink
-        key={collectionName}
-        to={`/collections/${collectionName}`}
-        activeClassName="sidebar-active"
-      >
-        <Icon type="write" />
-        {collection.get('label')}
-      </SidebarNavLink>
+      <li key={collectionName}>
+        <SidebarNavLink to={`/collections/${collectionName}`} activeClassName="sidebar-active">
+          <Icon type="write" />
+          {collection.get('label')}
+        </SidebarNavLink>
+      </li>
     );
   };
 
@@ -131,7 +132,7 @@ class Sidebar extends React.Component {
             value={query}
           />
         </SearchContainer>
-        {collections.toList().map(this.renderLink)}
+        <SidebarNavList>{collections.toList().map(this.renderLink)}</SidebarNavList>
       </SidebarContainer>
     );
   }
