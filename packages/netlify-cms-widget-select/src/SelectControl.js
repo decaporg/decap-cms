@@ -70,35 +70,40 @@ export default class SelectControl extends React.Component {
     }),
   };
 
-  static defaultProps = {
-    value: '',
-  };
-
   handleChange = selectedOption => {
     const { field, onChange } = this.props;
 
     if (field.get('multiple')) {
-      onChange(fromJS(selectedOption));
+      onChange(selectedOption.length ? fromJS(selectedOption) : '');
     } else {
       onChange(selectedOption);
     }
+  };
+
+  convertToOption = raw => {
+    if (typeof raw === 'string') {
+      return { label: raw, value: raw };
+    }
+    return Map.isMap(raw) ? raw.toJS() : raw;
   };
 
   getSelectedValue = ({ value, defaultValue, multiple, options }) => {
     const rawSelectedValue = value != null ? value : defaultValue;
 
     if (multiple) {
-      let selectedOptions = List.isList(rawSelectedValue)
+      const selectedOptions = List.isList(rawSelectedValue)
         ? rawSelectedValue.toJS()
         : rawSelectedValue;
 
       if (!selectedOptions || !Array.isArray(selectedOptions)) {
-        return null;
+        return [];
       }
 
-      return options.filter(i => selectedOptions.findIndex(o => (o.value || o) === i.value) !== -1);
+      return selectedOptions
+        .filter(i => options.find(o => o.value === (i.value || i)))
+        .map(this.convertToOption);
     } else {
-      return find(options, ['value', rawSelectedValue]);
+      return find(options, ['value', rawSelectedValue]) || '';
     }
   };
 
@@ -111,15 +116,7 @@ export default class SelectControl extends React.Component {
       return <div>Error rendering select control for {field.get('name')}: No options</div>;
     }
 
-    const options = [
-      ...fieldOptions.map(option => {
-        if (typeof option === 'string') {
-          return { label: option, value: option };
-        }
-        return Map.isMap(option) ? option.toJS() : option;
-      }),
-    ];
-
+    const options = [...fieldOptions.map(this.convertToOption)];
     const selectedValue = this.getSelectedValue({
       options,
       value,
