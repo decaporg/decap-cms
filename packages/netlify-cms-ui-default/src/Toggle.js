@@ -4,7 +4,7 @@ import styled, { css } from 'react-emotion';
 import ReactToggled from 'react-toggled';
 import { colors, colorsRaw, shadows, transitions } from './styles';
 
-const ToggleContainer = styled.span`
+const ToggleContainer = styled.button`
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -12,6 +12,10 @@ const ToggleContainer = styled.span`
   width: 40px;
   height: 20px;
   cursor: pointer;
+  border: none;
+  padding: 0;
+  margin: 0;
+  background: transparent;
 `;
 
 const ToggleHandle = styled.span`
@@ -40,6 +44,7 @@ const ToggleBackground = styled.span`
 `;
 
 const Toggle = ({
+  id,
   active,
   onChange,
   onFocus,
@@ -50,14 +55,17 @@ const Toggle = ({
   Handle = ToggleHandle,
 }) => (
   <ReactToggled on={active} onToggle={onChange}>
-    {({ on, getElementTogglerProps }) => (
+    {({ on, getTogglerProps }) => (
       <Container
-        role="switch"
-        aria-checked={on.toString()}
+        id={id}
         onFocus={onFocus}
         onBlur={onBlur}
         className={className}
-        {...getElementTogglerProps()}
+        {...getTogglerProps({
+          role: 'switch',
+          'aria-checked': on.toString(),
+          'aria-expanded': null,
+        })}
       >
         <Background isActive={on} />
         <Handle isActive={on} />
@@ -67,6 +75,7 @@ const Toggle = ({
 );
 
 Toggle.propTypes = {
+  id: PropTypes.string,
   active: PropTypes.bool,
   onChange: PropTypes.func,
   onFocus: PropTypes.func,
