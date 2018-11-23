@@ -60,6 +60,10 @@ class MediaLibrary extends React.Component {
     t: PropTypes.func.isRequired,
   };
 
+  static defaultProps = {
+    files: [],
+  };
+
   /**
    * The currently selected file and query are tracked in component state as
    * they do not impact the rest of the application.
@@ -120,7 +124,7 @@ class MediaLibrary extends React.Component {
   /**
    * Filter an array of file data to include only images.
    */
-  filterImages = (files = []) => {
+  filterImages = files => {
     return files.filter(file => {
       const ext = fileExtension(file.name).toLowerCase();
       return IMAGE_EXTENSIONS.includes(ext);
@@ -277,7 +281,7 @@ class MediaLibrary extends React.Component {
     const {
       isVisible,
       canInsert,
-      files = [],
+      files,
       dynamicSearch,
       dynamicSearchActive,
       forImage,
