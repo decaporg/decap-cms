@@ -26,13 +26,6 @@ collections: # A list of collections the CMS should be able to edit
           timeFormat: 'HH:mm',
           format: 'YYYY-MM-DD HH:mm',
         }
-      - {
-          label: 'Tags',
-          name: 'tags',
-          widget: 'select',
-          options: ['Foo', 'Bar', 'Baz'],
-          multiple: true,
-        }
       - label: 'Cover Image'
         name: 'image'
         widget: 'image'
