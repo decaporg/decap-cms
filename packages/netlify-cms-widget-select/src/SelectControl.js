@@ -85,12 +85,16 @@ export default class SelectControl extends React.Component {
   };
 
   getSelectedValue = ({ value, defaultValue, multiple, options }) => {
-    const rawSelectedValue = value || defaultValue;
+    const rawSelectedValue = value != null ? value : defaultValue;
 
     if (multiple) {
       let selectedOptions = List.isList(rawSelectedValue)
         ? rawSelectedValue.toJS()
         : rawSelectedValue;
+
+      if (!selectedOptions || !Array.isArray(selectedOptions)) {
+        return null;
+      }
 
       return options.filter(i => selectedOptions.findIndex(o => (o.value || o) === i.value) !== -1);
     } else {
