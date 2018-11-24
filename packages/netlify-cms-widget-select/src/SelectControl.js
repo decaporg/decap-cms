@@ -42,7 +42,7 @@ const styles = {
   multiValueRemove: styles => ({
     ...styles,
     color: colors.controlLabel,
-    [':hover']: {
+    ':hover': {
       color: colors.errorText,
       backgroundColor: colors.errorBackground,
     },
