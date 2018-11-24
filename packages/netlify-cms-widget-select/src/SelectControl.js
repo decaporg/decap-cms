@@ -111,6 +111,7 @@ export default class SelectControl extends React.Component {
     const { field, value, forID, classNameWrapper, setActiveStyle, setInactiveStyle } = this.props;
     const fieldOptions = field.get('options');
     const multiple = field.get('multiple');
+    const clearable = !!field.get('optional') || multiple;
 
     if (!fieldOptions) {
       return <div>Error rendering select control for {field.get('name')}: No options</div>;
@@ -136,7 +137,7 @@ export default class SelectControl extends React.Component {
         styles={styles}
         isMulti={multiple}
         placeholder=""
-        isClearable
+        isClearable={clearable}
       />
     );
   }
