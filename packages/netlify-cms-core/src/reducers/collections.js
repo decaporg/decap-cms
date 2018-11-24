@@ -114,9 +114,9 @@ export const selectTemplateName = (collection, slug) =>
   selectors[collection.get('type')].templateName(collection, slug);
 export const selectIdentifier = collection => {
   const identifier = collection.get('identifier_field');
-  const indentifierFields = identifier ? [identifier, ...IDENTIFIER_FIELDS] : IDENTIFIER_FIELDS;
+  const identifierFields = identifier ? [identifier, ...IDENTIFIER_FIELDS] : IDENTIFIER_FIELDS;
   const fieldNames = collection.get('fields').map(field => field.get('name'));
-  return indentifierFields.find(id => fieldNames.find(name => name.toLowerCase().trim() === id));
+  return identifierFields.find(id => fieldNames.find(name => name.toLowerCase().trim() === id.toLowerCase().trim()));
 };
 export const selectInferedField = (collection, fieldName) => {
   const inferableField = INFERABLE_FIELDS[fieldName];
