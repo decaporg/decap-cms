@@ -96,14 +96,14 @@ export default class SelectControl extends React.Component {
         : rawSelectedValue;
 
       if (!selectedOptions || !Array.isArray(selectedOptions)) {
-        return [];
+        return null;
       }
 
       return selectedOptions
         .filter(i => options.find(o => o.value === (i.value || i)))
         .map(this.convertToOption);
     } else {
-      return find(options, ['value', rawSelectedValue]) || '';
+      return find(options, ['value', rawSelectedValue]) || null;
     }
   };
 
