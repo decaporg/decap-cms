@@ -74,7 +74,7 @@ export default class SelectControl extends React.Component {
     const { field, onChange } = this.props;
 
     if (field.get('multiple')) {
-      onChange(selectedOption.length ? fromJS(selectedOption.map(i => i.value)) : '');
+      onChange(selectedOption.length ? fromJS(selectedOption.map(i => i.value)) : null);
     } else {
       onChange(selectedOption && selectedOption.value ? selectedOption.value : '');
     }
