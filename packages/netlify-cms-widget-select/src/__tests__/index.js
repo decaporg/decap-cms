@@ -1,7 +1,8 @@
-import 'react-testing-library/cleanup-after-each';
 import React from 'react';
 import { fromJS } from 'immutable';
 import { render, fireEvent } from 'react-testing-library';
+import 'react-testing-library/cleanup-after-each';
+import 'jest-dom/extend-expect';
 import { SelectControl } from '../';
 
 const options = [
@@ -10,53 +11,127 @@ const options = [
   { value: 'Baz', label: 'Baz' },
 ];
 
-function noop() {}
+class SelectController extends React.Component {
+  state = {
+    value: this.props.defaultValue,
+  };
 
-function renderSelect({ field }) {
-  const onChangeFn = jest.fn();
+  handleOnChange = jest.fn(value => {
+    this.setState({ value });
+  });
+
+  componentDidUpdate() {
+    this.props.onStateChange(this.state);
+  }
+
+  render() {
+    return this.props.children({
+      value: this.state.value,
+      handleOnChange: this.handleOnChange,
+    });
+  }
+}
+
+function setup({ field, defaultValue }) {
+  let renderArgs;
+  const stateChangeSpy = jest.fn();
+  const setActiveSpy = jest.fn();
+  const setInactiveSpy = jest.fn();
+
   const helpers = render(
-    <SelectControl
-      field={field}
-      onChange={onChangeFn}
-      forID="basic-select"
-      classNameWrapper=""
-      setActiveStyle={noop}
-      setInactiveStyle={noop}
-    />,
+    <SelectController defaultValue={defaultValue} onStateChange={stateChangeSpy}>
+      {({ value, handleOnChange }) => {
+        renderArgs = { value, onChangeSpy: handleOnChange };
+        return (
+          <SelectControl
+            field={field}
+            value={value}
+            onChange={handleOnChange}
+            forID="basic-select"
+            classNameWrapper=""
+            setActiveStyle={setActiveSpy}
+            setInactiveStyle={setInactiveSpy}
+          />
+        );
+      }}
+    </SelectController>,
   );
 
   const input = helpers.container.querySelector('input');
 
   return {
     ...helpers,
-    onChangeFn,
+    ...renderArgs,
+    stateChangeSpy,
+    setActiveSpy,
+    setInactiveSpy,
     input,
   };
 }
 
 describe('Select widget', () => {
-  it('should work', () => {
+  it('should call onChange with correct selectedItem', () => {
     const field = fromJS({ options });
-    const { getByText, input, onChangeFn } = renderSelect({ field });
+    const { getByText, input, onChangeSpy } = setup({ field });
 
     fireEvent.focus(input);
     fireEvent.keyDown(input, { key: 'ArrowDown' });
     fireEvent.click(getByText('Foo'));
 
-    expect(onChangeFn).toHaveBeenCalledTimes(1);
-    expect(onChangeFn).toHaveBeenCalledWith(options[0].value);
+    expect(onChangeSpy).toHaveBeenCalledTimes(1);
+    expect(onChangeSpy).toHaveBeenCalledWith(options[0].value);
+  });
+
+  it('should respect default value', () => {
+    const field = fromJS({ options, default: options[1].value });
+    const { getByText } = setup({ field });
+
+    expect(getByText('Bar')).toBeInTheDocument();
+  });
+
+  it('should respect value', () => {
+    const field = fromJS({ options });
+    const { getByText } = setup({ field, defaultValue: options[2].value });
+
+    expect(getByText('Baz')).toBeInTheDocument();
   });
 
   describe('with multiple', () => {
-    it('should work with multiple', () => {
+    it('should call onChange with correct selectedItem', () => {
       const field = fromJS({ options, multiple: true });
-      const { getByText, input, onChangeFn } = renderSelect({ field });
+      const { getByText, input, onChangeSpy } = setup({ field });
 
       fireEvent.keyDown(input, { key: 'ArrowDown' });
       fireEvent.click(getByText('Foo'));
+      fireEvent.keyDown(input, { key: 'ArrowDown' });
+      fireEvent.click(getByText('Baz'));
 
-      expect(onChangeFn).toHaveBeenCalledTimes(1);
-      expect(onChangeFn).toHaveBeenCalledWith(fromJS([options[0].value]));
+      expect(onChangeSpy).toHaveBeenCalledTimes(2);
+      expect(onChangeSpy).toHaveBeenCalledWith(fromJS([options[0].value]));
+      expect(onChangeSpy).toHaveBeenCalledWith(fromJS([options[0].value, options[2].value]));
+    });
+
+    it('should respect default value', () => {
+      const field = fromJS({
+        options,
+        multiple: true,
+        default: [options[1].value, options[2].value],
+      });
+      const { getByText } = setup({ field });
+
+      expect(getByText('Bar')).toBeInTheDocument();
+      expect(getByText('Baz')).toBeInTheDocument();
+    });
+
+    it('should respect value', () => {
+      const field = fromJS({ options, multiple: true });
+      const { getByText } = setup({
+        field,
+        defaultValue: fromJS([options[1].value, options[2].value]),
+      });
+
+      expect(getByText('Bar')).toBeInTheDocument();
+      expect(getByText('Baz')).toBeInTheDocument();
     });
   });
 });
