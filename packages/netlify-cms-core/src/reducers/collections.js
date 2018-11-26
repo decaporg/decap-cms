@@ -116,7 +116,9 @@ export const selectIdentifier = collection => {
   const identifier = collection.get('identifier_field');
   const identifierFields = identifier ? [identifier, ...IDENTIFIER_FIELDS] : IDENTIFIER_FIELDS;
   const fieldNames = collection.get('fields').map(field => field.get('name'));
-  return identifierFields.find(id => fieldNames.find(name => name.toLowerCase().trim() === id.toLowerCase().trim()));
+  return identifierFields.find(id =>
+    fieldNames.find(name => name.toLowerCase().trim() === id.toLowerCase().trim()),
+  );
 };
 export const selectInferedField = (collection, fieldName) => {
   const inferableField = INFERABLE_FIELDS[fieldName];
