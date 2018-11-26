@@ -449,7 +449,7 @@ class Backend {
     }
 
     const commitMessage = commitMessageFormatter('delete', config, { collection, slug, path });
-    return this.implementation.deleteFile(path, commitMessage);
+    return this.implementation.deleteFile(path, commitMessage, { collection, slug });
   }
 
   deleteMedia(config, path) {
