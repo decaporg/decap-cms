@@ -22,7 +22,7 @@ const styles = {
         : 'transparent',
     paddingLeft: '22px',
   }),
-  menu: styles => ({ ...styles, right: 0 }),
+  menu: styles => ({ ...styles, right: 0, zIndex: 2 }),
   container: styles => ({ ...styles, padding: '0 !important' }),
   indicatorSeparator: (styles, state) =>
     state.hasValue && state.selectProps.isClearable
