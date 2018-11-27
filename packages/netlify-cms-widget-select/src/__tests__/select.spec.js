@@ -82,13 +82,6 @@ describe('Select widget', () => {
     expect(onChangeSpy).toHaveBeenCalledWith(options[0].value);
   });
 
-  it('should respect default value', () => {
-    const field = fromJS({ options, default: options[1].value });
-    const { getByText } = setup({ field });
-
-    expect(getByText('Bar')).toBeInTheDocument();
-  });
-
   it('should respect value', () => {
     const field = fromJS({ options });
     const { getByText } = setup({ field, defaultValue: options[2].value });
@@ -109,18 +102,6 @@ describe('Select widget', () => {
       expect(onChangeSpy).toHaveBeenCalledTimes(2);
       expect(onChangeSpy).toHaveBeenCalledWith(fromJS([options[0].value]));
       expect(onChangeSpy).toHaveBeenCalledWith(fromJS([options[0].value, options[2].value]));
-    });
-
-    it('should respect default value', () => {
-      const field = fromJS({
-        options,
-        multiple: true,
-        default: [options[1].value, options[2].value],
-      });
-      const { getByText } = setup({ field });
-
-      expect(getByText('Bar')).toBeInTheDocument();
-      expect(getByText('Baz')).toBeInTheDocument();
     });
 
     it('should respect value', () => {
