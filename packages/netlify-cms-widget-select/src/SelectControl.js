@@ -49,6 +49,17 @@ const styles = {
   }),
 };
 
+function optionToString(option) {
+  return option && option.value ? option.value : '';
+}
+
+function convertToOption(raw) {
+  if (typeof raw === 'string') {
+    return { label: raw, value: raw };
+  }
+  return Map.isMap(raw) ? raw.toJS() : raw;
+}
+
 export default class SelectControl extends React.Component {
   static propTypes = {
     onChange: PropTypes.func.isRequired,
@@ -71,29 +82,18 @@ export default class SelectControl extends React.Component {
   };
 
   handleChange = selectedOption => {
-    const { field, onChange } = this.props;
+    const { onChange } = this.props;
 
-    if (field.get('multiple')) {
-      onChange(selectedOption.length ? fromJS(selectedOption.map(i => i.value)) : null);
+    if (Array.isArray(selectedOption)) {
+      onChange(fromJS(selectedOption.map(optionToString)));
     } else {
-      onChange(selectedOption && selectedOption.value ? selectedOption.value : '');
+      onChange(optionToString(selectedOption));
     }
   };
 
-  convertToOption = raw => {
-    if (typeof raw === 'string') {
-      return { label: raw, value: raw };
-    }
-    return Map.isMap(raw) ? raw.toJS() : raw;
-  };
-
-  getSelectedValue = ({ value, defaultValue, multiple, options }) => {
-    const rawSelectedValue = value != null ? value : defaultValue;
-
-    if (multiple) {
-      const selectedOptions = List.isList(rawSelectedValue)
-        ? rawSelectedValue.toJS()
-        : rawSelectedValue;
+  getSelectedValue = ({ value, options, isMultiple }) => {
+    if (isMultiple) {
+      const selectedOptions = List.isList(value) ? value.toJS() : value;
 
       if (!selectedOptions || !Array.isArray(selectedOptions)) {
         return null;
@@ -101,28 +101,27 @@ export default class SelectControl extends React.Component {
 
       return selectedOptions
         .filter(i => options.find(o => o.value === (i.value || i)))
-        .map(this.convertToOption);
+        .map(convertToOption);
     } else {
-      return find(options, ['value', rawSelectedValue]) || null;
+      return find(options, ['value', value]) || null;
     }
   };
 
   render() {
     const { field, value, forID, classNameWrapper, setActiveStyle, setInactiveStyle } = this.props;
     const fieldOptions = field.get('options');
-    const multiple = field.get('multiple');
-    const clearable = !!field.get('optional') || multiple;
+    const isMultiple = field.get('multiple', false);
+    const isClearable = !field.get('required', true) || isMultiple;
 
     if (!fieldOptions) {
       return <div>Error rendering select control for {field.get('name')}: No options</div>;
     }
 
-    const options = [...fieldOptions.map(this.convertToOption)];
+    const options = [...fieldOptions.map(convertToOption)];
     const selectedValue = this.getSelectedValue({
       options,
       value,
-      multiple,
-      defaultValue: field.get('default'),
+      isMultiple,
     });
 
     return (
@@ -135,9 +134,9 @@ export default class SelectControl extends React.Component {
         onBlur={setInactiveStyle}
         options={options}
         styles={styles}
-        isMulti={multiple}
+        isMulti={isMultiple}
+        isClearable={isClearable}
         placeholder=""
-        isClearable={clearable}
       />
     );
   }
