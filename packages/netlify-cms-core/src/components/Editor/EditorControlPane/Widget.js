@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { Map } from 'immutable';
+import { Map, List } from 'immutable';
 import ValidationErrorTypes from 'Constants/validationErrorTypes';
 
 const truthy = () => ({ error: false });
@@ -10,7 +10,8 @@ const isEmpty = value =>
   value === null ||
   value === undefined ||
   (value.hasOwnProperty('length') && value.length === 0) ||
-  (value.constructor === Object && Object.keys(value).length === 0);
+  (value.constructor === Object && Object.keys(value).length === 0) ||
+  (List.isList(value) && value.size === 0);
 
 export default class Widget extends Component {
   static propTypes = {
