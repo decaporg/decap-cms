@@ -57,7 +57,7 @@
     "react-sortable-hoc": "^0.6.8",
     "react-split-pane": "^0.1.82",
     "react-topbar-progress-indicator": "^2.0.0",
-    "react-waypoint": "^7.1.0",
+    "react-waypoint": "^8.1.0",
     "redux": "^4.0.1",
     "redux-notifications": "^4.0.1",
     "redux-optimist": "^1.0.0",
