@@ -23,7 +23,7 @@
     "build": "cross-env NODE_ENV=production webpack"
   },
   "dependencies": {
-    "react-textarea-autosize": "^5.2.0"
+    "react-textarea-autosize": "^7.0.0"
   },
   "devDependencies": {
     "cross-env": "^5.2.0",
