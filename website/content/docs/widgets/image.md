@@ -21,9 +21,9 @@ The image widget allows editors to upload an image or select an existing one fro
       name: "thumbnail"
       widget: "image"
       default: "/uploads/chocolate-dogecoin.jpg"
-      options:
-        media_library:
-          config:
-            publicKey: "demopublickey"
-            multiple: true
+        options:
+          media_library:
+            config:
+              publicKey: "demopublickey"
+              multiple: true
     ```
