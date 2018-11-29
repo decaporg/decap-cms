@@ -22,7 +22,7 @@
     "e2e": "run-s e2e-prep e2e-run",
     "e2e-ci": "run-s e2e-prep e2e-run-ci",
     "e2e-dev": "start-test develop 8080 e2e-exec-dev",
-    "prepublishOnly": "run-s bootstrap build",
+    "prepublishOnly": "run-s test bootstrap build",
     "publish": "run-s publish:version publish:push",
     "publish:version": "lerna version --no-push",
     "publish:push": "lerna publish from-git && git push --follow-tags",
