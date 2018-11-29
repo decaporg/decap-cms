@@ -25,7 +25,7 @@
     "emotion": "^9.2.6",
     "fuzzy": "^0.1.1",
     "gotrue-js": "^0.9.15",
-    "gray-matter": "^3.0.6",
+    "gray-matter": "^4.0.1",
     "history": "^4.7.2",
     "immutable": "^3.7.6",
     "js-base64": "^2.1.9",
