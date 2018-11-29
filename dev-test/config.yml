@@ -18,7 +18,14 @@ collections: # A list of collections the CMS should be able to edit
     create: true # Allow users to create new documents in this collection
     fields: # The fields each document in this collection have
       - { label: 'Title', name: 'title', widget: 'string', tagname: 'h1' }
-      - { label: 'Publish Date', name: 'date', widget: 'datetime', dateFormat: 'YYYY-MM-DD', timeFormat: 'HH:mm', format: 'YYYY-MM-DD HH:mm' }
+      - {
+          label: 'Publish Date',
+          name: 'date',
+          widget: 'datetime',
+          dateFormat: 'YYYY-MM-DD',
+          timeFormat: 'HH:mm',
+          format: 'YYYY-MM-DD HH:mm',
+        }
       - label: 'Cover Image'
         name: 'image'
         widget: 'image'
@@ -92,6 +99,13 @@ collections: # A list of collections the CMS should be able to edit
       - { label: 'Image', name: 'image', widget: 'image' }
       - { label: 'File', name: 'file', widget: 'file' }
       - { label: 'Select', name: 'select', widget: 'select', options: ['a', 'b', 'c'] }
+      - {
+          label: 'Select multiple',
+          name: 'select_multiple',
+          widget: 'select',
+          options: ['a', 'b', 'c'],
+          multiple: true,
+        }
       - { label: 'Hidden', name: 'hidden', widget: 'hidden', default: 'hidden' }
       - label: 'Object'
         name: 'object'
