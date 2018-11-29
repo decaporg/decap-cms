@@ -26,8 +26,7 @@
   "devDependencies": {
     "cross-env": "^5.2.0",
     "css-loader": "^1.0.0",
-    "rollup": "^0.66.6",
-    "to-string-loader": "^1.1.5"
+    "rollup": "^0.66.6"
   },
   "peerDependencies": {
     "emotion": "^9.2.6",
