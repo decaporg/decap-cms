@@ -126,7 +126,7 @@ export default class SelectControl extends React.Component {
 
     return (
       <Select
-        id={forID}
+        inputId={forID}
         value={selectedValue}
         onChange={this.handleChange}
         className={classNameWrapper}

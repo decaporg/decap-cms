@@ -10,11 +10,13 @@ import {
   DropdownButton,
   colors,
   transitions,
+  lengths,
 } from 'netlify-cms-ui-default';
 import ToolbarButton from './ToolbarButton';
 
 const ToolbarContainer = styled.div`
   background-color: ${colors.textFieldBorder};
+  border-top-right-radius: ${lengths.borderRadius};
   position: relative;
   display: flex;
   justify-content: space-between;

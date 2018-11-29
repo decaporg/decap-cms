@@ -238,7 +238,7 @@ export default class Widget extends Component {
       onAddAsset,
       onRemoveInsertedMedia,
       getAsset,
-      forID: field.get('name') + uniqueFieldId,
+      forID: uniqueFieldId,
       ref: this.processInnerControlRef,
       classNameWrapper,
       classNameWidget,

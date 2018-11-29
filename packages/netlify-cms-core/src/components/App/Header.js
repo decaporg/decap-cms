@@ -96,6 +96,12 @@ const AppHeaderQuickNewButton = styled(StyledDropdownButton)`
   }
 `;
 
+const AppHeaderNavList = styled.ul`
+  display: flex;
+  margin: 0;
+  list-style: none;
+`;
+
 class Header extends React.Component {
   static propTypes = {
     user: ImmutablePropTypes.map.isRequired,
@@ -135,26 +141,34 @@ class Header extends React.Component {
       <AppHeader>
         <AppHeaderContent>
           <nav>
-            <AppHeaderNavLink
-              to="/"
-              activeClassName="header-link-active"
-              isActive={(match, location) => location.pathname.startsWith('/collections/')}
-            >
-              <Icon type="page" />
-              {t('app.header.content')}
-            </AppHeaderNavLink>
-            {hasWorkflow ? (
-              <AppHeaderNavLink to="/workflow" activeClassName="header-link-active">
-                <Icon type="workflow" />
-                {t('app.header.workflow')}
-              </AppHeaderNavLink>
-            ) : null}
-            {showMediaButton ? (
-              <AppHeaderButton onClick={openMediaLibrary}>
-                <Icon type="media-alt" />
-                {t('app.header.media')}
-              </AppHeaderButton>
-            ) : null}
+            <AppHeaderNavList>
+              <li>
+                <AppHeaderNavLink
+                  to="/"
+                  activeClassName="header-link-active"
+                  isActive={(match, location) => location.pathname.startsWith('/collections/')}
+                >
+                  <Icon type="page" />
+                  {t('app.header.content')}
+                </AppHeaderNavLink>
+              </li>
+              {hasWorkflow && (
+                <li>
+                  <AppHeaderNavLink to="/workflow" activeClassName="header-link-active">
+                    <Icon type="workflow" />
+                    {t('app.header.workflow')}
+                  </AppHeaderNavLink>
+                </li>
+              )}
+              {showMediaButton && (
+                <li>
+                  <AppHeaderButton onClick={openMediaLibrary}>
+                    <Icon type="media-alt" />
+                    {t('app.header.media')}
+                  </AppHeaderButton>
+                </li>
+              )}
+            </AppHeaderNavList>
           </nav>
           <AppHeaderActions>
             {createableCollections.size > 0 && (
