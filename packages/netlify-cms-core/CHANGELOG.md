@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.2.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.2.0...netlify-cms-core@2.2.1) (2018-11-29)
+
+
+### Bug Fixes
+
+* correct validation pattern error message ([#1879](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1879)) ([2a63940](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/2a63940))
+* fix entry saved message ([#1887](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1887)) ([c4e474b](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/c4e474b))
+* MediaLibraryHeader CloseButton style ([#1883](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1883)) ([034c29a](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/034c29a))
+* **a11y:** correct label "for" references to fields ([#1904](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1904)) ([955f94f](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/955f94f))
+* **backend:** use singular label in custom commit message ([#1917](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1917)) ([2c5827b](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/2c5827b))
+* **config:** remove identifier field validation ([#1882](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1882)) ([fe6af19](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/fe6af19))
+* **netlify-cms-core:** fix identifier field validation ([#1907](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1907)) ([d5f4c99](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/d5f4c99))
+* **netlify-cms-core:** fix prop-types warnings ([#1906](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1906)) ([751ec09](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/751ec09))
+* **netlify-cms-core:** remove double focusable elements on profile menu button ([#1900](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1900)) ([888ae6b](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/888ae6b))
+
+
+
+
+
 # [2.2.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.1.1...netlify-cms-core@2.2.0) (2018-11-12)
 
 

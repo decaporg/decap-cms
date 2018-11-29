@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.1.0...netlify-cms-ui-default@2.1.1) (2018-11-29)
+
+
+### Bug Fixes
+
+* **a11y:** correct label "for" references to fields ([#1904](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/issues/1904)) ([955f94f](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/commit/955f94f))
+
+
+
+
+
 # [2.1.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.0.6...netlify-cms-ui-default@2.1.0) (2018-11-12)
 
 

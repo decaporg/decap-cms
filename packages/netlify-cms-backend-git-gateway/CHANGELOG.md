@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/compare/netlify-cms-backend-git-gateway@2.1.0...netlify-cms-backend-git-gateway@2.1.1) (2018-11-29)
+
+
+### Bug Fixes
+
+* **backend-git-gateway:** double slashes when gateway_url contained a backend ([#1712](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/issues/1712)) ([6de47cd](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/commit/6de47cd))
+
+
+
+
+
 # [2.1.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/compare/netlify-cms-backend-git-gateway@2.0.8...netlify-cms-backend-git-gateway@2.1.0) (2018-11-12)
 
 

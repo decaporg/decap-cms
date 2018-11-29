@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-select/compare/netlify-cms-widget-select@2.0.4...netlify-cms-widget-select@2.0.5) (2018-11-29)
+
+
+### Bug Fixes
+
+* **a11y:** correct label "for" references to fields ([#1904](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-select/issues/1904)) ([955f94f](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-select/commit/955f94f))
+
+
+
+
+
 <a name="2.0.4"></a>
 ## [2.0.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-select/compare/netlify-cms-widget-select@2.0.3...netlify-cms-widget-select@2.0.4) (2018-08-24)
 
