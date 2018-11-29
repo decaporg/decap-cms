@@ -67,12 +67,11 @@ class App extends React.Component {
     t: PropTypes.func.isRequired,
   };
 
-  static configError(config) {
+  configError(config) {
     const t = this.props.t;
     return (
       <ErrorContainer>
         <h1>{t('app.app.errorHeader')}</h1>
-
         <div>
           <strong>{t('app.app.configErrors')}:</strong>
           <ErrorCodeBlock>{config.get('error')}</ErrorCodeBlock>
@@ -145,7 +144,7 @@ class App extends React.Component {
     }
 
     if (config.get('error')) {
-      return App.configError(config);
+      return this.configError(config);
     }
 
     if (config.get('isFetching')) {
@@ -160,7 +159,7 @@ class App extends React.Component {
     const hasWorkflow = publishMode === EDITORIAL_WORKFLOW;
 
     return (
-      <div>
+      <>
         <Notifs CustomComponent={Toast} />
         <Header
           user={user}
@@ -174,27 +173,25 @@ class App extends React.Component {
         />
         <AppMainContainer>
           {isFetching && <TopBarProgress />}
-          <div>
-            <Switch>
-              <Redirect exact from="/" to={defaultPath} />
-              <Redirect exact from="/search/" to={defaultPath} />
-              {hasWorkflow ? <Route path="/workflow" component={Workflow} /> : null}
-              <Route exact path="/collections/:name" component={Collection} />
-              <Route
-                path="/collections/:name/new"
-                render={props => <Editor {...props} newRecord />}
-              />
-              <Route path="/collections/:name/entries/:slug" component={Editor} />
-              <Route
-                path="/search/:searchTerm"
-                render={props => <Collection {...props} isSearchResults />}
-              />
-              <Route component={NotFoundPage} />
-            </Switch>
-            {useMediaLibrary ? <MediaLibrary /> : null}
-          </div>
+          <Switch>
+            <Redirect exact from="/" to={defaultPath} />
+            <Redirect exact from="/search/" to={defaultPath} />
+            {hasWorkflow ? <Route path="/workflow" component={Workflow} /> : null}
+            <Route exact path="/collections/:name" component={Collection} />
+            <Route
+              path="/collections/:name/new"
+              render={props => <Editor {...props} newRecord />}
+            />
+            <Route path="/collections/:name/entries/:slug" component={Editor} />
+            <Route
+              path="/search/:searchTerm"
+              render={props => <Collection {...props} isSearchResults />}
+            />
+            <Route component={NotFoundPage} />
+          </Switch>
+          {useMediaLibrary ? <MediaLibrary /> : null}
         </AppMainContainer>
-      </div>
+      </>
     );
   }
 }

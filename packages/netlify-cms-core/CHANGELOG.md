@@ -3,6 +3,46 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.2.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.2.0...netlify-cms-core@2.2.1) (2018-11-29)
+
+
+### Bug Fixes
+
+* correct validation pattern error message ([#1879](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1879)) ([2a63940](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/2a63940))
+* fix entry saved message ([#1887](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1887)) ([c4e474b](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/c4e474b))
+* MediaLibraryHeader CloseButton style ([#1883](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1883)) ([034c29a](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/034c29a))
+* **a11y:** correct label "for" references to fields ([#1904](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1904)) ([955f94f](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/955f94f))
+* **backend:** use singular label in custom commit message ([#1917](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1917)) ([2c5827b](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/2c5827b))
+* **config:** remove identifier field validation ([#1882](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1882)) ([fe6af19](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/fe6af19))
+* **netlify-cms-core:** fix identifier field validation ([#1907](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1907)) ([d5f4c99](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/d5f4c99))
+* **netlify-cms-core:** fix prop-types warnings ([#1906](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1906)) ([751ec09](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/751ec09))
+* **netlify-cms-core:** remove double focusable elements on profile menu button ([#1900](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1900)) ([888ae6b](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/888ae6b))
+
+
+
+
+
+# [2.2.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.1.1...netlify-cms-core@2.2.0) (2018-11-12)
+
+
+### Bug Fixes
+
+* **config:** allow setting publish_mode to 'simple' ([#1827](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1827)) ([288359d](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/288359d))
+* **i18n:** fix missing widget placeholder ([#1861](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1861)) ([b1a7e00](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/b1a7e00))
+* **widget-date:** fix default value for nested date widget ([#1859](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1859)) ([d8f8887](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/d8f8887))
+* **widgets:** fix list object field default values ([#1826](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1826)) ([c765793](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/c765793))
+* fix App configError method ([#1864](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1864)) ([79205f7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/79205f7))
+
+
+### Features
+
+* **config:** add support for setting custom identifier field ([#1543](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1543)) ([12418dd](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/12418dd))
+* allow custom logo on auth page ([#1818](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1818)) ([c6ae1e8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/c6ae1e8))
+
+
+
+
+
 <a name="2.1.1"></a>
 ## [2.1.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.1.0...netlify-cms-core@2.1.1) (2018-10-09)
 

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.1.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/compare/netlify-cms-backend-bitbucket@2.0.7...netlify-cms-backend-bitbucket@2.1.0) (2018-11-12)
+
+
+### Features
+
+* allow custom logo on auth page ([#1818](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/issues/1818)) ([c6ae1e8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/commit/c6ae1e8))
+
+
+
+
+
 <a name="2.0.7"></a>
 ## [2.0.7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/compare/netlify-cms-backend-bitbucket@2.0.6...netlify-cms-backend-bitbucket@2.0.7) (2018-09-06)
 

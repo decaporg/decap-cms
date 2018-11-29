@@ -17,7 +17,7 @@ export default class GitLabAuthenticationPage extends React.Component {
     siteId: PropTypes.string,
     authEndpoint: PropTypes.string,
     config: ImmutablePropTypes.map,
-    clearHash: PropTypes.function,
+    clearHash: PropTypes.func,
   };
 
   state = {};

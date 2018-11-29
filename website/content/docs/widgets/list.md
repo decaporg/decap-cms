@@ -10,7 +10,7 @@ The list widget allows you to create a repeatable item in the UI which saves as 
 - **Data type:** list of widget values
 - **Options:**
   - `default`: if `fields` is specified, declare defaults on the child widgets; if not, you may specify a list of strings to populate the text field
-  - `allow_add`: if added and labeled `false`, button to add additional widgets disapears
+  - `allow_add`: if added and labeled `false`, button to add additional widgets disappears
   - `field`: a single widget field to be repeated
   - `fields`: a nested list of multiple widget fields to be included in each repeatable iteration
 - **Example** (`field`/`fields` not specified):
