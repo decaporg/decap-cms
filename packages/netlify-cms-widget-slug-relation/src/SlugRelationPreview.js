@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { WidgetPreviewContainer } from 'netlify-cms-ui-default';
 
-const stringify = value => Array.isArray(value) ? value.join(', ') : value
-const SlugRelationPreview = ({ value }) => (
+const stringify = (value = null) => Array.isArray(value) ? value.join(', ') : value
+const SlugRelationPreview = ({ value } = {}) => (
   <WidgetPreviewContainer>{stringify(value)}</WidgetPreviewContainer>
 );
 
