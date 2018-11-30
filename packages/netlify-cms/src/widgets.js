@@ -11,6 +11,7 @@ import { MarkdownControl, MarkdownPreview } from 'netlify-cms-widget-markdown/sr
 import { ListControl, ListPreview } from 'netlify-cms-widget-list/src';
 import { ObjectControl, ObjectPreview } from 'netlify-cms-widget-object/src';
 import { RelationControl, RelationPreview } from 'netlify-cms-widget-relation/src';
+import { SlugRelationControl, SlugRelationPreview } from 'netlify-cms-widget-slug-relation/src';
 import { BooleanControl } from 'netlify-cms-widget-boolean/src';
 
 const { registerWidget } = cms;
@@ -27,4 +28,5 @@ registerWidget('datetime', DateTimeControl, DateTimePreview);
 registerWidget('select', SelectControl, SelectPreview);
 registerWidget('object', ObjectControl, ObjectPreview);
 registerWidget('relation', RelationControl, RelationPreview);
+registerWidget('relation-v2', SlugRelationControl, SlugRelationPreview);
 registerWidget('boolean', BooleanControl);

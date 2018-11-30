@@ -38,6 +38,7 @@
     "netlify-cms-widget-image": "^2.1.0",
     "netlify-cms-widget-list": "^2.0.7",
     "netlify-cms-widget-markdown": "^2.0.10",
+    "netlify-cms-widget-slug-relation": "^2.0.5",
     "netlify-cms-widget-number": "^2.0.5",
     "netlify-cms-widget-object": "^2.0.5",
     "netlify-cms-widget-relation": "^2.0.5",

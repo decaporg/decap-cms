@@ -26,6 +26,15 @@ collections: # A list of collections the CMS should be able to edit
           timeFormat: 'HH:mm',
           format: 'YYYY-MM-DD HH:mm',
         }
+      - {
+          label: 'Relation v2',
+          name: 'relations',
+          widget: 'relation-v2',
+          collection: 'posts',
+          searchFields: ['title', 'body'],
+          required: false,
+          multiple: true,
+        }
       - label: 'Cover Image'
         name: 'image'
         widget: 'image'
