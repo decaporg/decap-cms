@@ -53,7 +53,7 @@ class EntriesSearch extends React.Component {
   };
 
   render() {
-    const { collections, entries, publicFolder, isFetching } = this.props;
+    const { collections, entries, publicFolder, isFetching, unpublishedChildEntry } = this.props;
     return (
       <Entries
         cursor={this.getCursor()}
@@ -62,6 +62,7 @@ class EntriesSearch extends React.Component {
         entries={entries}
         publicFolder={publicFolder}
         isFetching={isFetching}
+        unpublishedChildEntry={unpublishedChildEntry}
       />
     );
   }

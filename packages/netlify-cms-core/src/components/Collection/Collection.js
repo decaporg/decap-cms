@@ -10,6 +10,7 @@ import CollectionTop from './CollectionTop';
 import EntriesCollection from './Entries/EntriesCollection';
 import EntriesSearch from './Entries/EntriesSearch';
 import { VIEW_STYLE_LIST } from 'Constants/collectionViews';
+import { selectUnpublishedEntryByParentSlug } from 'Reducers';
 
 const CollectionContainer = styled.div`
   margin: ${lengths.pageMargin};
@@ -33,13 +34,25 @@ class Collection extends React.Component {
   };
 
   renderEntriesCollection = () => {
-    const { collection } = this.props;
-    return <EntriesCollection collection={collection} viewStyle={this.state.viewStyle} />;
+    const { collection, unpublishedChildEntry } = this.props;
+    return (
+      <EntriesCollection
+        collection={collection}
+        viewStyle={this.state.viewStyle}
+        unpublishedChildEntry={unpublishedChildEntry}
+      />
+    );
   };
 
   renderEntriesSearch = () => {
-    const { searchTerm, collections } = this.props;
-    return <EntriesSearch collections={collections} searchTerm={searchTerm} />;
+    const { searchTerm, collections, unpublishedChildEntry } = this.props;
+    return (
+      <EntriesSearch
+        collections={collections}
+        searchTerm={searchTerm}
+        unpublishedChildEntry={unpublishedChildEntry}
+      />
+    );
   };
 
   handleChangeViewStyle = viewStyle => {
@@ -77,7 +90,15 @@ function mapStateToProps(state, ownProps) {
   const { isSearchResults, match } = ownProps;
   const { name, searchTerm } = match.params;
   const collection = name ? collections.get(name) : collections.first();
-  return { collection, collections, collectionName: name, isSearchResults, searchTerm };
+  const unpublishedChildEntry = selectUnpublishedEntryByParentSlug.bind(null, state);
+  return {
+    collection,
+    collections,
+    collectionName: name,
+    isSearchResults,
+    searchTerm,
+    unpublishedChildEntry,
+  };
 }
 
 export default connect(mapStateToProps)(Collection);

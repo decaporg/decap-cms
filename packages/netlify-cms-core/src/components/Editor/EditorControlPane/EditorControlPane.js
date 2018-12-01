@@ -42,7 +42,7 @@ export default class ControlPane extends React.Component {
       indentifierField,
       entry,
       slugField,
-      autoSlug,
+      getAutoSlug,
       fieldsMetaData,
       fieldsErrors,
       onChange,
@@ -72,7 +72,7 @@ export default class ControlPane extends React.Component {
                 fieldsErrors={fieldsErrors}
                 indentifierField={indentifierField}
                 slugField={slugField}
-                autoSlug={autoSlug}
+                getAutoSlug={getAutoSlug}
                 onChange={onChange}
                 onValidate={onValidate}
                 processControlRef={this.controlRef.bind(this)}

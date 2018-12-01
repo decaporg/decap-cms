@@ -61,42 +61,31 @@ const unpublishedEntries = (state = Map(), action) => {
             ids: List(action.payload.entries.map(entry => entry.slug)),
           }),
         );
+        map.set('isFetched', true);
       });
 
     case UNPUBLISHED_ENTRY_PERSIST_REQUEST:
       // Update Optimistically
       return state.withMutations(map => {
         map.setIn(
-          ['entities', `${action.payload.collection}.${action.payload.entry.get('slug')}`],
+          ['entities', `${action.payload.collection}.${action.payload.slug}`],
           fromJS(action.payload.entry),
         );
         map.setIn(
-          [
-            'entities',
-            `${action.payload.collection}.${action.payload.entry.get('slug')}`,
-            'isPersisting',
-          ],
+          ['entities', `${action.payload.collection}.${action.payload.slug}`, 'isPersisting'],
           true,
         );
-        map.updateIn(['pages', 'ids'], List(), list => list.push(action.payload.entry.get('slug')));
+        map.updateIn(['pages', 'ids'], List(), list => list.push(action.payload.slug));
       });
 
     case UNPUBLISHED_ENTRY_PERSIST_SUCCESS:
       // Update Optimistically
       return state.withMutations(map => {
-        if (action.payload.entry.get('slug') != action.payload.slug) {
-          // Slug changed, delete old slug entities
-          map.deleteIn([
-            'entities',
-            `${action.payload.collection}.${action.payload.entry.get('slug')}`,
-          ]);
-        } else {
-          map.deleteIn([
-            'entities',
-            `${action.payload.collection}.${action.payload.entry.get('slug')}`,
-            'isPersisting',
-          ]);
-        }
+        map.deleteIn([
+          'entities',
+          `${action.payload.collection}.${action.payload.slug}`,
+          'isPersisting',
+        ]);
       });
 
     case UNPUBLISHED_ENTRY_STATUS_CHANGE_REQUEST:
@@ -148,6 +137,14 @@ export const selectUnpublishedEntriesByStatus = (state, status) => {
     .get('entities')
     .filter(entry => entry.getIn(['metaData', 'status']) === status)
     .valueSeq();
+};
+
+export const selectUnpublishedEntryByParentSlug = (state, collection, slug) => {
+  if (!state.get('entities')) return null;
+  return state
+    .get('entities')
+    .filter((v, k) => k.includes(collection))
+    .find(entry => entry.getIn(['metaData', 'parentSlug']) === slug);
 };
 
 export const selectUnpublishedSlugEntriesByCollection = (state, collection) => {

@@ -372,7 +372,8 @@ export default class API {
     const contentKey = entry.slug;
     const branchName = this.generateBranchName(contentKey);
     const unpublished = options.unpublished || false;
-    if (!unpublished) {
+    const slugChanged = entry.slugChanged;
+    if (!unpublished || slugChanged) {
       // Open new editorial review workflow for this entry - Create new metadata and commit to new branch`
       let prResponse;
 
@@ -385,7 +386,18 @@ export default class API {
           prResponse = pr;
           return this.user();
         })
-        .then(user => {
+        .then(async user => {
+          // Keep track of the entry initial parent slug
+          let parentSlug = entry.oldSlug || entry.slug;
+          let parentPath = entry.oldPath || entry.path;
+          if (slugChanged) {
+            await this.retrieveMetadata(entry.oldSlug).then(metaData => {
+              if (metaData) {
+                parentSlug = metaData.parentSlug;
+                parentPath = metaData.parentPath;
+              }
+            });
+          }
           return this.storeMetadata(contentKey, {
             type: 'PR',
             pr: {
@@ -398,6 +410,8 @@ export default class API {
             collection: options.collectionName,
             title: options.parsedData && options.parsedData.title,
             description: options.parsedData && options.parsedData.description,
+            parentSlug,
+            parentPath,
             objects: {
               entry: {
                 path: entry.path,

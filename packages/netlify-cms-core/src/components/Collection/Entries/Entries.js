@@ -12,6 +12,7 @@ const Entries = ({
   isFetching,
   viewStyle,
   cursor,
+  unpublishedChildEntry,
   handleCursorActions,
   t,
 }) => {
@@ -29,6 +30,7 @@ const Entries = ({
         publicFolder={publicFolder}
         viewStyle={viewStyle}
         cursor={cursor}
+        unpublishedChildEntry={unpublishedChildEntry}
         handleCursorActions={handleCursorActions}
       />
     );

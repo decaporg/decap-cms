@@ -162,7 +162,15 @@ export const generateUniqueSlug = (slug, slugConfig, publishedOrDraftSlugs) => {
   let sanitizedSlug = sanitizeSlug(slug, slugConfig);
   let uniqueSlug = sanitizedSlug;
   while (publishedOrDraftSlugs.includes(uniqueSlug)) {
-    uniqueSlug = sanitizeSlug(`${sanitizedSlug} ${i++}`, slugConfig);
+    uniqueSlug = sanitizeSlug(`${sanitizedSlug} ${i++}`, slugConfig)
+      // Remove single quotes.
+      .replace(/[']/g, '')
+
+      // Replace periods with dashes.
+      .replace(/[.]/g, '-')
+
+      // Convert slug to lower-case
+      .toLocaleLowerCase();
   }
   return uniqueSlug;
 };
@@ -577,12 +585,12 @@ class Backend {
     entryDraft,
     MediaFiles,
     integrations,
+    selectedSlug,
     unavailableSlugs,
     options = {},
   ) {
     const newEntry = entryDraft.getIn(['entry', 'newRecord']) || false;
     const slugField = selectSlugField(collection);
-    const manualSlug = entryDraft.getIn(['entry', 'data', slugField], '');
 
     const parsedData = {
       title: entryDraft.getIn(['entry', 'data', 'title'], 'No Title'),
@@ -600,27 +608,28 @@ class Backend {
         config.get('slug'),
         unavailableSlugs,
       );
-      const slug = manualSlug || autoSlug;
+      const slug = selectedSlug || autoSlug;
 
       const path = selectEntryPath(collection, slug);
       entryObj = {
         path,
         slug,
+        slugChanged: false,
         raw: this.entryToRaw(collection, entryDraft.get('entry'), slugField),
       };
     } else {
-      let path = entryDraft.getIn(['entry', 'path']);
-      let slug = entryDraft.getIn(['entry', 'slug']);
-      if (manualSlug && manualSlug != slug) {
-        Object.assign(options, { oldSlug: slug, oldPath: path });
-        path = selectEntryPath(collection, manualSlug);
-        slug = manualSlug;
-      }
+      const path = entryDraft.getIn(['entry', 'path']);
+      const slug = entryDraft.getIn(['entry', 'slug']);
+      const selectedPath = selectEntryPath(collection, selectedSlug);
       entryObj = {
-        path,
-        slug,
+        path: selectedPath,
+        slug: selectedSlug,
+        slugChanged: false,
         raw: this.entryToRaw(collection, entryDraft.get('entry'), slugField),
       };
+      if (selectedSlug !== slug) {
+        Object.assign(entryObj, { slugChanged: true, oldSlug: slug, oldPath: path });
+      }
     }
 
     const commitMessage = commitMessageFormatter(newEntry ? 'create' : 'update', config, {
@@ -643,7 +652,6 @@ class Backend {
       parsedData,
       commitMessage,
       collectionName,
-      manualSlug,
       useWorkflow,
       ...updatedOptions,
     };
@@ -693,7 +701,7 @@ class Backend {
   entryToRaw(collection, entry, slugField) {
     const format = resolveFormat(collection, entry.toJS());
     const fieldsOrder = this.fieldsOrder(collection, entry);
-    // Remove slug field value
+    // Remove slug field and value
     const data = entry.get('data').delete(slugField);
     return format && format.toFile(data.toJS(), fieldsOrder);
   }

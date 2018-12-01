@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { translate } from 'react-polyglot';
 import styled, { css, cx } from 'react-emotion';
-import { partial, uniqueId } from 'lodash';
+import { partial, uniqueId, difference } from 'lodash';
 import { connect } from 'react-redux';
 import { colors, colorsRaw, transitions, lengths, borders } from 'netlify-cms-ui-default';
 import { resolveWidget, getEditorComponents } from 'Lib/registry';
@@ -157,40 +157,49 @@ class EditorControl extends React.Component {
 
   uniqueFieldId = uniqueId(`${this.props.field.get('name')}-field-`);
 
-  componentDidUpdate() {
-    const { field, value, onChange, slugField, entrySlug, isNewEntry } = this.props;
-    const fieldName = field.get('name');
-    if (fieldName == slugField && !value && !isNewEntry) {
-      setTimeout(() => {
-        onChange(slugField, entrySlug);
-      }, 0);
-    }
+  componentDidMount() {
+    this.handleSetSlugFieldValue();
   }
+
+  componentDidUpdate() {
+    this.handleSetSlugFieldValue();
+  }
+
+  handleSetSlugFieldValue = () => {
+    const { field, value, onChange, slugField, entry, isNewEntry } = this.props;
+    const fieldName = field.get('name');
+    const entrySlug = entry.get('slug');
+    if (fieldName == slugField && !value && !isNewEntry && !this.state.styleActive) {
+      onChange(slugField, entrySlug, {}, false);
+    }
+  };
 
   handleSetInactiveStyle = () => {
     const {
       field,
       value,
       config,
-      entryData,
-      entrySlug,
+      entry,
       indentifierField,
-      autoSlug,
+      getAutoSlug,
       onChange,
       slugField,
       unavailableSlugs,
     } = this.props;
     const fieldName = field.get('name');
-    const slugValue = entryData.get(slugField);
+    const entryData = entry.get('data');
+    const entryParentSlugs = [entry.get('slug'), entry.getIn(['metaData', 'parentSlug'])];
+    const slugValue = entry.getIn(['data', slugField]);
 
     this.setState({ styleActive: false });
+
     if (fieldName == indentifierField && value && !slugValue) {
-      onChange(slugField, autoSlug(entryData, config, unavailableSlugs));
+      onChange(slugField, getAutoSlug(entryData, config, unavailableSlugs));
     }
 
     if (fieldName == slugField && value) {
-      // Remove current entry slug from the list
-      const slugs = unavailableSlugs.filter(item => item !== entrySlug);
+      // Make current entry slug and parent slugs available
+      const slugs = difference(unavailableSlugs, entryParentSlugs);
       onChange(slugField, generateUniqueSlug(value, config, slugs));
     }
   };
@@ -311,8 +320,7 @@ const mapStateToProps = state => ({
   boundGetAsset: getAsset.bind(null, state),
   isFetching: state.search.get('isFetching'),
   queryHits: state.search.get('queryHits'),
-  entryData: state.entryDraft.getIn(['entry', 'data']),
-  entrySlug: state.entryDraft.getIn(['entry', 'slug']),
+  entry: state.entryDraft.get('entry'),
   config: state.config,
 });
 

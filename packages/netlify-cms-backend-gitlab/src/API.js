@@ -264,7 +264,10 @@ export default class API {
   persistFiles = (files, { commitMessage, newEntry }) =>
     Promise.all(
       files.map(file =>
-        this.uploadAndCommit(file, { commitMessage, updateFile: newEntry === false }),
+        this.uploadAndCommit(file, {
+          commitMessage,
+          updateFile: newEntry === false && file.slugChanged === false,
+        }),
       ),
     );
 

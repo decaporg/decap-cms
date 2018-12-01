@@ -141,14 +141,15 @@ export default class TestRepo {
     const existingEntryIndex = unpubStore.findIndex(
       e => e.metaData.collection === collection && e.slug === slug,
     );
-    unpubStore.splice(existingEntryIndex, 1);
+    if (existingEntryIndex >= 0) {
+      unpubStore.splice(existingEntryIndex, 1);
+    }
     return Promise.resolve();
   }
 
-  persistEntry({ path, raw, slug }, mediaFiles, options = {}) {
+  persistEntry({ path, raw, slug, oldPath, oldSlug }, mediaFiles, options = {}) {
     if (options.useWorkflow) {
       const unpubStore = window.repoFilesUnpublished;
-      const oldPath = options.oldPath;
       const existingPath = oldPath || path;
       const existingEntryIndex = unpubStore.findIndex(e => e.file.path === existingPath);
       if (existingEntryIndex >= 0) {
@@ -170,6 +171,8 @@ export default class TestRepo {
             status: this.options.initialWorkflowStatus,
             title: options.parsedData && options.parsedData.title,
             description: options.parsedData && options.parsedData.description,
+            parentSlug: oldSlug || slug,
+            parentPath: oldPath || path,
           },
           slug,
         };
@@ -186,11 +189,6 @@ export default class TestRepo {
     if (newEntry) {
       window.repoFiles[folder][fileName] = { content: raw };
     } else {
-      if (options.oldPath) {
-        const oldFileName = options.oldPath.substring(path.lastIndexOf('/') + 1);
-        window.repoFiles[folder][fileName] = window.repoFiles[folder][oldFileName];
-        delete window.repoFiles[folder][oldFileName];
-      }
       window.repoFiles[folder][fileName].content = raw;
     }
     return Promise.resolve();

@@ -14,7 +14,7 @@ import {
   discardDraft,
   changeDraftField,
   changeDraftFieldValidation,
-  autoSlugValue,
+  getSlug,
   persistEntry,
   deleteEntry,
 } from 'Actions/entries';
@@ -166,10 +166,13 @@ class Editor extends React.Component {
      * correct url using the slug.
      */
     const newSlug = this.props.entryDraft && this.props.entryDraft.getIn(['entry', 'slug']);
+    const currentPath = history.location.pathname;
     if (
       (!prevProps.slug && newSlug && this.props.newEntry) ||
       (prevProps.slug && newSlug && prevProps.slug != newSlug)
     ) {
+      if (currentPath.split('/').pop() === newSlug) return;
+
       navigateToEntry(prevProps.collection.get('name'), newSlug);
       return this.props.loadEntry(this.props.collection, newSlug);
     }
@@ -313,7 +316,7 @@ class Editor extends React.Component {
       indentifierField,
       slugField,
       boundGetAsset,
-      autoSlug,
+      getAutoSlug,
       collection,
       changeDraftField,
       changeDraftFieldValidation,
@@ -359,7 +362,7 @@ class Editor extends React.Component {
         fieldsErrors={entryDraft.get('fieldsErrors')}
         indentifierField={indentifierField}
         slugField={slugField}
-        autoSlug={autoSlug}
+        getAutoSlug={getAutoSlug}
         onChange={changeDraftField}
         onValidate={changeDraftFieldValidation}
         onPersist={this.handlePersistEntry}
@@ -392,7 +395,7 @@ function mapStateToProps(state, ownProps) {
   const collectionName = collection.get('name');
   const newEntry = ownProps.newRecord === true;
   const fields = selectFields(collection, slug);
-  const indentifierField = selectIdentifier(collection);
+  const indentifierField = selectIdentifier(collection, slug);
   const slugField = selectSlugField(collection);
   const entry = newEntry ? null : selectEntry(state, collectionName, slug);
   const boundGetAsset = getAsset.bind(null, state);
@@ -408,14 +411,14 @@ function mapStateToProps(state, ownProps) {
   const unpublishedSlugs = selectUnpublishedSlugEntriesByCollection(state, collectionName);
   const publishedSlugs = selectSlugEntries(state, collectionName);
   const unavailableSlugs = hasWorkflow ? publishedSlugs.concat(unpublishedSlugs) : publishedSlugs;
-  const autoSlug = autoSlugValue(collection); console.log(entryDraft.toJS());
+  const getAutoSlug = getSlug(collection);
   return {
     collection,
     collections,
     newEntry,
     entryDraft,
     boundGetAsset,
-    autoSlug,
+    getAutoSlug,
     fields,
     indentifierField,
     slugField,

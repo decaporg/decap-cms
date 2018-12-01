@@ -3,13 +3,13 @@ import { actions as notifActions } from 'redux-notifications';
 import { BEGIN, COMMIT, REVERT } from 'redux-optimist';
 import { serializeValues } from 'Lib/serializeEntryValues';
 import { currentBackend } from 'src/backend';
-import { getAsset } from 'Reducers';
-import { selectFields } from 'Reducers/collections';
+import { getAsset, selectUnpublishedEntry } from 'Reducers';
+import { selectFields, selectSlugField } from 'Reducers/collections';
 import { selectSlugEntries } from 'Reducers/entries';
 import { selectUnpublishedSlugEntriesByCollection } from 'Reducers/editorialWorkflow';
 import { EDITORIAL_WORKFLOW } from 'Constants/publishModes';
 import { EDITORIAL_WORKFLOW_ERROR } from 'netlify-cms-lib-util';
-import { loadEntry } from './entries';
+import { loadEntry, deleteEntry } from './entries';
 import ValidationErrorTypes from 'Constants/validationErrorTypes';
 
 const { notifSend } = notifActions;
@@ -99,12 +99,13 @@ function unpublishedEntriesFailed(error) {
   };
 }
 
-function unpublishedEntryPersisting(collection, entry, transactionID) {
+function unpublishedEntryPersisting(collection, entry, slug, transactionID) {
   return {
     type: UNPUBLISHED_ENTRY_PERSIST_REQUEST,
     payload: {
       collection: collection.get('name'),
       entry,
+      slug,
     },
     optimist: { type: BEGIN, id: transactionID },
   };
@@ -263,6 +264,7 @@ export function loadUnpublishedEntries(collections) {
   return (dispatch, getState) => {
     const state = getState();
     if (state.config.get('publish_mode') !== EDITORIAL_WORKFLOW) return;
+    if (state.editorialWorkflow.get('isFetched')) return;
     const backend = currentBackend(state.config);
     dispatch(unpublishedEntriesLoading());
     backend
@@ -328,11 +330,16 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
      * update the entry and entryDraft with the serialized values.
      */
     const fields = selectFields(collection, entry.get('slug'));
+    const slugField = selectSlugField(collection);
     const serializedData = serializeValues(entryDraft.getIn(['entry', 'data']), fields);
     const serializedEntry = entry.set('data', serializedData);
     const serializedEntryDraft = entryDraft.set('entry', serializedEntry);
+    const manualSlug = serializedData.get(slugField);
+    const entrySlug = serializedEntry.get('slug');
+    const slugChanged = manualSlug && entrySlug && manualSlug !== entrySlug;
+    const selectedSlug = manualSlug || entrySlug;
 
-    dispatch(unpublishedEntryPersisting(collection, serializedEntry, transactionID));
+    dispatch(unpublishedEntryPersisting(collection, serializedEntry, selectedSlug, transactionID));
     const persistAction = existingUnpublishedEntry
       ? backend.persistUnpublishedEntry
       : backend.persistEntry;
@@ -343,6 +350,7 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
       serializedEntryDraft,
       assetProxies.toJS(),
       state.integrations,
+      selectedSlug,
       unavailableSlugs,
     ];
 
@@ -358,6 +366,10 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
         }),
       );
       dispatch(unpublishedEntryPersisted(collection, serializedEntry, transactionID, newSlug));
+      if (slugChanged && selectUnpublishedEntry(state, collection.get('name'), entrySlug)) {
+        // Delete previous entry
+        dispatch(deleteUnpublishedEntry(collection.get('name'), entrySlug));
+      }
     } catch (error) {
       dispatch(
         notifSend({
@@ -458,6 +470,10 @@ export function publishUnpublishedEntry(collection, slug) {
     const collections = state.collections;
     const backend = currentBackend(state.config);
     const transactionID = uuid();
+    const unpublishedEntry = selectUnpublishedEntry(state, collection, slug);
+    const parentSlug = unpublishedEntry.getIn(['metaData', 'parentSlug']);
+    const slugChanged = parentSlug && parentSlug !== slug;
+
     dispatch(unpublishedEntryPublishRequest(collection, slug, transactionID));
     return backend
       .publishUnpublishedEntry(collection, slug)
@@ -471,6 +487,10 @@ export function publishUnpublishedEntry(collection, slug) {
         );
         dispatch(unpublishedEntryPublished(collection, slug, transactionID));
         dispatch(loadEntry(collections.get(collection), slug));
+        if (slugChanged) {
+          // Delete parent entry
+          dispatch(deleteEntry(state.collections.get(collection), parentSlug));
+        }
       })
       .catch(error => {
         dispatch(

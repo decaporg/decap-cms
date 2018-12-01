@@ -91,15 +91,7 @@ export function sanitizeSlug(str, options = Map()) {
   const normalizedSlug = sanitizedSlug
     .replace(doubleReplacement, replacement)
     .replace(leadingReplacment, '')
-    .replace(trailingReplacment, '')
-    // Remove single quotes.
-    .replace(/[']/g, '')
-
-    // Replace periods with dashes.
-    .replace(/[.]/g, '-')
-
-    // Convert slug to lower-case
-    .toLocaleLowerCase();
+    .replace(trailingReplacment, '');
 
   return normalizedSlug;
 }

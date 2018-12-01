@@ -8,9 +8,11 @@ import {
   loadEntries as actionLoadEntries,
   traverseCollectionCursor as actionTraverseCollectionCursor,
 } from 'Actions/entries';
+import { loadUnpublishedEntries as actionLoadUnpublishedEntries } from 'Actions/editorialWorkflow';
 import { selectEntries } from 'Reducers';
 import { selectCollectionEntriesCursor } from 'Reducers/cursors';
 import Entries from './Entries';
+import { EDITORIAL_WORKFLOW } from 'Constants/publishModes';
 
 class EntriesCollection extends React.Component {
   static propTypes = {
@@ -25,9 +27,21 @@ class EntriesCollection extends React.Component {
   };
 
   componentDidMount() {
-    const { collection, entriesLoaded, loadEntries } = this.props;
+    const {
+      collection,
+      entriesLoaded,
+      loadEntries,
+      collections,
+      isEditorialWorkflow,
+      loadUnpublishedEntries,
+    } = this.props;
+
     if (collection && !entriesLoaded) {
       loadEntries(collection);
+    }
+
+    if (isEditorialWorkflow) {
+      loadUnpublishedEntries(collections);
     }
   }
 
@@ -44,7 +58,15 @@ class EntriesCollection extends React.Component {
   };
 
   render() {
-    const { collection, entries, publicFolder, isFetching, viewStyle, cursor } = this.props;
+    const {
+      collection,
+      entries,
+      publicFolder,
+      isFetching,
+      viewStyle,
+      cursor,
+      unpublishedChildEntry,
+    } = this.props;
 
     return (
       <Entries
@@ -55,6 +77,7 @@ class EntriesCollection extends React.Component {
         collectionName={collection.get('label')}
         viewStyle={viewStyle}
         cursor={cursor}
+        unpublishedChildEntry={unpublishedChildEntry}
         handleCursorActions={partial(this.handleCursorActions, cursor)}
       />
     );
@@ -63,7 +86,7 @@ class EntriesCollection extends React.Component {
 
 function mapStateToProps(state, ownProps) {
   const { collection, viewStyle } = ownProps;
-  const { config } = state;
+  const { config, collections } = state;
   const publicFolder = config.get('public_folder');
   const page = state.entries.getIn(['pages', collection.get('name'), 'page']);
 
@@ -73,13 +96,26 @@ function mapStateToProps(state, ownProps) {
 
   const rawCursor = selectCollectionEntriesCursor(state.cursors, collection.get('name'));
   const cursor = Cursor.create(rawCursor).clearData();
+  const isEditorialWorkflow = state.config.get('publish_mode') === EDITORIAL_WORKFLOW;
 
-  return { publicFolder, collection, page, entries, entriesLoaded, isFetching, viewStyle, cursor };
+  return {
+    publicFolder,
+    collection,
+    page,
+    entries,
+    entriesLoaded,
+    isFetching,
+    viewStyle,
+    cursor,
+    collections,
+    isEditorialWorkflow,
+  };
 }
 
 const mapDispatchToProps = {
   loadEntries: actionLoadEntries,
   traverseCollectionCursor: actionTraverseCollectionCursor,
+  loadUnpublishedEntries: actionLoadUnpublishedEntries,
 };
 
 export default connect(

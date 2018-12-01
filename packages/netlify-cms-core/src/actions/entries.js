@@ -122,7 +122,6 @@ export function entryPersisted(collection, entry, slug) {
     payload: {
       collectionName: collection.get('name'),
       entrySlug: entry.get('slug'),
-      slugField: selectSlugField(collection),
       /**
        * Pass slug from backend for newly created entries.
        */
@@ -203,10 +202,10 @@ export function changeDraft(entry) {
   };
 }
 
-export function changeDraftField(field, value, metadata) {
+export function changeDraftField(field, value, metadata, hasChanged = true) {
   return {
     type: DRAFT_CHANGE_FIELD,
-    payload: { field, value, metadata },
+    payload: { field, value, metadata, hasChanged },
   };
 }
 
@@ -443,9 +442,15 @@ export function persistEntry(collection) {
      * update the entry and entryDraft with the serialized values.
      */
     const fields = selectFields(collection, entry.get('slug'));
+    const slugField = selectSlugField(collection);
     const serializedData = serializeValues(entryDraft.getIn(['entry', 'data']), fields);
     const serializedEntry = entry.set('data', serializedData);
     const serializedEntryDraft = entryDraft.set('entry', serializedEntry);
+    const manualSlug = slugField && serializedData.get(slugField);
+    const entrySlug = serializedEntry.get('slug');
+    const selectedSlug = manualSlug || entrySlug;
+    const slugChanged = manualSlug && entrySlug && manualSlug !== entrySlug;
+
     dispatch(entryPersisting(collection, serializedEntry));
     return backend
       .persistEntry(
@@ -454,6 +459,7 @@ export function persistEntry(collection) {
         serializedEntryDraft,
         assetProxies.toJS(),
         state.integrations,
+        selectedSlug,
         unavailableSlugs,
       )
       .then(slug => {
@@ -467,6 +473,10 @@ export function persistEntry(collection) {
           }),
         );
         dispatch(entryPersisted(collection, serializedEntry, slug));
+        if (slugChanged) {
+          // Delete previous entry
+          dispatch(deleteEntry(collection, entrySlug));
+        }
       })
       .catch(error => {
         console.error(error);
@@ -513,7 +523,7 @@ export function deleteEntry(collection, slug) {
   };
 }
 
-export function autoSlugValue(collection) {
+export function getSlug(collection) {
   return (entryData, config, unavailableSlugs) => {
     return slugFormatter(collection, entryData, config, unavailableSlugs);
   };
