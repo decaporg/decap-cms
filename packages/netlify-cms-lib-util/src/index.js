@@ -7,12 +7,3 @@ export { filterPromises, resolvePromiseProperties, then } from './promise';
 export unsentRequest from './unsentRequest';
 export { filterByPropExtension, parseResponse, responseParser } from './backendUtil';
 export loadScript from './loadScript';
-export {
-  TYPES_KEY,
-  TYPE_KEY,
-  DEFAULT_TYPE_KEY,
-  getTypedFieldForValue,
-  resolveFunctionForTypedField,
-  resolveFieldKeyType,
-  getErrorMessageForTypedFieldAndValue,
-} from './typedList';

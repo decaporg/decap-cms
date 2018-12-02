@@ -11,7 +11,7 @@ import {
   getTypedFieldForValue,
   resolveFieldKeyType,
   getErrorMessageForTypedFieldAndValue,
-} from 'netlify-cms-lib-util';
+} from './typedListHelpers';
 import {
   ListItemTopBar,
   ObjectWidgetTopBar,
@@ -153,13 +153,17 @@ export default class ListControl extends React.Component {
     this.props.setInactiveStyle();
   };
 
-  handleAdd = (e, type, typeKey) => {
+  handleAdd = e => {
     e.preventDefault();
     const { value, onChange } = this.props;
-    let parsedValue = this.getValueType() === valueTypes.SINGLE ? null : Map();
-    if (this.getValueType() === valueTypes.MIXED && type) {
-      parsedValue = parsedValue.set(typeKey, type);
-    }
+    const parsedValue = this.getValueType() === valueTypes.SINGLE ? null : Map();
+    this.setState({ itemsCollapsed: this.state.itemsCollapsed.push(false) });
+    onChange((value || List()).push(parsedValue));
+  };
+
+  handleAddType = (type, typeKey) => {
+    const { value, onChange } = this.props;
+    let parsedValue = Map().set(typeKey, type);
     this.setState({ itemsCollapsed: this.state.itemsCollapsed.push(false) });
     onChange((value || List()).push(parsedValue));
   };
@@ -320,8 +324,9 @@ export default class ListControl extends React.Component {
       <div id={forID} className={cx(classNameWrapper, components.objectWidgetTopBarContainer)}>
         <ObjectWidgetTopBar
           allowAdd={field.get('allow_add', true)}
+          onAdd={this.handleAdd}
           types={field.get(TYPES_KEY, null)}
-          onAdd={(e, type) => this.handleAdd(e, type, resolveFieldKeyType(field))}
+          onAddType={type => this.handleAddType(type, resolveFieldKeyType(field))}
           heading={`${items.size} ${listLabel}`}
           label={labelSingular.toLowerCase()}
           onCollapseToggle={this.handleCollapseAllToggle}

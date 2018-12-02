@@ -4,7 +4,7 @@ import styled from 'react-emotion';
 import { List, Map } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import Frame from 'react-frame-component';
-import { lengths, colors } from 'netlify-cms-ui-default';
+import { lengths } from 'netlify-cms-ui-default';
 import { resolveWidget, getPreviewTemplate, getPreviewStyles } from 'Lib/registry';
 import { ErrorBoundary } from 'UI';
 import { selectTemplateName, selectInferedField } from 'Reducers/collections';
@@ -12,11 +12,6 @@ import { INFERABLE_FIELDS } from 'Constants/fieldInference';
 import EditorPreviewContent from './EditorPreviewContent.js';
 import PreviewHOC from './PreviewHOC';
 import EditorPreview from './EditorPreview';
-import {
-  TYPES_KEY,
-  resolveFunctionForTypedField,
-  getErrorMessageForTypedFieldAndValue,
-} from 'netlify-cms-lib-util';
 
 const PreviewPaneFrame = styled(Frame)`
   width: 100%;
@@ -25,11 +20,6 @@ const PreviewPaneFrame = styled(Frame)`
   background: #fff;
   border-radius: ${lengths.borderRadius};
 `;
-
-const nestedListStyle = {
-  marginTop: 0,
-  paddingLeft: '2em',
-};
 
 export default class PreviewPane extends React.Component {
   getWidget = (field, value, props, idx = null) => {
@@ -78,13 +68,8 @@ export default class PreviewPane extends React.Component {
     // custom preview templates, where the field object can't be passed in.
     let field = fields && fields.find(f => f.get('name') === name);
     let value = values && values.get(field.get('name'));
-    let types = field.get(TYPES_KEY);
     let nestedFields = field.get('fields');
     let singleField = field.get('field');
-
-    if (types) {
-      field = field.set(TYPES_KEY, this.getTypedWidgets(field, value));
-    }
 
     if (nestedFields) {
       field = field.set('fields', this.getNestedWidgets(nestedFields, value));
@@ -97,56 +82,19 @@ export default class PreviewPane extends React.Component {
     const labelledWidgets = ['string', 'text', 'number'];
     if (Object.keys(this.inferedFields).indexOf(name) !== -1) {
       value = this.inferedFields[name].defaultPreview(value);
-    } else if (labelledWidgets.indexOf(field.get('widget')) !== -1) {
+    } else if (
+      value &&
+      labelledWidgets.indexOf(field.get('widget')) !== -1 &&
+      value.toString().length < 50
+    ) {
       value = (
         <div>
-          <strong>{field.get('label', field.get('name'))}:</strong>{' '}
-          {value && value.toString().length < 50 ? (
-            value
-          ) : (
-            <span style={{ color: '#666666' }}>{'undefined'}</span>
-          )}
+          <strong>{field.get('label', field.get('name'))}:</strong> {value}
         </div>
       );
     }
 
     return value ? this.getWidget(field, value, this.props) : null;
-  };
-
-  getTypedWidgets = (field, values) => {
-    const typedFieldResolver = resolveFunctionForTypedField(field);
-    if (!values) {
-      return null;
-    } else if (List.isList(values)) {
-      return (
-        <ul style={nestedListStyle}>
-          {values.map((value, idx) => {
-            const typedField = typedFieldResolver(value);
-            if (!typedField) {
-              const errorMessage = getErrorMessageForTypedFieldAndValue(field, value);
-              return (
-                <li key={idx} style={{ color: colors.errorText }}>
-                  Item {idx + 1} {errorMessage}
-                </li>
-              );
-            }
-            const fields = typedField.get('fields');
-            return (
-              <li key={idx}>
-                <span>{`Item ${idx + 1} [${typedField.get(
-                  'label',
-                  typedField.get('name'),
-                )}]:`}</span>{' '}
-                {this.getNestedWidgets(fields, value)}
-              </li>
-            );
-          })}
-        </ul>
-      );
-    } else {
-      const fields = typedFieldResolver(values).get('fields');
-      return this.getNestedWidgets(fields, values);
-    }
   };
 
   /**
@@ -155,46 +103,24 @@ export default class PreviewPane extends React.Component {
   getNestedWidgets = (fields, values) => {
     // Fields nested within a list field will be paired with a List of value Maps.
     if (List.isList(values)) {
-      return (
-        <ul style={nestedListStyle}>
-          {values.map((value, idx) => (
-            <li key={idx}>
-              <span>Item {idx + 1}:</span> {this.widgetsForNestedFields(fields, value)}
-            </li>
-          ))}
-        </ul>
-      );
+      return values.map(value => this.widgetsForNestedFields(fields, value));
     }
     // Fields nested within an object field will be paired with a single Map of values.
     return this.widgetsForNestedFields(fields, values);
+  };
+
+  getSingleNested = (field, values) => {
+    if (List.isList(values)) {
+      return values.map((value, idx) => this.getWidget(field, value, this.props, idx));
+    }
+    return this.getWidget(field, values, this.props);
   };
 
   /**
    * Use widgetFor as a mapping function for recursive widget retrieval
    */
   widgetsForNestedFields = (fields, values) => {
-    return (
-      <ul style={nestedListStyle}>
-        {fields.map((field, idx) => (
-          <li key={idx}>{this.widgetFor(field.get('name'), fields, values)}</li>
-        ))}
-      </ul>
-    );
-  };
-
-  getSingleNested = (field, values) => {
-    if (List.isList(values)) {
-      return (
-        <ul style={nestedListStyle}>
-          {values.map((value, idx) => (
-            <li key={idx}>
-              <span>Item {idx + 1}:</span> {this.getWidget(field, value, this.props, idx)}
-            </li>
-          ))}
-        </ul>
-      );
-    }
-    return this.getWidget(field, values, this.props);
+    return fields.map(field => this.widgetFor(field.get('name'), fields, values));
   };
 
   /**
@@ -206,17 +132,11 @@ export default class PreviewPane extends React.Component {
   widgetsFor = name => {
     const { fields, entry } = this.props;
     const field = fields.find(f => f.get('name') === name);
-    const types = field && field.get(TYPES_KEY);
-    const typedFieldResolver = types && resolveFunctionForTypedField(field);
+    const nestedFields = field && field.get('fields');
     const value = entry.getIn(['data', field.get('name')]);
-    let nestedFields = field && field.get('fields');
 
     if (List.isList(value)) {
       return value.map(val => {
-        if (typedFieldResolver) {
-          const typedField = typedFieldResolver(val);
-          nestedFields = typedField ? typedField.get('fields') : null;
-        }
         const widgets =
           nestedFields &&
           Map(
@@ -227,11 +147,6 @@ export default class PreviewPane extends React.Component {
           );
         return Map({ data: val, widgets });
       });
-    }
-
-    if (typedFieldResolver) {
-      const typedField = typedFieldResolver(value);
-      nestedFields = typedField ? typedField.get('fields') : null;
     }
 
     return Map({

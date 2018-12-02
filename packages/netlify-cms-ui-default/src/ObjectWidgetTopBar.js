@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import styled, { css } from 'react-emotion';
 import Icon from './Icon';
 import { colors, buttons } from './styles';
+import Dropdown, { StyledDropdownButton, DropdownItem } from './Dropdown';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 
 const TopBarContainer = styled.div`
@@ -52,75 +53,53 @@ const AddButton = styled.button`
   }
 `;
 
-const AddItem = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
 class ObjectWidgetTopBar extends React.Component {
   static propTypes = {
     allowAdd: PropTypes.bool,
     types: ImmutablePropTypes.list,
     onAdd: PropTypes.func,
+    onAddType: PropTypes.func,
     onCollapseToggle: PropTypes.func,
     collapsed: PropTypes.bool,
     heading: PropTypes.node,
     label: PropTypes.string,
   };
 
-  constructor(props) {
-    super(props);
-
-    let type = null;
-    if (this.props.types && this.props.types.size > 0) {
-      type = this.props.types.get(0).get('name');
-    }
-
-    this.state = {
-      type: type,
-    };
-  }
-
-  handleWidgetChange = event => {
-    this.setState({ type: event.target.value });
-  };
-
-  handleAdd = e => {
-    this.props.onAdd(e, this.state.type);
-  };
-
-  addItemUI() {
+  renderAddUI() {
     if (!this.props.allowAdd) {
       return null;
     }
-    const types = this.props.types;
-    const addButton = (
-      <AddButton onClick={this.handleAdd}>
+    if (this.props.types && this.props.types.size > 0) {
+      return this.renderTypesDropdown(this.props.types);
+    } else {
+      return this.renderAddButton();
+    }
+  }
+
+  renderTypesDropdown(types) {
+    return (
+      <Dropdown
+        renderButton={() => (
+          <StyledDropdownButton>Add {this.props.label} item</StyledDropdownButton>
+        )}
+      >
+        {types.map((type, idx) => (
+          <DropdownItem
+            key={idx}
+            label={type.get('label', type.get('name'))}
+            onClick={() => this.props.onAddType(type.get('name'))}
+          />
+        ))}
+      </Dropdown>
+    );
+  }
+
+  renderAddButton() {
+    return (
+      <AddButton onClick={this.props.onAdd}>
         Add {this.props.label} <Icon type="add" size="xsmall" />
       </AddButton>
     );
-
-    if (types && types.size > 0) {
-      return (
-        <AddItem>
-          <select
-            value={this.state.type}
-            style={{ marginRight: 10 }}
-            onChange={this.handleWidgetChange}
-          >
-            {types.map((type, idx) => (
-              <option key={idx} value={type.get('name')}>
-                {type.get('label', type.get('name'))}
-              </option>
-            ))}
-          </select>
-          {addButton}
-        </AddItem>
-      );
-    } else {
-      return addButton;
-    }
   }
 
   render() {
@@ -134,7 +113,7 @@ class ObjectWidgetTopBar extends React.Component {
           </ExpandButton>
           {heading}
         </ExpandButtonContainer>
-        {this.addItemUI()}
+        {this.renderAddUI()}
       </TopBarContainer>
     );
   }
