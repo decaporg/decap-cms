@@ -170,7 +170,7 @@ class WorkflowList extends React.Component {
     }
     return (
       <div>
-        {entries.map(entry => {
+        {entries.map((entry, idx) => {
           const timestamp = moment(entry.getIn(['metaData', 'timeStamp'])).format('MMMM D');
           const editLink = `collections/${entry.getIn([
             'metaData',
@@ -184,7 +184,7 @@ class WorkflowList extends React.Component {
           return (
             <DragSource
               namespace={DNDNamespace}
-              key={slug}
+              key={idx}
               slug={slug}
               collection={collection}
               ownStatus={ownStatus}
