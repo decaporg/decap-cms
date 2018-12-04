@@ -3,10 +3,8 @@ import { actions as notifActions } from 'redux-notifications';
 import { BEGIN, COMMIT, REVERT } from 'redux-optimist';
 import { serializeValues } from 'Lib/serializeEntryValues';
 import { currentBackend } from 'src/backend';
-import { getAsset, selectUnpublishedEntry } from 'Reducers';
+import { getAsset, selectSlugs, selectUnpublishedEntry } from 'Reducers';
 import { selectFields, selectSlugField } from 'Reducers/collections';
-import { selectSlugEntries } from 'Reducers/entries';
-import { selectUnpublishedSlugEntriesByCollection } from 'Reducers/editorialWorkflow';
 import { EDITORIAL_WORKFLOW } from 'Constants/publishModes';
 import { EDITORIAL_WORKFLOW_ERROR } from 'netlify-cms-lib-util';
 import { loadEntry, deleteEntry } from './entries';
@@ -292,13 +290,7 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
     const state = getState();
     const entryDraft = state.entryDraft;
     const fieldsErrors = entryDraft.get('fieldsErrors');
-    const unpublishedSlugs = selectUnpublishedSlugEntriesByCollection(
-      state.editorialWorkflow,
-      collection.get('name'),
-    );
-    const unavailableSlugs = selectSlugEntries(state.entries, collection.get('name')).concat(
-      unpublishedSlugs,
-    );
+    const unavailableSlugs = selectSlugs(state, collection.get('name'));
 
     // Early return if draft contains validation errors
     if (!fieldsErrors.isEmpty()) {

@@ -74,6 +74,12 @@ export const selectUnpublishedSlugEntriesByCollection = (state, collection) =>
     collection,
   );
 
+export const selectSlugs = (state, collection) => {
+  const unpublishedSlugs = selectUnpublishedSlugEntriesByCollection(state, collection);
+  const publishedSlugs = selectSlugEntries(state, collection);
+  return unpublishedSlugs ? publishedSlugs.concat(unpublishedSlugs) : publishedSlugs;
+};
+
 export const selectIntegration = (state, collection, hook) =>
   fromIntegrations.selectIntegration(state.integrations, collection, hook);
 

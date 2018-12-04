@@ -152,9 +152,6 @@ class EditorInterface extends Component {
       fields,
       fieldsMetaData,
       fieldsErrors,
-      indentifierField,
-      slugField,
-      getAutoSlug,
       getAsset,
       onChange,
       showDelete,
@@ -171,7 +168,6 @@ class EditorInterface extends Component {
       isNewEntry,
       isModification,
       currentStatus,
-      unavailableSlugs,
       onLogoutClick,
       loadDeployPreview,
       deployPreview,
@@ -189,12 +185,8 @@ class EditorInterface extends Component {
           fields={fields}
           fieldsMetaData={fieldsMetaData}
           fieldsErrors={fieldsErrors}
-          indentifierField={indentifierField}
-          slugField={slugField}
-          getAutoSlug={getAutoSlug}
           onChange={onChange}
           onValidate={onValidate}
-          unavailableSlugs={unavailableSlugs}
           isNewEntry={isNewEntry}
           ref={c => (this.controlPaneRef = c)}
         />

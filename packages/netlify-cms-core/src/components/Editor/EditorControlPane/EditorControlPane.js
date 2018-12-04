@@ -39,15 +39,11 @@ export default class ControlPane extends React.Component {
     const {
       collection,
       fields,
-      indentifierField,
       entry,
-      slugField,
-      getAutoSlug,
       fieldsMetaData,
       fieldsErrors,
       onChange,
       onValidate,
-      unavailableSlugs,
       isNewEntry,
     } = this.props;
 
@@ -65,14 +61,12 @@ export default class ControlPane extends React.Component {
           (field, i) =>
             field.get('widget') === 'hidden' ? null : (
               <EditorControl
+                collection={collection}
                 key={i}
                 field={field}
                 value={entry.getIn(['data', field.get('name')])}
                 fieldsMetaData={fieldsMetaData}
                 fieldsErrors={fieldsErrors}
-                indentifierField={indentifierField}
-                slugField={slugField}
-                getAutoSlug={getAutoSlug}
                 onChange={onChange}
                 onValidate={onValidate}
                 processControlRef={this.controlRef.bind(this)}

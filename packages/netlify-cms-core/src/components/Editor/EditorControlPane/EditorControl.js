@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { translate } from 'react-polyglot';
 import styled, { css, cx } from 'react-emotion';
-import { partial, uniqueId, difference } from 'lodash';
+import { partial, uniqueId } from 'lodash';
 import { connect } from 'react-redux';
 import { colors, colorsRaw, transitions, lengths, borders } from 'netlify-cms-ui-default';
 import { resolveWidget, getEditorComponents } from 'Lib/registry';
-import { generateUniqueSlug } from 'src/backend';
+import { currentBackend } from 'src/backend';
 import { addAsset } from 'Actions/media';
 import { query, clearSearch } from 'Actions/search';
 import { clearFieldErrors, loadEntry } from 'Actions/entries';
@@ -17,7 +17,8 @@ import {
   clearMediaControl,
   removeMediaControl,
 } from 'Actions/mediaLibrary';
-import { getAsset } from 'Reducers';
+import { getAsset, selectSlugs } from 'Reducers';
+import { selectIdentifier, selectSlugField } from 'Reducers/collections';
 import Widget from './Widget';
 
 const styles = {
@@ -166,41 +167,43 @@ class EditorControl extends React.Component {
   }
 
   handleSetSlugFieldValue = () => {
-    const { field, value, onChange, slugField, entry, isNewEntry } = this.props;
+    const { field, value, onChange, collection, entry, isNewEntry } = this.props;
     const fieldName = field.get('name');
     const entrySlug = entry.get('slug');
+    const slugField = collection && selectSlugField(collection);
     if (fieldName == slugField && !value && !isNewEntry && !this.state.styleActive) {
       onChange(slugField, entrySlug, {}, false);
     }
   };
 
-  handleSetInactiveStyle = () => {
-    const {
-      field,
-      value,
-      config,
-      entry,
-      indentifierField,
-      getAutoSlug,
-      onChange,
-      slugField,
-      unavailableSlugs,
-    } = this.props;
+  handleSetInactiveStyle = async () => {
+    const { field, value, config, entry, onChange, collection, boundSelectSlugs } = this.props;
     const fieldName = field.get('name');
     const entryData = entry.get('data');
-    const entryParentSlugs = [entry.get('slug'), entry.getIn(['metaData', 'parentSlug'])];
+    const unavailableSlugs = boundSelectSlugs(collection.get('name'));
+    const availableSlugs = [entry.get('slug'), entry.getIn(['metaData', 'parentSlug'])];
+    const indentifierField = collection && selectIdentifier(collection);
+    const slugField = collection && selectSlugField(collection);
     const slugValue = entry.getIn(['data', slugField]);
+    const backend = currentBackend(config);
 
     this.setState({ styleActive: false });
 
-    if (fieldName == indentifierField && value && !slugValue) {
-      onChange(slugField, getAutoSlug(entryData, config, unavailableSlugs));
+    if (fieldName == indentifierField && value && !slugValue && collection) {
+      onChange(slugField, await backend.getSlug(collection, entryData, config, unavailableSlugs));
     }
 
-    if (fieldName == slugField && value) {
-      // Make current entry slug and parent slugs available
-      const slugs = difference(unavailableSlugs, entryParentSlugs);
-      onChange(slugField, generateUniqueSlug(value, config, slugs));
+    if (fieldName == slugField && value && collection) {
+      onChange(
+        slugField,
+        await backend.generateUniqueSlug(
+          collection,
+          value,
+          config,
+          unavailableSlugs,
+          availableSlugs,
+        ),
+      );
     }
   };
 
@@ -322,6 +325,7 @@ const mapStateToProps = state => ({
   queryHits: state.search.get('queryHits'),
   entry: state.entryDraft.get('entry'),
   config: state.config,
+  boundSelectSlugs: selectSlugs.bind(null, state),
 });
 
 const mapDispatchToProps = {

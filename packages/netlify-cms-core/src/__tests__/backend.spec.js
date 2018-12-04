@@ -1,6 +1,5 @@
-import { resolveBackend, generateUniqueSlug } from '../backend';
+import { resolveBackend } from '../backend';
 import registry from 'Lib/registry';
-import { Map } from 'immutable';
 
 jest.mock('Lib/registry');
 
@@ -107,15 +106,6 @@ describe('Backend', () => {
       );
 
       expect(result.length).toBe(1);
-    });
-  });
-
-  describe('uniqueSlug', () => {
-    it('generates unique slug', () => {
-      expect(generateUniqueSlug('title', Map(), ['title'])).toEqual('title-1');
-      expect(generateUniqueSlug('title', Map({ sanitize_replacement: '_' }), ['title'])).toEqual(
-        'title_1',
-      );
     });
   });
 });

@@ -14,7 +14,6 @@ import {
   discardDraft,
   changeDraftField,
   changeDraftFieldValidation,
-  getSlug,
   persistEntry,
   deleteEntry,
 } from 'Actions/entries';
@@ -25,15 +24,8 @@ import {
 } from 'Actions/editorialWorkflow';
 import { loadDeployPreview } from 'Actions/deploys';
 import { deserializeValues } from 'Lib/serializeEntryValues';
-import {
-  selectEntry,
-  selectUnpublishedEntry,
-  selectDeployPreview,
-  getAsset,
-  selectSlugEntries,
-  selectUnpublishedSlugEntriesByCollection,
-} from 'Reducers';
-import { selectFields, selectIdentifier, selectSlugField } from 'Reducers/collections';
+import { selectEntry, selectUnpublishedEntry, selectDeployPreview, getAsset } from 'Reducers';
+import { selectFields } from 'Reducers/collections';
 import { status } from 'Constants/publishModes';
 import { EDITORIAL_WORKFLOW } from 'Constants/publishModes';
 import EditorInterface from './EditorInterface';
@@ -313,10 +305,7 @@ class Editor extends React.Component {
       entry,
       entryDraft,
       fields,
-      indentifierField,
-      slugField,
       boundGetAsset,
-      getAutoSlug,
       collection,
       changeDraftField,
       changeDraftFieldValidation,
@@ -328,7 +317,6 @@ class Editor extends React.Component {
       newEntry,
       isModification,
       currentStatus,
-      unavailableSlugs,
       logoutUser,
       deployPreview,
       loadDeployPreview,
@@ -360,9 +348,6 @@ class Editor extends React.Component {
         fields={fields}
         fieldsMetaData={entryDraft.get('fieldsMetaData')}
         fieldsErrors={entryDraft.get('fieldsErrors')}
-        indentifierField={indentifierField}
-        slugField={slugField}
-        getAutoSlug={getAutoSlug}
         onChange={changeDraftField}
         onValidate={changeDraftFieldValidation}
         onPersist={this.handlePersistEntry}
@@ -379,7 +364,6 @@ class Editor extends React.Component {
         isNewEntry={newEntry}
         isModification={isModification}
         currentStatus={currentStatus}
-        unavailableSlugs={unavailableSlugs}
         onLogoutClick={logoutUser}
         deployPreview={deployPreview}
         loadDeployPreview={opts => loadDeployPreview(collection, slug, entry, isPublished, opts)}
@@ -395,8 +379,6 @@ function mapStateToProps(state, ownProps) {
   const collectionName = collection.get('name');
   const newEntry = ownProps.newRecord === true;
   const fields = selectFields(collection, slug);
-  const indentifierField = selectIdentifier(collection, slug);
-  const slugField = selectSlugField(collection);
   const entry = newEntry ? null : selectEntry(state, collectionName, slug);
   const boundGetAsset = getAsset.bind(null, state);
   const user = auth && auth.get('user');
@@ -408,20 +390,13 @@ function mapStateToProps(state, ownProps) {
   const unpublishedEntry = selectUnpublishedEntry(state, collectionName, slug);
   const currentStatus = unpublishedEntry && unpublishedEntry.getIn(['metaData', 'status']);
   const deployPreview = selectDeployPreview(state, collectionName, slug);
-  const unpublishedSlugs = selectUnpublishedSlugEntriesByCollection(state, collectionName);
-  const publishedSlugs = selectSlugEntries(state, collectionName);
-  const unavailableSlugs = hasWorkflow ? publishedSlugs.concat(unpublishedSlugs) : publishedSlugs;
-  const getAutoSlug = getSlug(collection);
   return {
     collection,
     collections,
     newEntry,
     entryDraft,
     boundGetAsset,
-    getAutoSlug,
     fields,
-    indentifierField,
-    slugField,
     slug,
     entry,
     user,
@@ -432,7 +407,6 @@ function mapStateToProps(state, ownProps) {
     collectionEntriesLoaded,
     currentStatus,
     deployPreview,
-    unavailableSlugs,
   };
 }
 

@@ -19,7 +19,7 @@ import {
 import { createEntry } from 'ValueObjects/Entry';
 import { sanitizeSlug } from 'Lib/urlHelper';
 import { getBackend } from 'Lib/registry';
-import { Cursor, CURSOR_COMPATIBILITY_SYMBOL } from 'netlify-cms-lib-util';
+import { Cursor, EditorialWorkflowError, CURSOR_COMPATIBILITY_SYMBOL } from 'netlify-cms-lib-util';
 import { EDITORIAL_WORKFLOW, status } from 'Constants/publishModes';
 
 class LocalStorageAuthStore {
@@ -111,7 +111,7 @@ function compileSlug(template, date, identifier = '', data = Map(), processor) {
   }
 }
 
-export function slugFormatter(collection, entryData, slugConfig, unavailableSlugs) {
+export function slugFormatter(collection, entryData, slugConfig) {
   const template = collection.get('slug') || '{{slug}}';
 
   const identifier = entryData.get(selectIdentifier(collection));
@@ -128,6 +128,19 @@ export function slugFormatter(collection, entryData, slugConfig, unavailableSlug
 
   return processSlug(template, new Date(), identifier, entryData);
 }
+
+const sanitizeEntrySlug = (slug, slugConfig) => {
+  return sanitizeSlug(
+    slug
+      // Convert slug to lower-case
+      .toLocaleLowerCase()
+      // Remove single quotes.
+      .replace(/[']/g, '')
+      // Replace periods with dashes.
+      .replace(/[.]/g, '-'),
+    slugConfig,
+  );
+};
 
 const commitMessageTemplates = Map({
   create: 'Create {{collection}} “{{slug}}”',
@@ -155,24 +168,6 @@ const commitMessageFormatter = (type, config, { slug, path, collection }) => {
         return '';
     }
   });
-};
-
-export const generateUniqueSlug = (slug, slugConfig, publishedOrDraftSlugs) => {
-  let i = 1;
-  let sanitizedSlug = sanitizeSlug(slug, slugConfig);
-  let uniqueSlug = sanitizedSlug;
-  while (publishedOrDraftSlugs.includes(uniqueSlug)) {
-    uniqueSlug = sanitizeSlug(`${sanitizedSlug} ${i++}`, slugConfig)
-      // Remove single quotes.
-      .replace(/[']/g, '')
-
-      // Replace periods with dashes.
-      .replace(/[.]/g, '-')
-
-      // Convert slug to lower-case
-      .toLocaleLowerCase();
-  }
-  return uniqueSlug;
 };
 
 const extractSearchFields = searchFields => entry =>
@@ -319,6 +314,55 @@ class Backend {
   }
 
   getToken = () => this.implementation.getToken();
+
+  async entryExist(collection, path, slug) {
+    const unpublishedEntry =
+      this.implementation.unpublishedEntry &&
+      (await this.implementation.unpublishedEntry(collection, slug).catch(error => {
+        if (error instanceof EditorialWorkflowError && error.notUnderEditorialWorkflow) {
+          return Promise.resolve(false);
+        }
+        return Promise.reject(error);
+      }));
+
+    if (unpublishedEntry) return unpublishedEntry;
+
+    const publishedEntry = await this.implementation
+      .getEntry(collection, slug, path)
+      .then(({ data }) => data)
+      .catch(error => {
+        if (error.status === 404 || error.message.includes(404)) {
+          return Promise.resolve(false);
+        }
+        return Promise.reject(error);
+      });
+
+    return publishedEntry;
+  }
+
+  async getSlug(collection, entryData, slugConfig, unavailableSlugs) {
+    const slug = slugFormatter(collection, entryData, slugConfig);
+
+    return await this.generateUniqueSlug(collection, slug, slugConfig, unavailableSlugs);
+  }
+
+  async generateUniqueSlug(collection, slug, slugConfig, unavailableSlugs, availableSlugs = []) {
+    let i = 1;
+    let sanitizedSlug = sanitizeEntrySlug(slug, slugConfig);
+    let uniqueSlug = sanitizedSlug;
+
+    // Return if slug is the same as the current entry or parent slug.
+    if (availableSlugs && availableSlugs.includes(uniqueSlug)) return uniqueSlug;
+
+    // Check for duplicate slug in loaded entities store first before repo
+    while (
+      unavailableSlugs.includes(uniqueSlug) ||
+      (await this.entryExist(collection, selectEntryPath(collection, uniqueSlug), uniqueSlug))
+    ) {
+      uniqueSlug = sanitizeEntrySlug(`${sanitizedSlug} ${i++}`, slugConfig);
+    }
+    return uniqueSlug;
+  }
 
   processEntries(loadedEntries, collection) {
     const collectionFilter = collection.get('filter');
@@ -579,7 +623,7 @@ class Backend {
     };
   }
 
-  persistEntry(
+  async persistEntry(
     config,
     collection,
     entryDraft,
@@ -602,7 +646,7 @@ class Backend {
       if (!selectAllowNewEntries(collection)) {
         throw new Error('Not allowed to create new entries in this collection');
       }
-      const autoSlug = slugFormatter(
+      const autoSlug = await this.getSlug(
         collection,
         entryDraft.getIn(['entry', 'data']),
         config.get('slug'),
