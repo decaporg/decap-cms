@@ -48,7 +48,7 @@ The Cloudinary media library integration can be configured in two ways: globally
 
 ### Media library behavior
 
-* `default_transformations` _\- only the first [image transformation](#image-transformations) is used, be sure to use the `Library` column transformation names from the [transformation reference](https://cloudinary.com/documentation/image_transformation_reference)_
+* `default_transformations` _\- only the first [image transformation](#image-transformations) is used, be sure to use the `Library` column transformation names from the_ [_transformation reference_]("https://cloudinary.com/documentation/image_transformation_reference")
 * `max_files`
 * `multiple` _\- has no impact on images inside the [markdown widget](/docs/widgets/#markdown)_
 
