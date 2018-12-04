@@ -184,7 +184,7 @@ class WorkflowList extends React.Component {
           return (
             <DragSource
               namespace={DNDNamespace}
-              key={slug}
+              key={`${collection}-${slug}`}
               slug={slug}
               collection={collection}
               ownStatus={ownStatus}
