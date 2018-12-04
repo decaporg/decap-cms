@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-core",
   "description": "Netlify CMS core application, see netlify-cms package for the main distribution.",
-  "version": "2.2.1",
+  "version": "2.3.0",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
   "main": "dist/netlify-cms-core.js",
@@ -33,7 +33,7 @@
     "jwt-decode": "^2.1.0",
     "lodash": "^4.17.10",
     "moment": "^2.11.2",
-    "netlify-cms-editor-component-image": "^2.0.4",
+    "netlify-cms-editor-component-image": "^2.1.0",
     "netlify-cms-lib-auth": "^2.0.5",
     "netlify-cms-lib-util": "^2.1.1",
     "netlify-cms-ui-default": "^2.1.1",
