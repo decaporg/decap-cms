@@ -45,7 +45,11 @@ function getAssetUrl(asset, { use_secure_url, use_transformations, output_filena
   return urlObject[urlKey];
 }
 
-async function init({ options, handleInsert }) {
+async function init({ options = {}, handleInsert } = {}) {
+  /**
+   * Configuration is specific to Cloudinary, while options are specific to this
+   * integration.
+   */
   const { config: providedConfig = {}, ...integrationOptions } = options;
   const resolvedOptions = { ...defaultOptions, ...integrationOptions };
   const cloudinaryConfig = { ...defaultConfig, ...providedConfig, ...enforcedConfig };
@@ -62,7 +66,7 @@ async function init({ options, handleInsert }) {
   const mediaLibrary = window.cloudinary.createMediaLibrary(cloudinaryConfig, { insertHandler });
 
   return {
-    show: ({ config: instanceConfig = {}, allowMultiple }) => {
+    show: ({ config: instanceConfig = {}, allowMultiple } = {}) => {
       /**
        * Ensure multiple selection is not available if the field is configured
        * to disallow it.
@@ -70,7 +74,7 @@ async function init({ options, handleInsert }) {
       if (allowMultiple === false) {
         instanceConfig.multiple = false;
       }
-      return mediaLibrary.show({ config: { ...cloudinaryBehaviorConfig, instanceConfig } });
+      return mediaLibrary.show({ config: { ...cloudinaryBehaviorConfig, ...instanceConfig } });
     },
     hide: () => mediaLibrary.hide(),
     enableStandalone: () => true,

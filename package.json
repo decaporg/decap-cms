@@ -62,6 +62,7 @@
     "babel-plugin-inline-svg": "^1.0.0",
     "babel-plugin-lodash": "^3.3.4",
     "babel-plugin-module-resolver": "^3.1.1",
+    "babel-plugin-rewire": "^1.2.0",
     "babel-plugin-transform-builtin-extend": "^1.1.2",
     "babel-plugin-transform-export-extensions": "^6.22.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.3",
