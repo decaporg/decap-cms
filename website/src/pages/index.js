@@ -1,5 +1,4 @@
 import React from 'react';
-import moment from 'moment';
 import { graphql } from 'gatsby';
 
 import Layout from '../components/layout';
@@ -72,7 +71,8 @@ const HomePage = ({ data }) => {
             <Release
               key={idx}
               version={node.version}
-              date={moment(node.date).format('MMMM D, YYYY')}
+              versionPrevious={updates.updates[idx + 1].version}
+              date={node.date}
               description={node.description}
             />
           ))}
