@@ -129,6 +129,7 @@ export function getPhrases() {
         onFailToPublishEntry: 'Failed to publish: %{details}',
         entryUpdated: 'Entry status updated',
         onDeleteUnpublishedChanges: 'Unpublished changes deleted',
+        onFailToAuth: "%{details}",
       },
     },
     workflow: {
