@@ -1,5 +1,5 @@
 import yaml from 'js-yaml';
-import { Map, fromJS } from 'immutable';
+import { Map } from 'immutable';
 import { trimStart, get } from 'lodash';
 import { authenticateUser } from 'Actions/auth';
 import * as publishModes from 'Constants/publishModes';
@@ -54,17 +54,15 @@ function parseConfig(data) {
   return config;
 }
 
-async function getConfig(file, isPreloaded) {
+async function getConfig(file) {
   const response = await fetch(file, { credentials: 'same-origin' }).catch(err => err);
   if (response instanceof Error || response.status !== 200) {
-    if (isPreloaded) return parseConfig('');
     throw new Error(`Failed to load config.yml (${response.status || response})`);
   }
   const contentType = response.headers.get('Content-Type') || 'Not-Found';
   const isYaml = contentType.indexOf('yaml') !== -1;
   if (!isYaml) {
     console.log(`Response for ${file} was not yaml. (Content-Type: ${contentType})`);
-    if (isPreloaded) return parseConfig('');
   }
   return parseConfig(await response.text());
 }
@@ -97,24 +95,20 @@ export function configDidLoad(config) {
 }
 
 export function loadConfig(bootstrapConfig) {
-  if (window.CMS_CONFIG) {
-    return configDidLoad(fromJS(window.CMS_CONFIG));
-  }
-  return async (dispatch, getState) => {
+  return async (dispatch) => {
     dispatch(configLoading());
 
     try {
-      const preloadedConfig = getState().config;
       const configUrl = getConfigUrl();
       const loadedConfig =
         bootstrapConfig && bootstrapConfig.load_config_file === false
           ? {}
-          : await getConfig(configUrl, preloadedConfig && preloadedConfig.size > 1);
+          : await getConfig(configUrl);
 
       /**
        * Merge any existing configuration so the result can be validated.
        */
-      const mergedConfig = mergePreloadedConfig(preloadedConfig, bootstrapConfig, loadedConfig);
+      const mergedConfig = mergePreloadedConfig(bootstrapConfig, loadedConfig, window.CMS_CONFIG);
       validateConfig(mergedConfig.toJS());
 
       const config = applyDefaults(mergedConfig);
