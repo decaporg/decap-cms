@@ -1,56 +1,44 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { injectGlobal } from 'react-emotion';
-import Autosuggest from 'react-autosuggest';
-import uuid from 'uuid/v4';
-import { List } from 'immutable';
-import { debounce } from 'lodash';
-import { Loader, components } from 'netlify-cms-ui-default';
+import ImmutablePropTypes from 'react-immutable-proptypes';
+import AsyncSelect from 'react-select/lib/Async';
+import { find } from 'lodash';
+import { List, fromJS } from 'immutable';
+import { reactSelectStyles } from 'netlify-cms-ui-default';
 
-injectGlobal`
-  .react-autosuggest__container {
-    position: relative;
-  }
+function optionToString(option) {
+  return option && option.value ? option.value : '';
+}
 
-  .react-autosuggest__suggestions-container {
-    display: none;
+function convertToOption(raw) {
+  if (typeof raw === 'string') {
+    return { label: raw, value: raw };
   }
+  return Map.isMap(raw) ? raw.toJS() : raw;
+}
 
-  .react-autosuggest__container--open .react-autosuggest__suggestions-container {
-    ${components.dropdownList}
-    position: absolute;
-    display: block;
-    top: 51px;
-    width: 100%;
-    z-index: 2;
-  }
+function getSelectedValue({ value, options, isMultiple }) {
+  if (isMultiple) {
+    const selectedOptions = List.isList(value) ? value.toJS() : value;
 
-  .react-autosuggest__suggestion {
-    ${components.dropdownItem}
-  }
+    if (!selectedOptions || !Array.isArray(selectedOptions)) {
+      return null;
+    }
 
-  .react-autosuggest__suggestions-list {
-    margin: 0;
-    padding: 0;
-    list-style-type: none;
+    return selectedOptions
+      .filter(i => options.find(o => o.value === (i.value || i)))
+      .map(convertToOption);
+  } else {
+    return find(options, ['value', value]) || null;
   }
-
-  .react-autosuggest__suggestion {
-    cursor: pointer;
-    padding: 10px 20px;
-  }
-
-  .react-autosuggest__suggestion--focused {
-    background-color: #ddd;
-  }
-`;
+}
 
 export default class RelationControl extends React.Component {
   static propTypes = {
     onChange: PropTypes.func.isRequired,
     forID: PropTypes.string.isRequired,
     value: PropTypes.node,
-    field: PropTypes.node,
+    field: ImmutablePropTypes.map,
     isFetching: PropTypes.bool,
     fetchID: PropTypes.string,
     query: PropTypes.func.isRequired,
@@ -61,132 +49,80 @@ export default class RelationControl extends React.Component {
     setInactiveStyle: PropTypes.func.isRequired,
   };
 
-  static defaultProps = {
-    value: '',
-  };
+  handleChange = selectedOption => {
+    const { onChange } = this.props;
 
-  constructor(props, ctx) {
-    super(props, ctx);
-    this.controlID = uuid();
-    this.didInitialSearch = false;
-  }
-
-  componentDidMount() {
-    const { value, field } = this.props;
-    if (value) {
-      const collection = field.get('collection');
-      const searchFields = field.get('searchFields').toJS();
-      this.props.query(this.controlID, collection, searchFields, value);
+    if (Array.isArray(selectedOption)) {
+      onChange(fromJS(selectedOption.map(optionToString)));
+    } else {
+      onChange(optionToString(selectedOption));
     }
-  }
-
-  componentDidUpdate(prevProps) {
-    /**
-     * Load extra post data into the store after first query.
-     */
-    if (this.didInitialSearch) return;
-    if (
-      this.props.queryHits !== prevProps.queryHits &&
-      this.props.queryHits.get &&
-      this.props.queryHits.get(this.controlID)
-    ) {
-      this.didInitialSearch = true;
-      const suggestion = this.props.queryHits.get(this.controlID);
-      if (suggestion && suggestion.length === 1) {
-        const val = this.getSuggestionValue(suggestion[0]);
-        this.props.onChange(val, {
-          [this.props.field.get('name')]: {
-            [this.props.field.get('collection')]: { [val]: suggestion[0].data },
-          },
-        });
-      }
-    }
-  }
-
-  onChange = (event, { newValue }) => {
-    this.props.onChange(newValue);
   };
 
-  onSuggestionSelected = (event, { suggestion }) => {
-    const value = this.getSuggestionValue(suggestion);
-    this.props.onChange(value, {
-      [this.props.field.get('name')]: {
-        [this.props.field.get('collection')]: { [value]: suggestion.data },
-      },
-    });
-  };
-
-  onSuggestionsFetchRequested = debounce(({ value }) => {
-    if (value.length < 2) return;
-    const { field } = this.props;
+  loadOptions = (term, callback) => {
+    const { field, query } = this.props;
     const collection = field.get('collection');
     const searchFields = field.get('searchFields').toJS();
-    this.props.query(this.controlID, collection, searchFields, value);
-  }, 500);
-
-  onSuggestionsClearRequested = () => {
-    this.props.clearSearch();
-  };
-
-  getSuggestionValue = suggestion => {
-    const { field } = this.props;
     const valueField = field.get('valueField');
-    return suggestion.data[valueField];
-  };
+    const displayField = field.get('displayFields') || field.get('valueField');
 
-  renderSuggestion = suggestion => {
-    const { field } = this.props;
-    const valueField = field.get('displayFields') || field.get('valueField');
-    if (List.isList(valueField)) {
-      return (
-        <span>
-          {valueField.toJS().map(key => (
-            <span key={key}>{new String(suggestion.data[key])} </span>
-          ))}
-        </span>
-      );
-    }
-    return <span>{new String(suggestion.data[valueField])}</span>;
+    query(this.props.forID, collection, searchFields, term).then(({ payload }) => {
+      const hits = term === '' ? payload.response.hits.slice(0, 20) : payload.response.hits;
+      const options = hits.map(i => {
+        if (List.isList(displayField)) {
+          return {
+            value: i.data[valueField],
+            label: displayField
+              .toJS()
+              .map(key => i.data[key])
+              .join(' '),
+          };
+        }
+        return { value: i.data[valueField], label: i.data[displayField] };
+      });
+
+      callback(options);
+    });
   };
 
   render() {
     const {
       value,
-      isFetching,
-      fetchID,
+      field,
       forID,
-      queryHits,
       classNameWrapper,
       setActiveStyle,
       setInactiveStyle,
+      queryHits,
     } = this.props;
+    const valueField = field.get('valueField');
+    const isMultiple = field.get('multiple', false);
+    const isClearable = !field.get('required', true) || isMultiple;
 
-    const inputProps = {
-      placeholder: '',
-      value: value || '',
-      onChange: this.onChange,
-      id: forID,
-      className: classNameWrapper,
-      onFocus: setActiveStyle,
-      onBlur: setInactiveStyle,
-    };
+    const hits = queryHits.get(forID, []);
 
-    const suggestions = queryHits.get ? queryHits.get(this.controlID, []) : [];
+    const options = [...hits.map(i => convertToOption(i.data[valueField]))];
+    const selectedValue = getSelectedValue({
+      options,
+      value,
+      isMultiple,
+    });
 
     return (
-      <div>
-        <Autosuggest
-          suggestions={suggestions}
-          onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
-          onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-          onSuggestionSelected={this.onSuggestionSelected}
-          getSuggestionValue={this.getSuggestionValue}
-          renderSuggestion={this.renderSuggestion}
-          inputProps={inputProps}
-          focusInputOnSuggestionClick={false}
-        />
-        <Loader active={isFetching && this.controlID === fetchID} />
-      </div>
+      <AsyncSelect
+        value={selectedValue}
+        inputId={forID}
+        defaultOptions
+        onChange={this.handleChange}
+        loadOptions={this.loadOptions}
+        className={classNameWrapper}
+        onFocus={setActiveStyle}
+        onBlur={setInactiveStyle}
+        styles={reactSelectStyles}
+        isMulti={isMultiple}
+        isClearable={isClearable}
+        placeholder=""
+      />
     );
   }
 }
