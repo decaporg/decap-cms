@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.3.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.2.1...netlify-cms-core@2.3.0) (2018-12-04)
+
+
+### Bug Fixes
+
+* **netlify-cms-core:** duplicate key warning ([#1930](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1930)) ([9662eb2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/9662eb2))
+
+
+### Features
+
+* **netlify-cms-widget-select:** add support for multiple selection ([#1901](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1901)) ([88bf287](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/88bf287))
+* add cloudinary support ([#1932](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1932)) ([1fc2f50](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/1fc2f50))
+
+
+
+
+
 ## [2.2.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.2.0...netlify-cms-core@2.2.1) (2018-11-29)
 
 

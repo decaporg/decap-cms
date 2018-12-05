@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.2.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/compare/netlify-cms-widget-file@2.1.0...netlify-cms-widget-file@2.2.0) (2018-12-04)
+
+
+### Features
+
+* add cloudinary support ([#1932](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/issues/1932)) ([1fc2f50](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/commit/1fc2f50))
+
+
+
+
+
 <a name="2.1.0"></a>
 # [2.1.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/compare/netlify-cms-widget-file@2.0.5...netlify-cms-widget-file@2.1.0) (2018-09-06)
 

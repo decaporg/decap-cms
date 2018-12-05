@@ -1,20 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { Map } from 'immutable';
+import { Map, List, fromJS } from 'immutable';
 import { find } from 'lodash';
 import Select from 'react-select';
 import { colors } from 'netlify-cms-ui-default';
 
 const styles = {
-  control: provided => ({
-    ...provided,
+  control: styles => ({
+    ...styles,
     border: 0,
     boxShadow: 'none',
     padding: '9px 0 9px 12px',
   }),
-  option: (provided, state) => ({
-    ...provided,
+  option: (styles, state) => ({
+    ...styles,
     backgroundColor: state.isSelected
       ? `${colors.active}`
       : state.isFocused
@@ -22,11 +22,43 @@ const styles = {
         : 'transparent',
     paddingLeft: '22px',
   }),
-  menu: provided => ({ ...provided, right: 0 }),
-  container: provided => ({ ...provided, padding: '0 !important' }),
-  indicatorSeparator: () => ({ display: 'none' }),
-  dropdownIndicator: provided => ({ ...provided, color: `${colors.controlLabel}` }),
+  menu: styles => ({ ...styles, right: 0, zIndex: 2 }),
+  container: styles => ({ ...styles, padding: '0 !important' }),
+  indicatorSeparator: (styles, state) =>
+    state.hasValue && state.selectProps.isClearable
+      ? { ...styles, backgroundColor: `${colors.textFieldBorder}` }
+      : { display: 'none' },
+  dropdownIndicator: styles => ({ ...styles, color: `${colors.controlLabel}` }),
+  clearIndicator: styles => ({ ...styles, color: `${colors.controlLabel}` }),
+  multiValue: styles => ({
+    ...styles,
+    backgroundColor: colors.background,
+  }),
+  multiValueLabel: styles => ({
+    ...styles,
+    color: colors.textLead,
+    fontWeight: 500,
+  }),
+  multiValueRemove: styles => ({
+    ...styles,
+    color: colors.controlLabel,
+    ':hover': {
+      color: colors.errorText,
+      backgroundColor: colors.errorBackground,
+    },
+  }),
 };
+
+function optionToString(option) {
+  return option && option.value ? option.value : '';
+}
+
+function convertToOption(raw) {
+  if (typeof raw === 'string') {
+    return { label: raw, value: raw };
+  }
+  return Map.isMap(raw) ? raw.toJS() : raw;
+}
 
 export default class SelectControl extends React.Component {
   static propTypes = {
@@ -49,33 +81,48 @@ export default class SelectControl extends React.Component {
     }),
   };
 
-  static defaultProps = {
-    value: '',
+  handleChange = selectedOption => {
+    const { onChange } = this.props;
+
+    if (Array.isArray(selectedOption)) {
+      onChange(fromJS(selectedOption.map(optionToString)));
+    } else {
+      onChange(optionToString(selectedOption));
+    }
   };
 
-  handleChange = selectedOption => {
-    this.props.onChange(selectedOption['value']);
+  getSelectedValue = ({ value, options, isMultiple }) => {
+    if (isMultiple) {
+      const selectedOptions = List.isList(value) ? value.toJS() : value;
+
+      if (!selectedOptions || !Array.isArray(selectedOptions)) {
+        return null;
+      }
+
+      return selectedOptions
+        .filter(i => options.find(o => o.value === (i.value || i)))
+        .map(convertToOption);
+    } else {
+      return find(options, ['value', value]) || null;
+    }
   };
 
   render() {
     const { field, value, forID, classNameWrapper, setActiveStyle, setInactiveStyle } = this.props;
     const fieldOptions = field.get('options');
+    const isMultiple = field.get('multiple', false);
+    const isClearable = !field.get('required', true) || isMultiple;
 
     if (!fieldOptions) {
       return <div>Error rendering select control for {field.get('name')}: No options</div>;
     }
 
-    const options = [
-      ...(field.get('default', false) ? [] : [{ label: '', value: '' }]),
-      ...fieldOptions.map(option => {
-        if (typeof option === 'string') {
-          return { label: option, value: option };
-        }
-        return Map.isMap(option) ? option.toJS() : option;
-      }),
-    ];
-
-    const selectedValue = find(options, ['value', value]);
+    const options = [...fieldOptions.map(convertToOption)];
+    const selectedValue = this.getSelectedValue({
+      options,
+      value,
+      isMultiple,
+    });
 
     return (
       <Select
@@ -87,6 +134,9 @@ export default class SelectControl extends React.Component {
         onBlur={setInactiveStyle}
         options={options}
         styles={styles}
+        isMulti={isMultiple}
+        isClearable={isClearable}
+        placeholder=""
       />
     );
   }
