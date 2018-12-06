@@ -5,7 +5,6 @@ import { Iterable } from 'immutable';
 import { createActions } from './actions';
 
 import MediaLibrary from './components/MediaLibrary';
-import { applyGlobalStyle } from './applyGlobalStyle';
 import reducer from './reducer';
 
 /**
@@ -101,9 +100,6 @@ function openDialog(files, config, { mediaLibraryActions, uploadcareActions }) {
  * CMS to call methods on.
  */
 async function init({ options = { config: {} }, store, mediaLibraryActions }) {
-  // attachReducer();
-  applyGlobalStyle();
-
   const uploadcareActions = createActions(store, mediaLibraryActions);
 
   const { publicKey, ...globalConfig } = options.config;
