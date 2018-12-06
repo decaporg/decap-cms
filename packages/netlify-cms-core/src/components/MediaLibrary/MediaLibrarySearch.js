@@ -35,7 +35,7 @@ const SearchIcon = styled(Icon)`
   transform: translate(0, -50%);
 `;
 
-const MediaLibrarySearch = ({ value, onChange, onKeyDown, placeholder, disabled }) => (
+const MediaLibrarySearch = ({ value, onChange, placeholder, disabled }) => (
   <SearchContainer>
     <SearchIcon type="search" size="small" />
     <SearchInput value={value} onChange={onChange} placeholder={placeholder} disabled={disabled} />
@@ -45,7 +45,6 @@ const MediaLibrarySearch = ({ value, onChange, onKeyDown, placeholder, disabled 
 MediaLibrarySearch.propTypes = {
   value: PropTypes.string,
   onChange: PropTypes.func.isRequired,
-  onKeyDown: PropTypes.func.isRequired,
   placeholder: PropTypes.string.isRequired,
   disabled: PropTypes.bool,
 };
