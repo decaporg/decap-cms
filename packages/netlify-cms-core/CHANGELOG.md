@@ -3,12 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-# [2.3.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.2.1...netlify-cms-core@2.3.0) (2018-12-04)
+# 2.3.0 (2018-12-04)
 
 
 ### Bug Fixes
 
-* **netlify-cms-core:** duplicate key warning ([#1930](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1930)) ([9662eb2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/9662eb2))
+* **netlify-cms-core:** duplicate key warning (#1930) (https://github.com/netlify/netlify-cms/commit/9662eb292f4b0a0f21f4436445a57a5ef073ae80)
 
 
 ### Features
