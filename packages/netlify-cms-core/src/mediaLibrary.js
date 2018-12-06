@@ -5,17 +5,34 @@
 import { once } from 'lodash';
 import { getMediaLibrary } from 'Lib/registry';
 import store from 'Redux';
-import { createMediaLibrary, insertMedia, persistMedia } from 'Actions/mediaLibrary';
+import {
+  createMediaLibrary,
+  insertMedia,
+  persistMedia,
+  deleteMedia,
+  loadMedia,
+} from 'Actions/mediaLibrary';
+import { bindActionCreators } from 'redux';
 
 const initializeMediaLibrary = once(async function initializeMediaLibrary(name, options) {
   const lib = getMediaLibrary(name);
-  const handleInsert = url => store.dispatch(insertMedia(url));
-  const handlePersist = file => store.dispatch(persistMedia(file));
-  const getState = () => store.getState()
+  const mediaLibraryActions = bindActionCreators(
+    {
+      insertMedia,
+      persistMedia,
+      deleteMedia,
+      loadMedia,
+    },
+    store.dispatch,
+  );
 
-  const instance = await lib.init({ options, handleInsert, handlePersist, getState });
+  const instance = await lib.init({ options, store, mediaLibraryActions });
 
-  store.dispatch(createMediaLibrary(instance));
+  await store.dispatch(createMediaLibrary(instance));
+
+  if (instance.getReducer()) {
+    store.attachReducers({ [name]: instance.getReducer() });
+  }
 });
 
 store.subscribe(() => {

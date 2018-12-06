@@ -34,7 +34,9 @@ export function createMediaLibrary(instance) {
     onClearControl: instance.onClearControl || (() => {}),
     onRemoveControl: instance.onRemoveControl || (() => {}),
     enableStandalone: instance.enableStandalone || (() => {}),
+    getReducer: instance.getReducer || (() => {}),
   };
+
   return { type: MEDIA_LIBRARY_CREATE, payload: api };
 }
 

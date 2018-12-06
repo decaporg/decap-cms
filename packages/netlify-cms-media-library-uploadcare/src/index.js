@@ -2,12 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { loadScript } from 'netlify-cms-lib-util';
 import { Iterable } from 'immutable';
-import { attachReducer } from './attachReducer';
-import { addFile } from './actions';
+import { createActions } from './actions';
 
 import MediaLibrary from './components/MediaLibrary';
-import store from 'Redux';
 import { applyGlobalStyle } from './applyGlobalStyle';
+import reducer from './reducer';
 
 /**
  * Default Uploadcare widget configuration, can be overriden via config.yml.
@@ -77,7 +76,7 @@ function getFile(url, cdnBase) {
  * Open the standalone dialog. A single instance is created and destroyed for
  * each use.
  */
-function openDialog(files, config, handleInsert) {
+function openDialog(files, config, { mediaLibraryActions, uploadcareActions }) {
   window.uploadcare.openDialog(files, config).done(({ promise }) =>
     promise()
       .then(fileInfo => {
@@ -86,14 +85,14 @@ function openDialog(files, config, handleInsert) {
             { length: fileInfo.count },
             (val, idx) => `${fileInfo.cdnUrl}nth/${idx}/`,
           );
-          handleInsert(urls);
+          mediaLibraryActions.insertMedia(urls);
         } else {
-          handleInsert(fileInfo.cdnUrl);
+          mediaLibraryActions.insertMedia(fileInfo.cdnUrl);
         }
 
         return fileInfo;
       })
-      .then(fileInfo => store.dispatch(addFile(fileInfo)))
+      .then(fileInfo => uploadcareActions.addFile(fileInfo)),
   );
 }
 
@@ -101,9 +100,11 @@ function openDialog(files, config, handleInsert) {
  * Initialization function will only run once, returns an API object for Netlify
  * CMS to call methods on.
  */
-async function init({ options = { config: {} }, handleInsert }) {
-  attachReducer();
+async function init({ options = { config: {} }, store, mediaLibraryActions }) {
+  // attachReducer();
   applyGlobalStyle();
+
+  const uploadcareActions = createActions(store, mediaLibraryActions);
 
   const { publicKey, ...globalConfig } = options.config;
   const baseConfig = { ...defaultConfig, ...globalConfig };
@@ -141,7 +142,12 @@ async function init({ options = { config: {} }, handleInsert }) {
     console.log('mediaLibrary registered: ', ReactDOM);
 
     ReactDOM.render(
-      <MediaLibrary store={store} dialogApi={dialogApi} settings={settings} />,
+      <MediaLibrary
+        store={store}
+        actions={uploadcareActions}
+        dialogApi={dialogApi}
+        settings={settings}
+      />,
       container[0],
     );
 
@@ -165,6 +171,7 @@ async function init({ options = { config: {} }, handleInsert }) {
   window.uploadcare.registerTab('mediaLibrary', mediaLibrary);
 
   return {
+    getReducer: () => reducer,
     /**
      * On show, create a new widget, cache it in the widgets object, and open.
      * No hide method is provided because the widget doesn't provide it.
@@ -180,9 +187,11 @@ async function init({ options = { config: {} }, handleInsert }) {
        * from the Uploadcare library will have a `state` method.
        */
       if (files && !files.state) {
-        files.then(result => openDialog(result, resolvedConfig, handleInsert));
+        files.then(result =>
+          openDialog(result, resolvedConfig, { uploadcareActions, mediaLibraryActions }),
+        );
       } else {
-        openDialog(files, resolvedConfig, handleInsert);
+        openDialog(files, resolvedConfig, { uploadcareActions, mediaLibraryActions });
       }
     },
 

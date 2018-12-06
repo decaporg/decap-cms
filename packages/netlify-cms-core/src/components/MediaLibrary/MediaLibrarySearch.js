@@ -38,12 +38,7 @@ const SearchIcon = styled(Icon)`
 const MediaLibrarySearch = ({ value, onChange, onKeyDown, placeholder, disabled }) => (
   <SearchContainer>
     <SearchIcon type="search" size="small" />
-    <SearchInput
-      value={value}
-      onChange={onChange}
-      placeholder={placeholder}
-      disabled={disabled}
-    />
+    <SearchInput value={value} onChange={onChange} placeholder={placeholder} disabled={disabled} />
   </SearchContainer>
 );
 

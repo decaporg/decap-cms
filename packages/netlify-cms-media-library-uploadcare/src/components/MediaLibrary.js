@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import styled from 'react-emotion';
 import { orderBy, map } from 'lodash';
 import fuzzy from 'fuzzy';
-import axios from 'axios';
 import MediaLibrarySearch from './MediaLibrarySearch';
 import MediaLibraryCardGrid from './MediaLibraryCardGrid';
 import { connect } from 'react-redux';
-import { loadFiles, removeFiles } from '../actions';
+import PropTypes from 'prop-types';
 
 const COLUMNS = 4;
 
@@ -36,7 +34,7 @@ class MediaLibrary extends Component {
     };
   }
 
-  static getDerivedStateFromProps(props, state) {
+  static getDerivedStateFromProps(props) {
     return {
       files: props.files.toArray(),
     };
@@ -44,7 +42,7 @@ class MediaLibrary extends Component {
 
   componentDidMount() {
     if (!this.state.files.length > 0) {
-      this.props.loadFiles();
+      this.props.actions.loadFiles();
     }
   }
 
@@ -70,7 +68,7 @@ class MediaLibrary extends Component {
   };
 
   onRemoveClick = () => {
-    this.props.removeFiles(this.state.selectedUuids);
+    this.props.actions.removeFiles(this.state.selectedUuids);
   };
 
   /**
@@ -191,7 +189,7 @@ class MediaLibrary extends Component {
   }
 }
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state) {
   const files = state.uploadcare.get('files');
   const isLoading = state.mediaLibrary.get('isLoading');
   const isDeleting = state.mediaLibrary.get('isDeleting');
@@ -200,12 +198,14 @@ function mapStateToProps(state, ownProps) {
   return { files, isLoading, isDeleting, isFetching };
 }
 
-const mapDispatchToProps = {
-  loadFiles,
-  removeFiles,
+MediaLibrary.propTypes = {
+  store: PropTypes.object.isRequired,
+  actions: PropTypes.object.isRequired,
+  dialogApi: PropTypes.object.isRequired,
+  settings: PropTypes.object.isRequired,
+  isLoading: PropTypes.func.isRequired,
+  isDeleting: PropTypes.func.isRequired,
+  isFetching: PropTypes.func.isRequired,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(MediaLibrary);
+export default connect(mapStateToProps)(MediaLibrary);

@@ -1,29 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled from 'react-emotion';
-import {
-  Grid,
-  AutoSizer
-} from 'react-virtualized'
+import { Grid, AutoSizer } from 'react-virtualized';
 import MediaLibraryCard from './MediaLibraryCard';
 
-
-const CardGrid = styled(Grid)`
-  overflow: auto;
-`;
-
-const MediaLibraryCardGrid = ({
-  onAssetClick,
-  rowCount,
-  columnCount,
-  getCell,
-  selectedUuids,
-}) => {
-
-  function cellRenderer({columnIndex, key, rowIndex, style, isVisible}) {
-    console.log('getCell(rowIndex, columnIndex): ', getCell(rowIndex, columnIndex))
-    const file = getCell(rowIndex, columnIndex)
-    return file ?
+const MediaLibraryCardGrid = ({ onAssetClick, rowCount, columnCount, getCell, selectedUuids }) => {
+  function cellRenderer({ columnIndex, rowIndex, style }) {
+    console.log('getCell(rowIndex, columnIndex): ', getCell(rowIndex, columnIndex));
+    const file = getCell(rowIndex, columnIndex);
+    return file ? (
       <MediaLibraryCard
         isSelected={selectedUuids.includes(file.uuid)}
         style={style}
@@ -31,12 +15,21 @@ const MediaLibraryCardGrid = ({
         imageUrl={file.cdnUrl}
         text={file.name}
         onClick={() => onAssetClick(file.uuid)}
-      /> : <div/>
+      />
+    ) : (
+      <div />
+    );
   }
+
+  cellRenderer.propTypes = {
+    columnIndex: PropTypes.number.isRequired,
+    rowIndex: PropTypes.number.isRequired,
+    style: PropTypes.object.isRequired,
+  };
 
   return (
     <AutoSizer>
-      {({width, height}) => (
+      {({ width, height }) => (
         <Grid
           cellRenderer={cellRenderer}
           height={height}
@@ -51,19 +44,16 @@ const MediaLibraryCardGrid = ({
         />
       )}
     </AutoSizer>
-  )
-}
+  );
+};
 
 MediaLibraryCardGrid.propTypes = {
-  mediaItems: PropTypes.arrayOf(
-    PropTypes.shape({
-      cdnUrl: PropTypes.string.isRequired,
-      uuid: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      size: PropTypes.number.isRequired
-    }),
-  ).isRequired,
-  onAssetClick: PropTypes.func.isRequired
+  selectedUuids: PropTypes.array.isRequired,
+  onAssetRemove: PropTypes.func.isRequired,
+  onAssetClick: PropTypes.func.isRequired,
+  getCell: PropTypes.func.isRequired,
+  columnCount: PropTypes.number.isRequired,
+  rowCount: PropTypes.number.isRequired,
 };
 
 export default MediaLibraryCardGrid;

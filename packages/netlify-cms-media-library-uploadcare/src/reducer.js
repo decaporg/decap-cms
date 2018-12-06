@@ -26,7 +26,10 @@ const reducer = (state = Map(defaultState), action) => {
     case UPLOADCARE_LOAD:
       return state.set('files', OrderedMap(action.payload.files));
     case UPLOADCARE_REMOVE_FILES:
-      return state.set('files', state.get('files').filter(fileInfo => !action.payload.uuids.includes(fileInfo.uuid)));
+      return state.set(
+        'files',
+        state.get('files').filter(fileInfo => !action.payload.uuids.includes(fileInfo.uuid)),
+      );
     default:
       return state;
   }
