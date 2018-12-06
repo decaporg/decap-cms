@@ -3,6 +3,7 @@ import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 import { Loader } from 'netlify-cms-ui-default';
+import { translate } from 'react-polyglot';
 import history from 'Routing/history';
 import { logoutUser } from 'Actions/auth';
 import {
@@ -69,6 +70,7 @@ class Editor extends React.Component {
       pathname: PropTypes.string,
     }),
     hasChanged: PropTypes.bool,
+    t: PropTypes.func.isRequired,
   };
 
   componentDidMount() {
@@ -80,6 +82,7 @@ class Editor extends React.Component {
       createEmptyDraft,
       loadEntries,
       collectionEntriesLoaded,
+      t,
     } = this.props;
 
     if (newEntry) {
@@ -88,7 +91,7 @@ class Editor extends React.Component {
       loadEntry(collection, slug);
     }
 
-    const leaveMessage = 'Are you sure you want to leave this page?';
+    const leaveMessage = t('editor.editor.onLeavePage');
 
     this.exitBlocker = event => {
       if (this.props.entryDraft.get('hasChanged')) {
@@ -190,9 +193,10 @@ class Editor extends React.Component {
       collection,
       slug,
       currentStatus,
+      t,
     } = this.props;
     if (entryDraft.get('hasChanged')) {
-      window.alert('You have unsaved changes, please save before updating status.');
+      window.alert(t('editor.editor.onUpdatingWithUnsavedChanges'));
       return;
     }
     const newStatus = status.get(newStatusName);
@@ -230,14 +234,15 @@ class Editor extends React.Component {
       slug,
       currentStatus,
       loadEntry,
+      t,
     } = this.props;
     if (currentStatus !== status.last()) {
-      window.alert('Please update status to "Ready" before publishing.');
+      window.alert(t('editor.editor.onPublishingNotReady'));
       return;
     } else if (entryDraft.get('hasChanged')) {
-      window.alert('You have unsaved changes, please save before publishing.');
+      window.alert(t('editor.editor.onPublishingWithUnsavedChanges'));
       return;
-    } else if (!window.confirm('Are you sure you want to publish this entry?')) {
+    } else if (!window.confirm(t('editor.editor.onPublishing'))) {
       return;
     }
 
@@ -251,16 +256,12 @@ class Editor extends React.Component {
   };
 
   handleDeleteEntry = () => {
-    const { entryDraft, newEntry, collection, deleteEntry, slug } = this.props;
+    const { entryDraft, newEntry, collection, deleteEntry, slug, t } = this.props;
     if (entryDraft.get('hasChanged')) {
-      if (
-        !window.confirm(
-          'Are you sure you want to delete this published entry, as well as your unsaved changes from the current session?',
-        )
-      ) {
+      if (!window.confirm(t('editor.editor.onDeleteWithUnsavedChanges'))) {
         return;
       }
-    } else if (!window.confirm('Are you sure you want to delete this published entry?')) {
+    } else if (!window.confirm(t('editor.editor.onDeletePublishedEntry'))) {
       return;
     }
     if (newEntry) {
@@ -281,19 +282,14 @@ class Editor extends React.Component {
       deleteUnpublishedEntry,
       loadEntry,
       isModification,
+      t,
     } = this.props;
     if (
       entryDraft.get('hasChanged') &&
-      !window.confirm(
-        'This will delete all unpublished changes to this entry, as well as your unsaved changes from the current session. Do you still want to delete?',
-      )
+      !window.confirm(t('editor.editor.onDeleteUnpublishedChangesWithUnsavedChanges'))
     ) {
       return;
-    } else if (
-      !window.confirm(
-        'All unpublished changes to this entry will be deleted. Do you still want to delete?',
-      )
-    ) {
+    } else if (!window.confirm(t('editor.editor.onDeleteUnpublishedChanges'))) {
       return;
     }
     await deleteUnpublishedEntry(collection.get('name'), slug);
@@ -323,6 +319,7 @@ class Editor extends React.Component {
       isModification,
       currentStatus,
       logoutUser,
+      t,
     } = this.props;
 
     if (entry && entry.get('error')) {
@@ -336,7 +333,7 @@ class Editor extends React.Component {
       entryDraft.get('entry') === undefined ||
       (entry && entry.get('isFetching'))
     ) {
-      return <Loader active>Loading entry...</Loader>;
+      return <Loader active>{t('editor.editor.loadingEntry')}</Loader>;
     }
 
     return (
@@ -422,4 +419,4 @@ export default connect(
     deleteUnpublishedEntry,
     logoutUser,
   },
-)(withWorkflow(Editor));
+)(withWorkflow(translate()(Editor)));

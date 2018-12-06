@@ -1,6 +1,4 @@
 # Netlify CMS
-[![All Contributors](https://img.shields.io/badge/all_contributors-122-orange.svg)](#contributors)
-[![Open Source Helpers](https://www.codetriage.com/netlify/netlify-cms/badges/users.svg)](https://www.codetriage.com/netlify/netlify-cms)
 [![](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/netlify/netlifycms)
 
 A CMS for static site generators. Give non-technical users a simple way to edit
@@ -31,6 +29,10 @@ The Netlify CMS can be used in two different ways.
 # Community
 
 Netlify CMS has a [Gitter community](https://gitter.im/netlify/netlifycms) where members of the community hang out and share things about the project, as well as give and receive support.
+
+# Contributing
+
+New contributors are always welcome! Check out [CONTRIBUTING.md](https://github.com/netlify/netlify-cms/blob/master/CONTRIBUTING.md) to get involved.
 
 # Change Log
 

@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { hot } from 'react-hot-loader';
+import { translate } from 'react-polyglot';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from 'react-emotion';
 import { connect } from 'react-redux';
@@ -63,17 +64,18 @@ class App extends React.Component {
     useMediaLibrary: PropTypes.bool,
     openMediaLibrary: PropTypes.func.isRequired,
     showMediaButton: PropTypes.bool,
+    t: PropTypes.func.isRequired,
   };
 
-  static configError(config) {
+  configError(config) {
+    const t = this.props.t;
     return (
       <ErrorContainer>
-        <h1>Error loading the CMS configuration</h1>
-
+        <h1>{t('app.app.errorHeader')}</h1>
         <div>
-          <strong>Config Errors:</strong>
+          <strong>{t('app.app.configErrors')}:</strong>
           <ErrorCodeBlock>{config.get('error')}</ErrorCodeBlock>
-          <span>Check your config.yml file.</span>
+          <span>{t('app.app.checkConfigYml')}</span>
         </div>
       </ErrorContainer>
     );
@@ -89,13 +91,13 @@ class App extends React.Component {
   }
 
   authenticating() {
-    const { auth } = this.props;
+    const { auth, t } = this.props;
     const backend = currentBackend(this.props.config);
 
     if (backend == null) {
       return (
         <div>
-          <h1>Waiting for backend...</h1>
+          <h1>{t('app.app.waitingBackend')}</h1>
         </div>
       );
     }
@@ -133,6 +135,7 @@ class App extends React.Component {
       publishMode,
       useMediaLibrary,
       openMediaLibrary,
+      t,
       showMediaButton,
     } = this.props;
 
@@ -141,22 +144,22 @@ class App extends React.Component {
     }
 
     if (config.get('error')) {
-      return App.configError(config);
+      return this.configError(config);
     }
 
     if (config.get('isFetching')) {
-      return <Loader active>Loading configuration...</Loader>;
+      return <Loader active>{t('app.app.loadingConfig')}</Loader>;
     }
 
     if (user == null) {
-      return this.authenticating();
+      return this.authenticating(t);
     }
 
     const defaultPath = `/collections/${collections.first().get('name')}`;
     const hasWorkflow = publishMode === EDITORIAL_WORKFLOW;
 
     return (
-      <div>
+      <>
         <Notifs CustomComponent={Toast} />
         <Header
           user={user}
@@ -170,27 +173,25 @@ class App extends React.Component {
         />
         <AppMainContainer>
           {isFetching && <TopBarProgress />}
-          <div>
-            <Switch>
-              <Redirect exact from="/" to={defaultPath} />
-              <Redirect exact from="/search/" to={defaultPath} />
-              {hasWorkflow ? <Route path="/workflow" component={Workflow} /> : null}
-              <Route exact path="/collections/:name" component={Collection} />
-              <Route
-                path="/collections/:name/new"
-                render={props => <Editor {...props} newRecord />}
-              />
-              <Route path="/collections/:name/entries/:slug" component={Editor} />
-              <Route
-                path="/search/:searchTerm"
-                render={props => <Collection {...props} isSearchResults />}
-              />
-              <Route component={NotFoundPage} />
-            </Switch>
-            {useMediaLibrary ? <MediaLibrary /> : null}
-          </div>
+          <Switch>
+            <Redirect exact from="/" to={defaultPath} />
+            <Redirect exact from="/search/" to={defaultPath} />
+            {hasWorkflow ? <Route path="/workflow" component={Workflow} /> : null}
+            <Route exact path="/collections/:name" component={Collection} />
+            <Route
+              path="/collections/:name/new"
+              render={props => <Editor {...props} newRecord />}
+            />
+            <Route path="/collections/:name/entries/:slug" component={Editor} />
+            <Route
+              path="/search/:searchTerm"
+              render={props => <Collection {...props} isSearchResults />}
+            />
+            <Route component={NotFoundPage} />
+          </Switch>
+          {useMediaLibrary ? <MediaLibrary /> : null}
         </AppMainContainer>
-      </div>
+      </>
     );
   }
 }
@@ -225,5 +226,5 @@ export default hot(module)(
   connect(
     mapStateToProps,
     mapDispatchToProps,
-  )(App),
+  )(translate()(App)),
 );

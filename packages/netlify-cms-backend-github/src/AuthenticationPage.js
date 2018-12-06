@@ -17,7 +17,7 @@ export default class GitHubAuthenticationPage extends React.Component {
     siteId: PropTypes.string,
     authEndpoint: PropTypes.string,
     config: ImmutablePropTypes.map,
-    clearHash: PropTypes.function,
+    clearHash: PropTypes.func,
   };
 
   state = {};
@@ -44,12 +44,13 @@ export default class GitHubAuthenticationPage extends React.Component {
   };
 
   render() {
-    const { inProgress } = this.props;
+    const { inProgress, config } = this.props;
     return (
       <AuthenticationPage
         onLogin={this.handleLogin}
         loginDisabled={inProgress}
         loginErrorMessage={this.state.loginError}
+        logoUrl={config.get('logo_url')}
         renderButtonContent={() => (
           <React.Fragment>
             <LoginButtonIcon type="github" /> {inProgress ? 'Logging in...' : 'Login with GitHub'}

@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'react-emotion';
+import { translate } from 'react-polyglot';
 import { Icon, Dropdown, DropdownItem, DropdownButton, colors } from 'netlify-cms-ui-default';
 import { stripProtocol } from 'Lib/urlHelper';
 
@@ -11,8 +12,8 @@ const styles = {
   `,
 };
 
-const AppHeaderAvatar = styled.button`
-  border: 0;
+const AvatarDropdownButton = styled(DropdownButton)`
+  display: inline-block;
   padding: 8px;
   cursor: pointer;
   color: #1e2532;
@@ -37,17 +38,14 @@ const AppHeaderSiteLink = styled.a`
   padding: 10px 16px;
 `;
 
-const Avatar = ({ imageUrl }) => (
-  <AppHeaderAvatar>
-    {imageUrl ? <AvatarImage src={imageUrl} /> : <AvatarPlaceholderIcon type="user" size="large" />}
-  </AppHeaderAvatar>
-);
+const Avatar = ({ imageUrl }) =>
+  imageUrl ? <AvatarImage src={imageUrl} /> : <AvatarPlaceholderIcon type="user" size="large" />;
 
 Avatar.propTypes = {
   imageUrl: PropTypes.string,
 };
 
-const SettingsDropdown = ({ displayUrl, imageUrl, onLogoutClick }) => (
+const SettingsDropdown = ({ displayUrl, imageUrl, onLogoutClick, t }) => (
   <React.Fragment>
     {displayUrl ? (
       <AppHeaderSiteLink href={displayUrl} target="_blank">
@@ -59,12 +57,12 @@ const SettingsDropdown = ({ displayUrl, imageUrl, onLogoutClick }) => (
       dropdownWidth="100px"
       dropdownPosition="right"
       renderButton={() => (
-        <DropdownButton>
+        <AvatarDropdownButton>
           <Avatar imageUrl={imageUrl} />
-        </DropdownButton>
+        </AvatarDropdownButton>
       )}
     >
-      <DropdownItem label="Log Out" onClick={onLogoutClick} />
+      <DropdownItem label={t('ui.settingsDropdown.logOut')} onClick={onLogoutClick} />
     </Dropdown>
   </React.Fragment>
 );
@@ -73,6 +71,7 @@ SettingsDropdown.propTypes = {
   displayUrl: PropTypes.string,
   imageUrl: PropTypes.string,
   onLogoutClick: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
-export default SettingsDropdown;
+export default translate()(SettingsDropdown);

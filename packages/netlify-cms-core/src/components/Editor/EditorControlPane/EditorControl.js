@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import { translate } from 'react-polyglot';
 import styled, { css, cx } from 'react-emotion';
 import { partial, uniqueId } from 'lodash';
 import { connect } from 'react-redux';
@@ -142,11 +143,14 @@ class EditorControl extends React.Component {
     queryHits: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
     isFetching: PropTypes.bool,
     clearSearch: PropTypes.func.isRequired,
+    t: PropTypes.func.isRequired,
   };
 
   state = {
     activeLabel: false,
   };
+
+  uniqueFieldId = uniqueId(`${this.props.field.get('name')}-field-`);
 
   render() {
     const {
@@ -168,12 +172,12 @@ class EditorControl extends React.Component {
       queryHits,
       isFetching,
       clearSearch,
+      t,
     } = this.props;
     const widgetName = field.get('widget');
     const widget = resolveWidget(widgetName);
     const fieldName = field.get('name');
     const fieldHint = field.get('hint');
-    const uniqueFieldId = uniqueId();
     const metadata = fieldsMetaData && fieldsMetaData.get(fieldName);
     const errors = fieldsErrors && fieldsErrors.get(fieldName);
     return (
@@ -194,9 +198,9 @@ class EditorControl extends React.Component {
             { [styles.labelActive]: this.state.styleActive },
             { [styles.labelError]: !!errors },
           )}
-          htmlFor={fieldName + uniqueFieldId}
+          htmlFor={this.uniqueFieldId}
         >
-          {field.get('label')}
+          {field.get('label', field.get('name'))}
         </label>
         <Widget
           classNameWrapper={cx(
@@ -210,7 +214,7 @@ class EditorControl extends React.Component {
           classNameLabelActive={styles.labelActive}
           controlComponent={widget.control}
           field={field}
-          uniqueFieldId={uniqueFieldId}
+          uniqueFieldId={this.uniqueFieldId}
           value={value}
           mediaPaths={mediaPaths}
           metadata={metadata}
@@ -233,6 +237,7 @@ class EditorControl extends React.Component {
           queryHits={queryHits}
           clearSearch={clearSearch}
           isFetching={isFetching}
+          t={t}
         />
         {fieldHint && (
           <ControlHint active={this.state.styleActive} error={!!errors}>
@@ -266,6 +271,6 @@ const ConnectedEditorControl = connect(
   mapDispatchToProps,
   null,
   { withRef: true },
-)(EditorControl);
+)(translate()(EditorControl));
 
 export default ConnectedEditorControl;

@@ -4,6 +4,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 import { orderBy, map } from 'lodash';
 import { Map } from 'immutable';
+import { translate } from 'react-polyglot';
 import fuzzy from 'fuzzy';
 import { resolvePath, fileExtension } from 'netlify-cms-lib-util';
 import {
@@ -56,6 +57,11 @@ class MediaLibrary extends React.Component {
     insertMedia: PropTypes.func.isRequired,
     publicFolder: PropTypes.string,
     closeMediaLibrary: PropTypes.func.isRequired,
+    t: PropTypes.func.isRequired,
+  };
+
+  static defaultProps = {
+    files: [],
   };
 
   /**
@@ -118,7 +124,7 @@ class MediaLibrary extends React.Component {
   /**
    * Filter an array of file data to include only images.
    */
-  filterImages = (files = []) => {
+  filterImages = files => {
     return files.filter(file => {
       const ext = fileExtension(file.name).toLowerCase();
       return IMAGE_EXTENSIONS.includes(ext);
@@ -212,8 +218,8 @@ class MediaLibrary extends React.Component {
    */
   handleDelete = () => {
     const { selectedFile } = this.state;
-    const { files, deleteMedia, privateUpload } = this.props;
-    if (!window.confirm('Are you sure you want to delete selected media?')) {
+    const { files, deleteMedia, privateUpload, t } = this.props;
+    if (!window.confirm(t('mediaLibrary.mediaLibrary.onDelete'))) {
       return;
     }
     const file = files.find(file => selectedFile.key === file.key);
@@ -275,7 +281,7 @@ class MediaLibrary extends React.Component {
     const {
       isVisible,
       canInsert,
-      files = [],
+      files,
       dynamicSearch,
       dynamicSearchActive,
       forImage,
@@ -285,6 +291,7 @@ class MediaLibrary extends React.Component {
       hasNextPage,
       isPaginating,
       privateUpload,
+      t,
     } = this.props;
 
     return (
@@ -316,6 +323,7 @@ class MediaLibrary extends React.Component {
         handleAssetClick={this.handleAssetClick}
         handleLoadMore={this.handleLoadMore}
         getDisplayURL={this.getDisplayURL}
+        t={t}
       />
     );
   }
@@ -358,4 +366,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(MediaLibrary);
+)(translate()(MediaLibrary));

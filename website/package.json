@@ -7,8 +7,7 @@
     "build": "gatsby build && mv public dist",
     "copy:contribs": "cp ../.all-contributorsrc data/contributors.json",
     "prepare": "npm run copy:contribs",
-    "reset": "rm -rf .cache",
-    "lint": "eslint src"
+    "reset": "rm -rf .cache"
   },
   "author": "",
   "homepage": "https://www.netlifycms.org/",
@@ -28,6 +27,7 @@
     "gatsby-transformer-json": "next",
     "gatsby-transformer-remark": "next",
     "gatsby-transformer-yaml": "next",
+    "github-buttons": "git+https://github.com/ntkme/github-buttons.git",
     "lodash": "^4.17.10",
     "netlify-cms": "^2.0.11",
     "postcss-at2x": "^2.0.0",

@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from 'react-emotion';
 import { OrderedMap } from 'immutable';
+import { translate } from 'react-polyglot';
 import { connect } from 'react-redux';
 import {
   Dropdown,
@@ -60,6 +61,7 @@ class Workflow extends Component {
     updateUnpublishedEntryStatus: PropTypes.func.isRequired,
     publishUnpublishedEntry: PropTypes.func.isRequired,
     deleteUnpublishedEntry: PropTypes.func.isRequired,
+    t: PropTypes.func.isRequired,
   };
 
   componentDidMount() {
@@ -78,10 +80,11 @@ class Workflow extends Component {
       publishUnpublishedEntry,
       deleteUnpublishedEntry,
       collections,
+      t,
     } = this.props;
 
     if (!isEditorialWorkflow) return null;
-    if (isFetching) return <Loader active>Loading Editorial Workflow Entries</Loader>;
+    if (isFetching) return <Loader active>{t('workflow.workflow.loading')}</Loader>;
     const reviewCount = unpublishedEntries.get('pending_review').size;
     const readyCount = unpublishedEntries.get('pending_publish').size;
 
@@ -89,12 +92,14 @@ class Workflow extends Component {
       <WorkflowContainer>
         <WorkflowTop>
           <WorkflowTopRow>
-            <WorkflowTopHeading>Editorial Workflow</WorkflowTopHeading>
+            <WorkflowTopHeading>{t('workflow.workflow.workflowHeading')}</WorkflowTopHeading>
             <Dropdown
               dropdownWidth="160px"
               dropdownPosition="left"
               dropdownTopOverlap="40px"
-              renderButton={() => <StyledDropdownButton>New Post</StyledDropdownButton>}
+              renderButton={() => (
+                <StyledDropdownButton>{t('workflow.workflow.newPost')}</StyledDropdownButton>
+              )}
             >
               {collections
                 .filter(collection => collection.get('create'))
@@ -109,8 +114,10 @@ class Workflow extends Component {
             </Dropdown>
           </WorkflowTopRow>
           <WorkflowTopDescription>
-            {reviewCount} {reviewCount === 1 ? 'entry' : 'entries'} waiting for review, {readyCount}{' '}
-            ready to go live.
+            {t('workflow.workflow.description', {
+              smart_count: reviewCount,
+              readyCount: readyCount,
+            })}
           </WorkflowTopDescription>
         </WorkflowTop>
         <WorkflowList
@@ -153,4 +160,4 @@ export default connect(
     publishUnpublishedEntry,
     deleteUnpublishedEntry,
   },
-)(Workflow);
+)(translate()(Workflow));

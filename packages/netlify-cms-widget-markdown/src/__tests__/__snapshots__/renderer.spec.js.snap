@@ -71,7 +71,8 @@ exports[`Markdown Preview renderer Markdown rendering General should render mark
 <p><a href=\\"http://google.com\\">link title</a></p>
 <h5>H5</h5>
 <p>![alt text](https://pbs.twimg.com/profile_images/678903331176214528/TQTdqGwD.jpg)</p>
-<h6>H6</h6>",
+<h6>H6</h6>
+<p>![](https://pbs.twimg.com/profile_images/678903331176214528/TQTdqGwD.jpg)</p>",
     }
   }
 />

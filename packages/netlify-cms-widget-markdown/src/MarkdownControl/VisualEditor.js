@@ -145,25 +145,32 @@ export default class Editor extends React.Component {
     const { getEditorComponents } = this.props;
     const { value } = this.state;
     const nodes = [Text.create('')];
-    const pluginFields = getEditorComponents()
-      .get(pluginId)
-      .get('fields', List());
-    const shortcodeData = pluginFields
-      .map(field => field.get('default'))
-      .filter(val => val)
+
+    /**
+     * Get default values for plugin fields.
+     */
+    const pluginFields = getEditorComponents().getIn([pluginId, 'fields'], List());
+    const defaultValues = pluginFields
       .toMap()
-      .mapKeys((idx, field) => field.get('name'));
+      .mapKeys((_, field) => field.get('name'))
+      .filter(field => field.has('default'))
+      .map(field => field.get('default'));
+
+    /**
+     * Create new shortcode block with default values set.
+     */
     const block = {
       object: 'block',
       type: 'shortcode',
       data: {
         shortcode: pluginId,
         shortcodeNew: true,
-        shortcodeData,
+        shortcodeData: defaultValues,
       },
       isVoid: true,
       nodes,
     };
+
     let change = value.change();
     const { focusBlock } = change.value;
 

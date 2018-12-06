@@ -8,7 +8,6 @@ import { addFile } from './actions';
 import MediaLibrary from './components/MediaLibrary';
 import store from 'Redux';
 import { applyGlobalStyle } from './applyGlobalStyle';
-import { isFileGroup } from './util';
 
 /**
  * Default Uploadcare widget configuration, can be overriden via config.yml.
@@ -17,6 +16,18 @@ const defaultConfig = {
   previewStep: true,
   tabs: 'mediaLibrary file',
 };
+
+/**
+ * Determine whether an array of urls represents an unaltered set of Uploadcare
+ * group urls. If they've been changed or any are missing, a new group will need
+ * to be created to represent the current values.
+ */
+function isFileGroup(files) {
+  const basePatternString = `~${files.length}/nth/`;
+  const mapExpression = (val, idx) => new RegExp(`${basePatternString}${idx}/$`);
+  const expressions = Array.from({ length: files.length }, mapExpression);
+  return expressions.every(exp => files.some(url => exp.test(url)));
+}
 
 /**
  * Returns a fileGroupInfo object wrapped in a promise-like object.
@@ -158,8 +169,10 @@ async function init({ options = { config: {} }, handleInsert }) {
      * On show, create a new widget, cache it in the widgets object, and open.
      * No hide method is provided because the widget doesn't provide it.
      */
-    show: async ({ value, config: instanceConfig = {}, imagesOnly }) => {
+    show: async ({ value, config: instanceConfig = {}, allowMultiple, imagesOnly }) => {
       const config = { ...baseConfig, imagesOnly, ...instanceConfig };
+      const multiple = allowMultiple === false ? false : !!config.multiple;
+      const resolvedConfig = { ...config, multiple };
       const files = getFiles(value);
 
       /**
@@ -167,9 +180,9 @@ async function init({ options = { config: {} }, handleInsert }) {
        * from the Uploadcare library will have a `state` method.
        */
       if (files && !files.state) {
-        files.then(result => openDialog(result, config, handleInsert));
+        files.then(result => openDialog(result, resolvedConfig, handleInsert));
       } else {
-        openDialog(files, config, handleInsert);
+        openDialog(files, resolvedConfig, handleInsert);
       }
     },
 

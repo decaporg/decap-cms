@@ -42,7 +42,9 @@ const slugFormatter = (collection, entryData, slugConfig) => {
 
   const identifier = entryData.get(selectIdentifier(collection));
   if (!identifier) {
-    throw new Error('Collection must have a field name that is a valid entry identifier');
+    throw new Error(
+      'Collection must have a field name that is a valid entry identifier, or must have `identifier_field` set',
+    );
   }
 
   const slug = template
@@ -98,7 +100,7 @@ const commitMessageFormatter = (type, config, { slug, path, collection }) => {
       case 'path':
         return path;
       case 'collection':
-        return collection.get('label');
+        return collection.get('label_singular') || collection.get('label');
       default:
         console.warn(`Ignoring unknown variable “${variable}” in commit message template.`);
         return '';
@@ -447,7 +449,7 @@ class Backend {
     }
 
     const commitMessage = commitMessageFormatter('delete', config, { collection, slug, path });
-    return this.implementation.deleteFile(path, commitMessage);
+    return this.implementation.deleteFile(path, commitMessage, { collection, slug });
   }
 
   deleteMedia(config, path) {
