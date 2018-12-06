@@ -8,7 +8,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Bug Fixes
 
-* **netlify-cms-core:** duplicate key warning (#1930) (https://github.com/netlify/netlify-cms/commit/9662eb292f4b0a0f21f4436445a57a5ef073ae80)
+* **netlify-cms-core:** duplicate key warning (#1930) ( https://github.com/netlify/netlify-cms/commit/9662eb292f4b0a0f21f4436445a57a5ef073ae80 )
 
 
 ### Features
