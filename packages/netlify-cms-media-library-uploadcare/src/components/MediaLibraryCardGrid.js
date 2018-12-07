@@ -2,6 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Grid, AutoSizer } from 'react-virtualized';
 import MediaLibraryCard from './MediaLibraryCard';
+import styled from 'react-emotion';
+
+const GridWrapper = styled.div`
+  flex: 1;
+`;
 
 const MediaLibraryCardGrid = ({ onAssetClick, rowCount, columnCount, getCell, selectedUuids }) => {
   function cellRenderer({ columnIndex, rowIndex, style }) {
@@ -28,22 +33,24 @@ const MediaLibraryCardGrid = ({ onAssetClick, rowCount, columnCount, getCell, se
   };
 
   return (
-    <AutoSizer>
-      {({ width, height }) => (
-        <Grid
-          cellRenderer={cellRenderer}
-          height={height}
-          width={width}
-          overscanRowCount={3}
-          columnWidth={195}
-          rowHeight={200}
-          rowCount={rowCount}
-          columnCount={columnCount}
-          scrollToColumn={0}
-          scrollToRow={0}
-        />
-      )}
-    </AutoSizer>
+    <GridWrapper>
+      <AutoSizer>
+        {({ width, height }) => (
+          <Grid
+            cellRenderer={cellRenderer}
+            height={height}
+            width={width}
+            overscanRowCount={3}
+            columnWidth={195}
+            rowHeight={200}
+            rowCount={rowCount}
+            columnCount={columnCount}
+            scrollToColumn={0}
+            scrollToRow={0}
+          />
+        )}
+      </AutoSizer>
+    </GridWrapper>
   );
 };
 

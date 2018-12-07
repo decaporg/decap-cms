@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import styled, { css } from 'react-emotion';
+import styled from 'react-emotion';
 import { orderBy, map } from 'lodash';
 import fuzzy from 'fuzzy';
 import MediaLibrarySearch from './MediaLibrarySearch';
@@ -14,6 +14,8 @@ const Wrapper = styled.div`
   width: 100%;
   padding: 0 5px;
   flex: 1;
+  display: flex;
+  flex-direction: column;
 `;
 
 const Header = styled.div`

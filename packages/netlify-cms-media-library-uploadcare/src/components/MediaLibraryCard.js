@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'react-emotion';
-import { colors, borders, lengths } from 'netlify-cms-ui-default';
+import { colors, colorsRaw, borders, lengths } from 'netlify-cms-ui-default';
 
 const Card = styled.div`
   width: ${props => props.width};
@@ -20,12 +20,13 @@ const CardInner = styled.div`
   border: ${borders.textField};
   border-color: ${props => props.isSelected && colors.active};
   border-radius: ${lengths.borderRadius};
+  background-color: ${colorsRaw.blueLight};
 `;
 
 const CardImage = styled.img`
   width: 100%;
   height: 120px;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: 2px 2px 0 0;
 `;
 
