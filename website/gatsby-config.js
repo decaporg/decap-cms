@@ -38,8 +38,6 @@ module.exports = {
         name: 'content',
       },
     },
-    'gatsby-transformer-yaml',
-    'gatsby-transformer-json',
     {
       resolve: 'gatsby-source-filesystem',
       options: {
@@ -62,6 +60,8 @@ module.exports = {
         ]
       },
     },
+    'gatsby-transformer-yaml',
+    'gatsby-transformer-json',
     'gatsby-plugin-postcss',
     'gatsby-plugin-react-helmet',
     'gatsby-plugin-catch-links',

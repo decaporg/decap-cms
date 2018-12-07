@@ -150,6 +150,8 @@ class EditorControl extends React.Component {
     activeLabel: false,
   };
 
+  uniqueFieldId = uniqueId(`${this.props.field.get('name')}-field-`);
+
   render() {
     const {
       value,
@@ -176,7 +178,6 @@ class EditorControl extends React.Component {
     const widget = resolveWidget(widgetName);
     const fieldName = field.get('name');
     const fieldHint = field.get('hint');
-    const uniqueFieldId = uniqueId();
     const metadata = fieldsMetaData && fieldsMetaData.get(fieldName);
     const errors = fieldsErrors && fieldsErrors.get(fieldName);
     return (
@@ -197,7 +198,7 @@ class EditorControl extends React.Component {
             { [styles.labelActive]: this.state.styleActive },
             { [styles.labelError]: !!errors },
           )}
-          htmlFor={fieldName + uniqueFieldId}
+          htmlFor={this.uniqueFieldId}
         >
           {field.get('label', field.get('name'))}
         </label>
@@ -213,7 +214,7 @@ class EditorControl extends React.Component {
           classNameLabelActive={styles.labelActive}
           controlComponent={widget.control}
           field={field}
-          uniqueFieldId={uniqueFieldId}
+          uniqueFieldId={this.uniqueFieldId}
           value={value}
           mediaPaths={mediaPaths}
           metadata={metadata}

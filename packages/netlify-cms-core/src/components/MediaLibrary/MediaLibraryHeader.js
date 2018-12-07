@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'react-emotion';
-import { Icon, shadows, colors } from 'netlify-cms-ui-default';
+import { Icon, shadows, colors, buttons } from 'netlify-cms-ui-default';
 
 const CloseButton = styled.button`
+  ${buttons.button};
   ${shadows.dropMiddle};
   position: absolute;
   margin-right: -40px;
