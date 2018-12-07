@@ -127,7 +127,7 @@ To enable it:
     ```
 
 ## Test Repo Backend
-You can use the `test-repo` backend to try out Netlify CMS without connecting to a Git repo. With this backend, you can write and publish content normally, but nothing will be saved. Any changes will disapear when you reload the page. This backend powers the Netlify CMS [demo site](https://cms-demo.netlify.com/).
+You can use the `test-repo` backend to try out Netlify CMS without connecting to a Git repo. With this backend, you can write and publish content normally, but any changes will disapear when you reload the page. This backend powers the Netlify CMS [demo site](https://cms-demo.netlify.com/).
 
 To enable this backend, add the following lines to your Netlify CMS `config.yml` file:
 
