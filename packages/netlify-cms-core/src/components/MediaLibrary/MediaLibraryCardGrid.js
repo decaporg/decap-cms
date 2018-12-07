@@ -46,7 +46,7 @@ const MediaLibraryCardGrid = ({
           width={cardWidth}
           margin={cardMargin}
           isPrivate={isPrivate}
-          displayURL={getDisplayURL(file)}
+          displayURL={file.isViewableImage && getDisplayURL(file)}
         />
       ))}
       {!canLoadMore ? null : <Waypoint onEnter={onLoadMore} />}
