@@ -35,6 +35,9 @@ describe('cloudinary media library', () => {
      * so we wait for the script tag to be added to the dom and then manually
      * call its `onreadystatechange` method, which resolves the promise and
      * allows initialization to continue.
+     *
+     * This also ensures that the script is being added to the DOM, and in a way
+     * that is not tied to script loading implementation details.
      */
     waitForElement(() => {
       const url = 'https://media-library.cloudinary.com/global/all.js';
