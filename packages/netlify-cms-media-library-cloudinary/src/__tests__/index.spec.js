@@ -1,17 +1,17 @@
+import { queryHelpers, waitForElement } from 'dom-testing-library';
 import cloudinary from '../index';
-
-cloudinary.__Rewire__('loadScript', () => {});
 
 describe('cloudinary media library', () => {
   let mediaLibrary;
+  let cloudinaryScript;
   let cloudinaryConfig;
   let cloudinaryInsertHandler;
 
   beforeEach(() => {
-    mediaLibrary = {
-      show: jest.fn(),
-      hide: jest.fn(),
-    };
+    /**
+     * Mock of the Cloudinary library itself, which is otherwise created by
+     * their script (which isn't actually run during testing).
+     */
     window.cloudinary = {
       createMediaLibrary: (config, { insertHandler }) => {
         cloudinaryConfig = config;
@@ -19,6 +19,39 @@ describe('cloudinary media library', () => {
         return mediaLibrary;
       },
     };
+
+    /**
+     * Mock of the object returned by the Cloudinary createMediaLibrary method.
+     */
+    mediaLibrary = {
+      show: jest.fn(),
+      hide: jest.fn(),
+    };
+
+    /**
+     * Every time the integration is initialized, a script tag is dynamically
+     * generated and added to the page. The initialization is on hold until
+     * the `load` event is broadcast, but that doesn't happen during testing,
+     * so we wait for the script tag to be added to the dom and then manually
+     * call its `onreadystatechange` method, which resolves the promise and
+     * allows initialization to continue.
+     */
+    waitForElement(() => {
+      const url = 'https://media-library.cloudinary.com/global/all.js';
+      return queryHelpers.queryByAttribute('src', document, url);
+    }).then(script => {
+      cloudinaryScript = script;
+      script.onreadystatechange();
+    });
+  });
+
+  afterEach(() => {
+    /**
+     * Remove the script element from the dom after each test.
+     */
+    if (cloudinaryScript) {
+      document.head.removeChild(cloudinaryScript);
+    }
   });
 
   it('exports an object with expected properties', () => {

@@ -53,7 +53,6 @@ const plugins = () => {
           autoLabel: true,
         },
       ],
-      'rewire',
     ];
   }
 
