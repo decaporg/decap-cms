@@ -152,6 +152,13 @@ export default class GitLab {
             sem.take(() =>
               this.api
                 .readFile(path, id, { parseText: false })
+                .then(blob => {
+                  // svgs are returned with mimetype "text/plain" by gitlab
+                  if (blob.type === 'text/plain' && name.match(/\.svg$/i)) {
+                    return new window.Blob([blob], { type: 'image/svg+xml' });
+                  }
+                  return blob;
+                })
                 .then(resolve, reject)
                 .finally(() => sem.leave()),
             ),
