@@ -29,15 +29,9 @@ describe('cloudinary media library', () => {
     };
 
     /**
-     * Every time the integration is initialized, a script tag is dynamically
-     * generated and added to the page. The initialization is on hold until
-     * the `load` event is broadcast, but that doesn't happen during testing,
-     * so we wait for the script tag to be added to the dom and then manually
-     * call its `onreadystatechange` method, which resolves the promise and
-     * allows initialization to continue.
-     *
-     * This also ensures that the script is being added to the DOM, and in a way
-     * that is not tied to script loading implementation details.
+     * We load the Cloudinary library by injecting a script tag to the page
+     * head. Initialization waits for the script to load, so here we fake it.
+     * This also tests that the expected script is added to the DOM.
      */
     waitForElement(() => {
       const url = 'https://media-library.cloudinary.com/global/all.js';
@@ -252,7 +246,7 @@ Object {
       expect(mediaLibrary.show).toHaveBeenCalledWith(showOptions);
     });
 
-    it('enforces multiple: false if allowMultiple is true', async () => {
+    it('enforces multiple: false if allowMultiple is false', async () => {
       const options = {
         config: {
           multiple: true,
