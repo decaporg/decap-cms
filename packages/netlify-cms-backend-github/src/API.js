@@ -146,28 +146,28 @@ export default class API {
 
   retrieveMetadata(key) {
     const cache = localForage.getItem(`gh.meta.${key}`);
-    return cache.then(cached => {
-      if (cached && cached.expires > Date.now()) {
-        return cached.data;
-      }
-      console.log(
-        '%c Checking for MetaData files',
-        'line-height: 30px;text-align: center;font-weight: bold',
-      );
-      return this.request(`${this.repoURL}/contents/${key}.json`, {
-        params: { ref: 'refs/meta/_netlify_cms' },
-        headers: { Accept: 'application/vnd.github.VERSION.raw' },
-        cache: 'no-store',
-      })
-        .then(response => JSON.parse(response))
-        .catch(() =>
-          console.log(
-            '%c %s does not have metadata',
-            'line-height: 30px;text-align: center;font-weight: bold',
-            key,
-          ),
+    return cache
+      .then(cached => {
+        if (cached && cached.expires > Date.now()) {
+          return cached.data;
+        }
+        console.log(
+          '%c Checking for MetaData files',
+          'line-height: 30px;text-align: center;font-weight: bold',
         );
-    });
+        return this.request(`${this.repoURL}/contents/${key}.json`, {
+          params: { ref: 'refs/meta/_netlify_cms' },
+          headers: { Accept: 'application/vnd.github.VERSION.raw' },
+          cache: 'no-store',
+        })
+          .then(response => JSON.parse(response))
+          .catch(() => {
+            throw new Error(`${key} does not have metadata`);
+          });
+      })
+      .catch(() => {
+        throw new Error(`${key} does not have cached metadata`);
+      });
   }
 
   readFile(path, sha, branch = this.branch) {
@@ -221,10 +221,17 @@ export default class API {
       .then(files => files.filter(file => file.type === 'file'));
   }
 
-  readUnpublishedBranchFile(contentKey) {
-    const metaDataPromise = this.retrieveMetadata(contentKey).then(
-      data => (data.objects.entry.path ? data : Promise.reject(null)),
-    );
+  readUnpublishedBranchFile(slug, collection) {
+    const metaDataPromise = this.retrieveMetadata(slug)
+      .catch(e => {
+        if (collection) {
+          return this.retrieveMetadata(`${collection.get('name')}-${slug}`);
+        }
+
+        console.log(e.message, 'line-height: 30px;text-align: center;font-weight: bold');
+      })
+      .then(data => (data.objects.entry.path ? data : Promise.reject(null)));
+
     return resolvePromiseProperties({
       metaData: metaDataPromise,
       fileData: metaDataPromise.then(data =>
@@ -360,8 +367,12 @@ export default class API {
   }
 
   editorialWorkflowGit(fileTree, entry, filesList, options) {
-    const contentKey = entry.slug;
+    const oldContentKey = entry.slug;
+    const contentKey = `${options.collectionName}-${oldContentKey}`;
+
+    const oldBranchName = this.generateBranchName(oldContentKey);
     const branchName = this.generateBranchName(contentKey);
+
     const unpublished = options.unpublished || false;
     if (!unpublished) {
       // Open new editorial review workflow for this entry - Create new metadata and commit to new branch`
@@ -402,12 +413,26 @@ export default class API {
     } else {
       // Entry is already on editorial review workflow - just update metadata and commit to existing branch
       let newHead;
+
+      let realContentKey = contentKey,
+        realBranchName = branchName;
       return this.getBranch(branchName)
+        .catch(e => {
+          if (e instanceof APIError) {
+            realContentKey = oldContentKey;
+            realBranchName = oldBranchName;
+            return this.getBranch(oldBranchName);
+          }
+          throw e;
+        })
         .then(branchData => this.updateTree(branchData.commit.sha, '/', fileTree))
         .then(changeTree => this.commit(options.commitMessage, changeTree))
         .then(commit => {
           newHead = commit;
-          return this.retrieveMetadata(contentKey);
+          return this.retrieveMetadata(realContentKey);
+        })
+        .catch(e => {
+          console.log(e.message, 'line-height: 30px;text-align: center;font-weight: bold');
         })
         .then(metadata => {
           const { title, description } = options.parsedData || {};
@@ -425,8 +450,8 @@ export default class API {
            * can just finish the persist operation here.
            */
           if (options.hasAssetStore) {
-            return this.storeMetadata(contentKey, updatedMetadata).then(() =>
-              this.patchBranch(branchName, newHead.sha),
+            return this.storeMetadata(realContentKey, updatedMetadata).then(() =>
+              this.patchBranch(realBranchName, newHead.sha),
             );
           }
 
@@ -435,7 +460,13 @@ export default class API {
            * repo, which means pull requests opened for editorial workflow
            * entries must be rebased if assets have been added or removed.
            */
-          return this.rebasePullRequest(pr.number, branchName, contentKey, metadata, newHead);
+          return this.rebasePullRequest(
+            pr.number,
+            realBranchName,
+            realContentKey,
+            metadata,
+            newHead,
+          );
         });
     }
   }
@@ -584,22 +615,44 @@ export default class API {
   }
 
   updateUnpublishedEntryStatus(collection, slug, status) {
-    const contentKey = slug;
+    const oldContentKey = slug;
+    const contentKey = `${collection}-${slug}`;
+    let realContentKey = contentKey;
+
     return this.retrieveMetadata(contentKey)
+      .catch(() => {
+        realContentKey = oldContentKey;
+        return this.retrieveMetadata(oldContentKey);
+      })
+      .catch(e => {
+        console.log(e.message, 'line-height: 30px;text-align: center;font-weight: bold');
+      })
       .then(metadata => ({
         ...metadata,
         status,
       }))
-      .then(updatedMetadata => this.storeMetadata(contentKey, updatedMetadata));
+      .then(updatedMetadata => this.storeMetadata(realContentKey, updatedMetadata));
   }
 
   deleteUnpublishedEntry(collection, slug) {
-    const contentKey = slug;
+    const oldContentKey = slug;
+    const contentKey = `${collection}-${slug}`;
+
+    const oldBranchName = this.generateBranchName(oldContentKey);
     const branchName = this.generateBranchName(contentKey);
+    let realBranchName = branchName;
+
     return (
       this.retrieveMetadata(contentKey)
+        .catch(() => {
+          realBranchName = oldBranchName;
+          return this.retrieveMetadata(oldContentKey);
+        })
+        .catch(e => {
+          console.log(e.message, 'line-height: 30px;text-align: center;font-weight: bold');
+        })
         .then(metadata => this.closePR(metadata.pr))
-        .then(() => this.deleteBranch(branchName))
+        .then(() => this.deleteBranch(realBranchName))
         // If the PR doesn't exist, then this has already been deleted -
         // deletion should be idempotent, so we can consider this a
         // success.
@@ -613,11 +666,23 @@ export default class API {
   }
 
   publishUnpublishedEntry(collection, slug) {
-    const contentKey = slug;
+    const oldContentKey = slug;
+    const contentKey = `${collection}-${slug}`;
+
+    const oldBranchName = this.generateBranchName(oldContentKey);
     const branchName = this.generateBranchName(contentKey);
+    let realBranchName = branchName;
+
     return this.retrieveMetadata(contentKey)
+      .catch(() => {
+        realBranchName = oldBranchName;
+        return this.retrieveMetadata(oldContentKey);
+      })
+      .catch(e => {
+        console.log(e.message, 'line-height: 30px;text-align: center;font-weight: bold');
+      })
       .then(metadata => this.mergePR(metadata.pr, metadata.objects))
-      .then(() => this.deleteBranch(branchName));
+      .then(() => this.deleteBranch(realBranchName));
   }
 
   createRef(type, name, sha) {

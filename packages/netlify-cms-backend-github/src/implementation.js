@@ -210,7 +210,7 @@ export default class GitHub {
   }
 
   unpublishedEntry(collection, slug) {
-    return this.api.readUnpublishedBranchFile(slug).then(data => {
+    return this.api.readUnpublishedBranchFile(slug, collection).then(data => {
       if (!data) return null;
       return {
         slug,
