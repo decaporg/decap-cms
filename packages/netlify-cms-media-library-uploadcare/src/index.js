@@ -13,6 +13,7 @@ import reducer from './reducer';
 const defaultConfig = {
   previewStep: true,
   tabs: 'mediaLibrary file',
+  multiple: true,
 };
 
 /**
@@ -76,23 +77,16 @@ function getFile(url, cdnBase) {
  * each use.
  */
 function openDialog(files, config, { mediaLibraryActions, uploadcareActions }) {
-  window.uploadcare.openDialog(files, config).done(({ promise }) =>
-    promise()
-      .then(fileInfo => {
-        if (config.multiple) {
-          const urls = Array.from(
-            { length: fileInfo.count },
-            (val, idx) => `${fileInfo.cdnUrl}nth/${idx}/`,
-          );
-          mediaLibraryActions.insertMedia(urls);
-        } else {
-          mediaLibraryActions.insertMedia(fileInfo.cdnUrl);
-        }
+  const handleFileInfoList = (fileInfoList) => {
+    mediaLibraryActions.insertMedia(fileInfoList.map(fileInfo => fileInfo.cdnUrl));
+    uploadcareActions.addFiles(fileInfoList);
+  };
 
-        return fileInfo;
-      })
-      .then(fileInfo => uploadcareActions.addFile(fileInfo)),
-  );
+  window.uploadcare
+    .openDialog(files, config)
+    .done(({ files, promise }) =>
+      Promise.all(files ? files() : [promise()]).then(handleFileInfoList),
+    );
 }
 
 /**

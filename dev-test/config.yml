@@ -22,4 +22,4 @@ collections: # A list of collections the CMS should be able to edit
       - { label: "Titel", name: "title", widget: "string", tagname: "h1" }
       - { label: "Date", name: "date", widget: "datetime" }
       - { label: "Content", name: "body", widget: "markdown" }
-      - { label: "Media (works)", name: "image_single", widget: "image" }
+      - { label: "Media (works)", name: "image_single", widget: "image", allow_multiple: true }

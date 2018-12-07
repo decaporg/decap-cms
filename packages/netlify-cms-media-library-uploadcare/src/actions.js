@@ -1,6 +1,6 @@
 import { bindActionCreators } from 'redux';
 
-export const UPLOADCARE_ADD_FILE = 'UPLOADCARE_ADD_FILE';
+export const UPLOADCARE_ADD_FILES = 'UPLOADCARE_ADD_FILES';
 export const UPLOADCARE_REMOVE_FILES = 'UPLOADCARE_REMOVE_FILES';
 export const UPLOADCARE_FLUSH = 'UPLOADCARE_FLUSH';
 export const UPLOADCARE_LOAD = 'UPLOADCARE_LOAD';
@@ -77,14 +77,11 @@ export function createActions(store, mediaLibraryActions) {
     };
   }
 
-  function addFile(fileInfo) {
+  function addFiles(fileInfoList) {
     return async (dispatch, getState) => {
       await dispatch({
-        type: UPLOADCARE_ADD_FILE,
-        payload: {
-          fileInfo,
-          uuid: fileInfo.uuid,
-        },
+        type: UPLOADCARE_ADD_FILES,
+        payload: fileInfoList,
       });
 
       if (getState().uploadcare.get('dirty')) {
@@ -109,7 +106,7 @@ export function createActions(store, mediaLibraryActions) {
   return bindActionCreators(
     {
       loadFiles,
-      addFile,
+      addFiles,
       removeFiles,
     },
     store.dispatch,

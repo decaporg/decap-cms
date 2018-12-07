@@ -1,6 +1,6 @@
 import { OrderedMap, Map } from 'immutable';
 import {
-  UPLOADCARE_ADD_FILE,
+  UPLOADCARE_ADD_FILES,
   UPLOADCARE_FLUSH,
   UPLOADCARE_LOAD,
   UPLOADCARE_REMOVE_FILES,
@@ -13,13 +13,16 @@ const defaultState = {
 
 const reducer = (state = Map(defaultState), action) => {
   switch (action.type) {
-    case UPLOADCARE_ADD_FILE:
-      if (state.get('files').has(action.payload.uuid)) {
-        return state;
-      }
+    case UPLOADCARE_ADD_FILES:
       return state.withMutations(map => {
-        map.set('dirty', true);
-        map.update('files', files => files.set(action.payload.uuid, action.payload.fileInfo));
+        action.payload.forEach(fileInfo => {
+          if(map.get('files').has(fileInfo.uuid)) {
+            return
+          }
+
+          map.set('dirty', true);
+          map.update('files', files => files.set(fileInfo.uuid, fileInfo));
+        })
       });
     case UPLOADCARE_FLUSH:
       return state.set('dirty', false);
