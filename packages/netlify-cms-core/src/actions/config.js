@@ -95,7 +95,7 @@ export function configDidLoad(config) {
 }
 
 export function loadConfig(bootstrapConfig) {
-  return async (dispatch) => {
+  return async dispatch => {
     dispatch(configLoading());
 
     try {
