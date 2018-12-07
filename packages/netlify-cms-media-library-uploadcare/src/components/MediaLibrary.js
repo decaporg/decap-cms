@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import styled from 'react-emotion';
+import styled, { css } from 'react-emotion';
 import { orderBy, map } from 'lodash';
 import fuzzy from 'fuzzy';
 import MediaLibrarySearch from './MediaLibrarySearch';
 import MediaLibraryCardGrid from './MediaLibraryCardGrid';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { buttons, shadows, colorsRaw, colors } from 'netlify-cms-ui-default';
 
 const COLUMNS = 4;
 
@@ -17,11 +18,32 @@ const Wrapper = styled.div`
 
 const Header = styled.div`
   display: flex;
+  align-items: center;
+  padding: 10px;
 `;
 
-const ActionsPanel = styled.div``;
+const ActionsPanel = styled.div`
+  margin-left: 16px;
+`;
 
-const ActionButton = styled.button``;
+const ActionButton = styled.button`
+  ${buttons.button};
+  ${shadows.dropMiddle};
+  background-color: ${colorsRaw.white};
+  border-radius: 32px;
+  padding: 8px 16px;
+  margin-right: 12px;
+`;
+
+const SelectionToggle = styled(ActionButton)`
+  color: ${props => colors[props.active ? `active` : `inactive`]};
+  background-color: ${props => colorsRaw[props.active ? 'tealLight' : 'white']}
+`
+
+const RemoveButton = styled(ActionButton)`
+  background-color: ${colorsRaw.red};
+  color: ${colorsRaw.white};
+`
 
 class MediaLibrary extends Component {
   constructor(...args) {
@@ -163,13 +185,17 @@ class MediaLibrary extends Component {
             disabled={false}
           />
           <ActionsPanel>
-            <ActionButton onClick={this.onSelectClick} disabled={actionInProgress}>
-              Select
-            </ActionButton>
+            <SelectionToggle
+              active={this.state.selectionMode}
+              onClick={this.onSelectClick}
+              disabled={actionInProgress}
+            >
+              Selection mode
+            </SelectionToggle>
             {anySelected && (
-              <ActionButton onClick={this.onRemoveClick} disabled={actionInProgress}>
+              <RemoveButton onClick={this.onRemoveClick} disabled={actionInProgress}>
                 Remove
-              </ActionButton>
+              </RemoveButton>
             )}
           </ActionsPanel>
         </Header>

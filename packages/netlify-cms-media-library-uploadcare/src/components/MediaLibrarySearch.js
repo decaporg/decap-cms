@@ -4,12 +4,11 @@ import styled from 'react-emotion';
 import { Icon, lengths, colors } from 'netlify-cms-ui-default';
 
 const SearchContainer = styled.div`
-  height: 37px;
+  height: 40px;
   display: flex;
   align-items: center;
   position: relative;
   width: 400px;
-  margin: 10px 0 10px 5px;
 `;
 
 const SearchInput = styled.input`
