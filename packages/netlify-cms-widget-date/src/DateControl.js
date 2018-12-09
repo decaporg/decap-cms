@@ -12,6 +12,7 @@ injectGlobal`
 export default class DateControl extends React.Component {
   static propTypes = {
     field: PropTypes.object.isRequired,
+    forID: PropTypes.string,
     onChange: PropTypes.func.isRequired,
     classNameWrapper: PropTypes.string.isRequired,
     setActiveStyle: PropTypes.func.isRequired,
@@ -102,7 +103,7 @@ export default class DateControl extends React.Component {
   };
 
   render() {
-    const { value, classNameWrapper, setActiveStyle } = this.props;
+    const { forID, value, classNameWrapper, setActiveStyle } = this.props;
     const { format, dateFormat, timeFormat } = this.formats;
     return (
       <DateTime
@@ -112,7 +113,7 @@ export default class DateControl extends React.Component {
         onChange={this.handleChange}
         onFocus={setActiveStyle}
         onBlur={this.onBlur}
-        inputProps={{ className: classNameWrapper }}
+        inputProps={{ className: classNameWrapper, id: forID }}
       />
     );
   }

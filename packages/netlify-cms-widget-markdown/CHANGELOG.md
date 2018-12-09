@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.10](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.0.9...netlify-cms-widget-markdown@2.0.10) (2018-11-29)
+
+
+### Bug Fixes
+
+* **netlify-cms-widget-markdown:** add missing border radius on toolbar ([#1905](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/issues/1905)) ([3772171](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/commit/3772171))
+
+
+
+
+
 ## [2.0.9](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.0.8...netlify-cms-widget-markdown@2.0.9) (2018-11-12)
 
 

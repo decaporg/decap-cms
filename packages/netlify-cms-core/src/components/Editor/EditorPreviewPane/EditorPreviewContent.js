@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { isElement } from 'react-is';
 import { ScrollSyncPane } from 'react-scroll-sync';
+import { FrameContextConsumer } from 'react-frame-component';
 
 /**
  * We need to create a lightweight component here so that we can access the
@@ -12,18 +13,18 @@ class PreviewContent extends React.Component {
   render() {
     const { previewComponent, previewProps } = this.props;
     return (
-      <ScrollSyncPane attachTo={this.context.document.scrollingElement}>
-        {isElement(previewComponent)
-          ? React.cloneElement(previewComponent, previewProps)
-          : React.createElement(previewComponent, previewProps)}
-      </ScrollSyncPane>
+      <FrameContextConsumer>
+        {context => (
+          <ScrollSyncPane attachTo={context.document.scrollingElement}>
+            {isElement(previewComponent)
+              ? React.cloneElement(previewComponent, previewProps)
+              : React.createElement(previewComponent, previewProps)}
+          </ScrollSyncPane>
+        )}
+      </FrameContextConsumer>
     );
   }
 }
-
-PreviewContent.contextTypes = {
-  document: PropTypes.any,
-};
 
 PreviewContent.propTypes = {
   previewComponent: PropTypes.func.isRequired,

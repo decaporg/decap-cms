@@ -174,7 +174,6 @@ class EditorToolbar extends React.Component {
     isDeleting: PropTypes.bool,
     onPersist: PropTypes.func.isRequired,
     onPersistAndNew: PropTypes.func.isRequired,
-    enableSave: PropTypes.bool.isRequired,
     showDelete: PropTypes.bool.isRequired,
     onDelete: PropTypes.func.isRequired,
     onDeleteUnpublishedChanges: PropTypes.func.isRequired,
