@@ -19,7 +19,7 @@ function isFileGroup(files) {
   const basePatternString = `~${files.length}/nth/`;
   const mapExpression = (val, idx) => new RegExp(`${basePatternString}${idx}/$`);
   const expressions = Array.from({ length: files.length }, mapExpression);
-  const result = expressions.every(exp => files.some(url => exp.test(url)));
+  return expressions.every(exp => files.some(url => exp.test(url)));
 }
 
 /**

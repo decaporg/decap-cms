@@ -1,4 +1,3 @@
-import { without } from 'lodash';
 import { queryHelpers, waitForElement } from 'dom-testing-library';
 import uuid from 'uuid/v4';
 import uploadcare from '../index';
@@ -6,9 +5,8 @@ import uploadcare from '../index';
 function generateMockUrl({ count = 1, cdnUrl } = {}) {
   const baseUrl = 'https://ucarecdn.com';
   const url = `${baseUrl}/${uuid()}~${count}/`;
-  const result = count === 1
-    ? `${url}nth/0/`
-    : Array.from({ length: count }, (val, idx) => `${url}nth/${idx}/`);
+  const result =
+    count === 1 ? `${url}nth/0/` : Array.from({ length: count }, (val, idx) => `${url}nth/${idx}/`);
   if (cdnUrl) {
     return { result, cdnUrl: url };
   }
@@ -32,10 +30,7 @@ describe('uploadcare media library', () => {
      * head. Initialization waits for the scripts to load, so here we fake it.
      * This also tests that the expected scripts are added to the DOM.
      */
-    const urlPatterns = [
-      /uploadcare\.full\.js$/,
-      /uploadcare\.tab-effects\.js$/,
-    ].forEach(pattern => {
+    [/uploadcare\.full\.js$/, /uploadcare\.tab-effects\.js$/].forEach(pattern => {
       waitForElement(() => {
         return queryHelpers.queryByAttribute('src', document, pattern);
       }).then(script => {
@@ -56,10 +51,12 @@ describe('uploadcare media library', () => {
           openDialogCallback = cb;
         }),
       })),
-      fileFrom: jest.fn((type, url) => Promise.resolve({
-        testFileUrl: url,
-      })),
-      loadFileGroup: groupId => ({
+      fileFrom: jest.fn((type, url) =>
+        Promise.resolve({
+          testFileUrl: url,
+        }),
+      ),
+      loadFileGroup: () => ({
         done: cb => cb(),
       }),
     };
@@ -67,9 +64,10 @@ describe('uploadcare media library', () => {
     /**
      * Mock to manually call the close dialog registered callback.
      */
-    simulateCloseDialog = result => openDialogCallback({
-      promise: () => Promise.resolve(result),
-    });
+    simulateCloseDialog = result =>
+      openDialogCallback({
+        promise: () => Promise.resolve(result),
+      });
 
     /**
      * Spy to serve as the Netlify CMS insertion handler.
@@ -100,7 +98,7 @@ Object {
       const options = {
         config: {
           publicKey: TEST_PUBLIC_KEY,
-        }
+        },
       };
       await uploadcare.init({ options });
       expect(window.UPLOADCARE_LIVE).toEqual(false);
