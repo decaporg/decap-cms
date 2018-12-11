@@ -1,6 +1,8 @@
 import { loadScript } from 'netlify-cms-lib-util';
 import { Iterable } from 'immutable';
 
+const CDN_BASE_URL = 'https://ucarecdn.com';
+
 /**
  * Default Uploadcare widget configuration, can be overriden via config.yml.
  */
@@ -44,12 +46,12 @@ function getFileGroup(files) {
  * promises, or Uploadcare groups when possible. Output is wrapped in a promise
  * because the value we're returning may be a promise that we created.
  */
-function getFiles(value, cdnBase) {
+function getFiles(value) {
   if (Array.isArray(value) || Iterable.isIterable(value)) {
     const arr = Array.isArray(value) ? value : value.toJS();
-    return isFileGroup(arr) ? getFileGroup(arr) : arr.map(val => getFile(val, cdnBase));
+    return isFileGroup(arr) ? getFileGroup(arr) : Promise.all(arr.map(val => getFile(val)));
   }
-  return value && typeof value === 'string' ? getFile(value, cdnBase) : null;
+  return value && typeof value === 'string' ? getFile(value) : null;
 }
 
 /**
@@ -57,10 +59,9 @@ function getFiles(value, cdnBase) {
  * object. Group urls that get passed here were not a part of a complete and
  * untouched group, so they'll be uploaded as new images (only way to do it).
  */
-function getFile(url, cdnBase) {
+function getFile(url) {
   const groupPattern = /~\d+\/nth\/\d+\//;
-  const baseUrls = ['https://ucarecdn.com', cdnBase].filter(v => v);
-  const uploaded = baseUrls.some(baseUrl => url.startsWith(baseUrl) && !groupPattern.test(url));
+  const uploaded = url.startsWith(CDN_BASE_URL) && !groupPattern.test(url);
   return window.uploadcare.fileFrom(uploaded ? 'uploaded' : 'url', url);
 }
 
@@ -85,7 +86,7 @@ function openDialog(files, config, handleInsert) {
  * Initialization function will only run once, returns an API object for Netlify
  * CMS to call methods on.
  */
-async function init({ options = { config: {} }, handleInsert }) {
+async function init({ options = { config: {} }, handleInsert } = {}) {
   const { publicKey, ...globalConfig } = options.config;
   const baseConfig = { ...defaultConfig, ...globalConfig };
 
@@ -113,7 +114,7 @@ async function init({ options = { config: {} }, handleInsert }) {
      * On show, create a new widget, cache it in the widgets object, and open.
      * No hide method is provided because the widget doesn't provide it.
      */
-    show: ({ value, config: instanceConfig = {}, allowMultiple, imagesOnly }) => {
+    show: ({ value, config: instanceConfig = {}, allowMultiple, imagesOnly = false } = {}) => {
       const config = { ...baseConfig, imagesOnly, ...instanceConfig };
       const multiple = allowMultiple === false ? false : !!config.multiple;
       const resolvedConfig = { ...config, multiple };
@@ -124,9 +125,9 @@ async function init({ options = { config: {} }, handleInsert }) {
        * from the Uploadcare library will have a `state` method.
        */
       if (files && !files.state) {
-        files.then(result => openDialog(result, resolvedConfig, handleInsert));
+        return files.then(result => openDialog(result, resolvedConfig, handleInsert));
       } else {
-        openDialog(files, resolvedConfig, handleInsert);
+        return openDialog(files, resolvedConfig, handleInsert);
       }
     },
 
