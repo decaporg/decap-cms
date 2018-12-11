@@ -126,6 +126,16 @@ To enable it:
       repo: owner-name/repo-name # Path to your Bitbucket repository
     ```
 
+## Test Repo Backend
+You can use the `test-repo` backend to try out Netlify CMS without connecting to a Git repo. With this backend, you can write and publish content normally, but any changes will disapear when you reload the page. This backend powers the Netlify CMS [demo site](https://cms-demo.netlify.com/).
+
+To enable this backend, add the following lines to your Netlify CMS `config.yml` file:
+
+```
+backend:
+  name: test-repo
+```
+
 ## External OAuth Clients
 
 If you would like to facilitate your own OAuth authentication rather than use Netlify's service or implicit grant, you can use one of the community-maintained projects below. Feel free to [submit a pull request](https://github.com/netlify/netlify-cms/blob/master/CONTRIBUTING.md) if you'd like to add yours!
