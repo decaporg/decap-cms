@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.2.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-editor-component-image/compare/netlify-cms-editor-component-image@2.1.0...netlify-cms-editor-component-image@2.2.0) (2018-12-11)
+
+
+### Features
+
+* **editor-components:** support title in image component ([#1862](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-editor-component-image/issues/1862)) ([cbb7762](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-editor-component-image/commit/cbb7762))
+
+
+
+
+
 # [2.1.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-editor-component-image/compare/netlify-cms-editor-component-image@2.0.4...netlify-cms-editor-component-image@2.1.0) (2018-12-04)
 
 

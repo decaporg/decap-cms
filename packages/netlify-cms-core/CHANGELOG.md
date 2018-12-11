@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.3.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.3.0...netlify-cms-core@2.3.1) (2018-12-11)
+
+
+### Bug Fixes
+
+* **netlify-cms-core:** support translation in error message ([#1935](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1935)) ([0f1ebd1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/0f1ebd1))
+
+
+
+
+
 # [2.3.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.2.1...netlify-cms-core@2.3.0) (2018-12-04)
 
 

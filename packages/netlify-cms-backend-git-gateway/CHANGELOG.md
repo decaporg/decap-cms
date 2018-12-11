@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/compare/netlify-cms-backend-git-gateway@2.1.1...netlify-cms-backend-git-gateway@2.1.2) (2018-12-11)
+
+
+### Bug Fixes
+
+* **netlify-cms-backend-git-gateway:** content-type may have charset ([#1951](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/issues/1951)) ([c74dbae](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/commit/c74dbae))
+
+
+
+
+
 ## [2.1.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/compare/netlify-cms-backend-git-gateway@2.1.0...netlify-cms-backend-git-gateway@2.1.1) (2018-11-29)
 
 

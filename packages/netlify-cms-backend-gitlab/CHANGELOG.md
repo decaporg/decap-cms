@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/compare/netlify-cms-backend-gitlab@2.1.0...netlify-cms-backend-gitlab@2.1.1) (2018-12-11)
+
+
+### Bug Fixes
+
+* **backend-gitlab:** show svg previews ([#1946](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/issues/1946)) ([c3adebe](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/commit/c3adebe))
+
+
+
+
+
 # [2.1.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/compare/netlify-cms-backend-gitlab@2.0.6...netlify-cms-backend-gitlab@2.1.0) (2018-11-12)
 
 

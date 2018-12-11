@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.1.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.0.10...netlify-cms-widget-markdown@2.1.0) (2018-12-11)
+
+
+### Features
+
+* **editor-components:** support title in image component ([#1862](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/issues/1862)) ([cbb7762](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/commit/cbb7762))
+
+
+
+
+
 ## [2.0.10](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.0.9...netlify-cms-widget-markdown@2.0.10) (2018-11-29)
 
 
