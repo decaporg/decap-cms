@@ -90,8 +90,5 @@
   "workspaces": [
     "packages/*"
   ],
-  "private": true,
-  "dependencies": {
-    "@redux-dynostore/core": "^1.1.0"
-  }
+  "private": true
 }

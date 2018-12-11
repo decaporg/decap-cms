@@ -67,7 +67,8 @@
     "toml-j0.4": "^1.1.1",
     "tomlify-j0.4": "^3.0.0-alpha.0",
     "url": "^0.11.0",
-    "what-input": "^5.0.3"
+    "what-input": "^5.0.3",
+    "@redux-dynostore/core": "^1.1.0"
   },
   "devDependencies": {
     "cross-env": "^5.2.0",
