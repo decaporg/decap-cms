@@ -92,7 +92,7 @@ export default class GitGateway {
           },
         ).then(async res => {
           const contentType = res.headers.get('Content-Type');
-          if (contentType !== 'application/json' && contentType !== 'text/json') {
+          if (!contentType.includes('application/json') && !contentType.includes('text/json')) {
             throw new APIError(
               `Your Git Gateway backend is not returning valid settings. Please make sure it is enabled.`,
               res.status,
