@@ -374,7 +374,7 @@ export function updateUnpublishedEntryStatus(collection, slug, oldStatus, newSta
       unpublishedEntryStatusChangeRequest(collection, slug, oldStatus, newStatus, transactionID),
     );
     backend
-      .updateUnpublishedEntryStatus(collection, slug, newStatus)
+      .updateUnpublishedEntryStatus(collection, slug, oldStatus, newStatus)
       .then(() => {
         dispatch(
           notifSend({

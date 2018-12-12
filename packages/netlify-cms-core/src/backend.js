@@ -18,7 +18,7 @@ import { createEntry } from 'ValueObjects/Entry';
 import { sanitizeSlug } from 'Lib/urlHelper';
 import { getBackend } from 'Lib/registry';
 import { localForage, Cursor, CURSOR_COMPATIBILITY_SYMBOL } from 'netlify-cms-lib-util';
-import { EDITORIAL_WORKFLOW, status } from 'Constants/publishModes';
+import { EDITORIAL_WORKFLOW, statusLabels, status } from 'Constants/publishModes';
 import {
   SLUG_MISSING_REQUIRED_DATE,
   compileStringTemplate,
@@ -199,6 +199,7 @@ class Backend {
       useWorkflow: config.getIn(['publish_mode']) === EDITORIAL_WORKFLOW,
       updateUserCredentials: this.updateUserCredentials,
       initialWorkflowStatus: status.first(),
+      statusLabels,
     });
     this.backendName = backendName;
     this.authStore = authStore;
@@ -657,8 +658,8 @@ class Backend {
     return this.persistEntry(...args, { unpublished: true });
   }
 
-  updateUnpublishedEntryStatus(collection, slug, newStatus) {
-    return this.implementation.updateUnpublishedEntryStatus(collection, slug, newStatus);
+  updateUnpublishedEntryStatus(collection, slug, oldStatus, newStatus) {
+    return this.implementation.updateUnpublishedEntryStatus(collection, slug, oldStatus, newStatus);
   }
 
   publishUnpublishedEntry(collection, slug) {

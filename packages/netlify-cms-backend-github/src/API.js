@@ -19,6 +19,7 @@ export default class API {
     this.repoURL = `/repos/${this.repo}`;
     this.merge_method = config.squash_merges ? 'squash' : 'merge';
     this.initialWorkflowStatus = config.initialWorkflowStatus;
+    this.statusLabels = config.statusLabels;
   }
 
   user() {
@@ -122,6 +123,25 @@ export default class API {
           .then(tree => this.commit('First Commit', tree))
           .then(response => this.createRef('meta', '_netlify_cms', response.sha))
           .then(response => response.object);
+      });
+  }
+
+  checkStatusLabel(status) {
+    const labelName = this.statusLabels.getIn([status, 'name']);
+
+    return this.request(`${this.repoURL}/labels/${labelName}?${Date.now()}`, {
+      cache: 'no-store',
+    })
+      .then(response => response.name)
+      .catch(() => {
+        // Label doesn't exist, create label
+        return this.request(`${this.repoURL}/labels`, {
+          method: 'POST',
+          body: JSON.stringify({
+            name: labelName,
+            color: this.statusLabels.getIn([status, 'color']),
+          }),
+        }).then(response => response.name);
       });
   }
 
@@ -411,7 +431,8 @@ export default class API {
             },
             timeStamp: new Date().toISOString(),
           });
-        });
+        })
+        .then(() => this.addStatusLabel(prResponse.number));
     } else {
       // Entry is already on editorial review workflow - just update metadata and commit to existing branch
       let newHead;
@@ -596,14 +617,16 @@ export default class API {
     throw Error('Editorial workflow branch changed unexpectedly.');
   }
 
-  updateUnpublishedEntryStatus(collection, slug, status) {
+  updateUnpublishedEntryStatus(collection, slug, oldStatus, newStatus) {
     const contentKey = slug;
+    let prNumber;
     return this.retrieveMetadata(contentKey)
-      .then(metadata => ({
-        ...metadata,
-        status,
-      }))
-      .then(updatedMetadata => this.storeMetadata(contentKey, updatedMetadata));
+      .then(metadata => ({ ...metadata, status: newStatus }))
+      .then(updatedMetadata => {
+        prNumber = updatedMetadata.pr.number;
+        return this.storeMetadata(contentKey, updatedMetadata);
+      })
+      .then(() => this.updateStatusLabel(prNumber, oldStatus, newStatus));
   }
 
   deleteUnpublishedEntry(collection, slug) {
@@ -684,6 +707,36 @@ export default class API {
       method: 'POST',
       body: JSON.stringify({ title, body, head, base }),
     });
+  }
+
+  addLabel(issueNumber, labelName) {
+    return this.request(`${this.repoURL}/issues/${issueNumber}/labels`, {
+      method: 'POST',
+      body: JSON.stringify({ labels: [labelName] }),
+    });
+  }
+
+  removeLabel(issueNumber, labelName) {
+    return this.request(`${this.repoURL}/issues/${issueNumber}/labels/${labelName}`, {
+      method: 'DELETE',
+    }).catch(err => {
+      if (err.message === 'Label does not exist') {
+        return Promise.resolve();
+      }
+      return Promise.reject(err);
+    });
+  }
+
+  addStatusLabel(prNumber) {
+    this.checkStatusLabel(this.initialWorkflowStatus).then(labelName =>
+      this.addLabel(prNumber, labelName),
+    );
+  }
+
+  updateStatusLabel(prNumber, oldStatus, newStatus) {
+    this.removeLabel(prNumber, this.statusLabels.getIn([oldStatus, 'name']))
+      .then(() => this.checkStatusLabel(newStatus))
+      .then(labelName => this.addLabel(prNumber, labelName));
   }
 
   closePR(pullrequest) {

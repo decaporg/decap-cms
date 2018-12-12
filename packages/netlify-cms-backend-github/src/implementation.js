@@ -73,6 +73,7 @@ export default class GitHub {
       api_root: this.api_root,
       squash_merges: this.squash_merges,
       initialWorkflowStatus: this.options.initialWorkflowStatus,
+      statusLabels: this.options.statusLabels,
     });
     const user = await this.api.user();
     const isCollab = await this.api.hasWriteAccess().catch(error => {
@@ -278,8 +279,8 @@ export default class GitHub {
     }
   }
 
-  updateUnpublishedEntryStatus(collection, slug, newStatus) {
-    return this.api.updateUnpublishedEntryStatus(collection, slug, newStatus);
+  updateUnpublishedEntryStatus(collection, slug, oldStatus, newStatus) {
+    return this.api.updateUnpublishedEntryStatus(collection, slug, oldStatus, newStatus);
   }
 
   deleteUnpublishedEntry(collection, slug) {
