@@ -25,7 +25,7 @@ export default class ControlPane extends React.Component {
 
   validate = () => {
     this.props.fields.forEach(field => {
-      if (this.isVisible(field)) return;
+      if (!this.isVisible(field)) return;
       this.componentValidate[field.get('name')]();
     });
   };
