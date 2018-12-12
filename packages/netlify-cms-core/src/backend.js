@@ -32,7 +32,7 @@ import {
   dateParsers,
 } from 'Lib/stringTemplate';
 
-class LocalStorageAuthStore {
+export class LocalStorageAuthStore {
   storageKey = 'netlify-cms-user';
 
   retrieve() {
@@ -200,7 +200,7 @@ function createPreviewUrl(baseUrl, collection, slug, slugConfig, entry) {
   return `${basePath}/${previewPath}`;
 }
 
-class Backend {
+export class Backend {
   constructor(implementation, { backendName, authStore = null, config } = {}) {
     // We can't reliably run this on exit, so we do cleanup on load.
     this.deleteAnonymousBackup();
@@ -218,6 +218,7 @@ class Backend {
   }
 
   currentUser() {
+    // TODO: investigate, `this.user` doesn't look like it is ever true.
     if (this.user) {
       return this.user;
     }
