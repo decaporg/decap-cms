@@ -658,8 +658,8 @@ class Backend {
     return this.persistEntry(...args, { unpublished: true });
   }
 
-  updateUnpublishedEntryStatus(collection, slug, oldStatus, newStatus) {
-    return this.implementation.updateUnpublishedEntryStatus(collection, slug, oldStatus, newStatus);
+  updateUnpublishedEntryStatus(collection, slug, newStatus, oldStatus) {
+    return this.implementation.updateUnpublishedEntryStatus(collection, slug, newStatus, oldStatus);
   }
 
   publishUnpublishedEntry(collection, slug) {

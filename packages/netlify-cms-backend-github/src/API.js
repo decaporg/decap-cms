@@ -617,7 +617,7 @@ export default class API {
     throw Error('Editorial workflow branch changed unexpectedly.');
   }
 
-  updateUnpublishedEntryStatus(collection, slug, oldStatus, newStatus) {
+  updateUnpublishedEntryStatus(collection, slug, newStatus, oldStatus) {
     const contentKey = slug;
     let prNumber;
     return this.retrieveMetadata(contentKey)
@@ -626,7 +626,7 @@ export default class API {
         prNumber = updatedMetadata.pr.number;
         return this.storeMetadata(contentKey, updatedMetadata);
       })
-      .then(() => this.updateStatusLabel(prNumber, oldStatus, newStatus));
+      .then(() => this.updateStatusLabel(prNumber, newStatus, oldStatus));
   }
 
   deleteUnpublishedEntry(collection, slug) {
@@ -733,7 +733,7 @@ export default class API {
     );
   }
 
-  updateStatusLabel(prNumber, oldStatus, newStatus) {
+  updateStatusLabel(prNumber, newStatus, oldStatus) {
     this.removeLabel(prNumber, this.statusLabels.getIn([oldStatus, 'name']))
       .then(() => this.checkStatusLabel(newStatus))
       .then(labelName => this.addLabel(prNumber, labelName));

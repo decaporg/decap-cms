@@ -1,4 +1,5 @@
 import API from '../API';
+import { Map } from 'immutable';
 
 describe('github API', () => {
   const mockAPI = (api, responses) => {
@@ -13,7 +14,7 @@ describe('github API', () => {
 
   it('should create PR with correct base branch name when publishing with editorial workflow', () => {
     let prBaseBranch = null;
-    const api = new API({ branch: 'gh-pages', repo: 'my-repo' });
+    const api = new API({ branch: 'gh-pages', repo: 'my-repo', statusLabels: Map() });
     const responses = {
       '/repos/my-repo/branches/gh-pages': () => ({ commit: { sha: 'def' } }),
       '/repos/my-repo/git/trees/def': () => ({ tree: [] }),
