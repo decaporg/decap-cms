@@ -366,6 +366,7 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
 
 export function updateUnpublishedEntryStatus(collection, slug, oldStatus, newStatus) {
   return (dispatch, getState) => {
+    if (oldStatus === newStatus) return;
     const state = getState();
     const backend = currentBackend(state.config);
     const transactionID = uuid();
