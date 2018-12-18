@@ -445,6 +445,7 @@ export function deleteUnpublishedEntry(collection, slug) {
 export function publishUnpublishedEntry(collection, slug) {
   return (dispatch, getState) => {
     const state = getState();
+    const collections = state.collections;
     const backend = currentBackend(state.config);
     const transactionID = uuid();
     dispatch(unpublishedEntryPublishRequest(collection, slug, transactionID));
@@ -459,6 +460,7 @@ export function publishUnpublishedEntry(collection, slug) {
           }),
         );
         dispatch(unpublishedEntryPublished(collection, slug, transactionID));
+        dispatch(loadEntry(collections.get(collection), slug));
       })
       .catch(error => {
         dispatch(

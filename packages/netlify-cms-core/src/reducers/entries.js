@@ -15,6 +15,7 @@ let collection;
 let loadedEntries;
 let append;
 let page;
+let slug;
 
 const entries = (state = Map({ entities: Map(), pages: Map() }), action) => {
   switch (action.type) {
@@ -25,10 +26,15 @@ const entries = (state = Map({ entities: Map(), pages: Map() }), action) => {
       );
 
     case ENTRY_SUCCESS:
-      return state.setIn(
-        ['entities', `${action.payload.collection}.${action.payload.entry.slug}`],
-        fromJS(action.payload.entry),
-      );
+      collection = action.payload.collection;
+      slug = action.payload.entry.slug;
+      return state.withMutations(map => {
+        map.setIn(['entities', `${collection}.${slug}`], fromJS(action.payload.entry));
+        const ids = map.getIn(['pages', collection, 'ids'], List());
+        if (!ids.includes(slug)) {
+          map.setIn(['pages', collection, 'ids'], ids.unshift(slug));
+        }
+      });
 
     case ENTRIES_REQUEST:
       return state.setIn(['pages', action.payload.collection, 'isFetching'], true);
