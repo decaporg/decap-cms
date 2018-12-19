@@ -42,4 +42,23 @@ describe('entries', () => {
       ),
     );
   });
+
+  it('should handle loaded entry', () => {
+    const entry = { slug: 'a', path: '' };
+    expect(reducer(initialState, actions.entryLoaded(Map({ name: 'posts' }), entry))).toEqual(
+      OrderedMap(
+        fromJS({
+          posts: { name: 'posts' },
+          entities: {
+            'posts.a': { slug: 'a', path: '' },
+          },
+          pages: {
+            posts: {
+              ids: ['a'],
+            },
+          },
+        }),
+      ),
+    );
+  });
 });

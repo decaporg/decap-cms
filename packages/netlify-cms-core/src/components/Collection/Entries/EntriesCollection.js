@@ -25,15 +25,15 @@ class EntriesCollection extends React.Component {
   };
 
   componentDidMount() {
-    const { collection, loadEntries } = this.props;
-    if (collection) {
+    const { collection, entriesLoaded, loadEntries } = this.props;
+    if (collection && !entriesLoaded) {
       loadEntries(collection);
     }
   }
 
   componentDidUpdate(prevProps) {
-    const { collection, loadEntries } = this.props;
-    if (collection !== prevProps.collection) {
+    const { collection, entriesLoaded, loadEntries } = this.props;
+    if (collection !== prevProps.collection && !entriesLoaded) {
       loadEntries(collection);
     }
   }
@@ -68,12 +68,13 @@ function mapStateToProps(state, ownProps) {
   const page = state.entries.getIn(['pages', collection.get('name'), 'page']);
 
   const entries = selectEntries(state, collection.get('name'));
+  const entriesLoaded = !!state.entries.getIn(['pages', collection.get('name')]);
   const isFetching = state.entries.getIn(['pages', collection.get('name'), 'isFetching'], false);
 
   const rawCursor = selectCollectionEntriesCursor(state.cursors, collection.get('name'));
   const cursor = Cursor.create(rawCursor).clearData();
 
-  return { publicFolder, collection, page, entries, isFetching, viewStyle, cursor };
+  return { publicFolder, collection, page, entries, entriesLoaded, isFetching, viewStyle, cursor };
 }
 
 const mapDispatchToProps = {
