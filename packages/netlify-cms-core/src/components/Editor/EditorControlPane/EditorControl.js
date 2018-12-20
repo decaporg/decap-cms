@@ -202,7 +202,7 @@ class EditorControl extends React.Component {
           htmlFor={this.uniqueFieldId}
         >
           {`${field.get('label', field.get('name'))}${isFieldOptional ? ' (optional)' : ''}`}
-          </label>
+        </label>
         <Widget
           classNameWrapper={cx(
             styles.widget,
