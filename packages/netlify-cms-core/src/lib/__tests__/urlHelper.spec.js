@@ -105,6 +105,10 @@ describe('sanitizeSlug', () => {
     expect(sanitizeSlug('test   test   ')).toEqual('test-test');
   });
 
+  it('removes leading replacemenets', () => {
+    expect(sanitizeSlug('"test"    test')).toEqual('test-test');
+  });
+
   it('uses alternate replacements', () => {
     expect(sanitizeSlug('test   test   ', Map({ sanitize_replacement: '_' }))).toEqual('test_test');
   });

@@ -86,8 +86,11 @@ export function sanitizeSlug(str, options = Map()) {
   // Remove any doubled or trailing replacement characters (that were added in the sanitizers).
   const doubleReplacement = new RegExp(`(?:${escapeRegExp(replacement)})+`, 'g');
   const trailingReplacment = new RegExp(`${escapeRegExp(replacement)}$`);
+  const leadingReplacment = new RegExp(`^${escapeRegExp(replacement)}`);
+
   const normalizedSlug = sanitizedSlug
     .replace(doubleReplacement, replacement)
+    .replace(leadingReplacment, '')
     .replace(trailingReplacment, '');
 
   return normalizedSlug;
