@@ -3,7 +3,7 @@ label: "List"
 title: list
 ---
 
-The list widget allows you to create a repeatable item in the UI which saves as a list of widget values. map a user-provided string with a comma delimiter into a list. You can choose any widget as a child of a list widget—even other lists. Or you can define a list with different widget types.
+The list widget allows you to create a repeatable item in the UI which saves as a list of widget values. map a user-provided string with a comma delimiter into a list. You can choose any widget as a child of a list widget—even other lists. Or you can define a list of different object widgets.
 
 - **Name:** `list`
 - **UI:** if `fields` is specified, field containing a repeatable child widget, with controls for adding, deleting, and re-ordering the repeated widgets; if unspecified, a text input for entering comma-separated values. If `types` is specified instead, the list will render items of different widget types. 
@@ -13,8 +13,8 @@ The list widget allows you to create a repeatable item in the UI which saves as 
   - `allow_add`: if added and labeled `false`, button to add additional widgets disappears. When used together with `types`, additional control for selecting a widget type will be available.
   - `field`: a single widget field to be repeated
   - `fields`: a nested list of multiple widget fields to be included in each repeatable iteration
-  - `types`: a nested list of widgets. Each widget will define different item type that could be added to the list.
-  - `typeKey`: the name of the field that will be added to every item in list representing the name of the widget type that item belongs to. Ignored if `types` is not defined. Default is `type`.
+  - `types`: a nested list of object widgets. All widgets must be of type `object`. Every object widget may define different set of fields. 
+  - `typeKey`: the name of the field that will be added to every item in list representing the name of the object widget that item belongs to. Ignored if `types` is not defined. Default is `type`.
 - **Example** (`field`/`fields` not specified):
     ```yaml
     - label: "Tags"
@@ -98,4 +98,4 @@ The list widget allows you to create a repeatable item in the UI which saves as 
           - images/image05.png
           - images/image06.png
     ```
-    The `type` field must be present on each section object and will be added automatically when new section is created through CMS. To use different name for this field, set the `typeKey`.
+    The `type` field must be present on every item in the list. It will be added automatically when new item is created through CMS. To use different name for this field, use `typeKey` option.
