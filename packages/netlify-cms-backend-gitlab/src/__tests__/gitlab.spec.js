@@ -25,17 +25,20 @@ const generateEntries = (path, length) => {
       path: filePath,
       mode: '100644',
     })),
-    files: entries.reduce((acc, { id, filePath }) => ({
-      ...acc,
-      [filePath]: stripIndent`
+    files: entries.reduce(
+      (acc, { id, filePath }) => ({
+        ...acc,
+        [filePath]: stripIndent`
         ---
         title: test ${id}
         ---
         # test ${id}
       `,
-    }), {}),
+      }),
+      {},
+    ),
   };
-}
+};
 
 const manyEntries = generateEntries('many-entries', 500);
 
@@ -159,7 +162,7 @@ describe('gitlab backend', () => {
       return {};
     }
     return query.split('&').reduce((acc, q) => {
-      const [ key, value ] = q.split('=');
+      const [key, value] = q.split('=');
       acc[key] = value;
       return acc;
     }, {});
@@ -168,9 +171,9 @@ describe('gitlab backend', () => {
   function createHeaders(backend, { basePath, path, page, perPage, pageCount, totalCount }) {
     const pageNum = parseInt(page, 10);
     const pageCountNum = parseInt(pageCount, 10);
-    const url = `${backend.implementation.api_root}${basePath}`
+    const url = `${backend.implementation.api_root}${basePath}`;
     const link = linkPage =>
-      `<${url}?id=${expectedRepo}&page=${linkPage}&path=${path}&per_page=${perPage}&recursive=false>`
+      `<${url}?id=${expectedRepo}&page=${linkPage}&path=${path}&per_page=${perPage}&recursive=false>`;
 
     const linkHeader = oneLine`
       ${link(1)}; rel="first",
@@ -184,7 +187,7 @@ describe('gitlab backend', () => {
       'X-Total-Pages': pageCount,
       'X-Per-Page': perPage,
       'X-Total': totalCount,
-      'Link': linkHeader,
+      Link: linkHeader,
     };
   }
 
@@ -341,7 +344,7 @@ describe('gitlab backend', () => {
       expect(entries).toEqual({
         cursor: expect.any(Cursor),
         entries: expect.arrayContaining(
-          tree.map(file => expect.objectContaining({ path: file.path }))
+          tree.map(file => expect.objectContaining({ path: file.path })),
         ),
       });
       expect(entries.entries).toHaveLength(2);
@@ -375,7 +378,7 @@ describe('gitlab backend', () => {
       expect(entries).toEqual({
         cursor: expect.any(Cursor),
         entries: expect.arrayContaining(
-          files.map(file => expect.objectContaining({ path: file.file }))
+          files.map(file => expect.objectContaining({ path: file.file })),
         ),
       });
       expect(entries.entries).toHaveLength(2);
@@ -400,9 +403,9 @@ describe('gitlab backend', () => {
       interceptCollection(backend, collectionConfig, { verb: 'head' });
       interceptCollection(backend, collectionConfig, { page: 25 });
       const entries = await backend.listEntries(fromJS(collectionConfig));
-      expect(entries.entries).toEqual(expect.arrayContaining(
-        pageTree.map(file => expect.objectContaining({ path: file.path }))
-      ));
+      expect(entries.entries).toEqual(
+        expect.arrayContaining(pageTree.map(file => expect.objectContaining({ path: file.path }))),
+      );
       expect(entries.entries).toHaveLength(20);
     });
   });
@@ -435,17 +438,21 @@ describe('gitlab backend', () => {
       nextPageTree.forEach(file => interceptFiles(backend, file.path));
       interceptCollection(backend, collectionConfig, { page: 24 });
       const nextPage = await backend.traverseCursor(entries.cursor, 'next');
-      expect(nextPage.entries).toEqual(expect.arrayContaining(
-        nextPageTree.map(file => expect.objectContaining({ path: file.path }))
-      ));
+      expect(nextPage.entries).toEqual(
+        expect.arrayContaining(
+          nextPageTree.map(file => expect.objectContaining({ path: file.path })),
+        ),
+      );
       expect(nextPage.entries).toHaveLength(20);
 
       const prevPageTree = tree.slice(-20);
       interceptCollection(backend, collectionConfig, { page: 25 });
       const prevPage = await backend.traverseCursor(nextPage.cursor, 'prev');
-      expect(prevPage.entries).toEqual(expect.arrayContaining(
-        prevPageTree.map(file => expect.objectContaining({ path: file.path }))
-      ));
+      expect(prevPage.entries).toEqual(
+        expect.arrayContaining(
+          prevPageTree.map(file => expect.objectContaining({ path: file.path })),
+        ),
+      );
       expect(prevPage.entries).toHaveLength(20);
     });
   });
