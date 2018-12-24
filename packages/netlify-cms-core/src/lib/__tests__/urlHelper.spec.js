@@ -101,11 +101,11 @@ describe('sanitizeSlug', () => {
     expect(sanitizeSlug('test   test')).toEqual('test-test');
   });
 
-  it('removes trailing replacemenets', () => {
+  it('removes trailing replacements', () => {
     expect(sanitizeSlug('test   test   ')).toEqual('test-test');
   });
 
-  it('removes leading replacemenets', () => {
+  it('removes leading replacements', () => {
     expect(sanitizeSlug('"test"    test')).toEqual('test-test');
   });
 
