@@ -7,6 +7,12 @@ import { partial } from 'lodash';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 import { ObjectControl } from 'netlify-cms-widget-object';
 import {
+  TYPES_KEY,
+  getTypedFieldForValue,
+  resolveFieldKeyType,
+  getErrorMessageForTypedFieldAndValue,
+} from './typedListHelpers';
+import {
   ListItemTopBar,
   ObjectWidgetTopBar,
   colors,
@@ -29,6 +35,7 @@ const StyledListItemTopBar = styled(ListItemTopBar)`
 const NestedObjectLabel = styled.div`
   display: ${props => (props.collapsed ? 'block' : 'none')};
   border-top: 0;
+  color: ${props => (props.error ? colors.errorText : 'inherit')};
   background-color: ${colors.textFieldBorder};
   padding: 13px;
   border-radius: 0 0 ${lengths.borderRadius} ${lengths.borderRadius};
@@ -57,6 +64,7 @@ const SortableList = SortableContainer(({ items, renderItem }) => {
 const valueTypes = {
   SINGLE: 'SINGLE',
   MULTIPLE: 'MULTIPLE',
+  MIXED: 'MIXED',
 };
 
 export default class ListControl extends React.Component {
@@ -101,6 +109,8 @@ export default class ListControl extends React.Component {
       return valueTypes.MULTIPLE;
     } else if (field.get('field')) {
       return valueTypes.SINGLE;
+    } else if (field.get(TYPES_KEY)) {
+      return valueTypes.MIXED;
     } else {
       return null;
     }
@@ -151,6 +161,13 @@ export default class ListControl extends React.Component {
     onChange((value || List()).push(parsedValue));
   };
 
+  handleAddType = (type, typeKey) => {
+    const { value, onChange } = this.props;
+    let parsedValue = Map().set(typeKey, type);
+    this.setState({ itemsCollapsed: this.state.itemsCollapsed.push(false) });
+    onChange((value || List()).push(parsedValue));
+  };
+
   /**
    * In case the `onChangeObject` function is frozen by a child widget implementation,
    * e.g. when debounced, always get the latest object value instead of using
@@ -163,7 +180,7 @@ export default class ListControl extends React.Component {
       const { value, metadata, onChange, field } = this.props;
       const collectionName = field.get('name');
       const newObjectValue =
-        this.getValueType() === valueTypes.MULTIPLE
+        this.getValueType() !== valueTypes.SINGLE
           ? this.getObjectValue(index).set(fieldName, newValue)
           : newValue;
       const parsedMetadata = {
@@ -208,6 +225,9 @@ export default class ListControl extends React.Component {
 
   objectLabel(item) {
     const { field } = this.props;
+    if (this.getValueType() === valueTypes.MIXED) {
+      return getTypedFieldForValue(field, item).get('label', field.get('name'));
+    }
     const multiFields = field.get('fields');
     const singleField = field.get('field');
     const labelField = (multiFields && multiFields.first()) || singleField;
@@ -233,9 +253,17 @@ export default class ListControl extends React.Component {
   };
 
   renderItem = (item, index) => {
-    const { field, classNameWrapper, editorControl, resolveWidget } = this.props;
+    const { classNameWrapper, editorControl, resolveWidget } = this.props;
     const { itemsCollapsed } = this.state;
     const collapsed = itemsCollapsed.get(index);
+    let field = this.props.field;
+
+    if (this.getValueType() === valueTypes.MIXED) {
+      field = getTypedFieldForValue(field, item);
+      if (!field) {
+        return this.renderErroneousTypedItem(index, item);
+      }
+    }
 
     return (
       <SortableListItem
@@ -263,6 +291,27 @@ export default class ListControl extends React.Component {
     );
   };
 
+  renderErroneousTypedItem(index, item) {
+    const field = this.props.field;
+    const errorMessage = getErrorMessageForTypedFieldAndValue(field, item);
+    return (
+      <SortableListItem
+        className={cx(styles.listControlItem, styles.listControlItemCollapsed)}
+        index={index}
+        key={`item-${index}`}
+      >
+        <StyledListItemTopBar
+          onCollapseToggle={null}
+          onRemove={partial(this.handleRemove, index)}
+          dragHandleHOC={SortableHandle}
+        />
+        <NestedObjectLabel collapsed={true} error={true}>
+          {errorMessage}
+        </NestedObjectLabel>
+      </SortableListItem>
+    );
+  }
+
   renderListControl() {
     const { value, forID, field, classNameWrapper } = this.props;
     const { itemsCollapsed } = this.state;
@@ -276,6 +325,8 @@ export default class ListControl extends React.Component {
         <ObjectWidgetTopBar
           allowAdd={field.get('allow_add', true)}
           onAdd={this.handleAdd}
+          types={field.get(TYPES_KEY, null)}
+          onAddType={type => this.handleAddType(type, resolveFieldKeyType(field))}
           heading={`${items.size} ${listLabel}`}
           label={labelSingular.toLowerCase()}
           onCollapseToggle={this.handleCollapseAllToggle}
@@ -292,13 +343,9 @@ export default class ListControl extends React.Component {
     );
   }
 
-  render() {
-    const { field, forID, classNameWrapper } = this.props;
+  renderInput() {
+    const { forID, classNameWrapper } = this.props;
     const { value } = this.state;
-
-    if (field.get('field') || field.get('fields')) {
-      return this.renderListControl();
-    }
 
     return (
       <input
@@ -311,5 +358,13 @@ export default class ListControl extends React.Component {
         className={classNameWrapper}
       />
     );
+  }
+
+  render() {
+    if (this.getValueType() !== null) {
+      return this.renderListControl();
+    } else {
+      return this.renderInput();
+    }
   }
 }

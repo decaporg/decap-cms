@@ -195,3 +195,29 @@ collections: # A list of collections the CMS should be able to edit
                           widget: 'select',
                           options: ['a', 'b', 'c'],
                         }
+      - label: 'Typed List'
+        name: 'typed_list'
+        widget: 'list'
+        types:
+          - label: 'Type 1 Object'
+            name: 'type_1_object'
+            widget: 'object'
+            fields:
+              - { label: 'String', name: 'string', widget: 'string' }
+              - { label: 'Boolean', name: 'boolean', widget: 'boolean' }
+              - { label: 'Text', name: 'text', widget: 'text' }
+          - label: 'Type 2 Object'
+            name: 'type_2_object'
+            widget: 'object'
+            fields:
+              - { label: 'Number', name: 'number', widget: 'number' }
+              - { label: 'Select', name: 'select', widget: 'select', options: ['a', 'b', 'c'] }
+              - { label: 'Datetime', name: 'datetime', widget: 'datetime' }
+              - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
+          - label: 'Type 3 Object'
+            name: 'type_3_object'
+            widget: 'object'
+            fields:
+              - { label: 'Date', name: 'date', widget: 'date' }
+              - { label: 'Image', name: 'image', widget: 'image' }
+              - { label: 'File', name: 'file', widget: 'file' }
