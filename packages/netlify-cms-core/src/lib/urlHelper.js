@@ -83,11 +83,14 @@ export function sanitizeSlug(str, options = Map()) {
     partialRight(sanitizeFilename, { replacement }),
   ])(str);
 
-  // Remove any doubled or trailing replacement characters (that were added in the sanitizers).
+  // Remove any doubled or leading/trailing replacement characters (that were added in the sanitizers).
   const doubleReplacement = new RegExp(`(?:${escapeRegExp(replacement)})+`, 'g');
   const trailingReplacment = new RegExp(`${escapeRegExp(replacement)}$`);
+  const leadingReplacment = new RegExp(`^${escapeRegExp(replacement)}`);
+
   const normalizedSlug = sanitizedSlug
     .replace(doubleReplacement, replacement)
+    .replace(leadingReplacment, '')
     .replace(trailingReplacment, '');
 
   return normalizedSlug;
