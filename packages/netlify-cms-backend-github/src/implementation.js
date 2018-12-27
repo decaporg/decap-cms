@@ -26,6 +26,7 @@ export default class GitHub {
     this.api_root = config.getIn(['backend', 'api_root'], 'https://api.github.com');
     this.token = '';
     this.squash_merges = config.getIn(['backend', 'squash_merges']);
+    this.access_token_param = config.getIn(['backend', 'access_token_param']);
   }
 
   authComponent() {
@@ -45,6 +46,7 @@ export default class GitHub {
       api_root: this.api_root,
       squash_merges: this.squash_merges,
       initialWorkflowStatus: this.options.initialWorkflowStatus,
+      access_token_param: this.access_token_param,
     });
     const user = await this.api.user();
     const isCollab = await this.api.hasWriteAccess().catch(error => {

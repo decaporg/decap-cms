@@ -15,6 +15,7 @@ export default class API {
     this.repoURL = `/repos/${this.repo}`;
     this.merge_method = config.squash_merges ? 'squash' : 'merge';
     this.initialWorkflowStatus = config.initialWorkflowStatus;
+    this.accessTokenParam = config.access_token_param || false;
   }
 
   user() {
@@ -57,6 +58,9 @@ export default class API {
   urlFor(path, options) {
     const cacheBuster = new Date().getTime();
     const params = [`ts=${cacheBuster}`];
+    if(this.accessTokenParam&&this.token){
+      params.push(`access_token=${this.token}`);
+    }
     if (options.params) {
       for (const key in options.params) {
         params.push(`${key}=${encodeURIComponent(options.params[key])}`);
