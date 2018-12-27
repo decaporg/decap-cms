@@ -1,4 +1,10 @@
 updates:
+  - date: '2018-12-26'
+    description: Bugfixes, list widget variable types in beta
+    version: 2.3.2
+  - date: '2018-12-11'
+    description: Bugfixes
+    version: 2.3.1
   - date: '2018-12-04'
     description: Cloudinary support, multi-select in select widget
     version: 2.3.0
