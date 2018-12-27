@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.4.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.3.1...netlify-cms-core@2.4.0) (2018-12-27)
+
+
+### Bug Fixes
+
+* **netlify-cms-core:** avoid leading replacement char in slug ([#1965](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1965)) ([79c0445](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/79c0445))
+* **netlify-cms-core:** avoid partially loaded collection list ([#1964](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1964)) ([cedcbf8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/cedcbf8))
+* **netlify-cms-core:** fix collection entries loaded check ([#1881](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1881)) ([b374ffe](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/b374ffe))
+* **netlify-cms-core:** workflow hide delete publish entry button ([#1971](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1971)) ([44fb2fb](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/44fb2fb))
+
+
+### Features
+
+* **editor:** display optional status in widget labels ([#1955](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1955)) ([44b7cdf](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/44b7cdf))
+
+
+
+
+
 ## [2.3.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.3.0...netlify-cms-core@2.3.1) (2018-12-11)
 
 
