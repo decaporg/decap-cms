@@ -178,6 +178,7 @@ class EditorControl extends React.Component {
     const widget = resolveWidget(widgetName);
     const fieldName = field.get('name');
     const fieldHint = field.get('hint');
+    const isFieldOptional = field.get('required') === false;
     const metadata = fieldsMetaData && fieldsMetaData.get(fieldName);
     const errors = fieldsErrors && fieldsErrors.get(fieldName);
     return (
@@ -200,7 +201,7 @@ class EditorControl extends React.Component {
           )}
           htmlFor={this.uniqueFieldId}
         >
-          {field.get('label', field.get('name'))}
+          {`${field.get('label', field.get('name'))}${isFieldOptional ? ' (optional)' : ''}`}
         </label>
         <Widget
           classNameWrapper={cx(
