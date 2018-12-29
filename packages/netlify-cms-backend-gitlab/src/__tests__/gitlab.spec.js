@@ -114,12 +114,47 @@ const resp = {
 
 describe('gitlab backend', () => {
   let authStore;
+  let backend;
   const repo = 'foo/bar';
   const defaultConfig = {
     backend: {
       name: 'gitlab',
       repo,
     },
+  };
+  const collectionContentConfig = {
+    name: 'foo',
+    folder: 'content',
+    fields: [{ name: 'title' }],
+    // TODO: folder_based_collection is an internal string, we should not
+    // be depending on it here
+    type: 'folder_based_collection',
+  };
+  const collectionManyEntriesConfig = {
+    name: 'foo',
+    folder: 'many-entries',
+    fields: [{ name: 'title' }],
+    // TODO: folder_based_collection is an internal string, we should not
+    // be depending on it here
+    type: 'folder_based_collection',
+  };
+  const collectionFilesConfig = {
+    name: 'foo',
+    files: [
+      {
+        label: 'foo',
+        name: 'foo',
+        file: 'content/test1.md',
+        fields: [{ name: 'title' }],
+      },
+      {
+        label: 'bar',
+        name: 'bar',
+        file: 'content/test2.md',
+        fields: [{ name: 'title' }],
+      },
+    ],
+    type: 'file_based_collection',
   };
   const mockCredentials = { token: 'MOCK_TOKEN' };
   const expectedRepo = encodeURIComponent(repo);
@@ -191,7 +226,11 @@ describe('gitlab backend', () => {
     };
   }
 
-  function interceptCollection(backend, collection, { verb = 'get', page: expectedPage } = {}) {
+  function interceptCollection(
+    backend,
+    collection,
+    { verb = 'get', repeat = 1, page: expectedPage } = {},
+  ) {
     const api = mockApi(backend);
     const url = `${expectedRepoUrl}/repository/tree`;
     const { folder } = collection;
@@ -201,11 +240,12 @@ describe('gitlab backend', () => {
         if (path !== folder) {
           return false;
         }
-        if (expectedPage && parseInt(page, 10) !== parseInt(expectedPage, 10)) {
+        if (expectedPage && page && parseInt(page, 10) !== parseInt(expectedPage, 10)) {
           return false;
         }
         return true;
       })
+      .times(repeat)
       .reply(uri => {
         const { page = 1, per_page = 20 } = parseQuery(uri);
         const pageCount = tree.length <= per_page ? 1 : Math.round(tree.length / per_page);
@@ -236,6 +276,16 @@ describe('gitlab backend', () => {
       .reply(200, mockRepo.files[path]);
   }
 
+  function sharedSetup() {
+    beforeEach(async () => {
+      backend = resolveBackend(defaultConfig);
+      interceptAuth(backend);
+      await backend.authenticate(mockCredentials);
+      interceptCollection(backend, collectionManyEntriesConfig, { verb: 'head' });
+      interceptCollection(backend, collectionContentConfig, { verb: 'head' });
+    });
+  }
+
   it('throws if configuration requires editorial workflow', () => {
     const resolveBackendWithWorkflow = partial(resolveBackend, {
       ...defaultConfig,
@@ -254,14 +304,14 @@ describe('gitlab backend', () => {
 
   describe('authComponent', () => {
     it('returns authentication page component', () => {
-      const backend = resolveBackend(defaultConfig);
+      backend = resolveBackend(defaultConfig);
       expect(backend.authComponent()).toEqual(AuthenticationPage);
     });
   });
 
   describe('authenticate', () => {
     it('throws if user does not have access to project', async () => {
-      const backend = resolveBackend(defaultConfig);
+      backend = resolveBackend(defaultConfig);
       interceptAuth(backend, { projectResponse: resp.project.readOnly });
       await expect(
         backend.authenticate(mockCredentials),
@@ -272,7 +322,7 @@ describe('gitlab backend', () => {
 
     it('stores and returns user object on success', async () => {
       const backendName = defaultConfig.backend.name;
-      const backend = resolveBackend(defaultConfig);
+      backend = resolveBackend(defaultConfig);
       interceptAuth(backend);
       const user = await backend.authenticate(mockCredentials);
       expect(authStore.retrieve()).toEqual(user);
@@ -282,15 +332,14 @@ describe('gitlab backend', () => {
 
   describe('currentUser', () => {
     it('returns null if no user', async () => {
-      const backend = resolveBackend(defaultConfig);
+      backend = resolveBackend(defaultConfig);
       const user = await backend.currentUser();
       expect(user).toEqual(null);
     });
 
     it('returns the stored user if exists', async () => {
       const backendName = defaultConfig.backend.name;
-      const backend = resolveBackend(defaultConfig);
-      interceptAuth(backend);
+      backend = resolveBackend(defaultConfig);
       interceptAuth(backend);
       await backend.authenticate(mockCredentials);
       const user = await backend.currentUser();
@@ -300,7 +349,7 @@ describe('gitlab backend', () => {
 
   describe('getToken', () => {
     it('returns the token for the current user', async () => {
-      const backend = resolveBackend(defaultConfig);
+      backend = resolveBackend(defaultConfig);
       interceptAuth(backend);
       await backend.authenticate(mockCredentials);
       const token = await backend.getToken();
@@ -310,7 +359,7 @@ describe('gitlab backend', () => {
 
   describe('logout', () => {
     it('sets token to null', async () => {
-      const backend = resolveBackend(defaultConfig);
+      backend = resolveBackend(defaultConfig);
       interceptAuth(backend);
       await backend.authenticate(mockCredentials);
       await backend.logout();
@@ -319,27 +368,33 @@ describe('gitlab backend', () => {
     });
   });
 
+  describe('getEntry', () => {
+    sharedSetup();
+
+    it('returns an entry from folder collection', async () => {
+      const entryTree = mockRepo.tree[collectionContentConfig.folder][0];
+      const slug = entryTree.path
+        .split('/')
+        .pop()
+        .replace('.md', '');
+
+      interceptFiles(backend, entryTree.path);
+      interceptCollection(backend, collectionContentConfig);
+      const entry = await backend.getEntry(fromJS(collectionContentConfig), slug);
+
+      expect(entry).toEqual(expect.objectContaining({ path: entryTree.path }));
+    });
+  });
+
   describe('listEntries', () => {
+    sharedSetup();
+
     it('returns entries from folder collection', async () => {
-      const collectionConfig = {
-        name: 'foo',
-        folder: 'content',
-        fields: [{ name: 'title' }],
-        // TODO: folder_based_collection is an internal string, we should not
-        // be depending on it here
-        type: 'folder_based_collection',
-      };
-      const backend = resolveBackend(defaultConfig);
-
-      interceptAuth(backend);
-      await backend.authenticate(mockCredentials);
-
-      const tree = mockRepo.tree[collectionConfig.folder];
+      const tree = mockRepo.tree[collectionContentConfig.folder];
       tree.forEach(file => interceptFiles(backend, file.path));
 
-      interceptCollection(backend, collectionConfig, { verb: 'head' });
-      interceptCollection(backend, collectionConfig);
-      const entries = await backend.listEntries(fromJS(collectionConfig));
+      interceptCollection(backend, collectionContentConfig);
+      const entries = await backend.listEntries(fromJS(collectionContentConfig));
 
       expect(entries).toEqual({
         cursor: expect.any(Cursor),
@@ -350,31 +405,28 @@ describe('gitlab backend', () => {
       expect(entries.entries).toHaveLength(2);
     });
 
+    it(
+      'returns all entries from folder collection',
+      async () => {
+        const tree = mockRepo.tree[collectionManyEntriesConfig.folder];
+        tree.forEach(file => interceptFiles(backend, file.path));
+
+        interceptCollection(backend, collectionManyEntriesConfig, { repeat: 5 });
+        const entries = await backend.listAllEntries(fromJS(collectionManyEntriesConfig));
+
+        expect(entries).toEqual(
+          expect.arrayContaining(tree.map(file => expect.objectContaining({ path: file.path }))),
+        );
+        expect(entries).toHaveLength(500);
+      },
+      7000,
+    );
+
     it('returns entries from file collection', async () => {
-      const collectionConfig = {
-        name: 'foo',
-        files: [
-          {
-            label: 'foo',
-            name: 'foo',
-            file: 'content/test1.md',
-            fields: [{ name: 'title' }],
-          },
-          {
-            label: 'bar',
-            name: 'bar',
-            file: 'content/test2.md',
-            fields: [{ name: 'title' }],
-          },
-        ],
-        type: 'file_based_collection',
-      };
-      const { files } = collectionConfig;
-      const backend = resolveBackend(defaultConfig);
-      interceptAuth(backend);
-      await backend.authenticate(mockCredentials);
+      const { files } = collectionFilesConfig;
       files.forEach(file => interceptFiles(backend, file.file));
-      const entries = await backend.listEntries(fromJS(collectionConfig));
+      const entries = await backend.listEntries(fromJS(collectionFilesConfig));
+
       expect(entries).toEqual({
         cursor: expect.any(Cursor),
         entries: expect.arrayContaining(
@@ -385,24 +437,12 @@ describe('gitlab backend', () => {
     });
 
     it('returns last page from paginated folder collection tree', async () => {
-      const collectionConfig = {
-        name: 'foo',
-        folder: 'many-entries',
-        fields: [{ name: 'title' }],
-        // TODO: folder_based_collection is an internal string, we should not
-        // be depending on it here
-        type: 'folder_based_collection',
-      };
-      const tree = mockRepo.tree[collectionConfig.folder];
-      const backend = resolveBackend(defaultConfig);
-      interceptAuth(backend);
-      await backend.authenticate(mockCredentials);
-
+      const tree = mockRepo.tree[collectionManyEntriesConfig.folder];
       const pageTree = tree.slice(-20);
       pageTree.forEach(file => interceptFiles(backend, file.path));
-      interceptCollection(backend, collectionConfig, { verb: 'head' });
-      interceptCollection(backend, collectionConfig, { page: 25 });
-      const entries = await backend.listEntries(fromJS(collectionConfig));
+      interceptCollection(backend, collectionManyEntriesConfig, { page: 25 });
+      const entries = await backend.listEntries(fromJS(collectionManyEntriesConfig));
+
       expect(entries.entries).toEqual(
         expect.arrayContaining(pageTree.map(file => expect.objectContaining({ path: file.path }))),
       );
@@ -411,33 +451,19 @@ describe('gitlab backend', () => {
   });
 
   describe('traverseCursor', () => {
-    const collectionConfig = {
-      name: 'foo',
-      folder: 'many-entries',
-      fields: [{ name: 'title' }],
-      // TODO: folder_based_collection is an internal string, we should not
-      // be depending on it here
-      type: 'folder_based_collection',
-    };
-    const tree = mockRepo.tree[collectionConfig.folder];
-    let backend;
-
-    beforeEach(async () => {
-      backend = resolveBackend(defaultConfig);
-      interceptAuth(backend);
-      await backend.authenticate(mockCredentials);
-      interceptCollection(backend, collectionConfig, { verb: 'head' });
-    });
+    sharedSetup();
 
     it('returns complete last page of paginated tree', async () => {
+      const tree = mockRepo.tree[collectionManyEntriesConfig.folder];
       tree.slice(-20).forEach(file => interceptFiles(backend, file.path));
-      interceptCollection(backend, collectionConfig, { page: 25 });
-      const entries = await backend.listEntries(fromJS(collectionConfig));
+      interceptCollection(backend, collectionManyEntriesConfig, { page: 25 });
+      const entries = await backend.listEntries(fromJS(collectionManyEntriesConfig));
 
       const nextPageTree = tree.slice(-40, -20);
       nextPageTree.forEach(file => interceptFiles(backend, file.path));
-      interceptCollection(backend, collectionConfig, { page: 24 });
+      interceptCollection(backend, collectionManyEntriesConfig, { page: 24 });
       const nextPage = await backend.traverseCursor(entries.cursor, 'next');
+
       expect(nextPage.entries).toEqual(
         expect.arrayContaining(
           nextPageTree.map(file => expect.objectContaining({ path: file.path })),
@@ -446,7 +472,7 @@ describe('gitlab backend', () => {
       expect(nextPage.entries).toHaveLength(20);
 
       const prevPageTree = tree.slice(-20);
-      interceptCollection(backend, collectionConfig, { page: 25 });
+      interceptCollection(backend, collectionManyEntriesConfig, { page: 25 });
       const prevPage = await backend.traverseCursor(nextPage.cursor, 'prev');
       expect(prevPage.entries).toEqual(
         expect.arrayContaining(
@@ -460,6 +486,7 @@ describe('gitlab backend', () => {
   afterEach(() => {
     nock.cleanAll();
     authStore.logout();
+    backend = null;
     expect(authStore.retrieve()).toEqual(null);
   });
 });

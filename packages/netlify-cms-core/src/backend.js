@@ -218,17 +218,16 @@ export class Backend {
   }
 
   currentUser() {
-    // TODO: investigate, `this.user` doesn't look like it is ever true.
     if (this.user) {
       return this.user;
     }
     const stored = this.authStore && this.authStore.retrieve();
     if (stored && stored.backendName === this.backendName) {
       return Promise.resolve(this.implementation.restoreUser(stored)).then(user => {
-        const newUser = { ...user, backendName: this.backendName };
+        this.user = { ...user, backendName: this.backendName };
         // return confirmed/rehydrated user object instead of stored
-        this.authStore.store(newUser);
-        return newUser;
+        this.authStore.store(this.user);
+        return this.user;
       });
     }
     return Promise.resolve(null);
@@ -237,9 +236,9 @@ export class Backend {
   updateUserCredentials = updatedCredentials => {
     const storedUser = this.authStore && this.authStore.retrieve();
     if (storedUser && storedUser.backendName === this.backendName) {
-      const newUser = { ...storedUser, ...updatedCredentials };
-      this.authStore.store(newUser);
-      return newUser;
+      this.user = { ...storedUser, ...updatedCredentials };
+      this.authStore.store(this.user);
+      return this.user;
     }
   };
 
@@ -249,16 +248,17 @@ export class Backend {
 
   authenticate(credentials) {
     return this.implementation.authenticate(credentials).then(user => {
-      const newUser = { ...user, backendName: this.backendName };
+      this.user = { ...user, backendName: this.backendName };
       if (this.authStore) {
-        this.authStore.store(newUser);
+        this.authStore.store(this.user);
       }
-      return newUser;
+      return this.user;
     });
   }
 
   logout() {
     return Promise.resolve(this.implementation.logout()).then(() => {
+      this.user = null;
       if (this.authStore) {
         this.authStore.logout();
       }
