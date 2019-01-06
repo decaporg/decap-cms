@@ -16,4 +16,6 @@ Example | Tools | Type | Source | More info |
 [Forest Garden Wales](https://www.forestgarden.wales/) | Hugo | blog | [forestgardenwales/forestgarden.wales](https://github.com/forestgardenwales/forestgarden.wales) | [blog post](https://www.forestgarden.wales/blog/now-using-netlify-cms/)
 [Jekyll Demo](https://jekyll-netlifycms.netlify.com/) | Jekyll, Gulp | demo | [NickStees/jekyll-cms](https://github.com/NickStees/jekyll-cms) | [read me](https://github.com/NickStees/jekyll-cms)
 [Eleventy Starter Project](https://eleventy-netlify-boilerplate.netlify.com/) | Eleventy | demo | [danurbanowicz/eleventy-netlify-boilerplate](https://github.com/danurbanowicz/eleventy-netlify-boilerplate) | [read me](https://github.com/danurbanowicz/eleventy-netlify-boilerplate)
-
+[Hexo Demo](https://hexocms.imst.xyz/) | Hexo | demo | [DemoMacro/Hexo-NetlifyCMS](https://github.com/DemoMacro/Hexo-NetlifyCMS) | [read me](https://github.com/DemoMacro/Hexo-NetlifyCMS)
+[Gitbook Demo](https://gitbook.imst.xyz/) | Gitbook | demo | [DemoMacro/Gitbook-NetlifyCMS](https://github.com/DemoMacro/Gitbook-NetlifyCMS) | [read me](https://github.com/DemoMacro/Gitbook-NetlifyCMS)
+[VuePress Demo](https://vuepress.imst.xyz/) | VuePress | demo | [DemoMacro/VuePress-NetlifyCMS](https://github.com/DemoMacro/VuePress-NetlifyCMS) | [read me](https://github.com/DemoMacro/VuePress-NetlifyCMS)
