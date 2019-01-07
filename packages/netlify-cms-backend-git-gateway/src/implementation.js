@@ -1,6 +1,6 @@
 import GoTrue from 'gotrue-js';
 import jwtDecode from 'jwt-decode';
-import { get, pick, intersection } from 'lodash';
+import { fromPairs, get, pick, intersection, unzip } from 'lodash';
 import { APIError, unsentRequest } from 'netlify-cms-lib-util';
 import { GitHubBackend } from 'netlify-cms-backend-github';
 import { GitLabBackend } from 'netlify-cms-backend-gitlab';
@@ -8,6 +8,7 @@ import { BitBucketBackend, API as BitBucketAPI } from 'netlify-cms-backend-bitbu
 import GitHubAPI from './GitHubAPI';
 import GitLabAPI from './GitLabAPI';
 import AuthenticationPage from './AuthenticationPage';
+import { parsePointerFile, createPointerFile, getLargeMediaPatternsFromGitAttributesFile, getClient } from "./netlify-lfs-client";
 
 const localHosts = {
   localhost: true,
@@ -17,6 +18,7 @@ const localHosts = {
 const defaults = {
   identity: '/.netlify/identity',
   gateway: '/.netlify/git',
+  largeMedia: '/.netlify/large-media'
 };
 
 function getEndpoint(endpoint, netlifySiteURL) {
@@ -58,6 +60,11 @@ export default class GitGateway {
       config.getIn(['backend', 'gateway_url'], defaults.gateway),
       netlifySiteURL,
     );
+    this.netlifyLargeMediaUrl = getEndpoint(
+      config.getIn(['backend', 'large_media_url'], defaults.largeMedia),
+      netlifySiteURL,
+    );
+    this.largeMediaDisplayUrlsBySha = {};
 
     const backendTypeRegex = /\/(github|gitlab|bitbucket)\/?$/;
     const backendTypeMatches = this.gatewayUrl.match(backendTypeRegex);
@@ -196,14 +203,121 @@ export default class GitGateway {
   getEntry(collection, slug, path) {
     return this.backend.getEntry(collection, slug, path);
   }
+  getLargeMediaClient() {
+    if (this._largeMediaClient) {
+      return Promise.resolve(this._largeMediaClient);
+    }
+
+    return this.api.readFile(".gitattributes")
+      .then(getLargeMediaPatternsFromGitAttributesFile)
+      .then(patterns => {
+	const enabled = patterns.length !== 0;
+	this._largeMediaClient = getClient({
+          rootUrl: this.netlifyLargeMediaUrl,
+          requestFunction: this.requestFunction,
+          patterns
+	});
+
+	return this._largeMediaClient;
+      });
+  }
   getMedia() {
-    return this.backend.getMedia();
+    return Promise.all([
+      this.backend.getMedia(),
+      this.getLargeMediaClient(),
+    ]).then(([mediaFiles, largeMediaClient]) => {
+      if (!largeMediaClient.enabled) {
+	return mediaFiles;
+      }
+
+      return Promise.all([mediaFiles, this.getLargeMedia(mediaFiles)]);
+    }).then(
+      ([media, lfsMedia]) =>
+        media.map(({ id, url, ...rest }) => ({
+          ...rest,
+          url: lfsMedia[id] || url
+        }))
+    );
+  }
+  getLargeMedia(mediaFiles) {
+    return this.getLargeMediaClient().then(client => {
+      const largeMediaItems = mediaFiles
+	.filter(({ path }) => client.matchPath(path))
+	.map(({ id, path }) => ({ path, sha: id }));
+      return this.backend.fetchFiles(largeMediaItems).then(
+	items => items.map(
+	  ({ file: { sha }, data }) => {
+	    const parsedPointerFile = parsePointerFile(data);
+            return [
+              {
+		pointerId: sha,
+		resourceId: parsedPointerFile.sha
+              },
+              parsedPointerFile
+            ];
+          }
+	)
+      )
+	.then(unzip)
+	.then(async ([idMaps, files]) => [
+          idMaps,
+          await client.getResourceDownloadUrls(files),
+	])
+	.then(([idMaps, resourceMap]) =>
+	  idMaps.map(({ pointerId, resourceId }) => [
+            pointerId,
+            resourceMap[resourceId]
+	  ]))
+	.then(fromPairs);
+    });
   }
   persistEntry(entry, mediaFiles, options) {
     return this.backend.persistEntry(entry, mediaFiles, options);
   }
   persistMedia(mediaFile, options) {
-    return this.backend.persistMedia(mediaFile, options);
+    const { fileObj, path, value } = mediaFile;
+    const { name, size } = fileObj;
+    return this.getLargeMediaClient().then(client => {
+      if (!client.enabled || !client.matchPath(path)) {
+	return this.backend.persistMedia(mediaFile, options);
+      };
+
+      const getFileSHA = file => new Promise(resolve => {
+        const fr = new FileReader();
+        fr.onload = ({ target: { result } }) => resolve(sha256(result));
+        fr.readAsArrayBuffer(file);
+      })
+
+      return getFileSHA(fileObj).then(
+        sha =>
+          this.largeMediaDisplayUrlsBySha[sha]
+            ? sha
+            : client.uploadResource({ sha, size }, fileObj)
+      ).then(
+        async imageSHA => {
+          const pointerFileString = createPointerFile({ sha: imageSHA, size })
+          const pointerFileBlob = new Blob([pointerFileString]);
+          const pointerFileSize = pointerFileBlob.size;
+          const pointerFile = new File([pointerFileBlob], name, { type: "text/plain" });
+          const pointerFileSHA = await getFileSHA(pointerFile);
+          const persistMediaArgument = {
+            fileObj: pointerFile,
+            size: pointerFileSize,
+            path,
+            sha: pointerFileSHA,
+            raw: pointerFileString,
+            value,
+          };
+          const { url, ...rest } = await this.backend.persistMedia(persistMediaArgument, options);
+          const displayUrl = (await client.getResourceDownloadUrls([{ sha: imageSHA }]))[imageSHA];
+          return {
+            ...rest,
+            url: displayUrl
+          }
+        }
+      );
+
+    })
   }
   deleteFile(path, commitMessage, options) {
     return this.backend.deleteFile(path, commitMessage, options);

@@ -21,7 +21,9 @@
   },
   "dependencies": {
     "gotrue-js": "^0.9.22",
-    "jwt-decode": "^2.2.0"
+    "js-sha256": "^0.9.0",
+    "jwt-decode": "^2.2.0",
+    "minimatch": "^3.0.4"
   },
   "devDependencies": {
     "cross-env": "^5.2.0",
