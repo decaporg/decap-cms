@@ -1,4 +1,7 @@
 updates:
+  - date: '2019-01-10'
+    description: Fix missing entry labels for file collections
+    version: 2.3.3
   - date: '2018-12-26'
     description: Bugfixes, list widget variable types in beta
     version: 2.3.2
