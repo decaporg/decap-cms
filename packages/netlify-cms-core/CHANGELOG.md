@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.4.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.4.0...netlify-cms-core@2.4.1) (2019-01-10)
+
+
+### Bug Fixes
+
+* **netlify-cms-core:** files collection blank label ([#1987](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1987)) ([f2e4800](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/f2e4800))
+
+
+
+
+
 # [2.4.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.3.1...netlify-cms-core@2.4.0) (2018-12-27)
 
 
