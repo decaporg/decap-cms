@@ -65,7 +65,6 @@ export const markdownToRemark = markdown => {
    */
   const parsed = unified()
     .use(markdownToRemarkPlugin, { fences: true, commonmark: true })
-    .use(markdownToRemarkRemoveTokenizers, { inlineTokenizers: ['url'] })
     .use(remarkAllowHtmlEntities)
     .parse(markdown);
 
@@ -80,16 +79,6 @@ export const markdownToRemark = markdown => {
 
   return result;
 };
-
-/**
- * Remove named tokenizers from the parser, effectively deactivating them.
- */
-function markdownToRemarkRemoveTokenizers({ inlineTokenizers }) {
-  inlineTokenizers &&
-    inlineTokenizers.forEach(tokenizer => {
-      delete this.Parser.prototype.inlineTokenizers[tokenizer];
-    });
-}
 
 /**
  * Serialize an MDAST to a Markdown string.
