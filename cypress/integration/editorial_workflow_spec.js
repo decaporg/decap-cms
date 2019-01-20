@@ -1,14 +1,14 @@
 describe('Editorial Workflow', () => {
-  const workflowStatus = { draft: 'Drafts', review: 'In Review', ready: 'Ready' }
-  const editorStatus = { draft: 'Draft', review: 'In review', ready: 'Ready' }
+  const workflowStatus = { draft: 'Rascunhos', review: 'Em revisão', ready: 'Pronto' }
+  const editorStatus = { draft: 'Rascunho', review: 'Revisão', ready: 'Pronto' }
   const entry1 = { title: 'first title', body: 'first body' }
   const entry2 = { title: 'second title', body: 'second body' }
   const entry3 = { title: 'third title', body: 'third body' }
   const notifications = {
-    saved: 'Entry saved',
-    published: 'Entry published',
-    updated: 'Entry status updated',
-    deletedUnpublished: 'Unpublished changes deleted',
+    saved: 'Entrada salva',
+    published: 'Entrada publicada',
+    updated: 'Status alterado com sucesso',
+    deletedUnpublished: 'Mudanças descartadas',
   }
 
   describe('Test Backend', () => {
@@ -19,20 +19,20 @@ describe('Editorial Workflow', () => {
     }
 
     function createPost({ title, body }) {
-      cy.contains('a', 'New Post').click()
+      cy.contains('a', 'Criar').click()
       cy.get('input').first().type(title)
       cy.get('[data-slate-editor]').click().type(body)
       cy.get('input').first().click()
-      cy.contains('button', 'Save').click()
+      cy.contains('button', 'Salvar').click()
       assertNotification(notifications.saved)
     }
 
     function exitEditor() {
-      cy.contains('a[href^="#/collections/"]', 'Writing in').click()
+      cy.contains('a[href^="#/collections/"]', 'Voltar para').click()
     }
 
     function deleteEntryInEditor() {
-      cy.contains('button', 'Delete').click()
+      cy.contains('button', 'Apagar').click()
       assertNotification(notifications.deletedUnpublished)
     }
 
@@ -71,11 +71,11 @@ describe('Editorial Workflow', () => {
     }
 
     function goToWorkflow() {
-      cy.contains('a', 'Workflow').click()
+      cy.contains('a', 'Fluxo Editorial').click()
     }
 
     function goToCollections() {
-      cy.contains('a', 'Content').click()
+      cy.contains('a', 'Conteúdo').click()
     }
 
     function updateWorkflowStatus({ title }, fromColumnHeading, toColumnHeading) {
@@ -102,7 +102,7 @@ describe('Editorial Workflow', () => {
     }
 
     function updateWorkflowStatusInEditor(newStatus) {
-      cy.contains('[role="button"]', 'Set status').as('setStatusButton')
+      cy.contains('[role="button"]', 'Definir status').as('setStatusButton')
       cy.get('@setStatusButton').parent().within(() => {
         cy.get('@setStatusButton').click()
         cy.contains('[role="menuitem"] span', newStatus).click()
@@ -111,7 +111,7 @@ describe('Editorial Workflow', () => {
     }
 
     function assertWorkflowStatusInEditor(status) {
-      cy.contains('[role="button"]', 'Set status').as('setStatusButton')
+      cy.contains('[role="button"]', 'Definir status').as('setStatusButton')
       cy.get('@setStatusButton').parent().within(() => {
         cy.get('@setStatusButton').click()
         cy.contains('[role="menuitem"] span', status).parent().within(() => {
@@ -124,7 +124,7 @@ describe('Editorial Workflow', () => {
     function publishWorkflowEntry({ title }) {
       cy.contains('h2', workflowStatus.ready).parent().within(() => {
         cy.contains('a', title).parent().within(() => {
-          cy.contains('button', 'Publish new entry').click({ force: true })
+          cy.contains('button', 'Publicar entrada').click({ force: true })
         })
       })
       assertNotification(notifications.published)
@@ -160,7 +160,7 @@ describe('Editorial Workflow', () => {
 
     function assertOnCollectionsPage() {
       cy.url().should('contain', '/#/collections/posts')
-      cy.contains('h2', 'Collections')
+      cy.contains('h2', 'Coleções')
     }
 
     it('successfully loads', () => {
