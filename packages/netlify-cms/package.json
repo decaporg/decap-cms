@@ -1,16 +1,19 @@
 {
-  "name": "netlify-cms",
+  "name": "@campus-online/cms",
   "description": "An extensible, open source, Git-based, React CMS for static sites.",
   "version": "2.3.3",
   "homepage": "https://www.netlifycms.org",
-  "repository": "https://github.com/netlify/netlify-cms",
-  "bugs": "https://github.com/netlify/netlify-cms/issues",
+  "repository": "https://github.com/campus-online/cms",
+  "bugs": "https://github.com/campus-online/cms/issues",
   "main": "dist/netlify-cms.js",
   "scripts": {
     "watch": "webpack -w",
     "build": "cross-env NODE_ENV=production webpack",
     "build-preview": "cross-env NODE_ENV=production webpack-dev-server --open",
     "develop": "webpack-dev-server --hot"
+  },
+  "publishConfig": {
+    "access": "public",
   },
   "keywords": [
     "netlify",
