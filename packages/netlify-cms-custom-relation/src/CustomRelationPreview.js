@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import { WidgetPreviewContainer } from 'netlify-cms-ui-default';
 
 const stringify = (value = null) => (Array.isArray(value) ? value.join(', ') : value);
-const SlugRelationPreview = ({ value } = {}) => (
+const CustomRelationPreview = ({ value } = {}) => (
   <WidgetPreviewContainer>{stringify(value)}</WidgetPreviewContainer>
 );
 
-SlugRelationPreview.propTypes = {
-  value: PropTypes.array,
+CustomRelationPreview.propTypes = {
+  value: PropTypes.oneOfType([PropTypes.array, PropTypes.string]),
 };
 
-export default SlugRelationPreview;
+export default CustomRelationPreview;

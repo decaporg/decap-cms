@@ -1,8 +1,30 @@
 import React from 'react';
+import { List, Map } from 'immutable';
+import { Provider } from 'react-redux';
 import { render } from 'react-testing-library';
 import 'react-testing-library/cleanup-after-each';
 import 'jest-dom/extend-expect';
+import store from 'netlify-cms-core/src/redux';
 import create from '../index';
+
+const props = {
+  onChange: () => {},
+  forID: 'some-random-id',
+  classNameWrapper: 'classname-wrapper',
+  query: async () => {},
+  loadEntry: async () => {},
+  clearSearch: () => {},
+  setActiveStyle: () => {},
+  setInactiveStyle: () => {},
+  field: Map({
+    label: 'Autor',
+    name: 'authors',
+    widget: 'author',
+    multiple: true,
+    required: false,
+  }),
+  value: List(['saved-slug']),
+};
 
 describe('"create" custom-relation widget', () => {
   console.log(create);
@@ -19,10 +41,12 @@ describe('"create" custom-relation widget', () => {
   });
 
   it('widget.control is a react component', () => {
-    // [TODO]: actually render it...
-    const instance = new widget.control();
-    expect(typeof instance.isReactComponent).toBe('object');
-    expect(instance.isReactComponent).toBeTruthy();
+    const { container } = render(
+      <Provider store={store}>
+        <widget.control {...props} />
+      </Provider>,
+    );
+    expect(container.querySelector('#some-random-id')).toBeInTheDocument();
   });
 
   it('widget.preview is a react component', () => {

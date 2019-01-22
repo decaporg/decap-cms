@@ -12,7 +12,7 @@ const toJS = object => {
   return object;
 };
 
-const defaultProps = { queryHits: Map() };
+const defaultProps = { queryHits: Map(), field: Map() };
 const propTypes = {
   onChange: PropTypes.func.isRequired,
   forID: PropTypes.string.isRequired,
