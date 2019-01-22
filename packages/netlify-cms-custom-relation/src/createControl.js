@@ -36,10 +36,12 @@ const createControl = (customParams = {}) => {
     static propTypes = propTypes;
     static displayName = params.displayName || 'CustomRelationControl';
 
-    required = this.props.field.get('required', true);
-    multiple = this.props.field.get('multiple', false);
-    collection = params.collection || this.props.field.get('collection');
-    searchFields = toJS(params.searchFields || this.props.field.get('searchFields'));
+    getConfig = () => ({
+      required: this.props.field.get('required', true),
+      multiple: this.props.field.get('multiple', false),
+      collection: params.collection || this.props.field.get('collection'),
+      searchFields: toJS(params.searchFields || this.props.field.get('searchFields', ['title'])),
+    });
 
     componentDidUpdate(prevProps) {
       if (!this.callback) return;
@@ -56,12 +58,12 @@ const createControl = (customParams = {}) => {
       this.props.onChange(Array.isArray(value) ? List(value.map(getSlug)) : getSlug(value));
 
     loadOptions = debounce((term, callback) => {
-      const { props, collection, searchFields } = this;
+      const { collection, searchFields } = this.getConfig();
       this.callback = value => {
         callback(value);
         this.callback = null;
       };
-      this.props.query(props.forID, collection, searchFields, term);
+      this.props.query(this.props.forID, collection, searchFields, term);
     }, 250);
 
     handleMenuClose = () => {
@@ -74,7 +76,7 @@ const createControl = (customParams = {}) => {
       if (typeof value === 'string')
         return {
           slug: value,
-          collection: this.collection,
+          collection: this.getConfig().collection,
           loadEntry: this.props.loadEntry,
         };
       return { entry: value };
@@ -87,14 +89,15 @@ const createControl = (customParams = {}) => {
     render() {
       const { value, forID, classNameWrapper } = this.props;
       const { setActiveStyle, setInactiveStyle } = this.props;
-      const isClearable = this.multiple || !this.required;
+      const { multiple, required } = this.getConfig();
+      const isClearable = multiple || !required;
       const defaultValue = castArray(toJS(value));
 
       return (
         <Select
           inputId={forID}
           className={classNameWrapper}
-          isMulti={this.multiple}
+          isMulti={multiple}
           defaultValue={defaultValue}
           onChange={this.handleChange}
           openMenuOnClick={false}
