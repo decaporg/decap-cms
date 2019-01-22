@@ -21,7 +21,7 @@
     "build": "cross-env NODE_ENV=production webpack"
   },
   "dependencies": {
-    "react-select": "^2.1.1"
+    "react-select": "^2.3.0"
   },
   "devDependencies": {
     "cross-env": "^5.2.0",
