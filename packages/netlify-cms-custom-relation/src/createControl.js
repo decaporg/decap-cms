@@ -36,6 +36,11 @@ const createControl = (customParams = {}) => {
     static propTypes = propTypes;
     static displayName = params.displayName || 'CustomRelationControl';
 
+    required = this.props.field.get('required', true);
+    multiple = this.props.field.get('multiple', false);
+    collection = params.collection || this.props.field.get('collection');
+    searchFields = toJS(params.searchFields || this.props.field.get('searchFields'));
+
     componentDidUpdate(prevProps) {
       if (!this.callback) return;
       if (
@@ -51,14 +56,12 @@ const createControl = (customParams = {}) => {
       this.props.onChange(Array.isArray(value) ? List(value.map(getSlug)) : getSlug(value));
 
     loadOptions = debounce((term, callback) => {
-      const { field, forID } = this.props;
-      const collection = field.get('collection');
-      const searchFields = field.get('searchFields').toJS();
+      const { props, collection, searchFields } = this;
       this.callback = value => {
         callback(value);
         this.callback = null;
       };
-      this.props.query(forID, collection, searchFields, term);
+      this.props.query(props.forID, collection, searchFields, term);
     }, 250);
 
     handleMenuClose = () => {
@@ -71,7 +74,7 @@ const createControl = (customParams = {}) => {
       if (typeof value === 'string')
         return {
           slug: value,
-          collection: this.props.field.get('collection'),
+          collection: this.collection,
           loadEntry: this.props.loadEntry,
         };
       return { entry: value };
@@ -82,23 +85,16 @@ const createControl = (customParams = {}) => {
     }
 
     render() {
-      const {
-        field,
-        value,
-        forID,
-        classNameWrapper,
-        setActiveStyle,
-        setInactiveStyle,
-      } = this.props;
-      const isMultiple = field.get('multiple', false);
-      const isClearable = !field.get('required', true) || isMultiple;
+      const { value, forID, classNameWrapper } = this.props;
+      const { setActiveStyle, setInactiveStyle } = this.props;
+      const isClearable = this.multiple || !this.required;
       const defaultValue = castArray(toJS(value));
 
       return (
         <Select
           inputId={forID}
           className={classNameWrapper}
-          isMulti={isMultiple}
+          isMulti={this.multiple}
           defaultValue={defaultValue}
           onChange={this.handleChange}
           openMenuOnClick={false}
