@@ -1,7 +1,7 @@
 {
   "name": "@campus-online/cms",
   "description": "An extensible, open source, Git-based, React CMS for static sites.",
-  "version": "2.3.4-alpha.3",
+  "version": "2.3.4-alpha.4",
   "homepage": "https://www.netlifycms.org",
   "repository": "https://github.com/campus-online/cms",
   "bugs": "https://github.com/campus-online/cms/issues",
