@@ -111,6 +111,7 @@ const createControl = (customParams = {}) => {
           getOptionValue={getOptionValue}
           onMenuClose={this.handleMenuClose}
           loadOptions={this.loadOptions}
+          menuPlacement="bottom"
         />
       );
     }
