@@ -1,0 +1,39 @@
+{
+  "name": "netlify-cms-custom-relation",
+  "description": "Widget for linking related entries in Netlify CMS.",
+  "version": "2.0.5",
+  "homepage": "https://www.netlifycms.org/docs/widgets/#custom-relation",
+  "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-custom-relation",
+  "bugs": "https://github.com/netlify/netlify-cms/issues",
+  "main": "dist/netlify-cms-custom-relation.js",
+  "license": "MIT",
+  "keywords": [
+    "netlify",
+    "netlify-cms",
+    "widget",
+    "custom-relation",
+    "link"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "watch": "webpack -w",
+    "develop": "npm run watch",
+    "build": "cross-env NODE_ENV=production webpack"
+  },
+  "dependencies": {
+    "react-select": "^2.1.1"
+  },
+  "devDependencies": {
+    "cross-env": "^5.2.0",
+    "webpack": "^4.16.1",
+    "webpack-cli": "^3.1.0"
+  },
+  "peerDependencies": {
+    "immutable": "^3.7.6",
+    "lodash": "^4.17.10",
+    "netlify-cms-ui-default": "^2.0.0",
+    "prop-types": "^15.5.10",
+    "react": "^16.4.1",
+    "react-immutable-proptypes": "^2.1.0"
+  }
+}
