@@ -30,8 +30,6 @@ collections: # A list of collections the CMS should be able to edit
           label: 'Relation v2',
           name: 'relations',
           widget: 'custom-relation',
-          collection: 'posts',
-          searchFields: ['title', 'body'],
           required: false,
           multiple: true,
         }
