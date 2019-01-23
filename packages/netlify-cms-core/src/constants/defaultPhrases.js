@@ -140,6 +140,7 @@ export function getPhrases() {
           '%{smart_count} entrada esperando revisão, %{readyCount} prontas. |||| %{smart_count} entradas esperando revisão, %{readyCount} prontas. ',
       },
       workflowCard: {
+        lastChange: 'por %{author}, em %{date}',
         deleteChanges: 'Descartar mudanças',
         deleteNewEntry: 'Descartar entrada',
         publishChanges: 'Publicar mudanças',

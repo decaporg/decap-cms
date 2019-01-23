@@ -115,7 +115,10 @@ const WorkflowCard = ({
       <CardCollection>{collectionName}</CardCollection>
       <CardTitle>{title}</CardTitle>
       <CardDate>
-        {timestamp} by {authorLastChange}
+        {t('workflow.workflowCard.lastChange', {
+          date: timestamp || '',
+          author: authorLastChange || '',
+        })}
       </CardDate>
       <CardBody>{body}</CardBody>
     </WorkflowLink>
