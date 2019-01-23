@@ -9784,6 +9784,19 @@ react-select@^2.1.1:
     react-input-autosize "^2.2.1"
     react-transition-group "^2.2.1"
 
+react-select@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/react-select/-/react-select-2.3.0.tgz#990429622445eb2b4a6e985b8069fe7d498cae91"
+  integrity sha512-CD3jyZs5lwy/CHW3SdYU1d1FtmJxgvVPdKMwEE8dD6MyNANFtvW95P/V20StPsPppFY7oePv/i2Mun2C2+WgTA==
+  dependencies:
+    classnames "^2.2.5"
+    emotion "^9.1.2"
+    memoize-one "^4.0.0"
+    prop-types "^15.6.0"
+    raf "^3.4.0"
+    react-input-autosize "^2.2.1"
+    react-transition-group "^2.2.1"
+
 react-sortable-hoc@^0.6.8:
   version "0.6.8"
   resolved "https://registry.yarnpkg.com/react-sortable-hoc/-/react-sortable-hoc-0.6.8.tgz#b08562f570d7c41f6e393fca52879d2ebb9118e9"

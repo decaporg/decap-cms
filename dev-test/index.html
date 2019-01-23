@@ -184,6 +184,13 @@
     CMS.registerPreviewStyle(previewStyles, { raw: true });
     // Pass the name of a registered control to reuse with a new widget preview.
     CMS.registerWidget("relationKitchenSinkPost", "relation", RelationKitchenSinkPostPreview);
+
+    const customRelationWidget = CMS.createCustomRelationWidget({
+      collection: 'posts',
+      searchFields: ['title', 'body'],
+    });
+
+    CMS.registerWidget("custom-relation", customRelationWidget.control, customRelationWidget.preview)
     CMS.registerEditorComponent({
       id: "youtube",
       label: "Youtube",
