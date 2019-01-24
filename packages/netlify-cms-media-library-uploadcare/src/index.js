@@ -1,11 +1,14 @@
-import uploadcare from 'uploadcare-widget'
-import uploadcareTabEffects from 'uploadcare-widget-tab-effects'
+import uploadcare from 'uploadcare-widget';
+import uploadcareTabEffects from 'uploadcare-widget-tab-effects';
+
+const userAgent = 'NetlifyCMS-Uploadcare-MediaLibrary';
 
 /**
  * Default Uploadcare widget configuration, can be overriden via config.yml.
  */
 const defaultConfig = {
   previewStep: true,
+  integration: userAgent,
 };
 
 /**
@@ -34,9 +37,7 @@ function getFileGroup(files) {
    * `fileFrom`, but requires the promise returned by `loadFileGroup` to provide
    * the result of it's `done` method.
    */
-  return new Promise(resolve =>
-    uploadcare.loadFileGroup(groupId).done(group => resolve(group)),
-  );
+  return new Promise(resolve => uploadcare.loadFileGroup(groupId).done(group => resolve(group)));
 }
 
 /**
