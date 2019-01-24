@@ -36,23 +36,4 @@ const baseConfig = {
   },
 };
 
-if (isProduction) {
-  module.exports = [
-    baseConfig,
-
-    /**
-     * Output the same script a second time, but named `cms.js`, and with a
-     * deprecation notice.
-     */
-    {
-      ...baseConfig,
-      entry: [path.join(__dirname, 'shims/deprecate-old-dist.js'), baseConfig.entry],
-      output: {
-        ...baseConfig.output,
-        filename: 'dist/cms.js',
-      },
-    },
-  ];
-} else {
-  module.exports = baseConfig;
-}
+module.exports = baseConfig;
