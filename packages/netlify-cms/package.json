@@ -8,8 +8,8 @@
   "main": "dist/netlify-cms.js",
   "scripts": {
     "watch": "webpack -w",
-    "build": "cross-env NODE_ENV=production webpack",
-    "build-preview": "cross-env NODE_ENV=production webpack-dev-server --open",
+    "build": "webpack",
+    "build-preview": "webpack-dev-server --open",
     "develop": "webpack-dev-server --hot"
   },
   "publishConfig": {
@@ -55,6 +55,7 @@
     "friendly-errors-webpack-plugin": "^1.7.0",
     "webpack": "^4.16.1",
     "webpack-cli": "^3.1.0",
+    "webpack-conditional-loader": "^1.0.12",
     "webpack-dev-server": "^3.1.5"
   }
 }
