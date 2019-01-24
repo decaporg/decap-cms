@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.1.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/compare/netlify-cms-widget-list@2.0.7...netlify-cms-widget-list@2.1.0) (2018-12-27)
+
+
+### Features
+
+* **netlify-cms-widget-list:** add variable type definitions to list widget ([#1857](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/issues/1857)) ([8ddc168](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/commit/8ddc168))
+
+
+
+
+
+## [2.0.7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/compare/netlify-cms-widget-list@2.0.6...netlify-cms-widget-list@2.0.7) (2018-11-12)
+
+
+### Bug Fixes
+
+* **widget-list:** fix list item deletion ([#1815](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/issues/1815)) ([cd2036f](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/commit/cd2036f))
+
+
+
+
+
 <a name="2.0.6"></a>
 ## [2.0.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/compare/netlify-cms-widget-list@2.0.5...netlify-cms-widget-list@2.0.6) (2018-08-27)
 

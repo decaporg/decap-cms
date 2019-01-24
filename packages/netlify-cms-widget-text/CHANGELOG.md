@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-text/compare/netlify-cms-widget-text@2.0.5...netlify-cms-widget-text@2.0.6) (2018-11-29)
+
+
+### Bug Fixes
+
+* **netlify-cms-widget-text:** set correct font family ([#1916](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-text/issues/1916)) ([a2e9401](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-text/commit/a2e9401))
+
+
+
+
+
 <a name="2.0.5"></a>
 ## [2.0.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-text/compare/netlify-cms-widget-text@2.0.4...netlify-cms-widget-text@2.0.5) (2018-08-24)
 

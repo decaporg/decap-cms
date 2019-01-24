@@ -154,7 +154,7 @@ Existing error:
 ```javascript
   isValid = () => {
     // Do internal validation
-    return { error: 'Your error message.' };
+    return { error: { message: 'Your error message.' } };
   };
 ```
 

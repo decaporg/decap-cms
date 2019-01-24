@@ -12,10 +12,37 @@ const StyledAuthenticationPage = styled.section`
   height: 100vh;
 `;
 
-const PageLogoIcon = styled(Icon)`
+const CustomIconWrapper = styled.span`
+  width: 300px;
+  height: 200px;
+  margin-top: -150px;
+`;
+
+const NetlifyLogoIcon = styled(Icon)`
   color: #c4c6d2;
   margin-top: -300px;
 `;
+
+const NetlifyCreditIcon = styled(Icon)`
+  color: #c4c6d2;
+  position: absolute;
+  bottom: 10px;
+`;
+
+const CustomLogoIcon = ({ url }) => {
+  return (
+    <CustomIconWrapper>
+      <img src={url} alt="Logo" />
+    </CustomIconWrapper>
+  );
+};
+
+const renderPageLogo = logoUrl => {
+  if (logoUrl) {
+    return <CustomLogoIcon url={logoUrl} />;
+  }
+  return <NetlifyLogoIcon size="300px" type="netlify-cms" />;
+};
 
 const LoginButton = styled.button`
   ${buttons.button};
@@ -39,10 +66,11 @@ const AuthenticationPage = ({
   loginErrorMessage,
   renderButtonContent,
   renderPageContent,
+  logoUrl,
 }) => {
   return (
     <StyledAuthenticationPage>
-      <PageLogoIcon size="300px" type="netlify-cms" />
+      {renderPageLogo(logoUrl)}
       {loginErrorMessage ? <p>{loginErrorMessage}</p> : null}
       {!renderPageContent ? null : renderPageContent()}
       {!renderButtonContent ? null : (
@@ -50,12 +78,14 @@ const AuthenticationPage = ({
           {renderButtonContent()}
         </LoginButton>
       )}
+      {logoUrl ? <NetlifyCreditIcon size="100px" type="netlify-cms" /> : null}
     </StyledAuthenticationPage>
   );
 };
 
 AuthenticationPage.propTypes = {
   onLogin: PropTypes.func,
+  logoUrl: PropTypes.string,
   loginDisabled: PropTypes.bool,
   loginErrorMessage: PropTypes.node,
   renderButtonContent: PropTypes.func,

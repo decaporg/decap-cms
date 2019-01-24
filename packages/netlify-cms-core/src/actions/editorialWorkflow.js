@@ -6,7 +6,7 @@ import { currentBackend } from 'src/backend';
 import { getAsset } from 'Reducers';
 import { selectFields } from 'Reducers/collections';
 import { EDITORIAL_WORKFLOW } from 'Constants/publishModes';
-import { EditorialWorkflowError } from 'netlify-cms-lib-util';
+import { EDITORIAL_WORKFLOW_ERROR } from 'netlify-cms-lib-util';
 import { loadEntry } from './entries';
 import ValidationErrorTypes from 'Constants/validationErrorTypes';
 
@@ -238,13 +238,16 @@ export function loadUnpublishedEntry(collection, slug) {
       .unpublishedEntry(collection, slug)
       .then(entry => dispatch(unpublishedEntryLoaded(collection, entry)))
       .catch(error => {
-        if (error instanceof EditorialWorkflowError && error.notUnderEditorialWorkflow) {
+        if (error.name === EDITORIAL_WORKFLOW_ERROR && error.notUnderEditorialWorkflow) {
           dispatch(unpublishedEntryRedirected(collection, slug));
           dispatch(loadEntry(collection, slug));
         } else {
           dispatch(
             notifSend({
-              message: `Error loading entry: ${error}`,
+              message: {
+                key: 'ui.toast.onFailToLoadEntries',
+                details: error,
+              },
               kind: 'danger',
               dismissAfter: 8000,
             }),
@@ -266,7 +269,10 @@ export function loadUnpublishedEntries(collections) {
       .catch(error => {
         dispatch(
           notifSend({
-            message: `Error loading entries: ${error}`,
+            message: {
+              key: 'ui.toast.onFailToLoadEntries',
+              details: error,
+            },
             kind: 'danger',
             dismissAfter: 8000,
           }),
@@ -292,7 +298,9 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
       if (hasPresenceErrors) {
         dispatch(
           notifSend({
-            message: "Oops, you've missed a required field. Please complete before saving.",
+            message: {
+              key: 'ui.toast.missingRequiredField',
+            },
             kind: 'danger',
             dismissAfter: 8000,
           }),
@@ -332,7 +340,9 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
       const newSlug = await persistAction.call(...persistCallArgs);
       dispatch(
         notifSend({
-          message: 'Entry saved',
+          message: {
+            key: 'ui.toast.entrySaved',
+          },
           kind: 'success',
           dismissAfter: 4000,
         }),
@@ -341,7 +351,10 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
     } catch (error) {
       dispatch(
         notifSend({
-          message: `Failed to persist entry: ${error}`,
+          message: {
+            key: 'ui.toast.onFailToPersist',
+            details: error,
+          },
           kind: 'danger',
           dismissAfter: 8000,
         }),
@@ -353,6 +366,7 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
 
 export function updateUnpublishedEntryStatus(collection, slug, oldStatus, newStatus) {
   return (dispatch, getState) => {
+    if (oldStatus === newStatus) return;
     const state = getState();
     const backend = currentBackend(state.config);
     const transactionID = uuid();
@@ -364,7 +378,9 @@ export function updateUnpublishedEntryStatus(collection, slug, oldStatus, newSta
       .then(() => {
         dispatch(
           notifSend({
-            message: 'Entry status updated',
+            message: {
+              key: 'ui.toast.entryUpdated',
+            },
             kind: 'success',
             dismissAfter: 4000,
           }),
@@ -382,7 +398,10 @@ export function updateUnpublishedEntryStatus(collection, slug, oldStatus, newSta
       .catch(error => {
         dispatch(
           notifSend({
-            message: `Failed to update status: ${error}`,
+            message: {
+              key: 'ui.toast.onFailToUpdateStatus',
+              details: error,
+            },
             kind: 'danger',
             dismissAfter: 8000,
           }),
@@ -403,7 +422,7 @@ export function deleteUnpublishedEntry(collection, slug) {
       .then(() => {
         dispatch(
           notifSend({
-            message: 'Unpublished changes deleted',
+            message: { key: 'ui.toast.onDeleteUnpublishedChanges' },
             kind: 'success',
             dismissAfter: 4000,
           }),
@@ -413,7 +432,7 @@ export function deleteUnpublishedEntry(collection, slug) {
       .catch(error => {
         dispatch(
           notifSend({
-            message: `Failed to delete unpublished changes: ${error}`,
+            message: { key: 'ui.toast.onDeleteUnpublishedChanges', details: error },
             kind: 'danger',
             dismissAfter: 8000,
           }),
@@ -426,6 +445,7 @@ export function deleteUnpublishedEntry(collection, slug) {
 export function publishUnpublishedEntry(collection, slug) {
   return (dispatch, getState) => {
     const state = getState();
+    const collections = state.collections;
     const backend = currentBackend(state.config);
     const transactionID = uuid();
     dispatch(unpublishedEntryPublishRequest(collection, slug, transactionID));
@@ -434,17 +454,18 @@ export function publishUnpublishedEntry(collection, slug) {
       .then(() => {
         dispatch(
           notifSend({
-            message: 'Entry published',
+            message: { key: 'ui.toast.entryPublished' },
             kind: 'success',
             dismissAfter: 4000,
           }),
         );
         dispatch(unpublishedEntryPublished(collection, slug, transactionID));
+        dispatch(loadEntry(collections.get(collection), slug));
       })
       .catch(error => {
         dispatch(
           notifSend({
-            message: `Failed to publish: ${error}`,
+            message: { key: 'ui.toast.onFailToPublishEntry', details: error },
             kind: 'danger',
             dismissAfter: 8000,
           }),

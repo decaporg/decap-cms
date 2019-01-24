@@ -89,7 +89,7 @@ export default class PreviewPane extends React.Component {
     ) {
       value = (
         <div>
-          <strong>{field.get('label')}:</strong> {value}
+          <strong>{field.get('label', field.get('name'))}:</strong> {value}
         </div>
       );
     }

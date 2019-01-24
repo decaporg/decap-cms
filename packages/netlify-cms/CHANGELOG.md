@@ -3,6 +3,65 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.3.3](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.3.2...netlify-cms@2.3.3) (2019-01-10)
+
+**Note:** Version bump only for package netlify-cms
+
+
+
+
+
+## [2.3.2](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.3.1...netlify-cms@2.3.2) (2018-12-27)
+
+**Note:** Version bump only for package netlify-cms
+
+
+
+
+
+## [2.3.1](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.3.0...netlify-cms@2.3.1) (2018-12-11)
+
+**Note:** Version bump only for package netlify-cms
+
+
+
+
+
+# [2.3.0](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.2.1...netlify-cms@2.3.0) (2018-12-04)
+
+
+### Features
+
+* add cloudinary support ([#1932](https://github.com/netlify/netlify-cms/issues/1932)) ([1fc2f50](https://github.com/netlify/netlify-cms/commit/1fc2f50))
+
+
+
+
+
+## [2.2.1](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.2.0...netlify-cms@2.2.1) (2018-11-29)
+
+**Note:** Version bump only for package netlify-cms
+
+
+
+
+
+# [2.2.0](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.1.3...netlify-cms@2.2.0) (2018-11-12)
+
+**Note:** Version bump only for package netlify-cms
+
+
+
+
+
+<a name="2.1.3"></a>
+## [2.1.3](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.1.2...netlify-cms@2.1.3) (2018-10-09)
+
+
+
+
+**Note:** Version bump only for package netlify-cms
+
 <a name="2.1.2"></a>
 ## [2.1.2](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.1.1...netlify-cms@2.1.2) (2018-09-17)
 

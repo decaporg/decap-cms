@@ -2,8 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from 'react-emotion';
-import { List } from 'immutable';
+import { Map, List } from 'immutable';
+import { once } from 'lodash';
 import uuid from 'uuid/v4';
+import { oneLine } from 'common-tags';
 import { lengths, components, buttons } from 'netlify-cms-ui-default';
 
 const MAX_DISPLAY_LENGTH = 50;
@@ -63,6 +65,15 @@ const FileWidgetButtonRemove = styled.button`
 function isMultiple(value) {
   return Array.isArray(value) || List.isList(value);
 }
+
+const warnDeprecatedOptions = once(field =>
+  console.warn(oneLine`
+  Netlify CMS config: ${field.get('name')} field: property "options" has been deprecated for the
+  ${field.get('widget')} widget and will be removed in the next major release. Rather than
+  \`field.options.media_library\`, apply media library options for this widget under
+  \`field.media_library\`.
+`),
+);
 
 export default function withFileControl({ forImage } = {}) {
   return class FileControl extends React.Component {
@@ -126,12 +137,28 @@ export default function withFileControl({ forImage } = {}) {
     handleChange = e => {
       const { field, onOpenMediaLibrary, value } = this.props;
       e.preventDefault();
+      let mediaLibraryFieldOptions;
+
+      /**
+       * `options` hash as a general field property is deprecated, only used
+       * when external media libraries were first introduced. Not to be
+       * confused with `options` for the select widget, which serves a different
+       * purpose.
+       */
+      if (field.hasIn(['options', 'media_library'])) {
+        warnDeprecatedOptions(field);
+        mediaLibraryFieldOptions = field.getIn(['options', 'media_library'], Map());
+      } else {
+        mediaLibraryFieldOptions = field.get('media_library', Map());
+      }
+
       return onOpenMediaLibrary({
         controlID: this.controlID,
         forImage,
         privateUpload: field.get('private'),
         value,
-        config: field.getIn(['options', 'media_library', 'config']),
+        allowMultiple: !!mediaLibraryFieldOptions.get('allow_multiple', true),
+        config: mediaLibraryFieldOptions.get('config'),
       });
     };
 

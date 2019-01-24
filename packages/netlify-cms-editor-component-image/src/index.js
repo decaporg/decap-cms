@@ -7,20 +7,31 @@ const image = {
     match && {
       image: match[2],
       alt: match[1],
+      title: match[4],
     },
-  toBlock: data => `![${data.alt || ''}](${data.image || ''})`,
+  toBlock: ({ alt, image, title }) =>
+    `![${alt || ''}](${image || ''}${title ? ` "${title.replace(/"/g, '\\"')}"` : ''})`,
   // eslint-disable-next-line react/display-name
-  toPreview: (data, getAsset) => <img src={getAsset(data.image) || ''} alt={data.alt || ''} />,
-  pattern: /^!\[(.*)\]\((.*)\)$/,
+  toPreview: ({ alt, image, title }, getAsset) => (
+    <img src={getAsset(image) || ''} alt={alt || ''} title={title || ''} />
+  ),
+  pattern: /^!\[(.*)\]\((.*?)(\s"(.*)")?\)$/,
   fields: [
     {
       label: 'Image',
       name: 'image',
       widget: 'image',
+      media_library: {
+        allow_multiple: false,
+      },
     },
     {
       label: 'Alt Text',
       name: 'alt',
+    },
+    {
+      label: 'Title',
+      name: 'title',
     },
   ],
 };

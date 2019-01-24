@@ -12,16 +12,16 @@ module.exports = {
           title: 'Quick Start',
         },
         {
-          name: 'guides',
-          title: 'Guides',
+          name: 'reference',
+          title: 'Reference',
         },
         {
           name: 'media',
           title: 'Media',
         },
         {
-          name: 'reference',
-          title: 'Reference',
+          name: 'guides',
+          title: 'Guides',
         },
         {
           name: 'contributing',
@@ -38,8 +38,6 @@ module.exports = {
         name: 'content',
       },
     },
-    'gatsby-transformer-yaml',
-    'gatsby-transformer-json',
     {
       resolve: 'gatsby-source-filesystem',
       options: {
@@ -53,10 +51,17 @@ module.exports = {
         // prettier-ignore
         plugins: [
           'gatsby-remark-autolink-headers',
-          'gatsby-remark-prismjs'
+          {
+            resolve: 'gatsby-remark-prismjs',
+            options: {
+              noInlineHighlight: true,
+            },
+          },
         ]
       },
     },
+    'gatsby-transformer-yaml',
+    'gatsby-transformer-json',
     'gatsby-plugin-postcss',
     'gatsby-plugin-react-helmet',
     'gatsby-plugin-catch-links',

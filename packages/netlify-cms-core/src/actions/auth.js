@@ -76,9 +76,13 @@ export function loginUser(credentials) {
         dispatch(authenticate(user));
       })
       .catch(error => {
+        console.error(error);
         dispatch(
           notifSend({
-            message: `${error.message}`,
+            message: {
+              details: error.message,
+              key: 'ui.toast.onFailToAuth',
+            },
             kind: 'warning',
             dismissAfter: 8000,
           }),

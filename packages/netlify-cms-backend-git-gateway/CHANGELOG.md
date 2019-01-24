@@ -3,6 +3,44 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/compare/netlify-cms-backend-git-gateway@2.1.1...netlify-cms-backend-git-gateway@2.1.2) (2018-12-11)
+
+
+### Bug Fixes
+
+* **netlify-cms-backend-git-gateway:** content-type may have charset ([#1951](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/issues/1951)) ([c74dbae](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/commit/c74dbae))
+
+
+
+
+
+## [2.1.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/compare/netlify-cms-backend-git-gateway@2.1.0...netlify-cms-backend-git-gateway@2.1.1) (2018-11-29)
+
+
+### Bug Fixes
+
+* **backend-git-gateway:** double slashes when gateway_url contained a backend ([#1712](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/issues/1712)) ([6de47cd](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/commit/6de47cd))
+
+
+
+
+
+# [2.1.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/compare/netlify-cms-backend-git-gateway@2.0.8...netlify-cms-backend-git-gateway@2.1.0) (2018-11-12)
+
+
+### Bug Fixes
+
+* **identity:** switch user name reference to full_name ([#1809](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/issues/1809)) ([55d45a8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/commit/55d45a8))
+
+
+### Features
+
+* allow custom logo on auth page ([#1818](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/issues/1818)) ([c6ae1e8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/commit/c6ae1e8))
+
+
+
+
+
 <a name="2.0.8"></a>
 ## [2.0.8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/compare/netlify-cms-backend-git-gateway@2.0.7...netlify-cms-backend-git-gateway@2.0.8) (2018-09-06)
 

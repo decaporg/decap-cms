@@ -4,6 +4,7 @@ import classnames from 'classnames';
 import { Location } from '@reach/router';
 
 import DocSearch from './docsearch';
+import GitHubButton from './github-button';
 
 import logo from '../img/netlify-cms-logo.svg';
 
@@ -14,7 +15,7 @@ class Header extends Component {
     scrolled: false,
   };
 
-  componentDidMount() {
+  async componentDidMount() {
     // TODO: use raf to throttle events
     window.addEventListener('scroll', this.handleScroll);
   }
@@ -72,16 +73,7 @@ class Header extends Component {
                     Blog
                   </Link>
                   <span className="gh-button">
-                    <a
-                      id="ghstars"
-                      className="github-button"
-                      href="https://github.com/netlify/netlify-cms"
-                      data-icon="octicon-star"
-                      data-show-count="true"
-                      aria-label="Star netlify/netlify-cms on GitHub"
-                    >
-                      Star
-                    </a>
+                    <GitHubButton />
                   </span>
                 </div>
               </div>

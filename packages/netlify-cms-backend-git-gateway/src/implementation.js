@@ -63,7 +63,7 @@ export default class GitGateway {
     const backendTypeMatches = this.gatewayUrl.match(backendTypeRegex);
     if (backendTypeMatches) {
       this.backendType = backendTypeMatches[1];
-      this.gatewayUrl = this.gatewayUrl.replace(backendTypeRegex, '/');
+      this.gatewayUrl = this.gatewayUrl.replace(backendTypeRegex, '');
     } else {
       this.backendType = null;
     }
@@ -92,7 +92,7 @@ export default class GitGateway {
           },
         ).then(async res => {
           const contentType = res.headers.get('Content-Type');
-          if (contentType !== 'application/json' && contentType !== 'text/json') {
+          if (!contentType.includes('application/json') && !contentType.includes('text/json')) {
             throw new APIError(
               `Your Git Gateway backend is not returning valid settings. Please make sure it is enabled.`,
               res.status,
@@ -131,7 +131,7 @@ export default class GitGateway {
       }
 
       const userData = {
-        name: user.user_metadata.name || user.email.split('@').shift(),
+        name: user.user_metadata.full_name || user.email.split('@').shift(),
         email: user.email,
         avatar_url: user.user_metadata.avatar_url,
         metadata: user.user_metadata,

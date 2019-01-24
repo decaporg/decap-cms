@@ -119,7 +119,12 @@ export default class API {
       .map(str => str.trim().split(';'))
       .map(([linkStr, keyStr]) => [
         keyStr.match(/rel="(.*?)"/)[1],
-        unsentRequest.fromURL(linkStr.trim().match(/<(.*?)>/)[1]),
+        unsentRequest.fromURL(
+          linkStr
+            .trim()
+            .match(/<(.*?)>/)[1]
+            .replace(/\+/g, '%20'),
+        ),
       ])
       .update(list => Map(list));
     const actions = links

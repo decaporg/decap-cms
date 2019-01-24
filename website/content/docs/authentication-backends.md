@@ -27,6 +27,10 @@ To use it in your own project stored on GitHub or GitLab, follow these steps:
 
 3. Optionally, you can assign roles to users in your Netlify dashboard, and then limit which roles can access the CMS by defining the `accept_roles` field as shown in the example above. Otherwise `accept_roles` can be left out, and all Netlify Identity users on your site have access.
 
+### Reconnect after Changing Repository Permissions
+
+If you change ownership on your repository, or convert a repository from public to private, you may need to reconnect Git Gateway with proper permissions. Find further instructions in the [Netlify Git Gateway docs](https://www.netlify.com/docs/git-gateway/#reconnect-after-changing-repository-permissions).
+
 ## Git Gateway without Netlify
 
 You can use [Git Gateway](https://github.com/netlify/git-gateway) without Netlify by setting up your own Git Gateway server and connecting it with your own instance of [GoTrue](https://www.gotrueapi.org) (the open source microservice that powers Netlify Identity), or with any other identity service that can issue JSON Web Tokens (JWT).
@@ -122,6 +126,16 @@ To enable it:
       repo: owner-name/repo-name # Path to your Bitbucket repository
     ```
 
+## Test Repo Backend
+You can use the `test-repo` backend to try out Netlify CMS without connecting to a Git repo. With this backend, you can write and publish content normally, but any changes will disapear when you reload the page. This backend powers the Netlify CMS [demo site](https://cms-demo.netlify.com/).
+
+To enable this backend, add the following lines to your Netlify CMS `config.yml` file:
+
+```
+backend:
+  name: test-repo
+```
+
 ## External OAuth Clients
 
 If you would like to facilitate your own OAuth authentication rather than use Netlify's service or implicit grant, you can use one of the community-maintained projects below. Feel free to [submit a pull request](https://github.com/netlify/netlify-cms/blob/master/CONTRIBUTING.md) if you'd like to add yours!
@@ -131,7 +145,9 @@ If you would like to facilitate your own OAuth authentication rather than use Ne
 | [@vencax](https://github.com/vencax)           | GitHub, GitHub Enterprise | Node.js                 | [Repo](https://github.com/vencax/netlify-cms-github-oauth-provider)                                                                          |
 | [@igk1972](https://github.com/igk1972)         | GitHub, GitHub Enterprise | Go                      | [Repo](https://github.com/igk1972/netlify-cms-oauth-provider-go)                                                                             |
 | [@davidejones](https://github.com/davidejones) | GitHub, GitHub Enterprise | Python                  | [Repo](https://github.com/davidejones/netlify-cms-oauth-provider-python)                                                                     |
+| [@marcelkornblum](https://github.com/marcelkornblum) | GitHub, GitHub Enterprise | Google AppEngine with Python                  | [Repo](https://github.com/signal-noise/netlify-cms-oauth-provider-python-appengine)                                                                  |
 | [@marksteele](https://github.com/marksteele)   | GitHub, GitHub Enterprise | Serverless              | [Repo](https://github.com/marksteele/netlify-serverless-oauth2-backend), [Blog](https://www.control-alt-del.org/blog/serverless-blog-howto/) |
+| [@Herohtar](https://github.com/Herohtar)       | GitHub, GitHub Enterprise | Firebase Cloud Function | [Repo](https://github.com/Herohtar/netlify-cms-oauth-firebase)                                                                               |
 
 Check each project's documentation for instructions on how to configure it.
 
