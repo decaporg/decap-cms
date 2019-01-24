@@ -16,7 +16,7 @@ import {
 import { createEntry } from 'ValueObjects/Entry';
 import { sanitizeSlug } from 'Lib/urlHelper';
 import { getBackend } from 'Lib/registry';
-import { Cursor, CURSOR_COMPATIBILITY_SYMBOL } from 'netlify-cms-lib-util';
+import { Cursor, CURSOR_COMPATIBILITY_SYMBOL } from 'netlify-cms-lib-util/src';
 import { EDITORIAL_WORKFLOW, status } from 'Constants/publishModes';
 
 class LocalStorageAuthStore {

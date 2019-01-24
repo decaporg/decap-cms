@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'react-emotion';
-import { Icon, lengths, colors } from 'netlify-cms-ui-default';
+import { Icon, lengths, colors } from 'netlify-cms-ui-default/src';
 
 const SearchContainer = styled.div`
   height: 37px;

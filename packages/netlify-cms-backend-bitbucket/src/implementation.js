@@ -7,8 +7,8 @@ import {
   resolvePromiseProperties,
   then,
   unsentRequest,
-} from 'netlify-cms-lib-util';
-import { NetlifyAuthenticator } from 'netlify-cms-lib-auth';
+} from 'netlify-cms-lib-util/src';
+import { NetlifyAuthenticator } from 'netlify-cms-lib-auth/src';
 import AuthenticationPage from './AuthenticationPage';
 import API from './API';
 

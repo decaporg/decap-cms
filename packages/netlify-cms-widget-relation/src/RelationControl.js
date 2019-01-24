@@ -5,7 +5,7 @@ import Autosuggest from 'react-autosuggest';
 import uuid from 'uuid/v4';
 import { List } from 'immutable';
 import { debounce } from 'lodash';
-import { Loader, components } from 'netlify-cms-ui-default';
+import { Loader, components } from 'netlify-cms-ui-default/src';
 
 injectGlobal`
   .react-autosuggest__container {

@@ -5,7 +5,7 @@ import styled, { css, cx } from 'react-emotion';
 import { Editor as Slate } from 'slate-react';
 import Plain from 'slate-plain-serializer';
 import { debounce } from 'lodash';
-import { lengths, fonts } from 'netlify-cms-ui-default';
+import { lengths, fonts } from 'netlify-cms-ui-default/src';
 import { editorStyleVars, EditorControlBar } from '../styles';
 import Toolbar from './Toolbar';
 

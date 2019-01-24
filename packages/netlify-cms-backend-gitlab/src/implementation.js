@@ -1,7 +1,7 @@
 import trimStart from 'lodash/trimStart';
 import semaphore from 'semaphore';
 import { stripIndent } from 'common-tags';
-import { CURSOR_COMPATIBILITY_SYMBOL } from 'netlify-cms-lib-util';
+import { CURSOR_COMPATIBILITY_SYMBOL } from 'netlify-cms-lib-util/src';
 import AuthenticationPage from './AuthenticationPage';
 import API from './API';
 

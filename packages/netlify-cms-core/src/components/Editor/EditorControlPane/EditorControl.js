@@ -5,7 +5,7 @@ import { translate } from 'react-polyglot';
 import styled, { css, cx } from 'react-emotion';
 import { partial, uniqueId } from 'lodash';
 import { connect } from 'react-redux';
-import { colors, colorsRaw, transitions, lengths, borders } from 'netlify-cms-ui-default';
+import { colors, colorsRaw, transitions, lengths, borders } from 'netlify-cms-ui-default/src';
 import { resolveWidget, getEditorComponents } from 'Lib/registry';
 import { addAsset } from 'Actions/media';
 import { query, clearSearch } from 'Actions/search';

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'react-emotion';
 import { FileUploadButton } from 'UI';
-import { buttons, shadows } from 'netlify-cms-ui-default';
+import { buttons, shadows } from 'netlify-cms-ui-default/src';
 
 const styles = {
   button: css`

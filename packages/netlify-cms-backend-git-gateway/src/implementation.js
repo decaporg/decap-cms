@@ -1,8 +1,8 @@
 import GoTrue from 'gotrue-js';
 import jwtDecode from 'jwt-decode';
 import { get, pick, intersection } from 'lodash';
-import { APIError, unsentRequest } from 'netlify-cms-lib-util';
-import { GitHubBackend } from 'netlify-cms-backend-github';
+import { APIError, unsentRequest } from 'netlify-cms-lib-util/src';
+import { GitHubBackend } from 'netlify-cms-backend-github/src';
 import GitHubAPI from './GitHubAPI';
 import AuthenticationPage from './AuthenticationPage';
 

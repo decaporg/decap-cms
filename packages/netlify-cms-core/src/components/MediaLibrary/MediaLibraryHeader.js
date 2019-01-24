@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'react-emotion';
-import { Icon, shadows, colors, buttons } from 'netlify-cms-ui-default';
+import { Icon, shadows, colors, buttons } from 'netlify-cms-ui-default/src';
 
 const CloseButton = styled.button`
   ${buttons.button};

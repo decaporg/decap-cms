@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
-import { Loader } from 'netlify-cms-ui-default';
+import { Loader } from 'netlify-cms-ui-default/src';
 import { translate } from 'react-polyglot';
 import history from 'Routing/history';
 import { logoutUser } from 'Actions/auth';
