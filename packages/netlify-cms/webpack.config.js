@@ -1,7 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
 const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
 const pkg = require('./package.json');
 const { plugins } = require('../../scripts/webpack');
 const coreWebpackConfig = require('../netlify-cms-core/webpack.config.js');
@@ -25,7 +24,6 @@ const baseConfig = {
         messages: ['Netlify CMS is now running at http://localhost:8080'],
       },
     }),
-    new CopyWebpackPlugin([{ from: '../shims/cms.css', to: 'dist/' }]),
   ],
   devServer: {
     contentBase: '../../dev-test',
