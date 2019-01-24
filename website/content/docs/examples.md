@@ -16,4 +16,4 @@ Example | Tools | Type | Source | More info |
 [Forest Garden Wales](https://www.forestgarden.wales/) | Hugo | blog | [forestgardenwales/forestgarden.wales](https://github.com/forestgardenwales/forestgarden.wales) | [blog post](https://www.forestgarden.wales/blog/now-using-netlify-cms/)
 [Jekyll Demo](https://jekyll-netlifycms.netlify.com/) | Jekyll, Gulp | demo | [NickStees/jekyll-cms](https://github.com/NickStees/jekyll-cms) | [read me](https://github.com/NickStees/jekyll-cms)
 [Eleventy Starter Project](https://eleventy-netlify-boilerplate.netlify.com/) | Eleventy | demo | [danurbanowicz/eleventy-netlify-boilerplate](https://github.com/danurbanowicz/eleventy-netlify-boilerplate) | [read me](https://github.com/danurbanowicz/eleventy-netlify-boilerplate)
-
+[YellowCake - Complete website with blog](https://yellowcake.netlify.com) | Gatsby, Netlify-CMS, Uploadcare | demo | [Thrive web - Gold Coast, Australia / yellowcake](https://github.com/thriveweb/yellowcake/) | [blog post](https://thriveweb.com.au/the-lab/yellowcake-gatsby-react-js-starter-project/)
