@@ -1,4 +1,5 @@
-import { loadScript } from 'netlify-cms-lib-util';
+import uploadcare from 'uploadcare-widget'
+import uploadcareTabEffects from 'uploadcare-widget-tab-effects'
 
 /**
  * Default Uploadcare widget configuration, can be overriden via config.yml.
@@ -34,7 +35,7 @@ function getFileGroup(files) {
    * the result of it's `done` method.
    */
   return new Promise(resolve =>
-    window.uploadcare.loadFileGroup(groupId).done(group => resolve(group)),
+    uploadcare.loadFileGroup(groupId).done(group => resolve(group)),
   );
 }
 
@@ -60,7 +61,7 @@ function getFile(url, cdnBase) {
   const groupPattern = /~\d+\/nth\/\d+\//;
   const baseUrls = ['https://ucarecdn.com', cdnBase].filter(v => v);
   const uploaded = baseUrls.some(baseUrl => url.startsWith(baseUrl) && !groupPattern.test(url));
-  return window.uploadcare.fileFrom(uploaded ? 'uploaded' : 'url', url);
+  return uploadcare.fileFrom(uploaded ? 'uploaded' : 'url', url);
 }
 
 /**
@@ -68,7 +69,7 @@ function getFile(url, cdnBase) {
  * each use.
  */
 function openDialog(files, config, handleInsert) {
-  window.uploadcare.openDialog(files, config).done(({ promise }) =>
+  uploadcare.openDialog(files, config).done(({ promise }) =>
     promise().then(({ cdnUrl, count }) => {
       if (config.multiple) {
         const urls = Array.from({ length: count }, (val, idx) => `${cdnUrl}nth/${idx}/`);
@@ -93,19 +94,10 @@ async function init({ options = { config: {} }, handleInsert }) {
   window.UPLOADCARE_PUBLIC_KEY = publicKey;
 
   /**
-   * Loading scripts via url because the uploadcare widget includes
-   * non-strict-mode code that's incompatible with our build system
-   */
-  await loadScript('https://unpkg.com/uploadcare-widget@^3.6.0/uploadcare.full.js');
-  await loadScript(
-    'https://unpkg.com/uploadcare-widget-tab-effects@^1.2.1/dist/uploadcare.tab-effects.js',
-  );
-
-  /**
    * Register the effects tab by default because the effects tab is awesome. Can
    * be disabled via config.
    */
-  window.uploadcare.registerTab('preview', window.uploadcareTabEffects);
+  uploadcare.registerTab('preview', uploadcareTabEffects);
 
   return {
     /**
