@@ -308,11 +308,11 @@ class EditorToolbar extends React.Component {
     if (currentStatus) {
       return (
         <>
-          {previewUrl &&
+          {previewUrl && (
             <PreviewButton rel="noopener noreferrer" target="_blank" href={previewUrl}>
               Preview
             </PreviewButton>
-          }
+          )}
           <ToolbarDropdown
             dropdownTopOverlap="40px"
             dropdownWidth="120px"

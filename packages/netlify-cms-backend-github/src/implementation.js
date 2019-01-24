@@ -9,9 +9,7 @@ const MAX_CONCURRENT_DOWNLOADS = 10;
 /**
  * Keywords for inferring a status that will provide a deploy preview URL.
  */
-const PREVIEW_CONTEXT_KEYWORDS = [
-  'deploy',
-];
+const PREVIEW_CONTEXT_KEYWORDS = ['deploy'];
 
 /**
  * Check a given status context string to determine if it provides a link to a
