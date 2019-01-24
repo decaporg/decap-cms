@@ -6,6 +6,40 @@ import API from './API';
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
 
+/**
+ * Keywords for inferring a status that will provide a deploy preview URL.
+ */
+const PREVIEW_CONTEXT_KEYWORDS = [
+  'deploy',
+];
+
+/**
+ * Check a given status context string to determine if it provides a link to a
+ * deploy preview. Checks for an exact match against `previewContext` if given,
+ * otherwise checks for inclusion of a value from `PREVIEW_CONTEXT_KEYWORDS`.
+ */
+function isPreviewContext(context, previewContext) {
+  if (previewContext) {
+    return context === previewContext;
+  }
+  return PREVIEW_CONTEXT_KEYWORDS.some(keyword => context.includes(keyword));
+}
+
+/**
+ * Retrieve a deploy preview URL from an array of statuses. By default, a
+ * matching status is inferred via `isPreviewContext`.
+ */
+function getPreviewUrlFromStatuses(statuses, config) {
+  const previewContext = config.getIn(['backend', 'preview_context']);
+  const deployStatus = statuses.find(({ state, context }) => {
+    return state === 'success' && isPreviewContext(context, previewContext);
+  });
+
+  if (deployStatus) {
+    return deployStatus.target_url;
+  }
+}
+
 export default class GitHub {
   constructor(config, options = {}) {
     this.config = config;
@@ -209,17 +243,24 @@ export default class GitHub {
       });
   }
 
-  unpublishedEntry(collection, slug) {
-    return this.api.readUnpublishedBranchFile(slug).then(data => {
-      if (!data) return null;
-      return {
-        slug,
-        file: { path: data.metaData.objects.entry.path },
-        data: data.fileData,
-        metaData: data.metaData,
-        isModification: data.isModification,
-      };
-    });
+  async unpublishedEntry(collection, slug) {
+    const data = await this.api.readUnpublishedBranchFile(slug);
+
+    if (!data) {
+      return null;
+    }
+
+    const statuses = await this.api.getStatuses(data.metaData.pr.head);
+    const previewUrl = getPreviewUrlFromStatuses(statuses, this.config);
+
+    return {
+      slug,
+      file: { path: data.metaData.objects.entry.path },
+      data: data.fileData,
+      metaData: data.metaData,
+      isModification: data.isModification,
+      previewUrl,
+    };
   }
 
   updateUnpublishedEntryStatus(collection, slug, newStatus) {

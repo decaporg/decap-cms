@@ -58,6 +58,7 @@ class Editor extends React.Component {
     hasWorkflow: PropTypes.bool,
     unpublishedEntry: PropTypes.bool,
     isModification: PropTypes.bool,
+    previewUrl: PropTypes.string,
     collectionEntriesLoaded: PropTypes.bool,
     updateUnpublishedEntryStatus: PropTypes.func.isRequired,
     publishUnpublishedEntry: PropTypes.func.isRequired,
@@ -307,6 +308,7 @@ class Editor extends React.Component {
       unpublishedEntry,
       newEntry,
       isModification,
+      previewUrl,
       currentStatus,
       logoutUser,
       t,
@@ -349,6 +351,7 @@ class Editor extends React.Component {
         hasUnpublishedChanges={unpublishedEntry}
         isNewEntry={newEntry}
         isModification={isModification}
+        previewUrl={previewUrl}
         currentStatus={currentStatus}
         onLogoutClick={logoutUser}
       />
@@ -370,6 +373,7 @@ function mapStateToProps(state, ownProps) {
   const displayUrl = config.get('display_url');
   const hasWorkflow = config.get('publish_mode') === EDITORIAL_WORKFLOW;
   const isModification = entryDraft.getIn(['entry', 'isModification']);
+  const previewUrl = entryDraft.getIn(['entry', 'previewUrl']);
   const collectionEntriesLoaded = !!entries.getIn(['pages', collectionName]);
   const unpublishedEntry = selectUnpublishedEntry(state, collectionName, slug);
   const currentStatus = unpublishedEntry && unpublishedEntry.getIn(['metaData', 'status']);
@@ -387,6 +391,7 @@ function mapStateToProps(state, ownProps) {
     displayUrl,
     hasWorkflow,
     isModification,
+    previewUrl,
     collectionEntriesLoaded,
     currentStatus,
   };

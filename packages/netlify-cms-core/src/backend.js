@@ -1,4 +1,4 @@
-import { attempt, flatten, isError } from 'lodash';
+import { attempt, flatten, isError, trimStart, trimEnd } from 'lodash';
 import { Map } from 'immutable';
 import fuzzy from 'fuzzy';
 import { resolveFormat } from 'Formats/formats';
@@ -119,6 +119,32 @@ const sortByScore = (a, b) => {
   if (a.score < b.score) return 1;
   return 0;
 };
+
+function createPreviewUrl(baseUrl, collection, slug) {
+  /**
+   * Preview URL can't be created without `baseUrl`. This makes preview URLs
+   * optional for backends that don't support them.
+   */
+  if (!baseUrl) {
+    return;
+  }
+
+  /**
+   * Without a `previewPath` for the collection (via config), the preview URL
+   * will be the URL provided by the backend.
+   */
+  if (!collection.get('previewPath')) {
+    return baseUrl;
+  }
+
+  /**
+   * If a `previewPath` is provided for the collection, use it to construct the
+   * URL path.
+   */
+  const basePath = trimEnd(baseUrl, '/');
+  const previewPath = trimStart(collection.get('previewPath').replace('{{slug}}', slug), ' /');
+  return `${basePath}/${previewPath}`;
+}
 
 class Backend {
   constructor(implementation, { backendName, authStore = null, config } = {}) {
@@ -367,6 +393,7 @@ class Backend {
         const entry = createEntry('draft', loadedEntry.slug, loadedEntry.file.path, {
           raw: loadedEntry.data,
           isModification: loadedEntry.isModification,
+          previewUrl: createPreviewUrl(loadedEntry.previewUrl, collection, slug),
         });
         entry.metaData = loadedEntry.metaData;
         return entry;

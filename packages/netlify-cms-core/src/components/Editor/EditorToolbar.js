@@ -160,6 +160,10 @@ const StatusButton = styled(StyledDropdownButton)`
   color: ${colorsRaw.teal};
 `;
 
+const PreviewButton = styled(ToolbarButton.withComponent('a'))`
+  ${buttons.gray};
+`;
+
 const StatusDropdownItem = styled(DropdownItem)`
   ${Icon} {
     color: ${colors.infoText};
@@ -188,6 +192,7 @@ class EditorToolbar extends React.Component {
     hasUnpublishedChanges: PropTypes.bool,
     isNewEntry: PropTypes.bool,
     isModification: PropTypes.bool,
+    previewUrl: PropTypes.string,
     currentStatus: PropTypes.string,
     onLogoutClick: PropTypes.func.isRequired,
     t: PropTypes.func.isRequired,
@@ -297,11 +302,17 @@ class EditorToolbar extends React.Component {
       onPublishAndNew,
       currentStatus,
       isNewEntry,
+      previewUrl,
       t,
     } = this.props;
     if (currentStatus) {
       return (
         <>
+          {previewUrl &&
+            <PreviewButton rel="noopener noreferrer" target="_blank" href={previewUrl}>
+              Preview
+            </PreviewButton>
+          }
           <ToolbarDropdown
             dropdownTopOverlap="40px"
             dropdownWidth="120px"
