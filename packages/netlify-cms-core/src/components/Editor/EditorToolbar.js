@@ -160,8 +160,12 @@ const StatusButton = styled(StyledDropdownButton)`
   color: ${colorsRaw.teal};
 `;
 
-const PreviewButton = styled(ToolbarButton.withComponent('a'))`
-  ${buttons.gray};
+const AnchorTargetBlank = ({ children, ...props }) => (
+  <a rel="noopener noreferrer" target="_blank" {...props}>{children}</a>
+);
+
+const PreviewButton = styled(ToolbarButton.withComponent(AnchorTargetBlank))`
+  ${buttons.lightGray};
 `;
 
 const StatusDropdownItem = styled(DropdownItem)`
@@ -217,10 +221,20 @@ class EditorToolbar extends React.Component {
       isPersisting,
       hasChanged,
       isNewEntry,
+      previewUrl,
       t,
     } = this.props;
     if (!isNewEntry && !hasChanged) {
-      return <StatusPublished>{t('editor.editorToolbar.published')}</StatusPublished>;
+      return (
+        <>
+          {previewUrl && (
+            <PreviewButton href={previewUrl}>
+              {t('editor.editorToolbar.viewLiveButtonLabel')}
+            </PreviewButton>
+          )}
+          <StatusPublished>{t('editor.editorToolbar.published')}</StatusPublished>
+        </>
+      );
     }
     return (
       <div>
@@ -309,8 +323,8 @@ class EditorToolbar extends React.Component {
       return (
         <>
           {previewUrl && (
-            <PreviewButton rel="noopener noreferrer" target="_blank" href={previewUrl}>
-              Preview
+            <PreviewButton href={previewUrl}>
+              {t('editor.editorToolbar.previewButtonLabel')}
             </PreviewButton>
           )}
           <ToolbarDropdown
@@ -370,7 +384,16 @@ class EditorToolbar extends React.Component {
     }
 
     if (!isNewEntry) {
-      return <StatusPublished>{t('editor.editorToolbar.published')}</StatusPublished>;
+      return (
+        <>
+          {previewUrl && (
+            <PreviewButton href={previewUrl}>
+              {t('editor.editorToolbar.viewLiveButtonLabel')}
+            </PreviewButton>
+          )}
+          <StatusPublished>{t('editor.editorToolbar.published')}</StatusPublished>
+        </>
+      );
     }
   };
 

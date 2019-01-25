@@ -133,7 +133,7 @@ function createPreviewUrl(baseUrl, collection, slug) {
    * Without a `previewPath` for the collection (via config), the preview URL
    * will be the URL provided by the backend.
    */
-  if (!collection.get('previewPath')) {
+  if (!collection.get('preview_path')) {
     return baseUrl;
   }
 
@@ -142,7 +142,7 @@ function createPreviewUrl(baseUrl, collection, slug) {
    * URL path.
    */
   const basePath = trimEnd(baseUrl, '/');
-  const previewPath = trimStart(collection.get('previewPath').replace('{{slug}}', slug), ' /');
+  const previewPath = trimStart(collection.get('preview_path').replace('{{slug}}', slug), ' /');
   return `${basePath}/${previewPath}`;
 }
 
@@ -394,6 +394,7 @@ class Backend {
           raw: loadedEntry.data,
           isModification: loadedEntry.isModification,
           previewUrl: createPreviewUrl(loadedEntry.previewUrl, collection, slug),
+          previewStatus: loadedEntry.previewStatus,
         });
         entry.metaData = loadedEntry.metaData;
         return entry;

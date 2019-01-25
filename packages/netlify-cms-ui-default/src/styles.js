@@ -171,9 +171,13 @@ const buttons = {
 
     &:focus,
     &:hover {
-      color: ${colors.white};
+      color: ${colorsRaw.white};
       background-color: #555a65;
     }
+  `,
+  lightGray: css`
+    background-color: ${colorsRaw.grayLight};
+    color: ${colorsRaw.gray};
   `,
   green: css`
     background-color: #aae31f;

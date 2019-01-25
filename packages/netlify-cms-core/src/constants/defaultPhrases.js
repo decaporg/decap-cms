@@ -78,6 +78,8 @@ export function getPhrases() {
         inReview: 'In review',
         ready: 'Ready',
         publishNow: 'Publish now',
+        previewButtonLabel: 'View Preview',
+        viewLiveButtonLabel: 'View Live',
       },
       editorWidgets: {
         unknownControl: {
