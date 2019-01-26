@@ -12,7 +12,6 @@ const props = {
   forID: 'some-random-id',
   classNameWrapper: 'classname-wrapper',
   query: async () => {},
-  loadEntry: async () => {},
   clearSearch: () => {},
   setActiveStyle: () => {},
   setInactiveStyle: () => {},

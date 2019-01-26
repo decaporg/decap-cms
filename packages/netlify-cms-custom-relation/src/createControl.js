@@ -21,7 +21,6 @@ const propTypes = {
   field: ImmutablePropTypes.map.isRequired,
   classNameWrapper: PropTypes.string.isRequired,
   query: PropTypes.func.isRequired,
-  loadEntry: PropTypes.func.isRequired,
   clearSearch: PropTypes.func.isRequired,
   setActiveStyle: PropTypes.func.isRequired,
   setInactiveStyle: PropTypes.func.isRequired,
@@ -77,7 +76,6 @@ const createControl = (customParams = {}) => {
         return {
           slug: value,
           collection: this.getConfig().collection,
-          loadEntry: this.props.loadEntry,
         };
       return { entry: value };
     };
