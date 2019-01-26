@@ -170,6 +170,8 @@ class EditorInterface extends Component {
       previewUrl,
       currentStatus,
       onLogoutClick,
+      loadDeployPreview,
+      deployPreview,
     } = this.props;
 
     const { previewVisible, scrollSyncEnabled, showEventBlocker } = this.state;
@@ -241,6 +243,8 @@ class EditorInterface extends Component {
           previewUrl={previewUrl}
           currentStatus={currentStatus}
           onLogoutClick={onLogoutClick}
+          loadDeployPreview={loadDeployPreview}
+          deployPreview={deployPreview}
         />
         <Editor>
           <ViewControls>
@@ -293,6 +297,8 @@ EditorInterface.propTypes = {
   previewUrl: PropTypes.string,
   currentStatus: PropTypes.string,
   onLogoutClick: PropTypes.func.isRequired,
+  deployPreview: ImmutablePropTypes.map,
+  loadDeployPreview: PropTypes.func.isRequired,
 };
 
 export default EditorInterface;

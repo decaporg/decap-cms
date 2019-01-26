@@ -148,6 +148,7 @@ function createPreviewUrl(baseUrl, collection, slug) {
 
 class Backend {
   constructor(implementation, { backendName, authStore = null, config } = {}) {
+    this.config = config;
     this.implementation = implementation.init(config, {
       useWorkflow: config.getIn(['publish_mode']) === EDITORIAL_WORKFLOW,
       updateUserCredentials: this.updateUserCredentials,
@@ -393,13 +394,44 @@ class Backend {
         const entry = createEntry('draft', loadedEntry.slug, loadedEntry.file.path, {
           raw: loadedEntry.data,
           isModification: loadedEntry.isModification,
-          previewUrl: createPreviewUrl(loadedEntry.previewUrl, collection, slug),
-          previewStatus: loadedEntry.previewStatus,
         });
         entry.metaData = loadedEntry.metaData;
         return entry;
       })
       .then(this.entryWithFormat(collection, slug));
+  }
+
+  getDeploy(collection, slug) {
+    const baseUrl = this.config.get('site_url');
+    if (!baseUrl) {
+      return;
+    }
+    return {
+      url: createPreviewUrl(baseUrl, collection, slug),
+      status: 'SUCCESS',
+    };
+  }
+
+  async getDeployPreview(collection, slug, { maxAttempts = 1, interval = 5000 } = {}) {
+    if (this.implementation.getDeployPreview) {
+      let deployPreview, count = 0;
+      while (!deployPreview && count < maxAttempts) {
+        count++
+        deployPreview = await this.implementation.getDeployPreview(collection, slug);
+        if (!deployPreview) {
+          await new Promise(resolve => setTimeout(() => resolve(), 5000));
+        }
+      }
+
+      if (!deployPreview) {
+        return
+      }
+
+      return {
+        url: createPreviewUrl(deployPreview.url, collection, slug),
+        status: deployPreview.status ? deployPreview.status.toUpperCase() : '',
+      };
+    }
   }
 
   persistEntry(config, collection, entryDraft, MediaFiles, integrations, options = {}) {

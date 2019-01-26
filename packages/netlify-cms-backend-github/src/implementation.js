@@ -27,15 +27,11 @@ function isPreviewContext(context, previewContext) {
  * Retrieve a deploy preview URL from an array of statuses. By default, a
  * matching status is inferred via `isPreviewContext`.
  */
-function getPreviewUrlFromStatuses(statuses, config) {
+function getPreviewStatus(statuses, config) {
   const previewContext = config.getIn(['backend', 'preview_context']);
-  const deployStatus = statuses.find(({ state, context }) => {
-    return state === 'success' && isPreviewContext(context, previewContext);
+  return statuses.find(({ state, context }) => {
+    return isPreviewContext(context, previewContext);
   });
-
-  if (deployStatus) {
-    return deployStatus.target_url;
-  }
 }
 
 export default class GitHub {
@@ -248,17 +244,29 @@ export default class GitHub {
       return null;
     }
 
-    const statuses = await this.api.getStatuses(data.metaData.pr.head);
-    const previewUrl = getPreviewUrlFromStatuses(statuses, this.config);
-
     return {
       slug,
       file: { path: data.metaData.objects.entry.path },
       data: data.fileData,
       metaData: data.metaData,
       isModification: data.isModification,
-      previewUrl,
     };
+  }
+
+  async getDeployPreview(collection, slug) {
+    const data = await this.api.retrieveMetadata(slug);
+
+    if (!data) {
+      return null;
+    }
+
+    const statuses = await this.api.getStatuses(data.pr.head);
+    const deployStatus = getPreviewStatus(statuses, this.config);
+
+    if (deployStatus) {
+      const { target_url, state } = deployStatus;
+      return { url: target_url, status: state };
+    }
   }
 
   updateUnpublishedEntryStatus(collection, slug, newStatus) {
