@@ -22,7 +22,7 @@ const props = {
     multiple: true,
     required: false,
   }),
-  value: List(['saved-slug']),
+  value: List([]),
 };
 
 describe('"create" custom-relation widget', () => {
