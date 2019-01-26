@@ -1,4 +1,5 @@
 dist/
+umd/
 bin/
 public/
 node_modules/
@@ -11,6 +12,7 @@ manifest.yml
 .imdone/
 website/data/contributors.json
 cypress/videos
+cypress/screenshots
 /coverage/
 .cache
 *.log
