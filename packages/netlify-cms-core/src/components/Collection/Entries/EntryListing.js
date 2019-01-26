@@ -5,8 +5,9 @@ import styled from 'react-emotion';
 import Waypoint from 'react-waypoint';
 import { Map } from 'immutable';
 import { Cursor } from 'netlify-cms-lib-util/src';
+import { getEntryCard } from 'Lib/registry';
 import { selectFields, selectInferedField } from 'Reducers/collections';
-import EntryCard from './EntryCard';
+import DefaultEntryCard from './EntryCard';
 
 const CardsGrid = styled.ul`
   display: flex;
@@ -47,6 +48,8 @@ export default class EntryListing extends React.Component {
     const { collections, entries, publicFolder, viewStyle } = this.props;
     const inferedFields = this.inferFields(collections);
     const entryCardProps = { collection: collections, inferedFields, publicFolder, viewStyle };
+    const EntryCard = getEntryCard(collections.get('name')) || DefaultEntryCard;
+    console.log({ collectionName: collections.get('name') });
     return entries.map((entry, idx) => <EntryCard {...entryCardProps} entry={entry} key={idx} />);
   };
 
@@ -58,6 +61,7 @@ export default class EntryListing extends React.Component {
       const collectionLabel = collection.get('label');
       const inferedFields = this.inferFields(collection);
       const entryCardProps = { collection, entry, inferedFields, publicFolder, collectionLabel };
+      const EntryCard = getEntryCard(collectionName) || DefaultEntryCard;
       return <EntryCard {...entryCardProps} key={idx} />;
     });
   };

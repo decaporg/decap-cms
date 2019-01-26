@@ -153,6 +153,25 @@
         ) : null;
       }
     });
+    function formatDate(date){
+      if(date && date.toLocaleDateString) return date.toLocaleDateString('en')
+      return date.toString ? date.toString() : ''
+    }
+    function PostEntryCard(props){
+      const entry = props.entry;
+      const collection = props.collection;
+      const title = entry.getIn(['data', 'title']);
+      const date = entry.getIn(['data', 'date']);
+      const path = `#/collections/${collection.get('name')}/entries/${entry.get('slug')}`;
+      return (
+        h('div', {style: {flex: 1, minWidth: '100%'}},
+          h('a', {href: path}, [
+            h('h2', {key: 'title'}, title),
+            h('h3', {key: 'date'}, formatDate(date)),
+          ])
+        )
+      );
+    }
 
     const previewStyles = `
       html,
@@ -178,6 +197,7 @@
       }
     `;
 
+    CMS.registerEntryCard("posts", PostEntryCard);
     CMS.registerPreviewTemplate("posts", PostPreview);
     CMS.registerPreviewTemplate("general", GeneralPreview);
     CMS.registerPreviewTemplate("authors", AuthorsPreview);
