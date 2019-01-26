@@ -12,6 +12,7 @@ const registry = {
   editorComponents: Map(),
   widgetValueSerializers: {},
   mediaLibraries: [],
+  entryCards: {},
 };
 
 export default {
@@ -30,6 +31,8 @@ export default {
   getBackend,
   registerMediaLibrary,
   getMediaLibrary,
+  registerEntryCard,
+  getEntryCard,
 };
 
 /**
@@ -125,4 +128,20 @@ export function registerMediaLibrary(mediaLibrary, options) {
 
 export function getMediaLibrary(name) {
   return registry.mediaLibraries.find(ml => ml.name === name);
+}
+
+/**
+ * EntryCard component
+ */
+export function registerEntryCard(collectionName, Component) {
+  if (!collectionName || !Component) {
+    console.error(
+      "EntryCard parameters invalid. example: CMS.registerEntryCard('collection-name', Component)",
+    );
+  }
+  registry.entryCards[collectionName] = Component;
+}
+
+export function getEntryCard(collectionName) {
+  return registry.entryCards[collectionName];
 }
