@@ -1,4 +1,3 @@
-import createReactClass from 'create-react-class';
 import React from 'react';
 import CMS, { init } from 'netlify-cms-core/src';
 import createCustomRelationWidget from 'netlify-cms-custom-relation/src';
@@ -22,7 +21,6 @@ if (!window.CMS_MANUAL_INIT) {
 if (typeof window !== 'undefined') {
   window.CMS = CMS;
   window.initCMS = init;
-  window.createClass = window.createClass || createReactClass;
   window.h = window.h || React.createElement;
   window.CMS.createCustomRelationWidget = createCustomRelationWidget;
 }

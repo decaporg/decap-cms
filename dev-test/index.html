@@ -80,79 +80,72 @@
 
   <script src="dist/netlify-cms.js"></script>
   <script>
-    var PostPreview = createClass({
-      render: function() {
-        var entry = this.props.entry;
-        return h('div', {},
-          h('div', {className: "cover"},
-            h('h1', {}, entry.getIn(['data', 'title'])),
-            this.props.widgetFor('image'),
-          ),
-          h('p', {},
-            h('small', {}, "Written " + entry.getIn(['data', 'date']))
-          ),
-          h('div', {"className": "text"}, this.props.widgetFor('body'))
-        );
-      }
-    });
+    function PostPreview(props) {
+      var entry = props.entry;
+      return h('div', {},
+        h('div', {className: "cover"},
+          h('h1', {}, entry.getIn(['data', 'title'])),
+          props.widgetFor('image'),
+        ),
+        h('p', {},
+          h('small', {}, "Written " + entry.getIn(['data', 'date']))
+        ),
+        h('div', {"className": "text"}, props.widgetFor('body'))
+      );
+    };
 
-    var GeneralPreview = createClass({
-      render: function() {
-        var entry = this.props.entry;
-        var title = entry.getIn(['data', 'site_title']);
-        var posts = entry.getIn(['data', 'posts']);
-        var thumb = posts && posts.get('thumb');
+    function GeneralPreview(props) {
+      var entry = props.entry;
+      var title = entry.getIn(['data', 'site_title']);
+      var posts = entry.getIn(['data', 'posts']);
+      var thumb = posts && posts.get('thumb');
 
-        return h('div', {},
-          h('h1', {}, title),
-          h('dl', {},
-            h('dt', {}, 'Posts on Frontpage'),
-            h('dd', {}, this.props.widgetsFor('posts').getIn(['widgets', 'front_limit']) || 0),
+      return h('div', {},
+        h('h1', {}, title),
+        h('dl', {},
+          h('dt', {}, 'Posts on Frontpage'),
+          h('dd', {}, props.widgetsFor('posts').getIn(['widgets', 'front_limit']) || 0),
 
-            h('dt', {}, 'Default Author'),
-            h('dd', {}, this.props.widgetsFor('posts').getIn(['data', 'author']) || 'None'),
+          h('dt', {}, 'Default Author'),
+          h('dd', {}, props.widgetsFor('posts').getIn(['data', 'author']) || 'None'),
 
-            h('dt', {}, 'Default Thumbnail'),
-            h('dd', {}, thumb && h('img', {src: this.props.getAsset(thumb).toString()}))
-          )
-        );
-      }
-    });
+          h('dt', {}, 'Default Thumbnail'),
+          h('dd', {}, thumb && h('img', {src: props.getAsset(thumb).toString()}))
+        )
+      );
+    };
 
-    var AuthorsPreview = createClass({
-      render: function() {
-        return h('div', {},
-          h('h1', {}, 'Authors'),
-          this.props.widgetsFor('authors').map(function(author, index) {
-            return h('div', {key: index},
-              h('hr', {}),
-              h('strong', {}, author.getIn(['data', 'name'])),
-              author.getIn(['widgets', 'description'])
-            );
-          })
-        );
-      }
-    });
+    function AuthorsPreview(props) {
+      return h('div', {},
+        h('h1', {}, 'Authors'),
+        props.widgetsFor('authors').map(function(author, index) {
+          return h('div', {key: index},
+            h('hr', {}),
+            h('strong', {}, author.getIn(['data', 'name'])),
+            author.getIn(['widgets', 'description'])
+          );
+        })
+      );
+    };
 
-    const RelationKitchenSinkPostPreview = createClass({
-      render: function() {
-        // When a post is selected from the relation field, all of it's data
-        // will be available in the metadata nested under the collection name,
-        // and then further nested under the value specified in `valueField`.
-        // In this case, the post would be nested under "posts" and then under
-        // the title of the selected post, since our `valueField` in the config
-        // is "title".
-        const postValue = this.props.entry.getIn(['data', 'post']);
-        const post = this.props.fieldsMetaData.getIn(['posts', postValue]);
-        const style = { border: '2px solid #ccc', borderRadius: '8px', padding: '20px' };
-        return post ? h('div', { style: style },
-          h('h2', {}, 'Related Post'),
-          h('h3', {}, post.get('title')),
-          h('img', { src: post.get('image') }),
-          h('p', {}, post.get('body', '').substr(0, 100) + '...'),
-        ) : null;
-      }
-    });
+    function RelationKitchenSinkPostPreview(props) {
+      // When a post is selected from the relation field, all of it's data
+      // will be available in the metadata nested under the collection name,
+      // and then further nested under the value specified in `valueField`.
+      // In this case, the post would be nested under "posts" and then under
+      // the title of the selected post, since our `valueField` in the config
+      // is "title".
+      const postValue = props.entry.getIn(['data', 'post']);
+      const post = props.fieldsMetaData.getIn(['posts', postValue]);
+      const style = { border: '2px solid #ccc', borderRadius: '8px', padding: '20px' };
+      return post ? h('div', { style: style },
+        h('h2', {}, 'Related Post'),
+        h('h3', {}, post.get('title')),
+        h('img', { src: post.get('image') }),
+        h('p', {}, post.get('body', '').substr(0, 100) + '...'),
+      ) : null;
+    };
+
     function formatDate(date){
       if(date && date.toLocaleDateString) return date.toLocaleDateString('en')
       return date.toString ? date.toString() : ''
