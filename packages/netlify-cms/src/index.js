@@ -1,6 +1,7 @@
 import CMS, { init } from 'netlify-cms-core/src';
 import createCustomRelationWidget from 'netlify-cms-custom-relation/src';
 import EntryLoader from 'netlify-cms-entry-loader/src';
+import * as styles from 'netlify-cms-ui-default/src/styles';
 import './backends';
 import './widgets';
 import './editor-components';
@@ -25,8 +26,9 @@ if (typeof window !== 'undefined') {
   window.initCMS = init;
   window.CMS.createCustomRelationWidget = createCustomRelationWidget;
   window.CMS.EntryLoader = EntryLoader;
+  window.CMS.styles = styles;
 }
 
 // #endif
 
-export { CMS as default, init, createCustomRelationWidget, EntryLoader };
+export { CMS as default, init, createCustomRelationWidget, EntryLoader, styles };

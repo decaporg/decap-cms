@@ -35,6 +35,7 @@
     "netlify-cms-editor-component-image": "^2.2.0",
     "netlify-cms-entry-loader": "^2.0.5",
     "netlify-cms-media-library-uploadcare": "^0.3.1",
+    "netlify-cms-ui-default": "^2.2.0",
     "netlify-cms-widget-boolean": "^2.0.5",
     "netlify-cms-widget-date": "^2.1.0",
     "netlify-cms-widget-datetime": "^2.0.7",
