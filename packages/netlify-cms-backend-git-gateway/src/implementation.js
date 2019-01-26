@@ -1,12 +1,9 @@
 import GoTrue from 'gotrue-js';
 import jwtDecode from 'jwt-decode';
 import { get, pick, intersection } from 'lodash';
-import { APIError, unsentRequest } from 'netlify-cms-lib-util';
-import { GitHubBackend } from 'netlify-cms-backend-github';
-import { GitLabBackend } from 'netlify-cms-backend-gitlab';
-import { BitBucketBackend, API as BitBucketAPI } from 'netlify-cms-backend-bitbucket';
+import { APIError, unsentRequest } from 'netlify-cms-lib-util/src';
+import { GitHubBackend } from 'netlify-cms-backend-github/src';
 import GitHubAPI from './GitHubAPI';
-import GitLabAPI from './GitLabAPI';
 import AuthenticationPage from './AuthenticationPage';
 
 const localHosts = {
@@ -148,16 +145,6 @@ export default class GitGateway {
       if (this.backendType === 'github') {
         this.api = new GitHubAPI(apiConfig);
         this.backend = new GitHubBackend(this.config, { ...this.options, API: this.api });
-      } else if (this.backendType === 'gitlab') {
-        this.api = new GitLabAPI(apiConfig);
-        this.backend = new GitLabBackend(this.config, { ...this.options, API: this.api });
-      } else if (this.backendType === 'bitbucket') {
-        this.api = new BitBucketAPI({
-          ...apiConfig,
-          requestFunction: this.requestFunction,
-          hasWriteAccess: async () => true,
-        });
-        this.backend = new BitBucketBackend(this.config, { ...this.options, API: this.api });
       }
 
       if (!(await this.api.hasWriteAccess())) {

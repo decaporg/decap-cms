@@ -1,4 +1,4 @@
-import { localForage, unsentRequest, then, APIError, Cursor } from 'netlify-cms-lib-util';
+import { localForage, unsentRequest, then, APIError, Cursor } from 'netlify-cms-lib-util/src';
 import { Base64 } from 'js-base64';
 import { fromJS, List, Map } from 'immutable';
 import { flow, partial, result } from 'lodash';

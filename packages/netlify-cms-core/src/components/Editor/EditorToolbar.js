@@ -14,7 +14,7 @@ import {
   components,
   buttons,
   lengths,
-} from 'netlify-cms-ui-default';
+} from 'netlify-cms-ui-default/src';
 import { status } from 'Constants/publishModes';
 import SettingsDropdown from 'UI/SettingsDropdown';
 

@@ -1,7 +1,7 @@
 import { attempt, isError, take } from 'lodash';
 import uuid from 'uuid/v4';
-import { EditorialWorkflowError } from 'netlify-cms-lib-util';
-import { Cursor, CURSOR_COMPATIBILITY_SYMBOL } from 'netlify-cms-lib-util';
+import { EditorialWorkflowError } from 'netlify-cms-lib-util/src';
+import { Cursor, CURSOR_COMPATIBILITY_SYMBOL } from 'netlify-cms-lib-util/src';
 import AuthenticationPage from './AuthenticationPage';
 
 window.repoFiles = window.repoFiles || {};

@@ -6,7 +6,7 @@ import { orderBy, map } from 'lodash';
 import { Map } from 'immutable';
 import { translate } from 'react-polyglot';
 import fuzzy from 'fuzzy';
-import { resolvePath, fileExtension } from 'netlify-cms-lib-util';
+import { resolvePath, fileExtension } from 'netlify-cms-lib-util/src';
 import {
   loadMedia as loadMediaAction,
   persistMedia as persistMediaAction,

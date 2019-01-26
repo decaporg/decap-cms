@@ -1,7 +1,7 @@
 import createReactClass from 'create-react-class';
 import React from 'react';
 import CMS, { init } from 'netlify-cms-core/src';
-import createCustomRelationWidget from 'netlify-cms-custom-relation';
+import createCustomRelationWidget from 'netlify-cms-custom-relation/src';
 import './backends';
 import './widgets';
 import './editor-components';

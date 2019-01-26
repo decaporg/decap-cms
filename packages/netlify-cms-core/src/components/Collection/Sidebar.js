@@ -4,7 +4,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled, { css } from 'react-emotion';
 import { translate } from 'react-polyglot';
 import { NavLink } from 'react-router-dom';
-import { Icon, components, colors, colorsRaw, lengths } from 'netlify-cms-ui-default';
+import { Icon, components, colors, colorsRaw, lengths } from 'netlify-cms-ui-default/src';
 import { searchCollections } from 'Actions/collections';
 
 const styles = {

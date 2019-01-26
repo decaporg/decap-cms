@@ -4,7 +4,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Map, List, fromJS } from 'immutable';
 import { find } from 'lodash';
 import Select from 'react-select';
-import { colors } from 'netlify-cms-ui-default';
+import { colors } from 'netlify-cms-ui-default/src';
 
 const styles = {
   control: styles => ({

@@ -21,6 +21,11 @@ const rules = () => ({
     exclude: [/node_modules/],
     use: 'svg-inline-loader',
   }),
+  css: () => ({
+    test: /\.css$/,
+    include: [/(redux-notifications|react-datetime)/],
+    use: ['to-string-loader', 'css-loader'],
+  }),
 });
 
 const plugins = () => {

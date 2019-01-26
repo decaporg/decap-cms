@@ -6,7 +6,7 @@ import { Map, List } from 'immutable';
 import { once } from 'lodash';
 import uuid from 'uuid/v4';
 import { oneLine } from 'common-tags';
-import { lengths, components, buttons } from 'netlify-cms-ui-default';
+import { lengths, components, buttons } from 'netlify-cms-ui-default/src';
 
 const MAX_DISPLAY_LENGTH = 50;
 

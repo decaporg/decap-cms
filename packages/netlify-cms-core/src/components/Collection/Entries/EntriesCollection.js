@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 import { partial } from 'lodash';
-import { Cursor } from 'netlify-cms-lib-util';
+import { Cursor } from 'netlify-cms-lib-util/src';
 import {
   loadEntries as actionLoadEntries,
   traverseCollectionCursor as actionTraverseCollectionCursor,

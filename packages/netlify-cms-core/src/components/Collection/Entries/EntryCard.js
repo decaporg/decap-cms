@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'react-emotion';
 import { Link } from 'react-router-dom';
-import { resolvePath } from 'netlify-cms-lib-util';
-import { colors, colorsRaw, components, lengths } from 'netlify-cms-ui-default';
+import { resolvePath } from 'netlify-cms-lib-util/src';
+import { colors, colorsRaw, components, lengths } from 'netlify-cms-ui-default/src';
 import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from 'Constants/collectionViews';
 
 const ListCard = styled.li`

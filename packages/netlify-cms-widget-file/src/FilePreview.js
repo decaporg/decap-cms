@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'react-emotion';
 import { List } from 'immutable';
-import { WidgetPreviewContainer } from 'netlify-cms-ui-default';
+import { WidgetPreviewContainer } from 'netlify-cms-ui-default/src';
 
 const FileLink = styled(({ value, getAsset }) => (
   <a href={getAsset(value)} rel="noopener noreferrer" target="_blank">

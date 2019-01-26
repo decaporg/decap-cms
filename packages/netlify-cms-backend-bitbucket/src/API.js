@@ -7,7 +7,7 @@ import {
   basename,
   Cursor,
   APIError,
-} from 'netlify-cms-lib-util';
+} from 'netlify-cms-lib-util/src';
 
 export default class API {
   constructor(config) {

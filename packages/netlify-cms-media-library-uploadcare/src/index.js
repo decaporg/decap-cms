@@ -1,4 +1,4 @@
-import { loadScript } from 'netlify-cms-lib-util';
+import { loadScript } from 'netlify-cms-lib-util/src';
 import { Iterable } from 'immutable';
 
 const CDN_BASE_URL = 'https://ucarecdn.com';

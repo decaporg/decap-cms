@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { translate } from 'react-polyglot';
-import { Loader } from 'netlify-cms-ui-default';
+import { Loader } from 'netlify-cms-ui-default/src';
 import EntryListing from './EntryListing';
 
 const Entries = ({

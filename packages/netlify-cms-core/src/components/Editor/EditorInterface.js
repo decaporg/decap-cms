@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled, { css, injectGlobal } from 'react-emotion';
 import SplitPane from 'react-split-pane';
-import { colors, colorsRaw, components, transitions } from 'netlify-cms-ui-default';
+import { colors, colorsRaw, components, transitions } from 'netlify-cms-ui-default/src';
 import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
 import EditorControlPane from './EditorControlPane/EditorControlPane';
 import EditorPreviewPane from './EditorPreviewPane/EditorPreviewPane';

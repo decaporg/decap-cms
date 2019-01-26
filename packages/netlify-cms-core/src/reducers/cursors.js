@@ -1,5 +1,5 @@
 import { fromJS } from 'immutable';
-import { Cursor } from 'netlify-cms-lib-util';
+import { Cursor } from 'netlify-cms-lib-util/src';
 import { ENTRIES_SUCCESS } from 'Actions/entries';
 
 // Since pagination can be used for a variety of views (collections

@@ -1,4 +1,4 @@
-import { colors } from 'netlify-cms-ui-default';
+import { colors } from 'netlify-cms-ui-default/src';
 
 const reactSelectStyles = {
   control: styles => ({

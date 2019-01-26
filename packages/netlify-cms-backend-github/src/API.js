@@ -1,8 +1,8 @@
-import { localForage } from 'netlify-cms-lib-util';
+import { localForage } from 'netlify-cms-lib-util/src';
 import { Base64 } from 'js-base64';
 import { uniq, initial, last, get, find, hasIn, partial, result } from 'lodash';
-import { filterPromises, resolvePromiseProperties } from 'netlify-cms-lib-util';
-import { APIError, EditorialWorkflowError } from 'netlify-cms-lib-util';
+import { filterPromises, resolvePromiseProperties } from 'netlify-cms-lib-util/src';
+import { APIError, EditorialWorkflowError } from 'netlify-cms-lib-util/src';
 
 const CMS_BRANCH_PREFIX = 'cms/';
 
