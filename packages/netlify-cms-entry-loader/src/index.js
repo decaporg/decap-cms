@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-
-const selectEntry = (state, collection, slug) => state.getIn(['entities', `${collection}.${slug}`]);
+import { selectEntry } from 'netlify-cms-core/src/reducers';
+import { loadEntry } from 'netlify-cms-core/src/actions/entries';
 
 const toJS = object => {
   if (typeof object.toJS === 'function') return object.toJS();
@@ -40,26 +40,41 @@ class EntryLoaderComponent extends React.Component {
   }
   fetch = () => {
     if (this.props.bypass) return;
-    const { entry: _e, loadEntry, collection, slug } = this.props;
+    const { entry: _e, collection, slug } = this.props;
     const entry = toJS(_e);
     const isCached = entry.data && !entry.isFetching;
     const isUpdate = entry.slug !== slug || entry.collection !== collection;
     if (!isUpdate && isCached) return;
-    loadEntry(collection, slug);
+    this.props.loadEntry(collection, slug);
   };
   render() {
     const { children, render = children } = this.props;
-    const { isFetching, data, error } = toJS(this.props.entry);
-    return render({ ...data, isFetching, error });
+    const { isFetching, data = {}, error } = toJS(this.props.entry);
+    return render({ isFetching, data, error });
   }
 }
 
-const mapStateToProps = ({ entries }, { collection, slug, entry }) => ({
-  entry: entry ? { data: entry } : selectEntry(entries, collection, slug),
+const mapStateToProps = (state, { collection, slug, entry }) => ({
+  entry: entry ? { data: entry } : selectEntry(state, collection, slug),
   bypass: !!entry,
 });
 
-const EntryLoader = connect(mapStateToProps)(EntryLoaderComponent);
+const getCollection = (collections, collection) =>
+  typeof collection === 'string' ? collections.get(collection) : collection;
+
+const mapDispatchToProps = {
+  loadEntry: (collectionName, slug) => (dispatch, getState) => {
+    const collection = getCollection(getState().collections, collectionName);
+    return loadEntry(collection, slug)(dispatch, getState);
+  },
+};
+
+const enhance = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+);
+
+const EntryLoader = enhance(EntryLoaderComponent);
 
 EntryLoader.propTypes = {
   collection: PropTypes.string,

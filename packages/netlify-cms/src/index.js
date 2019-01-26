@@ -1,11 +1,13 @@
-import createReactClass from 'create-react-class';
-import React from 'react';
 import CMS, { init } from 'netlify-cms-core/src';
 import createCustomRelationWidget from 'netlify-cms-custom-relation/src';
+import EntryLoader from 'netlify-cms-entry-loader/src';
+import * as styles from 'netlify-cms-ui-default/src/styles';
 import './backends';
 import './widgets';
 import './editor-components';
 import './media-libraries';
+
+// #if e = process.env.NODE_ENV !== 'production'
 
 /**
  * Load Netlify CMS automatically if `window.CMS_MANUAL_INIT` is set.
@@ -22,9 +24,11 @@ if (!window.CMS_MANUAL_INIT) {
 if (typeof window !== 'undefined') {
   window.CMS = CMS;
   window.initCMS = init;
-  window.createClass = window.createClass || createReactClass;
-  window.h = window.h || React.createElement;
   window.CMS.createCustomRelationWidget = createCustomRelationWidget;
+  window.CMS.EntryLoader = EntryLoader;
+  window.CMS.styles = styles;
 }
 
-export { CMS as default, init, createCustomRelationWidget };
+// #endif
+
+export { CMS as default, init, createCustomRelationWidget, EntryLoader, styles };

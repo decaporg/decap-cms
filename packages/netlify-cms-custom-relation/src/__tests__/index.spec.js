@@ -12,7 +12,6 @@ const props = {
   forID: 'some-random-id',
   classNameWrapper: 'classname-wrapper',
   query: async () => {},
-  loadEntry: async () => {},
   clearSearch: () => {},
   setActiveStyle: () => {},
   setInactiveStyle: () => {},
@@ -23,7 +22,7 @@ const props = {
     multiple: true,
     required: false,
   }),
-  value: List(['saved-slug']),
+  value: List([]),
 };
 
 describe('"create" custom-relation widget', () => {
