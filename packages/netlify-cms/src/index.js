@@ -5,6 +5,8 @@ import './widgets';
 import './editor-components';
 import './media-libraries';
 
+// #if e = process.env.NODE_ENV !== 'production'
+
 /**
  * Load Netlify CMS automatically if `window.CMS_MANUAL_INIT` is set.
  */
@@ -22,5 +24,7 @@ if (typeof window !== 'undefined') {
   window.initCMS = init;
   window.CMS.createCustomRelationWidget = createCustomRelationWidget;
 }
+
+// #endif
 
 export { CMS as default, init, createCustomRelationWidget };
