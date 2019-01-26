@@ -1,5 +1,3 @@
-import { css, injectGlobal } from 'react-emotion';
-
 export { fonts, colorsRaw, colors, lengths, components, buttons, shadows, borders, transitions };
 
 /**
@@ -99,26 +97,26 @@ const transitions = {
 };
 
 const shadows = {
-  drop: css`
+  drop: `
     box-shadow: 0 2px 4px 0 rgba(19, 39, 48, 0.12);
   `,
-  dropMain: css`
+  dropMain: `
     box-shadow: 0 2px 6px 0 rgba(68, 74, 87, 0.05), 0 1px 3px 0 rgba(68, 74, 87, 0.1);
   `,
-  dropMiddle: css`
+  dropMiddle: `
     box-shadow: 0 2px 6px 0 rgba(68, 74, 87, 0.15), 0 1px 3px 0 rgba(68, 74, 87, 0.3);
   `,
-  dropDeep: css`
+  dropDeep: `
     box-shadow: 0 4px 12px 0 rgba(68, 74, 87, 0.15), 0 1px 3px 0 rgba(68, 74, 87, 0.25);
   `,
 };
 
-const badge = css`
+const badge = `
   font-size: 13px;
   line-height: 1;
 `;
 
-const backgroundBadge = css`
+const backgroundBadge = `
   ${badge};
   display: block;
   border-radius: ${lengths.borderRadius};
@@ -126,26 +124,26 @@ const backgroundBadge = css`
   text-align: center;
 `;
 
-const textBadge = css`
+const textBadge = `
   ${badge};
   display: inline-block;
   font-weight: 700;
   text-transform: uppercase;
 `;
 
-const card = css`
+const card = `
   ${shadows.dropMain};
   border-radius: 5px;
   background-color: #fff;
 `;
 
 const buttons = {
-  button: css`
+  button: `
     border: 0;
     border-radius: ${lengths.borderRadius};
     cursor: pointer;
   `,
-  default: css`
+  default: `
     height: 36px;
     line-height: 36px;
     font-weight: 500;
@@ -153,7 +151,7 @@ const buttons = {
     background-color: ${colorsRaw.gray};
     color: ${colorsRaw.white};
   `,
-  medium: css`
+  medium: `
     height: 27px;
     line-height: 27px;
     font-size: 12px;
@@ -161,11 +159,11 @@ const buttons = {
     border-radius: 3px;
     padding: 0 24px 0 14px;
   `,
-  small: css`
+  small: `
     height: 23px;
     line-height: 23px;
   `,
-  gray: css`
+  gray: `
     background-color: ${colors.button};
     color: ${colors.buttonText};
 
@@ -175,27 +173,27 @@ const buttons = {
       background-color: #555a65;
     }
   `,
-  green: css`
+  green: `
     background-color: #aae31f;
     color: ${colorsRaw.green};
   `,
-  lightRed: css`
+  lightRed: `
     background-color: ${colorsRaw.redLight};
     color: ${colorsRaw.red};
   `,
-  lightBlue: css`
+  lightBlue: `
     background-color: ${colorsRaw.blueLight};
     color: ${colorsRaw.blue};
   `,
-  lightTeal: css`
+  lightTeal: `
     background-color: ${colorsRaw.tealLight};
     color: #1195aa;
   `,
-  teal: css`
+  teal: `
     background-color: ${colorsRaw.teal};
     color: ${colorsRaw.white};
   `,
-  disabled: css`
+  disabled: `
     background-color: ${colorsRaw.grayLight};
     color: ${colorsRaw.gray};
   `,
@@ -203,7 +201,7 @@ const buttons = {
 
 const components = {
   card,
-  caretDown: css`
+  caretDown: `
     color: ${colorsRaw.white};
     width: 0;
     height: 0;
@@ -212,67 +210,67 @@ const components = {
     border-top: 6px solid currentColor;
     border-radius: 2px;
   `,
-  badge: css`
+  badge: `
     ${backgroundBadge};
     color: ${colors.infoText};
     background-color: ${colors.infoBackground};
   `,
-  badgeSuccess: css`
+  badgeSuccess: `
     ${backgroundBadge};
     color: ${colors.successText};
     background-color: ${colors.successBackground};
   `,
-  badgeDanger: css`
+  badgeDanger: `
     ${backgroundBadge};
     color: ${colorsRaw.red};
     background-color: #fbe0d7;
   `,
-  textBadge: css`
+  textBadge: `
     ${textBadge};
     color: ${colors.infoText};
   `,
-  textBadgeSuccess: css`
+  textBadgeSuccess: `
     ${textBadge};
     color: ${colors.successText};
   `,
-  textBadgeDanger: css`
+  textBadgeDanger: `
     ${textBadge};
     color: ${colorsRaw.red};
   `,
-  loaderSize: css`
+  loaderSize: `
     width: 2.28571429rem;
     height: 2.28571429rem;
   `,
-  cardTop: css`
+  cardTop: `
     ${card};
     width: ${lengths.topCardWidth};
     max-width: 100%;
     padding: 18px 20px;
     margin-bottom: 28px;
   `,
-  cardTopHeading: css`
+  cardTopHeading: `
     font-size: 22px;
     font-weight: 600;
     line-height: 37px;
     margin: 0;
     padding: 0;
   `,
-  cardTopDescription: css`
+  cardTopDescription: `
     max-width: 480px;
     color: ${colors.text};
     font-size: 14px;
     margin-top: 8px;
   `,
-  objectWidgetTopBarContainer: css`
+  objectWidgetTopBarContainer: `
     padding: 0 14px 14px;
   `,
-  dropdownList: css`
+  dropdownList: `
     ${shadows.dropDeep};
     background-color: ${colorsRaw.white};
     border-radius: ${lengths.borderRadius};
     overflow: hidden;
   `,
-  dropdownItem: css`
+  dropdownItem: `
     ${buttons.button};
     background-color: transparent;
     border-radius: 0;
@@ -297,7 +295,7 @@ const components = {
   `,
 };
 
-injectGlobal`
+export const globalStyles = `
   *, *:before, *:after {
     box-sizing: border-box;
   }

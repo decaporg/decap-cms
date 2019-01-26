@@ -16,4 +16,5 @@ export {
   shadows,
   borders,
   transitions,
+  globalStyles,
 } from './styles';

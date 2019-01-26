@@ -5,6 +5,8 @@ import { Route } from 'react-router-dom';
 import { ConnectedRouter } from 'react-router-redux';
 import history from 'Routing/history';
 import store from 'Redux';
+import { injectGlobal } from 'react-emotion';
+import { globalStyles } from 'netlify-cms-ui-default/src';
 import { mergeConfig } from 'Actions/config';
 import { getPhrases } from 'Constants/defaultPhrases';
 import { I18n } from 'react-polyglot';
@@ -76,6 +78,7 @@ function bootstrap(opts = {}) {
   /**
    * Render application root.
    */
+  injectGlobal(globalStyles);
   render(<Root />, getRoot());
 }
 
