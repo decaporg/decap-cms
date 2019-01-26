@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import BaseOption from 'react-select/lib/components/Option';
 import BaseSingleValue from 'react-select/lib/components/SingleValue';
-import EntryLoader from './EntryLoader';
+import EntryLoader from 'netlify-cms-entry-loader/src';
 
 // TODO: add support for setting custom identifier field #1543
 // TODO: export a factory to create custom Option UI
@@ -13,10 +13,10 @@ Option.propTypes = { data: PropTypes.object };
 // TODO: export a factory to create custom Value UI
 const ValueRenderer = props => (
   <EntryLoader {...props}>
-    {({ isLoading, isFetching, title, error }) => {
-      if (isLoading || isFetching) return '...';
+    {({ isFetching, data, error }) => {
+      if (isFetching) return '...';
       if (error) return error;
-      return title || 'Unknown Entity';
+      return data.title || 'Unknown Entity';
     }}
   </EntryLoader>
 );

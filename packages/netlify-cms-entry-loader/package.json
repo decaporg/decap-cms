@@ -1,17 +1,15 @@
 {
-  "name": "netlify-cms-custom-relation",
-  "description": "Widget for linking related entries in Netlify CMS.",
+  "name": "netlify-cms-entry-loader",
+  "description": "Widget for loading entries in Netlify CMS.",
   "version": "2.0.5",
-  "homepage": "https://www.netlifycms.org/docs/widgets/#custom-relation",
-  "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-custom-relation",
+  "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-entry-loader",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
-  "main": "dist/netlify-cms-custom-relation.js",
+  "main": "dist/netlify-cms-entry-loader.js",
   "license": "MIT",
   "keywords": [
     "netlify",
     "netlify-cms",
     "widget",
-    "custom-relation",
     "link"
   ],
   "sideEffects": false,
@@ -21,7 +19,6 @@
     "build": "cross-env NODE_ENV=production webpack"
   },
   "dependencies": {
-    "netlify-cms-entry-loader": "2.0.5",
     "react-select": "^2.3.0"
   },
   "devDependencies": {
