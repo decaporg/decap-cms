@@ -77,9 +77,11 @@
   </script>
 </head>
 <body>
-
+  <script src="umd/react.production.min.js"></script>
   <script src="dist/netlify-cms.js"></script>
   <script>
+    window.h = window.h || React.createElement;
+
     function PostPreview(props) {
       var entry = props.entry;
       return h('div', {},
