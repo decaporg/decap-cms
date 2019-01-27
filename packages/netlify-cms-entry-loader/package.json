@@ -19,7 +19,7 @@
     "build": "cross-env NODE_ENV=production webpack"
   },
   "dependencies": {
-    "react-select": "^2.3.0"
+    "netlify-cms-core": "^2.4.1"
   },
   "devDependencies": {
     "cross-env": "^5.2.0",
@@ -32,6 +32,7 @@
     "netlify-cms-ui-default": "^2.0.0",
     "prop-types": "^15.5.10",
     "react": "^16.4.1",
-    "react-immutable-proptypes": "^2.1.0"
+    "react-immutable-proptypes": "^2.1.0",
+    "react-redux": "^5.1.1"
   }
 }

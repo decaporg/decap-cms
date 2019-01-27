@@ -21,7 +21,7 @@
     "build": "cross-env NODE_ENV=production webpack"
   },
   "dependencies": {
-    "netlify-cms-entry-loader": "2.0.5",
+    "netlify-cms-entry-loader": "^2.0.5",
     "react-select": "^2.3.0"
   },
   "devDependencies": {
