@@ -272,7 +272,7 @@ class EditorToolbar extends React.Component {
           </PreviewLink>
         ) : (
           <RefreshPreviewButton onClick={loadDeployPreview}>
-            <span>Check for Preview</span>
+            <span>{t('editor.editorToolbar.deployPreviewPendingButtonLabel')}</span>
             <Icon type="refresh" size="xsmall" />
           </RefreshPreviewButton>
         )}

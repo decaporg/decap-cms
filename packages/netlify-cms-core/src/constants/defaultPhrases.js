@@ -78,7 +78,7 @@ export function getPhrases() {
         inReview: 'In review',
         ready: 'Ready',
         publishNow: 'Publish now',
-        deployPreviewPendingButtonLabel: 'Awaiting Preview...',
+        deployPreviewPendingButtonLabel: 'Check for Preview',
         deployPreviewButtonLabel: 'View Preview',
         deployButtonLabel: 'View Live',
       },
