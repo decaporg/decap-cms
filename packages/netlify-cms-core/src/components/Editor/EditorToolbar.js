@@ -168,7 +168,8 @@ const PreviewButtonContainer = styled.div`
   display: flex;
   align-items: center;
 
-  a, ${Icon} {
+  a,
+  ${Icon} {
     color: ${colorsRaw.blue};
   }
 
@@ -176,7 +177,7 @@ const PreviewButtonContainer = styled.div`
     position: relative;
     top: 1px;
   }
-`
+`;
 
 const RefreshPreviewButton = styled.button`
   background: none;
@@ -187,7 +188,7 @@ const RefreshPreviewButton = styled.button`
   span {
     margin-right: 6px;
   }
-`
+`;
 
 const PreviewLink = RefreshPreviewButton.withComponent('a');
 
@@ -252,7 +253,7 @@ class EditorToolbar extends React.Component {
   };
 
   renderDeployPreviewControls = label => {
-    const { deployPreview = Map(), loadDeployPreview, hasWorkflow } = this.props;
+    const { deployPreview = Map(), loadDeployPreview } = this.props;
     const url = deployPreview.get('url');
     const status = deployPreview.get('status');
 
@@ -264,16 +265,17 @@ class EditorToolbar extends React.Component {
     const deployPreviewReady = status === 'SUCCESS' && !isFetching;
     return (
       <PreviewButtonContainer>
-        {deployPreviewReady
-          ? <PreviewLink rel="noopener noreferrer" target="_blank" href={url}>
-              <span>{label}</span>
-              <Icon type="new-tab" size="xsmall"/>
-            </PreviewLink>
-          : <RefreshPreviewButton onClick={loadDeployPreview}>
-              <span>Check for Preview</span>
-              <Icon type="refresh" size="xsmall"/>
-            </RefreshPreviewButton>
-        }
+        {deployPreviewReady ? (
+          <PreviewLink rel="noopener noreferrer" target="_blank" href={url}>
+            <span>{label}</span>
+            <Icon type="new-tab" size="xsmall" />
+          </PreviewLink>
+        ) : (
+          <RefreshPreviewButton onClick={loadDeployPreview}>
+            <span>Check for Preview</span>
+            <Icon type="refresh" size="xsmall" />
+          </RefreshPreviewButton>
+        )}
       </PreviewButtonContainer>
     );
   };

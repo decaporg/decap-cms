@@ -401,6 +401,11 @@ class Backend {
       .then(this.entryWithFormat(collection, slug));
   }
 
+  /**
+   * Creates a URL using `site_url` from the config and `preview_path` from the
+   * entry's collection. Does not currently make a request through the backend,
+   * but likely will in the future.
+   */
   getDeploy(collection, slug) {
     const baseUrl = this.config.get('site_url');
     if (!baseUrl) {
@@ -412,26 +417,51 @@ class Backend {
     };
   }
 
+  /**
+   * Requests a base URL from the backend for previewing a specific entry.
+   * Supports polling via `maxAttempts` and `interval` options, as there is
+   * often a delay before a preview URL is available.
+   */
   async getDeployPreview(collection, slug, { maxAttempts = 1, interval = 5000 } = {}) {
-    if (this.implementation.getDeployPreview) {
-      let deployPreview, count = 0;
-      while (!deployPreview && count < maxAttempts) {
-        count++
-        deployPreview = await this.implementation.getDeployPreview(collection, slug);
-        if (!deployPreview) {
-          await new Promise(resolve => setTimeout(() => resolve(), 5000));
-        }
-      }
-
-      if (!deployPreview) {
-        return
-      }
-
-      return {
-        url: createPreviewUrl(deployPreview.url, collection, slug),
-        status: deployPreview.status ? deployPreview.status.toUpperCase() : '',
-      };
+    /**
+     * If the registered backend does not provide a `getDeployPreview` method,
+     * nothing happens.
+     */
+    if (!this.implementation.getDeployPreview) {
+      return;
     }
+
+    /**
+     * Poll for the deploy preview URL (defaults to 1 attempt, so no polling by
+     * default).
+     */
+    let deployPreview,
+      count = 0;
+    while (!deployPreview && count < maxAttempts) {
+      count++;
+      deployPreview = await this.implementation.getDeployPreview(collection, slug);
+      if (!deployPreview) {
+        await new Promise(resolve => setTimeout(() => resolve(), interval));
+      }
+    }
+
+    /**
+     * If there's no deploy preview, do nothing.
+     */
+    if (!deployPreview) {
+      return;
+    }
+
+    return {
+      /**
+       * Create a URL using the collection `preview_path`, if provided.
+       */
+      url: createPreviewUrl(deployPreview.url, collection, slug),
+      /**
+       * Always capitalize the status for consistency.
+       */
+      status: deployPreview.status ? deployPreview.status.toUpperCase() : '',
+    };
   }
 
   persistEntry(config, collection, entryDraft, MediaFiles, integrations, options = {}) {

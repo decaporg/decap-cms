@@ -14,18 +14,24 @@ const deploys = (state = Map({ deploys: Map() }), action) => {
 
     case DEPLOY_PREVIEW_SUCCESS: {
       const { collection, slug, url, status } = action.payload;
-      return state.setIn(['deploys', `${collection}.${slug}`], fromJS({
-        isFetching: false,
-        url,
-        status,
-      }));
+      return state.setIn(
+        ['deploys', `${collection}.${slug}`],
+        fromJS({
+          isFetching: false,
+          url,
+          status,
+        }),
+      );
     }
 
     case DEPLOY_PREVIEW_FAILURE: {
       const { collection, slug } = action.payload;
-      return state.setIn(['deploys', `${collection}.${slug}`,], fromJS({
-        isFetching: false,
-      }));
+      return state.setIn(
+        ['deploys', `${collection}.${slug}`],
+        fromJS({
+          isFetching: false,
+        }),
+      );
     }
 
     default:

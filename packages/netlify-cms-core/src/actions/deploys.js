@@ -39,6 +39,9 @@ export function deployPreviewError(collection, slug) {
   };
 }
 
+/**
+ * Requests a deploy preview object from the registered backend.
+ */
 export function loadDeployPreview(collection, slug, published, opts) {
   return async (dispatch, getState) => {
     const state = getState();
@@ -46,9 +49,13 @@ export function loadDeployPreview(collection, slug, published, opts) {
     dispatch(deployPreviewLoading(collection, slug));
 
     try {
+      /**
+       * `getDeploy` is for published entries, while `getDeployPreview` is for
+       * unpublished entries.
+       */
       const deploy = published
         ? backend.getDeploy(collection, slug)
-        : await backend.getDeployPreview(collection, slug, opts)
+        : await backend.getDeployPreview(collection, slug, opts);
       if (deploy) {
         return dispatch(deployPreviewLoaded(collection, slug, deploy));
       }
@@ -59,7 +66,7 @@ export function loadDeployPreview(collection, slug, published, opts) {
         notifSend({
           message: {
             details: error.message,
-            key: 'ui.toast.onFailToLoadDeployPreview'
+            key: 'ui.toast.onFailToLoadDeployPreview',
           },
           kind: 'danger',
           dismissAfter: 8000,

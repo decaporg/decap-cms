@@ -59,7 +59,6 @@ class Editor extends React.Component {
     hasWorkflow: PropTypes.bool,
     unpublishedEntry: PropTypes.bool,
     isModification: PropTypes.bool,
-    previewUrl: PropTypes.string,
     collectionEntriesLoaded: PropTypes.bool,
     updateUnpublishedEntryStatus: PropTypes.func.isRequired,
     publishUnpublishedEntry: PropTypes.func.isRequired,
@@ -311,7 +310,6 @@ class Editor extends React.Component {
       unpublishedEntry,
       newEntry,
       isModification,
-      previewUrl,
       currentStatus,
       logoutUser,
       deployPreview,
@@ -319,6 +317,8 @@ class Editor extends React.Component {
       slug,
       t,
     } = this.props;
+
+    const isPublished = !newEntry && !unpublishedEntry;
 
     if (entry && entry.get('error')) {
       return (
@@ -357,13 +357,10 @@ class Editor extends React.Component {
         hasUnpublishedChanges={unpublishedEntry}
         isNewEntry={newEntry}
         isModification={isModification}
-        previewUrl={previewUrl}
         currentStatus={currentStatus}
         onLogoutClick={logoutUser}
         deployPreview={deployPreview}
-        loadDeployPreview={opts => (
-          console.log(opts) || loadDeployPreview(collection, slug, !newEntry && !unpublishedEntry, opts)
-        )}
+        loadDeployPreview={opts => loadDeployPreview(collection, slug, isPublished, opts)}
       />
     );
   }
@@ -383,7 +380,6 @@ function mapStateToProps(state, ownProps) {
   const displayUrl = config.get('display_url');
   const hasWorkflow = config.get('publish_mode') === EDITORIAL_WORKFLOW;
   const isModification = entryDraft.getIn(['entry', 'isModification']);
-  const previewUrl = entryDraft.getIn(['entry', 'previewUrl']);
   const collectionEntriesLoaded = !!entries.getIn(['pages', collectionName]);
   const unpublishedEntry = selectUnpublishedEntry(state, collectionName, slug);
   const currentStatus = unpublishedEntry && unpublishedEntry.getIn(['metaData', 'status']);
@@ -402,7 +398,6 @@ function mapStateToProps(state, ownProps) {
     displayUrl,
     hasWorkflow,
     isModification,
-    previewUrl,
     collectionEntriesLoaded,
     currentStatus,
     deployPreview,

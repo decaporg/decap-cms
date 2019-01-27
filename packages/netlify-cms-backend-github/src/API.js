@@ -6,13 +6,6 @@ import { APIError, EditorialWorkflowError } from 'netlify-cms-lib-util';
 
 const CMS_BRANCH_PREFIX = 'cms/';
 
-function cacheMetadata(key, data) {
-  localForage.setItem(`gh.meta.${key}`, {
-    expires: Date.now() + 300000, // In 5 minutes
-    data,
-  });
-}
-
 export default class API {
   constructor(config) {
     this.api_root = config.api_root || 'https://api.github.com';
@@ -142,10 +135,12 @@ export default class API {
         .then(() => this.updateTree(branchData.sha, '/', fileTree))
         .then(changeTree => this.commit(`Updating “${key}” metadata`, changeTree))
         .then(response => this.patchRef('meta', '_netlify_cms', response.sha))
-        .then(response => {
-          cacheMetadata(key, data);
-          return response;
-        })
+        .then(() => {
+          localForage.setItem(`gh.meta.${key}`, {
+            expires: Date.now() + 300000, // In 5 minutes
+            data,
+          });
+        });
     });
   }
 
@@ -165,10 +160,6 @@ export default class API {
         cache: 'no-store',
       })
         .then(response => JSON.parse(response))
-        .then(data => {
-          cacheMetadata(key, data);
-          return data;
-        })
         .catch(() =>
           console.log(
             '%c %s does not have metadata',

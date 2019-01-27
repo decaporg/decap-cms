@@ -29,7 +29,7 @@ function isPreviewContext(context, previewContext) {
  */
 function getPreviewStatus(statuses, config) {
   const previewContext = config.getIn(['backend', 'preview_context']);
-  return statuses.find(({ state, context }) => {
+  return statuses.find(({ context }) => {
     return isPreviewContext(context, previewContext);
   });
 }
@@ -237,22 +237,25 @@ export default class GitHub {
       });
   }
 
-  async unpublishedEntry(collection, slug) {
-    const data = await this.api.readUnpublishedBranchFile(slug);
-
-    if (!data) {
-      return null;
-    }
-
-    return {
-      slug,
-      file: { path: data.metaData.objects.entry.path },
-      data: data.fileData,
-      metaData: data.metaData,
-      isModification: data.isModification,
-    };
+  unpublishedEntry(collection, slug) {
+    return this.api.readUnpublishedBranchFile(slug).then(data => {
+      if (!data) return null;
+      return {
+        slug,
+        file: { path: data.metaData.objects.entry.path },
+        data: data.fileData,
+        metaData: data.metaData,
+        isModification: data.isModification,
+      };
+    });
   }
 
+  /**
+   * Uses GitHub's Statuses API to retrieve statuses, infers which is for a
+   * deploy preview via `getPreviewStatus`. Returns the url provided by the
+   * status, as well as the status state, which should be one of 'success',
+   * 'pending', and 'failure'.
+   */
   async getDeployPreview(collection, slug) {
     const data = await this.api.retrieveMetadata(slug);
 

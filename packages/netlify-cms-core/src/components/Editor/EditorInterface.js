@@ -167,7 +167,6 @@ class EditorInterface extends Component {
       hasUnpublishedChanges,
       isNewEntry,
       isModification,
-      previewUrl,
       currentStatus,
       onLogoutClick,
       loadDeployPreview,
@@ -240,7 +239,6 @@ class EditorInterface extends Component {
           hasUnpublishedChanges={hasUnpublishedChanges}
           isNewEntry={isNewEntry}
           isModification={isModification}
-          previewUrl={previewUrl}
           currentStatus={currentStatus}
           onLogoutClick={onLogoutClick}
           loadDeployPreview={loadDeployPreview}
@@ -294,7 +292,6 @@ EditorInterface.propTypes = {
   hasUnpublishedChanges: PropTypes.bool,
   isNewEntry: PropTypes.bool,
   isModification: PropTypes.bool,
-  previewUrl: PropTypes.string,
   currentStatus: PropTypes.string,
   onLogoutClick: PropTypes.func.isRequired,
   deployPreview: ImmutablePropTypes.map,

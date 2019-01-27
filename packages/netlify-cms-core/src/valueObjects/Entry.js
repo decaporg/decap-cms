@@ -11,6 +11,5 @@ export function createEntry(collection, slug = '', path = '', options = {}) {
   returnObj.label = options.label || null;
   returnObj.metaData = options.metaData || null;
   returnObj.isModification = isBoolean(options.isModification) ? options.isModification : null;
-  returnObj.previewUrl = options.previewUrl || null;
   return returnObj;
 }
