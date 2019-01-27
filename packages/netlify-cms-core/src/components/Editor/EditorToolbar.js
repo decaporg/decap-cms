@@ -230,14 +230,14 @@ class EditorToolbar extends React.Component {
   componentDidMount() {
     const { isNewEntry, loadDeployPreview } = this.props;
     if (!isNewEntry) {
-      loadDeployPreview({ maxAttempts: 5 });
+      loadDeployPreview({ maxAttempts: 2 });
     }
   }
 
   componentDidUpdate(prevProps) {
     const { isNewEntry, isPersisting, loadDeployPreview } = this.props;
     if (!isNewEntry && prevProps.isPersisting && !isPersisting) {
-      loadDeployPreview({ maxAttempts: 5 });
+      loadDeployPreview({ maxAttempts: 2 });
     }
   }
 
@@ -253,7 +253,7 @@ class EditorToolbar extends React.Component {
   };
 
   renderDeployPreviewControls = label => {
-    const { deployPreview = Map(), loadDeployPreview } = this.props;
+    const { deployPreview = Map(), loadDeployPreview, t } = this.props;
     const url = deployPreview.get('url');
     const status = deployPreview.get('status');
 
