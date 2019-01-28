@@ -1,5 +1,5 @@
 ---
-title: Netlify CMS 2.4.0: Deploy Preview Links
+title: "Netlify CMS 2.4.0: Deploy Preview Links"
 author: Shawn Erquhart
 description: >-
   Deploy preview links from your GitHub repository are now surfaced in Netlify
