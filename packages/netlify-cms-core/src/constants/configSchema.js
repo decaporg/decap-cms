@@ -155,12 +155,13 @@ class ConfigError extends Error {
  * the config that is passed in.
  */
 export function validateConfig(config) {
-  const ajv = new AJV({ allErrors: true });
+  const logger = process.env.NODE_ENV !== 'test' && console;
+  const ajv = new AJV({ allErrors: true, jsonPointers: true, logger });
   ajvErrors(ajv);
 
   const valid = ajv.validate(getConfigSchema(), config);
   if (!valid) {
-    console.error('Config Errors', ajv.errors);
+    if (logger) console.error('Config Errors', ajv.errors);
     throw new ConfigError(ajv.errors);
   }
 }
