@@ -6,6 +6,9 @@ group: start
 
 Netlify CMS stores content in your GitHub, GitLab, or Bitbucket repository. In order for this to work, authenticate with your Git host. In most cases that requires a server. We have a few options for handling this.
 
+
+**Note:** If you prefer to run your own authentication server, check out the section on [external OAuth clients](#external-oauth-clients).
+
 **Note:** Some static site generators have plugins for optimized integration with Netlify CMS, and starter templates may utilize these plugins. If you're using a starter template, read the template documentation before proceeding, as their instructions may differ.
 
 ## Git Gateway with Netlify Identity
@@ -54,7 +57,20 @@ To enable basic GitHub authentication:
       repo: owner-name/repo-name # Path to your GitHub repository
     ```
 
-If you prefer to run your own authentication server, check out the section on [external OAuth clients](#external-oauth-clients).
+### Specifying a status for deploy previews
+The GitHub backend supports [deploy preview links](../deploy-preview-links). Netlify CMS checks the
+`context` of a commit's [statuses](https://help.github.com/articles/about-status-checks/) and infers
+one that seems to represent a deploy preview. If you need to customize this behavior, you can
+specify which context to look for using `preview_context`:
+
+    ```yaml
+    backend:
+      name: github
+      repo: my/repo
+      preview_context: my-provider/deployment
+    ```
+
+The above configuration would look for the status who's `"context"` is `"my-provider/deployment"`.
 
 ## GitLab Backend
 
