@@ -208,6 +208,11 @@ export default class GitGateway {
   deleteFile(path, commitMessage, options) {
     return this.backend.deleteFile(path, commitMessage, options);
   }
+  getDeployPreview(collection, slug) {
+    if (this.backend.getDeployPreview) {
+      return this.backend.getDeployPreview(collection, slug);
+    }
+  }
   unpublishedEntries() {
     return this.backend.unpublishedEntries();
   }
