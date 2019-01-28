@@ -85,9 +85,23 @@ media_library:
     publicKey: demopublickey
 ```
 
+## Site URL
+
+The `site_url` setting should provide a URL to your published site. May be used by the CMS for
+various functionality. Used together with a collection's `preview_path` to create links to live
+content.
+
+**Example:**
+
+```yaml
+display_url: https://your-site.com
+```
+
 ## Display URL
 
 When the `display_url` setting is specified, the CMS UI will include a link in the fixed area at the top of the page, allowing content authors to easily return to your main site. The text of the link consists of the URL less the protocol portion (e.g., `your-site.com`).
+
+Defaults to `site_url`.
 
 **Example:**
 
@@ -146,6 +160,7 @@ The `collections` setting is the heart of your Netlify CMS configuration, as it 
 - `format`: see detailed description below
 - `frontmatter_delimiter`: see detailed description under `format`
 - `slug`: see detailed description below
+- `preview_path`: see detailed description below
 - `fields` (required): see detailed description below
 - `editor`: see detailed description below
 
@@ -190,6 +205,21 @@ For folder collections where users can create new items, the `slug` option speci
 
 ```yaml
 slug: "{{year}}-{{month}}-{{day}}_{{slug}}"
+```
+
+
+### `preview_path`
+A string representing the path where content in this collection can be found on the live site. This
+allows deploy preview links to direct to lead to a specific piece of content rather than the site
+root of a deploy preview.
+
+**Available template tags:**
+
+- `{{slug}}`: the output from the collection's `slug` configuration
+
+**Example:**
+```yaml
+preview_path: "blog/{{slug}}"
 ```
 
 ### `fields`

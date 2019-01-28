@@ -1,7 +1,7 @@
 ---
 title: Cloudinary
 group: media
-weight: '10'
+weight: 10
 ---
 Cloudinary is a digital asset management platform with a broad feature set, including support for responsive image generation and url based image transformation. They also provide a powerful media library UI for managing assets, and tools for organizing your assets into a hierarchy.
 

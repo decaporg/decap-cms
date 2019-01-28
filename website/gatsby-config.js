@@ -12,6 +12,10 @@ module.exports = {
           title: 'Quick Start',
         },
         {
+          name: 'features',
+          title: 'Features',
+        },
+        {
           name: 'reference',
           title: 'Reference',
         },
