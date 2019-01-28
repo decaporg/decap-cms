@@ -32,7 +32,16 @@ const plugins = () => {
   ];
 
   if (isProduction) {
-    return [...defaultPlugins, ['emotion', { hoist: true }]];
+    return [
+      ...defaultPlugins,
+      [
+        'emotion',
+        {
+          hoist: true,
+          autoLabel: true,
+        },
+      ],
+    ];
   }
 
   if (isTest) {
