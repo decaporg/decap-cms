@@ -121,7 +121,7 @@ logo_url: https://your-site.com/images/logo.svg
 
 ## Show Preview Links
 
-[Deploy preview links]() can be disabled by setting `show_preview_links` to `false`.
+[Deploy preview links](../deploy-preview-links) can be disabled by setting `show_preview_links` to `false`.
 
 **Example:**
 

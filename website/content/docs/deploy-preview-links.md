@@ -20,9 +20,10 @@ Deploy preview links will work without configuration when all of the following r
 - Using editorial workflow
 - Have a continous deployment platform that builds every commit and provides statuses to your repo
 
-Any site created using one of the Deploy to Netlify options on our [starters page]() will
-automatically meet these criteria (barring any changes made to your Netlify settings), but you may
-need to [update]() your Netlify CMS version to get the functionality.
+Any site created using one of the Deploy to Netlify options on our [starters
+page](../start-with-a-template) will automatically meet these criteria (barring any changes made to
+your Netlify settings), but you may need to [update](../update-the-cms-version) your Netlify CMS version to get the
+functionality.
 
 **Note:** If you're using a custom backend (one that is not included with Netlify CMS), please check the
 documentation for that backend for more information about enabling deploy preview links.
@@ -67,6 +68,8 @@ content, inks to published content will use any `preview_path` values that are d
 collection configurations.
 
 Preview links for published content will also work if you are not using the editorial workflow.
+
+![Deploy preview link for unpublished content](/img/preview-link-unpublished.png)
 
 ## Disabling deploy preview links
 To disable deploy preview links, set `show_preview_links` to false in your CMS configuration.
