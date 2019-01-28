@@ -1,5 +1,5 @@
 ---
-title: Deploy Preview Links in Netlify CMS 2.4.0
+title: Netlify CMS 2.4.0: Deploy Preview Links
 author: Shawn Erquhart
 description: >-
   Deploy preview links from your GitHub repository are now surfaced in Netlify
@@ -10,20 +10,20 @@ twitter_image: /img/preview-link-unpublished.png
 
 ![Deploy preview link for unpublished content](/img/preview-link-unpublished.png)
 
-Content editors need a way to see how content will look in production. The preview pane in Netlify
-CMS is a good tool for this, but in the words of Marvin Gaye, "ain't nothing like the real thing!"
-As Mr. Gaye bemoaned being unable to interact with a picture of his beloved, so content
-creators long for the warm embrace of a deployed build.
+The editorial workflow allows editors to create draft content in Netlify CMS, and Netlify can
+provide deploy previews of draft content, but there hasn't been a way to access links to these
+preview builds from within Netlify CMS. The preview pane in the editor is a good tool for seeing how
+content will look on the site, but in the words of Marvin Gaye, "ain't nothing like the real thing!"
+As Mr. Gaye bemoaned the absence of his beloved, so content creators long for the warm embrace of an
+actual production build. Their words, not ours.
 
-Or something like that.
-
-JAMstack platforms provide solutions for this, such as Netlify's Deploy Previews, but there hasn't
-been a way to access links to these preview builds from within Netlify CMS.
-
-## Solution: Statuses
+## Solution: GitHub Statuses
 
 ![GitHub statuses](/img/github-statuses-deploy-previews.png)
 
+For sites using the GitHub (or Git Gateway with GitHub) backend, we now have deploy preview links in
+the CMS using the [GitHub Statuses
+API](https://developer.github.com/v3/repos/statuses/#get-the-combined-status-for-a-specific-ref).
 Many static sites already have continuous deployment and deploy previews configured on their repo,
 and they often use statuses to provide a link to a deployment directly from a commit or pull
 request. To retrieve a commit status that provides a deploy preview URL, we check for a status whose
@@ -53,6 +53,9 @@ That said, it's at least convenient to have a link direct to your content from t
 preview links can also work for CMS installs that do not use the editorial workflow. Instead of
 retrieving a URL from a commit status, this functionality requires setting a `site_url` in your
 config, and that URL is used in place of the deploy preview URL.
+
+## GitLab and Bitbucket
+Support is coming soon for these two awesome backends! Stay tuned.
 
 ## Try it out!
 Deploy preview links are live in Netlify CMS 2.4.0. Please give them a try and let us know if you
