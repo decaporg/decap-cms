@@ -424,10 +424,10 @@ class Backend {
    */
   async getDeployPreview(collection, slug, { maxAttempts = 1, interval = 5000 } = {}) {
     /**
-     * If the registered backend does not provide a `getDeployPreview` method,
-     * nothing happens.
+     * If the registered backend does not provide a `getDeployPreview` method, or
+     * `show_preview_links` in the config is set to false, do nothing.
      */
-    if (!this.implementation.getDeployPreview) {
+    if (!this.implementation.getDeployPreview || this.config.get('show_preview_links') === false) {
       return;
     }
 

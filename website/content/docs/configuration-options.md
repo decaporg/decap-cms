@@ -119,6 +119,16 @@ When the `logo_url` setting is specified, the CMS UI will change the logo displa
 logo_url: https://your-site.com/images/logo.svg
 ```
 
+## Show Preview Links
+
+[Deploy preview links]() can be disabled by setting `show_preview_links` to `false`.
+
+**Example:**
+
+```yaml
+show_preview_links: false
+```
+
 ## Slug Type
 
 The `slug` option allows you to change how filenames for entries are created and sanitized. For modifying the actual data in a slug, see the per-collection option below.

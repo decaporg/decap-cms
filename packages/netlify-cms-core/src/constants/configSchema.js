@@ -36,6 +36,7 @@ const getConfigSchema = () => ({
     },
     display_url: { type: 'string', examples: ['https://example.com'] },
     logo_url: { type: 'string', examples: ['https://example.com/images/logo.svg'] },
+    show_preview_links: { type: 'boolean' },
     media_folder: { type: 'string', examples: ['assets/uploads'] },
     public_folder: { type: 'string', examples: ['/uploads'] },
     media_library: {
