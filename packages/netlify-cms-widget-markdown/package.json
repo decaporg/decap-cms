@@ -21,7 +21,7 @@
     "build": "cross-env NODE_ENV=production webpack"
   },
   "dependencies": {
-    "is-hotkey": "^0.1.1",
+    "is-hotkey": "^0.1.4",
     "mdast-util-definitions": "^1.2.3",
     "mdast-util-to-string": "^1.0.5",
     "rehype-parse": "^6.0.0",
@@ -58,8 +58,8 @@
     "react-test-renderer": "^16.7.0",
     "rimraf": "^2.6.3",
     "start-server-and-test": "^1.7.11",
-    "webpack": "^4.16.1",
-    "webpack-cli": "^3.1.0"
+    "webpack": "^4.29.0",
+    "webpack-cli": "^3.2.1"
   },
   "peerDependencies": {
     "emotion": "^9.2.6",

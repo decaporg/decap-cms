@@ -20,7 +20,7 @@
     "build": "cross-env NODE_ENV=production webpack"
   },
   "dependencies": {
-    "gotrue-js": "^0.9.22",
+    "gotrue-js": "^0.9.24",
     "jwt-decode": "^2.2.0"
   },
   "devDependencies": {

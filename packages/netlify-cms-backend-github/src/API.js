@@ -222,8 +222,8 @@ export default class API {
   }
 
   readUnpublishedBranchFile(contentKey) {
-    const metaDataPromise = this.retrieveMetadata(contentKey).then(
-      data => (data.objects.entry.path ? data : Promise.reject(null)),
+    const metaDataPromise = this.retrieveMetadata(contentKey).then(data =>
+      data.objects.entry.path ? data : Promise.reject(null),
     );
     return resolvePromiseProperties({
       metaData: metaDataPromise,

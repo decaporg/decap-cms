@@ -10,6 +10,11 @@
     "node": true,
     "jest": true
   },
+   "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
   "globals": {
     "NETLIFY_CMS_VERSION": false,
     "NETLIFY_CMS_CORE_VERSION": false,
