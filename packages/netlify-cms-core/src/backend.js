@@ -407,10 +407,16 @@ class Backend {
    * but likely will in the future.
    */
   getDeploy(collection, slug) {
+    /**
+     * If `site_url` is undefiend or `show_preview_links` in the config is set to false, do nothing.
+     */
+
     const baseUrl = this.config.get('site_url');
-    if (!baseUrl) {
+
+    if (!baseUrl || this.config.get('show_preview_links') === false) {
       return;
     }
+
     return {
       url: createPreviewUrl(baseUrl, collection, slug),
       status: 'SUCCESS',
