@@ -34,6 +34,7 @@ const getConfigSchema = () => ({
       properties: { name: { type: 'string', examples: ['test-repo'] } },
       required: ['name'],
     },
+    site_url: { type: 'string', examples: ['https://example.com'] },
     display_url: { type: 'string', examples: ['https://example.com'] },
     logo_url: { type: 'string', examples: ['https://example.com/images/logo.svg'] },
     show_preview_links: { type: 'boolean' },

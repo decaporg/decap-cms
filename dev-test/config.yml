@@ -1,7 +1,7 @@
 backend:
   name: test-repo
 
-display_url: https://example.com
+site_url: https://example.com
 
 publish_mode: editorial_workflow
 media_folder: assets/uploads
