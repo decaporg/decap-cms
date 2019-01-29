@@ -18,8 +18,8 @@ const styles = {
     backgroundColor: state.isSelected
       ? `${colors.active}`
       : state.isFocused
-        ? `${colors.activeBackground}`
-        : 'transparent',
+      ? `${colors.activeBackground}`
+      : 'transparent',
     paddingLeft: '22px',
   }),
   menu: styles => ({ ...styles, right: 0, zIndex: 2 }),

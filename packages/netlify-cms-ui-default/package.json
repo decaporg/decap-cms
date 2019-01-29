@@ -18,7 +18,7 @@
   "dependencies": {
     "react-aria-menubutton": "^5.1.0",
     "react-toggled": "^1.1.2",
-    "react-transition-group": "^2.2.1"
+    "react-transition-group": "^2.5.3"
   },
   "devDependencies": {
     "cross-env": "^5.2.0",

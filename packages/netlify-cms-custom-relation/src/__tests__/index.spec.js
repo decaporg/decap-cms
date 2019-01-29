@@ -26,7 +26,6 @@ const props = {
 };
 
 describe('"create" custom-relation widget', () => {
-  console.log(create);
   it('exports a function', () => {
     expect(typeof create).toBe('function');
   });

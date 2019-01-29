@@ -12,8 +12,12 @@ const MarkdownPreview = ({ value, getAsset }) => {
 };
 
 MarkdownPreview.propTypes = {
-  getAsset: PropTypes.func.isRequired,
+  getAsset: PropTypes.func,
   value: PropTypes.string,
+};
+
+MarkdownPreview.defaultProps = {
+  getAsset: () => 'https://missing.getAsset.function',
 };
 
 export default MarkdownPreview;

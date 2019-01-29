@@ -219,21 +219,15 @@ exports[`Markdown Preview renderer Markdown rendering Lists should render lists 
     Object {
       "__html": "<ol>
 <li>ol item 1</li>
-<li>
-<p>ol item 2</p>
-<ul>
+<li>ol item 2<ul>
 <li>Sublist 1</li>
 <li>Sublist 2</li>
-<li>
-<p>Sublist 3</p>
-<ol>
+<li>Sublist 3<ol>
 <li>Sub-Sublist 1</li>
 <li>Sub-Sublist 2</li>
 <li>Sub-Sublist 3</li>
-</ol>
-</li>
-</ul>
-</li>
+</ol></li>
+</ul></li>
 <li>ol item 3</li>
 </ol>",
     }
