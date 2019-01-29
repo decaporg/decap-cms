@@ -173,7 +173,7 @@ export default class ListControl extends React.Component {
     let parsedValue = Map().set(typeKey, type);
     this.setState({ itemsCollapsed: this.state.itemsCollapsed.push(false) });
     onChange((value || List()).push(parsedValue));
-  }
+  };
 
   processObjectControlRef = ref => {
     if (!ref) return;
