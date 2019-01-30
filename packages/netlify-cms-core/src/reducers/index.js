@@ -61,6 +61,11 @@ export const getAsset = (state, path) => {
    * If an external media library is in use, just return the path.
    */
   if (state.mediaLibrary.get('externalLibrary')) {
+    const mediaLibraryConfig = state.config.get("media_library");
+    if(mediaLibraryConfig.get("output_filename_only") && mediaLibraryConfig.get("display_base_url"))
+    {
+      return mediaLibraryConfig.get("display_base_url") + path;
+    }
     return path;
   }
   return fromMedias.getAsset(state.config.get('public_folder'), state.medias, path);
