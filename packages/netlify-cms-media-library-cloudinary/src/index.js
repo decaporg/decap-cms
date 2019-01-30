@@ -54,7 +54,7 @@ async function init({ options = {}, handleInsert } = {}) {
   const resolvedOptions = { ...defaultOptions, ...integrationOptions };
   const cloudinaryConfig = { ...defaultConfig, ...providedConfig, ...enforcedConfig };
   const cloudinaryBehaviorConfigKeys = ['default_transformations', 'max_files', 'multiple'];
-  const cloudinaryBehaviorConfig = pick(cloudinaryConfig, cloudinaryBehaviorConfigKeys);
+  const cloudinaryBehaviorConfig = pick(resolvedOptions, cloudinaryBehaviorConfigKeys);
 
   await loadScript('https://media-library.cloudinary.com/global/all.js');
 
@@ -74,7 +74,7 @@ async function init({ options = {}, handleInsert } = {}) {
       if (allowMultiple === false) {
         instanceConfig.multiple = false;
       }
-      return mediaLibrary.show({ config: { ...cloudinaryBehaviorConfig, ...instanceConfig } });
+      return mediaLibrary.show({ ...cloudinaryBehaviorConfig, ...instanceConfig } );
     },
     hide: () => mediaLibrary.hide(),
     enableStandalone: () => true,
