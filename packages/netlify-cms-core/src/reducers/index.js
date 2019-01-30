@@ -64,7 +64,8 @@ export const getAsset = (state, path) => {
     const mediaLibraryConfig = state.config.get('media_library');
     if (
       mediaLibraryConfig.get('output_filename_only') &&
-      mediaLibraryConfig.get('display_base_url')
+      mediaLibraryConfig.get('display_base_url') &&
+      !path.startsWith('http')
     ) {
       return mediaLibraryConfig.get('display_base_url') + path;
     }
