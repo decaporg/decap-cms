@@ -64,8 +64,10 @@ const getCollection = (collections, collection) =>
 
 const mapDispatchToProps = {
   loadEntry: (collectionName, slug) => (dispatch, getState) => {
-    const collection = getCollection(getState().collections, collectionName);
-    return loadEntry(collection, slug)(dispatch, getState);
+    const {collections, entries} = getState();
+    const collection = getCollection(collections, collectionName);
+    const isFetching = entries.getIn(['entities', `${collection}.${slug}`, 'isFetching']);
+    return isFetching ? null : loadEntry(collection, slug)(dispatch, getState);
   },
 };
 
