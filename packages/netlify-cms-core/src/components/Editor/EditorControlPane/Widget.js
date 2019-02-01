@@ -90,9 +90,10 @@ export default class Widget extends Component {
   validate = (skipWrapped = false) => {
     const { field, value } = this.props;
     const errors = [];
-    const validations = field.get('widget') === 'number' ?
-      [this.validatePresence, this.validateRange] :
-      [this.validatePresence, this.validatePattern];
+    const validations =
+      field.get('widget') === 'number'
+        ? [this.validatePresence, this.validateRange]
+        : [this.validatePresence, this.validatePattern];
 
     validations.forEach(func => {
       const response = func(field, value);
@@ -120,7 +121,7 @@ export default class Widget extends Component {
     }
 
     switch (true) {
-      case (min !== false && max !== false && (value < min || value > max)):
+      case min !== false && max !== false && (value < min || value > max):
         error = {
           type: ValidationErrorTypes.RANGE,
           message: t('editor.editorControlPane.widget.range', {
@@ -130,7 +131,7 @@ export default class Widget extends Component {
           }),
         };
         break;
-      case (min !== false && value < min):
+      case min !== false && value < min:
         error = {
           type: ValidationErrorTypes.RANGE,
           message: t('editor.editorControlPane.widget.min', {
@@ -139,7 +140,7 @@ export default class Widget extends Component {
           }),
         };
         break;
-      case (max !== false && value > max):
+      case max !== false && value > max:
         error = {
           type: ValidationErrorTypes.RANGE,
           message: t('editor.editorControlPane.widget.max', {
