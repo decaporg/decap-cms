@@ -12,6 +12,7 @@ import { ListControl, ListPreview } from 'netlify-cms-widget-list/src';
 import { ObjectControl, ObjectPreview } from 'netlify-cms-widget-object/src';
 import { RelationControl, RelationPreview } from 'netlify-cms-widget-relation/src';
 import { BooleanControl } from 'netlify-cms-widget-boolean/src';
+import { MapControl, MapPreview } from 'netlify-cms-widget-map/src';
 
 const { registerWidget } = cms;
 
@@ -28,3 +29,4 @@ registerWidget('select', SelectControl, SelectPreview);
 registerWidget('object', ObjectControl, ObjectPreview);
 registerWidget('relation', RelationControl, RelationPreview);
 registerWidget('boolean', BooleanControl);
+registerWidget('map', MapControl, MapPreview);

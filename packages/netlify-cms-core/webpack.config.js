@@ -28,7 +28,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        include: [/(redux-notifications|react-datetime)/],
+        include: [/(ol|redux-notifications|react-datetime)/],
         use: ['to-string-loader', 'css-loader'],
       },
     ],
