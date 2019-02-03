@@ -111,7 +111,10 @@ export function loadConfig() {
     try {
       const preloadedConfig = getState().config;
       const configUrl = getConfigUrl();
-      const loadedConfig = await getConfig(configUrl, preloadedConfig && preloadedConfig.size > 1);
+      const loadedConfig =
+        preloadedConfig && preloadedConfig.get('load_config_file') === false
+          ? {}
+          : await getConfig(configUrl, preloadedConfig && preloadedConfig.size > 1);
 
       /**
        * Merge any existing configuration so the result can be validated.
