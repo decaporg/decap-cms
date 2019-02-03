@@ -6,10 +6,11 @@ import 'jest-dom/extend-expect';
 import { SelectControl } from '../';
 
 const options = [
-  { value: 'Foo', label: 'Foo' },
-  { value: 'Bar', label: 'Bar' },
-  { value: 'Baz', label: 'Baz' },
+  { value: 'foo', label: 'Foo' },
+  { value: 'bar', label: 'Bar' },
+  { value: 'baz', label: 'Baz' },
 ];
+const stringOptions = ['foo', 'bar', 'baz'];
 
 class SelectController extends React.Component {
   state = {
@@ -69,6 +70,15 @@ function setup({ field, defaultValue }) {
   };
 }
 
+function clickClearButton(container) {
+  const allSvgs = container.querySelectorAll('svg');
+  const clear = allSvgs[allSvgs.length - 2];
+
+  fireEvent.mouseDown(clear, {
+    button: 0,
+  });
+}
+
 describe('Select widget', () => {
   it('should call onChange with correct selectedItem', () => {
     const field = fromJS({ options });
@@ -82,11 +92,42 @@ describe('Select widget', () => {
     expect(onChangeSpy).toHaveBeenCalledWith(options[0].value);
   });
 
-  it('should respect value', () => {
+  it('should call onChange with null when no item is selected', () => {
+    const field = fromJS({ options });
+    const { input, onChangeSpy } = setup({ field, defaultValue: options[0].value });
+
+    fireEvent.focus(input);
+    fireEvent.keyDown(input, { key: 'Delete' });
+
+    expect(onChangeSpy).toHaveBeenCalledTimes(1);
+    expect(onChangeSpy).toHaveBeenCalledWith(null);
+  });
+
+  it('should call onChange with null when selection is cleared', () => {
+    const field = fromJS({ options, required: false });
+    const { onChangeSpy, container } = setup({ field, defaultValue: options[0].value });
+
+    clickClearButton(container);
+
+    expect(onChangeSpy).toHaveBeenCalledTimes(1);
+    expect(onChangeSpy).toHaveBeenCalledWith(null);
+  });
+
+  it('should respect default value', () => {
     const field = fromJS({ options });
     const { getByText } = setup({ field, defaultValue: options[2].value });
 
     expect(getByText('Baz')).toBeInTheDocument();
+  });
+
+  it('should respect default value when options are string only', () => {
+    const field = fromJS({ options: stringOptions });
+    const { getByText } = setup({
+      field,
+      defaultValue: stringOptions[2],
+    });
+
+    expect(getByText('baz')).toBeInTheDocument();
   });
 
   describe('with multiple', () => {
@@ -104,7 +145,47 @@ describe('Select widget', () => {
       expect(onChangeSpy).toHaveBeenCalledWith(fromJS([options[0].value, options[2].value]));
     });
 
-    it('should respect value', () => {
+    it('should call onChange with correct selectedItem when item is removed', () => {
+      const field = fromJS({ options, multiple: true });
+      const { container, onChangeSpy } = setup({
+        field,
+        defaultValue: fromJS([options[1].value, options[2].value]),
+      });
+
+      fireEvent.click(container.querySelector('svg'), { button: 0 });
+
+      expect(onChangeSpy).toHaveBeenCalledTimes(1);
+      expect(onChangeSpy).toHaveBeenCalledWith(fromJS([options[2].value]));
+    });
+
+    it('should call onChange with empty list when no item is selected', () => {
+      const field = fromJS({ options, multiple: true });
+      const { input, onChangeSpy } = setup({
+        field,
+        defaultValue: fromJS([options[1].value]),
+      });
+
+      fireEvent.focus(input);
+      fireEvent.keyDown(input, { key: 'Delete' });
+
+      expect(onChangeSpy).toHaveBeenCalledTimes(1);
+      expect(onChangeSpy).toHaveBeenCalledWith(fromJS([]));
+    });
+
+    it('should call onChange with empty list when selection is cleared', () => {
+      const field = fromJS({ options, multiple: true });
+      const { container, onChangeSpy } = setup({
+        field,
+        defaultValue: fromJS([options[1].value]),
+      });
+
+      clickClearButton(container);
+
+      expect(onChangeSpy).toHaveBeenCalledTimes(1);
+      expect(onChangeSpy).toHaveBeenCalledWith(fromJS([]));
+    });
+
+    it('should respect default value', () => {
       const field = fromJS({ options, multiple: true });
       const { getByText } = setup({
         field,
@@ -113,6 +194,17 @@ describe('Select widget', () => {
 
       expect(getByText('Bar')).toBeInTheDocument();
       expect(getByText('Baz')).toBeInTheDocument();
+    });
+
+    it('should respect default value when options are string only', () => {
+      const field = fromJS({ options: stringOptions, multiple: true });
+      const { getByText } = setup({
+        field,
+        defaultValue: fromJS([stringOptions[1], stringOptions[2]]),
+      });
+
+      expect(getByText('bar')).toBeInTheDocument();
+      expect(getByText('baz')).toBeInTheDocument();
     });
   });
 });
