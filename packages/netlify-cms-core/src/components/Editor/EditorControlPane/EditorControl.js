@@ -9,6 +9,7 @@ import { colors, colorsRaw, transitions, lengths, borders } from 'netlify-cms-ui
 import { resolveWidget, getEditorComponents } from 'Lib/registry';
 import { addAsset } from 'Actions/media';
 import { query, clearSearch } from 'Actions/search';
+import { loadEntry } from 'Actions/entries';
 import {
   openMediaLibrary,
   removeInsertedMedia,
@@ -143,6 +144,7 @@ class EditorControl extends React.Component {
     queryHits: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
     isFetching: PropTypes.bool,
     clearSearch: PropTypes.func.isRequired,
+    loadEntry: PropTypes.func.isRequired,
     t: PropTypes.func.isRequired,
   };
 
@@ -172,6 +174,7 @@ class EditorControl extends React.Component {
       queryHits,
       isFetching,
       clearSearch,
+      loadEntry,
       t,
     } = this.props;
     const widgetName = field.get('widget');
@@ -235,6 +238,7 @@ class EditorControl extends React.Component {
           ref={processControlRef && partial(processControlRef, fieldName)}
           editorControl={ConnectedEditorControl}
           query={query}
+          loadEntry={loadEntry}
           queryHits={queryHits}
           clearSearch={clearSearch}
           isFetching={isFetching}
@@ -264,6 +268,10 @@ const mapDispatchToProps = {
   removeInsertedMedia,
   addAsset,
   query,
+  loadEntry: (collectionName, slug) => (dispatch, getState) => {
+    const collection = getState().collections.get(collectionName);
+    return loadEntry(collection, slug)(dispatch, getState);
+  },
   clearSearch,
 };
 
