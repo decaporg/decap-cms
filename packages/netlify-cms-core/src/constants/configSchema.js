@@ -96,7 +96,14 @@ const getConfigSchema = () => ({
           },
           format: { type: 'string', enum: Object.keys(formatExtensions) },
           extension: { type: 'string' },
-          frontmatter_delimiter: { type: 'string' },
+          frontmatter_delimiter: {
+            type: ['string', 'array'],
+            minItems: 2,
+            maxItems: 2,
+            items: {
+              type: 'string',
+            },
+          },
           fields: fieldsConfig,
         },
         required: ['name', 'label'],
