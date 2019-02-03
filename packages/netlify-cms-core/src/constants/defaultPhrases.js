@@ -141,6 +141,7 @@ export function getPhrases() {
           '%{smart_count} entry waiting for review, %{readyCount} ready to go live. |||| %{smart_count} entries waiting for review, %{readyCount} ready to go live. ',
       },
       workflowCard: {
+        lastChange: '%{date} by %{author}',
         deleteChanges: 'Delete changes',
         deleteNewEntry: 'Delete new entry',
         publishChanges: 'Publish changes',
