@@ -31,8 +31,6 @@ Uploadcare came up on our radar when they built a Netlify CMS integration for th
 
 We're super excited to honor Uploadcare's love for Netlify CMS by launching external media handling with their service as the first integration!
 
-You can play with the integration using a test account [right now](https://5b85d3054ed62f29fd759737--cms-demo.netlify.com/#/collections/posts/new), or keep reading to get Uploadcare working on your Netlify CMS site!
-
 ## Get started today!
 
 Here's how to start externalizing your media with Netlify CMS and Uploadcare:
