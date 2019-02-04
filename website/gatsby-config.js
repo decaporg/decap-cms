@@ -70,7 +70,7 @@ module.exports = {
     },
     'gatsby-transformer-yaml',
     'gatsby-transformer-json',
-    'gatsby-plugin-postcss',
+    'gatsby-plugin-emotion',
     'gatsby-plugin-react-helmet',
     'gatsby-plugin-catch-links',
     {

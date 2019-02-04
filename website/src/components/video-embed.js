@@ -1,6 +1,65 @@
 import React, { Component } from 'react';
+import styled from '@emotion/styled';
+
+import { mq } from '../utils';
+import theme from '../theme';
 
 import screenshotEditor from '../img/screenshot-editor.jpg';
+
+const VideoLink = styled.a`
+  position: relative;
+  cursor: pointer;
+
+  &:hover {
+    div {
+      background-color: ${theme.colors.blue};
+      box-shadow: 0 6px 18px 0 rgba(0, 0, 0, 0.15), 0 2px 6px 0 rgba(0, 0, 0, 0.3);
+      transform: scale(1.1);
+    }
+    svg {
+      fill: #fff;
+    }
+  }
+
+  &:active {
+    div {
+      transform: scale(0.9);
+    }
+  }
+
+  img,
+  iframe {
+    width: 100%;
+    border-radius: ${theme.radii[2]};
+    box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.15), 0 3px 9px 0 rgba(0, 0, 0, 0.3);
+  }
+`;
+
+const VideoButton = styled.div`
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 90px;
+  height: 90px;
+  color: ${theme.colors.blue};
+  background-color: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 3px 9px 0 rgba(0, 0, 0, 0.05), 0 1px 3px 0 rgba(0, 0, 0, 0.15);
+  border-radius: 100px;
+  transition: 0.1s;
+
+  svg {
+    position: absolute;
+    left: 33px;
+    top: 28px;
+    width: 44px;
+    height: 44px;
+    fill: #3a69c7;
+  }
+`;
+
+const VideoIcon = styled.div``;
 
 /**
  * We should be able to import complete inline svg's rather than base64, this
@@ -40,19 +99,17 @@ class VideoEmbed extends Component {
       />
     );
 
-    const imgPlaceholder = (
-      <img src={screenshotEditor} className="responsive" alt="editor video screenshot" />
-    );
+    const imgPlaceholder = <img src={screenshotEditor} />;
 
     return (
-      <div className="hero-graphic" onClick={this.toggleVideo}>
+      <VideoLink onClick={this.toggleVideo}>
         {toggled ? embedcode : imgPlaceholder}
         {!toggled && (
-          <div className="hero-videolink">
-            <PlayIcon className="hero-videolink-arrow" />
-          </div>
+          <VideoButton>
+            <PlayIcon />
+          </VideoButton>
         )}
-      </div>
+      </VideoLink>
     );
   }
 }

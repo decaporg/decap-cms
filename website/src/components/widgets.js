@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import classnames from 'classnames';
 import WidgetDoc from './widget-doc';
 
-import '../css/imports/widgets.css';
-
 class Widgets extends Component {
   state = {
     currentWidget: null,

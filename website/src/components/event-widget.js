@@ -52,19 +52,13 @@ class EventWidget extends Component {
     const datePrefix = eventDateMoment.format('dddd, MMMM Do');
     const dateSuffix = eventDateMoment.utcOffset(offset).format('h a');
 
-    return (
-      <div>
-        <div className="calendar">
-          <div className="month">{month}</div>
-          <div className="day">{day}</div>
-        </div>
-        <h3>
-          <strong>
-            {datePrefix} at {dateSuffix} PT
-          </strong>
-        </h3>
-      </div>
-    );
+    return this.props.children({
+      loading,
+      month,
+      day,
+      datePrefix,
+      dateSuffix,
+    });
   }
 }
 

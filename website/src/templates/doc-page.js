@@ -7,9 +7,10 @@ import Layout from '../components/layout';
 import EditLink from '../components/edit-link';
 import Widgets from '../components/widgets';
 import DocsNav from '../components/docs-nav';
-import MobileNav from '../components/mobile-nav';
-
-import '../css/imports/docs.css';
+import DocSearch from '../components/docsearch';
+import Container from '../components/container';
+import SidebarLayout from '../components/sidebar-layout';
+import Markdown from '../components/markdown';
 
 const toMenu = (menu, nav) =>
   menu.map(group => ({
@@ -18,9 +19,9 @@ const toMenu = (menu, nav) =>
   }));
 
 const DocsSidebar = ({ docsNav, location, history }) => (
-  <aside id="sidebar" className="sidebar">
+  <aside>
+    <DocSearch />
     <DocsNav items={docsNav} location={location} />
-    <MobileNav items={docsNav} history={history} />
   </aside>
 );
 
@@ -36,17 +37,22 @@ export const DocsTemplate = ({
   location,
   history,
 }) => (
-  <div className="docs detail page">
-    <div className="container">
-      {showSidebar && <DocsSidebar docsNav={docsNav} location={location} history={history} />}
-      <article className="docs-content" id="docs-content">
+  <Container>
+    <SidebarLayout
+      sidebar={
+        <div>
+          {showSidebar && <DocsSidebar docsNav={docsNav} location={location} history={history} />}
+        </div>
+      }
+    >
+      <article data-docs-content>
         {editLinkPath && <EditLink path={editLinkPath} />}
         <h1>{title}</h1>
-        {body ? body : <div dangerouslySetInnerHTML={{ __html: html }} />}
+        <Markdown source={body || html} escapeHtml={false} />
         {showWidgets && <Widgets widgets={widgets} />}
       </article>
-    </div>
-  </div>
+    </SidebarLayout>
+  </Container>
 );
 
 const DocPage = ({ data, location, history }) => {

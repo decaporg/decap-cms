@@ -1,6 +1,33 @@
 import React, { Component } from 'react';
+import styled from '@emotion/styled';
 
+import theme from '../theme';
 import searchIcon from '../img/search.svg';
+
+const SearchField = styled.div`
+  display: flex;
+  background: white;
+  border-radius: ${theme.radii[1]};
+  width: 100%;
+  margin-bottom: ${theme.space[4]};
+
+  > span {
+    width: 100%;
+  }
+
+  > div {
+    padding: ${theme.space[1]};
+  }
+
+  input {
+    padding: ${theme.space[1]};
+    border: 0;
+    width: 100%;
+    font-size: ${theme.fontsize[3]};
+    outline: 0;
+    height: 100%;
+  }
+`;
 
 class DocSearch extends Component {
   state = {
@@ -24,10 +51,12 @@ class DocSearch extends Component {
     }
 
     return (
-      <div className="utility-input">
-        <img src={searchIcon} alt="" />
+      <SearchField>
+        <div>
+          <img src={searchIcon} />
+        </div>
         <input type="search" placeholder="Search the docs" className="algolia-search" />
-      </div>
+      </SearchField>
     );
   }
 }

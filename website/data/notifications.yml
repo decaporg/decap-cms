@@ -3,7 +3,7 @@ notifications:
     message: >-
       Register to join us online for our next community dev meeting, every other
       Wednesday at 9am-10am PT!
-    published: false
+    published: true
     title: Netlify CMS Development Planning Sessions Promo
     url: >-
       https://www.eventbrite.com/e/netlify-cms-planning-session-bi-weekly-tickets-35794058994

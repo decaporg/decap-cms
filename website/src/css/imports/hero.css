@@ -53,34 +53,6 @@
   h3 {
     color: white;
   }
-
-  .cta-header {
-    display: block;
-    margin-top: $small;
-  }
-  .cta-header a {
-    display: inline-block;
-    color: white;
-    text-transform: uppercase;
-    font-size: $tiny;
-    letter-spacing: 0.5px;
-    background-color: $blue;
-    background-image: linear-gradient(-180deg, #4a7fdd 0%, #3a69c7 100%);
-    box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.3), 0 1px 3px 0 rgba(0, 0, 0, 0.6);
-    border-radius: $borderRadius;
-    padding: 10px 14px 8px 14px;
-    transition: 0.2s;
-
-    &:hover {
-      transform: scale(1.05);
-      box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.5), 0 1px 3px 0 rgba(0, 0, 0, 1);
-    }
-    &:active {
-      transform: scale(0.95);
-      box-shadow: none;
-    }
-  }
-
   .hero-features {
     @media screen and (min-width: $tablet) {
       @neat-span-columns 5;
@@ -88,67 +60,6 @@
 
     .feature {
       margin: 0 0 $medium 0;
-    }
-  }
-
-  .hero-graphic {
-    @neat-span-columns 12;
-    position: relative;
-    cursor: pointer;
-
-    @media screen and (min-width: $tablet) {
-      @neat-span-columns 6;
-      float: right;
-      margin: 0;
-    }
-
-    img,
-    iframe {
-      width: 100%;
-      border-radius: $largeBorderRadius;
-      box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.15), 0 3px 9px 0 rgba(0, 0, 0, 0.3);
-    }
-
-    .hero-videolink {
-      position: absolute;
-      margin: auto;
-      padding: 10px 0 0 10px;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      width: 90px;
-      height: 90px;
-      color: $blue;
-      background-color: rgba(255, 255, 255, 0.85);
-      box-shadow: 0 3px 9px 0 rgba(0, 0, 0, 0.05), 0 1px 3px 0 rgba(0, 0, 0, 0.15);
-      border-radius: 100px;
-      transition: 0.1s;
-    }
-    .hero-videolink-arrow {
-      position: absolute;
-      left: 33px;
-      top: 28px;
-      width: 44px;
-      height: 44px;
-      fill: #3a69c7;
-    }
-
-    &:hover {
-      .hero-videolink {
-        background-color: $blue;
-        box-shadow: 0 6px 18px 0 rgba(0, 0, 0, 0.15), 0 2px 6px 0 rgba(0, 0, 0, 0.3);
-        transform: scale(1.1);
-      }
-      .hero-videolink-arrow {
-        fill: #fff;
-      }
-    }
-
-    &:active {
-      .hero-videolink {
-        transform: scale(0.9);
-      }
     }
   }
 

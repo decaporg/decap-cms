@@ -5,21 +5,20 @@ import { trimStart, trimEnd } from 'lodash';
 
 import TwitterMeta from '../components/twitter-meta';
 import Layout from '../components/layout';
+import Container from '../components/container';
+import Markdown from '../components/markdown';
+import MetaInfo from '../components/meta-info';
 
 export const BlogPostTemplate = ({ title, author, date, body, html }) => (
-  <div className="docs page">
-    <div className="container">
-      <article className="blog-content" id="blog-content">
-        <div className="blog-post-header">
-          <h1>{title}</h1>
-          <p className="meta-info">
-            by {author} on {date}
-          </p>
-        </div>
-        {body ? body : <div dangerouslySetInnerHTML={{ __html: html }} />}
-      </article>
-    </div>
-  </div>
+  <Container css={{ maxWidth: 800 }}>
+    <article className="blog-content" id="blog-content">
+      <h1>{title}</h1>
+      <MetaInfo>
+        by {author} on {date}
+      </MetaInfo>
+      <Markdown source={body || html} escapeHtml={false} />
+    </article>
+  </Container>
 );
 
 const BlogPost = ({ data }) => {

@@ -9,12 +9,6 @@ import Release from '../components/release';
 import WhatsNew from '../components/whats-new';
 import Notification from '../components/notification';
 import Community from '../components/community';
-import '../css/imports/hero.css';
-import '../css/imports/docs.css';
-import '../css/imports/whatsnew.css';
-import '../css/imports/header.css';
-import '../css/imports/collab.css';
-import '../css/imports/community.css';
 
 const withHighlight = WrappedComponent =>
   class Highlight extends React.Component {
