@@ -50,7 +50,7 @@ const styles = {
 };
 
 function optionToString(option) {
-  return option && option.value ? option.value : '';
+  return option && option.value ? option.value : null;
 }
 
 function convertToOption(raw) {
@@ -82,10 +82,15 @@ export default class SelectControl extends React.Component {
   };
 
   handleChange = selectedOption => {
-    const { onChange } = this.props;
+    const { onChange, field } = this.props;
+    const isMultiple = field.get('multiple', false);
 
     if (Array.isArray(selectedOption)) {
-      onChange(fromJS(selectedOption.map(optionToString)));
+      if (!isMultiple && selectedOption.length === 0) {
+        onChange(null);
+      } else {
+        onChange(fromJS(selectedOption.map(optionToString)));
+      }
     } else {
       onChange(optionToString(selectedOption));
     }
@@ -100,7 +105,8 @@ export default class SelectControl extends React.Component {
       }
 
       return selectedOptions
-        .filter(i => options.find(o => o.value === (i.value || i)))
+        .map(i => options.find(o => o.value === (i.value || i)))
+        .filter(Boolean)
         .map(convertToOption);
     } else {
       return find(options, ['value', value]) || null;
