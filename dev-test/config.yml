@@ -91,6 +91,7 @@ collections: # A list of collections the CMS should be able to edit
         valueField: 'title'
       - { label: 'Title', name: 'title', widget: 'string' }
       - { label: 'Boolean', name: 'boolean', widget: 'boolean', default: true }
+      - { label: 'Map', name: 'map', widget: 'map' }
       - { label: 'Text', name: 'text', widget: 'text', hint: 'Plain text, not markdown' }
       - { label: 'Number', name: 'number', widget: 'number', hint: 'To infinity and beyond!' }
       - { label: 'Markdown', name: 'markdown', widget: 'markdown' }

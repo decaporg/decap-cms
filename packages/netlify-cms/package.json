@@ -37,6 +37,7 @@
     "netlify-cms-widget-file": "^2.2.0",
     "netlify-cms-widget-image": "^2.1.1",
     "netlify-cms-widget-list": "^2.1.0",
+    "netlify-cms-widget-map": "^1.0.0",
     "netlify-cms-widget-markdown": "^2.1.0",
     "netlify-cms-widget-number": "^2.0.5",
     "netlify-cms-widget-object": "^2.0.5",
