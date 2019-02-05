@@ -90,11 +90,7 @@ export default class Widget extends Component {
   validate = (skipWrapped = false) => {
     const { field, value } = this.props;
     const errors = [];
-    const validations =
-      field.get('widget') === 'number'
-        ? [this.validatePresence, this.validateRange]
-        : [this.validatePresence, this.validatePattern];
-
+    const validations = [this.validatePresence, this.validatePattern];
     validations.forEach(func => {
       const response = func(field, value);
       if (response.error) errors.push(response.error);
@@ -106,54 +102,6 @@ export default class Widget extends Component {
       if (wrappedError.error) errors.push(wrappedError.error);
     }
     this.props.onValidate(errors);
-  };
-
-  validateRange = (field, value) => {
-    const t = this.props.t;
-    const hasPattern = !!field.get('pattern', false);
-    const min = field.get('min', false);
-    const max = field.get('max', false);
-    let error;
-
-    // Pattern overrides min/max logic always:
-    if (hasPattern) {
-      return this.validatePattern(field, value);
-    }
-
-    switch (true) {
-      case min !== false && max !== false && (value < min || value > max):
-        error = {
-          type: ValidationErrorTypes.RANGE,
-          message: t('editor.editorControlPane.widget.range', {
-            fieldLabel: field.get('label', field.get('name')),
-            minValue: min,
-            maxValue: max,
-          }),
-        };
-        break;
-      case min !== false && value < min:
-        error = {
-          type: ValidationErrorTypes.RANGE,
-          message: t('editor.editorControlPane.widget.min', {
-            fieldLabel: field.get('label', field.get('name')),
-            minValue: min,
-          }),
-        };
-        break;
-      case max !== false && value > max:
-        error = {
-          type: ValidationErrorTypes.RANGE,
-          message: t('editor.editorControlPane.widget.max', {
-            fieldLabel: field.get('label', field.get('name')),
-            maxValue: max,
-          }),
-        };
-        break;
-      default:
-        error = false;
-    }
-
-    return { error };
   };
 
   validatePresence = (field, value) => {
