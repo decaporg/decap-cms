@@ -5,6 +5,7 @@ import {
   DRAFT_DISCARD,
   DRAFT_CHANGE_FIELD,
   DRAFT_VALIDATION_ERRORS,
+  DRAFT_CLEAR_ERRORS,
   ENTRY_PERSIST_REQUEST,
   ENTRY_PERSIST_SUCCESS,
   ENTRY_PERSIST_FAILURE,
@@ -61,10 +62,14 @@ const entryDraftReducer = (state = Map(), action) => {
 
     case DRAFT_VALIDATION_ERRORS:
       if (action.payload.errors.length === 0) {
-        return state.deleteIn(['fieldsErrors', action.payload.field]);
+        return state.deleteIn(['fieldsErrors', action.payload.uniquefieldId]);
       } else {
-        return state.setIn(['fieldsErrors', action.payload.field], action.payload.errors);
+        return state.setIn(['fieldsErrors', action.payload.uniquefieldId], action.payload.errors);
       }
+
+    case DRAFT_CLEAR_ERRORS: {
+      return state.set('fieldsErrors', Map());
+    }
 
     case ENTRY_PERSIST_REQUEST:
     case UNPUBLISHED_ENTRY_PERSIST_REQUEST: {

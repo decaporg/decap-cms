@@ -68,13 +68,17 @@ const valueTypes = {
 };
 
 export default class ListControl extends React.Component {
+  validations = [];
+
   static propTypes = {
     metadata: ImmutablePropTypes.map,
     onChange: PropTypes.func.isRequired,
     onChangeObject: PropTypes.func.isRequired,
+    onValidateObject: PropTypes.func.isRequired,
     value: ImmutablePropTypes.list,
     field: PropTypes.object,
     forID: PropTypes.string,
+    controlRef: PropTypes.func,
     mediaPaths: ImmutablePropTypes.map.isRequired,
     getAsset: PropTypes.func.isRequired,
     onOpenMediaLibrary: PropTypes.func.isRequired,
@@ -85,6 +89,8 @@ export default class ListControl extends React.Component {
     setInactiveStyle: PropTypes.func.isRequired,
     editorControl: PropTypes.func.isRequired,
     resolveWidget: PropTypes.func.isRequired,
+    clearFieldErrors: PropTypes.func.isRequired,
+    fieldsErrors: ImmutablePropTypes.map.isRequired,
   };
 
   static defaultProps = {
@@ -168,6 +174,17 @@ export default class ListControl extends React.Component {
     onChange((value || List()).push(parsedValue));
   };
 
+  processControlRef = ref => {
+    if (!ref) return;
+    this.validations.push(ref.validate);
+  };
+
+  validate = () => {
+    this.validations.forEach(validateListItem => {
+      validateListItem();
+    });
+  };
+
   /**
    * In case the `onChangeObject` function is frozen by a child widget implementation,
    * e.g. when debounced, always get the latest object value instead of using
@@ -196,16 +213,25 @@ export default class ListControl extends React.Component {
   handleRemove = (index, event) => {
     event.preventDefault();
     const { itemsCollapsed } = this.state;
-    const { value, metadata, onChange, field } = this.props;
+    const { value, metadata, onChange, field, clearFieldErrors } = this.props;
     const collectionName = field.get('name');
     const isSingleField = this.getValueType() === valueTypes.SINGLE;
 
     const metadataRemovePath = isSingleField ? value.get(index) : value.get(index).valueSeq();
     const parsedMetadata = metadata && { [collectionName]: metadata.removeIn(metadataRemovePath) };
 
+    // Removed item object index is the last item in the list
+    const removedItemIndex = value.count() - 1;
+
     this.setState({ itemsCollapsed: itemsCollapsed.delete(index) });
 
     onChange(value.remove(index), parsedMetadata);
+    clearFieldErrors();
+
+    // Remove deleted item object validation
+    if (this.validations) {
+      this.validations.splice(removedItemIndex, 1);
+    }
   };
 
   handleItemCollapseToggle = (index, event) => {
@@ -253,7 +279,16 @@ export default class ListControl extends React.Component {
   };
 
   renderItem = (item, index) => {
-    const { classNameWrapper, editorControl, resolveWidget } = this.props;
+    const {
+      classNameWrapper,
+      editorControl,
+      onValidateObject,
+      clearFieldErrors,
+      fieldsErrors,
+      controlRef,
+      resolveWidget,
+    } = this.props;
+
     const { itemsCollapsed } = this.state;
     const collapsed = itemsCollapsed.get(index);
     let field = this.props.field;
@@ -286,6 +321,11 @@ export default class ListControl extends React.Component {
           editorControl={editorControl}
           resolveWidget={resolveWidget}
           forList
+          onValidateObject={onValidateObject}
+          clearFieldErrors={clearFieldErrors}
+          fieldsErrors={fieldsErrors}
+          ref={this.processControlRef}
+          controlRef={controlRef}
         />
       </SortableListItem>
     );

@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 import { css, cx } from 'react-emotion';
-import { Map } from 'immutable';
+import { Map, List } from 'immutable';
 import { ObjectWidgetTopBar, components } from 'netlify-cms-ui-default';
 
 const styles = {
@@ -14,15 +15,21 @@ const styles = {
 };
 
 export default class ObjectControl extends Component {
+  componentValidate = {};
+
   static propTypes = {
     onChangeObject: PropTypes.func.isRequired,
+    onValidateObject: PropTypes.func.isRequired,
     value: PropTypes.oneOfType([PropTypes.node, PropTypes.object, PropTypes.bool]),
     field: PropTypes.object,
     forID: PropTypes.string,
     classNameWrapper: PropTypes.string.isRequired,
     forList: PropTypes.bool,
+    controlRef: PropTypes.func,
     editorControl: PropTypes.func.isRequired,
     resolveWidget: PropTypes.func.isRequired,
+    clearFieldErrors: PropTypes.func.isRequired,
+    fieldsErrors: ImmutablePropTypes.map.isRequired,
   };
 
   static defaultProps = {
@@ -46,8 +53,26 @@ export default class ObjectControl extends Component {
     return true;
   }
 
+  validate = () => {
+    const { field } = this.props;
+    let fields = field.get('field') || field.get('fields');
+    fields = List.isList(fields) ? fields : List([fields]);
+    fields.forEach(field => {
+      if (field.get('widget') === 'hidden') return;
+      this.componentValidate[field.get('name')]();
+    });
+  };
+
   controlFor(field, key) {
-    const { value, onChangeObject, editorControl: EditorControl } = this.props;
+    const {
+      value,
+      onChangeObject,
+      onValidateObject,
+      clearFieldErrors,
+      fieldsErrors,
+      editorControl: EditorControl,
+      controlRef,
+    } = this.props;
 
     if (field.get('widget') === 'hidden') {
       return null;
@@ -55,7 +80,19 @@ export default class ObjectControl extends Component {
     const fieldName = field.get('name');
     const fieldValue = value && Map.isMap(value) ? value.get(fieldName) : value;
 
-    return <EditorControl key={key} field={field} value={fieldValue} onChange={onChangeObject} />;
+    return (
+      <EditorControl
+        key={key}
+        field={field}
+        value={fieldValue}
+        onChange={onChangeObject}
+        clearFieldErrors={clearFieldErrors}
+        fieldsErrors={fieldsErrors}
+        onValidate={onValidateObject}
+        processControlRef={controlRef && controlRef.bind(this)}
+        controlRef={controlRef}
+      />
+    );
   }
 
   handleCollapseToggle = () => {

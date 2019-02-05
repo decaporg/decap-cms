@@ -62,7 +62,7 @@ collections: # A list of collections the CMS should be able to edit
             fields:
               - { label: 'Number of posts on frontpage', name: front_limit, widget: number }
               - { label: 'Default Author', name: author, widget: string }
-              - { label: 'Default Thumbnail', name: thumb, widget: image, class: 'thumb' }
+              - { label: 'Default Thumbnail', name: thumb, widget: image, class: 'thumb', required: false }
 
       - name: 'authors'
         label: 'Authors'

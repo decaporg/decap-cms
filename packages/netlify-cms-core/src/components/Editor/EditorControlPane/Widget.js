@@ -33,6 +33,7 @@ export default class Widget extends Component {
     ]),
     mediaPaths: ImmutablePropTypes.map.isRequired,
     metadata: ImmutablePropTypes.map,
+    fieldsErrors: ImmutablePropTypes.map,
     onChange: PropTypes.func.isRequired,
     onValidate: PropTypes.func,
     onOpenMediaLibrary: PropTypes.func.isRequired,
@@ -44,8 +45,10 @@ export default class Widget extends Component {
     resolveWidget: PropTypes.func.isRequired,
     getEditorComponents: PropTypes.func.isRequired,
     isFetching: PropTypes.bool,
+    controlRef: PropTypes.func,
     query: PropTypes.func.isRequired,
     clearSearch: PropTypes.func.isRequired,
+    clearFieldErrors: PropTypes.func.isRequired,
     queryHits: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
     editorControl: PropTypes.func.isRequired,
     uniqueFieldId: PropTypes.string.isRequired,
@@ -77,16 +80,16 @@ export default class Widget extends Component {
      * `getWrappedInstance` method. Note that connected widgets must pass
      * `withRef: true` to `connect` in the options object.
      */
-    const wrappedControl = ref.getWrappedInstance ? ref.getWrappedInstance() : ref;
+    this.innerWrappedControl = ref.getWrappedInstance ? ref.getWrappedInstance() : ref;
 
-    this.wrappedControlValid = wrappedControl.isValid || truthy;
+    this.wrappedControlValid = this.innerWrappedControl.isValid || truthy;
 
     /**
      * Get the `shouldComponentUpdate` method from the wrapped control, and
      * provide the control instance is the `this` binding.
      */
-    const { shouldComponentUpdate: scu } = wrappedControl;
-    this.wrappedControlShouldComponentUpdate = scu && scu.bind(wrappedControl);
+    const { shouldComponentUpdate: scu } = this.innerWrappedControl;
+    this.wrappedControlShouldComponentUpdate = scu && scu.bind(this.innerWrappedControl);
   };
 
   validate = (skipWrapped = false) => {
@@ -203,6 +206,7 @@ export default class Widget extends Component {
       mediaPaths,
       metadata,
       onChange,
+      onValidateObject,
       onOpenMediaLibrary,
       onRemoveMediaControl,
       onClearMediaControl,
@@ -224,8 +228,11 @@ export default class Widget extends Component {
       query,
       queryHits,
       clearSearch,
+      clearFieldErrors,
       isFetching,
       loadEntry,
+      fieldsErrors,
+      controlRef,
       t,
     } = this.props;
     return React.createElement(controlComponent, {
@@ -235,6 +242,7 @@ export default class Widget extends Component {
       metadata,
       onChange,
       onChangeObject: this.onChangeObject,
+      onValidateObject,
       onOpenMediaLibrary,
       onClearMediaControl,
       onRemoveMediaControl,
@@ -257,8 +265,11 @@ export default class Widget extends Component {
       query,
       queryHits,
       clearSearch,
+      clearFieldErrors,
       isFetching,
       loadEntry,
+      fieldsErrors,
+      controlRef,
       t,
     });
   }

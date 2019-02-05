@@ -4,11 +4,14 @@ describe('Editorial Workflow', () => {
   const entry1 = { title: 'first title', body: 'first body' }
   const entry2 = { title: 'second title', body: 'second body' }
   const entry3 = { title: 'third title', body: 'third body' }
+  const setting1 = { limit: 10, author: 'John Doe' }
+  const setting2 = { name: 'Andrew Wommack', description: 'A Gospel Teacher' }
   const notifications = {
     saved: 'Entry saved',
     published: 'Entry published',
     updated: 'Entry status updated',
     deletedUnpublished: 'Unpublished changes deleted',
+    error: { missingField: 'Oops, you\'ve missed a required field. Please complete before saving.' }
   }
 
   describe('Test Backend', () => {
@@ -25,6 +28,29 @@ describe('Editorial Workflow', () => {
       cy.get('input').first().click()
       cy.contains('button', 'Save').click()
       assertNotification(notifications.saved)
+    }
+
+    function validateObjectFields({ limit, author }) {
+      cy.get('a[href^="#/collections/settings"]').click()
+      cy.get('a[href^="#/collections/settings/entries/general"]').click()
+      cy.get('input[type=number]').type(limit);
+      cy.contains('button', 'Save').click()
+      assertNotification(notifications.error.missingField)
+      cy.contains('label', 'Default Author').click()
+      cy.focused().type(author)
+      cy.contains('button', 'Save').click()
+      assertNotification(notifications.saved)
+    }
+
+    function validateListFields({ name, description }) {
+      cy.get('a[href^="#/collections/settings"]').click()
+      cy.get('a[href^="#/collections/settings/entries/authors"]').click()
+      cy.contains('button', 'Add').click()
+      cy.contains('button', 'Save').click()
+      assertNotification(notifications.error.missingField)
+      cy.get('input').eq(2).type(name)
+      cy.get('[data-slate-editor]').eq(2).type(description)
+      cy.contains('button', 'Save').click()
     }
 
     function exitEditor() {
@@ -67,6 +93,16 @@ describe('Editorial Workflow', () => {
 
     function createPublishedPostAndExit(entry) {
       createPublishedPost(entry)
+      exitEditor()
+    }
+
+    function validateObjectFieldsAndExit(setting) {
+      validateObjectFields(setting)
+      exitEditor()
+    }
+
+    function validateListFieldsAndExit(setting) {
+      validateListFields(setting)
       exitEditor()
     }
 
@@ -170,6 +206,16 @@ describe('Editorial Workflow', () => {
     it('can create an entry', () => {
       login()
       createPostAndExit(entry1)
+    })
+
+    it('can validate object fields', () => {
+      login()
+      validateObjectFieldsAndExit(setting1)
+    })
+
+    it('can validate list fields', () => {
+      login()
+      validateListFieldsAndExit(setting2)
     })
 
     it('can publish an editorial workflow entry', () => {

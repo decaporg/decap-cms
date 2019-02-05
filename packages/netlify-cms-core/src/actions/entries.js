@@ -29,6 +29,7 @@ export const DRAFT_DISCARD = 'DRAFT_DISCARD';
 export const DRAFT_CHANGE = 'DRAFT_CHANGE';
 export const DRAFT_CHANGE_FIELD = 'DRAFT_CHANGE_FIELD';
 export const DRAFT_VALIDATION_ERRORS = 'DRAFT_VALIDATION_ERRORS';
+export const DRAFT_CLEAR_ERRORS = 'DRAFT_CLEAR_ERRORS';
 
 export const ENTRY_PERSIST_REQUEST = 'ENTRY_PERSIST_REQUEST';
 export const ENTRY_PERSIST_SUCCESS = 'ENTRY_PERSIST_SUCCESS';
@@ -208,11 +209,15 @@ export function changeDraftField(field, value, metadata) {
   };
 }
 
-export function changeDraftFieldValidation(field, errors) {
+export function changeDraftFieldValidation(uniquefieldId, errors) {
   return {
     type: DRAFT_VALIDATION_ERRORS,
-    payload: { field, errors },
+    payload: { uniquefieldId, errors },
   };
+}
+
+export function clearFieldErrors() {
+  return { type: DRAFT_CLEAR_ERRORS };
 }
 
 /*

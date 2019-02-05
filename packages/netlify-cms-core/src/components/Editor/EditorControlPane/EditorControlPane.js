@@ -17,10 +17,16 @@ const ControlPaneContainer = styled.div`
 export default class ControlPane extends React.Component {
   componentValidate = {};
 
-  processControlRef = (fieldName, wrappedControl) => {
+  controlRef(field, wrappedControl) {
     if (!wrappedControl) return;
-    this.componentValidate[fieldName] = wrappedControl.validate;
-  };
+    const name = field.get('name');
+    const widget = field.get('widget');
+    if (widget === 'list' || widget === 'object') {
+      this.componentValidate[name] = wrappedControl.innerWrappedControl.validate;
+    } else {
+      this.componentValidate[name] = wrappedControl.validate;
+    }
+  }
 
   validate = () => {
     this.props.fields.forEach(field => {
@@ -61,7 +67,8 @@ export default class ControlPane extends React.Component {
                 fieldsErrors={fieldsErrors}
                 onChange={onChange}
                 onValidate={onValidate}
-                processControlRef={this.processControlRef}
+                processControlRef={this.controlRef.bind(this)}
+                controlRef={this.controlRef}
               />
             ),
         )}
