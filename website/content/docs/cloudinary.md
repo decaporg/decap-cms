@@ -30,7 +30,7 @@ media_library:
 The following options are specific to the Netlify CMS integration for Cloudinary:
 
 * **`output_filename_only`**: _(default: `false`)_\
-  By default, the value provided for a selected image is a complete URL for the asset on Cloudinary's CDN. Setting `output_filename_only` to `true` will instead produce just the filename (e.g. `image.jpg`). This should be `true` if you will be directly embedding cloudinary transformation urls in page tempaltes. Refer to [Embedding Cloudinary url in templates] ()
+  By default, the value provided for a selected image is a complete URL for the asset on Cloudinary's CDN. Setting `output_filename_only` to `true` will instead produce just the filename (e.g. `image.jpg`). This should be `true` if you will be directly embedding cloudinary transformation urls in page tempaltes. Refer to [Inserting Cloudinary URL in page templates](#inserting-cloudinary-url-in-page-templates).
 * **`use_transformations`**: _(default: `true`)_\
   If `true`, uses derived url when available (the url will have image transformation segments included). Has no effect if `output_filename_only` is set to `true`.
 * **`use_secure_url`**: _(default: `true`)_\
@@ -57,7 +57,7 @@ The Cloudinary integration allows images to be transformed in two ways: directly
 
 ### Transforming images via Media Library
 If you transform and insert images from within the Cloudinary media library, the transformed image URL will be output by default. This gives the editor complete freedom to make changes to the image output.
-There are two ways to configure image transformation via media library - globally and per field. Global options will be overridden by field options.
+There are two ways to configure image transformation via media library - [globally](#global-configuration) and per [field](#field-configuration). Global options will be overridden by field options.
 
 #### Global configuration
 
