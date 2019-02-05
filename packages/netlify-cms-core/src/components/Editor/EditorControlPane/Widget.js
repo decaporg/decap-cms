@@ -36,7 +36,6 @@ export default class Widget extends Component {
     fieldsErrors: ImmutablePropTypes.map,
     onChange: PropTypes.func.isRequired,
     onValidate: PropTypes.func,
-    onDeleteErrors: PropTypes.func,
     onOpenMediaLibrary: PropTypes.func.isRequired,
     onClearMediaControl: PropTypes.func.isRequired,
     onRemoveMediaControl: PropTypes.func.isRequired,
@@ -46,6 +45,7 @@ export default class Widget extends Component {
     resolveWidget: PropTypes.func.isRequired,
     getEditorComponents: PropTypes.func.isRequired,
     isFetching: PropTypes.bool,
+    controlRef: PropTypes.func,
     query: PropTypes.func.isRequired,
     clearSearch: PropTypes.func.isRequired,
     clearFieldErrors: PropTypes.func.isRequired,
@@ -206,7 +206,6 @@ export default class Widget extends Component {
       mediaPaths,
       metadata,
       onChange,
-      onDeleteErrors,
       onValidateObject,
       onOpenMediaLibrary,
       onRemoveMediaControl,
@@ -233,6 +232,7 @@ export default class Widget extends Component {
       isFetching,
       loadEntry,
       fieldsErrors,
+      controlRef,
       t,
     } = this.props;
     return React.createElement(controlComponent, {
@@ -243,7 +243,6 @@ export default class Widget extends Component {
       onChange,
       onChangeObject: this.onChangeObject,
       onValidateObject,
-      onDeleteErrors,
       onOpenMediaLibrary,
       onClearMediaControl,
       onRemoveMediaControl,
@@ -270,6 +269,7 @@ export default class Widget extends Component {
       isFetching,
       loadEntry,
       fieldsErrors,
+      controlRef,
       t,
     });
   }

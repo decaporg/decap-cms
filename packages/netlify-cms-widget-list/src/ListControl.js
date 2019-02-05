@@ -78,6 +78,7 @@ export default class ListControl extends React.Component {
     value: ImmutablePropTypes.list,
     field: PropTypes.object,
     forID: PropTypes.string,
+    controlRef: PropTypes.func,
     mediaPaths: ImmutablePropTypes.map.isRequired,
     getAsset: PropTypes.func.isRequired,
     onOpenMediaLibrary: PropTypes.func.isRequired,
@@ -284,6 +285,7 @@ export default class ListControl extends React.Component {
       onValidateObject,
       clearFieldErrors,
       fieldsErrors,
+      controlRef,
       resolveWidget,
     } = this.props;
 
@@ -323,6 +325,7 @@ export default class ListControl extends React.Component {
           clearFieldErrors={clearFieldErrors}
           fieldsErrors={fieldsErrors}
           ref={this.processControlRef}
+          controlRef={controlRef}
         />
       </SortableListItem>
     );

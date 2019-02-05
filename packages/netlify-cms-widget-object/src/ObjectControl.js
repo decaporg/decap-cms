@@ -25,6 +25,7 @@ export default class ObjectControl extends Component {
     forID: PropTypes.string,
     classNameWrapper: PropTypes.string.isRequired,
     forList: PropTypes.bool,
+    controlRef: PropTypes.func,
     editorControl: PropTypes.func.isRequired,
     resolveWidget: PropTypes.func.isRequired,
     clearFieldErrors: PropTypes.func.isRequired,
@@ -52,17 +53,6 @@ export default class ObjectControl extends Component {
     return true;
   }
 
-  processControlRef = (field, wrappedControl) => {
-    if (!wrappedControl) return;
-    const name = field.get('name');
-    const widget = field.get('widget');
-    if (widget === 'list' || widget === 'object') {
-      this.componentValidate[name] = wrappedControl.innerWrappedControl.validate;
-    } else {
-      this.componentValidate[name] = wrappedControl.validate;
-    }
-  };
-
   validate = () => {
     const { field } = this.props;
     let fields = field.get('field') || field.get('fields');
@@ -81,6 +71,7 @@ export default class ObjectControl extends Component {
       clearFieldErrors,
       fieldsErrors,
       editorControl: EditorControl,
+      controlRef,
     } = this.props;
 
     if (field.get('widget') === 'hidden') {
@@ -98,7 +89,8 @@ export default class ObjectControl extends Component {
         clearFieldErrors={clearFieldErrors}
         fieldsErrors={fieldsErrors}
         onValidate={onValidateObject}
-        processControlRef={this.processControlRef}
+        processControlRef={controlRef && controlRef.bind(this)}
+        controlRef={controlRef}
       />
     );
   }

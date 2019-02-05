@@ -141,6 +141,7 @@ class EditorControl extends React.Component {
     removeInsertedMedia: PropTypes.func.isRequired,
     onValidate: PropTypes.func,
     processControlRef: PropTypes.func,
+    controlRef: PropTypes.func,
     query: PropTypes.func.isRequired,
     queryHits: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
     isFetching: PropTypes.bool,
@@ -172,6 +173,7 @@ class EditorControl extends React.Component {
       removeInsertedMedia,
       onValidate,
       processControlRef,
+      controlRef,
       query,
       queryHits,
       isFetching,
@@ -240,6 +242,7 @@ class EditorControl extends React.Component {
           resolveWidget={resolveWidget}
           getEditorComponents={getEditorComponents}
           ref={processControlRef && partial(processControlRef, field)}
+          controlRef={controlRef}
           editorControl={ConnectedEditorControl}
           query={query}
           loadEntry={loadEntry}
