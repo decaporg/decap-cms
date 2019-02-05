@@ -17,12 +17,9 @@ const styles = {
 export default class ObjectControl extends Component {
   componentValidate = {};
 
-  objectUniqueFieldIds = [];
-
   static propTypes = {
     onChangeObject: PropTypes.func.isRequired,
     onValidateObject: PropTypes.func.isRequired,
-    onDeleteErrors: PropTypes.func.isRequired,
     value: PropTypes.oneOfType([PropTypes.node, PropTypes.object, PropTypes.bool]),
     field: PropTypes.object,
     forID: PropTypes.string,
@@ -30,6 +27,7 @@ export default class ObjectControl extends Component {
     forList: PropTypes.bool,
     editorControl: PropTypes.func.isRequired,
     resolveWidget: PropTypes.func.isRequired,
+    clearFieldErrors: PropTypes.func.isRequired,
     fieldsErrors: ImmutablePropTypes.map.isRequired,
   };
 
@@ -57,19 +55,15 @@ export default class ObjectControl extends Component {
   processControlRef = (field, wrappedControl) => {
     if (!wrappedControl) return;
     const name = field.get('name');
-    const list = field.get('widget') == 'list';
-    const object = field.get('widget') == 'object';
-    if (list) {
-      this.componentValidate[name] = wrappedControl.innerWrappedControl.validateList;
-    } else if (object) {
-      this.componentValidate[name] = wrappedControl.innerWrappedControl.validateObject;
+    const widget = field.get('widget');
+    if (widget === 'list' || widget === 'object') {
+      this.componentValidate[name] = wrappedControl.innerWrappedControl.validate;
     } else {
       this.componentValidate[name] = wrappedControl.validate;
     }
-    this.objectUniqueFieldIds.push(wrappedControl.props.uniqueFieldId);
   };
 
-  validateObject = () => {
+  validate = () => {
     const { field } = this.props;
     let fields = field.get('field') || field.get('fields');
     fields = List.isList(fields) ? fields : List([fields]);
@@ -84,7 +78,7 @@ export default class ObjectControl extends Component {
       value,
       onChangeObject,
       onValidateObject,
-      onDeleteErrors,
+      clearFieldErrors,
       fieldsErrors,
       editorControl: EditorControl,
     } = this.props;
@@ -101,7 +95,7 @@ export default class ObjectControl extends Component {
         field={field}
         value={fieldValue}
         onChange={onChangeObject}
-        onDeleteErrors={onDeleteErrors}
+        clearFieldErrors={clearFieldErrors}
         fieldsErrors={fieldsErrors}
         onValidate={onValidateObject}
         processControlRef={this.processControlRef}

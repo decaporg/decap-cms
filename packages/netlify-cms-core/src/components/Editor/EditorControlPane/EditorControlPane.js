@@ -20,12 +20,9 @@ export default class ControlPane extends React.Component {
   processControlRef = (field, wrappedControl) => {
     if (!wrappedControl) return;
     const name = field.get('name');
-    const list = field.get('widget') == 'list';
-    const object = field.get('widget') == 'object';
-    if (list) {
-      this.componentValidate[name] = wrappedControl.innerWrappedControl.validateList;
-    } else if (object) {
-      this.componentValidate[name] = wrappedControl.innerWrappedControl.validateObject;
+    const widget = field.get('widget');
+    if (widget === 'list' || widget === 'object') {
+      this.componentValidate[name] = wrappedControl.innerWrappedControl.validate;
     } else {
       this.componentValidate[name] = wrappedControl.validate;
     }
@@ -47,7 +44,6 @@ export default class ControlPane extends React.Component {
       fieldsErrors,
       onChange,
       onValidate,
-      onDeleteErrors,
     } = this.props;
 
     if (!collection || !fields) {
@@ -71,7 +67,6 @@ export default class ControlPane extends React.Component {
                 fieldsErrors={fieldsErrors}
                 onChange={onChange}
                 onValidate={onValidate}
-                onDeleteErrors={onDeleteErrors}
                 processControlRef={this.processControlRef}
               />
             ),
@@ -89,5 +84,4 @@ ControlPane.propTypes = {
   fieldsErrors: ImmutablePropTypes.map.isRequired,
   onChange: PropTypes.func.isRequired,
   onValidate: PropTypes.func.isRequired,
-  onDeleteErrors: PropTypes.func.isRequired,
 };

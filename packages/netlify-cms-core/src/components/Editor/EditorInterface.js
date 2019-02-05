@@ -160,7 +160,6 @@ class EditorInterface extends Component {
       onChangeStatus,
       onPublish,
       onValidate,
-      onDeleteErrors,
       user,
       hasChanged,
       displayUrl,
@@ -186,7 +185,6 @@ class EditorInterface extends Component {
           fieldsErrors={fieldsErrors}
           onChange={onChange}
           onValidate={onValidate}
-          onDeleteErrors={onDeleteErrors}
           ref={c => (this.controlPaneRef = c)}
         />
       </ControlPaneContainer>
@@ -277,7 +275,6 @@ EditorInterface.propTypes = {
   getAsset: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   onValidate: PropTypes.func.isRequired,
-  onDeleteErrors: PropTypes.func.isRequired,
   onPersist: PropTypes.func.isRequired,
   showDelete: PropTypes.bool.isRequired,
   onDelete: PropTypes.func.isRequired,

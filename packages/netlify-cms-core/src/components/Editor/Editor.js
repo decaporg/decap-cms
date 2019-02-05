@@ -14,7 +14,6 @@ import {
   discardDraft,
   changeDraftField,
   changeDraftFieldValidation,
-  changeDraftDeleteErrors,
   persistEntry,
   deleteEntry,
 } from 'Actions/entries';
@@ -42,7 +41,6 @@ class Editor extends React.Component {
     boundGetAsset: PropTypes.func.isRequired,
     changeDraftField: PropTypes.func.isRequired,
     changeDraftFieldValidation: PropTypes.func.isRequired,
-    changeDraftDeleteErrors: PropTypes.func.isRequired,
     collection: ImmutablePropTypes.map.isRequired,
     createDraftFromEntry: PropTypes.func.isRequired,
     createEmptyDraft: PropTypes.func.isRequired,
@@ -302,7 +300,6 @@ class Editor extends React.Component {
       collection,
       changeDraftField,
       changeDraftFieldValidation,
-      changeDraftDeleteErrors,
       user,
       hasChanged,
       displayUrl,
@@ -339,7 +336,6 @@ class Editor extends React.Component {
         fieldsErrors={entryDraft.get('fieldsErrors')}
         onChange={changeDraftField}
         onValidate={changeDraftFieldValidation}
-        onDeleteErrors={changeDraftDeleteErrors}
         onPersist={this.handlePersistEntry}
         onDelete={this.handleDeleteEntry}
         onDeleteUnpublishedChanges={this.handleDeleteUnpublishedChanges}
@@ -401,7 +397,6 @@ export default connect(
   {
     changeDraftField,
     changeDraftFieldValidation,
-    changeDraftDeleteErrors,
     loadEntry,
     loadEntries,
     createDraftFromEntry,

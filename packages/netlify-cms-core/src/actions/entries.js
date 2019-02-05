@@ -29,7 +29,7 @@ export const DRAFT_DISCARD = 'DRAFT_DISCARD';
 export const DRAFT_CHANGE = 'DRAFT_CHANGE';
 export const DRAFT_CHANGE_FIELD = 'DRAFT_CHANGE_FIELD';
 export const DRAFT_VALIDATION_ERRORS = 'DRAFT_VALIDATION_ERRORS';
-export const DRAFT_DELETE_ERRORS = 'DRAFT_DELETE_ERRORS';
+export const DRAFT_CLEAR_ERRORS = 'DRAFT_CLEAR_ERRORS';
 
 export const ENTRY_PERSIST_REQUEST = 'ENTRY_PERSIST_REQUEST';
 export const ENTRY_PERSIST_SUCCESS = 'ENTRY_PERSIST_SUCCESS';
@@ -216,11 +216,8 @@ export function changeDraftFieldValidation(uniquefieldId, errors) {
   };
 }
 
-export function changeDraftDeleteErrors(uniquefieldIds) {
-  return {
-    type: DRAFT_DELETE_ERRORS,
-    payload: uniquefieldIds,
-  };
+export function clearFieldErrors() {
+  return { type: DRAFT_CLEAR_ERRORS };
 }
 
 /*

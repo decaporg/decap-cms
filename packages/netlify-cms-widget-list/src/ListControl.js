@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled, { cx, css } from 'react-emotion';
 import { List, Map } from 'immutable';
-import { partial, uniq } from 'lodash';
+import { partial } from 'lodash';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 import { ObjectControl } from 'netlify-cms-widget-object';
 import {
@@ -70,14 +70,11 @@ const valueTypes = {
 export default class ListControl extends React.Component {
   validations = [];
 
-  listUniqueFieldIds = [];
-
   static propTypes = {
     metadata: ImmutablePropTypes.map,
     onChange: PropTypes.func.isRequired,
     onChangeObject: PropTypes.func.isRequired,
     onValidateObject: PropTypes.func.isRequired,
-    onDeleteErrors: PropTypes.func.isRequired,
     value: ImmutablePropTypes.list,
     field: PropTypes.object,
     forID: PropTypes.string,
@@ -91,6 +88,7 @@ export default class ListControl extends React.Component {
     setInactiveStyle: PropTypes.func.isRequired,
     editorControl: PropTypes.func.isRequired,
     resolveWidget: PropTypes.func.isRequired,
+    clearFieldErrors: PropTypes.func.isRequired,
     fieldsErrors: ImmutablePropTypes.map.isRequired,
   };
 
@@ -175,15 +173,14 @@ export default class ListControl extends React.Component {
     onChange((value || List()).push(parsedValue));
   };
 
-  processObjectControlRef = ref => {
+  processControlRef = ref => {
     if (!ref) return;
-    this.validations.push(ref.validateObject);
-    this.listUniqueFieldIds.push(uniq(ref.objectUniqueFieldIds));
+    this.validations.push(ref.validate);
   };
 
-  validateList = () => {
-    this.validations.forEach(validate => {
-      validate();
+  validate = () => {
+    this.validations.forEach(validateListItem => {
+      validateListItem();
     });
   };
 
@@ -215,7 +212,7 @@ export default class ListControl extends React.Component {
   handleRemove = (index, event) => {
     event.preventDefault();
     const { itemsCollapsed } = this.state;
-    const { value, metadata, onChange, field, onDeleteErrors } = this.props;
+    const { value, metadata, onChange, field, clearFieldErrors } = this.props;
     const collectionName = field.get('name');
     const isSingleField = this.getValueType() === valueTypes.SINGLE;
 
@@ -228,17 +225,11 @@ export default class ListControl extends React.Component {
     this.setState({ itemsCollapsed: itemsCollapsed.delete(index) });
 
     onChange(value.remove(index), parsedMetadata);
+    clearFieldErrors();
 
     // Remove deleted item object validation
     if (this.validations) {
       this.validations.splice(removedItemIndex, 1);
-    }
-
-    // Remove deleted item object unique field Ids from fieldsErrors Map() and from the
-    // list unique field ids array.
-    if (this.listUniqueFieldIds) {
-      onDeleteErrors(this.listUniqueFieldIds[removedItemIndex]);
-      this.listUniqueFieldIds.splice(removedItemIndex, 1);
     }
   };
 
@@ -291,7 +282,7 @@ export default class ListControl extends React.Component {
       classNameWrapper,
       editorControl,
       onValidateObject,
-      onDeleteErrors,
+      clearFieldErrors,
       fieldsErrors,
       resolveWidget,
     } = this.props;
@@ -329,9 +320,9 @@ export default class ListControl extends React.Component {
           resolveWidget={resolveWidget}
           forList
           onValidateObject={onValidateObject}
-          onDeleteErrors={onDeleteErrors}
+          clearFieldErrors={clearFieldErrors}
           fieldsErrors={fieldsErrors}
-          ref={this.processObjectControlRef}
+          ref={this.processControlRef}
         />
       </SortableListItem>
     );
