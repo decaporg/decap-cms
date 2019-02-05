@@ -23,7 +23,7 @@ const PreviewPaneFrame = styled(Frame)`
 
 export default class PreviewPane extends React.Component {
   getWidget = (field, value, metadata, props, idx = null) => {
-    const { fieldsMetaData, getAsset, entry } = props;
+    const { getAsset, entry } = props;
     const widget = resolveWidget(field.get('widget'));
     const key = idx ? field.get('name') + '_' + idx : field.get('name');
 
@@ -37,9 +37,8 @@ export default class PreviewPane extends React.Component {
         field={field}
         getAsset={getAsset}
         value={value && Map.isMap(value) ? value.get(field.get('name')) : value}
-        metadata={metadata}
         entry={entry}
-        fieldsMetaData={fieldsMetaData}
+        fieldsMetaData={metadata}
       />
     );
   };

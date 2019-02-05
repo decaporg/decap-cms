@@ -166,12 +166,12 @@ Registers a template for a folder collection or an individual file in a file col
     </script>
     ```
     ### Accessing Metadata
-    Preview Components also receive an additional prop: `metadata`. It contains aditional information (besides the plain plain textual value of each field) that can be useful for preview purposes. For example, the Relation widget passes the whole selected relation data in `metadata`.
+    Preview Components also receive an additional prop: `fieldsMetaData`. It contains aditional information (besides the plain plain textual value of each field) that can be useful for preview purposes. For example, the Relation widget passes the whole selected relation data in `fieldsMetaData`.
     ```js
     export default class ArticlePreview extends React.Component {
       render() {
-        const {entry, metadata} = this.props;
-        const author = metadata.getIn(['authors', data.author]);
+        const {entry, fieldsMetaData} = this.props;
+        const author = fieldsMetaData.getIn(['authors', data.author]);
 
         return <article><h2>{ entry.getIn(['data', 'title']) }</h2>
           {author &&<AuthorBio author={author.toJS()}/>}

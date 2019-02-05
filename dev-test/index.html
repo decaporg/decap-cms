@@ -142,8 +142,8 @@
         // In this case, the post would be nested under "posts" and then under
         // the title of the selected post, since our `valueField` in the config
         // is "title".
-        const { value, metadata } = this.props;
-        const post = metadata && metadata.getIn(['posts', value]);
+        const { value, fieldsMetaData } = this.props;
+        const post = fieldsMetaData && fieldsMetaData.getIn(['posts', value]);
         const style = { border: '2px solid #ccc', borderRadius: '8px', padding: '20px' };
         return post ? h('div', { style: style },
           h('h2', {}, 'Related Post'),
