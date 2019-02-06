@@ -210,6 +210,7 @@ export default class GitGateway {
 
     return this.api.readFile(".gitattributes")
       .then(getLargeMediaPatternsFromGitAttributesFile)
+      .catch(err => err.message.includes("404") ? [] : Promise.reject(err))
       .then(patterns => {
 	const enabled = patterns.length !== 0;
 	this._largeMediaClient = getClient({
@@ -225,19 +226,17 @@ export default class GitGateway {
     return Promise.all([
       this.backend.getMedia(),
       this.getLargeMediaClient(),
-    ]).then(([mediaFiles, largeMediaClient]) => {
+    ]).then(async ([mediaFiles, largeMediaClient]) => {
       if (!largeMediaClient.enabled) {
 	return mediaFiles;
       }
-
-      return Promise.all([mediaFiles, this.getLargeMedia(mediaFiles)]);
-    }).then(
-      ([media, lfsMedia]) =>
-        media.map(({ id, url, ...rest }) => ({
-          ...rest,
-          url: lfsMedia[id] || url
-        }))
-    );
+      const largeMediaFiles = await this.getLargeMedia(mediaFiles);
+      return media.map(({ id, url, ...rest }) => ({
+	...rest,
+	id,
+	url: largeMediaFiles[id] || url
+      }))
+    });
   }
   getLargeMedia(mediaFiles) {
     return this.getLargeMediaClient().then(client => {
