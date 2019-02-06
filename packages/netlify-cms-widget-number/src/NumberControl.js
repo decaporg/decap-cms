@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import ValidationErrorTypes from 'Constants/validationErrorTypes';
+import ValidationErrorTypes from 'netlify-cms-core/src/constants/validationErrorTypes';
 
 export default class NumberControl extends React.Component {
   static propTypes = {
