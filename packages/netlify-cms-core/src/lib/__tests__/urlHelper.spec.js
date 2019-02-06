@@ -96,8 +96,13 @@ describe('sanitizeSlug', () => {
     ).toEqual('escrzy');
   });
 
+  it('does not remove doubles in original string even if they match `sanitize_replacement`', () => {
+    expect(sanitizeSlug('test--test  test', Map({ sanitize_replacement: '-' }))).toEqual(
+      'test--test-test',
+    );
+  });
+
   it('removes double replacements', () => {
-    expect(sanitizeSlug('test--test')).toEqual('test-test');
     expect(sanitizeSlug('test   test')).toEqual('test-test');
   });
 

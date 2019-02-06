@@ -77,21 +77,26 @@ export function sanitizeSlug(str, options = Map()) {
     throw new Error('The input slug must be a string.');
   }
 
-  const sanitizedSlug = flow([
-    ...(stripDiacritics ? [diacritics.remove] : []),
-    partialRight(sanitizeURI, { replacement, encoding }),
-    partialRight(sanitizeFilename, { replacement }),
-  ])(str);
-
   // Remove any doubled or leading/trailing replacement characters (that were added in the sanitizers).
   const doubleReplacement = new RegExp(`(?:${escapeRegExp(replacement)})+`, 'g');
   const trailingReplacment = new RegExp(`${escapeRegExp(replacement)}$`);
   const leadingReplacment = new RegExp(`^${escapeRegExp(replacement)}`);
 
-  const normalizedSlug = sanitizedSlug
-    .replace(doubleReplacement, replacement)
-    .replace(leadingReplacment, '')
-    .replace(trailingReplacment, '');
+  // Split to preserve repeated characters even if they match the replacement character
+  const stringSplitByReplacement = str.split(replacement);
 
-  return normalizedSlug;
+  const sanitizedAndNormalized = stringSplitByReplacement.map(s => {
+    const sanitizedSubSlug = flow([
+      ...(stripDiacritics ? [diacritics.remove] : []),
+      partialRight(sanitizeURI, { replacement: replacement, encoding }),
+      partialRight(sanitizeFilename, { replacement: replacement }),
+    ])(s);
+    const normalizedSubSlug = sanitizedSubSlug
+      .replace(doubleReplacement, replacement)
+      .replace(leadingReplacment, '')
+      .replace(trailingReplacment, '');
+    return normalizedSubSlug;
+  });
+
+  return sanitizedAndNormalized.join(replacement);
 }
