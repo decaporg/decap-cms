@@ -159,6 +159,7 @@ The `collections` setting is the heart of your Netlify CMS configuration, as it 
 `collections` accepts a list of collection objects, each with the following options:
 
 - `name` (required): unique identifier for the collection, used as the key when referenced in other contexts (like the [relation widget](../widgets/#relation))
+- `identifier_field`: see detailed description below
 - `label`: label for the collection in the editor UI; defaults to the value of `name`
 - `label_singular`: singular label for certain elements in the editor; defaults to the value of `label`
 - `description`: optional text, displayed below the label when viewing a collection
@@ -175,6 +176,21 @@ The `collections` setting is the heart of your Netlify CMS configuration, as it 
 - `editor`: see detailed description below
 
 The last few options require more detailed information.
+
+### `identifier_field`
+
+Netlify CMS expects every entry to provide a field named `"title"` that serves as an identifier for
+the entry. The identifier field serves as an entry's title when viewing a list of entries, and is
+used in [slug](#slug) creation. If you would like to use a field other than `"title"` as the
+identifier, you can set `identifier_field` to the name of the other field.
+
+**Example**
+
+``` yaml
+collections:
+  - name: posts
+    identifier_field: name
+```
 
 ### `extension` and `format`
 
@@ -199,11 +215,11 @@ You may also specify a custom `extension` not included in the list above, as lon
 
 ### `slug`
 
-For folder collections where users can create new items, the `slug` option specifies a template for generating new filenames based on a file's creation date and `title` field. (This means that all collections with `create: true` must have a `title` field.)
+For folder collections where users can create new items, the `slug` option specifies a template for generating new filenames based on a file's creation date and `title` field. (This means that all collections with `create: true` must have a `title` field (a different field can be used via `identifier_field`, see [collection config](#collections) for more info.)
 
 **Available template tags:**
 
-- `{{slug}}`: a url-safe version of the `title` field for the file
+- `{{slug}}`: a url-safe version of the `title` field (or identifier field) for the file
 - `{{year}}`: 4-digit year of the file creation date
 - `{{month}}`: 2-digit month of the file creation date
 - `{{day}}`: 2-digit day of the month of the file creation date
@@ -225,11 +241,38 @@ root of a deploy preview.
 
 **Available template tags:**
 
-- `{{slug}}`: the output from the collection's `slug` configuration
+- Any field can be referenced by wrapping the field name in double curly braces, eg. `{{author}}`
+- `{{slug}}`: the entire slug for the current entry (not just the url-safe identifier, as is the
+    case with [`slug` configuration](#slug)
+
+The following date based template tags are pulled from a date field in your entry, and may require additional configuration, see [`preview_path_date_field`](#preview_path_date_field) for details. If a date template tag is used and no date can be found, `preview_path` will be ignored.
+
+- `{{year}}`: 4-digit year from entry data
+- `{{month}}`: 2-digit month from entry data
+- `{{day}}`: 2-digit day of the month from entry data
+- `{{hour}}`: 2-digit hour from entry data
+- `{{minute}}`: 2-digit minute from entry data
+- `{{second}}`: 2-digit second from entry data
 
 **Example:**
 ```yaml
-preview_path: "blog/{{slug}}"
+collections:
+  - name: posts
+    preview_path: "blog/{{year}}/{{month}}/{{slug}}"
+```
+
+### `preview_path_date_field`
+The name of a date field for parsing date-based template tags from `preview_path`. If this field is
+not provided and `preview_path` contains date-based template tags (eg. `{{year}}`), Netlify CMS will
+attempt to infer a usable date field by checking for common date field names, such as `date`. If you
+find that you need to specify a date field, you can use `preview_path_date_field` to tell Netlify
+CMS which field to use for preview path template tags.
+
+**Example:**
+```yaml
+collections:
+  - name: posts
+    preview_path_date_field: "updated_on"
 ```
 
 ### `fields`

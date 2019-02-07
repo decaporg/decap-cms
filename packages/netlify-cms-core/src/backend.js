@@ -1,5 +1,7 @@
-import { attempt, flatten, isError, trimStart, trimEnd } from 'lodash';
+import { attempt, flatten, isError, trimStart, trimEnd, flow, partialRight } from 'lodash';
 import { Map } from 'immutable';
+import { stripIndent } from 'common-tags';
+import moment from 'moment';
 import fuzzy from 'fuzzy';
 import { resolveFormat } from 'Formats/formats';
 import { selectIntegration } from 'Reducers/integrations';
@@ -36,38 +38,8 @@ class LocalStorageAuthStore {
   }
 }
 
-const slugFormatter = (collection, entryData, slugConfig) => {
-  const template = collection.get('slug') || '{{slug}}';
-  const date = new Date();
-
-  const identifier = entryData.get(selectIdentifier(collection));
-  if (!identifier) {
-    throw new Error(
-      'Collection must have a field name that is a valid entry identifier, or must have `identifier_field` set',
-    );
-  }
-
-  const slug = template
-    .replace(/\{\{([^}]+)\}\}/g, (_, field) => {
-      switch (field) {
-        case 'year':
-          return date.getFullYear();
-        case 'month':
-          return `0${date.getMonth() + 1}`.slice(-2);
-        case 'day':
-          return `0${date.getDate()}`.slice(-2);
-        case 'hour':
-          return `0${date.getHours()}`.slice(-2);
-        case 'minute':
-          return `0${date.getMinutes()}`.slice(-2);
-        case 'second':
-          return `0${date.getSeconds()}`.slice(-2);
-        case 'slug':
-          return identifier.trim();
-        default:
-          return entryData.get(field, '').trim();
-      }
-    })
+function prepareSlug(slug) {
+  return slug
     // Convert slug to lower-case
     .toLocaleLowerCase()
 
@@ -76,8 +48,73 @@ const slugFormatter = (collection, entryData, slugConfig) => {
 
     // Replace periods with dashes.
     .replace(/[.]/g, '-');
+}
 
-  return sanitizeSlug(slug, slugConfig);
+const dateParsers = {
+  year: date => date.getFullYear(),
+  month: date => `0${date.getMonth() + 1}`.slice(-2),
+  day: date => `0${date.getDate()}`.slice(-2),
+  hour: date => `0${date.getHours()}`.slice(-2),
+  minute: date => `0${date.getMinutes()}`.slice(-2),
+  second: date => `0${date.getSeconds()}`.slice(-2),
+}
+
+const SLUG_MISSING_REQUIRED_DATE = 'SLUG_MISSING_REQUIRED_DATE';
+
+function compileSlug(template, date, identifier = '', data = Map(), processor) {
+  let missingRequiredDate;
+
+  const slug = template.replace(/\{\{([^}]+)\}\}/g, (_, key) => {
+    let replacement;
+    if (dateParsers[key] && !date) {
+      missingRequiredDate = true;
+      return '';
+    }
+
+    if (dateParsers[key]) {
+      replacement = dateParsers[key](date);
+    } else if (key === 'slug') {
+      replacement = identifier.trim();
+    } else {
+      replacement = data.get(key, '').trim();
+    }
+
+    if (processor) {
+      return processor(replacement);
+    }
+
+    return replacement;
+  });
+
+  if (missingRequiredDate) {
+    const err = new Error();
+    err.name = SLUG_MISSING_REQUIRED_DATE;
+    throw err;
+  } else {
+    return slug;
+  }
+}
+
+function slugFormatter(collection, entryData, slugConfig) {
+  const template = collection.get('slug') || '{{slug}}';
+
+  const identifier = entryData.get(selectIdentifier(collection));
+  if (!identifier) {
+    throw new Error(
+      'Collection must have a field name that is a valid entry identifier, or must have `identifier_field` set',
+    );
+  }
+
+  // Pass entire slug through `prepareSlug` and `sanitizeSlug`.
+  // TODO: only pass slug replacements through sanitizers, static portions of
+  // the slug template should not be sanitized.
+  const processSlug = flow([
+    compileSlug,
+    prepareSlug,
+    partialRight(sanitizeSlug, slugConfig),
+  ]);
+
+  return processSlug(template, new Date(), identifier, entryData);
 };
 
 const commitMessageTemplates = Map({
@@ -120,7 +157,20 @@ const sortByScore = (a, b) => {
   return 0;
 };
 
-function createPreviewUrl(baseUrl, collection, slug) {
+function parsePreviewPathDate(collection, entry) {
+  const dateField = collection.get('preview_path_date_field') || selectInferedField(collection, 'date');
+  if (!dateField) {
+    return;
+  }
+
+  const dateValue = entry.getIn(['data', dateField]);
+  const dateMoment = dateValue && moment(dateValue);
+  if (dateMoment && dateMoment.isValid()) {
+    return dateMoment.toDate();
+  }
+}
+
+function createPreviewUrl(baseUrl, collection, slug, slugConfig, entry) {
   /**
    * Preview URL can't be created without `baseUrl`. This makes preview URLs
    * optional for backends that don't support them.
@@ -142,7 +192,37 @@ function createPreviewUrl(baseUrl, collection, slug) {
    * URL path.
    */
   const basePath = trimEnd(baseUrl, '/');
-  const previewPath = trimStart(collection.get('preview_path').replace('{{slug}}', slug), ' /');
+  const pathTemplate = collection.get('preview_path');
+  const fields = entry.get('data');
+  const date = parsePreviewPathDate(collection, entry);
+
+  // Prepare and sanitize slug variables only, leave the rest of the
+  // `preview_path` template as is.
+  const processSegment = flow([
+    value => String(value),
+    prepareSlug,
+    partialRight(sanitizeSlug, slugConfig),
+  ]);
+  let compiledPath;
+
+  try {
+    compiledPath = compileSlug(pathTemplate, date, slug, fields, processSegment);
+  }
+  catch (err) {
+    // Print an error and ignore `preview_path` if both:
+    //   1. Date is invalid (according to Moment), and
+    //   2. A date expression (eg. `{{year}}`) is used in `preview_path`
+    if (err.name === SLUG_MISSING_REQUIRED_DATE) {
+      console.error(stripIndent`
+        Collection "${collection.get('name')}" configuration error:
+          \`preview_path_date_field\` must be a field with a valid date. Ignoring \`preview_path\`.
+      `);
+      return basePath;
+    }
+    throw err;
+  }
+
+  const previewPath = trimStart(compiledPath, ' /');
   return `${basePath}/${previewPath}`;
 }
 
@@ -406,7 +486,7 @@ class Backend {
    * entry's collection. Does not currently make a request through the backend,
    * but likely will in the future.
    */
-  getDeploy(collection, slug) {
+  getDeploy(collection, slug, entry) {
     /**
      * If `site_url` is undefiend or `show_preview_links` in the config is set to false, do nothing.
      */
@@ -418,7 +498,7 @@ class Backend {
     }
 
     return {
-      url: createPreviewUrl(baseUrl, collection, slug),
+      url: createPreviewUrl(baseUrl, collection, slug, this.config.get('slug'), entry),
       status: 'SUCCESS',
     };
   }
@@ -428,7 +508,7 @@ class Backend {
    * Supports polling via `maxAttempts` and `interval` options, as there is
    * often a delay before a preview URL is available.
    */
-  async getDeployPreview(collection, slug, { maxAttempts = 1, interval = 5000 } = {}) {
+  async getDeployPreview(collection, slug, entry, { maxAttempts = 1, interval = 5000 } = {}) {
     /**
      * If the registered backend does not provide a `getDeployPreview` method, or
      * `show_preview_links` in the config is set to false, do nothing.
@@ -462,7 +542,7 @@ class Backend {
       /**
        * Create a URL using the collection `preview_path`, if provided.
        */
-      url: createPreviewUrl(deployPreview.url, collection, slug),
+      url: createPreviewUrl(deployPreview.url, collection, slug, this.config.get('slug'), entry),
       /**
        * Always capitalize the status for consistency.
        */

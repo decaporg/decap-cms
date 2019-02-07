@@ -43,7 +43,7 @@ export function deployPreviewError(collection, slug) {
 /**
  * Requests a deploy preview object from the registered backend.
  */
-export function loadDeployPreview(collection, slug, published, opts) {
+export function loadDeployPreview(collection, slug, entry, published, opts) {
   return async (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
@@ -62,8 +62,8 @@ export function loadDeployPreview(collection, slug, published, opts) {
        * unpublished entries.
        */
       const deploy = published
-        ? backend.getDeploy(collection, slug)
-        : await backend.getDeployPreview(collection, slug, opts);
+        ? backend.getDeploy(collection, slug, entry)
+        : await backend.getDeployPreview(collection, slug, entry, opts);
       if (deploy) {
         return dispatch(deployPreviewLoaded(collection, slug, deploy));
       }

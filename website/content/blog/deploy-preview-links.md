@@ -10,6 +10,8 @@ twitter_image: /img/preview-link-unpublished.png
 
 ![Deploy preview link for unpublished content](/img/preview-link-unpublished.png)
 
+## Seeing is believing
+
 The editorial workflow allows editors to create draft content in Netlify CMS, and Netlify can
 provide deploy previews of draft content, but there hasn't been a way to access links to these
 preview builds from within Netlify CMS. The preview pane in the editor is a good tool for seeing how
@@ -40,11 +42,11 @@ When the preview is ready, the "Check for Preview" button is replaced with a lin
 ![Deploy preview link for unpublished content](/img/preview-link-unpublished.png)
 
 ## Deep links
-
-Deploy preview links generally direct to the root of a site, but Netlify CMS provides a method for
-deep linking, so deploy preview links navigate straight to the piece of content being edited. By
-[providing a string template](/docs/deploy-preview-links) for each collection, you can get links
-that go right where editors expect them to.
+Deploy preview links generally direct to the root of a site, but Netlify CMS can also link straight
+to the piece of content being edited. By [providing a string template](/docs/deploy-preview-links)
+for each collection, you can get links that go right where editors expect them to. More complex
+URL's can be constructed [using date
+information](/docs/deploy-preview-links/#dates-in-preview-paths) from your content files.
 
 ## Unpublished vs. published
 If you're not using the editorial workflow, you may not feel you need this very much. Whenever you

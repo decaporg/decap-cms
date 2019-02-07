@@ -60,6 +60,58 @@ collections:
 With the above configuration, the deploy preview URL from your backend will be combined with your
 preview path to create a URL to a specific blog post.
 
+**Note:** `{{slug}}` in `preview_path` is different than `{{slug}}` in `slug`. In the `slug`
+template, `{{slug}}` is only the url-safe [identifier
+field](../configuration-options/#identifier_field), while in the `preview_path` template, `{{slug}}`
+is the entire slug for the entry. For example:
+
+```yml
+# for an entry created Jan 1, 2000 with identifier "My New Post!"
+
+collections:
+  - name: posts
+    slug: {{year}}-{{month}}-{{slug}} # {{slug}} will compile to "my-new-post"
+    preview_path: blog/{{slug}} # {{slug}} will compile to "2000-01-my-new-post"
+```
+
+### Dates in preview paths
+Some static site generators allow URL's to be customized with date parameters - for example, Hugo
+can be configured to use values like `year` and `month` in a URL. These values are generally derived
+by the static site generator from a date field in the content file. `preview_path` accepts these
+parameters as well, similar to the `slug` configuration, except `preview_path` populates date values
+based on a date value from the entry, just like static site generators do. Netlify CMS will attempt
+to infer an obvious date field, but you can also specify which date field to use for `preview_path`
+template tags by using
+[`preview_path_date_field`](../configuration-options/#preview_path_date_field).
+
+Together with your other field values, dates can be used to configure most URL schemes available
+through static site generators.
+
+**Example**
+
+```yaml
+# This collection's date field will be inferred because it has a field named `"date"`
+
+collections:
+  - name: posts
+    preview_path: blog/{{year}}/{{month}}/{{title}}
+    fields:
+      - { name: title, label: Title }
+        { name: date, label: Date, widget: date }
+        { name: body, label: Body, widget: markdown }
+
+# This collection requires `path_preview_date_field` because the no obvious date field is available
+
+collections:
+  - name: posts
+    preview_path: blog/{{year}}/{{month}}/{{title}}
+    preview_path_date_field: published_at
+    fields:
+      - { name: title, label: Title }
+        { name: published_at, label: Published At, widget: date }
+        { name: body, label: Body, widget: markdown }
+```
+
 ## Preview links for published content
 You may also want preview links for published content as a convenience. You can do this by providing
 a `site_url` in your configuration, which will be used in place of the deploy preview URL that a

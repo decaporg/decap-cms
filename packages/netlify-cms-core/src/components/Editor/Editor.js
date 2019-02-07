@@ -360,7 +360,7 @@ class Editor extends React.Component {
         currentStatus={currentStatus}
         onLogoutClick={logoutUser}
         deployPreview={deployPreview}
-        loadDeployPreview={opts => loadDeployPreview(collection, slug, isPublished, opts)}
+        loadDeployPreview={opts => loadDeployPreview(collection, slug, entry, isPublished, opts)}
       />
     );
   }

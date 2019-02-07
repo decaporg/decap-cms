@@ -230,14 +230,14 @@ class EditorToolbar extends React.Component {
   componentDidMount() {
     const { isNewEntry, loadDeployPreview } = this.props;
     if (!isNewEntry) {
-      loadDeployPreview({ maxAttempts: 2 });
+      loadDeployPreview({ maxAttempts: 3 });
     }
   }
 
   componentDidUpdate(prevProps) {
     const { isNewEntry, isPersisting, loadDeployPreview } = this.props;
     if (!isNewEntry && prevProps.isPersisting && !isPersisting) {
-      loadDeployPreview({ maxAttempts: 2 });
+      loadDeployPreview({ maxAttempts: 3 });
     }
   }
 
