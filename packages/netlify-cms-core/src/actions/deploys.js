@@ -1,5 +1,6 @@
 import { actions as notifActions } from 'redux-notifications';
 import { currentBackend } from 'src/backend';
+import { selectDeployPreview } from 'Reducers';
 
 const { notifSend } = notifActions;
 
@@ -46,6 +47,13 @@ export function loadDeployPreview(collection, slug, published, opts) {
   return async (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
+
+    // Exit if currently fetching
+    const deployState = selectDeployPreview(state, collection, slug);
+    if (deployState && deployState.get('isFetching')) {
+      return;
+    }
+
     dispatch(deployPreviewLoading(collection, slug));
 
     try {
