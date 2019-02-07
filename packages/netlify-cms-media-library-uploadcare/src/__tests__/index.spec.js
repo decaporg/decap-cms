@@ -44,7 +44,7 @@ describe('uploadcare media library', () => {
     imagesOnly: false,
     multiple: false,
     previewStep: true,
-    integration: "NetlifyCMS-Uploadcare-MediaLibrary",
+    integration: 'NetlifyCMS-Uploadcare-MediaLibrary',
   };
 
   beforeEach(() => {
