@@ -78,10 +78,7 @@ export const getLargeMediaPatternsFromGitAttributesFile = flow([
 ]);
 
 export const matchPath = ({ patterns }, path) =>
-  patterns.some(pattern => {
-    const result = minimatch(path, pattern, { matchBase: true });
-    return result;
-  });
+  patterns.some(pattern => minimatch(path, pattern, { matchBase: true }));
 
 //
 // API interactions
@@ -109,14 +106,15 @@ const resourceExists = async ({ rootUrl, requestFunction }, { sha, size }) => {
   // to fit
 };
 
-const getDownloadUrlFromSha = sha =>
-  `https://lm.services.netlify.com/lfsorigin/${sha}`;
+const getDownloadUrlFromSha = ({ netlifySiteId }, sha) =>
+  `https://lm.services.netlify.com/lfsorigin/${netlifySiteId}/${sha}`;
 
-const getResourceDownloadUrls = flow([
-  map(({ sha }) => [sha, getDownloadUrlFromSha(sha)]),
-  fromPairs,
-  Promise.resolve.bind(Promise)
-]);
+const getResourceDownloadUrls = (clientConfig, sha) =>
+  flow([
+    map(({ sha }) => [sha, getDownloadUrlFromSha(clientConfig, sha)]),
+    fromPairs,
+    Promise.resolve.bind(Promise)
+  ])(sha);
 
 const uploadOperation = objects => ({
   operation: "upload",
@@ -165,12 +163,11 @@ export const getClient = clientConfig => {
   const configFns = {
     resourceExists,
     getResourceUploadUrls,
+    getResourceDownloadUrls,
     uploadResource,
     matchPath
   };
-  const configlessFns = {
-    getResourceDownloadUrls
-  };
+  const configlessFns = {};
   return flow([
     Object.keys,
     map(key => [key, configureFn(clientConfig, configFns[key])]),
