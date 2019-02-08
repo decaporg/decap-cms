@@ -9,6 +9,7 @@ import collections from './collections';
 import search from './search';
 import mediaLibrary from './mediaLibrary';
 import medias, * as fromMedias from './medias';
+import deploys, * as fromDeploys from './deploys';
 import globalUI from './globalUI';
 
 const reducers = {
@@ -23,6 +24,7 @@ const reducers = {
   entryDraft,
   mediaLibrary,
   medias,
+  deploys,
   globalUI,
 };
 
@@ -46,6 +48,9 @@ export const selectSearchedEntries = state => {
     )
   );
 };
+
+export const selectDeployPreview = (state, collection, slug) =>
+  fromDeploys.selectDeployPreview(state.deploys, collection, slug);
 
 export const selectUnpublishedEntry = (state, collection, slug) =>
   fromEditorialWorkflow.selectUnpublishedEntry(state.editorialWorkflow, collection, slug);

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled, { css } from 'react-emotion';
 import { translate } from 'react-polyglot';
+import { Map } from 'immutable';
 import { Link } from 'react-router-dom';
 import {
   Icon,
@@ -55,6 +56,7 @@ const ToolbarSectionMain = styled.div`
 
 const ToolbarSubSectionFirst = styled.div`
   display: flex;
+  align-items: center;
 `;
 
 const ToolbarSubSectionLast = styled(ToolbarSubSectionFirst)`
@@ -160,6 +162,36 @@ const StatusButton = styled(StyledDropdownButton)`
   color: ${colorsRaw.teal};
 `;
 
+const PreviewButtonContainer = styled.div`
+  margin-right: 12px;
+  color: ${colorsRaw.blue};
+  display: flex;
+  align-items: center;
+
+  a,
+  ${Icon} {
+    color: ${colorsRaw.blue};
+  }
+
+  ${Icon} {
+    position: relative;
+    top: 1px;
+  }
+`;
+
+const RefreshPreviewButton = styled.button`
+  background: none;
+  border: 0;
+  cursor: pointer;
+  color: ${colorsRaw.blue};
+
+  span {
+    margin-right: 6px;
+  }
+`;
+
+const PreviewLink = RefreshPreviewButton.withComponent('a');
+
 const StatusDropdownItem = styled(DropdownItem)`
   ${Icon} {
     color: ${colors.infoText};
@@ -190,8 +222,24 @@ class EditorToolbar extends React.Component {
     isModification: PropTypes.bool,
     currentStatus: PropTypes.string,
     onLogoutClick: PropTypes.func.isRequired,
+    deployPreview: ImmutablePropTypes.map,
+    loadDeployPreview: PropTypes.func.isRequired,
     t: PropTypes.func.isRequired,
   };
+
+  componentDidMount() {
+    const { isNewEntry, loadDeployPreview } = this.props;
+    if (!isNewEntry) {
+      loadDeployPreview({ maxAttempts: 3 });
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    const { isNewEntry, isPersisting, loadDeployPreview } = this.props;
+    if (!isNewEntry && prevProps.isPersisting && !isPersisting) {
+      loadDeployPreview({ maxAttempts: 3 });
+    }
+  }
 
   renderSimpleSaveControls = () => {
     const { showDelete, onDelete, t } = this.props;
@@ -201,6 +249,34 @@ class EditorToolbar extends React.Component {
           <DeleteButton onClick={onDelete}>{t('editor.editorToolbar.deleteEntry')}</DeleteButton>
         ) : null}
       </div>
+    );
+  };
+
+  renderDeployPreviewControls = label => {
+    const { deployPreview = Map(), loadDeployPreview, t } = this.props;
+    const url = deployPreview.get('url');
+    const status = deployPreview.get('status');
+
+    if (!status) {
+      return;
+    }
+
+    const isFetching = deployPreview.get('isFetching');
+    const deployPreviewReady = status === 'SUCCESS' && !isFetching;
+    return (
+      <PreviewButtonContainer>
+        {deployPreviewReady ? (
+          <PreviewLink rel="noopener noreferrer" target="_blank" href={url}>
+            <span>{label}</span>
+            <Icon type="new-tab" size="xsmall" />
+          </PreviewLink>
+        ) : (
+          <RefreshPreviewButton onClick={loadDeployPreview}>
+            <span>{t('editor.editorToolbar.deployPreviewPendingButtonLabel')}</span>
+            <Icon type="refresh" size="xsmall" />
+          </RefreshPreviewButton>
+        )}
+      </PreviewButtonContainer>
     );
   };
 
@@ -215,7 +291,12 @@ class EditorToolbar extends React.Component {
       t,
     } = this.props;
     if (!isNewEntry && !hasChanged) {
-      return <StatusPublished>{t('editor.editorToolbar.published')}</StatusPublished>;
+      return (
+        <>
+          {this.renderDeployPreviewControls(t('editor.editorToolbar.deployButtonLabel'))}
+          <StatusPublished>{t('editor.editorToolbar.published')}</StatusPublished>
+        </>
+      );
     }
     return (
       <div>
@@ -302,6 +383,7 @@ class EditorToolbar extends React.Component {
     if (currentStatus) {
       return (
         <>
+          {this.renderDeployPreviewControls(t('editor.editorToolbar.deployPreviewButtonLabel'))}
           <ToolbarDropdown
             dropdownTopOverlap="40px"
             dropdownWidth="120px"
@@ -358,8 +440,16 @@ class EditorToolbar extends React.Component {
       );
     }
 
+    /**
+     * Publish control for published workflow entry.
+     */
     if (!isNewEntry) {
-      return <StatusPublished>{t('editor.editorToolbar.published')}</StatusPublished>;
+      return (
+        <>
+          {this.renderDeployPreviewControls(t('editor.editorToolbar.deployButtonLabel'))}
+          <StatusPublished>{t('editor.editorToolbar.published')}</StatusPublished>
+        </>
+      );
     }
   };
 

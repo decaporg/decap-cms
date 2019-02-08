@@ -31,6 +31,12 @@ export function applyDefaults(config) {
     .mergeDeep(config)
     .withMutations(map => {
       /**
+       * Use `site_url` as default `display_url`.
+       */
+      if (!map.get('display_url') && map.get('site_url')) {
+        map.set('display_url', map.get('site_url'));
+      }
+      /**
        * Use media_folder as default public_folder.
        */
       const defaultPublicFolder = `/${trimStart(map.get('media_folder'), '/')}`;

@@ -22,8 +22,9 @@ import {
   publishUnpublishedEntry,
   deleteUnpublishedEntry,
 } from 'Actions/editorialWorkflow';
+import { loadDeployPreview } from 'Actions/deploys';
 import { deserializeValues } from 'Lib/serializeEntryValues';
-import { selectEntry, selectUnpublishedEntry, getAsset } from 'Reducers';
+import { selectEntry, selectUnpublishedEntry, selectDeployPreview, getAsset } from 'Reducers';
 import { selectFields } from 'Reducers/collections';
 import { status } from 'Constants/publishModes';
 import { EDITORIAL_WORKFLOW } from 'Constants/publishModes';
@@ -64,6 +65,8 @@ class Editor extends React.Component {
     deleteUnpublishedEntry: PropTypes.func.isRequired,
     logoutUser: PropTypes.func.isRequired,
     loadEntries: PropTypes.func.isRequired,
+    deployPreview: ImmutablePropTypes.map,
+    loadDeployPreview: PropTypes.func.isRequired,
     currentStatus: PropTypes.string,
     user: ImmutablePropTypes.map.isRequired,
     location: PropTypes.shape({
@@ -309,8 +312,13 @@ class Editor extends React.Component {
       isModification,
       currentStatus,
       logoutUser,
+      deployPreview,
+      loadDeployPreview,
+      slug,
       t,
     } = this.props;
+
+    const isPublished = !newEntry && !unpublishedEntry;
 
     if (entry && entry.get('error')) {
       return (
@@ -351,6 +359,8 @@ class Editor extends React.Component {
         isModification={isModification}
         currentStatus={currentStatus}
         onLogoutClick={logoutUser}
+        deployPreview={deployPreview}
+        loadDeployPreview={opts => loadDeployPreview(collection, slug, entry, isPublished, opts)}
       />
     );
   }
@@ -373,6 +383,7 @@ function mapStateToProps(state, ownProps) {
   const collectionEntriesLoaded = !!entries.getIn(['pages', collectionName]);
   const unpublishedEntry = selectUnpublishedEntry(state, collectionName, slug);
   const currentStatus = unpublishedEntry && unpublishedEntry.getIn(['metaData', 'status']);
+  const deployPreview = selectDeployPreview(state, collectionName, slug);
   return {
     collection,
     collections,
@@ -389,6 +400,7 @@ function mapStateToProps(state, ownProps) {
     isModification,
     collectionEntriesLoaded,
     currentStatus,
+    deployPreview,
   };
 }
 
@@ -399,6 +411,7 @@ export default connect(
     changeDraftFieldValidation,
     loadEntry,
     loadEntries,
+    loadDeployPreview,
     createDraftFromEntry,
     createEmptyDraft,
     discardDraft,

@@ -280,6 +280,15 @@ export default class API {
       });
   }
 
+  /**
+   * Retrieve statuses for a given SHA. Unrelated to the editorial workflow
+   * concept of entry "status". Useful for things like deploy preview links.
+   */
+  async getStatuses(sha) {
+    const resp = await this.request(`${this.repoURL}/commits/${sha}/status`);
+    return resp.statuses;
+  }
+
   composeFileTree(files) {
     let filename;
     let part;
