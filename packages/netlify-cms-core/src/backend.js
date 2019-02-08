@@ -109,7 +109,7 @@ function slugFormatter(collection, entryData, slugConfig) {
 
   // Pass entire slug through `prepareSlug` and `sanitizeSlug`.
   // TODO: only pass slug replacements through sanitizers, static portions of
-  // the slug template should not be sanitized.
+  // the slug template should not be sanitized. (breaking change)
   const processSlug = flow([compileSlug, prepareSlug, partialRight(sanitizeSlug, slugConfig)]);
 
   return processSlug(template, new Date(), identifier, entryData);
