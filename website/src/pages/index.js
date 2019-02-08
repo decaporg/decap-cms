@@ -15,21 +15,23 @@ import HomeSection from '../components/home-section';
 import Grid from '../components/grid';
 
 import theme from '../theme';
+import { mq } from '../utils';
 
 const MarkdownButton = styled.span`
   a {
+    white-space: nowrap;
     display: inline-block;
     color: white;
     text-transform: uppercase;
     font-weight: 700;
-    font-size: ${theme.fontsize[2]};
+    font-size: ${theme.fontsize[3]};
     letter-spacing: 0.5px;
     line-height: ${theme.lineHeight[0]};
     background-color: ${theme.colors.blue};
     background-image: linear-gradient(-180deg, #4a7fdd 0%, #3a69c7 100%);
     box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.3), 0 1px 3px 0 rgba(0, 0, 0, 0.6);
     border-radius: ${theme.radii[1]};
-    padding: 10px 14px 8px 14px;
+    padding: ${theme.space[3]} ${theme.space[4]};
     transition: 0.2s;
     text-decoration: none;
 
@@ -98,24 +100,40 @@ const HomePage = ({ data }) => {
         </Grid>
       </PageHero>
 
-      <section>
+      <section
+        css={css`
+          background: white;
+          ${mq[2]} {
+            position: absolute;
+            left: 50%;
+            transform: translate(-50%, -75%);
+            width: 880px;
+            border-radius: 8px;
+          }
+        `}
+      >
         <div
           css={css`
-            padding: ${theme.space[5]};
+            padding: ${theme.space[4]} ${theme.space[5]};
             color: ${theme.colors.lightishGray};
-
-            span {
-              font-weight: 700;
-              color: ${theme.colors.darkGray};
+            ${mq[2]} {
+              display: flex;
             }
           `}
         >
-          <p>
-            <span>
+          <Lead
+            css={css`
+              margin-right: 2rem;
+              ${mq[2]} {
+                margin-bottom: 0;
+              }
+            `}
+          >
+            <strong>
               <Markdownify source={landing.cta.primaryhook} />
-            </span>{' '}
+            </strong>{' '}
             <Markdownify source={landing.cta.primary} />
-          </p>
+          </Lead>
           <MarkdownButton>
             <Markdownify source={landing.cta.button} />
           </MarkdownButton>

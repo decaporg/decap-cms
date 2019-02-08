@@ -24,6 +24,7 @@ const ReleaseLink = styled.a`
   display: block;
   padding: ${theme.space[2]} ${theme.space[3]};
   border-radius: ${theme.radii[1]};
+  height: 100%;
 
   &:hover {
     background: ${theme.colors.darkGray};
@@ -72,7 +73,7 @@ const WhatsNew = ({ updates }) => (
   <section
     css={css`
       background: ${theme.colors.lightishGray};
-      padding-top: ${theme.space[5]};
+      padding-top: ${theme.space[6]};
       padding-bottom: ${theme.space[5]};
     `}
   >

@@ -13,8 +13,8 @@ const PageHero = ({ children }) => (
       background-image: linear-gradient(to bottom, #2a2c24 0%, ${theme.colors.darkerGray} 20%);
       color: ${theme.colors.blueGray};
       position: relative;
-      padding-top: ${theme.space[4]};
-      padding-bottom: ${theme.space[4]};
+      padding-top: ${theme.space[6]};
+      padding-bottom: ${theme.space[6]};
 
       ${mq[3]} {
         padding-top: ${theme.space[7]};

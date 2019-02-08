@@ -16,6 +16,7 @@ import Page from '../components/page';
 import Grid from '../components/grid';
 
 import theme from '../theme';
+import { mq } from '../utils';
 
 const CommunityPage = ({ data }) => {
   const { title, headline, subhead, sections } = data.markdownRemark.frontmatter;
@@ -42,8 +43,10 @@ const CommunityPage = ({ data }) => {
           </div>
           <div
             css={css`
-              position: sticky;
-              top: 0;
+              ${mq[2]} {
+                position: fixed;
+                left: 50%;
+              }
             `}
           >
             <EventBox title={upcomingevent.hook} cta={primarycta} />
