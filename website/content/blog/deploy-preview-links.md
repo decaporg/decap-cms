@@ -1,12 +1,13 @@
 ---
-title: "Netlify CMS 2.4.0: Deploy Preview Links"
+title: Deploy Preview Links
 author: Shawn Erquhart
 description: >-
   Deploy preview links from your GitHub repository are now surfaced in Netlify
   CMS for previewing builds of unpublished content.
-date: 2019-01-28T19:30:00.000Z
 twitter_image: /img/preview-link-unpublished.png
+date: 2019-01-28T19:30:00.000Z
 ---
+Netlify CMS 2.4.0 brings deploy preview links!
 
 ![Deploy preview link for unpublished content](/img/preview-link-unpublished.png)
 
