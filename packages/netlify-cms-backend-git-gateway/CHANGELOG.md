@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.2.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/compare/netlify-cms-backend-git-gateway@2.1.2...netlify-cms-backend-git-gateway@2.2.0) (2019-02-08)
+
+
+### Features
+
+* **workflow:** add deploy preview links ([#2028](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/issues/2028)) ([15d221d](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/commit/15d221d))
+
+
+
+
+
 ## [2.1.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/compare/netlify-cms-backend-git-gateway@2.1.1...netlify-cms-backend-git-gateway@2.1.2) (2018-12-11)
 
 

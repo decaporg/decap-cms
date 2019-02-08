@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.1.0...netlify-cms-widget-markdown@2.1.1) (2019-02-08)
+
+
+### Bug Fixes
+
+* **markdown-widget:** handle leading or trailing whitespace ([#1517](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/issues/1517)) ([ade03d0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/commit/ade03d0))
+
+
+
+
+
 # [2.1.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.0.10...netlify-cms-widget-markdown@2.1.0) (2018-12-11)
 
 

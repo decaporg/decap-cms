@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-object/compare/netlify-cms-widget-object@2.0.5...netlify-cms-widget-object@2.0.6) (2019-02-08)
+
+
+### Bug Fixes
+
+* **netlify-cms-core:** fix fields metadata for objects and lists ([#2011](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-object/issues/2011)) ([2d1d1c1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-object/commit/2d1d1c1))
+* **netlify-cms-core:** validate nested fields ([#1873](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-object/issues/1873)) ([627e600](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-object/commit/627e600))
+
+
+
+
+
 <a name="2.0.5"></a>
 ## [2.0.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-object/compare/netlify-cms-widget-object@2.0.4...netlify-cms-widget-object@2.0.5) (2018-08-24)
 

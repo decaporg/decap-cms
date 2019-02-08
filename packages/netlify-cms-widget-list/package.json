@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-widget-list",
   "description": "Widget for editing lists in Netlify CMS.",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "homepage": "https://www.netlifycms.org/docs/widgets/#list",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
@@ -21,7 +21,7 @@
     "build": "cross-env NODE_ENV=production webpack"
   },
   "dependencies": {
-    "netlify-cms-widget-object": "^2.0.5",
+    "netlify-cms-widget-object": "^2.0.6",
     "react-sortable-hoc": "^0.6.8"
   },
   "devDependencies": {

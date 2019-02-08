@@ -3,6 +3,34 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.5.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.4.1...netlify-cms-core@2.5.0) (2019-02-08)
+
+
+### Bug Fixes
+
+* **netlify-cms-core:** allow arrays for frontmatter_delimiter in config ([#1997](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1997)) ([ebba686](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/ebba686))
+* **netlify-cms-core:** fix fields metadata for objects and lists ([#2011](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2011)) ([2d1d1c1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/2d1d1c1))
+* **netlify-cms-core:** relation widget value swap ([#2018](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2018)) ([11305d3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/11305d3))
+* **netlify-cms-core:** validate nested fields ([#1873](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1873)) ([627e600](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/627e600))
+
+
+### Features
+
+* **config:** allow config.yml file load to be skipped ([#2053](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2053)) ([14f94a0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/14f94a0))
+* **netlify-cms-core:** expose loadEntry action to Widgets ([#2010](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2010)) ([5d8aef1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/5d8aef1))
+* **netlify-cms-widget-map:** add map widget ([#2051](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2051)) ([18f34d2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/18f34d2))
+* **widget-number:** add range validation ([#2049](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2049)) ([dc44cac](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/dc44cac))
+* **workflow:** add deploy preview links ([#2028](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2028)) ([15d221d](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/15d221d))
+
+
+### Performance Improvements
+
+* **netlify-cms-core:** add basic route code-splitting ([#1889](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1889)) ([9aa5645](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/9aa5645))
+
+
+
+
+
 ## [2.4.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.4.0...netlify-cms-core@2.4.1) (2019-01-10)
 
 
