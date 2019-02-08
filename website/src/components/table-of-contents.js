@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import styled from '@emotion/styled';
 
 import theme from '../theme';
-import { NavLink } from './docs-nav';
 
 const TocList = styled.ol`
   margin: ${theme.space[2]} 0;

@@ -1,15 +1,10 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { css } from '@emotion/core';
 
 import Container from './container';
-import theme from '../theme';
-import { mq } from '../utils';
+import Page from './page';
 
-const Section = styled.section`
-  padding-top: ${theme.space[7]};
-  padding-bottom: ${theme.space[7]};
-`;
+import theme from '../theme';
 
 const Header = styled.header`
   text-align: center;
@@ -25,8 +20,8 @@ const Text = styled.div`
   margin: 0 auto;
 `;
 
-const HomeSection = ({ title, text, children, css }) => (
-  <Section css={css}>
+const HomeSection = ({ title, text, children, ...props }) => (
+  <Page as="section" {...props}>
     <Container>
       <Header>
         <Title>{title}</Title>
@@ -34,7 +29,7 @@ const HomeSection = ({ title, text, children, css }) => (
       </Header>
       {children}
     </Container>
-  </Section>
+  </Page>
 );
 
 export default HomeSection;

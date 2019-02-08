@@ -53,8 +53,11 @@ const Day = styled.div`
   border-bottom-right-radius: 8px;
 `;
 
-const CalDates = styled.strong`
+const CalDates = styled.p`
   color: white;
+  font-weight: bold;
+  font-size: ${theme.fontsize[4]};
+  margin-bottom: ${theme.space[3]};
 `;
 
 const CalCta = styled.div``;

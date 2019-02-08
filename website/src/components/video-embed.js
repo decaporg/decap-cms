@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import styled from '@emotion/styled';
 
-import { mq } from '../utils';
 import theme from '../theme';
 
 import screenshotEditor from '../img/screenshot-editor.jpg';
@@ -9,6 +8,7 @@ import screenshotEditor from '../img/screenshot-editor.jpg';
 const VideoLink = styled.a`
   position: relative;
   cursor: pointer;
+  display: block;
 
   &:hover {
     div {
@@ -43,6 +43,9 @@ const VideoButton = styled.div`
   right: 0;
   width: 90px;
   height: 90px;
+  margin: auto;
+  padding-top: 10px;
+  padding-left: 10px;
   color: ${theme.colors.blue};
   background-color: rgba(255, 255, 255, 0.85);
   box-shadow: 0 3px 9px 0 rgba(0, 0, 0, 0.05), 0 1px 3px 0 rgba(0, 0, 0, 0.15);
@@ -58,8 +61,6 @@ const VideoButton = styled.div`
     fill: #3a69c7;
   }
 `;
-
-const VideoIcon = styled.div``;
 
 /**
  * We should be able to import complete inline svg's rather than base64, this
@@ -89,6 +90,7 @@ class VideoEmbed extends Component {
 
     const embedcode = (
       <iframe
+        title="Netlify CMS video"
         width={560}
         height={315}
         src="https://www.youtube-nocookie.com/embed/p6h-rYSVX90?rel=0&showinfo=0&autoplay=1"
@@ -99,7 +101,7 @@ class VideoEmbed extends Component {
       />
     );
 
-    const imgPlaceholder = <img src={screenshotEditor} />;
+    const imgPlaceholder = <img src={screenshotEditor} alt="Netlify CMS editor" />;
 
     return (
       <VideoLink onClick={this.toggleVideo}>

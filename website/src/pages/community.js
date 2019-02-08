@@ -1,7 +1,6 @@
 import React from 'react';
 import Helmet from 'react-helmet';
 import { graphql } from 'gatsby';
-import styled from '@emotion/styled';
 import { css } from '@emotion/core';
 
 import Layout from '../components/layout';
@@ -13,9 +12,10 @@ import Container from '../components/container';
 import Markdown from '../components/Markdown';
 import SectionLabel from '../components/section-label';
 import EventBox from '../components/event-box';
+import Page from '../components/page';
+import Grid from '../components/grid';
 
 import theme from '../theme';
-import { mq } from '../utils';
 
 const CommunityPage = ({ data }) => {
   const { title, headline, subhead, sections } = data.markdownRemark.frontmatter;
@@ -23,38 +23,52 @@ const CommunityPage = ({ data }) => {
   return (
     <Layout>
       <Helmet title={title} />
-
       <PageHero>
-        <div
-          css={css`
-            margin-bottom: 20px;
-          `}
-        >
-          <HeroTitle>
-            <Markdownify source={headline} />
-          </HeroTitle>
-          <Lead>
-            <Markdownify source={subhead} />
-          </Lead>
-          <Lead>
-            <Markdownify source={primarycta} />
-          </Lead>
-        </div>
-        <div>
-          <EventBox title={upcomingevent.hook} cta={primarycta} />
-        </div>
+        <Grid cols={2}>
+          <div
+            css={css`
+              margin-bottom: 20px;
+            `}
+          >
+            <HeroTitle>
+              <Markdownify source={headline} />
+            </HeroTitle>
+            <Lead>
+              <Markdownify source={subhead} />
+            </Lead>
+            <Lead>
+              <Markdownify source={primarycta} />
+            </Lead>
+          </div>
+          <div
+            css={css`
+              position: sticky;
+              top: 0;
+            `}
+          >
+            <EventBox title={upcomingevent.hook} cta={primarycta} />
+          </div>
+        </Grid>
       </PageHero>
 
-      <section className="how-it-works clearfix">
-        <Container>
-          <div css={{ width: '50%' }}>
-            <SectionLabel>How it works</SectionLabel>
-            <Markdown source={howitworks} />
-            <SectionLabel>How to join</SectionLabel>
-            <Markdown source={howtojoin} />
-          </div>
-        </Container>
-      </section>
+      <Container>
+        <Page>
+          <Grid cols={2}>
+            <div>
+              <div
+                css={css`
+                  margin-bottom: ${theme.space[5]};
+                `}
+              >
+                <SectionLabel>How it works</SectionLabel>
+                <Markdown source={howitworks} />
+              </div>
+              <SectionLabel>How to join</SectionLabel>
+              <Markdown source={howtojoin} />
+            </div>
+          </Grid>
+        </Page>
+      </Container>
     </Layout>
   );
 };

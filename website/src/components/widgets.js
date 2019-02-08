@@ -1,6 +1,25 @@
 import React, { Component } from 'react';
-import classnames from 'classnames';
+import styled from '@emotion/styled';
+
 import WidgetDoc from './widget-doc';
+import Button from './button';
+
+import theme from '../theme';
+
+const WidgetsNav = styled.nav`
+  margin-bottom: 1rem;
+
+  > button {
+    margin-right: 8px;
+    margin-bottom: 8px;
+  }
+`;
+
+const WidgetsContent = styled.div`
+  background: ${theme.colors.lightGray};
+  padding: ${theme.space[3]};
+  border-radius: 4px;
+`;
 
 class Widgets extends Component {
   state = {
@@ -42,34 +61,31 @@ class Widgets extends Component {
     const { currentWidget } = this.state;
 
     return (
-      <div>
-        <section className="widgets">
-          <div className="widgets__cloud">
-            {widgets.edges.map(({ node }) => {
-              const { label, title } = node.frontmatter;
-              return (
-                <button
-                  key={title}
-                  className={classnames('widgets__item', {
-                    widgets__item_active: currentWidget === title,
-                  })}
-                  onClick={event => this.handleWidgetChange(event, title)}
-                >
-                  {label}
-                </button>
-              );
-            })}
-          </div>
-          <div className="widgets__container">
-            {widgets.edges.map(({ node }) => {
-              const { frontmatter, html } = node;
-              const { title, label } = frontmatter;
-              const isVisible = currentWidget === title;
-              return <WidgetDoc key={label} visible={isVisible} label={label} html={html} />;
-            })}
-          </div>
-        </section>
-      </div>
+      <section className="widgets">
+        <WidgetsNav>
+          {widgets.edges.map(({ node }) => {
+            const { label, title } = node.frontmatter;
+            return (
+              <Button
+                key={title}
+                active={currentWidget === title}
+                onClick={event => this.handleWidgetChange(event, title)}
+                outline
+              >
+                {label}
+              </Button>
+            );
+          })}
+        </WidgetsNav>
+        <WidgetsContent>
+          {widgets.edges.map(({ node }) => {
+            const { frontmatter, html } = node;
+            const { title, label } = frontmatter;
+            const isVisible = currentWidget === title;
+            return <WidgetDoc key={label} visible={isVisible} label={label} html={html} />;
+          })}
+        </WidgetsContent>
+      </section>
     );
   }
 }

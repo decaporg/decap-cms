@@ -14,6 +14,7 @@ const Box = styled.div`
 
 const Title = styled.h3`
   color: ${p => (p.kind === 'light' ? theme.colors.white : theme.colors.gray)};
+  font-size: ${theme.fontsize[4]};
 `;
 
 const Text = styled.p`
@@ -24,7 +25,7 @@ const Text = styled.p`
 
 const FeatureItem = ({ feature, description, imgpath, kind }) => (
   <Box>
-    {imgpath && <img src={require(`../img/${imgpath}`)} />}
+    {imgpath && <img src={require(`../img/${imgpath}`)} alt="" />}
     <Title kind={kind}>
       <Markdownify source={feature} />
     </Title>

@@ -53,7 +53,7 @@ class DocSearch extends Component {
     return (
       <SearchField>
         <div>
-          <img src={searchIcon} />
+          <img src={searchIcon} alt="magnifying glass" />
         </div>
         <input type="search" placeholder="Search the docs" className="algolia-search" />
       </SearchField>

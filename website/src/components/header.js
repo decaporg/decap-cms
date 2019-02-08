@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'gatsby';
-import { Location } from '@reach/router';
 import styled from '@emotion/styled';
 
-import DocSearch from './docsearch';
 import GitHubButton from './github-button';
 import Container from './container';
 import Notifications from './notifications';
@@ -96,51 +94,41 @@ class Header extends Component {
     const { scrolled } = this.state;
 
     return (
-      <Location>
-        {({ location }) => {
-          const isDocs = location.pathname.indexOf('docs') !== -1;
-          const isBlog = location.pathname.indexOf('blog') !== -1;
-
-          // #header id for smooth scroll
-          return (
-            <Root scrolled={scrolled} id="header">
-              <Notifications />
-              <HeaderContainer>
-                <Logo>
-                  <Link to="/" className="logo">
-                    <img src={logo} alt="Netlify CMS" />
-                  </Link>
-                </Logo>
-                <Menu>
-                  <MenuItem>
-                    <Link className="nav-link" to="/docs/intro">
-                      Docs
-                    </Link>
-                  </MenuItem>
-                  <MenuItem>
-                    <Link className="nav-link" to="/docs/contributor-guide">
-                      Contributing
-                    </Link>
-                  </MenuItem>
-                  <MenuItem>
-                    <Link className="nav-link" to="/community">
-                      Community
-                    </Link>
-                  </MenuItem>
-                  <MenuItem>
-                    <Link className="nav-link" to="/blog">
-                      Blog
-                    </Link>
-                  </MenuItem>
-                  <MenuItem>
-                    <GitHubButton />
-                  </MenuItem>
-                </Menu>
-              </HeaderContainer>
-            </Root>
-          );
-        }}
-      </Location>
+      <Root scrolled={scrolled} id="header">
+        <Notifications />
+        <HeaderContainer>
+          <Logo>
+            <Link to="/" className="logo">
+              <img src={logo} alt="Netlify CMS logo" />
+            </Link>
+          </Logo>
+          <Menu>
+            <MenuItem>
+              <Link className="nav-link" to="/docs/intro">
+                Docs
+              </Link>
+            </MenuItem>
+            <MenuItem>
+              <Link className="nav-link" to="/docs/contributor-guide">
+                Contributing
+              </Link>
+            </MenuItem>
+            <MenuItem>
+              <Link className="nav-link" to="/community">
+                Community
+              </Link>
+            </MenuItem>
+            <MenuItem>
+              <Link className="nav-link" to="/blog">
+                Blog
+              </Link>
+            </MenuItem>
+            <MenuItem>
+              <GitHubButton />
+            </MenuItem>
+          </Menu>
+        </HeaderContainer>
+      </Root>
     );
   }
 }

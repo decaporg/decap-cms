@@ -8,7 +8,6 @@ import Markdownify from '../components/markdownify';
 import { mq } from '../utils';
 import theme from '../theme';
 
-const ReleaseItem = styled.li``;
 const Version = styled.span`
   background: ${theme.colors.shadeBlue};
   font-size: ${theme.fontsize[1]};
@@ -30,9 +29,6 @@ const ReleaseLink = styled.a`
     background: ${theme.colors.darkGray};
   }
 `;
-
-const DisplayDate = styled.span``;
-const Description = styled.span``;
 
 const Release = ({ version, versionPrevious, date, description }) => {
   const displayDate = moment(date).format('MMMM D, YYYY');

@@ -10,7 +10,7 @@ const PageHero = ({ children }) => (
   <section
     css={css`
       background: ${theme.colors.darkerGray};
-      background-image: linear-gradient(-180deg, #2a2c24 0%, $darkerGrey 20%);
+      background-image: linear-gradient(to bottom, #2a2c24 0%, ${theme.colors.darkerGray} 20%);
       color: ${theme.colors.blueGray};
       position: relative;
       padding-top: ${theme.space[4]};

@@ -9,21 +9,12 @@ import PageHero from '../components/page-hero';
 import HeroTitle from '../components/hero-title';
 import VideoEmbed from '../components/video-embed';
 import WhatsNew from '../components/whats-new';
-import Container from '../components/container';
 import Lead from '../components/lead';
 import Features from '../components/features';
 import HomeSection from '../components/home-section';
+import Grid from '../components/grid';
 
 import theme from '../theme';
-import { mq } from '../utils';
-
-const HeroRow = styled.div`
-  ${mq[1]} {
-    display: grid;
-    grid-gap: 1rem;
-    grid-template-columns: 1fr 1fr;
-  }
-`;
 
 const MarkdownButton = styled.span`
   a {
@@ -80,29 +71,31 @@ const HomePage = ({ data }) => {
   return (
     <Layout>
       <PageHero>
-        <HeroRow>
+        <div
+          css={css`
+            margin-bottom: ${theme.space[7]};
+          `}
+        >
+          <HeroTitle>
+            <Markdownify source={landing.hero.headline} />
+          </HeroTitle>
+          <Lead>
+            <Markdownify source={landing.hero.subhead} />
+          </Lead>
+          <Lead>
+            <MarkdownButton>
+              <Markdownify source={landing.cta.button} />
+            </MarkdownButton>
+          </Lead>
+        </div>
+        <Grid cols={2}>
           <div>
-            <div
-              css={css`
-                margin-bottom: ${theme.space[5]};
-              `}
-            >
-              <HeroTitle>
-                <Markdownify source={landing.hero.headline} />
-              </HeroTitle>
-              <Lead>
-                <Markdownify source={landing.hero.subhead} />
-              </Lead>
-              <MarkdownButton>
-                <Markdownify source={landing.cta.button} />
-              </MarkdownButton>
-            </div>
             <Features items={landing.hero.devfeatures} kind="light" />
           </div>
           <div>
             <VideoEmbed />
           </div>
-        </HeroRow>
+        </Grid>
       </PageHero>
 
       <section>
@@ -135,17 +128,9 @@ const HomePage = ({ data }) => {
         title={<Markdownify source={landing.editors.hook} />}
         text={<Markdownify source={landing.editors.intro} />}
       >
-        <div
-          css={css`
-            ${mq[2]} {
-              display: grid;
-              grid-template-columns: repeat(3, 1fr);
-              grid-gap: 2rem;
-            }
-          `}
-        >
+        <Grid cols={3}>
           <Features items={landing.editors.features} />
-        </div>
+        </Grid>
       </HomeSection>
 
       <HomeSection
@@ -154,15 +139,7 @@ const HomePage = ({ data }) => {
         `}
         title={<Markdownify source={landing.community.hook} />}
       >
-        <div
-          css={css`
-            ${mq[2]} {
-              display: grid;
-              grid-template-columns: repeat(2, 1fr);
-              grid-gap: 2rem;
-            }
-          `}
-        >
+        <Grid cols={2}>
           <div>
             <Features items={landing.community.features} />
           </div>
@@ -176,7 +153,7 @@ const HomePage = ({ data }) => {
               ))}
             </ContribList>
           </div>
-        </div>
+        </Grid>
       </HomeSection>
     </Layout>
   );

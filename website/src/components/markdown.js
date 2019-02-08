@@ -1,9 +1,10 @@
+import React, { Fragment } from 'react';
 import ReactMarkdown from 'react-markdown';
 import styled from '@emotion/styled';
 
-import { mq } from '../utils';
+import theme from '../theme';
 
-const Markdown = styled(ReactMarkdown)`
+const StyledMarkdown = styled.div`
   > :first-child {
     margin-top: 0;
   }
@@ -17,30 +18,30 @@ const Markdown = styled(ReactMarkdown)`
   h4,
   h5,
   h6 {
-    line-height: 1.2;
+    line-height: ${theme.lineHeight[1]};
     margin-top: 2em;
-    margin-bottom: 0.5em;
+    margin-bottom: 0.25em;
   }
 
   h1 {
-    font-size: 32px;
+    font-size: ${theme.fontsize[6]};
   }
 
   h2 {
-    font-size: 24px;
+    font-size: ${theme.fontsize[5]};
   }
 
   h3 {
-    font-size: 20px;
+    font-size: ${theme.fontsize[4]};
   }
 
   h4 {
-    font-size: 18px;
+    font-size: ${theme.fontsize[3]};
   }
 
   ol,
   ul {
-    margin-left: 2rem;
+    margin-left: ${theme.space[3]};
   }
 
   ul {
@@ -52,7 +53,7 @@ const Markdown = styled(ReactMarkdown)`
   }
 
   li {
-    margin-bottom: 0.5rem;
+    margin-bottom: ${theme.space[1]};
   }
 
   ol,
@@ -72,7 +73,6 @@ const Markdown = styled(ReactMarkdown)`
 
   table {
     border: 0;
-    border-collapse: collapse;
     background: #f7f7f7;
     border-radius: 4px;
     margin-top: 40px;
@@ -81,8 +81,7 @@ const Markdown = styled(ReactMarkdown)`
     text-align: left;
   }
 
-  tr {
-    background: white;
+  tbody tr {
     &:nth-child(odd) {
       background: #fdfdfd;
     }
@@ -91,7 +90,6 @@ const Markdown = styled(ReactMarkdown)`
   th,
   td {
     padding: 8px;
-    border: 1px solid lightgray;
   }
 
   th {
@@ -108,10 +106,14 @@ const Markdown = styled(ReactMarkdown)`
   }
 
   pre {
-    margin: 30px -16px !important;
-    ${mq[4]} {
-      margin-right: -120px !important;
-    }
+    border-radius: ${theme.radii[2]};
+    margin-bottom: ${theme.space[4]};
+    margin-top: ${theme.space[4]};
+  }
+
+  pre > code {
+    font-size: ${theme.fontsize[2]};
+    line-height: ${theme.lineHeight[0]};
   }
 
   *:not(pre) > code {
@@ -120,7 +122,16 @@ const Markdown = styled(ReactMarkdown)`
     border-radius: 2px;
     padding: 2px 6px;
     white-space: nowrap;
+    font-size: ${theme.fontsize[2]};
   }
 `;
+
+const Markdown = props => {
+  return (
+    <StyledMarkdown>
+      <ReactMarkdown renderers={{ root: Fragment }} {...props} />
+    </StyledMarkdown>
+  );
+};
 
 export default Markdown;

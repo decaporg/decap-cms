@@ -8,16 +8,17 @@ import Layout from '../components/layout';
 import Container from '../components/container';
 import Markdown from '../components/markdown';
 import MetaInfo from '../components/meta-info';
+import Page from '../components/page';
 
 export const BlogPostTemplate = ({ title, author, date, body, html }) => (
   <Container css={{ maxWidth: 800 }}>
-    <article className="blog-content" id="blog-content">
+    <Page as="article">
       <h1>{title}</h1>
       <MetaInfo>
         by {author} on {date}
       </MetaInfo>
       <Markdown source={body || html} escapeHtml={false} />
-    </article>
+    </Page>
   </Container>
 );
 

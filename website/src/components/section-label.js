@@ -8,6 +8,7 @@ const SectionLabel = styled.h3`
   font-weight: 600;
   letter-spacing: 1.5px;
   text-transform: uppercase;
+  margin-bottom: ${theme.space[4]};
 
   &:after {
     background: ${theme.colors.darkGreen};
