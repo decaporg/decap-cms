@@ -39,15 +39,17 @@ class LocalStorageAuthStore {
 }
 
 function prepareSlug(slug) {
-  return slug
-    // Convert slug to lower-case
-    .toLocaleLowerCase()
+  return (
+    slug
+      // Convert slug to lower-case
+      .toLocaleLowerCase()
 
-    // Remove single quotes.
-    .replace(/[']/g, '')
+      // Remove single quotes.
+      .replace(/[']/g, '')
 
-    // Replace periods with dashes.
-    .replace(/[.]/g, '-');
+      // Replace periods with dashes.
+      .replace(/[.]/g, '-')
+  );
 }
 
 const dateParsers = {
@@ -57,7 +59,7 @@ const dateParsers = {
   hour: date => `0${date.getHours()}`.slice(-2),
   minute: date => `0${date.getMinutes()}`.slice(-2),
   second: date => `0${date.getSeconds()}`.slice(-2),
-}
+};
 
 const SLUG_MISSING_REQUIRED_DATE = 'SLUG_MISSING_REQUIRED_DATE';
 
@@ -108,14 +110,10 @@ function slugFormatter(collection, entryData, slugConfig) {
   // Pass entire slug through `prepareSlug` and `sanitizeSlug`.
   // TODO: only pass slug replacements through sanitizers, static portions of
   // the slug template should not be sanitized.
-  const processSlug = flow([
-    compileSlug,
-    prepareSlug,
-    partialRight(sanitizeSlug, slugConfig),
-  ]);
+  const processSlug = flow([compileSlug, prepareSlug, partialRight(sanitizeSlug, slugConfig)]);
 
   return processSlug(template, new Date(), identifier, entryData);
-};
+}
 
 const commitMessageTemplates = Map({
   create: 'Create {{collection}} “{{slug}}”',
@@ -158,7 +156,8 @@ const sortByScore = (a, b) => {
 };
 
 function parsePreviewPathDate(collection, entry) {
-  const dateField = collection.get('preview_path_date_field') || selectInferedField(collection, 'date');
+  const dateField =
+    collection.get('preview_path_date_field') || selectInferedField(collection, 'date');
   if (!dateField) {
     return;
   }
@@ -207,8 +206,7 @@ function createPreviewUrl(baseUrl, collection, slug, slugConfig, entry) {
 
   try {
     compiledPath = compileSlug(pathTemplate, date, slug, fields, processSegment);
-  }
-  catch (err) {
+  } catch (err) {
     // Print an error and ignore `preview_path` if both:
     //   1. Date is invalid (according to Moment), and
     //   2. A date expression (eg. `{{year}}`) is used in `preview_path`
