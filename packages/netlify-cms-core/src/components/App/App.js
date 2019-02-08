@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Suspense } from 'react';
+import React from 'react';
 import { hot } from 'react-hot-loader';
 import { translate } from 'react-polyglot';
 import ImmutablePropTypes from 'react-immutable-proptypes';
@@ -18,12 +18,11 @@ import { Toast } from 'UI';
 import { Loader, colors } from 'netlify-cms-ui-default';
 import history from 'Routing/history';
 import { SIMPLE, EDITORIAL_WORKFLOW } from 'Constants/publishModes';
+import Collection from 'Collection/Collection';
+import Workflow from 'Workflow/Workflow';
+import Editor from 'Editor/Editor';
 import NotFoundPage from './NotFoundPage';
 import Header from './Header';
-
-const Collection = React.lazy(() => import(/* webpackPreload: true */ '../Collection/Collection'));
-const Workflow = React.lazy(() => import(/* webpackPreload: true */ '../Workflow/Workflow'));
-const Editor = React.lazy(() => import(/* webpackPreload: true */ '../Editor/Editor'));
 
 TopBarProgress.config({
   barColors: {
@@ -174,25 +173,23 @@ class App extends React.Component {
         />
         <AppMainContainer>
           {isFetching && <TopBarProgress />}
-          <Suspense fallback={<Loader active />}>
-            <Switch>
-              <Redirect exact from="/" to={defaultPath} />
-              <Redirect exact from="/search/" to={defaultPath} />
-              {hasWorkflow ? <Route path="/workflow" component={Workflow} /> : null}
-              <Route exact path="/collections/:name" component={Collection} />
-              <Route
-                path="/collections/:name/new"
-                render={props => <Editor {...props} newRecord />}
-              />
-              <Route path="/collections/:name/entries/:slug" component={Editor} />
-              <Route
-                path="/search/:searchTerm"
-                render={props => <Collection {...props} isSearchResults />}
-              />
-              <Route component={NotFoundPage} />
-            </Switch>
-            {useMediaLibrary ? <MediaLibrary /> : null}
-          </Suspense>
+          <Switch>
+            <Redirect exact from="/" to={defaultPath} />
+            <Redirect exact from="/search/" to={defaultPath} />
+            {hasWorkflow ? <Route path="/workflow" component={Workflow} /> : null}
+            <Route exact path="/collections/:name" component={Collection} />
+            <Route
+              path="/collections/:name/new"
+              render={props => <Editor {...props} newRecord />}
+            />
+            <Route path="/collections/:name/entries/:slug" component={Editor} />
+            <Route
+              path="/search/:searchTerm"
+              render={props => <Collection {...props} isSearchResults />}
+            />
+            <Route component={NotFoundPage} />
+          </Switch>
+          {useMediaLibrary ? <MediaLibrary /> : null}
         </AppMainContainer>
       </>
     );
