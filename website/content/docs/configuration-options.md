@@ -215,7 +215,7 @@ You may also specify a custom `extension` not included in the list above, as lon
 
 ### `slug`
 
-For folder collections where users can create new items, the `slug` option specifies a template for generating new filenames based on a file's creation date and `title` field. (This means that all collections with `create: true` must have a `title` field (a different field can be used via `identifier_field`, see [collection config](#collections) for more info.)
+For folder collections where users can create new items, the `slug` option specifies a template for generating new filenames based on a file's creation date and `title` field. (This means that all collections with `create: true` must have a `title` field (a different field can be used via [`identifier_field`](#identifier_field)).
 
 **Available template tags:**
 

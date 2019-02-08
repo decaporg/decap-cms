@@ -88,7 +88,10 @@ const getConfigSchema = () => ({
               required: ['name', 'label', 'file', 'fields'],
             },
           },
+          identifier_field: { type: 'string' },
           slug: { type: 'string' },
+          preview_path: { type: 'string' },
+          preview_path_date_field: { type: 'string' },
           create: { type: 'boolean' },
           editor: {
             type: 'object',
