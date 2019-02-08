@@ -95,7 +95,9 @@ export default class RelationControl extends React.Component {
       if (suggestion && suggestion.length === 1) {
         const val = this.getSuggestionValue(suggestion[0]);
         this.props.onChange(val, {
-          [this.props.field.get('collection')]: { [val]: suggestion[0].data },
+          [this.props.field.get('name')]: {
+            [this.props.field.get('collection')]: { [val]: suggestion[0].data },
+          },
         });
       }
     }
@@ -108,7 +110,9 @@ export default class RelationControl extends React.Component {
   onSuggestionSelected = (event, { suggestion }) => {
     const value = this.getSuggestionValue(suggestion);
     this.props.onChange(value, {
-      [this.props.field.get('collection')]: { [value]: suggestion.data },
+      [this.props.field.get('name')]: {
+        [this.props.field.get('collection')]: { [value]: suggestion.data },
+      },
     });
   };
 

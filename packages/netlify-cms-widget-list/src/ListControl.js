@@ -201,10 +201,7 @@ export default class ListControl extends React.Component {
           ? this.getObjectValue(index).set(fieldName, newValue)
           : newValue;
       const parsedMetadata = {
-        [collectionName]: Object.assign(
-          metadata ? metadata.toJS() : {},
-          newMetadata ? newMetadata[collectionName] : {},
-        ),
+        [collectionName]: Object.assign(metadata ? metadata.toJS() : {}, newMetadata || {}),
       };
       onChange(value.set(index, newObjectValue), parsedMetadata);
     };
@@ -283,6 +280,7 @@ export default class ListControl extends React.Component {
       classNameWrapper,
       editorControl,
       onValidateObject,
+      metadata,
       clearFieldErrors,
       fieldsErrors,
       controlRef,
@@ -320,6 +318,7 @@ export default class ListControl extends React.Component {
           onChangeObject={this.handleChangeFor(index)}
           editorControl={editorControl}
           resolveWidget={resolveWidget}
+          metadata={metadata}
           forList
           onValidateObject={onValidateObject}
           clearFieldErrors={clearFieldErrors}

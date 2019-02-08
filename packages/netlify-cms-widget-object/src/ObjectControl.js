@@ -69,6 +69,7 @@ export default class ObjectControl extends Component {
       onChangeObject,
       onValidateObject,
       clearFieldErrors,
+      metadata,
       fieldsErrors,
       editorControl: EditorControl,
       controlRef,
@@ -87,6 +88,7 @@ export default class ObjectControl extends Component {
         value={fieldValue}
         onChange={onChangeObject}
         clearFieldErrors={clearFieldErrors}
+        fieldsMetaData={metadata}
         fieldsErrors={fieldsErrors}
         onValidate={onValidateObject}
         processControlRef={controlRef && controlRef.bind(this)}

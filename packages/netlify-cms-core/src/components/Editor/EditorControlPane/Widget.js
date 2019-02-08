@@ -195,7 +195,7 @@ export default class Widget extends Component {
    */
   onChangeObject = (fieldName, newValue, newMetadata) => {
     const newObjectValue = this.getObjectValue().set(fieldName, newValue);
-    return this.props.onChange(newObjectValue, newMetadata);
+    return this.props.onChange(newObjectValue, { [this.props.field.get('name')]: newMetadata });
   };
 
   render() {

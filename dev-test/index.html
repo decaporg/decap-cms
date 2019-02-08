@@ -137,13 +137,13 @@
     const RelationKitchenSinkPostPreview = createClass({
       render: function() {
         // When a post is selected from the relation field, all of it's data
-        // will be available in the metadata nested under the collection name,
-        // and then further nested under the value specified in `valueField`.
+        // will be available in the field's metadata nested under the collection
+        // name, and then further nested under the value specified in `valueField`.
         // In this case, the post would be nested under "posts" and then under
         // the title of the selected post, since our `valueField` in the config
         // is "title".
-        const postValue = this.props.entry.getIn(['data', 'post']);
-        const post = this.props.fieldsMetaData.getIn(['posts', postValue]);
+        const { value, fieldsMetaData } = this.props;
+        const post = fieldsMetaData && fieldsMetaData.getIn(['posts', value]);
         const style = { border: '2px solid #ccc', borderRadius: '8px', padding: '20px' };
         return post ? h('div', { style: style },
           h('h2', {}, 'Related Post'),
