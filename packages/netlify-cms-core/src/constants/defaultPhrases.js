@@ -39,6 +39,9 @@ export function getPhrases() {
           required: '%{fieldLabel} is required.',
           regexPattern: "%{fieldLabel} didn't match the pattern: %{pattern}.",
           processing: '%{fieldLabel} is processing.',
+          range: '%{fieldLabel} must be between %{minValue} and %{maxValue}.',
+          min: '%{fieldLabel} must be at least %{minValue}.',
+          max: '%{fieldLabel} must be %{maxValue} or less.',
         },
       },
       editor: {

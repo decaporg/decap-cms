@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import ValidationErrorTypes from 'netlify-cms-core/src/constants/validationErrorTypes';
 
 export default class NumberControl extends React.Component {
   static propTypes = {
@@ -15,6 +16,7 @@ export default class NumberControl extends React.Component {
     step: PropTypes.number,
     min: PropTypes.number,
     max: PropTypes.number,
+    t: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -31,6 +33,54 @@ export default class NumberControl extends React.Component {
     } else {
       onChange(e.target.value);
     }
+  };
+
+  isValid = () => {
+    const { field, value, t } = this.props;
+    const hasPattern = !!field.get('pattern', false);
+    const min = field.get('min', false);
+    const max = field.get('max', false);
+    let error;
+
+    // Pattern overrides min/max logic always:
+    if (hasPattern) {
+      return true;
+    }
+
+    switch (true) {
+      case min !== false && max !== false && (value < min || value > max):
+        error = {
+          type: ValidationErrorTypes.RANGE,
+          message: t('editor.editorControlPane.widget.range', {
+            fieldLabel: field.get('label', field.get('name')),
+            minValue: min,
+            maxValue: max,
+          }),
+        };
+        break;
+      case min !== false && value < min:
+        error = {
+          type: ValidationErrorTypes.RANGE,
+          message: t('editor.editorControlPane.widget.min', {
+            fieldLabel: field.get('label', field.get('name')),
+            minValue: min,
+          }),
+        };
+        break;
+      case max !== false && value > max:
+        error = {
+          type: ValidationErrorTypes.RANGE,
+          message: t('editor.editorControlPane.widget.max', {
+            fieldLabel: field.get('label', field.get('name')),
+            maxValue: max,
+          }),
+        };
+        break;
+      default:
+        return true;
+    }
+
+    return { error };
   };
 
   render() {
