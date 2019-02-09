@@ -15,7 +15,6 @@
   "dependencies": {
     "@emotion/core": "^10.0.6",
     "@emotion/styled": "^10.0.6",
-    "classnames": "^2.2.5",
     "dayjs": "^1.7.5",
     "emotion-theming": "^10.0.6",
     "gatsby": "2.0.117",
