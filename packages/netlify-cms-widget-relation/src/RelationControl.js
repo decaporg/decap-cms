@@ -60,13 +60,13 @@ export default class RelationControl extends React.Component {
   };
 
   loadOptions = (term, callback) => {
-    const { field, query } = this.props;
+    const { field, query, forID } = this.props;
     const collection = field.get('collection');
     const searchFields = field.get('searchFields').toJS();
     const valueField = field.get('valueField');
     const displayField = field.get('displayFields') || field.get('valueField');
 
-    query(this.props.forID, collection, searchFields, term).then(({ payload }) => {
+    query(forID, collection, searchFields, term).then(({ payload }) => {
       const hits = term === '' ? payload.response.hits.slice(0, 20) : payload.response.hits;
       const options = hits.map(i => {
         if (List.isList(displayField)) {
@@ -100,8 +100,7 @@ export default class RelationControl extends React.Component {
     const isClearable = !field.get('required', true) || isMultiple;
 
     const hits = queryHits.get(forID, []);
-
-    const options = [...hits.map(i => convertToOption(i.data[valueField]))];
+    const options = hits.map(i => convertToOption(i.data[valueField]));
     const selectedValue = getSelectedValue({
       options,
       value,
