@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'gatsby';
 import styled from '@emotion/styled';
 
@@ -113,92 +113,80 @@ const NavLink = styled(Link)`
   font-weight: 500;
 `;
 
-class Header extends Component {
-  state = {
-    scrolled: false,
-    isNavOpen: false,
-    isSearchOpen: false,
-  };
+const Header = () => {
+  const [scrolled, setScrolled] = useState(false);
+  const [isNavOpen, setNavOpen] = useState(false);
+  const [isSearchOpen, setSearchOpen] = useState(false);
 
-  async componentDidMount() {
+  useEffect(() => {
     // TODO: use raf to throttle events
-    window.addEventListener('scroll', this.handleScroll);
-  }
+    window.addEventListener('scroll', handleScroll);
 
-  componentWillUnmount() {
-    window.removeEventListener('scroll', this.handleScroll);
-  }
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
-  handleScroll = () => {
+  const handleScroll = () => {
     const currentWindowPos = document.documentElement.scrollTop || document.body.scrollTop;
 
     const scrolled = currentWindowPos > 0;
 
-    this.setState({
-      scrolled,
-    });
+    setScrolled(scrolled);
   };
 
-  handleMenuBtnClick = e => {
-    this.setState(state => ({
-      isNavOpen: !state.isNavOpen,
-      isSearchOpen: false,
-    }));
+  const handleMenuBtnClick = e => {
+    setNavOpen(s => !s);
+    setSearchOpen(false);
   };
 
-  handleSearchBtnClick = e => {
-    this.setState(state => ({
-      isSearchOpen: !state.isSearchOpen,
-      isNavOpen: false,
-    }));
+  const handleSearchBtnClick = e => {
+    setSearchOpen(s => !s);
+    setNavOpen(false);
   };
 
-  render() {
-    const { scrolled, isNavOpen, isSearchOpen } = this.state;
-
-    return (
-      <StyledHeader scrolled={scrolled} id="header">
-        <Notifications />
-        <HeaderContainer>
-          <Logo>
-            <Link to="/">
-              <img src={logo} alt="Netlify CMS logo" />
-            </Link>
-          </Logo>
-          <MenuActions>
-            <SearchBtn onClick={this.handleSearchBtnClick}>
-              {isSearchOpen ? <span>&times;</span> : <img src={searchIcon} alt="search" />}
-            </SearchBtn>
-            <MenuBtn onClick={this.handleMenuBtnClick}>
-              {isNavOpen ? <span>&times;</span> : <span>&#9776;</span>}
-            </MenuBtn>
-          </MenuActions>
-          <SearchBox open={isSearchOpen}>
-            <DocSearch />
-          </SearchBox>
-          <Menu open={isNavOpen}>
-            <MenuList>
-              <MenuItem>
-                <NavLink to="/docs/intro/">Docs</NavLink>
-              </MenuItem>
-              <MenuItem>
-                <NavLink to="/docs/contributor-guide/">Contributing</NavLink>
-              </MenuItem>
-              <MenuItem>
-                <NavLink to="/community/">Community</NavLink>
-              </MenuItem>
-              <MenuItem>
-                <NavLink to="/blog/">Blog</NavLink>
-              </MenuItem>
-              <MenuItem>
-                <GitHubButton />
-              </MenuItem>
-            </MenuList>
-          </Menu>
-        </HeaderContainer>
-      </StyledHeader>
-    );
-  }
-}
+  return (
+    <StyledHeader scrolled={scrolled} id="header">
+      <Notifications />
+      <HeaderContainer>
+        <Logo>
+          <Link to="/">
+            <img src={logo} alt="Netlify CMS logo" />
+          </Link>
+        </Logo>
+        <MenuActions>
+          <SearchBtn onClick={handleSearchBtnClick}>
+            {isSearchOpen ? <span>&times;</span> : <img src={searchIcon} alt="search" />}
+          </SearchBtn>
+          <MenuBtn onClick={handleMenuBtnClick}>
+            {isNavOpen ? <span>&times;</span> : <span>&#9776;</span>}
+          </MenuBtn>
+        </MenuActions>
+        <SearchBox open={isSearchOpen}>
+          <DocSearch />
+        </SearchBox>
+        <Menu open={isNavOpen}>
+          <MenuList>
+            <MenuItem>
+              <NavLink to="/docs/intro/">Docs</NavLink>
+            </MenuItem>
+            <MenuItem>
+              <NavLink to="/docs/contributor-guide/">Contributing</NavLink>
+            </MenuItem>
+            <MenuItem>
+              <NavLink to="/community/">Community</NavLink>
+            </MenuItem>
+            <MenuItem>
+              <NavLink to="/blog/">Blog</NavLink>
+            </MenuItem>
+            <MenuItem>
+              <GitHubButton />
+            </MenuItem>
+          </MenuList>
+        </Menu>
+      </HeaderContainer>
+    </StyledHeader>
+  );
+};
 
 export default Header;

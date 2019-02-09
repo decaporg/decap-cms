@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 
 import theme from '../theme';
@@ -29,11 +29,10 @@ const TocLink = styled.a`
  *
  * https://github.com/gatsbyjs/gatsby/issues/5436
  */
-class TableOfContents extends Component {
-  state = {
-    headings: [],
-  };
-  componentDidMount() {
+const TableOfContents = () => {
+  const [headings, setHeadings] = useState([]);
+
+  useEffect(() => {
     const contentHeadings = document.querySelectorAll('[data-docs-content] h2');
     const headings = [];
     contentHeadings.forEach(h => {
@@ -42,22 +41,19 @@ class TableOfContents extends Component {
         text: h.innerText,
       });
     });
-    this.setState({
-      headings,
-    });
-  }
-  render() {
-    const { headings } = this.state;
-    return (
-      <TocList>
-        {headings.map(h => (
-          <li key={h.id}>
-            <TocLink href={`#${h.id}`}>{h.text}</TocLink>
-          </li>
-        ))}
-      </TocList>
-    );
-  }
-}
+
+    setHeadings(headings);
+  }, []);
+
+  return (
+    <TocList>
+      {headings.map(h => (
+        <li key={h.id}>
+          <TocLink href={`#${h.id}`}>{h.text}</TocLink>
+        </li>
+      ))}
+    </TocList>
+  );
+};
 
 export default TableOfContents;

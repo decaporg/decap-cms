@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import styled from '@emotion/styled';
 
 import theme from '../theme';
@@ -17,6 +17,7 @@ const SearchField = styled.div`
 
   > div {
     padding: ${theme.space[1]};
+    height: 35px;
   }
 
   input {
@@ -27,15 +28,14 @@ const SearchField = styled.div`
     width: 100%;
     font-size: ${theme.fontsize[3]};
     outline: 0;
-    height: 100%;
+    height: 35px;
   }
 `;
 
-class DocSearch extends Component {
-  state = {
-    enabled: true,
-  };
-  componentDidMount() {
+const DocSearch = () => {
+  const [enabled, setEnabled] = useState(true);
+
+  useEffect(() => {
     if (window.docsearch) {
       window.docsearch({
         apiKey: '08d03dc80862e84c70c5a1e769b13019',
@@ -44,23 +44,22 @@ class DocSearch extends Component {
         debug: false, // Set debug to true if you want to inspect the dropdown
       });
     } else {
-      this.setState({ enabled: false });
+      setEnabled(false);
     }
-  }
-  render() {
-    if (!this.state.enabled) {
-      return null;
-    }
+  }, []);
 
-    return (
-      <SearchField>
-        <div>
-          <img src={searchIcon} alt="magnifying glass" />
-        </div>
-        <input type="search" placeholder="Search the docs" className="algolia-search" />
-      </SearchField>
-    );
-  }
-}
+  // if (!enabled) {
+  //   return null;
+  // }
 
-export default DocSearch;
+  return (
+    <SearchField>
+      <div>
+        <img src={searchIcon} alt="magnifying glass" />
+      </div>
+      <input type="search" placeholder="Search the docs" className="algolia-search" />
+    </SearchField>
+  );
+};
+
+export default memo(DocSearch);

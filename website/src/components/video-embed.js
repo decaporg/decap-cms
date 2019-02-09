@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import styled from '@emotion/styled';
 
 import theme from '../theme';
@@ -76,44 +76,36 @@ const PlayIcon = ({ className }) => (
   </svg>
 );
 
-class VideoEmbed extends Component {
-  state = {
-    toggled: false,
-  };
-  toggleVideo = () => {
-    this.setState({
-      toggled: true,
-    });
-  };
-  render() {
-    const { toggled } = this.state;
+const VideoEmbed = () => {
+  const [toggled, setToggled] = useState(false);
 
-    const embedcode = (
-      <iframe
-        title="Netlify CMS video"
-        width={560}
-        height={315}
-        src="https://www.youtube-nocookie.com/embed/p6h-rYSVX90?rel=0&showinfo=0&autoplay=1"
-        frameBorder={0}
-        allow="autoplay; encrypted-media"
-        allowFullScreen
-        title="video_embed"
-      />
-    );
+  const toggleVideo = () => setToggled(true);
 
-    const imgPlaceholder = <img src={screenshotEditor} alt="Netlify CMS editor" />;
+  const embedcode = (
+    <iframe
+      title="Netlify CMS video"
+      width={560}
+      height={315}
+      src="https://www.youtube-nocookie.com/embed/p6h-rYSVX90?rel=0&showinfo=0&autoplay=1"
+      frameBorder={0}
+      allow="autoplay; encrypted-media"
+      allowFullScreen
+      title="video_embed"
+    />
+  );
 
-    return (
-      <VideoLink onClick={this.toggleVideo}>
-        {toggled ? embedcode : imgPlaceholder}
-        {!toggled && (
-          <VideoButton>
-            <PlayIcon />
-          </VideoButton>
-        )}
-      </VideoLink>
-    );
-  }
-}
+  const imgPlaceholder = <img src={screenshotEditor} alt="Netlify CMS editor" />;
+
+  return (
+    <VideoLink onClick={toggleVideo}>
+      {toggled ? embedcode : imgPlaceholder}
+      {!toggled && (
+        <VideoButton>
+          <PlayIcon />
+        </VideoButton>
+      )}
+    </VideoLink>
+  );
+};
 
 export default VideoEmbed;

@@ -34,8 +34,8 @@
     "moment": "^2.24.0",
     "netlify-cms": "^2.0.11",
     "prismjs": "^1.15.0",
-    "react": "^16.7.0",
-    "react-dom": "^16.7.0",
+    "react": "^16.8.1",
+    "react-dom": "^16.8.1",
     "react-helmet": "^5.2.0",
     "react-markdown": "^4.0.6",
     "smooth-scroll": "^14.2.0"

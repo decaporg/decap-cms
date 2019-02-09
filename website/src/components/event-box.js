@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import moment from 'moment';
 import styled from '@emotion/styled';
 
-import EventWidget from './event-widget';
 import Markdownify from './markdownify';
 
 import theme from '../theme';
@@ -62,27 +62,63 @@ const CalDates = styled.p`
 
 const CalCta = styled.div``;
 
-const EventBox = ({ title, cta }) => (
-  <Root>
-    <Title>{title}</Title>
-    <EventWidget>
-      {({ month, day, datePrefix, dateSuffix }) => (
-        <div>
-          <Cal>
-            <Month>{month}</Month>
-            <Day>{day}</Day>
-          </Cal>
-          <CalDates>
-            {datePrefix} at {dateSuffix} PT
-          </CalDates>
-        </div>
-      )}
-    </EventWidget>
+const EventBox = ({ title, cta }) => {
+  const [loading, setLoading] = useState(true);
+  const [eventDate, setEventDate] = useState('');
 
-    <CalCta>
-      <Markdownify source={cta} />
-    </CalCta>
-  </Root>
-);
+  useEffect(() => {
+    const eventbriteToken = 'C5PX65CJBVIXWWLNFKLO';
+    const eventbriteOrganiser = '14281996019';
+
+    const url = `https://www.eventbriteapi.com/v3/events/search/?token=${eventbriteToken}&organizer.id=${eventbriteOrganiser}&expand=venue%27`;
+
+    fetch(url)
+      .then(res => res.json())
+      .then(data => {
+        const eventDate = data.events[0].start.utc;
+
+        setEventDate(eventDate);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.log(err); // eslint-disable-line no-console
+        // TODO: set state to show error message
+
+        setLoading(false);
+      });
+  }, []);
+
+  const eventDateMoment = moment(eventDate);
+
+  const offset = eventDateMoment.isDST() ? -7 : -8;
+  const month = eventDateMoment.format('MMMM');
+  const day = eventDateMoment.format('DD');
+  const datePrefix = eventDateMoment.format('dddd, MMMM Do');
+  const dateSuffix = eventDateMoment.utcOffset(offset).format('h a');
+
+  const ellip = <span>&hellip;</span>;
+
+  return (
+    <Root>
+      <Title>{title}</Title>
+      <Cal>
+        <Month>{loading ? 'loading' : month}</Month>
+        <Day>{loading ? ellip : day}</Day>
+      </Cal>
+      <CalDates>
+        {loading ? (
+          ellip
+        ) : (
+          <span>
+            {datePrefix} at {dateSuffix} PT
+          </span>
+        )}
+      </CalDates>
+      <CalCta>
+        <Markdownify source={cta} />
+      </CalCta>
+    </Root>
+  );
+};
 
 export default EventBox;

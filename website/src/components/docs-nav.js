@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'gatsby';
 import styled from '@emotion/styled';
 
@@ -62,45 +62,39 @@ const NavLink = styled(Link)`
   }
 `;
 
-class DocsNav extends Component {
-  state = {
-    isMenuOpen: false,
+const DocsNav = ({ items, location }) => {
+  const [isMenuOpen, setMenuOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setMenuOpen(isOpen => !isOpen);
   };
 
-  toggleMenu = e => {
-    this.setState(s => ({ isMenuOpen: !s.isMenuOpen }));
-  };
-
-  render() {
-    const { items, location } = this.props;
-    const { isMenuOpen } = this.state;
-    return (
-      <Menu>
-        <MenuBtn onClick={this.toggleMenu} block>
-          {isMenuOpen ? <span>&times;</span> : <span>&#9776;</span>} {isMenuOpen ? 'Hide' : 'Show'}{' '}
-          Navigation
-        </MenuBtn>
-        <MenuContent isOpen={isMenuOpen}>
-          {items.map(item => (
-            <MenuSection key={item.title}>
-              <SectionTitle>{item.title}</SectionTitle>
-              <SectionList>
-                {item.group.edges.map(({ node }) => (
-                  <MenuItem key={node.fields.slug}>
-                    <NavLink to={node.fields.slug} activeClassName="active">
-                      {node.frontmatter.title}
-                    </NavLink>
-                    {location.pathname === node.fields.slug && <TableOfContents />}
-                  </MenuItem>
-                ))}
-              </SectionList>
-            </MenuSection>
-          ))}
-        </MenuContent>
-      </Menu>
-    );
-  }
-}
+  return (
+    <Menu>
+      <MenuBtn onClick={toggleMenu} block>
+        {isMenuOpen ? <span>&times;</span> : <span>&#9776;</span>} {isMenuOpen ? 'Hide' : 'Show'}{' '}
+        Navigation
+      </MenuBtn>
+      <MenuContent isOpen={isMenuOpen}>
+        {items.map(item => (
+          <MenuSection key={item.title}>
+            <SectionTitle>{item.title}</SectionTitle>
+            <SectionList>
+              {item.group.edges.map(({ node }) => (
+                <MenuItem key={node.fields.slug}>
+                  <NavLink to={node.fields.slug} activeClassName="active">
+                    {node.frontmatter.title}
+                  </NavLink>
+                  {location.pathname === node.fields.slug && <TableOfContents />}
+                </MenuItem>
+              ))}
+            </SectionList>
+          </MenuSection>
+        ))}
+      </MenuContent>
+    </Menu>
+  );
+};
 
 export default DocsNav;
 
