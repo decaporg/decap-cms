@@ -21,7 +21,6 @@ const NOTIFS_QUERY = graphql`
 const Notifications = () => (
   <StaticQuery query={NOTIFS_QUERY}>
     {data => {
-      console.log(data);
       const notifs = data.file.childDataYaml.notifications.filter(notif => notif.published);
       return notifs.map((node, i) => (
         <Notification key={i} url={node.url} loud={node.loud}>
