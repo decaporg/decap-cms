@@ -61,6 +61,33 @@ const globalStyles = css`
     color: ${theme.colors.darkGreen};
     text-decoration: none;
   }
+
+  .gitter-open-chat-button {
+    &,
+    &:visited {
+      padding: ${theme.space[3]} ${theme.space[4]};
+      font-family: ${theme.fontFamily};
+      font-size: ${theme.fontsize[3]};
+      letter-spacing: 0.5px;
+      color: ${theme.colors.gray};
+      background-color: ${theme.colors.green};
+      box-shadow: 0 2px 16px 0 rgba(68, 74, 87, 0.15), 0 1px 4px 0 rgba(68, 74, 87, 0.3);
+    }
+
+    &:hover {
+      background-color: ${theme.colors.lightGreen};
+      box-shadow: 0 2px 16px 0 rgba(68, 74, 87, 0.25), 0 1px 4px 0 rgba(68, 74, 87, 0.5);
+    }
+
+    &:focus {
+      box-shadow: 0 0 6px 3px rgba(62, 160, 127, 0.6);
+      transition: none;
+    }
+
+    &:active {
+      color: ${theme.colors.lightGray};
+    }
+  }
 `;
 
 const GlobalStyles = () => <Global styles={globalStyles} />;
