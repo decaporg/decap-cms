@@ -4,6 +4,10 @@ import styled from '@emotion/styled';
 import theme from '../theme';
 import searchIcon from '../img/search.svg';
 
+/**
+ * div and input have fixed heights due to the input vertically jumping on page navigations.
+ * Possibly due to rerender and docsearch updating?
+ */
 const SearchField = styled.div`
   display: flex;
   background: ${theme.colors.darkGray};
