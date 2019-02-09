@@ -6,10 +6,10 @@ import searchIcon from '../img/search.svg';
 
 const SearchField = styled.div`
   display: flex;
-  background: white;
+  background: ${theme.colors.darkGray};
   border-radius: ${theme.radii[1]};
+  color: white;
   width: 100%;
-  margin-bottom: ${theme.space[4]};
 
   > span {
     width: 100%;
@@ -20,6 +20,8 @@ const SearchField = styled.div`
   }
 
   input {
+    background: none;
+    color: currentColor;
     padding: ${theme.space[1]};
     border: 0;
     width: 100%;

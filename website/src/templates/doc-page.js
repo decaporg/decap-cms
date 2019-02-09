@@ -7,7 +7,6 @@ import Layout from '../components/layout';
 import EditLink from '../components/edit-link';
 import Widgets from '../components/widgets';
 import DocsNav from '../components/docs-nav';
-import DocSearch from '../components/docsearch';
 import Container from '../components/container';
 import SidebarLayout from '../components/sidebar-layout';
 import Markdown from '../components/markdown';
@@ -20,7 +19,6 @@ const toMenu = (menu, nav) =>
 
 const DocsSidebar = ({ docsNav, location, history }) => (
   <aside>
-    <DocSearch />
     <DocsNav items={docsNav} location={location} />
   </aside>
 );
