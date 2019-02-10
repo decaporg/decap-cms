@@ -71,7 +71,7 @@ const HomePage = ({ data }) => {
   const contribs = data.contribs.childDataJson;
 
   return (
-    <Layout>
+    <Layout hasPageHero>
       <PageHero>
         <div
           css={css`

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'gatsby';
 import styled from '@emotion/styled';
+import { css } from '@emotion/core';
 
 import GitHubButton from './github-button';
 import Container from './container';
@@ -15,21 +16,30 @@ import { mq } from '../utils';
 
 const StyledHeader = styled.header`
   background: ${theme.colors.darkerGray};
+  padding-top: ${theme.space[3]};
+  padding-bottom: ${theme.space[3]};
   transition: background 0.2s ease, padding 0.2s ease, box-shadow 0.2s ease;
 
-  ${mq[3]} {
+  ${mq[2]} {
     position: sticky;
     top: 0;
     width: 100%;
     z-index: ${theme.zIndexes.header};
+
+    ${p =>
+      p.hasHeroBelow &&
+      !p.scrolled &&
+      css`
+        background: #2a2c24;
+        padding-top: ${theme.space[5]};
+        padding-bottom: ${theme.space[5]};
+      `}
   }
 `;
 
 const HeaderContainer = styled(Container)`
   display: flex;
   align-items: center;
-  padding-top: ${theme.space[3]};
-  padding-bottom: ${theme.space[3]};
   flex-wrap: wrap;
 `;
 
@@ -115,7 +125,7 @@ const NavLink = styled(Link)`
   font-weight: 500;
 `;
 
-const Header = () => {
+const Header = ({ hasHeroBelow }) => {
   const [scrolled, setScrolled] = useState(false);
   const [isNavOpen, setNavOpen] = useState(false);
   const [isSearchOpen, setSearchOpen] = useState(false);
@@ -148,7 +158,7 @@ const Header = () => {
   };
 
   return (
-    <StyledHeader scrolled={scrolled} id="header">
+    <StyledHeader scrolled={scrolled} id="header" hasHeroBelow={hasHeroBelow}>
       <Notifications />
       <HeaderContainer>
         <Logo>

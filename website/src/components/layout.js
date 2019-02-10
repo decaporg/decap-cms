@@ -28,7 +28,7 @@ const LAYOUT_QUERY = graphql`
   }
 `;
 
-const Layout = ({ children }) => {
+const Layout = ({ hasPageHero, children }) => {
   return (
     <StaticQuery query={LAYOUT_QUERY}>
       {data => {
@@ -44,7 +44,7 @@ const Layout = ({ children }) => {
                 href="https://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,700,900|Roboto+Mono:400,700"
               />
             </Helmet>
-            <Header />
+            <Header hasHeroBelow={hasPageHero} />
             {children}
             <Footer buttons={data.footer.childDataYaml.footer.buttons} />
           </ThemeProvider>

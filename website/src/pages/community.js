@@ -22,7 +22,7 @@ const CommunityPage = ({ data }) => {
   const { title, headline, subhead, sections } = data.markdownRemark.frontmatter;
 
   return (
-    <Layout>
+    <Layout hasPageHero>
       <Helmet title={title} />
       <PageHero>
         <Grid cols={2}>
