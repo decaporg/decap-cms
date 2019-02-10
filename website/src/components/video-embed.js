@@ -44,8 +44,6 @@ const VideoButton = styled.div`
   width: 90px;
   height: 90px;
   margin: auto;
-  padding-top: 10px;
-  padding-left: 10px;
   color: ${theme.colors.blue};
   background-color: rgba(255, 255, 255, 0.85);
   box-shadow: 0 3px 9px 0 rgba(0, 0, 0, 0.05), 0 1px 3px 0 rgba(0, 0, 0, 0.15);
@@ -54,8 +52,8 @@ const VideoButton = styled.div`
 
   svg {
     position: absolute;
-    left: 33px;
-    top: 28px;
+    left: 30px;
+    top: 24px;
     width: 44px;
     height: 44px;
     fill: #3a69c7;
