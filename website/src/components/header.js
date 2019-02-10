@@ -55,6 +55,8 @@ const MenuBtn = styled.button`
   border: 0;
   color: white;
   padding: ${theme.space[3]};
+  font-size: ${theme.fontsize[4]};
+  line-height: 1;
 `;
 
 const SearchBtn = styled(MenuBtn)``;
