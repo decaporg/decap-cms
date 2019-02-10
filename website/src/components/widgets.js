@@ -45,7 +45,7 @@ const Widgets = ({ widgets }) => {
   };
 
   return (
-    <section className="widgets">
+    <section>
       <WidgetsNav>
         {widgets.edges.map(({ node }) => {
           const { label, title } = node.frontmatter;
