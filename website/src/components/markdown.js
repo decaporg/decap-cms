@@ -53,7 +53,7 @@ const StyledMarkdown = styled.div`
   }
 
   li {
-    margin-bottom: ${theme.space[1]};
+    margin-bottom: 0;
   }
 
   ol,
