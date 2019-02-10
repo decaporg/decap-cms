@@ -4,36 +4,26 @@ import styled from '@emotion/styled';
 import theme from '../theme';
 import searchIcon from '../img/search.svg';
 
-/**
- * div and input have fixed heights due to the input vertically jumping on page navigations.
- * Possibly due to rerender and docsearch updating?
- */
-const SearchField = styled.div`
-  display: flex;
-  background: ${theme.colors.darkGray};
-  border-radius: ${theme.radii[1]};
-  color: white;
-  width: 100%;
-
+const SearchForm = styled.form`
   > span {
     width: 100%;
   }
+`;
 
-  > div {
-    padding: ${theme.space[1]};
-    height: 35px;
-  }
-
-  input {
-    background: none;
-    color: currentColor;
-    padding: ${theme.space[1]};
-    border: 0;
-    width: 100%;
-    font-size: ${theme.fontsize[3]};
-    outline: 0;
-    height: 35px;
-  }
+const SearchField = styled.input`
+  color: white;
+  font-size: ${theme.fontsize[3]};
+  border-radius: ${theme.radii[1]};
+  background-color: ${theme.colors.darkGray};
+  background-image: url(${searchIcon});
+  background-repeat: no-repeat;
+  background-position: ${theme.space[2]} 50%;
+  border: 0;
+  appearance: none;
+  width: 100%;
+  padding: ${theme.space[2]};
+  padding-left: 30px;
+  outline: 0;
 `;
 
 const DocSearch = () => {
@@ -44,7 +34,7 @@ const DocSearch = () => {
       window.docsearch({
         apiKey: '08d03dc80862e84c70c5a1e769b13019',
         indexName: 'netlifycms',
-        inputSelector: '.algolia-search',
+        inputSelector: '#algolia-search',
         debug: false, // Set debug to true if you want to inspect the dropdown
       });
     } else {
@@ -52,17 +42,14 @@ const DocSearch = () => {
     }
   }, []);
 
-  // if (!enabled) {
-  //   return null;
-  // }
+  if (!enabled) {
+    return null;
+  }
 
   return (
-    <SearchField>
-      <div>
-        <img src={searchIcon} alt="magnifying glass" />
-      </div>
-      <input type="search" placeholder="Search the docs" className="algolia-search" />
-    </SearchField>
+    <SearchForm>
+      <SearchField type="search" placeholder="Search the docs" id="algolia-search" />
+    </SearchForm>
   );
 };
 
