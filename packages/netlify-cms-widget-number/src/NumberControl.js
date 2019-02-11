@@ -26,12 +26,12 @@ export default class NumberControl extends React.Component {
   handleChange = e => {
     const valueType = this.props.field.get('valueType');
     const { onChange } = this.props;
-    if (valueType === 'int') {
-      onChange(parseInt(e.target.value, 10));
-    } else if (valueType === 'float') {
-      onChange(parseFloat(e.target.value));
+    const value = valueType === 'float' ? parseFloat(e.target.value) : parseInt(e.target.value, 10);
+
+    if (!isNaN(value)) {
+      onChange(value);
     } else {
-      onChange(e.target.value);
+      onChange('');
     }
   };
 
