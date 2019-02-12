@@ -1,9 +1,9 @@
 ---
 title: date
-label: "Date"
+label: Date
 ---
 
-The date widget translates a date picker input to a date string. For saving date and time together, use the datetime widget.
+Testing. The date widget translates a date picker input to a date string. For saving date and time together, use the datetime widget.
 
 - **Name:** `date`
 - **UI:** date picker
