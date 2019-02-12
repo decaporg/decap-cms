@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.6.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.5.1...netlify-cms-core@2.6.0) (2019-02-12)
+
+
+### Features
+
+* **core:** allow field name to override slug placeholders ([#2087](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2087)) ([ff8dfac](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/ff8dfac))
+
+
+
+
+
 ## [2.5.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.5.0...netlify-cms-core@2.5.1) (2019-02-09)
 
 **Note:** Version bump only for package netlify-cms-core
