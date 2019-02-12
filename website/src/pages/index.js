@@ -74,6 +74,7 @@ const HomePage = ({ data }) => {
               versionPrevious={updates.updates[idx + 1].version}
               date={node.date}
               description={node.description}
+              url={node.url}
             />
           ))}
         </WhatsNew>
@@ -127,6 +128,7 @@ export const pageQuery = graphql`
           date
           description
           version
+          url
         }
       }
     }

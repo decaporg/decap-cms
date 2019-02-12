@@ -5,6 +5,7 @@ updates:
   - date: 2019-02-08T22:27:39.913Z
     description: 'Deploy preview links, map widget, and nested field validation'
     version: 2.4.0
+    url: 'https://www.netlifycms.org/blog/2019/02/netlify-cms-2-4-0'
   - date: '2019-01-10'
     description: Fix missing entry labels for file collections
     version: 2.3.3
