@@ -50,12 +50,15 @@ export default class RelationControl extends React.Component {
   };
 
   handleChange = selectedOption => {
-    const { onChange } = this.props;
+    const { onChange, field } = this.props;
 
     if (Array.isArray(selectedOption)) {
       onChange(fromJS(selectedOption.map(optionToString)));
     } else {
-      onChange(optionToString(selectedOption));
+      const value = optionToString(selectedOption);
+      onChange(value, {
+        [field.get('collection')]: { [value]: selectedOption.data },
+      });
     }
   };
 
@@ -68,17 +71,17 @@ export default class RelationControl extends React.Component {
 
     query(forID, collection, searchFields, term).then(({ payload }) => {
       const hits = term === '' ? payload.response.hits.slice(0, 20) : payload.response.hits;
-      const options = hits.map(i => {
-        if (List.isList(displayField)) {
-          return {
-            value: i.data[valueField],
-            label: displayField
-              .toJS()
-              .map(key => i.data[key])
-              .join(' '),
-          };
-        }
-        return { value: i.data[valueField], label: i.data[displayField] };
+      const options = hits.map(hit => {
+        return {
+          data: hit.data,
+          value: hit.data[valueField],
+          label: List.isList(displayField)
+            ? displayField
+                .toJS()
+                .map(key => hit.data[key])
+                .join(' ')
+            : hit.data[displayField],
+        };
       });
 
       callback(options);
@@ -112,8 +115,8 @@ export default class RelationControl extends React.Component {
         value={selectedValue}
         inputId={forID}
         defaultOptions
-        onChange={this.handleChange}
         loadOptions={this.loadOptions}
+        onChange={this.handleChange}
         className={classNameWrapper}
         onFocus={setActiveStyle}
         onBlur={setInactiveStyle}
