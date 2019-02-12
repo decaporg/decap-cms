@@ -4,8 +4,7 @@ import Markdownify from '../components/markdownify';
 
 const Release = ({ version, versionPrevious, date, description, url }) => {
   const displayDate = moment(date).format('MMMM D, YYYY');
-  const defaultUrl =
-    `https://github.com/netlify/netlify-cms/compare/${versionPrevious}...${version}`;
+  const defaultUrl = `https://github.com/netlify/netlify-cms/compare/${versionPrevious}...${version}`;
 
   return (
     <a href={url || defaultUrl} key={version}>
