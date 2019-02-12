@@ -67,13 +67,21 @@ function compileSlug(template, date, identifier = '', data = Map(), processor) {
   let missingRequiredDate;
 
   const slug = template.replace(/\{\{([^}]+)\}\}/g, (_, key) => {
+    const USE_FIELD_PREFIX = 'fields.';
     let replacement;
-    if (dateParsers[key] && !date) {
+
+    // Allow `fields.` prefix in placeholder to override built in replacements
+    // like "slug" and "year" with values from fields of the same name.
+    if (key.startsWith(USE_FIELD_PREFIX)) {
+      const fieldName = key.substring(USE_FIELD_PREFIX.length);
+      const field = data.get(fieldName);
+      if (field) {
+        replacement = field.trim();
+      }
+    } else if (dateParsers[key] && !date) {
       missingRequiredDate = true;
       return '';
-    }
-
-    if (dateParsers[key]) {
+    } else if (dateParsers[key]) {
       replacement = dateParsers[key](date);
     } else if (key === 'slug') {
       replacement = identifier.trim();
