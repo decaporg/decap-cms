@@ -2,13 +2,12 @@ import React from 'react';
 import moment from 'moment';
 import Markdownify from '../components/markdownify';
 
-const Release = ({ version, versionPrevious, date, description }) => {
-  console.log(version, versionPrevious);
+const Release = ({ version, versionPrevious, date, description, url }) => {
   const displayDate = moment(date).format('MMMM D, YYYY');
-  const url = `https://github.com/netlify/netlify-cms/compare/${versionPrevious}...${version}`;
+  const defaultUrl = `https://github.com/netlify/netlify-cms/compare/${versionPrevious}...${version}`;
 
   return (
-    <a href={url} key={version}>
+    <a href={url || defaultUrl} key={version}>
       <li>
         <div className="update-metadata">
           <span className="update-version">{version}</span>
