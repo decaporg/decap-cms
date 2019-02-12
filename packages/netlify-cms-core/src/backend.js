@@ -62,18 +62,31 @@ const dateParsers = {
 };
 
 const SLUG_MISSING_REQUIRED_DATE = 'SLUG_MISSING_REQUIRED_DATE';
+const USE_FIELD_PREFIX = 'fields.';
+
+// Allow `fields.` prefix in placeholder to override built in replacements
+// like "slug" and "year" with values from fields of the same name.
+function getExplicitFieldReplacement(key, data) {
+  if (!key.startsWith(USE_FIELD_PREFIX)) {
+    return;
+  }
+  const fieldName = key.substring(USE_FIELD_PREFIX.length);
+  return data.get(fieldName, '').trim();
+}
 
 function compileSlug(template, date, identifier = '', data = Map(), processor) {
   let missingRequiredDate;
 
   const slug = template.replace(/\{\{([^}]+)\}\}/g, (_, key) => {
     let replacement;
-    if (dateParsers[key] && !date) {
+    const explicitFieldReplacement = getExplicitFieldReplacement(key, data);
+
+    if (explicitFieldReplacement) {
+      replacement = explicitFieldReplacement;
+    } else if (dateParsers[key] && !date) {
       missingRequiredDate = true;
       return '';
-    }
-
-    if (dateParsers[key]) {
+    } else if (dateParsers[key]) {
       replacement = dateParsers[key](date);
     } else if (key === 'slug') {
       replacement = identifier.trim();

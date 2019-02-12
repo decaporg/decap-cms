@@ -213,8 +213,13 @@ You may also specify a custom `extension` not included in the list above, as lon
 
 For folder collections where users can create new items, the `slug` option specifies a template for generating new filenames based on a file's creation date and `title` field. (This means that all collections with `create: true` must have a `title` field (a different field can be used via [`identifier_field`](#identifier_field)).
 
-**Available template tags:**
+The slug template can also reference a field value by name, eg. `{{title}}`. If a field name
+conflicts with a built in template tag name - for example, if you have a field named `slug`, and
+would like to reference that field via `{{slug}}`, you can do so by adding the explicit `fields.`
+prefix, eg. `{{fields.slug}}`.
 
+**Available template tags:**
+* Any field can be referenced by wrapping the field name in double curly braces, eg. `{{author}}`
 * `{{slug}}`: a url-safe version of the `title` field (or identifier field) for the file
 * `{{year}}`: 4-digit year of the file creation date
 * `{{month}}`: 2-digit month of the file creation date
@@ -224,9 +229,18 @@ For folder collections where users can create new items, the `slug` option speci
 * `{{second}}`: 2-digit second of the file creation date
 
 **Example:**
-
 ```yaml
 slug: "{{year}}-{{month}}-{{day}}_{{slug}}"
+```
+
+**Example using field names:**
+```yaml
+slug: "{{year}}-{{month}}-{{day}}_{{title}}_{{some_other_field}}"
+```
+
+**Example using field name that conflicts with a template tag:**
+```yaml
+slug: "{{year}}-{{month}}-{{day}}_{{fields.slug}}"
 ```
 
 ### `preview_path`
@@ -237,18 +251,10 @@ root of a deploy preview.
 
 **Available template tags:**
 
-* Any field can be referenced by wrapping the field name in double curly braces, eg. `{{author}}`
-* `{{slug}}`: the entire slug for the current entry (not just the url-safe identifier, as is the
+Template tags are the same as those for [slug](#slug), with the following exceptions:
+* `{{slug}}` is the entire slug for the current entry (not just the url-safe identifier, as is the
     case with [`slug` configuration](#slug)
-
-The following date based template tags are pulled from a date field in your entry, and may require additional configuration, see [`preview_path_date_field`](#preview_path_date_field) for details. If a date template tag is used and no date can be found, `preview_path` will be ignored.
-
-* `{{year}}`: 4-digit year from entry data
-* `{{month}}`: 2-digit month from entry data
-* `{{day}}`: 2-digit day of the month from entry data
-* `{{hour}}`: 2-digit hour from entry data
-* `{{minute}}`: 2-digit minute from entry data
-* `{{second}}`: 2-digit second from entry data
+* The date based template tags, such as `{{year}}` and `{{month}}`, are pulled from a date field in your entry, and may require additional configuration - see [`preview_path_date_field`](#preview_path_date_field) for details. If a date template tag is used and no date can be found, `preview_path` will be ignored.
 
 **Example:**
 
