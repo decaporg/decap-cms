@@ -1,7 +1,9 @@
 ---
 title: Netlify CMS 2.4.0
 author: Shawn Erquhart
-description: Netlify CMS 2.4.0
+description: >-
+  Netlify CMS 2.4.0 is out with Deploy Preview Links, a new Map widget, and
+  more!
 twitter_image: /img/preview-link-published.png
 date: 2019-02-08T23:00:58.501Z
 ---
