@@ -71,7 +71,7 @@ function getExplicitFieldReplacement(key, data) {
     return;
   }
   const fieldName = key.substring(USE_FIELD_PREFIX.length);
-  return data.get(fieldName);
+  return data.get(fieldName, '').trim();
 }
 
 function compileSlug(template, date, identifier = '', data = Map(), processor) {
@@ -82,7 +82,7 @@ function compileSlug(template, date, identifier = '', data = Map(), processor) {
     const explicitFieldReplacement = getExplicitFieldReplacement(key, data);
 
     if (explicitFieldReplacement) {
-      replacement = field.trim();
+      replacement = explicitFieldReplacement;
     } else if (dateParsers[key] && !date) {
       missingRequiredDate = true;
       return '';
