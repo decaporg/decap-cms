@@ -26,7 +26,14 @@ const CardImage = styled.img`
   border-radius: 2px 2px 0 0;
 `;
 
-const CardImagePlaceholder = CardImage.withComponent(`div`);
+const CardFileIcon = styled.div`
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 2px 2px 0 0;
+  padding: 1em;
+  font-size: 3em;
+`;
 
 const CardText = styled.p`
   color: ${colors.text};
@@ -36,7 +43,16 @@ const CardText = styled.p`
   line-height: 1.3 !important;
 `;
 
-const MediaLibraryCard = ({ isSelected, displayURL, text, onClick, width, margin, isPrivate }) => (
+const MediaLibraryCard = ({
+  isSelected,
+  displayURL,
+  text,
+  onClick,
+  width,
+  margin,
+  isPrivate,
+  type,
+}) => (
   <Card
     isSelected={isSelected}
     onClick={onClick}
@@ -45,7 +61,7 @@ const MediaLibraryCard = ({ isSelected, displayURL, text, onClick, width, margin
     tabIndex="-1"
     isPrivate={isPrivate}
   >
-    <div>{displayURL ? <CardImage src={displayURL} /> : <CardImagePlaceholder />}</div>
+    <div>{displayURL ? <CardImage src={displayURL} /> : <CardFileIcon>{type}</CardFileIcon>}</div>
     <CardText>{text}</CardText>
   </Card>
 );
@@ -58,6 +74,7 @@ MediaLibraryCard.propTypes = {
   width: PropTypes.string.isRequired,
   margin: PropTypes.string.isRequired,
   isPrivate: PropTypes.bool,
+  type: PropTypes.string,
 };
 
 export default MediaLibraryCard;
