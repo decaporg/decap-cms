@@ -1,6 +1,11 @@
-import { loadScript } from 'netlify-cms-lib-util';
+import uploadcare from 'uploadcare-widget';
+import uploadcareTabEffects from 'uploadcare-widget-tab-effects';
 import { Iterable } from 'immutable';
 
+window.UPLOADCARE_LIVE = false;
+window.UPLOADCARE_MANUAL_START = true;
+
+const USER_AGENT = 'NetlifyCMS-Uploadcare-MediaLibrary';
 const CDN_BASE_URL = 'https://ucarecdn.com';
 
 /**
@@ -8,6 +13,7 @@ const CDN_BASE_URL = 'https://ucarecdn.com';
  */
 const defaultConfig = {
   previewStep: true,
+  integration: USER_AGENT,
 };
 
 /**
@@ -36,9 +42,7 @@ function getFileGroup(files) {
    * `fileFrom`, but requires the promise returned by `loadFileGroup` to provide
    * the result of it's `done` method.
    */
-  return new Promise(resolve =>
-    window.uploadcare.loadFileGroup(groupId).done(group => resolve(group)),
-  );
+  return new Promise(resolve => uploadcare.loadFileGroup(groupId).done(group => resolve(group)));
 }
 
 /**
@@ -62,7 +66,7 @@ function getFiles(value) {
 function getFile(url) {
   const groupPattern = /~\d+\/nth\/\d+\//;
   const uploaded = url.startsWith(CDN_BASE_URL) && !groupPattern.test(url);
-  return window.uploadcare.fileFrom(uploaded ? 'uploaded' : 'url', url);
+  return uploadcare.fileFrom(uploaded ? 'uploaded' : 'url', url);
 }
 
 /**
@@ -70,7 +74,7 @@ function getFile(url) {
  * each use.
  */
 function openDialog(files, config, handleInsert) {
-  window.uploadcare.openDialog(files, config).done(({ promise }) =>
+  uploadcare.openDialog(files, config).done(({ promise }) =>
     promise().then(({ cdnUrl, count }) => {
       if (config.multiple) {
         const urls = Array.from({ length: count }, (val, idx) => `${cdnUrl}nth/${idx}/`);
@@ -90,24 +94,13 @@ async function init({ options = { config: {} }, handleInsert } = {}) {
   const { publicKey, ...globalConfig } = options.config;
   const baseConfig = { ...defaultConfig, ...globalConfig };
 
-  window.UPLOADCARE_LIVE = false;
-  window.UPLOADCARE_MANUAL_START = true;
   window.UPLOADCARE_PUBLIC_KEY = publicKey;
-
-  /**
-   * Loading scripts via url because the uploadcare widget includes
-   * non-strict-mode code that's incompatible with our build system
-   */
-  await loadScript('https://unpkg.com/uploadcare-widget@^3.6.0/uploadcare.full.js');
-  await loadScript(
-    'https://unpkg.com/uploadcare-widget-tab-effects@^1.2.1/dist/uploadcare.tab-effects.js',
-  );
 
   /**
    * Register the effects tab by default because the effects tab is awesome. Can
    * be disabled via config.
    */
-  window.uploadcare.registerTab('preview', window.uploadcareTabEffects);
+  uploadcare.registerTab('preview', uploadcareTabEffects);
 
   return {
     /**

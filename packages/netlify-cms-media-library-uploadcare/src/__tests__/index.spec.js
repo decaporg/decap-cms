@@ -1,6 +1,7 @@
-import { queryHelpers, waitForElement } from 'dom-testing-library';
 import uuid from 'uuid/v4';
-import uploadcare from '../index';
+import uploadcareMediaLibrary from '../index';
+import uploadcare from 'uploadcare-widget';
+import uploadcareTabEffects from 'uploadcare-widget-tab-effects';
 
 function generateMockUrl({ count = 1, cdnUrl } = {}) {
   const baseUrl = 'https://ucarecdn.com';
@@ -13,54 +14,40 @@ function generateMockUrl({ count = 1, cdnUrl } = {}) {
   return result;
 }
 
+let openDialogCallback;
+
+/**
+ * Mock of the uploadcare widget object itself.
+ */
+jest.mock('uploadcare-widget', () => ({
+  registerTab: jest.fn(),
+  openDialog: jest.fn(() => ({
+    done: jest.fn(cb => {
+      openDialogCallback = cb;
+    }),
+  })),
+  fileFrom: jest.fn((type, url) =>
+    Promise.resolve({
+      testFileUrl: url,
+    }),
+  ),
+  loadFileGroup: () => ({
+    done: cb => cb(),
+  }),
+}));
+
 describe('uploadcare media library', () => {
   let handleInsert;
   let simulateCloseDialog;
-  let uploadcareScripts = [];
   const TEST_PUBLIC_KEY = 123;
   const defaultConfig = {
     imagesOnly: false,
     multiple: false,
     previewStep: true,
+    integration: 'NetlifyCMS-Uploadcare-MediaLibrary',
   };
 
   beforeEach(() => {
-    /**
-     * We load the Uploadcare library by injecting script tags to the page
-     * head. Initialization waits for the scripts to load, so here we fake it.
-     * This also tests that the expected scripts are added to the DOM.
-     */
-    [/uploadcare\.full\.js$/, /uploadcare\.tab-effects\.js$/].forEach(pattern => {
-      waitForElement(() => {
-        return queryHelpers.queryByAttribute('src', document, pattern);
-      }).then(script => {
-        uploadcareScripts.push(script);
-        script.onreadystatechange();
-      });
-    });
-
-    let openDialogCallback;
-
-    /**
-     * Mock of the uploadcare widget object itself.
-     */
-    window.uploadcare = {
-      registerTab: jest.fn(),
-      openDialog: jest.fn(() => ({
-        done: jest.fn(cb => {
-          openDialogCallback = cb;
-        }),
-      })),
-      fileFrom: jest.fn((type, url) =>
-        Promise.resolve({
-          testFileUrl: url,
-        }),
-      ),
-      loadFileGroup: () => ({
-        done: cb => cb(),
-      }),
-    };
-
     /**
      * Mock to manually call the close dialog registered callback.
      */
@@ -75,17 +62,8 @@ describe('uploadcare media library', () => {
     handleInsert = jest.fn();
   });
 
-  afterEach(() => {
-    /**
-     * Remove the script elements from the dom after each test.
-     */
-    const { head } = document;
-    uploadcareScripts.forEach(script => head.contains(script) && head.removeChild(script));
-    uploadcareScripts = [];
-  });
-
   it('exports an object with expected properties', () => {
-    expect(uploadcare).toMatchInlineSnapshot(`
+    expect(uploadcareMediaLibrary).toMatchInlineSnapshot(`
 Object {
   "init": [Function],
   "name": "uploadcare",
@@ -100,17 +78,15 @@ Object {
           publicKey: TEST_PUBLIC_KEY,
         },
       };
-      await uploadcare.init({ options });
+      await uploadcareMediaLibrary.init({ options });
       expect(window.UPLOADCARE_LIVE).toEqual(false);
       expect(window.UPLOADCARE_MANUAL_START).toEqual(true);
       expect(window.UPLOADCARE_PUBLIC_KEY).toEqual(TEST_PUBLIC_KEY);
     });
 
     it('registers the effects tab', async () => {
-      const mockEffectsTab = { mockEffectsTab: true };
-      window.uploadcareTabEffects = mockEffectsTab;
-      await uploadcare.init();
-      expect(window.uploadcare.registerTab).toHaveBeenCalledWith('preview', mockEffectsTab);
+      await uploadcareMediaLibrary.init();
+      expect(uploadcare.registerTab).toHaveBeenCalledWith('preview', uploadcareTabEffects);
     });
   });
 
@@ -122,9 +98,9 @@ Object {
     };
 
     it('has defaults', async () => {
-      const integration = await uploadcare.init();
+      const integration = await uploadcareMediaLibrary.init();
       await integration.show();
-      expect(window.uploadcare.openDialog).toHaveBeenCalledWith(null, defaultConfig);
+      expect(uploadcare.openDialog).toHaveBeenCalledWith(null, defaultConfig);
     });
 
     it('can be defined globally', async () => {
@@ -132,9 +108,9 @@ Object {
         ...defaultConfig,
         ...options.config,
       };
-      const integration = await uploadcare.init({ options });
+      const integration = await uploadcareMediaLibrary.init({ options });
       await integration.show();
-      expect(window.uploadcare.openDialog).toHaveBeenCalledWith(null, expectedConfig);
+      expect(uploadcare.openDialog).toHaveBeenCalledWith(null, expectedConfig);
     });
 
     it('can be defined per field', async () => {
@@ -142,9 +118,9 @@ Object {
         ...defaultConfig,
         ...options.config,
       };
-      const integration = await uploadcare.init();
+      const integration = await uploadcareMediaLibrary.init();
       await integration.show({ config: options.config });
-      expect(window.uploadcare.openDialog).toHaveBeenCalledWith(null, expectedConfig);
+      expect(uploadcare.openDialog).toHaveBeenCalledWith(null, expectedConfig);
     });
   });
 
@@ -161,9 +137,9 @@ Object {
         ...options.config,
         imagesOnly: true,
       };
-      const integration = await uploadcare.init();
+      const integration = await uploadcareMediaLibrary.init();
       await integration.show({ config: options.config, imagesOnly: true });
-      expect(window.uploadcare.openDialog).toHaveBeenCalledWith(null, expectedConfig);
+      expect(uploadcare.openDialog).toHaveBeenCalledWith(null, expectedConfig);
     });
 
     it('allows multiple selection if allowMultiple is not false', async () => {
@@ -173,9 +149,9 @@ Object {
         ...options.config,
         multiple: true,
       };
-      const integration = await uploadcare.init({ options });
+      const integration = await uploadcareMediaLibrary.init({ options });
       await integration.show({ config: options.config });
-      expect(window.uploadcare.openDialog).toHaveBeenCalledWith(null, expectedConfig);
+      expect(uploadcare.openDialog).toHaveBeenCalledWith(null, expectedConfig);
     });
 
     it('disallows multiple selection if allowMultiple is false', async () => {
@@ -185,15 +161,15 @@ Object {
         ...options.config,
         multiple: false,
       };
-      const integration = await uploadcare.init({ options });
+      const integration = await uploadcareMediaLibrary.init({ options });
       await integration.show({ config: options.config, allowMultiple: false });
-      expect(window.uploadcare.openDialog).toHaveBeenCalledWith(null, expectedConfig);
+      expect(uploadcare.openDialog).toHaveBeenCalledWith(null, expectedConfig);
     });
 
     it('passes selected image url to handleInsert', async () => {
       const url = generateMockUrl();
       const mockResult = { cdnUrl: url };
-      const integration = await uploadcare.init({ handleInsert });
+      const integration = await uploadcareMediaLibrary.init({ handleInsert });
       await integration.show();
       await simulateCloseDialog(mockResult);
       expect(handleInsert).toHaveBeenCalledWith(url);
@@ -203,7 +179,7 @@ Object {
       options.config.multiple = true;
       const { result, cdnUrl } = generateMockUrl({ count: 3, cdnUrl: true });
       const mockDialogCloseResult = { cdnUrl, count: 3 };
-      const integration = await uploadcare.init({ options, handleInsert });
+      const integration = await uploadcareMediaLibrary.init({ options, handleInsert });
       await integration.show();
       await simulateCloseDialog(mockDialogCloseResult);
       expect(handleInsert).toHaveBeenCalledWith(result);
@@ -212,7 +188,7 @@ Object {
 
   describe('enableStandalone method', () => {
     it('returns false', async () => {
-      const integration = await uploadcare.init();
+      const integration = await uploadcareMediaLibrary.init();
       expect(integration.enableStandalone()).toEqual(false);
     });
   });
