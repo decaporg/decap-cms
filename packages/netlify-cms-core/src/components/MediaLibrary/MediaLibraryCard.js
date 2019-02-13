@@ -31,8 +31,8 @@ const CardFileIcon = styled.div`
   height: 160px;
   object-fit: cover;
   border-radius: 2px 2px 0 0;
-  padding: 2em;
-  font-size: 2em;
+  padding: 1em;
+  font-size: 3em;
 `;
 
 const CardText = styled.p`
