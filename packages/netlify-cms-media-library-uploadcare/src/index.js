@@ -2,6 +2,9 @@ import uploadcare from 'uploadcare-widget';
 import uploadcareTabEffects from 'uploadcare-widget-tab-effects';
 import { Iterable } from 'immutable';
 
+window.UPLOADCARE_LIVE = false;
+window.UPLOADCARE_MANUAL_START = true;
+
 const USER_AGENT = 'NetlifyCMS-Uploadcare-MediaLibrary';
 const CDN_BASE_URL = 'https://ucarecdn.com';
 
@@ -91,8 +94,6 @@ async function init({ options = { config: {} }, handleInsert } = {}) {
   const { publicKey, ...globalConfig } = options.config;
   const baseConfig = { ...defaultConfig, ...globalConfig };
 
-  window.UPLOADCARE_LIVE = false;
-  window.UPLOADCARE_MANUAL_START = true;
   window.UPLOADCARE_PUBLIC_KEY = publicKey;
 
   /**
