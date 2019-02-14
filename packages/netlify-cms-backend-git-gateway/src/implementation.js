@@ -210,14 +210,16 @@ export default class GitGateway {
       return this._largeMediaClientPromise;
     }
     this._largeMediaClientPromise = Promise.resolve().then(() => {
-      const netlifyLargeMediaEnabledPromise = this.api.readFile(".lfsconfig")
-        .then(ini.decode)
-        .then(lfsConfig => ({ enabled: (new URL(lfsConfig.lfs.url)).hostname.endsWith("netlify.com") }))
+      const lfsUrlPromise = this.api.readFile(".lfsConfig")
+	.then(ini.decode)
+	.then(({ lfs: { url } }) => new URL(url));
+
+      const netlifyLargeMediaEnabledPromise = lfsUrlPromise
+        .then(lfsUrl => ({ enabled: lfsUrl.hostname.endsWith("netlify.com") }))
         .catch(err => ({ enabled: false, err }));
 
-      const netlifySiteIdPromise = this.api.readFile(".netlify/state.json")
-        .then(JSON.parse)
-        .then(({ siteId }) => ({ siteId }))
+      const netlifySiteIdPromise = lfsUrlPromise
+        .then(lfsUrl => lfsUrl.hostname.split(".")[0])
         .catch(err => ({ err }));
 
       const lfsPatternsPromise = this.api.readFile(".gitattributes")
