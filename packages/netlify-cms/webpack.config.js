@@ -52,6 +52,30 @@ if (isProduction) {
         filename: 'dist/cms.js',
       },
     },
+
+    /**
+     * Output the same script with react, react-dom as external peers.
+     */
+    {
+      ...baseConfig,
+      entry: [path.join(__dirname, 'src/index-manual.js'), baseConfig.entry],
+      output: {
+        ...baseConfig.output,
+        filename: 'dist/netlify-cms-manual-init.js',
+      },
+      externals: (context, request, cb) => {
+        const localExternals = pkg.localExternals || [];
+        const peerDeps = ['react', 'react-dom'];
+        const externals = isProduction ? peerDeps : [...localExternals, ...peerDeps];
+        const isPeerDep = dep => new RegExp(`^${dep}($|/)`).test(request);
+        return externals.some(isPeerDep) ? cb(null, request) : cb();
+      },
+    },
+
+      /**
+   * Exclude peer dependencies from package bundles.
+   */
+
   ];
 } else {
   module.exports = baseConfig;

@@ -32,7 +32,8 @@
     "immutable": "^3.7.6",
     "netlify-cms-ui-default": "^2.0.0",
     "prop-types": "^15.5.10",
-    "react": "^16.4.1",
+    "react": "^16.8.1",
+    "react-dom": "^16.8.1",
     "react-immutable-proptypes": "^2.1.0"
   },
   "dependencies": {

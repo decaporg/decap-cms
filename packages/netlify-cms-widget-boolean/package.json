@@ -29,7 +29,7 @@
     "lodash": "^4.17.10",
     "netlify-cms-ui-default": "^2.0.0",
     "prop-types": "^15.5.10",
-    "react": "^16.4.1",
+    "react": "^16.8.1",
     "react-immutable-proptypes": "^2.1.0"
   }
 }

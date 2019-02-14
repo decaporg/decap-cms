@@ -31,7 +31,8 @@
   },
   "peerDependencies": {
     "emotion": "^9.2.6",
-    "react": "^16.4.1"
+    "react": "^16.8.1",
+    "react-dom": "^16.8.1"
   },
   "localExternals": [
     "netlify-cms-widget-date"

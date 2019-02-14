@@ -44,7 +44,9 @@
     "netlify-cms-widget-relation": "^2.0.6",
     "netlify-cms-widget-select": "^2.1.1",
     "netlify-cms-widget-string": "^2.0.4",
-    "netlify-cms-widget-text": "^2.0.6"
+    "netlify-cms-widget-text": "^2.0.6",
+    "react": "^16.8.1",
+    "react-dom": "^16.8.1"
   },
   "devDependencies": {
     "copy-webpack-plugin": "^4.5.2",
