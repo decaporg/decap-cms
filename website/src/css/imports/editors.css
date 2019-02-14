@@ -1,9 +1,10 @@
 .editors {
   @neat-row;
-  margin: $xxl 0 $xxl 0;
+  margin: $large 0 $large 0;
 
   @media screen and (min-width: $desktop) {
     text-align: center;
+    margin: $xxl 0 $xxl 0;
   }
 
   h2,
