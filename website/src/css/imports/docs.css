@@ -77,7 +77,7 @@
   h1,
   h2 {
     font-size: 36px;
-    line-height: 48px;
+    line-height: 1.4em;
 
     &.intro-headline {
       padding: 0 $small;
