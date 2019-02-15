@@ -4,6 +4,9 @@ import './widgets';
 import './editor-components';
 import './media-libraries';
 
-console.log(`Using netlify-cms manual initialization required.\nDependencies['react', 'react-dom']`);
+console.log(
+  `Using netlify-cms manual initialization required.
+Dependencies['react', 'react-dom']`,
+);
 
 export { CMS as default, init };

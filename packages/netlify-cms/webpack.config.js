@@ -71,11 +71,6 @@ if (isProduction) {
         return externals.some(isPeerDep) ? cb(null, request) : cb();
       },
     },
-
-      /**
-   * Exclude peer dependencies from package bundles.
-   */
-
   ];
 } else {
   module.exports = baseConfig;
