@@ -309,6 +309,7 @@ class Backend {
         selectEntrySlug(collection, loadedEntry.file.path),
         loadedEntry.file.path,
         { raw: loadedEntry.data || '', label: loadedEntry.file.label },
+        loadedEntry.updated,
       ),
     );
     const formattedEntries = entries.map(this.entryWithFormat(collection));

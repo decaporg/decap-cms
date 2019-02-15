@@ -11,5 +11,6 @@ export function createEntry(collection, slug = '', path = '', options = {}) {
   returnObj.label = options.label || null;
   returnObj.metaData = options.metaData || null;
   returnObj.isModification = isBoolean(options.isModification) ? options.isModification : null;
+  returnObj.updated = options.date || null;
   return returnObj;
 }

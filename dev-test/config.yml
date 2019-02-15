@@ -1,5 +1,6 @@
 backend:
-  name: test-repo
+  name: github
+  repo: erquhart/blank
 
 site_url: https://example.com
 
