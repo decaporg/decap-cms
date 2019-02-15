@@ -1,9 +1,11 @@
 import { localForage } from 'netlify-cms-lib-util';
 import { Base64 } from 'js-base64';
-import { uniq, initial, last, get, find, hasIn, partial, result } from 'lodash';
+import { uniq, initial, last, get, find, hasIn, partial, result, sortBy, reverse } from 'lodash';
+import semaphore from 'semaphore';
 import { filterPromises, resolvePromiseProperties } from 'netlify-cms-lib-util';
 import { APIError, EditorialWorkflowError } from 'netlify-cms-lib-util';
 
+const MAX_CONCURRENT_DOWNLOADS = 10;
 const CMS_BRANCH_PREFIX = 'cms/';
 
 export default class API {
@@ -208,6 +210,20 @@ export default class API {
     });
   }
 
+  async getPathChangeDate(path) {
+    const cached = await localForage.getItem(`gh.paths.${path}`);
+    if (cached) {
+      return cached.updated;
+    }
+
+    const commits = await this.request(`${this.repoURL}/commits`, { params: { path } });
+    if (commits[0]) {
+      const date = commits[0].commit.committer.date;
+      localForage.setItem(`gh.paths.${path}`, { updated: date });
+      return date;
+    }
+  }
+
   listFiles(path) {
     return this.request(`${this.repoURL}/contents/${path.replace(/\/$/, '')}`, {
       params: { ref: this.branch },
@@ -218,7 +234,30 @@ export default class API {
         }
         return files;
       })
-      .then(files => files.filter(file => file.type === 'file'));
+      .then(files => files.filter(file => file.type === 'file'))
+      .then(files => {
+        const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
+        const promises = [];
+        files.forEach(file => {
+          promises.push(
+            new Promise(resolve => {
+              sem.take(async () => {
+                try {
+                  const date = await this.getPathChangeDate(file.path);
+                  const updatedFile = date ? { ...file, date } : file;
+                  resolve(updatedFile);
+                  sem.leave();
+                } catch (e) {
+                  resolve(file);
+                  sem.leave();
+                }
+              });
+            })
+          );
+        });
+        return Promise.all(promises);
+      })
+      .then(files => reverse(sortBy(files, 'date')));
   }
 
   readUnpublishedBranchFile(contentKey) {

@@ -111,7 +111,8 @@ export default class GitHub {
     return this.api
       .listFiles(collection.get('folder'))
       .then(files => files.filter(file => file.name.endsWith('.' + extension)))
-      .then(this.fetchFiles);
+      .then(this.fetchFiles)
+      .then(files => console.log(files) || files);
   }
 
   entriesByFiles(collection) {
