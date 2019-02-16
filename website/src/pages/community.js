@@ -9,7 +9,7 @@ import PageHero from '../components/page-hero';
 import HeroTitle from '../components/hero-title';
 import Lead from '../components/lead';
 import Container from '../components/container';
-import Markdown from '../components/Markdown';
+import Markdown from '../components/markdown';
 import SectionLabel from '../components/section-label';
 import EventBox from '../components/event-box';
 import Page from '../components/page';
