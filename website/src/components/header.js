@@ -33,7 +33,7 @@ const StyledHeader = styled.header`
         background: #2a2c24;
         padding-top: ${theme.space[5]};
         padding-bottom: ${theme.space[5]};
-      `}
+      `};
   }
 `;
 
@@ -147,12 +147,12 @@ const Header = ({ hasHeroBelow }) => {
     setScrolled(scrolled);
   };
 
-  const handleMenuBtnClick = e => {
+  const handleMenuBtnClick = () => {
     setNavOpen(s => !s);
     setSearchOpen(false);
   };
 
-  const handleSearchBtnClick = e => {
+  const handleSearchBtnClick = () => {
     setSearchOpen(s => !s);
     setNavOpen(false);
   };

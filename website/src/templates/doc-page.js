@@ -17,7 +17,7 @@ const toMenu = (menu, nav) =>
     group: nav.group.find(g => g.fieldValue === group.name),
   }));
 
-const DocsSidebar = ({ docsNav, location, history }) => (
+const DocsSidebar = ({ docsNav, location }) => (
   <aside>
     <DocsNav items={docsNav} location={location} />
   </aside>
@@ -33,15 +33,10 @@ export const DocsTemplate = ({
   showSidebar,
   docsNav,
   location,
-  history,
 }) => (
   <Container>
     <SidebarLayout
-      sidebar={
-        <div>
-          {showSidebar && <DocsSidebar docsNav={docsNav} location={location} history={history} />}
-        </div>
-      }
+      sidebar={<div>{showSidebar && <DocsSidebar docsNav={docsNav} location={location} />}</div>}
     >
       <article data-docs-content>
         {editLinkPath && <EditLink path={editLinkPath} />}
@@ -53,7 +48,7 @@ export const DocsTemplate = ({
   </Container>
 );
 
-const DocPage = ({ data, location, history }) => {
+const DocPage = ({ data, location }) => {
   const { nav, page, widgets, menu } = data;
 
   const docsNav = toMenu(menu.siteMetadata.menu.docs, nav);
@@ -70,7 +65,6 @@ const DocPage = ({ data, location, history }) => {
         widgets={widgets}
         docsNav={docsNav}
         location={location}
-        history={history}
         showSidebar
       />
     </Layout>
