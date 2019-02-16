@@ -23,8 +23,8 @@ const WhatsNew = ({ updates }) => (
           }
         `}
       >
-        {updates.map(item => (
-          <Release {...item} key={item.version} />
+        {updates.splice(0, 3).map((item, idx) => (
+          <Release {...item} versionPrevious={updates[idx + 1].version} key={item.version} />
         ))}
       </ol>
     </Container>

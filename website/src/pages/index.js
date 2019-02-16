@@ -140,7 +140,7 @@ const HomePage = ({ data }) => {
         </div>
       </section>
 
-      <WhatsNew updates={updates.updates.splice(0, 3)} />
+      <WhatsNew updates={updates.updates} />
 
       <HomeSection
         title={<Markdownify source={landing.editors.hook} />}
