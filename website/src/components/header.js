@@ -57,9 +57,12 @@ class Header extends Component {
                   <Link to="/" className="logo">
                     <img src={logo} />
                   </Link>
-                  {isDocs && <DocSearch />}
+                  <DocSearch />
                 </div>
                 <div className="nav-container">
+                  <span className="gh-button">
+                    <GitHubButton />
+                  </span>
                   <Link className="nav-link docs-link" to="/docs/intro/">
                     Docs
                   </Link>
@@ -72,9 +75,6 @@ class Header extends Component {
                   <Link className="nav-link" to="/blog/">
                     Blog
                   </Link>
-                  <span className="gh-button">
-                    <GitHubButton />
-                  </span>
                 </div>
               </div>
             </header>
