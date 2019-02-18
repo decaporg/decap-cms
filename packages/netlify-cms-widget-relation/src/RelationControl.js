@@ -42,10 +42,8 @@ export default class RelationControl extends React.Component {
     forID: PropTypes.string.isRequired,
     value: PropTypes.node,
     field: ImmutablePropTypes.map,
-    isFetching: PropTypes.bool,
     fetchID: PropTypes.string,
     query: PropTypes.func.isRequired,
-    clearSearch: PropTypes.func.isRequired,
     queryHits: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
     classNameWrapper: PropTypes.string.isRequired,
     setActiveStyle: PropTypes.func.isRequired,
@@ -104,7 +102,9 @@ export default class RelationControl extends React.Component {
     } else {
       value = optionToString(selectedOption);
       onChange(value, {
-        [field.get('collection')]: { [value]: selectedOption.data },
+        [field.get('name')]: {
+          [field.get('collection')]: { [value]: selectedOption.data },
+        },
       });
     }
   };
