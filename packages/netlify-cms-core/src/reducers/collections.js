@@ -121,6 +121,9 @@ export const selectIdentifier = collection => {
   );
 };
 export const selectInferedField = (collection, fieldName) => {
+  if (fieldName === 'title' && collection.get('identifier_field')) {
+    return selectIdentifier(collection);
+  }
   const inferableField = INFERABLE_FIELDS[fieldName];
   const fields = collection.get('fields');
   let field;
