@@ -4,50 +4,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Map, List, fromJS } from 'immutable';
 import { find } from 'lodash';
 import Select from 'react-select';
-import { colors } from 'netlify-cms-ui-default';
-
-const styles = {
-  control: styles => ({
-    ...styles,
-    border: 0,
-    boxShadow: 'none',
-    padding: '9px 0 9px 12px',
-  }),
-  option: (styles, state) => ({
-    ...styles,
-    backgroundColor: state.isSelected
-      ? `${colors.active}`
-      : state.isFocused
-        ? `${colors.activeBackground}`
-        : 'transparent',
-    paddingLeft: '22px',
-  }),
-  menu: styles => ({ ...styles, right: 0, zIndex: 2 }),
-  container: styles => ({ ...styles, padding: '0 !important' }),
-  indicatorSeparator: (styles, state) =>
-    state.hasValue && state.selectProps.isClearable
-      ? { ...styles, backgroundColor: `${colors.textFieldBorder}` }
-      : { display: 'none' },
-  dropdownIndicator: styles => ({ ...styles, color: `${colors.controlLabel}` }),
-  clearIndicator: styles => ({ ...styles, color: `${colors.controlLabel}` }),
-  multiValue: styles => ({
-    ...styles,
-    backgroundColor: colors.background,
-  }),
-  multiValueLabel: styles => ({
-    ...styles,
-    color: colors.textLead,
-    fontWeight: 500,
-  }),
-  multiValueRemove: styles => ({
-    ...styles,
-    color: colors.controlLabel,
-    ':hover': {
-      color: colors.errorText,
-      backgroundColor: colors.errorBackground,
-    },
-  }),
-};
+import { reactSelectStyles } from 'netlify-cms-ui-default';
 
 function optionToString(option) {
   return option && option.value ? option.value : null;
@@ -58,6 +15,23 @@ function convertToOption(raw) {
     return { label: raw, value: raw };
   }
   return Map.isMap(raw) ? raw.toJS() : raw;
+}
+
+function getSelectedValue({ value, options, isMultiple }) {
+  if (isMultiple) {
+    const selectedOptions = List.isList(value) ? value.toJS() : value;
+
+    if (!selectedOptions || !Array.isArray(selectedOptions)) {
+      return null;
+    }
+
+    return selectedOptions
+      .map(i => options.find(o => o.value === (i.value || i)))
+      .filter(Boolean)
+      .map(convertToOption);
+  } else {
+    return find(options, ['value', value]) || null;
+  }
 }
 
 export default class SelectControl extends React.Component {
@@ -96,23 +70,6 @@ export default class SelectControl extends React.Component {
     }
   };
 
-  getSelectedValue = ({ value, options, isMultiple }) => {
-    if (isMultiple) {
-      const selectedOptions = List.isList(value) ? value.toJS() : value;
-
-      if (!selectedOptions || !Array.isArray(selectedOptions)) {
-        return null;
-      }
-
-      return selectedOptions
-        .map(i => options.find(o => o.value === (i.value || i)))
-        .filter(Boolean)
-        .map(convertToOption);
-    } else {
-      return find(options, ['value', value]) || null;
-    }
-  };
-
   render() {
     const { field, value, forID, classNameWrapper, setActiveStyle, setInactiveStyle } = this.props;
     const fieldOptions = field.get('options');
@@ -124,7 +81,7 @@ export default class SelectControl extends React.Component {
     }
 
     const options = [...fieldOptions.map(convertToOption)];
-    const selectedValue = this.getSelectedValue({
+    const selectedValue = getSelectedValue({
       options,
       value,
       isMultiple,
@@ -139,7 +96,7 @@ export default class SelectControl extends React.Component {
         onFocus={setActiveStyle}
         onBlur={setInactiveStyle}
         options={options}
-        styles={styles}
+        styles={reactSelectStyles}
         isMulti={isMultiple}
         isClearable={isClearable}
         placeholder=""

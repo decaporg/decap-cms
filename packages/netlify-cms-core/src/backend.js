@@ -396,7 +396,6 @@ class Backend {
     const entries = await this.listAllEntries(collection);
     const hits = fuzzy
       .filter(searchTerm, entries, { extract: extractSearchFields(searchFields) })
-      .filter(entry => entry.score > 5)
       .sort(sortByScore)
       .map(f => f.original);
     return { query: searchTerm, hits };
