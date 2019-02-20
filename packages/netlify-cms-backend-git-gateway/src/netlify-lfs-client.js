@@ -88,8 +88,11 @@ const defaultContentHeaders = {
   ["Content-Type"]: "application/vnd.git-lfs+json"
 };
 
-const resourceExists = async ({ rootUrl, requestFunction }, { sha, size }) => {
-  const response = await requestFunction({
+const resourceExists = async (
+  { rootUrl, makeAuthorizedRequest },
+  { sha, size }
+) => {
+  const response = await makeAuthorizedRequest({
     url: `${rootUrl}/verify`,
     method: "POST",
     headers: defaultContentHeaders,
@@ -106,15 +109,39 @@ const resourceExists = async ({ rootUrl, requestFunction }, { sha, size }) => {
   // to fit
 };
 
-const getDownloadUrlFromSha = ({ netlifySiteId }, sha) =>
-  `https://lm.services.netlify.com/lfsorigin/${netlifySiteId}/${sha}`;
+const getDownloadUrlThunkFromSha = (
+  { rootUrl, makeAuthorizedRequest, transformImages: t },
+  sha
+) => () =>
+  makeAuthorizedRequest(
+    `${rootUrl}/origin/${sha}${
+      t && Object.keys(t).length > 0
+        ? `?nf_resize=${t.nf_resize}&w=${t.w}&h=${t.h}`
+        : ""
+    }`
+  )
+    .then(res => (res.ok ? res : Promise.reject(res)))
+    .then(res => res.blob())
+    .then(blob => URL.createObjectURL(blob))
+    .catch(err => console.error(err) || Promise.resolve(""));
 
-const getResourceDownloadUrls = (clientConfig, sha) =>
-  flow([
-    map(({ sha }) => [sha, getDownloadUrlFromSha(clientConfig, sha)]),
-    fromPairs,
-    Promise.resolve.bind(Promise)
-  ])(sha);
+// We allow users to get thunks which load the blobs instead of fully
+// resolved blob URLs so that media clients can download the blobs
+// lazily.  This behaves more similarly to the behavior of string
+// URLs, which only trigger an image download when the DOM element for
+// that image is created.
+const getResourceDownloadUrlThunks = (clientConfig, objects) =>
+  Promise.resolve(
+    objects.map(({ sha }) => [
+      sha,
+      getDownloadUrlThunkFromSha(clientConfig, sha)
+    ])
+  );
+
+const getResourceDownloadUrls = (clientConfig, objects) =>
+  getResourceDownloadUrlThunks(clientConfig, objects)
+    .then(map(([sha, thunk]) => Promise.all([sha, thunk()])))
+    .then(Promise.all.bind(Promise));
 
 const uploadOperation = objects => ({
   operation: "upload",
@@ -122,8 +149,11 @@ const uploadOperation = objects => ({
   objects: objects.map(({ sha, ...rest }) => ({ ...rest, oid: sha }))
 });
 
-const getResourceUploadUrls = async ({ rootUrl, requestFunction }, objects) => {
-  const response = await requestFunction({
+const getResourceUploadUrls = async (
+  { rootUrl, makeAuthorizedRequest },
+  objects
+) => {
+  const response = await makeAuthorizedRequest({
     url: `${rootUrl}/objects/batch`,
     method: "POST",
     headers: defaultContentHeaders,
@@ -159,24 +189,23 @@ const uploadResource = async (clientConfig, { sha, size }, resource) => {
 // Create Large Media client
 
 const configureFn = (config, fn) => (...args) => fn(config, ...args);
+const clientFns = {
+  resourceExists,
+  getResourceUploadUrls,
+  getResourceDownloadUrls,
+  getResourceDownloadUrlThunks,
+  uploadResource,
+  matchPath
+};
 export const getClient = clientConfig => {
-  const configFns = {
-    resourceExists,
-    getResourceUploadUrls,
-    getResourceDownloadUrls,
-    uploadResource,
-    matchPath
-  };
-  const configlessFns = {};
   return flow([
     Object.keys,
-    map(key => [key, configureFn(clientConfig, configFns[key])]),
+    map(key => [key, configureFn(clientConfig, clientFns[key])]),
     fromPairs,
     configuredFns => ({
       ...configuredFns,
-      ...configlessFns,
       patterns: clientConfig.patterns,
-      enabled: clientConfig.patterns.length !== 0
+      enabled: clientConfig.enabled
     })
-  ])(configFns);
+  ])(clientFns);
 };

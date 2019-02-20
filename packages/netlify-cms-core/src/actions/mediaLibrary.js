@@ -119,7 +119,7 @@ export function loadMedia(opts = {}) {
           backend
             .getMedia()
             .then(files => dispatch(mediaLoaded(files)))
-            .catch(error => dispatch(error.status === 404 ? mediaLoaded() : mediaLoadFailed())),
+            .catch(error => console.error(error) || dispatch(error.status === 404 ? mediaLoaded() : mediaLoadFailed())),
         ),
       );
     }, delay);
@@ -222,15 +222,18 @@ export function deleteMedia(file, opts = {}) {
 
 export function loadMediaDisplayURL(file) {
   return async dispatch => {
-    const { getBlobPromise, id } = file;
+    const { getDisplayUrl, id } = file;
 
-    if (id && getBlobPromise) {
+    if (id && getDisplayUrl) {
       try {
         dispatch(mediaDisplayURLRequest(id));
-        const blob = await getBlobPromise();
-        const newURL = window.URL.createObjectURL(blob);
-        dispatch(mediaDisplayURLSuccess(id, newURL));
-        return newURL;
+	const newUrlPromise = getDisplayUrl().then(x => console.log(x) || x).catch(err => console.error(err) || Promise.reject(err))
+        const newURL = await newUrlPromise;
+	if (newURL) {
+          dispatch(mediaDisplayURLSuccess(id, newURL));
+          return newURL;
+	}
+	throw new Error("No display URL was returned!");
       } catch (err) {
         dispatch(mediaDisplayURLFailure(id, err));
       }

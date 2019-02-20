@@ -205,51 +205,7 @@ export default class GitGateway {
   getEntry(collection, slug, path) {
     return this.backend.getEntry(collection, slug, path);
   }
-  getLargeMediaClient() {
-    if (this._largeMediaClientPromise) {
-      return this._largeMediaClientPromise;
-    }
-    this._largeMediaClientPromise = Promise.resolve().then(() => {
-      const lfsUrlPromise = this.api.readFile(".lfsConfig")
-	.then(ini.decode)
-	.then(({ lfs: { url } }) => new URL(url));
 
-      const netlifyLargeMediaEnabledPromise = lfsUrlPromise
-        .then(lfsUrl => ({ enabled: lfsUrl.hostname.endsWith("netlify.com") }))
-        .catch(err => ({ enabled: false, err }));
-
-      const netlifySiteIdPromise = lfsUrlPromise
-        .then(lfsUrl => lfsUrl.hostname.split(".")[0])
-        .catch(err => ({ err }));
-
-      const lfsPatternsPromise = this.api.readFile(".gitattributes")
-        .then(getLargeMediaPatternsFromGitAttributesFile)
-        .then(patterns => ({ patterns }))
-        .catch(err => err.message.includes("404") ? [] : ({ err }));
-
-      return Promise.all([netlifyLargeMediaEnabledPromise, netlifySiteIdPromise, lfsPatternsPromise])
-        .then(([{enabled: maybeEnabled, err: enabledErr}, {siteId, err: siteIdErr}, {patterns, err: patternsErr}]) => {
-          const errs = ([enabledErr, siteIdErr, patternsErr]).filter(err => err);
-          const enabled = maybeEnabled && siteId && patterns && !(errs.length > 0);
-
-          // we would expect there not to be additional errors if the
-          // .lfsconfig states that we're using Large Media
-          const unexpectedErrors = maybeEnabled && errs.length > 0;
-          if (unexpectedErrors) {
-            errs.forEach(err => console.error(err));
-          }
-
-          return getClient({
-            enabled,
-            rootUrl: this.netlifyLargeMediaUrl,
-            requestFunction: this.requestFunction,
-            netlifySiteId: siteId,
-            patterns
-          });
-        });
-    });
-    return this._largeMediaClientPromise;
-  }
   getMedia() {
     return Promise.all([
       this.backend.getMedia(),
@@ -258,13 +214,57 @@ export default class GitGateway {
       if (!largeMediaClient.enabled) {
         return mediaFiles;
       }
-      const largeMediaFiles = await this.getLargeMedia(mediaFiles);
-      return mediaFiles.map(({ id, url, ...rest }) => ({
+      const largeMediaUrlThunks = await this.getLargeMedia(mediaFiles);
+      return mediaFiles.map(({ id, url, getDisplayUrl, ...rest }) => ({
         ...rest,
         id,
-        url: largeMediaFiles[id] || url
-      }))
+        url: largeMediaUrlThunks[id] ? undefined : url,
+        getDisplayUrl: largeMediaUrlThunks[id]
+          ? largeMediaUrlThunks[id]
+          : getDisplayUrl
+      }));
     });
+  }
+
+  // this method memoizes this._getLargeMediaClient so that there can
+  // only be one client at a time
+  getLargeMediaClient() {
+    if (this._largeMediaClientPromise) {
+      return this._largeMediaClientPromise;
+    }
+    this._largeMediaClientPromise = this._getLargeMediaClient();
+    return this._largeMediaClientPromise;
+  }
+  _getLargeMediaClient() {
+    const netlifyLargeMediaEnabledPromise = this.api.readFile(".lfsconfig")
+      .then(ini.decode)
+      .then(({ lfs: { url } }) => new URL(url))
+      .then(lfsUrl => ({ enabled: lfsUrl.hostname.endsWith("netlify.com") }))
+      .catch(err => ({ enabled: false, err }));
+
+    const lfsPatternsPromise = this.api.readFile(".gitattributes")
+      .then(getLargeMediaPatternsFromGitAttributesFile)
+      .then(patterns => ({ patterns }))
+      .catch(err => err.message.includes("404") ? [] : ({ err }));
+
+    return Promise.all([netlifyLargeMediaEnabledPromise, lfsPatternsPromise])
+      .then(([{enabled: maybeEnabled, err: enabledErr}, {patterns, err: patternsErr}]) => {
+        const enabled = maybeEnabled && patterns;
+
+        // We expect LFS patterns to exist when the .lfsconfig
+        // states that we're using Netlify Large Media
+        if (maybeEnabled && patternsErr) {
+          console.error(patternsErr);
+        }
+
+        return getClient({
+          enabled,
+          rootUrl: this.netlifyLargeMediaUrl,
+          makeAuthorizedRequest: this.requestFunction,
+          patterns,
+          transformImages: { nf_resize: "fit", w: 280, h: 160 }
+        });
+      });
   }
   getLargeMedia(mediaFiles) {
     return this.getLargeMediaClient().then(client => {
@@ -288,13 +288,16 @@ export default class GitGateway {
         .then(unzip)
         .then(async ([idMaps, files]) => [
           idMaps,
-          await client.getResourceDownloadUrls(files),
+          await client.getResourceDownloadUrlThunks(files).then(fromPairs),
         ])
-        .then(([idMaps, resourceMap]) =>
-          idMaps.map(({ pointerId, resourceId }) => [
-          pointerId,
-          resourceMap[resourceId]
-        ]))
+        .then(
+          ([idMaps, resourceMap]) =>
+            idMaps.map(({ pointerId, resourceId }) => [
+              pointerId,
+              resourceMap[resourceId]
+            ]
+          )
+        )
         .then(fromPairs);
     });
   }
@@ -314,16 +317,14 @@ export default class GitGateway {
         const fr = new FileReader();
         fr.onload = ({ target: { result } }) => resolve(sha256(result));
         fr.readAsArrayBuffer(file);
-      })
+      });
 
       return getFileSHA(fileObj).then(
-        sha =>
-          this.largeMediaDisplayUrlsBySha[sha]
-            ? sha
-            : client.uploadResource({ sha, size }, fileObj)
-      ).then(
-        async imageSHA => {
-          const pointerFileString = createPointerFile({ sha: imageSHA, size })
+        async sha => {
+          if (!this.largeMediaDisplayUrlsBySha) {
+            await client.uploadResource({sha, size}, fileObj)
+          }
+          const pointerFileString = createPointerFile({ sha, size })
           const pointerFileBlob = new Blob([pointerFileString]);
           const pointerFileSize = pointerFileBlob.size;
           const pointerFile = new File([pointerFileBlob], name, { type: "text/plain" });
@@ -337,7 +338,7 @@ export default class GitGateway {
             value,
           };
           const { url, ...rest } = await this.backend.persistMedia(persistMediaArgument, options);
-          const displayUrl = (await client.getResourceDownloadUrls([{ sha: imageSHA }]))[imageSHA];
+          const displayUrl = URL.createObjectURL(fileObj);
           return {
             ...rest,
             url: displayUrl

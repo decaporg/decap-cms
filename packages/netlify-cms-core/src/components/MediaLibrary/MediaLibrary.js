@@ -137,7 +137,7 @@ class MediaLibrary extends React.Component {
   toTableData = files => {
     const tableData =
       files &&
-      files.map(({ key, name, id, size, queryOrder, url, urlIsPublicPath, getBlobPromise }) => {
+      files.map(({ key, name, id, size, queryOrder, url, urlIsPublicPath, getDisplayUrl }) => {
         const ext = fileExtension(name).toLowerCase();
         return {
           key,
@@ -148,7 +148,7 @@ class MediaLibrary extends React.Component {
           queryOrder,
           url,
           urlIsPublicPath,
-          getBlobPromise,
+          getDisplayUrl,
           isImage: IMAGE_EXTENSIONS.includes(ext),
           isViewableImage: IMAGE_EXTENSIONS_VIEWABLE.includes(ext),
         };
