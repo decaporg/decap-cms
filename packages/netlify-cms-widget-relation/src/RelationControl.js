@@ -54,8 +54,7 @@ export default class RelationControl extends React.Component {
     return (
       this.props.value !== nextProps.value ||
       this.props.hasActiveStyle !== nextProps.hasActiveStyle ||
-      this.props.queryHits !== nextProps.queryHits ||
-      this.props.metadata !== nextProps.metadata
+      this.props.queryHits !== nextProps.queryHits
     );
   }
 
