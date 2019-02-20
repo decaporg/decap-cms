@@ -171,7 +171,9 @@ const mediaLibrary = (state = Map(defaultState), action) => {
       const displayURLPath = ['displayURLs', action.payload.key];
       return state
         .setIn([...displayURLPath, 'isFetching'], false)
-        .setIn([...displayURLPath, 'err'], action.payload.err)
+        // make sure that err is set so the CMS won't attempt to load
+        // the image again
+        .setIn([...displayURLPath, 'err'], action.payload.err || true)
         .deleteIn([...displayURLPath, 'url']);
     }
     default:

@@ -1,7 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled from 'react-emotion';
-import { colors, borders, lengths } from 'netlify-cms-ui-default';
+import React from "react";
+import PropTypes from "prop-types";
+import ImmutablePropTypes from "react-immutable-proptypes";
+import styled from "react-emotion";
+import { colors, borders, lengths } from "netlify-cms-ui-default";
 
 const Card = styled.div`
   width: ${props => props.width};
@@ -43,38 +44,57 @@ const CardText = styled.p`
   line-height: 1.3 !important;
 `;
 
-const MediaLibraryCard = ({
-  isSelected,
-  displayURL,
-  text,
-  onClick,
-  width,
-  margin,
-  isPrivate,
-  type,
-}) => (
-  <Card
-    isSelected={isSelected}
-    onClick={onClick}
-    width={width}
-    margin={margin}
-    tabIndex="-1"
-    isPrivate={isPrivate}
-  >
-    <div>{displayURL ? <CardImage src={displayURL} /> : <CardFileIcon>{type}</CardFileIcon>}</div>
-    <CardText>{text}</CardText>
-  </Card>
-);
+class MediaLibraryCard extends React.Component {
+  render() {
+    const {
+      isSelected,
+      displayURL,
+      text,
+      onClick,
+      width,
+      margin,
+      isPrivate,
+      type
+    } = this.props;
+    const url = displayURL.get("url");
+    const isFetching = displayURL.get("isFetching");
+    const err = displayURL.get("err");
+    return (
+      <Card
+        isSelected={isSelected}
+        onClick={onClick}
+        width={width}
+        margin={margin}
+        tabIndex="-1"
+        isPrivate={isPrivate}
+      >
+        <div>
+          {url ? <CardImage src={url} /> : <CardFileIcon>{type}</CardFileIcon>}
+        </div>
+        <CardText>{text}</CardText>
+      </Card>
+    );
+  }
+  componentWillMount() {
+    const { displayURL, loadDisplayURL } = this.props;
+    if (
+      !displayURL ||
+      (!displayURL.url && !displayURL.isFetching && !displayURL.err)
+    ) {
+      loadDisplayURL();
+    }
+  }
+}
 
 MediaLibraryCard.propTypes = {
   isSelected: PropTypes.bool,
-  displayURL: PropTypes.string,
+  displayURL: ImmutablePropTypes.map.isRequired,
   text: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
   width: PropTypes.string.isRequired,
   margin: PropTypes.string.isRequired,
   isPrivate: PropTypes.bool,
-  type: PropTypes.string,
+  type: PropTypes.string
 };
 
 export default MediaLibraryCard;

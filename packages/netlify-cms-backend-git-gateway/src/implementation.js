@@ -2,8 +2,7 @@ import GoTrue from 'gotrue-js';
 import jwtDecode from 'jwt-decode';
 import { fromPairs, get, pick, intersection, unzip } from 'lodash';
 import ini from 'ini';
-import sha256 from 'js-sha256';
-import { APIError, unsentRequest } from 'netlify-cms-lib-util';
+import { APIError, getBlobSHA, unsentRequest } from 'netlify-cms-lib-util';
 import { GitHubBackend } from 'netlify-cms-backend-github';
 import { GitLabBackend } from 'netlify-cms-backend-gitlab';
 import { BitBucketBackend, API as BitBucketAPI } from 'netlify-cms-backend-bitbucket';
@@ -62,12 +61,10 @@ export default class GitGateway {
       config.getIn(['backend', 'gateway_url'], defaults.gateway),
       netlifySiteURL,
     );
-    this.netlifyLargeMediaUrl = getEndpoint(
+    this.netlifyLargeMediaURL = getEndpoint(
       config.getIn(['backend', 'large_media_url'], defaults.largeMedia),
       netlifySiteURL,
     );
-    this.largeMediaDisplayUrlsBySha = {};
-
     const backendTypeRegex = /\/(github|gitlab|bitbucket)\/?$/;
     const backendTypeMatches = this.gatewayUrl.match(backendTypeRegex);
     if (backendTypeMatches) {
@@ -214,14 +211,14 @@ export default class GitGateway {
       if (!largeMediaClient.enabled) {
         return mediaFiles;
       }
-      const largeMediaUrlThunks = await this.getLargeMedia(mediaFiles);
-      return mediaFiles.map(({ id, url, getDisplayUrl, ...rest }) => ({
+      const largeMediaURLThunks = await this.getLargeMedia(mediaFiles);
+      return mediaFiles.map(({ id, url, getDisplayURL, ...rest }) => ({
         ...rest,
         id,
-        url: largeMediaUrlThunks[id] ? undefined : url,
-        getDisplayUrl: largeMediaUrlThunks[id]
-          ? largeMediaUrlThunks[id]
-          : getDisplayUrl
+        url: largeMediaURLThunks[id] ? undefined : url,
+        getDisplayURL: largeMediaURLThunks[id]
+          ? largeMediaURLThunks[id]
+          : getDisplayURL
       }));
     });
   }
@@ -239,7 +236,7 @@ export default class GitGateway {
     const netlifyLargeMediaEnabledPromise = this.api.readFile(".lfsconfig")
       .then(ini.decode)
       .then(({ lfs: { url } }) => new URL(url))
-      .then(lfsUrl => ({ enabled: lfsUrl.hostname.endsWith("netlify.com") }))
+      .then(lfsURL => ({ enabled: lfsURL.hostname.endsWith("netlify.com") }))
       .catch(err => ({ enabled: false, err }));
 
     const lfsPatternsPromise = this.api.readFile(".gitattributes")
@@ -249,17 +246,17 @@ export default class GitGateway {
 
     return Promise.all([netlifyLargeMediaEnabledPromise, lfsPatternsPromise])
       .then(([{enabled: maybeEnabled, err: enabledErr}, {patterns, err: patternsErr}]) => {
-        const enabled = maybeEnabled && patterns;
+        const enabled = maybeEnabled && !patternsErr;
 
-        // We expect LFS patterns to exist when the .lfsconfig
-        // states that we're using Netlify Large Media
+        // We expect LFS patterns to exist when the .lfsconfig states
+        // that we're using Netlify Large Media
         if (maybeEnabled && patternsErr) {
           console.error(patternsErr);
         }
 
         return getClient({
           enabled,
-          rootUrl: this.netlifyLargeMediaUrl,
+          rootURL: this.netlifyLargeMediaURL,
           makeAuthorizedRequest: this.requestFunction,
           patterns,
           transformImages: { nf_resize: "fit", w: 280, h: 160 }
@@ -288,7 +285,7 @@ export default class GitGateway {
         .then(unzip)
         .then(async ([idMaps, files]) => [
           idMaps,
-          await client.getResourceDownloadUrlThunks(files).then(fromPairs),
+          await client.getResourceDownloadURLThunks(files).then(fromPairs),
         ])
         .then(
           ([idMaps, resourceMap]) =>
@@ -313,35 +310,26 @@ export default class GitGateway {
         return this.backend.persistMedia(mediaFile, options);
       };
 
-      const getFileSHA = file => new Promise(resolve => {
-        const fr = new FileReader();
-        fr.onload = ({ target: { result } }) => resolve(sha256(result));
-        fr.readAsArrayBuffer(file);
-      });
-
-      return getFileSHA(fileObj).then(
+      return getBlobSHA(fileObj).then(
         async sha => {
-          if (!this.largeMediaDisplayUrlsBySha) {
-            await client.uploadResource({sha, size}, fileObj)
-          }
+          await client.uploadResource({sha, size}, fileObj)
           const pointerFileString = createPointerFile({ sha, size })
           const pointerFileBlob = new Blob([pointerFileString]);
-          const pointerFileSize = pointerFileBlob.size;
           const pointerFile = new File([pointerFileBlob], name, { type: "text/plain" });
-          const pointerFileSHA = await getFileSHA(pointerFile);
+          const pointerFileSHA = await getBlobSHA(pointerFile);
           const persistMediaArgument = {
             fileObj: pointerFile,
-            size: pointerFileSize,
+            size: pointerFileBlob.size,
             path,
             sha: pointerFileSHA,
             raw: pointerFileString,
             value,
           };
           const { url, ...rest } = await this.backend.persistMedia(persistMediaArgument, options);
-          const displayUrl = URL.createObjectURL(fileObj);
+          const displayURL = URL.createObjectURL(fileObj);
           return {
             ...rest,
-            url: displayUrl
+            url: displayURL
           }
         }
       );

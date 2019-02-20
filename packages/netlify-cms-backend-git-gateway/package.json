@@ -22,7 +22,6 @@
   "dependencies": {
     "gotrue-js": "^0.9.22",
     "ini": "^1.3.5",
-    "js-sha256": "^0.9.0",
     "jwt-decode": "^2.2.0",
     "minimatch": "^3.0.4"
   },

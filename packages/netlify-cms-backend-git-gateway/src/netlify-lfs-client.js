@@ -89,11 +89,11 @@ const defaultContentHeaders = {
 };
 
 const resourceExists = async (
-  { rootUrl, makeAuthorizedRequest },
+  { rootURL, makeAuthorizedRequest },
   { sha, size }
 ) => {
   const response = await makeAuthorizedRequest({
-    url: `${rootUrl}/verify`,
+    url: `${rootURL}/verify`,
     method: "POST",
     headers: defaultContentHeaders,
     body: JSON.stringify({ oid: sha, size })
@@ -109,12 +109,12 @@ const resourceExists = async (
   // to fit
 };
 
-const getDownloadUrlThunkFromSha = (
-  { rootUrl, makeAuthorizedRequest, transformImages: t },
+const getDownloadURLThunkFromSha = (
+  { rootURL, makeAuthorizedRequest, transformImages: t },
   sha
 ) => () =>
   makeAuthorizedRequest(
-    `${rootUrl}/origin/${sha}${
+    `${rootURL}/origin/${sha}${
       t && Object.keys(t).length > 0
         ? `?nf_resize=${t.nf_resize}&w=${t.w}&h=${t.h}`
         : ""
@@ -130,16 +130,16 @@ const getDownloadUrlThunkFromSha = (
 // lazily.  This behaves more similarly to the behavior of string
 // URLs, which only trigger an image download when the DOM element for
 // that image is created.
-const getResourceDownloadUrlThunks = (clientConfig, objects) =>
+const getResourceDownloadURLThunks = (clientConfig, objects) =>
   Promise.resolve(
     objects.map(({ sha }) => [
       sha,
-      getDownloadUrlThunkFromSha(clientConfig, sha)
+      getDownloadURLThunkFromSha(clientConfig, sha)
     ])
   );
 
-const getResourceDownloadUrls = (clientConfig, objects) =>
-  getResourceDownloadUrlThunks(clientConfig, objects)
+const getResourceDownloadURLs = (clientConfig, objects) =>
+  getResourceDownloadURLThunks(clientConfig, objects)
     .then(map(([sha, thunk]) => Promise.all([sha, thunk()])))
     .then(Promise.all.bind(Promise));
 
@@ -149,12 +149,12 @@ const uploadOperation = objects => ({
   objects: objects.map(({ sha, ...rest }) => ({ ...rest, oid: sha }))
 });
 
-const getResourceUploadUrls = async (
-  { rootUrl, makeAuthorizedRequest },
+const getResourceUploadURLs = async (
+  { rootURL, makeAuthorizedRequest },
   objects
 ) => {
   const response = await makeAuthorizedRequest({
-    url: `${rootUrl}/objects/batch`,
+    url: `${rootURL}/objects/batch`,
     method: "POST",
     headers: defaultContentHeaders,
     body: JSON.stringify(uploadOperation(objects))
@@ -167,8 +167,8 @@ const getResourceUploadUrls = async (
   });
 };
 
-const uploadBlob = (clientConfig, uploadUrl, blob) =>
-  fetch(uploadUrl, {
+const uploadBlob = (clientConfig, uploadURL, blob) =>
+  fetch(uploadURL, {
     method: "PUT",
     body: blob
   });
@@ -178,10 +178,10 @@ const uploadResource = async (clientConfig, { sha, size }, resource) => {
   if (existingFile) {
     return sha;
   }
-  const [uploadUrl] = await getResourceUploadUrls(clientConfig, [
+  const [uploadURL] = await getResourceUploadURLs(clientConfig, [
     { sha, size }
   ]);
-  await uploadBlob(clientConfig, uploadUrl, resource);
+  await uploadBlob(clientConfig, uploadURL, resource);
   return sha;
 };
 
@@ -191,9 +191,9 @@ const uploadResource = async (clientConfig, { sha, size }, resource) => {
 const configureFn = (config, fn) => (...args) => fn(config, ...args);
 const clientFns = {
   resourceExists,
-  getResourceUploadUrls,
-  getResourceDownloadUrls,
-  getResourceDownloadUrlThunks,
+  getResourceUploadURLs,
+  getResourceDownloadURLs,
+  getResourceDownloadURLThunks,
   uploadResource,
   matchPath
 };

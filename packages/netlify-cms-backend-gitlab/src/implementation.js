@@ -147,7 +147,7 @@ export default class GitLab {
 
     return this.api.listAllFiles(this.config.get('media_folder')).then(files =>
       files.map(({ id, name, path }) => {
-        const getDisplayUrl = () =>
+        const getDisplayURL = () =>
           new Promise((resolve, reject) =>
             sem.take(() =>
               this.api
@@ -165,7 +165,7 @@ export default class GitLab {
             ),
           );
 
-        return { id, name, getDisplayUrl, path };
+        return { id, name, getDisplayURL, path };
       }),
     );
   }
@@ -177,8 +177,7 @@ export default class GitLab {
   async persistMedia(mediaFile, options = {}) {
     await this.api.persistFiles([mediaFile], options);
     const { value, path, fileObj } = mediaFile;
-    const getDisplayUrl = () => Promise.resolve(URL.createObjectURL(fileObj));
-    return { name: value, size: fileObj.size, getDisplayUrl, path: trimStart(path, '/') };
+    return { name: value, size: fileObj.size, path: trimStart(path, '/') };
   }
 
   deleteFile(path, commitMessage, options) {

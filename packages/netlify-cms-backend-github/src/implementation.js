@@ -164,7 +164,7 @@ export default class GitHub {
         if (url.pathname.match(/.svg$/)) {
           url.search += (url.search.slice(1) === '' ? '?' : '&') + 'sanitize=true';
         }
-        return { id: sha, name, size, url: url.href, path };
+        return { id: sha, name, size, url: url.href, urlIsPublicPath: true, path };
       }),
     );
   }
