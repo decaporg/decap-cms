@@ -41,6 +41,7 @@ class LocalStorageAuthStore {
 function prepareSlug(slug) {
   return (
     slug
+      .trim()
       // Convert slug to lower-case
       .toLocaleLowerCase()
 
@@ -71,7 +72,7 @@ function getExplicitFieldReplacement(key, data) {
     return;
   }
   const fieldName = key.substring(USE_FIELD_PREFIX.length);
-  return data.get(fieldName, '').trim();
+  return data.get(fieldName, '');
 }
 
 function compileSlug(template, date, identifier = '', data = Map(), processor) {
@@ -89,9 +90,9 @@ function compileSlug(template, date, identifier = '', data = Map(), processor) {
     } else if (dateParsers[key]) {
       replacement = dateParsers[key](date);
     } else if (key === 'slug') {
-      replacement = identifier.trim();
+      replacement = identifier;
     } else {
-      replacement = data.get(key, '').trim();
+      replacement = data.get(key, '');
     }
 
     if (processor) {
