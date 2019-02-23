@@ -76,9 +76,6 @@ collections:
       - { label: "Body", name: "body", widget: "markdown" }
 ```
 
-Here, we are telling Netlify CMS to ...
-For more info see https://www.netlifycms.org/docs/add-to-your-site/#configuration
-
 ### Add Netlify CMS
 
 Create the directory structure you see below:
@@ -146,7 +143,8 @@ plugins: [
 It's now time to commit your changes and push to GitHub. The Gatsby starter initializes Git automatically for you, so you only need to do:
 
 ```bash
-git commit -am "Initial Commit"
+git add .
+git commit -m "Initial Commit"
 git remote add origin git@github.com:user/repo.git
 git push -u origin master
 ```
@@ -157,14 +155,14 @@ Go to Netlify and select 'New Site from Git'. Select GitHub and the repository y
 
 ### Enable Netlify Identity and Git Gateway
 
-In Netlify go to Identity and Enable Git Gateway. Go to `admin` to create an account, either by email, or by setting an external 
+In Netlify go to Identity and Enable Identity. Then under Identity > Services, click Enable Git Gateway. Click Generate access token in GitHub. Then, go to `/admin/` to create an account, either by email, or by setting an external OAuth provider.
 
 ## Start publishing
 
-It's time to create your first blog post. Login to your site's `/admin/` and create a new post by clicking New Blog. Add a title, a date and some text. When you click Publish, a new commit will be created in your GitHub repo with this format `Create Blog “year-month-date-title”`. 
+It's time to create your first blog post. Login to your site's `/admin/` page and create a new post by clicking New Blog. Add a title, a date and some text. When you click Publish, a new commit will be created in your GitHub repo with this format `Create Blog “year-month-date-title”`. 
 
 Then Netlify will detect that there was a commit in your repo, and will start rebuilding your project. When your project is deployed you'll be able to see the post you created.
 
 ### Cleanup
 
-It is now safe to remove the default blog posts. _(We didn't delete them before, because we needed at least 1 post for our project to build)_
+It is now safe to remove the default Gatsby blog posts. _(We didn't delete them before, because we needed at least 1 post for our project to build)_
