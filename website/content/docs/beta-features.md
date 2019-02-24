@@ -86,6 +86,27 @@ sections:
       - images/image06.png
 ```
 
+## Slug Customization
+This feature makes it possible to edit slug entries. To enable this feature, add a config collection setting `slug_field` with the value pointing to the name of a field widget preferable a `string` widget, this widget will be used as the slug field.
+
+The value of the slug field is not saved in the frontmatter. The slug value is used internally by the CMS for entry navigation, to generate entry filename, etc.
+And If there is a slug change for any published or unpublished entry, a new slug entry is created, and the old slug entry is deleted.
+
+### Example Configuration
+```yaml
+collections:
+  - name: "blog"
+    label: "Blog"
+    folder: "content/blog"
+    create: true
+    slug_field: 'slug'
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Slug", name: "slug", widget: "string" }
+      - { label: 'Body', name: 'body', widget: 'markdown' }
+```
+
 ## Custom Mount Element
 Netlify CMS always creates its own DOM element for mounting the application, which means it always takes over the entire page, and is generally inflexible if you're trying to do something creative, like injecting it into a shared context.
 

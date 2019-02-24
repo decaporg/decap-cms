@@ -93,8 +93,8 @@ const EntryCard = ({
   const slug = entry.get('slug');
   const title = label || entry.getIn(['data', inferedFields.titleField]);
   const childEntry = unpublishedChildEntry(collection.get('name'), slug);
-  const selectedSlug = (childEntry && childEntry.get('slug')) || slug;
-  const path = `/collections/${collection.get('name')}/entries/${selectedSlug}`;
+  const entrySlug = (childEntry && childEntry.get('slug')) || slug;
+  const path = `/collections/${collection.get('name')}/entries/${entrySlug}`;
   let image = entry.getIn(['data', inferedFields.imageField]);
   image = resolvePath(image, publicFolder);
   if (image) {

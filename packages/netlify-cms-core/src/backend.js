@@ -111,7 +111,7 @@ function compileSlug(template, date, identifier = '', data = Map(), processor) {
   }
 }
 
-export function slugFormatter(collection, entryData, slugConfig) {
+function slugFormatter(collection, entryData, slugConfig) {
   const template = collection.get('slug') || '{{slug}}';
 
   const identifier = entryData.get(selectIdentifier(collection));
@@ -128,19 +128,6 @@ export function slugFormatter(collection, entryData, slugConfig) {
 
   return processSlug(template, new Date(), identifier, entryData);
 }
-
-const sanitizeEntrySlug = (slug, slugConfig) => {
-  return sanitizeSlug(
-    slug
-      // Convert slug to lower-case
-      .toLocaleLowerCase()
-      // Remove single quotes.
-      .replace(/[']/g, '')
-      // Replace periods with dashes.
-      .replace(/[.]/g, '-'),
-    slugConfig,
-  );
-};
 
 const commitMessageTemplates = Map({
   create: 'Create {{collection}} “{{slug}}”',
@@ -347,8 +334,9 @@ class Backend {
   }
 
   async generateUniqueSlug(collection, slug, slugConfig, unavailableSlugs, availableSlugs = []) {
+    const sanitizeEntrySlug = flow([prepareSlug, partialRight(sanitizeSlug, slugConfig)]);
     let i = 1;
-    let sanitizedSlug = sanitizeEntrySlug(slug, slugConfig);
+    let sanitizedSlug = sanitizeEntrySlug(slug);
     let uniqueSlug = sanitizedSlug;
 
     // Return if slug is the same as the current entry or parent slug.
@@ -359,7 +347,7 @@ class Backend {
       unavailableSlugs.includes(uniqueSlug) ||
       (await this.entryExist(collection, selectEntryPath(collection, uniqueSlug), uniqueSlug))
     ) {
-      uniqueSlug = sanitizeEntrySlug(`${sanitizedSlug} ${i++}`, slugConfig);
+      uniqueSlug = sanitizeEntrySlug(`${sanitizedSlug} ${i++}`);
     }
     return uniqueSlug;
   }
@@ -646,14 +634,15 @@ class Backend {
       if (!selectAllowNewEntries(collection)) {
         throw new Error('Not allowed to create new entries in this collection');
       }
-      const autoSlug = await this.getSlug(
-        collection,
-        entryDraft.getIn(['entry', 'data']),
-        config.get('slug'),
-        unavailableSlugs,
-      );
-      const slug = selectedSlug || autoSlug;
 
+      const slug = 
+        selectedSlug ||
+        (await this.getSlug(
+          collection,
+          entryDraft.getIn(['entry', 'data']),
+          config.get('slug'),
+          unavailableSlugs
+        ));
       const path = selectEntryPath(collection, slug);
       entryObj = {
         path,

@@ -182,14 +182,14 @@ class EditorControl extends React.Component {
     const entryData = entry.get('data');
     const unavailableSlugs = boundSelectSlugs(collection.get('name'));
     const availableSlugs = [entry.get('slug'), entry.getIn(['metaData', 'parentSlug'])];
-    const indentifierField = collection && selectIdentifier(collection);
+    const identifierField = collection && selectIdentifier(collection);
     const slugField = collection && selectSlugField(collection);
     const slugValue = entry.getIn(['data', slugField]);
     const backend = currentBackend(config);
 
     this.setState({ styleActive: false });
 
-    if (fieldName == indentifierField && value && !slugValue && collection) {
+    if (fieldName == identifierField && value && !slugValue && collection) {
       onChange(slugField, await backend.getSlug(collection, entryData, config, unavailableSlugs));
     }
 

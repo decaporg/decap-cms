@@ -1,4 +1,5 @@
 import { Map, List, fromJS } from 'immutable';
+import { startsWith } from 'lodash';
 import { EDITORIAL_WORKFLOW } from 'Constants/publishModes';
 import {
   UNPUBLISHED_ENTRY_REQUEST,
@@ -143,7 +144,7 @@ export const selectUnpublishedEntryByParentSlug = (state, collection, slug) => {
   if (!state.get('entities')) return null;
   return state
     .get('entities')
-    .filter((v, k) => k.includes(collection))
+    .filter((v, k) => startsWith(k, `${collection}.`))
     .find(entry => entry.getIn(['metaData', 'parentSlug']) === slug);
 };
 
@@ -151,7 +152,7 @@ export const selectUnpublishedSlugEntriesByCollection = (state, collection) => {
   if (!state.get('entities')) return null;
   return state
     .get('entities')
-    .filter((v, k) => k.includes(collection))
+    .filter((v, k) => startsWith(k, `${collection}.`))
     .map(entry => entry.get('slug'))
     .valueSeq();
 };

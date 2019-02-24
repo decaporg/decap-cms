@@ -15,11 +15,9 @@ collections: # A list of collections the CMS should be able to edit
       guidelines that are specific to a collection.
     folder: '_posts'
     slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
-    slug_field: 'slug'
     create: true # Allow users to create new documents in this collection
     fields: # The fields each document in this collection have
       - { label: 'Title', name: 'title', widget: 'string', tagname: 'h1' }
-      - { label: 'Slug', name: 'slug', widget: 'string', tagname: 'h1' }
       - {
           label: 'Publish Date',
           name: 'date',
@@ -41,9 +39,11 @@ collections: # A list of collections the CMS should be able to edit
   - name: 'faq' # Used in routes, ie.: /admin/collections/:slug/edit
     label: 'FAQ' # Used in the UI
     folder: '_faqs'
+    slug_field: 'slug'
     create: true # Allow users to create new documents in this collection
     fields: # The fields each document in this collection have
       - { label: 'Question', name: 'title', widget: 'string', tagname: 'h1' }
+      - { label: 'Slug', name: 'slug', widget: 'string', tagname: 'h1' }
       - { label: 'Answer', name: 'body', widget: 'markdown' }
 
   - name: 'settings'
