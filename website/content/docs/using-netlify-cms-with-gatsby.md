@@ -23,18 +23,18 @@ You will see that there are multiple `markdown` files that represent blog posts.
 
 ```yml
 ---
-title: Hello World
-date: "2015-05-01T22:12:03.284Z"
+title: New Beginnings
+date: "2015-05-28T22:40:32.169Z"
+description: This is a custom description for SEO and Open Graph purposes, rather than the default generated excerpt. Simply add a description field to the frontmatter.
 ---
-This is my first post on my new fake blog! How exciting!
 
-I'm sure I'll write a lot more interesting things in the future.
+Far far away, behind the word mountains, far from the countries Vokalia and
+Consonantia, there live the blind texts.
 ```
 
-We can see above that each blog post has a title, a date and a body. Now, let's recreate this using Netlify CMS. 
-_Note that properties that live between the 3 dotted lines (`---`) are called Front Matter._
+We can see above that each blog post has a title, a date, a description and a body. Now, let's recreate this using Netlify CMS. 
 
-## Integrate Netlify CMS to your site
+## Add Netlify CMS to your site
 
 First let's install some dependencies. We'll need `netlify-cms` and `gatsby-plugin-netlify-cms`.
 
@@ -70,72 +70,19 @@ collections:
     folder: "content/blog"
     create: true
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    editor:
+     preview: false
     fields:
       - { label: "Title", name: "title", widget: "string" }
       - { label: "Publish Date", name: "date", widget: "datetime" }
+      - { label: "Description", name: "description", widget: "string" }
       - { label: "Body", name: "body", widget: "markdown" }
 ```
 
-### Add Netlify CMS
-
-Create the directory structure you see below:
-
-```sh
-├── src
-│   ├── cms
-│   │   ├── cms.js
-│   │   ├── preview-templates
-│   │   │   ├── BlogPostPreview.js
-```
-
-We will use this file to import Netlify CMS and register preview templates.
-
-In the `cms.js` file paste the following code:
-
-```jsx
-import CMS from "netlify-cms";
-
-import BlogPostPreview from "./preview-templates/BlogPostPreview";
-
-CMS.registerPreviewTemplate("blog", BlogPostPreview);
-```
-
-In the `BlogPostPreview.js` file paste the following code:
-
-```jsx
-import React from "react";
-import PropTypes from "prop-types";
-import BlogPostTemplate from "../../templates/blog-post";
-
-const BlogPostPreview = ({ entry, widgetFor }) => (
-  <BlogPostTemplate
-    content={widgetFor("body")}
-    date={entry.getIn(["data", "date"])}
-    title={entry.getIn(["data", "title"])}
-  />
-);
-
-BlogPostPreview.propTypes = {
-  entry: PropTypes.shape({
-    getIn: PropTypes.func
-  }),
-  widgetFor: PropTypes.func
-};
-
-export default BlogPostPreview;
-```
-
-Then add the plugin to your `gatsby-config.js`.
+Finally, add the plugin to your `gatsby-config.js`.
 
 ```javascript
-plugins: [
-  {
-    resolve: `gatsby-plugin-netlify-cms`,
-    options: {
-      modulePath: `${__dirname}/src/cms/cms.js`
-    }
-  }
-];
+plugins: [`gatsby-plugin-netlify-cms`]
 ```
 
 ### Push to GitHub
@@ -153,9 +100,14 @@ git push -u origin master
 
 Go to Netlify and select 'New Site from Git'. Select GitHub and the repository you just pushed to. Click Configure Netlify on GitHub and give access to your repository. Finish the setup by clicking Deploy Site. Netlify will begin reading your repository and starting building your project.
 
-### Enable Netlify Identity and Git Gateway
+### Enable Identity and Git Gateway
 
-In Netlify go to Identity and Enable Identity. Then under Identity > Services, click Enable Git Gateway. Click Generate access token in GitHub. Then, go to `/admin/` to create an account, either by email, or by setting an external OAuth provider.
+Netlify's Identity and Git Gateway services allow you to manage CMS admin users for your site without requiring them to have an account with your Git host or commit access on your repo. From your site dashboard on Netlify:
+
+1. Go to **Settings > Identity**, and select **Enable Identity service**.
+2. Under **Registration preferences**, select **Open** or **Invite only**. In most cases, you want only invited users to access your CMS, but if you're just experimenting, you can leave it open for convenience.
+3. If you'd like to allow one-click login with services like Google and GitHub, check the boxes next to the services you'd like to use, under **External providers**.
+4. Scroll down to **Services > Git Gateway**, and click **Enable Git Gateway**. This authenticates with your Git host and generates an API access token. In this case, we're leaving the **Roles** field blank, which means any logged in user may access the CMS. For information on changing this, check the [Netlify Identity documentation](https://www.netlify.com/docs/identity/).
 
 ## Start publishing
 
@@ -165,4 +117,4 @@ Then Netlify will detect that there was a commit in your repo, and will start re
 
 ### Cleanup
 
-It is now safe to remove the default Gatsby blog posts. _(We didn't delete them before, because we needed at least 1 post for our project to build)_
+It is now safe to remove the default Gatsby blog posts.
