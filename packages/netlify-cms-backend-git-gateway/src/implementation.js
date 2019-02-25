@@ -259,7 +259,9 @@ export default class GitGateway {
           rootURL: this.netlifyLargeMediaURL,
           makeAuthorizedRequest: this.requestFunction,
           patterns,
-          transformImages: { nf_resize: "fit", w: 280, h: 160 }
+          transformImages: this.config.getIn(["backend", "use_large_media_transforms_in_media_library"], true)
+            ? { nf_resize: "fit", w: 280, h: 160 }
+            : false
         });
       });
   }
