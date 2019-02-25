@@ -230,9 +230,6 @@ class EditorControl extends React.Component {
       clearSearch,
       clearFieldErrors,
       loadEntry,
-      slugField,
-      entrySlug,
-      isNewEntry,
       t,
     } = this.props;
     const widgetName = field.get('widget');
@@ -243,7 +240,6 @@ class EditorControl extends React.Component {
     const onValidateObject = onValidate;
     const metadata = fieldsMetaData && fieldsMetaData.get(fieldName);
     const errors = fieldsErrors && fieldsErrors.get(this.uniqueFieldId);
-	const fieldValue = ((fieldName == slugField) && !value && !isNewEntry) ? entrySlug : value;
     return (
       <ControlContainer>
         <ControlErrorsList>

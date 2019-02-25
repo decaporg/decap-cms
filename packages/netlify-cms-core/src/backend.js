@@ -635,13 +635,13 @@ class Backend {
         throw new Error('Not allowed to create new entries in this collection');
       }
 
-      const slug = 
+      const slug =
         selectedSlug ||
         (await this.getSlug(
           collection,
           entryDraft.getIn(['entry', 'data']),
           config.get('slug'),
-          unavailableSlugs
+          unavailableSlugs,
         ));
       const path = selectEntryPath(collection, slug);
       entryObj = {
