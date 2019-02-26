@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 import { orderBy, map } from 'lodash';
-import { Map } from 'immutable';
 import { translate } from 'react-polyglot';
 import fuzzy from 'fuzzy';
 import { resolvePath, fileExtension } from 'netlify-cms-lib-util';
@@ -306,7 +305,7 @@ class MediaLibrary extends React.Component {
         setScrollContainerRef={ref => (this.scrollContainerRef = ref)}
         handleAssetClick={this.handleAssetClick}
         handleLoadMore={this.handleLoadMore}
-	displayURLs={displayURLs}
+        displayURLs={displayURLs}
         loadDisplayURL={this.loadDisplayURL}
         t={t}
       />

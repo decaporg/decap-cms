@@ -48,7 +48,7 @@ const MediaLibraryCardGrid = ({
           width={cardWidth}
           margin={cardMargin}
           isPrivate={isPrivate}
-	  displayURL={displayURLs.get(file.id, Map())}
+          displayURL={displayURLs.get(file.id, Map())}
           loadDisplayURL={() => loadDisplayURL(file)}
           type={file.type}
         />

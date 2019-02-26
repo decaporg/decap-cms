@@ -159,7 +159,7 @@ export default class GitLab {
                   }
                   return blob;
                 })
-		.then(blob => URL.createObjectURL(blob))
+                .then(blob => URL.createObjectURL(blob))
                 .then(resolve, reject)
                 .finally(() => sem.leave()),
             ),

@@ -120,7 +120,11 @@ export function loadMedia(opts = {}) {
           backend
             .getMedia()
             .then(files => dispatch(mediaLoaded(files)))
-            .catch(error => console.error(error) || dispatch(error.status === 404 ? mediaLoaded() : mediaLoadFailed())),
+            .catch(
+              error =>
+                console.error(error) ||
+                dispatch(error.status === 404 ? mediaLoaded() : mediaLoadFailed()),
+            ),
         ),
       );
     }, delay);
@@ -162,7 +166,9 @@ export function persistMedia(file, opts = {}) {
         const asset = await backend.persistMedia(state.config, assetProxy);
         return dispatch(mediaPersisted({ id, getDisplayURL, ...asset }));
       }
-      return dispatch(mediaPersisted({ id, getDisplayURL, ...assetProxy.asset }, { privateUpload }));
+      return dispatch(
+        mediaPersisted({ id, getDisplayURL, ...assetProxy.asset }, { privateUpload }),
+      );
     } catch (error) {
       console.error(error);
       dispatch(
@@ -227,22 +233,23 @@ export function loadMediaDisplayURL(file) {
   return async (dispatch, getState) => {
     const { getDisplayURL, id, url, urlIsPublicPath } = file;
     const { mediaLibrary: mediaLibraryState } = getState();
-    const displayURLPath = ["displayURLs", id];
-    const shouldLoadDisplayURL = id
-      && ((url && urlIsPublicPath)
-          || (getDisplayURL
-              && !mediaLibraryState.getIn([...displayURLPath, "url"])
-              && !mediaLibraryState.getIn([...displayURLPath, "isFetching"])
-              && !mediaLibraryState.getIn([...displayURLPath, "err"]))) ;
+    const displayURLPath = ['displayURLs', id];
+    const shouldLoadDisplayURL =
+      id &&
+      ((url && urlIsPublicPath) ||
+        (getDisplayURL &&
+          !mediaLibraryState.getIn([...displayURLPath, 'url']) &&
+          !mediaLibraryState.getIn([...displayURLPath, 'isFetching']) &&
+          !mediaLibraryState.getIn([...displayURLPath, 'err'])));
     if (shouldLoadDisplayURL) {
       try {
         dispatch(mediaDisplayURLRequest(id));
-        const newURL = (urlIsPublicPath && url) || await getDisplayURL();
+        const newURL = (urlIsPublicPath && url) || (await getDisplayURL());
         if (newURL) {
           dispatch(mediaDisplayURLSuccess(id, newURL));
           return newURL;
         }
-        throw new Error("No display URL was returned!");
+        throw new Error('No display URL was returned!');
       } catch (err) {
         dispatch(mediaDisplayURLFailure(id, err));
       }

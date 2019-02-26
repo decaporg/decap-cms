@@ -228,7 +228,7 @@ export default class Bitbucket {
             sem.take(() =>
               this.api
                 .readFile(path, id, { parseText: false })
-		.then(blob => URL.createObjectURL(blob))
+                .then(blob => URL.createObjectURL(blob))
                 .then(resolve, reject)
                 .finally(() => sem.leave()),
             ),

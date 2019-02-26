@@ -9,7 +9,12 @@ import { BitBucketBackend, API as BitBucketAPI } from 'netlify-cms-backend-bitbu
 import GitHubAPI from './GitHubAPI';
 import GitLabAPI from './GitLabAPI';
 import AuthenticationPage from './AuthenticationPage';
-import { parsePointerFile, createPointerFile, getLargeMediaPatternsFromGitAttributesFile, getClient } from "./netlify-lfs-client";
+import {
+  parsePointerFile,
+  createPointerFile,
+  getLargeMediaPatternsFromGitAttributesFile,
+  getClient,
+} from './netlify-lfs-client';
 
 const localHosts = {
   localhost: true,
@@ -19,7 +24,7 @@ const localHosts = {
 const defaults = {
   identity: '/.netlify/identity',
   gateway: '/.netlify/git',
-  largeMedia: '/.netlify/large-media'
+  largeMedia: '/.netlify/large-media',
 };
 
 function getEndpoint(endpoint, netlifySiteURL) {
@@ -204,24 +209,21 @@ export default class GitGateway {
   }
 
   getMedia() {
-    return Promise.all([
-      this.backend.getMedia(),
-      this.getLargeMediaClient(),
-    ]).then(async ([mediaFiles, largeMediaClient]) => {
-      if (!largeMediaClient.enabled) {
-        return mediaFiles;
-      }
-      const largeMediaURLThunks = await this.getLargeMedia(mediaFiles);
-      return mediaFiles.map(({ id, url, getDisplayURL, ...rest }) => ({
-        ...rest,
-        id,
-        url,
-        urlIsPublicPath: false,
-        getDisplayURL: largeMediaURLThunks[id]
-          ? largeMediaURLThunks[id]
-          : getDisplayURL
-      }));
-    });
+    return Promise.all([this.backend.getMedia(), this.getLargeMediaClient()]).then(
+      async ([mediaFiles, largeMediaClient]) => {
+        if (!largeMediaClient.enabled) {
+          return mediaFiles;
+        }
+        const largeMediaURLThunks = await this.getLargeMedia(mediaFiles);
+        return mediaFiles.map(({ id, url, getDisplayURL, ...rest }) => ({
+          ...rest,
+          id,
+          url,
+          urlIsPublicPath: false,
+          getDisplayURL: largeMediaURLThunks[id] ? largeMediaURLThunks[id] : getDisplayURL,
+        }));
+      },
+    );
   }
 
   // this method memoizes this._getLargeMediaClient so that there can
@@ -234,19 +236,21 @@ export default class GitGateway {
     return this._largeMediaClientPromise;
   }
   _getLargeMediaClient() {
-    const netlifyLargeMediaEnabledPromise = this.api.readFile(".lfsconfig")
+    const netlifyLargeMediaEnabledPromise = this.api
+      .readFile('.lfsconfig')
       .then(ini.decode)
       .then(({ lfs: { url } }) => new URL(url))
-      .then(lfsURL => ({ enabled: lfsURL.hostname.endsWith("netlify.com") }))
+      .then(lfsURL => ({ enabled: lfsURL.hostname.endsWith('netlify.com') }))
       .catch(err => ({ enabled: false, err }));
 
-    const lfsPatternsPromise = this.api.readFile(".gitattributes")
+    const lfsPatternsPromise = this.api
+      .readFile('.gitattributes')
       .then(getLargeMediaPatternsFromGitAttributesFile)
       .then(patterns => ({ patterns }))
-      .catch(err => err.message.includes("404") ? [] : ({ err }));
+      .catch(err => (err.message.includes('404') ? [] : { err }));
 
-    return Promise.all([netlifyLargeMediaEnabledPromise, lfsPatternsPromise])
-      .then(([{enabled: maybeEnabled, err: enabledErr}, {patterns, err: patternsErr}]) => {
+    return Promise.all([netlifyLargeMediaEnabledPromise, lfsPatternsPromise]).then(
+      ([{ enabled: maybeEnabled }, { patterns, err: patternsErr }]) => {
         const enabled = maybeEnabled && !patternsErr;
 
         // We expect LFS patterns to exist when the .lfsconfig states
@@ -260,43 +264,42 @@ export default class GitGateway {
           rootURL: this.netlifyLargeMediaURL,
           makeAuthorizedRequest: this.requestFunction,
           patterns,
-          transformImages: this.config.getIn(["backend", "use_large_media_transforms_in_media_library"], true)
-            ? { nf_resize: "fit", w: 280, h: 160 }
-            : false
+          transformImages: this.config.getIn(
+            ['backend', 'use_large_media_transforms_in_media_library'],
+            true,
+          )
+            ? { nf_resize: 'fit', w: 280, h: 160 }
+            : false,
         });
-      });
+      },
+    );
   }
   getLargeMedia(mediaFiles) {
     return this.getLargeMediaClient().then(client => {
       const largeMediaItems = mediaFiles
         .filter(({ path }) => client.matchPath(path))
         .map(({ id, path }) => ({ path, sha: id }));
-      return this.backend.fetchFiles(largeMediaItems).then(
-        items => items.map(
-          ({ file: { sha }, data }) => {
+      return this.backend
+        .fetchFiles(largeMediaItems)
+        .then(items =>
+          items.map(({ file: { sha }, data }) => {
             const parsedPointerFile = parsePointerFile(data);
             return [
               {
                 pointerId: sha,
-                resourceId: parsedPointerFile.sha
+                resourceId: parsedPointerFile.sha,
               },
-              parsedPointerFile
+              parsedPointerFile,
             ];
-          }
+          }),
         )
-      )
         .then(unzip)
         .then(async ([idMaps, files]) => [
           idMaps,
           await client.getResourceDownloadURLThunks(files).then(fromPairs),
         ])
-        .then(
-          ([idMaps, resourceMap]) =>
-            idMaps.map(({ pointerId, resourceId }) => [
-              pointerId,
-              resourceMap[resourceId]
-            ]
-          )
+        .then(([idMaps, resourceMap]) =>
+          idMaps.map(({ pointerId, resourceId }) => [pointerId, resourceMap[resourceId]]),
         )
         .then(fromPairs);
     });
@@ -308,36 +311,32 @@ export default class GitGateway {
     const { fileObj, path, value } = mediaFile;
     const { name, size } = fileObj;
     return this.getLargeMediaClient().then(client => {
-      const fixedPath = path.startsWith("/") ? path.slice(1) : path;
+      const fixedPath = path.startsWith('/') ? path.slice(1) : path;
       if (!client.enabled || !client.matchPath(fixedPath)) {
         return this.backend.persistMedia(mediaFile, options);
-      };
+      }
 
-      return getBlobSHA(fileObj).then(
-        async sha => {
-          await client.uploadResource({sha, size}, fileObj)
-          const pointerFileString = createPointerFile({ sha, size })
-          const pointerFileBlob = new Blob([pointerFileString]);
-          const pointerFile = new File([pointerFileBlob], name, { type: "text/plain" });
-          const pointerFileSHA = await getBlobSHA(pointerFile);
-          const persistMediaArgument = {
-            fileObj: pointerFile,
-            size: pointerFileBlob.size,
-            path,
-            sha: pointerFileSHA,
-            raw: pointerFileString,
-            value,
-          };
-          const persistedMediaFile = await this.backend.persistMedia(persistMediaArgument, options);
-          const displayURL = URL.createObjectURL(fileObj);
-          return {
-            ...persistedMediaFile,
-            urlIsPublicPath: false
-          };
-        }
-      );
-
-    })
+      return getBlobSHA(fileObj).then(async sha => {
+        await client.uploadResource({ sha, size }, fileObj);
+        const pointerFileString = createPointerFile({ sha, size });
+        const pointerFileBlob = new Blob([pointerFileString]);
+        const pointerFile = new File([pointerFileBlob], name, { type: 'text/plain' });
+        const pointerFileSHA = await getBlobSHA(pointerFile);
+        const persistMediaArgument = {
+          fileObj: pointerFile,
+          size: pointerFileBlob.size,
+          path,
+          sha: pointerFileSHA,
+          raw: pointerFileString,
+          value,
+        };
+        const persistedMediaFile = await this.backend.persistMedia(persistMediaArgument, options);
+        return {
+          ...persistedMediaFile,
+          urlIsPublicPath: false,
+        };
+      });
+    });
   }
   deleteFile(path, commitMessage, options) {
     return this.backend.deleteFile(path, commitMessage, options);

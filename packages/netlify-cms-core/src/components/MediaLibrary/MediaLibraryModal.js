@@ -173,7 +173,7 @@ const MediaLibraryModal = ({
         cardMargin={cardMargin}
         isPrivate={privateUpload}
         loadDisplayURL={loadDisplayURL}
-	displayURLs={displayURLs}
+        displayURLs={displayURLs}
       />
     </StyledModal>
   );

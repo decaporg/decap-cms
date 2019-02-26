@@ -1,8 +1,8 @@
-import React from "react";
-import PropTypes from "prop-types";
-import ImmutablePropTypes from "react-immutable-proptypes";
-import styled from "react-emotion";
-import { colors, borders, lengths } from "netlify-cms-ui-default";
+import React from 'react';
+import PropTypes from 'prop-types';
+import ImmutablePropTypes from 'react-immutable-proptypes';
+import styled from 'react-emotion';
+import { colors, borders, lengths } from 'netlify-cms-ui-default';
 
 const Card = styled.div`
   width: ${props => props.width};
@@ -46,19 +46,8 @@ const CardText = styled.p`
 
 class MediaLibraryCard extends React.Component {
   render() {
-    const {
-      isSelected,
-      displayURL,
-      text,
-      onClick,
-      width,
-      margin,
-      isPrivate,
-      type
-    } = this.props;
-    const url = displayURL.get("url");
-    const isFetching = displayURL.get("isFetching");
-    const err = displayURL.get("err");
+    const { isSelected, displayURL, text, onClick, width, margin, isPrivate, type } = this.props;
+    const url = displayURL.get('url');
     return (
       <Card
         isSelected={isSelected}
@@ -68,19 +57,14 @@ class MediaLibraryCard extends React.Component {
         tabIndex="-1"
         isPrivate={isPrivate}
       >
-        <div>
-          {url ? <CardImage src={url} /> : <CardFileIcon>{type}</CardFileIcon>}
-        </div>
+        <div>{url ? <CardImage src={url} /> : <CardFileIcon>{type}</CardFileIcon>}</div>
         <CardText>{text}</CardText>
       </Card>
     );
   }
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const { displayURL, loadDisplayURL } = this.props;
-    if (
-      !displayURL ||
-      (!displayURL.url && !displayURL.isFetching && !displayURL.err)
-    ) {
+    if (!displayURL || (!displayURL.url && !displayURL.isFetching && !displayURL.err)) {
       loadDisplayURL();
     }
   }
@@ -94,7 +78,7 @@ MediaLibraryCard.propTypes = {
   width: PropTypes.string.isRequired,
   margin: PropTypes.string.isRequired,
   isPrivate: PropTypes.bool,
-  type: PropTypes.string
+  type: PropTypes.string,
 };
 
 export default MediaLibraryCard;

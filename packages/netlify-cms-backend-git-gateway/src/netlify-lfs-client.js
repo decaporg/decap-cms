@@ -1,16 +1,13 @@
-import { filter, flow, fromPairs, map } from "lodash/fp";
-import minimatch from "minimatch";
+import { filter, flow, fromPairs, map } from 'lodash/fp';
+import minimatch from 'minimatch';
 
 //
 // Pointer file parsing
 
-const splitIntoLines = str => str.split("\n");
+const splitIntoLines = str => str.split('\n');
 const splitIntoWords = str => str.split(/\s+/g);
-const isNonEmptyString = str => str !== "";
-const withoutEmptyLines = flow([
-  map(str => str.trim()),
-  filter(isNonEmptyString)
-]);
+const isNonEmptyString = str => str !== '';
+const withoutEmptyLines = flow([map(str => str.trim()), filter(isNonEmptyString)]);
 export const parsePointerFile = flow([
   splitIntoLines,
   withoutEmptyLines,
@@ -18,9 +15,9 @@ export const parsePointerFile = flow([
   fromPairs,
   ({ size, oid, ...rest }) => ({
     size: parseInt(size),
-    sha: oid.split(":")[1],
-    ...rest
-  })
+    sha: oid.split(':')[1],
+    ...rest,
+  }),
 ]);
 
 export const createPointerFile = ({ size, sha }) => `\
@@ -32,7 +29,7 @@ size ${size}
 //
 // .gitattributes file parsing
 
-const removeGitAttributesCommentsFromLine = line => line.split("#")[0];
+const removeGitAttributesCommentsFromLine = line => line.split('#')[0];
 
 const parseGitPatternAttribute = attributeString => {
   // There are three kinds of attribute settings:
@@ -40,41 +37,37 @@ const parseGitPatternAttribute = attributeString => {
   // - a key without a value and a leading hyphen sets an attribute to false
   // - a key without a value and no leading hyphen sets an attribute
   //   to true
-  if (attributeString.includes("=")) {
-    return attributeString.split("=");
+  if (attributeString.includes('=')) {
+    return attributeString.split('=');
   }
-  if (attributeString.startsWith("-")) {
+  if (attributeString.startsWith('-')) {
     return [attributeString.slice(1), false];
   }
   return [attributeString, true];
 };
 
-const parseGitPatternAttributes = flow([
-  map(parseGitPatternAttribute),
-  fromPairs
-]);
+const parseGitPatternAttributes = flow([map(parseGitPatternAttribute), fromPairs]);
 
 const parseGitAttributesPatternLine = flow([
   splitIntoWords,
-  ([pattern, ...attributes]) => [pattern, parseGitPatternAttributes(attributes)]
+  ([pattern, ...attributes]) => [pattern, parseGitPatternAttributes(attributes)],
 ]);
 
 const parseGitAttributesFileToPatternAttributePairs = flow([
   splitIntoLines,
   map(removeGitAttributesCommentsFromLine),
   withoutEmptyLines,
-  map(parseGitAttributesPatternLine)
+  map(parseGitAttributesPatternLine),
 ]);
 
 export const getLargeMediaPatternsFromGitAttributesFile = flow([
   parseGitAttributesFileToPatternAttributePairs,
   filter(
+    // eslint-disable-next-line no-unused-vars
     ([pattern, attributes]) =>
-      attributes.filter === "lfs" &&
-      attributes.diff === "lfs" &&
-      attributes.merge === "lfs"
+      attributes.filter === 'lfs' && attributes.diff === 'lfs' && attributes.merge === 'lfs',
   ),
-  map(([pattern]) => pattern)
+  map(([pattern]) => pattern),
 ]);
 
 export const matchPath = ({ patterns }, path) =>
@@ -84,19 +77,16 @@ export const matchPath = ({ patterns }, path) =>
 // API interactions
 
 const defaultContentHeaders = {
-  Accept: "application/vnd.git-lfs+json",
-  ["Content-Type"]: "application/vnd.git-lfs+json"
+  Accept: 'application/vnd.git-lfs+json',
+  ['Content-Type']: 'application/vnd.git-lfs+json',
 };
 
-const resourceExists = async (
-  { rootURL, makeAuthorizedRequest },
-  { sha, size }
-) => {
+const resourceExists = async ({ rootURL, makeAuthorizedRequest }, { sha, size }) => {
   const response = await makeAuthorizedRequest({
     url: `${rootURL}/verify`,
-    method: "POST",
+    method: 'POST',
     headers: defaultContentHeaders,
-    body: JSON.stringify({ oid: sha, size })
+    body: JSON.stringify({ oid: sha, size }),
   });
   if (response.ok) {
     return true;
@@ -111,19 +101,17 @@ const resourceExists = async (
 
 const getDownloadURLThunkFromSha = (
   { rootURL, makeAuthorizedRequest, transformImages: t },
-  sha
+  sha,
 ) => () =>
   makeAuthorizedRequest(
     `${rootURL}/origin/${sha}${
-      t && Object.keys(t).length > 0
-        ? `?nf_resize=${t.nf_resize}&w=${t.w}&h=${t.h}`
-        : ""
-    }`
+      t && Object.keys(t).length > 0 ? `?nf_resize=${t.nf_resize}&w=${t.w}&h=${t.h}` : ''
+    }`,
   )
     .then(res => (res.ok ? res : Promise.reject(res)))
     .then(res => res.blob())
     .then(blob => URL.createObjectURL(blob))
-    .catch(err => console.error(err) || Promise.resolve(""));
+    .catch(err => console.error(err) || Promise.resolve(''));
 
 // We allow users to get thunks which load the blobs instead of fully
 // resolved blob URLs so that media clients can download the blobs
@@ -131,12 +119,7 @@ const getDownloadURLThunkFromSha = (
 // URLs, which only trigger an image download when the DOM element for
 // that image is created.
 const getResourceDownloadURLThunks = (clientConfig, objects) =>
-  Promise.resolve(
-    objects.map(({ sha }) => [
-      sha,
-      getDownloadURLThunkFromSha(clientConfig, sha)
-    ])
-  );
+  Promise.resolve(objects.map(({ sha }) => [sha, getDownloadURLThunkFromSha(clientConfig, sha)]));
 
 const getResourceDownloadURLs = (clientConfig, objects) =>
   getResourceDownloadURLThunks(clientConfig, objects)
@@ -144,20 +127,17 @@ const getResourceDownloadURLs = (clientConfig, objects) =>
     .then(Promise.all.bind(Promise));
 
 const uploadOperation = objects => ({
-  operation: "upload",
-  transfers: ["basic"],
-  objects: objects.map(({ sha, ...rest }) => ({ ...rest, oid: sha }))
+  operation: 'upload',
+  transfers: ['basic'],
+  objects: objects.map(({ sha, ...rest }) => ({ ...rest, oid: sha })),
 });
 
-const getResourceUploadURLs = async (
-  { rootURL, makeAuthorizedRequest },
-  objects
-) => {
+const getResourceUploadURLs = async ({ rootURL, makeAuthorizedRequest }, objects) => {
   const response = await makeAuthorizedRequest({
     url: `${rootURL}/objects/batch`,
-    method: "POST",
+    method: 'POST',
     headers: defaultContentHeaders,
-    body: JSON.stringify(uploadOperation(objects))
+    body: JSON.stringify(uploadOperation(objects)),
   });
   return (await response.json()).objects.map(object => {
     if (object.error) {
@@ -169,8 +149,8 @@ const getResourceUploadURLs = async (
 
 const uploadBlob = (clientConfig, uploadURL, blob) =>
   fetch(uploadURL, {
-    method: "PUT",
-    body: blob
+    method: 'PUT',
+    body: blob,
   });
 
 const uploadResource = async (clientConfig, { sha, size }, resource) => {
@@ -178,9 +158,7 @@ const uploadResource = async (clientConfig, { sha, size }, resource) => {
   if (existingFile) {
     return sha;
   }
-  const [uploadURL] = await getResourceUploadURLs(clientConfig, [
-    { sha, size }
-  ]);
+  const [uploadURL] = await getResourceUploadURLs(clientConfig, [{ sha, size }]);
   await uploadBlob(clientConfig, uploadURL, resource);
   return sha;
 };
@@ -195,7 +173,7 @@ const clientFns = {
   getResourceDownloadURLs,
   getResourceDownloadURLThunks,
   uploadResource,
-  matchPath
+  matchPath,
 };
 export const getClient = clientConfig => {
   return flow([
@@ -205,7 +183,7 @@ export const getClient = clientConfig => {
     configuredFns => ({
       ...configuredFns,
       patterns: clientConfig.patterns,
-      enabled: clientConfig.enabled
-    })
+      enabled: clientConfig.enabled,
+    }),
   ])(clientFns);
 };
