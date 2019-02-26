@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.1.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/compare/netlify-cms-widget-relation@2.0.6...netlify-cms-widget-relation@2.1.0) (2019-02-26)
+
+
+### Features
+
+* **netlify-cms-widget-relation:** use react-select and add support for multiple entries ([#1936](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/issues/1936)) ([518f6fb](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/commit/518f6fb))
+
+
+
+
+
 ## [2.0.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/compare/netlify-cms-widget-relation@2.0.5...netlify-cms-widget-relation@2.0.6) (2019-02-08)
 
 

@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.7.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.6.0...netlify-cms-core@2.7.0) (2019-02-26)
+
+
+### Bug Fixes
+
+* **widget-relation:** fix initial relation widget preview ([#2090](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2090)) ([aff9c1a](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/aff9c1a))
+
+
+### Features
+
+* **netlify-cms-widget-relation:** use react-select and add support for multiple entries ([#1936](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/1936)) ([518f6fb](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/518f6fb))
+
+
+
+
+
 # [2.6.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.5.1...netlify-cms-core@2.6.0) (2019-02-12)
 
 
