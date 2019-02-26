@@ -59,6 +59,7 @@ export function getPhrases() {
         onDeleteUnpublishedChanges:
           'All unpublished changes to this entry will be deleted. Do you still want to delete?',
         loadingEntry: 'Loading entry...',
+        confirmLoadBackup: 'A local backup was recovered for this entry, would you like to use it?',
       },
       editorToolbar: {
         publishing: 'Publishing...',

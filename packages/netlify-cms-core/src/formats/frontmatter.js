@@ -49,7 +49,7 @@ function inferFrontmatterFormat(str) {
     case '{':
       return getFormatOpts('json');
     default:
-      throw 'Unrecognized front-matter format.';
+      console.warn('Unrecognized front-matter format.');
   }
 }
 
