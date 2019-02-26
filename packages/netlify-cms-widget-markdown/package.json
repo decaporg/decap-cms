@@ -31,7 +31,7 @@
     "remark-parse": "^3.0.1",
     "remark-rehype": "^2.0.0",
     "remark-stringify": "^3.0.1",
-    "slate": "^0.43.0",
+    "slate": "^0.44.0",
     "slate-plain-serializer": "^0.6.0",
     "slate-react": "^0.21.0",
     "slate-soft-break": "^0.6.1",

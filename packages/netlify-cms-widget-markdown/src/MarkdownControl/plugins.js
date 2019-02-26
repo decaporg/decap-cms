@@ -28,14 +28,6 @@ const SoftBreak = (options = {}) => ({
   },
 });
 
-const SoftBreakOpts = {
-  onlyIn: ['quote', 'code'],
-};
-
-export const SoftBreakConfigured = SoftBreak(SoftBreakOpts);
-
-export const ParagraphSoftBreakConfigured = SoftBreak({ onlyIn: ['paragraph'], shift: true });
-
 const BreakToDefaultBlock = ({ onlyIn = [], defaultBlock = 'paragraph' }) => ({
   onKeyDown(event, editor, next) {
     const { value } = editor;
@@ -47,19 +39,6 @@ const BreakToDefaultBlock = ({ onlyIn = [], defaultBlock = 'paragraph' }) => ({
     return next();
   },
 });
-
-const BreakToDefaultBlockOpts = {
-  onlyIn: [
-    'heading-one',
-    'heading-two',
-    'heading-three',
-    'heading-four',
-    'heading-five',
-    'heading-six',
-  ],
-};
-
-export const BreakToDefaultBlockConfigured = BreakToDefaultBlock(BreakToDefaultBlockOpts);
 
 const BackspaceCloseBlock = (options = {}) => ({
   onKeyDown(event, editor, next) {
@@ -95,21 +74,42 @@ const BackspaceCloseBlock = (options = {}) => ({
   },
 });
 
-const BackspaceCloseBlockOpts = {
-  ignoreIn: [
-    'table',
-    'table-row',
-    'table-cell',
-  ],
-};
-
-export const BackspaceCloseBlockConfigured = BackspaceCloseBlock(BackspaceCloseBlockOpts);
+function ListPlugin(options) {
+  return {
+    commands: {
+      wrapList(editor, type) {
+        editor.wrapBlock(type).wrapBlock('list-item');
+      }
+    },
+  };
+}
 
 const plugins = [
-  SoftBreakConfigured,
-  ParagraphSoftBreakConfigured,
-  BackspaceCloseBlockConfigured,
-  BreakToDefaultBlockConfigured,
+  SoftBreak({
+    onlyIn: ['quote', 'code'],
+  }),
+  SoftBreak({
+    onlyIn: ['paragraph'],
+    shift: true,
+  }),
+  BackspaceCloseBlock({
+    ignoreIn: [
+      'table',
+      'table-row',
+      'table-cell',
+    ],
+  }),
+  BreakToDefaultBlock({
+    onlyIn: [
+      'heading-one',
+      'heading-two',
+      'heading-three',
+      'heading-four',
+      'heading-five',
+      'heading-six',
+    ],
+  }),
+  ListPlugin(),
 ];
 
 export default plugins;

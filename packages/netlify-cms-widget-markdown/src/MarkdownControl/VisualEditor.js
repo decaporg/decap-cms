@@ -113,9 +113,49 @@ export default class Editor extends React.Component {
     }
 
     const { editor } = this;
-    const { value } = editor;
-    const { document: doc } = value;
 
+    switch (type) {
+      /**
+       * Headers and code blocks can only contain text. If any selected block is not a header,
+       * wrap all selected blocks into single selected block. If all selected blocks are of selected
+       * block type, convert each to a paragraph.
+       */
+      case 'heading-one':
+      case 'heading-two':
+      case 'heading-three':
+      case 'heading-four':
+      case 'heading-five':
+      case 'heading-six':
+      case 'code': {
+        if (editor.value.blocks.every(block => block.type === type)) {
+          editor.value.blocks.forEach(block => editor.setNodeByKey(block.key, 'paragraph'));
+        } else {
+          const texts = editor.value.texts.map(text => text.regenerateKey());
+          const selectBackward = editor.value.selection.isBackward;
+          const newBlock = Block.create({ type, nodes: texts });
+          editor
+            .moveStartToStartOfBlock()
+            .moveEndToEndOfBlock()
+            .delete()
+            .insertBlock(newBlock)
+            .moveToRangeOfNode(newBlock);
+          if (selectBackward) {
+            editor.flip();
+          }
+        }
+      }
+      case 'quote':
+        /**
+         * Quotes can contain other blocks, even other quotes. If a selection contains quotes, they
+         * shouldn't be impacted. The selection's immediate parent should be checked - if it's a
+         * quote, unwrap the quote (as within are only blocks), and if it's not, wrap all selected
+         * blocks into a quote. Make sure text is wrapped into paragraphs.
+         */
+      case 'list':
+    }
+        /**
+         * 
+        const 
     // Handle everything except list buttons.
     if (!['bulleted-list', 'numbered-list'].includes(type)) {
       const blocksOfType = value.blocks.filter(block => block.type === type);
@@ -132,7 +172,8 @@ export default class Editor extends React.Component {
 
     // Handle list buttons.
     else {
-      editor.wrapBlock(type).wrapBlock('list-item');
+      //editor.wrapBlock(type).wrapBlock('list-item');
+      editor.wrapList('bulleted-list');
     }
     /*
     } else {

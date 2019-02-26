@@ -42,6 +42,7 @@ const Table = props => (
 const TableRow = props => <tr {...props.attributes}>{props.children}</tr>;
 const TableCell = props => <td {...props.attributes}>{props.children}</td>;
 const ThematicBreak = props => <hr {...props.attributes} />;
+const Break = props => <br {...props.attributes} />;
 const BulletedList = props => <ul {...props.attributes}>{props.children}</ul>;
 const NumberedList = props => (
   <ol {...props.attributes} start={props.node.data.get('start') || 1}>
@@ -133,5 +134,7 @@ export const renderNode = props => {
       return <Image {...props} />;
     case 'shortcode':
       return <Shortcode {...props} />;
+    case 'break':
+      return <Break {...props} />;
   }
 };

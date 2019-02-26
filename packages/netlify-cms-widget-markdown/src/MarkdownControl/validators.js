@@ -5,6 +5,7 @@ import { Block, Text } from 'slate';
  * changes, to ensure it is never rendered in an undesirable state.
  */
 export function validateNode(node) {
+  console.log('validating');
   /**
    * Validation of the document itself.
    */
