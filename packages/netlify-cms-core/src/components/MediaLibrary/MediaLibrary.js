@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 import { orderBy, map } from 'lodash';
-import { Map } from 'immutable';
 import { translate } from 'react-polyglot';
 import fuzzy from 'fuzzy';
 import { resolvePath, fileExtension } from 'netlify-cms-lib-util';
@@ -26,11 +25,13 @@ const IMAGE_EXTENSIONS = [...IMAGE_EXTENSIONS_VIEWABLE];
 
 const fileShape = {
   key: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  size: PropTypes.number.isRequired,
+  size: PropTypes.number,
   queryOrder: PropTypes.number,
-  url: PropTypes.string.isRequired,
+  url: PropTypes.string,
   urlIsPublicPath: PropTypes.bool,
+  getDisplayURL: PropTypes.func,
 };
 
 class MediaLibrary extends React.Component {
@@ -97,28 +98,9 @@ class MediaLibrary extends React.Component {
     }
   }
 
-  getDisplayURL = file => {
-    const { isVisible, loadMediaDisplayURL, displayURLs } = this.props;
-
-    if (!isVisible) {
-      return '';
-    }
-
-    if (file && file.url) {
-      return file.url;
-    }
-
-    const { url, isFetching } = displayURLs.get(file.id, Map()).toObject();
-
-    if (url && url !== '') {
-      return url;
-    }
-
-    if (!isFetching) {
-      loadMediaDisplayURL(file);
-    }
-
-    return '';
+  loadDisplayURL = file => {
+    const { loadMediaDisplayURL } = this.props;
+    loadMediaDisplayURL(file);
   };
 
   /**
@@ -137,7 +119,7 @@ class MediaLibrary extends React.Component {
   toTableData = files => {
     const tableData =
       files &&
-      files.map(({ key, name, id, size, queryOrder, url, urlIsPublicPath, getBlobPromise }) => {
+      files.map(({ key, name, id, size, queryOrder, url, urlIsPublicPath, getDisplayURL }) => {
         const ext = fileExtension(name).toLowerCase();
         return {
           key,
@@ -148,7 +130,7 @@ class MediaLibrary extends React.Component {
           queryOrder,
           url,
           urlIsPublicPath,
-          getBlobPromise,
+          getDisplayURL,
           isImage: IMAGE_EXTENSIONS.includes(ext),
           isViewableImage: IMAGE_EXTENSIONS_VIEWABLE.includes(ext),
         };
@@ -291,6 +273,7 @@ class MediaLibrary extends React.Component {
       hasNextPage,
       isPaginating,
       privateUpload,
+      displayURLs,
       t,
     } = this.props;
 
@@ -322,7 +305,8 @@ class MediaLibrary extends React.Component {
         setScrollContainerRef={ref => (this.scrollContainerRef = ref)}
         handleAssetClick={this.handleAssetClick}
         handleLoadMore={this.handleLoadMore}
-        getDisplayURL={this.getDisplayURL}
+        displayURLs={displayURLs}
+        loadDisplayURL={this.loadDisplayURL}
         t={t}
       />
     );

@@ -127,7 +127,7 @@ export default class GitGatewayAuthenticationPage extends React.Component {
       return;
     }
 
-    AuthenticationPage.authClient
+    GitGatewayAuthenticationPage.authClient
       .login(this.state.email, this.state.password, true)
       .then(user => {
         this.props.onLogin(user);

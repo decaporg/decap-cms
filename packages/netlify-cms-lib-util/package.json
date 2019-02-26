@@ -16,7 +16,8 @@
     "build": "cross-env NODE_ENV=production webpack"
   },
   "dependencies": {
-    "localforage": "^1.4.2"
+    "localforage": "^1.4.2",
+    "js-sha256": "^0.9.0"
   },
   "devDependencies": {
     "cross-env": "^5.2.0",

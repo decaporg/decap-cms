@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import styled from 'react-emotion';
 import Waypoint from 'react-waypoint';
 import MediaLibraryCard from './MediaLibraryCard';
+import { Map } from 'immutable';
 import { colors } from 'netlify-cms-ui-default';
 
 const CardGridContainer = styled.div`
@@ -33,7 +34,8 @@ const MediaLibraryCardGrid = ({
   cardWidth,
   cardMargin,
   isPrivate,
-  getDisplayURL,
+  displayURLs,
+  loadDisplayURL,
 }) => (
   <CardGridContainer innerRef={setScrollContainerRef}>
     <CardGrid>
@@ -46,7 +48,8 @@ const MediaLibraryCardGrid = ({
           width={cardWidth}
           margin={cardMargin}
           isPrivate={isPrivate}
-          displayURL={file.isViewableImage && getDisplayURL(file)}
+          displayURL={displayURLs.get(file.id, Map())}
+          loadDisplayURL={() => loadDisplayURL(file)}
           type={file.type}
         />
       ))}
@@ -76,7 +79,7 @@ MediaLibraryCardGrid.propTypes = {
   paginatingMessage: PropTypes.string,
   cardWidth: PropTypes.string.isRequired,
   cardMargin: PropTypes.string.isRequired,
-  getDisplayURL: PropTypes.func.isRequired,
+  loadDisplayURL: PropTypes.func.isRequired,
   isPrivate: PropTypes.bool,
 };
 

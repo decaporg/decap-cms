@@ -93,7 +93,8 @@ const MediaLibraryModal = ({
   setScrollContainerRef,
   handleAssetClick,
   handleLoadMore,
-  getDisplayURL,
+  loadDisplayURL,
+  displayURLs,
   t,
 }) => {
   const filteredFiles = forImage ? handleFilter(files) : files;
@@ -171,7 +172,8 @@ const MediaLibraryModal = ({
         cardWidth={cardWidth}
         cardMargin={cardMargin}
         isPrivate={privateUpload}
-        getDisplayURL={getDisplayURL}
+        loadDisplayURL={loadDisplayURL}
+        displayURLs={displayURLs}
       />
     </StyledModal>
   );
@@ -179,11 +181,13 @@ const MediaLibraryModal = ({
 
 const fileShape = {
   key: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  size: PropTypes.number.isRequired,
+  size: PropTypes.number,
   queryOrder: PropTypes.number,
-  url: PropTypes.string.isRequired,
+  url: PropTypes.string,
   urlIsPublicPath: PropTypes.bool,
+  getDisplayURL: PropTypes.func.isRequired,
 };
 
 MediaLibraryModal.propTypes = {
@@ -213,7 +217,7 @@ MediaLibraryModal.propTypes = {
   setScrollContainerRef: PropTypes.func.isRequired,
   handleAssetClick: PropTypes.func.isRequired,
   handleLoadMore: PropTypes.func.isRequired,
-  getDisplayURL: PropTypes.func.isRequired,
+  loadDisplayURL: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
 };
 

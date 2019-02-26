@@ -1,13 +1,20 @@
 import GoTrue from 'gotrue-js';
 import jwtDecode from 'jwt-decode';
-import { get, pick, intersection } from 'lodash';
-import { APIError, unsentRequest } from 'netlify-cms-lib-util';
+import { fromPairs, get, pick, intersection, unzip } from 'lodash';
+import ini from 'ini';
+import { APIError, getBlobSHA, unsentRequest } from 'netlify-cms-lib-util';
 import { GitHubBackend } from 'netlify-cms-backend-github';
 import { GitLabBackend } from 'netlify-cms-backend-gitlab';
 import { BitBucketBackend, API as BitBucketAPI } from 'netlify-cms-backend-bitbucket';
 import GitHubAPI from './GitHubAPI';
 import GitLabAPI from './GitLabAPI';
 import AuthenticationPage from './AuthenticationPage';
+import {
+  parsePointerFile,
+  createPointerFile,
+  getLargeMediaPatternsFromGitAttributesFile,
+  getClient,
+} from './netlify-lfs-client';
 
 const localHosts = {
   localhost: true,
@@ -17,6 +24,7 @@ const localHosts = {
 const defaults = {
   identity: '/.netlify/identity',
   gateway: '/.netlify/git',
+  largeMedia: '/.netlify/large-media',
 };
 
 function getEndpoint(endpoint, netlifySiteURL) {
@@ -58,7 +66,10 @@ export default class GitGateway {
       config.getIn(['backend', 'gateway_url'], defaults.gateway),
       netlifySiteURL,
     );
-
+    this.netlifyLargeMediaURL = getEndpoint(
+      config.getIn(['backend', 'large_media_url'], defaults.largeMedia),
+      netlifySiteURL,
+    );
     const backendTypeRegex = /\/(github|gitlab|bitbucket)\/?$/;
     const backendTypeMatches = this.gatewayUrl.match(backendTypeRegex);
     if (backendTypeMatches) {
@@ -196,14 +207,136 @@ export default class GitGateway {
   getEntry(collection, slug, path) {
     return this.backend.getEntry(collection, slug, path);
   }
+
   getMedia() {
-    return this.backend.getMedia();
+    return Promise.all([this.backend.getMedia(), this.getLargeMediaClient()]).then(
+      async ([mediaFiles, largeMediaClient]) => {
+        if (!largeMediaClient.enabled) {
+          return mediaFiles;
+        }
+        const largeMediaURLThunks = await this.getLargeMedia(mediaFiles);
+        return mediaFiles.map(({ id, url, getDisplayURL, ...rest }) => ({
+          ...rest,
+          id,
+          url,
+          urlIsPublicPath: false,
+          getDisplayURL: largeMediaURLThunks[id] ? largeMediaURLThunks[id] : getDisplayURL,
+        }));
+      },
+    );
+  }
+
+  // this method memoizes this._getLargeMediaClient so that there can
+  // only be one client at a time
+  getLargeMediaClient() {
+    if (this._largeMediaClientPromise) {
+      return this._largeMediaClientPromise;
+    }
+    this._largeMediaClientPromise = this._getLargeMediaClient();
+    return this._largeMediaClientPromise;
+  }
+  _getLargeMediaClient() {
+    const netlifyLargeMediaEnabledPromise = this.api
+      .readFile('.lfsconfig')
+      .then(ini.decode)
+      .then(({ lfs: { url } }) => new URL(url))
+      .then(lfsURL => ({ enabled: lfsURL.hostname.endsWith('netlify.com') }))
+      .catch(err => ({ enabled: false, err }));
+
+    const lfsPatternsPromise = this.api
+      .readFile('.gitattributes')
+      .then(getLargeMediaPatternsFromGitAttributesFile)
+      .then(patterns => ({ patterns }))
+      .catch(err => (err.message.includes('404') ? [] : { err }));
+
+    return Promise.all([netlifyLargeMediaEnabledPromise, lfsPatternsPromise]).then(
+      ([{ enabled: maybeEnabled }, { patterns, err: patternsErr }]) => {
+        const enabled = maybeEnabled && !patternsErr;
+
+        // We expect LFS patterns to exist when the .lfsconfig states
+        // that we're using Netlify Large Media
+        if (maybeEnabled && patternsErr) {
+          console.error(patternsErr);
+        }
+
+        return getClient({
+          enabled,
+          rootURL: this.netlifyLargeMediaURL,
+          makeAuthorizedRequest: this.requestFunction,
+          patterns,
+          transformImages: this.config.getIn(
+            ['backend', 'use_large_media_transforms_in_media_library'],
+            true,
+          )
+            ? { nf_resize: 'fit', w: 280, h: 160 }
+            : false,
+        });
+      },
+    );
+  }
+  getLargeMedia(mediaFiles) {
+    return this.getLargeMediaClient().then(client => {
+      const largeMediaItems = mediaFiles
+        .filter(({ path }) => client.matchPath(path))
+        .map(({ id, path }) => ({ path, sha: id }));
+      return this.backend
+        .fetchFiles(largeMediaItems)
+        .then(items =>
+          items.map(({ file: { sha }, data }) => {
+            const parsedPointerFile = parsePointerFile(data);
+            return [
+              {
+                pointerId: sha,
+                resourceId: parsedPointerFile.sha,
+              },
+              parsedPointerFile,
+            ];
+          }),
+        )
+        .then(unzip)
+        .then(async ([idMaps, files]) => [
+          idMaps,
+          await client.getResourceDownloadURLThunks(files).then(fromPairs),
+        ])
+        .then(([idMaps, resourceMap]) =>
+          idMaps.map(({ pointerId, resourceId }) => [pointerId, resourceMap[resourceId]]),
+        )
+        .then(fromPairs);
+    });
   }
   persistEntry(entry, mediaFiles, options) {
     return this.backend.persistEntry(entry, mediaFiles, options);
   }
   persistMedia(mediaFile, options) {
-    return this.backend.persistMedia(mediaFile, options);
+    const { fileObj, path, value } = mediaFile;
+    const { name, size } = fileObj;
+    return this.getLargeMediaClient().then(client => {
+      const fixedPath = path.startsWith('/') ? path.slice(1) : path;
+      if (!client.enabled || !client.matchPath(fixedPath)) {
+        return this.backend.persistMedia(mediaFile, options);
+      }
+
+      return getBlobSHA(fileObj).then(async sha => {
+        await client.uploadResource({ sha, size }, fileObj);
+        const pointerFileString = createPointerFile({ sha, size });
+        const pointerFileBlob = new Blob([pointerFileString]);
+        const pointerFile = new File([pointerFileBlob], name, { type: 'text/plain' });
+        const pointerFileSHA = await getBlobSHA(pointerFile);
+        const persistMediaArgument = {
+          fileObj: pointerFile,
+          size: pointerFileBlob.size,
+          path,
+          sha: pointerFileSHA,
+          raw: pointerFileString,
+          value,
+        };
+        const persistedMediaFile = await this.backend.persistMedia(persistMediaArgument, options);
+        return {
+          ...persistedMediaFile,
+          urlIsPublicPath: false,
+        };
+      });
+    });
   }
   deleteFile(path, commitMessage, options) {
     return this.backend.deleteFile(path, commitMessage, options);

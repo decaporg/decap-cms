@@ -1,5 +1,6 @@
 import { Map } from 'immutable';
 import { actions as notifActions } from 'redux-notifications';
+import { getBlobSHA } from 'netlify-cms-lib-util';
 import { currentBackend } from 'src/backend';
 import { createAssetProxy } from 'ValueObjects/AssetProxy';
 import { selectIntegration } from 'Reducers';
@@ -119,7 +120,11 @@ export function loadMedia(opts = {}) {
           backend
             .getMedia()
             .then(files => dispatch(mediaLoaded(files)))
-            .catch(error => dispatch(error.status === 404 ? mediaLoaded() : mediaLoadFailed())),
+            .catch(
+              error =>
+                console.error(error) ||
+                dispatch(error.status === 404 ? mediaLoaded() : mediaLoadFailed()),
+            ),
         ),
       );
     }, delay);
@@ -153,13 +158,17 @@ export function persistMedia(file, opts = {}) {
     dispatch(mediaPersisting());
 
     try {
+      const id = await getBlobSHA(file);
+      const getDisplayURL = () => URL.createObjectURL(file);
       const assetProxy = await createAssetProxy(fileName, file, false, privateUpload);
       dispatch(addAsset(assetProxy));
       if (!integration) {
         const asset = await backend.persistMedia(state.config, assetProxy);
-        return dispatch(mediaPersisted(asset));
+        return dispatch(mediaPersisted({ id, getDisplayURL, ...asset }));
       }
-      return dispatch(mediaPersisted(assetProxy.asset, { privateUpload }));
+      return dispatch(
+        mediaPersisted({ id, getDisplayURL, ...assetProxy.asset }, { privateUpload }),
+      );
     } catch (error) {
       console.error(error);
       dispatch(
@@ -221,16 +230,26 @@ export function deleteMedia(file, opts = {}) {
 }
 
 export function loadMediaDisplayURL(file) {
-  return async dispatch => {
-    const { getBlobPromise, id } = file;
-
-    if (id && getBlobPromise) {
+  return async (dispatch, getState) => {
+    const { getDisplayURL, id, url, urlIsPublicPath } = file;
+    const { mediaLibrary: mediaLibraryState } = getState();
+    const displayURLPath = ['displayURLs', id];
+    const shouldLoadDisplayURL =
+      id &&
+      ((url && urlIsPublicPath) ||
+        (getDisplayURL &&
+          !mediaLibraryState.getIn([...displayURLPath, 'url']) &&
+          !mediaLibraryState.getIn([...displayURLPath, 'isFetching']) &&
+          !mediaLibraryState.getIn([...displayURLPath, 'err'])));
+    if (shouldLoadDisplayURL) {
       try {
         dispatch(mediaDisplayURLRequest(id));
-        const blob = await getBlobPromise();
-        const newURL = window.URL.createObjectURL(blob);
-        dispatch(mediaDisplayURLSuccess(id, newURL));
-        return newURL;
+        const newURL = (urlIsPublicPath && url) || (await getDisplayURL());
+        if (newURL) {
+          dispatch(mediaDisplayURLSuccess(id, newURL));
+          return newURL;
+        }
+        throw new Error('No display URL was returned!');
       } catch (err) {
         dispatch(mediaDisplayURLFailure(id, err));
       }
