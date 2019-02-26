@@ -215,7 +215,8 @@ export default class GitGateway {
       return mediaFiles.map(({ id, url, getDisplayURL, ...rest }) => ({
         ...rest,
         id,
-        url: largeMediaURLThunks[id] ? undefined : url,
+        url,
+        urlIsPublicPath: false,
         getDisplayURL: largeMediaURLThunks[id]
           ? largeMediaURLThunks[id]
           : getDisplayURL
@@ -327,12 +328,12 @@ export default class GitGateway {
             raw: pointerFileString,
             value,
           };
-          const { url, ...rest } = await this.backend.persistMedia(persistMediaArgument, options);
+          const persistedMediaFile = await this.backend.persistMedia(persistMediaArgument, options);
           const displayURL = URL.createObjectURL(fileObj);
           return {
-            ...rest,
-            url: displayURL
-          }
+            ...persistedMediaFile,
+            urlIsPublicPath: false
+          };
         }
       );
 
