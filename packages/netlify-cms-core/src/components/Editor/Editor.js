@@ -175,15 +175,11 @@ class Editor extends React.Component {
     }
 
     if (!prevProps.localBackup && this.props.localBackup) {
-      if (this.props.newEntry) {
+      const confirmLoadBackup = window.confirm(this.props.t('editor.editor.confirmLoadBackup'));
+      if (confirmLoadBackup) {
         this.props.loadLocalBackup();
       } else {
-        const confirmLoadBackup = window.confirm(this.props.t('editor.editor.confirmLoadBackup'));
-        if (confirmLoadBackup) {
-          this.props.loadLocalBackup();
-        } else {
-          this.deleteBackup();
-        }
+        this.deleteBackup();
       }
     }
 

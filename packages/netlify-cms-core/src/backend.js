@@ -440,18 +440,20 @@ class Backend {
     );
   }
 
-  persistLocalDraftBackup(entry, collection) {
+  async persistLocalDraftBackup(entry, collection) {
     const key = getEntryBackupKey(collection.get('name'), entry.get('slug'));
     const raw = this.entryToRaw(collection, entry);
     if (!raw.trim()) {
       return;
     }
-    return localForage.setItem(key, { raw, path: entry.get('path') });
+    await localForage.setItem(key, { raw, path: entry.get('path') });
+    return localForage.setItem('backup', raw);
   }
 
-  deleteLocalDraftBackup(collection, slug) {
+  async deleteLocalDraftBackup(collection, slug) {
     const key = getEntryBackupKey(collection.get('name'), slug);
-    return localForage.removeItem(key);
+    await localForage.removeItem(key);
+    return localForage.removeItem('backup');
   }
 
   getEntry(collection, slug) {
