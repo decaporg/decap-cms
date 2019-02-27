@@ -44,7 +44,7 @@ const CopyButton = styled.button`
   ${buttons.gray};
   display: block;
   margin: 12px 0;
-`
+`;
 
 class ErrorBoundary extends React.Component {
   static propTypes = {
@@ -64,12 +64,13 @@ class ErrorBoundary extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return this.state.errorMessage !== nextState.errorMessage ||
-      this.state.backup !== nextState.backup;
+    return (
+      this.state.errorMessage !== nextState.errorMessage || this.state.backup !== nextState.backup
+    );
   }
 
   async componentDidUpdate() {
-    const backup = await localForage.getItem('backup')
+    const backup = await localForage.getItem('backup');
     console.log(backup);
     this.setState({ backup });
   }
@@ -94,18 +95,20 @@ class ErrorBoundary extends React.Component {
             {t('ui.errorBoundary.reportIt')}
           </a>
         </p>
-        <hr/>
+        <hr />
         <h2>Details</h2>
         <p>{errorMessage}</p>
-        {backup &&
+        {backup && (
           <>
-            <hr/>
+            <hr />
             <h2>Recovered document</h2>
             <strong>Please copy/paste this somewhere before navigating away!</strong>
             <CopyButton onClick={() => copyToClipboard(backup)}>Copy to clipboard</CopyButton>
-            <pre><code>{backup}</code></pre>
+            <pre>
+              <code>{backup}</code>
+            </pre>
           </>
-        }
+        )}
       </div>
     );
   }
