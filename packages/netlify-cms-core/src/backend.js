@@ -78,12 +78,12 @@ function getExplicitFieldReplacement(key, data) {
 function getEntryBackupKey(collectionName, slug) {
   const suffix = slug ? `.${slug}` : '';
   return `backup.${collectionName}${suffix}`;
-};
+}
 
 function getLabelForFileCollectionEntry(collection, path) {
   const files = collection.get('files');
-  const label = files && files.find(f => f.get('file') === path).get('label');
-};
+  return files && files.find(f => f.get('file') === path).get('label');
+}
 
 function compileSlug(template, date, identifier = '', data = Map(), processor) {
   let missingRequiredDate;

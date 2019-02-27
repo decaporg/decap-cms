@@ -79,8 +79,10 @@ export default class Editor extends React.Component {
   // the new props value does not match the others, the new props value
   // originated from outside of this widget and should be used.
   shouldForcePropsValue(oldPropsValue, oldStateValue, newPropsValue, newStateValue) {
-    return uniq([oldPropsValue, oldStateValue, newStateValue]).length === 1
-      && oldPropsValue !== newPropsValue;
+    return (
+      uniq([oldPropsValue, oldStateValue, newStateValue]).length === 1 &&
+      oldPropsValue !== newPropsValue
+    );
   }
 
   handlePaste = (e, data, change) => {

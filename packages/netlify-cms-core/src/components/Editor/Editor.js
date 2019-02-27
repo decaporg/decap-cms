@@ -193,7 +193,7 @@ class Editor extends React.Component {
 
     if (prevProps.entry === this.props.entry) return;
 
-    const { entry, entryDraft, newEntry, fields, collection } = this.props;
+    const { entry, newEntry, fields, collection } = this.props;
 
     if (entry && !entry.get('isFetching') && !entry.get('error')) {
       /**
@@ -215,7 +215,7 @@ class Editor extends React.Component {
     window.removeEventListener('beforeunload', this.exitBlocker);
   }
 
-  createBackup = debounce(function (entry, collection) {
+  createBackup = debounce(function(entry, collection) {
     this.props.persistLocalBackup(entry, collection);
   }, 2000);
 
@@ -254,7 +254,6 @@ class Editor extends React.Component {
       currentStatus,
       hasWorkflow,
       loadEntry,
-      newEntry,
       slug,
       createEmptyDraft,
     } = this.props;
@@ -269,18 +268,11 @@ class Editor extends React.Component {
     } else if (slug && hasWorkflow && !currentStatus) {
       loadEntry(collection, slug);
     }
-  }
+  };
 
   handlePublishEntry = async (opts = {}) => {
     const { createNew = false } = opts;
-    const {
-      publishUnpublishedEntry,
-      entryDraft,
-      collection,
-      slug,
-      currentStatus,
-      t,
-    } = this.props;
+    const { publishUnpublishedEntry, entryDraft, collection, slug, currentStatus, t } = this.props;
     if (currentStatus !== status.last()) {
       window.alert(t('editor.editor.onPublishingNotReady'));
       return;
@@ -301,14 +293,7 @@ class Editor extends React.Component {
   };
 
   handleDeleteEntry = () => {
-    const {
-      entryDraft,
-      newEntry,
-      collection,
-      deleteEntry,
-      slug,
-      t,
-    } = this.props;
+    const { entryDraft, newEntry, collection, deleteEntry, slug, t } = this.props;
     if (entryDraft.get('hasChanged')) {
       if (!window.confirm(t('editor.editor.onDeleteWithUnsavedChanges'))) {
         return;

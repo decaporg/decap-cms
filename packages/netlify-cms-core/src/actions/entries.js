@@ -226,13 +226,13 @@ export function localBackupRetrieved(entry) {
   return {
     type: DRAFT_LOCAL_BACKUP_RETRIEVED,
     payload: { entry },
-  }
+  };
 }
 
 export function loadLocalBackup() {
   return {
     type: DRAFT_CREATE_FROM_LOCAL_BACKUP,
-  }
+  };
 }
 
 export function persistLocalBackup(entry, collection) {
@@ -240,7 +240,7 @@ export function persistLocalBackup(entry, collection) {
     const state = getState();
     const backend = currentBackend(state.config);
     return backend.persistLocalDraftBackup(entry, collection);
-  }
+  };
 }
 
 export function retrieveLocalBackup(collection, slug) {
@@ -251,7 +251,7 @@ export function retrieveLocalBackup(collection, slug) {
     if (entry) {
       return dispatch(localBackupRetrieved(entry));
     }
-  }
+  };
 }
 
 export function deleteLocalBackup(collection, slug) {
@@ -259,7 +259,7 @@ export function deleteLocalBackup(collection, slug) {
     const state = getState();
     const backend = currentBackend(state.config);
     return backend.deleteLocalDraftBackup(collection, slug);
-  }
+  };
 }
 
 /*
