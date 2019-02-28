@@ -76,6 +76,10 @@ function getExplicitFieldReplacement(key, data) {
 }
 
 function getEntryBackupKey(collectionName, slug) {
+  const baseKey = 'backup';
+  if (!collectionName) {
+    return baseKey;
+  }
   const suffix = slug ? `.${slug}` : '';
   return `backup.${collectionName}${suffix}`;
 }
@@ -449,7 +453,7 @@ class Backend {
       return;
     }
     await localForage.setItem(key, { raw, path: entry.get('path') });
-    return localForage.setItem('backup', raw);
+    return localForage.setItem(getEntryBackupKey(), raw);
   }
 
   async deleteLocalDraftBackup(collection, slug) {
@@ -461,7 +465,7 @@ class Backend {
   // Unnamed backup for use in the global error boundary, should always be
   // deleted on cms load.
   deleteAnonymousBackup() {
-    return localForage.removeItem('backup');
+    return localForage.removeItem(getEntryBackupKey());
   }
 
   getEntry(collection, slug) {
