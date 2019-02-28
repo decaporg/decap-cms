@@ -71,7 +71,7 @@ describe('config', () => {
           fromJS({
             collections: [{ folder: '/foo' }],
           }),
-        )
+        ),
       ).toEqual(
         fromJS({
           publish_mode: 'simple',
@@ -87,7 +87,7 @@ describe('config', () => {
           fromJS({
             collections: [{ files: [{ file: '/foo' }] }],
           }),
-        )
+        ),
       ).toEqual(
         fromJS({
           publish_mode: 'simple',
