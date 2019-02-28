@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms",
   "description": "An extensible, open source, Git-based, React CMS for static sites.",
-  "version": "2.5.0",
+  "version": "2.5.1",
   "homepage": "https://www.netlifycms.org",
   "repository": "https://github.com/netlify/netlify-cms",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
@@ -24,7 +24,7 @@
     "create-react-class": "^15.6.0",
     "emotion": "^9.2.6",
     "netlify-cms-backend-bitbucket": "^2.1.1",
-    "netlify-cms-backend-git-gateway": "^2.2.1",
+    "netlify-cms-backend-git-gateway": "^2.2.2",
     "netlify-cms-backend-github": "^2.2.1",
     "netlify-cms-backend-gitlab": "^2.1.2",
     "netlify-cms-backend-test": "^2.0.6",
