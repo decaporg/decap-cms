@@ -14,6 +14,7 @@ The relation widget allows you to reference items from another collection. It pr
   - `displayFields`: list of one or more names of fields in the referenced collection that will render in the autocomplete menu of the control. Defaults to `valueField`.
   - `searchFields`: (**required**) list of one or more names of fields in the referenced collection to search for the typed value
   - `valueField`: (**required**) name of the field from the referenced collection whose value will be stored for the relation
+  - `multiple` : accepts a boolean, defaults to `false`
 - **Example** (assuming a separate "authors" collection with "name" and "twitterHandle" fields):
     ```yaml
     - label: "Post Author"
