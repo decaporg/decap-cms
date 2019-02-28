@@ -3,6 +3,7 @@ import { Map } from 'immutable';
 import { stripIndent } from 'common-tags';
 import moment from 'moment';
 import fuzzy from 'fuzzy';
+import { localForage } from 'netlify-cms-lib-util';
 import { resolveFormat } from 'Formats/formats';
 import { selectIntegration } from 'Reducers/integrations';
 import {
@@ -73,6 +74,20 @@ function getExplicitFieldReplacement(key, data) {
   }
   const fieldName = key.substring(USE_FIELD_PREFIX.length);
   return data.get(fieldName, '');
+}
+
+function getEntryBackupKey(collectionName, slug) {
+  const baseKey = 'backup';
+  if (!collectionName) {
+    return baseKey;
+  }
+  const suffix = slug ? `.${slug}` : '';
+  return `backup.${collectionName}${suffix}`;
+}
+
+function getLabelForFileCollectionEntry(collection, path) {
+  const files = collection.get('files');
+  return files && files.find(f => f.get('file') === path).get('label');
 }
 
 function compileSlug(template, date, identifier = '', data = Map(), processor) {
@@ -240,6 +255,8 @@ function createPreviewUrl(baseUrl, collection, slug, slugConfig, entry) {
 
 class Backend {
   constructor(implementation, { backendName, authStore = null, config } = {}) {
+    // We can't reliably run this on exit, so we do cleanup on load.
+    this.deleteAnonymousBackup();
     this.config = config;
     this.implementation = implementation.init(config, {
       useWorkflow: config.getIn(['publish_mode']) === EDITORIAL_WORKFLOW,
@@ -417,10 +434,44 @@ class Backend {
       }));
   }
 
+  async getLocalDraftBackup(collection, slug) {
+    const key = getEntryBackupKey(collection.get('name'), slug);
+    const backup = await localForage.getItem(key);
+    if (!backup || !backup.raw.trim()) {
+      return;
+    }
+    const { raw, path } = backup;
+    const label = getLabelForFileCollectionEntry(collection, path);
+    return this.entryWithFormat(collection, slug)(
+      createEntry(collection.get('name'), slug, path, { raw, label }),
+    );
+  }
+
+  async persistLocalDraftBackup(entry, collection) {
+    const key = getEntryBackupKey(collection.get('name'), entry.get('slug'));
+    const raw = this.entryToRaw(collection, entry);
+    if (!raw.trim()) {
+      return;
+    }
+    await localForage.setItem(key, { raw, path: entry.get('path') });
+    return localForage.setItem(getEntryBackupKey(), raw);
+  }
+
+  async deleteLocalDraftBackup(collection, slug) {
+    const key = getEntryBackupKey(collection.get('name'), slug);
+    await localForage.removeItem(key);
+    return this.deleteAnonymousBackup();
+  }
+
+  // Unnamed backup for use in the global error boundary, should always be
+  // deleted on cms load.
+  deleteAnonymousBackup() {
+    return localForage.removeItem(getEntryBackupKey());
+  }
+
   getEntry(collection, slug) {
     const path = selectEntryPath(collection, slug);
-    const files = collection.get('files');
-    const label = files && files.find(f => f.get('file') === path).get('label');
+    const label = getLabelForFileCollectionEntry(collection, path);
     return this.implementation.getEntry(collection, slug, path).then(loadedEntry =>
       this.entryWithFormat(collection, slug)(
         createEntry(collection.get('name'), slug, loadedEntry.file.path, {

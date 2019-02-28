@@ -30,6 +30,8 @@ export const DRAFT_CHANGE = 'DRAFT_CHANGE';
 export const DRAFT_CHANGE_FIELD = 'DRAFT_CHANGE_FIELD';
 export const DRAFT_VALIDATION_ERRORS = 'DRAFT_VALIDATION_ERRORS';
 export const DRAFT_CLEAR_ERRORS = 'DRAFT_CLEAR_ERRORS';
+export const DRAFT_LOCAL_BACKUP_RETRIEVED = 'DRAFT_LOCAL_BACKUP_RETRIEVED';
+export const DRAFT_CREATE_FROM_LOCAL_BACKUP = 'DRAFT_CREATE_FROM_LOCAL_BACKUP';
 
 export const ENTRY_PERSIST_REQUEST = 'ENTRY_PERSIST_REQUEST';
 export const ENTRY_PERSIST_SUCCESS = 'ENTRY_PERSIST_SUCCESS';
@@ -218,6 +220,46 @@ export function changeDraftFieldValidation(uniquefieldId, errors) {
 
 export function clearFieldErrors() {
   return { type: DRAFT_CLEAR_ERRORS };
+}
+
+export function localBackupRetrieved(entry) {
+  return {
+    type: DRAFT_LOCAL_BACKUP_RETRIEVED,
+    payload: { entry },
+  };
+}
+
+export function loadLocalBackup() {
+  return {
+    type: DRAFT_CREATE_FROM_LOCAL_BACKUP,
+  };
+}
+
+export function persistLocalBackup(entry, collection) {
+  return (dispatch, getState) => {
+    const state = getState();
+    const backend = currentBackend(state.config);
+    return backend.persistLocalDraftBackup(entry, collection);
+  };
+}
+
+export function retrieveLocalBackup(collection, slug) {
+  return async (dispatch, getState) => {
+    const state = getState();
+    const backend = currentBackend(state.config);
+    const entry = await backend.getLocalDraftBackup(collection, slug);
+    if (entry) {
+      return dispatch(localBackupRetrieved(entry));
+    }
+  };
+}
+
+export function deleteLocalBackup(collection, slug) {
+  return (dispatch, getState) => {
+    const state = getState();
+    const backend = currentBackend(state.config);
+    return backend.deleteLocalDraftBackup(collection, slug);
+  };
 }
 
 /*
