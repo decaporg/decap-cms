@@ -134,6 +134,7 @@ class Editor extends React.Component {
         return leaveMessage;
       }
     };
+
     const unblock = history.block(navigationBlocker);
 
     /**

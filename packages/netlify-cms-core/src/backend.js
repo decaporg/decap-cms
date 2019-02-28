@@ -250,6 +250,8 @@ function createPreviewUrl(baseUrl, collection, slug, slugConfig, entry) {
 
 class Backend {
   constructor(implementation, { backendName, authStore = null, config } = {}) {
+    // We can't reliably run this on exit, so we do cleanup on load.
+    this.deleteAnonymousBackup();
     this.config = config;
     this.implementation = implementation.init(config, {
       useWorkflow: config.getIn(['publish_mode']) === EDITORIAL_WORKFLOW,
@@ -453,6 +455,12 @@ class Backend {
   async deleteLocalDraftBackup(collection, slug) {
     const key = getEntryBackupKey(collection.get('name'), slug);
     await localForage.removeItem(key);
+    return this.deleteAnonymousBackup();
+  }
+
+  // Unnamed backup for use in the global error boundary, should always be
+  // deleted on cms load.
+  deleteAnonymousBackup() {
     return localForage.removeItem('backup');
   }
 
