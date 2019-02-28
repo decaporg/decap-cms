@@ -141,9 +141,7 @@ export function loadConfig() {
       const mergedConfig = mergePreloadedConfig(preloadedConfig, loadedConfig);
       validateConfig(mergedConfig.toJS());
 
-      console.log(mergedConfig);
       const config = applyDefaults(mergedConfig);
-      console.log(config);
 
       dispatch(configDidLoad(config));
       dispatch(authenticateUser());
