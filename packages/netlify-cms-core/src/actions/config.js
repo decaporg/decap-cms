@@ -30,19 +30,37 @@ export function applyDefaults(config) {
   return Map(defaults)
     .mergeDeep(config)
     .withMutations(map => {
-      /**
-       * Use `site_url` as default `display_url`.
-       */
+      // Use `site_url` as default `display_url`.
       if (!map.get('display_url') && map.get('site_url')) {
         map.set('display_url', map.get('site_url'));
       }
-      /**
-       * Use media_folder as default public_folder.
-       */
+
+      // Use media_folder as default public_folder.
       const defaultPublicFolder = `/${trimStart(map.get('media_folder'), '/')}`;
       if (!map.get('public_folder')) {
         map.set('public_folder', defaultPublicFolder);
       }
+
+      // Strip leading slash from collection folders and files
+      map.set(
+        'collections',
+        map.get('collections').map(collection => {
+          const folder = collection.get('folder');
+          if (folder) {
+            return collection.set('folder', trimStart(folder, '/'));
+          }
+
+          const files = collection.get('files');
+          if (files) {
+            return collection.set(
+              'files',
+              files.map(file => {
+                return file.set('file', trimStart(file.get('file'), '/'));
+              }),
+            );
+          }
+        }),
+      );
     });
 }
 
