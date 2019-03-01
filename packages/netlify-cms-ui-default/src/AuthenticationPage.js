@@ -13,8 +13,10 @@ const StyledAuthenticationPage = styled.section`
 `;
 
 const CustomIconWrapper = styled.span`
-  width: 300px;
-  height: 200px;
+  width: auto;
+  height: auto;
+  max-width: 300px;
+  mac-height: 200px;
   margin-top: -150px;
 `;
 
@@ -54,7 +56,7 @@ const LoginButton = styled.button`
   }
 
   padding: 0 12px;
-  margin-top: -40px;
+  margin-top: 40px;
   display: flex;
   align-items: center;
   position: relative;
