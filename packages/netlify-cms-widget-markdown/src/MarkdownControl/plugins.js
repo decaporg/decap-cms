@@ -1,6 +1,7 @@
 import { Text, Inline, Range } from 'slate';
 import isHotkey from 'is-hotkey';
 
+const DEFAULT_BLOCK_TYPE = 'paragraph';
 const BLOCK_PARENTS = [
   'list-item',
   'quote',
@@ -57,22 +58,20 @@ const BreakToDefaultBlock = ({ onlyIn = [], defaultBlock = 'paragraph' }) => ({
 
 const BreakToAdditionalBlock = ({ onlyIn = [], defaultBlock = 'paragraph' }) => ({
   onKeyDown(event, editor, next) {
-    const { type: blockType, text, key } = editor.value.startBlock;
-    const { type: parentType, parentKey } = editor.value.document.getParent(key);
-    const targetParentBlock = BLOCK_PARENTS.includes(parentType);
-    const type = targetParentBlock ? parentType : blockType;
-    if (onlyIn && !onlyIn.includes(type)) return next();
-    if (ignoreIn && ignoreIn.includes(type)) return next();
-    const type = getTargetType({ block: editor.value.startBlock, onlyIn });
-    if (!type) {
+    if (!isHotkey('enter', event) || editor.value.isExpanded) return next();
+    const block = editor.value.startBlock;
+    const parentBlock = editor.value.document.getParent(block.key);
+    if (onlyIn && !onlyIn.includes(parentBlock.type)) {
       return next();
     }
 
-    const block = editor.value.startBlock;
-    if (!isHotkey('enter', event) || editor.value.isExpanded) return next();
-    if (onlyIn.includes(block.type)) {
-      editor.insertBlock(block.type);
-    }
+    editor.withoutNormalizing(() => {
+      console.log(JSON.stringify(editor.value.document.toJS(), null, 2));
+      editor.unwrapNodeByKey(block.key)
+      console.log(JSON.stringify(editor.value.document.toJS(), null, 2));
+      editor.wrapBlock(parentBlock.type);
+      console.log(JSON.stringify(editor.value.document.toJS(), null, 2));
+    });
     return next();
   },
 });
