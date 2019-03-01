@@ -117,7 +117,7 @@ export default class Editor extends React.Component {
     switch (type) {
       /**
        * Headers and code blocks can only contain text. If any selected block is not a header,
-       * wrap all selected blocks into single selected block. If all selected blocks are of selected
+       * wrap all selected blocks into selected block type. If all selected blocks are of selected
        * block type, convert each to a paragraph.
        */
       case 'heading-one':
@@ -126,32 +126,49 @@ export default class Editor extends React.Component {
       case 'heading-four':
       case 'heading-five':
       case 'heading-six':
-      case 'code': {
+      case 'code':
         if (editor.value.blocks.every(block => block.type === type)) {
           editor.value.blocks.forEach(block => editor.setNodeByKey(block.key, 'paragraph'));
         } else {
-          const texts = editor.value.texts.map(text => text.regenerateKey());
-          const selectBackward = editor.value.selection.isBackward;
-          const newBlock = Block.create({ type, nodes: texts });
-          editor
-            .moveStartToStartOfBlock()
-            .moveEndToEndOfBlock()
-            .delete()
-            .insertBlock(newBlock)
-            .moveToRangeOfNode(newBlock);
-          if (selectBackward) {
-            editor.flip();
-          }
+          editor.setBlocks(type);
         }
-      }
-      case 'quote':
+        break;
+      case 'quote': {
         /**
          * Quotes can contain other blocks, even other quotes. If a selection contains quotes, they
          * shouldn't be impacted. The selection's immediate parent should be checked - if it's a
          * quote, unwrap the quote (as within are only blocks), and if it's not, wrap all selected
          * blocks into a quote. Make sure text is wrapped into paragraphs.
          */
-      case 'list':
+        const topBlocks = editor.value.document.getRootBlocksAtRange(editor.value.selection);
+        const ancestor = editor.value.document.getCommonAncestor(topBlocks.first().key, topBlocks.last().key);
+        if (ancestor.type === type) {
+          editor.unwrapBlock(type);
+        } else {
+          editor.wrapBlock(type);
+        }
+        break;
+      }
+      case 'numbered-list':
+      case 'bulleted-list': {
+        /**
+         * Quotes can contain other blocks, even other quotes. If a selection contains quotes, they
+         * shouldn't be impacted. The selection's immediate parent should be checked - if it's a
+         * quote, unwrap the quote (as within are only blocks), and if it's not, wrap all selected
+         * blocks into a quote. Make sure text is wrapped into paragraphs.
+         */
+        const { key } = editor.value.startBlock;
+        const topBlocks = editor.value.document.getRootBlocksAtRange(editor.value.selection);
+        const ancestor = editor.value.document.getCommonAncestor(topBlocks.first().key, topBlocks.last().key);
+        if (ancestor.type === type) {
+          editor.unwrapBlock('list-item').unwrapBlock(type);
+        } else {
+          editor.wrapBlock('list-item');
+          const listItem = editor.value.document.getClosest(key, node => node.type === 'list-item');
+          editor.wrapBlockByKey(listItem.key, type);
+        }
+        break;
+      }
     }
         /**
          * 

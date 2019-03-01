@@ -1,5 +1,10 @@
-import { Text, Inline } from 'slate';
+import { Text, Inline, Range } from 'slate';
 import isHotkey from 'is-hotkey';
+
+const BLOCK_PARENTS = [
+  'list-item',
+  'quote',
+];
 
 const SoftBreak = (options = {}) => ({
   onKeyDown(event, editor, next) {
@@ -7,34 +12,66 @@ const SoftBreak = (options = {}) => ({
     if (!options.shift && !isHotkey('enter', event)) return next();
 
     const { onlyIn, ignoreIn, defaultBlock = 'paragraph' } = options;
-    const { type, text } = editor.value.startBlock;
+    const { type: blockType, text, key } = editor.value.startBlock;
+    const { type: parentType, parentKey } = editor.value.document.getParent(key);
+    const targetParentBlock = BLOCK_PARENTS.includes(parentType);
+    const type = targetParentBlock ? parentType : blockType;
     if (onlyIn && !onlyIn.includes(type)) return next();
     if (ignoreIn && ignoreIn.includes(type)) return next();
 
-    const shouldClose = text.endsWith('\n');
-    if (shouldClose) {
-      editor.deleteBackward(1).insertBlock(defaultBlock);
-      return true;
+    if (targetParentBlock) {
+      const shouldClose = text === '';
+      if (shouldClose) {
+        editor.unwrapNodeByKey(key);
+      }
+      return next();
+    } else {
+      const shouldClose = text.endsWith('\n');
+      if (shouldClose) {
+        editor.deleteBackward(1).insertBlock(defaultBlock);
+        return next();
+      }
+
+      const textNode = Text.create('\n');
+      const breakNode = Inline.create({ type: 'break', nodes: [textNode] });
+      editor
+        .insertInline(breakNode)
+        .insertText('')
+        .moveToStartOfNextText();
+
+      return next();
     }
-
-    const textNode = Text.create('\n');
-    const breakNode = Inline.create({ type: 'break', nodes: [textNode] });
-    editor
-      .insertInline(breakNode)
-      .insertText('')
-      .moveToStartOfNextText();
-
-    return true;
   },
 });
 
 const BreakToDefaultBlock = ({ onlyIn = [], defaultBlock = 'paragraph' }) => ({
   onKeyDown(event, editor, next) {
-    const { value } = editor;
-    if (!isHotkey('enter', event) || value.isExpanded) return next();
-    if (onlyIn.includes(value.startBlock.type)) {
+    const block = editor.value.startBlock;
+    if (!isHotkey('enter', event) || editor.value.isExpanded) return next();
+    if (onlyIn.includes(editor.value.startBlock.type)) {
       editor.insertBlock(defaultBlock);
-      return true;
+    }
+    return next();
+  },
+});
+
+const BreakToAdditionalBlock = ({ onlyIn = [], defaultBlock = 'paragraph' }) => ({
+  onKeyDown(event, editor, next) {
+    const { type: blockType, text, key } = editor.value.startBlock;
+    const { type: parentType, parentKey } = editor.value.document.getParent(key);
+    const targetParentBlock = BLOCK_PARENTS.includes(parentType);
+    const type = targetParentBlock ? parentType : blockType;
+    if (onlyIn && !onlyIn.includes(type)) return next();
+    if (ignoreIn && ignoreIn.includes(type)) return next();
+    const type = getTargetType({ block: editor.value.startBlock, onlyIn });
+    if (!type) {
+      return next();
+    }
+
+    const block = editor.value.startBlock;
+    if (!isHotkey('enter', event) || editor.value.isExpanded) return next();
+    if (onlyIn.includes(block.type)) {
+      editor.insertBlock(block.type);
     }
     return next();
   },
@@ -47,13 +84,13 @@ const BackspaceCloseBlock = (options = {}) => ({
     const { defaultBlock = 'paragraph', ignoreIn = [], onlyIn} = options;
     const { value } = editor;
     const { startBlock, document: doc } = value;
-    const { type, text, key } = startBlock;
+    const { type,  key } = startBlock;
 
     if (
       value.selection.isExpanded
       || (onlyIn && !onlyIn.includes(type))
       || ignoreIn.includes(type)
-      || text !== ''
+      || !value.selection.start.isAtStartOfNode(startBlock)
     ) {
       return next();
     }
@@ -61,13 +98,17 @@ const BackspaceCloseBlock = (options = {}) => ({
     const parent = doc.getParent(key);
     const grandparent = doc.getParent(parent.key);
 
+    if (type === defaultBlock && parent.type === 'quote') {
+      editor.unwrapBlock(parent.type).focus();
+      return next();
+    }
     if (type === defaultBlock && parent.type === 'list-item') {
       editor.unwrapBlock(parent.type).unwrapBlock(grandparent.type);
-      return true;
+      return next();
     }
     if (type !== defaultBlock) {
       editor.setBlocks(defaultBlock).focus();
-      return true;
+      return next();
     }
 
     return next();
@@ -107,7 +148,11 @@ const plugins = [
       'heading-four',
       'heading-five',
       'heading-six',
+      'quote',
     ],
+  }),
+  BreakToAdditionalBlock({
+    onlyIn: ['list-item'],
   }),
   ListPlugin(),
 ];
