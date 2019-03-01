@@ -18,7 +18,7 @@ const Blog = ({ data }) => (
       <meta name="description" content="Recent news and updates about Netlify CMS." />
     </Helmet>
     <Page>
-      <Container css={{ maxWidth: 800 }}>
+      <Container size="sm">
         <h1>Netlify CMS Blog</h1>
         {data.allMarkdownRemark.edges.map(({ node }) => (
           <article
@@ -27,7 +27,11 @@ const Blog = ({ data }) => (
               margin-bottom: ${theme.space[5]};
             `}
           >
-            <h2>
+            <h2
+              css={css`
+                margin-bottom: 0;
+              `}
+            >
               <Link to={node.fields.slug}>{node.frontmatter.title}</Link>
             </h2>
             <MetaInfo>

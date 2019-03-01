@@ -17,11 +17,12 @@ const Root = styled.div`
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 24px;
-
+  padding-top: 40px;
   max-width: 446px;
 `;
 
 const Title = styled.h2`
+  font-size: 36px;
   color: white;
 `;
 
@@ -45,6 +46,7 @@ const Month = styled.div`
 
 const Day = styled.div`
   font-size: 104px;
+  line-height: 1.3;
   font-weight: bold;
   color: white;
   border: 1px solid ${theme.colors.gray};

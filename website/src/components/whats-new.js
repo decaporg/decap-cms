@@ -3,7 +3,7 @@ import { css } from '@emotion/core';
 
 import Container from './container';
 import Release from './release';
-import { mq } from '../utils';
+import Grid from './grid';
 import theme from '../theme';
 
 const WhatsNew = ({ updates }) => (
@@ -15,18 +15,11 @@ const WhatsNew = ({ updates }) => (
     `}
   >
     <Container>
-      <ol
-        css={css`
-          ${mq[2]} {
-            display: flex;
-            justify-content: space-between;
-          }
-        `}
-      >
+      <Grid as="ol" cols={3}>
         {updates.splice(0, 3).map((item, idx) => (
           <Release {...item} versionPrevious={updates[idx + 1].version} key={item.version} />
         ))}
-      </ol>
+      </Grid>
     </Container>
   </section>
 );

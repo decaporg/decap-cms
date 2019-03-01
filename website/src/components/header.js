@@ -47,7 +47,7 @@ const Logo = styled.div`
   flex: 1 0 50%;
   ${mq[1]} {
     flex: 0 0 auto;
-    margin-right: ${theme.space[3]};
+    margin-right: ${theme.space[5]};
   }
 `;
 
@@ -87,7 +87,7 @@ const ToggleArea = styled.div`
 const SearchBox = styled(ToggleArea)`
   ${mq[1]} {
     flex: 1;
-    max-width: 300px;
+    max-width: 200px;
     margin-right: ${theme.space[3]};
   }
 `;
@@ -122,7 +122,7 @@ const MenuItem = styled.li`
 const NavLink = styled(Link)`
   color: white;
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 600;
 `;
 
 const Header = ({ hasHeroBelow }) => {
@@ -179,6 +179,13 @@ const Header = ({ hasHeroBelow }) => {
         </SearchBox>
         <Menu open={isNavOpen}>
           <MenuList>
+            <MenuItem
+              css={css`
+                margin-top: 8px;
+              `}
+            >
+              <GitHubButton />
+            </MenuItem>
             <MenuItem>
               <NavLink to="/docs/intro/">Docs</NavLink>
             </MenuItem>
@@ -190,9 +197,6 @@ const Header = ({ hasHeroBelow }) => {
             </MenuItem>
             <MenuItem>
               <NavLink to="/blog/">Blog</NavLink>
-            </MenuItem>
-            <MenuItem>
-              <GitHubButton />
             </MenuItem>
           </MenuList>
         </Menu>

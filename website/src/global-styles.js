@@ -69,6 +69,7 @@ const globalStyles = css`
       font-family: ${theme.fontFamily};
       font-size: ${theme.fontsize[3]};
       letter-spacing: 0.5px;
+      line-height: 1;
       color: ${theme.colors.gray};
       background-color: ${theme.colors.green};
       box-shadow: 0 2px 16px 0 rgba(68, 74, 87, 0.15), 0 1px 4px 0 rgba(68, 74, 87, 0.3);

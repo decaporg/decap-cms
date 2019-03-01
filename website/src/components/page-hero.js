@@ -17,8 +17,8 @@ const PageHero = ({ children }) => (
       padding-bottom: ${theme.space[6]};
 
       ${mq[3]} {
-        padding-top: ${theme.space[7]};
-        padding-bottom: ${theme.space[7]};
+        padding-top: ${theme.space[6]};
+        padding-bottom: ${theme.space[8]};
       }
     `}
   >

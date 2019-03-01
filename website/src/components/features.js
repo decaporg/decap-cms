@@ -9,6 +9,7 @@ const Box = styled.div`
 
   img {
     margin-bottom: ${theme.space[3]};
+    margin-left: -${theme.space[2]};
   }
 `;
 
@@ -18,6 +19,7 @@ const Title = styled.h3`
 `;
 
 const Text = styled.p`
+  font-size: 18px;
   a {
     font-weight: 700;
   }

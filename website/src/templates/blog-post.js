@@ -2,6 +2,7 @@ import React from 'react';
 import Helmet from 'react-helmet';
 import { graphql } from 'gatsby';
 import { trimStart, trimEnd } from 'lodash';
+import { css } from '@emotion/core';
 
 import TwitterMeta from '../components/twitter-meta';
 import Layout from '../components/layout';
@@ -11,9 +12,15 @@ import MetaInfo from '../components/meta-info';
 import Page from '../components/page';
 
 export const BlogPostTemplate = ({ title, author, date, body, html }) => (
-  <Container css={{ maxWidth: 800 }}>
+  <Container size="sm">
     <Page as="article">
-      <h1>{title}</h1>
+      <h1
+        css={css`
+          margin-bottom: 0;
+        `}
+      >
+        {title}
+      </h1>
       <MetaInfo>
         by {author} on {date}
       </MetaInfo>

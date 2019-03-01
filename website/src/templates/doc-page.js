@@ -34,7 +34,7 @@ export const DocsTemplate = ({
   docsNav,
   location,
 }) => (
-  <Container>
+  <Container size="md">
     <SidebarLayout
       sidebar={<div>{showSidebar && <DocsSidebar docsNav={docsNav} location={location} />}</div>}
     >

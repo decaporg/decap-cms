@@ -34,7 +34,7 @@ const CommunityPage = ({ data }) => {
             <HeroTitle>
               <Markdownify source={headline} />
             </HeroTitle>
-            <Lead>
+            <Lead light>
               <Markdownify source={subhead} />
             </Lead>
             <Lead>
@@ -45,7 +45,10 @@ const CommunityPage = ({ data }) => {
             css={css`
               ${mq[2]} {
                 position: fixed;
-                left: 50%;
+                right: 40px;
+                top: 20%;
+                max-height: calc(100vh - (104px * 1.5) - 40px);
+                overflow-y: auto;
               }
             `}
           >

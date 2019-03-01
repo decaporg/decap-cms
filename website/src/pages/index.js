@@ -26,12 +26,12 @@ const MarkdownButton = styled.span`
     font-weight: 700;
     font-size: ${theme.fontsize[3]};
     letter-spacing: 0.5px;
-    line-height: ${theme.lineHeight[0]};
+    line-height: ${theme.lineHeight[1]};
     background-color: ${theme.colors.blue};
     background-image: linear-gradient(-180deg, #4a7fdd 0%, #3a69c7 100%);
     box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.3), 0 1px 3px 0 rgba(0, 0, 0, 0.6);
     border-radius: ${theme.radii[1]};
-    padding: ${theme.space[3]} ${theme.space[4]};
+    padding: ${theme.space[2]} ${theme.space[3]};
     transition: 0.2s;
     text-decoration: none;
 
@@ -124,6 +124,7 @@ const HomePage = ({ data }) => {
           <Lead
             css={css`
               margin-right: 2rem;
+              font-size: 18px;
               ${mq[2]} {
                 margin-bottom: 0;
               }
@@ -162,7 +163,13 @@ const HomePage = ({ data }) => {
             <Features items={landing.community.features} />
           </div>
           <div>
-            <h3>{landing.community.contributors}</h3>
+            <h3
+              css={css`
+                font-size: 18px;
+              `}
+            >
+              {landing.community.contributors}
+            </h3>
             <ContribList>
               {contribs.contributors.map(user => (
                 <a href={user.profile} title={user.name} key={user.login}>

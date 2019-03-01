@@ -14,7 +14,7 @@ const SearchField = styled.input`
   color: white;
   font-size: ${theme.fontsize[3]};
   border-radius: ${theme.radii[1]};
-  background-color: ${theme.colors.darkGray};
+  background-color: rgba(255, 255, 255, 0.1);
   background-image: url(${searchIcon});
   background-repeat: no-repeat;
   background-position: ${theme.space[2]} 50%;

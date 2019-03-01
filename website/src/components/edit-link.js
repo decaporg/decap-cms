@@ -5,15 +5,17 @@ const EditLink = ({ path }) => (
   <div
     css={css`
       float: right;
+
+      a {
+        font-weight: 700;
+      }
+
       #pencil {
         fill: #7ca511;
       }
     `}
   >
-    <a
-      className="edit-this-page"
-      href={`https://github.com/netlify/netlify-cms/blob/master/website/content/${path}`}
-    >
+    <a href={`https://github.com/netlify/netlify-cms/blob/master/website/content/${path}`}>
       <svg
         version="1.1"
         id="pencil"
