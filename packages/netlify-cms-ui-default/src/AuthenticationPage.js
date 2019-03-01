@@ -16,7 +16,7 @@ const CustomIconWrapper = styled.span`
   width: auto;
   height: auto;
   max-width: 300px;
-  mac-height: 200px;
+  max-height: 200px;
   margin-top: -150px;
 `;
 
