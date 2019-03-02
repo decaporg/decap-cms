@@ -2,30 +2,29 @@
 
 This guide will help you get started using Netlify CMS and Gatsby.
 
+To get up and running with Gatsby, you’ll need to have [Node.js](https://nodejs.org/) installed on your computer. _Note: Gatsby's minimum supported Node.js version is Node 8._
+
 ## Create a new Gatsby site
 
-Let's start by importing the default Gatsby Starter Blog.
+Let's create a new site using the default Gatsby Starter Blog. Run the following commands in the terminal, in the folder where you'd like to create the blog:
 
 ```sh
-npx gatsby new blog https://github.com/gatsbyjs/gatsby-starter-blog
+npm install -g gatsby-cli
+gatsby new blog https://github.com/gatsbyjs/gatsby-starter-blog
+cd blog
 ```
 
 ## Get to know Gatsby
 
 In your favorite code editor, open up the code generated for your "Gatsby Starter Blog" site, and take a look at the `content` directory.
 
-```sh
-cd blog
-code .      # If you are using Visual Studio Code
-```
-
-You will see that there are multiple `markdown` files that represent blog posts. Open one `.md` file and you will see something like this:
+You will see that there are multiple Markdown files that represent blog posts. Open one `.md` file and you will see something like this:
 
 ```yml
 ---
 title: New Beginnings
 date: "2015-05-28T22:40:32.169Z"
-description: This is a custom description for SEO and Open Graph purposes, rather than the default generated excerpt. Simply add a description field to the frontmatter.
+description: This is an optional description for SEO and Open Graph purposes, rather than the default generated excerpt.
 ---
 
 Far far away, behind the word mountains, far from the countries Vokalia and
@@ -36,10 +35,10 @@ We can see above that each blog post has a title, a date, a description and a bo
 
 ## Add Netlify CMS to your site
 
-First let's install some dependencies. We'll need `netlify-cms` and `gatsby-plugin-netlify-cms`.
+First let's install some dependencies. We'll need `netlify-cms` and `gatsby-plugin-netlify-cms`. Run the following command in the terminal at the root of your site:
 
 ```sh
-yarn add netlify-cms gatsby-plugin-netlify-cms
+npm install --save netlify-cms gatsby-plugin-netlify-cms
 ```
 
 ### Configuration
