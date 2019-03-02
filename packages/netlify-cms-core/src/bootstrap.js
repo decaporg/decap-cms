@@ -63,7 +63,7 @@ function bootstrap(opts = {}) {
    */
   const Root = () => (
     <I18n locale={'en'} messages={getPhrases()}>
-      <ErrorBoundary>
+      <ErrorBoundary showBackup>
         <Provider store={store}>
           <ConnectedRouter history={history}>
             <Route component={App} />

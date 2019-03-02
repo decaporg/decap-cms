@@ -120,6 +120,12 @@ export function getPhrases() {
         title: 'Error',
         details: "There's been an error - please ",
         reportIt: 'report it.',
+        detailsHeading: 'Details',
+        recoveredEntry: {
+          heading: 'Recovered document',
+          warning: 'Please copy/paste this somewhere before navigating away!',
+          copyButtonLabel: 'Copy to clipboard',
+        },
       },
       settingsDropdown: {
         logOut: 'Log Out',

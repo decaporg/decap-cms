@@ -46,6 +46,23 @@ const CopyButton = styled.button`
   margin: 12px 0;
 `;
 
+const RecoveredEntry = ({ entry, t }) => {
+  console.log(entry);
+  return (
+    <>
+      <hr />
+      <h2>{t('ui.errorBoundary.recoveredEntry.heading')}</h2>
+      <strong>{t('ui.errorBoundary.recoveredEntry.warning')}</strong>
+      <CopyButton onClick={() => copyToClipboard(entry)}>
+        {t('ui.errorBoundary.recoveredEntry.copyButtonLabel')}
+      </CopyButton>
+      <pre>
+        <code>{entry}</code>
+      </pre>
+    </>
+  );
+};
+
 class ErrorBoundary extends React.Component {
   static propTypes = {
     children: PropTypes.node,
@@ -64,23 +81,28 @@ class ErrorBoundary extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return (
-      this.state.errorMessage !== nextState.errorMessage || this.state.backup !== nextState.backup
-    );
+    if (this.props.showBackup) {
+      return (
+        this.state.errorMessage !== nextState.errorMessage || this.state.backup !== nextState.backup
+      );
+    }
+    return true;
   }
 
   async componentDidUpdate() {
-    const backup = await localForage.getItem('backup');
-    console.log(backup);
-    this.setState({ backup });
+    if (this.props.showBackup) {
+      const backup = await localForage.getItem('backup');
+      console.log(backup);
+      this.setState({ backup });
+    }
   }
 
   render() {
     const { hasError, errorMessage, backup } = this.state;
+    const { showBackup, t } = this.props;
     if (!hasError) {
       return this.props.children;
     }
-    const t = this.props.t;
     return (
       <div className={styles.errorBoundary}>
         <h1 className={styles.errorBoundaryText}>{t('ui.errorBoundary.title')}</h1>
@@ -96,19 +118,9 @@ class ErrorBoundary extends React.Component {
           </a>
         </p>
         <hr />
-        <h2>Details</h2>
+        <h2>{t('ui.errorBoundary.detailsHeading')}</h2>
         <p>{errorMessage}</p>
-        {backup && (
-          <>
-            <hr />
-            <h2>Recovered document</h2>
-            <strong>Please copy/paste this somewhere before navigating away!</strong>
-            <CopyButton onClick={() => copyToClipboard(backup)}>Copy to clipboard</CopyButton>
-            <pre>
-              <code>{backup}</code>
-            </pre>
-          </>
-        )}
+        {backup && showBackup && <RecoveredEntry entry={backup} t={t} />}
       </div>
     );
   }
