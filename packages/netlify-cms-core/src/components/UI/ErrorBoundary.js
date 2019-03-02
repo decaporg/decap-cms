@@ -64,23 +64,26 @@ class ErrorBoundary extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return (
-      this.state.errorMessage !== nextState.errorMessage || this.state.backup !== nextState.backup
-    );
+    if (this.props.showBackup) {
+      return this.state.errorMessage !== nextState.errorMessage || this.state.backup !== nextState.backup
+    }
+    return true;
   }
 
   async componentDidUpdate() {
-    const backup = await localForage.getItem('backup');
-    console.log(backup);
-    this.setState({ backup });
+    if (this.props.showBackup) {
+      const backup = await localForage.getItem('backup');
+      console.log(backup);
+      this.setState({ backup });
+    }
   }
 
   render() {
     const { hasError, errorMessage, backup } = this.state;
+    const { showBackup, t } = this.props;
     if (!hasError) {
       return this.props.children;
     }
-    const t = this.props.t;
     return (
       <div className={styles.errorBoundary}>
         <h1 className={styles.errorBoundaryText}>{t('ui.errorBoundary.title')}</h1>
@@ -98,7 +101,7 @@ class ErrorBoundary extends React.Component {
         <hr />
         <h2>Details</h2>
         <p>{errorMessage}</p>
-        {backup && (
+        {backup && showBackup && (
           <>
             <hr />
             <h2>Recovered document</h2>
