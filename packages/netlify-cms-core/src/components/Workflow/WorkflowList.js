@@ -124,23 +124,24 @@ class WorkflowList extends React.Component {
     const slug = dragProps.slug;
     const collection = dragProps.collection;
     const oldStatus = dragProps.ownStatus;
-    this.props.handleChangeStatus(collection, slug, oldStatus, newStatus);
+    const newMeta = dragProps.newMeta;
+    this.props.handleChangeStatus(collection, slug, newMeta, oldStatus, newStatus);
   };
 
-  requestDelete = (collection, slug, ownStatus) => {
+  requestDelete = (collection, slug, newMeta) => {
     if (window.confirm(this.props.t('workflow.workflowList.onDeleteEntry'))) {
-      this.props.handleDelete(collection, slug, ownStatus);
+      this.props.handleDelete(collection, slug, newMeta);
     }
   };
 
-  requestPublish = (collection, slug, ownStatus) => {
+  requestPublish = (collection, slug, ownStatus, newMeta) => {
     if (ownStatus !== status.last()) {
       window.alert(this.props.t('workflow.workflowList.onPublishingNotReadyEntry'));
       return;
     } else if (!window.confirm(this.props.t('workflow.workflowList.onPublishEntry'))) {
       return;
     }
-    this.props.handlePublish(collection, slug);
+    this.props.handlePublish(collection, slug, newMeta);
   };
 
   // eslint-disable-next-line react/display-name
@@ -193,6 +194,7 @@ class WorkflowList extends React.Component {
           const collection = entry.getIn(['metaData', 'collection']);
           const isModification = entry.get('isModification');
           const canPublish = ownStatus === status.last() && !entry.get('isPersisting', false);
+          const newMeta = entry.getIn(['metaData', 'newMeta']);
           return (
             <DragSource
               namespace={DNDNamespace}
@@ -200,6 +202,7 @@ class WorkflowList extends React.Component {
               slug={slug}
               collection={collection}
               ownStatus={ownStatus}
+              newMeta={newMeta}
             >
               {connect =>
                 connect(
@@ -212,9 +215,15 @@ class WorkflowList extends React.Component {
                       isModification={isModification}
                       editLink={editLink}
                       timestamp={timestamp}
-                      onDelete={this.requestDelete.bind(this, collection, slug, ownStatus)}
+                      onDelete={this.requestDelete.bind(this, collection, slug, newMeta)}
                       canPublish={canPublish}
-                      onPublish={this.requestPublish.bind(this, collection, slug, ownStatus)}
+                      onPublish={this.requestPublish.bind(
+                        this,
+                        collection,
+                        slug,
+                        ownStatus,
+                        newMeta,
+                      )}
                     />
                   </div>,
                 )

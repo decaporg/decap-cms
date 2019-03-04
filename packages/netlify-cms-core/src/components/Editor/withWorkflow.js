@@ -19,19 +19,21 @@ function mapStateToProps(state, ownProps) {
     if (unpublishedEntry) {
       returnObj.unpublishedEntry = true;
       returnObj.entry = unpublishedEntry;
+      returnObj.newMeta = unpublishedEntry.getIn(['metaData', 'newMeta']);
     }
   }
   return returnObj;
 }
 
 function mergeProps(stateProps, dispatchProps, ownProps) {
-  const { isEditorialWorkflow, unpublishedEntry } = stateProps;
+  const { isEditorialWorkflow, unpublishedEntry, newMeta } = stateProps;
   const { dispatch } = dispatchProps;
   const returnObj = {};
 
   if (isEditorialWorkflow) {
     // Overwrite loadEntry to loadUnpublishedEntry
-    returnObj.loadEntry = (collection, slug) => dispatch(loadUnpublishedEntry(collection, slug));
+    returnObj.loadEntry = (collection, slug) =>
+      dispatch(loadUnpublishedEntry(collection, slug, newMeta));
 
     // Overwrite persistEntry to persistUnpublishedEntry
     returnObj.persistEntry = collection =>

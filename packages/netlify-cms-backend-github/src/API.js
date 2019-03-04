@@ -1,11 +1,12 @@
 import { Base64 } from 'js-base64';
-import { uniq, initial, last, get, find, hasIn, partial, result } from 'lodash';
+import { uniq, initial, last, get, find, hasIn, partial, result, flow } from 'lodash';
 import {
   localForage,
   filterPromises,
   resolvePromiseProperties,
   APIError,
   EditorialWorkflowError,
+  unsentRequest,
 } from 'netlify-cms-lib-util';
 
 const CMS_BRANCH_PREFIX = 'cms/';
@@ -22,6 +23,29 @@ export default class API {
     this.statusLabels = config.statusLabels;
   }
 
+  withAuthorizationHeaders = req =>
+    unsentRequest.withHeaders(
+      {
+        ['Content-Type']: 'application/json',
+        ...(this.token && { Authorization: `Bearer ${this.token}` }),
+      },
+      req,
+    );
+
+  buildRequest = req =>
+    flow([
+      unsentRequest.withRoot(this.api_root),
+      this.withAuthorizationHeaders,
+      unsentRequest.withTimestamp,
+    ])(req);
+
+  performRequest = async req =>
+    flow([
+      this.buildRequest,
+      unsentRequest.performRequest,
+      p => p.catch(err => Promise.reject(new APIError(err.message, null, 'GitHub'))),
+    ])(req);
+
   user() {
     return this.request('/user');
   }
@@ -35,18 +59,16 @@ export default class API {
       });
   }
 
-  requestHeaders(headers = {}) {
-    const baseHeader = {
-      'Content-Type': 'application/json',
-      ...headers,
-    };
-
-    if (this.token) {
-      baseHeader.Authorization = `token ${this.token}`;
-      return baseHeader;
+  parseResponse(response) {
+    const contentType = response.headers.get('Content-Type');
+    if (contentType && contentType.match(/json/)) {
+      return this.parseJsonResponse(response);
     }
-
-    return baseHeader;
+    const text = response.text();
+    if (!response.ok) {
+      return Promise.reject(text);
+    }
+    return text;
   }
 
   parseJsonResponse(response) {
@@ -59,44 +81,45 @@ export default class API {
     });
   }
 
-  urlFor(path, options) {
-    const cacheBuster = new Date().getTime();
-    const params = [`ts=${cacheBuster}`];
-    if (options.params) {
-      for (const key in options.params) {
-        params.push(`${key}=${encodeURIComponent(options.params[key])}`);
-      }
-    }
-    if (params.length) {
-      path += `?${params.join('&')}`;
-    }
-    return this.api_root + path;
+  request(url, options = {}) {
+    const req = { url, ...options };
+    return this.performRequest(req).then(response => this.parseResponse(response));
   }
 
-  request(path, options = {}) {
-    const headers = this.requestHeaders(options.headers || {});
-    const url = this.urlFor(path, options);
-    let responseStatus;
-    return fetch(url, { ...options, headers })
-      .then(response => {
-        responseStatus = response.status;
-        const contentType = response.headers.get('Content-Type');
-        if (contentType && contentType.match(/json/)) {
-          return this.parseJsonResponse(response);
-        }
-        const text = response.text();
-        if (!response.ok) {
-          return Promise.reject(text);
-        }
-        return text;
-      })
-      .catch(error => {
-        throw new APIError(error.message, responseStatus, 'GitHub');
-      });
+  async paginate(url, options) {
+    let results = [];
+    const asyncIterable = {
+      [Symbol.asyncIterator]: () => {
+        return {
+          next: () => {
+            if (!url) {
+              return Promise.resolve({ done: true });
+            }
+
+            return this.performRequest({ url, ...options }).then(response => {
+              const link = ((response.headers.get('Link') || '').match(/<([^>]+)>;\s*rel="next"/) ||
+                [])[1];
+              const req = (link && unsentRequest.fromURL(link).toJS()) || {};
+              ({ url, ...options } = req);
+              return { value: this.parseResponse(response) };
+            });
+          },
+        };
+      },
+    };
+
+    for await (let result of asyncIterable) {
+      results = results.concat(result);
+    }
+    return results;
   }
 
   generateBranchName(basename) {
     return `${CMS_BRANCH_PREFIX}${basename}`;
+  }
+
+  generateBaseName(collection, slug) {
+    return `${collection}--${slug}`;
   }
 
   checkMetadataRef() {
@@ -168,7 +191,10 @@ export default class API {
     });
   }
 
-  retrieveMetadata(key) {
+  retrieveMetadata(key, collection, newMeta) {
+    if (newMeta) {
+      return this.retrievePrData(key, collection);
+    }
     const cache = localForage.getItem(`gh.meta.${key}`);
     return cache.then(cached => {
       if (cached && cached.expires > Date.now()) {
@@ -184,14 +210,59 @@ export default class API {
         cache: 'no-store',
       })
         .then(response => JSON.parse(response))
-        .catch(() =>
-          console.log(
-            '%c %s does not have metadata',
-            'line-height: 30px;text-align: center;font-weight: bold',
-            key,
-          ),
-        );
+        .catch(err => {
+          if (err.message === 'Not Found') {
+            console.log(
+              '%c %s does not have metadata',
+              'line-height: 30px;text-align: center;font-weight: bold',
+              key,
+            );
+            return this.retrievePrData(key, collection);
+          }
+          return Promise.reject(err);
+        });
     });
+  }
+
+  retrievePrData(slug, collection) {
+    const baseName = this.generateBaseName(collection, slug);
+    const branchName = this.generateBranchName(baseName);
+    const entryFile = file => file.path.includes(slug);
+    let pr;
+    return this.paginate(`${this.repoURL}/pulls`, {
+      params: {
+        state: 'open',
+        base: this.branch,
+      },
+    })
+      .then(prs => {
+        pr = prs.find(pr => pr.head.ref === branchName);
+        if (!pr) {
+          console.log(
+            '%c %s branch does not exist',
+            'line-height: 30px;text-align: center;font-weight: bold',
+            branchName,
+          );
+          return Promise.reject(false);
+        }
+        return this.request(`${this.repoURL}/pulls/${pr.number}/files`);
+      })
+      .then(dataFiles => {
+        const files = dataFiles.map(file => ({ path: file.filename, sha: file.sha }));
+        const entry = files.find(entryFile);
+        const objects = { entry };
+        return {
+          pr: { number: pr.number, head: pr.head.sha },
+          user: pr.head.user.login,
+          branch: branchName,
+          collection,
+          status: this.getLabelStatus(pr.labels.map(label => label.name)),
+          objects,
+          files,
+          timeStamp: pr.updated_at,
+          newMeta: true,
+        };
+      });
   }
 
   readFile(path, sha, branch = this.branch) {
@@ -245,10 +316,11 @@ export default class API {
       .then(files => files.filter(file => file.type === 'file'));
   }
 
-  readUnpublishedBranchFile(contentKey) {
-    const metaDataPromise = this.retrieveMetadata(contentKey).then(data =>
-      data.objects.entry.path ? data : Promise.reject(null),
+  readUnpublishedBranchFile(slug, collection, newMeta) {
+    const metaDataPromise = this.retrieveMetadata(slug, collection, newMeta).then(
+      data => (data.objects.entry.path ? data : Promise.reject(null)),
     );
+
     return resolvePromiseProperties({
       metaData: metaDataPromise,
       fileData: metaDataPromise.then(data =>
@@ -286,7 +358,7 @@ export default class API {
           // Get PRs with a `head` of `branchName`. Note that this is a
           // substring match, so we need to check that the `head.ref` of
           // at least one of the returned objects matches `branchName`.
-          return this.request(`${this.repoURL}/pulls`, {
+          return this.paginate(`${this.repoURL}/pulls`, {
             params: {
               head: branchName,
               state: 'open',
@@ -394,54 +466,33 @@ export default class API {
 
   editorialWorkflowGit(fileTree, entry, filesList, options) {
     const contentKey = entry.slug;
-    const branchName = this.generateBranchName(contentKey);
+    const oldBranchName = this.generateBranchName(contentKey);
+    let branchName = this.generateBranchName(
+      this.generateBaseName(options.collectionName, contentKey),
+    );
+    const newMeta = options.parsedData.newMeta;
     const unpublished = options.unpublished || false;
     if (!unpublished) {
       // Open new editorial review workflow for this entry - Create new metadata and commit to new branch`
-      let prResponse;
-
       return this.getBranch()
         .then(branchData => this.updateTree(branchData.commit.sha, '/', fileTree))
         .then(changeTree => this.commit(options.commitMessage, changeTree))
         .then(commitResponse => this.createBranch(branchName, commitResponse.sha))
         .then(() => this.createPR(options.commitMessage, branchName))
-        .then(pr => {
-          prResponse = pr;
-          return this.user();
-        })
-        .then(user => {
-          return this.storeMetadata(contentKey, {
-            type: 'PR',
-            pr: {
-              number: prResponse.number,
-              head: prResponse.head && prResponse.head.sha,
-            },
-            user: user.name || user.login,
-            status: this.initialWorkflowStatus,
-            branch: branchName,
-            collection: options.collectionName,
-            title: options.parsedData && options.parsedData.title,
-            description: options.parsedData && options.parsedData.description,
-            objects: {
-              entry: {
-                path: entry.path,
-                sha: entry.sha,
-              },
-              files: filesList,
-            },
-            timeStamp: new Date().toISOString(),
-          });
-        })
-        .then(() => this.addStatusLabel(prResponse.number));
+        .then(pr => this.addStatusLabel(pr.number));
     } else {
       // Entry is already on editorial review workflow - just update metadata and commit to existing branch
       let newHead;
+      if (!newMeta) {
+        branchName = oldBranchName;
+      }
+
       return this.getBranch(branchName)
         .then(branchData => this.updateTree(branchData.commit.sha, '/', fileTree))
         .then(changeTree => this.commit(options.commitMessage, changeTree))
         .then(commit => {
           newHead = commit;
-          return this.retrieveMetadata(contentKey);
+          return this.retrieveMetadata(contentKey, options.collectionName, newMeta);
         })
         .then(metadata => {
           const { title, description } = options.parsedData || {};
@@ -459,6 +510,9 @@ export default class API {
            * can just finish the persist operation here.
            */
           if (options.hasAssetStore) {
+            if (newMeta) {
+              return this.patchBranch(branchName, newHead.sha);
+            }
             return this.storeMetadata(contentKey, updatedMetadata).then(() =>
               this.patchBranch(branchName, newHead.sha),
             );
@@ -506,7 +560,9 @@ export default class API {
       const pr = { ...metadata.pr, head: rebasedHead.sha };
       const timeStamp = new Date().toISOString();
       const updatedMetadata = { ...metadata, pr, timeStamp };
-      await this.storeMetadata(contentKey, updatedMetadata);
+      if (!metadata.newMeta) {
+        await this.storeMetadata(contentKey, updatedMetadata);
+      }
       return this.patchBranch(branchName, rebasedHead.sha, { force: true });
     } catch (error) {
       console.error(error);
@@ -617,23 +673,28 @@ export default class API {
     throw Error('Editorial workflow branch changed unexpectedly.');
   }
 
-  updateUnpublishedEntryStatus(collection, slug, newStatus, oldStatus) {
+  updateUnpublishedEntryStatus(collection, slug, newMeta, newStatus, oldStatus) {
     const contentKey = slug;
     let prNumber;
-    return this.retrieveMetadata(contentKey)
+    return this.retrieveMetadata(contentKey, collection, newMeta)
       .then(metadata => ({ ...metadata, status: newStatus }))
       .then(updatedMetadata => {
         prNumber = updatedMetadata.pr.number;
+        if (newMeta) {
+          return this.updateStatusLabel(prNumber, newStatus, oldStatus);
+        }
         return this.storeMetadata(contentKey, updatedMetadata);
-      })
-      .then(() => this.updateStatusLabel(prNumber, newStatus, oldStatus));
+      });
   }
 
-  deleteUnpublishedEntry(collection, slug) {
+  deleteUnpublishedEntry(collection, slug, newMeta) {
     const contentKey = slug;
-    const branchName = this.generateBranchName(contentKey);
+    let branchName = this.generateBranchName(contentKey);
+    if (newMeta) {
+      branchName = this.generateBranchName(this.generateBaseName(collection, contentKey));
+    }
     return (
-      this.retrieveMetadata(contentKey)
+      this.retrieveMetadata(contentKey, collection, newMeta)
         .then(metadata => this.closePR(metadata.pr))
         .then(() => this.deleteBranch(branchName))
         // If the PR doesn't exist, then this has already been deleted -
@@ -648,10 +709,13 @@ export default class API {
     );
   }
 
-  publishUnpublishedEntry(collection, slug) {
+  publishUnpublishedEntry(collection, slug, newMeta) {
     const contentKey = slug;
-    const branchName = this.generateBranchName(contentKey);
-    return this.retrieveMetadata(contentKey)
+    let branchName = this.generateBranchName(contentKey);
+    if (newMeta) {
+      branchName = this.generateBranchName(this.generateBaseName(collection, contentKey));
+    }
+    return this.retrieveMetadata(contentKey, collection, newMeta)
       .then(metadata => this.mergePR(metadata.pr, metadata.objects))
       .then(() => this.deleteBranch(branchName));
   }
@@ -707,6 +771,13 @@ export default class API {
       method: 'POST',
       body: JSON.stringify({ title, body, head, base }),
     });
+  }
+
+  getLabelStatus(labels) {
+    return (
+      this.statusLabels.findKey(status => labels.includes(status.get('name'))) ||
+      this.initialWorkflowStatus
+    );
   }
 
   addLabel(issueNumber, labelName) {

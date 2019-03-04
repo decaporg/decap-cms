@@ -226,6 +226,7 @@ class Editor extends React.Component {
       collection,
       slug,
       currentStatus,
+      newMeta,
       t,
     } = this.props;
     if (entryDraft.get('hasChanged')) {
@@ -233,7 +234,7 @@ class Editor extends React.Component {
       return;
     }
     const newStatus = status.get(newStatusName);
-    updateUnpublishedEntryStatus(collection.get('name'), slug, currentStatus, newStatus);
+    updateUnpublishedEntryStatus(collection.get('name'), slug, newMeta, currentStatus, newStatus);
   };
 
   deleteBackup() {
@@ -268,7 +269,15 @@ class Editor extends React.Component {
 
   handlePublishEntry = async (opts = {}) => {
     const { createNew = false } = opts;
-    const { publishUnpublishedEntry, entryDraft, collection, slug, currentStatus, t } = this.props;
+    const {
+      publishUnpublishedEntry,
+      entryDraft,
+      collection,
+      slug,
+      currentStatus,
+      newMeta,
+      t,
+    } = this.props;
     if (currentStatus !== status.last()) {
       window.alert(t('editor.editor.onPublishingNotReady'));
       return;
@@ -279,7 +288,7 @@ class Editor extends React.Component {
       return;
     }
 
-    await publishUnpublishedEntry(collection.get('name'), slug);
+    await publishUnpublishedEntry(collection.get('name'), slug, newMeta);
 
     this.deleteBackup();
 
@@ -316,6 +325,7 @@ class Editor extends React.Component {
       deleteUnpublishedEntry,
       loadEntry,
       isModification,
+      newMeta,
       t,
     } = this.props;
     if (
@@ -326,7 +336,7 @@ class Editor extends React.Component {
     } else if (!window.confirm(t('editor.editor.onDeleteUnpublishedChanges'))) {
       return;
     }
-    await deleteUnpublishedEntry(collection.get('name'), slug);
+    await deleteUnpublishedEntry(collection.get('name'), slug, newMeta);
 
     this.deleteBackup();
 
@@ -358,6 +368,7 @@ class Editor extends React.Component {
       deployPreview,
       loadDeployPreview,
       slug,
+      newMeta,
       t,
     } = this.props;
 
@@ -403,7 +414,9 @@ class Editor extends React.Component {
         currentStatus={currentStatus}
         onLogoutClick={logoutUser}
         deployPreview={deployPreview}
-        loadDeployPreview={opts => loadDeployPreview(collection, slug, entry, isPublished, opts)}
+        loadDeployPreview={opts =>
+          loadDeployPreview(collection, slug, entry, isPublished, newMeta, opts)
+        }
       />
     );
   }
@@ -426,6 +439,7 @@ function mapStateToProps(state, ownProps) {
   const collectionEntriesLoaded = !!entries.getIn(['pages', collectionName]);
   const unpublishedEntry = selectUnpublishedEntry(state, collectionName, slug);
   const currentStatus = unpublishedEntry && unpublishedEntry.getIn(['metaData', 'status']);
+  const newMeta = unpublishedEntry && unpublishedEntry.getIn(['metaData', 'newMeta']);
   const deployPreview = selectDeployPreview(state, collectionName, slug);
   const localBackup = entryDraft.get('localBackup');
   return {
@@ -444,6 +458,7 @@ function mapStateToProps(state, ownProps) {
     isModification,
     collectionEntriesLoaded,
     currentStatus,
+    newMeta,
     deployPreview,
     localBackup,
   };

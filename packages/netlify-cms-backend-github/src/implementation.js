@@ -1,4 +1,5 @@
 import trimStart from 'lodash/trimStart';
+import { Map } from 'immutable';
 import semaphore from 'semaphore';
 import { stripIndent } from 'common-tags';
 import AuthenticationPage from './AuthenticationPage';
@@ -72,8 +73,8 @@ export default class GitHub {
       repo: this.repo,
       api_root: this.api_root,
       squash_merges: this.squash_merges,
-      initialWorkflowStatus: this.options.initialWorkflowStatus,
-      statusLabels: this.options.statusLabels,
+      initialWorkflowStatus: this.options.status.first(),
+      statusLabels: this.getStatusLabels(this.options.status),
     });
     const user = await this.api.user();
     const isCollab = await this.api.hasWriteAccess().catch(error => {
@@ -206,10 +207,20 @@ export default class GitHub {
         branches.map(branch => {
           promises.push(
             new Promise(resolve => {
-              const slug = branch.ref.split('refs/heads/cms/').pop();
+              const collectionAndOrSlug = branch.ref
+                .split('refs/heads/cms/')
+                .pop()
+                .split('--');
+              let newMeta = false;
+              let collection;
+              let [slug] = collectionAndOrSlug;
+              if (collectionAndOrSlug.length > 1) {
+                [collection, slug] = collectionAndOrSlug;
+                newMeta = true;
+              }
               return sem.take(() =>
                 this.api
-                  .readUnpublishedBranchFile(slug)
+                  .readUnpublishedBranchFile(slug, collection, newMeta)
                   .then(data => {
                     if (data === null || data === undefined) {
                       resolve(null);
@@ -244,8 +255,8 @@ export default class GitHub {
       });
   }
 
-  unpublishedEntry(collection, slug) {
-    return this.api.readUnpublishedBranchFile(slug).then(data => {
+  unpublishedEntry(collection, slug, newMeta) {
+    return this.api.readUnpublishedBranchFile(slug, collection.get('name'), newMeta).then(data => {
       if (!data) return null;
       return {
         slug,
@@ -263,8 +274,8 @@ export default class GitHub {
    * status, as well as the status state, which should be one of 'success',
    * 'pending', and 'failure'.
    */
-  async getDeployPreview(collection, slug) {
-    const data = await this.api.retrieveMetadata(slug);
+  async getDeployPreview(collection, slug, newMeta) {
+    const data = await this.api.retrieveMetadata(slug, collection.get('name'), newMeta);
 
     if (!data) {
       return null;
@@ -279,14 +290,22 @@ export default class GitHub {
     }
   }
 
-  updateUnpublishedEntryStatus(collection, slug, newStatus, oldStatus) {
-    return this.api.updateUnpublishedEntryStatus(collection, slug, newStatus, oldStatus);
+  getStatusLabels(status) {
+    return Map({
+      [status.get('DRAFT')]: Map({ name: 'draft', color: 'fad8c7' }),
+      [status.get('PENDING_REVIEW')]: Map({ name: 'pending: review', color: 'fef2c0' }),
+      [status.get('PENDING_PUBLISH')]: Map({ name: 'pending: publish', color: 'c2e0c6' }),
+    });
   }
 
-  deleteUnpublishedEntry(collection, slug) {
-    return this.api.deleteUnpublishedEntry(collection, slug);
+  updateUnpublishedEntryStatus(collection, slug, newMeta, newStatus, oldStatus) {
+    return this.api.updateUnpublishedEntryStatus(collection, slug, newMeta, newStatus, oldStatus);
   }
-  publishUnpublishedEntry(collection, slug) {
-    return this.api.publishUnpublishedEntry(collection, slug);
+
+  deleteUnpublishedEntry(collection, slug, newMeta) {
+    return this.api.deleteUnpublishedEntry(collection, slug, newMeta);
+  }
+  publishUnpublishedEntry(collection, slug, newMeta) {
+    return this.api.publishUnpublishedEntry(collection, slug, newMeta);
   }
 }

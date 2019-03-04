@@ -61,6 +61,7 @@ const unpublishedEntries = (state = Map(), action) => {
             ids: List(action.payload.entries.map(entry => entry.slug)),
           }),
         );
+        map.set('loaded', true);
       });
 
     case UNPUBLISHED_ENTRY_PERSIST_REQUEST:

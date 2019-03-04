@@ -18,7 +18,7 @@ import { createEntry } from 'ValueObjects/Entry';
 import { sanitizeSlug } from 'Lib/urlHelper';
 import { getBackend } from 'Lib/registry';
 import { localForage, Cursor, CURSOR_COMPATIBILITY_SYMBOL } from 'netlify-cms-lib-util';
-import { EDITORIAL_WORKFLOW, statusLabels, status } from 'Constants/publishModes';
+import { EDITORIAL_WORKFLOW, status } from 'Constants/publishModes';
 import {
   SLUG_MISSING_REQUIRED_DATE,
   compileStringTemplate,
@@ -198,8 +198,7 @@ class Backend {
     this.implementation = implementation.init(config, {
       useWorkflow: config.getIn(['publish_mode']) === EDITORIAL_WORKFLOW,
       updateUserCredentials: this.updateUserCredentials,
-      initialWorkflowStatus: status.first(),
-      statusLabels,
+      status,
     });
     this.backendName = backendName;
     this.authStore = authStore;
@@ -487,9 +486,9 @@ class Backend {
       }));
   }
 
-  unpublishedEntry(collection, slug) {
+  unpublishedEntry(collection, slug, newMeta) {
     return this.implementation
-      .unpublishedEntry(collection, slug)
+      .unpublishedEntry(collection, slug, newMeta)
       .then(loadedEntry => {
         const entry = createEntry('draft', loadedEntry.slug, loadedEntry.file.path, {
           raw: loadedEntry.data,
@@ -528,7 +527,13 @@ class Backend {
    * Supports polling via `maxAttempts` and `interval` options, as there is
    * often a delay before a preview URL is available.
    */
-  async getDeployPreview(collection, slug, entry, { maxAttempts = 1, interval = 5000 } = {}) {
+  async getDeployPreview(
+    collection,
+    slug,
+    entry,
+    newMeta,
+    { maxAttempts = 1, interval = 5000 } = {},
+  ) {
     /**
      * If the registered backend does not provide a `getDeployPreview` method, or
      * `show_preview_links` in the config is set to false, do nothing.
@@ -545,7 +550,7 @@ class Backend {
       count = 0;
     while (!deployPreview && count < maxAttempts) {
       count++;
-      deployPreview = await this.implementation.getDeployPreview(collection, slug);
+      deployPreview = await this.implementation.getDeployPreview(collection, slug, newMeta);
       if (!deployPreview) {
         await new Promise(resolve => setTimeout(() => resolve(), interval));
       }
@@ -576,6 +581,7 @@ class Backend {
     const parsedData = {
       title: entryDraft.getIn(['entry', 'data', 'title'], 'No Title'),
       description: entryDraft.getIn(['entry', 'data', 'description'], 'No Description!'),
+      newMeta: entryDraft.getIn(['entry', 'metaData', 'newMeta'], false),
     };
 
     let entryObj;
@@ -658,16 +664,22 @@ class Backend {
     return this.persistEntry(...args, { unpublished: true });
   }
 
-  updateUnpublishedEntryStatus(collection, slug, newStatus, oldStatus) {
-    return this.implementation.updateUnpublishedEntryStatus(collection, slug, newStatus, oldStatus);
+  updateUnpublishedEntryStatus(collection, slug, newMeta, newStatus, oldStatus) {
+    return this.implementation.updateUnpublishedEntryStatus(
+      collection,
+      slug,
+      newMeta,
+      newStatus,
+      oldStatus,
+    );
   }
 
-  publishUnpublishedEntry(collection, slug) {
-    return this.implementation.publishUnpublishedEntry(collection, slug);
+  publishUnpublishedEntry(collection, slug, newMeta) {
+    return this.implementation.publishUnpublishedEntry(collection, slug, newMeta);
   }
 
-  deleteUnpublishedEntry(collection, slug) {
-    return this.implementation.deleteUnpublishedEntry(collection, slug);
+  deleteUnpublishedEntry(collection, slug, newMeta) {
+    return this.implementation.deleteUnpublishedEntry(collection, slug, newMeta);
   }
 
   entryToRaw(collection, entry) {

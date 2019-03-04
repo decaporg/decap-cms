@@ -229,13 +229,13 @@ function unpublishedEntryDeleteError(collection, slug, transactionID) {
  * Exported Thunk Action Creators
  */
 
-export function loadUnpublishedEntry(collection, slug) {
+export function loadUnpublishedEntry(collection, slug, newMeta) {
   return (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
     dispatch(unpublishedEntryLoading(collection, slug));
     backend
-      .unpublishedEntry(collection, slug)
+      .unpublishedEntry(collection, slug, newMeta)
       .then(entry => dispatch(unpublishedEntryLoaded(collection, entry)))
       .catch(error => {
         if (error.name === EDITORIAL_WORKFLOW_ERROR && error.notUnderEditorialWorkflow) {
@@ -261,6 +261,7 @@ export function loadUnpublishedEntries(collections) {
   return (dispatch, getState) => {
     const state = getState();
     if (state.config.get('publish_mode') !== EDITORIAL_WORKFLOW) return;
+    if (state.editorialWorkflow.get('loaded')) return;
     const backend = currentBackend(state.config);
     dispatch(unpublishedEntriesLoading());
     backend
@@ -364,7 +365,7 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
   };
 }
 
-export function updateUnpublishedEntryStatus(collection, slug, oldStatus, newStatus) {
+export function updateUnpublishedEntryStatus(collection, slug, newMeta, oldStatus, newStatus) {
   return (dispatch, getState) => {
     if (oldStatus === newStatus) return;
     const state = getState();
@@ -374,7 +375,7 @@ export function updateUnpublishedEntryStatus(collection, slug, oldStatus, newSta
       unpublishedEntryStatusChangeRequest(collection, slug, oldStatus, newStatus, transactionID),
     );
     backend
-      .updateUnpublishedEntryStatus(collection, slug, newStatus, oldStatus)
+      .updateUnpublishedEntryStatus(collection, slug, newMeta, newStatus, oldStatus)
       .then(() => {
         dispatch(
           notifSend({
@@ -411,14 +412,14 @@ export function updateUnpublishedEntryStatus(collection, slug, oldStatus, newSta
   };
 }
 
-export function deleteUnpublishedEntry(collection, slug) {
+export function deleteUnpublishedEntry(collection, slug, newMeta) {
   return (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
     const transactionID = uuid();
     dispatch(unpublishedEntryDeleteRequest(collection, slug, transactionID));
     return backend
-      .deleteUnpublishedEntry(collection, slug)
+      .deleteUnpublishedEntry(collection, slug, newMeta)
       .then(() => {
         dispatch(
           notifSend({
@@ -442,7 +443,7 @@ export function deleteUnpublishedEntry(collection, slug) {
   };
 }
 
-export function publishUnpublishedEntry(collection, slug) {
+export function publishUnpublishedEntry(collection, slug, newMeta) {
   return (dispatch, getState) => {
     const state = getState();
     const collections = state.collections;
@@ -450,7 +451,7 @@ export function publishUnpublishedEntry(collection, slug) {
     const transactionID = uuid();
     dispatch(unpublishedEntryPublishRequest(collection, slug, transactionID));
     return backend
-      .publishUnpublishedEntry(collection, slug)
+      .publishUnpublishedEntry(collection, slug, newMeta)
       .then(() => {
         dispatch(
           notifSend({

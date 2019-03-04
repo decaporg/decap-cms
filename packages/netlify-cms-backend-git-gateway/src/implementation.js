@@ -409,17 +409,23 @@ export default class GitGateway {
   unpublishedEntries() {
     return this.backend.unpublishedEntries();
   }
-  unpublishedEntry(collection, slug) {
-    return this.backend.unpublishedEntry(collection, slug);
+  unpublishedEntry(collection, slug, newMeta) {
+    return this.backend.unpublishedEntry(collection, slug, newMeta);
   }
-  updateUnpublishedEntryStatus(collection, slug, newStatus) {
-    return this.backend.updateUnpublishedEntryStatus(collection, slug, newStatus);
+  updateUnpublishedEntryStatus(collection, slug, newMeta, newStatus, oldStatus) {
+    return this.backend.updateUnpublishedEntryStatus(
+      collection,
+      slug,
+      newMeta,
+      newStatus,
+      oldStatus,
+    );
   }
-  deleteUnpublishedEntry(collection, slug) {
-    return this.backend.deleteUnpublishedEntry(collection, slug);
+  deleteUnpublishedEntry(collection, slug, newMeta) {
+    return this.backend.deleteUnpublishedEntry(collection, slug, newMeta);
   }
-  publishUnpublishedEntry(collection, slug) {
-    return this.backend.publishUnpublishedEntry(collection, slug);
+  publishUnpublishedEntry(collection, slug, newMeta) {
+    return this.backend.publishUnpublishedEntry(collection, slug, newMeta);
   }
   traverseCursor(cursor, action) {
     return this.backend.traverseCursor(cursor, action);

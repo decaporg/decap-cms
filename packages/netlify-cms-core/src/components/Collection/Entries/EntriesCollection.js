@@ -8,9 +8,11 @@ import {
   loadEntries as actionLoadEntries,
   traverseCollectionCursor as actionTraverseCollectionCursor,
 } from 'Actions/entries';
+import { loadUnpublishedEntries as actionLoadUnpublishedEntries } from 'Actions/editorialWorkflow';
 import { selectEntries } from 'Reducers';
 import { selectCollectionEntriesCursor } from 'Reducers/cursors';
 import Entries from './Entries';
+import { EDITORIAL_WORKFLOW } from 'Constants/publishModes';
 
 class EntriesCollection extends React.Component {
   static propTypes = {
@@ -24,8 +26,19 @@ class EntriesCollection extends React.Component {
     traverseCollectionCursor: PropTypes.func.isRequired,
   };
 
-  componentDidMount() {
-    const { collection, entriesLoaded, loadEntries } = this.props;
+  async componentDidMount() {
+    const {
+      collection,
+      entriesLoaded,
+      loadEntries,
+      collections,
+      isEditorialWorkflow,
+      loadUnpublishedEntries,
+    } = this.props;
+    if (isEditorialWorkflow) {
+      await loadUnpublishedEntries(collections);
+    }
+
     if (collection && !entriesLoaded) {
       loadEntries(collection);
     }
@@ -63,23 +76,36 @@ class EntriesCollection extends React.Component {
 
 function mapStateToProps(state, ownProps) {
   const { collection, viewStyle } = ownProps;
-  const { config } = state;
+  const { config, collections } = state;
   const publicFolder = config.get('public_folder');
   const page = state.entries.getIn(['pages', collection.get('name'), 'page']);
 
   const entries = selectEntries(state, collection.get('name'));
   const entriesLoaded = !!state.entries.getIn(['pages', collection.get('name')]);
   const isFetching = state.entries.getIn(['pages', collection.get('name'), 'isFetching'], false);
+  const isEditorialWorkflow = state.config.get('publish_mode') === EDITORIAL_WORKFLOW;
 
   const rawCursor = selectCollectionEntriesCursor(state.cursors, collection.get('name'));
   const cursor = Cursor.create(rawCursor).clearData();
 
-  return { publicFolder, collection, page, entries, entriesLoaded, isFetching, viewStyle, cursor };
+  return {
+    publicFolder,
+    collection,
+    page,
+    entries,
+    entriesLoaded,
+    isFetching,
+    viewStyle,
+    cursor,
+    collections,
+    isEditorialWorkflow,
+  };
 }
 
 const mapDispatchToProps = {
   loadEntries: actionLoadEntries,
   traverseCollectionCursor: actionTraverseCollectionCursor,
+  loadUnpublishedEntries: actionLoadUnpublishedEntries,
 };
 
 export default connect(
