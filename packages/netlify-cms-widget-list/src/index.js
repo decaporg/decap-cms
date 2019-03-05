@@ -1,2 +1,3 @@
-export ListControl from './ListControl';
-export { ObjectPreview as ListPreview } from 'netlify-cms-widget-object';
+import Control from './ListControl';
+import { Preview } from 'netlify-cms-widget-object';
+export default { Control, Preview };

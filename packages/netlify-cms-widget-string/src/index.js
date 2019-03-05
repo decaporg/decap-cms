@@ -1,2 +1,3 @@
-export StringControl from './StringControl';
-export StringPreview from './StringPreview';
+import Control from './StringControl';
+import Preview from './StringPreview';
+export default { Control, Preview };

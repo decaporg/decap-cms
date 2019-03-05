@@ -1,2 +1,3 @@
-export DateControl from './DateControl';
-export DatePreview from './DatePreview';
+import Control from './DateControl';
+import Preview from './DatePreview';
+export default { Control, Preview };

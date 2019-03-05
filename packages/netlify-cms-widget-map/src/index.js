@@ -1,5 +1,5 @@
 import withMapControl from './withMapControl';
+import Preview from './MapPreview';
+const Control = withMapControl();
 
-export { withMapControl };
-export const MapControl = withMapControl();
-export MapPreview from './MapPreview';
+export default { Control, Preview };

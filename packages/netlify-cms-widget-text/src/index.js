@@ -1,2 +1,3 @@
-export TextControl from './TextControl';
-export TextPreview from './TextPreview';
+import Control from './TextControl';
+import Preview from './TextPreview';
+export default { Control, Preview };

@@ -1,2 +1,3 @@
-export ObjectControl from './ObjectControl';
-export ObjectPreview from './ObjectPreview';
+import Control from './ObjectControl';
+import Preview from './ObjectPreview';
+export default { Control, Preview };

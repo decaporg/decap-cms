@@ -1,5 +1,5 @@
 import withFileControl from './withFileControl';
+import Preview from './FilePreview';
 
-export { withFileControl };
-export const FileControl = withFileControl();
-export FilePreview from './FilePreview';
+const Control = withFileControl();
+export default { Control, Preview, withFileControl };

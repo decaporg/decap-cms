@@ -1,4 +1,5 @@
 import { withFileControl } from 'netlify-cms-widget-file';
 
-export const ImageControl = withFileControl({ forImage: true });
-export ImagePreview from './ImagePreview';
+const Control = withFileControl({ forImage: true });
+import Preview from './ImagePreview';
+export default { Control, Preview };

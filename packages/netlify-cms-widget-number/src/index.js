@@ -1,2 +1,3 @@
-export NumberControl from './NumberControl';
-export NumberPreview from './NumberPreview';
+import Control from './NumberControl';
+import Preview from './NumberPreview';
+export default { Control, Preview };
