@@ -13,16 +13,12 @@
   "scripts": {
     "watch": "webpack -w",
     "develop": "npm run watch",
-    "build": "cross-env NODE_ENV=production webpack"
+    "build": "cross-env NODE_ENV=production webpack",
+    "build:dev": "cross-env NODE_ENV=development webpack"
   },
   "dependencies": {
     "js-sha256": "^0.9.0",
     "localforage": "^1.4.2"
-  },
-  "devDependencies": {
-    "cross-env": "^5.2.0",
-    "webpack": "^4.16.1",
-    "webpack-cli": "^3.1.0"
   },
   "peerDependencies": {
     "immutable": "^3.7.6",

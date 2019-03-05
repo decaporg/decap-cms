@@ -16,17 +16,13 @@
   "scripts": {
     "watch": "webpack -w",
     "develop": "npm run watch",
-    "build": "cross-env NODE_ENV=production webpack"
+    "build": "cross-env NODE_ENV=production webpack",
+    "build:dev": "cross-env NODE_ENV=development webpack"
   },
   "dependencies": {
     "common-tags": "^1.8.0",
     "js-base64": "^2.4.8",
     "semaphore": "^1.1.0"
-  },
-  "devDependencies": {
-    "cross-env": "^5.2.0",
-    "webpack": "^4.16.1",
-    "webpack-cli": "^3.1.0"
   },
   "peerDependencies": {
     "emotion": "^9.2.6",
@@ -34,8 +30,8 @@
     "netlify-cms-lib-auth": "^2.0.0",
     "netlify-cms-lib-util": "^2.0.0",
     "netlify-cms-ui-default": "^2.0.0",
-    "prop-types": "^15.6.2",
-    "react": "^16.4.1",
+    "prop-types": "^15.7.2",
+    "react": "^16.8.1",
     "react-emotion": "^9.2.6"
   }
 }

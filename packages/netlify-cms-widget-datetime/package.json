@@ -19,21 +19,14 @@
   "scripts": {
     "watch": "webpack -w",
     "develop": "npm run watch",
-    "build": "cross-env NODE_ENV=production webpack"
+    "build": "cross-env NODE_ENV=production webpack",
+    "build:dev": "cross-env NODE_ENV=development webpack"
   },
   "dependencies": {
-    "netlify-cms-widget-date": "^2.1.0"
-  },
-  "devDependencies": {
-    "cross-env": "^5.2.0",
-    "webpack": "^4.16.1",
-    "webpack-cli": "^3.1.0"
   },
   "peerDependencies": {
     "emotion": "^9.2.6",
-    "react": "^16.4.1"
-  },
-  "localExternals": [
-    "netlify-cms-widget-date"
-  ]
+    "netlify-cms-widget-date": "^2.1.0",
+    "react": "^16.8.1"
+  }
 }

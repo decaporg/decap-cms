@@ -10,7 +10,8 @@
     "dist/"
   ],
   "scripts": {
-    "build": "cross-env NODE_ENV=production webpack"
+    "build": "cross-env NODE_ENV=production webpack",
+    "build:dev": "cross-env NODE_ENV=development webpack"
   },
   "keywords": [
     "netlify",
@@ -23,31 +24,20 @@
     "ajv-errors": "^1.0.0",
     "copy-text-to-clipboard": "^1.0.4",
     "diacritics": "^1.3.0",
-    "emotion": "^9.2.6",
     "fuzzy": "^0.1.1",
     "gotrue-js": "^0.9.15",
     "gray-matter": "^4.0.1",
     "history": "^4.7.2",
-    "immutable": "^3.7.6",
     "js-base64": "^2.1.9",
     "js-yaml": "^3.10.0",
     "jwt-decode": "^2.1.0",
     "lodash": "^4.17.10",
     "moment": "^2.11.2",
-    "netlify-cms-editor-component-image": "^2.2.0",
-    "netlify-cms-lib-auth": "^2.0.5",
-    "netlify-cms-lib-util": "^2.1.2",
-    "netlify-cms-ui-default": "^2.4.0",
     "node-polyglot": "^2.3.0",
-    "prop-types": "^15.5.10",
-    "react": "^16.8.1",
     "react-dnd": "^7.0.0",
     "react-dnd-html5-backend": "^7.0.0",
-    "react-dom": "^16.8.1",
-    "react-emotion": "^9.2.5",
     "react-frame-component": "^4.0.2",
     "react-hot-loader": "^4.0.0",
-    "react-immutable-proptypes": "^2.1.0",
     "react-is": "16.3.1",
     "react-modal": "^3.1.5",
     "react-polyglot": "^0.2.6",
@@ -70,11 +60,19 @@
     "url": "^0.11.0",
     "what-input": "^5.0.3"
   },
-  "devDependencies": {
-    "cross-env": "^5.2.0",
-    "css-loader": "^1.0.0",
-    "to-string-loader": "^1.1.5",
-    "webpack": "^4.16.1",
-    "webpack-cli": "^3.1.0"
+  "peerDependencies": {
+    "emotion": "^9.2.6",
+    "immutable": "^3.7.6",
+    "moment": "^2.24.0",
+    "prop-types": "^15.7.2",
+    "netlify-cms-editor-component-image": "^2.0.0",
+    "netlify-cms-lib-auth": "^2.0.0",
+    "netlify-cms-lib-util": "^2.0.0",
+    "netlify-cms-ui-default": "^2.0.0",
+    "react": "^16.8.1",
+    "react-dom": "^16.8.1",
+    "react-emotion": "^9.2.6",
+    "react-immutable-proptypes": "^2.1.0",
+    "uuid": "^3.3.2"
   }
 }
