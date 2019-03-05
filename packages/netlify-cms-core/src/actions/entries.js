@@ -1,7 +1,7 @@
 import { fromJS, List, Map } from 'immutable';
 import { actions as notifActions } from 'redux-notifications';
 import { serializeValues } from 'Lib/serializeEntryValues';
-import { currentBackend } from 'src/backend';
+import { currentBackend } from 'coreSrc/backend';
 import { getIntegrationProvider } from 'Integrations';
 import { getAsset, selectIntegration } from 'Reducers';
 import { selectFields } from 'Reducers/collections';

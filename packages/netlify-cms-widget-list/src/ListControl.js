@@ -4,8 +4,12 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled, { cx, css } from 'react-emotion';
 import { List, Map } from 'immutable';
 import { partial } from 'lodash';
-import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
-import { ObjectControl } from 'netlify-cms-widget-object';
+import {
+  SortableContainer,
+  SortableElement,
+  SortableHandle,
+} from 'react-sortable-hoc/dist/umd/react-sortable-hoc';
+import { Control as ObjectControl } from 'netlify-cms-widget-object';
 import {
   TYPES_KEY,
   getTypedFieldForValue,

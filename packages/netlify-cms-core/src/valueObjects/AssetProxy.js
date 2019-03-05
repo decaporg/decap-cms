@@ -1,5 +1,5 @@
 import { resolvePath } from 'netlify-cms-lib-util';
-import { currentBackend } from 'src/backend';
+import { currentBackend } from 'coreSrc/backend';
 import store from 'Redux';
 import { getIntegrationProvider } from 'Integrations';
 import { selectIntegration } from 'Reducers';

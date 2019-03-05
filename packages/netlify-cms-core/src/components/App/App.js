@@ -10,7 +10,7 @@ import { Notifs } from 'redux-notifications';
 import TopBarProgress from 'react-topbar-progress-indicator';
 import { loadConfig } from 'Actions/config';
 import { loginUser, logoutUser } from 'Actions/auth';
-import { currentBackend } from 'src/backend';
+import { currentBackend } from 'coreSrc/backend';
 import { createNewEntry } from 'Actions/collections';
 import { openMediaLibrary } from 'Actions/mediaLibrary';
 import MediaLibrary from 'MediaLibrary/MediaLibrary';
