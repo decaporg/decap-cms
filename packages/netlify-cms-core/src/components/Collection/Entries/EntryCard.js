@@ -89,8 +89,17 @@ const EntryCard = ({
   viewStyle = VIEW_STYLE_LIST,
 }) => {
   const label = entry.get('label');
-  const title = label || entry.getIn(['data', inferedFields.titleField]);
+  let title = label || entry.getIn(['data', inferedFields.titleField]);
   const path = `/collections/${collection.get('name')}/entries/${entry.get('slug')}`;
+  const list_fields = collection.get('list_fields');
+  const list_fields_seperator = collection.get('list_fields_seperator') || ' - ';
+  if (list_fields){
+    title = '';
+    list_fields.forEach(function (value) {
+      title = ((title.length > 0) ? title + list_fields_seperator : '' ) +  entry.getIn(['data', value]);
+    });
+  }
+
   let image = entry.getIn(['data', inferedFields.imageField]);
   image = resolvePath(image, publicFolder);
   if (image) {
