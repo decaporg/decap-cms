@@ -7,8 +7,4 @@ export const NetlifyCmsBackendGitlab = {
   API,
   AuthenticationPage,
 };
-export {
-  Control,
-  API,
-  AuthenticationPage,
-}
+export { Control, API, AuthenticationPage };

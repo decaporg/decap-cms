@@ -7,8 +7,4 @@ export const NetlifyCmsBackendBitbucket = {
   API,
   AuthenticationPage,
 };
-export {
-  Control,
-  API,
-  AuthenticationPage,
-}
+export { Control, API, AuthenticationPage };

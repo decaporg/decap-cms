@@ -5,7 +5,4 @@ export const NetlifyCmsBackendGitGateway = {
   Control,
   AuthenticationPage,
 };
-export {
-  Control,
-  AuthenticationPage,
-}
+export { Control, AuthenticationPage };

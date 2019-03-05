@@ -7,8 +7,4 @@ export const NetlifyCmsBackendGithub = {
   API,
   AuthenticationPage,
 };
-export {
-  Control,
-  API,
-  AuthenticationPage,
-}
+export { Control, API, AuthenticationPage };

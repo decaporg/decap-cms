@@ -5,7 +5,4 @@ export const NetlifyCmsBackendTest = {
   Control,
   AuthenticationPage,
 };
-export {
-  Control,
-  AuthenticationPage,
-}
+export { Control, AuthenticationPage };

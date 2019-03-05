@@ -34,7 +34,7 @@ export const NetlifyCmsCore = {
   registerMediaLibrary,
   getMediaLibrary,
   init: bootstrap,
-}
+};
 export {
   registerPreviewStyle,
   getPreviewStyles,
@@ -52,4 +52,4 @@ export {
   registerMediaLibrary,
   getMediaLibrary,
   bootstrap as init,
-}
+};
