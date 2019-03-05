@@ -19,7 +19,7 @@ import {
   reactSelectStyles,
 } from './styles';
 
-export default {
+export const NetlifyCmsUiDefault =  {
   Dropdown,
   DropdownItem,
   DropdownButton,

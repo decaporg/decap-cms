@@ -1,3 +1,4 @@
 import Control from './ObjectControl';
 import Preview from './ObjectPreview';
-export default { Control, Preview };
+export const NetlifyCmsWidgetObject = { Control, Preview };
+export { Control, Preview };

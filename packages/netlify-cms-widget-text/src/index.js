@@ -1,3 +1,5 @@
 import Control from './TextControl';
 import Preview from './TextPreview';
-export default { Control, Preview };
+
+export const NetlifyCmsWidgetText = { Control, Preview };
+export { Control, Preview };

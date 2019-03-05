@@ -68,7 +68,7 @@ const targetOutputs = () => {
       filename: `${pkg.name}.js`,
       library: toGlobalName(pkg.name),
       libraryTarget: 'umd',
-      libraryExport: 'default',
+      libraryExport: toGlobalName(pkg.name),
       umdNamedDefine: true,
       globalObject: 'window',
     },
@@ -77,7 +77,7 @@ const targetOutputs = () => {
       filename: `index.js`,
       library: toGlobalName(pkg.name),
       libraryTarget: 'umd',
-      libraryExport: 'default',
+      libraryExport: toGlobalName(pkg.name),
       umdNamedDefine: true,
       globalObject: 'window',
     },
@@ -131,7 +131,7 @@ const getConfig = ({ baseOnly = false } = {}) => {
     // netlify-cms build
     return baseConfig({ target: 'umd' });
   }
-  return [baseConfig({ target: 'umd' }), baseConfig({ target: 'cjs' })];
+  return [baseConfig({ target: 'umd' }), baseConfig({ target: 'umddir' })];
 };
 
 module.exports = {

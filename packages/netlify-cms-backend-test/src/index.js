@@ -1,7 +1,11 @@
 import Control from './implementation';
 import AuthenticationPage from './AuthenticationPage';
 
-export default {
+export const NetlifyCmsBackendTest = {
   Control,
   AuthenticationPage,
 };
+export {
+  Control,
+  AuthenticationPage,
+}

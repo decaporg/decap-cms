@@ -1,3 +1,4 @@
 import Control from './NumberControl';
 import Preview from './NumberPreview';
-export default { Control, Preview };
+export const NetlifyCmsWidgetNumber = { Control, Preview };
+export { Control, Preview };

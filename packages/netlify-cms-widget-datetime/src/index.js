@@ -1,3 +1,4 @@
 import Control from './DateTimeControl';
 import { Preview } from 'netlify-cms-widget-date';
-export default { Control, Preview };
+export const NetlifyCmsWidgetDatetime = { Control, Preview };
+export { Control, Preview };

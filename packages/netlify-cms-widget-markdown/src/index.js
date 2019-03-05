@@ -1,3 +1,4 @@
 import Control from './MarkdownControl';
 import Preview from './MarkdownPreview';
-export default { Control, Preview };
+export const NetlifyCmsWidgetMarkdown = { Control, Preview };
+export { Control, Preview };

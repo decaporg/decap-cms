@@ -36,4 +36,5 @@ const image = {
   ],
 };
 
+export const NetlifyCmsEditorComponentImage = image;
 export default image;

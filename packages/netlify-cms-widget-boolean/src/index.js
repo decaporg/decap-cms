@@ -1,2 +1,3 @@
 import Control from './BooleanControl';
-export default { Control };
+export const NetlifyCmsWidgetBoolean = { Control };
+export { Control };

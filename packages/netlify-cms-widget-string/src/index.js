@@ -1,3 +1,4 @@
 import Control from './StringControl';
 import Preview from './StringPreview';
-export default { Control, Preview };
+export const NetlifyCmsWidgetString = { Control, Preview };
+export { Control, Preview };

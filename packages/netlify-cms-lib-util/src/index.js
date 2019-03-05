@@ -9,7 +9,7 @@ import { filterByPropExtension, parseResponse, responseParser } from './backendU
 import loadScript from './loadScript';
 import getBlobSHA from './getBlobSHA';
 
-export default {
+export const NetlifyCmsLibUtil = {
   APIError,
   Cursor,
   CURSOR_COMPATIBILITY_SYMBOL,

@@ -9,7 +9,19 @@ import ReactDOM from 'react-dom';
 import * as ReactEmotion from 'react-emotion/src/index';
 import * as UUId from 'uuid';
 
-export default {
+export const NetlifyCmsDefaultExports = {
+  Emotion,
+  Immutable,
+  ImmutablePropTypes,
+  Lodash,
+  Moment,
+  PropTypes,
+  React,
+  ReactDOM,
+  ReactEmotion,
+  UUId,
+};
+export {
   Emotion,
   Immutable,
   ImmutablePropTypes,

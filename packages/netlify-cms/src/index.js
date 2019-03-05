@@ -1,6 +1,6 @@
 import createReactClass from 'create-react-class';
 import React from 'react';
-import CMS from 'netlify-cms-core/src';
+import { NetlifyCmsCore as CMS } from 'netlify-cms-core/src';
 import './backends';
 import './widgets';
 import './editor-components';
@@ -25,4 +25,5 @@ if (typeof window !== 'undefined') {
   window.h = window.h || React.createElement;
 }
 
+export const NetlifyCms = CMS;
 export { CMS as default };

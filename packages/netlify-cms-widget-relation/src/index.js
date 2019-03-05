@@ -1,3 +1,4 @@
 import Control from './RelationControl';
 import Preview from './RelationPreview';
-export default { Control, Preview };
+export const NetlifyCmsWidgetRelation = { Control, Preview };
+export { Control, Preview };
