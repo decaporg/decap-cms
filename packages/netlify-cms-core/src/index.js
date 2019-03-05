@@ -1,4 +1,7 @@
 import bootstrap from './bootstrap';
 import registry from 'Lib/registry';
 
-export { registry as default, bootstrap as init };
+const CMS = registry;
+CMS.init = bootstrap;
+
+export default CMS;
