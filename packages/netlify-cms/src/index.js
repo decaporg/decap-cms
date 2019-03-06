@@ -1,6 +1,6 @@
 import createReactClass from 'create-react-class';
 import React from 'react';
-import { NetlifyCmsCore as CMS } from 'netlify-cms-core/src';
+import * as CMS from 'netlify-cms-core/src';
 import './backends';
 import './widgets';
 import './editor-components';
