@@ -54,7 +54,7 @@ async function init({ options = {}, handleInsert } = {}) {
   const resolvedOptions = { ...defaultOptions, ...integrationOptions };
   const cloudinaryConfig = { ...defaultConfig, ...providedConfig, ...enforcedConfig };
   const cloudinaryBehaviorConfigKeys = ['default_transformations', 'max_files', 'multiple'];
-  const cloudinaryBehaviorConfig = pick(resolvedOptions, cloudinaryBehaviorConfigKeys);
+  const cloudinaryBehaviorConfig = pick(cloudinaryConfig, cloudinaryBehaviorConfigKeys);
 
   await loadScript('https://media-library.cloudinary.com/global/all.js');
 
