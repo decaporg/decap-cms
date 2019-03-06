@@ -161,7 +161,7 @@ export default class TestBackend {
           },
           metaData: {
             collection: options.collectionName,
-            status: this.options.initialWorkflowStatus,
+            status: this.options.status.first(),
             title: options.parsedData && options.parsedData.title,
             description: options.parsedData && options.parsedData.description,
           },

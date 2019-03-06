@@ -470,7 +470,7 @@ export default class API {
     let branchName = this.generateBranchName(
       this.generateBaseName(options.collectionName, contentKey),
     );
-    const newMeta = options.parsedData.newMeta;
+    const newMeta = options.parsedData && options.parsedData.newMeta;
     const unpublished = options.unpublished || false;
     if (!unpublished) {
       // Open new editorial review workflow for this entry - Create new metadata and commit to new branch`

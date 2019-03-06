@@ -25,6 +25,7 @@ describe('github API', () => {
         prBaseBranch = JSON.parse(pullRequest.body).base;
         return { head: { sha: 'cbd' } };
       },
+      '/repos/my-repo/labels': () => ({}),
       '/user': () => ({}),
       '/repos/my-repo/git/blobs': () => ({}),
       '/repos/my-repo/git/refs/meta/_netlify_cms': () => ({ object: {} }),
