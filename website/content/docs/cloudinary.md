@@ -70,11 +70,12 @@ instance of the Cloudinary widget.
 media_library:
   name: cloudinary
   output_filename_only: false
-  default_transformations:
-    -   - fetch_format: auto
-          width: 160
-          quality: auto
-          crop: scale
+  config:
+    default_transformations:
+      -   - fetch_format: auto
+            width: 160
+            quality: auto
+            crop: scale
 ```
 
 #### Field configuration
