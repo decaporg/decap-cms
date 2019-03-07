@@ -270,7 +270,7 @@ export default class GitGateway {
             ['backend', 'use_large_media_transforms_in_media_library'],
             true,
           )
-            ? { nf_resize: 'fit', w: 280, h: 160 }
+            ? { nf_resize: 'fit', w: 560, h: 320 }
             : false,
         });
       },
