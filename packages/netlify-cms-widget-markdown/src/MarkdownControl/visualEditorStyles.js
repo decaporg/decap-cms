@@ -66,8 +66,14 @@ export default `
     margin-bottom: 16px;
   }
 
-  li > p {
-    margin: 0;
+  li {
+    & > p:first-child {
+      margin-top: 8px;
+    }
+
+    & > p:last-child {
+      margin-bottom: 8px;
+    }
   }
 
   ul,

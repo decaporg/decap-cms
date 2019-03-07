@@ -178,11 +178,21 @@ function convertNode(node, nodes) {
      */
     case 'root':
     case 'paragraph':
-    case 'listItem':
     case 'blockquote':
     case 'tableRow':
     case 'tableCell': {
       return createBlock(typeMap[node.type], nodes);
+    }
+
+    /**
+     * List Items
+     *
+     * Markdown list items can be empty, but a list item in the Slate schema
+     * should at least have an empty paragraph node.
+     */
+    case 'listItem': {
+      const children = isEmpty(nodes) ? [createBlock('paragraph')] : nodes;
+      return createBlock(typeMap[type], children);
     }
 
     /**

@@ -157,6 +157,7 @@ export default class Editor extends React.Component {
          * quote, unwrap the quote (as within are only blocks), and if it's not, wrap all selected
          * blocks into a quote. Make sure text is wrapped into paragraphs.
          */
+        /*
         const { key } = editor.value.startBlock;
         const topBlocks = editor.value.document.getRootBlocksAtRange(editor.value.selection);
         const ancestor = editor.value.document.getCommonAncestor(topBlocks.first().key, topBlocks.last().key);
@@ -167,6 +168,8 @@ export default class Editor extends React.Component {
           const listItem = editor.value.document.getClosest(key, node => node.type === 'list-item');
           editor.wrapBlockByKey(listItem.key, type);
         }
+        */
+        editor.toggleList(type);
         break;
       }
     }
@@ -295,6 +298,7 @@ export default class Editor extends React.Component {
 
   handleDocumentChange = debounce(editor => {
     const { onChange } = this.props;
+    //console.log(JSON.stringify(editor.value.document.toJS(), null, 2));
     const raw = editor.value.document.toJSON();
     const markdown = slateToMarkdown(raw);
     this.setState({ lastRawValue: markdown }, () => onChange(markdown));
