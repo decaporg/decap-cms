@@ -215,14 +215,12 @@ export default class GitGateway {
           return mediaFiles;
         }
         const largeMediaURLThunks = await this.getLargeMedia(mediaFiles);
-        return mediaFiles.map(({ id, url, urlIsPublicPath, getDisplayURL, ...rest }) => ({
+        return mediaFiles.map(({ id, url, getDisplayURL, ...rest }) => ({
           ...rest,
           id,
           url,
-          urlIsPublicPath: largeMediaURLThunks[id] ? false : urlIsPublicPath,
-          getDisplayURL: largeMediaURLThunks[id]
-            ? largeMediaURLThunks[id]
-            : getDisplayURL || (url && (() => Promise.resolve(url))),
+          urlIsPublicPath: false,
+          getDisplayURL: largeMediaURLThunks[id] ? largeMediaURLThunks[id] : getDisplayURL,
         }));
       },
     );
