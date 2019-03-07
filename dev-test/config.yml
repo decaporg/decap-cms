@@ -1,10 +1,10 @@
 backend:
-  name: test-repo
+  name: git-gateway
 
 site_url: https://example.com
 
 publish_mode: editorial_workflow
-media_folder: assets/uploads
+media_folder: assets/uploads-lm
 
 collections: # A list of collections the CMS should be able to edit
   - name: 'posts' # Used in routes, ie.: /admin/collections/:slug/edit

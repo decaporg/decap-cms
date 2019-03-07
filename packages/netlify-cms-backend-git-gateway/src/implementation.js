@@ -215,13 +215,15 @@ export default class GitGateway {
           return mediaFiles;
         }
         const largeMediaURLThunks = await this.getLargeMedia(mediaFiles);
-        return mediaFiles.map(({ id, url, getDisplayURL, ...rest }) => ({
-          ...rest,
-          id,
-          url,
-          urlIsPublicPath: false,
-          getDisplayURL: largeMediaURLThunks[id] ? largeMediaURLThunks[id] : getDisplayURL,
-        }));
+        return mediaFiles.map(({ id, url, ...rest }) => {
+          const getUrl = () => Promise.resolve(url);
+          const getDisplayURL = rest.getDisplayURL || getUrl;
+          return {
+            ...rest,
+            id,
+            getDisplayURL: largeMediaURLThunks[id] || getDisplayURL,
+          };
+        });
       },
     );
   }
@@ -330,11 +332,7 @@ export default class GitGateway {
           raw: pointerFileString,
           value,
         };
-        const persistedMediaFile = await this.backend.persistMedia(persistMediaArgument, options);
-        return {
-          ...persistedMediaFile,
-          urlIsPublicPath: false,
-        };
+        return this.backend.persistMedia(persistMediaArgument, options);
       });
     });
   }

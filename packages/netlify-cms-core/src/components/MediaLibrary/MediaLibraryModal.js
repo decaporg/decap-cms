@@ -187,7 +187,6 @@ const fileShape = {
   queryOrder: PropTypes.number,
   url: PropTypes.string,
   urlIsPublicPath: PropTypes.bool,
-  getDisplayURL: PropTypes.func.isRequired,
 };
 
 MediaLibraryModal.propTypes = {

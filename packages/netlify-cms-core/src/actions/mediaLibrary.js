@@ -1,8 +1,7 @@
 import { Map } from 'immutable';
 import { actions as notifActions } from 'redux-notifications';
 import { getBlobSHA } from 'netlify-cms-lib-util';
-import { currentBackend } from 'src/backend';
-import { createAssetProxy } from 'ValueObjects/AssetProxy';
+import { currentBackend } from 'src/backend'; import { createAssetProxy } from 'ValueObjects/AssetProxy';
 import { selectIntegration } from 'Reducers';
 import { getIntegrationProvider } from 'Integrations';
 import { addAsset } from './media';
@@ -231,28 +230,28 @@ export function deleteMedia(file, opts = {}) {
 
 export function loadMediaDisplayURL(file) {
   return async (dispatch, getState) => {
-    const { getDisplayURL, id, url, urlIsPublicPath } = file;
+    const { getDisplayURL, id, url } = file;
     const { mediaLibrary: mediaLibraryState } = getState();
-    const displayURLPath = ['displayURLs', id];
-    const shouldLoadDisplayURL =
-      id &&
-      ((url && urlIsPublicPath) ||
-        (getDisplayURL &&
-          !mediaLibraryState.getIn([...displayURLPath, 'url']) &&
-          !mediaLibraryState.getIn([...displayURLPath, 'isFetching']) &&
-          !mediaLibraryState.getIn([...displayURLPath, 'err'])));
-    if (shouldLoadDisplayURL) {
-      try {
-        dispatch(mediaDisplayURLRequest(id));
-        const newURL = (urlIsPublicPath && url) || (await getDisplayURL());
-        if (newURL) {
-          dispatch(mediaDisplayURLSuccess(id, newURL));
-          return newURL;
-        }
+    const state = mediaLibraryState.getIn(['displayURLs', id], Map());
+    if (!id) {
+      return;
+    }
+    if (!getDisplayURL && url) {
+      dispatch(mediaDisplayURLSuccess(id, url));
+    }
+    if (state.get('url') || state.get('isFetching') || state.get('err')) {
+      return;
+    }
+    try {
+      dispatch(mediaDisplayURLRequest(id));
+      const newURL = await getDisplayURL();
+      if (newURL) {
+        dispatch(mediaDisplayURLSuccess(id, newURL));
+      } else {
         throw new Error('No display URL was returned!');
-      } catch (err) {
-        dispatch(mediaDisplayURLFailure(id, err));
       }
+    } catch (err) {
+      dispatch(mediaDisplayURLFailure(id, err));
     }
   };
 }
