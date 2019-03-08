@@ -134,7 +134,8 @@ function assertType(node, type) {
 const ListPlugin = options => ({
   queries: {
     getCommonAncestor(editor) {
-      return document.getCommonAncestor(editor.value.startBlock.key, editor.value.endBlock.key);
+      const { startBlock, endBlock, document: doc } = editor.value;
+      return doc.getCommonAncestor(startBlock.key, endBlock.key);
     },
     getClosestType(editor, key, type) {
       return editor.value.document.getClosest(key, node => node.type === type);
@@ -147,12 +148,9 @@ const ListPlugin = options => ({
       }
       return editor.value.document.getClosest(ancestor.key, node => node.type === 'list-item');
     },
-    isInList(editor) {
-      return editor.getListContextNode().type === 'list-item';
-    },
-    getListItem(editor) {
+    getListOrListItem(editor) {
       const listContextNode = editor.getListContextNode();
-      if (listContextNode.type === 'list-item') {
+      if (['bulleted-list', 'numbered-list', 'list-item'].contains(listContextNode.type)) {
         return listContextNode;
       }
     },
@@ -161,7 +159,7 @@ const ListPlugin = options => ({
     },
     getListContextNode(editor, node) {
       const targetTypes = ['bulleted-list', 'numbered-list', 'list-item', 'quote', 'table-cell'];
-      const { startBlock, endBlock, selection, document } = editor.value;
+      const { startBlock, endBlock, selection } = editor.value;
       const target = node || (selection.isCollapsed && startBlock) || editor.getCommonAncestor();
       if (!target.type) {
         return target;
@@ -213,21 +211,6 @@ const ListPlugin = options => ({
         .wrapBlockByKey(listItem.key, type);
     },
     toggleList(editor, type) {
-      /**
-       * 1. Get the common ancestor - if selection is collapsed, use `startBlock`
-       * 2. If it's a list and it's a different type than the type received, change the list type
-       * 3. If it's a list, and it's the same as the received type, split the list items included
-       *    in the selection out of the list, which will dissolve the list if no list items remain.
-       * 4. If it's a list item and the list is a different type than the type received, nest
-       *    the selected blocks into a new list item and list of the new type
-       * 5. If it's a list item, and it's the same type, unwrap the list item one level through it's
-       *    parent and then unwrap (remove) the list item itself
-       * 6. If it's a non-list type that can contain lists, create a new list and list item
-       *    containing the selected blocks, as usual.
-       * 7. If it's something else, get it's parent and run it through the above steps.
-       * 8. If you go back to root and still haven't found a block that can contain lists or a list,
-       *    wrap the top
-       */
       if (!LIST_TYPES.includes(type)) {
         throw Error(`${type} is not a valid list type, must be one of: ${LIST_TYPES}`);
       }
@@ -287,11 +270,26 @@ const ListPlugin = options => ({
     /**
      * Handle `Tab`
      */
+    /**
+     * - If context is list, and the first list item is in the selection, tab does nothing
+     * - If context is list, and the first list item is not in the selection, tab indents all list
+     *   selected list items
+     * - If context is list, and the list context is a list item, shift+tab moves selected
+     *   list items into the parent list, taking on parent list type per probably user intent
+     * - If context is list, and the list context is not a list item, shift+tab does nothing
+     * - If context is list-item, and the list item is first child of list, tab does nothing
+     * - If context is list-item, and the list item is not first child, tab wraps the selection
+     *   into a new list and list-item
+     * - If context is list-item and the list context is a list item, shift+tab
+     * - Normalization should join adjacent same type lists
+     * - Normalization should delete empty lists
+     * - We should wrap any operation that could leave the editor in an invalid state with
+     *   `editor.withoutNormalizing`
     const isTab = isHotkey('tab', event);
     const isShiftTab = isHotkey('shift+tab', event);
     if (isTab || isShiftTab) {
       event.preventDefault();
-      const listItem = editor.getCurrentListItem();
+      const listItem = editor.getListItem();
       if (!listItem) {
         return next();
       }
@@ -329,7 +327,8 @@ const ListPlugin = options => ({
      * Handle `Enter`
      */
     else if (isHotkey('enter', event)) {
-      if (!editor.isInList()) {
+      const listOrListItem = editor.getListOrListItem();
+      if (!listOrListItem) {
         return next();
       }
 
@@ -337,40 +336,28 @@ const ListPlugin = options => ({
         editor.delete();
       }
 
-      // If the list item is empty, remove it.
-      if (parentBlock.text === '') {
-        editor.unwrapNodeToDepth(block.key, 2);
-      }
-
-      else if (
-        block.text === '' ||
-        !editor.value.selection.start.isAtStartOfNode(parentBlock) &&
-        editor.value.selection.start.isAtStartOfNode(block)
-      ) {
-        editor.unwrapNodeByKey(block.key).wrapBlockByKey(block.key, 'list-item');
-      }
-
-        /*
-        const previousSibling = editor.value.document.getPreviousSibling(block.key);
-        if (previousSibling && previousSibling.text === '') {
-          const newParent = editor.value.document.getParent(block.key);
-          if (LIST_TYPES.includes(newParent.type)) {
-            editor
-              .unwrapNodeByKey(block.key)
-              .wrapBlock('list-item');
-          }
+      if (listOrListItem.type === 'list-item') {
+        const listItem = listOrListItem;
+        // If the list item is empty, remove it.
+        if (listItem.text === '' || editor.value.selection.start.isAtStartOfNode(listItem)) {
+          editor.unwrapListItem(listItem);
         }
-        */
-      else {
-        return next();
+
+        else if (
+          editor.value.startBlock.text === '' ||
+          !editor.value.selection.start.isAtStartOfNode(listItem) &&
+          editor.value.selection.start.isAtStartOfNode(editor.value.startBlock)
+        ) {
+          const depth = listItem.getDepth(editor.value.startBlock.key) + 1;
+          editor.deleteBackward();
+          editor.splitBlockAtRange(editor.value.selection, depth);
+        }
+      } else {
+        const list = listOrListItem;
+        if (list.nodes.size === 0) {
+          editor.removeNodeByKey(list.key);
+        }
       }
-        /*
-      else {
-        editor
-          .splitBlockAtRange(editor.value.selection)
-          .setNodeByKey(editor.value.startBlock.key, DEFAULT_BLOCK_TYPE);
-      }
-      */
     }
 
     else {
