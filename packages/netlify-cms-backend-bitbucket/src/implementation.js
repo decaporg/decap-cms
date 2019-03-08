@@ -222,13 +222,13 @@ export default class Bitbucket {
     return this.api
       .listAllFiles(this.config.get('media_folder'))
       .then(files =>
-        files.map(({ id, name, path }) => ({ id, name, path, displayURL: { id, name, path } })),
+        files.map(({ id, name, path }) => ({ id, name, path, displayURL: { id, path } })),
       );
   }
 
   getMediaDisplayURL(displayURL) {
     this._mediaDisplayURLSem = this._mediaDisplayURLSem || semaphore(MAX_CONCURRENT_DOWNLOADS);
-    const { id, name, path } = displayURL;
+    const { id, path } = displayURL;
     return new Promise((resolve, reject) =>
       this._mediaDisplayURLSem.take(() =>
         this.api
