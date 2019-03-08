@@ -159,16 +159,14 @@ export function persistMedia(file, opts = {}) {
 
     try {
       const id = await getBlobSHA(file);
-      const getDisplayURL = () => URL.createObjectURL(file);
+      const displayURL = URL.createObjectURL(file);
       const assetProxy = await createAssetProxy(fileName, file, false, privateUpload);
       dispatch(addAsset(assetProxy));
       if (!integration) {
         const asset = await backend.persistMedia(state.config, assetProxy);
-        return dispatch(mediaPersisted({ id, getDisplayURL, ...asset }));
+        return dispatch(mediaPersisted({ id, displayURL, ...asset }));
       }
-      return dispatch(
-        mediaPersisted({ id, getDisplayURL, ...assetProxy.asset }, { privateUpload }),
-      );
+      return dispatch(mediaPersisted({ id, displayURL, ...assetProxy.asset }, { privateUpload }));
     } catch (error) {
       console.error(error);
       dispatch(
@@ -231,28 +229,41 @@ export function deleteMedia(file, opts = {}) {
 
 export function loadMediaDisplayURL(file) {
   return async (dispatch, getState) => {
-    const { getDisplayURL, id, url, urlIsPublicPath } = file;
-    const { mediaLibrary: mediaLibraryState } = getState();
-    const displayURLPath = ['displayURLs', id];
-    const shouldLoadDisplayURL =
-      id &&
-      ((url && urlIsPublicPath) ||
-        (getDisplayURL &&
-          !mediaLibraryState.getIn([...displayURLPath, 'url']) &&
-          !mediaLibraryState.getIn([...displayURLPath, 'isFetching']) &&
-          !mediaLibraryState.getIn([...displayURLPath, 'err'])));
-    if (shouldLoadDisplayURL) {
-      try {
-        dispatch(mediaDisplayURLRequest(id));
-        const newURL = (urlIsPublicPath && url) || (await getDisplayURL());
-        if (newURL) {
-          dispatch(mediaDisplayURLSuccess(id, newURL));
-          return newURL;
-        }
+    const { displayURL, id, url } = file;
+    const state = getState();
+    const displayURLState = state.mediaLibrary.getIn(['displayURLs', id], Map());
+    if (
+      !id ||
+      // displayURL is used by most backends; url (like urlIsPublicPath) is used exclusively by the
+      // assetStore integration. Only the assetStore uses URLs which can actually be inserted into
+      // an entry - other backends create a domain-relative URL using the public_folder from the
+      // config and the file's name.
+      (!displayURL && !url) ||
+      displayURLState.get('url') ||
+      displayURLState.get('isFetching') ||
+      displayURLState.get('err')
+    ) {
+      return Promise.resolve();
+    }
+    if (typeof url === 'string') {
+      dispatch(mediaDisplayURLRequest(id));
+      return dispatch(mediaDisplayURLSuccess(id, displayURL));
+    }
+    if (typeof displayURL === 'string') {
+      dispatch(mediaDisplayURLRequest(id));
+      return dispatch(mediaDisplayURLSuccess(id, displayURL));
+    }
+    try {
+      const backend = currentBackend(state.config);
+      dispatch(mediaDisplayURLRequest(id));
+      const newURL = await backend.getMediaDisplayURL(displayURL);
+      if (newURL) {
+        return dispatch(mediaDisplayURLSuccess(id, newURL));
+      } else {
         throw new Error('No display URL was returned!');
-      } catch (err) {
-        dispatch(mediaDisplayURLFailure(id, err));
       }
+    } catch (err) {
+      return dispatch(mediaDisplayURLFailure(id, err));
     }
   };
 }
@@ -322,6 +333,7 @@ export function mediaDisplayURLSuccess(key, url) {
 }
 
 export function mediaDisplayURLFailure(key, err) {
+  console.error(err);
   return {
     type: MEDIA_DISPLAY_URL_FAILURE,
     payload: { key, err },

@@ -164,7 +164,7 @@ export default class GitHub {
         if (url.pathname.match(/.svg$/)) {
           url.search += (url.search.slice(1) === '' ? '?' : '&') + 'sanitize=true';
         }
-        return { id: sha, name, size, url: url.href, urlIsPublicPath: true, path };
+        return { id: sha, name, size, displayURL: url.href, path };
       }),
     );
   }
@@ -178,8 +178,14 @@ export default class GitHub {
       await this.api.persistFiles(null, [mediaFile], options);
 
       const { sha, value, path, fileObj } = mediaFile;
-      const url = URL.createObjectURL(fileObj);
-      return { id: sha, name: value, size: fileObj.size, url, path: trimStart(path, '/') };
+      const displayURL = URL.createObjectURL(fileObj);
+      return {
+        id: sha,
+        name: value,
+        size: fileObj.size,
+        displayURL,
+        path: trimStart(path, '/'),
+      };
     } catch (error) {
       console.error(error);
       throw error;

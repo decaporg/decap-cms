@@ -62,9 +62,9 @@ class MediaLibraryCard extends React.Component {
       </Card>
     );
   }
-  UNSAFE_componentWillMount() {
+  componentDidMount() {
     const { displayURL, loadDisplayURL } = this.props;
-    if (!displayURL || (!displayURL.url && !displayURL.isFetching && !displayURL.err)) {
+    if (!displayURL.get('url')) {
       loadDisplayURL();
     }
   }

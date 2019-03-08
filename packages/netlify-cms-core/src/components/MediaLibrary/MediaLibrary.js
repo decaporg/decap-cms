@@ -24,14 +24,14 @@ const IMAGE_EXTENSIONS_VIEWABLE = ['jpg', 'jpeg', 'webp', 'gif', 'png', 'bmp', '
 const IMAGE_EXTENSIONS = [...IMAGE_EXTENSIONS_VIEWABLE];
 
 const fileShape = {
-  key: PropTypes.string.isRequired,
+  displayURL: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
   id: PropTypes.string.isRequired,
+  key: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  size: PropTypes.number,
   queryOrder: PropTypes.number,
+  size: PropTypes.number,
   url: PropTypes.string,
   urlIsPublicPath: PropTypes.bool,
-  getDisplayURL: PropTypes.func,
 };
 
 class MediaLibrary extends React.Component {
@@ -119,7 +119,7 @@ class MediaLibrary extends React.Component {
   toTableData = files => {
     const tableData =
       files &&
-      files.map(({ key, name, id, size, queryOrder, url, urlIsPublicPath, getDisplayURL }) => {
+      files.map(({ key, name, id, size, queryOrder, url, urlIsPublicPath, displayURL }) => {
         const ext = fileExtension(name).toLowerCase();
         return {
           key,
@@ -130,7 +130,7 @@ class MediaLibrary extends React.Component {
           queryOrder,
           url,
           urlIsPublicPath,
-          getDisplayURL,
+          displayURL,
           isImage: IMAGE_EXTENSIONS.includes(ext),
           isViewableImage: IMAGE_EXTENSIONS_VIEWABLE.includes(ext),
         };
