@@ -99,10 +99,7 @@ const resourceExists = async ({ rootURL, makeAuthorizedRequest }, { sha, size })
   // to fit
 };
 
-const getDownloadURLThunkFromSha = (
-  { rootURL, makeAuthorizedRequest, transformImages: t },
-  sha,
-) => () =>
+const getDownloadURL = ({ rootURL, transformImages: t, makeAuthorizedRequest }, { sha }) =>
   makeAuthorizedRequest(
     `${rootURL}/origin/${sha}${
       t && Object.keys(t).length > 0 ? `?nf_resize=${t.nf_resize}&w=${t.w}&h=${t.h}` : ''
@@ -113,17 +110,13 @@ const getDownloadURLThunkFromSha = (
     .then(blob => URL.createObjectURL(blob))
     .catch(err => console.error(err) || Promise.resolve(''));
 
-// We allow users to get thunks which load the blobs instead of fully
-// resolved blob URLs so that media clients can download the blobs
-// lazily.  This behaves more similarly to the behavior of string
-// URLs, which only trigger an image download when the DOM element for
-// that image is created.
-const getResourceDownloadURLThunks = (clientConfig, objects) =>
-  Promise.resolve(objects.map(({ sha }) => [sha, getDownloadURLThunkFromSha(clientConfig, sha)]));
+const getResourceDownloadURLArgs = (clientConfig, objects) => {
+  return Promise.resolve(objects.map(({ sha }) => [sha, { sha }]));
+};
 
 const getResourceDownloadURLs = (clientConfig, objects) =>
-  getResourceDownloadURLThunks(clientConfig, objects)
-    .then(map(([sha, thunk]) => Promise.all([sha, thunk()])))
+  getResourceDownloadURLArgs(clientConfig, objects)
+    .then(map(downloadURLArg => getDownloadURL(downloadURLArg)))
     .then(Promise.all.bind(Promise));
 
 const uploadOperation = objects => ({
@@ -171,7 +164,8 @@ const clientFns = {
   resourceExists,
   getResourceUploadURLs,
   getResourceDownloadURLs,
-  getResourceDownloadURLThunks,
+  getResourceDownloadURLArgs,
+  getDownloadURL,
   uploadResource,
   matchPath,
 };

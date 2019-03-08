@@ -143,30 +143,31 @@ export default class GitLab {
   }
 
   getMedia() {
-    const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
-
     return this.api.listAllFiles(this.config.get('media_folder')).then(files =>
       files.map(({ id, name, path }) => {
-        const getDisplayURL = () =>
-          new Promise((resolve, reject) =>
-            sem.take(() =>
-              this.api
-                .readFile(path, id, { parseText: false })
-                .then(blob => {
-                  // svgs are returned with mimetype "text/plain" by gitlab
-                  if (blob.type === 'text/plain' && name.match(/\.svg$/i)) {
-                    return new window.Blob([blob], { type: 'image/svg+xml' });
-                  }
-                  return blob;
-                })
-                .then(blob => URL.createObjectURL(blob))
-                .then(resolve, reject)
-                .finally(() => sem.leave()),
-            ),
-          );
-
-        return { id, name, getDisplayURL, path };
+        return { id, name, path, displayURL: { id, name, path } };
       }),
+    );
+  }
+
+  getMediaDisplayURL(displayURL) {
+    this._mediaDisplayURLSem = this._mediaDisplayURLSem || semaphore(MAX_CONCURRENT_DOWNLOADS);
+    const { id, name, path } = displayURL;
+    return new Promise((resolve, reject) =>
+      this._mediaDisplayURLSem.take(() =>
+        this.api
+          .readFile(path, id, { parseText: false })
+          .then(blob => {
+            // svgs are returned with mimetype "text/plain" by gitlab
+            if (blob.type === 'text/plain' && name.match(/\.svg$/i)) {
+              return new window.Blob([blob], { type: 'image/svg+xml' });
+            }
+            return blob;
+          })
+          .then(blob => URL.createObjectURL(blob))
+          .then(resolve, reject)
+          .finally(() => this._mediaDisplayURLSem.leave()),
+      ),
     );
   }
 

@@ -486,6 +486,17 @@ class Backend {
     return this.implementation.getMedia();
   }
 
+  getMediaDisplayURL(displayURL) {
+    if (this.implementation.getMediaDisplayURL) {
+      return this.implementation.getMediaDisplayURL(displayURL);
+    }
+    const err = new Error(
+      'getMediaDisplayURL is not implemented by the current backend, but the backend returned a displayURL which was not a string!',
+    );
+    err.displayURL = displayURL;
+    return Promise.reject(err);
+  }
+
   entryWithFormat(collectionOrEntity) {
     return entry => {
       const format = resolveFormat(collectionOrEntity, entry);

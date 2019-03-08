@@ -214,16 +214,19 @@ export default class GitGateway {
         if (!largeMediaClient.enabled) {
           return mediaFiles;
         }
-        const largeMediaURLThunks = await this.getLargeMedia(mediaFiles);
-        return mediaFiles.map(({ id, url, urlIsPublicPath, getDisplayURL, ...rest }) => ({
-          ...rest,
-          id,
-          url,
-          urlIsPublicPath: largeMediaURLThunks[id] ? false : urlIsPublicPath,
-          getDisplayURL: largeMediaURLThunks[id]
-            ? largeMediaURLThunks[id]
-            : getDisplayURL || (url && (() => Promise.resolve(url))),
-        }));
+        const largeMediaDisplayURLs = await this.getLargeMediaDisplayURLs(mediaFiles);
+        return mediaFiles.map(({ id, displayURL, path, ...rest }) => {
+          return {
+            ...rest,
+            id,
+            path,
+            displayURL: {
+              path,
+              original: displayURL,
+              largeMedia: largeMediaDisplayURLs[id],
+            },
+          };
+        });
       },
     );
   }
@@ -270,13 +273,13 @@ export default class GitGateway {
             ['backend', 'use_large_media_transforms_in_media_library'],
             true,
           )
-            ? { nf_resize: 'fit', w: 280, h: 160 }
+            ? { nf_resize: 'fit', w: 560, h: 320 }
             : false,
         });
       },
     );
   }
-  getLargeMedia(mediaFiles) {
+  getLargeMediaDisplayURLs(mediaFiles) {
     return this.getLargeMediaClient().then(client => {
       const largeMediaItems = mediaFiles
         .filter(({ path }) => client.matchPath(path))
@@ -296,16 +299,35 @@ export default class GitGateway {
           }),
         )
         .then(unzip)
-        .then(async ([idMaps, files]) => [
-          idMaps,
-          await client.getResourceDownloadURLThunks(files).then(fromPairs),
-        ])
+        .then(([idMaps, files]) =>
+          Promise.all([idMaps, client.getResourceDownloadURLArgs(files).then(fromPairs)]),
+        )
         .then(([idMaps, resourceMap]) =>
           idMaps.map(({ pointerId, resourceId }) => [pointerId, resourceMap[resourceId]]),
         )
         .then(fromPairs);
     });
   }
+
+  getMediaDisplayURL(displayURL) {
+    const { path, original, largeMedia: largeMediaDisplayURL } = displayURL;
+    return this.getLargeMediaClient().then(client => {
+      if (client.enabled && client.matchPath(path)) {
+        return client.getDownloadURL(largeMediaDisplayURL);
+      }
+      if (this.backend.getMediaDisplayURL) {
+        return this.backend.getMediaDisplayURL(original);
+      }
+      const err = new Error(
+        `getMediaDisplayURL is not implemented by the ${
+          this.backendType
+        } backend, but the backend returned a displayURL which was not a string!`,
+      );
+      err.displayURL = displayURL;
+      return Promise.reject(err);
+    });
+  }
+
   persistEntry(entry, mediaFiles, options) {
     return this.backend.persistEntry(entry, mediaFiles, options);
   }
@@ -332,11 +354,7 @@ export default class GitGateway {
           raw: pointerFileString,
           value,
         };
-        const persistedMediaFile = await this.backend.persistMedia(persistMediaArgument, options);
-        return {
-          ...persistedMediaFile,
-          urlIsPublicPath: false,
-        };
+        return this.backend.persistMedia(persistMediaArgument, options);
       });
     });
   }

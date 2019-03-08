@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.8.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.7.0...netlify-cms-core@2.8.0) (2019-03-08)
+
+
+### Bug Fixes
+
+* **config:** strip leading slashes from collection location config ([#2131](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2131)) ([efa650c](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/efa650c))
+* **core:** allow updates through error boundary ([#2136](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2136)) ([3d98b72](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/3d98b72))
+* **core:** number type slug template ([#2119](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2119)) ([7577443](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/7577443))
+
+
+### Features
+
+* **core:** recover entry after unexpected quit ([#2129](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2129)) ([686504a](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/686504a))
+
+
+
+
+
 # [2.7.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.6.0...netlify-cms-core@2.7.0) (2019-02-26)
 
 
