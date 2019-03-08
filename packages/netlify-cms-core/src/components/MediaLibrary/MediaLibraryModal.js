@@ -180,11 +180,12 @@ const MediaLibraryModal = ({
 };
 
 const fileShape = {
-  key: PropTypes.string.isRequired,
+  displayURL: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
   id: PropTypes.string.isRequired,
+  key: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  size: PropTypes.number,
   queryOrder: PropTypes.number,
+  size: PropTypes.number,
   url: PropTypes.string,
   urlIsPublicPath: PropTypes.bool,
 };

@@ -48,7 +48,7 @@ const MediaLibraryCardGrid = ({
           width={cardWidth}
           margin={cardMargin}
           isPrivate={isPrivate}
-          displayURL={displayURLs.get(file.id, Map())}
+          displayURL={displayURLs.get(file.id, file.url ? Map({ url: file.url }) : Map())}
           loadDisplayURL={() => loadDisplayURL(file)}
           type={file.type}
         />
@@ -65,10 +65,13 @@ MediaLibraryCardGrid.propTypes = {
   setScrollContainerRef: PropTypes.func.isRequired,
   mediaItems: PropTypes.arrayOf(
     PropTypes.shape({
+      displayURL: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+      id: PropTypes.string.isRequired,
       key: PropTypes.string.isRequired,
-      isViewableImage: PropTypes.bool,
+      name: PropTypes.string.isRequired,
+      type: PropTypes.string.isRequired,
       url: PropTypes.string,
-      name: PropTypes.string,
+      urlIsPublicPath: PropTypes.bool,
     }),
   ).isRequired,
   isSelectedFile: PropTypes.func.isRequired,

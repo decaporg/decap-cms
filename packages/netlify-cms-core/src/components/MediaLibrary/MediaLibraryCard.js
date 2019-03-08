@@ -57,14 +57,12 @@ class MediaLibraryCard extends React.Component {
         tabIndex="-1"
         isPrivate={isPrivate}
       >
-        <div>
-          {url ? <CardImage src={url} /> : <CardFileIcon>{type}</CardFileIcon>}
-        </div>
+        <div>{url ? <CardImage src={url} /> : <CardFileIcon>{type}</CardFileIcon>}</div>
         <CardText>{text}</CardText>
       </Card>
     );
   }
-  UNSAFE_componentWillMount() {
+  componentDidMount() {
     const { displayURL, loadDisplayURL } = this.props;
     if (!displayURL.get('url')) {
       loadDisplayURL();
