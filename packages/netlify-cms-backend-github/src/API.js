@@ -83,7 +83,15 @@ export default class API {
 
   request(url, options = {}) {
     const req = { url, ...options };
-    return this.performRequest(req).then(response => this.parseResponse(response));
+    let responseStatus;
+    return this.performRequest(req)
+      .then(response => {
+        responseStatus = response.status;
+        return this.parseResponse(response);
+      })
+      .catch(error => {
+        throw new APIError(error.message, responseStatus, 'GitHub');
+      });
   }
 
   async paginate(url, options) {
@@ -243,14 +251,14 @@ export default class API {
             'line-height: 30px;text-align: center;font-weight: bold',
             branchName,
           );
-          return Promise.reject(false);
+          return Promise.reject();
         }
         return this.request(`${this.repoURL}/pulls/${pr.number}/files`);
       })
       .then(dataFiles => {
         const files = dataFiles.map(file => ({ path: file.filename, sha: file.sha }));
         const entry = files.find(entryFile);
-        const objects = { entry };
+        const objects = { entry, files: [] };
         return {
           pr: { number: pr.number, head: pr.head.sha },
           user: pr.head.user.login,
@@ -258,7 +266,6 @@ export default class API {
           collection,
           status: this.getLabelStatus(pr.labels.map(label => label.name)),
           objects,
-          files,
           timeStamp: pr.updated_at,
           newMeta: true,
         };
