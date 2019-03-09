@@ -13,6 +13,7 @@ import { renderNode, renderMark } from './renderers';
 import { validateNode } from './validators';
 import plugins from './plugins';
 import onKeyDown from './keys';
+import schema from './schema';
 import visualEditorStyles from './visualEditorStyles';
 import { EditorControlBar } from '../styles';
 
@@ -126,7 +127,7 @@ export default class Editor extends React.Component {
       case 'heading-four':
       case 'heading-five':
       case 'heading-six':
-      case 'code':
+      case 'code-block':
         if (editor.value.blocks.every(block => block.type === type)) {
           editor.value.blocks.forEach(block => editor.setNodeByKey(block.key, 'paragraph'));
         } else {
@@ -140,6 +141,10 @@ export default class Editor extends React.Component {
          * quote, unwrap the quote (as within are only blocks), and if it's not, wrap all selected
          * blocks into a quote. Make sure text is wrapped into paragraphs.
          */
+
+        /**
+         * TODO: highlight a couple list items and hit the quote button. doesn't work.
+         */
         const topBlocks = editor.value.document.getRootBlocksAtRange(editor.value.selection);
         const ancestor = editor.value.document.getCommonAncestor(topBlocks.first().key, topBlocks.last().key);
         if (ancestor.type === type) {
@@ -151,78 +156,10 @@ export default class Editor extends React.Component {
       }
       case 'numbered-list':
       case 'bulleted-list': {
-        /**
-         * Quotes can contain other blocks, even other quotes. If a selection contains quotes, they
-         * shouldn't be impacted. The selection's immediate parent should be checked - if it's a
-         * quote, unwrap the quote (as within are only blocks), and if it's not, wrap all selected
-         * blocks into a quote. Make sure text is wrapped into paragraphs.
-         */
-        /*
-        const { key } = editor.value.startBlock;
-        const topBlocks = editor.value.document.getRootBlocksAtRange(editor.value.selection);
-        const ancestor = editor.value.document.getCommonAncestor(topBlocks.first().key, topBlocks.last().key);
-        if (ancestor.type === type) {
-          editor.unwrapBlock('list-item').unwrapBlock(type);
-        } else {
-          editor.wrapBlock('list-item');
-          const listItem = editor.value.document.getClosest(key, node => node.type === 'list-item');
-          editor.wrapBlockByKey(listItem.key, type);
-        }
-        */
         editor.toggleList(type);
         break;
       }
     }
-        /**
-         * 
-        const 
-    // Handle everything except list buttons.
-    if (!['bulleted-list', 'numbered-list'].includes(type)) {
-      const blocksOfType = value.blocks.filter(block => block.type === type);
-      if (blocksOfType.size > 0) {
-        value.blocks.forEach(block => {
-          if (block.type === type) {
-            editor.setNodeByKey(block.key, 'paragraph');
-          }
-        });
-      } else {
-        editor.setBlocks(type);
-      }
-    }
-
-    // Handle list buttons.
-    else {
-      //editor.wrapBlock(type).wrapBlock('list-item');
-      editor.wrapList('bulleted-list');
-    }
-    /*
-    } else {
-      const focusBlock = editor.value.focusBlock;
-      const isSameListType = value.blocks.some(block => {
-        return !!doc.getClosest(block.key, parent => parent.type === type);
-      });
-    */
-
-    // Handle the extra wrapping required for list buttons.
-    // slate-edit-list removed from project, must rewrite list handling
-    /*
-    const { unwrapList, wrapInList } = EditListConfigured.changes;
-    else {
-      const isSameListType = value.blocks.some(block => {
-        return !!doc.getClosest(block.key, parent => parent.type === type);
-      });
-      const isInList = EditListConfigured.utils.isSelectionInList(value);
-
-      if (isInList && isSameListType) {
-        editor.command(unwrapList, type);
-      } else if (isInList) {
-        const currentListType = type === 'bulleted-list' ? 'numbered-list' : 'bulleted-list';
-        editor.call(unwrapList, currentListType).call(wrapInList, type);
-      } else {
-        editor.call(wrapInList, type);
-      }
-    }
-    */
 
     editor.focus();
   };
@@ -348,7 +285,7 @@ export default class Editor extends React.Component {
               value={this.state.value}
               renderNode={renderNode}
               renderMark={renderMark}
-              validateNode={validateNode}
+              schema={schema}
               plugins={plugins}
               onKeyDown={onKeyDown}
               onChange={this.handleChange}

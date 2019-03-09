@@ -38,7 +38,15 @@ export default function remarkUnwrapInvalidNest() {
     /**
      * Node types that are considered "blocks".
      */
-    const blocks = ['paragraph', 'heading', 'code', 'blockquote', 'list', 'table', 'thematicBreak'];
+    const blocks = [
+      'paragraph',
+      'heading',
+      'codeBlock',
+      'blockquote',
+      'list',
+      'table',
+      'thematicBreak',
+    ];
 
     /**
      * Node types that can contain "block" nodes as direct children. We check

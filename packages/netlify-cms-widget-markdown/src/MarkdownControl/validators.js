@@ -81,7 +81,7 @@ export function validateNode(node) {
   /**
    * Ensure that code blocks contain no marks.
    */
-  if (node.type === 'code') {
+  if (node.type === 'code-block') {
     const invalidChild = node.getTexts().find(text => !text.getMarks().isEmpty());
     if (invalidChild) {
       return editor =>

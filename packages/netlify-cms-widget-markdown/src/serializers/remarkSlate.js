@@ -34,7 +34,7 @@ const typeMap = {
   root: 'root',
   paragraph: 'paragraph',
   blockquote: 'quote',
-  code: 'code',
+  codeBlock: 'code-block',
   listItem: 'list-item',
   table: 'table',
   tableRow: 'table-row',
@@ -117,7 +117,7 @@ function processMarkNode(node, parentMarks = []) {
        * first add the inline code mark to the marks array.
        */
       case 'inlineCode': {
-        const childMarks = [...marks, { type: markMap['inlineCode'] }];
+        const childMarks = [...marks, { type: markMap[childNode.type] }];
         return { text: childNode.value, marks: childMarks };
       }
 
@@ -271,7 +271,7 @@ function convertNode(node, nodes) {
      * convert that value into a nested child text node for Slate. We also carry
      * over the "lang" data property if it's defined.
      */
-    case 'code': {
+    case 'codeBlock': {
       const data = { lang: node.lang };
       const text = createText(node.value);
       const nodes = [text];

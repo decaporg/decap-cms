@@ -102,7 +102,7 @@ export const renderNode = props => {
       return <ListItem {...props} />;
     case 'quote':
       return <Quote {...props} />;
-    case 'code':
+    case 'code-block':
       return <CodeBlock {...props} />;
     case 'heading-one':
       return <HeadingOne {...props} />;
