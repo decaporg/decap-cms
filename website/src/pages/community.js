@@ -45,8 +45,8 @@ const CommunityPage = ({ data }) => {
             css={css`
               ${mq[2]} {
                 position: fixed;
-                right: 40px;
-                top: 20%;
+                left: 55%;
+                top: 250px;
                 max-height: calc(100vh - (104px * 1.5) - 40px);
                 overflow-y: auto;
               }
