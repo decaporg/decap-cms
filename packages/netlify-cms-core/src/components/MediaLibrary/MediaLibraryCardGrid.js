@@ -8,6 +8,7 @@ import { colors } from 'netlify-cms-ui-default';
 
 const CardGridContainer = styled.div`
   overflow-y: auto;
+  overflow-x: hidden;
 `;
 
 const CardGrid = styled.div`
