@@ -348,16 +348,11 @@ class Backend {
     return publishedEntry;
   }
 
-  async getSlug(collection, entryData, slugConfig, usedSlugs) {
+  async generateUniqueSlug(collection, entryData, slugConfig, usedSlugs) {
     const slug = slugFormatter(collection, entryData, slugConfig);
-
-    return await this.generateUniqueSlug(collection, slug, slugConfig, usedSlugs);
-  }
-
-  async generateUniqueSlug(collection, slug, slugConfig, usedSlugs) {
-    const sanitizeEntrySlug = flow([prepareSlug, partialRight(sanitizeSlug, slugConfig)]);
+    const sanitizeEntrySlug = partialRight(sanitizeSlug, slugConfig);
     let i = 1;
-    let sanitizedSlug = sanitizeEntrySlug(slug);
+    let sanitizedSlug = slug;
     let uniqueSlug = sanitizedSlug;
 
     // Check for duplicate slug in loaded entities store first before repo
@@ -695,7 +690,7 @@ class Backend {
       if (!selectAllowNewEntries(collection)) {
         throw new Error('Not allowed to create new entries in this collection');
       }
-      const slug = await this.getSlug(
+      const slug = await this.generateUniqueSlug(
         collection,
         entryDraft.getIn(['entry', 'data']),
         config.get('slug'),

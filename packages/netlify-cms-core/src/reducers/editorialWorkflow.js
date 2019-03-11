@@ -141,7 +141,7 @@ export const selectUnpublishedEntriesByStatus = (state, status) => {
     .valueSeq();
 };
 
-export const selectUnpublishedSlugEntries = (state, collection) => {
+export const selectUnpublishedSlugs = (state, collection) => {
   if (!state.get('entities')) return null;
   return state
     .get('entities')
