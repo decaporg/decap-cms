@@ -33,6 +33,7 @@
     "publish:version": "lerna version --no-push",
     "publish:push": "git push --follow-tags && lerna publish from-git",
     "publish:dry-run": "lerna version --no-git-tag-version --no-push",
+    "publish:beta": "lerna publish --canary",
     "format": "run-s \"lint:css -- --fix --quiet\" \"lint:js -- --fix --quiet\" \"format:prettier -- --write\"",
     "format:prettier": "prettier \"{{packages,scripts,website}/**/,}*.{js,css}\"",
     "lint": "run-p -c --aggregate-output lint:*",
