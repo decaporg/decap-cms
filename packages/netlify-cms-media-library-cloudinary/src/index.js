@@ -74,7 +74,7 @@ async function init({ options = {}, handleInsert } = {}) {
       if (allowMultiple === false) {
         instanceConfig.multiple = false;
       }
-      return mediaLibrary.show({ config: { ...cloudinaryBehaviorConfig, ...instanceConfig } });
+      return mediaLibrary.show({ ...cloudinaryBehaviorConfig, ...instanceConfig });
     },
     hide: () => mediaLibrary.hide(),
     enableStandalone: () => true,
