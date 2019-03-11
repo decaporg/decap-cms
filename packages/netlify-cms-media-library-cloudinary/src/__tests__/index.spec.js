@@ -197,7 +197,7 @@ Object {
     it('calls cloudinary instance show method with default options', async () => {
       const integration = await cloudinary.init();
       integration.show();
-      expect(mediaLibrary.show).toHaveBeenCalledWith(defaultOptions);
+      expect(mediaLibrary.show).toHaveBeenCalledWith(defaultOptions.config);
     });
 
     it('accepts unknown configuration keys', async () => {
@@ -209,7 +209,7 @@ Object {
       };
       const integration = await cloudinary.init();
       integration.show(showOptions);
-      expect(mediaLibrary.show).toHaveBeenCalledWith(showOptions);
+      expect(mediaLibrary.show).toHaveBeenCalledWith(showOptions.config);
     });
 
     it('receives global configuration for behavior only', async () => {
@@ -232,7 +232,7 @@ Object {
       };
       const integration = await cloudinary.init({ options });
       integration.show();
-      expect(mediaLibrary.show).toHaveBeenCalledWith(expectedOptions);
+      expect(mediaLibrary.show).toHaveBeenCalledWith(expectedOptions.config);
     });
 
     it('allows global/default configuration to be overridden', async () => {
@@ -243,7 +243,7 @@ Object {
       };
       const integration = await cloudinary.init();
       integration.show(showOptions);
-      expect(mediaLibrary.show).toHaveBeenCalledWith(showOptions);
+      expect(mediaLibrary.show).toHaveBeenCalledWith(showOptions.config);
     });
 
     it('enforces multiple: false if allowMultiple is false', async () => {
@@ -265,7 +265,7 @@ Object {
       };
       const integration = await cloudinary.init(options);
       integration.show(showOptions);
-      expect(mediaLibrary.show).toHaveBeenCalledWith(expectedOptions);
+      expect(mediaLibrary.show).toHaveBeenCalledWith(expectedOptions.config);
     });
   });
 
