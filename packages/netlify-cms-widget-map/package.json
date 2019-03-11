@@ -28,7 +28,7 @@
     "webpack-cli": "^3.1.0"
   },
   "peerDependencies": {
-    "emotion": "^9.2.6",
+    "@emotion/core": "^10.0.9",
     "lodash": "^4.17.10",
     "netlify-cms-ui-default": "^2.0.0",
     "prop-types": "^15.5.10",

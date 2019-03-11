@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import styled, { cx, css } from 'react-emotion';
+import styled from '@emotion/styled';
+import { cx, css } from 'emotion';
 import { List, Map } from 'immutable';
 import { partial } from 'lodash';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';

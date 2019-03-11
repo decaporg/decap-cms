@@ -2,7 +2,8 @@
 
 import React from 'react';
 import { Map } from 'immutable';
-import styled, { css } from 'react-emotion';
+import styled from '@emotion/styled';
+import { css } from 'emotion';
 import { partial, capitalize } from 'lodash';
 import { ListItemTopBar, components, colors, lengths } from 'netlify-cms-ui-default';
 import { getEditorControl, getEditorComponents } from './index';

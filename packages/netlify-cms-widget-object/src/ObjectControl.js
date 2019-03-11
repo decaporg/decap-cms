@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { css, cx } from 'react-emotion';
+import { css, cx } from 'emotion';
 import { Map, List } from 'immutable';
 import { ObjectWidgetTopBar, components } from 'netlify-cms-ui-default';
 

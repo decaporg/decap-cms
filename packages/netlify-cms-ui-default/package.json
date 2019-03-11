@@ -26,10 +26,10 @@
     "webpack-cli": "^3.1.0"
   },
   "peerDependencies": {
-    "emotion": "^9.2.6",
+    "@emotion/core": "^10.0.9",
+    "@emotion/styled": "^10.0.9",
     "lodash": "^4.13.1",
     "prop-types": "^15.5.10",
-    "react": "^16.4.1",
-    "react-emotion": "^9.2.6"
+    "react": "^16.4.1"
   }
 }

@@ -86,6 +86,7 @@
     "cypress": "^3.0.3",
     "dom-testing-library": "^3.13.0",
     "eslint": "^5.3.0",
+    "eslint-plugin-emotion": "^10.0.7",
     "eslint-plugin-react": "^7.10.0",
     "friendly-errors-webpack-plugin": "^1.7.0",
     "http-server": "^0.11.1",

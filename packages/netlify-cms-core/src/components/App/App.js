@@ -3,7 +3,7 @@ import React from 'react';
 import { hot } from 'react-hot-loader';
 import { translate } from 'react-polyglot';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 import { connect } from 'react-redux';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import { Notifs } from 'redux-notifications';
@@ -15,7 +15,7 @@ import { createNewEntry } from 'Actions/collections';
 import { openMediaLibrary } from 'Actions/mediaLibrary';
 import MediaLibrary from 'MediaLibrary/MediaLibrary';
 import { Toast } from 'UI';
-import { Loader, colors } from 'netlify-cms-ui-default';
+import { Loader, colors, GlobalStyles } from 'netlify-cms-ui-default';
 import history from 'Routing/history';
 import { SIMPLE, EDITORIAL_WORKFLOW } from 'Constants/publishModes';
 import Collection from 'Collection/Collection';
@@ -160,6 +160,7 @@ class App extends React.Component {
 
     return (
       <>
+        <GlobalStyles/>
         <Notifs CustomComponent={Toast} />
         <Header
           user={user}

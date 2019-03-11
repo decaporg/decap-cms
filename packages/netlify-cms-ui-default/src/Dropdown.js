@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled, { css } from 'react-emotion';
+import { css } from '@emotion/core';
+import styled from '@emotion/styled';
 import { Wrapper, Button as DropdownButton, Menu, MenuItem } from 'react-aria-menubutton';
 import { buttons, components } from './styles';
 import Icon from './Icon';

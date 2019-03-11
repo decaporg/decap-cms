@@ -46,14 +46,14 @@
     "webpack-cli": "^3.1.0"
   },
   "peerDependencies": {
-    "emotion": "^9.2.6",
+    "@emotion/core": "^10.0.9",
+    "@emotion/styled": "^10.0.9",
     "immutable": "^3.7.6",
     "lodash": "^4.17.10",
     "netlify-cms-ui-default": "^2.0.0",
     "prop-types": "^15.5.10",
     "react": "^16.4.1",
     "react-dom": "^16.0.0",
-    "react-emotion": "^9.2.5",
     "react-immutable-proptypes": "^2.1.0"
   }
 }

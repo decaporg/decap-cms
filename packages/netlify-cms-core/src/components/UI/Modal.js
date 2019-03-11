@@ -1,17 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { css, cx, injectGlobal } from 'react-emotion';
+import { css, Global } from '@emotion/core';
 import ReactModal from 'react-modal';
 import { transitions, shadows, lengths } from 'netlify-cms-ui-default';
 
-injectGlobal`
-  .ReactModal__Body--open {
-    overflow: hidden;
-  }
-`;
+const ReactModalGlobalStyles = () => (
+  <Global
+    styles={css`
+      .ReactModal__Body--open {
+        overflow: hidden;
+      }
+    `}
+  />
+);
 
-const styles = {
-  modalBody: css`
+const styleStrings = {
+  modalBody: `
     ${shadows.dropDeep};
     background-color: #fff;
     border-radius: ${lengths.borderRadius};
@@ -24,7 +28,7 @@ const styles = {
       outline: none;
     }
   `,
-  overlay: css`
+  overlay: `
     z-index: 99999;
     position: fixed;
     top: 0;
@@ -38,11 +42,11 @@ const styles = {
     background-color: rgba(0, 0, 0, 0);
     transition: background-color ${transitions.main}, opacity ${transitions.main};
   `,
-  overlayAfterOpen: css`
+  overlayAfterOpen: `
     background-color: rgba(0, 0, 0, 0.6);
     opacity: 1;
   `,
-  overlayBeforeClose: css`
+  overlayBeforeClose: `
     background-color: rgba(0, 0, 0, 0);
     opacity: 0;
   `,
@@ -63,23 +67,30 @@ export class Modal extends React.Component {
   render() {
     const { isOpen, children, className, onClose } = this.props;
     return (
-      <ReactModal
-        isOpen={isOpen}
-        onRequestClose={onClose}
-        closeTimeoutMS={300}
-        className={{
-          base: cx(styles.modalBody, className),
-          afterOpen: '',
-          beforeClose: '',
-        }}
-        overlayClassName={{
-          base: styles.overlay,
-          afterOpen: styles.overlayAfterOpen,
-          beforeClose: styles.overlayBeforeClose,
-        }}
-      >
-        {children}
-      </ReactModal>
+      <>
+        <ReactModalGlobalStyles/>
+        <ClassNames>
+          {({ css, cx }) => (
+            <ReactModal
+              isOpen={isOpen}
+              onRequestClose={onClose}
+              closeTimeoutMS={300}
+              className={{
+                base: cx(css`${styleStrings.modalBody}`, className),
+                afterOpen: '',
+                beforeClose: '',
+              }}
+              overlayClassName={{
+                base: css`${styleStrings.overlay}`,
+                afterOpen: css`${styleStrings.overlayAfterOpen}`,
+                beforeClose: css`${styleStrings.overlayBeforeClose}`,
+              }}
+            >
+              {children}
+            </ReactModal>
+          )}
+        </ClassNames>
+      </>
     );
   }
 }

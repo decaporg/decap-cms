@@ -9,7 +9,7 @@ import OSMSource from 'ol/source/OSM.js';
 import VectorSource from 'ol/source/Vector.js';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { injectGlobal } from 'react-emotion';
+import { injectGlobal } from 'emotion';
 
 injectGlobal`
   ${olStyles}

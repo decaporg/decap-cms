@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import styled, { css } from 'react-emotion';
+import styled from '@emotion/styled';
+import { css } from 'emotion';
 import { List } from 'immutable';
 import {
   Toggle,

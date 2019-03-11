@@ -31,11 +31,11 @@
     "webpack-cli": "^3.1.0"
   },
   "peerDependencies": {
-    "emotion": "^9.2.6",
+    "@emotion/core": "^10.0.9",
+    "@emotion/styled": "^10.0.9",
     "moment": "^2.11.2",
     "netlify-cms-ui-default": "^2.0.0",
     "prop-types": "^15.5.10",
-    "react": "^16.4.1",
-    "react-emotion": "^9.2.6"
+    "react": "^16.4.1"
   }
 }

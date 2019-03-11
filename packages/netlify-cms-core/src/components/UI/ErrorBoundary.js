@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { translate } from 'react-polyglot';
-import styled, { css } from 'react-emotion';
+import { css } from '@emotion/core';
+import styled from '@emotion/styled';
 import copyToClipboard from 'copy-text-to-clipboard';
 import { localForage } from 'netlify-cms-lib-util';
 import { buttons, colors } from 'netlify-cms-ui-default';

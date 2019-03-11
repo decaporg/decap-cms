@@ -17,6 +17,13 @@
   },
   "rules": {
     "no-console": [0],
-    "react/prop-types": [1]
-  }
+    "react/prop-types": [1],
+    "emotion/jsx-import": "error",
+    "emotion/no-vanilla": "error",
+    "emotion/import-from-emotion": "error",
+    "emotion/styled-import": "error"
+  },
+  "plugins": [
+    "emotion",
+  ]
 }

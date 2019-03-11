@@ -22,7 +22,6 @@
   "license": "MIT",
   "dependencies": {
     "create-react-class": "^15.6.0",
-    "emotion": "^9.2.6",
     "netlify-cms-backend-bitbucket": "^2.1.2",
     "netlify-cms-backend-git-gateway": "^2.2.4",
     "netlify-cms-backend-github": "^2.2.2",

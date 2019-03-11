@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import styled, { cx } from 'react-emotion';
+import styled from '@emotion/styled';
+import { cx } from 'emotion';
 import { get, isEmpty, debounce, uniq } from 'lodash';
 import { List } from 'immutable';
 import { Value, Document, Block, Text } from 'slate';

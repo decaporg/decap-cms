@@ -1,4 +1,5 @@
 import { Map } from 'immutable';
+import { oneLine } from 'common-tags';
 import EditorComponent from 'ValueObjects/EditorComponent';
 
 /**
@@ -59,10 +60,31 @@ export function getPreviewTemplate(name) {
  * Editor Widgets
  */
 export function registerWidget(name, control, preview) {
-  // A registered widget control can be reused by a new widget, allowing
-  // multiple copies with different previews.
-  const newControl = typeof control === 'string' ? registry.widgets[control].control : control;
-  registry.widgets[name] = { control: newControl, preview };
+  if (typeof name === 'string') {
+    // A registered widget control can be reused by a new widget, allowing
+    // multiple copies with different previews.
+    const newControl = typeof control === 'string' ? registry.widgets[control].control : control;
+    registry.widgets[name] = { control: newControl, preview };
+  }
+  if (typeof name === 'object') {
+    const {
+      name: widgetName,
+      controlComponent: control,
+      previewComponent: preview,
+      globalStyles,
+    } = name;
+    if (registry.widgets[widgetName]) {
+      console.error(oneLine`
+        Multiple widgets registered with name "${widgetName}". Only the last widget registered with
+        this name will be used.
+      `);
+    }
+    if (!controlComponent) {
+      throw Error(`Widget "${widgetName}" registered without \`controlComponent\`.`);
+    }
+    registry.widgets[widgetName] = { control, preview, globalStyles };
+  }
+  console.error('`registerWidget` failed, called with incorrect arguments.');
 }
 export function getWidget(name) {
   return registry.widgets[name];

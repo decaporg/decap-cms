@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import styled, { css, cx } from 'react-emotion';
+import { css } from '@emotion/core';
+import styled from '@emotion/styled';
 import moment from 'moment';
 import { translate } from 'react-polyglot';
 import { colors, lengths } from 'netlify-cms-ui-default';
@@ -152,7 +153,7 @@ class WorkflowList extends React.Component {
         >
           {(connect, { isHovered }) =>
             connect(
-              <div className={cx(styles.column, { [styles.columnHovered]: isHovered })}>
+              <div css={[styles.column, isHovered && styles.columnHovered]}>
                 <ColumnHeader name={currColumn}>
                   {getColumnHeaderText(currColumn, this.props.t)}
                 </ColumnHeader>

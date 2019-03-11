@@ -1,18 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { css, injectGlobal, cx } from 'react-emotion';
+import { css, Global } from '@emotion/core';
 import { translate } from 'react-polyglot';
 import reduxNotificationsStyles from 'redux-notifications/lib/styles.css';
 import { shadows, colors, lengths } from 'netlify-cms-ui-default';
 
-injectGlobal`
-  ${reduxNotificationsStyles};
+const ReduxNotificationsGlobalStyles = () => (
+  <Global
+    styles={css`
+      ${reduxNotificationsStyles};
 
-  .notif__container {
-    z-index: 10000;
-    white-space: pre-wrap;
-  }
-`;
+      .notif__container {
+        z-index: 10000;
+        white-space: pre-wrap;
+      }
+    `}
+  />
+);
 
 const styles = {
   toast: css`
@@ -43,7 +47,10 @@ const styles = {
 };
 
 const Toast = ({ kind, message, t }) => (
-  <div className={cx(styles.toast, styles[kind])}>
+  <div
+    css={[styles.toast, styles[kind]]}
+  >
+    <ReduxNotificationsGlobalStyles/>
     {t(message.key, { details: message.details })}
   </div>
 );
