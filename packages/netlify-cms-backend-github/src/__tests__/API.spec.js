@@ -1,5 +1,5 @@
 import API from '../API';
-import { Map } from 'immutable';
+import { fromJS } from 'immutable';
 
 describe('github API', () => {
   const mockAPI = (api, responses) => {
@@ -14,7 +14,12 @@ describe('github API', () => {
 
   it('should create PR with correct base branch name when publishing with editorial workflow', () => {
     let prBaseBranch = null;
-    const api = new API({ branch: 'gh-pages', repo: 'my-repo', statusLabels: Map() });
+    const api = new API({
+      branch: 'gh-pages',
+      repo: 'my-repo',
+      initialWorkflowStatus: 'draft',
+      statusLabels: fromJS({ ['draft']: { name: 'draft' } }),
+    });
     const responses = {
       '/repos/my-repo/branches/gh-pages': () => ({ commit: { sha: 'def' } }),
       '/repos/my-repo/git/trees/def': () => ({ tree: [] }),
@@ -23,9 +28,10 @@ describe('github API', () => {
       '/repos/my-repo/git/refs': () => ({}),
       '/repos/my-repo/pulls': pullRequest => {
         prBaseBranch = JSON.parse(pullRequest.body).base;
-        return { head: { sha: 'cbd' } };
+        return { number: 23, head: { sha: 'cbd' } };
       },
-      '/repos/my-repo/labels': () => ({}),
+      '/repos/my-repo/labels/draft': () => ({}),
+      '/repos/my-repo/issues/23/labels': () => ({}),
       '/user': () => ({}),
       '/repos/my-repo/git/blobs': () => ({}),
       '/repos/my-repo/git/refs/meta/_netlify_cms': () => ({ object: {} }),
