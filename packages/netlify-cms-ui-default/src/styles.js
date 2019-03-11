@@ -90,8 +90,8 @@ const colors = {
   errorBackground: colorsRaw.redLight,
   textFieldBorder: '#dfdfe3',
   controlLabel: '#7a8291',
-  checkerboardLight: '#919191',
-  checkerboardDark: '#878787',
+  checkerboardLight: '#f2f2f2',
+  checkerboardDark: '#e6e6e6',
 };
 
 const lengths = {
@@ -126,7 +126,7 @@ const shadows = {
     box-shadow: 0 4px 12px 0 rgba(68, 74, 87, 0.15), 0 1px 3px 0 rgba(68, 74, 87, 0.25);
   `,
   inset: css`
-    box-shadow: inset 0 0 4px rgba(68, 74, 87, 0.8);
+    box-shadow: inset 0 0 4px rgba(68, 74, 87, 0.3);
   `,
 };
 
