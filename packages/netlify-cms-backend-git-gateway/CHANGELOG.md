@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.2.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/compare/netlify-cms-backend-git-gateway@2.2.3...netlify-cms-backend-git-gateway@2.2.4) (2019-03-11)
+
+
+### Bug Fixes
+
+* **backend-github:** make non-Large Media previews work with Git Gateway+Github ([#2151](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/issues/2151)) ([63582dc](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/commit/63582dc))
+
+
+
+
+
 ## [2.2.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/compare/netlify-cms-backend-git-gateway@2.2.2...netlify-cms-backend-git-gateway@2.2.3) (2019-03-08)
 
 **Note:** Version bump only for package netlify-cms-backend-git-gateway

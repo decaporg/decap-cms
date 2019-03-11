@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-media-library-cloudinary",
   "description": "Cloudinary integration for Netlify CMS",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-media-library-cloudinary",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
   "main": "dist/netlify-cms-media-library-cloudinary.js",
