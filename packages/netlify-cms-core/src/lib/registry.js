@@ -23,6 +23,7 @@ export default {
   getWidget,
   resolveWidget,
   registerEditorComponent,
+  unregisterEditorComponent,
   getEditorComponents,
   registerWidgetValueSerializer,
   getWidgetValueSerializer,
@@ -77,6 +78,9 @@ export function resolveWidget(name) {
 export function registerEditorComponent(component) {
   const plugin = EditorComponent(component);
   registry.editorComponents = registry.editorComponents.set(plugin.get('id'), plugin);
+}
+export function unregisterEditorComponent(id) {
+  registry.editorComponents = registry.editorComponents.delete(id);
 }
 export function getEditorComponents() {
   return registry.editorComponents;

@@ -123,6 +123,27 @@ CMS.registerEditorComponent({
 
 ![youtube-widget](/img/screen shot 2018-01-05 at 4.25.07 pm.png)
 
+## `unregisterEditorComponent`
+
+Unregister a block level component for the Markdown editor (for example, `image` which is included by default):
+
+```js
+CMS.unregisterEditorComponent(key)
+```
+
+**Params**
+
+* **id:** The id with which is identified the component in the registry.
+
+**Example:**
+
+```html
+<script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
+<script>
+CMS.unregisterEditorComponent('image');
+</script>
+```
+
 ## Advanced field validation
 
 All widget fields, including those for built-in widgets, [include basic validation](../widgets/#common-widget-options) capability using the `required` and `pattern` options.
