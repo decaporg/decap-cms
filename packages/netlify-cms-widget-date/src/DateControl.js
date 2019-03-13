@@ -1,13 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { injectGlobal } from 'emotion';
 import DateTime from 'react-datetime';
-import dateTimeStyles from 'react-datetime/css/react-datetime.css';
 import moment from 'moment';
-
-injectGlobal`
-  ${dateTimeStyles}
-`;
 
 export default class DateControl extends React.Component {
   static propTypes = {

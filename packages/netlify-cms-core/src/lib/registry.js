@@ -60,13 +60,24 @@ export function getPreviewTemplate(name) {
  * Editor Widgets
  */
 export function registerWidget(name, control, preview) {
-  if (typeof name === 'string') {
+  if (Array.isArray(name)) {
+    name.forEach(widget => {
+      if (typeof widget !== 'object') {
+        console.error(`Cannot register widget: ${widget}`);
+      } else {
+        registerWidget(widget);
+      }
+    });
+  }
+
+  else if (typeof name === 'string') {
     // A registered widget control can be reused by a new widget, allowing
     // multiple copies with different previews.
     const newControl = typeof control === 'string' ? registry.widgets[control].control : control;
     registry.widgets[name] = { control: newControl, preview };
   }
-  if (typeof name === 'object') {
+
+  else if (typeof name === 'object') {
     const {
       name: widgetName,
       controlComponent: control,
@@ -79,12 +90,15 @@ export function registerWidget(name, control, preview) {
         this name will be used.
       `);
     }
-    if (!controlComponent) {
+    if (!control) {
       throw Error(`Widget "${widgetName}" registered without \`controlComponent\`.`);
     }
     registry.widgets[widgetName] = { control, preview, globalStyles };
   }
-  console.error('`registerWidget` failed, called with incorrect arguments.');
+
+  else {
+    console.error('`registerWidget` failed, called with incorrect arguments.');
+  }
 }
 export function getWidget(name) {
   return registry.widgets[name];

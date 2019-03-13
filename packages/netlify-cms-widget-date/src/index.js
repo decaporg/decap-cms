@@ -1,12 +1,18 @@
-import dateTimeStyles from 'react-datetime/css/react-datetime.css';
-import DateControl from './DateControl';
-import DatePreview from './DatePreview';
+import globalStyles from 'react-datetime/css/react-datetime.css';
+import controlComponent from './DateControl';
+import previewComponent from './DatePreview';
 
-const DateWidget = {
+const Widget = (opts = {}) => ({
   name: 'date',
-  controlComponent: DateControl,
-  previewComponent: DatePreview,
-  globalStyles: dateTimeStyles,
-};
+  controlComponent,
+  previewComponent,
+  globalStyles,
+  ...opts,
+});
 
-export { DateControl, DatePreview, DateWidget };
+export {
+  Widget as default,
+  controlComponent,
+  previewComponent,
+  globalStyles,
+};

@@ -1,3 +1,4 @@
+import React from 'react';
 import { css, Global } from '@emotion/core'
 
 export {
@@ -456,3 +457,17 @@ const GlobalStyles = () => (
     `}
   />
 );
+
+export {
+  fonts,
+  colorsRaw,
+  colors,
+  lengths,
+  components,
+  buttons,
+  shadows,
+  borders,
+  transitions,
+  reactSelectStyles,
+  GlobalStyles,
+};

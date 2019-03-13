@@ -18,4 +18,5 @@ export {
   transitions,
   effects,
   reactSelectStyles,
+  GlobalStyles,
 } from './styles';
