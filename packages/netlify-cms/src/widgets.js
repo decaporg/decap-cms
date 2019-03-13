@@ -28,7 +28,4 @@ registerWidget('object', ObjectControl, ObjectPreview);
 registerWidget('relation', RelationControl, RelationPreview);
 registerWidget('boolean', BooleanControl);
 registerWidget('map', MapControl, MapPreview);
-registerWidget([
-  DateWidget(),
-  DateTimeWidget(),
-]);
+registerWidget([DateWidget(), DateTimeWidget()]);

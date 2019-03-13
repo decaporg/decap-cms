@@ -68,7 +68,7 @@ export class Modal extends React.Component {
     const { isOpen, children, className, onClose } = this.props;
     return (
       <>
-        <ReactModalGlobalStyles/>
+        <ReactModalGlobalStyles />
         <ClassNames>
           {({ css, cx }) => (
             <ReactModal
@@ -76,14 +76,25 @@ export class Modal extends React.Component {
               onRequestClose={onClose}
               closeTimeoutMS={300}
               className={{
-                base: cx(css`${styleStrings.modalBody}`, className),
+                base: cx(
+                  css`
+                    ${styleStrings.modalBody};
+                  `,
+                  className,
+                ),
                 afterOpen: '',
                 beforeClose: '',
               }}
               overlayClassName={{
-                base: css`${styleStrings.overlay}`,
-                afterOpen: css`${styleStrings.overlayAfterOpen}`,
-                beforeClose: css`${styleStrings.overlayBeforeClose}`,
+                base: css`
+                  ${styleStrings.overlay};
+                `,
+                afterOpen: css`
+                  ${styleStrings.overlayAfterOpen};
+                `,
+                beforeClose: css`
+                  ${styleStrings.overlayBeforeClose};
+                `,
               }}
             >
               {children}

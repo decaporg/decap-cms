@@ -1,3 +1,8 @@
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import React from 'react';
+import PropTypes from 'prop-types';
+import { css } from '@emotion/core';
 import olStyles from 'ol/ol.css';
 import Map from 'ol/Map.js';
 import View from 'ol/View.js';
@@ -7,13 +12,6 @@ import TileLayer from 'ol/layer/Tile.js';
 import VectorLayer from 'ol/layer/Vector.js';
 import OSMSource from 'ol/source/OSM.js';
 import VectorSource from 'ol/source/Vector.js';
-import PropTypes from 'prop-types';
-import React from 'react';
-import { injectGlobal } from 'emotion';
-
-injectGlobal`
-  ${olStyles}
-`;
 
 const formatOptions = {
   dataProjection: 'EPSG:4326',
@@ -70,7 +68,17 @@ export default function withMapControl({ getFormat, getMap } = {}) {
     }
 
     render() {
-      return <div ref={this.mapContainer}> </div>;
+      return (
+        <div
+          css={css`
+            ${olStyles};
+            padding: 0;
+            overflow: hidden;
+          `}
+          className={this.props.classNameWrapper}
+          ref={this.mapContainer}
+        />
+      );
     }
   };
 }

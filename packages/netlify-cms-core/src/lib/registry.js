@@ -68,16 +68,12 @@ export function registerWidget(name, control, preview) {
         registerWidget(widget);
       }
     });
-  }
-
-  else if (typeof name === 'string') {
+  } else if (typeof name === 'string') {
     // A registered widget control can be reused by a new widget, allowing
     // multiple copies with different previews.
     const newControl = typeof control === 'string' ? registry.widgets[control].control : control;
     registry.widgets[name] = { control: newControl, preview };
-  }
-
-  else if (typeof name === 'object') {
+  } else if (typeof name === 'object') {
     const {
       name: widgetName,
       controlComponent: control,
@@ -94,9 +90,7 @@ export function registerWidget(name, control, preview) {
       throw Error(`Widget "${widgetName}" registered without \`controlComponent\`.`);
     }
     registry.widgets[widgetName] = { control, preview, globalStyles };
-  }
-
-  else {
+  } else {
     console.error('`registerWidget` failed, called with incorrect arguments.');
   }
 }

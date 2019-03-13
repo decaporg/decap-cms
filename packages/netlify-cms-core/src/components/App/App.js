@@ -160,7 +160,7 @@ class App extends React.Component {
 
     return (
       <>
-        <GlobalStyles/>
+        <GlobalStyles />
         <Notifs CustomComponent={Toast} />
         <Header
           user={user}

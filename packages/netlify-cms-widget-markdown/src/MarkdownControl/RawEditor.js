@@ -1,8 +1,10 @@
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
-import { css, cx } from 'emotion';
+import { css } from '@emotion/core';
 import { Editor as Slate } from 'slate-react';
 import Plain from 'slate-plain-serializer';
 import { debounce } from 'lodash';
@@ -85,7 +87,8 @@ export default class RawEditor extends React.Component {
           />
         </EditorControlBar>
         <Slate
-          className={cx(className, styles.slateRaw)}
+          css={styles.slateRaw}
+          className={className}
           value={this.state.value}
           onChange={this.handleChange}
           onPaste={this.handlePaste}

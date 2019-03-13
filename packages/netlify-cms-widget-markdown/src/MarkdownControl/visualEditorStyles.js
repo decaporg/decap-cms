@@ -1,4 +1,4 @@
-import { css } from 'emotion';
+import { css } from '@emotion/core';
 import { colors, lengths, fonts } from 'netlify-cms-ui-default';
 import { editorStyleVars } from '../styles';
 

@@ -1,7 +1,8 @@
+/** @jsx jsx */
 import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { css } from '@emotion/core';
+import { jsx, css } from '@emotion/core';
 import styled from '@emotion/styled';
 import moment from 'moment';
 import { translate } from 'react-polyglot';
@@ -141,6 +142,7 @@ class WorkflowList extends React.Component {
     this.props.handlePublish(collection, slug);
   };
 
+  // eslint-disable-next-line react/display-name
   renderColumns = (entries, column) => {
     if (!entries) return null;
 
@@ -153,7 +155,7 @@ class WorkflowList extends React.Component {
         >
           {(connect, { isHovered }) =>
             connect(
-              <div css={[styles.column, isHovered && styles.columnHovered]}>
+              <div css={css`color: red;`}>
                 <ColumnHeader name={currColumn}>
                   {getColumnHeaderText(currColumn, this.props.t)}
                 </ColumnHeader>

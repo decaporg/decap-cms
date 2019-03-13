@@ -1,3 +1,5 @@
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
@@ -107,7 +109,6 @@ const ControlContainer = styled.div`
   }
 `;
 
-
 const ControlErrorsList = styled.ul`
   list-style-type: none;
   font-size: 12px;
@@ -124,11 +125,10 @@ export const ControlHint = styled.p`
   margin-bottom: 0;
   padding: 3px 0;
   font-size: 12px;
-  color: ${props => (
-    props.error ? colors.errorText : props.active ? colors.active : colors.controlLabel
-  )};
+  color: ${props =>
+    props.error ? colors.errorText : props.active ? colors.active : colors.controlLabel};
   transition: color ${transitions.main};
-`
+`;
 
 class EditorControl extends React.Component {
   static propTypes = {
@@ -202,37 +202,65 @@ class EditorControl extends React.Component {
       <ClassNames>
         {({ css, cx }) => (
           <ControlContainer>
-            {widget.globalStyles && <Global styles={coreCss`${widget.globalStyles}`}/>}
+            {widget.globalStyles && <Global styles={coreCss`${widget.globalStyles}`} />}
             <ControlErrorsList>
               {errors &&
                 errors.map(
                   error =>
                     error.message &&
                     typeof error.message === 'string' && (
-                      <li key={error.message.trim().replace(/[^a-z0-9]+/gi, '-')}>{error.message}</li>
+                      <li key={error.message.trim().replace(/[^a-z0-9]+/gi, '-')}>
+                        {error.message}
+                      </li>
                     ),
                 )}
             </ControlErrorsList>
             <label
-              css={[
-                css`${styleStrings.label}`,
-                this.state.styleActive && css`${styleStrings.labelActive}`,
-                !!errors && css`${styleStrings.labelError}`,
-              ]}
+              className={cx(
+                css`
+                  ${styleStrings.label};
+                `,
+                this.state.styleActive &&
+                  css`
+                    ${styleStrings.labelActive};
+                  `,
+                !!errors &&
+                  css`
+                    ${styleStrings.labelError};
+                  `,
+              )}
               htmlFor={this.uniqueFieldId}
             >
               {`${field.get('label', field.get('name'))}${isFieldOptional ? ' (optional)' : ''}`}
             </label>
             <Widget
               classNameWrapper={cx(
-                css`${styleStrings.widget}`,
-                { [css`${styleStrings.widgetActive}`]: this.state.styleActive },
-                { [css`${styleStrings.widgetError}`]: !!errors },
+                css`
+                  ${styleStrings.widget};
+                `,
+                {
+                  [css`
+                    ${styleStrings.widgetActive};
+                  `]: this.state.styleActive,
+                },
+                {
+                  [css`
+                    ${styleStrings.widgetError};
+                  `]: !!errors,
+                },
               )}
-              classNameWidget={css`${styleStrings.widget}`}
-              classNameWidgetActive={css`${styleStrings.widgetActive}`}
-              classNameLabel={css`${styleStrings.label}`}
-              classNameLabelActive={css`${styleStrings.labelActive}`}
+              classNameWidget={css`
+                ${styleStrings.widget};
+              `}
+              classNameWidgetActive={css`
+                ${styleStrings.widgetActive};
+              `}
+              classNameLabel={css`
+                ${styleStrings.label};
+              `}
+              classNameLabelActive={css`
+                ${styleStrings.labelActive};
+              `}
               controlComponent={widget.control}
               field={field}
               uniqueFieldId={this.uniqueFieldId}

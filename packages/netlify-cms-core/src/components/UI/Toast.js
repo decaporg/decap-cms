@@ -1,3 +1,6 @@
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+// eslint-disable-next-line no-unused-vars
 import React from 'react';
 import PropTypes from 'prop-types';
 import { css, Global } from '@emotion/core';
@@ -47,10 +50,8 @@ const styles = {
 };
 
 const Toast = ({ kind, message, t }) => (
-  <div
-    css={[styles.toast, styles[kind]]}
-  >
-    <ReduxNotificationsGlobalStyles/>
+  <div css={[styles.toast, styles[kind]]}>
+    <ReduxNotificationsGlobalStyles />
     {t(message.key, { details: message.details })}
   </div>
 );

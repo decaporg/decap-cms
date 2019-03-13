@@ -196,7 +196,7 @@ class EditorInterface extends Component {
     const editorWithPreview = (
       <ScrollSync enabled={this.state.scrollSyncEnabled}>
         <div>
-          <ReactSplitPaneGlobalStyles/>
+          <ReactSplitPaneGlobalStyles />
           <StyledSplitPane
             maxSize={-100}
             defaultSize="50%"

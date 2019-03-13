@@ -1,7 +1,9 @@
-import React, { Component } from 'react';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { css, cx } from 'emotion';
+import { css } from '@emotion/core';
 import { Map, List } from 'immutable';
 import { ObjectWidgetTopBar, components } from 'netlify-cms-ui-default';
 
@@ -14,7 +16,7 @@ const styles = {
   `,
 };
 
-export default class ObjectControl extends Component {
+export default class ObjectControl extends React.Component {
   componentValidate = {};
 
   static propTypes = {
@@ -118,9 +120,8 @@ export default class ObjectControl extends Component {
       return (
         <div
           id={forID}
-          className={cx(classNameWrapper, components.objectWidgetTopBarContainer, {
-            [styles.nestedObjectControl]: forList,
-          })}
+          css={[components.objectWidgetTopBarContainer, forList && styles.nestedObjectControl]}
+          className={classNameWrapper}
         >
           {forList ? null : (
             <ObjectWidgetTopBar

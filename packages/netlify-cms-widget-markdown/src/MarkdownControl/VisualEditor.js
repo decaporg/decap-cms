@@ -1,8 +1,9 @@
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
-import { cx } from 'emotion';
 import { get, isEmpty, debounce, uniq } from 'lodash';
 import { List } from 'immutable';
 import { Value, Document, Block, Text } from 'slate';
@@ -261,7 +262,8 @@ export default class Editor extends React.Component {
           />
         </EditorControlBar>
         <Slate
-          className={cx(className, visualEditorStyles)}
+          css={visualEditorStyles}
+          className={className}
           value={this.state.value}
           renderNode={renderNode}
           renderMark={renderMark}

@@ -200,11 +200,7 @@ export default function withFileControl({ forImage } = {}) {
           </FileLinks>
         );
       }
-      return (
-        <FileLinks>
-          {this.renderFileLink(value)}
-        </FileLinks>
-      );
+      return <FileLinks>{this.renderFileLink(value)}</FileLinks>;
     };
 
     renderImages = () => {

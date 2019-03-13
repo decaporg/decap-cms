@@ -1,5 +1,9 @@
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
 import React from 'react';
 import PropTypes from 'prop-types';
+import { css } from '@emotion/core';
+import reactDateTimeStyles from 'react-datetime/css/react-datetime.css';
 import DateTime from 'react-datetime';
 import moment from 'moment';
 
@@ -100,15 +104,21 @@ export default class DateControl extends React.Component {
     const { forID, value, classNameWrapper, setActiveStyle } = this.props;
     const { format, dateFormat, timeFormat } = this.formats;
     return (
-      <DateTime
-        dateFormat={dateFormat}
-        timeFormat={timeFormat}
-        value={moment(value, format)}
-        onChange={this.handleChange}
-        onFocus={setActiveStyle}
-        onBlur={this.onBlur}
-        inputProps={{ className: classNameWrapper, id: forID }}
-      />
+      <div
+        css={css`
+          ${reactDateTimeStyles};
+        `}
+      >
+        <DateTime
+          dateFormat={dateFormat}
+          timeFormat={timeFormat}
+          value={moment(value, format)}
+          onChange={this.handleChange}
+          onFocus={setActiveStyle}
+          onBlur={this.onBlur}
+          inputProps={{ className: classNameWrapper, id: forID }}
+        />
+      </div>
     );
   }
 }

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
-import EditorControl, { ControlHint } from './EditorControl';
+import EditorControl from './EditorControl';
 
 const ControlPaneContainer = styled.div`
   max-width: 800px;
