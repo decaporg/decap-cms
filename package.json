@@ -108,5 +108,8 @@
   "workspaces": [
     "packages/*"
   ],
-  "private": true
+  "private": true,
+  "dependencies": {
+    "emotion": "^10.0.9"
+  }
 }
