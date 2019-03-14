@@ -125,8 +125,14 @@ export default class ObjectControl extends React.Component {
               id={forID}
               className={cx(
                 classNameWrapper,
-                css`${styleStrings.objectWidgetTopBarContainer}`,
-                { [css`${styleStrings.nestedObjectControl}`]: forList },
+                css`
+                  ${styleStrings.objectWidgetTopBarContainer}
+                `,
+                {
+                  [css`
+                    ${styleStrings.nestedObjectControl}
+                  `]: forList,
+                },
               )}
             >
               {forList ? null : (

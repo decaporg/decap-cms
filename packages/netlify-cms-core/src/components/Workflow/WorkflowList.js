@@ -18,13 +18,15 @@ const WorkflowListContainer = styled.div`
 `;
 
 const styles = {
-  columnPosition: idx => (
-    idx === 0 && css`
-      margin-left: 0;
-    ` ||
-    idx === 2 && css`
-      margin-right: 0;
-    ` ||
+  columnPosition: idx =>
+    (idx === 0 &&
+      css`
+        margin-left: 0;
+      `) ||
+    (idx === 2 &&
+      css`
+        margin-right: 0;
+      `) ||
     css`
       &:before,
       &:after {
@@ -44,8 +46,7 @@ const styles = {
       &:after {
         right: -23px;
       }
-    `
-  ),
+    `,
   column: css`
     margin: 0 20px;
     transition: background-color 0.5s ease;
@@ -156,11 +157,13 @@ class WorkflowList extends React.Component {
           {(connect, { isHovered }) =>
             connect(
               <div style={{ height: '100%' }}>
-                <div css={[
-                  styles.column,
-                  styles.columnPosition(idx),
-                  isHovered && styles.columnHovered,
-                ]}>
+                <div
+                  css={[
+                    styles.column,
+                    styles.columnPosition(idx),
+                    isHovered && styles.columnHovered,
+                  ]}
+                >
                   <ColumnHeader name={currColumn}>
                     {getColumnHeaderText(currColumn, this.props.t)}
                   </ColumnHeader>
@@ -171,7 +174,7 @@ class WorkflowList extends React.Component {
                   </ColumnCount>
                   {this.renderColumns(currEntries, currColumn)}
                 </div>
-              </div>
+              </div>,
             )
           }
         </DropTarget>

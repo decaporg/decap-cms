@@ -25,5 +25,10 @@
   },
   "plugins": [
     "emotion",
-  ]
+  ],
+  "settings": {
+    "react": {
+      "version": "detect",
+    },
+  },
 }

@@ -53,21 +53,20 @@ export default class ControlPane extends React.Component {
 
     return (
       <ControlPaneContainer>
-        {fields.map(
-          (field, i) =>
-            field.get('widget') === 'hidden' ? null : (
-              <EditorControl
-                key={i}
-                field={field}
-                value={entry.getIn(['data', field.get('name')])}
-                fieldsMetaData={fieldsMetaData}
-                fieldsErrors={fieldsErrors}
-                onChange={onChange}
-                onValidate={onValidate}
-                processControlRef={this.controlRef.bind(this)}
-                controlRef={this.controlRef}
-              />
-            ),
+        {fields.map((field, i) =>
+          field.get('widget') === 'hidden' ? null : (
+            <EditorControl
+              key={i}
+              field={field}
+              value={entry.getIn(['data', field.get('name')])}
+              fieldsMetaData={fieldsMetaData}
+              fieldsErrors={fieldsErrors}
+              onChange={onChange}
+              onValidate={onValidate}
+              processControlRef={this.controlRef.bind(this)}
+              controlRef={this.controlRef}
+            />
+          ),
         )}
       </ControlPaneContainer>
     );

@@ -15,12 +15,7 @@ import {
   resolveFieldKeyType,
   getErrorMessageForTypedFieldAndValue,
 } from './typedListHelpers';
-import {
-  ListItemTopBar,
-  ObjectWidgetTopBar,
-  colors,
-  lengths,
-} from 'netlify-cms-ui-default';
+import { ListItemTopBar, ObjectWidgetTopBar, colors, lengths } from 'netlify-cms-ui-default';
 
 function valueToString(value) {
   return value ? value.join(',').replace(/,([^\s]|$)/g, ', $1') : '';
@@ -381,7 +376,12 @@ export default class ListControl extends React.Component {
         {({ cx, css }) => (
           <div
             id={forID}
-            className={cx(classNameWrapper, css`${styleStrings.objectWidgetTopBarContainer}`)}
+            className={cx(
+              classNameWrapper,
+              css`
+                ${styleStrings.objectWidgetTopBarContainer}
+              `,
+            )}
           >
             <ObjectWidgetTopBar
               allowAdd={field.get('allow_add', true)}

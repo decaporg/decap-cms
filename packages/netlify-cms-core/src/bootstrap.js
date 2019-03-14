@@ -64,7 +64,7 @@ function bootstrap(opts = {}) {
    */
   const Root = () => (
     <>
-      <GlobalStyles/>
+      <GlobalStyles />
       <I18n locale={'en'} messages={getPhrases()}>
         <ErrorBoundary showBackup>
           <Provider store={store}>
