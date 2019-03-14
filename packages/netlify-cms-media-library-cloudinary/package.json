@@ -25,8 +25,8 @@
   },
   "devDependencies": {
     "cross-env": "^5.2.0",
-    "webpack": "^4.16.1",
-    "webpack-cli": "^3.1.0"
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.2.3"
   },
   "peerDependencies": {
     "netlify-cms-lib-util": "^2.0.4"

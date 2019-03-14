@@ -22,10 +22,10 @@
   },
   "devDependencies": {
     "cross-env": "^5.2.0",
-    "css-loader": "^2.1.0",
+    "css-loader": "^2.1.1",
     "to-string-loader": "^1.1.5",
-    "webpack": "^4.16.1",
-    "webpack-cli": "^3.1.0"
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.2.3"
   },
   "peerDependencies": {
     "@emotion/core": "^10.0.9",
@@ -36,6 +36,6 @@
     "react-immutable-proptypes": "^2.1.0"
   },
   "dependencies": {
-    "ol": "^5.3.0"
+    "ol": "^5.3.1"
   }
 }

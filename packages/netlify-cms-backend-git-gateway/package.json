@@ -20,15 +20,15 @@
     "build": "cross-env NODE_ENV=production webpack"
   },
   "dependencies": {
-    "gotrue-js": "^0.9.22",
+    "gotrue-js": "^0.9.24",
     "ini": "^1.3.5",
     "jwt-decode": "^2.2.0",
     "minimatch": "^3.0.4"
   },
   "devDependencies": {
     "cross-env": "^5.2.0",
-    "webpack": "^4.16.1",
-    "webpack-cli": "^3.1.0"
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.2.3"
   },
   "peerDependencies": {
     "@emotion/core": "^10.0.9",

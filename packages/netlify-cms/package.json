@@ -46,11 +46,11 @@
     "netlify-cms-widget-text": "^2.0.6"
   },
   "devDependencies": {
-    "copy-webpack-plugin": "^4.5.2",
+    "copy-webpack-plugin": "^5.0.1",
     "cross-env": "^5.2.0",
     "friendly-errors-webpack-plugin": "^1.7.0",
-    "webpack": "^4.16.1",
-    "webpack-cli": "^3.1.0",
-    "webpack-dev-server": "^3.1.5"
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.2.3",
+    "webpack-dev-server": "^3.2.1"
   }
 }
