@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.8.1-alpha.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.8.0...netlify-cms-core@2.8.1-alpha.0) (2019-03-14)
+
+**Note:** Version bump only for package netlify-cms-core
+
+
+
+
+
 # [2.8.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.7.0...netlify-cms-core@2.8.0) (2019-03-08)
 
 
