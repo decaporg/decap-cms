@@ -1,19 +1,17 @@
 /** @jsx jsx */
-import { jsx } from '@emotion/core';
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { translate } from 'react-polyglot';
-import { ClassNames, Global, css as coreCss } from '@emotion/core';
+import { jsx, ClassNames, Global, css as coreCss } from '@emotion/core';
 import styled from '@emotion/styled';
 import { partial, uniqueId } from 'lodash';
 import { connect } from 'react-redux';
 import { colors, colorsRaw, transitions, lengths, borders } from 'netlify-cms-ui-default';
 import { resolveWidget, getEditorComponents } from 'Lib/registry';
-import { clearFieldErrors } from 'Actions/entries';
+import { clearFieldErrors, loadEntry } from 'Actions/entries';
 import { addAsset } from 'Actions/media';
 import { query, clearSearch } from 'Actions/search';
-import { loadEntry } from 'Actions/entries';
 import {
   openMediaLibrary,
   removeInsertedMedia,

@@ -1,9 +1,8 @@
 /** @jsx jsx */
-import { jsx } from '@emotion/core';
 // eslint-disable-next-line no-unused-vars
 import React from 'react';
 import PropTypes from 'prop-types';
-import { css, Global } from '@emotion/core';
+import { jsx, css, Global } from '@emotion/core';
 import { translate } from 'react-polyglot';
 import reduxNotificationsStyles from 'redux-notifications/lib/styles.css';
 import { shadows, colors, lengths } from 'netlify-cms-ui-default';
