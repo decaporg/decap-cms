@@ -1,7 +1,7 @@
 {
   "scripts": {
-    "bootstrap": "run-s install bootstrap:lerna",
-    "install": "yarn",
+    "bootstrap": "run-s bootstrap:install bootstrap:lerna",
+    "bootstrap:install": "yarn",
     "bootstrap:lerna": "lerna bootstrap",
     "start": "run-s bootstrap develop",
     "watch": "lerna run watch --parallel",
