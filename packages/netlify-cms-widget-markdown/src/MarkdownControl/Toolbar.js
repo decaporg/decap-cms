@@ -25,6 +25,7 @@ const ToolbarContainer = styled.div`
   padding: 11px 14px;
   min-height: 58px;
   transition: background-color ${transitions.main}, color ${transitions.main};
+  color: ${colors.text};
 `;
 
 const ToolbarDropdownWrapper = styled.div`

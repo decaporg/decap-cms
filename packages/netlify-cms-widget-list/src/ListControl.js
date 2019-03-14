@@ -20,7 +20,6 @@ import {
   ObjectWidgetTopBar,
   colors,
   lengths,
-  components,
 } from 'netlify-cms-ui-default';
 
 function valueToString(value) {
@@ -47,6 +46,9 @@ const NestedObjectLabel = styled.div`
 const styleStrings = {
   collapsedObjectControl: `
     display: none;
+  `,
+  objectWidgetTopBarContainer: `
+    padding: ${lengths.objectWidgetTopBarContainerPadding};
   `,
 };
 
@@ -375,25 +377,32 @@ export default class ListControl extends React.Component {
     const listLabel = items.size === 1 ? labelSingular.toLowerCase() : label.toLowerCase();
 
     return (
-      <div id={forID} className={classNameWrapper} css={components.objectWidgetTopBarContainer}>
-        <ObjectWidgetTopBar
-          allowAdd={field.get('allow_add', true)}
-          onAdd={this.handleAdd}
-          types={field.get(TYPES_KEY, null)}
-          onAddType={type => this.handleAddType(type, resolveFieldKeyType(field))}
-          heading={`${items.size} ${listLabel}`}
-          label={labelSingular.toLowerCase()}
-          onCollapseToggle={this.handleCollapseAllToggle}
-          collapsed={itemsCollapsed.every(val => val === true)}
-        />
-        <SortableList
-          items={items}
-          renderItem={this.renderItem}
-          onSortEnd={this.onSortEnd}
-          useDragHandle
-          lockAxis="y"
-        />
-      </div>
+      <ClassNames>
+        {({ cx, css }) => (
+          <div
+            id={forID}
+            className={cx(classNameWrapper, css`${styleStrings.objectWidgetTopBarContainer}`)}
+          >
+            <ObjectWidgetTopBar
+              allowAdd={field.get('allow_add', true)}
+              onAdd={this.handleAdd}
+              types={field.get(TYPES_KEY, null)}
+              onAddType={type => this.handleAddType(type, resolveFieldKeyType(field))}
+              heading={`${items.size} ${listLabel}`}
+              label={labelSingular.toLowerCase()}
+              onCollapseToggle={this.handleCollapseAllToggle}
+              collapsed={itemsCollapsed.every(val => val === true)}
+            />
+            <SortableList
+              items={items}
+              renderItem={this.renderItem}
+              onSortEnd={this.onSortEnd}
+              useDragHandle
+              lockAxis="y"
+            />
+          </div>
+        )}
+      </ClassNames>
     );
   }
 

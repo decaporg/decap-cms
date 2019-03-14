@@ -1,8 +1,6 @@
-/** @jsx jsx */
-import { jsx } from '@emotion/core';
 import React from 'react';
 import PropTypes from 'prop-types';
-import { css } from '@emotion/core';
+import { ClassNames } from '@emotion/core';
 import olStyles from 'ol/ol.css';
 import Map from 'ol/Map.js';
 import View from 'ol/View.js';
@@ -69,15 +67,21 @@ export default function withMapControl({ getFormat, getMap } = {}) {
 
     render() {
       return (
-        <div
-          css={css`
-            ${olStyles};
-            padding: 0;
-            overflow: hidden;
-          `}
-          className={this.props.classNameWrapper}
-          ref={this.mapContainer}
-        />
+        <ClassNames>
+          {({ cx, css }) => (
+            <div
+              className={cx(
+                this.props.classNameWrapper,
+                css`
+                  ${olStyles};
+                  padding: 0;
+                  overflow: hidden;
+                `,
+              )}
+              ref={this.mapContainer}
+            />
+          )}
+        </ClassNames>
       );
     }
   };

@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { translate } from 'react-polyglot';
-import { css } from '@emotion/core';
 import styled from '@emotion/styled';
 import copyToClipboard from 'copy-text-to-clipboard';
 import { localForage } from 'netlify-cms-lib-util';
@@ -9,35 +8,35 @@ import { buttons, colors } from 'netlify-cms-ui-default';
 
 const ISSUE_URL = 'https://github.com/netlify/netlify-cms/issues/new?template=bug_report.md';
 
-const styles = {
-  errorBoundary: css`
-    padding: 40px;
+const ErrorBoundaryContainer = styled.div`
+  padding: 40px;
 
-    h1 {
-      font-size: 28px;
-    }
+  h1 {
+    font-size: 28px;
+    color: ${colors.text};
+  }
 
-    h2 {
-      font-size: 20px;
-    }
+  h2 {
+    font-size: 20px;
+  }
 
-    strong {
-      color: ${colors.textLead};
-      font-weight: 500;
-    }
+  strong {
+    color: ${colors.textLead};
+    font-weight: 500;
+  }
 
-    hr {
-      width: 200px;
-      margin: 30px 0;
-      border: 0;
-      height: 1px;
-      background-color: ${colors.text};
-    }
-  `,
-  errorText: css`
-    color: ${colors.errorText};
-  `,
-};
+  hr {
+    width: 200px;
+    margin: 30px 0;
+    border: 0;
+    height: 1px;
+    background-color: ${colors.text};
+  }
+
+  a {
+    color: ${colors.text};
+  }
+`;
 
 const CopyButton = styled.button`
   ${buttons.button};
@@ -105,16 +104,11 @@ class ErrorBoundary extends React.Component {
       return this.props.children;
     }
     return (
-      <div className={styles.errorBoundary}>
-        <h1 className={styles.errorBoundaryText}>{t('ui.errorBoundary.title')}</h1>
+      <ErrorBoundaryContainer>
+        <h1>{t('ui.errorBoundary.title')}</h1>
         <p>
           <span>{t('ui.errorBoundary.details')}</span>
-          <a
-            href={ISSUE_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.errorBoundaryText}
-          >
+          <a href={ISSUE_URL} target="_blank" rel="noopener noreferrer">
             {t('ui.errorBoundary.reportIt')}
           </a>
         </p>
@@ -122,7 +116,7 @@ class ErrorBoundary extends React.Component {
         <h2>{t('ui.errorBoundary.detailsHeading')}</h2>
         <p>{errorMessage}</p>
         {backup && showBackup && <RecoveredEntry entry={backup} t={t} />}
-      </div>
+      </ErrorBoundaryContainer>
     );
   }
 }

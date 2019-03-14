@@ -18,22 +18,14 @@ const WorkflowListContainer = styled.div`
 `;
 
 const styles = {
-  column: css`
-    margin: 0 20px;
-    transition: background-color 0.5s ease;
-    border: 2px dashed transparent;
-    border-radius: 4px;
-    position: relative;
-
-    &:first-child {
+  columnPosition: idx => (
+    idx === 0 && css`
       margin-left: 0;
-    }
-
-    &:last-child {
+    ` ||
+    idx === 2 && css`
       margin-right: 0;
-    }
-
-    &:not(:first-child):not(:last-child) {
+    ` ||
+    css`
       &:before,
       &:after {
         content: '';
@@ -52,7 +44,15 @@ const styles = {
       &:after {
         right: -23px;
       }
-    }
+    `
+  ),
+  column: css`
+    margin: 0 20px;
+    transition: background-color 0.5s ease;
+    border: 2px dashed transparent;
+    border-radius: 4px;
+    position: relative;
+    height: 100%;
   `,
   columnHovered: css`
     border-color: ${colors.active};
@@ -147,7 +147,7 @@ class WorkflowList extends React.Component {
     if (!entries) return null;
 
     if (!column) {
-      return entries.entrySeq().map(([currColumn, currEntries]) => (
+      return entries.entrySeq().map(([currColumn, currEntries], idx) => (
         <DropTarget
           namespace={DNDNamespace}
           key={currColumn}
@@ -155,17 +155,23 @@ class WorkflowList extends React.Component {
         >
           {(connect, { isHovered }) =>
             connect(
-              <div css={css`color: red;`}>
-                <ColumnHeader name={currColumn}>
-                  {getColumnHeaderText(currColumn, this.props.t)}
-                </ColumnHeader>
-                <ColumnCount>
-                  {this.props.t('workflow.workflowList.currentEntries', {
-                    smart_count: currEntries.size,
-                  })}
-                </ColumnCount>
-                {this.renderColumns(currEntries, currColumn)}
-              </div>,
+              <div style={{ height: '100%' }}>
+                <div css={[
+                  styles.column,
+                  styles.columnPosition(idx),
+                  isHovered && styles.columnHovered,
+                ]}>
+                  <ColumnHeader name={currColumn}>
+                    {getColumnHeaderText(currColumn, this.props.t)}
+                  </ColumnHeader>
+                  <ColumnCount>
+                    {this.props.t('workflow.workflowList.currentEntries', {
+                      smart_count: currEntries.size,
+                    })}
+                  </ColumnCount>
+                  {this.renderColumns(currEntries, currColumn)}
+                </div>
+              </div>
             )
           }
         </DropTarget>

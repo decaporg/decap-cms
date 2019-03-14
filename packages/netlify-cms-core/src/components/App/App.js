@@ -15,7 +15,7 @@ import { createNewEntry } from 'Actions/collections';
 import { openMediaLibrary } from 'Actions/mediaLibrary';
 import MediaLibrary from 'MediaLibrary/MediaLibrary';
 import { Toast } from 'UI';
-import { Loader, colors, GlobalStyles } from 'netlify-cms-ui-default';
+import { Loader, colors } from 'netlify-cms-ui-default';
 import history from 'Routing/history';
 import { SIMPLE, EDITORIAL_WORKFLOW } from 'Constants/publishModes';
 import Collection from 'Collection/Collection';
@@ -160,7 +160,6 @@ class App extends React.Component {
 
     return (
       <>
-        <GlobalStyles />
         <Notifs CustomComponent={Toast} />
         <Header
           user={user}

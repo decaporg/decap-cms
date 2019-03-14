@@ -8,6 +8,7 @@ import store from 'Redux';
 import { mergeConfig } from 'Actions/config';
 import { getPhrases } from 'Constants/defaultPhrases';
 import { I18n } from 'react-polyglot';
+import { GlobalStyles } from 'netlify-cms-ui-default';
 import { ErrorBoundary } from 'UI';
 import App from 'App/App';
 import 'EditorWidgets';
@@ -62,15 +63,18 @@ function bootstrap(opts = {}) {
    * Create connected root component.
    */
   const Root = () => (
-    <I18n locale={'en'} messages={getPhrases()}>
-      <ErrorBoundary showBackup>
-        <Provider store={store}>
-          <ConnectedRouter history={history}>
-            <Route component={App} />
-          </ConnectedRouter>
-        </Provider>
-      </ErrorBoundary>
-    </I18n>
+    <>
+      <GlobalStyles/>
+      <I18n locale={'en'} messages={getPhrases()}>
+        <ErrorBoundary showBackup>
+          <Provider store={store}>
+            <ConnectedRouter history={history}>
+              <Route component={App} />
+            </ConnectedRouter>
+          </Provider>
+        </ErrorBoundary>
+      </I18n>
+    </>
   );
 
   /**
