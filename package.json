@@ -46,8 +46,8 @@
     "lint": "run-p -c --aggregate-output lint:*",
     "lint-quiet": "run-p -c --aggregate-output \"lint:* -- --quiet\"",
     "lint:css": "stylelint --ignore-path .gitignore \"{packages/**/*.{css,js},website/**/*.css}\"",
-    "lint:js": "eslint --ignore-path .gitignore \"{{packages,scripts,website}/**/,}*.js\"",
-    "lint:format": "run-s \"format:prettier -- --list-different\"",
+    "lint:js": "eslint --color --ignore-path .gitignore \"{{packages,scripts,website}/**/,}*.js\"",
+    "lint:format": "prettier \"{{packages,scripts,website}/**/,}*.{js,css}\" --list-different",
     "add-contributor": "all-contributors add"
   },
   "browserslist": [
