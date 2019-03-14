@@ -34,7 +34,9 @@ Far far away, behind the word mountains, far from the countries Vokalia and
 Consonantia, there live the blind texts.
 ```
 
-We can see above that each blog post has a title, a date, a description and a body. Now, let's recreate this using Netlify CMS. 
+We can see above that each blog post has a title, a date, a description and a body. Now, let's recreate this using Netlify CMS.
+
+**Note:** each existing blog post in `gatsby-starter-blog` is stored in its own directory. Netlify CMS doesn't work with files that are stored this way ([feature request here](https://github.com/netlify/netlify-cms/issues/1472)), so you won't be able to see or edit the starter's included sample blog posts in Netlify CMS, but you will be able to create and edit new posts.
 
 ## Add Netlify CMS to your site
 
