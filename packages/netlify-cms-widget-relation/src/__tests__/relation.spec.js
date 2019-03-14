@@ -114,7 +114,7 @@ describe('Relation widget', () => {
 
   it('should update option list based on search term', async () => {
     const field = fromJS(fieldConfig);
-    const { getAllByText, getByText, input } = setup({ field });
+    const { getAllByText, input } = setup({ field });
     fireEvent.change(input, { target: { value: 'YAML' } });
 
     await wait(() => {
