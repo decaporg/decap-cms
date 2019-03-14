@@ -6,7 +6,7 @@ import { Map, List } from 'immutable';
 import { once } from 'lodash';
 import uuid from 'uuid/v4';
 import { oneLine } from 'common-tags';
-import { lengths, components, buttons } from 'netlify-cms-ui-default';
+import { lengths, components, buttons, borders, effects, shadows } from 'netlify-cms-ui-default';
 
 const MAX_DISPLAY_LENGTH = 50;
 
@@ -16,13 +16,16 @@ const ImageWrapper = styled.div`
   height: 100px;
   margin-right: 20px;
   margin-bottom: 20px;
+  border: ${borders.textField};
+  border-radius: ${lengths.borderRadius};
+  ${effects.checkerboard};
+  ${shadows.inset};
 `;
 
 const Image = styled.img`
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  border-radius: ${lengths.borderRadius};
+  object-fit: contain;
 `;
 
 const MultiImageWrapper = styled.div`

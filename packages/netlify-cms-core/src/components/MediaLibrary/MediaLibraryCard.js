@@ -2,7 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from 'react-emotion';
-import { colors, borders, lengths } from 'netlify-cms-ui-default';
+import { colors, borders, lengths, shadows, effects } from 'netlify-cms-ui-default';
+
+const IMAGE_HEIGHT = 160;
 
 const Card = styled.div`
   width: ${props => props.width};
@@ -20,10 +22,17 @@ const Card = styled.div`
   }
 `;
 
+const CardImageWrapper = styled.div`
+  height: ${IMAGE_HEIGHT + 2}px;
+  ${effects.checkerboard};
+  ${shadows.inset};
+  border-bottom: solid ${lengths.borderWidth} ${colors.textFieldBorder};
+`;
+
 const CardImage = styled.img`
   width: 100%;
-  height: 160px;
-  object-fit: cover;
+  height: ${IMAGE_HEIGHT}px;
+  object-fit: contain;
   border-radius: 2px 2px 0 0;
 `;
 
@@ -57,7 +66,9 @@ class MediaLibraryCard extends React.Component {
         tabIndex="-1"
         isPrivate={isPrivate}
       >
-        <div>{url ? <CardImage src={url} /> : <CardFileIcon>{type}</CardFileIcon>}</div>
+        <CardImageWrapper>
+          {url ? <CardImage src={url} /> : <CardFileIcon>{type}</CardFileIcon>}
+        </CardImageWrapper>
         <CardText>{text}</CardText>
       </Card>
     );

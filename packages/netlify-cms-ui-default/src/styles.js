@@ -10,6 +10,7 @@ export {
   shadows,
   borders,
   transitions,
+  effects,
   reactSelectStyles,
 };
 
@@ -89,6 +90,8 @@ const colors = {
   errorBackground: colorsRaw.redLight,
   textFieldBorder: '#dfdfe3',
   controlLabel: '#7a8291',
+  checkerboardLight: '#f2f2f2',
+  checkerboardDark: '#e6e6e6',
 };
 
 const lengths = {
@@ -121,6 +124,33 @@ const shadows = {
   `,
   dropDeep: css`
     box-shadow: 0 4px 12px 0 rgba(68, 74, 87, 0.15), 0 1px 3px 0 rgba(68, 74, 87, 0.25);
+  `,
+  inset: css`
+    box-shadow: inset 0 0 4px rgba(68, 74, 87, 0.3);
+  `,
+};
+
+const effects = {
+  checkerboard: css`
+    background-color: ${colors.checkerboardLight};
+    background-size: 16px 16px;
+    background-position: 0 0, 8px 8px;
+    background-image: linear-gradient(
+        45deg,
+        ${colors.checkerboardDark} 25%,
+        transparent 25%,
+        transparent 75%,
+        ${colors.checkerboardDark} 75%,
+        ${colors.checkerboardDark}
+      ),
+      linear-gradient(
+        45deg,
+        ${colors.checkerboardDark} 25%,
+        transparent 25%,
+        transparent 75%,
+        ${colors.checkerboardDark} 75%,
+        ${colors.checkerboardDark}
+      );
   `,
 };
 

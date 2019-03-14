@@ -16,5 +16,6 @@ export {
   shadows,
   borders,
   transitions,
+  effects,
   reactSelectStyles,
 } from './styles';
