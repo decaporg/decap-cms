@@ -67,7 +67,7 @@
     "babel-plugin-transform-builtin-extend": "^1.1.2",
     "babel-plugin-transform-export-extensions": "^6.22.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.3",
-    "cache-me-outside": "^0.0.4",
+    "cache-me-outside": "^0.0.10",
     "cross-env": "^5.1.4",
     "cypress": "^3.0.3",
     "dom-testing-library": "^3.13.0",
