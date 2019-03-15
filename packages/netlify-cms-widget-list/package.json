@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "netlify-cms-widget-object": "^2.0.6",
-    "react-sortable-hoc": "^0.6.8"
+    "react-sortable-hoc": "^1.0.0"
   },
   "devDependencies": {
     "cross-env": "^5.2.0",

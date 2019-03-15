@@ -710,7 +710,7 @@
   dependencies:
     regenerator-runtime "^0.12.0"
 
-"@babel/runtime@^7.3.1", "@babel/runtime@^7.3.4":
+"@babel/runtime@^7.2.0", "@babel/runtime@^7.3.1", "@babel/runtime@^7.3.4":
   version "7.3.4"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.3.4.tgz#73d12ba819e365fcf7fd152aed56d6df97d21c83"
   integrity sha512-IvfvnMdSaLBateu0jfsYIpZTxAc2cKEXEMiezGGN75QcBcecDUKd3PgLAncT0oOgxKy8dd8hrJKj9MfzgfZd6g==
@@ -2743,7 +2743,7 @@ babel-preset-jest@^24.3.0:
     "@babel/plugin-syntax-object-rest-spread" "^7.0.0"
     babel-plugin-jest-hoist "^24.3.0"
 
-babel-runtime@^6.11.6, babel-runtime@^6.18.0, babel-runtime@^6.2.0, babel-runtime@^6.22.0, babel-runtime@^6.26.0:
+babel-runtime@^6.18.0, babel-runtime@^6.2.0, babel-runtime@^6.22.0, babel-runtime@^6.26.0:
   version "6.26.0"
   resolved "https://registry.yarnpkg.com/babel-runtime/-/babel-runtime-6.26.0.tgz#965c7058668e82b55d7bfe04ff2337bc8b5647fe"
   integrity sha1-llxwWGaOgrVde/4E/yM3vItWR/4=
@@ -8104,7 +8104,7 @@ lodash@4.17.11, lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.4, lodash@^4.2.1,
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.11.tgz#b39ea6229ef607ecd89e2c8df12536891cac9b8d"
   integrity sha512-cQKh8igo5QUhZ7lg38DYWAxMvjSAKG0A8wGSVimP07SIUEK2UO+arSRKbRZWtelMtN5V0Hkwh5ryOto/SshYIg==
 
-lodash@^4.1.1, lodash@^4.11.2, lodash@^4.12.0, lodash@^4.13.1, lodash@^4.14.0, lodash@^4.17.5, lodash@^4.2.0:
+lodash@^4.1.1, lodash@^4.11.2, lodash@^4.13.1, lodash@^4.14.0, lodash@^4.17.5, lodash@^4.2.0:
   version "4.17.10"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.10.tgz#1b7793cf7259ea38fb3661d4d38b3260af8ae4e7"
   integrity sha512-UejweD1pDoXu+AD825lWwp4ZGtSwgnpZxb3JDViD7StjQz+Nb/6l093lx4OQ0foGWNRoc19mWy7BzL+UAK2iVg==
@@ -10409,10 +10409,10 @@ react-router@^4.2.0, react-router@^4.3.1:
     prop-types "^15.6.1"
     warning "^4.0.1"
 
-react-scroll-sync@^0.7.0:
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/react-scroll-sync/-/react-scroll-sync-0.7.0.tgz#935387b2b877dcc7032ad9410155b0b7d7951048"
-  integrity sha512-PL4MWceh596EA+z5zLPYYB7HfctjShh+XTOZ5FgZnxwA66g1Fnx0kK0DMjma23cqlhXBvYLA7Fnp67afzBwdHA==
+react-scroll-sync@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/react-scroll-sync/-/react-scroll-sync-0.6.0.tgz#c87eba2cdd55ae35874277d74b034419d73df59a"
+  integrity sha512-Frc7pNPIEQY6rUAUwm1wW0an57Xau6X1Sag+Ra2FJT+oDBEBdh4cahrE3oGwtYHPcyWMt74q7vRKLw73cPy6aw==
 
 react-select@^2.4.2:
   version "2.4.2"
@@ -10427,14 +10427,13 @@ react-select@^2.4.2:
     react-input-autosize "^2.2.1"
     react-transition-group "^2.2.1"
 
-react-sortable-hoc@^0.6.8:
-  version "0.6.8"
-  resolved "https://registry.yarnpkg.com/react-sortable-hoc/-/react-sortable-hoc-0.6.8.tgz#b08562f570d7c41f6e393fca52879d2ebb9118e9"
-  integrity sha512-sUUAtNdV84AKZ2o+F5lVOOFWcyWG6aGDkNFgHoieB1zFLeWLWENkix06asPS4/GhigfuRh06aZix1j3Qx8+NSQ==
+react-sortable-hoc@^1.0.0:
+  version "1.7.1"
+  resolved "https://registry.yarnpkg.com/react-sortable-hoc/-/react-sortable-hoc-1.7.1.tgz#2d61c6003f22523ab3adfe37e69774c5d73c1ac6"
+  integrity sha512-I8X6T7n6jIc+gL65Xr56zauDvmM7mFDEyM3cuDMYWh/ZrLszm2jTxqJ+0tgmM++vh3dfXAbDd6cBfg4id5cHGQ==
   dependencies:
-    babel-runtime "^6.11.6"
-    invariant "^2.2.1"
-    lodash "^4.12.0"
+    "@babel/runtime" "^7.2.0"
+    invariant "^2.2.4"
     prop-types "^15.5.7"
 
 react-split-pane@^0.1.85:
