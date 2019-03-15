@@ -1,18 +1,5 @@
-import { css, injectGlobal } from 'react-emotion';
-
-export {
-  fonts,
-  colorsRaw,
-  colors,
-  lengths,
-  components,
-  buttons,
-  shadows,
-  borders,
-  transitions,
-  effects,
-  reactSelectStyles,
-};
+import React from 'react';
+import { css, Global } from '@emotion/core';
 
 /**
  * Font Stacks
@@ -102,6 +89,7 @@ const lengths = {
   borderWidth: '2px',
   topCardWidth: '682px',
   pageMargin: '28px 18px',
+  objectWidgetTopBarContainerPadding: '0 14px 14px',
 };
 
 const borders = {
@@ -130,27 +118,25 @@ const shadows = {
   `,
 };
 
+const gradients = {
+  checkerboard: `
+    linear-gradient(
+      45deg,
+      ${colors.checkerboardDark} 25%,
+      transparent 25%,
+      transparent 75%,
+      ${colors.checkerboardDark} 75%,
+      ${colors.checkerboardDark}
+    )
+  `,
+};
+
 const effects = {
   checkerboard: css`
     background-color: ${colors.checkerboardLight};
     background-size: 16px 16px;
     background-position: 0 0, 8px 8px;
-    background-image: linear-gradient(
-        45deg,
-        ${colors.checkerboardDark} 25%,
-        transparent 25%,
-        transparent 75%,
-        ${colors.checkerboardDark} 75%,
-        ${colors.checkerboardDark}
-      ),
-      linear-gradient(
-        45deg,
-        ${colors.checkerboardDark} 25%,
-        transparent 25%,
-        transparent 75%,
-        ${colors.checkerboardDark} 75%,
-        ${colors.checkerboardDark}
-      );
+    background-image: ${gradients.checkerboard}, ${gradients.checkerboard};
   `,
 };
 
@@ -305,7 +291,7 @@ const components = {
     margin-top: 8px;
   `,
   objectWidgetTopBarContainer: css`
-    padding: 0 14px 14px;
+    padding: ${lengths.objectWidgetTopBarContainerPadding};
   `,
   dropdownList: css`
     ${shadows.dropDeep};
@@ -350,8 +336,8 @@ const reactSelectStyles = {
     backgroundColor: state.isSelected
       ? `${colors.active}`
       : state.isFocused
-        ? `${colors.activeBackground}`
-        : 'transparent',
+      ? `${colors.activeBackground}`
+      : 'transparent',
     paddingLeft: '22px',
   }),
   menu: styles => ({ ...styles, right: 0, zIndex: 2 }),
@@ -381,73 +367,105 @@ const reactSelectStyles = {
   }),
 };
 
-injectGlobal`
-  *, *:before, *:after {
-    box-sizing: border-box;
-  }
+const GlobalStyles = () => (
+  <Global
+    styles={css`
+      *,
+      *:before,
+      *:after {
+        box-sizing: border-box;
+      }
 
-  :focus {
-    outline: -webkit-focus-ring-color auto ${lengths.borderRadius};
-  }
+      :focus {
+        outline: -webkit-focus-ring-color auto ${lengths.borderRadius};
+      }
 
-  /**
-   * Don't show outlines if the user is utilizing mouse rather than keyboard.
-   */
-  [data-whatintent="mouse"] *:focus {
-    outline: none;
-  }
+      /**
+       * Don't show outlines if the user is utilizing mouse rather than keyboard.
+       */
+      [data-whatintent='mouse'] *:focus {
+        outline: none;
+      }
 
+      input {
+        border: 0;
+      }
 
-  input {
-    border: 0;
-  }
+      body {
+        font-family: ${fonts.primary};
+        font-weight: normal;
+        background-color: ${colors.background};
+        color: ${colors.text};
+        margin: 0;
+      }
 
-  body {
-    font-family: ${fonts.primary};
-    font-weight: normal;
-    background-color: ${colors.background};
-    color: ${colors.text};
-    margin: 0;
-  }
+      ul,
+      ol {
+        padding-left: 0;
+      }
 
-  ul, ol {
-    padding-left: 0;
-  }
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6,
+      p {
+        font-family: ${fonts.primary};
+        color: ${colors.textLead};
+        font-size: 15px;
+        line-height: 1.5;
+        margin-top: 0;
+      }
 
-  h1, h2, h3, h4, h5, h6, p {
-    font-family: ${fonts.primary};
-    color: ${colors.textLead};
-    font-size: 15px;
-    line-height: 1.5;
-    margin-top: 0;
-  }
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        font-weight: 500;
+      }
 
-  h1, h2, h3, h4, h5, h6 {
-    font-weight: 500;
-  }
+      h1 {
+        font-size: 24px;
+        letter-spacing: 0.4px;
+        color: ${colors.textLead};
+      }
 
-  h1 {
-    font-size: 24px;
-    letter-spacing: 0.4px;
-    color: ${colors.textLead};
-  }
+      a,
+      button {
+        font-size: 14px;
+        font-weight: 500;
+      }
 
-  a,
-  button {
-    font-size: 14px;
-    font-weight: 500;
-  }
+      a {
+        color: ${colors.text};
+        text-decoration: none;
+      }
 
-  a {
-    color: ${colors.text};
-    text-decoration: none;
-  }
+      img {
+        max-width: 100%;
+      }
 
-  img {
-    max-width: 100%;
-  }
+      textarea {
+        resize: none;
+      }
+    `}
+  />
+);
 
-  textarea {
-    resize: none;
-  }
-`;
+export {
+  fonts,
+  colorsRaw,
+  colors,
+  lengths,
+  components,
+  buttons,
+  shadows,
+  borders,
+  transitions,
+  effects,
+  reactSelectStyles,
+  GlobalStyles,
+};

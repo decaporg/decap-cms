@@ -18,18 +18,18 @@
   "dependencies": {
     "react-aria-menubutton": "^5.1.0",
     "react-toggled": "^1.1.2",
-    "react-transition-group": "^2.2.1"
+    "react-transition-group": "^2.6.0"
   },
   "devDependencies": {
     "cross-env": "^5.2.0",
-    "webpack": "^4.16.1",
-    "webpack-cli": "^3.1.0"
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.2.3"
   },
   "peerDependencies": {
-    "emotion": "^9.2.6",
+    "@emotion/core": "^10.0.9",
+    "@emotion/styled": "^10.0.9",
     "lodash": "^4.13.1",
     "prop-types": "^15.5.10",
-    "react": "^16.4.1",
-    "react-emotion": "^9.2.6"
+    "react": "^16.4.1"
   }
 }

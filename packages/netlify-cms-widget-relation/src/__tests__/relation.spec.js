@@ -104,22 +104,21 @@ function setup({ field, value }) {
 describe('Relation widget', () => {
   it('should list the first 20 option hits on initial load', async () => {
     const field = fromJS(fieldConfig);
-    const { getAllByRole, input } = setup({ field });
+    const { getAllByText, input } = setup({ field });
+    fireEvent.keyDown(input, { key: 'ArrowDown' });
 
     await wait(() => {
-      fireEvent.keyDown(input, { key: 'ArrowDown' });
-      expect(getAllByRole('option')).toHaveLength(20);
+      expect(getAllByText(/^Post # (\d{1,2}) post-number-\1$/)).toHaveLength(20);
     });
   });
 
   it('should update option list based on search term', async () => {
     const field = fromJS(fieldConfig);
-    const { getAllByRole, getByText, input } = setup({ field });
+    const { getAllByText, input } = setup({ field });
+    fireEvent.change(input, { target: { value: 'YAML' } });
 
     await wait(() => {
-      fireEvent.change(input, { target: { value: 'YAML' } });
-      expect(getAllByRole('option')).toHaveLength(1);
-      expect(getByText('YAML post post-yaml')).toBeInTheDocument();
+      expect(getAllByText('YAML post post-yaml')).toHaveLength(1);
     });
   });
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 import { Icon, buttons, shadows } from 'netlify-cms-ui-default';
 
 const StyledAuthenticationPage = styled.section`

@@ -1,20 +1,23 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { css, cx } from 'react-emotion';
+import { ClassNames } from '@emotion/core';
 import { Map, List } from 'immutable';
-import { ObjectWidgetTopBar, components } from 'netlify-cms-ui-default';
+import { ObjectWidgetTopBar, lengths } from 'netlify-cms-ui-default';
 
-const styles = {
-  nestedObjectControl: css`
+const styleStrings = {
+  nestedObjectControl: `
     padding: 6px 14px 14px;
     border-top: 0;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
   `,
+  objectWidgetTopBarContainer: `
+    padding: ${lengths.objectWidgetTopBarContainerPadding}
+  `,
 };
 
-export default class ObjectControl extends Component {
+export default class ObjectControl extends React.Component {
   componentValidate = {};
 
   static propTypes = {
@@ -116,20 +119,32 @@ export default class ObjectControl extends Component {
 
     if (multiFields || singleField) {
       return (
-        <div
-          id={forID}
-          className={cx(classNameWrapper, components.objectWidgetTopBarContainer, {
-            [styles.nestedObjectControl]: forList,
-          })}
-        >
-          {forList ? null : (
-            <ObjectWidgetTopBar
-              collapsed={collapsed}
-              onCollapseToggle={this.handleCollapseToggle}
-            />
+        <ClassNames>
+          {({ css, cx }) => (
+            <div
+              id={forID}
+              className={cx(
+                classNameWrapper,
+                css`
+                  ${styleStrings.objectWidgetTopBarContainer}
+                `,
+                {
+                  [css`
+                    ${styleStrings.nestedObjectControl}
+                  `]: forList,
+                },
+              )}
+            >
+              {forList ? null : (
+                <ObjectWidgetTopBar
+                  collapsed={collapsed}
+                  onCollapseToggle={this.handleCollapseToggle}
+                />
+              )}
+              {collapsed ? null : this.renderFields(multiFields, singleField)}
+            </div>
           )}
-          {collapsed ? null : this.renderFields(multiFields, singleField)}
-        </div>
+        </ClassNames>
       );
     }
 

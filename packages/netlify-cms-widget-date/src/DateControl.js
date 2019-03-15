@@ -1,13 +1,10 @@
+/** @jsx jsx */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { injectGlobal } from 'react-emotion';
+import { jsx, css } from '@emotion/core';
+import reactDateTimeStyles from 'react-datetime/css/react-datetime.css';
 import DateTime from 'react-datetime';
-import dateTimeStyles from 'react-datetime/css/react-datetime.css';
 import moment from 'moment';
-
-injectGlobal`
-  ${dateTimeStyles}
-`;
 
 export default class DateControl extends React.Component {
   static propTypes = {
@@ -106,15 +103,21 @@ export default class DateControl extends React.Component {
     const { forID, value, classNameWrapper, setActiveStyle } = this.props;
     const { format, dateFormat, timeFormat } = this.formats;
     return (
-      <DateTime
-        dateFormat={dateFormat}
-        timeFormat={timeFormat}
-        value={moment(value, format)}
-        onChange={this.handleChange}
-        onFocus={setActiveStyle}
-        onBlur={this.onBlur}
-        inputProps={{ className: classNameWrapper, id: forID }}
-      />
+      <div
+        css={css`
+          ${reactDateTimeStyles};
+        `}
+      >
+        <DateTime
+          dateFormat={dateFormat}
+          timeFormat={timeFormat}
+          value={moment(value, format)}
+          onChange={this.handleChange}
+          onFocus={setActiveStyle}
+          onBlur={this.onBlur}
+          inputProps={{ className: classNameWrapper, id: forID }}
+        />
+      </div>
     );
   }
 }

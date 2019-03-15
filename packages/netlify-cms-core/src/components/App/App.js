@@ -3,7 +3,7 @@ import React from 'react';
 import { hot } from 'react-hot-loader';
 import { translate } from 'react-polyglot';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 import { connect } from 'react-redux';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import { Notifs } from 'redux-notifications';

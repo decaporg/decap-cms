@@ -21,21 +21,21 @@
     "build": "cross-env NODE_ENV=production webpack"
   },
   "dependencies": {
-    "react-datetime": "^2.11.0"
+    "react-datetime": "^2.16.3"
   },
   "devDependencies": {
     "cross-env": "^5.2.0",
-    "css-loader": "^1.0.0",
+    "css-loader": "^2.1.1",
     "to-string-loader": "^1.1.5",
-    "webpack": "^4.16.1",
-    "webpack-cli": "^3.1.0"
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.2.3"
   },
   "peerDependencies": {
-    "emotion": "^9.2.6",
+    "@emotion/core": "^10.0.9",
+    "@emotion/styled": "^10.0.9",
     "moment": "^2.11.2",
     "netlify-cms-ui-default": "^2.0.0",
     "prop-types": "^15.5.10",
-    "react": "^16.4.1",
-    "react-emotion": "^9.2.6"
+    "react": "^16.4.1"
   }
 }

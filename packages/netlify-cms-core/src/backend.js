@@ -3,7 +3,6 @@ import { Map } from 'immutable';
 import { stripIndent } from 'common-tags';
 import moment from 'moment';
 import fuzzy from 'fuzzy';
-import { localForage } from 'netlify-cms-lib-util';
 import { resolveFormat } from 'Formats/formats';
 import { selectIntegration } from 'Reducers/integrations';
 import {
@@ -19,7 +18,7 @@ import {
 import { createEntry } from 'ValueObjects/Entry';
 import { sanitizeSlug } from 'Lib/urlHelper';
 import { getBackend } from 'Lib/registry';
-import { Cursor, CURSOR_COMPATIBILITY_SYMBOL } from 'netlify-cms-lib-util';
+import { localForage, Cursor, CURSOR_COMPATIBILITY_SYMBOL } from 'netlify-cms-lib-util';
 import { EDITORIAL_WORKFLOW, status } from 'Constants/publishModes';
 
 class LocalStorageAuthStore {

@@ -1,7 +1,9 @@
+/** @jsx jsx */
 import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import styled, { css } from 'react-emotion';
+import styled from '@emotion/styled';
+import { jsx, css } from '@emotion/core';
 import { translate } from 'react-polyglot';
 import { NavLink } from 'react-router-dom';
 import {
@@ -22,15 +24,20 @@ const styles = {
   `,
 };
 
-const AppHeader = styled.header`
-  ${shadows.dropMain};
-  position: sticky;
-  width: 100%;
-  top: 0;
-  background-color: ${colors.foreground};
-  z-index: 300;
-  height: ${lengths.topBarHeight};
-`;
+const AppHeader = props => (
+  <header
+    css={css`
+      ${shadows.dropMain};
+      position: sticky;
+      width: 100%;
+      top: 0;
+      background-color: ${colors.foreground};
+      z-index: 300;
+      height: ${lengths.topBarHeight};
+    `}
+    {...props}
+  />
+);
 
 const AppHeaderContent = styled.div`
   display: flex;

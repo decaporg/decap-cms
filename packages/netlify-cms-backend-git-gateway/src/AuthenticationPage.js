@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import React from 'react';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 import { partial } from 'lodash';
 import {
   AuthenticationPage,

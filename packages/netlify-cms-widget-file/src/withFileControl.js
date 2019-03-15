@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 import { Map, List } from 'immutable';
 import { once } from 'lodash';
 import uuid from 'uuid/v4';
@@ -33,12 +33,6 @@ const MultiImageWrapper = styled.div`
   flex-wrap: wrap;
 `;
 
-const FileInfo = styled.div`
-  button:not(:first-child) {
-    margin-top: 12px;
-  }
-`;
-
 const FileLink = styled.a`
   margin-bottom: 20px;
   font-weight: normal;
@@ -49,6 +43,10 @@ const FileLink = styled.a`
   &:focus {
     text-decoration: underline;
   }
+`;
+
+const FileLinks = styled.div`
+  margin-bottom: 12px;
 `;
 
 const FileLinkList = styled.ul`
@@ -63,6 +61,7 @@ const FileWidgetButton = styled.button`
 const FileWidgetButtonRemove = styled.button`
   ${buttons.button};
   ${components.badgeDanger};
+  margin-top: 12px;
 `;
 
 function isMultiple(value) {
@@ -192,14 +191,16 @@ export default function withFileControl({ forImage } = {}) {
 
       if (isMultiple(value)) {
         return (
-          <FileLinkList>
-            {value.map(val => (
-              <li key={val}>{this.renderFileLink(val)}</li>
-            ))}
-          </FileLinkList>
+          <FileLinks>
+            <FileLinkList>
+              {value.map(val => (
+                <li key={val}>{this.renderFileLink(val)}</li>
+              ))}
+            </FileLinkList>
+          </FileLinks>
         );
       }
-      return this.renderFileLink(value);
+      return <FileLinks>{this.renderFileLink(value)}</FileLinks>;
     };
 
     renderImages = () => {
@@ -225,7 +226,7 @@ export default function withFileControl({ forImage } = {}) {
     renderSelection = subject => (
       <div>
         {forImage ? this.renderImages() : null}
-        <FileInfo>
+        <div>
           {forImage ? null : this.renderFileLinks()}
           <FileWidgetButton onClick={this.handleChange}>
             Choose different {subject}
@@ -233,7 +234,7 @@ export default function withFileControl({ forImage } = {}) {
           <FileWidgetButtonRemove onClick={this.handleRemove}>
             Remove {subject}
           </FileWidgetButtonRemove>
-        </FileInfo>
+        </div>
       </div>
     );
 

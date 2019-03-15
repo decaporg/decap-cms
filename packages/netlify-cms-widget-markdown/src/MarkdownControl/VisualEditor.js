@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import styled, { cx } from 'react-emotion';
+import styled from '@emotion/styled';
+import { ClassNames } from '@emotion/core';
 import { get, isEmpty, debounce, uniq } from 'lodash';
 import { List } from 'immutable';
 import { Value, Document, Block, Text } from 'slate';
@@ -259,19 +260,28 @@ export default class Editor extends React.Component {
             buttons={field.get('buttons')}
           />
         </EditorControlBar>
-        <Slate
-          className={cx(className, visualEditorStyles)}
-          value={this.state.value}
-          renderNode={renderNode}
-          renderMark={renderMark}
-          validateNode={validateNode}
-          plugins={plugins}
-          onChange={this.handleChange}
-          onKeyDown={onKeyDown}
-          onPaste={this.handlePaste}
-          ref={this.processRef}
-          spellCheck
-        />
+        <ClassNames>
+          {({ css, cx }) => (
+            <Slate
+              className={cx(
+                className,
+                css`
+                  ${visualEditorStyles}
+                `,
+              )}
+              value={this.state.value}
+              renderNode={renderNode}
+              renderMark={renderMark}
+              validateNode={validateNode}
+              plugins={plugins}
+              onChange={this.handleChange}
+              onKeyDown={onKeyDown}
+              onPaste={this.handlePaste}
+              ref={this.processRef}
+              spellCheck
+            />
+          )}
+        </ClassNames>
       </VisualEditorContainer>
     );
   }
