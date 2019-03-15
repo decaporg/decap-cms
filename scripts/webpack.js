@@ -131,7 +131,7 @@ const getConfig = ({ baseOnly = false } = {}) => {
     // netlify-cms build
     return baseConfig({ target: 'umd' });
   }
-  return [baseConfig({ target: 'umd' }), baseConfig({ target: 'umddir' })];
+  return [baseConfig({ target: 'umd' })];
 };
 
 module.exports = {
