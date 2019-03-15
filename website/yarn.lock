@@ -3382,6 +3382,11 @@ domelementtype@1, domelementtype@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/domelementtype/-/domelementtype-1.3.0.tgz#b17aed82e8ab59e52dd9c19b1756e0fc187204c2"
 
+domelementtype@^1.3.1:
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/domelementtype/-/domelementtype-1.3.1.tgz#d048c44b37b0d10a7f2a3d5fee3f4333d790481f"
+  integrity sha512-BSKB+TSpMpFI/HOxCNr1O8aMOTZ8hT3pM3GQ0w/mWRmkhEDSFJkkyzz4XQsBV44BChwGkrDfMyjVD0eA2aFV3w==
+
 domelementtype@~1.1.1:
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/domelementtype/-/domelementtype-1.1.3.tgz#bd28773e2642881aec51544924299c5cd822185b"
@@ -3392,7 +3397,7 @@ domhandler@2.1:
   dependencies:
     domelementtype "1"
 
-domhandler@^2.3.0:
+domhandler@^2.3.0, domhandler@^2.4.2:
   version "2.4.2"
   resolved "https://registry.yarnpkg.com/domhandler/-/domhandler-2.4.2.tgz#8805097e933d65e85546f726d60f5eb88b44f803"
   dependencies:
@@ -5413,6 +5418,17 @@ html-minifier@^3.2.3:
     relateurl "0.2.x"
     uglify-js "3.4.x"
 
+html-to-react@^1.3.4:
+  version "1.3.4"
+  resolved "https://registry.yarnpkg.com/html-to-react/-/html-to-react-1.3.4.tgz#647b3a54fdec73a6461864b129fb0d1eec7d4589"
+  integrity sha512-/tWDdb/8Koi/QEP5YUY1653PcDpBnnMblXRhotnTuhFDjI1Fc6Wzox5d4sw73Xk5rM2OdM5np4AYjT/US/Wj7Q==
+  dependencies:
+    domhandler "^2.4.2"
+    escape-string-regexp "^1.0.5"
+    htmlparser2 "^3.10.0"
+    lodash.camelcase "^4.3.0"
+    ramda "^0.26"
+
 html-void-elements@^1.0.0, html-void-elements@^1.0.1:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/html-void-elements/-/html-void-elements-1.0.3.tgz#956707dbecd10cf658c92c5d27fee763aa6aa982"
@@ -5437,6 +5453,18 @@ html-whitespace-sensitive-tag-names@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/html-whitespace-sensitive-tag-names/-/html-whitespace-sensitive-tag-names-1.0.0.tgz#fd6ed3a3d631ce29341aefe26a8fea720d3adfa7"
   integrity sha1-/W7To9Yxzik0Gu/iao/qcg0636c=
+
+htmlparser2@^3.10.0:
+  version "3.10.1"
+  resolved "https://registry.yarnpkg.com/htmlparser2/-/htmlparser2-3.10.1.tgz#bd679dc3f59897b6a34bb10749c855bb53a9392f"
+  integrity sha512-IgieNijUMbkDovyoKObU1DUhm1iwNYE/fuifEoEHfd1oZKZDaONBSkal7Y01shxsM49R4XaMdGez3WnF9UfiCQ==
+  dependencies:
+    domelementtype "^1.3.1"
+    domhandler "^2.3.0"
+    domutils "^1.5.1"
+    entities "^1.1.1"
+    inherits "^2.0.1"
+    readable-stream "^3.1.1"
 
 htmlparser2@^3.9.0:
   version "3.9.2"
@@ -6697,9 +6725,10 @@ md5@^2.2.1:
     crypt "~0.0.1"
     is-buffer "~1.1.1"
 
-mdast-add-list-metadata@^1.0.1:
+mdast-add-list-metadata@1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/mdast-add-list-metadata/-/mdast-add-list-metadata-1.0.1.tgz#95e73640ce2fc1fa2dcb7ec443d09e2bfe7db4cf"
+  integrity sha512-fB/VP4MJ0LaRsog7hGPxgOrSL3gE/2uEdZyDuSEnKCv/8IkYHiDkIQSbChiJoHyxZZXZ9bzckyRk+vNxFzh8rA==
   dependencies:
     unist-util-visit-parents "1.1.2"
 
@@ -8874,6 +8903,11 @@ raf@^3.4.0:
   dependencies:
     performance-now "^2.1.0"
 
+ramda@^0.26:
+  version "0.26.1"
+  resolved "https://registry.yarnpkg.com/ramda/-/ramda-0.26.1.tgz#8d41351eb8111c55353617fc3bbffad8e4d35d06"
+  integrity sha512-hLWjpy7EnsDBb0p+Z3B7rPi3GDeRG5ZtiI33kJhTt+ORCd38AbAIjB/9zRIUoeTbE/AVX5ZkU7m6bznsvrf8eQ==
+
 randomatic@^3.0.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/randomatic/-/randomatic-3.1.0.tgz#36f2ca708e9e567f5ed2ec01949026d50aa10116"
@@ -9115,11 +9149,13 @@ react-lifecycles-compat@^3.0.0, react-lifecycles-compat@^3.0.2, react-lifecycles
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
-react-markdown@^3.3.2:
-  version "3.4.1"
-  resolved "https://registry.yarnpkg.com/react-markdown/-/react-markdown-3.4.1.tgz#9fb726a94dfcb600d625fd06a5550629801303dc"
+react-markdown@^4.0.0:
+  version "4.0.6"
+  resolved "https://registry.yarnpkg.com/react-markdown/-/react-markdown-4.0.6.tgz#927d44421735cd90b7634bb221e9d7d8656e01e9"
+  integrity sha512-E1d/q+OBk5eumId42oYqVrJRB/+whrZdk+YHqUBCCNeWxqeV+Qzt+yLTsft9+4HRDj89Od7eAbUPQBYq8ZwShQ==
   dependencies:
-    mdast-add-list-metadata "^1.0.1"
+    html-to-react "^1.3.4"
+    mdast-add-list-metadata "1.0.1"
     prop-types "^15.6.1"
     remark-parse "^5.0.0"
     unified "^6.1.5"
@@ -9388,6 +9424,15 @@ readable-stream@1.0, readable-stream@~1.0.31:
     inherits "~2.0.1"
     isarray "0.0.1"
     string_decoder "~0.10.x"
+
+readable-stream@^3.1.1:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-3.2.0.tgz#de17f229864c120a9f56945756e4f32c4045245d"
+  integrity sha512-RV20kLjdmpZuTF1INEb9IA3L68Nmi+Ri7ppZqo78wj//Pn62fCoJyV9zalccNzDD/OuJpMG4f+pfMl8+L6QdGw==
+  dependencies:
+    inherits "^2.0.3"
+    string_decoder "^1.1.1"
+    util-deprecate "^1.0.1"
 
 readdirp@^2.0.0:
   version "2.1.0"
@@ -10708,6 +10753,13 @@ string_decoder@^1.0.0, string_decoder@~1.1.1:
   dependencies:
     safe-buffer "~5.1.0"
 
+string_decoder@^1.1.1:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/string_decoder/-/string_decoder-1.2.0.tgz#fe86e738b19544afe70469243b2a1ee9240eae8d"
+  integrity sha512-6YqyX6ZWEYguAxgZzHGL7SsCeGx3V2TtOTqZz1xSTSWnqsbWwbptafNyvf/ACquZUXV3DANr5BDIwNYe1mN42w==
+  dependencies:
+    safe-buffer "~5.1.0"
+
 string_decoder@~0.10.x:
   version "0.10.31"
   resolved "https://registry.yarnpkg.com/string_decoder/-/string_decoder-0.10.31.tgz#62e203bc41766c6c28c9fc84301dab1c5310fa94"
@@ -11400,7 +11452,7 @@ utf8-byte-length@^1.0.1:
   resolved "https://registry.yarnpkg.com/utf8-byte-length/-/utf8-byte-length-1.0.4.tgz#f45f150c4c66eee968186505ab93fcbb8ad6bf61"
   integrity sha1-9F8VDExm7uloGGUFq5P8u4rWv2E=
 
-util-deprecate@^1.0.2, util-deprecate@~1.0.1:
+util-deprecate@^1.0.1, util-deprecate@^1.0.2, util-deprecate@~1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
 
