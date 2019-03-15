@@ -6,6 +6,5 @@
   "lockFileMaintenance": {
     "enabled": true,
     "extends": "schedule:weekly"
-  },
-  "prConcurrentLimit": 0
+  }
 }
