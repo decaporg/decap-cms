@@ -29,7 +29,7 @@
     "webpack-cli": "^3.1.0"
   },
   "peerDependencies": {
-    "emotion": "^9.2.6",
+    "emotion": "^10.0.0",
     "lodash": "^4.17.10",
     "netlify-cms-lib-auth": "^2.0.0",
     "netlify-cms-lib-util": "^2.0.0",
