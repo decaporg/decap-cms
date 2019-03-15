@@ -52,7 +52,7 @@ class Collection extends React.Component {
   redirectToFirstCollection = () => {
     const { collections } = this.props;
     const firstCollection = collections.first();
-    const redirectPath = `/collections/${!!firstCollection ? firstCollection.get('name') : ''}`;
+    const redirectPath = `/collections/${firstCollection ? firstCollection.get('name') : ''}`;
 
     return <Redirect to={redirectPath}/>;
   }
@@ -60,7 +60,7 @@ class Collection extends React.Component {
   render() {
     const { collection, collections, collectionName, isSearchResults, searchTerm } = this.props;
 
-    if (collection === undefined ) {
+    if (!collection) {
       return this.redirectToFirstCollection();
     }
 
