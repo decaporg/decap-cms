@@ -1,21 +1,6 @@
 import React from 'react';
 import { css, Global } from '@emotion/core'
 
-export {
-  fonts,
-  colorsRaw,
-  colors,
-  lengths,
-  components,
-  buttons,
-  shadows,
-  borders,
-  transitions,
-  effects,
-  reactSelectStyles,
-  GlobalStyles,
-};
-
 /**
  * Font Stacks
  */
@@ -133,27 +118,25 @@ const shadows = {
   `,
 };
 
+const gradients = {
+  checkerboard: `
+    linear-gradient(
+      45deg,
+      ${colors.checkerboardDark} 25%,
+      transparent 25%,
+      transparent 75%,
+      ${colors.checkerboardDark} 75%,
+      ${colors.checkerboardDark}
+    )
+  `,
+};
+
 const effects = {
   checkerboard: css`
     background-color: ${colors.checkerboardLight};
     background-size: 16px 16px;
     background-position: 0 0, 8px 8px;
-    background-image: linear-gradient(
-        45deg,
-        ${colors.checkerboardDark} 25%,
-        transparent 25%,
-        transparent 75%,
-        ${colors.checkerboardDark} 75%,
-        ${colors.checkerboardDark}
-      ),
-      linear-gradient(
-        45deg,
-        ${colors.checkerboardDark} 25%,
-        transparent 25%,
-        transparent 75%,
-        ${colors.checkerboardDark} 75%,
-        ${colors.checkerboardDark}
-      );
+    background-image: ${gradients.checkerboard}, ${gradients.checkerboard};
   `,
 };
 
@@ -482,6 +465,7 @@ export {
   shadows,
   borders,
   transitions,
+  effects,
   reactSelectStyles,
   GlobalStyles,
 };
