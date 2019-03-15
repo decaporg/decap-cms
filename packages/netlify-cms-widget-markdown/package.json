@@ -36,7 +36,7 @@
     "slate-plain-serializer": "^0.5.15",
     "slate-react": "0.12.9",
     "slate-soft-break": "^0.6.1",
-    "unified": "^6.1.4",
+    "unified": "^7.0.0",
     "unist-builder": "^1.0.2",
     "unist-util-visit-parents": "^1.1.1"
   },
