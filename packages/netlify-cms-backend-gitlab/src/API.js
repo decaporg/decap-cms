@@ -129,14 +129,13 @@ export default class API {
       .update(list => Map(list));
     const actions = links
       .keySeq()
-      .flatMap(
-        key =>
-          (key === 'prev' && index > 0) ||
-          (key === 'next' && index < pageCount) ||
-          (key === 'first' && index > 0) ||
-          (key === 'last' && index < pageCount)
-            ? [key]
-            : [],
+      .flatMap(key =>
+        (key === 'prev' && index > 0) ||
+        (key === 'next' && index < pageCount) ||
+        (key === 'first' && index > 0) ||
+        (key === 'last' && index < pageCount)
+          ? [key]
+          : [],
       );
     return Cursor.create({
       actions,

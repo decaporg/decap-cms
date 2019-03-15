@@ -1,17 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import styled from 'react-emotion';
-import EditorControl, { ControlHint } from './EditorControl';
+import styled from '@emotion/styled';
+import EditorControl from './EditorControl';
 
 const ControlPaneContainer = styled.div`
   max-width: 800px;
   margin: 0 auto;
   padding-bottom: 16px;
-
-  p:not(${ControlHint}) {
-    font-size: 16px;
-  }
+  font-size: 16px;
 `;
 
 export default class ControlPane extends React.Component {
@@ -56,21 +53,20 @@ export default class ControlPane extends React.Component {
 
     return (
       <ControlPaneContainer>
-        {fields.map(
-          (field, i) =>
-            field.get('widget') === 'hidden' ? null : (
-              <EditorControl
-                key={i}
-                field={field}
-                value={entry.getIn(['data', field.get('name')])}
-                fieldsMetaData={fieldsMetaData}
-                fieldsErrors={fieldsErrors}
-                onChange={onChange}
-                onValidate={onValidate}
-                processControlRef={this.controlRef.bind(this)}
-                controlRef={this.controlRef}
-              />
-            ),
+        {fields.map((field, i) =>
+          field.get('widget') === 'hidden' ? null : (
+            <EditorControl
+              key={i}
+              field={field}
+              value={entry.getIn(['data', field.get('name')])}
+              fieldsMetaData={fieldsMetaData}
+              fieldsErrors={fieldsErrors}
+              onChange={onChange}
+              onValidate={onValidate}
+              processControlRef={this.controlRef.bind(this)}
+              controlRef={this.controlRef}
+            />
+          ),
         )}
       </ControlPaneContainer>
     );

@@ -93,7 +93,7 @@ describe('Select widget', () => {
   });
 
   it('should call onChange with null when no item is selected', () => {
-    const field = fromJS({ options });
+    const field = fromJS({ options, required: false });
     const { input, onChangeSpy } = setup({ field, defaultValue: options[0].value });
 
     fireEvent.focus(input);

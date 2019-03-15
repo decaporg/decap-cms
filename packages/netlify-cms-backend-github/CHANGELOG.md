@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.2.3-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.2.2...netlify-cms-backend-github@2.2.3-beta.0) (2019-03-15)
+
+
+### Features
+
+* upgrade to Emotion 10 ([#2166](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/issues/2166)) ([ccef446](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/commit/ccef446))
+
+
+
+
+
 ## [2.2.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.2.1...netlify-cms-backend-github@2.2.2) (2019-03-08)
 
 **Note:** Version bump only for package netlify-cms-backend-github

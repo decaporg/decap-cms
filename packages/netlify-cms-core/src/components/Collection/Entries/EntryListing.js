@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 import Waypoint from 'react-waypoint';
 import { Map } from 'immutable';
 import { Cursor } from 'netlify-cms-lib-util';

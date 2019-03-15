@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-widget-file",
   "description": "Widget for uploading files in Netlify CMS.",
-  "version": "2.2.0",
+  "version": "2.2.1-beta.0",
   "homepage": "https://www.netlifycms.org/docs/widgets/#file",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
@@ -19,20 +19,24 @@
   "scripts": {
     "watch": "webpack -w",
     "develop": "npm run watch",
-    "build": "cross-env NODE_ENV=production webpack",
-    "build:dev": "cross-env NODE_ENV=development webpack"
+    "build": "cross-env NODE_ENV=production webpack"
   },
   "dependencies": {
-    "common-tags": "^1.8.0"
+    "common-tags": "^1.8.0",
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "cross-env": "^5.2.0",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.2.3"
   },
   "peerDependencies": {
-    "emotion": "^9.2.6",
+    "@emotion/core": "^10.0.9",
+    "@emotion/styled": "^10.0.9",
     "immutable": "^3.7.6",
     "netlify-cms-ui-default": "^2.0.0",
-    "prop-types": "^15.7.2",
-    "react": "^16.8.1",
-    "react-emotion": "^9.2.6",
-    "react-immutable-proptypes": "^2.1.0",
-    "uuid": "^3.3.2"
+    "prop-types": "^15.5.10",
+    "react": "^16.4.1",
+    "react-immutable-proptypes": "^2.1.0"
   }
 }

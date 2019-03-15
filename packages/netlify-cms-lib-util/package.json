@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-lib-util",
   "description": "Shared utilities for Netlify CMS.",
-  "version": "2.1.2",
+  "version": "2.1.3-beta.0",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
   "main": "dist/netlify-cms-lib-util.js",
@@ -13,12 +13,16 @@
   "scripts": {
     "watch": "webpack -w",
     "develop": "npm run watch",
-    "build": "cross-env NODE_ENV=production webpack",
-    "build:dev": "cross-env NODE_ENV=development webpack"
+    "build": "cross-env NODE_ENV=production webpack"
   },
   "dependencies": {
     "js-sha256": "^0.9.0",
-    "localforage": "^1.4.2"
+    "localforage": "^1.7.3"
+  },
+  "devDependencies": {
+    "cross-env": "^5.2.0",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.2.3"
   },
   "peerDependencies": {
     "immutable": "^3.7.6",

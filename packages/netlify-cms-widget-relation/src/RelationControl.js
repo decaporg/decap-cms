@@ -130,9 +130,10 @@ export default class RelationControl extends React.Component {
   loadOptions = debounce((term, callback) => {
     const { field, query, forID } = this.props;
     const collection = field.get('collection');
-    const searchFields = field.get('searchFields').toJS();
+    const searchFields = field.get('searchFields');
+    const searchFieldsArray = List.isList(searchFields) ? searchFields.toJS() : [searchFields];
 
-    query(forID, collection, searchFields, term).then(({ payload }) => {
+    query(forID, collection, searchFieldsArray, term).then(({ payload }) => {
       let options = this.parseHitOptions(payload.response.hits);
 
       if (!this.allOptions && !term) {

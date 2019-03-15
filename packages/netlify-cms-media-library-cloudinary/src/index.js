@@ -60,7 +60,7 @@ async function init({ options = {}, handleInsert } = {}) {
 
   const insertHandler = data => {
     const assets = data.assets.map(asset => getAssetUrl(asset, resolvedOptions));
-    handleInsert(cloudinaryConfig.multiple ? assets : assets[0]);
+    handleInsert(assets.length > 1 ? assets : assets[0]);
   };
 
   const mediaLibrary = window.cloudinary.createMediaLibrary(cloudinaryConfig, { insertHandler });
@@ -74,7 +74,7 @@ async function init({ options = {}, handleInsert } = {}) {
       if (allowMultiple === false) {
         instanceConfig.multiple = false;
       }
-      return mediaLibrary.show({ config: { ...cloudinaryBehaviorConfig, ...instanceConfig } });
+      return mediaLibrary.show({ ...cloudinaryBehaviorConfig, ...instanceConfig });
     },
     hide: () => mediaLibrary.hide(),
     enableStandalone: () => true,

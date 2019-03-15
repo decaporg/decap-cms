@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-widget-object",
   "description": "Widget for displaying an object of fields for Netlify CMS.",
-  "version": "2.0.6",
+  "version": "2.0.7-beta.0",
   "homepage": "https://www.netlifycms.org/docs/widgets/#object",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-object",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
@@ -19,17 +19,21 @@
   "scripts": {
     "watch": "webpack -w",
     "develop": "npm run watch",
-    "build": "cross-env NODE_ENV=production webpack",
-    "build:dev": "cross-env NODE_ENV=development webpack"
+    "build": "cross-env NODE_ENV=production webpack"
+  },
+  "devDependencies": {
+    "cross-env": "^5.2.0",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.2.3"
   },
   "peerDependencies": {
-    "emotion": "^9.2.6",
+    "@emotion/core": "^10.0.9",
+    "@emotion/styled": "^10.0.9",
     "immutable": "^3.7.6",
     "lodash": "^4.17.10",
     "netlify-cms-ui-default": "^2.0.0",
-    "prop-types": "^15.7.2",
-    "react": "^16.8.1",
-    "react-emotion": "^9.2.6",
+    "prop-types": "^15.5.10",
+    "react": "^16.4.1",
     "react-immutable-proptypes": "^2.1.0"
   }
 }

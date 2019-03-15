@@ -1,7 +1,9 @@
+/** @jsx jsx */
 import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import styled, { css, cx } from 'react-emotion';
+import { jsx, css } from '@emotion/core';
+import styled from '@emotion/styled';
 import moment from 'moment';
 import { translate } from 'react-polyglot';
 import { colors, lengths } from 'netlify-cms-ui-default';
@@ -16,22 +18,16 @@ const WorkflowListContainer = styled.div`
 `;
 
 const styles = {
-  column: css`
-    margin: 0 20px;
-    transition: background-color 0.5s ease;
-    border: 2px dashed transparent;
-    border-radius: 4px;
-    position: relative;
-
-    &:first-child {
-      margin-left: 0;
-    }
-
-    &:last-child {
-      margin-right: 0;
-    }
-
-    &:not(:first-child):not(:last-child) {
+  columnPosition: idx =>
+    (idx === 0 &&
+      css`
+        margin-left: 0;
+      `) ||
+    (idx === 2 &&
+      css`
+        margin-right: 0;
+      `) ||
+    css`
       &:before,
       &:after {
         content: '';
@@ -50,7 +46,14 @@ const styles = {
       &:after {
         right: -23px;
       }
-    }
+    `,
+  column: css`
+    margin: 0 20px;
+    transition: background-color 0.5s ease;
+    border: 2px dashed transparent;
+    border-radius: 4px;
+    position: relative;
+    height: 100%;
   `,
   columnHovered: css`
     border-color: ${colors.active};
@@ -140,11 +143,12 @@ class WorkflowList extends React.Component {
     this.props.handlePublish(collection, slug);
   };
 
+  // eslint-disable-next-line react/display-name
   renderColumns = (entries, column) => {
     if (!entries) return null;
 
     if (!column) {
-      return entries.entrySeq().map(([currColumn, currEntries]) => (
+      return entries.entrySeq().map(([currColumn, currEntries], idx) => (
         <DropTarget
           namespace={DNDNamespace}
           key={currColumn}
@@ -152,16 +156,24 @@ class WorkflowList extends React.Component {
         >
           {(connect, { isHovered }) =>
             connect(
-              <div className={cx(styles.column, { [styles.columnHovered]: isHovered })}>
-                <ColumnHeader name={currColumn}>
-                  {getColumnHeaderText(currColumn, this.props.t)}
-                </ColumnHeader>
-                <ColumnCount>
-                  {this.props.t('workflow.workflowList.currentEntries', {
-                    smart_count: currEntries.size,
-                  })}
-                </ColumnCount>
-                {this.renderColumns(currEntries, currColumn)}
+              <div style={{ height: '100%' }}>
+                <div
+                  css={[
+                    styles.column,
+                    styles.columnPosition(idx),
+                    isHovered && styles.columnHovered,
+                  ]}
+                >
+                  <ColumnHeader name={currColumn}>
+                    {getColumnHeaderText(currColumn, this.props.t)}
+                  </ColumnHeader>
+                  <ColumnCount>
+                    {this.props.t('workflow.workflowList.currentEntries', {
+                      smart_count: currEntries.size,
+                    })}
+                  </ColumnCount>
+                  {this.renderColumns(currEntries, currColumn)}
+                </div>
               </div>,
             )
           }

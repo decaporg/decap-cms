@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 import Waypoint from 'react-waypoint';
 import MediaLibraryCard from './MediaLibraryCard';
 import { Map } from 'immutable';
@@ -8,6 +8,7 @@ import { colors } from 'netlify-cms-ui-default';
 
 const CardGridContainer = styled.div`
   overflow-y: auto;
+  overflow-x: hidden;
 `;
 
 const CardGrid = styled.div`

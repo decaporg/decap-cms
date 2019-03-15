@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-widget-select",
   "description": "Selectable values widget for Netlify CMS.",
-  "version": "2.2.0",
+  "version": "2.2.1-beta.0",
   "homepage": "https://www.netlifycms.org/docs/widgets/#select",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-select",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
@@ -19,18 +19,23 @@
   "scripts": {
     "watch": "webpack -w",
     "develop": "npm run watch",
-    "build": "cross-env NODE_ENV=production webpack",
-    "build:dev": "cross-env NODE_ENV=development webpack"
+    "build": "cross-env NODE_ENV=production webpack"
   },
-  "dependencies": {
-    "react-select": "^2.1.1"
+  "devDependencies": {
+    "cross-env": "^5.2.0",
+    "jest-dom": "^3.1.3",
+    "react-testing-library": "^6.0.0",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.2.3"
   },
   "peerDependencies": {
     "immutable": "^3.7.6",
     "netlify-cms-ui-default": "^2.0.0",
-    "prop-types": "^15.7.2",
-    "react": "^16.8.1",
-    "react-dom": "^16.8.1",
+    "prop-types": "^15.5.10",
+    "react": "^16.4.1",
     "react-immutable-proptypes": "^2.1.0"
+  },
+  "dependencies": {
+    "react-select": "^2.4.2"
   }
 }

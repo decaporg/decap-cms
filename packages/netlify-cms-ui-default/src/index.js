@@ -16,7 +16,9 @@ import {
   shadows,
   borders,
   transitions,
+  effects,
   reactSelectStyles,
+  GlobalStyles,
 } from './styles';
 
 export const NetlifyCmsUiDefault = {

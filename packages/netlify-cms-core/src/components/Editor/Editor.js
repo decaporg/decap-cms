@@ -31,8 +31,7 @@ import { loadDeployPreview } from 'Actions/deploys';
 import { deserializeValues } from 'Lib/serializeEntryValues';
 import { selectEntry, selectUnpublishedEntry, selectDeployPreview, getAsset } from 'Reducers';
 import { selectFields } from 'Reducers/collections';
-import { status } from 'Constants/publishModes';
-import { EDITORIAL_WORKFLOW } from 'Constants/publishModes';
+import { status, EDITORIAL_WORKFLOW } from 'Constants/publishModes';
 import EditorInterface from './EditorInterface';
 import withWorkflow from './withWorkflow';
 

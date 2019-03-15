@@ -315,6 +315,9 @@ export default class GitGateway {
       if (client.enabled && client.matchPath(path)) {
         return client.getDownloadURL(largeMediaDisplayURL);
       }
+      if (typeof original === 'string') {
+        return original;
+      }
       if (this.backend.getMediaDisplayURL) {
         return this.backend.getMediaDisplayURL(original);
       }
