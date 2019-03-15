@@ -54,7 +54,7 @@
     "react-redux": "^5.1.1",
     "react-router-dom": "^4.2.2",
     "react-router-redux": "^5.0.0-alpha.8",
-    "react-scroll-sync": "^0.6.0",
+    "react-scroll-sync": "^0.7.0",
     "react-sortable-hoc": "^0.6.8",
     "react-split-pane": "^0.1.85",
     "react-topbar-progress-indicator": "^2.0.0",
