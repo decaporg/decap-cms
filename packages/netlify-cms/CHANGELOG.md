@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.6.2-beta.0](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.6.2-alpha.0...netlify-cms@2.6.2-beta.0) (2019-03-15)
+
+
+### Features
+
+* upgrade to Emotion 10 ([#2166](https://github.com/netlify/netlify-cms/issues/2166)) ([ccef446](https://github.com/netlify/netlify-cms/commit/ccef446))
+
+
+
+
+
 ## [2.6.2-alpha.0](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.6.1...netlify-cms@2.6.2-alpha.0) (2019-03-14)
 
 **Note:** Version bump only for package netlify-cms

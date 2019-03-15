@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.4.1-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.4.1-alpha.0...netlify-cms-ui-default@2.4.1-beta.0) (2019-03-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency react-aria-menubutton to v6 ([#2195](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/issues/2195)) ([e8d3db1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/commit/e8d3db1))
+
+
+### Features
+
+* upgrade to Emotion 10 ([#2166](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/issues/2166)) ([ccef446](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/commit/ccef446))
+
+
+
+
+
 ## [2.4.1-alpha.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.4.0...netlify-cms-ui-default@2.4.1-alpha.0) (2019-03-14)
 
 **Note:** Version bump only for package netlify-cms-ui-default

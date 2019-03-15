@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.8.1-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.8.1-alpha.0...netlify-cms-core@2.8.1-beta.0) (2019-03-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency react-scroll-sync to ^0.7.0 ([#2171](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2171)) ([12cc5a9](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/12cc5a9))
+* **deps:** update dependency react-sortable-hoc to v1 ([#2198](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2198)) ([b5180e9](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/b5180e9))
+
+
+### Features
+
+* upgrade to Emotion 10 ([#2166](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2166)) ([ccef446](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/ccef446))
+
+
+
+
+
 ## [2.8.1-alpha.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.8.0...netlify-cms-core@2.8.1-alpha.0) (2019-03-14)
 
 **Note:** Version bump only for package netlify-cms-core

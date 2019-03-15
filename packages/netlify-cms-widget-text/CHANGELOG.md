@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.7-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-text/compare/netlify-cms-widget-text@2.0.6...netlify-cms-widget-text@2.0.7-beta.0) (2019-03-15)
+
+
+### Features
+
+* upgrade to Emotion 10 ([#2166](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-text/issues/2166)) ([ccef446](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-text/commit/ccef446))
+
+
+
+
+
 ## [2.0.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-text/compare/netlify-cms-widget-text@2.0.5...netlify-cms-widget-text@2.0.6) (2018-11-29)
 
 
