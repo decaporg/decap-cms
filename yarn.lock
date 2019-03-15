@@ -10336,11 +10336,12 @@ react-onclickoutside@^6.5.0:
   resolved "https://registry.yarnpkg.com/react-onclickoutside/-/react-onclickoutside-6.7.1.tgz#6a5b5b8b4eae6b776259712c89c8a2b36b17be93"
   integrity sha512-p84kBqGaMoa7VYT0vZ/aOYRfJB+gw34yjpda1Z5KeLflg70HipZOT+MXQenEhdkPAABuE2Astq4zEPdMqUQxcg==
 
-react-polyglot@^0.2.6:
-  version "0.2.6"
-  resolved "https://registry.yarnpkg.com/react-polyglot/-/react-polyglot-0.2.6.tgz#5a7065aa82ee00a6d92a9c89447b2cc5b939986c"
-  integrity sha512-/V+kb6Acs/F6EzMZ6MAp6UiJnPSL9BX59hN54bFhJzbpy4tFQTxAZAmpw/mg5pk8giZ2LiiIBc4TMPKrVJNOGw==
+react-polyglot@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/react-polyglot/-/react-polyglot-0.4.0.tgz#87712ecf73858755e2705419adf1294f1c0eae91"
+  integrity sha512-XdLi0NZCJ1nGxHEMry238MPvWypDiU9xFBP30atbKrAsIiAf7nTA/EXCzQWMVX7kv4YPj+Ly4Fo9QMWEQOq1aw==
   dependencies:
+    hoist-non-react-statics "^2.5.0"
     prop-types "^15.5.8"
 
 react-portal@^3.1.0:
