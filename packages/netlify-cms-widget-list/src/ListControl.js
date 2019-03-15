@@ -6,11 +6,7 @@ import styled from '@emotion/styled';
 import { jsx, css, ClassNames } from '@emotion/core';
 import { List, Map } from 'immutable';
 import { partial } from 'lodash';
-import {
-  SortableContainer,
-  SortableElement,
-  SortableHandle,
-} from 'react-sortable-hoc/dist/umd/react-sortable-hoc';
+import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 import { Control as ObjectControl } from 'netlify-cms-widget-object';
 import {
   TYPES_KEY,

@@ -1,4 +1,4 @@
-import Control from './StringControl';
-import Preview from './StringPreview';
-export const NetlifyCmsWidgetString = { Control, Preview };
-export { Control, Preview };
+import controlComponent from './StringControl';
+import previewComponent from './StringPreview';
+export const NetlifyCmsWidgetString = { controlComponent, previewComponent };
+export { controlComponent, previewComponent };

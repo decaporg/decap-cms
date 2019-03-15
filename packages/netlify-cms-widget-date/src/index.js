@@ -8,4 +8,5 @@ const Widget = (opts = {}) => ({
   ...opts,
 });
 
+export const NetlifyCmsWidgetDate = { Widget, controlComponent, previewComponent };
 export { Widget as default, controlComponent, previewComponent };

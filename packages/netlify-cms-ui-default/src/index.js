@@ -45,7 +45,9 @@ export const NetlifyCmsUiDefault = {
   shadows,
   borders,
   transitions,
+  effects,
   reactSelectStyles,
+  GlobalStyles,
 };
 export {
   Dropdown,
@@ -71,5 +73,7 @@ export {
   shadows,
   borders,
   transitions,
+  effects,
   reactSelectStyles,
+  GlobalStyles,
 };

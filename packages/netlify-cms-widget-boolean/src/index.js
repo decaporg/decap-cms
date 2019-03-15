@@ -1,3 +1,3 @@
-import Control from './BooleanControl';
-export const NetlifyCmsWidgetBoolean = { Control };
-export { Control };
+import controlComponent from './BooleanControl';
+export const NetlifyCmsWidgetBoolean = { controlComponent };
+export { controlComponent };

@@ -4,7 +4,7 @@ import { last } from 'lodash';
 import { render, fireEvent, wait } from 'react-testing-library';
 import 'react-testing-library/cleanup-after-each';
 import 'jest-dom/extend-expect';
-import { RelationControl } from '../';
+import { controlComponent as RelationControl } from '../';
 
 const fieldConfig = {
   name: 'post',

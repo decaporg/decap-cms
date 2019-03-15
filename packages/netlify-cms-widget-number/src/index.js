@@ -1,4 +1,4 @@
-import Control from './NumberControl';
-import Preview from './NumberPreview';
-export const NetlifyCmsWidgetNumber = { Control, Preview };
-export { Control, Preview };
+import controlComponent from './NumberControl';
+import previewComponent from './NumberPreview';
+export const NetlifyCmsWidgetNumber = { controlComponent, previewComponent };
+export { controlComponent, previewComponent };

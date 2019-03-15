@@ -1,4 +1,4 @@
-import Control from './MarkdownControl';
-import Preview from './MarkdownPreview';
-export const NetlifyCmsWidgetMarkdown = { Control, Preview };
-export { Control, Preview };
+import controlComponent from './MarkdownControl';
+import previewComponent from './MarkdownPreview';
+export const NetlifyCmsWidgetMarkdown = { controlComponent, previewComponent };
+export { controlComponent, previewComponent };

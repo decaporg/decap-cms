@@ -19,13 +19,8 @@
     "js-sha256": "^0.9.0",
     "localforage": "^1.7.3"
   },
-  "devDependencies": {
-    "cross-env": "^5.2.0",
-    "webpack": "^4.29.6",
-    "webpack-cli": "^3.2.3"
-  },
   "peerDependencies": {
     "immutable": "^3.7.6",
-    "lodash": "^4.13.1"
+    "lodash": "^4.17.11"
   }
 }

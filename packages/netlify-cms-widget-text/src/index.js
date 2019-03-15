@@ -1,5 +1,5 @@
-import Control from './TextControl';
-import Preview from './TextPreview';
+import controlComponent from './TextControl';
+import previewComponent from './TextPreview';
 
-export const NetlifyCmsWidgetText = { Control, Preview };
-export { Control, Preview };
+export const NetlifyCmsWidgetText = { controlComponent, previewComponent };
+export { controlComponent, previewComponent };

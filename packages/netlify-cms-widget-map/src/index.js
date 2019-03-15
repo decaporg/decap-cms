@@ -1,6 +1,6 @@
 import withMapControl from './withMapControl';
-import Preview from './MapPreview';
-const Control = withMapControl();
+import previewComponent from './MapPreview';
+const controlComponent = withMapControl();
 
-export const NetlifyCmsWidgetMap = { Control, Preview };
-export { Control, Preview };
+export const NetlifyCmsWidgetMap = { controlComponent, previewComponent };
+export { controlComponent, previewComponent };

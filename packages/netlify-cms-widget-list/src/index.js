@@ -1,4 +1,4 @@
-import Control from './ListControl';
-import { Preview } from 'netlify-cms-widget-object';
-export const NetlifyCmsWidgetList = { Control, Preview };
-export { Control, Preview };
+import controlComponent from './ListControl';
+import { previewComponent } from 'netlify-cms-widget-object';
+export const NetlifyCmsWidgetList = { controlComponent, previewComponent };
+export { controlComponent, previewComponent };

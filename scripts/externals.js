@@ -41,12 +41,19 @@ module.exports = {
       amd: 'lodash',
       umd: 'lodash',
     },
-    emotion: {
-      root: ['NetlifyCmsDefaultExports', 'Emotion'],
+    '@emotion/core': {
+      root: ['NetlifyCmsDefaultExports', 'EmotionCore'],
       commonjs2: 'emotion',
       commonjs: 'emotion',
       amd: 'emotion',
       umd: 'emotion',
+    },
+    '@emotion/styled': {
+      root: ['NetlifyCmsDefaultExports', 'EmotionStyled'],
+      commonjs2: 'styled',
+      commonjs: 'styled',
+      amd: 'styled',
+      umd: 'styled',
     },
     immutable: {
       root: ['NetlifyCmsDefaultExports', 'Immutable'],
@@ -68,13 +75,6 @@ module.exports = {
       commonjs: 'prop-types',
       amd: 'prop-types',
       umd: 'prop-types',
-    },
-    'react-emotion': {
-      root: ['NetlifyCmsDefaultExports', 'ReactEmotion'],
-      commonjs2: 'react-emotion',
-      commonjs: 'react-emotion',
-      amd: 'react-emotion',
-      umd: 'react-emotion',
     },
     'react-immutable-proptypes': {
       root: ['NetlifyCmsDefaultExports', 'ImmutablePropTypes'],

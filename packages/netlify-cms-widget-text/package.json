@@ -25,14 +25,9 @@
   "dependencies": {
     "react-textarea-autosize": "^7.1.0"
   },
-  "devDependencies": {
-    "cross-env": "^5.2.0",
-    "webpack": "^4.29.6",
-    "webpack-cli": "^3.2.3"
-  },
   "peerDependencies": {
-    "netlify-cms-ui-default": "^2.0.0",
-    "prop-types": "^15.5.10",
-    "react": "^16.4.1"
+    "netlify-cms-ui-default": "^2.4.1-beta.0",
+    "prop-types": "^15.7.2",
+    "react": "^16.8.4"
   }
 }

@@ -1,16 +1,17 @@
-import * as Emotion from 'emotion';
+import EmotionCore from '@emotion/core';
+import EmotionStyled from '@emotion/styled';
 import Immutable from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import Lodash from 'lodash';
+import Lodash from 'lodash/lodash';
 import Moment from 'moment';
 import PropTypes from 'prop-types';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import * as ReactEmotion from 'react-emotion/src/index';
 import * as UUId from 'uuid';
 
 export const NetlifyCmsDefaultExports = {
-  Emotion,
+  EmotionCore,
+  EmotionStyled,
   Immutable,
   ImmutablePropTypes,
   Lodash,
@@ -18,11 +19,11 @@ export const NetlifyCmsDefaultExports = {
   PropTypes,
   React,
   ReactDOM,
-  ReactEmotion,
   UUId,
 };
 export {
-  Emotion,
+  EmotionCore,
+  EmotionStyled,
   Immutable,
   ImmutablePropTypes,
   Lodash,
@@ -30,6 +31,5 @@ export {
   PropTypes,
   React,
   ReactDOM,
-  ReactEmotion,
   UUId,
 };

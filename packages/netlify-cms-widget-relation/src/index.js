@@ -1,4 +1,4 @@
-import Control from './RelationControl';
-import Preview from './RelationPreview';
-export const NetlifyCmsWidgetRelation = { Control, Preview };
-export { Control, Preview };
+import controlComponent from './RelationControl';
+import previewComponent from './RelationPreview';
+export const NetlifyCmsWidgetRelation = { controlComponent, previewComponent };
+export { controlComponent, previewComponent };

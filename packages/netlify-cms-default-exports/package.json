@@ -20,17 +20,17 @@
     "build:dev": "cross-env NODE_ENV=development webpack"
   },
   "dependencies": {
-    "emotion": "^9.2.6",
+    "@emotion/core": "^10.0.9",
+    "@emotion/styled": "^10.0.9",
     "immutable": "^3.7.6",
-    "lodash": "^4.17.10",
+    "lodash": "^4.17.11",
     "moment": "^2.24.0",
     "prop-types": "^15.7.2",
-    "react-emotion": "^9.2.6",
     "react-immutable-proptypes": "^2.1.0",
     "uuid": "^3.3.2"
   },
   "peerDependencies": {
-    "react": "^16.8.1",
-    "react-dom": "^16.8.1"
+    "react": "^16.8.4",
+    "react-dom": "^16.8.4"
   }
 }

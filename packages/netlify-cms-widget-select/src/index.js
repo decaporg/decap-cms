@@ -1,4 +1,4 @@
-import Control from './SelectControl';
-import Preview from './SelectPreview';
-export const NetlifyCmsWidgetSelect = { Control, Preview };
-export { Control, Preview };
+import controlComponent from './SelectControl';
+import previewComponent from './SelectPreview';
+export const NetlifyCmsWidgetSelect = { controlComponent, previewComponent };
+export { controlComponent, previewComponent };
