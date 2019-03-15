@@ -33,7 +33,7 @@
     "postcss-at2x": "^2.0.0",
     "postcss-cssnext": "^2.7.0",
     "postcss-neat": "^2.5.2",
-    "postcss-nested": "^1.0.0",
+    "postcss-nested": "^4.0.0",
     "postcss-simple-extend": "^1.0.0",
     "postcss-simple-vars-async": "^1.2.1",
     "prismjs": "^1.15.0",
