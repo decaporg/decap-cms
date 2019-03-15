@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import { Redirect } from 'react-router-dom';
 import styled from '@emotion/styled';
 import { connect } from 'react-redux';
 import { lengths } from 'netlify-cms-ui-default';
@@ -48,9 +49,23 @@ class Collection extends React.Component {
     }
   };
 
+  redirectToFirstCollection = () => {
+    const { collections } = this.props;
+    const firstCollection = collections.first();
+    const redirectPath = `/collections/${!!firstCollection ? firstCollection.get('name') : ''}`;
+
+    return <Redirect to={redirectPath}/>;
+  }
+
   render() {
     const { collection, collections, collectionName, isSearchResults, searchTerm } = this.props;
+
+    if (collection === undefined ) {
+      return this.redirectToFirstCollection();
+    }
+
     const newEntryUrl = collection.get('create') ? getNewEntryUrl(collectionName) : '';
+
     return (
       <CollectionContainer>
         <Sidebar collections={collections} searchTerm={searchTerm} />
