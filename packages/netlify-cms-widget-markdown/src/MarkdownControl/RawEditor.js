@@ -87,7 +87,12 @@ export default class RawEditor extends React.Component {
         <ClassNames>
           {({ css, cx }) => (
             <Slate
-              className={cx(className, css`${styleStrings.slateRaw}`)}
+              className={cx(
+                className,
+                css`
+                  ${styleStrings.slateRaw}
+                `,
+              )}
               value={this.state.value}
               onChange={this.handleChange}
               onPaste={this.handlePaste}
