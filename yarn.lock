@@ -880,13 +880,6 @@
   resolved "https://registry.yarnpkg.com/@emotion/hash/-/hash-0.6.5.tgz#097729b84a5164f71f9acd2570ecfd1354d7b360"
   integrity sha512-JlZbn5+adseTdDPTUkx/O1/UZbhaGR5fCLLWQDCIJ4eP9fJcVdP/qjlTveEX6mkNoJHWFbZ47wArWQQ0Qk6nMA==
 
-"@emotion/is-prop-valid@^0.6.1":
-  version "0.6.5"
-  resolved "https://registry.yarnpkg.com/@emotion/is-prop-valid/-/is-prop-valid-0.6.5.tgz#25071b70957f250e7a8a543a9a187b09161f4d1c"
-  integrity sha512-pfjQHT3FCZkAPxqY+sI6MmMTPMCKGIV3DcC1qhf68XkE9pGtKqb5WNN2vfmLgTMGnNVXnaFyx/VjdDYmGFcRaw==
-  dependencies:
-    "@emotion/memoize" "^0.6.5"
-
 "@emotion/memoize@^0.6.1", "@emotion/memoize@^0.6.5":
   version "0.6.5"
   resolved "https://registry.yarnpkg.com/@emotion/memoize/-/memoize-0.6.5.tgz#f868c314b889e7c3d84868a1d1cc323fbb40ca86"
@@ -3551,13 +3544,6 @@ create-ecdh@^4.0.0:
   dependencies:
     bn.js "^4.1.0"
     elliptic "^6.0.0"
-
-create-emotion-styled@^9.2.6:
-  version "9.2.6"
-  resolved "https://registry.yarnpkg.com/create-emotion-styled/-/create-emotion-styled-9.2.6.tgz#25be44a298e6e49d833ecf2247836284dc9c2042"
-  integrity sha512-Kk6qWuEiHY9iptLsxzoJztHM237yedoY2Zhmc79HwkRkC+wZ7W8IFt5gP6AAGx6eN44hc3Zwc+WA5N7ku3QJfg==
-  dependencies:
-    "@emotion/is-prop-valid" "^0.6.1"
 
 create-emotion@^9.2.12:
   version "9.2.12"
@@ -9756,13 +9742,10 @@ react-dom@^16.8.1:
     prop-types "^15.6.2"
     scheduler "^0.13.1"
 
-react-emotion@^9.2.5:
-  version "9.2.6"
-  resolved "https://registry.yarnpkg.com/react-emotion/-/react-emotion-9.2.6.tgz#3941f78779f9a8ad8300042ddfa9b2cb111442c2"
-  integrity sha512-3GwLQ0Vib/X0G7KWY7N1F/7NmfoBLkkg3g9Jd8t6By5QUH0PyCSUVdDmfFBbgVKsAcpkjA0vcsMbiWeZusaRrA==
-  dependencies:
-    babel-plugin-emotion "^9.2.6"
-    create-emotion-styled "^9.2.6"
+react-emotion@^10.0.0:
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/react-emotion/-/react-emotion-10.0.0.tgz#03adf5a93f9dc41396401551566adf9668a2418e"
+  integrity sha512-HMEH1I0m4AxJzG31ii/g227WhR0RBlRdr2M4C0n7yg9s3SiAPGB7lxvc/EoE8ixU9PLeOlBOb/n0wo42tGu99Q==
 
 react-frame-component@^4.0.2:
   version "4.0.2"
