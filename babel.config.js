@@ -30,7 +30,6 @@ const plugins = () => {
     '@babel/plugin-proposal-class-properties',
     '@babel/plugin-proposal-object-rest-spread',
     '@babel/plugin-proposal-export-default-from',
-    'react-hot-loader/babel',
     [
       'module-resolver',
       {
@@ -85,6 +84,7 @@ const plugins = () => {
     ];
   }
 
+  defaultPlugins.push('react-hot-loader/babel');
   return [
     ...defaultPlugins,
     [
