@@ -34,6 +34,7 @@
     "netlify-cms-backend-test": "^2.0.7-beta.0",
     "netlify-cms-core": "^2.8.1-beta.0",
     "netlify-cms-editor-component-image": "^2.2.1-beta.0",
+    "netlify-cms-media-library-cloudinary": "^1.1.3-beta.0",
     "netlify-cms-media-library-uploadcare": "^0.3.5-beta.0",
     "netlify-cms-widget-boolean": "^2.0.6-beta.0",
     "netlify-cms-widget-date": "^2.1.1-beta.0",
