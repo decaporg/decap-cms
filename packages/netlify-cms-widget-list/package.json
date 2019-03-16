@@ -21,7 +21,6 @@
     "build": "cross-env NODE_ENV=production webpack"
   },
   "dependencies": {
-    "netlify-cms-widget-object": "^2.0.7-beta.0",
     "react-sortable-hoc": "^1.0.0"
   },
   "peerDependencies": {
@@ -30,11 +29,9 @@
     "immutable": "^3.7.6",
     "lodash": "^4.17.11",
     "netlify-cms-ui-default": "^2.4.1-beta.0",
+    "netlify-cms-widget-object": "^2.0.7-beta.0",
     "prop-types": "^15.7.2",
     "react": "^16.8.4",
     "react-immutable-proptypes": "^2.1.0"
-  },
-  "localExternals": [
-    "netlify-cms-widget-object"
-  ]
+  }
 }
