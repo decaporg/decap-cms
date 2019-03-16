@@ -8,7 +8,7 @@ const path = require('path');
  */
 const toGlobalName = name =>
   `${name}`
-    .replace(new RegExp(/[-_]+/, 'g'), ' ')
+    .replace(new RegExp(/[-_/]+/, 'g'), ' ')
     .replace(new RegExp(/[^\w\s]/, 'g'), '')
     .replace(
       new RegExp(/\s+(.)(\w+)/, 'g'),
@@ -43,17 +43,17 @@ module.exports = {
     },
     '@emotion/core': {
       root: ['NetlifyCmsDefaultExports', 'EmotionCore'],
-      commonjs2: 'emotion',
-      commonjs: 'emotion',
-      amd: 'emotion',
-      umd: 'emotion',
+      commonjs2: '@emotion/core',
+      commonjs: '@emotion/core',
+      amd: '@emotion/core',
+      umd: '@emotion/core',
     },
     '@emotion/styled': {
       root: ['NetlifyCmsDefaultExports', 'EmotionStyled'],
-      commonjs2: 'styled',
-      commonjs: 'styled',
-      amd: 'styled',
-      umd: 'styled',
+      commonjs2: '@emotion/styled',
+      commonjs: '@emotion/styled',
+      amd: '@emotion/styled',
+      umd: '@emotion/styled',
     },
     immutable: {
       root: ['NetlifyCmsDefaultExports', 'Immutable'],
