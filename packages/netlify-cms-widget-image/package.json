@@ -21,23 +21,13 @@
     "develop": "npm run watch",
     "build": "cross-env NODE_ENV=production webpack"
   },
-  "dependencies": {
-    "netlify-cms-widget-file": "^2.2.1-beta.0"
-  },
-  "devDependencies": {
-    "cross-env": "^5.2.0",
-    "webpack": "^4.29.6",
-    "webpack-cli": "^3.2.3"
-  },
   "peerDependencies": {
     "@emotion/core": "^10.0.9",
     "@emotion/styled": "^10.0.9",
     "immutable": "^3.7.6",
-    "netlify-cms-ui-default": "^2.0.0",
-    "prop-types": "^15.5.10",
-    "react": "^16.4.1"
-  },
-  "localExternals": [
-    "netlify-cms-widget-file"
-  ]
+    "netlify-cms-ui-default": "^2.4.1-beta.0",
+    "netlify-cms-widget-file": "^2.2.1-beta.0",
+    "prop-types": "^15.7.2",
+    "react": "^16.8.4"
+  }
 }

@@ -12,7 +12,7 @@ import { GlobalStyles } from 'netlify-cms-ui-default';
 import { ErrorBoundary } from 'UI';
 import App from 'App/App';
 import 'EditorWidgets';
-import 'src/mediaLibrary';
+import 'coreSrc/mediaLibrary';
 import 'what-input';
 
 const ROOT_ID = 'nc-root';

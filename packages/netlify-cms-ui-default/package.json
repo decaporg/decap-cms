@@ -20,16 +20,11 @@
     "react-toggled": "^1.1.2",
     "react-transition-group": "^2.6.0"
   },
-  "devDependencies": {
-    "cross-env": "^5.2.0",
-    "webpack": "^4.29.6",
-    "webpack-cli": "^3.2.3"
-  },
   "peerDependencies": {
     "@emotion/core": "^10.0.9",
     "@emotion/styled": "^10.0.9",
-    "lodash": "^4.13.1",
-    "prop-types": "^15.5.10",
-    "react": "^16.4.1"
+    "lodash": "^4.17.11",
+    "prop-types": "^15.7.2",
+    "react": "^16.8.4"
   }
 }

@@ -20,19 +20,12 @@
     "develop": "npm run watch",
     "build": "cross-env NODE_ENV=production webpack"
   },
-  "devDependencies": {
-    "cross-env": "^5.2.0",
-    "css-loader": "^2.1.1",
-    "to-string-loader": "^1.1.5",
-    "webpack": "^4.29.6",
-    "webpack-cli": "^3.2.3"
-  },
   "peerDependencies": {
     "@emotion/core": "^10.0.9",
-    "lodash": "^4.17.10",
-    "netlify-cms-ui-default": "^2.0.0",
-    "prop-types": "^15.5.10",
-    "react": "^16.4.1",
+    "lodash": "^4.17.11",
+    "netlify-cms-ui-default": "^2.4.1-beta.0",
+    "prop-types": "^15.7.2",
+    "react": "^16.8.4",
     "react-immutable-proptypes": "^2.1.0"
   },
   "dependencies": {

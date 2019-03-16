@@ -140,4 +140,5 @@ async function init({ options = { config: {} }, handleInsert } = {}) {
  */
 const uploadcareMediaLibrary = { name: 'uploadcare', init };
 
+export const NetlifyCmsMediaLibraryUploadcare = uploadcareMediaLibrary;
 export default uploadcareMediaLibrary;

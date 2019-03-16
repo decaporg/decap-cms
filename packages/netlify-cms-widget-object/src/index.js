@@ -1,2 +1,4 @@
-export ObjectControl from './ObjectControl';
-export ObjectPreview from './ObjectPreview';
+import controlComponent from './ObjectControl';
+import previewComponent from './ObjectPreview';
+export const NetlifyCmsWidgetObject = { controlComponent, previewComponent };
+export { controlComponent, previewComponent };

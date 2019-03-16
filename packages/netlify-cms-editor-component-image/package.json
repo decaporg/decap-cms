@@ -24,6 +24,6 @@
     "webpack-cli": "^3.2.3"
   },
   "peerDependencies": {
-    "react": "^16.4.1"
+    "react": "^16.8.4"
   }
 }

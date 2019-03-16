@@ -1,2 +1,4 @@
-export ListControl from './ListControl';
-export { ObjectPreview as ListPreview } from 'netlify-cms-widget-object';
+import controlComponent from './ListControl';
+import { previewComponent } from 'netlify-cms-widget-object';
+export const NetlifyCmsWidgetList = { controlComponent, previewComponent };
+export { controlComponent, previewComponent };

@@ -1,4 +1,4 @@
-import { currentBackend } from 'src/backend';
+import { currentBackend } from 'coreSrc/backend';
 import { getIntegrationProvider } from 'Integrations';
 import { selectIntegration } from 'Reducers';
 

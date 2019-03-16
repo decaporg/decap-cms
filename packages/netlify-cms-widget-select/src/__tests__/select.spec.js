@@ -3,7 +3,7 @@ import { fromJS } from 'immutable';
 import { render, fireEvent } from 'react-testing-library';
 import 'react-testing-library/cleanup-after-each';
 import 'jest-dom/extend-expect';
-import { SelectControl } from '../';
+import { controlComponent as SelectControl } from '../';
 
 const options = [
   { value: 'foo', label: 'Foo' },

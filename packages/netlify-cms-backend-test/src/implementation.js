@@ -40,7 +40,7 @@ const getFolderEntries = (folder, extension) => {
     .reverse();
 };
 
-export default class TestRepo {
+export default class TestBackend {
   constructor(config, options = {}) {
     this.config = config;
     this.assets = [];

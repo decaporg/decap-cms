@@ -21,7 +21,12 @@
   ],
   "license": "MIT",
   "dependencies": {
+    "@emotion/core": "^10.0.9",
+    "@emotion/styled": "^10.0.9",
     "create-react-class": "^15.6.0",
+    "immutable": "^3.7.6",
+    "lodash": "^4.17.11",
+    "moment": "^2.24.0",
     "netlify-cms-backend-bitbucket": "^2.1.3-beta.0",
     "netlify-cms-backend-git-gateway": "^2.2.5-beta.0",
     "netlify-cms-backend-github": "^2.2.3-beta.0",
@@ -29,6 +34,7 @@
     "netlify-cms-backend-test": "^2.0.7-beta.0",
     "netlify-cms-core": "^2.8.1-beta.0",
     "netlify-cms-editor-component-image": "^2.2.1-beta.0",
+    "netlify-cms-media-library-cloudinary": "^1.1.3-beta.0",
     "netlify-cms-media-library-uploadcare": "^0.3.5-beta.0",
     "netlify-cms-widget-boolean": "^2.0.6-beta.0",
     "netlify-cms-widget-date": "^2.1.1-beta.0",
@@ -43,14 +49,10 @@
     "netlify-cms-widget-relation": "^2.1.3-beta.0",
     "netlify-cms-widget-select": "^2.2.1-beta.0",
     "netlify-cms-widget-string": "^2.0.5-beta.0",
-    "netlify-cms-widget-text": "^2.0.7-beta.0"
-  },
-  "devDependencies": {
-    "copy-webpack-plugin": "^5.0.1",
-    "cross-env": "^5.2.0",
-    "friendly-errors-webpack-plugin": "^1.7.0",
-    "webpack": "^4.29.6",
-    "webpack-cli": "^3.2.3",
-    "webpack-dev-server": "^3.2.1"
+    "netlify-cms-widget-text": "^2.0.7-beta.0",
+    "prop-types": "^15.7.2",
+    "react-immutable-proptypes": "^2.1.0",
+    "react": "^16.8.4",
+    "react-dom": "^16.8.4"
   }
 }
