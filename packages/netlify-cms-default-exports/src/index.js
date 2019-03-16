@@ -1,13 +1,13 @@
 import css from '@emotion/css';
 import {
-    withEmotionCache,
-    CacheProvider,
-    ThemeContext,
-    jsx,
-    Global,
-    keyframes,
-    ClassNames
-  } from '@emotion/core';
+  withEmotionCache,
+  CacheProvider,
+  ThemeContext,
+  jsx,
+  Global,
+  keyframes,
+  ClassNames,
+} from '@emotion/core';
 import EmotionStyled from '@emotion/styled';
 import Immutable from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
@@ -26,8 +26,8 @@ const EmotionCore = {
   jsx,
   Global,
   keyframes,
-  ClassNames
-}
+  ClassNames,
+};
 export const NetlifyCmsDefaultExports = {
   EmotionCore,
   EmotionStyled,
