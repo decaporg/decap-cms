@@ -28,6 +28,10 @@ module.exports = {
           title: 'Guides',
         },
         {
+          name: 'customization',
+          title: 'Customization',
+        },
+        {
           name: 'contributing',
           title: 'Contributing',
         },
