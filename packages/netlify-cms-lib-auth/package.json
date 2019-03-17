@@ -19,11 +19,9 @@
     "develop": "npm run watch",
     "build": "cross-env NODE_ENV=production webpack"
   },
-  "dependencies": {
-    "uuid": "^3.1.0"
-  },
   "peerDependencies": {
     "immutable": "^3.7.6",
-    "lodash": "^4.17.11"
+    "lodash": "^4.17.11",
+    "uuid": "^3.3.2"
   }
 }
