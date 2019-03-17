@@ -22,8 +22,7 @@
     "build": "cross-env NODE_ENV=production webpack"
   },
   "dependencies": {
-    "common-tags": "^1.8.0",
-    "uuid": "^3.3.2"
+    "common-tags": "^1.8.0"
   },
   "peerDependencies": {
     "@emotion/core": "^10.0.9",
@@ -32,6 +31,7 @@
     "netlify-cms-ui-default": "^2.4.1-beta.0",
     "prop-types": "^15.7.2",
     "react": "^16.8.4",
-    "react-immutable-proptypes": "^2.1.0"
+    "react-immutable-proptypes": "^2.1.0",
+    "uuid": "^3.3.2"
   }
 }
