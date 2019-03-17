@@ -1,7 +1,7 @@
 ---
 title: Creating Custom Widgets
 weight: 35
-group: guides
+group: customization
 ---
 
 The NetlifyCMS exposes a `window.CMS` global object that you can use to register custom widgets, previews, and editor plugins. The same object is also the default export if you import Netify CMS as an npm module. The available widget extension methods are:
