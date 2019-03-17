@@ -1,9 +1,9 @@
-import { registerBackend } from 'netlify-cms-core/src';
-import { Control as NetlifyCmsBackendGithub } from 'netlify-cms-backend-github/src';
-import { Control as NetlifyCmsBackendGitlab } from 'netlify-cms-backend-gitlab/src';
-import { Control as NetlifyCmsBackendGitGateway } from 'netlify-cms-backend-git-gateway/src';
-import { Control as NetlifyCmsBackendBitbucket } from 'netlify-cms-backend-bitbucket/src';
-import { Control as NetlifyCmsBackendTest } from 'netlify-cms-backend-test/src';
+import { registerBackend } from 'netlify-cms-core';
+import { Control as NetlifyCmsBackendGithub } from 'netlify-cms-backend-github';
+import { Control as NetlifyCmsBackendGitlab } from 'netlify-cms-backend-gitlab';
+import { Control as NetlifyCmsBackendGitGateway } from 'netlify-cms-backend-git-gateway';
+import { Control as NetlifyCmsBackendBitbucket } from 'netlify-cms-backend-bitbucket';
+import { Control as NetlifyCmsBackendTest } from 'netlify-cms-backend-test';
 
 registerBackend('git-gateway', NetlifyCmsBackendGitGateway);
 registerBackend('github', NetlifyCmsBackendGithub);

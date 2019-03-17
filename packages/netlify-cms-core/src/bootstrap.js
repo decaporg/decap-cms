@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { Route } from 'react-router-dom';
 import { ConnectedRouter } from 'react-router-redux';
 import history from 'Routing/history';
-import store from 'Redux';
+import store from 'ReduxStore';
 import { mergeConfig } from 'Actions/config';
 import { getPhrases } from 'Constants/defaultPhrases';
 import { I18n } from 'react-polyglot';

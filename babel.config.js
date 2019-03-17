@@ -1,6 +1,7 @@
 const path = require('path');
 const isProduction = process.env.NODE_ENV === 'production';
 const isTest = process.env.NODE_ENV === 'test';
+const isESM = process.env.NODE_ENV === 'esm';
 
 const presets = () => {
   if (isTest) {
@@ -32,7 +33,32 @@ const plugins = () => {
     '@babel/plugin-proposal-export-default-from',
     [
       'module-resolver',
-      {
+      (isESM)
+      ? {
+          root: ['./src'],
+          alias: {
+            coreSrc: './src',
+            Actions: './src/actions',
+            App: './src/components/App',
+            Collection: './src/components/Collection',
+            Constants: './src/constants',
+            Editor: './src/components/Editor',
+            EditorWidgets: './src/components/EditorWidgets',
+            Formats: './src/formats',
+            Integrations: './src/integrations',
+            Lib: './src/lib',
+            MediaLibrary: './src/components/MediaLibrary',
+            Reducers: './src/reducers',
+            ReduxStore: './src/redux',
+            Routing: './src/routing',
+            UI: './src/components/UI',
+            Workflow: './src/components/Workflow',
+            ValueObjects: './src/valueObjects',
+            localforage: 'localforage',
+            redux: 'redux',
+          },
+        }
+      : {
         root: path.join(__dirname, 'packages/netlify-cms-core/src/components'),
         alias: {
           coreSrc: path.join(__dirname, 'packages/netlify-cms-core/src'),
@@ -42,9 +68,11 @@ const plugins = () => {
           Integrations: path.join(__dirname, 'packages/netlify-cms-core/src/integrations/'),
           Lib: path.join(__dirname, 'packages/netlify-cms-core/src/lib/'),
           Reducers: path.join(__dirname, 'packages/netlify-cms-core/src/reducers/'),
-          Redux: path.join(__dirname, 'packages/netlify-cms-core/src/redux/'),
+          ReduxStore: path.join(__dirname, 'packages/netlify-cms-core/src/redux/'),
           Routing: path.join(__dirname, 'packages/netlify-cms-core/src/routing/'),
           ValueObjects: path.join(__dirname, 'packages/netlify-cms-core/src/valueObjects/'),
+          localforage: 'localforage',
+          redux: 'redux',
         },
       },
     ],
@@ -58,6 +86,27 @@ const plugins = () => {
         {
           hoist: true,
           autoLabel: true,
+        },
+      ],
+    ];
+  }
+
+  if (isESM) {
+    return [
+      ...defaultPlugins,
+      [
+        'emotion',
+        {
+          hoist: true,
+          autoLabel: true,
+        },
+      ],
+      [
+        'inline-svg',
+        {
+          svgo: {
+            plugins: [{ removeViewBox: false }],
+          },
         },
       ],
     ];
