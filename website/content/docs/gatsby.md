@@ -1,5 +1,5 @@
 ---
-title: Using Netlify CMS with Gatsby
+title: Gatsby
 group: guides
 weight: 20
 ---
