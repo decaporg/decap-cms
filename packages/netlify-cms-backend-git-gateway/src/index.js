@@ -1,8 +1,8 @@
-import Control from './implementation';
+import GitGatewayBackend from './implementation';
 import AuthenticationPage from './AuthenticationPage';
 
 export const NetlifyCmsBackendGitGateway = {
-  Control,
+  GitGatewayBackend,
   AuthenticationPage,
 };
-export { Control, AuthenticationPage };
+export { GitGatewayBackend, AuthenticationPage };
