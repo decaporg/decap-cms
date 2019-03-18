@@ -21,11 +21,9 @@
     "build": "cross-env NODE_ENV=production webpack",
     "build:esm": "cross-env NODE_ENV=esm babel ./src --out-dir dist/esm  --ignore src/**/__tests__/* --root-mode upward"
   },
-  "dependencies": {
-    "uuid": "^3.1.0"
-  },
   "peerDependencies": {
     "immutable": "^3.7.6",
-    "lodash": "^4.17.11"
+    "lodash": "^4.17.11",
+    "uuid": "^3.3.2"
   }
 }
