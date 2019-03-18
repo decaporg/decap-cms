@@ -202,6 +202,14 @@ out/
 When your project is under version control, go to Netlify and select "New Site from Git". 
 Select GitHub (or whatever service you used in the previous step), and the repository you just pushed to.
 
+Under the final step (Build options, and deploy!), make sure you enter the following:
+
+| Field | Value |
+|-------|-------|
+| Build command | **npm run export** |
+| Publish directory | **out** |
+
+
 ### Enable Identity and Git Gateway
 
 Netlify's Identity and Git Gateway services allow you to manage CMS admin users for your site without requiring them to have an account with your Git host or commit access on your repo. From your site dashboard on Netlify:
@@ -213,6 +221,8 @@ Netlify's Identity and Git Gateway services allow you to manage CMS admin users 
 
 ### Celebrate!
 Great job - you did it! 
-Open your new page from Netlify URL, and navigate to ```/static/admin```. If you did everything correct in the previous step, you should now be able to sign up for an account, and log in.
+Open your new page via the new Netlify URL, and navigate to ```/static/admin```. If you did everything correct in the previous step, you should now be able to sign up for an account, and log in. 
+
+**Tip:** Signing up with an external provider is the easiest. If you want to sign up by email, you'll have to set up a redirect in your index.js page (which we won't be covering in this guide). For more information, have a look at the [Add To Your Site](http://localhost:8000/docs/add-to-your-site/) section.
 
 Congratulations - you can finally manage your new list of cats!
