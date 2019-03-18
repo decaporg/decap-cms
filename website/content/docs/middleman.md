@@ -6,7 +6,7 @@ weight: 30
 This guide will help you get started using Netlify CMS and Middleman.
 
 ## Installation
-To get up and running with Middleman, you need both the Ruby language runtime and RubyGems installed installed on your computer. Check out the [Middleman installation docs](https://middlemanapp.com/basics/install/) for more details. If you already have Ruby and RubyGems installed use the following command to install Middleman:
+To get up and running with Middleman, you need both the Ruby language runtime and RubyGems installed on your computer. Check out the [Middleman installation docs](https://middlemanapp.com/basics/install/) for more details. If you already have your environment set up, use the following command to install Middleman:
 
 ```
 gem install middleman
@@ -44,7 +44,7 @@ title: Example Article
 date: 2019-01-01
 ---
 
-This is an example article. You probably want to delete it and write your own articles!
+This is an example article. You probably want to delete it and write your own articles once you finished this guide!
 ```
 
 ### Activate the blog extension
@@ -86,11 +86,11 @@ In the last step before we add Netlify CMS, we add a layout for the article page
 <%= yield %>
 ```
 
-Now we have a functioning blog, let's get started with Netlify CMS!
+Now that we have a functioning blog, let's get started with Netlify CMS!
 
 ## Add Netlify CMS to your site
 
-We create two files in a new folder called `admin`, and an `upload` folder in the images directory that will be our `media_folder`.
+Create two files in a new folder called `admin`, `index.html` and `config.yml`. Also add an `upload` folder in the images directory that will function as our `media_folder`.
 ```
 ├── source
 │   ├── admin
@@ -102,7 +102,7 @@ We create two files in a new folder called `admin`, and an `upload` folder in th
 ```
 
 
-In the newly created `index.html` we add scripts for Netlify CMS and the Netlify Identity Widget
+In the newly created `index.html` we add scripts for Netlify CMS and the Netlify Identity Widget:
 
 ```
 <!doctype html>
@@ -123,8 +123,7 @@ In the newly created `index.html` we add scripts for Netlify CMS and the Netlify
 
 ### Configuration
 
-For the purpose of this guide we will deploy to Netlify from a GitHub repository which requires the minimum configuration.
-
+For the purpose of this guide we will deploy to Netlify from a GitHub repository which requires the minimum configuration. In `config.yml` file paste the following code:
 
 ```
 backend:
