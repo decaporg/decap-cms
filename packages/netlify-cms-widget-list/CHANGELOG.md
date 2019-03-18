@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.2-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/compare/netlify-cms-widget-list@2.1.1...netlify-cms-widget-list@2.1.2-beta.0) (2019-03-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency react-sortable-hoc to v1 ([#2198](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/issues/2198)) ([b5180e9](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/commit/b5180e9))
+
+
+### Features
+
+* upgrade to Emotion 10 ([#2166](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/issues/2166)) ([ccef446](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/commit/ccef446))
+
+
+
+
+
 ## [2.1.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/compare/netlify-cms-widget-list@2.1.0...netlify-cms-widget-list@2.1.1) (2019-02-08)
 
 

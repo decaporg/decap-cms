@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-widget-relation",
   "description": "Widget for linking related entries in Netlify CMS.",
-  "version": "2.1.2",
+  "version": "2.1.3-beta.0",
   "homepage": "https://www.netlifycms.org/docs/widgets/#relation",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
@@ -21,21 +21,16 @@
     "build": "cross-env NODE_ENV=production webpack"
   },
   "dependencies": {
-    "react-select": "^2.3.0"
-  },
-  "devDependencies": {
-    "cross-env": "^5.2.0",
-    "webpack": "^4.16.1",
-    "webpack-cli": "^3.1.0"
+    "react-select": "^2.4.2"
   },
   "peerDependencies": {
-    "emotion": "^9.2.6",
+    "@emotion/core": "^10.0.9",
+    "@emotion/styled": "^10.0.9",
     "immutable": "^3.7.6",
-    "lodash": "^4.17.10",
-    "netlify-cms-ui-default": "^2.0.0",
-    "prop-types": "^15.5.10",
-    "react": "^16.4.1",
-    "react-emotion": "^9.2.5",
-    "uuid": "^3.1.0"
+    "lodash": "^4.17.11",
+    "netlify-cms-ui-default": "^2.4.1-beta.0",
+    "prop-types": "^15.7.2",
+    "react": "^16.8.4",
+    "uuid": "^3.3.2"
   }
 }

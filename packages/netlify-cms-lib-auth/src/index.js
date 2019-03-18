@@ -1,2 +1,4 @@
-export NetlifyAuthenticator from './netlify-auth';
-export ImplicitAuthenticator from './implicit-oauth';
+import NetlifyAuthenticator from './netlify-auth';
+import ImplicitAuthenticator from './implicit-oauth';
+export const NetlifyCmsLibAuth = { NetlifyAuthenticator, ImplicitAuthenticator };
+export { NetlifyAuthenticator, ImplicitAuthenticator };

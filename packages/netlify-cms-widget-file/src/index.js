@@ -1,5 +1,6 @@
 import withFileControl from './withFileControl';
+import previewComponent from './FilePreview';
 
-export { withFileControl };
-export const FileControl = withFileControl();
-export FilePreview from './FilePreview';
+const controlComponent = withFileControl();
+export const NetlifyCmsWidgetFile = { controlComponent, previewComponent, withFileControl };
+export { controlComponent, previewComponent, withFileControl };

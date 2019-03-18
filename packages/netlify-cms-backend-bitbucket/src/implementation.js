@@ -15,7 +15,7 @@ import API from './API';
 const MAX_CONCURRENT_DOWNLOADS = 10;
 
 // Implementation wrapper class
-export default class Bitbucket {
+export default class BitbucketBackend {
   constructor(config, options = {}) {
     this.config = config;
     this.options = {

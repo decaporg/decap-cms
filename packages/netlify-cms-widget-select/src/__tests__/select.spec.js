@@ -3,7 +3,7 @@ import { fromJS } from 'immutable';
 import { render, fireEvent } from 'react-testing-library';
 import 'react-testing-library/cleanup-after-each';
 import 'jest-dom/extend-expect';
-import { SelectControl } from '../';
+import { controlComponent as SelectControl } from '../';
 
 const options = [
   { value: 'foo', label: 'Foo' },
@@ -93,7 +93,7 @@ describe('Select widget', () => {
   });
 
   it('should call onChange with null when no item is selected', () => {
-    const field = fromJS({ options });
+    const field = fromJS({ options, required: false });
     const { input, onChangeSpy } = setup({ field, defaultValue: options[0].value });
 
     fireEvent.focus(input);

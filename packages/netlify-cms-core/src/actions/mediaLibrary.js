@@ -1,7 +1,7 @@
 import { Map } from 'immutable';
 import { actions as notifActions } from 'redux-notifications';
 import { getBlobSHA } from 'netlify-cms-lib-util';
-import { currentBackend } from 'src/backend';
+import { currentBackend } from 'coreSrc/backend';
 import { createAssetProxy } from 'ValueObjects/AssetProxy';
 import { selectIntegration } from 'Reducers';
 import { getIntegrationProvider } from 'Integrations';

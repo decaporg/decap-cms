@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import styled, { css } from 'react-emotion';
+import styled from '@emotion/styled';
+import { css } from '@emotion/core';
 import { List } from 'immutable';
 import {
   Toggle,
@@ -24,6 +25,7 @@ const ToolbarContainer = styled.div`
   padding: 11px 14px;
   min-height: 58px;
   transition: background-color ${transitions.main}, color ${transitions.main};
+  color: ${colors.text};
 `;
 
 const ToolbarDropdownWrapper = styled.div`

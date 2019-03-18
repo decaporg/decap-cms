@@ -1,5 +1,5 @@
 module.exports = {
-  setupTestFrameworkScriptFile: '<rootDir>/setupTestFramework.js',
+  setupFilesAfterEnv: ['<rootDir>/setupTestFramework.js'],
   transform: {
     '\\.js$': '<rootDir>/custom-preprocessor.js',
   },

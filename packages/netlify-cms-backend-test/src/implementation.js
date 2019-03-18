@@ -1,7 +1,6 @@
 import { attempt, isError, take } from 'lodash';
 import uuid from 'uuid/v4';
-import { EditorialWorkflowError } from 'netlify-cms-lib-util';
-import { Cursor, CURSOR_COMPATIBILITY_SYMBOL } from 'netlify-cms-lib-util';
+import { EditorialWorkflowError, Cursor, CURSOR_COMPATIBILITY_SYMBOL } from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';
 
 window.repoFiles = window.repoFiles || {};
@@ -41,7 +40,7 @@ const getFolderEntries = (folder, extension) => {
     .reverse();
 };
 
-export default class TestRepo {
+export default class TestBackend {
   constructor(config, options = {}) {
     this.config = config;
     this.assets = [];

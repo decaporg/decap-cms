@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import styled, { css, cx } from 'react-emotion';
+import styled from '@emotion/styled';
+import { ClassNames } from '@emotion/core';
 import { Editor as Slate } from 'slate-react';
 import Plain from 'slate-plain-serializer';
 import { debounce } from 'lodash';
@@ -9,8 +10,8 @@ import { lengths, fonts } from 'netlify-cms-ui-default';
 import { editorStyleVars, EditorControlBar } from '../styles';
 import Toolbar from './Toolbar';
 
-const styles = {
-  slateRaw: css`
+const styleStrings = {
+  slateRaw: `
     position: relative;
     overflow: hidden;
     overflow-x: auto;
@@ -83,12 +84,21 @@ export default class RawEditor extends React.Component {
             rawMode
           />
         </EditorControlBar>
-        <Slate
-          className={cx(className, styles.slateRaw)}
-          value={this.state.value}
-          onChange={this.handleChange}
-          onPaste={this.handlePaste}
-        />
+        <ClassNames>
+          {({ css, cx }) => (
+            <Slate
+              className={cx(
+                className,
+                css`
+                  ${styleStrings.slateRaw}
+                `,
+              )}
+              value={this.state.value}
+              onChange={this.handleChange}
+              onPaste={this.handlePaste}
+            />
+          )}
+        </ClassNames>
       </RawEditorContainer>
     );
   }
