@@ -49,21 +49,8 @@ class Collection extends React.Component {
     }
   };
 
-  redirectToFirstCollection = () => {
-    const { collections } = this.props;
-    const firstCollection = collections.first();
-    const redirectPath = `/collections/${firstCollection ? firstCollection.get('name') : ''}`;
-
-    return <Redirect to={redirectPath}/>;
-  }
-
   render() {
     const { collection, collections, collectionName, isSearchResults, searchTerm } = this.props;
-
-    if (!collection) {
-      return this.redirectToFirstCollection();
-    }
-
     const newEntryUrl = collection.get('create') ? getNewEntryUrl(collectionName) : '';
 
     return (
