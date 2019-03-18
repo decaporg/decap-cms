@@ -13,7 +13,7 @@ const rules = () => ({
     use: {
       loader: 'babel-loader',
       options: {
-        rootMode: "upward",
+        rootMode: 'upward',
         // configFile: path.resolve(`${__dirname}/../babel.config.js`),
       },
     },
