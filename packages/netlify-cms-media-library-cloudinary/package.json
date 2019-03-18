@@ -23,7 +23,7 @@
     "watch": "webpack -w",
     "develop": "npm run watch",
     "build": "cross-env NODE_ENV=production webpack",
-    "build:esm": "cross-env NODE_ENV=esm babel ./src --out-dir dist/esm  --ignore src/**/__tests__/* --root-mode upward"
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore src/**/__tests__/* --root-mode upward"
   },
   "peerDependencies": {
     "netlify-cms-lib-util": "^2.1.3-beta.0"
