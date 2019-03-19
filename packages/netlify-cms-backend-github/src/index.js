@@ -1,10 +1,10 @@
-import Control from './implementation';
+import GitHubBackend from './implementation';
 import API from './API';
 import AuthenticationPage from './AuthenticationPage';
 
 export const NetlifyCmsBackendGithub = {
-  Control,
+  GitHubBackend,
   API,
   AuthenticationPage,
 };
-export { Control, API, AuthenticationPage };
+export { GitHubBackend, API, AuthenticationPage };
