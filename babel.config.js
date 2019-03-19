@@ -1,4 +1,6 @@
 const path = require('path');
+const version = require('./packages/netlify-cms/package.json').version;
+const coreVersion = require('./packages/netlify-cms-core/package.json').version;
 const isProduction = process.env.NODE_ENV === 'production';
 const isTest = process.env.NODE_ENV === 'test';
 const isESM = process.env.NODE_ENV === 'esm';
@@ -94,6 +96,13 @@ const plugins = () => {
   if (isESM) {
     return [
       ...defaultPlugins,
+      [
+        'transform-define',
+        {
+          NETLIFY_CMS_VERSION: `esm-v${version}`,
+          NETLIFY_CMS_CORE_VERSION: `esm-v${coreVersion}`,
+        },
+      ],
       [
         'emotion',
         {
