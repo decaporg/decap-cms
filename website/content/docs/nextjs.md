@@ -180,7 +180,7 @@ collections:
 ```
 
 Awesome! Netlify CMS should now be available at ```localhost:3000/static/admin/index.html```.
-Unfortunatly we can't edit our content just yet. First we need to move our code into a git repository, and create a new Netlify site.
+Unfortunately we can't edit our content just yet. First we need to move our code into a git repository, and create a new Netlify site.
 
 **Tip:** If you want to test changes made to your config.yml file locally, swap out "git-gateway" with "test-repo" and navigate to ```localhost:3000/static/admin/index.html``` to view Netlify CMS locally (you can't make changes or read actual content from Git this way, but it's great to verify how things will look).
 
