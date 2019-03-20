@@ -9,7 +9,7 @@ The select widget allows you to pick a string value from a dropdown menu.
 - **UI:** select input
 - **Data type:** string or array
 - **Options:**
-  - `default`: accepts a string; defaults to an empty string
+  - `default`: accepts a string; defaults to an empty string. Accepts an array of strings and defaults to an empty array with `multiple: true` enabled.
   - `options`: (**required**) a list of options for the dropdown menu; can be listed in two ways:
       - string values: the label displayed in the dropdown is the value saved in the file
       - object with `label` and `value` fields: the label displays in the dropdown; the value is saved in the file
@@ -38,5 +38,6 @@ The select widget allows you to pick a string value from a dropdown menu.
       widget: "select"
       multiple: true
       options: ["Design", "UX", "Dev"]
+      default: ["Design"]
     ```
 
