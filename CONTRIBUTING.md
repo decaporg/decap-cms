@@ -36,7 +36,7 @@ Installs and bootstraps any CMS package dependencies.
 #### Usage
 
 ```sh
-$ yarn && yarn bootstrap
+$ yarn bootstrap
 ```
 
 ### `watch`
