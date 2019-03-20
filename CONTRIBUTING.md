@@ -17,7 +17,8 @@ bootstrap and run the development server.
 ```sh
 $ git clone https://github.com/netlify/netlify-cms
 $ cd netlify-cms
-$ yarn && yarn bootstrap
+$ yarn
+$ yarn bootstrap
 ```
 
 ### Run locally
