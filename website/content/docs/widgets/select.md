@@ -38,5 +38,6 @@ The select widget allows you to pick a string value from a dropdown menu.
       widget: "select"
       multiple: true
       options: ["Design", "UX", "Dev"]
+      default: ["Design"]
     ```
 
