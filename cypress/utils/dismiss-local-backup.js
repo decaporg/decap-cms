@@ -1,7 +1,15 @@
+import { getPhrases } from 'Constants/defaultPhrases';
+
 // Prevents unsaved changes in dev local storage from being used
 Cypress.on('window:confirm', message => {
+  const {
+    editor: {
+      editor: { confirmLoadBackup },
+    },
+  } = getPhrases();
+
   switch (message) {
-    case 'A local backup was recovered for this entry, would you like to use it?':
+    case confirmLoadBackup:
       return false;
     default:
       return true;
