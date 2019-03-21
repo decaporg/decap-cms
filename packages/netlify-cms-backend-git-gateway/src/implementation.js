@@ -279,34 +279,33 @@ export default class GitGateway {
       },
     );
   }
-  getLargeMediaDisplayURLs(mediaFiles) {
-    return this.getLargeMediaClient().then(client => {
-      const largeMediaItems = mediaFiles
-        .filter(({ path }) => client.matchPath(path))
-        .map(({ id, path }) => ({ path, sha: id }));
-      return this.backend
-        .fetchFiles(largeMediaItems)
-        .then(items =>
-          items.map(({ file: { sha }, data }) => {
-            const parsedPointerFile = parsePointerFile(data);
-            return [
-              {
-                pointerId: sha,
-                resourceId: parsedPointerFile.sha,
-              },
-              parsedPointerFile,
-            ];
-          }),
-        )
-        .then(unzip)
-        .then(([idMaps, files]) =>
-          Promise.all([idMaps, client.getResourceDownloadURLArgs(files).then(fromPairs)]),
-        )
-        .then(([idMaps, resourceMap]) =>
-          idMaps.map(({ pointerId, resourceId }) => [pointerId, resourceMap[resourceId]]),
-        )
-        .then(fromPairs);
-    });
+  async getLargeMediaDisplayURLs(mediaFiles) {
+    const client = await this.getLargeMediaClient();
+    const largeMediaItems = mediaFiles
+      .filter(({ path }) => client.matchPath(path))
+      .map(({ id, path }) => ({ path, sha: id }));
+    return this.backend
+      .fetchFiles(largeMediaItems)
+      .then(items =>
+        items.map(({ file: { sha }, data }) => {
+          const parsedPointerFile = parsePointerFile(data);
+          return [
+            {
+              pointerId: sha,
+              resourceId: parsedPointerFile.sha,
+            },
+            parsedPointerFile,
+          ];
+        }),
+      )
+      .then(unzip)
+      .then(([idMaps, files]) =>
+        Promise.all([idMaps, client.getResourceDownloadURLArgs(files).then(fromPairs)]),
+      )
+      .then(([idMaps, resourceMap]) =>
+        idMaps.map(({ pointerId, resourceId }) => [pointerId, resourceMap[resourceId]]),
+      )
+      .then(fromPairs);
   }
 
   getMediaDisplayURL(displayURL) {
