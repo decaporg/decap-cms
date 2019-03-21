@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.5.0-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.4.1-beta.0...netlify-cms-ui-default@2.5.0-beta.0) (2019-03-21)
+
+
+### Features
+
+* provide usable UMD builds for all packages ([#2141](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/issues/2141)) ([82cc794](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/commit/82cc794))
+
+
+
+
+
 ## [2.4.1-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.4.1-alpha.0...netlify-cms-ui-default@2.4.1-beta.0) (2019-03-15)
 
 

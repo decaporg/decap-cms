@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.7.0-beta.0](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.6.2-beta.0...netlify-cms@2.7.0-beta.0) (2019-03-21)
+
+
+### Bug Fixes
+
+* fix umd builds ([#2214](https://github.com/netlify/netlify-cms/issues/2214)) ([e04f6be](https://github.com/netlify/netlify-cms/commit/e04f6be))
+
+
+### Features
+
+* provide usable UMD builds for all packages ([#2141](https://github.com/netlify/netlify-cms/issues/2141)) ([82cc794](https://github.com/netlify/netlify-cms/commit/82cc794))
+
+
+
+
+
 ## [2.6.2-beta.0](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.6.2-alpha.0...netlify-cms@2.6.2-beta.0) (2019-03-15)
 
 

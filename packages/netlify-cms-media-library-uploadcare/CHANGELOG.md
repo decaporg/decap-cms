@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.4.0-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-media-library-uploadcare/compare/netlify-cms-media-library-uploadcare@0.3.5-beta.0...netlify-cms-media-library-uploadcare@0.4.0-beta.0) (2019-03-21)
+
+
+### Features
+
+* provide usable UMD builds for all packages ([#2141](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-media-library-uploadcare/issues/2141)) ([82cc794](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-media-library-uploadcare/commit/82cc794))
+
+
+
+
+
 ## [0.3.5-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-media-library-uploadcare/compare/netlify-cms-media-library-uploadcare@0.3.4...netlify-cms-media-library-uploadcare@0.3.5-beta.0) (2019-03-15)
 
 
