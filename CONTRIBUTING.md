@@ -31,7 +31,7 @@ $ yarn start
 
 ### `bootstrap`
 
-Installs and bootstraps any CMS package dependencies.
+Bootstraps the monorepo.
 
 #### Usage
 
