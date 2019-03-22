@@ -99,8 +99,8 @@ const plugins = () => {
       [
         'transform-define',
         {
-          NETLIFY_CMS_VERSION: `esm-v${version}`,
-          NETLIFY_CMS_CORE_VERSION: `esm-v${coreVersion}`,
+          NETLIFY_CMS_VERSION: `${version}`,
+          NETLIFY_CMS_CORE_VERSION: `${coreVersion}`,
         },
       ],
       [
