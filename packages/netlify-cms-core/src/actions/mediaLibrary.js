@@ -159,14 +159,19 @@ export function persistMedia(file, opts = {}) {
 
     try {
       const id = await getBlobSHA(file);
-      const displayURL = URL.createObjectURL(file);
       const assetProxy = await createAssetProxy(fileName, file, false, privateUpload);
       dispatch(addAsset(assetProxy));
       if (!integration) {
         const asset = await backend.persistMedia(state.config, assetProxy);
+        const displayURL = asset.displayURL || URL.createObjectURL(file);
         return dispatch(mediaPersisted({ id, displayURL, ...asset }));
       }
-      return dispatch(mediaPersisted({ id, displayURL, ...assetProxy.asset }, { privateUpload }));
+      return dispatch(
+        mediaPersisted(
+          { id, displayURL: URL.createObjectURL(file), ...assetProxy.asset },
+          { privateUpload },
+        ),
+      );
     } catch (error) {
       console.error(error);
       dispatch(

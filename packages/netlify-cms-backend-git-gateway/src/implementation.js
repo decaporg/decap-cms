@@ -279,34 +279,33 @@ export default class GitGateway {
       },
     );
   }
-  getLargeMediaDisplayURLs(mediaFiles) {
-    return this.getLargeMediaClient().then(client => {
-      const largeMediaItems = mediaFiles
-        .filter(({ path }) => client.matchPath(path))
-        .map(({ id, path }) => ({ path, sha: id }));
-      return this.backend
-        .fetchFiles(largeMediaItems)
-        .then(items =>
-          items.map(({ file: { sha }, data }) => {
-            const parsedPointerFile = parsePointerFile(data);
-            return [
-              {
-                pointerId: sha,
-                resourceId: parsedPointerFile.sha,
-              },
-              parsedPointerFile,
-            ];
-          }),
-        )
-        .then(unzip)
-        .then(([idMaps, files]) =>
-          Promise.all([idMaps, client.getResourceDownloadURLArgs(files).then(fromPairs)]),
-        )
-        .then(([idMaps, resourceMap]) =>
-          idMaps.map(({ pointerId, resourceId }) => [pointerId, resourceMap[resourceId]]),
-        )
-        .then(fromPairs);
-    });
+  async getLargeMediaDisplayURLs(mediaFiles) {
+    const client = await this.getLargeMediaClient();
+    const largeMediaItems = mediaFiles
+      .filter(({ path }) => client.matchPath(path))
+      .map(({ id, path }) => ({ path, sha: id }));
+    return this.backend
+      .fetchFiles(largeMediaItems)
+      .then(items =>
+        items.map(({ file: { sha }, data }) => {
+          const parsedPointerFile = parsePointerFile(data);
+          return [
+            {
+              pointerId: sha,
+              resourceId: parsedPointerFile.sha,
+            },
+            parsedPointerFile,
+          ];
+        }),
+      )
+      .then(unzip)
+      .then(([idMaps, files]) =>
+        Promise.all([idMaps, client.getResourceDownloadURLArgs(files).then(fromPairs)]),
+      )
+      .then(([idMaps, resourceMap]) =>
+        idMaps.map(({ pointerId, resourceId }) => [pointerId, resourceMap[resourceId]]),
+      )
+      .then(fromPairs);
   }
 
   getMediaDisplayURL(displayURL) {
@@ -331,35 +330,73 @@ export default class GitGateway {
     });
   }
 
-  persistEntry(entry, mediaFiles, options) {
-    return this.backend.persistEntry(entry, mediaFiles, options);
-  }
-  persistMedia(mediaFile, options) {
-    const { fileObj, path, value } = mediaFile;
+  async getPointerFileForMediaFileObj(fileObj) {
+    const client = await this.getLargeMediaClient();
     const { name, size } = fileObj;
-    return this.getLargeMediaClient().then(client => {
-      const fixedPath = path.startsWith('/') ? path.slice(1) : path;
-      if (!client.enabled || !client.matchPath(fixedPath)) {
-        return this.backend.persistMedia(mediaFile, options);
-      }
+    const sha = await getBlobSHA(fileObj);
+    await client.uploadResource({ sha, size }, fileObj);
+    const pointerFileString = createPointerFile({ sha, size });
+    const pointerFileBlob = new Blob([pointerFileString]);
+    const pointerFile = new File([pointerFileBlob], name, { type: 'text/plain' });
+    const pointerFileSHA = await getBlobSHA(pointerFile);
+    return {
+      file: pointerFile,
+      blob: pointerFileBlob,
+      sha: pointerFileSHA,
+      raw: pointerFileString,
+    };
+  }
 
-      return getBlobSHA(fileObj).then(async sha => {
-        await client.uploadResource({ sha, size }, fileObj);
-        const pointerFileString = createPointerFile({ sha, size });
-        const pointerFileBlob = new Blob([pointerFileString]);
-        const pointerFile = new File([pointerFileBlob], name, { type: 'text/plain' });
-        const pointerFileSHA = await getBlobSHA(pointerFile);
-        const persistMediaArgument = {
-          fileObj: pointerFile,
-          size: pointerFileBlob.size,
-          path,
-          sha: pointerFileSHA,
-          raw: pointerFileString,
-          value,
+  async persistEntry(entry, mediaFiles, options) {
+    const client = await this.getLargeMediaClient();
+    if (!client.enabled) {
+      return this.backend.persistEntry(entry, mediaFiles, options);
+    }
+
+    const largeMediaFilteredMediaFiles = await Promise.all(
+      mediaFiles.map(async mediaFile => {
+        const { fileObj, path } = mediaFile;
+        const fixedPath = path.startsWith('/') ? path.slice(1) : path;
+        if (!client.matchPath(fixedPath)) {
+          return mediaFile;
+        }
+
+        const pointerFileDetails = await this.getPointerFileForMediaFileObj(fileObj);
+        return {
+          ...mediaFile,
+          fileObj: pointerFileDetails.file,
+          size: pointerFileDetails.blob.size,
+          sha: pointerFileDetails.sha,
+          raw: pointerFileDetails.raw,
         };
-        return this.backend.persistMedia(persistMediaArgument, options);
-      });
-    });
+      }),
+    );
+
+    return this.backend.persistEntry(entry, largeMediaFilteredMediaFiles, options);
+  }
+
+  async persistMedia(mediaFile, options) {
+    const { fileObj, path, value } = mediaFile;
+    const displayURL = URL.createObjectURL(fileObj);
+    const client = await this.getLargeMediaClient();
+    const fixedPath = path.startsWith('/') ? path.slice(1) : path;
+    if (!client.enabled || !client.matchPath(fixedPath)) {
+      return this.backend.persistMedia(mediaFile, options);
+    }
+
+    const pointerFileDetails = await this.getPointerFileForMediaFileObj(fileObj);
+    const persistMediaArgument = {
+      fileObj: pointerFileDetails.file,
+      size: pointerFileDetails.blob.size,
+      path,
+      sha: pointerFileDetails.sha,
+      raw: pointerFileDetails.raw,
+      value,
+    };
+    return {
+      ...(await this.backend.persistMedia(persistMediaArgument, options)),
+      displayURL,
+    };
   }
   deleteFile(path, commitMessage, options) {
     return this.backend.deleteFile(path, commitMessage, options);
