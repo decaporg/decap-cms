@@ -1,8 +1,6 @@
 {
   "scripts": {
-    "bootstrap": "run-s bootstrap:install bootstrap:lerna",
-    "bootstrap:install": "yarn",
-    "bootstrap:lerna": "lerna bootstrap",
+    "bootstrap": "lerna bootstrap",
     "start": "run-s bootstrap develop",
     "watch": "lerna run watch --parallel",
     "develop": "lerna run develop --parallel",
@@ -36,14 +34,16 @@
     "publish:version": "lerna version --no-push",
     "publish:push": "run-s publish:push-git publish:from-git",
     "publish:push-git": "git push --follow-tags",
-    "publish:from-git": "lerna publish from-git",
+    "publish:from-git": "lerna publish from-git --pre-dist-tag beta",
     "publish:dry-run": "run-s \"publish:version --no-git-tag-version\"",
-    "publish:beta": "run-s publish:beta:before-manual-version publish:beta:after-manual-version",
-    "publish:beta:before-manual-version": "run-s bootstrap test publish:beta:version",
-    "publish:beta:after-manual-version": "run-s publish:prepare publish:beta:push",
-    "publish:beta:version": "lerna version prerelease --preid beta --no-push",
-    "publish:beta:push": "run-s publish:push-git \"publish:from-git -- --dist-tag beta\"",
-    "publish:beta:dry-run": "run-s \"publish:beta:version --no-git-tag-version\"",
+    "publish:prerelease": "run-s publish:prerelease:before-manual-version publish:after-manual-version",
+    "publish:prerelease:before-manual-version": "run-s bootstrap test publish:prerelease:version",
+    "publish:prerelease:version": "run-s \"publish:version --conventional-prerelease\"",
+    "publish:prerelease:dry-run": "run-s \"publish:version --conventional-prerelease --no-git-tag-version\"",
+    "publish:graduate": "run-s publish:graduate:before-manual-version publish:after-manual-version",
+    "publish:graduate:before-manual-version": "run-s bootstrap test publish:graduate:version",
+    "publish:graduate:version": "run-s \"publish:version --conventional-graduate\"",
+    "publish:graduate:dry-run": "run-s \"publish:version --conventional-graduate --no-git-tag-version\"",
     "format": "run-s \"lint:css -- --fix --quiet\" \"lint:js -- --fix --quiet\" \"format:prettier -- --write\"",
     "format:prettier": "prettier \"{{packages,scripts,website}/**/,}*.{js,css}\"",
     "lint": "run-p -c --aggregate-output lint:*",
@@ -98,7 +98,6 @@
     "jest-cli": "^24.5.0",
     "jest-dom": "^3.1.3",
     "jest-emotion": "^10.0.9",
-    "lerna": "^3.13.1",
     "npm-run-all": "^4.1.5",
     "prettier": "1.16.4",
     "react-test-renderer": "^16.8.4",
@@ -120,6 +119,7 @@
   ],
   "private": true,
   "dependencies": {
+    "@erquhart/lerna": "^3.14.1",
     "emotion": "^10.0.9"
   }
 }

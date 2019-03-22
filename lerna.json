@@ -6,6 +6,9 @@
   "useWorkspaces": true,
   "loglevel": "success",
   "command": {
+    "version": {
+      "preid": "beta"
+    },
     "publish": {
       "allowBranch": "master",
       "conventionalCommits": true,
