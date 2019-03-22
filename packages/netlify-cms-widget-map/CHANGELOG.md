@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.2.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-map/compare/netlify-cms-widget-map@1.2.0-beta.0...netlify-cms-widget-map@1.2.0) (2019-03-22)
+
+**Note:** Version bump only for package netlify-cms-widget-map
+
+
+
+
+
 # [1.2.0-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-map/compare/netlify-cms-widget-map@1.1.1-beta.0...netlify-cms-widget-map@1.2.0-beta.0) (2019-03-21)
 
 
