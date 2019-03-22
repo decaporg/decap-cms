@@ -116,7 +116,7 @@ collections:
 You may also want preview links for published content as a convenience. You can do this by providing
 a `site_url` in your configuration, which will be used in place of the deploy preview URL that a
 backend would provide for an unpublished entry. Just as for deploy preview links to unpublished
-content, inks to published content will use any `preview_path` values that are defined in the
+content, links to published content will use any `preview_path` values that are defined in the
 collection configurations.
 
 Preview links for published content will also work if you are not using the editorial workflow.
