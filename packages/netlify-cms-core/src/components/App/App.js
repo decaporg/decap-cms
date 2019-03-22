@@ -180,13 +180,10 @@ class App extends React.Component {
             <Route
               exact
               path="/collections/:name"
-              render={props =>
-                collections.get(props.match.params.name) ? (
-                  <Collection {...props} />
-                ) : (
-                  <Redirect to={defaultPath} />
-                )
-              }
+              render={props => {
+                const collectionExists = collections.get(props.match.params.name);
+                return collectionExists ? <Collection {...props} /> : <Redirect to={defaultPath} />;
+              }}
             />
             <Route
               path="/collections/:name/new"
