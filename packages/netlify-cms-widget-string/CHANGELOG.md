@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.2.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-string/compare/netlify-cms-widget-string@2.1.0...netlify-cms-widget-string@2.2.0) (2019-03-22)
+
+
+### Features
+
+* add ES module builds ([#2215](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-string/issues/2215)) ([d142b32](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-string/commit/d142b32))
+
+
+
+
+
 # [2.1.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-string/compare/netlify-cms-widget-string@2.1.0-beta.0...netlify-cms-widget-string@2.1.0) (2019-03-22)
 
 **Note:** Version bump only for package netlify-cms-widget-string

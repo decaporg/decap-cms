@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.8.0](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.7.1-beta.0...netlify-cms@2.8.0) (2019-03-22)
+
+
+### Features
+
+* add ES module builds ([#2215](https://github.com/netlify/netlify-cms/issues/2215)) ([d142b32](https://github.com/netlify/netlify-cms/commit/d142b32))
+
+
+
+
+
 ## [2.7.1-beta.0](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.7.0...netlify-cms@2.7.1-beta.0) (2019-03-22)
 
 **Note:** Version bump only for package netlify-cms
