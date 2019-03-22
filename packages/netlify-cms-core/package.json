@@ -11,6 +11,7 @@
     "dist/"
   ],
   "scripts": {
+    "develop": "webpack -w",
     "build": "cross-env NODE_ENV=production webpack",
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore src/**/__tests__/* --root-mode upward"
   },

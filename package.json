@@ -1,15 +1,15 @@
 {
   "scripts": {
     "bootstrap": "lerna bootstrap",
-    "start": "run-s bootstrap develop",
+    "start": "run-s clean bootstrap develop",
     "watch": "lerna run watch --parallel",
-    "develop": "lerna run develop --parallel",
+    "develop": "lerna run --parallel develop",
     "build": "run-s clean build:esm build:lerna",
     "build:lerna": "lerna run build",
     "build:esm": "lerna run build:esm",
     "build-preview": "run-s build build-preview:lerna",
     "build-preview:lerna": "lerna run build-preview",
-    "clean": "rimraf packages/*/dist dev-test/*.js",
+    "clean": "rimraf packages/*/dist dev-test/dist",
     "clean:lerna": "lerna clean --yes",
     "reset": "run-s clean clean:lerna",
     "cache-ci": "node scripts/cache.js",

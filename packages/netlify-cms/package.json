@@ -7,7 +7,6 @@
   "bugs": "https://github.com/netlify/netlify-cms/issues",
   "main": "dist/netlify-cms.js",
   "scripts": {
-    "watch": "webpack -w",
     "build": "cross-env NODE_ENV=production webpack",
     "build-preview": "cross-env NODE_ENV=production webpack-dev-server --open",
     "develop": "webpack-dev-server --hot"
