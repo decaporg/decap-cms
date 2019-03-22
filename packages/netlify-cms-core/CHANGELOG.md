@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.9.1-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.9.0...netlify-cms-core@2.9.1-beta.0) (2019-03-22)
+
+
+### Bug Fixes
+
+* **editorial-workflow:** fix LM pointers changing to binary files ([#2228](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2228)) ([d39a361](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/d39a361))
+
+
+
+
+
 # [2.9.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.9.0-beta.0...netlify-cms-core@2.9.0) (2019-03-22)
 
 **Note:** Version bump only for package netlify-cms-core
