@@ -4,6 +4,7 @@
   "version": "2.2.0",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
+  "module": "dist/esm/index.js",
   "main": "dist/netlify-cms-backend-bitbucket.js",
   "license": "MIT",
   "keywords": [
@@ -16,7 +17,8 @@
   "scripts": {
     "watch": "webpack -w",
     "develop": "npm run watch",
-    "build": "cross-env NODE_ENV=production webpack"
+    "build": "cross-env NODE_ENV=production webpack",
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore src/**/__tests__/* --root-mode upward"
   },
   "dependencies": {
     "js-base64": "^2.5.1",

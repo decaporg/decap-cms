@@ -4,6 +4,7 @@
   "version": "2.3.1-beta.0",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
+  "module": "dist/esm/index.js",
   "main": "dist/netlify-cms-backend-git-gateway.js",
   "license": "MIT",
   "keywords": [
@@ -17,7 +18,8 @@
   "scripts": {
     "watch": "webpack -w",
     "develop": "npm run watch",
-    "build": "cross-env NODE_ENV=production webpack"
+    "build": "cross-env NODE_ENV=production webpack",
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore src/**/__tests__/* --root-mode upward"
   },
   "dependencies": {
     "gotrue-js": "^0.9.24",

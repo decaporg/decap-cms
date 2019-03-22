@@ -1,6 +1,6 @@
 import createReactClass from 'create-react-class';
 import React from 'react';
-import * as CMS from 'netlify-cms-core/src';
+import * as CMS from 'netlify-cms-core';
 import './backends';
 import './widgets';
 import './editor-components';
@@ -23,6 +23,12 @@ if (typeof window !== 'undefined') {
   window.initCMS = CMS.init;
   window.createClass = window.createClass || createReactClass;
   window.h = window.h || React.createElement;
+  /**
+   * Log the version number.
+   */
+  if (typeof NETLIFY_CMS_VERSION === 'string') {
+    console.log(`netlify-cms ${NETLIFY_CMS_VERSION}`);
+  }
 }
 
 export const NetlifyCms = CMS;

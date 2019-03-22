@@ -4,6 +4,7 @@
   "description": "NetlifyCMS default exports",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-default-exports",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
+  "module": "dist/esm/index.js",
   "main": "dist/netlify-cms-editor-component-image.js",
   "license": "MIT",
   "keywords": [
@@ -17,7 +18,7 @@
     "watch": "webpack -w",
     "develop": "npm run watch",
     "build": "cross-env NODE_ENV=production webpack",
-    "build:dev": "cross-env NODE_ENV=development webpack"
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore src/**/__tests__/* --root-mode upward"
   },
   "dependencies": {
     "@emotion/core": "^10.0.9",

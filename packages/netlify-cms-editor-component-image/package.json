@@ -4,6 +4,7 @@
   "version": "2.3.0",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-editor-component-image",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
+  "module": "dist/esm/index.js",
   "main": "dist/netlify-cms-editor-component-image.js",
   "license": "MIT",
   "keywords": [
@@ -16,7 +17,8 @@
   "scripts": {
     "watch": "webpack -w",
     "develop": "npm run watch",
-    "build": "cross-env NODE_ENV=production webpack"
+    "build": "cross-env NODE_ENV=production webpack",
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore src/**/__tests__/* --root-mode upward"
   },
   "devDependencies": {
     "cross-env": "^5.2.0",

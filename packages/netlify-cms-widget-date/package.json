@@ -5,6 +5,7 @@
   "homepage": "https://www.netlifycms.org/docs/widgets/#date",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-date",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
+  "module": "dist/esm/index.js",
   "main": "dist/netlify-cms-widget-date.js",
   "license": "MIT",
   "keywords": [
@@ -18,7 +19,8 @@
   "scripts": {
     "watch": "webpack -w",
     "develop": "npm run watch",
-    "build": "cross-env NODE_ENV=production webpack"
+    "build": "cross-env NODE_ENV=production webpack",
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore src/**/__tests__/* --root-mode upward"
   },
   "dependencies": {
     "react-datetime": "^2.16.3"
