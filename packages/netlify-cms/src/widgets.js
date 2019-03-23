@@ -11,8 +11,8 @@ import * as NetlifyCmsWidgetObject from 'netlify-cms-widget-object';
 import * as NetlifyCmsWidgetRelation from 'netlify-cms-widget-relation';
 import * as NetlifyCmsWidgetBoolean from 'netlify-cms-widget-boolean';
 import * as NetlifyCmsWidgetMap from 'netlify-cms-widget-map';
-import * as NetlifyCmsWidgetDate from 'netlify-cms-widget-date';
-import * as NetlifyCmsWidgetDateTime from 'netlify-cms-widget-datetime';
+import { NetlifyCmsWidgetDate } from 'netlify-cms-widget-date';
+import { NetlifyCmsWidgetDatetime } from 'netlify-cms-widget-datetime';
 
 registerWidget(
   'string',
@@ -66,4 +66,4 @@ registerWidget(
 );
 registerWidget('boolean', NetlifyCmsWidgetBoolean.controlComponent);
 registerWidget('map', NetlifyCmsWidgetMap.controlComponent, NetlifyCmsWidgetMap.previewComponent);
-registerWidget([NetlifyCmsWidgetDate.Widget(), NetlifyCmsWidgetDateTime.Widget()]);
+registerWidget([NetlifyCmsWidgetDate.Widget(), NetlifyCmsWidgetDatetime.Widget()]);
