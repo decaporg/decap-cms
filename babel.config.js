@@ -95,6 +95,7 @@ const plugins = () => {
       [
         'emotion',
         {
+          sourceMap: false,
           hoist: true,
           autoLabel: true,
         },
