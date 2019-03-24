@@ -1,7 +1,7 @@
 # Netlify CMS
 [![](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/netlify/netlifycms)
 
-A CMS for static site generators. Give non-technical users a simple way to edit
+A CMS for static site generators. Give users a simple way to edit
 and add content to any site built with a static site generator.
 
 ## How it works
