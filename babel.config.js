@@ -6,18 +6,7 @@ const isTest = process.env.NODE_ENV === 'test';
 const isESM = process.env.NODE_ENV === 'esm';
 
 const presets = () => {
-  if (isTest) {
-    return ['@babel/preset-react', '@babel/preset-env'];
-  }
-  return [
-    '@babel/preset-react',
-    [
-      '@babel/preset-env',
-      {
-        modules: false,
-      },
-    ],
-  ];
+  return ['@babel/preset-react', '@babel/preset-env'];
 };
 
 const plugins = () => {
