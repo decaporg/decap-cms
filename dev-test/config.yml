@@ -39,8 +39,7 @@ collections: # A list of collections the CMS should be able to edit
   - name: 'faq' # Used in routes, ie.: /admin/collections/:slug/edit
     label: 'FAQ' # Used in the UI
     folder: '_faqs'
-    list_fields: ['version','title']
-    list_fields_seperator: ' - '
+    summary: 'Version: {{version}}  -  {{title}}'
     create: true # Allow users to create new documents in this collection
     fields: # The fields each document in this collection have
       - { label: 'Question', name: 'title', widget: 'string', tagname: 'h1' }

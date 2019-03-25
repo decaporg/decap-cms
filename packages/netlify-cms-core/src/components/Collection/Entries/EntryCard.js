@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { resolvePath } from 'netlify-cms-lib-util';
 import { colors, colorsRaw, components, lengths } from 'netlify-cms-ui-default';
 import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from 'Constants/collectionViews';
+import { compileSlug, getIdentifier } from 'src/backend';
 
 const ListCard = styled.li`
   ${components.card};
@@ -89,19 +90,16 @@ const EntryCard = ({
   viewStyle = VIEW_STYLE_LIST,
 }) => {
   const label = entry.get('label');
-  let title = label || entry.getIn(['data', inferedFields.titleField]);
+  const entryData = entry.get('data');
+  let title = label || entryData.get(inferedFields.titleField);
   const path = `/collections/${collection.get('name')}/entries/${entry.get('slug')}`;
-  const list_fields = collection.get('list_fields');
-  const list_fields_seperator = collection.get('list_fields_seperator') || ' - ';
-  if (list_fields) {
-    title = '';
-    list_fields.forEach(function(value) {
-      title =
-        (title.length > 0 ? title + list_fields_seperator : '') + entry.getIn(['data', value]);
-    });
+
+  const summary = collection.get('summary');
+  if(summary) {
+    title = compileSlug(summary, new Date(), getIdentifier(entryData, collection), entryData);
   }
 
-  let image = entry.getIn(['data', inferedFields.imageField]);
+  let image = entryData.get(inferedFields.imageField);
   image = resolvePath(image, publicFolder);
   if (image) {
     image = encodeURI(image);

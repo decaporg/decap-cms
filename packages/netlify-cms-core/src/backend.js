@@ -89,7 +89,7 @@ function getLabelForFileCollectionEntry(collection, path) {
   return files && files.find(f => f.get('file') === path).get('label');
 }
 
-function compileSlug(template, date, identifier = '', data = Map(), processor) {
+export function compileSlug(template, date, identifier = '', data = Map(), processor) {
   let missingRequiredDate;
 
   const slug = template.replace(/\{\{([^}]+)\}\}/g, (_, key) => {
@@ -125,15 +125,20 @@ function compileSlug(template, date, identifier = '', data = Map(), processor) {
   }
 }
 
-function slugFormatter(collection, entryData, slugConfig) {
-  const template = collection.get('slug') || '{{slug}}';
-
+export function getIdentifier(entryData, collection) {
   const identifier = entryData.get(selectIdentifier(collection));
   if (!identifier) {
     throw new Error(
       'Collection must have a field name that is a valid entry identifier, or must have `identifier_field` set',
     );
   }
+  return identifier;
+}
+
+function slugFormatter(collection, entryData, slugConfig) {
+  const template = collection.get('slug') || '{{slug}}';
+
+  const identifier = getIdentifier(entryData, collection);
 
   // Pass entire slug through `prepareSlug` and `sanitizeSlug`.
   // TODO: only pass slug replacements through sanitizers, static portions of

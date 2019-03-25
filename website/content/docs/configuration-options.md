@@ -171,8 +171,7 @@ The `collections` setting is the heart of your Netlify CMS configuration, as it 
 * `preview_path`: see detailed description below
 * `fields` (required): see detailed description below
 * `editor`: see detailed description below
-* `list_fields`: see detailed description below
-* `list_fields_seperator`: see detailed description below
+* `summary`: see detailed description below
 
 The last few options require more detailed information.
 
@@ -324,22 +323,12 @@ This setting changes options for the editor view of the collection. It has one o
 ```
 
 
-### `list_fields`
+### `summary`
 
-This setting allows the customisation of the collection list view. Multiple fields can be combined into the list field.
-This over-rides the default of `title` field and `identifier_field`
-
-**Example**
-```yaml
-    list_fields: ['version','title']
-```
-
-### `list_fields_seperator`
-This setting allows specifying a separator used between fields defined in `list_fields` attribute.
-If not defined the default separator is ` - `
-
+This setting allows the customisation of the collection list view. Similar to the `slug` field, a string with templates can be used to include values of different fields, e.g. `{{title}}`.
+This option over-rides the default of `title` field and `identifier_field`.
 
 **Example**
 ```yaml
-    list_fields_seperator: ' - '
+    summary: "Version: {{version}} - {{title}}"
 ```
