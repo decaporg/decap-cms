@@ -95,7 +95,7 @@ const EntryCard = ({
   const path = `/collections/${collection.get('name')}/entries/${entry.get('slug')}`;
 
   const summary = collection.get('summary');
-  if(summary) {
+  if (summary) {
     title = compileSlug(summary, new Date(), getIdentifier(entryData, collection), entryData);
   }
 
