@@ -31,5 +31,7 @@ if (typeof window !== 'undefined') {
   }
 }
 
-export const NetlifyCms = CMS;
-export { CMS as default };
+export const NetlifyCms = {
+  ...CMS,
+};
+export default CMS;
