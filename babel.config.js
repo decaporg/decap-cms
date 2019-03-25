@@ -6,18 +6,7 @@ const isTest = process.env.NODE_ENV === 'test';
 const isESM = process.env.NODE_ENV === 'esm';
 
 const presets = () => {
-  if (isTest) {
-    return ['@babel/preset-react', '@babel/preset-env'];
-  }
-  return [
-    '@babel/preset-react',
-    [
-      '@babel/preset-env',
-      {
-        modules: false,
-      },
-    ],
-  ];
+  return ['@babel/preset-react', '@babel/preset-env'];
 };
 
 const plugins = () => {
@@ -33,6 +22,13 @@ const plugins = () => {
     '@babel/plugin-proposal-class-properties',
     '@babel/plugin-proposal-object-rest-spread',
     '@babel/plugin-proposal-export-default-from',
+    [
+      'emotion',
+      {
+        sourceMap: true,
+        autoLabel: true,
+      },
+    ],
     [
       'module-resolver',
       isESM
@@ -80,19 +76,6 @@ const plugins = () => {
     ],
   ];
 
-  if (isProduction) {
-    return [
-      ...defaultPlugins,
-      [
-        'emotion',
-        {
-          hoist: true,
-          autoLabel: true,
-        },
-      ],
-    ];
-  }
-
   if (isESM) {
     return [
       ...defaultPlugins,
@@ -101,13 +84,6 @@ const plugins = () => {
         {
           NETLIFY_CMS_VERSION: `${version}`,
           NETLIFY_CMS_CORE_VERSION: `${coreVersion}`,
-        },
-      ],
-      [
-        'emotion',
-        {
-          hoist: true,
-          autoLabel: true,
         },
       ],
       [
@@ -132,27 +108,14 @@ const plugins = () => {
           },
         },
       ],
-      [
-        'emotion',
-        {
-          sourceMap: true,
-          autoLabel: true,
-        },
-      ],
     ];
   }
 
-  defaultPlugins.push('react-hot-loader/babel');
-  return [
-    ...defaultPlugins,
-    [
-      'emotion',
-      {
-        sourceMap: true,
-        autoLabel: true,
-      },
-    ],
-  ];
+  if (!isProduction) {
+    defaultPlugins.push('react-hot-loader/babel');
+  }
+
+  return defaultPlugins;
 };
 
 module.exports = {

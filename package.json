@@ -1,9 +1,8 @@
 {
   "scripts": {
     "bootstrap": "lerna bootstrap",
-    "start": "run-s clean bootstrap develop",
-    "watch": "lerna run watch --parallel",
-    "develop": "lerna run --parallel develop",
+    "start": "run-s clean bootstrap build:esm develop",
+    "develop": "lerna run develop --parallel",
     "build": "run-s clean build:esm build:lerna",
     "build:lerna": "lerna run build",
     "build:esm": "lerna run build:esm",
