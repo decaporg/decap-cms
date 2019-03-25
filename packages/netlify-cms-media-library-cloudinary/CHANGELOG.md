@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.3.1-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-media-library-cloudinary/compare/netlify-cms-media-library-cloudinary@1.3.0...netlify-cms-media-library-cloudinary@1.3.1-beta.0) (2019-03-25)
+
+**Note:** Version bump only for package netlify-cms-media-library-cloudinary
+
+
+
+
+
 # [1.3.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-media-library-cloudinary/compare/netlify-cms-media-library-cloudinary@1.2.0...netlify-cms-media-library-cloudinary@1.3.0) (2019-03-22)
 
 

@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.2.1-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-default-exports/compare/netlify-cms-default-exports@2.2.0...netlify-cms-default-exports@2.2.1-beta.0) (2019-03-25)
+
+**Note:** Version bump only for package netlify-cms-default-exports
+
+
+
+
+
 # [2.2.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-default-exports/compare/netlify-cms-default-exports@2.1.0...netlify-cms-default-exports@2.2.0) (2019-03-22)
 
 

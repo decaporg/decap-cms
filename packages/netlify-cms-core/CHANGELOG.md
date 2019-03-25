@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.10.1-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.10.0...netlify-cms-core@2.10.1-beta.0) (2019-03-25)
+
+
+### Bug Fixes
+
+* update peer dep versions ([#2234](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2234)) ([7987091](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/7987091))
+* **deps:** update dependency react-is to v16.8.5 ([#2232](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2232)) ([6e2d18f](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/6e2d18f))
+
+
+
+
+
 # [2.10.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.9.1-beta.0...netlify-cms-core@2.10.0) (2019-03-22)
 
 

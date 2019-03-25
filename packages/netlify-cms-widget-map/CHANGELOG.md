@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.3.1-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-map/compare/netlify-cms-widget-map@1.3.0...netlify-cms-widget-map@1.3.1-beta.0) (2019-03-25)
+
+
+### Bug Fixes
+
+* update peer dep versions ([#2234](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-map/issues/2234)) ([7987091](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-map/commit/7987091))
+
+
+
+
+
 # [1.3.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-map/compare/netlify-cms-widget-map@1.2.0...netlify-cms-widget-map@1.3.0) (2019-03-22)
 
 

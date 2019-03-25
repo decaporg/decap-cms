@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.8.1-beta.0](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.8.0...netlify-cms@2.8.1-beta.0) (2019-03-25)
+
+**Note:** Version bump only for package netlify-cms
+
+
+
+
+
 # [2.8.0](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.7.1-beta.0...netlify-cms@2.8.0) (2019-03-22)
 
 
