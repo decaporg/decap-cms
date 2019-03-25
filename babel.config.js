@@ -23,6 +23,13 @@ const plugins = () => {
     '@babel/plugin-proposal-object-rest-spread',
     '@babel/plugin-proposal-export-default-from',
     [
+      'emotion',
+      {
+        sourceMap: true,
+        autoLabel: true,
+      },
+    ],
+    [
       'module-resolver',
       isESM
         ? {
@@ -69,19 +76,6 @@ const plugins = () => {
     ],
   ];
 
-  if (isProduction) {
-    return [
-      ...defaultPlugins,
-      [
-        'emotion',
-        {
-          hoist: true,
-          autoLabel: true,
-        },
-      ],
-    ];
-  }
-
   if (isESM) {
     return [
       ...defaultPlugins,
@@ -90,14 +84,6 @@ const plugins = () => {
         {
           NETLIFY_CMS_VERSION: `${version}`,
           NETLIFY_CMS_CORE_VERSION: `${coreVersion}`,
-        },
-      ],
-      [
-        'emotion',
-        {
-          sourceMap: false,
-          hoist: true,
-          autoLabel: true,
         },
       ],
       [
@@ -122,27 +108,14 @@ const plugins = () => {
           },
         },
       ],
-      [
-        'emotion',
-        {
-          sourceMap: true,
-          autoLabel: true,
-        },
-      ],
     ];
   }
 
-  defaultPlugins.push('react-hot-loader/babel');
-  return [
-    ...defaultPlugins,
-    [
-      'emotion',
-      {
-        sourceMap: true,
-        autoLabel: true,
-      },
-    ],
-  ];
+  if (!isProduction) {
+    defaultPlugins.push('react-hot-loader/babel');
+  }
+
+  return defaultPlugins;
 };
 
 module.exports = {
