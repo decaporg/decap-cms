@@ -22,7 +22,7 @@
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore src/**/__tests__/* --root-mode upward"
   },
   "peerDependencies": {
-    "netlify-cms-ui-default": "^2.4.1-beta.0",
+    "netlify-cms-ui-default": "^2.6.0",
     "prop-types": "^15.7.2",
     "react": "^16.8.4"
   }
