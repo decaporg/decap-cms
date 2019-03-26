@@ -1,4 +1,4 @@
-import { registerWidget } from 'netlify-cms-core';
+import { NetlifyCmsCore as CMS } from 'netlify-cms-core';
 import * as NetlifyCmsWidgetString from 'netlify-cms-widget-string';
 import * as NetlifyCmsWidgetNumber from 'netlify-cms-widget-number';
 import * as NetlifyCmsWidgetText from 'netlify-cms-widget-text';
@@ -14,56 +14,56 @@ import * as NetlifyCmsWidgetMap from 'netlify-cms-widget-map';
 import { NetlifyCmsWidgetDate } from 'netlify-cms-widget-date';
 import { NetlifyCmsWidgetDatetime } from 'netlify-cms-widget-datetime';
 
-registerWidget(
+CMS.registerWidget(
   'string',
   NetlifyCmsWidgetString.controlComponent,
   NetlifyCmsWidgetString.previewComponent,
 );
-registerWidget(
+CMS.registerWidget(
   'number',
   NetlifyCmsWidgetNumber.controlComponent,
   NetlifyCmsWidgetNumber.previewComponent,
 );
-registerWidget(
+CMS.registerWidget(
   'text',
   NetlifyCmsWidgetText.controlComponent,
   NetlifyCmsWidgetText.previewComponent,
 );
-registerWidget(
+CMS.registerWidget(
   'list',
   NetlifyCmsWidgetList.controlComponent,
   NetlifyCmsWidgetList.previewComponent,
 );
-registerWidget(
+CMS.registerWidget(
   'markdown',
   NetlifyCmsWidgetMarkdown.controlComponent,
   NetlifyCmsWidgetMarkdown.previewComponent,
 );
-registerWidget(
+CMS.registerWidget(
   'image',
   NetlifyCmsWidgetImage.controlComponent,
   NetlifyCmsWidgetImage.previewComponent,
 );
-registerWidget(
+CMS.registerWidget(
   'file',
   NetlifyCmsWidgetFile.controlComponent,
   NetlifyCmsWidgetFile.previewComponent,
 );
-registerWidget(
+CMS.registerWidget(
   'select',
   NetlifyCmsWidgetSelect.controlComponent,
   NetlifyCmsWidgetSelect.previewComponent,
 );
-registerWidget(
+CMS.registerWidget(
   'object',
   NetlifyCmsWidgetObject.controlComponent,
   NetlifyCmsWidgetObject.previewComponent,
 );
-registerWidget(
+CMS.registerWidget(
   'relation',
   NetlifyCmsWidgetRelation.controlComponent,
   NetlifyCmsWidgetRelation.previewComponent,
 );
-registerWidget('boolean', NetlifyCmsWidgetBoolean.controlComponent);
-registerWidget('map', NetlifyCmsWidgetMap.controlComponent, NetlifyCmsWidgetMap.previewComponent);
-registerWidget([NetlifyCmsWidgetDate.Widget(), NetlifyCmsWidgetDatetime.Widget()]);
+CMS.registerWidget('boolean', NetlifyCmsWidgetBoolean.controlComponent);
+CMS.registerWidget('map', NetlifyCmsWidgetMap.controlComponent, NetlifyCmsWidgetMap.previewComponent);
+CMS.registerWidget([NetlifyCmsWidgetDate.Widget(), NetlifyCmsWidgetDatetime.Widget()]);
