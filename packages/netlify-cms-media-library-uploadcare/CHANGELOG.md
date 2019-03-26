@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.5.1-beta.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-media-library-uploadcare/compare/netlify-cms-media-library-uploadcare@0.5.1-beta.0...netlify-cms-media-library-uploadcare@0.5.1-beta.1) (2019-03-26)
+
+
+### Bug Fixes
+
+* export on netlify-cms and maps on esm ([#2244](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-media-library-uploadcare/issues/2244)) ([6ffd13b](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-media-library-uploadcare/commit/6ffd13b))
+
+
+
+
+
 ## [0.5.1-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-media-library-uploadcare/compare/netlify-cms-media-library-uploadcare@0.5.0...netlify-cms-media-library-uploadcare@0.5.1-beta.0) (2019-03-25)
 
 **Note:** Version bump only for package netlify-cms-media-library-uploadcare
