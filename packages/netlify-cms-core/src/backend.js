@@ -394,10 +394,12 @@ class Backend {
 
         // TODO: pass search fields in as an argument
         const searchFields = [
-          selectInferedField(collection, 'title'),
-          selectInferedField(collection, 'shortTitle'),
-          selectInferedField(collection, 'author'),
-          ...results,
+          ...new Set([
+            selectInferedField(collection, 'title'),
+            selectInferedField(collection, 'shortTitle'),
+            selectInferedField(collection, 'author'),
+            ...results,
+          ]),
         ];
         const collectionEntries = await this.listAllEntries(collection);
         return fuzzy.filter(searchTerm, collectionEntries, {
