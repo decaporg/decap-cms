@@ -5,3 +5,4 @@ export const NetlifyCmsCore = {
   ...Registry,
   init: bootstrap,
 };
+export default NetlifyCmsCore;
