@@ -389,7 +389,7 @@ class Backend {
     const errors = [];
     const collectionEntriesRequests = collections
       .map(async collection => {
-        let summaryString = collection.get('summary') || "";
+        let summaryString = collection.get('summary') || '';
         let results = summaryString ? summaryString.match(/(?<=\{\{)[^}]+(?=\}\})/g) : [];
 
         // TODO: pass search fields in as an argument
@@ -397,7 +397,7 @@ class Backend {
           selectInferedField(collection, 'title'),
           selectInferedField(collection, 'shortTitle'),
           selectInferedField(collection, 'author'),
-          ...results
+          ...results,
         ];
         const collectionEntries = await this.listAllEntries(collection);
         return fuzzy.filter(searchTerm, collectionEntries, {
