@@ -3,7 +3,9 @@ import { fromJS } from 'immutable';
 import { render, fireEvent } from 'react-testing-library';
 import 'react-testing-library/cleanup-after-each';
 import 'jest-dom/extend-expect';
-import { controlComponent as NumberControl } from '../';
+import { NetlifyCmsWidgetNumber } from '../';
+
+const NumberControl = NetlifyCmsWidgetNumber.controlComponent;
 
 const fieldSettings = {
   min: -20,
