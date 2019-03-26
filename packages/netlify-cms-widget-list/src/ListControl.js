@@ -7,7 +7,7 @@ import { jsx, css, ClassNames } from '@emotion/core';
 import { List, Map } from 'immutable';
 import { partial } from 'lodash';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
-import { NetlifyCmsWidgetObject } from 'netlify-cms-widget-object';
+import NetlifyCmsWidgetObject from 'netlify-cms-widget-object';
 import {
   TYPES_KEY,
   getTypedFieldForValue,

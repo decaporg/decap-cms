@@ -7,4 +7,4 @@ const Widget = (opts = {}) => ({
 });
 
 export const NetlifyCmsWidgetBoolean = { Widget, controlComponent };
-export default Widget;
+export default NetlifyCmsWidgetBoolean;

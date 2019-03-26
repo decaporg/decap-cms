@@ -10,4 +10,4 @@ const Widget = (opts = {}) => ({
 });
 
 export const NetlifyCmsWidgetFile = { Widget, controlComponent, previewComponent, withFileControl };
-export default Widget;
+export default NetlifyCmsWidgetFile;

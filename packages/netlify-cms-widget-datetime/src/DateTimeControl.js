@@ -1,5 +1,5 @@
 import React from 'react';
-import { NetlifyCmsWidgetDate } from 'netlify-cms-widget-date';
+import NetlifyCmsWidgetDate from 'netlify-cms-widget-date';
 
 const DateControl = NetlifyCmsWidgetDate.controlComponent;
 

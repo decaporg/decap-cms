@@ -9,4 +9,4 @@ const Widget = (opts = {}) => ({
 });
 
 export const NetlifyCmsWidgetSelect = { Widget, controlComponent, previewComponent };
-export default Widget;
+export default NetlifyCmsWidgetSelect;

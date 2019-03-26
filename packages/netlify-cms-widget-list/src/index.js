@@ -1,5 +1,5 @@
 import controlComponent from './ListControl';
-import { NetlifyCmsWidgetObject } from 'netlify-cms-widget-object';
+import NetlifyCmsWidgetObject from 'netlify-cms-widget-object';
 
 const previewComponent = NetlifyCmsWidgetObject.previewComponent;
 const Widget = (opts = {}) => ({
@@ -10,4 +10,4 @@ const Widget = (opts = {}) => ({
 });
 
 export const NetlifyCmsWidgetList = { Widget, controlComponent, previewComponent };
-export default Widget;
+export default NetlifyCmsWidgetList;
