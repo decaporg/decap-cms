@@ -1,4 +1,4 @@
-import { attempt, flatten, isError, trimStart, trimEnd, flow, partialRight } from 'lodash';
+import { attempt, flatten, isError, trimStart, trimEnd, flow, partialRight, uniq } from 'lodash';
 import { Map } from 'immutable';
 import { stripIndent } from 'common-tags';
 import moment from 'moment';
@@ -20,6 +20,11 @@ import { sanitizeSlug } from 'Lib/urlHelper';
 import { getBackend } from 'Lib/registry';
 import { localForage, Cursor, CURSOR_COMPATIBILITY_SYMBOL } from 'netlify-cms-lib-util';
 import { EDITORIAL_WORKFLOW, status } from 'Constants/publishModes';
+import {
+  SLUG_MISSING_REQUIRED_DATE,
+  compileStringTemplate,
+  extractTemplateVars,
+} from 'Lib/stringTemplate';
 
 class LocalStorageAuthStore {
   storageKey = 'netlify-cms-user';
@@ -53,28 +58,6 @@ function prepareSlug(slug) {
   );
 }
 
-const dateParsers = {
-  year: date => date.getFullYear(),
-  month: date => `0${date.getMonth() + 1}`.slice(-2),
-  day: date => `0${date.getDate()}`.slice(-2),
-  hour: date => `0${date.getHours()}`.slice(-2),
-  minute: date => `0${date.getMinutes()}`.slice(-2),
-  second: date => `0${date.getSeconds()}`.slice(-2),
-};
-
-const SLUG_MISSING_REQUIRED_DATE = 'SLUG_MISSING_REQUIRED_DATE';
-const USE_FIELD_PREFIX = 'fields.';
-
-// Allow `fields.` prefix in placeholder to override built in replacements
-// like "slug" and "year" with values from fields of the same name.
-function getExplicitFieldReplacement(key, data) {
-  if (!key.startsWith(USE_FIELD_PREFIX)) {
-    return;
-  }
-  const fieldName = key.substring(USE_FIELD_PREFIX.length);
-  return data.get(fieldName, '');
-}
-
 function getEntryBackupKey(collectionName, slug) {
   const baseKey = 'backup';
   if (!collectionName) {
@@ -87,42 +70,6 @@ function getEntryBackupKey(collectionName, slug) {
 function getLabelForFileCollectionEntry(collection, path) {
   const files = collection.get('files');
   return files && files.find(f => f.get('file') === path).get('label');
-}
-
-export function compileSlug(template, date, identifier = '', data = Map(), processor) {
-  let missingRequiredDate;
-
-  const slug = template.replace(/\{\{([^}]+)\}\}/g, (_, key) => {
-    let replacement;
-    const explicitFieldReplacement = getExplicitFieldReplacement(key, data);
-
-    if (explicitFieldReplacement) {
-      replacement = explicitFieldReplacement;
-    } else if (dateParsers[key] && !date) {
-      missingRequiredDate = true;
-      return '';
-    } else if (dateParsers[key]) {
-      replacement = dateParsers[key](date);
-    } else if (key === 'slug') {
-      replacement = identifier;
-    } else {
-      replacement = data.get(key, '');
-    }
-
-    if (processor) {
-      return processor(replacement);
-    }
-
-    return replacement;
-  });
-
-  if (missingRequiredDate) {
-    const err = new Error();
-    err.name = SLUG_MISSING_REQUIRED_DATE;
-    throw err;
-  } else {
-    return slug;
-  }
 }
 
 function slugFormatter(collection, entryData, slugConfig) {
@@ -138,7 +85,11 @@ function slugFormatter(collection, entryData, slugConfig) {
   // Pass entire slug through `prepareSlug` and `sanitizeSlug`.
   // TODO: only pass slug replacements through sanitizers, static portions of
   // the slug template should not be sanitized. (breaking change)
-  const processSlug = flow([compileSlug, prepareSlug, partialRight(sanitizeSlug, slugConfig)]);
+  const processSlug = flow([
+    compileStringTemplate,
+    prepareSlug,
+    partialRight(sanitizeSlug, slugConfig),
+  ]);
 
   return processSlug(template, new Date(), identifier, entryData);
 }
@@ -233,7 +184,7 @@ function createPreviewUrl(baseUrl, collection, slug, slugConfig, entry) {
   let compiledPath;
 
   try {
-    compiledPath = compileSlug(pathTemplate, date, slug, fields, processSegment);
+    compiledPath = compileStringTemplate(pathTemplate, date, slug, fields, processSegment);
   } catch (err) {
     // Print an error and ignore `preview_path` if both:
     //   1. Date is invalid (according to Moment), and
@@ -384,21 +335,19 @@ class Backend {
     const errors = [];
     const collectionEntriesRequests = collections
       .map(async collection => {
-        let summaryString = collection.get('summary') || '';
-        let results = summaryString ? summaryString.match(/(?<=\{\{)[^}]+(?=\}\})/g) : [];
+        const summary = collection.get('summary', '');
+        const summaryFields = extractTemplateVars(summary);
 
         // TODO: pass search fields in as an argument
         const searchFields = [
-          ...new Set([
-            selectInferedField(collection, 'title'),
-            selectInferedField(collection, 'shortTitle'),
-            selectInferedField(collection, 'author'),
-            ...results,
-          ]),
+          selectInferedField(collection, 'title'),
+          selectInferedField(collection, 'shortTitle'),
+          selectInferedField(collection, 'author'),
+          ...summaryFields,
         ];
         const collectionEntries = await this.listAllEntries(collection);
         return fuzzy.filter(searchTerm, collectionEntries, {
-          extract: extractSearchFields(searchFields),
+          extract: extractSearchFields(uniq(searchFields)),
         });
       })
       .map(p => p.catch(err => errors.push(err) && []));

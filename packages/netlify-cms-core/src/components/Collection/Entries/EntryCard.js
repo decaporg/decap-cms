@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { resolvePath } from 'netlify-cms-lib-util';
 import { colors, colorsRaw, components, lengths } from 'netlify-cms-ui-default';
 import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from 'Constants/collectionViews';
-import { compileSlug } from 'src/backend';
+import { compileStringTemplate } from 'Lib/stringTemplate';
 import { selectIdentifier } from 'Reducers/collections';
 
 const ListCard = styled.li`
@@ -92,18 +92,13 @@ const EntryCard = ({
 }) => {
   const label = entry.get('label');
   const entryData = entry.get('data');
-  let title = label || entryData.get(inferedFields.titleField);
+  const defaultTitle = label || entryData.get(inferedFields.titleField);
   const path = `/collections/${collection.get('name')}/entries/${entry.get('slug')}`;
-
   const summary = collection.get('summary');
-  if (summary) {
-    title = compileSlug(
-      summary,
-      new Date(),
-      entryData.get(selectIdentifier(collection)),
-      entryData,
-    );
-  }
+  const identifier = entryData.get(selectIdentifier(collection));
+  const title = summary
+    ? compileStringTemplate(summary, null, identifier, entryData)
+    : defaultTitle;
 
   let image = entryData.get(inferedFields.imageField);
   image = resolvePath(image, publicFolder);
