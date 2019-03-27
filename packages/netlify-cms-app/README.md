@@ -1,4 +1,4 @@
-# Netlify CMS App (reusable react component)
+# Netlify CMS App
 [![](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/netlify/netlifycms)
 
 Use this app component when extending the CMS.
