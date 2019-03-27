@@ -1,55 +1,8 @@
 import bootstrap from './bootstrap';
-import {
-  registerPreviewStyle,
-  getPreviewStyles,
-  registerPreviewTemplate,
-  getPreviewTemplate,
-  registerWidget,
-  getWidget,
-  resolveWidget,
-  registerEditorComponent,
-  getEditorComponents,
-  registerWidgetValueSerializer,
-  getWidgetValueSerializer,
-  registerBackend,
-  getBackend,
-  registerMediaLibrary,
-  getMediaLibrary,
-} from 'Lib/registry';
+import Registry from 'Lib/registry';
 
 export const NetlifyCmsCore = {
-  registerPreviewStyle,
-  getPreviewStyles,
-  registerPreviewTemplate,
-  getPreviewTemplate,
-  registerWidget,
-  getWidget,
-  resolveWidget,
-  registerEditorComponent,
-  getEditorComponents,
-  registerWidgetValueSerializer,
-  getWidgetValueSerializer,
-  registerBackend,
-  getBackend,
-  registerMediaLibrary,
-  getMediaLibrary,
+  ...Registry,
   init: bootstrap,
 };
-export {
-  registerPreviewStyle,
-  getPreviewStyles,
-  registerPreviewTemplate,
-  getPreviewTemplate,
-  registerWidget,
-  getWidget,
-  resolveWidget,
-  registerEditorComponent,
-  getEditorComponents,
-  registerWidgetValueSerializer,
-  getWidgetValueSerializer,
-  registerBackend,
-  getBackend,
-  registerMediaLibrary,
-  getMediaLibrary,
-  bootstrap as init,
-};
+export default NetlifyCmsCore;

@@ -1,4 +1,12 @@
 import controlComponent from './StringControl';
 import previewComponent from './StringPreview';
-export const NetlifyCmsWidgetString = { controlComponent, previewComponent };
-export { controlComponent, previewComponent };
+
+const Widget = (opts = {}) => ({
+  name: 'string',
+  controlComponent,
+  previewComponent,
+  ...opts,
+});
+
+export const NetlifyCmsWidgetString = { Widget, controlComponent, previewComponent };
+export default NetlifyCmsWidgetString;

@@ -4,7 +4,9 @@ import { last } from 'lodash';
 import { render, fireEvent, wait } from 'react-testing-library';
 import 'react-testing-library/cleanup-after-each';
 import 'jest-dom/extend-expect';
-import { controlComponent as RelationControl } from '../';
+import { NetlifyCmsWidgetRelation } from '../';
+
+const RelationControl = NetlifyCmsWidgetRelation.controlComponent;
 
 const fieldConfig = {
   name: 'post',

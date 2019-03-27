@@ -1,6 +1,7 @@
 import controlComponent from './DateTimeControl';
-import { previewComponent } from 'netlify-cms-widget-date';
+import NetlifyCmsWidgetDate from 'netlify-cms-widget-date';
 
+const previewComponent = NetlifyCmsWidgetDate.previewComponent;
 const Widget = (opts = {}) => ({
   name: 'datetime',
   controlComponent,
@@ -9,4 +10,4 @@ const Widget = (opts = {}) => ({
 });
 
 export const NetlifyCmsWidgetDatetime = { Widget, controlComponent, previewComponent };
-export { Widget as default, controlComponent, previewComponent };
+export default NetlifyCmsWidgetDatetime;

@@ -1,3 +1,10 @@
 import controlComponent from './BooleanControl';
-export const NetlifyCmsWidgetBoolean = { controlComponent };
-export { controlComponent };
+
+const Widget = (opts = {}) => ({
+  name: 'boolean',
+  controlComponent,
+  ...opts,
+});
+
+export const NetlifyCmsWidgetBoolean = { Widget, controlComponent };
+export default NetlifyCmsWidgetBoolean;

@@ -7,7 +7,7 @@ import { jsx, css, ClassNames } from '@emotion/core';
 import { List, Map } from 'immutable';
 import { partial } from 'lodash';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
-import { controlComponent as ObjectControl } from 'netlify-cms-widget-object';
+import NetlifyCmsWidgetObject from 'netlify-cms-widget-object';
 import {
   TYPES_KEY,
   getTypedFieldForValue,
@@ -19,6 +19,8 @@ import { ListItemTopBar, ObjectWidgetTopBar, colors, lengths } from 'netlify-cms
 function valueToString(value) {
   return value ? value.join(',').replace(/,([^\s]|$)/g, ', $1') : '';
 }
+
+const ObjectControl = NetlifyCmsWidgetObject.controlComponent;
 
 const ListItem = styled.div();
 

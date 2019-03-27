@@ -1,69 +1,32 @@
-import { registerWidget } from 'netlify-cms-core';
-import * as NetlifyCmsWidgetString from 'netlify-cms-widget-string';
-import * as NetlifyCmsWidgetNumber from 'netlify-cms-widget-number';
-import * as NetlifyCmsWidgetText from 'netlify-cms-widget-text';
-import * as NetlifyCmsWidgetImage from 'netlify-cms-widget-image';
-import * as NetlifyCmsWidgetFile from 'netlify-cms-widget-file';
-import * as NetlifyCmsWidgetSelect from 'netlify-cms-widget-select';
-import * as NetlifyCmsWidgetMarkdown from 'netlify-cms-widget-markdown';
-import * as NetlifyCmsWidgetList from 'netlify-cms-widget-list';
-import * as NetlifyCmsWidgetObject from 'netlify-cms-widget-object';
-import * as NetlifyCmsWidgetRelation from 'netlify-cms-widget-relation';
-import * as NetlifyCmsWidgetBoolean from 'netlify-cms-widget-boolean';
-import * as NetlifyCmsWidgetMap from 'netlify-cms-widget-map';
-import { NetlifyCmsWidgetDate } from 'netlify-cms-widget-date';
-import { NetlifyCmsWidgetDatetime } from 'netlify-cms-widget-datetime';
+import { NetlifyCmsCore as CMS } from 'netlify-cms-core';
+import NetlifyCmsWidgetString from 'netlify-cms-widget-string';
+import NetlifyCmsWidgetNumber from 'netlify-cms-widget-number';
+import NetlifyCmsWidgetText from 'netlify-cms-widget-text';
+import NetlifyCmsWidgetImage from 'netlify-cms-widget-image';
+import NetlifyCmsWidgetFile from 'netlify-cms-widget-file';
+import NetlifyCmsWidgetSelect from 'netlify-cms-widget-select';
+import NetlifyCmsWidgetMarkdown from 'netlify-cms-widget-markdown';
+import NetlifyCmsWidgetList from 'netlify-cms-widget-list';
+import NetlifyCmsWidgetObject from 'netlify-cms-widget-object';
+import NetlifyCmsWidgetRelation from 'netlify-cms-widget-relation';
+import NetlifyCmsWidgetBoolean from 'netlify-cms-widget-boolean';
+import NetlifyCmsWidgetMap from 'netlify-cms-widget-map';
+import NetlifyCmsWidgetDate from 'netlify-cms-widget-date';
+import NetlifyCmsWidgetDatetime from 'netlify-cms-widget-datetime';
 
-registerWidget(
-  'string',
-  NetlifyCmsWidgetString.controlComponent,
-  NetlifyCmsWidgetString.previewComponent,
-);
-registerWidget(
-  'number',
-  NetlifyCmsWidgetNumber.controlComponent,
-  NetlifyCmsWidgetNumber.previewComponent,
-);
-registerWidget(
-  'text',
-  NetlifyCmsWidgetText.controlComponent,
-  NetlifyCmsWidgetText.previewComponent,
-);
-registerWidget(
-  'list',
-  NetlifyCmsWidgetList.controlComponent,
-  NetlifyCmsWidgetList.previewComponent,
-);
-registerWidget(
-  'markdown',
-  NetlifyCmsWidgetMarkdown.controlComponent,
-  NetlifyCmsWidgetMarkdown.previewComponent,
-);
-registerWidget(
-  'image',
-  NetlifyCmsWidgetImage.controlComponent,
-  NetlifyCmsWidgetImage.previewComponent,
-);
-registerWidget(
-  'file',
-  NetlifyCmsWidgetFile.controlComponent,
-  NetlifyCmsWidgetFile.previewComponent,
-);
-registerWidget(
-  'select',
-  NetlifyCmsWidgetSelect.controlComponent,
-  NetlifyCmsWidgetSelect.previewComponent,
-);
-registerWidget(
-  'object',
-  NetlifyCmsWidgetObject.controlComponent,
-  NetlifyCmsWidgetObject.previewComponent,
-);
-registerWidget(
-  'relation',
-  NetlifyCmsWidgetRelation.controlComponent,
-  NetlifyCmsWidgetRelation.previewComponent,
-);
-registerWidget('boolean', NetlifyCmsWidgetBoolean.controlComponent);
-registerWidget('map', NetlifyCmsWidgetMap.controlComponent, NetlifyCmsWidgetMap.previewComponent);
-registerWidget([NetlifyCmsWidgetDate.Widget(), NetlifyCmsWidgetDatetime.Widget()]);
+CMS.registerWidget([
+  NetlifyCmsWidgetString.Widget(),
+  NetlifyCmsWidgetNumber.Widget(),
+  NetlifyCmsWidgetText.Widget(),
+  NetlifyCmsWidgetImage.Widget(),
+  NetlifyCmsWidgetFile.Widget(),
+  NetlifyCmsWidgetSelect.Widget(),
+  NetlifyCmsWidgetMarkdown.Widget(),
+  NetlifyCmsWidgetList.Widget(),
+  NetlifyCmsWidgetObject.Widget(),
+  NetlifyCmsWidgetRelation.Widget(),
+  NetlifyCmsWidgetBoolean.Widget(),
+  NetlifyCmsWidgetMap.Widget(),
+  NetlifyCmsWidgetDate.Widget(),
+  NetlifyCmsWidgetDatetime.Widget(),
+]);
