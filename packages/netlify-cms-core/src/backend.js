@@ -125,20 +125,15 @@ export function compileSlug(template, date, identifier = '', data = Map(), proce
   }
 }
 
-export function getIdentifier(entryData, collection) {
+function slugFormatter(collection, entryData, slugConfig) {
+  const template = collection.get('slug') || '{{slug}}';
+
   const identifier = entryData.get(selectIdentifier(collection));
   if (!identifier) {
     throw new Error(
       'Collection must have a field name that is a valid entry identifier, or must have `identifier_field` set',
     );
   }
-  return identifier;
-}
-
-function slugFormatter(collection, entryData, slugConfig) {
-  const template = collection.get('slug') || '{{slug}}';
-
-  const identifier = getIdentifier(entryData, collection);
 
   // Pass entire slug through `prepareSlug` and `sanitizeSlug`.
   // TODO: only pass slug replacements through sanitizers, static portions of

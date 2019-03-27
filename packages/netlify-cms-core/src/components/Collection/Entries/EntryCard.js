@@ -4,7 +4,8 @@ import { Link } from 'react-router-dom';
 import { resolvePath } from 'netlify-cms-lib-util';
 import { colors, colorsRaw, components, lengths } from 'netlify-cms-ui-default';
 import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from 'Constants/collectionViews';
-import { compileSlug, getIdentifier } from 'src/backend';
+import { compileSlug } from 'src/backend';
+import { selectIdentifier } from 'Reducers/collections';
 
 const ListCard = styled.li`
   ${components.card};
@@ -96,7 +97,12 @@ const EntryCard = ({
 
   const summary = collection.get('summary');
   if (summary) {
-    title = compileSlug(summary, new Date(), getIdentifier(entryData, collection), entryData);
+    title = compileSlug(
+      summary,
+      new Date(),
+      entryData.get(selectIdentifier(collection)),
+      entryData,
+    );
   }
 
   let image = entryData.get(inferedFields.imageField);
