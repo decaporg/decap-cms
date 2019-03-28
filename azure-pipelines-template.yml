@@ -1,5 +1,7 @@
 jobs:
 - job: ${{ parameters.name }}
+  env:
+    CYPRESS_RECORD_KEY: $(CYPRESS_RECORD_KEY)
   pool:
     vmImage: ${{ parameters.vmImage }}
 
