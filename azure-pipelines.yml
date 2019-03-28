@@ -1,24 +1,12 @@
-# Node.js
-# Build a general Node.js project with npm.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+jobs:
+- template: azure-pipelines-template.yml
+  parameters:
+    name: unit tests
+    vmImage: 'Ubuntu-16.04'
+    script: yarn test:ci
 
-pool:
-  vmImage: 'Ubuntu-16.04'
-
-strategy:
-  matrix:
-    node_8_x:
-      node_version: 8.x
-    node_10_x:
-      node_version: 10.x
-
-steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: $(node_version)
-
-- script: |
-    yarn
-    yarn bootstrap
-    yarn test:ci
+- template: azure-pipelines-template.yml
+  parameters:
+    name: e2e tests
+    vmImage: 'Ubuntu-16.04'
+    script: yarn test:e2e:ci
