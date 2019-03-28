@@ -1,7 +1,6 @@
 import { attempt, flatten, isError, trimStart, trimEnd, flow, partialRight, uniq } from 'lodash';
 import { Map } from 'immutable';
 import { stripIndent } from 'common-tags';
-import moment from 'moment';
 import fuzzy from 'fuzzy';
 import { resolveFormat } from 'Formats/formats';
 import { selectIntegration } from 'Reducers/integrations';
@@ -24,6 +23,7 @@ import {
   SLUG_MISSING_REQUIRED_DATE,
   compileStringTemplate,
   extractTemplateVars,
+  parseDateFromEntry,
 } from 'Lib/stringTemplate';
 
 class LocalStorageAuthStore {
@@ -134,20 +134,6 @@ const sortByScore = (a, b) => {
   return 0;
 };
 
-export function parsePreviewPathDate(collection, entry) {
-  const dateField =
-    collection.get('preview_path_date_field') || selectInferedField(collection, 'date');
-  if (!dateField) {
-    return;
-  }
-
-  const dateValue = entry.getIn(['data', dateField]);
-  const dateMoment = dateValue && moment(dateValue);
-  if (dateMoment && dateMoment.isValid()) {
-    return dateMoment.toDate();
-  }
-}
-
 function createPreviewUrl(baseUrl, collection, slug, slugConfig, entry) {
   /**
    * Preview URL can't be created without `baseUrl`. This makes preview URLs
@@ -172,7 +158,7 @@ function createPreviewUrl(baseUrl, collection, slug, slugConfig, entry) {
   const basePath = trimEnd(baseUrl, '/');
   const pathTemplate = collection.get('preview_path');
   const fields = entry.get('data');
-  const date = parsePreviewPathDate(collection, entry);
+  const date = parseDateFromEntry(entry, collection, collection.get('preview_path_date_field'));
 
   // Prepare and sanitize slug variables only, leave the rest of the
   // `preview_path` template as is.

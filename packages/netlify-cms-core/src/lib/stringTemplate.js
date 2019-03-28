@@ -1,3 +1,6 @@
+import moment from 'moment';
+import { selectInferedField } from 'Reducers/collections';
+
 // prepends a Zero if the date has only 1 digit
 function formatDate(date) {
   return `0${date}`.slice(-2);
@@ -13,6 +16,7 @@ const dateParsers = {
 };
 
 export const SLUG_MISSING_REQUIRED_DATE = 'SLUG_MISSING_REQUIRED_DATE';
+
 const FIELD_PREFIX = 'fields.';
 const templateContentPattern = '[^}{]+';
 const templateVariablePattern = `{{(${templateContentPattern})}}`;
@@ -25,6 +29,19 @@ function getExplicitFieldReplacement(key, data) {
   }
   const fieldName = key.substring(FIELD_PREFIX.length);
   return data.get(fieldName, '');
+}
+
+export function parseDateFromEntry(entry, collection, fieldName) {
+  const dateFieldName = fieldName || selectInferedField(collection, 'date');
+  if (!dateFieldName) {
+    return;
+  }
+
+  const dateValue = entry.getIn(['data', dateFieldName]);
+  const dateMoment = dateValue && moment(dateValue);
+  if (dateMoment && dateMoment.isValid()) {
+    return dateMoment.toDate();
+  }
 }
 
 export function compileStringTemplate(template, date, identifier = '', data = Map(), processor) {
