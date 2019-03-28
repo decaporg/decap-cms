@@ -1,12 +1,12 @@
 jobs:
 - template: azure-pipelines-template.yml
   parameters:
-    name: unit tests
+    name: unit_tests
     vmImage: 'Ubuntu-16.04'
     script: yarn test:ci
 
 - template: azure-pipelines-template.yml
   parameters:
-    name: e2e tests
+    name: e2e_tests
     vmImage: 'Ubuntu-16.04'
     script: yarn test:e2e:ci
