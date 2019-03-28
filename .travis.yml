@@ -5,9 +5,13 @@ cache:
     - $HOME/.npm
     - $HOME/.yarn-cache
     - node_modules
+    - ~/.cache
 node_js:
   - '8'
   - '10'
+env:
+  - TEST_SUITE="test:unit"
+  - TEST_SUITE="test:e2e:ci"
 install:
   - yarn bootstrap
 script:
