@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.9.0-beta.0](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.8.1-beta.1...netlify-cms@2.9.0-beta.0) (2019-03-28)
+
+
+### Features
+
+* add byo react package netlify-cms-app ([#2252](https://github.com/netlify/netlify-cms/issues/2252)) ([ff4ffd7](https://github.com/netlify/netlify-cms/commit/ff4ffd7))
+
+
+
+
+
 ## [2.8.1-beta.1](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.8.1-beta.0...netlify-cms@2.8.1-beta.1) (2019-03-26)
 
 

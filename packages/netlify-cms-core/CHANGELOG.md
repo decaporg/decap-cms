@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.10.1-beta.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.10.1-beta.1...netlify-cms-core@2.10.1-beta.2) (2019-03-28)
+
+
+### Bug Fixes
+
+* broken preview ([#2245](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2245)) ([4db497b](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/4db497b))
+
+
+
+
+
 ## [2.10.1-beta.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.10.1-beta.0...netlify-cms-core@2.10.1-beta.1) (2019-03-26)
 
 
