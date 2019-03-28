@@ -16,6 +16,7 @@ jobs:
       versionSpec: $(node_version)
 
   - script: |
+      ${{ parameters.preScript }}
       node --version
       npm --version
       yarn --version

@@ -3,10 +3,14 @@ jobs:
   parameters:
     name: unit_tests
     vmImage: 'Ubuntu-16.04'
+    preScript: ''
     script: yarn test:ci
 
 - template: azure-pipelines-template.yml
   parameters:
     name: e2e_tests
     vmImage: 'Ubuntu-16.04'
-    script: yarn test:e2e:ci
+    preScript: |
+      apt-get update && apt-get install -y libgconf-2-4
+    script: |
+      yarn test:e2e:ci
