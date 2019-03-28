@@ -115,7 +115,7 @@ export const selectTemplateName = (collection, slug) =>
 export const selectIdentifier = collection => {
   const identifier = collection.get('identifier_field');
   const identifierFields = identifier ? [identifier, ...IDENTIFIER_FIELDS] : IDENTIFIER_FIELDS;
-  const fieldNames = collection.get('fields').map(field => field.get('name'));
+  const fieldNames = collection.get('fields', []).map(field => field.get('name'));
   return identifierFields.find(id =>
     fieldNames.find(name => name.toLowerCase().trim() === id.toLowerCase().trim()),
   );
