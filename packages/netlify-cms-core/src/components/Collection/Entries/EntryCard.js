@@ -6,6 +6,7 @@ import { colors, colorsRaw, components, lengths } from 'netlify-cms-ui-default';
 import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from 'Constants/collectionViews';
 import { compileStringTemplate } from 'Lib/stringTemplate';
 import { selectIdentifier } from 'Reducers/collections';
+import { parsePreviewPathDate } from 'backend';
 
 const ListCard = styled.li`
   ${components.card};
@@ -95,9 +96,10 @@ const EntryCard = ({
   const defaultTitle = label || entryData.get(inferedFields.titleField);
   const path = `/collections/${collection.get('name')}/entries/${entry.get('slug')}`;
   const summary = collection.get('summary');
+  const date = parsePreviewPathDate(collection, entry) || null;
   const identifier = entryData.get(selectIdentifier(collection));
   const title = summary
-    ? compileStringTemplate(summary, null, identifier, entryData)
+    ? compileStringTemplate(summary, date, identifier, entryData)
     : defaultTitle;
 
   let image = entryData.get(inferedFields.imageField);

@@ -64,7 +64,7 @@ function getEntryBackupKey(collectionName, slug) {
     return baseKey;
   }
   const suffix = slug ? `.${slug}` : '';
-  return `backup.${collectionName}${suffix}`;
+  return `${baseKey}.${collectionName}${suffix}`;
 }
 
 function getLabelForFileCollectionEntry(collection, path) {
@@ -134,7 +134,7 @@ const sortByScore = (a, b) => {
   return 0;
 };
 
-function parsePreviewPathDate(collection, entry) {
+export function parsePreviewPathDate(collection, entry) {
   const dateField =
     collection.get('preview_path_date_field') || selectInferedField(collection, 'date');
   if (!dateField) {
