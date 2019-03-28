@@ -14,7 +14,7 @@
     "clean:lerna": "lerna clean --yes",
     "reset": "run-s clean clean:lerna",
     "test": "run-s clean lint test:unit test:e2e",
-    "test-ci": "run-s clean lint-quiet test:unit test:e2e:ci",
+    "test:ci": "run-s clean lint-quiet test:unit test:e2e:ci",
     "test:unit": "cross-env NODE_ENV=test jest --no-cache",
     "test:e2e": "run-s build:demo test:e2e:run",
     "test:e2e:ci": "run-s build:demo test:e2e:run-ci",
