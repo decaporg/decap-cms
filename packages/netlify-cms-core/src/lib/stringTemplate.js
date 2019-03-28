@@ -70,5 +70,6 @@ export function compileStringTemplate(template, date, identifier = '', data = Ma
 export function extractTemplateVars(template) {
   const regexp = RegExp(templateVariablePattern, 'g');
   const contentRegexp = RegExp(templateContentPattern, 'g');
-  return template.match(regexp).map(elem => elem.match(contentRegexp)[0]);
+  const matches = template.match(regexp) || [];
+  return matches.map(elem => elem.match(contentRegexp)[0]);
 }
