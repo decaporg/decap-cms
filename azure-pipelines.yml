@@ -7,7 +7,6 @@ pool:
   vmImage: 'Ubuntu-16.04'
 
 strategy:
-  parallel: 2
   matrix:
     node_8_x:
       node_version: 8.x
