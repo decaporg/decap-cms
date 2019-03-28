@@ -18,8 +18,8 @@ const baseConfig = {
     new webpack.DefinePlugin({
       NETLIFY_CMS_VERSION: JSON.stringify(`- app - ${pkg.version}${isProduction ? '' : '-dev'}`),
       NETLIFY_CMS_CORE_VERSION: null,
-    })
-  ]
+    }),
+  ],
 };
 
 module.exports = baseConfig;
