@@ -19,5 +19,6 @@ steps:
     versionSpec: $(node_version)
 
 - script: |
+    yarn
     yarn bootstrap
     yarn test:ci
