@@ -9,7 +9,7 @@
     "build-preview": "run-s build build-preview:lerna",
     "build-preview:lerna": "lerna run build-preview",
     "build:demo": "run-s build build:demo:copy",
-    "build:demo:copy": "ncp packages/netlify-cms/dist dev-test/",
+    "build:demo:copy": "ncp packages/netlify-cms/dist dev-test/dist/",
     "clean": "rimraf packages/*/dist dev-test/dist",
     "clean:lerna": "lerna clean --yes",
     "reset": "run-s clean clean:lerna",
