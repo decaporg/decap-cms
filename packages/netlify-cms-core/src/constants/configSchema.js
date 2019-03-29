@@ -89,6 +89,7 @@ const getConfigSchema = () => ({
             },
           },
           identifier_field: { type: 'string' },
+          summary: { type: 'string' },
           slug: { type: 'string' },
           preview_path: { type: 'string' },
           preview_path_date_field: { type: 'string' },

@@ -115,7 +115,7 @@ export const selectTemplateName = (collection, slug) =>
 export const selectIdentifier = collection => {
   const identifier = collection.get('identifier_field');
   const identifierFields = identifier ? [identifier, ...IDENTIFIER_FIELDS] : IDENTIFIER_FIELDS;
-  const fieldNames = collection.get('fields').map(field => field.get('name'));
+  const fieldNames = collection.get('fields', []).map(field => field.get('name'));
   return identifierFields.find(id =>
     fieldNames.find(name => name.toLowerCase().trim() === id.toLowerCase().trim()),
   );
@@ -128,7 +128,7 @@ export const selectInferedField = (collection, fieldName) => {
   const fields = collection.get('fields');
   let field;
 
-  // If colllection has no fields or fieldName is not defined within inferables list, return null
+  // If collection has no fields or fieldName is not defined within inferables list, return null
   if (!fields || !inferableField) return null;
   // Try to return a field of the specified type with one of the synonyms
   const mainTypeFields = fields

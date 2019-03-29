@@ -171,6 +171,7 @@ The `collections` setting is the heart of your Netlify CMS configuration, as it 
 * `preview_path`: see detailed description below
 * `fields` (required): see detailed description below
 * `editor`: see detailed description below
+* `summary`: see detailed description below
 
 The last few options require more detailed information.
 
@@ -319,4 +320,15 @@ This setting changes options for the editor view of the collection. It has one o
 ```yaml
   editor:
      preview: false
+```
+
+
+### `summary`
+
+This setting allows the customisation of the collection list view. Similar to the `slug` field, a string with templates can be used to include values of different fields, e.g. `{{title}}`.
+This option over-rides the default of `title` field and `identifier_field`.
+
+**Example**
+```yaml
+    summary: "Version: {{version}} - {{title}}"
 ```
