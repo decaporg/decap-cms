@@ -1,4 +1,22 @@
 updates:
+  - date: '2019-03-29'
+    description: 'Add netlify-cms-app package with external deps, fix breaking preview templates'
+    version: 2.9.0
+  - date: '2019-03-22'
+    description: 'Add es module builds, fix large media binary output'
+    version: 2.8.0
+  - date: '2019-03-21'
+    description: 'Standalone UMD builds with externalized dependencies for all extension packages'
+    version: 2.7.0
+  - date: '2019-03-11'
+    description: 'Fix Cloudinary multiselect, preview pane and config fixes, other improvements'
+    version: 2.6.1
+  - date: '2019-03-07'
+    description: 'Add entry recovery after error, fix large media GitHub URL output, other fixes'
+    version: 2.6.0
+  - date: '2019-02-28'
+    description: 'Fix previews of GitHub images'
+    version: 2.5.1
   - date: '2019-02-26'
     description: 'Netlify Large Media support, multi-select relation widget, and more'
     version: 2.5.0
