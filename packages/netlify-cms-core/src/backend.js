@@ -24,6 +24,7 @@ import {
   compileStringTemplate,
   extractTemplateVars,
   parseDateFromEntry,
+  dateParsers,
 } from 'Lib/stringTemplate';
 
 class LocalStorageAuthStore {
@@ -329,7 +330,12 @@ class Backend {
           selectInferedField(collection, 'title'),
           selectInferedField(collection, 'shortTitle'),
           selectInferedField(collection, 'author'),
-          ...summaryFields,
+          ...summaryFields.map(elem => {
+            if (dateParsers[elem]) {
+              return selectInferedField(collection, 'date');
+            }
+            return elem;
+          }),
         ];
         const collectionEntries = await this.listAllEntries(collection);
         return fuzzy.filter(searchTerm, collectionEntries, {

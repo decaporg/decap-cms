@@ -6,7 +6,7 @@ function formatDate(date) {
   return `0${date}`.slice(-2);
 }
 
-const dateParsers = {
+export const dateParsers = {
   year: date => date.getFullYear(),
   month: date => formatDate(date.getMonth() + 1),
   day: date => formatDate(date.getDate()),
