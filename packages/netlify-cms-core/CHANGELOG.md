@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.11.0-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.10.1...netlify-cms-core@2.11.0-beta.0) (2019-03-29)
+
+
+### Features
+
+* **core:** allow custom summary on entry cards ([#2140](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2140)) ([573ad88](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/573ad88))
+
+
+
+
+
 ## [2.10.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.10.1-beta.2...netlify-cms-core@2.10.1) (2019-03-29)
 
 **Note:** Version bump only for package netlify-cms-core
