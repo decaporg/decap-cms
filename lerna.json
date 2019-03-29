@@ -11,7 +11,7 @@
       "conventionalCommits": true,
       "preid": "beta",
       "gitRemote": "upstream",
-      "message": "chore(release): %s"
+      "message": "chore(release): publish"
     }
   },
   "ignoreChanges": [
