@@ -1,4 +1,3 @@
-const path = require('path');
 const webpack = require('webpack');
 const pkg = require('./package.json');
 const { getConfig, plugins } = require('../../scripts/webpack');
@@ -9,8 +8,6 @@ console.log(`${pkg.version}${isProduction ? '' : '-dev'}`);
 
 const baseConfig = {
   ...baseWebpackConfig,
-  context: path.join(__dirname, 'src'),
-  entry: './index.js',
   plugins: [
     ...Object.entries(plugins)
       .filter(([key]) => key !== 'friendlyErrors')
