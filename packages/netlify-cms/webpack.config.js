@@ -19,7 +19,6 @@ const baseConfig = {
       .map(([, plugin]) => plugin()),
     new webpack.DefinePlugin({
       NETLIFY_CMS_VERSION: JSON.stringify(`${pkg.version}${isProduction ? '' : '-dev'}`),
-      NETLIFY_CMS_CORE_VERSION: null,
     }),
     new FriendlyErrorsWebpackPlugin({
       compilationSuccessInfo: {
