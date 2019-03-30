@@ -5,6 +5,8 @@ const isProduction = process.env.NODE_ENV === 'production';
 const isTest = process.env.NODE_ENV === 'test';
 const isESM = process.env.NODE_ENV === 'esm';
 
+console.log('Build Package:', path.basename(process.cwd()));
+
 const presets = () => {
   return ['@babel/preset-react', '@babel/preset-env'];
 };
