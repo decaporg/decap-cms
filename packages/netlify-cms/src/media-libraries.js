@@ -1,4 +1,4 @@
-import { NetlifyCmsCore as CMS } from 'netlify-cms-core';
+import { NetlifyCmsApp as CMS } from 'netlify-cms-app/dist/esm';
 import uploadcare from 'netlify-cms-media-library-uploadcare';
 import cloudinary from 'netlify-cms-media-library-cloudinary';
 
