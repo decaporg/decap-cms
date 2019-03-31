@@ -25,7 +25,7 @@ const baseConfig = {
     new CopyWebpackPlugin([{ from: './shims/cms.css', to: './' }]),
   ],
   devServer: {
-    contentBase: '../dev-test',
+    contentBase: '../../dev-test',
     watchContentBase: true,
     publicPath: '/dist/',
     quiet: true,
