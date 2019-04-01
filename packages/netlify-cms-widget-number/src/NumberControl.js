@@ -100,7 +100,7 @@ export default class NumberControl extends React.Component {
         className={classNameWrapper}
         onFocus={setActiveStyle}
         onBlur={setInactiveStyle}
-        value={value || ''}
+        value={value || (value === 0 ? value : '')}
         step={step}
         min={min}
         max={max}
