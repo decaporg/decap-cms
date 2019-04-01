@@ -23,6 +23,10 @@ export const UNPUBLISHED_ENTRIES_REQUEST = 'UNPUBLISHED_ENTRIES_REQUEST';
 export const UNPUBLISHED_ENTRIES_SUCCESS = 'UNPUBLISHED_ENTRIES_SUCCESS';
 export const UNPUBLISHED_ENTRIES_FAILURE = 'UNPUBLISHED_ENTRIES_FAILURE';
 
+export const UNPUBLISHED_ENTRIES_MIGRATION_REQUEST = 'UNPUBLISHED_ENTRIES_MIGRATION_REQUEST';
+export const UNPUBLISHED_ENTRIES_MIGRATION_SUCCESS = 'UNPUBLISHED_ENTRIES_MIGRATION_SUCCESS';
+export const UNPUBLISHED_ENTRIES_MIGRATION_FAILURE = 'UNPUBLISHED_ENTRIES_MIGRATION_FAILURE';
+
 export const UNPUBLISHED_ENTRY_PERSIST_REQUEST = 'UNPUBLISHED_ENTRY_PERSIST_REQUEST';
 export const UNPUBLISHED_ENTRY_PERSIST_SUCCESS = 'UNPUBLISHED_ENTRY_PERSIST_SUCCESS';
 export const UNPUBLISHED_ENTRY_PERSIST_FAILURE = 'UNPUBLISHED_ENTRY_PERSIST_FAILURE';
@@ -93,6 +97,28 @@ function unpublishedEntriesFailed(error) {
   return {
     type: UNPUBLISHED_ENTRIES_FAILURE,
     error: 'Failed to load entries',
+    payload: error,
+  };
+}
+
+function unpublishedEntriesMigrating() {
+  return {
+    type: UNPUBLISHED_ENTRIES_MIGRATION_REQUEST,
+  };
+}
+
+function unpublishedEntriesMigrated(entries) {
+  return {
+    type: UNPUBLISHED_ENTRIES_MIGRATION_SUCCESS,
+    payload: {
+      entries,
+    },
+  };
+}
+
+function unpublishedEntriesMigrationFailed(error) {
+  return {
+    type: UNPUBLISHED_ENTRIES_MIGRATION_FAILURE,
     payload: error,
   };
 }
@@ -229,13 +255,13 @@ function unpublishedEntryDeleteError(collection, slug, transactionID) {
  * Exported Thunk Action Creators
  */
 
-export function loadUnpublishedEntry(collection, slug, newMeta) {
+export function loadUnpublishedEntry(collection, slug) {
   return (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
     dispatch(unpublishedEntryLoading(collection, slug));
     backend
-      .unpublishedEntry(collection, slug, newMeta)
+      .unpublishedEntry(collection, slug)
       .then(entry => dispatch(unpublishedEntryLoaded(collection, entry)))
       .catch(error => {
         if (error.name === EDITORIAL_WORKFLOW_ERROR && error.notUnderEditorialWorkflow) {
@@ -264,9 +290,20 @@ export function loadUnpublishedEntries(collections) {
     if (state.editorialWorkflow.get('loaded')) return;
     const backend = currentBackend(state.config);
     dispatch(unpublishedEntriesLoading());
-    backend
+    return backend
       .unpublishedEntries(collections)
-      .then(response => dispatch(unpublishedEntriesLoaded(response.entries, response.pagination)))
+      .then(response => {
+        const entriesUsingMeta = response.entries.filter(
+          ({ metaData }) => !metaData.useAnnotations,
+        );
+        dispatch(unpublishedEntriesLoaded(response.entries, response.pagination));
+        if (
+          state.config.getIn(['backend', 'editorial_workflow_labels']) &&
+          entriesUsingMeta.length
+        ) {
+          return dispatch(migrateUnpublishedEntries(entriesUsingMeta));
+        }
+      })
       .catch(error => {
         dispatch(
           notifSend({
@@ -279,6 +316,32 @@ export function loadUnpublishedEntries(collections) {
           }),
         );
         dispatch(unpublishedEntriesFailed(error));
+        Promise.reject(error);
+      });
+  };
+}
+
+export function migrateUnpublishedEntries(entries) {
+  return (dispatch, getState) => {
+    const state = getState();
+    if (state.config.get('publish_mode') !== EDITORIAL_WORKFLOW) return;
+    const backend = currentBackend(state.config);
+    dispatch(unpublishedEntriesMigrating());
+    return backend
+      .migrateUnpublishedEntries(entries)
+      .then(() => dispatch(unpublishedEntriesMigrated(entries)))
+      .catch(error => {
+        dispatch(
+          notifSend({
+            message: {
+              key: 'ui.toast.onFailToMigrateEntries',
+              details: error,
+            },
+            kind: 'danger',
+            dismissAfter: 8000,
+          }),
+        );
+        dispatch(unpublishedEntriesMigrationFailed(error));
         Promise.reject(error);
       });
   };
@@ -365,7 +428,13 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
   };
 }
 
-export function updateUnpublishedEntryStatus(collection, slug, newMeta, oldStatus, newStatus) {
+export function updateUnpublishedEntryStatus(
+  collection,
+  slug,
+  useAnnotations,
+  oldStatus,
+  newStatus,
+) {
   return (dispatch, getState) => {
     if (oldStatus === newStatus) return;
     const state = getState();
@@ -375,7 +444,7 @@ export function updateUnpublishedEntryStatus(collection, slug, newMeta, oldStatu
       unpublishedEntryStatusChangeRequest(collection, slug, oldStatus, newStatus, transactionID),
     );
     backend
-      .updateUnpublishedEntryStatus(collection, slug, newMeta, newStatus, oldStatus)
+      .updateUnpublishedEntryStatus(collection, slug, useAnnotations, newStatus, oldStatus)
       .then(() => {
         dispatch(
           notifSend({
@@ -412,14 +481,14 @@ export function updateUnpublishedEntryStatus(collection, slug, newMeta, oldStatu
   };
 }
 
-export function deleteUnpublishedEntry(collection, slug, newMeta) {
+export function deleteUnpublishedEntry(collection, slug) {
   return (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
     const transactionID = uuid();
     dispatch(unpublishedEntryDeleteRequest(collection, slug, transactionID));
     return backend
-      .deleteUnpublishedEntry(collection, slug, newMeta)
+      .deleteUnpublishedEntry(collection, slug)
       .then(() => {
         dispatch(
           notifSend({
@@ -443,7 +512,7 @@ export function deleteUnpublishedEntry(collection, slug, newMeta) {
   };
 }
 
-export function publishUnpublishedEntry(collection, slug, newMeta) {
+export function publishUnpublishedEntry(collection, slug) {
   return (dispatch, getState) => {
     const state = getState();
     const collections = state.collections;
@@ -451,7 +520,7 @@ export function publishUnpublishedEntry(collection, slug, newMeta) {
     const transactionID = uuid();
     dispatch(unpublishedEntryPublishRequest(collection, slug, transactionID));
     return backend
-      .publishUnpublishedEntry(collection, slug, newMeta)
+      .publishUnpublishedEntry(collection, slug)
       .then(() => {
         dispatch(
           notifSend({

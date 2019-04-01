@@ -486,9 +486,9 @@ class Backend {
       }));
   }
 
-  unpublishedEntry(collection, slug, newMeta) {
+  unpublishedEntry(collection, slug) {
     return this.implementation
-      .unpublishedEntry(collection, slug, newMeta)
+      .unpublishedEntry(collection, slug)
       .then(loadedEntry => {
         const entry = createEntry('draft', loadedEntry.slug, loadedEntry.file.path, {
           raw: loadedEntry.data,
@@ -527,13 +527,7 @@ class Backend {
    * Supports polling via `maxAttempts` and `interval` options, as there is
    * often a delay before a preview URL is available.
    */
-  async getDeployPreview(
-    collection,
-    slug,
-    entry,
-    newMeta,
-    { maxAttempts = 1, interval = 5000 } = {},
-  ) {
+  async getDeployPreview(collection, slug, entry, { maxAttempts = 1, interval = 5000 } = {}) {
     /**
      * If the registered backend does not provide a `getDeployPreview` method, or
      * `show_preview_links` in the config is set to false, do nothing.
@@ -550,7 +544,7 @@ class Backend {
       count = 0;
     while (!deployPreview && count < maxAttempts) {
       count++;
-      deployPreview = await this.implementation.getDeployPreview(collection, slug, newMeta);
+      deployPreview = await this.implementation.getDeployPreview(collection, slug);
       if (!deployPreview) {
         await new Promise(resolve => setTimeout(() => resolve(), interval));
       }
@@ -581,7 +575,8 @@ class Backend {
     const parsedData = {
       title: entryDraft.getIn(['entry', 'data', 'title'], 'No Title'),
       description: entryDraft.getIn(['entry', 'data', 'description'], 'No Description!'),
-      newMeta: entryDraft.getIn(['entry', 'metaData', 'newMeta'], false),
+      useAnnotations: entryDraft.getIn(['entry', 'metaData', 'useAnnotations']),
+      branch: entryDraft.getIn(['entry', 'metaData', 'branch']),
     };
 
     let entryObj;
@@ -664,22 +659,26 @@ class Backend {
     return this.persistEntry(...args, { unpublished: true });
   }
 
-  updateUnpublishedEntryStatus(collection, slug, newMeta, newStatus, oldStatus) {
+  updateUnpublishedEntryStatus(collection, slug, useAnnotations, newStatus, oldStatus) {
     return this.implementation.updateUnpublishedEntryStatus(
       collection,
       slug,
-      newMeta,
+      useAnnotations,
       newStatus,
       oldStatus,
     );
   }
 
-  publishUnpublishedEntry(collection, slug, newMeta) {
-    return this.implementation.publishUnpublishedEntry(collection, slug, newMeta);
+  migrateUnpublishedEntries(entries) {
+    return this.implementation.migrateUnpublishedEntries(entries);
   }
 
-  deleteUnpublishedEntry(collection, slug, newMeta) {
-    return this.implementation.deleteUnpublishedEntry(collection, slug, newMeta);
+  publishUnpublishedEntry(collection, slug) {
+    return this.implementation.publishUnpublishedEntry(collection, slug);
+  }
+
+  deleteUnpublishedEntry(collection, slug) {
+    return this.implementation.deleteUnpublishedEntry(collection, slug);
   }
 
   entryToRaw(collection, entry) {

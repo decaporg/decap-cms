@@ -1,6 +1,7 @@
 import GoTrue from 'gotrue-js';
 import jwtDecode from 'jwt-decode';
 import { fromPairs, get, pick, intersection, unzip } from 'lodash';
+import { Map } from 'immutable';
 import ini from 'ini';
 import { APIError, getBlobSHA, unsentRequest } from 'netlify-cms-lib-util';
 import { GitHubBackend } from 'netlify-cms-backend-github';
@@ -153,7 +154,8 @@ export default class GitGateway {
         tokenPromise: this.tokenPromise,
         commitAuthor: pick(userData, ['name', 'email']),
         squash_merges: this.squash_merges,
-        initialWorkflowStatus: this.options.initialWorkflowStatus,
+        initialWorkflowStatus: this.options.status.first(),
+        statusLabels: this.getStatusLabels(this.options.status),
       };
 
       if (this.backendType === 'github') {
@@ -409,25 +411,35 @@ export default class GitGateway {
   unpublishedEntries() {
     return this.backend.unpublishedEntries();
   }
-  unpublishedEntry(collection, slug, newMeta) {
-    return this.backend.unpublishedEntry(collection, slug, newMeta);
+  unpublishedEntry(collection, slug) {
+    return this.backend.unpublishedEntry(collection, slug);
   }
-  updateUnpublishedEntryStatus(collection, slug, newMeta, newStatus, oldStatus) {
+  migrateUnpublishedEntries(entries) {
+    return this.backend.migrateUnpublishedEntries(entries);
+  }
+  updateUnpublishedEntryStatus(collection, slug, useAnnotations, newStatus, oldStatus) {
     return this.backend.updateUnpublishedEntryStatus(
       collection,
       slug,
-      newMeta,
+      useAnnotations,
       newStatus,
       oldStatus,
     );
   }
-  deleteUnpublishedEntry(collection, slug, newMeta) {
-    return this.backend.deleteUnpublishedEntry(collection, slug, newMeta);
+  deleteUnpublishedEntry(collection, slug) {
+    return this.backend.deleteUnpublishedEntry(collection, slug);
   }
-  publishUnpublishedEntry(collection, slug, newMeta) {
-    return this.backend.publishUnpublishedEntry(collection, slug, newMeta);
+  publishUnpublishedEntry(collection, slug) {
+    return this.backend.publishUnpublishedEntry(collection, slug);
   }
   traverseCursor(cursor, action) {
     return this.backend.traverseCursor(cursor, action);
+  }
+  getStatusLabels(status) {
+    return Map({
+      [status.get('DRAFT')]: Map({ name: 'netlify-cms/draft', color: 'fad8c7' }),
+      [status.get('PENDING_REVIEW')]: Map({ name: 'netlify-cms/review', color: 'fef2c0' }),
+      [status.get('PENDING_PUBLISH')]: Map({ name: 'netlify-cms/publish', color: 'c2e0c6' }),
+    });
   }
 }

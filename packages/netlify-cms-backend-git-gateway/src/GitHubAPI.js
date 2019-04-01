@@ -1,5 +1,6 @@
 import { API as GithubAPI } from 'netlify-cms-backend-github';
-import { APIError } from 'netlify-cms-lib-util';
+import { APIError, unsentRequest } from 'netlify-cms-lib-util';
+import { flow } from 'lodash';
 
 export default class API extends GithubAPI {
   constructor(config) {
@@ -9,6 +10,27 @@ export default class API extends GithubAPI {
     this.commitAuthor = config.commitAuthor;
     this.repoURL = '';
   }
+
+  buildRequest = req =>
+    flow([unsentRequest.withRoot(this.api_root), unsentRequest.withTimestamp])(req);
+
+  performRequest = async req => {
+    const jwtToken = await this.tokenPromise();
+    const reqWithHeaders = {
+      ...req,
+      headers: {
+        ...req.headers,
+        Authorization: `Bearer ${jwtToken}`,
+        ['Content-Type']: 'application/json',
+      },
+    };
+    return flow([
+      this.buildRequest,
+      unsentRequest.performRequest,
+      p =>
+        p.catch(err => Promise.reject(new APIError(err.message || err.msg, null, 'Git Gateway'))),
+    ])(reqWithHeaders);
+  };
 
   hasWriteAccess() {
     return this.getBranch()
@@ -40,52 +62,17 @@ export default class API extends GithubAPI {
       });
   }
 
-  getRequestHeaders(headers = {}) {
-    return this.tokenPromise().then(jwtToken => {
-      const baseHeader = {
-        Authorization: `Bearer ${jwtToken}`,
-        'Content-Type': 'application/json',
-        ...headers,
-      };
-
-      return baseHeader;
-    });
-  }
-
-  urlFor(path, options) {
-    const cacheBuster = new Date().getTime();
-    const params = [`ts=${cacheBuster}`];
-    if (options.params) {
-      for (const key in options.params) {
-        params.push(`${key}=${encodeURIComponent(options.params[key])}`);
-      }
-    }
-    if (params.length) {
-      path += `?${params.join('&')}`;
-    }
-    return this.api_root + path;
-  }
-
   user() {
     return Promise.resolve(this.commitAuthor);
   }
 
-  request(path, options = {}) {
-    const url = this.urlFor(path, options);
+  request(url, options = {}) {
+    const req = { url, ...options };
     let responseStatus;
-    return this.getRequestHeaders(options.headers || {})
-      .then(headers => fetch(url, { ...options, headers }))
+    return this.performRequest(req)
       .then(response => {
         responseStatus = response.status;
-        const contentType = response.headers.get('Content-Type');
-        if (contentType && contentType.match(/json/)) {
-          return this.parseJsonResponse(response);
-        }
-        const text = response.text();
-        if (!response.ok) {
-          return Promise.reject(text);
-        }
-        return text;
+        return this.parseResponse(response);
       })
       .catch(error => {
         throw new APIError(error.message || error.msg, responseStatus, 'Git Gateway');

@@ -131,7 +131,8 @@ export function getPhrases() {
         logOut: 'Log Out',
       },
       toast: {
-        onFailToLoadEntries: 'Failed to load entry: %{details}',
+        onFailToLoadEntries: 'Failed to load entries: %{details}',
+        onFailToMigrateEntries: 'Failed to migrate entries: %{details}',
         onFailToLoadDeployPreview: 'Failed to load preview: %{details}',
         onFailToPersist: 'Failed to persist entry: %{details}',
         onFailToDelete: 'Failed to delete entry: %{details}',

@@ -27,7 +27,7 @@ export default class API {
     unsentRequest.withHeaders(
       {
         ['Content-Type']: 'application/json',
-        ...(this.token && { Authorization: `Bearer ${this.token}` }),
+        ...(this.token && { Authorization: `token ${this.token}` }),
       },
       req,
     );
@@ -39,7 +39,7 @@ export default class API {
       unsentRequest.withTimestamp,
     ])(req);
 
-  performRequest = async req =>
+  performRequest = req =>
     flow([
       this.buildRequest,
       unsentRequest.performRequest,
@@ -199,10 +199,7 @@ export default class API {
     });
   }
 
-  retrieveMetadata(key, collection, newMeta) {
-    if (newMeta) {
-      return this.retrievePrData(key, collection);
-    }
+  retrieveMetadata(key, collection) {
     const cache = localForage.getItem(`gh.meta.${key}`);
     return cache.then(cached => {
       if (cached && cached.expires > Date.now()) {
@@ -232,9 +229,14 @@ export default class API {
     });
   }
 
+  deleteMetadata() {
+    return this.deleteRef('meta', '_netlify_cms');
+  }
+
   retrievePrData(slug, collection) {
     const baseName = this.generateBaseName(collection, slug);
     const branchName = this.generateBranchName(baseName);
+    const oldBranchName = this.generateBranchName(slug);
     const entryFile = file => file.path.includes(slug);
     let pr;
     return this.paginate(`${this.repoURL}/pulls`, {
@@ -244,7 +246,7 @@ export default class API {
       },
     })
       .then(prs => {
-        pr = prs.find(pr => pr.head.ref === branchName);
+        pr = prs.find(pr => [branchName, oldBranchName].includes(pr.head.ref));
         if (!pr) {
           console.log(
             '%c %s branch does not exist',
@@ -262,12 +264,12 @@ export default class API {
         return {
           pr: { number: pr.number, head: pr.head.sha },
           user: pr.head.user.login,
-          branch: branchName,
+          branch: pr.head.ref,
           collection,
           status: this.getLabelStatus(pr.labels.map(label => label.name)),
           objects,
           timeStamp: pr.updated_at,
-          newMeta: true,
+          useAnnotations: true,
         };
       });
   }
@@ -323,8 +325,8 @@ export default class API {
       .then(files => files.filter(file => file.type === 'file'));
   }
 
-  readUnpublishedBranchFile(slug, collection, newMeta) {
-    const metaDataPromise = this.retrieveMetadata(slug, collection, newMeta).then(
+  readUnpublishedBranchFile(slug, collection) {
+    const metaDataPromise = this.retrieveMetadata(slug, collection).then(
       data => (data.objects.entry.path ? data : Promise.reject(null)),
     );
 
@@ -473,11 +475,9 @@ export default class API {
 
   editorialWorkflowGit(fileTree, entry, filesList, options) {
     const contentKey = entry.slug;
-    const oldBranchName = this.generateBranchName(contentKey);
     let branchName = this.generateBranchName(
       this.generateBaseName(options.collectionName, contentKey),
     );
-    const newMeta = options.parsedData && options.parsedData.newMeta;
     const unpublished = options.unpublished || false;
     if (!unpublished) {
       // Open new editorial review workflow for this entry - Create new metadata and commit to new branch`
@@ -490,16 +490,14 @@ export default class API {
     } else {
       // Entry is already on editorial review workflow - just update metadata and commit to existing branch
       let newHead;
-      if (!newMeta) {
-        branchName = oldBranchName;
-      }
+      branchName = options.parsedData.branch;
 
       return this.getBranch(branchName)
         .then(branchData => this.updateTree(branchData.commit.sha, '/', fileTree))
         .then(changeTree => this.commit(options.commitMessage, changeTree))
         .then(commit => {
           newHead = commit;
-          return this.retrieveMetadata(contentKey, options.collectionName, newMeta);
+          return this.retrieveMetadata(contentKey, options.collectionName);
         })
         .then(metadata => {
           const { title, description } = options.parsedData || {};
@@ -517,7 +515,7 @@ export default class API {
            * can just finish the persist operation here.
            */
           if (options.hasAssetStore) {
-            if (newMeta) {
+            if (options.parsedData.useAnnotations) {
               return this.patchBranch(branchName, newHead.sha);
             }
             return this.storeMetadata(contentKey, updatedMetadata).then(() =>
@@ -567,7 +565,7 @@ export default class API {
       const pr = { ...metadata.pr, head: rebasedHead.sha };
       const timeStamp = new Date().toISOString();
       const updatedMetadata = { ...metadata, pr, timeStamp };
-      if (!metadata.newMeta) {
+      if (!metadata.useAnnotations) {
         await this.storeMetadata(contentKey, updatedMetadata);
       }
       return this.patchBranch(branchName, rebasedHead.sha, { force: true });
@@ -680,29 +678,27 @@ export default class API {
     throw Error('Editorial workflow branch changed unexpectedly.');
   }
 
-  updateUnpublishedEntryStatus(collection, slug, newMeta, newStatus, oldStatus) {
+  updateUnpublishedEntryStatus(collection, slug, useAnnotations, newStatus, oldStatus) {
     const contentKey = slug;
-    let prNumber;
-    return this.retrieveMetadata(contentKey, collection, newMeta)
+    return this.retrieveMetadata(contentKey, collection)
       .then(metadata => ({ ...metadata, status: newStatus }))
       .then(updatedMetadata => {
-        prNumber = updatedMetadata.pr.number;
-        if (newMeta) {
-          return this.updateStatusLabel(prNumber, newStatus, oldStatus);
+        if (useAnnotations) {
+          return this.updateStatusLabel(updatedMetadata.pr.number, newStatus, oldStatus);
         }
         return this.storeMetadata(contentKey, updatedMetadata);
       });
   }
 
-  deleteUnpublishedEntry(collection, slug, newMeta) {
+  deleteUnpublishedEntry(collection, slug) {
     const contentKey = slug;
-    let branchName = this.generateBranchName(contentKey);
-    if (newMeta) {
-      branchName = this.generateBranchName(this.generateBaseName(collection, contentKey));
-    }
+    let branchName;
     return (
-      this.retrieveMetadata(contentKey, collection, newMeta)
-        .then(metadata => this.closePR(metadata.pr))
+      this.retrieveMetadata(contentKey, collection)
+        .then(metadata => {
+          branchName = metadata.branch;
+          return this.closePR(metadata.pr);
+        })
         .then(() => this.deleteBranch(branchName))
         // If the PR doesn't exist, then this has already been deleted -
         // deletion should be idempotent, so we can consider this a
@@ -716,14 +712,14 @@ export default class API {
     );
   }
 
-  publishUnpublishedEntry(collection, slug, newMeta) {
+  publishUnpublishedEntry(collection, slug) {
     const contentKey = slug;
-    let branchName = this.generateBranchName(contentKey);
-    if (newMeta) {
-      branchName = this.generateBranchName(this.generateBaseName(collection, contentKey));
-    }
-    return this.retrieveMetadata(contentKey, collection, newMeta)
-      .then(metadata => this.mergePR(metadata.pr, metadata.objects))
+    let branchName;
+    return this.retrieveMetadata(contentKey, collection)
+      .then(metadata => {
+        branchName = metadata.branch;
+        return this.mergePR(metadata.pr, metadata.objects);
+      })
       .then(() => this.deleteBranch(branchName));
   }
 
@@ -812,7 +808,7 @@ export default class API {
   }
 
   updateStatusLabel(prNumber, newStatus, oldStatus) {
-    this.removeLabel(prNumber, this.statusLabels.getIn([oldStatus, 'name']))
+    return this.removeLabel(prNumber, this.statusLabels.getIn([oldStatus, 'name']))
       .then(() => this.checkStatusLabel(newStatus))
       .then(labelName => this.addLabel(prNumber, labelName));
   }

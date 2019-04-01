@@ -211,22 +211,23 @@ export default class GitHub {
                 .split('refs/heads/cms/')
                 .pop()
                 .split('--');
-              let newMeta = false;
               let collection;
               let [slug] = collectionAndOrSlug;
               if (collectionAndOrSlug.length > 1) {
                 [collection, slug] = collectionAndOrSlug;
-                newMeta = true;
               }
               return sem.take(() =>
                 this.api
-                  .readUnpublishedBranchFile(slug, collection, newMeta)
+                  .readUnpublishedBranchFile(slug, collection)
                   .then(data => {
                     if (data === null || data === undefined) {
                       resolve(null);
                       sem.leave();
                     } else {
                       const path = data.metaData.objects.entry.path;
+                      if (!data.metaData.collection) {
+                        data.metaData.collection = this.inferCollection(path);
+                      }
                       resolve({
                         slug,
                         file: { path },
@@ -255,8 +256,8 @@ export default class GitHub {
       });
   }
 
-  unpublishedEntry(collection, slug, newMeta) {
-    return this.api.readUnpublishedBranchFile(slug, collection.get('name'), newMeta).then(data => {
+  unpublishedEntry(collection, slug) {
+    return this.api.readUnpublishedBranchFile(slug, collection.get('name')).then(data => {
       if (!data) return null;
       return {
         slug,
@@ -274,8 +275,8 @@ export default class GitHub {
    * status, as well as the status state, which should be one of 'success',
    * 'pending', and 'failure'.
    */
-  async getDeployPreview(collection, slug, newMeta) {
-    const data = await this.api.retrieveMetadata(slug, collection.get('name'), newMeta);
+  async getDeployPreview(collection, slug) {
+    const data = await this.api.retrieveMetadata(slug, collection.get('name'));
 
     if (!data) {
       return null;
@@ -290,22 +291,64 @@ export default class GitHub {
     }
   }
 
+  async migrateUnpublishedEntries(entries) {
+    const errors = [];
+    const entriesMigration = entries
+      .map(entry => {
+        return this.updateUnpublishedEntryStatus(
+          null,
+          entry.slug,
+          true,
+          entry.metaData.status,
+          entry.metaData.status,
+        );
+      })
+      .map(p => p.catch(err => errors.push(err)));
+
+    await Promise.all(entriesMigration);
+
+    if (errors.length > 0) {
+      throw new Error('Error migrating entries');
+    }
+
+    return this.api.deleteMetadata();
+  }
+
   getStatusLabels(status) {
     return Map({
-      [status.get('DRAFT')]: Map({ name: 'draft', color: 'fad8c7' }),
-      [status.get('PENDING_REVIEW')]: Map({ name: 'pending: review', color: 'fef2c0' }),
-      [status.get('PENDING_PUBLISH')]: Map({ name: 'pending: publish', color: 'c2e0c6' }),
+      [status.get('DRAFT')]: Map({ name: 'netlify-cms/draft', color: 'fad8c7' }),
+      [status.get('PENDING_REVIEW')]: Map({ name: 'netlify-cms/review', color: 'fef2c0' }),
+      [status.get('PENDING_PUBLISH')]: Map({ name: 'netlify-cms/publish', color: 'c2e0c6' }),
     });
   }
 
-  updateUnpublishedEntryStatus(collection, slug, newMeta, newStatus, oldStatus) {
-    return this.api.updateUnpublishedEntryStatus(collection, slug, newMeta, newStatus, oldStatus);
+  inferCollection(path) {
+    const collections = this.config.get('collections').toJS();
+    const collection = collections.find(collection => {
+      return (
+        (collection.files && collection.files.some(f => f.file === path)) ||
+        path.indexOf(collection.folder) >= 0
+      );
+    });
+
+    return collection && collection.name;
   }
 
-  deleteUnpublishedEntry(collection, slug, newMeta) {
-    return this.api.deleteUnpublishedEntry(collection, slug, newMeta);
+  updateUnpublishedEntryStatus(collection, slug, useAnnotations, newStatus, oldStatus) {
+    return this.api.updateUnpublishedEntryStatus(
+      collection,
+      slug,
+      useAnnotations,
+      newStatus,
+      oldStatus,
+    );
   }
-  publishUnpublishedEntry(collection, slug, newMeta) {
-    return this.api.publishUnpublishedEntry(collection, slug, newMeta);
+
+  deleteUnpublishedEntry(collection, slug) {
+    return this.api.deleteUnpublishedEntry(collection, slug);
+  }
+
+  publishUnpublishedEntry(collection, slug) {
+    return this.api.publishUnpublishedEntry(collection, slug);
   }
 }

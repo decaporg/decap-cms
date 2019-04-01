@@ -124,24 +124,24 @@ class WorkflowList extends React.Component {
     const slug = dragProps.slug;
     const collection = dragProps.collection;
     const oldStatus = dragProps.ownStatus;
-    const newMeta = dragProps.newMeta;
-    this.props.handleChangeStatus(collection, slug, newMeta, oldStatus, newStatus);
+    const useAnnotations = dragProps.useAnnotations;
+    this.props.handleChangeStatus(collection, slug, useAnnotations, oldStatus, newStatus);
   };
 
-  requestDelete = (collection, slug, newMeta) => {
+  requestDelete = (collection, slug) => {
     if (window.confirm(this.props.t('workflow.workflowList.onDeleteEntry'))) {
-      this.props.handleDelete(collection, slug, newMeta);
+      this.props.handleDelete(collection, slug);
     }
   };
 
-  requestPublish = (collection, slug, ownStatus, newMeta) => {
+  requestPublish = (collection, slug, ownStatus) => {
     if (ownStatus !== status.last()) {
       window.alert(this.props.t('workflow.workflowList.onPublishingNotReadyEntry'));
       return;
     } else if (!window.confirm(this.props.t('workflow.workflowList.onPublishEntry'))) {
       return;
     }
-    this.props.handlePublish(collection, slug, newMeta);
+    this.props.handlePublish(collection, slug);
   };
 
   // eslint-disable-next-line react/display-name
@@ -194,7 +194,7 @@ class WorkflowList extends React.Component {
           const collection = entry.getIn(['metaData', 'collection']);
           const isModification = entry.get('isModification');
           const canPublish = ownStatus === status.last() && !entry.get('isPersisting', false);
-          const newMeta = entry.getIn(['metaData', 'newMeta']);
+          const useAnnotations = entry.getIn(['metaData', 'useAnnotations']);
           return (
             <DragSource
               namespace={DNDNamespace}
@@ -202,7 +202,7 @@ class WorkflowList extends React.Component {
               slug={slug}
               collection={collection}
               ownStatus={ownStatus}
-              newMeta={newMeta}
+              useAnnotations={useAnnotations}
             >
               {connect =>
                 connect(
@@ -215,15 +215,9 @@ class WorkflowList extends React.Component {
                       isModification={isModification}
                       editLink={editLink}
                       timestamp={timestamp}
-                      onDelete={this.requestDelete.bind(this, collection, slug, newMeta)}
+                      onDelete={this.requestDelete.bind(this, collection, slug)}
                       canPublish={canPublish}
-                      onPublish={this.requestPublish.bind(
-                        this,
-                        collection,
-                        slug,
-                        ownStatus,
-                        newMeta,
-                      )}
+                      onPublish={this.requestPublish.bind(this, collection, slug, ownStatus)}
                     />
                   </div>,
                 )
