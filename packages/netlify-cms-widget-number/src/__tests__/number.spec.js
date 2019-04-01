@@ -119,4 +119,15 @@ describe('Number widget', () => {
     expect(onChangeSpy).toHaveBeenCalledTimes(1);
     expect(onChangeSpy).toHaveBeenCalledWith(parseInt(testValue, 10));
   });
+
+  it('should allow 0 as a value', () => {
+    const field = fromJS(fieldSettings);
+    const testValue = 0;
+    const { input } = setup({ field });
+
+    fireEvent.focus(input);
+    fireEvent.change(input, { target: { value: String(testValue) } });
+
+    expect(input.value).toBe('0');
+  });
 });
