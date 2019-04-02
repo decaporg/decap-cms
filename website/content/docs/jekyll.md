@@ -1,3 +1,9 @@
+---
+title: Jekyll
+weight: 20
+group: guides
+---
+
 ## Introduction
 
 This section will help you integrate Netlify CMS with a new or existing Jekyll project.
