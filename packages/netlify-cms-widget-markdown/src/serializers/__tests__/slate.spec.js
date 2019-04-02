@@ -88,7 +88,7 @@ describe('slate', () => {
     expect(slateToMarkdown(slateAst)).toEqual('foo **bar**');
   });
 
-  describe('with nested styles within a single word', () => {
+  describe.skip('with nested styles within a single word', () => {
     it('should not produce invalid markdown when a bold word has italics applied to a smaller part', () => {
       const slateAst = {
         object: 'block',
