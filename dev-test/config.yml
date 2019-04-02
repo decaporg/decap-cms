@@ -15,6 +15,7 @@ collections: # A list of collections the CMS should be able to edit
       guidelines that are specific to a collection.
     folder: '_posts'
     slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
+    summary: '{{title}} -- {{year}}/{{month}}/{{day}}'
     create: true # Allow users to create new documents in this collection
     fields: # The fields each document in this collection have
       - { label: 'Title', name: 'title', widget: 'string', tagname: 'h1' }

@@ -1,5 +1,12 @@
 import controlComponent from './TextControl';
 import previewComponent from './TextPreview';
 
-export const NetlifyCmsWidgetText = { controlComponent, previewComponent };
-export { controlComponent, previewComponent };
+const Widget = (opts = {}) => ({
+  name: 'text',
+  controlComponent,
+  previewComponent,
+  ...opts,
+});
+
+export const NetlifyCmsWidgetText = { Widget, controlComponent, previewComponent };
+export default NetlifyCmsWidgetText;

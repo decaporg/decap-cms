@@ -1,4 +1,12 @@
 import controlComponent from './RelationControl';
 import previewComponent from './RelationPreview';
-export const NetlifyCmsWidgetRelation = { controlComponent, previewComponent };
-export { controlComponent, previewComponent };
+
+const Widget = (opts = {}) => ({
+  name: 'relation',
+  controlComponent,
+  previewComponent,
+  ...opts,
+});
+
+export const NetlifyCmsWidgetRelation = { Widget, controlComponent, previewComponent };
+export default NetlifyCmsWidgetRelation;

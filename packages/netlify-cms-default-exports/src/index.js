@@ -40,15 +40,3 @@ export const NetlifyCmsDefaultExports = {
   ReactDOM,
   UUId,
 };
-export {
-  EmotionCore,
-  EmotionStyled,
-  Immutable,
-  ImmutablePropTypes,
-  Lodash,
-  Moment,
-  PropTypes,
-  React,
-  ReactDOM,
-  UUId,
-};
