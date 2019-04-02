@@ -22,7 +22,7 @@ This guide aims to be helpful for users in the following situations.
 
 ### Create a Jekyll Site
 
-This guide will use the blog you get if you follow the [really excellent official Jekyll step by step tutorial](https://jekyllrb.com/docs/step-by-step/01-setup/) as a starting point. If you're new to Jekyll - I recommended you start by following the tutorial so you know your way around your new blog. Otherwise [you can clone this repo](https://github.com/adamwatters/jekyll-tutorial-blog) and checkout the `without-cms` branch.
+This guide will use the blog you get if you follow the [really excellent official Jekyll step by step tutorial](https://jekyllrb.com/docs/step-by-step/01-setup/) as a starting point. If you're new to Jekyll - I recommended you start by following the tutorial so you know your way around your new blog. Otherwise [you can clone this repo](https://github.com/adamwatters/jekyll-tutorial-with-netlify-cms/tree/without-cms) and checkout the `without-cms` branch.
 
 ![Jekyll tutorial blog screenshot](https://www.netlifycms.org/img/screenshot-jekyll-tutorial-blog?raw=true)
 
@@ -111,9 +111,9 @@ Copy and paste the following into `config.yml`
 
 backend:
   name: test-repo
-media_folder: "assets/"
+media_folder: 'assets/'
 collections:
-  - name: "blog"
+  - name: 'blog'
 ```
 
 Back in the browser you should see a new set of errors.
@@ -142,11 +142,11 @@ Update `config.yml` like so.
 
 backend:
   name: test-repo
-media_folder: "assets/uploads"
+media_folder: 'assets/uploads'
 collections:
-  - name: "blog"
-    label: "Blog"
-    folder: "_posts/"
+  - name: 'blog'
+    label: 'Blog'
+    folder: '_posts/'
     fields:
       - { name: Title }
 ```
@@ -243,18 +243,18 @@ We'll start by updating the `blog` collection. Blogging is baked into into Jekyl
 
 ```yaml
 collections:
-  - name: "blog"
-    label: "Blog"
-    folder: "_posts/"
+  - name: 'blog'
+    label: 'Blog'
+    folder: '_posts/'
     create: true # Allow users to create new documents in this collection
-    slug: "{{year}}-{{month}}-{{day}}-{{slug}}" # Filename template, e.g., YYYY-MM-DD-title.md
+    slug: '{{year}}-{{month}}-{{day}}-{{slug}}' # Filename template, e.g., YYYY-MM-DD-title.md
     editor:
       preview: false
     fields: # The fields for each document, usually in front matter
-      - { label: "Layout", name: "layout", widget: "hidden", default: "post" }
-      - { label: "Title", name: "title", widget: "string" }
-      - { label: "Publish Date", name: "date", widget: "datetime" }
-      - { label: "Body", name: "body", widget: "markdown" }
+      - { label: 'Layout', name: 'layout', widget: 'hidden', default: 'post' }
+      - { label: 'Title', name: 'title', widget: 'string' }
+      - { label: 'Publish Date', name: 'date', widget: 'datetime' }
+      - { label: 'Body', name: 'body', widget: 'markdown' }
 ```
 
 A few things to note.
@@ -330,18 +330,18 @@ then update `_layouts/author.html` and `staff.html` accordingly.
 Next, copy and paste the following into the collections array in `config.yml` below the `blog` collection.
 
 ```yaml
-- name: "authors"
-  label: "Authors"
-  folder: "_authors/"
+- name: 'authors'
+  label: 'Authors'
+  folder: '_authors/'
   create: true
   editor:
     preview: false
   fields:
-    - { label: "Layout", name: "layout", widget: "hidden", default: "author" }
-    - { label: "Short Name", name: "name", widget: "string" }
-    - { label: "Diplay Name", name: "display_name", widget: "string" }
-    - { label: "Position", name: "position", widget: "string" }
-    - { label: "Body", name: "body", widget: "markdown" }
+    - { label: 'Layout', name: 'layout', widget: 'hidden', default: 'author' }
+    - { label: 'Short Name', name: 'name', widget: 'string' }
+    - { label: 'Diplay Name', name: 'display_name', widget: 'string' }
+    - { label: 'Position', name: 'position', widget: 'string' }
+    - { label: 'Body', name: 'body', widget: 'markdown' }
 ```
 
 Now that we have the `authors` collection configured, we can add an `author` field to the `blog` collection. We'll use the [relation widget](https://www.netlifycms.org/docs/widgets/#relation) to define the relationship between blog posts and authors.
@@ -349,19 +349,19 @@ Now that we have the `authors` collection configured, we can add an `author` fie
 ```yaml
 # updated fields in blog collection configuration
 fields:
-  - { label: "Layout", name: "layout", widget: "hidden", default: "post" }
-  - { label: "Title", name: "title", widget: "string" }
-  - { label: "Publish Date", name: "date", widget: "datetime" }
+  - { label: 'Layout', name: 'layout', widget: 'hidden', default: 'post' }
+  - { label: 'Title', name: 'title', widget: 'string' }
+  - { label: 'Publish Date', name: 'date', widget: 'datetime' }
   - {
-      label: "Author",
-      name: "author",
-      widget: "relation",
-      collection: "authors",
+      label: 'Author',
+      name: 'author',
+      widget: 'relation',
+      collection: 'authors',
       displayFields: [display_name],
       searchFields: [display_name],
-      valueField: "name",
+      valueField: 'name',
     }
-  - { label: "Body", name: "body", widget: "markdown" }
+  - { label: 'Body', name: 'body', widget: 'markdown' }
 ```
 
 With that configuration added, you should be able to select the author for a post from a dropdown.
@@ -373,18 +373,18 @@ Our Jekyll blog includes an About page. It would nice to be able to edit that pa
 Copy and paste the following into the collections array in `config.yml`
 
 ```yaml
-- name: "pages"
-  label: "Pages"
+- name: 'pages'
+  label: 'Pages'
   editor:
     preview: false
   files:
-    - label: "About Page"
-      name: "about"
-      file: "about.md"
+    - label: 'About Page'
+      name: 'about'
+      file: 'about.md'
       fields:
-        - { label: "Title", name: "title", widget: "hidden", default: "about" }
-        - { label: "Layout", name: "title", widget: "hidden", default: "about" }
-        - { label: "Body", name: "body", widget: "markdown" }
+        - { label: 'Title', name: 'title', widget: 'hidden', default: 'about' }
+        - { label: 'Layout', name: 'title', widget: 'hidden', default: 'about' }
+        - { label: 'Body', name: 'body', widget: 'markdown' }
 ```
 
 ### Navigation
