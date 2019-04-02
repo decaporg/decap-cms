@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.3.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-number/compare/netlify-cms-widget-number@2.3.1...netlify-cms-widget-number@2.3.2) (2019-04-02)
+
+
+### Bug Fixes
+
+* **widget-number:** allow zero as value ([#2261](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-number/issues/2261)) ([800c3ee](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-number/commit/800c3ee))
+
+
+
+
+
 ## [2.3.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-number/compare/netlify-cms-widget-number@2.3.1-beta.2...netlify-cms-widget-number@2.3.1) (2019-03-29)
 
 **Note:** Version bump only for package netlify-cms-widget-number

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.11.0-beta.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.11.0-beta.0...netlify-cms-core@2.11.0-beta.1) (2019-04-02)
+
+
+### Bug Fixes
+
+* redirect when a collection doesn't exist ([#2208](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2208)) ([9e08b65](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/9e08b65))
+
+
+
+
+
 # [2.11.0-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.10.1...netlify-cms-core@2.11.0-beta.0) (2019-03-29)
 
 
