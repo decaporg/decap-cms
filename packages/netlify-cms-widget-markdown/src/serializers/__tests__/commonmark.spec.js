@@ -13,11 +13,7 @@ const spec = commonmarkSpec.map(({ markdown, html }) => [markdown, html]);
  * compliance. To test all of our handling in one go, we serialize the markdown
  * into our Slate AST, then back to raw markdown, and finally to HTML.
  */
-const process = flow([
-  markdownToSlate,
-  slateToMarkdown,
-  markdownToHtml,
-]);
+const process = flow([markdownToSlate, slateToMarkdown, markdownToHtml]);
 
 /**
  * Passing this test suite requires 100% Commonmark compliance. There are 624
