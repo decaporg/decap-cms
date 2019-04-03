@@ -14,8 +14,7 @@ import remarkPaddedLinks from './remarkPaddedLinks';
 import remarkWrapHtml from './remarkWrapHtml';
 import remarkToSlate from './remarkSlate';
 import remarkSquashReferences from './remarkSquashReferences';
-import remarkImagesToText from './remarkImagesToText';
-import remarkShortcodes from './remarkShortcodes';
+import { remarkParseShortcodes, createRemarkShortcodeStringifier } from './remarkShortcodes';
 import remarkEscapeMarkdownEntities from './remarkEscapeMarkdownEntities';
 import remarkStripTrailingBreaks from './remarkStripTrailingBreaks';
 import remarkAllowHtmlEntities from './remarkAllowHtmlEntities';
@@ -66,6 +65,7 @@ export const markdownToRemark = markdown => {
   const parsed = unified()
     .use(markdownToRemarkPlugin, { fences: true, commonmark: true })
     .use(markdownToRemarkRemoveTokenizers, { inlineTokenizers: ['url'] })
+    .use(remarkParseShortcodes, { plugins: getEditorComponents() })
     .use(remarkAllowHtmlEntities)
     .parse(markdown);
 
@@ -74,8 +74,6 @@ export const markdownToRemark = markdown => {
    */
   const result = unified()
     .use(remarkSquashReferences)
-    .use(remarkImagesToText)
-    .use(remarkShortcodes, { plugins: getEditorComponents() })
     .runSync(parsed);
 
   return result;
@@ -136,6 +134,7 @@ export const remarkToMarkdown = obj => {
   const markdown = unified()
     .use(remarkToMarkdownPlugin, remarkToMarkdownPluginOpts)
     .use(remarkAllowAllText)
+    .use(createRemarkShortcodeStringifier({ plugins: getEditorComponents() }))
     .stringify(processedMdast);
 
   /**
@@ -179,8 +178,6 @@ export const htmlToSlate = html => {
   const slateRaw = unified()
     .use(remarkAssertParents)
     .use(remarkPaddedLinks)
-    .use(remarkImagesToText)
-    .use(remarkShortcodes, { plugins: getEditorComponents() })
     .use(remarkWrapHtml)
     .use(remarkToSlate)
     .runSync(mdast);
