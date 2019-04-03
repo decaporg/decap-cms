@@ -185,7 +185,7 @@ export default class TestBackend {
     return Promise.resolve();
   }
 
-  updateUnpublishedEntryStatus(collection, slug, newStatus) {
+  updateUnpublishedEntryStatus(collection, slug, useAnnotations, newStatus) {
     const unpubStore = window.repoFilesUnpublished;
     const entryIndex = unpubStore.findIndex(
       e => e.metaData.collection === collection && e.slug === slug,
