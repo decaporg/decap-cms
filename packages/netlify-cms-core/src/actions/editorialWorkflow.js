@@ -290,7 +290,7 @@ export function loadUnpublishedEntries(collections) {
     if (state.editorialWorkflow.get('loaded')) return;
     const backend = currentBackend(state.config);
     dispatch(unpublishedEntriesLoading());
-    return backend
+    backend
       .unpublishedEntries(collections)
       .then(response => {
         const entriesUsingMeta = response.entries.filter(
@@ -301,7 +301,7 @@ export function loadUnpublishedEntries(collections) {
           state.config.getIn(['backend', 'editorial_workflow_labels']) &&
           entriesUsingMeta.length
         ) {
-          return dispatch(migrateUnpublishedEntries(entriesUsingMeta));
+          dispatch(migrateUnpublishedEntries(entriesUsingMeta));
         }
       })
       .catch(error => {
