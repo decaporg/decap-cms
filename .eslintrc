@@ -12,6 +12,7 @@
   },
   "globals": {
     "NETLIFY_CMS_VERSION": false,
+    "NETLIFY_CMS_APP_VERSION": false,
     "NETLIFY_CMS_CORE_VERSION": false,
     "CMS_ENV": false
   },
