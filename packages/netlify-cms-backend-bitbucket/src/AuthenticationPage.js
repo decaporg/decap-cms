@@ -40,7 +40,6 @@ export default class BitbucketAuthenticationPage extends React.Component {
           this.setState({ loginError: err.toString() });
           return;
         }
-        console.log('Got data:', data);
         this.props.onLogin(data);
       });
       this.authSettings = { scope: 'repository:write' };
