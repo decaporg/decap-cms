@@ -142,6 +142,20 @@ To enable it:
       repo: owner-name/repo-name # Path to your Bitbucket repository
     ```
 
+### Client-Side Implicit Grant
+
+With Bitbucket's Implicit Grant, users can authenticate with Bitbucket directly from the client. To do this:
+
+1. Follow the authentication provider setup steps in the [Netlify docs](https://www.netlify.com/docs/authentication-providers/#using-an-authentication-provider), make sure you allow 'Account/Read' and 'Repository/Write'.
+2. Bitbucket gives you a **Key**. Copy this Key and enter it in your Netlify CMD `config.yml` file, along with the following settings:
+
+    backend:
+      name: bitbucket
+      repo: owner-name/repo-name
+      branch: default
+      auth_type: implicit
+      app_id: # The Key from your Bitbucket settings
+
 ## Test Repo Backend
 You can use the `test-repo` backend to try out Netlify CMS without connecting to a Git repo. With this backend, you can write and publish content normally, but any changes will disapear when you reload the page. This backend powers the Netlify CMS [demo site](https://cms-demo.netlify.com/).
 
