@@ -458,7 +458,6 @@ class Backend {
   unpublishedEntries(collections) {
     return this.implementation
       .unpublishedEntries()
-      .then(loadedEntries => loadedEntries.filter(entry => entry !== null))
       .then(entries =>
         entries.map(loadedEntry => {
           const entry = createEntry(
@@ -659,14 +658,8 @@ class Backend {
     return this.persistEntry(...args, { unpublished: true });
   }
 
-  updateUnpublishedEntryStatus(collection, slug, useAnnotations, newStatus, oldStatus) {
-    return this.implementation.updateUnpublishedEntryStatus(
-      collection,
-      slug,
-      useAnnotations,
-      newStatus,
-      oldStatus,
-    );
+  updateUnpublishedEntryStatus(collection, slug, newStatus, oldStatus) {
+    return this.implementation.updateUnpublishedEntryStatus(collection, slug, newStatus, oldStatus);
   }
 
   migrateUnpublishedEntries(entries) {

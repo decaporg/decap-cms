@@ -678,12 +678,12 @@ export default class API {
     throw Error('Editorial workflow branch changed unexpectedly.');
   }
 
-  updateUnpublishedEntryStatus(collection, slug, useAnnotations, newStatus, oldStatus) {
+  updateUnpublishedEntryStatus(collection, slug, newStatus, oldStatus) {
     const contentKey = slug;
     return this.retrieveMetadata(contentKey, collection)
       .then(metadata => ({ ...metadata, status: newStatus }))
       .then(updatedMetadata => {
-        if (useAnnotations) {
+        if (updatedMetadata.useAnnotations) {
           return this.updateStatusLabel(updatedMetadata.pr.number, newStatus, oldStatus);
         }
         return this.storeMetadata(contentKey, updatedMetadata);

@@ -49,6 +49,9 @@ export default class GitHub {
     }
 
     this.api = this.options.API || null;
+    if (this.api) {
+      this.api.statusLabels = this.getStatusLabels(this.options.status);
+    }
 
     this.repo = config.getIn(['backend', 'repo'], '');
     this.branch = config.getIn(['backend', 'branch'], 'master').trim();
@@ -246,7 +249,24 @@ export default class GitHub {
             }),
           );
         });
-        return Promise.all(promises);
+        return Promise.all(promises)
+          .then(loadedEntries => loadedEntries.filter(entry => entry !== null))
+          .then(entries => {
+            const entriesUsingMeta = entries.filter(({ metaData }) => !metaData.useAnnotations);
+
+            if (
+              this.config.getIn(['backend', 'editorial_workflow_labels']) &&
+              entriesUsingMeta.length
+            ) {
+              return this.migrateUnpublishedEntries(entriesUsingMeta).then(() => {
+                return entries.map(entry => ({
+                  ...entry,
+                  metaData: { ...entry.metaData, useAnnotations: true },
+                }));
+              });
+            }
+            return entries;
+          });
       })
       .catch(error => {
         if (error.message === 'Not Found') {
@@ -295,10 +315,8 @@ export default class GitHub {
     const errors = [];
     const entriesMigration = entries
       .map(entry => {
-        return this.updateUnpublishedEntryStatus(
-          null,
-          entry.slug,
-          true,
+        return this.api.updateStatusLabel(
+          entry.metaData.pr.number,
           entry.metaData.status,
           entry.metaData.status,
         );
@@ -334,14 +352,8 @@ export default class GitHub {
     return collection && collection.name;
   }
 
-  updateUnpublishedEntryStatus(collection, slug, useAnnotations, newStatus, oldStatus) {
-    return this.api.updateUnpublishedEntryStatus(
-      collection,
-      slug,
-      useAnnotations,
-      newStatus,
-      oldStatus,
-    );
+  updateUnpublishedEntryStatus(collection, slug, newStatus, oldStatus) {
+    return this.api.updateUnpublishedEntryStatus(collection, slug, newStatus, oldStatus);
   }
 
   deleteUnpublishedEntry(collection, slug) {

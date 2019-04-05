@@ -24,7 +24,7 @@ class EntriesCollection extends React.Component {
     traverseCollectionCursor: PropTypes.func.isRequired,
   };
 
-  async componentDidMount() {
+  componentDidMount() {
     const { collection, entriesLoaded, loadEntries } = this.props;
 
     if (collection && !entriesLoaded) {

@@ -226,7 +226,6 @@ class Editor extends React.Component {
       collection,
       slug,
       currentStatus,
-      useAnnotations,
       t,
     } = this.props;
     if (entryDraft.get('hasChanged')) {
@@ -234,13 +233,7 @@ class Editor extends React.Component {
       return;
     }
     const newStatus = status.get(newStatusName);
-    updateUnpublishedEntryStatus(
-      collection.get('name'),
-      slug,
-      useAnnotations,
-      currentStatus,
-      newStatus,
-    );
+    updateUnpublishedEntryStatus(collection.get('name'), slug, currentStatus, newStatus);
   };
 
   deleteBackup() {
@@ -433,7 +426,6 @@ function mapStateToProps(state, ownProps) {
   const collectionEntriesLoaded = !!entries.getIn(['pages', collectionName]);
   const unpublishedEntry = selectUnpublishedEntry(state, collectionName, slug);
   const currentStatus = unpublishedEntry && unpublishedEntry.getIn(['metaData', 'status']);
-  const useAnnotations = unpublishedEntry && unpublishedEntry.getIn(['metaData', 'useAnnotations']);
   const deployPreview = selectDeployPreview(state, collectionName, slug);
   const localBackup = entryDraft.get('localBackup');
   return {
@@ -452,7 +444,6 @@ function mapStateToProps(state, ownProps) {
     isModification,
     collectionEntriesLoaded,
     currentStatus,
-    useAnnotations,
     deployPreview,
     localBackup,
   };

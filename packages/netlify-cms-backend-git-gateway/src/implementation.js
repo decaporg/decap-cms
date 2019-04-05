@@ -1,7 +1,6 @@
 import GoTrue from 'gotrue-js';
 import jwtDecode from 'jwt-decode';
 import { fromPairs, get, pick, intersection, unzip } from 'lodash';
-import { Map } from 'immutable';
 import ini from 'ini';
 import { APIError, getBlobSHA, unsentRequest } from 'netlify-cms-lib-util';
 import { GitHubBackend } from 'netlify-cms-backend-github';
@@ -155,7 +154,6 @@ export default class GitGateway {
         commitAuthor: pick(userData, ['name', 'email']),
         squash_merges: this.squash_merges,
         initialWorkflowStatus: this.options.status.first(),
-        statusLabels: this.getStatusLabels(this.options.status),
       };
 
       if (this.backendType === 'github') {
@@ -434,12 +432,5 @@ export default class GitGateway {
   }
   traverseCursor(cursor, action) {
     return this.backend.traverseCursor(cursor, action);
-  }
-  getStatusLabels(status) {
-    return Map({
-      [status.get('DRAFT')]: Map({ name: 'netlify-cms/draft', color: 'fad8c7' }),
-      [status.get('PENDING_REVIEW')]: Map({ name: 'netlify-cms/review', color: 'fef2c0' }),
-      [status.get('PENDING_PUBLISH')]: Map({ name: 'netlify-cms/publish', color: 'c2e0c6' }),
-    });
   }
 }

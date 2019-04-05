@@ -23,10 +23,6 @@ export const UNPUBLISHED_ENTRIES_REQUEST = 'UNPUBLISHED_ENTRIES_REQUEST';
 export const UNPUBLISHED_ENTRIES_SUCCESS = 'UNPUBLISHED_ENTRIES_SUCCESS';
 export const UNPUBLISHED_ENTRIES_FAILURE = 'UNPUBLISHED_ENTRIES_FAILURE';
 
-export const UNPUBLISHED_ENTRIES_MIGRATION_REQUEST = 'UNPUBLISHED_ENTRIES_MIGRATION_REQUEST';
-export const UNPUBLISHED_ENTRIES_MIGRATION_SUCCESS = 'UNPUBLISHED_ENTRIES_MIGRATION_SUCCESS';
-export const UNPUBLISHED_ENTRIES_MIGRATION_FAILURE = 'UNPUBLISHED_ENTRIES_MIGRATION_FAILURE';
-
 export const UNPUBLISHED_ENTRY_PERSIST_REQUEST = 'UNPUBLISHED_ENTRY_PERSIST_REQUEST';
 export const UNPUBLISHED_ENTRY_PERSIST_SUCCESS = 'UNPUBLISHED_ENTRY_PERSIST_SUCCESS';
 export const UNPUBLISHED_ENTRY_PERSIST_FAILURE = 'UNPUBLISHED_ENTRY_PERSIST_FAILURE';
@@ -97,28 +93,6 @@ function unpublishedEntriesFailed(error) {
   return {
     type: UNPUBLISHED_ENTRIES_FAILURE,
     error: 'Failed to load entries',
-    payload: error,
-  };
-}
-
-function unpublishedEntriesMigrating() {
-  return {
-    type: UNPUBLISHED_ENTRIES_MIGRATION_REQUEST,
-  };
-}
-
-function unpublishedEntriesMigrated(entries) {
-  return {
-    type: UNPUBLISHED_ENTRIES_MIGRATION_SUCCESS,
-    payload: {
-      entries,
-    },
-  };
-}
-
-function unpublishedEntriesMigrationFailed(error) {
-  return {
-    type: UNPUBLISHED_ENTRIES_MIGRATION_FAILURE,
     payload: error,
   };
 }
@@ -292,18 +266,7 @@ export function loadUnpublishedEntries(collections) {
     dispatch(unpublishedEntriesLoading());
     backend
       .unpublishedEntries(collections)
-      .then(response => {
-        const entriesUsingMeta = response.entries.filter(
-          ({ metaData }) => !metaData.useAnnotations,
-        );
-        dispatch(unpublishedEntriesLoaded(response.entries, response.pagination));
-        if (
-          state.config.getIn(['backend', 'editorial_workflow_labels']) &&
-          entriesUsingMeta.length
-        ) {
-          dispatch(migrateUnpublishedEntries(entriesUsingMeta));
-        }
-      })
+      .then(response => dispatch(unpublishedEntriesLoaded(response.entries, response.pagination)))
       .catch(error => {
         dispatch(
           notifSend({
@@ -316,32 +279,6 @@ export function loadUnpublishedEntries(collections) {
           }),
         );
         dispatch(unpublishedEntriesFailed(error));
-        Promise.reject(error);
-      });
-  };
-}
-
-export function migrateUnpublishedEntries(entries) {
-  return (dispatch, getState) => {
-    const state = getState();
-    if (state.config.get('publish_mode') !== EDITORIAL_WORKFLOW) return;
-    const backend = currentBackend(state.config);
-    dispatch(unpublishedEntriesMigrating());
-    return backend
-      .migrateUnpublishedEntries(entries)
-      .then(() => dispatch(unpublishedEntriesMigrated(entries)))
-      .catch(error => {
-        dispatch(
-          notifSend({
-            message: {
-              key: 'ui.toast.onFailToMigrateEntries',
-              details: error,
-            },
-            kind: 'danger',
-            dismissAfter: 8000,
-          }),
-        );
-        dispatch(unpublishedEntriesMigrationFailed(error));
         Promise.reject(error);
       });
   };
@@ -428,13 +365,7 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
   };
 }
 
-export function updateUnpublishedEntryStatus(
-  collection,
-  slug,
-  useAnnotations,
-  oldStatus,
-  newStatus,
-) {
+export function updateUnpublishedEntryStatus(collection, slug, oldStatus, newStatus) {
   return (dispatch, getState) => {
     if (oldStatus === newStatus) return;
     const state = getState();
@@ -444,7 +375,7 @@ export function updateUnpublishedEntryStatus(
       unpublishedEntryStatusChangeRequest(collection, slug, oldStatus, newStatus, transactionID),
     );
     backend
-      .updateUnpublishedEntryStatus(collection, slug, useAnnotations, newStatus, oldStatus)
+      .updateUnpublishedEntryStatus(collection, slug, newStatus, oldStatus)
       .then(() => {
         dispatch(
           notifSend({

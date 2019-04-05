@@ -132,7 +132,6 @@ export function getPhrases() {
       },
       toast: {
         onFailToLoadEntries: 'Failed to load entries: %{details}',
-        onFailToMigrateEntries: 'Failed to migrate entries: %{details}',
         onFailToLoadDeployPreview: 'Failed to load preview: %{details}',
         onFailToPersist: 'Failed to persist entry: %{details}',
         onFailToDelete: 'Failed to delete entry: %{details}',

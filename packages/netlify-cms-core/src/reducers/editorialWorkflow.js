@@ -15,7 +15,6 @@ import {
   UNPUBLISHED_ENTRY_PUBLISH_SUCCESS,
   UNPUBLISHED_ENTRY_PUBLISH_FAILURE,
   UNPUBLISHED_ENTRY_DELETE_SUCCESS,
-  UNPUBLISHED_ENTRIES_MIGRATION_SUCCESS,
 } from 'Actions/editorialWorkflow';
 import { CONFIG_SUCCESS } from 'Actions/config';
 
@@ -63,16 +62,6 @@ const unpublishedEntries = (state = Map(), action) => {
           }),
         );
         map.set('loaded', true);
-      });
-
-    case UNPUBLISHED_ENTRIES_MIGRATION_SUCCESS:
-      return state.withMutations(map => {
-        action.payload.entries.forEach(entry =>
-          map.setIn(
-            ['entities', `${entry.collection}.${entry.slug}`, 'metaData', 'useAnnotations'],
-            true,
-          ),
-        );
       });
 
     case UNPUBLISHED_ENTRY_PERSIST_REQUEST:

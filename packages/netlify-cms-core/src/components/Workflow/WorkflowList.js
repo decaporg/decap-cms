@@ -124,8 +124,7 @@ class WorkflowList extends React.Component {
     const slug = dragProps.slug;
     const collection = dragProps.collection;
     const oldStatus = dragProps.ownStatus;
-    const useAnnotations = dragProps.useAnnotations;
-    this.props.handleChangeStatus(collection, slug, useAnnotations, oldStatus, newStatus);
+    this.props.handleChangeStatus(collection, slug, oldStatus, newStatus);
   };
 
   requestDelete = (collection, slug) => {
@@ -194,7 +193,6 @@ class WorkflowList extends React.Component {
           const collection = entry.getIn(['metaData', 'collection']);
           const isModification = entry.get('isModification');
           const canPublish = ownStatus === status.last() && !entry.get('isPersisting', false);
-          const useAnnotations = entry.getIn(['metaData', 'useAnnotations']);
           return (
             <DragSource
               namespace={DNDNamespace}
@@ -202,7 +200,6 @@ class WorkflowList extends React.Component {
               slug={slug}
               collection={collection}
               ownStatus={ownStatus}
-              useAnnotations={useAnnotations}
             >
               {connect =>
                 connect(
