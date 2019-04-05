@@ -1,10 +1,10 @@
 # Netlify CMS
-[![](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/netlify/netlifycms)
+[![Gitter Chat](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/netlify/netlifycms)
 
 A CMS for static site generators. Give users a simple way to edit
 and add content to any site built with a static site generator.
 
-## How it works
+## How It Works
 
 Netlify CMS is a single-page app that you pull into the `/admin` part of your site.
 
@@ -13,7 +13,7 @@ It presents a clean UI for editing content stored in a Git repository.
 You setup a YAML config to describe the content model of your site, and typically
 tweak the main layout of the CMS a bit to fit your own site.
 
-When a user navigates to `/admin/` they'll be prompted to login, and once authenticated
+When a user navigates to `/admin/` they'll be prompted to log in, and once authenticated
 they'll be able to create new content or edit existing content.
 
 Read more about Netlify CMS [Core Concepts](https://www.netlifycms.org/docs/intro/).
@@ -22,7 +22,7 @@ Read more about Netlify CMS [Core Concepts](https://www.netlifycms.org/docs/intr
 
 The Netlify CMS can be used in two different ways.
 
-* A Quick and easy install, that just requires you to create a single HTML file and a configuration file. All the CMS Javascript and CSS are loaded from a CDN.
+* A Quick and easy install, that requires you to create a single HTML file and a configuration file. All the CMS Javascript and CSS are loaded from a CDN.
   To learn more about this installation method, refer to the [Quick Start Guide](https://www.netlifycms.org/docs/quick-start/)
 * A complete, more complex install, that gives you more flexibility but requires that you use a static site builder with a build system that supports npm packages.
 
@@ -50,10 +50,10 @@ Please make sure you understand its [implications and guarantees](https://writin
 These services support Netlify CMS development by providing free infrastructure.
 <p>
   <a href="https://www.travis-ci.org">
-    <img src="https://raw.githubusercontent.com/netlify/netlify-cms/master/img/travis.png" height="38"/>
+    <img src="https://raw.githubusercontent.com/netlify/netlify-cms/master/img/travis.png" height="38" alt="travis-ci" />
   </a>
   <img src="https://spacergif.org/spacer.gif" width="20"/>
   <a href="https://www.browserstack.com">
-    <img src="https://raw.githubusercontent.com/netlify/netlify-cms/master/img/browserstack.png" height="38"/>
+    <img src="https://raw.githubusercontent.com/netlify/netlify-cms/master/img/browserstack.png" height="38" alt="browserstack" />
   </a>
 </p>
