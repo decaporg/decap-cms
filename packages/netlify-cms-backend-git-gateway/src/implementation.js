@@ -415,14 +415,8 @@ export default class GitGateway {
   migrateUnpublishedEntries(entries) {
     return this.backend.migrateUnpublishedEntries(entries);
   }
-  updateUnpublishedEntryStatus(collection, slug, useAnnotations, newStatus, oldStatus) {
-    return this.backend.updateUnpublishedEntryStatus(
-      collection,
-      slug,
-      useAnnotations,
-      newStatus,
-      oldStatus,
-    );
+  updateUnpublishedEntryStatus(collection, slug, newStatus, oldStatus) {
+    return this.backend.updateUnpublishedEntryStatus(collection, slug, newStatus, oldStatus);
   }
   deleteUnpublishedEntry(collection, slug) {
     return this.backend.deleteUnpublishedEntry(collection, slug);
