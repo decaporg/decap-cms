@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.4.0-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/compare/netlify-cms-backend-bitbucket@2.3.1...netlify-cms-backend-bitbucket@2.4.0-beta.0) (2019-04-05)
+
+
+### Features
+
+* **backend-bitbucket:** add implicit auth ([#2247](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/issues/2247)) ([54fde06](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/commit/54fde06))
+
+
+
+
+
 ## [2.3.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/compare/netlify-cms-backend-bitbucket@2.3.1-beta.1...netlify-cms-backend-bitbucket@2.3.1) (2019-03-29)
 
 **Note:** Version bump only for package netlify-cms-backend-bitbucket
