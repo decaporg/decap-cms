@@ -212,7 +212,10 @@ export default class GitGateway {
     return Promise.all([this.backend.getMedia(), this.getLargeMediaClient()]).then(
       async ([mediaFiles, largeMediaClient]) => {
         if (!largeMediaClient.enabled) {
-          return mediaFiles;
+          return mediaFiles.map(({ displayURL, ...rest }) => ({
+            ...rest,
+            displayURL: { original: displayURL },
+          }));
         }
         const largeMediaDisplayURLs = await this.getLargeMediaDisplayURLs(mediaFiles);
         return mediaFiles.map(({ id, displayURL, path, ...rest }) => {
