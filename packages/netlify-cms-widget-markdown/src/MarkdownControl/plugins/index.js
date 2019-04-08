@@ -1,4 +1,3 @@
-import { List } from 'immutable';
 import { Text, Inline } from 'slate';
 import isHotkey from 'is-hotkey';
 import ListPlugin from './ListPlugin';
