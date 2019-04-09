@@ -62,8 +62,8 @@ function bootstrap(opts = {}) {
    */
   const { overwriteLang } = config || {};
   const { CMS_OVERWRITE_LANG } = window;
-  const { locale , phrases } = overwriteLang || CMS_OVERWRITE_LANG || {locale : 'en'};
-  
+  const { locale, phrases } = overwriteLang || CMS_OVERWRITE_LANG || { locale: 'en' };
+
   /**
    * Create connected root component.
    */

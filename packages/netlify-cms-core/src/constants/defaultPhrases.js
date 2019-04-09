@@ -175,5 +175,7 @@ export function getPhrases(overwritePhrases = {}) {
       },
     },
   };
-  return fromJS(phrases).mergeDeep(overwritePhrases).toJS();
+  return fromJS(phrases)
+    .mergeDeep(overwritePhrases)
+    .toJS();
 }
