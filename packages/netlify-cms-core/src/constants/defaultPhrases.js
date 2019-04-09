@@ -1,5 +1,7 @@
-export function getPhrases() {
-  return {
+import { fromJS } from 'immutable';
+
+export function getPhrases(overwritePhrases = {}) {
+  const phrases = {
     app: {
       header: {
         content: 'Contents',
@@ -173,4 +175,5 @@ export function getPhrases() {
       },
     },
   };
+  return fromJS(phrases).mergeDeep(overwritePhrases).toJS();
 }

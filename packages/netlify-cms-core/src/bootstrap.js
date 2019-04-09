@@ -58,12 +58,19 @@ function bootstrap(opts = {}) {
   }
 
   /**
+   * Overwrite language.
+   */
+  const { overwriteLang } = config || {};
+  const { CMS_OVERWRITE_LANG } = window;
+  const { locale , phrases } = overwriteLang || CMS_OVERWRITE_LANG || {locale : 'en'};
+  
+  /**
    * Create connected root component.
    */
   const Root = () => (
     <>
       <GlobalStyles />
-      <I18n locale={'en'} messages={getPhrases()}>
+      <I18n locale={locale} messages={getPhrases(phrases)}>
         <ErrorBoundary showBackup>
           <Provider store={store}>
             <ConnectedRouter history={history}>
