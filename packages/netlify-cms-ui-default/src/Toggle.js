@@ -64,7 +64,7 @@ const Toggle = ({
         className={className}
         {...getTogglerProps({
           role: 'switch',
-          'aria-checked': on.toString(),
+          'aria-checked': on ? 'true' : 'false',
           'aria-expanded': null,
         })}
       >
