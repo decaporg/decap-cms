@@ -227,3 +227,51 @@ Template tags produce the following output:
 - `{{collection}}`: the name of the collection containing the entry changed
 
 - `{{path}}`: the full path to the file changed
+
+## Overwrite language
+You can overwrite the default language of the environment with two means:
+- with global window variable `CMS_OVERWRITE_LANG`
+``` html
+<script>
+    window.CMS_OVERWRITE_LANG = {
+      locale: 'fr',
+      phrases: {
+        app: {
+          header: {
+            content: 'Contenus',
+            workflow: 'Flux de travail',
+            media: 'Médias',
+            quickAdd: 'Ajout rapide'
+          }
+        }
+      }
+    }
+</script>
+<!-- import netlify-cms after -->
+<script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
+```
+- with [manual initialization](/docs/beta-features/#manual-initialization)
+``` js
+  init({
+    config:{
+      overwriteLang: {
+        locale: 'fr',
+        phrases: {
+          app: {
+            header: {
+              content: 'Contenus',
+              workflow: 'Flux de travail',
+              media: 'Médias',
+              quickAdd: 'Ajout rapide'
+            }
+          }
+        }
+      }
+    }
+  })
+```
+**You can access all the variables available [here](https://github.com/netlify/netlify-cms/blob/master/packages/netlify-cms-core/src/constants/defaultPhrases.js)**
+
+`locale` represents the expected language
+
+`phrases` will be merged with existing phrases object, and any part that conflicts with existing phrases will be overwritten.
