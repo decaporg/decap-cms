@@ -9,6 +9,7 @@ import { selectCollectionEntriesCursor } from 'Reducers/cursors';
 import { Cursor } from 'netlify-cms-lib-util';
 import { createEntry } from 'ValueObjects/Entry';
 import ValidationErrorTypes from 'Constants/validationErrorTypes';
+import { resolveWidget } from 'Lib/registry';
 
 const { notifSend } = notifActions;
 
@@ -427,7 +428,23 @@ function createEmptyDraftData(fields) {
     const subfields = item.get('field') || item.get('fields');
     const list = item.get('widget') == 'list';
     const name = item.get('name');
-    const defaultValue = item.get('default', null);
+    const getDefaultValueFromWidget = componentName => {
+      const widgetComponent = resolveWidget(componentName);
+
+      if (!widgetComponent) {
+        return null;
+      }
+
+      const {
+        control: {
+          defaultProps: { value: widgetComponentDefaultValue } = {
+            value: null,
+          },
+        },
+      } = widgetComponent;
+      return widgetComponentDefaultValue;
+    };
+    const defaultValue = item.get('default', getDefaultValueFromWidget(item.get('widget')));
 
     if (List.isList(subfields)) {
       acc[name] = list ? [createEmptyDraftData(subfields)] : createEmptyDraftData(subfields);
@@ -439,9 +456,7 @@ function createEmptyDraftData(fields) {
       return acc;
     }
 
-    if (defaultValue !== null) {
-      acc[name] = defaultValue;
-    }
+    acc[name] = defaultValue;
 
     return acc;
   }, {});
