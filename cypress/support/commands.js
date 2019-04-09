@@ -23,8 +23,11 @@
 //
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
-const { escapeRegExp } = require('../utils/regexp');
-const path = require('path');
+import path from 'path';
+import rehype from 'rehype';
+import visit from 'unist-util-visit';
+import { oneLineTrim } from 'common-tags';
+import { escapeRegExp } from '../utils/regexp';
 
 const matchRoute = (route, fetchArgs) => {
   const url = fetchArgs[0];
@@ -86,3 +89,54 @@ Cypress.Commands.add('stubFetch', ({ fixture }) => {
     cy.on('window:before:load', win => stubFetch(win, routes));
   });
 });
+
+Cypress.Commands.add('login', () => {
+  cy.viewport(1200, 1200);
+  cy.visit('/');
+  cy.contains('button', 'Login').click();
+});
+
+Cypress.Commands.add('loginAndNewPost', () => {
+  cy.login();
+  cy.contains('a', 'New Post').click();
+});
+
+Cypress.Commands.add('clickToolbarButton', title => {
+  cy.get(`button[title="${title}"]`).click();
+  return cy.focused();
+});
+
+Cypress.Commands.add('clickUnorderedListButton', () => {
+  return cy.clickToolbarButton('Bulleted List');
+});
+
+Cypress.Commands.add('confirmEditorTree', expectedDomString => {
+  return cy.get('[data-slate-editor]')
+    .should(([element]) => {
+      const actualDomString = toPlainTree(element.innerHTML);
+      expect(actualDomString).toEqual(oneLineTrim(expectedDomString));
+    });
+});
+
+function toPlainTree(domString) {
+  return rehype()
+    .use(removeSlateArtifacts)
+    .data('settings', { fragment: true })
+    .processSync(domString)
+    .contents;
+}
+
+function removeSlateArtifacts() {
+  return function transform(tree) {
+    visit(tree, 'element', node => {
+      // remove all element attributes
+      delete node.properties;
+
+      // all paragraphs are padded with three spans, remove them to simplify
+      // snapshots
+      if (node.tagName === 'p') {
+        node.children = node.children[0].children[0].children[0].children;
+      }
+    });
+  }
+}

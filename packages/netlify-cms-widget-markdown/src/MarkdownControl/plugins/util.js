@@ -1,3 +1,5 @@
+import { castArray, isArray } from 'lodash';
+
 export function assertType(nodes, type) {
   const nodesArray = castArray(nodes);
   const validate = isArray(type) ? node => type.includes(node.type) : node => type === node.type;
