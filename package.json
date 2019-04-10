@@ -99,6 +99,7 @@
     "css-loader": "^3.0.0",
     "cypress": "^3.4.1",
     "cypress-jest-adapter": "^0.0.3",
+    "cypress-plugin-tab": "^1.0.0",
     "dom-testing-library": "^4.0.0",
     "dotenv": "^8.0.0",
     "eslint": "^5.15.1",
