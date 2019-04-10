@@ -17,7 +17,12 @@ import {
 import { createEntry } from 'ValueObjects/Entry';
 import { sanitizeSlug } from 'Lib/urlHelper';
 import { getBackend } from 'Lib/registry';
-import { localForage, Cursor, CURSOR_COMPATIBILITY_SYMBOL } from 'netlify-cms-lib-util';
+import {
+  localForage,
+  Cursor,
+  CURSOR_COMPATIBILITY_SYMBOL,
+  EditorialWorkflowError,
+} from 'netlify-cms-lib-util';
 import { EDITORIAL_WORKFLOW, status } from 'Constants/publishModes';
 import {
   SLUG_MISSING_REQUIRED_DATE,
@@ -255,6 +260,48 @@ class Backend {
   }
 
   getToken = () => this.implementation.getToken();
+
+  async entryExist(collection, path, slug) {
+    const unpublishedEntry =
+      this.implementation.unpublishedEntry &&
+      (await this.implementation.unpublishedEntry(collection, slug).catch(error => {
+        if (error instanceof EditorialWorkflowError && error.notUnderEditorialWorkflow) {
+          return Promise.resolve(false);
+        }
+        return Promise.reject(error);
+      }));
+
+    if (unpublishedEntry) return unpublishedEntry;
+
+    const publishedEntry = await this.implementation
+      .getEntry(collection, slug, path)
+      .then(({ data }) => data)
+      .catch(error => {
+        if (error.status === 404 || error.message.includes(404)) {
+          return Promise.resolve(false);
+        }
+        return Promise.reject(error);
+      });
+
+    return publishedEntry;
+  }
+
+  async generateUniqueSlug(collection, entryData, slugConfig, usedSlugs) {
+    const slug = slugFormatter(collection, entryData, slugConfig);
+    const sanitizeEntrySlug = partialRight(sanitizeSlug, slugConfig);
+    let i = 1;
+    let sanitizedSlug = slug;
+    let uniqueSlug = sanitizedSlug;
+
+    // Check for duplicate slug in loaded entities store first before repo
+    while (
+      usedSlugs.includes(uniqueSlug) ||
+      (await this.entryExist(collection, selectEntryPath(collection, uniqueSlug), uniqueSlug))
+    ) {
+      uniqueSlug = sanitizeEntrySlug(`${sanitizedSlug} ${i++}`);
+    }
+    return uniqueSlug;
+  }
 
   processEntries(loadedEntries, collection) {
     const collectionFilter = collection.get('filter');
@@ -569,7 +616,15 @@ class Backend {
     };
   }
 
-  persistEntry(config, collection, entryDraft, MediaFiles, integrations, options = {}) {
+  async persistEntry(
+    config,
+    collection,
+    entryDraft,
+    MediaFiles,
+    integrations,
+    usedSlugs,
+    options = {},
+  ) {
     const newEntry = entryDraft.getIn(['entry', 'newRecord']) || false;
 
     const parsedData = {
@@ -582,10 +637,11 @@ class Backend {
       if (!selectAllowNewEntries(collection)) {
         throw new Error('Not allowed to create new entries in this collection');
       }
-      const slug = slugFormatter(
+      const slug = await this.generateUniqueSlug(
         collection,
         entryDraft.getIn(['entry', 'data']),
         config.get('slug'),
+        usedSlugs,
       );
       const path = selectEntryPath(collection, slug);
       entryObj = {

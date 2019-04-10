@@ -3,7 +3,7 @@ import { actions as notifActions } from 'redux-notifications';
 import { serializeValues } from 'Lib/serializeEntryValues';
 import { currentBackend } from 'coreSrc/backend';
 import { getIntegrationProvider } from 'Integrations';
-import { getAsset, selectIntegration } from 'Reducers';
+import { getAsset, selectIntegration, selectPublishedSlugs } from 'Reducers';
 import { selectFields } from 'Reducers/collections';
 import { selectCollectionEntriesCursor } from 'Reducers/cursors';
 import { Cursor } from 'netlify-cms-lib-util';
@@ -452,6 +452,7 @@ export function persistEntry(collection) {
     const state = getState();
     const entryDraft = state.entryDraft;
     const fieldsErrors = entryDraft.get('fieldsErrors');
+    const usedSlugs = selectPublishedSlugs(state, collection.get('name'));
 
     // Early return if draft contains validation errors
     if (!fieldsErrors.isEmpty()) {
@@ -488,7 +489,14 @@ export function persistEntry(collection) {
     const serializedEntryDraft = entryDraft.set('entry', serializedEntry);
     dispatch(entryPersisting(collection, serializedEntry));
     return backend
-      .persistEntry(state.config, collection, serializedEntryDraft, assetProxies.toJS())
+      .persistEntry(
+        state.config,
+        collection,
+        serializedEntryDraft,
+        assetProxies.toJS(),
+        state.integrations,
+        usedSlugs,
+      )
       .then(slug => {
         dispatch(
           notifSend({
