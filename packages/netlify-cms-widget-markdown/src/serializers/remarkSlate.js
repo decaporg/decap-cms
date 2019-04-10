@@ -1,4 +1,4 @@
-import { get, isEmpty, isArray, last, flatMap } from 'lodash';
+import { isEmpty, isArray, last, flatMap } from 'lodash';
 
 /**
  * A Remark plugin for converting an MDAST to Slate Raw AST. Remark plugins
@@ -169,14 +169,7 @@ function convertMarkNode(node) {
  * transformer.
  */
 function convertNode(node, nodes) {
-  /**
-   * Unified/Remark processors use mutable operations, so we don't want to
-   * change a node's type directly for conversion purposes, as that tends to
-   * unexpected errors.
-   */
-  const type = get(node, ['data', 'shortcode']) ? 'shortcode' : node.type;
-
-  switch (type) {
+  switch (node.type) {
     /**
      * General
      *
@@ -189,7 +182,7 @@ function convertNode(node, nodes) {
     case 'blockquote':
     case 'tableRow':
     case 'tableCell': {
-      return createBlock(typeMap[type], nodes);
+      return createBlock(typeMap[node.type], nodes);
     }
 
     /**
@@ -202,7 +195,7 @@ function convertNode(node, nodes) {
     case 'shortcode': {
       const { data } = node;
       const nodes = [createText('')];
-      return createBlock(typeMap[type], nodes, { data, isVoid: true });
+      return createBlock(typeMap[node.type], nodes, { data, isVoid: true });
     }
 
     /**
@@ -272,7 +265,7 @@ function convertNode(node, nodes) {
       const data = { lang: node.lang };
       const text = createText(node.value);
       const nodes = [text];
-      return createBlock(typeMap[type], nodes, { data });
+      return createBlock(typeMap[node.type], nodes, { data });
     }
 
     /**
@@ -307,7 +300,7 @@ function convertNode(node, nodes) {
      * Thematic breaks are void nodes in the Slate schema.
      */
     case 'thematicBreak': {
-      return createBlock(typeMap[type], { isVoid: true });
+      return createBlock(typeMap[node.type], { isVoid: true });
     }
 
     /**
@@ -319,7 +312,7 @@ function convertNode(node, nodes) {
     case 'link': {
       const { title, url, data } = node;
       const newData = { ...data, title, url };
-      return createInline(typeMap[type], { data: newData }, nodes);
+      return createInline(typeMap[node.type], { data: newData }, nodes);
     }
 
     /**
@@ -332,7 +325,7 @@ function convertNode(node, nodes) {
     case 'image': {
       const { title, url, alt, data } = node;
       const newData = { ...data, title, alt, url };
-      return createInline(typeMap[type], { isVoid: true, data: newData });
+      return createInline(typeMap[node.type], { isVoid: true, data: newData });
     }
 
     /**
@@ -343,7 +336,7 @@ function convertNode(node, nodes) {
      */
     case 'table': {
       const data = { align: node.align };
-      return createBlock(typeMap[type], nodes, { data });
+      return createBlock(typeMap[node.type], nodes, { data });
     }
   }
 }

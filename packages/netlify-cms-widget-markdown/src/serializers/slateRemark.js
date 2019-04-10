@@ -25,6 +25,7 @@ const typeMap = {
   'thematic-break': 'thematicBreak',
   link: 'link',
   image: 'image',
+  shortcode: 'shortcode',
 };
 
 /**
@@ -37,14 +38,7 @@ const markMap = {
   code: 'inlineCode',
 };
 
-let shortcodePlugins;
-
-export default function slateToRemark(raw, opts) {
-  /**
-   * Set shortcode plugins in outer scope.
-   */
-  ({ shortcodePlugins } = opts);
-
+export default function slateToRemark(raw) {
   /**
    * The Slate Raw AST generally won't have a top level type, so we set it to
    * "root" for clarity.
@@ -76,9 +70,7 @@ function transform(node) {
   /**
    * Run individual nodes through conversion factories.
    */
-  return ['text'].includes(node.object)
-    ? convertTextNode(node)
-    : convertNode(node, children, shortcodePlugins);
+  return ['text'].includes(node.object) ? convertTextNode(node) : convertNode(node, children);
 }
 
 /**
@@ -388,9 +380,9 @@ function getMarkLength(markType, nodes) {
 
 /**
  * Convert a single Slate Raw node to an MDAST node. Uses the unist-builder `u`
- * function to create MDAST nodes and parses shortcodes.
+ * function to create MDAST nodes.
  */
-function convertNode(node, children, shortcodePlugins) {
+function convertNode(node, children) {
   switch (node.type) {
     /**
      * General
@@ -418,19 +410,12 @@ function convertNode(node, children, shortcodePlugins) {
      * property contains the data received from the shortcode plugin's
      * `fromBlock` method when the shortcode node was created.
      *
-     * Here we get the shortcode plugin from the registry and use it's
-     * `toBlock` method to recreate the original markdown shortcode. We then
-     * insert that text into a new "html" type node (a "text" type node
-     * might get encoded or escaped by remark-stringify). Finally, we wrap
-     * the "html" node in a "paragraph" type node, as shortcode nodes must
-     * be alone in their own paragraph.
+     * Here we create a `shortcode` MDAST node that contains only the shortcode
+     * data.
      */
     case 'shortcode': {
       const { data } = node;
-      const plugin = shortcodePlugins.get(data.shortcode);
-      const text = plugin.toBlock(data.shortcodeData);
-      const textNode = u('html', text);
-      return u('paragraph', { data }, [textNode]);
+      return u(typeMap[node.type], { data });
     }
 
     /**
@@ -510,10 +495,7 @@ function convertNode(node, children, shortcodePlugins) {
      * Images
      *
      * This transformation is almost identical to that of links, except for the
-     * lack of child nodes and addition of `alt` attribute data. Currently the
-     * CMS handles block images by shortcode, so this case will only apply to
-     * inline images, which currently can only occur through raw markdown
-     * insertion.
+     * lack of child nodes and addition of `alt` attribute data.
      */
     case 'image': {
       const { url, title, alt, ...data } = get(node, 'data', {});
