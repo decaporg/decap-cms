@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.5.0-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.4.2...netlify-cms-widget-markdown@2.5.0-beta.0) (2019-04-10)
+
+
+### Features
+
+* **editor-components:** match any characters with shortcodes ([#2268](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/issues/2268)) ([14b6292](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/commit/14b6292))
+
+
+
+
+
 ## [2.4.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.4.2-beta.0...netlify-cms-widget-markdown@2.4.2) (2019-04-10)
 
 **Note:** Version bump only for package netlify-cms-widget-markdown
