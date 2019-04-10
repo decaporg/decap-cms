@@ -313,13 +313,14 @@ Object {
     Object {
       "nodes": Array [
         Object {
-          "data": undefined,
-          "leaves": Array [
-            Object {
-              "text": "![super](duper.jpg)",
-            },
-          ],
-          "object": "text",
+          "data": Object {
+            "alt": "super",
+            "title": null,
+            "url": "duper.jpg",
+          },
+          "isVoid": true,
+          "object": "inline",
+          "type": "image",
         },
       ],
       "object": "block",
@@ -1520,13 +1521,14 @@ Object {
     Object {
       "nodes": Array [
         Object {
-          "data": undefined,
-          "leaves": Array [
-            Object {
-              "text": "![test](test.png)",
-            },
-          ],
-          "object": "text",
+          "data": Object {
+            "alt": "test",
+            "title": null,
+            "url": "test.png",
+          },
+          "isVoid": true,
+          "object": "inline",
+          "type": "image",
         },
       ],
       "object": "block",
