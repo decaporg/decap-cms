@@ -1,4 +1,7 @@
 updates:
+  - date: '2019-04-10'
+    description: 'Entry card customization, Bitbucket implicit auth, fix image previews, other bugfixes'
+    version: 2.9.1
   - date: '2019-03-29'
     description: 'Add netlify-cms-app package with external deps, fix breaking preview templates'
     version: 2.9.0
