@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.4.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/compare/netlify-cms-backend-bitbucket@2.4.0-beta.0...netlify-cms-backend-bitbucket@2.4.0) (2019-04-10)
+
+**Note:** Version bump only for package netlify-cms-backend-bitbucket
+
+
+
+
+
 # [2.4.0-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/compare/netlify-cms-backend-bitbucket@2.3.1...netlify-cms-backend-bitbucket@2.4.0-beta.0) (2019-04-05)
 
 
