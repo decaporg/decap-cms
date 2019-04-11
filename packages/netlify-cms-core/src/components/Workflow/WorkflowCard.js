@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled, { css } from 'react-emotion';
+import { css } from '@emotion/core';
+import styled from '@emotion/styled';
 import { translate } from 'react-polyglot';
 import { Link } from 'react-router-dom';
 import { components, colors, colorsRaw, transitions, buttons } from 'netlify-cms-ui-default';
@@ -115,7 +116,10 @@ const WorkflowCard = ({
       <CardCollection>{collectionName}</CardCollection>
       <CardTitle>{title}</CardTitle>
       <CardDate>
-        {timestamp} by {authorLastChange}
+        {t('workflow.workflowCard.lastChange', {
+          date: timestamp || '',
+          author: authorLastChange || '',
+        })}
       </CardDate>
       <CardBody>{body}</CardBody>
     </WorkflowLink>

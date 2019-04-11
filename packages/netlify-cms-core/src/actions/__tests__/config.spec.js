@@ -8,6 +8,7 @@ describe('config', () => {
         foo: 'bar',
         media_folder: 'path/to/media',
         public_folder: '/path/to/media',
+        collections: [],
       });
       expect(applyDefaults(config)).toEqual(config.set('publish_mode', 'simple'));
     });
@@ -18,6 +19,7 @@ describe('config', () => {
         publish_mode: 'complex',
         media_folder: 'path/to/media',
         public_folder: '/path/to/media',
+        collections: [],
       });
       expect(applyDefaults(config)).toEqual(config);
     });
@@ -28,6 +30,7 @@ describe('config', () => {
           fromJS({
             foo: 'bar',
             media_folder: 'path/to/media',
+            collections: [],
           }),
         ),
       ).toEqual(
@@ -36,6 +39,7 @@ describe('config', () => {
           publish_mode: 'simple',
           media_folder: 'path/to/media',
           public_folder: '/path/to/media',
+          collections: [],
         }),
       );
     });
@@ -47,6 +51,7 @@ describe('config', () => {
             foo: 'bar',
             media_folder: 'path/to/media',
             public_folder: '/publib/path',
+            collections: [],
           }),
         ),
       ).toEqual(
@@ -55,6 +60,39 @@ describe('config', () => {
           publish_mode: 'simple',
           media_folder: 'path/to/media',
           public_folder: '/publib/path',
+          collections: [],
+        }),
+      );
+    });
+
+    it('should strip leading slashes from collection folder', () => {
+      expect(
+        applyDefaults(
+          fromJS({
+            collections: [{ folder: '/foo' }],
+          }),
+        ),
+      ).toEqual(
+        fromJS({
+          publish_mode: 'simple',
+          public_folder: '/',
+          collections: [{ folder: 'foo' }],
+        }),
+      );
+    });
+
+    it('should strip leading slashes from collection files', () => {
+      expect(
+        applyDefaults(
+          fromJS({
+            collections: [{ files: [{ file: '/foo' }] }],
+          }),
+        ),
+      ).toEqual(
+        fromJS({
+          publish_mode: 'simple',
+          public_folder: '/',
+          collections: [{ files: [{ file: 'foo' }] }],
         }),
       );
     });

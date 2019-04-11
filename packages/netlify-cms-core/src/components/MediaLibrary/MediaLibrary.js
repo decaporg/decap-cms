@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 import { orderBy, map } from 'lodash';
-import { Map } from 'immutable';
 import { translate } from 'react-polyglot';
 import fuzzy from 'fuzzy';
 import { resolvePath, fileExtension } from 'netlify-cms-lib-util';
@@ -25,11 +24,13 @@ const IMAGE_EXTENSIONS_VIEWABLE = ['jpg', 'jpeg', 'webp', 'gif', 'png', 'bmp', '
 const IMAGE_EXTENSIONS = [...IMAGE_EXTENSIONS_VIEWABLE];
 
 const fileShape = {
+  displayURL: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
+  id: PropTypes.string.isRequired,
   key: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  size: PropTypes.number.isRequired,
   queryOrder: PropTypes.number,
-  url: PropTypes.string.isRequired,
+  size: PropTypes.number,
+  url: PropTypes.string,
   urlIsPublicPath: PropTypes.bool,
 };
 
@@ -58,6 +59,10 @@ class MediaLibrary extends React.Component {
     publicFolder: PropTypes.string,
     closeMediaLibrary: PropTypes.func.isRequired,
     t: PropTypes.func.isRequired,
+  };
+
+  static defaultProps = {
+    files: [],
   };
 
   /**
@@ -93,34 +98,15 @@ class MediaLibrary extends React.Component {
     }
   }
 
-  getDisplayURL = file => {
-    const { isVisible, loadMediaDisplayURL, displayURLs } = this.props;
-
-    if (!isVisible) {
-      return '';
-    }
-
-    if (file && file.url) {
-      return file.url;
-    }
-
-    const { url, isFetching } = displayURLs.get(file.id, Map()).toObject();
-
-    if (url && url !== '') {
-      return url;
-    }
-
-    if (!isFetching) {
-      loadMediaDisplayURL(file);
-    }
-
-    return '';
+  loadDisplayURL = file => {
+    const { loadMediaDisplayURL } = this.props;
+    loadMediaDisplayURL(file);
   };
 
   /**
    * Filter an array of file data to include only images.
    */
-  filterImages = (files = []) => {
+  filterImages = files => {
     return files.filter(file => {
       const ext = fileExtension(file.name).toLowerCase();
       return IMAGE_EXTENSIONS.includes(ext);
@@ -133,7 +119,7 @@ class MediaLibrary extends React.Component {
   toTableData = files => {
     const tableData =
       files &&
-      files.map(({ key, name, id, size, queryOrder, url, urlIsPublicPath, getBlobPromise }) => {
+      files.map(({ key, name, id, size, queryOrder, url, urlIsPublicPath, displayURL }) => {
         const ext = fileExtension(name).toLowerCase();
         return {
           key,
@@ -144,7 +130,7 @@ class MediaLibrary extends React.Component {
           queryOrder,
           url,
           urlIsPublicPath,
-          getBlobPromise,
+          displayURL,
           isImage: IMAGE_EXTENSIONS.includes(ext),
           isViewableImage: IMAGE_EXTENSIONS_VIEWABLE.includes(ext),
         };
@@ -277,7 +263,7 @@ class MediaLibrary extends React.Component {
     const {
       isVisible,
       canInsert,
-      files = [],
+      files,
       dynamicSearch,
       dynamicSearchActive,
       forImage,
@@ -287,6 +273,7 @@ class MediaLibrary extends React.Component {
       hasNextPage,
       isPaginating,
       privateUpload,
+      displayURLs,
       t,
     } = this.props;
 
@@ -318,7 +305,8 @@ class MediaLibrary extends React.Component {
         setScrollContainerRef={ref => (this.scrollContainerRef = ref)}
         handleAssetClick={this.handleAssetClick}
         handleLoadMore={this.handleLoadMore}
-        getDisplayURL={this.getDisplayURL}
+        displayURLs={displayURLs}
+        loadDisplayURL={this.loadDisplayURL}
         t={t}
       />
     );

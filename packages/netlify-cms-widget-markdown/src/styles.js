@@ -1,4 +1,4 @@
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 
 export const editorStyleVars = {
   stickyDistanceBottom: '100px',

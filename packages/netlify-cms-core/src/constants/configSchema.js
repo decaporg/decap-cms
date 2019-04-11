@@ -1,7 +1,6 @@
 import AJV from 'ajv';
 import ajvErrors from 'ajv-errors';
 import { formatExtensions, frontmatterFormats, extensionFormatters } from 'Formats/formats';
-import { IDENTIFIER_FIELDS } from 'Constants/fieldInference';
 
 /**
  * Config for fields in both file and folder collections.
@@ -35,8 +34,10 @@ const getConfigSchema = () => ({
       properties: { name: { type: 'string', examples: ['test-repo'] } },
       required: ['name'],
     },
+    site_url: { type: 'string', examples: ['https://example.com'] },
     display_url: { type: 'string', examples: ['https://example.com'] },
     logo_url: { type: 'string', examples: ['https://example.com/images/logo.svg'] },
+    show_preview_links: { type: 'boolean' },
     media_folder: { type: 'string', examples: ['assets/uploads'] },
     public_folder: { type: 'string', examples: ['/uploads'] },
     media_library: {
@@ -87,7 +88,11 @@ const getConfigSchema = () => ({
               required: ['name', 'label', 'file', 'fields'],
             },
           },
+          identifier_field: { type: 'string' },
+          summary: { type: 'string' },
           slug: { type: 'string' },
+          preview_path: { type: 'string' },
+          preview_path_date_field: { type: 'string' },
           create: { type: 'boolean' },
           editor: {
             type: 'object',
@@ -97,7 +102,14 @@ const getConfigSchema = () => ({
           },
           format: { type: 'string', enum: Object.keys(formatExtensions) },
           extension: { type: 'string' },
-          frontmatter_delimiter: { type: 'string' },
+          frontmatter_delimiter: {
+            type: ['string', 'array'],
+            minItems: 2,
+            maxItems: 2,
+            items: {
+              type: 'string',
+            },
+          },
           fields: fieldsConfig,
         },
         required: ['name', 'label'],
@@ -118,20 +130,6 @@ const getConfigSchema = () => ({
               format: { enum: frontmatterFormats },
             },
             required: ['format'],
-          },
-          folder: {
-            errorMessage: {
-              _: 'must have a field that is a valid entry identifier',
-            },
-            properties: {
-              fields: {
-                contains: {
-                  properties: {
-                    name: { enum: [{ $data: '3/identifier_field' }, ...IDENTIFIER_FIELDS] },
-                  },
-                },
-              },
-            },
           },
         },
       },
@@ -170,7 +168,7 @@ class ConfigError extends Error {
  * the config that is passed in.
  */
 export function validateConfig(config) {
-  const ajv = new AJV({ allErrors: true, jsonPointers: true, $data: true });
+  const ajv = new AJV({ allErrors: true });
   ajvErrors(ajv);
 
   const valid = ajv.validate(getConfigSchema(), config);

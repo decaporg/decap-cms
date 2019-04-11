@@ -1,13 +1,12 @@
 {
   "name": "netlify-cms",
   "description": "An extensible, open source, Git-based, React CMS for static sites.",
-  "version": "2.2.0",
+  "version": "2.9.1-beta.0",
   "homepage": "https://www.netlifycms.org",
   "repository": "https://github.com/netlify/netlify-cms",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
   "main": "dist/netlify-cms.js",
   "scripts": {
-    "watch": "webpack -w",
     "build": "cross-env NODE_ENV=production webpack",
     "build-preview": "cross-env NODE_ENV=production webpack-dev-server --open",
     "develop": "webpack-dev-server --hot"
@@ -21,35 +20,10 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "emotion": "^9.2.6",
-    "netlify-cms-backend-bitbucket": "^2.1.0",
-    "netlify-cms-backend-git-gateway": "^2.1.0",
-    "netlify-cms-backend-github": "^2.1.0",
-    "netlify-cms-backend-gitlab": "^2.1.0",
-    "netlify-cms-backend-test": "^2.0.6",
-    "netlify-cms-core": "^2.2.0",
-    "netlify-cms-editor-component-image": "^2.0.4",
-    "netlify-cms-media-library-uploadcare": "^0.2.1",
-    "netlify-cms-widget-boolean": "^2.0.5",
-    "netlify-cms-widget-date": "^2.0.6",
-    "netlify-cms-widget-datetime": "^2.0.6",
-    "netlify-cms-widget-file": "^2.1.0",
-    "netlify-cms-widget-image": "^2.1.0",
-    "netlify-cms-widget-list": "^2.0.7",
-    "netlify-cms-widget-markdown": "^2.0.9",
-    "netlify-cms-widget-number": "^2.0.5",
-    "netlify-cms-widget-object": "^2.0.5",
-    "netlify-cms-widget-relation": "^2.0.5",
-    "netlify-cms-widget-select": "^2.0.4",
-    "netlify-cms-widget-string": "^2.0.4",
-    "netlify-cms-widget-text": "^2.0.5"
-  },
-  "devDependencies": {
-    "copy-webpack-plugin": "^4.5.2",
-    "cross-env": "^5.2.0",
-    "friendly-errors-webpack-plugin": "^1.7.0",
-    "webpack": "^4.16.1",
-    "webpack-cli": "^3.1.0",
-    "webpack-dev-server": "^3.1.5"
+    "netlify-cms-app": "^2.9.1-beta.0",
+    "netlify-cms-media-library-cloudinary": "^1.3.1",
+    "netlify-cms-media-library-uploadcare": "^0.5.1",
+    "react": "^16.8.4",
+    "react-dom": "^16.8.4"
   }
 }

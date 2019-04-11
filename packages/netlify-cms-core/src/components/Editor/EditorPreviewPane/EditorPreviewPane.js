@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 import { List, Map } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import Frame from 'react-frame-component';
@@ -22,8 +22,8 @@ const PreviewPaneFrame = styled(Frame)`
 `;
 
 export default class PreviewPane extends React.Component {
-  getWidget = (field, value, props, idx = null) => {
-    const { fieldsMetaData, getAsset, entry } = props;
+  getWidget = (field, value, metadata, props, idx = null) => {
+    const { getAsset, entry } = props;
     const widget = resolveWidget(field.get('widget'));
     const key = idx ? field.get('name') + '_' + idx : field.get('name');
 
@@ -37,9 +37,8 @@ export default class PreviewPane extends React.Component {
         field={field}
         getAsset={getAsset}
         value={value && Map.isMap(value) ? value.get(field.get('name')) : value}
-        metadata={fieldsMetaData && fieldsMetaData.get(field.get('name'))}
         entry={entry}
-        fieldsMetaData={fieldsMetaData}
+        fieldsMetaData={metadata}
       />
     );
   };
@@ -63,20 +62,26 @@ export default class PreviewPane extends React.Component {
    * object and list type fields. Used internally to retrieve widgets, and also
    * exposed for use in custom preview templates.
    */
-  widgetFor = (name, fields = this.props.fields, values = this.props.entry.get('data')) => {
+  widgetFor = (
+    name,
+    fields = this.props.fields,
+    values = this.props.entry.get('data'),
+    fieldsMetaData = this.props.fieldsMetaData,
+  ) => {
     // We retrieve the field by name so that this function can also be used in
     // custom preview templates, where the field object can't be passed in.
     let field = fields && fields.find(f => f.get('name') === name);
     let value = values && values.get(field.get('name'));
     let nestedFields = field.get('fields');
     let singleField = field.get('field');
+    let metadata = fieldsMetaData && fieldsMetaData.get(field.get('name'), Map());
 
     if (nestedFields) {
-      field = field.set('fields', this.getNestedWidgets(nestedFields, value));
+      field = field.set('fields', this.getNestedWidgets(nestedFields, value, metadata));
     }
 
     if (singleField) {
-      field = field.set('field', this.getSingleNested(singleField, value));
+      field = field.set('field', this.getSingleNested(singleField, value, metadata));
     }
 
     const labelledWidgets = ['string', 'text', 'number'];
@@ -94,33 +99,35 @@ export default class PreviewPane extends React.Component {
       );
     }
 
-    return value ? this.getWidget(field, value, this.props) : null;
+    return value ? this.getWidget(field, value, metadata, this.props) : null;
   };
 
   /**
    * Retrieves widgets for nested fields (children of object/list fields)
    */
-  getNestedWidgets = (fields, values) => {
+  getNestedWidgets = (fields, values, fieldsMetaData) => {
     // Fields nested within a list field will be paired with a List of value Maps.
     if (List.isList(values)) {
-      return values.map(value => this.widgetsForNestedFields(fields, value));
+      return values.map(value => this.widgetsForNestedFields(fields, value, fieldsMetaData));
     }
     // Fields nested within an object field will be paired with a single Map of values.
-    return this.widgetsForNestedFields(fields, values);
+    return this.widgetsForNestedFields(fields, values, fieldsMetaData);
   };
 
-  getSingleNested = (field, values) => {
+  getSingleNested = (field, values, fieldsMetaData) => {
     if (List.isList(values)) {
-      return values.map((value, idx) => this.getWidget(field, value, this.props, idx));
+      return values.map((value, idx) =>
+        this.getWidget(field, value, fieldsMetaData.get(field.get('name')), this.props, idx),
+      );
     }
-    return this.getWidget(field, values, this.props);
+    return this.getWidget(field, values, fieldsMetaData.get(field.get('name')), this.props);
   };
 
   /**
    * Use widgetFor as a mapping function for recursive widget retrieval
    */
-  widgetsForNestedFields = (fields, values) => {
-    return fields.map(field => this.widgetFor(field.get('name'), fields, values));
+  widgetsForNestedFields = (fields, values, fieldsMetaData) => {
+    return fields.map(field => this.widgetFor(field.get('name'), fields, values, fieldsMetaData));
   };
 
   /**
@@ -130,10 +137,11 @@ export default class PreviewPane extends React.Component {
    * TODO: see if widgetFor can now provide this functionality for preview templates
    */
   widgetsFor = name => {
-    const { fields, entry } = this.props;
+    const { fields, entry, fieldsMetaData } = this.props;
     const field = fields.find(f => f.get('name') === name);
     const nestedFields = field && field.get('fields');
     const value = entry.getIn(['data', field.get('name')]);
+    const metadata = fieldsMetaData.get(field.get('name'), Map());
 
     if (List.isList(value)) {
       return value.map(val => {
@@ -142,7 +150,7 @@ export default class PreviewPane extends React.Component {
           Map(
             nestedFields.map((f, i) => [
               f.get('name'),
-              <div key={i}>{this.getWidget(f, val, this.props)}</div>,
+              <div key={i}>{this.getWidget(f, val, metadata.get(f.get('name')), this.props)}</div>,
             ]),
           );
         return Map({ data: val, widgets });
@@ -153,7 +161,12 @@ export default class PreviewPane extends React.Component {
       data: value,
       widgets:
         nestedFields &&
-        Map(nestedFields.map(f => [f.get('name'), this.getWidget(f, value, this.props)])),
+        Map(
+          nestedFields.map(f => [
+            f.get('name'),
+            this.getWidget(f, value, metadata.get(f.get('name')), this.props),
+          ]),
+        ),
     });
   };
 

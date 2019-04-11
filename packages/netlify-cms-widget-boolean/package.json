@@ -1,10 +1,11 @@
 {
   "name": "netlify-cms-widget-boolean",
   "description": "Widget for editing boolean values in Netlify CMS.",
-  "version": "2.0.5",
+  "version": "2.2.1",
   "homepage": "https://www.netlifycms.org/docs/widgets/#boolean",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-boolean",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
+  "module": "dist/esm/index.js",
   "main": "dist/netlify-cms-widget-boolean.js",
   "license": "MIT",
   "keywords": [
@@ -15,21 +16,16 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "watch": "webpack -w",
-    "develop": "npm run watch",
-    "build": "cross-env NODE_ENV=production webpack"
-  },
-  "devDependencies": {
-    "cross-env": "^5.2.0",
-    "webpack": "^4.16.1",
-    "webpack-cli": "^3.1.0"
+    "develop": "yarn build:esm --watch",
+    "build": "cross-env NODE_ENV=production webpack",
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore src/**/__tests__/* --root-mode upward -s"
   },
   "peerDependencies": {
-    "emotion": "^9.2.6",
-    "lodash": "^4.17.10",
-    "netlify-cms-ui-default": "^2.0.0",
-    "prop-types": "^15.5.10",
-    "react": "^16.4.1",
+    "@emotion/core": "^10.0.9",
+    "lodash": "^4.17.11",
+    "netlify-cms-ui-default": "^2.6.0",
+    "prop-types": "^15.7.2",
+    "react": "^16.8.4",
     "react-immutable-proptypes": "^2.1.0"
   }
 }

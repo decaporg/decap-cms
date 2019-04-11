@@ -12,6 +12,10 @@ module.exports = {
           title: 'Quick Start',
         },
         {
+          name: 'features',
+          title: 'Features',
+        },
+        {
           name: 'reference',
           title: 'Reference',
         },
@@ -22,6 +26,10 @@ module.exports = {
         {
           name: 'guides',
           title: 'Guides',
+        },
+        {
+          name: 'customization',
+          title: 'Customization',
         },
         {
           name: 'contributing',

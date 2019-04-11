@@ -217,6 +217,48 @@ function convertTextNode(node) {
    */
   if (node.leaves) {
     const processedLeaves = node.leaves.map(processLeaves);
+    // Compensate for Slate including leading and trailing whitespace in styled text nodes, which
+    // cannot be represented in markdown (https://github.com/netlify/netlify-cms/issues/1448)
+    for (let i = 0; i < processedLeaves.length; i += 1) {
+      const leaf = processedLeaves[i];
+      if (leaf.marks.length > 0 && leaf.text && leaf.text.trim() !== leaf.text) {
+        const [, leadingWhitespace, trailingWhitespace] = leaf.text.match(/^(\s*).*?(\s*)$/);
+        // Move the leading whitespace to a separate unstyled leaf, unless the current leaf
+        // is preceded by another one with (at least) the same marks applied:
+        if (
+          leadingWhitespace.length > 0 &&
+          (i === 0 ||
+            !leaf.marks.every(
+              mark => processedLeaves[i - 1].marks && processedLeaves[i - 1].marks.includes(mark),
+            ))
+        ) {
+          processedLeaves.splice(i, 0, {
+            text: leadingWhitespace,
+            marks: [],
+            textNodeType: leaf.textNodeType,
+          });
+          i += 1;
+          leaf.text = leaf.text.replace(/^\s+/, '');
+        }
+        // Move the trailing whitespace to a separate unstyled leaf, unless the current leaf
+        // is followed by another one with (at least) the same marks applied:
+        if (
+          trailingWhitespace.length > 0 &&
+          (i === processedLeaves.length - 1 ||
+            !leaf.marks.every(
+              mark => processedLeaves[i + 1].marks && processedLeaves[i + 1].marks.includes(mark),
+            ))
+        ) {
+          processedLeaves.splice(i + 1, 0, {
+            text: trailingWhitespace,
+            marks: [],
+            textNodeType: leaf.textNodeType,
+          });
+          i += 1;
+          leaf.text = leaf.text.replace(/\s+$/, '');
+        }
+      }
+    }
     const condensedNodes = processedLeaves.reduce(condenseNodesReducer, { nodes: [] });
     return condensedNodes.nodes;
   }

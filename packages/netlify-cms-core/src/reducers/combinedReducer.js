@@ -2,7 +2,7 @@ import { combineReducers } from 'redux';
 import { routerReducer } from 'react-router-redux';
 import { reducer as notifReducer } from 'redux-notifications';
 import optimist from 'redux-optimist';
-import reducers from '.';
+import reducers from './index';
 
 export default optimist(
   combineReducers({

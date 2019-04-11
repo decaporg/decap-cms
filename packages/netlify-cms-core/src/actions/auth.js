@@ -1,5 +1,5 @@
 import { actions as notifActions } from 'redux-notifications';
-import { currentBackend } from 'src/backend';
+import { currentBackend } from 'coreSrc/backend';
 
 const { notifSend } = notifActions;
 
@@ -79,7 +79,10 @@ export function loginUser(credentials) {
         console.error(error);
         dispatch(
           notifSend({
-            message: `${error.message}`,
+            message: {
+              details: error.message,
+              key: 'ui.toast.onFailToAuth',
+            },
             kind: 'warning',
             dismissAfter: 8000,
           }),

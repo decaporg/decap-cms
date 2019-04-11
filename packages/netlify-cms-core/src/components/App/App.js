@@ -3,14 +3,14 @@ import React from 'react';
 import { hot } from 'react-hot-loader';
 import { translate } from 'react-polyglot';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 import { connect } from 'react-redux';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import { Notifs } from 'redux-notifications';
 import TopBarProgress from 'react-topbar-progress-indicator';
 import { loadConfig } from 'Actions/config';
 import { loginUser, logoutUser } from 'Actions/auth';
-import { currentBackend } from 'src/backend';
+import { currentBackend } from 'coreSrc/backend';
 import { createNewEntry } from 'Actions/collections';
 import { openMediaLibrary } from 'Actions/mediaLibrary';
 import MediaLibrary from 'MediaLibrary/MediaLibrary';
@@ -72,7 +72,6 @@ class App extends React.Component {
     return (
       <ErrorContainer>
         <h1>{t('app.app.errorHeader')}</h1>
-
         <div>
           <strong>{t('app.app.configErrors')}:</strong>
           <ErrorCodeBlock>{config.get('error')}</ErrorCodeBlock>
@@ -160,7 +159,7 @@ class App extends React.Component {
     const hasWorkflow = publishMode === EDITORIAL_WORKFLOW;
 
     return (
-      <div>
+      <>
         <Notifs CustomComponent={Toast} />
         <Header
           user={user}
@@ -174,27 +173,25 @@ class App extends React.Component {
         />
         <AppMainContainer>
           {isFetching && <TopBarProgress />}
-          <div>
-            <Switch>
-              <Redirect exact from="/" to={defaultPath} />
-              <Redirect exact from="/search/" to={defaultPath} />
-              {hasWorkflow ? <Route path="/workflow" component={Workflow} /> : null}
-              <Route exact path="/collections/:name" component={Collection} />
-              <Route
-                path="/collections/:name/new"
-                render={props => <Editor {...props} newRecord />}
-              />
-              <Route path="/collections/:name/entries/:slug" component={Editor} />
-              <Route
-                path="/search/:searchTerm"
-                render={props => <Collection {...props} isSearchResults />}
-              />
-              <Route component={NotFoundPage} />
-            </Switch>
-            {useMediaLibrary ? <MediaLibrary /> : null}
-          </div>
+          <Switch>
+            <Redirect exact from="/" to={defaultPath} />
+            <Redirect exact from="/search/" to={defaultPath} />
+            {hasWorkflow ? <Route path="/workflow" component={Workflow} /> : null}
+            <Route exact path="/collections/:name" component={Collection} />
+            <Route
+              path="/collections/:name/new"
+              render={props => <Editor {...props} newRecord />}
+            />
+            <Route path="/collections/:name/entries/:slug" component={Editor} />
+            <Route
+              path="/search/:searchTerm"
+              render={props => <Collection {...props} isSearchResults />}
+            />
+            <Route component={NotFoundPage} />
+          </Switch>
+          {useMediaLibrary ? <MediaLibrary /> : null}
         </AppMainContainer>
-      </div>
+      </>
     );
   }
 }

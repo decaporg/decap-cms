@@ -35,4 +35,4 @@ If you hook up Netlify CMS to your website, you're basically adding a tool for c
 - [Start with a template](../start-with-a-template/) to make a Netlify CMS-enabled site of your own.
 - Configure your existing site by following a [tutorial](../add-to-your-site/) or checking [configuration options](../configuration-options).
 - Ask questions and share ideas in the Netlify CMS community on [Gitter](https://gitter.im/netlify/netlifycms).
-- Get involved in new developments and become a [contributor](https://docs-starters--netlify-cms-www.netlify.com/docs/contributor-guide/).
+- Get involved in new developments and become a [contributor](../contributor-guide/).

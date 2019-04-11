@@ -6,6 +6,34 @@ import API from './API';
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
 
+/**
+ * Keywords for inferring a status that will provide a deploy preview URL.
+ */
+const PREVIEW_CONTEXT_KEYWORDS = ['deploy'];
+
+/**
+ * Check a given status context string to determine if it provides a link to a
+ * deploy preview. Checks for an exact match against `previewContext` if given,
+ * otherwise checks for inclusion of a value from `PREVIEW_CONTEXT_KEYWORDS`.
+ */
+function isPreviewContext(context, previewContext) {
+  if (previewContext) {
+    return context === previewContext;
+  }
+  return PREVIEW_CONTEXT_KEYWORDS.some(keyword => context.includes(keyword));
+}
+
+/**
+ * Retrieve a deploy preview URL from an array of statuses. By default, a
+ * matching status is inferred via `isPreviewContext`.
+ */
+function getPreviewStatus(statuses, config) {
+  const previewContext = config.getIn(['backend', 'preview_context']);
+  return statuses.find(({ context }) => {
+    return isPreviewContext(context, previewContext);
+  });
+}
+
 export default class GitHub {
   constructor(config, options = {}) {
     this.config = config;
@@ -136,7 +164,7 @@ export default class GitHub {
         if (url.pathname.match(/.svg$/)) {
           url.search += (url.search.slice(1) === '' ? '?' : '&') + 'sanitize=true';
         }
-        return { id: sha, name, size, url: url.href, path };
+        return { id: sha, name, size, displayURL: url.href, path };
       }),
     );
   }
@@ -150,8 +178,14 @@ export default class GitHub {
       await this.api.persistFiles(null, [mediaFile], options);
 
       const { sha, value, path, fileObj } = mediaFile;
-      const url = URL.createObjectURL(fileObj);
-      return { id: sha, name: value, size: fileObj.size, url, path: trimStart(path, '/') };
+      const displayURL = URL.createObjectURL(fileObj);
+      return {
+        id: sha,
+        name: value,
+        size: fileObj.size,
+        displayURL,
+        path: trimStart(path, '/'),
+      };
     } catch (error) {
       console.error(error);
       throw error;
@@ -220,6 +254,28 @@ export default class GitHub {
         isModification: data.isModification,
       };
     });
+  }
+
+  /**
+   * Uses GitHub's Statuses API to retrieve statuses, infers which is for a
+   * deploy preview via `getPreviewStatus`. Returns the url provided by the
+   * status, as well as the status state, which should be one of 'success',
+   * 'pending', and 'failure'.
+   */
+  async getDeployPreview(collection, slug) {
+    const data = await this.api.retrieveMetadata(slug);
+
+    if (!data) {
+      return null;
+    }
+
+    const statuses = await this.api.getStatuses(data.pr.head);
+    const deployStatus = getPreviewStatus(statuses, this.config);
+
+    if (deployStatus) {
+      const { target_url, state } = deployStatus;
+      return { url: target_url, status: state };
+    }
   }
 
   updateUnpublishedEntryStatus(collection, slug, newStatus) {

@@ -3,13 +3,14 @@ const webpack = require('webpack');
 const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const pkg = require('./package.json');
-const { plugins } = require('../../scripts/webpack');
-const coreWebpackConfig = require('../netlify-cms-core/webpack.config.js');
+const { getConfig, plugins } = require('../../scripts/webpack');
+const baseWebpackConfig = getConfig({ baseOnly: true });
 
 const isProduction = process.env.NODE_ENV === 'production';
+console.log(`${pkg.version}${isProduction ? '' : '-dev'}`);
 
 const baseConfig = {
-  ...coreWebpackConfig,
+  ...baseWebpackConfig,
   context: path.join(__dirname, 'src'),
   entry: './index.js',
   plugins: [
@@ -25,11 +26,12 @@ const baseConfig = {
         messages: ['Netlify CMS is now running at http://localhost:8080'],
       },
     }),
-    new CopyWebpackPlugin([{ from: '../shims/cms.css', to: 'dist/' }]),
+    new CopyWebpackPlugin([{ from: '../shims/cms.css', to: './' }]),
   ],
   devServer: {
     contentBase: '../../dev-test',
     watchContentBase: true,
+    publicPath: '/dist/',
     quiet: true,
     host: 'localhost',
     port: 8080,
@@ -49,7 +51,7 @@ if (isProduction) {
       entry: [path.join(__dirname, 'shims/deprecate-old-dist.js'), baseConfig.entry],
       output: {
         ...baseConfig.output,
-        filename: 'dist/cms.js',
+        filename: 'cms.js',
       },
     },
   ];

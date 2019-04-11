@@ -1,3 +1,10 @@
-export BitbucketBackend from './implementation';
-export API from './API';
-export AuthenticationPage from './AuthenticationPage';
+import BitbucketBackend from './implementation';
+import API from './API';
+import AuthenticationPage from './AuthenticationPage';
+
+export const NetlifyCmsBackendBitbucket = {
+  BitbucketBackend,
+  API,
+  AuthenticationPage,
+};
+export { BitbucketBackend, API, AuthenticationPage };

@@ -1,2 +1,8 @@
-export TestBackend from './implementation';
-export AuthenticationPage from './AuthenticationPage';
+import TestBackend from './implementation';
+import AuthenticationPage from './AuthenticationPage';
+
+export const NetlifyCmsBackendTest = {
+  TestBackend,
+  AuthenticationPage,
+};
+export { TestBackend, AuthenticationPage };

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import React from 'react';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 import { partial } from 'lodash';
 import {
   AuthenticationPage,
@@ -127,7 +127,7 @@ export default class GitGatewayAuthenticationPage extends React.Component {
       return;
     }
 
-    AuthenticationPage.authClient
+    GitGatewayAuthenticationPage.authClient
       .login(this.state.email, this.state.password, true)
       .then(user => {
         this.props.onLogin(user);

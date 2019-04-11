@@ -17,6 +17,7 @@ bootstrap and run the development server.
 ```sh
 $ git clone https://github.com/netlify/netlify-cms
 $ cd netlify-cms
+$ yarn
 $ yarn bootstrap
 ```
 
@@ -30,7 +31,7 @@ $ yarn start
 
 ### `bootstrap`
 
-Installs and bootstraps any CMS package dependencies.
+Bootstraps the monorepo.
 
 #### Usage
 

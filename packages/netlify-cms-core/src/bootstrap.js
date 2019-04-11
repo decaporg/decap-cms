@@ -4,14 +4,15 @@ import { Provider } from 'react-redux';
 import { Route } from 'react-router-dom';
 import { ConnectedRouter } from 'react-router-redux';
 import history from 'Routing/history';
-import store from 'Redux';
+import store from 'ReduxStore';
 import { mergeConfig } from 'Actions/config';
 import { getPhrases } from 'Constants/defaultPhrases';
 import { I18n } from 'react-polyglot';
+import { GlobalStyles } from 'netlify-cms-ui-default';
 import { ErrorBoundary } from 'UI';
 import App from 'App/App';
 import 'EditorWidgets';
-import 'src/mediaLibrary';
+import 'coreSrc/mediaLibrary';
 import 'what-input';
 
 const ROOT_ID = 'nc-root';
@@ -22,9 +23,7 @@ function bootstrap(opts = {}) {
   /**
    * Log the version number.
    */
-  if (NETLIFY_CMS_VERSION) {
-    console.log(`netlify-cms ${NETLIFY_CMS_VERSION}`);
-  } else if (NETLIFY_CMS_CORE_VERSION) {
+  if (typeof NETLIFY_CMS_CORE_VERSION === 'string') {
     console.log(`netlify-cms-core ${NETLIFY_CMS_CORE_VERSION}`);
   }
 
@@ -62,15 +61,18 @@ function bootstrap(opts = {}) {
    * Create connected root component.
    */
   const Root = () => (
-    <I18n locale={'en'} messages={getPhrases()}>
-      <ErrorBoundary>
-        <Provider store={store}>
-          <ConnectedRouter history={history}>
-            <Route component={App} />
-          </ConnectedRouter>
-        </Provider>
-      </ErrorBoundary>
-    </I18n>
+    <>
+      <GlobalStyles />
+      <I18n locale={'en'} messages={getPhrases()}>
+        <ErrorBoundary showBackup>
+          <Provider store={store}>
+            <ConnectedRouter history={history}>
+              <Route component={App} />
+            </ConnectedRouter>
+          </Provider>
+        </ErrorBoundary>
+      </I18n>
+    </>
   );
 
   /**

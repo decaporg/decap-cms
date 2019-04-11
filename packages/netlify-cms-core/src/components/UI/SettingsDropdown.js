@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled, { css } from 'react-emotion';
+import { css } from '@emotion/core';
+import styled from '@emotion/styled';
 import { translate } from 'react-polyglot';
 import { Icon, Dropdown, DropdownItem, DropdownButton, colors } from 'netlify-cms-ui-default';
 import { stripProtocol } from 'Lib/urlHelper';
@@ -12,8 +13,8 @@ const styles = {
   `,
 };
 
-const AppHeaderAvatar = styled.button`
-  border: 0;
+const AvatarDropdownButton = styled(DropdownButton)`
+  display: inline-block;
   padding: 8px;
   cursor: pointer;
   color: #1e2532;
@@ -38,11 +39,8 @@ const AppHeaderSiteLink = styled.a`
   padding: 10px 16px;
 `;
 
-const Avatar = ({ imageUrl }) => (
-  <AppHeaderAvatar>
-    {imageUrl ? <AvatarImage src={imageUrl} /> : <AvatarPlaceholderIcon type="user" size="large" />}
-  </AppHeaderAvatar>
-);
+const Avatar = ({ imageUrl }) =>
+  imageUrl ? <AvatarImage src={imageUrl} /> : <AvatarPlaceholderIcon type="user" size="large" />;
 
 Avatar.propTypes = {
   imageUrl: PropTypes.string,
@@ -60,9 +58,9 @@ const SettingsDropdown = ({ displayUrl, imageUrl, onLogoutClick, t }) => (
       dropdownWidth="100px"
       dropdownPosition="right"
       renderButton={() => (
-        <DropdownButton>
+        <AvatarDropdownButton>
           <Avatar imageUrl={imageUrl} />
-        </DropdownButton>
+        </AvatarDropdownButton>
       )}
     >
       <DropdownItem label={t('ui.settingsDropdown.logOut')} onClick={onLogoutClick} />

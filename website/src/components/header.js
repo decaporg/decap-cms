@@ -57,24 +57,24 @@ class Header extends Component {
                   <Link to="/" className="logo">
                     <img src={logo} />
                   </Link>
-                  {isDocs && <DocSearch />}
+                  <DocSearch />
                 </div>
                 <div className="nav-container">
-                  <Link className="nav-link docs-link" to="/docs/intro">
-                    Docs
-                  </Link>
-                  <Link className="nav-link contributing-link" to="/docs/contributor-guide">
-                    Contributing
-                  </Link>
-                  <Link className="nav-link" to="/community">
-                    Community
-                  </Link>
-                  <Link className="nav-link" to="/blog">
-                    Blog
-                  </Link>
                   <span className="gh-button">
                     <GitHubButton />
                   </span>
+                  <Link className="nav-link docs-link" to="/docs/intro/">
+                    Docs
+                  </Link>
+                  <Link className="nav-link contributing-link" to="/docs/contributor-guide/">
+                    Contributing
+                  </Link>
+                  <Link className="nav-link" to="/community/">
+                    Community
+                  </Link>
+                  <Link className="nav-link" to="/blog/">
+                    Blog
+                  </Link>
                 </div>
               </div>
             </header>

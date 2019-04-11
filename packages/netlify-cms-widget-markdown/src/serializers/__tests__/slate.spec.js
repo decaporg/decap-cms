@@ -33,4 +33,58 @@ describe('slate', () => {
   it('should not escape markdown entities in html', () => {
     expect(process('<span>*</span>')).toEqual('<span>*</span>');
   });
+
+  it('should not produce invalid markdown when a styled block has trailing whitespace', () => {
+    const slateAst = {
+      object: 'block',
+      type: 'root',
+      nodes: [
+        {
+          object: 'block',
+          type: 'paragraph',
+          nodes: [
+            {
+              object: 'text',
+              data: undefined,
+              leaves: [
+                {
+                  text: 'foo ', // <--
+                  marks: [{ type: 'bold' }],
+                },
+              ],
+            },
+            { object: 'text', data: undefined, leaves: [{ text: 'bar' }] },
+          ],
+        },
+      ],
+    };
+    expect(slateToMarkdown(slateAst)).toEqual('**foo** bar');
+  });
+
+  it('should not produce invalid markdown when a styled block has leading whitespace', () => {
+    const slateAst = {
+      object: 'block',
+      type: 'root',
+      nodes: [
+        {
+          object: 'block',
+          type: 'paragraph',
+          nodes: [
+            { object: 'text', data: undefined, leaves: [{ text: 'foo' }] },
+            {
+              object: 'text',
+              data: undefined,
+              leaves: [
+                {
+                  text: ' bar', // <--
+                  marks: [{ type: 'bold' }],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+    expect(slateToMarkdown(slateAst)).toEqual('foo **bar**');
+  });
 });

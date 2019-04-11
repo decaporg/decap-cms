@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import styled, { cx } from 'react-emotion';
-import { get, isEmpty, debounce } from 'lodash';
+import styled from '@emotion/styled';
+import { ClassNames } from '@emotion/core';
+import { get, isEmpty, debounce, uniq } from 'lodash';
 import { List } from 'immutable';
 import { Value, Document, Block, Text } from 'slate';
 import { Editor as Slate } from 'slate-react';
@@ -48,11 +49,41 @@ export default class Editor extends React.Component {
     super(props);
     this.state = {
       value: createSlateValue(props.value),
+      lastRawValue: props.value,
     };
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return !this.state.value.equals(nextState.value);
+    const forcePropsValue = this.shouldForcePropsValue(
+      this.props.value,
+      this.state.lastRawValue,
+      nextProps.value,
+      nextState.lastRawValue,
+    );
+    return !this.state.value.equals(nextState.value) || forcePropsValue;
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const forcePropsValue = this.shouldForcePropsValue(
+      prevProps.value,
+      prevState.lastRawValue,
+      this.props.value,
+      this.state.lastRawValue,
+    );
+
+    if (forcePropsValue) {
+      this.setState({ value: createSlateValue(this.props.value) });
+    }
+  }
+
+  // If the old props/state values and new state value are all the same, and
+  // the new props value does not match the others, the new props value
+  // originated from outside of this widget and should be used.
+  shouldForcePropsValue(oldPropsValue, oldStateValue, newPropsValue, newStateValue) {
+    return (
+      uniq([oldPropsValue, oldStateValue, newStateValue]).length === 1 &&
+      oldPropsValue !== newPropsValue
+    );
   }
 
   handlePaste = (e, data, change) => {
@@ -194,7 +225,7 @@ export default class Editor extends React.Component {
     const { onChange } = this.props;
     const raw = change.value.document.toJSON();
     const markdown = slateToMarkdown(raw);
-    onChange(markdown);
+    this.setState({ lastRawValue: markdown }, () => onChange(markdown));
   }, 150);
 
   handleChange = change => {
@@ -229,19 +260,28 @@ export default class Editor extends React.Component {
             buttons={field.get('buttons')}
           />
         </EditorControlBar>
-        <Slate
-          className={cx(className, visualEditorStyles)}
-          value={this.state.value}
-          renderNode={renderNode}
-          renderMark={renderMark}
-          validateNode={validateNode}
-          plugins={plugins}
-          onChange={this.handleChange}
-          onKeyDown={onKeyDown}
-          onPaste={this.handlePaste}
-          ref={this.processRef}
-          spellCheck
-        />
+        <ClassNames>
+          {({ css, cx }) => (
+            <Slate
+              className={cx(
+                className,
+                css`
+                  ${visualEditorStyles}
+                `,
+              )}
+              value={this.state.value}
+              renderNode={renderNode}
+              renderMark={renderMark}
+              validateNode={validateNode}
+              plugins={plugins}
+              onChange={this.handleChange}
+              onKeyDown={onKeyDown}
+              onPaste={this.handlePaste}
+              ref={this.processRef}
+              spellCheck
+            />
+          )}
+        </ClassNames>
       </VisualEditorContainer>
     );
   }

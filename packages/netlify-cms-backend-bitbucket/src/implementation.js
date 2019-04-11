@@ -15,7 +15,7 @@ import API from './API';
 const MAX_CONCURRENT_DOWNLOADS = 10;
 
 // Implementation wrapper class
-export default class Bitbucket {
+export default class BitbucketBackend {
   constructor(config, options = {}) {
     this.config = config;
     this.options = {
@@ -219,22 +219,24 @@ export default class Bitbucket {
   }
 
   getMedia() {
-    const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
+    return this.api
+      .listAllFiles(this.config.get('media_folder'))
+      .then(files =>
+        files.map(({ id, name, path }) => ({ id, name, path, displayURL: { id, path } })),
+      );
+  }
 
-    return this.api.listAllFiles(this.config.get('media_folder')).then(files =>
-      files.map(({ id, name, path }) => {
-        const getBlobPromise = () =>
-          new Promise((resolve, reject) =>
-            sem.take(() =>
-              this.api
-                .readFile(path, id, { parseText: false })
-                .then(resolve, reject)
-                .finally(() => sem.leave()),
-            ),
-          );
-
-        return { id, name, getBlobPromise, path };
-      }),
+  getMediaDisplayURL(displayURL) {
+    this._mediaDisplayURLSem = this._mediaDisplayURLSem || semaphore(MAX_CONCURRENT_DOWNLOADS);
+    const { id, path } = displayURL;
+    return new Promise((resolve, reject) =>
+      this._mediaDisplayURLSem.take(() =>
+        this.api
+          .readFile(path, id, { parseText: false })
+          .then(blob => URL.createObjectURL(blob))
+          .then(resolve, reject)
+          .finally(() => this._mediaDisplayURLSem.leave()),
+      ),
     );
   }
 
@@ -245,8 +247,7 @@ export default class Bitbucket {
   async persistMedia(mediaFile, options = {}) {
     await this.api.persistFiles([mediaFile], options);
     const { value, path, fileObj } = mediaFile;
-    const getBlobPromise = () => Promise.resolve(fileObj);
-    return { name: value, size: fileObj.size, getBlobPromise, path: trimStart(path, '/k') };
+    return { name: value, size: fileObj.size, path: trimStart(path, '/k') };
   }
 
   deleteFile(path, commitMessage, options) {

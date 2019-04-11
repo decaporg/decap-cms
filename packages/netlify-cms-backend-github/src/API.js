@@ -1,8 +1,12 @@
-import { localForage } from 'netlify-cms-lib-util';
 import { Base64 } from 'js-base64';
 import { uniq, initial, last, get, find, hasIn, partial, result } from 'lodash';
-import { filterPromises, resolvePromiseProperties } from 'netlify-cms-lib-util';
-import { APIError, EditorialWorkflowError } from 'netlify-cms-lib-util';
+import {
+  localForage,
+  filterPromises,
+  resolvePromiseProperties,
+  APIError,
+  EditorialWorkflowError,
+} from 'netlify-cms-lib-util';
 
 const CMS_BRANCH_PREFIX = 'cms/';
 
@@ -222,8 +226,8 @@ export default class API {
   }
 
   readUnpublishedBranchFile(contentKey) {
-    const metaDataPromise = this.retrieveMetadata(contentKey).then(
-      data => (data.objects.entry.path ? data : Promise.reject(null)),
+    const metaDataPromise = this.retrieveMetadata(contentKey).then(data =>
+      data.objects.entry.path ? data : Promise.reject(null),
     );
     return resolvePromiseProperties({
       metaData: metaDataPromise,
@@ -278,6 +282,15 @@ export default class API {
         );
         throw error;
       });
+  }
+
+  /**
+   * Retrieve statuses for a given SHA. Unrelated to the editorial workflow
+   * concept of entry "status". Useful for things like deploy preview links.
+   */
+  async getStatuses(sha) {
+    const resp = await this.request(`${this.repoURL}/commits/${sha}/status`);
+    return resp.statuses;
   }
 
   composeFileTree(files) {

@@ -1,7 +1,7 @@
 import { Map } from 'immutable';
 /*
-* Reducer for some global UI state that we want to share between components
-* */
+ * Reducer for some global UI state that we want to share between components
+ * */
 const globalUI = (state = Map({ isFetching: false }), action) => {
   // Generic, global loading indicator
   if (action.type.indexOf('REQUEST') > -1) {

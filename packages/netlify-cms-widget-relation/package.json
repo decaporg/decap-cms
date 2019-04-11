@@ -1,10 +1,11 @@
 {
   "name": "netlify-cms-widget-relation",
   "description": "Widget for linking related entries in Netlify CMS.",
-  "version": "2.0.5",
+  "version": "2.3.1",
   "homepage": "https://www.netlifycms.org/docs/widgets/#relation",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
+  "module": "dist/esm/index.js",
   "main": "dist/netlify-cms-widget-relation.js",
   "license": "MIT",
   "keywords": [
@@ -16,26 +17,21 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "watch": "webpack -w",
-    "develop": "npm run watch",
-    "build": "cross-env NODE_ENV=production webpack"
+    "develop": "yarn build:esm --watch",
+    "build": "cross-env NODE_ENV=production webpack",
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore src/**/__tests__/* --root-mode upward -s"
   },
   "dependencies": {
-    "react-autosuggest": "^9.3.2"
-  },
-  "devDependencies": {
-    "cross-env": "^5.2.0",
-    "webpack": "^4.16.1",
-    "webpack-cli": "^3.1.0"
+    "react-select": "^2.4.2"
   },
   "peerDependencies": {
-    "emotion": "^9.2.6",
+    "@emotion/core": "^10.0.9",
+    "@emotion/styled": "^10.0.9",
     "immutable": "^3.7.6",
-    "lodash": "^4.17.10",
-    "netlify-cms-ui-default": "^2.0.0",
-    "prop-types": "^15.5.10",
-    "react": "^16.4.1",
-    "react-emotion": "^9.2.5",
-    "uuid": "^3.1.0"
+    "lodash": "^4.17.11",
+    "netlify-cms-ui-default": "^2.6.0",
+    "prop-types": "^15.7.2",
+    "react": "^16.8.4",
+    "uuid": "^3.3.2"
   }
 }

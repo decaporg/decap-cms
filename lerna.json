@@ -6,10 +6,17 @@
   "useWorkspaces": true,
   "loglevel": "success",
   "command": {
-    "publish": {
+    "version": {
       "allowBranch": "master",
       "conventionalCommits": true,
-      "ignoreChanges": ["CHANGELOG.md"]
+      "preid": "beta",
+      "gitRemote": "upstream",
+      "message": "chore(release): publish"
     }
-  }
+  },
+  "ignoreChanges": [
+    "**/__fixtures__/**",
+    "**/__tests__/**",
+    "**/*.md"
+  ]
 }

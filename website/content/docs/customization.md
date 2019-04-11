@@ -1,15 +1,13 @@
 ---
 title: Creating Custom Previews
-position: 50
-group: guides
+weight: 50
+group: customization
 ---
 
 The NetlifyCMS exposes a `window.CMS` global object that you can use to register custom widgets, previews and editor plugins. The available customization methods are:
 
 * **registerPreviewStyle:** Register a custom stylesheet to use on the preview pane.
 * **registerPreviewTemplate:** Registers a template for a collection.
-
-Explore the [NetlifyCMS GitHub example](https://github.com/netlify/netlify-cms/blob/9ced3f16c8bcc3d1a36773b126842d023c589eaf/example/index.html#L90-L91), a working example you can review on GitHub.
 
 ### React Components inline interaction
 

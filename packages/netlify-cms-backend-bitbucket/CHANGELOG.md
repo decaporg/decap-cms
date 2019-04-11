@@ -3,6 +3,98 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.3.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/compare/netlify-cms-backend-bitbucket@2.3.1-beta.1...netlify-cms-backend-bitbucket@2.3.1) (2019-03-29)
+
+**Note:** Version bump only for package netlify-cms-backend-bitbucket
+
+
+
+
+
+## [2.3.1-beta.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/compare/netlify-cms-backend-bitbucket@2.3.1-beta.0...netlify-cms-backend-bitbucket@2.3.1-beta.1) (2019-03-26)
+
+
+### Bug Fixes
+
+* export on netlify-cms and maps on esm ([#2244](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/issues/2244)) ([6ffd13b](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/commit/6ffd13b))
+
+
+
+
+
+## [2.3.1-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/compare/netlify-cms-backend-bitbucket@2.3.0...netlify-cms-backend-bitbucket@2.3.1-beta.0) (2019-03-25)
+
+
+### Bug Fixes
+
+* update peer dep versions ([#2234](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/issues/2234)) ([7987091](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/commit/7987091))
+
+
+
+
+
+# [2.3.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/compare/netlify-cms-backend-bitbucket@2.2.0...netlify-cms-backend-bitbucket@2.3.0) (2019-03-22)
+
+
+### Features
+
+* add ES module builds ([#2215](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/issues/2215)) ([d142b32](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/commit/d142b32))
+
+
+
+
+
+# [2.2.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/compare/netlify-cms-backend-bitbucket@2.2.0-beta.0...netlify-cms-backend-bitbucket@2.2.0) (2019-03-22)
+
+**Note:** Version bump only for package netlify-cms-backend-bitbucket
+
+
+
+
+
+# [2.2.0-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/compare/netlify-cms-backend-bitbucket@2.1.3-beta.0...netlify-cms-backend-bitbucket@2.2.0-beta.0) (2019-03-21)
+
+
+### Bug Fixes
+
+* fix umd builds ([#2214](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/issues/2214)) ([e04f6be](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/commit/e04f6be))
+
+
+### Features
+
+* provide usable UMD builds for all packages ([#2141](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/issues/2141)) ([82cc794](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/commit/82cc794))
+
+
+
+
+
+## [2.1.3-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/compare/netlify-cms-backend-bitbucket@2.1.2...netlify-cms-backend-bitbucket@2.1.3-beta.0) (2019-03-15)
+
+
+### Features
+
+* upgrade to Emotion 10 ([#2166](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/issues/2166)) ([ccef446](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/commit/ccef446))
+
+
+
+
+
+## [2.1.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/compare/netlify-cms-backend-bitbucket@2.1.1...netlify-cms-backend-bitbucket@2.1.2) (2019-03-08)
+
+**Note:** Version bump only for package netlify-cms-backend-bitbucket
+
+
+
+
+
+## [2.1.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/compare/netlify-cms-backend-bitbucket@2.1.0...netlify-cms-backend-bitbucket@2.1.1) (2019-02-26)
+
+**Note:** Version bump only for package netlify-cms-backend-bitbucket
+
+
+
+
+
 # [2.1.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/compare/netlify-cms-backend-bitbucket@2.0.7...netlify-cms-backend-bitbucket@2.1.0) (2018-11-12)
 
 

@@ -1,6 +1,52 @@
 updates:
+  - date: '2019-03-29'
+    description: 'Add netlify-cms-app package with external deps, fix breaking preview templates'
+    version: 2.9.0
+  - date: '2019-03-22'
+    description: 'Add es module builds, fix large media binary output'
+    version: 2.8.0
+  - date: '2019-03-21'
+    description: 'Standalone UMD builds with externalized dependencies for all extension packages'
+    version: 2.7.0
+  - date: '2019-03-11'
+    description: 'Fix Cloudinary multiselect, preview pane and config fixes, other improvements'
+    version: 2.6.1
+  - date: '2019-03-07'
+    description: 'Add entry recovery after error, fix large media GitHub URL output, other fixes'
+    version: 2.6.0
+  - date: '2019-02-28'
+    description: 'Fix previews of GitHub images'
+    version: 2.5.1
+  - date: '2019-02-26'
+    description: 'Netlify Large Media support, multi-select relation widget, and more'
+    version: 2.5.0
+  - date: '2019-02-12'
+    description: 'Fix empty number widget values, accept explicit fields in slug template'
+    version: 2.4.2
+  - date: 2019-02-09T00:08:11.159Z
+    description: Bugfixes
+    version: 2.4.1
+  - date: 2019-02-08T22:27:39.913Z
+    description: 'Deploy preview links, map widget, and nested field validation'
+    version: 2.4.0
+    url: 'https://www.netlifycms.org/blog/2019/02/netlify-cms-2-4-0'
+  - date: '2019-01-10'
+    description: Fix missing entry labels for file collections
+    version: 2.3.3
+  - date: '2018-12-26'
+    description: 'Bugfixes, list widget variable types in beta'
+    version: 2.3.2
+  - date: '2018-12-11'
+    description: Bugfixes
+    version: 2.3.1
+  - date: '2018-12-04'
+    description: 'Cloudinary support, multi-select in select widget'
+    version: 2.3.0
+  - date: '2018-11-29'
+    description: 'Date display formatting, lots of bugfixes'
+    version: 2.2.1
   - date: '2018-11-12'
-    description: Custom identifier fields, custom logo on auth page, bugfixes
+    description: 'Custom identifier fields, custom logo on auth page, bugfixes'
     version: 2.2.0
   - date: 2018-10-09T13:57:04.203Z
     description: Bugfixes

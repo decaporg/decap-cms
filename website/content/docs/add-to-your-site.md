@@ -12,13 +12,15 @@ This tutorial guides you through the steps for adding Netlify CMS to a site that
 
 A static `admin` folder contains all Netlify CMS files, stored at the root of your published site. Where you store this folder in the source files depends on your static site generator. Here's the static file location for a few of the most popular static site generators:
 
-| These generators ...    | store static files in |
-| ----------------------- | --------------------- |
-| Jekyll, GitBook         | `/` (project root)    |
-| Hugo, Gatsby, Nuxt      | `/static`             |
-| Hexo, Middleman, Jigsaw | `/source`             |
-| Spike                   | `/views`              |
-| Wyam                    | `/input`              |
+| These generators ...         | store static files in |
+| ---------------------------- | --------------------- |
+| Jekyll, GitBook              | `/` (project root)    |
+| Hugo, Gatsby, Nuxt, Gridsome | `/static`             |
+| Hexo, Middleman, Jigsaw      | `/source`             |
+| Spike                        | `/views`              |
+| Wyam                         | `/input`              |
+| Pelican                      | `/content`            |
+| VuePress                     | `/.vuepress/public`   |
 
 If your generator isn't listed here, you can check its documentation, or as a shortcut, look in your project for a `css` or `images` folder. The contents of folders like that are usually processed as static files, so it's likely you can store your `admin` folder next to those. (When you've found the location, feel free to add it to these docs by [filing a pull request](https://github.com/netlify/netlify-cms/blob/master/CONTRIBUTING.md)!)
 

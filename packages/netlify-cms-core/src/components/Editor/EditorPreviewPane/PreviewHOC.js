@@ -10,7 +10,11 @@ class PreviewHOC extends React.Component {
    */
   shouldComponentUpdate(nextProps) {
     const isWidgetContainer = ['object', 'list'].includes(nextProps.field.get('widget'));
-    return isWidgetContainer || this.props.value !== nextProps.value;
+    return (
+      isWidgetContainer ||
+      this.props.value !== nextProps.value ||
+      this.props.fieldsMetaData !== nextProps.fieldsMetaData
+    );
   }
 
   render() {

@@ -123,7 +123,9 @@ header {
       vertical-align: middle;
       -webkit-vertical-align: middle !important;
       margin-left: $tiny;
-
+      &:first-child {
+        margin-left: 0;
+      }
       &:hover {
         color: $green;
       }
@@ -138,6 +140,7 @@ header {
       @media screen and (max-width: $mobile) {
         margin-top: $tiny;
         top: 0;
+        margin-left: 0;
       }
     }
   }

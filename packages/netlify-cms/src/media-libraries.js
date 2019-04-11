@@ -1,6 +1,6 @@
-import cms from 'netlify-cms-core/src';
-import uploadcare from 'netlify-cms-media-library-uploadcare/src';
+import { NetlifyCmsCore as CMS } from 'netlify-cms-core';
+import uploadcare from 'netlify-cms-media-library-uploadcare';
+import cloudinary from 'netlify-cms-media-library-cloudinary';
 
-const { registerMediaLibrary } = cms;
-
-registerMediaLibrary(uploadcare);
+CMS.registerMediaLibrary(uploadcare);
+CMS.registerMediaLibrary(cloudinary);

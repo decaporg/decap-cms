@@ -52,7 +52,7 @@ configuration options directly through your `config.yml`.
 
 **Note:** all default values described in Uploadcare's documentation also apply in the Netlify CMS
 integration, except for `previewStep`, which is set to `true`. This was done because the preview
-step provides helpful information like upload status, and proivdes access to image editing controls.
+step provides helpful information like upload status, and provides access to image editing controls.
 This option can be disabled through the configuration options below.
 
 ### Global configuration
@@ -73,9 +73,8 @@ For example:
     name: cover
     label: Cover Image
     widget: image
-    options:
-      media_library:
-        config:
-          multiple: true
-          previewStep: false
+    media_library:
+      config:
+        multiple: true
+        previewStep: false
 ```
