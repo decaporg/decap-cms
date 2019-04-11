@@ -24,7 +24,6 @@
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 import path from 'path';
-import { times } from 'lodash';
 import rehype from 'rehype';
 import visit from 'unist-util-visit';
 import { oneLineTrim } from 'common-tags';
@@ -91,6 +90,15 @@ Cypress.Commands.add('stubFetch', ({ fixture }) => {
   });
 });
 
+function runTimes(cyInstance, fn, count = 1) {
+  let chain = cyInstance, i = count;
+  while (i) {
+    i -= 1;
+    chain = fn(chain);
+  }
+  return chain;
+}
+
 [
   'enter',
   'backspace',
@@ -101,11 +109,67 @@ Cypress.Commands.add('stubFetch', ({ fixture }) => {
   ['right', 'rightArrow'],
 ].forEach(key => {
   const [ cmd, keyName ] = typeof key === 'object' ? key : [key, key];
-  Cypress.Commands.add(cmd, { prevSubject: true }, (subject, { shift, times: t = 1 } = {}) => {
-    times(t, () => {
-      cy.wrap(subject).type(`{${keyName}}${shift ? '{shift}' : ''}`);
-    });
+  Cypress.Commands.add(cmd, { prevSubject: true }, (subject, { shift, times = 1 } = {}) => {
+    const fn = chain => chain.type(`{${keyName}}${shift ? '{shift}' : ''}`);
+    return runTimes(cy.wrap(subject), fn, times);
   });
+});
+
+// Convert `tab` command from plugin to a child command with `times` support
+Cypress.Commands.add('tabkey', { prevSubject: true }, (subject, { shift, times } = {}) => {
+  const fn = chain => chain.tab({ shift });
+  return runTimes(cy, fn, times).wrap(subject);
+});
+
+Cypress.Commands.add('selection', { prevSubject: true }, (subject, fn) => {
+  cy.wrap(subject)
+    .trigger('mousedown')
+    .then(fn)
+    .trigger('mouseup');
+
+  cy.document().trigger('selectionchange');
+  return cy.wrap(subject);
+});
+
+Cypress.Commands.add('setSelection', { prevSubject: true }, (subject, query, endQuery) => {
+  return cy.wrap(subject)
+    .selection($el => {
+      if (typeof query === 'string') {
+        const anchorNode = getTextNode($el[0], query);
+        const focusNode = endQuery ? getTextNode($el[0], endQuery) : anchorNode;
+        const anchorOffset = anchorNode.wholeText.indexOf(query);
+        const focusOffset = endQuery ?
+          focusNode.wholeText.indexOf(endQuery) + endQuery.length :
+          anchorOffset + query.length;
+        setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset);
+      } else if (typeof query === 'object') {
+        const el = $el[0];
+        const anchorNode = getTextNode(el.querySelector(query.anchorQuery));
+        const anchorOffset = query.anchorOffset || 0;
+        const focusNode = query.focusQuery ? getTextNode(el.querySelector(query.focusQuery)) : anchorNode;
+        const focusOffset = query.focusOffset || 0;
+        setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset);
+      }
+    });
+});
+
+Cypress.Commands.add('setCursor', { prevSubject: true }, (subject, query, atStart) => {
+  return cy.wrap(subject)
+    .selection($el => {
+      const node = getTextNode($el[0], query);
+      const offset = node.wholeText.indexOf(query) + (atStart ? 0 : query.length);
+      const document = node.ownerDocument;
+      document.getSelection().removeAllRanges();
+      document.getSelection().setBaseAndExtent(node, offset, node, offset);
+    })
+});
+
+Cypress.Commands.add('setCursorBefore', { prevSubject: true }, (subject, query) => {
+  cy.wrap(subject).setCursor(query, true);
+});
+
+Cypress.Commands.add('setCursorAfter', { prevSubject: true }, (subject, query) => {
+  cy.wrap(subject).setCursor(query);
 });
 
 Cypress.Commands.add('login', () => {
@@ -119,16 +183,18 @@ Cypress.Commands.add('loginAndNewPost', () => {
   cy.contains('a', 'New Post').click();
 });
 
-Cypress.Commands.add('clickToolbarButton', title => {
-  cy.get(`button[title="${title}"]`).click();
-  return cy.focused();
+Cypress.Commands.add('clickToolbarButton', (title, { times } = {}) => {
+    const instance = cy.get(`button[title="${title}"]`);
+    const fn = chain => chain.click();
+    return runTimes(instance, fn, times).focused();
 });
 
-Cypress.Commands.add('clickUnorderedListButton', ({ times: t = 1 } = {}) => {
-  times(t, () => {
-    cy.clickToolbarButton('Bulleted List');
-  });
-  return cy.focused();
+Cypress.Commands.add('clickUnorderedListButton', opts => {
+  return cy.clickToolbarButton('Bulleted List', opts);
+});
+
+Cypress.Commands.add('clickOrderedListButton', opts => {
+  return cy.clickToolbarButton('Numbered List', opts);
 });
 
 Cypress.Commands.add('confirmEditorContent', expectedDomString => {
@@ -160,4 +226,28 @@ function removeSlateArtifacts() {
       }
     });
   }
+}
+
+function walker(el) {
+}
+
+function getTextNode(el, match){
+  const walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null, false);
+  if (!match) {
+    return walk.nextNode();
+  }
+
+  const nodes = [];
+  let node;
+  while(node = walk.nextNode()) {
+    if (node.wholeText.includes(match)) {
+      return node;
+    }
+  }
+}
+
+function setBaseAndExtent(...args) {
+  const document = args[0].ownerDocument;
+  document.getSelection().removeAllRanges();
+  document.getSelection().setBaseAndExtent(...args);
 }
