@@ -100,19 +100,20 @@ const selectors = {
 export const selectFields = (collection, slug) =>
   selectors[collection.get('type')].fields(collection, slug);
 export const selectNonConfiguredFields = (collection, entry) => {
-  const fields = selectFields(collection, entry.slug);
-  const unconfiguredFields = entry
-    .get('data', [])
-    .filter((entryFieldValue, entryField) =>
-      fields.every(field => entryField !== field.get('name')),
-    )
-    .map((field, key) => Map({ name: key, widget: 'hidden' }));
-  return unconfiguredFields;
+  const fields = selectFields(collection, entry.slug || entry.get('slug'));
+  return fields
+    ? entry
+        .get('data', [])
+        .filter((entryFieldValue, entryField) =>
+          fields.every(field => entryField !== field.get('name')),
+        )
+        .map((field, key) => Map({ name: key, widget: 'hidden' }))
+    : [];
 };
 export const selectAllFields = (collection, entry) => {
-  const fields = selectFields(collection, entry.slug);
+  const fields = selectFields(collection, entry.slug || entry.get('slug'));
   const unconfiguredFields = selectNonConfiguredFields(collection, entry);
-  return fields.concat(unconfiguredFields);
+  return fields ? fields.concat(unconfiguredFields) : List();
 };
 export const selectFolderEntryExtension = collection =>
   selectors[FOLDER].entryExtension(collection);
