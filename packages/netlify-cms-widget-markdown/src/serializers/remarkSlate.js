@@ -192,7 +192,7 @@ function convertNode(node, nodes) {
      */
     case 'listItem': {
       const children = isEmpty(nodes) ? [createBlock('paragraph')] : nodes;
-      return createBlock(typeMap[type], children);
+      return createBlock(typeMap[node.type], children);
     }
 
     /**

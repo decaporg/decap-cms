@@ -119,9 +119,6 @@ const ListPlugin = ({ defaultBlockType, unorderedListType, orderedListType }) =>
       },
     },
     commands: {
-      moveToEndOfNode(editor, node, parent) {
-        editor.moveNodeByKey(node.key, parent.key, parent.nodes.size);
-      },
       unwrapBlockChildren(editor, block) {
         if (!block || block.object !== 'block') {
           throw Error(`Expected block but received ${block}.`);
