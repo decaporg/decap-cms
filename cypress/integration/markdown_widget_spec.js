@@ -186,7 +186,7 @@ describe('Markdown widget', () => {
           `);
       });
 
-      it.only('combines adjacent same-typed lists, not differently typed lists', () => {
+      it('combines adjacent same-typed lists, not differently typed lists', () => {
         cy.focused()
           .type('foo')
           .enter()
@@ -357,7 +357,7 @@ describe('Markdown widget', () => {
           .setSelection('baz')
           .clickOrderedListButton()
           .setCursorAfter('qux')
-          .enter({ times: 5 })
+          .enter({ times: 4 })
           .clickUnorderedListButton()
           .confirmEditorContent(`
             <ul>

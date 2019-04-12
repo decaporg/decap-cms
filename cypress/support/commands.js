@@ -125,9 +125,15 @@ Cypress.Commands.add('selection', { prevSubject: true }, (subject, fn) => {
   cy.wrap(subject)
     .trigger('mousedown')
     .then(fn)
-    .trigger('mouseup');
+    .trigger('mouseup')
 
   cy.document().trigger('selectionchange');
+  return cy.wrap(subject);
+});
+
+Cypress.Commands.add('print', { prevSubject: 'optional' }, (subject, str) => {
+  cy.log(str);
+  console.log(`cy.log: ${str}`);
   return cy.wrap(subject);
 });
 
@@ -160,8 +166,11 @@ Cypress.Commands.add('setCursor', { prevSubject: true }, (subject, query, atStar
       const offset = node.wholeText.indexOf(query) + (atStart ? 0 : query.length);
       const document = node.ownerDocument;
       document.getSelection().removeAllRanges();
-      document.getSelection().setBaseAndExtent(node, offset, node, offset);
+      document.getSelection().collapse(node, offset);
     })
+    .click();
+  // click chained at end to reactivate Slate, otherwise subsequent key presses
+  // are processed by the contenteditable element without Slate's processing
 });
 
 Cypress.Commands.add('setCursorBefore', { prevSubject: true }, (subject, query) => {
@@ -181,6 +190,22 @@ Cypress.Commands.add('login', () => {
 Cypress.Commands.add('loginAndNewPost', () => {
   cy.login();
   cy.contains('a', 'New Post').click();
+});
+
+Cypress.Commands.add('drag', { prevSubject: true }, subject => {
+  return cy.wrap(subject)
+    .trigger('dragstart', {
+      dataTransfer: {},
+      force: true,
+    });
+});
+
+Cypress.Commands.add('drop', { prevSubject: true }, subject => {
+  return cy.wrap(subject)
+    .trigger('drop', {
+      dataTransfer: {},
+      force: true,
+    });
 });
 
 Cypress.Commands.add('clickToolbarButton', (title, { times } = {}) => {

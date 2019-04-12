@@ -51,16 +51,10 @@ function updateWorkflowStatus({ title }, fromColumnHeading, toColumnHeading) {
   cy.contains('h2', fromColumnHeading)
     .parent()
     .contains('a', title)
-    .trigger('dragstart', {
-      dataTransfer: {},
-      force: true,
-    });
+    .drag();
   cy.contains('h2', toColumnHeading)
     .parent()
-    .trigger('drop', {
-      dataTransfer: {},
-      force: true,
-    });
+    .drag();
   assertNotification(notifications.updated);
 }
 
