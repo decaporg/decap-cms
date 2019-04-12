@@ -88,23 +88,28 @@ export default class RelationControl extends React.Component {
   handleChange = selectedOption => {
     const { onChange, field } = this.props;
     let value;
+    let metadata;
 
     if (Array.isArray(selectedOption)) {
       value = selectedOption.map(optionToString);
-      onChange(fromJS(value), {
-        [field.get('name')]: {
-          [field.get('collection')]: {
-            [last(value)]: !isEmpty(selectedOption) && last(selectedOption).data,
+      metadata =
+        (!isEmpty(selectedOption) && {
+          [field.get('name')]: {
+            [field.get('collection')]: {
+              [last(value)]: last(selectedOption).data,
+            },
           },
-        },
-      });
+        }) ||
+        {};
+      onChange(fromJS(value), metadata);
     } else {
       value = optionToString(selectedOption);
-      onChange(value, {
+      metadata = selectedOption && {
         [field.get('name')]: {
           [field.get('collection')]: { [value]: selectedOption.data },
         },
-      });
+      };
+      onChange(value, metadata);
     }
   };
 
