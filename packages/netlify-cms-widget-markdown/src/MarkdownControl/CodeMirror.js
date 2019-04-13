@@ -14,22 +14,18 @@ const styles = css`
   ${codeMirrorTheme};
 `;
 
-const CodeMirrorRenderer = props => (
-  <div css={styles} {...props.attributes}>
-    <div onClick={e => e.stopPropagation()}>
-      <CodeMirror
-        options={{
-          mode: 'javascript',
-          theme: 'material',
-          lineNumbers: true,
-          keyMap: 'vim',
-        }}
-        value={props.node.data.get('value')}
-        onBeforeChange={(editor, data, value) => {
-          props.editor.setNodeByKey(props.node.key, { data: { value } })
-        }}
-      />
-    </div>
+const CodeMirrorRenderer = ({ value, onChange }) => (
+  <div css={styles}>
+    <CodeMirror
+      options={{
+        mode: 'javascript',
+        theme: 'material',
+        lineNumbers: true,
+        keyMap: 'vim',
+      }}
+      value={value}
+      onBeforeChange={(editor, data, value) => onChange(value)}
+    />
   </div>
 );
 

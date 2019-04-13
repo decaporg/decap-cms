@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Shortcode from './Shortcode';
-import CodeMirror from './CodeMirror';
+import CodeEditor from './CodeEditor';
 
 /**
  * Slate uses React components to render each type of node that it receives.
@@ -24,7 +24,7 @@ const Code = props => <code>{props.children}</code>;
 const Paragraph = props => <p {...props.attributes}>{props.children}</p>;
 const ListItem = props => <li {...props.attributes}>{props.children}</li>;
 const Quote = props => <blockquote {...props.attributes}>{props.children}</blockquote>;
-const CodeBlock = props => <CodeMirror {...props}/>;
+const CodeBlock = props => <CodeEditor {...props}/>;
 const HeadingOne = props => <h1 {...props.attributes}>{props.children}</h1>;
 const HeadingTwo = props => <h2 {...props.attributes}>{props.children}</h2>;
 const HeadingThree = props => <h3 {...props.attributes}>{props.children}</h3>;

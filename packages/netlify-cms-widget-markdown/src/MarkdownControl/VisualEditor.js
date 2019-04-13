@@ -147,8 +147,8 @@ export default class Editor extends React.Component {
       case 'code-block':
         if (editor.value.blocks.every(block => block.type === type)) {
           editor.value.blocks.forEach(block => {
-            const newBlock = { type: 'paragraph', data: { value: block.data.get('value') } };
-            editor.setNodeByKey(block.key, newBlock);
+            const newBlock = Block.create({ type: 'paragraph', nodes: getBlockNodes(block) });
+            editor.replaceNodeByKey(block.key, newBlock);
           });
         } else {
           editor.value.blocks.forEach(block => {
