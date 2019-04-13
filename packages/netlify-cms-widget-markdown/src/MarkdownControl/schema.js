@@ -190,22 +190,9 @@ const schema = {
         { object: 'block', type: 'break' },
         { object: 'block', type: 'thematic-break' },
         { object: 'block', type: 'shortcode' },
-      ],
-      isVoid: true,
-    },
-
-    /**
-     * Code Block
-     */
-    {
-      match: [
         { object: 'block', type: 'code-block' },
       ],
-      nodes: [{
-        match: [
-          { object: 'text' },
-        ],
-      }],
+      isVoid: true,
     },
 
     /**

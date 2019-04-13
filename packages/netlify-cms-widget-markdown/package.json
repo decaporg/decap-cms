@@ -22,9 +22,11 @@
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
   },
   "dependencies": {
+    "codemirror": "^5.45.0",
     "is-hotkey": "^0.1.4",
     "mdast-util-definitions": "^1.2.3",
     "mdast-util-to-string": "^1.0.5",
+    "react-codemirror2": "^5.1.0",
     "rehype-parse": "^6.0.0",
     "rehype-remark": "^5.0.1",
     "rehype-stringify": "^5.0.0",

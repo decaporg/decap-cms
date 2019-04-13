@@ -115,6 +115,13 @@ export default class Editor extends React.Component {
 
     const { editor } = this;
 
+    const getBlockNodes = block => {
+      if (block.type === 'code-block') {
+        return [Text.create(block.data.get('value'))];
+      }
+      return block.nodes;
+    }
+
     switch (type) {
       /**
        * Headers and code blocks can only contain text. If any selected block is not a header,
@@ -127,11 +134,29 @@ export default class Editor extends React.Component {
       case 'heading-four':
       case 'heading-five':
       case 'heading-six':
-      case 'code-block':
         if (editor.value.blocks.every(block => block.type === type)) {
           editor.value.blocks.forEach(block => editor.setNodeByKey(block.key, 'paragraph'));
         } else {
-          editor.setBlocks(type);
+          editor.value.blocks.forEach(block => {
+            const newBlock = Block.create({ type, nodes: getBlockNodes(block) });
+            console.log(newBlock);
+            editor.replaceNodeByKey(block.key, newBlock);
+          });
+        }
+        break;
+      case 'code-block':
+        if (editor.value.blocks.every(block => block.type === type)) {
+          editor.value.blocks.forEach(block => {
+            const newBlock = { type: 'paragraph', data: { value: block.data.get('value') } };
+            editor.setNodeByKey(block.key, newBlock);
+          });
+        } else {
+          editor.value.blocks.forEach(block => {
+            if (block.type !== type) {
+              const newBlock = { type, data: { value: block.text } };
+              editor.setNodeByKey(block.key, newBlock);
+            }
+          });
         }
         break;
       case 'quote': {
@@ -237,6 +262,7 @@ export default class Editor extends React.Component {
     const { onChange } = this.props;
     //console.log(JSON.stringify(editor.value.document.toJS(), null, 2));
     const raw = editor.value.document.toJSON();
+    console.log(editor.value.document.nodes);
     const markdown = slateToMarkdown(raw);
     this.setState({ lastRawValue: markdown }, () => onChange(markdown));
   }, 150);

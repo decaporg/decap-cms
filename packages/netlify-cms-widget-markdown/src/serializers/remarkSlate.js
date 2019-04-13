@@ -1,4 +1,5 @@
 import { isEmpty, isArray, last, flatMap } from 'lodash';
+import { Block } from 'slate';
 
 /**
  * A Remark plugin for converting an MDAST to Slate Raw AST. Remark plugins
@@ -34,7 +35,7 @@ const typeMap = {
   root: 'root',
   paragraph: 'paragraph',
   blockquote: 'quote',
-  codeBlock: 'code-block',
+  code: 'code-block',
   listItem: 'list-item',
   table: 'table',
   tableRow: 'table-row',
@@ -63,7 +64,7 @@ function addNodes(parent, nodes) {
 }
 
 /**
- * Create a Slate Inline node.
+ * Create a Slate Block node.
  */
 function createBlock(type, nodes, props = {}) {
   if (!isArray(nodes)) {
@@ -76,7 +77,7 @@ function createBlock(type, nodes, props = {}) {
 }
 
 /**
- * Create a Slate Block node.
+ * Create a Slate Inline node.
  */
 function createInline(type, props = {}, nodes) {
   const node = { object: 'inline', type, ...props };
@@ -271,11 +272,9 @@ function convertNode(node, nodes) {
      * convert that value into a nested child text node for Slate. We also carry
      * over the "lang" data property if it's defined.
      */
-    case 'codeBlock': {
-      const data = { lang: node.lang };
-      const text = createText(node.value);
-      const nodes = [text];
-      return createBlock(typeMap[node.type], nodes, { data });
+    case 'code': {
+      const data = { lang: node.lang, value: node.value };
+      return Block.create({ type: typeMap[node.type], data });
     }
 
     /**

@@ -193,7 +193,7 @@ export default class Toolbar extends React.Component {
             disabled={disabled}
           />
           <ToolbarButton
-            type="code"
+            type="code-block"
             label="Code Block"
             icon="code-block"
             onClick={onBlockClick}

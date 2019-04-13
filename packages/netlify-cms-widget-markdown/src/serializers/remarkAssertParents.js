@@ -41,7 +41,7 @@ export default function remarkUnwrapInvalidNest() {
     const blocks = [
       'paragraph',
       'heading',
-      'codeBlock',
+      'code',
       'blockquote',
       'list',
       'table',

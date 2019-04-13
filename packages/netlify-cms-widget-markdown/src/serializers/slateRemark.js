@@ -14,7 +14,7 @@ const typeMap = {
   'heading-five': 'heading',
   'heading-six': 'heading',
   quote: 'blockquote',
-  'code-block': 'codeBlock',
+  'code-block': 'code',
   'numbered-list': 'list',
   'bulleted-list': 'list',
   'list-item': 'listItem',
@@ -442,15 +442,13 @@ function convertNode(node, children) {
     /**
      * Code Blocks
      *
-     * Code block nodes have a single text child, and may have a code language
-     * stored in the "lang" data property. Here we transfer both the node
-     * value and the "lang" data property to the new MDAST node.
+     * Code block nodes are void and store their value in `data.value`. They
+     * also may have a code language stored in the "lang" data property. Here we
+     * transfer both the node value and the "lang" data property to the new
+     * MDAST node, and spread any remaining data as `data`.
      */
     case 'code-block': {
-      const value = flatMap(node.nodes, child => {
-        return flatMap(child.leaves, 'text');
-      }).join('');
-      const { lang, ...data } = get(node, 'data', {});
+      const { lang, value, ...data } = get(node, 'data', {});
       return u(typeMap[node.type], { lang, data }, value);
     }
 

@@ -9,7 +9,7 @@ describe('remarkAssertParents', () => {
       u('paragraph', [
         u('paragraph', [u('text', 'Paragraph text.')]),
         u('heading', { depth: 1 }, [u('text', 'Heading text.')]),
-        u('codeBlock', 'someCode()'),
+        u('code', 'someCode()'),
         u('blockquote', [u('text', 'Quote text.')]),
         u('list', [u('listItem', [u('text', 'A list item.')])]),
         u('table', [u('tableRow', [u('tableCell', [u('text', 'Text in a table cell.')])])]),
@@ -20,7 +20,7 @@ describe('remarkAssertParents', () => {
     const output = u('root', [
       u('paragraph', [u('text', 'Paragraph text.')]),
       u('heading', { depth: 1 }, [u('text', 'Heading text.')]),
-      u('codeBlock', 'someCode()'),
+      u('code', 'someCode()'),
       u('blockquote', [u('text', 'Quote text.')]),
       u('list', [u('listItem', [u('text', 'A list item.')])]),
       u('table', [u('tableRow', [u('tableCell', [u('text', 'Text in a table cell.')])])]),
@@ -37,7 +37,7 @@ describe('remarkAssertParents', () => {
           u('paragraph', [
             u('paragraph', [u('text', 'Paragraph text.')]),
             u('heading', { depth: 1 }, [u('text', 'Heading text.')]),
-            u('codeBlock', 'someCode()'),
+            u('code', 'someCode()'),
             u('blockquote', [
               u('paragraph', [u('strong', [u('heading', [u('text', 'Quote text.')])])]),
             ]),
@@ -52,7 +52,7 @@ describe('remarkAssertParents', () => {
     const output = u('root', [
       u('paragraph', [u('text', 'Paragraph text.')]),
       u('heading', { depth: 1 }, [u('text', 'Heading text.')]),
-      u('codeBlock', 'someCode()'),
+      u('code', 'someCode()'),
       u('blockquote', [u('heading', [u('text', 'Quote text.')])]),
       u('list', [u('listItem', [u('text', 'A list item.')])]),
       u('table', [u('tableRow', [u('tableCell', [u('text', 'Text in a table cell.')])])]),
