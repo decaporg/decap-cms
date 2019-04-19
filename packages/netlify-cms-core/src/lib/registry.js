@@ -2,6 +2,16 @@ import { Map } from 'immutable';
 import { oneLine } from 'common-tags';
 import EditorComponent from 'ValueObjects/EditorComponent';
 
+const allowedActionHooks = ['pre-publish'];
+
+function initActionHooks() {
+  const obj = {};
+  for (let hook of allowedActionHooks) {
+    obj[hook] = [];
+  }
+  return obj;
+}
+
 /**
  * Global Registry Object
  */
@@ -13,6 +23,7 @@ const registry = {
   editorComponents: Map(),
   widgetValueSerializers: {},
   mediaLibraries: [],
+  actionHooks: initActionHooks(),
 };
 
 export default {
@@ -31,7 +42,44 @@ export default {
   getBackend,
   registerMediaLibrary,
   getMediaLibrary,
+  registerActionHook,
+  getActionHooks,
 };
+
+export function registerActionHook(hookName, functionName, functionToAdd, priority = 10) {
+  // Priority currently does nothing
+
+  if (allowedActionHooks.indexOf(hookName) == -1) {
+    throw new Error(`Hook name '${hookName}' not recognised`);
+  }
+
+  registry.actionHooks[hookName].push({
+    functionName,
+    function: functionToAdd,
+    priority,
+  });
+}
+
+// eslint-disable-next-line no-unused-vars
+export function unregisterActionHook(hookName, functionName) {
+  throw new Error('Unimplemented');
+}
+
+// eslint-disable-next-line no-unused-vars
+export function unregisterActionHookAll(hookName) {
+  throw new Error('Unimplemented');
+}
+
+export function getActionHooks(hookName) {
+  return registry.actionHooks[hookName];
+}
+
+export function doAction(hookName, ...args) {
+  const actions = registry.actionHooks[hookName];
+  for (let action of actions) {
+    action.function(...args);
+  }
+}
 
 /**
  * Preview Styles

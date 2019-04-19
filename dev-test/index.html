@@ -203,6 +203,8 @@
         );
       }
     });
+
+    CMS.registerActionHook('pre-publish', 'test-pre-publish', () => console.log('TESTING pre-publish hook'));
   </script>
 </body>
 </html>

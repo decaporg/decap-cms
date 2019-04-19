@@ -16,7 +16,7 @@ import {
 } from 'Reducers/collections';
 import { createEntry } from 'ValueObjects/Entry';
 import { sanitizeSlug } from 'Lib/urlHelper';
-import { getBackend } from 'Lib/registry';
+import { getBackend, doAction } from 'Lib/registry';
 import {
   localForage,
   Cursor,
@@ -718,6 +718,7 @@ class Backend {
   }
 
   publishUnpublishedEntry(collection, slug) {
+    doAction('pre-publish');
     return this.implementation.publishUnpublishedEntry(collection, slug);
   }
 
