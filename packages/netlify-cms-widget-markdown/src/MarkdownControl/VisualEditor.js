@@ -72,7 +72,10 @@ export default class Editor extends React.Component {
     );
 
     if (forcePropsValue) {
-      this.setState({ value: createSlateValue(this.props.value) });
+      this.setState({
+        value: createSlateValue(this.props.value),
+        lastRawValue: this.props.value,
+      });
     }
   }
 
