@@ -139,7 +139,6 @@ export default class Editor extends React.Component {
         } else {
           editor.value.blocks.forEach(block => {
             const newBlock = Block.create({ type, nodes: getBlockNodes(block) });
-            console.log(newBlock);
             editor.replaceNodeByKey(block.key, newBlock);
           });
         }
@@ -260,9 +259,7 @@ export default class Editor extends React.Component {
 
   handleDocumentChange = debounce(editor => {
     const { onChange } = this.props;
-    //console.log(JSON.stringify(editor.value.document.toJS(), null, 2));
     const raw = editor.value.document.toJSON();
-    console.log(editor.value.document.nodes);
     const markdown = slateToMarkdown(raw);
     this.setState({ lastRawValue: markdown }, () => onChange(markdown));
   }, 150);

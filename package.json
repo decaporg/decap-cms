@@ -127,6 +127,7 @@
     "rimraf": "^3.0.0",
     "simple-git": "^1.124.0",
     "start-server-and-test": "^1.7.11",
+    "style-loader": "^0.23.1",
     "stylelint": "^9.10.1",
     "stylelint-config-recommended": "^2.1.0",
     "stylelint-config-styled-components": "^0.1.1",
@@ -144,7 +145,8 @@
   "private": true,
   "dependencies": {
     "emotion": "^10.0.9",
-    "lerna": "^3.15.0"
+    "lerna": "^3.15.0",
+    "monaco-editor-webpack-plugin": "^1.7.0"
   },
   "husky": {
     "hooks": {

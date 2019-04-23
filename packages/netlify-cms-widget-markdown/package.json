@@ -26,7 +26,10 @@
     "is-hotkey": "^0.1.4",
     "mdast-util-definitions": "^1.2.3",
     "mdast-util-to-string": "^1.0.5",
+    "re-resizable": "^4.11.0",
     "react-codemirror2": "^5.1.0",
+    "react-monaco-editor": "^0.25.1",
+    "react-select": "^2.4.3",
     "rehype-parse": "^6.0.0",
     "rehype-remark": "^5.0.1",
     "rehype-stringify": "^5.0.0",
@@ -51,5 +54,8 @@
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
     "react-immutable-proptypes": "^2.1.0"
+  },
+  "devDependencies": {
+    "monaco-editor-webpack-plugin": "^1.7.0"
   }
 }

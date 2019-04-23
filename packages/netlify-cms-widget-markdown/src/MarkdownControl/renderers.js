@@ -100,7 +100,6 @@ export const renderNode = props => {
     case 'quote':
       return <Quote {...props} />;
     case 'code-block':
-      console.log('code block')
       return <CodeBlock {...props} />;
     case 'heading-one':
       return <HeadingOne {...props} />;
