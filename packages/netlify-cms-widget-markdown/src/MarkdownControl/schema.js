@@ -45,7 +45,6 @@ const schema = {
       match: [
         { object: 'block', type: 'quote' },
         { object: 'block', type: 'list-item' },
-        { object: 'block', type: 'table-cell' },
       ],
       nodes: [{
         match: [

@@ -1,15 +1,14 @@
 /** @jsx jsx */
 /* eslint-disable react/prop-types */
 
-import React, { useState } from 'react';
+import React from 'react';
 import { jsx, css } from '@emotion/core';
+import { find } from 'lodash';
 import Resizable from 're-resizable';
 import Select from 'react-select';
 import { Controlled as CodeMirror } from 'react-codemirror2';
 import codeMirrorStyles from 'codemirror/lib/codemirror.css';
 import codeMirrorTheme from 'codemirror/theme/material.css';
-import 'codemirror/mode/javascript/javascript';
-import 'codemirror/mode/htmlmixed/htmlmixed';
 import { lengths, reactSelectStyles } from 'netlify-cms-ui-default';
 
 const styles = css`
@@ -66,20 +65,25 @@ const selectStyles = {
   }),
 };
 
-const modes = {
-  html: { name: 'htmlmixed', label: 'HTML' },
-  javascript: { name: 'javascript', label: 'JavaScript' },
-};
+const languages = [
+  { name: '', mode: '', label: 'None' },
+  { name: 'html', mode: 'htmlmixed', label: 'HTML' },
+  { name: 'css', mode: 'css', label: 'CSS' },
+  { name: 'javascript', mode: 'javascript', label: 'JavaScript' },
+];
 
-const CodeMirrorRenderer = ({ value, onChange }) => {
-  const [mode, setMode] = useState();
+const CodeMirrorRenderer = ({ value, lang, onChange }) => {
+  const language = find(languages, { name: lang || '' });
 
   return (
     <Resizable defaultSize={{ height: 300 }} minHeight={130}>
       <Select
         styles={selectStyles}
-        options={Object.values(modes).map(({ name, label }) => ({ value: name, label }))}
-        onChange={({ value }) => setMode(value)}
+        defaultValue={{ value: language.name, label: language.label }}
+        options={languages.map(({ name, label }) => ({ value: name, label }))}
+        onChange={opt => {
+          onChange(value, find(languages, { name: opt.value }).name);
+        }}
       />
       <CodeMirror
         css={styles}
@@ -87,11 +91,11 @@ const CodeMirrorRenderer = ({ value, onChange }) => {
           theme: 'material',
           lineNumbers: true,
           autofocus: true,
-          mode,
+          mode: language.mode,
         }}
         value={value}
         onBeforeChange={(editor, data, newValue) => {
-          onChange(newValue, /*pass lang back*/);
+          onChange(newValue, language.name);
         }}
       />
     </Resizable>

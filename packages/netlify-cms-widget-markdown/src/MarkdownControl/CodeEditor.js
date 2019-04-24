@@ -8,7 +8,10 @@ const CodeEditor = props => (
     <div onClick={e => e.stopPropagation()}>
       <Editor
         value={props.node.data.get('value')}
-        onChange={value => props.editor.setNodeByKey(props.node.key, { data: { value } })}
+        lang={props.node.data.get('lang')}
+        onChange={(value, lang) => {
+          props.editor.setNodeByKey(props.node.key, { data: { value, lang } });
+        }}
       />
     </div>
   </div>
