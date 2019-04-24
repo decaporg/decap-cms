@@ -36,7 +36,7 @@ export default class NumberControl extends React.Component {
     if (!isNaN(value)) {
       onChange(value);
     } else {
-      onChange('');
+      onChange(null);
     }
   };
 

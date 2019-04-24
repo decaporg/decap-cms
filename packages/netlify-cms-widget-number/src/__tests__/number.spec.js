@@ -86,18 +86,18 @@ describe('Number widget', () => {
     expect(onChangeSpy).toHaveBeenCalledWith(testValue);
   });
 
-  it('should call onChange with empty string when no value is set', () => {
+  it('should call onChange with null when no value is set', () => {
     const field = fromJS(fieldSettings);
     const { input, onChangeSpy } = setup({ field, defaultValue: 20 });
 
     fireEvent.focus(input);
-    fireEvent.change(input, { target: { value: '' } });
+    fireEvent.change(input, { target: { value: null } });
 
     expect(onChangeSpy).toHaveBeenCalledTimes(1);
-    expect(onChangeSpy).toHaveBeenCalledWith('');
+    expect(onChangeSpy).toHaveBeenCalledWith(null)
   });
 
-  it('should call onChange with empty string when a non numeric value is set', () => {
+  it('should call onChange with null when a non numeric value is set', () => {
     const field = fromJS(fieldSettings);
     const { input, onChangeSpy } = setup({ field, defaultValue: 20 });
 
@@ -105,7 +105,7 @@ describe('Number widget', () => {
     fireEvent.change(input, { target: { value: 'invalid' } });
 
     expect(onChangeSpy).toHaveBeenCalledTimes(1);
-    expect(onChangeSpy).toHaveBeenCalledWith('');
+    expect(onChangeSpy).toHaveBeenCalledWith(null);
   });
 
   it('should parse float numbers as integers', () => {
