@@ -1,116 +1,68 @@
 /* eslint-disable react/prop-types */
 
-import React from 'react';
-import { Map } from 'immutable';
+import React, { useState, useEffect } from 'react';
+import { Map, fromJS } from 'immutable';
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
-import { partial, capitalize } from 'lodash';
+import { omit } from 'lodash';
 import { ListItemTopBar, components, colors, lengths } from 'netlify-cms-ui-default';
+import ObjectWidget from 'netlify-cms-widget-object';
+import CMS from 'netlify-cms-core';
 import { getEditorControl, getEditorComponents } from './index';
 
-const ShortcodeContainer = styled.div`
-  ${components.objectWidgetTopBarContainer};
-  border-radius: ${lengths.borderRadius};
-  border: 2px solid ${colors.textFieldBorder};
-  margin: 12px 0;
-  padding: 14px;
+const ObjectControl = ObjectWidget.controlComponent;
 
-  ${props =>
-    props.collapsed &&
-    css`
-      background-color: ${colors.textFieldBorder};
-      cursor: pointer;
-    `};
-`;
+const Shortcode = ({ editor, attributes, node, classNameWrapper }) => {
+  const plugin = getEditorComponents().get(node.data.get('shortcode'));
+  const Control = CMS.resolveWidget(plugin.widget).control;
 
-const ShortcodeTopBar = styled(ListItemTopBar)`
-  background-color: ${colors.textFieldBorder};
-  margin: -14px -14px 0;
-  border-radius: 0;
-`;
+  /**
+   * The `shortcodeNew` prop is set to `true` when creating a new Shortcode,
+   * so that the form is immediately open for editing. Otherwise all
+   * shortcodes are collapsed by default.
+   */
+  const [collapsed, setCollapsed] = useState(!node.data.get('shortcodeNew'));
+  const [field, setField] = useState(Map());
 
-const ShortcodeTitle = styled.div`
-  padding: 8px;
-  color: ${colors.controlLabel};
-`;
+  useEffect(() => {
+    setField(fromJS(omit(plugin, ['id', 'fromBlock', 'toBlock', 'toPreview', 'pattern', 'icon'])));
+  }, []);
 
-export default class Shortcode extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      /**
-       * The `shortcodeNew` prop is set to `true` when creating a new Shortcode,
-       * so that the form is immediately open for editing. Otherwise all
-       * shortcodes are collapsed by default.
-       */
-      collapsed: !props.node.data.get('shortcodeNew'),
-    };
-  }
+  const shortcodeData = Map(node.data.get('shortcodeData'));
 
-  handleChange = (fieldName, value) => {
-    const { editor, node } = this.props;
-    const shortcodeData = Map(node.data.get('shortcodeData')).set(fieldName, value);
-    const data = node.data.set('shortcodeData', shortcodeData);
+  const handleChange = (fieldName, value) => {
+    const data = node.data.set('shortcodeData', shortcodeData.set(fieldName, value));
     editor.setNodeByKey(node.key, { data });
   };
 
-  handleCollapseToggle = () => {
-    this.setState({ collapsed: !this.state.collapsed });
+  const handleCollapseToggle = () => {
+    setCollapsed(!collapsed);
   };
 
-  handleRemove = () => {
-    const { editor, node } = this.props;
+  const handleRemove = () => {
     editor.removeNodeByKey(node.key).focus();
   };
 
-  handleClick = event => {
+  const handleClick = event => {
     /**
      * Stop click from propagating to editor, otherwise focus will be passed
      * to the editor.
      */
     event.stopPropagation();
-
-    /**
-     * If collapsed, any click should open the form.
-     */
-    if (this.state.collapsed) {
-      this.handleCollapseToggle();
-    }
   };
 
-  renderControl = (shortcodeData, field) => {
-    if (field.get('widget') === 'hidden') return null;
-    const value = shortcodeData.get(field.get('name'));
-    const key = `field-${field.get('name')}`;
-    const Control = getEditorControl();
-    const controlProps = { field, value, onChange: this.handleChange };
-
-    return (
-      <div key={key}>
-        <Control {...controlProps} />
-      </div>
-    );
-  };
-
-  render() {
-    const { attributes, node } = this.props;
-    const { collapsed } = this.state;
-    const pluginId = node.data.get('shortcode');
-    const shortcodeData = Map(this.props.node.data.get('shortcodeData'));
-    const plugin = getEditorComponents().get(pluginId);
-    return (
-      <ShortcodeContainer collapsed={collapsed} {...attributes} onClick={this.handleClick}>
-        <ShortcodeTopBar
-          collapsed={collapsed}
-          onCollapseToggle={this.handleCollapseToggle}
-          onRemove={this.handleRemove}
-        />
-        {collapsed ? (
-          <ShortcodeTitle>{capitalize(pluginId)}</ShortcodeTitle>
-        ) : (
-          plugin.get('fields').map(partial(this.renderControl, shortcodeData))
-        )}
-      </ShortcodeContainer>
-    );
-  }
+  return (
+    <div {...attributes} draggable={true} onClick={handleClick}>
+      <Control
+        classNameWrapper={classNameWrapper}
+        value={shortcodeData}
+        field={field}
+        onChangeObject={handleChange}
+        editorControl={getEditorControl()}
+        resolveWidget={CMS.resolveWidget}
+      />
+    </div>
+  );
 }
+
+export default Shortcode;

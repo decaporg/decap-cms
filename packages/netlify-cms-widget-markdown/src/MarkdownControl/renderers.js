@@ -91,7 +91,7 @@ export const renderMark = props => {
   }
 };
 
-export const renderNode = props => {
+export const renderNode = classNameWrapper => props => {
   switch (props.node.type) {
     case 'paragraph':
       return <Paragraph {...props} />;
@@ -130,7 +130,7 @@ export const renderNode = props => {
     case 'image':
       return <Image {...props} />;
     case 'shortcode':
-      return <Shortcode {...props} />;
+      return <Shortcode classNameWrapper={classNameWrapper} {...props} />;
     case 'break':
       return <Break {...props} />;
   }

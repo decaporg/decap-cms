@@ -306,7 +306,7 @@ export default class Editor extends React.Component {
                 `,
               )}
               value={this.state.value}
-              renderNode={renderNode}
+              renderNode={renderNode(className)}
               renderMark={renderMark}
               schema={schema}
               plugins={plugins}

@@ -109,7 +109,7 @@ export function resolveWidget(name) {
  */
 export function registerEditorComponent(component) {
   const plugin = EditorComponent(component);
-  registry.editorComponents = registry.editorComponents.set(plugin.get('id'), plugin);
+  registry.editorComponents = registry.editorComponents.set(plugin.id, plugin);
 }
 export function getEditorComponents() {
   return registry.editorComponents;

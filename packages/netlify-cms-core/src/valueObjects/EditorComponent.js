@@ -1,40 +1,33 @@
-import { Record, fromJS } from 'immutable';
+import { fromJS } from 'immutable';
 import { isFunction } from 'lodash';
 
 const catchesNothing = /.^/;
-/* eslint-disable no-unused-vars */
-const EditorComponent = Record({
-  id: null,
-  label: 'unnamed component',
-  icon: 'exclamation-triangle',
-  fields: [],
-  pattern: catchesNothing,
-  fromBlock(match) {
-    return {};
-  },
-  toBlock(attributes) {
-    return 'Plugin';
-  },
-  toPreview(attributes) {
-    return 'Plugin';
-  },
-});
-/* eslint-enable */
+const bind = fn => isFunction(fn) && fn.bind(null);
 
 export default function createEditorComponent(config) {
-  const fromBlock = isFunction(config.fromBlock) ? config.fromBlock.bind(null) : null;
-  const toBlock = isFunction(config.toBlock) ? config.toBlock.bind(null) : null;
-  const toPreview = isFunction(config.toPreview) ? config.toPreview.bind(null) : toBlock;
-  const configObj = new EditorComponent({
-    id: config.id || config.label.replace(/[^A-Z0-9]+/gi, '_'),
-    label: config.label,
-    icon: config.icon,
-    fields: fromJS(config.fields),
-    pattern: config.pattern,
+  const {
+    id = null,
+    label = 'unnamed component',
+    icon = 'exclamation-triangle',
+    widget = 'object',
+    pattern = catchesNothing,
+    fields = [],
     fromBlock,
     toBlock,
     toPreview,
-  });
+    ...remainingConfig
+  } = config;
 
-  return configObj;
-}
+  return {
+    id: id || label.replace(/[^A-Z0-9]+/gi, '_'),
+    label,
+    icon,
+    widget,
+    pattern,
+    fromBlock: bind(fromBlock) || (() => ({})),
+    toBlock: bind(toBlock) || (() => 'Plugin'),
+    toPreview: bind(toPreview) || bind(toBlock) || (() => 'Plugin'),
+    fields: fromJS(fields),
+    ...remainingConfig
+  };
+};
