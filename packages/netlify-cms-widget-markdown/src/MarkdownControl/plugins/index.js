@@ -1,4 +1,5 @@
 import { Text, Inline } from 'slate';
+import { getEventRange, getEventTransfer, setEventTransfer } from 'slate-react';
 import isHotkey from 'is-hotkey';
 import ListPlugin from './ListPlugin';
 
@@ -7,7 +8,6 @@ const BLOCK_PARENTS = [
   'list-item',
   'quote',
 ];
-
 const SoftBreak = (options = {}) => ({
   onKeyDown(event, editor, next) {
     if (options.shift && !isHotkey('shift+enter', event)) return next();
@@ -70,6 +70,30 @@ const BreakToDefaultBlock = () => ({
     return next();
   },
 });
+
+/*
+const Drag = () => ({
+  onDragOver(e) {
+    e.preventDefault();
+  },
+  onDragStart(event, editor, next) {
+    console.log(editor.value);
+    console.log(editor.value.startBlock);
+    // if a void node is being dragged, nothing is selected right now, no way
+    // to get a hold of the dragged node
+    setEventTransfer(event, 'node', editor.value.startBlock);
+  },
+  onDrop(event, editor, next) {
+    const target = getEventRange(event, editor);
+    const transfer = getEventTransfer(event);
+    console.log(transfer);
+    console.log(node);
+    if (target) {
+      editor.select(target);
+    }
+  },
+});
+*/
 
 const Logger = () => ({
   commands: {

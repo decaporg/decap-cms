@@ -1,9 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { WidgetPreviewContainer } from 'netlify-cms-ui-default';
 import { markdownToHtml } from './serializers';
 
-const MarkdownPreview = ({ value, getAsset }) => {
+let editorPreview;
+
+export const getEditorPreview = () => editorPreview;
+
+const MarkdownPreview = props => {
+  const { value, getAsset } = props;
+  useEffect(() => {
+    editorPreview = props.editorPreview;
+  }, []);
+
   if (value === null) {
     return null;
   }
@@ -13,6 +22,7 @@ const MarkdownPreview = ({ value, getAsset }) => {
 
 MarkdownPreview.propTypes = {
   getAsset: PropTypes.func.isRequired,
+  editorPreview: PropTypes.func.isRequired,
   value: PropTypes.string,
 };
 

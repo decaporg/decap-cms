@@ -1,6 +1,7 @@
 import { map, has } from 'lodash';
 import { renderToString } from 'react-dom/server';
 import u from 'unist-builder';
+import { resolveWidget } from 'netlify-cms-core';
 
 /**
  * This plugin doesn't actually transform Remark (MDAST) nodes to Rehype
@@ -14,6 +15,17 @@ export default function remarkToRehypeShortcodes({ plugins, getAsset }) {
   function transform(root) {
     const transformedChildren = map(root.children, processShortcodes);
     return { ...root, children: transformedChildren };
+  }
+
+  function getPreview(plugin, shortcodeData) {
+    const { toPreview, widget } = plugin;
+    if (toPreview) {
+      return toPreview(shortcodeData, getAsset);
+    }
+    return React.createElement(resolveWidget(widget).preview, {
+      value: shortcodeData,
+      field: plugin,
+    })
   }
 
   /**
@@ -37,7 +49,7 @@ export default function remarkToRehypeShortcodes({ plugins, getAsset }) {
      * an HTML string or a React component. If a React component is returned,
      * render it to an HTML string.
      */
-    const value = plugin.toPreview(shortcodeData, getAsset);
+    const value = getPreview(plugin, shortcodeData);
     const valueHtml = typeof value === 'string' ? value : renderToString(value);
 
     /**
