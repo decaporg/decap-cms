@@ -3,8 +3,8 @@ import { actions as notifActions } from 'redux-notifications';
 import { BEGIN, COMMIT, REVERT } from 'redux-optimist';
 import { serializeValues } from 'Lib/serializeEntryValues';
 import { currentBackend } from 'coreSrc/backend';
-import { getAsset } from 'Reducers';
 import { selectAllFields } from 'Reducers/collections';
+import { getAsset, selectPublishedSlugs, selectUnpublishedSlugs } from 'Reducers';
 import { EDITORIAL_WORKFLOW } from 'Constants/publishModes';
 import { EDITORIAL_WORKFLOW_ERROR } from 'netlify-cms-lib-util';
 import { loadEntry } from './entries';
@@ -288,6 +288,9 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
     const state = getState();
     const entryDraft = state.entryDraft;
     const fieldsErrors = entryDraft.get('fieldsErrors');
+    const unpublishedSlugs = selectUnpublishedSlugs(state, collection.get('name'));
+    const publishedSlugs = selectPublishedSlugs(state, collection.get('name'));
+    const usedSlugs = publishedSlugs.concat(unpublishedSlugs);
 
     // Early return if draft contains validation errors
     if (!fieldsErrors.isEmpty()) {
@@ -334,6 +337,7 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
       serializedEntryDraft,
       assetProxies.toJS(),
       state.integrations,
+      usedSlugs,
     ];
 
     try {

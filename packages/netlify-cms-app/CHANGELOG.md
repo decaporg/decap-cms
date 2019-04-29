@@ -3,6 +3,38 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.9.2-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.9.1...netlify-cms-app@2.9.2-beta.0) (2019-04-10)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.9.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.9.1-beta.2...netlify-cms-app@2.9.1) (2019-04-10)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.9.1-beta.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.9.1-beta.1...netlify-cms-app@2.9.1-beta.2) (2019-04-05)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.9.1-beta.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.9.1-beta.0...netlify-cms-app@2.9.1-beta.1) (2019-04-02)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
 ## [2.9.1-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.9.0...netlify-cms-app@2.9.1-beta.0) (2019-03-29)
 
 **Note:** Version bump only for package netlify-cms-app

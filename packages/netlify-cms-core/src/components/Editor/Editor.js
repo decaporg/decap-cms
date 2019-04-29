@@ -237,9 +237,9 @@ class Editor extends React.Component {
   };
 
   deleteBackup() {
-    const { deleteLocalBackup, collection, slug } = this.props;
+    const { deleteLocalBackup, collection, slug, newEntry } = this.props;
     this.createBackup.cancel();
-    deleteLocalBackup(collection, slug);
+    deleteLocalBackup(collection, !newEntry && slug);
   }
 
   handlePersistEntry = async (opts = {}) => {

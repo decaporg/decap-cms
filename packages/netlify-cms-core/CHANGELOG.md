@@ -3,6 +3,47 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.11.1-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.11.0...netlify-cms-core@2.11.1-beta.0) (2019-04-10)
+
+
+### Bug Fixes
+
+* **core:** ensure against slug overwrite ([#2139](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2139)) ([0ce995d](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/0ce995d))
+
+
+
+
+
+# [2.11.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.11.0-beta.2...netlify-cms-core@2.11.0) (2019-04-10)
+
+**Note:** Version bump only for package netlify-cms-core
+
+
+
+
+
+# [2.11.0-beta.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.11.0-beta.1...netlify-cms-core@2.11.0-beta.2) (2019-04-05)
+
+
+### Bug Fixes
+
+* **core:** correctly delete backups for new entries ([#2265](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2265)) ([a6c51fe](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/a6c51fe))
+
+
+
+
+
+# [2.11.0-beta.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.11.0-beta.0...netlify-cms-core@2.11.0-beta.1) (2019-04-02)
+
+
+### Bug Fixes
+
+* redirect when a collection doesn't exist ([#2208](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2208)) ([9e08b65](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/9e08b65))
+
+
+
+
+
 # [2.11.0-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.10.1...netlify-cms-core@2.11.0-beta.0) (2019-03-29)
 
 

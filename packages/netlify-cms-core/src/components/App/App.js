@@ -177,7 +177,14 @@ class App extends React.Component {
             <Redirect exact from="/" to={defaultPath} />
             <Redirect exact from="/search/" to={defaultPath} />
             {hasWorkflow ? <Route path="/workflow" component={Workflow} /> : null}
-            <Route exact path="/collections/:name" component={Collection} />
+            <Route
+              exact
+              path="/collections/:name"
+              render={props => {
+                const collectionExists = collections.get(props.match.params.name);
+                return collectionExists ? <Collection {...props} /> : <Redirect to={defaultPath} />;
+              }}
+            />
             <Route
               path="/collections/:name/new"
               render={props => <Editor {...props} newRecord />}

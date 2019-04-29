@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-core",
   "description": "Netlify CMS core application, see netlify-cms package for the main distribution.",
-  "version": "2.11.0-beta.0",
+  "version": "2.11.1-beta.0",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
   "module": "dist/esm/index.js",
@@ -13,7 +13,7 @@
   "scripts": {
     "develop": "yarn build:esm --watch",
     "build": "cross-env NODE_ENV=production webpack",
-    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore src/**/__tests__/* --root-mode upward -s"
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore **/__tests__ --root-mode upward"
   },
   "keywords": [
     "netlify",
