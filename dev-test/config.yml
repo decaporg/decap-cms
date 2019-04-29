@@ -27,11 +27,14 @@ collections: # A list of collections the CMS should be able to edit
           timeFormat: 'HH:mm',
           format: 'YYYY-MM-DD HH:mm',
         }
-      - label: 'Cover Image'
-        name: 'image'
-        widget: 'image'
-        required: false
-        tagname: ''
+      - name: code
+        widget: code
+        allow_language_selection: false
+        output_code_only: false
+        keys:
+          code: myCode
+          lang: myLang
+        lang: 'javascript'
 
       - { label: 'Body', name: 'body', widget: 'markdown', hint: 'Main content goes here.' }
     meta:

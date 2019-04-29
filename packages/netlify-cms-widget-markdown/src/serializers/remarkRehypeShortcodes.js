@@ -1,7 +1,8 @@
+import React from 'react';
 import { map, has } from 'lodash';
 import { renderToString } from 'react-dom/server';
 import u from 'unist-builder';
-import { resolveWidget } from 'netlify-cms-core';
+import { NetlifyCmsCore as CMS } from 'netlify-cms-core';
 
 /**
  * This plugin doesn't actually transform Remark (MDAST) nodes to Rehype
@@ -15,17 +16,6 @@ export default function remarkToRehypeShortcodes({ plugins, getAsset }) {
   function transform(root) {
     const transformedChildren = map(root.children, processShortcodes);
     return { ...root, children: transformedChildren };
-  }
-
-  function getPreview(plugin, shortcodeData) {
-    const { toPreview, widget } = plugin;
-    if (toPreview) {
-      return toPreview(shortcodeData, getAsset);
-    }
-    return React.createElement(resolveWidget(widget).preview, {
-      value: shortcodeData,
-      field: plugin,
-    })
   }
 
   /**
@@ -59,4 +49,21 @@ export default function remarkToRehypeShortcodes({ plugins, getAsset }) {
     const children = [textNode];
     return { ...node, children };
   }
+
+  /**
+   * Retrieve the shortcode preview component.
+   */
+  function getPreview(plugin, shortcodeData) {
+    const { toPreview, widget } = plugin;
+    if (toPreview) {
+      return toPreview(shortcodeData, getAsset);
+    }
+    const preview = CMS.resolveWidget(widget);
+    return React.createElement(preview.preview, {
+      value: shortcodeData,
+      field: plugin,
+      getAsset,
+    })
+  }
+
 }

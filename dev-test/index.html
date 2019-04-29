@@ -80,22 +80,6 @@
 
   <script src="dist/netlify-cms.js"></script>
   <script>
-    var PostPreview = createClass({
-      render: function() {
-        var entry = this.props.entry;
-        return h('div', {},
-          h('div', {className: "cover"},
-            h('h1', {}, entry.getIn(['data', 'title'])),
-            this.props.widgetFor('image'),
-          ),
-          h('p', {},
-            h('small', {}, "Written " + entry.getIn(['data', 'date']))
-          ),
-          h('div', {"className": "text"}, this.props.widgetFor('body'))
-        );
-      }
-    });
-
     var GeneralPreview = createClass({
       render: function() {
         var entry = this.props.entry;
@@ -187,21 +171,21 @@
     CMS.registerEditorComponent({
       id: "youtube",
       label: "Youtube",
-      widget: "image",
+      fields: [{name: 'id', label: 'Youtube Video ID'}],
       pattern: /^{{<\s?youtube (\S+)\s?>}}/,
       fromBlock: function(match) {
-        return match[1];
+        return {
+          id: match[1]
+        };
       },
-      toBlock: function(value) {
-        return '{{< youtube ' + value + ' >}}';
+      toBlock: function(obj) {
+        return '{{< youtube ' + obj.id + ' >}}';
       },
-      /*
-      toPreview: function(value) {
+      toPreview: function(obj) {
         return (
-          '<img src="http://img.youtube.com/vi/' + value + '/maxresdefault.jpg" alt="Youtube Video"/>'
+          '<img src="http://img.youtube.com/vi/' + obj.id + '/maxresdefault.jpg" alt="Youtube Video"/>'
         );
       }
-      */
     });
   </script>
 </body>

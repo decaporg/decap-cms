@@ -26,7 +26,7 @@ export default function createEditorComponent(config) {
     pattern,
     fromBlock: bind(fromBlock) || (() => ({})),
     toBlock: bind(toBlock) || (() => 'Plugin'),
-    toPreview: bind(toPreview) || bind(toBlock) || (() => 'Plugin'),
+    toPreview: bind(toPreview) || (!widget && (bind(toBlock) || (() => 'Plugin'))),
     fields: fromJS(fields),
     ...remainingConfig
   };

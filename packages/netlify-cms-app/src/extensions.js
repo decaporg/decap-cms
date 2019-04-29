@@ -1,4 +1,14 @@
+// Core
 import { NetlifyCmsCore as CMS } from 'netlify-cms-core';
+
+// Backends
+import { GitHubBackend } from 'netlify-cms-backend-github';
+import { GitLabBackend } from 'netlify-cms-backend-gitlab';
+import { GitGatewayBackend } from 'netlify-cms-backend-git-gateway';
+import { BitbucketBackend } from 'netlify-cms-backend-bitbucket';
+import { TestBackend } from 'netlify-cms-backend-test';
+
+// Widgets
 import NetlifyCmsWidgetString from 'netlify-cms-widget-string';
 import NetlifyCmsWidgetNumber from 'netlify-cms-widget-number';
 import NetlifyCmsWidgetText from 'netlify-cms-widget-text';
@@ -14,6 +24,18 @@ import NetlifyCmsWidgetMap from 'netlify-cms-widget-map';
 import NetlifyCmsWidgetDate from 'netlify-cms-widget-date';
 import NetlifyCmsWidgetDatetime from 'netlify-cms-widget-datetime';
 
+// Editor Components
+import image from 'netlify-cms-editor-component-image';
+
+// Locales
+import { en } from 'netlify-cms-locales';
+
+// Register all the things
+CMS.registerBackend('git-gateway', GitGatewayBackend);
+CMS.registerBackend('github', GitHubBackend);
+CMS.registerBackend('gitlab', GitLabBackend);
+CMS.registerBackend('bitbucket', BitbucketBackend);
+CMS.registerBackend('test-repo', TestBackend);
 CMS.registerWidget([
   NetlifyCmsWidgetString.Widget(),
   NetlifyCmsWidgetNumber.Widget(),
@@ -30,3 +52,5 @@ CMS.registerWidget([
   NetlifyCmsWidgetDate.Widget(),
   NetlifyCmsWidgetDatetime.Widget(),
 ]);
+CMS.registerEditorComponent(image);
+CMS.registerLocale('en', en);

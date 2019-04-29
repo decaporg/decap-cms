@@ -1,11 +1,6 @@
-/** @jsx jsx */
-/* eslint-disable react/prop-types */
-import React from 'react';
-import { jsx, css } from '@emotion/core';
-import Select from 'react-select';
 import { reactSelectStyles } from 'netlify-cms-ui-default';
 
-const selectStyles = {
+const languageSelectStyles = {
   ...reactSelectStyles,
   container: provided => ({
     ...reactSelectStyles.container(provided),
@@ -43,8 +38,4 @@ const selectStyles = {
   }),
 };
 
-const LanguageSelector = props => (
-  <Select styles={selectStyles} {...props}/>
-);
-
-export default LanguageSelector;
+export default languageSelectStyles;

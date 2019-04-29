@@ -30,13 +30,17 @@ export default class PreviewPane extends React.Component {
     /**
      * Use an HOC to provide conditional updates for all previews.
      */
+    if (field.get('name') === 'code') {
+      console.log(widget);
+      console.log(widget.preview);
+    }
     return !widget.preview ? null : (
       <PreviewHOC
         previewComponent={widget.preview}
         key={key}
         field={field}
         getAsset={getAsset}
-        value={value && Map.isMap(value) ? value.get(field.get('name')) : value}
+        value={/* allow this behavior to be overriden by a Widget object config key */value && Map.isMap(value) ? value.get(field.get('name')) : value}
         entry={entry}
         fieldsMetaData={metadata}
       />
