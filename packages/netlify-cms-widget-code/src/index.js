@@ -5,6 +5,7 @@ const Widget = (opts = {}) => ({
   name: 'code',
   controlComponent,
   previewComponent,
+  allowMapValue: true,
   ...opts,
 });
 

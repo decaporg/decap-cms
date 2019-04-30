@@ -66,7 +66,9 @@ export default class CodeControl extends React.Component {
     const lang = (this.valueIsMap() && props.value && props.value.get(this.keys.lang)) || field.get('lang');
     this.state = { lang: find(languages, { name: lang }) || defaultLanguage };
     if (this.valueIsMap()) {
-      this.getCode = () => this.props.value && this.props.value.get(this.keys.code);
+      this.getCode = () => {
+        return this.props.value && this.props.value.get(this.keys.code);
+      }
       this.toValue = (type, value) => (this.props.value || Map()).set(this.keys[type], value);
     } else {
       this.getCode = () => this.props.value;
@@ -100,7 +102,20 @@ export default class CodeControl extends React.Component {
     return (
       <ClassNames>
         {({ css, cx }) => (
-          <Resizable defaultSize={{ height: 300 }} minHeight={130}>
+          <Resizable
+            defaultSize={{ height: 300 }}
+            minHeight={130}
+            enable={{
+              top: false,
+              right: false,
+              bottom: true,
+              left: false,
+              topRight: false,
+              bottomRight: false,
+              bottomLeft: false,
+              topLeft: false,
+            }}
+          >
             {allowLanguageSelection &&
               <Select
                 styles={languageSelectStyles}

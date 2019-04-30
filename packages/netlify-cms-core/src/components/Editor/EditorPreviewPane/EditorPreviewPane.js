@@ -26,21 +26,18 @@ export default class PreviewPane extends React.Component {
     const { getAsset, entry } = props;
     const widget = resolveWidget(field.get('widget'));
     const key = idx ? field.get('name') + '_' + idx : field.get('name');
+    const getValueFromMap = value && !widget.allowMapValue && Map.isMap(value);
 
     /**
      * Use an HOC to provide conditional updates for all previews.
      */
-    if (field.get('name') === 'code') {
-      console.log(widget);
-      console.log(widget.preview);
-    }
     return !widget.preview ? null : (
       <PreviewHOC
         previewComponent={widget.preview}
         key={key}
         field={field}
         getAsset={getAsset}
-        value={/* allow this behavior to be overriden by a Widget object config key */value && Map.isMap(value) ? value.get(field.get('name')) : value}
+        value={getValueFromMap ? value.get(field.get('name')) : value}
         entry={entry}
         fieldsMetaData={metadata}
       />

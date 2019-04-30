@@ -81,6 +81,7 @@ export function registerWidget(name, control, preview) {
       name: widgetName,
       controlComponent: control,
       previewComponent: preview,
+      allowMapValue,
       globalStyles,
     } = name;
     if (registry.widgets[widgetName]) {
@@ -92,7 +93,7 @@ export function registerWidget(name, control, preview) {
     if (!control) {
       throw Error(`Widget "${widgetName}" registered without \`controlComponent\`.`);
     }
-    registry.widgets[widgetName] = { control, preview, globalStyles };
+    registry.widgets[widgetName] = { control, preview, globalStyles, allowMapValue };
   } else {
     console.error('`registerWidget` failed, called with incorrect arguments.');
   }

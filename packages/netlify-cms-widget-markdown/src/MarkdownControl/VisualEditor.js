@@ -276,7 +276,7 @@ export default class Editor extends React.Component {
   };
 
   render() {
-    const { onAddAsset, getAsset, className, field, getEditorComponents } = this.props;
+    const { onAddAsset, getAsset, className, field, getEditorComponents, resolveWidget } = this.props;
 
     return (
       <VisualEditorContainer>
@@ -306,7 +306,7 @@ export default class Editor extends React.Component {
                 `,
               )}
               value={this.state.value}
-              renderNode={renderNode(className)}
+              renderNode={renderNode(className, field.get('components'), resolveWidget)}
               renderMark={renderMark}
               schema={schema}
               plugins={plugins}

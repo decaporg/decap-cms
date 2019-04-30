@@ -1,8 +1,8 @@
-/* eslint-disable react/prop-types */
-
 import React from 'react';
+import { Map } from 'immutable';
 import Shortcode from './Shortcode';
 import CodeEditor from './CodeEditor';
+import WidgetAdapter from './WidgetAdapter';
 
 /**
  * Slate uses React components to render each type of node that it receives.
@@ -24,7 +24,11 @@ const Code = props => <code>{props.children}</code>;
 const Paragraph = props => <p {...props.attributes}>{props.children}</p>;
 const ListItem = props => <li {...props.attributes}>{props.children}</li>;
 const Quote = props => <blockquote {...props.attributes}>{props.children}</blockquote>;
-const CodeBlock = props => <CodeEditor {...props}/>;
+const CodeBlock = props => (
+  <pre>
+    <code {...props.attributes}>{props.children}</code>
+  </pre>
+);
 const HeadingOne = props => <h1 {...props.attributes}>{props.children}</h1>;
 const HeadingTwo = props => <h2 {...props.attributes}>{props.children}</h2>;
 const HeadingThree = props => <h3 {...props.attributes}>{props.children}</h3>;
@@ -91,7 +95,7 @@ export const renderMark = props => {
   }
 };
 
-export const renderNode = classNameWrapper => props => {
+export const renderNode = (classNameWrapper, fieldComponents, resolveWidget) => props => {
   switch (props.node.type) {
     case 'paragraph':
       return <Paragraph {...props} />;
@@ -100,6 +104,16 @@ export const renderNode = classNameWrapper => props => {
     case 'quote':
       return <Quote {...props} />;
     case 'code-block':
+      if (fieldComponents && fieldComponents.has('codeBlock')) {
+        return (
+          <WidgetAdapter
+            widgetConfig={fieldComponents.get('codeBlock').set('keys', Map({ code: 'value', lang: 'lang' }))}
+            resolveWidget={resolveWidget}
+            classNameWrapper={classNameWrapper}
+            {...props}
+          />
+        );
+      }
       return <CodeBlock {...props} />;
     case 'heading-one':
       return <HeadingOne {...props} />;

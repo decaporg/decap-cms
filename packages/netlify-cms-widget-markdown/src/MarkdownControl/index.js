@@ -51,6 +51,7 @@ export default class MarkdownControl extends React.Component {
       classNameWrapper,
       field,
       getEditorComponents,
+      resolveWidget,
     } = this.props;
 
     const { mode } = this.state;
@@ -65,6 +66,7 @@ export default class MarkdownControl extends React.Component {
           value={value}
           field={field}
           getEditorComponents={getEditorComponents}
+          resolveWidget={resolveWidget}
         />
       </div>
     );
