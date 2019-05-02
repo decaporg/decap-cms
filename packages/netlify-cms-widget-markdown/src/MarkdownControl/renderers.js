@@ -95,7 +95,7 @@ export const renderMark = props => {
   }
 };
 
-export const renderNode = (classNameWrapper, fieldComponents, resolveWidget) => props => {
+export const renderNode = ({ classNameWrapper, fieldComponents, resolveWidget }) => props => {
   switch (props.node.type) {
     case 'paragraph':
       return <Paragraph {...props} />;
@@ -104,12 +104,13 @@ export const renderNode = (classNameWrapper, fieldComponents, resolveWidget) => 
     case 'quote':
       return <Quote {...props} />;
     case 'code-block':
-      if (fieldComponents && fieldComponents.has('codeBlock')) {
+      if (fieldComponents.codeBlock) {
         return (
           <WidgetAdapter
-            widgetConfig={fieldComponents.get('codeBlock').set('keys', Map({ code: 'value', lang: 'lang' }))}
+            widgetConfig={fieldComponents.codeBlock}
             resolveWidget={resolveWidget}
             classNameWrapper={classNameWrapper}
+            editorComponentType="code-block"
             {...props}
           />
         );

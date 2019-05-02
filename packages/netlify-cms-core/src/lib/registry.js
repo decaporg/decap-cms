@@ -110,6 +110,18 @@ export function resolveWidget(name) {
  */
 export function registerEditorComponent(component) {
   const plugin = EditorComponent(component);
+  if (plugin.type === 'code-block') {
+    const codeBlock = registry.editorComponents.find(c => c.type === 'code-block');
+
+    if (codeBlock) {
+      console.warn(oneLine`
+        Only one editor component of type "code-block" may be registered. Previously registered code
+        block component(s) will be overwritten.
+      `);
+      registry.editorComponents = register.editorComponents.delete(codeBlock.id);
+    }
+  }
+
   registry.editorComponents = registry.editorComponents.set(plugin.id, plugin);
 }
 export function getEditorComponents() {

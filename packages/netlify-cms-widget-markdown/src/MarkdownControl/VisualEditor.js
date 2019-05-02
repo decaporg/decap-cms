@@ -4,7 +4,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import { ClassNames } from '@emotion/core';
 import { get, isEmpty, debounce, uniq } from 'lodash';
-import { List } from 'immutable';
+import { List, fromJS } from 'immutable';
 import { Value, Document, Block, Text } from 'slate';
 import { Editor as Slate } from 'slate-react';
 import { slateToMarkdown, markdownToSlate, htmlToSlate } from '../serializers';
@@ -48,6 +48,11 @@ export default class Editor extends React.Component {
 
   constructor(props) {
     super(props);
+    const editorComponents = props.getEditorComponents();
+    this.shortcodeComponents = editorComponents.filter(({ type }) => type === 'shortcode');
+    this.fieldComponents = {
+      codeBlock: fromJS(editorComponents.find(({ type }) => type === 'code-block')),
+    };
     this.state = {
       value: createSlateValue(props.value),
       lastRawValue: props.value,
@@ -214,14 +219,13 @@ export default class Editor extends React.Component {
   };
 
   handlePluginAdd = pluginId => {
-    const { getEditorComponents } = this.props;
     const { editor } = this;
     const nodes = [Text.create('')];
 
     /**
      * Get default values for plugin fields.
      */
-    const pluginFields = getEditorComponents().getIn([pluginId, 'fields'], List());
+    const pluginFields = this.editorComponents.getIn([pluginId, 'fields'], List());
     const defaultValues = pluginFields
       .toMap()
       .mapKeys((_, field) => field.get('name'))
@@ -276,7 +280,8 @@ export default class Editor extends React.Component {
   };
 
   render() {
-    const { onAddAsset, getAsset, className, field, getEditorComponents, resolveWidget } = this.props;
+    const { onAddAsset, getAsset, className, field, resolveWidget } = this.props;
+    const { fieldComponents } = this;
 
     return (
       <VisualEditorContainer>
@@ -289,7 +294,7 @@ export default class Editor extends React.Component {
             selectionHasBlock={this.selectionHasBlock}
             selectionHasLink={this.hasLinks}
             onToggleMode={this.handleToggle}
-            plugins={getEditorComponents()}
+            plugins={this.shortcodeComponents}
             onSubmit={this.handlePluginAdd}
             onAddAsset={onAddAsset}
             getAsset={getAsset}
@@ -306,9 +311,9 @@ export default class Editor extends React.Component {
                 `,
               )}
               value={this.state.value}
-              renderNode={renderNode(className, field.get('components'), resolveWidget)}
+              renderNode={renderNode({ className, resolveWidget, fieldComponents })}
               renderMark={renderMark}
-              schema={schema}
+              schema={schema({ fieldComponents })}
               plugins={plugins}
               onKeyDown={onKeyDown}
               onChange={this.handleChange}

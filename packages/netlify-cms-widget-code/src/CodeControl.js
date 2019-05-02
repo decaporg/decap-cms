@@ -80,12 +80,15 @@ export default class CodeControl extends React.Component {
     return {
       code: 'code',
       lang: 'lang',
-      ...field.get('keys', Map()).toJS(),
+
+      // force default keys if widget is an editor component code block
+      ...(this.props.editorComponentType === 'code-block' ? {} : field.get('keys', Map()).toJS()),
     };
   }
 
   valueIsMap() {
-    return !this.props.field.get('output_code_only');
+    const { field, editorComponentType } = this.props;
+    return !field.get('output_code_only') || editorComponentType !== 'code-block';
   }
 
   handleChangeLang(lang) {
@@ -95,7 +98,7 @@ export default class CodeControl extends React.Component {
   }
 
   render() {
-    const { value, onChange, field, classNameWrapper, forID } = this.props;
+    const { value, onChange, field, classNameWrapper, forID, editorComponentType } = this.props;
     const { keys, allowLanguageSelection } = this;
     const { lang } = this.state;
 

@@ -1,4 +1,22 @@
-const schema = {
+const codeBlock = {
+  match: [
+    { object: 'block', type: 'code-block' },
+  ],
+  nodes: [{
+    match: [
+      { object: 'text' },
+    ],
+  }],
+};
+
+const codeBlockOverride = {
+  match: [
+    { object: 'block', type: 'code-block' },
+  ],
+  isVoid: true,
+};
+
+const schema = ({ fieldComponents = {} } = {}) => ({
   rules: [
     /**
      * Document
@@ -189,7 +207,6 @@ const schema = {
         { object: 'block', type: 'break' },
         { object: 'block', type: 'thematic-break' },
         { object: 'block', type: 'shortcode' },
-        { object: 'block', type: 'code-block' },
       ],
       isVoid: true,
     },
@@ -233,7 +250,12 @@ const schema = {
         { object: 'mark', type: 'code' },
       ],
     },
+
+    /**
+     * Overrides
+     */
+    fieldComponents.codeBlock ? codeBlockOverride : codeBlock,
   ],
-};
+});
 
 export default schema;

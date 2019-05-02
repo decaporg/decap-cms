@@ -41,7 +41,7 @@ collections: # A list of collections the CMS should be able to edit
         widget: 'markdown'
         hint: 'Main content goes here.'
         components:
-          codeBlock: { widget: code }
+          - {type: code-block, widget: code}
     meta:
       - { label: 'SEO Description', name: 'description', widget: 'text' }
 

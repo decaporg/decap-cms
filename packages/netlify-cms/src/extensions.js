@@ -20,6 +20,13 @@ CMS.registerWidget([
   NetlifyCmsWidgetCode.Widget(),
 ]);
 
+CMS.registerEditorComponent({
+  id: 'code-block',
+  widget: 'code',
+  type: 'code-block',
+});
+
 Object.keys(locales).forEach(locale => {
   CMS.registerLocale(locale, locales[locale]);
-});
+})
+

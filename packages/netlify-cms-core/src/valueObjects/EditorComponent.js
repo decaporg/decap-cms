@@ -9,6 +9,7 @@ export default function createEditorComponent(config) {
     id = null,
     label = 'unnamed component',
     icon = 'exclamation-triangle',
+    type = 'shortcode',
     widget = 'object',
     pattern = catchesNothing,
     fields = [],
@@ -21,6 +22,7 @@ export default function createEditorComponent(config) {
   return {
     id: id || label.replace(/[^A-Z0-9]+/gi, '_'),
     label,
+    type,
     icon,
     widget,
     pattern,
