@@ -34,7 +34,7 @@
     "slate": "^0.34.0",
     "slate-edit-list": "^0.11.3",
     "slate-edit-table": "^0.15.1",
-    "slate-plain-serializer": "^0.5.15",
+    "slate-plain-serializer": "^0.7.0",
     "slate-react": "0.12.9",
     "slate-soft-break": "^0.6.1",
     "unified": "^6.1.4",
