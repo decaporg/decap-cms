@@ -26,7 +26,6 @@
     "mdast-util-definitions": "^1.2.3",
     "mdast-util-to-string": "^1.0.5",
     "re-resizable": "^4.11.0",
-    "react-codemirror2": "^5.1.0",
     "react-monaco-editor": "^0.25.1",
     "react-select": "^2.4.3",
     "rehype-parse": "^6.0.0",
@@ -46,7 +45,6 @@
   "peerDependencies": {
     "@emotion/core": "^10.0.9",
     "@emotion/styled": "^10.0.9",
-    "codemirror": "^5.46.0",
     "immutable": "^3.7.6",
     "lodash": "^4.17.11",
     "netlify-cms-ui-default": "^2.6.0",

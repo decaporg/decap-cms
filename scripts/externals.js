@@ -55,6 +55,13 @@ module.exports = {
       amd: '@emotion/styled',
       umd: '@emotion/styled',
     },
+    codemirror: {
+      root: 'Codemirror',
+      commonjs2: 'codemirror',
+      commonjs: 'codemirror',
+      amd: 'codemirror',
+      umd: 'codemirror',
+    },
     immutable: {
       root: ['NetlifyCmsDefaultExports', 'Immutable'],
       commonjs2: 'immutable',

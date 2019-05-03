@@ -27,8 +27,8 @@ const createEmptyRawDoc = () => {
   return { nodes: [emptyBlock] };
 };
 
-const createSlateValue = rawValue => {
-  const rawDoc = rawValue && markdownToSlate(rawValue);
+const createSlateValue = (rawValue, { voidCodeBlock }) => {
+  const rawDoc = rawValue && markdownToSlate(rawValue, { voidCodeBlock });
   const rawDocHasNodes = !isEmpty(get(rawDoc, 'nodes'));
   const document = Document.fromJSON(rawDocHasNodes ? rawDoc : createEmptyRawDoc());
   return Value.create({ document });
@@ -46,18 +46,22 @@ export default class Editor extends React.Component {
     getEditorComponents: PropTypes.func.isRequired,
   };
 
-  constructor(props) {
-    super(props);
-    const editorComponents = props.getEditorComponents();
-    this.shortcodeComponents = editorComponents.filter(({ type }) => type === 'shortcode');
-    this.fieldComponents = {
-      codeBlock: fromJS(editorComponents.find(({ type }) => type === 'code-block')),
-    };
-    this.state = {
-      value: createSlateValue(props.value),
-      lastRawValue: props.value,
-    };
-  }
+  editorComponents = this.props.getEditorComponents();
+  shortcodeComponents = this.editorComponents.filter(({ type }) => type === 'shortcode');
+  fieldComponents = {
+    codeBlock: fromJS(this.editorComponents.find(({ type }) => type === 'code-block')),
+  };
+  voidCodeBlock = !!this.fieldComponents.codeBlock;
+  renderNode = renderNode({
+    classNameWrapper: this.props.className,
+    resolveWidget: this.props.resolveWidget,
+    fieldComponents: this.fieldComponents,
+  });
+  schema = schema({ fieldComponents: this.fieldComponents });
+  state = {
+    value: createSlateValue(this.props.value, { voidCodeBlock: this.voidCodeBlock }),
+    lastRawValue: this.props.value,
+  };
 
   shouldComponentUpdate(nextProps, nextState) {
     const forcePropsValue = this.shouldForcePropsValue(
@@ -79,7 +83,7 @@ export default class Editor extends React.Component {
 
     if (forcePropsValue) {
       this.setState({
-        value: createSlateValue(this.props.value),
+        value: createSlateValue(this.props.value, { voidCodeBlock: this.voidCodeBlock }),
         lastRawValue: this.props.value,
       });
     }
@@ -263,8 +267,8 @@ export default class Editor extends React.Component {
 
   handleDocumentChange = debounce(editor => {
     const { onChange } = this.props;
-    const raw = editor.value.document.toJSON();
-    const markdown = slateToMarkdown(raw);
+    //const raw = editor.value.document.toJSON();
+    const markdown = slateToMarkdown(editor.value.document);
     this.setState({ lastRawValue: markdown }, () => onChange(markdown));
   }, 150);
 
@@ -307,13 +311,13 @@ export default class Editor extends React.Component {
               className={cx(
                 className,
                 css`
-                  ${visualEditorStyles}
+                  ${visualEditorStyles};
                 `,
               )}
               value={this.state.value}
-              renderNode={renderNode({ className, resolveWidget, fieldComponents })}
+              renderNode={this.renderNode}
               renderMark={renderMark}
-              schema={schema({ fieldComponents })}
+              schema={this.schema}
               plugins={plugins}
               onKeyDown={onKeyDown}
               onChange={this.handleChange}

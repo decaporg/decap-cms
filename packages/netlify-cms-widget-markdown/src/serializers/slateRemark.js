@@ -357,13 +357,13 @@ function condenseNodesReducer(acc, node, idx, nodes) {
   const baseNode =
     typeof node.text === 'string'
       ? u(node.textNodeType, { marks: node.marks }, node.text)
-      : transform(node.node);
+      : node.node && transform(node.node);
 
   /**
    * Recursively wrap the base text node in the individual mark nodes, if
    * any exist.
    */
-  return { ...acc, nodes: [...acc.nodes, baseNode] };
+  return { ...acc, nodes: [...acc.nodes, ...(baseNode ? [baseNode] : [])] };
 }
 
 /**
@@ -442,13 +442,15 @@ function convertNode(node, children) {
     /**
      * Code Blocks
      *
-     * Code block nodes are void and store their value in `data.value`. They
-     * also may have a code language stored in the "lang" data property. Here we
-     * transfer both the node value and the "lang" data property to the new
-     * MDAST node, and spread any remaining data as `data`.
+     * Code block nodes may have a single text child, or instead be void and
+     * store their value in `data.code`. They also may have a code language
+     * stored in the "lang" data property. Here we transfer both the node value
+     * and the "lang" data property to the new MDAST node, and spread any
+     * remaining data as `data`.
      */
     case 'code-block': {
-      const { lang, value, ...data } = get(node, 'data', {});
+      const { lang, code, ...data } = get(node, 'data', {});
+      const value = code || node.text || '';
       return u(typeMap[node.type], { lang, data }, value);
     }
 

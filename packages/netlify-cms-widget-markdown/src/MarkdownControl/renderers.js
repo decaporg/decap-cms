@@ -1,7 +1,7 @@
 import React from 'react';
 import { Map } from 'immutable';
+import { get } from 'lodash';
 import Shortcode from './Shortcode';
-import CodeEditor from './CodeEditor';
 import WidgetAdapter from './WidgetAdapter';
 
 /**
@@ -111,6 +111,7 @@ export const renderNode = ({ classNameWrapper, fieldComponents, resolveWidget })
             resolveWidget={resolveWidget}
             classNameWrapper={classNameWrapper}
             editorComponentType="code-block"
+            value={props.node.data}
             {...props}
           />
         );

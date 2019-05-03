@@ -189,12 +189,12 @@ export const htmlToSlate = html => {
 /**
  * Convert Markdown to Slate's Raw AST.
  */
-export const markdownToSlate = markdown => {
+export const markdownToSlate = (markdown, { voidCodeBlock }) => {
   const mdast = markdownToRemark(markdown);
 
   const slateRaw = unified()
     .use(remarkWrapHtml)
-    .use(remarkToSlate)
+    .use(remarkToSlate, { voidCodeBlock })
     .runSync(mdast);
 
   return slateRaw;

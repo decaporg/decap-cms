@@ -58,23 +58,23 @@ export default class CodeControl extends React.Component {
 
   constructor(props) {
     super(props);
-    const { field } = props;
-    this.keys = this.getKeys(field);
-    this.languageOptions = languages.map(({ name, label }) => ({ value: name, label }));
-    this.allowLanguageSelection = !field.has('allow_language_selection') ||
-      !!field.get('allow_language_selection');
-    const lang = (this.valueIsMap() && props.value && props.value.get(this.keys.lang)) || field.get('lang');
+    const { value, field } = props;
+    const lang = (this.valueIsMap() && value && value.get(this.keys.lang)) || field.get('lang');
     this.state = { lang: find(languages, { name: lang }) || defaultLanguage };
-    if (this.valueIsMap()) {
-      this.getCode = () => {
-        return this.props.value && this.props.value.get(this.keys.code);
-      }
-      this.toValue = (type, value) => (this.props.value || Map()).set(this.keys[type], value);
-    } else {
-      this.getCode = () => this.props.value;
-      this.toValue = (type, value) => type === 'code' ? value : this.props.value;
-    }
   }
+
+  keys = this.getKeys(this.props.field);
+  languageOptions = languages.map(({ name, label }) => ({ value: name, label }));
+  allowLanguageSelection = !this.props.field.has('allow_language_selection')
+    || !!(this.props.field.get('allow_language_selection'));
+
+  getCode = this.valueIsMap()
+    ? () => this.props.value && this.props.value.get(this.keys.code)
+    : () => this.props.value;
+
+  toValue = this.valueIsMap()
+    ? (type, value) => (this.props.value || Map()).set(this.keys[type], value)
+    : (type, value) => type === 'code' ? value : this.props.value;
 
   getKeys(field) {
     return {
@@ -101,6 +101,7 @@ export default class CodeControl extends React.Component {
     const { value, onChange, field, classNameWrapper, forID, editorComponentType } = this.props;
     const { keys, allowLanguageSelection } = this;
     const { lang } = this.state;
+    console.log(value);
 
     return (
       <ClassNames>

@@ -41,8 +41,8 @@ export function createRemarkShortcodeStringifier({ plugins }) {
 
     function shortcode(node) {
       const { data } = node;
-      const plugin = plugins.find(plugin => data.shortcode === plugin.id);
-      return plugin.toBlock(data.shortcodeData);
+      const plugin = plugins.find(plugin => data.get('shortcode') === plugin.id);
+      return plugin.toBlock(data.get('shortcodeData').toJS());
     }
   };
 }
