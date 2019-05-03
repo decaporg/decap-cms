@@ -10,7 +10,7 @@ date: 2019-05-03T00:00:10.000Z
 
 Netlify CMS released `netlify-cms-app` at version 2.9.x
 
-Gatsby released the new 4.0.0 today!
+Gatsby released `gatsby-plugin-netlify-cms` 4.0.0 plugin today!
 
 ![Netlify CMS and Gatsby together and better](/img/netlify-cms-gatsby.png)
 
