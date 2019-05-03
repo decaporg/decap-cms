@@ -149,13 +149,15 @@ With Bitbucket's Implicit Grant, users can authenticate with Bitbucket directly 
 1. Follow the authentication provider setup steps in the [Netlify docs](https://www.netlify.com/docs/authentication-providers/#using-an-authentication-provider), make sure you allow 'Account/Read' and 'Repository/Write'.
 2. Bitbucket gives you a **Key**. Copy this Key and enter it in your Netlify CMD `config.yml` file, along with the following settings:
 
+    ```yaml
     backend:
       name: bitbucket
       repo: owner-name/repo-name
       branch: default
       auth_type: implicit
       app_id: # The Key from your Bitbucket settings
-
+    ```
+  
 **Warning:** With Bitbucket implicit grant, the authentication is valid for 1 hour only. After that, the user has to login again, **which can lead to data loss** if the expiration occurs while content is being edited.
 
 ## Test Repo Backend
