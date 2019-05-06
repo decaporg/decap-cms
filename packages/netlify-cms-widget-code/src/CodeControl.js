@@ -101,7 +101,6 @@ export default class CodeControl extends React.Component {
     const { value, onChange, field, classNameWrapper, forID, editorComponentType } = this.props;
     const { keys, allowLanguageSelection } = this;
     const { lang } = this.state;
-    console.log(value);
 
     return (
       <ClassNames>
@@ -130,7 +129,7 @@ export default class CodeControl extends React.Component {
             }
             <ReactCodeMirror
               id={forID}
-              editorDidMount={() => console.log(CodeMirror.modes) || console.log(CodeMirror.mimeModes)}
+              //editorDidMount={() => console.log(CodeMirror.modes) || console.log(CodeMirror.mimeModes)}
               className={cx(classNameWrapper, css`${styleString}`)}
               options={{
                 theme: 'material',

@@ -209,8 +209,8 @@ export const markdownToSlate = (markdown, { voidCodeBlock }) => {
  * MDAST. The conversion is manual because Unified can only operate on Unist
  * trees.
  */
-export const slateToMarkdown = raw => {
-  const mdast = slateToRemark(raw, { shortcodePlugins: getEditorComponents() });
+export const slateToMarkdown = (raw, { voidCodeBlock }) => {
+  const mdast = slateToRemark(raw, { voidCodeBlock });
   const markdown = remarkToMarkdown(mdast);
   return markdown;
 };

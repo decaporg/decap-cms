@@ -70,6 +70,7 @@ export default class Editor extends React.Component {
       nextProps.value,
       nextState.lastRawValue,
     );
+
     return !this.state.value.equals(nextState.value) || forcePropsValue;
   }
 
@@ -125,8 +126,8 @@ export default class Editor extends React.Component {
     const { editor } = this;
 
     const getBlockNodes = block => {
-      if (block.type === 'code-block') {
-        return [Text.create(block.data.get('value'))];
+      if (block.type === 'code-block' && this.voidCodeBlock) {
+        return [Text.create(block.data.get('code'))];
       }
       return block.nodes;
     }
@@ -148,7 +149,7 @@ export default class Editor extends React.Component {
         } else {
           editor.value.blocks.forEach(block => {
             const newBlock = Block.create({ type, nodes: getBlockNodes(block) });
-            editor.replaceNodeByKey(block.key, newBlock);
+            editor.setNodeByKey(block.key, { type, nodes: getBlockNodes(block) });
           });
         }
         break;
@@ -159,12 +160,18 @@ export default class Editor extends React.Component {
             editor.replaceNodeByKey(block.key, newBlock);
           });
         } else {
-          editor.value.blocks.forEach(block => {
-            if (block.type !== type) {
-              const newBlock = { type, data: { value: block.text } };
-              editor.setNodeByKey(block.key, newBlock);
-            }
-          });
+          if (this.voidCodeBlock) {
+            editor.value.blocks.forEach(block => {
+              if (block.type !== type) {
+                const newBlock = { type, data: { code: block.text } };
+                editor.setNodeByKey(block.key, newBlock);
+              }
+            });
+          } else {
+            editor.value.blocks.forEach(block => {
+              editor.setNodeByKey(block.key, type);
+            });
+          }
         }
         break;
       case 'quote': {
@@ -267,8 +274,8 @@ export default class Editor extends React.Component {
 
   handleDocumentChange = debounce(editor => {
     const { onChange } = this.props;
-    //const raw = editor.value.document.toJSON();
-    const markdown = slateToMarkdown(editor.value.document);
+    const raw = editor.value.document.toJSON();
+    const markdown = slateToMarkdown(raw, { voidCodeBlock: this.voidCodeBlock });
     this.setState({ lastRawValue: markdown }, () => onChange(markdown));
   }, 150);
 

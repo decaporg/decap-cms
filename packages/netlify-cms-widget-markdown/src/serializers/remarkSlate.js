@@ -276,8 +276,6 @@ export default function remarkToSlate({ voidCodeBlock }) {
         const text = createText(voidCodeBlock ? '' : node.value);
         const nodes = [text];
         const block = createBlock(typeMap[node.type], nodes, { data });
-        console.log('IN');
-        console.log(block);
         return block;
       }
 
