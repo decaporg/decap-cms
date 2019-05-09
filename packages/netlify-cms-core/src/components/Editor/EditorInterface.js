@@ -200,8 +200,8 @@ class EditorInterface extends Component {
           <ReactSplitPaneGlobalStyles />
           <StyledSplitPane
             maxSize={-100}
-            defaultSize={ parseInt(localStorage.getItem(SPLIT_PANE_POSITION), 10) || "50%" }
-            onChange={ size => localStorage.setItem(SPLIT_PANE_POSITION, size) }
+            defaultSize={parseInt(localStorage.getItem(SPLIT_PANE_POSITION), 10) || '50%'}
+            onChange={size => localStorage.setItem(SPLIT_PANE_POSITION, size)}
             onDragStarted={this.handleSplitPaneDragStart}
             onDragFinished={this.handleSplitPaneDragFinished}
           >
