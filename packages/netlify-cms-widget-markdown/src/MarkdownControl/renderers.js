@@ -82,7 +82,7 @@ const Image = props => {
   return result;
 };
 
-export const renderMark = props => {
+export const renderMark = () => props => {
   switch (props.mark.type) {
     case 'bold':
       return <Bold {...props} />;
@@ -95,7 +95,16 @@ export const renderMark = props => {
   }
 };
 
-export const renderNode = ({ classNameWrapper, fieldComponents, resolveWidget }) => props => {
+export const renderInline = () => props => {
+  switch (props.node.type) {
+    case 'link':
+      return <Link {...props} />;
+    case 'image':
+      return <Image {...props} />;
+  }
+};
+
+export const renderBlock = ({ classNameWrapper, fieldComponents, resolveWidget }) => props => {
   switch (props.node.type) {
     case 'paragraph':
       return <Paragraph {...props} />;
@@ -141,10 +150,6 @@ export const renderNode = ({ classNameWrapper, fieldComponents, resolveWidget })
       return <BulletedList {...props} />;
     case 'numbered-list':
       return <NumberedList {...props} />;
-    case 'link':
-      return <Link {...props} />;
-    case 'image':
-      return <Image {...props} />;
     case 'shortcode':
       return <Shortcode classNameWrapper={classNameWrapper} {...props} />;
     case 'break':

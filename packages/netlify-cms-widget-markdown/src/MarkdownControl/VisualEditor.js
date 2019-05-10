@@ -9,7 +9,7 @@ import { Value, Document, Block, Text } from 'slate';
 import { Editor as Slate } from 'slate-react';
 import { slateToMarkdown, markdownToSlate, htmlToSlate } from '../serializers';
 import Toolbar from '../MarkdownControl/Toolbar';
-import { renderNode, renderMark } from './renderers';
+import { renderBlock, renderInline, renderMark } from './renderers';
 import { validateNode } from './validators';
 import plugins from './plugins';
 import onKeyDown from './keys';
@@ -52,11 +52,13 @@ export default class Editor extends React.Component {
     codeBlock: fromJS(this.editorComponents.find(({ type }) => type === 'code-block')),
   };
   voidCodeBlock = !!this.fieldComponents.codeBlock;
-  renderNode = renderNode({
+  renderBlock = renderBlock({
     classNameWrapper: this.props.className,
     resolveWidget: this.props.resolveWidget,
     fieldComponents: this.fieldComponents,
   });
+  renderInline = renderInline();
+  renderMark = renderMark();
   schema = schema({ fieldComponents: this.fieldComponents });
   state = {
     value: createSlateValue(this.props.value, { voidCodeBlock: this.voidCodeBlock }),
@@ -322,8 +324,9 @@ export default class Editor extends React.Component {
                 `,
               )}
               value={this.state.value}
-              renderNode={this.renderNode}
-              renderMark={renderMark}
+              renderBlock={this.renderBlock}
+              renderInline={this.renderInline}
+              renderMark={this.renderMark}
               schema={this.schema}
               plugins={plugins}
               onKeyDown={onKeyDown}
