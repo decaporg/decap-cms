@@ -13,6 +13,7 @@ import EditorToggle from './EditorToggle';
 
 const PREVIEW_VISIBLE = 'cms.preview-visible';
 const SCROLL_SYNC_ENABLED = 'cms.scroll-sync-enabled';
+const SPLIT_PANE_POSITION = 'cms.split-pane-position';
 
 const styles = {
   splitPane: css`
@@ -199,7 +200,8 @@ class EditorInterface extends Component {
           <ReactSplitPaneGlobalStyles />
           <StyledSplitPane
             maxSize={-100}
-            defaultSize="50%"
+            defaultSize={parseInt(localStorage.getItem(SPLIT_PANE_POSITION), 10) || '50%'}
+            onChange={size => localStorage.setItem(SPLIT_PANE_POSITION, size)}
             onDragStarted={this.handleSplitPaneDragStart}
             onDragFinished={this.handleSplitPaneDragFinished}
           >
