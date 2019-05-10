@@ -6,7 +6,6 @@ import styled from '@emotion/styled';
 import { css } from '@emotion/core';
 import { omit } from 'lodash';
 import { ListItemTopBar, components, colors, lengths } from 'netlify-cms-ui-default';
-import CMS from 'netlify-cms-core';
 import { getEditorControl, getEditorComponents } from './index';
 
 const Shortcode = ({ editor, attributes, node, classNameWrapper }) => {

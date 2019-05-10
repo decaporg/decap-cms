@@ -2,7 +2,6 @@ import React from 'react';
 import { map, has } from 'lodash';
 import { renderToString } from 'react-dom/server';
 import u from 'unist-builder';
-import { NetlifyCmsCore as CMS } from 'netlify-cms-core';
 
 /**
  * This plugin doesn't actually transform Remark (MDAST) nodes to Rehype
@@ -10,7 +9,7 @@ import { NetlifyCmsCore as CMS } from 'netlify-cms-core';
  * conversion by replacing the shortcode text with stringified HTML for
  * previewing the shortcode output.
  */
-export default function remarkToRehypeShortcodes({ plugins, getAsset }) {
+export default function remarkToRehypeShortcodes({ plugins, getAsset, resolveWidget }) {
   return transform;
 
   function transform(root) {
@@ -58,7 +57,7 @@ export default function remarkToRehypeShortcodes({ plugins, getAsset }) {
     if (toPreview) {
       return toPreview(shortcodeData, getAsset);
     }
-    const preview = CMS.resolveWidget(widget);
+    const preview = resolveWidget(widget);
     return React.createElement(preview.preview, {
       value: shortcodeData,
       field: plugin,

@@ -147,11 +147,11 @@ export const remarkToMarkdown = obj => {
 /**
  * Convert Markdown to HTML.
  */
-export const markdownToHtml = (markdown, getAsset) => {
+export const markdownToHtml = (markdown, { getAsset, resolveWidget } = {}) => {
   const mdast = markdownToRemark(markdown);
 
   const hast = unified()
-    .use(remarkToRehypeShortcodes, { plugins: getEditorComponents(), getAsset })
+    .use(remarkToRehypeShortcodes, { plugins: getEditorComponents(), getAsset, resolveWidget })
     .use(remarkToRehype, { allowDangerousHTML: true })
     .runSync(mdast);
 
@@ -189,7 +189,7 @@ export const htmlToSlate = html => {
 /**
  * Convert Markdown to Slate's Raw AST.
  */
-export const markdownToSlate = (markdown, { voidCodeBlock }) => {
+export const markdownToSlate = (markdown, { voidCodeBlock } = {}) => {
   const mdast = markdownToRemark(markdown);
 
   const slateRaw = unified()
@@ -209,7 +209,7 @@ export const markdownToSlate = (markdown, { voidCodeBlock }) => {
  * MDAST. The conversion is manual because Unified can only operate on Unist
  * trees.
  */
-export const slateToMarkdown = (raw, { voidCodeBlock }) => {
+export const slateToMarkdown = (raw, { voidCodeBlock } = {}) => {
   const mdast = slateToRemark(raw, { voidCodeBlock });
   const markdown = remarkToMarkdown(mdast);
   return markdown;

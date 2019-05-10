@@ -9,7 +9,44 @@ describe('Compile markdown to Slate Raw AST', () => {
 
 sweet body
 `;
-    expect(parser(value)).toMatchSnapshot();
+    expect(parser(value)).toMatchInlineSnapshot(`
+      Object {
+        "nodes": Array [
+          Object {
+            "nodes": Array [
+              Object {
+                "data": undefined,
+                "leaves": Array [
+                  Object {
+                    "text": "H1",
+                  },
+                ],
+                "object": "text",
+              },
+            ],
+            "object": "block",
+            "type": "heading-one",
+          },
+          Object {
+            "nodes": Array [
+              Object {
+                "data": undefined,
+                "leaves": Array [
+                  Object {
+                    "text": "sweet body",
+                  },
+                ],
+                "object": "text",
+              },
+            ],
+            "object": "block",
+            "type": "paragraph",
+          },
+        ],
+        "object": "block",
+        "type": "root",
+      }
+    `);
   });
 
   it('should compile a markdown ordered list', () => {
@@ -20,7 +57,101 @@ sweet body
 2. bro
 3. fro
 `;
-    expect(parser(value)).toMatchSnapshot();
+    expect(parser(value)).toMatchInlineSnapshot(`
+      Object {
+        "nodes": Array [
+          Object {
+            "nodes": Array [
+              Object {
+                "data": undefined,
+                "leaves": Array [
+                  Object {
+                    "text": "H1",
+                  },
+                ],
+                "object": "text",
+              },
+            ],
+            "object": "block",
+            "type": "heading-one",
+          },
+          Object {
+            "data": Object {
+              "start": 1,
+            },
+            "nodes": Array [
+              Object {
+                "nodes": Array [
+                  Object {
+                    "nodes": Array [
+                      Object {
+                        "data": undefined,
+                        "leaves": Array [
+                          Object {
+                            "text": "yo",
+                          },
+                        ],
+                        "object": "text",
+                      },
+                    ],
+                    "object": "block",
+                    "type": "paragraph",
+                  },
+                ],
+                "object": "block",
+                "type": "list-item",
+              },
+              Object {
+                "nodes": Array [
+                  Object {
+                    "nodes": Array [
+                      Object {
+                        "data": undefined,
+                        "leaves": Array [
+                          Object {
+                            "text": "bro",
+                          },
+                        ],
+                        "object": "text",
+                      },
+                    ],
+                    "object": "block",
+                    "type": "paragraph",
+                  },
+                ],
+                "object": "block",
+                "type": "list-item",
+              },
+              Object {
+                "nodes": Array [
+                  Object {
+                    "nodes": Array [
+                      Object {
+                        "data": undefined,
+                        "leaves": Array [
+                          Object {
+                            "text": "fro",
+                          },
+                        ],
+                        "object": "text",
+                      },
+                    ],
+                    "object": "block",
+                    "type": "paragraph",
+                  },
+                ],
+                "object": "block",
+                "type": "list-item",
+              },
+            ],
+            "object": "block",
+            "type": "numbered-list",
+          },
+        ],
+        "object": "block",
+        "type": "root",
+      }
+    `);
   });
 
   it('should compile bulleted lists', () => {
@@ -31,7 +162,101 @@ sweet body
 * bro
 * fro
 `;
-    expect(parser(value)).toMatchSnapshot();
+    expect(parser(value)).toMatchInlineSnapshot(`
+      Object {
+        "nodes": Array [
+          Object {
+            "nodes": Array [
+              Object {
+                "data": undefined,
+                "leaves": Array [
+                  Object {
+                    "text": "H1",
+                  },
+                ],
+                "object": "text",
+              },
+            ],
+            "object": "block",
+            "type": "heading-one",
+          },
+          Object {
+            "data": Object {
+              "start": null,
+            },
+            "nodes": Array [
+              Object {
+                "nodes": Array [
+                  Object {
+                    "nodes": Array [
+                      Object {
+                        "data": undefined,
+                        "leaves": Array [
+                          Object {
+                            "text": "yo",
+                          },
+                        ],
+                        "object": "text",
+                      },
+                    ],
+                    "object": "block",
+                    "type": "paragraph",
+                  },
+                ],
+                "object": "block",
+                "type": "list-item",
+              },
+              Object {
+                "nodes": Array [
+                  Object {
+                    "nodes": Array [
+                      Object {
+                        "data": undefined,
+                        "leaves": Array [
+                          Object {
+                            "text": "bro",
+                          },
+                        ],
+                        "object": "text",
+                      },
+                    ],
+                    "object": "block",
+                    "type": "paragraph",
+                  },
+                ],
+                "object": "block",
+                "type": "list-item",
+              },
+              Object {
+                "nodes": Array [
+                  Object {
+                    "nodes": Array [
+                      Object {
+                        "data": undefined,
+                        "leaves": Array [
+                          Object {
+                            "text": "fro",
+                          },
+                        ],
+                        "object": "text",
+                      },
+                    ],
+                    "object": "block",
+                    "type": "paragraph",
+                  },
+                ],
+                "object": "block",
+                "type": "list-item",
+              },
+            ],
+            "object": "block",
+            "type": "bulleted-list",
+          },
+        ],
+        "object": "block",
+        "type": "root",
+      }
+    `);
   });
 
   it('should compile multiple header levels', () => {
@@ -42,7 +267,59 @@ sweet body
 
 ### H3
 `;
-    expect(parser(value)).toMatchSnapshot();
+    expect(parser(value)).toMatchInlineSnapshot(`
+      Object {
+        "nodes": Array [
+          Object {
+            "nodes": Array [
+              Object {
+                "data": undefined,
+                "leaves": Array [
+                  Object {
+                    "text": "H1",
+                  },
+                ],
+                "object": "text",
+              },
+            ],
+            "object": "block",
+            "type": "heading-one",
+          },
+          Object {
+            "nodes": Array [
+              Object {
+                "data": undefined,
+                "leaves": Array [
+                  Object {
+                    "text": "H2",
+                  },
+                ],
+                "object": "text",
+              },
+            ],
+            "object": "block",
+            "type": "heading-two",
+          },
+          Object {
+            "nodes": Array [
+              Object {
+                "data": undefined,
+                "leaves": Array [
+                  Object {
+                    "text": "H3",
+                  },
+                ],
+                "object": "text",
+              },
+            ],
+            "object": "block",
+            "type": "heading-three",
+          },
+        ],
+        "object": "block",
+        "type": "root",
+      }
+    `);
   });
 
   it('should compile horizontal rules', () => {
@@ -53,7 +330,48 @@ sweet body
 
 blue moon
 `;
-    expect(parser(value)).toMatchSnapshot();
+    expect(parser(value)).toMatchInlineSnapshot(`
+      Object {
+        "nodes": Array [
+          Object {
+            "nodes": Array [
+              Object {
+                "data": undefined,
+                "leaves": Array [
+                  Object {
+                    "text": "H1",
+                  },
+                ],
+                "object": "text",
+              },
+            ],
+            "object": "block",
+            "type": "heading-one",
+          },
+          Object {
+            "object": "block",
+            "type": "thematic-break",
+          },
+          Object {
+            "nodes": Array [
+              Object {
+                "data": undefined,
+                "leaves": Array [
+                  Object {
+                    "text": "blue moon",
+                  },
+                ],
+                "object": "text",
+              },
+            ],
+            "object": "block",
+            "type": "paragraph",
+          },
+        ],
+        "object": "block",
+        "type": "root",
+      }
+    `);
   });
 
   it('should compile horizontal rules', () => {
@@ -64,7 +382,48 @@ blue moon
 
 blue moon
 `;
-    expect(parser(value)).toMatchSnapshot();
+    expect(parser(value)).toMatchInlineSnapshot(`
+      Object {
+        "nodes": Array [
+          Object {
+            "nodes": Array [
+              Object {
+                "data": undefined,
+                "leaves": Array [
+                  Object {
+                    "text": "H1",
+                  },
+                ],
+                "object": "text",
+              },
+            ],
+            "object": "block",
+            "type": "heading-one",
+          },
+          Object {
+            "object": "block",
+            "type": "thematic-break",
+          },
+          Object {
+            "nodes": Array [
+              Object {
+                "data": undefined,
+                "leaves": Array [
+                  Object {
+                    "text": "blue moon",
+                  },
+                ],
+                "object": "text",
+              },
+            ],
+            "object": "block",
+            "type": "paragraph",
+          },
+        ],
+        "object": "block",
+        "type": "root",
+      }
+    `);
   });
 
   it('should compile soft breaks (double space)', () => {
@@ -72,14 +431,83 @@ blue moon
 blue moon  
 footballs
 `;
-    expect(parser(value)).toMatchSnapshot();
+    expect(parser(value)).toMatchInlineSnapshot(`
+      Object {
+        "nodes": Array [
+          Object {
+            "nodes": Array [
+              Object {
+                "data": undefined,
+                "leaves": Array [
+                  Object {
+                    "text": "blue moon",
+                  },
+                ],
+                "object": "text",
+              },
+              Object {
+                "nodes": Array [
+                  Object {
+                    "data": undefined,
+                    "leaves": Array [
+                      Object {
+                        "text": "
+      ",
+                      },
+                    ],
+                    "object": "text",
+                  },
+                ],
+                "object": "inline",
+                "type": "break",
+              },
+              Object {
+                "data": undefined,
+                "leaves": Array [
+                  Object {
+                    "text": "footballs",
+                  },
+                ],
+                "object": "text",
+              },
+            ],
+            "object": "block",
+            "type": "paragraph",
+          },
+        ],
+        "object": "block",
+        "type": "root",
+      }
+    `);
   });
 
   it('should compile images', () => {
     const value = `
 ![super](duper.jpg)
 `;
-    expect(parser(value)).toMatchSnapshot();
+    expect(parser(value)).toMatchInlineSnapshot(`
+      Object {
+        "nodes": Array [
+          Object {
+            "nodes": Array [
+              Object {
+                "data": Object {
+                  "alt": "super",
+                  "title": null,
+                  "url": "duper.jpg",
+                },
+                "object": "inline",
+                "type": "image",
+              },
+            ],
+            "object": "block",
+            "type": "paragraph",
+          },
+        ],
+        "object": "block",
+        "type": "root",
+      }
+    `);
   });
 
   it('should compile code blocks', () => {
@@ -88,7 +516,32 @@ footballs
 var a = 1;
 \`\`\`
 `;
-    expect(parser(value)).toMatchSnapshot();
+    expect(parser(value)).toMatchInlineSnapshot(`
+      Object {
+        "nodes": Array [
+          Object {
+            "data": Object {
+              "lang": "javascript",
+            },
+            "nodes": Array [
+              Object {
+                "data": undefined,
+                "leaves": Array [
+                  Object {
+                    "text": "var a = 1;",
+                  },
+                ],
+                "object": "text",
+              },
+            ],
+            "object": "block",
+            "type": "code-block",
+          },
+        ],
+        "object": "block",
+        "type": "root",
+      }
+    `);
   });
 
   it('should compile nested inline markup', () => {
@@ -99,7 +552,115 @@ This is **some *hot* content**
 
 perhaps **scalding** even
 `;
-    expect(parser(value)).toMatchSnapshot();
+    expect(parser(value)).toMatchInlineSnapshot(`
+      Object {
+        "nodes": Array [
+          Object {
+            "nodes": Array [
+              Object {
+                "data": undefined,
+                "leaves": Array [
+                  Object {
+                    "text": "Word",
+                  },
+                ],
+                "object": "text",
+              },
+            ],
+            "object": "block",
+            "type": "heading-one",
+          },
+          Object {
+            "nodes": Array [
+              Object {
+                "data": undefined,
+                "leaves": Array [
+                  Object {
+                    "text": "This is ",
+                  },
+                ],
+                "object": "text",
+              },
+              Object {
+                "data": undefined,
+                "leaves": Array [
+                  Object {
+                    "marks": Array [
+                      Object {
+                        "type": "bold",
+                      },
+                    ],
+                    "text": "some ",
+                  },
+                  Object {
+                    "marks": Array [
+                      Object {
+                        "type": "bold",
+                      },
+                      Object {
+                        "type": "italic",
+                      },
+                    ],
+                    "text": "hot",
+                  },
+                  Object {
+                    "marks": Array [
+                      Object {
+                        "type": "bold",
+                      },
+                    ],
+                    "text": " content",
+                  },
+                ],
+                "object": "text",
+              },
+            ],
+            "object": "block",
+            "type": "paragraph",
+          },
+          Object {
+            "nodes": Array [
+              Object {
+                "data": undefined,
+                "leaves": Array [
+                  Object {
+                    "text": "perhaps ",
+                  },
+                ],
+                "object": "text",
+              },
+              Object {
+                "data": undefined,
+                "leaves": Array [
+                  Object {
+                    "marks": Array [
+                      Object {
+                        "type": "bold",
+                      },
+                    ],
+                    "text": "scalding",
+                  },
+                ],
+                "object": "text",
+              },
+              Object {
+                "data": undefined,
+                "leaves": Array [
+                  Object {
+                    "text": " even",
+                  },
+                ],
+                "object": "text",
+              },
+            ],
+            "object": "block",
+            "type": "paragraph",
+          },
+        ],
+        "object": "block",
+        "type": "root",
+      }
+    `);
   });
 
   it('should compile inline code', () => {
@@ -108,7 +669,67 @@ perhaps **scalding** even
 
 This is some sweet \`inline code\` yo!
 `;
-    expect(parser(value)).toMatchSnapshot();
+    expect(parser(value)).toMatchInlineSnapshot(`
+      Object {
+        "nodes": Array [
+          Object {
+            "nodes": Array [
+              Object {
+                "data": undefined,
+                "leaves": Array [
+                  Object {
+                    "text": "Word",
+                  },
+                ],
+                "object": "text",
+              },
+            ],
+            "object": "block",
+            "type": "heading-one",
+          },
+          Object {
+            "nodes": Array [
+              Object {
+                "data": undefined,
+                "leaves": Array [
+                  Object {
+                    "text": "This is some sweet ",
+                  },
+                ],
+                "object": "text",
+              },
+              Object {
+                "data": undefined,
+                "leaves": Array [
+                  Object {
+                    "marks": Array [
+                      Object {
+                        "type": "code",
+                      },
+                    ],
+                    "text": "inline code",
+                  },
+                ],
+                "object": "text",
+              },
+              Object {
+                "data": undefined,
+                "leaves": Array [
+                  Object {
+                    "text": " yo!",
+                  },
+                ],
+                "object": "text",
+              },
+            ],
+            "object": "block",
+            "type": "paragraph",
+          },
+        ],
+        "object": "block",
+        "type": "root",
+      }
+    `);
   });
 
   it('should compile links', () => {
@@ -117,7 +738,72 @@ This is some sweet \`inline code\` yo!
 
 How far is it to [Google](https://google.com) land?
 `;
-    expect(parser(value)).toMatchSnapshot();
+    expect(parser(value)).toMatchInlineSnapshot(`
+      Object {
+        "nodes": Array [
+          Object {
+            "nodes": Array [
+              Object {
+                "data": undefined,
+                "leaves": Array [
+                  Object {
+                    "text": "Word",
+                  },
+                ],
+                "object": "text",
+              },
+            ],
+            "object": "block",
+            "type": "heading-one",
+          },
+          Object {
+            "nodes": Array [
+              Object {
+                "data": undefined,
+                "leaves": Array [
+                  Object {
+                    "text": "How far is it to ",
+                  },
+                ],
+                "object": "text",
+              },
+              Object {
+                "data": Object {
+                  "title": null,
+                  "url": "https://google.com",
+                },
+                "nodes": Array [
+                  Object {
+                    "data": undefined,
+                    "leaves": Array [
+                      Object {
+                        "text": "Google",
+                      },
+                    ],
+                    "object": "text",
+                  },
+                ],
+                "object": "inline",
+                "type": "link",
+              },
+              Object {
+                "data": undefined,
+                "leaves": Array [
+                  Object {
+                    "text": " land?",
+                  },
+                ],
+                "object": "text",
+              },
+            ],
+            "object": "block",
+            "type": "paragraph",
+          },
+        ],
+        "object": "block",
+        "type": "root",
+      }
+    `);
   });
 
   it('should compile plugins', () => {
@@ -126,7 +812,44 @@ How far is it to [Google](https://google.com) land?
 
 {{< test >}}
 `;
-    expect(parser(value)).toMatchSnapshot();
+    expect(parser(value)).toMatchInlineSnapshot(`
+      Object {
+        "nodes": Array [
+          Object {
+            "nodes": Array [
+              Object {
+                "data": Object {
+                  "alt": "test",
+                  "title": null,
+                  "url": "test.png",
+                },
+                "object": "inline",
+                "type": "image",
+              },
+            ],
+            "object": "block",
+            "type": "paragraph",
+          },
+          Object {
+            "nodes": Array [
+              Object {
+                "data": undefined,
+                "leaves": Array [
+                  Object {
+                    "text": "{{< test >}}",
+                  },
+                ],
+                "object": "text",
+              },
+            ],
+            "object": "block",
+            "type": "paragraph",
+          },
+        ],
+        "object": "block",
+        "type": "root",
+      }
+    `);
   });
 
   it('should compile kitchen sink example', () => {

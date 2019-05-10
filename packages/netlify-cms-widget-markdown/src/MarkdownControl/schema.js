@@ -16,7 +16,7 @@ const codeBlockOverride = {
   isVoid: true,
 };
 
-const schema = ({ fieldComponents = {} } = {}) => ({
+const schema = ({ voidCodeBlock } = {}) => ({
   rules: [
     /**
      * Document
@@ -254,7 +254,7 @@ const schema = ({ fieldComponents = {} } = {}) => ({
     /**
      * Overrides
      */
-    fieldComponents.codeBlock ? codeBlockOverride : codeBlock,
+    voidCodeBlock ? codeBlockOverride : codeBlock,
   ],
 });
 

@@ -8,7 +8,7 @@ let editorPreview;
 export const getEditorPreview = () => editorPreview;
 
 const MarkdownPreview = props => {
-  const { value, getAsset } = props;
+  const { value, getAsset, resolveWidget } = props;
   useEffect(() => {
     editorPreview = props.editorPreview;
   }, []);
@@ -16,13 +16,14 @@ const MarkdownPreview = props => {
   if (value === null) {
     return null;
   }
-  const html = markdownToHtml(value, getAsset);
+  const html = markdownToHtml(value, { getAsset, resolveWidget });
   return <WidgetPreviewContainer dangerouslySetInnerHTML={{ __html: html }} />;
 };
 
 MarkdownPreview.propTypes = {
   getAsset: PropTypes.func.isRequired,
   editorPreview: PropTypes.func.isRequired,
+  resolveWidget: PropTypes.func.isRequired,
   value: PropTypes.string,
 };
 

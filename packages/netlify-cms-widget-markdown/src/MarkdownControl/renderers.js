@@ -104,7 +104,7 @@ export const renderInline = () => props => {
   }
 };
 
-export const renderBlock = ({ classNameWrapper, fieldComponents, resolveWidget }) => props => {
+export const renderBlock = ({ classNameWrapper, codeBlockComponent, resolveWidget }) => props => {
   switch (props.node.type) {
     case 'paragraph':
       return <Paragraph {...props} />;
@@ -113,10 +113,10 @@ export const renderBlock = ({ classNameWrapper, fieldComponents, resolveWidget }
     case 'quote':
       return <Quote {...props} />;
     case 'code-block':
-      if (fieldComponents.codeBlock) {
+      if (codeBlockComponent) {
         return (
           <WidgetAdapter
-            widgetConfig={fieldComponents.codeBlock}
+            widgetConfig={codeBlockComponent}
             resolveWidget={resolveWidget}
             classNameWrapper={classNameWrapper}
             editorComponentType="code-block"

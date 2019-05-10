@@ -34,7 +34,64 @@ const createSlateValue = (rawValue, { voidCodeBlock }) => {
   return Value.create({ document });
 };
 
+const pluginToBlock = plugin => {
+  // Handle code block component
+  if (plugin.type === 'code-block') {
+    return { type: plugin.type };
+  }
+
+  const nodes = [Text.create('')];
+
+  /**
+   * Get default values for plugin fields.
+   */
+  const defaultValues = plugin.fields
+    .toMap()
+    .mapKeys((_, field) => field.get('name'))
+    .filter(field => field.has('default'))
+    .map(field => field.get('default'));
+
+  /**
+   * Create new shortcode block with default values set.
+   */
+  return {
+    object: 'block',
+    type: 'shortcode',
+    data: {
+      shortcode: plugin.id,
+      shortcodeNew: true,
+      shortcodeData: defaultValues,
+    },
+    nodes,
+  };
+};
+
 export default class Editor extends React.Component {
+  constructor(props) {
+    super(props);
+    const editorComponents = props.getEditorComponents();
+    this.shortcodeComponents = editorComponents.filter(({ type }) => type === 'shortcode');
+    this.codeBlockComponent = fromJS(editorComponents.find(({ type }) => type === 'code-block'));
+    this.editorComponents = this.codeBlockComponent || editorComponents.has('code-block')
+      ? editorComponents
+      : editorComponents.set('code-block', Map({
+          label: 'Code Block',
+          type: 'code-block',
+        }));
+    this.renderBlock = renderBlock({
+      classNameWrapper: props.className,
+      resolveWidget: props.resolveWidget,
+      codeBlockComponent: this.codeBlockComponent,
+    });
+    this.renderInline = renderInline();
+    this.renderMark = renderMark();
+    this.schema = schema({ voidCodeBlock: !!this.codeBlockComponent });
+    this.state = {
+      value: createSlateValue(this.props.value, { voidCodeBlock: !!this.codeBlockComponent }),
+      lastRawValue: this.props.value,
+    };
+  }
+
   static propTypes = {
     onAddAsset: PropTypes.func.isRequired,
     getAsset: PropTypes.func.isRequired,
@@ -44,25 +101,6 @@ export default class Editor extends React.Component {
     value: PropTypes.string,
     field: ImmutablePropTypes.map.isRequired,
     getEditorComponents: PropTypes.func.isRequired,
-  };
-
-  editorComponents = this.props.getEditorComponents();
-  shortcodeComponents = this.editorComponents.filter(({ type }) => type === 'shortcode');
-  fieldComponents = {
-    codeBlock: fromJS(this.editorComponents.find(({ type }) => type === 'code-block')),
-  };
-  voidCodeBlock = !!this.fieldComponents.codeBlock;
-  renderBlock = renderBlock({
-    classNameWrapper: this.props.className,
-    resolveWidget: this.props.resolveWidget,
-    fieldComponents: this.fieldComponents,
-  });
-  renderInline = renderInline();
-  renderMark = renderMark();
-  schema = schema({ fieldComponents: this.fieldComponents });
-  state = {
-    value: createSlateValue(this.props.value, { voidCodeBlock: this.voidCodeBlock }),
-    lastRawValue: this.props.value,
   };
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -86,7 +124,7 @@ export default class Editor extends React.Component {
 
     if (forcePropsValue) {
       this.setState({
-        value: createSlateValue(this.props.value, { voidCodeBlock: this.voidCodeBlock }),
+        value: createSlateValue(this.props.value, { voidCodeBlock: this.codeBlockComponent }),
         lastRawValue: this.props.value,
       });
     }
@@ -128,7 +166,7 @@ export default class Editor extends React.Component {
     const { editor } = this;
 
     const getBlockNodes = block => {
-      if (block.type === 'code-block' && this.voidCodeBlock) {
+      if (block.type === 'code-block' && this.codeBlockComponent) {
         return [Text.create(block.data.get('code'))];
       }
       return block.nodes;
@@ -162,7 +200,7 @@ export default class Editor extends React.Component {
             editor.replaceNodeByKey(block.key, newBlock);
           });
         } else {
-          if (this.voidCodeBlock) {
+          if (this.codeBlockComponent) {
             editor.value.blocks.forEach(block => {
               if (block.type !== type) {
                 const newBlock = { type, data: { code: block.text } };
@@ -231,43 +269,17 @@ export default class Editor extends React.Component {
     }
   };
 
-  handlePluginAdd = pluginId => {
-    const { editor } = this;
-    const nodes = [Text.create('')];
-
-    /**
-     * Get default values for plugin fields.
-     */
-    const pluginFields = this.editorComponents.getIn([pluginId, 'fields'], List());
-    const defaultValues = pluginFields
-      .toMap()
-      .mapKeys((_, field) => field.get('name'))
-      .filter(field => field.has('default'))
-      .map(field => field.get('default'));
-
-    /**
-     * Create new shortcode block with default values set.
-     */
-    const block = {
-      object: 'block',
-      type: 'shortcode',
-      data: {
-        shortcode: pluginId,
-        shortcodeNew: true,
-        shortcodeData: defaultValues,
-      },
-      nodes,
-    };
-
-    const { focusBlock } = editor.value;
+  handlePluginAdd = plugin => {
+    const block = pluginToBlock(plugin);
+    const { focusBlock } = this.editor.value;
 
     if (focusBlock.text === '' && focusBlock.type === 'paragraph') {
-      editor.setNodeByKey(focusBlock.key, block);
+      this.editor.setNodeByKey(focusBlock.key, block);
     } else {
-      editor.insertBlock(block);
+      this.editor.insertBlock(block);
     }
 
-    editor.focus();
+    this.editor.focus();
   };
 
   handleToggle = () => {
@@ -277,7 +289,7 @@ export default class Editor extends React.Component {
   handleDocumentChange = debounce(editor => {
     const { onChange } = this.props;
     const raw = editor.value.document.toJSON();
-    const markdown = slateToMarkdown(raw, { voidCodeBlock: this.voidCodeBlock });
+    const markdown = slateToMarkdown(raw, { voidCodeBlock: this.codeBlockComponent });
     this.setState({ lastRawValue: markdown }, () => onChange(markdown));
   }, 150);
 
@@ -294,7 +306,6 @@ export default class Editor extends React.Component {
 
   render() {
     const { onAddAsset, getAsset, className, field, resolveWidget } = this.props;
-    const { fieldComponents } = this;
 
     return (
       <VisualEditorContainer>
@@ -307,7 +318,7 @@ export default class Editor extends React.Component {
             selectionHasBlock={this.selectionHasBlock}
             selectionHasLink={this.hasLinks}
             onToggleMode={this.handleToggle}
-            plugins={this.shortcodeComponents}
+            plugins={this.editorComponents}
             onSubmit={this.handlePluginAdd}
             onAddAsset={onAddAsset}
             getAsset={getAsset}

@@ -34,7 +34,9 @@ const markMap = {
  * return a `transform` function that receives the MDAST as it's first argument.
  */
 export default function remarkToSlate({ voidCodeBlock }) {
-  return function transform(node) {
+  return transform;
+
+  function transform(node) {
     /**
      * Call `transform` recursively on child nodes.
      *
