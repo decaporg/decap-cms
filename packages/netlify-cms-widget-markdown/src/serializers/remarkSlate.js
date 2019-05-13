@@ -31,14 +31,14 @@ const markMap = {
 
 /**
  * A Remark plugin for converting an MDAST to Slate Raw AST. Remark plugins
- * return a `transform` function that receives the MDAST as it's first argument.
+ * return a `transformNode` function that receives the MDAST as it's first argument.
  */
 export default function remarkToSlate({ voidCodeBlock }) {
-  return transform;
+  return transformNode;
 
-  function transform(node) {
+  function transformNode(node) {
     /**
-     * Call `transform` recursively on child nodes.
+     * Call `transformNode` recursively on child nodes.
      *
      * If a node returns a falsey value, filter it out. Some nodes do not
      * translate from MDAST to Slate, such as definitions for link/image
@@ -47,7 +47,7 @@ export default function remarkToSlate({ voidCodeBlock }) {
     const children =
       !['strong', 'emphasis', 'delete'].includes(node.type) &&
       !isEmpty(node.children) &&
-      flatMap(node.children, transform).filter(val => val);
+      flatMap(node.children, transformNode).filter(val => val);
 
     /**
      * Run individual nodes through the conversion factory.
@@ -86,10 +86,13 @@ export default function remarkToSlate({ voidCodeBlock }) {
   /**
    * Create a Slate Raw text node.
    */
-  function createText(value, data) {
-    const node = { object: 'text', data };
-    const leaves = isArray(value) ? value : [{ text: value }];
-    return { ...node, leaves };
+  function createText(node) {
+    const newNode = { object: 'text' };
+    if (typeof node === 'string') {
+      return { ...newNode, text: node };
+    }
+    const { value: text, marks } = node;
+    return { ...newNode, text, marks };
   }
 
   function processMarkNode(node, parentMarks = []) {
@@ -104,8 +107,8 @@ export default function remarkToSlate({ voidCodeBlock }) {
       switch (childNode.type) {
         /**
          * If a text node is a direct child of the current node, it should be
-         * set aside as a leaf, and all marks that have been collected in the
-         * `marks` array should apply to that specific leaf.
+         * set aside as a text, and all marks that have been collected in the
+         * `marks` array should apply to that specific text.
          */
         case 'html':
         case 'text':
@@ -123,8 +126,8 @@ export default function remarkToSlate({ voidCodeBlock }) {
 
         /**
          * Process nested style nodes. The recursive results should be pushed into
-         * the leaves array. This way, every MDAST nested text structure becomes a
-         * flat array of leaves that can serve as the value of a single Slate Raw
+         * the texts array. This way, every MDAST nested text structure becomes a
+         * flat array of texts that can serve as the value of a single Slate Raw
          * text node.
          */
         case 'strong':
@@ -147,14 +150,12 @@ export default function remarkToSlate({ voidCodeBlock }) {
   function convertMarkNode(node) {
     const slateNodes = processMarkNode(node);
 
-    const convertedSlateNodes = slateNodes.reduce((acc, node) => {
-      const lastConvertedNode = last(acc);
-      if (node.text && lastConvertedNode && lastConvertedNode.leaves) {
-        lastConvertedNode.leaves.push(node);
-      } else if (node.text) {
-        acc.push(createText([node]));
+    const convertedSlateNodes = slateNodes.reduce((acc, slateNode) => {
+      const lastConvertedSlateNode = last(acc);
+      if (slateNode.text) {
+        acc.push(createText(slateNode));
       } else {
-        acc.push(transform(node));
+        acc.push(transformNode(slateNode));
       }
 
       return acc;
@@ -217,23 +218,19 @@ export default function remarkToSlate({ voidCodeBlock }) {
        */
       case 'text':
       case 'html': {
-        return createText(node.value, node.data);
+        return createText(node);
       }
 
       /**
        * Inline Code
        *
        * Inline code nodes from an MDAST are represented in our Slate schema as
-       * text nodes with a "code" mark. We manually create the "leaf" containing
+       * text nodes with a "code" mark. We manually create the text containing
        * the inline code value and a "code" mark, and place it in an array for use
        * as a Slate text node's children array.
        */
       case 'inlineCode': {
-        const leaf = {
-          text: node.value,
-          marks: [{ type: 'code' }],
-        };
-        return createText([leaf]);
+        return createText({ ...node, marks: [{ type: 'code' }] });
       }
 
       /**
