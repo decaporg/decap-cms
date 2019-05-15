@@ -62,6 +62,7 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
     const children = hasBlockChildren ? node.nodes.map(transform) : convertInlineAndTextChildren(node.nodes);
 
     const output = convertBlockNode(node, children);
+    console.log(output);
     return output;
   }
 

@@ -53,7 +53,6 @@ export default function remarkToSlate({ voidCodeBlock }) {
      * Run individual nodes through the conversion factory.
      */
     const output = convertNode(node, children);
-    console.log('Remark to Slate:');
     console.log(output);
     return output;
   }

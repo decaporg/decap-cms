@@ -52,21 +52,15 @@ const NumberedList = props => (
 );
 const Link = props => {
   const data = props.node.get('data');
-  const marks = data.get('marks');
   const url = data.get('url');
   const title = data.get('title');
-  const link = (
+  return (
     <a href={url} title={title} {...props.attributes}>
       {props.children}
     </a>
   );
-  const result = !marks
-    ? link
-    : marks.reduce((acc, mark) => {
-        return renderMark({ mark, children: acc });
-      }, link);
-  return result;
 };
+
 const Image = props => {
   const data = props.node.get('data');
   const marks = data.get('marks');

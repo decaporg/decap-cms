@@ -36,8 +36,7 @@ const createSlateValue = (rawValue, { voidCodeBlock }) => {
 
 const pluginToBlock = plugin => {
   // Handle code block component
-  if (plugin.type === 'code-block') {
-    return { type: plugin.type };
+  if (plugin.type === 'code-block') { return { type: plugin.type };
   }
 
   const nodes = [Text.create('')];
