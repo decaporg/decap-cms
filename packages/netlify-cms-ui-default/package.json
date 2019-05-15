@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-ui-default",
   "description": "Default UI components for Netlify CMS.",
-  "version": "2.6.2",
+  "version": "2.6.3-beta.0",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
   "license": "MIT",

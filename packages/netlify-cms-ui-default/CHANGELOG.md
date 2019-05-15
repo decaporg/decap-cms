@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.6.3-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.6.2...netlify-cms-ui-default@2.6.3-beta.0) (2019-05-15)
+
+
+### Bug Fixes
+
+* **widget-markdown:** keep markdown widget dropdowns on top ([#2326](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/issues/2326)) ([5f807d7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/commit/5f807d7))
+
+
+
+
+
 ## [2.6.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.6.2-beta.0...netlify-cms-ui-default@2.6.2) (2019-04-10)
 
 **Note:** Version bump only for package netlify-cms-ui-default

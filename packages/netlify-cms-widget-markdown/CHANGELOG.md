@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.5.0-beta.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.5.0-beta.0...netlify-cms-widget-markdown@2.5.0-beta.1) (2019-05-15)
+
+
+### Bug Fixes
+
+* **widget-markdown:** ensure correct value on list reorder ([#2298](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/issues/2298)) ([60caca0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/commit/60caca0))
+
+
+
+
+
 # [2.5.0-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.4.2...netlify-cms-widget-markdown@2.5.0-beta.0) (2019-04-10)
 
 

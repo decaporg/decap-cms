@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.11.1-beta.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.11.1-beta.0...netlify-cms-core@2.11.1-beta.1) (2019-05-15)
+
+**Note:** Version bump only for package netlify-cms-core
+
+
+
+
+
 ## [2.11.1-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.11.0...netlify-cms-core@2.11.1-beta.0) (2019-04-10)
 
 
