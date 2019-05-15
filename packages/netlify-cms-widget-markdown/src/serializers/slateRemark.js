@@ -1,4 +1,4 @@
-import { get, isEmpty, without, flatMap, last, sortBy } from 'lodash';
+import { get, isEmpty, without, flatMap, last, map, sortBy, intersection } from 'lodash';
 import u from 'unist-builder';
 
 /**
@@ -58,18 +58,86 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
      * Combine adjacent text and inline nodes before processing so they can
      * share marks.
      */
-    const combinedChildren = node.nodes && combineTextAndInline(node.nodes);
+    const hasBlockChildren = node.nodes && node.nodes[0] && node.nodes[0].object === 'block';
+    const children = hasBlockChildren ? node.nodes.map(transform) : convertInlineAndTextChildren(node.nodes);
 
-    /**
-     * Call `transform` recursively on child nodes, and flatten the resulting
-     * array.
-     */
-    const children = !isEmpty(combinedChildren) && flatMap(combinedChildren, transform);
+    const output = convertBlockNode(node, children);
+    return output;
+  }
 
-    /**
-     * Run individual nodes through conversion factories.
-     */
-    return ['text'].includes(node.object) ? convertTextNode(node) : convertNode(node, children);
+  function removeMarkFromNodes(nodes, markType) {
+    return nodes.map(node => {
+      if (node.object === 'inline') {
+        const updatedNodes = removeMarkFromNodes(node.nodes, markType);
+        return {
+          ...node,
+          nodes: updatedNodes,
+        };
+      }
+      return {
+        ...node,
+        marks: node.marks.filter(({ type }) => type !== markType),
+      }
+    });
+  }
+
+  function getNodeMarks(node) {
+    if (node.object === 'inline') {
+      const childMarks = map(node.nodes, getNodeMarks);
+      return intersection(...childMarks);
+    }
+    return node.marks.map(mark => mark.type);
+  }
+
+  function extractFirstMark(nodes) {
+    let firstGroupMarks = getNodeMarks(nodes[0]);
+    let splitIndex = 1;
+
+    if (firstGroupMarks.length > 0) {
+      while (splitIndex < nodes.length) {
+        if (nodes[splitIndex]) {
+          const sharedMarks = intersection(firstGroupMarks, getNodeMarks(nodes[splitIndex]));
+          if (sharedMarks.length > 0) {
+            firstGroupMarks = sharedMarks;
+          } else {
+            break;
+          }
+        }
+        splitIndex += 1;
+      }
+    }
+
+    const markType = firstGroupMarks[0];
+    const childNodes = nodes.slice(0, splitIndex);
+    const updatedChildNodes = markType ? removeMarkFromNodes(childNodes, markType) : childNodes;
+    const remainingNodes = nodes.slice(splitIndex);
+
+    return [markType, updatedChildNodes, remainingNodes];
+  }
+
+  function convertInlineAndTextChildren(nodes) {
+    const convertedNodes = [];
+    let remainingNodes = nodes;
+
+    while (remainingNodes.length > 0) {
+      const nextNode = remainingNodes[0];
+      if (nextNode.object === 'inline' || nextNode.marks && nextNode.marks.length > 0) {
+        const [markType, markNodes, remainder] = extractFirstMark(remainingNodes);
+        if (!markType && markNodes.length === 1 && markNodes[0].object === 'inline') {
+          const node = markNodes[0];
+          convertedNodes.push(convertInlineNode(node, convertInlineAndTextChildren(node.nodes)));
+        } else {
+          const convertedNode = u(markMap[markType], convertInlineAndTextChildren(markNodes));
+          convertedNodes.push(convertedNode);
+        }
+        remainingNodes = remainder;
+      } else {
+        remainingNodes.shift();
+        convertedNodes.push(u('html', nextNode.text));
+      }
+    }
+
+    return convertedNodes;
   }
 
   /**
@@ -80,48 +148,55 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
    * they were text is a bit of a necessary hack.
    */
   function combineTextAndInline(nodes) {
+    const wrappedNodes = wrapInMarks(nodes);
+
+    /**
+     * Inlines
+     * Get list of the marks that are present on every text node, which may be
+     * nested in child inlines. The entire inline should be nested within those
+     * marks. Children should be run through this function recursively.
+     */
     return nodes.reduce((acc, node) => {
-      const prevNode = last(acc);
-      const prevNodeLeaves = get(prevNode, 'leaves');
-      const data = node.data || {};
+      if (['text', 'inline'].includes(node.object)) {
+        const prevNode = last(acc);
+        const data = node.data || {};
 
-      /**
-       * If the previous node has leaves and the current node has marks in data
-       * (only happens when we place them on inline nodes here in the parser), or
-       * the current node also has leaves (because the previous node was
-       * originally an inline node that we've already squashed into a leaf)
-       * combine the current node into the previous.
-       */
-      if (!isEmpty(prevNodeLeaves) && !isEmpty(data.marks)) {
-        prevNodeLeaves.push({ node, marks: data.marks });
-        return acc;
+        /**
+         * If the previous node has leaves and the current node has marks in data
+         * (only happens when we place them on inline nodes here in the parser), or
+         * the current node also has leaves (because the previous node was
+         * originally an inline node that we've already squashed into a leaf),
+         * combine the current node into the previous.
+         */
+        if (!isEmpty(prevNodeLeaves) && !isEmpty(data.marks)) {
+          prevNodeLeaves.push({ node, marks: data.marks });
+          return acc;
+        }
+
+        if (!isEmpty(prevNodeLeaves) && !isEmpty(node.leaves)) {
+          prevNode.leaves = prevNodeLeaves.concat(node.leaves);
+          return acc;
+        }
+
+        /**
+         * Break nodes contain a single child text node with a newline character
+         * for visual purposes in the editor, but Remark break nodes have no
+         * children, so we remove the child node here.
+         */
+        if (node.type === 'break') {
+          acc.push({ object: 'inline', type: 'break' });
+          return acc;
+        }
+
+        // Convert remaining inline nodes to text nodes.
+        if (node.object === 'inline') {
+          acc.push({ object: 'text', text: node.text, marks: data.marks });
+          return acc;
+        }
       }
 
-      if (!isEmpty(prevNodeLeaves) && !isEmpty(node.leaves)) {
-        prevNode.leaves = prevNodeLeaves.concat(node.leaves);
-        return acc;
-      }
-
       /**
-       * Break nodes contain a single child text node with a newline character
-       * for visual purposes in the editor, but Remark break nodes have no
-       * children, so we remove the child node here.
-       */
-      if (node.type === 'break') {
-        acc.push({ object: 'inline', type: 'break' });
-        return acc;
-      }
-
-      /**
-       * Convert remaining inline nodes to standalone text nodes with leaves.
-       */
-      if (node.object === 'inline') {
-        acc.push({ object: 'text', leaves: [{ node, marks: data.marks }] });
-        return acc;
-      }
-
-      /**
-       * Only remaining case is an actual text node, can be pushed as is.
+       * All other node types can be pushed as is.
        */
       acc.push(node);
       return acc;
@@ -148,57 +223,33 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
   /**
    * Converts a Slate Raw text node to an MDAST text node.
    *
-   * Slate text nodes without marks often simply have a "text" property with
-   * the value. In this case the conversion to MDAST is simple. If a Slate
-   * text node does not have a "text" property, it will instead have a
-   * "leaves" property containing an array of objects, each with an array of
-   * marks, such as "bold" or "italic", along with a "text" property.
+   * A Slate text node will have a text property containing a string of text,
+   * and may contain an array of marks, such as "bold" or "italic". MDAST
+   * instead expresses such marks in a nested structure, with individual nodes
+   * for each mark type nested until the deepest mark node, which will contain
+   * the text node.
    *
-   * MDAST instead expresses such marks in a nested structure, with individual
-   * nodes for each mark type nested until the deepest mark node, which will
-   * contain the text node.
-   *
-   * To convert a Slate text node's marks to MDAST, we treat each "leaf" as a
-   * separate text node, convert the text node itself to an MDAST text node,
-   * and then recursively wrap the text node for each mark, collecting the results
-   * of each leaf in a single array of child nodes.
-   *
-   * For example, this Slate text node:
+   * To convert a Slate text node's marks to MDAST, we recursively wrap the text
+   * node with an MDAST node for each mark. For example, this Slate text node:
    *
    * {
    *   object: 'text',
-   *   leaves: [
-   *     {
-   *       text: 'test',
-   *       marks: ['bold', 'italic']
-   *     },
-   *     {
-   *       text: 'test two'
-   *     }
-   *   ]
+   *   text: 'test',
+   *   marks: ['bold', 'italic'],
    * }
    *
    * ...would be converted to this MDAST nested structure:
    *
-   * [
-   *   {
-   *     type: 'strong',
+   * {
+   *   type: 'strong',
+   *   children: [{
+   *     type: 'emphasis',
    *     children: [{
-   *       type: 'emphasis',
-   *       children: [{
-   *         type: 'text',
-   *         value: 'test'
-   *       }]
-   *     }]
-   *   },
-   *   {
-   *     type: 'text',
-   *     value: 'test two'
-   *   }
-   * ]
-   *
-   * This example also demonstrates how a single Slate node may need to be
-   * replaced with multiple MDAST nodes, so the resulting array must be flattened.
+   *       type: 'text',
+   *       value: 'test',
+   *     }],
+   *   }],
+   * }
    */
   function convertTextNode(node) {
     /**
@@ -381,7 +432,7 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
    * Convert a single Slate Raw node to an MDAST node. Uses the unist-builder `u`
    * function to create MDAST nodes.
    */
-  function convertNode(node, children) {
+  function convertBlockNode(node, children) {
     switch (node.type) {
       /**
        * General
@@ -472,12 +523,25 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
       }
 
       /**
-       * Breaks
+       * Thematic Break
        *
-       * Breaks don't have children. We parse them separately for clarity.
+       * Thematic break is a block level break. They cannot have children.
        */
-      case 'break':
       case 'thematic-break': {
+        return u(typeMap[node.type]);
+      }
+    }
+  }
+
+  function convertInlineNode(node, children) {
+    switch (node.type) {
+
+      /**
+       * Break
+       *
+       * Breaks are phrasing level breaks. They cannot have children.
+       */
+      case 'break': {
         return u(typeMap[node.type]);
       }
 
@@ -502,11 +566,6 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
         const { url, title, alt, ...data } = get(node, 'data', {});
         return u(typeMap[node.type], { url, title, alt, data });
       }
-
-      /**
-       * No default case is supplied because an unhandled case should never
-       * occur. In the event that it does, let the error throw (for now).
-       */
     }
   }
 }

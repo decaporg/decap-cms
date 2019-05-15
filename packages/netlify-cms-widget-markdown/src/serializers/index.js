@@ -119,6 +119,7 @@ export const remarkToMarkdown = obj => {
      * necessarily optimal. Should eventually be configurable.
      */
     bullet: '*',
+    emphasis: '*',
     strong: '*',
     rule: '-',
   };

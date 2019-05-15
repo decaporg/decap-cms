@@ -52,7 +52,10 @@ export default function remarkToSlate({ voidCodeBlock }) {
     /**
      * Run individual nodes through the conversion factory.
      */
-    return convertNode(node, children);
+    const output = convertNode(node, children);
+    console.log('Remark to Slate:');
+    console.log(output);
+    return output;
   }
 
   /**
@@ -91,7 +94,7 @@ export default function remarkToSlate({ voidCodeBlock }) {
     if (typeof node === 'string') {
       return { ...newNode, text: node };
     }
-    const { value: text, marks } = node;
+    const { text, marks } = node;
     return { ...newNode, text, marks };
   }
 
@@ -218,7 +221,7 @@ export default function remarkToSlate({ voidCodeBlock }) {
        */
       case 'text':
       case 'html': {
-        return createText(node);
+        return createText(node.value);
       }
 
       /**
@@ -230,7 +233,7 @@ export default function remarkToSlate({ voidCodeBlock }) {
        * as a Slate text node's children array.
        */
       case 'inlineCode': {
-        return createText({ ...node, marks: [{ type: 'code' }] });
+        return createText({ text: node.value, marks: [{ type: 'code' }] });
       }
 
       /**
