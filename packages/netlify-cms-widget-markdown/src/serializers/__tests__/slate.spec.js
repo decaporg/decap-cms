@@ -19,6 +19,7 @@ describe('slate', () => {
   it('should condense adjacent, identically styled text and inline nodes', () => {
     expect(process('**a ~~b~~~~c~~**')).toEqual('**a ~~bc~~**');
     expect(process('**a ~~b~~~~[c](d)~~**')).toEqual('**a ~~b[c](d)~~**');
+    console.log('test')
   });
 
   it('should handle nested markdown entities', () => {

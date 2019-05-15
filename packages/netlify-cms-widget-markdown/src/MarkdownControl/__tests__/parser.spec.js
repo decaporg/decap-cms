@@ -15,13 +15,8 @@ sweet body
           Object {
             "nodes": Array [
               Object {
-                "data": undefined,
-                "leaves": Array [
-                  Object {
-                    "text": "H1",
-                  },
-                ],
                 "object": "text",
+                "text": "H1",
               },
             ],
             "object": "block",
@@ -30,13 +25,8 @@ sweet body
           Object {
             "nodes": Array [
               Object {
-                "data": undefined,
-                "leaves": Array [
-                  Object {
-                    "text": "sweet body",
-                  },
-                ],
                 "object": "text",
+                "text": "sweet body",
               },
             ],
             "object": "block",
@@ -63,13 +53,8 @@ sweet body
           Object {
             "nodes": Array [
               Object {
-                "data": undefined,
-                "leaves": Array [
-                  Object {
-                    "text": "H1",
-                  },
-                ],
                 "object": "text",
+                "text": "H1",
               },
             ],
             "object": "block",
@@ -85,13 +70,8 @@ sweet body
                   Object {
                     "nodes": Array [
                       Object {
-                        "data": undefined,
-                        "leaves": Array [
-                          Object {
-                            "text": "yo",
-                          },
-                        ],
                         "object": "text",
+                        "text": "yo",
                       },
                     ],
                     "object": "block",
@@ -106,13 +86,8 @@ sweet body
                   Object {
                     "nodes": Array [
                       Object {
-                        "data": undefined,
-                        "leaves": Array [
-                          Object {
-                            "text": "bro",
-                          },
-                        ],
                         "object": "text",
+                        "text": "bro",
                       },
                     ],
                     "object": "block",
@@ -127,13 +102,8 @@ sweet body
                   Object {
                     "nodes": Array [
                       Object {
-                        "data": undefined,
-                        "leaves": Array [
-                          Object {
-                            "text": "fro",
-                          },
-                        ],
                         "object": "text",
+                        "text": "fro",
                       },
                     ],
                     "object": "block",
@@ -168,13 +138,8 @@ sweet body
           Object {
             "nodes": Array [
               Object {
-                "data": undefined,
-                "leaves": Array [
-                  Object {
-                    "text": "H1",
-                  },
-                ],
                 "object": "text",
+                "text": "H1",
               },
             ],
             "object": "block",
@@ -190,13 +155,8 @@ sweet body
                   Object {
                     "nodes": Array [
                       Object {
-                        "data": undefined,
-                        "leaves": Array [
-                          Object {
-                            "text": "yo",
-                          },
-                        ],
                         "object": "text",
+                        "text": "yo",
                       },
                     ],
                     "object": "block",
@@ -211,13 +171,8 @@ sweet body
                   Object {
                     "nodes": Array [
                       Object {
-                        "data": undefined,
-                        "leaves": Array [
-                          Object {
-                            "text": "bro",
-                          },
-                        ],
                         "object": "text",
+                        "text": "bro",
                       },
                     ],
                     "object": "block",
@@ -232,13 +187,8 @@ sweet body
                   Object {
                     "nodes": Array [
                       Object {
-                        "data": undefined,
-                        "leaves": Array [
-                          Object {
-                            "text": "fro",
-                          },
-                        ],
                         "object": "text",
+                        "text": "fro",
                       },
                     ],
                     "object": "block",
@@ -273,13 +223,8 @@ sweet body
           Object {
             "nodes": Array [
               Object {
-                "data": undefined,
-                "leaves": Array [
-                  Object {
-                    "text": "H1",
-                  },
-                ],
                 "object": "text",
+                "text": "H1",
               },
             ],
             "object": "block",
@@ -288,13 +233,8 @@ sweet body
           Object {
             "nodes": Array [
               Object {
-                "data": undefined,
-                "leaves": Array [
-                  Object {
-                    "text": "H2",
-                  },
-                ],
                 "object": "text",
+                "text": "H2",
               },
             ],
             "object": "block",
@@ -303,13 +243,8 @@ sweet body
           Object {
             "nodes": Array [
               Object {
-                "data": undefined,
-                "leaves": Array [
-                  Object {
-                    "text": "H3",
-                  },
-                ],
                 "object": "text",
+                "text": "H3",
               },
             ],
             "object": "block",
@@ -336,13 +271,8 @@ blue moon
           Object {
             "nodes": Array [
               Object {
-                "data": undefined,
-                "leaves": Array [
-                  Object {
-                    "text": "H1",
-                  },
-                ],
                 "object": "text",
+                "text": "H1",
               },
             ],
             "object": "block",
@@ -355,13 +285,8 @@ blue moon
           Object {
             "nodes": Array [
               Object {
-                "data": undefined,
-                "leaves": Array [
-                  Object {
-                    "text": "blue moon",
-                  },
-                ],
                 "object": "text",
+                "text": "blue moon",
               },
             ],
             "object": "block",
@@ -388,13 +313,8 @@ blue moon
           Object {
             "nodes": Array [
               Object {
-                "data": undefined,
-                "leaves": Array [
-                  Object {
-                    "text": "H1",
-                  },
-                ],
                 "object": "text",
+                "text": "H1",
               },
             ],
             "object": "block",
@@ -407,13 +327,8 @@ blue moon
           Object {
             "nodes": Array [
               Object {
-                "data": undefined,
-                "leaves": Array [
-                  Object {
-                    "text": "blue moon",
-                  },
-                ],
                 "object": "text",
+                "text": "blue moon",
               },
             ],
             "object": "block",
@@ -437,38 +352,23 @@ footballs
           Object {
             "nodes": Array [
               Object {
-                "data": undefined,
-                "leaves": Array [
-                  Object {
-                    "text": "blue moon",
-                  },
-                ],
                 "object": "text",
+                "text": "blue moon",
               },
               Object {
                 "nodes": Array [
                   Object {
-                    "data": undefined,
-                    "leaves": Array [
-                      Object {
-                        "text": "
-      ",
-                      },
-                    ],
                     "object": "text",
+                    "text": "
+      ",
                   },
                 ],
                 "object": "inline",
                 "type": "break",
               },
               Object {
-                "data": undefined,
-                "leaves": Array [
-                  Object {
-                    "text": "footballs",
-                  },
-                ],
                 "object": "text",
+                "text": "footballs",
               },
             ],
             "object": "block",
@@ -486,28 +386,28 @@ footballs
 ![super](duper.jpg)
 `;
     expect(parser(value)).toMatchInlineSnapshot(`
-      Object {
-        "nodes": Array [
-          Object {
-            "nodes": Array [
-              Object {
-                "data": Object {
-                  "alt": "super",
-                  "title": null,
-                  "url": "duper.jpg",
+            Object {
+              "nodes": Array [
+                Object {
+                  "nodes": Array [
+                    Object {
+                      "data": Object {
+                        "alt": "super",
+                        "title": null,
+                        "url": "duper.jpg",
+                      },
+                      "object": "inline",
+                      "type": "image",
+                    },
+                  ],
+                  "object": "block",
+                  "type": "paragraph",
                 },
-                "object": "inline",
-                "type": "image",
-              },
-            ],
-            "object": "block",
-            "type": "paragraph",
-          },
-        ],
-        "object": "block",
-        "type": "root",
-      }
-    `);
+              ],
+              "object": "block",
+              "type": "root",
+            }
+        `);
   });
 
   it('should compile code blocks', () => {
@@ -525,13 +425,8 @@ var a = 1;
             },
             "nodes": Array [
               Object {
-                "data": undefined,
-                "leaves": Array [
-                  Object {
-                    "text": "var a = 1;",
-                  },
-                ],
                 "object": "text",
+                "text": "var a = 1;",
               },
             ],
             "object": "block",
@@ -558,13 +453,8 @@ perhaps **scalding** even
           Object {
             "nodes": Array [
               Object {
-                "data": undefined,
-                "leaves": Array [
-                  Object {
-                    "text": "Word",
-                  },
-                ],
                 "object": "text",
+                "text": "Word",
               },
             ],
             "object": "block",
@@ -573,46 +463,38 @@ perhaps **scalding** even
           Object {
             "nodes": Array [
               Object {
-                "data": undefined,
-                "leaves": Array [
-                  Object {
-                    "text": "This is ",
-                  },
-                ],
                 "object": "text",
+                "text": "This is ",
               },
               Object {
-                "data": undefined,
-                "leaves": Array [
+                "marks": Array [
                   Object {
-                    "marks": Array [
-                      Object {
-                        "type": "bold",
-                      },
-                    ],
-                    "text": "some ",
-                  },
-                  Object {
-                    "marks": Array [
-                      Object {
-                        "type": "bold",
-                      },
-                      Object {
-                        "type": "italic",
-                      },
-                    ],
-                    "text": "hot",
-                  },
-                  Object {
-                    "marks": Array [
-                      Object {
-                        "type": "bold",
-                      },
-                    ],
-                    "text": " content",
+                    "type": "bold",
                   },
                 ],
                 "object": "text",
+                "text": "some ",
+              },
+              Object {
+                "marks": Array [
+                  Object {
+                    "type": "bold",
+                  },
+                  Object {
+                    "type": "italic",
+                  },
+                ],
+                "object": "text",
+                "text": "hot",
+              },
+              Object {
+                "marks": Array [
+                  Object {
+                    "type": "bold",
+                  },
+                ],
+                "object": "text",
+                "text": " content",
               },
             ],
             "object": "block",
@@ -621,36 +503,21 @@ perhaps **scalding** even
           Object {
             "nodes": Array [
               Object {
-                "data": undefined,
-                "leaves": Array [
-                  Object {
-                    "text": "perhaps ",
-                  },
-                ],
                 "object": "text",
+                "text": "perhaps ",
               },
               Object {
-                "data": undefined,
-                "leaves": Array [
+                "marks": Array [
                   Object {
-                    "marks": Array [
-                      Object {
-                        "type": "bold",
-                      },
-                    ],
-                    "text": "scalding",
+                    "type": "bold",
                   },
                 ],
                 "object": "text",
+                "text": "scalding",
               },
               Object {
-                "data": undefined,
-                "leaves": Array [
-                  Object {
-                    "text": " even",
-                  },
-                ],
                 "object": "text",
+                "text": " even",
               },
             ],
             "object": "block",
@@ -675,13 +542,8 @@ This is some sweet \`inline code\` yo!
           Object {
             "nodes": Array [
               Object {
-                "data": undefined,
-                "leaves": Array [
-                  Object {
-                    "text": "Word",
-                  },
-                ],
                 "object": "text",
+                "text": "Word",
               },
             ],
             "object": "block",
@@ -690,36 +552,21 @@ This is some sweet \`inline code\` yo!
           Object {
             "nodes": Array [
               Object {
-                "data": undefined,
-                "leaves": Array [
-                  Object {
-                    "text": "This is some sweet ",
-                  },
-                ],
                 "object": "text",
+                "text": "This is some sweet ",
               },
               Object {
-                "data": undefined,
-                "leaves": Array [
+                "marks": Array [
                   Object {
-                    "marks": Array [
-                      Object {
-                        "type": "code",
-                      },
-                    ],
-                    "text": "inline code",
+                    "type": "code",
                   },
                 ],
                 "object": "text",
+                "text": "inline code",
               },
               Object {
-                "data": undefined,
-                "leaves": Array [
-                  Object {
-                    "text": " yo!",
-                  },
-                ],
                 "object": "text",
+                "text": " yo!",
               },
             ],
             "object": "block",
@@ -744,13 +591,8 @@ How far is it to [Google](https://google.com) land?
           Object {
             "nodes": Array [
               Object {
-                "data": undefined,
-                "leaves": Array [
-                  Object {
-                    "text": "Word",
-                  },
-                ],
                 "object": "text",
+                "text": "Word",
               },
             ],
             "object": "block",
@@ -759,13 +601,8 @@ How far is it to [Google](https://google.com) land?
           Object {
             "nodes": Array [
               Object {
-                "data": undefined,
-                "leaves": Array [
-                  Object {
-                    "text": "How far is it to ",
-                  },
-                ],
                 "object": "text",
+                "text": "How far is it to ",
               },
               Object {
                 "data": Object {
@@ -774,26 +611,16 @@ How far is it to [Google](https://google.com) land?
                 },
                 "nodes": Array [
                   Object {
-                    "data": undefined,
-                    "leaves": Array [
-                      Object {
-                        "text": "Google",
-                      },
-                    ],
                     "object": "text",
+                    "text": "Google",
                   },
                 ],
                 "object": "inline",
                 "type": "link",
               },
               Object {
-                "data": undefined,
-                "leaves": Array [
-                  Object {
-                    "text": " land?",
-                  },
-                ],
                 "object": "text",
+                "text": " land?",
               },
             ],
             "object": "block",
@@ -833,13 +660,8 @@ How far is it to [Google](https://google.com) land?
           Object {
             "nodes": Array [
               Object {
-                "data": undefined,
-                "leaves": Array [
-                  Object {
-                    "text": "{{< test >}}",
-                  },
-                ],
                 "object": "text",
+                "text": "{{< test >}}",
               },
             ],
             "object": "block",

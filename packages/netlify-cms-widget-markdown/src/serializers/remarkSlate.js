@@ -1,4 +1,4 @@
-import { isEmpty, isArray, last, flatMap } from 'lodash';
+import { isEmpty, isArray, last, flatMap, map } from 'lodash';
 import { Block } from 'slate';
 
 /**
@@ -52,8 +52,8 @@ export default function remarkToSlate({ voidCodeBlock }) {
     /**
      * Run individual nodes through the conversion factory.
      */
-    const output = convertNode(node, children);
-    console.log(output);
+    const output = convertNode(node, children || undefined);
+    console.log(JSON.stringify(output, null, 2));
     return output;
   }
 
@@ -97,6 +97,52 @@ export default function remarkToSlate({ voidCodeBlock }) {
     return { ...newNode, text, marks };
   }
 
+  function processMarkChild(childNode, marks) {
+    switch (childNode.type) {
+      /**
+       * If a text node is a direct child of the current node, it should be
+       * set aside as a text, and all marks that have been collected in the
+       * `marks` array should apply to that specific text.
+       */
+      case 'html':
+      case 'text':
+        return { ...convertNode(childNode), marks };
+
+      /**
+       * MDAST inline code nodes don't have children, just a text value, similar
+       * to a text node, so it receives the same treatment as a text node, but we
+       * first add the inline code mark to the marks array.
+       */
+      case 'inlineCode': {
+        const childMarks = [...marks, { type: markMap[childNode.type] }];
+        return { ...convertNode(childNode), marks: childMarks };
+      }
+
+      /**
+       * Process nested style nodes. The recursive results should be pushed into
+       * the texts array. This way, every MDAST nested text structure becomes a
+       * flat array of texts that can serve as the value of a single Slate Raw
+       * text node.
+       */
+      case 'strong':
+      case 'emphasis':
+      case 'delete':
+        return processMarkNode(childNode, marks);
+
+      case 'link': {
+        const nodes = map(childNode.children, child => processMarkChild(child, marks));
+        return convertNode(childNode, nodes);
+      }
+
+      /**
+       * Remaining nodes simply need mark data added to them, and to then be
+       * added into the cumulative children array.
+       */
+      default:
+        return transformNode({ ...childNode, data: { ...childNode.data, marks } });
+    }
+  }
+
   function processMarkNode(node, parentMarks = []) {
     /**
      * Add the current node's mark type to the marks collected from parent
@@ -105,65 +151,9 @@ export default function remarkToSlate({ voidCodeBlock }) {
     const markType = markMap[node.type];
     const marks = markType ? [...parentMarks, { type: markMap[node.type] }] : parentMarks;
 
-    const children = flatMap(node.children, childNode => {
-      switch (childNode.type) {
-        /**
-         * If a text node is a direct child of the current node, it should be
-         * set aside as a text, and all marks that have been collected in the
-         * `marks` array should apply to that specific text.
-         */
-        case 'html':
-        case 'text':
-          return { text: childNode.value, marks };
-
-        /**
-         * MDAST inline code nodes don't have children, just a text value, similar
-         * to a text node, so it receives the same treatment as a text node, but we
-         * first add the inline code mark to the marks array.
-         */
-        case 'inlineCode': {
-          const childMarks = [...marks, { type: markMap[childNode.type] }];
-          return { text: childNode.value, marks: childMarks };
-        }
-
-        /**
-         * Process nested style nodes. The recursive results should be pushed into
-         * the texts array. This way, every MDAST nested text structure becomes a
-         * flat array of texts that can serve as the value of a single Slate Raw
-         * text node.
-         */
-        case 'strong':
-        case 'emphasis':
-        case 'delete':
-          return processMarkNode(childNode, marks);
-
-        /**
-         * Remaining nodes simply need mark data added to them, and to then be
-         * added into the cumulative children array.
-         */
-        default:
-          return { ...childNode, data: { marks } };
-      }
-    });
+    const children = flatMap(node.children, child => processMarkChild(child, marks));
 
     return children;
-  }
-
-  function convertMarkNode(node) {
-    const slateNodes = processMarkNode(node);
-
-    const convertedSlateNodes = slateNodes.reduce((acc, slateNode) => {
-      const lastConvertedSlateNode = last(acc);
-      if (slateNode.text) {
-        acc.push(createText(slateNode));
-      } else {
-        acc.push(transformNode(slateNode));
-      }
-
-      return acc;
-    }, []);
-
-    return convertedSlateNodes;
   }
 
   /**
@@ -246,7 +236,7 @@ export default function remarkToSlate({ voidCodeBlock }) {
       case 'strong':
       case 'emphasis':
       case 'delete': {
-        return convertMarkNode(node);
+        return processMarkNode(node);
       }
 
       /**

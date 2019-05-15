@@ -6,13 +6,8 @@ Object {
     Object {
       "nodes": Array [
         Object {
-          "data": undefined,
-          "leaves": Array [
-            Object {
-              "text": "An exhibit of Markdown",
-            },
-          ],
           "object": "text",
+          "text": "An exhibit of Markdown",
         },
       ],
       "object": "block",
@@ -21,13 +16,8 @@ Object {
     Object {
       "nodes": Array [
         Object {
-          "data": undefined,
-          "leaves": Array [
-            Object {
-              "text": "This note demonstrates some of what Markdown is capable of doing.",
-            },
-          ],
           "object": "text",
+          "text": "This note demonstrates some of what Markdown is capable of doing.",
         },
       ],
       "object": "block",
@@ -36,19 +26,14 @@ Object {
     Object {
       "nodes": Array [
         Object {
-          "data": undefined,
-          "leaves": Array [
+          "marks": Array [
             Object {
-              "marks": Array [
-                Object {
-                  "type": "italic",
-                },
-              ],
-              "text": "Note: Feel free to play with this page. Unlike regular notes, this doesn't
+              "type": "italic",
+            },
+          ],
+          "object": "text",
+          "text": "Note: Feel free to play with this page. Unlike regular notes, this doesn't
 automatically save itself.",
-            },
-          ],
-          "object": "text",
         },
       ],
       "object": "block",
@@ -57,13 +42,8 @@ automatically save itself.",
     Object {
       "nodes": Array [
         Object {
-          "data": undefined,
-          "leaves": Array [
-            Object {
-              "text": "Basic formatting",
-            },
-          ],
           "object": "text",
+          "text": "Basic formatting",
         },
       ],
       "object": "block",
@@ -72,15 +52,10 @@ automatically save itself.",
     Object {
       "nodes": Array [
         Object {
-          "data": undefined,
-          "leaves": Array [
-            Object {
-              "text": "Paragraphs can be written like so. A paragraph is the basic block of Markdown.
+          "object": "text",
+          "text": "Paragraphs can be written like so. A paragraph is the basic block of Markdown.
 A paragraph is what text will turn into when there is no reason it should
 become anything else.",
-            },
-          ],
-          "object": "text",
         },
       ],
       "object": "block",
@@ -89,102 +64,69 @@ become anything else.",
     Object {
       "nodes": Array [
         Object {
-          "data": undefined,
-          "leaves": Array [
+          "object": "text",
+          "text": "Paragraphs must be separated by a blank line. Basic formatting of ",
+        },
+        Object {
+          "marks": Array [
             Object {
-              "text": "Paragraphs must be separated by a blank line. Basic formatting of ",
+              "type": "italic",
             },
           ],
           "object": "text",
+          "text": "italics",
         },
         Object {
-          "data": undefined,
-          "leaves": Array [
-            Object {
-              "marks": Array [
-                Object {
-                  "type": "italic",
-                },
-              ],
-              "text": "italics",
-            },
-          ],
           "object": "text",
-        },
-        Object {
-          "data": undefined,
-          "leaves": Array [
-            Object {
-              "text": " and
+          "text": " and
 ",
-            },
-          ],
-          "object": "text",
         },
         Object {
-          "data": undefined,
-          "leaves": Array [
+          "marks": Array [
             Object {
-              "marks": Array [
-                Object {
-                  "type": "bold",
-                },
-              ],
-              "text": "bold",
+              "type": "bold",
             },
           ],
           "object": "text",
+          "text": "bold",
         },
         Object {
-          "data": undefined,
-          "leaves": Array [
-            Object {
-              "text": " is supported. This ",
-            },
-          ],
           "object": "text",
+          "text": " is supported. This ",
         },
         Object {
-          "data": undefined,
-          "leaves": Array [
+          "marks": Array [
             Object {
-              "marks": Array [
-                Object {
-                  "type": "italic",
-                },
-              ],
-              "text": "can be ",
-            },
-            Object {
-              "marks": Array [
-                Object {
-                  "type": "italic",
-                },
-                Object {
-                  "type": "bold",
-                },
-              ],
-              "text": "nested",
-            },
-            Object {
-              "marks": Array [
-                Object {
-                  "type": "italic",
-                },
-              ],
-              "text": " like",
+              "type": "italic",
             },
           ],
           "object": "text",
+          "text": "can be ",
         },
         Object {
-          "data": undefined,
-          "leaves": Array [
+          "marks": Array [
             Object {
-              "text": " so.",
+              "type": "italic",
+            },
+            Object {
+              "type": "bold",
             },
           ],
           "object": "text",
+          "text": "nested",
+        },
+        Object {
+          "marks": Array [
+            Object {
+              "type": "italic",
+            },
+          ],
+          "object": "text",
+          "text": " like",
+        },
+        Object {
+          "object": "text",
+          "text": " so.",
         },
       ],
       "object": "block",
@@ -193,13 +135,8 @@ become anything else.",
     Object {
       "nodes": Array [
         Object {
-          "data": undefined,
-          "leaves": Array [
-            Object {
-              "text": "Lists",
-            },
-          ],
           "object": "text",
+          "text": "Lists",
         },
       ],
       "object": "block",
@@ -208,13 +145,8 @@ become anything else.",
     Object {
       "nodes": Array [
         Object {
-          "data": undefined,
-          "leaves": Array [
-            Object {
-              "text": "Ordered list",
-            },
-          ],
           "object": "text",
+          "text": "Ordered list",
         },
       ],
       "object": "block",
@@ -230,13 +162,8 @@ become anything else.",
             Object {
               "nodes": Array [
                 Object {
-                  "data": undefined,
-                  "leaves": Array [
-                    Object {
-                      "text": "Item 1 2. A second item 3. Number 3 4. Ⅳ",
-                    },
-                  ],
                   "object": "text",
+                  "text": "Item 1 2. A second item 3. Number 3 4. Ⅳ",
                 },
               ],
               "object": "block",
@@ -253,18 +180,13 @@ become anything else.",
     Object {
       "nodes": Array [
         Object {
-          "data": undefined,
-          "leaves": Array [
+          "marks": Array [
             Object {
-              "marks": Array [
-                Object {
-                  "type": "italic",
-                },
-              ],
-              "text": "Note: the fourth item uses the Unicode character for Roman numeral four.",
+              "type": "italic",
             },
           ],
           "object": "text",
+          "text": "Note: the fourth item uses the Unicode character for Roman numeral four.",
         },
       ],
       "object": "block",
@@ -273,13 +195,8 @@ become anything else.",
     Object {
       "nodes": Array [
         Object {
-          "data": undefined,
-          "leaves": Array [
-            Object {
-              "text": "Unordered list",
-            },
-          ],
           "object": "text",
+          "text": "Unordered list",
         },
       ],
       "object": "block",
@@ -295,13 +212,8 @@ become anything else.",
             Object {
               "nodes": Array [
                 Object {
-                  "data": undefined,
-                  "leaves": Array [
-                    Object {
-                      "text": "An item Another item Yet another item And there's more...",
-                    },
-                  ],
                   "object": "text",
+                  "text": "An item Another item Yet another item And there's more...",
                 },
               ],
               "object": "block",
@@ -318,13 +230,8 @@ become anything else.",
     Object {
       "nodes": Array [
         Object {
-          "data": undefined,
-          "leaves": Array [
-            Object {
-              "text": "Paragraph modifiers",
-            },
-          ],
           "object": "text",
+          "text": "Paragraph modifiers",
         },
       ],
       "object": "block",
@@ -333,13 +240,8 @@ become anything else.",
     Object {
       "nodes": Array [
         Object {
-          "data": undefined,
-          "leaves": Array [
-            Object {
-              "text": "Code block",
-            },
-          ],
           "object": "text",
+          "text": "Code block",
         },
       ],
       "object": "block",
@@ -351,15 +253,10 @@ become anything else.",
       },
       "nodes": Array [
         Object {
-          "data": undefined,
-          "leaves": Array [
-            Object {
-              "text": "Code blocks are very useful for developers and other people who look at
+          "object": "text",
+          "text": "Code blocks are very useful for developers and other people who look at
 code or other things that are written in plain text. As you can see, it
 uses a fixed-width font.",
-            },
-          ],
-          "object": "text",
         },
       ],
       "object": "block",
@@ -368,36 +265,21 @@ uses a fixed-width font.",
     Object {
       "nodes": Array [
         Object {
-          "data": undefined,
-          "leaves": Array [
-            Object {
-              "text": "You can also make ",
-            },
-          ],
           "object": "text",
+          "text": "You can also make ",
         },
         Object {
-          "data": undefined,
-          "leaves": Array [
+          "marks": Array [
             Object {
-              "marks": Array [
-                Object {
-                  "type": "code",
-                },
-              ],
-              "text": "inline code",
+              "type": "code",
             },
           ],
           "object": "text",
+          "text": "inline code",
         },
         Object {
-          "data": undefined,
-          "leaves": Array [
-            Object {
-              "text": " to add code into other things.",
-            },
-          ],
           "object": "text",
+          "text": " to add code into other things.",
         },
       ],
       "object": "block",
@@ -406,13 +288,8 @@ uses a fixed-width font.",
     Object {
       "nodes": Array [
         Object {
-          "data": undefined,
-          "leaves": Array [
-            Object {
-              "text": "Quote",
-            },
-          ],
           "object": "text",
+          "text": "Quote",
         },
       ],
       "object": "block",
@@ -423,14 +300,9 @@ uses a fixed-width font.",
         Object {
           "nodes": Array [
             Object {
-              "data": undefined,
-              "leaves": Array [
-                Object {
-                  "text": "Here is a quote. What this is should be self explanatory. Quotes are
-automatically indented when they are used.",
-                },
-              ],
               "object": "text",
+              "text": "Here is a quote. What this is should be self explanatory. Quotes are
+automatically indented when they are used.",
             },
           ],
           "object": "block",
@@ -443,13 +315,8 @@ automatically indented when they are used.",
     Object {
       "nodes": Array [
         Object {
-          "data": undefined,
-          "leaves": Array [
-            Object {
-              "text": "Headings",
-            },
-          ],
           "object": "text",
+          "text": "Headings",
         },
       ],
       "object": "block",
@@ -458,15 +325,10 @@ automatically indented when they are used.",
     Object {
       "nodes": Array [
         Object {
-          "data": undefined,
-          "leaves": Array [
-            Object {
-              "text": "There are six levels of headings. They correspond with the six levels of HTML
+          "object": "text",
+          "text": "There are six levels of headings. They correspond with the six levels of HTML
 headings. You've probably noticed them already in the page. Each level down
 uses one more hash character.",
-            },
-          ],
-          "object": "text",
         },
       ],
       "object": "block",
@@ -475,50 +337,30 @@ uses one more hash character.",
     Object {
       "nodes": Array [
         Object {
-          "data": undefined,
-          "leaves": Array [
-            Object {
-              "text": "Headings ",
-            },
-          ],
           "object": "text",
+          "text": "Headings ",
         },
         Object {
-          "data": undefined,
-          "leaves": Array [
+          "marks": Array [
             Object {
-              "marks": Array [
-                Object {
-                  "type": "italic",
-                },
-              ],
-              "text": "can",
+              "type": "italic",
             },
           ],
           "object": "text",
+          "text": "can",
         },
         Object {
-          "data": undefined,
-          "leaves": Array [
-            Object {
-              "text": " also contain ",
-            },
-          ],
           "object": "text",
+          "text": " also contain ",
         },
         Object {
-          "data": undefined,
-          "leaves": Array [
+          "marks": Array [
             Object {
-              "marks": Array [
-                Object {
-                  "type": "bold",
-                },
-              ],
-              "text": "formatting",
+              "type": "bold",
             },
           ],
           "object": "text",
+          "text": "formatting",
         },
       ],
       "object": "block",
@@ -527,27 +369,17 @@ uses one more hash character.",
     Object {
       "nodes": Array [
         Object {
-          "data": undefined,
-          "leaves": Array [
-            Object {
-              "text": "They can even contain ",
-            },
-          ],
           "object": "text",
+          "text": "They can even contain ",
         },
         Object {
-          "data": undefined,
-          "leaves": Array [
+          "marks": Array [
             Object {
-              "marks": Array [
-                Object {
-                  "type": "code",
-                },
-              ],
-              "text": "inline code",
+              "type": "code",
             },
           ],
           "object": "text",
+          "text": "inline code",
         },
       ],
       "object": "block",
@@ -556,14 +388,9 @@ uses one more hash character.",
     Object {
       "nodes": Array [
         Object {
-          "data": undefined,
-          "leaves": Array [
-            Object {
-              "text": "Of course, demonstrating what headings look like messes up the structure of the
+          "object": "text",
+          "text": "Of course, demonstrating what headings look like messes up the structure of the
 page.",
-            },
-          ],
-          "object": "text",
         },
       ],
       "object": "block",
@@ -572,16 +399,11 @@ page.",
     Object {
       "nodes": Array [
         Object {
-          "data": undefined,
-          "leaves": Array [
-            Object {
-              "text": "I don't recommend using more than three or four levels of headings here,
+          "object": "text",
+          "text": "I don't recommend using more than three or four levels of headings here,
 because, when you're smallest heading isn't too small, and you're largest
 heading isn't too big, and you want each size up to look noticeably larger and
 more important, there there are only so many sizes that you can use.",
-            },
-          ],
-          "object": "text",
         },
       ],
       "object": "block",
@@ -590,13 +412,8 @@ more important, there there are only so many sizes that you can use.",
     Object {
       "nodes": Array [
         Object {
-          "data": undefined,
-          "leaves": Array [
-            Object {
-              "text": "URLs",
-            },
-          ],
           "object": "text",
+          "text": "URLs",
         },
       ],
       "object": "block",
@@ -605,13 +422,8 @@ more important, there there are only so many sizes that you can use.",
     Object {
       "nodes": Array [
         Object {
-          "data": undefined,
-          "leaves": Array [
-            Object {
-              "text": "URLs can be made in a handful of ways:",
-            },
-          ],
           "object": "text",
+          "text": "URLs can be made in a handful of ways:",
         },
       ],
       "object": "block",
@@ -627,13 +439,8 @@ more important, there there are only so many sizes that you can use.",
             Object {
               "nodes": Array [
                 Object {
-                  "data": undefined,
-                  "leaves": Array [
-                    Object {
-                      "text": "A named link to MarkItDown. The easiest way to do these is to select what you",
-                    },
-                  ],
                   "object": "text",
+                  "text": "A named link to MarkItDown. The easiest way to do these is to select what you",
                 },
               ],
               "object": "block",
@@ -648,36 +455,21 @@ more important, there there are only so many sizes that you can use.",
             Object {
               "nodes": Array [
                 Object {
-                  "data": undefined,
-                  "leaves": Array [
-                    Object {
-                      "text": "want to make a link and hit ",
-                    },
-                  ],
                   "object": "text",
+                  "text": "want to make a link and hit ",
                 },
                 Object {
-                  "data": undefined,
-                  "leaves": Array [
+                  "marks": Array [
                     Object {
-                      "marks": Array [
-                        Object {
-                          "type": "code",
-                        },
-                      ],
-                      "text": "Ctrl+L",
+                      "type": "code",
                     },
                   ],
                   "object": "text",
+                  "text": "Ctrl+L",
                 },
                 Object {
-                  "data": undefined,
-                  "leaves": Array [
-                    Object {
-                      "text": ".  Another named link to",
-                    },
-                  ],
                   "object": "text",
+                  "text": ".  Another named link to",
                 },
               ],
               "object": "block",
@@ -698,26 +490,16 @@ more important, there there are only so many sizes that you can use.",
                   },
                   "nodes": Array [
                     Object {
-                      "data": undefined,
-                      "leaves": Array [
-                        Object {
-                          "text": "MarkItDown",
-                        },
-                      ],
                       "object": "text",
+                      "text": "MarkItDown",
                     },
                   ],
                   "object": "inline",
                   "type": "link",
                 },
                 Object {
-                  "data": undefined,
-                  "leaves": Array [
-                    Object {
-                      "text": " Sometimes you just want a URL like",
-                    },
-                  ],
                   "object": "text",
+                  "text": " Sometimes you just want a URL like",
                 },
               ],
               "object": "block",
@@ -738,26 +520,16 @@ more important, there there are only so many sizes that you can use.",
                   },
                   "nodes": Array [
                     Object {
-                      "data": undefined,
-                      "leaves": Array [
-                        Object {
-                          "text": "http://www.markitdown.net/",
-                        },
-                      ],
                       "object": "text",
+                      "text": "http://www.markitdown.net/",
                     },
                   ],
                   "object": "inline",
                   "type": "link",
                 },
                 Object {
-                  "data": undefined,
-                  "leaves": Array [
-                    Object {
-                      "text": ".",
-                    },
-                  ],
                   "object": "text",
+                  "text": ".",
                 },
               ],
               "object": "block",
@@ -774,13 +546,8 @@ more important, there there are only so many sizes that you can use.",
     Object {
       "nodes": Array [
         Object {
-          "data": undefined,
-          "leaves": Array [
-            Object {
-              "text": "Horizontal rule",
-            },
-          ],
           "object": "text",
+          "text": "Horizontal rule",
         },
       ],
       "object": "block",
@@ -789,13 +556,8 @@ more important, there there are only so many sizes that you can use.",
     Object {
       "nodes": Array [
         Object {
-          "data": undefined,
-          "leaves": Array [
-            Object {
-              "text": "A horizontal rule is a line that goes across the middle of the page.",
-            },
-          ],
           "object": "text",
+          "text": "A horizontal rule is a line that goes across the middle of the page.",
         },
       ],
       "object": "block",
@@ -808,13 +570,8 @@ more important, there there are only so many sizes that you can use.",
     Object {
       "nodes": Array [
         Object {
-          "data": undefined,
-          "leaves": Array [
-            Object {
-              "text": "It's sometimes handy for breaking things up.",
-            },
-          ],
           "object": "text",
+          "text": "It's sometimes handy for breaking things up.",
         },
       ],
       "object": "block",
@@ -823,13 +580,8 @@ more important, there there are only so many sizes that you can use.",
     Object {
       "nodes": Array [
         Object {
-          "data": undefined,
-          "leaves": Array [
-            Object {
-              "text": "Images",
-            },
-          ],
           "object": "text",
+          "text": "Images",
         },
       ],
       "object": "block",
@@ -838,13 +590,8 @@ more important, there there are only so many sizes that you can use.",
     Object {
       "nodes": Array [
         Object {
-          "data": undefined,
-          "leaves": Array [
-            Object {
-              "text": "Markdown can also contain images. I'll need to add something here sometime.",
-            },
-          ],
           "object": "text",
+          "text": "Markdown can also contain images. I'll need to add something here sometime.",
         },
       ],
       "object": "block",
@@ -853,13 +600,8 @@ more important, there there are only so many sizes that you can use.",
     Object {
       "nodes": Array [
         Object {
-          "data": undefined,
-          "leaves": Array [
-            Object {
-              "text": "Finally",
-            },
-          ],
           "object": "text",
+          "text": "Finally",
         },
       ],
       "object": "block",
@@ -868,16 +610,11 @@ more important, there there are only so many sizes that you can use.",
     Object {
       "nodes": Array [
         Object {
-          "data": undefined,
-          "leaves": Array [
-            Object {
-              "text": "There's actually a lot more to Markdown than this. See the official
+          "object": "text",
+          "text": "There's actually a lot more to Markdown than this. See the official
 introduction and syntax for more information. However, be aware that this is
 not using the official implementation, and this might work subtly differently
   in some of the little things.",
-            },
-          ],
-          "object": "text",
         },
       ],
       "object": "block",

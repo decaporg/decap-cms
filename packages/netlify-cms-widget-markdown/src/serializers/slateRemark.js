@@ -62,7 +62,7 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
     const children = hasBlockChildren ? node.nodes.map(transform) : convertInlineAndTextChildren(node.nodes);
 
     const output = convertBlockNode(node, children);
-    console.log(output);
+    //console.log(output);
     return output;
   }
 
@@ -87,7 +87,7 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
       const childMarks = map(node.nodes, getNodeMarks);
       return intersection(...childMarks);
     }
-    return node.marks.map(mark => mark.type);
+    return map(node.marks, mark => mark.type);
   }
 
   function extractFirstMark(nodes) {
@@ -116,7 +116,7 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
     return [markType, updatedChildNodes, remainingNodes];
   }
 
-  function convertInlineAndTextChildren(nodes) {
+  function convertInlineAndTextChildren(nodes = []) {
     const convertedNodes = [];
     let remainingNodes = nodes;
 
