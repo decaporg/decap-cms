@@ -1,4 +1,4 @@
-import { get, isEmpty, without, flatMap, last, map, sortBy, intersection } from 'lodash';
+import { get, isEmpty, without, flatMap, last, map, sortBy, intersection, omit } from 'lodash';
 import u from 'unist-builder';
 
 /**
@@ -62,36 +62,58 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
     const children = hasBlockChildren ? node.nodes.map(transform) : convertInlineAndTextChildren(node.nodes);
 
     const output = convertBlockNode(node, children);
-    //console.log(output);
+    //console.log(JSON.stringify(output, null, 2));
     return output;
   }
 
   function removeMarkFromNodes(nodes, markType) {
     return nodes.map(node => {
-      if (node.object === 'inline') {
-        const updatedNodes = removeMarkFromNodes(node.nodes, markType);
-        return {
-          ...node,
-          nodes: updatedNodes,
-        };
-      }
-      return {
-        ...node,
-        marks: node.marks.filter(({ type }) => type !== markType),
+      switch (node.type) {
+        case 'link': {
+          const updatedNodes = removeMarkFromNodes(node.nodes, markType);
+          return {
+            ...node,
+            nodes: updatedNodes,
+          };
+        }
+
+        case 'image': {
+          const data = omit(node.data, 'marks');
+          return { ...node, data };
+        }
+
+        default:
+          return {
+            ...node,
+            marks: node.marks.filter(({ type }) => type !== markType),
+          }
       }
     });
   }
 
   function getNodeMarks(node) {
-    if (node.object === 'inline') {
-      const childMarks = map(node.nodes, getNodeMarks);
-      return intersection(...childMarks);
+    switch (node.type) {
+      case 'link': {
+        const childMarks = map(node.nodes, getNodeMarks);
+        return intersection(...childMarks);
+      }
+
+      case 'image':
+        return map(get(node, ['data', 'marks']), mark => mark.type);
+
+      default:
+        return map(node.marks, mark => mark.type);
     }
-    return map(node.marks, mark => mark.type);
   }
 
   function extractFirstMark(nodes) {
-    let firstGroupMarks = getNodeMarks(nodes[0]);
+    let firstGroupMarks = getNodeMarks(nodes[0]) || [];
+
+    // Ensure that code mark is last if present
+    if (firstGroupMarks.includes('code') && last(firstGroupMarks) !== 'code') {
+      firstGroupMarks = [...without('firstGroupMarks', 'code'), 'code'];
+    }
+
     let splitIndex = 1;
 
     if (firstGroupMarks.length > 0) {
@@ -116,6 +138,67 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
     return [markType, updatedChildNodes, remainingNodes];
   }
 
+  function splitOnMatch(str, exp) {
+    const index = str.search(exp);
+    if (index > -1) {
+      return [str.substring(0, index), str.substring(index)];
+    }
+  }
+
+  function splitWhiteSpace(node, exp) {
+    if (node.text) {
+      return splitOnMatch(node.text, exp);
+    }
+  }
+
+  function splitStartingWhitespace(node) {
+    const split = splitWhiteSpace(node, /^\s+\S/);
+    if (!split) {
+      return [node];
+    }
+    const [whitespace, text] = split;
+    return [{ object: 'text', text: whitespace }, { ...node, text }];
+  }
+
+  function splitEndingWhitespace(node) {
+    const split = splitWhiteSpace(node, /(?!\S)\s+$/);
+    if (!split) {
+      return [node];
+    }
+    const [text, whitespace] = split;
+    return [{ ...node, text }, { object: 'text', text: whitespace }];
+  }
+
+  function normalizeFlankingWhitespace(nodes) {
+    if (nodes.length === 0) {
+      return [null, nodes];
+    }
+    const startingNodes = splitStartingWhitespace(nodes[0]);
+    const startingWhiteSpace = startingNodes.length > 1 ? startingNodes[0] : null;
+    if (nodes.length === 1 && startingNodes.length > 1) {
+      const endingNodes = splitEndingWhitespace(startingNodes[1]);
+      const endingWhiteSpace = endingNodes.length > 1 ? endingNodes[1] : null;
+      return [startingWhiteSpace, endingNodes];
+    }
+    const endingNodes = splitEndingWhitespace(last(nodes));
+    const endingWhiteSpace = endingNodes.length > 1 ? endingNodes[1] : null;
+    if (nodes.length === 1) {
+      return [null, ...endingNodes];
+    }
+    if (nodes.length === 2 && startingNodes.length > 1 && endingNodes.length > 1) {
+      return [startingNodes[0], [startingNodes[1], endingNodes[0]], endingNodes[1]];
+    }
+    if (nodes.length === 2 && startingNodes.length > 1) {
+      return [startingNodes[0], [startingNodes[1], endingNodes[0]]];
+    }
+    if (nodes.length === 2) {
+      return [null, [startingNodes[0], endingNodes[0]]];
+    }
+    if (startingNodes.length > 1 && endingNodes.length > 1) {
+      return [startingNodes[0], [startingNodes[1], ...nodes.slice(1, -1), endingNodes[0]], endingNodes[1]];
+    }
+  }
+
   function convertInlineAndTextChildren(nodes = []) {
     const convertedNodes = [];
     let remainingNodes = nodes;
@@ -124,12 +207,29 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
       const nextNode = remainingNodes[0];
       if (nextNode.object === 'inline' || nextNode.marks && nextNode.marks.length > 0) {
         const [markType, markNodes, remainder] = extractFirstMark(remainingNodes);
-        if (!markType && markNodes.length === 1 && markNodes[0].object === 'inline') {
+        /**
+         * A node with a code mark will be a text node, and will not be adjacent
+         * to a sibling code node as the Slate schema requires them to be
+         * merged. Markdown also requires at least a space between inline code
+         * nodes.
+         */
+        if (markType === 'code') {
+          const node = markNodes[0];
+          convertedNodes.push(u(markMap[markType], node.data, node.text));
+        } else if (!markType && markNodes.length === 1 && markNodes[0].object === 'inline') {
           const node = markNodes[0];
           convertedNodes.push(convertInlineNode(node, convertInlineAndTextChildren(node.nodes)));
         } else {
-          const convertedNode = u(markMap[markType], convertInlineAndTextChildren(markNodes));
-          convertedNodes.push(convertedNode);
+          const [startNode, centerNodes, endNode] = normalizeFlankingWhitespace(markNodes);
+          if (startNode) {
+            convertedNodes.push(u('html', startNode));
+          }
+          if (centerNodes) {
+            convertedNodes.push(u(markMap[markType], convertInlineAndTextChildren(centerNodes)));
+          }
+          if (endNode) {
+            convertedNodes.push(u('html', endNode));
+          }
         }
         remainingNodes = remainder;
       } else {

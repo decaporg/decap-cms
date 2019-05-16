@@ -53,7 +53,7 @@ export default function remarkToSlate({ voidCodeBlock }) {
      * Run individual nodes through the conversion factory.
      */
     const output = convertNode(node, children || undefined);
-    console.log(JSON.stringify(output, null, 2));
+    //console.log(JSON.stringify(output, null, 2));
     return output;
   }
 

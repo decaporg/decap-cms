@@ -12,19 +12,18 @@ describe('slate', () => {
     expect(process('**a[b](c)d**')).toEqual('**a[b](c)d**');
     expect(process('**[a](b)**')).toEqual('**[a](b)**');
     expect(process('**![a](b)**')).toEqual('**![a](b)**');
-    expect(process('_`a`_')).toEqual('_`a`_');
-    expect(process('_`a`b_')).toEqual('_`a`b_');
+    expect(process('_`a`b_')).toEqual('*`a`b*');
+    expect(process('_`a`_')).toEqual('*`a`*');
   });
 
   it('should condense adjacent, identically styled text and inline nodes', () => {
     expect(process('**a ~~b~~~~c~~**')).toEqual('**a ~~bc~~**');
     expect(process('**a ~~b~~~~[c](d)~~**')).toEqual('**a ~~b[c](d)~~**');
-    console.log('test')
   });
 
   it('should handle nested markdown entities', () => {
     expect(process('**a**b**c**')).toEqual('**a**b**c**');
-    expect(process('**a _b_ c**')).toEqual('**a _b_ c**');
+    expect(process('**a _b_ c**')).toEqual('**a *b* c**');
   });
 
   it('should parse inline images as images', () => {
@@ -35,7 +34,7 @@ describe('slate', () => {
     expect(process('<span>*</span>')).toEqual('<span>*</span>');
   });
 
-  it('should not produce invalid markdown when a styled block has trailing whitespace', () => {
+  fit('should not produce invalid markdown when a styled block has trailing whitespace', () => {
     const slateAst = {
       object: 'block',
       type: 'root',
@@ -46,20 +45,28 @@ describe('slate', () => {
           nodes: [
             {
               object: 'text',
-              data: undefined,
-              leaves: [
-                {
-                  text: 'foo ', // <--
-                  marks: [{ type: 'bold' }],
-                },
+              text: 'foo ', // <--
+              marks: [{ type: 'bold' }],
+            },
+            { object: 'text', text: 'bar ' },
+            {
+              object: 'text',
+              text: 'foo ',
+              marks: [{ type: 'bold' }],
+            },
+            {
+              object: 'text',
+              text: 'bar',
+              marks: [
+                { type: 'bold' },
+                { type: 'italic' },
               ],
             },
-            { object: 'text', data: undefined, leaves: [{ text: 'bar' }] },
           ],
         },
       ],
     };
-    expect(slateToMarkdown(slateAst)).toEqual('**foo** bar');
+    expect(slateToMarkdown(slateAst)).toEqual('**foo** bar **foo *bar***');
   });
 
   it('should not produce invalid markdown when a styled block has leading whitespace', () => {
