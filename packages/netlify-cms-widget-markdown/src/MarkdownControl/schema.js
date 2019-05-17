@@ -1,18 +1,14 @@
 const codeBlock = {
-  match: [
-    { object: 'block', type: 'code-block' },
+  match: [{ object: 'block', type: 'code-block' }],
+  nodes: [
+    {
+      match: [{ object: 'text' }],
+    },
   ],
-  nodes: [{
-    match: [
-      { object: 'text' },
-    ],
-  }],
 };
 
 const codeBlockOverride = {
-  match: [
-    { object: 'block', type: 'code-block' },
-  ],
+  match: [{ object: 'block', type: 'code-block' }],
   isVoid: true,
 };
 
@@ -22,29 +18,29 @@ const schema = ({ voidCodeBlock } = {}) => ({
      * Document
      */
     {
-      match: [
-        { object: 'document'},
+      match: [{ object: 'document' }],
+      nodes: [
+        {
+          match: [
+            { type: 'paragraph' },
+            { type: 'heading-one' },
+            { type: 'heading-two' },
+            { type: 'heading-three' },
+            { type: 'heading-four' },
+            { type: 'heading-five' },
+            { type: 'heading-six' },
+            { type: 'quote' },
+            { type: 'code-block' },
+            { type: 'bulleted-list' },
+            { type: 'numbered-list' },
+            { type: 'break' },
+            { type: 'thematicBreak' },
+            { type: 'table' },
+            { type: 'shortcode' },
+          ],
+          min: 1,
+        },
       ],
-      nodes: [{
-        match: [
-          { type: 'paragraph' },
-          { type: 'heading-one' },
-          { type: 'heading-two' },
-          { type: 'heading-three' },
-          { type: 'heading-four' },
-          { type: 'heading-five' },
-          { type: 'heading-six' },
-          { type: 'quote' },
-          { type: 'code-block' },
-          { type: 'bulleted-list' },
-          { type: 'numbered-list' },
-          { type: 'break' },
-          { type: 'thematicBreak' },
-          { type: 'table' },
-          { type: 'shortcode' },
-        ],
-        min: 1,
-      }],
       normalize: (editor, error) => {
         switch (error.code) {
           case 'child_min_invalid': {
@@ -60,28 +56,27 @@ const schema = ({ voidCodeBlock } = {}) => ({
      * Block Containers
      */
     {
-      match: [
-        { object: 'block', type: 'quote' },
-        { object: 'block', type: 'list-item' },
+      match: [{ object: 'block', type: 'quote' }, { object: 'block', type: 'list-item' }],
+      nodes: [
+        {
+          match: [
+            { type: 'paragraph' },
+            { type: 'heading-one' },
+            { type: 'heading-two' },
+            { type: 'heading-three' },
+            { type: 'heading-four' },
+            { type: 'heading-five' },
+            { type: 'heading-six' },
+            { type: 'quote' },
+            { type: 'code-block' },
+            { type: 'bulleted-list' },
+            { type: 'numbered-list' },
+            { type: 'break' },
+            { type: 'thematicBreak' },
+            { type: 'table' },
+          ],
+        },
       ],
-      nodes: [{
-        match: [
-          { type: 'paragraph' },
-          { type: 'heading-one' },
-          { type: 'heading-two' },
-          { type: 'heading-three' },
-          { type: 'heading-four' },
-          { type: 'heading-five' },
-          { type: 'heading-six' },
-          { type: 'quote' },
-          { type: 'code-block' },
-          { type: 'bulleted-list' },
-          { type: 'numbered-list' },
-          { type: 'break' },
-          { type: 'thematicBreak' },
-          { type: 'table' },
-        ],
-      }],
     },
 
     /**
@@ -98,27 +93,21 @@ const schema = ({ voidCodeBlock } = {}) => ({
         { object: 'block', type: 'heading-six' },
         { object: 'inline', type: 'link' },
       ],
-      nodes: [{
-        match: [
-          { object: 'text' },
-          { type: 'link' },
-          { type: 'image' },
-        ],
-      }],
+      nodes: [
+        {
+          match: [{ object: 'text' }, { type: 'link' }, { type: 'image' }],
+        },
+      ],
     },
 
     /**
      * Bulleted List
      */
     {
-      match: [
-        { object: 'block', type: 'bulleted-list' },
-      ],
+      match: [{ object: 'block', type: 'bulleted-list' }],
       nodes: [
         {
-          match: [
-            { type: 'list-item' },
-          ],
+          match: [{ type: 'list-item' }],
           min: 1,
         },
       ],
@@ -156,14 +145,10 @@ const schema = ({ voidCodeBlock } = {}) => ({
      * Numbered List
      */
     {
-      match: [
-        { object: 'block', type: 'numbered-list' },
-      ],
+      match: [{ object: 'block', type: 'numbered-list' }],
       nodes: [
         {
-          match: [
-            { type: 'list-item' },
-          ],
+          match: [{ type: 'list-item' }],
           min: 1,
         },
       ],
@@ -215,28 +200,24 @@ const schema = ({ voidCodeBlock } = {}) => ({
      * Table
      */
     {
-      match: [
-        { object: 'block', type: 'table' },
+      match: [{ object: 'block', type: 'table' }],
+      nodes: [
+        {
+          match: [{ object: 'table-row' }],
+        },
       ],
-      nodes: [{
-        match: [
-          { object: 'table-row' },
-        ],
-      }],
     },
 
     /**
      * Table Row
      */
     {
-      match: [
-        { object: 'block', type: 'table-row' },
+      match: [{ object: 'block', type: 'table-row' }],
+      nodes: [
+        {
+          match: [{ object: 'table-cell' }],
+        },
       ],
-      nodes: [{
-        match: [
-          { object: 'table-cell' },
-        ],
-      }],
     },
 
     /**

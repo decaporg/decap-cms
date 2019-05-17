@@ -1,6 +1,5 @@
+/* eslint-disable react/display-name */
 import React from 'react';
-import { Map } from 'immutable';
-import { get } from 'lodash';
 import Shortcode from './Shortcode';
 import WidgetAdapter from './WidgetAdapter';
 

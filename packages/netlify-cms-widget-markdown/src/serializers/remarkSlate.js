@@ -1,5 +1,4 @@
-import { isEmpty, isArray, last, flatMap, map } from 'lodash';
-import { Block } from 'slate';
+import { isEmpty, isArray, flatMap, map } from 'lodash';
 
 /**
  * Map of MDAST node types to Slate node types.
@@ -263,7 +262,7 @@ export default function remarkToSlate({ voidCodeBlock }) {
        * data property if it's defined.
        */
       case 'code': {
-        const data = { lang: node.lang, ...(voidCodeBlock ? { code: node.value } : {}) }
+        const data = { lang: node.lang, ...(voidCodeBlock ? { code: node.value } : {}) };
         const text = createText(voidCodeBlock ? '' : node.value);
         const nodes = [text];
         const block = createBlock(typeMap[node.type], nodes, { data });

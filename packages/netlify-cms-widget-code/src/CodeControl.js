@@ -6,11 +6,9 @@ import { Map } from 'immutable';
 import { find } from 'lodash';
 import Resizable from 're-resizable';
 import Select from 'react-select';
-import CodeMirror from 'codemirror';
 import { Controlled as ReactCodeMirror } from 'react-codemirror2';
 import codeMirrorStyles from 'codemirror/lib/codemirror.css';
 import codeMirrorTheme from 'codemirror/theme/material.css';
-import { lengths } from 'netlify-cms-ui-default';
 import languageSelectStyles from './languageSelectStyles';
 
 const styleString = `
@@ -46,7 +44,6 @@ const languages = [
 
 const defaultLanguage = languages[0];
 
-
 export default class CodeControl extends React.Component {
   static propTypes = {
     field: ImmutablePropTypes.map.isRequired,
@@ -65,8 +62,9 @@ export default class CodeControl extends React.Component {
 
   keys = this.getKeys(this.props.field);
   languageOptions = languages.map(({ name, label }) => ({ value: name, label }));
-  allowLanguageSelection = !this.props.field.has('allow_language_selection')
-    || !!(this.props.field.get('allow_language_selection'));
+  allowLanguageSelection =
+    !this.props.field.has('allow_language_selection') ||
+    !!this.props.field.get('allow_language_selection');
 
   getCode = this.valueIsMap()
     ? () => this.props.value && this.props.value.get(this.keys.code)
@@ -74,7 +72,7 @@ export default class CodeControl extends React.Component {
 
   toValue = this.valueIsMap()
     ? (type, value) => (this.props.value || Map()).set(this.keys[type], value)
-    : (type, value) => type === 'code' ? value : this.props.value;
+    : (type, value) => (type === 'code' ? value : this.props.value);
 
   getKeys(field) {
     return {
@@ -98,8 +96,8 @@ export default class CodeControl extends React.Component {
   }
 
   render() {
-    const { value, onChange, field, classNameWrapper, forID, editorComponentType } = this.props;
-    const { keys, allowLanguageSelection } = this;
+    const { onChange, classNameWrapper, forID } = this.props;
+    const { allowLanguageSelection } = this;
     const { lang } = this.state;
 
     return (
@@ -119,18 +117,23 @@ export default class CodeControl extends React.Component {
               topLeft: false,
             }}
           >
-            {allowLanguageSelection &&
+            {allowLanguageSelection && (
               <Select
                 styles={languageSelectStyles}
                 value={{ value: lang.name, label: lang.label }}
                 options={this.languageOptions}
                 onChange={opt => this.handleChangeLang(opt.value)}
               />
-            }
+            )}
             <ReactCodeMirror
               id={forID}
               //editorDidMount={() => console.log(CodeMirror.modes) || console.log(CodeMirror.mimeModes)}
-              className={cx(classNameWrapper, css`${styleString}`)}
+              className={cx(
+                classNameWrapper,
+                css`
+                  ${styleString}
+                `,
+              )}
               options={{
                 theme: 'material',
                 lineNumbers: true,
@@ -145,4 +148,4 @@ export default class CodeControl extends React.Component {
       </ClassNames>
     );
   }
-};
+}

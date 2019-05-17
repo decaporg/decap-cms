@@ -12,14 +12,12 @@ const toValue = (value, field) => {
     return value.get(field.getIn(['keys', 'code'], 'code'), '');
   }
   return '';
-}
+};
 
 const CodePreview = props => (
   <WidgetPreviewContainer>
     <pre>
-      <code>
-        {toValue(props.value, props.field)}
-      </code>
+      <code>{toValue(props.value, props.field)}</code>
     </pre>
   </WidgetPreviewContainer>
 );

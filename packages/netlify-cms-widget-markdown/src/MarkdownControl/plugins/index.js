@@ -1,13 +1,15 @@
-import { Text, Inline } from 'slate';
-import { getEventRange, getEventTransfer, setEventTransfer } from 'slate-react';
+//import { Text, Inline } from 'slate';
 import isHotkey from 'is-hotkey';
 import ListPlugin from './ListPlugin';
 
 const DEFAULT_BLOCK_TYPE = 'paragraph';
+/*
 const BLOCK_PARENTS = [
   'list-item',
   'quote',
 ];
+*/
+/*
 const SoftBreak = (options = {}) => ({
   onKeyDown(event, editor, next) {
     if (options.shift && !isHotkey('shift+enter', event)) return next();
@@ -15,7 +17,7 @@ const SoftBreak = (options = {}) => ({
 
     const { onlyIn, ignoreIn, defaultBlock = 'paragraph' } = options;
     const { type: blockType, text, key } = editor.value.startBlock;
-    const { type: parentType, parentKey } = editor.value.document.getParent(key);
+    const { type: parentType } = editor.value.document.getParent(key);
     const targetParentBlock = BLOCK_PARENTS.includes(parentType);
     const type = targetParentBlock ? parentType : blockType;
     if (onlyIn && !onlyIn.includes(type)) return next();
@@ -42,6 +44,7 @@ const SoftBreak = (options = {}) => ({
     }
   },
 });
+*/
 
 const BreakToDefaultBlock = () => ({
   onKeyDown(event, editor, next) {

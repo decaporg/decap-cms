@@ -62,7 +62,6 @@ export default function remarkToRehypeShortcodes({ plugins, getAsset, resolveWid
       value: shortcodeData,
       field: plugin,
       getAsset,
-    })
+    });
   }
-
 }

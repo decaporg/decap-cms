@@ -22,7 +22,7 @@ const rules = () => ({
       },
     },
   }),
-  css: () => ([
+  css: () => [
     {
       test: /\.css$/,
       include: ['monaco-editor'].map(moduleNameToPath),
@@ -33,7 +33,7 @@ const rules = () => ({
       include: ['ol', 'redux-notifications', 'react-datetime', 'codemirror'].map(moduleNameToPath),
       use: ['to-string-loader', 'css-loader'],
     },
-  ]),
+  ],
   svg: () => ({
     test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
     exclude: [/node_modules/],

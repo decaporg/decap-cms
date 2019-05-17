@@ -10,19 +10,20 @@ const WidgetAdapter = props => {
     <div {...props.attributes}>
       <div onClick={e => e.stopPropagation()}>
         <ClassNames>
-          {({ css, cx }) => (
+          {({ css, cx }) =>
             React.createElement(controlComponent, {
               value,
-              onChange: (newValue = Map()) => props.editor.setNodeByKey(props.node.key, { data: newValue }),
+              onChange: (newValue = Map()) =>
+                props.editor.setNodeByKey(props.node.key, { data: newValue }),
               field: widgetConfig.set(editorComponentType, editorComponentType),
               classNameWrapper: cx(
                 classNameWrapper,
                 css`
                   border-top-left-radius: ${lengths.borderRadius};
-                `
+                `,
               ),
             })
-          )}
+          }
         </ClassNames>
       </div>
     </div>

@@ -2,16 +2,12 @@
 
 import React, { useState, useEffect } from 'react';
 import { Map, fromJS } from 'immutable';
-import styled from '@emotion/styled';
-import { css } from '@emotion/core';
 import { omit } from 'lodash';
-import { ListItemTopBar, components, colors, lengths } from 'netlify-cms-ui-default';
 import { getEditorControl, getEditorComponents } from './index';
 
-const Shortcode = ({ editor, attributes, node, classNameWrapper }) => {
+const Shortcode = ({ editor, attributes, node }) => {
   const plugin = getEditorComponents().get(node.data.get('shortcode'));
   const EditorControl = getEditorControl();
-  const [collapsed, setCollapsed] = useState(!node.data.get('shortcodeNew'));
   const [field, setField] = useState(Map());
 
   useEffect(() => {
@@ -27,15 +23,17 @@ const Shortcode = ({ editor, attributes, node, classNameWrapper }) => {
     event.stopPropagation();
   };
 
-  return !field.isEmpty() && (
-    <div {...attributes} onClick={handleClick}>
-      <EditorControl
-        value={fromJS(node.data.get('shortcodeData'))}
-        field={field}
-        onChange={handleChange}
-      />
-    </div>
+  return (
+    !field.isEmpty() && (
+      <div {...attributes} onClick={handleClick}>
+        <EditorControl
+          value={fromJS(node.data.get('shortcodeData'))}
+          field={field}
+          onChange={handleChange}
+        />
+      </div>
+    )
   );
-}
+};
 
 export default Shortcode;

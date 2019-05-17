@@ -1,4 +1,4 @@
-import { get, isEmpty, without, flatMap, last, map, sortBy, intersection, omit } from 'lodash';
+import { get, without, flatMap, last, map, intersection, omit } from 'lodash';
 import u from 'unist-builder';
 
 /**
@@ -62,7 +62,9 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
      * share marks.
      */
     const hasBlockChildren = node.nodes && node.nodes[0] && node.nodes[0].object === 'block';
-    const children = hasBlockChildren ? node.nodes.map(transform) : convertInlineAndTextChildren(node.nodes);
+    const children = hasBlockChildren
+      ? node.nodes.map(transform)
+      : convertInlineAndTextChildren(node.nodes);
 
     const output = convertBlockNode(node, children);
     //console.log(JSON.stringify(output, null, 2));
@@ -89,7 +91,7 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
           return {
             ...node,
             marks: node.marks.filter(({ type }) => type !== markType),
-          }
+          };
       }
     });
   }
@@ -185,12 +187,11 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
 
   function convertInlineAndTextChildren(nodes = []) {
     const convertedNodes = [];
-    const pushTextToConvertedNodes = text => text && convertedNodes.push(u('html', text));
     let remainingNodes = nodes;
 
     while (remainingNodes.length > 0) {
       const nextNode = remainingNodes[0];
-      if (nextNode.object === 'inline' || nextNode.marks && nextNode.marks.length > 0) {
+      if (nextNode.object === 'inline' || (nextNode.marks && nextNode.marks.length > 0)) {
         const [markType, markNodes, remainder] = extractFirstMark(remainingNodes);
         /**
          * A node with a code mark will be a text node, and will not be adjacent
@@ -365,9 +366,11 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
        */
       case 'code-block': {
         const { lang, code, ...data } = get(node, 'data', {});
-        const value = voidCodeBlock ? code : flatMap(node.nodes, child => {
-          return flatMap(child.leaves, 'text');
-        }).join('');
+        const value = voidCodeBlock
+          ? code
+          : flatMap(node.nodes, child => {
+              return flatMap(child.leaves, 'text');
+            }).join('');
         return u(typeMap[node.type], { lang, data }, value || '');
       }
 
@@ -400,7 +403,6 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
 
   function convertInlineNode(node, children) {
     switch (node.type) {
-
       /**
        * Break
        *

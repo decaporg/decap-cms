@@ -20,7 +20,7 @@ function onKeyDown(event, editor, next) {
      * If the selected block is the first block in the document, create the
      * new block above it. If not, create the new block below it.
      */
-    const { document: doc, anchorBlock, focusBlock, schema } = editor.value;
+    const { document: doc, anchorBlock, focusBlock } = editor.value;
     const singleBlockSelected = anchorBlock === focusBlock;
     const isVoid = editor.isVoid(focusBlock);
     if (!singleBlockSelected || !isVoid) {

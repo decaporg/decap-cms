@@ -32,15 +32,14 @@ import { assertType } from './util';
  * - empty new list item is parsed as a literal asterisk in markdown until non-empty
  */
 const ListPlugin = ({ defaultBlockType, unorderedListType, orderedListType }) => {
-  const LIST_TYPES = [
-    orderedListType,
-    unorderedListType,
-  ];
+  const LIST_TYPES = [orderedListType, unorderedListType];
 
   function oppositeListType(type) {
     switch (type) {
-      case LIST_TYPES[0]: return LIST_TYPES[1];
-      case LIST_TYPES[1]: return LIST_TYPES[0];
+      case LIST_TYPES[0]:
+        return LIST_TYPES[1];
+      case LIST_TYPES[1]:
+        return LIST_TYPES[0];
     }
   }
 
@@ -81,7 +80,7 @@ const ListPlugin = ({ defaultBlockType, unorderedListType, orderedListType }) =>
       },
       getListContextNode(editor, node) {
         const targetTypes = ['bulleted-list', 'numbered-list', 'list-item', 'quote', 'table-cell'];
-        const { startBlock, endBlock, selection } = editor.value;
+        const { startBlock, selection } = editor.value;
         const target = node
           ? editor.value.document.getParent(node.key)
           : (selection.isCollapsed && startBlock) || editor.getCommonAncestor();
@@ -100,7 +99,7 @@ const ListPlugin = ({ defaultBlockType, unorderedListType, orderedListType }) =>
         if (!isArray(nodes) || nodes.length < 2) {
           return true;
         }
-        const parent = editor.value.document.getParent(nodes[0].key)
+        const parent = editor.value.document.getParent(nodes[0].key);
         return tail(nodes).every(node => {
           return editor.value.document.getParent(node.key).key === parent.key;
         });
@@ -134,17 +133,13 @@ const ListPlugin = ({ defaultBlockType, unorderedListType, orderedListType }) =>
       },
       wrapInList(editor, type) {
         editor.withoutNormalizing(() => {
-          editor
-            .wrapBlock(type)
-            .wrapBlock('list-item');
+          editor.wrapBlock(type).wrapBlock('list-item');
         });
       },
       unwrapListItem(editor, node) {
         assertType(node, 'list-item');
         editor.withoutNormalizing(() => {
-          editor
-            .unwrapNodeByKey(node.key)
-            .unwrapBlockChildren(node);
+          editor.unwrapNodeByKey(node.key).unwrapBlockChildren(node);
         });
       },
       indentListItems: throttle(function indentListItem(editor, listItemsArg) {
@@ -217,7 +212,9 @@ const ListPlugin = ({ defaultBlockType, unorderedListType, orderedListType }) =>
         // of the unindented list items as the new parent of the remaining items
         // list.
         if (nextSibling) {
-          const nextSiblingParentListItem = editor.value.document.getNextSibling(listItems.last().key);
+          const nextSiblingParentListItem = editor.value.document.getNextSibling(
+            listItems.last().key,
+          );
           editor.mergeNodeByKey(nextSiblingParentListItem.key);
         }
       }, 100),
@@ -226,16 +223,14 @@ const ListPlugin = ({ defaultBlockType, unorderedListType, orderedListType }) =>
         const list = editor.value.document.getParent(listItem.key);
         const newListType = oppositeListType(list.type);
         editor.withoutNormalizing(() => {
-          editor
-            .unwrapNodeByKey(listItem.key)
-            .wrapBlockByKey(listItem.key, newListType);
+          editor.unwrapNodeByKey(listItem.key).wrapBlockByKey(listItem.key, newListType);
         });
       },
       toggleList(editor, type) {
         if (!LIST_TYPES.includes(type)) {
           throw Error(`${type} is not a valid list type, must be one of: ${LIST_TYPES}`);
         }
-        const { startBlock, endBlock } = editor.value;
+        const { startBlock } = editor.value;
         const target = editor.getListContextNode();
 
         switch (get(target, 'type')) {
@@ -246,9 +241,7 @@ const ListPlugin = ({ defaultBlockType, unorderedListType, orderedListType }) =>
               const newListType = oppositeListType(target.type);
               const newList = Block.create(newListType);
               editor.withoutNormalizing(() => {
-                editor
-                  .wrapBlock(newList)
-                  .unwrapNodeByKey(newList.key);
+                editor.wrapBlock(newList).unwrapNodeByKey(newList.key);
               });
             } else {
               editor.withoutNormalizing(() => {
@@ -267,13 +260,9 @@ const ListPlugin = ({ defaultBlockType, unorderedListType, orderedListType }) =>
             const list = editor.value.document.getParent(listItem.key);
             if (!editor.isFirstChild(startBlock)) {
               editor.wrapInList(type);
-            }
-
-            else if (list.type !== type) {
+            } else if (list.type !== type) {
               editor.toggleListItemType(listItem);
-            }
-
-            else {
+            } else {
               editor.unwrapListItem(listItem);
             }
             break;
@@ -322,12 +311,10 @@ const ListPlugin = ({ defaultBlockType, unorderedListType, orderedListType }) =>
         }
 
         return next();
-      }
-
-      /**
-       * Tab, Shift+Tab
-       */
-      else if (isHotkey('tab', event) || isHotkey('shift+tab', event)) {
+      } else if (isHotkey('tab', event) || isHotkey('shift+tab', event)) {
+        /**
+         * Tab, Shift+Tab
+         */
         const isTab = isHotkey('tab', event);
         const isShiftTab = !isTab;
         event.preventDefault();
@@ -345,9 +332,7 @@ const ListPlugin = ({ defaultBlockType, unorderedListType, orderedListType }) =>
           if (isShiftTab) {
             editor.unindentListItems(listItem);
           }
-        }
-
-        else {
+        } else {
           const list = listOrListItem;
           if (isTab) {
             const listItems = editor.getSelectedChildren(list);
@@ -358,12 +343,10 @@ const ListPlugin = ({ defaultBlockType, unorderedListType, orderedListType }) =>
             editor.unindentListItems(listItems);
           }
         }
-      }
-
-      /**
-       * Enter
-       */
-      else if (isHotkey('enter', event)) {
+      } else if (isHotkey('enter', event)) {
+        /**
+         * Enter
+         */
         const listOrListItem = editor.getListOrListItem();
         if (!listOrListItem) {
           return next();
@@ -385,22 +368,16 @@ const ListPlugin = ({ defaultBlockType, unorderedListType, orderedListType }) =>
           // the first block, move the current block to a new list item.
           else if (
             editor.value.startBlock.text === '' ||
-            !editor.value.selection.start.isAtStartOfNode(listItem) &&
-            editor.value.selection.start.isAtStartOfNode(editor.value.startBlock)
+            (!editor.value.selection.start.isAtStartOfNode(listItem) &&
+              editor.value.selection.start.isAtStartOfNode(editor.value.startBlock))
           ) {
             const newListItem = Block.create('list-item');
-            const range = Range
-              .create(editor.value.selection)
-              .moveEndToEndOfNode(listItem);
+            const range = Range.create(editor.value.selection).moveEndToEndOfNode(listItem);
 
             editor.withoutNormalizing(() => {
-              editor
-                .wrapBlockAtRange(range, newListItem)
-                .unwrapNodeByKey(newListItem.key);
+              editor.wrapBlockAtRange(range, newListItem).unwrapNodeByKey(newListItem.key);
             });
-          }
-
-          else {
+          } else {
             return next();
           }
         } else {
@@ -409,9 +386,7 @@ const ListPlugin = ({ defaultBlockType, unorderedListType, orderedListType }) =>
             editor.removeNodeByKey(list.key);
           }
         }
-      }
-
-      else {
+      } else {
         return next();
       }
     },

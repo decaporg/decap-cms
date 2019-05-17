@@ -118,7 +118,7 @@ export function registerEditorComponent(component) {
         Only one editor component of type "code-block" may be registered. Previously registered code
         block component(s) will be overwritten.
       `);
-      registry.editorComponents = register.editorComponents.delete(codeBlock.id);
+      registry.editorComponents = registry.editorComponents.delete(codeBlock.id);
     }
   }
 

@@ -32,7 +32,7 @@ const languageSelectStyles = {
     padding: 0,
     paddingLeft: '8px',
   }),
-  menu: (provided, state) => ({
+  menu: provided => ({
     ...reactSelectStyles.menu(provided),
     margin: '2px 0',
   }),

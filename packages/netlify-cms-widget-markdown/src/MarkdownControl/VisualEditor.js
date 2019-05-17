@@ -4,13 +4,12 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import { ClassNames } from '@emotion/core';
 import { get, isEmpty, debounce, uniq } from 'lodash';
-import { List, fromJS } from 'immutable';
+import { fromJS } from 'immutable';
 import { Value, Document, Block, Text } from 'slate';
 import { Editor as Slate } from 'slate-react';
 import { slateToMarkdown, markdownToSlate, htmlToSlate } from '../serializers';
 import Toolbar from '../MarkdownControl/Toolbar';
 import { renderBlock, renderInline, renderMark } from './renderers';
-import { validateNode } from './validators';
 import plugins from './plugins';
 import onKeyDown from './keys';
 import schema from './schema';
@@ -36,7 +35,8 @@ const createSlateValue = (rawValue, { voidCodeBlock }) => {
 
 const pluginToBlock = plugin => {
   // Handle code block component
-  if (plugin.type === 'code-block') { return { type: plugin.type };
+  if (plugin.type === 'code-block') {
+    return { type: plugin.type };
   }
 
   const nodes = [Text.create('')];
@@ -71,12 +71,16 @@ export default class Editor extends React.Component {
     const editorComponents = props.getEditorComponents();
     this.shortcodeComponents = editorComponents.filter(({ type }) => type === 'shortcode');
     this.codeBlockComponent = fromJS(editorComponents.find(({ type }) => type === 'code-block'));
-    this.editorComponents = this.codeBlockComponent || editorComponents.has('code-block')
-      ? editorComponents
-      : editorComponents.set('code-block', Map({
-          label: 'Code Block',
-          type: 'code-block',
-        }));
+    this.editorComponents =
+      this.codeBlockComponent || editorComponents.has('code-block')
+        ? editorComponents
+        : editorComponents.set(
+            'code-block',
+            Map({
+              label: 'Code Block',
+              type: 'code-block',
+            }),
+          );
     this.renderBlock = renderBlock({
       classNameWrapper: props.className,
       resolveWidget: props.resolveWidget,
@@ -169,7 +173,7 @@ export default class Editor extends React.Component {
         return [Text.create(block.data.get('code'))];
       }
       return block.nodes;
-    }
+    };
 
     switch (type) {
       /**
@@ -187,7 +191,6 @@ export default class Editor extends React.Component {
           editor.value.blocks.forEach(block => editor.setNodeByKey(block.key, 'paragraph'));
         } else {
           editor.value.blocks.forEach(block => {
-            const newBlock = Block.create({ type, nodes: getBlockNodes(block) });
             editor.setNodeByKey(block.key, { type, nodes: getBlockNodes(block) });
           });
         }
@@ -225,7 +228,10 @@ export default class Editor extends React.Component {
          * TODO: highlight a couple list items and hit the quote button. doesn't work.
          */
         const topBlocks = editor.value.document.getRootBlocksAtRange(editor.value.selection);
-        const ancestor = editor.value.document.getCommonAncestor(topBlocks.first().key, topBlocks.last().key);
+        const ancestor = editor.value.document.getCommonAncestor(
+          topBlocks.first().key,
+          topBlocks.last().key,
+        );
         if (ancestor.type === type) {
           editor.unwrapBlock(type);
         } else {
@@ -304,7 +310,7 @@ export default class Editor extends React.Component {
   };
 
   render() {
-    const { onAddAsset, getAsset, className, field, resolveWidget } = this.props;
+    const { onAddAsset, getAsset, className, field } = this.props;
 
     return (
       <VisualEditorContainer>

@@ -54,7 +54,7 @@ export function validateNode(node) {
          */
         const unwrapNestedShortcode = editor => editor.unwrapNodeByKey(nestedShortcode.key);
         if (docIsParentParent) {
-          unwrapNestedShortcode(editor)
+          unwrapNestedShortcode(editor);
         } else {
           editor.withoutNormalizing(() => unwrapNestedShortcode(editor));
         }

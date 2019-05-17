@@ -16,10 +16,7 @@ import * as locales from 'netlify-cms-locales';
 
 CMS.registerMediaLibrary(uploadcare);
 CMS.registerMediaLibrary(cloudinary);
-CMS.registerWidget([
-  NetlifyCmsWidgetCode.Widget(),
-]);
-
+CMS.registerWidget([NetlifyCmsWidgetCode.Widget()]);
 CMS.registerEditorComponent({
   id: 'code-block',
   label: 'Code Block',
