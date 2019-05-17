@@ -38,6 +38,9 @@ const markMap = {
   code: 'inlineCode',
 };
 
+const leadingWhitespaceExp = /^\s+\S/;
+const trailingWhitespaceExp = /(?!\S)\s+$/;
+
 export default function slateToRemark(raw, { voidCodeBlock }) {
   /**
    * The Slate Raw AST generally won't have a top level type, so we set it to
@@ -138,69 +141,51 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
     return [markType, updatedChildNodes, remainingNodes];
   }
 
-  function splitOnMatch(str, exp) {
-    const index = str.search(exp);
+  /**
+   * Converts the strings returned from `splitToNamedParts` to Slate nodes.
+   */
+  function splitWhitespace(node, { trailing } = {}) {
+    if (!node.text) {
+      return { trimmedNode: node };
+    }
+    const exp = trailing ? trailingWhitespaceExp : leadingWhitespaceExp;
+    const index = node.text.search(exp);
     if (index > -1) {
-      return [str.substring(0, index), str.substring(index)];
+      const substringIndex = trailing ? index : index + 1;
+      const firstSplit = node.text.substring(0, substringIndex);
+      const secondSplit = node.text.substring(substringIndex);
+      const whitespace = trailing ? secondSplit : firstSplit;
+      const text = trailing ? firstSplit : secondSplit;
+      return { whitespace, trimmedNode: { ...node, text } };
     }
+    return { trimmedNode: node };
   }
 
-  function splitWhiteSpace(node, exp) {
-    if (node.text) {
-      return splitOnMatch(node.text, exp);
+  function collectCenterNodes(nodes, leadingNode, trailingNode) {
+    switch (nodes.length) {
+      case 0:
+        return [];
+      case 1:
+        return [trailingNode];
+      case 2:
+        return [leadingNode, trailingNode];
+      default:
+        return [leadingNode, ...nodes.slice(1, -1), trailingNode];
     }
-  }
-
-  function splitStartingWhitespace(node) {
-    const split = splitWhiteSpace(node, /^\s+\S/);
-    if (!split) {
-      return [node];
-    }
-    const [whitespace, text] = split;
-    return [{ object: 'text', text: whitespace }, { ...node, text }];
-  }
-
-  function splitEndingWhitespace(node) {
-    const split = splitWhiteSpace(node, /(?!\S)\s+$/);
-    if (!split) {
-      return [node];
-    }
-    const [text, whitespace] = split;
-    return [{ ...node, text }, { object: 'text', text: whitespace }];
   }
 
   function normalizeFlankingWhitespace(nodes) {
-    if (nodes.length === 0) {
-      return [null, nodes];
-    }
-    const startingNodes = splitStartingWhitespace(nodes[0]);
-    const startingWhiteSpace = startingNodes.length > 1 ? startingNodes[0] : null;
-    if (nodes.length === 1 && startingNodes.length > 1) {
-      const endingNodes = splitEndingWhitespace(startingNodes[1]);
-      const endingWhiteSpace = endingNodes.length > 1 ? endingNodes[1] : null;
-      return [startingWhiteSpace, endingNodes];
-    }
-    const endingNodes = splitEndingWhitespace(last(nodes));
-    const endingWhiteSpace = endingNodes.length > 1 ? endingNodes[1] : null;
-    if (nodes.length === 1) {
-      return [null, ...endingNodes];
-    }
-    if (nodes.length === 2 && startingNodes.length > 1 && endingNodes.length > 1) {
-      return [startingNodes[0], [startingNodes[1], endingNodes[0]], endingNodes[1]];
-    }
-    if (nodes.length === 2 && startingNodes.length > 1) {
-      return [startingNodes[0], [startingNodes[1], endingNodes[0]]];
-    }
-    if (nodes.length === 2) {
-      return [null, [startingNodes[0], endingNodes[0]]];
-    }
-    if (startingNodes.length > 1 && endingNodes.length > 1) {
-      return [startingNodes[0], [startingNodes[1], ...nodes.slice(1, -1), endingNodes[0]], endingNodes[1]];
-    }
+    const { whitespace: leadingWhitespace, trimmedNode: leadingNode } = splitWhitespace(nodes[0]);
+    const lastNode = nodes.length > 1 ? last(nodes) : leadingNode;
+    const trailingSplitResult = splitWhitespace(lastNode, { trailing: true });
+    const { whitespace: trailingWhitespace, trimmedNode: trailingNode } = trailingSplitResult;
+    const centerNodes = collectCenterNodes(nodes, leadingNode, trailingNode).filter(val => val);
+    return { leadingWhitespace, centerNodes, trailingWhitespace };
   }
 
   function convertInlineAndTextChildren(nodes = []) {
     const convertedNodes = [];
+    const pushTextToConvertedNodes = text => text && convertedNodes.push(u('html', text));
     let remainingNodes = nodes;
 
     while (remainingNodes.length > 0) {
@@ -220,16 +205,18 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
           const node = markNodes[0];
           convertedNodes.push(convertInlineNode(node, convertInlineAndTextChildren(node.nodes)));
         } else {
-          const [startNode, centerNodes, endNode] = normalizeFlankingWhitespace(markNodes);
-          if (startNode) {
-            convertedNodes.push(u('html', startNode));
-          }
-          if (centerNodes) {
-            convertedNodes.push(u(markMap[markType], convertInlineAndTextChildren(centerNodes)));
-          }
-          if (endNode) {
-            convertedNodes.push(u('html', endNode));
-          }
+          const {
+            leadingWhitespace,
+            trailingWhitespace,
+            centerNodes,
+          } = normalizeFlankingWhitespace(markNodes);
+          const createText = text => text && u('html', text);
+          const normalizedNodes = [
+            createText(leadingWhitespace),
+            u(markMap[markType], convertInlineAndTextChildren(centerNodes)),
+            createText(trailingWhitespace),
+          ].filter(val => val);
+          convertedNodes.push(...normalizedNodes);
         }
         remainingNodes = remainder;
       } else {
@@ -248,61 +235,6 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
    * inline nodes in MDAST may be nested within mark nodes. Treating them as if
    * they were text is a bit of a necessary hack.
    */
-  function combineTextAndInline(nodes) {
-    const wrappedNodes = wrapInMarks(nodes);
-
-    /**
-     * Inlines
-     * Get list of the marks that are present on every text node, which may be
-     * nested in child inlines. The entire inline should be nested within those
-     * marks. Children should be run through this function recursively.
-     */
-    return nodes.reduce((acc, node) => {
-      if (['text', 'inline'].includes(node.object)) {
-        const prevNode = last(acc);
-        const data = node.data || {};
-
-        /**
-         * If the previous node has leaves and the current node has marks in data
-         * (only happens when we place them on inline nodes here in the parser), or
-         * the current node also has leaves (because the previous node was
-         * originally an inline node that we've already squashed into a leaf),
-         * combine the current node into the previous.
-         */
-        if (!isEmpty(prevNodeLeaves) && !isEmpty(data.marks)) {
-          prevNodeLeaves.push({ node, marks: data.marks });
-          return acc;
-        }
-
-        if (!isEmpty(prevNodeLeaves) && !isEmpty(node.leaves)) {
-          prevNode.leaves = prevNodeLeaves.concat(node.leaves);
-          return acc;
-        }
-
-        /**
-         * Break nodes contain a single child text node with a newline character
-         * for visual purposes in the editor, but Remark break nodes have no
-         * children, so we remove the child node here.
-         */
-        if (node.type === 'break') {
-          acc.push({ object: 'inline', type: 'break' });
-          return acc;
-        }
-
-        // Convert remaining inline nodes to text nodes.
-        if (node.object === 'inline') {
-          acc.push({ object: 'text', text: node.text, marks: data.marks });
-          return acc;
-        }
-      }
-
-      /**
-       * All other node types can be pushed as is.
-       */
-      acc.push(node);
-      return acc;
-    }, []);
-  }
 
   /**
    * Slate treats inline code decoration as a standard mark, but MDAST does
@@ -314,12 +246,6 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
    * in the markTypes array, we make the base text node an "inlineCode" type
    * instead of a standard text node.
    */
-  function processCodeMark(markTypes) {
-    const isInlineCode = markTypes.includes('inlineCode');
-    const filteredMarkTypes = isInlineCode ? without(markTypes, 'inlineCode') : markTypes;
-    const textNodeType = isInlineCode ? 'inlineCode' : 'html';
-    return { filteredMarkTypes, textNodeType };
-  }
 
   /**
    * Converts a Slate Raw text node to an MDAST text node.
@@ -352,89 +278,6 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
    *   }],
    * }
    */
-  function convertTextNode(node) {
-    /**
-     * If the Slate text node has a "leaves" property, translate the Slate AST to
-     * a nested MDAST structure. Otherwise, just return an equivalent MDAST text
-     * node.
-     */
-    if (node.leaves) {
-      const processedLeaves = node.leaves.map(processLeaves);
-      // Compensate for Slate including leading and trailing whitespace in styled text nodes, which
-      // cannot be represented in markdown (https://github.com/netlify/netlify-cms/issues/1448)
-      for (let i = 0; i < processedLeaves.length; i += 1) {
-        const leaf = processedLeaves[i];
-        if (leaf.marks.length > 0 && leaf.text && leaf.text.trim() !== leaf.text) {
-          const [, leadingWhitespace, trailingWhitespace] = leaf.text.match(/^(\s*).*?(\s*)$/);
-          // Move the leading whitespace to a separate unstyled leaf, unless the current leaf
-          // is preceded by another one with (at least) the same marks applied:
-          if (
-            leadingWhitespace.length > 0 &&
-            (i === 0 ||
-              !leaf.marks.every(
-                mark => processedLeaves[i - 1].marks && processedLeaves[i - 1].marks.includes(mark),
-              ))
-          ) {
-            processedLeaves.splice(i, 0, {
-              text: leadingWhitespace,
-              marks: [],
-              textNodeType: leaf.textNodeType,
-            });
-            i += 1;
-            leaf.text = leaf.text.replace(/^\s+/, '');
-          }
-          // Move the trailing whitespace to a separate unstyled leaf, unless the current leaf
-          // is followed by another one with (at least) the same marks applied:
-          if (
-            trailingWhitespace.length > 0 &&
-            (i === processedLeaves.length - 1 ||
-              !leaf.marks.every(
-                mark => processedLeaves[i + 1].marks && processedLeaves[i + 1].marks.includes(mark),
-              ))
-          ) {
-            processedLeaves.splice(i + 1, 0, {
-              text: trailingWhitespace,
-              marks: [],
-              textNodeType: leaf.textNodeType,
-            });
-            i += 1;
-            leaf.text = leaf.text.replace(/\s+$/, '');
-          }
-        }
-      }
-      const condensedNodes = processedLeaves.reduce(condenseNodesReducer, { nodes: [] });
-      return condensedNodes.nodes;
-    }
-
-    if (node.object === 'inline') {
-      return transform(node);
-    }
-
-    return u('html', node.text);
-  }
-
-  /**
-   * Process Slate node leaves in preparation for MDAST transformation.
-   */
-  function processLeaves(leaf) {
-    /**
-     * Get an array of the mark types, converted to their MDAST equivalent
-     * types.
-     */
-    const { marks = [], text } = leaf;
-    const markTypes = marks.map(mark => markMap[mark.type]);
-
-    if (typeof leaf.text === 'string') {
-      /**
-       * Code marks must be removed from the marks array, and the presence of a
-       * code mark changes the text node type that should be used.
-       */
-      const { filteredMarkTypes, textNodeType } = processCodeMark(markTypes);
-      return { text, marks: filteredMarkTypes, textNodeType };
-    }
-
-    return { node: leaf.node, marks: markTypes };
-  }
 
   /**
    * Slate's AST doesn't group adjacent text nodes with the same marks - a
@@ -449,85 +292,6 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
    * transformed as-is. The reducer can be called recursively to produce nested
    * structures.
    */
-  function condenseNodesReducer(acc, node, idx, nodes) {
-    /**
-     * Skip any nodes that are being processed as children of an MDAST node
-     * through recursive calls.
-     */
-    if (typeof acc.nextIndex === 'number' && acc.nextIndex > idx) {
-      return acc;
-    }
-
-    /**
-     * Processing for nodes with marks.
-     */
-    if (node.marks && node.marks.length > 0) {
-      /**
-       * For each mark on the current node, get the number of consecutive nodes
-       * (starting with this one) that have the mark. Whichever mark covers the
-       * most nodes is used as the parent node, and the nodes with that mark are
-       * processed as children. If the greatest number of consecutive nodes is
-       * tied between multiple marks, there is no priority as to which goes
-       * first.
-       */
-      const markLengths = node.marks.map(mark => getMarkLength(mark, nodes.slice(idx)));
-      const parentMarkLength = last(sortBy(markLengths, 'length'));
-      const { markType: parentType, length: parentLength } = parentMarkLength;
-
-      /**
-       * Since this and any consecutive nodes with the parent mark are going to
-       * be processed as children of the parent mark, this reducer should simply
-       * return the accumulator until after the last node to be covered by the
-       * new parent node. Here we set the next index that should be processed,
-       * if any.
-       */
-      const newNextIndex = idx + parentLength;
-
-      /**
-       * Get the set of nodes that should be processed as children of the new
-       * parent mark node, run each through the reducer as children of the
-       * parent node, and create the parent MDAST node with the resulting
-       * children.
-       */
-      const children = nodes.slice(idx, newNextIndex);
-      const denestedChildren = children.map(child => ({
-        ...child,
-        marks: without(child.marks, parentType),
-      }));
-      const mdastChildren = denestedChildren.reduce(condenseNodesReducer, { nodes: [], parentType })
-        .nodes;
-      const mdastNode = u(parentType, mdastChildren);
-
-      return { ...acc, nodes: [...acc.nodes, mdastNode], nextIndex: newNextIndex };
-    }
-
-    /**
-     * Create the base text node, and pass in the array of mark types as data
-     * (helpful when optimizing/condensing the final structure).
-     */
-    const baseNode =
-      typeof node.text === 'string'
-        ? u(node.textNodeType, { marks: node.marks }, node.text)
-        : node.node && transform(node.node);
-
-    /**
-     * Recursively wrap the base text node in the individual mark nodes, if
-     * any exist.
-     */
-    return { ...acc, nodes: [...acc.nodes, ...(baseNode ? [baseNode] : [])] };
-  }
-
-  /**
-   * Get the number of consecutive Slate nodes containing a given mark beginning
-   * from the first received node.
-   */
-  function getMarkLength(markType, nodes) {
-    let length = 0;
-    while (nodes[length] && nodes[length].marks.includes(markType)) {
-      ++length;
-    }
-    return { markType, length };
-  }
 
   /**
    * Convert a single Slate Raw node to an MDAST node. Uses the unist-builder `u`
