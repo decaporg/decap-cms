@@ -88,6 +88,66 @@ describe('slate', () => {
     expect(slateToMarkdown(slateAst)).toMatchInlineSnapshot(`"foo **bar**"`);
   });
 
+  it('should group adjacent marks into a single mark when possible', () => {
+    const slateAst = {
+      object: 'block',
+      type: 'root',
+      nodes: [
+        {
+          object: 'block',
+          type: 'paragraph',
+          nodes: [
+            {
+              object: 'text',
+              text: 'shared mark',
+              marks: [{ type: 'bold' }],
+            },
+            {
+              object: 'inline',
+              type: 'link',
+              data: { url: 'link' },
+              nodes: [
+                {
+                  object: 'text',
+                  text: 'link',
+                  marks: [{ type: 'bold' }, { type: 'italic' }],
+                },
+              ],
+            },
+            {
+              object: 'text',
+              text: ' ',
+            },
+            {
+              object: 'text',
+              text: 'not shared mark',
+              marks: [{ type: 'bold' }],
+            },
+            {
+              object: 'inline',
+              type: 'link',
+              data: { url: 'link' },
+              nodes: [
+                {
+                  object: 'text',
+                  text: 'another ',
+                  marks: [{ type: 'italic' }],
+                },
+                {
+                  text: 'link',
+                  marks: [{ type: 'bold' }, { type: 'italic' }],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+    expect(slateToMarkdown(slateAst)).toMatchInlineSnapshot(
+      `"**shared mark*[link](link)*** **not shared mark***[another **link**](link)*"`,
+    );
+  });
+
   describe('with nested styles within a single word', () => {
     it('should not produce invalid markdown when a bold word has italics applied to a smaller part', () => {
       const slateAst = {
