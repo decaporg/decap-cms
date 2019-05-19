@@ -13,7 +13,7 @@ Being a developer is not a requirement for contributing to Netlify CMS, you only
 
 
 
-
+## Places to get involved
 While we work on building this page (and you can help!), here are some links with more information about getting involved:
 
 * [Setup instructions and Contribution Guidelines](https://github.com/netlify/netlify-cms/blob/master/CONTRIBUTING.md)
