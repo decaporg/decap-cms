@@ -56,8 +56,54 @@ where ```<pod-name>``` is the name of one of your Pods.
 ### Use bold for user interface elements
 
 Do: Click **Fork**.
+
 Don't: Click "Fork".
 _____
 
 Do: Select **Other**.
+
 Don't: Select 'Other'.
+_____
+
+### Use italics to define or introduce new terms
+
+Do: A _cluster_ is a set of nodes ...	
+
+Don't: A "cluster" is a set of nodes ...
+_____
+
+Do: These components form the _control plane_.	
+
+Don't: These components form the **control plane**.
+_____
+
+### Use code style for filenames, directories, and paths
+
+Do: Open the `envars.yaml` file.
+
+Don't: Open the envars.yaml file.
+_____
+
+Do: Go to the `/docs/tutorials` directory.	
+
+Don't: Go to the /docs/tutorials directory.
+_____
+
+Do: Open the `/_data/concepts.yaml` file.	
+
+Don't: Open the /_data/concepts.yaml file.
+_____
+
+### Use the international standard for punctuation inside quotes
+
+Do: events are recorded with an associated "stage".	
+
+Don't: events are recorded with an associated "stage."
+_____
+
+Do: The copy is called a "fork".	
+
+Don't: The copy is called a "fork."
+_____
+
+
