@@ -158,4 +158,15 @@ Do: Set the value of the `replicas` field to 2.
 Don't: Set the value of the `replicas` field to 2.
 _____
 
+## Code snippet formatting
+
+### Don’t include the command prompt
+
+Do: kubectl get pods	
+
+Don't: $ kubectl get pods
+
+
+
+
 
