@@ -139,5 +139,23 @@ Do: The value of the `exec` field is an ExecAction object.
 Don't: The value of the "exec" field is an ExecAction object.
 _____
 
+### Use normal style for string and integer field values
+
+For field values of type string or integer, use normal style without quotation marks.
+
+Do: Set the value of `imagePullPolicy` to Always.	
+
+Don't: Set the value of `imagePullPolicy` to "Always".
+_____
+
+Do: Set the value of `image` to nginx:1.8.	
+
+Don't: Set the value of `image` to `nginx:1.8`.
+_____
+
+Do: Set the value of the `replicas` field to 2.	
+
+Don't: Set the value of the `replicas` field to 2.
+_____
 
 
