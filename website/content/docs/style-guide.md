@@ -106,4 +106,25 @@ Do: The copy is called a "fork".
 Don't: The copy is called a "fork."
 _____
 
+## Inline code formatting
+
+### Use code style for inline code and commands
+
+For inline code in an HTML document, use the `<code>` tag. In a Markdown document, use the backtick (`).
+
+Do: The `kubectl run` command creates a Deployment.	
+
+Don't: The "kubectl run" command creates a Deployment.
+_____
+
+Do: For declarative management, use `kubectl apply`.	
+
+Don't: For declarative management, use "kubectl apply".
+_____
+
+Do: Enclose code samples with triple backticks. `(```)`	
+
+Don't:Enclose code samples with any other syntax.
+_____
+
 
