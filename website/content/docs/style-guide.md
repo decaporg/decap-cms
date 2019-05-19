@@ -6,6 +6,8 @@ group: contributing
 
 # Netlify CMS Style Guide
 
+NOTE: Guide taken from [Kubernete's Style Guide](https://kubernetes.io/docs/contribute/style/style-guide/#use-bold-for-user-interface-elements)
+
 ## Documentation Formatting Standards
 
 ### Use camel case for API objects
@@ -238,8 +240,56 @@ _____
 
 Exception: Use “etc.” for et cetera.
 
+## Patterns to avoid
 
+### Avoid using “we”
 
+Using “we” in a sentence can be confusing, because the reader might not know whether they’re part of the “we” you’re describing.
 
+Do: Version 1.4 includes ...	
 
+Don't: In version 1.4, we have added ...
+_____
+
+Do: Kubernetes provides a new feature for ...
+
+Don't: We provide a new feature ...
+_____
+
+Do: This page teaches you how to use Pods.	
+
+Don't: In this page, we are going to learn about Pods.
+_____
+
+### Avoid jargon and idioms
+
+Some readers speak English as a second language. Avoid jargon and idioms to help them understand better.
+
+Do: Internally
+
+Don't: Under the hood, ...
+_____
+
+Do: Create a new cluster.	
+
+Don't: Turn up a new cluster.
+_____
+
+### Avoid statements about the future
+
+Avoid making promises or giving hints about the future. If you need to talk about an alpha feature, put the text under a heading that identifies it as alpha information.
+
+### Avoid statements that will soon be out of date
+
+Avoid words like “currently” and “new.” A feature that is new today might not be considered new in a few months.
+
+Do: In version 1.4, ...	
+
+Don't: In the current version, ...
+_____
+
+Do: The Federation feature provides ...	
+
+Don't: The new Federation feature provides ...
+_____
 
