@@ -127,4 +127,17 @@ Do: Enclose code samples with triple backticks. `(```)`
 Don't:Enclose code samples with any other syntax.
 _____
 
+### Use code style for object field names
+
+Do: Set the value of the `replicas` field in the configuration file.	
+
+Don't: Set the value of the "replicas" field in the configuration file.
+_____
+
+Do: The value of the `exec` field is an ExecAction object.	
+
+Don't: The value of the "exec" field is an ExecAction object.
+_____
+
+
 
