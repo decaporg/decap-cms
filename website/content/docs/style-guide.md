@@ -57,7 +57,19 @@ where ```<pod-name>``` is the name of one of your Pods.
 
 Do: Click **Fork**.
 Don't: Click "Fork".
-_____
+_
 
 Do: Select **Other**.
 Don't: Select 'Other'.
+_
+
+
+### Use italics to define or introduce new terms
+
+Do: A _cluster_ is a set of nodes ...	
+Don't: A "cluster" is a set of nodes ...
+_ 
+
+Do: These components form the _control plane_.	
+Don't: These components form the **control plane**.
+_
