@@ -157,7 +157,7 @@ export const markdownToHtml = (markdown, { getAsset, resolveWidget } = {}) => {
     .runSync(mdast);
 
   const html = unified()
-    .use(rehypeToHtml, { allowDangerousHTML: true, allowDangerousCharacters: true })
+    .use(rehypeToHtml, { allowDangerousHTML: true, allowDangerousCharacters: true, closeSelfClosing: true })
     .stringify(hast);
 
   return html;
