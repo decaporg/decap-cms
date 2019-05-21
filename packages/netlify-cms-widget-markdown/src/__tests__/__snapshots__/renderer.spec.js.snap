@@ -55,7 +55,7 @@ exports[`Markdown Preview renderer Markdown rendering General should render mark
   dangerouslySetInnerHTML={
     Object {
       "__html": "<h1>H1</h1>
-<p>Text with <strong>bold</strong> &#x26; <em>em</em> elements</p>
+<p>Text with <strong>bold</strong> &amp; <em>em</em> elements</p>
 <h2>H2</h2>
 <ul>
 <li>ul item 1</li>
@@ -70,9 +70,9 @@ exports[`Markdown Preview renderer Markdown rendering General should render mark
 <h4>H4</h4>
 <p><a href=\\"http://google.com\\">link title</a></p>
 <h5>H5</h5>
-<p><img src=\\"https://pbs.twimg.com/profile_images/678903331176214528/TQTdqGwD.jpg\\" alt=\\"alt text\\"></p>
+<p><img src=\\"https://pbs.twimg.com/profile_images/678903331176214528/TQTdqGwD.jpg\\" alt=\\"alt text\\" /></p>
 <h6>H6</h6>
-<p><img src=\\"https://pbs.twimg.com/profile_images/678903331176214528/TQTdqGwD.jpg\\"></p>",
+<p><img src=\\"https://pbs.twimg.com/profile_images/678903331176214528/TQTdqGwD.jpg\\" /></p>",
     }
   }
 />

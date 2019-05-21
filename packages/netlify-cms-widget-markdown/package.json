@@ -54,6 +54,8 @@
     "react-immutable-proptypes": "^2.1.0"
   },
   "devDependencies": {
+    "commonmark": "^0.29.0",
+    "commonmark-spec": "^0.29.0",
     "monaco-editor-webpack-plugin": "^1.7.0"
   }
 }

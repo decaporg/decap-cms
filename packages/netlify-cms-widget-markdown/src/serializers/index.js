@@ -128,7 +128,7 @@ export const remarkToMarkdown = obj => {
    * Transform the MDAST with plugins.
    */
   const processedMdast = unified()
-    .use(remarkEscapeMarkdownEntities)
+    //.use(remarkEscapeMarkdownEntities)
     .use(remarkStripTrailingBreaks)
     .runSync(mdast);
 
@@ -157,7 +157,12 @@ export const markdownToHtml = (markdown, { getAsset, resolveWidget } = {}) => {
     .runSync(mdast);
 
   const html = unified()
-    .use(rehypeToHtml, { allowDangerousHTML: true, allowDangerousCharacters: true, closeSelfClosing: true })
+    .use(rehypeToHtml, {
+      allowDangerousHTML: true,
+      allowDangerousCharacters: true,
+      closeSelfClosing: true,
+      entities: { useNamedReferences: true },
+    })
     .stringify(hast);
 
   return html;

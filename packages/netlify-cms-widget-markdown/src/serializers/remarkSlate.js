@@ -36,6 +36,7 @@ export default function remarkToSlate({ voidCodeBlock }) {
   return transformNode;
 
   function transformNode(node) {
+    //console.log(JSON.stringify(node, null, 2));
     /**
      * Call `transformNode` recursively on child nodes.
      *
@@ -291,8 +292,8 @@ export default function remarkToSlate({ voidCodeBlock }) {
        * line breaks within a text node.
        */
       case 'break': {
-        const textNode = createText('\n');
-        return createInline('break', {}, [textNode]);
+        const { data } = node;
+        return createInline('break', { data });
       }
 
       /**

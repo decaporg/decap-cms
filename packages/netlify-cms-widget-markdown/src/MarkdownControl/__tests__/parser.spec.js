@@ -356,13 +356,7 @@ Object {
           "text": "blue moon",
         },
         Object {
-          "nodes": Array [
-            Object {
-              "object": "text",
-              "text": "
-",
-            },
-          ],
+          "data": undefined,
           "object": "inline",
           "type": "break",
         },

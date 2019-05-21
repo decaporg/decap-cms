@@ -82,7 +82,8 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
           };
         }
 
-        case 'image': {
+        case 'image':
+        case 'break': {
           const data = omit(node.data, 'marks');
           return { ...node, data };
         }
@@ -103,6 +104,7 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
         return intersection(...childMarks);
       }
 
+      case 'break':
       case 'image':
         return map(get(node, ['data', 'marks']), mark => mark.type);
 

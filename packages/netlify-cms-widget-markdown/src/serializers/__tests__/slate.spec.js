@@ -34,6 +34,10 @@ describe('slate', () => {
     expect(process('<span>*</span>')).toEqual('<span>*</span>');
   });
 
+  fit('should wrap break tags in surrounding marks', () => {
+    expect(process('*a  \nb*')).toEqual('*a\\\nb*');
+  });
+
   it('should not produce invalid markdown when a styled block has trailing whitespace', () => {
     const slateAst = {
       object: 'block',
