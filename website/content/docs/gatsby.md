@@ -3,6 +3,7 @@ title: Gatsby
 group: guides
 weight: 20
 ---
+
 This guide will help you get started using Netlify CMS and Gatsby.
 
 To get up and running with Gatsby, you’ll need to have [Node.js](https://nodejs.org/) installed on your computer. _Note: Gatsby's minimum supported Node.js version is Node 8._
@@ -26,10 +27,9 @@ You will see that there are multiple Markdown files that represent blog posts. O
 ```yml
 ---
 title: New Beginnings
-date: "2015-05-28T22:40:32.169Z"
+date: '2015-05-28T22:40:32.169Z'
 description: This is an optional description for SEO and Open Graph purposes, rather than the default generated excerpt.
 ---
-
 Far far away, behind the word mountains, far from the countries Vokalia and
 Consonantia, there live the blind texts.
 ```
@@ -69,24 +69,24 @@ media_folder: static/img
 public_folder: /img
 
 collections:
-  - name: "blog"
-    label: "Blog"
-    folder: "content/blog"
+  - name: 'blog'
+    label: 'Blog'
+    folder: 'content/blog'
     create: true
-    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
     editor:
-     preview: false
+      preview: false
     fields:
-      - { label: "Title", name: "title", widget: "string" }
-      - { label: "Publish Date", name: "date", widget: "datetime" }
-      - { label: "Description", name: "description", widget: "string" }
-      - { label: "Body", name: "body", widget: "markdown" }
+      - { label: 'Title', name: 'title', widget: 'string' }
+      - { label: 'Publish Date', name: 'date', widget: 'datetime' }
+      - { label: 'Description', name: 'description', widget: 'string' }
+      - { label: 'Body', name: 'body', widget: 'markdown' }
 ```
 
 Finally, add the plugin to your `gatsby-config.js`.
 
 ```javascript
-plugins: [`gatsby-plugin-netlify-cms`]
+plugins: [`gatsby-plugin-netlify-cms`];
 ```
 
 ### Push to GitHub
