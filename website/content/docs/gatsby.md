@@ -40,10 +40,10 @@ We can see above that each blog post has a title, a date, a description and a bo
 
 ## Add Netlify CMS to your site
 
-First let's install some dependencies. We'll need `netlify-cms` and `gatsby-plugin-netlify-cms`. Run the following command in the terminal at the root of your site:
+First let's install some dependencies. We'll need `netlify-cms-app` and `gatsby-plugin-netlify-cms`. Run the following command in the terminal at the root of your site:
 
 ```sh
-npm install --save netlify-cms gatsby-plugin-netlify-cms
+npm install --save netlify-cms-app gatsby-plugin-netlify-cms
 ```
 
 ### Configuration
