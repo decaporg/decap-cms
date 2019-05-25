@@ -115,8 +115,8 @@ export const remarkToMarkdown = obj => {
     listItemIndent: '1',
 
     /**
-     * Settings to emulate the defaults from the Prosemirror editor, not
-     * necessarily optimal. Should eventually be configurable.
+     * Use asterisk for everything, it's the most versatile. Eventually using
+     * other characters should be an option.
      */
     bullet: '*',
     emphasis: '*',
@@ -128,7 +128,7 @@ export const remarkToMarkdown = obj => {
    * Transform the MDAST with plugins.
    */
   const processedMdast = unified()
-    //.use(remarkEscapeMarkdownEntities)
+    .use(remarkEscapeMarkdownEntities)
     .use(remarkStripTrailingBreaks)
     .runSync(mdast);
 

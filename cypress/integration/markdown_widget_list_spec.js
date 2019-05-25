@@ -302,7 +302,7 @@ describe('Markdown widget', () => {
           });
       });
 
-      it.only('affects only selected list items', () => {
+      it('affects only selected list items', () => {
         cy.clickUnorderedListButton()
           .type('foo')
           .enter({ times: 2 })

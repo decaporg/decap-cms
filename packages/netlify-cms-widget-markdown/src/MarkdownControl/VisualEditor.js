@@ -158,7 +158,7 @@ export default class Editor extends React.Component {
   handleMarkClick = (event, type) => {
     event.preventDefault();
     const { editor } = this;
-    editor.focus().toggleMark(type);
+    editor.toggleMark(type).focus();
   };
 
   handleBlockClick = (event, type) => {

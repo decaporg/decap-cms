@@ -222,6 +222,14 @@ Cypress.Commands.add('clickOrderedListButton', opts => {
   return cy.clickToolbarButton('Numbered List', opts);
 });
 
+Cypress.Commands.add('clickCodeButton', opts => {
+  return cy.clickToolbarButton('Code', opts);
+});
+
+Cypress.Commands.add('clickItalicButton', opts => {
+  return cy.clickToolbarButton('Italic', opts);
+});
+
 Cypress.Commands.add('confirmEditorContent', expectedDomString => {
   return cy.get('[data-slate-editor]')
     .should(([element]) => {
@@ -238,16 +246,32 @@ function toPlainTree(domString) {
     .contents;
 }
 
+function getActualBlockChildren(node) {
+  // data-slate-object="text" will always have a child filler span, so we go
+  // straight for the grandchild - an external call to this function will
+  // always match this condition first
+  if (node.properties.dataSlateObject === 'text') {
+    return getActualBlockChildren(node.children[0].children[0]);
+  }
+
+  // catch intermediate non-text nodes, which will be marks like `<strong>`
+  if (!node.properties.dataSlateString) {
+    return { ...node, children: [getActualBlockChildren(node.children[0])] };
+  }
+
+  // the lowest level text node
+  return node.children[0];
+}
+
 function removeSlateArtifacts() {
   return function transform(tree) {
     visit(tree, 'element', node => {
       // remove all element attributes
       delete node.properties;
 
-      // all paragraphs are padded with three spans, remove them to simplify
-      // snapshots
+      // remove slate padding spans to simplify test cases
       if (node.tagName === 'p') {
-        node.children = node.children[0].children[0].children[0].children;
+        node.children = node.children.map(getActualBlockChildren);
       }
     });
   }

@@ -1,8 +1,7 @@
-import { flow, trim } from 'lodash';
-import { stripIndent, source } from 'common-tags';
+import { flow } from 'lodash';
 import { tests as commonmarkSpec } from 'commonmark-spec';
 import commonmark from 'commonmark';
-import { markdownToSlate, slateToMarkdown, markdownToHtml } from '../index.js';
+import { markdownToSlate, slateToMarkdown } from '../index.js';
 
 const skips = [
   {
@@ -26,7 +25,24 @@ const skips = [
   { number: 507, reason: 'Remark allows a space between link alt and url' },
   {
     number: [
-      511, 516, 525, 528, 529, 530, 532, 533, 534, 540, 541, 542, 543, 546, 548, 560, 565, 567
+      511,
+      516,
+      525,
+      528,
+      529,
+      530,
+      532,
+      533,
+      534,
+      540,
+      541,
+      542,
+      543,
+      546,
+      548,
+      560,
+      565,
+      567,
     ],
     reason: 'we convert link references to standard links, but Remark also fails these',
   },
@@ -64,9 +80,10 @@ const parse = flow([markdownToSlate, slateToMarkdown]);
  * work on improving Commonmark support, update __fixtures__/commonmarkExpected.json
  */
 describe.skip('Commonmark support', function() {
-  const specs = onlys.length > 0
-    ? commonmarkSpec.filter(({ number }) => onlys.includes(number))
-    : commonmarkSpec;
+  const specs =
+    onlys.length > 0
+      ? commonmarkSpec.filter(({ number }) => onlys.includes(number))
+      : commonmarkSpec;
   specs.forEach(spec => {
     const skip = skips.find(({ number }) => {
       return Array.isArray(number) ? number.includes(spec.number) : number === spec.number;
@@ -74,7 +91,7 @@ describe.skip('Commonmark support', function() {
     const specUrl = `https://spec.commonmark.org/0.29/#example-${spec.number}`;
     const parsed = parse(spec.markdown);
     const commonmarkParsedHtml = parseWithCommonmark(parsed);
-    const description =`
+    const description = `
 ${spec.section}
 ${specUrl}
 

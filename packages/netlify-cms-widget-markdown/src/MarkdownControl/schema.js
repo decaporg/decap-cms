@@ -33,8 +33,7 @@ const schema = ({ voidCodeBlock } = {}) => ({
             { type: 'code-block' },
             { type: 'bulleted-list' },
             { type: 'numbered-list' },
-            { type: 'break' },
-            { type: 'thematicBreak' },
+            { type: 'thematic-break' },
             { type: 'table' },
             { type: 'shortcode' },
           ],
@@ -71,8 +70,7 @@ const schema = ({ voidCodeBlock } = {}) => ({
             { type: 'code-block' },
             { type: 'bulleted-list' },
             { type: 'numbered-list' },
-            { type: 'break' },
-            { type: 'thematicBreak' },
+            { type: 'thematic-break' },
             { type: 'table' },
           ],
         },
@@ -122,8 +120,7 @@ const schema = ({ voidCodeBlock } = {}) => ({
         { type: 'quote' },
         { type: 'code-block' },
         { type: 'numbered-list' },
-        { type: 'break' },
-        { type: 'thematicBreak' },
+        { type: 'thematic-break' },
         { type: 'table' },
       ],
       normalize: (editor, error) => {
@@ -163,8 +160,7 @@ const schema = ({ voidCodeBlock } = {}) => ({
         { type: 'quote' },
         { type: 'code-block' },
         { type: 'bulleted-list' },
-        { type: 'break' },
-        { type: 'thematicBreak' },
+        { type: 'thematic-break' },
         { type: 'table' },
       ],
       normalize: (editor, error) => {
@@ -189,7 +185,7 @@ const schema = ({ voidCodeBlock } = {}) => ({
     {
       match: [
         { object: 'inline', type: 'image' },
-        { object: 'block', type: 'break' },
+        { object: 'inline', type: 'break' },
         { object: 'block', type: 'thematic-break' },
         { object: 'block', type: 'shortcode' },
       ],

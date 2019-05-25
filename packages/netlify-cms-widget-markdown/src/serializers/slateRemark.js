@@ -113,11 +113,22 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
     }
   }
 
+  function getSharedMarks(marks, node) {
+    const nodeMarks = getNodeMarks(node);
+    const sharedMarks = intersection(marks, nodeMarks);
+    if (sharedMarks[0] === 'code') {
+      return nodeMarks.length === 1 ? marks : [];
+    }
+    return sharedMarks;
+  }
+
   function extractFirstMark(nodes) {
     let firstGroupMarks = getNodeMarks(nodes[0]) || [];
 
-    // Ensure that code mark is last if present
-    if (firstGroupMarks.includes('code') && last(firstGroupMarks) !== 'code') {
+    // If code mark is present, but there are other marks, process others first.
+    // If only the code mark is present, don't allow it to be shared with other
+    // nodes.
+    if (firstGroupMarks[0] === 'code' && firstGroupMarks.length > 1) {
       firstGroupMarks = [...without('firstGroupMarks', 'code'), 'code'];
     }
 
@@ -126,7 +137,7 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
     if (firstGroupMarks.length > 0) {
       while (splitIndex < nodes.length) {
         if (nodes[splitIndex]) {
-          const sharedMarks = intersection(firstGroupMarks, getNodeMarks(nodes[splitIndex]));
+          const sharedMarks = getSharedMarks(firstGroupMarks, nodes[splitIndex]);
           if (sharedMarks.length > 0) {
             firstGroupMarks = sharedMarks;
           } else {
