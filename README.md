@@ -56,4 +56,7 @@ These services support Netlify CMS development by providing free infrastructure.
   <a href="https://www.browserstack.com">
     <img src="https://raw.githubusercontent.com/netlify/netlify-cms/master/img/browserstack.png" height="38" alt="browserstack" />
   </a>
+  <a href="https://www.cypress.io">
+    <img src="https://raw.githubusercontent.com/netlify/netlify-cms/master/img/cypressio.png" height="38" alt="Cypress.io" />
+  </a>
 </p>
