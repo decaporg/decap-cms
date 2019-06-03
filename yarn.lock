@@ -4573,6 +4573,11 @@ dom-testing-library@^4.0.0:
     pretty-format "^24.7.0"
     wait-for-expect "^1.1.1"
 
+dom-testing-library@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/dom-testing-library/-/dom-testing-library-5.0.0.tgz#29a899d4d7aaf8aadfced4eee899e99c24d80b57"
+  integrity sha512-1Rx62geC7F3RGYW7HODhTKOMxsQZyHmlHUDcvpbc88ndPo0Wa7U2dNny4NO/Jsndp7qLpnjrlW8gWi7YkOrHgQ==
+
 dom-walk@^0.1.0:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/dom-walk/-/dom-walk-0.1.1.tgz#672226dc74c8f799ad35307df936aba11acd6018"
