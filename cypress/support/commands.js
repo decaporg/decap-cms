@@ -247,20 +247,13 @@ function toPlainTree(domString) {
 }
 
 function getActualBlockChildren(node) {
-  // data-slate-object="text" will always have a child filler span, so we go
-  // straight for the grandchild - an external call to this function will
-  // always match this condition first
-  if (node.properties.dataSlateObject === 'text') {
-    return getActualBlockChildren(node.children[0].children[0]);
+  if (node.tagName === 'span') {
+    return node.children.flatMap(getActualBlockChildren);
   }
-
-  // catch intermediate non-text nodes, which will be marks like `<strong>`
-  if (!node.properties.dataSlateString) {
-    return { ...node, children: [getActualBlockChildren(node.children[0])] };
+  if (node.children) {
+    return { ...node, children: node.children.flatMap(getActualBlockChildren) };
   }
-
-  // the lowest level text node
-  return node.children[0];
+  return node;
 }
 
 function removeSlateArtifacts() {
@@ -271,13 +264,10 @@ function removeSlateArtifacts() {
 
       // remove slate padding spans to simplify test cases
       if (node.tagName === 'p') {
-        node.children = node.children.map(getActualBlockChildren);
+        node.children = node.children.flatMap(getActualBlockChildren);
       }
     });
   }
-}
-
-function walker(el) {
 }
 
 function getTextNode(el, match){

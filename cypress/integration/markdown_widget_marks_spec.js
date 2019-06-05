@@ -23,9 +23,9 @@ describe('Markdown widget', () => {
           .confirmEditorContent(`
             <p>
               <em>f</em>
-              <em>
-                <code>oo</code>
-              </em>
+              <code>
+                <em>oo</em>
+              </code>
             </p>
           `);
       });
