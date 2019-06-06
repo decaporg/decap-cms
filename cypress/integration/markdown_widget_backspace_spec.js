@@ -12,68 +12,65 @@ describe('Markdown widget', () => {
   });
 
   describe('pressing backspace', () => {
-    it('creates new default block from empty block', () => {
+    it('sets non-default block to default when empty', () => {
       cy.focused()
-        .enter()
+        .clickHeadingOneButton()
+        .backspace()
         .confirmMarkdownEditorContent(`
-          <p>${empty}</p>
           <p>${empty}</p>
         `);
     });
-    it('creates new default block when selection collapsed at end of block', () => {
+    it('does nothing at start of first block in document when non-empty and non-default', () => {
       cy.focused()
-        .type('foo')
-        .enter()
-        .confirmMarkdownEditorContent(`
-          <p>foo</p>
-          <p>${empty}</p>
-        `);
-    });
-    it('creates new default block when selection collapsed at end of non-default block', () => {
-      cy.clickHeadingOneButton()
-        .type('foo')
-        .enter()
-        .confirmMarkdownEditorContent(`
-          <h1>foo</h1>
-          <p>${empty}</p>
-        `);
-    });
-    it('creates new default block when selection collapsed in empty non-default block', () => {
-      cy.clickHeadingOneButton()
-        .enter()
-        .confirmMarkdownEditorContent(`
-          <h1>${empty}</h1>
-          <p>${empty}</p>
-        `);
-    });
-    it('splits block into two same-type blocks when collapsed selection at block start', () => {
-      cy.clickHeadingOneButton()
+        .clickHeadingOneButton()
         .type('foo')
         .setCursorBefore('foo')
-        .enter()
+        .backspace({ times: 4 })
         .confirmMarkdownEditorContent(`
-          <h1>${empty}</h1>
           <h1>foo</h1>
         `);
     });
-    it('splits block into two same-type blocks when collapsed in middle of selection at block start', () => {
-      cy.clickHeadingOneButton()
+    it('deletes individual characters in middle of non-empty non-default block in document', () => {
+      cy.focused()
+        .clickHeadingOneButton()
         .type('foo')
-        .setCursorBefore('oo')
-        .enter()
+        .setCursorAfter('fo')
+        .backspace({ times: 3 })
         .confirmMarkdownEditorContent(`
-          <h1>f</h1>
-          <h1>oo</h1>
+          <h1>o</h1>
         `);
     });
-    it('deletes selected content and splits to same-type block when selection is expanded', () => {
-      cy.clickHeadingOneButton()
-        .type('foo bar')
-        .setSelection('o b')
+    it('at beginning of non-first block, moves default block content to previous block', () => {
+      cy.focused()
+        .clickHeadingOneButton()
+        .type('foo')
         .enter()
+        .type('bar')
+        .setCursorBefore('bar')
+        .backspace()
         .confirmMarkdownEditorContent(`
-          <h1>fo</h1>
-          <h1>ar</h1>
+          <h1>foobar</h1>
+        `);
+    });
+    it('at beginning of non-first block, moves non-default block content to previous block', () => {
+      cy.focused()
+        .type('foo')
+        .enter()
+        .clickHeadingOneButton()
+        .type('bar')
+        .enter()
+        .clickHeadingTwoButton()
+        .type('baz')
+        .setCursorBefore('baz')
+        .backspace()
+        .confirmMarkdownEditorContent(`
+          <p>foo</p>
+          <h1>barbaz</h1>
+        `)
+        .setCursorBefore('bar')
+        .backspace()
+        .confirmMarkdownEditorContent(`
+          <p>foobarbaz</p>
         `);
     });
   });

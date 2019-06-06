@@ -70,7 +70,7 @@ describe('Markdown widget', () => {
           `);
       });
 
-      it.only('converts empty nested list item to empty block in parent list item', () => {
+      it('converts empty nested list item to empty block in parent list item', () => {
         cy.clickUnorderedListButton()
           .type('foo')
           .enter()

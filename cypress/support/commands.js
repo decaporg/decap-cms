@@ -213,6 +213,7 @@ Cypress.Commands.add('clickToolbarButton', (title, { times } = {}) => {
 
 [
   ['clickHeadingOneButton', 'Header 1'],
+  ['clickHeadingTwoButton', 'Header 2'],
   ['clickOrderedListButton', 'Numbered List'],
   ['clickUnorderedListButton', 'Bulleted List'],
   ['clickCodeButton', 'Code'],
