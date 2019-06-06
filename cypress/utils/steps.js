@@ -165,7 +165,7 @@ function populateEntry(entry) {
   for (let key of keys) {
     const value = entry[key];
     if (key === 'body') {
-      cy.get('[data-slate-editor]')
+      cy.getMarkdownEditor()
         .click()
         .clear()
         .type(value);
@@ -282,7 +282,7 @@ function validateListFields({ name, description }) {
   cy.get('input')
     .eq(2)
     .type(name);
-  cy.get('[data-slate-editor]')
+  cy.getMarkdownEditor()
     .eq(2)
     .type(description);
   cy.contains('button', 'Save').click();

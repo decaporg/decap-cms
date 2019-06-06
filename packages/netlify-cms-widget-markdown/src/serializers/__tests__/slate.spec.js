@@ -50,6 +50,10 @@ describe('slate', () => {
     expect(process('*a  \nb*')).toEqual('*a\\\nb*');
   });
 
+  it.only('should ignore consecutive whitespace', () => {
+    expect(markdownToSlate('<span>*</span>')).toEqual();
+  });
+
   it('should not produce invalid markdown when a styled block has trailing whitespace', () => {
     // prettier-ignore
     const slateAst = (

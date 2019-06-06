@@ -295,21 +295,17 @@ const ListPlugin = ({ defaultBlockType, unorderedListType, orderedListType }) =>
           const listItem = listOrListItem;
           const previousSibling = editor.value.document.getPreviousSibling(listItem.key);
           if (previousSibling && previousSibling.type === 'list-item') {
-            editor.mergeNodeByKey(listItem.key);
-          } else {
-            editor.unwrapListItem(listItem);
+            return editor.mergeNodeByKey(listItem.key);
           }
-          return;
+          return editor.unwrapListItem(listItem);
         }
 
         const block = editor.value.startBlock;
         const previousSibling = editor.value.document.getPreviousSibling(block.key);
         const isAtStart = editor.value.selection.start.isAtStartOfNode(block);
         if (block.type === defaultBlockType && isAtStart && editor.isList(previousSibling)) {
-          editor.wrapInList(previousSibling.type);
-          return;
+          return editor.wrapInList(previousSibling.type);
         }
-
         return next();
       } else if (isHotkey('tab', event) || isHotkey('shift+tab', event)) {
         /**
@@ -327,22 +323,23 @@ const ListPlugin = ({ defaultBlockType, unorderedListType, orderedListType }) =>
         if (listOrListItem.type === 'list-item') {
           const listItem = listOrListItem;
           if (isTab) {
-            editor.indentListItems(listItem);
+            return editor.indentListItems(listItem);
           }
           if (isShiftTab) {
-            editor.unindentListItems(listItem);
+            return editor.unindentListItems(listItem);
           }
         } else {
           const list = listOrListItem;
           if (isTab) {
             const listItems = editor.getSelectedChildren(list);
-            editor.indentListItems(listItems);
+            return editor.indentListItems(listItems);
           }
           if (isShiftTab) {
             const listItems = editor.getSelectedChildren(list);
-            editor.unindentListItems(listItems);
+            return editor.unindentListItems(listItems);
           }
         }
+        return next();
       } else if (isHotkey('enter', event)) {
         /**
          * Enter
@@ -353,7 +350,7 @@ const ListPlugin = ({ defaultBlockType, unorderedListType, orderedListType }) =>
         }
 
         if (editor.value.selection.isExpanded) {
-          editor.delete();
+          return editor.delete();
         }
 
         if (listOrListItem.type === 'list-item') {
@@ -361,7 +358,7 @@ const ListPlugin = ({ defaultBlockType, unorderedListType, orderedListType }) =>
 
           // If the list item is empty, remove it.
           if (listItem.text === '' || editor.value.selection.start.isAtStartOfNode(listItem)) {
-            editor.unwrapListItem(listItem);
+            return editor.unwrapListItem(listItem);
           }
 
           // If current block is empty, or selection at start of block that is not
@@ -374,7 +371,7 @@ const ListPlugin = ({ defaultBlockType, unorderedListType, orderedListType }) =>
             const newListItem = Block.create('list-item');
             const range = Range.create(editor.value.selection).moveEndToEndOfNode(listItem);
 
-            editor.withoutNormalizing(() => {
+            return editor.withoutNormalizing(() => {
               editor.wrapBlockAtRange(range, newListItem).unwrapNodeByKey(newListItem.key);
             });
           } else {
@@ -383,12 +380,12 @@ const ListPlugin = ({ defaultBlockType, unorderedListType, orderedListType }) =>
         } else {
           const list = listOrListItem;
           if (list.nodes.size === 0) {
-            editor.removeNodeByKey(list.key);
+            returneditor.removeNodeByKey(list.key);
           }
         }
-      } else {
         return next();
       }
+      return next();
     },
   };
 };

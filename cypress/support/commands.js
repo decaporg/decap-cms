@@ -167,10 +167,7 @@ Cypress.Commands.add('setCursor', { prevSubject: true }, (subject, query, atStar
       const document = node.ownerDocument;
       document.getSelection().removeAllRanges();
       document.getSelection().collapse(node, offset);
-    })
-    .click();
-  // click chained at end to reactivate Slate, otherwise subsequent key presses
-  // are processed by the contenteditable element without Slate's processing
+    });
 });
 
 Cypress.Commands.add('setCursorBefore', { prevSubject: true }, (subject, query) => {
@@ -214,28 +211,34 @@ Cypress.Commands.add('clickToolbarButton', (title, { times } = {}) => {
     return runTimes(instance, fn, times).focused();
 });
 
-Cypress.Commands.add('clickUnorderedListButton', opts => {
-  return cy.clickToolbarButton('Bulleted List', opts);
+[
+  ['clickHeadingOneButton', 'Header 1'],
+  ['clickOrderedListButton', 'Numbered List'],
+  ['clickUnorderedListButton', 'Bulleted List'],
+  ['clickCodeButton', 'Code'],
+  ['clickItalicButton', 'Italic'],
+].forEach(([commandName, toolbarButtonName]) => {
+  Cypress.Commands.add(commandName, opts => {
+    return cy.clickToolbarButton(toolbarButtonName, opts);
+  });
 });
 
-Cypress.Commands.add('clickOrderedListButton', opts => {
-  return cy.clickToolbarButton('Numbered List', opts);
+Cypress.Commands.add('getMarkdownEditor', () => {
+  return cy.get('[data-slate-editor]');
 });
 
-Cypress.Commands.add('clickCodeButton', opts => {
-  return cy.clickToolbarButton('Code', opts);
-});
-
-Cypress.Commands.add('clickItalicButton', opts => {
-  return cy.clickToolbarButton('Italic', opts);
-});
-
-Cypress.Commands.add('confirmEditorContent', expectedDomString => {
-  return cy.get('[data-slate-editor]')
+Cypress.Commands.add('confirmMarkdownEditorContent', expectedDomString => {
+  return cy.getMarkdownEditor()
     .should(([element]) => {
       const actualDomString = toPlainTree(element.innerHTML);
       expect(actualDomString).toEqual(oneLineTrim(expectedDomString));
     });
+});
+
+Cypress.Commands.add('clearMarkdownEditorContent', () => {
+  return cy.getMarkdownEditor()
+    .selectAll()
+    .backspace({ times: 2 });
 });
 
 function toPlainTree(domString) {
@@ -263,7 +266,7 @@ function removeSlateArtifacts() {
       delete node.properties;
 
       // remove slate padding spans to simplify test cases
-      if (node.tagName === 'p') {
+      if (['h1', 'p'].includes(node.tagName)) {
         node.children = node.children.flatMap(getActualBlockChildren);
       }
     });

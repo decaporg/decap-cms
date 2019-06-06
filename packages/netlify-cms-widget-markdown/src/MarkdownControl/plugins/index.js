@@ -48,27 +48,57 @@ const SoftBreak = (options = {}) => ({
 
 const BreakToDefaultBlock = () => ({
   onKeyDown(event, editor, next) {
+    const { selection, startBlock } = editor.value;
     const isEnter = isHotkey('enter', event);
+    if (!isEnter) {
+      return next();
+    }
+    if (selection.isExpanded) {
+      editor.delete();
+      return next();
+    }
+    if (selection.start.isAtEndOfNode(startBlock) && startBlock.type !== DEFAULT_BLOCK_TYPE) {
+      return editor.insertBlock(DEFAULT_BLOCK_TYPE);
+    }
+    return next();
+  },
+});
+
+const CloseBlock = () => ({
+  onKeyDown(event, editor, next) {
+    const { selection, startBlock } = editor.value;
     const isBackspace = isHotkey('backspace', event);
-    if (!isEnter && !isBackspace) {
+    if (!isBackspace) {
       return next();
     }
-    if (editor.value.selection.isExpanded) {
-      if (isEnter) {
-        editor.delete();
-      }
+    if (selection.isExpanded) {
+      return editor.delete();
+    }
+    if (!selection.start.isAtStartOfNode(startBlock) || startBlock.text.length > 0) {
       return next();
     }
-    const block = editor.value.startBlock;
-    if (block.type !== DEFAULT_BLOCK_TYPE) {
+    if (startBlock.type !== DEFAULT_BLOCK_TYPE) {
+      return editor.setBlocks(DEFAULT_BLOCK_TYPE);
+    }
+    return next();
+  },
+});
+
+const QuoteBlock = () => ({
+  onKeyDown(event, editor, next) {
+    const isBackspace = isHotkey('backspace', event);
+    const { selection, startBlock, document: doc } = editor.value;
+    if (!isBackspace) {
       return next();
     }
-    if (editor.value.selection.start.isAtStartOfNode(block)) {
-      const parent = editor.value.document.getParent(block.key);
-      if (['quote'].includes(parent.type)) {
-        editor.unwrapNodeByKey(block.key);
-        return;
-      }
+    if (selection.isExpanded) {
+      return editor.delete();
+    }
+    if (!selection.start.isAtStartOfNode(startBlock)) {
+      return next();
+    }
+    if (startBlock.type === DEFAULT_BLOCK_TYPE && doc.getParent(startBlock.key).type === 'quote' ) {
+      return editor.unwrapNodeByKey(startBlock.key);
     }
     return next();
   },
@@ -101,7 +131,7 @@ const Drag = () => ({
 const Logger = () => ({
   commands: {
     log(editor) {
-      console.log(editor.value);
+      console.log(JSON.stringify(editor.value.toJS(), null, 2));
     },
   },
   onKeyDown(event, editor, next) {
@@ -143,12 +173,14 @@ const plugins = [
     ],
   }),
   */
-  BreakToDefaultBlock(),
+  QuoteBlock(),
   ListPlugin({
     defaultBlockType: DEFAULT_BLOCK_TYPE,
     unorderedListType: 'bulleted-list',
     orderedListType: 'numbered-list',
   }),
+  BreakToDefaultBlock(),
+  CloseBlock(),
 ];
 
 export default plugins;

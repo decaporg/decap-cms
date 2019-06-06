@@ -9,15 +9,13 @@ describe('Markdown widget', () => {
     });
 
     beforeEach(() => {
-      cy.get('[data-slate-editor]')
-        .selectAll()
-        .backspace({ times: 2 })
+      cy.clearMarkdownEditorContent();
     });
 
     describe('toolbar buttons', () => {
       it('creates and focuses empty list', () => {
         cy.clickUnorderedListButton()
-          .confirmEditorContent(`
+          .confirmMarkdownEditorContent(`
             <ul>
               <li>
                 <p>${empty}</p>
@@ -28,7 +26,7 @@ describe('Markdown widget', () => {
 
       it('removes list', () => {
         cy.clickUnorderedListButton({ times: 2 })
-          .confirmEditorContent(`
+          .confirmMarkdownEditorContent(`
             <p>${empty}</p>
           `);
       });
@@ -38,7 +36,7 @@ describe('Markdown widget', () => {
           .type('foo')
           .enter()
           .clickUnorderedListButton()
-          .confirmEditorContent(`
+          .confirmMarkdownEditorContent(`
             <ul>
               <li>
                 <p>foo</p>
@@ -53,7 +51,7 @@ describe('Markdown widget', () => {
           .type('bar')
           .enter()
           .clickUnorderedListButton()
-          .confirmEditorContent(`
+          .confirmMarkdownEditorContent(`
             <ul>
               <li>
                 <p>foo</p>
@@ -72,7 +70,7 @@ describe('Markdown widget', () => {
           `);
       });
 
-      it('converts empty nested list item to empty block in parent list item', () => {
+      it.only('converts empty nested list item to empty block in parent list item', () => {
         cy.clickUnorderedListButton()
           .type('foo')
           .enter()
@@ -80,7 +78,7 @@ describe('Markdown widget', () => {
           .type('bar')
           .enter()
           .clickUnorderedListButton()
-          .confirmEditorContent(`
+          .confirmMarkdownEditorContent(`
             <ul>
               <li>
                 <p>foo</p>
@@ -98,7 +96,7 @@ describe('Markdown widget', () => {
             </ul>
           `)
           .clickUnorderedListButton()
-          .confirmEditorContent(`
+          .confirmMarkdownEditorContent(`
             <ul>
               <li>
                 <p>foo</p>
@@ -113,7 +111,7 @@ describe('Markdown widget', () => {
           `)
           .backspace({ times: 4 })
           .clickUnorderedListButton()
-          .confirmEditorContent(`
+          .confirmMarkdownEditorContent(`
             <ul>
               <li>
                 <p>foo</p>
@@ -133,7 +131,7 @@ describe('Markdown widget', () => {
           .clickUnorderedListButton()
           .type('baz')
           .clickUnorderedListButton()
-          .confirmEditorContent(`
+          .confirmMarkdownEditorContent(`
             <ul>
               <li>
                 <p>foo</p>
@@ -148,7 +146,7 @@ describe('Markdown widget', () => {
           `)
           .up()
           .clickUnorderedListButton()
-          .confirmEditorContent(`
+          .confirmMarkdownEditorContent(`
             <ul>
               <li>
                 <p>foo</p>
@@ -159,7 +157,7 @@ describe('Markdown widget', () => {
           `)
           .up()
           .clickUnorderedListButton()
-          .confirmEditorContent(`
+          .confirmMarkdownEditorContent(`
             <p>foo</p>
             <p>bar</p>
             <p>baz</p>
@@ -175,7 +173,7 @@ describe('Markdown widget', () => {
           .type('baz')
           .up()
           .clickUnorderedListButton()
-          .confirmEditorContent(`
+          .confirmMarkdownEditorContent(`
             <p>foo</p>
             <ul>
               <li>
@@ -197,7 +195,7 @@ describe('Markdown widget', () => {
           .clickUnorderedListButton()
           .up()
           .clickUnorderedListButton()
-          .confirmEditorContent(`
+          .confirmMarkdownEditorContent(`
             <ul>
               <li>
                 <p>foo</p>
@@ -210,7 +208,7 @@ describe('Markdown widget', () => {
           `)
           .down({ times: 2 })
           .clickUnorderedListButton()
-          .confirmEditorContent(`
+          .confirmMarkdownEditorContent(`
             <ul>
               <li>
                 <p>foo</p>
@@ -227,7 +225,7 @@ describe('Markdown widget', () => {
           .enter()
           .type('qux')
           .clickUnorderedListButton()
-          .confirmEditorContent(`
+          .confirmMarkdownEditorContent(`
             <ul>
               <li>
                 <p>foo</p>
@@ -249,7 +247,7 @@ describe('Markdown widget', () => {
           .enter()
           .type('quux')
           .clickUnorderedListButton()
-          .confirmEditorContent(`
+          .confirmMarkdownEditorContent(`
             <ul>
               <li>
                 <p>foo</p>
@@ -271,7 +269,7 @@ describe('Markdown widget', () => {
             </ul>
           `)
           .clickOrderedListButton()
-          .confirmEditorContent(`
+          .confirmMarkdownEditorContent(`
             <ul>
               <li>
                 <p>foo</p>
@@ -311,7 +309,7 @@ describe('Markdown widget', () => {
           .type('baz')
           .setSelection('bar')
           .clickUnorderedListButton()
-          .confirmEditorContent(`
+          .confirmMarkdownEditorContent(`
             <ul>
               <li>
                 <p>foo</p>
@@ -327,7 +325,7 @@ describe('Markdown widget', () => {
           .clickUnorderedListButton()
           .setSelection('bar', 'baz')
           .clickUnorderedListButton()
-          .confirmEditorContent(`
+          .confirmMarkdownEditorContent(`
             <ul>
               <li>
                 <p>foo</p>
@@ -337,7 +335,7 @@ describe('Markdown widget', () => {
             <p>baz</p>
           `)
           .clickUnorderedListButton()
-          .confirmEditorContent(`
+          .confirmMarkdownEditorContent(`
             <ul>
               <li>
                 <p>foo</p>
@@ -359,7 +357,7 @@ describe('Markdown widget', () => {
           .setCursorAfter('qux')
           .enter({ times: 4 })
           .clickUnorderedListButton()
-          .confirmEditorContent(`
+          .confirmMarkdownEditorContent(`
             <ul>
               <li>
                 <p>foo</p>
@@ -392,7 +390,7 @@ describe('Markdown widget', () => {
       it('removes the list item and list if empty', () => {
         cy.clickUnorderedListButton()
           .enter()
-          .confirmEditorContent(`
+          .confirmMarkdownEditorContent(`
             <p>${empty}</p>
           `);
       });
@@ -401,7 +399,7 @@ describe('Markdown widget', () => {
         cy.clickUnorderedListButton()
           .type('foo')
           .enter()
-          .confirmEditorContent(`
+          .confirmMarkdownEditorContent(`
             <ul>
               <li>
                 <p>foo</p>
@@ -411,7 +409,7 @@ describe('Markdown widget', () => {
           `)
           .type('bar')
           .enter()
-          .confirmEditorContent(`
+          .confirmMarkdownEditorContent(`
             <ul>
               <li>
                 <p>foo</p>
@@ -426,7 +424,7 @@ describe('Markdown widget', () => {
         cy.clickUnorderedListButton()
           .type('foo')
           .enter({ times: 2 })
-          .confirmEditorContent(`
+          .confirmMarkdownEditorContent(`
             <ul>
               <li>
                 <p>foo</p>
@@ -438,7 +436,7 @@ describe('Markdown widget', () => {
           `)
           .type('bar')
           .enter()
-          .confirmEditorContent(`
+          .confirmMarkdownEditorContent(`
             <ul>
               <li>
                 <p>foo</p>
@@ -455,7 +453,7 @@ describe('Markdown widget', () => {
         cy.clickUnorderedListButton()
           .type('foo')
           .enter({ times: 3 })
-          .confirmEditorContent(`
+          .confirmMarkdownEditorContent(`
             <ul>
               <li>
                 <p>foo</p>
@@ -470,7 +468,7 @@ describe('Markdown widget', () => {
       it('removes the list item and list if empty', () => {
         cy.clickUnorderedListButton()
           .backspace()
-          .confirmEditorContent(`
+          .confirmMarkdownEditorContent(`
             <p>${empty}</p>
           `);
       });
@@ -480,7 +478,7 @@ describe('Markdown widget', () => {
           .type('foo')
           .enter()
           .backspace()
-          .confirmEditorContent(`
+          .confirmMarkdownEditorContent(`
             <ul>
               <li>
                 <p>foo</p>
@@ -494,7 +492,7 @@ describe('Markdown widget', () => {
           .type('foo')
           .enter({ times: 2 })
           .backspace()
-          .confirmEditorContent(`
+          .confirmMarkdownEditorContent(`
             <ul>
               <li>
                 <p>foo</p>
@@ -509,7 +507,7 @@ describe('Markdown widget', () => {
       it('does nothing in top level list', () => {
         cy.clickUnorderedListButton()
           .tabkey()
-          .confirmEditorContent(`
+          .confirmMarkdownEditorContent(`
             <ul>
               <li>
                 <p>${empty}</p>
@@ -518,7 +516,7 @@ describe('Markdown widget', () => {
           `)
           .type('foo')
           .tabkey()
-          .confirmEditorContent(`
+          .confirmMarkdownEditorContent(`
             <ul>
               <li>
                 <p>foo</p>
@@ -533,7 +531,7 @@ describe('Markdown widget', () => {
           .enter({ times: 2 })
           .type('bar')
           .tabkey()
-          .confirmEditorContent(`
+          .confirmMarkdownEditorContent(`
             <ul>
               <li>
                 <p>foo</p>
@@ -547,7 +545,7 @@ describe('Markdown widget', () => {
           `)
           .enter({ times: 2 })
           .tabkey()
-          .confirmEditorContent(`
+          .confirmMarkdownEditorContent(`
             <ul>
               <li>
                 <p>foo</p>
@@ -571,7 +569,7 @@ describe('Markdown widget', () => {
           .type('foo')
           .enter({ times: 2 })
           .tabkey({ times: 5 })
-          .confirmEditorContent(`
+          .confirmMarkdownEditorContent(`
             <ul>
               <li>
                 <p>foo</p>
@@ -591,7 +589,7 @@ describe('Markdown widget', () => {
           .enter({ times: 2 })
           .tabkey()
           .tabkey({ shift: true })
-          .confirmEditorContent(`
+          .confirmMarkdownEditorContent(`
             <ul>
               <li>
                 <p>foo</p>
@@ -612,7 +610,7 @@ describe('Markdown widget', () => {
           .enter({ times: 2 })
           .tabkey()
           .type('baz')
-          .confirmEditorContent(`
+          .confirmMarkdownEditorContent(`
             <ul>
               <li>
                 <p>foo</p>
@@ -630,7 +628,7 @@ describe('Markdown widget', () => {
             </ul>
           `)
           .tabkey({ shift: true })
-          .confirmEditorContent(`
+          .confirmMarkdownEditorContent(`
             <ul>
               <li>
                 <p>foo</p>
@@ -646,7 +644,7 @@ describe('Markdown widget', () => {
             </ul>
           `)
           .tabkey({ shift: true })
-          .confirmEditorContent(`
+          .confirmMarkdownEditorContent(`
             <ul>
               <li>
                 <p>foo</p>
