@@ -93,7 +93,12 @@ const schema = ({ voidCodeBlock } = {}) => ({
       ],
       nodes: [
         {
-          match: [{ object: 'text' }, { type: 'link' }, { type: 'image' }],
+          match: [
+            { object: 'text' },
+            { type: 'link' },
+            { type: 'image' },
+            { type: 'break' },
+          ],
         },
       ],
     },

@@ -9,42 +9,18 @@ const BLOCK_PARENTS = [
   'quote',
 ];
 */
-/*
-const SoftBreak = (options = {}) => ({
+const LineBreak = (options = {}) => ({
   onKeyDown(event, editor, next) {
-    if (options.shift && !isHotkey('shift+enter', event)) return next();
-    if (!options.shift && !isHotkey('enter', event)) return next();
-
-    const { onlyIn, ignoreIn, defaultBlock = 'paragraph' } = options;
-    const { type: blockType, text, key } = editor.value.startBlock;
-    const { type: parentType } = editor.value.document.getParent(key);
-    const targetParentBlock = BLOCK_PARENTS.includes(parentType);
-    const type = targetParentBlock ? parentType : blockType;
-    if (onlyIn && !onlyIn.includes(type)) return next();
-    if (ignoreIn && ignoreIn.includes(type)) return next();
-
-    if (targetParentBlock) {
-      const shouldClose = text === '';
-      if (shouldClose) {
-        editor.unwrapNodeByKey(key);
-      }
+    const isShiftEnter = isHotkey('shift+enter', event);
+    if (!isShiftEnter) {
       return next();
-    } else {
-      const shouldClose = text.endsWith('\n');
-      if (shouldClose) {
-        editor.deleteBackward(1).insertBlock(defaultBlock);
-      }
-
-      const textNode = Text.create('\n');
-      const breakNode = Inline.create({ type: 'break', nodes: [textNode] });
-      editor
-        .insertInline(breakNode)
-        .insertText('')
-        .moveToStartOfNextText();
     }
+    return editor
+      .insertInline('break')
+      .insertText('')
+      .moveToStartOfNextText();
   },
 });
-*/
 
 const BreakToDefaultBlock = () => ({
   onKeyDown(event, editor, next) {
@@ -179,6 +155,7 @@ const plugins = [
     unorderedListType: 'bulleted-list',
     orderedListType: 'numbered-list',
   }),
+  LineBreak(),
   BreakToDefaultBlock(),
   CloseBlock(),
 ];

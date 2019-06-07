@@ -18,7 +18,7 @@ describe('Markdown widget', () => {
           .confirmMarkdownEditorContent(`
             <ul>
               <li>
-                <p>${empty}</p>
+                <p></p>
               </li>
             </ul>
           `);
@@ -27,7 +27,7 @@ describe('Markdown widget', () => {
       it('removes list', () => {
         cy.clickUnorderedListButton({ times: 2 })
           .confirmMarkdownEditorContent(`
-            <p>${empty}</p>
+            <p></p>
           `);
       });
 
@@ -42,7 +42,7 @@ describe('Markdown widget', () => {
                 <p>foo</p>
                 <ul>
                   <li>
-                    <p>${empty}</p>
+                    <p></p>
                   </li>
                 </ul>
               </li>
@@ -60,7 +60,7 @@ describe('Markdown widget', () => {
                     <p>bar</p>
                     <ul>
                       <li>
-                        <p>${empty}</p>
+                        <p></p>
                       </li>
                     </ul>
                   </li>
@@ -87,7 +87,7 @@ describe('Markdown widget', () => {
                     <p>bar</p>
                     <ul>
                       <li>
-                        <p>${empty}</p>
+                        <p></p>
                       </li>
                     </ul>
                   </li>
@@ -103,7 +103,7 @@ describe('Markdown widget', () => {
                 <ul>
                   <li>
                     <p>bar</p>
-                    <p>${empty}</p>
+                    <p></p>
                   </li>
                 </ul>
               </li>
@@ -115,7 +115,7 @@ describe('Markdown widget', () => {
             <ul>
               <li>
                 <p>foo</p>
-                <p>${empty}</p>
+                <p></p>
               </li>
             </ul>
           `);
@@ -376,7 +376,7 @@ describe('Markdown widget', () => {
                 </ol>
                 <ul>
                   <li>
-                    <p>${empty}</p>
+                    <p></p>
                   </li>
                 </ul>
               </li>
@@ -391,7 +391,7 @@ describe('Markdown widget', () => {
         cy.clickUnorderedListButton()
           .enter()
           .confirmMarkdownEditorContent(`
-            <p>${empty}</p>
+            <p></p>
           `);
       });
 
@@ -403,7 +403,7 @@ describe('Markdown widget', () => {
             <ul>
               <li>
                 <p>foo</p>
-                <p>${empty}</p>
+                <p></p>
               </li>
             </ul>
           `)
@@ -414,7 +414,7 @@ describe('Markdown widget', () => {
               <li>
                 <p>foo</p>
                 <p>bar</p>
-                <p>${empty}</p>
+                <p></p>
               </li>
             </ul>
           `);
@@ -430,7 +430,7 @@ describe('Markdown widget', () => {
                 <p>foo</p>
               </li>
               <li>
-                <p>${empty}</p>
+                <p></p>
               </li>
             </ul>
           `)
@@ -443,7 +443,7 @@ describe('Markdown widget', () => {
               </li>
               <li>
                 <p>bar</p>
-                <p>${empty}</p>
+                <p></p>
               </li>
             </ul>
           `);
@@ -459,7 +459,7 @@ describe('Markdown widget', () => {
                 <p>foo</p>
               </li>
             </ul>
-            <p>${empty}</p>
+            <p></p>
           `);
       });
     });
@@ -469,7 +469,7 @@ describe('Markdown widget', () => {
         cy.clickUnorderedListButton()
           .backspace()
           .confirmMarkdownEditorContent(`
-            <p>${empty}</p>
+            <p></p>
           `);
       });
 
@@ -496,7 +496,7 @@ describe('Markdown widget', () => {
             <ul>
               <li>
                 <p>foo</p>
-                <p>${empty}</p>
+                <p></p>
               </li>
             </ul>
           `);
@@ -510,7 +510,7 @@ describe('Markdown widget', () => {
           .confirmMarkdownEditorContent(`
             <ul>
               <li>
-                <p>${empty}</p>
+                <p></p>
               </li>
             </ul>
           `)
@@ -554,7 +554,7 @@ describe('Markdown widget', () => {
                     <p>bar</p>
                     <ul>
                       <li>
-                        <p>${empty}</p>
+                        <p></p>
                       </li>
                     </ul>
                   </li>
@@ -575,7 +575,7 @@ describe('Markdown widget', () => {
                 <p>foo</p>
                 <ul>
                   <li>
-                    <p>${empty}</p>
+                    <p></p>
                   </li>
                 </ul>
               </li>
@@ -595,7 +595,7 @@ describe('Markdown widget', () => {
                 <p>foo</p>
               </li>
               <li>
-                <p>${empty}</p>
+                <p></p>
               </li>
             </ul>
           `)

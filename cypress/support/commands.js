@@ -110,7 +110,7 @@ function runTimes(cyInstance, fn, count = 1) {
 ].forEach(key => {
   const [ cmd, keyName ] = typeof key === 'object' ? key : [key, key];
   Cypress.Commands.add(cmd, { prevSubject: true }, (subject, { shift, times = 1 } = {}) => {
-    const fn = chain => chain.type(`{${keyName}}${shift ? '{shift}' : ''}`);
+    const fn = chain => chain.type(`${shift ? '{shift}' : ''}{${keyName}}`);
     return runTimes(cy.wrap(subject), fn, times);
   });
 });
@@ -231,7 +231,14 @@ Cypress.Commands.add('getMarkdownEditor', () => {
 Cypress.Commands.add('confirmMarkdownEditorContent', expectedDomString => {
   return cy.getMarkdownEditor()
     .should(([element]) => {
-      const actualDomString = toPlainTree(element.innerHTML);
+      // Slate makes the following representations:
+      // - blank line: 2 BOM's + <br>
+      // - blank element (placed inside empty elements): 1 BOM + <br>
+      // We replace to represent a blank line as a single <br>, and remove the
+      // contents of elements that are actually empty.
+      const actualDomString = toPlainTree(element.innerHTML)
+        .replace(/\uFEFF\uFEFF<br>/g, '<br>')
+        .replace(/\uFEFF<br>/g, '');
       expect(actualDomString).toEqual(oneLineTrim(expectedDomString));
     });
 });

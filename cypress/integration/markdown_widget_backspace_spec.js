@@ -1,7 +1,5 @@
 import '../utils/dismiss-local-backup';
 
-const empty = `﻿<br>`;
-
 describe('Markdown widget', () => {
   before(() => {
     cy.loginAndNewPost();
@@ -17,7 +15,7 @@ describe('Markdown widget', () => {
         .clickHeadingOneButton()
         .backspace()
         .confirmMarkdownEditorContent(`
-          <p>${empty}</p>
+          <p></p>
         `);
     });
     it('does nothing at start of first block in document when non-empty and non-default', () => {

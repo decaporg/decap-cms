@@ -1,7 +1,5 @@
 import '../utils/dismiss-local-backup';
 
-const empty = `﻿<br>`;
-
 describe('Markdown widget breaks', () => {
   before(() => {
     cy.loginAndNewPost();
@@ -16,8 +14,8 @@ describe('Markdown widget breaks', () => {
       cy.focused()
         .enter()
         .confirmMarkdownEditorContent(`
-          <p>${empty}</p>
-          <p>${empty}</p>
+          <p></p>
+          <p></p>
         `);
     });
     it('creates new default block when selection collapsed at end of block', () => {
@@ -26,7 +24,7 @@ describe('Markdown widget breaks', () => {
         .enter()
         .confirmMarkdownEditorContent(`
           <p>foo</p>
-          <p>${empty}</p>
+          <p></p>
         `);
     });
     it('creates new default block when selection collapsed at end of non-default block', () => {
@@ -35,15 +33,15 @@ describe('Markdown widget breaks', () => {
         .enter()
         .confirmMarkdownEditorContent(`
           <h1>foo</h1>
-          <p>${empty}</p>
+          <p></p>
         `);
     });
     it('creates new default block when selection collapsed in empty non-default block', () => {
       cy.clickHeadingOneButton()
         .enter()
         .confirmMarkdownEditorContent(`
-          <h1>${empty}</h1>
-          <p>${empty}</p>
+          <h1></h1>
+          <p></p>
         `);
     });
     it('splits block into two same-type blocks when collapsed selection at block start', () => {
@@ -52,7 +50,7 @@ describe('Markdown widget breaks', () => {
         .setCursorBefore('foo')
         .enter()
         .confirmMarkdownEditorContent(`
-          <h1>${empty}</h1>
+          <h1></h1>
           <h1>foo</h1>
         `);
     });
@@ -74,6 +72,30 @@ describe('Markdown widget breaks', () => {
         .confirmMarkdownEditorContent(`
           <h1>fo</h1>
           <h1>ar</h1>
+        `);
+    });
+  });
+
+  describe('pressing shift+enter', () => {
+    it('creates line break', () => {
+      cy.focused()
+        .enter({ shift: true })
+        .confirmMarkdownEditorContent(`
+          <p>
+            <br>
+          </p>
+        `);
+    });
+    it('creates consecutive line break', () => {
+      cy.focused()
+        .enter({ shift: true, times: 4 })
+        .confirmMarkdownEditorContent(`
+          <p>
+            <br>
+            <br>
+            <br>
+            <br>
+          </p>
         `);
     });
   });

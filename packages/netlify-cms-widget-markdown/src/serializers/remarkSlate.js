@@ -204,11 +204,26 @@ export default function remarkToSlate({ voidCodeBlock }) {
       /**
        * Text
        *
-       * Text and HTML nodes are both used to render text, and should be treated
-       * the same. HTML is treated as text because we never want to escape or
-       * encode it.
+       * Text nodes contain plain text. We remove newlines because they don't
+       * carry meaning for a rich text editor - a break in rich text would be
+       * expected to result in a break in output HTML, but that isn't the case.
+       * To avoid this confusion we remove them.
        */
-      case 'text':
+      case 'text': {
+        const text = node.value.replace(/\n/, ' ');
+        return createText(text);
+      }
+
+      /**
+       * HTML
+       *
+       * HTML nodes contain plain text like text nodes, except they only contain
+       * HTML. Our serialization results in non-HTML being placed in HTML nodes
+       * sometimes to ensure that we're never escaping HTML from the rich text
+       * editor. We do not replace line feeds in HTML because the HTML is raw
+       * in the rich text editor, so the writer knows they're writing HTML, and
+       * should expect soft breaks to be visually absent in the rendered HTML.
+       */
       case 'html': {
         return createText(node.value);
       }

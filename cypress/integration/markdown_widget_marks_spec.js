@@ -1,7 +1,5 @@
 import '../utils/dismiss-local-backup';
 
-const empty = `﻿<br>`;
-
 describe('Markdown widget', () => {
   describe('code mark', () => {
     before(() => {

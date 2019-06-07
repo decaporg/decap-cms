@@ -94,6 +94,8 @@ export const renderInline = () => props => {
       return <Link {...props} />;
     case 'image':
       return <Image {...props} />;
+    case 'break':
+      return <Break {...props} />;
   }
 };
 
@@ -145,7 +147,5 @@ export const renderBlock = ({ classNameWrapper, codeBlockComponent, resolveWidge
       return <NumberedList {...props} />;
     case 'shortcode':
       return <Shortcode classNameWrapper={classNameWrapper} {...props} />;
-    case 'break':
-      return <Break {...props} />;
   }
 };
