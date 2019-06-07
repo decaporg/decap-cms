@@ -182,6 +182,18 @@
     }
   }
 
+  figure {
+    margin-left: 0;
+
+    .gatsby-highlight {
+      margin-top: -20px;
+    }
+  }
+
+  figcaption {
+    font-style: italic;
+  }
+
   :not(pre) > code {
     color: inherit;
     background: $lightestGrey;
