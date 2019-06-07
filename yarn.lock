@@ -2703,15 +2703,15 @@ babel-plugin-emotion@^9.2.11:
     source-map "^0.5.7"
     touch "^2.0.1"
 
-babel-plugin-inline-svg@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/babel-plugin-inline-svg/-/babel-plugin-inline-svg-1.0.0.tgz#900a155fe8348185d809211a34a7d1d0bcac6abc"
-  integrity sha512-aMbUqBGD71z3bsJUI4tGy3YyRP9ttKjXW4c0uxbDXOGyNzJYd8XZfgotfZtdHgBgOol1iC9TmoM3G1stlQbQOQ==
+babel-plugin-inline-svg@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/babel-plugin-inline-svg/-/babel-plugin-inline-svg-1.0.1.tgz#dc67ba4df41ea416f51ddd7a895fea0da6e45354"
+  integrity sha512-ur+wbGmDKrc73p12HEHFDMh3FmOiBD5G1ZlopQTTPKAVJAGLH7UNP52xE4Up7RmUPlB+EVDKEszN3rIYav1Vqg==
   dependencies:
     babel-template "^6.26.0"
     resolve-from "^4.0.0"
     svgo "^1.0.3"
-    synchronized-promise "^0.0.4"
+    synchronized-promise "^0.1.0"
 
 babel-plugin-istanbul@^5.1.0:
   version "5.1.1"
@@ -4234,13 +4234,13 @@ dateformat@^3.0.0:
   resolved "https://registry.yarnpkg.com/dateformat/-/dateformat-3.0.3.tgz#a6e37499a4d9a9cf85ef5872044d62901c9889ae"
   integrity sha512-jyCETtSl3VMZMWeRo7iY1FL19ges1t55hMo5yaam4Jrsm5EPL89UQkoQRyiI+Yf4k8r2ZpdngkV8hr1lIdjb3Q==
 
-deasync@^0.1.12:
-  version "0.1.13"
-  resolved "https://registry.yarnpkg.com/deasync/-/deasync-0.1.13.tgz#815c2b69bbd1117cae570152cd895661c09f20ea"
-  integrity sha512-/6ngYM7AapueqLtvOzjv9+11N2fHDSrkxeMF1YPE20WIfaaawiBg+HZH1E5lHrcJxlKR42t6XPOEmMmqcAsU1g==
+deasync@^0.1.15:
+  version "0.1.15"
+  resolved "https://registry.yarnpkg.com/deasync/-/deasync-0.1.15.tgz#788c4bbe6d32521233b28d23936de1bbadd2e112"
+  integrity sha512-pxMaCYu8cQIbGkA4Y1R0PLSooPIpH1WgFBLeJ+zLxQgHfkZG86ViJSmZmONSjZJ/R3NjwkMcIWZAzpLB2G9/CA==
   dependencies:
     bindings "~1.2.1"
-    nan "^2.0.7"
+    node-addon-api "^1.6.0"
 
 debug@2.6.9, debug@^2.1.2, debug@^2.2.0, debug@^2.3.3, debug@^2.6.8:
   version "2.6.9"
@@ -8609,7 +8609,7 @@ mute-stream@~0.0.4:
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.8.tgz#1630c42b2251ff81e2a283de96a5497ea92e5e0d"
   integrity sha512-nnbWWOkoWyUsTjKrhgD0dcz22mdkSnpYqbEjIm2nhwhuxlSkpywJmBo8h0ZqJdkp73mb90SssHkN4rsRaBAfAA==
 
-nan@^2.0.7, nan@^2.9.2:
+nan@^2.9.2:
   version "2.10.0"
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.10.0.tgz#96d0cd610ebd58d4b4de9cc0c6828cda99c7548f"
   integrity sha512-bAdJv7fBLhWC+/Bls0Oza+mvTaNQtP+1RyhhhvD95pgUJz6XM5IzgmxOkItJ9tkoCiplvAnXI1tNmmUD/eScyA==
@@ -8664,6 +8664,11 @@ nice-try@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/nice-try/-/nice-try-1.0.4.tgz#d93962f6c52f2c1558c0fbda6d512819f1efe1c4"
   integrity sha512-2NpiFHqC87y/zFke0fC0spBXL3bBsoh/p5H1EFhshxjCR5+0g2d6BiXbUFz9v1sAcxsk2htp2eQnNIci2dIYcA==
+
+node-addon-api@^1.6.0:
+  version "1.6.3"
+  resolved "https://registry.yarnpkg.com/node-addon-api/-/node-addon-api-1.6.3.tgz#3998d4593e2dca2ea82114670a4eb003386a9fe1"
+  integrity sha512-FXWH6mqjWgU8ewuahp4spec8LkroFZK2NicOv6bNwZC3kcwZUI8LeZdG80UzTSLLhK4T7MsgNwlYDVRlDdfTDg==
 
 node-fetch-npm@^2.0.2:
   version "2.0.2"
@@ -12179,12 +12184,12 @@ symbol-tree@^3.2.2:
   resolved "https://registry.yarnpkg.com/symbol-tree/-/symbol-tree-3.2.2.tgz#ae27db38f660a7ae2e1c3b7d1bc290819b8519e6"
   integrity sha1-rifbOPZgp64uHDt9G8KQgZuFGeY=
 
-synchronized-promise@^0.0.4:
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/synchronized-promise/-/synchronized-promise-0.0.4.tgz#f3ae418621289b93ebf2f4fbafb851c6015cd39e"
-  integrity sha512-JcyVCuZnd09fzsdGiz3HZl4sRrJEOniTTXwYcwf6o5BmREeKdPdiuy2yQkMkpg78re2SzNKMKTOwk5s3UUz2jw==
+synchronized-promise@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/synchronized-promise/-/synchronized-promise-0.1.0.tgz#cfaca296e3ed6eec0863fb08370c6383be5b9a89"
+  integrity sha512-8enEUnLjw0+Oi8YsqkYYSfI+Tb8KtPfCfbJWZFPLaXIDwUPnRQYw9qSmNcPYKUj26Bx5MkYmnv6ie6EGVH+gBw==
   dependencies:
-    deasync "^0.1.12"
+    deasync "^0.1.15"
 
 table@^5.0.0, table@^5.2.3:
   version "5.2.3"
