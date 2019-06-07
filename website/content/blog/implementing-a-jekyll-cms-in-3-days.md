@@ -10,7 +10,7 @@ date: '2019-06-06'
 canonical_url: https://www.dwolla.com/updates/implementing-netlify-cms/
 ---
 
-*This guest post was written by Shea Daniels, Lead Software Engineer at [Dwolla](https://www.dwolla.com) and user of Netlify CMS.*
+*This guest post was written by Shea Daniels, Lead Software Engineer at [Dwolla](https://www.dwolla.com) and user of Netlify CMS. It was originally published on the [Dwolla blog](https://www.dwolla.com/updates/implementing-netlify-cms/).*
 
 ---
 <br>
