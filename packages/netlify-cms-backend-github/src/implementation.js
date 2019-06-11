@@ -186,7 +186,7 @@ export default class GitHub {
     }
 
     // Authorized user
-    return { ...user, token: state.token };
+    return { ...user, token: state.token, useForkWorkflow: this.useForkWorkflow };
   }
 
   logout() {
