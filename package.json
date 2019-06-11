@@ -144,6 +144,7 @@
   ],
   "private": true,
   "dependencies": {
+    "@emotion/babel-preset-css-prop": "^10.0.9",
     "emotion": "^10.0.9",
     "lerna": "^3.15.0",
     "monaco-editor-webpack-plugin": "^1.7.0"

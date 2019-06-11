@@ -1,5 +1,5 @@
 import { List } from 'immutable';
-import { castArray, isArray, tail, throttle, get } from 'lodash';
+import { castArray, throttle, get } from 'lodash';
 import { Range, Block } from 'slate';
 import isHotkey from 'is-hotkey';
 import { assertType } from './util';
@@ -45,16 +45,6 @@ const ListPlugin = ({ defaultBlockType, unorderedListType, orderedListType }) =>
 
   return {
     queries: {
-      getSelectedChildren(editor, node) {
-        return node.nodes.filter(child => editor.isSelected(child));
-      },
-      getCommonAncestor(editor) {
-        const { startBlock, endBlock, document: doc } = editor.value;
-        return doc.getCommonAncestor(startBlock.key, endBlock.key);
-      },
-      getClosestType(editor, key, type) {
-        return editor.value.document.getClosest(key, node => node.type === type);
-      },
       getCurrentListItem(editor) {
         const { startBlock, endBlock } = editor.value;
         const ancestor = editor.value.document.getCommonAncestor(startBlock.key, endBlock.key);
@@ -75,9 +65,6 @@ const ListPlugin = ({ defaultBlockType, unorderedListType, orderedListType }) =>
           return editor.getListOrListItem({ node: listContextNode, ...opts });
         }
       },
-      isSelected(editor, node) {
-        return editor.value.document.isNodeInRange(node.key, editor.value.selection);
-      },
       getListContextNode(editor, node) {
         const targetTypes = ['bulleted-list', 'numbered-list', 'list-item', 'quote', 'table-cell'];
         const { startBlock, selection } = editor.value;
@@ -91,18 +78,6 @@ const ListPlugin = ({ defaultBlockType, unorderedListType, orderedListType }) =>
           return target;
         }
         return editor.getListContextNode(target);
-      },
-      isFirstChild(editor, node) {
-        return editor.value.document.getParent(node.key).nodes.first().key === node.key;
-      },
-      areSiblings(editor, nodes) {
-        if (!isArray(nodes) || nodes.length < 2) {
-          return true;
-        }
-        const parent = editor.value.document.getParent(nodes[0].key);
-        return tail(nodes).every(node => {
-          return editor.value.document.getParent(node.key).key === parent.key;
-        });
       },
       isList(editor, node) {
         return node && LIST_TYPES.includes(node.type);
@@ -118,19 +93,6 @@ const ListPlugin = ({ defaultBlockType, unorderedListType, orderedListType }) =>
       },
     },
     commands: {
-      unwrapBlockChildren(editor, block) {
-        if (!block || block.object !== 'block') {
-          throw Error(`Expected block but received ${block}.`);
-        }
-        const index = editor.value.document.getPath(block.key).last();
-        const parent = editor.value.document.getParent(block.key);
-        editor.withoutNormalizing(() => {
-          block.nodes.forEach((node, idx) => {
-            editor.moveNodeByKey(node.key, parent.key, index + idx);
-          });
-          editor.removeNodeByKey(block.key);
-        });
-      },
       wrapInList(editor, type) {
         editor.withoutNormalizing(() => {
           editor.wrapBlock(type).wrapBlock('list-item');
@@ -273,15 +235,6 @@ const ListPlugin = ({ defaultBlockType, unorderedListType, orderedListType }) =>
             break;
           }
         }
-      },
-      unwrapNodeToDepth(editor, node, depth) {
-        let currentDepth = 0;
-        editor.withoutNormalizing(() => {
-          while (currentDepth < depth) {
-            editor.unwrapNodeByKey(node.key);
-            currentDepth += 1;
-          }
-        });
       },
     },
     onKeyDown(event, editor, next) {

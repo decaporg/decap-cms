@@ -345,6 +345,7 @@ export default class Editor extends React.Component {
               renderMark={this.renderMark}
               schema={this.schema}
               plugins={plugins}
+              onClick={() => console.log('clicked')}
               onKeyDown={onKeyDown}
               onChange={this.handleChange}
               onPaste={this.handlePaste}

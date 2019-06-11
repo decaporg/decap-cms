@@ -4,12 +4,11 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { css, Global } from '@emotion/core';
 import styled from '@emotion/styled';
 import SplitPane from 'react-split-pane';
-import { colors, colorsRaw, components, transitions } from 'netlify-cms-ui-default';
+import { colors, colorsRaw, components, transitions, IconButton } from 'netlify-cms-ui-default';
 import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
 import EditorControlPane from './EditorControlPane/EditorControlPane';
 import EditorPreviewPane from './EditorPreviewPane/EditorPreviewPane';
 import EditorToolbar from './EditorToolbar';
-import EditorToggle from './EditorToggle';
 
 const PREVIEW_VISIBLE = 'cms.preview-visible';
 const SCROLL_SYNC_ENABLED = 'cms.scroll-sync-enabled';
@@ -26,6 +25,10 @@ const styles = {
     overflow-y: auto;
   `,
 };
+
+const EditorToggle = styled(IconButton)`
+  margin-bottom: 12px;
+`;
 
 const ReactSplitPaneGlobalStyles = () => (
   <Global
@@ -257,20 +260,20 @@ class EditorInterface extends Component {
         />
         <Editor>
           <ViewControls>
-            <EditorToggle
-              enabled={collectionPreviewEnabled}
-              active={previewVisible}
+            {collectionPreviewEnabled && <EditorToggle
+              isActive={previewVisible}
               onClick={this.handleTogglePreview}
-              icon="eye"
+              size="large"
+              type="eye"
               title="Toggle preview"
-            />
-            <EditorToggle
-              enabled={collectionPreviewEnabled && previewVisible}
-              active={scrollSyncEnabled}
+            />}
+            {collectionPreviewEnabled && previewVisible && <EditorToggle
+              isActive={scrollSyncEnabled}
               onClick={this.handleToggleScrollSync}
-              icon="scroll"
+              size="large"
+              type="scroll"
               title="Sync scrolling"
-            />
+            />}
           </ViewControls>
           {collectionPreviewEnabled && this.state.previewVisible ? (
             editorWithPreview

@@ -1,5 +1,6 @@
 //import { Text, Inline } from 'slate';
 import isHotkey from 'is-hotkey';
+import CommandsAndQueries from './CommandsAndQueries';
 import ListPlugin from './ListPlugin';
 
 const DEFAULT_BLOCK_TYPE = 'paragraph';
@@ -108,6 +109,7 @@ const Logger = () => ({
   commands: {
     log(editor) {
       console.log(JSON.stringify(editor.value.toJS(), null, 2));
+      console.log(JSON.stringify(editor.value.selection.toJS(), null, 2));
     },
   },
   onKeyDown(event, editor, next) {
@@ -121,7 +123,6 @@ const Logger = () => ({
 });
 
 const plugins = [
-  Logger(),
   /*
   SoftBreak({
     onlyIn: ['quote', 'code-block'],
@@ -149,6 +150,8 @@ const plugins = [
     ],
   }),
   */
+  Logger(),
+  CommandsAndQueries(),
   QuoteBlock(),
   ListPlugin({
     defaultBlockType: DEFAULT_BLOCK_TYPE,

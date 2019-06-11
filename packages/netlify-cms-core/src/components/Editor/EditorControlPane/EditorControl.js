@@ -1,13 +1,12 @@
-/** @jsx jsx */
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { translate } from 'react-polyglot';
-import { jsx, ClassNames, Global, css as coreCss } from '@emotion/core';
+import { ClassNames, Global, css as coreCss } from '@emotion/core';
 import styled from '@emotion/styled';
 import { partial, uniqueId } from 'lodash';
 import { connect } from 'react-redux';
-import { colors, colorsRaw, transitions, lengths, borders } from 'netlify-cms-ui-default';
+import { FieldLabel, colors, colorsRaw, transitions, lengths, borders } from 'netlify-cms-ui-default';
 import { resolveWidget, getEditorComponents } from 'Lib/registry';
 import { clearFieldErrors, loadEntry } from 'Actions/entries';
 import { addAsset } from 'Actions/media';
@@ -27,48 +26,6 @@ import Widget from './Widget';
  * this.
  */
 const styleStrings = {
-  label: `
-    color: ${colors.controlLabel};
-    background-color: ${colors.textFieldBorder};
-    display: inline-block;
-    font-size: 12px;
-    text-transform: uppercase;
-    font-weight: 600;
-    border: 0;
-    border-radius: 3px 3px 0 0;
-    padding: 3px 6px 2px;
-    margin: 0;
-    transition: all ${transitions.main};
-    position: relative;
-
-    /**
-     * Faux outside curve into top of input
-     */
-    &:before,
-    &:after {
-      content: '';
-      display: block;
-      position: absolute;
-      top: 0;
-      right: -4px;
-      height: 100%;
-      width: 4px;
-      background-color: inherit;
-    }
-
-    &:after {
-      border-bottom-left-radius: 3px;
-      background-color: #fff;
-    }
-  `,
-  labelActive: `
-    background-color: ${colors.active};
-    color: ${colors.textLight};
-  `,
-  labelError: `
-    background-color: ${colors.errorText};
-    color: ${colorsRaw.white};
-  `,
   widget: `
     display: block;
     width: 100%;
@@ -186,6 +143,7 @@ class EditorControl extends React.Component {
       clearSearch,
       clearFieldErrors,
       loadEntry,
+      className,
       t,
     } = this.props;
     const widgetName = field.get('widget');
@@ -199,38 +157,24 @@ class EditorControl extends React.Component {
     return (
       <ClassNames>
         {({ css, cx }) => (
-          <ControlContainer>
+          <ControlContainer className={className}>
             {widget.globalStyles && <Global styles={coreCss`${widget.globalStyles}`} />}
-            <ControlErrorsList>
-              {errors &&
-                errors.map(
-                  error =>
-                    error.message &&
-                    typeof error.message === 'string' && (
-                      <li key={error.message.trim().replace(/[^a-z0-9]+/gi, '-')}>
-                        {error.message}
-                      </li>
-                    ),
-                )}
-            </ControlErrorsList>
-            <label
-              className={cx(
-                css`
-                  ${styleStrings.label};
-                `,
-                this.state.styleActive &&
-                  css`
-                    ${styleStrings.labelActive};
-                  `,
-                !!errors &&
-                  css`
-                    ${styleStrings.labelError};
-                  `,
-              )}
+            {errors &&
+              <ControlErrorsList>
+                {errors.map(error => error.message && typeof error.message === 'string' && (
+                  <li key={error.message.trim().replace(/[^a-z0-9]+/gi, '-')}>
+                    {error.message}
+                  </li>
+                ))}
+              </ControlErrorsList>
+            }
+            <FieldLabel
+              isActive={this.state.styleActive}
+              hasErrors={!!errors}
               htmlFor={this.uniqueFieldId}
             >
               {`${field.get('label', field.get('name'))}${isFieldOptional ? ' (optional)' : ''}`}
-            </label>
+            </FieldLabel>
             <Widget
               classNameWrapper={cx(
                 css`

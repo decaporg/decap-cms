@@ -2,6 +2,8 @@ import Dropdown, { DropdownItem, DropdownButton, StyledDropdownButton } from './
 import Icon from './Icon';
 import ListItemTopBar from './ListItemTopBar';
 import Loader from './Loader';
+import FieldLabel from './FieldLabel';
+import IconButton from './IconButton';
 import Toggle, { ToggleContainer, ToggleBackground, ToggleHandle } from './Toggle';
 import AuthenticationPage from './AuthenticationPage';
 import WidgetPreviewContainer from './WidgetPreviewContainer';
@@ -28,7 +30,9 @@ export const NetlifyCmsUiDefault = {
   DropdownButton,
   StyledDropdownButton,
   ListItemTopBar,
+  FieldLabel,
   Icon,
+  IconButton,
   Loader,
   Toggle,
   ToggleContainer,
@@ -56,7 +60,9 @@ export {
   DropdownButton,
   StyledDropdownButton,
   ListItemTopBar,
+  FieldLabel,
   Icon,
+  IconButton,
   Loader,
   Toggle,
   ToggleContainer,

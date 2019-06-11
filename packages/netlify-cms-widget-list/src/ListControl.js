@@ -1,9 +1,8 @@
-/** @jsx jsx */
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
-import { jsx, css, ClassNames } from '@emotion/core';
+import { css, ClassNames } from '@emotion/core';
 import { List, Map, fromJS } from 'immutable';
 import { partial, isEmpty } from 'lodash';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
