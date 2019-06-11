@@ -196,8 +196,8 @@ export default function remarkToSlate({ voidCodeBlock }) {
        * contain a blank text node.
        */
       case 'shortcode': {
-        const { data } = node;
         const nodes = [createText('')];
+        const data = { ...node.data, isShortcode: true };
         return createBlock(typeMap[node.type], nodes, { data });
       }
 
@@ -278,7 +278,10 @@ export default function remarkToSlate({ voidCodeBlock }) {
        * data property if it's defined.
        */
       case 'code': {
-        const data = { lang: node.lang, ...(voidCodeBlock ? { code: node.value } : {}) };
+        const data = {
+          lang: node.lang,
+          ...(voidCodeBlock ? { code: node.value, isShortcode: true } : {}),
+        };
         const text = createText(voidCodeBlock ? '' : node.value);
         const nodes = [text];
         const block = createBlock(typeMap[node.type], nodes, { data });

@@ -144,6 +144,7 @@ class EditorControl extends React.Component {
       clearFieldErrors,
       loadEntry,
       className,
+      isSelected,
       t,
     } = this.props;
     const widgetName = field.get('widget');
@@ -169,7 +170,7 @@ class EditorControl extends React.Component {
               </ControlErrorsList>
             }
             <FieldLabel
-              isActive={this.state.styleActive}
+              isActive={isSelected || this.state.styleActive}
               hasErrors={!!errors}
               htmlFor={this.uniqueFieldId}
             >
@@ -183,7 +184,7 @@ class EditorControl extends React.Component {
                 {
                   [css`
                     ${styleStrings.widgetActive};
-                  `]: this.state.styleActive,
+                  `]: isSelected || this.state.styleActive,
                 },
                 {
                   [css`
@@ -217,7 +218,7 @@ class EditorControl extends React.Component {
               onRemoveInsertedMedia={removeInsertedMedia}
               onAddAsset={addAsset}
               getAsset={boundGetAsset}
-              hasActiveStyle={this.state.styleActive}
+              hasActiveStyle={isSelected || this.state.styleActive}
               setActiveStyle={() => this.setState({ styleActive: true })}
               setInactiveStyle={() => this.setState({ styleActive: false })}
               resolveWidget={resolveWidget}
@@ -236,7 +237,7 @@ class EditorControl extends React.Component {
               t={t}
             />
             {fieldHint && (
-              <ControlHint active={this.state.styleActive} error={!!errors}>
+              <ControlHint active={isSelected || this.state.styleActive} error={!!errors}>
                 {fieldHint}
               </ControlHint>
             )}

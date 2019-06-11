@@ -1,7 +1,6 @@
 /* eslint-disable react/display-name */
 import React from 'react';
 import Shortcode from './Shortcode';
-import WidgetAdapter from './WidgetAdapter';
 
 /**
  * Slate uses React components to render each type of node that it receives.
@@ -110,12 +109,10 @@ export const renderBlock = ({ classNameWrapper, codeBlockComponent, resolveWidge
     case 'code-block':
       if (codeBlockComponent) {
         return (
-          <WidgetAdapter
-            widgetConfig={codeBlockComponent}
-            resolveWidget={resolveWidget}
+          <Shortcode
             classNameWrapper={classNameWrapper}
-            editorComponentType="code-block"
-            value={props.node.data}
+            typeOverload="code-block"
+            dataKey={false}
             {...props}
           />
         );

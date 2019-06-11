@@ -80,13 +80,13 @@ export default class CodeControl extends React.Component {
       lang: 'lang',
 
       // force default keys if widget is an editor component code block
-      ...(this.props.editorComponentType === 'code-block' ? {} : field.get('keys', Map()).toJS()),
+      ...(this.props.isEditorComponent ? {} : field.get('keys', Map()).toJS()),
     };
   }
 
   valueIsMap() {
-    const { field, editorComponentType } = this.props;
-    return !field.get('output_code_only') || editorComponentType !== 'code-block';
+    const { field, isEditorComponent } = this.props;
+    return !field.get('output_code_only') || !isEditorComponent;
   }
 
   handleChangeLang(lang) {

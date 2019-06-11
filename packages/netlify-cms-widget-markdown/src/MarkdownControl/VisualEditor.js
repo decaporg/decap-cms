@@ -57,6 +57,7 @@ const pluginToBlock = plugin => {
     object: 'block',
     type: 'shortcode',
     data: {
+      isShortcode: true,
       shortcode: plugin.id,
       shortcodeNew: true,
       shortcodeData: defaultValues,

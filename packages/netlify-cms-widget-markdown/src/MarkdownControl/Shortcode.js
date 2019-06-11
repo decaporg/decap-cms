@@ -3,26 +3,23 @@ import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { Map, fromJS } from 'immutable';
 import { omit } from 'lodash';
-import { IconButton } from 'netlify-cms-ui-default';
+import { colors, lengths } from 'netlify-cms-ui-default';
 import { getEditorControl, getEditorComponents } from './index';
 
-const ActionButtonContainer = styled.div`
-  position: absolute;
-  top: 36px;
-  left: -18px;
-  z-index: 1;
+const InsertionPoint = styled.div`
+  height: 32px;
+  margin-top: ${props => (props.atStart && '-8px') || (props.atEnd && '8px') || '8px'};
+  margin-bottom: ${props => (props.atStart && '-8px') || (props.atEnd && '-8px') || '-24px'};
+
+  &:hover {
+    cursor: pointer;
+    background-color: ${colors.activeBackground};
+    border-radius: ${lengths.borderRadius};
+  }
 `;
 
-const ActionButton = styled(IconButton)`
-  position: sticky;
-`;
-
-const StyledShortcode = styled.div`
-  position: relative;
-`;
-
-const Shortcode = ({ editor, attributes, node }) => {
-  const plugin = getEditorComponents().get(node.data.get('shortcode'));
+const Shortcode = ({ editor, attributes, node, dataKey = 'shortcodeData', typeOverload }) => {
+  const plugin = getEditorComponents().get(typeOverload || node.data.get('shortcode'));
   const EditorControl = getEditorControl();
   const [field, setField] = useState(Map());
 
@@ -31,26 +28,48 @@ const Shortcode = ({ editor, attributes, node }) => {
   }, []);
 
   const handleChange = (fieldName, value) => {
-    const data = node.data.set('shortcodeData', value);
-    editor.setNodeByKey(node.key, { data });
+    if (dataKey === false) {
+      editor.setNodeByKey(node.key, { data: value || Map() });
+    } else {
+      editor.setNodeByKey(node.key, { data: node.data.set('shortcodeData', value) });
+    }
   };
 
   const handleClick = event => {
     event.stopPropagation();
   };
 
+  const previousSibling = editor.value.document.getPreviousSibling(node.key);
+  const nextSibling = editor.value.document.getNextSibling(node.key);
+
+  const value = dataKey === false ? node.data : fromJS(node.data.get(dataKey));
+
   return (
     !field.isEmpty() && (
-      <StyledShortcode {...attributes} onClick={handleClick}>
-        <ActionButtonContainer>
-          <ActionButton size="small" type="close"/>
-        </ActionButtonContainer>
+      <div {...attributes} onClick={handleClick}>
+        {!previousSibling && (
+          <InsertionPoint atStart onClick={() => {
+            editor
+              .insertNodeByKey(editor.value.document.key, 0, { type: 'paragraph', object: 'block' })
+              .moveToStartOfDocument();
+          }}/>
+        )}
         <EditorControl
-          value={fromJS(node.data.get('shortcodeData'))}
+          value={value}
           field={field}
           onChange={handleChange}
+          isEditorComponent={true}
+          isSelected={editor.isSelected(node)}
         />
-      </StyledShortcode>
+        {(!nextSibling || nextSibling.data.get('isShortcode')) && (
+          <InsertionPoint atEnd={!nextSibling} onClick={() => {
+            editor
+              .moveToEndOfNode(node)
+              .insertBlock('paragraph')
+              .focus();
+          }}/>
+        )}
+      </div>
     )
   );
 };
