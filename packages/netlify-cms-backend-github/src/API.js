@@ -436,8 +436,16 @@ export default class API {
    * concept of entry "status". Useful for things like deploy preview links.
    */
   async getStatuses(sha) {
-    const resp = await this.request(`${this.repoURL}/commits/${sha}/status`);
-    return resp.statuses;
+    const repoURL = this.useForkWorkflow ? this.originRepoURL : this.repoURL;
+    try {
+      const resp = await this.request(`${repoURL}/commits/${sha}/status`);
+      return resp.statuses;
+    } catch (err) {
+      if (err && err.message && err.message === 'Ref not found') {
+        return [];
+      }
+      throw err;
+    }
   }
 
   composeFileTree(files) {
