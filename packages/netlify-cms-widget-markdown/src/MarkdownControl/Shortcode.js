@@ -10,12 +10,7 @@ const InsertionPoint = styled.div`
   height: 32px;
   margin-top: ${props => (props.atStart && '-8px') || (props.atEnd && '8px') || '8px'};
   margin-bottom: ${props => (props.atStart && '-8px') || (props.atEnd && '-8px') || '-24px'};
-
-  &:hover {
-    cursor: pointer;
-    background-color: ${colors.activeBackground};
-    border-radius: ${lengths.borderRadius};
-  }
+  cursor: text;
 `;
 
 const Shortcode = ({ editor, attributes, node, dataKey = 'shortcodeData', typeOverload }) => {
