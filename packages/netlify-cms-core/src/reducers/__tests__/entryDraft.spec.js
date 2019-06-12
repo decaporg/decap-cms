@@ -13,13 +13,13 @@ let initialState = Map({
 const entry = {
   collection: 'posts',
   data: {
-    dataField: 'dataFieldInitialValue'
+    dataField: 'dataFieldInitialValue',
   },
   metaData: null,
   path: 'content/blog/art-and-wine-festival.md',
   partial: false,
   raw: '',
-  slug: 'slug'
+  slug: 'slug',
 };
 
 describe('entryDraft reducer', () => {
@@ -84,15 +84,15 @@ describe('entryDraft reducer', () => {
 
   describe('DRAFT_CHANGE_FIELD', () => {
     it('should update the draft field', () => {
-      let draftEntryState = reducer(initialState, actions.createDraftFromEntry(fromJS(entry)));
+      const draftEntryState = reducer(initialState, actions.createDraftFromEntry(fromJS(entry)));
       expect(reducer(draftEntryState, actions.changeDraftField('dataField', 'update', {}))).toEqual(
         fromJS({
           entry: {
             ...entry,
             data: {
-              dataField: 'update'
+              dataField: 'update',
             },
-            newRecord: false
+            newRecord: false,
           },
           mediaFiles: [],
           fieldsMetaData: {},
@@ -103,19 +103,26 @@ describe('entryDraft reducer', () => {
     });
 
     it('should metadata update the draft field without marking hasChanged', () => {
-      let draftEntryState = reducer(initialState, actions.createDraftFromEntry(fromJS(entry)));
-      expect(reducer(draftEntryState, actions.changeDraftField('dataField', 'dataFieldInitialValue', { metaField : 'metaFieldValue'}))).toEqual(
+      const draftEntryState = reducer(initialState, actions.createDraftFromEntry(fromJS(entry)));
+      expect(
+        reducer(
+          draftEntryState,
+          actions.changeDraftField('dataField', 'dataFieldInitialValue', {
+            metaField: 'metaFieldValue',
+          }),
+        ),
+      ).toEqual(
         fromJS({
           entry: {
             ...entry,
             data: {
-              dataField: 'dataFieldInitialValue'
+              dataField: 'dataFieldInitialValue',
             },
-            newRecord: false
+            newRecord: false,
           },
           mediaFiles: [],
           fieldsMetaData: {
-            metaField: 'metaFieldValue'
+            metaField: 'metaFieldValue',
           },
           fieldsErrors: {},
           hasChanged: false,

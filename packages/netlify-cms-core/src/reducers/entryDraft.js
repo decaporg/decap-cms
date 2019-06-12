@@ -1,4 +1,4 @@
-import { Map, List, fromJS} from 'immutable';
+import { Map, List, fromJS } from 'immutable';
 import {
   DRAFT_CREATE_FROM_ENTRY,
   DRAFT_CREATE_EMPTY,
@@ -71,7 +71,7 @@ const entryDraftReducer = (state = Map(), action) => {
       return state.set('localBackup', fromJS(action.payload.entry));
     case DRAFT_CHANGE_FIELD:
       return state.withMutations(state => {
-        let keyPath = ['entry', 'data', action.payload.field]
+        const keyPath = ['entry', 'data', action.payload.field];
         if (state.getIn(keyPath) !== action.payload.value) {
           state.setIn(['entry', 'data', action.payload.field], action.payload.value);
           state.set('hasChanged', true);
