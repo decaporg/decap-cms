@@ -12,12 +12,14 @@ let initialState = Map({
 
 const entry = {
   collection: 'posts',
-  slug: 'slug',
+  data: {
+    dataField: 'dataFieldInitialValue'
+  },
+  metaData: null,
   path: 'content/blog/art-and-wine-festival.md',
   partial: false,
   raw: '',
-  data: {},
-  metaData: null,
+  slug: 'slug'
 };
 
 describe('entryDraft reducer', () => {
@@ -75,6 +77,48 @@ describe('entryDraft reducer', () => {
           },
           mediaFiles: [],
           hasChanged: true,
+        }),
+      );
+    });
+  });
+
+  describe('DRAFT_CHANGE_FIELD', () => {
+    it('should update the draft field', () => {
+      let draftEntryState = reducer(initialState, actions.createDraftFromEntry(fromJS(entry)));
+      expect(reducer(draftEntryState, actions.changeDraftField('dataField', 'update', {}))).toEqual(
+        fromJS({
+          entry: {
+            ...entry,
+            data: {
+              dataField: 'update'
+            },
+            newRecord: false
+          },
+          mediaFiles: [],
+          fieldsMetaData: {},
+          fieldsErrors: {},
+          hasChanged: true,
+        }),
+      );
+    });
+
+    it('should metadata update the draft field without marking hasChanged', () => {
+      let draftEntryState = reducer(initialState, actions.createDraftFromEntry(fromJS(entry)));
+      expect(reducer(draftEntryState, actions.changeDraftField('dataField', 'dataFieldInitialValue', { metaField : 'metaFieldValue'}))).toEqual(
+        fromJS({
+          entry: {
+            ...entry,
+            data: {
+              dataField: 'dataFieldInitialValue'
+            },
+            newRecord: false
+          },
+          mediaFiles: [],
+          fieldsMetaData: {
+            metaField: 'metaFieldValue'
+          },
+          fieldsErrors: {},
+          hasChanged: false,
         }),
       );
     });
