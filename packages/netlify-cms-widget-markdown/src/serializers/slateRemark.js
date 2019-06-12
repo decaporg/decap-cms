@@ -1,5 +1,6 @@
 import { get, without, flatMap, last, map, intersection, omit } from 'lodash';
 import u from 'unist-builder';
+import mdastToString from 'mdast-util-to-string';
 
 /**
  * Map of Slate node types to MDAST/Remark node types.
@@ -224,10 +225,19 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
             trailingWhitespace,
             centerNodes,
           } = normalizeFlankingWhitespace(markNodes);
+          const children = convertInlineAndTextChildren(centerNodes);
+          const markNode = u(markMap[markType], children);
+
+          // Filter out empty marks, otherwise their output literally by
+          // remark-stringify, eg. an empty bold node becomes "****"
+          if (mdastToString(markNode) === '') {
+            remainingNodes = remainder;
+            continue;
+          }
           const createText = text => text && u('html', text);
           const normalizedNodes = [
             createText(leadingWhitespace),
-            u(markMap[markType], convertInlineAndTextChildren(centerNodes)),
+            markNode,
             createText(trailingWhitespace),
           ].filter(val => val);
           convertedNodes.push(...normalizedNodes);
