@@ -73,7 +73,7 @@ const entryDraftReducer = (state = Map(), action) => {
       return state.withMutations(state => {
         const keyPath = ['entry', 'data', action.payload.field];
         if (state.getIn(keyPath) !== action.payload.value) {
-          state.setIn(['entry', 'data', action.payload.field], action.payload.value);
+          state.setIn(keyPath, action.payload.value);
           state.set('hasChanged', true);
         }
         state.mergeDeepIn(['fieldsMetaData'], fromJS(action.payload.metadata));
