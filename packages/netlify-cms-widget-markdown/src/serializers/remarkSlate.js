@@ -197,7 +197,7 @@ export default function remarkToSlate({ voidCodeBlock } = {}) {
        */
       case 'shortcode': {
         const nodes = [createText('')];
-        const data = { ...node.data, isShortcode: true };
+        const data = { ...node.data };
         return createBlock(typeMap[node.type], nodes, { data });
       }
 
@@ -280,7 +280,7 @@ export default function remarkToSlate({ voidCodeBlock } = {}) {
       case 'code': {
         const data = {
           lang: node.lang,
-          ...(voidCodeBlock ? { code: node.value, isShortcode: true } : {}),
+          ...(voidCodeBlock ? { code: node.value } : {}),
         };
         const text = createText(voidCodeBlock ? '' : node.value);
         const nodes = [text];

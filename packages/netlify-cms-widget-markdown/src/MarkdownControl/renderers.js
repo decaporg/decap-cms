@@ -1,5 +1,6 @@
 /* eslint-disable react/display-name */
 import React from 'react';
+import VoidBlock from './VoidBlock';
 import Shortcode from './Shortcode';
 
 /**
@@ -109,12 +110,14 @@ export const renderBlock = ({ classNameWrapper, codeBlockComponent, resolveWidge
     case 'code-block':
       if (codeBlockComponent) {
         return (
-          <Shortcode
-            classNameWrapper={classNameWrapper}
-            typeOverload="code-block"
-            dataKey={false}
-            {...props}
-          />
+          <VoidBlock {...props}>
+            <Shortcode
+              classNameWrapper={classNameWrapper}
+              typeOverload="code-block"
+              dataKey={false}
+              {...props}
+            />
+          </VoidBlock>
         );
       }
       return <CodeBlock {...props} />;
@@ -137,12 +140,20 @@ export const renderBlock = ({ classNameWrapper, codeBlockComponent, resolveWidge
     case 'table-cell':
       return <TableCell {...props} />;
     case 'thematic-break':
-      return <ThematicBreak {...props} />;
+      return (
+        <VoidBlock {...props}>
+          <ThematicBreak/>
+        </VoidBlock>
+      );
     case 'bulleted-list':
       return <BulletedList {...props} />;
     case 'numbered-list':
       return <NumberedList {...props} />;
     case 'shortcode':
-      return <Shortcode classNameWrapper={classNameWrapper} {...props} />;
+      return (
+        <VoidBlock {...props}>
+          <Shortcode classNameWrapper={classNameWrapper} {...props} />
+        </VoidBlock>
+      );
   }
 };

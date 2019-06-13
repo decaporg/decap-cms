@@ -2,6 +2,8 @@ import { colors, lengths, fonts } from 'netlify-cms-ui-default';
 import { editorStyleVars } from '../styles';
 
 export default `
+  display: flex;
+  flex-direction: column;
   position: relative;
   overflow: hidden;
   overflow-x: auto;
@@ -53,7 +55,6 @@ export default `
   blockquote,
   ul,
   ol {
-    margin-top: 16px;
     margin-bottom: 16px;
   }
 
