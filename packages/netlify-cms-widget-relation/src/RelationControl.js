@@ -113,21 +113,35 @@ export default class RelationControl extends React.Component {
     }
   };
 
+  parseNestedFields = (targetObject, field) => {
+    let nestedDisplayField = field.split('.');
+    let f = targetObject;
+    for (let i = 0; i < nestedDisplayField.length; i++) {
+      f = f[nestedDisplayField[i]];
+      if (!f) break;
+    }
+    if (typeof f === 'object' && f !== null) {
+      return JSON.stringify(f);
+    }
+    return f;
+  }
+
   parseHitOptions = hits => {
     const { field } = this.props;
     const valueField = field.get('valueField');
     const displayField = field.get('displayFields') || field.get('valueField');
 
     return hits.map(hit => {
+      let labelReturn;
+      if (List.isList(displayField)) {
+        labelReturn = displayField.toJS().map(key => this.parseNestedFields(hit.data, key)).join(' ')
+      } else {
+        labelReturn = this.parseNestedFields(hit.data, displayField);
+      }
       return {
         data: hit.data,
         value: hit.data[valueField],
-        label: List.isList(displayField)
-          ? displayField
-              .toJS()
-              .map(key => hit.data[key])
-              .join(' ')
-          : hit.data[displayField],
+        label: labelReturn,
       };
     });
   };
