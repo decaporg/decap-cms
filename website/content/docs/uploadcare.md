@@ -46,7 +46,7 @@ using the image or file widgets.
 ## Configuring the Uploadcare Widget
 
 The Uploadcare widget can be configured with settings that are outlined [in their
-docs](https://uploadcare.com/docs/uploads/widget/config/). The widget itself accepts configration
+docs](https://uploadcare.com/docs/file_uploads/widget/options/). The widget itself accepts configration
 through global variables and data properties on HTML elements, but with Netlify CMS you can pass
 configuration options directly through your `config.yml`.
 
