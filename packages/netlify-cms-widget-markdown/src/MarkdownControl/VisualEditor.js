@@ -7,6 +7,7 @@ import { get, isEmpty, debounce, uniq } from 'lodash';
 import { fromJS } from 'immutable';
 import { Value, Document, Block, Text } from 'slate';
 import { Editor as Slate } from 'slate-react';
+import isHotkey from 'is-hotkey';
 import { slateToMarkdown, markdownToSlate, htmlToSlate } from '../serializers';
 import Toolbar from '../MarkdownControl/Toolbar';
 import { renderBlock, renderInline, renderMark } from './renderers';
@@ -144,11 +145,14 @@ export default class Editor extends React.Component {
     );
   }
 
-  handlePaste = (e, data, editor) => {
-    if (data.type !== 'html' || data.isShift) {
-      return;
+  handlePaste = (event, editor, next) => {
+    const data = event.clipboardData;
+    if (isHotkey('shift', event)) {
+      return next();
     }
-    const ast = htmlToSlate(data.html);
+
+    const html = data.types.includes('text/html') && data.getData('text/html');
+    const ast = html ? htmlToSlate(html) : markdownToSlate(data.getData('text/plain'));
     const doc = Document.fromJSON(ast);
     return editor.insertFragment(doc);
   };

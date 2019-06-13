@@ -56,16 +56,13 @@ export default class RawEditor extends React.Component {
     this.props.onChange(value);
   }, 150);
 
-  /**
-   * If a paste contains plain text, deserialize it to Slate's AST and insert
-   * to the document. Selection logic (where to insert, whether to replace) is
-   * handled by Slate.
-   */
-  handlePaste = (e, data, editor) => {
-    if (data.text) {
-      const fragment = Plain.deserialize(data.text).document;
-      return editor.insertFragment(fragment);
+  handlePaste = (event, editor, next) => {
+    const data = event.clipboardData;
+    if (isHotkey('shift', event)) {
+      return next();
     }
+    const doc = Plain.deserialize(data.getData('text/plain')).document;
+    return editor.insertFragment(doc);
   };
 
   handleToggleMode = () => {
@@ -95,7 +92,6 @@ export default class RawEditor extends React.Component {
               )}
               value={this.state.value}
               onChange={this.handleChange}
-              onPaste={this.handlePaste}
             />
           )}
         </ClassNames>

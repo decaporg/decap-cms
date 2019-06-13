@@ -32,7 +32,7 @@ const markMap = {
  * A Remark plugin for converting an MDAST to Slate Raw AST. Remark plugins
  * return a `transformNode` function that receives the MDAST as it's first argument.
  */
-export default function remarkToSlate({ voidCodeBlock }) {
+export default function remarkToSlate({ voidCodeBlock } = {}) {
   return transformNode;
 
   function transformNode(node) {
