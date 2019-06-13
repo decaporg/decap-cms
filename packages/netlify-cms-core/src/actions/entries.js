@@ -430,10 +430,11 @@ export function createEmptyDraftData(fields, withNameKey = true) {
     const name = item.get('name');
     const defaultValue = item.get('default', null);
     const isEmptyDefaultValue = val => [[{}], {}].some(e => isEqual(val, e));
-    let subDefaultValue;
 
     if (List.isList(subfields)) {
-      subDefaultValue = list ? [createEmptyDraftData(subfields)] : createEmptyDraftData(subfields);
+      const subDefaultValue = list
+        ? [createEmptyDraftData(subfields)]
+        : createEmptyDraftData(subfields);
       if (!isEmptyDefaultValue(subDefaultValue)) {
         acc[name] = subDefaultValue;
       }
@@ -441,7 +442,7 @@ export function createEmptyDraftData(fields, withNameKey = true) {
     }
 
     if (Map.isMap(subfields)) {
-      subDefaultValue = list
+      const subDefaultValue = list
         ? [createEmptyDraftData([subfields], false)]
         : createEmptyDraftData([subfields]);
       if (!isEmptyDefaultValue(subDefaultValue)) {
