@@ -1,4 +1,7 @@
 updates:
+  - date: '2019-06-14'
+    description: 'Match any char with shortcode/editor component patterns, bugfixes'
+    version: 2.9.2
   - date: '2019-04-10'
     description: 'Entry card customization, Bitbucket implicit auth, fix image previews, other bugfixes'
     version: 2.9.1
