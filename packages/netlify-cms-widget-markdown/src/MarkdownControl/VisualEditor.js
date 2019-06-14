@@ -331,6 +331,7 @@ export default class Editor extends React.Component {
 
   render() {
     const { onAddAsset, getAsset, className, field } = this.props;
+    //console.log(this.state.value.document.toJS())
 
     return (
       <VisualEditorContainer>

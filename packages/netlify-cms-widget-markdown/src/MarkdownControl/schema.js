@@ -89,6 +89,7 @@ const schema = ({ voidCodeBlock } = {}) => ({
         { object: 'block', type: 'heading-four' },
         { object: 'block', type: 'heading-five' },
         { object: 'block', type: 'heading-six' },
+        { object: 'block', type: 'table-cell' },
         { object: 'inline', type: 'link' },
       ],
       nodes: [
@@ -204,7 +205,7 @@ const schema = ({ voidCodeBlock } = {}) => ({
       match: [{ object: 'block', type: 'table' }],
       nodes: [
         {
-          match: [{ object: 'table-row' }],
+          match: [{ object: 'block', type: 'table-row' }],
         },
       ],
     },
@@ -216,7 +217,7 @@ const schema = ({ voidCodeBlock } = {}) => ({
       match: [{ object: 'block', type: 'table-row' }],
       nodes: [
         {
-          match: [{ object: 'table-cell' }],
+          match: [{ object: 'block', type: 'table-cell' }],
         },
       ],
     },
