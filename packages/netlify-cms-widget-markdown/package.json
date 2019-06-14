@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-widget-markdown",
   "description": "Widget for editing markdown in Netlify CMS.",
-  "version": "2.5.0-beta.1",
+  "version": "2.5.0",
   "homepage": "https://www.netlifycms.org/docs/widgets/#markdown",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
