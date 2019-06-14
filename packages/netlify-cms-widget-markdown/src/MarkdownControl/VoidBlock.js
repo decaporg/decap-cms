@@ -21,21 +21,21 @@ const VoidBlock = ({ editor, attributes, node, children }) => {
   return (
     <div {...attributes} onClick={handleClick}>
       {!previousSibling && (
-        <InsertionPoint atStart onClick={() => {
+        <InsertionPoint onClick={() => {
           editor
             .insertNodeByKey(editor.value.document.key, 0, { type: 'paragraph', object: 'block' })
             .moveToStartOfDocument();
         }}/>
       )}
       {children}
-      {(!nextSibling || editor.isVoid(nextSibling) && (
+      {(!nextSibling || editor.isVoid(nextSibling)) && (
         <InsertionPoint onClick={() => {
           editor
             .moveToEndOfNode(node)
             .insertBlock('paragraph')
             .focus();
         }}/>
-      ))}
+      )}
     </div>
   );
 };

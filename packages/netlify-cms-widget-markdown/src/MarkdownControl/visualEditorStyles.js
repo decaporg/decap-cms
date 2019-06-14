@@ -11,7 +11,7 @@ export default `
   border-top-right-radius: 0;
   border-top: 0;
   margin-top: -${editorStyleVars.stickyDistanceBottom};
-  padding-bottom: 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
 

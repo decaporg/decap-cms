@@ -316,13 +316,13 @@ export default class Editor extends React.Component {
   };
 
   handleInsertionPointClick = () => {
-    const lastBlock = this.editor.value.document.nodes.last();
-    if (this.editor.isVoid(lastBlock)) {
-      this.editor
-        .moveToEndOfNode(this.editor.value.document)
-        .insertBlock('paragraph');
+    const editor = this.editor;
+    editor.moveToEndOfNode(editor.value.document);
+    const lastBlock = editor.value.document.nodes.last();
+    if (editor.isVoid(lastBlock)) {
+      editor.insertBlock('paragraph');
     }
-    this.editor.focus();
+    editor.focus();
   };
 
   processRef = ref => {
@@ -354,6 +354,9 @@ export default class Editor extends React.Component {
           {({ css, cx }) => (
             <div className={cx(className, css`${visualEditorStyles}`)}>
               <Slate
+                className={css`
+                  padding: 16px 20px;
+                `}
                 value={this.state.value}
                 renderBlock={this.renderBlock}
                 renderInline={this.renderInline}
