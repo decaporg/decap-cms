@@ -7,6 +7,7 @@ import { get, isEmpty, debounce, uniq } from 'lodash';
 import { fromJS } from 'immutable';
 import { Value, Document, Block, Text } from 'slate';
 import { Editor as Slate } from 'slate-react';
+import slateBase64Serializer from 'slate-base64-serializer';
 import isHotkey from 'is-hotkey';
 import { lengths } from 'netlify-cms-ui-default';
 import { slateToMarkdown, markdownToSlate, htmlToSlate } from '../serializers';
@@ -17,6 +18,8 @@ import onKeyDown from './keys';
 import schema from './schema';
 import visualEditorStyles from './visualEditorStyles';
 import { EditorControlBar } from '../styles';
+
+const { deserializeNode } = slateBase64Serializer;
 
 const VisualEditorContainer = styled.div`
   position: relative;
@@ -154,6 +157,11 @@ export default class Editor extends React.Component {
     const data = event.clipboardData;
     if (isHotkey('shift', event)) {
       return next();
+    }
+
+    if (data.types.includes('application/x-slate-fragment')) {
+      const fragment = deserializeNode(data.getData('application/x-slate-fragment'));
+      return editor.insertFragment(fragment);
     }
 
     const html = data.types.includes('text/html') && data.getData('text/html');
@@ -356,7 +364,7 @@ export default class Editor extends React.Component {
             <div className={cx(className, css`${visualEditorStyles}`)}>
               <Slate
                 className={css`
-                  padding: 16px 20px;
+                  padding: 16px 20px 0;
                 `}
                 value={this.state.value}
                 renderBlock={this.renderBlock}
