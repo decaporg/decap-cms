@@ -8,6 +8,7 @@ import { fromJS } from 'immutable';
 import { Value, Document, Block, Text } from 'slate';
 import { Editor as Slate } from 'slate-react';
 import isHotkey from 'is-hotkey';
+import { lengths } from 'netlify-cms-ui-default';
 import { slateToMarkdown, markdownToSlate, htmlToSlate } from '../serializers';
 import Toolbar from '../MarkdownControl/Toolbar';
 import { renderBlock, renderInline, renderMark } from './renderers';
@@ -20,6 +21,11 @@ import { EditorControlBar } from '../styles';
 const VisualEditorContainer = styled.div`
   position: relative;
 `;
+
+const InsertionPoint = styled.div`
+  flex: 1 1 auto;
+  cursor: text;
+`
 
 const createEmptyRawDoc = () => {
   const emptyText = Text.create('');
@@ -309,6 +315,16 @@ export default class Editor extends React.Component {
     this.setState({ value: editor.value });
   };
 
+  handleInsertionPointClick = () => {
+    const lastBlock = this.editor.value.document.nodes.last();
+    if (this.editor.isVoid(lastBlock)) {
+      this.editor
+        .moveToEndOfNode(this.editor.value.document)
+        .insertBlock('paragraph');
+    }
+    this.editor.focus();
+  };
+
   processRef = ref => {
     this.editor = ref;
   };
@@ -336,26 +352,23 @@ export default class Editor extends React.Component {
         </EditorControlBar>
         <ClassNames>
           {({ css, cx }) => (
-            <Slate
-              className={cx(
-                className,
-                css`
-                  ${visualEditorStyles};
-                `,
-              )}
-              value={this.state.value}
-              renderBlock={this.renderBlock}
-              renderInline={this.renderInline}
-              renderMark={this.renderMark}
-              schema={this.schema}
-              plugins={plugins}
-              onClick={() => console.log('clicked')}
-              onKeyDown={onKeyDown}
-              onChange={this.handleChange}
-              onPaste={this.handlePaste}
-              ref={this.processRef}
-              spellCheck
-            />
+            <div className={cx(className, css`${visualEditorStyles}`)}>
+              <Slate
+                value={this.state.value}
+                renderBlock={this.renderBlock}
+                renderInline={this.renderInline}
+                renderMark={this.renderMark}
+                schema={this.schema}
+                plugins={plugins}
+                onClick={() => console.log('clicked')}
+                onKeyDown={onKeyDown}
+                onChange={this.handleChange}
+                onPaste={this.handlePaste}
+                ref={this.processRef}
+                spellCheck
+              />
+              <InsertionPoint onClick={this.handleInsertionPointClick}/>
+            </div>
           )}
         </ClassNames>
       </VisualEditorContainer>

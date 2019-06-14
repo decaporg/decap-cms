@@ -2,17 +2,18 @@ import { colors, lengths, fonts } from 'netlify-cms-ui-default';
 import { editorStyleVars } from '../styles';
 
 export default `
-  display: flex;
-  flex-direction: column;
   position: relative;
   overflow: hidden;
   overflow-x: auto;
-  min-height: ${lengths.richTextEditorMinHeight};
   font-family: ${fonts.primary};
+  min-height: ${lengths.richTextEditorMinHeight};
   border-top-left-radius: 0;
   border-top-right-radius: 0;
   border-top: 0;
   margin-top: -${editorStyleVars.stickyDistanceBottom};
+  padding-bottom: 0;
+  display: flex;
+  flex-direction: column;
 
   h1 {
     font-size: 32px;
