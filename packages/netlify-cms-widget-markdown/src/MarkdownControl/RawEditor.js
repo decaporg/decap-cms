@@ -56,15 +56,6 @@ export default class RawEditor extends React.Component {
     this.props.onChange(value);
   }, 150);
 
-  handlePaste = (event, editor, next) => {
-    const data = event.clipboardData;
-    if (isHotkey('shift', event)) {
-      return next();
-    }
-    const doc = Plain.deserialize(data.getData('text/plain')).document;
-    return editor.insertFragment(doc);
-  };
-
   handleToggleMode = () => {
     this.props.onMode('visual');
   };

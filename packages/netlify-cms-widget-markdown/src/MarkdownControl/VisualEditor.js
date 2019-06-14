@@ -6,7 +6,7 @@ import { ClassNames } from '@emotion/core';
 import { get, isEmpty, debounce, uniq } from 'lodash';
 import { fromJS } from 'immutable';
 import { Value, Document, Block, Text } from 'slate';
-import { Editor as Slate } from 'slate-react';
+import { Editor as Slate, setEventTransfer } from 'slate-react';
 import slateBase64Serializer from 'slate-base64-serializer';
 import isHotkey from 'is-hotkey';
 import { lengths } from 'netlify-cms-ui-default';
@@ -152,6 +152,16 @@ export default class Editor extends React.Component {
       oldPropsValue !== newPropsValue
     );
   }
+
+  handleCopy = (event, editor, next) => {
+    setEventTransfer(event, 'text', this.state.lastRawValue);
+    event.preventDefault();
+  };
+
+  handleCut = (event, editor, next) => {
+    this.handleCopy(event, editor, next);
+    editor.delete();
+  };
 
   handlePaste = (event, editor, next) => {
     const data = event.clipboardData;
@@ -372,10 +382,11 @@ export default class Editor extends React.Component {
                 renderMark={this.renderMark}
                 schema={this.schema}
                 plugins={plugins}
-                onClick={() => console.log('clicked')}
                 onKeyDown={onKeyDown}
                 onChange={this.handleChange}
                 onPaste={this.handlePaste}
+                onCut={this.handleCut}
+                onCopy={this.handleCopy}
                 ref={this.processRef}
                 spellCheck
               />
