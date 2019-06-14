@@ -1,4 +1,5 @@
 import { fromJS, List, Map } from 'immutable';
+import { isEqual } from 'lodash';
 import { actions as notifActions } from 'redux-notifications';
 import { serializeValues } from 'Lib/serializeEntryValues';
 import { currentBackend } from 'coreSrc/backend';
@@ -422,24 +423,38 @@ export function createEmptyDraft(collection) {
   };
 }
 
-function createEmptyDraftData(fields) {
+export function createEmptyDraftData(fields, withNameKey = true) {
   return fields.reduce((acc, item) => {
     const subfields = item.get('field') || item.get('fields');
     const list = item.get('widget') == 'list';
     const name = item.get('name');
     const defaultValue = item.get('default', null);
+    const isEmptyDefaultValue = val => [[{}], {}].some(e => isEqual(val, e));
 
     if (List.isList(subfields)) {
-      acc[name] = list ? [createEmptyDraftData(subfields)] : createEmptyDraftData(subfields);
+      const subDefaultValue = list
+        ? [createEmptyDraftData(subfields)]
+        : createEmptyDraftData(subfields);
+      if (!isEmptyDefaultValue(subDefaultValue)) {
+        acc[name] = subDefaultValue;
+      }
       return acc;
     }
 
     if (Map.isMap(subfields)) {
-      acc[name] = list ? [createEmptyDraftData([subfields])] : createEmptyDraftData([subfields]);
+      const subDefaultValue = list
+        ? [createEmptyDraftData([subfields], false)]
+        : createEmptyDraftData([subfields]);
+      if (!isEmptyDefaultValue(subDefaultValue)) {
+        acc[name] = subDefaultValue;
+      }
       return acc;
     }
 
     if (defaultValue !== null) {
+      if (!withNameKey) {
+        return defaultValue;
+      }
       acc[name] = defaultValue;
     }
 
