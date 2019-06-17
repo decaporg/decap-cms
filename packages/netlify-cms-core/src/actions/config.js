@@ -63,6 +63,7 @@ export function applyDefaults(config) {
         }),
       );
 
+      // Set default value function if widget provides a static createDefaultValue method
       map.set(
         'collections',
         map.get('collections').map(collection => {
@@ -70,10 +71,8 @@ export function applyDefaults(config) {
           if (fields) {
             return collection.set('fields', fields.map(field => {
               if (!field.get('default')) {
-                const widget = resolveWidget(field.get('widget'));
-                const createDefaultValue = widget.control.createDefaultValue;
+                const createDefaultValue = resolveWidget(field.get('widget')).control.createDefaultValue;
                 if (createDefaultValue) {
-                  console.log(createDefaultValue());
                   return field.set('default', createDefaultValue);
                 }
               }

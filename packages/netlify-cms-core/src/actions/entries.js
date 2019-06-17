@@ -440,6 +440,7 @@ function createEmptyDraftData(fields) {
     }
 
     if (defaultValue !== null) {
+      // Widget can define default value as a function
       acc[name] = (typeof defaultValue === "function") ? defaultValue() : defaultValue;
     }
 

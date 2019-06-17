@@ -18,6 +18,8 @@ export default class DateControl extends React.Component {
     includeTime: PropTypes.bool,
   };
 
+  static createDefaultValue = () => { return moment(); };
+
   getFormats() {
     const { field, includeTime } = this.props;
     const format = field.get('format');
@@ -58,10 +60,6 @@ export default class DateControl extends React.Component {
   // Handle the empty case, if the user wants to empty the field.
   isValidDate = datetime =>
     moment.isMoment(datetime) || datetime instanceof Date || datetime === '';
-
-  static createDefaultValue = () => {
-    return moment();
-  };
 
   handleChange = datetime => {
     /**
