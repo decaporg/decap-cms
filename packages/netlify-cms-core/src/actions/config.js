@@ -4,6 +4,7 @@ import { trimStart, get } from 'lodash';
 import { authenticateUser } from 'Actions/auth';
 import * as publishModes from 'Constants/publishModes';
 import { validateConfig } from 'Constants/configSchema';
+import { resolveWidget } from 'Lib/registry';
 
 export const CONFIG_REQUEST = 'CONFIG_REQUEST';
 export const CONFIG_SUCCESS = 'CONFIG_SUCCESS';
@@ -60,6 +61,27 @@ export function applyDefaults(config) {
             );
           }
         }),
+      );
+
+      map.set(
+        'collections',
+        map.get('collections').map(collection => {
+          const fields = collection.get('fields');
+          if (fields) {
+            return collection.set('fields', fields.map(field => {
+              if (!field.get('default')) {
+                const widget = resolveWidget(field.get('widget'));
+                const createDefaultValue = widget.control.createDefaultValue;
+                if (createDefaultValue) {
+                  console.log(createDefaultValue());
+                  return field.set('default', createDefaultValue);
+                }
+              }
+              return field;
+            }));
+          }
+          return collection;
+        })
       );
     });
 }

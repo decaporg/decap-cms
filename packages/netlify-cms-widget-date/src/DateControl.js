@@ -59,6 +59,10 @@ export default class DateControl extends React.Component {
   isValidDate = datetime =>
     moment.isMoment(datetime) || datetime instanceof Date || datetime === '';
 
+  static createDefaultValue = () => {
+    return moment();
+  };
+
   handleChange = datetime => {
     /**
      * Set the date only if it is valid.

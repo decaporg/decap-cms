@@ -440,7 +440,7 @@ function createEmptyDraftData(fields) {
     }
 
     if (defaultValue !== null) {
-      acc[name] = defaultValue;
+      acc[name] = (typeof defaultValue === "function") ? defaultValue() : defaultValue;
     }
 
     return acc;
