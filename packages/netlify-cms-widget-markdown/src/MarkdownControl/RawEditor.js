@@ -3,10 +3,13 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import { ClassNames } from '@emotion/core';
-import { Editor as Slate } from 'slate-react';
-import Plain from 'slate-plain-serializer';
 import { debounce } from 'lodash';
+import { Document } from 'slate';
+import { Editor as Slate, setEventTransfer } from 'slate-react';
+import Plain from 'slate-plain-serializer';
+import isHotkey from 'is-hotkey';
 import { lengths, fonts } from 'netlify-cms-ui-default';
+import { markdownToSlate, markdownToHtml } from '../serializers';
 import { editorStyleVars, EditorControlBar } from '../styles';
 import Toolbar from './Toolbar';
 
@@ -39,6 +42,29 @@ export default class RawEditor extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     return !this.state.value.equals(nextState.value);
   }
+
+  handleCopy = (event, editor, next) => {
+    const markdown = Plain.serialize(editor.value);
+    const html = markdownToHtml(markdown);
+    setEventTransfer(event, 'text', markdown);
+    setEventTransfer(event, 'html', html);
+    event.preventDefault();
+  };
+
+  handleCut = (event, editor, next) => {
+    this.handleCopy(event, editor, next);
+    editor.delete();
+  };
+
+  handlePaste = (event, editor, next) => {
+    const data = event.clipboardData;
+    if (isHotkey('shift', event)) {
+      return next();
+    }
+
+    const value = Plain.deserialize(data.getData('text/plain'));
+    return editor.insertFragment(value.document);
+  };
 
   handleChange = editor => {
     if (!this.state.value.document.equals(editor.value.document)) {
@@ -83,6 +109,9 @@ export default class RawEditor extends React.Component {
               )}
               value={this.state.value}
               onChange={this.handleChange}
+              onPaste={this.handlePaste}
+              onCut={this.handleCut}
+              onCopy={this.handleCopy}
             />
           )}
         </ClassNames>

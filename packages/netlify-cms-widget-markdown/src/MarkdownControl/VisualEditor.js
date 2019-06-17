@@ -10,7 +10,7 @@ import { Editor as Slate, setEventTransfer } from 'slate-react';
 import slateBase64Serializer from 'slate-base64-serializer';
 import isHotkey from 'is-hotkey';
 import { lengths } from 'netlify-cms-ui-default';
-import { slateToMarkdown, markdownToSlate, htmlToSlate } from '../serializers';
+import { slateToMarkdown, markdownToSlate, htmlToSlate, markdownToHtml } from '../serializers';
 import Toolbar from '../MarkdownControl/Toolbar';
 import { renderBlock, renderInline, renderMark } from './renderers';
 import plugins from './plugins';
@@ -19,7 +19,7 @@ import schema from './schema';
 import visualEditorStyles from './visualEditorStyles';
 import { EditorControlBar } from '../styles';
 
-const { deserializeNode } = slateBase64Serializer;
+const { serializeNode, deserializeNode } = slateBase64Serializer;
 
 const VisualEditorContainer = styled.div`
   position: relative;
@@ -154,7 +154,11 @@ export default class Editor extends React.Component {
   }
 
   handleCopy = (event, editor, next) => {
-    setEventTransfer(event, 'text', this.state.lastRawValue);
+    const markdown = slateToMarkdown(editor.value.fragment.toJS());
+    const html = markdownToHtml(markdown);
+    setEventTransfer(event, 'text', markdown);
+    setEventTransfer(event, 'html', html);
+    setEventTransfer(event, 'fragment', serializeNode(editor.value.fragment));
     event.preventDefault();
   };
 
@@ -321,7 +325,7 @@ export default class Editor extends React.Component {
 
   handleDocumentChange = debounce(editor => {
     const { onChange } = this.props;
-    const raw = editor.value.document.toJSON();
+    const raw = editor.value.document.toJS();
     const markdown = slateToMarkdown(raw, { voidCodeBlock: this.codeBlockComponent });
     this.setState({ lastRawValue: markdown }, () => onChange(markdown));
   }, 150);

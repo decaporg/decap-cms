@@ -1,5 +1,7 @@
 /* eslint-disable react/display-name */
 import React from 'react';
+import { css } from '@emotion/core';
+import { colors } from 'netlify-cms-ui-default';
 import VoidBlock from './VoidBlock';
 import Shortcode from './Shortcode';
 
@@ -41,7 +43,16 @@ const Table = props => (
 );
 const TableRow = props => <tr {...props.attributes}>{props.children}</tr>;
 const TableCell = props => <td {...props.attributes}>{props.children}</td>;
-const ThematicBreak = props => <hr {...props.attributes} />;
+const ThematicBreak = props => (
+  <hr
+    {...props.attributes}
+    css={props.editor.isSelected(props.node) && css`
+      box-shadow: 0 0 0 2px ${colors.active};
+      border-radius: 8px;
+      color: ${colors.active};
+    `}
+  />
+);
 const Break = props => <br {...props.attributes} />;
 const BulletedList = props => <ul {...props.attributes}>{props.children}</ul>;
 const NumberedList = props => (
@@ -142,7 +153,7 @@ export const renderBlock = ({ classNameWrapper, codeBlockComponent, resolveWidge
     case 'thematic-break':
       return (
         <VoidBlock {...props}>
-          <ThematicBreak/>
+          <ThematicBreak editor={props.editor} node={props.node}/>
         </VoidBlock>
       );
     case 'bulleted-list':
