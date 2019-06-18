@@ -413,7 +413,10 @@ export default class GitGateway {
     return this.backend.unpublishedEntries();
   }
   unpublishedEntry(collection, slug) {
-    return this.backend.unpublishedEntry(collection, slug);
+    return (
+      (this.backend.unpublishedEntry && this.backend.unpublishedEntry(collection, slug)) ||
+      Promise.resolve(false)
+    );
   }
   updateUnpublishedEntryStatus(collection, slug, newStatus) {
     return this.backend.updateUnpublishedEntryStatus(collection, slug, newStatus);
