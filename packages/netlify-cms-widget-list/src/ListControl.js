@@ -65,6 +65,8 @@ const SortableList = SortableContainer(({ items, renderItem }) => {
   return <div>{items.map(renderItem)}</div>;
 });
 
+const fieldWidgets = ['list', 'object'];
+
 const valueTypes = {
   SINGLE: 'SINGLE',
   MULTIPLE: 'MULTIPLE',
@@ -200,10 +202,13 @@ export default class ListControl extends React.Component {
     return (fieldName, newValue, newMetadata) => {
       const { value, metadata, onChange, field } = this.props;
       const collectionName = field.get('name');
-      const newObjectValue =
-        this.getValueType() !== valueTypes.SINGLE
-          ? this.getObjectValue(index).set(fieldName, newValue)
-          : newValue;
+      const listFieldWidget = field.getIn(['field', 'widget']);
+      const withNameKey =
+        this.getValueType() !== valueTypes.SINGLE ||
+        (this.getValueType() === valueTypes.SINGLE && fieldWidgets.includes(listFieldWidget));
+      const newObjectValue = withNameKey
+        ? this.getObjectValue(index).set(fieldName, newValue)
+        : newValue;
       const parsedMetadata = {
         [collectionName]: Object.assign(metadata ? metadata.toJS() : {}, newMetadata || {}),
       };
