@@ -128,6 +128,7 @@ const schema = ({ voidCodeBlock } = {}) => ({
         { type: 'numbered-list' },
         { type: 'thematic-break' },
         { type: 'table' },
+        { type: 'shortcode' },
       ],
       normalize: (editor, error) => {
         switch (error.code) {
@@ -168,6 +169,7 @@ const schema = ({ voidCodeBlock } = {}) => ({
         { type: 'bulleted-list' },
         { type: 'thematic-break' },
         { type: 'table' },
+        { type: 'shortcode' },
       ],
       normalize: (editor, error) => {
         switch (error.code) {
