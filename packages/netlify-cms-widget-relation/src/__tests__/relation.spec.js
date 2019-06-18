@@ -16,6 +16,14 @@ const fieldConfig = {
   valueField: 'title',
 };
 
+const deeplyNestedFieldConfig = {
+  name: 'post',
+  collection: 'posts',
+  displayFields: ['title', 'slug', 'deeply.nested.post.field'],
+  searchFields: ['deeply.nested.post.field'],
+  valueField: 'title'
+}
+
 const nestedFieldConfig = {
   name: 'post',
   collection: 'posts',
@@ -33,6 +41,20 @@ const generateHits = length => {
 
   return [
     ...hits,
+    {
+      collection: 'posts',
+      data: {
+        title: 'Deeply nested post',
+        slug: 'post-deeply-nested',
+        deeply: {
+          nested: {
+            post: {
+              field: 'Deeply nested field'
+            }
+          }
+        }
+      }
+    },
     {
       collection: 'posts',
       data: {
@@ -72,6 +94,8 @@ class RelationController extends React.Component {
       return Promise.resolve({ payload: { response: { hits: [last(queryHits)] } } });
     } else if (last(args) === 'Nested') {
       return Promise.resolve({ payload: { response: { hits: [queryHits[queryHits.length - 2]] }}});
+    } else if (last(args) === 'Deeply nested') {
+      return Promise.resolve({ payload: { response: { hits: [queryHits[queryHits.length - 3]] }}});
     }
     return Promise.resolve({ payload: { response: { hits: queryHits } } });
   });
@@ -187,6 +211,16 @@ describe('Relation widget', () => {
 
     await wait(() => {
       expect(getAllByText('Nested post post-nested Nested field 1')).toHaveLength(1);
+    });
+  });
+
+  it('should update option list based on deeply nested search term', async () => {
+    const field = fromJS(deeplyNestedFieldConfig);
+    const { getAllByText, input } = setup({ field });
+    fireEvent.change(input, { target: { value: 'Deeply nested' } });
+
+    await wait(() => {
+      expect(getAllByText('Deeply nested post post-deeply-nested Deeply nested field')).toHaveLength(1);
     });
   });
 
