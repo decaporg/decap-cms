@@ -16,6 +16,14 @@ const fieldConfig = {
   valueField: 'title',
 };
 
+const nestedFieldConfig = {
+  name: 'post',
+  collection: 'posts',
+  displayFields: ['title', 'slug', 'nested.field_1'],
+  searchFields: ['nested.field_1', 'nested.field_2'],
+  valueField: 'title'
+}
+
 const generateHits = length => {
   const hits = Array.from({ length }, (val, idx) => {
     const title = `Post # ${idx + 1}`;
@@ -25,6 +33,17 @@ const generateHits = length => {
 
   return [
     ...hits,
+    {
+      collection: 'posts',
+      data: {
+        title: 'Nested post',
+        slug: 'post-nested',
+        nested: {
+          field_1: 'Nested field 1',
+          field_2: 'Nested field 2'
+        }
+      }
+    },
     {
       collection: 'posts',
       data: { title: 'YAML post', slug: 'post-yaml', body: 'Body yaml' },
@@ -51,6 +70,8 @@ class RelationController extends React.Component {
     const queryHits = generateHits(25);
     if (last(args) === 'YAML') {
       return Promise.resolve({ payload: { response: { hits: [last(queryHits)] } } });
+    } else if (last(args) === 'Nested') {
+      return Promise.resolve({ payload: { response: { hits: [queryHits[queryHits.length - 2]] }}});
     }
     return Promise.resolve({ payload: { response: { hits: queryHits } } });
   });
@@ -156,6 +177,16 @@ describe('Relation widget', () => {
       expect(getByText(label)).toBeInTheDocument();
       expect(onChangeSpy).toHaveBeenCalledTimes(1);
       expect(onChangeSpy).toHaveBeenCalledWith(value, metadata);
+    });
+  });
+
+  it('should update option list based on nested search term', async () => {
+    const field = fromJS(nestedFieldConfig);
+    const { getAllByText, input } = setup({ field });
+    fireEvent.change(input, { target: { value: 'Nested' } });
+
+    await wait(() => {
+      expect(getAllByText('Nested post post-nested Nested field 1')).toHaveLength(1);
     });
   });
 

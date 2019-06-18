@@ -134,8 +134,7 @@ const extractSearchFields = searchFields => entry =>
     let f = entry.data;
     for (let i = 0; i < nestedFields.length; i++) {
       f = f[nestedFields[i]];
-      if (!f)
-        break;
+      if (!f) break;
     }
     return f ? `${acc} ${f}` : acc;
   }, '');
