@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.4.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/compare/netlify-cms-backend-git-gateway@2.4.2...netlify-cms-backend-git-gateway@2.4.3) (2019-06-18)
+
+
+### Bug Fixes
+
+* **core:** address new entries error for non-github backends ([#2390](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/issues/2390)) ([a5bd6b3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/commit/a5bd6b3))
+
+
+
+
+
 ## [2.4.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/compare/netlify-cms-backend-git-gateway@2.4.2-beta.0...netlify-cms-backend-git-gateway@2.4.2) (2019-04-10)
 
 **Note:** Version bump only for package netlify-cms-backend-git-gateway
