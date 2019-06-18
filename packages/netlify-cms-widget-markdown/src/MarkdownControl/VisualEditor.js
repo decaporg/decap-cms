@@ -154,8 +154,9 @@ export default class Editor extends React.Component {
   }
 
   handleCopy = (event, editor, next) => {
+    const { getAsset, resolveWidget } = this.props;
     const markdown = slateToMarkdown(editor.value.fragment.toJS());
-    const html = markdownToHtml(markdown);
+    const html = markdownToHtml(markdown, { getAsset, resolveWidget });
     setEventTransfer(event, 'text', markdown);
     setEventTransfer(event, 'html', html);
     setEventTransfer(event, 'fragment', serializeNode(editor.value.fragment));

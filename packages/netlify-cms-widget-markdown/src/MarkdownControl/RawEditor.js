@@ -44,8 +44,9 @@ export default class RawEditor extends React.Component {
   }
 
   handleCopy = (event, editor, next) => {
+    const { getAsset, resolveWidget } = this.props;
     const markdown = Plain.serialize(editor.value);
-    const html = markdownToHtml(markdown);
+    const html = markdownToHtml(markdown, { getAsset, resolveWidget });
     setEventTransfer(event, 'text', markdown);
     setEventTransfer(event, 'html', html);
     event.preventDefault();

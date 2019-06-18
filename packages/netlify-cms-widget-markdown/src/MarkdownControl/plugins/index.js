@@ -81,6 +81,17 @@ const QuoteBlock = () => ({
   },
 });
 
+const SelectAll = () => ({
+  onKeyDown(event, editor, next) {
+    const isModA = isHotkey('mod+a', event);
+    if (!isModA) {
+      return next();
+    }
+    event.preventDefault();
+    return editor.moveToRangeOfDocument();
+  },
+});
+
 /*
 const Drag = () => ({
   onDragOver(e) {
@@ -161,6 +172,7 @@ const plugins = [
   LineBreak(),
   BreakToDefaultBlock(),
   CloseBlock(),
+  SelectAll(),
 ];
 
 export default plugins;
