@@ -22,7 +22,7 @@ The relation widget allows you to reference items from another collection. It pr
       widget: "relation"
       collection: "authors"
       searchFields: ["name.first", "twitterHandle"]
-      valueField: "name"
+      valueField: "name.first"
       displayFields: ["twitterHandle", "followerCount"]
     ```
   The generated UI input will search the authors collection by name and twitterHandle, and display each author's handle and follower count. On selection, the author name will be saved for the field.
