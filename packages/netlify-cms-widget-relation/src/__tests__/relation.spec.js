@@ -21,16 +21,16 @@ const deeplyNestedFieldConfig = {
   collection: 'posts',
   displayFields: ['title', 'slug', 'deeply.nested.post.field'],
   searchFields: ['deeply.nested.post.field'],
-  valueField: 'title'
-}
+  valueField: 'title',
+};
 
 const nestedFieldConfig = {
   name: 'post',
   collection: 'posts',
   displayFields: ['title', 'slug', 'nested.field_1'],
   searchFields: ['nested.field_1', 'nested.field_2'],
-  valueField: 'title'
-}
+  valueField: 'title',
+};
 
 const generateHits = length => {
   const hits = Array.from({ length }, (val, idx) => {
@@ -49,11 +49,11 @@ const generateHits = length => {
         deeply: {
           nested: {
             post: {
-              field: 'Deeply nested field'
-            }
-          }
-        }
-      }
+              field: 'Deeply nested field',
+            },
+          },
+        },
+      },
     },
     {
       collection: 'posts',
@@ -62,9 +62,9 @@ const generateHits = length => {
         slug: 'post-nested',
         nested: {
           field_1: 'Nested field 1',
-          field_2: 'Nested field 2'
-        }
-      }
+          field_2: 'Nested field 2',
+        },
+      },
     },
     {
       collection: 'posts',
@@ -93,9 +93,13 @@ class RelationController extends React.Component {
     if (last(args) === 'YAML') {
       return Promise.resolve({ payload: { response: { hits: [last(queryHits)] } } });
     } else if (last(args) === 'Nested') {
-      return Promise.resolve({ payload: { response: { hits: [queryHits[queryHits.length - 2]] }}});
+      return Promise.resolve({
+        payload: { response: { hits: [queryHits[queryHits.length - 2]] } },
+      });
     } else if (last(args) === 'Deeply nested') {
-      return Promise.resolve({ payload: { response: { hits: [queryHits[queryHits.length - 3]] }}});
+      return Promise.resolve({
+        payload: { response: { hits: [queryHits[queryHits.length - 3]] } },
+      });
     }
     return Promise.resolve({ payload: { response: { hits: queryHits } } });
   });
@@ -220,7 +224,9 @@ describe('Relation widget', () => {
     fireEvent.change(input, { target: { value: 'Deeply nested' } });
 
     await wait(() => {
-      expect(getAllByText('Deeply nested post post-deeply-nested Deeply nested field')).toHaveLength(1);
+      expect(
+        getAllByText('Deeply nested post post-deeply-nested Deeply nested field'),
+      ).toHaveLength(1);
     });
   });
 

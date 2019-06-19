@@ -124,7 +124,7 @@ export default class RelationControl extends React.Component {
       return JSON.stringify(f);
     }
     return f;
-  }
+  };
 
   parseHitOptions = hits => {
     const { field } = this.props;
@@ -134,7 +134,10 @@ export default class RelationControl extends React.Component {
     return hits.map(hit => {
       let labelReturn;
       if (List.isList(displayField)) {
-        labelReturn = displayField.toJS().map(key => this.parseNestedFields(hit.data, key)).join(' ')
+        labelReturn = displayField
+          .toJS()
+          .map(key => this.parseNestedFields(hit.data, key))
+          .join(' ');
       } else {
         labelReturn = this.parseNestedFields(hit.data, displayField);
       }
