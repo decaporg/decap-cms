@@ -18,6 +18,7 @@ const styleString = `
   height: 100%;
   padding: 0;
   overflow: hidden;
+  cursor: text;
 
   & > .CodeMirror {
     // Enforce border radius on CodeMirror's absolute positioned gutter
