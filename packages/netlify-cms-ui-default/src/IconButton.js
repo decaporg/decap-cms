@@ -23,8 +23,8 @@ const ButtonRound = styled.button`
   padding: 0;
 `;
 
-const IconButton = ({ size, isActive, type, className, title }) => (
-  <ButtonRound size={size} isActive={isActive} className={className} title={title}>
+const IconButton = ({ size, isActive, type, onClick, className, title }) => (
+  <ButtonRound size={size} isActive={isActive} className={className} onClick={onClick} title={title}>
     <Icon type={type} size={size}/>
   </ButtonRound>
 );
