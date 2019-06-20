@@ -6,8 +6,6 @@ import { assertType } from './util';
 
 /**
  * TODO:
- * - close list item after second enter, should collapse to previous level if
- *   nested
  * - make sure nested empty list items (can be read in from markdown) don't cause list handling to break
  * - closing a block in a nested list item via backspace should only close the
  *   immediate block

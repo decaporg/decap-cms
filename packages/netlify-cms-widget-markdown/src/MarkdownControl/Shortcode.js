@@ -26,23 +26,26 @@ const Shortcode = ({ editor, node, dataKey = 'shortcodeData', typeOverload }) =>
   const nextSibling = editor.value.document.getNextSibling(node.key);
 
   const value = dataKey === false ? node.data : fromJS(node.data.get(dataKey));
+  const handleFocus = () => editor.moveToRangeOfNode(node);
 
   return !field.isEmpty() && (
-    <EditorControl
-      css={css`
-        margin-top: 0;
-        margin-bottom: 16px;
-
-        &:first-of-type {
+    <div onClick={handleFocus} onFocus={handleFocus}>
+      <EditorControl
+        css={css`
           margin-top: 0;
-        }
-      `}
-      value={value}
-      field={field}
-      onChange={handleChange}
-      isEditorComponent={true}
-      isSelected={editor.isSelected(node)}
-    />
+          margin-bottom: 16px;
+
+          &:first-of-type {
+            margin-top: 0;
+          }
+        `}
+        value={value}
+        field={field}
+        onChange={handleChange}
+        isEditorComponent={true}
+        isSelected={editor.isSelected(node)}
+      />
+    </div>
   );
 };
 
