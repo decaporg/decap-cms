@@ -1,7 +1,12 @@
 const absolutePath = new RegExp('^(?:[a-z]+:)?//', 'i');
 const normalizePath = path => path.replace(/[\\/]+/g, '/');
 
-export function resolvePath(path, basePath) {
+/**
+ * @param {*} relativeBasePath (optional) If set, then when the
+ * given path is relative or just a single filename, the path is
+ * appended to it and no slash prepended.
+ */
+export function resolvePath(path, basePath, relativeBasePath) {
   // No path provided, skip
   if (!path) return null;
 
@@ -10,11 +15,15 @@ export function resolvePath(path, basePath) {
 
   if (path.indexOf('/') === -1) {
     // It's a single file name, no directories. Prepend public folder
-    return normalizePath(`/${basePath}/${path}`);
+    return relativeBasePath
+      ? normalizePath(`${relativeBasePath}/${path}`)
+      : normalizePath(`/${basePath}/${path}`);
   }
 
   // It's a relative path. Prepend a forward slash.
-  return normalizePath(`/${path}`);
+  return relativeBasePath
+    ? normalizePath(`${relativeBasePath}/${path}`)
+    : normalizePath(`/${path}`);
 }
 
 /**

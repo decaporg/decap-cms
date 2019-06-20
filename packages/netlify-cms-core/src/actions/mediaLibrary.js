@@ -241,8 +241,8 @@ export function loadMediaDisplayURL(file) {
       !id ||
       // displayURL is used by most backends; url (like urlIsPublicPath) is used exclusively by the
       // assetStore integration. Only the assetStore uses URLs which can actually be inserted into
-      // an entry - other backends create a domain-relative URL using the public_folder from the
-      // config and the file's name.
+      // an entry - other backends create a domain-relative URL or relative path using the
+      // public_folder or media_folder_relative options from the config and the file's name.
       (!displayURL && !url) ||
       displayURLState.get('url') ||
       displayURLState.get('isFetching') ||
