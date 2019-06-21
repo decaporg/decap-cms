@@ -434,7 +434,7 @@ export default class API {
           const objects = {
             entry: {
               path: (entry && entry.path) || '',
-              sha: (entry && entry.sha) || ''
+              sha: (entry && entry.sha) || '',
             },
             files: uniq(files),
           };
@@ -456,7 +456,13 @@ export default class API {
            * repo, which means pull requests opened for editorial workflow
            * entries must be rebased if assets have been added or removed.
            */
-          return this.rebasePullRequest(pr.number, branchName, contentKey, updatedMetadata, newHead);
+          return this.rebasePullRequest(
+            pr.number,
+            branchName,
+            contentKey,
+            updatedMetadata,
+            newHead,
+          );
         });
     }
   }

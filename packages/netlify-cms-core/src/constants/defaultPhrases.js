@@ -139,7 +139,7 @@ export function getPhrases() {
         missingRequiredField:
           "Oops, you've missed a required field. Please complete before saving.",
         missingRequiredFieldsForSlugForUpload:
-          "Unable to create slug for this entry, make sure you have filled out all required fields BEFORE trying to upload media.",
+          'Unable to create slug for this entry, make sure you have filled out all required fields BEFORE trying to upload media.',
         entrySaved: 'Entry saved',
         entryPublished: 'Entry published',
         onFailToPublishEntry: 'Failed to publish: %{details}',

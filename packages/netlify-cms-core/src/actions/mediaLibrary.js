@@ -7,7 +7,7 @@ import { selectIntegration } from 'Reducers';
 import { getIntegrationProvider } from 'Integrations';
 import { addAsset } from './media';
 import { sanitizeSlug } from 'Lib/urlHelper';
-import { EDITORIAL_WORKFLOW } from "Constants/publishModes";
+import { EDITORIAL_WORKFLOW } from 'Constants/publishModes';
 
 const { notifSend } = notifActions;
 
@@ -152,22 +152,29 @@ export function persistMedia(file, opts = {}) {
 
     if (publishMode === EDITORIAL_WORKFLOW) {
       const tempCollectionName = state.entryDraft.getIn(['entry', 'collection']); // May be set to draft sometimes.
-      const collectionName = tempCollectionName === 'draft' ? state.entryDraft.getIn(['entry', 'metadata', 'collection']) : tempCollectionName;
+      const collectionName =
+        tempCollectionName === 'draft'
+          ? state.entryDraft.getIn(['entry', 'metadata', 'collection'])
+          : tempCollectionName;
       const collection = state.collections.get(collectionName) || '';
       const collectionLabel = collection && collection.get('label');
       let slug;
       try {
-        slug = entryDraft.getIn(['entry', 'slug']) || slugFormatter(collection, entryDraft.getIn(["entry", "data"]), config.get("slug"));
+        slug =
+          entryDraft.getIn(['entry', 'slug']) ||
+          slugFormatter(collection, entryDraft.getIn(['entry', 'data']), config.get('slug'));
       } catch (e) {
         console.error(e);
         dispatch({ type: MEDIA_LIBRARY_CLOSE });
-        dispatch(notifSend({
-          message: {
-            key: 'ui.toast.missingRequiredFieldsForSlugForUpload',
-          },
-          kind: 'danger',
-          dismissAfter: 10000,
-        }));
+        dispatch(
+          notifSend({
+            message: {
+              key: 'ui.toast.missingRequiredFieldsForSlugForUpload',
+            },
+            kind: 'danger',
+            dismissAfter: 10000,
+          }),
+        );
         return;
       }
 
@@ -176,7 +183,8 @@ export function persistMedia(file, opts = {}) {
       options.collectionName = collectionName;
       options.isMediaOnlyPR = true;
       options.useWorkflow = true;
-      if (tempCollectionName === 'draft') { // This is a draft. Update the branch.
+      if (tempCollectionName === 'draft') {
+        // This is a draft. Update the branch.
         options.unpublished = true;
       }
     }

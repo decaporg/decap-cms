@@ -68,7 +68,6 @@ export function sanitizeURI(str, { replacement = '', encoding = 'unicode' } = {}
     .join('');
 }
 
-
 export function sanitizeSlug(str, options = Map()) {
   const encoding = options.get('encoding', 'unicode');
   const stripDiacritics = options.get('clean_accents', false);

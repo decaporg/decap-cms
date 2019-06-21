@@ -2,7 +2,7 @@ import { Map } from 'immutable';
 import { resolvePath } from 'netlify-cms-lib-util';
 import { ADD_ASSET, REMOVE_ASSET } from 'Actions/media';
 import AssetProxy from 'ValueObjects/AssetProxy';
-import { EDITORIAL_WORKFLOW } from "Constants/publishModes";
+import { EDITORIAL_WORKFLOW } from 'Constants/publishModes';
 
 const medias = (state = Map(), action) => {
   switch (action.type) {
@@ -41,7 +41,11 @@ export const getAsset = (publicFolder, mediaState, path, state) => {
     const repo = state.config.getIn(['backend', 'repo'], false);
     const mediaFolder = state.config.getIn(['media_folder'], false);
     const fileName = path.replace(publicFolder + '/', '');
-    proxy = memoizedProxies[path] = new AssetProxy(`https://raw.githubusercontent.com/${repo}/${branch}/${mediaFolder}/${fileName}`, null, true);
+    proxy = memoizedProxies[path] = new AssetProxy(
+      `https://raw.githubusercontent.com/${repo}/${branch}/${mediaFolder}/${fileName}`,
+      null,
+      true,
+    );
     return proxy;
   }
 
