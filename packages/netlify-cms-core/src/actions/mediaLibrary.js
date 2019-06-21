@@ -160,13 +160,14 @@ export function persistMedia(file, opts = {}) {
         slug = entryDraft.getIn(['entry', 'slug']) || slugFormatter(collection, entryDraft.getIn(["entry", "data"]), config.get("slug"));
       } catch (e) {
         console.error(e);
-        const message = 'Unable to create slug for the URL this post, make sure you have filled out all required fields.';
+        dispatch({ type: MEDIA_LIBRARY_CLOSE });
         dispatch(notifSend({
-          message,
+          message: {
+            key: 'ui.toast.missingRequiredFieldsForSlugForUpload',
+          },
           kind: 'danger',
-          dismissAfter: 8000,
+          dismissAfter: 10000,
         }));
-        window.alert(message);
         return;
       }
 
