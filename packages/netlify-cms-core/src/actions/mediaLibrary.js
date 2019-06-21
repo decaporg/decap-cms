@@ -1,12 +1,12 @@
 import { Map } from 'immutable';
 import { actions as notifActions } from 'redux-notifications';
 import { getBlobSHA } from 'netlify-cms-lib-util';
-import { currentBackend } from 'coreSrc/backend';
+import { currentBackend, slugFormatter } from 'coreSrc/backend';
 import { createAssetProxy } from 'ValueObjects/AssetProxy';
 import { selectIntegration } from 'Reducers';
 import { getIntegrationProvider } from 'Integrations';
 import { addAsset } from './media';
-import { sanitizeSlug, slugFormatter } from 'Lib/urlHelper';
+import { sanitizeSlug } from 'Lib/urlHelper';
 import { EDITORIAL_WORKFLOW } from "Constants/publishModes";
 
 const { notifSend } = notifActions;
@@ -150,47 +150,17 @@ export function persistMedia(file, opts = {}) {
       slug: `upload_${fileName}`,
     };
 
-    const title = entryDraft.getIn(["entry", "data", "title"])
-
-    // console.log('persistMedia', publishMode, entryDraft, entryDraft.getIn(["entry"]), entryDraft.getIn(["entry", "data", "title"]));
-
-    // If in Editorial workflow and there is something in a draft entry (means uploaded from draft page)
-    console.log('persistMedia - publishMode, title', publishMode, title);
-
-    if (publishMode === EDITORIAL_WORKFLOW && title) {
+    if (publishMode === EDITORIAL_WORKFLOW) {
       const tempCollectionName = state.entryDraft.getIn(['entry', 'collection']); // May be set to draft sometimes.
       const collectionName = tempCollectionName === 'draft' ? state.entryDraft.getIn(['entry', 'metadata', 'collection']) : tempCollectionName;
       const collection = state.collections.get(collectionName) || '';
       const collectionLabel = collection && collection.get('label');
-      const slug = entryDraft.getIn(['entry', 'slug']) || slugFormatter(collection.get("slug"), entryDraft.getIn(["entry", "data"]), config.get("slug"));
-
-      const parsedData = {
-        title: entryDraft.getIn(["entry", "data", "title"], "No Title"),
-        description: entryDraft.getIn(["entry", "data", "description"], "No Description!"),
-      };
-
-      options.PRName = `Create ${collectionLabel} "${slug}"`;
-      options.slug = slug;
-      options.collectionName = collectionName;
-      options.parsedData = parsedData;
-      options.isMediaOnlyPR = true;
-      options.useWorkflow = true;
-      if (tempCollectionName === 'draft') { // This is a draft. Update the branch.
-        options.unpublished = true;
-      }
-    }
-
-    // Don't allow uploading from the draft screen without a title
-    // or if unable to generate slug
-    if (publishMode === EDITORIAL_WORKFLOW) {
-      let message;
-      if (!title) {
-        message = 'You must enter a title before uploading an image.';
-      }
-      if (!options.slug) {
-        message = 'Unable to create slug for the URL this post, make sure you have filled out all required fields.';
-      }
-      if (message) {
+      let slug;
+      try {
+        slug = entryDraft.getIn(['entry', 'slug']) || slugFormatter(collection, entryDraft.getIn(["entry", "data"]), config.get("slug"));
+      } catch (e) {
+        console.error(e);
+        const message = 'Unable to create slug for the URL this post, make sure you have filled out all required fields.';
         dispatch(notifSend({
           message,
           kind: 'danger',
@@ -198,6 +168,15 @@ export function persistMedia(file, opts = {}) {
         }));
         window.alert(message);
         return;
+      }
+
+      options.PRName = `Create ${collectionLabel} "${slug}"`;
+      options.slug = slug;
+      options.collectionName = collectionName;
+      options.isMediaOnlyPR = true;
+      options.useWorkflow = true;
+      if (tempCollectionName === 'draft') { // This is a draft. Update the branch.
+        options.unpublished = true;
       }
     }
 

@@ -78,7 +78,7 @@ function getLabelForFileCollectionEntry(collection, path) {
   return files && files.find(f => f.get('file') === path).get('label');
 }
 
-function slugFormatter(collection, entryData, slugConfig) {
+export function slugFormatter(collection, entryData, slugConfig) {
   const template = collection.get('slug') || '{{slug}}';
 
   const identifier = entryData.get(selectIdentifier(collection));
