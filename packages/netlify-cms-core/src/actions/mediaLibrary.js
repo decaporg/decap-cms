@@ -175,6 +175,7 @@ export function persistMedia(file, opts = {}) {
       options.collectionName = collectionName;
       options.parsedData = parsedData;
       options.isMediaOnlyPR = true;
+      options.useWorkflow = true;
       if (tempCollectionName === 'draft') { // This is a draft. Update the branch.
         options.unpublished = true;
       }
