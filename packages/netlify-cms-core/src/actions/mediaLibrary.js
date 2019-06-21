@@ -151,7 +151,6 @@ export function persistMedia(file, opts = {}) {
     };
 
     const title = entryDraft.getIn(["entry", "data", "title"])
-    const draftIsOpen = entryDraft.getIn(["entry", "data", "generated_by_cms"])
 
     // console.log('persistMedia', publishMode, entryDraft, entryDraft.getIn(["entry"]), entryDraft.getIn(["entry", "data", "title"]));
 
@@ -182,14 +181,24 @@ export function persistMedia(file, opts = {}) {
     }
 
     // Don't allow uploading from the draft screen without a title
-    if (publishMode === EDITORIAL_WORKFLOW && !title && draftIsOpen) {
-      dispatch(notifSend({
-        message: `You must enter a title before uploading an image.`,
-        kind: 'danger',
-        dismissAfter: 8000,
-      }));
-      window.alert('You must enter a title before uploading an image.');
-      return;
+    // or if unable to generate slug
+    if (publishMode === EDITORIAL_WORKFLOW) {
+      let message;
+      if (!title) {
+        message = 'You must enter a title before uploading an image.';
+      }
+      if (!options.slug) {
+        message = 'Unable to create slug for the URL this post, make sure you have filled out all required fields.';
+      }
+      if (message) {
+        dispatch(notifSend({
+          message,
+          kind: 'danger',
+          dismissAfter: 8000,
+        }));
+        window.alert(message);
+        return;
+      }
     }
 
     /**
