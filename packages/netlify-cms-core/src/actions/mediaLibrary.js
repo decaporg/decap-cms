@@ -1,6 +1,6 @@
 import { Map } from 'immutable';
 import { actions as notifActions } from 'redux-notifications';
-import { getBlobSHA } from 'netlify-cms-lib-util';
+import { resolveMediaFilename, getBlobSHA } from 'netlify-cms-lib-util';
 import { currentBackend } from 'coreSrc/backend';
 import { createAssetProxy } from 'ValueObjects/AssetProxy';
 import { selectIntegration } from 'Reducers';
@@ -82,8 +82,24 @@ export function closeMediaLibrary() {
   };
 }
 
-export function insertMedia(mediaPath) {
-  return { type: MEDIA_INSERT, payload: { mediaPath } };
+export function insertMedia(mediaPath, resolveOptions) {
+  return (dispatch, getState) => {
+    const state = getState();
+    const entryDraft = state.entryDraft;
+    // if resolveOptions is set, then the path still needs to be resolved
+    if (resolveOptions) {
+      if (resolveOptions.mediaFolder) {
+        // If mediaFolder is set, the path is being resolved relatively
+        // and we need to know the path of the entry to resolve it
+        const state = getState();
+        const collection = state.entryDraft.getIn(['entry', 'collection']);
+        const collectionFolder = state.collections.getIn([collection, 'folder']);
+        resolveOptions = { collectionFolder, ...resolveOptions };
+      }
+      mediaPath = resolveMediaFilename(mediaPath, resolveOptions);
+    }
+    dispatch({ type: MEDIA_INSERT, payload: { mediaPath } });
+  };
 }
 
 export function removeInsertedMedia(controlID) {
@@ -241,8 +257,8 @@ export function loadMediaDisplayURL(file) {
       !id ||
       // displayURL is used by most backends; url (like urlIsPublicPath) is used exclusively by the
       // assetStore integration. Only the assetStore uses URLs which can actually be inserted into
-      // an entry - other backends create a domain-relative URL or relative path using the
-      // public_folder or media_folder_relative options from the config and the file's name.
+      // an entry - other backends create a domain-relative URL using the public_folder from the
+      // config and the file's name.
       (!displayURL && !url) ||
       displayURLState.get('url') ||
       displayURLState.get('isFetching') ||

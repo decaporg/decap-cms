@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { orderBy, map } from 'lodash';
 import { translate } from 'react-polyglot';
 import fuzzy from 'fuzzy';
-import { resolvePath, fileExtension } from 'netlify-cms-lib-util';
+import { fileExtension } from 'netlify-cms-lib-util';
 import {
   loadMedia as loadMediaAction,
   persistMedia as persistMediaAction,
@@ -189,9 +189,12 @@ class MediaLibrary extends React.Component {
   handleInsert = () => {
     const { selectedFile } = this.state;
     const { name, url, urlIsPublicPath } = selectedFile;
-    const { insertMedia, publicFolder, mediaFolderRelative } = this.props;
-    const publicPath = urlIsPublicPath ? url : resolvePath(name, publicFolder, mediaFolderRelative);
-    insertMedia(publicPath);
+    const { insertMedia, publicFolder, mediaFolder, mediaFolderRelative } = this.props;
+    if (urlIsPublicPath) {
+      insertMedia(url);
+    } else {
+      insertMedia(name, mediaFolderRelative ? { mediaFolder } : { publicFolder });
+    }
     this.handleClose();
   };
 
@@ -317,6 +320,7 @@ const mapStateToProps = state => {
   const { config, mediaLibrary } = state;
   const configProps = {
     publicFolder: config.get('public_folder'),
+    mediaFolder: config.get('media_folder'),
     mediaFolderRelative: config.get('media_folder_relative'),
   };
   const mediaLibraryProps = {
