@@ -80,9 +80,7 @@ export default class Toolbar extends React.Component {
     onMarkClick: PropTypes.func,
     onBlockClick: PropTypes.func,
     onLinkClick: PropTypes.func,
-    selectionHasMark: PropTypes.func,
-    selectionHasBlock: PropTypes.func,
-    selectionHasLink: PropTypes.func,
+    editor: PropTypes.object.isRequired,
   };
 
   isHidden = button => {
@@ -90,19 +88,29 @@ export default class Toolbar extends React.Component {
     return List.isList(buttons) ? !buttons.includes(button) : false;
   };
 
+  handleBlockClick = (event, type) => {
+    if (event) {
+      event.preventDefault();
+    }
+    this.props.onBlockClick(type);
+  }
+
+  handleMarkClick = (event, type) => {
+    event.preventDefault();
+    this.props.onMarkClick(type);
+  }
+
   render() {
     const {
       onMarkClick,
       onBlockClick,
       onLinkClick,
-      selectionHasMark,
-      selectionHasBlock,
-      selectionHasLink,
       onToggleMode,
       rawMode,
       plugins,
       disabled,
       onSubmit,
+      editor,
     } = this.props;
 
     return (
@@ -112,8 +120,8 @@ export default class Toolbar extends React.Component {
             type="bold"
             label="Bold"
             icon="bold"
-            onClick={onMarkClick}
-            isActive={selectionHasMark}
+            onClick={this.handleMarkClick}
+            isActive={editor.hasMark('bold')}
             isHidden={this.isHidden('bold')}
             disabled={disabled}
           />
@@ -121,8 +129,8 @@ export default class Toolbar extends React.Component {
             type="italic"
             label="Italic"
             icon="italic"
-            onClick={onMarkClick}
-            isActive={selectionHasMark}
+            onClick={this.handleMarkClick}
+            isActive={editor.hasMark('italic')}
             isHidden={this.isHidden('italic')}
             disabled={disabled}
           />
@@ -130,8 +138,8 @@ export default class Toolbar extends React.Component {
             type="code"
             label="Code"
             icon="code"
-            onClick={onMarkClick}
-            isActive={selectionHasMark}
+            onClick={this.handleMarkClick}
+            isActive={editor.hasMark('code')}
             isHidden={this.isHidden('code')}
             disabled={disabled}
           />
@@ -140,7 +148,7 @@ export default class Toolbar extends React.Component {
             label="Link"
             icon="link"
             onClick={onLinkClick}
-            isActive={selectionHasLink}
+            isActive={editor.hasInline('link')}
             isHidden={this.isHidden('link')}
             disabled={disabled}
           />
@@ -158,12 +166,9 @@ export default class Toolbar extends React.Component {
                       label="Headings"
                       icon="hOptions"
                       disabled={disabled}
-                      isActive={() =>
-                        !disabled &&
-                        Object.keys(headingOptions).some(optionKey => {
-                          return selectionHasBlock(optionKey);
-                        })
-                      }
+                      isActive={!disabled && Object.keys(headingOptions).some(optionKey => {
+                        return editor.hasBlock(optionKey);
+                      })}
                     />
                   </DropdownButton>
                 )}
@@ -175,8 +180,8 @@ export default class Toolbar extends React.Component {
                         <DropdownItem
                           key={idx}
                           label={headingOptions[optionKey]}
-                          className={selectionHasBlock(optionKey) ? 'active' : undefined}
-                          onClick={() => onBlockClick(undefined, optionKey)}
+                          className={editor.hasBlock(optionKey) ? 'active' : undefined}
+                          onClick={() => this.handleBlockClick(null, optionKey)}
                         />
                       ),
                   )}
@@ -187,8 +192,8 @@ export default class Toolbar extends React.Component {
             type="quote"
             label="Quote"
             icon="quote"
-            onClick={onBlockClick}
-            isActive={selectionHasBlock}
+            onClick={this.handleBlockClick}
+            isActive={editor.hasBlock('quote')}
             isHidden={this.isHidden('quote')}
             disabled={disabled}
           />
@@ -196,8 +201,8 @@ export default class Toolbar extends React.Component {
             type="bulleted-list"
             label="Bulleted List"
             icon="list-bulleted"
-            onClick={onBlockClick}
-            isActive={selectionHasBlock}
+            onClick={this.handleBlockClick}
+            isActive={editor.hasBlock('bulleted-list')}
             isHidden={this.isHidden('bulleted-list')}
             disabled={disabled}
           />
@@ -205,8 +210,8 @@ export default class Toolbar extends React.Component {
             type="numbered-list"
             label="Numbered List"
             icon="list-numbered"
-            onClick={onBlockClick}
-            isActive={selectionHasBlock}
+            onClick={this.handleBlockClick}
+            isActive={editor.hasBlock('numbered-list')}
             isHidden={this.isHidden('numbered-list')}
             disabled={disabled}
           />

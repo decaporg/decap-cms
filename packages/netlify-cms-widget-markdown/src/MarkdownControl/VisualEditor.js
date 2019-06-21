@@ -2,28 +2,20 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
-import { ClassNames } from '@emotion/core';
+import { css as coreCss, ClassNames } from '@emotion/core';
 import { get, isEmpty, debounce, uniq } from 'lodash';
 import { fromJS } from 'immutable';
 import { Value, Document, Block, Text } from 'slate';
 import { Editor as Slate, setEventTransfer } from 'slate-react';
-import slateBase64Serializer from 'slate-base64-serializer';
 import isHotkey from 'is-hotkey';
 import { lengths } from 'netlify-cms-ui-default';
 import { slateToMarkdown, markdownToSlate, htmlToSlate, markdownToHtml } from '../serializers';
 import Toolbar from '../MarkdownControl/Toolbar';
 import { renderBlock, renderInline, renderMark } from './renderers';
-import plugins from './plugins';
-import onKeyDown from './keys';
+import plugins from './plugins/visual';
 import schema from './schema';
 import visualEditorStyles from './visualEditorStyles';
 import { EditorControlBar } from '../styles';
-
-const { serializeNode, deserializeNode } = slateBase64Serializer;
-
-const VisualEditorContainer = styled.div`
-  position: relative;
-`;
 
 const InsertionPoint = styled.div`
   flex: 1 1 auto;
@@ -41,38 +33,6 @@ const createSlateValue = (rawValue, { voidCodeBlock }) => {
   const rawDocHasNodes = !isEmpty(get(rawDoc, 'nodes'));
   const document = Document.fromJSON(rawDocHasNodes ? rawDoc : createEmptyRawDoc());
   return Value.create({ document });
-};
-
-const pluginToBlock = plugin => {
-  // Handle code block component
-  if (plugin.type === 'code-block') {
-    return { type: plugin.type };
-  }
-
-  const nodes = [Text.create('')];
-
-  /**
-   * Get default values for plugin fields.
-   */
-  const defaultValues = plugin.fields
-    .toMap()
-    .mapKeys((_, field) => field.get('name'))
-    .filter(field => field.has('default'))
-    .map(field => field.get('default'));
-
-  /**
-   * Create new shortcode block with default values set.
-   */
-  return {
-    object: 'block',
-    type: 'shortcode',
-    data: {
-      shortcode: plugin.id,
-      shortcodeNew: true,
-      shortcodeData: defaultValues,
-    },
-    nodes,
-  };
 };
 
 export default class Editor extends React.Component {
@@ -99,6 +59,7 @@ export default class Editor extends React.Component {
     this.renderInline = renderInline();
     this.renderMark = renderMark();
     this.schema = schema({ voidCodeBlock: !!this.codeBlockComponent });
+    this.plugins = plugins({ getAsset: props.getAsset, resolveWidget: props.resolveWidget });
     this.state = {
       value: createSlateValue(this.props.value, { voidCodeBlock: !!this.codeBlockComponent }),
       lastRawValue: this.props.value,
@@ -153,174 +114,19 @@ export default class Editor extends React.Component {
     );
   }
 
-  handleCopy = (event, editor, next) => {
-    const { getAsset, resolveWidget } = this.props;
-    const markdown = slateToMarkdown(editor.value.fragment.toJS());
-    const html = markdownToHtml(markdown, { getAsset, resolveWidget });
-    setEventTransfer(event, 'text', markdown);
-    setEventTransfer(event, 'html', html);
-    setEventTransfer(event, 'fragment', serializeNode(editor.value.fragment));
-    event.preventDefault();
+  handleMarkClick = type => {
+    this.editor.toggleMark(type).focus();
   };
 
-  handleCut = (event, editor, next) => {
-    this.handleCopy(event, editor, next);
-    editor.delete();
+  handleBlockClick = type => {
+    this.editor.toggleBlock(type).focus();
   };
 
-  handlePaste = (event, editor, next) => {
-    const data = event.clipboardData;
-    if (isHotkey('shift', event)) {
-      return next();
-    }
-
-    if (data.types.includes('application/x-slate-fragment')) {
-      const fragment = deserializeNode(data.getData('application/x-slate-fragment'));
-      return editor.insertFragment(fragment);
-    }
-
-    const html = data.types.includes('text/html') && data.getData('text/html');
-    const ast = html ? htmlToSlate(html) : markdownToSlate(data.getData('text/plain'));
-    const doc = Document.fromJSON(ast);
-    return editor.insertFragment(doc);
+  handleLinkClick = () => {
+    this.editor.toggleLink(() => window.prompt('Enter the URL of the link'));
   };
 
-  selectionHasMark = type => this.state.value.activeMarks.some(mark => mark.type === type);
-  selectionHasBlock = type => this.state.value.blocks.some(node => node.type === type);
-
-  handleMarkClick = (event, type) => {
-    event.preventDefault();
-    const { editor } = this;
-    editor.toggleMark(type).focus();
-  };
-
-  handleBlockClick = (event, type) => {
-    if (event) {
-      event.preventDefault();
-    }
-
-    const { editor } = this;
-
-    const getBlockNodes = block => {
-      if (block.type === 'code-block' && this.codeBlockComponent) {
-        return [Text.create(block.data.get('code'))];
-      }
-      return block.nodes;
-    };
-
-    switch (type) {
-      /**
-       * Headers and code blocks can only contain text. If any selected block is not a header,
-       * wrap all selected blocks into selected block type. If all selected blocks are of selected
-       * block type, convert each to a paragraph.
-       */
-      case 'heading-one':
-      case 'heading-two':
-      case 'heading-three':
-      case 'heading-four':
-      case 'heading-five':
-      case 'heading-six':
-        if (editor.value.blocks.every(block => block.type === type)) {
-          editor.value.blocks.forEach(block => editor.setNodeByKey(block.key, 'paragraph'));
-        } else {
-          editor.value.blocks.forEach(block => {
-            editor.setNodeByKey(block.key, { type, nodes: getBlockNodes(block) });
-          });
-        }
-        break;
-      case 'code-block':
-        if (editor.value.blocks.every(block => block.type === type)) {
-          editor.value.blocks.forEach(block => {
-            const newBlock = Block.create({ type: 'paragraph', nodes: getBlockNodes(block) });
-            editor.replaceNodeByKey(block.key, newBlock);
-          });
-        } else {
-          if (this.codeBlockComponent) {
-            editor.value.blocks.forEach(block => {
-              if (block.type !== type) {
-                const newBlock = { type, data: { code: block.text } };
-                editor.setNodeByKey(block.key, newBlock);
-              }
-            });
-          } else {
-            editor.value.blocks.forEach(block => {
-              editor.setNodeByKey(block.key, type);
-            });
-          }
-        }
-        break;
-      case 'quote': {
-        /**
-         * Quotes can contain other blocks, even other quotes. If a selection contains quotes, they
-         * shouldn't be impacted. The selection's immediate parent should be checked - if it's a
-         * quote, unwrap the quote (as within are only blocks), and if it's not, wrap all selected
-         * blocks into a quote. Make sure text is wrapped into paragraphs.
-         */
-
-        /**
-         * TODO: highlight a couple list items and hit the quote button. doesn't work.
-         */
-        const topBlocks = editor.value.document.getRootBlocksAtRange(editor.value.selection);
-        const ancestor = editor.value.document.getCommonAncestor(
-          topBlocks.first().key,
-          topBlocks.last().key,
-        );
-        if (ancestor.type === type) {
-          editor.unwrapBlock(type);
-        } else {
-          editor.wrapBlock(type);
-        }
-        break;
-      }
-      case 'numbered-list':
-      case 'bulleted-list': {
-        editor.toggleList(type);
-        break;
-      }
-    }
-
-    editor.focus();
-  };
-
-  hasLinks = () => {
-    return this.state.value.inlines.some(inline => inline.type === 'link');
-  };
-
-  handleLink = () => {
-    const { editor } = this;
-    // If the current selection contains links, clicking the "link" button
-    // should simply unlink them.
-    if (this.hasLinks()) {
-      editor.unwrapInline('link');
-    } else {
-      const url = window.prompt('Enter the URL of the link');
-
-      // If nothing is entered in the URL prompt, do nothing.
-      if (!url) return;
-
-      // If no text is selected, use the entered URL as text.
-      if (editor.value.isCollapsed) {
-        editor.insertText(url).moveFocusBackward(0 - url.length);
-      }
-
-      editor.wrapInline({ type: 'link', data: { url } }).moveToEnd();
-    }
-  };
-
-  handlePluginAdd = plugin => {
-    const block = pluginToBlock(plugin);
-    const { focusBlock } = this.editor.value;
-
-    if (focusBlock.text === '' && focusBlock.type === 'paragraph') {
-      this.editor.setNodeByKey(focusBlock.key, block);
-    } else {
-      this.editor.insertBlock(block);
-    }
-
-    this.editor.focus();
-  };
-
-  handleToggle = () => {
+  handleToggleMode = () => {
     this.props.onMode('raw');
   };
 
@@ -338,41 +144,33 @@ export default class Editor extends React.Component {
     this.setState({ value: editor.value });
   };
 
-  handleInsertionPointClick = () => {
-    const editor = this.editor;
-    editor.moveToEndOfNode(editor.value.document);
-    const lastBlock = editor.value.document.nodes.last();
-    if (editor.isVoid(lastBlock)) {
-      editor.insertBlock('paragraph');
-    }
-    editor.focus();
-  };
-
   processRef = ref => {
     this.editor = ref;
+    this.forceUpdate();
   };
 
   render() {
     const { onAddAsset, getAsset, className, field } = this.props;
-    //console.log(this.state.value.document.toJS())
-
+    const editor = this.editor;
     return (
-      <VisualEditorContainer>
+      <div
+        css={coreCss`
+          position: relative;
+        `}
+      >
         <EditorControlBar>
-          <Toolbar
+          {editor && <Toolbar
             onMarkClick={this.handleMarkClick}
             onBlockClick={this.handleBlockClick}
-            onLinkClick={this.handleLink}
-            selectionHasMark={this.selectionHasMark}
-            selectionHasBlock={this.selectionHasBlock}
-            selectionHasLink={this.hasLinks}
-            onToggleMode={this.handleToggle}
+            onLinkClick={this.handleLinkClick}
+            editor={editor}
+            onToggleMode={this.handleToggleMode}
             plugins={this.editorComponents}
-            onSubmit={this.handlePluginAdd}
+            onSubmit={editor.insertShortcode}
             onAddAsset={onAddAsset}
             getAsset={getAsset}
             buttons={field.get('buttons')}
-          />
+          />}
         </EditorControlBar>
         <ClassNames>
           {({ css, cx }) => (
@@ -386,20 +184,16 @@ export default class Editor extends React.Component {
                 renderInline={this.renderInline}
                 renderMark={this.renderMark}
                 schema={this.schema}
-                plugins={plugins}
-                onKeyDown={onKeyDown}
+                plugins={this.plugins}
                 onChange={this.handleChange}
-                onPaste={this.handlePaste}
-                onCut={this.handleCut}
-                onCopy={this.handleCopy}
                 ref={this.processRef}
                 spellCheck
               />
-              <InsertionPoint onClick={this.handleInsertionPointClick}/>
+              <InsertionPoint onClick={() => editor.moveToEndOfDocument()}/>
             </div>
           )}
         </ClassNames>
-      </VisualEditorContainer>
+      </div>
     );
   }
 }

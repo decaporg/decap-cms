@@ -7,27 +7,13 @@ import BreakToDefaultBlock from './BreakToDefaultBlock';
 import CloseBlock from './CloseBlock';
 import QuoteBlock from './QuoteBlock';
 import SelectAll from './SelectAll';
+import CopyPasteVisual from './CopyPasteVisual';
+import Link from './Link';
+import ForceInsert from './ForceInsert';
+import Shortcode from './Shortcode';
 import { SLATE_DEFAULT_BLOCK_TYPE } from '../../types';
 
-const Logger = () => ({
-  commands: {
-    log(editor) {
-      console.log(JSON.stringify(editor.value.toJS(), null, 2));
-      console.log(JSON.stringify(editor.value.selection.toJS(), null, 2));
-    },
-  },
-  onKeyDown(event, editor, next) {
-    if (isHotkey('mod+j', event)) {
-      editor.log();
-      event.preventDefault();
-    } else {
-      return next();
-    }
-  },
-});
-
-const plugins = [
-  Logger(),
+const plugins = ({ getAsset, resolveWidget }) => [
   CommandsAndQueries(),
   QuoteBlock(),
   ListPlugin({
@@ -35,10 +21,14 @@ const plugins = [
     unorderedListType: 'bulleted-list',
     orderedListType: 'numbered-list',
   }),
+  Link(),
   LineBreak(),
   BreakToDefaultBlock(),
   CloseBlock(),
   SelectAll(),
+  ForceInsert(),
+  CopyPasteVisual({ getAsset, resolveWidget }),
+  Shortcode(),
 ];
 
 export default plugins;

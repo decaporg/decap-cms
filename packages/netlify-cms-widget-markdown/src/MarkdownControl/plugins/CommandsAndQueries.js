@@ -27,8 +27,37 @@ const CommandsAndQueries = () => ({
         return editor.value.document.getParent(node.key).key === parent.key;
       });
     },
+    everyBlock(editor, type) {
+      return editor.value.blocks.every(block => block.type === type);
+    },
+    hasMark(editor, type) {
+      return editor.value.activeMarks.some(mark => mark.type === type);
+    },
+    hasBlock(editor, type) {
+      return editor.value.blocks.some(node => node.type === type);
+    },
+    hasInline(editor, type) {
+      return editor.value.inlines.some(node => node.type === type);
+    },
   },
   commands: {
+    toggleBlock(editor, type) {
+      switch (type) {
+        case 'heading-one':
+        case 'heading-two':
+        case 'heading-three':
+        case 'heading-four':
+        case 'heading-five':
+        case 'heading-six':
+          return editor.setBlocks(editor.everyBlock(type) ? SLATE_DEFAULT_BLOCK_TYPE : type);
+        case 'quote':
+          return editor.toggleQuoteBlock();
+        case 'numbered-list':
+        case 'bulleted-list': {
+          return editor.toggleList(type);
+        }
+      }
+    },
     unwrapBlockChildren(editor, block) {
       if (!block || block.object !== 'block') {
         throw Error(`Expected block but received ${block}.`);
