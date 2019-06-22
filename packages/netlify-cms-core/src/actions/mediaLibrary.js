@@ -84,8 +84,6 @@ export function closeMediaLibrary() {
 
 export function insertMedia(mediaPath, resolveOptions) {
   return (dispatch, getState) => {
-    const state = getState();
-    const entryDraft = state.entryDraft;
     // if resolveOptions is set, then the path still needs to be resolved
     if (resolveOptions) {
       if (resolveOptions.mediaFolder) {

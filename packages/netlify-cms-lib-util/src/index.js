@@ -2,7 +2,13 @@ import APIError from './APIError';
 import Cursor, { CURSOR_COMPATIBILITY_SYMBOL } from './Cursor';
 import EditorialWorkflowError, { EDITORIAL_WORKFLOW_ERROR } from './EditorialWorkflowError';
 import localForage from './localForage';
-import { resolvePath, resolveMediaFilename, basename, fileExtensionWithSeparator, fileExtension } from './path';
+import {
+  resolvePath,
+  resolveMediaFilename,
+  basename,
+  fileExtensionWithSeparator,
+  fileExtension,
+} from './path';
 import { filterPromises, resolvePromiseProperties, then } from './promise';
 import unsentRequest from './unsentRequest';
 import { filterByPropExtension, parseResponse, responseParser } from './backendUtil';
