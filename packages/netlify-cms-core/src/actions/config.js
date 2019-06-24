@@ -69,20 +69,28 @@ export function applyDefaults(config) {
         map.get('collections').map(collection => {
           const fields = collection.get('fields');
           if (fields) {
-            return collection.set('fields', fields.map(field => {
-              if (!field.get('default')) {
-                const createDefaultValue = resolveWidget(field.get('widget')).control.createDefaultValue;
-                if (createDefaultValue) {
-                  return field.set('default', createDefaultValue);
-                }
-              }
-              return field;
-            }));
+            return collection.set('fields', bindCreateDefaultValues(fields))
           }
           return collection;
         })
       );
     });
+}
+
+function bindCreateDefaultValues(fields) {
+  return fields.map(field => {
+    return field.withMutations(field => {
+      if (!field.get('default')) {
+        const createDefaultValue = resolveWidget(field.get('widget')).control.createDefaultValue;
+        if (createDefaultValue) {
+          field.set('default', createDefaultValue);
+        }
+      }
+      if (field.get('fields')) {
+        field.set('fields', bindCreateDefaultValues(field.get('fields')));
+      }
+    })
+  });
 }
 
 function mergePreloadedConfig(preloadedConfig, loadedConfig) {
