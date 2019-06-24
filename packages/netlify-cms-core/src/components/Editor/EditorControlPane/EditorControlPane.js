@@ -18,7 +18,9 @@ export default class ControlPane extends React.Component {
     if (!wrappedControl) return;
     const name = field.get('name');
     const widget = field.get('widget');
-    if (widget === 'list' || widget === 'object') {
+    const listFields = field => field.get('field') || field.get('fields') || field.get('types');
+
+    if ((widget === 'list' && listFields(field)) || widget === 'object') {
       this.componentValidate[name] = wrappedControl.innerWrappedControl.validate;
     } else {
       this.componentValidate[name] = wrappedControl.validate;
