@@ -8,12 +8,7 @@ import Markdownify from '../components/markdownify';
 import '../css/imports/collab.css';
 
 const CommunityPage = ({ data }) => {
-  const {
-    title,
-    headline,
-    subhead,
-    sections,
-  } = data.markdownRemark.frontmatter;
+  const { title, headline, subhead, sections } = data.markdownRemark.frontmatter;
 
   return (
     <Layout>
