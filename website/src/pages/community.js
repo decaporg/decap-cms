@@ -35,12 +35,12 @@ const CommunityPage = ({ data }) => {
         <section className="community-channels clearfix">
           <div className="contained">
             <div className="half">
-              {sections.map(({ title: sectionTitle, channels }) => (
-                <>
+              {sections.map(({ title: sectionTitle, channels }, channelIdx) => (
+                <React.Fragment key={channelIdx}>
                   <h4 className="section-label">{sectionTitle}</h4>
                   <ul className="community-channels-list">
-                    {channels.map(({ title, description, url }) => (
-                      <li>
+                    {channels.map(({ title, description, url }, idx) => (
+                      <li key={idx}>
                         <a href={url}>
                           <strong>{title}</strong>
                           <p>{description}</p>
@@ -48,7 +48,7 @@ const CommunityPage = ({ data }) => {
                       </li>
                     ))}
                   </ul>
-                </>
+                </React.Fragment>
               ))}
             </div>
           </div>
