@@ -55,7 +55,7 @@ class Header extends Component {
               <div className="contained">
                 <div className="logo-container">
                   <Link to="/" className="logo">
-                    <img src={logo} />
+                    <img src={logo} alt="Netlify CMS" />
                   </Link>
                   <DocSearch />
                 </div>

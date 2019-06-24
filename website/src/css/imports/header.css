@@ -95,23 +95,6 @@ header {
     @media screen and (max-width: $tablet) {
       position: static;
     }
-
-    /*.nav-link {
-      @media screen and (min-width: 487px) and (max-width: 767px) {
-        margin-top: $micro;
-      }
-    }*/
-
-    /*.utility-input {
-      @media screen and (max-width: 767px) {
-        display: block;
-        height: $small;
-        margin: $tiny 0 0 0;
-      }
-      @media screen and (min-width: 487px) and (max-width: 767px) {
-        margin-top: 32px;
-      }
-    }*/
   }
 
   .nav-container {
