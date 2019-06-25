@@ -35,7 +35,7 @@
     "slate-edit-list": "^0.11.3",
     "slate-edit-table": "^0.15.1",
     "slate-plain-serializer": "^0.5.15",
-    "slate-react": "0.12.9",
+    "slate-react": "0.22.4",
     "slate-soft-break": "^0.6.1",
     "unified": "^6.1.4",
     "unist-builder": "^1.0.2",
