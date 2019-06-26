@@ -8,9 +8,13 @@ import WidgetDoc from '../components/widget-doc';
 import Release from '../components/release';
 import WhatsNew from '../components/whats-new';
 import Notification from '../components/notification';
+import Community from '../components/community';
+import '../css/imports/hero.css';
 import '../css/imports/docs.css';
 import '../css/imports/whatsnew.css';
 import '../css/imports/header.css';
+import '../css/imports/collab.css';
+import '../css/imports/community.css';
 
 const withHighlight = WrappedComponent =>
   class Highlight extends React.Component {
@@ -52,6 +56,11 @@ const BlogPostPreview = ({ entry, widgetFor }) => {
   );
 };
 
+const CommunityPreview = ({ entry }) => {
+  const { title, headline, subhead, sections } = entry.get('data').toJS();
+  return <Community title={title} headline={headline} subhead={subhead} sections={sections} />;
+};
+
 const DocsPreview = ({ entry, widgetFor }) => (
   <DocsTemplate title={entry.getIn(['data', 'title'])} body={widgetFor('body')} />
 );
@@ -88,3 +97,4 @@ CMS.registerPreviewTemplate('docs', withHighlight(DocsPreview));
 CMS.registerPreviewTemplate('widget_docs', withHighlight(WidgetDocPreview));
 CMS.registerPreviewTemplate('releases', ReleasePreview);
 CMS.registerPreviewTemplate('notifications', NotificationPreview);
+CMS.registerPreviewTemplate('community', CommunityPreview);

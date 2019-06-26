@@ -46,25 +46,27 @@ collections: # A list of collections the CMS should be able to edit
       - {label: "Body", name: "body", widget: "markdown"}
   - name: community
     label: Community
-    file: website/content/pages/community.md
-    preview_path: "community"
-    fields:
-      - {label: Title, name: title}
-      - {label: Headline, name: headline}
-      - {label: Subheading, name: subhead}
-      - label: Sections
-        name: sections
-        widget: list
+    files:
+      - name: community
+        label: Community
+        file: website/content/pages/community.md
+        preview_path: "community"
         fields:
-          - {name: title, label: Title}
-          - name: channels
-            label: Channels
+          - {label: Title, name: title}
+          - {label: Headline, name: headline}
+          - {label: Subheading, name: subhead}
+          - label: Sections
+            name: sections
             widget: list
             fields:
               - {name: title, label: Title}
-                {name: url, label: URL}
-                {name: description, label: Description}
-
+              - name: channels
+                label: Channels
+                widget: list
+                fields:
+                  - {name: title, label: Title}
+                  - {name: url, label: URL}
+                  - {name: description, label: Description}
   - name: updates
     label: Updates
     files:
