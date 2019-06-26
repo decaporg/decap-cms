@@ -82,19 +82,30 @@ export function closeMediaLibrary() {
   };
 }
 
-export function insertMedia(mediaPath, resolveOptions) {
+export function insertMedia(media) {
   return (dispatch, getState) => {
-    // if resolveOptions is set, then the path still needs to be resolved
-    if (resolveOptions) {
-      if (resolveOptions.mediaFolder) {
-        // If mediaFolder is set, the path is being resolved relatively
+    let mediaPath;
+    if (media.url) {
+      // media.url is public, and already resolved
+      mediaPath = media.url;
+    } else if (media.name) {
+      // media.name still needs to be resolved to the appropriate URL
+      const state = getState();
+      const config = state.config;
+      if (config.get('media_folder_relative')) {
+        // the path is being resolved relatively
         // and we need to know the path of the entry to resolve it
-        const state = getState();
+        const mediaFolder = config.get('media_folder');
         const collection = state.entryDraft.getIn(['entry', 'collection']);
         const collectionFolder = state.collections.getIn([collection, 'folder']);
-        resolveOptions = { collectionFolder, ...resolveOptions };
+        mediaPath = resolveMediaFilename(media.name, { mediaFolder, collectionFolder });
+      } else {
+        // the path is being resolved to a public URL
+        const publicFolder = config.get('public_folder');
+        mediaPath = resolveMediaFilename(media.name, { publicFolder });
       }
-      mediaPath = resolveMediaFilename(mediaPath, resolveOptions);
+    } else {
+      throw new Error('Incorrect usage, expected media.url or media.file');
     }
     dispatch({ type: MEDIA_INSERT, payload: { mediaPath } });
   };

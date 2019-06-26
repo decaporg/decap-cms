@@ -56,7 +56,6 @@ class MediaLibrary extends React.Component {
     persistMedia: PropTypes.func.isRequired,
     deleteMedia: PropTypes.func.isRequired,
     insertMedia: PropTypes.func.isRequired,
-    publicFolder: PropTypes.string,
     closeMediaLibrary: PropTypes.func.isRequired,
     t: PropTypes.func.isRequired,
   };
@@ -189,12 +188,8 @@ class MediaLibrary extends React.Component {
   handleInsert = () => {
     const { selectedFile } = this.state;
     const { name, url, urlIsPublicPath } = selectedFile;
-    const { insertMedia, publicFolder, mediaFolder, mediaFolderRelative } = this.props;
-    if (urlIsPublicPath) {
-      insertMedia(url);
-    } else {
-      insertMedia(name, mediaFolderRelative ? { mediaFolder } : { publicFolder });
-    }
+    const { insertMedia } = this.props;
+    insertMedia(urlIsPublicPath ? {url} : {name});
     this.handleClose();
   };
 
@@ -320,8 +315,6 @@ const mapStateToProps = state => {
   const { config, mediaLibrary } = state;
   const configProps = {
     publicFolder: config.get('public_folder'),
-    mediaFolder: config.get('media_folder'),
-    mediaFolderRelative: config.get('media_folder_relative'),
   };
   const mediaLibraryProps = {
     isVisible: mediaLibrary.get('isVisible'),
