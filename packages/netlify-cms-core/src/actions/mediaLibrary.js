@@ -105,7 +105,7 @@ export function insertMedia(media) {
         mediaPath = resolveMediaFilename(media.name, { publicFolder });
       }
     } else {
-      throw new Error('Incorrect usage, expected media.url or media.file');
+      throw new Error('Incorrect usage, expected {url} or {file}');
     }
     dispatch({ type: MEDIA_INSERT, payload: { mediaPath } });
   };
