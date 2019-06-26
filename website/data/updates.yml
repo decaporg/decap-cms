@@ -1,4 +1,10 @@
 updates:
+  - date: '2019-06-26'
+    description: 'Reference nested fields in relation widget, validate simple lists, bugfixes'
+    version: 2.9.4
+  - date: '2019-06-18'
+    description: 'Fix new entries error for non-GitHub backends'
+    version: 2.9.3
   - date: '2019-06-14'
     description: 'Match any char with shortcode/editor component patterns, bugfixes'
     version: 2.9.2
