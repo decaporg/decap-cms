@@ -282,11 +282,8 @@ export class Backend {
     const publishedEntry = await this.implementation
       .getEntry(collection, slug, path)
       .then(({ data }) => data)
-      .catch(error => {
-        if (error.status === 404 || error.message.includes(404)) {
-          return Promise.resolve(false);
-        }
-        return Promise.reject(error);
+      .catch(() => {
+        return Promise.resolve(false);
       });
 
     return publishedEntry;
