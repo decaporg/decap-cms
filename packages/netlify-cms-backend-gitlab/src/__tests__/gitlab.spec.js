@@ -405,22 +405,18 @@ describe('gitlab backend', () => {
       expect(entries.entries).toHaveLength(2);
     });
 
-    it(
-      'returns all entries from folder collection',
-      async () => {
-        const tree = mockRepo.tree[collectionManyEntriesConfig.folder];
-        tree.forEach(file => interceptFiles(backend, file.path));
+    it('returns all entries from folder collection', async () => {
+      const tree = mockRepo.tree[collectionManyEntriesConfig.folder];
+      tree.forEach(file => interceptFiles(backend, file.path));
 
-        interceptCollection(backend, collectionManyEntriesConfig, { repeat: 5 });
-        const entries = await backend.listAllEntries(fromJS(collectionManyEntriesConfig));
+      interceptCollection(backend, collectionManyEntriesConfig, { repeat: 5 });
+      const entries = await backend.listAllEntries(fromJS(collectionManyEntriesConfig));
 
-        expect(entries).toEqual(
-          expect.arrayContaining(tree.map(file => expect.objectContaining({ path: file.path }))),
-        );
-        expect(entries).toHaveLength(500);
-      },
-      7000,
-    );
+      expect(entries).toEqual(
+        expect.arrayContaining(tree.map(file => expect.objectContaining({ path: file.path }))),
+      );
+      expect(entries).toHaveLength(500);
+    }, 7000);
 
     it('returns entries from file collection', async () => {
       const { files } = collectionFilesConfig;
