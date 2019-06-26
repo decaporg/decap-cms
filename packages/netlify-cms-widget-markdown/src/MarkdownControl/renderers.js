@@ -2,8 +2,8 @@
 import React from 'react';
 import { css } from '@emotion/core';
 import { colors } from 'netlify-cms-ui-default';
-import VoidBlock from './VoidBlock';
-import Shortcode from './Shortcode';
+import VoidBlock from './components/VoidBlock';
+import Shortcode from './components/Shortcode';
 
 /**
  * Slate uses React components to render each type of node that it receives.

@@ -1,5 +1,4 @@
 import isHotkey from 'is-hotkey';
-import { SLATE_DEFAULT_BLOCK_TYPE } from '../../types';
 
 const Link = () => ({
   commands: {

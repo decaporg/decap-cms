@@ -1,4 +1,5 @@
 import { isArray, tail } from 'lodash';
+import { SLATE_DEFAULT_BLOCK_TYPE } from '../../types';
 
 const CommandsAndQueries = () => ({
   queries: {

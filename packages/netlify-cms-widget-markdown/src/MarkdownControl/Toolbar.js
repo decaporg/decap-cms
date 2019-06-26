@@ -80,7 +80,9 @@ export default class Toolbar extends React.Component {
     onMarkClick: PropTypes.func,
     onBlockClick: PropTypes.func,
     onLinkClick: PropTypes.func,
-    editor: PropTypes.object.isRequired,
+    hasMark: PropTypes.func,
+    hasInline: PropTypes.func,
+    hasBlock: PropTypes.func,
   };
 
   isHidden = button => {
@@ -110,7 +112,9 @@ export default class Toolbar extends React.Component {
       plugins,
       disabled,
       onSubmit,
-      editor,
+      hasMark = () => {},
+      hasInline = () => {},
+      hasBlock = () => {},
     } = this.props;
 
     return (
@@ -121,7 +125,7 @@ export default class Toolbar extends React.Component {
             label="Bold"
             icon="bold"
             onClick={this.handleMarkClick}
-            isActive={editor.hasMark('bold')}
+            isActive={hasMark('bold')}
             isHidden={this.isHidden('bold')}
             disabled={disabled}
           />
@@ -130,7 +134,7 @@ export default class Toolbar extends React.Component {
             label="Italic"
             icon="italic"
             onClick={this.handleMarkClick}
-            isActive={editor.hasMark('italic')}
+            isActive={hasMark('italic')}
             isHidden={this.isHidden('italic')}
             disabled={disabled}
           />
@@ -139,7 +143,7 @@ export default class Toolbar extends React.Component {
             label="Code"
             icon="code"
             onClick={this.handleMarkClick}
-            isActive={editor.hasMark('code')}
+            isActive={hasMark('code')}
             isHidden={this.isHidden('code')}
             disabled={disabled}
           />
@@ -148,7 +152,7 @@ export default class Toolbar extends React.Component {
             label="Link"
             icon="link"
             onClick={onLinkClick}
-            isActive={editor.hasInline('link')}
+            isActive={hasInline('link')}
             isHidden={this.isHidden('link')}
             disabled={disabled}
           />
@@ -167,7 +171,7 @@ export default class Toolbar extends React.Component {
                       icon="hOptions"
                       disabled={disabled}
                       isActive={!disabled && Object.keys(headingOptions).some(optionKey => {
-                        return editor.hasBlock(optionKey);
+                        return hasBlock(optionKey);
                       })}
                     />
                   </DropdownButton>
@@ -180,7 +184,7 @@ export default class Toolbar extends React.Component {
                         <DropdownItem
                           key={idx}
                           label={headingOptions[optionKey]}
-                          className={editor.hasBlock(optionKey) ? 'active' : undefined}
+                          className={hasBlock(optionKey) ? 'active': undefined}
                           onClick={() => this.handleBlockClick(null, optionKey)}
                         />
                       ),
@@ -193,7 +197,7 @@ export default class Toolbar extends React.Component {
             label="Quote"
             icon="quote"
             onClick={this.handleBlockClick}
-            isActive={editor.hasBlock('quote')}
+            isActive={hasBlock('quote')}
             isHidden={this.isHidden('quote')}
             disabled={disabled}
           />
@@ -202,7 +206,7 @@ export default class Toolbar extends React.Component {
             label="Bulleted List"
             icon="list-bulleted"
             onClick={this.handleBlockClick}
-            isActive={editor.hasBlock('bulleted-list')}
+            isActive={hasBlock('bulleted-list')}
             isHidden={this.isHidden('bulleted-list')}
             disabled={disabled}
           />
@@ -211,7 +215,7 @@ export default class Toolbar extends React.Component {
             label="Numbered List"
             icon="list-numbered"
             onClick={this.handleBlockClick}
-            isActive={editor.hasBlock('numbered-list')}
+            isActive={hasBlock('numbered-list')}
             isHidden={this.isHidden('numbered-list')}
             disabled={disabled}
           />

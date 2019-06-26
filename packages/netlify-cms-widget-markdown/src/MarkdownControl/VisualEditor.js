@@ -126,8 +126,20 @@ export default class Editor extends React.Component {
     this.editor.toggleLink(() => window.prompt('Enter the URL of the link'));
   };
 
+  hasMark = type => this.editor && this.editor.hasMark(type);
+  hasInline = type => this.editor && this.editor.hasInline(type);
+  hasBlock = type => this.editor && this.editor.hasBlock(type);
+
   handleToggleMode = () => {
     this.props.onMode('raw');
+  };
+
+  handleInsertShortcode = pluginConfig => {
+    this.editor.insertShortcode(pluginConfig);
+  };
+
+  handleClickBelowDocument = () => {
+    this.editor.moveToEndOfDocument();
   };
 
   handleDocumentChange = debounce(editor => {
@@ -146,12 +158,10 @@ export default class Editor extends React.Component {
 
   processRef = ref => {
     this.editor = ref;
-    this.forceUpdate();
   };
 
   render() {
     const { onAddAsset, getAsset, className, field } = this.props;
-    const editor = this.editor;
     return (
       <div
         css={coreCss`
@@ -159,18 +169,20 @@ export default class Editor extends React.Component {
         `}
       >
         <EditorControlBar>
-          {editor && <Toolbar
+          <Toolbar
             onMarkClick={this.handleMarkClick}
             onBlockClick={this.handleBlockClick}
             onLinkClick={this.handleLinkClick}
-            editor={editor}
             onToggleMode={this.handleToggleMode}
             plugins={this.editorComponents}
-            onSubmit={editor.insertShortcode}
+            onSubmit={this.handleInsertShortcode}
             onAddAsset={onAddAsset}
             getAsset={getAsset}
             buttons={field.get('buttons')}
-          />}
+            hasMark={this.hasMark}
+            hasInline={this.hasInline}
+            hasBlock={this.hasBlock}
+          />
         </EditorControlBar>
         <ClassNames>
           {({ css, cx }) => (
@@ -189,7 +201,7 @@ export default class Editor extends React.Component {
                 ref={this.processRef}
                 spellCheck
               />
-              <InsertionPoint onClick={() => editor.moveToEndOfDocument()}/>
+              <InsertionPoint onClick={this.handleClickBelowDocument}/>
             </div>
           )}
         </ClassNames>

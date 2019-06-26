@@ -4,16 +4,20 @@ const ForceInsert = () => ({
   queries: {
     canInsertBeforeNode(editor, node) {
       if (!editor.isVoid(node)) {
-        return;
+        return true;
       }
       return !!editor.value.document.getPreviousSibling(node.key);
     },
     canInsertAfterNode(editor, node) {
       if (!editor.isVoid(node)) {
-        return;
+        return true;
       }
+
+      // The static insertion point at the bottom of the editor ensures nodes
+      // can be inserted after trailing void nodes, so we only return false if
+      // the current and next sibling are both void.
       const nextSibling = editor.value.document.getNextSibling(node.key);
-      return !editor.isVoid(nextSibling);
+      return !nextSibling || !editor.isVoid(nextSibling);
     },
   },
   commands: {

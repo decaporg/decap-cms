@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { css } from '@emotion/core';
 import { Map, fromJS } from 'immutable';
 import { omit } from 'lodash';
-import { getEditorControl, getEditorComponents } from './index';
+import { getEditorControl, getEditorComponents } from '../index';
 
 const Shortcode = ({ editor, node, dataKey = 'shortcodeData', typeOverload }) => {
   const plugin = getEditorComponents().get(typeOverload || node.data.get('shortcode'));

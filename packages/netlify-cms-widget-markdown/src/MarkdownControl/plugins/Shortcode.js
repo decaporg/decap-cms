@@ -1,10 +1,10 @@
+import { Text } from 'slate';
 import isHotkey from 'is-hotkey';
-import { SLATE_DEFAULT_BLOCK_TYPE } from '../../types';
 
 const createShortcodeBlock = shortcodeConfig => {
   // Handle code block component
-  if (plugin.type === 'code-block') {
-    return { type: plugin.type };
+  if (shortcodeConfig.type === 'code-block') {
+    return { type: shortcodeConfig.type };
   }
 
   const nodes = [Text.create('')];
@@ -37,15 +37,15 @@ const Shortcode = () => ({
   commands: {
     insertShortcode(editor, shortcodeConfig) {
       const block = createShortcodeBlock(shortcodeConfig);
-      const { focusBlock } = this.editor.value;
+      const { focusBlock } = editor.value;
 
       if (focusBlock.text === '' && focusBlock.type === 'paragraph') {
-        this.editor.setNodeByKey(focusBlock.key, block);
+        editor.setNodeByKey(focusBlock.key, block);
       } else {
-        this.editor.insertBlock(block);
+        editor.insertBlock(block);
       }
 
-      this.editor.focus();
+      editor.focus();
     },
   },
 });
