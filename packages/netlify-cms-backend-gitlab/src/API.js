@@ -1,9 +1,16 @@
-import { localForage, then, unsentRequest } from 'netlify-cms-lib-util';
-import { Base64 } from 'js-base64';
-import { fromJS, List, Map } from 'immutable';
 import { flow, get, partial, result, uniq } from 'lodash';
-import { filterPromises, resolvePromiseProperties } from 'netlify-cms-lib-util';
-import { APIError, Cursor, EditorialWorkflowError } from 'netlify-cms-lib-util';
+import { fromJS, List, Map } from 'immutable';
+import { Base64 } from 'js-base64';
+import {
+  filterPromises,
+  resolvePromiseProperties,
+  APIError,
+  Cursor,
+  EditorialWorkflowError,
+  localForage,
+  then,
+  unsentRequest,
+} from 'netlify-cms-lib-util';
 
 const CMS_BRANCH_PREFIX = 'cms/';
 const CMS_METADATA_BRANCH = '_netlify_cms';
@@ -543,8 +550,8 @@ export default class API {
 
   readUnpublishedBranchFile(collection, slug) {
     const branchName = this.generateBranchName(collection, slug);
-    const metaDataPromise = this.retrieveMetadata(branchName).then(
-      data => (data.objects.entry.path ? data : Promise.reject(null)),
+    const metaDataPromise = this.retrieveMetadata(branchName).then(data =>
+      data.objects.entry.path ? data : Promise.reject(null),
     );
     return resolvePromiseProperties({
       metaData: metaDataPromise,
