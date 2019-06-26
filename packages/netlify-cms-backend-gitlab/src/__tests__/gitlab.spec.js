@@ -286,16 +286,6 @@ describe('gitlab backend', () => {
     });
   }
 
-  it('throws if configuration requires editorial workflow', () => {
-    const resolveBackendWithWorkflow = partial(resolveBackend, {
-      ...defaultConfig,
-      publish_mode: 'editorial_workflow',
-    });
-    expect(resolveBackendWithWorkflow).toThrowErrorMatchingInlineSnapshot(
-      `"The GitLab backend does not support the Editorial Workflow."`,
-    );
-  });
-
   it('throws if configuration does not include repo', () => {
     expect(resolveBackend).toThrowErrorMatchingInlineSnapshot(
       `"The GitLab backend needs a \\"repo\\" in the backend configuration."`,
