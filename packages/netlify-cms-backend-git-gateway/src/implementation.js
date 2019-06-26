@@ -324,9 +324,7 @@ export default class GitGateway {
         return this.backend.getMediaDisplayURL(original);
       }
       const err = new Error(
-        `getMediaDisplayURL is not implemented by the ${
-          this.backendType
-        } backend, but the backend returned a displayURL which was not a string!`,
+        `getMediaDisplayURL is not implemented by the ${this.backendType} backend, but the backend returned a displayURL which was not a string!`,
       );
       err.displayURL = displayURL;
       return Promise.reject(err);
