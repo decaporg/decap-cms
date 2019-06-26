@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.4.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/compare/netlify-cms-widget-relation@2.3.3...netlify-cms-widget-relation@2.4.0) (2019-06-26)
+
+
+### Features
+
+* **widget-relation:** support nested field references in relation widget ([#2391](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/issues/2391)) ([d6964b5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/commit/d6964b5))
+
+
+
+
+
 ## [2.3.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/compare/netlify-cms-widget-relation@2.3.3-beta.0...netlify-cms-widget-relation@2.3.3) (2019-06-14)
 
 **Note:** Version bump only for package netlify-cms-widget-relation

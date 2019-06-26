@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.12.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.11.1...netlify-cms-core@2.12.0) (2019-06-26)
+
+
+### Bug Fixes
+
+* **core:** backend file system create entry ([#2401](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2401)) ([556c102](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/556c102))
+* **widget-list:** validate string values in list widget ([#2385](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2385)) ([814aa50](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/814aa50))
+
+
+### Features
+
+* **widget-relation:** support nested field references in relation widget ([#2391](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2391)) ([d6964b5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/d6964b5))
+
+
+
+
+
 ## [2.11.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.11.1-beta.2...netlify-cms-core@2.11.1) (2019-06-14)
 
 **Note:** Version bump only for package netlify-cms-core
