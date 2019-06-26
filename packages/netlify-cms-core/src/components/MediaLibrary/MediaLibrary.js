@@ -189,7 +189,7 @@ class MediaLibrary extends React.Component {
     const { selectedFile } = this.state;
     const { name, url, urlIsPublicPath } = selectedFile;
     const { insertMedia } = this.props;
-    insertMedia(urlIsPublicPath ? {url} : {name});
+    insertMedia(urlIsPublicPath ? { url } : { name });
     this.handleClose();
   };
 
