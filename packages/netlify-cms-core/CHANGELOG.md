@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.12.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.12.0...netlify-cms-core@2.12.1) (2019-06-28)
+
+
+### Bug Fixes
+
+* **core:** load more entries until viewport is filled ([#2415](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2415)) ([a02496b](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/a02496b))
+
+
+
+
+
 # [2.12.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.11.1...netlify-cms-core@2.12.0) (2019-06-26)
 
 
