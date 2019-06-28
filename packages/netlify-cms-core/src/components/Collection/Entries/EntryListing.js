@@ -25,10 +25,13 @@ export default class EntryListing extends React.Component {
     handleCursorActions: PropTypes.func.isRequired,
   };
 
+  hasMore = () => {
+    return Cursor.create(this.props.cursor).actions.has('append_next');
+  };
+
   handleLoadMore = () => {
-    const { cursor, handleCursorActions } = this.props;
-    if (Cursor.create(cursor).actions.has('append_next')) {
-      handleCursorActions('append_next');
+    if (this.hasMore()) {
+      this.props.handleCursorActions('append_next');
     }
   };
 
@@ -71,7 +74,7 @@ export default class EntryListing extends React.Component {
           {Map.isMap(collections)
             ? this.renderCardsForSingleCollection()
             : this.renderCardsForMultipleCollections()}
-          <Waypoint onEnter={this.handleLoadMore} />
+          {this.hasMore() && <Waypoint onEnter={this.handleLoadMore} />}
         </CardsGrid>
       </div>
     );
