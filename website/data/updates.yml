@@ -1,4 +1,7 @@
 updates:
+  - date: '2019-06-28'
+    description: 'Fix entry loading for GitLab'
+    version: 2.9.5
   - date: '2019-06-26'
     description: 'Reference nested fields in relation widget, validate simple lists, bugfixes'
     version: 2.9.4
