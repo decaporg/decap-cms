@@ -1,10 +1,10 @@
 import isHotkey from 'is-hotkey';
 
-const Link = () => ({
+const Link = ({ type }) => ({
   commands: {
     toggleLink(editor, getUrl) {
-      if (editor.hasInline('link')) {
-        editor.unwrapInline('link');
+      if (editor.hasInline(type)) {
+        editor.unwrapInline(type);
       } else {
         const url = getUrl();
         if (!url) return;
@@ -14,7 +14,7 @@ const Link = () => ({
           editor.insertText(url).moveFocusBackward(0 - url.length);
         }
 
-        return editor.wrapInline({ type: 'link', data: { url } }).moveToEnd();
+        return editor.wrapInline({ type, data: { url } }).moveToEnd();
       }
     },
   },

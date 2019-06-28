@@ -1,7 +1,6 @@
 import isHotkey from 'is-hotkey';
-import { SLATE_DEFAULT_BLOCK_TYPE } from '../../types';
 
-const CloseBlock = () => ({
+const CloseBlock = ({ defaultType }) => ({
   onKeyDown(event, editor, next) {
     const { selection, startBlock } = editor.value;
     const isBackspace = isHotkey('backspace', event);
@@ -14,8 +13,8 @@ const CloseBlock = () => ({
     if (!selection.start.isAtStartOfNode(startBlock) || startBlock.text.length > 0) {
       return next();
     }
-    if (startBlock.type !== SLATE_DEFAULT_BLOCK_TYPE) {
-      return editor.setBlocks(SLATE_DEFAULT_BLOCK_TYPE);
+    if (startBlock.type !== defaultType) {
+      return editor.setBlocks(defaultType);
     }
     return next();
   },

@@ -29,7 +29,7 @@ import { assertType } from './util';
  * - tab multiple nested lists and items when selection is expanded
  * - empty new list item is parsed as a literal asterisk in markdown until non-empty
  */
-const ListPlugin = ({ defaultBlockType, unorderedListType, orderedListType }) => {
+const ListPlugin = ({ defaultType, unorderedListType, orderedListType }) => {
   const LIST_TYPES = [orderedListType, unorderedListType];
 
   function oppositeListType(type) {
@@ -254,7 +254,7 @@ const ListPlugin = ({ defaultBlockType, unorderedListType, orderedListType }) =>
         const block = editor.value.startBlock;
         const previousSibling = editor.value.document.getPreviousSibling(block.key);
         const isAtStart = editor.value.selection.start.isAtStartOfNode(block);
-        if (block.type === defaultBlockType && isAtStart && editor.isList(previousSibling)) {
+        if (block.type === defaultType && isAtStart && editor.isList(previousSibling)) {
           return editor.wrapInList(previousSibling.type);
         }
         return next();

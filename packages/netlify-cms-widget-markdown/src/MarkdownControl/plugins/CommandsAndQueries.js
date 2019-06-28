@@ -1,7 +1,6 @@
 import { isArray, tail } from 'lodash';
-import { SLATE_DEFAULT_BLOCK_TYPE } from '../../types';
 
-const CommandsAndQueries = () => ({
+const CommandsAndQueries = ({ defaultType }) => ({
   queries: {
     getSelectedChildren(editor, node) {
       return node.nodes.filter(child => editor.isSelected(child));
@@ -50,7 +49,7 @@ const CommandsAndQueries = () => ({
         case 'heading-four':
         case 'heading-five':
         case 'heading-six':
-          return editor.setBlocks(editor.everyBlock(type) ? SLATE_DEFAULT_BLOCK_TYPE : type);
+          return editor.setBlocks(editor.everyBlock(type) ? defaultType : type);
         case 'quote':
           return editor.toggleQuoteBlock();
         case 'numbered-list':

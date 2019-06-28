@@ -9,18 +9,14 @@ const createShortcodeBlock = shortcodeConfig => {
 
   const nodes = [Text.create('')];
 
-  /**
-   * Get default values for plugin fields.
-   */
+  // Get default values for plugin fields.
   const defaultValues = shortcodeConfig.fields
     .toMap()
     .mapKeys((_, field) => field.get('name'))
     .filter(field => field.has('default'))
     .map(field => field.get('default'));
 
-  /**
-   * Create new shortcode block with default values set.
-   */
+  // Create new shortcode block with default values set.
   return {
     object: 'block',
     type: 'shortcode',
@@ -33,13 +29,13 @@ const createShortcodeBlock = shortcodeConfig => {
   };
 };
 
-const Shortcode = () => ({
+const Shortcode = ({ defaultType }) => ({
   commands: {
     insertShortcode(editor, shortcodeConfig) {
       const block = createShortcodeBlock(shortcodeConfig);
       const { focusBlock } = editor.value;
 
-      if (focusBlock.text === '' && focusBlock.type === 'paragraph') {
+      if (focusBlock.text === '' && focusBlock.type === defaultType) {
         editor.setNodeByKey(focusBlock.key, block);
       } else {
         editor.insertBlock(block);

@@ -1,10 +1,9 @@
 import isHotkey from 'is-hotkey';
-import { SLATE_DEFAULT_BLOCK_TYPE } from '../../types';
 
 /**
  * TODO: highlight a couple list items and hit the quote button. doesn't work.
  */
-const QuoteBlock = () => ({
+const QuoteBlock = ({ type, defaultType }) => ({
   commands: {
     /**
      * Quotes can contain other blocks, even other quotes. If a selection contains quotes, they
@@ -36,7 +35,7 @@ const QuoteBlock = () => ({
     if (!selection.start.isAtStartOfNode(startBlock)) {
       return next();
     }
-    if (startBlock.type === SLATE_DEFAULT_BLOCK_TYPE && doc.getParent(startBlock.key).type === 'quote' ) {
+    if (startBlock.type === defaultType && doc.getParent(startBlock.key).type === type) {
       return editor.unwrapNodeByKey(startBlock.key);
     }
     return next();

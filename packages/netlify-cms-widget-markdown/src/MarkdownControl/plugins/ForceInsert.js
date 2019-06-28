@@ -1,6 +1,4 @@
-import { SLATE_DEFAULT_BLOCK_TYPE } from '../../types';
-
-const ForceInsert = () => ({
+const ForceInsert = ({ defaultType }) => ({
   queries: {
     canInsertBeforeNode(editor, node) {
       if (!editor.isVoid(node)) {
@@ -22,7 +20,7 @@ const ForceInsert = () => ({
   },
   commands: {
     forceInsertAtDocumentStart(editor) {
-      const block = { type: SLATE_DEFAULT_BLOCK_TYPE, object: 'block' };
+      const block = { type: defaultType, object: 'block' };
       return editor
         .insertNodeByKey(editor.value.document.key, 0, block)
         .moveToStartOfDocument();
@@ -30,13 +28,13 @@ const ForceInsert = () => ({
     forceInsertAfterNode(editor, node) {
       return editor
         .moveToEndOfNode(node)
-        .insertBlock(SLATE_DEFAULT_BLOCK_TYPE)
+        .insertBlock(defaultType)
         .focus();
     },
     moveToEndOfDocument(editor) {
       const lastBlock = editor.value.document.nodes.last();
       if (editor.isVoid(lastBlock)) {
-        editor.insertBlock(SLATE_DEFAULT_BLOCK_TYPE);
+        editor.insertBlock(defaultType);
       }
       editor.focus();
     },

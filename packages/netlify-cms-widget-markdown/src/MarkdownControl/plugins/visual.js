@@ -11,24 +11,20 @@ import CopyPasteVisual from './CopyPasteVisual';
 import Link from './Link';
 import ForceInsert from './ForceInsert';
 import Shortcode from './Shortcode';
-import { SLATE_DEFAULT_BLOCK_TYPE } from '../../types';
+import { SLATE_DEFAULT_BLOCK_TYPE as defaultType } from '../../types';
 
 const plugins = ({ getAsset, resolveWidget }) => [
-  CommandsAndQueries(),
-  QuoteBlock(),
-  ListPlugin({
-    defaultBlockType: SLATE_DEFAULT_BLOCK_TYPE,
-    unorderedListType: 'bulleted-list',
-    orderedListType: 'numbered-list',
-  }),
-  Link(),
+  CommandsAndQueries({ defaultType }),
+  QuoteBlock({ defaultType, type: 'quote' }),
+  ListPlugin({ defaultType, unorderedListType: 'bulleted-list', orderedListType: 'numbered-list' }),
+  Link({ type: 'link' }),
   LineBreak(),
-  BreakToDefaultBlock(),
-  CloseBlock(),
+  BreakToDefaultBlock({ defaultType }),
+  CloseBlock({ defaultType }),
   SelectAll(),
-  ForceInsert(),
+  ForceInsert({ defaultType }),
   CopyPasteVisual({ getAsset, resolveWidget }),
-  Shortcode(),
+  Shortcode({ defaultType }),
 ];
 
 export default plugins;

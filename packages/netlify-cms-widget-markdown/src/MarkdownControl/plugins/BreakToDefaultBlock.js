@@ -1,7 +1,6 @@
 import isHotkey from 'is-hotkey';
-import { SLATE_DEFAULT_BLOCK_TYPE } from '../../types';
 
-const BreakToDefaultBlock = () => ({
+const BreakToDefaultBlock = ({ defaultType }) => ({
   onKeyDown(event, editor, next) {
     const { selection, startBlock } = editor.value;
     const isEnter = isHotkey('enter', event);
@@ -12,8 +11,8 @@ const BreakToDefaultBlock = () => ({
       editor.delete();
       return next();
     }
-    if (selection.start.isAtEndOfNode(startBlock) && startBlock.type !== SLATE_DEFAULT_BLOCK_TYPE) {
-      return editor.insertBlock(SLATE_DEFAULT_BLOCK_TYPE);
+    if (selection.start.isAtEndOfNode(startBlock) && startBlock.type !== defaultType) {
+      return editor.insertBlock(defaultType);
     }
     return next();
   },
