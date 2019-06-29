@@ -24,19 +24,34 @@ const QuoteBlock = ({ type, defaultType }) => ({
     },
   },
   onKeyDown(event, editor, next) {
-    const isBackspace = isHotkey('backspace', event);
-    const { selection, startBlock, document: doc } = editor.value;
-    if (!isBackspace) {
+    if (isHotkey('enter', event)) {
+      if (editor.value.selection.isExpanded) {
+        return editor.delete();
+      }
+
       return next();
-    }
-    if (selection.isExpanded) {
-      return editor.delete();
-    }
-    if (!selection.start.isAtStartOfNode(startBlock)) {
+    } else if (isHotkey('backspace', event)) {
+      const { selection, startBlock, document: doc } = editor.value;
+      const parent = doc.getParent(startBlock.key);
+      const isQuote = parent.type === type;
+      if (!isQuote) {
+        return next();
+      }
+      if (selection.isExpanded) {
+        return editor.delete();
+      }
+      if (!selection.start.isAtStartOfNode(startBlock)) {
+        return next();
+      }
+      const previousParentSibling = doc.getPreviousSibling(parent.key);
+      if (previousParentSibling && previousParentSibling.type === type) {
+        return editor.mergeNodeByKey(parent.key);
+      }
+
+      if (startBlock.type === defaultType && doc.getParent(startBlock.key).type === type) {
+        return editor.unwrapNodeByKey(startBlock.key);
+      }
       return next();
-    }
-    if (startBlock.type === defaultType && doc.getParent(startBlock.key).type === type) {
-      return editor.unwrapNodeByKey(startBlock.key);
     }
     return next();
   },

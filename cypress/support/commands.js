@@ -218,6 +218,7 @@ Cypress.Commands.add('clickToolbarButton', (title, { times } = {}) => {
   ['clickUnorderedListButton', 'Bulleted List'],
   ['clickCodeButton', 'Code'],
   ['clickItalicButton', 'Italic'],
+  ['clickQuoteButton', 'Quote'],
 ].forEach(([commandName, toolbarButtonName]) => {
   Cypress.Commands.add(commandName, opts => {
     return cy.clickToolbarButton(toolbarButtonName, opts);
