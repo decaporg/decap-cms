@@ -96,6 +96,7 @@ It's now time to commit your changes and push to GitHub. The Gatsby starter init
 ```bash
 git add .
 git commit -m "Initial Commit"
+curl -u 'YOUR_USERNAME' https://api.github.com/user/repos -d '{"name":"NEW_REPO_NAME""}'
 git remote add origin https://github.com/YOUR_USERNAME/NEW_REPO_NAME.git
 git push -u origin master
 ```
