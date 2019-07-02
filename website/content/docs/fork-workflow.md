@@ -28,13 +28,13 @@ At the same time, any contributors who _do_ have write access to the repository 
 
 ## Using the Fork Workflow
 
-When a user logs into Netlify CMS who doesn't have write access to your repo, the CMS will ask for permission to create a fork of your repo (or use their existing fork, if they already have one). They are then presented with the normal CMS interface. The published content shown is from the original repo, so it stays up-to-date as changes are made.
+When a user logs into Netlify CMS who doesn't have write access to your repo, the CMS asks for permission to create a fork of your repo (or uses their existing fork, if they already have one). They are then presented with the normal CMS interface. The published content shown is from the original repo, so it stays up-to-date as changes are made.
 
-On the editorial workflow screen, the normal three columns will be replaced by two columns instead — "Draft" and "Ready to Review".
+On the editorial workflow screen, the normal three columns are replaced by two columns instead — "Draft" and "Ready to Review".
 
-When they make changes to content in the CMS, the changes will be made to a branch on their fork. In the editorial workflow screen, they will see only their own pending changes. Once they're ready to submit their changes, they can move the card into the "Ready To Review" column to create a pull request. When the pull request is merged (by a repository maintainer via the GitHub UI), the CMS will delete the branch and remove the card the next time the user opens the editorial workflow screen. Fork workflow users will not be able to publish entries through the CMS.
+When they make changes to content in the CMS, the changes are made to a branch on their fork. In the editorial workflow screen, they see only their own pending changes. Once they're ready to submit their changes, they can move the card into the "Ready To Review" column to create a pull request. When the pull request is merged (by a repository maintainer via the GitHub UI), Netlify CMS deletes the branch and removes the card from the user's editorial workflow screen. Fork workflow users cannot publish entries through the CMS.
 
-Users who _do_ have write access to the original repository will continue to use the CMS normally. Unpublished changes made by users using the fork workflow will not be visible on the editorial workflow screen, and their unpublished changes must be merged through the GitHub UI.
+Users who _do_ have write access to the original repository continue to use the CMS normally. Unpublished changes made by users using the fork workflow are not visible on the editorial workflow screen, and their unpublished changes must be merged through the GitHub UI.
 
 ## Alternative for external contributors with Git Gateway
 
