@@ -6,7 +6,7 @@ import { css as coreCss, ClassNames } from '@emotion/core';
 import { get, isEmpty, debounce, uniq } from 'lodash';
 import { fromJS } from 'immutable';
 import { Value, Document, Block, Text } from 'slate';
-import { Editor as Slate, setEventTransfer } from 'slate-react';
+import { Editor as Slate } from 'slate-react';
 import isHotkey from 'is-hotkey';
 import { lengths } from 'netlify-cms-ui-default';
 import { slateToMarkdown, markdownToSlate, htmlToSlate, markdownToHtml } from '../serializers';
