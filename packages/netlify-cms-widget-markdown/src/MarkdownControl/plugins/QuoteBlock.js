@@ -12,10 +12,10 @@ const QuoteBlock = ({ type, defaultType }) => ({
      * blocks into a quote. Make sure text is wrapped into paragraphs.
      */
     toggleQuoteBlock(editor) {
-      const topBlocks = editor.value.document.getRootBlocksAtRange(editor.value.selection);
-      const firstBlockKey = topBlocks.first().key;
-      const lastBlockKey = topBlocks.last().key;
-      const ancestor = editor.value.document.getCommonAncestor(firstBlockKey, lastBlockKey);
+      const blocks = editor.value.blocks;
+      const firstBlockKey = blocks.first().key;
+      const lastBlockKey = blocks.last().key;
+      const ancestor = editor.getAncestor(firstBlockKey, lastBlockKey);
       if (ancestor.type === type) {
         editor.unwrapBlock(type);
       } else {
@@ -24,23 +24,38 @@ const QuoteBlock = ({ type, defaultType }) => ({
     },
   },
   onKeyDown(event, editor, next) {
+    if (!isHotkey('enter', event) && !isHotkey('backspace', event)) {
+      return next();
+    }
+    const { selection, startBlock, document: doc } = editor.value;
+    const parent = doc.getParent(startBlock.key);
+    const isQuote = parent.type === type;
+    if (!isQuote) {
+      return next();
+    }
     if (isHotkey('enter', event)) {
-      if (editor.value.selection.isExpanded) {
-        return editor.delete();
+      if (selection.isExpanded) {
+        editor.delete();
+      }
+
+      // If the quote is empty, remove it.
+      if (editor.atStartOf(parent)) {
+        return editor.unwrapBlockByKey(parent.key);
+      }
+
+      if (editor.atStartOf(startBlock)) {
+        const offset = editor.getOffset(startBlock);
+        return editor
+          .splitNodeByKey(parent.key, offset)
+          .unwrapBlockByKey(editor.value.document.getParent(startBlock.key).key);
       }
 
       return next();
     } else if (isHotkey('backspace', event)) {
-      const { selection, startBlock, document: doc } = editor.value;
-      const parent = doc.getParent(startBlock.key);
-      const isQuote = parent.type === type;
-      if (!isQuote) {
-        return next();
-      }
       if (selection.isExpanded) {
-        return editor.delete();
+        editor.delete();
       }
-      if (!selection.start.isAtStartOfNode(startBlock)) {
+      if (!editor.atStartOf(parent)) {
         return next();
       }
       const previousParentSibling = doc.getPreviousSibling(parent.key);
@@ -48,10 +63,7 @@ const QuoteBlock = ({ type, defaultType }) => ({
         return editor.mergeNodeByKey(parent.key);
       }
 
-      if (startBlock.type === defaultType && doc.getParent(startBlock.key).type === type) {
-        return editor.unwrapNodeByKey(startBlock.key);
-      }
-      return next();
+      return editor.unwrapNodeByKey(startBlock.key);
     }
     return next();
   },

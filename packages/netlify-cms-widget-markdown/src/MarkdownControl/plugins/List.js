@@ -299,37 +299,34 @@ const ListPlugin = ({ defaultType, unorderedListType, orderedListType }) => {
         }
 
         if (editor.value.selection.isExpanded) {
-          return editor.delete();
+          editor.delete();
         }
 
         if (listOrListItem.type === 'list-item') {
           const listItem = listOrListItem;
 
-          // If the list item is empty, remove it.
-          if (listItem.text === '' || editor.value.selection.start.isAtStartOfNode(listItem)) {
+          // If focus is at start of list item, unwrap the entire list item.
+          if (editor.atStartOf(listItem)) {
             return editor.unwrapListItem(listItem);
           }
 
-          // If current block is empty, or selection at start of block that is not
-          // the first block, move the current block to a new list item.
-          else if (
-            editor.value.startBlock.text === '' ||
-            (!editor.value.selection.start.isAtStartOfNode(listItem) &&
-              editor.value.selection.start.isAtStartOfNode(editor.value.startBlock))
-          ) {
+          // If focus is at start of a subsequent block in the list item, move
+          // everything after the cursor in the current list item to a new list
+          // item.
+          if (editor.atStartOf(editor.value.startBlock)) {
             const newListItem = Block.create('list-item');
             const range = Range.create(editor.value.selection).moveEndToEndOfNode(listItem);
 
             return editor.withoutNormalizing(() => {
               editor.wrapBlockAtRange(range, newListItem).unwrapNodeByKey(newListItem.key);
             });
-          } else {
-            return next();
           }
+
+          return next();
         } else {
           const list = listOrListItem;
           if (list.nodes.size === 0) {
-            returneditor.removeNodeByKey(list.key);
+            return editor.removeNodeByKey(list.key);
           }
         }
         return next();

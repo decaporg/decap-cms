@@ -22,8 +22,7 @@ describe('Markdown widget', () => {
           .confirmMarkdownEditorContent(`
             <p></p>
           `);
-      });
-      it('toggles empty quote block on and off for current block', () => {
+      }); it('toggles empty quote block on and off for current block', () => {
         cy.focused()
           .type('foo')
           .clickQuoteButton()
@@ -194,6 +193,39 @@ describe('Markdown widget', () => {
               <p>foo</p>
               <p>bar</p>
               <p>baz</p>
+            </blockquote>
+          `);
+      });
+    });
+
+    describe('backspace inside quote', () => {
+      it('joins two paragraphs', () => {
+        cy.clickQuoteButton()
+          .type('foo')
+          .enter()
+          .type('bar')
+          .setCursorBefore('bar')
+          .backspace()
+          .confirmMarkdownEditorContent(`
+            <blockquote>
+              <p>foobar</p>
+            </blockquote>
+          `);
+      });
+    });
+
+    describe('enter inside quote', () => {
+      it('at end of block, creates new block inside quote', () => {
+        cy.clickQuoteButton()
+          .type('foo')
+          .enter()
+          .type('bar')
+          .setCursorBefore('bar')
+          .backspace()
+          .confirmMarkdownEditorContent(`
+            <blockquote>
+              <p>foo</p>
+              <p>bar</p>
             </blockquote>
           `);
       });

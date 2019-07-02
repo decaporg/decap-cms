@@ -2,6 +2,20 @@ import { isArray, tail } from 'lodash';
 
 const CommandsAndQueries = ({ defaultType }) => ({
   queries: {
+    atStartOf(editor, node) {
+      const { selection } = editor.value;
+      return selection.isCollapsed && selection.start.isAtStartOfNode(node);
+    },
+    getAncestor(editor, firstKey, lastKey) {
+      if (firstKey === lastKey) {
+        return editor.value.document.getParent(firstKey);
+      }
+      return editor.value.document.getCommonAncestor(firstKey, lastKey);
+    },
+    getOffset(editor, node) {
+      const parent = editor.value.document.getParent(node.key);
+      return parent.nodes.indexOf(node);
+    },
     getSelectedChildren(editor, node) {
       return node.nodes.filter(child => editor.isSelected(child));
     },

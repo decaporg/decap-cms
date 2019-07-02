@@ -382,6 +382,33 @@ describe('Markdown widget', () => {
           `)
       });
 
+      it.only('wraps nested structure into list item', () => {
+        cy.clickQuoteButton()
+          .clickUnorderedListButton()
+          .type('foo')
+          .clickHeadingOneButton()
+          .enter({ times: 3 })
+          .clickQuoteButton()
+          .type('bar')
+          .setSelection('foo', 'bar')
+          .clickUnorderedListButton()
+          .confirmMarkdownEditorContent(`
+            <ul>
+              <li>
+                <blockquote>
+                  <ul>
+                    <li>
+                      <h1>foo</h1>
+                    </li>
+                  </ul>
+                  <blockquote>
+                    <p>bar</p>
+                  </blockquote>
+                </blockquote>
+              </li>
+            </ul>
+          `);
+      });
     });
 
     describe('on Enter', () => {
