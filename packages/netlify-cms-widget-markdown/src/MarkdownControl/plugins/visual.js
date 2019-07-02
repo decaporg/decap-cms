@@ -14,6 +14,14 @@ import Shortcode from './Shortcode';
 import { SLATE_DEFAULT_BLOCK_TYPE as defaultType } from '../../types';
 
 const plugins = ({ getAsset, resolveWidget }) => [
+  {
+    onKeyDown(event, editor, next) {
+      if (isHotkey('mod+j', event)) {
+        console.log(JSON.stringify(editor.value.document.toJS(), null, 2));
+      }
+      next();
+    },
+  },
   CommandsAndQueries({ defaultType }),
   QuoteBlock({ defaultType, type: 'quote' }),
   ListPlugin({ defaultType, unorderedListType: 'bulleted-list', orderedListType: 'numbered-list' }),

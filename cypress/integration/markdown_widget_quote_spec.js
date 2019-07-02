@@ -22,7 +22,8 @@ describe('Markdown widget', () => {
           .confirmMarkdownEditorContent(`
             <p></p>
           `);
-      }); it('toggles empty quote block on and off for current block', () => {
+      });
+      it('toggles empty quote block on and off for current block', () => {
         cy.focused()
           .type('foo')
           .clickQuoteButton()
@@ -34,6 +35,33 @@ describe('Markdown widget', () => {
           .clickQuoteButton()
           .confirmMarkdownEditorContent(`
             <p>foo</p>
+          `);
+      });
+      it('toggles entire quote block without expanded selection', () => {
+        cy.clickQuoteButton()
+          .type('foo')
+          .enter()
+          .type('bar')
+          .clickQuoteButton()
+          .confirmMarkdownEditorContent(`
+            <p>foo</p>
+            <p>bar</p>
+          `);
+      });
+      it('toggles entire quote block with complex content', () => {
+        cy.clickQuoteButton()
+          .clickUnorderedListButton()
+          .clickHeadingOneButton()
+          .type('foo')
+          .enter({ times: 3 })
+          .clickQuoteButton()
+          .confirmMarkdownEditorContent(`
+            <ul>
+              <li>
+                <h1>foo</h1>
+              </li>
+            </ul>
+            <p></p>
           `);
       });
       it('toggles empty quote block on and off for selected blocks', () => {
@@ -88,113 +116,42 @@ describe('Markdown widget', () => {
             </blockquote>
           `);
       });
-      it('toggles partial quote based on selection', () => {
-        cy.focused()
+      it('creates new quote block if parent is not a quote, can deeply nest', () => {
+        cy.clickQuoteButton()
+          .clickUnorderedListButton()
+          .clickQuoteButton()
+          .clickUnorderedListButton()
+          .clickQuoteButton()
+          .clickUnorderedListButton()
+          .clickQuoteButton()
           .type('foo')
-          .enter()
+          .enter({ times: 10 })
           .type('bar')
-          .enter()
-          .type('baz')
-          .setSelection('foo', 'baz')
-          .clickQuoteButton()
           .confirmMarkdownEditorContent(`
             <blockquote>
-              <p>foo</p>
-              <p>bar</p>
-              <p>baz</p>
-            </blockquote>
-          `)
-          .setSelection('foo')
-          .clickQuoteButton()
-          .confirmMarkdownEditorContent(`
-            <p>foo</p>
-            <blockquote>
-              <p>bar</p>
-              <p>baz</p>
-            </blockquote>
-          `)
-          .clickQuoteButton()
-          .confirmMarkdownEditorContent(`
-            <blockquote>
-              <p>foo</p>
-            </blockquote>
-            <blockquote>
-              <p>bar</p>
-              <p>baz</p>
-            </blockquote>
-          `)
-          .right({ times: 2 })
-          .backspace()
-          .confirmMarkdownEditorContent(`
-            <blockquote>
-              <p>foo</p>
-              <p>bar</p>
-              <p>baz</p>
-            </blockquote>
-          `)
-          .setSelection('bar')
-          .clickQuoteButton()
-          .confirmMarkdownEditorContent(`
-            <blockquote>
-              <p>foo</p>
-            </blockquote>
-            <p>bar</p>
-            <blockquote>
-              <p>baz</p>
-            </blockquote>
-          `)
-          .clickQuoteButton()
-          .confirmMarkdownEditorContent(`
-            <blockquote>
-              <p>foo</p>
-            </blockquote>
-            <blockquote>
+              <ul>
+                <li>
+                  <blockquote>
+                    <ul>
+                      <li>
+                        <blockquote>
+                          <ul>
+                            <li>
+                              <blockquote>
+                                <p>foo</p>
+                              </blockquote>
+                            </li>
+                          </ul>
+                        </blockquote>
+                      </li>
+                    </ul>
+                  </blockquote>
+                </li>
+              </ul>
               <p>bar</p>
             </blockquote>
-            <blockquote>
-              <p>baz</p>
-            </blockquote>
           `)
-          .right({ times: 2 })
-          .backspace()
-          .setSelection('foo')
-          .right({ times: 2 })
-          .backspace()
-          .confirmMarkdownEditorContent(`
-            <blockquote>
-              <p>foo</p>
-              <p>bar</p>
-              <p>baz</p>
-            </blockquote>
-          `)
-          .setSelection('baz')
-          .clickQuoteButton()
-          .confirmMarkdownEditorContent(`
-            <blockquote>
-              <p>foo</p>
-              <p>bar</p>
-            </blockquote>
-            <p>baz</p>
-          `)
-          .clickQuoteButton()
-          .confirmMarkdownEditorContent(`
-            <blockquote>
-              <p>foo</p>
-              <p>bar</p>
-            </blockquote>
-            <blockquote>
-              <p>baz</p>
-            </blockquote>
-          `)
-          .left()
-          .backspace()
-          .confirmMarkdownEditorContent(`
-            <blockquote>
-              <p>foo</p>
-              <p>bar</p>
-              <p>baz</p>
-            </blockquote>
-          `);
+          .backspace({ times: 20 });
       });
     });
 
@@ -212,14 +169,20 @@ describe('Markdown widget', () => {
             </blockquote>
           `);
       });
-    });
-
-    describe('enter inside quote', () => {
-      it('at end of block, creates new block inside quote', () => {
+      it('joins quote with previous quote', () => {
         cy.clickQuoteButton()
           .type('foo')
-          .enter()
+          .enter({ times: 2 })
+          .clickQuoteButton()
           .type('bar')
+          .confirmMarkdownEditorContent(`
+            <blockquote>
+              <p>foo</p>
+            </blockquote>
+            <blockquote>
+              <p>bar</p>
+            </blockquote>
+          `)
           .setCursorBefore('bar')
           .backspace()
           .confirmMarkdownEditorContent(`
@@ -228,6 +191,56 @@ describe('Markdown widget', () => {
               <p>bar</p>
             </blockquote>
           `);
+      });
+      it('removes first block from quote when focused at first block at start', () => {
+        cy.clickQuoteButton()
+          .type('foo')
+          .enter()
+          .type('bar')
+          .setCursorBefore('foo')
+          .backspace()
+          .confirmMarkdownEditorContent(`
+            <p>foo</p>
+            <blockquote>
+              <p>bar</p>
+            </blockquote>
+          `)
+      });
+    });
+
+    describe('enter inside quote', () => {
+      it('creates new block inside quote', () => {
+        cy.clickQuoteButton()
+          .type('foo')
+          .enter()
+          .confirmMarkdownEditorContent(`
+            <blockquote>
+              <p>foo</p>
+              <p></p>
+            </blockquote>
+          `)
+          .type('bar')
+          .setCursorAfter('ba')
+          .enter()
+          .confirmMarkdownEditorContent(`
+            <blockquote>
+              <p>foo</p>
+              <p>ba</p>
+              <p>r</p>
+            </blockquote>
+          `);
+      });
+      it('creates new block after quote from empty last block', () => {
+        cy.clickQuoteButton()
+          .type('foo')
+          .enter()
+          .enter()
+          .confirmMarkdownEditorContent(`
+            <blockquote>
+              <p>foo</p>
+            </blockquote>
+            <p></p>
+          `)
       });
     });
   });

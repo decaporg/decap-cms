@@ -17,7 +17,7 @@ const QuoteBlock = ({ type, defaultType }) => ({
       const lastBlockKey = blocks.last().key;
       const ancestor = editor.getAncestor(firstBlockKey, lastBlockKey);
       if (ancestor.type === type) {
-        editor.unwrapBlock(type);
+        editor.unwrapBlockChildren(ancestor);
       } else {
         editor.wrapBlock(type);
       }
