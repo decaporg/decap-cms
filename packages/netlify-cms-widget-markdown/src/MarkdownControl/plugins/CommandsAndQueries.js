@@ -27,7 +27,7 @@ const CommandsAndQueries = ({ defaultType }) => ({
       return editor.value.document.getClosest(key, node => node.type === type);
     },
     isSelected(editor, node) {
-      return editor.value.document.isNodeInRange(node.key, editor.value.selection);
+      return editor.value.document.isInRange(node.key, editor.value.selection);
     },
     isFirstChild(editor, node) {
       return editor.value.document.getParent(node.key).nodes.first().key === node.key;

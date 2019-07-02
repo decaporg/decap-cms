@@ -19,11 +19,13 @@ const ForceInsert = ({ defaultType }) => ({
     },
   },
   commands: {
-    forceInsertAtDocumentStart(editor) {
+    forceInsertBeforeNode(editor, node) {
       const block = { type: defaultType, object: 'block' };
+      const parent = editor.value.document.getParent(node.key);
       return editor
-        .insertNodeByKey(editor.value.document.key, 0, block)
-        .moveToStartOfDocument();
+        .insertNodeByKey(parent.key, 0, block)
+        .moveToStartOfNode(parent)
+        .focus();
     },
     forceInsertAfterNode(editor, node) {
       return editor
