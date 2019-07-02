@@ -10,12 +10,8 @@ const ForceInsert = ({ defaultType }) => ({
       if (!editor.isVoid(node)) {
         return true;
       }
-
-      // The static insertion point at the bottom of the editor ensures nodes
-      // can be inserted after trailing void nodes, so we only return false if
-      // the current and next sibling are both void.
       const nextSibling = editor.value.document.getNextSibling(node.key);
-      return !nextSibling || !editor.isVoid(nextSibling);
+      return nextSibling && !editor.isVoid(nextSibling);
     },
   },
   commands: {
@@ -38,7 +34,9 @@ const ForceInsert = ({ defaultType }) => ({
       if (editor.isVoid(lastBlock)) {
         editor.insertBlock(defaultType);
       }
-      editor.focus();
+      return editor
+        .moveToEndOfNode(lastBlock)
+        .focus();
     },
   },
 });
