@@ -50,6 +50,18 @@ describe('slate', () => {
     expect(process('*a  \nb*')).toEqual('*a\\\nb*');
   });
 
+  it('should not output empty headers in markdown', () => {
+    // prettier-ignore
+    const slateAst = (
+      <document>
+        <heading-one></heading-one>
+        <paragraph>foo</paragraph>
+        <heading-one></heading-one>
+      </document>
+    );
+    expect(slateToMarkdown(slateAst.toJSON())).toMatchInlineSnapshot(`"foo"`);
+  });
+
   it('should not output empty marks in markdown', () => {
     // prettier-ignore
     const slateAst = (

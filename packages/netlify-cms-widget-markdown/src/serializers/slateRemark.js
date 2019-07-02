@@ -64,7 +64,7 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
      */
     const hasBlockChildren = node.nodes && node.nodes[0] && node.nodes[0].object === 'block';
     const children = hasBlockChildren
-      ? node.nodes.map(transform)
+      ? node.nodes.map(transform).filter(v => v)
       : convertInlineAndTextChildren(node.nodes);
 
     const output = convertBlockNode(node, children);
@@ -375,7 +375,11 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
         const depthMap = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6 };
         const depthText = node.type.split('-')[1];
         const depth = depthMap[depthText];
-        return u(typeMap[node.type], { depth }, children);
+        const mdastNode = u(typeMap[node.type], { depth }, children);
+        if (mdastToString(mdastNode)) {
+          return mdastNode;
+        }
+        return;
       }
 
       /**
