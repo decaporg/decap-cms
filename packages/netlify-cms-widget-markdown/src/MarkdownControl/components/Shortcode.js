@@ -1,52 +1,60 @@
 /* eslint-disable react/prop-types */
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { css } from '@emotion/core';
 import { Map, fromJS } from 'immutable';
 import { omit } from 'lodash';
 import { getEditorControl, getEditorComponents } from '../index';
 
-const Shortcode = ({ editor, node, dataKey = 'shortcodeData', typeOverload }) => {
-  const plugin = getEditorComponents().get(typeOverload || node.data.get('shortcode'));
-  const EditorControl = getEditorControl();
-  const [field, setField] = useState(Map());
+export default class Shortcode extends React.Component {
+  state = {
+    field: Map(),
+  }
 
-  useEffect(() => {
-    setField(fromJS(omit(plugin, ['id', 'fromBlock', 'toBlock', 'toPreview', 'pattern', 'icon'])));
-  }, []);
+  componentDidMount() {
+    const { node, typeOverload } = this.props;
+    const plugin = getEditorComponents().get(typeOverload || node.data.get('shortcode'));
+    const fieldKeys = ['id', 'fromBlock', 'toBlock', 'toPreview', 'pattern', 'icon'];
+    const field = fromJS(omit(plugin, fieldKeys));
+    this.setState({ field });
+  }
 
-  const handleChange = (fieldName, value) => {
-    if (dataKey === false) {
-      editor.setNodeByKey(node.key, { data: value || Map() });
-    } else {
-      editor.setNodeByKey(node.key, { data: node.data.set('shortcodeData', value) });
-    }
-  };
+  render() {
+    const { editor, node, dataKey = 'shortcodeData' } = this.props;
+    const { field } = this.state;
+    const EditorControl = getEditorControl();
+    const value = dataKey === false ? node.data : fromJS(node.data.get(dataKey));
 
-  const previousSibling = editor.value.document.getPreviousSibling(node.key);
-  const nextSibling = editor.value.document.getNextSibling(node.key);
+    const handleChange = (fieldName, value) => {
+      if (dataKey === false) {
+        editor.setNodeByKey(node.key, { data: value || Map() });
+      } else {
+        editor.setNodeByKey(node.key, { data: node.data.set('shortcodeData', value) });
+      }
+    };
 
-  const value = dataKey === false ? node.data : fromJS(node.data.get(dataKey));
-  const handleFocus = () => editor.moveToRangeOfNode(node);
+    const previousSibling = editor.value.document.getPreviousSibling(node.key);
+    const nextSibling = editor.value.document.getNextSibling(node.key);
 
-  return !field.isEmpty() && (
-    <div onClick={handleFocus} onFocus={handleFocus}>
-      <EditorControl
-        css={css`
-          margin-top: 0;
-          margin-bottom: 16px;
+    const handleFocus = () => editor.moveToRangeOfNode(node);
 
-          &:first-of-type {
+    return !field.isEmpty() && (
+      <div onClick={handleFocus} onFocus={handleFocus}>
+        <EditorControl
+          css={css`
             margin-top: 0;
-          }
-        `}
-        value={value}
-        field={field}
-        onChange={handleChange}
-        isEditorComponent={true}
-        isSelected={editor.isSelected(node)}
-      />
-    </div>
-  );
-};
+            margin-bottom: 16px;
 
-export default Shortcode;
+            &:first-of-type {
+              margin-top: 0;
+            }
+          `}
+          value={value}
+          field={field}
+          onChange={handleChange}
+          isEditorComponent={true}
+          isSelected={editor.isSelected(node)}
+        />
+      </div>
+    );
+  }
+}

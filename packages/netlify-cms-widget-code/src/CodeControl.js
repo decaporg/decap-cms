@@ -6,7 +6,7 @@ import { Map } from 'immutable';
 import { find } from 'lodash';
 import Resizable from 're-resizable';
 import Select from 'react-select';
-import { Controlled as ReactCodeMirror } from 'react-codemirror2';
+import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
 import codeMirrorStyles from 'codemirror/lib/codemirror.css';
 import codeMirrorTheme from 'codemirror/theme/material.css';
 import languageSelectStyles from './languageSelectStyles';
@@ -128,7 +128,6 @@ export default class CodeControl extends React.Component {
             )}
             <ReactCodeMirror
               id={forID}
-              //editorDidMount={() => console.log(CodeMirror.modes) || console.log(CodeMirror.mimeModes)}
               className={cx(
                 classNameWrapper,
                 css`
@@ -138,11 +137,16 @@ export default class CodeControl extends React.Component {
               options={{
                 theme: 'material',
                 lineNumbers: true,
-                autofocus: true,
                 mode: lang.mode,
+                autofocus: true,
+                extraKeys: {
+                  'Shift-Tab': 'indentLess',
+                  'Tab': 'indentMore',
+                },
               }}
+              detach={true}
               value={this.getCode() || ''}
-              onBeforeChange={(editor, data, newValue) => onChange(this.toValue('code', newValue))}
+              onChange={(editor, data, newValue) => onChange(this.toValue('code', newValue))}
             />
           </Resizable>
         )}
