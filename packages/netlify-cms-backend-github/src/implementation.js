@@ -1,3 +1,4 @@
+import React from 'react';
 import trimStart from 'lodash/trimStart';
 import semaphore from 'semaphore';
 import { stripIndent } from 'common-tags';
@@ -49,7 +50,17 @@ export default class GitHub {
 
     this.api = this.options.API || null;
 
-    this.repo = config.getIn(['backend', 'repo'], '');
+    this.forkWorkflowEnabled = config.getIn(['backend', 'fork_workflow'], false);
+    if (this.forkWorkflowEnabled) {
+      if (!this.options.useWorkflow) {
+        throw new Error(
+          'backend.fork_workflow is true but publish_mode is not set to editorial_workflow.',
+        );
+      }
+      this.originRepo = config.getIn(['backend', 'repo'], '');
+    } else {
+      this.repo = config.getIn(['backend', 'repo'], '');
+    }
     this.branch = config.getIn(['backend', 'branch'], 'master').trim();
     this.api_root = config.getIn(['backend', 'api_root'], 'https://api.github.com');
     this.token = '';
@@ -57,11 +68,89 @@ export default class GitHub {
   }
 
   authComponent() {
-    return AuthenticationPage;
+    const wrappedAuthenticationPage = props => <AuthenticationPage {...props} backend={this} />;
+    wrappedAuthenticationPage.displayName = 'AuthenticationPage';
+    return wrappedAuthenticationPage;
   }
 
   restoreUser(user) {
-    return this.authenticate(user);
+    return this.forkWorkflowEnabled
+      ? this.authenticateWithFork({ userData: user, getPermissionToFork: () => true }).then(() =>
+          this.authenticate(user),
+        )
+      : this.authenticate(user);
+  }
+
+  async pollUntilForkExists({ repo, token }) {
+    const pollDelay = 250; // milliseconds
+    var repoExists = false;
+    while (!repoExists) {
+      repoExists = await fetch(`${this.api_root}/repos/${repo}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then(() => true)
+        .catch(err => (err && err.status === 404 ? false : Promise.reject(err)));
+      // wait between polls
+      if (!repoExists) {
+        await new Promise(resolve => setTimeout(resolve, pollDelay));
+      }
+    }
+    return Promise.resolve();
+  }
+
+  async currentUser({ token }) {
+    if (!this._currentUserPromise) {
+      this._currentUserPromise = fetch(`${this.api_root}/user`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }).then(res => res.json());
+    }
+    return this._currentUserPromise;
+  }
+
+  async userIsOriginMaintainer({ username: usernameArg, token }) {
+    const username = usernameArg || (await this.currentUser({ token })).login;
+    this._userIsOriginMaintainerPromises = this._userIsOriginMaintainerPromises || {};
+    if (!this._userIsOriginMaintainerPromises[username]) {
+      this._userIsOriginMaintainerPromises[username] = fetch(
+        `${this.api_root}/repos/${this.originRepo}/collaborators/${username}/permission`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      )
+        .then(res => res.json())
+        .then(({ permission }) => permission === 'admin' || permission === 'write');
+    }
+    return this._userIsOriginMaintainerPromises[username];
+  }
+
+  async authenticateWithFork({ userData, getPermissionToFork }) {
+    if (!this.forkWorkflowEnabled) {
+      throw new Error('Cannot authenticate with fork; forking workflow is turned off.');
+    }
+    const { token } = userData;
+
+    // Origin maintainers should be able to use the CMS normally
+    if (await this.userIsOriginMaintainer({ token })) {
+      this.repo = this.originRepo;
+      this.useForkWorkflow = false;
+      return Promise.resolve();
+    }
+
+    await getPermissionToFork();
+
+    const fork = await fetch(`${this.api_root}/repos/${this.originRepo}/forks`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }).then(res => res.json());
+    this.useForkWorkflow = true;
+    this.repo = fork.full_name;
+    return this.pollUntilForkExists({ repo: fork.full_name, token });
   }
 
   async authenticate(state) {
@@ -70,8 +159,10 @@ export default class GitHub {
       token: this.token,
       branch: this.branch,
       repo: this.repo,
+      originRepo: this.useForkWorkflow ? this.originRepo : undefined,
       api_root: this.api_root,
       squash_merges: this.squash_merges,
+      useForkWorkflow: this.useForkWorkflow,
       initialWorkflowStatus: this.options.initialWorkflowStatus,
     });
     const user = await this.api.user();
