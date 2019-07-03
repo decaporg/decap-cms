@@ -1,7 +1,9 @@
 import zipObject from 'lodash/zipObject';
 
 export const filterPromises = (arr, filter) =>
-  Promise.all(arr.map(entry => filter(entry))).then(bits => arr.filter(() => bits.shift()));
+  Promise.all(arr.map(entry => Promise.resolve(entry).then(filter))).then(bits =>
+    arr.filter(() => bits.shift()),
+  );
 
 export const resolvePromiseProperties = obj => {
   // Get the keys which represent promises
