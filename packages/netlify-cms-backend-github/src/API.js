@@ -22,7 +22,10 @@ export default class API {
   }
 
   user() {
-    return this.request('/user');
+    if (!this._userPromise) {
+      this._userPromise = this.request('/user');
+    }
+    return this._userPromise;
   }
 
   hasWriteAccess() {
