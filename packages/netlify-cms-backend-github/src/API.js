@@ -128,27 +128,39 @@ export default class API {
       });
   }
 
-  storeMetadata(key, data) {
-    return this.checkMetadataRef().then(branchData => {
-      const fileTree = {
-        [`${key}.json`]: {
-          path: `${key}.json`,
-          raw: JSON.stringify(data),
-          file: true,
-        },
-      };
-
-      return this.uploadBlob(fileTree[`${key}.json`])
-        .then(() => this.updateTree(branchData.sha, '/', fileTree))
-        .then(changeTree => this.commit(`Updating “${key}” metadata`, changeTree))
-        .then(response => this.patchRef('meta', '_netlify_cms', response.sha))
-        .then(() => {
+  async storeMetadata(key, data) {
+    // semaphore ensures metadata updates are always ordered, even if
+    // calls to storeMetadata are not. concurrent metadata updates
+    // will result in the metadata branch being unable to update.
+    if (!this._metadataSemaphore) {
+      this._metadataSemaphore = semaphore(1);
+    }
+    return new Promise((resolve, reject) =>
+      this._metadataSemaphore.take(async () => {
+        try {
+          const branchData = await this.checkMetadataRef();
+          const fileTree = {
+            [`${key}.json`]: {
+              path: `${key}.json`,
+              raw: JSON.stringify(data),
+              file: true,
+            },
+          };
+          await this.uploadBlob(fileTree[`${key}.json`]);
+          const changeTree = await this.updateTree(branchData.sha, '/', fileTree);
+          const { sha } = await this.commit(`Updating “${key}” metadata`, changeTree);
+          await this.patchRef('meta', '_netlify_cms', sha);
           localForage.setItem(`gh.meta.${key}`, {
             expires: Date.now() + 300000, // In 5 minutes
             data,
           });
-        });
-    });
+          this._metadataSemaphore.leave();
+          resolve();
+        } catch (err) {
+          reject(err);
+        }
+      }),
+    );
   }
 
   retrieveMetadata(key) {
