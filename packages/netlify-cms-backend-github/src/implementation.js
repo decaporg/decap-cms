@@ -198,22 +198,23 @@ export default class GitHub {
     return Promise.resolve(this.token);
   }
 
-  entriesByFolder(collection, extension) {
-    return this.api
-      .listFiles(collection.get('folder'))
-      .then(files => files.filter(file => file.name.endsWith('.' + extension)))
-      .then(this.fetchFiles);
+  async entriesByFolder(collection, extension) {
+    const repoURL = `/repos/${this.useForkWorkflow ? this.originRepo : this.repo}`;
+    const files = await this.api.listFiles(collection.get('folder'));
+    const filteredFiles = files.filter(file => file.name.endsWith('.' + extension));
+    return this.fetchFiles(filteredFiles, { repoURL });
   }
 
   entriesByFiles(collection) {
+    const repoURL = `/repos/${this.useForkWorkflow ? this.originRepo : this.repo}`;
     const files = collection.get('files').map(collectionFile => ({
       path: collectionFile.get('file'),
       label: collectionFile.get('label'),
     }));
-    return this.fetchFiles(files);
+    return this.fetchFiles(files, { repoURL });
   }
 
-  fetchFiles = files => {
+  fetchFiles = (files, { repoURL = `/repos/${this.repo}` } = {}) => {
     const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
     const promises = [];
     files.forEach(file => {
@@ -221,7 +222,7 @@ export default class GitHub {
         new Promise(resolve =>
           sem.take(() =>
             this.api
-              .readFile(file.path, file.sha)
+              .readFile(file.path, file.sha, { repoURL })
               .then(data => {
                 resolve({ file, data });
                 sem.leave();
@@ -242,7 +243,8 @@ export default class GitHub {
 
   // Fetches a single entry.
   getEntry(collection, slug, path) {
-    return this.api.readFile(path).then(data => ({
+    const repoURL = `/repos/${this.useForkWorkflow ? this.originRepo : this.repo}`;
+    return this.api.readFile(path, null, { repoURL }).then(data => ({
       file: { path },
       data,
     }));
@@ -293,13 +295,14 @@ export default class GitHub {
       .then(branches => {
         const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
         const promises = [];
-        branches.map(branch => {
+        branches.map(({ ref }) => {
           promises.push(
             new Promise(resolve => {
-              const slug = branch.ref.split('refs/heads/cms/').pop();
+              const contentKey = ref.split('refs/heads/cms/').pop();
+              const slug = contentKey.split('/').pop();
               return sem.take(() =>
                 this.api
-                  .readUnpublishedBranchFile(slug)
+                  .readUnpublishedBranchFile(contentKey)
                   .then(data => {
                     if (data === null || data === undefined) {
                       resolve(null);
@@ -330,12 +333,13 @@ export default class GitHub {
         if (error.message === 'Not Found') {
           return Promise.resolve([]);
         }
-        return error;
+        return Promise.reject(error);
       });
   }
 
   unpublishedEntry(collection, slug) {
-    return this.api.readUnpublishedBranchFile(slug).then(data => {
+    const contentKey = this.api.generateContentKey(collection.get('name'), slug);
+    return this.api.readUnpublishedBranchFile(contentKey).then(data => {
       if (!data) return null;
       return {
         slug,
@@ -354,9 +358,10 @@ export default class GitHub {
    * 'pending', and 'failure'.
    */
   async getDeployPreview(collection, slug) {
-    const data = await this.api.retrieveMetadata(slug);
+    const contentKey = this.api.generateContentKey(collection.get('name'), slug);
+    const data = await this.api.retrieveMetadata(contentKey);
 
-    if (!data) {
+    if (!data || !data.pr) {
       return null;
     }
 
