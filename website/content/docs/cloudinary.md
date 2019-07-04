@@ -25,7 +25,7 @@ media_library:
     api_key: your_api_key
 ```
 
-> ⚠️ Make sure you are logged in to the same Cloudinary account with the `your_cloud_name` you specified above otherwise the login will just fail. 
+**Note:** The user must be logged in to the Cloudinary account connected to the `api_key` used in your Netlify CMS configuration. 
 
 ## Netlify CMS configuration options
 
