@@ -5,6 +5,7 @@ import styled from '@emotion/styled';
 import { css, ClassNames } from '@emotion/core';
 import { List, Map, fromJS } from 'immutable';
 import { partial, isEmpty } from 'lodash';
+import uuid from 'uuid/v4';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 import NetlifyCmsWidgetObject from 'netlify-cms-widget-object';
 import {
@@ -109,6 +110,7 @@ export default class ListControl extends React.Component {
     this.state = {
       itemsCollapsed: List(itemsCollapsed),
       value: valueToString(value),
+      keys: List(),
     };
   }
 
@@ -134,6 +136,8 @@ export default class ListControl extends React.Component {
   shouldComponentUpdate() {
     return true;
   }
+
+
 
   handleChange = e => {
     const { onChange } = this.props;
@@ -313,7 +317,7 @@ export default class ListControl extends React.Component {
 
   onSortEnd = ({ oldIndex, newIndex }) => {
     const { value } = this.props;
-    const { itemsCollapsed } = this.state;
+    const { itemsCollapsed, keys } = this.state;
 
     // Update value
     const item = value.get(oldIndex);
@@ -323,7 +327,12 @@ export default class ListControl extends React.Component {
     // Update collapsing
     const collapsed = itemsCollapsed.get(oldIndex);
     const updatedItemsCollapsed = itemsCollapsed.delete(oldIndex).insert(newIndex, collapsed);
-    this.setState({ itemsCollapsed: updatedItemsCollapsed });
+
+    // Reset item to ensure updated state
+    const updatedKeys = keys
+      .set(oldIndex, uuid())
+      .set(newIndex, uuid());
+    this.setState({ itemsCollapsed: updatedItemsCollapsed, keys: updatedKeys });
   };
 
   // eslint-disable-next-line react/display-name
@@ -339,8 +348,9 @@ export default class ListControl extends React.Component {
       resolveWidget,
     } = this.props;
 
-    const { itemsCollapsed } = this.state;
+    const { itemsCollapsed, keys } = this.state;
     const collapsed = itemsCollapsed.get(index);
+    const key = keys.get(index) || `item-${index}`;
     let field = this.props.field;
 
     if (this.getValueType() === valueTypes.MIXED) {
@@ -354,7 +364,7 @@ export default class ListControl extends React.Component {
       <SortableListItem
         css={[styles.listControlItem, collapsed && styles.listControlItemCollapsed]}
         index={index}
-        key={`item-${index}`}
+        key={key}
       >
         <StyledListItemTopBar
           collapsed={collapsed}

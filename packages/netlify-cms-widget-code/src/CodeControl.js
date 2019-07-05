@@ -55,6 +55,8 @@ export default class CodeControl extends React.Component {
     classNameWrapper: PropTypes.string.isRequired,
   };
 
+  state = { lang: defaultLanguage };
+
   constructor(props) {
     super(props);
     const { value, field } = props;
@@ -63,18 +65,17 @@ export default class CodeControl extends React.Component {
   }
 
   keys = this.getKeys(this.props.field);
+  initialValue = this.valueIsMap()
+    ? this.props.value && this.props.value.get(this.keys.code)
+    : this.props.value;
   languageOptions = languages.map(({ name, label }) => ({ value: name, label }));
   allowLanguageSelection =
     !this.props.field.has('allow_language_selection') ||
     !!this.props.field.get('allow_language_selection');
 
-  getCode = this.valueIsMap()
-    ? () => this.props.value && this.props.value.get(this.keys.code)
-    : () => this.props.value;
-
   toValue = this.valueIsMap()
     ? (type, value) => (this.props.value || Map()).set(this.keys[type], value)
-    : (type, value) => (type === 'code' ? value : this.props.value);
+    : (type, value) => (type === 'code') ? value : this.props.value;
 
   getKeys(field) {
     return {
@@ -95,12 +96,13 @@ export default class CodeControl extends React.Component {
     const { onChange } = this.props;
     const callback = this.valueIsMap() ? () => onChange(this.toValue('lang', lang)) : undefined;
     this.setState({ lang: find(languages, { name: lang }) }, callback);
+    this.cm.focus();
   }
 
   render() {
     const { onChange, classNameWrapper, forID } = this.props;
     const { allowLanguageSelection } = this;
-    const { lang } = this.state;
+    const { lang, value } = this.state;
 
     return (
       <ClassNames>
@@ -125,7 +127,6 @@ export default class CodeControl extends React.Component {
                 value={{ value: lang.name, label: lang.label }}
                 options={this.languageOptions}
                 onChange={opt => this.handleChangeLang(opt.value)}
-                onKeyDown={event => isHotkey('enter', event) && this.cm.focus()}
               />
             )}
             <ReactCodeMirror
@@ -137,7 +138,6 @@ export default class CodeControl extends React.Component {
                 `,
               )}
               options={{
-                theme: 'material',
                 lineNumbers: true,
                 mode: lang.mode,
                 autofocus: true,
@@ -147,8 +147,7 @@ export default class CodeControl extends React.Component {
                 },
               }}
               editorDidMount={cm => { this.cm = cm }}
-              detach={true}
-              value={this.getCode() || ''}
+              value={this.initialValue}
               onChange={(editor, data, newValue) => onChange(this.toValue('code', newValue))}
             />
           </Resizable>

@@ -1,4 +1,5 @@
 import { Map, List, fromJS } from 'immutable';
+import uuid from 'uuid/v4';
 import {
   DRAFT_CREATE_FROM_ENTRY,
   DRAFT_CREATE_EMPTY,
@@ -30,6 +31,7 @@ const initialState = Map({
   fieldsMetaData: Map(),
   fieldsErrors: Map(),
   hasChanged: false,
+  key: '',
 });
 
 const entryDraftReducer = (state = Map(), action) => {
@@ -46,6 +48,7 @@ const entryDraftReducer = (state = Map(), action) => {
         state.set('fieldsMetaData', action.payload.metadata || Map());
         state.set('fieldsErrors', Map());
         state.set('hasChanged', false);
+        state.set('key', uuid());
       });
     case DRAFT_CREATE_EMPTY:
       // New Entry
@@ -56,6 +59,7 @@ const entryDraftReducer = (state = Map(), action) => {
         state.set('fieldsMetaData', Map());
         state.set('fieldsErrors', Map());
         state.set('hasChanged', false);
+        state.set('key', uuid());
       });
     case DRAFT_CREATE_FROM_LOCAL_BACKUP:
       // Local Backup
@@ -69,6 +73,7 @@ const entryDraftReducer = (state = Map(), action) => {
         state.set('fieldsMetaData', Map());
         state.set('fieldsErrors', Map());
         state.set('hasChanged', true);
+        state.set('key', uuid());
       });
     case DRAFT_CREATE_DUPLICATE_FROM_ENTRY:
       // Duplicate Entry

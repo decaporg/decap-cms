@@ -62,7 +62,6 @@ export default class Editor extends React.Component {
     this.plugins = plugins({ getAsset: props.getAsset, resolveWidget: props.resolveWidget });
     this.state = {
       value: createSlateValue(this.props.value, { voidCodeBlock: !!this.codeBlockComponent }),
-      lastRawValue: this.props.value,
     };
   }
 
@@ -78,40 +77,7 @@ export default class Editor extends React.Component {
   };
 
   shouldComponentUpdate(nextProps, nextState) {
-    const forcePropsValue = this.shouldForcePropsValue(
-      this.props.value,
-      this.state.lastRawValue,
-      nextProps.value,
-      nextState.lastRawValue,
-    );
-
-    return !this.state.value.equals(nextState.value) || forcePropsValue;
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    const forcePropsValue = this.shouldForcePropsValue(
-      prevProps.value,
-      prevState.lastRawValue,
-      this.props.value,
-      this.state.lastRawValue,
-    );
-
-    if (forcePropsValue) {
-      this.setState({
-        value: createSlateValue(this.props.value, { voidCodeBlock: this.codeBlockComponent }),
-        lastRawValue: this.props.value,
-      });
-    }
-  }
-
-  // If the old props/state values and new state value are all the same, and
-  // the new props value does not match the others, the new props value
-  // originated from outside of this widget and should be used.
-  shouldForcePropsValue(oldPropsValue, oldStateValue, newPropsValue, newStateValue) {
-    return (
-      uniq([oldPropsValue, oldStateValue, newStateValue]).length === 1 &&
-      oldPropsValue !== newPropsValue
-    );
+    return !this.state.value.equals(nextState.value);
   }
 
   handleMarkClick = type => {
@@ -146,7 +112,7 @@ export default class Editor extends React.Component {
     const { onChange } = this.props;
     const raw = editor.value.document.toJS();
     const markdown = slateToMarkdown(raw, { voidCodeBlock: this.codeBlockComponent });
-    this.setState({ lastRawValue: markdown }, () => onChange(markdown));
+    onChange(markdown);
   }, 150);
 
   handleChange = editor => {

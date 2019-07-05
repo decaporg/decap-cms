@@ -19,6 +19,7 @@ const languageSelectStyles = {
   }),
   control: provided => ({
     ...reactSelectStyles.control(provided),
+    border: '2px solid #666',
     padding: 0,
     fontSize: '13px',
     minHeight: 'auto',

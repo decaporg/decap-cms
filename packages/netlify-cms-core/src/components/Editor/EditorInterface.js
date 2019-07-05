@@ -178,6 +178,8 @@ class EditorInterface extends Component {
       onLogoutClick,
       loadDeployPreview,
       deployPreview,
+      draft,
+      draftKey,
     } = this.props;
 
     const { previewVisible, scrollSyncEnabled, showEventBlocker } = this.state;
@@ -258,7 +260,7 @@ class EditorInterface extends Component {
           loadDeployPreview={loadDeployPreview}
           deployPreview={deployPreview}
         />
-        <Editor>
+        <Editor key={draftKey}>
           <ViewControls>
             {collectionPreviewEnabled && <EditorToggle
               isActive={previewVisible}
@@ -315,6 +317,7 @@ EditorInterface.propTypes = {
   onLogoutClick: PropTypes.func.isRequired,
   deployPreview: ImmutablePropTypes.map,
   loadDeployPreview: PropTypes.func.isRequired,
+  draftKey: PropTypes.string.isRequired,
 };
 
 export default EditorInterface;
