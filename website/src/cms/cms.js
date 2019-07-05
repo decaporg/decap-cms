@@ -1,5 +1,5 @@
 import React from 'react';
-import CMS from 'netlify-cms';
+import CMS from '@cfpb/netlify-cms';
 import dayjs from 'dayjs';
 import Prism from 'prismjs';
 import { BlogPostTemplate } from '../templates/blog-post';

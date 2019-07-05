@@ -61,6 +61,10 @@ const stats = () => {
 const umdPath = path.resolve(process.cwd(), 'dist');
 const umdDirPath = path.resolve(process.cwd(), 'dist/umd');
 const cjsPath = path.resolve(process.cwd(), 'dist/cjs');
+// Remove the @cfpb package scope from this script
+if (pkg.name.startsWith('@')) {
+  pkg.name = pkg.name.replace(/@\w+\//, '');
+}
 const targetOutputs = () => {
   console.log(`Building [${pkg.name}, library: ${toGlobalName(pkg.name)}]`);
   return {

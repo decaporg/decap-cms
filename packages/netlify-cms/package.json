@@ -1,7 +1,7 @@
 {
-  "name": "netlify-cms",
+  "name": "@cfpb/netlify-cms",
   "description": "An extensible, open source, Git-based, React CMS for static sites.",
-  "version": "2.9.6",
+  "version": "1.0.2",
   "homepage": "https://www.netlifycms.org",
   "repository": "https://github.com/netlify/netlify-cms",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
