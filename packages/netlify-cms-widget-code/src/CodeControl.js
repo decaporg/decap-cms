@@ -7,6 +7,7 @@ import { find } from 'lodash';
 import Resizable from 're-resizable';
 import Select from 'react-select';
 import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
+import isHotkey from 'is-hotkey';
 import codeMirrorStyles from 'codemirror/lib/codemirror.css';
 import codeMirrorTheme from 'codemirror/theme/material.css';
 import languageSelectStyles from './languageSelectStyles';
@@ -124,6 +125,7 @@ export default class CodeControl extends React.Component {
                 value={{ value: lang.name, label: lang.label }}
                 options={this.languageOptions}
                 onChange={opt => this.handleChangeLang(opt.value)}
+                onKeyDown={event => isHotkey('enter', event) && this.cm.focus()}
               />
             )}
             <ReactCodeMirror
@@ -144,6 +146,7 @@ export default class CodeControl extends React.Component {
                   'Tab': 'indentMore',
                 },
               }}
+              editorDidMount={cm => { this.cm = cm }}
               detach={true}
               value={this.getCode() || ''}
               onChange={(editor, data, newValue) => onChange(this.toValue('code', newValue))}
