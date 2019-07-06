@@ -4,7 +4,8 @@ import { NetlifyCmsApp as CMS } from 'netlify-cms-app/dist/esm';
 import uploadcare from 'netlify-cms-media-library-uploadcare';
 import cloudinary from 'netlify-cms-media-library-cloudinary';
 
-// Code widget and default Codemirror extensions
+// Code widget and default Codemirror extensions, and probably
+// css too, emotion should work here
 import NetlifyCmsWidgetCode from 'netlify-cms-widget-code';
 import 'codemirror/mode/javascript/javascript';
 import 'codemirror/mode/htmlmixed/htmlmixed';

@@ -56,7 +56,7 @@ module.exports = {
       umd: '@emotion/styled',
     },
     codemirror: {
-      root: 'Codemirror',
+      root: 'CodeMirror',
       commonjs2: 'codemirror',
       commonjs: 'codemirror',
       amd: 'codemirror',

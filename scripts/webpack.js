@@ -1,7 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
 const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
-//const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 const { flatMap } = require('lodash');
 const { toGlobalName, externals } = require('./externals');
 const pkg = require(path.join(process.cwd(), 'package.json'));
@@ -25,11 +24,6 @@ const rules = () => ({
   css: () => [
     {
       test: /\.css$/,
-      include: ['monaco-editor'].map(moduleNameToPath),
-      use: ['style-loader', 'css-loader'],
-    },
-    {
-      test: /\.css$/,
       include: ['ol', 'redux-notifications', 'react-datetime', 'codemirror'].map(moduleNameToPath),
       use: ['to-string-loader', 'css-loader'],
     },
@@ -46,11 +40,6 @@ const plugins = () => {
     ignoreEsprima: () => new webpack.IgnorePlugin(/^esprima$/, /js-yaml/),
     ignoreMomentOptionalDeps: () => new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     friendlyErrors: () => new FriendlyErrorsWebpackPlugin(),
-    /*
-    monaco: () => new MonacoWebpackPlugin({
-      languages: ['json'],
-    }),
-    */
   };
 };
 

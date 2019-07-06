@@ -83,9 +83,10 @@ export function registerWidget(name, control, preview) {
       previewComponent: preview,
       allowMapValue,
       globalStyles,
+      ...options
     } = name;
     if (registry.widgets[widgetName]) {
-      console.error(oneLine`
+      console.warn(oneLine`
         Multiple widgets registered with name "${widgetName}". Only the last widget registered with
         this name will be used.
       `);
@@ -93,7 +94,7 @@ export function registerWidget(name, control, preview) {
     if (!control) {
       throw Error(`Widget "${widgetName}" registered without \`controlComponent\`.`);
     }
-    registry.widgets[widgetName] = { control, preview, globalStyles, allowMapValue };
+    registry.widgets[widgetName] = { control, preview, globalStyles, allowMapValue, ...options };
   } else {
     console.error('`registerWidget` failed, called with incorrect arguments.');
   }

@@ -222,6 +222,7 @@ class EditorControl extends React.Component {
               setActiveStyle={() => this.setState({ styleActive: true })}
               setInactiveStyle={() => this.setState({ styleActive: false })}
               resolveWidget={resolveWidget}
+              widget={widget}
               getEditorComponents={getEditorComponents}
               ref={processControlRef && partial(processControlRef, field)}
               controlRef={controlRef}

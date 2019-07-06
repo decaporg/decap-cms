@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import { Map } from 'immutable';
 import styled from '@emotion/styled';
 import { css as coreCss, ClassNames } from '@emotion/core';
 import { get, isEmpty, debounce, uniq } from 'lodash';

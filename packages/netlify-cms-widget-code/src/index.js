@@ -6,6 +6,7 @@ const Widget = (opts = {}) => ({
   controlComponent,
   previewComponent,
   allowMapValue: true,
+  codeMirrorConfig: {},
   ...opts,
 });
 

@@ -8,14 +8,9 @@ import Resizable from 're-resizable';
 import Select from 'react-select';
 import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
 import isHotkey from 'is-hotkey';
-import codeMirrorStyles from 'codemirror/lib/codemirror.css';
-import codeMirrorTheme from 'codemirror/theme/material.css';
 import languageSelectStyles from './languageSelectStyles';
 
 const styleString = `
-  ${codeMirrorStyles};
-  ${codeMirrorTheme};
-
   height: 100%;
   padding: 0;
   overflow: hidden;
@@ -53,21 +48,26 @@ export default class CodeControl extends React.Component {
     value: PropTypes.node,
     forID: PropTypes.string.isRequired,
     classNameWrapper: PropTypes.string.isRequired,
+    widget: PropTypes.object.isRequired,
   };
-
-  state = { lang: defaultLanguage };
 
   constructor(props) {
     super(props);
     const { value, field } = props;
     const lang = (this.valueIsMap() && value && value.get(this.keys.lang)) || field.get('lang');
-    this.state = { lang: find(languages, { name: lang }) || defaultLanguage };
   }
 
   keys = this.getKeys(this.props.field);
-  initialValue = this.valueIsMap()
-    ? this.props.value && this.props.value.get(this.keys.code)
-    : this.props.value;
+
+  state = {
+    lang: defaultLanguage,
+    value: this.valueIsMap()
+      ? this.props.value && this.props.value.get(this.keys.code)
+      : this.props.value,
+  }
+
+  theme = this.props.field.get('theme') || '';
+
   languageOptions = languages.map(({ name, label }) => ({ value: name, label }));
   allowLanguageSelection =
     !this.props.field.has('allow_language_selection') ||
@@ -94,13 +94,27 @@ export default class CodeControl extends React.Component {
 
   handleChangeLang(lang) {
     const { onChange } = this.props;
-    const callback = this.valueIsMap() ? () => onChange(this.toValue('lang', lang)) : undefined;
-    this.setState({ lang: find(languages, { name: lang }) }, callback);
-    this.cm.focus();
+    const cursor = this.cm.doc.getCursor();
+    const selections = this.cm.doc.listSelections();
+    this.setState({
+      lang: find(languages, { name: lang }),
+    }, () => {
+      this.cm.doc.setCursor(cursor);
+      this.cm.doc.setSelections(selections);
+      this.cm.focus();
+    });
+    if (this.valueIsMap()) {
+      onChange(this.toValue('lang', lang));
+    }
+  }
+
+  handleChange(newValue) {
+    this.props.onChange(this.toValue('code', newValue));
+    this.setState({ value: newValue });
   }
 
   render() {
-    const { onChange, classNameWrapper, forID } = this.props;
+    const { classNameWrapper, forID, widget } = this.props;
     const { allowLanguageSelection } = this;
     const { lang, value } = this.state;
 
@@ -130,6 +144,7 @@ export default class CodeControl extends React.Component {
               />
             )}
             <ReactCodeMirror
+              key={lang.name}
               id={forID}
               className={cx(
                 classNameWrapper,
@@ -145,10 +160,12 @@ export default class CodeControl extends React.Component {
                   'Shift-Tab': 'indentLess',
                   'Tab': 'indentMore',
                 },
+                ...widget.codeMirrorConfig,
               }}
+              detach={true}
               editorDidMount={cm => { this.cm = cm }}
-              value={this.initialValue}
-              onChange={(editor, data, newValue) => onChange(this.toValue('code', newValue))}
+              value={value}
+              onChange={(editor, data, newValue) => this.handleChange(newValue)}
             />
           </Resizable>
         )}
