@@ -364,7 +364,7 @@ class EditorToolbar extends React.Component {
       <SaveButton key="save-button" onClick={() => hasChanged && onPersist()}>
         {isPersisting ? t('editor.editorToolbar.saving') : t('editor.editorToolbar.save')}
       </SaveButton>,
-      isModification ? (
+      isNewEntry || isModification ? (
         <ViewPullRequestButton
           onClick={onViewPullRequest}
           key="view-pull-request-button"
