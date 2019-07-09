@@ -14,9 +14,11 @@ function mapStateToProps(state, ownProps) {
     showDelete: !ownProps.newEntry && selectAllowDeletion(collection),
   };
   if (isEditorialWorkflow) {
+    // console.log(isEditorialWorkflow);
     const slug = ownProps.match.params.slug;
     const unpublishedEntry = selectUnpublishedEntry(state, collection.get('name'), slug);
     const pullRequestLink = selectPullRequestLink(state);
+    // console.log(state);
     if (unpublishedEntry) {
       returnObj.unpublishedEntry = true;
       returnObj.entry = unpublishedEntry;
