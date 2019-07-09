@@ -364,20 +364,14 @@ class EditorToolbar extends React.Component {
       <SaveButton key="save-button" onClick={() => hasChanged && onPersist()}>
         {isPersisting ? t('editor.editorToolbar.saving') : t('editor.editorToolbar.save')}
       </SaveButton>,
-      <ViewPullRequestButton
-        onClick={onViewPullRequest}
-        key="view-pull-request-button"
-      >
-        View your pull request
-      </ViewPullRequestButton>,
-      !showDelete && !hasUnpublishedChanges && !isModification ? null : (
-        <DeleteButton
-          key="delete-button"
-          onClick={hasUnpublishedChanges ? onDeleteUnpublishedChanges : onDelete}
+      isModification ? (
+        <ViewPullRequestButton
+          onClick={onViewPullRequest}
+          key="view-pull-request-button"
         >
-          {isDeleting ? t('editor.editorToolbar.deleting') : deleteLabel}
-        </DeleteButton>
-      ),
+          View your pull request
+        </ViewPullRequestButton>
+      ) : null
     ];
   };
 
@@ -394,75 +388,16 @@ class EditorToolbar extends React.Component {
       t,
     } = this.props;
     if (currentStatus) {
-      return (
-        <>
-          {this.renderDeployPreviewControls(t('editor.editorToolbar.deployPreviewButtonLabel'))}
-          <ToolbarDropdown
-            dropdownTopOverlap="40px"
-            dropdownWidth="120px"
-            renderButton={() => (
-              <StatusButton>
-                {isUpdatingStatus
-                  ? t('editor.editorToolbar.updating')
-                  : t('editor.editorToolbar.setStatus')}
-              </StatusButton>
-            )}
-          >
-            <StatusDropdownItem
-              label={t('editor.editorToolbar.draft')}
-              onClick={() => onChangeStatus('DRAFT')}
-              icon={currentStatus === status.get('DRAFT') && 'check'}
-            />
-            <StatusDropdownItem
-              label={t('editor.editorToolbar.inReview')}
-              onClick={() => onChangeStatus('PENDING_REVIEW')}
-              icon={currentStatus === status.get('PENDING_REVIEW') && 'check'}
-            />
-            <StatusDropdownItem
-              label={t('editor.editorToolbar.ready')}
-              onClick={() => onChangeStatus('PENDING_PUBLISH')}
-              icon={currentStatus === status.get('PENDING_PUBLISH') && 'check'}
-            />
-          </ToolbarDropdown>
-          <ToolbarDropdown
-            dropdownTopOverlap="40px"
-            dropdownWidth="150px"
-            renderButton={() => (
-              <PublishButton>
-                {isPublishing
-                  ? t('editor.editorToolbar.publishing')
-                  : t('editor.editorToolbar.publish')}
-              </PublishButton>
-            )}
-          >
-            <DropdownItem
-              label={t('editor.editorToolbar.publishNow')}
-              icon="arrow"
-              iconDirection="right"
-              onClick={onPublish}
-            />
-            {collection.get('create') ? (
-              <DropdownItem
-                label={t('editor.editorToolbar.publishAndCreateNew')}
-                icon="add"
-                onClick={onPublishAndNew}
-              />
-            ) : null}
-          </ToolbarDropdown>
-        </>
-      );
+      // Most buttons are disabled
+      return null;
     }
 
     /**
      * Publish control for published workflow entry.
      */
     if (!isNewEntry) {
-      return (
-        <>
-          {this.renderDeployPreviewControls(t('editor.editorToolbar.deployButtonLabel'))}
-          <StatusPublished>{t('editor.editorToolbar.published')}</StatusPublished>
-        </>
-      );
+      // Most buttons are disabled
+      return null;
     }
   };
 
