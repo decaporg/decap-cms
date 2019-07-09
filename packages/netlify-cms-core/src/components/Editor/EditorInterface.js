@@ -159,6 +159,7 @@ class EditorInterface extends Component {
       showDelete,
       onDelete,
       onDeleteUnpublishedChanges,
+      onViewPullRequest,
       onChangeStatus,
       onPublish,
       onValidate,
@@ -231,6 +232,7 @@ class EditorInterface extends Component {
           onPersistAndNew={() => this.handleOnPersist({ createNew: true })}
           onDelete={onDelete}
           onDeleteUnpublishedChanges={onDeleteUnpublishedChanges}
+          onViewPullRequest={onViewPullRequest}
           onChangeStatus={onChangeStatus}
           showDelete={showDelete}
           onPublish={onPublish}
@@ -287,6 +289,7 @@ EditorInterface.propTypes = {
   showDelete: PropTypes.bool.isRequired,
   onDelete: PropTypes.func.isRequired,
   onDeleteUnpublishedChanges: PropTypes.func.isRequired,
+  onViewPullRequest: PropTypes.func.isRequired,
   onPublish: PropTypes.func.isRequired,
   onChangeStatus: PropTypes.func.isRequired,
   user: ImmutablePropTypes.map.isRequired,

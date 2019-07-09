@@ -337,6 +337,10 @@ class Editor extends React.Component {
     }
   };
 
+  handleViewPullRequest = () => {
+    window.open('https://example.com', '_blank');
+  };
+
   render() {
     const {
       entry,
@@ -390,6 +394,7 @@ class Editor extends React.Component {
         onPersist={this.handlePersistEntry}
         onDelete={this.handleDeleteEntry}
         onDeleteUnpublishedChanges={this.handleDeleteUnpublishedChanges}
+        onViewPullRequest={this.handleViewPullRequest}
         onChangeStatus={this.handleChangeStatus}
         onPublish={this.handlePublishEntry}
         showDelete={this.props.showDelete}

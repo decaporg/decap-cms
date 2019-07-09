@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { EDITORIAL_WORKFLOW } from 'Constants/publishModes';
-import { selectUnpublishedEntry } from 'Reducers';
+import { selectUnpublishedEntry, selectPullRequestLink } from 'Reducers';
 import { selectAllowDeletion } from 'Reducers/collections';
 import { loadUnpublishedEntry, persistUnpublishedEntry } from 'Actions/editorialWorkflow';
 
@@ -16,10 +16,12 @@ function mapStateToProps(state, ownProps) {
   if (isEditorialWorkflow) {
     const slug = ownProps.match.params.slug;
     const unpublishedEntry = selectUnpublishedEntry(state, collection.get('name'), slug);
+    const pullRequestLink = selectPullRequestLink(state);
     if (unpublishedEntry) {
       returnObj.unpublishedEntry = true;
       returnObj.entry = unpublishedEntry;
     }
+    returnObj.pullRequestLink = pullRequestLink;
   }
   return returnObj;
 }

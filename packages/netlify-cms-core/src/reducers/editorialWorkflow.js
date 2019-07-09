@@ -133,6 +133,9 @@ const unpublishedEntries = (state = Map(), action) => {
 export const selectUnpublishedEntry = (state, collection, slug) =>
   state && state.getIn(['entities', `${collection}.${slug}`]);
 
+export const selectPullRequestLink = state =>
+  state && state.get('entryDraft');
+
 export const selectUnpublishedEntriesByStatus = (state, status) => {
   if (!state) return null;
   return state

@@ -67,6 +67,9 @@ export const selectUnpublishedSlugs = (state, collection) =>
 export const selectIntegration = (state, collection, hook) =>
   fromIntegrations.selectIntegration(state.integrations, collection, hook);
 
+export const selectPullRequestLink = state =>
+  fromEditorialWorkflow.selectPullRequestLink(state.entryDraft);
+
 export const getAsset = (state, path) => {
   /**
    * If an external media library is in use, just return the path.

@@ -1,6 +1,8 @@
 {
   "scripts": {
     "bootstrap": "lerna bootstrap",
+    "link-all": "lerna exec -- yarn link",
+    "unlink-all": "lerna exec -- yarn unlink",
     "start": "run-s clean bootstrap build:esm develop",
     "develop": "lerna run develop --parallel",
     "build": "run-s clean build:esm build:lerna",

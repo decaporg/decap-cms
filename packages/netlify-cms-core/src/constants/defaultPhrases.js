@@ -138,7 +138,7 @@ export function getPhrases() {
         onFailToUpdateStatus: 'Failed to update status: %{details}',
         missingRequiredField:
           "Oops, you've missed a required field. Please complete before saving.",
-        entrySaved: 'Entry saved',
+        entrySaved: 'A pull request has been created on your behalf',
         entryPublished: 'Entry published',
         onFailToPublishEntry: 'Failed to publish: %{details}',
         entryUpdated: 'Entry status updated',

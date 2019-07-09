@@ -137,6 +137,10 @@ const DeleteButton = styled(ToolbarButton)`
   ${buttons.lightRed};
 `;
 
+const ViewPullRequestButton = styled(ToolbarButton)`
+  ${buttons.lightTeal};
+`;
+
 const SaveButton = styled(ToolbarButton)`
   ${buttons.lightBlue};
 `;
@@ -210,6 +214,7 @@ class EditorToolbar extends React.Component {
     showDelete: PropTypes.bool.isRequired,
     onDelete: PropTypes.func.isRequired,
     onDeleteUnpublishedChanges: PropTypes.func.isRequired,
+    onViewPullRequest: PropTypes.func.isRequired,
     onChangeStatus: PropTypes.func.isRequired,
     onPublish: PropTypes.func.isRequired,
     onPublishAndNew: PropTypes.func.isRequired,
@@ -335,6 +340,7 @@ class EditorToolbar extends React.Component {
       onPersist,
       onDelete,
       onDeleteUnpublishedChanges,
+      onViewPullRequest,
       showDelete,
       hasChanged,
       hasUnpublishedChanges,
@@ -358,6 +364,12 @@ class EditorToolbar extends React.Component {
       <SaveButton key="save-button" onClick={() => hasChanged && onPersist()}>
         {isPersisting ? t('editor.editorToolbar.saving') : t('editor.editorToolbar.save')}
       </SaveButton>,
+      <ViewPullRequestButton
+        onClick={onViewPullRequest}
+        key="view-pull-request-button"
+      >
+        View your pull request
+      </ViewPullRequestButton>,
       !showDelete && !hasUnpublishedChanges && !isModification ? null : (
         <DeleteButton
           key="delete-button"
