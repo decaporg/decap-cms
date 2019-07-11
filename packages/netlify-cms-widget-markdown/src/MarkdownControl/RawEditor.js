@@ -68,6 +68,7 @@ export default class RawEditor extends React.Component {
   };
 
   handleChange = editor => {
+    console.log('change')
     if (!this.state.value.document.equals(editor.value.document)) {
       this.handleDocumentChange(editor);
     }
@@ -79,7 +80,9 @@ export default class RawEditor extends React.Component {
    * text (which is Markdown) and pass that up as the new value.
    */
   handleDocumentChange = debounce(editor => {
+    console.log('document change')
     const value = Plain.serialize(editor.value);
+    console.log('serialized')
     this.props.onChange(value);
   }, 150);
 
@@ -88,6 +91,7 @@ export default class RawEditor extends React.Component {
   };
 
   render() {
+    console.log('render')
     const { className, field } = this.props;
     return (
       <RawEditorContainer>

@@ -1,4 +1,5 @@
 import { Map } from 'immutable';
+import produce from 'immer';
 import { oneLine } from 'common-tags';
 import EditorComponent from 'ValueObjects/EditorComponent';
 
@@ -23,6 +24,7 @@ export default {
   getPreviewTemplate,
   registerWidget,
   getWidget,
+  getWidgets,
   resolveWidget,
   registerEditorComponent,
   getEditorComponents,
@@ -101,6 +103,11 @@ export function registerWidget(name, control, preview) {
 }
 export function getWidget(name) {
   return registry.widgets[name];
+}
+export function getWidgets() {
+  return produce(Object.entries(registry.widgets), draft => {
+    return draft.map(([key, value]) => ({ name: key, ...value }));
+  });
 }
 export function resolveWidget(name) {
   return getWidget(name || 'string') || getWidget('unknown');

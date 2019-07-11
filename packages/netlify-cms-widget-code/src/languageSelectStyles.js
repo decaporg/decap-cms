@@ -1,25 +1,14 @@
-import { reactSelectStyles } from 'netlify-cms-ui-default';
+import { reactSelectStyles, borders } from 'netlify-cms-ui-default';
 
 const languageSelectStyles = {
   ...reactSelectStyles,
   container: provided => ({
     ...reactSelectStyles.container(provided),
-    width: '120px',
-    position: 'absolute',
-    zIndex: 2,
-    right: '8px',
-    top: '8px',
-    transition: 'opacity 1s',
-    transitionTimingFunction: 'cubic-bezier(.75,.02,.7,1)',
-    opacity: '0.2',
-    ':hover,:focus-within': {
-      opacity: '1',
-      transition: 'opacity .2s ease',
-    },
+    'margin-top': '2px',
   }),
   control: provided => ({
     ...reactSelectStyles.control(provided),
-    border: '2px solid #666',
+    border: borders.textField,
     padding: 0,
     fontSize: '13px',
     minHeight: 'auto',
@@ -36,6 +25,10 @@ const languageSelectStyles = {
   menu: provided => ({
     ...reactSelectStyles.menu(provided),
     margin: '2px 0',
+  }),
+  menuList: provided => ({
+    ...provided,
+    'max-height': '200px',
   }),
 };
 

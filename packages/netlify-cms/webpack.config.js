@@ -24,7 +24,6 @@ const baseConfig = {
     }),
     new CopyWebpackPlugin([
       { from: './shims/cms.css', to: './' },
-      { from: '../../dev-test/code.js', to: './' },
     ]),
   ],
   devServer: {

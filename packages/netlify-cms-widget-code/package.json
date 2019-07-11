@@ -24,12 +24,12 @@
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
   },
   "peerDependencies": {
-    "@emotion/core": "^10.0.9",
     "codemirror": "^5.46.0",
-    "lodash": "^4.17.11",
     "react": "^16.8.4"
   },
   "dependencies": {
+    "@emotion/core": "^10.0.9",
+    "lodash": "^4.17.11",
     "netlify-cms-ui-default": "^2.6.2",
     "re-resizable": "^4.11.0",
     "react-codemirror2": "^6.0.0",

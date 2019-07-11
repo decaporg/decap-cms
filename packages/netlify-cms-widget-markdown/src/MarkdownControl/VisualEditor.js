@@ -9,14 +9,29 @@ import { fromJS } from 'immutable';
 import { Value, Document, Block, Text } from 'slate';
 import { Editor as Slate } from 'slate-react';
 import isHotkey from 'is-hotkey';
-import { lengths } from 'netlify-cms-ui-default';
+import { lengths, fonts } from 'netlify-cms-ui-default';
+import { editorStyleVars } from '../styles';
 import { slateToMarkdown, markdownToSlate, htmlToSlate, markdownToHtml } from '../serializers';
 import Toolbar from '../MarkdownControl/Toolbar';
 import { renderBlock, renderInline, renderMark } from './renderers';
 import plugins from './plugins/visual';
 import schema from './schema';
-import visualEditorStyles from './visualEditorStyles';
 import { EditorControlBar } from '../styles';
+
+const visualEditorStyles = `
+  position: relative;
+  overflow: hidden;
+  overflow-x: auto;
+  font-family: ${fonts.primary};
+  min-height: ${lengths.richTextEditorMinHeight};
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-top: 0;
+  margin-top: -${editorStyleVars.stickyDistanceBottom};
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+`;
 
 const InsertionPoint = styled.div`
   flex: 1 1 auto;

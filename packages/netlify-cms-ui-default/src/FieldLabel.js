@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
-import { colors, colorsRaw, transitions } from './styles';
+import { colors, colorsRaw, transitions, text } from './styles';
 
 const stateColors = {
   default: {
@@ -19,18 +19,16 @@ const stateColors = {
 };
 
 const getStateColors = ({ isActive, hasErrors }) => {
-  return (hasErrors && stateColors.error)
-    || (isActive && stateColors.active)
-    || stateColors.default;
+  if (hasErrors) return stateColors.error;
+  if (isActive) return stateColors.active;
+  return stateColors.default;
 };
 
 const FieldLabel = styled.label`
+  ${text.fieldLabel};
   color: ${props => getStateColors(props).text};
   background-color: ${props => getStateColors(props).background};
   display: inline-block;
-  font-size: 12px;
-  text-transform: uppercase;
-  font-weight: 600;
   border: 0;
   border-radius: 3px 3px 0 0;
   padding: 3px 6px 2px;

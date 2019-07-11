@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import { css, Global } from '@emotion/core';
 import styled from '@emotion/styled';
+import { getWidgets } from 'Lib/registry';
 import EditorControl from './EditorControl';
 
 const ControlPaneContainer = styled.div`
@@ -10,6 +12,7 @@ const ControlPaneContainer = styled.div`
   padding-bottom: 16px;
   font-size: 16px;
 `;
+
 
 export default class ControlPane extends React.Component {
   componentValidate = {};
@@ -34,6 +37,19 @@ export default class ControlPane extends React.Component {
     });
   };
 
+  renderWidgetGlobalStyles = () => {
+    return getWidgets()
+      .filter(widget => widget.globalStyles)
+      .map(({ name, globalStyles }) => {
+        if (Array.isArray(globalStyles)) {
+          return globalStyles.map((style, idx) => (
+            <Global key={`${name}-${idx}`} styles={css`${style}`}/>
+          ));
+        }
+        return <Global key={name} styles={css`${globalStyles}`}/>;
+      });
+  };
+
   render() {
     const {
       collection,
@@ -54,23 +70,26 @@ export default class ControlPane extends React.Component {
     }
 
     return (
-      <ControlPaneContainer>
-        {fields.map((field, i) =>
-          field.get('widget') === 'hidden' ? null : (
-            <EditorControl
-              key={i}
-              field={field}
-              value={entry.getIn(['data', field.get('name')])}
-              fieldsMetaData={fieldsMetaData}
-              fieldsErrors={fieldsErrors}
-              onChange={onChange}
-              onValidate={onValidate}
-              processControlRef={this.controlRef.bind(this)}
-              controlRef={this.controlRef}
-            />
-          ),
-        )}
-      </ControlPaneContainer>
+      <>
+        {this.renderWidgetGlobalStyles()}
+        <ControlPaneContainer>
+          {fields.map((field, i) =>
+            field.get('widget') === 'hidden' ? null : (
+              <EditorControl
+                key={i}
+                field={field}
+                value={entry.getIn(['data', field.get('name')])}
+                fieldsMetaData={fieldsMetaData}
+                fieldsErrors={fieldsErrors}
+                onChange={onChange}
+                onValidate={onValidate}
+                processControlRef={this.controlRef.bind(this)}
+                controlRef={this.controlRef}
+              />
+            ),
+          )}
+        </ControlPaneContainer>
+      </>
     );
   }
 }
