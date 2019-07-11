@@ -71,6 +71,23 @@ var CategoriesPreview = createClass({
 CMS.registerWidget('categories', CategoriesControl, CategoriesPreview);
 </script>
 ```
+### Using pre-existing widgets within a Custom Widget
+
+You can create a pre-existing widget by using the `CMS.getWidget(widget)` method.
+
+**Example:**
+
+```jsx
+const SlideControl = props => {
+  const MarkdownControl = CMS.getWidget("markdown").control;
+  return (
+    <div>
+      <SlideControlHeader>Slide</SlideControlHeader>
+      <MarkdownControl {...props} />
+    </div>
+  );
+};
+```
 
 ## `registerEditorComponent`
 
