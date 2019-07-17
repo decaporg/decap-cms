@@ -4,7 +4,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { ClassNames } from '@emotion/core';
 import styled from '@emotion/styled';
 import { Map } from 'immutable';
-import { find, uniqBy, isEqual, capitalize, isObject } from 'lodash';
+import { find, uniqBy, isEqual, isObject, sortBy } from 'lodash';
 import uuid from 'uuid/v4';
 import Resizable from 're-resizable';
 import Select from 'react-select';
@@ -71,7 +71,7 @@ const SettingsSectionTitle = styled.h3`
   }
 `;
 
-const defaultLang = { name: '', mode: '', label: 'None' };
+const defaultLang = { name: '', mode: '', label: 'none' };
 
 function valueToOption(val) {
   if (typeof val === 'string') {
@@ -85,9 +85,9 @@ function themesToOptions(themes = []) {
     if (isObject(theme)) {
       return valueToOption(theme);
     }
-    return { value: theme, label: capitalize(theme) };
+    return { value: theme, label: theme };
   });
-  return [{ value: '', label: 'Default' }, ...options];
+  return [{ value: '', label: 'default' }, ...options];
 }
 
 const settingsPersistKeys = {
@@ -153,6 +153,7 @@ export default class CodeControl extends React.Component {
     }
 
     const mimeModes = CodeMirror?.mimeModes;
+    console.log(mimeModes)
     if (mimeModes) {
       const languages = Object.keys(mimeModes).map(mimeType => ({
         name: mimeType.match(/^.+\/(?:x-)?(.+)$/)[1],
@@ -166,9 +167,8 @@ export default class CodeControl extends React.Component {
   getKeyMapOptions = () => {
     return Object
       .keys(CodeMirror.keyMap)
-      .filter(keyMap => ['default', 'emacs', 'sublime', 'vim'].includes(keyMap))
       .sort()
-      .map(keyMap => ({ value: keyMap, label: capitalize(keyMap) }));
+      .map(keyMap => ({ value: keyMap, label: keyMap }));
   }
 
   getLanguages = () => {
@@ -176,7 +176,7 @@ export default class CodeControl extends React.Component {
     const allLanguages = this.getAllLanguages();
     const fieldLanguages = this.props.field.get('languages');
     if (!fieldLanguages) {
-      return baseLanguages.concat(allLanguages);
+      return sortBy(baseLanguages.concat(allLanguages), 'name');
     }
     const languages = fieldLanguages.map(lang => {
       if (Map.isMap(lang)) {
@@ -187,7 +187,7 @@ export default class CodeControl extends React.Component {
       });
       return langInfo || { name: lang, mode: lang };
     }).toJS();
-    return baseLanguages.concat(languages);
+    return sortBy(baseLanguages.concat(languages), 'name');
   };
 
   // This widget is not fully controlled, it only takes a value through props
@@ -362,7 +362,7 @@ export default class CodeControl extends React.Component {
                       <Select
                         inputId={`${forID}-select-keymap`}
                         styles={languageSelectStyles}
-                        value={valueToOption({ name: keyMap, label: capitalize(keyMap) })}
+                        value={{ value: keyMap, label: keyMap }}
                         options={this.getKeyMapOptions()}
                         onChange={opt => this.handleChangeCodeMirrorProp(opt.value, 'keyMap')}
                         menuPlacement="auto"
