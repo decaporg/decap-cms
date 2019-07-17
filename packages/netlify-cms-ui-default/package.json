@@ -19,7 +19,7 @@
   "dependencies": {
     "react-aria-menubutton": "^6.0.0",
     "react-toggled": "^1.1.2",
-    "react-transition-group": "^2.6.0"
+    "react-transition-group": "^4.0.0"
   },
   "peerDependencies": {
     "@emotion/core": "^10.0.9",
