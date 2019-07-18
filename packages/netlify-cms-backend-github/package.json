@@ -17,10 +17,17 @@
   "scripts": {
     "develop": "yarn build:esm --watch",
     "build": "cross-env NODE_ENV=production webpack",
-    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore **/__tests__ --root-mode upward"
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore **/__tests__ --root-mode upward",
+    "createFragmentTypes": "node scripts/createFragmentTypes.js"
   },
   "dependencies": {
+    "apollo-cache-inmemory": "^1.6.2",
+    "apollo-client": "^2.6.3",
+    "apollo-link-context": "^1.0.18",
+    "apollo-link-http": "^1.5.15",
     "common-tags": "^1.8.0",
+    "graphql": "^14.4.2",
+    "graphql-tag": "^2.10.1",
     "js-base64": "^2.5.1",
     "semaphore": "^1.1.0"
   },
