@@ -83,6 +83,9 @@ collections: # A list of collections the CMS should be able to edit
             fields:
               - { label: 'Name', name: 'name', widget: 'string', hint: 'First and Last' }
               - { label: 'Description', name: 'description', widget: 'markdown' }
+              - label: location
+                name: location
+                widget: map
 
   - name: 'kitchenSink' # all the things in one entry, for documentation and quick testing
     label: 'Kitchen Sink'

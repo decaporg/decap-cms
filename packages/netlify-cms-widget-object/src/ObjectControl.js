@@ -33,6 +33,7 @@ export default class ObjectControl extends React.Component {
     resolveWidget: PropTypes.func.isRequired,
     clearFieldErrors: PropTypes.func.isRequired,
     fieldsErrors: ImmutablePropTypes.map.isRequired,
+    parentCollapsed: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -42,7 +43,7 @@ export default class ObjectControl extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      collapsed: false,
+      collapsed: false
     };
   }
 
@@ -76,6 +77,7 @@ export default class ObjectControl extends React.Component {
       fieldsErrors,
       editorControl: EditorControl,
       controlRef,
+      parentCollapsed,
     } = this.props;
 
     if (field.get('widget') === 'hidden') {
@@ -96,6 +98,7 @@ export default class ObjectControl extends React.Component {
         onValidate={onValidateObject}
         processControlRef={controlRef && controlRef.bind(this)}
         controlRef={controlRef}
+        parentCollapsed={parentCollapsed}
       />
     );
   }

@@ -381,6 +381,7 @@ export default class ListControl extends React.Component {
               fieldsErrors={fieldsErrors}
               ref={this.processControlRef}
               controlRef={controlRef}
+              parentCollapsed={collapsed}
             />
           )}
         </ClassNames>

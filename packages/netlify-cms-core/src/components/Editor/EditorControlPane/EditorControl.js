@@ -155,6 +155,7 @@ class EditorControl extends React.Component {
     clearFieldErrors: PropTypes.func.isRequired,
     loadEntry: PropTypes.func.isRequired,
     t: PropTypes.func.isRequired,
+    parentCollapsed: PropTypes.bool,
   };
 
   state = {
@@ -187,6 +188,7 @@ class EditorControl extends React.Component {
       clearFieldErrors,
       loadEntry,
       t,
+      parentCollapsed,
     } = this.props;
     const widgetName = field.get('widget');
     const widget = resolveWidget(widgetName);
@@ -290,6 +292,7 @@ class EditorControl extends React.Component {
               fieldsErrors={fieldsErrors}
               onValidateObject={onValidateObject}
               t={t}
+              parentCollapsed={parentCollapsed}
             />
             {fieldHint && (
               <ControlHint active={this.state.styleActive} error={!!errors}>

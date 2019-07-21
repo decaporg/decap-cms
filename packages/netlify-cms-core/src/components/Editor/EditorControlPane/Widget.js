@@ -54,6 +54,7 @@ export default class Widget extends Component {
     uniqueFieldId: PropTypes.string.isRequired,
     loadEntry: PropTypes.func.isRequired,
     t: PropTypes.func.isRequired,
+    parentCollapsed: PropTypes.bool,
   };
 
   shouldComponentUpdate(nextProps) {
@@ -236,6 +237,7 @@ export default class Widget extends Component {
       fieldsErrors,
       controlRef,
       t,
+      parentCollapsed,
     } = this.props;
     return React.createElement(controlComponent, {
       field,
@@ -273,6 +275,7 @@ export default class Widget extends Component {
       fieldsErrors,
       controlRef,
       t,
+      parentCollapsed,
     });
   }
 }

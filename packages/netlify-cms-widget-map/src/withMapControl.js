@@ -30,6 +30,7 @@ export default function withMapControl({ getFormat, getMap } = {}) {
       onChange: PropTypes.func.isRequired,
       field: PropTypes.object.isRequired,
       value: PropTypes.node,
+      parentCollapsed: PropTypes.bool,
     };
 
     static defaultProps = {
@@ -39,10 +40,11 @@ export default function withMapControl({ getFormat, getMap } = {}) {
     constructor(props) {
       super(props);
       this.mapContainer = React.createRef();
+      this.map = null;
     }
 
     componentDidMount() {
-      const { field, onChange, value } = this.props;
+      const { field, onChange, value, parentCollapsed } = this.props;
       const format = getFormat ? getFormat(field) : getDefaultFormat(field);
       const features = value ? [format.readFeature(value)] : [];
 
@@ -50,13 +52,13 @@ export default function withMapControl({ getFormat, getMap } = {}) {
       const featuresLayer = new VectorLayer({ source: featuresSource });
 
       const target = this.mapContainer.current;
-      const map = getMap ? getMap(target, featuresLayer) : getDefaultMap(target, featuresLayer);
+      this.map = getMap ? getMap(target, featuresLayer) : getDefaultMap(target, featuresLayer);
       if (features.length > 0) {
-        map.getView().fit(featuresSource.getExtent(), { maxZoom: 16, padding: [80, 80, 80, 80] });
+        this.map.getView().fit(featuresSource.getExtent(), { maxZoom: 16, padding: [80, 80, 80, 80] });
       }
 
       const draw = new Draw({ source: featuresSource, type: field.get('type', 'Point') });
-      map.addInteraction(draw);
+      this.map.addInteraction(draw);
 
       const writeOptions = { decimals: field.get('decimals', 7) };
       draw.on('drawend', ({ feature }) => {
@@ -65,7 +67,22 @@ export default function withMapControl({ getFormat, getMap } = {}) {
       });
     }
 
+    shouldComponentUpdate(nextProps, nextState) {
+      console.log(nextProps);
+      if(nextProps.parentCollapsed != this.props.parentCollapsed) {
+        return true;
+      }
+      return false;
+    }
+
+    componentDidUpdate(prevProps) {
+      if(this.props.parentCollapsed == false && prevProps.parentCollapsed == true) {
+        this.map.updateSize();
+      }
+    }
+
     render() {
+      console.log('MAP - render');
       return (
         <ClassNames>
           {({ cx, css }) => (
@@ -76,6 +93,7 @@ export default function withMapControl({ getFormat, getMap } = {}) {
                   ${olStyles};
                   padding: 0;
                   overflow: hidden;
+                  min-height: 400px;
                 `,
               )}
               ref={this.mapContainer}
