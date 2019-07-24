@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.4.0-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/compare/netlify-cms-lib-util@2.3.3...netlify-cms-lib-util@2.4.0-beta.0) (2019-07-24)
+
+
+### Features
+
+* **backend-github:** Open Authoring ([#2430](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/issues/2430)) ([edf0a3a](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/commit/edf0a3a))
+
+
+
+
+
 ## [2.3.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/compare/netlify-cms-lib-util@2.3.2...netlify-cms-lib-util@2.3.3) (2019-07-24)
 
 **Note:** Version bump only for package netlify-cms-lib-util
