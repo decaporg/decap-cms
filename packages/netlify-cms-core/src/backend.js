@@ -386,7 +386,7 @@ export class Backend {
             }
             return elem;
           }),
-        ];
+        ].filter(Boolean);
         const collectionEntries = await this.listAllEntries(collection);
         return fuzzy.filter(searchTerm, collectionEntries, {
           extract: extractSearchFields(uniq(searchFields)),
