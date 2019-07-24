@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.12.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.12.1...netlify-cms-core@2.12.2) (2019-07-24)
+
+
+### Bug Fixes
+
+* **core:** fix broken search ([#2488](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2488)) ([326ed4d](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/326ed4d))
+
+
+
+
+
 ## [2.12.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.12.0...netlify-cms-core@2.12.1) (2019-06-28)
 
 

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.6.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.6.3...netlify-cms-ui-default@2.6.4) (2019-07-24)
+
+
+### Bug Fixes
+
+* **ui:** typos in color vars ([#2444](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/issues/2444)) ([d260161](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/commit/d260161))
+
+
+
+
+
 ## [2.6.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.6.3-beta.0...netlify-cms-ui-default@2.6.3) (2019-06-14)
 
 **Note:** Version bump only for package netlify-cms-ui-default

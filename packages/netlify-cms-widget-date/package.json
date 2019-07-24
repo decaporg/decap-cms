@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-widget-date",
   "description": "Widget for editing dates in Netlify CMS.",
-  "version": "2.3.2",
+  "version": "2.3.3",
   "homepage": "https://www.netlifycms.org/docs/widgets/#date",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-date",
   "bugs": "https://github.com/netlify/netlify-cms/issues",

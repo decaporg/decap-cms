@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-media-library-uploadcare",
   "description": "Uploadcare integration for Netlify CMS",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-media-library-uploadcare",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
   "module": "dist/esm/index.js",

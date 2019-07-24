@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-widget-map",
   "description": "Widget for editing spatial data in Netlify CMS.",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "homepage": "https://www.netlifycms.org/docs/widgets/#map",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-map",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
