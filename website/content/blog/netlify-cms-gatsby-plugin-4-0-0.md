@@ -3,7 +3,7 @@ title: React Hooks support in Netlify CMS (and the Gatsby plugin)
 author: Tony Alves
 description: >-
   Netlify CMS 2.9.0 allows React Hooks to be used in custom Netlify CMS previews and widgets, and `gatsby-plugin-netlify-cms` 4.0.0 extends that support to Gatsby projects.
-date: 2019-05-29T00:00:10.000Z
+date: 2019-07-23T00:00:10.000Z
 ---
 
 Netlify CMS is an extensible app written in, and bundled with, React. The most common extension is the custom preview template, which allows the preview on the right side of the editor to show what the site will actually look like as you type. These preview templates are also written in React.
