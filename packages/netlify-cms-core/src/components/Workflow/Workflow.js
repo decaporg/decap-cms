@@ -55,6 +55,7 @@ class Workflow extends Component {
   static propTypes = {
     collections: ImmutablePropTypes.orderedMap,
     isEditorialWorkflow: PropTypes.bool.isRequired,
+    isForkWorkflow: PropTypes.bool,
     isFetching: PropTypes.bool,
     unpublishedEntries: ImmutablePropTypes.map,
     loadUnpublishedEntries: PropTypes.func.isRequired,
@@ -74,6 +75,7 @@ class Workflow extends Component {
   render() {
     const {
       isEditorialWorkflow,
+      isForkWorkflow,
       isFetching,
       unpublishedEntries,
       updateUnpublishedEntryStatus,
@@ -125,6 +127,7 @@ class Workflow extends Component {
           handleChangeStatus={updateUnpublishedEntryStatus}
           handlePublish={publishUnpublishedEntry}
           handleDelete={deleteUnpublishedEntry}
+          isForkWorkflow={isForkWorkflow}
         />
       </WorkflowContainer>
     );
@@ -132,9 +135,10 @@ class Workflow extends Component {
 }
 
 function mapStateToProps(state) {
-  const { collections } = state;
-  const isEditorialWorkflow = state.config.get('publish_mode') === EDITORIAL_WORKFLOW;
-  const returnObj = { collections, isEditorialWorkflow };
+  const { collections, config, globalUI } = state;
+  const isEditorialWorkflow = config.get('publish_mode') === EDITORIAL_WORKFLOW;
+  const isForkWorkflow = globalUI.get('useForkWorkflow', false);
+  const returnObj = { collections, isEditorialWorkflow, isForkWorkflow };
 
   if (isEditorialWorkflow) {
     returnObj.isFetching = state.editorialWorkflow.getIn(['pages', 'isFetching'], false);
