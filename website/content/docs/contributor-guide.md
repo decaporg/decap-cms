@@ -18,13 +18,7 @@ The GitHub website allows you to submit issues, work with files, search for cont
 A [style guide](/website/content/docs/style-guide.md) is available to help provide context around grammar, code styling, syntax, etc. 
 
 ## Filing issues
-If you have a GitHub account, you can file an [issue](https://github.com/netlify/netlify-cms/issues) (aka bug report) against the Netlify CMS docs. Even if you're not able to, or don't know how to, fix the issue (see [Improve existing content](#improve-existing-content)), it helps to start the conversation. When you file an issue, it's important to include the following info:
-
-- Link to page
-- What is wrong
-- What could/should be done
-
-[TODO: Update this with the information preferred/required by the Netlify CMS team]
+If you have a GitHub account, you can file an [issue](https://github.com/netlify/netlify-cms/issues) (aka bug report) against the Netlify CMS docs. Even if you're not able to, or don't know how to, fix the issue (see [Improve existing content](#improve-existing-content)), it helps to start the conversation. 
 
 When filing an issue, it is important to remember the [Code of Conduct](https://github.com/netlify/netlify-cms/blob/master/CODE_OF_CONDUCT.md).
 
