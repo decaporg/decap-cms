@@ -134,7 +134,7 @@ touch index.html
 touch config.yml
 ```
 
-Paste HTML for Netlify CMS into your ``static/admin/index.html`` file (check out the [Add Netlify To Your Site](http://localhost:8000/docs/add-to-your-site/) section for more information)
+Paste HTML for Netlify CMS into your ``static/admin/index.html`` file (check out the [Add Netlify To Your Site](https://www.netlifycms.org/docs/add-to-your-site/) section for more information)
 
 ```html
 <!doctype html>
