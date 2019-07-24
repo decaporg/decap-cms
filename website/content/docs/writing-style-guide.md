@@ -1,106 +1,72 @@
 ---
-title: Style Guide
+title: Writing Style Guide
 weight: 30
 group: contributing
 ---
 
 # Netlify CMS Style Guide
-
-NOTE: Guide taken from [Kubernete's Style Guide](https://kubernetes.io/docs/contribute/style/style-guide/#use-bold-for-user-interface-elements)
+_Adapted from the [Kubernetes Style Guide](https://kubernetes.io/docs/contribute/style/style-guide)_
 
 ## Documentation Formatting Standards
-
-### Use camel case for API objects
-
-When you refer to an API object, use the same uppercase and lowercase letters that are used in the actual object name. Typically, the names of API objects use [camel case](https://en.wikipedia.org/wiki/Camel_case).
-
-Don’t split the API object name into separate words. For example, use PodTemplateList, not Pod Template List.
-
-Refer to API objects without saying “object,” unless omitting “object” leads to an awkward construction.
-
-Do: The Pod has two containers.
-
-Don't: The pod has two containers.
-_____
-
-Do: The Deployment is responsible for ...	
-
-Don't: The Deployment object is responsible for ...
-_____
-
-Do: A PodList is a list of Pods.
-
-Don't: A Pod List is a list of pods.
-_____
-
-Do: The two ContainerPorts ...
-
-Don't: The two ContainerPort objects ...
-_____
-
-Do: The two ContainerStateTerminated objects ...
-
-Don't: The two ContainerStateTerminateds ...
-_____
 
 ### Use angle brackets for placeholders
 
 Use angle brackets for placeholders. Tell the reader what a placeholder represents.
 
-1. Display information about a Pod:
+1. Display information about a cli command:
 
 ``` 
-kubectl describe pod <pod-name>
+npm install <package-name>
 ```
 
-where ```<pod-name>``` is the name of one of your Pods.
+where `<package-name>` is the name of a package.
 
 ### Use bold for user interface elements
 
-Do: Click **Fork**.
+Do: Click **Save**.
 
-Don't: Click "Fork".
+Don't: Click "Save".
 _____
 
-Do: Select **Other**.
+Do: Select **Log Out**.
 
-Don't: Select 'Other'.
+Don't: Select 'Log Out'.
 _____
 
 ### Use italics to define or introduce new terms
 
-Do: A _cluster_ is a set of nodes ...	
+Do: A _collection_ is a set of entries ...	
 
-Don't: A "cluster" is a set of nodes ...
+Don't: A "collection" is a set of entries ...
 _____
 
-Do: These components form the _control plane_.	
+Do: These components form the _control pane_.	
 
-Don't: These components form the **control plane**.
+Don't: These components form the **control pane**.
 _____
 
 ### Use code style for filenames, directories, and paths
 
-Do: Open the `envars.yaml` file.
+Do: Open the `config.yaml` file.
 
-Don't: Open the envars.yaml file.
+Don't: Open the config.yaml file.
 _____
 
-Do: Go to the `/docs/tutorials` directory.	
+Do: Go to the `/docs/guides` directory.	
 
-Don't: Go to the /docs/tutorials directory.
+Don't: Go to the /docs/guides directory.
 _____
 
-Do: Open the `/_data/concepts.yaml` file.	
+Do: Open the `/admin/index.html` file.	
 
-Don't: Open the /_data/concepts.yaml file.
+Don't: Open the /admin/index.html file.
 _____
 
 ### Use the international standard for punctuation inside quotes
 
-Do: events are recorded with an associated "stage".	
+Do: Branch names begin with "cms".	
 
-Don't: events are recorded with an associated "stage."
+Don't: Branch names begin with "stage."
 _____
 
 Do: The copy is called a "fork".	
@@ -114,14 +80,14 @@ _____
 
 For inline code in an HTML document, use the `<code>` tag. In a Markdown document, use the backtick (`).
 
-Do: The `kubectl run` command creates a Deployment.	
+Do: The `yarn start` command starts the development server.	
 
-Don't: The "kubectl run" command creates a Deployment.
+Don't: The "yarn start" command starts the development server.
 _____
 
-Do: For declarative management, use `kubectl apply`.	
+Do: For a production build, use `yarn build`.	
 
-Don't: For declarative management, use "kubectl apply".
+Don't: For a production build, use "yarn build".
 _____
 
 Do: Enclose code samples with triple backticks. `(```)`	
@@ -131,21 +97,21 @@ _____
 
 ### Use code style for object field names
 
-Do: Set the value of the `replicas` field in the configuration file.	
+Do: Set the value of the `media_folder` field in the configuration file.	
 
-Don't: Set the value of the "replicas" field in the configuration file.
+Don't: Set the value of the "media_folder" field in the configuration file.
 _____
 
-Do: The value of the `exec` field is an ExecAction object.	
+Do: The value of the `name` field is a string.	
 
-Don't: The value of the "exec" field is an ExecAction object.
+Don't: The value of the "name" field is a string.
 _____
 
 ### Use normal style for string and integer field values
 
 For field values of type string or integer, use normal style without quotation marks.
 
-Do: Set the value of `imagePullPolicy` to Always.	
+Do: Set the value of `publish_mode` to editorial_workflow.	
 
 Don't: Set the value of `imagePullPolicy` to "Always".
 _____
@@ -164,9 +130,9 @@ _____
 
 ### Don’t include the command prompt
 
-Do: kubectl get pods	
+Do: yarn start	
 
-Don't: $ kubectl get pods
+Don't: $ yarn start
 
 ## Content best practices
 
@@ -187,9 +153,9 @@ Do: You can explore the API using a browser.
 Don't: The API can be explored using a browser.
 _____
 
-Do: The YAML file specifies the replica count.
+Do: The YAML file specifies the collection name.
 
-Don't: The replica count is specified in the YAML file.
+Don't: The collection name is specified in the YAML file.
 _____
 
 Exception: Use passive voice if active voice leads to an awkward construction.
@@ -198,9 +164,9 @@ Exception: Use passive voice if active voice leads to an awkward construction.
 
 Use simple and direct language. Avoid using unnecessary phrases, such as saying “please.”
 
-Do: To create a ReplicaSet, ...	
+Do: To create an entry, ...	
 
-Don't: In order to create a ReplicaSet, ...
+Don't: In order to create an entry, ...
 _____
 
 Do: See the configuration file.	
@@ -208,9 +174,9 @@ Do: See the configuration file.
 Don't: Please see the configuration file.
 _____
 
-Do: View the Pods.	
+Do: View the fields.	
 
-Don't: With this next command, we'll view the Pods.
+Don't: With this next command, we'll view the fields.
 _____
 
 ### Address the reader as “you”
@@ -251,14 +217,14 @@ Do: Version 1.4 includes ...
 Don't: In version 1.4, we have added ...
 _____
 
-Do: Kubernetes provides a new feature for ...
+Do: Netlify CMS provides a new feature for ...
 
 Don't: We provide a new feature ...
 _____
 
-Do: This page teaches you how to use Pods.	
+Do: This page teaches you how to use Widgets.	
 
-Don't: In this page, we are going to learn about Pods.
+Don't: In this page, we are going to learn about Widgets.
 _____
 
 ### Avoid jargon and idioms
