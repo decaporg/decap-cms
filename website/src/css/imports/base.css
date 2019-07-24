@@ -163,7 +163,7 @@ pre {
 .code,
 code {
   font-family: 'Roboto Mono', monospace !important;
-  font-size: 14px;
+  font-size: 80%;
   text-transform: none;
   line-height: 1 !important;
 }
