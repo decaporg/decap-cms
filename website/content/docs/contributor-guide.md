@@ -10,7 +10,7 @@ We're hoping that Netlify CMS will do for the [JAMstack](https://www.jamstack.or
 Being a developer is not a requirement for contributing to Netlify CMS, you only need the desire, a web browser, and a [GitHub account](https://github.com/join). The GitHub repo has a step-by-step [guide](https://github.com/netlify/netlify-cms/blob/master/CONTRIBUTING.md) to get started with the code.
 
 ## The basics of the Netlify CMS docs
-The documentation for Netlify CMS is written in [Markdown](http://daringfireball.net/projects/markdown/) (a good cheatsheet on Markdown is [here](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet)), with the source residing on [GitHub](https://github.com/netlify-cms) in the `/website/content/docs` folder.
+The documentation for Netlify CMS is written in [Markdown](http://daringfireball.net/projects/markdown/) (a good cheatsheet on Markdown is [here](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet)), with the source residing on [GitHub](https://github.com/netlify/netlify-cms) in the `/website/content/docs` folder.
 
 The GitHub website allows you to submit issues, work with files, search for content, and browse changes that have been submitted in the past and those that are being submitted now (aka Pull Requests). 
 
