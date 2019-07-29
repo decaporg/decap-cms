@@ -1,14 +1,12 @@
 {
   "parser": "babel-eslint",
-  "extends": [
-    "eslint:recommended",
-    "plugin:react/recommended"
-  ],
+  "extends": ["eslint:recommended", "plugin:react/recommended", "plugin:cypress/recommended"],
   "env": {
     "es6": true,
     "browser": true,
     "node": true,
-    "jest": true
+    "jest": true,
+    "cypress/globals": true
   },
   "globals": {
     "NETLIFY_CMS_VERSION": false,
@@ -25,12 +23,10 @@
     "emotion/import-from-emotion": "error",
     "emotion/styled-import": "error"
   },
-  "plugins": [
-    "emotion",
-  ],
+  "plugins": ["emotion", "cypress"],
   "settings": {
     "react": {
-      "version": "detect",
-    },
-  },
+      "version": "detect"
+    }
+  }
 }

@@ -24,7 +24,15 @@ describe('Editorial Workflow', () => {
     },
   };
 
+  after(() => {
+    cy.task('restoreDefaults');
+  });
+
   describe('Test Backend', () => {
+    before(() => {
+      cy.task('setupBackend', { backend: 'test' });
+    });
+
     function login() {
       cy.viewport(1200, 1200);
       cy.visit('/');
@@ -107,34 +115,18 @@ describe('Editorial Workflow', () => {
     function assertEntryDeleted(entry) {
       if (Array.isArray(entry)) {
         const titles = entry.map(e => e.title);
-        cy.get('a h2').each((el, idx) => {
+        cy.get('a h2').each(el => {
           expect(titles).not.to.include(el.text());
         });
       } else {
-        cy.get('a h2').each((el, idx) => {
+        cy.get('a h2').each(el => {
           expect(entry.title).not.to.equal(el.text());
         });
       }
     }
 
-    function createAndDeletePost(entry) {
-      createPost(entry);
-      deleteEntryInEditor();
-    }
-
     function createPostAndExit(entry) {
       createPost(entry);
-      exitEditor();
-    }
-
-    function createPublishedPost(entry) {
-      createPost(entry);
-      updateWorkflowStatusInEditor(editorStatus.ready);
-      publishInEditor();
-    }
-
-    function createPublishedPostAndExit(entry) {
-      createPublishedPost(entry);
       exitEditor();
     }
 
@@ -344,6 +336,29 @@ describe('Editorial Workflow', () => {
       exitEditor();
       goToWorkflow();
       assertWorkflowStatus(entry1, workflowStatus.ready);
+    });
+  });
+
+  describe('Github Backend', () => {
+    let taskResult = { data: {} };
+
+    before(() => {
+      cy.task('setupBackend', { backend: 'github' }).then(data => {
+        taskResult.data = data;
+      });
+    });
+
+    after(() => {
+      cy.task('teardownBackend', { backend: 'github', ...taskResult.data });
+    });
+
+    function login() {
+      cy.viewport(1200, 1200);
+      cy.visit('/');
+    }
+
+    it('can update workflow status from within the editor', () => {
+      login();
     });
   });
 });
