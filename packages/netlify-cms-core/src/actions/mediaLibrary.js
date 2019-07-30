@@ -250,9 +250,10 @@ export function loadMediaDisplayURL(file) {
     ) {
       return Promise.resolve();
     }
-    if (typeof url === 'string' || typeof displayURL === 'string') {
+    if (typeof displayURL === 'string') {
       dispatch(mediaDisplayURLRequest(id));
       dispatch(mediaDisplayURLSuccess(id, displayURL));
+      return;
     }
     try {
       const backend = currentBackend(state.config);
