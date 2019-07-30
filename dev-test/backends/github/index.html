@@ -14,12 +14,7 @@
           return h(
             'div',
             {},
-            h(
-              'div',
-              { className: 'cover' },
-              h('h1', {}, entry.getIn(['data', 'title'])),
-              this.props.widgetFor('image'),
-            ),
+            h('div', { className: 'cover' }, h('h1', {}, entry.getIn(['data', 'title']))),
             h('p', {}, h('small', {}, 'Written ' + entry.getIn(['data', 'date']))),
             h('div', { className: 'text' }, this.props.widgetFor('body')),
           );
@@ -32,12 +27,7 @@
           return h(
             'div',
             {},
-            h(
-              'div',
-              { className: 'cover' },
-              h('h1', {}, entry.getIn(['data', 'title'])),
-              this.props.widgetFor('image'),
-            ),
+            h('div', { className: 'cover' }, h('h1', {}, entry.getIn(['data', 'title']))),
             h('p', {}, h('small', {}, 'Written ' + entry.getIn(['data', 'date']))),
             h('div', { className: 'text' }, this.props.widgetFor('body')),
           );

@@ -42,9 +42,11 @@ async function prepareTestGitHubRepo() {
   });
 
   const tempDir = path.join('.temp', testRepoName);
+  await fs.remove(tempDir);
   let git = simpleGit().env({ ...process.env, GIT_SSH_COMMAND });
 
   const repoUrl = `git@github.com:${owner}/${repo}.git`;
+
   console.log('Cloning repository', repoUrl);
   await git.clone(repoUrl, tempDir);
   git = simpleGit(tempDir).env({ ...process.env, GIT_SSH_COMMAND });
@@ -58,18 +60,62 @@ async function prepareTestGitHubRepo() {
   );
   await git.push(['-u', 'origin', 'master']);
 
-  await fs.remove(tempDir);
-
-  return { owner, repo: testRepoName };
+  return { owner, repo: testRepoName, tempDir };
 }
 
-async function deleteRepository({ owner, repo }) {
+async function getUser() {
+  const { token } = getEnvs();
+  const client = getGitHubClient();
+  const { data: user } = await client.users.getAuthenticated();
+  return { ...user, token, backendName: 'github' };
+}
+
+async function deleteRepository({ owner, repo, tempDir }) {
   console.log('Deleting repository', repo);
   const client = getGitHubClient();
   await client.repos.delete({
     owner,
     repo,
   });
+  await fs.remove(tempDir);
 }
 
-module.exports = { prepareTestGitHubRepo, deleteRepository };
+async function resetRepository({ owner, repo, tempDir }) {
+  const client = getGitHubClient();
+
+  const { data: prs } = await client.pulls.list({
+    repo,
+    owner,
+    state: 'open',
+  });
+  const numbers = prs.map(pr => pr.number);
+  console.log('Closing prs:', numbers);
+  await Promise.all(
+    numbers.map(pull_number =>
+      client.pulls.update({
+        owner,
+        repo,
+        pull_number,
+      }),
+    ),
+  );
+
+  const refs = prs.map(pr => `heads/${pr.head.ref}`);
+
+  console.log('Deleting refs', refs);
+  await Promise.all(
+    refs.map(ref =>
+      client.git.deleteRef({
+        owner,
+        repo,
+        ref,
+      }),
+    ),
+  );
+
+  console.log('Resetting master');
+  const git = simpleGit(tempDir).env({ ...process.env, GIT_SSH_COMMAND });
+  await git.push(['--force', 'origin', 'master']);
+}
+
+module.exports = { prepareTestGitHubRepo, deleteRepository, getUser, resetRepository };

@@ -9,6 +9,7 @@ public_folder: /media
 collections:
   - name: posts
     label: Posts
+    label_singular: 'Post'
     folder: content/posts
     create: true
     slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
@@ -42,6 +43,7 @@ collections:
         widget: list
   - name: pages
     label: Pages
+    label_singular: 'Page'
     folder: content/pages
     create: true
     slug: '{{slug}}'

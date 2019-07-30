@@ -3,9 +3,27 @@ import '../utils/dismiss-local-backup';
 describe('Editorial Workflow', () => {
   const workflowStatus = { draft: 'Drafts', review: 'In Review', ready: 'Ready' };
   const editorStatus = { draft: 'Draft', review: 'In review', ready: 'Ready' };
-  const entry1 = { title: 'first title', body: 'first body' };
-  const entry2 = { title: 'second title', body: 'second body' };
-  const entry3 = { title: 'third title', body: 'third body' };
+  const entry1 = {
+    title: 'first title',
+    body: 'first body',
+    description: 'first description',
+    category: 'first category',
+    tags: 'tag1',
+  };
+  const entry2 = {
+    title: 'second title',
+    body: 'second body',
+    description: 'second description',
+    category: 'second category',
+    tags: 'tag2',
+  };
+  const entry3 = {
+    title: 'third title',
+    body: 'third body',
+    description: 'third description',
+    category: 'third category',
+    tags: 'tag3',
+  };
   const setting1 = { limit: 10, author: 'John Doe' };
   const setting2 = { name: 'Andrew Wommack', description: 'A Gospel Teacher' };
   const notifications = {
@@ -28,8 +46,139 @@ describe('Editorial Workflow', () => {
     cy.task('restoreDefaults');
   });
 
+  function assertNotification(message) {
+    if (Array.isArray(message)) {
+      console.log(message);
+      const messages = message.reverse();
+      cy.get('.notif__container div')
+        .should('have.length.of', messages.length)
+        .each((el, idx) => {
+          cy.wrap(el)
+            .contains(messages[idx])
+            .invoke('hide');
+        });
+    } else {
+      cy.get('.notif__container').within(() => {
+        cy.contains(message).invoke('hide');
+      });
+    }
+  }
+
+  function exitEditor() {
+    cy.contains('a[href^="#/collections/"]', 'Writing in').click();
+  }
+
+  function goToWorkflow() {
+    cy.contains('a', 'Workflow').click();
+  }
+
+  function goToCollections() {
+    cy.contains('a', 'Content').click();
+  }
+
+  function updateWorkflowStatus({ title }, fromColumnHeading, toColumnHeading) {
+    cy.contains('h2', fromColumnHeading)
+      .parent()
+      .contains('a', title)
+      .trigger('dragstart', {
+        dataTransfer: {},
+        force: true,
+      });
+    cy.contains('h2', toColumnHeading)
+      .parent()
+      .trigger('drop', {
+        dataTransfer: {},
+        force: true,
+      });
+    assertNotification(notifications.updated);
+  }
+
+  function publishWorkflowEntry({ title }) {
+    cy.contains('h2', workflowStatus.ready)
+      .parent()
+      .within(() => {
+        cy.contains('a', title)
+          .parent()
+          .within(() => {
+            cy.contains('button', 'Publish new entry').click({ force: true });
+          });
+      });
+    assertNotification(notifications.published);
+  }
+
+  function assertWorkflowStatusInEditor(status) {
+    cy.contains('[role="button"]', 'Set status').as('setStatusButton');
+    cy.get('@setStatusButton')
+      .parent()
+      .within(() => {
+        cy.get('@setStatusButton').click();
+        cy.contains('[role="menuitem"] span', status)
+          .parent()
+          .within(() => {
+            cy.get('svg');
+          });
+        cy.get('@setStatusButton').click();
+      });
+  }
+
+  function assertPublishedEntry(entry) {
+    if (Array.isArray(entry)) {
+      const entries = entry.reverse();
+      cy.get('a h2').then(els => {
+        cy.wrap(els.slice(0, entries.length)).each((el, idx) => {
+          cy.wrap(el).contains(entries[idx].title);
+        });
+      });
+    } else {
+      cy.get('a h2')
+        .first()
+        .contains(entry.title);
+    }
+  }
+
+  function deleteEntryInEditor() {
+    cy.contains('button', 'Delete').click();
+    assertNotification(notifications.deletedUnpublished);
+  }
+
+  function assertOnCollectionsPage() {
+    cy.url().should('contain', '/#/collections/posts');
+    cy.contains('h2', 'Collections');
+  }
+
+  function assertEntryDeleted(entry) {
+    if (Array.isArray(entry)) {
+      const titles = entry.map(e => e.title);
+      cy.get('a h2').each(el => {
+        expect(titles).not.to.include(el.text());
+      });
+    } else {
+      cy.get('a h2').each(el => {
+        expect(entry.title).not.to.equal(el.text());
+      });
+    }
+  }
+
+  function assertWorkflowStatus({ title }, status) {
+    cy.contains('h2', status)
+      .parent()
+      .contains('a', title);
+  }
+
+  function updateWorkflowStatusInEditor(newStatus) {
+    cy.contains('[role="button"]', 'Set status').as('setStatusButton');
+    cy.get('@setStatusButton')
+      .parent()
+      .within(() => {
+        cy.get('@setStatusButton').click();
+        cy.contains('[role="menuitem"] span', newStatus).click();
+      });
+    assertNotification(notifications.updated);
+  }
+
   describe('Test Backend', () => {
     before(() => {
+      Cypress.config('defaultCommandTimeout', 4000);
       cy.task('setupBackend', { backend: 'test' });
     });
 
@@ -52,6 +201,11 @@ describe('Editorial Workflow', () => {
         .click();
       cy.contains('button', 'Save').click();
       assertNotification(notifications.saved);
+    }
+
+    function createPostAndExit(entry) {
+      createPost(entry);
+      exitEditor();
     }
 
     function validateObjectFields({ limit, author }) {
@@ -103,33 +257,6 @@ describe('Editorial Workflow', () => {
       cy.contains('button', 'Save').click();
     }
 
-    function exitEditor() {
-      cy.contains('a[href^="#/collections/"]', 'Writing in').click();
-    }
-
-    function deleteEntryInEditor() {
-      cy.contains('button', 'Delete').click();
-      assertNotification(notifications.deletedUnpublished);
-    }
-
-    function assertEntryDeleted(entry) {
-      if (Array.isArray(entry)) {
-        const titles = entry.map(e => e.title);
-        cy.get('a h2').each(el => {
-          expect(titles).not.to.include(el.text());
-        });
-      } else {
-        cy.get('a h2').each(el => {
-          expect(entry.title).not.to.equal(el.text());
-        });
-      }
-    }
-
-    function createPostAndExit(entry) {
-      createPost(entry);
-      exitEditor();
-    }
-
     function validateObjectFieldsAndExit(setting) {
       validateObjectFields(setting);
       exitEditor();
@@ -145,117 +272,10 @@ describe('Editorial Workflow', () => {
       exitEditor();
     }
 
-    function goToWorkflow() {
-      cy.contains('a', 'Workflow').click();
-    }
-
-    function goToCollections() {
-      cy.contains('a', 'Content').click();
-    }
-
-    function updateWorkflowStatus({ title }, fromColumnHeading, toColumnHeading) {
-      cy.contains('h2', fromColumnHeading)
-        .parent()
-        .contains('a', title)
-        .trigger('dragstart', {
-          dataTransfer: {},
-          force: true,
-        });
-      cy.contains('h2', toColumnHeading)
-        .parent()
-        .trigger('drop', {
-          dataTransfer: {},
-          force: true,
-        });
-      assertNotification(notifications.updated);
-    }
-
-    function assertWorkflowStatus({ title }, status) {
-      cy.contains('h2', status)
-        .parent()
-        .contains('a', title);
-    }
-
-    function updateWorkflowStatusInEditor(newStatus) {
-      cy.contains('[role="button"]', 'Set status').as('setStatusButton');
-      cy.get('@setStatusButton')
-        .parent()
-        .within(() => {
-          cy.get('@setStatusButton').click();
-          cy.contains('[role="menuitem"] span', newStatus).click();
-        });
-      assertNotification(notifications.updated);
-    }
-
-    function assertWorkflowStatusInEditor(status) {
-      cy.contains('[role="button"]', 'Set status').as('setStatusButton');
-      cy.get('@setStatusButton')
-        .parent()
-        .within(() => {
-          cy.get('@setStatusButton').click();
-          cy.contains('[role="menuitem"] span', status)
-            .parent()
-            .within(() => {
-              cy.get('svg');
-            });
-          cy.get('@setStatusButton').click();
-        });
-    }
-
-    function publishWorkflowEntry({ title }) {
-      cy.contains('h2', workflowStatus.ready)
-        .parent()
-        .within(() => {
-          cy.contains('a', title)
-            .parent()
-            .within(() => {
-              cy.contains('button', 'Publish new entry').click({ force: true });
-            });
-        });
-      assertNotification(notifications.published);
-    }
-
-    function assertPublishedEntry(entry) {
-      if (Array.isArray(entry)) {
-        const entries = entry.reverse();
-        cy.get('a h2').then(els => {
-          cy.wrap(els.slice(0, entries.length)).each((el, idx) => {
-            cy.wrap(el).contains(entries[idx].title);
-          });
-        });
-      } else {
-        cy.get('a h2')
-          .first()
-          .contains(entry.title);
-      }
-    }
-
-    function assertNotification(message) {
-      if (Array.isArray(message)) {
-        const messages = message.reverse();
-        cy.get('.notif__container div')
-          .should('have.length.of', messages.length)
-          .each((el, idx) => {
-            cy.wrap(el)
-              .contains(messages[idx])
-              .invoke('hide');
-          });
-      } else {
-        cy.get('.notif__container').within(() => {
-          cy.contains(message).invoke('hide');
-        });
-      }
-    }
-
     function assertFieldValidationError({ message, fieldLabel }) {
       cy.contains('label', fieldLabel)
         .siblings('ul[class*=ControlErrorsList]')
         .contains(message);
-    }
-
-    function assertOnCollectionsPage() {
-      cy.url().should('contain', '/#/collections/posts');
-      cy.contains('h2', 'Collections');
     }
 
     it('successfully loads', () => {
@@ -339,10 +359,11 @@ describe('Editorial Workflow', () => {
     });
   });
 
-  describe('Github Backend', () => {
+  describe.skip('Github Backend', () => {
     let taskResult = { data: {} };
 
     before(() => {
+      Cypress.config('defaultCommandTimeout', 60000);
       cy.task('setupBackend', { backend: 'github' }).then(data => {
         taskResult.data = data;
       });
@@ -352,13 +373,99 @@ describe('Editorial Workflow', () => {
       cy.task('teardownBackend', { backend: 'github', ...taskResult.data });
     });
 
+    afterEach(() => {
+      cy.task('teardownBackendTest', { backend: 'github', ...taskResult.data });
+    });
+
     function login() {
+      window.localStorage.setItem('netlify-cms-user', JSON.stringify(taskResult.data.user));
       cy.viewport(1200, 1200);
       cy.visit('/');
+      cy.contains('a', 'New Post');
     }
+
+    function createPost({ title, body, description, category, tags }) {
+      cy.contains('a', 'New Post').click();
+      cy.get('[id^="title-field"]').type(title);
+      cy.get('[id^="description-field"]').type(description);
+      cy.get('[id^="category-field"]').type(category);
+      cy.get('[data-slate-editor]')
+        .click()
+        .type(body);
+      cy.get('[id^="tags-field"]').type(tags);
+      cy.get('[id^="title-field"]').click;
+      cy.contains('button', 'Save').click();
+      assertNotification(notifications.saved);
+    }
+
+    function createPostAndExit(entry) {
+      createPost(entry);
+      exitEditor();
+    }
+
+    it('successfully loads', () => {
+      login();
+    });
+
+    it('can create an entry', () => {
+      login();
+      createPostAndExit(entry1);
+    });
+
+    it('can publish an editorial workflow entry', () => {
+      login();
+      createPostAndExit(entry1);
+      goToWorkflow();
+      updateWorkflowStatus(entry1, workflowStatus.draft, workflowStatus.ready);
+      publishWorkflowEntry(entry1);
+    });
+
+    it('can change workflow status', () => {
+      login();
+      createPostAndExit(entry1);
+      goToWorkflow();
+      updateWorkflowStatus(entry1, workflowStatus.draft, workflowStatus.review);
+      updateWorkflowStatus(entry1, workflowStatus.review, workflowStatus.ready);
+      updateWorkflowStatus(entry1, workflowStatus.ready, workflowStatus.review);
+      updateWorkflowStatus(entry1, workflowStatus.review, workflowStatus.draft);
+      updateWorkflowStatus(entry1, workflowStatus.draft, workflowStatus.ready);
+    });
+
+    it('can change status on and publish multiple entries', () => {
+      login();
+      createPostAndExit(entry1);
+      createPostAndExit(entry2);
+      createPostAndExit(entry3);
+      goToWorkflow();
+      updateWorkflowStatus(entry3, workflowStatus.draft, workflowStatus.ready);
+      updateWorkflowStatus(entry2, workflowStatus.draft, workflowStatus.ready);
+      updateWorkflowStatus(entry1, workflowStatus.draft, workflowStatus.ready);
+      publishWorkflowEntry(entry3);
+      publishWorkflowEntry(entry2);
+      publishWorkflowEntry(entry1);
+      goToCollections();
+      assertPublishedEntry([entry3, entry2, entry1]);
+    });
+
+    it('can delete an entry', () => {
+      login();
+      createPost(entry1);
+      deleteEntryInEditor();
+      assertOnCollectionsPage();
+      assertEntryDeleted(entry1);
+    });
 
     it('can update workflow status from within the editor', () => {
       login();
+      createPost(entry1);
+      assertWorkflowStatusInEditor(editorStatus.draft);
+      updateWorkflowStatusInEditor(editorStatus.review);
+      assertWorkflowStatusInEditor(editorStatus.review);
+      updateWorkflowStatusInEditor(editorStatus.ready);
+      assertWorkflowStatusInEditor(editorStatus.ready);
+      exitEditor();
+      goToWorkflow();
+      assertWorkflowStatus(entry1, workflowStatus.ready);
     });
   });
 });

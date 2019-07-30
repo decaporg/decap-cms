@@ -14,7 +14,7 @@ require('dotenv').config();
 const fs = require('fs-extra');
 const path = require('path');
 const yaml = require('js-yaml');
-const { prepareTestGitHubRepo, deleteRepository } = require('./github');
+const { prepareTestGitHubRepo, deleteRepository, getUser, resetRepository } = require('./github');
 
 const devTestDirectory = path.join(__dirname, '..', '..', 'dev-test');
 const backendsDirectory = path.join(devTestDirectory, 'backends');
@@ -28,24 +28,32 @@ async function copyBackendFiles(backend) {
   }
 }
 
-async function setupGitHub() {
-  const { owner, repo } = await prepareTestGitHubRepo();
-
+async function updateConfig(configModifier) {
   const configFile = path.join(devTestDirectory, 'config.yml');
   const configContent = await fs.readFile(configFile);
   const config = yaml.safeLoad(configContent);
-  config.backend.repo = `${owner}/${repo}`;
-
+  await configModifier(config);
   await fs.writeFileSync(configFile, yaml.safeDump(config));
-
-  return { owner, repo };
 }
 
-async function teardownGitHub({ owner, repo }) {
-  await deleteRepository({
-    owner,
-    repo,
+async function setupGitHub() {
+  const [user, repoData] = await Promise.all([getUser(), prepareTestGitHubRepo()]);
+
+  await updateConfig(config => {
+    config.backend.repo = `${repoData.owner}/${repoData.repo}`;
   });
+
+  return { ...repoData, user };
+}
+
+async function teardownGitHub(taskData) {
+  await deleteRepository(taskData);
+  return null;
+}
+
+async function teardownBackendTest(taskData) {
+  await resetRepository(taskData);
+  return null;
 }
 
 module.exports = async on => {
@@ -56,21 +64,26 @@ module.exports = async on => {
       await copyBackendFiles(backend);
 
       if (backend === 'github') {
-        const result = await setupGitHub();
-        return result;
+        return await setupGitHub();
       }
 
       return null;
     },
     async teardownBackend(taskData) {
-      console.log('Tearing down backend', backend);
       const { backend } = taskData;
+      console.log('Tearing down backend', backend);
       if (backend === 'github') {
-        const { owner, repo } = taskData;
-        await teardownGitHub({ owner, repo });
+        return await teardownGitHub(taskData);
       }
 
       return null;
+    },
+    async teardownBackendTest(taskData) {
+      const { backend } = taskData;
+      console.log('Tearing down single test for backend', backend);
+      if (backend === 'github') {
+        return await teardownBackendTest(taskData);
+      }
     },
     async restoreDefaults() {
       console.log('Restoring defaults');
