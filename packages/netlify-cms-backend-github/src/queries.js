@@ -178,11 +178,14 @@ export const pullRequest = gql`
 `;
 
 export const pullRequestAndBranch = gql`
-  query pullRequestAndBranch($owner: String!, $name: String!, $qualifiedName: String!, $number: Int!) {
+  query pullRequestAndBranch($owner: String!, $name: String!, $origin_owner: String!, $origin_name: String!, $qualifiedName: String!, $number: Int!) {
     repository(owner: $owner, name: $name) {
       ...RepositoryParts
-      ${pullRequestQueryPart}
       ${branchQueryPart}
+    }
+    origin: repository(owner: $origin_owner, name: $origin_name) {
+      ...RepositoryParts
+      ${pullRequestQueryPart}
     }
   }
   ${fragments.repository}

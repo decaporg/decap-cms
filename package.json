@@ -90,7 +90,7 @@
     "copy-webpack-plugin": "^5.0.1",
     "cross-env": "^5.2.0",
     "css-loader": "^3.0.0",
-    "cypress": "^3.4.0",
+    "cypress": "^3.4.1",
     "dom-testing-library": "^4.0.0",
     "dotenv": "^8.0.0",
     "eslint": "^5.15.1",

@@ -14,7 +14,13 @@ require('dotenv').config();
 const fs = require('fs-extra');
 const path = require('path');
 const yaml = require('js-yaml');
-const { prepareTestGitHubRepo, deleteRepository, getUser, resetRepository } = require('./github');
+const {
+  prepareTestGitHubRepo,
+  deleteRepositories,
+  getUser,
+  getForkUser,
+  resetRepositories,
+} = require('./github');
 
 const devTestDirectory = path.join(__dirname, '..', '..', 'dev-test');
 const backendsDirectory = path.join(devTestDirectory, 'backends');
@@ -34,25 +40,30 @@ async function updateConfig(configModifier) {
   const config = yaml.safeLoad(configContent);
   await configModifier(config);
   await fs.writeFileSync(configFile, yaml.safeDump(config));
+  return null;
 }
 
 async function setupGitHub() {
-  const [user, repoData] = await Promise.all([getUser(), prepareTestGitHubRepo()]);
+  const [user, forkUser, repoData] = await Promise.all([
+    getUser(),
+    getForkUser(),
+    prepareTestGitHubRepo(),
+  ]);
 
   await updateConfig(config => {
     config.backend.repo = `${repoData.owner}/${repoData.repo}`;
   });
 
-  return { ...repoData, user };
+  return { ...repoData, user, forkUser };
 }
 
 async function teardownGitHub(taskData) {
-  await deleteRepository(taskData);
+  await deleteRepositories(taskData);
   return null;
 }
 
 async function teardownBackendTest(taskData) {
-  await resetRepository(taskData);
+  await resetRepositories(taskData);
   return null;
 }
 
@@ -84,6 +95,15 @@ module.exports = async on => {
       if (backend === 'github') {
         return await teardownBackendTest(taskData);
       }
+    },
+    async updateBackendOptions({ backend, options }) {
+      console.log('Updating backend', backend, 'with options', options);
+      if (backend === 'github') {
+        return await updateConfig(config => {
+          config.backend = { ...config.backend, ...options };
+        });
+      }
+      return null;
     },
     async restoreDefaults() {
       console.log('Restoring defaults');

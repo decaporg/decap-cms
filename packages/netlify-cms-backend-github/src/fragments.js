@@ -42,6 +42,7 @@ export const pullRequest = gql`
     number
     state
     title
+    merged_at: mergedAt
     repository {
       ...RepositoryParts
     }

@@ -70,7 +70,7 @@ export default class GraphQLAPI extends API {
   }
 
   async getRepository() {
-    const { repo_owner: owner, repo_name: name } = this;
+    const { origin_repo_owner: owner, origin_repo_name: name } = this;
     const { data } = await this.query({
       query: queries.repository,
       variables: { owner, name },
@@ -226,7 +226,7 @@ export default class GraphQLAPI extends API {
     if (metaData && metaData.objects && metaData.objects.entry && metaData.objects.entry.path) {
       const { path } = metaData.objects.entry;
       const { repo_owner: headOwner, repo_name: headRepoName } = this;
-      const { origin_repo_name: baseOwner, origin_repo_name: baseRepoName } = this;
+      const { origin_repo_owner: baseOwner, origin_repo_name: baseRepoName } = this;
 
       const { data } = await this.query({
         query: queries.unpublishedBranchFile,
@@ -271,9 +271,11 @@ export default class GraphQLAPI extends API {
   }
 
   async getBranch(branch = this.branch) {
+    // don't cache base branch to always get the latest data
+    const fetchPolicy = branch === this.branch ? NO_CACHE : CACHE_FIRST;
     const { data } = await this.query({
       ...this.getBranchQuery(branch),
-      fetchPolicy: CACHE_FIRST, // branch query will be updated by mutations
+      fetchPolicy,
     });
     return data.repository.branch;
   }
@@ -319,19 +321,34 @@ export default class GraphQLAPI extends API {
 
   async getPullRequest(number) {
     const { data } = await this.query({
-      ...this.getPullRequest(number),
+      ...this.getPullRequestQuery(number),
       fetchPolicy: CACHE_FIRST,
     });
 
-    return data.repository.pullRequest;
+    // https://developer.github.com/v4/enum/pullrequeststate/
+    // GraphQL state: [CLOSED, MERGED, OPEN]
+    // REST API state: [closed, open]
+    const state = data.repository.pullRequest.state === 'OPEN' ? 'open' : 'closed';
+    return {
+      ...data.repository.pullRequest,
+      state,
+    };
   }
 
   getPullRequestAndBranchQuery(branch, number) {
     const { repo_owner: owner, repo_name: name } = this;
+    const { origin_repo_owner: origin_owner, origin_repo_name: origin_name } = this;
 
     return {
       query: queries.pullRequestAndBranch,
-      variables: { owner, name, number, qualifiedName: this.getBranchQualifiedName(branch) },
+      variables: {
+        owner,
+        name,
+        origin_owner,
+        origin_name,
+        number,
+        qualifiedName: this.getBranchQualifiedName(branch),
+      },
     };
   }
 
@@ -341,11 +358,12 @@ export default class GraphQLAPI extends API {
       fetchPolicy: CACHE_FIRST,
     });
 
-    return data.repository;
+    const { repository, origin } = data;
+    return { branch: repository.branch, pullRequest: origin.pullRequest };
   }
 
   async openPR({ number }) {
-    const { pullRequest } = await this.getPullRequest(number);
+    const pullRequest = await this.getPullRequest(number);
 
     const { data } = await this.mutate({
       mutation: mutations.reopenPullRequest,
@@ -367,7 +385,7 @@ export default class GraphQLAPI extends API {
   }
 
   async closePR({ number }) {
-    const { pullRequest } = await this.getPullRequest(number);
+    const pullRequest = await this.getPullRequest(number);
 
     const { data } = await this.mutate({
       mutation: mutations.closePullRequest,
@@ -388,30 +406,34 @@ export default class GraphQLAPI extends API {
     return data.closePullRequest;
   }
 
-  async deleteUnpublishedEntry(collection, slug) {
+  async deleteUnpublishedEntry(collectionName, slug) {
     try {
-      const contentKey = slug;
+      const contentKey = this.generateContentKey(collectionName, slug);
       const branchName = this.generateBranchName(contentKey);
 
       const metadata = await this.retrieveMetadata(contentKey);
-      const { branch, pullRequest } = await this.getPullRequestAndBranch(
-        branchName,
-        metadata.pr.number,
-      );
+      if (metadata && metadata.pr) {
+        const { branch, pullRequest } = await this.getPullRequestAndBranch(
+          branchName,
+          metadata.pr.number,
+        );
 
-      const { data } = await this.mutate({
-        mutation: mutations.closePullRequestAndDeleteBranch,
-        variables: {
-          deleteRefInput: { refId: branch.id },
-          closePullRequestInput: { pullRequestId: pullRequest.id },
-        },
-        update: store => {
-          store.data.delete(defaultDataIdFromObject(branch));
-          store.data.delete(defaultDataIdFromObject(pullRequest));
-        },
-      });
+        const { data } = await this.mutate({
+          mutation: mutations.closePullRequestAndDeleteBranch,
+          variables: {
+            deleteRefInput: { refId: branch.id },
+            closePullRequestInput: { pullRequestId: pullRequest.id },
+          },
+          update: store => {
+            store.data.delete(defaultDataIdFromObject(branch));
+            store.data.delete(defaultDataIdFromObject(pullRequest));
+          },
+        });
 
-      return data.closePullRequest;
+        return data.closePullRequest;
+      } else {
+        return await this.deleteBranch(branchName);
+      }
     } catch (e) {
       const { graphQLErrors } = e;
       if (graphQLErrors && graphQLErrors.length > 0) {
@@ -455,6 +477,10 @@ export default class GraphQLAPI extends API {
   }
 
   async createBranchAndPullRequest(branchName, sha, title) {
+    if (this.useForkWorkflow) {
+      await this.createBranch(branchName, sha);
+      return undefined;
+    }
     const repository = await this.getRepository();
     const { data } = await this.mutate({
       mutation: mutations.createBranchAndPullRequest,
@@ -475,8 +501,11 @@ export default class GraphQLAPI extends API {
       update: (store, { data: mutationResult }) => {
         const { branch } = mutationResult.createRef;
         const { pullRequest } = mutationResult.createPullRequest;
-        const branchData = { repository: { ...pullRequest.repository, branch } };
-        const pullRequestData = { repository: { ...pullRequest.repository, pullRequest } };
+        const branchData = { repository: { id: repository.id, branch } };
+        const pullRequestData = {
+          repository: { id: repository.id, branch },
+          origin: { id: repository.id, pullRequest },
+        };
 
         store.writeQuery({
           ...this.getBranchQuery(branchName),

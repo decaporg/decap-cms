@@ -581,6 +581,7 @@ export default class API {
     const unpublished = options.unpublished || false;
     if (!unpublished) {
       // Open new editorial review workflow for this entry - Create new metadata and commit to new branch
+      const branchData = await this.getBranch();
       const userPromise = this.user();
       const branchData = await this.getBranch();
       const changeTree = await this.updateTree(branchData.commit.sha, '/', fileTree);
