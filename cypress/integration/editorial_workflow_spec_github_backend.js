@@ -42,7 +42,7 @@ const entry3 = {
   tags: 'tag3',
 };
 
-describe('Github Backend Editorial Workflow', () => {
+describe.skip('Github Backend Editorial Workflow', () => {
   let taskResult = { data: {} };
 
   const backend = 'github';
