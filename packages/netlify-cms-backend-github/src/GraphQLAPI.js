@@ -166,7 +166,7 @@ export default class GraphQLAPI extends API {
       const { contexts } = status || { contexts: [] };
       return contexts;
     } else {
-      throw new APIError(`No commit found for SHA: ${sha}`, 422, 'GitHub');
+      return [];
     }
   }
 
