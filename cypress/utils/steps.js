@@ -5,7 +5,6 @@ function login(user) {
   if (user) {
     cy.visit('/', {
       onBeforeLoad: () => {
-        console.log('Storing user', user);
         window.localStorage.setItem('netlify-cms-user', JSON.stringify(user));
       },
     });
