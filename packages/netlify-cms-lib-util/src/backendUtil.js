@@ -1,4 +1,5 @@
-import { get } from 'lodash';
+import { flow, fromPairs, get } from 'lodash';
+import { map } from 'lodash/fp';
 import { fromJS } from 'immutable';
 import { fileExtension } from './path';
 
@@ -40,3 +41,16 @@ export const parseResponse = async (res, { expectingOk = true, format = 'text' }
 };
 
 export const responseParser = options => res => parseResponse(res, options);
+
+export const parseLinkHeader = flow([
+  linksString => linksString.split(','),
+  map(str => str.trim().split(';')),
+  map(([linkStr, keyStr]) => [
+    keyStr.match(/rel="(.*?)"/)[1],
+    linkStr
+      .trim()
+      .match(/<(.*?)>/)[1]
+      .replace(/\+/g, '%20'),
+  ]),
+  fromPairs,
+]);

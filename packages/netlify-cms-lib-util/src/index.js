@@ -11,7 +11,12 @@ import {
   then,
 } from './promise';
 import unsentRequest from './unsentRequest';
-import { filterByPropExtension, parseResponse, responseParser } from './backendUtil';
+import {
+  filterByPropExtension,
+  parseLinkHeader,
+  parseResponse,
+  responseParser,
+} from './backendUtil';
 import loadScript from './loadScript';
 import getBlobSHA from './getBlobSHA';
 
@@ -33,6 +38,7 @@ export const NetlifyCmsLibUtil = {
   then,
   unsentRequest,
   filterByPropExtension,
+  parseLinkHeader,
   parseResponse,
   responseParser,
   loadScript,
@@ -56,6 +62,7 @@ export {
   then,
   unsentRequest,
   filterByPropExtension,
+  parseLinkHeader,
   parseResponse,
   responseParser,
   loadScript,
