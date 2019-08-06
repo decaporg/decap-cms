@@ -153,6 +153,7 @@ export default class RelationControl extends React.Component {
     const { field, query, forID } = this.props;
     const collection = field.get('collection');
     const searchFields = field.get('searchFields');
+    const optionsLength = field.get('optionsLength') || 20;
     const searchFieldsArray = List.isList(searchFields) ? searchFields.toJS() : [searchFields];
 
     query(forID, collection, searchFieldsArray, term).then(({ payload }) => {
@@ -163,7 +164,7 @@ export default class RelationControl extends React.Component {
       }
 
       if (!term) {
-        options = options.slice(0, 20);
+        options = options.slice(0, optionsLength);
       }
 
       callback(options);
