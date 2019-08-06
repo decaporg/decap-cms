@@ -3,6 +3,7 @@ import semaphore from 'semaphore';
 import { find, flow, get, hasIn, initial, last, partial, result, uniq } from 'lodash';
 import { map } from 'lodash/fp';
 import {
+  getPaginatedRequestIterator,
   APIError,
   EditorialWorkflowError,
   filterPromisesWith,
@@ -11,7 +12,7 @@ import {
   resolvePromiseProperties,
 } from 'netlify-cms-lib-util';
 
-const CMS_BRANCH_PREFIX = 'cms/';
+const CMS_BRANCH_PREFIX = 'cms';
 
 const replace404WithEmptyArray = err => (err && err.status === 404 ? [] : Promise.reject(err));
 
@@ -83,6 +84,20 @@ export default class API {
     return this.api_root + path;
   }
 
+  parseResponse(response) {
+    const contentType = response.headers.get('Content-Type');
+    if (contentType && contentType.match(/json/)) {
+      return this.parseJsonResponse(response);
+    }
+    const textPromise = response.text().then(text => {
+      if (!response.ok) {
+        return Promise.reject(text);
+      }
+      return text;
+    });
+    return textPromise;
+  }
+
   request(path, options = {}) {
     const headers = this.requestHeaders(options.headers || {});
     const url = this.urlFor(path, options);
@@ -90,19 +105,22 @@ export default class API {
     return fetch(url, { ...options, headers })
       .then(response => {
         responseStatus = response.status;
-        const contentType = response.headers.get('Content-Type');
-        if (contentType && contentType.match(/json/)) {
-          return this.parseJsonResponse(response);
-        }
-        const text = response.text();
-        if (!response.ok) {
-          return Promise.reject(text);
-        }
-        return text;
+        return this.parseResponse(response);
       })
       .catch(error => {
         throw new APIError(error.message, responseStatus, 'GitHub');
       });
+  }
+
+  async requestAllPages(url, options = {}) {
+    const processedURL = this.urlFor(url, options);
+    const pagesIterator = getPaginatedRequestIterator(processedURL, options);
+    const pagesToParse = [];
+    for await (const page of pagesIterator) {
+      pagesToParse.push(this.parseResponse(page));
+    }
+    const pages = await Promise.all(pagesToParse);
+    return [].concat(...pages);
   }
 
   generateContentKey(collectionName, slug) {
@@ -122,15 +140,15 @@ export default class API {
   }
 
   generateBranchName(contentKey) {
-    return `${CMS_BRANCH_PREFIX}${contentKey}`;
+    return `${CMS_BRANCH_PREFIX}/${contentKey}`;
   }
 
   branchNameFromRef(ref) {
-    return ref.substring('refs/heads/'.length - 1);
+    return ref.substring('refs/heads/'.length);
   }
 
   contentKeyFromRef(ref) {
-    return ref.substring(`refs/heads/${CMS_BRANCH_PREFIX}/`.length - 1);
+    return ref.substring(`refs/heads/${CMS_BRANCH_PREFIX}/`.length);
   }
 
   checkMetadataRef() {
@@ -215,25 +233,31 @@ export default class API {
       if (!this.useForkWorkflow) {
         return this.request(`${this.repoURL}/contents/${key}.json`, metadataRequestOptions)
           .then(response => JSON.parse(response))
-          .catch(() =>
-            console.log(
-              '%c %s does not have metadata',
-              'line-height: 30px;text-align: center;font-weight: bold',
-              key,
-            ),
-          );
+          .catch(err => {
+            if (err.message === 'Not Found') {
+              console.log(
+                '%c %s does not have metadata',
+                'line-height: 30px;text-align: center;font-weight: bold',
+                key,
+              );
+            }
+            throw err;
+          });
       }
 
       const [user, repo] = key.split('/');
       return this.request(`/repos/${user}/${repo}/contents/${key}.json`, metadataRequestOptions)
         .then(response => JSON.parse(response))
-        .catch(() =>
-          console.log(
-            '%c %s does not have metadata',
-            'line-height: 30px;text-align: center;font-weight: bold',
-            key,
-          ),
-        );
+        .catch(err => {
+          if (err.message === 'Not Found') {
+            console.log(
+              '%c %s does not have metadata',
+              'line-height: 30px;text-align: center;font-weight: bold',
+              key,
+            );
+          }
+          throw err;
+        });
     });
   }
 
@@ -338,8 +362,7 @@ export default class API {
     // Get PRs with a `head` of `branchName`. Note that this is a
     // substring match, so we need to check that the `head.ref` of
     // at least one of the returned objects matches `branchName`.
-    // TODO: this is a paginated endpoint
-    return this.request(`${repoURL}/pulls`, {
+    return this.requestAllPages(`${repoURL}/pulls`, {
       params: {
         head: usernameOfFork ? `${usernameOfFork}:${branchName}` : branchName,
         ...(state ? { state } : {}),
@@ -350,7 +373,7 @@ export default class API {
 
   branchHasPR = async ({ branchName, ...rest }) => {
     const prs = await this.getPRsForBranchName({ branchName, ...rest });
-    return prs.some(pr => this.branchNameFromRef(pr.head.ref) === branchName);
+    return prs.some(pr => pr.head.ref === branchName);
   };
 
   getUpdatedForkWorkflowMetadata = async (contentKey, { metadata: metadataArg } = {}) => {
@@ -847,7 +870,7 @@ export default class API {
   }
 
   assertCmsBranch(branchName) {
-    return branchName.startsWith(CMS_BRANCH_PREFIX);
+    return branchName.startsWith(`${CMS_BRANCH_PREFIX}/`);
   }
 
   patchBranch(branchName, sha, opts = {}) {
