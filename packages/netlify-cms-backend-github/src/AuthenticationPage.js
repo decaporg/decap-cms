@@ -50,7 +50,7 @@ export default class GitHubAuthenticationPage extends React.Component {
     });
   };
 
-  loginWithForkWorkflow(data) {
+  loginWithOpenAuthoring(data) {
     const { backend } = this.props;
 
     this.setState({ findingFork: true });
@@ -80,8 +80,8 @@ export default class GitHubAuthenticationPage extends React.Component {
         this.setState({ loginError: err.toString() });
         return;
       }
-      if (this.props.config.getIn(['backend', 'fork_workflow'])) {
-        return this.loginWithForkWorkflow(data).then(() => this.props.onLogin(data));
+      if (this.props.config.getIn(['backend', 'open_authoring'])) {
+        return this.loginWithOpenAuthoring(data).then(() => this.props.onLogin(data));
       }
       this.props.onLogin(data);
     });

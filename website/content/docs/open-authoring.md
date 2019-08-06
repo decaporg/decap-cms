@@ -17,17 +17,17 @@ At the same time, any contributors who _do_ have write access to the repository 
 
 - Your repo on GitHub must be public.
 
-## Enabling the Open Authoring
+## Enabling Open Authoring
 
 1. [Enable the editorial workflow](/docs/configuration-options/#publish-mode) by setting `publish_mode` to `editorial_workflow` in your `config.yml`.
 
-2. Set `fork_workflow` to `true` in the `backend` section of your `config.yml`, as follows:
+2. Set `open_authoring` to `true` in the `backend` section of your `config.yml`, as follows:
 
     ```yaml
     backend:
       name: github
       repo: owner-name/repo-name # Path to your GitHub repository
-      fork_workflow: true
+      open_authoring: true
     ```
 
 ## Usage
