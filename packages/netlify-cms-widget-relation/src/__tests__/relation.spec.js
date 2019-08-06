@@ -178,7 +178,7 @@ describe('Relation widget', () => {
     fireEvent.keyDown(input, { key: 'ArrowDown' });
 
     await wait(() => {
-      expect(getAllByText(/^Post # (\d{1,2}) post-number-\1$/)).toHaveLength(30);
+      expect(getAllByText(/^Post # (\d{1,2}) post-number-\1$/)).toHaveLength(10);
     });
   });
 
