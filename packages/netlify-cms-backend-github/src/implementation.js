@@ -365,7 +365,8 @@ export default class GitHub {
       return null;
     }
 
-    const statuses = await this.api.getStatuses(data.pr.head);
+    const headSHA = typeof data.pr.head === 'string' ? data.pr.head : data.pr.head.sha;
+    const statuses = await this.api.getStatuses(headSHA);
     const deployStatus = getPreviewStatus(statuses, this.config);
 
     if (deployStatus) {
