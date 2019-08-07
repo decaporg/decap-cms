@@ -733,7 +733,7 @@ export default class API {
    * Get a pull request by PR number.
    */
   getPullRequest(prNumber) {
-    const repoURL = this.useOpenAuthoring ? this.repoURL : this.originRepoURL;
+    const repoURL = this.useOpenAuthoring ? this.originRepoURL : this.repoURL;
     return this.request(`${repoURL}/pulls/${prNumber} }`);
   }
 
@@ -741,7 +741,7 @@ export default class API {
    * Get the list of commits for a given pull request.
    */
   getPullRequestCommits(prNumber) {
-    const repoURL = this.useOpenAuthoring ? this.repoURL : this.originRepoURL;
+    const repoURL = this.useOpenAuthoring ? this.originRepoURL : this.repoURL;
     return this.request(`${repoURL}/pulls/${prNumber}/commits`);
   }
 
@@ -832,8 +832,8 @@ export default class API {
     );
   }
 
-  publishUnpublishedEntry(collection, slug) {
-    const contentKey = this.generateContentKey(collection.get('name'), slug);
+  publishUnpublishedEntry(collectionName, slug) {
+    const contentKey = this.generateContentKey(collectionName, slug);
     const branchName = this.generateBranchName(contentKey);
     return this.retrieveMetadata(contentKey)
       .then(metadata => this.mergePR(metadata.pr, metadata.objects))
