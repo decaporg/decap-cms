@@ -15,7 +15,7 @@ The documentation for Netlify CMS is written in [Markdown](http://daringfireball
 The GitHub website allows you to submit issues, work with files, search for content, and browse changes that have been submitted in the past and those that are being submitted now (aka Pull Requests). 
 
 ## Style guidelines
-A [style guide](/website/content/docs/style-guide.md) is available to help provide context around grammar, code styling, syntax, etc. 
+A [style guide](/docs/writing-style-guide/) is available to help provide context around grammar, code styling, syntax, etc. 
 
 ## Filing issues
 If you have a GitHub account, you can file an [issue](https://github.com/netlify/netlify-cms/issues) (aka bug report) against the Netlify CMS docs. Even if you're not able to, or don't know how to, fix the issue (see [Improve existing content](#improve-existing-content)), it helps to start the conversation. 
