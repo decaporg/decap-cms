@@ -57,13 +57,15 @@ function bootstrap(opts = {}) {
     store.dispatch(mergeConfig(config));
   }
 
+  const locale = 'en';
+
   /**
    * Create connected root component.
    */
   const Root = () => (
     <>
       <GlobalStyles />
-      <I18n locale={'en'} messages={getPhrases()}>
+      <I18n locale={locale} messages={getPhrases(locale)}>
         <ErrorBoundary showBackup>
           <Provider store={store}>
             <ConnectedRouter history={history}>
