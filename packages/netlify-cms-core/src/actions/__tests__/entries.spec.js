@@ -78,5 +78,18 @@ describe('entries', () => {
       ]);
       expect(createEmptyDraftData(fields)).toEqual({});
     });
+
+    it('should not return an empty object for boolean widgets without a default value', () => {
+      const fields = fromJS([
+        {
+          name: 'post',
+          widget: 'boolean',
+          fields: [{ name: 'title', widget: 'boolean' }],
+        },
+      ]);
+      expect(createEmptyDraftData(fields)).toEqual({
+        post: { title: false },
+      });
+    });
   });
 });
