@@ -83,7 +83,7 @@ describe('entries', () => {
       const fields = fromJS([
         {
           name: 'post',
-          widget: 'boolean',
+          widget: 'object',
           fields: [{ name: 'title', widget: 'boolean' }],
         },
       ]);
