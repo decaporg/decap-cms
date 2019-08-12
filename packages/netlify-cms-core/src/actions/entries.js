@@ -427,9 +427,12 @@ export function createEmptyDraftData(fields, withNameKey = true) {
   return fields.reduce((acc, item) => {
     const subfields = item.get('field') || item.get('fields');
     const list = item.get('widget') == 'list';
-    const boolean = item.get('widget') == 'boolean';
     const name = item.get('name');
-    const defaultValue = item.get('default', null);
+    // A boolean field without a default value defined will initially render
+    // render as false, but the field will fail the required check. So we are
+    // assinging false.
+    const widgetDefaultValue = item.get('widget') == 'boolean' ? false : null;
+    const defaultValue = item.get('default', widgetDefaultValue);
     const isEmptyDefaultValue = val => [[{}], {}].some(e => isEqual(val, e));
 
     if (List.isList(subfields)) {
@@ -449,14 +452,6 @@ export function createEmptyDraftData(fields, withNameKey = true) {
       if (!isEmptyDefaultValue(subDefaultValue)) {
         acc[name] = subDefaultValue;
       }
-      return acc;
-    }
-
-    // A boolean field without a default value defined will initially render
-    // render as false, but the field will fail the required check. So we are
-    // assinging false.
-    if (boolean && defaultValue === null) {
-      acc[name] = false;
       return acc;
     }
 
