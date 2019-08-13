@@ -86,7 +86,7 @@ export default class GitHub {
     var repoExists = false;
     while (!repoExists) {
       repoExists = await fetch(`${this.api_root}/repos/${repo}`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `token ${token}` },
       })
         .then(() => true)
         .catch(err => (err && err.status === 404 ? false : Promise.reject(err)));
@@ -102,7 +102,7 @@ export default class GitHub {
     if (!this._currentUserPromise) {
       this._currentUserPromise = fetch(`${this.api_root}/user`, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `token ${token}`,
         },
       }).then(res => res.json());
     }
@@ -117,7 +117,7 @@ export default class GitHub {
         `${this.api_root}/repos/${this.originRepo}/collaborators/${username}/permission`,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `token ${token}`,
           },
         },
       )
@@ -145,7 +145,7 @@ export default class GitHub {
     const fork = await fetch(`${this.api_root}/repos/${this.originRepo}/forks`, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `token ${token}`,
       },
     }).then(res => res.json());
     this.useOpenAuthoring = true;
