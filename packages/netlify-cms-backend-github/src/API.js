@@ -133,12 +133,6 @@ export default class API {
     return `${this.repo}/${collectionName}/${slug}`;
   }
 
-  generateBranchNameFromCollectionAndSlug(collectionName, slug) {
-    return this.generateContentKey(collectionName, slug).then(contentKey =>
-      this.generateBranchName(contentKey),
-    );
-  }
-
   generateBranchName(contentKey) {
     return `${CMS_BRANCH_PREFIX}/${contentKey}`;
   }
